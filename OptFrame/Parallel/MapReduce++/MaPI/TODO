@@ -1,0 +1,2 @@
+Introduce of fault tolerance
+Find a better way to serialize STL objects (pair,map,multimap,vector,..) -- lets take this gift for the users! :)

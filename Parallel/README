@@ -1,0 +1,11 @@
+Running the sequential example
+
+  $make seq && ./prun.sh seq mainOptFrame
+
+Running the SeqMR example
+
+  $make seq && ./prun.sh SeqMR mainOptFrame
+
+Running the MaPI example with 5 processes (i.e. 4 mapping nodes)
+
+  $make MaPI && ./prun.sh MaPI mainMaPI 5

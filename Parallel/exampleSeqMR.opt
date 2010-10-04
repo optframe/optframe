@@ -1,0 +1,13 @@
+%=======================
+% OptFrame example file
+%=======================
+
+dictionary %shows an empty dictionary
+define my_bestimprovement BISeqMR ev 0 ns 0 np 5 %define 'my_bestimprovement' as 'BISeqMR ev 0 ns 0 np 5'
+define random initsol 0 %define 'random' as 'initsol 0'
+dictionary %shows the updated dictionary
+
+test 5 12 8400 8400 random ev 0 my_bestimprovement out.txt
+
+%display the help
+help

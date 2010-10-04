@@ -1,0 +1,52 @@
+Testado no meu PC
+
+Com multimap
+
+sabir@sabir-laptop:~/projetos/svn/MapReduce++/examples/SeqRandomInt$ g++ SeqRandomInt.cpp -o sri && ./sri
+SeqMR test
+Spent time: 7.350 secs
+sabir@sabir-laptop:~/projetos/svn/MapReduce++/examples/SeqRandomInt$ g++ SeqRandomInt.cpp -o sri && ./sri
+SeqMR test
+Spent time: 7.340 secs
+sabir@sabir-laptop:~/projetos/svn/MapReduce++/examples/SeqRandomInt$ g++ SeqRandomInt.cpp -o sri && ./sri
+SeqMR test
+Spent time: 7.380 secs
+
+Com vector
+
+SeqMR test
+Spent time: 1.470 secs
+sabir@sabir-laptop:~/projetos/svn/MapReduce++/examples/SeqRandomInt$ g++ SeqRandomInt.cpp -o sri && ./sri
+SeqMR test
+Spent time: 1.460 secs
+sabir@sabir-laptop:~/projetos/svn/MapReduce++/examples/SeqRandomInt$ g++ SeqRandomInt.cpp -o sri && ./sri
+SeqMR test
+Spent time: 1.450 secs
+sabir@sabir-laptop:~/projetos/svn/MapReduce++/examples/SeqRandomInt$ 
+
+Com vector..
+
+Num threads 1
+
+sabir@sabir-laptop:~/projetos/svn/MapReduce++/examples/SeqRandomInt$ g++ MapMPRandomInt.cpp -o mpri -fopenmp && ./mpri
+MapMP test
+Elapsed time: 7.962 secs
+sabir@sabir-laptop:~/projetos/svn/MapReduce++/examples/SeqRandomInt$ g++ MapMPRandomInt.cpp -o mpri -fopenmp && ./mpri
+MapMP test
+Elapsed time: 7.948 secs
+sabir@sabir-laptop:~/projetos/svn/MapReduce++/examples/SeqRandomInt$ g++ MapMPRandomInt.cpp -o mpri -fopenmp && ./mpri
+MapMP test
+Elapsed time: 7.965 secs
+sabir@sabir-laptop:~/projetos/svn/MapReduce++/examples/SeqRandomInt$ g++ MapMPRandomInt.cpp -o mpri -fopenmp && ./mpri
+MapMP test
+
+Num threads 2
+
+Elapsed time: 4.498 secs
+sabir@sabir-laptop:~/projetos/svn/MapReduce++/examples/SeqRandomInt$ g++ MapMPRandomInt.cpp -o mpri -fopenmp && ./mpri
+MapMP test
+Elapsed time: 4.556 secs
+sabir@sabir-laptop:~/projetos/svn/MapReduce++/examples/SeqRandomInt$ g++ MapMPRandomInt.cpp -o mpri -fopenmp && ./mpri
+MapMP test
+Elapsed time: 4.519 secs
+

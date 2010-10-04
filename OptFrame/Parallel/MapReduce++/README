@@ -1,0 +1,16 @@
+===============
+MapReduce++v2.1
+---------------
+
+API based on vectors.
+
+===============
+MapReduce++v2.0
+---------------
+
+The MapReduce++v2.0 integrates the corresponding second versions of MaPI and MapMP MapReduce implementations. 
+The main factor that justify the jump from 1.x to the 2.x versions is the using of MapReduce Interface (MRI),
+which was proposed by the MaPI developments in order to make easily its comprehension and using by the users.
+
+See our examples!
+:)

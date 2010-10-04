@@ -1,0 +1,29 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream.h>
+#include "Runnable.h"
+
+class Work : public Runnable 
+{
+    public:
+        Work(char cc):c(cc),Runnable(){};
+        void run ()
+        {
+            while (true) 
+            {
+                std::cout << c;
+            }
+        };
+    protected:
+        char c;
+};
+
+int main (int argc, char *argv[])
+{
+  Work work1('#');
+  Work work2(' ');
+  work1.start();
+  work2.start();
+  while (true);
+  return 0;
+}

@@ -1,0 +1,13 @@
+This is Scanner++ Library, version 0.91, for C++.
+
+TODO:
+1. Implementar metodo hasNextLine()
+2. Corrigir metodos hasNextInt(), hasNextLong(), hasNextFloat()
+e hasNextDouble(), que, por default, retornam apenas true.
+Retornar true foi padronizado pois por padrao C++ consegue
+retornar os nextInt() e outros mesmo quando nao ha valores corretos
+a se retornar.
+3. Corrigir metodos nextInt(), nextLong(), nextFloat() e nextDouble()
+para lancar excecoes caso nao haja valor correto a se retornar.
+4. Estender a interface do Scanner++ para outros metodos ja contidos
+na interface Scanner Java, bem como suporte a expressoes regulares.

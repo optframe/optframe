@@ -1,0 +1,14 @@
+========================
+MapReduce++v2.0 examples
+------------------------
+
+To compile just type "make".
+
+Type "./program" to run a non-MPI example program (SeqEx01, SeqEx02, SeqWordCounter, MapMPEx01, MapMPEx02, or MapMPWordCounter) or type "mpirun -np P program" to run a MPI-based example program (MaPIEx01, MaPIEx02, MaPIWordCounter, MaPIFSEx01, MaPIFSEx02, or MaPIFSEx03), where P is the desired number of MPI processes (in this case P must to be grater than one).
+
+The examples are about three MapReduce implementations of MapReduce++v2.0: SeqMR, MapMP and MaPI. 
+SeqMR is a sequential MapReduce implementation. 
+MapMP is a parallel shared-memory, e.g. non-distributed, MapReduce implementation based on OpenMP. 
+MaPI is a parallel distributed MapReduce implementation based on MPI.
+
+Our suggestion for beginning users is to see first the SeqMR examples and after the MapMP and MaPI examples.
