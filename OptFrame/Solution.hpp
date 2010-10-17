@@ -13,7 +13,7 @@ protected:
 	R& r;
 
 public:
-	Solution(R& rr):r(rr){};
+	Solution(R& rr):r(*new R(rr)){};
 	Solution(const Solution<R>& s):r(*new R(s.r)){}
 
 	virtual ~Solution() { delete &r; }

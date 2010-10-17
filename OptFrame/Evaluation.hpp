@@ -18,10 +18,10 @@ protected:
 
 public:
 	Evaluation(double obj, double inf, M& mm):
-		objFunction(obj),infMeasure(inf),m(mm){};
+		objFunction(obj),infMeasure(inf),m(*new M(mm)){};
 
 	Evaluation(double obj, M& mm):
-		objFunction(obj),m(mm){ infMeasure=0; };
+		objFunction(obj),m(*new M(mm)){ infMeasure=0; };
 
 	Evaluation(const Evaluation<M>& e):
 		m(*new M(e.m)),objFunction(e.objFunction),infMeasure(e.infMeasure){};
