@@ -1,0 +1,14 @@
+# Makefile for Runnable library
+# Author: Sabir Ribas (sabirribas@yahoo.com.br)
+
+
+all : runnable runnabletest
+
+runnable: Runnable.h
+	g++ -c Runnable.h -Wno-deprecated
+
+runnabletest: Main.cpp
+	g++ Main.cpp -o runnabletest -Wno-deprecated -lpthread
+
+clean:
+	rm -f *.o runnabletest

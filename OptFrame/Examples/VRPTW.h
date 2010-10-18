@@ -1,0 +1,21 @@
+#ifndef VRPTW_H_
+#define VRPTW_H_
+
+#include "./VRPTW/Representation.h"
+#include "./VRPTW/Solution.h"
+#include "./VRPTW/Memory.h"
+#include "./VRPTW/Evaluation.h"
+#include "./VRPTW/ProblemInstance.hpp"
+#include "./VRPTW/Evaluator.hpp"
+#include "./VRPTW/NSEnumShiftk.hpp"
+#include "./VRPTW/NSEnumSwapk.hpp"
+//#include "./VRPTW/NSEnumCross.hpp"
+//#include "./VRPTW/NSEnumOrOpt.hpp"
+//#include "./VRPTW/NSEnumTwoOpt.hpp"
+//#include "./VRPTW/NSEnumExchange.hpp"
+//#include "./VRPTW/NSEnumReverse.hpp"
+#include "./VRPTW/PerturbationVRPTW.h"
+#include "./VRPTW/CheapestInsertionInitialSolution.hpp"
+#include "./VRPTW/SavingsInitialSolution.hpp"
+#include "./VRPTW/PartialGreedyInitialSolution.hpp"
+#endif /*VRPTW_H_*/

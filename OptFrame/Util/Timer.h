@@ -1,0 +1,41 @@
+#ifndef TIMER_HPP
+#define TIMER_HPP
+
+#include <cstdio>
+#include <cstdlib>
+#include <sys/time.h>
+
+class Timer
+{
+protected:
+	struct timeval time1, time2;
+    long elapsed_utime;    /* elapsed time in microseconds */
+    long elapsed_mtime;    /* elapsed time in milliseconds */
+    long elapsed_seconds;  /* diff between seconds counter */
+    long elapsed_useconds; /* diff between microseconds counter */
+
+	bool showMessageOnDestroy;
+public:
+	Timer()
+	{
+		gettimeofday(&time1, NULL);
+		showMessageOnDestroy=true;
+	};
+	Timer(bool m)
+	{
+		gettimeofday(&time1, NULL);
+		showMessageOnDestroy=m;
+	};
+	virtual ~Timer(){ if(showMessageOnDestroy) printf("Elapsed time: %.3f secs\n", now()); };
+	virtual double now()
+	{
+		gettimeofday(&time2, NULL);
+	    elapsed_seconds  = time2.tv_sec  - time1.tv_sec;
+	    elapsed_useconds = time2.tv_usec - time1.tv_usec;
+	    elapsed_utime = (elapsed_seconds) * 1000000 + elapsed_useconds;
+	    elapsed_mtime = ((elapsed_seconds) * 1000 + elapsed_useconds/1000.0) + 0.5;
+		return ( elapsed_mtime / 1000 + ( elapsed_mtime % 1000 ) * 0.001 ) ;
+	};
+};
+
+#endif /* TIMER_HPP */

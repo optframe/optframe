@@ -1,0 +1,13 @@
+%=======================
+% OptFrame example file
+%=======================
+
+dictionary %shows an empty dictionary
+define tabu_search TS ev 0 ns 0 10 300 %define 'tabu_search' as 'TS ev 0 ns 0 10 300'
+define random initsol 0 %define 'random' as 'initsol 0'
+dictionary %shows the updated dictionary
+
+test 5 12 8400 8400 random ev 0 tabu_search out.txt
+
+%display the help
+help
