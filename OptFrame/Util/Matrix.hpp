@@ -28,212 +28,216 @@ using namespace std;
 class BadIndex
 {
 private:
-	string message;
+   string message;
 public:
-	BadIndex(string m)
-	{
-		message = m;
-	};	
+   BadIndex(string m)
+   {
+      message = m;
+   }
 };
 
-
 template<class T>
-class Matrix 
+class Matrix
 {
 public:
-	Matrix(unsigned _quadratic)
-	{
-		rows = cols = _quadratic;
+   Matrix(unsigned _quadratic)
+   {
+      rows = cols = _quadratic;
 
-		if (rows == 0 || cols == 0)
-			throw BadIndex("Matrix constructor has 0 size");
+      if (rows == 0 || cols == 0)
+         throw BadIndex("Matrix constructor has 0 size");
 
-		data = new T[rows * cols];
-	};
+      data = new T[rows * cols];
+   }
 
-	Matrix(unsigned _rows, unsigned _cols)
-	{
-		rows = _rows;
-		cols = _cols;
+   Matrix(unsigned _rows, unsigned _cols)
+   {
+      rows = _rows;
+      cols = _cols;
 
-		if (rows == 0 || cols == 0)
-			throw BadIndex("Matrix constructor has 0 size");
+      if (rows == 0 || cols == 0)
+         throw BadIndex("Matrix constructor has 0 size");
 
-		data = new T[rows * cols];
-	};
+      data = new T[rows * cols];
+   }
 
-	T& operator() (unsigned row, unsigned col)  // subscript operators often come in pairs
-	{
-		if (row >= rows || col >= cols)
-		{
-			cout << "[set Matrix] Pedido de ("<<row<<","<<col<<")" << " de ("<<rows<<","<<cols<<")" << endl;
+   T& operator()(unsigned row, unsigned col) // subscript operators often come in pairs
+   {
+      if (row >= rows || col >= cols)
+      {
+         cout << "[set Matrix] Pedido de (" << row << "," << col << ")" << " de (" << rows << ","
+               << cols << ")" << endl;
 
-			int jkl;
-			cin >> jkl;
+         int jkl;
+         cin >> jkl;
 
-			throw BadIndex("Matrix subscript out of bounds");
-		}
+         throw BadIndex("Matrix subscript out of bounds");
+      }
 
-		return data[cols*row + col];
-	};
+      return data[cols * row + col];
+   }
 
-	T  operator() (unsigned row, unsigned col) const  // subscript operators often come in pairs
-	{
-		if (row >= rows || col >= cols)
-		{
-			cout << "[get Matrix] Pedido de ("<<row<<","<<col<<")" << " de ("<<rows<<","<<cols<<")" << endl;
+   T operator()(unsigned row, unsigned col) const // subscript operators often come in pairs
+   {
+      if (row >= rows || col >= cols)
+      {
+         cout << "[get Matrix] Pedido de (" << row << "," << col << ")" << " de (" << rows << ","
+               << cols << ")" << endl;
 
-			int jkl;
-			cin >> jkl;
+         int jkl;
+         cin >> jkl;
 
-			throw BadIndex("const Matrix subscript out of bounds");
-		}
+         throw BadIndex("const Matrix subscript out of bounds");
+      }
 
-		return data[cols*row + col];
-	};
+      return data[cols * row + col];
+   }
 
-	virtual ~Matrix()  //Destructor
-	{
-		delete[] data;
-	};
+   virtual ~Matrix() //Destructor
+   {
+      delete[] data;
+   }
 
-	// Metodos util! fill() preenche a matriz com o valor desejado
-	void fill(T v)
-	{
-		unsigned int total = rows * cols;
+   // Retorna true se a matriz for quadrada
+   bool square() const
+   {
+      return (rows == cols);
+   }
 
-		for(unsigned int i = 0; i < (total) ; i++)
-			data[i] = v;
-	};
+   // Metodos util! fill() preenche a matriz com o valor desejado
+   void fill(T v)
+   {
+      unsigned int total = rows * cols;
 
-	Matrix(const Matrix& m)  // Copy constructor
-	{
-		rows = m.rows;
-		cols = m.cols;
+      for (unsigned int i = 0; i < (total); i++)
+         data[i] = v;
+   }
 
-		unsigned int total = rows * cols;
-		data = new T[total];
+   Matrix(const Matrix& m) // Copy constructor
+   {
+      rows = m.rows;
+      cols = m.cols;
 
-		for(unsigned int i = 0; i < (total) ; i++)
-			data[i] = m.data[i];
-	};
+      unsigned int total = rows * cols;
+      data = new T[total];
 
-	Matrix& operator= (const Matrix& m) // Assignment operator
-	{
-		//Verificando auto-referencia (Importante!)
-		if(&m == this)
-			return *this;
+      for (unsigned int i = 0; i < (total); i++)
+         data[i] = m.data[i];
+   }
 
-		delete [] data;
+   Matrix& operator=(const Matrix& m) // Assignment operator
+   {
+      //Verificando auto-referencia (Importante!)
+      if (&m == this)
+         return *this;
 
-		rows = m.rows;
-		cols = m.cols;
+      delete[] data;
 
-		int total = rows * cols;
+      rows = m.rows;
+      cols = m.cols;
 
-		if(total < 0)
-		{
-			cerr << "Valor maior do que o suportado pela Matrix! (" << total << ")" << endl;
-			exit(1);
-		}
+      int total = rows * cols;
 
-		data = new T[total];
+      if (total < 0)
+      {
+         cerr << "Valor maior do que o suportado pela Matrix! (" << total << ")" << endl;
+         exit(1);
+      }
 
-		for(int i = 0; i < (total); i++)
-			data[i] = m.data[i];
+      data = new T[total];
 
-		return *this;
-	};
+      for (int i = 0; i < (total); i++)
+         data[i] = m.data[i];
 
-	unsigned getRows() const
-	{
-		return rows;
-	}
+      return *this;
+   }
 
-	unsigned getCols() const
-	{
-		return cols;
-	}
+   unsigned getRows() const
+   {
+      return rows;
+   }
 
-	vector<T> getRow(int _row) const
-	{
-	   vector<T> row(cols);
-	   
-	   for(int i=0;i<cols;i++)
-	   {
-	      row[i] = operator()(_row,i);
-	   }
-	   
-		return row;
-	}
+   unsigned getCols() const
+   {
+      return cols;
+   }
 
-	void setRow(int p, vector<T>& _row)
-	{
-      int numCol = (_row.size() < cols)?_row.size():cols;
-	   
-	   for(int i=0;i<numCol;i++)
-	   {
-	      operator()(p,i) = _row[i];
-	   }
-	}
+   vector<T> getRow(int _row) const
+   {
+      vector<T> row(cols);
+
+      for (int i = 0; i < cols; i++)
+      {
+         row[i] = operator()(_row, i);
+      }
+
+      return row;
+   }
+
+   void setRow(int p, vector<T>& _row)
+   {
+      int numCol = (_row.size() < cols) ? _row.size() : cols;
+
+      for (int i = 0; i < numCol; i++)
+      {
+         operator()(p, i) = _row[i];
+      }
+   }
 
    vector<T> getCol(int _col) const
-	{
-	   vector<T> col(rows);
-	   
-	   for(int i=0;i<rows;i++)
-	   {
-	      col[i] = operator()(i,_col);
-	   }
-	   
-		return col;
-	}
+   {
+      vector<T> col(rows);
 
-	void setCol(int p, vector<T>& _col)
-	{
-	   int numRow = (_col.size() < rows)?_col.size():rows;	   
-	   
-	   for(int i=0;i<numRow;i++)
-	   {
-	      operator()(i,p) = _col[i];
-	   }
-	}
+      for (int i = 0; i < rows; i++)
+      {
+         col[i] = operator()(i, _col);
+      }
 
+      return col;
+   }
+
+   void setCol(int p, vector<T>& _col)
+   {
+      int numRow = (_col.size() < rows) ? _col.size() : rows;
+
+      for (int i = 0; i < numRow; i++)
+      {
+         operator()(i, p) = _col[i];
+      }
+   }
 
 private:
-	unsigned rows, cols;
-	T* data;
+   unsigned rows, cols;
+   T* data;
 };
 
-
-
 template<class T>
-ostream& operator<< (ostream &os, const Matrix<T> &obj)
+ostream& operator<<(ostream &os, const Matrix<T> &obj)
 {
-	//os << "Matrix(" << obj.getRows() << "," << obj.getCols() << ")" << endl;
-	
-	os << endl;
+   //os << "Matrix(" << obj.getRows() << "," << obj.getCols() << ")" << endl;
 
-	for(unsigned int i = 0; i < obj.getRows(); i++)
-	{
-		for(unsigned int j=0; j < obj.getCols(); j++)
-			os << obj(i,j) << " ";
-		os << endl;
-	}
-	return os;
+   os << endl;
+
+   for (unsigned int i = 0; i < obj.getRows(); i++)
+   {
+      for (unsigned int j = 0; j < obj.getCols(); j++)
+         os << obj(i, j) << " ";
+      os << endl;
+   }
+   return os;
 }
 
-ostream& operator<< (ostream &os, const Matrix<string> &obj)
+ostream& operator<<(ostream &os, const Matrix<string> &obj)
 {
-	os << "Matrix(" << obj.getRows() << "," << obj.getCols() << ")" << endl;
-	
-	for(unsigned int i = 0; i < obj.getRows(); i++)
-	{
-		for(unsigned int j=0; j < obj.getCols(); j++)
-			os << "\"" << obj(i,j) << "\"" << "\t";
-		os << endl;
-	}
-	return os;
+   os << "Matrix(" << obj.getRows() << "," << obj.getCols() << ")" << endl;
+
+   for (unsigned int i = 0; i < obj.getRows(); i++)
+   {
+      for (unsigned int j = 0; j < obj.getCols(); j++)
+         os << "\"" << obj(i, j) << "\"" << "\t";
+      os << endl;
+   }
+   return os;
 }
 
 #endif /*MATRIX_H_*/

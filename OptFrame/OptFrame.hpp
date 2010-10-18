@@ -15,6 +15,8 @@
 #include "Solution.hpp"
 #include "Util/TestSolution.hpp"
 
+#include "Population.hpp"
+
 #include "InitialSolution.h"
 #include "InitialPopulation.h"
 
@@ -86,6 +88,15 @@
 #include "Modules/TestModule.hpp"
 #include "Modules/UsageModule.hpp"
 
+/*
+ * Mario - ToDo
+ *
+ * Implement the following modules:
+ *
+ * 1 - at : extracts a population's solution.
+ * 2 - best : returns the best solution in population.
+ *
+ */
 
 // ==================================
 //            Serializer
@@ -96,132 +107,142 @@
 
 // ==================================
 
-
 template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
 class OptFrame
 {
 private:
-	vector<OptFrameModule<R, M>*> modules;
-	HeuristicFactory<R, M>* factory;
-	map<string, string>* dictionary;
+   vector<OptFrameModule<R, M>*> modules;
+   HeuristicFactory<R, M>* factory;
+   map<string, string>* dictionary;
+
 public:
 
-	OptFrame(HeuristicFactory<R, M>* f)
-	{
-		loadDefaultModules();
-		factory = f;
-		dictionary = new map<string, string> ;
-	}
+   OptFrame(HeuristicFactory<R, M>* f)
+   {
+      loadDefaultModules();
+      factory = f;
+      dictionary = new map<string, string> ;
+   }
 
-	string version()
-	{
-		return "OptFrame - Version 1.1 beta\nhttp://sourceforge.net/projects/optframe/";
-	}
+   string version()
+   {
+      return "OptFrame - Version 1.1 beta\nhttp://sourceforge.net/projects/optframe/";
+   }
 
-	void loadModule(OptFrameModule<R, M>* module)
-	{
-		modules.push_back(module);
-	}
+   void loadModule(OptFrameModule<R, M>* module)
+   {
+      modules.push_back(module);
+   }
 
-	void loadDefaultModules()
-	{
-		modules.clear();
-		loadModule(new BuildModule<R, M> );
-		loadModule(new CheckModule<R, M> );
-		loadModule(new DefineModule<R, M> );
-		loadModule(new DictionaryModule<R, M> );
-		loadModule(new EmpiricalModule<R, M> );
-		loadModule(new EvaluateModule<R, M> );
-		loadModule(new ExecModule<R, M> );
-		loadModule(new ExportModule<R, M> );
-		loadModule(new HelpModule<R, M> );
-		loadModule(new PrintModule<R, M> );
-		loadModule(new ReadModule<R, M> );
-		loadModule(new TestModule<R, M> );
-		loadModule(new UsageModule<R, M> );
-	}
+   void loadDefaultModules()
+   {
+      modules.clear();
+      loadModule(new BuildModule<R, M> );
+      loadModule(new CheckModule<R, M> );
+      loadModule(new DefineModule<R, M> );
+      loadModule(new DictionaryModule<R, M> );
+      loadModule(new EmpiricalModule<R, M> );
+      loadModule(new EvaluateModule<R, M> );
+      loadModule(new ExecModule<R, M> );
+      loadModule(new ExportModule<R, M> );
+      loadModule(new HelpModule<R, M> );
+      loadModule(new PrintModule<R, M> );
+      loadModule(new ReadModule<R, M> );
+      loadModule(new TestModule<R, M> );
+      loadModule(new UsageModule<R, M> );
+   }
 
-	void execute()
-	{
-		cout << "Welcome to " << version() << endl;
+   void execute()
+   {
+      cout << "Welcome to " << version() << endl;
 
-		Scanner scanner(&cin);
-		string line;
+      Scanner scanner(&cin);
+      string line;
 
-		while (true)
-		{
-			cout << ">";
-			line = scanner.nextLine();
+      while (true)
+      {
+         cout << ">";
+         line = scanner.nextLine();
 
-			Scanner s2(line);
+         Scanner s2(line);
 
-			string command = s2.next();
+         string command = s2.next();
 
-			if (command == "quit" || command == "q" || command == "exit")
-				break;
+         if (command == "quit" || command == "q" || command == "exit")
+            break;
 
-			if (command == "version" || command == "v")
-			{
-				cout << version() << endl;
-				continue;
-			}
+         if (command == "version" || command == "v")
+         {
+            cout << version() << endl;
+            continue;
+         }
 
-			bool notfound = true;
+         bool notfound = true;
 
-			for (int i = 0; i < modules.size(); i++)
-				if (command == modules[i]->id())
-				{
-					string r = modules[i]->preprocess(dictionary, s2.rest());
+         for (int i = 0; i < modules.size(); i++)
+            if (command == modules[i]->id())
+            {
+               string r = modules[i]->preprocess(dictionary, s2.rest());
 
-					modules[i]->run(modules, factory, dictionary, r);
-					notfound = false;
-					break;
-				}
+               if (r == "INVALID_PARAM")
+               {
+                  cout << "Population size has to be, at least, equal 2.\n";
+                  notfound = false;
+                  break;
+               }
 
-			if (notfound)
-				cout << "Sorry, i couldn't understand the command '" << command << "'." << endl << "Please, type 'help' or type the command again."
-						<< endl;
-		}
+               modules[i]->run(modules, factory, dictionary, r);
+               notfound = false;
+               break;
+            }
 
-		cout << "Goodbye." << endl;
-	}
-	;
+         if (notfound)
+            cout << "Sorry, i couldn't understand the command '" << command << "'." << endl << "Please, type 'help' or type the command again." << endl;
+      }
 
-	void execute(string line)
-	{
-		cout << "Welcome to " << version() << endl;
+      cout << "Goodbye." << endl;
+   }
 
-		Scanner s2(line);
+   void execute(string line)
+   {
+      //cout << "Welcome to " << version() << endl;
 
-		string command = s2.next();
+      Scanner s2(line);
 
-		if (command == "quit" || command == "q" || command == "exit")
-			return;
+      string command = s2.next();
 
-		if (command == "version" || command == "v")
-		{
-			cout << version() << endl;
-			return;
-		}
+      if (command == "quit" || command == "q" || command == "exit")
+         return;
 
-		bool notfound = true;
+      if (command == "version" || command == "v")
+      {
+         cout << version() << endl;
+         return;
+      }
 
-		for (int i = 0; i < modules.size(); i++)
-			if (command == modules[i]->id())
-			{
-				string r = modules[i]->preprocess(dictionary, s2.rest());
+      bool notfound = true;
 
-				modules[i]->run(modules, factory, dictionary, r);
-				notfound = false;
-				break;
-			}
+      for (int i = 0; i < modules.size(); i++)
+         if (command == modules[i]->id())
+         {
+            string r = modules[i]->preprocess(dictionary, s2.rest());
 
-		if (notfound)
-			cout << "Sorry, i couldn't understand the command '" << command << "'." << endl << "Please, type 'help' or type the command again."
-					<< endl;
+            if (r == "INVALID_PARAM")
+            {
+               cout << "Population size has to be, at least, equal 2.\n";
+               exit(1);
+            }
 
-		cout << "Goodbye." << endl;
-	}
+            modules[i]->run(modules, factory, dictionary, r);
+            notfound = false;
+            break;
+         }
+
+      if (notfound)
+         cout << "Sorry, i couldn't understand the command '" << command << "'." << endl << "Please, type 'help' or type the command again." << endl;
+
+      //cout << "Goodbye." << endl;
+   }
 
 };
 

@@ -30,42 +30,59 @@ using namespace std;
 class FileNotFound
 {
 private:
-	string file;	
+   string file;
 public:
-	FileNotFound(string str){file = str;};
-	string getFile()
-	{
-		return file;
-	}
+   FileNotFound(string str)
+   {
+      file = str;
+   }
+   
+   string getFile()
+   {
+      return file;
+   }
 };
 
 class File
 {
 public:
-	std::ifstream* file;	
+   std::ifstream* file;
 
-	//File(const char* filename);
-	File(string filename)
-	{
-		std::fstream foo;
+   //File(const char* filename);
+   //File(string filename)
+   File(string const filename)
+   {
+      std::fstream foo;
 
-		foo.open(filename.c_str());
+      foo.open(filename.c_str());
 
-    	if(foo.is_open() == true)
-       		foo.close();
-    	else
-     		throw FileNotFound(filename);
-	
-		file = new std::ifstream(filename.c_str(), std::ifstream::in);
-	}
-	
-	virtual ~File() { close();}
-	
-	int get(){ return file->get();}
-	
-	bool eof(){ return file->eof();}
-	
-	void close(){ file->close();}
+      if (foo.is_open() == true)
+         foo.close();
+      else
+         throw FileNotFound(filename);
+
+      file = new std::ifstream(filename.c_str(), std::ifstream::in);
+   }
+
+   virtual ~File()
+   {
+      close();
+   }
+
+   int get()
+   {
+      return file->get();
+   }
+
+   bool eof()
+   {
+      return file->eof();
+   }
+
+   void close()
+   {
+      file->close();
+   }
 };
 
 #endif /*FILE_H_*/
