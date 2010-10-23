@@ -43,16 +43,15 @@ public:
 	{
 		cout << "ILS exec(" << target_f << "," << timelimit << ")" << endl;
 
-		long tini = time(NULL);
+		Timer tnow;
 
 		H* history = &initializeHistory();
 
 		// 's0' <- GenerateSolution
 		// 's*' <- localSearch 's'
 
-		long tnow = time(NULL);
 
-		localSearch(s, e, (timelimit - (tnow - tini)), target_f);
+		localSearch(s, e, (timelimit - (tnow.now())), target_f);
 
 		Solution<R>* sStar = &s.clone();
 		Evaluation<M>* eStar = &e.clone();
@@ -65,11 +64,9 @@ public:
 			Solution<R>* s1 = &sStar->clone();
 			Evaluation<M>* e1 = &eStar->clone();
 
-			tnow = time(NULL);
-			perturbation(*s1, *e1, (timelimit - (tnow - tini)), target_f, *history);
+			perturbation(*s1, *e1, (timelimit - (tnow.now())), target_f, *history);
 
-			tnow = time(NULL);
-			localSearch(*s1, *e1, (timelimit - (tnow - tini)), target_f);
+			localSearch(*s1, *e1, (timelimit - (tnow.now())), target_f);
 
 			Solution<R>* s2 = s1;
 			Evaluation<M>* e2 = e1;
@@ -84,8 +81,7 @@ public:
 			sStar = sStar1;
 			eStar = &evaluator.evaluate(*sStar);
 
-			tnow = time(NULL);
-		} while (evaluator.betterThan(target_f, eStar->evaluation()) && !terminationCondition(*history) && ((tnow - tini) < timelimit));
+		} while (evaluator.betterThan(target_f, eStar->evaluation()) && !terminationCondition(*history) && ((tnow.now()) < timelimit));
 
 		e = *eStar;
 		s = *sStar;
