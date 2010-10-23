@@ -2,6 +2,7 @@
 #define PARALLEL_H_
 
 #include "OffsetBestImprovement.hpp"
+#include "OffsetBestImprovementEnum.hpp"
 
 #include "BI_SeqMR.hpp"
 

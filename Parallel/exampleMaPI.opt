@@ -8,7 +8,6 @@ define my_hillclimbing HC ev 0 my_bestimprovement
 define random initsol 0 %define 'random' as 'initsol 0'
 dictionary %shows the updated dictionary
 
-%test 10 12 8400 8400 random ev 0 my_bestimprovement out.txt
 test 1 12 8400 8400 random ev 0 my_hillclimbing out-MaPI.txt
 
 %display the help

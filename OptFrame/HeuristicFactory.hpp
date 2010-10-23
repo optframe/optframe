@@ -876,9 +876,9 @@ public:
          cout << "Heuristic: MapReduce Best Improvement (MaPI)" << endl;
 
          Evaluator<R, M>* evaluator = read_ev(&scanner);
-         NSSeq<R, M>* ns_seq = (NSSeq<R, M>*) read_ns(&scanner);
+         NSEnum<R, M>* ns_enum = (NSEnum<R, M>*) read_ns(&scanner);
 
-         return make_pair(new BestImprovement_MaPI<R, M> (*serializer,*mapReduce,*mapper,*reducer,*evaluator, *ns_seq), scanner.rest());
+         return make_pair(new BestImprovement_MaPI<R, M> (*serializer,*mapReduce,*mapper,*reducer,*evaluator, *ns_enum), scanner.rest());
       }
 #endif
 

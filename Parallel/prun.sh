@@ -24,7 +24,7 @@ then
 elif [ "$1" = "MaPI" ] 
 then
 	echo "Running MaPI application.."
-	NP=5
+	NP=$3
 	mpirun -np $NP $2 exampleMaPI.opt $NP
 	echo "End of MaPI application.."
 fi

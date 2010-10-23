@@ -6,7 +6,7 @@
 // TODO implement this file
 
 #include "../Heuristic.hpp"
-#include "../NSSeq.hpp"
+#include "../NSEnum.hpp"
 #include "../Evaluator.hpp"
 
 
@@ -165,11 +165,11 @@ class MyMaPIMapper: public MaPI_Mapper<R, int, int, pair<R, double> , R>
 {
 private:
 	Evaluator<R, M>& eval;
-	NSSeq<R, M>& nsSeq;
+	NSEnum<R, M>& nsEnum;
 	int NP;
 public:
-	MyMaPIMapper(MaPI_MapReduce<R, int, int, pair<R, double> , R> * mr, MaPI_Serializer<R, int, int, pair<R, double> , R> * s, Evaluator<R, M>& _eval, NSSeq<R, M>& _nsSeq, int _NP) :
-		MaPI_Mapper<R, int, int, pair<R, double> , R> (mr,s), eval(_eval), nsSeq(_nsSeq), NP(_NP)
+	MyMaPIMapper(MaPI_MapReduce<R, int, int, pair<R, double> , R> * mr, MaPI_Serializer<R, int, int, pair<R, double> , R> * s, Evaluator<R, M>& _eval, NSEnum<R, M>& _nsEnum, int _NP) :
+		MaPI_Mapper<R, int, int, pair<R, double> , R> (mr,s), eval(_eval), nsEnum(_nsEnum), NP(_NP)
 	{
 	}
 
@@ -182,7 +182,7 @@ public:
 		Solution<R> s(a.first);
 
 
-		OffsetBestImprovement<R,M> bi(eval, nsSeq, a.second, NP-1);
+		OffsetBestImprovementEnum<R,M> bi(eval, nsEnum, a.second, NP-1);
 		bi.exec(s,0,0);
 
 		Evaluation<M> e = eval.evaluate(s);
@@ -238,7 +238,7 @@ class BestImprovement_MaPI: public Heuristic<R, M>
 {
 private:
 	Evaluator<R, M>& eval;
-	NSSeq<R, M>& nsSeq;
+	NSEnum<R, M>& nsEnum;
 
 	MyMaPISerializer<R, M> &serializer;
 	MaPI_MapReduce<R, int, int, pair<R, double> , R> &mapReduce;
@@ -254,9 +254,9 @@ public:
 			MaPI_MapReduce<R, int, int, pair<R, double> , R> &_mapReduce,
 			MyMaPIMapper<R, M> &_mapper,
 			MyMaPIReducer<R, M> &_reducer,
-			Evaluator<R, M>& _eval, NSSeq<R, M>& _nsSeq) :
+			Evaluator<R, M>& _eval, NSEnum<R, M>& _nsEnum) :
 		serializer(_serializer),mapReduce(_mapReduce),mapper(_mapper),reducer(_reducer),
-		eval(_eval), nsSeq(_nsSeq)
+		eval(_eval), nsEnum(_nsEnum)
 	{
 	}
 
@@ -278,7 +278,7 @@ public:
 
 //		MyMaPISerializer serializer;
 //		MaPI_MapReduce<R, int, int, pair<R, double> , R> mapReduce;
-//		MyMaPIMapper<R,M> mapper(&mapReduce,&serializer,eval,nsSeq,NP-1);
+//		MyMaPIMapper<R,M> mapper(&mapReduce,&serializer,eval,nsEnum,NP-1);
 //		MyMaPIReducer<R,M> reducer(&mapReduce,&serializer,eval);
 //		mapReduce.initServers(argc,argv);
 

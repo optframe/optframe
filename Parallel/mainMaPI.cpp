@@ -66,9 +66,10 @@ int main(int argc, char **argv)
 
 	mapReduce.initServers(argc,argv);
 
+	Timer timer;
 
 	string cmd("read ");
-	if (argc > 1) cmd += argv[1]; else cmd += "example.opt";
+	if (argc > 1) cmd += argv[1]; else cmd += "exampleMaPI.opt";
 	optframe.execute(string("read ") + argv[1]);
 
 	cout << "Program ended successfully" << endl;

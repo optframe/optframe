@@ -35,7 +35,7 @@ public:
 	{
 		double fo = 0; // Evaluation Function Value
 
-		vector<double>* reval = new vector<double> (pI->n);
+		vector<double> reval(pI->n);
 
 		for (int i = 0; i < pI->n - 1; i++)
 		{
@@ -43,7 +43,7 @@ public:
 			int z = r.at(i + 1);
 
 			double val = (*pI->dist)(j, z);
-			(*reval)[i] = val;
+			reval[i] = val;
 			fo += val;
 		}
 
@@ -51,10 +51,10 @@ public:
 		int l = r.at(0);
 
 		double val = (*pI->dist)(k, l);
-		(*reval)[pI->n - 1] = val;
+		reval[pI->n - 1] = val;
 		fo += val;
 
-		return *new Evaluation<MemTSP> (fo, *reval);
+		return *new Evaluation<MemTSP> (fo, reval);
 	}
 
 	virtual bool betterThan(double a, double b)
