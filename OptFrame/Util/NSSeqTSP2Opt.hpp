@@ -190,7 +190,7 @@ public:
 
 		do
 		{
-			p1 = rand() % (rep.size() + 1);
+			p2 = rand() % (rep.size() + 1);
 		} while (abs(p1 - p2) < 2);
 
 		// create 2-opt(p1,p2) move
