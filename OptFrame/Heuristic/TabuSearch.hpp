@@ -56,7 +56,7 @@ public:
 		{
 			Iter = Iter + 1;
 
-			if((Iter - BestIter) > estimative_BTmax)
+			if ((Iter - BestIter) > estimative_BTmax)
 				estimative_BTmax = (Iter - BestIter);
 
 			//cout << "Iter " << Iter << " (" << (Iter - BestIter - 1) << " without improvement)" << endl;
@@ -146,7 +146,7 @@ public:
 			tnow = time(NULL);
 		}
 
-		while(tabuList.size()>0)
+		while (tabuList.size() > 0)
 		{
 			delete tabuList[0];
 			tabuList.erase(tabuList.begin());
@@ -173,10 +173,9 @@ public:
 		fclose(ftabu);
 	}
 
-
 	Move<R, M>* tabuBestMove(Solution<R>& s, Evaluation<M>& e, const vector<Move<R, M>*>& tabuList)
 	{
-		NSIterator<R, M>& it = nsSeq.getIterator(s.getR());
+		NSIterator<R, M>& it = nsSeq.getIterator(e.getM(), s.getR());
 
 		it.first();
 

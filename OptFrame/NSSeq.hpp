@@ -49,6 +49,10 @@ public:
 	virtual Move<R, M>& move(const R&) = 0;
 
 	virtual NSIterator<R, M>& getIterator(const R&) = 0;
+	virtual NSIterator<R, M>& getIterator(const M&, const R& r)
+	{
+		return getIterator(r);
+	}
 
 	virtual void print() = 0;
 };
