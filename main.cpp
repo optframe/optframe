@@ -43,13 +43,15 @@ int main(int argc, char **argv)
 	e->print();
 	cout << endl;
 
-	HeuristicFactory<RepTSP, MemTSP> factory;
-	factory.add_initsol(&is);
-	factory.add_ev(&eval);
-	factory.add_ns(&ns);
+	OptFrame<RepTSP, MemTSP> optframe;
+	optframe.factory.add_initsol(&is);
+	optframe.factory.add_ev(&eval);
+	optframe.factory.add_ns(&ns);
 
+	optframe.execute("define is_random initsol 0");
+	optframe.execute("define my_eval ev 0");
+	optframe.execute("define swap ns 0");
 
-	OptFrame<RepTSP, MemTSP> optframe(&factory);
 	//optframe.execute();
 	optframe.execute("read example.opt");
 

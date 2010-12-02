@@ -112,16 +112,24 @@ class OptFrame
 {
 private:
    vector<OptFrameModule<R, M>*> modules;
-   HeuristicFactory<R, M>* factory;
    map<string, string>* dictionary;
 
 public:
 
-   OptFrame(HeuristicFactory<R, M>* f)
-   {
-      loadDefaultModules();
-      factory = f;
-      dictionary = new map<string, string> ;
+   HeuristicFactory<R, M>& factory;
+
+    OptFrame() :
+		factory(*new HeuristicFactory<R, M> )
+	{
+		loadDefaultModules();
+		dictionary = new map<string, string>;
+	}
+
+   OptFrame(HeuristicFactory<R, M>& f) :
+		factory(f)
+	{
+		loadDefaultModules();
+		dictionary = new map<string, string> ;
    }
 
    string version()
@@ -151,6 +159,14 @@ public:
       loadModule(new TestModule<R, M> );
       loadModule(new UsageModule<R, M> );
    }
+
+    OptFrameModule<R, M>* getModule(string module)
+	{
+		for (unsigned int i = 0; i < modules.size(); i++)
+			if (module == modules[i]->id())
+				return modules[i];
+		return NULL;
+	}
 
    void execute()
    {
@@ -233,7 +249,7 @@ public:
                exit(1);
             }
 
-            modules[i]->run(modules, factory, dictionary, r);
+            modules[i]->run(modules, &factory, dictionary, r);
             notfound = false;
             break;
          }
