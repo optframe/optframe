@@ -170,7 +170,7 @@ public:
       Population<R>* p2 = new Population<R> ;
 
       for (unsigned i = 0; i < p.size(); i++)
-         p2->push_back(&p[i]->clone());
+         p2->push_back(p.at(i).clone());
 
       FitnessValues* ev2 = new FitnessValues;
       for (unsigned i = 0; i < p.size(); i++)
