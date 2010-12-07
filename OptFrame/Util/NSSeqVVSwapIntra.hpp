@@ -52,8 +52,7 @@ public:
 
 	void print()
 	{
-		cout << "MoveVVSwapIntra( " << i << " , ( " << j << " , " << k
-				<< " ) )" << endl;
+		cout << "MoveVVSwapIntra( " << i << " , ( " << j << " , " << k << " ) )" << endl;
 	}
 };
 
@@ -142,7 +141,11 @@ public:
 
 		int n = rep.at(i).size();
 
-		int j = rand() % n;
+		int j = -1;
+
+		if (n > 0)
+			j = rand() % n;
+
 		int k = j;
 
 		if (n > 1)
