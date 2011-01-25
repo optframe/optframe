@@ -14,8 +14,6 @@ using namespace std;
 template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
 class Heuristic: public Runnable
 {
-   //typedef vector<Solution<R>*> Population;
-   //typedef const vector<const Solution<R>*> ConstPopulation;
    typedef vector<Evaluation<M>*> FitnessValues;
    typedef const vector<const Evaluation<M>*> ConstFitnessValues;
 
@@ -150,7 +148,7 @@ public:
 
    // no-optimization
    //Population& search(ConstPopulation& p, double timelimit = 100000000, double target_f = 0)
-   virtual Population<R>& search(Population<R> const & p, double timelimit = 100000000, double target_f = 0)
+   virtual Population<R>& search(const Population<R>& p, double timelimit = 100000000, double target_f = 0)
    {
       Population<R>* pop = new Population<R> ();
 
@@ -164,7 +162,7 @@ public:
 
    // optimizated version
    //pair<Population&, FitnessValues&>& search(ConstPopulation& p, ConstFitnessValues& ev,
-   virtual pair<Population<R>&, FitnessValues&>& search(Population<R> const & p, ConstFitnessValues& ev, double timelimit = 100000000, double target_f = 0)
+   virtual pair<Population<R>&, FitnessValues&>& search(const Population<R>& p, ConstFitnessValues& ev, double timelimit = 100000000, double target_f = 0)
    {
       //Population* p2 = new Population;
       Population<R>* p2 = new Population<R> ;

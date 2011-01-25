@@ -72,7 +72,7 @@ public:
 
    chromossome& remove(unsigned pos)
    {
-      chromossome *c = new chromossome(p.at(pos));
+      chromossome *c = new chromossome(*p.at(pos));
       p.erase(p.begin() + pos);
       return *c;
    }
