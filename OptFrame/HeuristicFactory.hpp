@@ -25,7 +25,7 @@ using namespace std;
 #include "Heuristic/IntensifiedIteratedLocalSearchLevels.hpp"
 #include "Heuristic/GRASP.hpp"
 #include "Heuristic/TabuSearch.hpp"
-#include "Heuristic/Evolutionary_Algorithms/GeneticAlgorithm.hpp"
+#include "Heuristic/EvolutionaryAlgorithms/GeneticAlgorithm.hpp"
 
 //Parallel Support
 //#include "Parallel/Parallel.h"
