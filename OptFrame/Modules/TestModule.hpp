@@ -14,7 +14,7 @@ public:
 	}
 	string usage()
 	{
-		string u = "test N T TF BF ISG EVAL METHOD OUTPUTFILE\n WHERE:\n";
+		string u = "test N T TF BF ISG EVAL METHOD OUTPUTFILE [solution_name]\n WHERE:\n";
 		u += "N is the number of tests to be executed;\n";
 		u += "T is the timelimit, in seconds, for each test; (0 for no timelimit)\n";
 		u += "TF is the target evaluation function value;\n";
@@ -22,7 +22,8 @@ public:
 		u += "ISG is the initial solution generator; (e.g. initsol 0)\n";
 		u += "EVAL is the main evaluator; (e.g. ev 0)\n";
 		u += "METHOD is the method to be tested with its own parameters;\n";
-		u += "OUTPUTFILE is the output file.\n";
+		u += "OUTPUTFILE is the output file;\n";
+		u += "[solution_name] is a name given to the best found solution (optional).";
 
 		return u;
 	}
@@ -47,7 +48,11 @@ public:
 
 		Heuristic<R, M>* h = method.first;
 
-		string filename = method.second;
+		string rest = method.second;
+
+		Scanner scan_rest(rest);
+		//TODO: check \" in filename to allow spaces in the name
+		string filename = scan_rest.next();
 
 		if (t == 0) // if no timelimit
 			t = 1000000000;
@@ -63,6 +68,11 @@ public:
 			cout << "Error creating file '" << filename << "'" << endl;
 			return;
 		}
+
+		fprintf(file, "PARAMETERS:%s\n", input.c_str());
+
+		bool minimization = eval->betterThan(1, 2);
+		Solution<R>* s_star = NULL;
 
 		double s_fo_ini = 0;
 		double s_t_ini = 0;
@@ -113,6 +123,14 @@ public:
 
 			cout << "... Finished! (" << t.now() << "secs.)" << endl;
 
+			if (!s_star)
+				s_star = &s2->clone();
+			else if (eval->betterThan(*s2, *s_star))
+			{
+				delete s_star;
+				s_star = &s2->clone();
+			}
+
 			delete s;
 			delete s2;
 
@@ -143,9 +161,22 @@ public:
 		fprintf(file, "GAP_FROM_AVG:\t%f\t-\t%f\t-\n", (s_fo_ini - bf) / s_fo_ini, (s_fo_end - bf) / s_fo_end);
 		fprintf(file, "IMPROVEMENT:\t-\t-\t%f\t-\n", (bf - min_fo) / bf);
 		fprintf(file, "BEST(LIT):\t%f\n", bf);
-		fprintf(file, "PARAMETERS:%s\n", input.c_str());
 
 		fclose(file);
+
+		int new_id = factory->add_loadsol(s_star);
+
+		stringstream str;
+		str << "loadsol " << new_id;
+		string s_new_id = str.str();
+
+		cout << "'" << s_new_id << "' added." << endl;
+
+		if (scan_rest.hasNext())
+		{
+			string new_name = scan_rest.next();
+			run_module("define", all_modules, factory, dictionary, new_name + " " + s_new_id);
+		}
 	}
 
 };
