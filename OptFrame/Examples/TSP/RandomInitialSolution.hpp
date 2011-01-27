@@ -42,7 +42,7 @@ public:
 		for(unsigned int i=0;i<r->size();i++)
 			(*r)[i]=i;
 
-		//std::random_shuffle( r->begin(), r->end() ); // shuffle elements of r
+		std::random_shuffle( r->begin(), r->end() ); // shuffle elements of r
 
 		for(unsigned int i=0;i<newRep->size();i++)
 			(*newRep)[i] = (*r)[i];
