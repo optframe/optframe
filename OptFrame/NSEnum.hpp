@@ -2,7 +2,6 @@
 #define OPTFRAME_NSENUM_HPP_
 
 #include "NSSeq.hpp"
-#include "RandGen.hpp"
 
 using namespace std;
 

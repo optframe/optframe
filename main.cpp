@@ -52,8 +52,8 @@ int main(int argc, char **argv)
 	optframe.execute("define my_eval ev 0");
 	optframe.execute("define swap ns 0");
 
-	//optframe.execute();
 	optframe.execute("read example.opt");
+	optframe.execute();
 
 	cout << "Program ended successfully" << endl;
 
