@@ -207,7 +207,7 @@ public:
                   break;
                }
 
-               modules[i]->run(modules, factory, dictionary, r);
+               modules[i]->run(modules, &factory, dictionary, r);
                notfound = false;
                break;
             }

@@ -2,7 +2,7 @@
 #define RANDGEN_HPP_
 
 // reuse of function 'rand()' by using function 'randgen_sys_rand()'
-int randgen_sys_rand()
+unsigned int randgen_sys_rand()
 {
 	return rand();
 }
@@ -10,27 +10,28 @@ int randgen_sys_rand()
 class RandGen
 {
 protected:
-	int seed;
+	unsigned int seed;
 
 public:
 	RandGen()
 	{
-		srand(time(NULL));
+		seed = time(NULL);
+		srand(seed);
 	}
 
-	RandGen(int _seed) :
+	RandGen(unsigned int _seed) :
 		seed(_seed)
 	{
 		srand(seed);
 	}
 
-	int rand()
+	unsigned int rand()
 	{
 		// reuse of function 'rand()' by using function 'randgen_sys_rand()'
 		return randgen_sys_rand();
 	}
 
-	int getSeed()
+	unsigned int getSeed()
 	{
 		return seed;
 	}
