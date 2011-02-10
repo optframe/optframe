@@ -341,7 +341,7 @@ public:
 	static pair<pair<int,int>,pair<int,int> > swapk_apply(vector<T> & v, pair<pair<int,int>,pair<int,int> > & m)
 	{
 		int k1 = m.first.first, k2 = m.first.second, rank1 = m.second.first, rank2 = m.second.second;
-		if (swapk_apply(v,k1,k2,rank1,rank2)) return pair<pair<int,int>,pair<int,int> >(pair<int,int>(k1,k2),pair<int,int>(rank2,rank1));
+		if (swapk_apply(v,k1,k2,rank1,rank2)) return pair<pair<int,int>,pair<int,int> >(pair<int,int>(k2,k1),pair<int,int>(rank2,rank1));
 	};
 
 	static int swap1_size(const vector<T> &v) { return v.size()*v.size(); };
