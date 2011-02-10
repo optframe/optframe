@@ -86,20 +86,20 @@ public:
 		if (shiftk_apply(v,k,rank1,rank2)) return pair<int,pair<int,int> >(k, pair<int,int>(rank2,rank1));
 	};
 
-	static int shift1_size(vector<T> &v) { return v.size()*v.size(); };
+	static int shift1_size(const vector<T> &v) { return v.size()*v.size(); };
 
-	static pair<int,pair<int,int> > shiftk_move(vector<T> &v, int k, int i) 
+	static pair<int,pair<int,int> > shiftk_move(const vector<T> &v, int k, int i)
 	{
 		return pair<int,pair<int,int> >(k, pair<int,int>((i/v.size()), (i%v.size())));
 	};
 
-	static bool shiftk_canBeApplied(vector<T> & v, pair<int,pair<int,int> > & m)
+	static bool shiftk_canBeApplied(const vector<T> & v, pair<int,pair<int,int> > & m)
 	{
 		int k = m.first, rank1 = m.second.first, rank2 = m.second.second;
 		return !(rank1 < 0 || rank1 + k > v.size() || rank2 < 0 || rank2 + k > v.size() || rank1 == rank2);
 	};
 
-	static vector< pair<int,pair<int,int> > > * shiftk_appliableMoves(vector<T> & v,int k)
+	static vector< pair<int,pair<int,int> > > * shiftk_appliableMoves(const vector<T> & v,int k)
 	{
 		vector< pair<int,pair<int,int> > > * moves = new vector< pair<int,pair<int,int> > >;
 		for (int i = 0 ; i < NSVector<int>::shift1_size(v) ; i++)
@@ -135,9 +135,9 @@ public:
 		if (shiftk_apply(v1,v2,k,rank1,rank2)) return pair<int,pair<int,int> >(k, pair<int,int>(rank2,rank1));
 	};
 
-	static int shift1_size(vector<T> &v1,vector<T> &v2) { return v1.size()*(v2.size()+1); };
+	static int shift1_size(const vector<T> &v1,const vector<T> &v2) { return v1.size()*(v2.size()+1); };
 
-	static pair<int,pair<int,int> > shiftk_move(vector<T> &v1,vector<T> &v2, int k, int i) 
+	static pair<int,pair<int,int> > shiftk_move(const vector<T> &v1,const vector<T> &v2, int k, int i)
 	{
 		return pair<int,pair<int,int> >(k, pair<int,int>((i/(v2.size()+1)), (i%(v2.size()+1))));
 	};
@@ -159,13 +159,13 @@ public:
 		return moves;
 	};
 
-	static bool shiftk_canBeApplied(vector< vector<T> > & v, pair<int, pair< pair<int,int>, pair<int,int> > > & m)
+	static bool shiftk_canBeApplied(const vector< vector<T> > & v, pair<int, pair< pair<int,int>, pair<int,int> > > & m)
 	{
 		int k = m.first, a = m.second.first.first, rank1 = m.second.first.second, b = m.second.second.first, rank2 = m.second.second.second;
 		return !(rank1 < 0 || rank1 + k > v[a].size() || rank2 < 0 || rank2 > v[b].size() || a==b);
 	};
 
-	static vector< pair<int, pair< pair<int,int>,pair<int,int> > > > * shiftk_appliableMoves(vector< vector<T> > & v, int k)
+	static vector< pair<int, pair< pair<int,int>,pair<int,int> > > > * shiftk_appliableMoves(const vector< vector<T> > & v, int k)
 	{
 		vector< pair<int,pair< pair<int,int>, pair<int,int> > > > * moves = new vector< pair<int,pair< pair<int,int>, pair<int,int> > > >;
 
@@ -239,20 +239,20 @@ public:
 	{
 		int k1 = m.first.first, k2 = m.first.second, rank1 = m.second.first, rank2 = m.second.second;
 		if (swapk_apply(v1,v2,k1,k2,rank1,rank2)) return pair< pair<int,int> , pair<int,int> >( pair<int,int>(k2,k1) , pair<int,int>(rank2,rank1));
-	}; // não testado
+	};
 
-	static int swap1_size(vector<T> &v1,vector<T> &v2) { return v1.size()*v2.size(); }; // não testado
+	static int swap1_size(const vector<T> &v1, const vector<T> &v2) { return v1.size()*v2.size(); };
 
-	static pair< pair<int,int>,pair<int,int> > swapk_move(vector<T> &v1,vector<T> &v2, int k1, int k2, int i) 
+	static pair< pair<int,int>,pair<int,int> > swapk_move(const vector<T> &v1,const vector<T> &v2, int k1, int k2, int i)
 	{
 		return pair< pair<int,int>,pair<int,int> >( pair<int,int>(k1,k2), pair<int,int>( i/v2.size() , i%v2.size() ) );
-	}; // não testado
+	};
 
-	static bool swapk_canBeApplied(vector<T> & v1, vector<T> & v2, pair< pair<int,int>,pair<int,int> > & m)
+	static bool swapk_canBeApplied(const vector<T> & v1, const vector<T> & v2, pair< pair<int,int>,pair<int,int> > & m)
 	{
 		int k1 = m.first.first, k2 = m.first.second, rank1 = m.second.first, rank2 = m.second.second;
 		return !(rank1 < 0 || rank1 + k1 > v1.size() || rank2 < 0 || rank2 + k2 > v2.size());
-	}; // não testado
+	};
 
 	static vector< pair< pair<int,int>,pair<int,int> > > * swapk_appliableMoves(vector<T> & v1, vector<T> & v2, int k1, int k2)
 	{
@@ -263,16 +263,16 @@ public:
 			if (NSVector<int>::swapk_canBeApplied(v1,v2,m)) moves->push_back(m);
 		}
 		return moves;
-	}; // não testado
+	};
 
-	static bool swapk_canBeApplied(vector< vector<T> > & v, pair< pair<int,int>, pair< pair<int,int>, pair<int,int> > > & m)
+	static bool swapk_canBeApplied(const vector< vector<T> > & v, pair< pair<int,int>, pair< pair<int,int>, pair<int,int> > > & m)
 	{
 		int k1 = m.first.first, k2 = m.first.second, 
 			a  = m.second.first.first, rank1 = m.second.first.second, b = m.second.second.first, rank2 = m.second.second.second;
 		return !(rank1 < 0 || rank1 + k1 > v[a].size() || rank2 < 0 || rank2 + k2 > v[b].size() || a==b);
-	}; // não testado
+	};
 
-	static vector< pair< pair<int,int> , pair< pair<int,int>,pair<int,int> > > > * swapk_appliableMoves(vector< vector<T> > & v, int k1, int k2)
+	static vector< pair< pair<int,int> , pair< pair<int,int>,pair<int,int> > > > * swapk_appliableMoves(const vector< vector<T> > & v, int k1, int k2)
 	{
 		vector< pair< pair<int,int> , pair< pair<int,int>,pair<int,int> > > > * moves = 
 			new vector< pair< pair<int,int> , pair< pair<int,int>,pair<int,int> > > >;
@@ -301,7 +301,7 @@ public:
 		}
 
 		return moves;
-	}; // não testado
+	};
 
 	static pair< pair<int,int> , pair < pair<int,int>,pair<int,int> > >
 	swapk_apply(vector< vector<T> > & v, pair< pair<int,int> , pair < pair<int,int>,pair<int,int> > > & m)
@@ -311,7 +311,63 @@ public:
 		if (swapk_apply(v[a],v[b],k1,k2,rank1,rank2)) 
 			return pair< pair<int,int> ,pair < pair<int,int>,pair<int,int> > >( pair<int,int>(k2,k1) , 
 				pair< pair<int,int>,pair<int,int> > ( pair<int,int>(b,rank2) , pair<int,int>(a,rank1) ) );
-	}; // não testado
+	};
+
+	/* Swapk - 2010-02-11 */
+
+	static bool swap1_apply(vector<T> & v, unsigned int rank1, unsigned int rank2)
+	{
+		if (rank1 < 0 || rank1 >= v.size() || rank2 < 0 || rank2 >= v.size())
+		{ cerr << "Warning [NSVector]: out of range swap1" << endl; return false; }
+
+		T aux = v[rank1];
+		v[rank1] = v[rank2];
+		v[rank2] = aux;
+
+		return true;
+	};
+
+	static bool swapk_apply(vector<T> & v, unsigned int k1, unsigned int k2, unsigned int rank1, unsigned int rank2)
+	{
+		if (rank1 < 0 || rank1 + k1 > v.size() || rank2 < 0 || rank2 + k2 > v.size())
+		{ cerr << "Warning [NSVector]: out of range swapk" << endl; return false; }
+		int k = min(k1,k2);
+		for (int i = 0; i < k; i++) swap1_apply(v,rank1+i,rank2+i);
+		if (k2 > k1) shiftk_apply(v,k2-k,rank2+k,rank1+k); else
+		if (k1 > k2) shiftk_apply(v,k1-k,rank1+k,rank2+k);
+		return true;
+	};
+
+	static pair<pair<int,int>,pair<int,int> > swapk_apply(vector<T> & v, pair<pair<int,int>,pair<int,int> > & m)
+	{
+		int k1 = m.first.first, k2 = m.first.second, rank1 = m.second.first, rank2 = m.second.second;
+		if (swapk_apply(v,k1,k2,rank1,rank2)) return pair<pair<int,int>,pair<int,int> >(pair<int,int>(k1,k2),pair<int,int>(rank2,rank1));
+	};
+
+	static int swap1_size(const vector<T> &v) { return v.size()*v.size(); };
+
+	static pair<pair<int,int>,pair<int,int> > swapk_move(const vector<T> &v, int k1, int k2, int i)
+	{
+		return pair<pair<int,int>,pair<int,int> >(pair<int,int>(k1,k2), pair<int,int>((i/v.size()), (i%v.size())));
+	};
+
+	static bool swapk_canBeApplied(const vector<T> & v, pair<pair<int,int>,pair<int,int> > & m)
+	{
+		int k1 = m.first.first, k2 = m.first.second, rank1 = m.second.first, rank2 = m.second.second;
+		return !(rank1 < 0 || rank1 + k1 > v.size() || rank2 < 0 || rank2 + k2 > v.size() || rank1 == rank2 ||
+				!( rank2+k2 <= rank1 && ! rank1+k1 <= rank2 || ! rank2+k2 <= rank1 && rank1+k1 <= rank2 ) );
+	};
+
+	static vector< pair<pair<int,int>,pair<int,int> > > * swapk_appliableMoves(const vector<T> & v,int k1,int k2)
+	{
+		vector< pair<pair<int,int>,pair<int,int> > > * moves = new vector< pair<pair<int,int>,pair<int,int> > >;
+		for (int i = 0 ; i < NSVector<int>::swap1_size(v) ; i++)
+		{
+			pair<pair<int,int>,pair<int,int> > m = NSVector<int>::swapk_move(v,k1,k2,i);
+			if (NSVector<int>::swapk_canBeApplied(v,m)) moves->push_back(m);
+		}
+		return moves;
+	};
 
 };
 

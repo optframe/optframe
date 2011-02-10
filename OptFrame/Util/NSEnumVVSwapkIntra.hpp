@@ -1,5 +1,5 @@
-#ifndef OPTFRAME_NSENUMVVSwapK_HPP_
-#define OPTFRAME_NSENUMVVSwapK_HPP_
+#ifndef OPTFRAME_NSENUMVVSwapkIntra_HPP_
+#define OPTFRAME_NSENUMVVSwapkIntra_HPP_
 
 // Framework includes
 #include "../Move.hpp"
@@ -9,22 +9,21 @@
 using namespace std;
 
 //============================================================================
-//                           VVSwapk Move
+//                           VVSwapkIntra Move
 //============================================================================
 
 template<class T, class M>
-class MoveVVSwapk : public Move<vector<vector<T> >, M>
+class MoveVVSwapkIntra : public Move<vector<vector<T> >, M>
 {
 public:
-	int k1,k2,v1,p1,v2,p2;
+	int k1,k2,v,p1,p2;
 
-	MoveVVSwapk(int k1,int k2,int v1,int p1,int v2,int p2)
+	MoveVVSwapkIntra(int k1,int k2,int v,int p1,int p2)
 	{
 		this->k1 = k1;
 		this->k2 = k2;
-		this->v1 = v1;
+		this->v = v;
 		this->p1 = p1;
-		this->v2 = v2;
 		this->p2 = p2;
 	}
 
@@ -35,27 +34,23 @@ public:
 
 	virtual Move<vector<vector<T> >, M>& apply(vector<vector<T> >& rep)
 	{
-		pair< pair<int,int> , pair < pair<int,int>,pair<int,int> > > m;
+		pair<pair<int,int>,pair<int,int> > m;
 		m.first.first = k1;
 		m.first.second = k2;
-		m.second.first.first = v1;
-		m.second.first.second = p1;
-		m.second.second.first = v2;
-		m.second.second.second = p2;
-		NSVector<int>::swapk_apply(rep,m);
+		m.second.first = p1;
+		m.second.second = p2;
+		NSVector<T>::swapk_apply(rep[v],m); //TODO
 
-		return * new MoveVVSwapk<T,M>(k1,k2,v2,p2,v1,p1);
+		return * new MoveVVSwapkIntra<T,M>(k1,k2,v,p2,p1);
 	}
 
 	virtual Move<vector<vector<T> >, M>& apply(M& m, vector<vector<T> > & r)
 	{
 		if (!m.empty())
 		{
-			m[v1].first = m[v2].first = -1;
-			m[v1].second.first = p1;
-			m[v1].second.second = r[v1].size()-1;
-			m[v2].second.first = p2;
-			m[v2].second.second = r[v2].size()-1;
+			m[v].first = -1;
+			m[v].second.first = p1;
+			m[v].second.second = r[v].size()-1;
 		} else
 		{
 			//e->setMemory(new MemVRP(r.size(),make_pair(-1,make_pair(0,r.size()-1))));
@@ -67,7 +62,7 @@ public:
 
 	virtual void print()
 	{
-		cout << "Move Vector Vector Swapk("<< k1 << " " << k2 << " " << v1 << " " << p1 << " " << v2 << " " << p2 <<")"<<endl;
+		cout << "Move VRP SwapkIntra("<< k1 << " " << k2 << " " << v << " " << p1 << " " << p2 <<")"<<endl;
 	}
 
 	virtual bool operator==(const Move<vector<vector<T> >,M>& m) const
@@ -83,21 +78,21 @@ public:
 
 
 template<class T, class M>
-class NSEnumVVSwapk: public NSEnum< vector<vector<T> >, M >
+class NSEnumVVSwapkIntra: public NSEnum< vector<vector<T> >, M >
 {
 protected:
 	int k1,k2;
-	vector< pair< pair<int,int> , pair< pair<int,int>,pair<int,int> > > > * moves;
+	vector < vector< pair<pair<int,int>,pair<int,int> > > * > moves;
+	vector< pair<int,int> > moveindex;
 
 public:	
 
 	using NSEnum<RepVRPTW, MemVRPTW>::move; // prevents name hiding
 
-	NSEnumVVSwapk(int k1, int k2)
+	NSEnumVVSwapkIntra(int k1,int k2)
 	{
 		this->k1 = k1;
 		this->k2 = k2;
-		moves = new vector< pair< pair<int,int> , pair< pair<int,int>,pair<int,int> > > >;
 	}
 
 	/*virtual void init(Solution<vector<vector<int> > >* s)
@@ -108,14 +103,21 @@ public:
 	virtual void init(vector<vector<int> >& rep)
 	{
 		delete moves;
-		moves = NSVector<int>::Swapk_appliableMoves(rep,k);
+		moves = NSVector<int>::SwapkIntra_appliableMoves(rep,k);
 	}*/
 
 	virtual NSIterator<vector<vector<T> > , M>& getIterator(const vector<vector<T> >& rep)
 	{
-		delete moves;
-		moves = NSVector<int>::swapk_appliableMoves(rep,k1,k2);
-		random_shuffle(moves->begin(),moves->end());
+		for (int i = 0 ; i < moves.size() ; i++) delete moves[i];
+		moves.clear();
+		moveindex.clear();
+
+		for (int i = 0 ; i < rep.size() ; i++)
+		{
+			moves.push_back( NSVector<int>::swapk_appliableMoves(rep[i],k1,k2) ); // TODO
+			for (int j = 0 ; j < moves.back()->size() ; j++)
+				moveindex.push_back(make_pair(i,j));
+		}
 
 		return *new NSEnumIterator<vector<vector<T> > , M> (*this);
 	}
@@ -130,37 +132,41 @@ public:
 			//return NULL;
 		}
 
-		return * new MoveVVSwapk<T,M>((*moves)[_k].first.first,(*moves)[_k].first.second,
-				(*moves)[_k].second.first.first,(*moves)[_k].second.first.second,
-				(*moves)[_k].second.second.first,(*moves)[_k].second.second.second);
+		int i = moveindex[_k].first;
+		int j = moveindex[_k].second;
+
+		int k1 = moves[i]->at(j).first.first;
+		int k2 = moves[i]->at(j).first.second;
+		int v = i;
+		int p1 = moves[i]->at(j).second.first;
+		int p2 = moves[i]->at(j).second.second;
+
+		return * new MoveVVSwapkIntra<T,M>(k1,k2,v,p1,p2);
 	}
 
-	virtual Move<vector<vector<T> >,M>& move(const vector<vector<T> >& rep)
+	virtual Move<vector<vector<T> >,M>& move(const vector<vector<T> >& rep)//TODO
 	{
 		//cout << "*";
-		int v1;
-		do v1 = rand()%rep.size(); while (rep[v1].size() < k1);
+		int v;
+		do v = rand()%rep.size(); while (rep[v].size() < k1 + k2);
 
-		int p1 = rand() % ( rep[v1].size() - k1 + 1 );
+		int p1 = rand() % ( rep[v].size() - k1 + 1 );
 
-		int v2;
-		do v2 = rand()%rep.size(); while (rep[v2].size() < k2 || v1==v2);
+		int p2 = rand()%(rep[v].size()+1);
 
-		int p2 = rand()%(rep[v2].size() - k2 + 1 );
-
-		return * new MoveVVSwapk<T,M>(k1,k2,v1,p1,v2,p2);
+		return * new MoveVVSwapkIntra<T,M>(k1,k2,v,p1,p2);
 	};
 
 	virtual unsigned int size()
 	{
-		return moves->size();
+		return moves.size();
 	}
 
 	virtual void print()
 	{
-		cout << "NSEnum Vector Vector Swapk ("<< size() << ")" << endl;
+		cout << "NSEnum Vector Vector SwapkIntra ("<< size() << ")" << endl;
 	}
 
 };
 
-#endif /*OPTFRAME_NSENUMVVSwapK_HPP_*/
+#endif /*OPTFRAME_NSENUMVVSwapkIntra_HPP_*/
