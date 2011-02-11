@@ -20,39 +20,33 @@ private:
 	unsigned int MT[GEN_STATE_LENGTH];
 	int index;
 
-public:
-
-	RandGenMersenneTwister() :
-		RandGen()
+	void GenNum()
 	{
-		initialize();
-	}
-
-	RandGenMersenneTwister(unsigned int _seed)
-	{
-		RandGen::seed = _seed;
-		initialize();
-	}
-
-	void initialize()
-	{
-		// initialize random number generation
 		register int i;
-
-		index = 0;
-	    MT[0] = seed;
-		for(i = 1; i < GEN_STATE_LENGTH; i++){
-			MT[i] = ((CONSTANT_1 * (MT[i - 1] ^ (MT[i - 1] >> 30))) + i) & MASK_1;
+		unsigned int y;
+		for (i = 0; i < GEN_STATE_LENGTH; i++)
+		{
+			y = (MT[i] ^ MASK_2) + (MT[(i + 1) % GEN_STATE_LENGTH] ^ MASK_3);
+			MT[i] = MT[(i + 397) % GEN_STATE_LENGTH] ^ (y >> 1);
+			if ((y % 2) == 1)
+			{
+				MT[i] = MT[i] ^ CONSTANT_4;
+			}
 		}
 	}
 
-	unsigned int rand()
-	{// generate random number
+	unsigned mt_rand()
+	{
+		if (!RandGen::init)
+		{
+			initialize();
+			RandGen::init = true;
+		}
+
 		unsigned int y;
 
-		if(index == 0){
+		if (index == 0)
 			GenNum();
-		}
 
 		y = MT[index];
 		y = y ^ (y >> 11);
@@ -65,18 +59,49 @@ public:
 		return y;
 	}
 
+public:
 
-	void GenNum()
+	RandGenMersenneTwister() :
+		RandGen()
 	{
-	    register int i;
-	    unsigned int y;
-	    for( i = 0; i < GEN_STATE_LENGTH; i++){
-	        y = (MT[i] ^ MASK_2) + (MT[(i + 1) % GEN_STATE_LENGTH] ^ MASK_3);
-	        MT[i] = MT[(i + 397) % GEN_STATE_LENGTH] ^ (y >> 1);
-	        if((y % 2) == 1){
-	            MT[i] = MT[i] ^ CONSTANT_4;
-	        }
-	    }
+	}
+
+	RandGenMersenneTwister(long seed) :
+		RandGen(seed)
+	{
+	}
+
+	using RandGen::rand;
+
+	// initialize random number generation
+	void initialize()
+	{
+		register int i;
+
+		index = 0;
+		MT[0] = seed;
+		for (i = 1; i < GEN_STATE_LENGTH; i++)
+		{
+			MT[i] = ((CONSTANT_1 * (MT[i - 1] ^ (MT[i - 1] >> 30))) + i) & MASK_1;
+		}
+	}
+
+	// generate random number
+	int rand()
+	{
+		return mt_rand();
+	}
+
+	// generate random number between 0 and n-1
+	int rand(int n)
+	{
+		return mt_rand() % n;
+	}
+
+	// random uniform between [0,1)
+	double rand01()
+	{
+		return (double) mt_rand() / UINT_MAX;
 	}
 };
 
