@@ -4,6 +4,7 @@
 #define RANDGENMersenneTwister_HPP_
 
 #include "../RandGen.hpp"
+#include <limits.h>
 
 class RandGenMersenneTwister: public RandGen
 {

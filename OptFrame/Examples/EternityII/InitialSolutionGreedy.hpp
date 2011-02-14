@@ -3,6 +3,7 @@
 
 #include "../../../OptFrame/InitialSolution.h"
 #include "../../../OptFrame/Util/TestSolution.hpp"
+#include "../../RandGen.hpp"
 
 #include "ProblemInstance.hpp"
 
@@ -22,11 +23,12 @@ class EtIIInitialSolutionGreedy: public InitialSolution<RepEtII>
 {
 private:
 	EtIIProblemInstance& pEtII;
+	RandGen& rg;
 
 public:
 
-	EtIIInitialSolutionGreedy(EtIIProblemInstance& _pEtII) : // If necessary, add more parameters
-		pEtII(_pEtII)
+	EtIIInitialSolutionGreedy(EtIIProblemInstance& _pEtII,RandGen& _rg) : // If necessary, add more parameters
+		pEtII(_pEtII), rg(_rg)
 	{
 	}
 
@@ -60,15 +62,15 @@ public:
 		}
 
 		// shuffle elements
-		std::random_shuffle(corner_pieces.begin(), corner_pieces.end());
-		std::random_shuffle(side_pieces.begin(), side_pieces.end());
-		std::random_shuffle(center_pieces.begin(), center_pieces.end());
+		rg.shuffle(corner_pieces);
+		rg.shuffle(side_pieces);
+		rg.shuffle(center_pieces);
 
 		int x;
 		Piece p;
 
 		// random one piece for left-upper corner
-		x = rand() % corner_pieces.size();
+		x = rg.rand(corner_pieces.size());
 		p = corner_pieces[x];
 		corner_pieces.erase(corner_pieces.begin() + x);
 
@@ -78,7 +80,7 @@ public:
 		(*tab)(0, 0) = p;
 
 		// random one piece for right-upper corner
-		x = rand() % corner_pieces.size();
+		x = rg.rand(corner_pieces.size());
 		p = corner_pieces[x];
 		corner_pieces.erase(corner_pieces.begin() + x);
 
@@ -88,7 +90,7 @@ public:
 		(*tab)(0, tab->getCols() - 1) = p;
 
 		// random one piece for right-lower corner
-		x = rand() % corner_pieces.size();
+		x = rg.rand(corner_pieces.size());
 		p = corner_pieces[x];
 		corner_pieces.erase(corner_pieces.begin() + x);
 
@@ -98,7 +100,7 @@ public:
 		(*tab)(tab->getRows() - 1, tab->getCols() - 1) = p;
 
 		// random one piece for left-lower corner
-		x = rand() % corner_pieces.size();
+		x = rg.rand(corner_pieces.size());
 		p = corner_pieces[x];
 		corner_pieces.erase(corner_pieces.begin() + x);
 

@@ -7,6 +7,8 @@ using namespace std;
 
 #include "./Util/Scanner++/Scanner.h"
 
+#include "RandGen.hpp"
+
 #include "Heuristic.hpp"
 
 #include "Heuristic/Empty.hpp"
@@ -75,6 +77,8 @@ private:
 	//typedef vector<chromossome*> Population;
 	//vector<Population*> loadpop;
 	vector<Population<R>*> loadpop;
+
+	RandGen& rg;
 
 public:
 
@@ -467,7 +471,12 @@ public:
 	// ================================================================
 	// ================================================================
 
-	HeuristicFactory()
+	HeuristicFactory(RandGen& _rg) :
+		rg(_rg)
+	{
+	}
+
+	~HeuristicFactory()
 	{
 	}
 
@@ -848,8 +857,7 @@ public:
 			int iterMax = scanner.nextInt();
 			int levelMax = scanner.nextInt();
 
-			return make_pair(new IntensifiedIteratedLocalSearchLevels<R, M> (*evaluator, *localSearch, *localSearch2, *ilsl_pert, iterMax, levelMax),
-					scanner.rest());
+			return make_pair(new IntensifiedIteratedLocalSearchLevels<R, M> (*evaluator, *localSearch, *localSearch2, *ilsl_pert, iterMax, levelMax), scanner.rest());
 		}
 
 		if (h == "VND")
@@ -872,7 +880,7 @@ public:
 			vector<Heuristic<R, M>*> hlist = read_heuristic_list(&scanner);
 			add_methods(hlist);
 
-			return make_pair(new RVND<R, M> (*evaluator, hlist), scanner.rest());
+			return make_pair(new RVND<R, M> (*evaluator, hlist, rg), scanner.rest());
 
 		}
 

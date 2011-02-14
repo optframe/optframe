@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "../NS.hpp"
+#include "../RandGen.hpp"
 
 template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
 class ILSLPerturbation
@@ -20,10 +21,11 @@ private:
 	vector<NS<R, M>*> ns;
 	Evaluator<R, M>& evaluator;
 	int pMax;
+	RandGen& rg;
 
 public:
-	ILSLPerturbationLPlus2(Evaluator<R, M>& e, int _pMax, NS<R, M>& _ns) :
-		evaluator(e), pMax(_pMax)
+	ILSLPerturbationLPlus2(Evaluator<R, M>& e, int _pMax, NS<R, M>& _ns, RandGen& _rg) :
+		evaluator(e), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
 	}
@@ -42,7 +44,7 @@ public:
 
 		while ((a < level) && (f < pMax))
 		{
-			int x = rand() % ns.size();
+			int x = rg.rand(ns.size());
 
 			Move<R, M>& m = ns[x]->move(s);
 

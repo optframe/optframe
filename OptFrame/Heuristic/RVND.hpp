@@ -5,6 +5,7 @@
 
 #include "../Heuristic.hpp"
 #include "../Evaluator.hpp"
+#include "../RandGen.hpp"
 
 template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
 class RVND: public Heuristic<R, M>
@@ -12,8 +13,8 @@ class RVND: public Heuristic<R, M>
 public:
 	using Heuristic<R, M>::exec; // prevents name hiding
 
-	RVND(Evaluator<R, M>& _ev, vector<Heuristic<R, M>*> _neighbors) :
-		ev(_ev), neighbors(_neighbors)
+	RVND(Evaluator<R, M>& _ev, vector<Heuristic<R, M>*> _neighbors, RandGen& _rg) :
+		ev(_ev), neighbors(_neighbors), rg(_rg)
 	{
 	}
 
@@ -30,7 +31,8 @@ public:
 
 		long tini = time(NULL);
 
-		std::random_shuffle(neighbors.begin(), neighbors.end()); // shuffle elements
+		rg.shuffle(neighbors); // shuffle elements
+
 		int r = neighbors.size();
 
 		int k = 1;
@@ -66,6 +68,7 @@ public:
 private:
 	vector<Heuristic<R, M>*> neighbors;
 	Evaluator<R, M>& ev;
+	RandGen& rg;
 };
 
 #endif /*RVND_HPP_*/

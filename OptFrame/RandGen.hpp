@@ -3,6 +3,8 @@
 
 #include <math.h>
 
+#include<vector>
+
 // reuse of function 'rand()' by using function 'randgen_sys_rand()'
 unsigned int randgen_sys_rand()
 {
@@ -119,6 +121,20 @@ public:
 	{
 		return seed;
 	}
-};
+
+	template <class T>
+	void shuffle(vector<T> v)
+    {
+		for (int i = 0; i < v.size() - 1; i++)
+		{
+			int x = i + rand(v.size() - i - 1) + 1;
+			T elem = v.at(i);
+			v.at(i) = v.at(x);
+			v.at(x) = elem;
+		}
+
+    }
+
+	};
 
 #endif /* RANDGEN_HPP_ */

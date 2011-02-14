@@ -4,6 +4,8 @@
 #include "../../../OptFrame/InitialSolution.h"
 #include "../../../OptFrame/Util/TestSolution.hpp"
 
+#include "../../RandGen.hpp"
+
 #include "ProblemInstance.hpp"
 
 #include "Representation.h"
@@ -22,13 +24,13 @@ class EtIIInitialSolutionRandom: public InitialSolution<RepEtII>
 {
 private:
 	EtIIProblemInstance& pEtII;
-
+	RandGen& rg;
 	// Your private vars
 
 public:
 
-	EtIIInitialSolutionRandom(EtIIProblemInstance& _pEtII) : // If necessary, add more parameters
-		pEtII(_pEtII)
+	EtIIInitialSolutionRandom(EtIIProblemInstance& _pEtII, RandGen& _rg) : // If necessary, add more parameters
+		pEtII(_pEtII), rg(_rg)
 	{
 	}
 
@@ -65,7 +67,7 @@ public:
 		Piece p;
 
 		// random one piece for left-upper corner
-		x = rand() % corner_pieces.size();
+		x = rg.rand(corner_pieces.size());
 		p = corner_pieces[x];
 		corner_pieces.erase(corner_pieces.begin() + x);
 
@@ -75,7 +77,7 @@ public:
 		(*tab)(0, 0) = p;
 
 		// random one piece for right-upper corner
-		x = rand() % corner_pieces.size();
+		x = rg.rand(corner_pieces.size());
 		p = corner_pieces[x];
 		corner_pieces.erase(corner_pieces.begin() + x);
 
@@ -85,7 +87,7 @@ public:
 		(*tab)(0, tab->getCols() - 1) = p;
 
 		// random one piece for right-lower corner
-		x = rand() % corner_pieces.size();
+		x = rg.rand(corner_pieces.size());
 		p = corner_pieces[x];
 		corner_pieces.erase(corner_pieces.begin() + x);
 
@@ -95,7 +97,7 @@ public:
 		(*tab)(tab->getRows() - 1, tab->getCols() - 1) = p;
 
 		// random one piece for left-lower corner
-		x = rand() % corner_pieces.size();
+		x = rg.rand(corner_pieces.size());
 		p = corner_pieces[x];
 		corner_pieces.erase(corner_pieces.begin() + x);
 
@@ -108,7 +110,7 @@ public:
 		for (int i = 1; i < tab->getCols() - 1; i++)
 		{
 			// top
-			x = rand() % side_pieces.size();
+			x = rg.rand(side_pieces.size());
 			p = side_pieces[x];
 			side_pieces.erase(side_pieces.begin() + x);
 
@@ -117,7 +119,7 @@ public:
 			(*tab)(0, i) = p;
 
 			// bottom
-			x = rand() % side_pieces.size();
+			x = rg.rand(side_pieces.size());
 			p = side_pieces[x];
 			side_pieces.erase(side_pieces.begin() + x);
 
@@ -130,7 +132,7 @@ public:
 		for (int i = 1; i < tab->getRows() - 1; i++)
 		{
 			// left
-			x = rand() % side_pieces.size();
+			x = rg.rand(side_pieces.size());
 			p = side_pieces[x];
 			side_pieces.erase(side_pieces.begin() + x);
 
@@ -139,7 +141,7 @@ public:
 			(*tab)(i, 0) = p;
 
 			// right
-			x = rand() % side_pieces.size();
+			x = rg.rand(side_pieces.size());
 			p = side_pieces[x];
 			side_pieces.erase(side_pieces.begin() + x);
 
@@ -152,12 +154,12 @@ public:
 		for (int i = 1; i < tab->getRows() - 1; i++)
 			for (int j = 1; j < tab->getCols() - 1; j++)
 			{
-				x = rand() % center_pieces.size();
+				x = rg.rand(center_pieces.size());
 				p = center_pieces[x];
 				center_pieces.erase(center_pieces.begin() + x);
 				(*tab)(i, j) = p;
 
-				int nRotation = rand() % 4;
+				int nRotation = rg.rand(4);
 				for (int r = 0; r < nRotation; r++)
 					(*tab)(i, j).rotate();
 			}

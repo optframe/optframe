@@ -3,6 +3,7 @@
 
 // Framework includes
 #include "../../../OptFrame/NSSeq.hpp"
+#include "../../RandGen.hpp"
 
 // Own includes
 #include "ProblemInstance.hpp"
@@ -182,12 +183,15 @@ public:
 
 class NSSeqSwapCenter: public NSSeq<RepEtII, MemEtII>
 {
+private:
+	RandGen& rg;
 public:
 
 	using NSSeq<RepEtII, MemEtII>::move; // prevents name hiding
 	using NSSeq<RepEtII, MemEtII>::getIterator; // prevents name hiding
 
-	NSSeqSwapCenter()
+	NSSeqSwapCenter(RandGen& _rg) :
+		rg(_rg)
 	{
 	}
 
@@ -201,15 +205,15 @@ public:
 			return *new MoveSwapCenter(1, 1, 1, 1);
 
 		// line 'x' and col 'y'
-		int x1 = rand() % (rep.getRows() - 2) + 1;
-		int y1 = rand() % (rep.getCols() - 2) + 1;
+		int x1 = rg.rand((rep.getRows() - 2)) + 1;
+		int y1 = rg.rand((rep.getCols() - 2)) + 1;
 
 		int x2 = x1;
 		int y2 = y1;
 		while ((x2 == x1) && (y2 == y1))
 		{
-			x2 = rand() % (rep.getRows() - 2) + 1;
-			y2 = rand() % (rep.getCols() - 2) + 1;
+			x2 = rg.rand((rep.getRows() - 2)) + 1;
+			y2 = rg.rand((rep.getCols() - 2)) + 1;
 		}
 
 		return *new MoveSwapCenter(x1, y1, x2, y2);

@@ -3,6 +3,7 @@
 
 // Framework includes
 #include "../../../OptFrame/NSSeq.hpp"
+#include "../../RandGen.hpp"
 
 // Own includes
 #include "ProblemInstance.hpp"
@@ -195,11 +196,14 @@ public:
 
 class NSSeqSwapCorner: public NSSeq<RepEtII, MemEtII>
 {
+private:
+	RandGen& rg;
+
 public:
 
 	using NSSeq<RepEtII, MemEtII>::move; // prevents name hiding
 
-	NSSeqSwapCorner()
+	NSSeqSwapCorner(RandGen& _rg):rg(_rg)
 	{
 	}
 
@@ -209,16 +213,16 @@ public:
 
 	virtual Move<RepEtII, MemEtII>& move(const RepEtII& rep)
 	{
-		int x1 = (rand() % 2) * (rep.getRows() - 1);
-		int y1 = (rand() % 2) * (rep.getCols() - 1);
+		int x1 = (rg.rand(2)) * (rep.getRows() - 1);
+		int y1 = (rg.rand(2)) * (rep.getCols() - 1);
 
 		int x2 = x1;
 		int y2 = y1;
 
 		while ((x2 == x1) && (y2 == y1))
 		{
-			x2 = (rand() % 2) * (rep.getRows() - 1);
-			y2 = (rand() % 2) * (rep.getCols() - 1);
+			x2 = (rg.rand(2)) * (rep.getRows() - 1);
+			y2 = (rg.rand(2)) * (rep.getCols() - 1);
 		}
 
 		return *new MoveSwapCorner(x1, y1, x2, y2);

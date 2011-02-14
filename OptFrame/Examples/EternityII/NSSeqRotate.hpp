@@ -3,6 +3,7 @@
 
 // Framework includes
 #include "../../../OptFrame/NSSeq.hpp"
+#include "../../RandGen.hpp"
 
 // Own includes
 #include "ProblemInstance.hpp"
@@ -139,11 +140,14 @@ public:
 
 class NSSeqRotate: public NSSeq<RepEtII, MemEtII>
 {
+private:
+	RandGen& rg;
 public:
 
 	using NSSeq<RepEtII, MemEtII>::move; // prevents name hiding
 
-	NSSeqRotate()
+	NSSeqRotate(RandGen& _rg) :
+		rg(_rg)
 	{
 	}
 
@@ -154,9 +158,9 @@ public:
 	virtual Move<RepEtII, MemEtII>& move(const RepEtII& rep)
 	{
 		// line 'x' and col 'y'
-		int x = rand() % (rep.getRows() - 2) + 1;
-		int y = rand() % (rep.getCols() - 2) + 1;
-		int nRot = rand() % 3 + 1;
+		int x = rg.rand((rep.getRows() - 2)) + 1;
+		int y = rg.rand((rep.getCols() - 2)) + 1;
+		int nRot = rg.rand(3) + 1;
 
 		return *new MoveRotate(nRot, x, y); // return a random move
 	}

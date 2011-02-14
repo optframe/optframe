@@ -3,6 +3,7 @@
 
 // Framework includes
 #include "../../../OptFrame/NSSeq.hpp"
+#include "../../RandGen.hpp"
 
 // Own includes
 #include "ProblemInstance.hpp"
@@ -238,11 +239,13 @@ public:
 
 class NSSeqSwapSide: public NSSeq<RepEtII, MemEtII>
 {
+private:
+	RandGen& rg;
 public:
 
 	using NSSeq<RepEtII, MemEtII>::move; // prevents name hiding
 
-	NSSeqSwapSide()
+	NSSeqSwapSide(RandGen& _rg): rg(_rg)
 	{
 	}
 
@@ -254,29 +257,29 @@ public:
 	{
 		int x1, y1;
 
-		if ((rand() % 2) == 0) // vert
+		if ((rg.rand(2)) == 0) // vert
 		{
-			x1 = rand() % (rep.getRows() - 2) + 1;
-			y1 = (rand() % 2) * (rep.getCols() - 1);
+			x1 = rg.rand((rep.getRows() - 2)) + 1;
+			y1 = rg.rand(2) * (rep.getCols() - 1);
 		}
 		else // horz
 		{
-			x1 = (rand() % 2) * (rep.getRows() - 1);
-			y1 = rand() % (rep.getCols() - 2) + 1;
+			x1 = (rg.rand(2)) * (rep.getRows() - 1);
+			y1 = rg.rand((rep.getCols() - 2)) + 1;
 		}
 
 		int x2 = x1;
 		int y2 = y1;
 		while ((x2 == x1) && (y2 == y1))
-			if ((rand() % 2) == 0) // vert
+			if ((rg.rand(2)) == 0) // vert
 			{
-				x2 = rand() % (rep.getRows() - 2) + 1;
-				y2 = (rand() % 2) * (rep.getCols() - 1);
+				x2 = rg.rand((rep.getRows() - 2)) + 1;
+				y2 = (rg.rand(2)) * (rep.getCols() - 1);
 			}
 			else // horz
 			{
-				x2 = (rand() % 2) * (rep.getRows() - 1);
-				y2 = rand() % (rep.getCols() - 2) + 1;
+				x2 = (rg.rand(2)) * (rep.getRows() - 1);
+				y2 = rg.rand((rep.getCols() - 2)) + 1;
 			}
 
 		return *new MoveSwapSide(x1, y1, x2, y2);

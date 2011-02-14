@@ -10,7 +10,7 @@
 #include "Solution.h"
 
 #include "Evaluator.hpp"
-
+#include "../../RandGen.hpp"
 #include <list>
 
 #include <algorithm>
@@ -22,15 +22,15 @@ class RandomInitialSolutionTSP: public InitialSolution<RepTSP>
 {
 private:
 	TSPProblemInstance* pI;
+	RandGen& rg;
 
 	// Your private vars
 
 public:
 
-	RandomInitialSolutionTSP(TSPProblemInstance* pI) // If necessary, add more parameters
+	RandomInitialSolutionTSP(TSPProblemInstance* pI,RandGen& _rg): rg(_rg) // If necessary, add more parameters
 	{
 		this->pI = pI;
-
 		// Put the rest of your code here
 	};
 
@@ -42,7 +42,7 @@ public:
 		for(unsigned int i=0;i<r->size();i++)
 			(*r)[i]=i;
 
-		std::random_shuffle( r->begin(), r->end() ); // shuffle elements of r
+		rg.shuffle(*r); // shuffle elements of r
 
 		for(unsigned int i=0;i<newRep->size();i++)
 			(*newRep)[i] = (*r)[i];

@@ -17,6 +17,8 @@
 
 #define EPSILON_EtII 0.0001
 
+int numEvs = 0;
+
 class EtIIEvaluator: public Evaluator<RepEtII, MemEtII>
 {
 private:
@@ -34,6 +36,10 @@ public:
 
 	EvaluationEtII& evaluate(const RepEtII& rep)
 	{
+		//counting evaluations.
+		numEvs++;
+		//cout<<"##### Number of evaluates: "<<numEvs<<endl;
+
 		int fo = 0; // Evaluation Function Value
 
 		// horizontal

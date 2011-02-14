@@ -66,9 +66,16 @@ public:
 template<class R, class M> // M = OPTFRAME_DEFAULT_MEMORY already defined
 class NSEnum: public NSSeq<R, M>
 {
+
+protected:
+	RandGen& rg;
+
 public:
 
 	using NSSeq<R, M>::move; // prevents name hiding
+
+	NSEnum(RandGen& _rg):rg(_rg)
+	{}
 
 	virtual ~NSEnum()
 	{
@@ -76,7 +83,7 @@ public:
 
 	virtual Move<R, M>& move(const R&)
 	{
-		return move(rand() % size());
+		return move( rg.rand(size()));
 	}
 
 	virtual NSIterator<R, M>& getIterator(const R&)

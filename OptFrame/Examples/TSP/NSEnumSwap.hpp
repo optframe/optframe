@@ -9,6 +9,7 @@
 #include "ProblemInstance.hpp"
 #include "Memory.h"
 #include "Solution.h"
+#include "../../RandGen.hpp"
 
 //#define MOV_Swap_DEBUG
 
@@ -88,7 +89,7 @@ public:
 
 	using NSEnum<RepTSP, MemTSP>::move; // prevents name hiding
 
-	NSEnumSwap(TSPProblemInstance* pI)
+	NSEnumSwap(TSPProblemInstance* pI, RandGen& _rg): NSEnum<RepTSP, MemTSP>(_rg)
 	{
 		this->pI = pI;
 		this->n = pI->n;
