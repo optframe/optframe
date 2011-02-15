@@ -12,7 +12,7 @@
 using namespace std;
 
 // Solution Memory
-typedef vector < double >  MemTSP;
+typedef double  MemTSP;
 
 #endif /*TSP_MEMORY_H_*/
 

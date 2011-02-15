@@ -23,12 +23,12 @@ class MoveSwap: public Move<RepTSP, MemTSP>
 {
 private:
 	int c1, c2;
-
-	// Your private vars
+	TSPProblemInstance& tsp;
 
 public:
 
-	MoveSwap(int c1, int c2) // If necessary, add more parameters
+	MoveSwap(int c1, int c2, TSPProblemInstance& _tsp) :
+		tsp(_tsp)
 	{
 		this->c1 = c1;
 		this->c2 = c2;
@@ -52,7 +52,71 @@ public:
 		rep[c2] = aux;
 
 		// return the reverse move
-		return *new MoveSwap(c2, c1); // If necessary, add more parameters
+		return *new MoveSwap(c2, c1, tsp);
+	}
+
+	Move<RepTSP, MemTSP>& apply(MemTSP& mem, RepTSP& rep)
+	{
+		int k1, k2;
+
+		if (c1 < c2)
+		{
+			k1 = c1;
+			k2 = c2;
+		}
+		else
+		{
+			k1 = c2;
+			k2 = c1;
+		}
+
+		// before k2 and k1
+		int bk1 = k1 - 1;
+		int bk2 = k2 - 1;
+		// after k2 and k1
+		int ak1 = k1 + 1;
+		int ak2 = k2 + 1;
+
+		if (k1 == 0)
+			bk1 = rep.size() - 1;
+		if (k2 == rep.size() - 1)
+			ak2 = 0;
+
+		int f = 0;
+
+		if (k2 - k1 == 1) // special case, cities are near
+		{
+			f -= (*tsp.dist)(rep[bk1], rep[k1]);
+			f -= (*tsp.dist)(rep[k1], rep[k2]);
+			f -= (*tsp.dist)(rep[k2], rep[ak2]);
+		}
+		else
+		{
+			f -= (*tsp.dist)(rep[bk1], rep[k1]);
+			f -= (*tsp.dist)(rep[k1], rep[ak1]);
+			f -= (*tsp.dist)(rep[bk2], rep[k2]);
+			f -= (*tsp.dist)(rep[k2], rep[ak2]);
+		}
+
+		Move<RepTSP, MemTSP>& rev = apply(rep);
+
+		if (k2 - k1 == 1) // special case, cities are near
+		{
+			f += (*tsp.dist)(rep[bk1], rep[k1]);
+			f += (*tsp.dist)(rep[k1], rep[k2]);
+			f += (*tsp.dist)(rep[k2], rep[ak2]);
+		}
+		else
+		{
+			f += (*tsp.dist)(rep[bk1], rep[k1]);
+			f += (*tsp.dist)(rep[k1], rep[ak1]);
+			f += (*tsp.dist)(rep[bk2], rep[k2]);
+			f += (*tsp.dist)(rep[k2], rep[ak2]);
+		}
+
+		mem += f;
+
+		return rev;
 	}
 
 	void print()
@@ -89,7 +153,8 @@ public:
 
 	using NSEnum<RepTSP, MemTSP>::move; // prevents name hiding
 
-	NSEnumSwap(TSPProblemInstance* pI, RandGen& _rg): NSEnum<RepTSP, MemTSP>(_rg)
+	NSEnumSwap(TSPProblemInstance* pI, RandGen& _rg) :
+		NSEnum<RepTSP, MemTSP> (_rg)
 	{
 		this->pI = pI;
 		this->n = pI->n;
@@ -188,7 +253,7 @@ public:
 
 			for (int i = 0; i < numElem(d); i++)
 				if (k == c + i)
-					return *new MoveSwap(i, d - i - 1);
+					return *new MoveSwap(i, d - i - 1, *pI);
 		}
 		else
 		{
@@ -197,13 +262,13 @@ public:
 				if (k == c + i)
 				{
 					int j = d - n;
-					return *new MoveSwap(i + j, d - i - 1 - j);
+					return *new MoveSwap(i + j, d - i - 1 - j, *pI);
 				}
 
 		}
 
 		cout << "Error!" << endl;
-		return *new MoveSwap(0, 0);
+		return *new MoveSwap(0, 0, *pI);
 	}
 
 };
