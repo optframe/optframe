@@ -1,29 +1,26 @@
-#ifndef OPTFRAME_IILSL_HPP_
-#define OPTFRAME_IILSL_HPP_
+#ifndef OPTFRAME_ILSL_HPP_
+#define OPTFRAME_ILSL_HPP_
 
 #include <math.h>
 #include <vector>
 
-#include "IntensifiedIteratedLocalSearch.hpp"
+#include "IteratedLocalSearch.hpp"
 #include "ILSLPerturbation.hpp"
-#include "Intensification.hpp"
 
 typedef pair<pair<int, int> , pair<int, int> > levelHistory;
 
 template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
-class IntensifiedIteratedLocalSearchLevels: public IntensifiedIteratedLocalSearch<levelHistory, R, M>
+class IteratedLocalSearchLevels: public IteratedLocalSearch<levelHistory, R, M>
 {
 protected:
 	Heuristic<R, M>& h;
-	Intensification<R, M>& h2;
 	ILSLPerturbation<R, M>& p;
 	int iterMax, levelMax;
 
 public:
 
-	IntensifiedIteratedLocalSearchLevels(Evaluator<R, M>& e, Heuristic<R, M>& _h, Intensification<R, M>& _h2, ILSLPerturbation<R, M>& _p, int _iterMax,
-			int _levelMax) :
-		h(_h), h2(_h2), p(_p), iterMax(_iterMax), levelMax(_levelMax), IntensifiedIteratedLocalSearch<levelHistory, R, M> (e)
+	IteratedLocalSearchLevels(Evaluator<R, M>& e, Heuristic<R, M>& _h, ILSLPerturbation<R, M>& _p, int _iterMax, int _levelMax) :
+		IteratedLocalSearch<levelHistory, R, M> (e), h(_h), p(_p), iterMax(_iterMax), levelMax(_levelMax)
 	{
 	}
 
@@ -36,29 +33,6 @@ public:
 		pair<int, int> maxs(iterMax, levelMax);
 
 		return *new levelHistory(vars, maxs);
-	}
-
-	virtual void intensification(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f, levelHistory& history)
-	{
-		h2.addSolution(s);
-
-		if (history.first.first == history.second.first-1) //TODO intensification applied only at last iteration of each level
-		{
-			Solution<R>& s1 = h2.search(s);
-
-			Evaluator<R,M> & ev = this->getEvaluator();
-			Evaluation<M>& s1_e = ev.evaluate(s1);
-
-			if (ev.betterThan(s1_e, e))
-			{
-				e = s1_e;
-				s = s1;
-				h2.addSolution(s);
-			}
-
-			delete &s1;
-		}
-
 	}
 
 	virtual void localSearch(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f)
@@ -98,12 +72,14 @@ public:
 
 	virtual Solution<R>& acceptanceCriterion(const Solution<R>& s1, const Solution<R>& s2, levelHistory& history)
 	{
-		if (IntensifiedIteratedLocalSearch<levelHistory, R, M>::evaluator.betterThan(s2, s1))
+		//cout << "acceptanceCriterion(.)" << endl;
+
+		if (IteratedLocalSearch<levelHistory, R, M>::evaluator.betterThan(s2, s1))
 		{
 			// =======================
 			//   Melhor solucao: 's2'
 			// =======================
-			Evaluation<M>& e = IntensifiedIteratedLocalSearch<levelHistory, R, M>::evaluator.evaluate(s2);
+			Evaluation<M>& e = IteratedLocalSearch<levelHistory, R, M>::evaluator.evaluate(s2);
 			cout << "Best fo: " << e.evaluation();
 			cout << " on [iter " << history.first.first << " of level " << history.first.second << "]" << endl;
 			delete &e;
@@ -119,9 +95,6 @@ public:
 			// =======================
 			//    Retorna s2
 			// =======================
-
-			h2.addSolution(s2);
-
 			return s2.clone();
 		}
 		else
@@ -138,4 +111,4 @@ public:
 	}
 };
 
-#endif /*OPTFRAME_IILSL_HPP_*/
+#endif /*OPTFRAME_ILSL_HPP_*/

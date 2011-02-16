@@ -1,17 +1,8 @@
 #ifndef PARALLEL_H_
 #define PARALLEL_H_
 
-#include "OffsetBestImprovement.hpp"
-#include "OffsetBestImprovementEnum.hpp"
-
-#include "BI_SeqMR.hpp"
-
-#ifdef MapMP
-#include "BI_MapMP.hpp"
-#endif
-
 #ifdef MaPI
-#include "BI_MaPI.hpp"
+#include "OptFrameMapReduce.hpp"
 #endif
 
 #endif /*PARALLEL_H_*/

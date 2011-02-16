@@ -5,6 +5,8 @@
 // Project Traveling Salesman Problem
 // ===================================
 
+#define MaPI
+
 #include <stdlib.h>
 #include <math.h>
 
@@ -16,45 +18,44 @@ using namespace std;
 
 #include "../OptFrame/OptFrame.hpp"
 #include "../OptFrame/Examples/TSP.h"
+#include "../OptFrame/Util/VShuffle.hpp"
 
 int main(int argc, char **argv)
 {
-	srand(time(NULL));
-
 	// Optimal value for berlin52 is 7542
 
 	Scanner scanner(new File("../OptFrame/Examples/TSP/tsplib/berlin52.txt"));
 
 	TSPProblemInstance* p = new TSPProblemInstance(scanner);
 
+	TSPEvaluator eval(p);
+
+	// MapReduce declaration
+	MaPI_MapReduce<RepTSP, RankAndStop, int, pair<RepTSP, double> , RepTSP> mapReduce;
+	TSPSerializer serializer;
+	MyMaPIMapper<RepTSP, MemTSP> mapper(&mapReduce, &serializer, eval);
+	MyMaPIReducer<RepTSP, MemTSP> reducer(&mapReduce, &serializer, eval);
+
+	srand(clock()+mapReduce.getMPIRank()); // Setting seed according to mpi rank
+
 	RandomInitialSolutionTSP is(p);
 
 	SolutionTSP& s = is.generateSolution();
-
-	NSEnumSwap ns(p);
-
 	s.print();
-
-	TSPEvaluator eval(p);
-	EvaluationTSP* e;
-
-	e = &eval.evaluate(s);
-
+	EvaluationTSP * e = &eval.evaluate(s);
 	e->print();
 	cout << endl;
 
-	HeuristicFactory<RepTSP, MemTSP> factory;
-	factory.add_initsol(&is);
-	factory.add_ev(&eval);
-	factory.add_ns(&ns);
+	OptFrame<RepTSP, MemTSP> optframe;
+	optframe.factory.add_initsol(&is);
+	optframe.factory.add_ev(&eval);
+	optframe.factory.add_ns(new NSEnumSwap(p));
+	optframe.factory.add_method(new VShuffle<RepTSP,MemTSP>);
 
+	// Adding MapReduce to factory
+	optframe.factory.setMapReduce(&serializer,&mapReduce,&mapper,&reducer,argc,argv);
 
-	OptFrame<RepTSP, MemTSP> optframe(&factory);
-	//optframe.execute();
-
-	string cmd("read ");
-	if (argc > 1) cmd += argv[1]; else cmd += "example.opt";
-	optframe.execute(string("read ") + argv[1]);
+	optframe.execute("read example.opt");
 
 	cout << "Program ended successfully" << endl;
 
