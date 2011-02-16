@@ -58,7 +58,7 @@ public:
 	// random uniform between [0,1)
 	double rand01()
 	{
-		return (double) d_rand() / UINT_MAX;
+		return rand(1000) / 1000.0;
 	}
 
 	// random gaussian mean 0.0 stdev 1.0

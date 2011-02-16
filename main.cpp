@@ -20,7 +20,7 @@ using namespace std;
 int main(int argc, char **argv)
 {
 	srand(time(NULL));
-	RandGen r(time(NULL));
+	RandGen rg(time(NULL));
 
 	// Optimal value for berlin52 is 7542
 
@@ -28,11 +28,11 @@ int main(int argc, char **argv)
 
 	TSPProblemInstance* p = new TSPProblemInstance(scanner);
 
-	RandomInitialSolutionTSP is(p,r);
+	RandomInitialSolutionTSP is(p,rg);
 
 	SolutionTSP& s = is.generateSolution();
 
-	NSEnumSwap ns(p);
+	NSEnumSwap ns(p, rg);
 
 	s.print();
 
@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 	e->print();
 	cout << endl;
 
-	OptFrame<RepTSP, MemTSP> optframe;
+	OptFrame<RepTSP, MemTSP> optframe(rg);
 	optframe.factory.add_initsol(&is);
 	optframe.factory.add_ev(&eval);
 	optframe.factory.add_ns(&ns);

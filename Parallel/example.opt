@@ -14,8 +14,11 @@ build Map ev 0 MH ev 0 [ shuffle my_bestimprovement ] my_mapreduce % must be bui
 
 initservers
 
-test 1 12 8400 8400 random ev 0 my_mapreduce out.txt
+test 1 12 8400 8400 random ev 0 my_mapreduce out.txt sStar
+
+print sStar
+evaluate ev 0 sStar
+export sStar out.sol
 
 %display the help
 help
-

@@ -122,9 +122,9 @@ public:
 		return seed;
 	}
 
-	template <class T>
-	void shuffle(vector<T> v)
-    {
+	template<class T>
+	void shuffle(vector<T>& v)
+	{
 		for (int i = 0; i < v.size() - 1; i++)
 		{
 			int x = i + rand(v.size() - i - 1) + 1;
@@ -132,9 +132,8 @@ public:
 			v.at(i) = v.at(x);
 			v.at(x) = elem;
 		}
+	}
 
-    }
-
-	};
+};
 
 #endif /* RANDGEN_HPP_ */

@@ -24,6 +24,8 @@ int main(int argc, char **argv)
 {
 	// Optimal value for berlin52 is 7542
 
+	RandGen rg;
+
 	Scanner scanner(new File("../OptFrame/Examples/TSP/tsplib/berlin52.txt"));
 
 	TSPProblemInstance* p = new TSPProblemInstance(scanner);
@@ -36,9 +38,9 @@ int main(int argc, char **argv)
 	MyMaPIMapper<RepTSP, MemTSP> mapper(&mapReduce, &serializer, eval);
 	MyMaPIReducer<RepTSP, MemTSP> reducer(&mapReduce, &serializer, eval);
 
-	srand(clock()+mapReduce.getMPIRank()); // Setting seed according to mpi rank
+	srand(clock() + mapReduce.getMPIRank()); // Setting seed according to mpi rank
 
-	RandomInitialSolutionTSP is(p);
+	RandomInitialSolutionTSP is(p, rg);
 
 	SolutionTSP& s = is.generateSolution();
 	s.print();
@@ -46,14 +48,14 @@ int main(int argc, char **argv)
 	e->print();
 	cout << endl;
 
-	OptFrame<RepTSP, MemTSP> optframe;
+	OptFrame<RepTSP, MemTSP> optframe(rg);
 	optframe.factory.add_initsol(&is);
 	optframe.factory.add_ev(&eval);
-	optframe.factory.add_ns(new NSEnumSwap(p));
-	optframe.factory.add_method(new VShuffle<RepTSP,MemTSP>);
+	optframe.factory.add_ns(new NSEnumSwap(p, rg));
+	optframe.factory.add_method(new VShuffle<RepTSP, MemTSP> );
 
 	// Adding MapReduce to factory
-	optframe.factory.setMapReduce(&serializer,&mapReduce,&mapper,&reducer,argc,argv);
+	optframe.factory.setMapReduce(&serializer, &mapReduce, &mapper, &reducer, argc, argv);
 
 	optframe.execute("read example.opt");
 

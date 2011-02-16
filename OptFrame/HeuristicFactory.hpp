@@ -7,6 +7,8 @@ using namespace std;
 
 #include "./Util/Scanner++/Scanner.h"
 
+#include "RandGen.hpp"
+
 #include "Heuristic.hpp"
 
 #include "Heuristic/Empty.hpp"
@@ -63,7 +65,7 @@ private:
 	vector<NS<R, M>*> ns;
 	vector<Evaluator<R, M>*> ev;
 	vector<ILSLPerturbation<R, M>*> ilsl_pert;
-	vector<Intensification<R,M>*> ils_int;
+	vector<Intensification<R, M>*> ils_int;
 
 	vector<Solution<R>*> loadsol;
 	vector<Heuristic<R, M>*> method;
@@ -79,8 +81,9 @@ private:
 	//vector<Population*> loadpop;
 	vector<Population<R>*> loadpop;
 
-public:
+	RandGen& rg;
 
+public:
 
 #ifdef MaPI
 	MyMaPISerializer<R, M> * serializer;
@@ -400,18 +403,18 @@ public:
 		return ilsl_pert[ilsl_pert_id];
 	}
 
-	Intensification<R,M> * read_ils_int(Scanner* scanner)
+	Intensification<R, M> * read_ils_int(Scanner* scanner)
 	{
 		string tmp = scanner->next();
 
-		if(tmp != "ils_int")
-			cout << "Warning: expected 'ils_int' and found '"<<tmp<<"'."<<endl;
+		if (tmp != "ils_int")
+			cout << "Warning: expected 'ils_int' and found '" << tmp << "'." << endl;
 
 		int ils_int_id = scanner->nextInt();
 
-		if(ils_int.size()<=ils_int_id)
+		if (ils_int.size() <= ils_int_id)
 		{
-			cout << "Error: 'intensification' number "<<ils_int_id<<" doesn't exist!"<<endl;
+			cout << "Error: 'intensification' number " << ils_int_id << " doesn't exist!" << endl;
 			exit(1);
 		}
 
@@ -493,7 +496,12 @@ public:
 	// ================================================================
 	// ================================================================
 
-	HeuristicFactory()
+	HeuristicFactory(RandGen& _rg) :
+		rg(_rg)
+	{
+	}
+
+	~HeuristicFactory()
 	{
 	}
 
@@ -591,7 +599,7 @@ public:
 		return ilsl_pert.size() - 1;
 	}
 
-	void add_ils_int(Intensification<R,M>* _ils_int)
+	void add_ils_int(Intensification<R, M>* _ils_int)
 	{
 		ils_int.push_back(_ils_int);
 	}
@@ -865,14 +873,14 @@ public:
 
 			/*rest = scanner.rest();
 
-			pair<Heuristic<R, M>*, string> method2;
-			method2 = createHeuristic(rest);
+			 pair<Heuristic<R, M>*, string> method2;
+			 method2 = createHeuristic(rest);
 
-			Heuristic<R, M>* localSearch2 = method2.first;
+			 Heuristic<R, M>* localSearch2 = method2.first;
 
-			scanner = Scanner(method2.second);*/
+			 scanner = Scanner(method2.second);*/
 
-			Intensification<R,M> * intensification = read_ils_int(&scanner);
+			Intensification<R, M> * intensification = read_ils_int(&scanner);
 
 			// ====================
 
@@ -882,7 +890,7 @@ public:
 			int levelMax = scanner.nextInt();
 
 			//return make_pair(new IntensifiedIteratedLocalSearchLevels<R, M> (*evaluator, *localSearch, *localSearch2, *ilsl_pert, iterMax, levelMax),scanner.rest());
-			return make_pair(new IntensifiedIteratedLocalSearchLevels<R,M>(*evaluator, *localSearch, *intensification, *ilsl_pert,iterMax,levelMax),scanner.rest());
+			return make_pair(new IntensifiedIteratedLocalSearchLevels<R, M> (*evaluator, *localSearch, *intensification, *ilsl_pert, iterMax, levelMax), scanner.rest());
 		}
 
 		if (h == "VND")
@@ -905,8 +913,7 @@ public:
 			vector<Heuristic<R, M>*> hlist = read_heuristic_list(&scanner);
 			add_methods(hlist);
 
-			return make_pair(new RVND<R, M> (*evaluator, hlist), scanner.rest());
-
+			return make_pair(new RVND<R, M> (*evaluator, hlist, rg), scanner.rest());
 		}
 
 		/*
@@ -935,28 +942,28 @@ public:
 
 		// Parallel Support
 		/*if (h == "BISeqMR")
-		{
-			cout << "Heuristic: MapReduce Best Improvement (SeqMR)" << endl;
+		 {
+		 cout << "Heuristic: MapReduce Best Improvement (SeqMR)" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
-			NSSeq<R, M>* ns_seq = (NSSeq<R, M>*) read_ns(&scanner);
-			int NP = read_np(&scanner);
+		 Evaluator<R, M>* evaluator = read_ev(&scanner);
+		 NSSeq<R, M>* ns_seq = (NSSeq<R, M>*) read_ns(&scanner);
+		 int NP = read_np(&scanner);
 
-			return make_pair(new BestImprovement_SeqMR<R, M> (*evaluator, *ns_seq, NP), scanner.rest());
-		}*/
+		 return make_pair(new BestImprovement_SeqMR<R, M> (*evaluator, *ns_seq, NP), scanner.rest());
+		 }*/
 
-/*
-#ifdef MaPI
-		if (h == "BIMaPI")
-		{
-			cout << "Heuristic: MapReduce Best Improvement (MaPI)" << endl;
+		/*
+		 #ifdef MaPI
+		 if (h == "BIMaPI")
+		 {
+		 cout << "Heuristic: MapReduce Best Improvement (MaPI)" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
-			NSSeq<R, M>* ns_seq = (NSSeq<R, M>*) read_ns(&scanner);
+		 Evaluator<R, M>* evaluator = read_ev(&scanner);
+		 NSSeq<R, M>* ns_seq = (NSSeq<R, M>*) read_ns(&scanner);
 
-			return make_pair(new BestImprovement_MaPI<R, M> (*serializer,*mapReduce,*mapper,*reducer,*evaluator, *ns_seq), scanner.rest());
-		}
-#endif/**/
+		 return make_pair(new BestImprovement_MaPI<R, M> (*serializer,*mapReduce,*mapper,*reducer,*evaluator, *ns_seq), scanner.rest());
+		 }
+		 #endif/**/
 
 		if (h == "MH")
 		{
@@ -968,7 +975,6 @@ public:
 
 			return make_pair(new MultiHeuristic<R, M> (*evaluator, hlist), scanner.rest());
 		}
-
 
 #ifdef MaPI
 		if (h == "MapReduce")

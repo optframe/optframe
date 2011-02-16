@@ -96,6 +96,9 @@ public:
 	// generate random number between 0 and n-1
 	int rand(int n)
 	{
+		if (n < 0)
+			n *= (-1);
+
 		return mt_rand() % n;
 	}
 
