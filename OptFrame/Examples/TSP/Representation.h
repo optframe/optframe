@@ -15,7 +15,7 @@ using namespace std;
 // Solution Representation
 typedef vector < int >  RepTSP;
 
-//#ifdef MaPI
+#ifdef MaPI
 
 class TSPSerializer : public MyMaPISerializer<RepTSP,MemTSP>
 {
@@ -160,7 +160,7 @@ public:
 
 };
 
-//#endif
+#endif
 
 #endif /*TSP_REPRESENTATION_H_*/
 

@@ -159,7 +159,9 @@ public:
       loadModule(new ReadModule<R, M> );
       loadModule(new TestModule<R, M> );
       loadModule(new UsageModule<R, M> );
+#ifdef MaPI
       loadModule(new InitServersModule<R, M> );
+#endif
    }
 
     OptFrameModule<R, M>* getModule(string module)

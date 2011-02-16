@@ -20,6 +20,7 @@ using namespace std;
 int main(int argc, char **argv)
 {
 	srand(time(NULL));
+	RandGen r(time(NULL));
 
 	// Optimal value for berlin52 is 7542
 
@@ -27,7 +28,7 @@ int main(int argc, char **argv)
 
 	TSPProblemInstance* p = new TSPProblemInstance(scanner);
 
-	RandomInitialSolutionTSP is(p);
+	RandomInitialSolutionTSP is(p,r);
 
 	SolutionTSP& s = is.generateSolution();
 

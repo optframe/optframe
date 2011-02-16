@@ -7,8 +7,6 @@ using namespace std;
 
 #include "./Util/Scanner++/Scanner.h"
 
-#include "RandGen.hpp"
-
 #include "Heuristic.hpp"
 
 #include "Heuristic/Empty.hpp"
@@ -25,6 +23,8 @@ using namespace std;
 #include "Heuristic/IteratedLocalSearch.hpp"
 #include "Heuristic/IteratedLocalSearchLevels.hpp"
 #include "Heuristic/IntensifiedIteratedLocalSearchLevels.hpp"
+#include "Heuristic/Intensification.hpp"
+#include "Heuristic/MultiHeuristic.hpp"
 #include "Heuristic/GRASP.hpp"
 #include "Heuristic/TabuSearch.hpp"
 #include "Heuristic/EvolutionaryAlgorithms/GeneticAlgorithm.hpp"
@@ -63,6 +63,7 @@ private:
 	vector<NS<R, M>*> ns;
 	vector<Evaluator<R, M>*> ev;
 	vector<ILSLPerturbation<R, M>*> ilsl_pert;
+	vector<Intensification<R,M>*> ils_int;
 
 	vector<Solution<R>*> loadsol;
 	vector<Heuristic<R, M>*> method;
@@ -78,25 +79,28 @@ private:
 	//vector<Population*> loadpop;
 	vector<Population<R>*> loadpop;
 
-	RandGen& rg;
-
 public:
+
 
 #ifdef MaPI
 	MyMaPISerializer<R, M> * serializer;
-	MaPI_MapReduce<R, int, int, pair<R, double> , R> * mapReduce;
+	MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mapReduce;
 	MyMaPIMapper<R, M> * mapper;
 	MyMaPIReducer<R, M> * reducer;
+	int argc;
+	char **argv;
 
-	void setMapReduce(MyMaPISerializer<R, M> * serializer, MaPI_MapReduce<R, int, int, pair<R, double> , R> * mapReduce,
-			MyMaPIMapper<R, M> * mapper,MyMaPIReducer<R, M> * reducer)
+	void setMapReduce(MyMaPISerializer<R, M> * serializer, MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mapReduce,
+			MyMaPIMapper<R, M> * mapper,MyMaPIReducer<R, M> * reducer,int argc, char **argv)
 	{
 		this->serializer = serializer;
 		this->mapReduce = mapReduce;
 		this->mapper = mapper;
 		this->reducer = reducer;
+		this->argc = argc;
+		this->argv = argv;
 	}
-#endif
+#endif/**/
 
 	Solution<R>* read_loadsol(Scanner* scanner)
 	{
@@ -396,6 +400,24 @@ public:
 		return ilsl_pert[ilsl_pert_id];
 	}
 
+	Intensification<R,M> * read_ils_int(Scanner* scanner)
+	{
+		string tmp = scanner->next();
+
+		if(tmp != "ils_int")
+			cout << "Warning: expected 'ils_int' and found '"<<tmp<<"'."<<endl;
+
+		int ils_int_id = scanner->nextInt();
+
+		if(ils_int.size()<=ils_int_id)
+		{
+			cout << "Error: 'intensification' number "<<ils_int_id<<" doesn't exist!"<<endl;
+			exit(1);
+		}
+
+		return ils_int[ils_int_id];
+	}
+
 	Selection<R, M>* read_ga_sel(Scanner* scanner)
 	{
 		string tmp = scanner->next();
@@ -471,12 +493,7 @@ public:
 	// ================================================================
 	// ================================================================
 
-	HeuristicFactory(RandGen& _rg) :
-		rg(_rg)
-	{
-	}
-
-	~HeuristicFactory()
+	HeuristicFactory()
 	{
 	}
 
@@ -572,6 +589,11 @@ public:
 	{
 		ilsl_pert.push_back(_ilsl_pert);
 		return ilsl_pert.size() - 1;
+	}
+
+	void add_ils_int(Intensification<R,M>* _ils_int)
+	{
+		ils_int.push_back(_ils_int);
 	}
 
 	ILSLPerturbation<R, M>* get_ilsl_pert(int index)
@@ -841,14 +863,16 @@ public:
 
 			// ====================
 
-			rest = scanner.rest();
+			/*rest = scanner.rest();
 
 			pair<Heuristic<R, M>*, string> method2;
 			method2 = createHeuristic(rest);
 
 			Heuristic<R, M>* localSearch2 = method2.first;
 
-			scanner = Scanner(method2.second);
+			scanner = Scanner(method2.second);*/
+
+			Intensification<R,M> * intensification = read_ils_int(&scanner);
 
 			// ====================
 
@@ -857,7 +881,8 @@ public:
 			int iterMax = scanner.nextInt();
 			int levelMax = scanner.nextInt();
 
-			return make_pair(new IntensifiedIteratedLocalSearchLevels<R, M> (*evaluator, *localSearch, *localSearch2, *ilsl_pert, iterMax, levelMax), scanner.rest());
+			//return make_pair(new IntensifiedIteratedLocalSearchLevels<R, M> (*evaluator, *localSearch, *localSearch2, *ilsl_pert, iterMax, levelMax),scanner.rest());
+			return make_pair(new IntensifiedIteratedLocalSearchLevels<R,M>(*evaluator, *localSearch, *intensification, *ilsl_pert,iterMax,levelMax),scanner.rest());
 		}
 
 		if (h == "VND")
@@ -880,7 +905,7 @@ public:
 			vector<Heuristic<R, M>*> hlist = read_heuristic_list(&scanner);
 			add_methods(hlist);
 
-			return make_pair(new RVND<R, M> (*evaluator, hlist, rg), scanner.rest());
+			return make_pair(new RVND<R, M> (*evaluator, hlist), scanner.rest());
 
 		}
 
@@ -909,7 +934,7 @@ public:
 		 */
 
 		// Parallel Support
-		if (h == "BISeqMR")
+		/*if (h == "BISeqMR")
 		{
 			cout << "Heuristic: MapReduce Best Improvement (SeqMR)" << endl;
 
@@ -918,8 +943,9 @@ public:
 			int NP = read_np(&scanner);
 
 			return make_pair(new BestImprovement_SeqMR<R, M> (*evaluator, *ns_seq, NP), scanner.rest());
-		}
+		}*/
 
+/*
 #ifdef MaPI
 		if (h == "BIMaPI")
 		{
@@ -929,6 +955,85 @@ public:
 			NSSeq<R, M>* ns_seq = (NSSeq<R, M>*) read_ns(&scanner);
 
 			return make_pair(new BestImprovement_MaPI<R, M> (*serializer,*mapReduce,*mapper,*reducer,*evaluator, *ns_seq), scanner.rest());
+		}
+#endif/**/
+
+		if (h == "MH")
+		{
+			cout << "Heuristic: MultiHeuristic" << endl;
+
+			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			vector<Heuristic<R, M>*> hlist = read_heuristic_list(&scanner);
+			add_methods(hlist);
+
+			return make_pair(new MultiHeuristic<R, M> (*evaluator, hlist), scanner.rest());
+		}
+
+
+#ifdef MaPI
+		if (h == "MapReduce")
+		{
+			cout << "Heuristic: MapReduce" << endl;
+
+			Evaluator<R, M>* evaluator = read_ev(&scanner);
+
+			// ===================
+			// Read next heuristic
+			// ===================
+
+			string rest = scanner.rest();
+
+			pair<Heuristic<R, M>*, string> method;
+			method = createHeuristic(rest);
+
+			Heuristic<R, M>* hmap = method.first;
+
+			scanner = Scanner(method.second);
+
+			// ===================
+			// Read next heuristic
+			// ===================
+
+			rest = scanner.rest();
+
+			method = createHeuristic(rest);
+
+			Heuristic<R, M>* hreduce = method.first;
+
+			scanner = Scanner(method.second);
+
+			// ===================
+			mapper->setHeuristic(hmap);
+			reducer->setHeuristic(hreduce); // reduz usando a heurística hreduce
+
+			return make_pair(new OptFrameMapReduce<R, M> (*serializer,*mapReduce,*mapper,*reducer,*evaluator), scanner.rest());
+		}
+
+		if (h == "Map")
+		{
+			cout << "Heuristic: Map" << endl;
+
+			Evaluator<R, M>* evaluator = read_ev(&scanner);
+
+			// ===================
+			// Read next heuristic
+			// ===================
+
+			string rest = scanner.rest();
+
+			pair<Heuristic<R, M>*, string> method;
+			method = createHeuristic(rest);
+
+			Heuristic<R, M>* hmap = method.first;
+
+			scanner = Scanner(method.second);
+
+			// ===================
+			mapper->setHeuristic(hmap);
+			// A não especificação da heurística de redução implina na
+			// redução à melhor solução produzida nos mapeamentos
+
+			return make_pair(new OptFrameMapReduce<R, M> (*serializer,*mapReduce,*mapper,*reducer,*evaluator), scanner.rest());
 		}
 #endif
 
