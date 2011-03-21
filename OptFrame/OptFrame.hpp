@@ -1,6 +1,10 @@
 #ifndef OPTFRAME_H_
 #define OPTFRAME_H_
 
+/*! \mainpage OptFrame
+ * This is the OptFrame documentation.
+ */
+//Esta é a documentação do OptFrame.
 #include <iostream>
 #include <ostream>
 

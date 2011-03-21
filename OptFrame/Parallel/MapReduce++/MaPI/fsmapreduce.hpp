@@ -2,7 +2,7 @@
    MaPI_FSMapReduce (old MaPI.hpp from MaPI v1.2)
  * =============================================================== */
 
-/*! \mainpage MaPI v1.1
+/* \mainpage MaPI v1.1
  *
  * MaPI é uma implementação em C++ da abstração MapReduce.
  * 
@@ -27,7 +27,7 @@
 
 using namespace std;
 
-///Gerenciador de mapeamento e redução.
+///MaPI_FSMapReduce.
 /**
 */
 
