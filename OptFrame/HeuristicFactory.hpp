@@ -23,6 +23,7 @@ using namespace std;
 
 //Metaheuristics
 #include "Heuristic/IteratedLocalSearch.hpp"
+#include "Heuristic/BasicIteratedLocalSearch.hpp"
 #include "Heuristic/IteratedLocalSearchLevels.hpp"
 #include "Heuristic/IntensifiedIteratedLocalSearchLevels.hpp"
 #include "Heuristic/Intensification.hpp"
@@ -65,6 +66,7 @@ private:
 	vector<NS<R, M>*> ns;
 	vector<Evaluator<R, M>*> ev;
 	vector<ILSLPerturbation<R, M>*> ilsl_pert;
+	vector<BasicILSPerturbation<R, M>*> ils_pert;
 	vector<Intensification<R, M>*> ils_int;
 
 	vector<Solution<R>*> loadsol;
@@ -403,6 +405,24 @@ public:
 		return ilsl_pert[ilsl_pert_id];
 	}
 
+	BasicILSPerturbation<R, M>* read_ils_pert(Scanner* scanner)
+	{
+		string tmp = scanner->next();
+
+		if (tmp != "ils_pert")
+			cout << "Warning: expected 'ils_pert' and found '" << tmp << "'." << endl;
+
+		int ils_pert_id = scanner->nextInt();
+
+		if (ils_pert.size() <= ils_pert_id)
+		{
+			cout << "Error: 'perturbation levels' number " << ils_pert_id << " doesn't exist!" << endl;
+			exit(1);
+		}
+
+		return ils_pert[ils_pert_id];
+	}
+
 	Intensification<R, M> * read_ils_int(Scanner* scanner)
 	{
 		string tmp = scanner->next();
@@ -599,6 +619,12 @@ public:
 		return ilsl_pert.size() - 1;
 	}
 
+	int add_ils_pert(BasicILSPerturbation<R, M>* _ils_pert)
+	{
+		ils_pert.push_back(_ils_pert);
+		return ils_pert.size() - 1;
+	}
+
 	void add_ils_int(Intensification<R, M>* _ils_int)
 	{
 		ils_int.push_back(_ils_int);
@@ -607,6 +633,11 @@ public:
 	ILSLPerturbation<R, M>* get_ilsl_pert(int index)
 	{
 		return ilsl_pert[index];
+	}
+
+	BasicILSPerturbation<R, M>* get_ils_pert(int index)
+	{
+		return ils_pert[index];
 	}
 
 	int add_ga_mut(Mutation<R, M>* _ga_mut)
@@ -821,6 +852,35 @@ public:
 		 }
 
 		 */
+
+		if (h == "ILS")
+		{
+			cout << "Heuristic: Basic Iterated Local Search" << endl;
+
+			Evaluator<R, M>* evaluator = read_ev(&scanner);
+
+			// ===================
+			// Read next heuristic
+			// ===================
+
+			string rest = scanner.rest();
+
+			pair<Heuristic<R, M>*, string> method;
+			method = createHeuristic(rest);
+
+			Heuristic<R, M>* localSearch = method.first;
+
+			scanner = Scanner(method.second);
+
+			// ====================
+
+			BasicILSPerturbation<R, M>* ils_pert = read_ils_pert(&scanner);
+
+			int iterMax = scanner.nextInt();
+
+			return make_pair(new BasicIteratedLocalSearch<R, M> (*evaluator, *localSearch, *ils_pert, iterMax), scanner.rest());
+		}
+
 		if (h == "ILSL")
 		{
 			cout << "Heuristic: Iterated Local Search (Levels)" << endl;
