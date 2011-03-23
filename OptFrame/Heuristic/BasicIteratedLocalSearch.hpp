@@ -52,8 +52,6 @@ public:
 
 	virtual Solution<R>& acceptanceCriterion(const Solution<R>& s1, const Solution<R>& s2, BasicHistory& history)
 	{
-		//cout << "acceptanceCriterion(.)" << endl;
-
 		if (IteratedLocalSearch<BasicHistory, R, M>::evaluator.betterThan(s2, s1))
 		{
 			// =======================
