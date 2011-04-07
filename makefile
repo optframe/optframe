@@ -1,2 +1,2 @@
 all:
-	g++ main.cpp ./OptFrame/Util/Scanner++/Scanner.cpp -lpthread -o mainOptFrame
+	g++ main.cpp ./OptFrame/Scanner++/Scanner.cpp -lpthread -o mainOptFrame
