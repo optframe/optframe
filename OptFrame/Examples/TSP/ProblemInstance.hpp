@@ -3,14 +3,7 @@
 
 #include <iostream>
 
-#include "../../../OptFrame/Util/Scanner++/Scanner.h"
-
-using namespace std;
-
-#include <iostream>
-#include <values.h>
-
-#include "../../../OptFrame/Util/Scanner++/Scanner.h"
+#include "../../../OptFrame/Scanner++/Scanner.h"
 #include "../../../OptFrame/Util/Matrix.hpp"
 
 using namespace std;

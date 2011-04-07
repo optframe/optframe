@@ -14,7 +14,7 @@
 #include <vector>
 #include <map>
 
-#include "Util/Scanner++/Scanner.h"
+#include "Scanner++/Scanner.h"
 
 #include "HeuristicFactory.hpp"
 

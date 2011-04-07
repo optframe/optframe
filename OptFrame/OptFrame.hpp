@@ -13,7 +13,7 @@
 
 #include "Util/printable.h"
 #include "Util/Matrix.hpp"
-#include "Util/Scanner++/Scanner.h"
+#include "Scanner++/Scanner.h"
 #include "Util/Timer.hpp"
 
 #include "Solution.hpp"

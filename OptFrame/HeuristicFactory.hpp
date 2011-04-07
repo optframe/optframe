@@ -5,7 +5,7 @@
 
 using namespace std;
 
-#include "./Util/Scanner++/Scanner.h"
+#include "./Scanner++/Scanner.h"
 
 #include "RandGen.hpp"
 
