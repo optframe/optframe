@@ -142,7 +142,7 @@ public:
 		return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2);
 	}
 
-	void print()
+	void print() const
 	{
 		cout << "MoveSwapSide: (" << x1 << "," << y1 << ") <=> (" << x2 << "," << y2 << ")" << endl;
 	}

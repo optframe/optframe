@@ -79,7 +79,7 @@ public:
 		return (m.nRot == nRot) && (m.x == x) && (m.y == y);
 	}
 
-	void print()
+	void print() const
 	{
 		cout << "MoveRotate: " << nRot << " rotations on (" << x << "," << y << ")" << endl;
 	}
