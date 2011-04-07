@@ -56,7 +56,7 @@ public:
 		return !(*this == m);
 	}
 
-	virtual void print() = 0;
+	virtual void print() const = 0;
 };
 
 #endif /*OPTFRAME_MOVE_HPP_*/

@@ -63,7 +63,7 @@ public:
 			return false;
 	}
 
-	void print()
+	void print() const
 	{
 		cout << "MoveMultiRoute: k=" << k << "; move = ";
 		m.print();

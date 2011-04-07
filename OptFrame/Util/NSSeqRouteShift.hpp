@@ -126,7 +126,7 @@ public:
 			return (m1.r1 == r1) && (m1.r2 == r2) && (m1.i1 == i1) && (m1.i2 == i2) && (m1.e1 == e1) && (m1.e2 == e2);
 	}
 
-	void print()
+	void print() const
 	{
 		cout << "MoveRouteShift( ";
 		cout << "route " << r1 << " [ ";

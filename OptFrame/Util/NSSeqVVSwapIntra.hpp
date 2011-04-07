@@ -50,7 +50,7 @@ public:
 		return (m.i == i) && ((m.j == j && m.k == k) || (m.j == k && m.k == j));
 	}
 
-	void print()
+	void print() const
 	{
 		cout << "MoveVVSwapIntra( " << i << " , ( " << j << " , " << k << " ) )" << endl;
 	}

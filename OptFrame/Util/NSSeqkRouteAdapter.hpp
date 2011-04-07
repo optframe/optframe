@@ -53,7 +53,7 @@ public:
 			return false;
 	}
 
-	void print()
+	void print() const
 	{
 		cout << "MovekRoute: k=" << k << "; move = ";
 		m.print();

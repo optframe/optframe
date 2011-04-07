@@ -46,7 +46,7 @@ public:
 		return m == m1.m;
 	}
 
-	void print()
+	void print() const
 	{
 		cout << "MovePairSecond: move = ";
 		m.print();

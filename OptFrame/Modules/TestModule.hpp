@@ -99,14 +99,18 @@ public:
 
 			Solution<R>* s = &initsol->generateSolution();
 			t_now = t.now();
-			fo_now = eval->evaluate(*s).evaluation();
+			Evaluation< M > & e = eval->evaluate(*s);
+			fo_now = e.evaluation();
+			delete &e;
 			fprintf(file, "%.3f\t%.3f\t", fo_now, t_now);
 			s_fo_ini += fo_now;
 			s_t_ini += t_now;
 
 			Solution<R>* s2 = &h->search(*s, timelimit, tf);
 			t_now = t.now();
-			fo_now = eval->evaluate(*s2).evaluation();
+			Evaluation< M > & e2 = eval->evaluate(*s2);
+			fo_now = e2.evaluation();
+			delete &e2;
 			s_fo_tests.at(i) = fo_now;
 			fprintf(file, "%.3f\t%.3f\t", fo_now, t_now);
 			s_fo_end += fo_now;

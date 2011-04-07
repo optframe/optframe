@@ -60,7 +60,7 @@ public:
 		return apply(r);
 	}
 
-	virtual void print()
+	virtual void print() const
 	{
 		cout << "Move VRP SwapkIntra("<< k1 << " " << k2 << " " << v << " " << p1 << " " << p2 <<")"<<endl;
 	}

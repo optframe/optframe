@@ -24,7 +24,7 @@ int main(int argc, char **argv)
 
 	// Optimal value for berlin52 is 7542
 
-	Scanner scanner(new File("./OptFrame/Examples/TSP/tsplib/berlin52.txt"));
+	Scanner scanner(new File("./trunk/OptFrame/Examples/TSP/tsplib/berlin52.txt"));
 
 	TSPProblemInstance* p = new TSPProblemInstance(scanner);
 
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 	optframe.execute("define swap ns 0");
 
 	//optframe.execute();
-	optframe.execute("read example.opt");
+	optframe.execute("read ./trunk/example.opt");
 
 	cout << "Program ended successfully" << endl;
 

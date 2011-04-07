@@ -56,7 +56,7 @@ public:
 		return ms;
 	}
 
-	void print()
+	void print() const
 	{
 		cout << "Move Vector Shift("<< t1 << " -> " << t2 <<")"<<endl;
 	}

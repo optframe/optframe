@@ -65,7 +65,7 @@ public:
 		return apply(r);
 	}
 
-	virtual void print()
+	virtual void print() const
 	{
 		cout << "Move Vector Vector Swapk("<< k1 << " " << k2 << " " << v1 << " " << p1 << " " << v2 << " " << p2 <<")"<<endl;
 	}

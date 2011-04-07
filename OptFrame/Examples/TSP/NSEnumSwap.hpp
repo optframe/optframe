@@ -119,7 +119,7 @@ public:
 		return rev;
 	}
 
-	void print()
+	void print() const
 	{
 		cout << "MoveSwap between " << c1 << " and " << c2 << endl;
 	}

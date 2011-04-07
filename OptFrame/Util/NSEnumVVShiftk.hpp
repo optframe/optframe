@@ -63,7 +63,7 @@ public:
 		return apply(r);
 	}
 
-	virtual void print()
+	virtual void print() const
 	{
 		cout << "Move Vector Vector Shiftk("<< k << " " << v1 << " " << p1 << " " << v2 << " " << p2 <<")"<<endl;
 	}

@@ -46,7 +46,7 @@ public:
 		return (m1->i==i) && ((m1->j==j && m1->k==k) || (m1->j==k && m1->k==j));
 	}
 
-	void print()
+	void print() const
 	{
 		cout << "MoveVVSwapIntra( " <<i<<" , ( "<<j<<" , "<<k<<" ) )" << endl;
 	}

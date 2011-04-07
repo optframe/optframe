@@ -79,7 +79,7 @@ public:
 		return ((m1.p1 == p1) && (m1.p2 == p2));
 	}
 
-	void print()
+	void print() const
 	{
 		cout << "MoveTSPSwap( " << p1 << " <=> " << p2 << " )" << endl;
 	}

@@ -60,7 +60,7 @@ public:
 			return false;
 	}
 
-	void print()
+	void print() const
 	{
 		cout << "MoveNSSeqUnion: id=" << id << "; move = ";
 		m.print();

@@ -58,7 +58,7 @@ public:
 		return apply(r);
 	}
 
-	virtual void print()
+	virtual void print() const
 	{
 		cout << "Move VRP ShiftkIntra("<< k << " " << v << " " << p1 << " " << p2 <<")"<<endl;
 	}

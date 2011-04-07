@@ -52,7 +52,7 @@ public:
 		return (m1.i == i) && (m1.j == j) && (m1.k == k);
 	}
 
-	void print()
+	void print() const
 	{
 		cout << "MoveVectorOrOpt{K=" << k << "}";
 		cout << "(" << i << ";" << j << ")" << endl;

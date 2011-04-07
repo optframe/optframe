@@ -57,7 +57,7 @@ public:
 
 			if (evaluator.betterThan(cost, 0))
 			{
-				move.apply(e, s);
+				delete &move.apply(e, s);
 				iter = 0;
 			}
 
