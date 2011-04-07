@@ -17,7 +17,7 @@
 #include "Util/Timer.hpp"
 
 #include "Solution.hpp"
-#include "Util/TestSolution.hpp"
+//#include "Util/TestSolution.hpp"
 
 #include "Population.hpp"
 
@@ -25,10 +25,10 @@
 #include "InitialPopulation.h"
 
 #include "Move.hpp"
-#include "Util/TestMove.hpp"
+//#include "Util/TestMove.hpp"
 
 #include "Evaluation.hpp"
-#include "Util/TestEvaluation.hpp"
+//#include "Util/TestEvaluation.hpp"
 #include "Evaluator.hpp"
 #include "MultiObjectiveEvaluator.hpp"
 
