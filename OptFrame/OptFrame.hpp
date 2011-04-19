@@ -43,24 +43,29 @@
 #include "NSEnum.hpp"
 
 // ==================================
-//           Util NS
+//           Experimental NS
 // ==================================
 
-#include "Util/NSSeqUnionAdapter.hpp"
+#include "Experimental/NSSeqUnionAdapter.hpp"
 
-#include "Util/NSSeqkRouteAdapter.hpp"
-#include "Util/NSSeqMultiRouteAdapter.hpp"
+#include "Experimental/NSSeqkRouteAdapter.hpp"
+#include "Experimental/NSSeqMultiRouteAdapter.hpp"
 
-#include "Util/NSSeqVectorOrOptk.hpp"
-#include "Util/NSSeqVectorOrOpt.hpp"
+#include "Experimental/NSSeqVectorOrOptk.hpp"
+#include "Experimental/NSSeqVectorOrOpt.hpp"
 
 /*
- #include "Util/NSEnumVectorShift.hpp"
- #include "Util/NSSeqVVSwapIntra.hpp"
+#include "Experimental/NSSeqVVSwapIntra.hpp"
+#include "Experimental/NSEnumVVShiftk.hpp"
+#include "Experimental/NSEnumVVShiftkIntra.hpp"
+#include "Experimental/NSEnumVVSwapk.hpp"
+#include "Experimental/NSEnumVVSwapkIntra.hpp"
+#include "Experimental/NSSeqPairSecondAdapter.hpp"
+#include "Experimental/NSSeqPairFirstAdapter.hpp"
+#include "Experimental/NSSeqTSP2Opt.hpp"
+#include "Experimental/NSSeqTSPSwap.hpp"
 
- #include "Util/NSEnumVVShiftk.hpp"
- #include "Util/NSEnumVVSwapk.hpp"
- */
+/**/
 
 // ==================================
 //        Parallel Support
