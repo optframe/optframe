@@ -156,6 +156,25 @@ public:
       }
    }
 
+	chromossome& cloneBestChromossome(Evaluator<R, M>& eval)
+	{
+		vector<pair<Solution<R> , double> > v;
+
+		for (int i = 0; i < p.size(); i++)
+		{
+			Evaluation<M>& e = eval.evaluate(p[i]);
+			v.push_back(make_pair(*p[i], e.evaluation()));
+			delete &e;
+		}
+
+		int bestC = 0;
+		for (int i = 0; i < (v.size() - 1); i++)
+			if (eval.betterThan(v[i + 1].second, v[i].second))
+				bestC = i + 1;
+
+		return v[bestC].first;
+	}
+
 };
 
 #endif /* OPTFRAME_POPULATION_HPP_ */
