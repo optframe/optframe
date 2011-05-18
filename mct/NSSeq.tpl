@@ -2,7 +2,7 @@
 #define $project_NSSEQ$neighborhood_HPP_
 
 // Framework includes
-#include "../OptFrame/NSSeq.hpp"
+#include "../../OptFrame/NSSeq.hpp"
 
 // Own includes
 #include "ProblemInstance.hpp"
@@ -45,7 +45,7 @@ public:
 		return false;
 	}
 
-	void print()
+	void print() const
 	{
 	}
 };

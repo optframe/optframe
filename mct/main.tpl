@@ -7,8 +7,8 @@
 #include <math.h>
 #include <iostream>
 
-#include "./OptFrame/OptFrame.hpp"
-#include "./$project.h"
+#include "../OptFrame/OptFrame.hpp"
+#include "$project.h"
 
 using namespace std;
 

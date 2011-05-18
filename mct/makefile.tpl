@@ -2,4 +2,4 @@
 
 all:
 	echo OptFrame Beta compilation.
-	g++ main$project.cpp ./OptFrame/Util/Scanner++/Scanner.cpp -lpthread -o main$project
+	g++ ./MyProjects/main$project.cpp ./OptFrame/Scanner++/Scanner.cpp -o main$project

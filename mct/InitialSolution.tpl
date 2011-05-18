@@ -1,8 +1,8 @@
 #ifndef $project_INITIALSOLUTION_$initialsolution_HPP_
 #define $project_INITIALSOLUTION_$initialsolution_HPP_
 
-#include "../OptFrame/InitialSolution.h"
-#include "../OptFrame/Util/TestSolution.hpp"
+#include "../../OptFrame/InitialSolution.h"
+#include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.hpp"
 

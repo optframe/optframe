@@ -1,23 +1,3 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009, 2010, 2011
-// Igor Machado - Mario Henrique Perche - Pablo Munhoz - Sabir Ribas
-//
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
-
 #!/bin/bash
 #######################################################################
 # OptFrame - Project Generator MCT - "Make a Compilable Thing!"
@@ -29,11 +9,11 @@
 #######################################################################
 
 clear
-echo "================================================"
-echo "OptFrame - Project Generator MCT - Version 1.1  "
-echo "           \"Make a Compilable Thing!\"           "
-echo "    http://sourceforge.net/projects/optframe/   " 
-echo "================================================"
+echo "===================================================="
+echo "OptFrame development version - Project Generator MCT"
+echo "             \"Make a Compilable Thing!\"           "
+echo "      http://sourceforge.net/projects/optframe/     " 
+echo "===================================================="
 echo
 echo "1. What's the name of your project? (Step 1 of 8)"
 read name
@@ -59,7 +39,7 @@ echo
 #  Creating directory
 ##############################################
 
-if mkdir $project
+if mkdir ./MyProjects/$project
 then
   echo "Creating project directory...[ok]"
 else
@@ -71,7 +51,7 @@ fi
 #  Creating files
 ##############################################
 
-if echo > "$project.h"
+if echo > "./MyProjects/$project.h"
 then
   echo "Project file: $project.h [ok]"
 else
@@ -85,7 +65,7 @@ echo "Creating project \"$name\""
 var="#ifndef "$project"_H_
 #define "$project"_H_
 "
-echo "$var" > "$project.h"
+echo "$var" > "./MyProjects/$project.h"
 echo
 
 ##############################################
@@ -130,7 +110,9 @@ echo
 
 ## Creating Representation file
 
-var="./$project/Representation.h"
+
+var_inc="./$project/Representation.h"
+var="./MyProjects/$project/Representation.h"
 var_tmp=$var".tmp"
 
 if cp ./mct/Representation.tpl $var
@@ -146,7 +128,7 @@ then echo "1. Creating Representation File...[ok]"
      sed $t < $var > $var_tmp
      mv $var_tmp $var
 
-     echo "#include \"$var\"" >> $project.h
+     echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
 else echo "1. Creating Representation File...[fail]"
      exit
 fi
@@ -154,7 +136,8 @@ fi
 
 ## Creating Solution file
 
-var="./$project/Solution.h"
+var_inc="./$project/Solution.h"
+var="./MyProjects/$project/Solution.h"
 var_tmp=$var".tmp"
 
 if cp ./mct/Solution.tpl $var
@@ -164,7 +147,7 @@ then echo "2. Creating Solution File...[ok]"
      sed $t < $var > $var_tmp
      mv $var_tmp $var
 
-     echo "#include \"$var\"" >> $project.h
+     echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
 else echo "2. Creating Solution File...[fail]"
      exit
 fi
@@ -232,7 +215,8 @@ echo
 
 ## Creating Memory file
 
-var="./$project/Memory.h"
+var_inc="./$project/Memory.h"
+var="./MyProjects/$project/Memory.h"
 var_tmp=$var".tmp"
 
 if cp ./mct/Memory.tpl $var
@@ -249,7 +233,7 @@ then echo "3. Creating Memory File...[ok]"
      sed $t < $var > $var_tmp
      mv $var_tmp $var
 
-     echo "#include \"$var\"" >> $project.h
+     echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
 else echo "3. Creating Memory File...[fail]"
      exit
 fi
@@ -257,7 +241,8 @@ fi
 
 ## Creating Evaluation file
 
-var="./$project/Evaluation.h"
+var_inc="./$project/Evaluation.h"
+var="./MyProjects/$project/Evaluation.h"
 var_tmp=$var".tmp"
 
 if cp ./mct/Evaluation.tpl $var
@@ -271,7 +256,7 @@ then echo "4. Creating Evaluation File...[ok]"
      sed $t < $var > $var_tmp
      mv $var_tmp $var
 
-     echo "#include \"$var\"" >> $project.h
+     echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
 else echo "4. Creating Evaluation File...[fail]"
      exit
 fi
@@ -281,7 +266,8 @@ fi
 #             Problem Instance
 ##############################################
 
-var="./$project/ProblemInstance.hpp"
+var_inc="./$project/ProblemInstance.hpp"
+var="./MyProjects/$project/ProblemInstance.hpp"
 var_tmp=$var".tmp"
 
 if cp ./mct/ProblemInstance.tpl $var
@@ -289,7 +275,7 @@ then echo "5. Creating Problem Instance...[ok]"
      t="s/\$project/$project/g"  
      sed $t < $var > $var_tmp
      mv $var_tmp $var
-     echo "#include \"$var\"" >> $project.h
+     echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
 else echo "5. Creating Problem Instance...[fail]"
      exit
 fi
@@ -308,7 +294,8 @@ if [ "$minmax" = "MINIMIZATION" ];
   else epsilon="(a > (b + EPSILON_$project));"
 fi
 
-var="./$project/Evaluator.hpp"
+var_inc="./$project/Evaluator.hpp"
+var="./MyProjects/$project/Evaluator.hpp"
 var_tmp=$var".tmp"
 
 if cp ./mct/Evaluator.tpl $var
@@ -334,7 +321,7 @@ then echo "6. Creating Evaluator...[ok]"
      sed -e "$t" < $var > $var_tmp
      mv $var_tmp $var
 
-     echo "#include \"$var\"" >> $project.h
+     echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
 else echo "6. Creating Evaluator...[fail]"
      exit
 fi
@@ -360,7 +347,8 @@ do
 
     read neighborhood
 
-    var="./$project/NSSeq$neighborhood.hpp"
+    var_inc="./$project/NSSeq$neighborhood.hpp"
+    var="./MyProjects/$project/NSSeq$neighborhood.hpp"
     var_tmp=$var".tmp"
 
     if cp ./mct/NSSeq.tpl $var
@@ -377,7 +365,7 @@ do
          sed -e "$t" < $var > $var_tmp
          mv $var_tmp $var
          
-         echo "#include \"$var\"" >> $project.h
+         echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
     else echo "7.$i Creating Neighborhood Structure $neighborhood ...[fail]"
          exit
     fi
@@ -405,7 +393,8 @@ do
 
     read initialsolution
 
-    var="./$project/InitialSolution${initialsolution}.hpp"
+    var_inc="./$project/InitialSolution${initialsolution}.hpp"
+    var="./MyProjects/$project/InitialSolution${initialsolution}.hpp"
     var_tmp=$var".tmp"
 
     if cp ./mct/InitialSolution.tpl $var
@@ -418,7 +407,7 @@ do
          sed $t < $var > $var_tmp
          mv $var_tmp $var
          
-         echo "#include \"$var\"" >> $project.h
+         echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
     else echo "8.$i Creating Initial Solution Generator $initialsolution ...[fail]"
          exit
     fi
@@ -426,7 +415,7 @@ done
 
 # Closing project file
 
-echo "#endif /*${project}_H_*/" >> "$project.h"
+echo "#endif /*${project}_H_*/" >> "./MyProjects/$project.h"
 
 
 
@@ -434,7 +423,7 @@ echo "#endif /*${project}_H_*/" >> "$project.h"
 #             Main file
 ##############################################
 
-var="./main$project.cpp"
+var="./MyProjects/main$project.cpp"
 var_tmp=$var".tmp"
 
 if cp ./mct/main.tpl $var
@@ -475,7 +464,7 @@ fi
 
 echo
 echo "Congratulations! You can use the following command to compile your project:"
-echo "g++ main$project.cpp ./OptFrame/Util/Scanner++/Scanner.cpp -lpthread -o main$project"
+echo "g++ ./MyProjects/main$project.cpp ./OptFrame/Scanner++/Scanner.cpp -o main$project"
 
 echo
 echo "Goodbye!"
