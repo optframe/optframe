@@ -43,6 +43,11 @@ public:
 	const R& getR() const {	return r; }
 	R& getR() { return r; }
 
+	virtual bool check() const
+	{
+	   return true;
+	}
+
 	virtual void print() const
 	{
 		cout << "Solution: "<< r << endl;
