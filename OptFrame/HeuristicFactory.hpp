@@ -536,8 +536,13 @@ public:
 	// ================================================================
 	// ================================================================
 
-	HeuristicFactory(RandGen& _rg) :
-		rg(_rg)
+	HeuristicFactory() :
+      rg(*new RandGen)
+   {
+   }
+
+	HeuristicFactory(RandGen _rg) :
+		rg(*new RandGen(_rg))
 	{
 	}
 

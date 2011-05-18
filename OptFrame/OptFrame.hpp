@@ -153,8 +153,8 @@ public:
 
 	HeuristicFactory<R, M>& factory;
 
-	OptFrame(RandGen& _rg) :
-		factory(*new HeuristicFactory<R, M> (_rg))
+	OptFrame() :
+		factory(*new HeuristicFactory<R, M>)
 	{
 		loadDefaultModules();
 		dictionary = new map<string, string> ;
