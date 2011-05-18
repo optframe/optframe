@@ -14,16 +14,11 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-   srand(time(NULL));
+   OptFrame<Rep$project $commamproject> optframe;
 
-   Scanner scanner(new File("README"));
+   optframe.loadModule(new $projectProblemModule);
 
-   $projectProblemInstance& p = * new $projectProblemInstance(scanner);
-
-   $projectInitialSolution$initialsolution is(p);
-
-   Solution$project& s = is.generateSolution();  
-
+   optframe.execute();
 
    cout << "Program ended successfully" << endl;
    

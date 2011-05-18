@@ -15,7 +15,7 @@ echo "             \"Make a Compilable Thing!\"           "
 echo "      http://sourceforge.net/projects/optframe/     " 
 echo "===================================================="
 echo
-echo "1. What's the name of your project? (Step 1 of 8)"
+echo "1. What's the name of your project? (Step 1 of 9)"
 read name
 project=$name
 project=`echo $project | sed 's/ //g'` #remove white spaces
@@ -67,6 +67,7 @@ var="#ifndef "$project"_H_
 "
 echo "$var" > "./MyProjects/$project.h"
 echo
+
 
 ##############################################
 #          Solution Representation
@@ -280,6 +281,7 @@ else echo "5. Creating Problem Instance...[fail]"
      exit
 fi
 
+
 ##############################################
 #             Evaluator
 ##############################################
@@ -418,6 +420,34 @@ done
 echo "#endif /*${project}_H_*/" >> "./MyProjects/$project.h"
 
 
+##############################################
+#               Problem Module
+##############################################
+
+var_inc="./$project/ProblemModule.hpp"
+var="./MyProjects/$project/ProblemModule.hpp"
+var_tmp=$var".tmp"
+
+if cp ./mct/ProblemModule.tpl $var
+then echo "9. Creating ProblemModule...[ok]"
+
+     t="s/\$project/$project/g"
+     sed -e "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
+     t="s/\$commamproject/$commamproject/g"
+     sed -e "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
+     t="s/\$initialsolution/$initialsolution/g"  
+     sed "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
+     echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
+else echo "9. Creating ProblemModule...[fail]"
+     exit
+fi
+
 
 ##############################################
 #             Main file
@@ -431,6 +461,10 @@ then echo "Main file...[ok]"
      
      t="s/\$project/$project/g"  
      sed "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
+     t="s/\$commamproject/$commamproject/g"
+     sed -e "$t" < $var > $var_tmp
      mv $var_tmp $var
 
      t="s/\$initialsolution/$initialsolution/g"  
@@ -465,6 +499,7 @@ fi
 echo
 echo "Congratulations! You can use the following command to compile your project:"
 echo "g++ ./MyProjects/main$project.cpp ./OptFrame/Scanner++/Scanner.cpp -o main$project"
+echo "or you can simply type: \"make\""
 
 echo
 echo "Goodbye!"
