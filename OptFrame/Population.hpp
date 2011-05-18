@@ -21,10 +21,13 @@
 #ifndef OPTFRAME_POPULATION_HPP_
 #define OPTFRAME_POPULATION_HPP_
 
-#include "Solution.hpp"
 #include <vector>
 
-template<class R>
+#include "Solution.hpp"
+#include "Evaluation.hpp"
+#include "Evaluator.hpp"
+
+template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
 class Population
 {
 protected:
