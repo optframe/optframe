@@ -40,7 +40,7 @@
 
 #include <algorithm>
 
-template<class R, class M>
+template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
 class OptFrameModule
 {
 protected:

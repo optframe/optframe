@@ -16,31 +16,42 @@
 class $projectProblemModule : public OptFrameModule<Rep$project $commamproject>
 {
 public:
-	string id()
-	{
-		return "problem";
-	}
+    string id()
+    {
+        return "problem";
+    }
 
-	string usage()
-	{
-		return "problem filename";
-	}
+    string usage()
+    {
+        return "problem filename";
+    }
 
-	void run(vector<OptFrameModule<Rep$project $commamproject>*> all_modules, HeuristicFactory<Rep$project $commamproject>* hf, map<string,string>* dictionary, string rest)
-	{
+    void run(vector<OptFrameModule<Rep$project $commamproject>*> all_modules, HeuristicFactory<Rep$project $commamproject>* hf, map<string,string>* dictionary, string rest)
+    {
+        File* file;
 
-		Scanner scanner(new File(rest));
+        try
+        {
+           file = new File(rest);
+        }
+        catch (FileNotFound f)
+        {
+           cout << "File '" <<rest <<"' not found" << endl;
+           return;
+        }
 
-		$projectProblemInstance* p = new $projectProblemInstance(scanner);
+        Scanner scanner(file);
 
-		// add everything to the HeuristicFactory 'hf'
+        $projectProblemInstance* p = new $projectProblemInstance(scanner);
 
-		hf->add_ev(new $projectEvaluator(*p));
+        // add everything to the HeuristicFactory 'hf'
 
-		hf->add_initsol(new $projectInitialSolution$initialsolution(*p));
+        hf->add_ev(new $projectEvaluator(*p));
 
-	}
-
+        hf->add_initsol(new $projectInitialSolution$initialsolution(*p));
+		
+        cout << "problem '" << rest << "' loaded successfully" << endl;
+    }
 };
 
 #endif /*$project_PROBLEMMODULE_HPP_*/
