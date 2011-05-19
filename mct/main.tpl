@@ -15,6 +15,7 @@ using namespace std;
 int main(int argc, char **argv)
 {
    OptFrame<Rep$project $commamproject> optframe;
+   //optframe.loadCallModule();
 
    optframe.loadModule(new $projectProblemModule);
 

@@ -263,6 +263,11 @@ public:
       exec(s, e, timelimit, target_f);
    }
 
+   virtual string log()
+   {
+      return "Empty heuristic log.";
+   }
+
 };
 
 #endif /* OPTFRAME_HEURISTIC_HPP_ */

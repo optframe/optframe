@@ -18,26 +18,30 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_EMPTY_HPP_
-#define OPTFRAME_EMPTY_HPP_
+#ifndef OPTFRAME_CALLMODULE_HPP_
+#define OPTFRAME_CALLMODULE_HPP_
 
-#include "../Heuristic.hpp"
+#include "../OptFrameModule.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
-class Empty : public Heuristic<R,M>
+template< class R, class M >
+class CallModule :
+      public OptFrameModule<R, M>
 {
 public:
+   string id()
+   {
+      return "call";
+   }
+   string usage()
+   {
+      return "call external_software";
+   }
 
-	using Heuristic<R, M>::exec; // prevents name hiding
+   void run(vector<OptFrameModule<R, M>*> all_modules, HeuristicFactory<R, M>*, map<string, string>* dictionary, string command)
+   {
+      system(command.c_str());
+   }
 
-	Empty(){};
-    virtual void exec(Solution<R>&, double timelimit, double target_f){};
-	virtual void exec(Solution<R>&, Evaluation<M>&, double timelimit, double target_f){};
-
-	string log()
-	{
-	   return "Heuristic Empty: no log.";
-	}
 };
 
-#endif /*OPTFRAME_EMPTY_HPP_*/
+#endif /* OPTFRAME_CALLMODULE_HPP_ */

@@ -109,6 +109,7 @@
 #include "Util/RandGenMersenneTwister.hpp"
 
 #include "Modules/BuildModule.hpp"
+#include "Modules/CallModule.hpp"
 #include "Modules/CheckModule.hpp"
 #include "Modules/DefineModule.hpp"
 #include "Modules/DictionaryModule.hpp"
@@ -116,6 +117,7 @@
 #include "Modules/EvaluateModule.hpp"
 #include "Modules/ExecModule.hpp"
 #include "Modules/ExportModule.hpp"
+#include "Modules/ExportLogModule.hpp"
 #include "Modules/HelpModule.hpp"
 #include "Modules/PrintModule.hpp"
 #include "Modules/ReadModule.hpp"
@@ -177,10 +179,17 @@ public:
 		modules.push_back(module);
 	}
 
-	void loadDefaultModules()
-	{
-		modules.clear();
-		loadModule(new BuildModule<R, M> );
+   void loadCallModule()
+   {
+      cout << "warning: call module loaded!" << endl;
+
+      modules.push_back(new CallModule<R,M>);
+   }
+
+   void loadDefaultModules()
+   {
+      modules.clear();
+      loadModule(new BuildModule<R, M> );
 		loadModule(new CheckModule<R, M> );
 		loadModule(new DefineModule<R, M> );
 		loadModule(new DictionaryModule<R, M> );
@@ -188,6 +197,7 @@ public:
 		loadModule(new EvaluateModule<R, M> );
 		loadModule(new ExecModule<R, M> );
 		loadModule(new ExportModule<R, M> );
+		loadModule(new ExportLogModule<R, M> );
 		loadModule(new HelpModule<R, M> );
 		loadModule(new PrintModule<R, M> );
 		loadModule(new ReadModule<R, M> );
