@@ -415,10 +415,6 @@ do
     fi
 done
 
-# Closing project file
-
-echo "#endif /*${project}_H_*/" >> "./MyProjects/$project.h"
-
 
 ##############################################
 #               Problem Module
@@ -448,6 +444,10 @@ else echo "9. Creating ProblemModule...[fail]"
      exit
 fi
 
+
+# Closing project file
+
+echo "#endif /*${project}_H_*/" >> "./MyProjects/$project.h"
 
 ##############################################
 #             Main file
