@@ -113,6 +113,7 @@
 #include "Modules/CheckModule.hpp"
 #include "Modules/DefineModule.hpp"
 #include "Modules/DictionaryModule.hpp"
+#include "Modules/DropAllModule.hpp"
 #include "Modules/EmpiricalModule.hpp"
 #include "Modules/EvaluateModule.hpp"
 #include "Modules/ExecModule.hpp"
@@ -120,6 +121,7 @@
 #include "Modules/ExportLogModule.hpp"
 #include "Modules/HelpModule.hpp"
 #include "Modules/PrintModule.hpp"
+#include "Modules/ProblemModule.hpp"
 #include "Modules/ReadModule.hpp"
 #include "Modules/TestModule.hpp"
 #include "Modules/UsageModule.hpp"
@@ -169,6 +171,13 @@ public:
 		dictionary = new map<string, string> ;
 	}
 
+	OptFrame(RandGen& _rg) :
+		factory(*new HeuristicFactory<R, M>(_rg))
+	{
+		loadDefaultModules();
+		dictionary = new map<string, string> ;
+	}
+
 	string version()
 	{
 		return "OptFrame - Development Version \nhttp://sourceforge.net/projects/optframe/";
@@ -193,6 +202,7 @@ public:
 		loadModule(new CheckModule<R, M> );
 		loadModule(new DefineModule<R, M> );
 		loadModule(new DictionaryModule<R, M> );
+		loadModule(new DropAllModule<R, M> );
 		loadModule(new EmpiricalModule<R, M> );
 		loadModule(new EvaluateModule<R, M> );
 		loadModule(new ExecModule<R, M> );

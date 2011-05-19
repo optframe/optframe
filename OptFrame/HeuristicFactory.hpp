@@ -52,6 +52,10 @@ using namespace std;
 #include "Heuristic/TabuSearch.hpp"
 #include "Heuristic/EvolutionaryAlgorithms/GeneticAlgorithm.hpp"
 
+//Modules
+template<class R, class M> class ProblemModule;
+//#include "Modules/ProblemModule.hpp"
+
 //Parallel Support
 //#include "Parallel/Parallel.h"
 
@@ -102,6 +106,8 @@ private:
 	//typedef vector<chromossome*> Population;
 	//vector<Population*> loadpop;
 	vector<Population<R>*> loadpop;
+
+	vector<ProblemModule<R, M>*> problem;
 
 	RandGen& rg;
 
@@ -709,6 +715,17 @@ public:
 		return ga_cross[index];
 	}
 
+	int add_problem(ProblemModule<R, M>* _problem)
+	{
+		problem.push_back(_problem);
+		return problem.size() - 1;
+	}
+
+	int problem_size()
+	{
+		return problem.size();
+	}
+
 	int initsol_size()
 	{
 		return initsol.size();
@@ -742,6 +759,11 @@ public:
 	int method_size()
 	{
 		return method.size();
+	}
+
+	RandGen& getRandGen()
+	{
+		return rg;
 	}
 
 	pair<Heuristic<R, M>*, string> createHeuristic(string str)
