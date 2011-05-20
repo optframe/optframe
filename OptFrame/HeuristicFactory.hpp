@@ -52,34 +52,6 @@ using namespace std;
 #include "Heuristic/TabuSearch.hpp"
 #include "Heuristic/EvolutionaryAlgorithms/GeneticAlgorithm.hpp"
 
-//Modules
-template<class R, class M> class ProblemModule;
-//#include "Modules/ProblemModule.hpp"
-
-//Parallel Support
-//#include "Parallel/Parallel.h"
-
-/*
- #include "Heuristic/Descida.hpp"
- #include "Heuristic/SimulatedAnnealing.hpp"
- #include "Heuristic/BuscaTabu.hpp"
- #include "Heuristic/IteratedLocalSearch/IteratedLocalSearch.hpp"
- #include "Heuristic/IteratedLocalSearch/IteratedLocalSearchLevels.hpp"
- #include "Heuristic/IteratedLocalSearch/PerturbationLPlus2.hpp"
- /////#include "Heuristic/NonLinearSimulatedAnnealing.hpp"
- #include "Heuristic/MultiStart.hpp"
- #include "Heuristic/VariableNeighborhoodDescent.hpp"
- #include "Heuristic/RVND.hpp"
- #include "Heuristic/VariableHeuristicDescent.hpp"
- #include "Heuristic/AlgoritmosGeneticos/AlgoritmosGeneticos.hpp"
- #include "Heuristic/AlgoritmosMemeticos/AlgoritmosMemeticos.hpp"
- #include "Heuristic/MultiHeuristic.hpp"
- #include "Heuristic/IteratedLocalSearch/IntensifiedIteratedLocalSearch.hpp"
- #include "Heuristic/IteratedLocalSearch/IntensifiedIteratedLocalSearchLevels.hpp"
- #include "Heuristic/IteratedLocalSearch/Intensification.hpp"
- #include "Heuristic/VNS.hpp"
- */
-
 // design pattern: Factory
 
 template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
@@ -102,12 +74,7 @@ private:
 	vector<Crossover<R, M>*> ga_cross;
 	vector<Elitism<R, M>*> ga_elt;
 
-	//typedef Solution<R> chromossome;
-	//typedef vector<chromossome*> Population;
-	//vector<Population*> loadpop;
 	vector<Population<R>*> loadpop;
-
-	vector<ProblemModule<R, M>*> problem;
 
 	RandGen& rg;
 
@@ -552,8 +519,49 @@ public:
 	{
 	}
 
-	~HeuristicFactory()
+	virtual ~HeuristicFactory()
 	{
+      for(int i = 0; i < ns.size(); i++)
+         delete ns[i];
+
+      for(int i = 0; i < ev.size(); i++)
+         delete ev[i];
+
+      for(int i = 0; i < initsol.size(); i++)
+         delete initsol[i];
+
+      for(int i = 0; i < loadsol.size(); i++)
+         delete loadsol[i];
+
+      for(int i = 0; i < method.size(); i++)
+         delete method[i];
+
+      for(int i = 0; i < initpop.size(); i++)
+         delete initpop[i];
+
+      for(int i = 0; i < loadpop.size(); i++)
+         delete loadpop[i];
+
+      for(int i = 0; i < ilsl_pert.size(); i++)
+         delete ilsl_pert[i];
+
+      for(int i = 0; i < ils_pert.size(); i++)
+         delete ils_pert[i];
+
+      for(int i = 0; i < ils_int.size(); i++)
+         delete ils_int[i];
+
+      for(int i = 0; i < ga_sel.size(); i++)
+         delete ga_sel[i];
+
+      for(int i = 0; i < ga_mut.size(); i++)
+         delete ga_mut[i];
+
+      for(int i = 0; i < ga_cross.size(); i++)
+         delete ga_cross[i];
+
+      for(int i = 0; i < ga_elt.size(); i++)
+         delete ga_elt[i];
 	}
 
 	int add_method(Heuristic<R, M>* _method)
@@ -715,17 +723,6 @@ public:
 		return ga_cross[index];
 	}
 
-	int add_problem(ProblemModule<R, M>* _problem)
-	{
-		problem.push_back(_problem);
-		return problem.size() - 1;
-	}
-
-	int problem_size()
-	{
-		return problem.size();
-	}
-
 	int initsol_size()
 	{
 		return initsol.size();
@@ -866,39 +863,6 @@ public:
 
 			return make_pair(new TabuSearch<R, M> (*evaluator, *ns, tamT, BTmax), scanner.rest());
 		}
-
-		/*
-		 * Heuristic "Descida" deprecated! use HillClimbing+BI instead.
-		 */
-
-		/*
-
-		 if(h == "SA")
-		 {
-		 cout << "Heuristic: Simulated Annealing" << endl;
-
-		 Evaluator<R,M>* evaluator = read_ev(&scanner);
-		 NS<R,M>* ns = read_ns(&scanner);
-		 double alpha = scanner.nextDouble();
-		 int SAmax = scanner.nextInt();
-		 double Ti = scanner.nextDouble();
-
-		 return make_pair(new SimulatedAnnealing<R,M>(evaluator,ns,alpha,SAmax,Ti),scanner.rest());
-		 }
-
-		 if(h == "TS")
-		 {
-		 cout << "Heuristic: Tabu Search" << endl;
-
-		 Evaluator<R,M>* evaluator = read_ev(&scanner);
-		 NSEnum<R,M>* ns = (NSEnum<R,M>*)read_ns(&scanner);
-		 int tamT = scanner.nextInt();
-		 int BTmax = scanner.nextInt();
-
-		 return make_pair(new BuscaTabu<R,M>(evaluator,ns,tamT,BTmax),scanner.rest());
-		 }
-
-		 */
 
 		if (h == "ILS")
 		{

@@ -155,27 +155,30 @@ private:
 
 public:
 
-	HeuristicFactory<R, M>& factory;
+	HeuristicFactory<R, M> factory;
 
-	OptFrame() :
-		factory(*new HeuristicFactory<R, M>)
+	OptFrame()
 	{
 		loadDefaultModules();
 		dictionary = new map<string, string> ;
 	}
 
-	OptFrame(HeuristicFactory<R, M>& f) :
+	OptFrame(HeuristicFactory<R, M> f) :
 		factory(f)
 	{
 		loadDefaultModules();
 		dictionary = new map<string, string> ;
 	}
 
-	OptFrame(RandGen& _rg) :
+	OptFrame(RandGen _rg) :
 		factory(*new HeuristicFactory<R, M>(_rg))
 	{
 		loadDefaultModules();
 		dictionary = new map<string, string> ;
+	}
+
+	virtual ~OptFrame()
+	{
 	}
 
 	string version()

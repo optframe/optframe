@@ -39,7 +39,6 @@ public:
 	{
 		cout << "problem: not implemented yet" << endl;
 		read(input);
-		factory->add_problem(this);
 	}
 	virtual void read(string filename) = 0;
 };
