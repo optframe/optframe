@@ -32,7 +32,7 @@ public:
 	{
 	}
 
-	Solution$project& generateSolution()
+	Solution<Rep$project>& generateSolution()
 	{
 	   Rep$project* newRep = new Rep$project;
 

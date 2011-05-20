@@ -23,7 +23,7 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class M>
+template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
 class ProblemModule: public OptFrameModule<R, M>
 {
 public:
@@ -37,10 +37,9 @@ public:
 	}
 	void run(vector<OptFrameModule<R, M>*> all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
 	{
-		cout << "problem: not implemented yet" << endl;
-		read(input);
+		read(input, factory);
 	}
-	virtual void read(string filename) = 0;
+	virtual void read(string filename, HeuristicFactory<R, M>* factory) = 0;
 };
 
 #endif /* PROBLEMMODULE_HPP_ */

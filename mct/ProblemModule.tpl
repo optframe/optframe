@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "../../OptFrame/OptFrameModule.hpp"
+#include "../../OptFrame/Modules/ProblemModule.hpp"
 #include "../../OptFrame/Scanner++/Scanner.h"
 
 #include "Representation.h"
@@ -13,30 +13,21 @@
 
 #include "ProblemInstance.hpp"
 
-class $projectProblemModule : public OptFrameModule<Rep$project $commamproject>
+class $projectProblemModule : public ProblemModule<Rep$project $commamproject>
 {
 public:
-    string id()
-    {
-        return "problem";
-    }
 
-    string usage()
-    {
-        return "problem filename";
-    }
-
-    void run(vector<OptFrameModule<Rep$project $commamproject>*> all_modules, HeuristicFactory<Rep$project $commamproject>* hf, map<string,string>* dictionary, string rest)
+    void read(string filename, HeuristicFactory<Rep$project $commamproject>* hf)
     {
         File* file;
 
         try
         {
-           file = new File(rest);
+           file = new File(filename);
         }
         catch (FileNotFound f)
         {
-           cout << "File '" <<rest <<"' not found" << endl;
+           cout << "File '" << filename <<"' not found" << endl;
            return;
         }
 
@@ -50,7 +41,7 @@ public:
 
         hf->add_initsol(new $projectInitialSolution$initialsolution(*p));
 		
-        cout << "problem '" << rest << "' loaded successfully" << endl;
+        cout << "problem '" << filename << "' loaded successfully" << endl;
     }
 };
 
