@@ -212,38 +212,21 @@ public:
 
 	vector<NS<R, M>*> read_ns_list(Scanner* scanner)
 	{
-		string tmp = scanner->next();
+		vector < string > list = readList(*scanner);
+
+		Scanner* aux;
+		string tmp;
 
 		vector<NS<R, M>*> v_ns;
 
-		if (tmp != "[")
+		for (int i = 0; i < list.size(); i++)
 		{
-			cout << "Error: expected '[' and found '" << tmp << "'!" << endl;
-
-			if (tmp == "ns")
-			{
-				int ns_id = scanner->nextInt();
-
-				if (ns.size() <= ns_id)
-				{
-					cout << "Error: ns number " << ns_id << " doesn't exist!" << endl;
-					exit(1);
-				}
-
-				v_ns.push_back(ns[ns_id]);
-			}
-
-			return v_ns; // returning empty list
-		}
-
-		tmp = scanner->next();
-
-		while (tmp != "]")
-		{
+			aux = new Scanner(list.at(i));
+			tmp = aux->next();
 			if (tmp != "ns")
 				cout << "Warning: expected 'ns' and found '" << tmp << "'." << endl;
 
-			int ns_id = scanner->nextInt();
+			int ns_id = aux->nextInt();
 
 			if (ns.size() <= ns_id)
 			{
@@ -253,7 +236,6 @@ public:
 
 			v_ns.push_back(ns[ns_id]);
 
-			tmp = scanner->next();
 		}
 
 		if (v_ns.size() == 0)
@@ -267,24 +249,21 @@ public:
 
 	vector<Evaluator<R, M> *> read_ev_list(Scanner* scanner)
 	{
-		string tmp = scanner->next();
+		vector < string > list = readList(*scanner);
+
+		Scanner* aux;
+		string tmp;
 
 		vector<Evaluator<R, M> *> v_ev;
 
-		if (tmp != "[")
+		for (int i = 0; i < list.size(); i++)
 		{
-			cout << "Error: expected '[' and found '" << tmp << "'." << endl;
-			exit(1);
-		}
-
-		tmp = scanner->next();
-
-		while (tmp != "]")
-		{
+			aux = new Scanner(list.at(i));
+			tmp = aux->next();
 			if (tmp != "ev")
 				cout << "Warning: expected 'ev' and found '" << tmp << "'." << endl;
 
-			int ev_id = scanner->nextInt();
+			int ev_id = aux->nextInt();
 
 			if (ev.size() <= ev_id)
 			{
@@ -294,7 +273,6 @@ public:
 
 			v_ev.push_back(ev[ev_id]);
 
-			tmp = scanner->next();
 		}
 
 		if (v_ev.size() == 0)
@@ -308,33 +286,15 @@ public:
 
 	vector<Heuristic<R, M>*> read_heuristic_list(Scanner* scanner)
 	{
-		string tmp = scanner->next();
-
+		vector < string > list = readList(*scanner);
 		vector<Heuristic<R, M>*> v_heuristics;
-
-		if (tmp != "[")
-		{
-			cout << "Error: expected '[' and found '" << tmp << "'!" << endl;
-
-			return v_heuristics; // returning empty list
-		}
 
 		pair<Heuristic<R, M>*, string> method;
 
-		string rest = scanner->rest();
-
-		while (rest[1] != ']')
+		for (int i = 0; i < list.size(); i++)
 		{
-
-			if (rest.empty())
-				break;
-
-			method = createHeuristic(rest);
-
+			method = createHeuristic(list.at(i));
 			v_heuristics.push_back(method.first);
-
-			rest = method.second;
-
 		}
 
 		if (v_heuristics.size() == 0)
@@ -342,11 +302,6 @@ public:
 			cout << "Error: empty heuristic list." << endl;
 			return v_heuristics;
 		}
-
-		(*scanner) = Scanner(rest);
-
-		if (scanner->next() != "]")
-			cout << "Warning: expected ']'." << endl;
 
 		return v_heuristics;
 	}
@@ -510,9 +465,9 @@ public:
 	// ================================================================
 
 	HeuristicFactory() :
-      rg(*new RandGen)
-   {
-   }
+		rg(*new RandGen)
+	{
+	}
 
 	HeuristicFactory(RandGen _rg) :
 		rg(*new RandGen(_rg))
@@ -521,47 +476,47 @@ public:
 
 	virtual ~HeuristicFactory()
 	{
-      for(int i = 0; i < ns.size(); i++)
-         delete ns[i];
+		for (int i = 0; i < ns.size(); i++)
+			delete ns[i];
 
-      for(int i = 0; i < ev.size(); i++)
-         delete ev[i];
+		for (int i = 0; i < ev.size(); i++)
+			delete ev[i];
 
-      for(int i = 0; i < initsol.size(); i++)
-         delete initsol[i];
+		for (int i = 0; i < initsol.size(); i++)
+			delete initsol[i];
 
-      for(int i = 0; i < loadsol.size(); i++)
-         delete loadsol[i];
+		for (int i = 0; i < loadsol.size(); i++)
+			delete loadsol[i];
 
-      for(int i = 0; i < method.size(); i++)
-         delete method[i];
+		for (int i = 0; i < method.size(); i++)
+			delete method[i];
 
-      for(int i = 0; i < initpop.size(); i++)
-         delete initpop[i];
+		for (int i = 0; i < initpop.size(); i++)
+			delete initpop[i];
 
-      for(int i = 0; i < loadpop.size(); i++)
-         delete loadpop[i];
+		for (int i = 0; i < loadpop.size(); i++)
+			delete loadpop[i];
 
-      for(int i = 0; i < ilsl_pert.size(); i++)
-         delete ilsl_pert[i];
+		for (int i = 0; i < ilsl_pert.size(); i++)
+			delete ilsl_pert[i];
 
-      for(int i = 0; i < ils_pert.size(); i++)
-         delete ils_pert[i];
+		for (int i = 0; i < ils_pert.size(); i++)
+			delete ils_pert[i];
 
-      for(int i = 0; i < ils_int.size(); i++)
-         delete ils_int[i];
+		for (int i = 0; i < ils_int.size(); i++)
+			delete ils_int[i];
 
-      for(int i = 0; i < ga_sel.size(); i++)
-         delete ga_sel[i];
+		for (int i = 0; i < ga_sel.size(); i++)
+			delete ga_sel[i];
 
-      for(int i = 0; i < ga_mut.size(); i++)
-         delete ga_mut[i];
+		for (int i = 0; i < ga_mut.size(); i++)
+			delete ga_mut[i];
 
-      for(int i = 0; i < ga_cross.size(); i++)
-         delete ga_cross[i];
+		for (int i = 0; i < ga_cross.size(); i++)
+			delete ga_cross[i];
 
-      for(int i = 0; i < ga_elt.size(); i++)
-         delete ga_elt[i];
+		for (int i = 0; i < ga_elt.size(); i++)
+			delete ga_elt[i];
 	}
 
 	int add_method(Heuristic<R, M>* _method)
@@ -761,6 +716,57 @@ public:
 	RandGen& getRandGen()
 	{
 		return rg;
+	}
+
+	static vector<string>& readList(Scanner& scanner)
+	{
+		vector < string > *list = new vector<string> ;
+		string word;
+		char character = scanner.nextChar();
+		int numberOfBrackets;
+
+		while (character == ' ')
+		{
+			character = scanner.nextChar();
+		}
+
+		if (character != '[')
+		{
+			cout << "Error: expected '[' and found '" << character << "'!" << endl;
+		}
+
+		numberOfBrackets = 0;
+
+		character = scanner.nextChar();
+
+		word = "";
+		while ((character != ']') || ((character == ']') && numberOfBrackets > 0))
+		{
+			if (character == '[')
+				numberOfBrackets++;
+			if (character == ']')
+				numberOfBrackets--;
+
+			if ((character == ',') && (numberOfBrackets == 0))
+			{
+				list->push_back(word);
+				word = "";
+			}
+			else
+			{
+				word += character;
+			}
+
+			character = scanner.nextChar();
+		}
+		list->push_back(word);
+
+		for (int i = 0; i < list->size(); i++)
+		{
+			list->at(i) = scanner.trim(list->at(i));
+		}
+
+		return *list;
 	}
 
 	pair<Heuristic<R, M>*, string> createHeuristic(string str)

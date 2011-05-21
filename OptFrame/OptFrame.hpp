@@ -119,6 +119,7 @@
 #include "Modules/ExecModule.hpp"
 #include "Modules/ExportModule.hpp"
 #include "Modules/ExportLogModule.hpp"
+#include "Modules/ForEachModule.hpp"
 #include "Modules/HelpModule.hpp"
 #include "Modules/PrintModule.hpp"
 #include "Modules/ProblemModule.hpp"
@@ -211,6 +212,7 @@ public:
 		loadModule(new ExecModule<R, M> );
 		loadModule(new ExportModule<R, M> );
 		loadModule(new ExportLogModule<R, M> );
+		loadModule(new ForEachModule<R, M> );
 		loadModule(new HelpModule<R, M> );
 		loadModule(new PrintModule<R, M> );
 		loadModule(new ReadModule<R, M> );
