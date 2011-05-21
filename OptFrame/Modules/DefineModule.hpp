@@ -56,7 +56,7 @@ public:
 				}
 
 			(*dictionary)[new_name] = scanner.trim(second_word);
-			cout << "Word '"<<new_name<<"' now means: "<<(*dictionary)[new_name]<<endl;
+			cout << "Word '"<<new_name<<"' now means: '"<<(*dictionary)[new_name]<<"'"<<endl;
 		}
 		else
 			cout << "Usage: "<<usage()<<endl;

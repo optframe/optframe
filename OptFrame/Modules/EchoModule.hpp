@@ -18,29 +18,33 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef DICTIONARYMODULE_HPP_
-#define DICTIONARYMODULE_HPP_
+#ifndef ECHOMODULE_HPP_
+#define ECHOMODULE_HPP_
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class M>
-class DictionaryModule : public OptFrameModule<R,M>
+template< class R, class M >
+class EchoModule :
+      public OptFrameModule<R, M>
 {
 public:
-	string id()
-	{
-		return "dictionary";
-	}
-	string usage()
-	{
-		return "dictionary";
-	}
+   string id()
+   {
+      return "echo";
+   }
+   string usage()
+   {
+      return "echo text";
+   }
 
-	void run(vector<OptFrameModule<R,M>*> all_modules, HeuristicFactory<R,M>*, map<string,string>* dictionary, string)
-	{
-		cout << (*dictionary) << endl;
-	}
+   void run(vector<OptFrameModule<R, M>*> all_modules, HeuristicFactory<R, M>*, map<string, string>* dictionary, string text)
+   {
+      if(text == "")
+         cout << "Say something..." << endl;
+      else
+         cout << text << endl;
+   }
 
 };
 
-#endif /* DICTIONARYMODULE_HPP_ */
+#endif /* ECHOMODULE_HPP_ */

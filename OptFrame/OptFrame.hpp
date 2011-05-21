@@ -114,6 +114,8 @@
 #include "Modules/DefineModule.hpp"
 #include "Modules/DictionaryModule.hpp"
 #include "Modules/DropAllModule.hpp"
+#include "Modules/EchoModule.hpp"
+#include "Modules/ElementModule.hpp"
 #include "Modules/EmpiricalModule.hpp"
 #include "Modules/EvaluateModule.hpp"
 #include "Modules/ExecModule.hpp"
@@ -121,10 +123,12 @@
 #include "Modules/ExportLogModule.hpp"
 #include "Modules/ForEachModule.hpp"
 #include "Modules/HelpModule.hpp"
+#include "Modules/ListFromFileModule.hpp"
 #include "Modules/PrintModule.hpp"
 #include "Modules/ProblemModule.hpp"
 #include "Modules/ReadModule.hpp"
 #include "Modules/TestModule.hpp"
+#include "Modules/UndefineModule.hpp"
 #include "Modules/UsageModule.hpp"
 #include "Modules/InitServersModule.hpp"
 
@@ -207,16 +211,20 @@ public:
 		loadModule(new DefineModule<R, M> );
 		loadModule(new DictionaryModule<R, M> );
 		loadModule(new DropAllModule<R, M> );
-		loadModule(new EmpiricalModule<R, M> );
+      loadModule(new EchoModule<R, M> );
+      loadModule(new ElementModule<R, M> );
+      loadModule(new EmpiricalModule<R, M> );
 		loadModule(new EvaluateModule<R, M> );
 		loadModule(new ExecModule<R, M> );
 		loadModule(new ExportModule<R, M> );
 		loadModule(new ExportLogModule<R, M> );
 		loadModule(new ForEachModule<R, M> );
 		loadModule(new HelpModule<R, M> );
+      loadModule(new ListFromFileModule<R, M> );
 		loadModule(new PrintModule<R, M> );
 		loadModule(new ReadModule<R, M> );
 		loadModule(new TestModule<R, M> );
+      loadModule(new UndefineModule<R, M> );
 		loadModule(new UsageModule<R, M> );
 #ifdef MaPI
 		loadModule(new InitServersModule<R, M> );

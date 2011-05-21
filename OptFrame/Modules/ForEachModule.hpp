@@ -57,11 +57,10 @@ public:
 	}
 	string usage()
 	{
-		return "for_each var [ list_of_values ] [ commands ]";
+		return "for_each var list_of_values list_of_commands";
 	}
 	void run(vector<OptFrameModule<R, M>*> all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
 	{
-		cout << "for_each: " << input << endl;
 		Scanner scanner(input);
 
 		if (!scanner.hasNext())
@@ -76,10 +75,6 @@ public:
 
 		values = HeuristicFactory<R, M>::readList(scanner);
 		commands = HeuristicFactory<R, M>::readList(scanner);
-
-		cout<<"values: "<<values<<endl;
-		cout<<"commands: "<<commands<<endl;
-		getchar();
 
 		for (int v = 0; v < values.size(); v++)
 		{
