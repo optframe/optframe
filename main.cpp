@@ -46,15 +46,15 @@ int main(int argc, char **argv)
 
 	TSPProblemInstance* p = new TSPProblemInstance(scanner);
 
-	RandomInitialSolutionTSP is(p,rg);
+	RandomInitialSolutionTSP& is = * new RandomInitialSolutionTSP(p,rg);
 
 	SolutionTSP& s = is.generateSolution();
 
-	NSEnumSwap ns(p, rg);
+	NSEnumSwap& ns = *new NSEnumSwap(p, rg);
 
 	s.print();
 
-	TSPEvaluator eval(p);
+	TSPEvaluator& eval = *new TSPEvaluator(p);
 	EvaluationTSP* e;
 
 	e = &eval.evaluate(s);
@@ -67,9 +67,9 @@ int main(int argc, char **argv)
 	optframe.factory.add_ev(&eval);
 	optframe.factory.add_ns(&ns);
 
-	optframe.execute("define is_random initsol 0");
-	optframe.execute("define my_eval ev 0");
-	optframe.execute("define swap ns 0");
+	//optframe.execute("define is_random initsol 0");
+	//optframe.execute("define my_eval ev 0");
+	//optframe.execute("define swap ns 0");
 
 	//optframe.execute();
 	optframe.execute("read example.opt");
