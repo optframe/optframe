@@ -42,19 +42,19 @@ int main(int argc, char **argv)
 
 	// Optimal value for berlin52 is 7542
 
-	Scanner scanner(new File("./OptFrame/Examples/TSP/tsplib/berlin52.txt"));
+	Scanner scanner(new File("./Examples/TSP/tsplib/berlin52.txt"));
 
 	TSPProblemInstance* p = new TSPProblemInstance(scanner);
 
-	RandomInitialSolutionTSP is(p,rg);
+	RandomInitialSolutionTSP& is = * new RandomInitialSolutionTSP(p,rg);
 
 	SolutionTSP& s = is.generateSolution();
 
-	NSEnumSwap ns(p,rg);
+	NSEnumSwap& ns = * new NSEnumSwap(p,rg);
 
 	s.print();
 
-	TSPEvaluator eval(p);
+	TSPEvaluator& eval = * new TSPEvaluator(p);
 	EvaluationTSP* e;
 
 	e = &eval.evaluate(s);
@@ -62,13 +62,11 @@ int main(int argc, char **argv)
 	e->print();
 	cout << endl;
 
-	HeuristicFactory<RepTSP, MemTSP> factory(rg);
-	factory.add_initsol(&is);
-	factory.add_ev(&eval);
-	factory.add_ns(&ns);
+	OptFrame<RepTSP, MemTSP> optframe(rg);
+	optframe.factory.add_initsol(&is);
+	optframe.factory.add_ev(&eval);
+	optframe.factory.add_ns(&ns);
 
-
-	OptFrame<RepTSP, MemTSP> optframe(factory);
 	optframe.execute();
 
 	cout << "Program ended successfully" << endl;

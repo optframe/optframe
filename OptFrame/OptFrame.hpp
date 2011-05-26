@@ -168,15 +168,8 @@ public:
 		dictionary = new map<string, string> ;
 	}
 
-	OptFrame(HeuristicFactory<R, M> f) :
-		factory(f)
-	{
-		loadDefaultModules();
-		dictionary = new map<string, string> ;
-	}
-
 	OptFrame(RandGen _rg) :
-		factory(*new HeuristicFactory<R, M>(_rg))
+		factory(HeuristicFactory<R, M>(_rg))
 	{
 		loadDefaultModules();
 		dictionary = new map<string, string> ;

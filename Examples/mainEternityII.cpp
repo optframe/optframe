@@ -40,23 +40,23 @@ int main(int argc, char **argv)
 	srand(time(NULL));
 	RandGen rg(time(NULL));
 
-	Scanner scanner(new File("./OptFrame/Examples/EternityII/pieces_set_2/pieces_03x03.txt"));
+	Scanner scanner(new File("./Examples/EternityII/pieces_set_2/pieces_03x03.txt"));
 
 	EtIIProblemInstance* p = new EtIIProblemInstance(scanner);
 
-	EtIIInitialSolutionGreedy is(*p,rg);
+	EtIIInitialSolutionGreedy& is = * new EtIIInitialSolutionGreedy(*p,rg);
 
 	SolutionEtII& s = is.generateSolution();
 
-	NSSeqRotate nsRotate(rg);
-	NSSeqSwapCenter nsSwapCenter(rg);
-	NSSeqSwapCorner nsSwapCorner(rg);
-	NSSeqSwapRotateCenter nsSwapRotateCenter(rg);
-	NSSeqSwapSide nsSwapSide(rg);
+	NSSeqRotate& nsRotate = * new NSSeqRotate(rg);
+	NSSeqSwapCenter& nsSwapCenter = * new NSSeqSwapCenter(rg);
+	NSSeqSwapCorner& nsSwapCorner = * new NSSeqSwapCorner(rg);
+	NSSeqSwapRotateCenter& nsSwapRotateCenter = * new NSSeqSwapRotateCenter(rg);
+	NSSeqSwapSide& nsSwapSide = * new NSSeqSwapSide(rg);
 
 	s.print();
 
-	EtIIEvaluator eval(*p);
+	EtIIEvaluator& eval = * new EtIIEvaluator(*p);
 	EvaluationEtII* e;
 
 	e = &eval.evaluate(s);
@@ -64,17 +64,14 @@ int main(int argc, char **argv)
 	e->print();
 	cout << endl;
 
-	HeuristicFactory<RepEtII, MemEtII> factory(rg);
-	factory.add_initsol(&is);
-	factory.add_ev(&eval);
-	factory.add_ns(&nsRotate);
-	factory.add_ns(&nsSwapCenter);
-	factory.add_ns(&nsSwapCorner);
-	factory.add_ns(&nsSwapRotateCenter);
-	factory.add_ns(&nsSwapSide);
-
-
-	OptFrame<RepEtII, MemEtII> optframe(factory);
+	OptFrame<RepEtII, MemEtII> optframe(rg);
+	optframe.factory.add_initsol(&is);
+	optframe.factory.add_ev(&eval);
+	optframe.factory.add_ns(&nsRotate);
+	optframe.factory.add_ns(&nsSwapCenter);
+	optframe.factory.add_ns(&nsSwapCorner);
+	optframe.factory.add_ns(&nsSwapRotateCenter);
+	optframe.factory.add_ns(&nsSwapSide);
 	optframe.execute();
 
 	cout << "Program ended successfully" << endl;
