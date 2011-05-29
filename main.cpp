@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 
 	// Optimal value for berlin52 is 7542
 
-	Scanner scanner(new File("./OptFrame/Examples/TSP/tsplib/berlin52.txt"));
+	Scanner scanner(new File("./Examples/TSP/tsplib/berlin52.txt"));
 
 	TSPProblemInstance* p = new TSPProblemInstance(scanner);
 

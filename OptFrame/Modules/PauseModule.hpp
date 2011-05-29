@@ -18,32 +18,34 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef ECHOMODULE_HPP_
-#define ECHOMODULE_HPP_
+#ifndef PAUSEMODULE_HPP_
+#define PAUSEMODULE_HPP_
 
 #include "../OptFrameModule.hpp"
 
 template< class R, class M >
-class EchoModule :
+class PauseModule :
       public OptFrameModule<R, M>
 {
 public:
 
    string id()
    {
-      return "echo";
+      return "pause";
    }
 
    string usage()
    {
-      return "echo text";
+      return "pause";
    }
 
-   void run(vector<OptFrameModule<R, M>*> all_modules, HeuristicFactory<R, M>*, map<string, string>* dictionary, string text)
+   void run(vector<OptFrameModule<R, M>*> , HeuristicFactory<R, M>*, map<string, string>* , string )
    {
-      printf("%s\n", text.c_str());
+      cout << "Press <enter> to continue..." << endl;
+
+      getchar();
    }
 
 };
 
-#endif /* ECHOMODULE_HPP_ */
+#endif /* PAUSEMODULE_HPP_ */

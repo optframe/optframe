@@ -124,6 +124,7 @@
 #include "Modules/ForEachModule.hpp"
 #include "Modules/HelpModule.hpp"
 #include "Modules/ListFromFileModule.hpp"
+#include "Modules/PauseModule.hpp"
 #include "Modules/PrintModule.hpp"
 #include "Modules/ProblemModule.hpp"
 #include "Modules/ReadModule.hpp"
@@ -214,6 +215,7 @@ public:
 		loadModule(new ForEachModule<R, M> );
 		loadModule(new HelpModule<R, M> );
       loadModule(new ListFromFileModule<R, M> );
+		loadModule(new PauseModule<R, M> );
 		loadModule(new PrintModule<R, M> );
 		loadModule(new ReadModule<R, M> );
 		loadModule(new TestModule<R, M> );

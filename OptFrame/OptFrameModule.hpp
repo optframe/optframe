@@ -92,23 +92,29 @@ public:
 		while(scanner.hasNext())
 		{
 			string new_word = scanner.next();
+			string unused = scanner.getDiscarded();
 
 			if(dictionary->count(new_word) == 0) // Not found in dictionary!
 			{
-				if(input3=="")
-					input3+=new_word;
-				else
-					input3 = input3+" "+new_word;
+				input3.append(unused);
+				input3.append(new_word);
 			}
 			else
 			{
 				string found = dictionary->find(new_word)->second;
-				scanner = Scanner(input3+" "+found+" "+scanner.rest());
+
+				input3.append(unused);
+				input3.append(found);
+				input3.append(scanner.rest());
+
+				scanner = Scanner(input3);
 				input3 = "";
 			}
 		}
 
-		return input3;
+		string input4 = Scanner::trim(input3);
+
+		return input4;
 	}
 };
 

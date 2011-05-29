@@ -525,17 +525,6 @@ public:
 		return method.size() - 1;
 	}
 
-	int add_methods(vector<Heuristic<R, M>*>& _methods)
-	{
-		for (int i = 0; i < _methods.size(); ++i)
-		{
-			cout << "\'method " << i << "\' added." << endl;
-			method.push_back(_methods.at(i));
-		}
-		return method.size() - 1;
-
-	}
-
 	Heuristic<R, M>* get_method(int index)
 	{
 		return method[index];
@@ -976,7 +965,6 @@ public:
 
 			Evaluator<R, M>* evaluator = read_ev(&scanner);
 			vector<Heuristic<R, M>*> hlist = read_heuristic_list(&scanner);
-			add_methods(hlist);
 
 			return make_pair(new VariableNeighborhoodDescent<R, M> (*evaluator, hlist), scanner.rest());
 
@@ -988,59 +976,38 @@ public:
 
 			Evaluator<R, M>* evaluator = read_ev(&scanner);
 			vector<Heuristic<R, M>*> hlist = read_heuristic_list(&scanner);
-			add_methods(hlist);
 
 			return make_pair(new RVND<R, M> (*evaluator, hlist, rg), scanner.rest());
 		}
 
-		/*
-		 if(h == "VNS")
-		 {
-		 cout << "Heuristic: VNS" << endl;
+		if (h == "VNS")
+		{
+			cout << "Heuristic: Variable Neighborhood Search" << endl;
 
-		 Evaluator<R,M>* evaluator = read_ev(&scanner);
-		 vector<NS<R,M>*> ns_list = read_ns_list(&scanner);
+			Evaluator<R, M>* evaluator = read_ev(&scanner);
 
-		 // ===================
-		 // Read next heuristic
-		 // ===================
+			// ===================
+			// Read next heuristic
+			// ===================
 
-		 string rest = scanner.rest();
+			string rest = scanner.rest();
 
-		 pair<Heuristic<R,M>*, string> method;
-		 method = createHeuristic(rest);
+			pair<Heuristic<R, M>*, string> method;
+			method = createHeuristic(rest);
 
-		 Heuristic<R,M>* localSearch = method.first;
-		 rest = method.second;
+			Heuristic<R, M>* localSearch = method.first;
 
-		 return make_pair(new VNS<R,M>(evaluator,ns_list,localSearch),rest);
-		 }
-		 */
+			scanner = Scanner(method.second);
 
-		// Parallel Support
-		/*if (h == "BISeqMR")
-		 {
-		 cout << "Heuristic: MapReduce Best Improvement (SeqMR)" << endl;
+			// ====================
 
-		 Evaluator<R, M>* evaluator = read_ev(&scanner);
-		 NSSeq<R, M>* ns_seq = (NSSeq<R, M>*) read_ns(&scanner);
-		 int NP = read_np(&scanner);
+			ILSLPerturbation<R, M>* ilsl_pert = read_ilsl_pert(&scanner);
 
-		 return make_pair(new BestImprovement_SeqMR<R, M> (*evaluator, *ns_seq, NP), scanner.rest());
-		 }*/
+			int iterMax = scanner.nextInt();
+			int levelMax = scanner.nextInt();
 
-		/*
-		 #ifdef MaPI
-		 if (h == "BIMaPI")
-		 {
-		 cout << "Heuristic: MapReduce Best Improvement (MaPI)" << endl;
-
-		 Evaluator<R, M>* evaluator = read_ev(&scanner);
-		 NSSeq<R, M>* ns_seq = (NSSeq<R, M>*) read_ns(&scanner);
-
-		 return make_pair(new BestImprovement_MaPI<R, M> (*serializer,*mapReduce,*mapper,*reducer,*evaluator, *ns_seq), scanner.rest());
-		 }
-		 #endif/**/
+			return make_pair(new IteratedLocalSearchLevels<R, M> (*evaluator, *localSearch, *ilsl_pert, iterMax, levelMax), scanner.rest());
+		}
 
 		if (h == "MH")
 		{
@@ -1048,7 +1015,6 @@ public:
 
 			Evaluator<R, M>* evaluator = read_ev(&scanner);
 			vector<Heuristic<R, M>*> hlist = read_heuristic_list(&scanner);
-			add_methods(hlist);
 
 			return make_pair(new MultiHeuristic<R, M> (*evaluator, hlist), scanner.rest());
 		}

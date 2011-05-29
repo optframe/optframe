@@ -63,8 +63,6 @@ public:
 		{
 			string line = scanner->nextLine();
 
-			line = OptFrameModule<R,M>::defaultPreprocess(dictionary,line);
-
 			Scanner s2(line);
 
 			if(!s2.hasNext()) // no command found in the line
@@ -74,10 +72,14 @@ public:
 
 			bool notfound = true;
 
+			if(command[0]=='%')
+				notfound = false;
+
 			for(int i=0;i<all_modules.size();i++)
 				if(command == all_modules[i]->id())
 				{
-					all_modules[i]->run(all_modules, factory, dictionary, s2.rest());
+					string after_preprocess = all_modules[i]->preprocess(dictionary, s2.rest());
+					all_modules[i]->run(all_modules, factory, dictionary, after_preprocess);
 					notfound = false;
 					break;
 				}
