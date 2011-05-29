@@ -56,7 +56,7 @@ public:
 
 	virtual void exec(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
-		cerr << "MultiHeuristic exec("<<target_f<<","<<timelimit<<")" << endl;
+		cout << "MultiHeuristic exec("<<target_f<<","<<timelimit<<")" << endl;
 
 		cout << "MultiHeuristic Initial Solution: " ; e.print();
 		cout << heuristics.size() << endl;
@@ -65,7 +65,7 @@ public:
 
 		for (int h = 0; h < heuristics.size(); h++)
 		{
-			cerr << "MultiHeuristic iter "<<h<<":"<<endl;
+			cout << "MultiHeuristic iter "<<h<<":"<<endl;
 			(heuristics)[h]->exec(s,timelimit, target_f);
 		}
 	}

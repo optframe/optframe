@@ -51,6 +51,7 @@ using namespace std;
 #include "Heuristic/GRASP.hpp"
 #include "Heuristic/TabuSearch.hpp"
 #include "Heuristic/EvolutionaryAlgorithms/GeneticAlgorithm.hpp"
+#include "Heuristic/BasicSimulatedAnnealing.hpp"
 
 // design pattern: Factory
 
@@ -885,6 +886,21 @@ public:
 			int iterMax = scanner.nextInt();
 
 			return make_pair(new BasicIteratedLocalSearch<R, M> (*evaluator, *localSearch, *ils_pert, iterMax), scanner.rest());
+		}
+
+		if (h == "SA")
+		{
+			cout << "Heuristic: Basic Simulated Annealing" << endl;
+
+			Evaluator<R, M>* evaluator = read_ev(&scanner);
+
+			vector<NS<R,M>* > ns_list = read_ns_list(&scanner);
+
+			double alpha = scanner.nextDouble();
+			int SAmax = scanner.nextInt();
+			double Ti = scanner.nextDouble();
+
+			return make_pair(new BasicSimulatedAnnealing<R, M> (*evaluator, ns_list, alpha, SAmax, Ti, rg), scanner.rest());
 		}
 
 		if (h == "ILSL")
