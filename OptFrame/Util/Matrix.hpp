@@ -60,6 +60,14 @@ template<class T>
 class Matrix
 {
 public:
+
+   Matrix()
+   {
+      rows = cols = 1;
+
+      data = new T[rows * cols];
+   }
+
    Matrix(unsigned _quadratic)
    {
       rows = cols = _quadratic;
