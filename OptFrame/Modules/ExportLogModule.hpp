@@ -37,7 +37,7 @@ public:
       return "export_log method 0 filename";
    }
 
-   void run(vector<OptFrameModule<R, M>*> all_modules, HeuristicFactory<R, M>* hf, map<string, string>* dictionary, string input)
+   void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* hf, map<string, string>* dictionary, string input)
    {
       Scanner scanner(input);
 

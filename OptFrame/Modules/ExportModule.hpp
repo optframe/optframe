@@ -46,7 +46,7 @@ public:
 		return out;
 	}
 
-	void run(vector<OptFrameModule<R, M>*> all_modules,
+	void run(vector<OptFrameModule<R, M>*>& all_modules,
 			HeuristicFactory<R, M>* factory, map<string, string>* dictionary,
 			string input)
 	{

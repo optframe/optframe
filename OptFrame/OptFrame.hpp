@@ -111,6 +111,7 @@
 #include "Modules/BuildModule.hpp"
 #include "Modules/CallModule.hpp"
 #include "Modules/CheckModule.hpp"
+#include "Modules/CreateModule.hpp"
 #include "Modules/DefineModule.hpp"
 #include "Modules/DictionaryModule.hpp"
 #include "Modules/DropAllModule.hpp"
@@ -202,6 +203,7 @@ public:
       modules.clear();
       loadModule(new BuildModule<R, M> );
 		loadModule(new CheckModule<R, M> );
+      loadModule(new CreateModule<R, M> );
 		loadModule(new DefineModule<R, M> );
 		loadModule(new DictionaryModule<R, M> );
 		loadModule(new DropAllModule<R, M> );

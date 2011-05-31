@@ -35,7 +35,7 @@ public:
 	{
 		return "problem instance_path";
 	}
-	void run(vector<OptFrameModule<R, M>*> all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
 	{
 		read(input, factory);
 	}

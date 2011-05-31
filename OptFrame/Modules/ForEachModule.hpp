@@ -165,7 +165,7 @@ private:
 
 	}
 
-	bool exec_command(vector<OptFrameModule<R, M>*> all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string command)
+	bool exec_command(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string command)
 	{
 		Scanner scanner(command);
 		string module = scanner.next();
@@ -189,7 +189,7 @@ public:
 	{
 		return "for_each $var list_of_values list_of_commands";
 	}
-	void run(vector<OptFrameModule<R, M>*> all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 

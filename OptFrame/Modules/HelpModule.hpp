@@ -36,7 +36,7 @@ public:
 		return "help";
 	}
 
-	void run(vector<OptFrameModule<R,M>*> all_modules, HeuristicFactory<R,M>*, map<string,string>* dictionary, string)
+	void run(vector<OptFrameModule<R,M>*>& all_modules, HeuristicFactory<R,M>*, map<string,string>* dictionary, string)
 	{
 		cout << "Available modules are:" << endl;
 		for(int i=0;i<all_modules.size();i++)

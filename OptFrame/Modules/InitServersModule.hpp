@@ -36,7 +36,7 @@ public:
 		return "initservers";
 	}
 
-	void run(vector<OptFrameModule<R,M>*>, HeuristicFactory<R,M>* factory, map<string,string>* dictionary, string rest)
+	void run(vector<OptFrameModule<R,M>*>&, HeuristicFactory<R,M>* factory, map<string,string>* dictionary, string rest)
 	{
 		factory->mapReduce->initServers(factory->argc,factory->argv);
 	}

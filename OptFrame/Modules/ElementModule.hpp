@@ -37,7 +37,7 @@ public:
       return "element N list new_element_name";
    }
 
-   void run(vector<OptFrameModule<R, M>*> all_modules, HeuristicFactory<R, M>* hf, map<string, string>* dictionary, string input)
+   void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* hf, map<string, string>* dictionary, string input)
    {
       Scanner scan(input);
       if(!scan.hasNext())

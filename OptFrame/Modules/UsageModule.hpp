@@ -36,7 +36,7 @@ public:
 		return "usage module_name";
 	}
 
-	void run(vector<OptFrameModule<R,M>*> all_modules, HeuristicFactory<R,M>*, map<string,string>* dictionary, string rest)
+	void run(vector<OptFrameModule<R,M>*>& all_modules, HeuristicFactory<R,M>*, map<string,string>* dictionary, string rest)
 	{
 		Scanner scanner(rest);
 

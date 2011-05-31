@@ -36,7 +36,7 @@ public:
 		return "define new_name string_to_be_substituted_from_the_new_name";
 	}
 
-	void run(vector<OptFrameModule<R,M>*>, HeuristicFactory<R,M>*, map<string,string>* dictionary, string rest)
+	void run(vector<OptFrameModule<R,M>*>&, HeuristicFactory<R,M>*, map<string,string>* dictionary, string rest)
 	{
 		Scanner scanner(rest);
 

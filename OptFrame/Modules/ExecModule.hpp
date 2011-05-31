@@ -44,7 +44,7 @@ public:
 	 * No factory, corrigir os readloadpop readinitpop entre outros.. .
 	 */
 
-	void run(vector<OptFrameModule<R, M>*> all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
 	{
 		cout << "exec: " << input << endl;
 		Scanner scanner(input);

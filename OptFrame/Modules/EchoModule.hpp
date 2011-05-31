@@ -39,7 +39,7 @@ public:
       return "echo text";
    }
 
-   void run(vector<OptFrameModule<R, M>*> all_modules, HeuristicFactory<R, M>*, map<string, string>* dictionary, string text)
+   void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>*, map<string, string>* dictionary, string text)
    {
       printf("%s\n", text.c_str());
    }

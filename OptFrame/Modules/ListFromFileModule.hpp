@@ -37,7 +37,7 @@ public:
       return "list_from_file new_list_name filename";
    }
 
-   void run(vector<OptFrameModule<R, M>*> all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
+   void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
    {
       Scanner scan(input);
       if(!scan.hasNext()) // no file

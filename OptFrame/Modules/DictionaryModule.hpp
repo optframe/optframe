@@ -36,7 +36,7 @@ public:
 		return "dictionary";
 	}
 
-	void run(vector<OptFrameModule<R,M>*> all_modules, HeuristicFactory<R,M>*, map<string,string>* dictionary, string)
+	void run(vector<OptFrameModule<R,M>*>& all_modules, HeuristicFactory<R,M>*, map<string,string>* dictionary, string)
 	{
 		cout << (*dictionary) << endl;
 	}

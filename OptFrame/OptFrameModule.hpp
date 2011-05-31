@@ -59,7 +59,7 @@ public:
 	virtual string id() = 0;
 	virtual string usage() = 0;
 
-	virtual void run(vector<OptFrameModule<R,M>*>, HeuristicFactory<R,M>*, map<string,string>* dictionary, string) = 0;
+	virtual void run(vector<OptFrameModule<R,M>*>&, HeuristicFactory<R,M>*, map<string,string>* dictionary, string) = 0;
 
 	virtual string preprocess(map<string,string>* dictionary, string input)
 	{

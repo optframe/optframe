@@ -37,7 +37,7 @@ public:
       return "call external_software";
    }
 
-   void run(vector<OptFrameModule<R, M>*> all_modules, HeuristicFactory<R, M>*, map<string, string>* dictionary, string command)
+   void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>*, map<string, string>* dictionary, string command)
    {
       system(command.c_str());
    }

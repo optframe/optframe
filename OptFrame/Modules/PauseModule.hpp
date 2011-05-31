@@ -39,7 +39,7 @@ public:
       return "pause";
    }
 
-   void run(vector<OptFrameModule<R, M>*> , HeuristicFactory<R, M>*, map<string, string>* , string )
+   void run(vector<OptFrameModule<R, M>*>& , HeuristicFactory<R, M>*, map<string, string>* , string )
    {
       cout << "Press <enter> to continue..." << endl;
 
