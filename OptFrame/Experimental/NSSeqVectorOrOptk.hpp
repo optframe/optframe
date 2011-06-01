@@ -48,6 +48,9 @@ public:
 	{
 	}
 
+        using NSSeq<vector<T> , M>::move;
+        using NSSeq<vector<T> , M>::getIterator;
+
 	Move<Route, M>& move(const Route& rep)
 	{
 		int n = rep.size();

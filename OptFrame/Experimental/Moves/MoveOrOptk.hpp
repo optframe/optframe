@@ -58,8 +58,8 @@ public:
 	Move<Route, M>& apply(Route& rep)
 	{
 		vector<T> v_aux;
-		v_aux.insert(v_aux.begin(), rep.begin() + i, rep.begin() + i + k - 1);
-		rep.erase(rep.begin() + i, rep.begin() + i + k - 1);
+		v_aux.insert(v_aux.begin(), rep.begin() + i, rep.begin() + i + k);
+		rep.erase(rep.begin() + i, rep.begin() + i + k);
 		rep.insert(rep.begin() + j, v_aux.begin(), v_aux.end());
 
 		return *new MoveOrOptk(j, i, k);
