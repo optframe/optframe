@@ -18,64 +18,71 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_NSSEQVECTOROROPTK_HPP_
-#define OPTFRAME_NSSEQVECTOROROPTK_HPP_
+#ifndef OPTFRAME_MOVETSPSWAP_HPP_
+#define OPTFRAME_MOVETSPSWAP_HPP_
 
 // Framework includes
-#include "../NSSeq.hpp"
-
-#include "Moves/MoveOrOptk.hpp"
-#include "NSIterators/IteratorOrOptk.hpp"
+#include "../../../Move.hpp"
 
 using namespace std;
 
-// Working structure: vector<vector<T> >
+// Working structure: vector<T>
 
 template<class T, class M = OPTFRAME_DEFAULT_MEMORY>
-class NSSeqVectorOrOptk: public NSSeq<vector<T> , M>
+class MoveTSPSwap: public Move<vector<T> , M>
 {
 	typedef vector<T> Route;
-	int k;
+
+protected:
+	int p1, p2; // position 1 and position 2, respectively
 
 public:
 
-	NSSeqVectorOrOptk(int _k) :
-		k(_k)
+	MoveTSPSwap(int _p1, int _p2) :
+		p1(_p1), p2(_p2)
 	{
 	}
 
-	virtual ~NSSeqVectorOrOptk()
+	virtual ~MoveTSPSwap()
 	{
 	}
 
-        using NSSeq<vector<T> , M>::move;
-        using NSSeq<vector<T> , M>::getIterator;
-
-	Move<Route, M>& move(const Route& rep)
+	int get_p1()
 	{
-		int n = rep.size();
-
-		if (n - k <= 0)
-			return *new MoveOrOptk<T, M> (0, 0, k);
-
-		int i = rand() % (n - k + 1);
-
-		int j = i;
-		while (i == j)
-			j = rand() % (n - k + 1);
-
-		return *new MoveOrOptk<T, M> (i, j, k);
+		return p1;
 	}
 
-	virtual NSIterator<Route, M>& getIterator(const Route& r)
+	int get_p2()
 	{
-		return *new NSIteratorOrOptk<T, M> (r.size(), k);
+		return p2;
 	}
 
-	virtual void print()
+	bool canBeApplied(const Route& rep)
 	{
-		cout << "NSSeqVectorOrOpt{K=" << k << "}" << endl;
+		bool all_positive = (p1 >= 0) && (p2 >= 0);
+		bool size_ok = (p1 < rep.size()) && (p2 < rep.size());
+		return all_positive && size_ok && (rep.size() >= 2);
+	}
+
+	Move<Route, M>& apply(Route& rep)
+	{
+		T t = rep[p1];
+		rep[p1] = rep[p2];
+		rep[p2] = t;
+
+		return *new MoveTSPSwap(p1, p2);
+	}
+
+	virtual bool operator==(const Move<Route, M>& _m) const
+	{
+		const MoveTSPSwap& m1 = (const MoveTSPSwap&) _m;
+		return ((m1.p1 == p1) && (m1.p2 == p2));
+	}
+
+	void print() const
+	{
+		cout << "MoveTSPSwap( " << p1 << " <=> " << p2 << " )" << endl;
 	}
 };
 
-#endif /*OPTFRAME_NSSEQVECTOROROPTK_HPP_*/
+#endif /*OPTFRAME_MOVETSPSWAP_HPP_*/

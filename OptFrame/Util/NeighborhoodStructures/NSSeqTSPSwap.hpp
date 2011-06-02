@@ -18,45 +18,42 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_NSSEQTSP2OPT_HPP_
-#define OPTFRAME_NSSEQTSP2OPT_HPP_
+#ifndef OPTFRAME_NSSEQTSPSWAP_HPP_
+#define OPTFRAME_NSSEQTSPSWAP_HPP_
 
 /*
  Classical Problem: Traveling Salesman Problem
 
- The Neighborhood Structure 2-opt has proposed by Cross (1958)
- Croes G., A method for solving traveling salesman problems. Operations Research 6 (1958), pp. 791–812
+ The Classic Swap Neighborhood Structure.
 
- 2-Opt is aplied for any problem that representation is like a vector<T>, where T is the type of the vector.
+ Article:
+
+ Swap is applied for any problem that representation is like a vector<T>, where T is the type of the vector.
 
  e.g: vector<T> where type of T is int
  s means Solution
 
  initial s: 1 2 3 4 5 6 7 8
 
- s' after apply MoveTSP2Opt(2,5) in s
+ s' after apply MoveTSPSwap(2,5) in s
 
- s': 1 2 5 4 3 6 7 8
-
- s" after apply MoveTSP2Opt(3,8) in s'
-
- s": 1 2 5 8 7 6 3 4
+ s': 1 2 6 4 5 3 7 8
 
  */
 
 // Framework includes
-#include "../Move.hpp"
-#include "../NSSeq.hpp"
+#include "../../Move.hpp"
+#include "../../NSSeq.hpp"
 
-#include "Moves/MoveTSP2Opt.hpp"
-#include "NSIterators/IteratorTSP2Opt.hpp"
+#include "Moves/MoveTSPSwap.hpp"
+#include "NSIterators/IteratorTSPSwap.hpp"
 
 using namespace std;
 
 // Working structure: vector<T>
 
-template<class T, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MoveTSP2Opt<T, M> >
-class NSSeqTSP2Opt: public NSSeq<vector<T> , M>
+template<class T, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MoveTSPSwap<T, M> >
+class NSSeqTSPSwap: public NSSeq<vector<T> , M>
 {
 	typedef vector<T> Route;
 
@@ -64,11 +61,11 @@ private:
 
 public:
 
-	NSSeqTSP2Opt()
+	NSSeqTSPSwap()
 	{
 	}
 
-	virtual ~NSSeqTSP2Opt()
+	virtual ~NSSeqTSPSwap()
 	{
 	}
 
@@ -77,28 +74,25 @@ public:
 		if (rep.size() < 2)
 			return *new MOVE(-1, -1);
 
-		int p1 = rand() % (rep.size() + 1);
+		int p1 = rand() % rep.size();
 
-		int p2;
+		int p2 = p1;
 
-		do
-		{
-			p2 = rand() % (rep.size() + 1);
-		} while (abs(p1 - p2) < 2);
+		while (p2 == p1)
+			p2 = rand() % rep.size();
 
-		// create 2-opt(p1,p2) move
 		return *new MOVE(p1, p2);
 	}
 
 	virtual NSIterator<Route, M>& getIterator(const Route& r)
 	{
-		return *new NSIteratorTSP2Opt<T, M, MOVE> (r);
+		return *new NSIteratorTSPSwap<T, M, MOVE> (r.size());
 	}
 
 	virtual void print()
 	{
-		cout << "NSSeqTSP2Opt" << endl;
+		cout << "NSSeqTSPSwap" << endl;
 	}
 };
 
-#endif /*OPTFRAME_NSSEQTSP2OPT_HPP_*/
+#endif /*OPTFRAME_NSSEQTSPSWAP_HPP_*/

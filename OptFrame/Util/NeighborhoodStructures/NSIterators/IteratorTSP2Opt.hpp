@@ -18,71 +18,89 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_MOVETSPSWAP_HPP_
-#define OPTFRAME_MOVETSPSWAP_HPP_
+#ifndef OPTFRAME_ITERATORNSSEQTSP2OPT_HPP_
+#define OPTFRAME_ITERATORNSSEQTSP2OPT_HPP_
 
 // Framework includes
-#include "../../Move.hpp"
+#include "../../../NSIterator.hpp"
+
+#include "../Moves/MoveTSP2Opt.hpp"
 
 using namespace std;
 
 // Working structure: vector<T>
 
-template<class T, class M = OPTFRAME_DEFAULT_MEMORY>
-class MoveTSPSwap: public Move<vector<T> , M>
+template<class T, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MoveTSP2Opt<T, M> >
+class NSIteratorTSP2Opt: public NSIterator<vector<T> , M>
 {
 	typedef vector<T> Route;
 
-protected:
+private:
+
+	MOVE* m;
 	int p1, p2; // position 1 and position 2, respectively
+	const Route& r;
 
 public:
 
-	MoveTSPSwap(int _p1, int _p2) :
-		p1(_p1), p2(_p2)
+	NSIteratorTSP2Opt(const Route& _r) :
+		r(_r)
+	{
+		m = NULL;
+	}
+
+	virtual ~NSIteratorTSP2Opt()
 	{
 	}
 
-	virtual ~MoveTSPSwap()
+	void first()
 	{
+		if (r.size() >= 2)
+		{
+			p1 = 0;
+			p2 = 2;
+			m = new MoveTSP2Opt<T, M> (p1, p2);
+		}
+		else
+			m = NULL;
 	}
 
-	int get_p1()
+	void next()
 	{
-		return p1;
+		if (!((p1 == r.size() - 2) && (p2 == r.size())))
+		{
+			if (p2 != r.size())
+			{
+				p2++;
+			}
+			else
+			{
+				p1++;
+				p2 = p1 + 2;
+			}
+
+			m = new MoveTSP2Opt<T, M> (p1, p2);
+		}
+		else
+			m = NULL;
 	}
 
-	int get_p2()
+	bool isDone()
 	{
-		return p2;
+		return m == NULL;
 	}
 
-	bool canBeApplied(const Route& rep)
+	Move<Route, M>& current()
 	{
-		bool all_positive = (p1 >= 0) && (p2 >= 0);
-		bool size_ok = (p1 < rep.size()) && (p2 < rep.size());
-		return all_positive && size_ok && (rep.size() >= 2);
-	}
+		if (isDone())
+		{
+			cout << "There isnt any current element!" << endl;
+			cout << "NSSeqRouteShift. Aborting." << endl;
+			exit(1);
+		}
 
-	Move<Route, M>& apply(Route& rep)
-	{
-		T t = rep[p1];
-		rep[p1] = rep[p2];
-		rep[p2] = t;
-
-		return *new MoveTSPSwap(p1, p2);
-	}
-
-	virtual bool operator==(const Move<Route, M>& _m) const
-	{
-		const MoveTSPSwap& m1 = (const MoveTSPSwap&) _m;
-		return ((m1.p1 == p1) && (m1.p2 == p2));
-	}
-
-	void print() const
-	{
-		cout << "MoveTSPSwap( " << p1 << " <=> " << p2 << " )" << endl;
+		return *m;
 	}
 };
 
-#endif /*OPTFRAME_MOVETSPSWAP_HPP_*/
+#endif /*OPTFRAME_ITERATORNSSEQTSP2OPT_HPP_*/

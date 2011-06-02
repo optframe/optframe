@@ -22,7 +22,7 @@
 #define OPTFRAME_ITERATORTSPSWAP_HPP_
 
 // Framework includes
-#include "../../NSIterator.hpp"
+#include "../../../NSIterator.hpp"
 
 #include "../Moves/MoveTSPSwap.hpp"
 

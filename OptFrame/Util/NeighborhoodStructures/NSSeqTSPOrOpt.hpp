@@ -22,10 +22,10 @@
 #define OPTFRAME_NSSEQVECTOROROPT_HPP_
 
 // Framework includes
-#include "../Move.hpp"
-#include "../NSSeq.hpp"
+#include "../../Move.hpp"
+#include "../../NSSeq.hpp"
 
-#include "NSSeqVectorOrOptk.hpp"
+#include "NSSeqTSPOrOptk.hpp"
 #include "NSSeqUnionAdapter.hpp"
 
 using namespace std;
@@ -33,36 +33,34 @@ using namespace std;
 // definition: OrOpt is OrOpt{1..3}
 
 template<class T, class M = OPTFRAME_DEFAULT_MEMORY>
-class NSSeqVectorOrOpt: public NSSeq<vector<T> , M>
+class NSSeqTSPOrOpt: public NSSeq<vector<T> , M>
 {
 	typedef vector<T> Route;
-	NSSeq<Route, M>* ns;
 
-	NSSeqVectorOrOptk<T, M>* OrOpt1;
-	NSSeqVectorOrOptk<T, M>* OrOpt2;
-	NSSeqVectorOrOptk<T, M>* OrOpt3;
+	NSSeqTSPOrOptk<T, M>* OrOpt1;
+	NSSeqTSPOrOptk<T, M>* OrOpt2;
+	NSSeqTSPOrOptk<T, M>* OrOpt3;
 
-	NSSeqUnionAdapter<vector<T>, M>* OrOpt2_3;
 	NSSeqUnionAdapter<vector<T>, M>* OrOpt1_2_3;
+
 public:
 
-	NSSeqVectorOrOpt()
+	NSSeqTSPOrOpt()
 	{
-		OrOpt1 = new NSSeqVectorOrOptk<T, M> (1);
-		OrOpt2 = new NSSeqVectorOrOptk<T, M> (2);
-		OrOpt3 = new NSSeqVectorOrOptk<T, M> (3);
+      OrOpt1 = new NSSeqTSPOrOptk<T, M> (1);
+      OrOpt2 = new NSSeqTSPOrOptk<T, M> (2);
+      OrOpt3 = new NSSeqTSPOrOptk<T, M> (3);
 
-		OrOpt2_3 = new NSSeqUnionAdapter<vector<T>, M> (*OrOpt2, *OrOpt3);
-		OrOpt1_2_3 = new NSSeqUnionAdapter<vector<T>, M> (*OrOpt1, *OrOpt2_3);
+      OrOpt1_2_3 = new NSSeqUnionAdapter<vector<T> , M> (*OrOpt1, *OrOpt2);
+      OrOpt1_2_3->add_ns(*OrOpt3);
 	}
 
-	virtual ~NSSeqVectorOrOpt()
+	virtual ~NSSeqTSPOrOpt()
 	{
 		delete OrOpt1;
 		delete OrOpt2;
 		delete OrOpt3;
 
-		delete OrOpt2_3;
 		delete OrOpt1_2_3;
 	}
 

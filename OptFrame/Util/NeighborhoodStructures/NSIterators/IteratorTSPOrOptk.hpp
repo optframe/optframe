@@ -18,64 +18,72 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_MOVEOROPTK_HPP_
-#define OPTFRAME_MOVEOROPTK_HPP_
+#ifndef OPTFRAME_NSITERATOROROPTK_HPP_
+#define OPTFRAME_NSITERATOROROPTK_HPP_
 
 // Framework includes
-#include "../../Move.hpp"
+#include "../../../NSIterator.hpp"
 
 using namespace std;
 
 // Working structure: vector<vector<T> >
 
 template<class T, class M = OPTFRAME_DEFAULT_MEMORY>
-class MoveOrOptk: public Move<vector<T> , M>
+class NSIteratorTSPOrOptk: public NSIterator<vector<T> , M>
 {
 	typedef vector<T> Route;
 
 private:
-	int i; // origin
-	int j; // destination
-	int k; // number of elements
+	int n, k;
+	int i, j;
 
 public:
 
-	MoveOrOptk(int _i, int _j, int _k) :
-		i(_i), j(_j), k(_k)
+	NSIteratorTSPOrOptk(int _n, int _k) :
+		n(_n), k(_k)
 	{
 	}
 
-	virtual ~MoveOrOptk()
+	virtual ~NSIteratorTSPOrOptk()
 	{
 	}
 
-	bool canBeApplied(const Route& rep)
+	void first()
 	{
-		//return (i != j) && (i + k <= rep.size());
-		return (i != j);
+		i = 0;
+		j = 1;
 	}
 
-	Move<Route, M>& apply(Route& rep)
+	void next()
 	{
-		vector<T> v_aux;
-		v_aux.insert(v_aux.begin(), rep.begin() + i, rep.begin() + i + k);
-		rep.erase(rep.begin() + i, rep.begin() + i + k);
-		rep.insert(rep.begin() + j, v_aux.begin(), v_aux.end());
+		j++;
 
-		return *new MoveOrOptk(j, i, k);
+		if (j == i)
+			j++;
+
+		if (j > n - k)
+		{
+			j = 0;
+			i++;
+		}
 	}
 
-	virtual bool operator==(const Move<Route, M>& _m) const
+	bool isDone()
 	{
-		const MoveOrOptk& m1 = (const MoveOrOptk&) _m;
-		return (m1.i == i) && (m1.j == j) && (m1.k == k);
+		return i > n - k;
 	}
 
-	void print() const
+	Move<Route, M>& current()
 	{
-		cout << "MoveVectorOrOpt{K=" << k << "}";
-		cout << "(" << i << ";" << j << ")" << endl;
+		if (isDone())
+		{
+			cout << "There isnt any current element!" << endl;
+			cout << "OrOpt{K=" << k << "}. Aborting." << endl;
+			exit(1);
+		}
+
+		return *new MoveTSPOrOptk<T, M> (i, j, k);
 	}
 };
 
-#endif /*OPTFRAME_MOVEOROPTK_HPP_*/
+#endif /*OPTFRAME_NSITERATOROROPTK_HPP_*/

@@ -18,58 +18,72 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_NSSEQUNIONADAPTER_HPP_
-#define OPTFRAME_NSSEQUNIONADAPTER_HPP_
+#ifndef OPTFRAME_MOVENSSEQUNION_HPP_
+#define OPTFRAME_MOVENSSEQUNION_HPP_
 
 // Framework includes
-//#include "../../../Move.hpp"
-#include "../NSSeq.hpp"
-
-#include "./Moves/MoveNSSeqUnion.hpp"
-#include "./NSIterators/IteratorNSSeqUnion.hpp"
+#include "../../../Move.hpp"
 
 using namespace std;
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MoveNSSeqUnion<R, M> >
-class NSSeqUnionAdapter: public NSSeq<R, M>
+template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+class MoveNSSeqUnion: public Move<R, M>
 {
-private:
-	NSSeq<R, M>& n1;
-	NSSeq<R, M>& n2;
+protected:
+	int id;
+	Move<R, M>& m;
 
 public:
 
-	NSSeqUnionAdapter(NSSeq<R, M>& _n1, NSSeq<R, M>& _n2) :
-		n1(_n1), n2(_n2)
+	MoveNSSeqUnion(int _id, Move<R, M>& _m) :
+		id(_id), m(_m)
 	{
 	}
 
-	virtual ~NSSeqUnionAdapter()
+	int get_id()
 	{
+		return id;
 	}
 
-	Move<R, M>& move(const R& r)
+	Move<R, M>& get_m()
 	{
-		int x = rand() % 2;
+		return m;
+	}
 
-		if (x == 0)
-			return *new MOVE(0, n1.move(r));
+	virtual ~MoveNSSeqUnion()
+	{
+		delete &m;
+	}
+
+	bool canBeApplied(const R& r)
+	{
+		return m.canBeApplied(r);
+	}
+
+	Move<R, M>& apply(R& r)
+	{
+		return *new MoveNSSeqUnion<R, M> (id, m.apply(r));
+	}
+
+	Move<R, M>& apply(M& mem, R& rep)
+	{
+		return *new MoveNSSeqUnion<R, M> (id, m.apply(mem, rep));
+	}
+
+	virtual bool operator==(const Move<R, M>& _m) const
+	{
+		const MoveNSSeqUnion<R, M>& m1 = (const MoveNSSeqUnion<R, M>&) _m;
+		if (id == m1.id)
+			return m == m1.m;
 		else
-			return *new MOVE(1, n2.move(r));
+			return false;
 	}
 
-	virtual NSIterator<R, M>& getIterator(const R& r)
+	void print() const
 	{
-		return *new IteratorNSSeqUnion<R, M, MOVE> (n1.getIterator(r), n2.getIterator(r));
-	}
-
-	virtual void print()
-	{
-		cout << "NSSeqUnionAdapter {" << endl;
-		n1.print();
-		n2.print();
-		cout << "}" << endl;
+		cout << "MoveNSSeqUnion: id=" << id << "; move = ";
+		m.print();
 	}
 };
 
-#endif /*OPTFRAME_NSSEQUNIONADAPTER_HPP_*/
+#endif /*OPTFRAME_MOVENSSEQUNION_HPP_*/

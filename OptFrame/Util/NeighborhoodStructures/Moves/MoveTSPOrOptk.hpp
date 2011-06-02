@@ -18,72 +18,64 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_MOVETSP2OPT_HPP_
-#define OPTFRAME_MOVETSP2OPT_HPP_
+#ifndef OPTFRAME_MOVE_TSP_OROPTK_HPP_
+#define OPTFRAME_MOVE_TSP_OROPTK_HPP_
 
 // Framework includes
-#include "../../Move.hpp"
+#include "../../../Move.hpp"
 
 using namespace std;
 
-// Working structure: vector<T>
+// Working structure: vector<vector<T> >
 
 template<class T, class M = OPTFRAME_DEFAULT_MEMORY>
-class MoveTSP2Opt: public Move<vector<T> , M>
+class MoveTSPOrOptk: public Move<vector<T> , M>
 {
 	typedef vector<T> Route;
 
-protected:
-	int p1, p2; // position 1 and position 2, respectively
+private:
+	int i; // origin
+	int j; // destination
+	int k; // number of elements
 
 public:
 
-	MoveTSP2Opt(int _p1, int _p2) :
-		p1(_p1), p2(_p2)
+	MoveTSPOrOptk(int _i, int _j, int _k) :
+		i(_i), j(_j), k(_k)
 	{
 	}
 
-	virtual ~MoveTSP2Opt()
+	virtual ~MoveTSPOrOptk()
 	{
-	}
-
-	int get_p1()
-	{
-		return p1;
-	}
-
-	int get_p2()
-	{
-		return p2;
 	}
 
 	bool canBeApplied(const Route& rep)
 	{
-		bool all_positive = (p1 >= 0) && (p2 >= 0);
-		return all_positive && (rep.size() >= 2);
+		//return (i != j) && (i + k <= rep.size());
+		return (i != j);
 	}
 
 	Move<Route, M>& apply(Route& rep)
 	{
+		vector<T> v_aux;
+		v_aux.insert(v_aux.begin(), rep.begin() + i, rep.begin() + i + k);
+		rep.erase(rep.begin() + i, rep.begin() + i + k);
+		rep.insert(rep.begin() + j, v_aux.begin(), v_aux.end());
 
-		reverse(rep.begin() + p1, rep.begin() + p2);
-
-		// r1->r1, r2->r2, e1->i1, e2->i2, n1->n2, n2->n1, i1->e1, i2->e2
-		return *new MoveTSP2Opt(p1, p2);
+		return *new MoveTSPOrOptk(j, i, k);
 	}
 
 	virtual bool operator==(const Move<Route, M>& _m) const
 	{
-		const MoveTSP2Opt& m1 = (const MoveTSP2Opt&) _m;
-		return ((m1.p1 == p1) && (m1.p2 == p2));
+		const MoveTSPOrOptk& m1 = (const MoveTSPOrOptk&) _m;
+		return (m1.i == i) && (m1.j == j) && (m1.k == k);
 	}
 
 	void print() const
 	{
-		cout << "MoveTSP2Opt( ";
-		cout << " edge " << p1 << " <=>  edge " << p2 << " )";
-		cout << endl;
+		cout << "MoveTSPOrOpt{K=" << k << "}";
+		cout << "(" << i << ";" << j << ")" << endl;
 	}
 };
 
-#endif /*OPTFRAME_MOVETSP2OPT_HPP_*/
+#endif /*OPTFRAME_MOVE_TSP_OROPTK_HPP_*/

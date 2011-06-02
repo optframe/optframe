@@ -35,6 +35,10 @@ using namespace std;
 #include "../OptFrame/OptFrame.hpp"
 #include "TSP.h"
 
+#include "../OptFrame/Util/NeighborhoodStructures/NSSeqTSP2Opt.hpp"
+#include "../OptFrame/Util/NeighborhoodStructures/NSSeqTSPOrOpt.hpp"
+#include "../OptFrame/Util/NeighborhoodStructures/NSSeqTSPSwap.hpp"
+
 int main(int argc, char **argv)
 {
 	srand(time(NULL));
@@ -65,7 +69,11 @@ int main(int argc, char **argv)
 	OptFrame<RepTSP, MemTSP> optframe(rg);
 	optframe.factory.add_initsol(&is);
 	optframe.factory.add_ev(&eval);
+
 	optframe.factory.add_ns(&ns);
+	optframe.factory.add_ns(new NSSeqTSPOrOpt<int, MemTSP>);
+	optframe.factory.add_ns(new NSSeqTSPSwap<int, MemTSP>);
+	optframe.factory.add_ns(new NSSeqTSP2Opt<int, MemTSP>);
 
 	optframe.execute();
 
