@@ -108,14 +108,17 @@ public:
 		string tmp = scanner->next();
 
 		if (tmp != "loadsol")
-			cout << "Warning: expected 'loadsol' and found '" << tmp << "'." << endl;
+		{
+			cout << "Error: expected 'loadsol' and found '" << tmp << "'." << endl;
+			return NULL;
+		}
 
 		int loadsol_id = scanner->nextInt();
 
 		if (loadsol.size() <= loadsol_id)
 		{
 			cout << "Error: solution number " << loadsol_id << " doesn't exist!" << endl;
-			exit(1);
+			return NULL;
 		}
 
 		return loadsol[loadsol_id];
@@ -144,14 +147,17 @@ public:
 		string tmp = scanner->next();
 
 		if (tmp != "loadpop")
-			cout << "Warning: expected 'loadpop' and found '" << tmp << "'." << endl;
+		{
+			cout << "Error: expected 'loadpop' and found '" << tmp << "'." << endl;
+			return NULL;
+		}
 
 		int loadpop_id = scanner->nextInt();
 
 		if (loadpop.size() <= loadpop_id)
 		{
 			cout << "Error: solution number " << loadpop_id << " doesn't exist!" << endl;
-			exit(1);
+			return NULL;
 		}
 
 		return loadpop[loadpop_id];
@@ -162,14 +168,17 @@ public:
 		string tmp = scanner->next();
 
 		if (tmp != "initpop")
-			cout << "Warning: expected 'initpop' and found '" << tmp << "'." << endl;
+		{
+			cout << "Error: expected 'initpop' and found '" << tmp << "'." << endl;
+			return NULL;
+		}
 
 		int initpop_id = scanner->nextInt();
 
 		if (initpop.size() <= initpop_id)
 		{
 			cout << "Error: init number " << initpop_id << " doesn't exist!" << endl;
-			exit(1);
+			return NULL;
 		}
 
 		return initpop[initpop_id];
@@ -180,14 +189,17 @@ public:
 		string tmp = scanner->next();
 
 		if (tmp != "ns")
+		{
 			cout << "Warning: expected 'ns' and found '" << tmp << "'." << endl;
+			return NULL;
+		}
 
 		int ns_id = scanner->nextInt();
 
 		if (ns.size() <= ns_id)
 		{
 			cout << "Error: ns number " << ns_id << " doesn't exist!" << endl;
-			exit(1);
+			return NULL;
 		}
 
 		return ns[ns_id];
@@ -198,14 +210,17 @@ public:
 		string tmp = scanner->next();
 
 		if (tmp != "np")
-			cout << "Warning: expected 'np' and found '" << tmp << "'." << endl;
+		{
+			cout << "Error: expected 'np' and found '" << tmp << "'." << endl;
+			return -1;
+		}
 
 		int np = scanner->nextInt();
 
 		if (np <= 1)
 		{
 			cout << "Error: number or processes " << np << " must be greater than or equal 2" << endl;
-			exit(1);
+			return -1;
 		}
 
 		return np;
@@ -225,14 +240,17 @@ public:
 			aux = new Scanner(list.at(i));
 			tmp = aux->next();
 			if (tmp != "ns")
-				cout << "Warning: expected 'ns' and found '" << tmp << "'." << endl;
+			{
+				cout << "Error: expected 'ns' and found '" << tmp << "'." << endl;
+				return vector<NS<R, M>*>();
+			}
 
 			int ns_id = aux->nextInt();
 
 			if (ns.size() <= ns_id)
 			{
 				cout << "Error: ns number " << ns_id << " doesn't exist!" << endl;
-				exit(1);
+				return vector<NS<R, M>*>();
 			}
 
 			v_ns.push_back(ns[ns_id]);
@@ -242,7 +260,7 @@ public:
 		if (v_ns.size() == 0)
 		{
 			cout << "Error: empty ns list." << endl;
-			exit(1);
+			return vector<NS<R, M>*>();
 		}
 
 		return v_ns;
@@ -262,14 +280,17 @@ public:
 			aux = new Scanner(list.at(i));
 			tmp = aux->next();
 			if (tmp != "ev")
-				cout << "Warning: expected 'ev' and found '" << tmp << "'." << endl;
+			{
+				cout << "Error: expected 'ev' and found '" << tmp << "'." << endl;
+				return vector<Evaluator<R, M> *>();
+			}
 
 			int ev_id = aux->nextInt();
 
 			if (ev.size() <= ev_id)
 			{
 				cout << "Error: ev number " << ev_id << " doesn't exist!" << endl;
-				exit(1);
+				return vector<Evaluator<R, M> *>();
 			}
 
 			v_ev.push_back(ev[ev_id]);
@@ -279,7 +300,7 @@ public:
 		if (v_ev.size() == 0)
 		{
 			cout << "Error: empty ev list." << endl;
-			exit(1);
+			return vector<Evaluator<R, M> *>();
 		}
 
 		return v_ev;
@@ -323,14 +344,17 @@ public:
 			return moev;
 		}
 		else if (tmp != "ev")
-			cout << "Warning: expected 'ev' and found '" << tmp << "'." << endl;
+		{
+			cout << "Error: expected 'ev' and found '" << tmp << "'." << endl;
+			return NULL;
+		}
 
 		int ev_id = scanner->nextInt();
 
 		if (ev.size() <= ev_id)
 		{
 			cout << "Error: ev number " << ev_id << " doesn't exist!" << endl;
-			exit(1);
+			return NULL;
 		}
 
 		return ev[ev_id];
@@ -341,14 +365,17 @@ public:
 		string tmp = scanner->next();
 
 		if (tmp != "ilsl_pert")
-			cout << "Warning: expected 'ilsl_pert' and found '" << tmp << "'." << endl;
+		{
+			cout << "Error: expected 'ilsl_pert' and found '" << tmp << "'." << endl;
+			return NULL;
+		}
 
 		int ilsl_pert_id = scanner->nextInt();
 
 		if (ilsl_pert.size() <= ilsl_pert_id)
 		{
 			cout << "Error: 'perturbation levels' number " << ilsl_pert_id << " doesn't exist!" << endl;
-			exit(1);
+			return NULL;
 		}
 
 		return ilsl_pert[ilsl_pert_id];
@@ -359,14 +386,17 @@ public:
 		string tmp = scanner->next();
 
 		if (tmp != "ils_pert")
-			cout << "Warning: expected 'ils_pert' and found '" << tmp << "'." << endl;
+		{
+			cout << "Error: expected 'ils_pert' and found '" << tmp << "'." << endl;
+			return NULL;
+		}
 
 		int ils_pert_id = scanner->nextInt();
 
 		if (ils_pert.size() <= ils_pert_id)
 		{
 			cout << "Error: 'perturbation levels' number " << ils_pert_id << " doesn't exist!" << endl;
-			exit(1);
+			return NULL;
 		}
 
 		return ils_pert[ils_pert_id];
@@ -377,14 +407,17 @@ public:
 		string tmp = scanner->next();
 
 		if (tmp != "ils_int")
-			cout << "Warning: expected 'ils_int' and found '" << tmp << "'." << endl;
+		{
+			cout << "Error: expected 'ils_int' and found '" << tmp << "'." << endl;
+			return NULL;
+		}
 
 		int ils_int_id = scanner->nextInt();
 
 		if (ils_int.size() <= ils_int_id)
 		{
 			cout << "Error: 'intensification' number " << ils_int_id << " doesn't exist!" << endl;
-			exit(1);
+			return NULL;
 		}
 
 		return ils_int[ils_int_id];
@@ -395,14 +428,17 @@ public:
 		string tmp = scanner->next();
 
 		if (tmp != "ga_sel")
-			cout << "Warning: expected 'ga_sel' and found '" << tmp << "'." << endl;
+		{
+			cout << "Error: expected 'ga_sel' and found '" << tmp << "'." << endl;
+			return NULL;
+		}
 
 		int ga_sel_id = scanner->nextInt();
 
 		if (ga_sel.size() <= ga_sel_id)
 		{
 			cout << "Error: 'genetic selection' number " << ga_sel_id << " doesn't exist!" << endl;
-			exit(1);
+			return NULL;
 		}
 
 		return ga_sel[ga_sel_id];
@@ -413,14 +449,17 @@ public:
 		string tmp = scanner->next();
 
 		if (tmp != "ga_mut")
-			cout << "Warning: expected 'ga_mut' and found '" << tmp << "'." << endl;
+		{
+			cout << "Error: expected 'ga_mut' and found '" << tmp << "'." << endl;
+			return NULL;
+		}
 
 		int ga_mut_id = scanner->nextInt();
 
 		if (ga_mut.size() <= ga_mut_id)
 		{
 			cout << "Error: 'genetic mutation' number " << ga_mut_id << " doesn't exist!" << endl;
-			exit(1);
+			return NULL;
 		}
 
 		return ga_mut[ga_mut_id];
@@ -431,14 +470,17 @@ public:
 		string tmp = scanner->next();
 
 		if (tmp != "ga_elt")
-			cout << "Warning: expected 'ga_elt' and found '" << tmp << "'." << endl;
+		{
+			cout << "Error: expected 'ga_elt' and found '" << tmp << "'." << endl;
+			return NULL;
+		}
 
 		int ga_elt_id = scanner->nextInt();
 
 		if (ga_elt.size() <= ga_elt_id)
 		{
 			cout << "Error: 'genetic elitism' number " << ga_elt_id << " doesn't exist!" << endl;
-			exit(1);
+			return NULL;
 		}
 
 		return ga_elt[ga_elt_id];
@@ -449,14 +491,17 @@ public:
 		string tmp = scanner->next();
 
 		if (tmp != "ga_cross")
-			cout << "Warning: expected 'ga_cross' and found '" << tmp << "'." << endl;
+		{
+			cout << "Error: expected 'ga_cross' and found '" << tmp << "'." << endl;
+			return NULL;
+		}
 
 		int ga_cross_id = scanner->nextInt();
 
 		if (ga_cross.size() <= ga_cross_id)
 		{
 			cout << "Error: 'genetic crossover' number " << ga_cross_id << " doesn't exist!" << endl;
-			exit(1);
+			return NULL;
 		}
 
 		return ga_cross[ga_cross_id];
@@ -772,6 +817,13 @@ public:
 		if (h == "method")
 		{
 			int id = scanner.nextInt();
+
+			if(id >= method.size())
+			{
+	         cout << "Error: method number " << id << " doesn't exist!" << endl;
+	         return make_pair(new Empty<R, M> , scanner.rest());
+			}
+
 			return make_pair(method[id], scanner.rest());
 		}
 
@@ -783,7 +835,12 @@ public:
 			cout << "Heuristic: Best Improvement" << endl;
 
 			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			if(!evaluator)
+			   return make_pair(new Empty<R, M> , scanner.rest());
+
 			NSSeq<R, M>* ns_seq = (NSSeq<R, M>*) read_ns(&scanner);
+			if(!ns_seq)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			return make_pair(new BestImprovement<R, M> (*evaluator, *ns_seq), scanner.rest());
 		}
@@ -793,7 +850,12 @@ public:
 			cout << "Heuristic: First Improvement" << endl;
 
 			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			if(!evaluator)
+			   return make_pair(new Empty<R, M> , scanner.rest());
+
 			NSSeq<R, M>* ns_seq = (NSSeq<R, M>*) read_ns(&scanner);
+			if(!ns_seq)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			return make_pair(new FirstImprovement<R, M> (*evaluator, *ns_seq), scanner.rest());
 		}
@@ -821,7 +883,13 @@ public:
 			cout << "Heuristic: Random Descent Method" << endl;
 
 			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			if(!evaluator)
+			   return make_pair(new Empty<R, M> , scanner.rest());
+
 			NS<R, M>* ns = (NS<R, M>*) read_ns(&scanner);
+			if(!ns)
+			   return make_pair(new Empty<R, M> , scanner.rest());
+
 			int iter = scanner.nextInt();
 
 			return make_pair(new RandomDescentMethod<R, M> (*evaluator, *ns, iter), scanner.rest());
@@ -832,7 +900,12 @@ public:
 			cout << "Heuristic: GRASP" << endl;
 
 			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			if(!evaluator)
+			   return make_pair(new Empty<R, M> , scanner.rest());
+
 			InitialSolution<R>* initsol = read_initsol(&scanner);
+			if(!initsol)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			string rest = scanner.rest();
 
@@ -853,7 +926,13 @@ public:
 			cout << "Heuristic: Tabu Search" << endl;
 
 			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			if(!evaluator)
+			   return make_pair(new Empty<R, M> , scanner.rest());
+
 			NSSeq<R, M>* ns = (NSSeq<R, M>*) read_ns(&scanner);
+			if(!ns)
+			   return make_pair(new Empty<R, M> , scanner.rest());
+
 			int tamT = scanner.nextInt();
 			int BTmax = scanner.nextInt();
 
@@ -865,6 +944,8 @@ public:
 			cout << "Heuristic: Basic Iterated Local Search" << endl;
 
 			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			if(!evaluator)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			// ===================
 			// Read next heuristic
@@ -882,6 +963,8 @@ public:
 			// ====================
 
 			BasicILSPerturbation<R, M>* ils_pert = read_ils_pert(&scanner);
+			if(!ils_pert)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			int iterMax = scanner.nextInt();
 
@@ -893,8 +976,12 @@ public:
 			cout << "Heuristic: Basic Simulated Annealing" << endl;
 
 			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			if(!evaluator)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			vector<NS<R,M>* > ns_list = read_ns_list(&scanner);
+			if(ns_list.size()==0)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			double alpha = scanner.nextDouble();
 			int SAmax = scanner.nextInt();
@@ -908,6 +995,8 @@ public:
 			cout << "Heuristic: Iterated Local Search (Levels)" << endl;
 
 			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			if(!evaluator)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			// ===================
 			// Read next heuristic
@@ -925,6 +1014,8 @@ public:
 			// ====================
 
 			ILSLPerturbation<R, M>* ilsl_pert = read_ilsl_pert(&scanner);
+			if(!ilsl_pert)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			int iterMax = scanner.nextInt();
 			int levelMax = scanner.nextInt();
@@ -937,6 +1028,8 @@ public:
 			cout << "Heuristic: Intensified Iterated Local Search (Levels)" << endl;
 
 			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			if(!evaluator)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			// ===================
 			// Read next heuristic
@@ -963,10 +1056,14 @@ public:
 			 scanner = Scanner(method2.second);*/
 
 			Intensification<R, M> * intensification = read_ils_int(&scanner);
+			if(!intensification)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			// ====================
 
 			ILSLPerturbation<R, M>* ilsl_pert = read_ilsl_pert(&scanner);
+			if(!ilsl_pert)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			int iterMax = scanner.nextInt();
 			int levelMax = scanner.nextInt();
@@ -980,7 +1077,12 @@ public:
 			cout << "Heuristic: Variable Neighborhood Descent" << endl;
 
 			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			if(!evaluator)
+			   return make_pair(new Empty<R, M> , scanner.rest());
+
 			vector<Heuristic<R, M>*> hlist = read_heuristic_list(&scanner);
+			if(hlist.size()==0)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			return make_pair(new VariableNeighborhoodDescent<R, M> (*evaluator, hlist), scanner.rest());
 
@@ -991,7 +1093,12 @@ public:
 			cout << "Heuristic: RVND" << endl;
 
 			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			if(!evaluator)
+			   return make_pair(new Empty<R, M> , scanner.rest());
+
 			vector<Heuristic<R, M>*> hlist = read_heuristic_list(&scanner);
+			if(hlist.size()==0)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			return make_pair(new RVND<R, M> (*evaluator, hlist, rg), scanner.rest());
 		}
@@ -1001,6 +1108,8 @@ public:
 			cout << "Heuristic: Variable Neighborhood Search" << endl;
 
 			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			if(!evaluator)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			// ===================
 			// Read next heuristic
@@ -1018,6 +1127,8 @@ public:
 			// ====================
 
 			ILSLPerturbation<R, M>* ilsl_pert = read_ilsl_pert(&scanner);
+			if(!ilsl_pert)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			int iterMax = scanner.nextInt();
 			int levelMax = scanner.nextInt();
@@ -1030,7 +1141,12 @@ public:
 			cout << "Heuristic: MultiHeuristic" << endl;
 
 			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			if(!evaluator)
+			   return make_pair(new Empty<R, M> , scanner.rest());
+
 			vector<Heuristic<R, M>*> hlist = read_heuristic_list(&scanner);
+			if(hlist.size()==0)
+			   return make_pair(new Empty<R, M> , scanner.rest());
 
 			return make_pair(new MultiHeuristic<R, M> (*evaluator, hlist), scanner.rest());
 		}
