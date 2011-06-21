@@ -39,9 +39,7 @@ public:
 	{
 		cout << "drop_all" << endl;
 
-		HeuristicFactory<R, M> * old_factory = factory;
-		factory = new HeuristicFactory<R, M>( old_factory->getRandGen() );
-		delete old_factory;
+      factory->drop_all();
 	}
 
 };

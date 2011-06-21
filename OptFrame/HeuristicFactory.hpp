@@ -522,48 +522,67 @@ public:
 
 	virtual ~HeuristicFactory()
 	{
+                drop_all();
+	}
+
+   void drop_all()
+   {
 		for (int i = 0; i < ns.size(); i++)
 			delete ns[i];
+                ns.clear();
 
 		for (int i = 0; i < ev.size(); i++)
 			delete ev[i];
+                ev.clear();
 
 		for (int i = 0; i < initsol.size(); i++)
 			delete initsol[i];
+                initsol.clear();
 
 		for (int i = 0; i < loadsol.size(); i++)
 			delete loadsol[i];
+                loadsol.clear();
 
 		for (int i = 0; i < method.size(); i++)
 			delete method[i];
+                method.clear();
 
 		for (int i = 0; i < initpop.size(); i++)
 			delete initpop[i];
+                initpop.clear();
 
 		for (int i = 0; i < loadpop.size(); i++)
 			delete loadpop[i];
+                loadpop.clear();
 
 		for (int i = 0; i < ilsl_pert.size(); i++)
 			delete ilsl_pert[i];
+                ilsl_pert.clear();
 
 		for (int i = 0; i < ils_pert.size(); i++)
 			delete ils_pert[i];
+                ils_pert.clear();
 
 		for (int i = 0; i < ils_int.size(); i++)
 			delete ils_int[i];
+                ils_int.clear();
 
 		for (int i = 0; i < ga_sel.size(); i++)
 			delete ga_sel[i];
+                ga_sel.clear();
 
 		for (int i = 0; i < ga_mut.size(); i++)
 			delete ga_mut[i];
+                ga_mut.clear();
 
 		for (int i = 0; i < ga_cross.size(); i++)
 			delete ga_cross[i];
+                ga_cross.clear();
 
 		for (int i = 0; i < ga_elt.size(); i++)
 			delete ga_elt[i];
-	}
+                ga_elt.clear();
+   }
 
 	int add_method(Heuristic<R, M>* _method)
 	{
