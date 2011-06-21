@@ -38,6 +38,7 @@ using namespace std;
 #include "Heuristic/HillClimbing.hpp"
 #include "Heuristic/BestImprovement.hpp"
 #include "Heuristic/FirstImprovement.hpp"
+#include "Heuristic/CircularSearch.hpp"
 #include "Heuristic/VariableNeighborhoodDescent.hpp"
 #include "Heuristic/RVND.hpp"
 
@@ -878,6 +879,16 @@ public:
 
 			return make_pair(new FirstImprovement<R, M> (*evaluator, *ns_seq), scanner.rest());
 		}
+
+	   if(h == "CS")
+      {
+         cout << "Heuristic: Circular Search" << endl;
+
+         Evaluator<R, M>* evaluator = read_ev(&scanner);
+         NSEnum<R, M>* ns_enum = (NSEnum<R, M>*) read_ns(&scanner);
+
+         return make_pair(new CircularSearch<R, M> (*evaluator, *ns_enum), scanner.rest());
+      }
 
 		if (h == "HC")
 		{
