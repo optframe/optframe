@@ -94,6 +94,7 @@
 #include "Modules/ElementModule.hpp"
 #include "Modules/EmpiricalModule.hpp"
 #include "Modules/EvaluateModule.hpp"
+#include "Modules/EvaluateToFileModule.hpp"
 #include "Modules/ExecModule.hpp"
 #include "Modules/ExportModule.hpp"
 #include "Modules/ExportLogModule.hpp"
@@ -186,6 +187,7 @@ public:
       loadModule(new ElementModule<R, M> );
       loadModule(new EmpiricalModule<R, M> );
 		loadModule(new EvaluateModule<R, M> );
+		loadModule(new EvaluateToFileModule<R, M> );
 		loadModule(new ExecModule<R, M> );
 		loadModule(new ExportModule<R, M> );
 		loadModule(new ExportLogModule<R, M> );
