@@ -136,7 +136,7 @@ public:
 
 		if (initsol.size() <= initsol_id)
 		{
-			cout << "Error: init number " << initsol_id << " doesn't exist!" << endl;
+			cout << "Error: initsol number " << initsol_id << " doesn't exist!" << endl;
 			exit(1);
 		}
 
@@ -178,7 +178,7 @@ public:
 
 		if (initpop.size() <= initpop_id)
 		{
-			cout << "Error: init number " << initpop_id << " doesn't exist!" << endl;
+			cout << "Error: initpop number " << initpop_id << " doesn't exist!" << endl;
 			return NULL;
 		}
 
