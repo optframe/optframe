@@ -31,6 +31,20 @@
 
 using namespace std;
 
+//! \english The Evaluator class is responsible for the attribution of objective values for each Solution \endenglish \portuguese A classe Evaluator é responsável pela atribuição de valores objetivo para cada Solution \endportuguese
+
+/*!
+  \english
+  The Evaluator class is responsible for the attribution of objective values for each Solution
+  This is done by the method evaluate().
+  \endenglish
+
+  \portuguese
+  A classe Evaluator é responsável pela atribuição de valores objetivo para cada Solution.
+  Isto é feito através do método evaluate().
+  \endportuguese
+*/
+
 template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
 class Evaluator
 {
@@ -136,8 +150,14 @@ public:
 		return betterThan(e1.evaluation(), e2.evaluation());
 	}
 
-	// minimization problem: true when a < b
-	// maximization problem: true when a > b
+	//! abstract method betterThan: true when a < b for minimization problems; and true when a > b for maximization problems.
+	/*!
+	 betterThan is the method in OptFrame used to guide the search methods into the solution space.
+	 with betterThan the search methods are able to compare good and poor solutions, in one of the two directions: minimization and maximization.
+	 It must be implemented by the final user in one of these ways:
+	 - for minimization problems, returns a < b;
+	 - for maximization problems, returns a > b.
+	 */
 	virtual bool betterThan(double a, double b) = 0;
 };
 
