@@ -213,6 +213,11 @@ public:
 		return NULL;
 	}
 
+   //! \english OptFrame Command Line Interface \endenglish \portuguese Interface de Linha de Comando do OptFrame \endportuguese
+   /*!
+      \sa execute(string)
+   */
+
 	void execute()
 	{
 		cout << "Welcome to " << version() << endl;
@@ -263,6 +268,18 @@ public:
 
 		cout << "Goodbye." << endl;
 	}
+
+   //! \english Execute command in OptFrame Command Line Interface \endenglish \portuguese Executa comando na Interface de Linha de Comando do OptFrame \endportuguese
+   /*!
+    \english
+    \param line command to be executed
+    \sa execute()
+    \endenglish
+    \portuguese
+    \param line comando a ser executado
+    \sa execute()
+    \endportuguese
+   */
 
 	void execute(string line)
 	{

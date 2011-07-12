@@ -23,14 +23,39 @@
 
 #include "../OptFrameModule.hpp"
 
+//! \english The BuildModule class is a Module that enables the user to create a heuristic and give a name to it. \endenglish \portuguese A classe BuildModule é o Módulo que permite o usuário criar uma heurística e definir um nome para ela. \endportuguese
+/*!
+  \sa run()
+*/
+
 template<class R, class M>
 class BuildModule: public OptFrameModule<R, M>
 {
 public:
+
+   //! \english Module id \endenglish \portuguese Identificação do módulo \endportuguese
+   /*! \english
+       \return string with the id of this module
+       \endenglish
+       \portuguese
+       \return string com a identificação deste módulo
+       \endportuguese
+   */
+
    string id()
    {
       return "build";
    }
+
+   //! \english Help for this module \endenglish \portuguese Ajuda para este módulo \endportuguese
+   /*! \english
+       \return string with the help for this module
+       \endenglish
+       \portuguese
+       \return string com a ajuda para este módulo
+       \endportuguese
+   */
+
    string usage()
    {
       string u = "build method [my_method_name]\n";
@@ -43,6 +68,28 @@ public:
 
       return u;
    }
+
+   //! \english Execution of the module \endenglish \portuguese Execução do módulo \endportuguese
+   /*! \english
+       The BuildModule receives as parameters the description of the heuristic and the desired name.
+
+       The string for the construction of the heuristic is sent to HeuristicFactory and it creates the method. Then, the BuildModule gives the desired name to the created method.
+
+       For more information type 'usage build' in OptFrame Command Line Interface
+
+       \sa OptFrame::execute()
+       \endenglish
+
+       \portuguese
+       O BuildModule recebe como parâmetro a descrição da heurística e o nome desejado.
+
+       A string para construção da heurística é repassada ao HeuristicFactory, que gera efetivamente o método. Após isso o BuildModule dá o nome desejado ao método criado.
+
+       Para mais informações digite 'usage build' na Interface de Linha de Comando do OptFrame
+
+       \sa OptFrame::execute()
+       \endportuguese
+   */
 
    void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
    {

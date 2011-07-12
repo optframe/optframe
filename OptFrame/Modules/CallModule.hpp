@@ -23,21 +23,65 @@
 
 #include "../OptFrameModule.hpp"
 
+//! \english The CallModule class is a Module that enables the user to do a system call to external software \endenglish \portuguese A classe CallModule é o Módulo que permite o usuário fazer uma chamada de sistema, executando um programa externo. \endportuguese
+/*!
+  \sa run()
+*/
+
 template< class R, class M >
 class CallModule :
       public OptFrameModule<R, M>
 {
 public:
+
+  //! \english Module id \endenglish \portuguese Identificação do módulo \endportuguese
+  /*! \english
+      \return string with the id of this module
+      \endenglish
+      \portuguese
+      \return string com a identificação deste módulo
+      \endportuguese
+  */
+
    string id()
    {
       return "call";
    }
+
+
+   //! \english Help for this module \endenglish \portuguese Ajuda para este módulo \endportuguese
+   /*! \english
+       \return string with the help for this module
+       \endenglish
+       \portuguese
+       \return string com a ajuda para este módulo
+       \endportuguese
+   */
+
    string usage()
    {
       return "call external_software";
    }
 
-   void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>*, map<string, string>* dictionary, string command)
+   //! \english Execution of the module \endenglish \portuguese Execução do módulo \endportuguese
+   /*! \english
+       The CallModule receives as parameter the desired system call.
+
+       For more information type 'usage call' in OptFrame Command Line Interface
+
+       \sa OptFrame::execute()
+       \endenglish
+
+       \portuguese
+       O CallModule recebe como parâmetro a chamada de sistema desejada.
+
+       Para mais informações digite 'usage call' na Interface de Linha de Comando do OptFrame
+
+       \sa OptFrame::execute()
+       \endportuguese
+   */
+
+   void run(vector<OptFrameModule<R, M>*>& , HeuristicFactory<R, M>* , map<string, string>* , string command)
    {
       system(command.c_str());
    }
