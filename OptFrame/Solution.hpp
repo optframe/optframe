@@ -26,6 +26,20 @@
 
 using namespace std;
 
+//! \english The Solution class is a container class for the Representation structure R. \endenglish \portuguese A classe Solution é uma classe contêiner para a Representação R. \endportuguese
+
+/*!
+  \english
+  In the constructor, a copy of R is stored inside the Solution class.
+  The getR() method returns a reference to the stored Representation R.
+  \endenglish
+
+  \portuguese
+  No construtor, uma cópia de R é armazenada dentro da classe Solution.
+  O método getR() retorna uma referência à Representação R armazenada.
+  \endportuguese
+*/
+
 template<class R>
 class Solution
 {

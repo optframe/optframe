@@ -21,27 +21,6 @@
 #ifndef OPTFRAME_NSSEQTSPSWAP_HPP_
 #define OPTFRAME_NSSEQTSPSWAP_HPP_
 
-/*
- Classical Problem: Traveling Salesman Problem
-
- The Classic Swap Neighborhood Structure.
-
- Article:
-
- Swap is applied for any problem that representation is like a vector<T>, where T is the type of the vector.
-
- e.g: vector<T> where type of T is int
- s means Solution
-
- initial s: 1 2 3 4 5 6 7 8
-
- s' after apply MoveTSPSwap(2,5) in s
-
- s': 1 2 6 4 5 3 7 8
-
- */
-
-// Framework includes
 #include "../../Move.hpp"
 #include "../../NSSeq.hpp"
 
@@ -50,7 +29,53 @@
 
 using namespace std;
 
-// Working structure: vector<T>
+//! \english NSSeq class for the classic Traveling Salesman Problem (TSP) neighborhood of Swap. \endenglish \portuguese Classe NSSeq para a estrutura de vizinhança clássica de troca (Swap) do Problema do Caixeiro Viajante. \endportuguese
+
+/*!
+  \english
+  Working structure: vector<T>.
+
+  Classical Problem: Traveling Salesman Problem
+
+  The Classic Swap Neighborhood Structure.
+
+  Article:
+
+  Swap is applied for any problem that representation is like a vector<T>, where T is the type of the vector.
+
+  e.g: vector<T> where type of T is int
+
+  s means Solution
+
+  initial s: 1 2 3 4 5 6 7 8
+
+  s' after apply MoveTSPSwap(2,5) in s
+
+  s': 1 2 6 4 5 3 7 8
+  \endenglish
+
+  \portuguese
+  Estrutura alvo: vector<T>.
+
+  Problema clássico: Problema do Caixeiro Viajante (em inglês TSP - Traveling Salesman Problem)
+
+  Estrutura de vizinhança clássica de troca.
+
+  Artigo referência:
+
+  Swap é aplicável em todo tipo de problema no qual a representação é um vector<T>, onde T é o tipo do vector.
+
+  Exemplo: vector<T> onde o tipo de T é int
+
+  s significa solução
+
+  inicial s: 1 2 3 4 5 6 7 8
+
+  s' após aplicação do MoveTSPSwap(2,5) em s
+
+  s': 1 2 6 4 5 3 7 8
+  \endportuguese
+*/
 
 template<class T, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MoveTSPSwap<T, M> >
 class NSSeqTSPSwap: public NSSeq<vector<T> , M>

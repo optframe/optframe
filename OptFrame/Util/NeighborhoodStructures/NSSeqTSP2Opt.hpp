@@ -21,30 +21,6 @@
 #ifndef OPTFRAME_NSSEQTSP2OPT_HPP_
 #define OPTFRAME_NSSEQTSP2OPT_HPP_
 
-/*
- Classical Problem: Traveling Salesman Problem
-
- The Neighborhood Structure 2-opt has proposed by Cross (1958)
- Croes G., A method for solving traveling salesman problems. Operations Research 6 (1958), pp. 791–812
-
- 2-Opt is aplied for any problem that representation is like a vector<T>, where T is the type of the vector.
-
- e.g: vector<T> where type of T is int
- s means Solution
-
- initial s: 1 2 3 4 5 6 7 8
-
- s' after apply MoveTSP2Opt(2,5) in s
-
- s': 1 2 5 4 3 6 7 8
-
- s" after apply MoveTSP2Opt(3,8) in s'
-
- s": 1 2 5 8 7 6 3 4
-
- */
-
-// Framework includes
 #include "../../Move.hpp"
 #include "../../NSSeq.hpp"
 
@@ -53,7 +29,63 @@
 
 using namespace std;
 
-// Working structure: vector<T>
+
+//! \english NSSeq class for the classic Traveling Salesman Problem (TSP) neighborhood of 2-Opt. \endenglish \portuguese Classe NSSeq para a estrutura de vizinhança clássica de 2-Opt do Problema do Caixeiro Viajante. \endportuguese
+
+/*!
+  \english
+  Working structure: vector<T>.
+
+  Classical Problem: Traveling Salesman Problem
+
+  The Neighborhood Structure 2-opt has proposed by Cross (1958)
+
+  Cross G., A method for solving traveling salesman problems. Operations Research 6 (1958), pp. 791–812
+
+  2-Opt is applied for any problem that representation is like a vector<T>, where T is the type of the vector.
+
+  e.g: vector<T> where type of T is int
+
+  s means Solution
+
+  initial s: 1 2 3 4 5 6 7 8
+
+  s' after apply MoveTSP2Opt(2,5) in s
+
+  s': 1 2 5 4 3 6 7 8
+
+  s" after apply MoveTSP2Opt(3,8) in s'
+
+  s": 1 2 5 8 7 6 3 4
+  \endenglish
+
+  \portuguese
+  Estrutura alvo: vector<T>.
+
+  Problema clássico: Problema do Caixeiro Viajante (em inglês TSP - Traveling Salesman Problem)
+
+  A estrutura de vizinhança 2-opt foi proposta por Cross (1958)
+
+  Artigo referência: Cross G., A method for solving traveling salesman problems. Operations Research 6 (1958), pp. 791–812
+
+  2-Opt é aplicável em todo tipo de problema no qual a representação é um vector<T>, onde T é o tipo do vector.
+
+  Exemplo: vector<T> onde o tipo de T é int
+
+  s significa solução
+
+  inicial s: 1 2 3 4 5 6 7 8
+
+  s' após aplicação do MoveTSP2Opt(2,5) em s
+
+  s': 1 2 5 4 3 6 7 8
+
+  s" após aplicação do MoveTSP2Opt(3,8) em s'
+
+  s": 1 2 5 8 7 6 3 4
+  \endportuguese
+*/
+
 
 template<class T, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MoveTSP2Opt<T, M> >
 class NSSeqTSP2Opt: public NSSeq<vector<T> , M>

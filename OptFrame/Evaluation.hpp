@@ -28,6 +28,20 @@ typedef int OPTFRAME_DEFAULT_MEMORY;
 
 using namespace std;
 
+//! \english The Evaluation class is a container class for the objective function value and the Memory structure M. \endenglish \portuguese A classe Evaluation é uma classe contêiner para o valor da função objetivo e a estrutura de Memória M. \endportuguese
+
+/*!
+  \english
+  It is also possible to carry an infeasibility measure.
+  The evaluation() method returns the sum of objFunction and infMeasure.
+  \endenglish
+
+  \portuguese
+  Também é possível carregar uma medida de inviabilidade infMeasure.
+  O método evaluation() retorna a soma da função objetivo objFunction e a infMeasure.
+  \endportuguese
+*/
+
 template<class M = OPTFRAME_DEFAULT_MEMORY>
 class Evaluation
 {
