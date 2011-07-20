@@ -28,7 +28,7 @@ public:
 
 	bool canBeApplied(const Rep$project& rep)
 	{
-		return false;
+		return true;
 	}
 
 	Move< Rep$project $commamproject >& apply(Rep$project& rep)
