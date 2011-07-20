@@ -99,7 +99,7 @@ public:
 
 		if (k1 == 0)
 			bk1 = rep.size() - 1;
-		if (k2 == rep.size() - 1)
+		if (k2 == ((int)rep.size()) - 1)
 			ak2 = 0;
 
 		int f = 0;

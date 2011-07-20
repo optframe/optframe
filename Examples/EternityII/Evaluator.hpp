@@ -63,14 +63,14 @@ public:
 		int fo = 0; // Evaluation Function Value
 
 		// horizontal
-		for (int i = 0; i < rep.getRows(); i++)
-			for (int j = 0; j < rep.getCols() - 1; j++)
+		for (unsigned int i = 0; i < rep.getRows(); i++)
+			for (unsigned int j = 0; j < rep.getCols() - 1; j++)
 				if (rep(i, j).right == rep(i, j + 1).left)
 					fo++;
 
 		// vertical
-		for (int j = 0; j < rep.getCols(); j++)
-			for (int i = 0; i < rep.getRows() - 1; i++)
+		for (unsigned int j = 0; j < rep.getCols(); j++)
+			for (unsigned int i = 0; i < rep.getRows() - 1; i++)
 				if (rep(i, j).down == rep(i + 1, j).up)
 					fo++;
 

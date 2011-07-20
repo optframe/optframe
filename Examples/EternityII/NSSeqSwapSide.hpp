@@ -54,9 +54,9 @@ public:
 	bool canBeApplied(const RepEtII& rep)
 	{
 		bool left_upper = ((x1 == 0) && (y1 == 0)) || ((x2 == 0) && (y2 == 0));
-		bool right_upper = ((x1 == 0) && (y1 == rep.getCols() - 1)) || ((x2 == 0) && (y2 == rep.getCols() - 1));
-		bool left_lower = ((x1 == rep.getRows() - 1) && (y1 == 0)) || ((x2 == rep.getRows() - 1) && (y2 == 0));
-		bool right_lower = ((x1 == rep.getRows() - 1) && (y1 == rep.getCols() - 1)) || ((x2 == rep.getRows() - 1) && (y2 == rep.getCols() - 1));
+		bool right_upper = ((x1 == 0) && (y1 == (int)rep.getCols() - 1)) || ((x2 == 0) && (y2 == (int)rep.getCols() - 1));
+		bool left_lower = ((x1 == (int)rep.getRows() - 1) && (y1 == 0)) || ((x2 == (int)rep.getRows() - 1) && (y2 == 0));
+		bool right_lower = ((x1 == (int)rep.getRows() - 1) && (y1 == (int)rep.getCols() - 1)) || ((x2 == (int)rep.getRows() - 1) && (y2 == (int)rep.getCols() - 1));
 
 		return !left_upper && !right_upper && !left_lower && !right_lower;
 	}
@@ -71,7 +71,7 @@ public:
 			while (rep(x1, y1).up != 0)
 				rep(x1, y1).rotate();
 
-		if (x1 == rep.getRows() - 1)
+		if (x1 == (int)rep.getRows() - 1)
 			while (rep(x1, y1).down != 0)
 				rep(x1, y1).rotate();
 
@@ -79,7 +79,7 @@ public:
 			while (rep(x1, y1).left != 0)
 				rep(x1, y1).rotate();
 
-		if (y1 == rep.getCols() - 1)
+		if (y1 == (int)rep.getCols() - 1)
 			while (rep(x1, y1).right != 0)
 				rep(x1, y1).rotate();
 
@@ -89,7 +89,7 @@ public:
 			while (rep(x2, y2).up != 0)
 				rep(x2, y2).rotate();
 
-		if (x2 == rep.getRows() - 1)
+		if (x2 == (int)rep.getRows() - 1)
 			while (rep(x2, y2).down != 0)
 				rep(x2, y2).rotate();
 
@@ -97,7 +97,7 @@ public:
 			while (rep(x2, y2).left != 0)
 				rep(x2, y2).rotate();
 
-		if (y2 == rep.getCols() - 1)
+		if (y2 == (int)rep.getCols() - 1)
 			while (rep(x2, y2).right != 0)
 				rep(x2, y2).rotate();
 

@@ -62,7 +62,7 @@ public:
 		vector<Piece> side_pieces;
 		vector<Piece> center_pieces;
 
-		for (int i = 0; i < pEtII.pieces.size(); i++)
+		for (unsigned int i = 0; i < pEtII.pieces.size(); i++)
 		{
 			int zeros = 0;
 
@@ -127,7 +127,7 @@ public:
 		(*tab)(tab->getRows() - 1, 0) = p;
 
 		// random the pieces for upper-bottom sides
-		for (int i = 1; i < tab->getCols() - 1; i++)
+		for (unsigned int i = 1; i < tab->getCols() - 1; i++)
 		{
 			// top
 			x = rg.rand(side_pieces.size());
@@ -149,7 +149,7 @@ public:
 		}
 
 		// random the pieces for left-right sides
-		for (int i = 1; i < tab->getRows() - 1; i++)
+		for (unsigned int i = 1; i < tab->getRows() - 1; i++)
 		{
 			// left
 			x = rg.rand(side_pieces.size());
@@ -171,8 +171,8 @@ public:
 		}
 
 		// random the center pieces
-		for (int i = 1; i < tab->getRows() - 1; i++)
-			for (int j = 1; j < tab->getCols() - 1; j++)
+		for (unsigned int i = 1; i < tab->getRows() - 1; i++)
+			for (unsigned int j = 1; j < tab->getCols() - 1; j++)
 			{
 				x = rg.rand(center_pieces.size());
 				p = center_pieces[x];

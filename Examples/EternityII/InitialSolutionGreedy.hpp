@@ -60,7 +60,7 @@ public:
 		vector<Piece> side_pieces;
 		vector<Piece> center_pieces;
 
-		for (int i = 0; i < pEtII.pieces.size(); i++)
+		for (unsigned int i = 0; i < pEtII.pieces.size(); i++)
 		{
 			int zeros = 0;
 
@@ -130,12 +130,12 @@ public:
 		(*tab)(tab->getRows() - 1, 0) = p;
 
 		// choose the pieces for upper-bottom sides
-		for (int i = 1; i < tab->getCols() - 1; i++)
+		for (unsigned int i = 1; i < tab->getCols() - 1; i++)
 		{
 			// top
 			int max = 0;
 			int best = 0;
-			for (int j = 0; j < side_pieces.size(); j++)
+			for (unsigned int j = 0; j < side_pieces.size(); j++)
 			{
 				p = side_pieces[j];
 
@@ -163,7 +163,7 @@ public:
 			// bottom
 			max = 0;
 			best = 0;
-			for (int j = 0; j < side_pieces.size(); j++)
+			for (unsigned int j = 0; j < side_pieces.size(); j++)
 			{
 				p = side_pieces[j];
 
@@ -190,12 +190,12 @@ public:
 		}
 
 		// random the pieces for left-right sides
-		for (int i = 1; i < tab->getRows() - 1; i++)
+		for (unsigned int i = 1; i < tab->getRows() - 1; i++)
 		{
 			// left
 			int max = 0;
 			int best = 0;
-			for (int j = 0; j < side_pieces.size(); j++)
+			for (unsigned int j = 0; j < side_pieces.size(); j++)
 			{
 				p = side_pieces[j];
 
@@ -223,7 +223,7 @@ public:
 			// right
 			max = 0;
 			best = 0;
-			for (int j = 0; j < side_pieces.size(); j++)
+			for (unsigned int j = 0; j < side_pieces.size(); j++)
 			{
 				p = side_pieces[j];
 
@@ -250,14 +250,14 @@ public:
 		}
 
 		// choose the center pieces
-		for (int i = 1; i < tab->getRows() - 1; i++)
-			for (int j = 1; j < tab->getCols() - 1; j++)
+		for (unsigned int i = 1; i < tab->getRows() - 1; i++)
+			for (unsigned int j = 1; j < tab->getCols() - 1; j++)
 			{
 				int max = -1;
 				int best_k = -1;
 				int best_r = -1;
 
-				for (int k = 0; k < center_pieces.size(); k++)
+				for (unsigned int k = 0; k < center_pieces.size(); k++)
 				{
 					p = center_pieces[k];
 

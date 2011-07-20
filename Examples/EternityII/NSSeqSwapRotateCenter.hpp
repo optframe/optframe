@@ -51,8 +51,10 @@ public:
 	}
 
 	MoveSwapRotateCenter(int _x1, int _y1, int _r1, int _x2, int _y2, int _r2) :
-		x1(_x1), y1(_y1), r1(_r1), x2(_x2), y2(_y2), r2(_r2)
+		x1(_x1), y1(_y1), x2(_x2), y2(_y2)
 	{
+	   r1 = _r1;
+	   r2 = _r2;
 	}
 
 	virtual ~MoveSwapRotateCenter()
