@@ -42,9 +42,10 @@ private:
 
 public:
 
-	NSIteratorTSPSwap(int _n) :
-		n(_n), m(NULL)
+	NSIteratorTSPSwap(int _n)
 	{
+	   n = _n;
+	   m = NULL;
 	}
 
 	virtual ~NSIteratorTSPSwap()

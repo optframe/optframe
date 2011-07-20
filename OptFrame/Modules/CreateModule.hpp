@@ -56,7 +56,7 @@ private:
       string rest = "";
       int dollar_pos = -1;
 
-      for(int i = 0; i < command.length(); i++)
+      for(unsigned int i = 0; i < command.length(); i++)
       {
          if(command[i] == '$')
          {
@@ -76,7 +76,7 @@ private:
             {
                //verifying if the found var is the same parameter var
                bool test_var = true;
-               for(int i = 1; i < var.length(); i++)//ignoring the $ in the var (i = 1)
+               for(unsigned int i = 1; i < var.length(); i++)//ignoring the $ in the var (i = 1)
                {
                   if(var[i] != command[dollar_pos + 1 + i])
                   {
@@ -138,7 +138,7 @@ private:
             {
                //verifying if the found var is the same parameter var
                bool test_var = true;
-               for(int i = 1; i < var.length(); i++)//ignoring the $ in the var (i = 1)
+               for(unsigned int i = 1; i < var.length(); i++)//ignoring the $ in the var (i = 1)
                {
                   if(var[i] != command[dollar_pos + i])
                   {
@@ -204,7 +204,7 @@ public:
    {
       string u = name;
       u.append(" ");
-      for(int i = 0; i < parameters.size(); i++)
+      for(unsigned int i = 0; i < parameters.size(); i++)
       {
          u.append(parameters[i]);
          u.append(" ");
@@ -225,7 +225,7 @@ public:
 
       vector<string> values;
 
-      for(int i = 0; i < parameters.size(); i++)
+      for(unsigned int i = 0; i < parameters.size(); i++)
          if(!scanner.hasNext())
          {
             cout << "Usage: " << usage() << endl;
@@ -234,11 +234,11 @@ public:
          else
             values.push_back(scanner.next());
 
-      for(int c = 0; c < commands.size(); c++)
+      for(unsigned int c = 0; c < commands.size(); c++)
       {
          string command = commands[c];
 
-         for(int v = 0; v < values.size(); v++)
+         for(unsigned int v = 0; v < values.size(); v++)
             command = var_preprocess(parameters[v], values[v], command);
 
          if(!exec_command(all_modules, factory, dictionary, command))
@@ -296,7 +296,7 @@ public:
 
       vector<string> parameters = HeuristicFactory<R, M>::readList(scanner);
 
-      for(int i = 0; i < parameters.size(); i++)
+      for(unsigned int i = 0; i < parameters.size(); i++)
          if(parameters[i][0] != '$')
          {
             cout << "Missing operator $ in variable: " << parameters[i] << endl;

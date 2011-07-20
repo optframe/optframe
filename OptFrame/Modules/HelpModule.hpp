@@ -39,7 +39,7 @@ public:
 	void run(vector<OptFrameModule<R,M>*>& all_modules, HeuristicFactory<R,M>*, map<string,string>* dictionary, string)
 	{
 		cout << "Available modules are:" << endl;
-		for(int i=0;i<all_modules.size();i++)
+		for(unsigned int i=0;i<all_modules.size();i++)
 			cout << all_modules[i]->id() << endl;
 		cout << "Type 'usage module_name' to learn how to use the module." << endl;
 	}

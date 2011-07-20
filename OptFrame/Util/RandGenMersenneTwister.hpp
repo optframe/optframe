@@ -45,7 +45,7 @@ private:
 	{
 		register int i;
 		unsigned int y;
-		for (i = 0; i < GEN_STATE_LENGTH; i++)
+		for (i = 0; i < ((int)GEN_STATE_LENGTH); i++)
 		{
 			y = (MT[i] ^ MASK_2) + (MT[(i + 1) % GEN_STATE_LENGTH] ^ MASK_3);
 			MT[i] = MT[(i + 397) % GEN_STATE_LENGTH] ^ (y >> 1);
@@ -101,7 +101,7 @@ public:
 
 		index = 0;
 		MT[0] = seed;
-		for (i = 1; i < GEN_STATE_LENGTH; i++)
+		for (i = 1; i < ((int)GEN_STATE_LENGTH); i++)
 		{
 			MT[i] = ((CONSTANT_1 * (MT[i - 1] ^ (MT[i - 1] >> 30))) + i) & MASK_1;
 		}

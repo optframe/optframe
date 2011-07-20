@@ -73,7 +73,7 @@ public:
       while(scanner->hasNextLine())
       {
          string line = scanner->nextLine();
-         for(int c = 0; c < line.size(); c++)
+         for(unsigned int c = 0; c < line.size(); c++)
             if( ( line.at(c) == ',' ) || ( line.at(c) == '[' ) || ( line.at(c) == ']' ))
                line[c] = '?';
 
@@ -88,7 +88,7 @@ public:
 
       if(elements.size() > 0)
       {
-         for(int e = 0; e < elements.size() - 1; e++)
+         for(unsigned int e = 0; e < elements.size() - 1; e++)
             listContent << elements[e] << ",";
          listContent << elements[elements.size() - 1];
       }

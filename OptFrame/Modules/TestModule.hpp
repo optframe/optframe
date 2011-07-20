@@ -91,7 +91,7 @@ public:
 
 		fprintf(file, "PARAMETERS:%s\n", input.c_str());
 
-		bool minimization = eval->betterThan(1, 2);
+		//bool minimization = eval->betterThan(1, 2); // TODO
 		Solution<R>* s_star = NULL;
 
 		double s_fo_ini = 0;

@@ -54,13 +54,13 @@ public:
 
    virtual ~IteratorNSSeqUnion()
    {
-      for(int i = 0; i < it.size(); i++)
+      for(unsigned int i = 0; i < it.size(); i++)
          delete it[i];
    }
 
    void first()
    {
-      for(int i = 0; i < it.size(); i++)
+      for(unsigned int i = 0; i < it.size(); i++)
          it[i]->first();
       k = 0;
    }
@@ -78,7 +78,7 @@ public:
 
    bool isDone()
    {
-      for(int i = 0; i < it.size(); i++)
+      for(unsigned int i = 0; i < it.size(); i++)
          if(!it[i]->isDone())
             return false;
 

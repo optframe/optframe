@@ -84,7 +84,7 @@ public:
 		Evaluator<R, M>* eval = factory->read_ev(&scanner);
 		vector<NS<R, M>*> ns_list = factory->read_ns_list(&scanner);
 		vector<NSSeq<R, M>*> ns_seq_list;
-		for (int i = 0; i < ns_list.size(); i++)
+		for (unsigned int i = 0; i < ns_list.size(); i++)
 			ns_seq_list.push_back((NSSeq<R, M>*) ns_list[i]);
 
 		cout << endl;

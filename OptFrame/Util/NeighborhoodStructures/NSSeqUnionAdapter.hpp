@@ -63,7 +63,7 @@ public:
 	virtual NSIterator<R, M>& getIterator(const R& r)
 	{
       vector<NSIterator<R, M>*> it;
-      for(int i = 0; i < ns.size(); i++)
+      for(unsigned int i = 0; i < ns.size(); i++)
          it.push_back(&ns[i]->getIterator(r));
 
       return *new IteratorNSSeqUnion<R, M, MOVE> (it);
@@ -72,7 +72,7 @@ public:
 	virtual void print()
 	{
 		cout << "NSSeqUnionAdapter {" << endl;
-		for(int i = 0; i < ns.size(); i++)
+		for(unsigned int i = 0; i < ns.size(); i++)
          ns[i]->print();
 		cout << "}" << endl;
 	}

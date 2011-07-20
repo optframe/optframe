@@ -67,9 +67,9 @@ public:
 
 	void next()
 	{
-		if (!((p1 == r.size() - 2) && (p2 == r.size())))
+		if (!((p1 == ((int)r.size()) - 2) && (p2 == ((int)r.size()) )))
 		{
-			if (p2 != r.size())
+			if (p2 != ((int)r.size()))
 			{
 				p2++;
 			}

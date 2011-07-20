@@ -31,18 +31,11 @@ public:
 	{
 		return "exec";
 	}
+
 	string usage()
 	{
 		return "exec [ <initsol> id | <loadsol> id | <initpop> id popSize | <loadpop> id ] target_fo timelimit method [output_solution_name]";
 	}
-
-	/*
-	 * TODO
-	 *
-	 * Corrigir todos os métodos que se relacionam com o typedef population.
-	 *
-	 * No factory, corrigir os readloadpop readinitpop entre outros.. .
-	 */
 
 	void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
 	{
@@ -70,7 +63,7 @@ public:
 		bool needDelete = false;
 
 		Population<R> *p = NULL;
-		bool needDeletePop = false;
+		//bool needDeletePop = false;
 
 		if (sol == "loadsol")
 		{

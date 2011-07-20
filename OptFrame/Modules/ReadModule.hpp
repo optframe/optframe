@@ -75,7 +75,7 @@ public:
 			if(command[0]=='%')
 				notfound = false;
 
-			for(int i=0;i<all_modules.size();i++)
+			for(unsigned int i=0;i<all_modules.size();i++)
 				if(command == all_modules[i]->id())
 				{
 					string after_preprocess = all_modules[i]->preprocess(dictionary, s2.rest());

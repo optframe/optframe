@@ -71,7 +71,7 @@ public:
 
       vector<string> list = hf->readList(scan);
 
-      if(n >= list.size())
+      if(n >= ((int)list.size()))
       {
          cout << "N is too big! " << ( n + 1 ) << " > " << list.size() << endl;
          return;

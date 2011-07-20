@@ -60,7 +60,7 @@ public:
 	bool canBeApplied(const Route& rep)
 	{
 		bool all_positive = (p1 >= 0) && (p2 >= 0);
-		bool size_ok = (p1 < rep.size()) && (p2 < rep.size());
+		bool size_ok = (p1 < ((int)rep.size())) && (p2 < ((int)rep.size()));
 		return all_positive && size_ok && (rep.size() >= 2);
 	}
 
