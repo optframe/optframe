@@ -41,11 +41,12 @@ protected:
 
 public:
 
-	IntensifiedIteratedLocalSearchLevels(Evaluator<R, M>& e, Heuristic<R, M>& _h, Intensification<R, M>& _h2, ILSLPerturbation<R, M>& _p, int _iterMax,
-			int _levelMax) :
-		h(_h), h2(_h2), p(_p), iterMax(_iterMax), levelMax(_levelMax), IntensifiedIteratedLocalSearch<levelHistory, R, M> (e)
-	{
-	}
+	IntensifiedIteratedLocalSearchLevels(Evaluator<R, M>& e, Heuristic<R, M>& _h, Intensification<R, M>& _h2, ILSLPerturbation<R, M>& _p, int _iterMax, int _levelMax) :
+      IntensifiedIteratedLocalSearch<levelHistory, R, M> (e), h(_h), h2(_h2), p(_p)
+   {
+      iterMax = _iterMax;
+      levelMax = _levelMax;
+   }
 
 	virtual levelHistory& initializeHistory()
 	{

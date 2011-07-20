@@ -55,7 +55,11 @@ public:
 		objFunction(obj),infMeasure(inf),m(*new M(mm)){};
 
 	Evaluation(double obj, M& mm):
-		objFunction(obj),m(*new M(mm)){ infMeasure=0; };
+		m(*new M(mm))
+	{
+	   objFunction = obj;
+	   infMeasure = 0;
+	};
 
 	Evaluation(const Evaluation<M>& e):
 		m(*new M(e.m)),objFunction(e.objFunction),infMeasure(e.infMeasure){};

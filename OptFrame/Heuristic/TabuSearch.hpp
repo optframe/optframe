@@ -29,8 +29,8 @@ template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
 class TabuSearch: public Heuristic<R, M>
 {
 private:
+   Evaluator<R, M>& evaluator;
 	NSSeq<R, M>& nsSeq;
-	Evaluator<R, M>& evaluator;
 	int tlSize;
 	int tsMax;
 
@@ -125,14 +125,14 @@ public:
 
 			tabuList.push_back(newTabu);
 
-			if (tabuList.size() > tlSize)
+			if (((int)tabuList.size()) > tlSize)
 			{
 				delete tabuList[0];
 				tabuList.erase(tabuList.begin());
 			}
 
 			//-----------------------------------------------------------
-			if (tabuList.size() > tlSize)
+			if (((int)tabuList.size()) > tlSize)
 				throw string("ERROR on Tabu Search! more elements than expected...");
 			//-----------------------------------------------------------
 

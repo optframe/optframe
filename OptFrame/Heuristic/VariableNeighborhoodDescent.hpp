@@ -35,7 +35,7 @@ public:
 		ev(_ev), neighbors(_neighbors)
 	{
 	}
-	;
+
 
 	virtual void exec(Solution<R>& s, double timelimit, double target_f)
 	{
@@ -45,7 +45,7 @@ public:
 
 		delete &e;
 	}
-	;
+
 
 	virtual void exec(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
@@ -83,11 +83,10 @@ public:
 		}
 
 	}
-	;
 
 private:
-	vector<Heuristic<R, M>*> neighbors;
 	Evaluator<R, M>& ev;
+	vector<Heuristic<R, M>*> neighbors;
 };
 
 #endif /*VARIABLENEIGHBORHOODDESCENT_HPP_*/

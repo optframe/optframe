@@ -153,7 +153,7 @@ public:
    {
       cout << "Population's printing:" << endl;
 
-      for (int i = 0; i < p.size(); i++)
+      for (unsigned int i = 0; i < p.size(); i++)
       {
          p.at(i)->print();
       }

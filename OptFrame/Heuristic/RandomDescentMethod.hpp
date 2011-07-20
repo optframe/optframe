@@ -27,8 +27,8 @@ template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
 class RandomDescentMethod: public Heuristic<R, M>
 {
 private:
+   Evaluator<R, M>& evaluator;
 	NS<R, M>& ns;
-	Evaluator<R, M>& evaluator;
 	unsigned int iterMax;
 
 public:

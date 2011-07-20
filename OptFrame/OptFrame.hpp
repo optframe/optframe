@@ -110,15 +110,6 @@
 #include "Modules/UsageModule.hpp"
 #include "Modules/InitServersModule.hpp"
 
-/*
- * Mario - ToDo
- *
- * Implement the following modules:
- *
- * 1 - at : extracts a population's solution.
- * 2 - best : returns the best solution in population.
- *
- */
 
 // ==================================
 //            Serializer
@@ -245,7 +236,7 @@ public:
 
 			bool notfound = true;
 
-			for (int i = 0; i < modules.size(); i++)
+			for (unsigned int i = 0; i < modules.size(); i++)
 				if (command == modules[i]->id())
 				{
 					string r = modules[i]->preprocess(dictionary, s2.rest());
@@ -300,7 +291,7 @@ public:
 
 		bool notfound = true;
 
-		for (int i = 0; i < modules.size(); i++)
+		for (unsigned int i = 0; i < modules.size(); i++)
 			if (command == modules[i]->id())
 			{
 				string r = modules[i]->preprocess(dictionary, s2.rest());

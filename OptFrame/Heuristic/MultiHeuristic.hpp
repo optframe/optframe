@@ -61,9 +61,7 @@ public:
 		cout << "MultiHeuristic Initial Solution: " ; e.print();
 		cout << heuristics.size() << endl;
 
-		long tatual;
-
-		for (int h = 0; h < heuristics.size(); h++)
+		for (unsigned int h = 0; h < heuristics.size(); h++)
 		{
 			cout << "MultiHeuristic iter "<<h<<":"<<endl;
 			(heuristics)[h]->exec(s,timelimit, target_f);

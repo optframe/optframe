@@ -145,13 +145,14 @@ public:
 	template<class T>
 	void shuffle(vector<T>& v)
 	{
-		for (int i = 0; i < v.size() - 1; i++)
-		{
-			int x = i + rand(v.size() - i - 1) + 1;
-			T elem = v.at(i);
-			v.at(i) = v.at(x);
-			v.at(x) = elem;
-		}
+	   if(v.size() > 0)
+         for(unsigned int i = 0; i < v.size() - 1; i++)
+         {
+            int x = i + rand(v.size() - i - 1) + 1;
+            T elem = v.at(i);
+            v.at(i) = v.at(x);
+            v.at(x) = elem;
+         }
 	}
 
 };

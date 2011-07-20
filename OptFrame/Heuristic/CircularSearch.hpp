@@ -67,7 +67,7 @@ public:
 
                       if(eval.betterThan(cost, 0))
                       {
-                         double old_f = e.evaluation();
+                         //double old_f = e.evaluation();
 
                          m.apply(e, s);
                          eval.evaluate(e, s); // updates 'e'

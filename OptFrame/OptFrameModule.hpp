@@ -46,7 +46,7 @@ class OptFrameModule
 protected:
 	void run_module(string mod, vector<OptFrameModule<R,M>*> v, HeuristicFactory<R,M>* f, map<string,string>* dictionary, string input)
 	{
-		for(int i=0;i<v.size();i++)
+		for(unsigned int i=0;i<v.size();i++)
 			if(mod==v[i]->id())
 			{
 				v[i]->run(v,f,dictionary,input);

@@ -114,7 +114,7 @@ public:
 			return NULL;
 		}
 
-		int loadsol_id = scanner->nextInt();
+		unsigned int loadsol_id = scanner->nextInt();
 
 		if (loadsol.size() <= loadsol_id)
 		{
@@ -132,7 +132,7 @@ public:
 		if (tmp != "initsol")
 			cout << "Warning: expected 'initsol' and found '" << tmp << "'." << endl;
 
-		int initsol_id = scanner->nextInt();
+		unsigned int initsol_id = scanner->nextInt();
 
 		if (initsol.size() <= initsol_id)
 		{
@@ -153,7 +153,7 @@ public:
 			return NULL;
 		}
 
-		int loadpop_id = scanner->nextInt();
+		unsigned int loadpop_id = scanner->nextInt();
 
 		if (loadpop.size() <= loadpop_id)
 		{
@@ -174,7 +174,7 @@ public:
 			return NULL;
 		}
 
-		int initpop_id = scanner->nextInt();
+		unsigned int initpop_id = scanner->nextInt();
 
 		if (initpop.size() <= initpop_id)
 		{
@@ -195,7 +195,7 @@ public:
 			return NULL;
 		}
 
-		int ns_id = scanner->nextInt();
+		unsigned int ns_id = scanner->nextInt();
 
 		if (ns.size() <= ns_id)
 		{
@@ -236,7 +236,7 @@ public:
 
 		vector<NS<R, M>*> v_ns;
 
-		for (int i = 0; i < list.size(); i++)
+		for (unsigned int i = 0; i < list.size(); i++)
 		{
 			aux = new Scanner(list.at(i));
 			tmp = aux->next();
@@ -246,7 +246,7 @@ public:
 				return vector<NS<R, M>*>();
 			}
 
-			int ns_id = aux->nextInt();
+			unsigned int ns_id = aux->nextInt();
 
 			if (ns.size() <= ns_id)
 			{
@@ -276,7 +276,7 @@ public:
 
 		vector<Evaluator<R, M> *> v_ev;
 
-		for (int i = 0; i < list.size(); i++)
+		for (unsigned int i = 0; i < list.size(); i++)
 		{
 			aux = new Scanner(list.at(i));
 			tmp = aux->next();
@@ -286,7 +286,7 @@ public:
 				return vector<Evaluator<R, M> *>();
 			}
 
-			int ev_id = aux->nextInt();
+			unsigned int ev_id = aux->nextInt();
 
 			if (ev.size() <= ev_id)
 			{
@@ -314,7 +314,7 @@ public:
 
 		pair<Heuristic<R, M>*, string> method;
 
-		for (int i = 0; i < list.size(); i++)
+		for (unsigned int i = 0; i < list.size(); i++)
 		{
 			method = createHeuristic(list.at(i));
 			v_heuristics.push_back(method.first);
@@ -339,7 +339,7 @@ public:
 
 			MultiObjectiveEvaluator<R, M>* moev = new MultiObjectiveEvaluator<R, M> (*evs[0]);
 
-			for (int i = 1; i < evs.size(); i++)
+			for (unsigned int i = 1; i < evs.size(); i++)
 				moev->add(*evs[i]);
 
 			return moev;
@@ -350,7 +350,7 @@ public:
 			return NULL;
 		}
 
-		int ev_id = scanner->nextInt();
+		unsigned int ev_id = scanner->nextInt();
 
 		if (ev.size() <= ev_id)
 		{
@@ -371,7 +371,7 @@ public:
 			return NULL;
 		}
 
-		int ilsl_pert_id = scanner->nextInt();
+		unsigned int ilsl_pert_id = scanner->nextInt();
 
 		if (ilsl_pert.size() <= ilsl_pert_id)
 		{
@@ -392,7 +392,7 @@ public:
 			return NULL;
 		}
 
-		int ils_pert_id = scanner->nextInt();
+		unsigned int ils_pert_id = scanner->nextInt();
 
 		if (ils_pert.size() <= ils_pert_id)
 		{
@@ -413,7 +413,7 @@ public:
 			return NULL;
 		}
 
-		int ils_int_id = scanner->nextInt();
+		unsigned int ils_int_id = scanner->nextInt();
 
 		if (ils_int.size() <= ils_int_id)
 		{
@@ -528,59 +528,59 @@ public:
 
    void drop_all()
    {
-		for (int i = 0; i < ns.size(); i++)
+		for (unsigned int i = 0; i < ns.size(); i++)
 			delete ns[i];
                 ns.clear();
 
-		for (int i = 0; i < ev.size(); i++)
+		for (unsigned int i = 0; i < ev.size(); i++)
 			delete ev[i];
                 ev.clear();
 
-		for (int i = 0; i < initsol.size(); i++)
+		for (unsigned int i = 0; i < initsol.size(); i++)
 			delete initsol[i];
                 initsol.clear();
 
-		for (int i = 0; i < loadsol.size(); i++)
+		for (unsigned int i = 0; i < loadsol.size(); i++)
 			delete loadsol[i];
                 loadsol.clear();
 
-		for (int i = 0; i < method.size(); i++)
+		for (unsigned int i = 0; i < method.size(); i++)
 			delete method[i];
                 method.clear();
 
-		for (int i = 0; i < initpop.size(); i++)
+		for (unsigned int i = 0; i < initpop.size(); i++)
 			delete initpop[i];
                 initpop.clear();
 
-		for (int i = 0; i < loadpop.size(); i++)
+		for (unsigned int i = 0; i < loadpop.size(); i++)
 			delete loadpop[i];
                 loadpop.clear();
 
-		for (int i = 0; i < ilsl_pert.size(); i++)
+		for (unsigned int i = 0; i < ilsl_pert.size(); i++)
 			delete ilsl_pert[i];
                 ilsl_pert.clear();
 
-		for (int i = 0; i < ils_pert.size(); i++)
+		for (unsigned int i = 0; i < ils_pert.size(); i++)
 			delete ils_pert[i];
                 ils_pert.clear();
 
-		for (int i = 0; i < ils_int.size(); i++)
+		for (unsigned int i = 0; i < ils_int.size(); i++)
 			delete ils_int[i];
                 ils_int.clear();
 
-		for (int i = 0; i < ga_sel.size(); i++)
+		for (unsigned int i = 0; i < ga_sel.size(); i++)
 			delete ga_sel[i];
                 ga_sel.clear();
 
-		for (int i = 0; i < ga_mut.size(); i++)
+		for (unsigned int i = 0; i < ga_mut.size(); i++)
 			delete ga_mut[i];
                 ga_mut.clear();
 
-		for (int i = 0; i < ga_cross.size(); i++)
+		for (unsigned int i = 0; i < ga_cross.size(); i++)
 			delete ga_cross[i];
                 ga_cross.clear();
 
-		for (int i = 0; i < ga_elt.size(); i++)
+		for (unsigned int i = 0; i < ga_elt.size(); i++)
 			delete ga_elt[i];
                 ga_elt.clear();
    }
@@ -816,7 +816,7 @@ public:
 		}
 		list->push_back(word);
 
-		for (int i = 0; i < list->size(); i++)
+		for (unsigned int i = 0; i < list->size(); i++)
 		{
 			list->at(i) = scanner.trim(list->at(i));
 		}
@@ -836,7 +836,7 @@ public:
 
 		if (h == "method")
 		{
-			int id = scanner.nextInt();
+			unsigned int id = scanner.nextInt();
 
 			if(id >= method.size())
 			{

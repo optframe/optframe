@@ -28,8 +28,8 @@ class GRASP: public Heuristic<R, M>
 {
 private:
 	Evaluator<R, M>& evaluator;
+   InitialSolution<R>& initsol;
 	Heuristic<R, M>& h;
-	InitialSolution<R>& initsol;
 	unsigned int iterMax;
 
 public:
@@ -37,8 +37,9 @@ public:
 	using Heuristic<R, M>::exec; // prevents name hiding
 
 	GRASP(Evaluator<R, M>& _eval, InitialSolution<R>& _initsol, Heuristic<R, M>& _h, int _iterMax) :
-		evaluator(_eval), initsol(_initsol), h(_h), iterMax(_iterMax)
+		evaluator(_eval), initsol(_initsol), h(_h)
 	{
+	   iterMax = _iterMax;
 	}
 
 	virtual void exec(Solution<R>& s, double timelimit, double target_f)

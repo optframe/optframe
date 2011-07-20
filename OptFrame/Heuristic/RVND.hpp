@@ -86,8 +86,8 @@ public:
 	}
 
 private:
-	vector<Heuristic<R, M>*> neighbors;
 	Evaluator<R, M>& ev;
+	vector<Heuristic<R, M>*> neighbors;
 	RandGen& rg;
 };
 
