@@ -59,9 +59,47 @@ public:
 			return;
 		}
 
-		while(scanner->hasNext())
+		vector<string> commands;
+
+	   while(scanner->hasNext())
+      {
+         string line = scanner->nextLine();
+
+         int brackets = 0;
+
+         for(unsigned int c = 0; c < line.length(); c++)
+         {
+            if(line.at(c)=='[')
+               brackets++;
+            if(line.at(c)==']')
+               brackets--;
+         }
+
+         while(brackets > 0)
+         {
+            string line2 = scanner->nextLine();
+
+            for(unsigned int c = 0; c < line2.length(); c++)
+            {
+               if(line2.at(c)=='[')
+                  brackets++;
+               if(line2.at(c)==']')
+                  brackets--;
+            }
+
+            line = line + line2;
+         }
+
+         if(brackets < 0)
+            cout << "error in command: wrong number of ']'" << endl;
+
+         if(brackets == 0)
+            commands.push_back(line);
+      }
+
+		for(unsigned int i = 0; i < commands.size(); i++)
 		{
-			string line = scanner->nextLine();
+			string line = commands[i];
 
 			Scanner s2(line);
 
