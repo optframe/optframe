@@ -1,0 +1,11 @@
+%=========================
+% OptFrame example file 2
+%=========================
+
+define x [ a, b, c ]
+
+for_each $i [1,2,3] [
+  element $i x e,
+  echo e,
+  undefine e
+]
