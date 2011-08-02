@@ -1,7 +1,7 @@
 // OptFrame - Optimization Framework
 
 // Copyright (C) 2009, 2010, 2011
-// Igor Machado - Mario Henrique Perche - Pablo Munhoz - Sabir Ribas
+// http://optframe.sourceforge.net/
 //
 // This file is part of the OptFrame optimization framework. This framework
 // is free software; you can redistribute it and/or modify it under the
