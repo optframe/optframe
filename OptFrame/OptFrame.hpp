@@ -104,6 +104,7 @@
 #include "Modules/PauseModule.hpp"
 #include "Modules/PrintModule.hpp"
 #include "Modules/ProblemModule.hpp"
+#include "Modules/RandGenModule.hpp"
 #include "Modules/ReadModule.hpp"
 #include "Modules/TestModule.hpp"
 #include "Modules/UndefineModule.hpp"
@@ -187,6 +188,7 @@ public:
       loadModule(new ListFromFileModule<R, M> );
 		loadModule(new PauseModule<R, M> );
 		loadModule(new PrintModule<R, M> );
+      loadModule(new RandGenModule<R, M> );
 		loadModule(new ReadModule<R, M> );
 		loadModule(new TestModule<R, M> );
       loadModule(new UndefineModule<R, M> );
