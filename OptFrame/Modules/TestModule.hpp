@@ -111,10 +111,7 @@ public:
 
 		for (int i = 0; i < n; i++)
 		{
-			long seed = time(NULL) + i;
-			fprintf(file, "%ld\t", seed);
-
-			cout << "Test " << i << " {seed=" << seed << "}... Running";
+			cout << "Test " << i << "... Running";
 			Timer t(false);
 
 			Solution<R>* s = &initsol->generateSolution();
