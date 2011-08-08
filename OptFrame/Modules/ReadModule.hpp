@@ -75,7 +75,7 @@ public:
                brackets--;
          }
 
-         while(brackets > 0)
+         while((brackets > 0) && scanner->hasNext())
          {
             string line2 = scanner->nextLine();
 
@@ -90,11 +90,14 @@ public:
             line = line + line2;
          }
 
-         if(brackets < 0)
-            cout << "error in command: wrong number of ']'" << endl;
-
          if(brackets == 0)
             commands.push_back(line);
+         else
+         {
+            cout << "read error: wrong number of '[' and ']'" << endl;
+            delete scanner;
+            return;
+         }
       }
 
 		for(unsigned int i = 0; i < commands.size(); i++)
