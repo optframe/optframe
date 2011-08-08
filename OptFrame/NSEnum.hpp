@@ -58,9 +58,9 @@ public:
 
 	virtual Move<R, M>& move(unsigned int m) = 0;
 
-	virtual unsigned int size() = 0;
+	virtual unsigned int size() const = 0;
 
-	virtual void print() = 0;
+	virtual void print() const = 0;
 };
 
 #endif /*OPTFRAME_NSENUM_HPP_*/

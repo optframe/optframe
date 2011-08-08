@@ -91,7 +91,7 @@ public:
 		return * new NSIterator$neighborhood; // return an iterator to the neighbors of 'rep' 
 	}
 
-	virtual void print()
+	virtual void print() const
 	{
 	}
 };

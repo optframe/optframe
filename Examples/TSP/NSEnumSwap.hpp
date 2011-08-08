@@ -185,12 +185,12 @@ public:
 		return busca(k, 1, 2 * n);
 	}
 
-	unsigned int size()
+	unsigned int size() const
 	{
 		return n * (n - 1) / 2;
 	}
 
-	virtual void print()
+	virtual void print() const
 	{
 		cout << "\nNSEnum Swap (" << size() << ")\n";
 	}

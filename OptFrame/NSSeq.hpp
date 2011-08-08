@@ -50,7 +50,7 @@ public:
 		return getIterator(r);
 	}
 
-	virtual void print() = 0;
+	virtual void print() const = 0;
 };
 
 #endif /*OPTFRAME_NSSEQ_HPP_*/

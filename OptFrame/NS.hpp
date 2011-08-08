@@ -40,7 +40,7 @@ public:
 
     virtual Move<R,M>& move(const R&) = 0;
 
-	virtual void print() = 0;
+	virtual void print() const = 0;
 };
 
 #endif /*OPTFRAME_NS_HPP_*/
