@@ -34,12 +34,11 @@ public:
 	}
 	string usage()
 	{
-		string u = "test N T TF BF ISG EVAL METHOD OUTPUTFILE [solution_name]\n WHERE:\n";
+		string u = "test N T TF BF [ initsol id | loadsol id ] EVAL METHOD OUTPUTFILE [solution_name]\n WHERE:\n";
 		u += "N is the number of tests to be executed;\n";
 		u += "T is the timelimit, in seconds, for each test; (0 for no timelimit)\n";
 		u += "TF is the target evaluation function value;\n";
 		u += "BF is the best known evaluation function value;\n";
-		u += "ISG is the initial solution generator; (e.g. initsol 0)\n";
 		u += "EVAL is the main evaluator; (e.g. ev 0)\n";
 		u += "METHOD is the method to be tested with its own parameters;\n";
 		u += "OUTPUTFILE is the output file;\n";
@@ -62,7 +61,25 @@ public:
 		int t = scanner.nextDouble();
 		double tf = scanner.nextDouble();
 		double bf = scanner.nextDouble();
-		InitialSolution<R>* initsol = factory->read_initsol(&scanner);
+
+      // -----------------------------
+      // option 'loadsol' or 'initsol'
+      // -----------------------------
+
+      InitialSolution<R>* initsol = NULL;
+      Solution<R>* s = NULL;
+
+      string sol_option = scanner.next();
+      int option_id = scanner.nextInt();
+
+      if (sol_option == "loadsol")
+         s = factory->get_loadsol(option_id);
+
+      if (sol_option == "initsol")
+         initsol = factory->get_initsol(option_id);
+
+      // -------------------------------
+
 		Evaluator<R, M>* eval = factory->read_ev(&scanner);
 		pair<Heuristic<R, M>*, string> method = factory->createHeuristic(scanner.rest());
 
@@ -114,7 +131,9 @@ public:
 			cout << "Test " << i << "... Running";
 			Timer t(false);
 
-			Solution<R>* s = &initsol->generateSolution();
+         if (initsol)
+            s = &initsol->generateSolution();
+
 			t_now = t.now();
 			Evaluation< M > & e = eval->evaluate(*s);
 			fo_now = e.evaluation();
@@ -152,7 +171,9 @@ public:
 				s_star = &s2->clone();
 			}
 
-			delete s;
+         if (initsol)
+            delete s;
+
 			delete s2;
 
 			fprintf(file, "\n");
