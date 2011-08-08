@@ -34,9 +34,9 @@ public:
 
 	Solution<Rep$project>& generateSolution()
 	{
-	   Rep$project* newRep = new Rep$project;
+	   Rep$project newRep;
 
-	   return * new TestSolution<Rep$project>(* newRep);			
+	   return * new TestSolution<Rep$project>(newRep);			
 	}
 	
 };
