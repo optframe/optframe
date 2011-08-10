@@ -69,7 +69,7 @@ public:
       return *new IteratorNSSeqUnion<R, M, MOVE> (it);
    }
 
-	virtual void print()
+	virtual void print() const
 	{
 		cout << "NSSeqUnionAdapter {" << endl;
 		for(unsigned int i = 0; i < ns.size(); i++)

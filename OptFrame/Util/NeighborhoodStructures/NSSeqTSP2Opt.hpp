@@ -127,7 +127,7 @@ public:
 		return *new NSIteratorTSP2Opt<T, M, MOVE> (r);
 	}
 
-	virtual void print()
+	virtual void print() const
 	{
 		cout << "NSSeqTSP2Opt" << endl;
 	}

@@ -114,7 +114,7 @@ public:
 		return *new NSIteratorTSPSwap<T, M, MOVE> (r.size());
 	}
 
-	virtual void print()
+	virtual void print() const
 	{
 		cout << "NSSeqTSPSwap" << endl;
 	}

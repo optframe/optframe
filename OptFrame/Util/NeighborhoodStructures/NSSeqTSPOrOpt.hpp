@@ -74,7 +74,7 @@ public:
 		return OrOpt1_2_3->getIterator(rep);
 	}
 
-	virtual void print()
+	virtual void print() const
 	{
 		cout << "NSSeqVectorOrOpt{1..3}" << endl;
 	}

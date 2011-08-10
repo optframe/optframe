@@ -310,7 +310,7 @@ public:
 		return *new NSIteratorSwapSide(rep.getRows(), rep.getCols());
 	}
 
-	virtual void print()
+	virtual void print() const
 	{
 		cout << "NSSeqSwapSide" << endl;
 	}

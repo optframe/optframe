@@ -254,7 +254,7 @@ public:
 		return *new NSIteratorSwapCorner(rep.getRows(), rep.getCols());
 	}
 
-	virtual void print()
+	virtual void print() const
 	{
 		cout << "NSSeqSwapCorner" << endl;
 	}

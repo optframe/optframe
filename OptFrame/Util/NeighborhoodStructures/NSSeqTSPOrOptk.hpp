@@ -73,7 +73,7 @@ public:
       return *new NSIteratorTSPOrOptk<T, M> (r.size(), k);
    }
 
-   virtual void print()
+   virtual void print() const
    {
       cout << "NSSeqTSPOrOpt{K=" << k << "}" << endl;
    }

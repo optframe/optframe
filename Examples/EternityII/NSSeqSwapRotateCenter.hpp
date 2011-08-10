@@ -334,7 +334,7 @@ public:
 		return *new NSIteratorSwapRotateCenter(rep.getRows() - 2, rep.getCols() - 2);
 	}
 
-	virtual void print()
+	virtual void print() const
 	{
 		cout << "NSSeqSwapRotateCenter" << endl;
 	}
