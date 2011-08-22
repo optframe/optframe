@@ -21,10 +21,10 @@
 
 void PCAPSolCheck(PCAPProblemInstance& pPCAP, Solution<RepPCAP>& s) {
 	vector<int> utilizacao;
-	for (int i = 0; i < s.getR().first.size(); i++)
+	for (unsigned int i = 0; i < s.getR().first.size(); i++)
 		utilizacao.push_back(0);
 
-	for (int i = 0; i < s.getR().second.size(); i++) {
+	for (unsigned int i = 0; i < s.getR().second.size(); i++) {
 		int med = s.getR().second[i];
 
 		int d = pPCAP.vecCidades[i].demanda;
@@ -32,13 +32,13 @@ void PCAPSolCheck(PCAPProblemInstance& pPCAP, Solution<RepPCAP>& s) {
 		cout<<"Cidade i= "<<i<<" Associada Facilidade: "<<s.getR().second[i]<<endl;
 	}
 
-	for (int i = 0; i < s.getR().first.size(); i++) {
+	for (unsigned int i = 0; i < s.getR().first.size(); i++) {
 		cout<<"Facilidade i: "<<i<<" eh CIDADE: "<<s.getR().first[i]<<endl;
 	}
 
 
 
-	for (int i = 0; i < s.getR().first.size(); i++) {
+	for (unsigned int i = 0; i < s.getR().first.size(); i++) {
 				if (utilizacao[i] > pPCAP.vecCidades[i].capacidade)
 			cout << "Capacidade Estourada da mediana: " << s.getR().first[i]
 					<< " Passaram: " << utilizacao[i]

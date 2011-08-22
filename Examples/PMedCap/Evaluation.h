@@ -21,8 +21,8 @@
 #ifndef PCAP_EVALUATION_H_
 #define PCAP_EVALUATION_H_
 
-#include "../OptFrame/Evaluation.hpp"
-#include "../OptFrame/Util/TestEvaluation.hpp"
+#include "../../OptFrame/Evaluation.hpp"
+#include "../../OptFrame/Util/TestEvaluation.hpp"
 
 #include "Memory.h"
 

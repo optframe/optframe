@@ -22,9 +22,9 @@
 #define PCAP_NSSEQSWAP_HPP_
 
 // Framework includes
-#include "../OptFrame/NSSeq.hpp"
+#include "../../OptFrame/NSSeq.hpp"
 
-#include "../OptFrame/Util/TestMove.hpp"
+#include "../../OptFrame/Util/TestMove.hpp"
 
 // Own includes
 #include "ProblemInstance.hpp"
@@ -69,10 +69,10 @@ public:
 	virtual bool operator==(const Move<RepPCAP>& _m) const
 	{
 		const MoveSWAP& m = (const MoveSWAP&) _m;
-		return false;
+		return x == m.x;
 	}
 
-	void print()
+	void print() const
 	{
 		cout << "MoveSwapMediana: (" << x << "," << med << ")" << endl;
 	}
@@ -150,7 +150,7 @@ public:
 		return *new NSIteratorSWAP(p); // return an iterator to the neighbors of 'rep'
 	}
 
-	virtual void print()
+	virtual void print() const
 	{
 	}
 };

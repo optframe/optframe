@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 
 	Scanner scanner(new File("./Examples/PMedCap/InstancesLorena/SJC1"));
 
-	double tempo = 120;
+	//double tempo = 120;
 
 	PCAPProblemInstance p(scanner);
 	PCAPEvaluator e(p);

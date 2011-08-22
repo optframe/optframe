@@ -21,8 +21,8 @@
 #ifndef PCAP_INITIALSOLUTION_InitalSolutionGreedy_HPP_
 #define PCAP_INITIALSOLUTION_InitalSolutionGreedy_HPP_
 
-#include "../OptFrame/InitialSolution.h"
-#include "../OptFrame/Util/TestSolution.hpp"
+#include "../../OptFrame/InitialSolution.h"
+#include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.hpp"
 

@@ -25,8 +25,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "../OptFrame/Evaluation.hpp"
-#include "../OptFrame/Evaluator.hpp"
+#include "../../OptFrame/Evaluation.hpp"
+#include "../../OptFrame/Evaluator.hpp"
 
 #include "Representation.h"
 #include "Memory.h"
@@ -61,10 +61,10 @@ public:
 		double fo_Inv = 0;
 
 		vector<int> utilizacao;
-		for (int i = 0; i < rep.first.size(); i++)
+		for (unsigned int i = 0; i < rep.first.size(); i++)
 			utilizacao.push_back(0);
 
-		for (int i = 0; i < rep.second.size(); i++)
+		for (unsigned int i = 0; i < rep.second.size(); i++)
 		{
 			int med = rep.first[rep.second[i]];
 			int indiceMed = rep.second[i];
@@ -87,10 +87,10 @@ public:
 
 		double fo_medAlocada = 0; //Garante que a mediana eh atendida por ela propria
 
-		for (int i = 0; i < rep.first.size(); i++)
+		for (unsigned int i = 0; i < rep.first.size(); i++)
 		{
 			int med = rep.first[i];
-			if (rep.second[med] != i)
+			if (rep.second[med] != (int)i)
 				fo_medAlocada += 100000;
 
 		}

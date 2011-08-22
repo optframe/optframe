@@ -21,7 +21,7 @@
 #ifndef PCAP_SOLUTION_H_
 #define PCAP_SOLUTION_H_
 
-#include "../OptFrame/Solution.hpp"
+#include "../../OptFrame/Solution.hpp"
 #include "Representation.h"
 
 typedef Solution<RepPCAP> SolutionPCAP;
