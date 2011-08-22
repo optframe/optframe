@@ -46,9 +46,9 @@ template<class M = OPTFRAME_DEFAULT_MEMORY>
 class Evaluation
 {
 protected:
-	M& m;
-	double objFunction;
-	double infMeasure;
+   double objFunction;
+   double infMeasure;
+   M& m;
 
 public:
 	Evaluation(double obj, double inf, M& mm):
@@ -62,7 +62,7 @@ public:
 	};
 
 	Evaluation(const Evaluation<M>& e):
-		m(*new M(e.m)),objFunction(e.objFunction),infMeasure(e.infMeasure){};
+		objFunction(e.objFunction),infMeasure(e.infMeasure),m(*new M(e.m)){};
 
 	virtual ~Evaluation() { delete &m; }
 
