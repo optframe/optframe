@@ -23,6 +23,7 @@
 
 #include "MapReduce++/MaPI/MaPI.h"
 
+#include "../Util/TestSolution.hpp"
 #include "../Heuristic.hpp"
 #include "../NSEnum.hpp"
 #include "../Evaluator.hpp"
