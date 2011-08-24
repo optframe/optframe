@@ -1,0 +1,3 @@
+Running the MaPI example with 5 processes (i.e. 4 mapping nodes)
+
+  $make && mpirun -np 5 main

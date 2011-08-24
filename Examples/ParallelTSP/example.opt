@@ -1,0 +1,24 @@
+%=======================
+% OptFrame example file
+%=======================
+
+dictionary %shows an empty dictionary
+define my_bestimprovement FI ev 0 ns 0 %define 'my_bestimprovement' as 'BI ev 0 ns 0'
+define random initsol 0 %define 'random' as 'initsol 0'
+define shuffle method 0
+%dictionary %shows the updated dictionary
+
+
+build Map ev 0 MH ev 0 [ shuffle my_bestimprovement ] my_mapreduce % must be builded
+%build MapReduce ev 0 my_map my_reduction my_mapreduce % must be builded
+
+initservers
+
+test 1 12 8400 8400 random ev 0 my_mapreduce out.txt sStar
+
+print sStar
+evaluate ev 0 sStar
+export sStar out.sol
+
+%display the help
+help
