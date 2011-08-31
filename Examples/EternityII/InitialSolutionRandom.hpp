@@ -104,7 +104,7 @@ public:
 		while ((p.right != 0) || (p.up != 0))
 			p.rotate();
 
-		(*tab)(0, tab->getCols() - 1) = p;
+		(*tab)(0, tab->getNumCols() - 1) = p;
 
 		// random one piece for right-lower corner
 		x = rg.rand(corner_pieces.size());
@@ -114,7 +114,7 @@ public:
 		while ((p.right != 0) || (p.down != 0))
 			p.rotate();
 
-		(*tab)(tab->getRows() - 1, tab->getCols() - 1) = p;
+		(*tab)(tab->getNumRows() - 1, tab->getNumCols() - 1) = p;
 
 		// random one piece for left-lower corner
 		x = rg.rand(corner_pieces.size());
@@ -124,10 +124,10 @@ public:
 		while ((p.left != 0) || (p.down != 0))
 			p.rotate();
 
-		(*tab)(tab->getRows() - 1, 0) = p;
+		(*tab)(tab->getNumRows() - 1, 0) = p;
 
 		// random the pieces for upper-bottom sides
-		for (unsigned int i = 1; i < tab->getCols() - 1; i++)
+		for (unsigned int i = 1; i < tab->getNumCols() - 1; i++)
 		{
 			// top
 			x = rg.rand(side_pieces.size());
@@ -145,11 +145,11 @@ public:
 
 			while (p.down != 0)
 				p.rotate();
-			(*tab)(tab->getRows() - 1, i) = p;
+			(*tab)(tab->getNumRows() - 1, i) = p;
 		}
 
 		// random the pieces for left-right sides
-		for (unsigned int i = 1; i < tab->getRows() - 1; i++)
+		for (unsigned int i = 1; i < tab->getNumRows() - 1; i++)
 		{
 			// left
 			x = rg.rand(side_pieces.size());
@@ -167,12 +167,12 @@ public:
 
 			while (p.right != 0)
 				p.rotate();
-			(*tab)(i, tab->getCols() - 1) = p;
+			(*tab)(i, tab->getNumCols() - 1) = p;
 		}
 
 		// random the center pieces
-		for (unsigned int i = 1; i < tab->getRows() - 1; i++)
-			for (unsigned int j = 1; j < tab->getCols() - 1; j++)
+		for (unsigned int i = 1; i < tab->getNumRows() - 1; i++)
+			for (unsigned int j = 1; j < tab->getNumCols() - 1; j++)
 			{
 				x = rg.rand(center_pieces.size());
 				p = center_pieces[x];

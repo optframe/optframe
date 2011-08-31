@@ -178,8 +178,8 @@ public:
 	virtual Move<RepEtII, MemEtII>& move(const RepEtII& rep)
 	{
 		// line 'x' and col 'y'
-		int x = rg.rand((rep.getRows() - 2)) + 1;
-		int y = rg.rand((rep.getCols() - 2)) + 1;
+		int x = rg.rand((rep.getNumRows() - 2)) + 1;
+		int y = rg.rand((rep.getNumCols() - 2)) + 1;
 		int nRot = rg.rand(3) + 1;
 
 		return *new MoveRotate(nRot, x, y); // return a random move
@@ -188,7 +188,7 @@ public:
 	virtual NSIterator<RepEtII, MemEtII>& getIterator(const RepEtII& rep)
 	{
 		// return an iterator to the neighbors of 'rep'
-		return *new NSIteratorRotate(rep.getRows() - 2, rep.getCols() - 2);
+		return *new NSIteratorRotate(rep.getNumRows() - 2, rep.getNumCols() - 2);
 	}
 
 	virtual void print() const

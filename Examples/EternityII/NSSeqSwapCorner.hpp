@@ -65,14 +65,14 @@ public:
 		while ((rep(0, 0).left != 0) || (rep(0, 0).up != 0))
 			rep(0, 0).rotate();
 
-		while ((rep(0, rep.getCols() - 1).right != 0) || (rep(0, rep.getCols() - 1).up != 0))
-			rep(0, rep.getCols() - 1).rotate();
+		while ((rep(0, rep.getNumCols() - 1).right != 0) || (rep(0, rep.getNumCols() - 1).up != 0))
+			rep(0, rep.getNumCols() - 1).rotate();
 
-		while ((rep(rep.getRows() - 1, 0).left != 0) || (rep(rep.getRows() - 1, 0).down != 0))
-			rep(rep.getRows() - 1, 0).rotate();
+		while ((rep(rep.getNumRows() - 1, 0).left != 0) || (rep(rep.getNumRows() - 1, 0).down != 0))
+			rep(rep.getNumRows() - 1, 0).rotate();
 
-		while ((rep(rep.getRows() - 1, rep.getCols() - 1).right != 0) || (rep(rep.getRows() - 1, rep.getCols() - 1).down != 0))
-			rep(rep.getRows() - 1, rep.getCols() - 1).rotate();
+		while ((rep(rep.getNumRows() - 1, rep.getNumCols() - 1).right != 0) || (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).down != 0))
+			rep(rep.getNumRows() - 1, rep.getNumCols() - 1).rotate();
 
 		return *new MoveSwapCorner(x2, y2, x1, y1);
 	}
@@ -86,19 +86,19 @@ public:
 		if (rep(0, 0).down == rep(1, 0).up)
 			f++;
 
-		if (rep(0, rep.getCols() - 1).left == rep(0, rep.getCols() - 2).right)
+		if (rep(0, rep.getNumCols() - 1).left == rep(0, rep.getNumCols() - 2).right)
 			f++;
-		if (rep(0, rep.getCols() - 1).down == rep(1, rep.getCols() - 1).up)
-			f++;
-
-		if (rep(rep.getRows() - 1, 0).right == rep(rep.getRows() - 1, 1).left)
-			f++;
-		if (rep(rep.getRows() - 1, 0).up == rep(rep.getRows() - 2, 0).down)
+		if (rep(0, rep.getNumCols() - 1).down == rep(1, rep.getNumCols() - 1).up)
 			f++;
 
-		if (rep(rep.getRows() - 1, rep.getCols() - 1).left == rep(rep.getRows() - 1, rep.getCols() - 2).right)
+		if (rep(rep.getNumRows() - 1, 0).right == rep(rep.getNumRows() - 1, 1).left)
 			f++;
-		if (rep(rep.getRows() - 1, rep.getCols() - 1).up == rep(rep.getRows() - 2, rep.getCols() - 1).down)
+		if (rep(rep.getNumRows() - 1, 0).up == rep(rep.getNumRows() - 2, 0).down)
+			f++;
+
+		if (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).left == rep(rep.getNumRows() - 1, rep.getNumCols() - 2).right)
+			f++;
+		if (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).up == rep(rep.getNumRows() - 2, rep.getNumCols() - 1).down)
 			f++;
 
 		Move<RepEtII, MemEtII>& rev = apply(rep);
@@ -110,19 +110,19 @@ public:
 		if (rep(0, 0).down == rep(1, 0).up)
 			f2++;
 
-		if (rep(0, rep.getCols() - 1).left == rep(0, rep.getCols() - 2).right)
+		if (rep(0, rep.getNumCols() - 1).left == rep(0, rep.getNumCols() - 2).right)
 			f2++;
-		if (rep(0, rep.getCols() - 1).down == rep(1, rep.getCols() - 1).up)
-			f2++;
-
-		if (rep(rep.getRows() - 1, 0).right == rep(rep.getRows() - 1, 1).left)
-			f2++;
-		if (rep(rep.getRows() - 1, 0).up == rep(rep.getRows() - 2, 0).down)
+		if (rep(0, rep.getNumCols() - 1).down == rep(1, rep.getNumCols() - 1).up)
 			f2++;
 
-		if (rep(rep.getRows() - 1, rep.getCols() - 1).left == rep(rep.getRows() - 1, rep.getCols() - 2).right)
+		if (rep(rep.getNumRows() - 1, 0).right == rep(rep.getNumRows() - 1, 1).left)
 			f2++;
-		if (rep(rep.getRows() - 1, rep.getCols() - 1).up == rep(rep.getRows() - 2, rep.getCols() - 1).down)
+		if (rep(rep.getNumRows() - 1, 0).up == rep(rep.getNumRows() - 2, 0).down)
+			f2++;
+
+		if (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).left == rep(rep.getNumRows() - 1, rep.getNumCols() - 2).right)
+			f2++;
+		if (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).up == rep(rep.getNumRows() - 2, rep.getNumCols() - 1).down)
 			f2++;
 
 		mem += (f2 - f);
@@ -233,16 +233,16 @@ public:
 
 	virtual Move<RepEtII, MemEtII>& move(const RepEtII& rep)
 	{
-		int x1 = (rg.rand(2)) * (rep.getRows() - 1);
-		int y1 = (rg.rand(2)) * (rep.getCols() - 1);
+		int x1 = (rg.rand(2)) * (rep.getNumRows() - 1);
+		int y1 = (rg.rand(2)) * (rep.getNumCols() - 1);
 
 		int x2 = x1;
 		int y2 = y1;
 
 		while ((x2 == x1) && (y2 == y1))
 		{
-			x2 = (rg.rand(2)) * (rep.getRows() - 1);
-			y2 = (rg.rand(2)) * (rep.getCols() - 1);
+			x2 = (rg.rand(2)) * (rep.getNumRows() - 1);
+			y2 = (rg.rand(2)) * (rep.getNumCols() - 1);
 		}
 
 		return *new MoveSwapCorner(x1, y1, x2, y2);
@@ -251,7 +251,7 @@ public:
 	virtual NSIterator<RepEtII, MemEtII>& getIterator(const RepEtII& rep)
 	{
 		// return an iterator to the neighbors of 'rep'
-		return *new NSIteratorSwapCorner(rep.getRows(), rep.getCols());
+		return *new NSIteratorSwapCorner(rep.getNumRows(), rep.getNumCols());
 	}
 
 	virtual void print() const

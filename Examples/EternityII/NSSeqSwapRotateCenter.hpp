@@ -310,19 +310,19 @@ public:
 
 	virtual Move<RepEtII, MemEtII>& move(const RepEtII& rep)
 	{
-		if ((rep.getRows() == 3) && (rep.getCols() == 3))
+		if ((rep.getNumRows() == 3) && (rep.getNumCols() == 3))
 			return *new MoveSwapRotateCenter(1, 1, 1, 1);
 
 		// line 'x' and col 'y'
-		int x1 = rg.rand((rep.getRows() - 2)) + 1;
-		int y1 = rg.rand((rep.getCols() - 2)) + 1;
+		int x1 = rg.rand((rep.getNumRows() - 2)) + 1;
+		int y1 = rg.rand((rep.getNumCols() - 2)) + 1;
 
 		int x2 = x1;
 		int y2 = y1;
 		while ((x2 == x1) && (y2 == y1))
 		{
-			x2 = rg.rand((rep.getRows() - 2)) + 1;
-			y2 = rg.rand((rep.getCols() - 2)) + 1;
+			x2 = rg.rand((rep.getNumRows() - 2)) + 1;
+			y2 = rg.rand((rep.getNumCols() - 2)) + 1;
 		}
 
 		return *new MoveSwapRotateCenter(x1, y1, x2, y2);
@@ -331,7 +331,7 @@ public:
 	virtual NSIterator<RepEtII, MemEtII>& getIterator(const RepEtII& rep)
 	{
 		// return an iterator to the neighbors of 'rep'
-		return *new NSIteratorSwapRotateCenter(rep.getRows() - 2, rep.getCols() - 2);
+		return *new NSIteratorSwapRotateCenter(rep.getNumRows() - 2, rep.getNumCols() - 2);
 	}
 
 	virtual void print() const

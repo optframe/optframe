@@ -67,12 +67,12 @@ ostream& operator<<(ostream &os, const Piece &obj)
 ostream& operator<<(ostream &os, const Matrix<Piece> &obj)
 {
 	cout << "game" << endl;
-	for (unsigned int i = 0; i < obj.getRows(); i++)
+	for (unsigned int i = 0; i < obj.getNumRows(); i++)
 		for (int count = 0; count < 3; count++)
 		{
 			if (count != 1)
 				cout << " ";
-			for (unsigned int j = 0; j < obj.getCols(); j++)
+			for (unsigned int j = 0; j < obj.getNumCols(); j++)
 			{
 				if (count == 0)
 					cout << obj(i, j).up << "   ";

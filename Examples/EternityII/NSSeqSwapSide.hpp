@@ -54,9 +54,9 @@ public:
 	bool canBeApplied(const RepEtII& rep)
 	{
 		bool left_upper = ((x1 == 0) && (y1 == 0)) || ((x2 == 0) && (y2 == 0));
-		bool right_upper = ((x1 == 0) && (y1 == (int)rep.getCols() - 1)) || ((x2 == 0) && (y2 == (int)rep.getCols() - 1));
-		bool left_lower = ((x1 == (int)rep.getRows() - 1) && (y1 == 0)) || ((x2 == (int)rep.getRows() - 1) && (y2 == 0));
-		bool right_lower = ((x1 == (int)rep.getRows() - 1) && (y1 == (int)rep.getCols() - 1)) || ((x2 == (int)rep.getRows() - 1) && (y2 == (int)rep.getCols() - 1));
+		bool right_upper = ((x1 == 0) && (y1 == (int)rep.getNumCols() - 1)) || ((x2 == 0) && (y2 == (int)rep.getNumCols() - 1));
+		bool left_lower = ((x1 == (int)rep.getNumRows() - 1) && (y1 == 0)) || ((x2 == (int)rep.getNumRows() - 1) && (y2 == 0));
+		bool right_lower = ((x1 == (int)rep.getNumRows() - 1) && (y1 == (int)rep.getNumCols() - 1)) || ((x2 == (int)rep.getNumRows() - 1) && (y2 == (int)rep.getNumCols() - 1));
 
 		return !left_upper && !right_upper && !left_lower && !right_lower;
 	}
@@ -71,7 +71,7 @@ public:
 			while (rep(x1, y1).up != 0)
 				rep(x1, y1).rotate();
 
-		if (x1 == (int)rep.getRows() - 1)
+		if (x1 == (int)rep.getNumRows() - 1)
 			while (rep(x1, y1).down != 0)
 				rep(x1, y1).rotate();
 
@@ -79,7 +79,7 @@ public:
 			while (rep(x1, y1).left != 0)
 				rep(x1, y1).rotate();
 
-		if (y1 == (int)rep.getCols() - 1)
+		if (y1 == (int)rep.getNumCols() - 1)
 			while (rep(x1, y1).right != 0)
 				rep(x1, y1).rotate();
 
@@ -89,7 +89,7 @@ public:
 			while (rep(x2, y2).up != 0)
 				rep(x2, y2).rotate();
 
-		if (x2 == (int)rep.getRows() - 1)
+		if (x2 == (int)rep.getNumRows() - 1)
 			while (rep(x2, y2).down != 0)
 				rep(x2, y2).rotate();
 
@@ -97,7 +97,7 @@ public:
 			while (rep(x2, y2).left != 0)
 				rep(x2, y2).rotate();
 
-		if (y2 == (int)rep.getCols() - 1)
+		if (y2 == (int)rep.getNumCols() - 1)
 			while (rep(x2, y2).right != 0)
 				rep(x2, y2).rotate();
 
@@ -113,9 +113,9 @@ public:
 			f++;
 		if (((x1 - 1) >= 0) && (rep(x1, y1).up == rep(x1 - 1, y1).down))
 			f++;
-		if (((y1 + 1) < rep.getCols()) && (rep(x1, y1).right == rep(x1, y1 + 1).left))
+		if (((y1 + 1) < rep.getNumCols()) && (rep(x1, y1).right == rep(x1, y1 + 1).left))
 			f++;
-		if (((x1 + 1) < rep.getRows()) && (rep(x1, y1).down == rep(x1 + 1, y1).up))
+		if (((x1 + 1) < rep.getNumRows()) && (rep(x1, y1).down == rep(x1 + 1, y1).up))
 			f++;
 
 		int g = 0;
@@ -123,9 +123,9 @@ public:
 			g++;
 		if (((x2 - 1) >= 0) && (rep(x2, y2).up == rep(x2 - 1, y2).down) && !(((x2 - 1) == x1) && (y2 == y1)))
 			g++;
-		if (((y2 + 1) < rep.getCols()) && (rep(x2, y2).right == rep(x2, y2 + 1).left) && !((x2 == x1) && ((y2 + 1) == y1)))
+		if (((y2 + 1) < rep.getNumCols()) && (rep(x2, y2).right == rep(x2, y2 + 1).left) && !((x2 == x1) && ((y2 + 1) == y1)))
 			g++;
-		if (((x2 + 1) < rep.getRows()) && (rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
+		if (((x2 + 1) < rep.getNumRows()) && (rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
 			g++;
 
 		Move<RepEtII, MemEtII>& rev = apply(rep);
@@ -135,9 +135,9 @@ public:
 			f2++;
 		if (((x1 - 1) >= 0) && (rep(x1, y1).up == rep(x1 - 1, y1).down))
 			f2++;
-		if (((y1 + 1) < rep.getCols()) && (rep(x1, y1).right == rep(x1, y1 + 1).left))
+		if (((y1 + 1) < rep.getNumCols()) && (rep(x1, y1).right == rep(x1, y1 + 1).left))
 			f2++;
-		if (((x1 + 1) < rep.getRows()) && (rep(x1, y1).down == rep(x1 + 1, y1).up))
+		if (((x1 + 1) < rep.getNumRows()) && (rep(x1, y1).down == rep(x1 + 1, y1).up))
 			f2++;
 
 		int g2 = 0;
@@ -145,9 +145,9 @@ public:
 			g2++;
 		if (((x2 - 1) >= 0) && (rep(x2, y2).up == rep(x2 - 1, y2).down) && !(((x2 - 1) == x1) && (y2 == y1)))
 			g2++;
-		if (((y2 + 1) < rep.getCols()) && (rep(x2, y2).right == rep(x2, y2 + 1).left) && !((x2 == x1) && ((y2 + 1) == y1)))
+		if (((y2 + 1) < rep.getNumCols()) && (rep(x2, y2).right == rep(x2, y2 + 1).left) && !((x2 == x1) && ((y2 + 1) == y1)))
 			g2++;
-		if (((x2 + 1) < rep.getRows()) && (rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
+		if (((x2 + 1) < rep.getNumRows()) && (rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
 			g2++;
 
 		mem += (f2 - f);
@@ -279,13 +279,13 @@ public:
 
 		if ((rg.rand(2)) == 0) // vert
 		{
-			x1 = rg.rand((rep.getRows() - 2)) + 1;
-			y1 = rg.rand(2) * (rep.getCols() - 1);
+			x1 = rg.rand((rep.getNumRows() - 2)) + 1;
+			y1 = rg.rand(2) * (rep.getNumCols() - 1);
 		}
 		else // horz
 		{
-			x1 = (rg.rand(2)) * (rep.getRows() - 1);
-			y1 = rg.rand((rep.getCols() - 2)) + 1;
+			x1 = (rg.rand(2)) * (rep.getNumRows() - 1);
+			y1 = rg.rand((rep.getNumCols() - 2)) + 1;
 		}
 
 		int x2 = x1;
@@ -293,13 +293,13 @@ public:
 		while ((x2 == x1) && (y2 == y1))
 			if ((rg.rand(2)) == 0) // vert
 			{
-				x2 = rg.rand((rep.getRows() - 2)) + 1;
-				y2 = (rg.rand(2)) * (rep.getCols() - 1);
+				x2 = rg.rand((rep.getNumRows() - 2)) + 1;
+				y2 = (rg.rand(2)) * (rep.getNumCols() - 1);
 			}
 			else // horz
 			{
-				x2 = (rg.rand(2)) * (rep.getRows() - 1);
-				y2 = rg.rand((rep.getCols() - 2)) + 1;
+				x2 = (rg.rand(2)) * (rep.getNumRows() - 1);
+				y2 = rg.rand((rep.getNumCols() - 2)) + 1;
 			}
 
 		return *new MoveSwapSide(x1, y1, x2, y2);
@@ -307,7 +307,7 @@ public:
 
 	virtual NSIterator<RepEtII, MemEtII>& getIterator(const RepEtII& rep)
 	{
-		return *new NSIteratorSwapSide(rep.getRows(), rep.getCols());
+		return *new NSIteratorSwapSide(rep.getNumRows(), rep.getNumCols());
 	}
 
 	virtual void print() const

@@ -45,14 +45,17 @@
 
 using namespace std;
 
-class BadIndex
+class MatrixBadIndex
 {
 private:
    string message;
+   unsigned row, col;
+   unsigned maxRow, maxCol;
+
 public:
-   BadIndex(string m)
+   MatrixBadIndex(string m, unsigned _row, unsigned _col, unsigned _maxRow, unsigned _maxCol) :
+      message(m), row(_row), col(_col), maxRow(_maxRow), maxCol(_maxCol)
    {
-      message = m;
    }
 };
 
@@ -61,19 +64,12 @@ class Matrix
 {
 public:
 
-   Matrix()
-   {
-      rows = cols = 1;
-
-      data = new T[rows * cols];
-   }
-
-   Matrix(unsigned _quadratic)
+   Matrix(unsigned _quadratic = 1)
    {
       rows = cols = _quadratic;
 
       if (rows == 0 || cols == 0)
-         throw BadIndex("Matrix constructor has 0 size");
+         throw MatrixBadIndex("Matrix constructor has 0 size", 0, 0, 0, 0);
 
       data = new T[rows * cols];
    }
@@ -84,39 +80,23 @@ public:
       cols = _cols;
 
       if (rows == 0 || cols == 0)
-         throw BadIndex("Matrix constructor has 0 size");
+         throw MatrixBadIndex("Matrix constructor has 0 size", 0, 0, 0, 0);
 
       data = new T[rows * cols];
    }
 
-   T& operator()(unsigned row, unsigned col) // subscript operators often come in pairs
+   T& operator()(unsigned row, unsigned col)
    {
       if (row >= rows || col >= cols)
-      {
-         cout << "[set Matrix] Pedido de (" << row << "," << col << ")" << " de (" << rows << ","
-               << cols << ")" << endl;
-
-         int jkl;
-         cin >> jkl;
-
-         throw BadIndex("Matrix subscript out of bounds");
-      }
+         throw MatrixBadIndex("Matrix Out of Bounds Exception", row, col, rows, cols);
 
       return data[cols * row + col];
    }
 
-   T operator()(unsigned row, unsigned col) const // subscript operators often come in pairs
+   T operator()(unsigned row, unsigned col) const
    {
       if (row >= rows || col >= cols)
-      {
-         cout << "[get Matrix] Pedido de (" << row << "," << col << ")" << " de (" << rows << ","
-               << cols << ")" << endl;
-
-         int jkl;
-         cin >> jkl;
-
-         throw BadIndex("const Matrix subscript out of bounds");
-      }
+         throw MatrixBadIndex("Matrix Out of Bounds Exception", row, col, rows, cols);
 
       return data[cols * row + col];
    }
@@ -166,12 +146,6 @@ public:
 
       int total = rows * cols;
 
-      if (total < 0)
-      {
-         cerr << "Valor maior do que o suportado pela Matrix! (" << total << ")" << endl;
-         exit(1);
-      }
-
       data = new T[total];
 
       for (int i = 0; i < (total); i++)
@@ -180,12 +154,12 @@ public:
       return *this;
    }
 
-   unsigned getRows() const
+   unsigned getNumRows() const
    {
       return rows;
    }
 
-   unsigned getCols() const
+   unsigned getNumCols() const
    {
       return cols;
    }
@@ -257,11 +231,11 @@ ostream& operator<<(ostream &os, const Matrix<T> &obj)
 
 ostream& operator<<(ostream &os, const Matrix<string> &obj)
 {
-   os << "Matrix(" << obj.getRows() << "," << obj.getCols() << ")" << endl;
+   os << "Matrix(" << obj.getNumRows() << "," << obj.getNumCols() << ")" << endl;
 
-   for (unsigned int i = 0; i < obj.getRows(); i++)
+   for (unsigned int i = 0; i < obj.getNumRows(); i++)
    {
-      for (unsigned int j = 0; j < obj.getCols(); j++)
+      for (unsigned int j = 0; j < obj.getNumCols(); j++)
          os << "\"" << obj(i, j) << "\"" << "\t";
       os << endl;
    }
