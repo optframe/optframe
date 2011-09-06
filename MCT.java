@@ -30,9 +30,15 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.Scanner;
 
 public class MCT
 {
@@ -52,6 +58,68 @@ public class MCT
 	}
 
 	return true;
+    }
+
+    public static boolean writeToFile(String s, String filename)
+    {
+	try
+	{
+	    FileWriter fstream = new FileWriter(filename, false);
+	    BufferedWriter out = new BufferedWriter(fstream);
+	    out.write(s);
+	    out.close();
+	}
+	catch (Exception e)
+	{
+	    System.err.println("Error: " + e.getMessage());
+	    return false;
+	}
+
+	return true;
+    }
+
+    private static boolean copyfile(String srFile, String dtFile){
+	try{
+	    File f1 = new File(srFile);
+	    File f2 = new File(dtFile);
+	    InputStream in = new FileInputStream(f1);
+
+	    //For Overwrite the file.
+	    OutputStream out = new FileOutputStream(f2);
+
+	    byte[] buf = new byte[1024];
+	    int len;
+	    while ((len = in.read(buf)) > 0){
+		out.write(buf, 0, len);
+	    }
+	    in.close();
+	    out.close();
+	    //System.out.println("File copied.");
+	    return true;
+	}
+	catch(FileNotFoundException ex){
+	    System.out.println(ex.getMessage() + " in the specified directory.");
+	    return false;
+	}
+	catch(IOException e){
+	    System.out.println(e.getMessage()); 
+	    return false; 
+	}
+    }
+
+    public static String loadfile(String filename)
+    {
+	String s = "";
+	Scanner scan;
+	try {
+	    scan = new Scanner(new File(filename));
+	    while (scan.hasNextLine())
+		s += scan.nextLine() + "\n";
+	} catch (FileNotFoundException e) {
+	    e.printStackTrace();
+	    return "";
+	}
+	return s;
     }
 
     public static void main(String[] args) throws IOException
@@ -123,8 +191,80 @@ public class MCT
 	appendToFile(var, "./MyProjects/" + project + ".h");
 
 	System.out.println();
-	
-	
 
+	// ##############################################
+	// #          Solution Representation
+	// ##############################################
+
+	System.out.println("What's your Solution Representation?");
+	String rep = input.readLine();
+	rep = rep.replaceAll(">", " > ");
+	rep = rep.replaceAll("<", " < ");
+
+	System.out.println("Do you need any extra include? (ex.: \"xyz.h\" or <vector>)");
+	String include = "";
+	String incl = input.readLine();
+
+	while ( ! incl.equals("") )//
+	{
+	    include += "\n#include " + incl;
+	    incl = input.readLine();
+	}
+
+	copyfile("./mct/RepTest.tpl","./RepTest.cpp");
+
+	String sRepTest = loadfile("RepTest.cpp");
+
+	sRepTest = sRepTest.replaceAll("\\$rep", rep);
+	sRepTest = sRepTest.replaceAll("\\$include", include);
+
+	writeToFile(sRepTest,"RepTest.cpp");
+
+	System.out.println("Warning: cannot compile the source code");
+
+	// ## Creating Representation file
+
+
+	String var_inc = "./"+project+"/Representation.h" ;
+	var = "./MyProjects/"+project+"/Representation.h";
+
+	if ( copyfile ( "./mct/Representation.tpl", var ) )
+	{
+	    System.out.println("1. Creating Representation File...[ok]");
+
+	    String sVar = loadfile( var );
+
+	    sVar = sVar.replaceAll("\\$rep", rep);
+	    sVar = sVar.replaceAll("\\$include", include);
+	    sVar = sVar.replaceAll("\\$project", project);
+
+	    writeToFile(sVar,var);
+
+	    appendToFile( "#include \""+var_inc+"\"" , "./MyProjects/"+project+".h") ;
+
+	} else { 
+	    System.out.println( "1. Creating Representation File...[fail]" );
+	    return;
+	}
+
+	// ## Creating Solution file
+
+	var_inc="./"+project+"/Solution.h";
+	var="./MyProjects/"+project+"/Solution.h";
+
+	if ( copyfile( "./mct/Solution.tpl", var ))
+	{ 
+	    System.out.println( "2. Creating Solution File...[ok]" );
+
+	    String sVar = loadfile( var );
+
+	    sVar = sVar.replaceAll("\\$project", project);
+
+	    writeToFile(sVar,var);
+
+	    appendToFile( "#include \""+var_inc+"\"" , "./MyProjects/"+project+".h") ;
+	} else 
+	    System.out.println( "2. Creating Solution File...[fail]" );
+	return;
     }
 }
