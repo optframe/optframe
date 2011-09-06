@@ -21,143 +21,133 @@
 #ifndef OPTFRAME_POPULATION_HPP_
 #define OPTFRAME_POPULATION_HPP_
 
+#include "Solution.hpp"
 #include <vector>
 
-#include "Solution.hpp"
-#include "Evaluation.hpp"
-#include "Evaluator.hpp"
-
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R>
 class Population
 {
 protected:
-   typedef Solution<R> chromossome;
-   typedef vector<chromossome*> population;
-   //typedef vector<const chromossome*> constPopulation;
+	typedef Solution<R> chromossome;
+	typedef vector<chromossome*> population;
 
-   population p;
+	population p;
 
 public:
 
-   Population()
-   {
-   }
+	Population()
+	{
+	}
 
-   Population(chromossome& c)
-   {
-      p.push_back(c);
-   }
+	Population(const Population& pop)
+	{
+		for (unsigned i = 0; i < pop.size(); i++)
+			p.push_back(&pop.at(i).clone());
+	}
 
-   Population(Population& pop) :
-      p(pop.p)
-   {
-   }
+	virtual ~Population()
+	{
+		unsigned sizePop = p.size();
 
-   Population(const Population& pop) :
-      p(pop.p)
-   {
-   }
+		for (unsigned i = 0; i < sizePop; i++)
+		{
+			delete p.at(i);
+		}
+	}
 
-   virtual ~Population()
-   {
-      unsigned sizePop = p.size();
+	unsigned size() const
+	{
+		return p.size();
+	}
 
-      for (unsigned i = 0; i < sizePop; i++)
-      {
-         delete p.at(i);
-      }
-   }
+	chromossome& at(unsigned c)
+	{
+		return (*p.at(c));
+	}
 
-   unsigned size() const
-   {
-      return p.size();
-   }
+	const chromossome& at(unsigned c) const
+	{
+		return (*p.at(c));
+	}
 
-   chromossome& at(unsigned c)
-   {
-      return (*p.at(c));
-   }
+	void insert(unsigned pos, chromossome& c)
+	{
+		p.insert(p.begin() + pos, new chromossome(c));
+	}
 
-   const chromossome& at(unsigned c) const
-   {
-      return (*p.at(c));
-   }
+	void push_back(const chromossome& c)
+	{
+		p.push_back(&c.clone());
+	}
 
-   void insert(unsigned pos, chromossome& c)
-   {
-      p.insert(p.begin() + pos, new chromossome(c));
-   }
+	chromossome& remove(unsigned pos)
+	{
+		chromossome& c = *p.at(pos);
+		p.erase(p.begin() + pos);
+		return c;
+	}
 
-   void push_back(chromossome& c)
-   {
-      p.push_back(new chromossome(c));
-   }
+	void clear()
+	{
+		for(unsigned i=0;i<p.size();i++)
+			delete p.at(i);
 
-   chromossome& remove(unsigned pos)
-   {
-      chromossome *c = new chromossome(*p.at(pos));
-      p.erase(p.begin() + pos);
-      return *c;
-   }
+		p.clear();
+	}
 
-   void clear()
-   {
-      p.clear();
-   }
+	bool empty()
+	{
+		return p.empty();
+	}
 
-   bool empty()
-   {
-      return p.empty();
-   }
+	virtual Population<R>& operator=(const Population<R>& p)
+	{
+		if (&p == this) // auto ref check
+			return *this;
 
-   virtual Population<R>& operator=(const Population<R>& p)
-   {
-      if (&p == this) // auto ref check
-         return *this;
+		unsigned sizePop = this->p.size();
 
-      unsigned sizePop = this->p.size();
+		for (unsigned i = 0; i < sizePop; i++)
+		{
+			if (this->p.at(i)) // If no NULL pointing.
+			{
+				delete this->p.at(i);
+			}
+		}
 
-      for (unsigned i = 0; i < sizePop; i++)
-      {
-         if (this->p.at(i)) // If no NULL pointing.
-         {
-            delete this->p.at(i);
-         }
-      }
+		this->p.clear();
 
-      this->p.clear();
+		sizePop = p.size();
 
-      sizePop = p.size();
+		for (unsigned i = 0; i < sizePop; i++)
+		{
+			if (&p.at(i)) // If no NULL pointing.
+			{
+				this->p.push_back(new chromossome(p.at(i)));
+			}
+			else
+			{
+				this->p.push_back(NULL);
+			}
+		}
 
-      for (unsigned i = 0; i < sizePop; i++)
-      {
-         if (&p.at(i)) // If no NULL pointing.
-         {
-            this->p.push_back(new chromossome(p.at(i)));
-         }
-         else
-         {
-            this->p.push_back(NULL);
-         }
-      }
+		return (*this);
+	}
 
-      return (*this);
-   }
+	virtual Population<R>& clone() const
+	{
+		return *new Population<R> (*this);
+	}
 
-   virtual Population<R>& clone() const
-   {
-      return *new Population<R> (*this);
-   }
+	virtual void print() const
+	{
+		cout << "Population's printing:" << endl;
 
-   virtual void print() const
-   {
-      cout << "Population's printing:" << endl;
-
-      for (unsigned int i = 0; i < p.size(); i++)
-      {
-         p.at(i)->print();
-      }
-   }
+		for (int i = 0; i < p.size(); i++)
+		{
+			p.at(i)->print();
+		}
+	}
 
 	chromossome& cloneBestChromossome(Evaluator<R, M>& eval)
 	{
