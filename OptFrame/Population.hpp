@@ -22,9 +22,11 @@
 #define OPTFRAME_POPULATION_HPP_
 
 #include "Solution.hpp"
+#include "Evaluation.hpp"
+#include "Evaluator.hpp"
 #include <vector>
 
-template<class R>
+template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
 class Population
 {
 protected:
@@ -141,13 +143,14 @@ public:
 
 	virtual void print() const
 	{
-		cout << "Population's printing:" << endl;
+		cout << "Population("<<p.size()<<")" << endl;
 
-		for (int i = 0; i < p.size(); i++)
+		for (unsigned i = 0; i < p.size(); i++)
 		{
 			p.at(i)->print();
 		}
 	}
+
 
 	chromossome& cloneBestChromossome(Evaluator<R, M>& eval)
 	{
