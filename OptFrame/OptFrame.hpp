@@ -101,6 +101,8 @@
 #include "Modules/ForEachModule.hpp"
 #include "Modules/HelpModule.hpp"
 #include "Modules/ListFromFileModule.hpp"
+#include "Modules/ListFromPopulationModule.hpp"
+#include "Modules/ListSizeModule.hpp"
 #include "Modules/PauseModule.hpp"
 #include "Modules/PrintModule.hpp"
 #include "Modules/ProblemModule.hpp"
@@ -186,6 +188,8 @@ public:
 		loadModule(new ForEachModule<R, M> );
 		loadModule(new HelpModule<R, M> );
       loadModule(new ListFromFileModule<R, M> );
+      loadModule(new ListFromPopulationModule<R, M> );
+      loadModule(new ListSizeModule<R, M> );
 		loadModule(new PauseModule<R, M> );
 		loadModule(new PrintModule<R, M> );
       loadModule(new RandGenModule<R, M> );
