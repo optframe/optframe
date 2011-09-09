@@ -220,9 +220,9 @@ ostream& operator<<(ostream &os, const Matrix<T> &obj)
 
    os << endl;
 
-   for (unsigned int i = 0; i < obj.getRows(); i++)
+   for (unsigned int i = 0; i < obj.getNumRows(); i++)
    {
-      for (unsigned int j = 0; j < obj.getCols(); j++)
+      for (unsigned int j = 0; j < obj.getNumCols(); j++)
          os << obj(i, j) << " ";
       os << endl;
    }
