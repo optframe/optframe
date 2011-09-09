@@ -83,7 +83,7 @@ public:
 
    void run(vector<OptFrameModule<R, M>*>& , HeuristicFactory<R, M>* , map<string, string>* , string command)
    {
-      system(command.c_str());
+      int c = system(command.c_str());
    }
 
 };
