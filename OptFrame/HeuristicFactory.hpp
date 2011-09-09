@@ -785,10 +785,71 @@ public:
 			character = scanner.nextChar();
 		}
 
-		if (character != '[')
-		{
-			cout << "Error: expected '[' and found '" << character << "'!" << endl;
-		}
+		if(character != '[')
+      {
+         if(( character >= '0' ) && ( character <= '9' )) // syntax 1..n
+         {
+            string number = "";
+            number += character;
+            character = scanner.nextChar();
+
+            while( ( ( character >= '0' ) && ( character <= '9' ) ) )
+            {
+               number += character;
+               character = scanner.nextChar();
+            }
+
+            Scanner toInt(number);
+            int firstInt = toInt.nextInt();
+
+            int dots = 0;
+
+            while(( character == ' ' ) || ( character == '.' ))
+            {
+               if(character == '.')
+                  dots++;
+
+               character = scanner.nextChar();
+            }
+
+            if(dots != 2)
+            {
+               cout << "Error: expected two dots (..) and found " << dots << " dots!" << endl;
+               return *list;
+            }
+
+            stringstream rest;
+            rest << character << scanner.rest();
+            scanner = Scanner(rest.str());
+
+            int secondInt = scanner.nextInt();
+
+            if(firstInt < secondInt)
+            {
+               for(int i = firstInt; i <= secondInt; i++)
+               {
+                  stringstream toStr;
+                  toStr << i;
+                  list->push_back(toStr.str());
+               }
+            }
+            else
+               for(int i = firstInt; i >= secondInt; i--)
+               {
+                  stringstream toStr;
+                  toStr << i;
+                  list->push_back(toStr.str());
+               }
+
+            return *list;
+         }
+         else
+         {
+            cout << "Error:! expected '[' and found '" << character << "'!" << endl;
+            return *list;
+         }
+      }
+
 
 		numberOfBrackets = 0;
 
