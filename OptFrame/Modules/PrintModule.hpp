@@ -24,7 +24,7 @@
 #include "../OptFrameModule.hpp"
 
 template<class R, class M>
-class PrintModule : public OptFrameModule<R,M>
+class PrintModule: public OptFrameModule<R, M>
 {
 public:
 	string id()
@@ -33,17 +33,17 @@ public:
 	}
 	string usage()
 	{
-		string u = "print loadsol id";
+		string u = "print [ loadsol id |  loadpop id ]  ";
 
 		return u;
 	}
 
-	void run(vector<OptFrameModule<R,M>*>& all_modules, HeuristicFactory<R,M>* factory, map<string,string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
 	{
-		cout << "print: "<<input<<endl;
+		cout << "print: " << input << endl;
 		Scanner scanner(input);
 
-		if(!scanner.hasNext())
+		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
 			return;
@@ -51,16 +51,25 @@ public:
 
 		string sol = scanner.next();
 
-		if(sol!="loadsol")
+		if (sol != "loadsol" && sol != "loadpop")
 		{
-			cout << "First parameter must be a 'loadsol'!" << endl;
-			cout << "Usage: "<<usage()<<endl;
+			cout << "First parameter must be a 'loadsol' or  a 'loadpop'!" << endl;
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
+
+		if (sol == "loadpop")
+		{
+			string id = scanner.next();
+			Scanner pop(sol + " " + id);
+			Population<R>* p = factory->read_loadpop(&pop);
+			p->print();
 			return;
 		}
 
 		string id = scanner.next();
 
-		Scanner s2(sol+" "+id);
+		Scanner s2(sol + " " + id);
 		Solution<R>* s = factory->read_loadsol(&s2);
 		s->print();
 	}
