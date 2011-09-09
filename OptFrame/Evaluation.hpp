@@ -25,6 +25,7 @@ typedef int OPTFRAME_DEFAULT_MEMORY;
 
 #include <cstdlib>
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -76,7 +77,7 @@ public:
 	void setInfMeasure (double inf){ infMeasure = inf;  }
 
 	virtual double evaluation() const { return objFunction + infMeasure; }
-	virtual bool   isFeasible() const { return (infMeasure == 0); }
+	virtual bool   isFeasible() const { return (abs(infMeasure)<0.0001); }
 
 	virtual void print() const
 	{
