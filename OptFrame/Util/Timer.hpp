@@ -21,33 +21,83 @@
 #ifndef TIMER_HPP
 #define TIMER_HPP
 
-#include <cstdio>
-#include <cstdlib>
-#include <ctime>
+#ifdef WIN32
+#include <windows.h>
+#else
 #include <sys/time.h>
-#include <sys/timeb.h>
-#include <sys/resource.h>
+#endif
 
-class Timer 
+#include <stdlib.h>
+
+class Timer
 {
-protected:
-	double initialTime;
+private:
+   bool showMessageOnDestroy;
 
-	bool showMessageOnDestroy;
-
-	double get_clock_sec(void)
-	{  struct timeval t;
-		struct timezone tz;
-		gettimeofday(&t, &tz);
-		return (double) t.tv_sec + (double) t.tv_usec * 1E-6;
-	};
+#ifdef WIN32
+   LARGE_INTEGER frequency;
+   LARGE_INTEGER tstart;
+#else
+   struct timeval tstart;
+#endif
 
 public:
-	Timer(){ initialTime=get_clock_sec(); showMessageOnDestroy=true; };
-	Timer(bool m){ initialTime=get_clock_sec(); showMessageOnDestroy=m; };
-	virtual ~Timer(){ if(showMessageOnDestroy) printf("Spent time: %f secs\n", get_clock_sec() -initialTime) ; };
-	virtual double now() { return (get_clock_sec() - initialTime) ;  };
 
+   Timer(bool m = true) :
+      showMessageOnDestroy(m)
+   {
+#ifdef WIN32
+      QueryPerformanceFrequency(&frequency);
+      QueryPerformanceCounter(&tstart);
+#else
+      struct timezone tz;
+      gettimeofday(&tstart, &tz);
+#endif
+   }
+
+   virtual ~Timer()
+   {
+      if(showMessageOnDestroy)
+         printf("Spent time: %f secs\n", now());
+   }
+
+   double now()
+   {
+      return inSecs();
+   }
+
+   double inSecs()
+   {
+      return inMicroSecs() * 0.000001;
+   }
+
+   double inMilliSecs()
+   {
+      return inMicroSecs() * 0.001;
+   }
+
+   double inMicroSecs()
+   {
+      double start;
+      double end;
+
+#ifdef WIN32
+      LARGE_INTEGER t;
+      QueryPerformanceCounter(&t);
+
+      start = tstart.QuadPart * (1000000.0 / frequency.QuadPart);
+      end = t.QuadPart * (1000000.0 / frequency.QuadPart);
+#else
+      struct timeval t;
+      struct timezone tz;
+      gettimeofday(&t, &tz);
+
+      start = ( tstart.tv_sec * 1000000.0 ) + tstart.tv_usec;
+      end = ( t.tv_sec * 1000000.0 ) + t.tv_usec;
+#endif
+
+      return end - start;
+   }
 };
 
 #endif /* TIMER_HPP */
