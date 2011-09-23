@@ -188,7 +188,7 @@ public class MCT
 	var = var + "#define " + project + "_H_";
 	var = var + "\n";
 
-	appendToFile(var, "./MyProjects/" + project + ".h");
+	appendToFile(var+"\n", "./MyProjects/" + project + ".h");
 
 	System.out.println();
 
@@ -241,7 +241,7 @@ public class MCT
 
 	    writeToFile(sVar,var);
 
-	    appendToFile( "#include \""+var_inc+"\"" , "./MyProjects/"+project+".h") ;
+	    appendToFile( "#include \""+var_inc+"\""+"\n" , "./MyProjects/"+project+".h") ;
 
 	} 
 	else 
@@ -266,7 +266,7 @@ public class MCT
 
 	    writeToFile(sVar,var);
 
-	    appendToFile( "#include \""+var_inc+"\"" , "./MyProjects/"+project+".h") ;
+	    appendToFile( "#include \""+var_inc+"\""+"\n" , "./MyProjects/"+project+".h") ;
 	} 
 	else 
 	{
@@ -349,7 +349,7 @@ public class MCT
 
 	    writeToFile(sVar,var);
 
-	    appendToFile( "#include \""+var_inc+"\"" , "./MyProjects/"+project+".h");
+	    appendToFile( "#include \""+var_inc+"\""+"\n" , "./MyProjects/"+project+".h");
 	} 
 	else 
 	{ 
@@ -374,7 +374,7 @@ public class MCT
 
 	    writeToFile(sVar,var);
 
-	    appendToFile( "#include \""+var_inc+"\"" , "./MyProjects/"+project+".h");
+	    appendToFile( "#include \""+var_inc+"\""+"\n" , "./MyProjects/"+project+".h");
 	}
 	else 
 	{ 
@@ -399,7 +399,7 @@ public class MCT
 
 	    writeToFile(sVar,var);
 
-	    appendToFile( "#include \""+var_inc+"\"" , "./MyProjects/"+project+".h");
+	    appendToFile( "#include \""+var_inc+"\""+"\n" , "./MyProjects/"+project+".h");
 	} 
 	else 
 	{ 
@@ -440,7 +440,7 @@ public class MCT
 
 	    writeToFile(sVar,var);
 
-	    appendToFile( "#include \""+var_inc+"\"" , "./MyProjects/"+project+".h") ;
+	    appendToFile( "#include \""+var_inc+"\""+"\n" , "./MyProjects/"+project+".h") ;
 	} 
 	else 
 	{ 
@@ -487,7 +487,7 @@ public class MCT
 
 		writeToFile(sVar,var);
 
-		appendToFile( "#include \""+var_inc+"\"" , "./MyProjects/"+project+".h");
+		appendToFile( "#include \""+var_inc+"\""+"\n" , "./MyProjects/"+project+".h");
 	    } 
 	    else 
 	    { 
@@ -538,7 +538,7 @@ public class MCT
 
 		writeToFile(sVar,var);
 
-		appendToFile( "#include \""+var_inc+"\"" , "./MyProjects/"+project+".h");
+		appendToFile( "#include \""+var_inc+"\""+"\n" , "./MyProjects/"+project+".h");
 	    } 
 	    else 
 	    { 
@@ -567,7 +567,7 @@ public class MCT
 
 	    writeToFile(sVar,var);
 
-	    appendToFile( "#include \""+var_inc+"\"" , "./MyProjects/"+project+".h");
+	    appendToFile( "#include \""+var_inc+"\""+"\n" , "./MyProjects/"+project+".h");
 	} 
 	else 
 	{ 
@@ -578,7 +578,7 @@ public class MCT
 
 	//# Closing project file
 
-	appendToFile( "#endif /*"+project+"_H_*/" , "./MyProjects/"+project+".h");
+	appendToFile( "#endif /*"+project+"_H_*/"+"\n" , "./MyProjects/"+project+".h");
 
 	//##############################################
 	//#             Main file

@@ -1,0 +1,10 @@
+OptFrame - Optimization Framework
+
+To get started (MCT for Windows/Linux):
+- compile and run MCT.java application;
+- this can be done like this: javac MCT.java && java MCT
+
+To get started (MCT stable version for Linux only):
+- run MCT.sh script
+
+Good luck!
