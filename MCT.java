@@ -127,7 +127,7 @@ public class MCT
 	BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
 	System.out.println("====================================================");
-	System.out.println("OptFrame development version - Project Generator MCT");
+	System.out.println("        OptFrame 1.4 - Project Generator MCT        ");
 	System.out.println("             \"Make a Compilable Thing!\"           ");
 	System.out.println("      http://sourceforge.net/projects/optframe/     ");
 	System.out.println("====================================================");

@@ -153,7 +153,7 @@ public:
 
 	string version()
 	{
-		return "OptFrame - Development Version \nhttp://sourceforge.net/projects/optframe/";
+		return "OptFrame 1.4 \nhttp://sourceforge.net/projects/optframe/";
 	}
 
 	void loadModule(OptFrameModule<R, M>* module)
