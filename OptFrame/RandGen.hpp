@@ -22,6 +22,7 @@
 #define RANDGEN_HPP_
 
 #include <math.h>
+#include <time.h>
 
 #include<vector>
 
