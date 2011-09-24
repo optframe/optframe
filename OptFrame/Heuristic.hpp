@@ -29,10 +29,10 @@ using namespace std;
 #include "./Solution.hpp"
 #include "Population.hpp"
 #include "./Evaluation.hpp"
-#include "./Util/Runnable/Runnable.hpp"
+//#include "./Util/Runnable/Runnable.hpp"
 
 template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
-class Heuristic: public Runnable
+class Heuristic//: public Runnable
 {
    typedef vector<Evaluation<M>*> FitnessValues;
    typedef const vector<const Evaluation<M>*> ConstFitnessValues;
@@ -48,8 +48,7 @@ public:
 
    static const int SAFE_SEARCH_TOLERANCE = 2; // tolerance in seconds
 
-   Heuristic() :
-      Runnable()
+   Heuristic()
    {
       log_solution = NULL;
    }
