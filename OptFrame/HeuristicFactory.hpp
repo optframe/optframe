@@ -31,28 +31,28 @@ using namespace std;
 
 #include "Heuristic.hpp"
 
-#include "Heuristic/Empty.hpp"
+#include "Heuristics/Empty.hpp"
 
 //Heuristics
-#include "Heuristic/RandomDescentMethod.hpp"
-#include "Heuristic/HillClimbing.hpp"
-#include "Heuristic/BestImprovement.hpp"
-#include "Heuristic/FirstImprovement.hpp"
-#include "Heuristic/CircularSearch.hpp"
-#include "Heuristic/VariableNeighborhoodDescent.hpp"
-#include "Heuristic/RVND.hpp"
+#include "Heuristics/RandomDescentMethod.hpp"
+#include "Heuristics/HillClimbing.hpp"
+#include "Heuristics/BestImprovement.hpp"
+#include "Heuristics/FirstImprovement.hpp"
+#include "Heuristics/CircularSearch.hpp"
+#include "Heuristics/VariableNeighborhoodDescent.hpp"
+#include "Heuristics/RVND.hpp"
 
 //Metaheuristics
-#include "Heuristic/IteratedLocalSearch.hpp"
-#include "Heuristic/BasicIteratedLocalSearch.hpp"
-#include "Heuristic/IteratedLocalSearchLevels.hpp"
-#include "Heuristic/IntensifiedIteratedLocalSearchLevels.hpp"
-#include "Heuristic/Intensification.hpp"
-#include "Heuristic/MultiHeuristic.hpp"
-#include "Heuristic/GRASP.hpp"
-#include "Heuristic/TabuSearch.hpp"
-#include "Heuristic/EvolutionaryAlgorithms/GeneticAlgorithm.hpp"
-#include "Heuristic/BasicSimulatedAnnealing.hpp"
+#include "Heuristics/IteratedLocalSearch.hpp"
+#include "Heuristics/BasicIteratedLocalSearch.hpp"
+#include "Heuristics/IteratedLocalSearchLevels.hpp"
+#include "Heuristics/IntensifiedIteratedLocalSearchLevels.hpp"
+#include "Heuristics/Intensification.hpp"
+#include "Heuristics/MultiHeuristic.hpp"
+#include "Heuristics/GRASP.hpp"
+#include "Heuristics/TabuSearch.hpp"
+#include "Heuristics/EvolutionaryAlgorithms/GeneticAlgorithm.hpp"
+#include "Heuristics/BasicSimulatedAnnealing.hpp"
 
 // design pattern: Factory
 
