@@ -28,7 +28,7 @@
 
 using namespace std;
 
-template<class M = OPTFRAME_DEFAULT_MEMORY>
+template<class M = OPTFRAME_DEFAULT_EMEMORY>
 class TestEvaluation: public Evaluation<M>
 {
 private:

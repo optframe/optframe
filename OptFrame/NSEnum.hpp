@@ -28,7 +28,7 @@
 
 using namespace std;
 
-template<class R, class M> // M = OPTFRAME_DEFAULT_MEMORY already defined
+template<class R, class M> // M = OPTFRAME_DEFAULT_EMEMORY already defined
 class NSEnum: public NSSeq<R, M>
 {
 

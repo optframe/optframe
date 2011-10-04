@@ -26,7 +26,7 @@
 
 using namespace std;
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
 class Move
 {
 public:
@@ -42,7 +42,7 @@ public:
 
 	bool canBeApplied(const Evaluation<M>& e, const Solution<R>& s)
 	{
-		return canBeApplied(e.getM(), s.getR());
+		return canBeApplied(e.getEM(), s.getR());
 	}
 
 	virtual bool canBeApplied(const R&) = 0;
@@ -59,7 +59,7 @@ public:
 
 	Move<R, M>& apply(Evaluation<M>& e, Solution<R>& s)
 	{
-		return apply(e.getM(), s.getR());
+		return apply(e.getEM(), s.getR());
 	}
 
 	virtual Move<R, M>& apply(R& r) = 0;

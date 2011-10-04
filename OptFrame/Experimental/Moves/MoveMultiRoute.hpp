@@ -26,7 +26,7 @@
 
 using namespace std;
 
-template<class T, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class T, class M = OPTFRAME_DEFAULT_EMEMORY>
 class MoveMultiRoute: public Move<vector<vector<T> > , M>
 {
 	typedef vector<T> Route;

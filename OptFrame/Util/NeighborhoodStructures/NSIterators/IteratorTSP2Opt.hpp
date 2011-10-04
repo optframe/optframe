@@ -30,7 +30,7 @@ using namespace std;
 
 // Working structure: vector<T>
 
-template<class T, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MoveTSP2Opt<T, M> >
+template<class T, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveTSP2Opt<T, M> >
 class NSIteratorTSP2Opt: public NSIterator<vector<T> , M>
 {
 	typedef vector<T> Route;

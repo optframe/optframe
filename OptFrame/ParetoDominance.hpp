@@ -37,7 +37,7 @@
 
 using namespace std;
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
 class ParetoDominance
 {
 protected:

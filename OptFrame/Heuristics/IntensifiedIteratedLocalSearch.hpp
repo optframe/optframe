@@ -27,7 +27,7 @@
 #include "../Heuristic.hpp"
 #include "../Evaluator.hpp"
 
-template<class H, class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class H, class R, class M = OPTFRAME_DEFAULT_EMEMORY>
 class IntensifiedIteratedLocalSearch: public Heuristic<R, M>
 {
 protected:

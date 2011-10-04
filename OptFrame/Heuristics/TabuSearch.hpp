@@ -25,7 +25,7 @@
 #include "../NSEnum.hpp"
 #include "../Evaluator.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
 class TabuSearch: public Heuristic<R, M>
 {
 private:
@@ -195,7 +195,7 @@ public:
 
 	Move<R, M>* tabuBestMove(Solution<R>& s, Evaluation<M>& e, const vector<Move<R, M>*>& tabuList)
 	{
-		NSIterator<R, M>& it = nsSeq.getIterator(e.getM(), s.getR());
+		NSIterator<R, M>& it = nsSeq.getIterator(e.getEM(), s.getR());
 
 		it.first();
 

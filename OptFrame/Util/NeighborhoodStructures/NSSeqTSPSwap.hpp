@@ -77,7 +77,7 @@ using namespace std;
   \endportuguese
 */
 
-template<class T, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MoveTSPSwap<T, M> >
+template<class T, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveTSPSwap<T, M> >
 class NSSeqTSPSwap: public NSSeq<vector<T> , M>
 {
 	typedef vector<T> Route;

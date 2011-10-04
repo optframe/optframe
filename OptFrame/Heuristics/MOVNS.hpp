@@ -30,7 +30,7 @@
 #include "../ParetoDominance.hpp"
 #include "../ParetoDominanceWeak.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
 class MOVNS: public Heuristic<R, M>
 {
 	typedef vector<Evaluation<M>*> FitnessValues;

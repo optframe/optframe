@@ -23,7 +23,7 @@
 
 #include "../Heuristic.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
 class RandomDescentMethod: public Heuristic<R, M>
 {
 private:

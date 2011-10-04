@@ -24,7 +24,7 @@
 #include "../Heuristic.hpp"
 #include <math.h>
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
 class BasicSimulatedAnnealing: public Heuristic<R, M>
 {
 private:

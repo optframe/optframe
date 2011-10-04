@@ -28,7 +28,7 @@
 
 using namespace std;
 
-template<class T, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class T, class M = OPTFRAME_DEFAULT_EMEMORY>
 class IteratorNSSeqTSPOr1Opt: public NSIterator<vector<T> , M>
 {
 

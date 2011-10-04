@@ -27,14 +27,14 @@
 #include "../NS.hpp"
 #include "../RandGen.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
 class ILSLPerturbation
 {
 public:
 	virtual void perturb(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f, int level) = 0;
 };
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
 class ILSLPerturbationLPlus2: public ILSLPerturbation<R, M>
 {
 private:

@@ -29,7 +29,7 @@ using namespace std;
 
 // Working structure: vector<vector<T> >
 
-template<class T, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class T, class M = OPTFRAME_DEFAULT_EMEMORY>
 class MoveRouteShift: public Move<vector<vector<T> > , M>
 {
 	typedef vector<vector<T> > Routes;
@@ -161,7 +161,7 @@ public:
 	}
 };
 
-template<class T, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MoveRouteShift<T, M> >
+template<class T, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveRouteShift<T, M> >
 class NSIteratorRoutesShift: public NSIterator<vector<vector<T> > , M>
 {
 	typedef vector<vector<T> > Routes;
@@ -253,7 +253,7 @@ public:
 	}
 };
 
-template<class T, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MoveRouteShift<T, M> >
+template<class T, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveRouteShift<T, M> >
 class NSSeqRouteShift: public NSSeq<vector<vector<T> > , M>
 {
 	typedef vector<vector<T> > Routes;

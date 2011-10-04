@@ -26,7 +26,7 @@
 #include <cstdlib>
 #include <iostream>
 
-template< class R, class M = OPTFRAME_DEFAULT_MEMORY >
+template< class R, class M = OPTFRAME_DEFAULT_EMEMORY >
 class TestMove : public Move< R, M >
 {
 private:

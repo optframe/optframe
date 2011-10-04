@@ -35,7 +35,7 @@ public:
 	}
 };
 
-template<class T, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MoveMultiRoute<T, M> >
+template<class T, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveMultiRoute<T, M> >
 class IteratorNSSeqMultiRoute: public NSIterator<vector<vector<T> > , M>
 {
 	typedef vector<T> Route;

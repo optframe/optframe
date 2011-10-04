@@ -29,7 +29,7 @@
 
 typedef pair<pair<int, int> , pair<int, int> > levelHistory;
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
 class IteratedLocalSearchLevels: public IteratedLocalSearch<levelHistory, R, M>
 {
 protected:

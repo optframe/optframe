@@ -23,7 +23,7 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
 class ProblemModule: public OptFrameModule<R, M>
 {
 public:

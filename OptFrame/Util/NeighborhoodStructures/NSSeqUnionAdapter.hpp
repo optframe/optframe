@@ -30,7 +30,7 @@
 
 using namespace std;
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MoveNSSeqUnion<R, M> >
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveNSSeqUnion<R, M> >
 class NSSeqUnionAdapter: public NSSeq<R, M>
 {
 private:

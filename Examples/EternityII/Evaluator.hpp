@@ -80,13 +80,13 @@ public:
 		return *new EvaluationEtII(fo, mem);
 	}
 
-	/*
+
 	virtual void evaluate(Evaluation<MemEtII>& e, const RepEtII&)
 	{
-		e.setObjFunction(e.getObjFunction() + e.getM());
-		e.getM() = 0;
+		e.setObjFunction(e.getObjFunction() + e.getEM());
+		e.getEM() = 0;
 	}
-	*/
+
 
 	virtual bool betterThan(double a, double b)
 	{

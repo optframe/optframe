@@ -29,7 +29,7 @@
 
 using namespace std;
 
-template<class T, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MovekRoute<T, M> >
+template<class T, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MovekRoute<T, M> >
 class IteratorNSSeqkRoute: public NSIterator<vector<vector<T> > , M>
 {
 	typedef vector<T> Route;

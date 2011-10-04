@@ -32,7 +32,7 @@ using namespace std;
 
 // definition: OrOpt is OrOpt{1..3}
 
-template<class T, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class T, class M = OPTFRAME_DEFAULT_EMEMORY>
 class NSSeqTSPOrOpt: public NSSeq<vector<T> , M>
 {
 	typedef vector<T> Route;

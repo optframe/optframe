@@ -174,7 +174,7 @@ public:
 	}
 };
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
 class OptFrameMapReduce: public Heuristic<R, M>
 {
 private:

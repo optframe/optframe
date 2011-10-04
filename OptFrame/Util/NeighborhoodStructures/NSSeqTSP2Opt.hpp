@@ -87,7 +87,7 @@ using namespace std;
 */
 
 
-template<class T, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MoveTSP2Opt<T, M> >
+template<class T, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveTSP2Opt<T, M> >
 class NSSeqTSP2Opt: public NSSeq<vector<T> , M>
 {
 	typedef vector<T> Route;

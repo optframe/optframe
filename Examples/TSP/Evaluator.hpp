@@ -77,8 +77,8 @@ public:
 
 	void evaluate(Evaluation<MemTSP>& e, const RepTSP& r)
 	{
-		e.setObjFunction(e.getObjFunction() + e.getM());
-		e.setM(0);
+		e.setObjFunction(e.getObjFunction() + e.getEM());
+		e.setEM(0);
 	}
 
 	virtual bool betterThan(double a, double b)

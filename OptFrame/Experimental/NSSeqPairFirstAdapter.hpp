@@ -31,7 +31,7 @@
 
 using namespace std;
 
-template<class T1, class T2, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MovePairFirst<T1, T2, M> >
+template<class T1, class T2, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MovePairFirst<T1, T2, M> >
 class NSSeqPairFirstAdapter: public NSSeq<pair<T1, T2> , M>
 {
 protected:

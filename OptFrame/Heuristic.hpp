@@ -31,7 +31,7 @@ using namespace std;
 #include "./Evaluation.hpp"
 //#include "./Util/Runnable/Runnable.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
 class Heuristic//: public Runnable
 {
    typedef vector<Evaluation<M>*> FitnessValues;

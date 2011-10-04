@@ -25,9 +25,9 @@
 
 using namespace std;
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY> class NSEnum;
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY> class NSEnum;
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
 class NSEnumIterator: public NSIterator<R, M>
 {
 private:

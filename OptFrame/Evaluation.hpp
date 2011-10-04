@@ -21,7 +21,7 @@
 #ifndef OPTFRAME_EVALUATION_HPP_
 #define OPTFRAME_EVALUATION_HPP_
 
-typedef int OPTFRAME_DEFAULT_MEMORY;
+typedef int OPTFRAME_DEFAULT_EMEMORY;
 
 #include <cstdlib>
 #include <iostream>
@@ -43,36 +43,36 @@ using namespace std;
   \endportuguese
 */
 
-template<class M = OPTFRAME_DEFAULT_MEMORY>
+template<class EM = OPTFRAME_DEFAULT_EMEMORY>
 class Evaluation
 {
 protected:
    double objFunction;
    double infMeasure;
-   M& m;
+   EM& em;
 
 public:
-	Evaluation(double obj, double inf, M& mm):
-		objFunction(obj),infMeasure(inf),m(*new M(mm)){};
+	Evaluation(double obj, double inf, EM& _em):
+		objFunction(obj),infMeasure(inf),em(*new EM(_em)){};
 
-	Evaluation(double obj, M& mm):
-		m(*new M(mm))
+	Evaluation(double obj, EM& _em):
+		em(*new EM(_em))
 	{
 	   objFunction = obj;
 	   infMeasure = 0;
 	};
 
-	Evaluation(const Evaluation<M>& e):
-		objFunction(e.objFunction),infMeasure(e.infMeasure),m(*new M(e.m)){};
+	Evaluation(const Evaluation<EM>& e):
+		objFunction(e.objFunction),infMeasure(e.infMeasure),em(*new EM(e.em)){};
 
-	virtual ~Evaluation() { delete &m; }
+	virtual ~Evaluation() { delete &em; }
 
-	const M& getM() const { return m; }
-	M& getM() { return m; }
+	const EM& getEM() const { return em; }
+	EM& getEM() { return em; }
 	double getObjFunction() const { return objFunction; }
 	double getInfMeasure() const  { return infMeasure;  }
 
-	void setM(const M& mm){ m = mm; }
+	void setEM(const EM& _em){ em = _em; }
 	void setObjFunction(double obj){ objFunction = obj; }
 	void setInfMeasure (double inf){ infMeasure = inf;  }
 
@@ -84,7 +84,7 @@ public:
 		cout << "Evaluation function value = " << evaluation();
 		cout << (isFeasible()?" ":" (not feasible) ") << endl;
 
-		// default - not printing memory
+		// default - not printing ememory
 		// cout << m << endl;
 	}
 
@@ -93,16 +93,16 @@ public:
 		if(&e == this) // auto ref check
 			return *this;
 
-		m = e.m;
+		em = e.em;
 		objFunction = e.objFunction;
 		infMeasure = e.infMeasure;
 
 		return *this;
 	}
 
-	virtual Evaluation<M>& clone() const
+	virtual Evaluation<EM>& clone() const
 	{
-		return * new Evaluation<M>(*this);
+		return * new Evaluation<EM>(*this);
 	}
 };
 

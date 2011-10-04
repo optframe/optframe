@@ -36,7 +36,7 @@ public:
    }
 };
 
-template< class R, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MoveNSSeqUnion<R, M> >
+template< class R, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveNSSeqUnion<R, M> >
 class IteratorNSSeqUnion :
       public NSIterator<R, M>
 {

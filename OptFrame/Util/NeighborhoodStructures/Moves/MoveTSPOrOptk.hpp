@@ -28,7 +28,7 @@ using namespace std;
 
 // Working structure: vector<vector<T> >
 
-template<class T, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class T, class M = OPTFRAME_DEFAULT_EMEMORY>
 class MoveTSPOrOptk: public Move<vector<T> , M>
 {
 	typedef vector<T> Route;

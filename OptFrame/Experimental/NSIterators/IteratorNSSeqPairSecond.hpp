@@ -36,7 +36,7 @@ public:
 	}
 };
 
-template<class T1, class T2, class M = OPTFRAME_DEFAULT_MEMORY, class MOVE = MovePairSecond<T1, T2, M> >
+template<class T1, class T2, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MovePairSecond<T1, T2, M> >
 class IteratorNSSeqPairSecond: public NSIterator<pair<T1, T2> , M>
 {
 private:

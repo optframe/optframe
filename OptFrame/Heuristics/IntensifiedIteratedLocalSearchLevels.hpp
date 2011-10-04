@@ -30,7 +30,7 @@
 
 typedef pair<pair<int, int> , pair<int, int> > levelHistory;
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
 class IntensifiedIteratedLocalSearchLevels: public IntensifiedIteratedLocalSearch<levelHistory, R, M>
 {
 protected:

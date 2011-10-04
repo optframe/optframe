@@ -56,7 +56,7 @@ using namespace std;
 
 // design pattern: Factory
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
 class HeuristicFactory
 {
 private:
