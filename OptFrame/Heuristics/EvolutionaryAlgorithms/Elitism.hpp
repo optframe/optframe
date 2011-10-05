@@ -26,18 +26,18 @@
 
 #include "../../Population.hpp"
 
-template<class R, class M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class Elitism
 {
 protected:
 
-   typedef Solution<R> chromossome;
+   typedef Solution<R, ADS> chromossome;
    //typedef vector<chromossome*> Population;
    typedef vector<Evaluation<M>*> FitnessValues;
 
 public:
 
-   virtual Population<R> & doElitism(const Population<R> &p, const FitnessValues& fv_p, unsigned popElitistSize) const = 0;
+   virtual Population<R, ADS> & doElitism(const Population<R, ADS> &p, const FitnessValues& fv_p, unsigned popElitistSize) const = 0;
 
 };
 

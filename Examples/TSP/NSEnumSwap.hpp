@@ -39,7 +39,7 @@ using namespace std;
 //                           Swap MOVE
 //============================================================================
 
-class MoveSwap: public Move<RepTSP, MemTSP>
+class MoveSwap: public Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>
 {
 private:
 	int c1, c2;
@@ -63,7 +63,7 @@ public:
 		return true;
 	}
 
-	Move<RepTSP, MemTSP>& apply(RepTSP& rep)
+	Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& apply(RepTSP& rep)
 	{
 		// Specify how the move "MoveSwap" will be applied
 
@@ -75,7 +75,7 @@ public:
 		return *new MoveSwap(c2, c1, tsp);
 	}
 
-	Move<RepTSP, MemTSP>& apply(MemTSP& mem, RepTSP& rep)
+	Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& apply(MemTSP& mem, RepTSP& rep)
 	{
 		int k1, k2;
 
@@ -118,7 +118,7 @@ public:
 			f -= (*tsp.dist)(rep[k2], rep[ak2]);
 		}
 
-		Move<RepTSP, MemTSP>& rev = apply(rep);
+		Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& rev = apply(rep);
 
 		if (k2 - k1 == 1) // special case, cities are near
 		{
@@ -144,7 +144,7 @@ public:
 		cout << "MoveSwap between " << c1 << " and " << c2 << endl;
 	}
 
-	virtual bool operator==(const Move<RepTSP, MemTSP>& _m) const
+	virtual bool operator==(const Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& _m) const
 	{
 		const MoveSwap& m = (const MoveSwap&) _m; // You can only compare if types are equal
 
@@ -161,7 +161,7 @@ public:
 //============================================================================
 
 
-class NSEnumSwap: public NSEnum<RepTSP, MemTSP>
+class NSEnumSwap: public NSEnum<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>
 {
 private:
 	TSPProblemInstance* pI;
@@ -171,16 +171,16 @@ private:
 
 public:
 
-	using NSEnum<RepTSP, MemTSP>::move; // prevents name hiding
+	using NSEnum<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::move; // prevents name hiding
 
 	NSEnumSwap(TSPProblemInstance* pI, RandGen& _rg) :
-		NSEnum<RepTSP, MemTSP> (_rg)
+		NSEnum<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> (_rg)
 	{
 		this->pI = pI;
 		this->n = pI->n;
 	}
 
-	virtual Move<RepTSP, MemTSP>& move(unsigned int k)
+	virtual Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& move(unsigned int k)
 	{
 		return busca(k, 1, 2 * n);
 	}
@@ -238,7 +238,7 @@ public:
 		return comeca(d) + numElem(d) - 1;
 	}
 
-	Move<RepTSP, MemTSP>& busca(int k, int a, int b)
+	Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& busca(int k, int a, int b)
 	{
 		int d = (a + b) / 2;
 

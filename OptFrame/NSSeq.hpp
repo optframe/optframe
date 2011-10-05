@@ -26,26 +26,26 @@
 
 using namespace std;
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
-class NSSeq: public NS<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class NSSeq: public NS<R, ADS, M>
 {
 public:
 
-	using NS<R, M>::move; // prevents name hiding
+	using NS<R, ADS, M>::move; // prevents name hiding
 
 	virtual ~NSSeq()
 	{
 	}
 
-	virtual Move<R, M>& move(const R&) = 0;
+	virtual Move<R, ADS, M>& move(const R&) = 0;
 
-        NSIterator<R, M>& getIterator(const Solution<R>& s)
+        NSIterator<R, ADS, M>& getIterator(const Solution<R, ADS>& s)
         {
            return getIterator(s.getR());
         }
 
-	virtual NSIterator<R, M>& getIterator(const R&) = 0;
-	virtual NSIterator<R, M>& getIterator(const M&, const R& r)
+	virtual NSIterator<R, ADS, M>& getIterator(const R&) = 0;
+	virtual NSIterator<R, ADS, M>& getIterator(const M&, const R& r)
 	{
 		return getIterator(r);
 	}

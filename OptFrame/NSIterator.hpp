@@ -41,7 +41,7 @@ public:
    }
 };
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class NSIterator
 {
 public:
@@ -52,7 +52,7 @@ public:
    virtual void first() = 0;
    virtual void next() = 0;
    virtual bool isDone() = 0;
-   virtual Move<R, M>& current() = 0;
+   virtual Move<R, ADS, M>& current() = 0;
 };
 
 

@@ -40,11 +40,11 @@
 
 #include <algorithm>
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class OptFrameModule
 {
 protected:
-	void run_module(string mod, vector<OptFrameModule<R,M>*> v, HeuristicFactory<R,M>* f, map<string,string>* dictionary, string input)
+	void run_module(string mod, vector<OptFrameModule<R, ADS, M>*> v, HeuristicFactory<R, ADS, M>* f, map<string,string>* dictionary, string input)
 	{
 		for(unsigned int i=0;i<v.size();i++)
 			if(mod==v[i]->id())
@@ -59,7 +59,7 @@ public:
 	virtual string id() = 0;
 	virtual string usage() = 0;
 
-	virtual void run(vector<OptFrameModule<R,M>*>&, HeuristicFactory<R,M>*, map<string,string>* dictionary, string) = 0;
+	virtual void run(vector<OptFrameModule<R, ADS, M>*>&, HeuristicFactory<R, ADS, M>*, map<string,string>* dictionary, string) = 0;
 
 	virtual string preprocess(map<string,string>* dictionary, string input)
 	{

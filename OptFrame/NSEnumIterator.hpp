@@ -25,19 +25,19 @@
 
 using namespace std;
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY> class NSEnum;
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY> class NSEnum;
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
-class NSEnumIterator: public NSIterator<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class NSEnumIterator: public NSIterator<R, ADS, M>
 {
 private:
-   NSEnum<R, M>& ns;
+   NSEnum<R, ADS, M>& ns;
    unsigned int move;
    unsigned int nsSize;
 
 public:
 
-   NSEnumIterator(NSEnum<R, M>& _ns) :
+   NSEnumIterator(NSEnum<R, ADS, M>& _ns) :
       ns(_ns)
    {
       move = 0;
@@ -63,14 +63,14 @@ public:
       return move >= nsSize;
    }
 
-   Move<R, M>& current()
+   Move<R, ADS, M>& current()
    {
       if (isDone())
          throw IteratorOutOfBound(move);
       return ns.move(move);
    }
 
-   Move<R, M>& at(unsigned int m)
+   Move<R, ADS, M>& at(unsigned int m)
    {
       // TODO: throw exception if m >= size
       return ns.move(m);

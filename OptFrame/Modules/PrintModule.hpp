@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class M>
-class PrintModule: public OptFrameModule<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class PrintModule: public OptFrameModule<R, ADS, M>
 {
 public:
 	string id()
@@ -38,7 +38,7 @@ public:
 		return u;
 	}
 
-	void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		cout << "print: " << input << endl;
 		Scanner scanner(input);
@@ -62,7 +62,7 @@ public:
 		{
 			string id = scanner.next();
 			Scanner pop(sol + " " + id);
-			Population<R>* p = factory->read_loadpop(&pop);
+			Population<R, ADS>* p = factory->read_loadpop(&pop);
 			p->print();
 			return;
 		}
@@ -70,7 +70,7 @@ public:
 		string id = scanner.next();
 
 		Scanner s2(sol + " " + id);
-		Solution<R>* s = factory->read_loadsol(&s2);
+		Solution<R, ADS>* s = factory->read_loadsol(&s2);
 		s->print();
 	}
 

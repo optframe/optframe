@@ -23,16 +23,16 @@
 
 #include "../Heuristic.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
-class Empty : public Heuristic<R,M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class Empty : public Heuristic<R, ADS, M>
 {
 public:
 
-	using Heuristic<R, M>::exec; // prevents name hiding
+	using Heuristic<R, ADS, M>::exec; // prevents name hiding
 
 	Empty(){};
-    virtual void exec(Solution<R>&, double timelimit, double target_f){};
-	virtual void exec(Solution<R>&, Evaluation<M>&, double timelimit, double target_f){};
+    virtual void exec(Solution<R, ADS>&, double timelimit, double target_f){};
+	virtual void exec(Solution<R, ADS>&, Evaluation<M>&, double timelimit, double target_f){};
 
 	string log()
 	{

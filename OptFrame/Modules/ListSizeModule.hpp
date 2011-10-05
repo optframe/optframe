@@ -23,9 +23,9 @@
 
 #include "../OptFrameModule.hpp"
 
-template< class R, class M >
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class ListSizeModule :
-      public OptFrameModule<R, M>
+      public OptFrameModule<R, ADS, M>
 {
 public:
    string id()
@@ -37,7 +37,7 @@ public:
       return "list_size list variable_for_list_size";
    }
 
-   void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* hf, map<string, string>* dictionary, string input)
+   void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
    {
       Scanner scan(input);
       if(!scan.hasNext())

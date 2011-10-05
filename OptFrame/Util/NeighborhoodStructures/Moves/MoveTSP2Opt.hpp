@@ -28,8 +28,8 @@ using namespace std;
 
 // Working structure: vector<T>
 
-template<class T, class M = OPTFRAME_DEFAULT_EMEMORY>
-class MoveTSP2Opt: public Move<vector<T> , M>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class MoveTSP2Opt: public Move<vector<T> , ADS, M>
 {
 	typedef vector<T> Route;
 
@@ -63,7 +63,7 @@ public:
 		return all_positive && (rep.size() >= 2);
 	}
 
-	Move<Route, M>& apply(Route& rep)
+	Move<Route, ADS, M>& apply(Route& rep)
 	{
 
 		reverse(rep.begin() + p1, rep.begin() + p2);
@@ -72,7 +72,7 @@ public:
 		return *new MoveTSP2Opt(p1, p2);
 	}
 
-	virtual bool operator==(const Move<Route, M>& _m) const
+	virtual bool operator==(const Move<Route, ADS, M>& _m) const
 	{
 		const MoveTSP2Opt& m1 = (const MoveTSP2Opt&) _m;
 		return ((m1.p1 == p1) && (m1.p2 == p2));

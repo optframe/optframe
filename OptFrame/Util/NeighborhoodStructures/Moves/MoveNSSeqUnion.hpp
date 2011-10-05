@@ -26,16 +26,16 @@
 
 using namespace std;
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
-class MoveNSSeqUnion: public Move<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class MoveNSSeqUnion: public Move<R, ADS, M>
 {
 protected:
 	int id;
-	Move<R, M>& m;
+	Move<R, ADS, M>& m;
 
 public:
 
-	MoveNSSeqUnion(int _id, Move<R, M>& _m) :
+	MoveNSSeqUnion(int _id, Move<R, ADS, M>& _m) :
 		id(_id), m(_m)
 	{
 	}
@@ -45,7 +45,7 @@ public:
 		return id;
 	}
 
-	Move<R, M>& get_m()
+	Move<R, ADS, M>& get_m()
 	{
 		return m;
 	}
@@ -60,19 +60,19 @@ public:
 		return m.canBeApplied(r);
 	}
 
-	Move<R, M>& apply(R& r)
+	Move<R, ADS, M>& apply(R& r)
 	{
-		return *new MoveNSSeqUnion<R, M> (id, m.apply(r));
+		return *new MoveNSSeqUnion<R, ADS, M> (id, m.apply(r));
 	}
 
-	Move<R, M>& apply(M& mem, R& rep)
+	Move<R, ADS, M>& apply(M& mem, R& rep)
 	{
-		return *new MoveNSSeqUnion<R, M> (id, m.apply(mem, rep));
+		return *new MoveNSSeqUnion<R, ADS, M> (id, m.apply(mem, rep));
 	}
 
-	virtual bool operator==(const Move<R, M>& _m) const
+	virtual bool operator==(const Move<R, ADS, M>& _m) const
 	{
-		const MoveNSSeqUnion<R, M>& m1 = (const MoveNSSeqUnion<R, M>&) _m;
+		const MoveNSSeqUnion<R, ADS, M>& m1 = (const MoveNSSeqUnion<R, ADS, M>&) _m;
 		if (id == m1.id)
 			return m == m1.m;
 		else

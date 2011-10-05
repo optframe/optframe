@@ -93,7 +93,9 @@ public:
 
 		}
 
-		return *new TestSolution<RepPCAP> (newRep);
+		int ads;
+
+		return *new TestSolution<RepPCAP> (newRep, ads);
 	}
 
 };

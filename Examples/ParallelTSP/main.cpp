@@ -55,8 +55,8 @@ int main(int argc, char **argv)
 	// MapReduce declaration
 	MaPI_MapReduce<RepTSP, RankAndStop, int, pair<RepTSP, double> , RepTSP> mapReduce;
 	TSPSerializer serializer;
-	MyMaPIMapper<RepTSP, MemTSP> mapper(&mapReduce, &serializer, eval);
-	MyMaPIReducer<RepTSP, MemTSP> reducer(&mapReduce, &serializer, eval);
+	MyMaPIMapper<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> mapper(&mapReduce, &serializer, eval);
+	MyMaPIReducer<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> reducer(&mapReduce, &serializer, eval);
 
 	srand(clock() + mapReduce.getMPIRank()); // Setting seed according to mpi rank
 
@@ -68,11 +68,11 @@ int main(int argc, char **argv)
 	e->print();
 	cout << endl;
 
-	OptFrame<RepTSP, MemTSP> optframe(rg);
+	OptFrame<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe(rg);
 	optframe.factory.add_initsol(&is);
 	optframe.factory.add_ev(&eval);
 	optframe.factory.add_ns(new NSEnumSwap(p, rg));
-	optframe.factory.add_method(new VShuffle<RepTSP, MemTSP> );
+	optframe.factory.add_method(new VShuffle<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> );
 
 	// Adding MapReduce to factory
 	optframe.factory.setMapReduce(&serializer, &mapReduce, &mapper, &reducer, argc, argv);

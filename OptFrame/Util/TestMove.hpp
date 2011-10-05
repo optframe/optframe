@@ -26,8 +26,8 @@
 #include <cstdlib>
 #include <iostream>
 
-template< class R, class M = OPTFRAME_DEFAULT_EMEMORY >
-class TestMove : public Move< R, M >
+template< class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY >
+class TestMove : public Move< R, ADS, M >
 {
 private:
    static const unsigned long long MAX_MOVE_IN_MEMORY_ERROR = 100000;
@@ -100,13 +100,13 @@ public:
    }
 };
 
-template< class R, class M >
-unsigned long long TestMove< R, M >::MAX_MOVE_IN_MEMORY_WARNING = 0.7 * MAX_MOVE_IN_MEMORY_ERROR;
+template<class R, class ADS, class M>
+unsigned long long TestMove< R, ADS, M >::MAX_MOVE_IN_MEMORY_WARNING = 0.7 * MAX_MOVE_IN_MEMORY_ERROR;
 
-template< class R, class M >
-unsigned long long TestMove< R, M >::testmove_objects = 0;
+template<class R, class ADS, class M>
+unsigned long long TestMove< R, ADS, M >::testmove_objects = 0;
 
-template< class R, class M >
-unsigned long long TestMove< R, M >::testmove_objects_nodecrement = 0;
+template<class R, class ADS, class M>
+unsigned long long TestMove< R, ADS, M >::testmove_objects_nodecrement = 0;
 
 #endif /* TESTMOVE_HPP_ */

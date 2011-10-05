@@ -26,7 +26,7 @@
 
 using namespace std;
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class Move
 {
 public:
@@ -35,12 +35,12 @@ public:
 	{
 	}
 
-	bool canBeApplied(const Solution<R>& s)
+	bool canBeApplied(const Solution<R, ADS>& s)
 	{
 		return canBeApplied(s.getR());
 	}
 
-	bool canBeApplied(const Evaluation<M>& e, const Solution<R>& s)
+	bool canBeApplied(const Evaluation<M>& e, const Solution<R, ADS>& s)
 	{
 		return canBeApplied(e.getEM(), s.getR());
 	}
@@ -52,26 +52,26 @@ public:
 		return canBeApplied(r);
 	}
 
-	Move<R, M>& apply(Solution<R>& s)
+	Move<R, ADS, M>& apply(Solution<R, ADS>& s)
 	{
 		return apply(s.getR());
 	}
 
-	Move<R, M>& apply(Evaluation<M>& e, Solution<R>& s)
+	Move<R, ADS, M>& apply(Evaluation<M>& e, Solution<R, ADS>& s)
 	{
 		return apply(e.getEM(), s.getR());
 	}
 
-	virtual Move<R, M>& apply(R& r) = 0;
+	virtual Move<R, ADS, M>& apply(R& r) = 0;
 
-	virtual Move<R, M>& apply(M& m, R& r)
+	virtual Move<R, ADS, M>& apply(M& m, R& r)
 	{
 		return apply(r);
 	}
 
-	virtual bool operator==(const Move<R, M>& m) const = 0;
+	virtual bool operator==(const Move<R, ADS, M>& m) const = 0;
 
-	bool operator!=(const Move<R, M>& m) const
+	bool operator!=(const Move<R, ADS, M>& m) const
 	{
 		return !(*this == m);
 	}

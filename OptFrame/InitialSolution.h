@@ -23,7 +23,7 @@
 
 #include "Solution.hpp"
 
-template<class R>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class InitialSolution
 {
 public:
@@ -31,7 +31,7 @@ public:
 	{
 	}
 
-	virtual Solution<R>& generateSolution() = 0;
+	virtual Solution<R, ADS>& generateSolution() = 0;
 };
 
 #endif /*OPTFRAME_INITIALSOLUTION_H_*/

@@ -28,8 +28,8 @@
   \sa run()
 */
 
-template<class R, class M>
-class BuildModule: public OptFrameModule<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class BuildModule: public OptFrameModule<R, ADS, M>
 {
 public:
 
@@ -91,7 +91,7 @@ public:
        \endportuguese
    */
 
-   void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
+   void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
    {
       cout << "build: " << input << endl;
       Scanner scanner(input);
@@ -102,7 +102,7 @@ public:
          return;
       }
 
-      pair<Heuristic<R, M>*, string> method = factory->createHeuristic(scanner.rest());
+      pair<Heuristic<R, ADS, M>*, string> method = factory->createHeuristic(scanner.rest());
 
       scanner = Scanner(method.second);
 

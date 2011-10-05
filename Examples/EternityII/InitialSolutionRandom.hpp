@@ -189,7 +189,9 @@ public:
 			cout << "Warning: construction problem!" << endl;
 		}
 
-		return *new TestSolution<RepEtII> (*tab);
+		int ads;
+
+		return *new TestSolution<RepEtII> (*tab, ads);
 	}
 
 };

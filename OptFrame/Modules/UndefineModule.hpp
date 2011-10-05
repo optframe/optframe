@@ -23,9 +23,9 @@
 
 #include "../OptFrameModule.hpp"
 
-template< class R, class M >
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class UndefineModule :
-      public OptFrameModule<R, M>
+      public OptFrameModule<R, ADS, M>
 {
 public:
    string id()
@@ -38,7 +38,7 @@ public:
       return "undefine word";
    }
 
-   void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>*, map<string, string>* dictionary, string rest)
+   void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>*, map<string, string>* dictionary, string rest)
    {
       Scanner scanner(rest);
 

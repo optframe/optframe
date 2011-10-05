@@ -25,33 +25,33 @@
 #include "../NSSeq.hpp"
 #include "../Evaluator.hpp"
 
-template<class R, class M>
-class CircularSearch: public Heuristic<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class CircularSearch: public Heuristic<R, ADS, M>
 {
 private:
-   Evaluator<R, M>& eval;
-   NSEnum<R, M>& ns;
+   Evaluator<R, ADS, M>& eval;
+   NSEnum<R, ADS, M>& ns;
 
    int initial_w;
 
 public:
 
-	using Heuristic<R, M>::exec; // prevents name hiding
+	using Heuristic<R, ADS, M>::exec; // prevents name hiding
 
-	CircularSearch(Evaluator<R, M>& _eval, NSEnum<R, M>& _nsEnum) :
+	CircularSearch(Evaluator<R, ADS, M>& _eval, NSEnum<R, ADS, M>& _nsEnum) :
 		eval(_eval), ns(_nsEnum)
 	{
            initial_w = 0;
 	}
 
-	virtual void exec(Solution<R>& s, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<M>& e = eval.evaluate(s.getR());
 		exec(s, e, timelimit, target_f);
 		delete &e;
 	}
 
-	virtual void exec(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
                 int Wmax = ns.size();
 
@@ -59,7 +59,7 @@ public:
 
                 do
                 {
-                    Move<R,M>& m = ns.move(w);
+                    Move<R, ADS, M>& m = ns.move(w);
 
                     if(m.canBeApplied(e, s))
                     {

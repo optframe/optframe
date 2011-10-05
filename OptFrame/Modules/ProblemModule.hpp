@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ProblemModule: public OptFrameModule<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class ProblemModule: public OptFrameModule<R, ADS, M>
 {
 public:
 	string id()
@@ -35,11 +35,11 @@ public:
 	{
 		return "problem instance_path";
 	}
-	void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		read(input, factory);
 	}
-	virtual void read(string filename, HeuristicFactory<R, M>* factory) = 0;
+	virtual void read(string filename, HeuristicFactory<R, ADS, M>* factory) = 0;
 };
 
 #endif /* PROBLEMMODULE_HPP_ */

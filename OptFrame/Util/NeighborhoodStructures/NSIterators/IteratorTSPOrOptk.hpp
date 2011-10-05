@@ -28,8 +28,8 @@ using namespace std;
 
 // Working structure: vector<vector<T> >
 
-template<class T, class M = OPTFRAME_DEFAULT_EMEMORY>
-class NSIteratorTSPOrOptk: public NSIterator<vector<T> , M>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class NSIteratorTSPOrOptk: public NSIterator<vector<T> , ADS, M>
 {
 	typedef vector<T> Route;
 
@@ -73,7 +73,7 @@ public:
 		return i > n - k;
 	}
 
-	Move<Route, M>& current()
+	Move<Route, ADS, M>& current()
 	{
 		if (isDone())
 		{
@@ -82,7 +82,7 @@ public:
 			exit(1);
 		}
 
-		return *new MoveTSPOrOptk<T, M> (i, j, k);
+		return *new MoveTSPOrOptk<T, ADS, M> (i, j, k);
 	}
 };
 

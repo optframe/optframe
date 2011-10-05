@@ -29,16 +29,16 @@
 
 using namespace std;
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
-class MultiObjectiveEvaluator: public Evaluator<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class MultiObjectiveEvaluator: public Evaluator<R, ADS, M>
 {
 protected:
-	vector<Evaluator<R, M>*> partialEvaluators;
+	vector<Evaluator<R, ADS, M>*> partialEvaluators;
 public:
 
-	using Evaluator<R, M>::evaluate; // prevents name hiding
+	using Evaluator<R, ADS, M>::evaluate; // prevents name hiding
 
-	MultiObjectiveEvaluator(Evaluator<R, M>& e)
+	MultiObjectiveEvaluator(Evaluator<R, ADS, M>& e)
 	{
 		partialEvaluators.push_back(&e);
 	}
@@ -47,7 +47,7 @@ public:
 	{
 	}
 
-	void add(Evaluator<R, M>& e)
+	void add(Evaluator<R, ADS, M>& e)
 	{
 		partialEvaluators.push_back(&e);
 	}

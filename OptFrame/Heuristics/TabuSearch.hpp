@@ -25,38 +25,38 @@
 #include "../NSEnum.hpp"
 #include "../Evaluator.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
-class TabuSearch: public Heuristic<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class TabuSearch: public Heuristic<R, ADS, M>
 {
 private:
-   Evaluator<R, M>& evaluator;
-	NSSeq<R, M>& nsSeq;
+   Evaluator<R, ADS, M>& evaluator;
+	NSSeq<R, ADS, M>& nsSeq;
 	int tlSize;
 	int tsMax;
 
 public:
 
-	using Heuristic<R, M>::exec; // prevents name hiding
+	using Heuristic<R, ADS, M>::exec; // prevents name hiding
 
-	TabuSearch(Evaluator<R, M>& _ev, NSSeq<R, M>& _nsSeq, int _tlSize, int _tsMax) :
+	TabuSearch(Evaluator<R, ADS, M>& _ev, NSSeq<R, ADS, M>& _nsSeq, int _tlSize, int _tsMax) :
 		evaluator(_ev), nsSeq(_nsSeq), tlSize(_tlSize), tsMax(_tsMax)
 	{
 	}
 
-	virtual void exec(Solution<R>& s, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<M>& e = evaluator.evaluate(s.getR());
 		exec(s, e, timelimit, target_f);
 		delete &e;
 	}
 
-	virtual void exec(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
 		//cout << "TabuSearch exec(" << target_f << "," << timelimit << ")" << endl;
 
 		long tini = time(NULL);
 
-		Solution<R>* sStar = &s.clone();
+		Solution<R, ADS>* sStar = &s.clone();
 		Evaluation<M>* evalSStar = &evaluator.evaluate(*sStar);
 
 		//evalSStar->print();
@@ -65,8 +65,8 @@ public:
 
 		int BestIter = 0;
 
-		const vector<Move<R, M>*> emptyList;
-		vector<Move<R, M>*> tabuList;
+		const vector<Move<R, ADS, M>*> emptyList;
+		vector<Move<R, ADS, M>*> tabuList;
 
 		long tnow = time(NULL);
 
@@ -85,11 +85,11 @@ public:
 			// First: aspiration
 			// ==================
 
-			Move<R, M>* bestMove = tabuBestMove(s, e, emptyList);
+			Move<R, ADS, M>* bestMove = tabuBestMove(s, e, emptyList);
 
-			Solution<R>* s1 = &s.clone();
+			Solution<R, ADS>* s1 = &s.clone();
 
-			Move<R, M>* newTabu = &bestMove->apply(*s1);
+			Move<R, ADS, M>* newTabu = &bestMove->apply(*s1);
 			Evaluation<M>* evalS1 = &evaluator.evaluate(*s1);
 
 			if (evaluator.betterThan(*evalS1, *evalSStar))
@@ -193,9 +193,9 @@ public:
 		fclose(ftabu);
 	}
 
-	Move<R, M>* tabuBestMove(Solution<R>& s, Evaluation<M>& e, const vector<Move<R, M>*>& tabuList)
+	Move<R, ADS, M>* tabuBestMove(Solution<R, ADS>& s, Evaluation<M>& e, const vector<Move<R, ADS, M>*>& tabuList)
 	{
-		NSIterator<R, M>& it = nsSeq.getIterator(e.getEM(), s.getR());
+		NSIterator<R, ADS, M>& it = nsSeq.getIterator(e.getEM(), s.getR());
 
 		it.first();
 
@@ -205,7 +205,7 @@ public:
 			return NULL;
 		}
 
-		Move<R, M>* bestMove = &it.current();
+		Move<R, ADS, M>* bestMove = &it.current();
 
 		while (!bestMove->canBeApplied(s) || inList(bestMove, tabuList))
 		{
@@ -227,7 +227,7 @@ public:
 		it.next();
 		while (!it.isDone())
 		{
-			Move<R, M>* move = &it.current();
+			Move<R, ADS, M>* move = &it.current();
 			if (move->canBeApplied(s) && !inList(bestMove, tabuList))
 			{
 				double cost = evaluator.moveCost(e, *move, s);
@@ -251,7 +251,7 @@ public:
 		return bestMove;
 	}
 
-	bool inList(Move<R, M>* m, const vector<Move<R, M>*>& v)
+	bool inList(Move<R, ADS, M>* m, const vector<Move<R, ADS, M>*>& v)
 	{
 		for (unsigned int i = 0; i < v.size(); i++)
 			if ((*m) == (*v[i]))

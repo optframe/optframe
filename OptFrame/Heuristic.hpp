@@ -31,16 +31,16 @@ using namespace std;
 #include "./Evaluation.hpp"
 //#include "./Util/Runnable/Runnable.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class Heuristic//: public Runnable
 {
    typedef vector<Evaluation<M>*> FitnessValues;
    typedef const vector<const Evaluation<M>*> ConstFitnessValues;
 
 protected:
-   Solution<R>* log_solution;
+   Solution<R, ADS>* log_solution;
    //Population log_solution_set;
-   Population<R> log_solution_set;
+   Population<R, ADS> log_solution_set;
    long log_timelimit;
    double log_efv;
 
@@ -78,7 +78,7 @@ public:
 
    /*
 
-    virtual Solution<R>& safeSearch(double efv, long timelimit, Solution<R>* base)
+    virtual Solution<R, ADS>& safeSearch(double efv, long timelimit, Solution<R, ADS>* base)
     {
     if(timelimit<=0)
     return base->clone();
@@ -111,12 +111,12 @@ public:
     return base->clone();
     }
 
-    virtual vector<Solution<R>*> safeSearch(double efv, long timelimit, vector<Solution<R>*> base)
+    virtual vector<Solution<R, ADS>*> safeSearch(double efv, long timelimit, vector<Solution<R, ADS>*> base)
     {
     if(timelimit<=0)
     return base;
 
-    vector<Solution<R>*> v;
+    vector<Solution<R, ADS>*> v;
     for(int i=0;i<base.size();i++)
     v.push_back(base[i]->clone());
 
@@ -150,26 +150,26 @@ public:
     */
 
    // no-optimization
-   Solution<R>& search(const Solution<R>& s, double timelimit = 100000000, double target_f = 0)
+   Solution<R, ADS>& search(const Solution<R, ADS>& s, double timelimit = 100000000, double target_f = 0)
    {
-      Solution<R>& s2 = s.clone();
+      Solution<R, ADS>& s2 = s.clone();
       exec(s2, timelimit, target_f);
       return s2;
    }
    // optimizated version
-   pair<Solution<R>&, Evaluation<M>&>& search(const Solution<R>& s, const Evaluation<M>& e, double timelimit = 100000000, double target_f = 0)
+   pair<Solution<R, ADS>&, Evaluation<M>&>& search(const Solution<R, ADS>& s, const Evaluation<M>& e, double timelimit = 100000000, double target_f = 0)
    {
-      Solution<R>& s2 = s.clone();
+      Solution<R, ADS>& s2 = s.clone();
       Evaluation<M>& e2 = e.clone();
       exec(s2, e2, timelimit, target_f);
-      return *new pair<Solution<R>&, Evaluation<M>&> (s2, e2);
+      return *new pair<Solution<R, ADS>&, Evaluation<M>&> (s2, e2);
    }
 
    // no-optimization
    //Population& search(ConstPopulation& p, double timelimit = 100000000, double target_f = 0)
-   virtual Population<R>& search(const Population<R>& p, double timelimit = 100000000, double target_f = 0)
+   virtual Population<R, ADS>& search(const Population<R, ADS>& p, double timelimit = 100000000, double target_f = 0)
    {
-      Population<R>* pop = new Population<R> ();
+      Population<R, ADS>* pop = new Population<R, ADS> ();
 
       for (unsigned i = 0; i < p.size(); i++)
          pop->push_back(p.at(i).clone());
@@ -181,10 +181,10 @@ public:
 
    // optimizated version
    //pair<Population&, FitnessValues&>& search(ConstPopulation& p, ConstFitnessValues& ev,
-   virtual pair<Population<R>&, FitnessValues&>& search(const Population<R>& p, ConstFitnessValues& ev, double timelimit = 100000000, double target_f = 0)
+   virtual pair<Population<R, ADS>&, FitnessValues&>& search(const Population<R, ADS>& p, ConstFitnessValues& ev, double timelimit = 100000000, double target_f = 0)
    {
       //Population* p2 = new Population;
-      Population<R>* p2 = new Population<R> ;
+      Population<R, ADS>* p2 = new Population<R, ADS> ;
 
       for (unsigned i = 0; i < p.size(); i++)
          p2->push_back(p.at(i).clone());
@@ -195,17 +195,17 @@ public:
 
       exec(*p2, *ev2, timelimit, target_f);
 
-      return *new pair<Population<R>&, FitnessValues&> (*p2, *ev2);
+      return *new pair<Population<R, ADS>&, FitnessValues&> (*p2, *ev2);
    }
 
    // core methods
 
    // 1
-   virtual void exec(Solution<R>& s, double timelimit, double target_f)
+   virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
    {
       // call 3
       //Population p;
-      Population<R> p;
+      Population<R, ADS> p;
 
       //p.push_back(&s);
       p.push_back(s);
@@ -215,11 +215,11 @@ public:
    }
 
    // 2
-   virtual void exec(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f)
+   virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
    {
       // call 4
       //Population p;
-      Population<R> p;
+      Population<R, ADS> p;
 
       FitnessValues ev;
 
@@ -235,27 +235,27 @@ public:
       //e = v[0].second;
    }
 
-   // TODO: Nao consegui programar vector<Solution<R>& >& v (???)
-   // TODO: E o que isso significa??? Usando ponteiro agora. em: vector<Solution<R>* >& v
+   // TODO: Nao consegui programar vector<Solution<R, ADS>& >& v (???)
+   // TODO: E o que isso significa??? Usando ponteiro agora. em: vector<Solution<R, ADS>* >& v
 
    // 3
    //virtual void exec(Population& p, double timelimit, double target_f)
-   virtual void exec(Population<R>& p, double timelimit, double target_f)
+   virtual void exec(Population<R, ADS>& p, double timelimit, double target_f)
    {
       // call 1
-      //Solution<R>& s = *(p[0]);
-      Solution<R>& s = (p.at(0));
+      //Solution<R, ADS>& s = *(p[0]);
+      Solution<R, ADS>& s = (p.at(0));
 
       exec(s, timelimit, target_f);
    }
 
    // 4
    //virtual void exec(Population& p, FitnessValues& ev, double timelimit, double target_f)
-   virtual void exec(Population<R>& p, FitnessValues& ev, double timelimit, double target_f)
+   virtual void exec(Population<R, ADS>& p, FitnessValues& ev, double timelimit, double target_f)
    {
       // call 2
-      //Solution<R>& s = *(p[0]);
-      Solution<R>& s = (p.at(0));
+      //Solution<R, ADS>& s = *(p[0]);
+      Solution<R, ADS>& s = (p.at(0));
 
       Evaluation<M>& e = *(ev[0]);
 

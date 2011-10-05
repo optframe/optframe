@@ -23,33 +23,33 @@
 
 #include "../Heuristic.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
-class GRASP: public Heuristic<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class GRASP: public Heuristic<R, ADS, M>
 {
 private:
-	Evaluator<R, M>& evaluator;
-   InitialSolution<R>& initsol;
-	Heuristic<R, M>& h;
+	Evaluator<R, ADS, M>& evaluator;
+   InitialSolution<R, ADS>& initsol;
+	Heuristic<R, ADS, M>& h;
 	unsigned int iterMax;
 
 public:
 
-	using Heuristic<R, M>::exec; // prevents name hiding
+	using Heuristic<R, ADS, M>::exec; // prevents name hiding
 
-	GRASP(Evaluator<R, M>& _eval, InitialSolution<R>& _initsol, Heuristic<R, M>& _h, int _iterMax) :
+	GRASP(Evaluator<R, ADS, M>& _eval, InitialSolution<R, ADS>& _initsol, Heuristic<R, ADS, M>& _h, int _iterMax) :
 		evaluator(_eval), initsol(_initsol), h(_h)
 	{
 	   iterMax = _iterMax;
 	}
 
-	virtual void exec(Solution<R>& s, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<M>& e = evaluator.evaluate(s.getR());
 		exec(s, e, timelimit, target_f);
 		delete &e;
 	}
 
-	virtual void exec(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
 		long tini = time(NULL);
 
@@ -59,7 +59,7 @@ public:
 
 		while (iter < iterMax && ((tnow - tini) < timelimit))
 		{
-			Solution<R>& s1 = initsol.generateSolution();
+			Solution<R, ADS>& s1 = initsol.generateSolution();
 			Evaluation<M>& e1 = evaluator.evaluate(s1);
 
 			h.exec(s1,e1,timelimit, target_f);

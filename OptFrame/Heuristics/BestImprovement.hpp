@@ -25,23 +25,23 @@
 #include "../NSSeq.hpp"
 #include "../Evaluator.hpp"
 
-template<class R, class M>
-class BestImprovement: public Heuristic<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class BestImprovement: public Heuristic<R, ADS, M>
 {
 private:
-	Evaluator<R, M>& eval;
-	NSSeq<R, M>& nsSeq;
+	Evaluator<R, ADS, M>& eval;
+	NSSeq<R, ADS, M>& nsSeq;
 
 public:
 
-	using Heuristic<R, M>::exec; // prevents name hiding
+	using Heuristic<R, ADS, M>::exec; // prevents name hiding
 
-	BestImprovement(Evaluator<R, M>& _eval, NSSeq<R, M>& _nsSeq) :
+	BestImprovement(Evaluator<R, ADS, M>& _eval, NSSeq<R, ADS, M>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 	}
 
-	virtual void exec(Solution<R>& s, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<M>& e = eval.evaluate(s.getR());
 
@@ -50,9 +50,9 @@ public:
 		delete &e;
 	}
 
-	virtual void exec(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
-		NSIterator<R, M>& it = nsSeq.getIterator(e.getEM(), s.getR());
+		NSIterator<R, ADS, M>& it = nsSeq.getIterator(e.getEM(), s.getR());
 
 		it.first();
 
@@ -62,7 +62,7 @@ public:
 			return;
 		}
 
-		Move<R, M>* bestMove = &it.current();
+		Move<R, ADS, M>* bestMove = &it.current();
 		while (!bestMove->canBeApplied(e, s))
 		{
 			delete bestMove;
@@ -82,7 +82,7 @@ public:
 		it.next();
 		while (!it.isDone())
 		{
-			Move<R, M>* move = &it.current();
+			Move<R, ADS, M>* move = &it.current();
 			if (move->canBeApplied(e, s))
 			{
 				double cost = eval.moveCost(e, *move, s);

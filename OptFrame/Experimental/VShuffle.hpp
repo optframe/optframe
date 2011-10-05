@@ -36,19 +36,19 @@
 #endif
 
 
-template<class R, class M>
-class VShuffle : public Heuristic<R,M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class VShuffle : public Heuristic<R, ADS, M>
 {
 public:
-	using Heuristic<R, M>::exec; // prevents name hiding
+	using Heuristic<R, ADS, M>::exec; // prevents name hiding
 
-	virtual void exec(Solution<R>& s, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		cerr << "VShuffle exec("<<target_f<<","<<timelimit<<")" << endl;
 		random_shuffle(s.getR().begin(),s.getR().end());
 	}
 
-	virtual void exec(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
 		cerr << "VShuffle exec("<<target_f<<","<<timelimit<<")" << endl;
 		random_shuffle(s.getR().begin(),s.getR().end());

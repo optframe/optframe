@@ -24,12 +24,12 @@
 #include "../Heuristic.hpp"
 #include <math.h>
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
-class BasicSimulatedAnnealing: public Heuristic<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class BasicSimulatedAnnealing: public Heuristic<R, ADS, M>
 {
 private:
-	Evaluator<R, M>& evaluator;
-	vector<NS<R, M>*> neighbors;
+	Evaluator<R, ADS, M>& evaluator;
+	vector<NS<R, ADS, M>*> neighbors;
 	RandGen& rg;
 	double alpha;
 	int SAmax;
@@ -37,9 +37,9 @@ private:
 
 public:
 
-	using Heuristic<R, M>::exec; // prevents name hiding
+	using Heuristic<R, ADS, M>::exec; // prevents name hiding
 
-	BasicSimulatedAnnealing(Evaluator<R, M>& _evaluator, vector<NS<R, M>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(Evaluator<R, ADS, M>& _evaluator, vector<NS<R, ADS, M>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), neighbors(_neighbors), rg(_rg)
 	{
 		alpha = (_alpha);
@@ -48,7 +48,7 @@ public:
 
 	}
 
-	BasicSimulatedAnnealing(Evaluator<R, M>& _evaluator, NS<R, M>* _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(Evaluator<R, ADS, M>& _evaluator, NS<R, ADS, M>* _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), rg(_rg)
 	{
 		neighbors.push_back(_neighbors);
@@ -61,14 +61,14 @@ public:
 	{
 	}
 
-	void exec(Solution<R>& s, double timelimit, double target_f)
+	void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<M>& e = evaluator.evaluate(s.getR());
 		exec(s, e, timelimit, target_f);
 		delete &e;
 	}
 
-	void exec(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f)
+	void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
 		cout << "SA exec(" << target_f << "," << timelimit << ")" << endl;
 
@@ -76,7 +76,7 @@ public:
 
 		double T = Ti;
 		int iterT = 0;
-		Solution<R>* sStar = &s.clone();
+		Solution<R, ADS>* sStar = &s.clone();
 		Evaluation<M>* eStar = &e.clone();
 
 		while ((T > 0) && (tnow.now() < timelimit))
@@ -84,7 +84,7 @@ public:
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
 			{
 				int n = rg.rand(neighbors.size());
-				Move<R, M>* move = &(neighbors[n]->move(s));
+				Move<R, ADS, M>* move = &(neighbors[n]->move(s));
 
 				while (!(move->canBeApplied(e, s)))
 				{
@@ -92,7 +92,7 @@ public:
 					move = &(neighbors[n]->move(s));
 				}
 
-				Solution<R>* sCurrent = &s.clone();
+				Solution<R, ADS>* sCurrent = &s.clone();
 				Evaluation<M>* eCurrent = &e.clone();
 				move->apply(*eCurrent, *sCurrent);
 				evaluator.evaluate(*eCurrent, *sCurrent);

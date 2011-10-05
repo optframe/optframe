@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class M>
-class EmpiricalModule: public OptFrameModule<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class EmpiricalModule: public OptFrameModule<R, ADS, M>
 {
 public:
 	string id()
@@ -46,7 +46,7 @@ public:
 		return u;
 	}
 
-	void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -60,11 +60,11 @@ public:
 		int t = scanner.nextDouble();
 		double tf = scanner.nextDouble();
 		double bf = scanner.nextDouble();
-		InitialSolution<R>* initsol = factory->read_initsol(&scanner);
-		Evaluator<R, M>* eval = factory->read_ev(&scanner);
-		pair<Heuristic<R, M>*, string> method = factory->createHeuristic(scanner.rest());
+		InitialSolution<R, ADS>* initsol = factory->read_initsol(&scanner);
+		Evaluator<R, ADS, M>* eval = factory->read_ev(&scanner);
+		pair<Heuristic<R, ADS, M>*, string> method = factory->createHeuristic(scanner.rest());
 
-		Heuristic<R, M>* h = method.first;
+		Heuristic<R, ADS, M>* h = method.first;
 
 		string filename = method.second;
 
@@ -96,12 +96,12 @@ public:
 			cout << "Test " << i << " {seed=" << seed << "}... Running";
 			Timer t(false);
 
-			Solution<R>* s = &initsol->generateSolution();
+			Solution<R, ADS>* s = &initsol->generateSolution();
 			t_now = t.now();
 			fo_now = eval->evaluate(*s).evaluation();
 			fprintf(file, "%f\t%.3f\t", fo_now, t_now);
 
-			Solution<R>* s2 = &h->search(*s, timelimit, tf);
+			Solution<R, ADS>* s2 = &h->search(*s, timelimit, tf);
 			t_now = t.now();
 			fo_now = eval->evaluate(*s2).evaluation();
 			fprintf(file, "%f\t%.3f\t", fo_now, t_now);

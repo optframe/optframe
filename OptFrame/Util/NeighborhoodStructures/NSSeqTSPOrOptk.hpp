@@ -31,9 +31,9 @@ using namespace std;
 
 // Working structure: vector<vector<T> >
 
-template< class T, class M = OPTFRAME_DEFAULT_EMEMORY >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class NSSeqTSPOrOptk :
-      public NSSeq<vector<T> , M>
+      public NSSeq<vector<T> , ADS, M>
 {
    typedef vector<T> Route;
    int k;
@@ -49,15 +49,15 @@ public:
    {
    }
 
-   using NSSeq<vector<T> , M>::move;
-   using NSSeq<vector<T> , M>::getIterator;
+   using NSSeq<vector<T> , ADS, M>::move;
+   using NSSeq<vector<T> , ADS, M>::getIterator;
 
-   Move<Route, M>& move(const Route& rep)
+   Move<Route, ADS, M>& move(const Route& rep)
    {
       int n = rep.size();
 
       if(n - k <= 0)
-         return *new MoveTSPOrOptk<T, M> (0, 0, k);
+         return *new MoveTSPOrOptk<T, ADS, M> (0, 0, k);
 
       int i = rand() % ( n - k + 1 );
 
@@ -65,12 +65,12 @@ public:
       while(i == j)
          j = rand() % ( n - k + 1 );
 
-      return *new MoveTSPOrOptk<T, M> (i, j, k);
+      return *new MoveTSPOrOptk<T, ADS, M> (i, j, k);
    }
 
-   virtual NSIterator<Route, M>& getIterator(const Route& r)
+   virtual NSIterator<Route, ADS, M>& getIterator(const Route& r)
    {
-      return *new NSIteratorTSPOrOptk<T, M> (r.size(), k);
+      return *new NSIteratorTSPOrOptk<T, ADS, M> (r.size(), k);
    }
 
    virtual void print() const

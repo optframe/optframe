@@ -23,9 +23,9 @@
 
 #include "../OptFrameModule.hpp"
 
-template< class R, class M >
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class PauseModule :
-      public OptFrameModule<R, M>
+      public OptFrameModule<R, ADS, M>
 {
 public:
 
@@ -39,7 +39,7 @@ public:
       return "pause";
    }
 
-   void run(vector<OptFrameModule<R, M>*>& , HeuristicFactory<R, M>*, map<string, string>* , string )
+   void run(vector<OptFrameModule<R, ADS, M>*>& , HeuristicFactory<R, ADS, M>*, map<string, string>* , string )
    {
       cout << "Press <enter> to continue..." << endl;
 

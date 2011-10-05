@@ -25,11 +25,11 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class M>
-class ForEachModule: public OptFrameModule<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class ForEachModule: public OptFrameModule<R, ADS, M>
 {
 private:
-	OptFrameModule<R, M>* getModule(vector<OptFrameModule<R, M>*>& modules, string module)
+	OptFrameModule<R, ADS, M>* getModule(vector<OptFrameModule<R, ADS, M>*>& modules, string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())
@@ -165,11 +165,11 @@ private:
 
 	}
 
-	bool exec_command(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string command)
+	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string command)
 	{
 		Scanner scanner(command);
 		string module = scanner.next();
-		OptFrameModule<R, M>* m = getModule(all_modules, module);
+		OptFrameModule<R, ADS, M>* m = getModule(all_modules, module);
 
 		if (m == NULL)
 			return false;
@@ -189,7 +189,7 @@ public:
 	{
 		return "for_each $var list_of_values list_of_commands";
 	}
-	void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -210,8 +210,8 @@ public:
 		vector < string > values;
 		vector < string > commands;
 
-		values = HeuristicFactory<R, M>::readList(scanner);
-		commands = HeuristicFactory<R, M>::readList(scanner);
+		values = HeuristicFactory<R, ADS, M>::readList(scanner);
+		commands = HeuristicFactory<R, ADS, M>::readList(scanner);
 
 		for (unsigned int v = 0; v < values.size(); v++)
 		{

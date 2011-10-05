@@ -25,23 +25,23 @@
 #include "../NSSeq.hpp"
 #include "../Evaluator.hpp"
 
-template<class R, class M>
-class HillClimbing: public Heuristic<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class HillClimbing: public Heuristic<R, ADS, M>
 {
 private:
-	Evaluator<R, M>& evaluator;
-	Heuristic<R, M>& heuristic;
+	Evaluator<R, ADS, M>& evaluator;
+	Heuristic<R, ADS, M>& heuristic;
 
 public:
 
-	using Heuristic<R, M>::exec; // prevents name hiding
+	using Heuristic<R, ADS, M>::exec; // prevents name hiding
 
-	HillClimbing(Evaluator<R, M>& _ev, Heuristic<R, M>& _h) :
+	HillClimbing(Evaluator<R, ADS, M>& _ev, Heuristic<R, ADS, M>& _h) :
 		evaluator(_ev), heuristic(_h)
 	{
 	}
 
-	virtual void exec(Solution<R>& s, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<M>& e = evaluator.evaluate(s.getR());
 
@@ -50,12 +50,12 @@ public:
 		delete &e;
 	}
 
-	virtual void exec(Solution<R>& s, Evaluation<M>& e, double timelimit,
+	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit,
 			double target_f)
 	{
 		long tini = time(NULL);
 
-		Solution<R>* s0 = &s.clone();
+		Solution<R, ADS>* s0 = &s.clone();
 		Evaluation<M>* e0 = &e.clone();
 
 		heuristic.exec(s, e, timelimit, target_f);

@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class M>
-class EvaluateToFileModule: public OptFrameModule<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class EvaluateToFileModule: public OptFrameModule<R, ADS, M>
 {
 public:
 	string id()
@@ -37,7 +37,7 @@ public:
 		return u;
 	}
 
-	void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		cout << "evaluate_to_file: " << input << endl;
 		Scanner scanner(input);
@@ -48,7 +48,7 @@ public:
 			return;
 		}
 
-		Evaluator<R, M>* eval = factory->read_ev(&scanner);
+		Evaluator<R, ADS, M>* eval = factory->read_ev(&scanner);
 
 		string sol = scanner.next();
 
@@ -62,7 +62,7 @@ public:
 		string id = scanner.next();
 
 		Scanner s2(sol + " " + id);
-		Solution<R>* s = factory->read_loadsol(&s2);
+		Solution<R, ADS>* s = factory->read_loadsol(&s2);
 
 		Evaluation<M>* e = &eval->evaluate(*s);
 		e->print();

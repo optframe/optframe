@@ -28,9 +28,9 @@
   \sa run()
 */
 
-template< class R, class M >
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class CallModule :
-      public OptFrameModule<R, M>
+      public OptFrameModule<R, ADS, M>
 {
 public:
 
@@ -81,7 +81,7 @@ public:
        \endportuguese
    */
 
-   void run(vector<OptFrameModule<R, M>*>& , HeuristicFactory<R, M>* , map<string, string>* , string command)
+   void run(vector<OptFrameModule<R, ADS, M>*>& , HeuristicFactory<R, ADS, M>* , map<string, string>* , string command)
    {
       int c = system(command.c_str());
    }

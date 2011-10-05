@@ -87,8 +87,8 @@ using namespace std;
 */
 
 
-template<class T, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveTSP2Opt<T, M> >
-class NSSeqTSP2Opt: public NSSeq<vector<T> , M>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveTSP2Opt<T, ADS, M> >
+class NSSeqTSP2Opt: public NSSeq<vector<T> , ADS, M>
 {
 	typedef vector<T> Route;
 
@@ -104,7 +104,7 @@ public:
 	{
 	}
 
-	Move<Route, M>& move(const Route& rep)
+	Move<Route, ADS, M>& move(const Route& rep)
 	{
 		if (rep.size() < 2)
 			return *new MOVE(-1, -1);
@@ -122,9 +122,9 @@ public:
 		return *new MOVE(p1, p2);
 	}
 
-	virtual NSIterator<Route, M>& getIterator(const Route& r)
+	virtual NSIterator<Route, ADS, M>& getIterator(const Route& r)
 	{
-		return *new NSIteratorTSP2Opt<T, M, MOVE> (r);
+		return *new NSIteratorTSP2Opt<T, ADS, M, MOVE> (r);
 	}
 
 	virtual void print() const

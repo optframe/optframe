@@ -25,9 +25,9 @@
 
 #include "../OptFrameModule.hpp"
 
-template< class R, class M >
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class GeneralModule :
-      public OptFrameModule<R, M>
+      public OptFrameModule<R, ADS, M>
 {
    string name;
    vector<string> parameters;
@@ -42,7 +42,7 @@ public:
    }
 
 private:
-   OptFrameModule<R, M>* getModule(vector<OptFrameModule<R, M>*>& modules, string module)
+   OptFrameModule<R, ADS, M>* getModule(vector<OptFrameModule<R, ADS, M>*>& modules, string module)
    {
       for(unsigned int i = 0; i < modules.size(); i++)
          if(module == modules[i]->id())
@@ -178,11 +178,11 @@ private:
 
    }
 
-   bool exec_command(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string command)
+   bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string command)
    {
       Scanner scanner(command);
       string module = scanner.next();
-      OptFrameModule<R, M>* m = getModule(all_modules, module);
+      OptFrameModule<R, ADS, M>* m = getModule(all_modules, module);
 
       if(m == NULL)
          return false;
@@ -213,7 +213,7 @@ public:
       return u;
    }
 
-   void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
+   void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
    {
       Scanner scanner(input);
 
@@ -250,13 +250,13 @@ public:
    }
 };
 
-template< class R, class M >
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class CreateModule :
-      public OptFrameModule<R, M>
+      public OptFrameModule<R, ADS, M>
 {
 private:
 
-   OptFrameModule<R, M>* getModule(vector<OptFrameModule<R, M>*>& modules, string module)
+   OptFrameModule<R, ADS, M>* getModule(vector<OptFrameModule<R, ADS, M>*>& modules, string module)
    {
       for(unsigned int i = 0; i < modules.size(); i++)
          if(module == modules[i]->id())
@@ -276,7 +276,7 @@ public:
       return "create_module name list_of_$parameters list_of_commands";
    }
 
-   void run(vector<OptFrameModule<R, M>*>& modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
+   void run(vector<OptFrameModule<R, ADS, M>*>& modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
    {
       Scanner scanner(input);
 
@@ -294,7 +294,7 @@ public:
          return;
       }
 
-      vector<string> parameters = HeuristicFactory<R, M>::readList(scanner);
+      vector<string> parameters = HeuristicFactory<R, ADS, M>::readList(scanner);
 
       for(unsigned int i = 0; i < parameters.size(); i++)
          if(parameters[i][0] != '$')
@@ -311,15 +311,15 @@ public:
 
       vector<string> commands;
 
-      commands = HeuristicFactory<R, M>::readList(scanner);
+      commands = HeuristicFactory<R, ADS, M>::readList(scanner);
 
-      OptFrameModule<R, M>* m = getModule(modules, name);
+      OptFrameModule<R, ADS, M>* m = getModule(modules, name);
 
       if(m != NULL)
          cout << "error: module with name '" << name << "' already exists!" << endl;
       else
       {
-         modules.push_back(new GeneralModule<R, M> (name, parameters, commands));
+         modules.push_back(new GeneralModule<R, ADS, M> (name, parameters, commands));
          cout << "module '" << name << "' created!" << endl;
       }
 

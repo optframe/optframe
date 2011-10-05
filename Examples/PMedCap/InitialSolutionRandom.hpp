@@ -78,7 +78,9 @@ public:
 				newRep.second[i] = rg.rand(pPCAP.nMedianas);
 		}
 
-		return *new TestSolution<RepPCAP> (newRep);
+		int ads;
+
+		return *new TestSolution<RepPCAP> (newRep, ads);
 	}
 
 };

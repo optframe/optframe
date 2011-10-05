@@ -23,23 +23,23 @@
 
 #include "../Heuristic.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
-class PathRelinking: public Heuristic<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class PathRelinking: public Heuristic<R, ADS, M>
 {
 	typedef vector<Evaluation<M>*> FitnessValues;
 	typedef const vector<const Evaluation<M>*> ConstFitnessValues;
 
 protected:
-	Evaluator<R, M>& evaluator;
+	Evaluator<R, ADS, M>& evaluator;
 	unsigned int k;
 	bool forward;
-	Heuristic<R, M>& localSearch;
+	Heuristic<R, ADS, M>& localSearch;
 
 public:
 
-	using Heuristic<R, M>::exec; // prevents name hiding
+	using Heuristic<R, ADS, M>::exec; // prevents name hiding
 
-	PathRelinking(Heuristic<R, M>& localSearch, Evaluator<R, M>& evaluator, int k = 1, bool forward = false) :
+	PathRelinking(Heuristic<R, ADS, M>& localSearch, Evaluator<R, ADS, M>& evaluator, int k = 1, bool forward = false) :
 		localSearch(localSearch), evaluator(evaluator), k(k), forward(forward)
 	{
 	}
@@ -48,17 +48,17 @@ public:
 	{
 	}
 
-	virtual vector<pair<Move<R, M>*, double> >& symmetric_difference(Solution<R>& x, Evaluation<M>& e_x, const Solution<R>& xt,
+	virtual vector<pair<Move<R, ADS, M>*, double> >& symmetric_difference(Solution<R, ADS>& x, Evaluation<M>& e_x, const Solution<R, ADS>& xt,
 			const Evaluation<M>& e_xt) = 0;
 
-	virtual void update_delta(vector<pair<Move<R, M>*, double> >& delta, int index_best, Solution<R>& x, Evaluation<M>& e_x, const Solution<R>& xt,
+	virtual void update_delta(vector<pair<Move<R, ADS, M>*, double> >& delta, int index_best, Solution<R, ADS>& x, Evaluation<M>& e_x, const Solution<R, ADS>& xt,
 			const Evaluation<M>& e_xt)
 	{
 		delta.erase(delta.begin() + index_best);
 	}
 
 	// path-relinking from starting solution 'xs' to target solution 'xt'
-	virtual pair<Solution<R>&, Evaluation<M>&>& path_relinking(const Solution<R>& xs, const Evaluation<M>& e_xs, const Solution<R>& xt,
+	virtual pair<Solution<R, ADS>&, Evaluation<M>&>& path_relinking(const Solution<R, ADS>& xs, const Evaluation<M>& e_xs, const Solution<R, ADS>& xt,
 			const Evaluation<M>& e_xt, double timelimit, double target_f)
 	{
 		cout << "path_relinking " << (forward ? "forward" : "backward") << endl;
@@ -67,14 +67,14 @@ public:
 		cout << "to: ";
 		e_xt.print();
 
-		Solution<R>& x = xs.clone();
+		Solution<R, ADS>& x = xs.clone();
 		Evaluation<M>& e_x = e_xs.clone();
 
 		// compute the symmetric difference 'delta' between xs and xt
-		vector<pair<Move<R, M>*, double> >& delta = symmetric_difference(x, e_x, xt, e_xt);
+		vector<pair<Move<R, ADS, M>*, double> >& delta = symmetric_difference(x, e_x, xt, e_xt);
 
 		// compute f*
-		Solution<R>* s_star;
+		Solution<R, ADS>* s_star;
 		Evaluation<M>* e_star;
 
 		if (evaluator.betterThan(e_xs, e_xt))
@@ -104,7 +104,7 @@ public:
 				if (evaluator.betterThan(delta[i].second, delta[index_best].second))
 					index_best = i;
 
-			Move<R, M>* m_star = delta[index_best].first;
+			Move<R, ADS, M>* m_star = delta[index_best].first;
 			double f_m_star = delta[index_best].second;
 
 			//2. update 'x' and 'e_x'
@@ -134,7 +134,7 @@ public:
 		delete &x;
 		delete &e_x;
 
-		pair<Solution<R>&, Evaluation<M>&>& r = *new pair<Solution<R>&, Evaluation<M>&> (*s_star, *e_star);
+		pair<Solution<R, ADS>&, Evaluation<M>&>& r = *new pair<Solution<R, ADS>&, Evaluation<M>&> (*s_star, *e_star);
 		cout << "best path_relinking: ";
 		e_star->print();
 		//getchar();
@@ -143,14 +143,14 @@ public:
 
 	// rewritting search method for efficiency purposes!
 	// safe use of const_cast
-	Population<R>& search(const Population<R>& p, double timelimit = 100000000, double target_f = 0)
+	Population<R, ADS>& search(const Population<R, ADS>& p, double timelimit = 100000000, double target_f = 0)
 	{
 		int p_size = p.size();
 
-		Population<R>* v = new Population<R> ;
+		Population<R, ADS>* v = new Population<R, ADS> ;
 
 		for (unsigned i = 0; i < p.size(); i++)
-			v->push_back(const_cast<Solution<R>&> (p.at(i)));
+			v->push_back(const_cast<Solution<R, ADS>&> (p.at(i)));
 
 		exec(*v, timelimit, target_f);
 
@@ -160,7 +160,7 @@ public:
 		return *v;
 	}
 
-	void exec(Population<R>& p, double timelimit, double target_f)
+	void exec(Population<R, ADS>& p, double timelimit, double target_f)
 	{
 		vector<Evaluation<M>*>& ev = *new vector<Evaluation<M>*> ;
 		for (int i = 0; i < p.size(); i++)
@@ -175,11 +175,11 @@ public:
 
 	// rewritting search method for efficiency purposes!
 	// safe use of const_cast
-	pair<Population<R>&, FitnessValues&>& search(const Population<R>& p, ConstFitnessValues& ev, double timelimit = 100000000, double target_f = 0)
+	pair<Population<R, ADS>&, FitnessValues&>& search(const Population<R, ADS>& p, ConstFitnessValues& ev, double timelimit = 100000000, double target_f = 0)
 	{
-		Population<R>* p2 = new Population<R> ;
+		Population<R, ADS>* p2 = new Population<R, ADS> ;
 		for (unsigned i = 0; i < p.size(); i++)
-			p2->push_back(const_cast<Solution<R>&> (p.at(i)));
+			p2->push_back(const_cast<Solution<R, ADS>&> (p.at(i)));
 
 		vector<Evaluation<M>*>* ev2 = new vector<Evaluation<M>*> ;
 		for (unsigned i = 0; i < p.size(); i++)
@@ -189,10 +189,10 @@ public:
 
 		// update and return correct values
 
-		return *new pair<Population<R>&, FitnessValues&> (*p2, *ev2);
+		return *new pair<Population<R, ADS>&, FitnessValues&> (*p2, *ev2);
 	}
 
-	void exec(Population<R>& p, vector<Evaluation<M>*>& ev, double timelimit, double target_f)
+	void exec(Population<R, ADS>& p, vector<Evaluation<M>*>& ev, double timelimit, double target_f)
 	{
 		if (p.size() <= 1)
 		{
@@ -204,7 +204,7 @@ public:
 
 		cout << "Path Relinking starts!" << endl;
 
-		vector<Solution<R>*> new_s;
+		vector<Solution<R, ADS>*> new_s;
 		vector<Evaluation<M>*> new_e;
 
 		int iter = 0;
@@ -233,7 +233,7 @@ public:
 				x2 = aux;
 			}
 
-			pair<Solution<R> &, Evaluation<M>&>& ret_path = path_relinking(p.at(x1), *ev[x1], p.at(x2), *ev[x2], timelimit, target_f);
+			pair<Solution<R, ADS> &, Evaluation<M>&>& ret_path = path_relinking(p.at(x1), *ev[x1], p.at(x2), *ev[x2], timelimit, target_f);
 
 			new_s.push_back(&ret_path.first);
 			new_e.push_back(&ret_path.second);

@@ -26,12 +26,12 @@
 
 //#include "../../Population.hpp"
 
-template<class R, class M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class Crossover
 {
 protected:
 
-   typedef Solution<R> chromossome;
+   typedef Solution<R, ADS> chromossome;
    //typedef vector<chromossome*> Population;
    typedef vector<Evaluation<M>*> FitnessValues;
 

@@ -30,19 +30,19 @@
 
 typedef pair<pair<int, int> , pair<int, int> > levelHistory;
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
-class IntensifiedIteratedLocalSearchLevels: public IntensifiedIteratedLocalSearch<levelHistory, R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class IntensifiedIteratedLocalSearchLevels: public IntensifiedIteratedLocalSearch<levelHistory, R, ADS, M>
 {
 protected:
-	Heuristic<R, M>& h;
-	Intensification<R, M>& h2;
-	ILSLPerturbation<R, M>& p;
+	Heuristic<R, ADS, M>& h;
+	Intensification<R, ADS, M>& h2;
+	ILSLPerturbation<R, ADS, M>& p;
 	int iterMax, levelMax;
 
 public:
 
-	IntensifiedIteratedLocalSearchLevels(Evaluator<R, M>& e, Heuristic<R, M>& _h, Intensification<R, M>& _h2, ILSLPerturbation<R, M>& _p, int _iterMax, int _levelMax) :
-      IntensifiedIteratedLocalSearch<levelHistory, R, M> (e), h(_h), h2(_h2), p(_p)
+	IntensifiedIteratedLocalSearchLevels(Evaluator<R, ADS, M>& e, Heuristic<R, ADS, M>& _h, Intensification<R, ADS, M>& _h2, ILSLPerturbation<R, ADS, M>& _p, int _iterMax, int _levelMax) :
+      IntensifiedIteratedLocalSearch<levelHistory, R, ADS, M> (e), h(_h), h2(_h2), p(_p)
    {
       iterMax = _iterMax;
       levelMax = _levelMax;
@@ -59,15 +59,15 @@ public:
 		return *new levelHistory(vars, maxs);
 	}
 
-	virtual void intensification(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f, levelHistory& history)
+	virtual void intensification(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f, levelHistory& history)
 	{
 		h2.addSolution(s);
 
 		if (history.first.first == history.second.first-1) //TODO intensification applied only at last iteration of each level
 		{
-			Solution<R>& s1 = h2.search(s);
+			Solution<R, ADS>& s1 = h2.search(s);
 
-			Evaluator<R,M> & ev = this->getEvaluator();
+			Evaluator<R, ADS, M> & ev = this->getEvaluator();
 			Evaluation<M>& s1_e = ev.evaluate(s1);
 
 			if (ev.betterThan(s1_e, e))
@@ -82,13 +82,13 @@ public:
 
 	}
 
-	virtual void localSearch(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f)
+	virtual void localSearch(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
 		//cout << "localSearch(.)" << endl;
 		h.exec(s, e, timelimit, target_f);
 	}
 
-	virtual void perturbation(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f, levelHistory& history)
+	virtual void perturbation(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f, levelHistory& history)
 	{
 		//cout << "perturbation(.)" << endl;
 
@@ -117,14 +117,14 @@ public:
 		history.first.second = level;
 	}
 
-	virtual Solution<R>& acceptanceCriterion(const Solution<R>& s1, const Solution<R>& s2, levelHistory& history)
+	virtual Solution<R, ADS>& acceptanceCriterion(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2, levelHistory& history)
 	{
-		if (IntensifiedIteratedLocalSearch<levelHistory, R, M>::evaluator.betterThan(s2, s1))
+		if (IntensifiedIteratedLocalSearch<levelHistory, R, ADS, M>::evaluator.betterThan(s2, s1))
 		{
 			// =======================
 			//   Melhor solucao: 's2'
 			// =======================
-			Evaluation<M>& e = IntensifiedIteratedLocalSearch<levelHistory, R, M>::evaluator.evaluate(s2);
+			Evaluation<M>& e = IntensifiedIteratedLocalSearch<levelHistory, R, ADS, M>::evaluator.evaluate(s2);
 			cout << "Best fo: " << e.evaluation();
 			cout << " on [iter " << history.first.first << " of level " << history.first.second << "]" << endl;
 			delete &e;

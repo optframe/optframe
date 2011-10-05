@@ -30,24 +30,24 @@
 #include "../ParetoDominance.hpp"
 #include "../ParetoDominanceWeak.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
-class MOVNSLevels: public Heuristic<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class MOVNSLevels: public Heuristic<R, ADS, M>
 {
 	typedef vector<Evaluation<M>*> FitnessValues;
 
 private:
-	vector<NSSeq<R, M>*> neighbors;
-	vector<Evaluator<R, M>*> v_e;
-	ParetoDominance<R, M> pDominance;
-	ParetoDominanceWeak<R, M> pDominanceWeak;
+	vector<NSSeq<R, ADS, M>*> neighbors;
+	vector<Evaluator<R, ADS, M>*> v_e;
+	ParetoDominance<R, ADS, M> pDominance;
+	ParetoDominanceWeak<R, ADS, M> pDominanceWeak;
 	RandGen& rg;
 	int levelMax;
 	int iterMax;
 
 public:
-	using Heuristic<R, M>::exec; // prevents name hiding
+	using Heuristic<R, ADS, M>::exec; // prevents name hiding
 
-	MOVNSLevels(vector<Evaluator<R, M>*> _v_e, vector<NSSeq<R, M>*> _neighbors, RandGen& _rg, int _iterMax, int _levelMax) :
+	MOVNSLevels(vector<Evaluator<R, ADS, M>*> _v_e, vector<NSSeq<R, ADS, M>*> _neighbors, RandGen& _rg, int _iterMax, int _levelMax) :
 		v_e(_v_e), neighbors(_neighbors), rg(_rg)
 	{
 		pDominance.insertEvaluators(_v_e);
@@ -56,7 +56,7 @@ public:
 		iterMax = _iterMax;
 	}
 
-	virtual void exec(Population<R>& p, double timelimit, double target_f)
+	virtual void exec(Population<R, ADS>& p, double timelimit, double target_f)
 	{
 		FitnessValues& e_pop = *new FitnessValues;
 
@@ -71,16 +71,16 @@ public:
 		delete &e_pop;
 	}
 
-	virtual void exec(Population<R>& p_0, FitnessValues& e_pop, double timelimit, double target_f)
+	virtual void exec(Population<R, ADS>& p_0, FitnessValues& e_pop, double timelimit, double target_f)
 	{
 		Timer tnow;
 		cout << "exec: MOVNS " << endl;
 		int r = neighbors.size();
 
-		Population<R> D;
+		Population<R, ADS> D;
 		for (int ind = 0; ind < p_0.size(); ind++)
 		{
-			Solution<R>& s = p_0.at(ind).clone();
+			Solution<R, ADS>& s = p_0.at(ind).clone();
 			if (!addSolution(D, s))
 				delete &s;
 		}
@@ -107,11 +107,11 @@ public:
 				cout << "perturbationLevel = " << perturbationLevel << endl;
 			}
 
-			Solution<R>& s1 = D.at(ind).clone();
+			Solution<R, ADS>& s1 = D.at(ind).clone();
 			for (int m = 0; m < perturbationLevel; m++)
 			{
 				int neigh = rg.rand(neighbors.size());
-				Move<R, M>* move = &(neighbors[neigh]->move(s1));
+				Move<R, ADS, M>* move = &(neighbors[neigh]->move(s1));
 
 				while (!(move->canBeApplied(s1)))
 				{
@@ -119,14 +119,14 @@ public:
 					move = &(neighbors[neigh]->move(s1));
 				}
 
-				Move<R, M>& mov_rev = move->apply(s1);
+				Move<R, ADS, M>& mov_rev = move->apply(s1);
 				delete &mov_rev;
 				delete move;
 			}
 
 			int neigh = rg.rand(neighbors.size());
 
-			NSIterator<R, M>& it = neighbors[neigh]->getIterator(s1.getR());
+			NSIterator<R, ADS, M>& it = neighbors[neigh]->getIterator(s1.getR());
 			it.first();//Primeiro vizinho
 
 			//verifica se existe vizinho a ser gerado
@@ -137,12 +137,12 @@ public:
 			else
 			{
 
-				Move<R, M>* move = geraMovimentoValido(it, s1);
+				Move<R, ADS, M>* move = geraMovimentoValido(it, s1);
 				//cout << "!it.isDone() = " << !it.isDone() << " aplly = " << move->canBeApplied(p.at(ind)) << endl;
 				while ((!it.isDone()) && (move->canBeApplied(s1)))
 				{
-					Solution<R>& s2 = s1.clone();
-					Move<R, M>& mov_rev = move->apply(s2);
+					Solution<R, ADS>& s2 = s1.clone();
+					Move<R, ADS, M>& mov_rev = move->apply(s2);
 					delete &mov_rev;
 					delete move;
 
@@ -186,10 +186,10 @@ public:
 		p_0 = D;
 	}
 
-	Move<R, M>* geraMovimentoValido(NSIterator<R, M>& it, Solution<R>& s)
+	Move<R, ADS, M>* geraMovimentoValido(NSIterator<R, ADS, M>& it, Solution<R, ADS>& s)
 	{
 
-		Move<R, M>* move = NULL;
+		Move<R, ADS, M>* move = NULL;
 
 		if (it.isDone())
 			return NULL;
@@ -212,7 +212,7 @@ public:
 		return move;
 	}
 
-	bool addSolution(Population<R>& p, Solution<R>& s)
+	bool addSolution(Population<R, ADS>& p, Solution<R, ADS>& s)
 	{
 		Evaluation<M>& e = v_e[0]->evaluate(s);
 		if (!e.isFeasible())

@@ -23,13 +23,13 @@
 
 #include "../../Population.hpp"
 
-template<class R, class M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class Selection
 {
    //private:
 protected:
 
-   typedef Solution<R> chromossome;
+   typedef Solution<R, ADS> chromossome;
    //typedef vector<chromossome*> Population;
    typedef vector<Evaluation<M>*> FitnessValues;
 
@@ -55,20 +55,20 @@ public:
     */
 
    /*
-    virtual Population<R>&
-    select(unsigned populationSize, Population<R>& currentPopulation, FitnessValues& fv_crrtPop,
-    Population<R>& intermediatePopulation, FitnessValues& fv_intPop) = 0;
+    virtual Population<R, ADS>&
+    select(unsigned populationSize, Population<R, ADS>& currentPopulation, FitnessValues& fv_crrtPop,
+    Population<R, ADS>& intermediatePopulation, FitnessValues& fv_intPop) = 0;
     */
 
    /*
-    virtual Population<R>&
-    select(const Population<R>& currentPopulation, const FitnessValues& fv_crrtPop,
-    const Population<R>& intermediatePopulation, const FitnessValues& fv_intPop) const = 0;
+    virtual Population<R, ADS>&
+    select(const Population<R, ADS>& currentPopulation, const FitnessValues& fv_crrtPop,
+    const Population<R, ADS>& intermediatePopulation, const FitnessValues& fv_intPop) const = 0;
     */
 
-   virtual Population<R>&
-   select(const Population<R>& currentPopulation, const FitnessValues& fv_crrtPop,
-         const Population<R>& intermediatePopulation, const FitnessValues& fv_intPop, const unsigned elitist_chrm_nb) const = 0;
+   virtual Population<R, ADS>&
+   select(const Population<R, ADS>& currentPopulation, const FitnessValues& fv_crrtPop,
+         const Population<R, ADS>& intermediatePopulation, const FitnessValues& fv_intPop, const unsigned elitist_chrm_nb) const = 0;
 
 };
 

@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class M>
-class ExecModule: public OptFrameModule<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class ExecModule: public OptFrameModule<R, ADS, M>
 {
 public:
 	string id()
@@ -37,7 +37,7 @@ public:
 		return "exec [ <initsol> id | <loadsol> id | <initpop> id popSize | <loadpop> id ] target_fo timelimit method [output_solution_name]";
 	}
 
-	void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		cout << "exec: " << input << endl;
 		Scanner scanner(input);
@@ -59,10 +59,10 @@ public:
 
 		string id = scanner.next();
 
-		Solution<R>* s = NULL;
+		Solution<R, ADS>* s = NULL;
 		bool needDelete = false;
 
-		Population<R> *p = NULL;
+		Population<R, ADS> *p = NULL;
 		//bool needDeletePop = false;
 
 		if (sol == "loadsol")
@@ -74,7 +74,7 @@ public:
 		if (sol == "initsol")
 		{
 			Scanner s2(sol + " " + id);
-			InitialSolution<R>* initsol = factory->read_initsol(&s2);
+			InitialSolution<R, ADS>* initsol = factory->read_initsol(&s2);
 			s = &initsol->generateSolution();
 			needDelete = true;
 		}
@@ -88,7 +88,7 @@ public:
 		if (sol == "initpop")
 		{
 			Scanner s2(sol + " " + id);
-			InitialPopulation<R>* initpop = factory->read_initpop(&s2);
+			InitialPopulation<R, ADS>* initpop = factory->read_initpop(&s2);
 
 			unsigned popSize = scanner.nextInt();
 			p = &initpop->generatePopulation(popSize);
@@ -97,7 +97,7 @@ public:
 		double target_fo = scanner.nextDouble();
 		double timelimit = scanner.nextDouble();
 
-		pair<Heuristic<R, M>*, string> method = factory->createHeuristic(scanner.rest());
+		pair<Heuristic<R, ADS, M>*, string> method = factory->createHeuristic(scanner.rest());
 		scanner = Scanner(method.second);
 
 		// ---
@@ -106,7 +106,7 @@ public:
 
 		if (sol == "initsol" || sol == "loadsol")
 		{
-			Solution<R>* sFinal = &method.first->search(*s, timelimit, target_fo);
+			Solution<R, ADS>* sFinal = &method.first->search(*s, timelimit, target_fo);
 
 			if (needDelete)
 				delete s;
@@ -121,8 +121,8 @@ public:
 		}
 		else if (sol == "initpop" || sol == "loadpop")
 		{
-			Population<R> *pFinal;
-			Population<R> *pAux;
+			Population<R, ADS> *pFinal;
+			Population<R, ADS> *pAux;
 
 			pAux = &(p->clone());
 

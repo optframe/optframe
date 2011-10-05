@@ -23,14 +23,14 @@
 
 #include "../Heuristic.hpp"
 
-template<class R,class M>
-class Intensification : public Heuristic<R,M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class Intensification : public Heuristic<R, ADS, M>
 {
 public:
 
-	virtual void exec(Solution<R>& _s, double timelimit, double target_f) = 0;
+	virtual void exec(Solution<R, ADS>& _s, double timelimit, double target_f) = 0;
 
-	virtual void addSolution(const Solution<R>&) = 0;
+	virtual void addSolution(const Solution<R, ADS>&) = 0;
 };
 
 

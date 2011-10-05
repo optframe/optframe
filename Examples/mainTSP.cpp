@@ -66,14 +66,14 @@ int main(int argc, char **argv)
 	e->print();
 	cout << endl;
 
-	OptFrame<RepTSP, MemTSP> optframe(rg);
+	OptFrame<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe(rg);
 	optframe.factory.add_initsol(&is);
 	optframe.factory.add_ev(&eval);
 
 	optframe.factory.add_ns(&ns);
-	optframe.factory.add_ns(new NSSeqTSPOrOpt<int, MemTSP>);
-	optframe.factory.add_ns(new NSSeqTSPSwap<int, MemTSP>);
-	optframe.factory.add_ns(new NSSeqTSP2Opt<int, MemTSP>);
+	optframe.factory.add_ns(new NSSeqTSPOrOpt<int, OPTFRAME_DEFAULT_ADS, MemTSP>);
+	optframe.factory.add_ns(new NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS, MemTSP>);
+	optframe.factory.add_ns(new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP>);
 
 	optframe.execute();
 

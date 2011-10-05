@@ -36,17 +36,17 @@ public:
    }
 };
 
-template< class R, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveNSSeqUnion<R, M> >
+template< class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveNSSeqUnion<R, ADS, M> >
 class IteratorNSSeqUnion :
-      public NSIterator<R, M>
+      public NSIterator<R, ADS, M>
 {
 private:
-   vector<NSIterator<R, M>*> it;
+   vector<NSIterator<R, ADS, M>*> it;
    int k;
 
 public:
 
-   IteratorNSSeqUnion(vector<NSIterator<R, M>*> _it) :
+   IteratorNSSeqUnion(vector<NSIterator<R, ADS, M>*> _it) :
       it(_it)
    {
       k = 0;
@@ -85,7 +85,7 @@ public:
       return true;
    }
 
-   Move<R, M>& current()
+   Move<R, ADS, M>& current()
    {
       if(!it[k]->isDone())
          return *new MOVE(k, it[k]->current());

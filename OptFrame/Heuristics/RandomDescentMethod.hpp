@@ -23,31 +23,31 @@
 
 #include "../Heuristic.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
-class RandomDescentMethod: public Heuristic<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class RandomDescentMethod: public Heuristic<R, ADS, M>
 {
 private:
-   Evaluator<R, M>& evaluator;
-	NS<R, M>& ns;
+   Evaluator<R, ADS, M>& evaluator;
+	NS<R, ADS, M>& ns;
 	unsigned int iterMax;
 
 public:
 
-	using Heuristic<R, M>::exec; // prevents name hiding
+	using Heuristic<R, ADS, M>::exec; // prevents name hiding
 
-	RandomDescentMethod(Evaluator<R, M>& _eval, NS<R, M>& _ns, unsigned int _iterMax) :
+	RandomDescentMethod(Evaluator<R, ADS, M>& _eval, NS<R, ADS, M>& _ns, unsigned int _iterMax) :
 		evaluator(_eval), ns(_ns), iterMax(_iterMax)
 	{
 	}
 
-	virtual void exec(Solution<R>& s, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<M>& e = evaluator.evaluate(s.getR());
 		exec(s, e, timelimit, target_f);
 		delete &e;
 	}
 
-	virtual void exec(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
 		long tini = time(NULL);
 
@@ -57,7 +57,7 @@ public:
 
 		while (iter < iterMax && ((tnow - tini) < timelimit))
 		{
-			Move<R, M>& move = ns.move(s);
+			Move<R, ADS, M>& move = ns.move(s);
 
 			double cost = 0;
 

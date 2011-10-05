@@ -29,18 +29,18 @@
 
 typedef int BasicHistory;
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
-class BasicIteratedLocalSearch: public IteratedLocalSearch<BasicHistory, R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class BasicIteratedLocalSearch: public IteratedLocalSearch<BasicHistory, R, ADS, M>
 {
 protected:
-	Heuristic<R, M>& h;
-	BasicILSPerturbation<R, M>& p;
+	Heuristic<R, ADS, M>& h;
+	BasicILSPerturbation<R, ADS, M>& p;
 	int iterMax;
 
 public:
 
-	BasicIteratedLocalSearch(Evaluator<R, M>& e, Heuristic<R, M>& _h, BasicILSPerturbation<R, M>& _p, int _iterMax) :
-		IteratedLocalSearch<BasicHistory, R, M> (e), h(_h), p(_p), iterMax(_iterMax)
+	BasicIteratedLocalSearch(Evaluator<R, ADS, M>& e, Heuristic<R, ADS, M>& _h, BasicILSPerturbation<R, ADS, M>& _p, int _iterMax) :
+		IteratedLocalSearch<BasicHistory, R, ADS, M> (e), h(_h), p(_p), iterMax(_iterMax)
 	{
 	}
 
@@ -52,12 +52,12 @@ public:
 		return iter;
 	}
 
-	virtual void localSearch(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f)
+	virtual void localSearch(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
 		h.exec(s, e, timelimit, target_f);
 	}
 
-	virtual void perturbation(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f, BasicHistory& history)
+	virtual void perturbation(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f, BasicHistory& history)
 	{
 		int iter = history;
 
@@ -70,14 +70,14 @@ public:
 		history = iter;
 	}
 
-	virtual Solution<R>& acceptanceCriterion(const Solution<R>& s1, const Solution<R>& s2, BasicHistory& history)
+	virtual Solution<R, ADS>& acceptanceCriterion(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2, BasicHistory& history)
 	{
-		if (IteratedLocalSearch<BasicHistory, R, M>::evaluator.betterThan(s2, s1))
+		if (IteratedLocalSearch<BasicHistory, R, ADS, M>::evaluator.betterThan(s2, s1))
 		{
 			// =======================
 			//   Melhor solucao: 's2'
 			// =======================
-			Evaluation<M>& e = IteratedLocalSearch<BasicHistory, R, M>::evaluator.evaluate(s2);
+			Evaluation<M>& e = IteratedLocalSearch<BasicHistory, R, ADS, M>::evaluator.evaluate(s2);
 			cout << "Best fo: " << e.evaluation();
 			cout << " on [iter " << history << "]" << endl;
 			delete &e;

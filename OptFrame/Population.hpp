@@ -26,11 +26,11 @@
 #include "Evaluator.hpp"
 #include <vector>
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class Population
 {
 protected:
-	typedef Solution<R> chromossome;
+	typedef Solution<R, ADS> chromossome;
 	typedef vector<chromossome*> population;
 
 	population p;
@@ -102,7 +102,7 @@ public:
 		return p.empty();
 	}
 
-	virtual Population<R>& operator=(const Population<R>& p)
+	virtual Population<R, ADS>& operator=(const Population<R, ADS>& p)
 	{
 		if (&p == this) // auto ref check
 			return *this;
@@ -136,9 +136,9 @@ public:
 		return (*this);
 	}
 
-	virtual Population<R>& clone() const
+	virtual Population<R, ADS>& clone() const
 	{
-		return *new Population<R> (*this);
+		return *new Population<R, ADS> (*this);
 	}
 
 	virtual void print() const
@@ -152,9 +152,9 @@ public:
 	}
 
 
-	chromossome& cloneBestChromossome(Evaluator<R, M>& eval)
+	chromossome& cloneBestChromossome(Evaluator<R, ADS, M>& eval)
 	{
-		vector<pair<Solution<R> , double> > v;
+		vector<pair<Solution<R, ADS> , double> > v;
 
 		for (int i = 0; i < p.size(); i++)
 		{

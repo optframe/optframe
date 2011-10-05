@@ -26,6 +26,8 @@
 
 using namespace std;
 
+typedef int OPTFRAME_DEFAULT_ADS;
+
 //! \english The Solution class is a container class for the Representation structure R. \endenglish \portuguese A classe Solution é uma classe contêiner para a Representação R. \endportuguese
 
 /*!
@@ -40,22 +42,27 @@ using namespace std;
   \endportuguese
 */
 
-template<class R>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class Solution
 {
 protected:
 	R& r;
+	ADS& ads;
 
 public:
-	Solution(R& rr):r(*new R(rr)){};
-	Solution(const Solution<R>& s):r(*new R(s.r)){}
+	Solution(R& _r, ADS& _ads):r(*new R(_r)), ads(*new ADS(_ads)){};
+	Solution(const Solution<R, ADS>& s):r(*new R(s.r)), ads(*new ADS(s.ads)){}
 
-	virtual ~Solution() { delete &r; }
+	virtual ~Solution() { delete &r; delete &ads;}
 
-	void setR(const R& rr){ r = rr; }
+	void setR(const R& _r){ r = _r; }
+	void setADS(const ADS& _ads){ ads = _ads; }
 
 	const R& getR() const {	return r; }
+	const ADS& getADS() const { return ads; }
+
 	R& getR() { return r; }
+	ADS& getADS() { return ads; }
 
 	virtual bool check() const
 	{
@@ -65,21 +72,23 @@ public:
 	virtual void print() const
 	{
 		cout << "Solution: "<< r << endl;
+      //cout << "ADS: "<< ads << endl;
 	}
 
-	virtual Solution<R>& operator= (const Solution<R>& s)
+	virtual Solution<R, ADS>& operator= (const Solution<R, ADS>& s)
 	{
 		if(&s == this) // auto ref check
 			return *this;
 
 		r = s.r;
+	   ads = s.ads;
 
 		return *this;
 	}
 
-	virtual Solution<R>& clone() const
+	virtual Solution<R, ADS>& clone() const
 	{
-		return * new Solution<R>(*this);
+		return * new Solution<R, ADS>(*this);
 	}
 
 };

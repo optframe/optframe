@@ -24,8 +24,8 @@
 #include "../OptFrameModule.hpp"
 #include "../Util/Timer.hpp"
 
-template<class R, class M>
-class CheckModule: public OptFrameModule<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class CheckModule: public OptFrameModule<R, ADS, M>
 {
 public:
 	string id()
@@ -37,7 +37,7 @@ public:
 		return "check [initsol id | loadsol id] evaluator ns_seq_list";
 	}
 
-	void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		cout << "check: " << input << endl;
 		Scanner scanner(input);
@@ -59,7 +59,7 @@ public:
 
 		string id = scanner.next();
 
-		Solution<R>* s = NULL;
+		Solution<R, ADS>* s = NULL;
 
 		if (sol == "loadsol")
 		{
@@ -71,7 +71,7 @@ public:
 		{
 			Scanner s2(sol + " " + id);
 			cout << "Step 1: Testing solution generator... ";
-			InitialSolution<R>* initsol = factory->read_initsol(&s2);
+			InitialSolution<R, ADS>* initsol = factory->read_initsol(&s2);
 			s = &initsol->generateSolution();
 			if (!s)
 			{
@@ -81,11 +81,11 @@ public:
 			cout << "[Ok]" << endl;
 		}
 
-		Evaluator<R, M>* eval = factory->read_ev(&scanner);
-		vector<NS<R, M>*> ns_list = factory->read_ns_list(&scanner);
-		vector<NSSeq<R, M>*> ns_seq_list;
+		Evaluator<R, ADS, M>* eval = factory->read_ev(&scanner);
+		vector<NS<R, ADS, M>*> ns_list = factory->read_ns_list(&scanner);
+		vector<NSSeq<R, ADS, M>*> ns_seq_list;
 		for (unsigned int i = 0; i < ns_list.size(); i++)
-			ns_seq_list.push_back((NSSeq<R, M>*) ns_list[i]);
+			ns_seq_list.push_back((NSSeq<R, ADS, M>*) ns_list[i]);
 
 		cout << endl;
 
@@ -96,7 +96,7 @@ public:
 
 		cout << "2.1 - Representation [Ok]" << endl;
 
-		Solution<R>* s2 = &s->clone();
+		Solution<R, ADS>* s2 = &s->clone();
 		if (&s2->getR() == &s->getR())
 		{
 			cout << "Error! Solution has the SAME representation object. Maybe a pointer-based representation?" << endl;
@@ -206,7 +206,7 @@ public:
 
 			while (ns_seq_list[i]->hasNext(s))
 			{
-				Move<R, M>* m = ns_seq_list[i]->next(s);
+				Move<R, ADS, M>* m = ns_seq_list[i]->next(s);
 				s_total++;
 
 				if (m->canBeApplied(s)) // Sum of useful moves
@@ -216,7 +216,7 @@ public:
 				{
 					Evaluation<M>* e2 = eval->evaluate(s);
 
-					Move<R, M>* rev = m->apply(s);
+					Move<R, ADS, M>* rev = m->apply(s);
 					if (!rev)
 					{
 						cout << "Problem! Reverse move is NULL!" << endl;
@@ -224,7 +224,7 @@ public:
 						m->print();
 						return;
 					}
-					Move<R, M>* new_m = rev->apply(s);
+					Move<R, ADS, M>* new_m = rev->apply(s);
 					delete new_m;
 
 					Evaluation<M>* e3 = eval->evaluate(s);
@@ -252,7 +252,7 @@ public:
 					Evaluation<M>* e1 = eval->evaluate(s);
 					double f1 = e1->evaluation();
 
-					Move<R, M>* rev = m->apply(e1, s);
+					Move<R, ADS, M>* rev = m->apply(e1, s);
 					if (!rev)
 					{
 						cout << "Problem! Reverse move is NULL!" << endl;
@@ -260,7 +260,7 @@ public:
 						m->print();
 						return;
 					}
-					Move<R, M>* new_m = rev->apply(e1, s);
+					Move<R, ADS, M>* new_m = rev->apply(e1, s);
 					delete new_m;
 
 					Evaluation<M>* e2 = eval->evaluate(s);
@@ -298,7 +298,7 @@ public:
 		{
 			cout << "neighborhood " << i << ": ";
 			s2 = s->clone();
-			Solution<R>* s3 = ns_seq_list[i]->bestImprovement(eval, s2);
+			Solution<R, ADS>* s3 = ns_seq_list[i]->bestImprovement(eval, s2);
 			s3->print();
 			delete s2;
 			delete s3;
@@ -310,7 +310,7 @@ public:
 		{
 			cout << "neighborhood " << i << ": ";
 			s2 = s->clone();
-			Solution<R>* s3 = ns_seq_list[i]->firstImprovement(eval, s2);
+			Solution<R, ADS>* s3 = ns_seq_list[i]->firstImprovement(eval, s2);
 			s3->print();
 			delete s2;
 			delete s3;

@@ -28,8 +28,8 @@
 
 using namespace std;
 
-template<class R, class M> // M = OPTFRAME_DEFAULT_EMEMORY already defined
-class NSEnum: public NSSeq<R, M>
+template<class R, class ADS, class M> // already defined: ADS = OPTFRAME_DEFAULT_ADS , M = OPTFRAME_DEFAULT_EMEMORY
+class NSEnum: public NSSeq<R, ADS, M>
 {
 
 protected:
@@ -37,7 +37,7 @@ protected:
 
 public:
 
-	using NSSeq<R, M>::move; // prevents name hiding
+	using NSSeq<R, ADS, M>::move; // prevents name hiding
 
 	NSEnum(RandGen& _rg):rg(_rg)
 	{}
@@ -46,17 +46,17 @@ public:
 	{
 	}
 
-	virtual Move<R, M>& move(const R&)
+	virtual Move<R, ADS, M>& move(const R&)
 	{
 		return move( rg.rand(size()));
 	}
 
-	virtual NSIterator<R, M>& getIterator(const R&)
+	virtual NSIterator<R, ADS, M>& getIterator(const R&)
 	{
-		return *new NSEnumIterator<R, M> (*this);
+		return *new NSEnumIterator<R, ADS, M> (*this);
 	}
 
-	virtual Move<R, M>& move(unsigned int m) = 0;
+	virtual Move<R, ADS, M>& move(unsigned int m) = 0;
 
 	virtual unsigned int size() const = 0;
 

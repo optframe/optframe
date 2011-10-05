@@ -58,16 +58,16 @@
  * ToDo : Analisar critérios parada do algoritmo dado um tempo máximo de execução.
  */
 
-template<class R, class M>
-class GeneticAlgorithm: public Heuristic<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class GeneticAlgorithm: public Heuristic<R, ADS, M>
 {
 protected:
 
-   typedef Solution<R> chromossome;
+   typedef Solution<R, ADS> chromossome;
 
    typedef vector<Evaluation<M>*> FitnessValues;
 
-   Evaluator<R, M>& evaluator;
+   Evaluator<R, ADS, M>& evaluator;
 
 private:
 
@@ -77,22 +77,22 @@ private:
 
    unsigned numGenerations;
 
-   InitialPopulation<R>& initPop;
+   InitialPopulation<R, ADS>& initPop;
 
-   Selection<R, M> *selection;
+   Selection<R, ADS, M> *selection;
 
-   Crossover<R, M> *cross;
+   Crossover<R, ADS, M> *cross;
 
-   Mutation<R, M> *mut;
+   Mutation<R, ADS, M> *mut;
 
-   Elitism<R, M> *elt;
+   Elitism<R, ADS, M> *elt;
 
 public:
 
-   GeneticAlgorithm(Evaluator<R, M>& _evaluator, InitialPopulation<R>& _initPop,
+   GeneticAlgorithm(Evaluator<R, ADS, M>& _evaluator, InitialPopulation<R, ADS>& _initPop,
          double crossoverRate, double mutationRate, double elitismRate, unsigned populationSize,
-         unsigned numGenerations, Selection<R, M>& _selection, Crossover<R, M>& _cross, Mutation<R,
-               M>& _mut, Elitism<R, M>& _elt) :
+         unsigned numGenerations, Selection<R, ADS, M>& _selection, Crossover<R, ADS, M>& _cross, Mutation<R,
+               M>& _mut, Elitism<R, ADS, M>& _elt) :
       evaluator(_evaluator), initPop(_initPop), selection(&_selection), cross(&_cross), mut(&_mut),
             elt(&_elt)
    {
@@ -112,7 +112,7 @@ public:
 
    }
 
-   virtual void evaluateFitness(const Population<R> &p, FitnessValues &fv) const
+   virtual void evaluateFitness(const Population<R, ADS> &p, FitnessValues &fv) const
    {
       /*
        * In the canonical genetic algorithm, fitness is defined by:
@@ -143,12 +143,12 @@ public:
    }
 
    // Means Sufficient OffSprings Created
-   virtual const unsigned suffOffCreated(const Population<R> &p) const
+   virtual const unsigned suffOffCreated(const Population<R, ADS> &p) const
    {
       return p.size() / 2;
    }
 
-   virtual pair<const chromossome&, const chromossome&>& selectParents(const Population<R> &p) const
+   virtual pair<const chromossome&, const chromossome&>& selectParents(const Population<R, ADS> &p) const
    {
       unsigned p1 = rand() % (p.size());
       unsigned p2 = p1;
@@ -161,7 +161,7 @@ public:
       return *new pair<const chromossome&, const chromossome&> (p.at(p1), p.at(p2));
    }
 
-   void exec(Population<R> &p, double timelimit, double target_f)
+   void exec(Population<R, ADS> &p, double timelimit, double target_f)
    {
 #ifdef DBG_GA
       cout << "GA exec(" << target_f << "," << timelimit << ")" << endl;
@@ -253,7 +253,7 @@ public:
          }
 
          // ---
-         Population<R> p_elitist;
+         Population<R, ADS> p_elitist;
          // ---
 
          // Recalculating the number of best individuals (chromossomes) to carried to the next generation.
@@ -267,7 +267,7 @@ public:
             p_elitist = elt->doElitism(p, fv, best_chromossomes_this_generation);
          }
 
-         Population<R> intermediatePop;
+         Population<R, ADS> intermediatePop;
 
          unsigned iter = 0;
 
@@ -346,7 +346,7 @@ public:
 #endif
 
          // The selection specified by the user can return a new population with different size (nb. of chromossomes).
-         Population<R> next_p = selection->select(p, fv, intermediatePop, fv_intPop,
+         Population<R, ADS> next_p = selection->select(p, fv, intermediatePop, fv_intPop,
                best_chromossomes_this_generation);
 
          if (!p_elitist.empty())
@@ -436,7 +436,7 @@ public:
 
    }
 
-   void exec(Population<R> &p, FitnessValues &ev, double timelimit, double target_f)
+   void exec(Population<R, ADS> &p, FitnessValues &ev, double timelimit, double target_f)
    {
       exec(p, timelimit, target_f);
    }

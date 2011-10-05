@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class M>
-class DefineModule : public OptFrameModule<R,M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class DefineModule : public OptFrameModule<R, ADS, M>
 {
 public:
 	string id()
@@ -36,7 +36,7 @@ public:
 		return "define new_name string_to_be_substituted_from_the_new_name";
 	}
 
-	void run(vector<OptFrameModule<R,M>*>&, HeuristicFactory<R,M>*, map<string,string>* dictionary, string rest)
+	void run(vector<OptFrameModule<R, ADS, M>*>&, HeuristicFactory<R, ADS, M>*, map<string,string>* dictionary, string rest)
 	{
 		Scanner scanner(rest);
 

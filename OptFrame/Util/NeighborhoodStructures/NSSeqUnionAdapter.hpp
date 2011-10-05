@@ -30,21 +30,21 @@
 
 using namespace std;
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveNSSeqUnion<R, M> >
-class NSSeqUnionAdapter: public NSSeq<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveNSSeqUnion<R, ADS, M> >
+class NSSeqUnionAdapter: public NSSeq<R, ADS, M>
 {
 private:
-	vector<NSSeq<R, M>*> ns;
+	vector<NSSeq<R, ADS, M>*> ns;
 
 public:
 
-	NSSeqUnionAdapter(NSSeq<R, M>& _n1, NSSeq<R, M>& _n2)
+	NSSeqUnionAdapter(NSSeq<R, ADS, M>& _n1, NSSeq<R, ADS, M>& _n2)
 	{
 	   ns.push_back(&_n1);
 	   ns.push_back(&_n2);
 	}
 
-	void add_ns(NSSeq<R, M>& _ns)
+	void add_ns(NSSeq<R, ADS, M>& _ns)
 	{
 	   ns.push_back(&_ns);
 	}
@@ -53,20 +53,20 @@ public:
 	{
 	}
 
-	Move<R, M>& move(const R& r)
+	Move<R, ADS, M>& move(const R& r)
 	{
       int x = rand() % ns.size();
 
       return *new MOVE(x, ns[x]->move(r));
    }
 
-	virtual NSIterator<R, M>& getIterator(const R& r)
+	virtual NSIterator<R, ADS, M>& getIterator(const R& r)
 	{
-      vector<NSIterator<R, M>*> it;
+      vector<NSIterator<R, ADS, M>*> it;
       for(unsigned int i = 0; i < ns.size(); i++)
          it.push_back(&ns[i]->getIterator(r));
 
-      return *new IteratorNSSeqUnion<R, M, MOVE> (it);
+      return *new IteratorNSSeqUnion<R, ADS, M, MOVE> (it);
    }
 
 	virtual void print() const

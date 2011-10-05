@@ -23,9 +23,9 @@
 
 #include "../OptFrameModule.hpp"
 
-template< class R, class M >
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class RandGenModule :
-      public OptFrameModule<R, M>
+      public OptFrameModule<R, ADS, M>
 {
 public:
    string id()
@@ -38,7 +38,7 @@ public:
       return "randgen system_seed seed\n Where: 'seed' is a positive integer value for the system random number generator.";
    }
 
-   void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
+   void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
    {
       Scanner scanner(input);
 

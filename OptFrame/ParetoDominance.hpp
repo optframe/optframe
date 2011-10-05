@@ -37,15 +37,15 @@
 
 using namespace std;
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class ParetoDominance
 {
 protected:
-	vector<Evaluator<R, M>*> v_e;
+	vector<Evaluator<R, ADS, M>*> v_e;
 
 public:
 
-	ParetoDominance(vector<Evaluator<R, M>*> _v_e) :
+	ParetoDominance(vector<Evaluator<R, ADS, M>*> _v_e) :
 		v_e(_v_e)
 	{
 
@@ -60,13 +60,13 @@ public:
 	{
 	}
 
-	void insertEvaluators(vector<Evaluator<R, M>*> _v_e)
+	void insertEvaluators(vector<Evaluator<R, ADS, M>*> _v_e)
 	{
 		v_e = _v_e;
 	}
 
 	// true if 's1' dominates 's2'
-	virtual bool dominates(const Solution<R>& s1, const Solution<R>& s2)
+	virtual bool dominates(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2)
 	{
 		vector<Evaluation<M>*> v1;
 		vector<Evaluation<M>*> v2;

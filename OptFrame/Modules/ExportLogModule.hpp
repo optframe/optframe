@@ -23,9 +23,9 @@
 
 #include "../OptFrameModule.hpp"
 
-template< class R, class M >
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class ExportLogModule :
-      public OptFrameModule<R, M>
+      public OptFrameModule<R, ADS, M>
 {
 public:
    string id()
@@ -37,7 +37,7 @@ public:
       return "export_log method 0 filename";
    }
 
-   void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* hf, map<string, string>* dictionary, string input)
+   void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
    {
       Scanner scanner(input);
 
@@ -62,7 +62,7 @@ public:
 
       FILE * pFile = fopen(filename.c_str(), "a");
 
-      Heuristic<R, M>* h = hf->get_method(id);
+      Heuristic<R, ADS, M>* h = hf->get_method(id);
 
       stringstream stream;
 

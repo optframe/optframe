@@ -24,7 +24,7 @@
 #include "Move.hpp"
 #include "Solution.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class NS
 {
 public:
@@ -33,12 +33,12 @@ public:
 	{
 	}
 
-    Move<R,M>& move(const Solution<R>& s)
+    Move<R, ADS, M>& move(const Solution<R, ADS>& s)
     {
     	return move(s.getR());
     }
 
-    virtual Move<R,M>& move(const R&) = 0;
+    virtual Move<R, ADS, M>& move(const R&) = 0;
 
 	virtual void print() const = 0;
 };

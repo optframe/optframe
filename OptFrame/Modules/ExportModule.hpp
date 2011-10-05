@@ -25,8 +25,8 @@
 
 #include <stdio.h>
 
-template<class R, class M>
-class ExportModule: public OptFrameModule<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class ExportModule: public OptFrameModule<R, ADS, M>
 {
 public:
 	string id()
@@ -46,8 +46,8 @@ public:
 		return out;
 	}
 
-	void run(vector<OptFrameModule<R, M>*>& all_modules,
-			HeuristicFactory<R, M>* factory, map<string, string>* dictionary,
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules,
+			HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary,
 			string input)
 	{
 		//cout << "export: " << input << endl;
@@ -88,7 +88,7 @@ public:
 
 					Scanner s2((sol + " " + i_temp.str()));
 
-					Solution<R>* s =
+					Solution<R, ADS>* s =
 							&(factory->read_initsol(&s2))->generateSolution();
 
 					stringstream stream;
@@ -107,7 +107,7 @@ public:
 
 					Scanner s2((sol + " " + i_temp.str()));
 
-					Solution<R>* s = factory->read_loadsol(&s2);
+					Solution<R, ADS>* s = factory->read_loadsol(&s2);
 
 					stringstream stream;
 
@@ -147,7 +147,7 @@ public:
 					{
 						Scanner s2((sol + " " + solutions[i]));
 
-						Solution<R>
+						Solution<R, ADS>
 								* s =
 										&(factory->read_initsol(&s2))->generateSolution();
 
@@ -164,7 +164,7 @@ public:
 					{
 						Scanner s2((sol + " " + solutions[i]));
 
-						Solution<R>* s = factory->read_loadsol(&s2);
+						Solution<R, ADS>* s = factory->read_loadsol(&s2);
 
 						stringstream stream;
 
@@ -186,7 +186,7 @@ public:
 		{
 			Scanner s2(sol + " " + id);
 
-			Solution<R>* s;
+			Solution<R, ADS>* s;
 
 			if (sol == "initsol")
 				s = &(factory->read_initsol(&s2))->generateSolution();

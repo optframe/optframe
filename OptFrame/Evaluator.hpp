@@ -45,7 +45,7 @@ using namespace std;
   \endportuguese
 */
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class Evaluator
 {
 public:
@@ -54,14 +54,14 @@ public:
 	{
 	}
 
-	Evaluation<M>& evaluate(const Solution<R>& s)
+	Evaluation<M>& evaluate(const Solution<R, ADS>& s)
 	{
 		return evaluate(s.getR());
 	}
 
 	virtual Evaluation<M>& evaluate(const R& r) = 0;
 
-	void evaluate(Evaluation<M>& e, const Solution<R>& s)
+	void evaluate(Evaluation<M>& e, const Solution<R, ADS>& s)
 	{
 		evaluate(e, s.getR());
 	}
@@ -75,28 +75,28 @@ public:
 
 	// Apply movement considering a previous evaluation => Faster.
 	// Update evaluation 'e'
-	Move<R, M>& applyMove(Evaluation<M>& e, Move<R, M>& m, Solution<R>& s)
+	Move<R, ADS, M>& applyMove(Evaluation<M>& e, Move<R, ADS, M>& m, Solution<R, ADS>& s)
 	{
-		Move<R, M>& rev = m.apply(e, s);
+		Move<R, ADS, M>& rev = m.apply(e, s);
 		evaluate(e, s);
 		return rev;
 	}
 
 	// Apply movement without considering a previous evaluation => Slower.
 	// Return new evaluation 'e'
-	pair<Move<R, M>&, Evaluation<M>&>& applyMove(Move<R, M>& m, Solution<R>& s)
+	pair<Move<R, ADS, M>&, Evaluation<M>&>& applyMove(Move<R, ADS, M>& m, Solution<R, ADS>& s)
 	{
-		Move<R, M>& rev = m.apply(s);
-		return *new pair<Move<R, M>&, Evaluation<M>&> (rev, evaluate(s));
+		Move<R, ADS, M>& rev = m.apply(s);
+		return *new pair<Move<R, ADS, M>&, Evaluation<M>&> (rev, evaluate(s));
 	}
 
 	// Movement cost based on reevaluation of 'e'
-	double moveCost(Evaluation<M>& e, Move<R, M>& m, Solution<R>& s)
+	double moveCost(Evaluation<M>& e, Move<R, ADS, M>& m, Solution<R, ADS>& s)
 	{
-		Move<R, M>& rev = applyMove(e, m, s);
+		Move<R, ADS, M>& rev = applyMove(e, m, s);
 		double e_end = e.evaluation();
 
-		Move<R, M>& ini = applyMove(e, rev, s);
+		Move<R, ADS, M>& ini = applyMove(e, rev, s);
 		double e_ini = e.evaluation();
 
 		// Difference: new - original
@@ -109,11 +109,11 @@ public:
 	}
 
 	// Movement cost based on complete evaluation
-	double moveCost(Move<R, M>& m, Solution<R>& s)
+	double moveCost(Move<R, ADS, M>& m, Solution<R, ADS>& s)
 	{
-		pair<Move<R, M>&, Evaluation<M>&>& rev = applyMove(m, s);
+		pair<Move<R, ADS, M>&, Evaluation<M>&>& rev = applyMove(m, s);
 
-		pair<Move<R, M>&, Evaluation<M>&>& ini = applyMove(rev.first, s);
+		pair<Move<R, ADS, M>&, Evaluation<M>&>& ini = applyMove(rev.first, s);
 
 		// Difference: new - original
 		double diff = rev.second.evaluation() - ini.second.evaluation();
@@ -130,7 +130,7 @@ public:
 	}
 
 	// true if 's1' is better than 's2'
-	bool betterThan(const Solution<R>& s1, const Solution<R>& s2)
+	bool betterThan(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2)
 	{
 		Evaluation<M>& e1 = evaluate(s1);
 		Evaluation<M>& e2 = evaluate(s2);

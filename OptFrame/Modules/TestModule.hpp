@@ -24,8 +24,8 @@
 #include "../OptFrameModule.hpp"
 #include <math.h>
 
-template<class R, class M>
-class TestModule: public OptFrameModule<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class TestModule: public OptFrameModule<R, ADS, M>
 {
 public:
 	string id()
@@ -47,7 +47,7 @@ public:
 		return u;
 	}
 
-	void run(vector<OptFrameModule<R, M>*>& all_modules, HeuristicFactory<R, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -66,8 +66,8 @@ public:
       // option 'loadsol' or 'initsol'
       // -----------------------------
 
-      InitialSolution<R>* initsol = NULL;
-      Solution<R>* s = NULL;
+      InitialSolution<R, ADS>* initsol = NULL;
+      Solution<R, ADS>* s = NULL;
 
       string sol_option = scanner.next();
       int option_id = scanner.nextInt();
@@ -80,10 +80,10 @@ public:
 
       // -------------------------------
 
-		Evaluator<R, M>* eval = factory->read_ev(&scanner);
-		pair<Heuristic<R, M>*, string> method = factory->createHeuristic(scanner.rest());
+		Evaluator<R, ADS, M>* eval = factory->read_ev(&scanner);
+		pair<Heuristic<R, ADS, M>*, string> method = factory->createHeuristic(scanner.rest());
 
-		Heuristic<R, M>* h = method.first;
+		Heuristic<R, ADS, M>* h = method.first;
 
 		string rest = method.second;
 
@@ -109,7 +109,7 @@ public:
 		fprintf(file, "PARAMETERS:%s\n", input.c_str());
 
 		//bool minimization = eval->betterThan(1, 2); // TODO
-		Solution<R>* s_star = NULL;
+		Solution<R, ADS>* s_star = NULL;
 
 		double s_fo_ini = 0;
 		double s_t_ini = 0;
@@ -142,7 +142,7 @@ public:
 			s_fo_ini += fo_now;
 			s_t_ini += t_now;
 
-			Solution<R>* s2 = &h->search(*s, timelimit, tf);
+			Solution<R, ADS>* s2 = &h->search(*s, timelimit, tf);
 			t_now = t.now();
 			Evaluation< M > & e2 = eval->evaluate(*s2);
 			fo_now = e2.evaluation();

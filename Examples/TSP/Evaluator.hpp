@@ -37,21 +37,21 @@
 
 #define TSP_EPSILON 0.0001
 
-class TSPEvaluator: public Evaluator<RepTSP, MemTSP>
+class TSPEvaluator: public Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>
 {
 private:
 	TSPProblemInstance* pI;
 
 public:
 
-	using Evaluator<RepTSP, MemTSP>::evaluate; // prevents name hiding
+	using Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::evaluate; // prevents name hiding
 
 	TSPEvaluator(TSPProblemInstance* pI) // If necessary, add more parameters
 	{
 		this->pI = pI;
 	}
 
-	EvaluationTSP& evaluate(const RepTSP& r)
+	Evaluation<MemTSP>& evaluate(const RepTSP& r)
 	{
 		double fo = 0; // Evaluation Function Value
 

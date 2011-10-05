@@ -56,42 +56,42 @@ using namespace std;
 
 // design pattern: Factory
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class HeuristicFactory
 {
 private:
-	vector<InitialSolution<R>*> initsol;
-	vector<NS<R, M>*> ns;
-	vector<Evaluator<R, M>*> ev;
-	vector<ILSLPerturbation<R, M>*> ilsl_pert;
-	vector<BasicILSPerturbation<R, M>*> ils_pert;
-	vector<Intensification<R, M>*> ils_int;
+	vector<InitialSolution<R, ADS>*> initsol;
+	vector<NS<R, ADS, M>*> ns;
+	vector<Evaluator<R, ADS, M>*> ev;
+	vector<ILSLPerturbation<R, ADS, M>*> ilsl_pert;
+	vector<BasicILSPerturbation<R, ADS, M>*> ils_pert;
+	vector<Intensification<R, ADS, M>*> ils_int;
 
-	vector<Solution<R>*> loadsol;
-	vector<Heuristic<R, M>*> method;
+	vector<Solution<R, ADS>*> loadsol;
+	vector<Heuristic<R, ADS, M>*> method;
 
-	vector<InitialPopulation<R>*> initpop;
-	vector<Selection<R, M>*> ga_sel;
-	vector<Mutation<R, M>*> ga_mut;
-	vector<Crossover<R, M>*> ga_cross;
-	vector<Elitism<R, M>*> ga_elt;
+	vector<InitialPopulation<R, ADS>*> initpop;
+	vector<Selection<R, ADS, M>*> ga_sel;
+	vector<Mutation<R, ADS, M>*> ga_mut;
+	vector<Crossover<R, ADS, M>*> ga_cross;
+	vector<Elitism<R, ADS, M>*> ga_elt;
 
-	vector<Population<R>*> loadpop;
+	vector<Population<R, ADS>*> loadpop;
 
 	RandGen& rg;
 
 public:
 
 #ifdef MaPI
-	MyMaPISerializer<R, M> * serializer;
+	MyMaPISerializer<R, ADS, M> * serializer;
 	MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mapReduce;
-	MyMaPIMapper<R, M> * mapper;
-	MyMaPIReducer<R, M> * reducer;
+	MyMaPIMapper<R, ADS, M> * mapper;
+	MyMaPIReducer<R, ADS, M> * reducer;
 	int argc;
 	char **argv;
 
-	void setMapReduce(MyMaPISerializer<R, M> * serializer, MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mapReduce,
-			MyMaPIMapper<R, M> * mapper,MyMaPIReducer<R, M> * reducer,int argc, char **argv)
+	void setMapReduce(MyMaPISerializer<R, ADS, M> * serializer, MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mapReduce,
+			MyMaPIMapper<R, ADS, M> * mapper,MyMaPIReducer<R, ADS, M> * reducer,int argc, char **argv)
 	{
 		this->serializer = serializer;
 		this->mapReduce = mapReduce;
@@ -102,7 +102,7 @@ public:
 	}
 #endif/**/
 
-	Solution<R>* read_loadsol(Scanner* scanner)
+	Solution<R, ADS>* read_loadsol(Scanner* scanner)
 	{
 		//cout << "DBG: " << loadsol.size() << endl;
 
@@ -125,7 +125,7 @@ public:
 		return loadsol[loadsol_id];
 	}
 
-	InitialSolution<R>* read_initsol(Scanner* scanner)
+	InitialSolution<R, ADS>* read_initsol(Scanner* scanner)
 	{
 		string tmp = scanner->next();
 
@@ -143,7 +143,7 @@ public:
 		return initsol[initsol_id];
 	}
 
-	Population<R>* read_loadpop(Scanner* scanner)
+	Population<R, ADS>* read_loadpop(Scanner* scanner)
 	{
 		string tmp = scanner->next();
 
@@ -164,7 +164,7 @@ public:
 		return loadpop[loadpop_id];
 	}
 
-	InitialPopulation<R>* read_initpop(Scanner* scanner)
+	InitialPopulation<R, ADS>* read_initpop(Scanner* scanner)
 	{
 		string tmp = scanner->next();
 
@@ -185,7 +185,7 @@ public:
 		return initpop[initpop_id];
 	}
 
-	NS<R, M>* read_ns(Scanner* scanner)
+	NS<R, ADS, M>* read_ns(Scanner* scanner)
 	{
 		string tmp = scanner->next();
 
@@ -227,14 +227,14 @@ public:
 		return np;
 	}
 
-	vector<NS<R, M>*> read_ns_list(Scanner* scanner)
+	vector<NS<R, ADS, M>*> read_ns_list(Scanner* scanner)
 	{
 		vector < string > list = readList(*scanner);
 
 		Scanner* aux;
 		string tmp;
 
-		vector<NS<R, M>*> v_ns;
+		vector<NS<R, ADS, M>*> v_ns;
 
 		for (unsigned int i = 0; i < list.size(); i++)
 		{
@@ -243,7 +243,7 @@ public:
 			if (tmp != "ns")
 			{
 				cout << "Error: expected 'ns' and found '" << tmp << "'." << endl;
-				return vector<NS<R, M>*>();
+				return vector<NS<R, ADS, M>*>();
 			}
 
 			unsigned int ns_id = aux->nextInt();
@@ -251,7 +251,7 @@ public:
 			if (ns.size() <= ns_id)
 			{
 				cout << "Error: ns number " << ns_id << " doesn't exist!" << endl;
-				return vector<NS<R, M>*>();
+				return vector<NS<R, ADS, M>*>();
 			}
 
 			v_ns.push_back(ns[ns_id]);
@@ -261,20 +261,20 @@ public:
 		if (v_ns.size() == 0)
 		{
 			cout << "Error: empty ns list." << endl;
-			return vector<NS<R, M>*>();
+			return vector<NS<R, ADS, M>*>();
 		}
 
 		return v_ns;
 	}
 
-	vector<Evaluator<R, M> *> read_ev_list(Scanner* scanner)
+	vector<Evaluator<R, ADS, M> *> read_ev_list(Scanner* scanner)
 	{
 		vector < string > list = readList(*scanner);
 
 		Scanner* aux;
 		string tmp;
 
-		vector<Evaluator<R, M> *> v_ev;
+		vector<Evaluator<R, ADS, M> *> v_ev;
 
 		for (unsigned int i = 0; i < list.size(); i++)
 		{
@@ -283,7 +283,7 @@ public:
 			if (tmp != "ev")
 			{
 				cout << "Error: expected 'ev' and found '" << tmp << "'." << endl;
-				return vector<Evaluator<R, M> *>();
+				return vector<Evaluator<R, ADS, M> *>();
 			}
 
 			unsigned int ev_id = aux->nextInt();
@@ -291,7 +291,7 @@ public:
 			if (ev.size() <= ev_id)
 			{
 				cout << "Error: ev number " << ev_id << " doesn't exist!" << endl;
-				return vector<Evaluator<R, M> *>();
+				return vector<Evaluator<R, ADS, M> *>();
 			}
 
 			v_ev.push_back(ev[ev_id]);
@@ -301,18 +301,18 @@ public:
 		if (v_ev.size() == 0)
 		{
 			cout << "Error: empty ev list." << endl;
-			return vector<Evaluator<R, M> *>();
+			return vector<Evaluator<R, ADS, M> *>();
 		}
 
 		return v_ev;
 	}
 
-	vector<Heuristic<R, M>*> read_heuristic_list(Scanner* scanner)
+	vector<Heuristic<R, ADS, M>*> read_heuristic_list(Scanner* scanner)
 	{
 		vector < string > list = readList(*scanner);
-		vector<Heuristic<R, M>*> v_heuristics;
+		vector<Heuristic<R, ADS, M>*> v_heuristics;
 
-		pair<Heuristic<R, M>*, string> method;
+		pair<Heuristic<R, ADS, M>*, string> method;
 
 		for (unsigned int i = 0; i < list.size(); i++)
 		{
@@ -329,15 +329,15 @@ public:
 		return v_heuristics;
 	}
 
-	Evaluator<R, M>* read_ev(Scanner* scanner)
+	Evaluator<R, ADS, M>* read_ev(Scanner* scanner)
 	{
 		string tmp = scanner->next();
 
 		if (tmp == "moev")
 		{
-			vector<Evaluator<R, M> *> evs = read_ev_list(scanner);
+			vector<Evaluator<R, ADS, M> *> evs = read_ev_list(scanner);
 
-			MultiObjectiveEvaluator<R, M>* moev = new MultiObjectiveEvaluator<R, M> (*evs[0]);
+			MultiObjectiveEvaluator<R, ADS, M>* moev = new MultiObjectiveEvaluator<R, ADS, M> (*evs[0]);
 
 			for (unsigned int i = 1; i < evs.size(); i++)
 				moev->add(*evs[i]);
@@ -361,7 +361,7 @@ public:
 		return ev[ev_id];
 	}
 
-	ILSLPerturbation<R, M>* read_ilsl_pert(Scanner* scanner)
+	ILSLPerturbation<R, ADS, M>* read_ilsl_pert(Scanner* scanner)
 	{
 		string tmp = scanner->next();
 
@@ -382,7 +382,7 @@ public:
 		return ilsl_pert[ilsl_pert_id];
 	}
 
-	BasicILSPerturbation<R, M>* read_ils_pert(Scanner* scanner)
+	BasicILSPerturbation<R, ADS, M>* read_ils_pert(Scanner* scanner)
 	{
 		string tmp = scanner->next();
 
@@ -403,7 +403,7 @@ public:
 		return ils_pert[ils_pert_id];
 	}
 
-	Intensification<R, M> * read_ils_int(Scanner* scanner)
+	Intensification<R, ADS, M> * read_ils_int(Scanner* scanner)
 	{
 		string tmp = scanner->next();
 
@@ -424,7 +424,7 @@ public:
 		return ils_int[ils_int_id];
 	}
 
-	Selection<R, M>* read_ga_sel(Scanner* scanner)
+	Selection<R, ADS, M>* read_ga_sel(Scanner* scanner)
 	{
 		string tmp = scanner->next();
 
@@ -445,7 +445,7 @@ public:
 		return ga_sel[ga_sel_id];
 	}
 
-	Mutation<R, M>* read_ga_mut(Scanner* scanner)
+	Mutation<R, ADS, M>* read_ga_mut(Scanner* scanner)
 	{
 		string tmp = scanner->next();
 
@@ -466,7 +466,7 @@ public:
 		return ga_mut[ga_mut_id];
 	}
 
-	Elitism<R, M>* read_ga_elt(Scanner* scanner)
+	Elitism<R, ADS, M>* read_ga_elt(Scanner* scanner)
 	{
 		string tmp = scanner->next();
 
@@ -487,7 +487,7 @@ public:
 		return ga_elt[ga_elt_id];
 	}
 
-	Crossover<R, M>* read_ga_cross(Scanner* scanner)
+	Crossover<R, ADS, M>* read_ga_cross(Scanner* scanner)
 	{
 		string tmp = scanner->next();
 
@@ -585,150 +585,150 @@ public:
                 ga_elt.clear();
    }
 
-	int add_method(Heuristic<R, M>* _method)
+	int add_method(Heuristic<R, ADS, M>* _method)
 	{
 		method.push_back(_method);
 		return method.size() - 1;
 	}
 
-	Heuristic<R, M>* get_method(int index)
+	Heuristic<R, ADS, M>* get_method(int index)
 	{
 		return method[index];
 	}
 
-	int add_loadsol(Solution<R>* _loadsol)
+	int add_loadsol(Solution<R, ADS>* _loadsol)
 	{
 		loadsol.push_back(_loadsol);
 		return loadsol.size() - 1;
 	}
 
-	Solution<R>* get_loadsol(int index)
+	Solution<R, ADS>* get_loadsol(int index)
 	{
 		return loadsol[index];
 	}
 
-	int add_initsol(InitialSolution<R>* _initsol)
+	int add_initsol(InitialSolution<R, ADS>* _initsol)
 	{
 		initsol.push_back(_initsol);
 		return initsol.size() - 1;
 	}
 
-	int add_loadpop(Population<R>* _loadpop)
+	int add_loadpop(Population<R, ADS>* _loadpop)
 	{
 		loadpop.push_back(_loadpop);
 		return loadpop.size() - 1;
 	}
 
-	Population<R>* get_loadpop(int index)
+	Population<R, ADS>* get_loadpop(int index)
 	{
 		return loadpop[index];
 	}
 
-	int add_initpop(InitialPopulation<R>* _initpop)
+	int add_initpop(InitialPopulation<R, ADS>* _initpop)
 	{
 		initpop.push_back(_initpop);
 		return initpop.size() - 1;
 	}
 
-	InitialSolution<R>* get_initsol(int index)
+	InitialSolution<R, ADS>* get_initsol(int index)
 	{
 		return initsol[index];
 	}
 
-	Population<R>* get_initpop(int index)
+	Population<R, ADS>* get_initpop(int index)
 	{
 		return initpop[index];
 	}
 
-	int add_ns(NS<R, M>* _ns)
+	int add_ns(NS<R, ADS, M>* _ns)
 	{
 		ns.push_back(_ns);
 		return ns.size() - 1;
 	}
 
-	NS<R, M>* get_ns(int index)
+	NS<R, ADS, M>* get_ns(int index)
 	{
 		return ns[index];
 	}
 
-	int add_ev(Evaluator<R, M>* _ev)
+	int add_ev(Evaluator<R, ADS, M>* _ev)
 	{
 		ev.push_back(_ev);
 		return ev.size() - 1;
 	}
 
-	Evaluator<R, M>* get_ev(int index)
+	Evaluator<R, ADS, M>* get_ev(int index)
 	{
 		return ev[index];
 	}
 
-	int add_ilsl_pert(ILSLPerturbation<R, M>* _ilsl_pert)
+	int add_ilsl_pert(ILSLPerturbation<R, ADS, M>* _ilsl_pert)
 	{
 		ilsl_pert.push_back(_ilsl_pert);
 		return ilsl_pert.size() - 1;
 	}
 
-	int add_ils_pert(BasicILSPerturbation<R, M>* _ils_pert)
+	int add_ils_pert(BasicILSPerturbation<R, ADS, M>* _ils_pert)
 	{
 		ils_pert.push_back(_ils_pert);
 		return ils_pert.size() - 1;
 	}
 
-	void add_ils_int(Intensification<R, M>* _ils_int)
+	void add_ils_int(Intensification<R, ADS, M>* _ils_int)
 	{
 		ils_int.push_back(_ils_int);
 	}
 
-	ILSLPerturbation<R, M>* get_ilsl_pert(int index)
+	ILSLPerturbation<R, ADS, M>* get_ilsl_pert(int index)
 	{
 		return ilsl_pert[index];
 	}
 
-	BasicILSPerturbation<R, M>* get_ils_pert(int index)
+	BasicILSPerturbation<R, ADS, M>* get_ils_pert(int index)
 	{
 		return ils_pert[index];
 	}
 
-	int add_ga_mut(Mutation<R, M>* _ga_mut)
+	int add_ga_mut(Mutation<R, ADS, M>* _ga_mut)
 	{
 		ga_mut.push_back(_ga_mut);
 		return ga_mut.size() - 1;
 	}
 
-	Mutation<R, M>* get_ga_mut(int index)
+	Mutation<R, ADS, M>* get_ga_mut(int index)
 	{
 		return ga_mut[index];
 	}
 
-	int add_ga_sel(Selection<R, M>* _ga_sel)
+	int add_ga_sel(Selection<R, ADS, M>* _ga_sel)
 	{
 		ga_sel.push_back(_ga_sel);
 		return ga_sel.size() - 1;
 	}
 
-	int add_ga_elt(Elitism<R, M>* _ga_elt)
+	int add_ga_elt(Elitism<R, ADS, M>* _ga_elt)
 	{
 		ga_elt.push_back(_ga_elt);
 		return ga_elt.size() - 1;
 	}
 
-	Selection<R, M>* get_ga_sel(int index)
+	Selection<R, ADS, M>* get_ga_sel(int index)
 	{
 		return ga_sel[index];
 	}
 
-	Elitism<R, M>* get_ga_elt(int index)
+	Elitism<R, ADS, M>* get_ga_elt(int index)
 	{
 		return ga_elt[index];
 	}
 
-	int add_ga_cross(Crossover<R, M>* _ga_cross)
+	int add_ga_cross(Crossover<R, ADS, M>* _ga_cross)
 	{
 		ga_cross.push_back(_ga_cross);
 		return ga_cross.size() - 1;
 	}
 
-	Crossover<R, M>* get_ga_cross(int index)
+	Crossover<R, ADS, M>* get_ga_cross(int index)
 	{
 		return ga_cross[index];
 	}
@@ -885,13 +885,13 @@ public:
 		return *list;
 	}
 
-	pair<Heuristic<R, M>*, string> createHeuristic(string str)
+	pair<Heuristic<R, ADS, M>*, string> createHeuristic(string str)
 	{
 		Scanner scanner(str);
 
 		// No heuristic!
 		if (!scanner.hasNext())
-			return make_pair(new Empty<R, M> , "");
+			return make_pair(new Empty<R, ADS, M> , "");
 
 		string h = scanner.next();
 
@@ -902,141 +902,141 @@ public:
 			if(id >= method.size())
 			{
 	         cout << "Error: method number " << id << " doesn't exist!" << endl;
-	         return make_pair(new Empty<R, M> , scanner.rest());
+	         return make_pair(new Empty<R, ADS, M> , scanner.rest());
 			}
 
 			return make_pair(method[id], scanner.rest());
 		}
 
 		if (h == "Empty")
-			return make_pair(new Empty<R, M> , scanner.rest());
+			return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 		if (h == "BI")
 		{
 			cout << "Heuristic: Best Improvement" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
 			if(!evaluator)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			NSSeq<R, M>* ns_seq = (NSSeq<R, M>*) read_ns(&scanner);
+			NSSeq<R, ADS, M>* ns_seq = (NSSeq<R, ADS, M>*) read_ns(&scanner);
 			if(!ns_seq)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			return make_pair(new BestImprovement<R, M> (*evaluator, *ns_seq), scanner.rest());
+			return make_pair(new BestImprovement<R, ADS, M> (*evaluator, *ns_seq), scanner.rest());
 		}
 
 		if (h == "FI")
 		{
 			cout << "Heuristic: First Improvement" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
 			if(!evaluator)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			NSSeq<R, M>* ns_seq = (NSSeq<R, M>*) read_ns(&scanner);
+			NSSeq<R, ADS, M>* ns_seq = (NSSeq<R, ADS, M>*) read_ns(&scanner);
 			if(!ns_seq)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			return make_pair(new FirstImprovement<R, M> (*evaluator, *ns_seq), scanner.rest());
+			return make_pair(new FirstImprovement<R, ADS, M> (*evaluator, *ns_seq), scanner.rest());
 		}
 
 	   if(h == "CS")
       {
          cout << "Heuristic: Circular Search" << endl;
 
-         Evaluator<R, M>* evaluator = read_ev(&scanner);
-         NSEnum<R, M>* ns_enum = (NSEnum<R, M>*) read_ns(&scanner);
+         Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+         NSEnum<R, ADS, M>* ns_enum = (NSEnum<R, ADS, M>*) read_ns(&scanner);
 
-         return make_pair(new CircularSearch<R, M> (*evaluator, *ns_enum), scanner.rest());
+         return make_pair(new CircularSearch<R, ADS, M> (*evaluator, *ns_enum), scanner.rest());
       }
 
 		if (h == "HC")
 		{
 			cout << "Heuristic: Hill Climbing" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
 
 			string rest = scanner.rest();
 
-			pair<Heuristic<R, M>*, string> method;
+			pair<Heuristic<R, ADS, M>*, string> method;
 			method = createHeuristic(rest);
 
-			Heuristic<R, M>* h = method.first;
+			Heuristic<R, ADS, M>* h = method.first;
 
 			scanner = Scanner(method.second);
 
-			return make_pair(new HillClimbing<R, M> (*evaluator, *h), scanner.rest());
+			return make_pair(new HillClimbing<R, ADS, M> (*evaluator, *h), scanner.rest());
 		}
 
 		if (h == "RDM")
 		{
 			cout << "Heuristic: Random Descent Method" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
 			if(!evaluator)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			NS<R, M>* ns = (NS<R, M>*) read_ns(&scanner);
+			NS<R, ADS, M>* ns = (NS<R, ADS, M>*) read_ns(&scanner);
 			if(!ns)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 			int iter = scanner.nextInt();
 
-			return make_pair(new RandomDescentMethod<R, M> (*evaluator, *ns, iter), scanner.rest());
+			return make_pair(new RandomDescentMethod<R, ADS, M> (*evaluator, *ns, iter), scanner.rest());
 		}
 
 		if (h == "GRASP")
 		{
 			cout << "Heuristic: GRASP" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
 			if(!evaluator)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			InitialSolution<R>* initsol = read_initsol(&scanner);
+			InitialSolution<R, ADS>* initsol = read_initsol(&scanner);
 			if(!initsol)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 			string rest = scanner.rest();
 
-			pair<Heuristic<R, M>*, string> method;
+			pair<Heuristic<R, ADS, M>*, string> method;
 			method = createHeuristic(rest);
 
-			Heuristic<R, M>* h = method.first;
+			Heuristic<R, ADS, M>* h = method.first;
 
 			scanner = Scanner(method.second);
 
 			int iter = scanner.nextInt();
 
-			return make_pair(new GRASP<R, M> (*evaluator, *initsol, *h, iter), scanner.rest());
+			return make_pair(new GRASP<R, ADS, M> (*evaluator, *initsol, *h, iter), scanner.rest());
 		}
 
 		if (h == "TS")
 		{
 			cout << "Heuristic: Tabu Search" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
 			if(!evaluator)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			NSSeq<R, M>* ns = (NSSeq<R, M>*) read_ns(&scanner);
+			NSSeq<R, ADS, M>* ns = (NSSeq<R, ADS, M>*) read_ns(&scanner);
 			if(!ns)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 			int tamT = scanner.nextInt();
 			int BTmax = scanner.nextInt();
 
-			return make_pair(new TabuSearch<R, M> (*evaluator, *ns, tamT, BTmax), scanner.rest());
+			return make_pair(new TabuSearch<R, ADS, M> (*evaluator, *ns, tamT, BTmax), scanner.rest());
 		}
 
 		if (h == "ILS")
 		{
 			cout << "Heuristic: Basic Iterated Local Search" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
 			if(!evaluator)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 			// ===================
 			// Read next heuristic
@@ -1044,50 +1044,50 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<Heuristic<R, M>*, string> method;
+			pair<Heuristic<R, ADS, M>*, string> method;
 			method = createHeuristic(rest);
 
-			Heuristic<R, M>* localSearch = method.first;
+			Heuristic<R, ADS, M>* localSearch = method.first;
 
 			scanner = Scanner(method.second);
 
 			// ====================
 
-			BasicILSPerturbation<R, M>* ils_pert = read_ils_pert(&scanner);
+			BasicILSPerturbation<R, ADS, M>* ils_pert = read_ils_pert(&scanner);
 			if(!ils_pert)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 			int iterMax = scanner.nextInt();
 
-			return make_pair(new BasicIteratedLocalSearch<R, M> (*evaluator, *localSearch, *ils_pert, iterMax), scanner.rest());
+			return make_pair(new BasicIteratedLocalSearch<R, ADS, M> (*evaluator, *localSearch, *ils_pert, iterMax), scanner.rest());
 		}
 
 		if (h == "SA")
 		{
 			cout << "Heuristic: Basic Simulated Annealing" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
 			if(!evaluator)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			vector<NS<R,M>* > ns_list = read_ns_list(&scanner);
+			vector<NS<R, ADS, M>* > ns_list = read_ns_list(&scanner);
 			if(ns_list.size()==0)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 			double alpha = scanner.nextDouble();
 			int SAmax = scanner.nextInt();
 			double Ti = scanner.nextDouble();
 
-			return make_pair(new BasicSimulatedAnnealing<R, M> (*evaluator, ns_list, alpha, SAmax, Ti, rg), scanner.rest());
+			return make_pair(new BasicSimulatedAnnealing<R, ADS, M> (*evaluator, ns_list, alpha, SAmax, Ti, rg), scanner.rest());
 		}
 
 		if (h == "ILSL")
 		{
 			cout << "Heuristic: Iterated Local Search (Levels)" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
 			if(!evaluator)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 			// ===================
 			// Read next heuristic
@@ -1095,32 +1095,32 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<Heuristic<R, M>*, string> method;
+			pair<Heuristic<R, ADS, M>*, string> method;
 			method = createHeuristic(rest);
 
-			Heuristic<R, M>* localSearch = method.first;
+			Heuristic<R, ADS, M>* localSearch = method.first;
 
 			scanner = Scanner(method.second);
 
 			// ====================
 
-			ILSLPerturbation<R, M>* ilsl_pert = read_ilsl_pert(&scanner);
+			ILSLPerturbation<R, ADS, M>* ilsl_pert = read_ilsl_pert(&scanner);
 			if(!ilsl_pert)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 			int iterMax = scanner.nextInt();
 			int levelMax = scanner.nextInt();
 
-			return make_pair(new IteratedLocalSearchLevels<R, M> (*evaluator, *localSearch, *ilsl_pert, iterMax, levelMax), scanner.rest());
+			return make_pair(new IteratedLocalSearchLevels<R, ADS, M> (*evaluator, *localSearch, *ilsl_pert, iterMax, levelMax), scanner.rest());
 		}
 
 		if (h == "IILSL")
 		{
 			cout << "Heuristic: Intensified Iterated Local Search (Levels)" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
 			if(!evaluator)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 			// ===================
 			// Read next heuristic
@@ -1128,10 +1128,10 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<Heuristic<R, M>*, string> method;
+			pair<Heuristic<R, ADS, M>*, string> method;
 			method = createHeuristic(rest);
 
-			Heuristic<R, M>* localSearch = method.first;
+			Heuristic<R, ADS, M>* localSearch = method.first;
 
 			scanner = Scanner(method.second);
 
@@ -1139,43 +1139,43 @@ public:
 
 			/*rest = scanner.rest();
 
-			 pair<Heuristic<R, M>*, string> method2;
+			 pair<Heuristic<R, ADS, M>*, string> method2;
 			 method2 = createHeuristic(rest);
 
-			 Heuristic<R, M>* localSearch2 = method2.first;
+			 Heuristic<R, ADS, M>* localSearch2 = method2.first;
 
 			 scanner = Scanner(method2.second);*/
 
-			Intensification<R, M> * intensification = read_ils_int(&scanner);
+			Intensification<R, ADS, M> * intensification = read_ils_int(&scanner);
 			if(!intensification)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 			// ====================
 
-			ILSLPerturbation<R, M>* ilsl_pert = read_ilsl_pert(&scanner);
+			ILSLPerturbation<R, ADS, M>* ilsl_pert = read_ilsl_pert(&scanner);
 			if(!ilsl_pert)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 			int iterMax = scanner.nextInt();
 			int levelMax = scanner.nextInt();
 
-			//return make_pair(new IntensifiedIteratedLocalSearchLevels<R, M> (*evaluator, *localSearch, *localSearch2, *ilsl_pert, iterMax, levelMax),scanner.rest());
-			return make_pair(new IntensifiedIteratedLocalSearchLevels<R, M> (*evaluator, *localSearch, *intensification, *ilsl_pert, iterMax, levelMax), scanner.rest());
+			//return make_pair(new IntensifiedIteratedLocalSearchLevels<R, ADS, M> (*evaluator, *localSearch, *localSearch2, *ilsl_pert, iterMax, levelMax),scanner.rest());
+			return make_pair(new IntensifiedIteratedLocalSearchLevels<R, ADS, M> (*evaluator, *localSearch, *intensification, *ilsl_pert, iterMax, levelMax), scanner.rest());
 		}
 
 		if (h == "VND")
 		{
 			cout << "Heuristic: Variable Neighborhood Descent" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
 			if(!evaluator)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			vector<Heuristic<R, M>*> hlist = read_heuristic_list(&scanner);
+			vector<Heuristic<R, ADS, M>*> hlist = read_heuristic_list(&scanner);
 			if(hlist.size()==0)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			return make_pair(new VariableNeighborhoodDescent<R, M> (*evaluator, hlist), scanner.rest());
+			return make_pair(new VariableNeighborhoodDescent<R, ADS, M> (*evaluator, hlist), scanner.rest());
 
 		}
 
@@ -1183,24 +1183,24 @@ public:
 		{
 			cout << "Heuristic: RVND" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
 			if(!evaluator)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			vector<Heuristic<R, M>*> hlist = read_heuristic_list(&scanner);
+			vector<Heuristic<R, ADS, M>*> hlist = read_heuristic_list(&scanner);
 			if(hlist.size()==0)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			return make_pair(new RVND<R, M> (*evaluator, hlist, rg), scanner.rest());
+			return make_pair(new RVND<R, ADS, M> (*evaluator, hlist, rg), scanner.rest());
 		}
 
 		if (h == "VNS")
 		{
 			cout << "Heuristic: Variable Neighborhood Search" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
 			if(!evaluator)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 			// ===================
 			// Read next heuristic
@@ -1208,38 +1208,38 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<Heuristic<R, M>*, string> method;
+			pair<Heuristic<R, ADS, M>*, string> method;
 			method = createHeuristic(rest);
 
-			Heuristic<R, M>* localSearch = method.first;
+			Heuristic<R, ADS, M>* localSearch = method.first;
 
 			scanner = Scanner(method.second);
 
 			// ====================
 
-			ILSLPerturbation<R, M>* ilsl_pert = read_ilsl_pert(&scanner);
+			ILSLPerturbation<R, ADS, M>* ilsl_pert = read_ilsl_pert(&scanner);
 			if(!ilsl_pert)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 			int iterMax = scanner.nextInt();
 			int levelMax = scanner.nextInt();
 
-			return make_pair(new IteratedLocalSearchLevels<R, M> (*evaluator, *localSearch, *ilsl_pert, iterMax, levelMax), scanner.rest());
+			return make_pair(new IteratedLocalSearchLevels<R, ADS, M> (*evaluator, *localSearch, *ilsl_pert, iterMax, levelMax), scanner.rest());
 		}
 
 		if (h == "MH")
 		{
 			cout << "Heuristic: MultiHeuristic" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
 			if(!evaluator)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			vector<Heuristic<R, M>*> hlist = read_heuristic_list(&scanner);
+			vector<Heuristic<R, ADS, M>*> hlist = read_heuristic_list(&scanner);
 			if(hlist.size()==0)
-			   return make_pair(new Empty<R, M> , scanner.rest());
+			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			return make_pair(new MultiHeuristic<R, M> (*evaluator, hlist), scanner.rest());
+			return make_pair(new MultiHeuristic<R, ADS, M> (*evaluator, hlist), scanner.rest());
 		}
 
 #ifdef MaPI
@@ -1247,7 +1247,7 @@ public:
 		{
 			cout << "Heuristic: MapReduce" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
 
 			// ===================
 			// Read next heuristic
@@ -1255,10 +1255,10 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<Heuristic<R, M>*, string> method;
+			pair<Heuristic<R, ADS, M>*, string> method;
 			method = createHeuristic(rest);
 
-			Heuristic<R, M>* hmap = method.first;
+			Heuristic<R, ADS, M>* hmap = method.first;
 
 			scanner = Scanner(method.second);
 
@@ -1270,7 +1270,7 @@ public:
 
 			method = createHeuristic(rest);
 
-			Heuristic<R, M>* hreduce = method.first;
+			Heuristic<R, ADS, M>* hreduce = method.first;
 
 			scanner = Scanner(method.second);
 
@@ -1278,14 +1278,14 @@ public:
 			mapper->setHeuristic(hmap);
 			reducer->setHeuristic(hreduce); // reduz usando a heurística hreduce
 
-			return make_pair(new OptFrameMapReduce<R, M> (*serializer,*mapReduce,*mapper,*reducer,*evaluator), scanner.rest());
+			return make_pair(new OptFrameMapReduce<R, ADS, M> (*serializer,*mapReduce,*mapper,*reducer,*evaluator), scanner.rest());
 		}
 
 		if (h == "Map")
 		{
 			cout << "Heuristic: Map" << endl;
 
-			Evaluator<R, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
 
 			// ===================
 			// Read next heuristic
@@ -1293,10 +1293,10 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<Heuristic<R, M>*, string> method;
+			pair<Heuristic<R, ADS, M>*, string> method;
 			method = createHeuristic(rest);
 
-			Heuristic<R, M>* hmap = method.first;
+			Heuristic<R, ADS, M>* hmap = method.first;
 
 			scanner = Scanner(method.second);
 
@@ -1305,13 +1305,13 @@ public:
 			// A não especificação da heurística de redução implina na
 			// redução à melhor solução produzida nos mapeamentos
 
-			return make_pair(new OptFrameMapReduce<R, M> (*serializer,*mapReduce,*mapper,*reducer,*evaluator), scanner.rest());
+			return make_pair(new OptFrameMapReduce<R, ADS, M> (*serializer,*mapReduce,*mapper,*reducer,*evaluator), scanner.rest());
 		}
 #endif
 
 		cout << "Warning: no heuristic '" << h << "' found! ignoring..." << endl;
 
-		return make_pair(new Empty<R, M> , scanner.rest());
+		return make_pair(new Empty<R, ADS, M> , scanner.rest());
 	}
 
 };

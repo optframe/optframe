@@ -26,8 +26,8 @@
 #include <cstdlib>
 #include <iostream>
 
-template<class R>
-class TestSolution : public Solution<R>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class TestSolution : public Solution<R, ADS>
 {
 private:
 	static const unsigned long long MAX_SOL_IN_MEMORY_ERROR = 1000;
@@ -39,7 +39,7 @@ private:
 	unsigned long long testsolution_number;
 
 public:
-	TestSolution(R& rr):Solution<R>(rr)
+	TestSolution(R& _r, ADS& _ads):Solution<R, ADS>(_r, _ads)
 	{
 		testsolution_objects++;
 		testsolution_objects_nodecrement++;
@@ -48,7 +48,7 @@ public:
 		testsolution_number = testsolution_objects_nodecrement;
 	}
 
-	TestSolution(const TestSolution<R>& s):Solution<R>(s)
+	TestSolution(const TestSolution<R, ADS>& s):Solution<R, ADS>(s)
 	{
 		testsolution_objects++;
 		testsolution_objects_nodecrement++;
@@ -63,13 +63,13 @@ public:
 	{
 		if(testsolution_objects >= MAX_SOL_IN_MEMORY_WARNING)
 		{
-			cout << "WARNING: " << TestSolution<R>::testsolution_objects << " TestSolution objects in memory!" << endl;
-			TestSolution<R>::MAX_SOL_IN_MEMORY_WARNING++;
+			cout << "WARNING: " << TestSolution<R, ADS>::testsolution_objects << " TestSolution objects in memory!" << endl;
+			TestSolution<R, ADS>::MAX_SOL_IN_MEMORY_WARNING++;
 		}
 
 		if(testsolution_objects >= MAX_SOL_IN_MEMORY_ERROR)
 		{
-			cout << "ERROR: " << TestSolution<R>::testsolution_objects << " TestSolution objects in memory!" << endl;
+			cout << "ERROR: " << TestSolution<R, ADS>::testsolution_objects << " TestSolution objects in memory!" << endl;
 			cout << "MAX_SOL_IN_MEMORY_ERROR = "<< MAX_SOL_IN_MEMORY_ERROR << endl;
 			cout << "aborting...";
 			exit(1);
@@ -79,40 +79,40 @@ public:
 	void print() const
 	{
 		cout << "TestSolution #"<<testsolution_number<<" ("<<testsolution_objects<<" in memory now): ";
-		cout << Solution<R>::r << endl;
+		cout << Solution<R, ADS>::r << endl;
 	}
 
-	TestSolution<R>& operator= (const TestSolution<R>& s)
+	TestSolution<R, ADS>& operator= (const TestSolution<R, ADS>& s)
 	{
 		if(&s == this) // auto ref check
 			return *this;
 
-		*this = Solution<R>::operator=(s);
+		*this = Solution<R, ADS>::operator=(s);
 
 		// do not copy the 'testsolution_number'
 
 		return *this;
 	}
 
-	Solution<R>& operator=(const Solution<R>& s)
+	Solution<R, ADS>& operator=(const Solution<R, ADS>& s)
 	{
-		return operator=((const TestSolution<R>&)s);
+		return operator=((const TestSolution<R, ADS>&)s);
 	}
 
-	Solution<R>& clone() const
+	Solution<R, ADS>& clone() const
 	{
-		Solution<R>* s = new TestSolution<R>(*this);
+		Solution<R, ADS>* s = new TestSolution<R, ADS>(*this);
 		return (*s);
 	}
 };
 
-template<class R>
-unsigned long long TestSolution<R>::MAX_SOL_IN_MEMORY_WARNING = 0.7*MAX_SOL_IN_MEMORY_ERROR;
+template<class R, class ADS>
+unsigned long long TestSolution<R, ADS>::MAX_SOL_IN_MEMORY_WARNING = 0.7*MAX_SOL_IN_MEMORY_ERROR;
 
-template<class R>
-unsigned long long TestSolution<R>::testsolution_objects = 0;
+template<class R, class ADS>
+unsigned long long TestSolution<R, ADS>::testsolution_objects = 0;
 
-template<class R>
-unsigned long long TestSolution<R>::testsolution_objects_nodecrement = 0;
+template<class R, class ADS>
+unsigned long long TestSolution<R, ADS>::testsolution_objects_nodecrement = 0;
 
 #endif /* OPTFRAME_TESTSOLUTION_HPP_ */

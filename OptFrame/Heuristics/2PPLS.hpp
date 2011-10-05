@@ -30,28 +30,28 @@
 #include "../ParetoDominance.hpp"
 #include "../ParetoDominanceWeak.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
-class TwoPhaseParetoLocalSearch: public Heuristic<R, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class TwoPhaseParetoLocalSearch: public Heuristic<R, ADS, M>
 {
 	typedef vector<Evaluation<M>*> FitnessValues;
 
 private:
-	vector<NSSeq<R, M>*> neighbors;
-	vector<Evaluator<R, M>*> v_e;
-	ParetoDominance<R, M> pDominance;
-	ParetoDominanceWeak<R, M> pDominanceWeak;
+	vector<NSSeq<R, ADS, M>*> neighbors;
+	vector<Evaluator<R, ADS, M>*> v_e;
+	ParetoDominance<R, ADS, M> pDominance;
+	ParetoDominanceWeak<R, ADS, M> pDominanceWeak;
 
 public:
-	using Heuristic<R, M>::exec; // prevents name hiding
+	using Heuristic<R, ADS, M>::exec; // prevents name hiding
 
-	TwoPhaseParetoLocalSearch(vector<Evaluator<R, M>*> _v_e, vector<NSSeq<R, M>*> _neighbors) :
+	TwoPhaseParetoLocalSearch(vector<Evaluator<R, ADS, M>*> _v_e, vector<NSSeq<R, ADS, M>*> _neighbors) :
 		v_e(_v_e), neighbors(_neighbors)
 	{
 		pDominance.insertEvaluators(_v_e);
 		pDominanceWeak.insertEvaluators(_v_e);
 	}
 
-	virtual void exec(Population<R>& p, double timelimit, double target_f)
+	virtual void exec(Population<R, ADS>& p, double timelimit, double target_f)
 	{
 		//ACHO Q FALTA APAGAR ALGUMA COISA NO FINAL
 
@@ -76,21 +76,21 @@ public:
 		delete &e_pop;
 	}
 
-	virtual void exec(Population<R>& p_0, FitnessValues& e_pop, double timelimit, double target_f)
+	virtual void exec(Population<R, ADS>& p_0, FitnessValues& e_pop, double timelimit, double target_f)
 	{
 		long tini = time(NULL);
 		cout << "exec: Two Phase Pareto Local Search " << endl;
 		int r = neighbors.size();
 
-		Population<R> p = p_0;
-		Population<R> p_a;
-		pair<Population<R> , vector<vector<bool> > > x_e;
+		Population<R, ADS> p = p_0;
+		Population<R, ADS> p_a;
+		pair<Population<R, ADS> , vector<vector<bool> > > x_e;
 
 		//x_e.first = p_0;
 
 		for (int ind = 0; ind < p_0.size(); ind++)
 		{
-			Solution<R>& s = p_0.at(ind).clone();
+			Solution<R, ADS>& s = p_0.at(ind).clone();
 			if (!addSolution(x_e.first, s))
 				delete &s;
 
@@ -123,7 +123,7 @@ public:
 			for (int ind = 0; ind < p.size(); ind++)
 			{
 
-				NSIterator<R, M>& it = neighbors[k - 1]->getIterator(p.at(0).getR());
+				NSIterator<R, ADS, M>& it = neighbors[k - 1]->getIterator(p.at(0).getR());
 				it.first();//Primeiro vizinho
 
 				//verifica se existe vizinho a ser gerado
@@ -134,13 +134,13 @@ public:
 				else
 				{
 
-					Move<R, M>* move = geraMovimentoValido(it, p.at(ind));
+					Move<R, ADS, M>* move = geraMovimentoValido(it, p.at(ind));
 					//cout << "!it.isDone() = " << !it.isDone() << " aplly = " << move->canBeApplied(p.at(ind)) << endl;
 					while ((!it.isDone()) && (move->canBeApplied(p.at(ind))))
 					{
 
-						Solution<R>& s = p.at(ind).clone();
-						Move<R, M>& mov_rev = move->apply(s);
+						Solution<R, ADS>& s = p.at(ind).clone();
+						Move<R, ADS, M>& mov_rev = move->apply(s);
 
 						delete &mov_rev;
 						delete move;
@@ -214,10 +214,10 @@ public:
 
 	}
 
-	Move<R, M>* geraMovimentoValido(NSIterator<R, M>& it, Solution<R>& s, int ind)
+	Move<R, ADS, M>* geraMovimentoValido(NSIterator<R, ADS, M>& it, Solution<R, ADS>& s, int ind)
 	{
 
-		Move<R, M>* move = NULL;
+		Move<R, ADS, M>* move = NULL;
 
 		if (it.isDone())
 			return NULL;
@@ -240,10 +240,10 @@ public:
 		return move;
 	}
 
-	Move<R, M>* geraMovimentoValido(NSIterator<R, M>& it, Solution<R>& s)
+	Move<R, ADS, M>* geraMovimentoValido(NSIterator<R, ADS, M>& it, Solution<R, ADS>& s)
 	{
 
-		Move<R, M>* move = NULL;
+		Move<R, ADS, M>* move = NULL;
 
 		if (it.isDone())
 			return NULL;
@@ -268,7 +268,7 @@ public:
 		return move;
 	}
 
-	bool addSolution(Population<R>& p, Solution<R>& s)
+	bool addSolution(Population<R, ADS>& p, Solution<R, ADS>& s)
 	{
 		Evaluation<M>& e = v_e[0]->evaluate(s);
 		if (!e.isFeasible())
@@ -296,7 +296,7 @@ public:
 
 	}
 
-	bool addSolution(pair<Population<R> , vector<vector<bool> > >& p, Solution<R>& s)
+	bool addSolution(pair<Population<R, ADS> , vector<vector<bool> > >& p, Solution<R, ADS>& s)
 	{
 		Evaluation<M>& e = v_e[0]->evaluate(s);
 		if (!e.isFeasible())

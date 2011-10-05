@@ -123,16 +123,16 @@
 
 // ==================================
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class OptFrame
 {
 private:
-	vector<OptFrameModule<R, M>*> modules;
+	vector<OptFrameModule<R, ADS, M>*> modules;
 	map<string, string>* dictionary;
 
 public:
 
-	HeuristicFactory<R, M> factory;
+	HeuristicFactory<R, ADS, M> factory;
 
 	OptFrame()
 	{
@@ -141,7 +141,7 @@ public:
 	}
 
 	OptFrame(RandGen _rg) :
-		factory(HeuristicFactory<R, M>(_rg))
+		factory(HeuristicFactory<R, ADS, M>(_rg))
 	{
 		loadDefaultModules();
 		dictionary = new map<string, string> ;
@@ -156,7 +156,7 @@ public:
 		return "OptFrame - Development Version \nhttp://sourceforge.net/projects/optframe/";
 	}
 
-	void loadModule(OptFrameModule<R, M>* module)
+	void loadModule(OptFrameModule<R, ADS, M>* module)
 	{
 		modules.push_back(module);
 	}
@@ -165,44 +165,44 @@ public:
    {
       cout << "warning: call module loaded!" << endl;
 
-      modules.push_back(new CallModule<R,M>);
+      modules.push_back(new CallModule<R, ADS, M>);
    }
 
    void loadDefaultModules()
    {
       modules.clear();
-      loadModule(new BuildModule<R, M> );
-		loadModule(new CheckModule<R, M> );
-      loadModule(new CreateModule<R, M> );
-		loadModule(new DefineModule<R, M> );
-		loadModule(new DictionaryModule<R, M> );
-		loadModule(new DropAllModule<R, M> );
-      loadModule(new EchoModule<R, M> );
-      loadModule(new ElementModule<R, M> );
-      loadModule(new EmpiricalModule<R, M> );
-		loadModule(new EvaluateModule<R, M> );
-		loadModule(new EvaluateToFileModule<R, M> );
-		loadModule(new ExecModule<R, M> );
-		loadModule(new ExportModule<R, M> );
-		loadModule(new ExportLogModule<R, M> );
-		loadModule(new ForEachModule<R, M> );
-		loadModule(new HelpModule<R, M> );
-      loadModule(new ListFromFileModule<R, M> );
-      loadModule(new ListFromPopulationModule<R, M> );
-      loadModule(new ListSizeModule<R, M> );
-		loadModule(new PauseModule<R, M> );
-		loadModule(new PrintModule<R, M> );
-      loadModule(new RandGenModule<R, M> );
-		loadModule(new ReadModule<R, M> );
-		loadModule(new TestModule<R, M> );
-      loadModule(new UndefineModule<R, M> );
-		loadModule(new UsageModule<R, M> );
+      loadModule(new BuildModule<R, ADS, M> );
+		loadModule(new CheckModule<R, ADS, M> );
+      loadModule(new CreateModule<R, ADS, M> );
+		loadModule(new DefineModule<R, ADS, M> );
+		loadModule(new DictionaryModule<R, ADS, M> );
+		loadModule(new DropAllModule<R, ADS, M> );
+      loadModule(new EchoModule<R, ADS, M> );
+      loadModule(new ElementModule<R, ADS, M> );
+      loadModule(new EmpiricalModule<R, ADS, M> );
+		loadModule(new EvaluateModule<R, ADS, M> );
+		loadModule(new EvaluateToFileModule<R, ADS, M> );
+		loadModule(new ExecModule<R, ADS, M> );
+		loadModule(new ExportModule<R, ADS, M> );
+		loadModule(new ExportLogModule<R, ADS, M> );
+		loadModule(new ForEachModule<R, ADS, M> );
+		loadModule(new HelpModule<R, ADS, M> );
+      loadModule(new ListFromFileModule<R, ADS, M> );
+      loadModule(new ListFromPopulationModule<R, ADS, M> );
+      loadModule(new ListSizeModule<R, ADS, M> );
+		loadModule(new PauseModule<R, ADS, M> );
+		loadModule(new PrintModule<R, ADS, M> );
+      loadModule(new RandGenModule<R, ADS, M> );
+		loadModule(new ReadModule<R, ADS, M> );
+		loadModule(new TestModule<R, ADS, M> );
+      loadModule(new UndefineModule<R, ADS, M> );
+		loadModule(new UsageModule<R, ADS, M> );
 #ifdef MaPI
-		loadModule(new InitServersModule<R, M> );
+		loadModule(new InitServersModule<R, ADS, M> );
 #endif
 	}
 
-	OptFrameModule<R, M>* getModule(string module)
+	OptFrameModule<R, ADS, M>* getModule(string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())

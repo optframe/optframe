@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class M>
-class DictionaryModule : public OptFrameModule<R,M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class DictionaryModule : public OptFrameModule<R, ADS, M>
 {
 public:
 	string id()
@@ -36,7 +36,7 @@ public:
 		return "dictionary";
 	}
 
-	void run(vector<OptFrameModule<R,M>*>& all_modules, HeuristicFactory<R,M>*, map<string,string>* dictionary, string)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>*, map<string,string>* dictionary, string)
 	{
 		cout << (*dictionary) << endl;
 	}

@@ -25,11 +25,11 @@
 
 using namespace std;
 
-template<class R>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class InitialPopulation
 {
 public:
-   virtual Population<R>& generatePopulation(unsigned populationSize) = 0;
+   virtual Population<R, ADS>& generatePopulation(unsigned populationSize) = 0;
 };
 
 #endif /*OPTFRAME_INITIALPOPULATION_H_*/

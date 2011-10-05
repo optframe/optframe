@@ -36,25 +36,25 @@
 #endif
 
 
-template<class R, class M>
-class MultiHeuristic : public Heuristic<R,M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class MultiHeuristic : public Heuristic<R, ADS, M>
 {
 public:
-	using Heuristic<R, M>::exec; // prevents name hiding
+	using Heuristic<R, ADS, M>::exec; // prevents name hiding
 
-	MultiHeuristic(Evaluator<R, M>& _ev, vector<Heuristic<R, M>*> _heuristics) :
+	MultiHeuristic(Evaluator<R, ADS, M>& _ev, vector<Heuristic<R, ADS, M>*> _heuristics) :
 		ev(_ev), heuristics(_heuristics)
 	{
 	}
 
-	virtual void exec(Solution<R>& s, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<M>& e = ev.evaluate(s.getR());
 		exec(s, e, timelimit, target_f);
 		delete &e;
 	}
 
-	virtual void exec(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
 		cout << "MultiHeuristic exec("<<target_f<<","<<timelimit<<")" << endl;
 
@@ -69,8 +69,8 @@ public:
 	}
 
 private:
-    Evaluator<R,M>& ev;
-    vector< Heuristic<R,M>* > heuristics;
+    Evaluator<R, ADS, M>& ev;
+    vector< Heuristic<R, ADS, M>* > heuristics;
 };
 
 #endif

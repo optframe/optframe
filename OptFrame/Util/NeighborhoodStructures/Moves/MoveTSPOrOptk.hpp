@@ -28,8 +28,8 @@ using namespace std;
 
 // Working structure: vector<vector<T> >
 
-template<class T, class M = OPTFRAME_DEFAULT_EMEMORY>
-class MoveTSPOrOptk: public Move<vector<T> , M>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class MoveTSPOrOptk: public Move<vector<T> , ADS, M>
 {
 	typedef vector<T> Route;
 
@@ -55,7 +55,7 @@ public:
 		return (i != j);
 	}
 
-	Move<Route, M>& apply(Route& rep)
+	Move<Route, ADS, M>& apply(Route& rep)
 	{
 		vector<T> v_aux;
 		v_aux.insert(v_aux.begin(), rep.begin() + i, rep.begin() + i + k);
@@ -65,7 +65,7 @@ public:
 		return *new MoveTSPOrOptk(j, i, k);
 	}
 
-	virtual bool operator==(const Move<Route, M>& _m) const
+	virtual bool operator==(const Move<Route, ADS, M>& _m) const
 	{
 		const MoveTSPOrOptk& m1 = (const MoveTSPOrOptk&) _m;
 		return (m1.i == i) && (m1.j == j) && (m1.k == k);

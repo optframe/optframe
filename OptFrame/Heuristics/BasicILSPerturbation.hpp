@@ -27,28 +27,28 @@
 #include "../NS.hpp"
 #include "../RandGen.hpp"
 
-template<class R, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class BasicILSPerturbation
 {
 private:
-	vector<NS<R, M>*> ns;
-	Evaluator<R, M>& evaluator;
+	vector<NS<R, ADS, M>*> ns;
+	Evaluator<R, ADS, M>& evaluator;
 	int pMax;
 	RandGen& rg;
 
 public:
-	BasicILSPerturbation(Evaluator<R, M>& e, int _pMax, NS<R, M>& _ns, RandGen& _rg) :
+	BasicILSPerturbation(Evaluator<R, ADS, M>& e, int _pMax, NS<R, ADS, M>& _ns, RandGen& _rg) :
 		evaluator(e), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
 	}
 
-	void add_ns(NS<R, M>& _ns)
+	void add_ns(NS<R, ADS, M>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
 
-	void perturb(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f)
+	void perturb(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
 		int f = 0; // number of failures
 
@@ -56,7 +56,7 @@ public:
 		{
 			int x = rg.rand(ns.size());
 
-			Move<R, M>& m = ns[x]->move(s);
+			Move<R, ADS, M>& m = ns[x]->move(s);
 
 			if (m.canBeApplied(e, s))
 			{

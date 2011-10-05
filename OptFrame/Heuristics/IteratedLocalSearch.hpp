@@ -27,39 +27,39 @@
 #include "../Heuristic.hpp"
 #include "../Evaluator.hpp"
 
-template<class H, class R, class M = OPTFRAME_DEFAULT_EMEMORY>
-class IteratedLocalSearch: public Heuristic<R, M>
+template<class H, class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class IteratedLocalSearch: public Heuristic<R, ADS, M>
 {
 protected:
-	Evaluator<R, M>& evaluator;
+	Evaluator<R, ADS, M>& evaluator;
 
 public:
 
-	using Heuristic<R, M>::exec; // prevents name hiding
+	using Heuristic<R, ADS, M>::exec; // prevents name hiding
 
-	IteratedLocalSearch(Evaluator<R, M>& _evaluator) :
+	IteratedLocalSearch(Evaluator<R, ADS, M>& _evaluator) :
 		evaluator(_evaluator)
 	{
 	}
 
 	virtual H& initializeHistory() = 0;
 
-	virtual void localSearch(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f) = 0;
+	virtual void localSearch(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f) = 0;
 
-	virtual void perturbation(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f, H& history) = 0;
+	virtual void perturbation(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f, H& history) = 0;
 
-	virtual Solution<R>& acceptanceCriterion(const Solution<R>& s1, const Solution<R>& s2, H& history) = 0;
+	virtual Solution<R, ADS>& acceptanceCriterion(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2, H& history) = 0;
 
 	virtual bool terminationCondition(H& history) = 0;
 
-	void exec(Solution<R>& s, double timelimit, double target_f)
+	void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<M>& e = evaluator.evaluate(s.getR());
 		exec(s, e, timelimit, target_f);
 		delete &e;
 	}
 
-	void exec(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f)
+	void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
 		cout << "ILS exec(" << target_f << "," << timelimit << ")" << endl;
 
@@ -73,7 +73,7 @@ public:
 
 		localSearch(s, e, (timelimit - (tnow.now())), target_f);
 
-		Solution<R>* sStar = &s.clone();
+		Solution<R, ADS>* sStar = &s.clone();
 		Evaluation<M>* eStar = &e.clone();
 
 		cout << "ILS starts: ";
@@ -81,17 +81,17 @@ public:
 
 		do
 		{
-			Solution<R>* s1 = &sStar->clone();
+			Solution<R, ADS>* s1 = &sStar->clone();
 			Evaluation<M>* e1 = &eStar->clone();
 
 			perturbation(*s1, *e1, (timelimit - (tnow.now())), target_f, *history);
 
 			localSearch(*s1, *e1, (timelimit - (tnow.now())), target_f);
 
-			Solution<R>* s2 = s1;
+			Solution<R, ADS>* s2 = s1;
 			Evaluation<M>* e2 = e1;
 
-			Solution<R>* sStar1 = &acceptanceCriterion(*sStar, *s2, *history);
+			Solution<R, ADS>* sStar1 = &acceptanceCriterion(*sStar, *s2, *history);
 
 			delete sStar;
 			delete eStar;
