@@ -51,6 +51,12 @@ protected:
 
 public:
 	Solution(R& _r, ADS& _ads):r(*new R(_r)), ads(*new ADS(_ads)){};
+
+	Solution(R& _r) :
+      r(*new R(_r)), ads(*new OPTFRAME_DEFAULT_ADS)
+   {
+   }
+
 	Solution(const Solution<R, ADS>& s):r(*new R(s.r)), ads(*new ADS(s.ads)){}
 
 	virtual ~Solution() { delete &r; delete &ads;}

@@ -62,6 +62,14 @@ public:
 	   infMeasure = 0;
 	};
 
+	Evaluation(double obj) :
+      em(*new OPTFRAME_DEFAULT_EMEMORY)
+   {
+      objFunction = obj;
+      infMeasure = 0;
+   }
+
+
 	Evaluation(const Evaluation<EM>& e):
 		objFunction(e.objFunction),infMeasure(e.infMeasure),em(*new EM(e.em)){};
 
