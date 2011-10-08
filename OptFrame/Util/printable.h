@@ -18,10 +18,6 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-// Last update Sabir Ribas (2009-02-06)
-// By Igor Machado Coelho
-// Em 25 de Julho de 2009
-
 #ifndef PRINTABLE_H_
 #define PRINTABLE_H_
 
