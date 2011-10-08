@@ -39,11 +39,22 @@ private:
 	unsigned long long testsolution_number;
 
 public:
+
+	TestSolution(R& _r) :
+      Solution<R, ADS> (_r, * new OPTFRAME_DEFAULT_ADS)
+   {
+      testsolution_objects++;
+      testsolution_objects_nodecrement++;
+      memcheck();
+
+      testsolution_number = testsolution_objects_nodecrement;
+   }
+
 	TestSolution(R& _r, ADS& _ads):Solution<R, ADS>(_r, _ads)
 	{
 		testsolution_objects++;
 		testsolution_objects_nodecrement++;
-		check();
+		memcheck();
 
 		testsolution_number = testsolution_objects_nodecrement;
 	}
@@ -52,14 +63,14 @@ public:
 	{
 		testsolution_objects++;
 		testsolution_objects_nodecrement++;
-		check();
+		memcheck();
 
 		testsolution_number = testsolution_objects_nodecrement;
 	}
 
 	virtual ~TestSolution() { testsolution_objects--; }
 
-	void check() // check number of TestSolution objects in memory
+	void memcheck() // check number of TestSolution objects in memory
 	{
 		if(testsolution_objects >= MAX_SOL_IN_MEMORY_WARNING)
 		{

@@ -69,9 +69,7 @@ public:
 
 		delete r;
 
-		int ads;
-
-		return * new TestSolution<RepTSP>(*newRep, ads);
+		return * new TestSolution<RepTSP>(*newRep);
 	}
 
 };
