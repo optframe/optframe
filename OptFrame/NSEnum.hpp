@@ -65,6 +65,11 @@ public:
       return "OptFrame:nsenum";
    }
 
+   virtual bool compatible(string s)
+   {
+      return ( s == id() ) || ( NSSeq<R, ADS, M>::compatible(s) );
+   }
+
 	virtual void print() const = 0;
 };
 

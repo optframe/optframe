@@ -113,6 +113,25 @@ public:
       return idx;
    }
 
+	int addComponent(OptFrameComponent& component, string id)
+   {
+      if(!component.compatible(id))
+      {
+         cout << "Warning: incompatible components '";
+         cout << component.id() << "' and '" << id << "'!" << endl;
+
+         return -1;
+      }
+
+      vector<OptFrameComponent*> v = components[id];
+      v.push_back(&component);
+      components[id] = v;
+
+      int idx = components[id].size() - 1;
+
+      return idx;
+   }
+
 #ifdef MaPI
 	MyMaPISerializer<R, ADS, M> * serializer;
 	MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mapReduce;

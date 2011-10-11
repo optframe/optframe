@@ -37,6 +37,11 @@ public:
 
    virtual string id() const = 0;
 
+   virtual bool compatible(string s)
+   {
+      return s == id();
+   }
+
    virtual vector<pair<string, string> > parameters() const
    {
       return vector<pair<string, string> > ();

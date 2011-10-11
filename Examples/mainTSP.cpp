@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 	optframe.factory.addComponent(is);
 	optframe.factory.addComponent(eval);
 
-	optframe.factory.addComponent(ns);
+	optframe.factory.addComponent(ns, "OptFrame:nsseq");
 	optframe.factory.addComponent(*new NSSeqTSPOrOpt<int, OPTFRAME_DEFAULT_ADS, MemTSP>);
 	optframe.factory.addComponent(*new NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS, MemTSP>);
 	optframe.factory.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP>);

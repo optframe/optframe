@@ -39,10 +39,10 @@ public:
 
 	virtual Move<R, ADS, M>& move(const R&) = 0;
 
-        NSIterator<R, ADS, M>& getIterator(const Solution<R, ADS>& s)
-        {
-           return getIterator(s.getR());
-        }
+   NSIterator<R, ADS, M>& getIterator(const Solution<R, ADS>& s)
+   {
+      return getIterator(s.getR());
+   }
 
 	virtual NSIterator<R, ADS, M>& getIterator(const R&) = 0;
 	virtual NSIterator<R, ADS, M>& getIterator(const M&, const R& r)
@@ -53,6 +53,11 @@ public:
    virtual string id() const
    {
       return "OptFrame:nsseq";
+   }
+
+   virtual bool compatible(string s)
+   {
+      return ( s == id() ) || ( NS<R, ADS, M>::compatible(s) );
    }
 
 	virtual void print() const = 0;
