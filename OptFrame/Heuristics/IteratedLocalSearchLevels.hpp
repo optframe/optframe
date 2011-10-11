@@ -129,6 +129,11 @@ public:
 
 		return (level >= levelMax);
 	}
+
+	virtual string id() const
+   {
+      return "OptFrame:ILS:ilsl";
+   }
 };
 
 #endif /*OPTFRAME_ILSL_HPP_*/

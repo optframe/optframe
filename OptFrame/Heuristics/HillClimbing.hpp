@@ -80,6 +80,11 @@ public:
 		delete s0;
 		delete e0;
 	}
+
+	virtual string id() const
+   {
+      return "OptFrame:HC:hc";
+   }
 };
 
 #endif /*OPTFRAME_HILLCLIMBING_HPP_*/

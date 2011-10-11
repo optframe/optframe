@@ -84,6 +84,11 @@ public:
 
 		evaluator.evaluate(e, s); // updates 'e'
 	}
+
+	virtual string id() const
+   {
+      return "OptFrame:ILS:ilsl_pert";
+   }
 };
 
 #endif /*OPTFRAME_ILSLPerturbation_HPP_*/

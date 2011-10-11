@@ -65,13 +65,13 @@ int main(int argc, char **argv)
 	cout << endl;
 
 	OptFrame<RepEtII, MemEtII> optframe(rg);
-	optframe.factory.add_initsol(&is);
-	optframe.factory.add_ev(&eval);
-	optframe.factory.add_ns(&nsRotate);
-	optframe.factory.add_ns(&nsSwapCenter);
-	optframe.factory.add_ns(&nsSwapCorner);
-	optframe.factory.add_ns(&nsSwapRotateCenter);
-	optframe.factory.add_ns(&nsSwapSide);
+	optframe.factory.addComponent(is);
+	optframe.factory.addComponent(eval);
+	optframe.factory.addComponent(nsRotate);
+	optframe.factory.addComponent(nsSwapCenter);
+	optframe.factory.addComponent(nsSwapCorner);
+	optframe.factory.addComponent(nsSwapRotateCenter);
+	optframe.factory.addComponent(nsSwapSide);
 	optframe.execute();
 
 	cout << "Program ended successfully" << endl;

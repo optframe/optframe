@@ -27,6 +27,8 @@ typedef int OPTFRAME_DEFAULT_EMEMORY;
 #include <iostream>
 #include <cmath>
 
+#include "OptFrameComponent.hpp"
+
 using namespace std;
 
 //! \english The Evaluation class is a container class for the objective function value and the Memory structure M. \endenglish \portuguese A classe Evaluation é uma classe contêiner para o valor da função objetivo e a estrutura de Memória M. \endportuguese
@@ -44,7 +46,7 @@ using namespace std;
 */
 
 template<class EM = OPTFRAME_DEFAULT_EMEMORY>
-class Evaluation
+class Evaluation : OptFrameComponent
 {
 protected:
    double objFunction;
@@ -86,6 +88,11 @@ public:
 
 	virtual double evaluation() const { return objFunction + infMeasure; }
 	virtual bool   isFeasible() const { return (abs(infMeasure)<0.0001); }
+
+   virtual string id() const
+   {
+      return "OptFrame:loadev";
+   }
 
 	virtual void print() const
 	{

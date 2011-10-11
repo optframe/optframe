@@ -108,6 +108,11 @@ public:
 		eval.evaluate(e, s); // updates 'e'
 	}
 
+	virtual string id() const
+   {
+      return "OptFrame:BI:bi";
+   }
+
 };
 
 #endif /*OPTFRAME_BI_HPP_*/

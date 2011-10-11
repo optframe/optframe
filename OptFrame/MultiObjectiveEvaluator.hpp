@@ -95,6 +95,11 @@ public:
 	{
 		return partialEvaluators[0]->betterThan(a, b);
 	}
+
+   virtual string id() const
+   {
+      return "OptFrame:moev";
+   }
 };
 
 #endif /*OPTFRAME_MULTIOBJECTIVEEVALUATOR_HPP_*/

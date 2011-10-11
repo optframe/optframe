@@ -81,7 +81,8 @@ public:
 		{
 			if (sol == "initsol")
 			{
-				for (int i = 0; i < (factory->initsol_size()); i++)
+				//for (int i = 0; i < (factory->initsol_size()); i++)
+			   for (int i = 0; i < 0; i++) // TODO fix this!
 				{
 					stringstream i_temp;
 					i_temp << i;
@@ -100,7 +101,8 @@ public:
 			}
 			else
 			{
-				for (int i = 0; i < (factory->loadsol_size()); i++)
+				//for (int i = 0; i < (factory->loadsol_size()); i++)
+				for (int i = 0; i < 0; i++) // TODO fix this!
 				{
 					stringstream i_temp;
 					i_temp << i;

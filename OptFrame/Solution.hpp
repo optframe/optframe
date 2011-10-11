@@ -24,6 +24,8 @@
 #include <cstdlib>
 #include <iostream>
 
+#include "OptFrameComponent.hpp"
+
 using namespace std;
 
 typedef int OPTFRAME_DEFAULT_ADS;
@@ -43,7 +45,7 @@ typedef int OPTFRAME_DEFAULT_ADS;
 */
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class Solution
+class Solution : public OptFrameComponent
 {
 protected:
 	R& r;
@@ -74,6 +76,11 @@ public:
 	{
 	   return true;
 	}
+
+   virtual string id() const
+   {
+      return "OptFrame:loadsol";
+   }
 
 	virtual void print() const
 	{

@@ -85,6 +85,11 @@ public:
 
 	}
 
+	virtual string id() const
+   {
+      return "OptFrame:VND:rvnd";
+   }
+
 private:
 	Evaluator<R, ADS, M>& ev;
 	vector<Heuristic<R, ADS, M>*> neighbors;

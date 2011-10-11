@@ -73,10 +73,10 @@ public:
       int option_id = scanner.nextInt();
 
       if (sol_option == "loadsol")
-         s = factory->get_loadsol(option_id);
+         factory->assign(s, "OptFrame:loadsol", option_id);
 
       if (sol_option == "initsol")
-         initsol = factory->get_initsol(option_id);
+         factory->assign(initsol, "OptFrame:initsol", option_id);
 
       // -------------------------------
 
@@ -206,7 +206,7 @@ public:
 
 		fclose(file);
 
-		int new_id = factory->add_loadsol(s_star);
+		int new_id = factory->addComponent(*s_star);
 
 		stringstream str;
 		str << "loadsol " << new_id;

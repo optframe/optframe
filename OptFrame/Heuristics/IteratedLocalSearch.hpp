@@ -111,6 +111,11 @@ public:
 
 		delete history;
 	}
+
+	virtual string id() const
+   {
+      return "OptFrame:ILS:";
+   }
 };
 
 #endif /*OPTFRAME_ILS_HPP_*/

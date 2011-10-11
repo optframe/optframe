@@ -103,6 +103,11 @@ public:
 
 		return (iter >= iterMax);
 	}
+
+	virtual string id() const
+   {
+      return "OptFrame:ILS:basic_ils";
+   }
 };
 
 #endif /*OPTFRAME_BASICILS_HPP_*/

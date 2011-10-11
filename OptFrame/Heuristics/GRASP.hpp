@@ -79,6 +79,11 @@ public:
 			iter++;
 		}
 	}
+
+	virtual string id() const
+   {
+      return "OptFrame:GRASP:grasp";
+   }
 };
 
 #endif /*OPTFRAME_GRASP_HPP_*/

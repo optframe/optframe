@@ -259,6 +259,22 @@ public:
 		return false;
 	}
 
+	virtual string id() const
+   {
+      return "OptFrame:TS:basic_ts";
+   }
+
+	virtual vector<pair<string, string> > parameters() const
+   {
+      vector<pair<string, string> > p;
+      p.push_back(make_pair("OptFrame:ev", "evaluator"));
+      p.push_back(make_pair("OptFrame:nsseq", "neighborhood_structure"));
+      p.push_back(make_pair("int", "tabu_list_size"));
+      p.push_back(make_pair("int", "ts_max"));
+
+      return p;
+   }
+
 };
 
 #endif /*OPTFRAME_TABUSEARCH_HPP_*/

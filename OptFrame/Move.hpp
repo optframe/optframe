@@ -24,10 +24,12 @@
 #include "Solution.hpp"
 #include "Evaluation.hpp"
 
+#include "OptFrameComponent.hpp"
+
 using namespace std;
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class Move
+class Move : public OptFrameComponent
 {
 public:
 
@@ -75,6 +77,11 @@ public:
 	{
 		return !(*this == m);
 	}
+
+   virtual string id() const
+   {
+      return "OptFrame:move";
+   }
 
 	virtual void print() const = 0;
 };

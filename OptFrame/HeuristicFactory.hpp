@@ -82,6 +82,37 @@ private:
 
 public:
 
+	map<string, vector<OptFrameComponent*> > components;
+
+	template< class T > void assign(T* component, string id, unsigned number)
+   {
+      if(components.count(id) > 0)
+      {
+         vector<OptFrameComponent*> v = components[id];
+         if(number < v.size())
+         {
+            component = (T*) v[number];
+            return;
+         }
+      }
+
+      // not found!
+      component = NULL;
+   }
+
+	int addComponent(OptFrameComponent& component)
+   {
+      string id = component.id();
+
+      vector<OptFrameComponent*> v = components[id];
+      v.push_back(&component);
+      components[id] = v;
+
+      int idx = components[id].size() - 1;
+
+      return idx;
+   }
+
 #ifdef MaPI
 	MyMaPISerializer<R, ADS, M> * serializer;
 	MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mapReduce;
@@ -330,36 +361,35 @@ public:
 	}
 
 	Evaluator<R, ADS, M>* read_ev(Scanner* scanner)
-	{
-		string tmp = scanner->next();
+   {
+      string tmp = scanner->next();
 
-		if (tmp == "moev")
-		{
-			vector<Evaluator<R, ADS, M> *> evs = read_ev_list(scanner);
+      if(tmp == "OptFrame:moev")
+      {
+         vector<Evaluator<R, ADS, M> *> evs = read_ev_list(scanner);
 
-			MultiObjectiveEvaluator<R, ADS, M>* moev = new MultiObjectiveEvaluator<R, ADS, M> (*evs[0]);
+         MultiObjectiveEvaluator<R, ADS, M>* moev = new MultiObjectiveEvaluator<R, ADS, M> (*evs[0]);
 
-			for (unsigned int i = 1; i < evs.size(); i++)
-				moev->add(*evs[i]);
+         for(unsigned int i = 1; i < evs.size(); i++)
+            moev->add(*evs[i]);
 
-			return moev;
-		}
-		else if (tmp != "ev")
-		{
-			cout << "Error: expected 'ev' and found '" << tmp << "'." << endl;
-			return NULL;
-		}
+         return moev;
+      }
+      else
+         if(tmp != "OptFrame:ev")
+         {
+            cout << "Error: expected 'OptFrame:ev' and found '" << tmp << "'." << endl;
+            return NULL;
+         }
 
-		unsigned int ev_id = scanner->nextInt();
+      unsigned int ev_id = scanner->nextInt();
 
-		if (ev.size() <= ev_id)
-		{
-			cout << "Error: ev number " << ev_id << " doesn't exist!" << endl;
-			return NULL;
-		}
+      Evaluator<R, ADS, M>* evaluator = NULL;
 
-		return ev[ev_id];
-	}
+      assign(evaluator, tmp, ev_id);
+
+      return evaluator;
+   }
 
 	ILSLPerturbation<R, ADS, M>* read_ilsl_pert(Scanner* scanner)
 	{
@@ -585,188 +615,6 @@ public:
                 ga_elt.clear();
    }
 
-	int add_method(Heuristic<R, ADS, M>* _method)
-	{
-		method.push_back(_method);
-		return method.size() - 1;
-	}
-
-	Heuristic<R, ADS, M>* get_method(int index)
-	{
-		return method[index];
-	}
-
-	int add_loadsol(Solution<R, ADS>* _loadsol)
-	{
-		loadsol.push_back(_loadsol);
-		return loadsol.size() - 1;
-	}
-
-	Solution<R, ADS>* get_loadsol(int index)
-	{
-		return loadsol[index];
-	}
-
-	int add_initsol(InitialSolution<R, ADS>* _initsol)
-	{
-		initsol.push_back(_initsol);
-		return initsol.size() - 1;
-	}
-
-	int add_loadpop(Population<R, ADS>* _loadpop)
-	{
-		loadpop.push_back(_loadpop);
-		return loadpop.size() - 1;
-	}
-
-	Population<R, ADS>* get_loadpop(int index)
-	{
-		return loadpop[index];
-	}
-
-	int add_initpop(InitialPopulation<R, ADS>* _initpop)
-	{
-		initpop.push_back(_initpop);
-		return initpop.size() - 1;
-	}
-
-	InitialSolution<R, ADS>* get_initsol(int index)
-	{
-		return initsol[index];
-	}
-
-	Population<R, ADS>* get_initpop(int index)
-	{
-		return initpop[index];
-	}
-
-	int add_ns(NS<R, ADS, M>* _ns)
-	{
-		ns.push_back(_ns);
-		return ns.size() - 1;
-	}
-
-	NS<R, ADS, M>* get_ns(int index)
-	{
-		return ns[index];
-	}
-
-	int add_ev(Evaluator<R, ADS, M>* _ev)
-	{
-		ev.push_back(_ev);
-		return ev.size() - 1;
-	}
-
-	Evaluator<R, ADS, M>* get_ev(int index)
-	{
-		return ev[index];
-	}
-
-	int add_ilsl_pert(ILSLPerturbation<R, ADS, M>* _ilsl_pert)
-	{
-		ilsl_pert.push_back(_ilsl_pert);
-		return ilsl_pert.size() - 1;
-	}
-
-	int add_ils_pert(BasicILSPerturbation<R, ADS, M>* _ils_pert)
-	{
-		ils_pert.push_back(_ils_pert);
-		return ils_pert.size() - 1;
-	}
-
-	void add_ils_int(Intensification<R, ADS, M>* _ils_int)
-	{
-		ils_int.push_back(_ils_int);
-	}
-
-	ILSLPerturbation<R, ADS, M>* get_ilsl_pert(int index)
-	{
-		return ilsl_pert[index];
-	}
-
-	BasicILSPerturbation<R, ADS, M>* get_ils_pert(int index)
-	{
-		return ils_pert[index];
-	}
-
-	int add_ga_mut(Mutation<R, ADS, M>* _ga_mut)
-	{
-		ga_mut.push_back(_ga_mut);
-		return ga_mut.size() - 1;
-	}
-
-	Mutation<R, ADS, M>* get_ga_mut(int index)
-	{
-		return ga_mut[index];
-	}
-
-	int add_ga_sel(Selection<R, ADS, M>* _ga_sel)
-	{
-		ga_sel.push_back(_ga_sel);
-		return ga_sel.size() - 1;
-	}
-
-	int add_ga_elt(Elitism<R, ADS, M>* _ga_elt)
-	{
-		ga_elt.push_back(_ga_elt);
-		return ga_elt.size() - 1;
-	}
-
-	Selection<R, ADS, M>* get_ga_sel(int index)
-	{
-		return ga_sel[index];
-	}
-
-	Elitism<R, ADS, M>* get_ga_elt(int index)
-	{
-		return ga_elt[index];
-	}
-
-	int add_ga_cross(Crossover<R, ADS, M>* _ga_cross)
-	{
-		ga_cross.push_back(_ga_cross);
-		return ga_cross.size() - 1;
-	}
-
-	Crossover<R, ADS, M>* get_ga_cross(int index)
-	{
-		return ga_cross[index];
-	}
-
-	int initsol_size()
-	{
-		return initsol.size();
-	}
-
-	int initpop_size()
-	{
-		return initpop.size();
-	}
-
-	int ns_size()
-	{
-		return ns.size();
-	}
-
-	int ev_size()
-	{
-		return ev.size();
-	}
-
-	int loadsol_size()
-	{
-		return loadsol.size();
-	}
-
-	int loadpop_size()
-	{
-		return loadpop.size();
-	}
-
-	int method_size()
-	{
-		return method.size();
-	}
 
 	RandGen& getRandGen()
 	{

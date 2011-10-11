@@ -24,8 +24,10 @@
 #include "Move.hpp"
 #include "Solution.hpp"
 
+#include "OptFrameComponent.hpp"
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class NS
+class NS : public OptFrameComponent
 {
 public:
 
@@ -39,6 +41,11 @@ public:
     }
 
     virtual Move<R, ADS, M>& move(const R&) = 0;
+
+    virtual string id() const
+    {
+       return "OptFrame:ns";
+    }
 
 	virtual void print() const = 0;
 };

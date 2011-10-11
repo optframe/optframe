@@ -72,14 +72,14 @@ public:
 
       for(unsigned i = 0; i < p->size() - 1; i++)
       {
-         int sid = factory->add_loadsol(&p->at(i).clone());
+         int sid = factory->addComponent(p->at(i).clone());
          listContent << "loadsol " << sid << " , ";
       }
 
       if(p->size() > 0)
       {
          unsigned i = p->size() - 1;
-         int sid = factory->add_loadsol(&p->at(i).clone());
+         int sid = factory->addComponent(p->at(i).clone());
          listContent << "loadsol " << sid;
       }
 

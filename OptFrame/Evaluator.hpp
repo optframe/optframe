@@ -27,6 +27,8 @@
 
 #include <iostream>
 
+#include "OptFrameComponent.hpp"
+
 //#define EPSILON 0.0001
 
 using namespace std;
@@ -46,7 +48,7 @@ using namespace std;
 */
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class Evaluator
+class Evaluator : public OptFrameComponent
 {
 public:
 
@@ -159,6 +161,12 @@ public:
 	 - for maximization problems, returns a > b.
 	 */
 	virtual bool betterThan(double a, double b) = 0;
+
+   virtual string id() const
+   {
+      return "OptFrame:ev";
+   }
+
 };
 
 #endif /*OPTFRAME_EVALUATOR_HPP_*/

@@ -111,7 +111,7 @@ public:
 			if (needDelete)
 				delete s;
 
-			int new_id = factory->add_loadsol(sFinal);
+			int new_id = factory->addComponent(*sFinal);
 
 			stringstream str;
 			str << "loadsol " << new_id;
@@ -131,7 +131,7 @@ public:
 			for (unsigned i = 0; i < pAux->size(); i++)
 				delete &(pAux->at(i));
 
-			int new_id = factory->add_loadpop(pFinal);
+			int new_id = factory->addComponent(*pFinal);
 
 			stringstream str;
 			str << "loadpop " << new_id;

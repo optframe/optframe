@@ -26,8 +26,10 @@
 #include "Evaluator.hpp"
 #include <vector>
 
+#include "OptFrameComponent.hpp"
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class Population
+class Population : public OptFrameComponent
 {
 protected:
 	typedef Solution<R, ADS> chromossome;
@@ -140,6 +142,11 @@ public:
 	{
 		return *new Population<R, ADS> (*this);
 	}
+
+   virtual string id() const
+   {
+      return "OptFrame:loadpop";
+   }
 
 	virtual void print() const
 	{

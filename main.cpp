@@ -63,9 +63,9 @@ int main(int argc, char **argv)
 	cout << endl;
 
 	OptFrame<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe(rg);
-	optframe.factory.add_initsol(&is);
-	optframe.factory.add_ev(&eval);
-	optframe.factory.add_ns(&ns);
+	optframe.factory.addComponent(is);
+	optframe.factory.addComponent(eval);
+	optframe.factory.addComponent(ns);
 
 	//optframe.execute("define is_random initsol 0");
 	//optframe.execute("define my_eval ev 0");

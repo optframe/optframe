@@ -38,6 +38,11 @@ public:
 	{
 	   return "Heuristic Empty: no log.";
 	}
+
+   virtual string id() const
+   {
+      return "OptFrame:method";
+   }
 };
 
 #endif /*OPTFRAME_EMPTY_HPP_*/

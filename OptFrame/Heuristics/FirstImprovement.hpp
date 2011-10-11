@@ -82,6 +82,11 @@ public:
 
 		delete &it;
 	}
+
+	virtual string id() const
+   {
+      return "OptFrame:FI:fi";
+   }
 };
 
 #endif /*OPTFRAME_FI_HPP_*/

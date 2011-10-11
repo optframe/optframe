@@ -61,9 +61,9 @@ int main(int argc, char **argv)
 	PCAPSolCheck(p, s);
 
 	OptFrame<RepPCAP> optframe(rg);
-	optframe.factory.add_initsol(&is_greedy);
-	optframe.factory.add_ev(&e);
-	optframe.factory.add_ns(&nsSwap);
+	optframe.factory.addComponent(is_greedy);
+	optframe.factory.addComponent(e);
+	optframe.factory.addComponent(nsSwap);
 	optframe.execute();
 
 	cout << "Program ended successfully" << endl;

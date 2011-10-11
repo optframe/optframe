@@ -87,6 +87,11 @@ public:
                  }
                  while(w != initial_w);
 	}
+
+   virtual string id() const
+   {
+      return "OptFrame:CS:cs";
+   }
 };
 
 #endif /*OPTFRAME_CS_HPP_*/

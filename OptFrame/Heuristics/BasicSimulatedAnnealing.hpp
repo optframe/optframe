@@ -145,6 +145,11 @@ public:
 		delete eStar;
 	}
 
+	virtual string id() const
+   {
+      return "OptFrame:SA:basic_sa";
+   }
+
 };
 
 /*

@@ -18,44 +18,35 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_NSSEQ_HPP_
-#define OPTFRAME_NSSEQ_HPP_
+#ifndef OPTFRAME_COMPONENT_HPP_
+#define OPTFRAME_COMPONENT_HPP_
 
-#include "NS.hpp"
-#include "NSIterator.hpp"
+#include <cstdlib>
+#include <iostream>
+#include <vector>
 
 using namespace std;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class NSSeq: public NS<R, ADS, M>
+class OptFrameComponent
 {
 public:
 
-	using NS<R, ADS, M>::move; // prevents name hiding
-
-	virtual ~NSSeq()
-	{
-	}
-
-	virtual Move<R, ADS, M>& move(const R&) = 0;
-
-        NSIterator<R, ADS, M>& getIterator(const Solution<R, ADS>& s)
-        {
-           return getIterator(s.getR());
-        }
-
-	virtual NSIterator<R, ADS, M>& getIterator(const R&) = 0;
-	virtual NSIterator<R, ADS, M>& getIterator(const M&, const R& r)
-	{
-		return getIterator(r);
-	}
-
-   virtual string id() const
+   virtual ~OptFrameComponent()
    {
-      return "OptFrame:nsseq";
    }
 
-	virtual void print() const = 0;
+   virtual string id() const = 0;
+
+   virtual vector<pair<string, string> > parameters() const
+   {
+      return vector<pair<string, string> > ();
+   }
+
+   virtual void print() const
+   {
+      cout << id() << endl;
+   }
+
 };
 
-#endif /*OPTFRAME_NSSEQ_HPP_*/
+#endif /* OPTFRAME_COMPONENT_HPP_ */

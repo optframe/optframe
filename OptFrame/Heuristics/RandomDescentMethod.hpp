@@ -85,6 +85,21 @@ public:
 			tnow = time(NULL);
 		}
 	}
+
+	virtual string id() const
+   {
+      return "OptFrame:ILS:rdm";
+   }
+
+	virtual vector<pair<string, string> > parameters() const
+   {
+	   vector<pair<string, string> > p;
+	   p.push_back(make_pair("OptFrame:ev","evaluator"));
+	   p.push_back(make_pair("OptFrame:ns","neighborhood_structure"));
+	   p.push_back(make_pair("int","iterMax"));
+
+      return p;
+   }
 };
 
 #endif /*OPTFRAME_RDM_HPP_*/

@@ -31,8 +31,10 @@ using namespace std;
 #include "./Evaluation.hpp"
 //#include "./Util/Runnable/Runnable.hpp"
 
+#include "OptFrameComponent.hpp"
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class Heuristic//: public Runnable
+class Heuristic: public OptFrameComponent
 {
    typedef vector<Evaluation<M>*> FitnessValues;
    typedef const vector<const Evaluation<M>*> ConstFitnessValues;
@@ -265,6 +267,11 @@ public:
    virtual string log()
    {
       return "Empty heuristic log.";
+   }
+
+   virtual string id() const
+   {
+      return "OptFrame:method";
    }
 
 };

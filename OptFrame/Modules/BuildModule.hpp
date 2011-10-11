@@ -106,7 +106,7 @@ public:
 
       scanner = Scanner(method.second);
 
-      int new_id = factory->add_method(method.first);
+      int new_id = factory->addComponent(*method.first);
 
       stringstream str;
       str << "method " << new_id;

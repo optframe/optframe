@@ -60,6 +60,11 @@ public:
 
 	virtual unsigned int size() const = 0;
 
+   virtual string id() const
+   {
+      return "OptFrame:nsenum";
+   }
+
 	virtual void print() const = 0;
 };
 

@@ -24,7 +24,7 @@
 #include "Solution.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class InitialSolution
+class InitialSolution : public OptFrameComponent
 {
 public:
 	virtual ~InitialSolution()
@@ -32,6 +32,11 @@ public:
 	}
 
 	virtual Solution<R, ADS>& generateSolution() = 0;
+
+   virtual string id() const
+   {
+      return "OptFrame:initsol";
+   }
 };
 
 #endif /*OPTFRAME_INITIALSOLUTION_H_*/

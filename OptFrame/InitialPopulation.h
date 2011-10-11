@@ -23,13 +23,25 @@
 
 #include "Population.hpp"
 
+#include "OptFrameComponent.hpp"
+
 using namespace std;
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class InitialPopulation
+class InitialPopulation : public OptFrameComponent
 {
 public:
+
+   virtual ~InitialPopulation()
+   {
+   }
+
    virtual Population<R, ADS>& generatePopulation(unsigned populationSize) = 0;
+
+   virtual string id() const
+   {
+      return "OptFrame:initpop";
+   }
 };
 
 #endif /*OPTFRAME_INITIALPOPULATION_H_*/
