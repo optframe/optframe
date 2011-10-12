@@ -162,9 +162,14 @@ public:
 	 */
 	virtual bool betterThan(double a, double b) = 0;
 
-   virtual string id() const
+   static string idComponent()
    {
       return "OptFrame:ev";
+   }
+
+   virtual string id() const
+   {
+      return idComponent();
    }
 
 };

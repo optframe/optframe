@@ -64,7 +64,8 @@ public:
 
       string id = scan.next();
       Scanner pop(strloadpop + " " + id);
-      Population<R, ADS>* p = factory->read_loadpop(&pop);
+      Population<R, ADS>* p = NULL;
+      factory->readComponent(p, &pop);
 
       stringstream listContent;
 

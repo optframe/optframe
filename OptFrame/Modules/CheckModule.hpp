@@ -64,14 +64,18 @@ public:
 		if (sol == "loadsol")
 		{
 			Scanner s2(sol + " " + id);
-			s = &factory->read_loadsol(&s2)->clone();
+			Solution<R, ADS>* tmp_s = NULL;
+			factory->readComponent(tmp_s, &s2);
+			s = &tmp_s->clone();
 		}
 
 		if (sol == "initsol")
 		{
 			Scanner s2(sol + " " + id);
 			cout << "Step 1: Testing solution generator... ";
-			InitialSolution<R, ADS>* initsol = factory->read_initsol(&s2);
+			InitialSolution<R, ADS>* initsol = NULL;
+         factory->readComponent(initsol, &s2);
+
 			s = &initsol->generateSolution();
 			if (!s)
 			{

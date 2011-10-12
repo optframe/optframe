@@ -77,9 +77,14 @@ public:
 	   return true;
 	}
 
-   virtual string id() const
+   static string idComponent()
    {
       return "OptFrame:loadsol";
+   }
+
+   virtual string id() const
+   {
+      return idComponent();
    }
 
 	virtual void print() const

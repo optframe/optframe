@@ -29,6 +29,8 @@ using namespace std;
 
 #include "RandGen.hpp"
 
+#include "OptFrameContainer.hpp"
+
 #include "Heuristic.hpp"
 
 #include "Heuristics/Empty.hpp"
@@ -60,24 +62,6 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_E
 class HeuristicFactory
 {
 private:
-	vector<InitialSolution<R, ADS>*> initsol;
-	vector<NS<R, ADS, M>*> ns;
-	vector<Evaluator<R, ADS, M>*> ev;
-	vector<ILSLPerturbation<R, ADS, M>*> ilsl_pert;
-	vector<BasicILSPerturbation<R, ADS, M>*> ils_pert;
-	vector<Intensification<R, ADS, M>*> ils_int;
-
-	vector<Solution<R, ADS>*> loadsol;
-	vector<Heuristic<R, ADS, M>*> method;
-
-	vector<InitialPopulation<R, ADS>*> initpop;
-	vector<Selection<R, ADS, M>*> ga_sel;
-	vector<Mutation<R, ADS, M>*> ga_mut;
-	vector<Crossover<R, ADS, M>*> ga_cross;
-	vector<Elitism<R, ADS, M>*> ga_elt;
-
-	vector<Population<R, ADS>*> loadpop;
-
 	RandGen& rg;
 
 public:
@@ -100,19 +84,6 @@ public:
       component = NULL;
    }
 
-	int addComponent(OptFrameComponent& component)
-   {
-      string id = component.id();
-
-      vector<OptFrameComponent*> v = components[id];
-      v.push_back(&component);
-      components[id] = v;
-
-      int idx = components[id].size() - 1;
-
-      return idx;
-   }
-
 	int addComponent(OptFrameComponent& component, string id)
    {
       if(!component.compatible(id))
@@ -131,6 +102,31 @@ public:
 
       return idx;
    }
+
+	int addComponent(OptFrameComponent& component)
+   {
+      return addComponent(component, component.id());
+   }
+
+	template< class T > void readComponent(T* component, Scanner* scanner)
+   {
+      string tmp = scanner->next();
+
+      if(tmp != T::idComponent())
+      {
+         cout << "Error: expected '" << T::idComponent() << "' and found '" << tmp << "'." << endl;
+         component = NULL;
+
+         return;
+      }
+
+      unsigned int number = scanner->nextInt();
+
+      component = NULL;
+
+      assign(component, tmp, number);
+   }
+
 
 #ifdef MaPI
 	MyMaPISerializer<R, ADS, M> * serializer;
@@ -152,109 +148,6 @@ public:
 	}
 #endif/**/
 
-	Solution<R, ADS>* read_loadsol(Scanner* scanner)
-	{
-		//cout << "DBG: " << loadsol.size() << endl;
-
-		string tmp = scanner->next();
-
-		if (tmp != "loadsol")
-		{
-			cout << "Error: expected 'loadsol' and found '" << tmp << "'." << endl;
-			return NULL;
-		}
-
-		unsigned int loadsol_id = scanner->nextInt();
-
-		if (loadsol.size() <= loadsol_id)
-		{
-			cout << "Error: solution number " << loadsol_id << " doesn't exist!" << endl;
-			return NULL;
-		}
-
-		return loadsol[loadsol_id];
-	}
-
-	InitialSolution<R, ADS>* read_initsol(Scanner* scanner)
-	{
-		string tmp = scanner->next();
-
-		if (tmp != "initsol")
-			cout << "Warning: expected 'initsol' and found '" << tmp << "'." << endl;
-
-		unsigned int initsol_id = scanner->nextInt();
-
-		if (initsol.size() <= initsol_id)
-		{
-			cout << "Error: initsol number " << initsol_id << " doesn't exist!" << endl;
-			exit(1);
-		}
-
-		return initsol[initsol_id];
-	}
-
-	Population<R, ADS>* read_loadpop(Scanner* scanner)
-	{
-		string tmp = scanner->next();
-
-		if (tmp != "loadpop")
-		{
-			cout << "Error: expected 'loadpop' and found '" << tmp << "'." << endl;
-			return NULL;
-		}
-
-		unsigned int loadpop_id = scanner->nextInt();
-
-		if (loadpop.size() <= loadpop_id)
-		{
-			cout << "Error: solution number " << loadpop_id << " doesn't exist!" << endl;
-			return NULL;
-		}
-
-		return loadpop[loadpop_id];
-	}
-
-	InitialPopulation<R, ADS>* read_initpop(Scanner* scanner)
-	{
-		string tmp = scanner->next();
-
-		if (tmp != "initpop")
-		{
-			cout << "Error: expected 'initpop' and found '" << tmp << "'." << endl;
-			return NULL;
-		}
-
-		unsigned int initpop_id = scanner->nextInt();
-
-		if (initpop.size() <= initpop_id)
-		{
-			cout << "Error: initpop number " << initpop_id << " doesn't exist!" << endl;
-			return NULL;
-		}
-
-		return initpop[initpop_id];
-	}
-
-	NS<R, ADS, M>* read_ns(Scanner* scanner)
-	{
-		string tmp = scanner->next();
-
-		if (tmp != "ns")
-		{
-			cout << "Warning: expected 'ns' and found '" << tmp << "'." << endl;
-			return NULL;
-		}
-
-		unsigned int ns_id = scanner->nextInt();
-
-		if (ns.size() <= ns_id)
-		{
-			cout << "Error: ns number " << ns_id << " doesn't exist!" << endl;
-			return NULL;
-		}
-
-		return ns[ns_id];
-	}
 
 	int read_np(Scanner* scanner)
 	{
@@ -289,23 +182,14 @@ public:
 		for (unsigned int i = 0; i < list.size(); i++)
 		{
 			aux = new Scanner(list.at(i));
-			tmp = aux->next();
-			if (tmp != "ns")
-			{
-				cout << "Error: expected 'ns' and found '" << tmp << "'." << endl;
-				return vector<NS<R, ADS, M>*>();
-			}
 
-			unsigned int ns_id = aux->nextInt();
+         NS<R, ADS, M>* ns;
+         readComponent(ns, aux);
 
-			if (ns.size() <= ns_id)
-			{
-				cout << "Error: ns number " << ns_id << " doesn't exist!" << endl;
-				return vector<NS<R, ADS, M>*>();
-			}
+         if(!ns)
+            return vector<NS<R, ADS, M>*>();
 
-			v_ns.push_back(ns[ns_id]);
-
+			v_ns.push_back(ns);
 		}
 
 		if (v_ns.size() == 0)
@@ -329,23 +213,14 @@ public:
 		for (unsigned int i = 0; i < list.size(); i++)
 		{
 			aux = new Scanner(list.at(i));
-			tmp = aux->next();
-			if (tmp != "ev")
-			{
-				cout << "Error: expected 'ev' and found '" << tmp << "'." << endl;
+
+			Evaluator<R, ADS, M> * ev;
+			readComponent(ev, aux);
+
+			if(!ev)
 				return vector<Evaluator<R, ADS, M> *>();
-			}
 
-			unsigned int ev_id = aux->nextInt();
-
-			if (ev.size() <= ev_id)
-			{
-				cout << "Error: ev number " << ev_id << " doesn't exist!" << endl;
-				return vector<Evaluator<R, ADS, M> *>();
-			}
-
-			v_ev.push_back(ev[ev_id]);
-
+			v_ev.push_back(ev);
 		}
 
 		if (v_ev.size() == 0)
@@ -381,181 +256,11 @@ public:
 
 	Evaluator<R, ADS, M>* read_ev(Scanner* scanner)
    {
-      string tmp = scanner->next();
-
-      if(tmp == "OptFrame:moev")
-      {
-         vector<Evaluator<R, ADS, M> *> evs = read_ev_list(scanner);
-
-         MultiObjectiveEvaluator<R, ADS, M>* moev = new MultiObjectiveEvaluator<R, ADS, M> (*evs[0]);
-
-         for(unsigned int i = 1; i < evs.size(); i++)
-            moev->add(*evs[i]);
-
-         return moev;
-      }
-      else
-         if(tmp != "OptFrame:ev")
-         {
-            cout << "Error: expected 'OptFrame:ev' and found '" << tmp << "'." << endl;
-            return NULL;
-         }
-
-      unsigned int ev_id = scanner->nextInt();
-
-      Evaluator<R, ADS, M>* evaluator = NULL;
-
-      assign(evaluator, tmp, ev_id);
-
-      return evaluator;
+      Evaluator<R, ADS, M>* ev = NULL;
+      readComponent(ev, scanner);
+      return ev;
    }
 
-	ILSLPerturbation<R, ADS, M>* read_ilsl_pert(Scanner* scanner)
-	{
-		string tmp = scanner->next();
-
-		if (tmp != "ilsl_pert")
-		{
-			cout << "Error: expected 'ilsl_pert' and found '" << tmp << "'." << endl;
-			return NULL;
-		}
-
-		unsigned int ilsl_pert_id = scanner->nextInt();
-
-		if (ilsl_pert.size() <= ilsl_pert_id)
-		{
-			cout << "Error: 'perturbation levels' number " << ilsl_pert_id << " doesn't exist!" << endl;
-			return NULL;
-		}
-
-		return ilsl_pert[ilsl_pert_id];
-	}
-
-	BasicILSPerturbation<R, ADS, M>* read_ils_pert(Scanner* scanner)
-	{
-		string tmp = scanner->next();
-
-		if (tmp != "ils_pert")
-		{
-			cout << "Error: expected 'ils_pert' and found '" << tmp << "'." << endl;
-			return NULL;
-		}
-
-		unsigned int ils_pert_id = scanner->nextInt();
-
-		if (ils_pert.size() <= ils_pert_id)
-		{
-			cout << "Error: 'perturbation levels' number " << ils_pert_id << " doesn't exist!" << endl;
-			return NULL;
-		}
-
-		return ils_pert[ils_pert_id];
-	}
-
-	Intensification<R, ADS, M> * read_ils_int(Scanner* scanner)
-	{
-		string tmp = scanner->next();
-
-		if (tmp != "ils_int")
-		{
-			cout << "Error: expected 'ils_int' and found '" << tmp << "'." << endl;
-			return NULL;
-		}
-
-		unsigned int ils_int_id = scanner->nextInt();
-
-		if (ils_int.size() <= ils_int_id)
-		{
-			cout << "Error: 'intensification' number " << ils_int_id << " doesn't exist!" << endl;
-			return NULL;
-		}
-
-		return ils_int[ils_int_id];
-	}
-
-	Selection<R, ADS, M>* read_ga_sel(Scanner* scanner)
-	{
-		string tmp = scanner->next();
-
-		if (tmp != "ga_sel")
-		{
-			cout << "Error: expected 'ga_sel' and found '" << tmp << "'." << endl;
-			return NULL;
-		}
-
-		int ga_sel_id = scanner->nextInt();
-
-		if (ga_sel.size() <= ga_sel_id)
-		{
-			cout << "Error: 'genetic selection' number " << ga_sel_id << " doesn't exist!" << endl;
-			return NULL;
-		}
-
-		return ga_sel[ga_sel_id];
-	}
-
-	Mutation<R, ADS, M>* read_ga_mut(Scanner* scanner)
-	{
-		string tmp = scanner->next();
-
-		if (tmp != "ga_mut")
-		{
-			cout << "Error: expected 'ga_mut' and found '" << tmp << "'." << endl;
-			return NULL;
-		}
-
-		int ga_mut_id = scanner->nextInt();
-
-		if (ga_mut.size() <= ga_mut_id)
-		{
-			cout << "Error: 'genetic mutation' number " << ga_mut_id << " doesn't exist!" << endl;
-			return NULL;
-		}
-
-		return ga_mut[ga_mut_id];
-	}
-
-	Elitism<R, ADS, M>* read_ga_elt(Scanner* scanner)
-	{
-		string tmp = scanner->next();
-
-		if (tmp != "ga_elt")
-		{
-			cout << "Error: expected 'ga_elt' and found '" << tmp << "'." << endl;
-			return NULL;
-		}
-
-		int ga_elt_id = scanner->nextInt();
-
-		if (ga_elt.size() <= ga_elt_id)
-		{
-			cout << "Error: 'genetic elitism' number " << ga_elt_id << " doesn't exist!" << endl;
-			return NULL;
-		}
-
-		return ga_elt[ga_elt_id];
-	}
-
-	Crossover<R, ADS, M>* read_ga_cross(Scanner* scanner)
-	{
-		string tmp = scanner->next();
-
-		if (tmp != "ga_cross")
-		{
-			cout << "Error: expected 'ga_cross' and found '" << tmp << "'." << endl;
-			return NULL;
-		}
-
-		int ga_cross_id = scanner->nextInt();
-
-		if (ga_cross.size() <= ga_cross_id)
-		{
-			cout << "Error: 'genetic crossover' number " << ga_cross_id << " doesn't exist!" << endl;
-			return NULL;
-		}
-
-		return ga_cross[ga_cross_id];
-	}
 
 	// ================================================================
 	// ================================================================
@@ -577,61 +282,24 @@ public:
 
    void drop_all()
    {
-		for (unsigned int i = 0; i < ns.size(); i++)
-			delete ns[i];
-                ns.clear();
+      cout << "drop_all()" << endl;
 
-		for (unsigned int i = 0; i < ev.size(); i++)
-			delete ev[i];
-                ev.clear();
+      map<string, vector<OptFrameComponent*> >::iterator iter;
 
-		for (unsigned int i = 0; i < initsol.size(); i++)
-			delete initsol[i];
-                initsol.clear();
+      for(iter = components.begin(); iter != components.end(); iter++)
+      {
+         cout << iter->first << " => " << endl;
 
-		for (unsigned int i = 0; i < loadsol.size(); i++)
-			delete loadsol[i];
-                loadsol.clear();
+         vector<OptFrameComponent*> v = iter->second;
 
-		for (unsigned int i = 0; i < method.size(); i++)
-			delete method[i];
-                method.clear();
+         for (unsigned int i = 0; i < v.size(); i++)
+         {
+            v[i]->print();
+            delete v[i];
+         }
 
-		for (unsigned int i = 0; i < initpop.size(); i++)
-			delete initpop[i];
-                initpop.clear();
-
-		for (unsigned int i = 0; i < loadpop.size(); i++)
-			delete loadpop[i];
-                loadpop.clear();
-
-		for (unsigned int i = 0; i < ilsl_pert.size(); i++)
-			delete ilsl_pert[i];
-                ilsl_pert.clear();
-
-		for (unsigned int i = 0; i < ils_pert.size(); i++)
-			delete ils_pert[i];
-                ils_pert.clear();
-
-		for (unsigned int i = 0; i < ils_int.size(); i++)
-			delete ils_int[i];
-                ils_int.clear();
-
-		for (unsigned int i = 0; i < ga_sel.size(); i++)
-			delete ga_sel[i];
-                ga_sel.clear();
-
-		for (unsigned int i = 0; i < ga_mut.size(); i++)
-			delete ga_mut[i];
-                ga_mut.clear();
-
-		for (unsigned int i = 0; i < ga_cross.size(); i++)
-			delete ga_cross[i];
-                ga_cross.clear();
-
-		for (unsigned int i = 0; i < ga_elt.size(); i++)
-			delete ga_elt[i];
-                ga_elt.clear();
+         iter->second.clear();
+      }
    }
 
 
@@ -762,17 +430,18 @@ public:
 
 		string h = scanner.next();
 
-		if (h == "method")
+		if (h == "OptFrame:method")
 		{
 			unsigned int id = scanner.nextInt();
 
-			if(id >= method.size())
-			{
-	         cout << "Error: method number " << id << " doesn't exist!" << endl;
-	         return make_pair(new Empty<R, ADS, M> , scanner.rest());
-			}
+			Heuristic<R, ADS, M>* mtd = NULL;
 
-			return make_pair(method[id], scanner.rest());
+			assign(mtd, "OptFrame:method", id);
+
+			if(!mtd)
+	         return make_pair(new Empty<R, ADS, M> , scanner.rest());
+
+			return make_pair(mtd, scanner.rest());
 		}
 
 		if (h == "Empty")
@@ -786,7 +455,9 @@ public:
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			NSSeq<R, ADS, M>* ns_seq = (NSSeq<R, ADS, M>*) read_ns(&scanner);
+			NSSeq<R, ADS, M>* ns_seq = NULL;
+			readComponent(ns_seq, &scanner);
+			//= (NSSeq<R, ADS, M>*) read_ns(&scanner);
 			if(!ns_seq)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -801,7 +472,9 @@ public:
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			NSSeq<R, ADS, M>* ns_seq = (NSSeq<R, ADS, M>*) read_ns(&scanner);
+         NSSeq<R, ADS, M>* ns_seq = NULL;
+         readComponent(ns_seq, &scanner);
+
 			if(!ns_seq)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -813,7 +486,8 @@ public:
          cout << "Heuristic: Circular Search" << endl;
 
          Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
-         NSEnum<R, ADS, M>* ns_enum = (NSEnum<R, ADS, M>*) read_ns(&scanner);
+         NSEnum<R, ADS, M>* ns_enum = NULL;
+         readComponent(ns_enum, &scanner);
 
          return make_pair(new CircularSearch<R, ADS, M> (*evaluator, *ns_enum), scanner.rest());
       }
@@ -844,7 +518,9 @@ public:
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			NS<R, ADS, M>* ns = (NS<R, ADS, M>*) read_ns(&scanner);
+         NS<R, ADS, M>* ns = NULL;
+         readComponent(ns, &scanner);
+
 			if(!ns)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -861,7 +537,9 @@ public:
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			InitialSolution<R, ADS>* initsol = read_initsol(&scanner);
+			InitialSolution<R, ADS>* initsol = NULL;
+			readComponent(initsol, &scanner);
+
 			if(!initsol)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -887,7 +565,9 @@ public:
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			NSSeq<R, ADS, M>* ns = (NSSeq<R, ADS, M>*) read_ns(&scanner);
+			NSSeq<R, ADS, M>* ns = NULL;
+			readComponent(ns, &scanner);
+
 			if(!ns)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -920,7 +600,9 @@ public:
 
 			// ====================
 
-			BasicILSPerturbation<R, ADS, M>* ils_pert = read_ils_pert(&scanner);
+			BasicILSPerturbation<R, ADS, M>* ils_pert = NULL;
+			readComponent(ils_pert, &scanner);
+
 			if(!ils_pert)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -971,7 +653,9 @@ public:
 
 			// ====================
 
-			ILSLPerturbation<R, ADS, M>* ilsl_pert = read_ilsl_pert(&scanner);
+			ILSLPerturbation<R, ADS, M>* ilsl_pert = NULL;
+         readComponent(ilsl_pert, &scanner);
+
 			if(!ilsl_pert)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -1013,13 +697,17 @@ public:
 
 			 scanner = Scanner(method2.second);*/
 
-			Intensification<R, ADS, M> * intensification = read_ils_int(&scanner);
+			Intensification<R, ADS, M> * intensification = NULL;
+         readComponent(intensification, &scanner);
+
 			if(!intensification)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 			// ====================
 
-			ILSLPerturbation<R, ADS, M>* ilsl_pert = read_ilsl_pert(&scanner);
+			ILSLPerturbation<R, ADS, M>* ilsl_pert = NULL;
+         readComponent(ilsl_pert, &scanner);
+
 			if(!ilsl_pert)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -1084,7 +772,9 @@ public:
 
 			// ====================
 
-			ILSLPerturbation<R, ADS, M>* ilsl_pert = read_ilsl_pert(&scanner);
+			ILSLPerturbation<R, ADS, M>* ilsl_pert = NULL;
+         readComponent(ilsl_pert, &scanner);
+
 			if(!ilsl_pert)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 

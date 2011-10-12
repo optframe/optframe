@@ -96,9 +96,14 @@ public:
 		return partialEvaluators[0]->betterThan(a, b);
 	}
 
-   virtual string id() const
+   static string idComponent()
    {
       return "OptFrame:moev";
+   }
+
+   virtual string id() const
+   {
+      return idComponent();
    }
 };
 

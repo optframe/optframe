@@ -60,7 +60,8 @@ public:
 		int t = scanner.nextDouble();
 		double tf = scanner.nextDouble();
 		double bf = scanner.nextDouble();
-		InitialSolution<R, ADS>* initsol = factory->read_initsol(&scanner);
+		InitialSolution<R, ADS>* initsol = NULL;
+      factory->readComponent(initsol, &scanner);
 		Evaluator<R, ADS, M>* eval = factory->read_ev(&scanner);
 		pair<Heuristic<R, ADS, M>*, string> method = factory->createHeuristic(scanner.rest());
 

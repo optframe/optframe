@@ -35,7 +35,15 @@ public:
    {
    }
 
-   virtual string id() const = 0;
+   static string idComponent()
+   {
+      return "OptFrame:";
+   }
+
+   virtual string id() const
+   {
+      return idComponent();
+   }
 
    virtual bool compatible(string s)
    {

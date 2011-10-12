@@ -80,6 +80,12 @@ public:
    {
       return "OptFrame:ILS:basic_pert";
    }
+
+   static string idComponent()
+   {
+      return "OptFrame:ILS:basic_pert";
+   }
+
 };
 
 #endif /*OPTFRAME_BASICILSPerturbation_HPP_*/

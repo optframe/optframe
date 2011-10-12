@@ -62,7 +62,8 @@ public:
 		string id = scanner.next();
 
 		Scanner s2(sol + " " + id);
-		Solution<R, ADS>* s = factory->read_loadsol(&s2);
+		Solution<R, ADS>* s = NULL;
+      factory->readComponent(s, &s2);
 
 		Evaluation<M>* e = &eval->evaluate(*s);
 		e->print();

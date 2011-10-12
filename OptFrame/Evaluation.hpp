@@ -89,9 +89,14 @@ public:
 	virtual double evaluation() const { return objFunction + infMeasure; }
 	virtual bool   isFeasible() const { return (abs(infMeasure)<0.0001); }
 
-   virtual string id() const
+   static string idComponent()
    {
       return "OptFrame:loadev";
+   }
+
+   virtual string id() const
+   {
+      return idComponent();
    }
 
 	virtual void print() const

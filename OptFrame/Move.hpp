@@ -78,9 +78,14 @@ public:
 		return !(*this == m);
 	}
 
-   virtual string id() const
+   static string idComponent()
    {
       return "OptFrame:move";
+   }
+
+   virtual string id() const
+   {
+      return idComponent();
    }
 
 	virtual void print() const = 0;

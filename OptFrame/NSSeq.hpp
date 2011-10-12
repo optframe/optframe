@@ -50,14 +50,19 @@ public:
 		return getIterator(r);
 	}
 
-   virtual string id() const
+   static string idComponent()
    {
       return "OptFrame:nsseq";
    }
 
+   virtual string id() const
+   {
+      return idComponent();
+   }
+
    virtual bool compatible(string s)
    {
-      return ( s == id() ) || ( NS<R, ADS, M>::compatible(s) );
+      return ( s == idComponent() ) || ( NS<R, ADS, M>::compatible(s) );
    }
 
 	virtual void print() const = 0;

@@ -28,10 +28,20 @@
 #include "../RandGen.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ILSLPerturbation
+class ILSLPerturbation : public OptFrameComponent
 {
 public:
 	virtual void perturb(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f, int level) = 0;
+
+   static string idComponent()
+   {
+      return "OptFrame:ILS:ilsl_pert";
+   }
+
+   virtual string id() const
+   {
+      return idComponent();
+   }
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
@@ -85,9 +95,14 @@ public:
 		evaluator.evaluate(e, s); // updates 'e'
 	}
 
-	virtual string id() const
+   static string idComponent()
    {
-      return "OptFrame:ILS:ilsl_pert";
+      return "OptFrame:ILS:ilsl_pert_lp2";
+   }
+
+   virtual string id() const
+   {
+      return idComponent();
    }
 };
 

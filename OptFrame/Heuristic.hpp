@@ -269,9 +269,14 @@ public:
       return "Empty heuristic log.";
    }
 
-   virtual string id() const
+   static string idComponent()
    {
       return "OptFrame:method";
+   }
+
+   virtual string id() const
+   {
+      return idComponent();
    }
 
 };

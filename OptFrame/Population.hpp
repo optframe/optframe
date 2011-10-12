@@ -143,9 +143,14 @@ public:
 		return *new Population<R, ADS> (*this);
 	}
 
-   virtual string id() const
+   static string idComponent()
    {
       return "OptFrame:loadpop";
+   }
+
+   virtual string id() const
+   {
+      return idComponent();
    }
 
 	virtual void print() const

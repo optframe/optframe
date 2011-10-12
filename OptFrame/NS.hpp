@@ -42,9 +42,19 @@ public:
 
     virtual Move<R, ADS, M>& move(const R&) = 0;
 
-    virtual string id() const
+    static string idComponent()
     {
        return "OptFrame:ns";
+    }
+
+    virtual string id() const
+    {
+       return idComponent();
+    }
+
+    virtual bool compatible(string s)
+    {
+       return ( s == idComponent() );
     }
 
 	virtual void print() const = 0;

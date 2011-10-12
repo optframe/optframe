@@ -60,14 +60,19 @@ public:
 
 	virtual unsigned int size() const = 0;
 
-   virtual string id() const
+   static string idComponent()
    {
       return "OptFrame:nsenum";
    }
 
+   virtual string id() const
+   {
+      return idComponent();
+   }
+
    virtual bool compatible(string s)
    {
-      return ( s == id() ) || ( NSSeq<R, ADS, M>::compatible(s) );
+      return ( s == idComponent() ) || ( NSSeq<R, ADS, M>::compatible(s) );
    }
 
 	virtual void print() const = 0;

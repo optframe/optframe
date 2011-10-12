@@ -62,7 +62,8 @@ public:
 		{
 			string id = scanner.next();
 			Scanner pop(sol + " " + id);
-			Population<R, ADS>* p = factory->read_loadpop(&pop);
+			Population<R, ADS>* p = NULL;
+         factory->readComponent(p, &pop);
 			p->print();
 			return;
 		}
@@ -70,7 +71,8 @@ public:
 		string id = scanner.next();
 
 		Scanner s2(sol + " " + id);
-		Solution<R, ADS>* s = factory->read_loadsol(&s2);
+		Solution<R, ADS>* s = NULL;
+      factory->readComponent(s, &s2);
 		s->print();
 	}
 

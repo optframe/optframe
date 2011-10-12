@@ -18,30 +18,43 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_INITIALSOLUTION_H_
-#define OPTFRAME_INITIALSOLUTION_H_
+#ifndef OPTFRAME_CONTAINER_HPP_
+#define OPTFRAME_CONTAINER_HPP_
 
-#include "Solution.hpp"
+#include <cstdlib>
+#include <iostream>
+#include <vector>
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class InitialSolution : public OptFrameComponent
+using namespace std;
+
+template< class T >
+class OptFrameContainer :
+      public OptFrameComponent
 {
+private:
+   T t;
+
 public:
-	virtual ~InitialSolution()
-	{
-	}
 
-	virtual Solution<R, ADS>& generateSolution() = 0;
-
-   static string idComponent()
+   OptFrameContainer(T _t) :
+      t(_t)
    {
-      return "OptFrame:initsol";
+   }
+
+   virtual ~OptFrameContainer()
+   {
+   }
+
+   T getContent()
+   {
+      return t;
    }
 
    virtual string id() const
    {
-      return idComponent();
+      return "container";
    }
+
 };
 
-#endif /*OPTFRAME_INITIALSOLUTION_H_*/
+#endif /* OPTFRAME_CONTAINER_HPP_ */

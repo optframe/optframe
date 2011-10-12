@@ -38,9 +38,14 @@ public:
 
    virtual Population<R, ADS>& generatePopulation(unsigned populationSize) = 0;
 
-   virtual string id() const
+   static string idComponent()
    {
       return "OptFrame:initpop";
+   }
+
+   virtual string id() const
+   {
+      return idComponent();
    }
 };
 
