@@ -68,17 +68,39 @@ public:
 
 	map<string, vector<OptFrameComponent*> > components;
 
-	template< class T > void assign(T* component, string id, unsigned number)
+	OptFrameComponent* getNextComponent(Scanner* scanner)
+   {
+	   string id = scanner->next();
+	   unsigned number = scanner->nextInt();
+
+      OptFrameComponent* component = NULL;
+
+      if(components.count(id) > 0)
+      {
+         vector<OptFrameComponent*> v = components[id];
+
+         if(number < v.size())
+            component = v[number];
+      }
+      else
+         cout << "'" << id << "' not found!" << endl;
+
+      return component;
+   }
+
+	template< class T > void assign(T*& component, string id, unsigned number)
    {
       if(components.count(id) > 0)
       {
          vector<OptFrameComponent*> v = components[id];
          if(number < v.size())
          {
-            component = (T*) v[number];
+            component = ((T*) v[number]) ;
             return;
          }
       }
+      else
+         cout << "'" << id << "' not found!" << endl;
 
       // not found!
       component = NULL;
@@ -108,7 +130,7 @@ public:
       return addComponent(component, component.id());
    }
 
-	template< class T > void readComponent(T* component, Scanner* scanner)
+	template< class T > void readComponent(T*& component, Scanner* scanner)
    {
       string tmp = scanner->next();
 
@@ -258,6 +280,7 @@ public:
    {
       Evaluator<R, ADS, M>* ev = NULL;
       readComponent(ev, scanner);
+
       return ev;
    }
 
@@ -282,21 +305,14 @@ public:
 
    void drop_all()
    {
-      cout << "drop_all()" << endl;
-
       map<string, vector<OptFrameComponent*> >::iterator iter;
 
       for(iter = components.begin(); iter != components.end(); iter++)
       {
-         cout << iter->first << " => " << endl;
-
          vector<OptFrameComponent*> v = iter->second;
 
          for (unsigned int i = 0; i < v.size(); i++)
-         {
-            v[i]->print();
             delete v[i];
-         }
 
          iter->second.clear();
       }
@@ -447,7 +463,7 @@ public:
 		if (h == "Empty")
 			return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-		if (h == "BI")
+		if (h == "OptFrame:bi")
 		{
 			cout << "Heuristic: Best Improvement" << endl;
 
@@ -455,11 +471,12 @@ public:
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			NSSeq<R, ADS, M>* ns_seq = NULL;
-			readComponent(ns_seq, &scanner);
-			//= (NSSeq<R, ADS, M>*) read_ns(&scanner);
+			NSSeq<R, ADS, M>* ns_seq = (NSSeq<R, ADS, M>*) getNextComponent(&scanner);
+
 			if(!ns_seq)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
+
+			cout << "ok" << endl;
 
 			return make_pair(new BestImprovement<R, ADS, M> (*evaluator, *ns_seq), scanner.rest());
 		}
@@ -472,8 +489,7 @@ public:
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-         NSSeq<R, ADS, M>* ns_seq = NULL;
-         readComponent(ns_seq, &scanner);
+         NSSeq<R, ADS, M>* ns_seq = (NSSeq<R, ADS, M>*) getNextComponent(&scanner);
 
 			if(!ns_seq)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
@@ -518,8 +534,7 @@ public:
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-         NS<R, ADS, M>* ns = NULL;
-         readComponent(ns, &scanner);
+         NS<R, ADS, M>* ns = (NS<R, ADS, M>*) getNextComponent(&scanner);
 
 			if(!ns)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
@@ -565,16 +580,15 @@ public:
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			NSSeq<R, ADS, M>* ns = NULL;
-			readComponent(ns, &scanner);
+         NSSeq<R, ADS, M>* ns_seq = (NSSeq<R, ADS, M>*) getNextComponent(&scanner);
 
-			if(!ns)
+			if(!ns_seq)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 			int tamT = scanner.nextInt();
 			int BTmax = scanner.nextInt();
 
-			return make_pair(new TabuSearch<R, ADS, M> (*evaluator, *ns, tamT, BTmax), scanner.rest());
+			return make_pair(new TabuSearch<R, ADS, M> (*evaluator, *ns_seq, tamT, BTmax), scanner.rest());
 		}
 
 		if (h == "ILS")

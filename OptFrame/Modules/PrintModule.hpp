@@ -51,14 +51,14 @@ public:
 
 		string sol = scanner.next();
 
-		if (sol != "loadsol" && sol != "loadpop")
+		if (sol != Solution<R,ADS>::idComponent() && sol != Population<R,ADS>::idComponent())
 		{
 			cout << "First parameter must be a 'loadsol' or  a 'loadpop'!" << endl;
 			cout << "Usage: " << usage() << endl;
 			return;
 		}
 
-		if (sol == "loadpop")
+		if (sol == Population<R,ADS>::idComponent())
 		{
 			string id = scanner.next();
 			Scanner pop(sol + " " + id);

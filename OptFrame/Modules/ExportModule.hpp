@@ -61,7 +61,7 @@ public:
 
 		string sol = scanner.next();
 
-		if (sol != "initsol" && sol != "loadsol")
+		if (sol != InitialSolution<R,ADS>::idComponent() && sol != Solution<R,ADS>::idComponent())
 		{
 			cout << "First parameter must be either 'initsol' or 'loadsol'!"
 					<< endl;
@@ -79,7 +79,7 @@ public:
 
 		if (id == "*") // Saving all solutions
 		{
-			if (sol == "initsol")
+			if (sol == InitialSolution<R,ADS>::idComponent())
 			{
 				//for (int i = 0; i < (factory->initsol_size()); i++)
 			   for (int i = 0; i < 0; i++) // TODO fix this!
@@ -193,7 +193,7 @@ public:
 
 			Solution<R, ADS>* s = NULL;
 
-			if (sol == "initsol")
+			if (sol == InitialSolution<R,ADS>::idComponent())
 			{
 			   InitialSolution<R, ADS>* initsol = NULL;
 	         factory->readComponent(initsol, &s2);

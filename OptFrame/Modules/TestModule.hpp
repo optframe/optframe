@@ -72,10 +72,10 @@ public:
       string sol_option = scanner.next();
       int option_id = scanner.nextInt();
 
-      if (sol_option == "loadsol")
+      if (sol_option == "OptFrame:loadsol")
          factory->assign(s, "OptFrame:loadsol", option_id);
 
-      if (sol_option == "initsol")
+      if (sol_option == "OptFrame:initsol")
          factory->assign(initsol, "OptFrame:initsol", option_id);
 
       // -------------------------------
@@ -133,6 +133,8 @@ public:
 
          if (initsol)
             s = &initsol->generateSolution();
+         else
+            cout << "no initsol!" << endl;
 
 			t_now = t.now();
 			Evaluation< M > & e = eval->evaluate(*s);
@@ -209,7 +211,7 @@ public:
 		int new_id = factory->addComponent(*s_star);
 
 		stringstream str;
-		str << "loadsol " << new_id;
+		str << "OptFrame:loadsol " << new_id;
 		string s_new_id = str.str();
 
 		cout << "'" << s_new_id << "' added." << endl;

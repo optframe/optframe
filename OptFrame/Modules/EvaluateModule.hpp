@@ -52,7 +52,7 @@ public:
 
 		string sol = scanner.next();
 
-		if (sol != "loadsol")
+		if (sol != Solution<R,ADS>::idComponent())
 		{
 			cout << "Second parameter must be a 'loadsol'!" << endl;
 			cout << "Usage: " << usage() << endl;
