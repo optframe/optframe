@@ -113,9 +113,9 @@ public:
 			f++;
 		if (((x1 - 1) >= 0) && (rep(x1, y1).up == rep(x1 - 1, y1).down))
 			f++;
-		if (((y1 + 1) < rep.getNumCols()) && (rep(x1, y1).right == rep(x1, y1 + 1).left))
+		if (((y1 + 1) < (int)rep.getNumCols()) && (rep(x1, y1).right == rep(x1, y1 + 1).left))
 			f++;
-		if (((x1 + 1) < rep.getNumRows()) && (rep(x1, y1).down == rep(x1 + 1, y1).up))
+		if (((x1 + 1) < (int)rep.getNumRows()) && (rep(x1, y1).down == rep(x1 + 1, y1).up))
 			f++;
 
 		int g = 0;
@@ -123,9 +123,9 @@ public:
 			g++;
 		if (((x2 - 1) >= 0) && (rep(x2, y2).up == rep(x2 - 1, y2).down) && !(((x2 - 1) == x1) && (y2 == y1)))
 			g++;
-		if (((y2 + 1) < rep.getNumCols()) && (rep(x2, y2).right == rep(x2, y2 + 1).left) && !((x2 == x1) && ((y2 + 1) == y1)))
+		if (((y2 + 1) < (int)rep.getNumCols()) && (rep(x2, y2).right == rep(x2, y2 + 1).left) && !((x2 == x1) && ((y2 + 1) == y1)))
 			g++;
-		if (((x2 + 1) < rep.getNumRows()) && (rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
+		if (((x2 + 1) < (int)rep.getNumRows()) && (rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
 			g++;
 
 		Move<RepEtII, MemEtII>& rev = apply(rep);
@@ -135,9 +135,9 @@ public:
 			f2++;
 		if (((x1 - 1) >= 0) && (rep(x1, y1).up == rep(x1 - 1, y1).down))
 			f2++;
-		if (((y1 + 1) < rep.getNumCols()) && (rep(x1, y1).right == rep(x1, y1 + 1).left))
+		if (((y1 + 1) < (int)rep.getNumCols()) && (rep(x1, y1).right == rep(x1, y1 + 1).left))
 			f2++;
-		if (((x1 + 1) < rep.getNumRows()) && (rep(x1, y1).down == rep(x1 + 1, y1).up))
+		if (((x1 + 1) < (int)rep.getNumRows()) && (rep(x1, y1).down == rep(x1 + 1, y1).up))
 			f2++;
 
 		int g2 = 0;
@@ -145,9 +145,9 @@ public:
 			g2++;
 		if (((x2 - 1) >= 0) && (rep(x2, y2).up == rep(x2 - 1, y2).down) && !(((x2 - 1) == x1) && (y2 == y1)))
 			g2++;
-		if (((y2 + 1) < rep.getNumCols()) && (rep(x2, y2).right == rep(x2, y2 + 1).left) && !((x2 == x1) && ((y2 + 1) == y1)))
+		if (((y2 + 1) < (int)rep.getNumCols()) && (rep(x2, y2).right == rep(x2, y2 + 1).left) && !((x2 == x1) && ((y2 + 1) == y1)))
 			g2++;
-		if (((x2 + 1) < rep.getNumRows()) && (rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
+		if (((x2 + 1) < (int)rep.getNumRows()) && (rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
 			g2++;
 
 		mem += (f2 - f);
