@@ -24,7 +24,7 @@
 #include "MapReduce++/MaPI/MaPI.h"
 
 #include "../Util/TestSolution.hpp"
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 #include "../NSEnum.hpp"
 #include "../Evaluator.hpp"
 
@@ -66,14 +66,14 @@ class MyMaPIMapper: public MaPI_Mapper<R, RankAndStop, int, pair<R, double> , R>
 {
 private:
 	Evaluator<R, ADS, M>& eval;
-	Heuristic<R, ADS, M>* hmap;
+	HTrajectory<R, ADS, M>* hmap;
 public:
 	MyMaPIMapper(MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mr, MaPI_Serializer<R, RankAndStop, int, pair<R, double> , R> * s, Evaluator<R, ADS, M>& _eval) :
 		MaPI_Mapper<R, RankAndStop, int, pair<R, double> , R> (mr,s), eval(_eval)
 	{
 	}
 
-	void setHeuristic(Heuristic<R, ADS, M>* h) {hmap = h;}
+	void setHeuristic(HTrajectory<R, ADS, M>* h) {hmap = h;}
 
 	virtual vector<pair<int, pair<R, double> > > map(pair<R, RankAndStop> a) // TODO
 	{
@@ -100,14 +100,14 @@ class MyMaPIReducer: public MaPI_Reducer<R, RankAndStop, int, pair<R, double> , 
 {
 private:
 	Evaluator<R, ADS, M>& eval;
-	Heuristic<R, ADS, M>* hreduce;
+	HTrajectory<R, ADS, M>* hreduce;
 public:
 	MyMaPIReducer(MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mr, MaPI_Serializer<R, RankAndStop, int, pair<R, double> , R> * s,Evaluator<R, ADS, M>& _eval) :
 		MaPI_Reducer<R, RankAndStop, int, pair<R, double> , R> (mr,s),eval(_eval),hreduce(NULL)
 	{
 	}
 
-	void setHeuristic(Heuristic<R, ADS, M>* h) {hreduce = h;}
+	void setHeuristic(HTrajectory<R, ADS, M>* h) {hreduce = h;}
 
 	virtual pair<int, R> reduce(pair<int, vector<pair<R, double> > > bs)
 	{
@@ -175,7 +175,7 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class OptFrameMapReduce: public Heuristic<R, ADS, M>
+class OptFrameMapReduce: public HTrajectory<R, ADS, M>
 {
 private:
 	Evaluator<R, ADS, M>& evaluator;
@@ -187,7 +187,7 @@ private:
 
 public:
 
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
 	OptFrameMapReduce(
 			MyMaPISerializer<R, ADS, M> &_serializer,

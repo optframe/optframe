@@ -99,7 +99,7 @@ public:
 		double target_fo = scanner.nextDouble();
 		double timelimit = scanner.nextDouble();
 
-		pair<Heuristic<R, ADS, M>*, string> method = factory->createHeuristic(scanner.rest());
+		pair<HTrajectory<R, ADS, M>*, string> method = factory->createHeuristic(scanner.rest());
 		scanner = Scanner(method.second);
 
 		// ---

@@ -21,12 +21,12 @@
 #ifndef OPTFRAME_TABUSEARCH_HPP_
 #define OPTFRAME_TABUSEARCH_HPP_
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 #include "../NSEnum.hpp"
 #include "../Evaluator.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class TabuSearch: public Heuristic<R, ADS, M>
+class TabuSearch: public HTrajectory<R, ADS, M>
 {
 private:
    Evaluator<R, ADS, M>& evaluator;
@@ -36,7 +36,7 @@ private:
 
 public:
 
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
 	TabuSearch(Evaluator<R, ADS, M>& _ev, NSSeq<R, ADS, M>& _nsSeq, int _tlSize, int _tsMax) :
 		evaluator(_ev), nsSeq(_nsSeq), tlSize(_tlSize), tsMax(_tsMax)

@@ -81,9 +81,9 @@ public:
       // -------------------------------
 
 		Evaluator<R, ADS, M>* eval = factory->read_ev(&scanner);
-		pair<Heuristic<R, ADS, M>*, string> method = factory->createHeuristic(scanner.rest());
+		pair<HTrajectory<R, ADS, M>*, string> method = factory->createHeuristic(scanner.rest());
 
-		Heuristic<R, ADS, M>* h = method.first;
+		HTrajectory<R, ADS, M>* h = method.first;
 
 		string rest = method.second;
 

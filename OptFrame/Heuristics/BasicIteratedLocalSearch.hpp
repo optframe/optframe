@@ -33,13 +33,13 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_E
 class BasicIteratedLocalSearch: public IteratedLocalSearch<BasicHistory, R, ADS, M>
 {
 protected:
-	Heuristic<R, ADS, M>& h;
+	HTrajectory<R, ADS, M>& h;
 	BasicILSPerturbation<R, ADS, M>& p;
 	int iterMax;
 
 public:
 
-	BasicIteratedLocalSearch(Evaluator<R, ADS, M>& e, Heuristic<R, ADS, M>& _h, BasicILSPerturbation<R, ADS, M>& _p, int _iterMax) :
+	BasicIteratedLocalSearch(Evaluator<R, ADS, M>& e, HTrajectory<R, ADS, M>& _h, BasicILSPerturbation<R, ADS, M>& _p, int _iterMax) :
 		IteratedLocalSearch<BasicHistory, R, ADS, M> (e), h(_h), p(_p), iterMax(_iterMax)
 	{
 	}

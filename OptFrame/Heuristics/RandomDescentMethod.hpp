@@ -21,10 +21,10 @@
 #ifndef OPTFRAME_RDM_HPP_
 #define OPTFRAME_RDM_HPP_
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class RandomDescentMethod: public Heuristic<R, ADS, M>
+class RandomDescentMethod: public HTrajectory<R, ADS, M>
 {
 private:
    Evaluator<R, ADS, M>& evaluator;
@@ -33,7 +33,7 @@ private:
 
 public:
 
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
 	RandomDescentMethod(Evaluator<R, ADS, M>& _eval, NS<R, ADS, M>& _ns, unsigned int _iterMax) :
 		evaluator(_eval), ns(_ns), iterMax(_iterMax)

@@ -23,7 +23,7 @@
 
 #include <algorithm>
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 #include "../Evaluator.hpp"
 #include "../Population.hpp"
 #include "../NSSeq.hpp"
@@ -31,7 +31,7 @@
 #include "../ParetoDominanceWeak.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class MOVNS: public Heuristic<R, ADS, M>
+class MOVNS: public HTrajectory<R, ADS, M>
 {
 	typedef vector<Evaluation<M>*> FitnessValues;
 
@@ -43,7 +43,7 @@ private:
 	RandGen& rg;
 
 public:
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
 	MOVNS(vector<Evaluator<R, ADS, M>*> _v_e, vector<NSSeq<R, ADS, M>*> _neighbors, RandGen& _rg) :
 		v_e(_v_e), neighbors(_neighbors), rg(_rg)

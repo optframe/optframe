@@ -21,22 +21,22 @@
 #ifndef OPTFRAME_GRASP_HPP_
 #define OPTFRAME_GRASP_HPP_
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class GRASP: public Heuristic<R, ADS, M>
+class GRASP: public HTrajectory<R, ADS, M>
 {
 private:
 	Evaluator<R, ADS, M>& evaluator;
    InitialSolution<R, ADS>& initsol;
-	Heuristic<R, ADS, M>& h;
+	HTrajectory<R, ADS, M>& h;
 	unsigned int iterMax;
 
 public:
 
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
-	GRASP(Evaluator<R, ADS, M>& _eval, InitialSolution<R, ADS>& _initsol, Heuristic<R, ADS, M>& _h, int _iterMax) :
+	GRASP(Evaluator<R, ADS, M>& _eval, InitialSolution<R, ADS>& _initsol, HTrajectory<R, ADS, M>& _h, int _iterMax) :
 		evaluator(_eval), initsol(_initsol), h(_h)
 	{
 	   iterMax = _iterMax;

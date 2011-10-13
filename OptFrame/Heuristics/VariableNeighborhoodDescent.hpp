@@ -21,17 +21,17 @@
 #ifndef VARIABLENEIGHBORHOODDESCENT_HPP_
 #define VARIABLENEIGHBORHOODDESCENT_HPP_
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 #include "../NSEnum.hpp"
 #include "../Evaluator.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class VariableNeighborhoodDescent: public Heuristic<R, ADS, M>
+class VariableNeighborhoodDescent: public HTrajectory<R, ADS, M>
 {
 public:
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
-	VariableNeighborhoodDescent(Evaluator<R, ADS, M>& _ev, vector<Heuristic<R, ADS, M>*> _neighbors) :
+	VariableNeighborhoodDescent(Evaluator<R, ADS, M>& _ev, vector<HTrajectory<R, ADS, M>*> _neighbors) :
 		ev(_ev), neighbors(_neighbors)
 	{
 	}
@@ -91,7 +91,7 @@ public:
 
 private:
 	Evaluator<R, ADS, M>& ev;
-	vector<Heuristic<R, ADS, M>*> neighbors;
+	vector<HTrajectory<R, ADS, M>*> neighbors;
 };
 
 #endif /*VARIABLENEIGHBORHOODDESCENT_HPP_*/

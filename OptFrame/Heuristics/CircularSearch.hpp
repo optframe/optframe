@@ -21,12 +21,12 @@
 #ifndef OPTFRAME_CS_HPP_
 #define OPTFRAME_CS_HPP_
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 #include "../NSSeq.hpp"
 #include "../Evaluator.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class CircularSearch: public Heuristic<R, ADS, M>
+class CircularSearch: public HTrajectory<R, ADS, M>
 {
 private:
    Evaluator<R, ADS, M>& eval;
@@ -36,7 +36,7 @@ private:
 
 public:
 
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
 	CircularSearch(Evaluator<R, ADS, M>& _eval, NSEnum<R, ADS, M>& _nsEnum) :
 		eval(_eval), ns(_nsEnum)

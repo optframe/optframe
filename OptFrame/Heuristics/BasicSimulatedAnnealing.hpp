@@ -21,11 +21,11 @@
 #ifndef OPTFRAME_BSA_HPP_
 #define OPTFRAME_BSA_HPP_
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 #include <math.h>
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class BasicSimulatedAnnealing: public Heuristic<R, ADS, M>
+class BasicSimulatedAnnealing: public HTrajectory<R, ADS, M>
 {
 private:
 	Evaluator<R, ADS, M>& evaluator;
@@ -37,7 +37,7 @@ private:
 
 public:
 
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
 	BasicSimulatedAnnealing(Evaluator<R, ADS, M>& _evaluator, vector<NS<R, ADS, M>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), neighbors(_neighbors), rg(_rg)

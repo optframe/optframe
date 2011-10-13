@@ -24,18 +24,18 @@
 #include <math.h>
 #include <vector>
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 #include "../Evaluator.hpp"
 
 template<class H, class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class IteratedLocalSearch: public Heuristic<R, ADS, M>
+class IteratedLocalSearch: public HTrajectory<R, ADS, M>
 {
 protected:
 	Evaluator<R, ADS, M>& evaluator;
 
 public:
 
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
 	IteratedLocalSearch(Evaluator<R, ADS, M>& _evaluator) :
 		evaluator(_evaluator)

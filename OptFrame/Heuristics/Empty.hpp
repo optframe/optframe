@@ -21,14 +21,14 @@
 #ifndef OPTFRAME_EMPTY_HPP_
 #define OPTFRAME_EMPTY_HPP_
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class Empty : public Heuristic<R, ADS, M>
+class Empty : public HTrajectory<R, ADS, M>
 {
 public:
 
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
 	Empty(){};
     virtual void exec(Solution<R, ADS>&, double timelimit, double target_f){};

@@ -21,10 +21,10 @@
 #ifndef OPTFRAME_PATHRELINKING_HPP_
 #define OPTFRAME_PATHRELINKING_HPP_
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class PathRelinking: public Heuristic<R, ADS, M>
+class PathRelinking: public HTrajectory<R, ADS, M>
 {
 	typedef vector<Evaluation<M>*> FitnessValues;
 	typedef const vector<const Evaluation<M>*> ConstFitnessValues;
@@ -33,13 +33,13 @@ protected:
 	Evaluator<R, ADS, M>& evaluator;
 	unsigned int k;
 	bool forward;
-	Heuristic<R, ADS, M>& localSearch;
+	HTrajectory<R, ADS, M>& localSearch;
 
 public:
 
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
-	PathRelinking(Heuristic<R, ADS, M>& localSearch, Evaluator<R, ADS, M>& evaluator, int k = 1, bool forward = false) :
+	PathRelinking(HTrajectory<R, ADS, M>& localSearch, Evaluator<R, ADS, M>& evaluator, int k = 1, bool forward = false) :
 		localSearch(localSearch), evaluator(evaluator), k(k), forward(forward)
 	{
 	}

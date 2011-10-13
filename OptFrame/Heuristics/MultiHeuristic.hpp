@@ -24,7 +24,7 @@
 #include <math.h>
 #include <vector>
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 #include "../NS.hpp"
 #include "../Evaluator.hpp"
 #include "../Solution.hpp"
@@ -37,12 +37,12 @@
 
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class MultiHeuristic : public Heuristic<R, ADS, M>
+class MultiHeuristic : public HTrajectory<R, ADS, M>
 {
 public:
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
-	MultiHeuristic(Evaluator<R, ADS, M>& _ev, vector<Heuristic<R, ADS, M>*> _heuristics) :
+	MultiHeuristic(Evaluator<R, ADS, M>& _ev, vector<HTrajectory<R, ADS, M>*> _heuristics) :
 		ev(_ev), heuristics(_heuristics)
 	{
 	}
@@ -70,7 +70,7 @@ public:
 
 private:
     Evaluator<R, ADS, M>& ev;
-    vector< Heuristic<R, ADS, M>* > heuristics;
+    vector< HTrajectory<R, ADS, M>* > heuristics;
 };
 
 #endif

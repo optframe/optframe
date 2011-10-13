@@ -21,22 +21,22 @@
 #ifndef OPTFRAME_HILLCLIMBING_HPP_
 #define OPTFRAME_HILLCLIMBING_HPP_
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 #include "../NSSeq.hpp"
 #include "../Evaluator.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class HillClimbing: public Heuristic<R, ADS, M>
+class HillClimbing: public HTrajectory<R, ADS, M>
 {
 private:
 	Evaluator<R, ADS, M>& evaluator;
-	Heuristic<R, ADS, M>& heuristic;
+	HTrajectory<R, ADS, M>& heuristic;
 
 public:
 
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
-	HillClimbing(Evaluator<R, ADS, M>& _ev, Heuristic<R, ADS, M>& _h) :
+	HillClimbing(Evaluator<R, ADS, M>& _ev, HTrajectory<R, ADS, M>& _h) :
 		evaluator(_ev), heuristic(_h)
 	{
 	}

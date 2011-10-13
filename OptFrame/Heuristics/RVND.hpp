@@ -23,17 +23,17 @@
 
 #include <algorithm>
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 #include "../Evaluator.hpp"
 #include "../RandGen.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class RVND: public Heuristic<R, ADS, M>
+class RVND: public HTrajectory<R, ADS, M>
 {
 public:
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
-	RVND(Evaluator<R, ADS, M>& _ev, vector<Heuristic<R, ADS, M>*> _neighbors, RandGen& _rg) :
+	RVND(Evaluator<R, ADS, M>& _ev, vector<HTrajectory<R, ADS, M>*> _neighbors, RandGen& _rg) :
 		ev(_ev), neighbors(_neighbors), rg(_rg)
 	{
 	}
@@ -92,7 +92,7 @@ public:
 
 private:
 	Evaluator<R, ADS, M>& ev;
-	vector<Heuristic<R, ADS, M>*> neighbors;
+	vector<HTrajectory<R, ADS, M>*> neighbors;
 	RandGen& rg;
 };
 

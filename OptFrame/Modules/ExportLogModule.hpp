@@ -62,7 +62,7 @@ public:
 
       FILE * pFile = fopen(filename.c_str(), "a");
 
-      Heuristic<R, ADS, M>* h = NULL;
+      HTrajectory<R, ADS, M>* h = NULL;
       hf->assign(h, "OptFrame:method", id);
 
       stringstream stream;

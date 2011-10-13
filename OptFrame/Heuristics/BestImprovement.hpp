@@ -21,12 +21,12 @@
 #ifndef OPTFRAME_BI_HPP_
 #define OPTFRAME_BI_HPP_
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 #include "../NSSeq.hpp"
 #include "../Evaluator.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class BestImprovement: public Heuristic<R, ADS, M>
+class BestImprovement: public HTrajectory<R, ADS, M>
 {
 private:
 	Evaluator<R, ADS, M>& eval;
@@ -34,7 +34,7 @@ private:
 
 public:
 
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
 	BestImprovement(Evaluator<R, ADS, M>& _eval, NSSeq<R, ADS, M>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)

@@ -24,7 +24,7 @@
 #include <math.h>
 #include <vector>
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 #include "../NS.hpp"
 #include "../Evaluator.hpp"
 #include "../Solution.hpp"
@@ -37,10 +37,10 @@
 
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class VShuffle : public Heuristic<R, ADS, M>
+class VShuffle : public HTrajectory<R, ADS, M>
 {
 public:
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{

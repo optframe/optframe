@@ -31,7 +31,8 @@ using namespace std;
 
 #include "OptFrameContainer.hpp"
 
-#include "Heuristic.hpp"
+#include "HeuristicMono.hpp"
+#include "HeuristicMulti.hpp"
 
 #include "Heuristics/Empty.hpp"
 
@@ -254,12 +255,12 @@ public:
 		return v_ev;
 	}
 
-	vector<Heuristic<R, ADS, M>*> read_heuristic_list(Scanner* scanner)
+	vector<HTrajectory<R, ADS, M>*> read_heuristic_list(Scanner* scanner)
 	{
 		vector < string > list = readList(*scanner);
-		vector<Heuristic<R, ADS, M>*> v_heuristics;
+		vector<HTrajectory<R, ADS, M>*> v_heuristics;
 
-		pair<Heuristic<R, ADS, M>*, string> method;
+		pair<HTrajectory<R, ADS, M>*, string> method;
 
 		for (unsigned int i = 0; i < list.size(); i++)
 		{
@@ -436,7 +437,7 @@ public:
 		return *list;
 	}
 
-	pair<Heuristic<R, ADS, M>*, string> createHeuristic(string str)
+	pair<HTrajectory<R, ADS, M>*, string> createHeuristic(string str)
 	{
 		Scanner scanner(str);
 
@@ -450,7 +451,7 @@ public:
 		{
 			unsigned int id = scanner.nextInt();
 
-			Heuristic<R, ADS, M>* mtd = NULL;
+			HTrajectory<R, ADS, M>* mtd = NULL;
 
 			assign(mtd, "OptFrame:method", id);
 
@@ -516,10 +517,10 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<Heuristic<R, ADS, M>*, string> method;
+			pair<HTrajectory<R, ADS, M>*, string> method;
 			method = createHeuristic(rest);
 
-			Heuristic<R, ADS, M>* h = method.first;
+			HTrajectory<R, ADS, M>* h = method.first;
 
 			scanner = Scanner(method.second);
 
@@ -560,10 +561,10 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<Heuristic<R, ADS, M>*, string> method;
+			pair<HTrajectory<R, ADS, M>*, string> method;
 			method = createHeuristic(rest);
 
-			Heuristic<R, ADS, M>* h = method.first;
+			HTrajectory<R, ADS, M>* h = method.first;
 
 			scanner = Scanner(method.second);
 
@@ -605,10 +606,10 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<Heuristic<R, ADS, M>*, string> method;
+			pair<HTrajectory<R, ADS, M>*, string> method;
 			method = createHeuristic(rest);
 
-			Heuristic<R, ADS, M>* localSearch = method.first;
+			HTrajectory<R, ADS, M>* localSearch = method.first;
 
 			scanner = Scanner(method.second);
 
@@ -658,10 +659,10 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<Heuristic<R, ADS, M>*, string> method;
+			pair<HTrajectory<R, ADS, M>*, string> method;
 			method = createHeuristic(rest);
 
-			Heuristic<R, ADS, M>* localSearch = method.first;
+			HTrajectory<R, ADS, M>* localSearch = method.first;
 
 			scanner = Scanner(method.second);
 
@@ -693,10 +694,10 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<Heuristic<R, ADS, M>*, string> method;
+			pair<HTrajectory<R, ADS, M>*, string> method;
 			method = createHeuristic(rest);
 
-			Heuristic<R, ADS, M>* localSearch = method.first;
+			HTrajectory<R, ADS, M>* localSearch = method.first;
 
 			scanner = Scanner(method.second);
 
@@ -704,10 +705,10 @@ public:
 
 			/*rest = scanner.rest();
 
-			 pair<Heuristic<R, ADS, M>*, string> method2;
+			 pair<HTrajectory<R, ADS, M>*, string> method2;
 			 method2 = createHeuristic(rest);
 
-			 Heuristic<R, ADS, M>* localSearch2 = method2.first;
+			 HTrajectory<R, ADS, M>* localSearch2 = method2.first;
 
 			 scanner = Scanner(method2.second);*/
 
@@ -740,7 +741,7 @@ public:
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			vector<Heuristic<R, ADS, M>*> hlist = read_heuristic_list(&scanner);
+			vector<HTrajectory<R, ADS, M>*> hlist = read_heuristic_list(&scanner);
 			if(hlist.size()==0)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -756,7 +757,7 @@ public:
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			vector<Heuristic<R, ADS, M>*> hlist = read_heuristic_list(&scanner);
+			vector<HTrajectory<R, ADS, M>*> hlist = read_heuristic_list(&scanner);
 			if(hlist.size()==0)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -777,10 +778,10 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<Heuristic<R, ADS, M>*, string> method;
+			pair<HTrajectory<R, ADS, M>*, string> method;
 			method = createHeuristic(rest);
 
-			Heuristic<R, ADS, M>* localSearch = method.first;
+			HTrajectory<R, ADS, M>* localSearch = method.first;
 
 			scanner = Scanner(method.second);
 
@@ -806,7 +807,7 @@ public:
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			vector<Heuristic<R, ADS, M>*> hlist = read_heuristic_list(&scanner);
+			vector<HTrajectory<R, ADS, M>*> hlist = read_heuristic_list(&scanner);
 			if(hlist.size()==0)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -826,10 +827,10 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<Heuristic<R, ADS, M>*, string> method;
+			pair<HTrajectory<R, ADS, M>*, string> method;
 			method = createHeuristic(rest);
 
-			Heuristic<R, ADS, M>* hmap = method.first;
+			HTrajectory<R, ADS, M>* hmap = method.first;
 
 			scanner = Scanner(method.second);
 
@@ -841,7 +842,7 @@ public:
 
 			method = createHeuristic(rest);
 
-			Heuristic<R, ADS, M>* hreduce = method.first;
+			HTrajectory<R, ADS, M>* hreduce = method.first;
 
 			scanner = Scanner(method.second);
 
@@ -864,10 +865,10 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<Heuristic<R, ADS, M>*, string> method;
+			pair<HTrajectory<R, ADS, M>*, string> method;
 			method = createHeuristic(rest);
 
-			Heuristic<R, ADS, M>* hmap = method.first;
+			HTrajectory<R, ADS, M>* hmap = method.first;
 
 			scanner = Scanner(method.second);
 

@@ -34,14 +34,14 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_E
 class IntensifiedIteratedLocalSearchLevels: public IntensifiedIteratedLocalSearch<levelHistory, R, ADS, M>
 {
 protected:
-	Heuristic<R, ADS, M>& h;
+	HTrajectory<R, ADS, M>& h;
 	Intensification<R, ADS, M>& h2;
 	ILSLPerturbation<R, ADS, M>& p;
 	int iterMax, levelMax;
 
 public:
 
-	IntensifiedIteratedLocalSearchLevels(Evaluator<R, ADS, M>& e, Heuristic<R, ADS, M>& _h, Intensification<R, ADS, M>& _h2, ILSLPerturbation<R, ADS, M>& _p, int _iterMax, int _levelMax) :
+	IntensifiedIteratedLocalSearchLevels(Evaluator<R, ADS, M>& e, HTrajectory<R, ADS, M>& _h, Intensification<R, ADS, M>& _h2, ILSLPerturbation<R, ADS, M>& _p, int _iterMax, int _levelMax) :
       IntensifiedIteratedLocalSearch<levelHistory, R, ADS, M> (e), h(_h), h2(_h2), p(_p)
    {
       iterMax = _iterMax;

@@ -23,7 +23,7 @@
 
 #include <algorithm>
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 #include "../Evaluator.hpp"
 #include "../Population.hpp"
 #include "../NSSeq.hpp"
@@ -31,7 +31,7 @@
 #include "../ParetoDominanceWeak.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class TwoPhaseParetoLocalSearch: public Heuristic<R, ADS, M>
+class TwoPhaseParetoLocalSearch: public HTrajectory<R, ADS, M>
 {
 	typedef vector<Evaluation<M>*> FitnessValues;
 
@@ -42,7 +42,7 @@ private:
 	ParetoDominanceWeak<R, ADS, M> pDominanceWeak;
 
 public:
-	using Heuristic<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
 	TwoPhaseParetoLocalSearch(vector<Evaluator<R, ADS, M>*> _v_e, vector<NSSeq<R, ADS, M>*> _neighbors) :
 		v_e(_v_e), neighbors(_neighbors)

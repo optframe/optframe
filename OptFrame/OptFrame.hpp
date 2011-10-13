@@ -72,7 +72,8 @@
 //            Heuristic
 // ==================================
 
-#include "Heuristic.hpp"
+#include "HeuristicMono.hpp"
+#include "HeuristicMulti.hpp"
 
 #include "HeuristicFactory.hpp"
 

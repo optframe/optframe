@@ -21,10 +21,10 @@
 #ifndef INTENSIFICATION_HPP_
 #define INTENSIFICATION_HPP_
 
-#include "../Heuristic.hpp"
+#include "../HTrajectory.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class Intensification : public Heuristic<R, ADS, M>
+class Intensification : public HTrajectory<R, ADS, M>
 {
 public:
 
