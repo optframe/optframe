@@ -90,7 +90,7 @@ public:
 		Timer tnow;
 
 		cout << "exec: Non Sorting Genetic Algorithm Search " << endl;
-		int N = p_0.size();
+		int N = p.size();
 
 		Population<R> q = p;
 		basicGeneticOperators(q);
@@ -109,30 +109,6 @@ public:
 			vector<Population<R>*> F;
 			nonDominanceOrder(F, r);
 
-			/*
-			for(int i =0;i<F.size();i++)
-				cout<<"F["<<i<<"] = "<<F[i]->size()<<endl;
-			getchar();
-			*/
-			if ((g % 10) == 0)
-			{
-				cout << "=================================" << endl;
-				for (int i = 0; i < F[0]->size(); i++)
-				{
-					Evaluation<M>& e1 = v_e[0]->evaluate(F[0]->at(i));
-					Evaluation<M>& e2 = v_e[1]->evaluate(F[0]->at(i));
-					Evaluation<M>& e3 = v_e[2]->evaluate(F[0]->at(i));
-					cout << "Ind = " << i << endl;
-					cout << " obj1 = " << e1.evaluation() << endl;
-					cout << " obj2 = " << e2.evaluation() << endl;
-					cout << " obj3 = " << e3.evaluation() << endl;
-					delete &e1;
-					delete &e2;
-					delete &e3;
-				}
-				cout << "=================================" << endl;
-			}
-
 			Population<R> popTemp;
 			int j = 0;
 
@@ -140,7 +116,7 @@ public:
 
 			while ((popTemp.size() + F[j]->size()) < N)
 			{
-				crowdingDistanceOrder(cD, *F[j], g);
+				crowdingDistanceOrder(cD, *F[j]);
 
 				for (int i = 0; i < F[j]->size(); i++)
 					popTemp.push_back(F[j]->at(i));
@@ -149,16 +125,6 @@ public:
 
 			vector<double> cDTemp;
 			crowdingDistanceOrder(cDTemp, *F[j]);
-
-			/*
-			 for (int i = 0; i < F.size(); i++)
-			 cout << "F[" << i << "] = " << F[i]->size() << endl;
-			 for (int i = 0; i < cD.size(); i++)
-			 cout << "cD[" << i << "] = " << cD[i] << endl;
-			 for (int i = 0; i < cDTemp.size(); i++)
-			 cout << "cDTemp[" << i << "] = " << cDTemp[i] << endl;
-			 getchar();
-			 */
 
 			vector<pair<double, int> > cDOrdenated;
 			for (int i = 0; i < cDTemp.size(); i++)
@@ -176,15 +142,11 @@ public:
 			p.clear();
 			p = popTemp;
 			popTemp.clear();
-			//cout << "p.size() = " << p.size() << endl;
-			//cout << "q.size() antes selecao = " << q.size() << endl;
+
 			q.clear();
 			q = basicSelection(p, cD);
-			//cout << "q.size() depois selecao= " << q.size() << endl;
-			//cout << "p.size() = " << p.size() << endl;
+
 			basicGeneticOperators(q);
-			//cout << "q.size() depois basic genect = " << q.size() << endl;
-			//getchar();
 
 			for (int i = 0; i < F.size(); i++)
 				F[i]->clear();
@@ -217,7 +179,6 @@ public:
 				}
 
 				sort(fitness.begin(), fitness.end(), compara);
-				//Maior [0], Menor [N]
 
 				CD[CDOldSize + fitness[0].second] = INFINITO;
 				CD[CDOldSize + fitness[N - 1].second] = INFINITO;
@@ -235,51 +196,9 @@ public:
 		}
 	}
 
-	void crowdingDistanceOrder(vector<double>& CD, const Population<R>& Fj, int g)
-	{
-		int N = Fj.size();
-		if (N > 0)
-		{
-			int CDOldSize = CD.size();
-			for (int i = 0; i < N; i++)
-				CD.push_back(0);
-
-			for (int m = 0; m < v_e.size(); m++)
-			{
-
-				vector<pair<double, int> > fitness;
-
-				for (int i = 0; i < N; i++)
-				{
-					Evaluation<M>& e = v_e[m]->evaluate(Fj.at(i));
-					fitness.push_back(make_pair(e.evaluation(), i));
-					delete &e;
-				}
-
-				sort(fitness.begin(), fitness.end(), compara);
-				//Maior [0], Menor [N]
-
-
-				CD[CDOldSize + fitness[0].second] = INFINITO;
-				CD[CDOldSize + fitness[N - 1].second] = INFINITO;
-
-				for (int i = 1; i < N - 1; i++)
-				{
-					if ((fitness[0].first - fitness[N - 1].first) < 0.000001)
-						CD[CDOldSize + fitness[i].second] = INFINITO;
-					else
-						CD[CDOldSize + fitness[i].second] = CD[CDOldSize + fitness[i].second] + (fitness[i - 1].first - fitness[i + 1].first) / (fitness[0].first - fitness[N - 1].first);
-				}
-
-			}
-		}
-	}
 
 	void nonDominanceOrder(vector<Population<R>*>& F, const Population<R>& p)
 	{
-
-		//vector<Population<R>*> U;
-
 
 		Population<R> pAtual = p;
 		Population<R>* F0 = new Population<R> ;
@@ -343,10 +262,7 @@ public:
 
 			for (int i = 0; i < deleteds.size(); i++)
 				delete &pAtual.remove(deleteds[i] - i);
-			//cout << "deleteds.size = " << deleteds.size() << endl;
-			//cout << "F[k].size = " << F[k]->size() << endl;
-			//cout<<" pAtual.size "<<pAtual.size()<<endl;
-			//getchar();
+
 			nAtual += F[k]->size();
 
 			deleteds.clear();
