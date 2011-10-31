@@ -114,7 +114,6 @@
 #include "Modules/UsageModule.hpp"
 #include "Modules/InitServersModule.hpp"
 
-
 // ==================================
 //            Serializer
 // ==================================
@@ -142,7 +141,7 @@ public:
 	}
 
 	OptFrame(RandGen _rg) :
-		factory(HeuristicFactory<R, ADS, M>(_rg))
+		factory(HeuristicFactory<R, ADS, M> (_rg))
 	{
 		loadDefaultModules();
 		dictionary = new map<string, string> ;
@@ -150,6 +149,11 @@ public:
 
 	virtual ~OptFrame()
 	{
+		for (unsigned int i = 0; i < modules.size(); ++i)
+		{
+			delete modules.at(i);
+		}
+		delete dictionary;
 	}
 
 	string version()
@@ -162,25 +166,25 @@ public:
 		modules.push_back(module);
 	}
 
-   void loadCallModule()
-   {
-      cout << "warning: call module loaded!" << endl;
+	void loadCallModule()
+	{
+		cout << "warning: call module loaded!" << endl;
 
-      modules.push_back(new CallModule<R, ADS, M>);
-   }
+		modules.push_back(new CallModule<R, ADS, M> );
+	}
 
-   void loadDefaultModules()
-   {
-      modules.clear();
-      loadModule(new BuildModule<R, ADS, M> );
+	void loadDefaultModules()
+	{
+		modules.clear();
+		loadModule(new BuildModule<R, ADS, M> );
 		loadModule(new CheckModule<R, ADS, M> );
-      loadModule(new CreateModule<R, ADS, M> );
+		loadModule(new CreateModule<R, ADS, M> );
 		loadModule(new DefineModule<R, ADS, M> );
 		loadModule(new DictionaryModule<R, ADS, M> );
 		loadModule(new DropAllModule<R, ADS, M> );
-      loadModule(new EchoModule<R, ADS, M> );
-      loadModule(new ElementModule<R, ADS, M> );
-      loadModule(new EmpiricalModule<R, ADS, M> );
+		loadModule(new EchoModule<R, ADS, M> );
+		loadModule(new ElementModule<R, ADS, M> );
+		loadModule(new EmpiricalModule<R, ADS, M> );
 		loadModule(new EvaluateModule<R, ADS, M> );
 		loadModule(new EvaluateToFileModule<R, ADS, M> );
 		loadModule(new ExecModule<R, ADS, M> );
@@ -188,15 +192,15 @@ public:
 		loadModule(new ExportLogModule<R, ADS, M> );
 		loadModule(new ForEachModule<R, ADS, M> );
 		loadModule(new HelpModule<R, ADS, M> );
-      loadModule(new ListFromFileModule<R, ADS, M> );
-      loadModule(new ListFromPopulationModule<R, ADS, M> );
-      loadModule(new ListSizeModule<R, ADS, M> );
+		loadModule(new ListFromFileModule<R, ADS, M> );
+		loadModule(new ListFromPopulationModule<R, ADS, M> );
+		loadModule(new ListSizeModule<R, ADS, M> );
 		loadModule(new PauseModule<R, ADS, M> );
 		loadModule(new PrintModule<R, ADS, M> );
-      loadModule(new RandGenModule<R, ADS, M> );
+		loadModule(new RandGenModule<R, ADS, M> );
 		loadModule(new ReadModule<R, ADS, M> );
 		loadModule(new TestModule<R, ADS, M> );
-      loadModule(new UndefineModule<R, ADS, M> );
+		loadModule(new UndefineModule<R, ADS, M> );
 		loadModule(new UsageModule<R, ADS, M> );
 #ifdef MaPI
 		loadModule(new InitServersModule<R, ADS, M> );
@@ -211,10 +215,10 @@ public:
 		return NULL;
 	}
 
-   //! \english OptFrame Command Line Interface \endenglish \portuguese Interface de Linha de Comando do OptFrame \endportuguese
-   /*!
-      \sa execute(string)
-   */
+	//! \english OptFrame Command Line Interface \endenglish \portuguese Interface de Linha de Comando do OptFrame \endportuguese
+	/*!
+	 \sa execute(string)
+	 */
 
 	void execute()
 	{
@@ -267,17 +271,17 @@ public:
 		cout << "Goodbye." << endl;
 	}
 
-   //! \english Execute command in OptFrame Command Line Interface \endenglish \portuguese Executa comando na Interface de Linha de Comando do OptFrame \endportuguese
-   /*!
-    \english
-    \param line command to be executed
-    \sa execute()
-    \endenglish
-    \portuguese
-    \param line comando a ser executado
-    \sa execute()
-    \endportuguese
-   */
+	//! \english Execute command in OptFrame Command Line Interface \endenglish \portuguese Executa comando na Interface de Linha de Comando do OptFrame \endportuguese
+	/*!
+	 \english
+	 \param line command to be executed
+	 \sa execute()
+	 \endenglish
+	 \portuguese
+	 \param line comando a ser executado
+	 \sa execute()
+	 \endportuguese
+	 */
 
 	void execute(string line)
 	{
