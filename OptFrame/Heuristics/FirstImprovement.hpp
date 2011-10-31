@@ -66,7 +66,7 @@ public:
 
 			if (move->canBeApplied(e, s) && eval.betterThan(eval.moveCost(e, *move, s), 0))
 			{
-				move->apply(e, s);
+				delete &move->apply(e, s);
 				delete move;
 
 				delete &it;

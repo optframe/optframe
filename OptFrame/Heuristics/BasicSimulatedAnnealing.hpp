@@ -94,7 +94,7 @@ public:
 
 				Solution<R, ADS>* sCurrent = &s.clone();
 				Evaluation<M>* eCurrent = &e.clone();
-				move->apply(*eCurrent, *sCurrent);
+				delete& move->apply(*eCurrent, *sCurrent);
 				evaluator.evaluate(*eCurrent, *sCurrent);
 
 				if (evaluator.betterThan(*eCurrent, e))

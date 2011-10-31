@@ -69,7 +69,7 @@ public:
                       {
                          //double old_f = e.evaluation();
 
-                         m.apply(e, s);
+                         delete &m.apply(e, s);
                          eval.evaluate(e, s); // updates 'e'
 
                          //cout << "CS improvement! w:" << w << " fo=" << e.evaluation() << " (antiga fo="<< old_f << ")" << endl << endl;

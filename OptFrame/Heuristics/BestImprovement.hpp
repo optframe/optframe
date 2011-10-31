@@ -101,7 +101,7 @@ public:
 
 			it.next();
 		}
-		bestMove->apply(e, s);
+		delete &bestMove->apply(e, s);
 		delete bestMove;
 		delete &it;
 
