@@ -42,6 +42,9 @@ public:
        \endportuguese
    */
 
+   virtual ~BuildModule()
+   {}
+
    string id()
    {
       return "build";

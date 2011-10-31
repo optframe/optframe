@@ -27,6 +27,11 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_E
 class EvaluateToFileModule: public OptFrameModule<R, ADS, M>
 {
 public:
+
+	virtual ~EvaluateToFileModule()
+	{
+	}
+
 	string id()
 	{
 		return "evaluate_to_file";

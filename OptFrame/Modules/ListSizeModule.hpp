@@ -24,43 +24,47 @@
 #include "../OptFrameModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ListSizeModule :
-      public OptFrameModule<R, ADS, M>
+class ListSizeModule: public OptFrameModule<R, ADS, M>
 {
 public:
-   string id()
-   {
-      return "list_size";
-   }
-   string usage()
-   {
-      return "list_size list variable_for_list_size";
-   }
 
-   void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
-   {
-      Scanner scan(input);
-      if(!scan.hasNext())
-      {
-         cout << "Usage: " << usage() << endl;
-         return;
-      }
+	virtual ~ListSizeModule()
+	{
+	}
 
-      vector<string> list = hf->readList(scan);
+	string id()
+	{
+		return "list_size";
+	}
+	string usage()
+	{
+		return "list_size list variable_for_list_size";
+	}
 
-      if(!scan.hasNext())
-      {
-         cout << "Usage: " << usage() << endl;
-         return;
-      }
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
+	{
+		Scanner scan(input);
+		if (!scan.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
 
-      string variable = scan.next();
+		vector < string > list = hf->readList(scan);
 
-      stringstream nameAndSize;
-      nameAndSize << variable << " " << list.size();
+		if (!scan.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
 
-      run_module("define", all_modules, hf, dictionary, nameAndSize.str());
-   }
+		string variable = scan.next();
+
+		stringstream nameAndSize;
+		nameAndSize << variable << " " << list.size();
+
+		run_module("define", all_modules, hf, dictionary, nameAndSize.str());
+	}
 
 };
 

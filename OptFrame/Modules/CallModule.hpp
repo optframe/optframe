@@ -25,66 +25,68 @@
 
 //! \english The CallModule class is a Module that enables the user to do a system call to external software \endenglish \portuguese A classe CallModule é o Módulo que permite o usuário fazer uma chamada de sistema, executando um programa externo. \endportuguese
 /*!
-  \sa run()
-*/
+ \sa run()
+ */
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class CallModule :
-      public OptFrameModule<R, ADS, M>
+class CallModule: public OptFrameModule<R, ADS, M>
 {
 public:
 
-  //! \english Module id \endenglish \portuguese Identificação do módulo \endportuguese
-  /*! \english
-      \return string with the id of this module
-      \endenglish
-      \portuguese
-      \return string com a identificação deste módulo
-      \endportuguese
-  */
+	//! \english Module id \endenglish \portuguese Identificação do módulo \endportuguese
+	/*! \english
+	 \return string with the id of this module
+	 \endenglish
+	 \portuguese
+	 \return string com a identificação deste módulo
+	 \endportuguese
+	 */
 
-   string id()
-   {
-      return "call";
-   }
+	virtual ~CallModule()
+	{
+	}
 
+	string id()
+	{
+		return "call";
+	}
 
-   //! \english Help for this module \endenglish \portuguese Ajuda para este módulo \endportuguese
-   /*! \english
-       \return string with the help for this module
-       \endenglish
-       \portuguese
-       \return string com a ajuda para este módulo
-       \endportuguese
-   */
+	//! \english Help for this module \endenglish \portuguese Ajuda para este módulo \endportuguese
+	/*! \english
+	 \return string with the help for this module
+	 \endenglish
+	 \portuguese
+	 \return string com a ajuda para este módulo
+	 \endportuguese
+	 */
 
-   string usage()
-   {
-      return "call external_software";
-   }
+	string usage()
+	{
+		return "call external_software";
+	}
 
-   //! \english Execution of the module \endenglish \portuguese Execução do módulo \endportuguese
-   /*! \english
-       The CallModule receives as parameter the desired system call.
+	//! \english Execution of the module \endenglish \portuguese Execução do módulo \endportuguese
+	/*! \english
+	 The CallModule receives as parameter the desired system call.
 
-       For more information type 'usage call' in OptFrame Command Line Interface
+	 For more information type 'usage call' in OptFrame Command Line Interface
 
-       \sa OptFrame::execute()
-       \endenglish
+	 \sa OptFrame::execute()
+	 \endenglish
 
-       \portuguese
-       O CallModule recebe como parâmetro a chamada de sistema desejada.
+	 \portuguese
+	 O CallModule recebe como parâmetro a chamada de sistema desejada.
 
-       Para mais informações digite 'usage call' na Interface de Linha de Comando do OptFrame
+	 Para mais informações digite 'usage call' na Interface de Linha de Comando do OptFrame
 
-       \sa OptFrame::execute()
-       \endportuguese
-   */
+	 \sa OptFrame::execute()
+	 \endportuguese
+	 */
 
-   void run(vector<OptFrameModule<R, ADS, M>*>& , HeuristicFactory<R, ADS, M>* , map<string, string>* , string command)
-   {
-      int c = system(command.c_str());
-   }
+	void run(vector<OptFrameModule<R, ADS, M>*>&, HeuristicFactory<R, ADS, M>*, map<string, string>*, string command)
+	{
+		int c = system(command.c_str());
+	}
 
 };
 

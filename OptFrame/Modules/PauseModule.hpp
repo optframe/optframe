@@ -24,27 +24,30 @@
 #include "../OptFrameModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class PauseModule :
-      public OptFrameModule<R, ADS, M>
+class PauseModule: public OptFrameModule<R, ADS, M>
 {
 public:
 
-   string id()
-   {
-      return "pause";
-   }
+	virtual ~PauseModule()
+	{
+	}
 
-   string usage()
-   {
-      return "pause";
-   }
+	string id()
+	{
+		return "pause";
+	}
 
-   void run(vector<OptFrameModule<R, ADS, M>*>& , HeuristicFactory<R, ADS, M>*, map<string, string>* , string )
-   {
-      cout << "Press <enter> to continue..." << endl;
+	string usage()
+	{
+		return "pause";
+	}
 
-      getchar();
-   }
+	void run(vector<OptFrameModule<R, ADS, M>*>&, HeuristicFactory<R, ADS, M>*, map<string, string>*, string)
+	{
+		cout << "Press <enter> to continue..." << endl;
+
+		getchar();
+	}
 
 };
 

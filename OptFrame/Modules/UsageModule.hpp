@@ -27,6 +27,10 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_E
 class UsageModule : public OptFrameModule<R, ADS, M>
 {
 public:
+	virtual ~UsageModule()
+	{
+	}
+
 	string id()
 	{
 		return "usage";

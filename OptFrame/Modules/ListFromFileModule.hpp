@@ -24,79 +24,82 @@
 #include "../OptFrameModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ListFromFileModule :
-      public OptFrameModule<R, ADS, M>
+class ListFromFileModule: public OptFrameModule<R, ADS, M>
 {
 public:
-   string id()
-   {
-      return "list_from_file";
-   }
-   string usage()
-   {
-      return "list_from_file new_list_name filename";
-   }
 
-   void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
-   {
-      Scanner scan(input);
-      if(!scan.hasNext()) // no file
-      {
-         cout << "Usage: " << usage() << endl;
-         return;
-      }
+	virtual ~ListFromFileModule()
+	{
+	}
 
-      string listName = scan.next();
+	string id()
+	{
+		return "list_from_file";
+	}
+	string usage()
+	{
+		return "list_from_file new_list_name filename";
+	}
 
-      if(!scan.hasNext()) // no file
-      {
-         cout << "Usage: " << usage() << endl;
-         return;
-      }
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	{
+		Scanner scan(input);
+		if (!scan.hasNext()) // no file
+		{
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
 
-      // Open file
-      Scanner* scanner;
+		string listName = scan.next();
 
-      try
-      {
-         scanner = new Scanner(new File(scan.trim(scan.rest())));
-      }
-      catch(FileNotFound e)
-      {
-         cout << "File '" << e.getFile() << "' not found!" << endl;
-         cout << "Usage: " << usage() << endl;
-         return;
-      }
+		if (!scan.hasNext()) // no file
+		{
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
 
-      vector<string> elements;
+		// Open file
+		Scanner* scanner;
 
-      while(scanner->hasNextLine())
-      {
-         string line = scanner->nextLine();
-         for(unsigned int c = 0; c < line.size(); c++)
-            if( ( line.at(c) == ',' ) || ( line.at(c) == '[' ) || ( line.at(c) == ']' ))
-               line[c] = '?';
+		try
+		{
+			scanner = new Scanner(new File(scan.trim(scan.rest())));
+		} catch (FileNotFound e)
+		{
+			cout << "File '" << e.getFile() << "' not found!" << endl;
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
 
-         elements.push_back(line);
-      }
+		vector < string > elements;
 
-      delete scanner;
+		while (scanner->hasNextLine())
+		{
+			string line = scanner->nextLine();
+			for (unsigned int c = 0; c < line.size(); c++)
+				if ((line.at(c) == ',') || (line.at(c) == '[') || (line.at(c) == ']'))
+					line[c] = '?';
 
-      stringstream listContent;
+			elements.push_back(line);
+		}
 
-      listContent << "[";
+		delete scanner;
 
-      if(elements.size() > 0)
-      {
-         for(unsigned int e = 0; e < elements.size() - 1; e++)
-            listContent << elements[e] << ",";
-         listContent << elements[elements.size() - 1];
-      }
+		stringstream listContent;
 
-      listContent << "]";
+		listContent << "[";
 
-      run_module("define", all_modules, factory, dictionary, listName + " " + listContent.str());
-   }
+		if (elements.size() > 0)
+		{
+			for (unsigned int e = 0; e < elements.size() - 1; e++)
+				listContent << elements[e] << ",";
+			listContent << elements[elements.size() - 1];
+		}
+
+		listContent << "]";
+
+		run_module("define", all_modules, factory, dictionary, listName + " " + listContent.str());
+	}
 
 };
 

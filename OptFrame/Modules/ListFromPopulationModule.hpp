@@ -24,70 +24,74 @@
 #include "../OptFrameModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ListFromPopulationModule :
-      public OptFrameModule<R, ADS, M>
+class ListFromPopulationModule: public OptFrameModule<R, ADS, M>
 {
 public:
-   string id()
-   {
-      return "list_from_population";
-   }
-   string usage()
-   {
-      return "list_from_population new_list_name loadpop id";
-   }
 
-   void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
-   {
-      Scanner scan(input);
-      if(!scan.hasNext()) // no file
-      {
-         cout << "Usage: " << usage() << endl;
-         return;
-      }
+	virtual ~ListFromPopulationModule()
+	{
+	}
 
-      string listName = scan.next();
+	string id()
+	{
+		return "list_from_population";
+	}
+	string usage()
+	{
+		return "list_from_population new_list_name loadpop id";
+	}
 
-      if(!scan.hasNext()) // no file
-      {
-         cout << "Usage: " << usage() << endl;
-         return;
-      }
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	{
+		Scanner scan(input);
+		if (!scan.hasNext()) // no file
+		{
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
 
-      string strloadpop = scan.next();
+		string listName = scan.next();
 
-      if(strloadpop != "loadpop")
-      {
-         cout << "expected 'loadpop id', but found '" << strloadpop << "'" << endl;
-         return;
-      }
+		if (!scan.hasNext()) // no file
+		{
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
 
-      string id = scan.next();
-      Scanner pop(strloadpop + " " + id);
-      Population<R, ADS>* p = NULL;
-      factory->readComponent(p, &pop);
+		string strloadpop = scan.next();
 
-      stringstream listContent;
+		if (strloadpop != "loadpop")
+		{
+			cout << "expected 'loadpop id', but found '" << strloadpop << "'" << endl;
+			return;
+		}
 
-      listContent << "[ ";
+		string id = scan.next();
+		Scanner pop(strloadpop + " " + id);
+		Population<R, ADS>* p = NULL;
+		factory->readComponent(p, &pop);
 
-      for(unsigned i = 0; i < p->size() - 1; i++)
-      {
-         int sid = factory->addComponent(p->at(i).clone());
-         listContent << "loadsol " << sid << " , ";
-      }
+		stringstream listContent;
 
-      if(p->size() > 0)
-      {
-         unsigned i = p->size() - 1;
-         int sid = factory->addComponent(p->at(i).clone());
-         listContent << "loadsol " << sid;
-      }
+		listContent << "[ ";
 
-      listContent << " ]";
+		for (unsigned i = 0; i < p->size() - 1; i++)
+		{
+			int sid = factory->addComponent(p->at(i).clone());
+			listContent << "loadsol " << sid << " , ";
+		}
 
-      run_module("define", all_modules, factory, dictionary, listName + " " + listContent.str());
-   }
+		if (p->size() > 0)
+		{
+			unsigned i = p->size() - 1;
+			int sid = factory->addComponent(p->at(i).clone());
+			listContent << "loadsol " << sid;
+		}
+
+		listContent << " ]";
+
+		run_module("define", all_modules, factory, dictionary, listName + " " + listContent.str());
+	}
 
 };
 

@@ -29,6 +29,11 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_E
 class ExportModule: public OptFrameModule<R, ADS, M>
 {
 public:
+
+	virtual ~ExportModule()
+	{
+	}
+
 	string id()
 	{
 		return "export";

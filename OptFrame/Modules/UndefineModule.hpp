@@ -24,54 +24,57 @@
 #include "../OptFrameModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class UndefineModule :
-      public OptFrameModule<R, ADS, M>
+class UndefineModule: public OptFrameModule<R, ADS, M>
 {
 public:
-   string id()
-   {
-      return "undefine";
-   }
+	virtual ~UndefineModule()
+	{
+	}
 
-   string usage()
-   {
-      return "undefine word";
-   }
+	string id()
+	{
+		return "undefine";
+	}
 
-   void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>*, map<string, string>* dictionary, string rest)
-   {
-      Scanner scanner(rest);
+	string usage()
+	{
+		return "undefine word";
+	}
 
-      if(!scanner.hasNext())
-      {
-         cout << "Usage: " << usage() << endl;
-         return;
-      }
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>*, map<string, string>* dictionary, string rest)
+	{
+		Scanner scanner(rest);
 
-      string word = scanner.next();
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
 
-      dictionary->erase(word);
-   }
+		string word = scanner.next();
 
-   virtual string preprocess(map<string, string>*, string input)
-   {
-      Scanner scanner(input);
+		dictionary->erase(word);
+	}
 
-      // First, remove the comments '%'
+	virtual string preprocess(map<string, string>*, string input)
+	{
+		Scanner scanner(input);
 
-      string input2 = "";
+		// First, remove the comments '%'
 
-      while(scanner.hasNextChar())
-      {
-         char c = scanner.nextChar();
-         if(c != '%')
-            input2 += c;
-         else
-            break;
-      }
+		string input2 = "";
 
-      return input2;
-   }
+		while (scanner.hasNextChar())
+		{
+			char c = scanner.nextChar();
+			if (c != '%')
+				input2 += c;
+			else
+				break;
+		}
+
+		return input2;
+	}
 
 };
 

@@ -24,56 +24,60 @@
 #include "../OptFrameModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ExportLogModule :
-      public OptFrameModule<R, ADS, M>
+class ExportLogModule: public OptFrameModule<R, ADS, M>
 {
 public:
-   string id()
-   {
-      return "export_log";
-   }
-   string usage()
-   {
-      return "export_log method 0 filename";
-   }
 
-   void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
-   {
-      Scanner scanner(input);
+	virtual ~ExportLogModule()
+	{
+	}
 
-      if(!scanner.hasNext())
-      {
-         cout << "Usage: " << usage() << endl;
-         return;
-      }
+	string id()
+	{
+		return "export_log";
+	}
+	string usage()
+	{
+		return "export_log method 0 filename";
+	}
 
-      string m = scanner.next();
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
+	{
+		Scanner scanner(input);
 
-      if(m != "method")
-      {
-         cout << "First parameter must be 'method'!" << endl;
-         cout << "Usage: " << usage() << endl;
-         return;
-      }
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
 
-      int id = scanner.nextInt();
+		string m = scanner.next();
 
-      string filename = scanner.next();
+		if (m != "method")
+		{
+			cout << "First parameter must be 'method'!" << endl;
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
 
-      FILE * pFile = fopen(filename.c_str(), "a");
+		int id = scanner.nextInt();
 
-      HTrajectory<R, ADS, M>* h = NULL;
-      hf->assign(h, "OptFrame:method", id);
+		string filename = scanner.next();
 
-      stringstream stream;
+		FILE * pFile = fopen(filename.c_str(), "a");
 
-      if(h) // not null
-         stream << h->log() << endl;
+		HTrajectory<R, ADS, M>* h = NULL;
+		hf->assign(h, "OptFrame:method", id);
 
-      fprintf(pFile, "%s", ( stream.str() ).c_str());
+		stringstream stream;
 
-      fclose(pFile);
-   }
+		if (h) // not null
+			stream << h->log() << endl;
+
+		fprintf(pFile, "%s", (stream.str()).c_str());
+
+		fclose(pFile);
+	}
 
 };
 

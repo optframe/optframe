@@ -28,6 +28,11 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_E
 class TestModule: public OptFrameModule<R, ADS, M>
 {
 public:
+
+	virtual ~TestModule()
+	{
+	}
+
 	string id()
 	{
 		return "test";

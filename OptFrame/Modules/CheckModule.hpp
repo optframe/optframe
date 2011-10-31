@@ -28,6 +28,11 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_E
 class CheckModule: public OptFrameModule<R, ADS, M>
 {
 public:
+
+	virtual ~CheckModule()
+	{
+	}
+
 	string id()
 	{
 		return "check";
@@ -74,7 +79,7 @@ public:
 			Scanner s2(sol + " " + id);
 			cout << "Step 1: Testing solution generator... ";
 			InitialSolution<R, ADS>* initsol = NULL;
-         factory->readComponent(initsol, &s2);
+			factory->readComponent(initsol, &s2);
 
 			s = &initsol->generateSolution();
 			if (!s)
@@ -197,130 +202,130 @@ public:
 		cout << "Step 4: Testing neighborhoods (" << ns_seq_list.size() << ")" << endl;
 
 		/*
-		cout << "4.1 - Number of neighbors " << endl;
-		for (int i = 0; i < ns_seq_list.size(); i++)
-		{
-			cout << "neighborhood " << i << ": ";
-			ns_seq_list[i]->print();
+		 cout << "4.1 - Number of neighbors " << endl;
+		 for (int i = 0; i < ns_seq_list.size(); i++)
+		 {
+		 cout << "neighborhood " << i << ": ";
+		 ns_seq_list[i]->print();
 
-			double s_total = 0;
-			double s_applied = 0;
+		 double s_total = 0;
+		 double s_applied = 0;
 
-			ns_seq_list[i]->init(s);
+		 ns_seq_list[i]->init(s);
 
-			while (ns_seq_list[i]->hasNext(s))
-			{
-				Move<R, ADS, M>* m = ns_seq_list[i]->next(s);
-				s_total++;
+		 while (ns_seq_list[i]->hasNext(s))
+		 {
+		 Move<R, ADS, M>* m = ns_seq_list[i]->next(s);
+		 s_total++;
 
-				if (m->canBeApplied(s)) // Sum of useful moves
-					s_applied++;
+		 if (m->canBeApplied(s)) // Sum of useful moves
+		 s_applied++;
 
-				if (m->canBeApplied(s)) // First -> checking moves and reverse moves
-				{
-					Evaluation<M>* e2 = eval->evaluate(s);
+		 if (m->canBeApplied(s)) // First -> checking moves and reverse moves
+		 {
+		 Evaluation<M>* e2 = eval->evaluate(s);
 
-					Move<R, ADS, M>* rev = m->apply(s);
-					if (!rev)
-					{
-						cout << "Problem! Reverse move is NULL!" << endl;
-						cout << "Move: ";
-						m->print();
-						return;
-					}
-					Move<R, ADS, M>* new_m = rev->apply(s);
-					delete new_m;
+		 Move<R, ADS, M>* rev = m->apply(s);
+		 if (!rev)
+		 {
+		 cout << "Problem! Reverse move is NULL!" << endl;
+		 cout << "Move: ";
+		 m->print();
+		 return;
+		 }
+		 Move<R, ADS, M>* new_m = rev->apply(s);
+		 delete new_m;
 
-					Evaluation<M>* e3 = eval->evaluate(s);
+		 Evaluation<M>* e3 = eval->evaluate(s);
 
-					if (e2->evaluation() != e3->evaluation())
-					{
-						cout << "Problem with reverse move." << endl;
-						cout << "Move: ";
-						m->print();
-						cout << "Reverse: ";
-						rev->print();
-						cout << "First evaluation: " << e2->evaluation() << endl;
-						cout << "Second evaluation: " << e3->evaluation() << endl;
+		 if (e2->evaluation() != e3->evaluation())
+		 {
+		 cout << "Problem with reverse move." << endl;
+		 cout << "Move: ";
+		 m->print();
+		 cout << "Reverse: ";
+		 rev->print();
+		 cout << "First evaluation: " << e2->evaluation() << endl;
+		 cout << "Second evaluation: " << e3->evaluation() << endl;
 
-						delete e2;
-						delete e3;
-						delete rev;
-						delete m;
-						return;
-					}
-				}
+		 delete e2;
+		 delete e3;
+		 delete rev;
+		 delete m;
+		 return;
+		 }
+		 }
 
-				if (m->canBeApplied(s)) // Second -> checking evaluation and reevaluation
-				{
-					Evaluation<M>* e1 = eval->evaluate(s);
-					double f1 = e1->evaluation();
+		 if (m->canBeApplied(s)) // Second -> checking evaluation and reevaluation
+		 {
+		 Evaluation<M>* e1 = eval->evaluate(s);
+		 double f1 = e1->evaluation();
 
-					Move<R, ADS, M>* rev = m->apply(e1, s);
-					if (!rev)
-					{
-						cout << "Problem! Reverse move is NULL!" << endl;
-						cout << "Move: ";
-						m->print();
-						return;
-					}
-					Move<R, ADS, M>* new_m = rev->apply(e1, s);
-					delete new_m;
+		 Move<R, ADS, M>* rev = m->apply(e1, s);
+		 if (!rev)
+		 {
+		 cout << "Problem! Reverse move is NULL!" << endl;
+		 cout << "Move: ";
+		 m->print();
+		 return;
+		 }
+		 Move<R, ADS, M>* new_m = rev->apply(e1, s);
+		 delete new_m;
 
-					Evaluation<M>* e2 = eval->evaluate(s);
+		 Evaluation<M>* e2 = eval->evaluate(s);
 
-					if (e1->evaluation() != e2->evaluation())
-					{
-						cout << "Problem with evaluation and reevaluation." << endl;
-						cout << "Move: ";
-						m->print();
-						cout << "Reverse: ";
-						rev->print();
-						cout << "Reevaluation value: " << e1->evaluation() << endl;
-						cout << "Evaluation value: " << e2->evaluation() << endl;
+		 if (e1->evaluation() != e2->evaluation())
+		 {
+		 cout << "Problem with evaluation and reevaluation." << endl;
+		 cout << "Move: ";
+		 m->print();
+		 cout << "Reverse: ";
+		 rev->print();
+		 cout << "Reevaluation value: " << e1->evaluation() << endl;
+		 cout << "Evaluation value: " << e2->evaluation() << endl;
 
-						delete e1;
-						delete e2;
-						delete rev;
-						delete m;
-						return;
-					}
-				}
+		 delete e1;
+		 delete e2;
+		 delete rev;
+		 delete m;
+		 return;
+		 }
+		 }
 
-				delete m;
-			}
+		 delete m;
+		 }
 
-			cout << "Number of moves: " << s_total << endl;
-			cout << "Number of useful moves (can be applied): " << s_applied << endl;
-			cout << "Percentage of useful moves: " << (s_applied / s_total) * 100 << "%" << endl;
-			if (s_applied < 0.01 * s_total)
-				cout << "Warning: useful moves less than 1% of total moves." << endl;
-		}
+		 cout << "Number of moves: " << s_total << endl;
+		 cout << "Number of useful moves (can be applied): " << s_applied << endl;
+		 cout << "Percentage of useful moves: " << (s_applied / s_total) * 100 << "%" << endl;
+		 if (s_applied < 0.01 * s_total)
+		 cout << "Warning: useful moves less than 1% of total moves." << endl;
+		 }
 
-		cout << "4.2 - Best Improvement " << endl;
-		for (int i = 0; i < ns_seq_list.size(); i++)
-		{
-			cout << "neighborhood " << i << ": ";
-			s2 = s->clone();
-			Solution<R, ADS>* s3 = ns_seq_list[i]->bestImprovement(eval, s2);
-			s3->print();
-			delete s2;
-			delete s3;
-		}
-		cout << "[Ok]" << endl;
+		 cout << "4.2 - Best Improvement " << endl;
+		 for (int i = 0; i < ns_seq_list.size(); i++)
+		 {
+		 cout << "neighborhood " << i << ": ";
+		 s2 = s->clone();
+		 Solution<R, ADS>* s3 = ns_seq_list[i]->bestImprovement(eval, s2);
+		 s3->print();
+		 delete s2;
+		 delete s3;
+		 }
+		 cout << "[Ok]" << endl;
 
-		cout << "4.3 - First Improvement " << endl;
-		for (int i = 0; i < ns_seq_list.size(); i++)
-		{
-			cout << "neighborhood " << i << ": ";
-			s2 = s->clone();
-			Solution<R, ADS>* s3 = ns_seq_list[i]->firstImprovement(eval, s2);
-			s3->print();
-			delete s2;
-			delete s3;
-		}
-		cout << "[Ok]" << endl;
-		*/
+		 cout << "4.3 - First Improvement " << endl;
+		 for (int i = 0; i < ns_seq_list.size(); i++)
+		 {
+		 cout << "neighborhood " << i << ": ";
+		 s2 = s->clone();
+		 Solution<R, ADS>* s3 = ns_seq_list[i]->firstImprovement(eval, s2);
+		 s3->print();
+		 delete s2;
+		 delete s3;
+		 }
+		 cout << "[Ok]" << endl;
+		 */
 
 		// ==========================================================
 		// ==========================================================

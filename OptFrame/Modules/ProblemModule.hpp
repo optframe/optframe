@@ -27,6 +27,11 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_E
 class ProblemModule: public OptFrameModule<R, ADS, M>
 {
 public:
+
+	virtual ~ProblemModule()
+	{
+	}
+
 	string id()
 	{
 		return "problem";

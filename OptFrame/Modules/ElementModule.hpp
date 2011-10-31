@@ -24,69 +24,73 @@
 #include "../OptFrameModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ElementModule :
-      public OptFrameModule<R, ADS, M>
+class ElementModule: public OptFrameModule<R, ADS, M>
 {
 public:
-   string id()
-   {
-      return "element";
-   }
-   string usage()
-   {
-      return "element N list new_element_name";
-   }
 
-   void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
-   {
-      Scanner scan(input);
-      if(!scan.hasNext())
-      {
-         cout << "Usage: " << usage() << endl;
-         return;
-      }
+	virtual ~ElementModule()
+	{
+	}
 
-      int n = scan.nextInt();
+	string id()
+	{
+		return "element";
+	}
+	string usage()
+	{
+		return "element N list new_element_name";
+	}
 
-      if(n < 0)
-      {
-         cout << "N must be a positive value!" << endl;
-         return;
-      }
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
+	{
+		Scanner scan(input);
+		if (!scan.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
 
-      if(n == 0)
-      {
-         cout << "sorry, this is not C language :)" << endl;
-         cout << "0 not included, try a number from 1 to the size of the list" << endl;
-         return;
-      }
+		int n = scan.nextInt();
 
-      n--;
+		if (n < 0)
+		{
+			cout << "N must be a positive value!" << endl;
+			return;
+		}
 
-      if(!scan.hasNext())
-      {
-         cout << "Usage: " << usage() << endl;
-         return;
-      }
+		if (n == 0)
+		{
+			cout << "sorry, this is not C language :)" << endl;
+			cout << "0 not included, try a number from 1 to the size of the list" << endl;
+			return;
+		}
 
-      vector<string> list = hf->readList(scan);
+		n--;
 
-      if(n >= ((int)list.size()))
-      {
-         cout << "N is too big! " << ( n + 1 ) << " > " << list.size() << endl;
-         return;
-      }
+		if (!scan.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
 
-      if(!scan.hasNext())
-      {
-         cout << "Usage: " << usage() << endl;
-         return;
-      }
+		vector < string > list = hf->readList(scan);
 
-      string element = scan.next();
+		if (n >= ((int) list.size()))
+		{
+			cout << "N is too big! " << (n + 1) << " > " << list.size() << endl;
+			return;
+		}
 
-      run_module("define", all_modules, hf, dictionary, element + " " + list[n]);
-   }
+		if (!scan.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
+
+		string element = scan.next();
+
+		run_module("define", all_modules, hf, dictionary, element + " " + list[n]);
+	}
 
 };
 

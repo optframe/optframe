@@ -181,6 +181,11 @@ private:
 	}
 
 public:
+
+	virtual ~ForEachModule()
+	{
+	}
+
 	string id()
 	{
 		return "for_each";

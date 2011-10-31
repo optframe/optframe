@@ -24,64 +24,68 @@
 #include "../OptFrameModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class RandGenModule :
-      public OptFrameModule<R, ADS, M>
+class RandGenModule: public OptFrameModule<R, ADS, M>
 {
 public:
-   string id()
-   {
-      return "randgen";
-   }
 
-   string usage()
-   {
-      return "randgen system_seed seed\n Where: 'seed' is a positive integer value for the system random number generator.";
-   }
+	virtual ~RandGenModule()
+	{
+	}
 
-   void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
-   {
-      Scanner scanner(input);
+	string id()
+	{
+		return "randgen";
+	}
 
-      if(!scanner.hasNext())
-      {
-         cout << "Usage: " << usage() << endl;
-         return;
-      }
+	string usage()
+	{
+		return "randgen system_seed seed\n Where: 'seed' is a positive integer value for the system random number generator.";
+	}
 
-      string ss = scanner.next(); // drop system_seed option
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	{
+		Scanner scanner(input);
 
-      if(ss != "system_seed")
-      {
-         cout << "invalid option: '" << ss << "'" << endl;
-         cout << "Usage: " << usage() << endl;
-         return;
-      }
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
 
-      if(!scanner.hasNext())
-      {
-         cout << "missing 'seed' positive integer value!" << endl;
-         cout << "Usage: " << usage() << endl;
-         return;
-      }
+		string ss = scanner.next(); // drop system_seed option
 
-      string strseed = scanner.next();
+		if (ss != "system_seed")
+		{
+			cout << "invalid option: '" << ss << "'" << endl;
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
 
-      unsigned long seed;
+		if (!scanner.hasNext())
+		{
+			cout << "missing 'seed' positive integer value!" << endl;
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
 
-      if(strseed == "time()")
-      {
-         seed = time(NULL);
-      }
-      else
-      {
-         Scanner scanseed(strseed);
-         seed = scanseed.nextInt();
-      }
+		string strseed = scanner.next();
 
-      cout << "randgen: setting system random number geneator seed to: " << seed << endl;
-      srand(seed);
+		unsigned long seed;
 
-   }
+		if (strseed == "time()")
+		{
+			seed = time(NULL);
+		}
+		else
+		{
+			Scanner scanseed(strseed);
+			seed = scanseed.nextInt();
+		}
+
+		cout << "randgen: setting system random number geneator seed to: " << seed << endl;
+		srand(seed);
+
+	}
 
 };
 
