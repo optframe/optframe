@@ -195,7 +195,7 @@ public:
 
 	vector<NS<R, ADS, M>*> read_ns_list(Scanner* scanner)
 	{
-		vector < string > list = readList(*scanner);
+		vector < string >& list = readList(*scanner);
 
 		Scanner* aux;
 		string tmp;
@@ -221,12 +221,13 @@ public:
 			return vector<NS<R, ADS, M>*>();
 		}
 
+		delete &list;
 		return v_ns;
 	}
 
 	vector<Evaluator<R, ADS, M> *> read_ev_list(Scanner* scanner)
 	{
-		vector < string > list = readList(*scanner);
+		vector < string >& list = readList(*scanner);
 
 		Scanner* aux;
 		string tmp;
@@ -252,12 +253,13 @@ public:
 			return vector<Evaluator<R, ADS, M> *>();
 		}
 
+		delete &list;
 		return v_ev;
 	}
 
 	vector<HTrajectory<R, ADS, M>*> read_heuristic_list(Scanner* scanner)
 	{
-		vector < string > list = readList(*scanner);
+		vector < string >& list = readList(*scanner);
 		vector<HTrajectory<R, ADS, M>*> v_heuristics;
 
 		pair<HTrajectory<R, ADS, M>*, string> method;
@@ -274,6 +276,7 @@ public:
 			return v_heuristics;
 		}
 
+		delete &list;
 		return v_heuristics;
 	}
 

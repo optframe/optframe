@@ -73,7 +73,7 @@ public:
 			return;
 		}
 
-		vector < string > list = hf->readList(scan);
+		vector < string >& list = hf->readList(scan);
 
 		if (n >= ((int) list.size()))
 		{
@@ -90,6 +90,7 @@ public:
 		string element = scan.next();
 
 		run_module("define", all_modules, hf, dictionary, element + " " + list[n]);
+		delete &list;
 	}
 
 };

@@ -212,11 +212,8 @@ public:
 			return;
 		}
 
-		vector < string > values;
-		vector < string > commands;
-
-		values = HeuristicFactory<R, ADS, M>::readList(scanner);
-		commands = HeuristicFactory<R, ADS, M>::readList(scanner);
+		vector < string >& values = HeuristicFactory<R, ADS, M>::readList(scanner);
+		vector < string >& commands = HeuristicFactory<R, ADS, M>::readList(scanner);
 
 		for (unsigned int v = 0; v < values.size(); v++)
 		{
@@ -230,6 +227,8 @@ public:
 			}
 		}
 
+		delete &values;
+		delete &commands;
 	}
 };
 
