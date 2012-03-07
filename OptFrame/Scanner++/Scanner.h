@@ -1,29 +1,9 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009, 2010, 2011
-// http://optframe.sourceforge.net/
-//
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
-
 // Scanner Object - Scanner++
 
-// Copyright (C) 2009, 2010, 2011
+// Copyright (C) 2009, 2010, 2011, 2012
 // Igor Machado - Mario Henrique Perche - Pablo Munhoz - Sabir Ribas
 //
-// This file is part of the Scanner++ Library v0.93.  This library is free
+// This file is part of the Scanner++ Library v0.94.  This library is free
 // software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License v3 as published by the
 // Free Software Foundation.
@@ -62,8 +42,11 @@ private:
 	istream *input;
 	File* inputfile;
 	string sep;
+	bool isString;
 
 	string discarded;
+
+	string contentString;
 
 public:
 
@@ -79,7 +62,11 @@ public:
 	Scanner(istream* input);
 	Scanner(string input);
 
+	Scanner(const Scanner& scanner);
+
 	virtual ~Scanner();
+
+	virtual Scanner& operator=(const Scanner& scanner);
 
 	// useDefaultSeparators: chama o useSeparators para os caracteres:
 	// espaco, quebra de linha (\n), tabulacao (\t) e retorno de carro (\r)
@@ -109,13 +96,13 @@ public:
 		string aux_word = "";
 
 		//removing initial spaces
-		while (c == ' ' && i < ((int)word.length()))
+		while (c == ' ' && i < ((int) word.length()))
 		{
 			i++;
 			c = word[i];
 		}
 
-		while (i < ((int)word.length()))
+		while (i < ((int) word.length()))
 		{
 			aux_word += word[i];
 			i++;
@@ -166,8 +153,6 @@ public:
 	{
 		return true;
 	}
-
-	void close();
 
 	string rest(); // Returns the rest of the input as string
 };

@@ -1,29 +1,9 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009, 2010, 2011
-// http://optframe.sourceforge.net/
-//
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
-
 // Scanner Object - Scanner++
 
-// Copyright (C) 2009, 2010, 2011
+// Copyright (C) 2009, 2010, 2011, 2012
 // Igor Machado - Mario Henrique Perche - Pablo Munhoz - Sabir Ribas
 //
-// This file is part of the Scanner++ Library v0.93.  This library is free
+// This file is part of the Scanner++ Library v0.94.  This library is free
 // software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License v3 as published by the
 // Free Software Foundation.
@@ -42,6 +22,7 @@
 
 Scanner::Scanner(File* inputfile)
 {
+	isString = false;
 	this->inputfile = inputfile;
 	this->input = inputfile->file;
 	useDefaultSeparators();
@@ -49,6 +30,7 @@ Scanner::Scanner(File* inputfile)
 
 Scanner::Scanner(istream* input)
 {
+	isString = false;
 	this->inputfile = NULL;
 	this->input = input;
 	useDefaultSeparators();
@@ -56,14 +38,90 @@ Scanner::Scanner(istream* input)
 
 Scanner::Scanner(string input)
 {
+	isString = true;
 	this->inputfile = NULL;
+	this->contentString = input;
 	this->input = new istringstream(input);
+	useDefaultSeparators();
+}
+
+Scanner::Scanner(const Scanner& scanner)
+{
+	contentString = scanner.contentString;
+	isString = scanner.isString;
+	discarded = scanner.discarded;
+
+	if (scanner.inputfile) //for files
+	{
+		inputfile = new File(scanner.inputfile->filename);
+		input = inputfile->file;
+	}
+
+	if (isString) // for string
+		input = new istringstream(contentString);
+
+	if (!isString) // for cin
+		input = scanner.input;
+
 	useDefaultSeparators();
 }
 
 Scanner::~Scanner()
 {
-	close();
+	if (inputfile)
+	{
+		delete inputfile;
+		inputfile = NULL;
+		input = NULL;
+	}
+
+	if(input && isString)
+	{
+		delete input;
+	}
+}
+
+Scanner& Scanner::operator=(const Scanner& scanner)
+{
+	if (&scanner == this) // auto ref check
+		return *this;
+
+	// ==========
+	// destructor
+	// ==========
+
+	if (inputfile)
+	{
+		delete inputfile;
+		inputfile = NULL;
+		input = NULL;
+	}
+
+	if(input && isString)
+	{
+		delete input;
+	}
+	// ==========
+
+	contentString = scanner.contentString;
+	isString = scanner.isString;
+	discarded = scanner.discarded;
+
+	if (scanner.inputfile) //for files
+	{
+		inputfile = new File(scanner.inputfile->filename);
+		input = inputfile->file;
+	}
+
+	if (isString) // for string
+		input = new istringstream(contentString);
+
+	if (!isString) // for cin
+		input = scanner.input;
+
+	useDefaultSeparators();
+
+	return *this;
 }
 
 void Scanner::useDefaultSeparators()
@@ -341,15 +399,6 @@ std::string Scanner::nextLine()
 
 // =================================================================
 // =================================================================
-
-void Scanner::close()
-{
-	if (inputfile)
-	{
-		delete inputfile;
-		inputfile = NULL;
-	}
-}
 
 string Scanner::rest() // Returns the rest of the input as string
 {
