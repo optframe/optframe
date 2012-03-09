@@ -29,7 +29,7 @@
 
 #include "OptFrameComponent.hpp"
 
-//#define EPSILON 0.0001
+#define OPTFRAME_EPSILON 0.0001
 
 using namespace std;
 
@@ -161,6 +161,30 @@ public:
 	 - for maximization problems, returns a > b.
 	 */
 	virtual bool betterThan(double a, double b) = 0;
+
+    bool betterOrEquals(const Solution<R>& s1, const Solution<R>& s2)
+	{
+		Evaluation<M>& e1 = evaluate(s1);
+		Evaluation<M>& e2 = evaluate(s2);
+
+		double f1 = e1.evaluation();
+		double f2 = e2.evaluation();
+
+		delete &e1;
+		delete &e2;
+
+		return betterOrEquals(f1, f2);
+	}
+
+	bool betterOrEquals(const Evaluation<M>& e1, const Evaluation<M>& e2)
+	{
+		return betterOrEquals(e1.evaluation(), e2.evaluation());
+	}
+
+	bool betterOrEquals(double a, double b)
+	{
+		return betterThan(a, b) || (abs(a - b) < OPTFRAME_EPSILON);
+	}
 
    static string idComponent()
    {
