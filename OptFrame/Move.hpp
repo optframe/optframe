@@ -42,17 +42,7 @@ public:
 		return canBeApplied(s.getR());
 	}
 
-	bool canBeApplied(const Evaluation<M>& e, const Solution<R, ADS>& s)
-	{
-		return canBeApplied(e.getEM(), s.getR());
-	}
-
 	virtual bool canBeApplied(const R&) = 0;
-
-	virtual bool canBeApplied(const M& m, const R& r)
-	{
-		return canBeApplied(r);
-	}
 
 	Move<R, ADS, M>& apply(Solution<R, ADS>& s)
 	{
