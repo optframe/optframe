@@ -85,7 +85,7 @@ public:
 
       listContent << " ]";
 
-      run_module("define", all_modules, factory, dictionary, listName + " " + listContent.str());
+      OptFrameModule<R,M>::run_module("define", all_modules, factory, dictionary, listName + " " + listContent.str());
    }
 
 };

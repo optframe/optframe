@@ -47,6 +47,9 @@ public:
       return offspring(off.first, off.second);
    }
 
+   virtual ~Crossover()
+   {
+   }
 };
 
 #endif /*OPTFRAME_CROSSOVER_HPP_*/

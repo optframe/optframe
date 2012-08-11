@@ -39,6 +39,9 @@ public:
 
    virtual Population<R> & doElitism(const Population<R> &p, const FitnessValues& fv_p, unsigned popElitistSize) const = 0;
 
+   virtual ~Elitism()
+   {
+   }
 };
 
 #endif /*OPTFRAME_ELITISM_HPP_*/

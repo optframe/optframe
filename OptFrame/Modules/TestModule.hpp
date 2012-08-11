@@ -217,7 +217,7 @@ public:
 		if (scan_rest.hasNext())
 		{
 			string new_name = scan_rest.next();
-			run_module("define", all_modules, factory, dictionary, new_name + " " + s_new_id);
+			OptFrameModule<R,M>::run_module("define", all_modules, factory, dictionary, new_name + " " + s_new_id);
 		}
 	}
 

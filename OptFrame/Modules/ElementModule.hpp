@@ -85,7 +85,7 @@ public:
 
       string element = scan.next();
 
-      run_module("define", all_modules, hf, dictionary, element + " " + list[n]);
+      OptFrameModule<R,M>::run_module("define", all_modules, hf, dictionary, element + " " + list[n]);
    }
 
 };

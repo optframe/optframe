@@ -30,6 +30,9 @@ class InitialPopulation
 {
 public:
    virtual Population<R>& generatePopulation(unsigned populationSize) = 0;
+   virtual ~InitialPopulation()
+   {
+   }
 };
 
 #endif /*OPTFRAME_INITIALPOPULATION_H_*/

@@ -10,7 +10,7 @@
 
 clear
 echo "===================================================="
-echo "        OptFrame 1.4 - Project Generator MCT        "
+echo "       OptFrame 1.4.2 - Project Generator MCT       "
 echo "             \"Make a Compilable Thing!\"           "
 echo "      http://sourceforge.net/projects/optframe/     " 
 echo "===================================================="

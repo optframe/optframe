@@ -32,6 +32,9 @@ class ILSLPerturbation
 {
 public:
 	virtual void perturb(Solution<R>& s, Evaluation<M>& e, double timelimit, double target_f, int level) = 0;
+    virtual ~ILSLPerturbation()
+    {
+    }
 };
 
 template<class R, class M = OPTFRAME_DEFAULT_MEMORY>

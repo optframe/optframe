@@ -70,6 +70,9 @@ public:
    select(const Population<R>& currentPopulation, const FitnessValues& fv_crrtPop,
          const Population<R>& intermediatePopulation, const FitnessValues& fv_intPop, const unsigned elitist_chrm_nb) const = 0;
 
+   virtual ~Selection()
+   {
+   }
 };
 
 #endif /* SELECTION_HPP_ */

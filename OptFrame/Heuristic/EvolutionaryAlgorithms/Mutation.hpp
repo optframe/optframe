@@ -34,6 +34,9 @@ public:
 
    virtual void mutate(chromossome& individual) = 0;
 
+   virtual ~Mutation()
+   {
+   }
 };
 
 #endif /* MUTATION_HPP_ */
