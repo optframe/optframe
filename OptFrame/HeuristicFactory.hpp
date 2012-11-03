@@ -117,9 +117,8 @@ public:
          return -1;
       }
 
-      vector<OptFrameComponent*> v = components[id];
+      vector<OptFrameComponent*>& v = components[id];
       v.push_back(&component);
-      components[id] = v;
 
       int idx = components[id].size() - 1;
 
