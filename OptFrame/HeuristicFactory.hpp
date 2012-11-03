@@ -69,10 +69,10 @@ public:
 
 	map<string, vector<OptFrameComponent*> > components;
 
-	OptFrameComponent* getNextComponent(Scanner* scanner)
+	OptFrameComponent* getNextComponent(Scanner& scanner)
    {
-	   string id = scanner->next();
-	   unsigned number = scanner->nextInt();
+	   string id = scanner.next();
+	   unsigned number = scanner.nextInt();
 
       OptFrameComponent* component = NULL;
 
@@ -93,7 +93,7 @@ public:
    {
       if(components.count(id) > 0)
       {
-         vector<OptFrameComponent*> v = components[id];
+         vector<OptFrameComponent*>& v = components[id];
          if(number < v.size())
          {
             component = ((T*) v[number]) ;
@@ -130,9 +130,9 @@ public:
       return addComponent(component, component.id());
    }
 
-	template< class T > void readComponent(T*& component, Scanner* scanner)
+	template< class T > void readComponent(T*& component, Scanner& scanner)
    {
-      string tmp = scanner->next();
+      string tmp = scanner.next();
 
       if(tmp != T::idComponent())
       {
@@ -142,7 +142,7 @@ public:
          return;
       }
 
-      unsigned int number = scanner->nextInt();
+      unsigned int number = scanner.nextInt();
 
       component = NULL;
 
@@ -171,9 +171,9 @@ public:
 #endif/**/
 
 
-	int read_np(Scanner* scanner)
+	int read_np(Scanner& scanner)
 	{
-		string tmp = scanner->next();
+		string tmp = scanner.next();
 
 		if (tmp != "np")
 		{
@@ -181,7 +181,7 @@ public:
 			return -1;
 		}
 
-		int np = scanner->nextInt();
+		int np = scanner.nextInt();
 
 		if (np <= 1)
 		{
@@ -192,9 +192,9 @@ public:
 		return np;
 	}
 
-	vector<NS<R, ADS, M>*> read_ns_list(Scanner* scanner)
+	vector<NS<R, ADS, M>*> read_ns_list(Scanner& scanner)
 	{
-		vector < string >& list = readList(*scanner);
+		vector < string >& list = readList(scanner);
 
 		Scanner* aux;
 		string tmp;
@@ -205,13 +205,15 @@ public:
 		{
 			aux = new Scanner(list.at(i));
 
-         NS<R, ADS, M>* ns;
-         readComponent(ns, aux);
+			NS<R, ADS, M>* ns;
+			readComponent(ns, *aux);
 
-         if(!ns)
-            return vector<NS<R, ADS, M>*>();
+			if(!ns)
+				return vector<NS<R, ADS, M>*>();
 
 			v_ns.push_back(ns);
+
+			delete aux;
 		}
 
 		if (v_ns.size() == 0)
@@ -224,9 +226,9 @@ public:
 		return v_ns;
 	}
 
-	vector<Evaluator<R, ADS, M> *> read_ev_list(Scanner* scanner)
+	vector<Evaluator<R, ADS, M> *> read_ev_list(Scanner& scanner)
 	{
-		vector < string >& list = readList(*scanner);
+		vector < string >& list = readList(scanner);
 
 		Scanner* aux;
 		string tmp;
@@ -256,9 +258,9 @@ public:
 		return v_ev;
 	}
 
-	vector<HTrajectory<R, ADS, M>*> read_heuristic_list(Scanner* scanner)
+	vector<HTrajectory<R, ADS, M>*> read_heuristic_list(Scanner& scanner)
 	{
-		vector < string >& list = readList(*scanner);
+		vector < string >& list = readList(scanner);
 		vector<HTrajectory<R, ADS, M>*> v_heuristics;
 
 		pair<HTrajectory<R, ADS, M>*, string> method;
@@ -279,7 +281,7 @@ public:
 		return v_heuristics;
 	}
 
-	Evaluator<R, ADS, M>* read_ev(Scanner* scanner)
+	Evaluator<R, ADS, M>* read_ev(Scanner& scanner)
    {
       Evaluator<R, ADS, M>* ev = NULL;
       readComponent(ev, scanner);
@@ -470,11 +472,11 @@ public:
 		{
 			cout << "Heuristic: Best Improvement" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			NSSeq<R, ADS, M>* ns_seq = (NSSeq<R, ADS, M>*) getNextComponent(&scanner);
+			NSSeq<R, ADS, M>* ns_seq = (NSSeq<R, ADS, M>*) getNextComponent(scanner);
 
 			if(!ns_seq)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
@@ -488,11 +490,11 @@ public:
 		{
 			cout << "Heuristic: First Improvement" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-         NSSeq<R, ADS, M>* ns_seq = (NSSeq<R, ADS, M>*) getNextComponent(&scanner);
+         NSSeq<R, ADS, M>* ns_seq = (NSSeq<R, ADS, M>*) getNextComponent(scanner);
 
 			if(!ns_seq)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
@@ -504,9 +506,9 @@ public:
       {
          cout << "Heuristic: Circular Search" << endl;
 
-         Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+         Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
          NSEnum<R, ADS, M>* ns_enum = NULL;
-         readComponent(ns_enum, &scanner);
+         readComponent(ns_enum, scanner);
 
          return make_pair(new CircularSearch<R, ADS, M> (*evaluator, *ns_enum), scanner.rest());
       }
@@ -515,7 +517,7 @@ public:
 		{
 			cout << "Heuristic: Hill Climbing" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
 
 			string rest = scanner.rest();
 
@@ -533,11 +535,11 @@ public:
 		{
 			cout << "Heuristic: Random Descent Method" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-         NS<R, ADS, M>* ns = (NS<R, ADS, M>*) getNextComponent(&scanner);
+         NS<R, ADS, M>* ns = (NS<R, ADS, M>*) getNextComponent(scanner);
 
 			if(!ns)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
@@ -551,12 +553,12 @@ public:
 		{
 			cout << "Heuristic: GRASP" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
 			InitialSolution<R, ADS>* initsol = NULL;
-			readComponent(initsol, &scanner);
+			readComponent(initsol, scanner);
 
 			if(!initsol)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
@@ -579,11 +581,11 @@ public:
 		{
 			cout << "Heuristic: Tabu Search" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-         NSSeq<R, ADS, M>* ns_seq = (NSSeq<R, ADS, M>*) getNextComponent(&scanner);
+         NSSeq<R, ADS, M>* ns_seq = (NSSeq<R, ADS, M>*) getNextComponent(scanner);
 
 			if(!ns_seq)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
@@ -598,7 +600,7 @@ public:
 		{
 			cout << "Heuristic: Basic Iterated Local Search" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -618,7 +620,7 @@ public:
 			// ====================
 
 			BasicILSPerturbation<R, ADS, M>* ils_pert = NULL;
-			readComponent(ils_pert, &scanner);
+			readComponent(ils_pert, scanner);
 
 			if(!ils_pert)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
@@ -632,11 +634,11 @@ public:
 		{
 			cout << "Heuristic: Basic Simulated Annealing" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			vector<NS<R, ADS, M>* > ns_list = read_ns_list(&scanner);
+			vector<NS<R, ADS, M>* > ns_list = read_ns_list(scanner);
 			if(ns_list.size()==0)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -651,7 +653,7 @@ public:
 		{
 			cout << "Heuristic: Iterated Local Search (Levels)" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -671,7 +673,7 @@ public:
 			// ====================
 
 			ILSLPerturbation<R, ADS, M>* ilsl_pert = NULL;
-         readComponent(ilsl_pert, &scanner);
+         readComponent(ilsl_pert, scanner);
 
 			if(!ilsl_pert)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
@@ -686,7 +688,7 @@ public:
 		{
 			cout << "Heuristic: Intensified Iterated Local Search (Levels)" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -715,7 +717,7 @@ public:
 			 scanner = Scanner(method2.second);*/
 
 			Intensification<R, ADS, M> * intensification = NULL;
-         readComponent(intensification, &scanner);
+         readComponent(intensification, scanner);
 
 			if(!intensification)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
@@ -723,7 +725,7 @@ public:
 			// ====================
 
 			ILSLPerturbation<R, ADS, M>* ilsl_pert = NULL;
-         readComponent(ilsl_pert, &scanner);
+         readComponent(ilsl_pert, scanner);
 
 			if(!ilsl_pert)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
@@ -739,11 +741,11 @@ public:
 		{
 			cout << "Heuristic: Variable Neighborhood Descent" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			vector<HTrajectory<R, ADS, M>*> hlist = read_heuristic_list(&scanner);
+			vector<HTrajectory<R, ADS, M>*> hlist = read_heuristic_list(scanner);
 			if(hlist.size()==0)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -755,11 +757,11 @@ public:
 		{
 			cout << "Heuristic: RVND" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			vector<HTrajectory<R, ADS, M>*> hlist = read_heuristic_list(&scanner);
+			vector<HTrajectory<R, ADS, M>*> hlist = read_heuristic_list(scanner);
 			if(hlist.size()==0)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -770,7 +772,7 @@ public:
 		{
 			cout << "Heuristic: Variable Neighborhood Search" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
@@ -790,7 +792,7 @@ public:
 			// ====================
 
 			ILSLPerturbation<R, ADS, M>* ilsl_pert = NULL;
-         readComponent(ilsl_pert, &scanner);
+         readComponent(ilsl_pert, scanner);
 
 			if(!ilsl_pert)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
@@ -805,11 +807,11 @@ public:
 		{
 			cout << "Heuristic: MultiHeuristic" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
 			if(!evaluator)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			vector<HTrajectory<R, ADS, M>*> hlist = read_heuristic_list(&scanner);
+			vector<HTrajectory<R, ADS, M>*> hlist = read_heuristic_list(scanner);
 			if(hlist.size()==0)
 			   return make_pair(new Empty<R, ADS, M> , scanner.rest());
 

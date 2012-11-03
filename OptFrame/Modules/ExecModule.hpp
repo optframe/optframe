@@ -74,14 +74,14 @@ public:
 		if (sol == "loadsol")
 		{
 			Scanner s2(sol + " " + id);
-         factory->readComponent(s, &s2);
+         factory->readComponent(s, s2);
 		}
 
 		if (sol == "initsol")
 		{
 			Scanner s2(sol + " " + id);
 			InitialSolution<R, ADS>* initsol = NULL;
-         factory->readComponent(initsol, &s2);
+         factory->readComponent(initsol, s2);
 			s = &initsol->generateSolution();
 			needDelete = true;
 		}
@@ -89,14 +89,14 @@ public:
 		if (sol == "loadpop")
 		{
 			Scanner s2(sol + " " + id);
-         factory->readComponent(p, &s2);
+         factory->readComponent(p, s2);
 		}
 
 		if (sol == "initpop")
 		{
 			Scanner s2(sol + " " + id);
 			InitialPopulation<R, ADS>* initpop = NULL;
-         factory->readComponent(initpop, &s2);
+         factory->readComponent(initpop, s2);
 
 			unsigned popSize = scanner.nextInt();
 			p = &initpop->generatePopulation(popSize);

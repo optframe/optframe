@@ -53,7 +53,7 @@ public:
 			return;
 		}
 
-		Evaluator<R, ADS, M>* eval = factory->read_ev(&scanner);
+		Evaluator<R, ADS, M>* eval = factory->read_ev(scanner);
 
 		string sol = scanner.next();
 
@@ -68,7 +68,7 @@ public:
 
 		Scanner s2(sol + " " + id);
 		Solution<R, ADS>* s = NULL;
-      factory->readComponent(s, &s2);
+      factory->readComponent(s, s2);
 
 		Evaluation<M>* e = &eval->evaluate(*s);
 		e->print();

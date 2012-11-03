@@ -66,18 +66,18 @@ public:
 		if (sol == Population<R,ADS>::idComponent())
 		{
 			string id = scanner.next();
-			Scanner pop(sol + " " + id);
+			Scanner scan_pop(sol + " " + id);
 			Population<R, ADS>* p = NULL;
-         factory->readComponent(p, &pop);
+         factory->readComponent(p, scan_pop);
 			p->print();
 			return;
 		}
 
 		string id = scanner.next();
 
-		Scanner s2(sol + " " + id);
+		Scanner scan_sol(sol + " " + id);
 		Solution<R, ADS>* s = NULL;
-      factory->readComponent(s, &s2);
+      factory->readComponent(s, scan_sol);
 		s->print();
 	}
 

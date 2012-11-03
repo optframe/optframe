@@ -95,7 +95,7 @@ public:
 					Scanner s2((sol + " " + i_temp.str()));
 
 					InitialSolution<R, ADS>* initsol = NULL;
-		         factory->readComponent(initsol, &s2);
+		         factory->readComponent(initsol, s2);
 
 	            Solution<R, ADS>* s = &(initsol->generateSolution());
 
@@ -117,7 +117,7 @@ public:
 					Scanner s2((sol + " " + i_temp.str()));
 
 					Solution<R, ADS>* s = NULL;
-		         factory->readComponent(s, &s2);
+		         factory->readComponent(s, s2);
 
 					stringstream stream;
 
@@ -201,13 +201,13 @@ public:
 			if (sol == InitialSolution<R,ADS>::idComponent())
 			{
 			   InitialSolution<R, ADS>* initsol = NULL;
-	         factory->readComponent(initsol, &s2);
+	         factory->readComponent(initsol, s2);
 
 				s = &(initsol->generateSolution());
 			}
 			else
 			{
-	         factory->readComponent(s, &s2);
+	         factory->readComponent(s, s2);
 			}
 
 			stringstream stream;

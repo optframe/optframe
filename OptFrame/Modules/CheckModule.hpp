@@ -70,7 +70,7 @@ public:
 		{
 			Scanner s2(sol + " " + id);
 			Solution<R, ADS>* tmp_s = NULL;
-			factory->readComponent(tmp_s, &s2);
+			factory->readComponent(tmp_s, s2);
 			s = &tmp_s->clone();
 		}
 
@@ -79,7 +79,7 @@ public:
 			Scanner s2(sol + " " + id);
 			cout << "Step 1: Testing solution generator... ";
 			InitialSolution<R, ADS>* initsol = NULL;
-			factory->readComponent(initsol, &s2);
+			factory->readComponent(initsol, s2);
 
 			s = &initsol->generateSolution();
 			if (!s)
@@ -90,8 +90,8 @@ public:
 			cout << "[Ok]" << endl;
 		}
 
-		Evaluator<R, ADS, M>* eval = factory->read_ev(&scanner);
-		vector<NS<R, ADS, M>*> ns_list = factory->read_ns_list(&scanner);
+		Evaluator<R, ADS, M>* eval = factory->read_ev(scanner);
+		vector<NS<R, ADS, M>*> ns_list = factory->read_ns_list(scanner);
 		vector<NSSeq<R, ADS, M>*> ns_seq_list;
 		for (unsigned int i = 0; i < ns_list.size(); i++)
 			ns_seq_list.push_back((NSSeq<R, ADS, M>*) ns_list[i]);
