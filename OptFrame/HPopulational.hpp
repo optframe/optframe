@@ -33,7 +33,7 @@ using namespace std;
 #include "HeuristicMonoObj.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class HPopulational: public HeuristicMono<R, ADS, M>
+class HPopulational: public HeuristicMonoObj<R, ADS, M>
 {
    typedef vector<Evaluation<M>*> FitnessValues;
    typedef const vector<const Evaluation<M>*> ConstFitnessValues;

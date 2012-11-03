@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_HEURISTIC_MULTI_HPP_
-#define OPTFRAME_HEURISTIC_MULTI_HPP_
+#ifndef OPTFRAME_HEURISTIC_MULTI_OBJ_HPP_
+#define OPTFRAME_HEURISTIC_MULTI_OBJ_HPP_
 
 #include <iostream>
 #include <vector>
@@ -33,7 +33,7 @@ using namespace std;
 #include "OptFrameComponent.hpp"
 
 template< class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY >
-class HeuristicMulti :
+class HeuristicMultiObj :
       public OptFrameComponent
 {
    typedef vector<vector<Evaluation<M>*> > MultiEvaluations;
@@ -41,11 +41,11 @@ class HeuristicMulti :
 
 public:
 
-   HeuristicMulti()
+   HeuristicMultiObj()
    {
    }
 
-   virtual ~HeuristicMulti()
+   virtual ~HeuristicMultiObj()
    {
    }
 
@@ -111,4 +111,4 @@ public:
 
 };
 
-#endif /* OPTFRAME_HEURISTIC_MULTI_MULTI_HPP_ */
+#endif /* OPTFRAME_HEURISTIC_MULTI_MULTI_OBJ_HPP_ */

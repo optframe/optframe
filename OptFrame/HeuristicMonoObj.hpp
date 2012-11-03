@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_HEURISTIC_MONO_HPP_
-#define OPTFRAME_HEURISTIC_MONO_HPP_
+#ifndef OPTFRAME_HEURISTIC_MONO_OBJ_HPP_
+#define OPTFRAME_HEURISTIC_MONO_OBJ_HPP_
 
 #include <iostream>
 #include <vector>
@@ -33,7 +33,7 @@ using namespace std;
 #include "OptFrameComponent.hpp"
 
 template< class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY >
-class HeuristicMono :
+class HeuristicMonoObj :
       public OptFrameComponent
 {
    typedef vector<Evaluation<M>*> FitnessValues;
@@ -41,11 +41,11 @@ class HeuristicMono :
 
 public:
 
-   HeuristicMono()
+   HeuristicMonoObj()
    {
    }
 
-   virtual ~HeuristicMono()
+   virtual ~HeuristicMonoObj()
    {
    }
 
@@ -128,4 +128,4 @@ public:
 
 };
 
-#endif /* OPTFRAME_HEURISTIC_MONO_HPP_ */
+#endif /* OPTFRAME_HEURISTIC_MONO_OBJ_HPP_ */
