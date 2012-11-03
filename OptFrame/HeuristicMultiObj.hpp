@@ -101,7 +101,9 @@ public:
 
    static string idComponent()
    {
-      return "OptFrame:HMulti:";
+	   stringstream ss;
+	   ss << OptFrameComponent::idComponent() << "HMultiObj:";
+	   return ss.str();
    }
 
    virtual string id() const

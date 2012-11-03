@@ -118,7 +118,9 @@ public:
 
    static string idComponent()
    {
-      return "OptFrame:HMono:";
+	   stringstream ss;
+	   ss << OptFrameComponent::idComponent() << "HMonoObj:";
+	   return ss.str();
    }
 
    virtual string id() const
