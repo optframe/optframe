@@ -42,6 +42,10 @@ public:
 	{
 	}
 
+	virtual ~IteratedLocalSearch()
+	{
+	}
+
 	virtual H& initializeHistory() = 0;
 
 	virtual void localSearch(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f) = 0;

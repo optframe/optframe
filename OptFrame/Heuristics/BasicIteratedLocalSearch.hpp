@@ -44,6 +44,10 @@ public:
 	{
 	}
 
+	virtual ~BasicIteratedLocalSearch()
+	{
+	}
+
 	virtual BasicHistory& initializeHistory()
 	{
 		int& iter = * new int;

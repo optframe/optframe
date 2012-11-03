@@ -44,6 +44,10 @@ public:
            initial_w = 0;
 	}
 
+	virtual ~CircularSearch()
+	{
+	}
+
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<M>& e = eval.evaluate(s.getR());
@@ -61,7 +65,7 @@ public:
                 {
                     Move<R, ADS, M>& m = ns.move(w);
 
-                    if(m.canBeApplied(e, s))
+                    if(m.canBeApplied(s))
                     {
                       double cost = eval.moveCost(e, m, s);
 

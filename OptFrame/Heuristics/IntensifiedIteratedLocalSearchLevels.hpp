@@ -48,6 +48,10 @@ public:
       levelMax = _levelMax;
    }
 
+	virtual ~IntensifiedIteratedLocalSearchLevels()
+	{
+	}
+
 	virtual levelHistory& initializeHistory()
 	{
 		//cout << "initializeHistory()" << endl;

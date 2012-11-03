@@ -43,6 +43,10 @@ public:
 		ns.push_back(&_ns);
 	}
 
+	virtual ~BasicILSPerturbation()
+	{
+	}
+
 	void add_ns(NS<R, ADS, M>& _ns)
 	{
 		ns.push_back(&_ns);
@@ -58,7 +62,7 @@ public:
 
 			Move<R, ADS, M>& m = ns[x]->move(s);
 
-			if (m.canBeApplied(e, s))
+			if (m.canBeApplied(s))
 			{
 				delete &m.apply(e, s);
 				delete &m;

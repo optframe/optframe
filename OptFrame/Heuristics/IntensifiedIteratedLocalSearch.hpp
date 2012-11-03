@@ -42,6 +42,10 @@ public:
 	{
 	}
 
+	virtual ~IntensifiedIteratedLocalSearch()
+	{
+	}
+
 	Evaluator<R, ADS, M>& getEvaluator()
 	{
 		return evaluator;

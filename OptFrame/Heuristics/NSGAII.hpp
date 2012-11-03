@@ -58,6 +58,10 @@ public:
 		gMax = _gMax;
 	}
 
+	virtual ~NSGAII()
+	{
+	}
+
 	virtual void basicGeneticOperators(Population<R>& p) = 0;
 
 	virtual void exec(Population<R>& p, double timelimit, double target_f)

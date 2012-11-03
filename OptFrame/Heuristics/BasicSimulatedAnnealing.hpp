@@ -86,7 +86,7 @@ public:
 				int n = rg.rand(neighbors.size());
 				Move<R, ADS, M>* move = &(neighbors[n]->move(s));
 
-				while (!(move->canBeApplied(e, s)))
+				while (!(move->canBeApplied(s)))
 				{
 					delete move;
 					move = &(neighbors[n]->move(s));

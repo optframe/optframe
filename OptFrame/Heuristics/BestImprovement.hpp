@@ -41,6 +41,10 @@ public:
 	{
 	}
 
+	virtual ~BestImprovement()
+	{
+	}
+
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<M>& e = eval.evaluate(s.getR());
@@ -63,7 +67,7 @@ public:
 		}
 
 		Move<R, ADS, M>* bestMove = &it.current();
-		while (!bestMove->canBeApplied(e, s))
+		while (!bestMove->canBeApplied(s))
 		{
 			delete bestMove;
 			it.next();
@@ -83,7 +87,7 @@ public:
 		while (!it.isDone())
 		{
 			Move<R, ADS, M>* move = &it.current();
-			if (move->canBeApplied(e, s))
+			if (move->canBeApplied(s))
 			{
 				double cost = eval.moveCost(e, *move, s);
 

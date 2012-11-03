@@ -52,6 +52,10 @@ public:
 		pDominanceWeak.insertEvaluators(_v_e);
 	}
 
+	virtual ~MOVNS()
+	{
+	}
+
 	virtual void exec(Population<R, ADS>& p, double timelimit, double target_f)
 	{
 		FitnessValues& e_pop = *new FitnessValues;

@@ -133,7 +133,7 @@ public:
 		for (unsigned int i = 1; i < tab->getNumCols() - 1; i++)
 		{
 			// top
-			int max = 0;
+			//int max = 0;
 			int best = 0;
 			for (unsigned int j = 0; j < side_pieces.size(); j++)
 			{
@@ -147,7 +147,7 @@ public:
 				{
 					f++;
 					// best found!
-					max = f;
+					//max = f;
 					best = j;
 					break;
 				}
@@ -161,7 +161,7 @@ public:
 			(*tab)(0, i) = p;
 
 			// bottom
-			max = 0;
+			//max = 0;
 			best = 0;
 			for (unsigned int j = 0; j < side_pieces.size(); j++)
 			{
@@ -175,7 +175,7 @@ public:
 				{
 					f++;
 					// best found!
-					max = f;
+					//max = f;
 					best = j;
 					break;
 				}
@@ -193,7 +193,7 @@ public:
 		for (unsigned int i = 1; i < tab->getNumRows() - 1; i++)
 		{
 			// left
-			int max = 0;
+			//int max = 0;
 			int best = 0;
 			for (unsigned int j = 0; j < side_pieces.size(); j++)
 			{
@@ -207,7 +207,7 @@ public:
 				{
 					f++;
 					// best found!
-					max = f;
+					//max = f;
 					best = j;
 					break;
 				}
@@ -221,7 +221,7 @@ public:
 			(*tab)(i, 0) = p;
 
 			// right
-			max = 0;
+			//max = 0;
 			best = 0;
 			for (unsigned int j = 0; j < side_pieces.size(); j++)
 			{
@@ -235,7 +235,7 @@ public:
 				{
 					f++;
 					// best found!
-					max = f;
+					//max = f;
 					best = j;
 					break;
 				}

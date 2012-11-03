@@ -28,6 +28,10 @@ class Intensification : public HTrajectory<R, ADS, M>
 {
 public:
 
+	virtual ~Intensification()
+	{
+	}
+
 	virtual void exec(Solution<R, ADS>& _s, double timelimit, double target_f) = 0;
 
 	virtual void addSolution(const Solution<R, ADS>&) = 0;

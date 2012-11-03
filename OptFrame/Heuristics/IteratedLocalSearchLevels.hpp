@@ -44,6 +44,10 @@ public:
 	{
 	}
 
+	virtual ~IteratedLocalSearchLevels()
+	{
+	}
+
 	virtual levelHistory& initializeHistory()
 	{
 		//cout << "initializeHistory()" << endl;

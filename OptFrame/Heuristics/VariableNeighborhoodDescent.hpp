@@ -36,6 +36,9 @@ public:
 	{
 	}
 
+	virtual ~VariableNeighborhoodDescent()
+	{
+	}
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{

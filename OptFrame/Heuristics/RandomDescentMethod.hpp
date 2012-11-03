@@ -40,6 +40,10 @@ public:
 	{
 	}
 
+	virtual ~RandomDescentMethod()
+	{
+	}
+
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<M>& e = evaluator.evaluate(s.getR());
@@ -61,7 +65,7 @@ public:
 
 			double cost = 0;
 
-			if (move.canBeApplied(e, s))
+			if (move.canBeApplied(s))
 			{
 				cost = evaluator.moveCost(e, move, s);
 			}

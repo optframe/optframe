@@ -42,6 +42,10 @@ public:
 	   iterMax = _iterMax;
 	}
 
+	virtual ~GRASP()
+	{
+	}
+
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<M>& e = evaluator.evaluate(s.getR());

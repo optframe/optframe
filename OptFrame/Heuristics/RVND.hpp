@@ -38,6 +38,10 @@ public:
 	{
 	}
 
+	virtual ~RVND()
+	{
+	}
+
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<M>& e = ev.evaluate(s.getR());

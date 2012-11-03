@@ -51,6 +51,10 @@ public:
 		pDominanceWeak.insertEvaluators(_v_e);
 	}
 
+	virtual ~TwoPhaseParetoLocalSearch()
+	{
+	}
+
 	virtual void exec(Population<R, ADS>& p, double timelimit, double target_f)
 	{
 		//ACHO Q FALTA APAGAR ALGUMA COISA NO FINAL

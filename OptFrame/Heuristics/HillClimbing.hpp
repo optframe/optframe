@@ -41,6 +41,10 @@ public:
 	{
 	}
 
+	virtual ~HillClimbing()
+	{
+	}
+
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<M>& e = evaluator.evaluate(s.getR());

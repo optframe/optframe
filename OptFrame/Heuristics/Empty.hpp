@@ -30,7 +30,14 @@ public:
 
 	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
-	Empty(){};
+	Empty()
+	{
+	}
+
+	virtual ~Empty()
+	{
+	}
+
     virtual void exec(Solution<R, ADS>&, double timelimit, double target_f){};
 	virtual void exec(Solution<R, ADS>&, Evaluation<M>&, double timelimit, double target_f){};
 

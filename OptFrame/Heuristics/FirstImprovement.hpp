@@ -41,6 +41,10 @@ public:
 	{
 	}
 
+	virtual ~FirstImprovement()
+	{
+	}
+
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<M>& e = eval.evaluate(s.getR());
@@ -64,7 +68,7 @@ public:
 		{
 			Move<R, ADS, M>* move = &it.current();
 
-			if (move->canBeApplied(e, s) && eval.betterThan(eval.moveCost(e, *move, s), 0))
+			if (move->canBeApplied(s) && eval.betterThan(eval.moveCost(e, *move, s), 0))
 			{
 				delete &move->apply(e, s);
 				delete move;

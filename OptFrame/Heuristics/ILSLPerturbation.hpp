@@ -31,6 +31,11 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_E
 class ILSLPerturbation : public OptFrameComponent
 {
 public:
+
+	virtual ~ILSLPerturbation()
+	{
+	}
+
 	virtual void perturb(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f, int level) = 0;
 
    static string idComponent()
@@ -58,6 +63,10 @@ public:
 		evaluator(e), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
+	}
+
+	virtual ~ILSLPerturbationLPlus2()
+	{
 	}
 
 	void add_ns(NS<R, ADS, M>& _ns)
