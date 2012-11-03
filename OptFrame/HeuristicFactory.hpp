@@ -31,8 +31,8 @@ using namespace std;
 
 #include "OptFrameContainer.hpp"
 
-#include "HeuristicMono.hpp"
-#include "HeuristicMulti.hpp"
+#include "HeuristicMonoObj.hpp"
+#include "HeuristicMultiObj.hpp"
 
 #include "Heuristics/Empty.hpp"
 

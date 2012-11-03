@@ -72,8 +72,8 @@
 //            Heuristic
 // ==================================
 
-#include "HeuristicMono.hpp"
-#include "HeuristicMulti.hpp"
+#include "HeuristicMonoObj.hpp"
+#include "HeuristicMultiObj.hpp"
 
 #include "HeuristicFactory.hpp"
 
