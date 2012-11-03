@@ -22,6 +22,8 @@
 #define TESTMODULE_HPP_
 
 #include "../OptFrameModule.hpp"
+#include "../InitialSolution.h"
+
 #include <math.h>
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
@@ -224,7 +226,7 @@ public:
 		if (scan_rest.hasNext())
 		{
 			string new_name = scan_rest.next();
-			run_module("define", all_modules, factory, dictionary, new_name + " " + s_new_id);
+			OptFrameModule<R, ADS, M>::run_module("define", all_modules, factory, dictionary, new_name + " " + s_new_id);
 		}
 	}
 

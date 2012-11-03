@@ -63,7 +63,7 @@ public:
 		stringstream nameAndSize;
 		nameAndSize << variable << " " << list.size();
 
-		run_module("define", all_modules, hf, dictionary, nameAndSize.str());
+		OptFrameModule<R, ADS, M>::run_module("define", all_modules, hf, dictionary, nameAndSize.str());
 	}
 
 };

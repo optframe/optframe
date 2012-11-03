@@ -56,6 +56,11 @@ protected:
 	}
 
 public:
+
+	virtual ~OptFrameModule()
+	{
+	}
+
 	virtual string id() = 0;
 	virtual string usage() = 0;
 
