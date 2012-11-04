@@ -18,30 +18,32 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_INITIALSOLUTION_H_
-#define OPTFRAME_INITIALSOLUTION_H_
+#ifndef OPTFRAME_CONSTRUCTIVE_H_
+#define OPTFRAME_CONSTRUCTIVE_H_
 
 #include "Solution.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class InitialSolution : public OptFrameComponent
+class Constructive : public OptFrameComponent
 {
 public:
-	virtual ~InitialSolution()
+	virtual ~Constructive()
 	{
 	}
 
 	virtual Solution<R, ADS>& generateSolution() = 0;
 
-   static string idComponent()
-   {
-      return "OptFrame:initsol";
-   }
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << OptFrameComponent::idComponent() << "initsol";
+		return ss.str();
+	}
 
-   virtual string id() const
-   {
-      return idComponent();
-   }
+	virtual string id() const
+	{
+		return idComponent();
+	}
 };
 
-#endif /*OPTFRAME_INITIALSOLUTION_H_*/
+#endif /*OPTFRAME_CONSTRUCTIVE_H_*/

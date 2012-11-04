@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_HTRAJECTORY_HPP_
-#define OPTFRAME_HTRAJECTORY_HPP_
+#ifndef OPTFRAME_LOCAL_SEARCH_HPP_
+#define OPTFRAME_LOCAL_SEARCH_HPP_
 
 #include <iostream>
 #include <vector>
@@ -30,53 +30,56 @@ using namespace std;
 #include "Population.hpp"
 #include "Evaluation.hpp"
 
-#include "SingleObjSearch.hpp"
-
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class HTrajectory: public HeuristicMonoObj<R, ADS, M>
+class LocalSearch: public OptFrameComponent<R, ADS, M>
 {
    typedef vector<Evaluation<M>*> FitnessValues;
    typedef const vector<const Evaluation<M>*> ConstFitnessValues;
 
 public:
 
-   HTrajectory()
+   LocalSearch()
    {
    }
 
-   virtual ~HTrajectory()
+   virtual ~LocalSearch()
    {
    }
 
    // core methods
 
+   // no-optimization
+   Solution<R, ADS>& search(const Solution<R, ADS>& s, double timelimit = 100000000, double target_f = 0)
+   {
+      Solution<R, ADS>& s2 = s.clone();
+      exec(s2, timelimit, target_f);
+      return s2;
+   }
+
+   // optimizated version
+   pair<Solution<R, ADS>&, Evaluation<M>&>& search(const Solution<R, ADS>& s, const Evaluation<M>& e, double timelimit = 100000000, double target_f = 0)
+   {
+      Solution<R, ADS>& s2 = s.clone();
+      Evaluation<M>& e2 = e.clone();
+      exec(s2, e2, timelimit, target_f);
+      return *new pair<Solution<R, ADS>&, Evaluation<M>&> (s2, e2);
+   }
+
+
+   // core methods
+
    // 1
    virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f) = 0;
+
    // 2
    virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f) = 0;
 
-   // 3
-   virtual void exec(Population<R, ADS>& p, double timelimit, double target_f)
-   {
-      // call 1
-      Solution<R, ADS>& s = (p.at(0));
-
-      exec(s, timelimit, target_f);
-   }
-
-   // 4
-   virtual void exec(Population<R, ADS>& p, FitnessValues& ev, double timelimit, double target_f)
-   {
-      // call 2
-      Solution<R, ADS>& s = (p.at(0));
-      Evaluation<M>& e = *(ev[0]);
-
-      exec(s, e, timelimit, target_f);
-   }
 
    static string idComponent()
    {
-      return "OptFrame:HMono:HT:";
+	   stringstream ss;
+	   ss << OptFrameComponent::idComponent() << "LocalSearch:";
+	   return ss.str();
    }
 
    virtual string id() const
@@ -86,4 +89,4 @@ public:
 
 };
 
-#endif /* OPTFRAME_HTRAJECTORY_HPP_ */
+#endif /* OPTFRAME_LOCAL_SEARCH_HPP_ */
