@@ -85,10 +85,17 @@ public:
 		delete &it;
 	}
 
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << LocalSearch<R, ADS, M>::idComponent() << "fi";
+		return ss.str();
+	}
+
 	virtual string id() const
-   {
-      return "OptFrame:FI:fi";
-   }
+	{
+		return idComponent();
+	}
 };
 
 #endif /*OPTFRAME_FI_HPP_*/

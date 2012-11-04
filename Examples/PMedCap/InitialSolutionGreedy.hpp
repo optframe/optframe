@@ -21,7 +21,7 @@
 #ifndef PCAP_INITIALSOLUTION_InitalSolutionGreedy_HPP_
 #define PCAP_INITIALSOLUTION_InitalSolutionGreedy_HPP_
 
-#include "../../OptFrame/InitialSolution.h"
+#include "../../OptFrame/Constructive.h"
 #include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.hpp"
@@ -38,7 +38,7 @@
 
 using namespace std;
 
-class PCAPInitialSolutionGreedy: public InitialSolution<RepPCAP>
+class PCAPInitialSolutionGreedy: public Constructive<RepPCAP>
 {
 private:
 	PCAPProblemInstance& pPCAP;

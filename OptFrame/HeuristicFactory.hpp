@@ -92,7 +92,7 @@ public:
 				component = v[number];
 		}
 		else
-			cout << "'" << id << "' not found!" << endl;
+			cout << "HeuristicFactory warning: component '" << id << " " << number << "' not found!" << endl;
 
 		return component;
 	}
@@ -129,6 +129,8 @@ public:
 		v.push_back(&component);
 
 		int idx = components[id].size() - 1;
+
+		cout << "HeuristicFactory: added component '" << id << " " << idx << "'" << endl;
 
 		return idx;
 	}
@@ -475,10 +477,10 @@ public:
 			return make_pair(mtd, scanner.rest());
 		}
 
-		if (h == "Empty")
+		if (h == Empty<R, ADS, M>::idComponent())
 			return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-		if (h == "OptFrame:bi")
+		if (h == BestImprovement<R, ADS, M>::idComponent())
 		{
 			cout << "Heuristic: Best Improvement" << endl;
 
@@ -491,12 +493,10 @@ public:
 			if(!ns_seq)
 				return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-			cout << "ok" << endl;
-
 			return make_pair(new BestImprovement<R, ADS, M> (*evaluator, *ns_seq), scanner.rest());
 		}
 
-		if (h == "FI")
+		if (h == FirstImprovement<R, ADS, M>::idComponent())
 		{
 			cout << "Heuristic: First Improvement" << endl;
 
@@ -512,7 +512,7 @@ public:
 			return make_pair(new FirstImprovement<R, ADS, M> (*evaluator, *ns_seq), scanner.rest());
 		}
 
-		if(h == "CS")
+		if(h == CircularSearch<R, ADS, M>::idComponent())
 		{
 			cout << "Heuristic: Circular Search" << endl;
 
@@ -523,7 +523,7 @@ public:
 			return make_pair(new CircularSearch<R, ADS, M> (*evaluator, *ns_enum), scanner.rest());
 		}
 
-		if (h == "HC")
+		if (h == HillClimbing<R, ADS, M>::idComponent())
 		{
 			cout << "Heuristic: Hill Climbing" << endl;
 
@@ -541,7 +541,7 @@ public:
 			return make_pair(new HillClimbing<R, ADS, M> (*evaluator, *h), scanner.rest());
 		}
 
-		if (h == "RDM")
+		if (h == RandomDescentMethod<R, ADS, M>::idComponent())
 		{
 			cout << "Heuristic: Random Descent Method" << endl;
 
@@ -560,7 +560,7 @@ public:
 		}
 
 
-		if (h == "VND")
+		if (h == VariableNeighborhoodDescent<R, ADS, M>::idComponent())
 		{
 			cout << "Heuristic: Variable Neighborhood Descent" << endl;
 
@@ -576,7 +576,7 @@ public:
 
 		}
 
-		if (h == "RVND")
+		if (h == RVND<R, ADS, M>::idComponent())
 		{
 			cout << "Heuristic: RVND" << endl;
 

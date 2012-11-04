@@ -110,10 +110,17 @@ public:
 		eval.evaluate(e, s); // updates 'e'
 	}
 
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << LocalSearch<R, ADS, M>::idComponent() << "bi";
+		return ss.str();
+	}
+
 	virtual string id() const
-   {
-      return "OptFrame:BI:bi";
-   }
+	{
+		return idComponent();
+	}
 
 };
 

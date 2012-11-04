@@ -21,7 +21,7 @@
 #ifndef EtII_INITIALSOLUTION_Greedy_HPP_
 #define EtII_INITIALSOLUTION_Greedy_HPP_
 
-#include "../../OptFrame/InitialSolution.h"
+#include "../../OptFrame/Constructive.h"
 #include "../../OptFrame/Util/TestSolution.hpp"
 #include "../../OptFrame/RandGen.hpp"
 
@@ -39,7 +39,7 @@
 
 using namespace std;
 
-class EtIIInitialSolutionGreedy: public InitialSolution<RepEtII>
+class EtIIInitialSolutionGreedy: public Constructive<RepEtII>
 {
 private:
 	EtIIProblemInstance& pEtII;

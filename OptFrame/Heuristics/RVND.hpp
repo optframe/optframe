@@ -88,9 +88,16 @@ public:
 
 	}
 
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << LocalSearch<R, ADS, M>::idComponent() << "rvnd";
+		return ss.str();
+	}
+
 	virtual string id() const
 	{
-		return "OptFrame:VND:rvnd";
+		return idComponent();
 	}
 
 private:

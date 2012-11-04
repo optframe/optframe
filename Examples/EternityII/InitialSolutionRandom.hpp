@@ -21,7 +21,7 @@
 #ifndef EtII_INITIALSOLUTION_Random_HPP_
 #define EtII_INITIALSOLUTION_Random_HPP_
 
-#include "../../OptFrame/InitialSolution.h"
+#include "../../OptFrame/Constructive.h"
 #include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "../../OptFrame/RandGen.hpp"
@@ -40,7 +40,7 @@
 
 using namespace std;
 
-class EtIIInitialSolutionRandom: public InitialSolution<RepEtII>
+class EtIIInitialSolutionRandom: public Constructive<RepEtII>
 {
 private:
 	EtIIProblemInstance& pEtII;

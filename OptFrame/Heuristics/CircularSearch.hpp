@@ -90,10 +90,17 @@ public:
                  while(w != initial_w);
 	}
 
-   virtual string id() const
-   {
-      return "OptFrame:CS:cs";
-   }
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << LocalSearch<R, ADS, M>::idComponent() << "cs";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
 };
 
 #endif /*OPTFRAME_CS_HPP_*/

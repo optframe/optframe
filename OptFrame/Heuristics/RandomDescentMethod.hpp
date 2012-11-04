@@ -88,16 +88,23 @@ public:
 		}
 	}
 
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << LocalSearch<R, ADS, M>::idComponent() << "rdm";
+		return ss.str();
+	}
+
 	virtual string id() const
 	{
-		return "OptFrame:ILS:rdm";
+		return idComponent();
 	}
 
 	virtual vector<pair<string, string> > parameters() const
 	{
 		vector<pair<string, string> > p;
-		p.push_back(make_pair("OptFrame:ev", "evaluator"));
-		p.push_back(make_pair("OptFrame:ns", "neighborhood_structure"));
+		p.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluator"));
+		p.push_back(make_pair(NS<R, ADS, M>::idComponent(), "neighborhood_structure"));
 		p.push_back(make_pair("int", "iterMax"));
 
 		return p;

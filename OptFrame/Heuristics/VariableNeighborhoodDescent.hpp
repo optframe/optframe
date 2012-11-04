@@ -86,10 +86,17 @@ public:
 
 	}
 
-   virtual string id() const
-   {
-      return "OptFrame:VND:vnd";
-   }
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << LocalSearch<R, ADS, M>::idComponent() << "vnd";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
 
 private:
 	Evaluator<R, ADS, M>& ev;

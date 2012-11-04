@@ -5,11 +5,11 @@
 randgen system_seed time()
 
 dictionary %shows an empty dictionary
-define my_bestimprovement OptFrame:bi OptFrame:ev 0 OptFrame:ns 0 %define 'my_bestimprovement' as 'BI ev 0 ns 0'
-define random OptFrame:initsol 0 %define 'random' as 'initsol 0'
+define my_bestimprovement OptFrame:LocalSearch:bi OptFrame:ev 0 OptFrame:nsenum 0 %define 'my_bestimprovement' as 'BI ev 0 ns 0'
+define random OptFrame:constructive 0 %define 'random' as 'OptFrame:constructive 0'
 dictionary %shows the updated dictionary
 
-test 5 12 8400 8400 random OptFrame:ev 0 my_bestimprovement out.txt sStar
+testls 5 12 8400 8400 OptFrame:ev 0 random my_bestimprovement out.txt sStar
 
 export sStar out.sol
 

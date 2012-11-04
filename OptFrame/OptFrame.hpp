@@ -110,6 +110,7 @@
 #include "Modules/RandGenModule.hpp"
 #include "Modules/ReadModule.hpp"
 #include "Modules/TestModule.hpp"
+#include "Modules/TestLocalSearchModule.hpp"
 #include "Modules/UndefineModule.hpp"
 #include "Modules/UsageModule.hpp"
 #include "Modules/InitServersModule.hpp"
@@ -200,6 +201,7 @@ public:
 		loadModule(new RandGenModule<R, ADS, M> );
 		loadModule(new ReadModule<R, ADS, M> );
 		loadModule(new TestModule<R, ADS, M> );
+		loadModule(new TestLocalSearchModule<R, ADS, M> );
 		loadModule(new UndefineModule<R, ADS, M> );
 		loadModule(new UsageModule<R, ADS, M> );
 #ifdef MaPI

@@ -186,15 +186,17 @@ public:
 		return betterThan(a, b) || (abs(a - b) < OPTFRAME_EPSILON);
 	}
 
-   static string idComponent()
-   {
-      return "OptFrame:ev";
-   }
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << OptFrameComponent::idComponent() << "ev";
+		return ss.str();
+	}
 
-   virtual string id() const
-   {
-      return idComponent();
-   }
+	virtual string id() const
+	{
+		return idComponent();
+	}
 
 };
 
