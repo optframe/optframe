@@ -21,7 +21,7 @@
 #ifndef OPTFRAME_CS_HPP_
 #define OPTFRAME_CS_HPP_
 
-#include "../HTrajectory.hpp"
+#include "../LocalSearch.hpp"
 #include "../NSSeq.hpp"
 #include "../Evaluator.hpp"
 

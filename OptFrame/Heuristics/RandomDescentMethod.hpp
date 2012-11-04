@@ -21,7 +21,7 @@
 #ifndef OPTFRAME_RDM_HPP_
 #define OPTFRAME_RDM_HPP_
 
-#include "../HTrajectory.hpp"
+#include "../LocalSearch.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class RandomDescentMethod: public HTrajectory<R, ADS, M>

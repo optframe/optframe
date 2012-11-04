@@ -21,7 +21,7 @@
 #ifndef VARIABLENEIGHBORHOODDESCENT_HPP_
 #define VARIABLENEIGHBORHOODDESCENT_HPP_
 
-#include "../HTrajectory.hpp"
+#include "../LocalSearch.hpp"
 #include "../NSEnum.hpp"
 #include "../Evaluator.hpp"
 

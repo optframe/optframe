@@ -22,7 +22,7 @@
 #define EXECMODULE_HPP_
 
 #include "../OptFrameModule.hpp"
-#include "../InitialSolution.h"
+#include "../Constructive.h"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class ExecModule: public OptFrameModule<R, ADS, M>

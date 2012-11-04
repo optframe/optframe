@@ -21,7 +21,7 @@
 #ifndef OPTFRAME_HILLCLIMBING_HPP_
 #define OPTFRAME_HILLCLIMBING_HPP_
 
-#include "../HTrajectory.hpp"
+#include "../LocalSearch.hpp"
 #include "../NSSeq.hpp"
 #include "../Evaluator.hpp"
 

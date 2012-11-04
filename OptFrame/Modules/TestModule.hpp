@@ -22,7 +22,7 @@
 #define TESTMODULE_HPP_
 
 #include "../OptFrameModule.hpp"
-#include "../InitialSolution.h"
+#include "../Constructive.h"
 
 #include <math.h>
 

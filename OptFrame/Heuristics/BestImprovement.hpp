@@ -21,7 +21,7 @@
 #ifndef OPTFRAME_BI_HPP_
 #define OPTFRAME_BI_HPP_
 
-#include "../HTrajectory.hpp"
+#include "../LocalSearch.hpp"
 #include "../NSSeq.hpp"
 #include "../Evaluator.hpp"
 

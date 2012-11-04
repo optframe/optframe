@@ -23,7 +23,7 @@
 
 #include <algorithm>
 
-#include "../HTrajectory.hpp"
+#include "../LocalSearch.hpp"
 #include "../Evaluator.hpp"
 #include "../RandGen.hpp"
 

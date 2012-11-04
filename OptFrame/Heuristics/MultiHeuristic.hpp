@@ -24,7 +24,7 @@
 #include <math.h>
 #include <vector>
 
-#include "../HTrajectory.hpp"
+#include "../LocalSearch.hpp"
 #include "../NS.hpp"
 #include "../Evaluator.hpp"
 #include "../Solution.hpp"

@@ -30,7 +30,7 @@ using namespace std;
 #include "Population.hpp"
 #include "Evaluation.hpp"
 
-#include "HeuristicMonoObj.hpp"
+#include "SingleObjSearch.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class HTrajectory: public HeuristicMonoObj<R, ADS, M>

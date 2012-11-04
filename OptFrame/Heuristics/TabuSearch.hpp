@@ -21,7 +21,7 @@
 #ifndef OPTFRAME_TABUSEARCH_HPP_
 #define OPTFRAME_TABUSEARCH_HPP_
 
-#include "../HTrajectory.hpp"
+#include "../LocalSearch.hpp"
 #include "../NSEnum.hpp"
 #include "../Evaluator.hpp"
 

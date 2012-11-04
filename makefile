@@ -1,4 +1,4 @@
-all: examples
+all:
 	g++ -Wall main.cpp ./OptFrame/Scanner++/Scanner.cpp -o mainOptFrame
 
 examples: tsp eternityII pmedcap

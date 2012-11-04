@@ -21,7 +21,7 @@
 #ifndef TSP_INITIALSOLUTION_Random_HPP_
 #define TSP_INITIALSOLUTION_Random_HPP_
 
-#include "../../OptFrame/InitialSolution.h"
+#include "../../OptFrame/Constructive.h"
 #include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.hpp"

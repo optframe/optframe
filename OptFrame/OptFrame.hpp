@@ -41,7 +41,7 @@
 
 #include "Population.hpp"
 
-#include "InitialSolution.h"
+#include "Constructive.h"
 #include "InitialPopulation.h"
 
 #include "Move.hpp"
@@ -72,8 +72,8 @@
 //            Heuristic
 // ==================================
 
-#include "HeuristicMonoObj.hpp"
-#include "HeuristicMultiObj.hpp"
+#include "SingleObjSearch.hpp"
+#include "MultiObjSearch.hpp"
 
 #include "HeuristicFactory.hpp"
 

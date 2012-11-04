@@ -21,7 +21,7 @@
 #ifndef INTENSIFICATION_HPP_
 #define INTENSIFICATION_HPP_
 
-#include "../HTrajectory.hpp"
+#include "../LocalSearch.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class Intensification : public HTrajectory<R, ADS, M>
