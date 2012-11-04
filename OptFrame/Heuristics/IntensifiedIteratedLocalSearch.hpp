@@ -24,21 +24,20 @@
 #include <math.h>
 #include <vector>
 
-#include "../LocalSearch.hpp"
+#include "../SingleObjSearch.hpp"
 #include "../Evaluator.hpp"
 
 template<class H, class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class IntensifiedIteratedLocalSearch: public HTrajectory<R, ADS, M>
+class IntensifiedIteratedLocalSearch: public SingleObjSearch<R, ADS, M>
 {
 protected:
 	Evaluator<R, ADS, M>& evaluator;
+	Constructive<R, ADS>& constructive;
 
 public:
 
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
-
-	IntensifiedIteratedLocalSearch(Evaluator<R, ADS, M>& _evaluator) :
-		evaluator(_evaluator)
+	IntensifiedIteratedLocalSearch(Evaluator<R, ADS, M>& _evaluator, Constructive<R, ADS>& _constructive) :
+		evaluator(_evaluator), constructive(_constructive)
 	{
 	}
 
@@ -63,18 +62,14 @@ public:
 
 	virtual bool terminationCondition(H& history) = 0;
 
-	void exec(Solution<R, ADS>& s, double timelimit, double target_f)
+	pair<Solution<R, ADS>&, Evaluation<M>&>* search(double timelimit = 100000000, double target_f = 0)
 	{
-		Evaluation<M>& e = evaluator.evaluate(s.getR());
-		exec(s, e, timelimit, target_f);
-		delete &e;
-	}
-
-	void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
-	{
-		cout << "ILS exec(" << target_f << "," << timelimit << ")" << endl;
+		cout << "IILS search(" << target_f << "," << timelimit << ")" << endl;
 
 		Timer tnow;
+
+		Solution<R, ADS>& s = constructive.generateSolution();
+		Evaluation<M>& e    = evaluator.evaluate(s);
 
 		H* history = &initializeHistory();
 
@@ -123,6 +118,8 @@ public:
 		delete sStar;
 
 		delete history;
+
+		return new pair<Solution<R, ADS>&, Evaluation<M>&>(s, e);
 	}
 };
 

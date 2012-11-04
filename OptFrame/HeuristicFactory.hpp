@@ -51,11 +51,13 @@ using namespace std;
 #include "Heuristics/IteratedLocalSearchLevels.hpp"
 #include "Heuristics/IntensifiedIteratedLocalSearchLevels.hpp"
 #include "Heuristics/Intensification.hpp"
-#include "Heuristics/MultiHeuristic.hpp"
 #include "Heuristics/GRASP.hpp"
 #include "Heuristics/TabuSearch.hpp"
 #include "Heuristics/EvolutionaryAlgorithms/GeneticAlgorithm.hpp"
 #include "Heuristics/BasicSimulatedAnnealing.hpp"
+
+#include "Heuristics/MOVNS.hpp"
+
 
 // design pattern: Factory
 

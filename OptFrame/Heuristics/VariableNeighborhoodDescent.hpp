@@ -26,13 +26,12 @@
 #include "../Evaluator.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class VariableNeighborhoodDescent: public HTrajectory<R, ADS, M>
+class VariableNeighborhoodDescent: public LocalSearch<R, ADS, M>
 {
 public:
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
-	VariableNeighborhoodDescent(Evaluator<R, ADS, M>& _ev, vector<HTrajectory<R, ADS, M>*> _neighbors) :
-		ev(_ev), neighbors(_neighbors)
+	VariableNeighborhoodDescent(Evaluator<R, ADS, M>& _ev, vector<LocalSearch<R, ADS, M>*> _lsList) :
+		ev(_ev), lsList(_lsList)
 	{
 	}
 
@@ -55,7 +54,7 @@ public:
 
 		long tini = time(NULL);
 
-		int r = neighbors.size();
+		int r = lsList.size();
 
 		int k = 1;
 
@@ -65,7 +64,7 @@ public:
 			Solution<R, ADS>* s0 = &s.clone();
 			Evaluation<M>* e0 = &e.clone();
 
-			neighbors[k - 1]->exec(*s0, *e0, timelimit, target_f);
+			lsList[k - 1]->exec(*s0, *e0, timelimit, target_f);
 			if (ev.betterThan(*s0, s))
 			{
 				s = *s0;
@@ -94,7 +93,7 @@ public:
 
 private:
 	Evaluator<R, ADS, M>& ev;
-	vector<HTrajectory<R, ADS, M>*> neighbors;
+	vector<LocalSearch<R, ADS, M>*> lsList;
 };
 
 #endif /*VARIABLENEIGHBORHOODDESCENT_HPP_*/

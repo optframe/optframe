@@ -24,6 +24,8 @@
 #include <math.h>
 #include <vector>
 
+#include "../LocalSearch.hpp"
+
 #include "IteratedLocalSearch.hpp"
 #include "BasicILSPerturbation.hpp"
 
@@ -33,14 +35,14 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_E
 class BasicIteratedLocalSearch: public IteratedLocalSearch<BasicHistory, R, ADS, M>
 {
 protected:
-	HTrajectory<R, ADS, M>& h;
+	LocalSearch<R, ADS, M>& ls;
 	BasicILSPerturbation<R, ADS, M>& p;
 	int iterMax;
 
 public:
 
-	BasicIteratedLocalSearch(Evaluator<R, ADS, M>& e, HTrajectory<R, ADS, M>& _h, BasicILSPerturbation<R, ADS, M>& _p, int _iterMax) :
-		IteratedLocalSearch<BasicHistory, R, ADS, M> (e), h(_h), p(_p), iterMax(_iterMax)
+	BasicIteratedLocalSearch(Evaluator<R, ADS, M>& e, LocalSearch<R, ADS, M>& _ls, BasicILSPerturbation<R, ADS, M>& _p, int _iterMax) :
+		IteratedLocalSearch<BasicHistory, R, ADS, M> (e), ls(_ls), p(_p), iterMax(_iterMax)
 	{
 	}
 
@@ -58,7 +60,7 @@ public:
 
 	virtual void localSearch(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
-		h.exec(s, e, timelimit, target_f);
+		ls.exec(s, e, timelimit, target_f);
 	}
 
 	virtual void perturbation(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f, BasicHistory& history)

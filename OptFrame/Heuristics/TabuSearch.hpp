@@ -21,25 +21,24 @@
 #ifndef OPTFRAME_TABUSEARCH_HPP_
 #define OPTFRAME_TABUSEARCH_HPP_
 
-#include "../LocalSearch.hpp"
+#include "../SingleObjSearch.hpp"
 #include "../NSEnum.hpp"
 #include "../Evaluator.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class TabuSearch: public HTrajectory<R, ADS, M>
+class TabuSearch: public SingleObjSearch<R, ADS, M>
 {
 private:
-   Evaluator<R, ADS, M>& evaluator;
+	Evaluator<R, ADS, M>& evaluator;
+	Constructive<R, ADS>& constructive;
 	NSSeq<R, ADS, M>& nsSeq;
 	int tlSize;
 	int tsMax;
 
 public:
 
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
-
-	TabuSearch(Evaluator<R, ADS, M>& _ev, NSSeq<R, ADS, M>& _nsSeq, int _tlSize, int _tsMax) :
-		evaluator(_ev), nsSeq(_nsSeq), tlSize(_tlSize), tsMax(_tsMax)
+	TabuSearch(Evaluator<R, ADS, M>& _ev, Constructive<R, ADS>& _constructive, NSSeq<R, ADS, M>& _nsSeq, int _tlSize, int _tsMax) :
+		evaluator(_ev), constructive(_constructive), nsSeq(_nsSeq), tlSize(_tlSize), tsMax(_tsMax)
 	{
 	}
 
@@ -47,18 +46,14 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
-	{
-		Evaluation<M>& e = evaluator.evaluate(s.getR());
-		exec(s, e, timelimit, target_f);
-		delete &e;
-	}
-
-	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
+	pair<Solution<R, ADS>&, Evaluation<M>&>* search(double timelimit = 100000000, double target_f = 0)
 	{
 		//cout << "TabuSearch exec(" << target_f << "," << timelimit << ")" << endl;
 
 		long tini = time(NULL);
+
+		Solution<R, ADS>& s = constructive.generateSolution();
+		Evaluation<M>& e    = evaluator.evaluate(s);
 
 		Solution<R, ADS>* sStar = &s.clone();
 		Evaluation<M>* evalSStar = &evaluator.evaluate(*sStar);
@@ -190,11 +185,14 @@ public:
 		if (!ftabu)
 		{
 			cout << "Error creating file 'tabu.txt'" << endl;
-			return;
+		}
+		else
+		{
+			fprintf(ftabu, "%d\n", estimative_BTmax);
+			fclose(ftabu);
 		}
 
-		fprintf(ftabu, "%d\n", estimative_BTmax);
-		fclose(ftabu);
+		return new pair<Solution<R, ADS>&, Evaluation<M>&>(s, e);
 	}
 
 	Move<R, ADS, M>* tabuBestMove(Solution<R, ADS>& s, Evaluation<M>& e, const vector<Move<R, ADS, M>*>& tabuList)

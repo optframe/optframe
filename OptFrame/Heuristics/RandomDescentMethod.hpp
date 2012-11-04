@@ -24,16 +24,14 @@
 #include "../LocalSearch.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class RandomDescentMethod: public HTrajectory<R, ADS, M>
+class RandomDescentMethod: public LocalSearch<R, ADS, M>
 {
 private:
-   Evaluator<R, ADS, M>& evaluator;
+	Evaluator<R, ADS, M>& evaluator;
 	NS<R, ADS, M>& ns;
 	unsigned int iterMax;
 
 public:
-
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
 	RandomDescentMethod(Evaluator<R, ADS, M>& _eval, NS<R, ADS, M>& _ns, unsigned int _iterMax) :
 		evaluator(_eval), ns(_ns), iterMax(_iterMax)
@@ -91,19 +89,19 @@ public:
 	}
 
 	virtual string id() const
-   {
-      return "OptFrame:ILS:rdm";
-   }
+	{
+		return "OptFrame:ILS:rdm";
+	}
 
 	virtual vector<pair<string, string> > parameters() const
-   {
-	   vector<pair<string, string> > p;
-	   p.push_back(make_pair("OptFrame:ev","evaluator"));
-	   p.push_back(make_pair("OptFrame:ns","neighborhood_structure"));
-	   p.push_back(make_pair("int","iterMax"));
+	{
+		vector<pair<string, string> > p;
+		p.push_back(make_pair("OptFrame:ev", "evaluator"));
+		p.push_back(make_pair("OptFrame:ns", "neighborhood_structure"));
+		p.push_back(make_pair("int", "iterMax"));
 
-      return p;
-   }
+		return p;
+	}
 };
 
 #endif /*OPTFRAME_RDM_HPP_*/

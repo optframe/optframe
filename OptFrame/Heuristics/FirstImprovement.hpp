@@ -26,15 +26,13 @@
 #include "../Evaluator.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class FirstImprovement: public HTrajectory<R, ADS, M>
+class FirstImprovement: public LocalSearch<R, ADS, M>
 {
 private:
 	Evaluator<R, ADS, M>& eval;
 	NSSeq<R, ADS, M>& nsSeq;
 
 public:
-
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
 	FirstImprovement(Evaluator<R, ADS, M>& _eval, NSSeq<R, ADS, M>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)

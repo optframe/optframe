@@ -32,41 +32,39 @@ using namespace std;
 
 #include "OptFrameComponent.hpp"
 
-template< class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY >
-class MultiObjSearch :
-      public OptFrameComponent
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class MultiObjSearch: public OptFrameComponent
 {
-   typedef vector<vector<Evaluation<M>*> > MultiEvaluations;
-   typedef const vector<vector<const Evaluation<M>*> > ConstMultiEvaluations;
-
 public:
 
-   MultiObjSearch()
-   {
-   }
+	typedef vector<pair<Solution<R, ADS>&, vector<Evaluation<M>*> > > ParetoFront;
 
-   virtual ~MultiObjSearch()
-   {
-   }
+	MultiObjSearch()
+	{
+	}
 
-   virtual Population<R, ADS>& search(double timelimit = 100000000, double target_f = 0) = 0;
+	virtual ~MultiObjSearch()
+	{
+	}
 
-   virtual string log()
-   {
-      return "Empty heuristic log.";
-   }
+	virtual ParetoFront* search(double timelimit = 100000000, double target_f = 0) = 0;
 
-   static string idComponent()
-   {
-	   stringstream ss;
-	   ss << OptFrameComponent::idComponent() << "MultiObjSearch:";
-	   return ss.str();
-   }
+	virtual string log()
+	{
+		return "Empty heuristic log.";
+	}
 
-   virtual string id() const
-   {
-      return idComponent();
-   }
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << OptFrameComponent::idComponent() << "MultiObjSearch:";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
 
 };
 

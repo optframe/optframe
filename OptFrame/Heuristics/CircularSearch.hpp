@@ -26,7 +26,7 @@
 #include "../Evaluator.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class CircularSearch: public HTrajectory<R, ADS, M>
+class CircularSearch: public LocalSearch<R, ADS, M>
 {
 private:
    Evaluator<R, ADS, M>& eval;
@@ -35,8 +35,6 @@ private:
    int initial_w;
 
 public:
-
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
 	CircularSearch(Evaluator<R, ADS, M>& _eval, NSEnum<R, ADS, M>& _nsEnum) :
 		eval(_eval), ns(_nsEnum)

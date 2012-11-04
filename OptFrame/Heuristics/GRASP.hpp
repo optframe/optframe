@@ -21,23 +21,22 @@
 #ifndef OPTFRAME_GRASP_HPP_
 #define OPTFRAME_GRASP_HPP_
 
+#include "../SingleObjSearch.hpp"
 #include "../LocalSearch.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class GRASP: public HTrajectory<R, ADS, M>
+class GRASP: public SingleObjSearch<R, ADS, M>
 {
 private:
 	Evaluator<R, ADS, M>& evaluator;
-   InitialSolution<R, ADS>& initsol;
-	HTrajectory<R, ADS, M>& h;
+	Constructive<R, ADS>& constructive;
+	LocalSearch<R, ADS, M>& ls;
 	unsigned int iterMax;
 
 public:
 
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
-
-	GRASP(Evaluator<R, ADS, M>& _eval, InitialSolution<R, ADS>& _initsol, HTrajectory<R, ADS, M>& _h, int _iterMax) :
-		evaluator(_eval), initsol(_initsol), h(_h)
+	GRASP(Evaluator<R, ADS, M>& _eval, Constructive<R, ADS>& _constructive, LocalSearch<R, ADS, M>& _ls, int _iterMax) :
+		evaluator(_eval), constructive(_constructive), ls(_ls)
 	{
 	   iterMax = _iterMax;
 	}
@@ -46,14 +45,7 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
-	{
-		Evaluation<M>& e = evaluator.evaluate(s.getR());
-		exec(s, e, timelimit, target_f);
-		delete &e;
-	}
-
-	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
+	pair<Solution<R, ADS>&, Evaluation<M>&>* search(double timelimit = 100000000, double target_f = 0)
 	{
 		long tini = time(NULL);
 
@@ -61,12 +53,15 @@ public:
 
 		long tnow = time(NULL);
 
+		Solution<R, ADS>& s = constructive.generateSolution();
+		Evaluation<M>& e    = evaluator.evaluate(s);
+
 		while (iter < iterMax && ((tnow - tini) < timelimit))
 		{
-			Solution<R, ADS>& s1 = initsol.generateSolution();
+			Solution<R, ADS>& s1 = constructive.generateSolution();
 			Evaluation<M>& e1 = evaluator.evaluate(s1);
 
-			h.exec(s1,e1,timelimit, target_f);
+			ls.exec(s1,e1,timelimit, target_f);
 
 			if(evaluator.betterThan(e1,e))
 			{
@@ -82,12 +77,14 @@ public:
 			tnow = time(NULL);
 			iter++;
 		}
+
+		return new pair<Solution<R, ADS>&, Evaluation<M>&>(s, e);
 	}
 
 	virtual string id() const
-   {
-      return "OptFrame:GRASP:grasp";
-   }
+	{
+		return "OptFrame:GRASP:grasp";
+	}
 };
 
 #endif /*OPTFRAME_GRASP_HPP_*/

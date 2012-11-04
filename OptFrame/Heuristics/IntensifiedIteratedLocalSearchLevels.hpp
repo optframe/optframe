@@ -28,25 +28,27 @@
 #include "ILSLPerturbation.hpp"
 #include "Intensification.hpp"
 
+#include "../LocalSearch.hpp"
+
 typedef pair<pair<int, int> , pair<int, int> > levelHistory;
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class IntensifiedIteratedLocalSearchLevels: public IntensifiedIteratedLocalSearch<levelHistory, R, ADS, M>
 {
 protected:
-	HTrajectory<R, ADS, M>& h;
+	LocalSearch<R, ADS, M>& ls;
 	Intensification<R, ADS, M>& h2;
 	ILSLPerturbation<R, ADS, M>& p;
 	int iterMax, levelMax;
 
 public:
 
-	IntensifiedIteratedLocalSearchLevels(Evaluator<R, ADS, M>& e, HTrajectory<R, ADS, M>& _h, Intensification<R, ADS, M>& _h2, ILSLPerturbation<R, ADS, M>& _p, int _iterMax, int _levelMax) :
-      IntensifiedIteratedLocalSearch<levelHistory, R, ADS, M> (e), h(_h), h2(_h2), p(_p)
-   {
-      iterMax = _iterMax;
-      levelMax = _levelMax;
-   }
+	IntensifiedIteratedLocalSearchLevels(Evaluator<R, ADS, M>& e, LocalSearch<R, ADS, M>& _ls, Intensification<R, ADS, M>& _h2, ILSLPerturbation<R, ADS, M>& _p, int _iterMax, int _levelMax) :
+		IntensifiedIteratedLocalSearch<levelHistory, R, ADS, M> (e), ls(_ls), h2(_h2), p(_p)
+	{
+		iterMax = _iterMax;
+		levelMax = _levelMax;
+	}
 
 	virtual ~IntensifiedIteratedLocalSearchLevels()
 	{
@@ -89,7 +91,7 @@ public:
 	virtual void localSearch(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
 		//cout << "localSearch(.)" << endl;
-		h.exec(s, e, timelimit, target_f);
+		ls.exec(s, e, timelimit, target_f);
 	}
 
 	virtual void perturbation(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f, levelHistory& history)

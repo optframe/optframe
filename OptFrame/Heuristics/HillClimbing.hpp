@@ -26,18 +26,16 @@
 #include "../Evaluator.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class HillClimbing: public HTrajectory<R, ADS, M>
+class HillClimbing: public LocalSearch<R, ADS, M>
 {
 private:
 	Evaluator<R, ADS, M>& evaluator;
-	HTrajectory<R, ADS, M>& heuristic;
+	LocalSearch<R, ADS, M>& ls;
 
 public:
 
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
-
-	HillClimbing(Evaluator<R, ADS, M>& _ev, HTrajectory<R, ADS, M>& _h) :
-		evaluator(_ev), heuristic(_h)
+	HillClimbing(Evaluator<R, ADS, M>& _ev, LocalSearch<R, ADS, M>& _ls) :
+		evaluator(_ev), ls(_ls)
 	{
 	}
 
@@ -62,7 +60,7 @@ public:
 		Solution<R, ADS>* s0 = &s.clone();
 		Evaluation<M>* e0 = &e.clone();
 
-		heuristic.exec(s, e, timelimit, target_f);
+		ls.exec(s, e, timelimit, target_f);
 
 		long tnow = time(NULL);
 
@@ -73,7 +71,7 @@ public:
 			delete e0;
 			e0 = &e.clone();
 
-			heuristic.exec(s, e, timelimit, target_f);
+			ls.exec(s, e, timelimit, target_f);
 
 			tnow = time(NULL);
 		}

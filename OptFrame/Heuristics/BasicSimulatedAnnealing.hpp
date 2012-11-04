@@ -21,14 +21,15 @@
 #ifndef OPTFRAME_BSA_HPP_
 #define OPTFRAME_BSA_HPP_
 
-#include "../LocalSearch.hpp"
+#include "../SingleObjSearch.hpp"
 #include <math.h>
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class BasicSimulatedAnnealing: public HTrajectory<R, ADS, M>
+class BasicSimulatedAnnealing: public SingleObjSearch<R, ADS, M>
 {
 private:
 	Evaluator<R, ADS, M>& evaluator;
+	Constructive<R, ADS>& constructive;
 	vector<NS<R, ADS, M>*> neighbors;
 	RandGen& rg;
 	double alpha;
@@ -37,10 +38,8 @@ private:
 
 public:
 
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
-
-	BasicSimulatedAnnealing(Evaluator<R, ADS, M>& _evaluator, vector<NS<R, ADS, M>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
-		evaluator(_evaluator), neighbors(_neighbors), rg(_rg)
+	BasicSimulatedAnnealing(Evaluator<R, ADS, M>& _evaluator, Constructive<R, ADS>& _constructive, vector<NS<R, ADS, M>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg)
 	{
 		alpha = (_alpha);
 		SAmax = (_SAmax);
@@ -48,8 +47,8 @@ public:
 
 	}
 
-	BasicSimulatedAnnealing(Evaluator<R, ADS, M>& _evaluator, NS<R, ADS, M>* _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
-		evaluator(_evaluator), rg(_rg)
+	BasicSimulatedAnnealing(Evaluator<R, ADS, M>& _evaluator, Constructive<R, ADS>& _constructive, NS<R, ADS, M>* _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+		evaluator(_evaluator), constructive(_constructive), rg(_rg)
 	{
 		neighbors.push_back(_neighbors);
 		alpha = (_alpha);
@@ -61,18 +60,14 @@ public:
 	{
 	}
 
-	void exec(Solution<R, ADS>& s, double timelimit, double target_f)
+	pair<Solution<R, ADS>&, Evaluation<M>&>* search(double timelimit = 100000000, double target_f = 0)
 	{
-		Evaluation<M>& e = evaluator.evaluate(s.getR());
-		exec(s, e, timelimit, target_f);
-		delete &e;
-	}
-
-	void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
-	{
-		cout << "SA exec(" << target_f << "," << timelimit << ")" << endl;
+		cout << "SA search(" << target_f << "," << timelimit << ")" << endl;
 
 		Timer tnow;
+
+		Solution<R, ADS>& s = constructive.generateSolution();
+		Evaluation<M>& e    = evaluator.evaluate(s);
 
 		double T = Ti;
 		int iterT = 0;
@@ -143,6 +138,8 @@ public:
 		e = *eStar;
 		delete sStar;
 		delete eStar;
+
+		return new pair<Solution<R, ADS>&, Evaluation<M>&>(s, e);
 	}
 
 	virtual string id() const

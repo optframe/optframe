@@ -24,11 +24,9 @@
 #include "../LocalSearch.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class Empty : public HTrajectory<R, ADS, M>
+class Empty : public LocalSearch<R, ADS, M>
 {
 public:
-
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
 	Empty()
 	{
@@ -38,18 +36,18 @@ public:
 	{
 	}
 
-    virtual void exec(Solution<R, ADS>&, double timelimit, double target_f){};
+	virtual void exec(Solution<R, ADS>&, double timelimit, double target_f){};
 	virtual void exec(Solution<R, ADS>&, Evaluation<M>&, double timelimit, double target_f){};
 
 	string log()
 	{
-	   return "Heuristic Empty: no log.";
+		return "Heuristic Empty: no log.";
 	}
 
-   virtual string id() const
-   {
-      return "OptFrame:method";
-   }
+	virtual string id() const
+	{
+		return "OptFrame:method";
+	}
 };
 
 #endif /*OPTFRAME_EMPTY_HPP_*/

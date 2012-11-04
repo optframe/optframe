@@ -26,12 +26,14 @@
 
 using namespace std;
 
+#include "OptFrameComponent.hpp"
+
 #include "Solution.hpp"
 #include "Population.hpp"
 #include "Evaluation.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class LocalSearch: public OptFrameComponent<R, ADS, M>
+class LocalSearch: public OptFrameComponent
 {
    typedef vector<Evaluation<M>*> FitnessValues;
    typedef const vector<const Evaluation<M>*> ConstFitnessValues;

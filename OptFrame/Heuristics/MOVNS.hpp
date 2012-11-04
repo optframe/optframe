@@ -23,7 +23,8 @@
 
 #include <algorithm>
 
-#include "../HTrajectory.hpp"
+#include "../MultiObjSearch.hpp"
+
 #include "../Evaluator.hpp"
 #include "../Population.hpp"
 #include "../NSSeq.hpp"
@@ -31,7 +32,7 @@
 #include "../ParetoDominanceWeak.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class MOVNS: public HTrajectory<R, ADS, M>
+class MOVNS: public MultiObjSearch<R, ADS, M>
 {
 	typedef vector<Evaluation<M>*> FitnessValues;
 
@@ -43,7 +44,6 @@ private:
 	RandGen& rg;
 
 public:
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
 	MOVNS(vector<Evaluator<R, ADS, M>*> _v_e, vector<NSSeq<R, ADS, M>*> _neighbors, RandGen& _rg) :
 		v_e(_v_e), neighbors(_neighbors), rg(_rg)
@@ -56,20 +56,6 @@ public:
 	{
 	}
 
-	virtual void exec(Population<R, ADS>& p, double timelimit, double target_f)
-	{
-		FitnessValues& e_pop = *new FitnessValues;
-
-		for (int i = 0; i < p.size(); i++)
-			e_pop.push_back(&v_e[0]->evaluate(p.at(i)));
-
-		exec(p, e_pop, timelimit, target_f);
-
-		for (int i = 0; i < e_pop.size(); i++)
-			delete e_pop[i];
-
-		delete &e_pop;
-	}
 
 	virtual void exec(Population<R, ADS>& p_0, FitnessValues& e_pop, double timelimit, double target_f)
 	{

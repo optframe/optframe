@@ -27,7 +27,6 @@
 using namespace std;
 
 #include "Solution.hpp"
-#include "Population.hpp"
 #include "Evaluation.hpp"
 
 #include "OptFrameComponent.hpp"
@@ -49,8 +48,8 @@ public:
    {
    }
 
-   virtual Solution<R, ADS>& search(double timelimit = 100000000, double target_f = 0) = 0;
-
+   // search method try to find a feasible solution within timelimit, if there is no such solution it returns NULL.
+   virtual pair<Solution<R, ADS>&, Evaluation<M>&>* search(double timelimit = 100000000, double target_f = 0) = 0;
 
    virtual string log()
    {

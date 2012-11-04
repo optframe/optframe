@@ -28,13 +28,12 @@
 #include "../RandGen.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class RVND: public HTrajectory<R, ADS, M>
+class RVND: public LocalSearch<R, ADS, M>
 {
 public:
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
 
-	RVND(Evaluator<R, ADS, M>& _ev, vector<HTrajectory<R, ADS, M>*> _neighbors, RandGen& _rg) :
-		ev(_ev), neighbors(_neighbors), rg(_rg)
+	RVND(Evaluator<R, ADS, M>& _ev, vector<LocalSearch<R, ADS, M>*> _lsList, RandGen& _rg) :
+		ev(_ev), lsList(_lsList), rg(_rg)
 	{
 	}
 
@@ -55,9 +54,9 @@ public:
 
 		long tini = time(NULL);
 
-		rg.shuffle(neighbors); // shuffle elements
+		rg.shuffle(lsList); // shuffle elements
 
-		int r = neighbors.size();
+		int r = lsList.size();
 
 		int k = 1;
 
@@ -67,7 +66,7 @@ public:
 			Solution<R, ADS>* s0 = &s.clone();
 			Evaluation<M>* e0 = &e.clone();
 
-			neighbors[k - 1]->exec(*s0, *e0, timelimit, target_f);
+			lsList[k - 1]->exec(*s0, *e0, timelimit, target_f);
 			if (ev.betterThan(*s0, s))
 			{
 				s = *s0;
@@ -90,13 +89,13 @@ public:
 	}
 
 	virtual string id() const
-   {
-      return "OptFrame:VND:rvnd";
-   }
+	{
+		return "OptFrame:VND:rvnd";
+	}
 
 private:
 	Evaluator<R, ADS, M>& ev;
-	vector<HTrajectory<R, ADS, M>*> neighbors;
+	vector<LocalSearch<R, ADS, M>*> lsList;
 	RandGen& rg;
 };
 
