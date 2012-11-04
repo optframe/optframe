@@ -66,8 +66,8 @@ public:
 
 		FILE * pFile = fopen(filename.c_str(), "a");
 
-		HTrajectory<R, ADS, M>* h = NULL;
-		hf->assign(h, "OptFrame:method", id);
+		SingleObjSearch<R, ADS, M>* h = NULL;
+		hf->assign(h, SingleObjSearch<R, ADS, M>::idComponent(), id);
 
 		stringstream stream;
 

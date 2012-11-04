@@ -66,7 +66,7 @@ public:
 
 		string sol = scanner.next();
 
-		if (sol != InitialSolution<R,ADS>::idComponent() && sol != Solution<R,ADS>::idComponent())
+		if (sol != Constructive<R,ADS>::idComponent() && sol != Solution<R,ADS>::idComponent())
 		{
 			cout << "First parameter must be either 'initsol' or 'loadsol'!"
 					<< endl;
@@ -84,7 +84,7 @@ public:
 
 		if (id == "*") // Saving all solutions
 		{
-			if (sol == InitialSolution<R,ADS>::idComponent())
+			if (sol == Constructive<R,ADS>::idComponent())
 			{
 				//for (int i = 0; i < (factory->initsol_size()); i++)
 			   for (int i = 0; i < 0; i++) // TODO fix this!
@@ -94,7 +94,7 @@ public:
 
 					Scanner s2((sol + " " + i_temp.str()));
 
-					InitialSolution<R, ADS>* initsol = NULL;
+					Constructive<R, ADS>* initsol = NULL;
 		         factory->readComponent(initsol, s2);
 
 	            Solution<R, ADS>* s = &(initsol->generateSolution());
@@ -198,9 +198,9 @@ public:
 
 			Solution<R, ADS>* s = NULL;
 
-			if (sol == InitialSolution<R,ADS>::idComponent())
+			if (sol == Constructive<R,ADS>::idComponent())
 			{
-			   InitialSolution<R, ADS>* initsol = NULL;
+			   Constructive<R, ADS>* initsol = NULL;
 	         factory->readComponent(initsol, s2);
 
 				s = &(initsol->generateSolution());

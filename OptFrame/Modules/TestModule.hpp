@@ -41,7 +41,7 @@ public:
 	}
 	string usage()
 	{
-		string u = "test N T TF BF [ initsol id | loadsol id ] EVAL METHOD OUTPUTFILE [solution_name]\n WHERE:\n";
+		string u = "test N T TF BF EVAL SINGLE_OBJ_SEARCH OUTPUTFILE [solution_name]\n WHERE:\n";
 		u += "N is the number of tests to be executed;\n";
 		u += "T is the timelimit, in seconds, for each test; (0 for no timelimit)\n";
 		u += "TF is the target evaluation function value;\n";
@@ -69,28 +69,10 @@ public:
 		double tf = scanner.nextDouble();
 		double bf = scanner.nextDouble();
 
-      // -----------------------------
-      // option 'loadsol' or 'initsol'
-      // -----------------------------
-
-      InitialSolution<R, ADS>* initsol = NULL;
-      Solution<R, ADS>* s = NULL;
-
-      string sol_option = scanner.next();
-      int option_id = scanner.nextInt();
-
-      if (sol_option == "OptFrame:loadsol")
-         factory->assign(s, "OptFrame:loadsol", option_id);
-
-      if (sol_option == "OptFrame:initsol")
-         factory->assign(initsol, "OptFrame:initsol", option_id);
-
-      // -------------------------------
-
 		Evaluator<R, ADS, M>* eval = factory->read_ev(scanner);
-		pair<HTrajectory<R, ADS, M>*, string> method = factory->createHeuristic(scanner.rest());
+		pair<SingleObjSearch<R, ADS, M>*, string> method = factory->createSingleObjSearch(scanner.rest());
 
-		HTrajectory<R, ADS, M>* h = method.first;
+		SingleObjSearch<R, ADS, M>* h = method.first;
 
 		string rest = method.second;
 
@@ -138,22 +120,18 @@ public:
 			cout << "Test " << i << "... Running";
 			Timer t(false);
 
-         if (initsol)
-            s = &initsol->generateSolution();
-         else
-            cout << "no initsol!" << endl;
 
-			t_now = t.now();
-			Evaluation< M > & e = eval->evaluate(*s);
-			fo_now = e.evaluation();
-			delete &e;
-			fprintf(file, "%.3f\t%.3f\t", fo_now, t_now);
-			s_fo_ini += fo_now;
-			s_t_ini += t_now;
+			pair<Solution<R, ADS>&, Evaluation<M>&>* result = h->search(timelimit, tf);
 
-			Solution<R, ADS>* s2 = &h->search(*s, timelimit, tf);
+			if(!result)
+			{
+				cout << "ERROR IN TEST MODULE, NO RESULT!" << endl;
+				exit(1);
+			}
+
+			Solution<R, ADS>* s2 = &result->first;
 			t_now = t.now();
-			Evaluation< M > & e2 = eval->evaluate(*s2);
+			Evaluation< M > & e2 = result->second;
 			fo_now = e2.evaluation();
 			delete &e2;
 			s_fo_tests.at(i) = fo_now;
@@ -179,9 +157,6 @@ public:
 				delete s_star;
 				s_star = &s2->clone();
 			}
-
-         if (initsol)
-            delete s;
 
 			delete s2;
 

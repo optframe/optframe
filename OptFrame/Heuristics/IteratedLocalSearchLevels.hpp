@@ -39,8 +39,8 @@ protected:
 
 public:
 
-	IteratedLocalSearchLevels(Evaluator<R, ADS, M>& e, LocalSearch<R, ADS, M>& _ls, ILSLPerturbation<R, ADS, M>& _p, int _iterMax, int _levelMax) :
-		IteratedLocalSearch<levelHistory, R, ADS, M> (e), ls(_ls), p(_p), iterMax(_iterMax), levelMax(_levelMax)
+	IteratedLocalSearchLevels(Evaluator<R, ADS, M>& e, Constructive<R, ADS>& constructive, LocalSearch<R, ADS, M>& _ls, ILSLPerturbation<R, ADS, M>& _p, int _iterMax, int _levelMax) :
+		IteratedLocalSearch<levelHistory, R, ADS, M> (e, constructive), ls(_ls), p(_p), iterMax(_iterMax), levelMax(_levelMax)
 	{
 	}
 

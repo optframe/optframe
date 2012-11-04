@@ -23,7 +23,7 @@
 
 #include <algorithm>
 
-#include "../../HPopulational.hpp"
+#include "../../SingleObjSearch.hpp"
 
 #include "../../Population.hpp"
 
@@ -59,7 +59,7 @@
  */
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class GeneticAlgorithm: public HPopulational<R, ADS, M>
+class GeneticAlgorithm: public SingleObjSearch<R, ADS, M>
 {
 protected:
 

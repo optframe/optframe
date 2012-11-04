@@ -38,13 +38,11 @@ public:
 	}
 	string usage()
 	{
-		string u = "empirical N T TF BF ISG EVAL METHOD OUTPUTFILE\n WHERE:\n";
+		string u = "empirical N T TF BF EVAL METHOD OUTPUTFILE\n WHERE:\n";
 		u += "N is the number of tests to be executed;\n";
 		u += "T is the timelimit, in seconds, for each test; (0 for no timelimit)\n";
 		u += "TF is the target evaluation function value;\n";
 		u += "BF is the best known evaluation function value;\n";
-		u += "ISG is the initial solution generator; (e.g. initsol 0)\n";
-		u += "EVAL is the main evaluator; (e.g. ev 0)\n";
 		u += "METHOD is the method to be tested with its own parameters;\n";
 		u += "OUTPUTFILE is the output file.\n";
 
@@ -65,12 +63,10 @@ public:
 		int t = scanner.nextDouble();
 		double tf = scanner.nextDouble();
 		double bf = scanner.nextDouble();
-		InitialSolution<R, ADS>* initsol = NULL;
-      factory->readComponent(initsol, scanner);
-		Evaluator<R, ADS, M>* eval = factory->read_ev(scanner);
-		pair<HTrajectory<R, ADS, M>*, string> method = factory->createHeuristic(scanner.rest());
 
-		HTrajectory<R, ADS, M>* h = method.first;
+		pair<SingleObjSearch<R, ADS, M>*, string> method = factory->createSingleObjSearch(scanner.rest());
+
+		SingleObjSearch<R, ADS, M>* h = method.first;
 
 		string filename = method.second;
 
@@ -102,20 +98,23 @@ public:
 			cout << "Test " << i << " {seed=" << seed << "}... Running";
 			Timer t(false);
 
-			Solution<R, ADS>* s = &initsol->generateSolution();
-			t_now = t.now();
-			fo_now = eval->evaluate(*s).evaluation();
-			fprintf(file, "%f\t%.3f\t", fo_now, t_now);
+			pair<Solution<R, ADS>&, Evaluation<M>&>* result = h->search(timelimit, tf);
 
-			Solution<R, ADS>* s2 = &h->search(*s, timelimit, tf);
+			if(!result)
+			{
+				cout << "EMPIRICAL ERROR!" << endl;
+				exit(1);
+			}
+
+			Solution<R, ADS>* s2 = &result->first;
+
 			t_now = t.now();
-			fo_now = eval->evaluate(*s2).evaluation();
+			fo_now = result->second.evaluation();
 			fprintf(file, "%f\t%.3f\t", fo_now, t_now);
 			time_spent.push_back(t_now);
 
 			cout << "... Finished! (" << t.now() << "secs.)" << endl;
 
-			delete s;
 			delete s2;
 
 			fprintf(file, "\n");

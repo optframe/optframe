@@ -105,7 +105,8 @@ public:
          return;
       }
 
-      pair<HTrajectory<R, ADS, M>*, string> method = factory->createHeuristic(scanner.rest());
+      pair<SingleObjSearch<R, ADS, M>*, string> method;
+      method = factory->createSingleObjSearch(scanner.rest());
 
       scanner = Scanner(method.second);
 

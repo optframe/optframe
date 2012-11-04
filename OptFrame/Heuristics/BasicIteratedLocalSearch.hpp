@@ -41,8 +41,8 @@ protected:
 
 public:
 
-	BasicIteratedLocalSearch(Evaluator<R, ADS, M>& e, LocalSearch<R, ADS, M>& _ls, BasicILSPerturbation<R, ADS, M>& _p, int _iterMax) :
-		IteratedLocalSearch<BasicHistory, R, ADS, M> (e), ls(_ls), p(_p), iterMax(_iterMax)
+	BasicIteratedLocalSearch(Evaluator<R, ADS, M>& e, Constructive<R, ADS>& constructive, LocalSearch<R, ADS, M>& _ls, BasicILSPerturbation<R, ADS, M>& _p, int _iterMax) :
+		IteratedLocalSearch<BasicHistory, R, ADS, M> (e, constructive), ls(_ls), p(_p), iterMax(_iterMax)
 	{
 	}
 

@@ -40,7 +40,7 @@ public:
 
 	string usage()
 	{
-		return "exec [ <initsol> id | <loadsol> id | <initpop> id popSize | <loadpop> id ] target_fo timelimit method [output_solution_name]";
+		return "exec target_fo timelimit method [output_solution_name]";
 	}
 
 	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
@@ -54,101 +54,33 @@ public:
 			return;
 		}
 
-		string sol = scanner.next();
-
-		if ((sol != "initsol") && (sol != "loadsol") && (sol != "initpop") && (sol != "loadpop"))
-		{
-			cout << "First parameter must be either 'initsol', 'loadsol', 'initpop', 'loadpop'!" << endl;
-			cout << "Usage: " << usage() << endl;
-			return;
-		}
-
-		string id = scanner.next();
-
-		Solution<R, ADS>* s = NULL;
-		bool needDelete = false;
-
-		Population<R, ADS> *p = NULL;
-		//bool needDeletePop = false;
-
-		if (sol == "loadsol")
-		{
-			Scanner s2(sol + " " + id);
-         factory->readComponent(s, s2);
-		}
-
-		if (sol == "initsol")
-		{
-			Scanner s2(sol + " " + id);
-			InitialSolution<R, ADS>* initsol = NULL;
-         factory->readComponent(initsol, s2);
-			s = &initsol->generateSolution();
-			needDelete = true;
-		}
-
-		if (sol == "loadpop")
-		{
-			Scanner s2(sol + " " + id);
-         factory->readComponent(p, s2);
-		}
-
-		if (sol == "initpop")
-		{
-			Scanner s2(sol + " " + id);
-			InitialPopulation<R, ADS>* initpop = NULL;
-         factory->readComponent(initpop, s2);
-
-			unsigned popSize = scanner.nextInt();
-			p = &initpop->generatePopulation(popSize);
-		}
-
 		double target_fo = scanner.nextDouble();
 		double timelimit = scanner.nextDouble();
 
-		pair<HTrajectory<R, ADS, M>*, string> method = factory->createHeuristic(scanner.rest());
+		pair<SingleObjSearch<R, ADS, M>*, string> method = factory->createSingleObjSearch(scanner.rest());
 		scanner = Scanner(method.second);
 
 		// ---
 
 		string s_new_id = "";
 
-		if (sol == "initsol" || sol == "loadsol")
+		pair<Solution<R, ADS>&, Evaluation<M>&>* result = method.first->search(timelimit, target_fo);
+
+		if(!result)
 		{
-			Solution<R, ADS>* sFinal = &method.first->search(*s, timelimit, target_fo);
-
-			if (needDelete)
-				delete s;
-
-			int new_id = factory->addComponent(*sFinal);
-
-			stringstream str;
-			str << "loadsol " << new_id;
-			s_new_id = str.str();
-
-			cout << "'" << s_new_id << "' added." << endl;
-		}
-		else if (sol == "initpop" || sol == "loadpop")
-		{
-			Population<R, ADS> *pFinal;
-			Population<R, ADS> *pAux;
-
-			pAux = &(p->clone());
-
-			pFinal = &method.first->search(*pAux, timelimit, target_fo);
-
-			for (unsigned i = 0; i < pAux->size(); i++)
-				delete &(pAux->at(i));
-
-			int new_id = factory->addComponent(*pFinal);
-
-			stringstream str;
-			str << "loadpop " << new_id;
-			s_new_id = str.str();
-
-			cout << "'" << s_new_id << "' added." << endl;
+			cout << "NO RESULT! EXEC ERROR!" << endl;
+			exit(1);
 		}
 
-		// ---
+		Solution<R, ADS>& sFinal = result->first;
+
+		int new_id = factory->addComponent(sFinal);
+
+		stringstream str;
+		str << Solution<R, ADS>::idComponent() << " " << new_id;
+		s_new_id = str.str();
+
+		cout << "'" << s_new_id << "' added." << endl;
 
 		if (scanner.hasNext())
 		{

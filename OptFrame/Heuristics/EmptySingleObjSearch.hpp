@@ -18,36 +18,37 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_EMPTY_HPP_
-#define OPTFRAME_EMPTY_HPP_
+#ifndef OPTFRAME_EMPTY_SINGLE_OBJ_SEARCH_HPP_
+#define OPTFRAME_EMPTY_SINGLE_OBJ_SEARCH_HPP_
 
-#include "../LocalSearch.hpp"
+#include <math.h>
+#include <vector>
+
+#include "../SingleObjSearch.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class Empty : public LocalSearch<R, ADS, M>
+class EmptySingleObjSearch: public SingleObjSearch<R, ADS, M>
 {
 public:
 
-	Empty()
+	EmptySingleObjSearch()
 	{
 	}
 
-	virtual ~Empty()
+	virtual ~EmptySingleObjSearch()
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>&, double timelimit, double target_f){};
-	virtual void exec(Solution<R, ADS>&, Evaluation<M>&, double timelimit, double target_f){};
-
-	string log()
+	pair<Solution<R, ADS>&, Evaluation<M>&>* search(double timelimit = 100000000, double target_f = 0)
 	{
-		return "Heuristic Empty: no log.";
+		cout << "WARNING: RETURNING A EmptySingleObjSearch!" << endl;
+		return NULL;
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, M>::idComponent() << "empty";
+		ss << SingleObjSearch<R, ADS, M>::idComponent() << "empty";
 		return ss.str();
 	}
 
@@ -57,4 +58,4 @@ public:
 	}
 };
 
-#endif /*OPTFRAME_EMPTY_HPP_*/
+#endif /*OPTFRAME_EMPTY_SINGLE_OBJ_SEARCH_HPP_*/

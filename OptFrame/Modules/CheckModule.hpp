@@ -78,7 +78,7 @@ public:
 		{
 			Scanner s2(sol + " " + id);
 			cout << "Step 1: Testing solution generator... ";
-			InitialSolution<R, ADS>* initsol = NULL;
+			Constructive<R, ADS>* initsol = NULL;
 			factory->readComponent(initsol, s2);
 
 			s = &initsol->generateSolution();

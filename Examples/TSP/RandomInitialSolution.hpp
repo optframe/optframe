@@ -38,7 +38,7 @@
 
 using namespace std;
 
-class RandomInitialSolutionTSP: public InitialSolution<RepTSP>
+class RandomInitialSolutionTSP: public Constructive<RepTSP>
 {
 private:
 	TSPProblemInstance* pI;
