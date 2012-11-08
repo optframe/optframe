@@ -108,6 +108,7 @@
 #include "Modules/PrintModule.hpp"
 #include "Modules/ProblemModule.hpp"
 #include "Modules/RandGenModule.hpp"
+#include "Modules/RandomNumberModule.hpp"
 #include "Modules/ReadModule.hpp"
 #include "Modules/TestModule.hpp"
 #include "Modules/TestLocalSearchModule.hpp"
@@ -199,6 +200,7 @@ public:
 		loadModule(new PauseModule<R, ADS, M> );
 		loadModule(new PrintModule<R, ADS, M> );
 		loadModule(new RandGenModule<R, ADS, M> );
+		loadModule(new RandomNumberModule<R, ADS, M> );
 		loadModule(new ReadModule<R, ADS, M> );
 		loadModule(new TestModule<R, ADS, M> );
 		loadModule(new TestLocalSearchModule<R, ADS, M> );

@@ -143,6 +143,13 @@ public:
 		return seed;
 	}
 
+	// sets the random generator seed
+	void setSeed(long _seed)
+	{
+		seed = _seed;
+	}
+
+
 	template<class T>
 	void shuffle(vector<T>& v)
 	{

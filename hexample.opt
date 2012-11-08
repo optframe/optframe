@@ -1,0 +1,21 @@
+
+randgen system_seed 0
+
+define lista [ 1 ,
+2,
+3,4,5
+,6]
+
+list_size lista n
+
+echo Lista com tamanho n
+
+for_each $i lista [
+  element $i lista e,
+  echo e,
+  random_number e valor,
+  echo Numero aleatorio entre 0 (inclusive) ate e (exclusive): valor,
+  undefine valor,
+  undefine e
+]
+

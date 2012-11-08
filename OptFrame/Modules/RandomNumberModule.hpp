@@ -18,29 +18,29 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef RANDGENMODULE_HPP_
-#define RANDGENMODULE_HPP_
+#ifndef RANDOM_NUMBER_MODULE_HPP_
+#define RANDOM_NUMBER_MODULE_HPP_
 
 #include "../OptFrameModule.hpp"
 #include "../RandGen.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class RandGenModule: public OptFrameModule<R, ADS, M>
+class RandomNumberModule: public OptFrameModule<R, ADS, M>
 {
 public:
 
-	virtual ~RandGenModule()
+	virtual ~RandomNumberModule()
 	{
 	}
 
 	string id()
 	{
-		return "randgen";
+		return "random_number";
 	}
 
 	string usage()
 	{
-		return "randgen system_seed seed\n Where: 'seed' is a positive integer value for the system random number generator.";
+		return "random_number positive_integer stored_number\n Where: 'positive_integer' is a positive integer value; 'stored_number' is the randomized number from [0,max).";
 	}
 
 	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
@@ -53,43 +53,30 @@ public:
 			return;
 		}
 
-		string ss = scanner.next(); // drop system_seed option
-
-		if (ss != "system_seed")
-		{
-			cout << "invalid option: '" << ss << "'" << endl;
-			cout << "Usage: " << usage() << endl;
-			return;
-		}
 
 		if (!scanner.hasNext())
 		{
-			cout << "missing 'seed' positive integer value!" << endl;
+			cout << "missing 'positive_integer' positive integer value!" << endl;
 			cout << "Usage: " << usage() << endl;
 			return;
 		}
 
-		string strseed = scanner.next();
-
-		unsigned long seed;
-
-		if (strseed == "time()")
-		{
-			seed = time(NULL);
-		}
-		else
-		{
-			Scanner scanseed(strseed);
-			seed = scanseed.nextInt();
-		}
-
-		cout << "randgen module: setting system random number generator seed to: " << seed << endl;
+		int max = scanner.nextInt();
 
 		RandGen& rg = factory->getRandGen();
-		rg.setSeed(seed);
-		rg.initialize();
+		int value = rg.rand(max);
+
+		if (scanner.hasNext())
+		{
+			string new_name = scanner.next();
+			stringstream ss;
+			ss << new_name << " " << value;
+			OptFrameModule<R, ADS, M>::run_module("define", all_modules, factory, dictionary, ss.str());
+		}
+		else
+			cout << "random_number module: random number is " << value << endl;
 	}
 
 };
 
-#endif /* RANDGENMODULE_HPP_ */
+#endif /* RANDOM_NUMBER_MODULE_HPP_ */
