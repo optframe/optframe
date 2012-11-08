@@ -19,3 +19,4 @@ for_each $i lista [
   undefine e
 ]
 
+list_components OptFrame: 

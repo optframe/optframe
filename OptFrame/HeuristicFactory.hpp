@@ -130,7 +130,7 @@ public:
 
 		int idx = components[id].size() - 1;
 
-		cout << "HeuristicFactory: added component '" << id << " " << idx << "'" << endl;
+		//cout << "HeuristicFactory: added component '" << id << " " << idx << "'" << endl;
 
 		return idx;
 	}
@@ -158,6 +158,58 @@ public:
 
 		assign(component, tmp, number);
 	}
+
+	//! \english compareBase is an auxiliar method to compare a pattern to a component id. \endenglish \portuguese compareBase eh um metodo auxiliar para comparar um padrao a um id de componente. \endportuguese
+	/*!
+		 \sa compareBase(string, string)
+	 */
+
+	bool compareBase(string base, string component)
+	{
+		for(unsigned i=0; i<base.length(); i++)
+			if(base.at(i) != component.at(i))
+				return false;
+		return true;
+	}
+
+
+	//! \english listComponents lists all available components that match a given pattern. \endenglish \portuguese listComponents lista todos componentes disponiveis que coincidem com um padrao dado. \endportuguese
+	/*!
+		 \sa listComponents(string)
+	 */
+	vector<string> listComponents(string pattern)
+	{
+		vector<string> list;
+
+		map<std::string, vector<OptFrameComponent*> >::iterator iter;
+
+		for(iter = components.begin(); iter != components.end(); iter++)
+		{
+			vector<OptFrameComponent*> v = iter->second;
+
+			for (unsigned int i = 0; i < v.size(); i++)
+				if (compareBase(pattern, v[i]->id()))
+				{
+					stringstream ss;
+					ss << iter->first << " " << i;
+					list.push_back(ss.str());
+				}
+		}
+
+		return list;
+	}
+
+
+	//! \english listAllComponents lists all available OptFrame components. \endenglish \portuguese listAllComponents lista todos os componentes do OptFrame disponiveis. \endportuguese
+	/*!
+		 \sa listAllComponents()
+	 */
+
+	vector<string> listAllComponents()
+	{
+		return listComponents("OptFrame:");
+	}
+
 
 
 #ifdef MaPI
