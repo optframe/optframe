@@ -82,7 +82,7 @@ public:
 		Solution<R, ADS>* sStar = &s.clone();
 		Evaluation<M>* eStar = &e.clone();
 
-		cout << "ILS starts: ";
+		cout << "IILS starts: ";
 		e.print();
 
 		do
@@ -120,6 +120,19 @@ public:
 		delete history;
 
 		return new pair<Solution<R, ADS>&, Evaluation<M>&>(s, e);
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << SingleObjSearch<R, ADS, M>::idComponent() << "IILS:";
+		return ss.str();
+
 	}
 };
 

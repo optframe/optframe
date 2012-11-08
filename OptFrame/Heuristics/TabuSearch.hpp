@@ -261,10 +261,17 @@ public:
 		return false;
 	}
 
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << SingleObjSearch<R, ADS, M>::idComponent() << "TS:basic_ts";
+		return ss.str();
+	}
+
 	virtual string id() const
-   {
-      return "OptFrame:TS:basic_ts";
-   }
+	{
+		return idComponent();
+	}
 
 	virtual vector<pair<string, string> > parameters() const
    {

@@ -67,7 +67,7 @@ public:
 		Timer tnow;
 
 		Solution<R, ADS>& s = constructive.generateSolution();
-		Evaluation<M>& e    = evaluator.evaluate(s);
+		Evaluation<M>& e = evaluator.evaluate(s);
 
 		double T = Ti;
 		int iterT = 0;
@@ -89,7 +89,7 @@ public:
 
 				Solution<R, ADS>* sCurrent = &s.clone();
 				Evaluation<M>* eCurrent = &e.clone();
-				delete& move->apply(*eCurrent, *sCurrent);
+				delete &move->apply(*eCurrent, *sCurrent);
 				evaluator.evaluate(*eCurrent, *sCurrent);
 
 				if (evaluator.betterThan(*eCurrent, e))
@@ -139,13 +139,21 @@ public:
 		delete sStar;
 		delete eStar;
 
-		return new pair<Solution<R, ADS>&, Evaluation<M>&>(s, e);
+		return new pair<Solution<R, ADS>&, Evaluation<M>&> (s, e);
 	}
 
 	virtual string id() const
-   {
-      return "OptFrame:SA:basic_sa";
-   }
+	{
+		return idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << SingleObjSearch<R, ADS, M>::idComponent() << "SA:basic_sa";
+		return ss.str();
+
+	}
 
 };
 

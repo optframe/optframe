@@ -83,7 +83,15 @@ public:
 
 	virtual string id() const
 	{
-		return "OptFrame:GRASP:grasp";
+		return idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << SingleObjSearch<R, ADS, M>::idComponent() << "grasp";
+		return ss.str();
+
 	}
 };
 

@@ -135,9 +135,17 @@ public:
 	}
 
 	virtual string id() const
-   {
-      return "OptFrame:ILS:ilsl";
-   }
+	{
+		return idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << IteratedLocalSearch<levelHistory, R, ADS, M>::idComponent() << "ilsl";
+		return ss.str();
+
+	}
 };
 
 #endif /*OPTFRAME_ILSL_HPP_*/

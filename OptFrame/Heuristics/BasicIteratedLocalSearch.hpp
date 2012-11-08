@@ -52,7 +52,7 @@ public:
 
 	virtual BasicHistory& initializeHistory()
 	{
-		int& iter = * new int;
+		int& iter = *new int;
 		iter = 0;
 
 		return iter;
@@ -111,9 +111,17 @@ public:
 	}
 
 	virtual string id() const
-   {
-      return "OptFrame:ILS:basic_ils";
-   }
+	{
+		return idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << IteratedLocalSearch<BasicHistory, R, ADS, M>::idComponent() << "basic_ils";
+		return ss.str();
+
+	}
 };
 
 #endif /*OPTFRAME_BASICILS_HPP_*/

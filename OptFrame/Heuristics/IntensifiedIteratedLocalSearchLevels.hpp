@@ -163,6 +163,19 @@ public:
 
 		return (level >= levelMax);
 	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << IntensifiedIteratedLocalSearch<levelHistory, R, ADS, M>::idComponent() << "iils";
+		return ss.str();
+
+	}
 };
 
 #endif /*OPTFRAME_IILSL_HPP_*/

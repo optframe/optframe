@@ -84,9 +84,17 @@ public:
 	}
 
 	virtual string id() const
-   {
-      return "OptFrame:HC:hc";
-   }
+	{
+		return idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << LocalSearch<R, ADS, M>::idComponent() << "hc";
+		return ss.str();
+
+	}
 };
 
 #endif /*OPTFRAME_HILLCLIMBING_HPP_*/

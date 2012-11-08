@@ -63,7 +63,7 @@ public:
 		Timer tnow;
 
 		Solution<R, ADS>& s = constructive.generateSolution();
-		Evaluation<M>& e    = evaluator.evaluate(s);
+		Evaluation<M>& e = evaluator.evaluate(s);
 
 		H* history = &initializeHistory();
 
@@ -111,13 +111,20 @@ public:
 
 		delete history;
 
-		return new pair<Solution<R, ADS>&, Evaluation<M>&>(s, e);
+		return new pair<Solution<R, ADS>&, Evaluation<M>&> (s, e);
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << SingleObjSearch<R, ADS, M>::idComponent() << "ILS:";
+		return ss.str();
 	}
 
 	virtual string id() const
-   {
-      return "OptFrame:ILS:";
-   }
+	{
+		return idComponent();
+	}
 };
 
 #endif /*OPTFRAME_ILS_HPP_*/

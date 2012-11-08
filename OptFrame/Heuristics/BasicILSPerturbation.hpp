@@ -28,7 +28,7 @@
 #include "../RandGen.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class BasicILSPerturbation : public OptFrameComponent
+class BasicILSPerturbation: public OptFrameComponent
 {
 private:
 	vector<NS<R, ADS, M>*> ns;
@@ -80,15 +80,17 @@ public:
 		evaluator.evaluate(e, s); // updates 'e'
 	}
 
-   virtual string id() const
-   {
-      return idComponent();
-   }
+	virtual string id() const
+	{
+		return idComponent();
+	}
 
-   static string idComponent()
-   {
-      return "OptFrame:ILS:basic_pert";
-   }
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << OptFrameComponent::idComponent() << "ILS:basic_pert";
+		return ss.str();
+	}
 };
 
 #endif /*OPTFRAME_BASICILSPerturbation_HPP_*/
