@@ -99,6 +99,13 @@ public:
 
 	template< class T > void assign(T*& component, string id, unsigned number)
 	{
+		if(component->idComponent() != id)
+		{
+			cout << "HeuristicFactory: imcompatible assign between " << component->idComponent() << " <- " << id << endl;
+			component = NULL;
+			return;
+		}
+
 		if(components.count(id) > 0)
 		{
 			vector<OptFrameComponent*>& v = components[id];
