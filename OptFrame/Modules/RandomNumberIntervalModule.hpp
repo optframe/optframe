@@ -18,29 +18,29 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef RANDOM_NUMBER_MODULE_HPP_
-#define RANDOM_NUMBER_MODULE_HPP_
+#ifndef RANDOM_NUMBER_INTERVAL_MODULE_HPP_
+#define RANDOM_NUMBER_INTERVAL_MODULE_HPP_
 
 #include "../OptFrameModule.hpp"
 #include "../RandGen.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class RandomNumberModule: public OptFrameModule<R, ADS, M>
+class RandomNumberIntervalModule: public OptFrameModule<R, ADS, M>
 {
 public:
 
-	virtual ~RandomNumberModule()
+	virtual ~RandomNumberIntervalModule()
 	{
 	}
 
 	string id()
 	{
-		return "random_number";
+		return "random_number_interval";
 	}
 
 	string usage()
 	{
-		return "random_number positive_integer [stored_number]\n Where: 'positive_integer' is a positive integer value; 'stored_number' is the randomized number from [0,max).";
+		return "random_number_interval begin end [stored_number]\n Where: 'begin' and 'end' are positive integer values; 'stored_number' is the randomized number from [begin,end].";
 	}
 
 	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
@@ -56,15 +56,24 @@ public:
 
 		if (!scanner.hasNext())
 		{
-			cout << "missing 'positive_integer' positive integer value!" << endl;
+			cout << "missing 'begin' positive integer value!" << endl;
 			cout << "Usage: " << usage() << endl;
 			return;
 		}
 
-		int max = scanner.nextInt();
+		int begin = scanner.nextInt();
+
+		if (!scanner.hasNext())
+		{
+			cout << "missing 'end' positive integer value!" << endl;
+			cout << "Usage: " << usage() << endl;
+			return;
+		}
+
+		int end = scanner.nextInt();
 
 		RandGen& rg = factory->getRandGen();
-		int value = rg.rand(max);
+		int value = rg.rand(end-begin+1) + begin;
 
 		if (scanner.hasNext())
 		{
@@ -74,9 +83,9 @@ public:
 			OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, factory, dictionary, ss.str());
 		}
 		else
-			cout << "random_number module: random number is " << value << endl;
+			cout << "random_number_interval module: random number is " << value << endl;
 	}
 
 };
 
-#endif /* RANDOM_NUMBER_MODULE_HPP_ */
+#endif /* RANDOM_NUMBER_INTERVAL_MODULE_HPP_ */

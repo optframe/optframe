@@ -111,6 +111,7 @@
 #include "Modules/ProblemModule.hpp"
 #include "Modules/RandGenModule.hpp"
 #include "Modules/RandomNumberModule.hpp"
+#include "Modules/RandomNumberIntervalModule.hpp"
 #include "Modules/ReadModule.hpp"
 #include "Modules/SilentDefineModule.hpp"
 #include "Modules/TestModule.hpp"
@@ -206,6 +207,7 @@ public:
 		loadModule(new PrintModule<R, ADS, M> );
 		loadModule(new RandGenModule<R, ADS, M> );
 		loadModule(new RandomNumberModule<R, ADS, M> );
+		loadModule(new RandomNumberIntervalModule<R, ADS, M> );
 		loadModule(new ReadModule<R, ADS, M> );
 		loadModule(new SilentDefineModule<R, ADS, M> );
 		loadModule(new TestModule<R, ADS, M> );

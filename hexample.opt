@@ -11,8 +11,8 @@ list_size lista n
 echo Lista com tamanho n
 
 for_each $i lista [
-  random_number $i valor,
-  echo Numero aleatorio entre 0 (inclusive) ate $i (exclusive): valor,
+  random_number_interval 1 $i valor,
+  echo Numero aleatorio entre 1 ate $i: valor,
   undefine valor
 ]
 
