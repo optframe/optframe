@@ -50,9 +50,14 @@ public:
       return s == id();
    }
 
+   static vector<pair<string, string> >  params()
+   {
+	   return vector<pair<string, string> > ();
+   }
+
    virtual vector<pair<string, string> > parameters() const
    {
-      return vector<pair<string, string> > ();
+	   return params();
    }
 
    virtual void print() const
