@@ -220,9 +220,13 @@ public:
 			for (unsigned int c = 0; c < commands.size(); c++)
 			{
 				string command = var_preprocess(var, values.at(v), commands.at(c));
+
 				if (!exec_command(all_modules, factory, dictionary, command))
 				{
-					cout << "Error in command: " << commands.at(c) << endl;
+					if(commands.at(c)=="")
+						cout << "for_each module: empty command! (perhaps an extra comma in list?)" << endl;
+					else
+						cout << "for_each module: error in command '" << commands.at(c) << "'" << endl;
 				}
 			}
 		}

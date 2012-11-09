@@ -18,54 +18,48 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef LISTSIZEMODULE_HPP_
-#define LISTSIZEMODULE_HPP_
+#ifndef CREATE_NUMERIC_LIST_MODULE_HPP_
+#define CREATE_NUMERIC_LIST_MODULE_HPP_
 
 #include "../OptFrameModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ListSizeModule: public OptFrameModule<R, ADS, M>
+class CreateNumericListModule: public OptFrameModule<R, ADS, M>
 {
 public:
 
-	virtual ~ListSizeModule()
+	virtual ~CreateNumericListModule()
 	{
 	}
 
 	string id()
 	{
-		return "list_size";
+		return "create_numeric_list";
 	}
 	string usage()
 	{
-		return "list_size list variable_for_list_size";
+		return "create_numeric_list begin end list_name";
 	}
-
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
-		Scanner scan(input);
-		if (!scan.hasNext())
-		{
-			cout << "Usage: " << usage() << endl;
-			return;
-		}
+		Scanner scanner(input);
 
-		vector < string > list = hf->readList(scan);
+		int begin    = scanner.nextInt();
+		int end      = scanner.nextInt();
+		string lname = scanner.next();
 
-		if (!scan.hasNext())
-		{
-			cout << "Usage: " << usage() << endl;
-			return;
-		}
+		stringstream ss;
 
-		string variable = scan.next();
+		ss << lname << " [";
+		for(int i=begin; i<end; i++)
+			ss << i << ",";
+		if((end-begin)>0)
+			ss << end;
+		ss << " ]";
 
-		stringstream nameAndSize;
-		nameAndSize << variable << " " << list.size();
-
-		OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, hf, dictionary, nameAndSize.str());
+		OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, factory, dictionary, ss.str());
 	}
 
 };
 
-#endif /* ELEMENTMODULE_HPP_ */
+#endif /* CREATE_NUMERIC_LIST_MODULE_HPP_ */

@@ -71,7 +71,7 @@ public:
 			string new_name = scanner.next();
 			stringstream ss;
 			ss << new_name << " " << value;
-			OptFrameModule<R, ADS, M>::run_module("define", all_modules, factory, dictionary, ss.str());
+			OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, factory, dictionary, ss.str());
 		}
 		else
 			cout << "random_number module: random number is " << value << endl;

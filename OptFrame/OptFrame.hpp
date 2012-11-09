@@ -88,6 +88,7 @@
 #include "Modules/CallModule.hpp"
 #include "Modules/CheckModule.hpp"
 #include "Modules/CreateModule.hpp"
+#include "Modules/CreateNumericListModule.hpp"
 #include "Modules/DefineModule.hpp"
 #include "Modules/DictionaryModule.hpp"
 #include "Modules/DropAllModule.hpp"
@@ -111,6 +112,7 @@
 #include "Modules/RandGenModule.hpp"
 #include "Modules/RandomNumberModule.hpp"
 #include "Modules/ReadModule.hpp"
+#include "Modules/SilentDefineModule.hpp"
 #include "Modules/TestModule.hpp"
 #include "Modules/TestLocalSearchModule.hpp"
 #include "Modules/UndefineModule.hpp"
@@ -182,6 +184,7 @@ public:
 		loadModule(new BuildModule<R, ADS, M> );
 		loadModule(new CheckModule<R, ADS, M> );
 		loadModule(new CreateModule<R, ADS, M> );
+		loadModule(new CreateNumericListModule<R, ADS, M> );
 		loadModule(new DefineModule<R, ADS, M> );
 		loadModule(new DictionaryModule<R, ADS, M> );
 		loadModule(new DropAllModule<R, ADS, M> );
@@ -204,6 +207,7 @@ public:
 		loadModule(new RandGenModule<R, ADS, M> );
 		loadModule(new RandomNumberModule<R, ADS, M> );
 		loadModule(new ReadModule<R, ADS, M> );
+		loadModule(new SilentDefineModule<R, ADS, M> );
 		loadModule(new TestModule<R, ADS, M> );
 		loadModule(new TestLocalSearchModule<R, ADS, M> );
 		loadModule(new UndefineModule<R, ADS, M> );

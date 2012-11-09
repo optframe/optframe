@@ -36,14 +36,14 @@ public:
 	{
 		return "list_components";
 	}
+
 	string usage()
 	{
 		return "list_components pattern [store_list]\nWhere: store_list is an optional variable to store the components.";
 	}
+
 	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
-		cout << "list_components:" << endl;
-
 		Scanner scanner(input);
 
 		string pattern = scanner.next();
@@ -68,7 +68,7 @@ public:
 				ss << components[components.size()-1];
 			ss << " ]";
 
-			OptFrameModule<R, ADS, M>::run_module("define", all_modules, factory, dictionary, ss.str());
+			OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, factory, dictionary, ss.str());
 		}
 
 	}

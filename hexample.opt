@@ -11,12 +11,23 @@ list_size lista n
 echo Lista com tamanho n
 
 for_each $i lista [
-  element $i lista e,
-  echo e,
-  random_number e valor,
-  echo Numero aleatorio entre 0 (inclusive) ate e (exclusive): valor,
-  undefine valor,
-  undefine e
+  random_number $i valor,
+  echo Numero aleatorio entre 0 (inclusive) ate $i (exclusive): valor,
+  undefine valor
 ]
 
-list_components OptFrame: 
+list_components OptFrame: componentes
+
+list_size componentes total
+
+create_numeric_list 1 total li_componentes
+
+echo =======================
+echo Componentes disponiveis
+echo =======================
+for_each $k li_componentes [
+  element $k componentes c,
+  echo c,
+  undefine c
+]
+echo =======================
