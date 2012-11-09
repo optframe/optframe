@@ -53,7 +53,7 @@ public:
 		ss << lname << " [";
 		for(int i=begin; i<end; i++)
 			ss << i << ",";
-		if((end-begin)>0)
+		if((end-begin)>=0)
 			ss << end;
 		ss << " ]";
 
