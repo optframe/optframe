@@ -18,5 +18,8 @@ export sStar out.sol
 print sStar
 evaluate Evaluator 0 sStar
 
+echo listing builders
+list_builders OptFrame:
+
 %display the help
-help
+%help

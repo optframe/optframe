@@ -145,6 +145,15 @@ public:
 		return new BestImprovement<R, ADS, M>(*eval, *nsseq);
 	}
 
+	virtual vector<pair<string, string> > parameters()
+	{
+		vector<pair<string, string> > params;
+		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), ""));
+		params.push_back(make_pair(NSSeq<R, ADS, M>::idComponent(), ""));
+
+		return params;
+	}
+
 	virtual bool canBuild(string component)
 	{
 		return component == BestImprovement<R, ADS, M>::idComponent();
@@ -153,7 +162,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, M>::idComponent() << "bi_builder";
+		ss << ComponentBuilder<R, ADS, M>::idComponent() << "BI";
 		return ss.str();
 	}
 

@@ -224,6 +224,22 @@ public:
 	}
 
 
+	//! \english listBuilders lists all component builders that match a given pattern, with their respective parameters. \endenglish \portuguese listBuilders lista todos component builders, com seus respectivos parametros, que coincidem com um padrao dado. \endportuguese
+	/*!
+		 \sa listComponents(string)
+	 */
+
+	vector<pair<string, vector<pair<string,string> > > > listBuilders(string pattern)
+	{
+		vector<pair<string, vector<pair<string,string> > > > list;
+
+		for(unsigned i=0; i<builders.size(); i++)
+			if (compareBase(pattern, builders[i]->id()))
+				list.push_back(make_pair(builders[i]->id(), builders[i]->parameters()));
+
+		return list;
+	}
+
 
 #ifdef MaPI
 	MyMaPISerializer<R, ADS, M> * serializer;

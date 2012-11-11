@@ -45,21 +45,9 @@ public:
       return idComponent();
    }
 
-
    virtual bool compatible(string s)
    {
       return s == id();
-   }
-
-
-   static vector<pair<string, string> >  params()
-   {
-	   return vector<pair<string, string> > ();
-   }
-
-   virtual vector<pair<string, string> > parameters() const
-   {
-	   return params();
    }
 
    virtual void print() const
