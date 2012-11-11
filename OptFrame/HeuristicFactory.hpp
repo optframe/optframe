@@ -27,6 +27,7 @@
 
 #include "./Scanner++/Scanner.h"
 
+
 #include "RandGen.hpp"
 
 #include "OptFrameComponent.hpp"
@@ -62,6 +63,8 @@
 
 #include "Heuristics/MOVNS.hpp"
 
+#include "ComponentBuilder.h"
+
 
 using namespace std;
 
@@ -76,6 +79,7 @@ private:
 public:
 
 	map<string, vector<OptFrameComponent*> > components;
+	vector<ComponentBuilder<R, ADS, M>* > builders;
 
 	OptFrameComponent* getNextComponent(Scanner& scanner)
 	{
@@ -97,11 +101,37 @@ public:
 		return component;
 	}
 
-	template< class T > void assign(T*& component, string id, unsigned number)
+	template< class T > void assignBase(T*& base, unsigned number, string id)
+	{
+		if(!T::isBaseOf(id))
+		{
+			cout << "HeuristicFactory: incompatible base " << base->idComponent() << " <- " << id << endl;
+			base = NULL;
+			return;
+		}
+
+		if(components.count(id) > 0)
+		{
+			vector<OptFrameComponent*>& v = components[id];
+			if(number < v.size())
+			{
+				base = ((T*) v[number]) ;
+				return;
+			}
+		}
+		else
+			cout << "'" << id << "' not found!" << endl;
+
+		// not found!
+		base = NULL;
+	}
+
+
+	template< class T > void assign(T*& component, unsigned number, string id)
 	{
 		if(component->idComponent() != id)
 		{
-			cout << "HeuristicFactory: imcompatible assign between " << component->idComponent() << " <- " << id << endl;
+			cout << "HeuristicFactory: incompatible assign between " << component->idComponent() << " <- " << id << endl;
 			component = NULL;
 			return;
 		}
@@ -163,7 +193,7 @@ public:
 
 		component = NULL;
 
-		assign(component, tmp, number);
+		assign(component, number, tmp);
 	}
 
 	//! \english compareBase is an auxiliar method to compare a pattern to a component id. \endenglish \portuguese compareBase eh um metodo auxiliar para comparar um padrao a um id de componente. \endportuguese
@@ -528,7 +558,7 @@ public:
 
 			LocalSearch<R, ADS, M>* mtd = NULL;
 
-			assign(mtd, LocalSearch<R, ADS, M>::idComponent(), id);
+			assign(mtd, id, LocalSearch<R, ADS, M>::idComponent());
 
 			if(!mtd)
 				return make_pair(new Empty<R, ADS, M> , scanner.rest());
@@ -539,21 +569,15 @@ public:
 		if (h == Empty<R, ADS, M>::idComponent())
 			return make_pair(new Empty<R, ADS, M> , scanner.rest());
 
-		if (h == BestImprovement<R, ADS, M>::idComponent())
+		for(unsigned i=0; i<builders.size(); i++)
 		{
-			cout << "Heuristic: Best Improvement" << endl;
-
-			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
-			if(!evaluator)
-				return make_pair(new Empty<R, ADS, M> , scanner.rest());
-
-			NSSeq<R, ADS, M>* ns_seq = (NSSeq<R, ADS, M>*) getNextComponent(scanner);
-
-			if(!ns_seq)
-				return make_pair(new Empty<R, ADS, M> , scanner.rest());
-
-			return make_pair(new BestImprovement<R, ADS, M> (*evaluator, *ns_seq), scanner.rest());
+			if(builders[i]->canBuild(BestImprovement<R, ADS, M>::idComponent()))
+			{
+				OptFrameComponent* component = builders[i]->build(scanner, *this);
+				return make_pair((LocalSearch<R, ADS, M>*) component, scanner.rest());
+			}
 		}
+
 
 		if (h == FirstImprovement<R, ADS, M>::idComponent())
 		{
@@ -675,7 +699,7 @@ public:
 
 			SingleObjSearch<R, ADS, M>* mtd = NULL;
 
-			assign(mtd, SingleObjSearch<R, ADS, M>::idComponent(), id);
+			assign(mtd, id, SingleObjSearch<R, ADS, M>::idComponent());
 
 			if(!mtd)
 				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());

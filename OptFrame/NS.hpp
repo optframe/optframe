@@ -52,9 +52,14 @@ public:
        return idComponent();
     }
 
+    static bool isBaseOf(string s)
+    {
+    	return ( s == "OptFrame:nsseq" );
+    }
+
     virtual bool compatible(string s)
     {
-       return ( s == idComponent() );
+    	return ( s == idComponent() );
     }
 
 	virtual void print() const = 0;

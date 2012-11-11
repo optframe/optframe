@@ -72,7 +72,7 @@ public:
 
    virtual bool compatible(string s)
    {
-      return ( s == idComponent() ) || ( NSSeq<R, ADS, M>::compatible(s) );
+	   return ( s == idComponent() ) || ( NSSeq<R, ADS, M>::compatible(s) );
    }
 
 	virtual void print() const = 0;

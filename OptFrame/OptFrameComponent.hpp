@@ -45,10 +45,12 @@ public:
       return idComponent();
    }
 
+
    virtual bool compatible(string s)
    {
       return s == id();
    }
+
 
    static vector<pair<string, string> >  params()
    {

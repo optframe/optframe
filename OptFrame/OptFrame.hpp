@@ -77,6 +77,8 @@
 
 #include "HeuristicFactory.hpp"
 
+#include "Heuristics/BestImprovement.hpp"
+
 // ==================================
 
 #include "OptFrameModule.hpp"
@@ -143,6 +145,7 @@ public:
 	OptFrame()
 	{
 		loadDefaultModules();
+		loadComponentBuilders();
 		dictionary = new map<string, string> ;
 	}
 
@@ -150,6 +153,7 @@ public:
 		factory(HeuristicFactory<R, ADS, M> (_rg))
 	{
 		loadDefaultModules();
+		loadComponentBuilders();
 		dictionary = new map<string, string> ;
 	}
 
@@ -217,6 +221,11 @@ public:
 #ifdef MaPI
 		loadModule(new InitServersModule<R, ADS, M> );
 #endif
+	}
+
+	void loadComponentBuilders()
+	{
+		factory.builders.push_back(new BestImprovementBuilder<R, ADS, M>);
 	}
 
 	OptFrameModule<R, ADS, M>* getModule(string module)

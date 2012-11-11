@@ -18,59 +18,36 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_NSSEQ_HPP_
-#define OPTFRAME_NSSEQ_HPP_
+#ifndef OPTFRAME_COMPONENT_BUILDER_H_
+#define OPTFRAME_COMPONENT_BUILDER_H_
 
-#include "NS.hpp"
-#include "NSIterator.hpp"
+#include "OptFrameComponent.hpp"
 
-using namespace std;
+template<class R, class ADS, class M> class HeuristicFactory;
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class NSSeq: public NS<R, ADS, M>
+class ComponentBuilder : public OptFrameComponent
 {
 public:
-
-	using NS<R, ADS, M>::move; // prevents name hiding
-
-	virtual ~NSSeq()
+	virtual ~ComponentBuilder()
 	{
 	}
 
-	virtual Move<R, ADS, M>& move(const R&) = 0;
+	virtual OptFrameComponent* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "") = 0;
 
-   NSIterator<R, ADS, M>& getIterator(const Solution<R, ADS>& s)
-   {
-      return getIterator(s.getR());
-   }
+	virtual bool canBuild(string) = 0;
 
-	virtual NSIterator<R, ADS, M>& getIterator(const R&) = 0;
-	virtual NSIterator<R, ADS, M>& getIterator(const M&, const R& r)
+	static string idComponent()
 	{
-		return getIterator(r);
+		stringstream ss;
+		ss << OptFrameComponent::idComponent() << "ComponentBuilder:";
+		return ss.str();
 	}
 
-   static string idComponent()
-   {
-      return "OptFrame:nsseq";
-   }
-
-   virtual string id() const
-   {
-      return idComponent();
-   }
-
-   static bool isBaseOf(string s)
-   {
-	   return ( s == "OptFrame:nsenum" );
-   }
-
-   virtual bool compatible(string s)
-   {
-	   return ( s == idComponent() ) || ( NS<R, ADS, M>::compatible(s) );
-   }
-
-	virtual void print() const = 0;
+	virtual string id() const
+	{
+		return idComponent();
+	}
 };
 
-#endif /*OPTFRAME_NSSEQ_HPP_*/
+#endif /*OPTFRAME_COMPONENT_BUILDER_H_*/

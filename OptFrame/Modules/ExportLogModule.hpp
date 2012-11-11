@@ -67,7 +67,7 @@ public:
 		FILE * pFile = fopen(filename.c_str(), "a");
 
 		SingleObjSearch<R, ADS, M>* h = NULL;
-		hf->assign(h, SingleObjSearch<R, ADS, M>::idComponent(), id);
+		hf->assign(h, id, SingleObjSearch<R, ADS, M>::idComponent());
 
 		stringstream stream;
 
