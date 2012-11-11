@@ -533,7 +533,6 @@ public:
 	}
 
 
-
 	pair<LocalSearch<R, ADS, M>*, std::string> createLocalSearch(std::string str)
 	{
 		Scanner scanner(str);
@@ -563,107 +562,11 @@ public:
 
 		for(unsigned i=0; i<builders.size(); i++)
 		{
-			if(builders[i]->canBuild(BestImprovement<R, ADS, M>::idComponent()))
+			if(builders[i]->canBuild(h))
 			{
 				LocalSearch<R, ADS, M>* ls = ((LocalSearchBuilder<R,ADS,M>*)(builders[i]))->build(scanner, *this);
 				return make_pair(ls, scanner.rest());
 			}
-		}
-
-
-		if (h == FirstImprovement<R, ADS, M>::idComponent())
-		{
-			cout << "Heuristic: First Improvement" << endl;
-
-			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
-			if(!evaluator)
-				return make_pair(new Empty<R, ADS, M> , scanner.rest());
-
-			NSSeq<R, ADS, M>* ns_seq = (NSSeq<R, ADS, M>*) getNextComponent(scanner);
-
-			if(!ns_seq)
-				return make_pair(new Empty<R, ADS, M> , scanner.rest());
-
-			return make_pair(new FirstImprovement<R, ADS, M> (*evaluator, *ns_seq), scanner.rest());
-		}
-
-		if(h == CircularSearch<R, ADS, M>::idComponent())
-		{
-			cout << "Heuristic: Circular Search" << endl;
-
-			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
-			NSEnum<R, ADS, M>* ns_enum = NULL;
-			readComponent(ns_enum, scanner);
-
-			return make_pair(new CircularSearch<R, ADS, M> (*evaluator, *ns_enum), scanner.rest());
-		}
-
-		if (h == HillClimbing<R, ADS, M>::idComponent())
-		{
-			cout << "Heuristic: Hill Climbing" << endl;
-
-			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
-
-			string rest = scanner.rest();
-
-			pair<LocalSearch<R, ADS, M>*, std::string> method;
-			method = createLocalSearch(rest);
-
-			LocalSearch<R, ADS, M>* h = method.first;
-
-			scanner = Scanner(method.second);
-
-			return make_pair(new HillClimbing<R, ADS, M> (*evaluator, *h), scanner.rest());
-		}
-
-		if (h == RandomDescentMethod<R, ADS, M>::idComponent())
-		{
-			cout << "Heuristic: Random Descent Method" << endl;
-
-			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
-			if(!evaluator)
-				return make_pair(new Empty<R, ADS, M> , scanner.rest());
-
-			NS<R, ADS, M>* ns = (NS<R, ADS, M>*) getNextComponent(scanner);
-
-			if(!ns)
-				return make_pair(new Empty<R, ADS, M> , scanner.rest());
-
-			int iter = scanner.nextInt();
-
-			return make_pair(new RandomDescentMethod<R, ADS, M> (*evaluator, *ns, iter), scanner.rest());
-		}
-
-
-		if (h == VariableNeighborhoodDescent<R, ADS, M>::idComponent())
-		{
-			cout << "Heuristic: Variable Neighborhood Descent" << endl;
-
-			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
-			if(!evaluator)
-				return make_pair(new Empty<R, ADS, M> , scanner.rest());
-
-			vector<LocalSearch<R, ADS, M>*> hlist = read_local_search_list(scanner);
-			if(hlist.size()==0)
-				return make_pair(new Empty<R, ADS, M> , scanner.rest());
-
-			return make_pair(new VariableNeighborhoodDescent<R, ADS, M> (*evaluator, hlist), scanner.rest());
-
-		}
-
-		if (h == RVND<R, ADS, M>::idComponent())
-		{
-			cout << "Heuristic: RVND" << endl;
-
-			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
-			if(!evaluator)
-				return make_pair(new Empty<R, ADS, M> , scanner.rest());
-
-			vector<LocalSearch<R, ADS, M>*> hlist = read_local_search_list(scanner);
-			if(hlist.size()==0)
-				return make_pair(new Empty<R, ADS, M> , scanner.rest());
-
-			return make_pair(new RVND<R, ADS, M> (*evaluator, hlist, rg), scanner.rest());
 		}
 
 		cout << "Warning: no heuristic '" << h << "' found! ignoring..." << endl;

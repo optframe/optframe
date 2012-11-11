@@ -91,9 +91,62 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, M>::idComponent() << "hc";
+		ss << LocalSearch<R, ADS, M>::idComponent() << "HC";
 		return ss.str();
 
+	}
+};
+
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class HillClimbingBuilder : public LocalSearchBuilder<R, ADS, M>
+{
+public:
+	virtual ~HillClimbingBuilder()
+	{
+	}
+
+	virtual LocalSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	{
+		Evaluator<R, ADS, M>* eval;
+		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		string rest = scanner.rest();
+
+		pair<LocalSearch<R, ADS, M>*, std::string> method;
+		method = hf.createLocalSearch(rest);
+
+		LocalSearch<R, ADS, M>* h = method.first;
+
+		scanner = Scanner(method.second);
+
+		return new HillClimbing<R, ADS, M>(*eval, *h);
+	}
+
+	virtual vector<pair<string, string> > parameters()
+	{
+		vector<pair<string, string> > params;
+		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(LocalSearch<R, ADS, M>::idComponent(), "local search"));
+
+		return params;
+	}
+
+	virtual bool canBuild(string component)
+	{
+		return component == HillClimbing<R, ADS, M>::idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << LocalSearchBuilder<R, ADS, M>::idComponent() << "HC";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
 	}
 };
 

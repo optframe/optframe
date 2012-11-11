@@ -91,7 +91,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, M>::idComponent() << "rdm";
+		ss << LocalSearch<R, ADS, M>::idComponent() << "RDM";
 		return ss.str();
 	}
 
@@ -99,16 +99,57 @@ public:
 	{
 		return idComponent();
 	}
+};
 
-	virtual vector<pair<string, string> > parameters() const
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class RandomDescentMethodBuilder : public LocalSearchBuilder<R, ADS, M>
+{
+public:
+	virtual ~RandomDescentMethodBuilder()
 	{
-		vector<pair<string, string> > p;
-		p.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluator"));
-		p.push_back(make_pair(NS<R, ADS, M>::idComponent(), "neighborhood_structure"));
-		p.push_back(make_pair("int", "iterMax"));
+	}
 
-		return p;
+	virtual LocalSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	{
+		Evaluator<R, ADS, M>* eval;
+		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		NS<R, ADS, M>* ns;
+		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		int iterMax = scanner.nextInt();
+
+		return new RandomDescentMethod<R, ADS, M>(*eval, *ns, iterMax);
+	}
+
+	virtual vector<pair<string, string> > parameters()
+	{
+		vector<pair<string, string> > params;
+		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NS<R, ADS, M>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair("int", "max number of iterations without improvement"));
+
+		return params;
+	}
+
+	virtual bool canBuild(string component)
+	{
+		return component == RandomDescentMethod<R, ADS, M>::idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << LocalSearchBuilder<R, ADS, M>::idComponent() << "RDM";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
 	}
 };
+
 
 #endif /*OPTFRAME_RDM_HPP_*/

@@ -78,6 +78,12 @@
 #include "HeuristicFactory.hpp"
 
 #include "Heuristics/BestImprovement.hpp"
+#include "Heuristics/FirstImprovement.hpp"
+#include "Heuristics/RandomDescentMethod.hpp"
+#include "Heuristics/CircularSearch.hpp"
+#include "Heuristics/VariableNeighborhoodDescent.hpp"
+#include "Heuristics/RVND.hpp"
+#include "Heuristics/HillClimbing.hpp"
 
 // ==================================
 
@@ -225,17 +231,23 @@ public:
 #endif
 	}
 
-	void loadComponentBuilders()
-	{
-		factory.builders.push_back(new BestImprovementBuilder<R, ADS, M>);
-	}
-
 	OptFrameModule<R, ADS, M>* getModule(string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())
 				return modules[i];
 		return NULL;
+	}
+
+	void loadComponentBuilders()
+	{
+		factory.builders.push_back(new BestImprovementBuilder<R, ADS, M>);
+		factory.builders.push_back(new FirstImprovementBuilder<R, ADS, M>);
+		factory.builders.push_back(new RandomDescentMethodBuilder<R, ADS, M>);
+		factory.builders.push_back(new CircularSearchBuilder<R, ADS, M>);
+		factory.builders.push_back(new VariableNeighborhoodDescentBuilder<R, ADS, M>);
+		factory.builders.push_back(new RVNDBuilder<R, ADS, M>);
+		factory.builders.push_back(new HillClimbingBuilder<R, ADS, M>);
 	}
 
 	//! \english OptFrame Command Line Interface \endenglish \portuguese Interface de Linha de Comando do OptFrame \endportuguese

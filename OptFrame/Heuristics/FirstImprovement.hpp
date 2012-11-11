@@ -98,4 +98,51 @@ public:
 	}
 };
 
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class FirstImprovementBuilder : public LocalSearchBuilder<R, ADS, M>
+{
+public:
+	virtual ~FirstImprovementBuilder()
+	{
+	}
+
+	virtual LocalSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	{
+		Evaluator<R, ADS, M>* eval;
+		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		NSSeq<R, ADS, M>* nsseq;
+		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		return new FirstImprovement<R, ADS, M>(*eval, *nsseq);
+	}
+
+	virtual vector<pair<string, string> > parameters()
+	{
+		vector<pair<string, string> > params;
+		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NSSeq<R, ADS, M>::idComponent(), "neighborhood structure"));
+
+		return params;
+	}
+
+	virtual bool canBuild(string component)
+	{
+		return component == FirstImprovement<R, ADS, M>::idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << LocalSearchBuilder<R, ADS, M>::idComponent() << "FI";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+};
+
 #endif /*OPTFRAME_FI_HPP_*/

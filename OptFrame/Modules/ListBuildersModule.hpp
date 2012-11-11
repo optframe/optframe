@@ -54,9 +54,9 @@ public:
 		{
 			for(int i=0; i<(int)builders.size(); i++)
 			{
-				cout << builders[i].first << " ";
+				cout << builders[i].first << "\t";
 				for(unsigned j=0; j<builders[i].second.size(); j++)
-					cout << builders[i].second[j].first << " " << builders[i].second[j].second << " ";
+					cout << builders[i].second[j].first << "=>'" << builders[i].second[j].second << "' ";
 				cout << endl;
 			}
 		}

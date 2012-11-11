@@ -93,7 +93,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, M>::idComponent() << "cs";
+		ss << LocalSearch<R, ADS, M>::idComponent() << "CS";
 		return ss.str();
 	}
 
@@ -102,5 +102,53 @@ public:
 		return idComponent();
 	}
 };
+
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class CircularSearchBuilder : public LocalSearchBuilder<R, ADS, M>
+{
+public:
+	virtual ~CircularSearchBuilder()
+	{
+	}
+
+	virtual LocalSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	{
+		Evaluator<R, ADS, M>* eval;
+		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		NSEnum<R, ADS, M>* nsenum;
+		hf.assign(nsenum, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		return new CircularSearch<R, ADS, M>(*eval, *nsenum);
+	}
+
+	virtual vector<pair<string, string> > parameters()
+	{
+		vector<pair<string, string> > params;
+		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NSEnum<R, ADS, M>::idComponent(), "neighborhood structure"));
+
+		return params;
+	}
+
+	virtual bool canBuild(string component)
+	{
+		return component == CircularSearch<R, ADS, M>::idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << LocalSearchBuilder<R, ADS, M>::idComponent() << "CS";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+};
+
 
 #endif /*OPTFRAME_CS_HPP_*/

@@ -106,4 +106,53 @@ private:
 	RandGen& rg;
 };
 
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class RVNDBuilder : public LocalSearchBuilder<R, ADS, M>
+{
+public:
+	virtual ~RVNDBuilder()
+	{
+	}
+
+	virtual LocalSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	{
+		Evaluator<R, ADS, M>* eval;
+		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		vector<LocalSearch<R, ADS, M>*> hlist = hf.read_local_search_list(scanner);
+
+		return new RVND<R, ADS, M>(*eval, hlist, hf.getRandGen());
+	}
+
+	virtual vector<pair<string, string> > parameters()
+	{
+		vector<pair<string, string> > params;
+		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluation function"));
+		stringstream ss;
+		ss << LocalSearch<R, ADS, M>::idComponent() << "[]";
+		params.push_back(make_pair(ss.str(), "list of local searches"));
+
+		return params;
+	}
+
+	virtual bool canBuild(string component)
+	{
+		return component == RVND<R, ADS, M>::idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << LocalSearchBuilder<R, ADS, M>::idComponent() << "RVND";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+};
+
+
 #endif /*RVND_HPP_*/

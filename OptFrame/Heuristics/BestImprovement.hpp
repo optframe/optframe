@@ -147,8 +147,8 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), ""));
-		params.push_back(make_pair(NSSeq<R, ADS, M>::idComponent(), ""));
+		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NSSeq<R, ADS, M>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}
