@@ -565,8 +565,8 @@ public:
 		{
 			if(builders[i]->canBuild(BestImprovement<R, ADS, M>::idComponent()))
 			{
-				OptFrameComponent* component = builders[i]->build(scanner, *this);
-				return make_pair((LocalSearch<R, ADS, M>*) component, scanner.rest());
+				LocalSearch<R, ADS, M>* ls = ((LocalSearchBuilder<R,ADS,M>*)(builders[i]))->build(scanner, *this);
+				return make_pair(ls, scanner.rest());
 			}
 		}
 

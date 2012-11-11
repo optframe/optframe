@@ -27,6 +27,7 @@
 using namespace std;
 
 #include "OptFrameComponent.hpp"
+#include "ComponentBuilder.h"
 
 #include "Solution.hpp"
 #include "Population.hpp"
@@ -90,5 +91,34 @@ public:
    }
 
 };
+
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class LocalSearchBuilder : public ComponentBuilder<R, ADS, M>
+{
+public:
+	virtual ~LocalSearchBuilder()
+	{
+	}
+
+	virtual LocalSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "") = 0;
+
+	virtual vector<pair<string, string> > parameters() = 0;
+
+	virtual bool canBuild(string) = 0;
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << ComponentBuilder<R, ADS, M>::idComponent() << "LocalSearch:";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+};
+
 
 #endif /* OPTFRAME_LOCAL_SEARCH_HPP_ */

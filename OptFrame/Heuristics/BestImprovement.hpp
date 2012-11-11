@@ -24,7 +24,6 @@
 #include "../LocalSearch.hpp"
 #include "../NSSeq.hpp"
 #include "../Evaluator.hpp"
-#include "../ComponentBuilder.h"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class BestImprovement: public LocalSearch<R, ADS, M>
@@ -127,14 +126,14 @@ public:
 
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class BestImprovementBuilder : public ComponentBuilder<R, ADS, M>
+class BestImprovementBuilder : public LocalSearchBuilder<R, ADS, M>
 {
 public:
 	virtual ~BestImprovementBuilder()
 	{
 	}
 
-	virtual OptFrameComponent* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	virtual LocalSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
 	{
 		Evaluator<R, ADS, M>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -162,7 +161,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, M>::idComponent() << "BI";
+		ss << LocalSearchBuilder<R, ADS, M>::idComponent() << "BI";
 		return ss.str();
 	}
 
