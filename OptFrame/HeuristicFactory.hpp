@@ -101,37 +101,11 @@ public:
 		return component;
 	}
 
-	template< class T > void assignBase(T*& base, unsigned number, string id)
-	{
-		if(!T::isBaseOf(id))
-		{
-			cout << "HeuristicFactory: incompatible base " << base->idComponent() << " <- " << id << endl;
-			base = NULL;
-			return;
-		}
-
-		if(components.count(id) > 0)
-		{
-			vector<OptFrameComponent*>& v = components[id];
-			if(number < v.size())
-			{
-				base = ((T*) v[number]) ;
-				return;
-			}
-		}
-		else
-			cout << "'" << id << "' not found!" << endl;
-
-		// not found!
-		base = NULL;
-	}
-
-
 	template< class T > void assign(T*& component, unsigned number, string id)
 	{
-		if(component->idComponent() != id)
+		if(!compareBase(T::idComponent(), id))
 		{
-			cout << "HeuristicFactory: incompatible assign between " << component->idComponent() << " <- " << id << endl;
+			cout << "HeuristicFactory: incompatible assign '" << T::idComponent() << "' <- '" << id << "'" << endl;
 			component = NULL;
 			return;
 		}
@@ -204,8 +178,10 @@ public:
 	bool compareBase(string base, string component)
 	{
 		for(unsigned i=0; i<base.length(); i++)
+		{
 			if(base.at(i) != component.at(i))
 				return false;
+		}
 		return true;
 	}
 

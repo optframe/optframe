@@ -62,7 +62,9 @@ public:
 
    static string idComponent()
    {
-      return "OptFrame:nsenum";
+		stringstream ss;
+		ss << NSSeq<R, ADS, M>::idComponent() << ":NSEnum";
+		return ss.str();
    }
 
    virtual string id() const

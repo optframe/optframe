@@ -137,10 +137,10 @@ public:
 	virtual OptFrameComponent* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
 	{
 		Evaluator<R, ADS, M>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next());      // read backwards!
+		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		NSSeq<R, ADS, M>* nsseq;
-		hf.assignBase(nsseq, scanner.nextInt(), scanner.next()); // read backwards!
+		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new BestImprovement<R, ADS, M>(*eval, *nsseq);
 	}

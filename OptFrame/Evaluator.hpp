@@ -189,7 +189,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << OptFrameComponent::idComponent() << "ev";
+		ss << OptFrameComponent::idComponent() << "Evaluator";
 		return ss.str();
 	}
 

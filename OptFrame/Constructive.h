@@ -36,7 +36,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << OptFrameComponent::idComponent() << "constructive";
+		ss << OptFrameComponent::idComponent() << "Constructive";
 		return ss.str();
 	}
 

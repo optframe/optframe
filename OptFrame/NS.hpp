@@ -44,17 +44,12 @@ public:
 
     static string idComponent()
     {
-       return "OptFrame:ns";
+       return "OptFrame:NS";
     }
 
     virtual string id() const
     {
        return idComponent();
-    }
-
-    static bool isBaseOf(string s)
-    {
-    	return ( s == "OptFrame:nsseq" );
     }
 
     virtual bool compatible(string s)

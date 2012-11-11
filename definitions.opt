@@ -1,0 +1,6 @@
+% OptFrame .opt definitions file
+silent_define Constructive OptFrame:Constructive
+silent_define Evaluator    OptFrame:Evaluator
+silent_define NS           OptFrame:NS
+silent_define NSSeq        OptFrame:NS:NSSeq
+silent_define NSEnum       OptFrame:NS:NSSeq:NSEnum

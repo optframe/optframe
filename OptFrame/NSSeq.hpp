@@ -52,17 +52,14 @@ public:
 
    static string idComponent()
    {
-      return "OptFrame:nsseq";
+		stringstream ss;
+		ss << NS<R, ADS, M>::idComponent() << ":NSSeq";
+		return ss.str();
    }
 
    virtual string id() const
    {
       return idComponent();
-   }
-
-   static bool isBaseOf(string s)
-   {
-	   return ( s == "OptFrame:nsenum" );
    }
 
    virtual bool compatible(string s)
