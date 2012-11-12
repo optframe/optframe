@@ -96,8 +96,6 @@ public:
 		string discarded = scanner.getDiscarded();
 
 		string input3 = "";
-		input3.append(discarded);
-		input3.append(name);
 
 		// now proceed as usual
 
@@ -124,10 +122,16 @@ public:
 			}
 		}
 
-		string input4 = Scanner::trim(input3);
+		string input4;
+		input4.append(discarded);
+		input4.append(name);
+		input4.append(input3);
 
-		return input4;
+		string input5 = Scanner::trim(input4);
+
+		return input5;
 	}
+
 
 };
 
