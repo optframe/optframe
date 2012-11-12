@@ -89,7 +89,7 @@ public:
 
 		string element = scan.next();
 
-		OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, hf, dictionary, element + " " + list[n]);
+		OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, hf, dictionary, element + " " + list.at(n));
 		delete &list;
 	}
 

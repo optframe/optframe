@@ -529,6 +529,10 @@ public:
 			list->at(i) = scanner.trim(list->at(i));
 		}
 
+		// error in code, dont know why but list should be empty!
+		if((list->size()==1) && (list->at(0)==""))
+			list->pop_back();
+
 		return *list;
 	}
 

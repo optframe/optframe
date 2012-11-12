@@ -66,10 +66,20 @@ public:
 			stringstream ss;
 
 			ss << new_name << " [";
-			for(int i=0; i<((int)builders.size())-1; i++)
-				ss << builders[i].first << ",";
-			if(builders.size()>0)
-				ss << builders[builders.size()-1].first;
+			for(unsigned i=0; i<builders.size(); i++)
+			{
+				ss << " [ " << builders[i].first << " , [ ";
+				for(unsigned j=0; j<builders[i].second.size(); j++)
+				{
+					ss << "[ " << builders[i].second[j].first << " , " << builders[i].second[j].second << "] ";
+					if(j != builders[i].second.size()-1)
+						ss << ",";
+				}
+				ss << " ] ] ";
+
+				if( i != builders.size()-1 )
+					ss << ",";
+			}
 			ss << " ]";
 
 			OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, factory, dictionary, ss.str());
