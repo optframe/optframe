@@ -57,7 +57,7 @@ public:
 		{
 			scanner = new Scanner(new File(input));
 		}
-		catch (FileNotFound e)
+		catch (FileNotFound& e)
 		{
 			cout << "File '"<< e.getFile() << "' not found!" << endl;
 			cout << "Usage: " << usage() << endl;
@@ -124,7 +124,8 @@ public:
 			for(unsigned int i=0;i<all_modules.size();i++)
 				if(command == all_modules[i]->id())
 				{
-					string after_preprocess = all_modules[i]->preprocess(dictionary, s2.rest());
+					string original = s2.rest();
+					string after_preprocess = all_modules[i]->preprocess(dictionary, original);
 					all_modules[i]->run(all_modules, factory, dictionary, after_preprocess);
 					notfound = false;
 					break;

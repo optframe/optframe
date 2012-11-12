@@ -16,18 +16,77 @@ for_each $i lista [
   undefine valor
 ]
 
-list_components OptFrame: componentes
-
-list_size componentes total
-
-create_numeric_list 1 total li_componentes
-
 echo =======================
 echo Componentes disponiveis
 echo =======================
+list_components OptFrame: componentes
+list_size componentes total
+create_numeric_list 1 total li_componentes
 for_each $k li_componentes [
   element $k componentes c,
   echo c,
   undefine c
 ]
+echo =======================
+
+echo =======================
+echo listando builders
+echo =======================
+list_builders OptFrame: builders
+echo builders
+list_size builders total_b
+create_numeric_list 1 total_b li_builders
+
+define builder_names [ ]
+echo definindo builder names: builder_names
+
+for_each $k li_builders [
+  element $k builders blist,
+  element 1 blist bname,
+  element 2 blist bparams,
+
+  echo bname	bparams,
+  
+  % comentarios em listas devem sempre terminar com virgula,
+  
+  list_append builder_names [ bname ] builder_names2 ,
+  undefine builder_names,
+  silent_define builder_names builder_names2,
+  undefine builder_names2,
+  
+  list_size bparams nparams,
+  create_numeric_list 1 nparams li_nparams,
+  
+  for_each $p li_nparams [
+     element $p bparams par,
+     element 1 par tipo,
+     
+     echo precisa de: tipo,
+     
+     list_components tipo comps,
+     list_size comps ncomps,
+     create_numeric_list 1 ncomps li_ncomps,
+     for_each $z li_ncomps [
+       element $z comps x,
+       echo serve: x,
+       undefine x
+     ],
+     
+     undefine comps,
+     undefine ncomps,
+     undefine li_ncomps,
+     
+     undefine tipo,
+     undefine par
+  ],
+  
+  echo,
+
+  undefine nparams,
+  undefine li_nparams,
+  undefine bparams,  
+  undefine bname,
+  undefine blist
+]
+echo LISTA DE BUILDERS: builder_names
 echo =======================

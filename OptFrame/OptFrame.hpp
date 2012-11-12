@@ -110,6 +110,7 @@
 #include "Modules/ExportLogModule.hpp"
 #include "Modules/ForEachModule.hpp"
 #include "Modules/HelpModule.hpp"
+#include "Modules/ListAppendModule.hpp"
 #include "Modules/ListBuildersModule.hpp"
 #include "Modules/ListComponentsModule.hpp"
 #include "Modules/ListFromFileModule.hpp"
@@ -210,6 +211,7 @@ public:
 		loadModule(new ExportLogModule<R, ADS, M> );
 		loadModule(new ForEachModule<R, ADS, M> );
 		loadModule(new HelpModule<R, ADS, M> );
+		loadModule(new ListAppendModule<R, ADS, M> );
 		loadModule(new ListBuildersModule<R, ADS, M> );
 		loadModule(new ListComponentsModule<R, ADS, M> );
 		loadModule(new ListFromFileModule<R, ADS, M> );

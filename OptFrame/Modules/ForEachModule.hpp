@@ -221,7 +221,10 @@ public:
 			{
 				string command = var_preprocess(var, values.at(v), commands.at(c));
 
-				if (!exec_command(all_modules, factory, dictionary, command))
+				if(command.at(0)=='%') // first line comment
+					command = "";
+
+				if ((command != "") && !exec_command(all_modules, factory, dictionary, command))
 				{
 					if(commands.at(c)=="")
 						cout << "for_each module: empty command! (perhaps an extra comma in list?)" << endl;
@@ -233,6 +236,47 @@ public:
 
 		delete &values;
 		delete &commands;
+	}
+
+	// should preprocess only until list of commands
+	virtual string preprocess(map<string, string>* dictionary, string input)
+	{
+		Scanner scanner(input);
+
+		// should skip the removal of comments '%' and variable definitions, otherwise it destroys the commands!
+
+		string input2 = "";
+
+		if(!scanner.hasNext())
+			return input2;
+
+		string variable   = scanner.next();
+		string discarded1 = scanner.getDiscarded();
+		input2.append(discarded1);
+		input2.append(variable);
+
+		if(!scanner.hasNext())
+			return input2;
+
+		string possibleDefinition = scanner.next();
+		string discarded2         = scanner.getDiscarded();
+
+		if(dictionary->count(possibleDefinition) == 0) // Not found in dictionary
+		{
+			input2.append(discarded2);
+			input2.append(possibleDefinition); // EXPLICIT LIST
+		}
+		else // definition found in dictionary
+		{
+			string found = dictionary->find(possibleDefinition)->second;
+
+			input2.append(discarded2);
+			input2.append(found);
+		}
+
+		input2.append(scanner.rest());
+
+		return input2;
 	}
 };
 
