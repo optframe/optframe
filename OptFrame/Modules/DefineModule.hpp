@@ -54,11 +54,14 @@ public:
 			Scanner s2(second_word);
 
 			while(s2.hasNext())
-				if(new_name==s2.next())
+			{
+				string next_word = s2.next();
+				if(new_name==next_word)
 				{
-					cout << "Recursive definitions are not allowed!" << endl;
+					cout << "Recursive definitions are not allowed! (define: '" << new_name << "' as '" << next_word << "')" << endl;
 					return;
 				}
+			}
 
 			(*dictionary)[new_name] = scanner.trim(second_word);
 			cout << "Word '"<<new_name<<"' now means: '"<<(*dictionary)[new_name]<<"'"<<endl;
@@ -97,8 +100,6 @@ public:
 		string discarded = scanner.getDiscarded();
 
 		string input3 = "";
-		input3.append(discarded);
-		input3.append(name);
 
 		// now proceed as usual
 
@@ -125,9 +126,14 @@ public:
 			}
 		}
 
-		string input4 = Scanner::trim(input3);
+		string input4;
+		input4.append(discarded);
+		input4.append(name);
+		input4.append(input3);
 
-		return input4;
+		string input5 = Scanner::trim(input4);
+
+		return input5;
 	}
 
 };
