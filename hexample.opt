@@ -1,4 +1,6 @@
 
+read definitions.opt
+
 randgen system_seed 0
 
 define lista [ 1 ,
@@ -16,6 +18,8 @@ for_each $i lista [
   undefine valor
 ]
 
+build OptFrame:ComponentBuilder:LocalSearch:BI Evaluator 0 NSEnum 0 meu_bi
+
 echo =======================
 echo Componentes disponiveis
 echo =======================
@@ -28,6 +32,7 @@ for_each $k li_componentes [
   undefine c
 ]
 echo =======================
+
 
 echo =======================
 echo listando builders

@@ -110,10 +110,15 @@ public:
 		eval.evaluate(e, s); // updates 'e'
 	}
 
+	virtual bool compatible(string s)
+	{
+		return (s == idComponent()) || (LocalSearch<R, ADS, M>::compatible(s));
+	}
+
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, M>::idComponent() << "bi";
+		ss << LocalSearch<R, ADS, M>::idComponent() << "BI";
 		return ss.str();
 	}
 

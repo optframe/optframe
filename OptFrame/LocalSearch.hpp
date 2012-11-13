@@ -77,6 +77,10 @@ public:
    // 2
    virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f) = 0;
 
+   virtual bool compatible(string s)
+   {
+	   return ( s == idComponent() );
+   }
 
    static string idComponent()
    {

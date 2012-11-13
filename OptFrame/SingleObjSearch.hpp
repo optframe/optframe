@@ -30,6 +30,7 @@ using namespace std;
 #include "Evaluation.hpp"
 
 #include "OptFrameComponent.hpp"
+#include "ComponentBuilder.h"
 
 template< class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY >
 class SingleObjSearch :
@@ -69,5 +70,33 @@ public:
    }
 
 };
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class SingleObjSearchBuilder: public ComponentBuilder<R, ADS, M>
+{
+public:
+	virtual ~SingleObjSearchBuilder()
+	{
+	}
+
+	virtual SingleObjSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "") = 0;
+
+	virtual vector<pair<string, string> > parameters() = 0;
+
+	virtual bool canBuild(string) = 0;
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << ComponentBuilder<R, ADS, M>::idComponent() << "SingleObjSearch:";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+};
+
 
 #endif /* OPTFRAME_SINGLE_OBJ_SEARCH_HPP_ */

@@ -23,6 +23,10 @@
 
 #include "../OptFrameModule.hpp"
 
+#include "../LocalSearch.hpp"
+#include "../SingleObjSearch.hpp"
+#include "../MultiObjSearch.hpp"
+
 //! \english The BuildModule class is a Module that enables the user to create a heuristic and give a name to it. \endenglish \portuguese A classe BuildModule é o Módulo que permite o usuário criar uma heurística e definir um nome para ela. \endportuguese
 /*!
   \sa run()
@@ -61,22 +65,15 @@ public:
 
    string usage()
    {
-      string u = "build method [my_method_name]\n";
-      u += "  eg.\n";
-      u += "\tbuild BI ev id ns id my_Best_Improvement\n";
-      u += "\tbuild FI ev id ns id my_First_Improvement\n";
-      u += "\tbuild HC ev id BI ev id ns id my_HillClimbing_BI\n";
-      u += "\tbuild HC ev id my_First_Improvement my_HillClimbing_FI\n";
-      u += "\tbuild GA ev id initpop id <crossover rate> <mutation rate> <population size> <number of generations> ga_sel id ga_cross id ga_mut id my_GA\n";
+      string u = "build builder_and_parameters [my_method_name]\n";
+      u += "to see the full list of builders type: 'list_builders OptFrame:'\n";
 
       return u;
    }
 
    //! \english Execution of the module \endenglish \portuguese Execução do módulo \endportuguese
    /*! \english
-       The BuildModule receives as parameters the description of the heuristic and the desired name.
-
-       The string for the construction of the heuristic is sent to HeuristicFactory and it creates the method. Then, the BuildModule gives the desired name to the created method.
+       The BuildModule receives as parameter a ComponentBuilder and the method parameters, also the desired name is optionally passed.
 
        For more information type 'usage build' in OptFrame Command Line Interface
 
@@ -84,9 +81,7 @@ public:
        \endenglish
 
        \portuguese
-       O BuildModule recebe como parâmetro a descrição da heurística e o nome desejado.
-
-       A string para construção da heurística é repassada ao HeuristicFactory, que gera efetivamente o método. Após isso o BuildModule dá o nome desejado ao método criado.
+       O BuildModule recebe como parâmetro um ComponentBuilder e os parâmetros do método, bem como um nome desejado para o método, opcionalmente.
 
        Para mais informações digite 'usage build' na Interface de Linha de Comando do OptFrame
 
@@ -97,23 +92,67 @@ public:
    void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
    {
       cout << "build: " << input << endl;
-      Scanner scanner(input);
+      Scanner scanner1(input);
 
-      if (!scanner.hasNext())
+      if (!scanner1.hasNext())
       {
          cout << "Usage: " << usage() << endl;
          return;
       }
 
-      pair<SingleObjSearch<R, ADS, M>*, string> method;
-      method = factory->createSingleObjSearch(scanner.rest());
+      string type = scanner1.next();
+      stringstream ss;
+      ss << type << " " << scanner1.rest();
 
-      scanner = Scanner(method.second);
+      Scanner scanner(ss.str());
 
-      int new_id = factory->addComponent(*method.first);
+      int new_id = -1;
+      string base = "";
+
+      if(factory->compareBase(LocalSearchBuilder<R, ADS, M>::idComponent(), type))
+      {
+          pair<LocalSearch<R, ADS, M>*, string> method;
+          method = factory->createLocalSearch(scanner.rest());
+          scanner = Scanner(method.second);
+
+          if(method.first!=NULL)
+          {
+        	  base   = LocalSearch<R, ADS, M>::idComponent();
+        	  new_id = factory->addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
+          }
+      }
+      else if(factory->compareBase(SingleObjSearchBuilder<R, ADS, M>::idComponent(), type))
+      {
+          pair<SingleObjSearch<R, ADS, M>*, string> method;
+          method = factory->createSingleObjSearch(scanner.rest());
+          scanner = Scanner(method.second);
+
+          if(method.first!=NULL)
+          {
+        	  base   = SingleObjSearch<R, ADS, M>::idComponent();
+        	  new_id = factory->addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
+          }
+      }
+      else if(factory->compareBase(MultiObjSearchBuilder<R, ADS, M>::idComponent(), type))
+      {
+          pair<MultiObjSearch<R, ADS, M>*, string> method;
+          method = factory->createMultiObjSearch(scanner.rest());
+          scanner = Scanner(method.second);
+
+          if(method.first!=NULL)
+          {
+        	  base   = MultiObjSearch<R, ADS, M>::idComponent();
+        	  new_id = factory->addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
+          }
+      }
+      else
+      {
+    	  cout << "build_module: error '" << type << "' is not a builder!" << endl;
+    	  return;
+      }
 
       stringstream str;
-      str << "method " << new_id;
+      str << base << " " << new_id;
       string s_new_id = str.str();
 
       cout << "'" << s_new_id << "' added." << endl;

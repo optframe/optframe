@@ -61,6 +61,7 @@
 #include "Heuristics/EvolutionaryAlgorithms/GeneticAlgorithm.hpp"
 #include "Heuristics/BasicSimulatedAnnealing.hpp"
 
+#include "Heuristics/EmptyMultiObjSearch.hpp"
 #include "Heuristics/MOVNS.hpp"
 
 #include "ComponentBuilder.h"
@@ -566,6 +567,14 @@ public:
 
 		for(unsigned i=0; i<builders.size(); i++)
 		{
+			// build local search directly by builder name
+			if(builders[i]->id()==h)
+			{
+				LocalSearch<R, ADS, M>* ls = ((LocalSearchBuilder<R,ADS,M>*)(builders[i]))->build(scanner, *this);
+				return make_pair(ls, scanner.rest());
+			}
+
+			// locate builder by local search name
 			if(builders[i]->canBuild(h))
 			{
 				LocalSearch<R, ADS, M>* ls = ((LocalSearchBuilder<R,ADS,M>*)(builders[i]))->build(scanner, *this);
@@ -573,7 +582,7 @@ public:
 			}
 		}
 
-		cout << "Warning: no heuristic '" << h << "' found! ignoring..." << endl;
+		cout << "Warning: no LocalSearch '" << h << "' found! ignoring..." << endl;
 
 		return make_pair(new Empty<R, ADS, M> , scanner.rest());
 	}
@@ -893,9 +902,44 @@ public:
 		}
 #endif
 
-		cout << "Warning: no heuristic '" << h << "' found! ignoring..." << endl;
+		cout << "Warning: no SingleObjSearch '" << h << "' found! ignoring..." << endl;
 
 		return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+	}
+
+	pair<MultiObjSearch<R, ADS, M>*, std::string> createMultiObjSearch(std::string str)
+	{
+		Scanner scanner(str);
+
+		// No heuristic!
+		if (!scanner.hasNext())
+		{
+			MultiObjSearch<R, ADS, M>* mios = new EmptyMultiObjSearch<R, ADS,	M>;
+			return make_pair(mios, "");
+		}
+
+		string h = scanner.next();
+
+		if (h == MultiObjSearch<R, ADS, M>::idComponent())
+		{
+			unsigned int id = scanner.nextInt();
+
+			MultiObjSearch<R, ADS, M>* mtd = NULL;
+
+			assign(mtd, id, MultiObjSearch<R, ADS, M>::idComponent());
+
+			if (!mtd)
+				return make_pair(new EmptyMultiObjSearch<R, ADS, M>, scanner.rest());
+
+			return make_pair(mtd, scanner.rest());
+		}
+
+		if (h == EmptyMultiObjSearch<R, ADS, M>::idComponent())
+			return make_pair(new EmptyMultiObjSearch<R, ADS, M>, scanner.rest());
+
+		cout << "Warning: no MultiObjSearch '" << h << "' found! ignoring..." << endl;
+
+		return make_pair(new EmptyMultiObjSearch<R, ADS, M>, scanner.rest());
 	}
 
 };
