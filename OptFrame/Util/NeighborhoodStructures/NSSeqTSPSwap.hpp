@@ -114,6 +114,23 @@ public:
 		return *new NSIteratorTSPSwap<T, ADS, M, MOVE> (r.size());
 	}
 
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << NSSeq<vector<T>, ADS, M>::idComponent() << ":NSSeqTSPSwap";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+
+	virtual bool compatible(string s)
+	{
+		return ( s == idComponent() ) || ( NSSeq<vector<T>, ADS, M>::compatible(s) );
+	}
+
 	virtual void print() const
 	{
 		cout << "NSSeqTSPSwap" << endl;

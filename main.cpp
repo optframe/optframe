@@ -35,6 +35,12 @@ using namespace std;
 #include "./OptFrame/OptFrame.hpp"
 #include "./Examples/TSP.h"
 
+#include "OptFrame/Util/NeighborhoodStructures/NSSeqTSP2Opt.hpp"
+#include "OptFrame/Util/NeighborhoodStructures/NSSeqTSPOrOpt.hpp"
+#include "OptFrame/Util/NeighborhoodStructures/NSSeqTSPOrOptk.hpp"
+#include "OptFrame/Util/NeighborhoodStructures/NSSeqTSPSwap.hpp"
+
+
 int main(int argc, char **argv)
 {
 	srand(time(NULL));
@@ -46,33 +52,31 @@ int main(int argc, char **argv)
 
 	TSPProblemInstance* p = new TSPProblemInstance(scanner);
 
+	OptFrame<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe(rg);
+
 	RandomInitialSolutionTSP& is = * new RandomInitialSolutionTSP(p,rg);
-
-	SolutionTSP& s = is.generateSolution();
-
-	NSEnumSwap& ns = *new NSEnumSwap(p, rg);
-
-	s.print();
+	optframe.factory.addComponent(is);
 
 	TSPEvaluator& eval = *new TSPEvaluator(p);
-	EvaluationTSP* e;
-
-	e = &eval.evaluate(s);
-
-	e->print();
-	cout << endl;
-
-	OptFrame<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe(rg);
-	optframe.factory.addComponent(is);
 	optframe.factory.addComponent(eval);
+
+	NSEnumSwap& ns = *new NSEnumSwap(p, rg);
 	optframe.factory.addComponent(ns);
+
+	optframe.factory.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP>);
+	optframe.factory.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(1));
+	optframe.factory.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(2));
+	optframe.factory.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(3));
+	optframe.factory.addComponent(*new NSSeqTSPOrOpt<int, OPTFRAME_DEFAULT_ADS, MemTSP>);
+	optframe.factory.addComponent(*new NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS, MemTSP>);
+
 
 	//optframe.execute("define is_random initsol 0");
 	//optframe.execute("define my_eval ev 0");
 	//optframe.execute("define swap ns 0");
 
 	//optframe.execute();
-	optframe.execute("read example.opt");
+	optframe.execute("read hexample.opt");
 
 	cout << "Program ended successfully" << endl;
 

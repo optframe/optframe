@@ -73,6 +73,24 @@ public:
       return *new NSIteratorTSPOrOptk<T, ADS, M> (r.size(), k);
    }
 
+   static string idComponent()
+   {
+	   stringstream ss;
+	   ss << NSSeq<vector<T>, ADS, M>::idComponent() << ":NSSeqTSPOrOptk";
+	   return ss.str();
+   }
+
+   virtual string id() const
+   {
+	   return idComponent();
+   }
+
+   virtual bool compatible(string s)
+   {
+	   return ( s == idComponent() ) || ( NSSeq<vector<T>, ADS, M>::compatible(s) );
+   }
+
+
    virtual void print() const
    {
       cout << "NSSeqTSPOrOpt{K=" << k << "}" << endl;

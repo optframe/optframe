@@ -127,6 +127,23 @@ public:
 		return *new NSIteratorTSP2Opt<T, ADS, M, MOVE> (r);
 	}
 
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << NSSeq<vector<T>, ADS, M>::idComponent() << ":NSSeqTSP2Opt";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+
+	virtual bool compatible(string s)
+	{
+		return ( s == idComponent() ) || ( NSSeq<vector<T>, ADS, M>::compatible(s) );
+	}
+
 	virtual void print() const
 	{
 		cout << "NSSeqTSP2Opt" << endl;

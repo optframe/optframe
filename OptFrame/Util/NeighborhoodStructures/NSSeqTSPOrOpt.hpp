@@ -74,6 +74,24 @@ public:
 		return OrOpt1_2_3->getIterator(rep);
 	}
 
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << NSSeq<vector<T>, ADS, M>::idComponent() << ":NSSeqTSPOrOpt";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+
+	virtual bool compatible(string s)
+	{
+		return ( s == idComponent() ) || ( NSSeq<vector<T>, ADS, M>::compatible(s) );
+	}
+
+
 	virtual void print() const
 	{
 		cout << "NSSeqVectorOrOpt{1..3}" << endl;
