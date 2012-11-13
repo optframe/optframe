@@ -48,13 +48,15 @@ public:
 
 		string pattern = scanner.next();
 
-		vector<string> components = factory->listComponents(pattern);
+		vector<string> components     = factory->listComponents(pattern);
+		vector<string> componentLists = factory->listComponentLists(pattern);
+
+		components.insert(components.end(), componentLists.begin(), componentLists.end());
 
 		if(!scanner.hasNext())
 		{
 			for(int i=0; i<(int)components.size(); i++)
 				cout << components[i] << endl;
-
 		}
 		else
 		{
@@ -62,10 +64,12 @@ public:
 			stringstream ss;
 
 			ss << new_name << " [";
-			for(int i=0; i<((int)components.size())-1; i++)
-				ss << components[i] << ",";
-			if(components.size()>0)
-				ss << components[components.size()-1];
+			for(unsigned i=0; i<components.size(); i++)
+			{
+				ss << components[i];
+				if(i != components.size()-1)
+					ss << ",";
+			}
 			ss << " ]";
 
 			OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, factory, dictionary, ss.str());

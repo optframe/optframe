@@ -81,6 +81,7 @@ public:
 
 	map<string, vector<OptFrameComponent*> > components;
 	vector<ComponentBuilder<R, ADS, M>* > builders;
+	map<string, vector<vector<OptFrameComponent*> > > componentLists;
 
 	OptFrameComponent* getNextComponent(Scanner& scanner)
 	{
@@ -171,6 +172,42 @@ public:
 		assign(component, number, tmp);
 	}
 
+	int addComponentList(vector<OptFrameComponent*>& cList, string _listId)
+	{
+		// type checking for safety!
+		string noList = typeOfList(_listId);
+		string listId = noList;
+		listId += "[]";
+
+		for(unsigned i=0; i<cList.size(); i++)
+			if((cList[i]==NULL) || (!cList[i]->compatible(noList)))
+			{
+				cout << "Warning: incompatible components '";
+				cout << cList[i]->id() << "' and '" << typeOfList(listId) << "'!" << endl;
+
+				return -1;
+			}
+
+		vector<vector<OptFrameComponent*> >& v = componentLists[listId];
+		v.push_back(cList);
+
+		int idx = componentLists[listId].size() - 1;
+
+		return idx;
+	}
+
+	int addComponentList(vector<OptFrameComponent*>& cList)
+	{
+		if((cList.size()>0) && (cList[0] != NULL))
+		{
+			string listId = cList[0]->id();
+			listId += "[]";
+			return addComponentList(cList, listId);
+		}
+		else
+			return -1;
+	}
+
 	//! \english compareBase is an auxiliar method to compare a pattern to a component id. \endenglish \portuguese compareBase eh um metodo auxiliar para comparar um padrao a um id de componente. \endportuguese
 	/*!
 		 \sa compareBase(string, string)
@@ -184,6 +221,14 @@ public:
 				return false;
 		}
 		return true;
+	}
+
+	string typeOfList(string listId)
+	{
+		Scanner scanner(listId);
+		scanner.useSeparators(" \t\n[]");
+
+		return scanner.next();
 	}
 
 
@@ -224,6 +269,32 @@ public:
 		return listComponents("OptFrame:");
 	}
 
+
+	//! \english listComponents lists all available components that match a given pattern. \endenglish \portuguese listComponents lista todos componentes disponiveis que coincidem com um padrao dado. \endportuguese
+	/*!
+		 \sa listComponents(string)
+	 */
+	vector<string> listComponentLists(string pattern)
+	{
+		vector<string> list;
+
+		map<std::string, vector<vector<OptFrameComponent*> > >::iterator iter;
+
+		for(iter = componentLists.begin(); iter != componentLists.end(); iter++)
+		{
+			vector<vector<OptFrameComponent*> > vl = iter->second;
+
+			for (unsigned int i = 0; i < vl.size(); i++)
+				if (compareBase(typeOfList(pattern), iter->first))
+				{
+					stringstream ss;
+					ss << iter->first << " " << i;
+					list.push_back(ss.str());
+				}
+		}
+
+		return list;
+	}
 
 	//! \english listBuilders lists all component builders that match a given pattern, with their respective parameters. \endenglish \portuguese listBuilders lista todos component builders, com seus respectivos parametros, que coincidem com um padrao dado. \endportuguese
 	/*!

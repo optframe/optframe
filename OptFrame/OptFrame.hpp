@@ -95,6 +95,7 @@
 #include "Modules/BuildModule.hpp"
 #include "Modules/CallModule.hpp"
 #include "Modules/CheckModule.hpp"
+#include "Modules/CreateListOfComponentsModule.hpp"
 #include "Modules/CreateModule.hpp"
 #include "Modules/CreateNumericListModule.hpp"
 #include "Modules/DefineModule.hpp"
@@ -196,6 +197,7 @@ public:
 		modules.clear();
 		loadModule(new BuildModule<R, ADS, M> );
 		loadModule(new CheckModule<R, ADS, M> );
+		loadModule(new CreateListOfComponentsModule<R, ADS, M> );
 		loadModule(new CreateModule<R, ADS, M> );
 		loadModule(new CreateNumericListModule<R, ADS, M> );
 		loadModule(new DefineModule<R, ADS, M> );
