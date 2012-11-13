@@ -176,8 +176,8 @@ public:
 	{
 		// type checking for safety!
 		string noList = typeOfList(_listId);
-		string listId = noList;
-		listId += "[]";
+		string listId = "[]";
+		listId += noList;
 
 		for(unsigned i=0; i<cList.size(); i++)
 			if((cList[i]==NULL) || (!cList[i]->compatible(noList)))
@@ -200,8 +200,9 @@ public:
 	{
 		if((cList.size()>0) && (cList[0] != NULL))
 		{
-			string listId = cList[0]->id();
-			listId += "[]";
+			string listId = "[]";
+			listId += cList[0]->id();
+
 			return addComponentList(cList, listId);
 		}
 		else
@@ -285,7 +286,7 @@ public:
 			vector<vector<OptFrameComponent*> > vl = iter->second;
 
 			for (unsigned int i = 0; i < vl.size(); i++)
-				if (compareBase(typeOfList(pattern), iter->first))
+				if (compareBase(pattern, iter->first))
 				{
 					stringstream ss;
 					ss << iter->first << " " << i;

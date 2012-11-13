@@ -35,6 +35,19 @@ for_each $k li_componentes [
 ]
 echo =======================
 
+echo =======================
+echo Listas disponiveis
+echo =======================
+list_components []OptFrame: lcomponentes
+list_size lcomponentes ltotal
+create_numeric_list 1 ltotal li_lcomponentes
+for_each $k li_lcomponentes [
+  element $k lcomponentes c,
+  echo c,
+  undefine c
+]
+echo =======================
+
 
 echo =======================
 echo listando builders
