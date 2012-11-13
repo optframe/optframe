@@ -90,6 +90,11 @@ public:
                  while(w != initial_w);
 	}
 
+	virtual bool compatible(string s)
+	{
+		return (s == idComponent()) || (LocalSearch<R, ADS, M>::compatible(s));
+	}
+
 	static string idComponent()
 	{
 		stringstream ss;

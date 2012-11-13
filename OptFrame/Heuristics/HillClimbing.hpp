@@ -83,6 +83,11 @@ public:
 		delete e0;
 	}
 
+	virtual bool compatible(string s)
+	{
+		return (s == idComponent()) || (LocalSearch<R, ADS, M>::compatible(s));
+	}
+
 	virtual string id() const
 	{
 		return idComponent();
