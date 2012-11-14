@@ -47,7 +47,7 @@ public:
 
    virtual bool compatible(string s)
    {
-      return s == id();
+      return (s == id()) || (s == idComponent()); // equal to this component or "OptFrame:" base
    }
 
    virtual void print() const

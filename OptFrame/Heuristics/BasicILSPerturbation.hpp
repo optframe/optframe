@@ -26,6 +26,7 @@
 
 #include "../NS.hpp"
 #include "../RandGen.hpp"
+#include "../ComponentBuilder.h"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class BasicILSPerturbation: public OptFrameComponent
@@ -88,8 +89,57 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << OptFrameComponent::idComponent() << "ILS:basic_pert";
+		ss << OptFrameComponent::idComponent() << "ils_basic_pert";
 		return ss.str();
+	}
+};
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class BasicILSPerturbationBuilder : public ComponentBuilder<R, ADS, M>
+{
+public:
+	virtual ~BasicILSPerturbationBuilder()
+	{
+	}
+
+	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	{
+		Evaluator<R, ADS, M>* eval;
+		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		int limit = scanner.nextInt();
+
+		NS<R, ADS, M>* ns;
+		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		return new BasicILSPerturbation<R, ADS, M>(*eval, limit, *ns, hf.getRandGen());
+	}
+
+	virtual vector<pair<string, string> > parameters()
+	{
+		vector<pair<string, string> > params;
+		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluation function"));
+		params.push_back(make_pair("int", "max number of not appliable moves"));
+		params.push_back(make_pair(NS<R, ADS, M>::idComponent(), "neighborhood structure"));
+
+		return params;
+	}
+
+	virtual bool canBuild(string component)
+	{
+		return component == BasicILSPerturbation<R, ADS, M>::idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << ComponentBuilder<R, ADS, M>::idComponent() << "ils_basic_pert";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
 	}
 };
 

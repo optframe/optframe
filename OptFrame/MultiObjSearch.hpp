@@ -80,6 +80,11 @@ public:
 
 	virtual MultiObjSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "") = 0;
 
+	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	{
+		return build(scanner, hf, family);
+	}
+
 	virtual vector<pair<string, string> > parameters() = 0;
 
 	virtual bool canBuild(string) = 0;

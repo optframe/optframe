@@ -85,6 +85,10 @@
 #include "Heuristics/RVND.hpp"
 #include "Heuristics/HillClimbing.hpp"
 
+#include "Heuristics/BasicIteratedLocalSearch.hpp"
+#include "Heuristics/BasicILSPerturbation.hpp"
+
+
 // ==================================
 
 #include "OptFrameModule.hpp"
@@ -245,6 +249,7 @@ public:
 
 	void loadComponentBuilders()
 	{
+		// LocalSearch
 		factory.builders.push_back(new BestImprovementBuilder<R, ADS, M>);
 		factory.builders.push_back(new FirstImprovementBuilder<R, ADS, M>);
 		factory.builders.push_back(new RandomDescentMethodBuilder<R, ADS, M>);
@@ -252,6 +257,11 @@ public:
 		factory.builders.push_back(new VariableNeighborhoodDescentBuilder<R, ADS, M>);
 		factory.builders.push_back(new RVNDBuilder<R, ADS, M>);
 		factory.builders.push_back(new HillClimbingBuilder<R, ADS, M>);
+
+		// SingleObjSearch + Parameters
+		factory.builders.push_back(new BasicIteratedLocalSearchBuilder<R, ADS, M>);
+		factory.builders.push_back(new BasicILSPerturbationBuilder<R, ADS, M>);
+
 	}
 
 	//! \english OptFrame Command Line Interface \endenglish \portuguese Interface de Linha de Comando do OptFrame \endportuguese

@@ -118,10 +118,74 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << IteratedLocalSearch<BasicHistory, R, ADS, M>::idComponent() << "basic_ils";
+		ss << IteratedLocalSearch<BasicHistory, R, ADS, M>::idComponent() << "BasicILS";
 		return ss.str();
 
 	}
 };
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class BasicIteratedLocalSearchBuilder : public SingleObjSearchBuilder<R, ADS, M>
+{
+public:
+	virtual ~BasicIteratedLocalSearchBuilder()
+	{
+	}
+
+	virtual SingleObjSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	{
+		Evaluator<R, ADS, M>* eval;
+		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		Constructive<R, ADS>* constructive;
+		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		string rest = scanner.rest();
+
+		pair<LocalSearch<R, ADS, M>*, std::string> method;
+		method = hf.createLocalSearch(rest);
+
+		LocalSearch<R, ADS, M>* h = method.first;
+
+		scanner = Scanner(method.second);
+
+		BasicILSPerturbation<R, ADS, M>* pert;
+		hf.assign(pert, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		int iterMax = scanner.nextInt();
+
+		return new BasicIteratedLocalSearch<R, ADS, M>(*eval, *constructive, *h, *pert, iterMax);
+	}
+
+	virtual vector<pair<string, string> > parameters()
+	{
+		vector<pair<string, string> > params;
+		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Constructive<R, ADS>::idComponent(), "constructive heuristic"));
+		params.push_back(make_pair(LocalSearch<R, ADS, M>::idComponent(), "local search"));
+		params.push_back(make_pair(BasicILSPerturbation<R, ADS, M>::idComponent(), "ils perturbation"));
+		params.push_back(make_pair("int", "max number of iterations without improvement"));
+
+		return params;
+	}
+
+	virtual bool canBuild(string component)
+	{
+		return component == BasicIteratedLocalSearch<R, ADS, M>::idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << SingleObjSearchBuilder<R, ADS, M>::idComponent() << "BasicILS";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+};
+
 
 #endif /*OPTFRAME_BASICILS_HPP_*/
