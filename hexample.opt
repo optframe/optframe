@@ -110,3 +110,7 @@ for_each $k li_builders [
 ]
 echo LISTA DE BUILDERS: builder_names
 echo =======================
+
+exit
+
+echo Alem do fim

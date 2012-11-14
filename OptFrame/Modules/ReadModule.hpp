@@ -132,7 +132,12 @@ public:
 				}
 
 			if(notfound)
-				cout << "Warning: command '"<<command<<"' not found!"<<endl;
+			{
+				if(command=="exit")
+					break;
+				else
+					cout << "Warning: command '"<<command<<"' not found!"<<endl;
+			}
 		}
 
 		delete scanner;
