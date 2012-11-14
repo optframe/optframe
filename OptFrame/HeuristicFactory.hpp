@@ -128,6 +128,30 @@ public:
 		component = NULL;
 	}
 
+	template< class T > void assignList(vector<T*>& cList, unsigned number, string _listId)
+	{
+		// type checking for safety!
+		string noList = typeOfList(_listId);
+		string listId = "[]";
+		listId += noList;
+
+		if(!compareBase(T::idComponent(), noList))
+		{
+			cout << "HeuristicFactory: incompatible list assign '[" << T::idComponent() << "]' <- '[" << noList << "]'" << endl;
+			return;
+		}
+
+		if(componentLists.count(listId) > 0)
+		{
+			vector<vector<OptFrameComponent*> >& vv = componentLists[listId];
+			if(number < vv.size())
+				for(unsigned i=0; i<vv[number].size(); i++)
+					cList.push_back((T*)vv[number][i]);
+		}
+		else
+			cout << "'" << listId << " " << number << "' not found!" << endl;
+	}
+
 	int addComponent(OptFrameComponent& component, string id)
 	{
 		if(!component.compatible(id))

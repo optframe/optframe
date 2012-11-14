@@ -122,7 +122,8 @@ public:
 		Evaluator<R, ADS, M>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<LocalSearch<R, ADS, M>*> hlist = hf.read_local_search_list(scanner);
+		vector<LocalSearch<R, ADS, M>*> hlist;
+		hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new VariableNeighborhoodDescent<R, ADS, M>(*eval, hlist);
 	}
