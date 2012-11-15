@@ -29,6 +29,8 @@
 #include "IteratedLocalSearch.hpp"
 #include "BasicILSPerturbation.hpp"
 
+#include "ILS.h"
+
 typedef int BasicHistory;
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
@@ -125,7 +127,7 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class BasicIteratedLocalSearchBuilder : public SingleObjSearchBuilder<R, ADS, M>
+class BasicIteratedLocalSearchBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, M>
 {
 public:
 	virtual ~BasicIteratedLocalSearchBuilder()
@@ -177,7 +179,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS, M>::idComponent() << "BasicILS";
+		ss << SingleObjSearchBuilder<R, ADS, M>::idComponent() << ILS::family << "BasicILS";
 		return ss.str();
 	}
 

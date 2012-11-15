@@ -28,8 +28,10 @@
 #include "../RandGen.hpp"
 #include "../ComponentBuilder.h"
 
+#include "ILS.h"
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class BasicILSPerturbation: public OptFrameComponent
+class BasicILSPerturbation: public ILS, public OptFrameComponent
 {
 private:
 	vector<NS<R, ADS, M>*> ns;
@@ -89,7 +91,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << OptFrameComponent::idComponent() << "ils_basic_pert";
+		ss << OptFrameComponent::idComponent() << ILS::family << "basic_pert";
 		return ss.str();
 	}
 };
@@ -133,7 +135,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, M>::idComponent() << "ils_basic_pert";
+		ss << ComponentBuilder<R, ADS, M>::idComponent() << ILS::family << "basic_pert";
 		return ss.str();
 	}
 

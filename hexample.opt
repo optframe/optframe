@@ -114,10 +114,10 @@ echo =======================
 echo
 
 echo ===========================================
-echo listando builder de OptFrame:ils_basic_pert
+echo listando builder de OptFrame:ILS:
 echo ===========================================
 
-list_builder_of_component OptFrame:ils_basic_pert
+list_builder_of_component OptFrame:ILS:
 
 echo ===========================================
 

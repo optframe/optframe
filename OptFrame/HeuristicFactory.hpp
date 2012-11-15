@@ -233,19 +233,66 @@ public:
 			return -1;
 	}
 
-	//! \english compareBase is an auxiliar method to compare a pattern to a component id. \endenglish \portuguese compareBase eh um metodo auxiliar para comparar um padrao a um id de componente. \endportuguese
+	//! \english compareBase is an auxiliar method to compare a pattern to a component id. Check if 'component' inherits from 'base'. \endenglish \portuguese compareBase eh um metodo auxiliar para comparar um padrao a um id de componente. Testa se 'component' herda de 'base'. \endportuguese
 	/*!
 		 \sa compareBase(string, string)
 	 */
 
-	bool compareBase(string base, string component)
+	// Check if 'base' inherits from 'component'
+	bool compareBase(string _base, string _component)
 	{
-		for(unsigned i=0; i<base.length(); i++)
+		if((_base.length()<3) || (_component.length()<3))
 		{
-			if(base.at(i) != component.at(i))
-				return false;
+			cout << "HeuristicFactory::compareBase warning: comparing less than 3 characters! with base='" << _base << "' component='" << _component << "'" << endl;
+			return false;
 		}
-		return true;
+
+		bool baseIsList      = (_base.at(_base.length()-2) == '['          ) && (_base.at(_base.length()-1) == ']'          );
+		bool componentIsList = (_component.at(_component.length()-2) == '[') && (_component.at(_component.length()-1) == ']');
+
+		if(baseIsList != componentIsList)
+			return false;
+
+		// remove list (if exists)
+		string base      = typeOfList(_base);
+		string component = typeOfList(_component);
+
+		bool sameBase = true;
+
+		if(base.length() <= component.length())
+		{
+			for(unsigned i=0; i<base.length(); i++)
+				if(base.at(i) != component.at(i))
+					sameBase = false;
+		}
+		else
+			sameBase = false;
+
+		if(sameBase)
+			return true;
+
+		// ------------------
+		// check last family
+		// ------------------
+
+		Scanner scanner(base);
+		scanner.useSeparators(":");
+
+		string family = scanner.next();
+		while(scanner.hasNext())
+			family = scanner.next();
+
+		Scanner scanComponent(component);
+		scanComponent.useSeparators(":");
+		string part;
+		while(scanComponent.hasNext())
+		{
+			part = scanComponent.next();
+			if(part == family)
+				sameBase = true;
+		}
+
+		return sameBase;
 	}
 
 	string typeOfList(string listId)

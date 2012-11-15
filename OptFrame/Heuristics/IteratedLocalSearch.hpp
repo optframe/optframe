@@ -28,8 +28,10 @@
 #include "../SingleObjSearch.hpp"
 #include "../Evaluator.hpp"
 
+#include "ILS.h"
+
 template<class H, class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class IteratedLocalSearch: public SingleObjSearch<R, ADS, M>
+class IteratedLocalSearch: public ILS, public SingleObjSearch<R, ADS, M>
 {
 protected:
 	Evaluator<R, ADS, M>& evaluator;
@@ -117,7 +119,8 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, M>::idComponent() << "ILS:";
+		ss << SingleObjSearch<R, ADS, M>::idComponent() << ILS::family;
+		//ss << SingleObjSearch<R, ADS, M>::idComponent() << ILS::family << "IteratedLocalSearch:";
 		return ss.str();
 	}
 
