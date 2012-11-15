@@ -136,7 +136,7 @@ public:
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluation function"));
 		stringstream ss;
-		ss << "[]" << LocalSearch<R, ADS, M>::idComponent();
+		ss << LocalSearch<R, ADS, M>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of local searches"));
 
 		return params;

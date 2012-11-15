@@ -132,8 +132,8 @@ public:
 	{
 		// type checking for safety!
 		string noList = typeOfList(_listId);
-		string listId = "[]";
-		listId += noList;
+		string listId = noList;
+		listId += "[]";
 
 		if(!compareBase(T::idComponent(), noList))
 		{
@@ -200,8 +200,8 @@ public:
 	{
 		// type checking for safety!
 		string noList = typeOfList(_listId);
-		string listId = "[]";
-		listId += noList;
+		string listId = noList;
+		listId += "[]";
 
 		for(unsigned i=0; i<cList.size(); i++)
 			if((cList[i]==NULL) || (!cList[i]->compatible(noList)))
@@ -224,8 +224,8 @@ public:
 	{
 		if((cList.size()>0) && (cList[0] != NULL))
 		{
-			string listId = "[]";
-			listId += cList[0]->id();
+			string listId = cList[0]->id();
+			listId += "[]";
 
 			return addComponentList(cList, listId);
 		}

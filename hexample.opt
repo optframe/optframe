@@ -38,7 +38,7 @@ echo =======================
 echo =======================
 echo Listas disponiveis
 echo =======================
-list_components []OptFrame: lcomponentes
+list_components OptFrame:[] lcomponentes
 list_size lcomponentes ltotal
 create_numeric_list 1 ltotal li_lcomponentes
 for_each $k li_lcomponentes [
