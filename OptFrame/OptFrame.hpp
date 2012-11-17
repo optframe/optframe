@@ -77,6 +77,7 @@
 
 #include "HeuristicFactory.hpp"
 
+// local search
 #include "Heuristics/BestImprovement.hpp"
 #include "Heuristics/FirstImprovement.hpp"
 #include "Heuristics/RandomDescentMethod.hpp"
@@ -85,6 +86,9 @@
 #include "Heuristics/RVND.hpp"
 #include "Heuristics/HillClimbing.hpp"
 
+
+// single obj search
+#include "Heuristics/SimpleLocalSearch.hpp"
 #include "Heuristics/BasicIteratedLocalSearch.hpp"
 #include "Heuristics/BasicILSPerturbation.hpp"
 
@@ -261,6 +265,7 @@ public:
 		factory.builders.push_back(new HillClimbingBuilder<R, ADS, M>);
 
 		// SingleObjSearch + Parameters
+		factory.builders.push_back(new SimpleLocalSearchBuilder<R, ADS, M>);
 		factory.builders.push_back(new BasicIteratedLocalSearchBuilder<R, ADS, M>);
 		factory.builders.push_back(new BasicILSPerturbationBuilder<R, ADS, M>);
 

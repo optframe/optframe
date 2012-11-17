@@ -20,6 +20,8 @@ for_each $i lista [
 
 build OptFrame:ComponentBuilder:LocalSearch:BI Evaluator 0 NSEnum 0 meu_bi
 
+build OptFrame:ComponentBuilder:SingleObjSearch:SimpleLocalSearch Evaluator 0 Constructive 0 meu_bi busca_bi
+
 create_list_of_components [ meu_bi ] OptFrame:LocalSearch: buscas_locais
 
 echo =======================
