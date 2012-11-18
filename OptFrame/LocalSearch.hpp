@@ -79,7 +79,7 @@ public:
 
    virtual bool compatible(string s)
    {
-	   return ( s == idComponent() );
+	   return ( s == idComponent() ) || ( OptFrameComponent::compatible(s) );
    }
 
    static string idComponent()

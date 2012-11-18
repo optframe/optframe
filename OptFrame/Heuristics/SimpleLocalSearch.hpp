@@ -67,6 +67,11 @@ public:
 		return &p;
 	}
 
+	virtual bool compatible(string s)
+	{
+		return ( s == idComponent() ) || ( SingleObjSearch<R, ADS, M>::compatible(s) );
+	}
+
 	static string idComponent()
 	{
 		stringstream ss;

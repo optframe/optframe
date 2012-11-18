@@ -186,6 +186,11 @@ public:
 		return betterThan(a, b) || (abs(a - b) < OPTFRAME_EPSILON);
 	}
 
+    virtual bool compatible(string s)
+    {
+    	return ( s == idComponent() ) || (OptFrameComponent::compatible(s));
+    }
+
 	static string idComponent()
 	{
 		stringstream ss;

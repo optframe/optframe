@@ -33,6 +33,11 @@ public:
 
 	virtual Solution<R, ADS>& generateSolution() = 0;
 
+    virtual bool compatible(string s)
+    {
+    	return ( s == idComponent() ) || (OptFrameComponent::compatible(s));
+    }
+
 	static string idComponent()
 	{
 		stringstream ss;

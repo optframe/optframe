@@ -91,7 +91,7 @@ public:
 
    void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
    {
-      cout << "build: " << input << endl;
+      //cout << "build module: " << input << endl;
       Scanner scanner1(input);
 
       if (!scanner1.hasNext())
@@ -151,6 +151,12 @@ public:
     	  return;
       }
 
+      if(new_id < 0)
+      {
+    	  cout << "build module: couldn't build component!" << endl;
+    	  return;
+      }
+
       stringstream str;
       str << base << " " << new_id;
       string s_new_id = str.str();
@@ -160,7 +166,7 @@ public:
       if (scanner.hasNext())
       {
          string new_name = scanner.next();
-         OptFrameModule<R, ADS, M>::run_module("define", all_modules, factory, dictionary, new_name + " " + s_new_id);
+         OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, factory, dictionary, new_name + " " + s_new_id);
       }
 
    }

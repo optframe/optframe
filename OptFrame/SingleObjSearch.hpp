@@ -33,8 +33,7 @@ using namespace std;
 #include "ComponentBuilder.h"
 
 template< class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY >
-class SingleObjSearch :
-      public OptFrameComponent
+class SingleObjSearch : public OptFrameComponent
 {
    typedef vector<Evaluation<M>*> FitnessValues;
    typedef const vector<const Evaluation<M>*> ConstFitnessValues;
@@ -55,6 +54,11 @@ public:
    virtual string log()
    {
       return "Empty heuristic log.";
+   }
+
+   virtual bool compatible(string s)
+   {
+	   return ( s == idComponent() ) || ( OptFrameComponent::compatible(s) );
    }
 
    static string idComponent()

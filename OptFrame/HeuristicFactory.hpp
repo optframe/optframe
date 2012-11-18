@@ -156,7 +156,7 @@ public:
 	{
 		if(!component.compatible(id))
 		{
-			cout << "Warning: incompatible components '";
+			cout << "HeuristicFactory addComponent: incompatible components '";
 			cout << component.id() << "' and '" << id << "'!" << endl;
 
 			return -1;
@@ -760,6 +760,24 @@ public:
 
 		if (h == EmptySingleObjSearch<R, ADS, M>::idComponent())
 			return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+
+		for(unsigned i=0; i<builders.size(); i++)
+		{
+			// build local search directly by builder name
+			if(builders[i]->id()==h)
+			{
+				SingleObjSearch<R, ADS, M>* sios = ((SingleObjSearchBuilder<R,ADS,M>*)(builders[i]))->build(scanner, *this);
+				return make_pair(sios, scanner.rest());
+			}
+
+			// locate builder by local search name
+			if(builders[i]->canBuild(h))
+			{
+				SingleObjSearch<R, ADS, M>* sios = ((SingleObjSearchBuilder<R,ADS,M>*)(builders[i]))->build(scanner, *this);
+				return make_pair(sios, scanner.rest());
+			}
+		}
+
 
 
 		if (h == GRASP<R, ADS, M>::idComponent())

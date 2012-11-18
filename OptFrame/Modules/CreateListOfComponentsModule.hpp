@@ -71,9 +71,9 @@ public:
 
 		stringstream ss;
 
-		ss << name << " []" << factory->typeOfList(type) << " " << idx;
+		ss << name << " " << factory->typeOfList(type) << "[] " << idx;
 
-		cout << "'[]" << factory->typeOfList(type) << " " << idx << "' added." << endl;
+		cout << "'" << factory->typeOfList(type) << "[] " << idx << "' added." << endl;
 
 		OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, factory, dictionary, ss.str());
 	}
