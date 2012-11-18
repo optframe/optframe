@@ -18,34 +18,34 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef PRINTMODULE_HPP_
-#define PRINTMODULE_HPP_
+#ifndef EXEC_CONSTRUCTIVE_MODULE_HPP_
+#define EXEC_CONSTRUCTIVE_MODULE_HPP_
 
 #include "../OptFrameModule.hpp"
+#include "../Constructive.h"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class PrintModule: public OptFrameModule<R, ADS, M>
+class ExecConstructiveModule: public OptFrameModule<R, ADS, M>
 {
 public:
 
-	virtual ~PrintModule()
+	virtual ~ExecConstructiveModule()
 	{
 	}
 
 	string id()
 	{
-		return "print";
+		return "exec_constructive";
 	}
+
 	string usage()
 	{
-		string u = "print [OptFrame:Solution id | OptFrame:Population id]";
-
-		return u;
+		return "exec OptFrame:Constructive [output_solution_name]";
 	}
 
 	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
-		cout << "print: " << input << endl;
+		cout << "exec_constructive: " << input << endl;
 		Scanner scanner(input);
 
 		if (!scanner.hasNext())
@@ -54,33 +54,30 @@ public:
 			return;
 		}
 
-		string sol = scanner.next();
+		Constructive<R, ADS>* cons;
+		factory->assign(cons, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		if ((sol != Solution<R,ADS>::idComponent()) && (sol != Population<R,ADS>::idComponent()))
+		Solution<R, ADS>& sFinal = cons->generateSolution();
+
+
+		string s_new_id = "";
+
+		int new_id = factory->addComponent(sFinal);
+
+		stringstream str;
+		str << Solution<R, ADS>::idComponent() << " " << new_id;
+		s_new_id = str.str();
+
+		cout << "'" << s_new_id << "' added." << endl;
+
+		if (scanner.hasNext())
 		{
-			cout << "First parameter must be a '" << Solution<R,ADS>::idComponent() << "'" << endl;
-			cout << "Usage: " << usage() << endl;
-			return;
+			string new_name = scanner.next();
+			OptFrameModule<R, ADS, M>::run_module("define", all_modules, factory, dictionary, new_name + " " + s_new_id);
 		}
 
-		if (sol == Population<R,ADS>::idComponent())
-		{
-			string id = scanner.next();
-			Scanner scan_pop(sol + " " + id);
-			Population<R, ADS>* p = NULL;
-         factory->readComponent(p, scan_pop);
-			p->print();
-			return;
-		}
-
-		string id = scanner.next();
-
-		Scanner scan_sol(sol + " " + id);
-		Solution<R, ADS>* s = NULL;
-      factory->readComponent(s, scan_sol);
-		s->print();
 	}
 
 };
 
-#endif /* PRINTMODULE_HPP_ */
+#endif /* EXEC_CONSTRUCTIVE_MODULE_HPP_ */

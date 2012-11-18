@@ -103,6 +103,7 @@ public:
       string type = scanner1.next();
       stringstream ss;
       ss << type << " " << scanner1.rest();
+      //cout << "rest: " << ss.str() << endl;
 
       Scanner scanner(ss.str());
 
@@ -145,9 +146,22 @@ public:
         	  new_id = factory->addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
           }
       }
+      else if(factory->getBuilder(type))
+      {
+    	  scanner.next(); // drop builder name!
+
+    	  ComponentBuilder<R, ADS, M>* builder = factory->getBuilder(type);
+    	  OptFrameComponent* comp = builder->buildComponent(scanner, *factory);
+
+    	  if(comp)
+    	  {
+    		  base   = comp->id();
+    		  new_id = factory->addComponent(*comp, base);
+    	  }
+      }
       else
       {
-    	  cout << "build_module: error '" << type << "' is not a builder!" << endl;
+    	  cout << "build_module: error '" << type << "' is not a known builder!" << endl;
     	  return;
       }
 

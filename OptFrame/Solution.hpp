@@ -79,7 +79,7 @@ public:
 
    static string idComponent()
    {
-      return "OptFrame:loadsol";
+      return "OptFrame:Solution";
    }
 
    virtual string id() const

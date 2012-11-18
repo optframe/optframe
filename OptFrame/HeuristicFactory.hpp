@@ -83,6 +83,14 @@ public:
 	vector<ComponentBuilder<R, ADS, M>* > builders;
 	map<string, vector<vector<OptFrameComponent*> > > componentLists;
 
+	ComponentBuilder<R, ADS, M>* getBuilder(string id)
+	{
+		for(unsigned i=0; i<builders.size(); i++)
+			if(builders[i]->id() == id)
+				return builders[i];
+		return NULL;
+	}
+
 	OptFrameComponent* getNextComponent(Scanner& scanner)
 	{
 		std::string id = scanner.next();
@@ -687,7 +695,7 @@ public:
 
 		// No heuristic!
 		if (!scanner.hasNext())
-			return make_pair(new Empty<R, ADS, M> , "");
+			return make_pair(new EmptyLocalSearch<R, ADS, M> , "");
 
 		string h = scanner.next();
 
@@ -700,13 +708,13 @@ public:
 			assign(mtd, id, LocalSearch<R, ADS, M>::idComponent());
 
 			if(!mtd)
-				return make_pair(new Empty<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptyLocalSearch<R, ADS, M> , scanner.rest());
 
 			return make_pair(mtd, scanner.rest());
 		}
 
-		if (h == Empty<R, ADS, M>::idComponent())
-			return make_pair(new Empty<R, ADS, M> , scanner.rest());
+		if (h == EmptyLocalSearch<R, ADS, M>::idComponent())
+			return make_pair(new EmptyLocalSearch<R, ADS, M> , scanner.rest());
 
 		for(unsigned i=0; i<builders.size(); i++)
 		{
@@ -727,7 +735,7 @@ public:
 
 		cout << "Warning: no LocalSearch '" << h << "' found! ignoring..." << endl;
 
-		return make_pair(new Empty<R, ADS, M> , scanner.rest());
+		return make_pair(new EmptyLocalSearch<R, ADS, M> , scanner.rest());
 	}
 
 

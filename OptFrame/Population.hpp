@@ -145,7 +145,7 @@ public:
 
    static string idComponent()
    {
-      return "OptFrame:loadpop";
+      return "OptFrame:Population";
    }
 
    virtual string id() const

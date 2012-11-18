@@ -77,7 +77,12 @@
 
 #include "HeuristicFactory.hpp"
 
+// base components
+#include "CloneConstructive.hpp"
+
+
 // local search
+#include "Heuristics/Empty.hpp"
 #include "Heuristics/BestImprovement.hpp"
 #include "Heuristics/FirstImprovement.hpp"
 #include "Heuristics/RandomDescentMethod.hpp"
@@ -115,6 +120,7 @@
 #include "Modules/EvaluateModule.hpp"
 #include "Modules/EvaluateToFileModule.hpp"
 #include "Modules/ExecModule.hpp"
+#include "Modules/ExecConstructiveModule.hpp"
 #include "Modules/ExportModule.hpp"
 #include "Modules/ExportLogModule.hpp"
 #include "Modules/ForEachModule.hpp"
@@ -218,6 +224,7 @@ public:
 		loadModule(new EvaluateModule<R, ADS, M> );
 		loadModule(new EvaluateToFileModule<R, ADS, M> );
 		loadModule(new ExecModule<R, ADS, M> );
+		loadModule(new ExecConstructiveModule<R, ADS, M> );
 		loadModule(new ExportModule<R, ADS, M> );
 		loadModule(new ExportLogModule<R, ADS, M> );
 		loadModule(new ForEachModule<R, ADS, M> );
@@ -255,7 +262,11 @@ public:
 
 	void loadComponentBuilders()
 	{
+		// Base
+		factory.builders.push_back(new CloneConstructiveBuilder<R, ADS, M>);
+
 		// LocalSearch
+		factory.builders.push_back(new EmptyLocalSearchBuilder<R, ADS, M>);
 		factory.builders.push_back(new BestImprovementBuilder<R, ADS, M>);
 		factory.builders.push_back(new FirstImprovementBuilder<R, ADS, M>);
 		factory.builders.push_back(new RandomDescentMethodBuilder<R, ADS, M>);

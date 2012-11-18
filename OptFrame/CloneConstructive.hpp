@@ -18,41 +18,42 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_EMPTY_HPP_
-#define OPTFRAME_EMPTY_HPP_
+#ifndef OPTFRAME_CLONE_CONSTRUCTIVE_HPP_
+#define OPTFRAME_CLONE_CONSTRUCTIVE_HPP_
 
-#include "../LocalSearch.hpp"
+#include "Constructive.h"
+#include "Solution.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class EmptyLocalSearch : public LocalSearch<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class CloneConstructive : public Constructive<R, ADS>
 {
+	Solution<R, ADS>& base;
 public:
 
-	EmptyLocalSearch()
+	CloneConstructive(Solution<R, ADS>& _base)
+	: base(_base.clone())
 	{
 	}
 
-	virtual ~EmptyLocalSearch()
+	virtual ~CloneConstructive()
 	{
+		delete &base;
 	}
 
-	virtual void exec(Solution<R, ADS>&, double timelimit, double target_f){};
-	virtual void exec(Solution<R, ADS>&, Evaluation<M>&, double timelimit, double target_f){};
-
-	string log()
+	virtual Solution<R, ADS>& generateSolution()
 	{
-		return "Heuristic Empty: no log.";
+		return base.clone();
 	}
 
-	virtual bool compatible(string s)
-	{
-		return (s == idComponent()) || (LocalSearch<R, ADS, M>::compatible(s));
-	}
+    virtual bool compatible(string s)
+    {
+    	return ( s == idComponent() ) || (Constructive<R, ADS>::compatible(s));
+    }
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, M>::idComponent() << "Empty";
+		ss << Constructive<R, ADS>::idComponent() << ":CloneConstructive";
 		return ss.str();
 	}
 
@@ -64,34 +65,38 @@ public:
 
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class EmptyLocalSearchBuilder : public LocalSearchBuilder<R, ADS, M>
+class CloneConstructiveBuilder : public ComponentBuilder<R, ADS, M>
 {
 public:
-	virtual ~EmptyLocalSearchBuilder()
+	virtual ~CloneConstructiveBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
 	{
-		return new EmptyLocalSearch<R, ADS, M>;
+		Solution<R, ADS>* s;
+		hf.assign(s, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		return new CloneConstructive<R, ADS>(*s);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
+		params.push_back(make_pair(Solution<R, ADS>::idComponent(), "solution"));
 
 		return params;
 	}
 
 	virtual bool canBuild(string component)
 	{
-		return component == EmptyLocalSearch<R, ADS, M>::idComponent();
+		return component == CloneConstructive<R, ADS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, M>::idComponent() << "Empty";
+		ss << ComponentBuilder<R, ADS, M>::idComponent() << "CloneConstructive";
 		return ss.str();
 	}
 
@@ -101,5 +106,4 @@ public:
 	}
 };
 
-
-#endif /*OPTFRAME_EMPTY_HPP_*/
+#endif /*OPTFRAME_CLONE_CONSTRUCTIVE_HPP_*/

@@ -2,25 +2,39 @@
 read definitions.opt
 
 randgen system_seed 0
-
-define lista [ 1 ,
-2,
-3,4,5
-,6]
-
-list_size lista n
-
-echo Lista com tamanho n
-
-for_each $i lista [
-  random_number_interval 1 $i valor,
-  echo Numero aleatorio entre 1 ate $i: valor,
-  undefine valor
-]
+echo
 
 build OptFrame:ComponentBuilder:LocalSearch:BI Evaluator 0 NSEnum 0 meu_bi
+echo
 
-build OptFrame:ComponentBuilder:SingleObjSearch:SimpleLocalSearch Evaluator 0 Constructive 0 meu_bi busca_bi
+
+exec_constructive Constructive 0 solucao_inicial
+print solucao_inicial
+evaluate Evaluator 0 solucao_inicial
+echo
+
+build OptFrame:ComponentBuilder:CloneConstructive solucao_inicial c_sol_inicial
+echo
+
+build OptFrame:ComponentBuilder:SingleObjSearch:SimpleLocalSearch Evaluator 0 c_sol_inicial OptFrame:ComponentBuilder:LocalSearch:Empty constr2
+exec 0 60 constr2 sol2
+print sol2
+evaluate Evaluator 0 sol2
+undefine constr2
+undefine sol2
+echo
+
+
+build OptFrame:ComponentBuilder:SingleObjSearch:SimpleLocalSearch Evaluator 0 c_sol_inicial meu_bi busca_bi
+
+exec 0 60 busca_bi solucao_final
+
+print solucao_final
+
+evaluate Evaluator 0 solucao_final
+
+exit
+
 
 create_list_of_components [ meu_bi ] OptFrame:LocalSearch: buscas_locais
 
