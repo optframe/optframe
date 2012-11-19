@@ -107,8 +107,11 @@
 #include "Util/RandGenMersenneTwister.hpp"
 
 #include "Functions/AppendFunction.hpp"
+#include "Functions/AvgFunction.hpp"
 #include "Functions/ElementFunction.hpp"
 #include "Functions/LengthFunction.hpp"
+#include "Functions/MaxFunction.hpp"
+#include "Functions/MinFunction.hpp"
 #include "Functions/TimeFunction.hpp"
 
 // arithmetic
@@ -265,8 +268,11 @@ public:
 
 		functions.clear();
 		loadFunction(new AppendFunction);
+		loadFunction(new AvgFunction);
 		loadFunction(new ElementFunction);
 		loadFunction(new LengthFunction);
+		loadFunction(new MaxFunction);
+		loadFunction(new MinFunction);
 		loadFunction(new TimeFunction);
 
 		//arithmetic
