@@ -106,6 +106,8 @@
 #include "RandGen.hpp"
 #include "Util/RandGenMersenneTwister.hpp"
 
+#include "Functions/AppendFunction.hpp"
+#include "Functions/ElementFunction.hpp"
 #include "Functions/LengthFunction.hpp"
 
 #include "Modules/BuildModule.hpp"
@@ -118,7 +120,6 @@
 #include "Modules/DictionaryModule.hpp"
 #include "Modules/DropAllModule.hpp"
 #include "Modules/EchoModule.hpp"
-#include "Modules/ElementModule.hpp"
 #include "Modules/EmpiricalModule.hpp"
 #include "Modules/EvaluateModule.hpp"
 #include "Modules/EvaluateToFileModule.hpp"
@@ -128,13 +129,11 @@
 #include "Modules/ExportLogModule.hpp"
 #include "Modules/ForEachModule.hpp"
 #include "Modules/HelpModule.hpp"
-#include "Modules/ListAppendModule.hpp"
 #include "Modules/ListBuilderOfComponentModule.hpp"
 #include "Modules/ListBuildersModule.hpp"
 #include "Modules/ListComponentsModule.hpp"
 #include "Modules/ListFromFileModule.hpp"
 #include "Modules/ListFromPopulationModule.hpp"
-#include "Modules/ListSizeModule.hpp"
 #include "Modules/PauseModule.hpp"
 #include "Modules/PrintModule.hpp"
 #include "Modules/ProblemModule.hpp"
@@ -228,7 +227,6 @@ public:
 		loadModule(new DictionaryModule<R, ADS, M> );
 		loadModule(new DropAllModule<R, ADS, M> );
 		loadModule(new EchoModule<R, ADS, M> );
-		loadModule(new ElementModule<R, ADS, M> );
 		loadModule(new EmpiricalModule<R, ADS, M> );
 		loadModule(new EvaluateModule<R, ADS, M> );
 		loadModule(new EvaluateToFileModule<R, ADS, M> );
@@ -238,13 +236,11 @@ public:
 		loadModule(new ExportLogModule<R, ADS, M> );
 		loadModule(new ForEachModule<R, ADS, M> );
 		loadModule(new HelpModule<R, ADS, M> );
-		loadModule(new ListAppendModule<R, ADS, M> );
 		loadModule(new ListBuilderOfComponentModule<R, ADS, M> );
 		loadModule(new ListBuildersModule<R, ADS, M> );
 		loadModule(new ListComponentsModule<R, ADS, M> );
 		loadModule(new ListFromFileModule<R, ADS, M> );
 		loadModule(new ListFromPopulationModule<R, ADS, M> );
-		loadModule(new ListSizeModule<R, ADS, M> );
 		loadModule(new PauseModule<R, ADS, M> );
 		loadModule(new PrintModule<R, ADS, M> );
 		loadModule(new RandGenModule<R, ADS, M> );
@@ -261,6 +257,8 @@ public:
 #endif
 
 		functions.clear();
+		loadFunction(new AppendFunction);
+		loadFunction(new ElementFunction);
 		loadFunction(new LengthFunction);
 	}
 

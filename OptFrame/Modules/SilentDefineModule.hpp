@@ -95,36 +95,14 @@ public:
 		string name      = scanner.next();
 		string discarded = scanner.getDiscarded();
 
-		string input3 = "";
-
 		// now proceed as usual
 
-		while(scanner.hasNext())
-		{
-			string new_word = scanner.next();
-			string unused = scanner.getDiscarded();
-
-			if(dictionary->count(new_word) == 0) // Not found in dictionary!
-			{
-				input3.append(unused);
-				input3.append(new_word);
-			}
-			else
-			{
-				string found = dictionary->find(new_word)->second;
-
-				input3.append(unused);
-				input3.append(found);
-				input3.append(scanner.rest());
-
-				scanner = Scanner(input3);
-				input3 = "";
-			}
-		}
+		string input3 = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, scanner.rest());
 
 		string input4;
 		input4.append(discarded);
 		input4.append(name);
+		input4.append(" ");
 		input4.append(input3);
 
 		string input5 = Scanner::trim(input4);

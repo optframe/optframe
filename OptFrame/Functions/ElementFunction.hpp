@@ -18,17 +18,28 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef ELEMENTMODULE_HPP_
-#define ELEMENTMODULE_HPP_
+#ifndef OPTFRAME_ELEMENT_FUNCTION_HPP_
+#define OPTFRAME_ELEMENT_FUNCTION_HPP_
 
-#include "../OptFrameModule.hpp"
+#include <iostream>
+#include <ostream>
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ElementModule: public OptFrameModule<R, ADS, M>
+#include <vector>
+#include <map>
+
+#include "../Scanner++/Scanner.h"
+
+#include "../OptFrameFunction.hpp"
+
+#include "../OptFrameList.hpp"
+
+#include <algorithm>
+
+class ElementFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~ElementModule()
+	virtual ~ElementFunction()
 	{
 	}
 
@@ -38,16 +49,17 @@ public:
 	}
 	string usage()
 	{
-		return "element N list new_element_name";
+		return "element( N list ) : return element at 'N'th position of 'list'";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
+	virtual pair<string, string> run(vector<OptFrameFunction*>& allFunctions, string body)
 	{
-		Scanner scan(input);
+		Scanner scan(body);
+
 		if (!scan.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return make_pair("", scan.rest());
 		}
 
 		int n = scan.nextInt();
@@ -55,14 +67,14 @@ public:
 		if (n < 0)
 		{
 			cout << "N must be a positive value!" << endl;
-			return;
+			return make_pair("", scan.rest());
 		}
 
 		if (n == 0)
 		{
 			cout << "sorry, this is not C language :)" << endl;
 			cout << "0 not included, try a number from 1 to the size of the list" << endl;
-			return;
+			return make_pair("", scan.rest());
 		}
 
 		n--;
@@ -70,7 +82,7 @@ public:
 		if (!scan.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return make_pair("", scan.rest());
 		}
 
 		vector < string >& list = OptFrameList::readList(scan);
@@ -78,21 +90,15 @@ public:
 		if (n >= ((int) list.size()))
 		{
 			cout << "N is too big! " << (n + 1) << " > " << list.size() << endl;
-			return;
+			return make_pair("", scan.rest());
 		}
 
-		if (!scan.hasNext())
-		{
-			cout << "Usage: " << usage() << endl;
-			return;
-		}
+		string element = list.at(n);
 
-		string element = scan.next();
+		scan.next(); // drop ')'
 
-		OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, hf, dictionary, element + " " + list.at(n));
-		delete &list;
+		return make_pair(element, scan.rest());
 	}
-
 };
 
-#endif /* ELEMENTMODULE_HPP_ */
+#endif /* OPTFRAME_ELEMENT_FUNCTION_HPP_ */
