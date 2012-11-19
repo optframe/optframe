@@ -136,7 +136,7 @@ public:
 		if(!scanFunc.hasNext())
 			return input4; // no functions
 
-		string input5;
+		string input5 = "";
 
 		string last       = scanFunc.next();
 		string ldiscarded = scanFunc.getDiscarded();
@@ -157,11 +157,16 @@ public:
 				scanFunc = Scanner(p.second);
 
 				if(!scanFunc.hasNext())
+				{
+					last = "";
+					ldiscarded = "";
 					break;
+				}
 				else
 				{
-					current    = scanFunc.next();
-					cdiscarded = scanFunc.getDiscarded();
+					last    = scanFunc.next();
+					ldiscarded = scanFunc.getDiscarded();
+					continue;
 				}
 			}
 			else
@@ -178,7 +183,9 @@ public:
 		input5.append(ldiscarded);
 		input5.append(last);
 
-		return input5;
+		string input6 = Scanner::trim(input5);
+
+		return input6;
 	}
 };
 
