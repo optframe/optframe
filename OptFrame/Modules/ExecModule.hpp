@@ -40,7 +40,7 @@ public:
 
 	string usage()
 	{
-		return "exec target_fo timelimit method [output_solution_name]";
+		return "exec target_fo timelimit sios_method output_solution_name [spent_time]";
 	}
 
 	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
@@ -64,7 +64,10 @@ public:
 
 		string s_new_id = "";
 
+		Timer t;
 		pair<Solution<R, ADS>&, Evaluation<M>&>* result = method.first->search(timelimit, target_fo);
+		double time = t.inMilliSecs();
+
 
 		if(!result)
 		{
@@ -85,8 +88,17 @@ public:
 		if (scanner.hasNext())
 		{
 			string new_name = scanner.next();
-			OptFrameModule<R, ADS, M>::run_module("define", all_modules, allFunctions, factory, dictionary, new_name + " " + s_new_id);
+			OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, new_name + " " + s_new_id);
 		}
+
+		if (scanner.hasNext())
+		{
+			string var_time = scanner.next();
+			stringstream ss;
+			ss << var_time << " " << time;
+			OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str());
+		}
+
 
 	}
 
