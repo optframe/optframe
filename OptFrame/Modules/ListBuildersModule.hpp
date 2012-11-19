@@ -46,7 +46,12 @@ public:
 	{
 		Scanner scanner(input);
 
-		string pattern = scanner.next();
+		string pattern;
+
+		if (scanner.hasNext())
+			pattern = scanner.next();
+		else
+			pattern = "OptFrame:";
 
 		vector<pair<string, vector<pair<string,string> > > > builders = factory->listBuilders(pattern);
 
