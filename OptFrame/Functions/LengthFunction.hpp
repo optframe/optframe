@@ -18,15 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-/*
- * OptFrameFunction.hpp
- *
- * LGPLv3
- *
- */
-
-#ifndef OPTFRAME_FUNCTION_HPP_
-#define OPTFRAME_FUNCTION_HPP_
+#ifndef OPTFRAME_LENGTH_FUNCTION_HPP_
+#define OPTFRAME_LENGTH_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -34,36 +27,49 @@
 #include <vector>
 #include <map>
 
-#include "Scanner++/Scanner.h"
+#include "../Scanner++/Scanner.h"
+
+#include "../OptFrameFunction.hpp"
+
+#include "../OptFrameList.hpp"
 
 #include <algorithm>
 
-class OptFrameFunction
+class LengthFunction : public OptFrameFunction
 {
 public:
 
-	static pair<string, string> run_function(string func, vector<OptFrameFunction*>& allFunctions, string input)
-	{
-		for(unsigned int i=0;i<allFunctions.size();i++)
-			if(func==allFunctions[i]->id())
-			{
-				pair<string, string> p = allFunctions[i]->run(allFunctions, input);
-				return p;
-			}
-
-		cout << "Function '" << func << "' not found." << endl;
-
-		return make_pair("", input);
-	}
-
-	virtual ~OptFrameFunction()
+	virtual ~LengthFunction()
 	{
 	}
 
-	virtual string id() = 0;
-	virtual string usage() = 0;
+	virtual string id()
+	{
+		return "length";
+	}
 
-	virtual pair<string, string> run(vector<OptFrameFunction*>& allFunctions, string body) = 0;
+	virtual string usage()
+	{
+		return "length(list) : return list size";
+	}
+
+	virtual pair<string, string> run(vector<OptFrameFunction*>& allFunctions, string body)
+	{
+		Scanner scanner(body);
+
+		vector<string> list = OptFrameList::readList(scanner);
+
+		int ilen = list.size();
+
+		stringstream ss;
+		ss << ilen;
+
+		string length = ss.str();
+
+		scanner.next(); // drop ')'
+
+		return make_pair(length, scanner.rest());
+	}
 };
 
-#endif /* OPTFRAME_FUNCTION_HPP_ */
+#endif /* OPTFRAME_LENGTH_FUNCTION_HPP_ */

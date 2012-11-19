@@ -27,6 +27,8 @@
 
 #include "./Scanner++/Scanner.h"
 
+#include "OptFrameList.hpp"
+
 
 #include "RandGen.hpp"
 
@@ -437,7 +439,7 @@ public:
 
 	vector<NS<R, ADS, M>*> read_ns_list(Scanner& scanner)
 	{
-		vector < std::string >& list = readList(scanner);
+		vector < std::string >& list = OptFrameList::readList(scanner);
 
 		Scanner* aux;
 		std::string tmp;
@@ -471,7 +473,7 @@ public:
 
 	vector<Evaluator<R, ADS, M> *> read_ev_list(Scanner& scanner)
 	{
-		vector < std::string >& list = readList(scanner);
+		vector < std::string >& list = OptFrameList::readList(scanner);
 
 		Scanner* aux;
 		std::string tmp;
@@ -503,7 +505,7 @@ public:
 
 	vector<LocalSearch<R, ADS, M>*> read_local_search_list(Scanner& scanner)
 	{
-		vector < std::string >& list = readList(scanner);
+		vector < std::string >& list = OptFrameList::readList(scanner);
 		vector<LocalSearch<R, ADS, M>*> v_heuristics;
 
 		pair<LocalSearch<R, ADS, M>*, std::string> method;
@@ -570,122 +572,6 @@ public:
 	RandGen& getRandGen()
 	{
 		return rg;
-	}
-
-	static vector<std::string>& readList(Scanner& scanner)
-	{
-		vector < std::string > *list = new vector<std::string> ;
-		std::string word;
-		char character = scanner.nextChar();
-		int numberOfBrackets;
-
-		while (character == ' ')
-		{
-			character = scanner.nextChar();
-		}
-
-		if(character != '[')
-		{
-			if(( character >= '0' ) && ( character <= '9' )) // syntax 1..n
-			{
-				std::string number = "";
-				number += character;
-				character = scanner.nextChar();
-
-				while( ( ( character >= '0' ) && ( character <= '9' ) ) )
-				{
-					number += character;
-					character = scanner.nextChar();
-				}
-
-				Scanner toInt(number);
-				int firstInt = toInt.nextInt();
-
-				int dots = 0;
-
-				while(( character == ' ' ) || ( character == '.' ))
-				{
-					if(character == '.')
-						dots++;
-
-					character = scanner.nextChar();
-				}
-
-				if(dots != 2)
-				{
-					cout << "Error: expected two dots (..) and found " << dots << " dots!" << endl;
-					return *list;
-				}
-
-				stringstream rest;
-				rest << character << scanner.rest();
-				scanner = Scanner(rest.str());
-
-				int secondInt = scanner.nextInt();
-
-				if(firstInt < secondInt)
-				{
-					for(int i = firstInt; i <= secondInt; i++)
-					{
-						stringstream toStr;
-						toStr << i;
-						list->push_back(toStr.str());
-					}
-				}
-				else
-					for(int i = firstInt; i >= secondInt; i--)
-					{
-						stringstream toStr;
-						toStr << i;
-						list->push_back(toStr.str());
-					}
-
-				return *list;
-			}
-			else
-			{
-				cout << "Error:! expected '[' and found '" << character << "'!" << endl;
-				return *list;
-			}
-		}
-
-
-		numberOfBrackets = 0;
-
-		character = scanner.nextChar();
-
-		word = "";
-		while ((character != ']') || ((character == ']') && numberOfBrackets > 0))
-		{
-			if (character == '[')
-				numberOfBrackets++;
-			if (character == ']')
-				numberOfBrackets--;
-
-			if ((character == ',') && (numberOfBrackets == 0))
-			{
-				list->push_back(word);
-				word = "";
-			}
-			else
-			{
-				word += character;
-			}
-
-			character = scanner.nextChar();
-		}
-		list->push_back(word);
-
-		for (unsigned int i = 0; i < list->size(); i++)
-		{
-			list->at(i) = scanner.trim(list->at(i));
-		}
-
-		// error in code, dont know why but list should be empty!
-		if((list->size()==1) && (list->at(0)==""))
-			list->pop_back();
-
-		return *list;
 	}
 
 

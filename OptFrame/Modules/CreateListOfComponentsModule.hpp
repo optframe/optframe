@@ -44,7 +44,7 @@ public:
 	{
 		Scanner scanner(input);
 
-		vector < string > list = factory->readList(scanner);
+		vector < string > list = OptFrameList::readList(scanner);
 		string type = scanner.next();
 		string name = scanner.next();
 

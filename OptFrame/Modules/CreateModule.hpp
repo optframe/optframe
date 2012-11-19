@@ -300,7 +300,7 @@ public:
 			return;
 		}
 
-		vector < string > parameters = HeuristicFactory<R, ADS, M>::readList(scanner);
+		vector < string > parameters = OptFrameList::readList(scanner);
 
 		for (unsigned int i = 0; i < parameters.size(); i++)
 			if (parameters[i][0] != '$')
@@ -317,7 +317,7 @@ public:
 
 		vector < string > commands;
 
-		commands = HeuristicFactory<R, ADS, M>::readList(scanner);
+		commands = OptFrameList::readList(scanner);
 
 		OptFrameModule<R, ADS, M>* m = getModule(modules, name);
 

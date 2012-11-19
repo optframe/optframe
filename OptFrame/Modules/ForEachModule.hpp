@@ -212,8 +212,8 @@ public:
 			return;
 		}
 
-		vector < string >& values = HeuristicFactory<R, ADS, M>::readList(scanner);
-		vector < string >& commands = HeuristicFactory<R, ADS, M>::readList(scanner);
+		vector < string >& values   = OptFrameList::readList(scanner);
+		vector < string >& commands = OptFrameList::readList(scanner);
 
 		for (unsigned int v = 0; v < values.size(); v++)
 		{

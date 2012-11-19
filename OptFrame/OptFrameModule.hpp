@@ -121,7 +121,64 @@ public:
 
 		string input4 = Scanner::trim(input3);
 
-		return input4;
+		// Third, locate functions
+
+		stringstream ssfunc;
+		// add space before and after brackets '(' ')'
+		for(unsigned i=0; i<input4.length(); i++)
+			if((input4.at(i)=='(') || (input4.at(i)==')'))
+				ssfunc << " " << input4.at(i) << " ";
+			else
+				ssfunc << input4.at(i);
+
+		Scanner scanFunc(ssfunc.str());
+
+		if(!scanFunc.hasNext())
+			return input4; // no functions
+
+		string input5;
+
+		string last       = scanFunc.next();
+		string ldiscarded = scanFunc.getDiscarded();
+
+		while(scanFunc.hasNext())
+		{
+			string current    = scanFunc.next();
+			string cdiscarded = scanFunc.getDiscarded();
+
+			if(current == "(") // FUNCTION
+			{
+				pair<string, string> p = OptFrameFunction::run_function(last, allFunctions, scanFunc.rest());
+
+				input5.append(" ");
+				input5.append(p.first);
+				input5.append(" ");
+
+				scanFunc = Scanner(p.second);
+
+				if(!scanFunc.hasNext())
+					break;
+				else
+				{
+					current    = scanFunc.next();
+					cdiscarded = scanFunc.getDiscarded();
+				}
+			}
+			else
+			{
+				input5.append(ldiscarded);
+				input5.append(last);
+			}
+
+			// update last
+			ldiscarded = cdiscarded;
+			last       = current;
+		}
+
+		input5.append(ldiscarded);
+		input5.append(last);
+
+		return input5;
 	}
 };
 

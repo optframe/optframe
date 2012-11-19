@@ -50,7 +50,7 @@ public:
 			return;
 		}
 
-		vector < string > list1 = hf->readList(scan);
+		vector < string > list1 = OptFrameList::readList(scan);
 
 		if (!scan.hasNext())
 		{
@@ -58,7 +58,7 @@ public:
 			return;
 		}
 
-		vector < string > list2 = hf->readList(scan);
+		vector < string > list2 = OptFrameList::readList(scan);
 
 		if (!scan.hasNext())
 		{

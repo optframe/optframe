@@ -73,7 +73,7 @@ public:
 			return;
 		}
 
-		vector < string >& list = hf->readList(scan);
+		vector < string >& list = OptFrameList::readList(scan);
 
 		if (n >= ((int) list.size()))
 		{

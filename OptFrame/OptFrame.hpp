@@ -106,6 +106,8 @@
 #include "RandGen.hpp"
 #include "Util/RandGenMersenneTwister.hpp"
 
+#include "Functions/LengthFunction.hpp"
+
 #include "Modules/BuildModule.hpp"
 #include "Modules/CallModule.hpp"
 #include "Modules/CheckModule.hpp"
@@ -202,6 +204,11 @@ public:
 		modules.push_back(module);
 	}
 
+	void loadFunction(OptFrameFunction* function)
+	{
+		functions.push_back(function);
+	}
+
 	void loadCallModule()
 	{
 		cout << "warning: call module loaded!" << endl;
@@ -252,6 +259,9 @@ public:
 #ifdef MaPI
 		loadModule(new InitServersModule<R, ADS, M> );
 #endif
+
+		functions.clear();
+		loadFunction(new LengthFunction);
 	}
 
 	OptFrameModule<R, ADS, M>* getModule(string module)
