@@ -38,7 +38,7 @@ public:
 	}
 	string usage()
 	{
-		string u = "print [OptFrame:Solution id | OptFrame:Population id]";
+		string u = "print OptFrame: id";
 
 		return u;
 	}
@@ -54,31 +54,8 @@ public:
 			return;
 		}
 
-		string sol = scanner.next();
-
-		if ((sol != Solution<R,ADS>::idComponent()) && (sol != Population<R,ADS>::idComponent()))
-		{
-			cout << "First parameter must be a '" << Solution<R,ADS>::idComponent() << "'" << endl;
-			cout << "Usage: " << usage() << endl;
-			return;
-		}
-
-		if (sol == Population<R,ADS>::idComponent())
-		{
-			string id = scanner.next();
-			Scanner scan_pop(sol + " " + id);
-			Population<R, ADS>* p = NULL;
-         factory->readComponent(p, scan_pop);
-			p->print();
-			return;
-		}
-
-		string id = scanner.next();
-
-		Scanner scan_sol(sol + " " + id);
-		Solution<R, ADS>* s = NULL;
-      factory->readComponent(s, scan_sol);
-		s->print();
+		OptFrameComponent* component = factory->getNextComponent(scanner);
+		component->print();
 	}
 
 };

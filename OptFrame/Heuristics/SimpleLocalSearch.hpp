@@ -83,6 +83,16 @@ public:
 	{
 		return idComponent();
 	}
+
+	virtual void print() const
+	{
+		cout << "SimpleLocalSearch with:" << endl;
+		cout << "constructive: ";
+		constructive.print();
+		cout << "local search: ";
+		localSearch.print();
+	}
+
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>

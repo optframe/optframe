@@ -51,7 +51,6 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
-
 		long tini = time(NULL);
 
 		int r = lsList.size();
@@ -101,6 +100,14 @@ public:
 	virtual string id() const
 	{
 		return idComponent();
+	}
+
+	virtual void print() const
+	{
+		cout << "VND with [" << endl;
+		for(unsigned i=0; i<lsList.size(); i++)
+			lsList[i]->print();
+		cout << "]" << endl;
 	}
 
 private:
