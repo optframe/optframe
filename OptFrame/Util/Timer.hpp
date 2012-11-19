@@ -43,7 +43,7 @@ private:
 
 public:
 
-   Timer(bool m = true) :
+   Timer(bool m = false) :
       showMessageOnDestroy(m)
    {
 #ifdef WIN32
