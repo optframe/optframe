@@ -1,6 +1,8 @@
 
 read definitions.opt
 
+echo times(plus(divide(5 2) 10) minus(4 0))
+
 randgen system_seed 0
 echo
 

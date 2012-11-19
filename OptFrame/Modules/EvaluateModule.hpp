@@ -38,7 +38,7 @@ public:
 	}
 	string usage()
 	{
-		string u = "evaluate ev id loadsol id";
+		string u = "evaluate OptFrame:Evaluator id OptFrame:Solution id [store_value]";
 		return u;
 	}
 
@@ -68,10 +68,19 @@ public:
 
 		Scanner s2(sol + " " + id);
 		Solution<R, ADS>* s = NULL;
-      factory->readComponent(s, s2);
+		factory->readComponent(s, s2);
 
 		Evaluation<M>* e = &eval->evaluate(*s);
-		e->print();
+
+		if(scanner.hasNext())
+		{
+			string ename = scanner.next();
+			stringstream ss;
+			ss << ename << " " << e->evaluation();
+			OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str());
+		}
+		else
+			e->print();
 
 		delete e;
 	}
