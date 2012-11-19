@@ -69,19 +69,7 @@ public:
 			return;
 		}
 
-		string strseed = scanner.next();
-
-		unsigned long seed;
-
-		if (strseed == "time()")
-		{
-			seed = time(NULL);
-		}
-		else
-		{
-			Scanner scanseed(strseed);
-			seed = scanseed.nextInt();
-		}
+		unsigned long seed = scanner.nextInt();
 
 		cout << "randgen module: setting system random number generator seed to: " << seed << endl;
 

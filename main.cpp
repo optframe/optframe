@@ -43,24 +43,21 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-	srand(time(NULL));
-	RandGen rg(time(NULL));
-
 	// Optimal value for berlin52 is 7542
 
 	Scanner scanner(new File("./Examples/TSP/tsplib/berlin52.txt"));
 
 	TSPProblemInstance* p = new TSPProblemInstance(scanner);
 
-	OptFrame<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe(rg);
+	OptFrame<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe;
 
-	RandomInitialSolutionTSP& is = * new RandomInitialSolutionTSP(p,rg);
+	RandomInitialSolutionTSP& is = * new RandomInitialSolutionTSP(p, optframe.factory.getRandGen());
 	optframe.factory.addComponent(is);
 
 	TSPEvaluator& eval = *new TSPEvaluator(p);
 	optframe.factory.addComponent(eval);
 
-	NSEnumSwap& ns = *new NSEnumSwap(p, rg);
+	NSEnumSwap& ns = *new NSEnumSwap(p, optframe.factory.getRandGen());
 	optframe.factory.addComponent(ns);
 
 	optframe.factory.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP>);

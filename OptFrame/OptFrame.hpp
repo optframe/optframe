@@ -109,6 +109,7 @@
 #include "Functions/AppendFunction.hpp"
 #include "Functions/ElementFunction.hpp"
 #include "Functions/LengthFunction.hpp"
+#include "Functions/TimeFunction.hpp"
 
 // arithmetic
 #include "Functions/PlusFunction.hpp"
@@ -266,6 +267,7 @@ public:
 		loadFunction(new AppendFunction);
 		loadFunction(new ElementFunction);
 		loadFunction(new LengthFunction);
+		loadFunction(new TimeFunction);
 
 		//arithmetic
 		loadFunction(new PlusFunction);
