@@ -41,7 +41,7 @@ public:
 		return "list_size list variable_for_list_size";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
 	{
 		Scanner scan(input);
 		if (!scan.hasNext())
@@ -63,7 +63,7 @@ public:
 		stringstream nameAndSize;
 		nameAndSize << variable << " " << list.size();
 
-		OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, hf, dictionary, nameAndSize.str());
+		OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, hf, dictionary, nameAndSize.str());
 	}
 
 };

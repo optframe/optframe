@@ -41,7 +41,7 @@ public:
 		return "list_append list1 list2 name_for_final_list";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
 	{
 		Scanner scan(input);
 		if (!scan.hasNext())
@@ -80,7 +80,7 @@ public:
 		}
 		ss << " ]";
 
-		OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, hf, dictionary, ss.str());
+		OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, hf, dictionary, ss.str());
 	}
 
 };

@@ -100,6 +100,7 @@
 
 // ==================================
 
+#include "OptFrameFunction.hpp"
 #include "OptFrameModule.hpp"
 
 #include "RandGen.hpp"
@@ -160,6 +161,7 @@ class OptFrame
 {
 private:
 	vector<OptFrameModule<R, ADS, M>*> modules;
+	vector<OptFrameFunction*> functions;
 	map<string, string>* dictionary;
 
 public:
@@ -326,7 +328,7 @@ public:
 						break;
 					}
 
-					modules[i]->run(modules, &factory, dictionary, r);
+					modules[i]->run(modules, functions, &factory, dictionary, r);
 					notfound = false;
 					break;
 				}
@@ -372,7 +374,7 @@ public:
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (command == modules[i]->id())
 			{
-				string r = modules[i]->preprocess(dictionary, s2.rest());
+				string r = modules[i]->preprocess(functions, dictionary, s2.rest());
 
 				if (r == "INVALID_PARAM")
 				{
@@ -380,7 +382,7 @@ public:
 					exit(1);
 				}
 
-				modules[i]->run(modules, &factory, dictionary, r);
+				modules[i]->run(modules, functions, &factory, dictionary, r);
 				notfound = false;
 				break;
 			}

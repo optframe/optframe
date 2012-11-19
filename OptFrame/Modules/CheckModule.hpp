@@ -42,7 +42,7 @@ public:
 		return "check [initsol id | loadsol id] evaluator ns_seq_list";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		cout << "check: " << input << endl;
 		Scanner scanner(input);

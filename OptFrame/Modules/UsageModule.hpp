@@ -40,7 +40,7 @@ public:
 		return "usage module_name";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>*, map<string,string>* dictionary, string rest)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string,string>* dictionary, string rest)
 	{
 		Scanner scanner(rest);
 

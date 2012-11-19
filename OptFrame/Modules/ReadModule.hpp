@@ -41,7 +41,7 @@ public:
 		return "read filename";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string,string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string,string>* dictionary, string input)
 	{
 		Scanner trim(input);
 		if(!trim.hasNext()) // no file
@@ -125,8 +125,8 @@ public:
 				if(command == all_modules[i]->id())
 				{
 					string original = s2.rest();
-					string after_preprocess = all_modules[i]->preprocess(dictionary, original);
-					all_modules[i]->run(all_modules, factory, dictionary, after_preprocess);
+					string after_preprocess = all_modules[i]->preprocess(allFunctions, dictionary, original);
+					all_modules[i]->run(all_modules, allFunctions, factory, dictionary, after_preprocess);
 					notfound = false;
 					break;
 				}

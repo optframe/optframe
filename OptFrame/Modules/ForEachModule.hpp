@@ -165,7 +165,7 @@ private:
 
 	}
 
-	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string command)
+	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string command)
 	{
 		Scanner scanner(command);
 		string module = scanner.next();
@@ -174,8 +174,8 @@ private:
 		if (m == NULL)
 			return false;
 
-		string rest = m->preprocess(dictionary, scanner.rest());
-		m->run(all_modules, factory, dictionary, rest);
+		string rest = m->preprocess(allFunctions, dictionary, scanner.rest());
+		m->run(all_modules, allFunctions, factory, dictionary, rest);
 
 		return true;
 	}
@@ -194,7 +194,7 @@ public:
 	{
 		return "for_each $var list_of_values list_of_commands";
 	}
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -224,7 +224,7 @@ public:
 				if(command.at(0)=='%') // first line comment
 					command = "";
 
-				if ((command != "") && !exec_command(all_modules, factory, dictionary, command))
+				if ((command != "") && !exec_command(all_modules, allFunctions, factory, dictionary, command))
 				{
 					if(commands.at(c)=="")
 						cout << "for_each module: empty command! (perhaps an extra comma in list?)" << endl;
@@ -239,7 +239,7 @@ public:
 	}
 
 	// should preprocess only until list of commands
-	virtual string preprocess(map<string, string>* dictionary, string input)
+	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 

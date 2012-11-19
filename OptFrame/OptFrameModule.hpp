@@ -36,6 +36,8 @@
 
 #include "Scanner++/Scanner.h"
 
+#include "OptFrameFunction.hpp"
+
 #include "HeuristicFactory.hpp"
 
 #include <algorithm>
@@ -44,12 +46,12 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_E
 class OptFrameModule
 {
 protected:
-	void run_module(string mod, vector<OptFrameModule<R, ADS, M>*> v, HeuristicFactory<R, ADS, M>* f, map<string,string>* dictionary, string input)
+	void run_module(string mod, vector<OptFrameModule<R, ADS, M>*> v, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* f, map<string,string>* dictionary, string input)
 	{
 		for(unsigned int i=0;i<v.size();i++)
 			if(mod==v[i]->id())
 			{
-				v[i]->run(v,f,dictionary,input);
+				v[i]->run(v, allFunctions, f, dictionary, input);
 				return;
 			}
 		cout << "Module '"<<mod<<"' not found." << endl;
@@ -64,14 +66,14 @@ public:
 	virtual string id() = 0;
 	virtual string usage() = 0;
 
-	virtual void run(vector<OptFrameModule<R, ADS, M>*>&, HeuristicFactory<R, ADS, M>*, map<string,string>* dictionary, string) = 0;
+	virtual void run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string,string>* dictionary, string) = 0;
 
-	virtual string preprocess(map<string,string>* dictionary, string input)
+	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>* dictionary, string input)
 	{
-		return defaultPreprocess(dictionary,input);
+		return defaultPreprocess(allFunctions, dictionary,input);
 	}
 
-	static string defaultPreprocess(map<string,string>* dictionary, string input)
+	static string defaultPreprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 

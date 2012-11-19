@@ -43,7 +43,7 @@ public:
 		return "exec target_fo timelimit method [output_solution_name]";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		cout << "exec: " << input << endl;
 		Scanner scanner(input);
@@ -85,7 +85,7 @@ public:
 		if (scanner.hasNext())
 		{
 			string new_name = scanner.next();
-			OptFrameModule<R, ADS, M>::run_module("define", all_modules, factory, dictionary, new_name + " " + s_new_id);
+			OptFrameModule<R, ADS, M>::run_module("define", all_modules, allFunctions, factory, dictionary, new_name + " " + s_new_id);
 		}
 
 	}

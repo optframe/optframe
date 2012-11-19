@@ -177,7 +177,7 @@ private:
 
 	}
 
-	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string command)
+	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string command)
 	{
 		Scanner scanner(command);
 		string module = scanner.next();
@@ -186,8 +186,8 @@ private:
 		if (m == NULL)
 			return false;
 
-		string rest = m->preprocess(dictionary, scanner.rest());
-		m->run(all_modules, factory, dictionary, rest);
+		string rest = m->preprocess(allFunctions, dictionary, scanner.rest());
+		m->run(all_modules, allFunctions, factory, dictionary, rest);
 
 		return true;
 	}
@@ -216,7 +216,7 @@ public:
 		return u;
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -244,7 +244,7 @@ public:
 			for (unsigned int v = 0; v < values.size(); v++)
 				command = var_preprocess(parameters[v], values[v], command);
 
-			if (!exec_command(all_modules, factory, dictionary, command))
+			if (!exec_command(all_modules, allFunctions, factory, dictionary, command))
 			{
 				cout << "Error in command: " << command << endl;
 			}
@@ -282,7 +282,7 @@ public:
 		return "create_module name list_of_$parameters list_of_commands";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 

@@ -41,7 +41,7 @@ public:
 		return "element N list new_element_name";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
 	{
 		Scanner scan(input);
 		if (!scan.hasNext())
@@ -89,7 +89,7 @@ public:
 
 		string element = scan.next();
 
-		OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, hf, dictionary, element + " " + list.at(n));
+		OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, hf, dictionary, element + " " + list.at(n));
 		delete &list;
 	}
 

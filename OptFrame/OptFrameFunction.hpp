@@ -18,35 +18,51 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef ECHOMODULE_HPP_
-#define ECHOMODULE_HPP_
+/*
+ * OptFrameFunction.hpp
+ *
+ * LGPLv3
+ *
+ */
 
-#include "../OptFrameModule.hpp"
+#ifndef OPTFRAME_FUNCTION_HPP_
+#define OPTFRAME_FUNCTION_HPP_
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class EchoModule: public OptFrameModule<R, ADS, M>
+#include <iostream>
+#include <ostream>
+
+#include <vector>
+#include <map>
+
+#include "Scanner++/Scanner.h"
+
+#include <algorithm>
+
+class OptFrameFunction
 {
+protected:
+	pair<string, string> run_function(string func, vector<OptFrameFunction*>& allFunctions, string input)
+	{
+		for(unsigned int i=0;i<allFunctions.size();i++)
+			if(func==allFunctions[i]->id())
+			{
+				pair<string, string> p = allFunctions[i]->run(allFunctions, input);
+				return p;
+			}
+		cout << "Function '" << func << "' not found." << endl;
+		return make_pair("", input);
+	}
+
 public:
 
-	virtual ~EchoModule()
+	virtual ~OptFrameFunction()
 	{
 	}
 
-	string id()
-	{
-		return "echo";
-	}
+	virtual string id() = 0;
+	virtual string usage() = 0;
 
-	string usage()
-	{
-		return "echo text";
-	}
-
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string, string>* dictionary, string text)
-	{
-		printf("%s\n", text.c_str());
-	}
-
+	virtual pair<string, string> run(vector<OptFrameFunction*>& allFunctions, string body) = 0;
 };
 
-#endif /* ECHOMODULE_HPP_ */
+#endif /* OPTFRAME_FUNCTION_HPP_ */

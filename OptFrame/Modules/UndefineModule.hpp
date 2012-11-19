@@ -41,7 +41,7 @@ public:
 		return "undefine word";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>*, map<string, string>* dictionary, string rest)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string, string>* dictionary, string rest)
 	{
 		Scanner scanner(rest);
 
@@ -56,7 +56,7 @@ public:
 		dictionary->erase(word);
 	}
 
-	virtual string preprocess(map<string, string>*, string input)
+	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>*, string input)
 	{
 		Scanner scanner(input);
 

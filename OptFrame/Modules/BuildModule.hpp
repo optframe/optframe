@@ -89,7 +89,7 @@ public:
        \endportuguese
    */
 
-   void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+   void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
    {
       //cout << "build module: " << input << endl;
       Scanner scanner1(input);
@@ -180,7 +180,7 @@ public:
       if (scanner.hasNext())
       {
          string new_name = scanner.next();
-         OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, factory, dictionary, new_name + " " + s_new_id);
+         OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, new_name + " " + s_new_id);
       }
 
    }

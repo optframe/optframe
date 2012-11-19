@@ -41,7 +41,7 @@ public:
 		return "list_from_file new_list_name filename";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scan(input);
 		if (!scan.hasNext()) // no file
@@ -98,7 +98,7 @@ public:
 
 		listContent << "]";
 
-		OptFrameModule<R, ADS, M>::run_module("define", all_modules, factory, dictionary, listName + " " + listContent.str());
+		OptFrameModule<R, ADS, M>::run_module("define", all_modules, allFunctions, factory, dictionary, listName + " " + listContent.str());
 	}
 
 };

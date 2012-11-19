@@ -41,7 +41,7 @@ public:
 		return "silent_define new_name string_to_be_substituted_from_the_new_name";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>&, HeuristicFactory<R, ADS, M>*, map<string,string>* dictionary, string rest)
+	void run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string,string>* dictionary, string rest)
 	{
 		Scanner scanner(rest);
 
@@ -66,7 +66,7 @@ public:
 			cout << "Usage: "<<usage()<<endl;
 	}
 
-	virtual string preprocess(map<string,string>* dictionary, string input)
+	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
