@@ -110,6 +110,12 @@
 #include "Functions/ElementFunction.hpp"
 #include "Functions/LengthFunction.hpp"
 
+// arithmetic
+#include "Functions/PlusFunction.hpp"
+#include "Functions/MinusFunction.hpp"
+#include "Functions/TimesFunction.hpp"
+#include "Functions/DivideFunction.hpp"
+
 #include "Modules/BuildModule.hpp"
 #include "Modules/CallModule.hpp"
 #include "Modules/CheckModule.hpp"
@@ -260,6 +266,12 @@ public:
 		loadFunction(new AppendFunction);
 		loadFunction(new ElementFunction);
 		loadFunction(new LengthFunction);
+
+		//arithmetic
+		loadFunction(new PlusFunction);
+		loadFunction(new MinusFunction);
+		loadFunction(new TimesFunction);
+		loadFunction(new DivideFunction);
 	}
 
 	OptFrameModule<R, ADS, M>* getModule(string module)
