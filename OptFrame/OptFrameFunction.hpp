@@ -47,7 +47,8 @@ public:
 		for(unsigned int i=0;i<allFunctions.size();i++)
 			if(func==allFunctions[i]->id())
 			{
-				pair<string, string> p = allFunctions[i]->run(allFunctions, input);
+				string iprep = allFunctions[i]->preprocess(allFunctions, input);
+				pair<string, string> p = allFunctions[i]->run(allFunctions, iprep);
 				return p;
 			}
 
@@ -64,6 +65,93 @@ public:
 	virtual string usage() = 0;
 
 	virtual pair<string, string> run(vector<OptFrameFunction*>& allFunctions, string body) = 0;
+
+	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, string input)
+	{
+		return defaultPreprocess(allFunctions, input);
+	}
+
+	static string defaultPreprocess(vector<OptFrameFunction*>& allFunctions, string input)
+	{
+		Scanner scanner(input);
+
+		// Locate functions
+
+		if(!scanner.hasNext())
+			return input; // empty
+
+		int bcount = 0;
+		stringstream ssfunc;
+		// add space before and after brackets '(' ')'
+		for(unsigned i=0; i<input.length(); i++)
+			if(input.at(i)=='(')
+			{
+				ssfunc << " " << input.at(i) << " ";
+				bcount++;
+			}
+			else if(input.at(i)==')')
+			{
+				ssfunc << " " << input.at(i) << " ";
+			}
+			else
+				ssfunc << input.at(i);
+
+		if(bcount==0)
+			return input; // no functions
+
+		Scanner scanFunc(ssfunc.str());
+
+		string input5 = "";
+
+		string last       = scanFunc.next();
+		string ldiscarded = scanFunc.getDiscarded();
+
+		while(scanFunc.hasNext())
+		{
+			string current    = scanFunc.next();
+			string cdiscarded = scanFunc.getDiscarded();
+
+			if(current == "(") // FUNCTION
+			{
+				pair<string, string> p = OptFrameFunction::run_function(last, allFunctions, scanFunc.rest());
+
+				input5.append(" ");
+				input5.append(p.first);
+				input5.append(" ");
+
+				scanFunc = Scanner(p.second);
+
+				if(!scanFunc.hasNext())
+				{
+					last = "";
+					ldiscarded = "";
+					break;
+				}
+				else
+				{
+					last    = scanFunc.next();
+					ldiscarded = scanFunc.getDiscarded();
+					continue;
+				}
+			}
+			else
+			{
+				input5.append(ldiscarded);
+				input5.append(last);
+			}
+
+			// update last
+			ldiscarded = cdiscarded;
+			last       = current;
+		}
+
+		input5.append(ldiscarded);
+		input5.append(last);
+
+		string input6 = Scanner::trim(input5);
+
+		return input6;
+	}
 };
 
 #endif /* OPTFRAME_FUNCTION_HPP_ */

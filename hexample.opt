@@ -33,7 +33,6 @@ print solucao_final
 
 evaluate Evaluator 0 solucao_final
 
-exit
 
 
 create_list_of_components [ meu_bi ] OptFrame:LocalSearch: buscas_locais
@@ -42,12 +41,9 @@ echo =======================
 echo Componentes disponiveis
 echo =======================
 list_components OptFrame: componentes
-list_size componentes total
-create_numeric_list 1 total li_componentes
+create_numeric_list 1 length( componentes ) li_componentes
 for_each $k li_componentes [
-  element $k componentes c,
-  echo c,
-  undefine c
+  echo element( $k componentes )
 ]
 echo =======================
 
@@ -55,12 +51,9 @@ echo =======================
 echo Listas disponiveis
 echo =======================
 list_components OptFrame:[] lcomponentes
-list_size lcomponentes ltotal
-create_numeric_list 1 ltotal li_lcomponentes
+create_numeric_list 1 length( lcomponentes ) li_lcomponentes
 for_each $k li_lcomponentes [
-  element $k lcomponentes c,
-  echo c,
-  undefine c
+  echo element( $k lcomponentes )
 ]
 echo =======================
 
@@ -70,59 +63,48 @@ echo listando builders
 echo =======================
 list_builders OptFrame: builders
 echo builders
-list_size builders total_b
-create_numeric_list 1 total_b li_builders
+create_numeric_list 1 length( builders ) li_builders
 
 define builder_names [ ]
 echo definindo builder names: builder_names
 
 for_each $k li_builders [
-  element $k builders blist,
-  element 1 blist bname,
-  element 2 blist bparams,
+  silent_define bname   element( 1 element( $k builders ) ),
+  silent_define bparams element( 2 element( $k builders ) ),
 
   echo bname	bparams,
   
   % comentarios em listas devem sempre terminar com virgula,
   
-  list_append builder_names [ bname ] builder_names2 ,
+  silent_define builder_names2 append( builder_names [ bname ] ),
   undefine builder_names,
   silent_define builder_names builder_names2,
   undefine builder_names2,
   
-  list_size bparams nparams,
-  create_numeric_list 1 nparams li_nparams,
+  create_numeric_list 1 length( bparams ) li_nparams,
   
   for_each $p li_nparams [
-     element $p bparams par,
-     element 1 par tipo,
+     silent_define tipo element( 1 element( $p bparams ) ),
      
      echo precisa de: tipo,
      
      list_components tipo comps,
-     list_size comps ncomps,
-     create_numeric_list 1 ncomps li_ncomps,
+     create_numeric_list 1 length( comps ) li_ncomps,
      for_each $z li_ncomps [
-       element $z comps x,
-       echo serve: x,
-       undefine x
+       echo serve: element( $z comps )
      ],
      
      undefine comps,
-     undefine ncomps,
      undefine li_ncomps,
      
-     undefine tipo,
-     undefine par
+     undefine tipo
   ],
   
   echo,
 
-  undefine nparams,
   undefine li_nparams,
   undefine bparams,  
-  undefine bname,
-  undefine blist
+  undefine bname
 ]
 echo LISTA DE BUILDERS: builder_names
 echo =======================
