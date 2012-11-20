@@ -85,7 +85,15 @@ public:
 			return make_pair("", scan.rest());
 		}
 
-		vector < string >& list = OptFrameList::readList(scan);
+		vector<string>* plist = OptFrameList::readList(scan);
+		vector<string>  list;
+		if(plist)
+		{
+			list = vector<string>(*plist);
+			delete plist;
+		}
+		//else
+		//	return NULL;
 
 		if (n >= ((int) list.size()))
 		{

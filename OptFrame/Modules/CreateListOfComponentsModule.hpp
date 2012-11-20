@@ -36,15 +36,26 @@ public:
 	{
 		return "create_list_of_components";
 	}
+
 	string usage()
 	{
 		return "create_list_of_components list type list_name";
 	}
+
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
-		vector < string > list = OptFrameList::readList(scanner);
+		vector<string>* plist = OptFrameList::readList(scanner);
+		vector<string>  list;
+		if(plist)
+		{
+			list = vector<string>(*plist);
+			delete plist;
+		}
+		else
+			return false;
+
 		string type = scanner.next();
 		string name = scanner.next();
 

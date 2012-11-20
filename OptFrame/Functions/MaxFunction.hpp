@@ -57,7 +57,15 @@ public:
 	{
 		Scanner scanner(body);
 
-		vector<string> list = OptFrameList::readList(scanner);
+		vector<string>* plist = OptFrameList::readList(scanner);
+		vector<string>  list;
+		if(plist)
+		{
+			list = vector<string>(*plist);
+			delete plist;
+		}
+		//else
+		//	return NULL;
 
 		if(list.size()==0)
 			return make_pair("","");

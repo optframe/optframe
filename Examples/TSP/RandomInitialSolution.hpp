@@ -54,6 +54,10 @@ public:
 		// Put the rest of your code here
 	};
 
+	virtual ~RandomInitialSolutionTSP()
+	{
+	}
+
 	SolutionTSP& generateSolution()
 	{
 		RepTSP* newRep = new vector<int>(pI->n);

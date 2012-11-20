@@ -212,8 +212,25 @@ public:
 			return false;
 		}
 
-		vector < string >& values   = OptFrameList::readList(scanner);
-		vector < string >& commands = OptFrameList::readList(scanner);
+		vector<string>* pvalues = OptFrameList::readList(scanner);
+		vector<string>  values;
+		if(pvalues)
+		{
+			values = vector<string>(*pvalues);
+			delete pvalues;
+		}
+		else
+			return false;
+
+		vector<string>* pcommands = OptFrameList::readList(scanner);
+		vector<string>  commands;
+		if(pcommands)
+		{
+			commands = vector<string>(*pcommands);
+			delete pcommands;
+		}
+		else
+			return false;
 
 		for (unsigned int v = 0; v < values.size(); v++)
 		{
@@ -236,9 +253,6 @@ public:
 					}
 			}
 		}
-
-		delete &values;
-		delete &commands;
 
 		return true;
 	}

@@ -57,8 +57,27 @@ public:
 	{
 		Scanner scanner(body);
 
-		vector<string> list1 = OptFrameList::readList(scanner);
-		vector<string> list2 = OptFrameList::readList(scanner);
+		vector<string>* plist1 = OptFrameList::readList(scanner);
+		vector<string>  list1;
+		if(plist1)
+		{
+			list1 = vector<string>(*plist1);
+			delete plist1;
+		}
+		//else
+		//	return NULL;
+
+
+		vector<string>* plist2 = OptFrameList::readList(scanner);
+		vector<string>  list2;
+		if(plist2)
+		{
+			list2 = vector<string>(*plist2);
+			delete plist2;
+		}
+		//else
+		//	return NULL;
+
 
 		list1.insert(list1.end(), list2.begin(), list2.end());
 

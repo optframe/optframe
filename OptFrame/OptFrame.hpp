@@ -198,16 +198,28 @@ public:
 
 	virtual ~OptFrame()
 	{
-		for (unsigned int i = 0; i < modules.size(); ++i)
-		{
-			delete modules.at(i);
-		}
+		unloadModules();
+		unloadFunctions();
 		delete dictionary;
 	}
 
 	string version()
 	{
 		return "OptFrame - Development Version \nhttp://sourceforge.net/projects/optframe/";
+	}
+
+	void unloadModules()
+	{
+		for (unsigned int i = 0; i < modules.size(); ++i)
+			delete modules.at(i);
+		modules.clear();
+	}
+
+	void unloadFunctions()
+	{
+		for (unsigned int i = 0; i < functions.size(); ++i)
+			delete functions.at(i);
+		functions.clear();
 	}
 
 	void loadModule(OptFrameModule<R, ADS, M>* module)
@@ -229,7 +241,7 @@ public:
 
 	void loadDefaultModules()
 	{
-		modules.clear();
+		unloadModules();
 		loadModule(new BuildModule<R, ADS, M> );
 		loadModule(new CheckModule<R, ADS, M> );
 		loadModule(new CreateListOfComponentsModule<R, ADS, M> );
@@ -270,7 +282,7 @@ public:
 		loadModule(new InitServersModule<R, ADS, M> );
 #endif
 
-		functions.clear();
+		unloadFunctions();
 		loadFunction(new AppendFunction);
 		loadFunction(new AvgFunction);
 		loadFunction(new ElementFunction);
@@ -414,7 +426,9 @@ public:
 					exit(1);
 				}
 
-				modules[i]->run(modules, functions, &factory, dictionary, r);
+				if(!modules[i]->run(modules, functions, &factory, dictionary, r))
+					cout << "error in module: '" << modules[i]->id() << "'" << endl;
+
 				notfound = false;
 				break;
 			}

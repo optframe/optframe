@@ -439,7 +439,15 @@ public:
 
 	vector<NS<R, ADS, M>*> read_ns_list(Scanner& scanner)
 	{
-		vector < std::string >& list = OptFrameList::readList(scanner);
+		vector<string>* plist = OptFrameList::readList(scanner);
+		vector<string>  list;
+		if(plist)
+		{
+			list = vector<string>(*plist);
+			delete plist;
+		}
+		//else
+		//	return NULL;
 
 		Scanner* aux;
 		std::string tmp;
@@ -467,7 +475,6 @@ public:
 			return vector<NS<R, ADS, M>*>();
 		}
 
-		delete &list;
 		return v_ns;
 	}
 
@@ -551,6 +558,12 @@ public:
 	virtual ~HeuristicFactory()
 	{
 		drop_all();
+
+		delete& rg;
+
+		for(unsigned i=0; i<builders.size(); i++)
+			delete builders.at(i);
+		builders.clear();
 	}
 
 	void drop_all()
@@ -565,6 +578,19 @@ public:
 				delete v[i];
 
 			iter->second.clear();
+		}
+
+		map<std::string, vector<vector<OptFrameComponent*> > >::iterator iter2;
+
+		for(iter2 = componentLists.begin(); iter2 != componentLists.end(); iter2++)
+		{
+			vector<vector<OptFrameComponent*> > vv = iter2->second;
+
+			for (unsigned int i = 0; i < vv.size(); i++)
+				for(unsigned int j=0; j<vv[i].size(); j++)
+					delete vv[i][j];
+
+			iter2->second.clear();
 		}
 	}
 

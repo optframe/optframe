@@ -67,6 +67,13 @@ public:
 		//cout << (*dist);
 	}
 
+	virtual ~TSPProblemInstance()
+	{
+		delete dist;
+		delete xvalues;
+		delete yvalues;
+	}
+
 //private:
 	// Your private vars
 	int n;

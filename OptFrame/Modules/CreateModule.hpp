@@ -302,7 +302,15 @@ public:
 			return false;
 		}
 
-		vector < string > parameters = OptFrameList::readList(scanner);
+		vector<string>* plist1 = OptFrameList::readList(scanner);
+		vector<string>  parameters;
+		if(plist1)
+		{
+			parameters = vector<string>(*plist1);
+			delete plist1;
+		}
+		else
+			return false;
 
 		for (unsigned int i = 0; i < parameters.size(); i++)
 			if (parameters[i][0] != '$')
@@ -319,7 +327,14 @@ public:
 
 		vector < string > commands;
 
-		commands = OptFrameList::readList(scanner);
+		vector<string>* plist = OptFrameList::readList(scanner);
+		if(plist)
+		{
+			commands = vector<string>(*plist);
+			delete plist;
+		}
+		else
+			return false;
 
 		OptFrameModule<R, ADS, M>* m = getModule(modules, name);
 

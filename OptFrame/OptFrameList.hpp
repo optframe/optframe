@@ -33,7 +33,7 @@ class OptFrameList
 {
 public:
 
-	static vector<std::string>& readList(Scanner& scanner)
+	static vector<std::string>* readList(Scanner& scanner)
 	{
 		vector < std::string > *list = new vector<std::string> ;
 		std::string word;
@@ -75,7 +75,7 @@ public:
 				if(dots != 2)
 				{
 					cout << "Error: expected two dots (..) and found " << dots << " dots!" << endl;
-					return *list;
+					return NULL;
 				}
 
 				stringstream rest;
@@ -101,12 +101,12 @@ public:
 						list->push_back(toStr.str());
 					}
 
-				return *list;
+				return list;
 			}
 			else
 			{
 				cout << "Error:! expected '[' and found '" << character << "'!" << endl;
-				return *list;
+				return NULL;
 			}
 		}
 
@@ -146,7 +146,7 @@ public:
 		if((list->size()==1) && (list->at(0)==""))
 			list->pop_back();
 
-		return *list;
+		return list;
 	}
 
 };
