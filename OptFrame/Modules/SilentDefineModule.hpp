@@ -54,11 +54,14 @@ public:
 			Scanner s2(second_word);
 
 			while(s2.hasNext())
-				if(new_name==s2.next())
+			{
+				string next_word = s2.next();
+				if(new_name==next_word)
 				{
-					cout << "Recursive definitions are not allowed!" << endl;
+					cout << "silent_define module: recursive definitions are not allowed! (define: '" << new_name << "' as '" << next_word << "')" << endl;
 					return false;
 				}
+			}
 
 			(*dictionary)[new_name] = scanner.trim(second_word);
 			return true;

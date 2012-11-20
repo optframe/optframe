@@ -58,7 +58,7 @@ public:
 				string next_word = s2.next();
 				if(new_name==next_word)
 				{
-					cout << "Recursive definitions are not allowed! (define: '" << new_name << "' as '" << next_word << "')" << endl;
+					cout << "define module: recursive definitions are not allowed! (define: '" << new_name << "' as '" << next_word << "')" << endl;
 					return false;
 				}
 			}
