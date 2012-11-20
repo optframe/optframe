@@ -50,9 +50,14 @@ public:
       return (s == id()) || (s == idComponent()); // equal to this component or "OptFrame:" base
    }
 
+   virtual string toString() const
+   {
+	   return id();
+   }
+
    virtual void print() const
    {
-      cout << id() << endl;
+      cout << toString() << endl;
    }
 
 };

@@ -56,8 +56,6 @@ public:
     {
     	return ( s == idComponent() ) || (OptFrameComponent::compatible(s));
     }
-
-	virtual void print() const = 0;
 };
 
 #endif /*OPTFRAME_NS_HPP_*/

@@ -93,13 +93,20 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, M>::idComponent() << "fi";
+		ss << LocalSearch<R, ADS, M>::idComponent() << "FI";
 		return ss.str();
 	}
 
 	virtual string id() const
 	{
 		return idComponent();
+	}
+
+	virtual string toString() const
+	{
+		stringstream ss;
+		ss << "FI: " << nsSeq.toString();
+		return ss.str();
 	}
 };
 

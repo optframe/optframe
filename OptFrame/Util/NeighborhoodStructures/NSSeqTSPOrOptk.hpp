@@ -90,11 +90,12 @@ public:
 	   return ( s == idComponent() ) || ( NSSeq<vector<T>, ADS, M>::compatible(s) );
    }
 
-
-   virtual void print() const
-   {
-      cout << "NSSeqTSPOrOpt{K=" << k << "}" << endl;
-   }
+	virtual string toString() const
+	{
+		stringstream ss;
+		ss << "NSSeqTSPOrOpt{K=" << k << "}";
+		return ss.str();
+	}
 };
 
 #endif /*OPTFRAME_NSSEQ_TSP_OROPTK_HPP_*/

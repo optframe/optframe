@@ -144,9 +144,11 @@ public:
 		return ( s == idComponent() ) || ( NSSeq<vector<T>, ADS, M>::compatible(s) );
 	}
 
-	virtual void print() const
+	virtual string toString() const
 	{
-		cout << "NSSeqTSP2Opt" << endl;
+		stringstream ss;
+		ss << "NSSeqTSP2Opt";
+		return ss.str();
 	}
 };
 

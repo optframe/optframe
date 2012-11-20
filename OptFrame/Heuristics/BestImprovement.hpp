@@ -127,6 +127,13 @@ public:
 		return idComponent();
 	}
 
+	virtual string toString() const
+	{
+		stringstream ss;
+		ss << "BI: " << nsSeq.toString();
+		return ss.str();
+	}
+
 };
 
 

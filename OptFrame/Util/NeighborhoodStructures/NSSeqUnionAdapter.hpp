@@ -69,12 +69,19 @@ public:
       return *new IteratorNSSeqUnion<R, ADS, M, MOVE> (it);
    }
 
-	virtual void print() const
+	virtual string toString() const
 	{
-		cout << "NSSeqUnionAdapter {" << endl;
+		stringstream ss;
+		ss << "NSSeqUnionAdapter: [";
 		for(unsigned int i = 0; i < ns.size(); i++)
-         ns[i]->print();
-		cout << "}" << endl;
+		{
+           ss << ns[i]->toString();
+
+           if(i != ns.size()-1)
+        	   ss << ",";
+		}
+		ss << "] ";
+		return ss.str();
 	}
 };
 

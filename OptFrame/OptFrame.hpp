@@ -154,6 +154,7 @@
 #include "Modules/SilentDefineModule.hpp"
 #include "Modules/TestModule.hpp"
 #include "Modules/TestLocalSearchModule.hpp"
+#include "Modules/ToStringModule.hpp"
 #include "Modules/UndefineModule.hpp"
 #include "Modules/UsageModule.hpp"
 #include "Modules/InitServersModule.hpp"
@@ -260,6 +261,7 @@ public:
 		loadModule(new SilentDefineModule<R, ADS, M> );
 		loadModule(new TestModule<R, ADS, M> );
 		loadModule(new TestLocalSearchModule<R, ADS, M> );
+		loadModule(new ToStringModule<R, ADS, M> );
 		loadModule(new UndefineModule<R, ADS, M> );
 		loadModule(new UsageModule<R, ADS, M> );
 #ifdef MaPI

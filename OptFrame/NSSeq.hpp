@@ -66,8 +66,6 @@ public:
    {
 	   return ( s == idComponent() ) || ( NS<R, ADS, M>::compatible(s) );
    }
-
-	virtual void print() const = 0;
 };
 
 #endif /*OPTFRAME_NSSEQ_HPP_*/

@@ -91,10 +91,11 @@ public:
 		return ( s == idComponent() ) || ( NSSeq<vector<T>, ADS, M>::compatible(s) );
 	}
 
-
-	virtual void print() const
+	virtual string toString() const
 	{
-		cout << "NSSeqVectorOrOpt{1..3}" << endl;
+		stringstream ss;
+		ss << "NSSeqVectorOrOpt{1..3}";
+		return ss.str();
 	}
 };
 

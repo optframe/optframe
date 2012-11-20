@@ -76,8 +76,6 @@ public:
    {
 	   return ( s == idComponent() ) || ( NSSeq<R, ADS, M>::compatible(s) );
    }
-
-	virtual void print() const = 0;
 };
 
 #endif /*OPTFRAME_NSENUM_HPP_*/

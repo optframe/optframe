@@ -102,12 +102,19 @@ public:
 		return idComponent();
 	}
 
-	virtual void print() const
+	virtual string toString() const
 	{
-		cout << "VND with [" << endl;
+		stringstream ss;
+		ss << "VND: [ ";
 		for(unsigned i=0; i<lsList.size(); i++)
-			lsList[i]->print();
-		cout << "]" << endl;
+		{
+			ss << lsList[i]->toString();
+			if(i != lsList.size()-1)
+				ss << ",";
+		}
+		ss << "]";
+
+		return ss.str();
 	}
 
 private:
