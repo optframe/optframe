@@ -130,6 +130,7 @@
 #include "Modules/DictionaryModule.hpp"
 #include "Modules/DropAllModule.hpp"
 #include "Modules/EchoModule.hpp"
+#include "Modules/EchoToFileModule.hpp"
 #include "Modules/EmpiricalModule.hpp"
 #include "Modules/EvaluateModule.hpp"
 #include "Modules/EvaluateToFileModule.hpp"
@@ -238,6 +239,7 @@ public:
 		loadModule(new DictionaryModule<R, ADS, M> );
 		loadModule(new DropAllModule<R, ADS, M> );
 		loadModule(new EchoModule<R, ADS, M> );
+		loadModule(new EchoToFileModule<R, ADS, M> );
 		loadModule(new EmpiricalModule<R, ADS, M> );
 		loadModule(new EvaluateModule<R, ADS, M> );
 		loadModule(new EvaluateToFileModule<R, ADS, M> );
