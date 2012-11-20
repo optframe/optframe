@@ -45,7 +45,7 @@ public:
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
-		cout << "exec_constructive: " << input << endl;
+		//cout << "exec_constructive: " << input << endl;
 		Scanner scanner(input);
 
 		if (!scanner.hasNext())
@@ -68,12 +68,12 @@ public:
 		str << Solution<R, ADS>::idComponent() << " " << new_id;
 		s_new_id = str.str();
 
-		cout << "'" << s_new_id << "' added." << endl;
+		//cout << "'" << s_new_id << "' added." << endl;
 
 		if (scanner.hasNext())
 		{
 			string new_name = scanner.next();
-			return OptFrameModule<R, ADS, M>::run_module("define", all_modules, allFunctions, factory, dictionary, new_name + " " + s_new_id);
+			return OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, new_name + " " + s_new_id);
 		}
 
 		return true;

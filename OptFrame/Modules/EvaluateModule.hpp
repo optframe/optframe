@@ -44,7 +44,7 @@ public:
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
-		cout << "evaluate: " << input << endl;
+		//cout << "evaluate: " << input << endl;
 		Scanner scanner(input);
 
 		if (!scanner.hasNext())

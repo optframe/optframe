@@ -133,7 +133,6 @@
 #include "Modules/EchoToFileModule.hpp"
 #include "Modules/EmpiricalModule.hpp"
 #include "Modules/EvaluateModule.hpp"
-#include "Modules/EvaluateToFileModule.hpp"
 #include "Modules/ExecModule.hpp"
 #include "Modules/ExecConstructiveModule.hpp"
 #include "Modules/ExportModule.hpp"
@@ -146,7 +145,6 @@
 #include "Modules/ListFromFileModule.hpp"
 #include "Modules/ListFromPopulationModule.hpp"
 #include "Modules/PauseModule.hpp"
-#include "Modules/PrintModule.hpp"
 #include "Modules/ProblemModule.hpp"
 #include "Modules/RandGenModule.hpp"
 #include "Modules/RandomNumberModule.hpp"
@@ -254,7 +252,6 @@ public:
 		loadModule(new EchoToFileModule<R, ADS, M> );
 		loadModule(new EmpiricalModule<R, ADS, M> );
 		loadModule(new EvaluateModule<R, ADS, M> );
-		loadModule(new EvaluateToFileModule<R, ADS, M> );
 		loadModule(new ExecModule<R, ADS, M> );
 		loadModule(new ExecConstructiveModule<R, ADS, M> );
 		loadModule(new ExportModule<R, ADS, M> );
@@ -267,7 +264,6 @@ public:
 		loadModule(new ListFromFileModule<R, ADS, M> );
 		loadModule(new ListFromPopulationModule<R, ADS, M> );
 		loadModule(new PauseModule<R, ADS, M> );
-		loadModule(new PrintModule<R, ADS, M> );
 		loadModule(new RandGenModule<R, ADS, M> );
 		loadModule(new RandomNumberModule<R, ADS, M> );
 		loadModule(new RandomNumberIntervalModule<R, ADS, M> );

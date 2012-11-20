@@ -45,7 +45,7 @@ public:
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
-		cout << "exec: " << input << endl;
+		//cout << "exec: " << input << endl;
 		Scanner scanner(input);
 
 		if (!scanner.hasNext())
@@ -83,7 +83,7 @@ public:
 		str << Solution<R, ADS>::idComponent() << " " << new_id;
 		s_new_id = str.str();
 
-		cout << "'" << s_new_id << "' added." << endl;
+		//cout << "'" << s_new_id << "' added." << endl;
 
 		if (scanner.hasNext())
 		{

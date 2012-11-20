@@ -52,7 +52,7 @@ public:
 
 	pair<Solution<R, ADS>&, Evaluation<M>&>* search(double timelimit = 100000000, double target_f = 0)
 	{
-		cout << "SimpleLocalSearch search(" << target_f << "," << timelimit << ")" << endl;
+		//cout << "SimpleLocalSearch search(" << target_f << "," << timelimit << ")" << endl;
 
 		Timer tnow;
 

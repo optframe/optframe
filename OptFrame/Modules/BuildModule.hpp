@@ -175,7 +175,7 @@ public:
       str << base << " " << new_id;
       string s_new_id = str.str();
 
-      cout << "'" << s_new_id << "' added." << endl;
+      //cout << "'" << s_new_id << "' added." << endl;
 
       if (scanner.hasNext())
       {

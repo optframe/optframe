@@ -87,11 +87,13 @@ public:
       return idComponent();
    }
 
-	virtual void print() const
-	{
-		cout << "Solution: "<< r << endl;
-      //cout << "ADS: "<< ads << endl;
-	}
+   virtual string toString() const
+   {
+	   stringstream ss;
+	   ss << "Solution: "<< r;
+	   //ss << "ADS: "<< ads;
+	   return ss.str();
+   }
 
 	virtual Solution<R, ADS>& operator= (const Solution<R, ADS>& s)
 	{

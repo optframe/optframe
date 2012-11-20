@@ -4,3 +4,9 @@ silent_define Evaluator    OptFrame:Evaluator
 silent_define NS           OptFrame:NS
 silent_define NSSeq        OptFrame:NS:NSSeq
 silent_define NSEnum       OptFrame:NS:NSSeq:NSEnum
+
+create_module print [ $component , $id ] [
+  to_string $component $id str,
+  echo str,
+  undefine str
+] 

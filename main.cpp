@@ -75,6 +75,8 @@ int main(int argc, char **argv)
 	//optframe.execute();
 	optframe.execute("read hexample.opt");
 
+	delete p;
+
 	cout << "Program ended successfully" << endl;
 
 	return 0;
