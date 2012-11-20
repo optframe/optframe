@@ -145,7 +145,7 @@ public:
 			string current    = scanFunc.next();
 			string cdiscarded = scanFunc.getDiscarded();
 
-			if(current == "(") // FUNCTION
+			if((current == "(") && OptFrameFunction::functionExists(last, allFunctions)) // FUNCTION
 			{
 				pair<string, string> p = OptFrameFunction::run_function(last, allFunctions, scanFunc.rest());
 

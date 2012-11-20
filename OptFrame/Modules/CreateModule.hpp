@@ -346,7 +346,7 @@ public:
 		else
 		{
 			modules.push_back(new GeneralModule<R, ADS, M> (name, parameters, commands));
-			cout << "module '" << name << "' created!" << endl;
+			//cout << "module '" << name << "' loaded." << endl;
 			return true;
 		}
 

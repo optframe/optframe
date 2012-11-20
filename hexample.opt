@@ -7,8 +7,6 @@ randgen system_seed time()
 echo
 
 build OptFrame:ComponentBuilder:LocalSearch:BI Evaluator 0 NSEnum 0 meu_bi
-echo
-
 
 exec_constructive Constructive 0 solucao_inicial
 print solucao_inicial
@@ -16,7 +14,6 @@ evaluate Evaluator 0 solucao_inicial
 echo
 
 build OptFrame:ComponentBuilder:CloneConstructive solucao_inicial c_sol_inicial
-echo
 
 build OptFrame:ComponentBuilder:SingleObjSearch:SimpleLocalSearch Evaluator 0 c_sol_inicial OptFrame:ComponentBuilder:LocalSearch:Empty constr2
 exec 0 60 constr2 sol2

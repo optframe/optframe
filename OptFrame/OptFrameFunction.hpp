@@ -57,6 +57,14 @@ public:
 		return make_pair("", input);
 	}
 
+	static bool functionExists(string func, vector<OptFrameFunction*>& allFunctions)
+	{
+		for(unsigned int i=0;i<allFunctions.size();i++)
+			if(func==allFunctions[i]->id())
+				return true;
+		return false;
+	}
+
 	virtual ~OptFrameFunction()
 	{
 	}
@@ -111,7 +119,7 @@ public:
 			string current    = scanFunc.next();
 			string cdiscarded = scanFunc.getDiscarded();
 
-			if(current == "(") // FUNCTION
+			if((current == "(") && OptFrameFunction::functionExists(last, allFunctions)) // FUNCTION
 			{
 				pair<string, string> p = OptFrameFunction::run_function(last, allFunctions, scanFunc.rest());
 
