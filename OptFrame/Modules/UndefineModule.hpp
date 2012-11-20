@@ -41,19 +41,21 @@ public:
 		return "undefine word";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string, string>* dictionary, string rest)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string, string>* dictionary, string rest)
 	{
 		Scanner scanner(rest);
 
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		string word = scanner.next();
 
 		dictionary->erase(word);
+
+		return true;
 	}
 
 	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>*, string input)

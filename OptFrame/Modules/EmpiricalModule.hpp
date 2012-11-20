@@ -49,14 +49,14 @@ public:
 		return u;
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return true;
 		}
 
 		int n = scanner.nextInt();
@@ -82,7 +82,7 @@ public:
 		if (!file)
 		{
 			cout << "Error creating file '" << filename << "'" << endl;
-			return;
+			return true;
 		}
 
 		double t_now = 0;
@@ -103,7 +103,7 @@ public:
 			if(!result)
 			{
 				cout << "EMPIRICAL ERROR!" << endl;
-				exit(1);
+				return false;
 			}
 
 			Solution<R, ADS>* s2 = &result->first;
@@ -129,6 +129,7 @@ public:
 		fprintf(file, "PARAMETERS:%s\n", input.c_str());
 
 		fclose(file);
+		return true;
 	}
 
 };

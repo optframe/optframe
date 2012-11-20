@@ -175,9 +175,7 @@ private:
 			return false;
 
 		string rest = m->preprocess(allFunctions, dictionary, scanner.rest());
-		m->run(all_modules, allFunctions, factory, dictionary, rest);
-
-		return true;
+		return m->run(all_modules, allFunctions, factory, dictionary, rest);
 	}
 
 public:
@@ -190,18 +188,20 @@ public:
 	{
 		return "for_each";
 	}
+
 	string usage()
 	{
 		return "for_each $var list_of_values list_of_commands";
 	}
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		string var = scanner.next();
@@ -209,7 +209,7 @@ public:
 		if (var[0] != '$')
 		{
 			cout << "Missing operator $ in variable: " << var << endl;
-			return;
+			return false;
 		}
 
 		vector < string >& values   = OptFrameList::readList(scanner);
@@ -224,18 +224,23 @@ public:
 				if(command.at(0)=='%') // first line comment
 					command = "";
 
-				if ((command != "") && !exec_command(all_modules, allFunctions, factory, dictionary, command))
-				{
-					if(commands.at(c)=="")
-						cout << "for_each module: empty command! (perhaps an extra comma in list?)" << endl;
-					else
-						cout << "for_each module: error in command '" << commands.at(c) << "'" << endl;
-				}
+				if (command != "")
+					if(!exec_command(all_modules, allFunctions, factory, dictionary, command))
+					{
+						if(commands.at(c)=="")
+							cout << "for_each module: empty command! (perhaps an extra comma in list?)" << endl;
+						else
+							cout << "for_each module: error in command '" << commands.at(c) << "'" << endl;
+
+						return false;
+					}
 			}
 		}
 
 		delete &values;
 		delete &commands;
+
+		return true;
 	}
 
 	// should preprocess only until list of commands

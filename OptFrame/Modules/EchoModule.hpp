@@ -42,9 +42,10 @@ public:
 		return "echo text";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string, string>* dictionary, string text)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string, string>* dictionary, string text)
 	{
 		printf("%s\n", text.c_str());
+		return true;
 	}
 
 };

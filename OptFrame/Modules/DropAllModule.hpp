@@ -36,15 +36,18 @@ public:
 	{
 		return "drop_all";
 	}
+
 	string usage()
 	{
 		return "drop_all";
 	}
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		cout << "drop_all" << endl;
 
-      factory->drop_all();
+		factory->drop_all();
+		return true;
 	}
 
 };

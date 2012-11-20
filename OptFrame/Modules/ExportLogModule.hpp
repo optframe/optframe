@@ -41,14 +41,14 @@ public:
 		return "export_log method 0 filename";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		string m = scanner.next();
@@ -57,7 +57,7 @@ public:
 		{
 			cout << "First parameter must be 'method'!" << endl;
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		int id = scanner.nextInt();
@@ -77,6 +77,8 @@ public:
 		fprintf(pFile, "%s", (stream.str()).c_str());
 
 		fclose(pFile);
+
+		return true;
 	}
 
 };

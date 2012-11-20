@@ -39,6 +39,7 @@ public:
 	{
 		return "testls";
 	}
+
 	string usage()
 	{
 		string u = "test N T TF BF EVAL OptFrame:constructive id OptFrame:LocalSearch id OUTPUTFILE [solution_name]\n WHERE:\n";
@@ -54,14 +55,14 @@ public:
 		return u;
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		int n = scanner.nextInt();
@@ -76,7 +77,7 @@ public:
 		if(!constructive)
 		{
 			cout << "ERROR IN TEST LOCAL SEARCH MODULE! NO SUCH CONSTRUCTIVE!" << endl;
-			exit(1);
+			return false;
 		}
 
 		pair<LocalSearch<R, ADS, M>*, string> method = factory->createLocalSearch(scanner.rest());
@@ -101,7 +102,7 @@ public:
 		if (!file)
 		{
 			cout << "Error creating file '" << filename << "'" << endl;
-			return;
+			return false;
 		}
 
 		fprintf(file, "PARAMETERS:%s\n", input.c_str());
@@ -204,8 +205,10 @@ public:
 		if (scan_rest.hasNext())
 		{
 			string new_name = scan_rest.next();
-			OptFrameModule<R, ADS, M>::run_module("define", all_modules, allFunctions, factory, dictionary, new_name + " " + s_new_id);
+			return OptFrameModule<R, ADS, M>::run_module("define", all_modules, allFunctions, factory, dictionary, new_name + " " + s_new_id);
 		}
+
+		return true;
 	}
 
 };

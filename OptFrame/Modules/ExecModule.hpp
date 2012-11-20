@@ -43,7 +43,7 @@ public:
 		return "exec target_fo timelimit sios_method output_solution_name [spent_time]";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		cout << "exec: " << input << endl;
 		Scanner scanner(input);
@@ -51,7 +51,7 @@ public:
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		double target_fo = scanner.nextDouble();
@@ -72,7 +72,7 @@ public:
 		if(!result)
 		{
 			cout << "NO RESULT! EXEC ERROR!" << endl;
-			exit(1);
+			return false;
 		}
 
 		Solution<R, ADS>& sFinal = result->first;
@@ -88,7 +88,8 @@ public:
 		if (scanner.hasNext())
 		{
 			string new_name = scanner.next();
-			OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, new_name + " " + s_new_id);
+			if(!OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, new_name + " " + s_new_id))
+				return false;
 		}
 
 		if (scanner.hasNext())
@@ -96,10 +97,11 @@ public:
 			string var_time = scanner.next();
 			stringstream ss;
 			ss << var_time << " " << time;
-			OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str());
+			if(!OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str()))
+				return false;
 		}
 
-
+		return true;
 	}
 
 };

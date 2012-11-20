@@ -42,7 +42,7 @@ public:
 		return u;
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		cout << "evaluate: " << input << endl;
 		Scanner scanner(input);
@@ -50,7 +50,7 @@ public:
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		Evaluator<R, ADS, M>* eval = factory->read_ev(scanner);
@@ -61,7 +61,7 @@ public:
 		{
 			cout << "Second parameter must be a 'loadsol'!" << endl;
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		string id = scanner.next();
@@ -77,12 +77,16 @@ public:
 			string ename = scanner.next();
 			stringstream ss;
 			ss << ename << " " << e->evaluation();
-			OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str());
+			delete e;
+			return OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str());
 		}
 		else
+		{
 			e->print();
+			delete e;
+			return true;
+		}
 
-		delete e;
 	}
 
 };

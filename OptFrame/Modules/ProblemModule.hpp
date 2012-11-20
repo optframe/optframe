@@ -36,15 +36,18 @@ public:
 	{
 		return "problem";
 	}
+
 	string usage()
 	{
 		return "problem instance_path";
 	}
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
-		read(input, factory);
+		return read(input, factory);
 	}
-	virtual void read(string filename, HeuristicFactory<R, ADS, M>* factory) = 0;
+
+	virtual bool read(string filename, HeuristicFactory<R, ADS, M>* factory) = 0;
 };
 
 #endif /* PROBLEMMODULE_HPP_ */

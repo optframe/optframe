@@ -40,7 +40,7 @@ public:
 	{
 		return "create_list_of_components list type list_name";
 	}
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -56,12 +56,12 @@ public:
 			if(!comp)
 			{
 				cout << "create_list_of_components: error, component #" << i << " is NULL! " << endl;
-				return;
+				return false;
 			}
 			else if(!comp->compatible(factory->typeOfList(type)))
 			{
 				cout << "create_list_of_components: error, component #" << i << " ('" << comp->id() <<"') in list incompatible with type '" << factory->typeOfList(type) << "'" << endl;
-				return;
+				return false;
 			}
 			else
 				componentList.push_back(comp);
@@ -75,7 +75,7 @@ public:
 
 		cout << "'" << factory->typeOfList(type) << "[] " << idx << "' added." << endl;
 
-		OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str());
+		return OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str());
 	}
 
 };

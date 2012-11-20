@@ -41,13 +41,13 @@ public:
 		return "read filename";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string,string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string,string>* dictionary, string input)
 	{
 		Scanner trim(input);
 		if(!trim.hasNext()) // no file
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		// Open file
@@ -61,7 +61,7 @@ public:
 		{
 			cout << "File '"<< e.getFile() << "' not found!" << endl;
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		vector<string> commands;
@@ -101,7 +101,7 @@ public:
          {
             cout << "read error: wrong number of '[' and ']'" << endl;
             delete scanner;
-            return;
+            return false;
          }
       }
 
@@ -126,7 +126,9 @@ public:
 				{
 					string original = s2.rest();
 					string after_preprocess = all_modules[i]->preprocess(allFunctions, dictionary, original);
-					all_modules[i]->run(all_modules, allFunctions, factory, dictionary, after_preprocess);
+					if(!all_modules[i]->run(all_modules, allFunctions, factory, dictionary, after_preprocess))
+						return false;
+
 					notfound = false;
 					break;
 				}
@@ -136,11 +138,15 @@ public:
 				if(command=="exit")
 					break;
 				else
+				{
 					cout << "Warning: command '"<<command<<"' not found!"<<endl;
+					return false;
+				}
 			}
 		}
 
 		delete scanner;
+		return true;
 	}
 
 };

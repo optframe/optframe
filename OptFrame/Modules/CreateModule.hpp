@@ -216,14 +216,14 @@ public:
 		return u;
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		vector < string > values;
@@ -232,7 +232,7 @@ public:
 			if (!scanner.hasNext())
 			{
 				cout << "Usage: " << usage() << endl;
-				return;
+				return false;
 			}
 			else
 				values.push_back(scanner.next());
@@ -247,9 +247,11 @@ public:
 			if (!exec_command(all_modules, allFunctions, factory, dictionary, command))
 			{
 				cout << "Error in command: " << command << endl;
+				return false;
 			}
 		}
 
+		return true;
 	}
 };
 
@@ -282,14 +284,14 @@ public:
 		return "create_module name list_of_$parameters list_of_commands";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		string name = scanner.next();
@@ -297,7 +299,7 @@ public:
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		vector < string > parameters = OptFrameList::readList(scanner);
@@ -306,13 +308,13 @@ public:
 			if (parameters[i][0] != '$')
 			{
 				cout << "Missing operator $ in variable: " << parameters[i] << endl;
-				return;
+				return false;
 			}
 
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		vector < string > commands;
@@ -322,11 +324,15 @@ public:
 		OptFrameModule<R, ADS, M>* m = getModule(modules, name);
 
 		if (m != NULL)
+		{
 			cout << "error: module with name '" << name << "' already exists!" << endl;
+			return false;
+		}
 		else
 		{
 			modules.push_back(new GeneralModule<R, ADS, M> (name, parameters, commands));
 			cout << "module '" << name << "' created!" << endl;
+			return true;
 		}
 
 	}

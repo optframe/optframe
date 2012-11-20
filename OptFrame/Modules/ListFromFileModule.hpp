@@ -41,13 +41,13 @@ public:
 		return "list_from_file new_list_name filename";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scan(input);
 		if (!scan.hasNext()) // no file
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		string listName = scan.next();
@@ -55,7 +55,7 @@ public:
 		if (!scan.hasNext()) // no file
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		// Open file
@@ -64,11 +64,11 @@ public:
 		try
 		{
 			scanner = new Scanner(new File(scan.trim(scan.rest())));
-		} catch (FileNotFound e)
+		} catch (FileNotFound& e)
 		{
 			cout << "File '" << e.getFile() << "' not found!" << endl;
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		vector < string > elements;
@@ -98,7 +98,7 @@ public:
 
 		listContent << "]";
 
-		OptFrameModule<R, ADS, M>::run_module("define", all_modules, allFunctions, factory, dictionary, listName + " " + listContent.str());
+		return OptFrameModule<R, ADS, M>::run_module("define", all_modules, allFunctions, factory, dictionary, listName + " " + listContent.str());
 	}
 
 };

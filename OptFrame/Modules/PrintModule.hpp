@@ -36,6 +36,7 @@ public:
 	{
 		return "print";
 	}
+
 	string usage()
 	{
 		string u = "print OptFrame: id";
@@ -43,7 +44,7 @@ public:
 		return u;
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		cout << "print: " << input << endl;
 		Scanner scanner(input);
@@ -51,11 +52,13 @@ public:
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		OptFrameComponent* component = factory->getNextComponent(scanner);
 		component->print();
+
+		return true;
 	}
 
 };

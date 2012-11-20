@@ -43,14 +43,14 @@ public:
 		return "random_number positive_integer [stored_number]\n Where: 'positive_integer' is a positive integer value; 'stored_number' is the randomized number from [0,max).";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 
@@ -58,7 +58,7 @@ public:
 		{
 			cout << "missing 'positive_integer' positive integer value!" << endl;
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		int max = scanner.nextInt();
@@ -71,10 +71,13 @@ public:
 			string new_name = scanner.next();
 			stringstream ss;
 			ss << new_name << " " << value;
-			OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str());
+			return OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str());
 		}
 		else
+		{
 			cout << "random_number module: random number is " << value << endl;
+			return true;
+		}
 	}
 
 };

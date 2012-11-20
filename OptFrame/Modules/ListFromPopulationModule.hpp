@@ -41,13 +41,13 @@ public:
 		return "list_from_population new_list_name loadpop id";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scan(input);
 		if (!scan.hasNext()) // no file
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		string listName = scan.next();
@@ -55,7 +55,7 @@ public:
 		if (!scan.hasNext()) // no file
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		string strloadpop = scan.next();
@@ -63,7 +63,7 @@ public:
 		if (strloadpop != "loadpop")
 		{
 			cout << "expected 'loadpop id', but found '" << strloadpop << "'" << endl;
-			return;
+			return false;
 		}
 
 		string id = scan.next();
@@ -90,7 +90,7 @@ public:
 
 		listContent << " ]";
 
-		OptFrameModule<R, ADS, M>::run_module("define", all_modules, allFunctions, factory, dictionary, listName + " " + listContent.str());
+		return OptFrameModule<R, ADS, M>::run_module("define", all_modules, allFunctions, factory, dictionary, listName + " " + listContent.str());
 	}
 
 };

@@ -43,14 +43,14 @@ public:
 		return "random_number_interval begin end [stored_number]\n Where: 'begin' and 'end' are positive integer values; 'stored_number' is the randomized number from [begin,end].";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 
@@ -58,7 +58,7 @@ public:
 		{
 			cout << "missing 'begin' positive integer value!" << endl;
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		int begin = scanner.nextInt();
@@ -67,7 +67,7 @@ public:
 		{
 			cout << "missing 'end' positive integer value!" << endl;
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		int end = scanner.nextInt();
@@ -80,10 +80,13 @@ public:
 			string new_name = scanner.next();
 			stringstream ss;
 			ss << new_name << " " << value;
-			OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str());
+			return OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str());
 		}
 		else
+		{
 			cout << "random_number_interval module: random number is " << value << endl;
+			return true;
+		}
 	}
 
 };

@@ -35,12 +35,13 @@ public:
 	{
 		return "usage";
 	}
+
 	string usage()
 	{
 		return "usage module_name";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string,string>* dictionary, string rest)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string,string>* dictionary, string rest)
 	{
 		Scanner scanner(rest);
 
@@ -57,7 +58,12 @@ public:
 			}
 
 		if(notfound)
+		{
 			cout << "Module '"<<command<<"' not found!"<<endl;
+			return false;
+		}
+
+		return true;
 	}
 
 };

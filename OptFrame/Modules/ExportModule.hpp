@@ -51,7 +51,7 @@ public:
 		return out;
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		//cout << "export: " << input << endl;
 		Scanner scanner(input);
@@ -59,7 +59,7 @@ public:
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		string sol = scanner.next();
@@ -69,7 +69,7 @@ public:
 			cout << "First parameter must be either 'initsol' or 'loadsol'!"
 					<< endl;
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		string id = scanner.next();
@@ -125,71 +125,6 @@ public:
 				}
 			}
 		}
-		/*
-		else if (id == "[") // TODO
-		{
-			bool right_bracket = false;
-
-			vector<string> solutions;
-
-			while (scanner.hasNext())
-			{
-				string temp = scanner.next();
-
-				if (temp == "]")
-				{
-					right_bracket = true;
-					break;
-				}
-				else
-				{
-					solutions.push_back(scanner.next());
-				}
-			}
-
-			if (right_bracket)
-			{
-				if (sol == "initsol")
-				{
-					for (int i = 0; i < (solutions.size()); i++)
-					{
-						Scanner s2((sol + " " + solutions[i]));
-
-						Solution<R, ADS>
-								* s =
-										&(factory->read_initsol(&s2))->generateSolution();
-
-						stringstream stream;
-
-						stream << s->getR() << endl;
-
-						fprintf(pFile, "%s", (stream.str()).c_str());
-					}
-				}
-				else
-				{
-					for (int i = 0; i < (solutions.size()); i++)
-					{
-						Scanner s2((sol + " " + solutions[i]));
-
-						Solution<R, ADS>* s = factory->read_loadsol(&s2);
-
-						stringstream stream;
-
-						stream << s->getR() << endl;
-
-						fprintf(pFile, "%s", (stream.str()).c_str());
-					}
-				}
-			}
-			else
-			{
-				cerr << "Right Bracket \"]\" not found." << endl;
-				//exit(1);
-				return;
-			}
-		}
-		*/
 		else // Saving only solution
 		{
 			Scanner s2(sol + " " + id);
@@ -217,6 +152,8 @@ public:
 		}
 
 		fclose(pFile);
+
+		return true;
 	}
 };
 

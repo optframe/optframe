@@ -42,7 +42,7 @@ public:
 		return "check [initsol id | loadsol id] evaluator ns_seq_list";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		cout << "check: " << input << endl;
 		Scanner scanner(input);
@@ -50,7 +50,7 @@ public:
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		string sol = scanner.next();
@@ -59,7 +59,7 @@ public:
 		{
 			cout << "First parameter must be either 'initsol' or 'loadsol'!" << endl;
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		string id = scanner.next();
@@ -85,7 +85,7 @@ public:
 			if (!s)
 			{
 				cout << "NULL Solution. [Failed]" << endl;
-				return;
+				return false;
 			}
 			cout << "[Ok]" << endl;
 		}
@@ -109,7 +109,7 @@ public:
 		if (&s2->getR() == &s->getR())
 		{
 			cout << "Error! Solution has the SAME representation object. Maybe a pointer-based representation?" << endl;
-			return;
+			return false;
 		}
 		cout << "2.2 - Representation Copy [Ok]" << endl;
 
@@ -331,6 +331,7 @@ public:
 		// ==========================================================
 
 		cout << "Tests finished successfully!" << endl;
+		return true;
 	}
 
 };

@@ -43,14 +43,14 @@ public:
 		return "randgen system_seed seed\n Where: 'seed' is a positive integer value for the system random number generator.";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		string ss = scanner.next(); // drop system_seed option
@@ -59,14 +59,14 @@ public:
 		{
 			cout << "invalid option: '" << ss << "'" << endl;
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		if (!scanner.hasNext())
 		{
 			cout << "missing 'seed' positive integer value!" << endl;
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		unsigned long seed = scanner.nextInt();
@@ -76,6 +76,8 @@ public:
 		RandGen& rg = factory->getRandGen();
 		rg.setSeed(seed);
 		rg.initialize();
+
+		return true;
 	}
 
 };

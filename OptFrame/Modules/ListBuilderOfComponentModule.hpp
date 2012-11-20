@@ -42,7 +42,7 @@ public:
 		return "list_builder_of_component component_name [store_list]\nWhere: store_list is an optional variable to store the builders.";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -64,6 +64,8 @@ public:
 					cout << builders[i].second[j].first << "=>'" << builders[i].second[j].second << "' ";
 				cout << endl;
 			}
+
+			return true;
 		}
 		else
 		{
@@ -87,9 +89,8 @@ public:
 			}
 			ss << " ]";
 
-			OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str());
+			return OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str());
 		}
-
 	}
 
 };

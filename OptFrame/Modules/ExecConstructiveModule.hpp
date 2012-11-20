@@ -43,7 +43,7 @@ public:
 		return "exec OptFrame:Constructive [output_solution_name]";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
 	{
 		cout << "exec_constructive: " << input << endl;
 		Scanner scanner(input);
@@ -51,7 +51,7 @@ public:
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return;
+			return false;
 		}
 
 		Constructive<R, ADS>* cons;
@@ -73,9 +73,10 @@ public:
 		if (scanner.hasNext())
 		{
 			string new_name = scanner.next();
-			OptFrameModule<R, ADS, M>::run_module("define", all_modules, allFunctions, factory, dictionary, new_name + " " + s_new_id);
+			return OptFrameModule<R, ADS, M>::run_module("define", all_modules, allFunctions, factory, dictionary, new_name + " " + s_new_id);
 		}
 
+		return true;
 	}
 
 };
