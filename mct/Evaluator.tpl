@@ -17,18 +17,25 @@
 
 #define EPSILON_$project 0.0001
 
+namespace $project
+{
+
 class $projectEvaluator: public Evaluator<Rep$project $commamproject>
 {
 private:
-	$projectProblemInstance& p$project;
+	ProblemInstance& p$project;
 
 	// Your private vars
 
 public:
-	$projectEvaluator($projectProblemInstance& _p$project): // If necessary, add more parameters
+	$projectEvaluator(ProblemInstance& _p$project): // If necessary, add more parameters
 	p$project(_p$project)
 	{
 		// Put the rest of your code here
+	}
+	
+	virtual ~$projectEvaluator()
+	{
 	}
 
 	Evaluation$project& evaluate(const Rep$project& rep)
@@ -47,6 +54,8 @@ public:
 	}
 
 };
+
+}
 
 #endif /*$project_EVALUATOR_HPP_*/
 

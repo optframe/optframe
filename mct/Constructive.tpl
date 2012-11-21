@@ -1,7 +1,7 @@
-#ifndef $project_INITIALSOLUTION_$initialsolution_HPP_
-#define $project_INITIALSOLUTION_$initialsolution_HPP_
+#ifndef $project_CONSTRUCTIVE_$constructive_HPP_
+#define $project_CONSTRUCTIVE_$constructive_HPP_
 
-#include "../../OptFrame/InitialSolution.h"
+#include "../../OptFrame/Constructive.h"
 #include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.hpp"
@@ -18,17 +18,24 @@
 
 using namespace std;
 
-class $projectInitialSolution$initialsolution: public InitialSolution<Rep$project>
+namespace $project
+{
+
+class Constructive$constructive: public Constructive<Rep$project>
 {
 private:
-   $projectProblemInstance& p$project;
+   ProblemInstance& p$project;
 
    // Your private vars
 
 public:
 	
-	$projectInitialSolution$initialsolution($projectProblemInstance& _p$project): // If necessary, add more parameters
+	Constructive$constructive(ProblemInstance& _p$project): // If necessary, add more parameters
         p$project(_p$project)
+	{
+	}
+	
+	virtual ~Constructive$constructive()
 	{
 	}
 
@@ -41,4 +48,6 @@ public:
 	
 };
 
-#endif /*$project_INITIALSOLUTION_$initialsolution_HPP_*/
+}
+
+#endif /*$project_CONTRUCTIVE_$constructive_HPP_*/

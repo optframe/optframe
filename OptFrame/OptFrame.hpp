@@ -359,7 +359,7 @@ public:
 			for (unsigned int i = 0; i < modules.size(); i++)
 				if (command == modules[i]->id())
 				{
-					string r = modules[i]->preprocess(dictionary, s2.rest());
+					string r = modules[i]->preprocess(functions, dictionary, s2.rest());
 
 					if (r == "INVALID_PARAM")
 					{

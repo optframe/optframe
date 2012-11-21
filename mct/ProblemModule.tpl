@@ -13,11 +13,14 @@
 
 #include "ProblemInstance.hpp"
 
+namespace $project
+{
+
 class $projectProblemModule : public ProblemModule<Rep$project $commamproject>
 {
 public:
 
-    void read(string filename, HeuristicFactory<Rep$project $commamproject>* hf)
+    bool read(string filename, HeuristicFactory<Rep$project $commamproject>* hf)
     {
         File* file;
 
@@ -25,25 +28,29 @@ public:
         {
            file = new File(filename);
         }
-        catch (FileNotFound f)
+        catch (FileNotFound& f)
         {
            cout << "File '" << filename <<"' not found" << endl;
-           return;
+           return false;
         }
 
         Scanner scanner(file);
 
-        $projectProblemInstance* p = new $projectProblemInstance(scanner);
+        ProblemInstance* p = new ProblemInstance(scanner);
 
         // add everything to the HeuristicFactory 'hf'
 
-        hf->add_ev(new $projectEvaluator(*p));
+        hf->addComponent(*new $projectEvaluator(*p));
 
-        hf->add_initsol(new $projectInitialSolution$initialsolution(*p));
+        hf->addComponent(*new Constructive$constructive(*p));
 		
         cout << "problem '" << filename << "' loaded successfully" << endl;
+        
+        return true;
     }
 };
+
+}
 
 #endif /*$project_PROBLEMMODULE_HPP_*/
 

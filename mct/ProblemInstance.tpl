@@ -7,18 +7,27 @@
 
 using namespace std;
 
-class $projectProblemInstance
+namespace $project
+{
+
+class ProblemInstance
 {
 private:
 	// Your private vars
 
 public:
-	$projectProblemInstance(Scanner& scanner)
+	ProblemInstance(Scanner& scanner)
 	{
 		// Put here your code
 		// You can read the input data from the 'scanner' object
 	}
+	
+	virtual ~ProblemInstance()
+	{
+	}
 };
+
+}
 
 #endif /*$project_PROBLEMINSTANCE_HPP_*/
 

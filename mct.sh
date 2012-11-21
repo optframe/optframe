@@ -378,39 +378,39 @@ done
 #             Initial Solution
 ##############################################
 
-echo -e "\nHow many Initial Solution Generators will be there in your project?"
+echo -e "\nHow many Constructive methods will be there in your project?"
 read nbISG
 
 for ((i=1; i<=$nbISG; i++ ))
 do
 
     if [ $i -eq 1 ];
-    then echo "Type the name of your 1st Initial Solution Generator:"
+    then echo "Type the name of your 1st Constructive:"
     elif [ $i -eq 2 ];
-    then echo "Type the name of your 2nd Initial Solution Generator:"
+    then echo "Type the name of your 2nd Constructive:"
     elif [ $i -eq 3 ];
-    then echo "Type the name of your 3rd Initial Solution Generator:"
-    else echo "Type the name of your ${x}th Initial Solution Generator:"
+    then echo "Type the name of your 3rd Constructive:"
+    else echo "Type the name of your ${x}th Constructive:"
     fi
 
-    read initialsolution
+    read constructive
 
-    var_inc="./$project/InitialSolution${initialsolution}.hpp"
-    var="./MyProjects/$project/InitialSolution${initialsolution}.hpp"
+    var_inc="./$project/Constructive${constructive}.hpp"
+    var="./MyProjects/$project/Constructive${constructive}.hpp"
     var_tmp=$var".tmp"
 
-    if cp ./mct/InitialSolution.tpl $var
-    then echo "8.$i Creating Initial Solution Generator $initialsolution ...[ok]"
+    if cp ./mct/Constructive.tpl $var
+    then echo "8.$i Creating Constructive $constructive ...[ok]"
          t="s/\$project/$project/g"  
          sed $t < $var > $var_tmp
          mv $var_tmp $var
          
-         t="s/\$initialsolution/$initialsolution/g"  
+         t="s/\$constructive/$constructive/g"  
          sed $t < $var > $var_tmp
          mv $var_tmp $var
          
          echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
-    else echo "8.$i Creating Initial Solution Generator $initialsolution ...[fail]"
+    else echo "8.$i Creating Constructive $constructive ...[fail]"
          exit
     fi
 done
@@ -435,7 +435,7 @@ then echo "9. Creating ProblemModule...[ok]"
      sed -e "$t" < $var > $var_tmp
      mv $var_tmp $var
 
-     t="s/\$initialsolution/$initialsolution/g"  
+     t="s/\$constructive/$constructive/g"  
      sed "$t" < $var > $var_tmp
      mv $var_tmp $var
 
