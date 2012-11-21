@@ -17,3 +17,9 @@ create_module evaluate_to_file [ $evaluator , $idev , $solution , $ids , $file ]
   undefine optframe_e
 ] 
 
+create_module print_to_file [ $component , $id , $file ] [
+  to_string $component $id optframe_str,
+  echo_to_file $file optframe_str,
+  undefine optframe_str
+] 
+
