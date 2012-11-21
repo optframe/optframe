@@ -584,12 +584,7 @@ public:
 
 		for(iter2 = componentLists.begin(); iter2 != componentLists.end(); iter2++)
 		{
-			vector<vector<OptFrameComponent*> > vv = iter2->second;
-
-			for (unsigned int i = 0; i < vv.size(); i++)
-				for(unsigned int j=0; j<vv[i].size(); j++)
-					delete vv[i][j];
-
+			// Should not delete the components inside lists. They're already deleted!
 			iter2->second.clear();
 		}
 	}
