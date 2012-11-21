@@ -51,6 +51,9 @@ private:
 
 	string var_preprocess(string var, string value, string command)
 	{
+		if(command.length() < var.length())
+			return command; // no possible variable!
+
 		string new_command = "";
 		string rest = "";
 		int dollar_pos = -1;
