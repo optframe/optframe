@@ -42,13 +42,11 @@ public:
 
 	string usage()
 	{
-		string u = "test N T TF BF EVAL OptFrame:constructive id OptFrame:LocalSearch id OUTPUTFILE [solution_name]\n WHERE:\n";
+		string u = "test N T TF BF OptFrame:Evaluator id OptFrame:Constructive id OptFrame:LocalSearch id OUTPUTFILE [solution_name]\n WHERE:\n";
 		u += "N is the number of tests to be executed;\n";
 		u += "T is the timelimit, in seconds, for each test; (0 for no timelimit)\n";
 		u += "TF is the target evaluation function value;\n";
 		u += "BF is the best known evaluation function value;\n";
-		u += "EVAL is the main evaluator; (e.g. ev 0)\n";
-		u += "METHOD is the method to be tested with its own parameters;\n";
 		u += "OUTPUTFILE is the output file;\n";
 		u += "[solution_name] is a name given to the best found solution (optional).";
 
@@ -76,7 +74,7 @@ public:
 		factory->readComponent(constructive, scanner);
 		if(!constructive)
 		{
-			cout << "ERROR IN TEST LOCAL SEARCH MODULE! NO SUCH CONSTRUCTIVE!" << endl;
+			cout << "testls module: ERROR IN TEST LOCAL SEARCH MODULE! NO SUCH CONSTRUCTIVE!" << endl;
 			return false;
 		}
 
@@ -197,15 +195,15 @@ public:
 		int new_id = factory->addComponent(*s_star);
 
 		stringstream str;
-		str << "OptFrame:loadsol " << new_id;
+		str << Solution<R, ADS>::idComponent() << " " << new_id;
 		string s_new_id = str.str();
 
-		cout << "'" << s_new_id << "' added." << endl;
+		//cout << "'" << s_new_id << "' added." << endl;
 
 		if (scan_rest.hasNext())
 		{
 			string new_name = scan_rest.next();
-			return OptFrameModule<R, ADS, M>::run_module("define", all_modules, allFunctions, factory, dictionary, new_name + " " + s_new_id);
+			return OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, new_name + " " + s_new_id);
 		}
 
 		return true;

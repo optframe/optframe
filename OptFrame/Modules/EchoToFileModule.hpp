@@ -53,7 +53,7 @@ public:
 
 		string filename = scanner.next();
 
-		FILE* file = fopen(filename.c_str(), "w");
+		FILE* file = fopen(filename.c_str(), "a");
 
 		if(!file)
 		{

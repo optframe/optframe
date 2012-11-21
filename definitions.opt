@@ -6,7 +6,14 @@ silent_define NSSeq        OptFrame:NS:NSSeq
 silent_define NSEnum       OptFrame:NS:NSSeq:NSEnum
 
 create_module print [ $component , $id ] [
-  to_string $component $id str,
-  echo str,
-  undefine str
+  to_string $component $id optframe_str,
+  echo optframe_str,
+  undefine optframe_str
 ] 
+
+create_module evaluate_to_file [ $evaluator , $idev , $solution , $ids , $file ] [
+  evaluate $evaluator $idev $solution $ids optframe_e,
+  echo_to_file $file optframe_e,
+  undefine optframe_e
+] 
+
