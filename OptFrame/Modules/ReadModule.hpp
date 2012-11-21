@@ -66,9 +66,14 @@ public:
 
 		vector<string> commands;
 
-	   while(scanner->hasNext())
-      {
-         string line = scanner->nextLine();
+		while(scanner->hasNext())
+		{
+			string line = scanner->nextLine();
+
+			if(line.length()==0)
+				continue;
+			if(line[0]=='%')
+				continue;
 
          int brackets = 0;
 
