@@ -90,7 +90,7 @@ public:
 
 			Move<R, ADS, M>& m = ns[x]->move(s);
 
-			if (m.canBeApplied(e, s))
+			if (m.canBeApplied(s))
 			{
 				a++;
 				delete &m.apply(e, s);
