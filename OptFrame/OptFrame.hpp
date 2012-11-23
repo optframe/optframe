@@ -365,7 +365,7 @@ public:
 						break;
 					}
 
-					modules[i]->run(modules, functions, &factory, dictionary, r);
+					modules[i]->run(modules, functions, factory, dictionary, r);
 					notfound = false;
 					break;
 				}
