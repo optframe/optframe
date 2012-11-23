@@ -41,7 +41,7 @@ public:
 		return "undefine word";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string, string>* dictionary, string rest)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string, string>& dictionary, string rest)
 	{
 		Scanner scanner(rest);
 
@@ -53,7 +53,7 @@ public:
 
 		string word = scanner.next();
 
-		dictionary->erase(word);
+		dictionary.erase(word);
 
 		return true;
 	}

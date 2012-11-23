@@ -83,7 +83,7 @@ public:
 	 \endportuguese
 	 */
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string, string>*, string command)
+	bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string, string>&, string command)
 	{
 		int c = system(command.c_str());
 		return true; // TODO: get return value from external command!

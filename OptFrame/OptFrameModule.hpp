@@ -46,11 +46,11 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_E
 class OptFrameModule
 {
 protected:
-	bool run_module(string mod, vector<OptFrameModule<R, ADS, M>*> v, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* f, map<string,string>* dictionary, string input)
+	bool run_module(string mod, vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& f, map<string,string>& dictionary, string input)
 	{
-		for(unsigned int i=0;i<v.size();i++)
-			if(mod==v[i]->id())
-				return v[i]->run(v, allFunctions, f, dictionary, input);
+		for(unsigned int i=0;i<allModules.size();i++)
+			if(mod==allModules[i]->id())
+				return allModules[i]->run(allModules, allFunctions, f, dictionary, input);
 
 		cout << "Module '"<<mod<<"' not found." << endl;
 		return false;
@@ -65,14 +65,14 @@ public:
 	virtual string id() = 0;
 	virtual string usage() = 0;
 
-	virtual bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string,string>* dictionary, string) = 0;
+	virtual bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string,string>& dictionary, string) = 0;
 
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>* dictionary, string input)
+	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, string input)
 	{
 		return defaultPreprocess(allFunctions, dictionary,input);
 	}
 
-	static string defaultPreprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>* dictionary, string input)
+	static string defaultPreprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -100,14 +100,14 @@ public:
 			string new_word = scanner.next();
 			string unused = scanner.getDiscarded();
 
-			if(dictionary->count(new_word) == 0) // Not found in dictionary!
+			if(dictionary.count(new_word) == 0) // Not found in dictionary!
 			{
 				input3.append(unused);
 				input3.append(new_word);
 			}
 			else
 			{
-				string found = dictionary->find(new_word)->second;
+				string found = dictionary.find(new_word)->second;
 
 				input3.append(unused);
 				input3.append(found);
@@ -145,27 +145,37 @@ public:
 			string current    = scanFunc.next();
 			string cdiscarded = scanFunc.getDiscarded();
 
-			if((current == "(") && OptFrameFunction::functionExists(last, allFunctions)) // FUNCTION
+			if( (current == "(") && OptFrameFunction::functionExists(last, allFunctions) ) // FUNCTION
 			{
-				pair<string, string> p = OptFrameFunction::run_function(last, allFunctions, scanFunc.rest());
+				pair<string, string>* p = OptFrameFunction::run_function(last, allFunctions, scanFunc.rest());
 
-				input5.append(" ");
-				input5.append(p.first);
-				input5.append(" ");
-
-				scanFunc = Scanner(p.second);
-
-				if(!scanFunc.hasNext())
+				if(p)
 				{
-					last = "";
-					ldiscarded = "";
-					break;
+					input5.append(" ");
+					input5.append(p->first);
+					input5.append(" ");
+
+					scanFunc = Scanner(p->second);
+
+					delete p;
+
+					if(!scanFunc.hasNext())
+					{
+						last = "";
+						ldiscarded = "";
+						break;
+					}
+					else
+					{
+						last       = scanFunc.next();
+						ldiscarded = scanFunc.getDiscarded();
+						continue;
+					}
 				}
 				else
 				{
-					last    = scanFunc.next();
-					ldiscarded = scanFunc.getDiscarded();
-					continue;
+					input5.append(ldiscarded);
+					input5.append(last);
 				}
 			}
 			else

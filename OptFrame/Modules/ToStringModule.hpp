@@ -86,7 +86,7 @@ public:
        \endportuguese
    */
 
-   bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+   bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
    {
 	   Scanner scanner(input);
 
@@ -96,7 +96,7 @@ public:
 		   return false;
 	   }
 
-	   OptFrameComponent* comp = factory->getNextComponent(scanner);
+	   OptFrameComponent* comp = factory.getNextComponent(scanner);
 
 	   string text;
 	   if(comp)

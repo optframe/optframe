@@ -89,7 +89,7 @@ public:
        \endportuguese
    */
 
-   bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+   bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
    {
       //cout << "build module: " << input << endl;
       Scanner scanner1(input);
@@ -110,53 +110,53 @@ public:
       int new_id = -1;
       string base = "";
 
-      if(factory->compareBase(LocalSearchBuilder<R, ADS, M>::idComponent(), type))
+      if(factory.compareBase(LocalSearchBuilder<R, ADS, M>::idComponent(), type))
       {
           pair<LocalSearch<R, ADS, M>*, string> method;
-          method = factory->createLocalSearch(scanner.rest());
+          method = factory.createLocalSearch(scanner.rest());
           scanner = Scanner(method.second);
 
           if(method.first!=NULL)
           {
         	  base   = LocalSearch<R, ADS, M>::idComponent();
-        	  new_id = factory->addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
+        	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
           }
       }
-      else if(factory->compareBase(SingleObjSearchBuilder<R, ADS, M>::idComponent(), type))
+      else if(factory.compareBase(SingleObjSearchBuilder<R, ADS, M>::idComponent(), type))
       {
           pair<SingleObjSearch<R, ADS, M>*, string> method;
-          method = factory->createSingleObjSearch(scanner.rest());
+          method = factory.createSingleObjSearch(scanner.rest());
           scanner = Scanner(method.second);
 
           if(method.first!=NULL)
           {
         	  base   = SingleObjSearch<R, ADS, M>::idComponent();
-        	  new_id = factory->addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
+        	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
           }
       }
-      else if(factory->compareBase(MultiObjSearchBuilder<R, ADS, M>::idComponent(), type))
+      else if(factory.compareBase(MultiObjSearchBuilder<R, ADS, M>::idComponent(), type))
       {
           pair<MultiObjSearch<R, ADS, M>*, string> method;
-          method = factory->createMultiObjSearch(scanner.rest());
+          method = factory.createMultiObjSearch(scanner.rest());
           scanner = Scanner(method.second);
 
           if(method.first!=NULL)
           {
         	  base   = MultiObjSearch<R, ADS, M>::idComponent();
-        	  new_id = factory->addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
+        	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
           }
       }
-      else if(factory->getBuilder(type))
+      else if(factory.getBuilder(type))
       {
     	  scanner.next(); // drop builder name!
 
-    	  ComponentBuilder<R, ADS, M>* builder = factory->getBuilder(type);
-    	  OptFrameComponent* comp = builder->buildComponent(scanner, *factory);
+    	  ComponentBuilder<R, ADS, M>* builder = factory.getBuilder(type);
+    	  OptFrameComponent* comp = builder->buildComponent(scanner, factory);
 
     	  if(comp)
     	  {
     		  base   = comp->id();
-    		  new_id = factory->addComponent(*comp, base);
+    		  new_id = factory.addComponent(*comp, base);
     	  }
       }
       else

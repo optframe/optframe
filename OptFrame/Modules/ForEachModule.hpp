@@ -168,7 +168,7 @@ private:
 
 	}
 
-	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string command)
+	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string command)
 	{
 		Scanner scanner(command);
 		string module = scanner.next();
@@ -197,7 +197,7 @@ public:
 		return "for_each $var list_of_values list_of_commands";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -261,7 +261,7 @@ public:
 	}
 
 	// should preprocess only until list of commands
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>* dictionary, string input)
+	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>& dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -283,14 +283,14 @@ public:
 		string possibleDefinition = scanner.next();
 		string discarded2         = scanner.getDiscarded();
 
-		if(dictionary->count(possibleDefinition) == 0) // Not found in dictionary
+		if(dictionary.count(possibleDefinition) == 0) // Not found in dictionary
 		{
 			input2.append(discarded2);
 			input2.append(possibleDefinition); // EXPLICIT LIST
 		}
 		else // definition found in dictionary
 		{
-			string found = dictionary->find(possibleDefinition)->second;
+			string found = dictionary.find(possibleDefinition)->second;
 
 			input2.append(discarded2);
 			input2.append(found);

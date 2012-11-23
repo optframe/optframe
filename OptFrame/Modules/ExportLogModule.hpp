@@ -41,7 +41,7 @@ public:
 		return "export_log method 0 filename";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* hf, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& hf, map<string, string>& dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -67,7 +67,7 @@ public:
 		FILE * pFile = fopen(filename.c_str(), "a");
 
 		SingleObjSearch<R, ADS, M>* h = NULL;
-		hf->assign(h, id, SingleObjSearch<R, ADS, M>::idComponent());
+		hf.assign(h, id, SingleObjSearch<R, ADS, M>::idComponent());
 
 		stringstream stream;
 

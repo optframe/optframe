@@ -53,7 +53,7 @@ public:
 		return "times( A B ) : return A*B";
 	}
 
-	virtual pair<string, string> run(vector<OptFrameFunction*>& allFunctions, string body)
+	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, string body)
 	{
 		Scanner scanner(body);
 
@@ -68,7 +68,7 @@ public:
 
 		scanner.next(); // drop ')'
 
-		return make_pair(result, scanner.rest());
+		return new pair<string, string>(result, scanner.rest());
 	}
 };
 

@@ -53,7 +53,7 @@ public:
 		return "length(list) : return list size";
 	}
 
-	virtual pair<string, string> run(vector<OptFrameFunction*>& allFunctions, string body)
+	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, string body)
 	{
 		Scanner scanner(body);
 
@@ -64,8 +64,8 @@ public:
 			list = vector<string>(*plist);
 			delete plist;
 		}
-		//else
-		//	return NULL;
+		else
+			return NULL;
 
 		int ilen = list.size();
 
@@ -76,7 +76,7 @@ public:
 
 		scanner.next(); // drop ')'
 
-		return make_pair(length, scanner.rest());
+		return new pair<string, string>(length, scanner.rest());
 	}
 };
 

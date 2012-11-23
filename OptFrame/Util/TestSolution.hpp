@@ -30,7 +30,7 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class TestSolution : public Solution<R, ADS>
 {
 private:
-	static const unsigned long long MAX_SOL_IN_MEMORY_ERROR = 1000;
+	static const unsigned long long MAX_SOL_IN_MEMORY_ERROR = 1000000;
 	static unsigned long long MAX_SOL_IN_MEMORY_WARNING;
 
 	static unsigned long long testsolution_objects;

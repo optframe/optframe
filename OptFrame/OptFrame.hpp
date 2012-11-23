@@ -173,7 +173,7 @@ class OptFrame
 private:
 	vector<OptFrameModule<R, ADS, M>*> modules;
 	vector<OptFrameFunction*> functions;
-	map<string, string>* dictionary;
+	map<string, string> dictionary;
 
 public:
 
@@ -183,7 +183,6 @@ public:
 	{
 		loadDefaultModules();
 		loadComponentBuilders();
-		dictionary = new map<string, string> ;
 	}
 
 	OptFrame(RandGen _rg) :
@@ -191,19 +190,17 @@ public:
 	{
 		loadDefaultModules();
 		loadComponentBuilders();
-		dictionary = new map<string, string> ;
 	}
 
 	virtual ~OptFrame()
 	{
 		unloadModules();
 		unloadFunctions();
-		delete dictionary;
 	}
 
 	string version()
 	{
-		return "OptFrame - Development Version \nhttp://sourceforge.net/projects/optframe/";
+		return "OptFrame - Development Version 2.0 \nhttp://sourceforge.net/projects/optframe/";
 	}
 
 	void unloadModules()
@@ -422,7 +419,7 @@ public:
 					exit(1);
 				}
 
-				if(!modules[i]->run(modules, functions, &factory, dictionary, r))
+				if(!modules[i]->run(modules, functions, factory, dictionary, r))
 					cout << "error in module: '" << modules[i]->id() << "'" << endl;
 
 				notfound = false;

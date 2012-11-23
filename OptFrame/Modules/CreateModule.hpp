@@ -33,7 +33,7 @@ class GeneralModule: public OptFrameModule<R, ADS, M>
 	vector<string> commands;
 
 public:
-	GeneralModule(string _name, vector<string> _parameters, vector<string> _commands)
+	GeneralModule(string _name, vector<string>& _parameters, vector<string>& _commands)
 	{
 		name = _name;
 		parameters = _parameters;
@@ -180,7 +180,7 @@ private:
 
 	}
 
-	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string command)
+	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string command)
 	{
 		Scanner scanner(command);
 		string module = scanner.next();
@@ -219,7 +219,7 @@ public:
 		return u;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -287,7 +287,7 @@ public:
 		return "create_module name list_of_$parameters list_of_commands";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
 	{
 		Scanner scanner(input);
 

@@ -41,9 +41,9 @@ public:
 		return "dictionary";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string,string>* dictionary, string)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string,string>& dictionary, string)
 	{
-		cout << (*dictionary) << endl;
+		cout << dictionary << endl;
 		return true;
 	}
 

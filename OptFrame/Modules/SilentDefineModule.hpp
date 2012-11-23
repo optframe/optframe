@@ -41,7 +41,7 @@ public:
 		return "silent_define new_name string_to_be_substituted_from_the_new_name";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string,string>* dictionary, string rest)
+	bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string,string>& dictionary, string rest)
 	{
 		Scanner scanner(rest);
 
@@ -63,7 +63,7 @@ public:
 				}
 			}
 
-			(*dictionary)[new_name] = scanner.trim(second_word);
+			dictionary[new_name] = scanner.trim(second_word);
 			return true;
 		}
 		else
@@ -73,7 +73,7 @@ public:
 		}
 	}
 
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>* dictionary, string input)
+	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, string input)
 	{
 		Scanner scanner(input);
 

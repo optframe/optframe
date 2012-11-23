@@ -53,7 +53,7 @@ public:
 		return "avg( list ) : return list average";
 	}
 
-	virtual pair<string, string> run(vector<OptFrameFunction*>& allFunctions, string body)
+	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, string body)
 	{
 		Scanner scanner(body);
 
@@ -64,11 +64,11 @@ public:
 			list = vector<string>(*plist);
 			delete plist;
 		}
-		//else
-		//	return NULL;
+		else
+			return NULL;
 
 		if(list.size()==0)
-			return make_pair("","");
+			return new pair<string, string>("","");
 
 		double min = Scanner::parseDouble(list[0]);
 		for(unsigned i=1; i<list.size(); i++)
@@ -85,7 +85,7 @@ public:
 
 		scanner.next(); // drop ')'
 
-		return make_pair(smin, scanner.rest());
+		return new pair<string, string>(smin, scanner.rest());
 	}
 };
 

@@ -41,7 +41,7 @@ public:
 		return "list_from_population new_list_name loadpop id";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
 	{
 		Scanner scan(input);
 		if (!scan.hasNext()) // no file
@@ -69,7 +69,7 @@ public:
 		string id = scan.next();
 		Scanner scan_pop(strloadpop + " " + id);
 		Population<R, ADS>* p = NULL;
-		factory->readComponent(p, scan_pop);
+		factory.readComponent(p, scan_pop);
 
 		stringstream listContent;
 
@@ -77,14 +77,14 @@ public:
 
 		for (unsigned i = 0; i < p->size() - 1; i++)
 		{
-			int sid = factory->addComponent(p->at(i).clone());
+			int sid = factory.addComponent(p->at(i).clone());
 			listContent << "loadsol " << sid << " , ";
 		}
 
 		if (p->size() > 0)
 		{
 			unsigned i = p->size() - 1;
-			int sid = factory->addComponent(p->at(i).clone());
+			int sid = factory.addComponent(p->at(i).clone());
 			listContent << "loadsol " << sid;
 		}
 

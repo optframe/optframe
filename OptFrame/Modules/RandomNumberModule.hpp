@@ -43,7 +43,7 @@ public:
 		return "random_number positive_integer [stored_number]\n Where: 'positive_integer' is a positive integer value; 'stored_number' is the randomized number from [0,max).";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -63,7 +63,7 @@ public:
 
 		int max = scanner.nextInt();
 
-		RandGen& rg = factory->getRandGen();
+		RandGen& rg = factory.getRandGen();
 		int value = rg.rand(max);
 
 		if (scanner.hasNext())

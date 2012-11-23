@@ -42,19 +42,19 @@ class OptFrameFunction
 {
 public:
 
-	static pair<string, string> run_function(string func, vector<OptFrameFunction*>& allFunctions, string input)
+	static pair<string, string>* run_function(string func, vector<OptFrameFunction*>& allFunctions, string input)
 	{
 		for(unsigned int i=0;i<allFunctions.size();i++)
 			if(func==allFunctions[i]->id())
 			{
 				string iprep = allFunctions[i]->preprocess(allFunctions, input);
-				pair<string, string> p = allFunctions[i]->run(allFunctions, iprep);
+				pair<string, string>* p = allFunctions[i]->run(allFunctions, iprep);
 				return p;
 			}
 
 		cout << "Function '" << func << "' not found." << endl;
 
-		return make_pair("", input);
+		return NULL;
 	}
 
 	static bool functionExists(string func, vector<OptFrameFunction*>& allFunctions)
@@ -72,7 +72,7 @@ public:
 	virtual string id() = 0;
 	virtual string usage() = 0;
 
-	virtual pair<string, string> run(vector<OptFrameFunction*>& allFunctions, string body) = 0;
+	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, string body) = 0;
 
 	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, string input)
 	{
@@ -119,27 +119,37 @@ public:
 			string current    = scanFunc.next();
 			string cdiscarded = scanFunc.getDiscarded();
 
-			if((current == "(") && OptFrameFunction::functionExists(last, allFunctions)) // FUNCTION
+			if( (current == "(") && OptFrameFunction::functionExists(last, allFunctions) ) // FUNCTION
 			{
-				pair<string, string> p = OptFrameFunction::run_function(last, allFunctions, scanFunc.rest());
+				pair<string, string>* p = OptFrameFunction::run_function(last, allFunctions, scanFunc.rest());
 
-				input5.append(" ");
-				input5.append(p.first);
-				input5.append(" ");
-
-				scanFunc = Scanner(p.second);
-
-				if(!scanFunc.hasNext())
+				if(p)
 				{
-					last = "";
-					ldiscarded = "";
-					break;
+					input5.append(" ");
+					input5.append(p->first);
+					input5.append(" ");
+
+					scanFunc = Scanner(p->second);
+
+					delete p;
+
+					if(!scanFunc.hasNext())
+					{
+						last = "";
+						ldiscarded = "";
+						break;
+					}
+					else
+					{
+						last       = scanFunc.next();
+						ldiscarded = scanFunc.getDiscarded();
+						continue;
+					}
 				}
 				else
 				{
-					last    = scanFunc.next();
-					ldiscarded = scanFunc.getDiscarded();
-					continue;
+					input5.append(ldiscarded);
+					input5.append(last);
 				}
 			}
 			else

@@ -42,7 +42,7 @@ public:
 		return "create_list_of_components list type list_name";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -63,28 +63,28 @@ public:
 		for(unsigned i=0; i<list.size(); i++)
 		{
 			Scanner scan(list[i]);
-			OptFrameComponent* comp = factory->getNextComponent(scan);
+			OptFrameComponent* comp = factory.getNextComponent(scan);
 			if(!comp)
 			{
 				cout << "create_list_of_components: error, component #" << i << " is NULL! " << endl;
 				return false;
 			}
-			else if(!comp->compatible(factory->typeOfList(type)))
+			else if(!comp->compatible(factory.typeOfList(type)))
 			{
-				cout << "create_list_of_components: error, component #" << i << " ('" << comp->id() <<"') in list incompatible with type '" << factory->typeOfList(type) << "'" << endl;
+				cout << "create_list_of_components: error, component #" << i << " ('" << comp->id() <<"') in list incompatible with type '" << factory.typeOfList(type) << "'" << endl;
 				return false;
 			}
 			else
 				componentList.push_back(comp);
 		}
 
-		int idx = factory->addComponentList(componentList, type);
+		int idx = factory.addComponentList(componentList, type);
 
 		stringstream ss;
 
-		ss << name << " " << factory->typeOfList(type) << "[] " << idx;
+		ss << name << " " << factory.typeOfList(type) << "[] " << idx;
 
-		cout << "'" << factory->typeOfList(type) << "[] " << idx << "' added." << endl;
+		cout << "'" << factory.typeOfList(type) << "[] " << idx << "' added." << endl;
 
 		return OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str());
 	}

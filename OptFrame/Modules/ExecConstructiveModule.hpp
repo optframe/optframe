@@ -43,7 +43,7 @@ public:
 		return "exec OptFrame:Constructive [output_solution_name]";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
 	{
 		//cout << "exec_constructive: " << input << endl;
 		Scanner scanner(input);
@@ -55,14 +55,14 @@ public:
 		}
 
 		Constructive<R, ADS>* cons;
-		factory->assign(cons, scanner.nextInt(), scanner.next()); // reads backwards!
+		factory.assign(cons, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		Solution<R, ADS>& sFinal = cons->generateSolution();
 
 
 		string s_new_id = "";
 
-		int new_id = factory->addComponent(sFinal);
+		int new_id = factory.addComponent(sFinal);
 
 		stringstream str;
 		str << Solution<R, ADS>::idComponent() << " " << new_id;

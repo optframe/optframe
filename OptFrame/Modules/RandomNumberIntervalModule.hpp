@@ -43,7 +43,7 @@ public:
 		return "random_number_interval begin end [stored_number]\n Where: 'begin' and 'end' are positive integer values; 'stored_number' is the randomized number from [begin,end].";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -72,7 +72,7 @@ public:
 
 		int end = scanner.nextInt();
 
-		RandGen& rg = factory->getRandGen();
+		RandGen& rg = factory.getRandGen();
 		int value = rg.rand(end-begin+1) + begin;
 
 		if (scanner.hasNext())

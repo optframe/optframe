@@ -51,7 +51,7 @@ public:
 		return out;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
 	{
 		//cout << "export: " << input << endl;
 		Scanner scanner(input);
@@ -85,7 +85,7 @@ public:
 			if (sol == Constructive<R,ADS>::idComponent())
 			{
 				//for (int i = 0; i < (factory->initsol_size()); i++)
-			   for (int i = 0; i < 0; i++) // TODO fix this!
+				for (int i = 0; i < 0; i++) // TODO fix this!
 				{
 					stringstream i_temp;
 					i_temp << i;
@@ -93,9 +93,9 @@ public:
 					Scanner s2((sol + " " + i_temp.str()));
 
 					Constructive<R, ADS>* initsol = NULL;
-		         factory->readComponent(initsol, s2);
+					factory.readComponent(initsol, s2);
 
-	            Solution<R, ADS>* s = &(initsol->generateSolution());
+					Solution<R, ADS>* s = &(initsol->generateSolution());
 
 					stringstream stream;
 
@@ -115,7 +115,7 @@ public:
 					Scanner s2((sol + " " + i_temp.str()));
 
 					Solution<R, ADS>* s = NULL;
-		         factory->readComponent(s, s2);
+					factory.readComponent(s, s2);
 
 					stringstream stream;
 
@@ -133,14 +133,14 @@ public:
 
 			if (sol == Constructive<R,ADS>::idComponent())
 			{
-			   Constructive<R, ADS>* initsol = NULL;
-	         factory->readComponent(initsol, s2);
+				Constructive<R, ADS>* initsol = NULL;
+				factory.readComponent(initsol, s2);
 
 				s = &(initsol->generateSolution());
 			}
 			else
 			{
-	         factory->readComponent(s, s2);
+				factory.readComponent(s, s2);
 			}
 
 			stringstream stream;
@@ -148,7 +148,6 @@ public:
 			stream << s->getR() << endl;
 
 			fprintf(pFile, "%s", (stream.str()).c_str());
-
 		}
 
 		fclose(pFile);

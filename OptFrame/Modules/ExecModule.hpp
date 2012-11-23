@@ -43,7 +43,7 @@ public:
 		return "exec target_fo timelimit sios_method output_solution_name [spent_time]";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
 	{
 		//cout << "exec: " << input << endl;
 		Scanner scanner(input);
@@ -57,7 +57,7 @@ public:
 		double target_fo = scanner.nextDouble();
 		double timelimit = scanner.nextDouble();
 
-		pair<SingleObjSearch<R, ADS, M>*, string> method = factory->createSingleObjSearch(scanner.rest());
+		pair<SingleObjSearch<R, ADS, M>*, string> method = factory.createSingleObjSearch(scanner.rest());
 		scanner = Scanner(method.second);
 
 		// ---
@@ -77,7 +77,7 @@ public:
 
 		Solution<R, ADS>& sFinal = result->first;
 
-		int new_id = factory->addComponent(sFinal);
+		int new_id = factory.addComponent(sFinal);
 
 		stringstream str;
 		str << Solution<R, ADS>::idComponent() << " " << new_id;

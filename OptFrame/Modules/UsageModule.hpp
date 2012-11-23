@@ -38,10 +38,10 @@ public:
 
 	string usage()
 	{
-		return "usage module_name";
+		return "usage module_or_function";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>*, map<string,string>* dictionary, string rest)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& all_functions, HeuristicFactory<R, ADS, M>&, map<string,string>& dictionary, string rest)
 	{
 		Scanner scanner(rest);
 
@@ -58,8 +58,17 @@ public:
 			}
 
 		if(notfound)
+			for(unsigned int i=0;i<all_functions.size();i++)
+				if(command == all_functions[i]->id())
+				{
+					cout << "Usage: " << all_functions[i]->usage() << endl;
+					notfound = false;
+					break;
+				}
+
+		if(notfound)
 		{
-			cout << "Module '"<<command<<"' not found!"<<endl;
+			cout << "Module or function '"<<command<<"' not found!"<<endl;
 			return false;
 		}
 

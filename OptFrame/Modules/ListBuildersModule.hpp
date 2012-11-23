@@ -42,7 +42,7 @@ public:
 		return "list_builders pattern [store_list]\nWhere: store_list is an optional variable to store the builders.";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -53,7 +53,7 @@ public:
 		else
 			pattern = "OptFrame:";
 
-		vector<pair<string, vector<pair<string,string> > > > builders = factory->listBuilders(pattern);
+		vector<pair<string, vector<pair<string,string> > > > builders = factory.listBuilders(pattern);
 
 		if(!scanner.hasNext())
 		{

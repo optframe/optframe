@@ -53,7 +53,7 @@ public:
 		return "append( list1 list2 ) : return append list1 with list2";
 	}
 
-	virtual pair<string, string> run(vector<OptFrameFunction*>& allFunctions, string body)
+	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, string body)
 	{
 		Scanner scanner(body);
 
@@ -64,8 +64,8 @@ public:
 			list1 = vector<string>(*plist1);
 			delete plist1;
 		}
-		//else
-		//	return NULL;
+		else
+			return NULL;
 
 
 		vector<string>* plist2 = OptFrameList::readList(scanner);
@@ -75,8 +75,8 @@ public:
 			list2 = vector<string>(*plist2);
 			delete plist2;
 		}
-		//else
-		//	return NULL;
+		else
+			return NULL;
 
 
 		list1.insert(list1.end(), list2.begin(), list2.end());
@@ -95,7 +95,7 @@ public:
 
 		scanner.next(); // drop ')'
 
-		return make_pair(list3, scanner.rest());
+		return new pair<string, string>(list3, scanner.rest());
 	}
 };
 

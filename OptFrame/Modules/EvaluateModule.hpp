@@ -42,7 +42,7 @@ public:
 		return u;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
 	{
 		//cout << "evaluate: " << input << endl;
 		Scanner scanner(input);
@@ -53,7 +53,7 @@ public:
 			return false;
 		}
 
-		Evaluator<R, ADS, M>* eval = factory->read_ev(scanner);
+		Evaluator<R, ADS, M>* eval = factory.read_ev(scanner);
 
 		string sol = scanner.next();
 
@@ -68,7 +68,7 @@ public:
 
 		Scanner s2(sol + " " + id);
 		Solution<R, ADS>* s = NULL;
-		factory->readComponent(s, s2);
+		factory.readComponent(s, s2);
 
 		Evaluation<M>* e = &eval->evaluate(*s);
 

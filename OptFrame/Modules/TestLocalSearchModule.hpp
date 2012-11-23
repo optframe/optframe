@@ -53,7 +53,7 @@ public:
 		return u;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -68,17 +68,17 @@ public:
 		double tf = scanner.nextDouble();
 		double bf = scanner.nextDouble();
 
-		Evaluator<R, ADS, M>* eval = factory->read_ev(scanner);
+		Evaluator<R, ADS, M>* eval = factory.read_ev(scanner);
 
 		Constructive<R, ADS>* constructive;
-		factory->readComponent(constructive, scanner);
+		factory.readComponent(constructive, scanner);
 		if(!constructive)
 		{
 			cout << "testls module: ERROR IN TEST LOCAL SEARCH MODULE! NO SUCH CONSTRUCTIVE!" << endl;
 			return false;
 		}
 
-		pair<LocalSearch<R, ADS, M>*, string> method = factory->createLocalSearch(scanner.rest());
+		pair<LocalSearch<R, ADS, M>*, string> method = factory.createLocalSearch(scanner.rest());
 
 		LocalSearch<R, ADS, M>* h = method.first;
 
@@ -192,7 +192,7 @@ public:
 
 		fclose(file);
 
-		int new_id = factory->addComponent(*s_star);
+		int new_id = factory.addComponent(*s_star);
 
 		stringstream str;
 		str << Solution<R, ADS>::idComponent() << " " << new_id;

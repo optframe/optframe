@@ -41,12 +41,12 @@ public:
 		return "initservers";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string,string>* dictionary, string rest)
+	void run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string,string>& dictionary, string rest)
 	{
 		factory->mapReduce->initServers(factory->argc,factory->argv);
 	}
 
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>*, string input)
+	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>&, string input)
 	{
 		Scanner scanner(input);
 

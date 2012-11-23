@@ -42,14 +42,14 @@ public:
 		return "list_components pattern [store_list]\nWhere: store_list is an optional variable to store the components.";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>* factory, map<string, string>* dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
 	{
 		Scanner scanner(input);
 
 		string pattern = scanner.next();
 
-		vector<string> components     = factory->listComponents(pattern);
-		vector<string> componentLists = factory->listComponentLists(pattern);
+		vector<string> components     = factory.listComponents(pattern);
+		vector<string> componentLists = factory.listComponentLists(pattern);
 
 		components.insert(components.end(), componentLists.begin(), componentLists.end());
 
