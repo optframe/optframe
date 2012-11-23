@@ -58,7 +58,7 @@ public:
 		return true;
 	}
 
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>*, string input)
+	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>&, string input)
 	{
 		Scanner scanner(input);
 
