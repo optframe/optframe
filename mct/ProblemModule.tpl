@@ -20,9 +20,22 @@ class $projectProblemModule : public ProblemModule<Rep$project $commamproject>
 {
 public:
 
-    bool read(string filename, HeuristicFactory<Rep$project $commamproject>* hf)
+    ProblemInstance* p;
+    
+    $projectProblemModule()
     {
-        File* file;
+        p = NULL;
+    }
+
+    virtual ~$projectProblemModule()
+    {
+        if(p)
+           delete p;    
+    }
+
+	bool load(string filename, vector<OptFrameModule<Rep$project $commamproject>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<Rep$project $commamproject>& hf, map<string, string>& dictionary)
+	{
+	    File* file;
 
         try
         {
@@ -36,17 +49,26 @@ public:
 
         Scanner scanner(file);
 
-        ProblemInstance* p = new ProblemInstance(scanner);
+        p = new ProblemInstance(scanner);
 
         // add everything to the HeuristicFactory 'hf'
 
-        hf->addComponent(*new $projectEvaluator(*p));
+        hf.addComponent(*new $projectEvaluator(*p));
 
-        hf->addComponent(*new Constructive$constructive(*p));
+        hf.addComponent(*new Constructive$constructive(*p));
 		
         cout << "problem '" << filename << "' loaded successfully" << endl;
         
         return true;
+    }
+    
+    bool unload(vector<OptFrameModule<Rep$project $commamproject>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<Rep$project $commamproject>& factory, map<string, string>& dictionary)
+    {
+       if(p)
+          delete p;
+       p = NULL;
+       
+       return true;
     }
 };
 
