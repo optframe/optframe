@@ -208,11 +208,28 @@ public:
       }
    }
 
+   ostream& operator<<(ostream &os)
+   {
+      const Matrix<T> &obj = *this;
+      //os << "Matrix(" << obj.getRows() << "," << obj.getCols() << ")" << endl;
+
+      os << endl;
+
+      for (unsigned int i = 0; i < obj.getNumRows(); i++)
+      {
+         for (unsigned int j = 0; j < obj.getNumCols(); j++)
+            os << obj(i, j) << " ";
+         os << endl;
+      }
+      return os;
+   }
+
 private:
    unsigned rows, cols;
    T* data;
 };
 
+/*
 template<class T>
 ostream& operator<<(ostream &os, const Matrix<T> &obj)
 {
@@ -241,5 +258,6 @@ ostream& operator<<(ostream &os, const Matrix<string> &obj)
    }
    return os;
 }
+*/
 
 #endif /*MATRIX_H_*/
