@@ -7,8 +7,15 @@ if_else compare( input() >= numero ) [
   echo m igual!
 ] [
   echo menor! 
-] 
+]
 
+define numero2 math( math( math( 5 / 2 ) + 10 ) * math( 4 - 0 ) )
+
+if_else compare( numero == numero2 )[
+  echo CORRETO!
+]
+
+echo Entre com uma frase:
 echo input()
 
 randgen system_seed time()

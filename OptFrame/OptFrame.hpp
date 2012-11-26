@@ -112,6 +112,7 @@
 #include "Functions/ElementFunction.hpp"
 #include "Functions/InputFunction.hpp"
 #include "Functions/LengthFunction.hpp"
+#include "Functions/MathFunction.hpp"
 #include "Functions/MaxFunction.hpp"
 #include "Functions/MinFunction.hpp"
 #include "Functions/TimeFunction.hpp"
@@ -288,6 +289,7 @@ public:
 		loadFunction(new ElementFunction);
 		loadFunction(new InputFunction);
 		loadFunction(new LengthFunction);
+		loadFunction(new MathFunction);
 		loadFunction(new MaxFunction);
 		loadFunction(new MinFunction);
 		loadFunction(new TimeFunction);
