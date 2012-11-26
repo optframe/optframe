@@ -129,6 +129,13 @@ public:
 			Timer t(false);
 
 			Solution<R, ADS>& s = constructive->generateSolution();
+			t_now = t.now();
+			Evaluation< M > & e = eval->evaluate(s);
+			fo_now = e.evaluation();
+			delete &e;
+			fprintf(file, "%.3f\t%.3f\t", fo_now, t_now);
+			s_fo_ini += fo_now;
+			s_t_ini += t_now;
 
 
 			Solution<R, ADS>* s2 = &h->search(s, timelimit, tf);
