@@ -110,6 +110,7 @@
 #include "Functions/AvgFunction.hpp"
 #include "Functions/CompareFunction.hpp"
 #include "Functions/ElementFunction.hpp"
+#include "Functions/InputFunction.hpp"
 #include "Functions/LengthFunction.hpp"
 #include "Functions/MaxFunction.hpp"
 #include "Functions/MinFunction.hpp"
@@ -221,19 +222,21 @@ public:
 
 	void loadModule(OptFrameModule<R, ADS, M>* module)
 	{
-		modules.push_back(module);
+		if(module)
+			modules.push_back(module);
 	}
 
 	void loadFunction(OptFrameFunction* function)
 	{
-		functions.push_back(function);
+		if(function)
+			functions.push_back(function);
 	}
 
 	void loadCallModule()
 	{
 		cout << "warning: call module loaded!" << endl;
 
-		modules.push_back(new CallModule<R, ADS, M> );
+		loadModule(new CallModule<R, ADS, M> );
 	}
 
 	void loadDefaultModules()
@@ -283,6 +286,7 @@ public:
 		loadFunction(new AvgFunction);
 		loadFunction(new CompareFunction);
 		loadFunction(new ElementFunction);
+		loadFunction(new InputFunction);
 		loadFunction(new LengthFunction);
 		loadFunction(new MaxFunction);
 		loadFunction(new MinFunction);
