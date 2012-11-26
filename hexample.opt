@@ -1,7 +1,11 @@
 
 read definitions.opt
 
-echo times(plus(divide(5 2) 10) minus(4 0))
+define numero times(plus(divide(5 2) 10) minus(4 0))
+
+if_else compare( numero == 40 ) [  echo igual! ] [  echo diferente! ] 
+
+exit
 
 randgen system_seed time()
 echo

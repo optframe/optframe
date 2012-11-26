@@ -108,6 +108,7 @@
 
 #include "Functions/AppendFunction.hpp"
 #include "Functions/AvgFunction.hpp"
+#include "Functions/CompareFunction.hpp"
 #include "Functions/ElementFunction.hpp"
 #include "Functions/LengthFunction.hpp"
 #include "Functions/MaxFunction.hpp"
@@ -139,6 +140,7 @@
 #include "Modules/ExportLogModule.hpp"
 #include "Modules/ForEachModule.hpp"
 #include "Modules/HelpModule.hpp"
+#include "Modules/IfElseModule.hpp"
 #include "Modules/ListBuilderOfComponentModule.hpp"
 #include "Modules/ListBuildersModule.hpp"
 #include "Modules/ListComponentsModule.hpp"
@@ -255,6 +257,7 @@ public:
 		loadModule(new ExportLogModule<R, ADS, M> );
 		loadModule(new ForEachModule<R, ADS, M> );
 		loadModule(new HelpModule<R, ADS, M> );
+		loadModule(new IfElseModule<R, ADS, M> );
 		loadModule(new ListBuilderOfComponentModule<R, ADS, M> );
 		loadModule(new ListBuildersModule<R, ADS, M> );
 		loadModule(new ListComponentsModule<R, ADS, M> );
@@ -278,6 +281,7 @@ public:
 		unloadFunctions();
 		loadFunction(new AppendFunction);
 		loadFunction(new AvgFunction);
+		loadFunction(new CompareFunction);
 		loadFunction(new ElementFunction);
 		loadFunction(new LengthFunction);
 		loadFunction(new MaxFunction);
