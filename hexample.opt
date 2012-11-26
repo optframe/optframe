@@ -3,9 +3,11 @@ read definitions.opt
 
 define numero times(plus(divide(5 2) 10) minus(4 0))
 
-if_else compare( numero == 40 ) [  echo igual! ] [  echo diferente! ] 
-
-exit
+if_else compare( numero == 50 ) [ 
+  echo igual!
+] [
+  echo diferente! 
+] 
 
 randgen system_seed time()
 echo

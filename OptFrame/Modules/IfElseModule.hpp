@@ -170,6 +170,7 @@ public:
 
 		string ninput = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ibegin);
 
+		ninput.append(" "); // after boolean value
 		ninput.append(iend);
 
 		return ninput;
