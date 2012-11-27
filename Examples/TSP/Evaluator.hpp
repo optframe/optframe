@@ -86,6 +86,13 @@ public:
 		return (a < (b - TSP_EPSILON));
 	}
 
+	virtual string id() const
+	{
+		string pai = Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::idComponent();
+		pai.append(":TSPEvaluator");
+		return pai;
+	}
+
 };
 
 #endif /*TSP_EVALUATOR_HPP_*/
