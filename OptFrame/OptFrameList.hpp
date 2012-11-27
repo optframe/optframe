@@ -47,6 +47,9 @@ public:
 
 		if(character != '[')
 		{
+
+			// DEPRECATED SYNTAX 1..n! TO MANY PROBLEMS!!
+			/*
 			if(( character >= '0' ) && ( character <= '9' )) // syntax 1..n
 			{
 				std::string number = "";
@@ -108,6 +111,9 @@ public:
 				cout << "Error:! expected '[' and found '" << character << "'!" << endl;
 				return NULL;
 			}
+			*/
+
+			return NULL;
 		}
 
 
