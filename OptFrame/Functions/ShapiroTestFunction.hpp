@@ -109,6 +109,8 @@ public:
 		pclose(pPipe);
 
 		//cout << "shapiro_test module: OUTPUT '" << output << "'" << endl;
+		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
+			return NULL;
 
 		Scanner scan_out(output); //example: 'W = 0.9819, p-value = 0.9606'
 		scan_out.next(); // drop 'W'
