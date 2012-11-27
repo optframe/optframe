@@ -110,6 +110,7 @@
 #include "Functions/AvgFunction.hpp"
 #include "Functions/CompareFunction.hpp"
 #include "Functions/ElementFunction.hpp"
+#include "Functions/FriedmanTestFunction.hpp"
 #include "Functions/InputFunction.hpp"
 #include "Functions/LengthFunction.hpp"
 #include "Functions/MathFunction.hpp"
@@ -291,6 +292,7 @@ public:
 		loadFunction(new AvgFunction);
 		loadFunction(new CompareFunction);
 		loadFunction(new ElementFunction);
+		loadFunction(new FriedmanTestFunction);
 		loadFunction(new InputFunction);
 		loadFunction(new LengthFunction);
 		loadFunction(new MathFunction);
