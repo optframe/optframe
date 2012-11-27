@@ -93,6 +93,21 @@ public:
 		return NULL;
 	}
 
+	bool inComponents(OptFrameComponent* c)
+	{
+		map<std::string, vector<OptFrameComponent*> >::iterator iter;
+		for(iter = components.begin(); iter != components.end(); iter++)
+		{
+			vector<OptFrameComponent*> v = iter->second;
+
+			for (unsigned int i = 0; i < v.size(); i++)
+				if(v[i]==c)
+					return true;
+		}
+
+		return false;
+	}
+
 	OptFrameComponent* getNextComponent(Scanner& scanner)
 	{
 		std::string id = scanner.next();
@@ -164,6 +179,13 @@ public:
 
 	int addComponent(OptFrameComponent& component, string id)
 	{
+		if(inComponents(&component))
+		{
+			cout << "HeuristicFactory addComponent: component '" << component.id()  << "' already registered!" << endl;
+
+			return -1;
+		}
+
 		if(!component.compatible(id))
 		{
 			cout << "HeuristicFactory addComponent: incompatible components '";
@@ -226,6 +248,8 @@ public:
 		v.push_back(cList);
 
 		int idx = componentLists[listId].size() - 1;
+
+		//cout << "HeuristicFactory: added component list '" << listId << " " << idx << "'" << endl;
 
 		return idx;
 	}

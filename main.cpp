@@ -55,7 +55,8 @@ int main(int argc, char **argv)
 	optframe.factory.addComponent(is);
 
 	TSPEvaluator& eval = *new TSPEvaluator(p);
-	optframe.factory.addComponent(eval);
+	optframe.factory.addComponent(eval, Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::idComponent());
+	optframe.factory.addComponent(eval, Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::idComponent());
 
 	NSEnumSwap& ns = *new NSEnumSwap(p, optframe.factory.getRandGen());
 	optframe.factory.addComponent(ns);
