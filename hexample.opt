@@ -1,6 +1,31 @@
 
 read definitions.opt
 
+create_numeric_list 1 50 testlist
+
+echo testlist
+
+echo shapiro_test( testlist )
+
+if_else compare( shapiro_test( testlist ) > 0.05 )[
+  echo NORMAL
+] [
+  echo NAO EH NORMAL
+]
+
+silent_define saida popen( "ls *.opt" )
+
+echo ARQUIVOS:
+echo saida
+
+
+echo NEXT: element( 1 next( word saida ) )
+
+echo WORDS 2: element( 2 words( saida ) )
+
+
+exit
+
 define numero times(plus(divide(5 2) 10) minus(4 0))
 
 if_else compare( input() >= numero ) [ 

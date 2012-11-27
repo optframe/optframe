@@ -115,7 +115,11 @@
 #include "Functions/MathFunction.hpp"
 #include "Functions/MaxFunction.hpp"
 #include "Functions/MinFunction.hpp"
+#include "Functions/NextFunction.hpp"
+#include "Functions/POpenFunction.hpp"
+#include "Functions/ShapiroTestFunction.hpp"
 #include "Functions/TimeFunction.hpp"
+#include "Functions/WordsFunction.hpp"
 
 // arithmetic
 #include "Functions/PlusFunction.hpp"
@@ -292,7 +296,11 @@ public:
 		loadFunction(new MathFunction);
 		loadFunction(new MaxFunction);
 		loadFunction(new MinFunction);
+		loadFunction(new NextFunction);
+		loadFunction(new POpenFunction);
+		loadFunction(new ShapiroTestFunction);
 		loadFunction(new TimeFunction);
+		loadFunction(new WordsFunction);
 
 		//arithmetic
 		loadFunction(new PlusFunction);
