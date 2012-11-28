@@ -50,7 +50,8 @@ public:
 
 	virtual string usage()
 	{
-		return "t_test( list1 signal list2 ) : return p-value\nnull hypothesis: values are from same distribution, if p-value < alpha reject null hypothesis.\nSamples must have same size and 'signal' can be '<', '>' or '=='";
+		return "t_test( list1 signal list2 ) : return p-value\nnull hypothesis: values are from same distribution, if p-value < alpha reject null hypothesis.\n'signal' can be '<', '>' or '=='";
+		// NOT USING PAIRED TESTS! Otherwise include in usage(): "Samples must have same size and ..."
 	}
 
 	virtual string formatNumber(double v)
@@ -92,8 +93,32 @@ public:
 		if(list2.size()==0)
 			return NULL;
 
+		/*
 		if(list1.size() != list2.size())
 			return NULL;
+		*/
+
+		// ANY ADVANTAGE IN USING PAIRED TEST? (NOT USING!)
+		/*
+		// avoid constant lists!!
+		bool paired = false;
+
+		for(int i=0; i<((int)list1.size())-1; i++)
+		{
+			double vil1 = Scanner::parseDouble(list1.at(i));
+			double viM1l1 = Scanner::parseDouble(list1.at(i+1));
+
+			double vil2 = Scanner::parseDouble(list2.at(i));
+			double viM1l2 = Scanner::parseDouble(list2.at(i+1));
+
+			if((vil1 - vil2)  != (viM1l1 - viM1l2))
+			{
+				paired = true;
+				break;
+			}
+		}
+		*/
+
 
 		stringstream scommand;
 		scommand << "echo \"t.test( x=c(";
@@ -114,14 +139,19 @@ public:
 				scommand << ",";
 		}
 
-		scommand << "), alternative=";
+		scommand << "),";
+		/*
+		if(paired)
+			scommand << "paired=TRUE,";
+		*/
+		scommand << "alternative=";
 
 		if(signal=="<")
-			scommand << "'l'";
+			scommand << "'l'"; // less
 		else if(signal==">")
-			scommand << "'g'";
+			scommand << "'g'"; // greater
 		else if(signal=="==")
-			scommand << "'p'";
+			scommand << "'t'"; // two.sided
 		else
 		{
 			cout << "t_test function: unknown signal '" << signal << "'" << endl;
