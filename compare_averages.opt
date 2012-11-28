@@ -46,15 +46,20 @@ undefine pvalue
 
 list_from_file average0 average0.txt
 list_from_file average1 average1.txt
+list_from_file average_ref average_reference.txt
 
 create_numeric_list 1 length( average0 ) l_average0
 create_numeric_list 1 length( average1 ) l_average1
+create_numeric_list 1 length( average_ref ) l_average_ref
 
 define value_avg0 [ ]
 for_each $k l_average0 [
   silent_define line words( element( $k average0 ) ),
   silent_define new_value_avg0 element( 2 line ),
-  silent_define value_avg0_2 append( value_avg0 [ new_value_avg0 ] ),
+  silent_define ref element( $k average_ref ),
+  silent_define value_avg0_2 append( value_avg0 [ math( math( math( ref - new_value_avg0 ) / abs( ref ) ) * 100 ) ] ),
+  %echo TESTANDO NORMALIDADE AVG0 $k : shapiro_test( value_avg0 ),
+  %echo value_avg0, 
   undefine value_avg0,
   silent_define value_avg0 value_avg0_2,
   undefine new_value_avg0_2
@@ -64,7 +69,10 @@ define value_avg1 [ ]
 for_each $k l_average1 [
   silent_define line words( element( $k average1 ) ),
   silent_define new_value_avg1 element( 2 line ),
-  silent_define value_avg1_2 append( value_avg1 [ new_value_avg1 ] ),
+  silent_define ref element( $k average_ref ),
+  silent_define value_avg1_2 append( value_avg1 [ math( math( math( ref - new_value_avg1 ) / abs( ref ) ) * 100 ) ] ),
+  %echo TESTANDO NORMALIDADE AVG1 $k : shapiro_test( value_avg1 ),
+  %echo value_avg1,
   undefine value_avg1,
   silent_define value_avg1 value_avg1_2,
   undefine new_value_avg1_2
@@ -96,6 +104,7 @@ define pvalue friedman_test( [ value_avg0 , value_avg1 ]  )
 %define pvalue friedman_test( [ [1, 1.2, 1.4, 1.6] , [2, 2.2, 2.4, 2.6] , [3, 3.2, 3.4, 3.6 ] ]  )
 %define pvalue friedman_test( [ [1, 1.2, 1.4, 1.6] , [2, 2.2, 2.4, 2.6]  ]  )
 
+echo MEDIAS: avg( value_avg0 ) e avg( value_avg1 )
 
 if_else compare( pvalue <= 0.05 )[
   echo DIFERENTE!
