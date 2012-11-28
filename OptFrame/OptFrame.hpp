@@ -144,6 +144,7 @@
 #include "Modules/EchoModule.hpp"
 #include "Modules/EchoToFileModule.hpp"
 #include "Modules/EmpiricalModule.hpp"
+#include "Modules/ErrorModule.hpp"
 #include "Modules/EvaluateModule.hpp"
 #include "Modules/ExecModule.hpp"
 #include "Modules/ExecConstructiveModule.hpp"
@@ -268,6 +269,7 @@ public:
 		loadModule(new ExecConstructiveModule<R, ADS, M> );
 		loadModule(new ExportModule<R, ADS, M> );
 		loadModule(new ExportLogModule<R, ADS, M> );
+		loadModule(new ErrorModule<R, ADS, M> );
 		loadModule(new ForEachModule<R, ADS, M> );
 		loadModule(new HelpModule<R, ADS, M> );
 		loadModule(new IfElseModule<R, ADS, M> );
