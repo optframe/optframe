@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_T_TEST_FUNCTION_HPP_
-#define OPTFRAME_T_TEST_FUNCTION_HPP_
+#ifndef OPTFRAME_STUDENT_T_TEST_FUNCTION_HPP_
+#define OPTFRAME_STUDENT_T_TEST_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,23 +35,22 @@
 
 #include <algorithm>
 
-class TTestFunction : public OptFrameFunction
+class StudentTTestFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~TTestFunction()
+	virtual ~StudentTTestFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "t_test";
+		return "student_t_test";
 	}
 
 	virtual string usage()
 	{
-		return "t_test( list1 signal list2 ) : return p-value\nnull hypothesis: values are from same distribution, if p-value < alpha reject null hypothesis.\n'signal' can be '<', '>' or '=='";
-		// NOT USING PAIRED TESTS! Otherwise include in usage(): "Samples must have same size and ..."
+		return "student_t_test( list1 list2 ) : return p-value\nStudent's t-test => requires: near-normality from each input data (use shapiro_test or kolmogorov_test); variances are equal (use var_test); data independently sampled\n null hypothesis: means are equal; if p-value < alpha reject null hypothesis.";
 	}
 
 	virtual string formatNumber(double v)
@@ -78,8 +77,6 @@ public:
 		if(list1.size()==0)
 			return NULL;
 
-		string signal = scanner.next();
-
 		vector<string>* plist2 = OptFrameList::readList(scanner);
 		vector<string>  list2;
 		if(plist2)
@@ -92,33 +89,6 @@ public:
 
 		if(list2.size()==0)
 			return NULL;
-
-		/*
-		if(list1.size() != list2.size())
-			return NULL;
-		*/
-
-		// ANY ADVANTAGE IN USING PAIRED TEST? (NOT USING!)
-		/*
-		// avoid constant lists!!
-		bool paired = false;
-
-		for(int i=0; i<((int)list1.size())-1; i++)
-		{
-			double vil1 = Scanner::parseDouble(list1.at(i));
-			double viM1l1 = Scanner::parseDouble(list1.at(i+1));
-
-			double vil2 = Scanner::parseDouble(list2.at(i));
-			double viM1l2 = Scanner::parseDouble(list2.at(i+1));
-
-			if((vil1 - vil2)  != (viM1l1 - viM1l2))
-			{
-				paired = true;
-				break;
-			}
-		}
-		*/
-
 
 		stringstream scommand;
 		scommand << "echo \"t.test( x=c(";
@@ -139,26 +109,7 @@ public:
 				scommand << ",";
 		}
 
-		scommand << "),";
-		/*
-		if(paired)
-			scommand << "paired=TRUE,";
-		*/
-		scommand << "alternative=";
-
-		if(signal=="<")
-			scommand << "'l'"; // less
-		else if(signal==">")
-			scommand << "'g'"; // greater
-		else if(signal=="==")
-			scommand << "'t'"; // two.sided
-		else
-		{
-			cout << "t_test function: unknown signal '" << signal << "'" << endl;
-			return NULL;
-		}
-
-		scommand << ")\" | R --no-save | grep p-value";
+		scommand << ") )\" | R --no-save | grep p-value";
 
 		//cout << scommand.str() << endl;
 
@@ -202,4 +153,4 @@ public:
 	}
 };
 
-#endif /* OPTFRAME_T_TEST_FUNCTION_HPP_ */
+#endif /* OPTFRAME_STUDENT_T_TEST_FUNCTION_HPP_ */

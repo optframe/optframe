@@ -110,8 +110,6 @@
 #include "Functions/AvgFunction.hpp"
 #include "Functions/CompareFunction.hpp"
 #include "Functions/ElementFunction.hpp"
-#include "Functions/FriedmanTestFunction.hpp"
-#include "Functions/GeneralTTestFunction.hpp"
 #include "Functions/InputFunction.hpp"
 #include "Functions/LengthFunction.hpp"
 #include "Functions/MathFunction.hpp"
@@ -119,10 +117,14 @@
 #include "Functions/MinFunction.hpp"
 #include "Functions/NextFunction.hpp"
 #include "Functions/POpenFunction.hpp"
-#include "Functions/ShapiroTestFunction.hpp"
 #include "Functions/TimeFunction.hpp"
-#include "Functions/TTestFunction.hpp"
 #include "Functions/WordsFunction.hpp"
+
+// statistics
+#include "Functions/FriedmanTestFunction.hpp"
+#include "Functions/PairedTTestFunction.hpp"
+#include "Functions/ShapiroTestFunction.hpp"
+#include "Functions/StudentTTestFunction.hpp"
 
 // arithmetic
 #include "Functions/PlusFunction.hpp"
@@ -294,8 +296,6 @@ public:
 		loadFunction(new AvgFunction);
 		loadFunction(new CompareFunction);
 		loadFunction(new ElementFunction);
-		loadFunction(new FriedmanTestFunction);
-		loadFunction(new GeneralTTestFunction);
 		loadFunction(new InputFunction);
 		loadFunction(new LengthFunction);
 		loadFunction(new MathFunction);
@@ -305,8 +305,14 @@ public:
 		loadFunction(new POpenFunction);
 		loadFunction(new ShapiroTestFunction);
 		loadFunction(new TimeFunction);
-		loadFunction(new TTestFunction);
 		loadFunction(new WordsFunction);
+
+		// statistics
+		loadFunction(new FriedmanTestFunction);
+		loadFunction(new PairedTTestFunction);
+		loadFunction(new ShapiroTestFunction);
+		loadFunction(new StudentTTestFunction);
+
 
 		//arithmetic
 		loadFunction(new PlusFunction);

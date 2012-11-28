@@ -9,7 +9,7 @@ if_else compare( shapiro1 <= 0.05 )[
   echo NORMAL
 ]
 
-define mylist2 [7,8,9,10,11,12]
+define mylist2 [7,8,9,10,11,12,13,14,15,16]
 define shapiro2 shapiro_test( mylist2 ) 
 if_else compare( shapiro2 <= 0.05 )[
   echo NAO NORMAL!
@@ -17,7 +17,7 @@ if_else compare( shapiro2 <= 0.05 )[
   echo NORMAL
 ]
 
-define pvalue general_t_test( mylist1  mylist2  )
+define pvalue student_t_test( mylist1  mylist2  )
 
 if_else compare( pvalue <= 0.05 )[
   echo DIFERENTES!
@@ -28,7 +28,7 @@ if_else compare( pvalue <= 0.05 )[
 undefine pvalue
 
 
-define pvalue2 t_test( mylist1 < mylist2  )
+define pvalue2 paired_t_test( [1, 1.4, 1.6, 500] < [3.9, 2.8, 1.2, 1000]  )
 undefine pvalue2
 
 

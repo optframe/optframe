@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_GENERAL_T_TEST_FUNCTION_HPP_
-#define OPTFRAME_GENERAL_T_TEST_FUNCTION_HPP_
+#ifndef OPTFRAME_T_TEST_FUNCTION_HPP_
+#define OPTFRAME_T_TEST_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,22 +35,22 @@
 
 #include <algorithm>
 
-class GeneralTTestFunction : public OptFrameFunction
+class PairedTTestFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~GeneralTTestFunction()
+	virtual ~PairedTTestFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "general_t_test";
+		return "paired_t_test";
 	}
 
 	virtual string usage()
 	{
-		return "general_t_test( list1 list2 ) : return p-value\nnull hypothesis: values are from same distribution, if p-value < alpha reject null hypothesis.";
+		return "paired_t_test( list1 signal list2 ) : return p-value\npaired t-test => requires: near-normality from each input data (use shapiro_test or kolmogorov_test); variances are equal (use var_test); data sampled in pairs\n null hypothesis: means are equal (after treatment), if p-value < alpha reject null hypothesis.\n'signal' can be '<', '>' or '=='";
 	}
 
 	virtual string formatNumber(double v)
@@ -77,6 +77,8 @@ public:
 		if(list1.size()==0)
 			return NULL;
 
+		string signal = scanner.next();
+
 		vector<string>* plist2 = OptFrameList::readList(scanner);
 		vector<string>  list2;
 		if(plist2)
@@ -89,6 +91,14 @@ public:
 
 		if(list2.size()==0)
 			return NULL;
+
+		if(list1.size() != list2.size())
+		{
+			cout << "paired_t_test function: lists should have same size!" << endl;
+			return NULL;
+		}
+
+		// CARE WITH CONSTANT LISTS IN A PAIRED TEST!
 
 		stringstream scommand;
 		scommand << "echo \"t.test( x=c(";
@@ -109,7 +119,25 @@ public:
 				scommand << ",";
 		}
 
-		scommand << ") )\" | R --no-save | grep p-value";
+		scommand << "),";
+
+		scommand << "paired=TRUE,";
+
+		scommand << "alternative=";
+
+		if(signal=="<")
+			scommand << "'l'"; // less
+		else if(signal==">")
+			scommand << "'g'"; // greater
+		else if(signal=="==")
+			scommand << "'t'"; // two.sided
+		else
+		{
+			cout << "t_test function: unknown signal '" << signal << "'" << endl;
+			return NULL;
+		}
+
+		scommand << ")\" | R --no-save | grep p-value";
 
 		//cout << scommand.str() << endl;
 
@@ -153,4 +181,4 @@ public:
 	}
 };
 
-#endif /* OPTFRAME_GENERAL_T_TEST_FUNCTION_HPP_ */
+#endif /* OPTFRAME_T_TEST_FUNCTION_HPP_ */
