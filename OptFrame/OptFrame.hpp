@@ -106,6 +106,7 @@
 #include "RandGen.hpp"
 #include "Util/RandGenMersenneTwister.hpp"
 
+#include "Functions/AbsFunction.hpp"
 #include "Functions/AppendFunction.hpp"
 #include "Functions/AvgFunction.hpp"
 #include "Functions/CompareFunction.hpp"
@@ -294,6 +295,7 @@ public:
 #endif
 
 		unloadFunctions();
+		loadFunction(new AbsFunction);
 		loadFunction(new AppendFunction);
 		loadFunction(new AvgFunction);
 		loadFunction(new CompareFunction);
