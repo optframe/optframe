@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_SHAPIRO_TEST_FUNCTION_HPP_
-#define OPTFRAME_SHAPIRO_TEST_FUNCTION_HPP_
+#ifndef OPTFRAME_GENERAL_T_TEST_FUNCTION_HPP_
+#define OPTFRAME_GENERAL_T_TEST_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,22 +35,22 @@
 
 #include <algorithm>
 
-class ShapiroTestFunction : public OptFrameFunction
+class GeneralTTestFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~ShapiroTestFunction()
+	virtual ~GeneralTTestFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "shapiro_test";
+		return "general_t_test";
 	}
 
 	virtual string usage()
 	{
-		return "shapiro_test( list ) : return p-value\nnull hypothesis: values are normal, if p-value < alpha reject null hypothesis.";
+		return "general_t_test( list1 list2 ) : return p-value\nnull hypothesis: values are from same distribution, if p-value < alpha reject null hypothesis.";
 	}
 
 	virtual string formatNumber(double v)
@@ -64,35 +64,59 @@ public:
 	{
 		Scanner scanner(body);
 
-		vector<string>* plist = OptFrameList::readList(scanner);
-		vector<string>  list;
-		if(plist)
+		vector<string>* plist1 = OptFrameList::readList(scanner);
+		vector<string>  list1;
+		if(plist1)
 		{
-			list = vector<string>(*plist);
-			delete plist;
+			list1 = vector<string>(*plist1);
+			delete plist1;
 		}
 		else
 			return NULL;
 
-		if(list.size()==0)
+		if(list1.size()==0)
+			return NULL;
+
+		vector<string>* plist2 = OptFrameList::readList(scanner);
+		vector<string>  list2;
+		if(plist2)
+		{
+			list2 = vector<string>(*plist2);
+			delete plist2;
+		}
+		else
+			return NULL;
+
+		if(list2.size()==0)
 			return NULL;
 
 		stringstream scommand;
-		scommand << "echo \"x <- c(";
+		scommand << "echo \"t.test( x=c(";
 
-		for(unsigned i=0; i<list.size(); i++)
+		for(unsigned i=0; i<list1.size(); i++)
 		{
-			scommand << list.at(i);
-			if(i != list.size()-1)
+			scommand << list1.at(i);
+			if(i != list1.size()-1)
 				scommand << ",";
 		}
 
-		scommand << ") \n shapiro.test(x)\" | R --no-save | grep p-value";
+		scommand << "), y=c(";
+
+		for(unsigned i=0; i<list2.size(); i++)
+		{
+			scommand << list2.at(i);
+			if(i != list2.size()-1)
+				scommand << ",";
+		}
+
+		scommand << ") )\" | R --no-save | grep p-value";
+
+		//cout << scommand.str() << endl;
 
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
 		if (pPipe == NULL)
 		{
-		    cout << "shapiro_test module: PIPE NOT OPEN!" << endl;
+		    cout << "general_t_test function: PIPE NOT OPEN!" << endl;
 		    return NULL;
 		}
 
@@ -108,14 +132,17 @@ public:
 
 		pclose(pPipe);
 
-		//cout << "shapiro_test module: OUTPUT '" << output << "'" << endl;
+		//cout << "general_t_test function: OUTPUT '" << output << "'" << endl;
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
 			return NULL;
 
-		Scanner scan_out(output); //example: 'W = 0.9819, p-value = 0.9606'
-		scan_out.next(); // drop 'W'
+		Scanner scan_out(output); //example: 't = -2.2156, df = 18, p-value = 0.01992'
+		scan_out.next(); // drop 't'
 		scan_out.next(); // drop '='
-		scan_out.next(); // drop '0.9819,'
+		scan_out.next(); // drop '-2.2156,'
+		scan_out.next(); // drop 'df'
+		scan_out.next(); // drop '='
+		scan_out.next(); // drop '18,'
 		scan_out.next(); // drop 'p-value'
 		scan_out.next(); // drop '='
 		double pvalue = scan_out.nextDouble();
@@ -126,4 +153,4 @@ public:
 	}
 };
 
-#endif /* OPTFRAME_SHAPIRO_TEST_FUNCTION_HPP_ */
+#endif /* OPTFRAME_GENERAL_T_TEST_FUNCTION_HPP_ */

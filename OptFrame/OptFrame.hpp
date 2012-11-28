@@ -111,6 +111,7 @@
 #include "Functions/CompareFunction.hpp"
 #include "Functions/ElementFunction.hpp"
 #include "Functions/FriedmanTestFunction.hpp"
+#include "Functions/GeneralTTestFunction.hpp"
 #include "Functions/InputFunction.hpp"
 #include "Functions/LengthFunction.hpp"
 #include "Functions/MathFunction.hpp"
@@ -120,6 +121,7 @@
 #include "Functions/POpenFunction.hpp"
 #include "Functions/ShapiroTestFunction.hpp"
 #include "Functions/TimeFunction.hpp"
+#include "Functions/TTestFunction.hpp"
 #include "Functions/WordsFunction.hpp"
 
 // arithmetic
@@ -293,6 +295,7 @@ public:
 		loadFunction(new CompareFunction);
 		loadFunction(new ElementFunction);
 		loadFunction(new FriedmanTestFunction);
+		loadFunction(new GeneralTTestFunction);
 		loadFunction(new InputFunction);
 		loadFunction(new LengthFunction);
 		loadFunction(new MathFunction);
@@ -302,6 +305,7 @@ public:
 		loadFunction(new POpenFunction);
 		loadFunction(new ShapiroTestFunction);
 		loadFunction(new TimeFunction);
+		loadFunction(new TTestFunction);
 		loadFunction(new WordsFunction);
 
 		//arithmetic

@@ -50,7 +50,7 @@ public:
 
 	virtual string usage()
 	{
-		return "friedman_test( list_of_list ) : return p-value\nnull hypothesis: values are from same distribution, if p-value < 0.05 discard null hypothesis.";
+		return "friedman_test( list_of_list ) : return p-value\nnull hypothesis: values are from same distribution, if p-value < alpha reject null hypothesis.";
 	}
 
 	virtual string formatNumber(double v)
