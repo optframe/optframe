@@ -113,7 +113,6 @@
 #include "Functions/ElementFunction.hpp"
 #include "Functions/InputFunction.hpp"
 #include "Functions/LengthFunction.hpp"
-#include "Functions/MathFunction.hpp"
 #include "Functions/MaxFunction.hpp"
 #include "Functions/MinFunction.hpp"
 #include "Functions/NextFunction.hpp"
@@ -127,7 +126,11 @@
 #include "Functions/ShapiroTestFunction.hpp"
 #include "Functions/StudentTTestFunction.hpp"
 
+// logic
+#include "Functions/LogicFunction.hpp"
+
 // arithmetic
+#include "Functions/MathFunction.hpp"
 #include "Functions/PlusFunction.hpp"
 #include "Functions/MinusFunction.hpp"
 #include "Functions/TimesFunction.hpp"
@@ -302,7 +305,6 @@ public:
 		loadFunction(new ElementFunction);
 		loadFunction(new InputFunction);
 		loadFunction(new LengthFunction);
-		loadFunction(new MathFunction);
 		loadFunction(new MaxFunction);
 		loadFunction(new MinFunction);
 		loadFunction(new NextFunction);
@@ -317,8 +319,11 @@ public:
 		loadFunction(new ShapiroTestFunction);
 		loadFunction(new StudentTTestFunction);
 
+		// logic
+		loadFunction(new LogicFunction);
 
 		//arithmetic
+		loadFunction(new MathFunction);
 		loadFunction(new PlusFunction);
 		loadFunction(new MinusFunction);
 		loadFunction(new TimesFunction);

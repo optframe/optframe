@@ -1,6 +1,22 @@
 
 read definitions.opt
 
+echo TRUTH TABLE
+echo logic( not true  )
+echo logic( not false )
+echo
+echo logic( true  and true  )
+echo logic( true  and false )
+echo logic( false and true  )
+echo logic( false and false )
+echo
+echo logic( true  or true  )
+echo logic( true  or false )
+echo logic( false or true  )
+echo logic( false or false )
+echo END TRUTH TABLE
+echo
+
 define mylist1 [1, 2, 3, 4, 5 ,6]
 define shapiro1 shapiro_test( mylist1 ) 
 if_else compare( shapiro1 <= 0.05 )[
