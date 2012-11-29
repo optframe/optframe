@@ -129,6 +129,8 @@ public:
 			for(unsigned int i=0;i<all_modules.size();i++)
 				if(command == all_modules[i]->id())
 				{
+					//cout << "READ COMMAND: '" << command << "'" << endl;
+
 					string original = s2.rest();
 					string after_preprocess = all_modules[i]->preprocess(allFunctions, dictionary, original);
 					if(!all_modules[i]->run(all_modules, allFunctions, factory, dictionary, after_preprocess))

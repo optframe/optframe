@@ -244,6 +244,8 @@ public:
 				if(command.at(0)=='%') // first line comment
 					command = "";
 
+				//cout << "FOR_EACH COMMAND: '" << command << "'" << endl;
+
 				if (command != "")
 					if(!exec_command(all_modules, allFunctions, factory, dictionary, command))
 					{
@@ -254,6 +256,7 @@ public:
 
 						return false;
 					}
+
 			}
 		}
 
