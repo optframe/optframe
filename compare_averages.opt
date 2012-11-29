@@ -17,6 +17,16 @@ echo logic( false or false )
 echo END TRUTH TABLE
 echo
 
+define total  10
+define inicio 1
+echo teste while:
+while compare( inicio < total ) [
+  echo inicio,
+  silent_define inicio math( inicio + 1 )
+]
+echo fim while
+echo
+
 define mylist1 [1, 2, 3, 4, 5 ,6]
 define shapiro1 shapiro_test( mylist1 ) 
 if_else compare( shapiro1 <= 0.05 )[

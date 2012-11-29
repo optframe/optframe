@@ -154,9 +154,7 @@
 #include "Modules/ExecConstructiveModule.hpp"
 #include "Modules/ExportModule.hpp"
 #include "Modules/ExportLogModule.hpp"
-#include "Modules/ForEachModule.hpp"
 #include "Modules/HelpModule.hpp"
-#include "Modules/IfElseModule.hpp"
 #include "Modules/ListBuilderOfComponentModule.hpp"
 #include "Modules/ListBuildersModule.hpp"
 #include "Modules/ListComponentsModule.hpp"
@@ -175,6 +173,12 @@
 #include "Modules/UndefineModule.hpp"
 #include "Modules/UsageModule.hpp"
 #include "Modules/InitServersModule.hpp"
+
+//structural
+#include "Modules/IfElseModule.hpp"
+#include "Modules/ForEachModule.hpp"
+#include "Modules/WhileModule.hpp"
+
 
 // ==================================
 //            Serializer
@@ -274,9 +278,7 @@ public:
 		loadModule(new ExportModule<R, ADS, M> );
 		loadModule(new ExportLogModule<R, ADS, M> );
 		loadModule(new ErrorModule<R, ADS, M> );
-		loadModule(new ForEachModule<R, ADS, M> );
 		loadModule(new HelpModule<R, ADS, M> );
-		loadModule(new IfElseModule<R, ADS, M> );
 		loadModule(new ListBuilderOfComponentModule<R, ADS, M> );
 		loadModule(new ListBuildersModule<R, ADS, M> );
 		loadModule(new ListComponentsModule<R, ADS, M> );
@@ -296,6 +298,11 @@ public:
 #ifdef MaPI
 		loadModule(new InitServersModule<R, ADS, M> );
 #endif
+
+		//structural
+		loadModule(new ForEachModule<R, ADS, M> );
+		loadModule(new IfElseModule<R, ADS, M> );
+		loadModule(new WhileModule<R, ADS, M> );
 
 		unloadFunctions();
 		loadFunction(new AbsFunction);
