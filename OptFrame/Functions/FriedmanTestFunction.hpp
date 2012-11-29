@@ -94,7 +94,7 @@ public:
 			list2.push_back(list1);
 		}
 
-		cout << list2 << endl;
+		//cout << list2 << endl;
 
 		stringstream scommand;
 		scommand << "echo \"x <- matrix(c(";
@@ -122,7 +122,7 @@ public:
 
 		scommand << "friedman.test(x)\" | R --no-save | grep p-value";
 
-		//cout << "COMMAND: '" << scommand.str() << "'";
+		//cout << "COMMAND: '" << scommand.str() << "'" << endl;
 
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
 		if (pPipe == NULL)
@@ -143,7 +143,7 @@ public:
 
 		pclose(pPipe);
 
-		//cout << "friedman_test module: OUTPUT '" << output << "'" << endl;
+		//cout << "friedman_test function: OUTPUT '" << output << "'" << endl;
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
 			return NULL;
 
@@ -157,7 +157,16 @@ public:
 		scan_out.next(); // drop '2,'
 		scan_out.next(); // drop 'p-value'
 		scan_out.next(); // drop '='
-		double pvalue = scan_out.nextDouble();
+		// WARNING: p-value can be 'NA'
+		string spvalue = scan_out.next();
+		double pvalue;
+		if(spvalue == "NA")
+		{
+			cout << "friedman function warning: returning 'NA' result! p-value = 1.0" << endl;
+			pvalue = 1;
+		}
+		else
+			pvalue = Scanner::parseDouble(spvalue);
 
 		scanner.next(); // drop ')'
 
