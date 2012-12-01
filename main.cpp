@@ -61,12 +61,13 @@ int main(int argc, char **argv)
 	NSEnumSwap& ns = *new NSEnumSwap(p, optframe.factory.getRandGen());
 	optframe.factory.addComponent(ns);
 
+
 	optframe.factory.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP>);
 	optframe.factory.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(1));
 	optframe.factory.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(2));
 	optframe.factory.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(3));
 	//optframe.factory.addComponent(*new NSSeqTSPOrOpt<int, OPTFRAME_DEFAULT_ADS, MemTSP>);
-	optframe.factory.addComponent(*new NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS, MemTSP>);
+	optframe.factory.addComponent(*new NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS, MemTSP>, "OptFrame:NS:NSSeq");
 
 
 	//optframe.execute("define is_random initsol 0");
@@ -74,7 +75,7 @@ int main(int argc, char **argv)
 	//optframe.execute("define swap ns 0");
 
 	//optframe.execute();
-	optframe.execute("read hexample.opt");
+	optframe.execute("read example.opt");
 
 	delete p;
 

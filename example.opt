@@ -4,11 +4,24 @@
 
 read definitions.opt     % load OptFrame system definitions
 
-run [
-  echo BLA,
-  define um 1,
-  echo FIM
+run_parallel [
+  create_numeric_list 1 1000 l_1_1000,
+  for_each $i l_1_1000 [
+    echo $i
+  ]
+][
+  create_numeric_list 1001 2000 l_1001_2000,
+  for_each $i l_1001_2000 [
+    echo $i
+  ]
+][
+  create_numeric_list 2001 3000 l_2001_3000,
+  for_each $i l_2001_3000 [
+    echo $i
+  ]
 ]
+
+exit
 
 %randgen system_seed time()
 randgen system_seed 0
