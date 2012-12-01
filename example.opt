@@ -4,10 +4,18 @@
 
 read definitions.opt     % load OptFrame system definitions
 
-randgen system_seed time()
+run [
+  echo BLA,
+  define um 1,
+  echo FIM
+]
+
+%randgen system_seed time()
+randgen system_seed 0
+
 
 dictionary %shows an empty dictionary
-define my_bestimprovement OptFrame:LocalSearch:bi Evaluator 0 NSEnum 0 %define 'my_bestimprovement' as 'BI ev 0 ns 0'
+define my_bestimprovement OptFrame:LocalSearch:BI Evaluator 0 NSSeq 0 %define 'my_bestimprovement' as 'BI ev 0 ns 0'
 define random Constructive 0 %define 'random' as 'OptFrame:constructive 0'
 dictionary %shows the updated dictionary
 
