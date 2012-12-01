@@ -208,9 +208,9 @@ public:
       }
    }
 
-   ostream& operator<<(ostream &os)
+   friend ostream& operator<<(ostream &os, const Matrix<T> &obj)
    {
-      const Matrix<T> &obj = *this;
+      //const Matrix<T> &obj = *this;
       //os << "Matrix(" << obj.getRows() << "," << obj.getCols() << ")" << endl;
 
       os << endl;
