@@ -50,7 +50,8 @@ public:
 
 	virtual string usage()
 	{
-		return "wilcoxon_test( list1 signal list2 ) : return p-value\ndependent 2-group Wilcoxon Signed Rank Test  => requires: data sampled in pairs\nnull hypothesis: data come from same distributions (after treatment), if p-value < alpha reject null hypothesis.\n'signal' can be '<', '>' or '=='";
+		return "wilcoxon_test( list1 list2 ) : return p-value\ndependent 2-group Wilcoxon Signed Rank Test  => requires: data sampled in pairs\nnull hypothesis: data come from same distributions (after treatment), if p-value < alpha reject null hypothesis.";
+		//return "wilcoxon_test( list1 signal list2 ) : return p-value\ndependent 2-group Wilcoxon Signed Rank Test  => requires: data sampled in pairs\nnull hypothesis: data come from same distributions (after treatment), if p-value < alpha reject null hypothesis.\n'signal' can be '<', '>' or '=='";
 	}
 
 	virtual string formatNumber(double v)
@@ -77,7 +78,7 @@ public:
 		if(list1.size()==0)
 			return NULL;
 
-		string signal = scanner.next();
+		//string signal = scanner.next();
 
 		vector<string>* plist2 = OptFrameList::readList(scanner);
 		vector<string>  list2;
@@ -135,9 +136,10 @@ public:
 			scommand << ")";
 		scommand << ",";
 
-		scommand << "paired=TRUE,";
+		scommand << "paired=TRUE";
 
-		scommand << "alternative=";
+		/*
+		scommand << ",alternative=";
 
 		if(signal=="<")
 			scommand << "'l'"; // less
@@ -150,6 +152,7 @@ public:
 			cout << "wilcoxon function: unknown signal '" << signal << "'" << endl;
 			return NULL;
 		}
+		*/
 
 		scommand << ")\" | R --no-save | grep p-value";
 
