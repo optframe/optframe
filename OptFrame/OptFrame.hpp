@@ -167,7 +167,6 @@
 #include "Modules/RandomNumberIntervalModule.hpp"
 #include "Modules/ReadModule.hpp"
 #include "Modules/RunModule.hpp"
-#include "Modules/RunParallelModule.hpp"
 #include "Modules/SilentDefineModule.hpp"
 #include "Modules/TestModule.hpp"
 #include "Modules/TestLocalSearchModule.hpp"
@@ -175,6 +174,11 @@
 #include "Modules/UndefineModule.hpp"
 #include "Modules/UsageModule.hpp"
 #include "Modules/InitServersModule.hpp"
+
+// parallel
+#ifdef OPTFRAME_PARALLEL
+#include "Modules/RunParallelModule.hpp"
+#endif
 
 //structural
 #include "Modules/IfElseModule.hpp"
@@ -292,7 +296,6 @@ public:
 		loadModule(new RandomNumberIntervalModule<R, ADS, M> );
 		loadModule(new ReadModule<R, ADS, M> );
 		loadModule(new RunModule<R, ADS, M> );
-		loadModule(new RunParallelModule<R, ADS, M> );
 		loadModule(new SilentDefineModule<R, ADS, M> );
 		loadModule(new TestModule<R, ADS, M> );
 		loadModule(new TestLocalSearchModule<R, ADS, M> );
@@ -302,6 +305,11 @@ public:
 #ifdef MaPI
 		loadModule(new InitServersModule<R, ADS, M> );
 #endif
+
+		// parallel
+		#ifdef OPTFRAME_PARALLEL
+		loadModule(new RunParallelModule<R, ADS, M> );
+		#endif
 
 		//structural
 		loadModule(new ForEachModule<R, ADS, M> );

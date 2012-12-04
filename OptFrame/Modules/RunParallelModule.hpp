@@ -21,6 +21,8 @@
 #ifndef OPTFRAME_RUN_PARALLEL_MODULE_HPP_
 #define OPTFRAME_RUN_PARALLEL_MODULE_HPP_
 
+#ifdef OPTFRAME_PARALLEL
+
 #include<string>
 
 #include <pthread.h>
@@ -218,5 +220,7 @@ public:
     }
 
 };
+
+#endif /* OPTFRAME_PARALLEL */
 
 #endif /* OPTFRAME_RUN_PARALLEL_MODULE_HPP_ */

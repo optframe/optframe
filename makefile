@@ -1,5 +1,5 @@
 all:
-	g++ -Wall -lpthread main.cpp ./OptFrame/Scanner++/Scanner.cpp -o mainOptFrame
+	g++ -Wall -DOPTFRAME_PARALLEL -lpthread main.cpp ./OptFrame/Scanner++/Scanner.cpp -o mainOptFrame
 
 examples: tsp eternityII pmedcap
 
