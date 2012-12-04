@@ -58,7 +58,10 @@ define pvalue2 paired_t_test( [1, 1.4, 1.6, 500] [3.9, 2.8, 1.2, 1000]  )
 define pvalue2 wilcoxon_test( [1, 1.4, 1.6, 500] [3.9, 2.8, 1.2, 1000]  )
 
 
-define pvalue friedman_test( [ [1, 1.4, 1.6, 500] , [0, 1.3, 1.4, 1000]  ]  )
+define pvalue anova( [ [1, 1.4, 1.6, 500] , [0, 1.3, 1.4, 1000] , [ 5, 10 , 20 , 4000 ] ] )
+define pvalue friedman_test( [ [1, 1.4, 1.6, 500] , [0, 1.3, 1.4, 1000] , [ 5, 10 , 20 , 4000 ] ] )
+
+pause
 
 if_else compare( pvalue <= 0.05 )[
   echo DIFERENTES!

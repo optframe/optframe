@@ -121,6 +121,7 @@
 #include "Functions/WordsFunction.hpp"
 
 // statistics
+#include "Functions/ANOVAFunction.hpp"
 #include "Functions/FriedmanTestFunction.hpp"
 #include "Functions/MannUTestFunction.hpp"
 #include "Functions/PairedTTestFunction.hpp"
@@ -337,6 +338,7 @@ public:
 		loadFunction(new WordsFunction);
 
 		// statistics
+		loadFunction(new ANOVAFunction);
 		loadFunction(new FriedmanTestFunction);
 		loadFunction(new MannUTestFunction);
 		loadFunction(new PairedTTestFunction);
