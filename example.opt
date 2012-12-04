@@ -4,7 +4,7 @@
 
 read definitions.opt     % load OptFrame system definitions
 
-try_catch [
+try [
 
 run_parallel [
   create_numeric_list 1 1000 l_1_1000,

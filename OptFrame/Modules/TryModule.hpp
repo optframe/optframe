@@ -18,15 +18,15 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef TRYCATCH_MODULE_HPP_
-#define TRYCATCH_MODULE_HPP_
+#ifndef TRY_MODULE_HPP_
+#define TRY_MODULE_HPP_
 
 #include<string>
 
 #include "../OptFrameModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class TryCatchModule: public OptFrameModule<R, ADS, M>
+class TryModule: public OptFrameModule<R, ADS, M>
 {
 private:
 	OptFrameModule<R, ADS, M>* getModule(vector<OptFrameModule<R, ADS, M>*>& modules, string module)
@@ -52,18 +52,18 @@ private:
 
 public:
 
-	virtual ~TryCatchModule()
+	virtual ~TryModule()
 	{
 	}
 
 	string id()
 	{
-		return "try_catch";
+		return "try";
 	}
 
 	string usage()
 	{
-		return "try_catch list_of_try_commands [list_of_catch_commands]";
+		return "try list_of_try_commands [list_of_exception_commands]";
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
@@ -115,9 +115,9 @@ public:
 					// EXPECTED ERROR, NO MESSAGE!
 					/*
 					if (ltry.at(c) == "")
-						cout << "try_catch module: (TRY) empty command! (perhaps an extra comma in list?)" << endl;
+						cout << "try module: (TRY) empty command! (perhaps an extra comma in list?)" << endl;
 					else
-						cout << "try_catch module: (TRY) problem in command '" << ltry.at(c) << "'" << endl;
+						cout << "try module: (TRY) problem in command '" << ltry.at(c) << "'" << endl;
 					*/
 
 					ok = false;
@@ -144,9 +144,9 @@ public:
 					if(!exec_command(allModules, allFunctions, factory, dictionary, command))
 					{
 						if(lcatch.at(c)=="")
-							cout << "try_catch module: (CATCH) empty command! (perhaps an extra comma in list?)" << endl;
+							cout << "try module: (AFTER ERROR) empty command! (perhaps an extra comma in list?)" << endl;
 						else
-							cout << "try_catch module: (CATCH) error in command '" << lcatch.at(c) << "'!" << endl;
+							cout << "try module: (AFTER ERROR) error in command '" << lcatch.at(c) << "'!" << endl;
 
 						return false;
 					}
@@ -183,4 +183,4 @@ public:
 	}
 };
 
-#endif /* TRYCATCH_MODULE_HPP_ */
+#endif /* TRY_MODULE_HPP_ */
