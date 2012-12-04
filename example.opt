@@ -4,6 +4,8 @@
 
 read definitions.opt     % load OptFrame system definitions
 
+try_catch [
+
 run_parallel [
   create_numeric_list 1 1000 l_1_1000,
   for_each $i l_1_1000 [
@@ -21,7 +23,9 @@ run_parallel [
   ]
 ]
 
-exit
+] [
+  echo No run_parallel module loaded. Continuing...
+]
 
 %randgen system_seed time()
 randgen system_seed 0

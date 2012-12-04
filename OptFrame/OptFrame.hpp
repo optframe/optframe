@@ -184,6 +184,7 @@
 #include "Modules/IfElseModule.hpp"
 #include "Modules/ForEachModule.hpp"
 #include "Modules/WhileModule.hpp"
+#include "Modules/TryCatchModule.hpp"
 
 
 // ==================================
@@ -315,6 +316,7 @@ public:
 		loadModule(new ForEachModule<R, ADS, M> );
 		loadModule(new IfElseModule<R, ADS, M> );
 		loadModule(new WhileModule<R, ADS, M> );
+		loadModule(new TryCatchModule<R, ADS, M> );
 
 		unloadFunctions();
 		loadFunction(new AbsFunction);
