@@ -122,9 +122,11 @@
 
 // statistics
 #include "Functions/FriedmanTestFunction.hpp"
+#include "Functions/MannUTestFunction.hpp"
 #include "Functions/PairedTTestFunction.hpp"
 #include "Functions/ShapiroTestFunction.hpp"
 #include "Functions/StudentTTestFunction.hpp"
+#include "Functions/WilcoxonTestFunction.hpp"
 
 // logic
 #include "Functions/LogicFunction.hpp"
@@ -336,9 +338,11 @@ public:
 
 		// statistics
 		loadFunction(new FriedmanTestFunction);
+		loadFunction(new MannUTestFunction);
 		loadFunction(new PairedTTestFunction);
 		loadFunction(new ShapiroTestFunction);
 		loadFunction(new StudentTTestFunction);
+		loadFunction(new WilcoxonTestFunction);
 
 		// logic
 		loadFunction(new LogicFunction);

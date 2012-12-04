@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_T_TEST_FUNCTION_HPP_
-#define OPTFRAME_T_TEST_FUNCTION_HPP_
+#ifndef OPTFRAME_WILCOXON_TEST_FUNCTION_HPP_
+#define OPTFRAME_WILCOXON_TEST_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,22 +35,22 @@
 
 #include <algorithm>
 
-class PairedTTestFunction : public OptFrameFunction
+class WilcoxonTestFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~PairedTTestFunction()
+	virtual ~WilcoxonTestFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "paired_t_test";
+		return "wilcoxon_test";
 	}
 
 	virtual string usage()
 	{
-		return "paired_t_test( list1 signal list2 ) : return p-value\npaired t-test => requires: near-normality from each input data (use shapiro_test or kolmogorov_test); variances are equal (use var_test); data sampled in pairs\n null hypothesis: means are equal (after treatment), if p-value < alpha reject null hypothesis.\n'signal' can be '<', '>' or '=='";
+		return "wilcoxon_test( list1 signal list2 ) : return p-value\ndependent 2-group Wilcoxon Signed Rank Test  => requires: data sampled in pairs\nnull hypothesis: data come from same distributions (after treatment), if p-value < alpha reject null hypothesis.\n'signal' can be '<', '>' or '=='";
 	}
 
 	virtual string formatNumber(double v)
@@ -62,7 +62,6 @@ public:
 
 	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, string body)
 	{
-		//cout << "paired_t_test run:'" << body << "'" << endl;
 		Scanner scanner(body);
 
 		vector<string>* plist1 = OptFrameList::readList(scanner);
@@ -95,14 +94,22 @@ public:
 
 		if(list1.size() != list2.size())
 		{
-			cout << "paired_t_test function: lists should have same size!" << endl;
+			cout << "wilcoxon_test function: lists should have same size!" << endl;
 			return NULL;
 		}
 
 		// CARE WITH CONSTANT LISTS IN A PAIRED TEST!
+		bool jitter = false;
+
+		for(unsigned i=0; i<list1.size(); i++)
+			if(Scanner::parseDouble(list1[i]) == Scanner::parseDouble(list2[i]))
+			{
+				jitter = true;
+				break;
+			}
 
 		stringstream scommand;
-		scommand << "echo \"t.test( x=c(";
+		scommand << "echo \"wilcox.test( x=c(";
 
 		for(unsigned i=0; i<list1.size(); i++)
 		{
@@ -111,7 +118,10 @@ public:
 				scommand << ",";
 		}
 
-		scommand << "), y=c(";
+		scommand << "), y=";
+		if(jitter)
+			scommand << "jitter(";
+		scommand << "c(";
 
 		for(unsigned i=0; i<list2.size(); i++)
 		{
@@ -120,7 +130,10 @@ public:
 				scommand << ",";
 		}
 
-		scommand << "),";
+		scommand << ")";
+		if(jitter)
+			scommand << ")";
+		scommand << ",";
 
 		scommand << "paired=TRUE,";
 
@@ -134,18 +147,20 @@ public:
 			scommand << "'t'"; // two.sided
 		else
 		{
-			cout << "paired_t_test function: unknown signal '" << signal << "'" << endl;
+			cout << "wilcoxon function: unknown signal '" << signal << "'" << endl;
 			return NULL;
 		}
 
 		scommand << ")\" | R --no-save | grep p-value";
 
 		//cout << scommand.str() << endl;
+		//if(jitter)
+		//	cout << "NEEDED JITTER!" << endl;
 
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
 		if (pPipe == NULL)
 		{
-		    cout << "paired_t_test function: PIPE NOT OPEN!" << endl;
+		    cout << "wilcoxon_test function: PIPE NOT OPEN!" << endl;
 		    return NULL;
 		}
 
@@ -161,17 +176,14 @@ public:
 
 		pclose(pPipe);
 
-		//cout << "paired_t_test function: OUTPUT '" << output << "'" << endl;
+		//cout << "wilcoxon_test function: OUTPUT '" << output << "'" << endl;
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
 			return NULL;
 
-		Scanner scan_out(output); //example: 't = -2.2156, df = 18, p-value = 0.01992'
-		scan_out.next(); // drop 't'
+		Scanner scan_out(output); //example: 'V = 0, p-value = 0.01992'
+		scan_out.next(); // drop 'V'
 		scan_out.next(); // drop '='
-		scan_out.next(); // drop '-2.2156,'
-		scan_out.next(); // drop 'df'
-		scan_out.next(); // drop '='
-		scan_out.next(); // drop '18,'
+		scan_out.next(); // drop '0,'
 		scan_out.next(); // drop 'p-value'
 		scan_out.next(); // drop '='
 		// WARNING: p-value can be 'NA'
@@ -179,7 +191,7 @@ public:
 		double pvalue;
 		if(spvalue == "NA")
 		{
-			cout << "paired_t_test function warning: returning 'NA' result! p-value = 1.0" << endl;
+			cout << "wilcoxon function warning: returning 'NA' result! p-value = 1.0" << endl;
 			pvalue = 1;
 		}
 		else
@@ -191,4 +203,4 @@ public:
 	}
 };
 
-#endif /* OPTFRAME_T_TEST_FUNCTION_HPP_ */
+#endif /* OPTFRAME_WILCOXON_TEST_FUNCTION_HPP_ */

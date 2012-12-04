@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_T_TEST_FUNCTION_HPP_
-#define OPTFRAME_T_TEST_FUNCTION_HPP_
+#ifndef OPTFRAME_MANN_U_TEST_FUNCTION_HPP_
+#define OPTFRAME_MANN_U_TEST_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,22 +35,22 @@
 
 #include <algorithm>
 
-class PairedTTestFunction : public OptFrameFunction
+class MannUTestFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~PairedTTestFunction()
+	virtual ~MannUTestFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "paired_t_test";
+		return "mann_u_test";
 	}
 
 	virtual string usage()
 	{
-		return "paired_t_test( list1 signal list2 ) : return p-value\npaired t-test => requires: near-normality from each input data (use shapiro_test or kolmogorov_test); variances are equal (use var_test); data sampled in pairs\n null hypothesis: means are equal (after treatment), if p-value < alpha reject null hypothesis.\n'signal' can be '<', '>' or '=='";
+		return "mann_u_test( list1 list2 ) : return p-value\nindependent 2-group Mann-Whitney U Test => requires: data independently sampled\nnull hypothesis: data come from same distribution; if p-value < alpha reject null hypothesis.";
 	}
 
 	virtual string formatNumber(double v)
@@ -62,7 +62,6 @@ public:
 
 	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, string body)
 	{
-		//cout << "paired_t_test run:'" << body << "'" << endl;
 		Scanner scanner(body);
 
 		vector<string>* plist1 = OptFrameList::readList(scanner);
@@ -78,8 +77,6 @@ public:
 		if(list1.size()==0)
 			return NULL;
 
-		string signal = scanner.next();
-
 		vector<string>* plist2 = OptFrameList::readList(scanner);
 		vector<string>  list2;
 		if(plist2)
@@ -93,16 +90,18 @@ public:
 		if(list2.size()==0)
 			return NULL;
 
-		if(list1.size() != list2.size())
-		{
-			cout << "paired_t_test function: lists should have same size!" << endl;
-			return NULL;
-		}
+		// CARE WITH TIES!
+		bool jitter = false;
 
-		// CARE WITH CONSTANT LISTS IN A PAIRED TEST!
+		for(unsigned i=0; i<list1.size(); i++)
+			if((i<list2.size()) && (Scanner::parseDouble(list1[i]) == Scanner::parseDouble(list2[i])))
+			{
+				jitter = true;
+				break;
+			}
 
 		stringstream scommand;
-		scommand << "echo \"t.test( x=c(";
+		scommand << "echo \"wilcox.test( x=c(";
 
 		for(unsigned i=0; i<list1.size(); i++)
 		{
@@ -111,7 +110,10 @@ public:
 				scommand << ",";
 		}
 
-		scommand << "), y=c(";
+		scommand << "), y=";
+		if(jitter)
+			scommand << "jitter(";
+		scommand << "c(";
 
 		for(unsigned i=0; i<list2.size(); i++)
 		{
@@ -120,32 +122,20 @@ public:
 				scommand << ",";
 		}
 
-		scommand << "),";
+		scommand << ")";
+		if(jitter)
+			scommand << ")";
 
-		scommand << "paired=TRUE,";
-
-		scommand << "alternative=";
-
-		if(signal=="<")
-			scommand << "'l'"; // less
-		else if(signal==">")
-			scommand << "'g'"; // greater
-		else if(signal=="==")
-			scommand << "'t'"; // two.sided
-		else
-		{
-			cout << "paired_t_test function: unknown signal '" << signal << "'" << endl;
-			return NULL;
-		}
-
-		scommand << ")\" | R --no-save | grep p-value";
+		scommand << " )\" | R --no-save | grep p-value";
 
 		//cout << scommand.str() << endl;
+		//if(jitter)
+		//	cout << "NEEDED JITTER!" << endl;
 
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
 		if (pPipe == NULL)
 		{
-		    cout << "paired_t_test function: PIPE NOT OPEN!" << endl;
+		    cout << "mann_u_test function: PIPE NOT OPEN!" << endl;
 		    return NULL;
 		}
 
@@ -161,17 +151,14 @@ public:
 
 		pclose(pPipe);
 
-		//cout << "paired_t_test function: OUTPUT '" << output << "'" << endl;
+		//cout << "mann_u_test function: OUTPUT '" << output << "'" << endl;
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
 			return NULL;
 
-		Scanner scan_out(output); //example: 't = -2.2156, df = 18, p-value = 0.01992'
-		scan_out.next(); // drop 't'
+		Scanner scan_out(output); //example: 'W = 450, p-value = 1'
+		scan_out.next(); // drop 'W'
 		scan_out.next(); // drop '='
-		scan_out.next(); // drop '-2.2156,'
-		scan_out.next(); // drop 'df'
-		scan_out.next(); // drop '='
-		scan_out.next(); // drop '18,'
+		scan_out.next(); // drop '450,'
 		scan_out.next(); // drop 'p-value'
 		scan_out.next(); // drop '='
 		// WARNING: p-value can be 'NA'
@@ -179,7 +166,7 @@ public:
 		double pvalue;
 		if(spvalue == "NA")
 		{
-			cout << "paired_t_test function warning: returning 'NA' result! p-value = 1.0" << endl;
+			cout << "mann_u_test function warning: returning 'NA' result! p-value = 1.0" << endl;
 			pvalue = 1;
 		}
 		else
@@ -191,4 +178,4 @@ public:
 	}
 };
 
-#endif /* OPTFRAME_T_TEST_FUNCTION_HPP_ */
+#endif /* OPTFRAME_MANN_U_TEST_FUNCTION_HPP_ */
