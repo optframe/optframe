@@ -50,7 +50,7 @@ public:
 
 	virtual string usage()
 	{
-		return "text( list ) : return list as string";
+		return "text( list ) : return list as text";
 	}
 
 	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string,vector<string> >& ldictionary, string body)
