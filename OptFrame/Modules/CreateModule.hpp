@@ -222,6 +222,7 @@ public:
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
 	{
 		Scanner scanner(input);
+		//cout << "module '" << id() << "' (created) run: '" << input << "'" << endl;
 
 		if (!scanner.hasNext())
 		{
@@ -290,6 +291,7 @@ public:
 	bool run(vector<OptFrameModule<R, ADS, M>*>& modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
 	{
 		Scanner scanner(input);
+		//cout << "create_module run: '" << input << "'" << endl;
 
 		if (!scanner.hasNext())
 		{
@@ -353,6 +355,12 @@ public:
 			return true;
 		}
 
+	}
+
+	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>& dictionary, string input)
+	{
+		// disable preprocess!!
+		return input;
 	}
 };
 
