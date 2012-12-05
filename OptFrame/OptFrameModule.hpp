@@ -89,7 +89,14 @@ public:
 				break;
 		}
 
-		scanner = Scanner(input2);
+		stringstream input_func; // add spaces before and after '(', ')', '[', ']' and ','
+		for(unsigned i=0; i<input2.size(); i++)
+			if( (input2.at(i)=='(') || (input2.at(i)==')') || (input2.at(i)=='[') || (input2.at(i)==']') || (input2.at(i)==',') )
+				input_func << ' ' << input2.at(i) << ' ';
+			else
+				input_func << input2.at(i);
+
+		scanner = Scanner(input_func.str());
 
 		// Second, use the dictionary
 
@@ -122,15 +129,7 @@ public:
 
 		// Third, locate functions
 
-		stringstream ssfunc;
-		// add space before and after brackets '(' ')'
-		for(unsigned i=0; i<input4.length(); i++)
-			if((input4.at(i)=='(') || (input4.at(i)==')'))
-				ssfunc << " " << input4.at(i) << " ";
-			else
-				ssfunc << input4.at(i);
-
-		Scanner scanFunc(ssfunc.str());
+		Scanner scanFunc(input4);
 
 		if(!scanFunc.hasNext())
 			return input4; // no functions

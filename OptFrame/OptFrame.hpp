@@ -107,7 +107,6 @@
 #include "Util/RandGenMersenneTwister.hpp"
 
 #include "Functions/AbsFunction.hpp"
-#include "Functions/AppendFunction.hpp"
 #include "Functions/AvgFunction.hpp"
 #include "Functions/CompareFunction.hpp"
 #include "Functions/ElementFunction.hpp"
@@ -119,6 +118,10 @@
 #include "Functions/POpenFunction.hpp"
 #include "Functions/TimeFunction.hpp"
 #include "Functions/WordsFunction.hpp"
+
+// lists
+#include "Functions/AppendFunction.hpp"
+#include "Functions/TextFunction.hpp"
 
 // statistics
 #include "Functions/ANOVAFunction.hpp"
@@ -333,7 +336,6 @@ public:
 
 		unloadFunctions();
 		loadFunction(new AbsFunction);
-		loadFunction(new AppendFunction);
 		loadFunction(new AvgFunction);
 		loadFunction(new CompareFunction);
 		loadFunction(new ElementFunction);
@@ -346,6 +348,10 @@ public:
 		loadFunction(new ShapiroTestFunction);
 		loadFunction(new TimeFunction);
 		loadFunction(new WordsFunction);
+
+		// lists
+		loadFunction(new AppendFunction);
+		loadFunction(new TextFunction);
 
 		// statistics
 		loadFunction(new ANOVAFunction);
