@@ -41,7 +41,7 @@ public:
 		return "define new_name string_to_be_substituted_from_the_new_name";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string,string>& dictionary, string rest)
+	bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string,string>& dictionary,  map< string,vector<string> >&, string rest)
 	{
 		Scanner scanner(rest);
 
@@ -74,7 +74,7 @@ public:
 		}
 	}
 
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, string input)
+	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -105,7 +105,7 @@ public:
 
 		// now proceed as usual
 
-		string input3 = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, scanner.rest());
+		string input3 = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, scanner.rest());
 
 		string input4;
 		input4.append(discarded);

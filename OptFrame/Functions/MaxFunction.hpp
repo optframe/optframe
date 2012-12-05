@@ -53,11 +53,11 @@ public:
 		return "max( list ) : return list maximum";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, string body)
+	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
-		vector<string>* plist = OptFrameList::readList(scanner);
+		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
 		vector<string>  list;
 		if(plist)
 		{

@@ -38,10 +38,10 @@ public:
 
 	string usage()
 	{
-		return "undefine word";
+		return "undefine word or list";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string, string>& dictionary, string rest)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string rest)
 	{
 		Scanner scanner(rest);
 
@@ -54,11 +54,12 @@ public:
 		string word = scanner.next();
 
 		dictionary.erase(word);
+		ldictionary.erase(word);
 
 		return true;
 	}
 
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>&, string input)
+	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>&, map< string,vector<string> >&, string input)
 	{
 		Scanner scanner(input);
 

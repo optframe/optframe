@@ -461,6 +461,7 @@ public:
 		return np;
 	}
 
+	/*
 	vector<NS<R, ADS, M>*> read_ns_list(Scanner& scanner)
 	{
 		vector<string>* plist = OptFrameList::readList(scanner);
@@ -556,6 +557,7 @@ public:
 		delete &list;
 		return v_heuristics;
 	}
+	*/
 
 	Evaluator<R, ADS, M>* read_ev(Scanner& scanner)
 	{
@@ -810,6 +812,7 @@ public:
 			return make_pair(new BasicIteratedLocalSearch<R, ADS, M> (*evaluator, *initsol, *localSearch, *ils_pert, iterMax), scanner.rest());
 		}
 
+		/*
 		if (h == BasicSimulatedAnnealing<R, ADS, M>::idComponent())
 		{
 			cout << "Heuristic: Basic Simulated Annealing" << endl;
@@ -833,6 +836,7 @@ public:
 
 			return make_pair(new BasicSimulatedAnnealing<R, ADS, M> (*evaluator, *initsol, ns_list, alpha, SAmax, Ti, rg), scanner.rest());
 		}
+		*/
 
 		if (h == IteratedLocalSearchLevels<R, ADS, M>::idComponent())
 		{

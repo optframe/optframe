@@ -33,10 +33,8 @@ class OptFrameList
 {
 public:
 
-	static vector<std::string>* readList(Scanner& scanner)
+	static vector<std::string>* readList(map< string,vector<string> >& ldictionary, Scanner& scanner)
 	{
-		vector < std::string > *list = new vector<std::string> ;
-		std::string word;
 		char character = scanner.nextChar();
 		int numberOfBrackets;
 
@@ -45,77 +43,28 @@ public:
 			character = scanner.nextChar();
 		}
 
-		if(character != '[')
+		if(character != '[') // read from dictionary
 		{
-
-			// DEPRECATED SYNTAX 1..n! TO MANY PROBLEMS!!
-			/*
-			if(( character >= '0' ) && ( character <= '9' )) // syntax 1..n
+			stringstream ssword;
+			while(character != ' ')
 			{
-				std::string number = "";
-				number += character;
+				ssword << character;
 				character = scanner.nextChar();
-
-				while( ( ( character >= '0' ) && ( character <= '9' ) ) )
-				{
-					number += character;
-					character = scanner.nextChar();
-				}
-
-				Scanner toInt(number);
-				int firstInt = toInt.nextInt();
-
-				int dots = 0;
-
-				while(( character == ' ' ) || ( character == '.' ))
-				{
-					if(character == '.')
-						dots++;
-
-					character = scanner.nextChar();
-				}
-
-				if(dots != 2)
-				{
-					cout << "Error: expected two dots (..) and found " << dots << " dots!" << endl;
-					return NULL;
-				}
-
-				stringstream rest;
-				rest << character << scanner.rest();
-				scanner = Scanner(rest.str());
-
-				int secondInt = scanner.nextInt();
-
-				if(firstInt < secondInt)
-				{
-					for(int i = firstInt; i <= secondInt; i++)
-					{
-						stringstream toStr;
-						toStr << i;
-						list->push_back(toStr.str());
-					}
-				}
-				else
-					for(int i = firstInt; i >= secondInt; i--)
-					{
-						stringstream toStr;
-						toStr << i;
-						list->push_back(toStr.str());
-					}
-
-				return list;
 			}
+
+			string word = ssword.str();
+
+			if(ldictionary.count(word) == 0)
+				return NULL; // not registered
 			else
 			{
-				cout << "Error:! expected '[' and found '" << character << "'!" << endl;
-				return NULL;
+				vector<string>* list = new vector<string>(ldictionary.find(word)->second);
+				return list;
 			}
-			*/
-
-			return NULL;
 		}
 
+		vector < std::string > *list = new vector<std::string> ;
+		std::string word;
 
 		numberOfBrackets = 0;
 

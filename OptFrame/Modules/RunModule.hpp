@@ -37,7 +37,7 @@ public:
 		return NULL;
 	}
 
-	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string command)
+	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string command)
 	{
 		Scanner scanner(command);
 		string module = scanner.next();
@@ -46,8 +46,8 @@ public:
 		if (m == NULL)
 			return false;
 
-		string rest = m->preprocess(allFunctions, dictionary, scanner.rest());
-		return m->run(all_modules, allFunctions, factory, dictionary, rest);
+		string rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+		return m->run(all_modules, allFunctions, factory, dictionary, ldictionary, rest);
 	}
 
 	virtual ~RunModule()
@@ -64,7 +64,7 @@ public:
 		return "run list_of_commands";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -75,7 +75,7 @@ public:
 		}
 
 		vector<string>  lcommands;
-		vector<string>* p_lcommands = OptFrameList::readList(scanner);
+		vector<string>* p_lcommands = OptFrameList::readList(ldictionary, scanner);
 		if(p_lcommands)
 		{
 			lcommands = vector<string>(*p_lcommands);
@@ -92,7 +92,7 @@ public:
 				command = "";
 
 			if (command != "")
-				if (!exec_command(allModules, allFunctions, factory, dictionary, command))
+				if (!exec_command(allModules, allFunctions, factory, dictionary, ldictionary, command))
 				{
 					if (lcommands.at(c) == "")
 						cout << "run module: empty command! (perhaps an extra comma in list?)" << endl;
@@ -107,7 +107,7 @@ public:
 	}
 
 	// leave preprocessing to each module
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>& dictionary, string input)
+	virtual string preprocess(vector<OptFrameFunction*>&, map<string, string>&, map< string,vector<string> >&, string input)
 	{
 		return input; // disable pre-processing
 	}

@@ -53,7 +53,7 @@ public:
 		return "next( string ) : return list_of_words";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, string body)
+	virtual pair<string, string>* run(vector<OptFrameFunction*>&, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(body);
 

@@ -43,7 +43,7 @@ public:
 		return "exec target_fo timelimit sios_method output_solution_name [spent_time]";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		//cout << "exec: " << input << endl;
 		Scanner scanner(input);
@@ -88,7 +88,7 @@ public:
 		if (scanner.hasNext())
 		{
 			string new_name = scanner.next();
-			if(!OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, new_name + " " + s_new_id))
+			if(!OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, new_name + " " + s_new_id))
 				return false;
 		}
 
@@ -97,7 +97,7 @@ public:
 			string var_time = scanner.next();
 			stringstream ss;
 			ss << var_time << " " << time;
-			if(!OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str()))
+			if(!OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str()))
 				return false;
 		}
 

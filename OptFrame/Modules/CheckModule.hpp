@@ -42,7 +42,7 @@ public:
 		return "check [initsol id | loadsol id] evaluator ns_seq_list";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >&, string input)
 	{
 		cout << "check: " << input << endl;
 		Scanner scanner(input);
@@ -91,7 +91,11 @@ public:
 		}
 
 		Evaluator<R, ADS, M>* eval = factory.read_ev(scanner);
-		vector<NS<R, ADS, M>*> ns_list = factory.read_ns_list(scanner);
+		//vector<NS<R, ADS, M>*> ns_list = factory.read_ns_list(scanner);
+		vector<NS<R, ADS, M>*> ns_list;
+		cerr << "TODO: FIX CHECK MODULE IMPLEMENTATION!" << endl;
+		return false;
+
 		vector<NSSeq<R, ADS, M>*> ns_seq_list;
 		for (unsigned int i = 0; i < ns_list.size(); i++)
 			ns_seq_list.push_back((NSSeq<R, ADS, M>*) ns_list[i]);

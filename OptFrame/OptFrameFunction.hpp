@@ -42,13 +42,13 @@ class OptFrameFunction
 {
 public:
 
-	static pair<string, string>* run_function(string func, vector<OptFrameFunction*>& allFunctions, string input)
+	static pair<string, string>* run_function(string func, vector<OptFrameFunction*>& allFunctions,  map< string,vector<string> >& ldictionary, string input)
 	{
 		for(unsigned int i=0;i<allFunctions.size();i++)
 			if(func==allFunctions[i]->id())
 			{
-				string iprep = allFunctions[i]->preprocess(allFunctions, input);
-				pair<string, string>* p = allFunctions[i]->run(allFunctions, iprep);
+				string iprep = allFunctions[i]->preprocess(allFunctions, ldictionary, input);
+				pair<string, string>* p = allFunctions[i]->run(allFunctions, ldictionary, iprep);
 				return p;
 			}
 
@@ -72,14 +72,14 @@ public:
 	virtual string id() = 0;
 	virtual string usage() = 0;
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, string body) = 0;
+	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions,  map< string,vector<string> >& ldictionary, string body) = 0;
 
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, string input)
+	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map< string,vector<string> >& ldictionary, string input)
 	{
-		return defaultPreprocess(allFunctions, input);
+		return defaultPreprocess(allFunctions, ldictionary, input);
 	}
 
-	static string defaultPreprocess(vector<OptFrameFunction*>& allFunctions, string input)
+	static string defaultPreprocess(vector<OptFrameFunction*>& allFunctions, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -121,7 +121,7 @@ public:
 
 			if( (current == "(") && OptFrameFunction::functionExists(last, allFunctions) ) // FUNCTION
 			{
-				pair<string, string>* p = OptFrameFunction::run_function(last, allFunctions, scanFunc.rest());
+				pair<string, string>* p = OptFrameFunction::run_function(last, allFunctions, ldictionary, scanFunc.rest());
 
 				if(p)
 				{

@@ -5,7 +5,7 @@
 define x [ a, b, c ]
 
 for_each $i [1,2,3] [
-  element $i x e,
+  define e element( $i x ),
   echo e,
   undefine e
 ]

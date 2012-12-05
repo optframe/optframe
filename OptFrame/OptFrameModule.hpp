@@ -46,11 +46,11 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_E
 class OptFrameModule
 {
 protected:
-	bool run_module(string mod, vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& f, map<string,string>& dictionary, string input)
+	bool run_module(string mod, vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& f, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		for(unsigned int i=0;i<allModules.size();i++)
 			if(mod==allModules[i]->id())
-				return allModules[i]->run(allModules, allFunctions, f, dictionary, input);
+				return allModules[i]->run(allModules, allFunctions, f, dictionary, ldictionary, input);
 
 		cout << "Module '"<<mod<<"' not found." << endl;
 		return false;
@@ -65,14 +65,14 @@ public:
 	virtual string id() = 0;
 	virtual string usage() = 0;
 
-	virtual bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string,string>& dictionary, string) = 0;
+	virtual bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input) = 0;
 
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, string input)
+	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
-		return defaultPreprocess(allFunctions, dictionary,input);
+		return defaultPreprocess(allFunctions, dictionary, ldictionary, input);
 	}
 
-	static string defaultPreprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, string input)
+	static string defaultPreprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -147,7 +147,7 @@ public:
 
 			if( (current == "(") && OptFrameFunction::functionExists(last, allFunctions) ) // FUNCTION
 			{
-				pair<string, string>* p = OptFrameFunction::run_function(last, allFunctions, scanFunc.rest());
+				pair<string, string>* p = OptFrameFunction::run_function(last, allFunctions, ldictionary, scanFunc.rest());
 
 				if(p)
 				{

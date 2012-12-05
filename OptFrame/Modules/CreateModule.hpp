@@ -180,7 +180,7 @@ private:
 
 	}
 
-	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string command)
+	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string command)
 	{
 		Scanner scanner(command);
 		string module = scanner.next();
@@ -189,8 +189,8 @@ private:
 		if (m == NULL)
 			return false;
 
-		string rest = m->preprocess(allFunctions, dictionary, scanner.rest());
-		m->run(all_modules, allFunctions, factory, dictionary, rest);
+		string rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+		m->run(all_modules, allFunctions, factory, dictionary, ldictionary, rest);
 
 		return true;
 	}
@@ -219,7 +219,7 @@ public:
 		return u;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 		//cout << "module '" << id() << "' (created) run: '" << input << "'" << endl;
@@ -248,7 +248,7 @@ public:
 			for (unsigned int v = 0; v < values.size(); v++)
 				command = var_preprocess(parameters[v], values[v], command);
 
-			if (!exec_command(all_modules, allFunctions, factory, dictionary, command))
+			if (!exec_command(all_modules, allFunctions, factory, dictionary, ldictionary, command))
 			{
 				cout << "Error in command: " << command << endl;
 				return false;
@@ -288,7 +288,7 @@ public:
 		return "create_module name list_of_$parameters list_of_commands";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 		//cout << "create_module run: '" << input << "'" << endl;
@@ -307,7 +307,7 @@ public:
 			return false;
 		}
 
-		vector<string>* plist1 = OptFrameList::readList(scanner);
+		vector<string>* plist1 = OptFrameList::readList(ldictionary, scanner);
 		vector<string>  parameters;
 		if(plist1)
 		{
@@ -332,7 +332,7 @@ public:
 
 		vector < string > commands;
 
-		vector<string>* plist = OptFrameList::readList(scanner);
+		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
 		if(plist)
 		{
 			commands = vector<string>(*plist);
@@ -357,7 +357,7 @@ public:
 
 	}
 
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>& dictionary, string input)
+	virtual string preprocess(vector<OptFrameFunction*>&, map<string, string>&,  map< string,vector<string> >&, string input)
 	{
 		// disable preprocess!!
 		return input;

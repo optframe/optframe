@@ -53,7 +53,7 @@ public:
 		return "divide( A B ) : return A/B";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, string body)
+	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 

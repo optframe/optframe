@@ -37,7 +37,7 @@ private:
 		return NULL;
 	}
 
-	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string command)
+	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string command)
 	{
 		Scanner scanner(command);
 		string module = scanner.next();
@@ -46,8 +46,8 @@ private:
 		if (m == NULL)
 			return false;
 
-		string rest = m->preprocess(allFunctions, dictionary, scanner.rest());
-		return m->run(all_modules, allFunctions, factory, dictionary, rest);
+		string rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+		return m->run(all_modules, allFunctions, factory, dictionary, ldictionary, rest);
 	}
 
 public:
@@ -66,7 +66,7 @@ public:
 		return "try list_of_try_commands [list_of_exception_commands]";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -77,7 +77,7 @@ public:
 		}
 
 		vector<string>  ltry;
-		vector<string>* p_ltry = OptFrameList::readList(scanner);
+		vector<string>* p_ltry = OptFrameList::readList(ldictionary, scanner);
 		if(p_ltry)
 		{
 			ltry = vector<string>(*p_ltry);
@@ -89,7 +89,7 @@ public:
 		vector<string>  lcatch;
 		if(scanner.hasNext())
 		{
-			vector<string>* p_lcatch = OptFrameList::readList(scanner);
+			vector<string>* p_lcatch = OptFrameList::readList(ldictionary, scanner);
 			if(p_lcatch)
 			{
 				lcatch = vector<string>(*p_lcatch);
@@ -110,7 +110,7 @@ public:
 				command = "";
 
 			if (command != "")
-				if (!exec_command(allModules, allFunctions, factory, dictionary, command))
+				if (!exec_command(allModules, allFunctions, factory, dictionary, ldictionary, command))
 				{
 					// EXPECTED ERROR, NO MESSAGE!
 					/*
@@ -141,7 +141,7 @@ public:
 					command = "";
 
 				if (command != "")
-					if(!exec_command(allModules, allFunctions, factory, dictionary, command))
+					if(!exec_command(allModules, allFunctions, factory, dictionary, ldictionary, command))
 					{
 						if(lcatch.at(c)=="")
 							cout << "try module: (AFTER ERROR) empty command! (perhaps an extra comma in list?)" << endl;
@@ -157,7 +157,7 @@ public:
 	}
 
 	// should preprocess only until list of commands
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>& dictionary, string input)
+	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		string ibegin = "";
 		string iend   = "";
@@ -174,7 +174,7 @@ public:
 		for(unsigned k=j; k<input.length(); k++)
 			iend += input.at(k);
 
-		string ninput = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ibegin);
+		string ninput = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, ibegin);
 
 		ninput.append(" "); // after boolean value
 		ninput.append(iend);

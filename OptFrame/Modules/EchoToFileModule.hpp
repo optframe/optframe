@@ -42,7 +42,7 @@ public:
 		return "echo_to_file filename text";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string, string>& dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, M>&, map<string, string>&,  map< string,vector<string> >&, string input)
 	{
 		Scanner scanner(input);
 		if(!scanner.hasNext()) // no file

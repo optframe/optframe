@@ -206,6 +206,7 @@ private:
 	vector<OptFrameModule<R, ADS, M>*> modules;
 	vector<OptFrameFunction*> functions;
 	map<string, string> dictionary;
+	map< string, vector<string> > ldictionary;
 
 public:
 
@@ -477,7 +478,7 @@ public:
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (command == modules[i]->id())
 			{
-				string r = modules[i]->preprocess(functions, dictionary, s2.rest());
+				string r = modules[i]->preprocess(functions, dictionary, ldictionary, s2.rest());
 
 				if (r == "INVALID_PARAM")
 				{
@@ -485,7 +486,7 @@ public:
 					exit(1);
 				}
 
-				if(!modules[i]->run(modules, functions, factory, dictionary, r))
+				if(!modules[i]->run(modules, functions, factory, dictionary, ldictionary, r))
 					cout << "error in module: '" << modules[i]->id() << "'" << endl;
 
 				notfound = false;

@@ -42,11 +42,11 @@ public:
 		return "create_list_of_components list type list_name";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
-		vector<string>* plist = OptFrameList::readList(scanner);
+		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
 		vector<string>  list;
 		if(plist)
 		{
@@ -86,7 +86,7 @@ public:
 
 		cout << "'" << factory.typeOfList(type) << "[] " << idx << "' added." << endl;
 
-		return OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ss.str());
+		return OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 	}
 
 };

@@ -60,11 +60,11 @@ public:
 		return ss.str();
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, string body)
+	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
-		vector<string>* plist = OptFrameList::readList(scanner);
+		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
 		vector<string>  list;
 		if(plist)
 		{
@@ -81,7 +81,7 @@ public:
 		for(unsigned i=0; i<list.size(); i++)
 		{
 			Scanner scan(list[i]);
-			vector<string>* plist1 = OptFrameList::readList(scan);
+			vector<string>* plist1 = OptFrameList::readList(ldictionary, scan);
 			vector<string>  list1;
 			if(plist1)
 			{

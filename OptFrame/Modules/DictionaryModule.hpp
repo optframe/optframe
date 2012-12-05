@@ -41,9 +41,10 @@ public:
 		return "dictionary";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string,string>& dictionary, string)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string)
 	{
-		cout << dictionary << endl;
+		cout << "Words dictionary: " << dictionary << endl;
+		cout << "List dictionary: " << ldictionary << endl;
 		return true;
 	}
 

@@ -42,6 +42,7 @@ private:
 	vector<OptFrameFunction*>* allFunctions;
 	HeuristicFactory<R, ADS, M>* factory;
 	map<string, string>* dictionary;
+	map< string,vector<string> >* ldictionary;
 
     // AUXILIAR FUNCTION
     OptFrameModule<R, ADS, M>* getModule(string module)
@@ -65,8 +66,9 @@ public:
 	{
 		allModules   = NULL;
 		allFunctions = NULL;
-		factory = NULL;
+		factory      = NULL;
 		dictionary   = NULL;
+		ldictionary  = NULL;
 	}
 
 	virtual ~RunParallelModule()
@@ -83,7 +85,7 @@ public:
 		return "run_parallel list_of_commands_0 [list_of_commands_1] [list_of_commands_2] ... ";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& _allModules, vector<OptFrameFunction*>& _allFunctions, HeuristicFactory<R, ADS, M>& _factory, map<string, string>& _dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& _allModules, vector<OptFrameFunction*>& _allFunctions, HeuristicFactory<R, ADS, M>& _factory, map<string, string>& _dictionary,  map< string,vector<string> >& _ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -99,11 +101,12 @@ public:
 		allFunctions = &_allFunctions;
 		factory      = &_factory;
 		dictionary   = &_dictionary;
+		ldictionary  = &_dictionary;
 
 		while(scanner.hasNext())
 		{
 			vector<string>  lcommands;
-			vector<string>* p_lcommands = OptFrameList::readList(scanner);
+			vector<string>* p_lcommands = OptFrameList::readList(_ldictionary, scanner);
 			if(p_lcommands)
 			{
 				lcommands = vector<string>(*p_lcommands);
@@ -155,7 +158,7 @@ public:
 	}
 
 	// leave preprocessing to each module
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>& dictionary, string input)
+	virtual string preprocess(vector<OptFrameFunction*>&, map<string, string>&, map< string,vector<string> >&, string input)
 	{
 		return input; // disable pre-processing
 	}
@@ -204,10 +207,10 @@ public:
     		if (m == NULL)
     			return;
 
-    		string rest = m->preprocess(*allFunctions, *dictionary, scanner.rest());
+    		string rest = m->preprocess(*allFunctions, *dictionary, *ldictionary, scanner.rest());
 
     		pthread_mutex_lock(&mutex);
-    		bool r = m->run(*allModules, *allFunctions, *factory, *dictionary, rest);
+    		bool r = m->run(*allModules, *allFunctions, *factory, *dictionary, *ldictionary, rest);
     		pthread_mutex_unlock(&mutex);
 
     		ok &= r;

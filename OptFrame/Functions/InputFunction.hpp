@@ -53,7 +53,7 @@ public:
 		return "input() : return user keyboard input";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, string body)
+	virtual pair<string, string>* run(vector<OptFrameFunction*>&, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(&cin);
 

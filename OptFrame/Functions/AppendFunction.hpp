@@ -53,11 +53,11 @@ public:
 		return "append( list1 list2 ) : return append list1 with list2";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, string body)
+	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
-		vector<string>* plist1 = OptFrameList::readList(scanner);
+		vector<string>* plist1 = OptFrameList::readList(ldictionary, scanner);
 		vector<string>  list1;
 		if(plist1)
 		{
@@ -68,7 +68,7 @@ public:
 			return NULL;
 
 
-		vector<string>* plist2 = OptFrameList::readList(scanner);
+		vector<string>* plist2 = OptFrameList::readList(ldictionary, scanner);
 		vector<string>  list2;
 		if(plist2)
 		{

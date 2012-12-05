@@ -52,7 +52,7 @@ public:
 		return "element( N list ) : return element at 'N'th position of 'list'";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, string body)
+	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scan(body);
 
@@ -85,7 +85,7 @@ public:
 			return new pair<string, string>("", scan.rest());
 		}
 
-		vector<string>* plist = OptFrameList::readList(scan);
+		vector<string>* plist = OptFrameList::readList(ldictionary, scan);
 		vector<string>  list;
 		if(plist)
 		{

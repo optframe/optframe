@@ -24,9 +24,13 @@ echo NEXT: element( 1 next( word saida ) )
 echo WORDS 2: element( 2 words( saida ) )
 
 
-exit
+echo
+echo =================================================
+echo
 
 define numero times(plus(divide(5 2) 10) minus(4 0))
+
+echo digite:
 
 if_else compare( input() >= numero ) [ 
   echo m igual!

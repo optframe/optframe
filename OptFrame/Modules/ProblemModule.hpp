@@ -42,7 +42,7 @@ public:
 		return "problem [load instance_path | unload]";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 		if(!scanner.hasNext())
@@ -50,18 +50,18 @@ public:
 
 		string mode = scanner.next();
 		if(mode == "load")
-			return load(input, allModules, allFunctions, factory, dictionary);
+			return load(input, allModules, allFunctions, factory, dictionary, ldictionary);
 
 		if(mode == "unload")
-			return unload(allModules, allFunctions, factory, dictionary);
+			return unload(allModules, allFunctions, factory, dictionary, ldictionary);
 
 		cout << "problem module: unknown mode '" << mode << "'! (should be 'load instance_path' or 'unload')";
 
 		return false;
 	}
 
-	virtual bool load(string filename, vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary) = 0;
-	virtual bool unload(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary) = 0;
+	virtual bool load(string filename, vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary) = 0;
+	virtual bool unload(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary) = 0;
 };
 
 #endif /* PROBLEMMODULE_HPP_ */

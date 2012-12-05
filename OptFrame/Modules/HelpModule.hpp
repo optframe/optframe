@@ -41,7 +41,7 @@ public:
 		return "help";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string,string>& dictionary, string)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, M>&, map<string,string>&, map< string,vector<string> >&, string)
 	{
 		cout << "Available modules are:" << endl;
 		for(unsigned int i=0;i<all_modules.size();i++)

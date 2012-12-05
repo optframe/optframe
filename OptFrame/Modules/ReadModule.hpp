@@ -41,7 +41,7 @@ public:
 		return "read filename";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string,string>& dictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner trim(input);
 		if(!trim.hasNext()) // no file
@@ -132,8 +132,11 @@ public:
 					//cout << "READ COMMAND: '" << command << "'" << endl;
 
 					string original = s2.rest();
-					string after_preprocess = all_modules[i]->preprocess(allFunctions, dictionary, original);
-					if(!all_modules[i]->run(all_modules, allFunctions, factory, dictionary, after_preprocess))
+					string after_preprocess = all_modules[i]->preprocess(allFunctions, dictionary, ldictionary, original);
+
+					//cout << "READ COMMAND INPUT: '" << after_preprocess << "'" << endl;
+
+					if(!all_modules[i]->run(all_modules, allFunctions, factory, dictionary, ldictionary, after_preprocess))
 						return false;
 
 					notfound = false;
