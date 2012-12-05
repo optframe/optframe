@@ -171,6 +171,7 @@
 #include "Modules/ReadModule.hpp"
 #include "Modules/RunModule.hpp"
 #include "Modules/SilentDefineModule.hpp"
+#include "Modules/SilentDefineListModule.hpp"
 #include "Modules/TestModule.hpp"
 #include "Modules/TestLocalSearchModule.hpp"
 #include "Modules/ToStringModule.hpp"
@@ -302,6 +303,7 @@ public:
 		loadModule(new ReadModule<R, ADS, M> );
 		loadModule(new RunModule<R, ADS, M> );
 		loadModule(new SilentDefineModule<R, ADS, M> );
+		loadModule(new SilentDefineListModule<R, ADS, M> );
 		loadModule(new TestModule<R, ADS, M> );
 		loadModule(new TestLocalSearchModule<R, ADS, M> );
 		loadModule(new ToStringModule<R, ADS, M> );

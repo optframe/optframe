@@ -104,6 +104,22 @@ public:
 		return list;
 	}
 
+	static string listToString(const vector<string>& list)
+	{
+		stringstream ss;
+
+		ss << "[";
+		for(unsigned i=0; i<list.size(); i++)
+		{
+			ss << list.at(i);
+			if(i != list.size()-1)
+				ss << ",";
+		}
+		ss << "]";
+
+		return ss.str();
+	}
+
 };
 
 #endif /* OPTFRAME_LIST_HPP_ */

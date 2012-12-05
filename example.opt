@@ -4,6 +4,18 @@
 
 read definitions.opt     % load OptFrame system definitions
 
+create_module print_sizes [ $l1 , $l2 ] [
+  echo length( $l1 ),
+  echo $l1,
+  echo length( $l2 ),
+  echo $l2
+]
+
+silent_define_list mylist1 [1,2,3,4,5]
+silent_define_list mylist2 [7,8,9]
+
+print_sizes mylist1 mylist2
+
 try [
 
 run_parallel [
