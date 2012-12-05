@@ -96,13 +96,28 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, M>::idComponent() << "rvnd";
+		ss << LocalSearch<R, ADS, M>::idComponent() << "RVND";
 		return ss.str();
 	}
 
 	virtual string id() const
 	{
 		return idComponent();
+	}
+
+	virtual string toString() const
+	{
+		stringstream ss;
+		ss << "RVND: [ ";
+		for(unsigned i=0; i<lsList.size(); i++)
+		{
+			ss << lsList[i]->toString();
+			if(i != lsList.size()-1)
+				ss << ",";
+		}
+		ss << "]";
+
+		return ss.str();
 	}
 
 private:
