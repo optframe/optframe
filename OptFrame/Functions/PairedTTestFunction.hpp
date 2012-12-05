@@ -182,7 +182,7 @@ public:
 		double pvalue;
 		if(spvalue == "NA")
 		{
-			cout << "paired_t_test function warning: returning 'NA' result! p-value = 1.0" << endl;
+			cerr << "paired_t_test function warning: returning 'NA' result! p-value = 1.0" << endl;
 			pvalue = 1;
 		}
 		else
