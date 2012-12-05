@@ -46,6 +46,7 @@ public:
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
+		//cout << "random_number_interval module: '" << input << "'" << endl;
 
 		if (!scanner.hasNext())
 		{
@@ -74,6 +75,8 @@ public:
 
 		RandGen& rg = factory.getRandGen();
 		int value = rg.rand(end-begin+1) + begin;
+
+		//cout << "random_number_interval VALUE=" << value << endl;
 
 		if (scanner.hasNext())
 		{

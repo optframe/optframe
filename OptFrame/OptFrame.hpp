@@ -139,6 +139,11 @@
 #include "Functions/TimesFunction.hpp"
 #include "Functions/DivideFunction.hpp"
 
+// string
+#include "Functions/ConcatFunction.hpp"
+
+// ------------------------------------------------
+
 #include "Modules/BuildModule.hpp"
 #include "Modules/CallModule.hpp"
 #include "Modules/CheckModule.hpp"
@@ -324,6 +329,8 @@ public:
 		loadModule(new WhileModule<R, ADS, M> );
 		loadModule(new TryModule<R, ADS, M> );
 
+		// ----------------------------------------------
+
 		unloadFunctions();
 		loadFunction(new AbsFunction);
 		loadFunction(new AppendFunction);
@@ -358,6 +365,9 @@ public:
 		loadFunction(new MinusFunction);
 		loadFunction(new TimesFunction);
 		loadFunction(new DivideFunction);
+
+		// string
+		loadFunction(new ConcatFunction);
 	}
 
 	OptFrameModule<R, ADS, M>* getModule(string module)

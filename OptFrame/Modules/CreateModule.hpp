@@ -52,81 +52,90 @@ private:
 	string var_preprocess(string var, string value, string command)
 	{
 		if(command.length() < var.length())
+		{
+			//cout << "general module var_preprocess: command='" << command << "' var='" << var << "'" << endl;
+			//cout << "general module var_preprocess: no possible variable because command is smaller!" << endl;
 			return command; // no possible variable!
+		}
+
+		//cout << "general module var_preprocess: command='" << command << "' var='" << var << "' value='" << value << "'" << endl;
 
 		string new_command = "";
 		string rest = "";
 		int dollar_pos = -1;
 
 		for (unsigned int i = 0; i < command.length(); i++)
-		{
 			if (command[i] == '$')
 			{
 				dollar_pos = i;//first dollar position
 				break;
 			}
-		}
 
 		if (dollar_pos == -1) //dollar not found
-			new_command = command;
-		else
+			return command;
+
+		if(((int)command.size()) == (dollar_pos+1)) // just a dollar
 		{
-			if (command[dollar_pos + 1] == '{') //var with brackets
+			cout << "general module warning: just a dollar!" << endl;
+			return command;
+		}
+
+		if ( ((dollar_pos+1) < ((int)command.size())) && (command[dollar_pos + 1] == '{') ) //var with brackets
+		{
+			//verifying if there is a close bracket for this var
+			if ( ((dollar_pos + ((int)var.length()) + 1) < ((int)command.size())) && (command[dollar_pos + var.length() + 1] == '}') )
 			{
-				//verifying if have close bracket for this var
-				if (command[dollar_pos + var.length() + 1] == '}')
+				//verifying if the found var is the same parameter var
+				bool test_var = true;
+				for (unsigned int i = 1; i < var.length(); i++)//ignoring the $ in the var (i = 1)
 				{
-					//verifying if the found var is the same parameter var
-					bool test_var = true;
-					for (unsigned int i = 1; i < var.length(); i++)//ignoring the $ in the var (i = 1)
+					if (var[i] != command[dollar_pos + 1 + i])
 					{
-						if (var[i] != command[dollar_pos + 1 + i])
-						{
-							test_var = false;
-							break;
-						}
+						test_var = false;
+						break;
 					}
-					if (test_var) // correctly variable found
-					{
-						//replacing variable
-						new_command.append(command, 0, dollar_pos); //first part of command without bracket
-						new_command.append(value); // value of variable
-						rest.append(command.begin() + dollar_pos + var.length() + 2, command.end());//rest of command
-						//verifying if have the same var in the rest of command
-						rest = var_preprocess(var, value, rest);
+				}
+				if (test_var) // correctly variable found
+				{
+					//replacing variable
+					new_command.append(command, 0, dollar_pos); //first part of command without bracket
+					new_command.append(value); // value of variable
+					rest.append(command.begin() + dollar_pos + var.length() + 2, command.end());//rest of command
+					//verifying if have the same var in the rest of command
+					rest = var_preprocess(var, value, rest);
 
-						new_command.append(rest);
-					}
-					else//can be another variable
-					{
-						//dont replace the variable
-						new_command.append(command, 0, dollar_pos + var.length() + 2);
-
-						rest.append(command.begin() + dollar_pos + var.length() + 2, command.end());//rest of command
-
-						//verifying if have the var in the rest of command
-						rest = var_preprocess(var, value, rest);
-
-						new_command.append(rest);
-
-					}
-
+					new_command.append(rest);
 				}
 				else//can be another variable
 				{
-					//ignoring the variable found and continue finding for the parameter variable in the rest of command
-					new_command.append(command, 0, dollar_pos + 2);
-					rest.append(command.begin() + dollar_pos + 2, command.end());
+					//dont replace the variable
+					new_command.append(command, 0, dollar_pos + var.length() + 2);
 
+					rest.append(command.begin() + dollar_pos + var.length() + 2, command.end());//rest of command
+
+					//verifying if have the var in the rest of command
 					rest = var_preprocess(var, value, rest);
 
 					new_command.append(rest);
 
 				}
+
 			}
-			else// variable without brackets
+			else//can be another variable
 			{
-				if (isalnum(command[dollar_pos + var.length()]) || (command[dollar_pos + var.length()] == '_'))// don't have the same length, can be another variable
+				//ignoring the variable found and continue finding for the parameter variable in the rest of command
+				new_command.append(command, 0, dollar_pos + 2);
+				rest.append(command.begin() + dollar_pos + 2, command.end());
+
+				rest = var_preprocess(var, value, rest);
+
+				new_command.append(rest);
+			}
+		}
+		else // variable without brackets
+			if((dollar_pos + ((int)var.length())) < ((int)command.size()))
+			{
+				if( isalnum(command[dollar_pos + var.length()]) || (command[dollar_pos + var.length()] == '_'))// don't have the same length, can be another variable
 				{
 					new_command.append(command, 0, dollar_pos + 1);
 					//finding for the parameter variable in the rest of command
@@ -148,6 +157,7 @@ private:
 							break;
 						}
 					}
+
 					if (test_var) // correctly variable found
 					{
 						//replacing variable
@@ -174,10 +184,11 @@ private:
 
 				}
 			}
-		}
 
-		return new_command;
-
+		if(new_command == "")
+			return command;
+		else
+			return new_command;
 	}
 
 	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string command)
@@ -221,7 +232,16 @@ public:
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
+		// CHECK IF EXPLICIT LIST IS PASSED AS PARAMETER (CAN'T DO THIS!!!)
+		for(unsigned i=0; i<input.size(); i++)
+			if(input.at(i)=='[')
+			{
+				cout << "module '" << id() << "' (created) error: can't have explicit list as parameter! use 'silent_define_list' before calling this!" << endl;
+				return false;
+			}
+
 		Scanner scanner(input);
+
 		//cout << "module '" << id() << "' (created) run: '" << input << "'" << endl;
 
 		if (!scanner.hasNext())
@@ -241,16 +261,23 @@ public:
 			else
 				values.push_back(scanner.next());
 
+		//cout << "MODULE '" << id() << "' (CREATED) VALUES: '" << values << "'" << endl;
+
 		for (unsigned int c = 0; c < commands.size(); c++)
 		{
 			string command = commands[c];
+			command.append(" "); // TODO: why we need this to find variable in the end?
+
+			//cout << "MODULE '" << id() << "' (CREATED) COMMAND: '" << command << "'" << endl;
 
 			for (unsigned int v = 0; v < values.size(); v++)
 				command = var_preprocess(parameters[v], values[v], command);
 
+			//cout << "MODULE '" << id() << "' (CREATED) COMMAND (after var_prep): '" << command << "'" << endl;
+
 			if (!exec_command(all_modules, allFunctions, factory, dictionary, ldictionary, command))
 			{
-				cout << "Error in command: " << command << endl;
+				cout << "Module (just created) '" << id() << "' error in command: " << command << endl;
 				return false;
 			}
 		}
