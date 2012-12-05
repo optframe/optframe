@@ -201,9 +201,7 @@ private:
 			return false;
 
 		string rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
-		m->run(all_modules, allFunctions, factory, dictionary, ldictionary, rest);
-
-		return true;
+		return m->run(all_modules, allFunctions, factory, dictionary, ldictionary, rest);
 	}
 
 public:

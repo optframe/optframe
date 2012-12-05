@@ -102,7 +102,11 @@ public:
 	   if(comp)
 		   text = comp->toString();
 	   else
-		   text = "NULL Component!";
+	   {
+		   //text = "NULL Component!";
+		   cout << "to_string module: NULL Component!" << endl;
+		   return false;
+	   }
 
 	   if (!scanner.hasNext())
 	   {

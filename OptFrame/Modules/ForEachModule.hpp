@@ -178,6 +178,7 @@ private:
 			return false;
 
 		string rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+		//cout << "FOR_EACH COMMAND: '" << module << "' input: '" << rest << "'"<< endl;
 		return m->run(all_modules, allFunctions, factory, dictionary, ldictionary, rest);
 	}
 

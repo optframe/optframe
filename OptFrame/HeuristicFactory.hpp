@@ -110,8 +110,34 @@ public:
 
 	OptFrameComponent* getNextComponent(Scanner& scanner)
 	{
-		std::string id = scanner.next();
-		unsigned number = scanner.nextInt();
+		std::string id = "";
+		unsigned number;
+
+		if(scanner.hasNext())
+			id = scanner.next();
+
+		// safety for unsigned!
+		bool validNumber = true;
+
+		if(scanner.hasNext())
+		{
+			string snum = scanner.next();
+			for(unsigned i=0; i<snum.size(); i++)
+				if( (snum.at(i)!='.') && ((snum.at(i)<'0') || (snum.at(i)>'9')) )
+				{
+					// not a number
+					validNumber = false;
+					break;
+				}
+
+			if(validNumber)
+				number = Scanner::parseInt(snum);
+		}
+		else
+			validNumber = false;
+
+		if((id=="") || (!validNumber))
+			return NULL;
 
 		OptFrameComponent* component = NULL;
 
