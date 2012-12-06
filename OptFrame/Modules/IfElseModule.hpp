@@ -138,7 +138,7 @@ public:
 	}
 
 	// should preprocess only until list of commands
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		string ibegin = "";
 		string iend   = "";
@@ -155,10 +155,13 @@ public:
 		for(unsigned k=j; k<input.length(); k++)
 			iend += input.at(k);
 
-		string ninput = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, ibegin);
+		string* ninput = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, ibegin);
 
-		ninput.append(" "); // after boolean value
-		ninput.append(iend);
+		if(!ninput)
+			return NULL;
+
+		ninput->append(" "); // after boolean value
+		ninput->append(iend);
 
 		return ninput;
 	}

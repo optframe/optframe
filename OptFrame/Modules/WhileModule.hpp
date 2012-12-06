@@ -46,8 +46,16 @@ private:
 		if (m == NULL)
 			return false;
 
-		string rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
-		return m->run(all_modules, allFunctions, factory, dictionary, ldictionary, rest);
+		string* rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+
+		if(!rest)
+			return NULL;
+
+		bool b = m->run(all_modules, allFunctions, factory, dictionary, ldictionary, *rest);
+
+		delete rest;
+
+		return b;
 	}
 
 public:
@@ -117,7 +125,14 @@ public:
 			return false;
 
 
-		string scondition = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, boolean_expr.str());
+		string* scond1 = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, boolean_expr.str());
+
+		if(!scond1)
+			return NULL;
+
+		string scondition = *scond1;
+
+		delete scond1;
 
 		while(parseBool(scondition))
 		{
@@ -140,17 +155,23 @@ public:
 					}
 			}
 
-			scondition = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, boolean_expr.str());
+			string* scond = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, boolean_expr.str());
+
+			if(!scond)
+				return false;
+
+			scondition = *scond;
+			delete scond;
 		}
 
 		return true;
 	}
 
 	// should preprocess only until list of commands
-	virtual string preprocess(vector<OptFrameFunction*>&, map<string, string>&, map< string,vector<string> >&, string input)
+	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&, map< string,vector<string> >&, string input)
 	{
 		// disable preprocess!!
-		return input;
+		return new string(input);
 	}
 };
 

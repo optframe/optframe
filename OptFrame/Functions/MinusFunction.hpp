@@ -53,7 +53,7 @@ public:
 		return "minus( A B ) : return A-B";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>&, map< string,vector<string> >&, string body)
+	virtual pair<string, string>* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(body);
 

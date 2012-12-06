@@ -53,7 +53,7 @@ public:
 		return "text( list ) : return list as text";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string,vector<string> >& ldictionary, string body)
+	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 

@@ -59,7 +59,7 @@ public:
 		return true;
 	}
 
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>&, map< string,vector<string> >&, string input)
+	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>&, map< string,vector<string> >&, string input)
 	{
 		Scanner scanner(input);
 
@@ -76,7 +76,7 @@ public:
 				break;
 		}
 
-		return input2;
+		return new string(input2);
 	}
 
 };

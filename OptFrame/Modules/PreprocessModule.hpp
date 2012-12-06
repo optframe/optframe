@@ -86,10 +86,15 @@ public:
 			return false;
 		}
 
-		string final = m->preprocess(allFunctions,dictionary,ldictionary, inp);
+		string* final = m->preprocess(allFunctions,dictionary,ldictionary, inp);
+
+		if(!final)
+			return false;
 
 		stringstream ss;
-		ss << name << " " << final;
+		ss << name << " " << (*final);
+
+		delete final;
 
 		return OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 	}

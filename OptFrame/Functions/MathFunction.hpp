@@ -60,7 +60,7 @@ public:
 		return ss.str();
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>&, map< string,vector<string> >&, string body)
+	virtual pair<string, string>* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(body);
 

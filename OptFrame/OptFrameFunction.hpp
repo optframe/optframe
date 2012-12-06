@@ -42,13 +42,16 @@ class OptFrameFunction
 {
 public:
 
-	static pair<string, string>* run_function(string func, vector<OptFrameFunction*>& allFunctions,  map< string,vector<string> >& ldictionary, string input)
+	static pair<string, string>* run_function(string func, vector<OptFrameFunction*>& allFunctions, map< string, string >& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		for(unsigned int i=0;i<allFunctions.size();i++)
 			if(func==allFunctions[i]->id())
 			{
-				string iprep = allFunctions[i]->preprocess(allFunctions, ldictionary, input);
-				pair<string, string>* p = allFunctions[i]->run(allFunctions, ldictionary, iprep);
+				string* iprep = allFunctions[i]->preprocess(allFunctions, dictionary, ldictionary, input);
+				if(!iprep)
+					return NULL;
+				pair<string, string>* p = allFunctions[i]->run(allFunctions, dictionary, ldictionary, *iprep);
+				delete iprep;
 				return p;
 			}
 
@@ -72,21 +75,21 @@ public:
 	virtual string id() = 0;
 	virtual string usage() = 0;
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions,  map< string,vector<string> >& ldictionary, string body) = 0;
+	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string, string >& dictionary, map< string,vector<string> >& ldictionary, string body) = 0;
 
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map< string,vector<string> >& ldictionary, string input)
+	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map< string, string >& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
-		return defaultPreprocess(allFunctions, ldictionary, input);
+		return defaultPreprocess(allFunctions, dictionary, ldictionary, input);
 	}
 
-	static string defaultPreprocess(vector<OptFrameFunction*>& allFunctions, map< string,vector<string> >& ldictionary, string input)
+	static string* defaultPreprocess(vector<OptFrameFunction*>& allFunctions, map< string, string >& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
 		// Locate functions
 
 		if(!scanner.hasNext())
-			return input; // empty
+			return new string(input); // empty
 
 		int bcount = 0;
 		stringstream ssfunc;
@@ -105,7 +108,7 @@ public:
 				ssfunc << input.at(i);
 
 		if(bcount==0)
-			return input; // no functions
+			return new string(input); // no functions
 
 		Scanner scanFunc(ssfunc.str());
 
@@ -121,7 +124,7 @@ public:
 
 			if( (current == "(") && OptFrameFunction::functionExists(last, allFunctions) ) // FUNCTION
 			{
-				pair<string, string>* p = OptFrameFunction::run_function(last, allFunctions, ldictionary, scanFunc.rest());
+				pair<string, string>* p = OptFrameFunction::run_function(last, allFunctions, dictionary, ldictionary, scanFunc.rest());
 
 				if(p)
 				{
@@ -168,7 +171,7 @@ public:
 
 		string input6 = Scanner::trim(input5);
 
-		return input6;
+		return new string(input6);
 	}
 };
 

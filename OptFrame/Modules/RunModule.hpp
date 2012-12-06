@@ -46,8 +46,12 @@ public:
 		if (m == NULL)
 			return false;
 
-		string rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
-		return m->run(all_modules, allFunctions, factory, dictionary, ldictionary, rest);
+		string* rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+		bool b = m->run(all_modules, allFunctions, factory, dictionary, ldictionary, *rest);
+
+		delete rest;
+
+		return b;
 	}
 
 	virtual ~RunModule()
@@ -107,9 +111,9 @@ public:
 	}
 
 	// leave preprocessing to each module
-	virtual string preprocess(vector<OptFrameFunction*>&, map<string, string>&, map< string,vector<string> >&, string input)
+	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&, map< string,vector<string> >&, string input)
 	{
-		return input; // disable pre-processing
+		return new string(input); // disable pre-processing
 	}
 };
 

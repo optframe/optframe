@@ -74,7 +74,7 @@ public:
 		}
 	}
 
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -98,24 +98,29 @@ public:
 		// WAIT! Save the definition name!
 
 		if(!scanner.hasNext())
-			return input2;
+			return new string(input2);
 
 		string name      = scanner.next();
 		string discarded = scanner.getDiscarded();
 
 		// now proceed as usual
 
-		string input3 = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+		string* input3 = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+
+		if(!input3)
+			return NULL;
 
 		string input4;
 		input4.append(discarded);
 		input4.append(name);
 		input4.append(" ");
-		input4.append(input3);
+		input4.append(*input3);
+
+		delete input3;
 
 		string input5 = Scanner::trim(input4);
 
-		return input5;
+		return new string(input5);
 	}
 
 };

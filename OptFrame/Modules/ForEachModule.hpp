@@ -177,9 +177,17 @@ private:
 		if (m == NULL)
 			return false;
 
-		string rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
-		//cout << "FOR_EACH COMMAND: '" << module << "' input: '" << rest << "'"<< endl;
-		return m->run(all_modules, allFunctions, factory, dictionary, ldictionary, rest);
+		string* rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+
+		if(!rest)
+			return NULL;
+
+		//cout << "FOR_EACH COMMAND: '" << module << "' input: '" << *rest << "'"<< endl;
+		bool b = m->run(all_modules, allFunctions, factory, dictionary, ldictionary, *rest);
+
+		delete rest;
+
+		return b;
 	}
 
 public:
@@ -266,7 +274,7 @@ public:
 	}
 
 	// should preprocess only until list of commands
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)
+	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -275,7 +283,7 @@ public:
 		string input2 = "";
 
 		if(!scanner.hasNext())
-			return input2;
+			return new string(input2);
 
 		string variable   = scanner.next();
 		string discarded1 = scanner.getDiscarded();
@@ -283,7 +291,7 @@ public:
 		input2.append(variable);
 
 		if(!scanner.hasNext())
-			return input2;
+			return new string(input2);
 
 		string possibleDefinition = scanner.next();
 		string discarded2         = scanner.getDiscarded();
@@ -303,7 +311,7 @@ public:
 
 		input2.append(scanner.rest());
 
-		return input2;
+		return new string(input2);
 	}
 };
 

@@ -132,12 +132,20 @@ public:
 					//cout << "READ COMMAND: '" << command << "'" << endl;
 
 					string original = s2.rest();
-					string after_preprocess = all_modules[i]->preprocess(allFunctions, dictionary, ldictionary, original);
+					string* after_preprocess = all_modules[i]->preprocess(allFunctions, dictionary, ldictionary, original);
+
+					if(!after_preprocess)
+						return false;
 
 					//cout << "READ COMMAND INPUT: '" << after_preprocess << "'" << endl;
 
-					if(!all_modules[i]->run(all_modules, allFunctions, factory, dictionary, ldictionary, after_preprocess))
+					if(!all_modules[i]->run(all_modules, allFunctions, factory, dictionary, ldictionary, *after_preprocess))
+					{
+						delete after_preprocess;
 						return false;
+					}
+
+					delete after_preprocess;
 
 					notfound = false;
 					break;

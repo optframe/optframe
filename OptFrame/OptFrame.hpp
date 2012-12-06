@@ -173,6 +173,7 @@
 #include "Modules/ListFromFileModule.hpp"
 #include "Modules/ListFromPopulationModule.hpp"
 #include "Modules/PauseModule.hpp"
+#include "Modules/PreprocessModule.hpp"
 #include "Modules/ProblemModule.hpp"
 #include "Modules/RandGenModule.hpp"
 #include "Modules/RandomNumberModule.hpp"
@@ -308,6 +309,7 @@ public:
 		loadModule(new ListFromFileModule<R, ADS, M> );
 		loadModule(new ListFromPopulationModule<R, ADS, M> );
 		loadModule(new PauseModule<R, ADS, M> );
+		loadModule(new PreprocessModule<R, ADS, M> );
 		loadModule(new RandGenModule<R, ADS, M> );
 		loadModule(new RandomNumberModule<R, ADS, M> );
 		loadModule(new RandomNumberIntervalModule<R, ADS, M> );
@@ -500,16 +502,21 @@ public:
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (command == modules[i]->id())
 			{
-				string r = modules[i]->preprocess(functions, dictionary, ldictionary, s2.rest());
+				string* r = modules[i]->preprocess(functions, dictionary, ldictionary, s2.rest());
 
-				if (r == "INVALID_PARAM")
+				if(!r)
+					break;
+
+				if (*r == "INVALID_PARAM")
 				{
 					cout << "Population size has to be, at least, equal 2.\n";
 					exit(1);
 				}
 
-				if(!modules[i]->run(modules, functions, factory, dictionary, ldictionary, r))
+				if(!modules[i]->run(modules, functions, factory, dictionary, ldictionary, *r))
 					cout << "error in module: '" << modules[i]->id() << "'" << endl;
+
+				delete r;
 
 				notfound = false;
 				break;

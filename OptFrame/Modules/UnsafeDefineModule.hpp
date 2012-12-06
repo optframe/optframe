@@ -64,8 +64,6 @@ public:
 			}
 
 			dictionary[new_name] = scanner.trim(second_word);
-			cout << "TODO: UNSAFE_DEFINE DEVE FAZER PARSING DE FUNCOES PRIMEIRO, DEPOIS SEPARAR O PRIMEIRO ELEMENTO E SUBSTITUIR NO DICIONARIO SOMENTE O RESTO" << endl;
-			cout << "DEFINING '" << new_name << "' AS '" << scanner.trim(second_word) << "'" << endl;
 			return true;
 		}
 		else
@@ -76,7 +74,7 @@ public:
 	}
 
 	// FAITH ON USER!! NO PREPROCESSING :D
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		return OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, input);
 	}

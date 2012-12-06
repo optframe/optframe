@@ -60,7 +60,7 @@ public:
 		return ss.str();
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string,vector<string> >& ldictionary, string body)
+	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
 		//cout << "next function run: '" << body << "'" << endl;
 

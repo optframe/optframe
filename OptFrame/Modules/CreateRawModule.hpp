@@ -200,8 +200,16 @@ private:
 		if (m == NULL)
 			return false;
 
-		string rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
-		return m->run(all_modules, allFunctions, factory, dictionary, ldictionary, rest);
+		string* rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+
+		if(!rest)
+			return false;
+
+		bool b = m->run(all_modules, allFunctions, factory, dictionary, ldictionary, *rest);
+
+		delete rest;
+
+		return b;
 	}
 
 public:
@@ -282,10 +290,10 @@ public:
 		return true;
 	}
 
-	virtual string preprocess(vector<OptFrameFunction*>&, map<string, string>&,  map< string,vector<string> >&, string input)
+	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&,  map< string,vector<string> >&, string input)
 	{
 		// disable preprocess!!
-		return input;
+		return new string(input);
 	}
 };
 
@@ -391,10 +399,10 @@ public:
 
 	}
 
-	virtual string preprocess(vector<OptFrameFunction*>&, map<string, string>&,  map< string,vector<string> >&, string input)
+	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&,  map< string,vector<string> >&, string input)
 	{
 		// disable preprocess!!
-		return input;
+		return new string(input);
 	}
 };
 
