@@ -78,7 +78,16 @@ public:
 
 		string sbool = scanner.next();
 
-		bool condition = (sbool=="true");
+		bool condition;
+		if(sbool=="true")
+			condition = true;
+		else if(sbool=="false")
+			condition = false;
+		else
+		{
+			cout << "if_else module: no such boolean '" << sbool << "'" << endl;
+			return false;
+		}
 
 
 		vector<string>  lif;
