@@ -144,6 +144,7 @@
 
 // string
 #include "Functions/ConcatFunction.hpp"
+#include "Functions/DicFunction.hpp"
 
 // ------------------------------------------------
 
@@ -380,6 +381,7 @@ public:
 
 		// string
 		loadFunction(new ConcatFunction);
+		loadFunction(new DicFunction);
 	}
 
 	OptFrameModule<R, ADS, M>* getModule(string module)
