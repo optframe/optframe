@@ -35,11 +35,17 @@ public:
 
 	static vector<std::string>* readList(map< string,vector<string> >& ldictionary, Scanner& scanner)
 	{
+		if(!scanner.hasNextChar())
+			return NULL;
+
 		char character = scanner.nextChar();
 		int numberOfBrackets;
 
 		while (character == ' ')
 		{
+			if(!scanner.hasNextChar())
+				return NULL;
+
 			character = scanner.nextChar();
 		}
 
@@ -49,6 +55,8 @@ public:
 			while(character != ' ')
 			{
 				ssword << character;
+				if(!scanner.hasNextChar())
+					break;
 				character = scanner.nextChar();
 			}
 
@@ -67,6 +75,9 @@ public:
 		std::string word;
 
 		numberOfBrackets = 0;
+
+		if(!scanner.hasNextChar())
+			return NULL;
 
 		character = scanner.nextChar();
 
@@ -87,6 +98,9 @@ public:
 			{
 				word += character;
 			}
+
+			if(!scanner.hasNextChar())
+				return NULL;
 
 			character = scanner.nextChar();
 		}
