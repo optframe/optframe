@@ -88,7 +88,7 @@ public:
 		{
 			string command = lcommands.at(c);
 
-			if (command.at(0) == '%') // first line comment
+			if ((command != "") && (command.at(0) == '%')) // first line comment
 				command = "";
 
 			if (command != "")

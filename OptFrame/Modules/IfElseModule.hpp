@@ -25,6 +25,8 @@
 
 #include "../OptFrameModule.hpp"
 
+#include "RunModule.hpp"
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class IfElseModule: public OptFrameModule<R, ADS, M>
 {
@@ -115,48 +117,24 @@ public:
 
 		if (condition)
 		{
-			for (unsigned int c = 0; c < lif.size(); c++)
+			if(!OptFrameModule<R, ADS, M>::run_module("run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::listToString(lif)))
 			{
-				string command = lif.at(c);
-
-				if (command.at(0) == '%') // first line comment
-					command = "";
-
-				if (command != "")
-					if (!exec_command(all_modules, allFunctions, factory, dictionary, ldictionary, command))
-					{
-						if (lif.at(c) == "")
-							cout << "if_else module: (IF) empty command! (perhaps an extra comma in list?)" << endl;
-						else
-							cout << "if_else module: (IF) error in command '" << lif.at(c) << "'" << endl;
-
-						return false;
-					}
+				cout << "if_else module: error in IF command!" << endl;
+				return false;
 			}
+			else
+				return true;
 		}
 		else
 		{
-			for (unsigned int c = 0; c < lelse.size(); c++)
+			if(!OptFrameModule<R, ADS, M>::run_module("run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::listToString(lelse)))
 			{
-				string command = lelse.at(c);
-
-				if(command.at(0)=='%') // first line comment
-					command = "";
-
-				if (command != "")
-					if(!exec_command(all_modules, allFunctions, factory, dictionary, ldictionary, command))
-					{
-						if(lelse.at(c)=="")
-							cout << "if_else module: (ELSE) empty command! (perhaps an extra comma in list?)" << endl;
-						else
-							cout << "if_else module: (ELSE) error in command '" << lelse.at(c) << "'" << endl;
-
-						return false;
-					}
+				cout << "if_else module: error in ELSE command!" << endl;
+				return false;
 			}
+			else
+				return true;
 		}
-
-		return true;
 	}
 
 	// should preprocess only until list of commands
