@@ -50,7 +50,7 @@ public:
 
 	virtual string usage()
 	{
-		return "next( [word|number] string ) : return pair [ next , rest ]";
+		return "next( text ) : return pair [ next , rest ]";
 	}
 
 	virtual string formatNumber(double v)
@@ -62,18 +62,52 @@ public:
 
 	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string,vector<string> >& ldictionary, string body)
 	{
-		// replace ',' by espace
+		//cout << "next function run: '" << body << "'" << endl;
+
+		// Maybe in future
+		// To be more useful: add spaces before and after '[', ']', '(' , ')' and ','
+
+		//int count_brackets1 = 0; //'('
+		//int count_brackets2 = 0; //'['
+
 		stringstream ss;
 		unsigned j=0;
 		for(unsigned i=0; i<body.length(); i++)
 		{
+			//if((body.at(i) == ')') && (count_brackets1==0) && (count_brackets2==0))
 			if(body.at(i) == ')')
 				break;
 
-			if(body.at(i) == ',')
-				ss << ' ';
+			/*
+			if(body.at(i) == '(')
+			{
+				count_brackets1++;
+				ss << " " << body.at(i) << " ";
+			}
+			else if(body.at(i) == ')')
+			{
+				count_brackets1--;
+				ss << " " << body.at(i) << " ";
+			}
+			else if(body.at(i) == '[')
+			{
+				count_brackets2++;
+				ss << " " << body.at(i) << " ";
+			}
+			else if(body.at(i) == ']')
+			{
+				count_brackets2--;
+				ss << " " << body.at(i) << " ";
+			}
+			else if(body.at(i) == ',')
+			{
+				ss << " " << body.at(i) << " ";
+			}
 			else
 				ss << body.at(i);
+				*/
+
+			ss << body.at(i);
 
 			j++;
 		}
@@ -84,15 +118,26 @@ public:
 		for(unsigned i=j; i<body.length(); i++)
 			ssrest << body.at(i);
 
+		//cout << "next function run (after filter): '" << ss.str() << "'" << endl;
+
 		Scanner scanner(ss.str());
 
+		/*
+		// NO MORE OPTIONS, NOT USEFUL!
 		string option = scanner.next();
 		string next = "";
 		if(option=="word")
 			next = scanner.next();
-		else // number
+		else if(option=="number")// number
 			next = formatNumber(scanner.nextDouble());
+		else
+		{
+			cout << "next function: no such option '" << option << "'" << endl;
+			return NULL;
+		}
+		*/
 
+		string next = scanner.next();
 		string rest = scanner.rest();
 
 		stringstream ssr;

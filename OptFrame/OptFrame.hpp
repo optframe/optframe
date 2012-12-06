@@ -153,6 +153,7 @@
 #include "Modules/CreateListOfComponentsModule.hpp"
 #include "Modules/CreateModule.hpp"
 #include "Modules/CreateNumericListModule.hpp"
+#include "Modules/CreateRawModule.hpp"
 #include "Modules/DefineModule.hpp"
 #include "Modules/DictionaryModule.hpp"
 #include "Modules/DropAllModule.hpp"
@@ -184,6 +185,7 @@
 #include "Modules/TestLocalSearchModule.hpp"
 #include "Modules/ToStringModule.hpp"
 #include "Modules/UndefineModule.hpp"
+#include "Modules/UnsafeDefineModule.hpp"
 #include "Modules/UsageModule.hpp"
 #include "Modules/InitServersModule.hpp"
 
@@ -286,6 +288,7 @@ public:
 		loadModule(new CreateListOfComponentsModule<R, ADS, M> );
 		loadModule(new CreateModule<R, ADS, M> );
 		loadModule(new CreateNumericListModule<R, ADS, M> );
+		loadModule(new CreateRawModule<R, ADS, M> );
 		loadModule(new DefineModule<R, ADS, M> );
 		loadModule(new DictionaryModule<R, ADS, M> );
 		loadModule(new DropAllModule<R, ADS, M> );
@@ -316,6 +319,7 @@ public:
 		loadModule(new TestLocalSearchModule<R, ADS, M> );
 		loadModule(new ToStringModule<R, ADS, M> );
 		loadModule(new UndefineModule<R, ADS, M> );
+		loadModule(new UnsafeDefineModule<R, ADS, M> );
 		loadModule(new UsageModule<R, ADS, M> );
 #ifdef MaPI
 		loadModule(new InitServersModule<R, ADS, M> );
