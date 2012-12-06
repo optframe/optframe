@@ -64,7 +64,7 @@ public:
 			}
 
 			dictionary[new_name] = scanner.trim(second_word);
-			cout << "SDEFINE: '" << new_name << "' AS '" << scanner.trim(second_word) << "'" << endl;
+			//cout << "SDEFINE: '" << new_name << "' AS '" << scanner.trim(second_word) << "'" << endl;
 			return true;
 		}
 		else
