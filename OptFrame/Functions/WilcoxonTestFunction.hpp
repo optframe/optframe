@@ -194,7 +194,7 @@ public:
 		double pvalue;
 		if(spvalue == "NA")
 		{
-			cerr << "wilcoxon function warning: returning 'NA' result! p-value = 1.0" << endl;
+			cout << "wilcoxon function warning: returning 'NA' result! p-value = 1.0" << endl;
 			pvalue = 1;
 		}
 		else

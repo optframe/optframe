@@ -196,8 +196,13 @@
 #include "Modules/RunParallelModule.hpp"
 #endif
 
+//list operation
+#include "Modules/ListAddModule.hpp"
+#include "Modules/ListRemoveModule.hpp"
+
 //structural
 #include "Modules/IfElseModule.hpp"
+#include "Modules/ForModule.hpp"
 #include "Modules/ForEachModule.hpp"
 #include "Modules/WhileModule.hpp"
 #include "Modules/TryModule.hpp"
@@ -333,7 +338,12 @@ public:
 		loadModule(new RunParallelModule<R, ADS, M> );
 		#endif
 
+		//list operation
+		loadModule(new ListAddModule<R, ADS, M> );
+		loadModule(new ListRemoveModule<R, ADS, M> );
+
 		//structural
+		loadModule(new ForModule<R, ADS, M> );
 		loadModule(new ForEachModule<R, ADS, M> );
 		loadModule(new IfElseModule<R, ADS, M> );
 		loadModule(new WhileModule<R, ADS, M> );
