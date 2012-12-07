@@ -111,7 +111,7 @@ public:
 	OptFrameComponent* getNextComponent(Scanner& scanner)
 	{
 		std::string id = "";
-		unsigned number;
+		unsigned number = 0;
 
 		if(scanner.hasNext())
 			id = scanner.next();
