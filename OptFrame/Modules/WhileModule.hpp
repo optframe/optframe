@@ -28,36 +28,6 @@
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class WhileModule: public OptFrameModule<R, ADS, M>
 {
-private:
-	OptFrameModule<R, ADS, M>* getModule(vector<OptFrameModule<R, ADS, M>*>& modules, string module)
-	{
-		for (unsigned int i = 0; i < modules.size(); i++)
-			if (module == modules[i]->id())
-				return modules[i];
-		return NULL;
-	}
-
-	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string command)
-	{
-		Scanner scanner(command);
-		string module = scanner.next();
-		OptFrameModule<R, ADS, M>* m = getModule(all_modules, module);
-
-		if (m == NULL)
-			return false;
-
-		string* rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
-
-		if(!rest)
-			return NULL;
-
-		bool b = m->run(all_modules, allFunctions, factory, dictionary, ldictionary, *rest);
-
-		delete rest;
-
-		return b;
-	}
-
 public:
 
 	virtual ~WhileModule()
@@ -136,24 +106,13 @@ public:
 
 		while(parseBool(scondition))
 		{
-			for (unsigned int c = 0; c < commands.size(); c++)
+			if(!OptFrameModule<R, ADS, M>::run_module("run", allModules, allFunctions, factory, dictionary, ldictionary, OptFrameList::listToString(commands)))
 			{
-				string command = commands.at(c);
-
-				if (command.at(0) == '%') // first line comment
-					command = "";
-
-				if (command != "")
-					if (!exec_command(allModules, allFunctions, factory, dictionary, ldictionary, command))
-					{
-						if (commands.at(c) == "")
-							cout << "while module: empty command! (perhaps an extra comma in list?)" << endl;
-						else
-							cout << "while module: error in command '" << commands.at(c) << "'" << endl;
-
-						return false;
-					}
+				cout << "while module: error in command!" << endl;
+				return false;
 			}
+			else
+				return true;
 
 			string* scond = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, boolean_expr.str());
 
