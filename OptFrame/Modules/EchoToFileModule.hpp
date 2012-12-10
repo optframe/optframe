@@ -63,7 +63,7 @@ public:
 
 		string text = scanner.nextLine();
 
-		fprintf(file, "%s\n", text.c_str());
+		fprintf(file, "%s\r\n", text.c_str());
 
 		fclose(file);
 
