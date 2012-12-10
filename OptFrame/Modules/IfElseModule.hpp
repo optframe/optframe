@@ -30,28 +30,6 @@
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class IfElseModule: public OptFrameModule<R, ADS, M>
 {
-private:
-	OptFrameModule<R, ADS, M>* getModule(vector<OptFrameModule<R, ADS, M>*>& modules, string module)
-	{
-		for (unsigned int i = 0; i < modules.size(); i++)
-			if (module == modules[i]->id())
-				return modules[i];
-		return NULL;
-	}
-
-	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string command)
-	{
-		Scanner scanner(command);
-		string module = scanner.next();
-		OptFrameModule<R, ADS, M>* m = getModule(all_modules, module);
-
-		if (m == NULL)
-			return false;
-
-		string rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
-		return m->run(all_modules, allFunctions, factory, dictionary, ldictionary, rest);
-	}
-
 public:
 
 	virtual ~IfElseModule()
