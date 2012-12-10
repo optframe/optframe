@@ -111,8 +111,6 @@ public:
 				cout << "while module: error in command!" << endl;
 				return false;
 			}
-			else
-				return true;
 
 			string* scond = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, boolean_expr.str());
 
