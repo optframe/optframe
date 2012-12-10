@@ -64,20 +64,34 @@ public:
 	{
 		Scanner scanner(body);
 
-		double a  = scanner.nextDouble();
+		string sa = scanner.next();
 		string op = scanner.next();
-		double b  = scanner.nextDouble();
+		string sb = scanner.next();
+
+		double a;
+		double b;
+
+		try
+		{
+			a = Scanner::parseDouble(sa);
+			b = Scanner::parseDouble(sb);
+		}
+		catch(ConversionError& e)
+		{
+			cout << "math function: not a number to operate ('" <<sa << "' " << op << " '" << sb << "')!" << endl;
+			return NULL;
+		}
 
 		scanner.next(); // drop ')'
 
-			if(op == "+")
-				return new pair<string, string>(formatNumber(a+b), scanner.rest());
-			if(op == "-")
-				return new pair<string, string>(formatNumber(a-b), scanner.rest());
-			if(op == "*")
-				return new pair<string, string>(formatNumber(a*b), scanner.rest());
-			if(op == "/")
-				return new pair<string, string>(formatNumber(a/b), scanner.rest());
+		if(op == "+")
+			return new pair<string, string>(formatNumber(a+b), scanner.rest());
+		if(op == "-")
+			return new pair<string, string>(formatNumber(a-b), scanner.rest());
+		if(op == "*")
+			return new pair<string, string>(formatNumber(a*b), scanner.rest());
+		if(op == "/")
+			return new pair<string, string>(formatNumber(a/b), scanner.rest());
 
 		cout << "math function: no such operation '" << op << "'" << endl;
 

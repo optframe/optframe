@@ -81,8 +81,19 @@ public:
 
 		if((signal == ">") || (signal == ">=") || (signal == "<") || (signal == "<=")) // compare as number
 		{
-			double a = Scanner::parseDouble(sa);
-			double b = Scanner::parseDouble(sb);
+			double a;
+			double b;
+
+			try
+			{
+				a = Scanner::parseDouble(sa);
+				b = Scanner::parseDouble(sb);
+			}
+			catch(ConversionError& e)
+			{
+				cout << "compare function: not a number to compare ('" <<sa << "' " << signal << " '" << sb << "')!" << endl;
+				return NULL;
+			}
 
 			if(signal == ">")
 				return new pair<string, string>(formatBool(a>b), scanner.rest());
