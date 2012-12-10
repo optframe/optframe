@@ -249,6 +249,12 @@ public:
 		{
 			for (unsigned int c = 0; c < commands.size(); c++)
 			{
+				if(commands.at(c) == "")
+				{
+					cout << "for_each module: empty command (possible extra colon)!" << endl;
+					return false;
+				}
+
 				string command = var_preprocess(var, values.at(v), commands.at(c));
 
 				if(command.at(0)=='%') // first line comment
