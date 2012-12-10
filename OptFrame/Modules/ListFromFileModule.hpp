@@ -64,7 +64,8 @@ public:
 		try
 		{
 			scanner = new Scanner(new File(scan.trim(scan.rest())));
-		} catch (FileNotFound& e)
+		}
+		catch (FileNotFound& e)
 		{
 			cout << "File '" << e.getFile() << "' not found!" << endl;
 			cout << "Usage: " << usage() << endl;
@@ -76,9 +77,13 @@ public:
 		while (scanner->hasNextLine())
 		{
 			string line = scanner->nextLine();
+
+			// WHY?
+			/*
 			for (unsigned int c = 0; c < line.size(); c++)
 				if ((line.at(c) == ',') || (line.at(c) == '[') || (line.at(c) == ']'))
 					line[c] = '?';
+			*/
 
 			elements.push_back(line);
 		}
@@ -86,19 +91,11 @@ public:
 		delete scanner;
 
 		stringstream listContent;
+		listContent << listName << " " << OptFrameList::listToString(elements);
 
-		listContent << "[";
+		// TODO: should register directly (for performance)!
 
-		if (elements.size() > 0)
-		{
-			for (unsigned int e = 0; e < elements.size() - 1; e++)
-				listContent << elements[e] << ",";
-			listContent << elements[elements.size() - 1];
-		}
-
-		listContent << "]";
-
-		return OptFrameModule<R, ADS, M>::run_module("define", all_modules, allFunctions, factory, dictionary, ldictionary, listName + " " + listContent.str());
+		return OptFrameModule<R, ADS, M>::run_module("silent_define_list", all_modules, allFunctions, factory, dictionary, ldictionary, listContent.str());
 	}
 
 };

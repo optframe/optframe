@@ -57,7 +57,11 @@ public:
 				delete p_list;
 			}
 			else
+			{
+				cout << "silent_define_list module: couldn't load list!" << endl;
+				//cout << "rest: '" << rest << "'" << endl;
 				return false;
+			}
 
 
 			ldictionary[list_name] = list;
