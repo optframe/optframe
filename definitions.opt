@@ -23,3 +23,20 @@ create_module print_to_file [ $component , $id , $file ] [
   undefine optframe_str
 ] 
 
+% ------------------- lists --------------
+
+create_module print_list [ $list ] [
+  silent_define_list _ilist $list,
+  for_each $e _ilist [
+     echo $e
+  ],
+  undefine _ilist
+] 
+
+create_module print_list_to_file [ $file , $list ] [
+  silent_define_list _ilist $list,
+  for_each $e _ilist [
+     echo_to_file $file $e
+  ],
+  undefine _ilist
+] 
