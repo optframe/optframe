@@ -47,6 +47,14 @@ public:
 			return false;
 
 		string* rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+
+		if(!rest)
+		{
+			delete rest;
+			return false;
+		}
+
+		//cout << "RUN COMMAND: '" << module << "' with '" << *rest << "'" << endl;
 		bool b = m->run(all_modules, allFunctions, factory, dictionary, ldictionary, *rest);
 
 		delete rest;
