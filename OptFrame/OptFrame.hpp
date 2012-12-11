@@ -199,6 +199,7 @@
 //list operation
 #include "Modules/ListAddModule.hpp"
 #include "Modules/ListRemoveModule.hpp"
+#include "Modules/ListSortModule.hpp"
 
 //structural
 #include "Modules/IfElseModule.hpp"
@@ -341,6 +342,7 @@ public:
 		//list operation
 		loadModule(new ListAddModule<R, ADS, M> );
 		loadModule(new ListRemoveModule<R, ADS, M> );
+		loadModule(new ListSortModule<R, ADS, M> );
 
 		//structural
 		loadModule(new ForModule<R, ADS, M> );
