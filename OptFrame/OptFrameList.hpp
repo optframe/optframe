@@ -118,6 +118,76 @@ public:
 		return list;
 	}
 
+
+	static vector<std::string>* readBlock(Scanner& scanner)
+	{
+		if(!scanner.hasNextChar())
+			return NULL;
+
+		char character = scanner.nextChar();
+		int numberOfBrackets;
+
+		while (character == ' ')
+		{
+			if(!scanner.hasNextChar())
+				return NULL;
+
+			character = scanner.nextChar();
+		}
+
+		if(character != '{') // read from dictionary
+		{
+			return NULL;
+		}
+
+		vector <string>* block = new vector<string> ;
+		string word;
+
+		numberOfBrackets = 0;
+
+		if(!scanner.hasNextChar())
+			return NULL;
+
+		character = scanner.nextChar();
+
+		word = "";
+		while ((character != '}') || ((character == '}') && numberOfBrackets > 0))
+		{
+			if (character == '{')
+				numberOfBrackets++;
+			if (character == '{')
+				numberOfBrackets--;
+
+			if ((character == ';') && (numberOfBrackets == 0))
+			{
+				block->push_back(word);
+				word = "";
+			}
+			else
+			{
+				word += character;
+			}
+
+			if(!scanner.hasNextChar())
+				return NULL;
+
+			character = scanner.nextChar();
+		}
+
+		block->push_back(word);
+
+		for (unsigned int i = 0; i < block->size(); i++)
+			block->at(i) = scanner.trim(block->at(i));
+
+
+		// error in code, dont know why but list should be empty!
+		if((block->size()==1) && (block->at(0)==""))
+			block->pop_back();
+
+		return block;
+	}
+
+
 	static string listToString(const vector<string>& list)
 	{
 		stringstream ss;
