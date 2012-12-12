@@ -46,7 +46,7 @@ public:
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
-		cout << "list_add module: '" << input << "'" << endl;
+		//cout << "list_add module: '" << input << "'" << endl;
 
 		Scanner scanner(input);
 
@@ -89,9 +89,9 @@ public:
 			return false;
 		}
 
-		if( (index < 0) || (index >= ((int)list.size())) )
+		if( (index < 0) || (index > ((int)list.size())) ) // index can be equal to size (adding)
 		{
-			cout << "list_remove module: invalid index '" << index << "'!" << endl;
+			cout << "list_add module: invalid index '" << index << "'!" << endl;
 			return false;
 		}
 
