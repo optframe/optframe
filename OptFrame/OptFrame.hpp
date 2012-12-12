@@ -174,7 +174,6 @@
 #include "Modules/ListFromFileModule.hpp"
 #include "Modules/ListFromPopulationModule.hpp"
 #include "Modules/PauseModule.hpp"
-#include "Modules/PreprocessModule.hpp"
 #include "Modules/ProblemModule.hpp"
 #include "Modules/RandGenModule.hpp"
 #include "Modules/RandomNumberModule.hpp"
@@ -183,7 +182,6 @@
 #include "Modules/RunListModule.hpp"
 #include "Modules/SilentDefineModule.hpp"
 #include "Modules/SilentDefineListModule.hpp"
-#include "Modules/SystemRunModule.hpp"
 #include "Modules/TestModule.hpp"
 #include "Modules/TestLocalSearchModule.hpp"
 #include "Modules/ToStringModule.hpp"
@@ -191,6 +189,10 @@
 #include "Modules/UnsafeDefineModule.hpp"
 #include "Modules/UsageModule.hpp"
 #include "Modules/InitServersModule.hpp"
+
+// system
+#include "Modules/SystemPreprocessModule.hpp"
+#include "Modules/SystemRunModule.hpp"
 
 // parallel
 #ifdef OPTFRAME_PARALLEL
@@ -317,7 +319,6 @@ public:
 		loadModule(new ListFromFileModule<R, ADS, M> );
 		loadModule(new ListFromPopulationModule<R, ADS, M> );
 		loadModule(new PauseModule<R, ADS, M> );
-		loadModule(new PreprocessModule<R, ADS, M> );
 		loadModule(new RandGenModule<R, ADS, M> );
 		loadModule(new RandomNumberModule<R, ADS, M> );
 		loadModule(new RandomNumberIntervalModule<R, ADS, M> );
@@ -325,7 +326,6 @@ public:
 		loadModule(new RunListModule<R, ADS, M> );
 		loadModule(new SilentDefineModule<R, ADS, M> );
 		loadModule(new SilentDefineListModule<R, ADS, M> );
-		loadModule(new SystemRunModule<R, ADS, M> );
 		loadModule(new TestModule<R, ADS, M> );
 		loadModule(new TestLocalSearchModule<R, ADS, M> );
 		loadModule(new ToStringModule<R, ADS, M> );
@@ -335,6 +335,10 @@ public:
 #ifdef MaPI
 		loadModule(new InitServersModule<R, ADS, M> );
 #endif
+
+		// system
+		loadModule(new SystemPreprocessModule<R, ADS, M> );
+		loadModule(new SystemRunModule<R, ADS, M> );
 
 		// parallel
 		#ifdef OPTFRAME_PARALLEL
