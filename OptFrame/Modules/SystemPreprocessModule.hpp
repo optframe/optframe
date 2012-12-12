@@ -99,6 +99,12 @@ public:
 		return OptFrameModule<R, ADS, M>::run_module("system.unsafe_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 	}
 
+	// runs raw module without preprocessing
+	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&, map< string,vector<string> >&, string input)
+	{
+		return new string(input); // disable pre-processing
+	}
+
 };
 
 #endif /* OPTFRAME_SYSTEM_PREPROCESS_MODULE_HPP_ */

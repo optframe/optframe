@@ -34,11 +34,11 @@ public:
 
 	string id()
 	{
-		return "unsafe_define";
+		return "system.unsafe_define";
 	}
 	string usage()
 	{
-		return "unsafe_define new_name string_to_be_substituted_from_the_new_name";
+		return "system.unsafe_define new_name text";
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string rest)
@@ -63,6 +63,8 @@ public:
 				}
 			}
 
+			//cout << "unsafe_define module: word '" << new_name << "' -> '" << second_word << "'" << endl;
+
 			dictionary[new_name] = scanner.trim(second_word);
 			return true;
 		}
@@ -76,9 +78,8 @@ public:
 	// FAITH ON USER!! NO PREPROCESSING :D
 	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
-		return OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, input);
+		return new string(input);
 	}
-
 
 };
 

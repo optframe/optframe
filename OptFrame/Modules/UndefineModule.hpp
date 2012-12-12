@@ -43,6 +43,8 @@ public:
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string rest)
 	{
+		//cout << "undefine module: '" << rest << "'" << endl;
+
 		Scanner scanner(rest);
 
 		if (!scanner.hasNext())

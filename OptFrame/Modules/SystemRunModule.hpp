@@ -78,6 +78,8 @@ public:
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
+		//cout << "system.run module: '" << input << "'" << endl;
+
 		Scanner scanner(input);
 
 		if (!scanner.hasNext())

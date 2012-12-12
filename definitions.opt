@@ -5,6 +5,15 @@ silent_define NS           OptFrame:NS
 silent_define NSSeq        OptFrame:NS:NSSeq
 silent_define NSEnum       OptFrame:NS:NSSeq:NSEnum
 
+create_raw system.rename [ $module_name , $new_name ] [
+   create_raw $new_name [ $a ] [
+      undefine _rename_final,
+      system.preprocess _rename_final $module_name $_all_params_$new_name,
+      system.run $module_name _rename_final,
+      undefine _rename_final
+   ]
+]
+
 create_module print [ $component , $id ] [
   to_string $component $id optframe_str,
   echo optframe_str,
