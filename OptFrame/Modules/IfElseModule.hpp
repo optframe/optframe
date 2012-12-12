@@ -25,7 +25,7 @@
 
 #include "../OptFrameModule.hpp"
 
-#include "RunModule.hpp"
+#include "RunListModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class IfElseModule: public OptFrameModule<R, ADS, M>
@@ -95,7 +95,7 @@ public:
 
 		if (condition)
 		{
-			if(!OptFrameModule<R, ADS, M>::run_module("run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::listToString(lif)))
+			if(!OptFrameModule<R, ADS, M>::run_module("system.run_list", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::listToString(lif)))
 			{
 				cout << "if_else module: error in IF command!" << endl;
 				return false;
@@ -105,7 +105,7 @@ public:
 		}
 		else
 		{
-			if(!OptFrameModule<R, ADS, M>::run_module("run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::listToString(lelse)))
+			if(!OptFrameModule<R, ADS, M>::run_module("system.run_list", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::listToString(lelse)))
 			{
 				cout << "if_else module: error in ELSE command!" << endl;
 				return false;

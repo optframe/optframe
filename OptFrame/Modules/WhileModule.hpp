@@ -25,6 +25,8 @@
 
 #include "../OptFrameModule.hpp"
 
+#include "RunListModule.hpp"
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class WhileModule: public OptFrameModule<R, ADS, M>
 {
@@ -106,7 +108,7 @@ public:
 
 		while(parseBool(scondition))
 		{
-			if(!OptFrameModule<R, ADS, M>::run_module("run", allModules, allFunctions, factory, dictionary, ldictionary, OptFrameList::listToString(commands)))
+			if(!OptFrameModule<R, ADS, M>::run_module("system.run_list", allModules, allFunctions, factory, dictionary, ldictionary, OptFrameList::listToString(commands)))
 			{
 				cout << "while module: error in command!" << endl;
 				return false;

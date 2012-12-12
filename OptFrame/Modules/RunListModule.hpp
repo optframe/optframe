@@ -18,15 +18,15 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_RUN_MODULE_HPP_
-#define OPTFRAME_RUN_MODULE_HPP_
+#ifndef OPTFRAME_RUN_LIST_MODULE_HPP_
+#define OPTFRAME_RUN_LIST_MODULE_HPP_
 
 #include<string>
 
 #include "../OptFrameModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class RunModule: public OptFrameModule<R, ADS, M>
+class RunListModule: public OptFrameModule<R, ADS, M>
 {
 public:
 	OptFrameModule<R, ADS, M>* getModule(vector<OptFrameModule<R, ADS, M>*>& modules, string module)
@@ -54,7 +54,7 @@ public:
 			return false;
 		}
 
-		//cout << "RUN COMMAND: '" << module << "' with '" << *rest << "'" << endl;
+		//cout << "RUN LIST COMMAND: '" << module << "' with '" << *rest << "'" << endl;
 		bool b = m->run(all_modules, allFunctions, factory, dictionary, ldictionary, *rest);
 
 		delete rest;
@@ -62,18 +62,18 @@ public:
 		return b;
 	}
 
-	virtual ~RunModule()
+	virtual ~RunListModule()
 	{
 	}
 
 	string id()
 	{
-		return "run";
+		return "system.run_list";
 	}
 
 	string usage()
 	{
-		return "run list_of_commands";
+		return "system.run_list list_of_commands";
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
@@ -107,9 +107,9 @@ public:
 				if (!exec_command(allModules, allFunctions, factory, dictionary, ldictionary, command))
 				{
 					if (lcommands.at(c) == "")
-						cout << "run module: empty command! (perhaps an extra comma in list?)" << endl;
+						cout << "run_list module: empty command! (perhaps an extra comma in list?)" << endl;
 					else
-						cout << "run module: error in command '" << lcommands.at(c) << "'" << endl;
+						cout << "run_list module: error in command '" << lcommands.at(c) << "'" << endl;
 
 					return false;
 				}
@@ -125,4 +125,4 @@ public:
 	}
 };
 
-#endif /* OPTFRAME_RUN_MODULE_HPP_ */
+#endif /* OPTFRAME_RUN_LIST_MODULE_HPP_ */
