@@ -351,7 +351,9 @@ public:
 		{
 			parameters = vector<string>(*plist1);
 			vector<string> system_params;
-			system_params.push_back("$_all_params");
+			string name_all_params = "$_all_params_"; // + MODULE_NAME
+			name_all_params.append(name);
+			system_params.push_back(name_all_params);
 			parameters.insert(parameters.begin(),system_params.begin(), system_params.end());
 			delete plist1;
 		}
