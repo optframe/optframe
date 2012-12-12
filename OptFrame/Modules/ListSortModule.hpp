@@ -147,7 +147,7 @@ public:
 				}
 
 				vector<string> otherValues;
-				double d;
+				double d = 0;
 
 				for(unsigned j=0; j<list1.size(); j++)
 					if(((int)j) != (index-1))
