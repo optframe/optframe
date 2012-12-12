@@ -56,14 +56,15 @@ public:
 		if (rotation == 4)
 			rotation = 0;
 	}
+
+	friend ostream& operator<<(ostream &os, const Piece &obj)
+	{
+		os << "(" << obj.down << "," << obj.left << "," << obj.up << "," << obj.right << ")";
+		return os;
+	}
 };
 
-ostream& operator<<(ostream &os, const Piece &obj)
-{
-	os << "(" << obj.down << "," << obj.left << "," << obj.up << "," << obj.right << ")";
-	return os;
-}
-
+/*
 ostream& operator<<(ostream &os, const Matrix<Piece> &obj)
 {
 	cout << "game" << endl;
@@ -87,5 +88,6 @@ ostream& operator<<(ostream &os, const Matrix<Piece> &obj)
 
 	return os;
 }
+*/
 
 #endif /* PIECE_H_ */

@@ -461,7 +461,13 @@ public:
 			for (unsigned int i = 0; i < modules.size(); i++)
 				if (command == modules[i]->id())
 				{
-					string r = modules[i]->preprocess(functions, dictionary, s2.rest());
+					string* r1 = modules[i]->preprocess(functions, dictionary, ldictionary, s2.rest());
+
+					if(!r1)
+						break;
+
+					string r = *r1;
+					delete r1;
 
 					if (r == "INVALID_PARAM")
 					{
@@ -470,7 +476,9 @@ public:
 						break;
 					}
 
-					modules[i]->run(modules, functions, factory, dictionary, r);
+					if(!modules[i]->run(modules, functions, factory, dictionary, ldictionary, r))
+						cout << "command failed!" << endl;
+
 					notfound = false;
 					break;
 				}
