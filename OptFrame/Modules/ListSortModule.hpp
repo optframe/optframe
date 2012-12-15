@@ -66,7 +66,7 @@ public:
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
-		cout << "list_sort module input: '" << input << "'" << endl;
+		//cout << "list_sort module input: '" << input << "'" << endl;
 
 		Scanner scanner(input);
 

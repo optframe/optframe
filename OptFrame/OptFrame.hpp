@@ -211,6 +211,9 @@
 #include "Modules/WhileModule.hpp"
 #include "Modules/TryModule.hpp"
 
+// plot
+#include "Modules/Plot2AxisModule.hpp"
+#include "Modules/PlotViewModule.hpp"
 
 // ==================================
 //            Serializer
@@ -356,6 +359,10 @@ public:
 		loadModule(new IfElseModule<R, ADS, M> );
 		loadModule(new WhileModule<R, ADS, M> );
 		loadModule(new TryModule<R, ADS, M> );
+
+		// plot
+		loadModule(new Plot2AxisModule<R, ADS, M> );
+		loadModule(new PlotViewModule<R, ADS, M> );
 
 		// ----------------------------------------------
 
