@@ -36,9 +36,22 @@ public:
 	{
 		return "read";
 	}
+
 	string usage()
 	{
 		return "read filename";
+	}
+
+	string removeComments(string line)
+	{
+		stringstream ss;
+		for(unsigned i=0; i<line.length(); i++)
+			if(line.at(i)!='%')
+				ss << line.at(i);
+			else
+				break;
+
+		return Scanner::trim(ss.str());
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
@@ -68,47 +81,58 @@ public:
 
 		while(scanner->hasNext())
 		{
-			string line = scanner->nextLine();
+			string line = removeComments(scanner->nextLine());
 
 			if(line.length()==0)
 				continue;
-			if(line[0]=='%')
-				continue;
 
-         int brackets = 0;
+			int lists  = 0;
+			int blocks = 0;
 
-         for(unsigned int c = 0; c < line.length(); c++)
-         {
-            if(line.at(c)=='[')
-               brackets++;
-            if(line.at(c)==']')
-               brackets--;
-         }
+			for(unsigned int c = 0; c < line.length(); c++)
+			{
+				if(line.at(c)=='[')
+					lists++;
+				if(line.at(c)==']')
+					lists--;
+				if(line.at(c)=='{')
+					blocks++;
+				if(line.at(c)=='}')
+					blocks--;
+			}
 
-         while((brackets > 0) && scanner->hasNext())
-         {
-            string line2 = scanner->nextLine();
+			while(((lists > 0) || (blocks > 0)) && scanner->hasNext())
+			{
+				string line2 = removeComments(scanner->nextLine());
 
-            for(unsigned int c = 0; c < line2.length(); c++)
-            {
-               if(line2.at(c)=='[')
-                  brackets++;
-               if(line2.at(c)==']')
-                  brackets--;
-            }
+				for(unsigned int c = 0; c < line2.length(); c++)
+				{
+					if(line2.at(c)=='[')
+						lists++;
+					if(line2.at(c)==']')
+						lists--;
+					if(line2.at(c)=='{')
+						blocks++;
+					if(line2.at(c)=='}')
+						blocks--;
+				}
 
-            line = line + line2;
-         }
+				line.append(line2);
+			}
 
-         if(brackets == 0)
-            commands.push_back(line);
-         else
-         {
-            cout << "read error: wrong number of '[' and ']'" << endl;
-            delete scanner;
-            return false;
-         }
-      }
+			if((lists == 0) && (blocks == 0))
+				commands.push_back(line);
+			else
+			{
+				if(lists > 0)
+					cout << "read error: wrong number of '[' and ']' => " << lists  << " '[' left open!" << endl;
+				if(blocks > 0)
+					cout << "read error: wrong number of '{' and '}' => " << blocks << " '{' left open!" << endl;
+
+				delete scanner;
+				return false;
+			}
+		}
 
 		for(unsigned int i = 0; i < commands.size(); i++)
 		{
@@ -117,14 +141,14 @@ public:
 			Scanner s2(line);
 
 			if(!s2.hasNext()) // no command found in the line
-				continue;
+			{
+				cout << "read module: strange error! Empty command with line '" << line << "'" << endl;
+				return false;
+			}
 
 			string command = s2.next();
 
 			bool notfound = true;
-
-			if(command[0]=='%')
-				notfound = false;
 
 			for(unsigned int i=0;i<all_modules.size();i++)
 				if(command == all_modules[i]->id())
@@ -135,7 +159,10 @@ public:
 					string* after_preprocess = all_modules[i]->preprocess(allFunctions, dictionary, ldictionary, original);
 
 					if(!after_preprocess)
+					{
+						cout << "read module: preprocessing error!" << endl;
 						return false;
+					}
 
 					//cout << "READ COMMAND INPUT: '" << after_preprocess << "'" << endl;
 
@@ -153,11 +180,12 @@ public:
 
 			if(notfound)
 			{
+				// special commands
 				if(command=="exit")
 					break;
 				else
 				{
-					cout << "Warning: command '"<<command<<"' not found!"<<endl;
+					cout << "Warning: command '" << command << "' not found!" << endl;
 					return false;
 				}
 			}
