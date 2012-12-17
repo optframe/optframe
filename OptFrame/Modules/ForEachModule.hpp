@@ -203,7 +203,7 @@ public:
 
 	string usage()
 	{
-		return "for_each $var list_of_values list_of_commands";
+		return "for_each $var list_of_values block_of_commands";
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
@@ -235,7 +235,7 @@ public:
 		else
 			return false;
 
-		vector<string>* pcommands = OptFrameList::readList(ldictionary, scanner);
+		vector<string>* pcommands = OptFrameList::readBlock(scanner);
 		vector<string>  commands;
 		if(pcommands)
 		{
@@ -251,7 +251,7 @@ public:
 			{
 				if(commands.at(c) == "")
 				{
-					cout << "for_each module: empty command (possible extra colon)!" << endl;
+					cout << "for_each module: empty command (possible extra semicolon)!" << endl;
 					return false;
 				}
 

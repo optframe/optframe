@@ -323,7 +323,7 @@ public:
 
 	string usage()
 	{
-		return "create_raw name list_of_$parameters list_of_commands";
+		return "create_raw name list_of_$parameters block_of_commands";
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
@@ -376,7 +376,7 @@ public:
 
 		vector < string > commands;
 
-		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
+		vector<string>* plist = OptFrameList::readBlock(scanner);
 		if(plist)
 		{
 			commands = vector<string>(*plist);

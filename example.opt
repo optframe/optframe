@@ -17,12 +17,12 @@ list_sort lista2 lista2 2
 echo text(lista2)
 
 
-create_module print_sizes [ $l1 , $l2 ] [
-  echo length( $l1 ),
-  echo $l1,
-  echo length( $l2 ),
+create_module print_sizes [ $l1 , $l2 ] {
+  echo length( $l1 );
+  echo $l1;
+  echo length( $l2 );
   echo $l2
-]
+}
 
 silent_define_list mylist1 [1,2,3,4,5]
 silent_define_list mylist2 [7,8,9]
@@ -33,28 +33,28 @@ print_list_to_file saida.txt mylist2
 
 print_sizes mylist1 mylist2
 
-try [
+try {
 
-run_parallel [
-  create_numeric_list 1 1000 l_1_1000,
-  for_each $i l_1_1000 [
-    echo $i
-  ]
-][
-  create_numeric_list 1001 2000 l_1001_2000,
-  for_each $i l_1001_2000 [
-    echo $i
-  ]
-][
-  create_numeric_list 2001 3000 l_2001_3000,
-  for_each $i l_2001_3000 [
-    echo $i
-  ]
-]
+  system.run_parallel {
+    create_numeric_list 1 1000 l_1_1000;
+    for_each $i l_1_1000 {
+      echo $i
+    }
+  }{
+    create_numeric_list 1001 2000 l_1001_2000;
+    for_each $i l_1001_2000 {
+      echo $i
+    }
+  }{
+    create_numeric_list 2001 3000 l_2001_3000;
+    for_each $i l_2001_3000 {
+      echo $i
+    }
+  }
 
-] [
+} except {
   echo No run_parallel module loaded. Continuing...
-]
+}
 
 %randgen system_seed time()
 randgen system_seed 0

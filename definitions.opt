@@ -5,47 +5,47 @@ silent_define NS           OptFrame:NS
 silent_define NSSeq        OptFrame:NS:NSSeq
 silent_define NSEnum       OptFrame:NS:NSSeq:NSEnum
 
-create_raw system.rename [ $module_name , $new_name ] [
-   create_raw $new_name [ $a ] [
-      undefine _rename_final,
-      system.preprocess _rename_final $module_name $_all_params_$new_name,
-      system.run $module_name _rename_final,
+create_raw system.rename [ $module_name , $new_name ] {
+   create_raw $new_name [ $a ] {
+      undefine _rename_final;
+      system.preprocess _rename_final $module_name $_all_params_$new_name;
+      system.run $module_name _rename_final;
       undefine _rename_final
-   ]
-]
+   }
+}
 
-create_module print [ $component , $id ] [
-  to_string $component $id optframe_str,
-  echo optframe_str,
+create_module print [ $component , $id ] {
+  to_string $component $id optframe_str;
+  echo optframe_str;
   undefine optframe_str
-] 
+}
 
-create_module evaluate_to_file [ $evaluator , $idev , $solution , $ids , $file ] [
-  evaluate $evaluator $idev $solution $ids optframe_e,
-  echo_to_file $file optframe_e,
+create_module evaluate_to_file [ $evaluator , $idev , $solution , $ids , $file ] {
+  evaluate $evaluator $idev $solution $ids optframe_e;
+  echo_to_file $file optframe_e;
   undefine optframe_e
-] 
+}
 
-create_module print_to_file [ $component , $id , $file ] [
-  to_string $component $id optframe_str,
-  echo_to_file $file optframe_str,
+create_module print_to_file [ $component , $id , $file ] {
+  to_string $component $id optframe_str;
+  echo_to_file $file optframe_str;
   undefine optframe_str
-] 
+} 
 
 % ------------------- lists --------------
 
-create_module print_list [ $list ] [
-  silent_define_list _ilist $list,
-  for_each $e _ilist [
+create_module print_list [ $list ] {
+  silent_define_list _ilist $list;
+  for_each $e _ilist {
      echo $e
-  ],
+  };
   undefine _ilist
-] 
+} 
 
-create_module print_list_to_file [ $file , $list ] [
-  silent_define_list _ilist $list,
-  for_each $e _ilist [
+create_module print_list_to_file [ $file , $list ] {
+  silent_define_list _ilist $list;
+  for_each $e _ilist {
      echo_to_file $file $e
-  ],
+  };
   undefine _ilist
-] 
+} 

@@ -25,6 +25,8 @@
 
 #include "../OptFrameModule.hpp"
 
+#include "SystemRunModule.hpp"
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class ForModule: public OptFrameModule<R, ADS, M>
 {
@@ -72,7 +74,7 @@ public:
 
 	string usage()
 	{
-		return "for var [ = value1 to value2 | = value2 downto value1 ] list_of_commands";
+		return "for var [ = value1 to value2 | = value2 downto value1 ] block_of_commands";
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
@@ -126,7 +128,7 @@ public:
 
 		int value2 = scanner.nextInt();
 
-		vector<string>* pcommands = OptFrameList::readList(ldictionary, scanner);
+		vector<string>* pcommands = OptFrameList::readBlock(scanner);
 		vector<string>  commands;
 		if(pcommands)
 		{
@@ -144,7 +146,7 @@ public:
 				if(!OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str()))
 					return false;
 
-				if(!OptFrameModule<R, ADS, M>::run_module("run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::listToString(commands)))
+				if(!OptFrameModule<R, ADS, M>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
 				{
 					cout << "for module: (TO) error in command with value='" << v << "'!" << endl;
 					return false;
@@ -160,7 +162,7 @@ public:
 				if(!OptFrameModule<R, ADS, M>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str()))
 					return false;
 
-				if(!OptFrameModule<R, ADS, M>::run_module("run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::listToString(commands)))
+				if(!OptFrameModule<R, ADS, M>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
 				{
 					cout << "for module: (DOWNTO) error in command with value='" << v << "'!" << endl;
 					return false;

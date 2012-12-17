@@ -4,8 +4,10 @@
 
 define x [ a, b, c ]
 
-for_each $i [1,2,3] [
-  define e element( $i x ),
-  echo e,
-  undefine e
-]
+% comentarios agora sao validos em qualquer lugar do codigo!
+
+for_each $i [1,2,3] {
+  define e element( $i x );
+  echo e; % comentarios agora sao validos em qualquer lugar do codigo! (2)
+  undefine e; % ponto-e-virgula opcional ao fim do bloco
+}

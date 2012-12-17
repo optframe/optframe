@@ -25,7 +25,7 @@
 
 #include "../OptFrameModule.hpp"
 
-#include "RunListModule.hpp"
+#include "SystemRunModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class WhileModule: public OptFrameModule<R, ADS, M>
@@ -66,7 +66,7 @@ public:
 		stringstream boolean_expr;
 		unsigned j = 0;
 		for(unsigned i=0; i<input.size(); i++)
-			if(input.at(i)!='[')
+			if(input.at(i)!='{')
 			{
 				boolean_expr << input.at(i);
 				j++;
@@ -87,7 +87,7 @@ public:
 		Scanner scanner(sscommands.str());
 
 		vector<string> commands;
-		vector<string>* p_commands = OptFrameList::readList(ldictionary, scanner);
+		vector<string>* p_commands = OptFrameList::readBlock(scanner);
 		if(p_commands)
 		{
 			commands = vector<string>(*p_commands);
@@ -108,7 +108,7 @@ public:
 
 		while(parseBool(scondition))
 		{
-			if(!OptFrameModule<R, ADS, M>::run_module("system.run_list", allModules, allFunctions, factory, dictionary, ldictionary, OptFrameList::listToString(commands)))
+			if(!OptFrameModule<R, ADS, M>::run_module("system.run", allModules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
 			{
 				cout << "while module: error in command!" << endl;
 				return false;

@@ -25,7 +25,7 @@
 
 #include "../OptFrameModule.hpp"
 
-#include "RunListModule.hpp"
+#include "SystemRunModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class IfElseModule: public OptFrameModule<R, ADS, M>
@@ -38,12 +38,12 @@ public:
 
 	string id()
 	{
-		return "if_else";
+		return "if";
 	}
 
 	string usage()
 	{
-		return "if_else boolean list_of_if_commands [list_of_else_commands]";
+		return "if boolean block_of_if_commands [else block_of_else_commands]";
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
@@ -65,13 +65,13 @@ public:
 			condition = false;
 		else
 		{
-			cout << "if_else module: no such boolean '" << sbool << "'" << endl;
+			cout << "if module: no such boolean '" << sbool << "'" << endl;
 			return false;
 		}
 
 
 		vector<string>  lif;
-		vector<string>* p_lif = OptFrameList::readList(ldictionary, scanner);
+		vector<string>* p_lif = OptFrameList::readBlock(scanner);
 		if(p_lif)
 		{
 			lif = vector<string>(*p_lif);
@@ -83,7 +83,15 @@ public:
 		vector<string>  lelse;
 		if(scanner.hasNext())
 		{
-			vector<string>* p_lelse = OptFrameList::readList(ldictionary, scanner);
+			string text_else = scanner.next(); // drop 'else'
+
+			if(text_else != "else")
+			{
+				cout << "if module: expected else and found '" << text_else << "'" << endl;
+				return false;
+			}
+
+			vector<string>* p_lelse = OptFrameList::readBlock(scanner);
 			if(p_lelse)
 			{
 				lelse = vector<string>(*p_lelse);
@@ -95,9 +103,9 @@ public:
 
 		if (condition)
 		{
-			if(!OptFrameModule<R, ADS, M>::run_module("system.run_list", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::listToString(lif)))
+			if(!OptFrameModule<R, ADS, M>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(lif)))
 			{
-				cout << "if_else module: error in IF command!" << endl;
+				cout << "if module: error in IF command!" << endl;
 				return false;
 			}
 			else
@@ -105,9 +113,9 @@ public:
 		}
 		else
 		{
-			if(!OptFrameModule<R, ADS, M>::run_module("system.run_list", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::listToString(lelse)))
+			if(!OptFrameModule<R, ADS, M>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(lelse)))
 			{
-				cout << "if_else module: error in ELSE command!" << endl;
+				cout << "if module: error in ELSE command!" << endl;
 				return false;
 			}
 			else
@@ -123,7 +131,7 @@ public:
 		unsigned j = 0;
 		for(unsigned i=0; i<input.length(); i++)
 		{
-			if(input.at(i)=='[')
+			if(input.at(i)=='{')
 				break;
 			else
 				ibegin += input.at(i);

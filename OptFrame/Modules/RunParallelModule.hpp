@@ -77,12 +77,12 @@ public:
 
 	string id()
 	{
-		return "run_parallel";
+		return "system.run_parallel";
 	}
 
 	string usage()
 	{
-		return "run_parallel list_of_commands_0 [list_of_commands_1] [list_of_commands_2] ... ";
+		return "system.run_parallel block_of_commands_0 [block_of_commands_1] [block_of_commands_2] ... ";
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& _allModules, vector<OptFrameFunction*>& _allFunctions, HeuristicFactory<R, ADS, M>& _factory, map<string, string>& _dictionary,  map< string,vector<string> >& _ldictionary, string input)
@@ -101,12 +101,12 @@ public:
 		allFunctions = &_allFunctions;
 		factory      = &_factory;
 		dictionary   = &_dictionary;
-		ldictionary  = &_dictionary;
+		ldictionary  = &_ldictionary;
 
 		while(scanner.hasNext())
 		{
 			vector<string>  lcommands;
-			vector<string>* p_lcommands = OptFrameList::readList(_ldictionary, scanner);
+			vector<string>* p_lcommands = OptFrameList::readBlock(scanner);
 			if(p_lcommands)
 			{
 				lcommands = vector<string>(*p_lcommands);
@@ -158,9 +158,9 @@ public:
 	}
 
 	// leave preprocessing to each module
-	virtual string preprocess(vector<OptFrameFunction*>&, map<string, string>&, map< string,vector<string> >&, string input)
+	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&, map< string,vector<string> >&, string input)
 	{
-		return input; // disable pre-processing
+		return new string(input); // disable pre-processing
 	}
 
 
@@ -207,7 +207,20 @@ public:
     		if (m == NULL)
     			return;
 
-    		string rest = m->preprocess(*allFunctions, *dictionary, *ldictionary, scanner.rest());
+    		string* rest1 = m->preprocess(*allFunctions, *dictionary, *ldictionary, scanner.rest());
+
+    		string rest = "";
+
+    		if(!rest1)
+    		{
+    			ok = false;
+    			break;
+    		}
+    		else
+    		{
+    			rest = *rest1;
+    			delete rest1;
+    		}
 
     		pthread_mutex_lock(&mutex);
     		bool r = m->run(*allModules, *allFunctions, *factory, *dictionary, *ldictionary, rest);

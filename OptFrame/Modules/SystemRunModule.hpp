@@ -73,12 +73,20 @@ public:
 
 	string usage()
 	{
-		return "system.run module_name [dictionary_entry]";
+		return "system.run block_of_commands | module_name [dictionary_entry]";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input1)
 	{
 		//cout << "system.run module: '" << input << "'" << endl;
+
+		string input = Scanner::trim(input1);
+
+		if(input.length()==0)
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
 
 		Scanner scanner(input);
 
@@ -88,32 +96,69 @@ public:
 			return false;
 		}
 
-		string module_name = scanner.next();
-
-		stringstream ss;
-
-		if(scanner.hasNext())
+		// multiple commands
+		if(input.at(0) == '{')
 		{
-			string new_word = scanner.next();
-
-			if(dictionary.count(new_word) == 0) // Not found in dictionary!
-				ss << new_word;
+			vector<string>  lcommands;
+			vector<string>* p_lcommands = OptFrameList::readBlock(scanner);
+			if(p_lcommands)
+			{
+				lcommands = vector<string>(*p_lcommands);
+				delete p_lcommands;
+			}
 			else
 			{
-				string found = dictionary.find(new_word)->second;
-				ss << found;
+				cout << "system.run module: error reading block of commands!" << endl;
+				return false;
 			}
-		}
 
-		ss << scanner.rest();
+			for (unsigned int c = 0; c < lcommands.size(); c++)
+			{
+				string command = lcommands.at(c);
 
-		if(!OptFrameModule<R, ADS, M>::run_module(module_name, allModules, allFunctions, factory, dictionary, ldictionary, ss.str()))
-		{
-			cout << "system.run module: error in command!" << endl;
-			return false;
-		}
-		else
+				if (command != "")
+					if (!exec_command(allModules, allFunctions, factory, dictionary, ldictionary, command))
+					{
+						if (lcommands.at(c) == "")
+							cout << "system.run module: empty command! (perhaps an extra semicolon in block?)" << endl;
+						else
+							cout << "system.run module: error in command '" << lcommands.at(c) << "'" << endl;
+
+						return false;
+					}
+			}
+
 			return true;
+		}
+		else // single command
+		{
+			string module_name = scanner.next();
+
+			stringstream ss;
+
+			if(scanner.hasNext())
+			{
+				string new_word = scanner.next();
+
+				if(dictionary.count(new_word) == 0) // Not found in dictionary!
+					ss << new_word;
+				else
+				{
+					string found = dictionary.find(new_word)->second;
+					ss << found;
+				}
+			}
+
+			ss << scanner.rest();
+
+			if(!OptFrameModule<R, ADS, M>::run_module(module_name, allModules, allFunctions, factory, dictionary, ldictionary, ss.str()))
+			{
+				cout << "system.run module: error in command!" << endl;
+				return false;
+			}
+			else
+				return true;
+		}
 	}
 
 	// runs raw module without preprocessing

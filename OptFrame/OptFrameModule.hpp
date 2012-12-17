@@ -78,29 +78,14 @@ public:
 
 	static string* defaultPreprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
-		Scanner scanner(input);
-
-		// First, remove the comments '%'
-
-		string input2 = "";
-
-		while(scanner.hasNextChar())
-		{
-			char c = scanner.nextChar();
-			if(c != '%')
-				input2 += c;
+		stringstream input_func; // add spaces before and after '(', ')', '[', ']', '{', '}', ';' and ','
+		for(unsigned i=0; i<input.size(); i++)
+			if( (input.at(i)=='(') || (input.at(i)==')') || (input.at(i)=='[') || (input.at(i)==']') || (input.at(i)==',') || (input.at(i)=='{') || (input.at(i)=='}') || (input.at(i)==';') )
+				input_func << ' ' << input.at(i) << ' ';
 			else
-				break;
-		}
+				input_func << input.at(i);
 
-		stringstream input_func; // add spaces before and after '(', ')', '[', ']' and ','
-		for(unsigned i=0; i<input2.size(); i++)
-			if( (input2.at(i)=='(') || (input2.at(i)==')') || (input2.at(i)=='[') || (input2.at(i)==']') || (input2.at(i)==',') )
-				input_func << ' ' << input2.at(i) << ' ';
-			else
-				input_func << input2.at(i);
-
-		scanner = Scanner(input_func.str());
+		Scanner scanner(input_func.str());
 
 		// Second, use the dictionary
 

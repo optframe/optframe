@@ -127,6 +127,7 @@ public:
 		char character = scanner.nextChar();
 		int numberOfBrackets;
 
+		// trim input
 		while (character == ' ')
 		{
 			if(!scanner.hasNextChar())
@@ -135,12 +136,14 @@ public:
 			character = scanner.nextChar();
 		}
 
-		if(character != '{') // read from dictionary
+		if(character != '{') // can't read block from dictionary
 		{
+			if(character == '[')
+				cout << "OptFrameList::readBlock() error: trying to read block from a possible list structure!" << endl;
 			return NULL;
 		}
 
-		vector <string>* block = new vector<string> ;
+		vector<string>* block = new vector<string> ;
 		string word;
 
 		numberOfBrackets = 0;
@@ -155,7 +158,7 @@ public:
 		{
 			if (character == '{')
 				numberOfBrackets++;
-			if (character == '{')
+			if (character == '}')
 				numberOfBrackets--;
 
 			if ((character == ';') && (numberOfBrackets == 0))
@@ -180,8 +183,8 @@ public:
 			block->at(i) = scanner.trim(block->at(i));
 
 
-		// error in code, dont know why but list should be empty!
-		if((block->size()==1) && (block->at(0)==""))
+		// allow last command with semicolon (optional)
+		if((block->size()>0) && (block->at(block->size()-1)==""))
 			block->pop_back();
 
 		return block;
@@ -203,6 +206,23 @@ public:
 
 		return ss.str();
 	}
+
+	static string blockToString(const vector<string>& block)
+	{
+		stringstream ss;
+
+		ss << "{";
+		for(unsigned i=0; i<block.size(); i++)
+		{
+			ss << block.at(i);
+			if(i != block.size()-1)
+				ss << ";";
+		}
+		ss << "}";
+
+		return ss.str();
+	}
+
 
 };
 

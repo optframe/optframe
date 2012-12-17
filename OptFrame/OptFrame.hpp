@@ -179,7 +179,6 @@
 #include "Modules/RandomNumberModule.hpp"
 #include "Modules/RandomNumberIntervalModule.hpp"
 #include "Modules/ReadModule.hpp"
-#include "Modules/RunListModule.hpp"
 #include "Modules/SilentDefineModule.hpp"
 #include "Modules/SilentDefineListModule.hpp"
 #include "Modules/TestModule.hpp"
@@ -326,7 +325,6 @@ public:
 		loadModule(new RandomNumberModule<R, ADS, M> );
 		loadModule(new RandomNumberIntervalModule<R, ADS, M> );
 		loadModule(new ReadModule<R, ADS, M> );
-		loadModule(new RunListModule<R, ADS, M> );
 		loadModule(new SilentDefineModule<R, ADS, M> );
 		loadModule(new SilentDefineListModule<R, ADS, M> );
 		loadModule(new TestModule<R, ADS, M> );

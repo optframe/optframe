@@ -71,7 +71,7 @@ public:
 
 	string usage()
 	{
-		return "try list_of_try_commands [list_of_exception_commands]";
+		return "try block_of_try_commands [except block_of_exception_commands]";
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
@@ -85,7 +85,7 @@ public:
 		}
 
 		vector<string>  ltry;
-		vector<string>* p_ltry = OptFrameList::readList(ldictionary, scanner);
+		vector<string>* p_ltry = OptFrameList::readBlock(scanner);
 		if(p_ltry)
 		{
 			ltry = vector<string>(*p_ltry);
@@ -97,7 +97,15 @@ public:
 		vector<string>  lcatch;
 		if(scanner.hasNext())
 		{
-			vector<string>* p_lcatch = OptFrameList::readList(ldictionary, scanner);
+			string text_except = scanner.next();
+
+			if(text_except != "except")
+			{
+				cout << "try module: error expecting word 'except' and got '" << text_except << "'" << endl;
+				return false;
+			}
+
+			vector<string>* p_lcatch = OptFrameList::readBlock(scanner);
 			if(p_lcatch)
 			{
 				lcatch = vector<string>(*p_lcatch);
@@ -172,7 +180,7 @@ public:
 		unsigned j = 0;
 		for(unsigned i=0; i<input.length(); i++)
 		{
-			if(input.at(i)=='[')
+			if(input.at(i)=='{')
 				break;
 			else
 				ibegin += input.at(i);
