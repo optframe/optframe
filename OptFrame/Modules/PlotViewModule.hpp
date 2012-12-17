@@ -66,7 +66,7 @@ public:
 		string filename = scanner.rest();
 
 		stringstream ssdisp;
-		ssdisp << view_software << " " << filename;
+		ssdisp << view_software << " " << filename << " &"; // detach application
 
 		system(ssdisp.str().c_str());
 
