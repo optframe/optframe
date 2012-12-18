@@ -1,18 +1,50 @@
 % OptFrame .opt definitions file
+
+module.create_raw system.rename [ $module_name , $new_name ] {
+   module.create_raw $new_name [ $a ] {
+      system.undefine _rename_final;
+      system.preprocess _rename_final $module_name $_all_params_$new_name;
+      system.run $module_name _rename_final;
+      system.undefine _rename_final
+   }
+}
+
+%%% GIVE SOME OLD NAMES
+system.rename system.define        define
+system.rename system.echo          echo
+system.rename system.silent_define silent_define
+system.rename system.unsafe_define unsafe_define
+system.rename system.undefine      undefine
+system.rename system.pause         pause
+system.rename system.read          read
+
+system.rename file.echo            echo_to_file
+
+system.rename list.silent_define   silent_define_list
+system.rename list.sort            list_sort
+
+system.rename module.create        create_module
+
+system.rename component.create_list       create_list_of_components
+system.rename component.evaluate          evaluate
+system.rename component.exec              exec
+system.rename component.exec_constructive exec_constructive
+system.rename component.export            export
+system.rename component.to_string         to_string
+system.rename component.list_builders     list_builders
+system.rename component.list              list_components
+
+
+
+
+%%% DEFINITIONS
+
 silent_define Constructive OptFrame:Constructive
 silent_define Evaluator    OptFrame:Evaluator
 silent_define NS           OptFrame:NS
 silent_define NSSeq        OptFrame:NS:NSSeq
 silent_define NSEnum       OptFrame:NS:NSSeq:NSEnum
 
-create_raw system.rename [ $module_name , $new_name ] {
-   create_raw $new_name [ $a ] {
-      undefine _rename_final;
-      system.preprocess _rename_final $module_name $_all_params_$new_name;
-      system.run $module_name _rename_final;
-      undefine _rename_final
-   }
-}
 
 create_module print [ $component , $id ] {
   to_string $component $id optframe_str;
@@ -27,7 +59,7 @@ create_module evaluate_to_file [ $evaluator , $idev , $solution , $ids , $file ]
 }
 
 create_module print_to_file [ $component , $id , $file ] {
-  to_string $component $id optframe_str;
+  system.to_string $component $id optframe_str;
   echo_to_file $file optframe_str;
   undefine optframe_str
 } 

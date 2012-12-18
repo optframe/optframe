@@ -18,48 +18,38 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef CREATE_NUMERIC_LIST_MODULE_HPP_
-#define CREATE_NUMERIC_LIST_MODULE_HPP_
+#ifndef DROPALLMODULE_HPP_
+#define DROPALLMODULE_HPP_
 
 #include "../OptFrameModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class CreateNumericListModule: public OptFrameModule<R, ADS, M>
+class ComponentDropAllModule: public OptFrameModule<R, ADS, M>
 {
 public:
 
-	virtual ~CreateNumericListModule()
+	virtual ~ComponentDropAllModule()
 	{
 	}
 
 	string id()
 	{
-		return "create_numeric_list";
+		return "component.drop_all";
 	}
+
 	string usage()
 	{
-		return "create_numeric_list begin end list_name";
+		return "component.drop_all";
 	}
+
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
-		Scanner scanner(input);
+		cout << "drop_all" << endl;
 
-		int begin    = scanner.nextInt();
-		int end      = scanner.nextInt();
-		string lname = scanner.next();
-
-		stringstream ss;
-
-		ss << lname << " [";
-		for(int i=begin; i<end; i++)
-			ss << i << ",";
-		if((end-begin)>=0)
-			ss << end;
-		ss << " ]";
-
-		return OptFrameModule<R, ADS, M>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
+		factory.drop_all();
+		return true;
 	}
 
 };
 
-#endif /* CREATE_NUMERIC_LIST_MODULE_HPP_ */
+#endif /* DROPALLMODULE_HPP_ */

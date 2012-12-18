@@ -18,48 +18,58 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef CREATE_NUMERIC_LIST_MODULE_HPP_
-#define CREATE_NUMERIC_LIST_MODULE_HPP_
+#ifndef ECHO_TO_FILE_MODULE_HPP_
+#define ECHO_TO_FILE_MODULE_HPP_
 
 #include "../OptFrameModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class CreateNumericListModule: public OptFrameModule<R, ADS, M>
+class FileEchoModule: public OptFrameModule<R, ADS, M>
 {
 public:
 
-	virtual ~CreateNumericListModule()
+	virtual ~FileEchoModule()
 	{
 	}
 
 	string id()
 	{
-		return "create_numeric_list";
+		return "file.echo";
 	}
+
 	string usage()
 	{
-		return "create_numeric_list begin end list_name";
+		return "file.echo filename text";
 	}
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+
+	bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, M>&, map<string, string>&,  map< string,vector<string> >&, string input)
 	{
 		Scanner scanner(input);
+		if(!scanner.hasNext()) // no file
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
 
-		int begin    = scanner.nextInt();
-		int end      = scanner.nextInt();
-		string lname = scanner.next();
+		string filename = scanner.next();
 
-		stringstream ss;
+		FILE* file = fopen(filename.c_str(), "a");
 
-		ss << lname << " [";
-		for(int i=begin; i<end; i++)
-			ss << i << ",";
-		if((end-begin)>=0)
-			ss << end;
-		ss << " ]";
+		if(!file)
+		{
+			cout << "file.echo module: couldn't open file: '" << filename << "'" << endl;
+			return false;
+		}
 
-		return OptFrameModule<R, ADS, M>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
+		string text = scanner.nextLine();
+
+		fprintf(file, "%s\r\n", text.c_str());
+
+		fclose(file);
+
+		return true;
 	}
 
 };
 
-#endif /* CREATE_NUMERIC_LIST_MODULE_HPP_ */
+#endif /* ECHO_TO_FILE_MODULE_HPP_ */

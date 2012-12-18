@@ -18,95 +18,88 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_SYSTEM_PREPROCESS_MODULE_HPP_
-#define OPTFRAME_SYSTEM_PREPROCESS_MODULE_HPP_
+#ifndef LISTFROMFILEMODULE_HPP_
+#define LISTFROMFILEMODULE_HPP_
 
 #include "../OptFrameModule.hpp"
 
-#include "SystemUnsafeDefineModule.hpp"
+#include "ListSilentDefineModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class SystemPreprocessModule: public OptFrameModule<R, ADS, M>
+class FileToListModule: public OptFrameModule<R, ADS, M>
 {
 public:
 
-	virtual ~SystemPreprocessModule()
+	virtual ~FileToListModule()
 	{
 	}
 
 	string id()
 	{
-		return "system.preprocess";
+		return "file.to_list";
 	}
-
 	string usage()
 	{
-		return "system.preprocess return_value module_name input";
-	}
-
-	OptFrameModule<R, ADS, M>* getModule(vector<OptFrameModule<R, ADS, M>*>& modules, string module)
-	{
-		for (unsigned int i = 0; i < modules.size(); i++)
-			if (module == modules[i]->id())
-				return modules[i];
-		return NULL;
+		return "file.to_list new_list_name filename";
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
-		Scanner scanner(input);
-
-		if (!scanner.hasNext())
+		Scanner scan(input);
+		if (!scan.hasNext()) // no file
 		{
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
 
-		string name = scanner.next();
+		string listName = scan.next();
 
-		if (!scanner.hasNext())
+		if (!scan.hasNext()) // no file
 		{
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
 
-		string module = scanner.next();
+		// Open file
+		Scanner* scanner;
 
-		if (!scanner.hasNext())
+		try
 		{
+			scanner = new Scanner(new File(scan.trim(scan.rest())));
+		}
+		catch (FileNotFound& e)
+		{
+			cout << "File '" << e.getFile() << "' not found!" << endl;
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
 
-		string inp = scanner.rest();
+		vector < string > elements;
 
-		OptFrameModule<R, ADS, M>* m = getModule(all_modules, module);
-
-		if(!m)
+		while (scanner->hasNextLine())
 		{
-			cout << "preprocess module: NULL module!" << endl;
-			return false;
+			string line = scanner->nextLine();
+
+			// WHY?
+			/*
+			for (unsigned int c = 0; c < line.size(); c++)
+				if ((line.at(c) == ',') || (line.at(c) == '[') || (line.at(c) == ']'))
+					line[c] = '?';
+			*/
+
+			elements.push_back(line);
 		}
 
-		string* final = m->preprocess(allFunctions,dictionary,ldictionary, inp);
+		delete scanner;
 
-		if(!final)
-			return false;
+		stringstream listContent;
+		listContent << listName << " " << OptFrameList::listToString(elements);
 
-		stringstream ss;
-		ss << name << " " << (*final);
+		// TODO: should register directly (for performance)!
 
-		delete final;
-
-		return OptFrameModule<R, ADS, M>::run_module("system.unsafe_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
-	}
-
-	// runs raw module without preprocessing
-	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&, map< string,vector<string> >&, string input)
-	{
-		return new string(input); // disable pre-processing
+		return OptFrameModule<R, ADS, M>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, listContent.str());
 	}
 
 };
 
-#endif /* OPTFRAME_SYSTEM_PREPROCESS_MODULE_HPP_ */
+#endif /* LISTFROMFILEMODULE_HPP_ */

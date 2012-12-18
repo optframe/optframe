@@ -18,48 +18,62 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef CREATE_NUMERIC_LIST_MODULE_HPP_
-#define CREATE_NUMERIC_LIST_MODULE_HPP_
+#ifndef OPTFRAME_COMPONENT_LIST_MODULE_HPP_
+#define OPTFRAME_COMPONENT_LIST_MODULE_HPP_
 
 #include "../OptFrameModule.hpp"
 
+#include "SystemDefineModule.hpp"
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class CreateNumericListModule: public OptFrameModule<R, ADS, M>
+class ComponentListModule: public OptFrameModule<R, ADS, M>
 {
 public:
 
-	virtual ~CreateNumericListModule()
+	virtual ~ComponentListModule()
 	{
 	}
 
 	string id()
 	{
-		return "create_numeric_list";
+		return "component.list";
 	}
+
 	string usage()
 	{
-		return "create_numeric_list begin end list_name";
+		return "component.list pattern [store_list]\nWhere: store_list is an optional variable to store the components.";
 	}
+
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
-		int begin    = scanner.nextInt();
-		int end      = scanner.nextInt();
-		string lname = scanner.next();
+		string pattern = scanner.next();
 
-		stringstream ss;
+		vector<string> components     = factory.listComponents(pattern);
+		vector<string> componentLists = factory.listComponentLists(pattern);
 
-		ss << lname << " [";
-		for(int i=begin; i<end; i++)
-			ss << i << ",";
-		if((end-begin)>=0)
-			ss << end;
-		ss << " ]";
+		components.insert(components.end(), componentLists.begin(), componentLists.end());
 
-		return OptFrameModule<R, ADS, M>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
+		if(!scanner.hasNext())
+		{
+			for(int i=0; i<(int)components.size(); i++)
+				cout << components[i] << endl;
+
+			return true;
+		}
+		else
+		{
+			string new_name = scanner.next();
+			stringstream ss;
+
+			ss << new_name << " " << OptFrameList::listToString(components);
+
+			return OptFrameModule<R, ADS, M>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
+		}
+
 	}
 
 };
 
-#endif /* CREATE_NUMERIC_LIST_MODULE_HPP_ */
+#endif /* OPTFRAME_COMPONENT_LIST_MODULE_HPP_ */

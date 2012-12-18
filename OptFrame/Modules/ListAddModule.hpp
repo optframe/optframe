@@ -25,6 +25,8 @@
 
 #include "../OptFrameModule.hpp"
 
+#include "ListSilentDefineModule.hpp"
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class ListAddModule: public OptFrameModule<R, ADS, M>
 {
@@ -36,12 +38,12 @@ public:
 
 	string id()
 	{
-		return "list_add";
+		return "list.add";
 	}
 
 	string usage()
 	{
-		return "list_add list index new_list_name value";
+		return "list.add list index new_list_name value";
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
@@ -112,7 +114,7 @@ public:
 
 		//TODO: acessar dicionario de listas diretamente!! Bem mais eficiente!
 
-		return OptFrameModule<R, ADS, M>::run_module("silent_define_list", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
+		return OptFrameModule<R, ADS, M>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 	}
 
 };

@@ -18,48 +18,69 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef CREATE_NUMERIC_LIST_MODULE_HPP_
-#define CREATE_NUMERIC_LIST_MODULE_HPP_
+#ifndef EXEC_CONSTRUCTIVE_MODULE_HPP_
+#define EXEC_CONSTRUCTIVE_MODULE_HPP_
 
 #include "../OptFrameModule.hpp"
+#include "../Constructive.h"
+
+#include "SystemSilentDefineModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class CreateNumericListModule: public OptFrameModule<R, ADS, M>
+class ComponentExecConstructiveModule: public OptFrameModule<R, ADS, M>
 {
 public:
 
-	virtual ~CreateNumericListModule()
+	virtual ~ComponentExecConstructiveModule()
 	{
 	}
 
 	string id()
 	{
-		return "create_numeric_list";
+		return "component.exec_constructive";
 	}
+
 	string usage()
 	{
-		return "create_numeric_list begin end list_name";
+		return "component.exec_constructive OptFrame:Constructive [output_solution_name]";
 	}
+
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
+		//cout << "exec_constructive: " << input << endl;
 		Scanner scanner(input);
 
-		int begin    = scanner.nextInt();
-		int end      = scanner.nextInt();
-		string lname = scanner.next();
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
 
-		stringstream ss;
+		Constructive<R, ADS>* cons;
+		factory.assign(cons, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		ss << lname << " [";
-		for(int i=begin; i<end; i++)
-			ss << i << ",";
-		if((end-begin)>=0)
-			ss << end;
-		ss << " ]";
+		Solution<R, ADS>& sFinal = cons->generateSolution();
 
-		return OptFrameModule<R, ADS, M>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
+
+		string s_new_id = "";
+
+		int new_id = factory.addComponent(sFinal);
+
+		stringstream str;
+		str << Solution<R, ADS>::idComponent() << " " << new_id;
+		s_new_id = str.str();
+
+		//cout << "'" << s_new_id << "' added." << endl;
+
+		if (scanner.hasNext())
+		{
+			string new_name = scanner.next();
+			return OptFrameModule<R, ADS, M>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, new_name + " " + s_new_id);
+		}
+
+		return true;
 	}
 
 };
 
-#endif /* CREATE_NUMERIC_LIST_MODULE_HPP_ */
+#endif /* EXEC_CONSTRUCTIVE_MODULE_HPP_ */

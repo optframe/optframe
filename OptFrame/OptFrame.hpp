@@ -148,60 +148,67 @@
 
 // ------------------------------------------------
 
-#include "Modules/BuildModule.hpp"
-#include "Modules/CallModule.hpp"
-#include "Modules/CheckModule.hpp"
-#include "Modules/CreateListOfComponentsModule.hpp"
-#include "Modules/CreateModule.hpp"
+// to become functions or runtime modules...
+
 #include "Modules/CreateNumericListModule.hpp"
-#include "Modules/CreateRawModule.hpp"
-#include "Modules/DefineModule.hpp"
-#include "Modules/DictionaryModule.hpp"
-#include "Modules/DropAllModule.hpp"
-#include "Modules/EchoModule.hpp"
-#include "Modules/EchoToFileModule.hpp"
 #include "Modules/EmpiricalModule.hpp"
-#include "Modules/ErrorModule.hpp"
-#include "Modules/EvaluateModule.hpp"
-#include "Modules/ExecModule.hpp"
-#include "Modules/ExecConstructiveModule.hpp"
-#include "Modules/ExportModule.hpp"
-#include "Modules/ExportLogModule.hpp"
-#include "Modules/HelpModule.hpp"
-#include "Modules/ListBuilderOfComponentModule.hpp"
-#include "Modules/ListBuildersModule.hpp"
-#include "Modules/ListComponentsModule.hpp"
-#include "Modules/ListFromFileModule.hpp"
-#include "Modules/ListFromPopulationModule.hpp"
-#include "Modules/PauseModule.hpp"
-#include "Modules/ProblemModule.hpp"
-#include "Modules/RandGenModule.hpp"
-#include "Modules/RandomNumberModule.hpp"
-#include "Modules/RandomNumberIntervalModule.hpp"
-#include "Modules/ReadModule.hpp"
-#include "Modules/SilentDefineModule.hpp"
-#include "Modules/SilentDefineListModule.hpp"
 #include "Modules/TestModule.hpp"
 #include "Modules/TestLocalSearchModule.hpp"
-#include "Modules/ToStringModule.hpp"
-#include "Modules/UndefineModule.hpp"
-#include "Modules/UnsafeDefineModule.hpp"
-#include "Modules/UsageModule.hpp"
-#include "Modules/InitServersModule.hpp"
 
-// system
-#include "Modules/SystemPreprocessModule.hpp"
-#include "Modules/SystemRunModule.hpp"
+// component
 
-// parallel
-#ifdef OPTFRAME_PARALLEL
-#include "Modules/RunParallelModule.hpp"
-#endif
+#include "Modules/ComponentBuilderOfComponent.hpp"
+#include "Modules/ComponentBuildModule.hpp"
+#include "Modules/ComponentCheckModule.hpp"
+#include "Modules/ComponentCreateListModule.hpp"
+#include "Modules/ComponentDropAllModule.hpp"
+#include "Modules/ComponentEvaluateModule.hpp"
+#include "Modules/ComponentExecConstructiveModule.hpp"
+#include "Modules/ComponentExecModule.hpp"
+#include "Modules/ComponentExportLogModule.hpp"
+#include "Modules/ComponentExportModule.hpp"
+#include "Modules/ComponentListBuildersModule.hpp"
+#include "Modules/ComponentListFromPopulationModule.hpp"
+#include "Modules/ComponentListModule.hpp"
+#include "Modules/ComponentToStringModule.hpp"
 
-//list operation
+#include "Modules/FileEchoModule.hpp"
+#include "Modules/FileToListModule.hpp"
+
 #include "Modules/ListAddModule.hpp"
 #include "Modules/ListRemoveModule.hpp"
+#include "Modules/ListSilentDefineModule.hpp"
 #include "Modules/ListSortModule.hpp"
+
+#include "Modules/ModuleCreateModule.hpp"
+#include "Modules/ModuleCreateRawModule.hpp"
+
+#include "Modules/ParallelInitServersModule.hpp"
+
+#include "Modules/Plot2AxisModule.hpp"
+#include "Modules/PlotViewModule.hpp"
+
+#include "Modules/ProblemModule.hpp"
+
+#include "Modules/RandGenIntervalModule.hpp"
+#include "Modules/RandGenNumberModule.hpp"
+#include "Modules/RandGenSetSeedModule.hpp"
+
+#include "Modules/SystemCallModule.hpp"
+#include "Modules/SystemDefineModule.hpp"
+#include "Modules/SystemDictionaryModule.hpp"
+#include "Modules/SystemEchoModule.hpp"
+#include "Modules/SystemErrorModule.hpp"
+#include "Modules/SystemHelpModule.hpp"
+#include "Modules/SystemPauseModule.hpp"
+#include "Modules/SystemPreprocessModule.hpp"
+#include "Modules/SystemReadModule.hpp"
+#include "Modules/SystemRunModule.hpp"
+#include "Modules/SystemRunParallelModule.hpp"
+#include "Modules/SystemSilentDefineModule.hpp"
+#include "Modules/SystemUndefineModule.hpp"
+#include "Modules/SystemUnsafeDefineModule.hpp"
+#include "Modules/SystemUsageModule.hpp"
 
 //structural
 #include "Modules/IfElseModule.hpp"
@@ -210,16 +217,11 @@
 #include "Modules/WhileModule.hpp"
 #include "Modules/TryModule.hpp"
 
-// plot
-#include "Modules/Plot2AxisModule.hpp"
-#include "Modules/PlotViewModule.hpp"
-
 // ==================================
 //            Serializer
 // ==================================
 
 //#include "Serializer/Serializer.hpp"
-
 
 // ==================================
 
@@ -288,68 +290,76 @@ public:
 
 	void loadCallModule()
 	{
-		cout << "warning: call module loaded!" << endl;
+		cout << "warning: system.call module loaded!" << endl;
 
-		loadModule(new CallModule<R, ADS, M> );
+		loadModule(new SystemCallModule<R, ADS, M> );
 	}
 
 	void loadDefaultModules()
 	{
 		unloadModules();
-		loadModule(new BuildModule<R, ADS, M> );
-		loadModule(new CheckModule<R, ADS, M> );
-		loadModule(new CreateListOfComponentsModule<R, ADS, M> );
-		loadModule(new CreateModule<R, ADS, M> );
+
+		// to become functions or runtime modules...
 		loadModule(new CreateNumericListModule<R, ADS, M> );
-		loadModule(new CreateRawModule<R, ADS, M> );
-		loadModule(new DefineModule<R, ADS, M> );
-		loadModule(new DictionaryModule<R, ADS, M> );
-		loadModule(new DropAllModule<R, ADS, M> );
-		loadModule(new EchoModule<R, ADS, M> );
-		loadModule(new EchoToFileModule<R, ADS, M> );
 		loadModule(new EmpiricalModule<R, ADS, M> );
-		loadModule(new EvaluateModule<R, ADS, M> );
-		loadModule(new ExecModule<R, ADS, M> );
-		loadModule(new ExecConstructiveModule<R, ADS, M> );
-		loadModule(new ExportModule<R, ADS, M> );
-		loadModule(new ExportLogModule<R, ADS, M> );
-		loadModule(new ErrorModule<R, ADS, M> );
-		loadModule(new HelpModule<R, ADS, M> );
-		loadModule(new ListBuilderOfComponentModule<R, ADS, M> );
-		loadModule(new ListBuildersModule<R, ADS, M> );
-		loadModule(new ListComponentsModule<R, ADS, M> );
-		loadModule(new ListFromFileModule<R, ADS, M> );
-		loadModule(new ListFromPopulationModule<R, ADS, M> );
-		loadModule(new PauseModule<R, ADS, M> );
-		loadModule(new RandGenModule<R, ADS, M> );
-		loadModule(new RandomNumberModule<R, ADS, M> );
-		loadModule(new RandomNumberIntervalModule<R, ADS, M> );
-		loadModule(new ReadModule<R, ADS, M> );
-		loadModule(new SilentDefineModule<R, ADS, M> );
-		loadModule(new SilentDefineListModule<R, ADS, M> );
 		loadModule(new TestModule<R, ADS, M> );
 		loadModule(new TestLocalSearchModule<R, ADS, M> );
-		loadModule(new ToStringModule<R, ADS, M> );
-		loadModule(new UndefineModule<R, ADS, M> );
-		loadModule(new UnsafeDefineModule<R, ADS, M> );
-		loadModule(new UsageModule<R, ADS, M> );
-#ifdef MaPI
-		loadModule(new InitServersModule<R, ADS, M> );
-#endif
 
-		// system
-		loadModule(new SystemPreprocessModule<R, ADS, M> );
-		loadModule(new SystemRunModule<R, ADS, M> );
+		// components
+		loadModule(new ComponentBuilderOfComponentModule<R, ADS, M> );
+		loadModule(new ComponentBuildModule<R, ADS, M> );
+		loadModule(new ComponentCheckModule<R, ADS, M> );
+		loadModule(new ComponentCreateListModule<R, ADS, M> );
+		loadModule(new ComponentDropAllModule<R, ADS, M> );
+		loadModule(new ComponentEvaluateModule<R, ADS, M> );
+		loadModule(new ComponentExecConstructiveModule<R, ADS, M> );
+		loadModule(new ComponentExecModule<R, ADS, M> );
+		loadModule(new ComponentExportLogModule<R, ADS, M> );
+		loadModule(new ComponentExportModule<R, ADS, M> );
+		loadModule(new ComponentListBuildersModule<R, ADS, M> );
+		loadModule(new ComponentListFromPopulationModule<R, ADS, M> );
+		loadModule(new ComponentListModule<R, ADS, M> );
+		loadModule(new ComponentToStringModule<R, ADS, M> );
 
-		// parallel
-		#ifdef OPTFRAME_PARALLEL
-		loadModule(new RunParallelModule<R, ADS, M> );
-		#endif
+		loadModule(new FileEchoModule<R, ADS, M> );
+		loadModule(new FileToListModule<R, ADS, M> );
 
-		//list operation
 		loadModule(new ListAddModule<R, ADS, M> );
 		loadModule(new ListRemoveModule<R, ADS, M> );
+		loadModule(new ListSilentDefineModule<R, ADS, M> );
 		loadModule(new ListSortModule<R, ADS, M> );
+
+		loadModule(new ModuleCreateModule<R, ADS, M> );
+		loadModule(new ModuleCreateRawModule<R, ADS, M> );
+
+		// deprecated
+		#ifdef MaPI
+				loadModule(new InitServersModule<R, ADS, M> );
+		#endif
+
+		loadModule(new Plot2AxisModule<R, ADS, M> );
+		loadModule(new PlotViewModule<R, ADS, M> );
+
+		// cannot load abstract module
+		//loadModule(new ProblemModule<R, ADS, M> );
+
+		loadModule(new RandGenIntervalModule<R, ADS, M> );
+		loadModule(new RandGenNumberModule<R, ADS, M> );
+		loadModule(new RandGenSetSeedModule<R, ADS, M> );
+
+		loadModule(new SystemDefineModule<R, ADS, M> );
+		loadModule(new SystemDictionaryModule<R, ADS, M> );
+		loadModule(new SystemEchoModule<R, ADS, M> );
+		loadModule(new SystemErrorModule<R, ADS, M> );
+		loadModule(new SystemHelpModule<R, ADS, M> );
+		loadModule(new SystemPauseModule<R, ADS, M> );
+		loadModule(new SystemPreprocessModule<R, ADS, M> );
+		loadModule(new SystemReadModule<R, ADS, M> );
+		loadModule(new SystemRunModule<R, ADS, M> );
+		loadModule(new SystemSilentDefineModule<R, ADS, M> );
+		loadModule(new SystemUndefineModule<R, ADS, M> );
+		loadModule(new SystemUnsafeDefineModule<R, ADS, M> );
+		loadModule(new SystemUsageModule<R, ADS, M> );
 
 		//structural
 		loadModule(new ForModule<R, ADS, M> );
@@ -357,10 +367,6 @@ public:
 		loadModule(new IfElseModule<R, ADS, M> );
 		loadModule(new WhileModule<R, ADS, M> );
 		loadModule(new TryModule<R, ADS, M> );
-
-		// plot
-		loadModule(new Plot2AxisModule<R, ADS, M> );
-		loadModule(new PlotViewModule<R, ADS, M> );
 
 		// ----------------------------------------------
 

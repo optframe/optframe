@@ -18,48 +18,53 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef CREATE_NUMERIC_LIST_MODULE_HPP_
-#define CREATE_NUMERIC_LIST_MODULE_HPP_
+#ifndef RANDGENMODULE_HPP_
+#define RANDGENMODULE_HPP_
 
 #include "../OptFrameModule.hpp"
+#include "../RandGen.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class CreateNumericListModule: public OptFrameModule<R, ADS, M>
+class RandGenSetSeedModule: public OptFrameModule<R, ADS, M>
 {
 public:
 
-	virtual ~CreateNumericListModule()
+	virtual ~RandGenSetSeedModule()
 	{
 	}
 
 	string id()
 	{
-		return "create_numeric_list";
+		return "randgen.set_seed";
 	}
+
 	string usage()
 	{
-		return "create_numeric_list begin end list_name";
+		return "randgen.set_seed seed\n Where: 'seed' is a positive integer value for the system random number generator.";
 	}
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+
+	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
-		int begin    = scanner.nextInt();
-		int end      = scanner.nextInt();
-		string lname = scanner.next();
+		if (!scanner.hasNext())
+		{
+			cout << "missing 'seed' positive integer value!" << endl;
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
 
-		stringstream ss;
+		unsigned long seed = scanner.nextInt();
 
-		ss << lname << " [";
-		for(int i=begin; i<end; i++)
-			ss << i << ",";
-		if((end-begin)>=0)
-			ss << end;
-		ss << " ]";
+		cout << "randgen.set_seed module: setting system random number generator seed to: " << seed << endl;
 
-		return OptFrameModule<R, ADS, M>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
+		RandGen& rg = factory.getRandGen();
+		rg.setSeed(seed);
+		rg.initialize();
+
+		return true;
 	}
 
 };
 
-#endif /* CREATE_NUMERIC_LIST_MODULE_HPP_ */
+#endif /* RANDGENMODULE_HPP_ */

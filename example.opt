@@ -2,7 +2,7 @@
 % OptFrame example file
 %=======================
 
-read definitions.opt     % load OptFrame system definitions
+system.read definitions.opt     % load OptFrame system definitions
 
 silent_define_list lista1 [3,5,4,1,2]
 
@@ -56,14 +56,14 @@ try {
   echo No run_parallel module loaded. Continuing...
 }
 
-%randgen system_seed time()
-randgen system_seed 0
+%randgen.set_seed time()
+randgen.set_seed 0
 
 
-dictionary %shows an empty dictionary
+system.dictionary %shows an empty dictionary
 define my_bestimprovement OptFrame:LocalSearch:BI Evaluator 0 NSSeq 0 %define 'my_bestimprovement' as 'BI ev 0 ns 0'
 define random Constructive 0 %define 'random' as 'OptFrame:constructive 0'
-dictionary %shows the updated dictionary
+system.dictionary %shows the updated dictionary
 
 testls 5 12 8400 8400 Evaluator 0 random my_bestimprovement out.txt sStar
 

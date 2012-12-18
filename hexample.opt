@@ -1,5 +1,5 @@
 
-read definitions.opt
+system.read definitions.opt
 
 create_numeric_list 1 50 testlist
 
@@ -24,9 +24,9 @@ echo NEXT: element( 1 next( word saida ) )
 echo WORDS 2: element( 2 words( saida ) )
 
 
-echo
+system.echo
 echo =================================================
-echo
+system.echo
 
 define numero times(plus(divide(5 2) 10) minus(4 0))
 
@@ -47,15 +47,15 @@ if compare( numero == numero2 ){
 echo Entre com uma frase:
 echo input()
 
-randgen system_seed time()
-echo
+randgen.set_seed time()
+system.echo
 
 build OptFrame:ComponentBuilder:LocalSearch:BI Evaluator 0 NSEnum 0 meu_bi
 
 exec_constructive Constructive 0 solucao_inicial
 print solucao_inicial
 evaluate Evaluator 0 solucao_inicial
-echo
+system.echo
 
 build OptFrame:ComponentBuilder:CloneConstructive solucao_inicial c_sol_inicial
 
@@ -65,7 +65,7 @@ print sol2
 evaluate Evaluator 0 sol2
 undefine constr2
 undefine sol2
-echo
+system.echo
 
 
 build OptFrame:ComponentBuilder:SingleObjSearch:SimpleLocalSearch Evaluator 0 c_sol_inicial meu_bi busca_bi
@@ -93,10 +93,17 @@ echo =======================
 echo =======================
 echo Listas disponiveis
 echo =======================
-list_components OptFrame:[] lcomponentes
+component.list OptFrame:[] lcomponentes
 
 echo lcomponentes text(lcomponentes)
+
+system.pause
+system.pause
+
 create_numeric_list 1 length( lcomponentes ) li_lcomponentes
+
+system.pause
+system.pause
 
 for_each $k li_lcomponentes {
   echo element( $k lcomponentes )

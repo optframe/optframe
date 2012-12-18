@@ -18,36 +18,35 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_LIST_REMOVE_MODULE_HPP_
-#define OPTFRAME_LIST_REMOVE_MODULE_HPP_
-
-#include<string>
+#ifndef EVALUATEMODULE_HPP_
+#define EVALUATEMODULE_HPP_
 
 #include "../OptFrameModule.hpp"
 
-#include "ListSilentDefineModule.hpp"
+#include "SystemSilentDefineModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ListRemoveModule: public OptFrameModule<R, ADS, M>
+class ComponentEvaluateModule: public OptFrameModule<R, ADS, M>
 {
 public:
 
-	virtual ~ListRemoveModule()
+	virtual ~ComponentEvaluateModule()
 	{
 	}
 
 	string id()
 	{
-		return "list.remove";
+		return "component.evaluate";
 	}
-
 	string usage()
 	{
-		return "list.remove list index new_list_name";
+		string u = "component.evaluate OptFrame:Evaluator id OptFrame:Solution id [store_value]";
+		return u;
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
+		//cout << "evaluate: " << input << endl;
 		Scanner scanner(input);
 
 		if (!scanner.hasNext())
@@ -56,55 +55,42 @@ public:
 			return false;
 		}
 
-		vector<string>  list;
-		vector<string>* p_list = OptFrameList::readList(ldictionary, scanner);
-		if(p_list)
+		Evaluator<R, ADS, M>* eval = factory.read_ev(scanner);
+
+		string sol = scanner.next();
+
+		if (sol != Solution<R,ADS>::idComponent())
 		{
-			list = vector<string>(*p_list);
-			delete p_list;
+			cout << "Second parameter must be a 'loadsol'!" << endl;
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+
+		string id = scanner.next();
+
+		Scanner s2(sol + " " + id);
+		Solution<R, ADS>* s = NULL;
+		factory.readComponent(s, s2);
+
+		Evaluation<M>* e = &eval->evaluate(*s);
+
+		if(scanner.hasNext())
+		{
+			string ename = scanner.next();
+			stringstream ss;
+			ss << ename << " " << e->evaluation();
+			delete e;
+			return OptFrameModule<R, ADS, M>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 		}
 		else
-			return false;
-
-		if (!scanner.hasNext())
 		{
-			cout << "Usage: " << usage() << endl;
-			return false;
+			e->print();
+			delete e;
+			return true;
 		}
 
-		int index = scanner.nextInt();
-		index--; // index is [1..size()], but in c++ is [0..size()-1]
-
-		if (!scanner.hasNext())
-		{
-			cout << "Usage: " << usage() << endl;
-			return false;
-		}
-
-		string new_name = Scanner::trim(scanner.next());
-
-		if((new_name != "") && (new_name.at(0)=='['))
-		{
-			cout << "list_remove module: invalid list new name '" << new_name << "'" << endl;
-			return false;
-		}
-
-		if( (index < 0) || (index >= ((int)list.size())) )
-		{
-			cout << "list_remove module: invalid index '" << index << "'!" << endl;
-			return false;
-		}
-
-		list.erase(list.begin()+index);
-
-		stringstream ss;
-		ss << new_name << " " << OptFrameList::listToString(list);
-
-		//TODO: acessar dicionario de listas diretamente!! Bem mais eficiente!
-
-		return OptFrameModule<R, ADS, M>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 	}
 
 };
 
-#endif /* OPTFRAME_LIST_REMOVE_MODULE_HPP_ */
+#endif /* EVALUATEMODULE_HPP_ */

@@ -27,6 +27,7 @@
 
 #include "../OptFrameModule.hpp"
 
+#include "ListSilentDefineModule.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class ListSortModule: public OptFrameModule<R, ADS, M>
@@ -39,12 +40,12 @@ public:
 
 	string id()
 	{
-		return "list_sort";
+		return "list.sort";
 	}
 
 	string usage()
 	{
-		return "list_sort list new_name [index]";
+		return "list.sort list new_name [index]";
 	}
 
 	string doubleToString(double d)
@@ -213,7 +214,7 @@ public:
 
 		//TODO: acessar dicionario de listas diretamente!! Bem mais eficiente!
 
-		return OptFrameModule<R, ADS, M>::run_module("silent_define_list", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
+		return OptFrameModule<R, ADS, M>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 	}
 
 };
