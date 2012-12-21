@@ -137,10 +137,6 @@
 
 // arithmetic
 #include "Functions/MathFunction.hpp"
-#include "Functions/PlusFunction.hpp"
-#include "Functions/MinusFunction.hpp"
-#include "Functions/TimesFunction.hpp"
-#include "Functions/DivideFunction.hpp"
 
 // string
 #include "Functions/ConcatFunction.hpp"
@@ -403,10 +399,6 @@ public:
 
 		//arithmetic
 		loadFunction(new MathFunction);
-		loadFunction(new PlusFunction);
-		loadFunction(new MinusFunction);
-		loadFunction(new TimesFunction);
-		loadFunction(new DivideFunction);
 
 		// string
 		loadFunction(new ConcatFunction);

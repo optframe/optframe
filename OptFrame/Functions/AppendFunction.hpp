@@ -53,7 +53,7 @@ public:
 		return "append( list1 list2 ) : return append list1 with list2";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
@@ -93,9 +93,7 @@ public:
 
 		string list3 = ss.str();
 
-		scanner.next(); // drop ')'
-
-		return new pair<string, string>(list3, scanner.rest());
+		return new string(list3);
 	}
 };
 

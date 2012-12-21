@@ -61,7 +61,7 @@ public:
 			return "false";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
@@ -69,14 +69,12 @@ public:
 		string signal = scanner.next();
 		string sb     = scanner.next();
 
-		scanner.next(); // drop ')'
-
 		if((signal == "==") || (signal == "!=")) // compare as string
 		{
 			if(signal == "==")
-				return new pair<string, string>(formatBool(sa == sb), scanner.rest());
+				return new string(formatBool(sa == sb));
 			if(signal == "!=")
-				return new pair<string, string>(formatBool(sa != sb), scanner.rest());
+				return new string(formatBool(sa != sb));
 		}
 
 		if((signal == ">") || (signal == ">=") || (signal == "<") || (signal == "<=")) // compare as number
@@ -96,13 +94,13 @@ public:
 			}
 
 			if(signal == ">")
-				return new pair<string, string>(formatBool(a>b), scanner.rest());
+				return new string(formatBool(a>b));
 			if(signal == "<")
-				return new pair<string, string>(formatBool(a<b), scanner.rest());
+				return new string(formatBool(a<b));
 			if(signal == ">=")
-				return new pair<string, string>(formatBool(a>=b), scanner.rest());
+				return new string(formatBool(a>=b));
 			if(signal == "<=")
-				return new pair<string, string>(formatBool(a<=b), scanner.rest());
+				return new string(formatBool(a<=b));
 		}
 
 		cout << "compare function: no such comparison signal '" << signal << "'" << endl;

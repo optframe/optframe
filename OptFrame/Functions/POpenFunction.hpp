@@ -53,7 +53,7 @@ public:
 		return "popen( \"command\" ) : return output";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
+	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
 	{
 		//cout << "popen function  POPEN: '" << Scanner::trim(body) << "'" << endl;
 		Scanner scanner(Scanner::trim(body));
@@ -85,7 +85,7 @@ public:
 
 		pclose(pPipe);
 
-		return new pair<string, string>(output, scanner.rest());
+		return new string(output);
 	}
 };
 

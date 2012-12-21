@@ -53,15 +53,15 @@ public:
 		return "input() : return user keyboard input";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
+	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(&cin);
 
 		string input = Scanner::trim(scanner.nextLine());
 
 		Scanner scan(body);
-		scan.next(); // drop ')'
-		return new pair<string, string>(input, scan.rest());
+
+		return new string(input);
 	}
 };
 

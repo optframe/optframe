@@ -53,7 +53,7 @@ public:
 		return "text( list ) : return list as text";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
@@ -67,9 +67,7 @@ public:
 		else
 			return NULL;
 
-		scanner.next(); // drop ')'
-
-		return new pair<string, string>(OptFrameList::listToString(list), scanner.rest());
+		return new string(OptFrameList::listToString(list));
 	}
 };
 

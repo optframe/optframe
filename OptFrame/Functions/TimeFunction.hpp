@@ -53,7 +53,7 @@ public:
 		return "time( ) : return current system time";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
+	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(body);
 
@@ -63,9 +63,7 @@ public:
 		ss << r;
 		string result = ss.str();
 
-		scanner.next(); // drop ')'
-
-		return new pair<string, string>(result, scanner.rest());
+		return new string(result);
 	}
 };
 

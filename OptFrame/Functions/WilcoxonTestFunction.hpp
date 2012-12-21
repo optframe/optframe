@@ -61,7 +61,7 @@ public:
 		return ss.str();
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
@@ -200,9 +200,7 @@ public:
 		else
 			pvalue = Scanner::parseDouble(spvalue);
 
-		scanner.next(); // drop ')'
-
-		return new pair<string, string>(formatNumber(pvalue), scanner.rest());
+		return new string(formatNumber(pvalue));
 	}
 };
 

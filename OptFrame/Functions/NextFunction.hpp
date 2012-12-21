@@ -60,7 +60,7 @@ public:
 		return ss.str();
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
 		//cout << "next function run: '" << body << "'" << endl;
 
@@ -112,7 +112,7 @@ public:
 			j++;
 		}
 
-		j++;// drop ')'
+		///j++;// drop ')'
 
 		stringstream ssrest;
 		for(unsigned i=j; i<body.length(); i++)
@@ -143,7 +143,7 @@ public:
 		stringstream ssr;
 		ssr << "[ " << next << " , " << rest << " ]";
 
-		return new pair<string, string>(ssr.str(), ssrest.str());
+		return new string(ssr.str());
 	}
 };
 

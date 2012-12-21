@@ -53,7 +53,7 @@ public:
 		return "length(list) : return list size";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
@@ -74,9 +74,7 @@ public:
 
 		string length = ss.str();
 
-		scanner.next(); // drop ')'
-
-		return new pair<string, string>(length, scanner.rest());
+		return new string(length);
 	}
 };
 

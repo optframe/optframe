@@ -42,17 +42,67 @@ class OptFrameFunction
 {
 public:
 
-	static pair<string, string>* run_function(string func, vector<OptFrameFunction*>& allFunctions, map< string, string >& dictionary, map< string,vector<string> >& ldictionary, string input)
+	static pair<string, string>* run_function(string func, vector<OptFrameFunction*>& allFunctions, map< string, string >& dictionary, map< string,vector<string> >& ldictionary, string raw_input)
 	{
+		string input = Scanner::trim(raw_input);
+
+		//printf("run_function: '%s' with: '%s'\n", func.c_str(), input.c_str());
+
 		for(unsigned int i=0;i<allFunctions.size();i++)
 			if(func==allFunctions[i]->id())
 			{
+				//cout << "found function: '" << func << "'" << endl;
 				string* iprep = allFunctions[i]->preprocess(allFunctions, dictionary, ldictionary, input);
 				if(!iprep)
 					return NULL;
-				pair<string, string>* p = allFunctions[i]->run(allFunctions, dictionary, ldictionary, *iprep);
+
+				//printf("function_after_prep (%s): '%s'\n", func.c_str(), iprep->c_str());
+
+				string body = "";
+				int index = -1;
+				bool inString = false;
+				for(int j=0; j< ((int)iprep->length()); j++)
+				{
+					if(!inString && iprep->at(j) == '"') // start string
+					{
+						inString = true;
+						body += '"';
+					}
+					else if(inString && iprep->at(j) == '"') // finish string
+					{
+						inString = false;
+						body += '"';
+					}
+					else if(inString || (!inString && iprep->at(j)!=')')) // usual character
+						body += iprep->at(j);
+					else if(iprep->at(j)==')') // out of string and close function
+					{
+						index = j;
+						break;
+					}
+				}
+
+				//printf("body (%s): '%s'\n", func.c_str(), body.c_str());
+
+				string rest = "";
+				if((index != -1) && (index < ((int)iprep->length())-1))
+					for(int j=index+1; j< ((int)iprep->length()); j++)
+						rest += iprep->at(j);
+
+				//printf("rest (%s): '%s'\n", func.c_str(), rest.c_str());
+
+				string* r = allFunctions[i]->run(allFunctions, dictionary, ldictionary, *iprep);
+
 				delete iprep;
-				return p;
+
+				if(!r)
+					return NULL;
+				else
+				{
+					string r1 = *r;
+					delete r;
+					return new pair<string, string>(r1, rest);
+				}
 			}
 
 		cout << "Function '" << func << "' not found." << endl;
@@ -75,7 +125,7 @@ public:
 	virtual string id() = 0;
 	virtual string usage() = 0;
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string, string >& dictionary, map< string,vector<string> >& ldictionary, string body) = 0;
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >& dictionary, map< string,vector<string> >& ldictionary, string body) = 0;
 
 	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map< string, string >& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
@@ -151,8 +201,8 @@ public:
 				}
 				else
 				{
-					input5.append(ldiscarded);
-					input5.append(last);
+					cout << "preprocessing error in function '" << last << "'" << endl;
+					return NULL; // error in valid function!
 				}
 			}
 			else

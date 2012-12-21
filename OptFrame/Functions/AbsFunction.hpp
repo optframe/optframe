@@ -56,7 +56,7 @@ public:
 		return ss.str();
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >&, string body)
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(body);
 
@@ -65,9 +65,7 @@ public:
 
 		double v = scanner.nextDouble();
 
-		scanner.next(); // drop ')'
-
-		return new pair<string, string>(formatNumber( abs(v) ), scanner.rest());
+		return new string(formatNumber(abs(v)));
 	}
 };
 

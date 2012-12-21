@@ -164,9 +164,6 @@ public:
 				{
 					cout << "preprocessing error in function '" << last << "'" << endl;
 					return NULL; // error in valid function!
-
-					input5.append(ldiscarded);
-					input5.append(last);
 				}
 			}
 			else

@@ -66,7 +66,7 @@ public:
 		return b == "true";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
+	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(body);
 
@@ -76,9 +76,7 @@ public:
 		{
 			bool a  = parseBool(scanner.next());
 
-			scanner.next(); // drop ')'
-
-			return new pair<string, string>(formatBool(!a), scanner.rest());
+			return new string(formatBool(!a));
 		}
 		else
 		{
@@ -86,13 +84,11 @@ public:
 			string op = scanner.next();
 			bool b  = parseBool(scanner.next());
 
-			scanner.next(); // drop ')'
-
 			if(op=="and")
-				return new pair<string, string>(formatBool(a && b), scanner.rest());
+				return new string(formatBool(a && b));
 
 			if(op=="or")
-				return new pair<string, string>(formatBool(a || b), scanner.rest());
+				return new string(formatBool(a || b));
 
 			cout << "logic function: no such operation '" << op << "'" << endl;
 

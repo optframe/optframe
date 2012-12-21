@@ -53,7 +53,7 @@ public:
 		return "dic( var ) : return value of variable in dictionary";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>&, map< string, string >& dictionary, map< string,vector<string> >&, string body)
+	virtual string* run(vector<OptFrameFunction*>&, map< string, string >& dictionary, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(body);
 
@@ -62,9 +62,7 @@ public:
 
 		string var = scanner.next();
 
-		scanner.next(); // drop ')'
-
-		return new pair<string, string>(dictionary[var], scanner.rest());
+		return new string(dictionary[var]);
 	}
 };
 

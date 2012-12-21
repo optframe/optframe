@@ -2,10 +2,9 @@
 
 module.create_raw system.rename [ $module_name , $new_name ] {
    module.create_raw $new_name [ $a ] {
-      system.undefine _rename_final;
-      system.preprocess _rename_final $module_name $_all_params_$new_name;
-      system.run $module_name _rename_final;
-      system.undefine _rename_final
+      system.preprocess _${new_name}_text $module_name $_all_params_$new_name;
+      system.run $module_name _${new_name}_text;
+      system.undefine _${new_name}_text;
    }
 }
 

@@ -60,7 +60,7 @@ public:
 		return ss.str();
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
+	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(body);
 
@@ -82,16 +82,16 @@ public:
 			return NULL;
 		}
 
-		scanner.next(); // drop ')'
-
 		if(op == "+")
-			return new pair<string, string>(formatNumber(a+b), scanner.rest());
+			return new string(formatNumber(a+b));
 		if(op == "-")
-			return new pair<string, string>(formatNumber(a-b), scanner.rest());
+			return new string(formatNumber(a-b));
 		if(op == "*")
-			return new pair<string, string>(formatNumber(a*b), scanner.rest());
+			return new string(formatNumber(a*b));
 		if(op == "/")
-			return new pair<string, string>(formatNumber(a/b), scanner.rest());
+			return new string(formatNumber(a/b));
+		if(op == "mod")
+			return new string(formatNumber(((int)a)%((int)b)));
 
 		cout << "math function: no such operation '" << op << "'" << endl;
 

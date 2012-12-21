@@ -49,7 +49,7 @@ public:
 		return "concat( string1 string2 ) : return string1string2";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >&, string body)
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(body);
 
@@ -59,11 +59,9 @@ public:
 		string s1 = scanner.next();
 		string s2 = scanner.next();
 
-		scanner.next(); // drop ')'
-
 		s1.append(s2);
 
-		return new pair<string, string>(s1, scanner.rest());
+		return new string(s1);
 	}
 };
 

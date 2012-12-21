@@ -52,14 +52,14 @@ public:
 		return "element( N list ) : return element at 'N'th position of 'list'";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scan(body);
 
 		if (!scan.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return new pair<string, string>("", scan.rest());
+			return NULL;
 		}
 
 		int n = scan.nextInt();
@@ -67,14 +67,14 @@ public:
 		if (n < 0)
 		{
 			cout << "N must be a positive value!" << endl;
-			return new pair<string, string>("", scan.rest());
+			return NULL;
 		}
 
 		if (n == 0)
 		{
 			cout << "sorry, this is not C language :)" << endl;
 			cout << "0 not included, try a number from 1 to the size of the list" << endl;
-			return new pair<string, string>("", scan.rest());
+			return NULL;
 		}
 
 		n--;
@@ -82,7 +82,7 @@ public:
 		if (!scan.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return new pair<string, string>("", scan.rest());
+			return NULL;
 		}
 
 		vector<string>* plist = OptFrameList::readList(ldictionary, scan);
@@ -98,14 +98,12 @@ public:
 		if (n >= ((int) list.size()))
 		{
 			cout << "N is too big! " << (n + 1) << " > " << list.size() << endl;
-			return new pair<string, string>("", scan.rest());
+			return NULL;
 		}
 
 		string element = list.at(n);
 
-		scan.next(); // drop ')'
-
-		return new pair<string, string>(element, scan.rest());
+		return new string(element);
 	}
 };
 

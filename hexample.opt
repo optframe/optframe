@@ -28,7 +28,7 @@ system.echo
 echo =================================================
 system.echo
 
-define numero times(plus(divide(5 2) 10) minus(4 0))
+define numero math(math(math(5 / 2) + 10) * math(4 - 0))
 
 echo digite:
 

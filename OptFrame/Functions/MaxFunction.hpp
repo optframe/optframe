@@ -53,7 +53,7 @@ public:
 		return "max( list ) : return list maximum";
 	}
 
-	virtual pair<string, string>* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
@@ -68,7 +68,7 @@ public:
 			return NULL;
 
 		if(list.size()==0)
-			return new pair<string, string>("","");
+			return NULL;
 
 		double max = Scanner::parseDouble(list[0]);
 		for(unsigned i=1; i<list.size(); i++)
@@ -83,9 +83,7 @@ public:
 
 		string smax = ss.str();
 
-		scanner.next(); // drop ')'
-
-		return new pair<string, string>(smax, scanner.rest());
+		return new string(smax);
 	}
 };
 
