@@ -3,7 +3,7 @@ system.read definitions.opt
 
 create_numeric_list 1 50 testlist
 
-echo testlist
+echo testlist text(testlist)
 
 echo shapiro_test( testlist )
 
@@ -162,7 +162,7 @@ echo ===========================================
 echo listando builder de OptFrame:ILS:
 echo ===========================================
 
-list_builder_of_component OptFrame:ILS:
+component.builder_of_component OptFrame:ILS:
 
 echo ===========================================
 
