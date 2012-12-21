@@ -48,12 +48,19 @@ public:
 	{
 		Scanner scanner(input);
 
+		if(!scanner.hasNext())
+		{
+			return false;
+		}
+
 		string pattern = scanner.next();
 
 		vector<string> components     = factory.listComponents(pattern);
 		vector<string> componentLists = factory.listComponentLists(pattern);
 
 		components.insert(components.end(), componentLists.begin(), componentLists.end());
+
+		//cout << "component.list module: NUM. COMPONENTS IS " << components.size() << endl;
 
 		if(!scanner.hasNext())
 		{
@@ -65,13 +72,27 @@ public:
 		else
 		{
 			string new_name = scanner.next();
+
+			//cout << "component.list module: NEW_NAME = '" << new_name << "'" << endl;
+
 			stringstream ss;
 
+			//cout << "components.list module: COMPONENTS '" << components << "'" << endl;
+
 			ss << new_name << " " << OptFrameList::listToString(components);
+
+			//cout << "component.list module: CREATING LIST OF COMPONENTS '" << ss.str() << "'" << endl;
 
 			return OptFrameModule<R, ADS, M>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 		}
 
+	}
+
+	// disable preprocess to don't destroy type!
+	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&,  map< string,vector<string> >&, string input)
+	{
+		// disable preprocess!!
+		return new string(input);
 	}
 
 };

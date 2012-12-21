@@ -97,13 +97,7 @@ component.list OptFrame:[] lcomponentes
 
 echo lcomponentes text(lcomponentes)
 
-system.pause
-system.pause
-
 create_numeric_list 1 length( lcomponentes ) li_lcomponentes
-
-system.pause
-system.pause
 
 for_each $k li_lcomponentes {
   echo element( $k lcomponentes )
@@ -153,7 +147,7 @@ for_each $k li_builders {
      undefine tipo
   };
   
-  echo ;
+  system.echo ;
 
   undefine li_nparams;
   undefine bparams;
@@ -162,7 +156,7 @@ for_each $k li_builders {
 echo LISTA DE BUILDERS: builder_names
 echo =======================
 
-echo
+system.echo
 
 echo ===========================================
 echo listando builder de OptFrame:ILS:
