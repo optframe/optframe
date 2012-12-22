@@ -1,6 +1,8 @@
 
 system.read definitions.opt
 
+system.require system.rename
+
 create_numeric_list 1 50 testlist
 
 echo testlist text(testlist)
@@ -24,9 +26,9 @@ echo NEXT: element( 1 next( word saida ) )
 echo WORDS 2: element( 2 words( saida ) )
 
 
-system.echo
+echo
 echo =================================================
-system.echo
+echo
 
 define numero math(math(math(5 / 2) + 10) * math(4 - 0))
 
@@ -48,14 +50,14 @@ echo Entre com uma frase:
 echo input()
 
 randgen.set_seed time()
-system.echo
+echo
 
 build OptFrame:ComponentBuilder:LocalSearch:BI Evaluator 0 NSEnum 0 meu_bi
 
 exec_constructive Constructive 0 solucao_inicial
 print solucao_inicial
 evaluate Evaluator 0 solucao_inicial
-system.echo
+echo
 
 build OptFrame:ComponentBuilder:CloneConstructive solucao_inicial c_sol_inicial
 
@@ -65,7 +67,7 @@ print sol2
 evaluate Evaluator 0 sol2
 undefine constr2
 undefine sol2
-system.echo
+echo
 
 
 build OptFrame:ComponentBuilder:SingleObjSearch:SimpleLocalSearch Evaluator 0 c_sol_inicial meu_bi busca_bi
@@ -156,7 +158,7 @@ for_each $k li_builders {
 echo LISTA DE BUILDERS: builder_names
 echo =======================
 
-system.echo
+echo
 
 echo ===========================================
 echo listando builder de OptFrame:ILS:

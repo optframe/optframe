@@ -72,12 +72,6 @@ public:
 
 		string module = scanner.next();
 
-		if (!scanner.hasNext())
-		{
-			cout << "Usage: " << usage() << endl;
-			return false;
-		}
-
 		string inp = scanner.rest();
 
 		OptFrameModule<R, ADS, M>* m = getModule(all_modules, module);

@@ -169,6 +169,7 @@ public:
 					if(!all_modules[i]->run(all_modules, allFunctions, factory, dictionary, ldictionary, *after_preprocess))
 					{
 						delete after_preprocess;
+						cout << "read module: error in module '" << command << "'" << endl;
 						return false;
 					}
 
@@ -185,7 +186,7 @@ public:
 					break;
 				else
 				{
-					cout << "Warning: command '" << command << "' not found!" << endl;
+					cout << "read module error: command '" << command << "' not found!" << endl;
 					return false;
 				}
 			}

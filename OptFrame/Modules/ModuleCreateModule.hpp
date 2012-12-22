@@ -296,6 +296,14 @@ class ModuleCreateModule: public OptFrameModule<R, ADS, M>
 {
 private:
 
+	bool moduleExists(string moduleName, vector<OptFrameModule<R, ADS, M>*>& allModules)
+	{
+		for(unsigned i=0; i<allModules.size(); i++)
+			if(allModules[i]->id() == moduleName)
+				return true;
+		return false;
+	}
+
 	OptFrameModule<R, ADS, M>* getModule(vector<OptFrameModule<R, ADS, M>*>& modules, string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
@@ -332,6 +340,12 @@ public:
 		}
 
 		string name = scanner.next();
+
+		if(moduleExists(name, modules))
+		{
+			cout << "module.create module: couldn't create module '" << name << "' because it already exists!" << endl;
+			return false;
+		}
 
 		if (!scanner.hasNext())
 		{

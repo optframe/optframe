@@ -96,6 +96,13 @@ public:
 
 	}
 
+	// disable preprocess to don't destroy type!
+	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&,  map< string,vector<string> >&, string input)
+	{
+		// disable preprocess!!
+		return new string(input);
+	}
+
 };
 
 #endif /* LIST_BUILDERS_MODULE_HPP_ */

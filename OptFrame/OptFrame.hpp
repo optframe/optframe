@@ -199,12 +199,14 @@
 #include "Modules/SystemPauseModule.hpp"
 #include "Modules/SystemPreprocessModule.hpp"
 #include "Modules/SystemReadModule.hpp"
+#include "Modules/SystemRequireModule.hpp"
 #include "Modules/SystemRunModule.hpp"
 #include "Modules/SystemRunParallelModule.hpp"
 #include "Modules/SystemSilentDefineModule.hpp"
 #include "Modules/SystemUndefineModule.hpp"
 #include "Modules/SystemUnsafeDefineModule.hpp"
 #include "Modules/SystemUsageModule.hpp"
+#include "Modules/SystemUseModule.hpp"
 
 //structural
 #include "Modules/IfElseModule.hpp"
@@ -351,11 +353,13 @@ public:
 		loadModule(new SystemPauseModule<R, ADS, M> );
 		loadModule(new SystemPreprocessModule<R, ADS, M> );
 		loadModule(new SystemReadModule<R, ADS, M> );
+		loadModule(new SystemRequireModule<R, ADS, M> );
 		loadModule(new SystemRunModule<R, ADS, M> );
 		loadModule(new SystemSilentDefineModule<R, ADS, M> );
 		loadModule(new SystemUndefineModule<R, ADS, M> );
 		loadModule(new SystemUnsafeDefineModule<R, ADS, M> );
 		loadModule(new SystemUsageModule<R, ADS, M> );
+		loadModule(new SystemUseModule<R, ADS, M> );
 
 		//structural
 		loadModule(new ForModule<R, ADS, M> );
