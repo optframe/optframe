@@ -80,7 +80,8 @@ public:
 
 				if(moduleExists(smallName, allModules))
 				{
-					cout << "system.use module warning: couldn't rename '" << allModules[i]->id() << "' because module '" << smallName << "' is already registered!" << endl;
+					// NO WARNING!
+					//cout << "system.use module warning: couldn't rename '" << allModules[i]->id() << "' because module '" << smallName << "' is already registered!" << endl;
 					continue;
 				}
 

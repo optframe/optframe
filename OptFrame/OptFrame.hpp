@@ -179,6 +179,8 @@
 #include "Modules/ModuleCreateModule.hpp"
 #include "Modules/ModuleCreateRawModule.hpp"
 
+#include "Modules/FunctionCreateRawModule.hpp"
+
 #include "Modules/ParallelInitServersModule.hpp"
 
 #include "Modules/Plot2AxisModule.hpp"
@@ -329,6 +331,8 @@ public:
 
 		loadModule(new ModuleCreateModule<R, ADS, M> );
 		loadModule(new ModuleCreateRawModule<R, ADS, M> );
+
+		loadModule(new FunctionCreateRawModule<R, ADS, M> );
 
 		// deprecated
 		#ifdef MaPI

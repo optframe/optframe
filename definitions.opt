@@ -14,6 +14,7 @@ use list
 use module
 use component
 use randgen
+use function
 
 %%% DEPRECATED! GIVE SOME OLD NAMES
 %system.rename system.define        define
@@ -32,6 +33,8 @@ system.rename list.add             list_add
 system.rename list.remove          list_remove
 
 system.rename module.create        create_module
+
+system.rename function.create_raw  create_function
 
 system.rename component.create_list       create_list_of_components
 %system.rename component.evaluate          evaluate

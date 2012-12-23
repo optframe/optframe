@@ -18,36 +18,29 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef CREATE_RAW_MODULE_HPP_
-#define CREATE_RAW_MODULE_HPP_
+#ifndef OPTFRAME_FUNCTION_CREATE_RAW_MODULE_HPP_
+#define OPTFRAME_FUNCTION_CREATE_RAW_MODULE_HPP_
 
 #include<string>
 
 #include "../OptFrameModule.hpp"
+#include "../OptFrameFunction.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class RawModule: public OptFrameModule<R, ADS, M>
+class RawFunction: public OptFrameFunction
 {
 	string name;
 	vector<string> parameters;
-	vector<string> commands;
+	string body;
 
 public:
-	RawModule(string _name, vector<string>& _parameters, vector<string>& _commands)
+	RawFunction(string _name, vector<string>& _parameters, string& _body)
 	{
 		name = _name;
 		parameters = _parameters;
-		commands = _commands;
+		body = _body;
 	}
 
 private:
-	OptFrameModule<R, ADS, M>* getModule(vector<OptFrameModule<R, ADS, M>*>& modules, string module)
-	{
-		for (unsigned int i = 0; i < modules.size(); i++)
-			if (module == modules[i]->id())
-				return modules[i];
-		return NULL;
-	}
 
 	string var_preprocess(string var, string value, string command)
 	{
@@ -76,7 +69,7 @@ private:
 
 		if(((int)command.size()) == (dollar_pos+1)) // just one dollar
 		{
-			cout << "raw module warning: just one buck!" << endl;
+			cout << "raw function warning: just one buck!" << endl;
 			return command;
 		}
 
@@ -191,30 +184,9 @@ private:
 			return new_command;
 	}
 
-	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string command)
-	{
-		Scanner scanner(command);
-		string module = scanner.next();
-		OptFrameModule<R, ADS, M>* m = getModule(all_modules, module);
-
-		if (m == NULL)
-			return false;
-
-		string* rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
-
-		if(!rest)
-			return false;
-
-		bool b = m->run(all_modules, allFunctions, factory, dictionary, ldictionary, *rest);
-
-		delete rest;
-
-		return b;
-	}
-
 public:
 
-	virtual ~RawModule()
+	virtual ~RawFunction()
 	{
 	}
 
@@ -236,13 +208,13 @@ public:
 		return u;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	string* run(vector<OptFrameFunction*>& allFunctions, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		string backup_input = input;
 
 		Scanner scanner(input);
 
-		//cout << "raw_module '" << id() << "' run: '" << input << "'" << endl;
+		//cout << "raw_function '" << id() << "' run: '" << input << "'" << endl;
 
 		vector < string > values;
 		values.push_back(backup_input); // "$_all_params"
@@ -253,35 +225,72 @@ public:
 			if (!scanner.hasNext())
 			{
 				cout << "Usage: " << usage() << endl;
-				return false;
+				return NULL;
 			}
 			else
 				values.push_back(scanner.next());
 
+		//cout << "FUNCTION '" << id() << "' (CREATED) VALUES: '" << values << "'" << endl;
 
+		stringstream input_body; // add spaces before and after '(', ')', '[', ']', '{', '}', ';' and ','
+		for(unsigned i=0; i<body.size(); i++)
+			if( (body.at(i)=='(') || (body.at(i)==')') || (body.at(i)=='[') || (body.at(i)==']') || (body.at(i)==',') )
+				input_body << ' ' << body.at(i) << ' ';
+			else
+				input_body << body.at(i);
 
-		//cout << "MODULE '" << id() << "' (CREATED) VALUES: '" << values << "'" << endl;
+		string command = input_body.str();
+		command.append(" "); // TODO: why we need this to find variable in the end?
 
-		for (unsigned int c = 0; c < commands.size(); c++)
+		//cout << "FUNCTION '" << id() << "' (CREATED) COMMAND: '" << command << "'" << endl;
+
+		for (unsigned int v = 0; v < values.size(); v++)
+			command = var_preprocess(parameters[v], values[v], command);
+
+		//cout << "FUNCTION '" << id() << "' (CREATED) BODY (after var_prep): '" << command << "'" << endl;
+
+		Scanner scanBody(Scanner::trim(command));
+
+		if(!scanBody.hasNext())
+			return new string("");
+
+		string nameOrValue = scanBody.next();
+
+		if(!scanBody.hasNext())
+			return new string(nameOrValue); // it was value!
+
+		string brackets = scanBody.next();
+
+		if((brackets == "(") && OptFrameFunction::functionExists(nameOrValue,allFunctions)) // found a function!
 		{
-			string command = commands[c];
-			command.append(" "); // TODO: why we need this to find variable in the end?
+			pair<string, string>* p = OptFrameFunction::run_function(nameOrValue, allFunctions, dictionary, ldictionary, scanBody.rest());
 
-			//cout << "MODULE '" << id() << "' (CREATED) COMMAND: '" << command << "'" << endl;
-
-			for (unsigned int v = 0; v < values.size(); v++)
-				command = var_preprocess(parameters[v], values[v], command);
-
-			//cout << "MODULE '" << id() << "' (CREATED) COMMAND (after var_prep): '" << command << "'" << endl;
-
-			if (!exec_command(all_modules, allFunctions, factory, dictionary, ldictionary, command))
+			if(p)
 			{
-				cout << "Module (just created) '" << id() << "' error in command: " << command << endl;
-				return false;
+				string value = Scanner::trim(p->first);
+				string rest  = Scanner::trim(p->second);
+
+				delete p;
+
+				if(rest != "")
+					cout << "raw_function (" << name << ") warning: rest is '" << rest << "'" << endl;
+
+				return new string(value);
+			}
+			else
+			{
+				cout << "preprocessing error in function '" << name << "'" << endl;
+				return NULL; // error in valid function!
 			}
 		}
+		else
+		{
+			stringstream ss;
+			ss << nameOrValue << scanBody.getDiscarded() << brackets;
+			ss << scanBody.rest();
 
-		return true;
+			return new string(ss.str());
+		}
 	}
 
 	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&,  map< string,vector<string> >&, string input)
@@ -292,40 +301,32 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ModuleCreateRawModule: public OptFrameModule<R, ADS, M>
+class FunctionCreateRawModule: public OptFrameModule<R, ADS, M>
 {
 private:
 
-	bool moduleExists(string moduleName, vector<OptFrameModule<R, ADS, M>*>& allModules)
+	bool functionExists(string  functionName, vector<OptFrameFunction*>& allFunctions)
 	{
-		for(unsigned i=0; i<allModules.size(); i++)
-			if(allModules[i]->id() == moduleName)
+		for(unsigned i=0; i<allFunctions.size(); i++)
+			if(allFunctions[i]->id() == functionName)
 				return true;
 		return false;
 	}
 
-	OptFrameModule<R, ADS, M>* getModule(vector<OptFrameModule<R, ADS, M>*>& modules, string module)
-	{
-		for (unsigned int i = 0; i < modules.size(); i++)
-			if (module == modules[i]->id())
-				return modules[i];
-		return NULL;
-	}
-
 public:
 
-	virtual ~ModuleCreateRawModule()
+	virtual ~FunctionCreateRawModule()
 	{
 	}
 
 	string id()
 	{
-		return "module.create_raw";
+		return "function.create_raw";
 	}
 
 	string usage()
 	{
-		return "module.create_raw name list_of_$parameters block_of_commands";
+		return "function.create_raw name list_of_$parameters = body_of_function";
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
@@ -341,9 +342,9 @@ public:
 
 		string name = scanner.next();
 
-		if(moduleExists(name, modules))
+		if(functionExists(name, allFunctions))
 		{
-			cout << "module.create_raw module: couldn't create module '" << name << "' because it already exists!" << endl;
+			cout << "function.create_raw module: couldn't create function '" << name << "' because it already exists!" << endl;
 			return false;
 		}
 
@@ -359,7 +360,7 @@ public:
 		{
 			parameters = vector<string>(*plist1);
 			vector<string> system_params;
-			string name_all_params = "$_all_params_"; // + MODULE_NAME
+			string name_all_params = "$_all_params_"; // + FUNCTION_NAME
 			name_all_params.append(name);
 			system_params.push_back(name_all_params);
 			parameters.insert(parameters.begin(),system_params.begin(), system_params.end());
@@ -382,31 +383,20 @@ public:
 			return false;
 		}
 
-		vector < string > commands;
-
-		vector<string>* plist = OptFrameList::readBlock(scanner);
-		if(plist)
+		string eq = scanner.next();
+		if(eq != "=")
 		{
-			commands = vector<string>(*plist);
-			delete plist;
-		}
-		else
-			return false;
-
-		OptFrameModule<R, ADS, M>* m = getModule(modules, name);
-
-		if (m != NULL)
-		{
-			cout << "error: module with name '" << name << "' already exists!" << endl;
+			cout << "function.create_raw error: expected '=' and found '" << eq << endl;
 			return false;
 		}
-		else
-		{
-			modules.push_back(new RawModule<R, ADS, M> (name, parameters, commands));
-			//cout << "raw_module '" << name << "' loaded." << endl;
-			return true;
-		}
 
+		string body = Scanner::trim(scanner.rest());
+
+		allFunctions.push_back(new RawFunction(name, parameters, body));
+
+		//cout << "raw_function '" << name << "' loaded with parameters '" << parameters << "' and body: '" << body << "'" << endl;
+
+		return true;
 	}
 
 	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&,  map< string,vector<string> >&, string input)
@@ -416,4 +406,4 @@ public:
 	}
 };
 
-#endif /* CREATE_RAW_MODULE_HPP_ */
+#endif /* OPTFRAME_FUNCTION_CREATE_RAW_MODULE_HPP_ */

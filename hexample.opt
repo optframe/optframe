@@ -9,11 +9,16 @@ echo testlist text(testlist)
 
 echo shapiro_test( testlist )
 
-if compare( shapiro_test( testlist ) > 0.05 ){
+create_function test_shapiro [ $list , $pvalue ] = compare( shapiro_test( $list ) > $pvalue )
+
+%if compare( shapiro_test( testlist ) > 0.05 ){
+
+if test_shapiro(testlist 0.05) {
   echo NORMAL
 } else {
   echo NAO EH NORMAL
 }
+
 
 silent_define saida popen( "ls *.opt" )
 
