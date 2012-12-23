@@ -20,6 +20,11 @@ use component
 use randgen
 use function
 
+% for functions only
+use operator
+use statistics
+use text
+
 %%% DEPRECATED! GIVE SOME OLD NAMES
 %module.rename system.define        define
 %module.rename system.echo          echo

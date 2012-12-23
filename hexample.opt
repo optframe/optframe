@@ -12,7 +12,7 @@ echo 1 > 2 ? comp( 1 > 2 )
 
 create_numeric_list 1 50 testlist
 
-echo testlist text(testlist)
+echo testlist definition(testlist)
 
 echo shapiro_test( testlist )
 
@@ -42,7 +42,7 @@ echo
 echo =================================================
 echo
 
-define numero math(math(math(5 / 2) + 10) * math(4 - 0))
+define numero compute(compute(compute(5 / 2) + 10) * compute(4 - 0))
 
 echo digite:
 
@@ -52,7 +52,7 @@ if compare( input() >= numero ) {
   echo menor! 
 }
 
-define numero2 math( math( math( 5 / 2 ) + 10 ) * math( 4 - 0 ) )
+define numero2 compute( compute( compute( 5 / 2 ) + 10 ) * compute( 4 - 0 ) )
 
 if compare( numero == numero2 ){
   echo CORRETO!

@@ -23,6 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
+#include "SystemRequireModule.hpp"
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
 class SystemUseModule : public OptFrameModule<R, ADS, M>
 {
@@ -50,12 +52,27 @@ public:
 		return false;
 	}
 
+	bool functionExists(string functionName, vector<OptFrameFunction*>& allFunctions)
+	{
+		for(unsigned i=0; i<allFunctions.size(); i++)
+			if(allFunctions[i]->id() == functionName)
+				return true;
+		return false;
+	}
+
 	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		// check dependency on 'module.rename' module
 		if(!OptFrameModule<R, ADS, M>::run_module("system.require", allModules, allFunctions, factory, dictionary, ldictionary, "module.rename"))
 		{
-			cout << "error: system.use module depends on 'system.rename' module, which is not loaded!" << endl;
+			cout << "error: system.use module depends on 'module.rename' module, which is not loaded!" << endl;
+			return false;
+		}
+
+		// check dependency on 'function.rename' module
+		if(!OptFrameModule<R, ADS, M>::run_module("system.require", allModules, allFunctions, factory, dictionary, ldictionary, "function.rename"))
+		{
+			cout << "error: system.use module depends on 'function.rename' module, which is not loaded!" << endl;
 			return false;
 		}
 
@@ -80,8 +97,8 @@ public:
 
 				if(moduleExists(smallName, allModules))
 				{
-					// NO WARNING!
-					//cout << "system.use module warning: couldn't rename '" << allModules[i]->id() << "' because module '" << smallName << "' is already registered!" << endl;
+					// WARNING!
+					cout << "system.use module warning: couldn't rename '" << allModules[i]->id() << "' because module '" << smallName << "' is already registered!" << endl;
 					continue;
 				}
 
@@ -95,6 +112,34 @@ public:
 				}
 			}
 		}
+
+		for(unsigned i=0; i<allFunctions.size(); i++)
+		{
+			Scanner scanPrefix(allFunctions[i]->id());
+			scanPrefix.useSeparators(".");
+
+			if(scanPrefix.next() == prefix)
+			{
+				string smallName = scanPrefix.next();
+
+				if(functionExists(smallName, allFunctions))
+				{
+					// WARNING!
+					cout << "system.use module warning: couldn't rename '" << allFunctions[i]->id() << "' because function '" << smallName << "' is already registered!" << endl;
+					continue;
+				}
+
+				stringstream ss;
+				ss << allFunctions[i]->id() << " " << smallName;
+
+				if(!OptFrameModule<R, ADS, M>::run_module("function.rename", allModules, allFunctions, factory, dictionary, ldictionary, ss.str()))
+				{
+					cout << "system.use module error: failed to do a function.rename with parameters '" << ss.str() << "'" << endl;
+					return false;
+				}
+			}
+		}
+
 
 		return true;
 	}
