@@ -55,8 +55,8 @@ public:
 
 		string word = scanner.next();
 
-		dictionary.erase(word);
-		ldictionary.erase(word);
+		OptFrameModule<R, ADS, M>::undefineText(word, dictionary);
+		OptFrameModule<R, ADS, M>::undefineList(word, ldictionary);
 
 		return true;
 	}

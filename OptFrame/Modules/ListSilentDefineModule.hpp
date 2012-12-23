@@ -45,6 +45,9 @@ public:
 	{
 		Scanner scanner(rest);
 
+		if(!scanner.hasNext())
+			return false;
+
 		string list_name = scanner.next();
 
 		if(list_name != "")
@@ -59,13 +62,10 @@ public:
 			else
 			{
 				cout << "list.silent_define module: couldn't load list!" << endl;
-				//cout << "rest: '" << rest << "'" << endl;
 				return false;
 			}
 
-
-			ldictionary[list_name] = list;
-			return true;
+			return OptFrameModule<R, ADS, M>::defineList(list_name, list, ldictionary);
 		}
 		else
 		{

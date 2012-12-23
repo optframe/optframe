@@ -45,31 +45,25 @@ public:
 	{
 		Scanner scanner(rest);
 
+		if(!scanner.hasNext())
+			return false;
+
 		string new_name = scanner.next();
 
 		if(new_name != "")
 		{
 			string second_word = scanner.rest();
-
-			Scanner s2(second_word);
-
-			while(s2.hasNext())
+			if(OptFrameModule<R, ADS, M>::defineText(new_name, second_word, dictionary))
 			{
-				string next_word = s2.next();
-				if(new_name==next_word)
-				{
-					cout << "system.define module: recursive definitions are not allowed! (define: '" << new_name << "' as '" << next_word << "')" << endl;
-					return false;
-				}
+				cout << "Word '" << new_name << "' now means: '" << dictionary[new_name] << "'" << endl;
+				return true;
 			}
-
-			dictionary[new_name] = scanner.trim(second_word);
-			cout << "Word '" << new_name << "' now means: '" << dictionary[new_name] << "'" << endl;
-			return true;
+			else
+				return false;
 		}
 		else
 		{
-			cout << "Usage: "<<usage()<<endl;
+			cout << "Usage: " << usage() << endl;
 			return false;
 		}
 	}

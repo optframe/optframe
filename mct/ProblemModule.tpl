@@ -33,7 +33,7 @@ public:
            delete p;    
     }
 
-	bool load(string filename, vector<OptFrameModule<Rep$project $commamproject>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<Rep$project $commamproject>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	bool load(string filename, HeuristicFactory<Rep$project $commamproject>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 	    File* file;
 
@@ -62,7 +62,7 @@ public:
         return true;
     }
     
-    bool unload(vector<OptFrameModule<Rep$project $commamproject>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<Rep$project $commamproject>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+    bool unload(HeuristicFactory<Rep$project $commamproject>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
     {
        if(p)
           delete p;

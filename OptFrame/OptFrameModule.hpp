@@ -69,6 +69,44 @@ public:
 	virtual string id() = 0;
 	virtual string usage() = 0;
 
+	bool defineText(string definition, string value, map<string,string>& dictionary)
+	{
+		// will not need this check after better implementation of dictionary with '$' before definitions
+
+		Scanner scanner(value);
+
+		while(scanner.hasNext())
+		{
+			string next_word = scanner.next();
+			if(definition==next_word)
+			{
+				cout << "defineText: recursive definitions are not allowed! (define: '" << definition << "' as '" << next_word << "')" << endl;
+				return false;
+			}
+		}
+
+		dictionary[definition] = scanner.trim(value);
+
+		return true;
+	}
+
+	bool defineList(string definition, vector<string>& list, map< string,vector<string> >& ldictionary)
+	{
+		ldictionary[definition] = list;
+
+		return true;
+	}
+
+	void undefineText(string definition, map<string,string>& dictionary)
+	{
+		dictionary.erase(definition);
+	}
+
+	void undefineList(string definition, map< string,vector<string> >& ldictionary)
+	{
+		ldictionary.erase(definition);
+	}
+
 	virtual bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input) = 0;
 
 	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
