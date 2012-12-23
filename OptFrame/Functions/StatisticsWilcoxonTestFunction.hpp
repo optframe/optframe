@@ -35,22 +35,22 @@
 
 #include <algorithm>
 
-class WilcoxonTestFunction : public OptFrameFunction
+class StatisticsWilcoxonTestFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~WilcoxonTestFunction()
+	virtual ~StatisticsWilcoxonTestFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "wilcoxon_test";
+		return "statistics.wilcoxon_test";
 	}
 
 	virtual string usage()
 	{
-		return "wilcoxon_test( list1 list2 ) : return p-value\ndependent 2-group Wilcoxon Signed Rank Test  => requires: data sampled in pairs\nnull hypothesis: data come from same distributions (after treatment), if p-value < alpha reject null hypothesis.";
+		return "statistics.wilcoxon_test( list1 list2 ) : return p-value\ndependent 2-group Wilcoxon Signed Rank Test  => requires: data sampled in pairs\nnull hypothesis: data come from same distributions (after treatment), if p-value < alpha reject null hypothesis.";
 		//return "wilcoxon_test( list1 signal list2 ) : return p-value\ndependent 2-group Wilcoxon Signed Rank Test  => requires: data sampled in pairs\nnull hypothesis: data come from same distributions (after treatment), if p-value < alpha reject null hypothesis.\n'signal' can be '<', '>' or '=='";
 	}
 

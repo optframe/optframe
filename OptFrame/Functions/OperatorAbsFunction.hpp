@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_MIN_FUNCTION_HPP_
-#define OPTFRAME_MIN_FUNCTION_HPP_
+#ifndef OPTFRAME_ABS_FUNCTION_HPP_
+#define OPTFRAME_ABS_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -31,60 +31,42 @@
 
 #include "../OptFrameFunction.hpp"
 
-#include "../OptFrameList.hpp"
-
-#include <algorithm>
-
-class MinFunction : public OptFrameFunction
+class OperatorAbsFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~MinFunction()
+	virtual ~OperatorAbsFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "min";
+		return "operator.abs";
 	}
 
 	virtual string usage()
 	{
-		return "avg( list ) : return list average";
+		return "operator.abs( value ) : return absolute value";
 	}
 
-	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
+	virtual string formatNumber(double v)
+	{
+		stringstream ss;
+		ss << v;
+		return ss.str();
+	}
+
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(body);
 
-		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
-		vector<string>  list;
-		if(plist)
-		{
-			list = vector<string>(*plist);
-			delete plist;
-		}
-		else
+		if(!scanner.hasNext())
 			return NULL;
 
-		if(list.size()==0)
-			return NULL;
+		double v = scanner.nextDouble();
 
-		double min = Scanner::parseDouble(list[0]);
-		for(unsigned i=1; i<list.size(); i++)
-		{
-			double v = Scanner::parseDouble(list[i]);
-			if(v < min)
-				min = v;
-		}
-
-		stringstream ss;
-		ss << min;
-
-		string smin = ss.str();
-
-		return new string(smin);
+		return new string(formatNumber(abs(v)));
 	}
 };
 
-#endif /* OPTFRAME_MIN_FUNCTION_HPP_ */
+#endif /* OPTFRAME_ABS_FUNCTION_HPP_ */

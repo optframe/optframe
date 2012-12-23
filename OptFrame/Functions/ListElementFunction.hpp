@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_TEXT_FUNCTION_HPP_
-#define OPTFRAME_TEXT_FUNCTION_HPP_
+#ifndef OPTFRAME_ELEMENT_FUNCTION_HPP_
+#define OPTFRAME_ELEMENT_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,40 +35,76 @@
 
 #include <algorithm>
 
-class TextFunction : public OptFrameFunction
+class ListElementFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~TextFunction()
+	virtual ~ListElementFunction()
 	{
 	}
 
-	virtual string id()
+	string id()
 	{
-		return "text";
+		return "list.element";
 	}
-
-	virtual string usage()
+	string usage()
 	{
-		return "text( list ) : return list as text";
+		return "list.element( N list ) : return element at 'N'th position of 'list'";
 	}
 
 	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
-		Scanner scanner(body);
+		Scanner scan(body);
 
-		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
+		if (!scan.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return NULL;
+		}
+
+		int n = scan.nextInt();
+
+		if (n < 0)
+		{
+			cout << "N must be a positive value!" << endl;
+			return NULL;
+		}
+
+		if (n == 0)
+		{
+			cout << "sorry, this is not C language :)" << endl;
+			cout << "0 not included, try a number from 1 to the size of the list" << endl;
+			return NULL;
+		}
+
+		n--;
+
+		if (!scan.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return NULL;
+		}
+
+		vector<string>* plist = OptFrameList::readList(ldictionary, scan);
 		vector<string>  list;
 		if(plist)
 		{
 			list = vector<string>(*plist);
 			delete plist;
 		}
-		else
-			return NULL;
+		//else
+		//	return NULL;
 
-		return new string(OptFrameList::listToString(list));
+		if (n >= ((int) list.size()))
+		{
+			cout << "N is too big! " << (n + 1) << " > " << list.size() << endl;
+			return NULL;
+		}
+
+		string element = list.at(n);
+
+		return new string(element);
 	}
 };
 
-#endif /* OPTFRAME_TEXT_FUNCTION_HPP_ */
+#endif /* OPTFRAME_ELEMENT_FUNCTION_HPP_ */

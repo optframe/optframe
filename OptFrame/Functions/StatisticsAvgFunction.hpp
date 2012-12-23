@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_INPUT_FUNCTION_HPP_
-#define OPTFRAME_INPUT_FUNCTION_HPP_
+#ifndef OPTFRAME_AVG_FUNCTION_HPP_
+#define OPTFRAME_AVG_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,34 +35,54 @@
 
 #include <algorithm>
 
-class InputFunction : public OptFrameFunction
+class StatisticsAvgFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~InputFunction()
+	virtual ~StatisticsAvgFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "input";
+		return "statistics.avg";
 	}
 
 	virtual string usage()
 	{
-		return "input() : return user keyboard input";
+		return "statistics.avg( list ) : return list average";
 	}
 
-	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
-		Scanner scanner(&cin);
+		Scanner scanner(body);
 
-		string input = Scanner::trim(scanner.nextLine());
+		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
+		vector<string>  list;
+		if(plist)
+		{
+			list = vector<string>(*plist);
+			delete plist;
+		}
+		else
+			return NULL;
 
-		Scanner scan(body);
+		if(list.size()==0)
+			return NULL;
 
-		return new string(input);
+		double sum = 0;
+		for(unsigned i=0; i<list.size(); i++)
+			sum += Scanner::parseDouble(list[i]);
+
+		int len = list.size();
+
+		stringstream ss;
+		ss << (sum/len);
+
+		string avg = ss.str();
+
+		return new string(avg);
 	}
 };
 
-#endif /* OPTFRAME_INPUT_FUNCTION_HPP_ */
+#endif /* OPTFRAME_AVG_FUNCTION_HPP_ */

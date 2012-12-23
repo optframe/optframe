@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_APPEND_FUNCTION_HPP_
-#define OPTFRAME_APPEND_FUNCTION_HPP_
+#ifndef OPTFRAME_MIN_FUNCTION_HPP_
+#define OPTFRAME_MIN_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,66 +35,56 @@
 
 #include <algorithm>
 
-class AppendFunction : public OptFrameFunction
+class StatisticsMinFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~AppendFunction()
+	virtual ~StatisticsMinFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "append";
+		return "statistics.min";
 	}
 
 	virtual string usage()
 	{
-		return "append( list1 list2 ) : return append list1 with list2";
+		return "statistics.min( list ) : return list minimum";
 	}
 
 	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
-		vector<string>* plist1 = OptFrameList::readList(ldictionary, scanner);
-		vector<string>  list1;
-		if(plist1)
+		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
+		vector<string>  list;
+		if(plist)
 		{
-			list1 = vector<string>(*plist1);
-			delete plist1;
+			list = vector<string>(*plist);
+			delete plist;
 		}
 		else
 			return NULL;
 
-
-		vector<string>* plist2 = OptFrameList::readList(ldictionary, scanner);
-		vector<string>  list2;
-		if(plist2)
-		{
-			list2 = vector<string>(*plist2);
-			delete plist2;
-		}
-		else
+		if(list.size()==0)
 			return NULL;
 
-
-		list1.insert(list1.end(), list2.begin(), list2.end());
+		double min = Scanner::parseDouble(list[0]);
+		for(unsigned i=1; i<list.size(); i++)
+		{
+			double v = Scanner::parseDouble(list[i]);
+			if(v < min)
+				min = v;
+		}
 
 		stringstream ss;
-		ss << "[ ";
-		for(unsigned i=0; i<list1.size(); i++)
-		{
-			ss << list1[i];
-			if(i != list1.size()-1)
-				ss << ",";
-		}
-		ss << " ]";
+		ss << min;
 
-		string list3 = ss.str();
+		string smin = ss.str();
 
-		return new string(list3);
+		return new string(smin);
 	}
 };
 
-#endif /* OPTFRAME_APPEND_FUNCTION_HPP_ */
+#endif /* OPTFRAME_MIN_FUNCTION_HPP_ */

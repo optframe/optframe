@@ -35,22 +35,22 @@
 
 #include <algorithm>
 
-class StudentTTestFunction : public OptFrameFunction
+class StatisticsStudentTTestFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~StudentTTestFunction()
+	virtual ~StatisticsStudentTTestFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "student_t_test";
+		return "statistics.student_t_test";
 	}
 
 	virtual string usage()
 	{
-		return "student_t_test( list1 list2 ) : return p-value\nStudent's t-test => requires: near-normality from each input data (use shapiro_test or kolmogorov_test); variances are equal (use var_test); data independently sampled\n null hypothesis: means are equal; if p-value < alpha reject null hypothesis.";
+		return "statistics.student_t_test( list1 list2 ) : return p-value\nStudent's t-test => requires: near-normality from each input data (use shapiro_test or kolmogorov_test); variances are equal (use var_test); data independently sampled\n null hypothesis: means are equal; if p-value < alpha reject null hypothesis.";
 	}
 
 	virtual string formatNumber(double v)

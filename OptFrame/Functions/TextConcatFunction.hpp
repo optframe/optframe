@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_AVG_FUNCTION_HPP_
-#define OPTFRAME_AVG_FUNCTION_HPP_
+#ifndef OPTFRAME_CONCAT_FUNCTION_HPP_
+#define OPTFRAME_CONCAT_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -31,58 +31,38 @@
 
 #include "../OptFrameFunction.hpp"
 
-#include "../OptFrameList.hpp"
-
-#include <algorithm>
-
-class AvgFunction : public OptFrameFunction
+class TextConcatFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~AvgFunction()
+	virtual ~TextConcatFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "avg";
+		return "text.concat";
 	}
 
 	virtual string usage()
 	{
-		return "avg( list ) : return list average";
+		return "text.concat( string1 string2 ) : return string1string2";
 	}
 
-	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(body);
 
-		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
-		vector<string>  list;
-		if(plist)
-		{
-			list = vector<string>(*plist);
-			delete plist;
-		}
-		else
+		if(!scanner.hasNext())
 			return NULL;
 
-		if(list.size()==0)
-			return NULL;
+		string s1 = scanner.next();
+		string s2 = scanner.next();
 
-		double sum = 0;
-		for(unsigned i=0; i<list.size(); i++)
-			sum += Scanner::parseDouble(list[i]);
+		s1.append(s2);
 
-		int len = list.size();
-
-		stringstream ss;
-		ss << (sum/len);
-
-		string avg = ss.str();
-
-		return new string(avg);
+		return new string(s1);
 	}
 };
 
-#endif /* OPTFRAME_AVG_FUNCTION_HPP_ */
+#endif /* OPTFRAME_CONCAT_FUNCTION_HPP_ */

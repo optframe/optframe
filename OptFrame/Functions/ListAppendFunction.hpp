@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_POPEN_FUNCTION_HPP_
-#define OPTFRAME_POPEN_FUNCTION_HPP_
+#ifndef OPTFRAME_APPEND_FUNCTION_HPP_
+#define OPTFRAME_APPEND_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,58 +35,66 @@
 
 #include <algorithm>
 
-class POpenFunction : public OptFrameFunction
+class ListAppendFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~POpenFunction()
+	virtual ~ListAppendFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "popen";
+		return "list.append";
 	}
 
 	virtual string usage()
 	{
-		return "popen( \"command\" ) : return output";
+		return "list.append( list1 list2 ) : return append list1 with list2";
 	}
 
-	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
-		//cout << "popen function  POPEN: '" << Scanner::trim(body) << "'" << endl;
-		Scanner scanner(Scanner::trim(body));
-		scanner.useSeparators("\"");
+		Scanner scanner(body);
 
-		string command = scanner.next();
-		scanner.useDefaultSeparators();
-		scanner.next(); // drop '"'
-		scanner.next(); // drop ')'
-
-		//cout << "popen function COMMAND: '" << command << "'" << endl;
-
-		FILE* pPipe = popen(command.c_str(), "r"); //popen("echo -e \"x <- c(1,2,3,4,5,6) \n shapiro.test(x)\" | R --no-save", "rt");
-		if (pPipe == NULL)
+		vector<string>* plist1 = OptFrameList::readList(ldictionary, scanner);
+		vector<string>  list1;
+		if(plist1)
 		{
-			cout << "popen function: PIPE NOT OPEN!" << endl;
+			list1 = vector<string>(*plist1);
+			delete plist1;
+		}
+		else
 			return NULL;
-		}
 
-		char line[100];
 
-		string output = "";
-
-		while(fgets(line, 100, pPipe) != NULL)
+		vector<string>* plist2 = OptFrameList::readList(ldictionary, scanner);
+		vector<string>  list2;
+		if(plist2)
 		{
-			string sline = line;
-			output.append(sline);
+			list2 = vector<string>(*plist2);
+			delete plist2;
 		}
+		else
+			return NULL;
 
-		pclose(pPipe);
 
-		return new string(output);
+		list1.insert(list1.end(), list2.begin(), list2.end());
+
+		stringstream ss;
+		ss << "[ ";
+		for(unsigned i=0; i<list1.size(); i++)
+		{
+			ss << list1[i];
+			if(i != list1.size()-1)
+				ss << ",";
+		}
+		ss << " ]";
+
+		string list3 = ss.str();
+
+		return new string(list3);
 	}
 };
 
-#endif /* OPTFRAME_POPEN_FUNCTION_HPP_ */
+#endif /* OPTFRAME_APPEND_FUNCTION_HPP_ */

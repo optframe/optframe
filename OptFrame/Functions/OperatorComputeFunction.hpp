@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_WORDS_FUNCTION_HPP_
-#define OPTFRAME_WORDS_FUNCTION_HPP_
+#ifndef OPTFRAME_MATH_FUNCTION_HPP_
+#define OPTFRAME_MATH_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,47 +35,68 @@
 
 #include <algorithm>
 
-class WordsFunction : public OptFrameFunction
+class OperatorComputeFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~WordsFunction()
+	virtual ~OperatorComputeFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "words";
+		return "operator.compute";
 	}
 
 	virtual string usage()
 	{
-		return "next( string ) : return list_of_words";
+		return "operator.compute( A operation B ) : return operation of numbers A and B according to operation (+, -, *, /)";
+	}
+
+	virtual string formatNumber(double v)
+	{
+		stringstream ss;
+		ss << v;
+		return ss.str();
 	}
 
 	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(body);
 
-		stringstream ssr;
-		ssr << "[ ";
-		string next = scanner.next();
-		if(next != ")")
-			ssr << " " << next << " ";
-		else
-			return NULL; // EMPTY
+		string sa = scanner.next();
+		string op = scanner.next();
+		string sb = scanner.next();
 
-		next = scanner.next();
-		while(next != ")")
+		double a;
+		double b;
+
+		try
 		{
-			ssr << ", " << next << " ";
-			next = scanner.next();
+			a = Scanner::parseDouble(sa);
+			b = Scanner::parseDouble(sb);
+		}
+		catch(ConversionError& e)
+		{
+			cout << "math function: not a number to operate ('" <<sa << "' " << op << " '" << sb << "')!" << endl;
+			return NULL;
 		}
 
-		ssr << " ]";
+		if(op == "+")
+			return new string(formatNumber(a+b));
+		if(op == "-")
+			return new string(formatNumber(a-b));
+		if(op == "*")
+			return new string(formatNumber(a*b));
+		if(op == "/")
+			return new string(formatNumber(a/b));
+		if(op == "mod")
+			return new string(formatNumber(((int)a)%((int)b)));
 
-		return new string(ssr.str());
+		cout << "math function: no such operation '" << op << "'" << endl;
+
+		return NULL;
 	}
 };
 
-#endif /* OPTFRAME_WORDS_FUNCTION_HPP_ */
+#endif /* OPTFRAME_MATH_FUNCTION_HPP_ */

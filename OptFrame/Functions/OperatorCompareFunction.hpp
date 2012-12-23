@@ -35,22 +35,22 @@
 
 #include <algorithm>
 
-class CompareFunction : public OptFrameFunction
+class OperatorCompareFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~CompareFunction()
+	virtual ~OperatorCompareFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "compare";
+		return "operator.compare";
 	}
 
 	virtual string usage()
 	{
-		return "compare( A signal B ) : return comparison of numbers A and B according to signal (==, !=, >, >=, <, <=)";
+		return "operator.compare( A signal B ) : return comparison of numbers A and B according to signal (==, !=, >, >=, <, <=)";
 	}
 
 	string formatBool(bool b)

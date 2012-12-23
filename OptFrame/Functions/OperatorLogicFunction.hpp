@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_TIME_FUNCTION_HPP_
-#define OPTFRAME_TIME_FUNCTION_HPP_
+#ifndef OPTFRAME_LOGIC_FUNCTION_HPP_
+#define OPTFRAME_LOGIC_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,36 +35,66 @@
 
 #include <algorithm>
 
-class TimeFunction : public OptFrameFunction
+class OperatorLogicFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~TimeFunction()
+	virtual ~OperatorLogicFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "time";
+		return "operator.logic";
 	}
 
 	virtual string usage()
 	{
-		return "time( ) : return current system time";
+		return "operator.logic( [ A operation B | not A ] ) : return operation of numbers A and B according to operation (and, or)";
+	}
+
+	string formatBool(bool b)
+	{
+		if(b)
+			return "true";
+		else
+			return "false";
+	}
+
+	bool parseBool(string b)
+	{
+		return b == "true";
 	}
 
 	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(body);
 
-		long r = time(NULL);
+		string first = scanner.next();
 
-		stringstream ss;
-		ss << r;
-		string result = ss.str();
+		if(first == "not")
+		{
+			bool a  = parseBool(scanner.next());
 
-		return new string(result);
+			return new string(formatBool(!a));
+		}
+		else
+		{
+			bool a  = parseBool(first);
+			string op = scanner.next();
+			bool b  = parseBool(scanner.next());
+
+			if(op=="and")
+				return new string(formatBool(a && b));
+
+			if(op=="or")
+				return new string(formatBool(a || b));
+
+			cout << "logic function: no such operation '" << op << "'" << endl;
+
+			return NULL;
+		}
 	}
 };
 
-#endif /* OPTFRAME_TIME_FUNCTION_HPP_ */
+#endif /* OPTFRAME_LOGIC_FUNCTION_HPP_ */

@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_CONCAT_FUNCTION_HPP_
-#define OPTFRAME_CONCAT_FUNCTION_HPP_
+#ifndef OPTFRAME_INPUT_FUNCTION_HPP_
+#define OPTFRAME_INPUT_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -31,38 +31,38 @@
 
 #include "../OptFrameFunction.hpp"
 
-class ConcatFunction : public OptFrameFunction
+#include "../OptFrameList.hpp"
+
+#include <algorithm>
+
+class SystemInputFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~ConcatFunction()
+	virtual ~SystemInputFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "concat";
+		return "system.input";
 	}
 
 	virtual string usage()
 	{
-		return "concat( string1 string2 ) : return string1string2";
+		return "system.input() : return user keyboard input";
 	}
 
-	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >&, string body)
+	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
 	{
-		Scanner scanner(body);
+		Scanner scanner(&cin);
 
-		if(!scanner.hasNext())
-			return NULL;
+		string input = Scanner::trim(scanner.nextLine());
 
-		string s1 = scanner.next();
-		string s2 = scanner.next();
+		Scanner scan(body);
 
-		s1.append(s2);
-
-		return new string(s1);
+		return new string(input);
 	}
 };
 
-#endif /* OPTFRAME_CONCAT_FUNCTION_HPP_ */
+#endif /* OPTFRAME_INPUT_FUNCTION_HPP_ */

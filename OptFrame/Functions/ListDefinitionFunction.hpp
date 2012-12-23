@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_LOGIC_FUNCTION_HPP_
-#define OPTFRAME_LOGIC_FUNCTION_HPP_
+#ifndef OPTFRAME_TEXT_FUNCTION_HPP_
+#define OPTFRAME_TEXT_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,66 +35,40 @@
 
 #include <algorithm>
 
-class LogicFunction : public OptFrameFunction
+class ListDefinitionFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~LogicFunction()
+	virtual ~ListDefinitionFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "logic";
+		return "list.definition";
 	}
 
 	virtual string usage()
 	{
-		return "logic( [ A operation B | not A ] ) : return operation of numbers A and B according to operation (and, or)";
+		return "list.definition( list ) : return list as text";
 	}
 
-	string formatBool(bool b)
-	{
-		if(b)
-			return "true";
-		else
-			return "false";
-	}
-
-	bool parseBool(string b)
-	{
-		return b == "true";
-	}
-
-	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
-		string first = scanner.next();
-
-		if(first == "not")
+		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
+		vector<string>  list;
+		if(plist)
 		{
-			bool a  = parseBool(scanner.next());
-
-			return new string(formatBool(!a));
+			list = vector<string>(*plist);
+			delete plist;
 		}
 		else
-		{
-			bool a  = parseBool(first);
-			string op = scanner.next();
-			bool b  = parseBool(scanner.next());
-
-			if(op=="and")
-				return new string(formatBool(a && b));
-
-			if(op=="or")
-				return new string(formatBool(a || b));
-
-			cout << "logic function: no such operation '" << op << "'" << endl;
-
 			return NULL;
-		}
+
+		return new string(OptFrameList::listToString(list));
 	}
 };
 
-#endif /* OPTFRAME_LOGIC_FUNCTION_HPP_ */
+#endif /* OPTFRAME_TEXT_FUNCTION_HPP_ */

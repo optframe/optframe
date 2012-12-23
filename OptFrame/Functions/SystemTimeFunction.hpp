@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_MAX_FUNCTION_HPP_
-#define OPTFRAME_MAX_FUNCTION_HPP_
+#ifndef OPTFRAME_TIME_FUNCTION_HPP_
+#define OPTFRAME_TIME_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,56 +35,36 @@
 
 #include <algorithm>
 
-class MaxFunction : public OptFrameFunction
+class SystemTimeFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~MaxFunction()
+	virtual ~SystemTimeFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "max";
+		return "system.time";
 	}
 
 	virtual string usage()
 	{
-		return "max( list ) : return list maximum";
+		return "system.time( ) : return current system time";
 	}
 
-	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(body);
 
-		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
-		vector<string>  list;
-		if(plist)
-		{
-			list = vector<string>(*plist);
-			delete plist;
-		}
-		else
-			return NULL;
-
-		if(list.size()==0)
-			return NULL;
-
-		double max = Scanner::parseDouble(list[0]);
-		for(unsigned i=1; i<list.size(); i++)
-		{
-			double v = Scanner::parseDouble(list[i]);
-			if(v > max)
-				max = v;
-		}
+		long r = time(NULL);
 
 		stringstream ss;
-		ss << max;
+		ss << r;
+		string result = ss.str();
 
-		string smax = ss.str();
-
-		return new string(smax);
+		return new string(result);
 	}
 };
 
-#endif /* OPTFRAME_MAX_FUNCTION_HPP_ */
+#endif /* OPTFRAME_TIME_FUNCTION_HPP_ */

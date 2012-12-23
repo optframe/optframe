@@ -106,41 +106,35 @@
 #include "RandGen.hpp"
 #include "Util/RandGenMersenneTwister.hpp"
 
-#include "Functions/AbsFunction.hpp"
-#include "Functions/AvgFunction.hpp"
-#include "Functions/CompareFunction.hpp"
-#include "Functions/ElementFunction.hpp"
-#include "Functions/InputFunction.hpp"
-#include "Functions/LengthFunction.hpp"
-#include "Functions/MaxFunction.hpp"
-#include "Functions/MinFunction.hpp"
-#include "Functions/NextFunction.hpp"
-#include "Functions/POpenFunction.hpp"
-#include "Functions/TimeFunction.hpp"
-#include "Functions/WordsFunction.hpp"
+#include "Functions/ListAppendFunction.hpp"
+#include "Functions/ListDefinitionFunction.hpp"
+#include "Functions/ListElementFunction.hpp"
+#include "Functions/ListLengthFunction.hpp"
+#include "Functions/ListWordsFunction.hpp"
 
-// lists
-#include "Functions/AppendFunction.hpp"
-#include "Functions/TextFunction.hpp"
+#include "Functions/OperatorAbsFunction.hpp"
+#include "Functions/OperatorCompareFunction.hpp"
+#include "Functions/OperatorComputeFunction.hpp"
+#include "Functions/OperatorLogicFunction.hpp"
 
-// statistics
-#include "Functions/ANOVAFunction.hpp"
-#include "Functions/FriedmanTestFunction.hpp"
-#include "Functions/MannUTestFunction.hpp"
-#include "Functions/PairedTTestFunction.hpp"
-#include "Functions/ShapiroTestFunction.hpp"
-#include "Functions/StudentTTestFunction.hpp"
-#include "Functions/WilcoxonTestFunction.hpp"
+#include "Functions/StatisticsANOVAFunction.hpp"
+#include "Functions/StatisticsAvgFunction.hpp"
+#include "Functions/StatisticsFriedmanTestFunction.hpp"
+#include "Functions/StatisticsMannUTestFunction.hpp"
+#include "Functions/StatisticsMaxFunction.hpp"
+#include "Functions/StatisticsMinFunction.hpp"
+#include "Functions/StatisticsPairedTTestFunction.hpp"
+#include "Functions/StatisticsShapiroTestFunction.hpp"
+#include "Functions/StatisticsStudentTTestFunction.hpp"
+#include "Functions/StatisticsWilcoxonTestFunction.hpp"
 
-// logic
-#include "Functions/LogicFunction.hpp"
+#include "Functions/SystemInputFunction.hpp"
+#include "Functions/SystemPOpenFunction.hpp"
+#include "Functions/SystemTimeFunction.hpp"
 
-// arithmetic
-#include "Functions/MathFunction.hpp"
-
-// string
-#include "Functions/ConcatFunction.hpp"
-#include "Functions/DicFunction.hpp"
+#include "Functions/TextConcatFunction.hpp"
+#include "Functions/TextDefinitionFunction.hpp"
+#include "Functions/TextNextFunction.hpp"
 
 // ------------------------------------------------
 
@@ -240,14 +234,14 @@ public:
 
 	OptFrame()
 	{
-		loadDefaultModules();
+		loadDefault();
 		loadComponentBuilders();
 	}
 
 	OptFrame(RandGen _rg) :
 		factory(HeuristicFactory<R, ADS, M> (_rg))
 	{
-		loadDefaultModules();
+		loadDefault();
 		loadComponentBuilders();
 	}
 
@@ -295,7 +289,7 @@ public:
 		loadModule(new SystemCallModule<R, ADS, M> );
 	}
 
-	void loadDefaultModules()
+	void loadDefault()
 	{
 		unloadModules();
 
@@ -375,42 +369,36 @@ public:
 		// ----------------------------------------------
 
 		unloadFunctions();
-		loadFunction(new AbsFunction);
-		loadFunction(new AvgFunction);
-		loadFunction(new CompareFunction);
-		loadFunction(new ElementFunction);
-		loadFunction(new InputFunction);
-		loadFunction(new LengthFunction);
-		loadFunction(new MaxFunction);
-		loadFunction(new MinFunction);
-		loadFunction(new NextFunction);
-		loadFunction(new POpenFunction);
-		loadFunction(new ShapiroTestFunction);
-		loadFunction(new TimeFunction);
-		loadFunction(new WordsFunction);
+		loadFunction(new ListAppendFunction);
+		loadFunction(new ListDefinitionFunction);
+		loadFunction(new ListElementFunction);
+		loadFunction(new ListLengthFunction);
+		loadFunction(new ListWordsFunction);
 
-		// lists
-		loadFunction(new AppendFunction);
-		loadFunction(new TextFunction);
+		loadFunction(new OperatorAbsFunction);
+		loadFunction(new OperatorCompareFunction);
+		loadFunction(new OperatorComputeFunction);
+		loadFunction(new OperatorLogicFunction);
 
 		// statistics
-		loadFunction(new ANOVAFunction);
-		loadFunction(new FriedmanTestFunction);
-		loadFunction(new MannUTestFunction);
-		loadFunction(new PairedTTestFunction);
-		loadFunction(new ShapiroTestFunction);
-		loadFunction(new StudentTTestFunction);
-		loadFunction(new WilcoxonTestFunction);
+		loadFunction(new StatisticsANOVAFunction);
+		loadFunction(new StatisticsAvgFunction);
+		loadFunction(new StatisticsFriedmanTestFunction);
+		loadFunction(new StatisticsMannUTestFunction);
+		loadFunction(new StatisticsMaxFunction);
+		loadFunction(new StatisticsMinFunction);
+		loadFunction(new StatisticsPairedTTestFunction);
+		loadFunction(new StatisticsShapiroTestFunction);
+		loadFunction(new StatisticsStudentTTestFunction);
+		loadFunction(new StatisticsWilcoxonTestFunction);
 
-		// logic
-		loadFunction(new LogicFunction);
+		loadFunction(new SystemInputFunction);
+		loadFunction(new SystemPOpenFunction);
+		loadFunction(new SystemTimeFunction);
 
-		//arithmetic
-		loadFunction(new MathFunction);
-
-		// string
-		loadFunction(new ConcatFunction);
-		loadFunction(new DicFunction);
+		loadFunction(new TextConcatFunction);
+		loadFunction(new TextDefinitionFunction);
+		loadFunction(new TextNextFunction);
 	}
 
 	OptFrameModule<R, ADS, M>* getModule(string module)

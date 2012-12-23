@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_ELEMENT_FUNCTION_HPP_
-#define OPTFRAME_ELEMENT_FUNCTION_HPP_
+#ifndef OPTFRAME_MAX_FUNCTION_HPP_
+#define OPTFRAME_MAX_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,76 +35,56 @@
 
 #include <algorithm>
 
-class ElementFunction : public OptFrameFunction
+class StatisticsMaxFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~ElementFunction()
+	virtual ~StatisticsMaxFunction()
 	{
 	}
 
-	string id()
+	virtual string id()
 	{
-		return "element";
+		return "statistics.max";
 	}
-	string usage()
+
+	virtual string usage()
 	{
-		return "element( N list ) : return element at 'N'th position of 'list'";
+		return "statistics.max( list ) : return list maximum";
 	}
 
 	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
-		Scanner scan(body);
+		Scanner scanner(body);
 
-		if (!scan.hasNext())
-		{
-			cout << "Usage: " << usage() << endl;
-			return NULL;
-		}
-
-		int n = scan.nextInt();
-
-		if (n < 0)
-		{
-			cout << "N must be a positive value!" << endl;
-			return NULL;
-		}
-
-		if (n == 0)
-		{
-			cout << "sorry, this is not C language :)" << endl;
-			cout << "0 not included, try a number from 1 to the size of the list" << endl;
-			return NULL;
-		}
-
-		n--;
-
-		if (!scan.hasNext())
-		{
-			cout << "Usage: " << usage() << endl;
-			return NULL;
-		}
-
-		vector<string>* plist = OptFrameList::readList(ldictionary, scan);
+		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
 		vector<string>  list;
 		if(plist)
 		{
 			list = vector<string>(*plist);
 			delete plist;
 		}
-		//else
-		//	return NULL;
-
-		if (n >= ((int) list.size()))
-		{
-			cout << "N is too big! " << (n + 1) << " > " << list.size() << endl;
+		else
 			return NULL;
+
+		if(list.size()==0)
+			return NULL;
+
+		double max = Scanner::parseDouble(list[0]);
+		for(unsigned i=1; i<list.size(); i++)
+		{
+			double v = Scanner::parseDouble(list[i]);
+			if(v > max)
+				max = v;
 		}
 
-		string element = list.at(n);
+		stringstream ss;
+		ss << max;
 
-		return new string(element);
+		string smax = ss.str();
+
+		return new string(smax);
 	}
 };
 
-#endif /* OPTFRAME_ELEMENT_FUNCTION_HPP_ */
+#endif /* OPTFRAME_MAX_FUNCTION_HPP_ */

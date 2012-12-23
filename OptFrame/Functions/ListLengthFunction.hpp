@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_ABS_FUNCTION_HPP_
-#define OPTFRAME_ABS_FUNCTION_HPP_
+#ifndef OPTFRAME_LENGTH_FUNCTION_HPP_
+#define OPTFRAME_LENGTH_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -31,42 +31,51 @@
 
 #include "../OptFrameFunction.hpp"
 
-class AbsFunction : public OptFrameFunction
+#include "../OptFrameList.hpp"
+
+#include <algorithm>
+
+class ListLengthFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~AbsFunction()
+	virtual ~ListLengthFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "abs";
+		return "list.length";
 	}
 
 	virtual string usage()
 	{
-		return "abs( value ) : return absolute value";
+		return "list.length(list) : return list size";
 	}
 
-	virtual string formatNumber(double v)
-	{
-		stringstream ss;
-		ss << v;
-		return ss.str();
-	}
-
-	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >&, string body)
+	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
-		if(!scanner.hasNext())
+		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
+		vector<string>  list;
+		if(plist)
+		{
+			list = vector<string>(*plist);
+			delete plist;
+		}
+		else
 			return NULL;
 
-		double v = scanner.nextDouble();
+		int ilen = list.size();
 
-		return new string(formatNumber(abs(v)));
+		stringstream ss;
+		ss << ilen;
+
+		string length = ss.str();
+
+		return new string(length);
 	}
 };
 
-#endif /* OPTFRAME_ABS_FUNCTION_HPP_ */
+#endif /* OPTFRAME_LENGTH_FUNCTION_HPP_ */

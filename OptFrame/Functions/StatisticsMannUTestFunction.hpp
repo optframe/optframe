@@ -35,22 +35,22 @@
 
 #include <algorithm>
 
-class MannUTestFunction : public OptFrameFunction
+class StatisticsMannUTestFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~MannUTestFunction()
+	virtual ~StatisticsMannUTestFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "mann_u_test";
+		return "statistics.mann_u_test";
 	}
 
 	virtual string usage()
 	{
-		return "mann_u_test( list1 list2 ) : return p-value\nindependent 2-group Mann-Whitney U Test => requires: data independently sampled\nnull hypothesis: data come from same distribution; if p-value < alpha reject null hypothesis.";
+		return "statistics.mann_u_test( list1 list2 ) : return p-value\nindependent 2-group Mann-Whitney U Test => requires: data independently sampled\nnull hypothesis: data come from same distribution; if p-value < alpha reject null hypothesis.";
 	}
 
 	virtual string formatNumber(double v)

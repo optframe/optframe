@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_LENGTH_FUNCTION_HPP_
-#define OPTFRAME_LENGTH_FUNCTION_HPP_
+#ifndef OPTFRAME_DIC_FUNCTION_HPP_
+#define OPTFRAME_DIC_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,47 +35,35 @@
 
 #include <algorithm>
 
-class LengthFunction : public OptFrameFunction
+class TextDefinitionFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~LengthFunction()
+	virtual ~TextDefinitionFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "length";
+		return "text.definition";
 	}
 
 	virtual string usage()
 	{
-		return "length(list) : return list size";
+		return "text.definition( var ) : return value of variable in dictionary";
 	}
 
-	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(vector<OptFrameFunction*>&, map< string, string >& dictionary, map< string,vector<string> >&, string body)
 	{
 		Scanner scanner(body);
 
-		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
-		vector<string>  list;
-		if(plist)
-		{
-			list = vector<string>(*plist);
-			delete plist;
-		}
-		else
+		if(!scanner.hasNext())
 			return NULL;
 
-		int ilen = list.size();
+		string var = scanner.next();
 
-		stringstream ss;
-		ss << ilen;
-
-		string length = ss.str();
-
-		return new string(length);
+		return new string(dictionary[var]);
 	}
 };
 
-#endif /* OPTFRAME_LENGTH_FUNCTION_HPP_ */
+#endif /* OPTFRAME_DIC_FUNCTION_HPP_ */

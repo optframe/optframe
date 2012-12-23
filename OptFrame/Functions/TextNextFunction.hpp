@@ -35,22 +35,22 @@
 
 #include <algorithm>
 
-class NextFunction : public OptFrameFunction
+class TextNextFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~NextFunction()
+	virtual ~TextNextFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "next";
+		return "text.next";
 	}
 
 	virtual string usage()
 	{
-		return "next( text ) : return pair [ next , rest ]";
+		return "text.next( text ) : return pair [ next , rest ]";
 	}
 
 	virtual string formatNumber(double v)

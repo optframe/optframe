@@ -35,22 +35,22 @@
 
 #include <algorithm>
 
-class ShapiroTestFunction : public OptFrameFunction
+class StatisticsShapiroTestFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~ShapiroTestFunction()
+	virtual ~StatisticsShapiroTestFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "shapiro_test";
+		return "statistics.shapiro_test";
 	}
 
 	virtual string usage()
 	{
-		return "shapiro_test( list ) : return p-value\nnull hypothesis: values are normal, if p-value < alpha reject null hypothesis.";
+		return "statistics.shapiro_test( list ) : return p-value\nnull hypothesis: values are normal, if p-value < alpha reject null hypothesis.";
 	}
 
 	virtual string formatNumber(double v)

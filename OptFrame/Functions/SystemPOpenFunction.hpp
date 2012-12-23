@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_DIC_FUNCTION_HPP_
-#define OPTFRAME_DIC_FUNCTION_HPP_
+#ifndef OPTFRAME_POPEN_FUNCTION_HPP_
+#define OPTFRAME_POPEN_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,35 +35,58 @@
 
 #include <algorithm>
 
-class DicFunction : public OptFrameFunction
+class SystemPOpenFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~DicFunction()
+	virtual ~SystemPOpenFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "dic";
+		return "system.popen";
 	}
 
 	virtual string usage()
 	{
-		return "dic( var ) : return value of variable in dictionary";
+		return "system.popen( \"command\" ) : return output";
 	}
 
-	virtual string* run(vector<OptFrameFunction*>&, map< string, string >& dictionary, map< string,vector<string> >&, string body)
+	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
 	{
-		Scanner scanner(body);
+		//cout << "popen function  POPEN: '" << Scanner::trim(body) << "'" << endl;
+		Scanner scanner(Scanner::trim(body));
+		scanner.useSeparators("\"");
 
-		if(!scanner.hasNext())
+		string command = scanner.next();
+		scanner.useDefaultSeparators();
+		scanner.next(); // drop '"'
+		scanner.next(); // drop ')'
+
+		//cout << "popen function COMMAND: '" << command << "'" << endl;
+
+		FILE* pPipe = popen(command.c_str(), "r"); //popen("echo -e \"x <- c(1,2,3,4,5,6) \n shapiro.test(x)\" | R --no-save", "rt");
+		if (pPipe == NULL)
+		{
+			cout << "popen function: PIPE NOT OPEN!" << endl;
 			return NULL;
+		}
 
-		string var = scanner.next();
+		char line[100];
 
-		return new string(dictionary[var]);
+		string output = "";
+
+		while(fgets(line, 100, pPipe) != NULL)
+		{
+			string sline = line;
+			output.append(sline);
+		}
+
+		pclose(pPipe);
+
+		return new string(output);
 	}
 };
 
-#endif /* OPTFRAME_DIC_FUNCTION_HPP_ */
+#endif /* OPTFRAME_POPEN_FUNCTION_HPP_ */

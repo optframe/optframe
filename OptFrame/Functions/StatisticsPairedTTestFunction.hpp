@@ -35,22 +35,22 @@
 
 #include <algorithm>
 
-class PairedTTestFunction : public OptFrameFunction
+class StatisticsPairedTTestFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~PairedTTestFunction()
+	virtual ~StatisticsPairedTTestFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "paired_t_test";
+		return "statistics.paired_t_test";
 	}
 
 	virtual string usage()
 	{
-		return "paired_t_test( list1 list2 ) : return p-value\npaired t-test => requires: near-normality from each input data (use shapiro_test or kolmogorov_test); variances are equal (use var_test); data sampled in pairs\n null hypothesis: means are equal (after treatment), if p-value < alpha reject null hypothesis.";
+		return "statistics.paired_t_test( list1 list2 ) : return p-value\npaired t-test => requires: near-normality from each input data (use shapiro_test or kolmogorov_test); variances are equal (use var_test); data sampled in pairs\n null hypothesis: means are equal (after treatment), if p-value < alpha reject null hypothesis.";
 		//return "paired_t_test( list1 signal list2 ) : return p-value\npaired t-test => requires: near-normality from each input data (use shapiro_test or kolmogorov_test); variances are equal (use var_test); data sampled in pairs\n null hypothesis: means are equal (after treatment), if p-value < alpha reject null hypothesis.\n'signal' can be '<', '>' or '=='";
 	}
 
