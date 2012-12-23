@@ -1,11 +1,15 @@
 % OptFrame .opt definitions file
 
-module.create_raw system.rename [ $module_name , $new_name ] {
+module.create_raw module.rename [ $module_name , $new_name ] {
    module.create_raw $new_name [ ] {
       system.preprocess _${new_name}_text $module_name $_all_params_$new_name;
       system.run $module_name _${new_name}_text;
       system.undefine _${new_name}_text;
    }
+}
+
+module.create_raw function.rename [ $function_name , $new_function_name ] {
+   function.create_raw $new_function_name [ $_all_params_$new_function_name ] = $function_name ( $_all_params_$new_function_name );
 }
 
 system.use system
@@ -17,35 +21,35 @@ use randgen
 use function
 
 %%% DEPRECATED! GIVE SOME OLD NAMES
-%system.rename system.define        define
-%system.rename system.echo          echo
-%system.rename system.silent_define silent_define
-%system.rename system.unsafe_define unsafe_define
-%system.rename system.undefine      undefine
-%system.rename system.pause         pause
-%system.rename system.read          read
+%module.rename system.define        define
+%module.rename system.echo          echo
+%module.rename system.silent_define silent_define
+%module.rename system.unsafe_define unsafe_define
+%module.rename system.undefine      undefine
+%module.rename system.pause         pause
+%module.rename system.read          read
 
-system.rename file.echo            echo_to_file
+module.rename file.echo            echo_to_file
 
-system.rename list.silent_define   silent_define_list
-system.rename list.sort            list_sort
-system.rename list.add             list_add
-system.rename list.remove          list_remove
+module.rename list.silent_define   silent_define_list
+module.rename list.sort            list_sort
+module.rename list.add             list_add
+module.rename list.remove          list_remove
 
-system.rename module.create        create_module
+module.rename module.create        create_module
 
-system.rename function.create_raw  create_function
+module.rename function.create_raw  create_function
 
-system.rename component.create_list       create_list_of_components
-%system.rename component.evaluate          evaluate
-%system.rename component.exec              exec
-%system.rename component.exec_constructive exec_constructive
-%system.rename component.export            export
-%system.rename component.to_string         to_string
-%system.rename component.list_builders     list_builders
-system.rename component.list              list_components
+module.rename component.create_list       create_list_of_components
+%module.rename component.evaluate          evaluate
+%module.rename component.exec              exec
+%module.rename component.exec_constructive exec_constructive
+%module.rename component.export            export
+%module.rename component.to_string         to_string
+%module.rename component.list_builders     list_builders
+module.rename component.list              list_components
 
-system.rename randgen.interval            random_number_interval
+module.rename randgen.interval            random_number_interval
 
 
 

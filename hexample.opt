@@ -1,7 +1,14 @@
 
 system.read definitions.opt
 
-system.require system.rename
+system.require module.rename
+system.require function.rename
+
+function.rename compare comp
+
+echo 1 < 2 ? comp( 1 < 2 )
+echo 1 > 2 ? comp( 1 > 2 )
+
 
 create_numeric_list 1 50 testlist
 

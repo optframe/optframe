@@ -52,8 +52,8 @@ public:
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
-		// check dependency on 'system.rename' module
-		if(!OptFrameModule<R, ADS, M>::run_module("system.require", allModules, allFunctions, factory, dictionary, ldictionary, "system.rename"))
+		// check dependency on 'module.rename' module
+		if(!OptFrameModule<R, ADS, M>::run_module("system.require", allModules, allFunctions, factory, dictionary, ldictionary, "module.rename"))
 		{
 			cout << "error: system.use module depends on 'system.rename' module, which is not loaded!" << endl;
 			return false;
@@ -88,9 +88,9 @@ public:
 				stringstream ss;
 				ss << allModules[i]->id() << " " << smallName;
 
-				if(!OptFrameModule<R, ADS, M>::run_module("system.rename", allModules, allFunctions, factory, dictionary, ldictionary, ss.str()))
+				if(!OptFrameModule<R, ADS, M>::run_module("module.rename", allModules, allFunctions, factory, dictionary, ldictionary, ss.str()))
 				{
-					cout << "system.use module error: failed to do a system.rename with parameters '" << ss.str() << "'" << endl;
+					cout << "system.use module error: failed to do a module.rename with parameters '" << ss.str() << "'" << endl;
 					return false;
 				}
 			}

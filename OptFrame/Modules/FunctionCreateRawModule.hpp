@@ -272,8 +272,9 @@ public:
 
 				delete p;
 
-				if(rest != "")
-					cout << "raw_function (" << name << ") warning: rest is '" << rest << "'" << endl;
+				// DO NOT WARN REST!
+				//if(rest != "")
+				//	cout << "raw_function (" << name << ") warning: rest is '" << rest << "'" << endl;
 
 				return new string(value);
 			}
