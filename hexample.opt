@@ -6,6 +6,8 @@ system.require function.rename
 
 function.rename compare comp
 
+define numero_teste compute(compute(compute(5 / 2) + 10) * compute(4 - 0))
+
 echo 1 < 2 ? comp( 1 < 2 )
 echo 1 > 2 ? comp( 1 > 2 )
 
@@ -32,11 +34,9 @@ silent_define saida popen( "ls *.opt" )
 echo ARQUIVOS:
 echo saida
 
-
 echo NEXT: element( 1 next( word saida ) )
 
 echo WORDS 2: element( 2 words( saida ) )
-
 
 echo
 echo =================================================

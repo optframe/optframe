@@ -41,7 +41,7 @@ public:
 
 	string usage()
 	{
-		return "system.use prefix";
+		return "system.use prefix -module_name ...";
 	}
 
 	bool moduleExists(string moduleName, vector<OptFrameModule<R, ADS, M>*>& allModules)
@@ -59,6 +59,15 @@ public:
 				return true;
 		return false;
 	}
+
+	bool in(string s, vector<string>& vs)
+	{
+		for(unsigned i=0; i<vs.size(); i++)
+			if(vs[i] == s)
+				return true;
+		return false;
+	}
+
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
@@ -86,6 +95,19 @@ public:
 
 		string prefix = scanner.next();
 
+		vector<string> negative_exceptions;
+
+		while(scanner.hasNext())
+		{
+			string exception = scanner.next();
+
+			Scanner scanReal(exception);
+			scanReal.useSeparators("-");
+			string real = scanReal.next();
+
+			negative_exceptions.push_back(real);
+		}
+
 		for(unsigned i=0; i<allModules.size(); i++)
 		{
 			Scanner scanPrefix(allModules[i]->id());
@@ -94,6 +116,9 @@ public:
 			if(scanPrefix.next() == prefix)
 			{
 				string smallName = scanPrefix.next();
+
+				if(in(smallName, negative_exceptions)) // jump negative exceptions in modules
+					continue;
 
 				if(moduleExists(smallName, allModules))
 				{
@@ -121,6 +146,9 @@ public:
 			if(scanPrefix.next() == prefix)
 			{
 				string smallName = scanPrefix.next();
+
+				if(in(smallName, negative_exceptions)) // jump negative exceptions in functions
+					continue;
 
 				if(functionExists(smallName, allFunctions))
 				{

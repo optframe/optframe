@@ -13,17 +13,21 @@ module.create_raw function.rename [ $function_name , $new_function_name ] {
 }
 
 system.use system
-use file
-use list
+use file -echo           % file.echo conflict with system.echo, renamed to 'echo_to_file'
+module.rename file.echo  echo_to_file
+use list -silent_define  % list.silent_define conflict with system.silent_define, renamed to 'silent_define_list'
+module.rename list.silent_define   silent_define_list
 use module
 use component
 use randgen
-use function
+use function -create_raw -rename % function.create_raw conflict with module.create_raw (renamed to create_function), function.rename with module.rename (not renamed)
+module.rename function.create_raw  create_function
 
-% for functions only
+% only functions
 use operator
 use statistics
-use text
+use text -definition    % text.definition conflict with list.definition (not renamed) 
+
 
 %%% DEPRECATED! GIVE SOME OLD NAMES
 %module.rename system.define        define
@@ -34,16 +38,14 @@ use text
 %module.rename system.pause         pause
 %module.rename system.read          read
 
-module.rename file.echo            echo_to_file
 
-module.rename list.silent_define   silent_define_list
+
 module.rename list.sort            list_sort
 module.rename list.add             list_add
 module.rename list.remove          list_remove
 
 module.rename module.create        create_module
 
-module.rename function.create_raw  create_function
 
 module.rename component.create_list       create_list_of_components
 %module.rename component.evaluate          evaluate
