@@ -147,7 +147,7 @@ public:
 
 			while(((lists > 0) || (blocks > 0)) && scanner->hasNext())
 			{
-				string line2 = removeComments(scanner->nextLine());
+				string line2 = Scanner::trim(removeComments(scanner->nextLine()));
 
 				for(unsigned int c = 0; c < line2.length(); c++)
 				{

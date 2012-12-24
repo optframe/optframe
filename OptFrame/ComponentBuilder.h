@@ -23,6 +23,10 @@
 
 #include "OptFrameComponent.hpp"
 
+#include "Scanner++/Scanner.h"
+
+using namespace scannerpp;
+
 template<class R, class ADS, class M> class HeuristicFactory;
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
