@@ -39,15 +39,18 @@ using namespace std;
 //                           Swap MOVE
 //============================================================================
 
+namespace TSP
+{
+
 class MoveSwap: public Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>
 {
 private:
 	int c1, c2;
-	TSPProblemInstance& tsp;
+	ProblemInstance& tsp;
 
 public:
 
-	MoveSwap(int c1, int c2, TSPProblemInstance& _tsp) :
+	MoveSwap(int c1, int c2, ProblemInstance& _tsp) :
 		tsp(_tsp)
 	{
 		this->c1 = c1;
@@ -164,7 +167,7 @@ public:
 class NSEnumSwap: public NSEnum<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>
 {
 private:
-	TSPProblemInstance* pI;
+	ProblemInstance* pI;
 	int n;
 
 	// Your private vars
@@ -173,7 +176,7 @@ public:
 
 	using NSEnum<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::move; // prevents name hiding
 
-	NSEnumSwap(TSPProblemInstance* pI, RandGen& _rg) :
+	NSEnumSwap(ProblemInstance* pI, RandGen& _rg) :
 		NSEnum<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> (_rg)
 	{
 		this->pI = pI;
@@ -292,6 +295,8 @@ public:
 	}
 
 };
+
+} // end namespace TSP
 
 #endif /*TSP_NSENUMSwap_HPP_*/
 

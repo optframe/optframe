@@ -38,17 +38,20 @@
 
 using namespace std;
 
+namespace TSP
+{
+
 class RandomInitialSolutionTSP: public Constructive<RepTSP>
 {
 private:
-	TSPProblemInstance* pI;
+	ProblemInstance* pI;
 	RandGen& rg;
 
 	// Your private vars
 
 public:
 
-	RandomInitialSolutionTSP(TSPProblemInstance* pI,RandGen& _rg): rg(_rg) // If necessary, add more parameters
+	RandomInitialSolutionTSP(ProblemInstance* pI, RandGen& _rg): rg(_rg) // If necessary, add more parameters
 	{
 		this->pI = pI;
 		// Put the rest of your code here
@@ -77,5 +80,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /*TSP_INITIALSOLUTION_Random_HPP_*/

@@ -27,11 +27,15 @@
 #include "../../OptFrame/Util/Matrix.hpp"
 
 using namespace std;
+using namespace scannerpp;
 
-class TSPProblemInstance
+namespace TSP
+{
+
+class ProblemInstance
 {
 public:
-	TSPProblemInstance(Scanner& scanner)
+	ProblemInstance(Scanner& scanner)
 	{
 		n = scanner.nextInt();
 
@@ -67,7 +71,7 @@ public:
 		//cout << (*dist);
 	}
 
-	virtual ~TSPProblemInstance()
+	virtual ~ProblemInstance()
 	{
 		delete dist;
 		delete xvalues;
@@ -90,5 +94,6 @@ public:
 
 };
 
+}
 
 #endif /*TSP_PROBLEMINSTANCE_HPP_*/

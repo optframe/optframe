@@ -37,16 +37,19 @@
 
 #define TSP_EPSILON 0.0001
 
+namespace TSP
+{
+
 class TSPEvaluator: public Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>
 {
 private:
-	TSPProblemInstance* pI;
+	ProblemInstance* pI;
 
 public:
 
 	using Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::evaluate; // prevents name hiding
 
-	TSPEvaluator(TSPProblemInstance* pI) // If necessary, add more parameters
+	TSPEvaluator(ProblemInstance* pI) // If necessary, add more parameters
 	{
 		this->pI = pI;
 	}
@@ -94,5 +97,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /*TSP_EVALUATOR_HPP_*/

@@ -31,5 +31,6 @@
 #include "./TSP/NSEnumShift.hpp"
 #include "./TSP/RandomInitialSolution.hpp"
 #include "./TSP/PerturbationTSP.h"
+#include "./TSP/ProblemModule.hpp"
 
 #endif /*TSP_H_*/
