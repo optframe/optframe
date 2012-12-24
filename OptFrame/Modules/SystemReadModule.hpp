@@ -44,14 +44,14 @@ public:
 
 	string removeComments(string line)
 	{
-		stringstream ss;
+		string ss;
 		for(unsigned i=0; i<line.length(); i++)
 			if(line.at(i)!='%')
-				ss << line.at(i);
+				ss += line.at(i);
 			else
 				break;
 
-		return Scanner::trim(ss.str());
+		return ss;
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
@@ -79,9 +79,53 @@ public:
 
 		vector<string> commands;
 
+		// add all lines
+
 		while(scanner->hasNext())
 		{
-			string line = removeComments(scanner->nextLine());
+			string line = Scanner::trim(removeComments(scanner->nextLine()));
+			if(line.length()==0)
+				continue;
+			commands.push_back(line);
+		}
+
+		// merge lines with multiline blocks or lists
+
+		for(int i=0; i<(int)(commands.size()); i++)
+			if((commands[i].at(0)=='{') || (commands[i].at(0)=='['))
+			{
+				if(i==0)
+				{
+					cout << "read module: error! block or list in the first line!" << endl;
+					return false;
+				}
+				else
+				{
+					commands[i-1].append(" ");
+					commands[i-1].append(commands[i]);
+					commands[i] = "";
+				}
+			}
+
+		// join in a string to proceed as usual
+
+		string ss;
+		for(unsigned i=0; i<commands.size(); i++)
+		{
+			ss.append(commands[i]);
+			ss.append("\n");
+		}
+
+		delete scanner;
+
+		scanner = new Scanner(ss);
+		commands.clear();
+
+		// proceed as usual
+
+		while(scanner->hasNext())
+		{
+			string line = Scanner::trim(removeComments(scanner->nextLine()));
 
 			if(line.length()==0)
 				continue;
