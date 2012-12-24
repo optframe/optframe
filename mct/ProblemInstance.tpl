@@ -6,6 +6,7 @@
 #include "../../OptFrame/Scanner++/Scanner.h"
 
 using namespace std;
+using namespace scannerpp;
 
 namespace $project
 {

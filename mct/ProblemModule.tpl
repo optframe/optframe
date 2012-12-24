@@ -13,10 +13,12 @@
 
 #include "ProblemInstance.hpp"
 
+using namespace scannerpp;
+
 namespace $project
 {
 
-class $projectProblemModule : public ProblemModule<Rep$project $commamproject>
+class $projectProblemModule : public ProblemModule<Rep$project , OPTFRAME_DEFAULT_ADS $commamproject>
 {
 public:
 
@@ -33,7 +35,7 @@ public:
            delete p;    
     }
 
-	bool load(string filename, HeuristicFactory<Rep$project $commamproject>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	bool load(string filename, HeuristicFactory<Rep$project , OPTFRAME_DEFAULT_ADS $commamproject>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 	    File* file;
 
@@ -62,7 +64,7 @@ public:
         return true;
     }
     
-    bool unload(HeuristicFactory<Rep$project $commamproject>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+    bool unload(HeuristicFactory<Rep$project , OPTFRAME_DEFAULT_ADS $commamproject>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
     {
        if(p)
           delete p;
