@@ -61,6 +61,7 @@ public:
 				string body = "";
 				int index = -1;
 				bool inString = false;
+				int countBrackets = 0;
 				for(int j=0; j< ((int)iprep->length()); j++)
 				{
 					if(!inString && iprep->at(j) == '"') // start string
@@ -73,13 +74,25 @@ public:
 						inString = false;
 						body += '"';
 					}
-					else if(inString || (!inString && iprep->at(j)!=')')) // usual character
+					else if(inString)
+						body += iprep->at(j); // usual character
+					else if(!inString && (iprep->at(j)=='('))
+					{
+						countBrackets++;
 						body += iprep->at(j);
-					else if(iprep->at(j)==')') // out of string and close function
+					}
+					else if(!inString &&  (iprep->at(j)==')') && (countBrackets>0)) // usual character
+					{
+						countBrackets--;
+						body += iprep->at(j);
+					}
+					else if((iprep->at(j)==')') && (countBrackets==0)) // out of string and close function
 					{
 						index = j;
 						break;
 					}
+					else
+						body += iprep->at(j); // usual character
 				}
 
 				//printf("body (%s): '%s'\n", func.c_str(), body.c_str());
@@ -91,9 +104,9 @@ public:
 
 				//printf("rest (%s): '%s'\n", func.c_str(), rest.c_str());
 
-				string* r = allFunctions[i]->run(allFunctions, dictionary, ldictionary, *iprep);
-
 				delete iprep;
+
+				string* r = allFunctions[i]->run(allFunctions, dictionary, ldictionary, body);
 
 				if(!r)
 					return NULL;
