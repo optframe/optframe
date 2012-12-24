@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_LOGIC_FUNCTION_HPP_
-#define OPTFRAME_LOGIC_FUNCTION_HPP_
+#ifndef OPTFRAME_OPERATOR_IN_FUNCTION_HPP_
+#define OPTFRAME_OPERATOR_IN_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,22 +35,22 @@
 
 #include <algorithm>
 
-class OperatorLogicFunction : public OptFrameFunction
+class OperatorInFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~OperatorLogicFunction()
+	virtual ~OperatorInFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "operator.logic";
+		return "operator.in";
 	}
 
 	virtual string usage()
 	{
-		return "operator.logic( [ A operation B | not A ] ) : return operation of numbers A and B according to operation (and, or)";
+		return "operator.in( value list ) : return true if value is inside list, false otherwise";
 	}
 
 	string formatBool(bool b)
@@ -66,38 +66,35 @@ public:
 		return b == "true";
 	}
 
-	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
+	bool in(string s, vector<string>& vs)
+	{
+		for(unsigned i=0; i<vs.size(); i++)
+			if(vs[i] == s)
+				return true;
+		return false;
+	}
+
+	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
 		if(!scanner.hasNext())
 			return NULL;
 
-		string first = scanner.next();
+		string value = scanner.next();
 
-		if(first == "not")
+		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
+		vector<string>  list;
+		if(plist)
 		{
-			bool a  = parseBool(scanner.next());
-
-			return new string(formatBool(!a));
+			list = vector<string>(*plist);
+			delete plist;
 		}
 		else
-		{
-			bool a  = parseBool(first);
-			string op = scanner.next();
-			bool b  = parseBool(scanner.next());
-
-			if(op=="and")
-				return new string(formatBool(a && b));
-
-			if(op=="or")
-				return new string(formatBool(a || b));
-
-			cout << "logic function: no such operation '" << op << "'" << endl;
-
 			return NULL;
-		}
+
+		return new string(formatBool(in(value, list)));
 	}
 };
 
-#endif /* OPTFRAME_LOGIC_FUNCTION_HPP_ */
+#endif /* OPTFRAME_OPERATOR_IN_FUNCTION_HPP_ */

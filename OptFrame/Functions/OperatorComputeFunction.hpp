@@ -64,8 +64,19 @@ public:
 	{
 		Scanner scanner(body);
 
+		if(!scanner.hasNext())
+			return NULL;
+
 		string sa = scanner.next();
+
+		if(!scanner.hasNext())
+			return NULL;
+
 		string op = scanner.next();
+
+		if(!scanner.hasNext())
+			return NULL;
+
 		string sb = scanner.next();
 
 		double a;

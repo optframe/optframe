@@ -14,6 +14,14 @@ echo 1 > 2 ? comp( 1 > 2 )
 
 create_numeric_list 1 50 testlist
 
+if in(50 testlist){
+  echo INCLUSIVE O 50 TA NA LISTA!
+}
+
+if logic(not in(60 testlist)){
+  echo O 60 NAO ESTA NA LISTA!
+}
+
 echo testlist definition(testlist)
 
 echo shapiro_test( testlist )

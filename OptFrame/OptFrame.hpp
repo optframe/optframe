@@ -115,6 +115,7 @@
 #include "Functions/OperatorAbsFunction.hpp"
 #include "Functions/OperatorCompareFunction.hpp"
 #include "Functions/OperatorComputeFunction.hpp"
+#include "Functions/OperatorInFunction.hpp"
 #include "Functions/OperatorLogicFunction.hpp"
 
 #include "Functions/StatisticsANOVAFunction.hpp"
@@ -378,6 +379,7 @@ public:
 		loadFunction(new OperatorAbsFunction);
 		loadFunction(new OperatorCompareFunction);
 		loadFunction(new OperatorComputeFunction);
+		loadFunction(new OperatorInFunction);
 		loadFunction(new OperatorLogicFunction);
 
 		// statistics

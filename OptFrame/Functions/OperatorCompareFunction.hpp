@@ -65,8 +65,19 @@ public:
 	{
 		Scanner scanner(body);
 
+		if(!scanner.hasNext())
+			return NULL;
+
 		string sa     = scanner.next();
+
+		if(!scanner.hasNext())
+			return NULL;
+
 		string signal = scanner.next();
+
+		if(!scanner.hasNext())
+			return NULL;
+
 		string sb     = scanner.next();
 
 		if((signal == "==") || (signal == "!=")) // compare as string
