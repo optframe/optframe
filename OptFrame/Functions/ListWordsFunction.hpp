@@ -55,26 +55,16 @@ public:
 
 	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
 	{
+		//cout << "function words run: '" << body << "'" << endl;
+
 		Scanner scanner(body);
 
-		stringstream ssr;
-		ssr << "[ ";
-		string next = scanner.next();
-		if(next != ")")
-			ssr << " " << next << " ";
-		else
-			return NULL; // EMPTY
+		vector<string> list;
 
-		next = scanner.next();
-		while(next != ")")
-		{
-			ssr << ", " << next << " ";
-			next = scanner.next();
-		}
+		while(scanner.hasNext())
+			list.push_back(scanner.next());
 
-		ssr << " ]";
-
-		return new string(ssr.str());
+		return new string(OptFrameList::listToString(list));
 	}
 };
 
