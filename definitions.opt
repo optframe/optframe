@@ -9,7 +9,7 @@ module.create_raw module.rename [ $module_name , $new_name ] {
 }
 
 module.create_raw function.rename [ $function_name , $new_function_name ] {
-   function.create_raw $new_function_name [ $_all_params_$new_function_name ] = $function_name ( $_all_params_$new_function_name );
+   function.create_raw $new_function_name [ ] = $function_name ( $_all_params_$new_function_name );
 }
 
 system.use system
