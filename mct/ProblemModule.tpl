@@ -34,6 +34,13 @@ public:
         if(p)
            delete p;    
     }
+    
+    string id()
+    {
+    	string parentId = ProblemModule<Rep$project , OPTFRAME_DEFAULT_ADS $commamproject>::id();
+    	parentId.append("$project"); // implements 'problem.project_name' module
+    	return parentId;
+    }
 
 	bool load(string filename, HeuristicFactory<Rep$project , OPTFRAME_DEFAULT_ADS $commamproject>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{

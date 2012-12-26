@@ -39,44 +39,14 @@ using namespace std;
 #include "../OptFrame/Util/NeighborhoodStructures/NSSeqTSPOrOpt.hpp"
 #include "../OptFrame/Util/NeighborhoodStructures/NSSeqTSPSwap.hpp"
 
+using namespace TSP;
+using namespace scannerpp;
+
 int main(int argc, char **argv)
 {
-	srand(time(NULL));
-	RandGen rg(time(NULL));
-
-	// Optimal value for berlin52 is 7542
-
-	Scanner scanner(new File("./Examples/TSP/tsplib/berlin52.txt"));
-
-	TSPProblemInstance* p = new TSPProblemInstance(scanner);
-
-	RandomInitialSolutionTSP& is = * new RandomInitialSolutionTSP(p,rg);
-
-	SolutionTSP& s = is.generateSolution();
-
-	NSEnumSwap& ns = * new NSEnumSwap(p,rg);
-
-	s.print();
-
-	TSPEvaluator& eval = * new TSPEvaluator(p);
-	EvaluationTSP* e;
-
-	e = &eval.evaluate(s);
-
-	e->print();
-	cout << endl;
-
-	OptFrame<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe(rg);
-	optframe.factory.addComponent(is);
-	optframe.factory.addComponent(eval);
-
-	optframe.factory.addComponent(ns, "OptFrame:nsseq");
-	optframe.factory.addComponent(*new NSSeqTSPOrOpt<int, OPTFRAME_DEFAULT_ADS, MemTSP>);
-	optframe.factory.addComponent(*new NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS, MemTSP>);
-	optframe.factory.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP>);
-
-	optframe.execute();
-
+	OptFrame<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe;
+	optframe.loadModule(new TSPProblemModule);
+	optframe.execute("system.read example.opt");
 	cout << "Program ended successfully" << endl;
 
 	return 0;

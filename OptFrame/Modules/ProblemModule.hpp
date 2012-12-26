@@ -32,14 +32,16 @@ public:
 	{
 	}
 
-	string id()
+	virtual string id()
 	{
-		return "problem";
+		return "problem."; // leave dot to implement next module in heritage
 	}
 
-	string usage()
+	virtual string usage()
 	{
-		return "problem [load instance_path | unload]";
+		string usage = id();
+		usage.append(" [load instance_path | unload]");
+		return usage;
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
@@ -50,7 +52,7 @@ public:
 
 		string mode = scanner.next();
 		if(mode == "load")
-			return load(input, factory, dictionary, ldictionary);
+			return load(Scanner::trim(scanner.rest()), factory, dictionary, ldictionary);
 
 		if(mode == "unload")
 			return unload(factory, dictionary, ldictionary);

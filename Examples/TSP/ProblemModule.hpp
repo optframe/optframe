@@ -42,6 +42,13 @@ public:
            delete p;    
     }
 
+    string id()
+    {
+    	string parentId = ProblemModule<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::id();
+    	parentId.append("TSP");
+    	return parentId;
+    }
+
 	bool load(string filename, HeuristicFactory<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 	    File* file;
