@@ -618,6 +618,28 @@ public:
 		builders.clear();
 	}
 
+	bool drop(string type, int id)
+	{
+		if(components.count(type) > 0)
+		{
+			vector<OptFrameComponent*> v = components[type];
+
+			if(id < ((int)v.size())) // else return false?
+			{
+				if(v[id] != NULL) // else return false?
+				{
+					delete v[id];
+					v[id] = NULL;
+					components[type] = v;
+
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	void drop_all()
 	{
 		map<std::string, vector<OptFrameComponent*> >::iterator iter;

@@ -53,7 +53,7 @@ public:
 
    string id()
    {
-      return "build";
+      return "component.build";
    }
 
    //! \english Help for this module \endenglish \portuguese Ajuda para este módulo \endportuguese
@@ -67,7 +67,7 @@ public:
 
    string usage()
    {
-      string u = "build builder_and_parameters [my_method_name]\n";
+      string u = "component.build builder_and_parameters [my_method_name]\n";
       u += "to see the full list of builders type: 'list_builders OptFrame:'\n";
 
       return u;

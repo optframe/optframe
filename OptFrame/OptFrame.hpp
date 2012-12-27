@@ -152,6 +152,7 @@
 #include "Modules/ComponentBuildModule.hpp"
 #include "Modules/ComponentCheckModule.hpp"
 #include "Modules/ComponentCreateListModule.hpp"
+#include "Modules/ComponentDropModule.hpp"
 #include "Modules/ComponentDropAllModule.hpp"
 #include "Modules/ComponentEvaluateModule.hpp"
 #include "Modules/ComponentExecConstructiveModule.hpp"
@@ -161,6 +162,7 @@
 #include "Modules/ComponentListBuildersModule.hpp"
 #include "Modules/ComponentListFromPopulationModule.hpp"
 #include "Modules/ComponentListModule.hpp"
+#include "Modules/ComponentNullModule.hpp"
 #include "Modules/ComponentToStringModule.hpp"
 
 #include "Modules/FileEchoModule.hpp"
@@ -305,6 +307,7 @@ public:
 		loadModule(new ComponentBuildModule<R, ADS, M> );
 		loadModule(new ComponentCheckModule<R, ADS, M> );
 		loadModule(new ComponentCreateListModule<R, ADS, M> );
+		loadModule(new ComponentDropModule<R, ADS, M> );
 		loadModule(new ComponentDropAllModule<R, ADS, M> );
 		loadModule(new ComponentEvaluateModule<R, ADS, M> );
 		loadModule(new ComponentExecConstructiveModule<R, ADS, M> );
@@ -314,6 +317,7 @@ public:
 		loadModule(new ComponentListBuildersModule<R, ADS, M> );
 		loadModule(new ComponentListFromPopulationModule<R, ADS, M> );
 		loadModule(new ComponentListModule<R, ADS, M> );
+		loadModule(new ComponentNullModule<R, ADS, M> );
 		loadModule(new ComponentToStringModule<R, ADS, M> );
 
 		loadModule(new FileEchoModule<R, ADS, M> );
