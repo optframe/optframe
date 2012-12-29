@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_FRIEDMAN_TEST_FUNCTION_HPP_
-#define OPTFRAME_FRIEDMAN_TEST_FUNCTION_HPP_
+#ifndef OPTFRAME_FRIEDMAN_TEST_NOBLOCK_FUNCTION_HPP_
+#define OPTFRAME_FRIEDMAN_TEST_NOBLOCK_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,22 +35,22 @@
 
 #include <algorithm>
 
-class StatisticsFriedmanTestFunction : public OptFrameFunction
+class StatisticsFriedmanNoBlockTestFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~StatisticsFriedmanTestFunction()
+	virtual ~StatisticsFriedmanNoBlockTestFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "statistics.friedman_test";
+		return "statistics.friedman_noblock_test";
 	}
 
 	virtual string usage()
 	{
-		return "statistics.friedman_test( list list_of_list ) : return p-value\nnull hypothesis: values are from same distribution, if p-value < alpha reject null hypothesis.";
+		return "statistics.friedman_noblock_test( list_of_list ) : return p-value\nnull hypothesis: values are from same distribution, if p-value < alpha reject null hypothesis.";
 	}
 
 	virtual string formatNumber(double v)
@@ -63,19 +63,6 @@ public:
 	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
-
-		vector<string>* plistb = OptFrameList::readList(ldictionary, scanner);
-		vector<string>  listb;
-		if(plistb)
-		{
-			listb = vector<string>(*plistb);
-			delete plistb;
-		}
-		else
-			return NULL;
-
-		if(listb.size()==0)
-			return NULL;
 
 		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
 		vector<string>  list;
@@ -109,56 +96,31 @@ public:
 
 		//cout << list2 << endl;
 
-		if(list2.size()==0)
-			return NULL;
-
-		unsigned sizes = list2.at(0).size();
-
-		for(unsigned i=1; i<list2.size(); i++)
-			if(list2.at(i).size() != sizes)
-			{
-				cout << "statistics.friedman_test error: different sizes!" << endl;
-				return NULL;
-			}
-
-		if(listb.size() != sizes)
-		{
-			cout << "statistics.friedman_test error: block with different size!" << endl;
-			return NULL;
-		}
-
 		stringstream scommand;
-		scommand << "echo \"b = factor(c(";
-		for(unsigned b=0; b<listb.size(); b++)
-			for(unsigned i=0; i<list2.size(); i++)
+		scommand << "echo \"x <- matrix(c(";
+
+		unsigned nrows = list2.at(0).size();
+		unsigned ncols = list2.size();
+
+		for(unsigned j=0; j<nrows; j++)
+			for(unsigned i=0; i<ncols; i++)
 			{
-				scommand << "\'" << listb.at(b) << "\'";
-				if(!((i == list2.size()-1) && (b == listb.size()-1)))
+				scommand << list2.at(i).at(j);
+				if(!( (j == nrows-1) && (i == ncols-1)) )
 					scommand << ",";
 			}
-		scommand << "))\n";
 
-		scommand << "g = factor(c(";
-		for(unsigned g=0; g<sizes; g++)
-			for(unsigned i=0; i<list2.size(); i++)
-			{
-				scommand << "\'T" << i << "\'";
-				if(!((i == list2.size()-1) && (g == sizes-1)))
-					scommand << ",";
-			}
-		scommand << "))\n";
+		scommand << "), nrow=" << nrows << ", byrow=TRUE, ";
+		scommand << "dimnames = list(1 : "<< nrows << ", c(";
+		for(unsigned i=0; i<ncols; i++)
+		{
+			scommand << '\'' << 'T' << i << '\'';
+			if(i != ncols-1)
+				scommand << ',';
+		}
+		scommand << ")))\n";
 
-		scommand << "v = c(";
-		for(unsigned v=0; v<sizes; v++)
-			for(unsigned i=0; i<list2.size(); i++)
-			{
-				scommand << list2.at(i).at(v);
-				if(!((i == list2.size()-1) && (v == sizes-1)))
-					scommand << ",";
-			}
-		scommand << ")\n";
-
-		scommand << "friedman.test(v, g, b)\" | R --no-save | grep p-value";
+		scommand << "friedman.test(x)\" | R --no-save | grep p-value";
 
 		//cout << "COMMAND: '" << scommand.str() << "'" << endl;
 
@@ -210,4 +172,4 @@ public:
 	}
 };
 
-#endif /* OPTFRAME_FRIEDMAN_TEST_FUNCTION_HPP_ */
+#endif /* OPTFRAME_FRIEDMAN_TEST_NOBLOCK_FUNCTION_HPP_ */

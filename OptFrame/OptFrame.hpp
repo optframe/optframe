@@ -120,6 +120,7 @@
 
 #include "Functions/StatisticsANOVAFunction.hpp"
 #include "Functions/StatisticsAvgFunction.hpp"
+#include "Functions/StatisticsFriedmanNoBlockTestFunction.hpp"
 #include "Functions/StatisticsFriedmanTestFunction.hpp"
 #include "Functions/StatisticsMannUTestFunction.hpp"
 #include "Functions/StatisticsMaxFunction.hpp"
@@ -389,6 +390,7 @@ public:
 		// statistics
 		loadFunction(new StatisticsANOVAFunction);
 		loadFunction(new StatisticsAvgFunction);
+		loadFunction(new StatisticsFriedmanNoBlockTestFunction);
 		loadFunction(new StatisticsFriedmanTestFunction);
 		loadFunction(new StatisticsMannUTestFunction);
 		loadFunction(new StatisticsMaxFunction);
