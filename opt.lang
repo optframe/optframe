@@ -2,6 +2,9 @@
 
 <!--
 
+COPY TO: /usr/share/gtksourceview-3.0/language-specs/
+ALSO TO: /usr/share/gtksourceview-2.0/language-specs/
+
 OptFrame Script Language
 
 Syntax for .opt files
