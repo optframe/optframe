@@ -68,7 +68,13 @@ public:
 		stringstream ssdisp;
 		ssdisp << view_software << " " << filename << " &"; // detach application
 
-		system(ssdisp.str().c_str());
+		int c = system(ssdisp.str().c_str());
+
+		if(c < 0)
+		{
+			cout << "plot.view error: return is less than zero '" << c << "'" << endl;
+			return false;
+		}
 
 		return true;
 	}

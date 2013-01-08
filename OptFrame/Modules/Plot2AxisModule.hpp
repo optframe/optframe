@@ -221,7 +221,13 @@ public:
 
 		//cout << "sexec: '" << sexec.str() << "'" << endl;
 
-		system(sexec.str().c_str());
+		int c = system(sexec.str().c_str());
+
+		if(c < 0)
+		{
+			cout << "plot.2axis error: return is less than zero '" << c << "'" << endl;
+			return false;
+		}
 
 		for(unsigned i=0; i<files.size(); i++)
 		{
