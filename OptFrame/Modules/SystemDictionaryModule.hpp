@@ -41,10 +41,36 @@ public:
 		return "system.dictionary";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string)
+	bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, M>&, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string)
 	{
-		cout << "Words dictionary: " << dictionary << endl;
-		cout << "List dictionary: " << ldictionary << endl;
+		cout << "Text dictionary: " << endl;
+
+		map<string, string>::iterator iter;
+		int size1 = 0;
+		for(iter = dictionary.begin(); iter != dictionary.end(); iter++)
+		{
+			string d = iter->first;
+			string v = iter->second;
+			cout << "'" << d << "' => '" << v << "'" << endl;
+			size1++;
+		}
+		cout << size1 << " entries." << endl;
+
+		// --------------------------------
+
+		cout << "List dictionary: " << endl;
+
+		map<string, vector<string> >::iterator iter2;
+		int size2 = 0;
+		for(iter2 = ldictionary.begin(); iter2 != ldictionary.end(); iter2++)
+		{
+			string d = iter2->first;
+			vector<string>& v = iter2->second;
+			cout << "'" << d << "' => '" << v << "'" << endl;
+			size2++;
+		}
+		cout << size2 << " entries." << endl;
+
 		return true;
 	}
 
