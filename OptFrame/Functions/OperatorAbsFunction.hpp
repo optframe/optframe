@@ -58,12 +58,24 @@ public:
 
 	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >&, string body)
 	{
+		//cout << "abs: '" << body << "'" << endl;
 		Scanner scanner(body);
 
 		if(!scanner.hasNext())
 			return NULL;
 
-		double v = scanner.nextDouble();
+		double v;
+		string a = scanner.next();
+
+		try
+		{
+			v = Scanner::parseDouble(a);
+		}
+		catch(ConversionError& e)
+		{
+			cout << "abs function error: not a number! ('" << a << "')" << endl;
+			return NULL;
+		}
 
 		return new string(formatNumber(abs(v)));
 	}
