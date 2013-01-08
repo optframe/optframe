@@ -77,33 +77,51 @@ public:
 			return false;
 		}
 
-		vector<string> commands;
+		// add a comment in every line end!
+		// have to do this to avoid Scanner jumping empty lines and return a wrong 'numLine' later
+
+		string allFile = scanner->rest();
+		string newFile = "";
+		for(unsigned i=0; i<allFile.length(); i++)
+		{
+			if(allFile[i]=='\n')
+				newFile += '%';
+			newFile += allFile[i];
+		}
+
+		delete scanner;
+		scanner = new Scanner(newFile);
+
+		vector<pair<int, string> > commands;
 
 		// add all lines
 
+		int numLine = 0;
 		while(scanner->hasNext())
 		{
 			string line = Scanner::trim(removeComments(scanner->nextLine()));
+			numLine++;
+			//cout << "FILE: '" << input << "' line " << numLine << " is '" << line << "'" << endl;
 			if(line.length()==0)
 				continue;
-			commands.push_back(line);
+			commands.push_back(make_pair(numLine,line));
 		}
 
 		// merge lines with multiline blocks or lists
 
 		for(int i=0; i<(int)(commands.size()); i++)
-			if((commands[i].at(0)=='{') || (commands[i].at(0)=='['))
+			if((commands[i].second.at(0)=='{') || (commands[i].second.at(0)=='['))
 			{
 				if(i==0)
 				{
-					cout << "read module: error! block or list in the first line!" << endl;
+					cout << "read module on file '" << input << "': error! block or list in the first line!" << endl;
 					return false;
 				}
 				else
 				{
-					commands[i-1].append(" ");
-					commands[i-1].append(commands[i]);
-					commands[i] = "";
+					commands[i-1].second.append(" ");
+					commands[i-1].second.append(commands[i].second);
+					commands[i].second = "";
 				}
 			}
 
@@ -111,10 +129,15 @@ public:
 
 		string ss;
 		for(unsigned i=0; i<commands.size(); i++)
-		{
-			ss.append(commands[i]);
-			ss.append("\n");
-		}
+			if(commands[i].second != "")
+			{
+				stringstream convNum;
+				convNum << commands[i].first;
+				ss.append(convNum.str()); // include line number in the begin!
+				ss.append(" ");
+				ss.append(commands[i].second);
+				ss.append("\n");
+			}
 
 		delete scanner;
 
@@ -127,8 +150,13 @@ public:
 		{
 			string line = Scanner::trim(removeComments(scanner->nextLine()));
 
-			if(line.length()==0)
+			Scanner scanNum(line);
+			int numLine = scanNum.nextInt();
+
+			if(!scanNum.hasNext()) //(line.length()==0)
 				continue;
+
+			line = Scanner::trim(scanNum.rest());
 
 			int lists  = 0;
 			int blocks = 0;
@@ -149,6 +177,12 @@ public:
 			{
 				string line2 = Scanner::trim(removeComments(scanner->nextLine()));
 
+				Scanner scanNum2(line2);
+				//int numLine2 = scanNum2.nextInt();
+				scanNum2.nextInt(); // drop line number
+
+				line2 = Scanner::trim(scanNum2.rest());
+
 				for(unsigned int c = 0; c < line2.length(); c++)
 				{
 					if(line2.at(c)=='[')
@@ -165,13 +199,13 @@ public:
 			}
 
 			if((lists == 0) && (blocks == 0))
-				commands.push_back(line);
+				commands.push_back(make_pair(numLine, line));
 			else
 			{
 				if(lists > 0)
-					cout << "read error: wrong number of '[' and ']' => " << lists  << " '[' left open!" << endl;
+					cout << "read error on line " << numLine << " of file '" << input << "': wrong number of '[' and ']' => " << lists  << " '[' left open!" << endl;
 				if(blocks > 0)
-					cout << "read error: wrong number of '{' and '}' => " << blocks << " '{' left open!" << endl;
+					cout << "read error on line " << numLine << " of file '" << input << "': wrong number of '{' and '}' => " << blocks << " '{' left open!" << endl;
 
 				delete scanner;
 				return false;
@@ -180,13 +214,14 @@ public:
 
 		for(unsigned int i = 0; i < commands.size(); i++)
 		{
-			string line = commands[i];
+			string line = commands[i].second;
+			int numLine = commands[i].first;
 
 			Scanner s2(line);
 
 			if(!s2.hasNext()) // no command found in the line
 			{
-				cout << "read module: strange error! Empty command with line '" << line << "'" << endl;
+				cout << "read module on line " << numLine << " of file '" << input << "': strange error! Empty command with line '" << line << "'" << endl;
 				return false;
 			}
 
@@ -204,7 +239,7 @@ public:
 
 					if(!after_preprocess)
 					{
-						cout << "read module: preprocessing error!" << endl;
+						cout << "read module on line " << numLine << " of file '" << input << "': preprocessing error!" << endl;
 						return false;
 					}
 
@@ -213,7 +248,7 @@ public:
 					if(!all_modules[i]->run(all_modules, allFunctions, factory, dictionary, ldictionary, *after_preprocess))
 					{
 						delete after_preprocess;
-						cout << "read module: error in module '" << command << "'" << endl;
+						cout << "read module on line " << numLine << " of file '" << input << "': error in module '" << command << "'" << endl;
 						return false;
 					}
 
@@ -230,7 +265,7 @@ public:
 					break;
 				else
 				{
-					cout << "read module error: command '" << command << "' not found!" << endl;
+					cout << "read module error on line " << numLine << " of file '" << input << "': command '" << command << "' not found!" << endl;
 					return false;
 				}
 			}
