@@ -63,6 +63,7 @@ public:
 
 	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
 	{
+		//cout << "compare: '" << body << "'" << endl;
 		Scanner scanner(body);
 
 		if(!scanner.hasNext())
@@ -114,7 +115,7 @@ public:
 				return new string(formatBool(a<=b));
 		}
 
-		cout << "compare function: no such comparison signal '" << signal << "'" << endl;
+		cout << "compare function: no such comparison '" << sa << "' '" << signal << "' '" << sb << "'" << endl;
 
 		return NULL;
 	}
