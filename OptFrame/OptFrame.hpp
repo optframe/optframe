@@ -497,7 +497,7 @@ public:
 				}
 
 			if (notfound)
-				cout << "Sorry, i couldn't understand the command '" << command << "'." << endl << "Please, type 'help' or type the command again." << endl;
+				cout << "Sorry, i couldn't understand the command '" << command << "'." << endl << "Please, type 'system.help' or type the command again." << endl;
 		}
 
 		cout << "Goodbye." << endl;
@@ -558,7 +558,7 @@ public:
 			}
 
 		if (notfound)
-			cout << "Sorry, i couldn't understand the command '" << command << "'." << endl << "Please, type 'help' or type the command again." << endl;
+			cout << "Sorry, i couldn't understand the command '" << command << "'." << endl << "Please, type 'system.help' or type the command again." << endl;
 
 		//cout << "Goodbye." << endl;
 	}

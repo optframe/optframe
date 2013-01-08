@@ -1,5 +1,13 @@
 % OptFrame .opt definitions file
 
+if operator.compare( _definitions_opt == true )
+{
+   echo File definitions.opt already included!;
+   error;
+}
+
+system.silent_define _definitions_opt true
+
 module.create_raw module.rename [ $module_name , $new_name ] {
    module.create_raw $new_name [ ] {
       system.preprocess _${new_name}_text $module_name $_all_params_$new_name;

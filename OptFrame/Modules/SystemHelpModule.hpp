@@ -46,7 +46,7 @@ public:
 		cout << "Available modules are:" << endl;
 		for(unsigned int i=0;i<all_modules.size();i++)
 			cout << all_modules[i]->id() << endl;
-		cout << "Type 'usage module_name' to learn how to use the module." << endl;
+		cout << "Type 'system.usage module_name' to learn how to use the module." << endl;
 
 		return true;
 	}
