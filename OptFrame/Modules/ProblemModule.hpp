@@ -48,7 +48,10 @@ public:
 	{
 		Scanner scanner(input);
 		if(!scanner.hasNext())
+		{
+			cout << "USAGE: " << usage() << endl;
 			return false;
+		}
 
 		string mode = scanner.next();
 		if(mode == "load")
