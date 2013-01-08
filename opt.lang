@@ -97,6 +97,14 @@ Date:   Jan./2013
       <match>OptFrame:[a-zA-Z_:]*</match>
     </context>
 
+    <context id="small-names" style-ref="type">
+      <keyword>Constructive</keyword>
+      <keyword>Evaluator</keyword>
+      <keyword>NS</keyword>
+      <keyword>NSSeq</keyword>
+      <keyword>NSEnum</keyword>
+    </context>
+
     <context id="commands" style-ref="keyword">
       <keyword>if</keyword>
       <keyword>else</keyword>
@@ -192,6 +200,7 @@ Date:   Jan./2013
         <context ref="commands"/>
 
         <context ref="component-families"/>
+        <context ref="small-names"/>
 
         <context ref="use-minus"/>
 
