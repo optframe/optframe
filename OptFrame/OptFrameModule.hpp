@@ -200,7 +200,7 @@ public:
 				}
 				else
 				{
-					cout << "preprocessing error in function '" << last << "'" << endl;
+					cout << "module preprocessing error in function '" << last << "'" << endl;
 					return NULL; // error in valid function!
 				}
 			}
