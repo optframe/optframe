@@ -90,7 +90,7 @@ Date:   Jan./2013
     </context>
 
     <context id="function" style-ref="special">
-      <match>([a-zA-Z_]*\()</match>
+      <match>([a-zA-Z_\.]*\()</match>
     </context>
 
     <context id="component-families" style-ref="type">
