@@ -139,6 +139,7 @@ public:
 
 
 			Solution<R, ADS>* s2 = &h->search(s, timelimit, tf);
+			delete &s;
 			t_now = t.now();
 			Evaluation< M > & e2 = eval->evaluate(*s2);
 			fo_now = e2.evaluation();

@@ -41,7 +41,7 @@ private:
 public:
 
 	TestSolution(R& _r) :
-      Solution<R, ADS> (_r, * new OPTFRAME_DEFAULT_ADS)
+      Solution<R, ADS> (_r)
    {
       testsolution_objects++;
       testsolution_objects_nodecrement++;
