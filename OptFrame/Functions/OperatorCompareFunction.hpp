@@ -65,21 +65,26 @@ public:
 	{
 		//cout << "compare: '" << body << "'" << endl;
 		Scanner scanner(body);
+		scanner.useSeparators("=+><!");
 
 		if(!scanner.hasNext())
 			return NULL;
 
-		string sa     = scanner.next();
+		string sa     = Scanner::trim(scanner.next());
+		//cout << "SA: " << sa << endl;
 
+		scanner.useDefaultSeparators();
 		if(!scanner.hasNext())
 			return NULL;
 
 		string signal = scanner.next();
+		//cout << "OP: " << signal << endl;
 
 		if(!scanner.hasNext())
 			return NULL;
 
-		string sb     = scanner.next();
+		string sb     = Scanner::trim(scanner.rest());
+		//cout << "SB: " << sb << endl;
 
 		if((signal == "==") || (signal == "!=")) // compare as string
 		{
