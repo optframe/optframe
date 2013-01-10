@@ -73,6 +73,21 @@ public:
 	{
 		// will not need this check after better implementation of dictionary with '$' before definitions
 
+		bool number = true;
+		try
+		{
+			Scanner::parseDouble(definition);
+		}
+		catch(ConversionError& e)
+		{
+			number = false;
+		}
+		if(number)
+		{
+			cout << "OptFrameModule defineText: cannot define a number! ('" << definition << "')" << endl;
+			return false;
+		}
+
 		Scanner scanner(value);
 
 		while(scanner.hasNext())
@@ -92,6 +107,21 @@ public:
 
 	bool defineList(string definition, vector<string>& list, map< string,vector<string> >& ldictionary)
 	{
+		bool number = true;
+		try
+		{
+			Scanner::parseDouble(definition);
+		}
+		catch(ConversionError& e)
+		{
+			number = false;
+		}
+		if(number)
+		{
+			cout << "OptFrameModule defineList: cannot define a number! ('" << definition << "')" << endl;
+			return false;
+		}
+
 		ldictionary[definition] = list;
 
 		return true;

@@ -103,7 +103,7 @@ public:
 			return false;
 		}
 
-		string value = scanner.rest();
+		string value = Scanner::trim(scanner.rest());
 		vector<string> vv;
 		vv.push_back(value);
 

@@ -50,7 +50,7 @@ public:
 
 	virtual string usage()
 	{
-		return "operator.in( value list ) : return true if value is inside list, false otherwise";
+		return "operator.in( list value ) : return true if value is inside list, false otherwise";
 	}
 
 	string formatBool(bool b)
@@ -81,8 +81,6 @@ public:
 		if(!scanner.hasNext())
 			return NULL;
 
-		string value = scanner.next();
-
 		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
 		vector<string>  list;
 		if(plist)
@@ -91,7 +89,15 @@ public:
 			delete plist;
 		}
 		else
+		{
+			cout << "function in: '" << body << "'" << endl;
 			return NULL;
+		}
+
+		if(!scanner.hasNext())
+			return NULL;
+
+		string value = Scanner::trim(scanner.rest());
 
 		return new string(formatBool(in(value, list)));
 	}
