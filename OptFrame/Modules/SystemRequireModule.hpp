@@ -52,6 +52,8 @@ public:
 			return false;
 		}
 
+		scanner.useSeparators(" \t\r\n;"); // prevent errors with semicolon
+
 		string module_name = scanner.next();
 
 		for(unsigned i=0; i<allModules.size(); i++)

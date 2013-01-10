@@ -218,6 +218,7 @@ public:
 			int numLine = commands[i].first;
 
 			Scanner s2(line);
+			s2.useSeparators(" \t\r\n;"); // prevent errors with semicolon
 
 			if(!s2.hasNext()) // no command found in the line
 			{
