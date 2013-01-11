@@ -210,6 +210,14 @@ public:
 
 	string* run(vector<OptFrameFunction*>& allFunctions, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
+		// CHECK IF EXPLICIT LIST IS PASSED AS PARAMETER (CAN'T DO THIS!!!) TODO: I DONT KNOW WHY =(
+		for(unsigned i=0; i<input.size(); i++)
+			if(input.at(i)=='[')
+			{
+				cout << "function '" << id() << "' (created) error: can't have explicit list as parameter, sorry! Please use 'list.silent_define' before calling this!" << endl;
+				return false;
+			}
+
 		string backup_input = input;
 
 		Scanner scanner(input);
