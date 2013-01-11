@@ -171,6 +171,7 @@
 #include "Modules/FileToListModule.hpp"
 
 #include "Modules/ListAddModule.hpp"
+#include "Modules/ListPushBackModule.hpp"
 #include "Modules/ListRemoveModule.hpp"
 #include "Modules/ListSilentDefineModule.hpp"
 #include "Modules/ListSortModule.hpp"
@@ -327,6 +328,7 @@ public:
 		loadModule(new FileToListModule<R, ADS, M> );
 
 		loadModule(new ListAddModule<R, ADS, M> );
+		loadModule(new ListPushBackModule<R, ADS, M> );
 		loadModule(new ListRemoveModule<R, ADS, M> );
 		loadModule(new ListSilentDefineModule<R, ADS, M> );
 		loadModule(new ListSortModule<R, ADS, M> );
