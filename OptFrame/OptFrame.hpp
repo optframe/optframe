@@ -157,6 +157,7 @@
 #include "Modules/ComponentDropAllModule.hpp"
 #include "Modules/ComponentEvaluateModule.hpp"
 #include "Modules/ComponentExecConstructiveModule.hpp"
+#include "Modules/ComponentExecLocalSearchModule.hpp"
 #include "Modules/ComponentExecModule.hpp"
 #include "Modules/ComponentExportLogModule.hpp"
 #include "Modules/ComponentExportModule.hpp"
@@ -312,6 +313,7 @@ public:
 		loadModule(new ComponentDropAllModule<R, ADS, M> );
 		loadModule(new ComponentEvaluateModule<R, ADS, M> );
 		loadModule(new ComponentExecConstructiveModule<R, ADS, M> );
+		loadModule(new ComponentExecLocalSearchModule<R, ADS, M> );
 		loadModule(new ComponentExecModule<R, ADS, M> );
 		loadModule(new ComponentExportLogModule<R, ADS, M> );
 		loadModule(new ComponentExportModule<R, ADS, M> );
