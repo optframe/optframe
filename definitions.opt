@@ -1,5 +1,9 @@
 % OptFrame .opt definitions file
 
+% -------------------------------------------------------------
+% safe inclusion
+% -------------------------------------------------------------
+
 if operator.compare( _definitions_opt == true )
 {
    echo File definitions.opt already included!;
@@ -7,6 +11,10 @@ if operator.compare( _definitions_opt == true )
 }
 
 system.silent_define _definitions_opt true
+
+% -------------------------------------------------------------
+% create auxiliar modules and functions
+% -------------------------------------------------------------
 
 module.create_raw module.rename [ $module_name , $new_name ] {
    module.create_raw $new_name [ ] {
@@ -19,6 +27,15 @@ module.create_raw module.rename [ $module_name , $new_name ] {
 module.create_raw function.rename [ $function_name , $new_function_name ] {
    function.create_raw $new_function_name [ ] = $function_name ( $_all_params_$new_function_name );
 }
+
+function.create_raw list.first  [ $list ] = list.element( 1 $list )
+function.create_raw list.second [ $list ] = list.element( 2 $list )
+function.create_raw list.third  [ $list ] = list.element( 3 $list )
+function.create_raw list.last   [ $list ] = list.element( length($list) $list )
+
+% -------------------------------------------------------------
+% import prefix of modules
+% -------------------------------------------------------------
 
 system.use system
 use file -echo           % file.echo conflict with system.echo, renamed to 'echo_to_file'
@@ -67,9 +84,9 @@ module.rename component.list              list_components
 module.rename randgen.interval            random_number_interval
 
 
-
-
-%%% DEFINITIONS
+% -------------------------------------------------------------
+% define smaller names for components
+% -------------------------------------------------------------
 
 silent_define Constructive OptFrame:Constructive
 silent_define Evaluator    OptFrame:Evaluator
@@ -77,6 +94,10 @@ silent_define NS           OptFrame:NS
 silent_define NSSeq        OptFrame:NS:NSSeq
 silent_define NSEnum       OptFrame:NS:NSSeq:NSEnum
 
+
+% -------------------------------------------------------------
+% create other modules and functions
+% -------------------------------------------------------------
 
 create_module print [ $component , $id ] {
   to_string $component $id optframe_str;
@@ -112,4 +133,5 @@ create_module print_list_to_file [ $file , $list ] {
      echo_to_file $file $e
   };
   undefine _ilist
-} 
+}
+
