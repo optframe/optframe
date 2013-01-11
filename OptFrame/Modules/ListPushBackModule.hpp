@@ -75,14 +75,17 @@ public:
 		Scanner scanList(list_name);
 
 		vector<string>  list;
-		vector<string>* p_list = OptFrameList::readList(ldictionary, scanner);
+		vector<string>* p_list = OptFrameList::readList(ldictionary, scanList);
 		if(p_list)
 		{
 			list = vector<string>(*p_list);
 			delete p_list;
 		}
 		else
+		{
+			cout << "list.push_back error reading list '" << list_name << "'" << endl;
 			return false;
+		}
 
 		list.push_back(element);
 
