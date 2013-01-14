@@ -137,6 +137,17 @@ public:
 		ldictionary.erase(definition);
 	}
 
+	bool testUnused(string id, Scanner& scanner)
+	{
+		if(scanner.hasNext())
+		{
+			cout << "Error in module '" << id << "': unused text '" << scanner.rest() << "'" << endl;
+			return false;
+		}
+
+		return true;
+	}
+
 	virtual bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input) = 0;
 
 	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)

@@ -276,6 +276,9 @@ public:
 			}
 		}
 
+		if(!OptFrameModule<R, ADS, M>::testUnused(id(), scanner))
+			return false;
+
 		return true;
 	}
 
