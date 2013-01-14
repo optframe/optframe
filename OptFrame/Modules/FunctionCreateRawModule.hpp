@@ -215,7 +215,7 @@ public:
 			if(input.at(i)=='[')
 			{
 				cout << "function '" << id() << "' (created) error: can't have explicit list as parameter, sorry! Please use 'list.silent_define' before calling this!" << endl;
-				return false;
+				return NULL;
 			}
 
 		string backup_input = input;
