@@ -101,6 +101,10 @@ public:
 				return false;
 		}
 
+		// check if all the text was used!
+		if(!OptFrameModule<R, ADS, M>::testUnused(id(), scanner))
+			return false;
+
 		if (condition)
 		{
 			if(!OptFrameModule<R, ADS, M>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(lif)))

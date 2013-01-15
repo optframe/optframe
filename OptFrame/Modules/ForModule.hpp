@@ -138,6 +138,10 @@ public:
 		else
 			return false;
 
+		// check if all the text was used!
+		if(!OptFrameModule<R, ADS, M>::testUnused(id(), scanner))
+			return false;
+
 		if(option == "to")
 			for (int v = value1; v <= value2; v++)
 			{

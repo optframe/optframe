@@ -96,6 +96,9 @@ public:
 		else
 			return false;
 
+		// check if all the text was used!
+		if(!OptFrameModule<R, ADS, M>::testUnused(id(), scanner))
+			return false;
 
 		string* scond1 = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, boolean_expr.str());
 

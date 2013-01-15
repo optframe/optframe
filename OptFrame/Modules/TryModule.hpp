@@ -115,6 +115,8 @@ public:
 				return false;
 		}
 
+		if(!OptFrameModule<R, ADS, M>::testUnused(id(), scanner))
+			return false;
 
 		bool ok = true;
 
