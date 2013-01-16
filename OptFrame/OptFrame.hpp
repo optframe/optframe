@@ -118,6 +118,8 @@
 #include "Functions/OperatorInFunction.hpp"
 #include "Functions/OperatorLogicFunction.hpp"
 
+#include "Functions/StatisticsArgMaxFunction.hpp"
+#include "Functions/StatisticsArgMinFunction.hpp"
 #include "Functions/StatisticsANOVAFunction.hpp"
 #include "Functions/StatisticsAvgFunction.hpp"
 #include "Functions/StatisticsFriedmanNoBlockTestFunction.hpp"
@@ -392,6 +394,8 @@ public:
 		loadFunction(new OperatorLogicFunction);
 
 		// statistics
+		loadFunction(new StatisticsArgMaxFunction);
+		loadFunction(new StatisticsArgMinFunction);
 		loadFunction(new StatisticsANOVAFunction);
 		loadFunction(new StatisticsAvgFunction);
 		loadFunction(new StatisticsFriedmanNoBlockTestFunction);

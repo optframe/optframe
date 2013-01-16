@@ -68,7 +68,10 @@ public:
 			return NULL;
 
 		if(list.size()==0)
+		{
+			cout << "function " << id() << " error: empty list!" << endl;
 			return NULL;
+		}
 
 		double max = Scanner::parseDouble(list[0]);
 		for(unsigned i=1; i<list.size(); i++)

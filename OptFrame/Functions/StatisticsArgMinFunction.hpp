@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_MIN_FUNCTION_HPP_
-#define OPTFRAME_MIN_FUNCTION_HPP_
+#ifndef OPTFRAME_ARG_MIN_FUNCTION_HPP_
+#define OPTFRAME_ARG_MIN_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,22 +35,22 @@
 
 #include <algorithm>
 
-class StatisticsMinFunction : public OptFrameFunction
+class StatisticsArgMinFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~StatisticsMinFunction()
+	virtual ~StatisticsArgMinFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "statistics.min";
+		return "statistics.argmin";
 	}
 
 	virtual string usage()
 	{
-		return "statistics.min( list ) : return list minimum";
+		return "statistics.argmin( list ) : return index of list minimum";
 	}
 
 	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
@@ -74,15 +74,21 @@ public:
 		}
 
 		double min = Scanner::parseDouble(list[0]);
+		unsigned imin = 0;
 		for(unsigned i=1; i<list.size(); i++)
 		{
 			double v = Scanner::parseDouble(list[i]);
 			if(v < min)
+			{
 				min = v;
+				imin = i;
+			}
 		}
 
+		imin++; // list range is [1..list_length]
+
 		stringstream ss;
-		ss << min;
+		ss << imin;
 
 		string smin = ss.str();
 
@@ -90,4 +96,4 @@ public:
 	}
 };
 
-#endif /* OPTFRAME_MIN_FUNCTION_HPP_ */
+#endif /* OPTFRAME_ARG_MIN_FUNCTION_HPP_ */

@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_MIN_FUNCTION_HPP_
-#define OPTFRAME_MIN_FUNCTION_HPP_
+#ifndef OPTFRAME_ARG_MAX_FUNCTION_HPP_
+#define OPTFRAME_ARG_MAX_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -35,22 +35,22 @@
 
 #include <algorithm>
 
-class StatisticsMinFunction : public OptFrameFunction
+class StatisticsArgMaxFunction : public OptFrameFunction
 {
 public:
 
-	virtual ~StatisticsMinFunction()
+	virtual ~StatisticsArgMaxFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "statistics.min";
+		return "statistics.argmax";
 	}
 
 	virtual string usage()
 	{
-		return "statistics.min( list ) : return list minimum";
+		return "statistics.argmax( list ) : return index of list maximum";
 	}
 
 	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
@@ -73,21 +73,27 @@ public:
 			return NULL;
 		}
 
-		double min = Scanner::parseDouble(list[0]);
+		double max = Scanner::parseDouble(list[0]);
+		unsigned imax = 0;
 		for(unsigned i=1; i<list.size(); i++)
 		{
 			double v = Scanner::parseDouble(list[i]);
-			if(v < min)
-				min = v;
+			if(v > max)
+			{
+				max = v;
+				imax = i;
+			}
 		}
 
+		imax++; // list range is [1..list_length]
+
 		stringstream ss;
-		ss << min;
+		ss << imax;
 
-		string smin = ss.str();
+		string smax = ss.str();
 
-		return new string(smin);
+		return new string(smax);
 	}
 };
 
-#endif /* OPTFRAME_MIN_FUNCTION_HPP_ */
+#endif /* OPTFRAME_ARG_MAX_FUNCTION_HPP_ */
