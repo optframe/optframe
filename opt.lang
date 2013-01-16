@@ -32,6 +32,7 @@ Date:   Jan./2013
     <style id="decimal"           _name="Decimal number"        map-to="def:decimal"/>
     <style id="boolean"           _name="Boolean value"         map-to="def:boolean"/>
     <style id="special"           _name="Special char"          map-to="def:special-char"/>
+    <style id="constant"          _name="CONSTANT"              map-to="def:special-constant"/>
   </styles>
 
   <definitions>
@@ -188,6 +189,10 @@ Date:   Jan./2013
       <keyword>false</keyword>
     </context>
 
+    <context id="constant" style-ref="constant">
+      <match>([a-z]*[\.]|[ ])[A-Z][A-Z0-9_]*[ ]</match>
+    </context>
+
     <!--Main context-->
     <context id="opt" class="no-spell-check">
       <include>
@@ -217,6 +222,7 @@ Date:   Jan./2013
         <context ref="float"/>
         <context ref="decimal"/>
         <context ref="boolean"/>
+        <context ref="constant"/>
 
       </include>
     </context>

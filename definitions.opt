@@ -135,3 +135,9 @@ create_module print_list_to_file [ $file , $list ] {
   undefine _ilist
 }
 
+% --------------------- CONSTANTS ---------------------- 
+
+list.silent_define list.EMPTY [ ]
+
+% ----------------------- EOF --------------------------
+
