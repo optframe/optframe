@@ -302,11 +302,14 @@ public:
 		}
 	}
 
+	// FUNCTIONS ALWAYS NEED DEFAULT PREPROCESSING!!
+	/*
 	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&,  map< string,vector<string> >&, string input)
 	{
 		// disable preprocess!!
 		return new string(input);
 	}
+	*/
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
