@@ -276,7 +276,7 @@ public:
 
 			if (!exec_command(all_modules, allFunctions, factory, dictionary, ldictionary, command))
 			{
-				cout << "Module (just created) '" << id() << "' error in command: " << command << endl;
+				cout << "raw_module '" << id() << "' error in command: " << command << endl;
 				return false;
 			}
 		}
@@ -397,7 +397,7 @@ public:
 
 		if (m != NULL)
 		{
-			cout << "error: module with name '" << name << "' already exists!" << endl;
+			cout << "module.create_raw error: module with name '" << name << "' already exists!" << endl;
 			return false;
 		}
 		else

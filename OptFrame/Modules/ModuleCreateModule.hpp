@@ -241,7 +241,7 @@ public:
 		for(unsigned i=0; i<input.size(); i++)
 			if(input.at(i)=='[')
 			{
-				cout << "module '" << id() << "' (created) error: can't have explicit list as parameter! use 'silent_define_list' before calling this!" << endl;
+				cout << "dynamic_module '" << id() << "' error: can't have explicit list as parameter! use 'silent_define_list' before calling this!" << endl;
 				return false;
 			}
 
@@ -282,7 +282,7 @@ public:
 
 			if (!exec_command(all_modules, allFunctions, factory, dictionary, ldictionary, command))
 			{
-				cout << "Module (just created) '" << id() << "' error in command: '" << command << "'" << endl;
+				cout << "dynamic_module '" << id() << "' error in command: '" << command << "'" << endl;
 				return false;
 			}
 		}
@@ -391,7 +391,7 @@ public:
 
 		if (m != NULL)
 		{
-			cout << "error: module with name '" << name << "' already exists!" << endl;
+			cout << "module.create error: module with name '" << name << "' already exists!" << endl;
 			return false;
 		}
 		else

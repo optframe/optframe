@@ -214,7 +214,7 @@ public:
 		for(unsigned i=0; i<input.size(); i++)
 			if(input.at(i)=='[')
 			{
-				cout << "function '" << id() << "' (created) error: can't have explicit list as parameter, sorry! Please use 'list.silent_define' before calling this!" << endl;
+				cout << "raw_function '" << id() << "' error: can't have explicit list as parameter, sorry! Please use 'list.silent_define' before calling this!" << endl;
 				return NULL;
 			}
 
@@ -288,7 +288,7 @@ public:
 			}
 			else
 			{
-				cout << "preprocessing error in function '" << name << "'" << endl;
+				cout << "preprocessing error in raw_function '" << name << "'" << endl;
 				return NULL; // error in valid function!
 			}
 		}
