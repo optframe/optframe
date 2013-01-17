@@ -37,17 +37,17 @@ public:
 	{
 	}
 
-	virtual Move<R, ADS, M>& move(const R&) = 0;
+	virtual Move<R, ADS, M>& move(const R&, const ADS&) = 0;
 
-   NSIterator<R, ADS, M>& getIterator(const Solution<R, ADS>& s)
-   {
-      return getIterator(s.getR());
-   }
-
-	virtual NSIterator<R, ADS, M>& getIterator(const R&) = 0;
-	virtual NSIterator<R, ADS, M>& getIterator(const M&, const R& r)
+	NSIterator<R, ADS, M>& getIterator(const Solution<R, ADS>& s)
 	{
-		return getIterator(r);
+		return getIterator(s.getR(), s.getADS());
+	}
+
+	virtual NSIterator<R, ADS, M>& getIterator(const R&, const ADS&) = 0;
+	virtual NSIterator<R, ADS, M>& getIterator(const M&, const R& r, const ADS& ads)
+	{
+		return getIterator(r, ads);
 	}
 
    static string idComponent()

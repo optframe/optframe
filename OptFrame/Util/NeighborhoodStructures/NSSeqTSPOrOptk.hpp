@@ -52,7 +52,7 @@ public:
    using NSSeq<vector<T> , ADS, M>::move;
    using NSSeq<vector<T> , ADS, M>::getIterator;
 
-   Move<Route, ADS, M>& move(const Route& rep)
+   Move<Route, ADS, M>& move(const Route& rep, const ADS&)
    {
       int n = rep.size();
 
@@ -68,7 +68,7 @@ public:
       return *new MoveTSPOrOptk<T, ADS, M> (i, j, k);
    }
 
-   virtual NSIterator<Route, ADS, M>& getIterator(const Route& r)
+   virtual NSIterator<Route, ADS, M>& getIterator(const Route& r, const ADS&)
    {
       return *new NSIteratorTSPOrOptk<T, ADS, M> (r.size(), k);
    }

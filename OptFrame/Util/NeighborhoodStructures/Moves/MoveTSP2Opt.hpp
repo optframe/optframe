@@ -57,13 +57,13 @@ public:
 		return p2;
 	}
 
-	bool canBeApplied(const Route& rep)
+	bool canBeApplied(const Route& rep, const ADS&)
 	{
 		bool all_positive = (p1 >= 0) && (p2 >= 0);
 		return all_positive && (rep.size() >= 2);
 	}
 
-	Move<Route, ADS, M>& apply(Route& rep)
+	Move<Route, ADS, M>& apply(Route& rep, ADS&)
 	{
 
 		reverse(rep.begin() + p1, rep.begin() + p2);

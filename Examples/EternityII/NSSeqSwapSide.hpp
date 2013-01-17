@@ -32,15 +32,15 @@
 
 using namespace std;
 
-class MoveSwapSide: public Move<RepEtII, MemEtII>
+class MoveSwapSide: public Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
 {
 private:
 	int x1, y1, x2, y2;
 
 public:
 
-	using Move<RepEtII, MemEtII>::apply; // prevents name hiding
-	using Move<RepEtII, MemEtII>::canBeApplied; // prevents name hiding
+	using Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::apply; // prevents name hiding
+	using Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::canBeApplied; // prevents name hiding
 
 	MoveSwapSide(int _x1, int _y1, int _x2, int _y2) :
 		x1(_x1), y1(_y1), x2(_x2), y2(_y2)
@@ -51,7 +51,7 @@ public:
 	{
 	}
 
-	bool canBeApplied(const RepEtII& rep)
+	bool canBeApplied(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		bool left_upper = ((x1 == 0) && (y1 == 0)) || ((x2 == 0) && (y2 == 0));
 		bool right_upper = ((x1 == 0) && (y1 == (int)rep.getNumCols() - 1)) || ((x2 == 0) && (y2 == (int)rep.getNumCols() - 1));
@@ -61,7 +61,7 @@ public:
 		return !left_upper && !right_upper && !left_lower && !right_lower;
 	}
 
-	Move<RepEtII, MemEtII>& apply(RepEtII& rep)
+	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS&)
 	{
 		Piece p = rep(x1, y1);
 		rep(x1, y1) = rep(x2, y2);
@@ -106,7 +106,7 @@ public:
 		return *new MoveSwapSide(x2, y2, x1, y1);
 	}
 
-	Move<RepEtII, MemEtII>& apply(MemEtII& mem, RepEtII& rep)
+	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& apply(MemEtII& mem, RepEtII& rep, OPTFRAME_DEFAULT_ADS& ads)
 	{
 		int f = 0;
 		if (((y1 - 1) >= 0) && (rep(x1, y1).left == rep(x1, y1 - 1).right))
@@ -128,7 +128,7 @@ public:
 		if (((x2 + 1) < (int)rep.getNumRows()) && (rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
 			g++;
 
-		Move<RepEtII, MemEtII>& rev = apply(rep);
+		Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& rev = apply(rep, ads);
 
 		int f2 = 0;
 		if (((y1 - 1) >= 0) && (rep(x1, y1).left == rep(x1, y1 - 1).right))
@@ -156,7 +156,7 @@ public:
 		return rev;
 	}
 
-	virtual bool operator==(const Move<RepEtII, MemEtII>& _m) const
+	virtual bool operator==(const Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& _m) const
 	{
 		const MoveSwapSide& m = (const MoveSwapSide&) _m;
 		return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2);
@@ -251,19 +251,19 @@ public:
 		return x2 >= nRows;
 	}
 
-	virtual Move<RepEtII, MemEtII>& current()
+	virtual Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& current()
 	{
 		return *new MoveSwapSide(x1, y1, x2, y2);
 	}
 };
 
-class NSSeqSwapSide: public NSSeq<RepEtII, MemEtII>
+class NSSeqSwapSide: public NSSeq<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
 {
 private:
 	RandGen& rg;
 public:
 
-	using NSSeq<RepEtII, MemEtII>::move; // prevents name hiding
+	using NSSeq<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::move; // prevents name hiding
 
 	NSSeqSwapSide(RandGen& _rg): rg(_rg)
 	{
@@ -273,7 +273,7 @@ public:
 	{
 	}
 
-	virtual Move<RepEtII, MemEtII>& move(const RepEtII& rep)
+	virtual Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& move(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		int x1, y1;
 
@@ -305,7 +305,7 @@ public:
 		return *new MoveSwapSide(x1, y1, x2, y2);
 	}
 
-	virtual NSIterator<RepEtII, MemEtII>& getIterator(const RepEtII& rep)
+	virtual NSIterator<RepEtII, MemEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		return *new NSIteratorSwapSide(rep.getNumRows(), rep.getNumCols());
 	}

@@ -39,14 +39,14 @@
 
 int numEvs = 0;
 
-class EtIIEvaluator: public Evaluator<RepEtII, MemEtII>
+class EtIIEvaluator: public Evaluator<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
 {
 private:
 	EtIIProblemInstance& pEtII;
 
 public:
 
-	using Evaluator<RepEtII, MemEtII>::evaluate;
+	using Evaluator<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::evaluate;
 
 	EtIIEvaluator(EtIIProblemInstance& _pEtII) : // If necessary, add more parameters
 		pEtII(_pEtII)
@@ -54,7 +54,7 @@ public:
 		// Put the rest of your code here
 	}
 
-	EvaluationEtII& evaluate(const RepEtII& rep)
+	EvaluationEtII& evaluate(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		//counting evaluations.
 		numEvs++;
@@ -81,7 +81,7 @@ public:
 	}
 
 
-	virtual void evaluate(Evaluation<MemEtII>& e, const RepEtII&)
+	virtual void evaluate(Evaluation<MemEtII>& e, const RepEtII&, const OPTFRAME_DEFAULT_ADS&)
 	{
 		e.setObjFunction(e.getObjFunction() + e.getEM());
 		e.getEM() = 0;

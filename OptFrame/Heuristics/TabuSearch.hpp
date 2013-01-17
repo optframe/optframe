@@ -197,7 +197,7 @@ public:
 
 	Move<R, ADS, M>* tabuBestMove(Solution<R, ADS>& s, Evaluation<M>& e, const vector<Move<R, ADS, M>*>& tabuList)
 	{
-		NSIterator<R, ADS, M>& it = nsSeq.getIterator(e.getEM(), s.getR());
+		NSIterator<R, ADS, M>& it = nsSeq.getIterator(e.getEM(), s.getR(), s.getADS());
 
 		it.first();
 

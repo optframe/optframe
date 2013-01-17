@@ -32,7 +32,7 @@
 
 using namespace std;
 
-class MoveSwapRotateCenter: public Move<RepEtII, MemEtII>
+class MoveSwapRotateCenter: public Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
 {
 private:
 	int x1, y1, x2, y2;
@@ -40,8 +40,8 @@ private:
 
 public:
 
-	using Move<RepEtII, MemEtII>::apply; // prevents name hiding
-	using Move<RepEtII, MemEtII>::canBeApplied; // prevents name hiding
+	using Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::apply; // prevents name hiding
+	using Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::canBeApplied; // prevents name hiding
 
 	MoveSwapRotateCenter(int _x1, int _y1, int _x2, int _y2) :
 		x1(_x1), y1(_y1), x2(_x2), y2(_y2)
@@ -61,12 +61,12 @@ public:
 	{
 	}
 
-	bool canBeApplied(const RepEtII& rep)
+	bool canBeApplied(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		return !((x1 == x2) && (y1 == y2));
 	}
 
-	Move<RepEtII, MemEtII>& apply(RepEtII& rep)
+	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS&)
 	{
 		Piece p = rep(x1, y1);
 		rep(x1, y1) = rep(x2, y2);
@@ -155,7 +155,7 @@ public:
 		return *new MoveSwapRotateCenter(x1, y1, rot2, x2, y2, rot1);
 	}
 
-	Move<RepEtII, MemEtII>& apply(MemEtII& mem, RepEtII& rep)
+	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& apply(MemEtII& mem, RepEtII& rep, OPTFRAME_DEFAULT_ADS& ads)
 	{
 		int f = 0;
 		if (rep(x1, y1).left == rep(x1, y1 - 1).right)
@@ -177,7 +177,7 @@ public:
 		if ((rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
 			g++;
 
-		Move<RepEtII, MemEtII>& rev = apply(rep);
+		Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& rev = apply(rep, ads);
 
 		int f2 = 0;
 		if (rep(x1, y1).left == rep(x1, y1 - 1).right)
@@ -205,7 +205,7 @@ public:
 		return rev;
 	}
 
-	virtual bool operator==(const Move<RepEtII, MemEtII>& _m) const
+	virtual bool operator==(const Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& _m) const
 	{
 		const MoveSwapRotateCenter& m = (const MoveSwapRotateCenter&) _m;
 		return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2) && (m.r1 == r1) && (m.r2 == r2);
@@ -284,20 +284,20 @@ public:
 		return (x1 >= nIntraRows) || (y1 >= nIntraCols) || (x2 >= nIntraRows) || (y2 >= nIntraCols);
 	}
 
-	virtual Move<RepEtII, MemEtII>& current()
+	virtual Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& current()
 	{
 		return *new MoveSwapRotateCenter(x1 + 1, y1 + 1, x2 + 1, y2 + 1);
 	}
 };
 
-class NSSeqSwapRotateCenter: public NSSeq<RepEtII, MemEtII>
+class NSSeqSwapRotateCenter: public NSSeq<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
 {
 private:
 	RandGen& rg;
 public:
 
-	using NSSeq<RepEtII, MemEtII>::move; // prevents name hiding
-	using NSSeq<RepEtII, MemEtII>::getIterator; // prevents name hiding
+	using NSSeq<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::move; // prevents name hiding
+	using NSSeq<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::getIterator; // prevents name hiding
 
 	NSSeqSwapRotateCenter(RandGen& _rg) :
 		rg(_rg)
@@ -308,7 +308,7 @@ public:
 	{
 	}
 
-	virtual Move<RepEtII, MemEtII>& move(const RepEtII& rep)
+	virtual Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& move(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		if ((rep.getNumRows() == 3) && (rep.getNumCols() == 3))
 			return *new MoveSwapRotateCenter(1, 1, 1, 1);
@@ -328,7 +328,7 @@ public:
 		return *new MoveSwapRotateCenter(x1, y1, x2, y2);
 	}
 
-	virtual NSIterator<RepEtII, MemEtII>& getIterator(const RepEtII& rep)
+	virtual NSIterator<RepEtII, MemEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		// return an iterator to the neighbors of 'rep'
 		return *new NSIteratorSwapRotateCenter(rep.getNumRows() - 2, rep.getNumCols() - 2);

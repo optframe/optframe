@@ -54,7 +54,7 @@ public:
 		this->pI = pI;
 	}
 
-	Evaluation<MemTSP>& evaluate(const RepTSP& r)
+	Evaluation<MemTSP>& evaluate(const RepTSP& r, const OPTFRAME_DEFAULT_ADS&)
 	{
 		double fo = 0; // Evaluation Function Value
 
@@ -78,7 +78,7 @@ public:
 		return *new Evaluation<MemTSP> (fo, mem);
 	}
 
-	void evaluate(Evaluation<MemTSP>& e, const RepTSP& r)
+	void evaluate(Evaluation<MemTSP>& e, const RepTSP& r, const OPTFRAME_DEFAULT_ADS&)
 	{
 		e.setObjFunction(e.getObjFunction() + e.getEM());
 		e.setEM(0);

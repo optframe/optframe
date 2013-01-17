@@ -94,7 +94,7 @@ public:
 	{
 	}
 
-	Move<Route, ADS, M>& move(const Route& rep)
+	Move<Route, ADS, M>& move(const Route& rep, const ADS&)
 	{
 		if (rep.size() < 2)
 			return *new MOVE(-1, -1);
@@ -109,7 +109,7 @@ public:
 		return *new MOVE(p1, p2);
 	}
 
-	virtual NSIterator<Route, ADS, M>& getIterator(const Route& r)
+	virtual NSIterator<Route, ADS, M>& getIterator(const Route& r, const ADS&)
 	{
 		return *new NSIteratorTSPSwap<T, ADS, M, MOVE> (r.size());
 	}

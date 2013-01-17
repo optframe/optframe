@@ -46,12 +46,12 @@ public:
 	{
 	}
 
-	virtual Move<R, ADS, M>& move(const R&)
+	virtual Move<R, ADS, M>& move(const R&, const ADS&)
 	{
 		return move( rg.rand(size()));
 	}
 
-	virtual NSIterator<R, ADS, M>& getIterator(const R&)
+	virtual NSIterator<R, ADS, M>& getIterator(const R&, const ADS&)
 	{
 		return *new NSEnumIterator<R, ADS, M> (*this);
 	}

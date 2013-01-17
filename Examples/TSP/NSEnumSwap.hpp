@@ -59,14 +59,14 @@ public:
 		// Put the rest of your code here
 	}
 
-	bool canBeApplied(const RepTSP& rep)
+	bool canBeApplied(const RepTSP& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		// If there are some move "MoveSwap" that can't be applied, implement this method
 
 		return true;
 	}
 
-	Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& apply(RepTSP& rep)
+	Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& apply(RepTSP& rep, OPTFRAME_DEFAULT_ADS&)
 	{
 		// Specify how the move "MoveSwap" will be applied
 
@@ -78,7 +78,7 @@ public:
 		return *new MoveSwap(c2, c1, tsp);
 	}
 
-	Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& apply(MemTSP& mem, RepTSP& rep)
+	Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& apply(MemTSP& mem, RepTSP& rep, OPTFRAME_DEFAULT_ADS& ads)
 	{
 		int k1, k2;
 
@@ -121,7 +121,7 @@ public:
 			f -= (*tsp.dist)(rep[k2], rep[ak2]);
 		}
 
-		Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& rev = apply(rep);
+		Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& rev = apply(rep, ads);
 
 		if (k2 - k1 == 1) // special case, cities are near
 		{

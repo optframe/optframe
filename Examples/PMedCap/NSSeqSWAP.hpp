@@ -54,12 +54,12 @@ public:
 	{
 	}
 
-	bool canBeApplied(const RepPCAP& rep)
+	bool canBeApplied(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		return true;
 	}
 
-	Move<RepPCAP>& apply(RepPCAP& rep)
+	Move<RepPCAP>& apply(RepPCAP& rep, OPTFRAME_DEFAULT_ADS&)
 	{
 		int aux = rep.second[x];
 		rep.second[x] = med;
@@ -138,14 +138,14 @@ public:
 	{
 	}
 
-	virtual Move<RepPCAP>& move(const RepPCAP& rep)
+	virtual Move<RepPCAP>& move(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		int cidade = rg.rand(rep.second.size());
 		int mediana = rg.rand(rep.first.size());
 		return *new MoveSWAP(cidade, mediana); // return a random move
 	}
 
-	virtual NSIterator<RepPCAP>& getIterator(const RepPCAP& rep)
+	virtual NSIterator<RepPCAP>& getIterator(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		return *new NSIteratorSWAP(p); // return an iterator to the neighbors of 'rep'
 	}

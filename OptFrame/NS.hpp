@@ -37,10 +37,10 @@ public:
 
     Move<R, ADS, M>& move(const Solution<R, ADS>& s)
     {
-    	return move(s.getR());
+    	return move(s.getR(), s.getADS());
     }
 
-    virtual Move<R, ADS, M>& move(const R&) = 0;
+    virtual Move<R, ADS, M>& move(const R&, const ADS&) = 0;
 
     static string idComponent()
     {

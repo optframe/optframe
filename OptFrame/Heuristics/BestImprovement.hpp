@@ -54,7 +54,7 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
 	{
-		NSIterator<R, ADS, M>& it = nsSeq.getIterator(e.getEM(), s.getR());
+		NSIterator<R, ADS, M>& it = nsSeq.getIterator(e.getEM(), s.getR(), s.getADS());
 
 		it.first();
 

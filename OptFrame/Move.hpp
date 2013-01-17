@@ -39,26 +39,26 @@ public:
 
 	bool canBeApplied(const Solution<R, ADS>& s)
 	{
-		return canBeApplied(s.getR());
+		return canBeApplied(s.getR(), s.getADS());
 	}
 
-	virtual bool canBeApplied(const R&) = 0;
+	virtual bool canBeApplied(const R&, const ADS&) = 0;
 
 	Move<R, ADS, M>& apply(Solution<R, ADS>& s)
 	{
-		return apply(s.getR());
+		return apply(s.getR(), s.getADS());
 	}
 
 	Move<R, ADS, M>& apply(Evaluation<M>& e, Solution<R, ADS>& s)
 	{
-		return apply(e.getEM(), s.getR());
+		return apply(e.getEM(), s.getR(), s.getADS());
 	}
 
-	virtual Move<R, ADS, M>& apply(R& r) = 0;
+	virtual Move<R, ADS, M>& apply(R& r, ADS& ads) = 0;
 
-	virtual Move<R, ADS, M>& apply(M& m, R& r)
+	virtual Move<R, ADS, M>& apply(M& m, R& r, ADS& ads)
 	{
-		return apply(r);
+		return apply(r, ads);
 	}
 
 	virtual bool operator==(const Move<R, ADS, M>& m) const = 0;

@@ -49,13 +49,13 @@ public:
 	{
 	}
 
-	bool canBeApplied(const Route& rep)
+	bool canBeApplied(const Route& rep, const ADS&)
 	{
 		//return (i != j) && (i + k <= rep.size());
 		return (i != j);
 	}
 
-	Move<Route, ADS, M>& apply(Route& rep)
+	Move<Route, ADS, M>& apply(Route& rep, ADS&)
 	{
 		vector<T> v_aux;
 		v_aux.insert(v_aux.begin(), rep.begin() + i, rep.begin() + i + k);

@@ -58,19 +58,19 @@ public:
 
 	Evaluation<M>& evaluate(const Solution<R, ADS>& s)
 	{
-		return evaluate(s.getR());
+		return evaluate(s.getR(), s.getADS());
 	}
 
-	virtual Evaluation<M>& evaluate(const R& r) = 0;
+	virtual Evaluation<M>& evaluate(const R& r, const ADS&) = 0;
 
 	void evaluate(Evaluation<M>& e, const Solution<R, ADS>& s)
 	{
-		evaluate(e, s.getR());
+		evaluate(e, s.getR(), s.getADS());
 	}
 
-	virtual void evaluate(Evaluation<M>& e, const R& r)
+	virtual void evaluate(Evaluation<M>& e, const R& r, const ADS& ads)
 	{
-		Evaluation<M>& e1 = evaluate(r);
+		Evaluation<M>& e1 = evaluate(r, ads);
 		e = e1;
 		delete &e1;
 	}
