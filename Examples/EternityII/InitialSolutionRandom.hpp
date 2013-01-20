@@ -40,16 +40,19 @@
 
 using namespace std;
 
+namespace EtII
+{
+
 class EtIIInitialSolutionRandom: public Constructive<RepEtII>
 {
 private:
-	EtIIProblemInstance& pEtII;
+	ProblemInstance& pEtII;
 	RandGen& rg;
 	// Your private vars
 
 public:
 
-	EtIIInitialSolutionRandom(EtIIProblemInstance& _pEtII, RandGen& _rg) : // If necessary, add more parameters
+	EtIIInitialSolutionRandom(ProblemInstance& _pEtII, RandGen& _rg) : // If necessary, add more parameters
 		pEtII(_pEtII), rg(_rg)
 	{
 	}
@@ -195,5 +198,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /*EtII_INITIALSOLUTION_Random_HPP_*/

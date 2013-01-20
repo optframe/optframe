@@ -35,44 +35,16 @@ using namespace std;
 #include "../OptFrame/OptFrame.hpp"
 #include "EternityII.h"
 
+using namespace EtII;
+
 int main(int argc, char **argv)
 {
-	srand(time(NULL));
-	RandGen rg(time(NULL));
 
-	Scanner scanner(new File("./Examples/EternityII/pieces_set_2/pieces_03x03.txt"));
+	OptFrame<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII> optframe;
+	optframe.loadModule(new EtIIProblemModule);
+	optframe.execute("system.read example.opt");
+	cout << "Program ended successfully" << endl;
 
-	EtIIProblemInstance* p = new EtIIProblemInstance(scanner);
-
-	EtIIInitialSolutionGreedy& is = * new EtIIInitialSolutionGreedy(*p,rg);
-
-	SolutionEtII& s = is.generateSolution();
-
-	NSSeqRotate& nsRotate = * new NSSeqRotate(rg);
-	NSSeqSwapCenter& nsSwapCenter = * new NSSeqSwapCenter(rg);
-	NSSeqSwapCorner& nsSwapCorner = * new NSSeqSwapCorner(rg);
-	NSSeqSwapRotateCenter& nsSwapRotateCenter = * new NSSeqSwapRotateCenter(rg);
-	NSSeqSwapSide& nsSwapSide = * new NSSeqSwapSide(rg);
-
-	s.print();
-
-	EtIIEvaluator& eval = * new EtIIEvaluator(*p);
-	EvaluationEtII* e;
-
-	e = &eval.evaluate(s);
-
-	e->print();
-	cout << endl;
-
-	OptFrame<RepEtII, MemEtII> optframe(rg);
-	optframe.factory.addComponent(is);
-	optframe.factory.addComponent(eval);
-	optframe.factory.addComponent(nsRotate);
-	optframe.factory.addComponent(nsSwapCenter);
-	optframe.factory.addComponent(nsSwapCorner);
-	optframe.factory.addComponent(nsSwapRotateCenter);
-	optframe.factory.addComponent(nsSwapSide);
-	optframe.execute();
 
 	cout << "Program ended successfully" << endl;
 

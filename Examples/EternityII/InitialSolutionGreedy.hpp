@@ -39,15 +39,18 @@
 
 using namespace std;
 
+namespace EtII
+{
+
 class EtIIInitialSolutionGreedy: public Constructive<RepEtII>
 {
 private:
-	EtIIProblemInstance& pEtII;
+	ProblemInstance& pEtII;
 	RandGen& rg;
 
 public:
 
-	EtIIInitialSolutionGreedy(EtIIProblemInstance& _pEtII,RandGen& _rg) : // If necessary, add more parameters
+	EtIIInitialSolutionGreedy(ProblemInstance& _pEtII,RandGen& _rg) : // If necessary, add more parameters
 		pEtII(_pEtII), rg(_rg)
 	{
 	}
@@ -307,5 +310,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /*EtII_INITIALSOLUTION_Greedy_HPP_*/

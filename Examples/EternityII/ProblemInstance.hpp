@@ -28,14 +28,18 @@
 #include "Piece.h"
 
 using namespace std;
+using namespace scannerpp;
 
-class EtIIProblemInstance
+namespace EtII
+{
+
+class ProblemInstance
 {
 public:
 	vector<Piece> pieces;
 	int width, height;
 
-	EtIIProblemInstance(Scanner& scanner)
+	ProblemInstance(Scanner& scanner)
 	{
 		cout << "Reading problem instance" << endl;
 		width = scanner.nextInt();
@@ -64,6 +68,8 @@ public:
 		}
 	}
 };
+
+}
 
 #endif /*EtII_PROBLEMINSTANCE_HPP_*/
 

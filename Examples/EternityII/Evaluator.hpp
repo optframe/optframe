@@ -39,16 +39,19 @@
 
 int numEvs = 0;
 
+namespace EtII
+{
+
 class EtIIEvaluator: public Evaluator<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
 {
 private:
-	EtIIProblemInstance& pEtII;
+	ProblemInstance& pEtII;
 
 public:
 
 	using Evaluator<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::evaluate;
 
-	EtIIEvaluator(EtIIProblemInstance& _pEtII) : // If necessary, add more parameters
+	EtIIEvaluator(ProblemInstance& _pEtII) : // If necessary, add more parameters
 		pEtII(_pEtII)
 	{
 		// Put the rest of your code here
@@ -95,6 +98,8 @@ public:
 	}
 
 };
+
+}
 
 #endif /*EtII_EVALUATOR_HPP_*/
 

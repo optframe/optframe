@@ -34,6 +34,7 @@
 #include "./EternityII/NSSeqSwapRotateCenter.hpp"
 #include "./EternityII/InitialSolutionRandom.hpp"
 #include "./EternityII/InitialSolutionGreedy.hpp"
+#include "./EternityII/ProblemModule.hpp"
 #endif /*EternityII_H_*/
 
 
