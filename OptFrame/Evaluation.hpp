@@ -86,7 +86,7 @@ public:
 	void setObjFunction(double obj){ objFunction = obj; }
 	void setInfMeasure (double inf){ infMeasure = inf;  }
 
-	virtual double evaluation() const { return objFunction + infMeasure; }
+	double evaluation() const { return objFunction + infMeasure; }
 	virtual bool   isFeasible() const { return (abs(infMeasure)<0.0001); }
 
    static string idComponent()

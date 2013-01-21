@@ -56,17 +56,14 @@ public:
 
 	virtual Move<R, ADS, DS>& apply(R& r, ADS& ads) = 0;
 
-	// WARNING: may need to override this! do not make it 'final'!
-	virtual Move<R, ADS, DS>& apply(DS& m, R& r, ADS& ads)
+	virtual Move<R, ADS, DS>& apply(DS& ds, R& r, ADS& ads)
 	{
-		updateDelta(m, r, ads);
-
 		return apply(r, ads);
 	}
 
-	virtual bool updateDelta(DS& m, const R& r, const ADS& ads)
+	virtual pair<double, double>* cost(const DS& m, const R& r, const ADS& ads)
 	{
-		return false;
+		return NULL;
 	}
 
 	virtual bool operator==(const Move<R, ADS, DS>& m) const = 0;

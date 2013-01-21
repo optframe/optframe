@@ -95,22 +95,20 @@ public:
 	// Movement cost based on reevaluation of 'e'
 	double moveCost(Evaluation<DS>& e, Move<R, ADS, DS>& m, Solution<R, ADS>& s)
 	{
-		//double backup_ini = e.evaluation(); // FOR TESTS
-
 		double e_end;
 		double e_ini;
 
-		Evaluation<DS>& e2 = e.clone();
+		pair<double, double>* p = m.cost(e.getDS(), s.getR(), s.getADS());
 
 		// do not update 's' => much faster (using updateDelta)
-		if(m.updateDelta(e2.getDS(), s.getR(), s.getADS()))
+		if(p)
 		{
-			evaluate(e2, s); // compute delta
-
-			e_end = e2.evaluation();
+			e_end = e.evaluation()+p->first+p->second;
 
 			// no need to compute first again, solution is the same
 			e_ini = e.evaluation();
+
+			delete p;
 		}
 		else // need to update 's' together with reevaluation of 'e' => little faster (doesn't use updateDelta, but do reevaluation)
 		{
@@ -124,19 +122,6 @@ public:
 			delete &ini;
 		}
 
-		delete &e2;
-
-		/*
-		// CHECKING (FOR TESTS)
-		if(abs(backup_ini - e_ini) > 0.0001)
-		{
-			printf("ERROR IN EVALUATOR moveCost: difference %.4f and %.4f (TOLERANCE IS 0.0001)\n", backup_ini, e_ini);
-			printf("m.print() => ");
-			m.print();
-			exit(1);
-		}
-		*/
-
 		// Difference: new - original
 		double diff = e_end - e_ini;
 
@@ -144,10 +129,9 @@ public:
 	}
 
 	// Movement cost based on complete evaluation
+	// USE ONLY FOR VALIDATION OF CODE! OTHERWISE, USE moveCost(e, m, s)
 	double moveCost(Move<R, ADS, DS>& m, Solution<R, ADS>& s)
 	{
-		cout << "DEPRECATED! USE EVALUATOR::moveCost(e, m, s)" << endl;
-
 		pair<Move<R, ADS, DS>&, Evaluation<DS>&>& rev = applyMove(m, s);
 
 		pair<Move<R, ADS, DS>&, Evaluation<DS>&>& ini = applyMove(rev.first, s);

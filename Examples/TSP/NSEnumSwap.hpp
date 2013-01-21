@@ -79,7 +79,6 @@ public:
 	}
 
 
-	/*
 	Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& apply(MemTSP& mem, RepTSP& rep, OPTFRAME_DEFAULT_ADS& ads)
 	{
 		int k1, k2;
@@ -143,10 +142,9 @@ public:
 
 		return rev;
 	}
-	*/
 
 
-	bool updateDelta(MemTSP& mem, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	pair<double, double>* cost(const MemTSP& mem, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		int k1, k2;
 
@@ -200,9 +198,7 @@ public:
 			f += (*tsp.dist)(rep[k1], rep[ak2]);
 		}
 
-		mem += f;
-
-		return true;
+		return new pair<double, double>(f, 0);
 	}
 
 
