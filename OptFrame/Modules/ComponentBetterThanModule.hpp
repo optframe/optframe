@@ -1,0 +1,106 @@
+// OptFrame - Optimization Framework
+
+// Copyright (C) 2009, 2010, 2011
+// http://optframe.sourceforge.net/
+//
+// This file is part of the OptFrame optimization framework. This framework
+// is free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License v3 as published by the
+// Free Software Foundation.
+
+// This framework is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License v3 for more details.
+
+// You should have received a copy of the GNU Lesser General Public License v3
+// along with this library; see the file COPYING.  If not, write to the Free
+// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+// USA.
+
+#ifndef OPTFRAME_COMPONENT_BETTER_THAN_HPP_
+#define OPTFRAME_COMPONENT_BETTER_THAN_HPP_
+
+#include "../OptFrameModule.hpp"
+
+#include "SystemSilentDefineModule.hpp"
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+class ComponentBetterThanModule: public OptFrameModule<R, ADS, M>
+{
+public:
+
+	virtual ~ComponentBetterThanModule()
+	{
+	}
+
+	string id()
+	{
+		return "component.better_than";
+	}
+
+	string usage()
+	{
+		string u = "component.better_than OptFrame:Evaluator id value_1 value_2 store_variable";
+		return u;
+	}
+
+	string formatBool(bool b)
+	{
+		if(b)
+			return "true";
+		else
+			return "false";
+	}
+
+	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	{
+		//cout << "component.better_than: " << input << endl;
+		Scanner scanner(input);
+
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+
+		Evaluator<R, ADS, M>* eval = factory.read_ev(scanner);
+
+		if(!eval)
+		{
+			cout << "module " << id() << " error: no evaluator!" << endl;
+			return false;
+		}
+
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+
+		double value1 = scanner.nextDouble();
+
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+
+		double value2 = scanner.nextDouble();
+
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+
+		string variable = scanner.next();
+
+		string result = formatBool(eval->betterThan(value1, value2));
+
+		return OptFrameModule<R, ADS, M>::defineText(variable, result, dictionary);
+	}
+
+};
+
+#endif /* OPTFRAME_COMPONENT_BETTER_THAN_HPP_ */

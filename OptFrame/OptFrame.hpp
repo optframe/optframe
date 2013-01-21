@@ -151,6 +151,7 @@
 
 // component
 
+#include "Modules/ComponentBetterThanModule.hpp"
 #include "Modules/ComponentBuilderOfComponent.hpp"
 #include "Modules/ComponentBuildModule.hpp"
 #include "Modules/ComponentCheckModule.hpp"
@@ -309,6 +310,7 @@ public:
 		loadModule(new TestLocalSearchModule<R, ADS, M> );
 
 		// components
+		loadModule(new ComponentBetterThanModule<R, ADS, M> );
 		loadModule(new ComponentBuilderOfComponentModule<R, ADS, M> );
 		loadModule(new ComponentBuildModule<R, ADS, M> );
 		loadModule(new ComponentCheckModule<R, ADS, M> );
