@@ -38,7 +38,7 @@ protected:
 
 public:
 
-	MoveTSP2Opt(int _p1, int _p2) :
+	MoveTSP2Opt(int _p1, int _p2, OPTFRAME_DEFAULT_PROBLEM* problem = NULL) :
 		p1(_p1), p2(_p2)
 	{
 	}
@@ -57,13 +57,13 @@ public:
 		return p2;
 	}
 
-	bool canBeApplied(const Route& rep, const ADS&)
+	virtual bool canBeApplied(const Route& rep, const ADS&)
 	{
 		bool all_positive = (p1 >= 0) && (p2 >= 0);
 		return all_positive && (rep.size() >= 2);
 	}
 
-	Move<Route, ADS, DS >& apply(Route& rep, ADS&)
+	virtual Move<Route, ADS, DS >& apply(Route& rep, ADS&)
 	{
 
 		reverse(rep.begin() + p1, rep.begin() + p2);
@@ -78,7 +78,7 @@ public:
 		return ((m1.p1 == p1) && (m1.p2 == p2));
 	}
 
-	void print() const
+	virtual void print() const
 	{
 		cout << "MoveTSP2Opt( ";
 		cout << " edge " << p1 << " <=>  edge " << p2 << " )";

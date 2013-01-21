@@ -87,16 +87,18 @@ using namespace std;
 */
 
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveTSP2Opt<T, ADS, DS > >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveTSP2Opt<T, ADS, DS >, class P = OPTFRAME_DEFAULT_PROBLEM >
 class NSSeqTSP2Opt: public NSSeq<vector<T> , ADS, DS >
 {
 	typedef vector<T> Route;
 
 private:
+	P* p; // has to be the last
 
 public:
 
-	NSSeqTSP2Opt()
+	NSSeqTSP2Opt(P* _p = NULL)
+	  : p(_p)
 	{
 	}
 
@@ -107,7 +109,7 @@ public:
 	Move<Route, ADS, DS >& move(const Route& rep, const ADS&)
 	{
 		if (rep.size() < 2)
-			return *new MOVE(-1, -1);
+			return *new MOVE(-1, -1, p);
 
 		int p1 = rand() % (rep.size() + 1);
 
@@ -119,12 +121,12 @@ public:
 		} while (abs(p1 - p2) < 2);
 
 		// create 2-opt(p1,p2) move
-		return *new MOVE(p1, p2);
+		return *new MOVE(p1, p2, p);
 	}
 
 	virtual NSIterator<Route, ADS, DS >& getIterator(const Route& r, const ADS&)
 	{
-		return *new NSIteratorTSP2Opt<T, ADS, DS, MOVE> (r);
+		return *new NSIteratorTSP2Opt<T, ADS, DS, MOVE, P> (r, p);
 	}
 
 	static string idComponent()

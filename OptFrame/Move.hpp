@@ -28,6 +28,8 @@
 
 using namespace std;
 
+typedef void OPTFRAME_DEFAULT_PROBLEM;
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class Move : public OptFrameComponent
 {

@@ -58,7 +58,7 @@ public:
 	{
 		double fo = 0; // Evaluation Function Value
 
-		for (int i = 0; i < pI->n - 1; i++)
+		for (int i = 0; i < ((int)r.size()) - 1; i++)
 		{
 			int j = r.at(i);
 			int z = r.at(i + 1);
@@ -67,7 +67,7 @@ public:
 			fo += val;
 		}
 
-		int k = r.at(pI->n - 1);
+		int k = r.at(((int)r.size()) - 1);
 		int l = r.at(0);
 
 		double val = (*pI->dist)(k, l);
@@ -78,11 +78,13 @@ public:
 		return *new Evaluation<MemTSP> (fo, mem);
 	}
 
+/*
 	void evaluate(Evaluation<MemTSP>& e, const RepTSP& r, const OPTFRAME_DEFAULT_ADS&)
 	{
 		e.setObjFunction(e.getObjFunction() + e.getDS());
 		e.setDS(0);
 	}
+*/
 
 	virtual bool betterThan(double a, double b)
 	{

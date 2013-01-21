@@ -29,6 +29,7 @@
 #include "./TSP/Evaluator.hpp"
 #include "./TSP/NSEnumSwap.hpp"
 #include "./TSP/NSEnumShift.hpp"
+#include "./TSP/DeltaMoveTSP2Opt.hpp"
 #include "./TSP/RandomInitialSolution.hpp"
 #include "./TSP/PerturbationTSP.h"
 #include "./TSP/ProblemModule.hpp"
