@@ -180,6 +180,7 @@
 
 #include "Modules/ModuleCreateModule.hpp"
 #include "Modules/ModuleCreateRawModule.hpp"
+#include "Modules/ModuleExistsModule.hpp"
 
 #include "Modules/FunctionCreateRawModule.hpp"
 
@@ -337,6 +338,7 @@ public:
 
 		loadModule(new ModuleCreateModule<R, ADS, M> );
 		loadModule(new ModuleCreateRawModule<R, ADS, M> );
+		loadModule(new ModuleExistsModule<R, ADS, M> );
 
 		loadModule(new FunctionCreateRawModule<R, ADS, M> );
 
