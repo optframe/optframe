@@ -24,18 +24,18 @@
 #include "../SingleObjSearch.hpp"
 #include "../LocalSearch.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class GRASP: public SingleObjSearch<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class GRASP: public SingleObjSearch<R, ADS, DS>
 {
 private:
-	Evaluator<R, ADS, M>& evaluator;
+	Evaluator<R, ADS, DS>& evaluator;
 	Constructive<R, ADS>& constructive;
-	LocalSearch<R, ADS, M>& ls;
+	LocalSearch<R, ADS, DS>& ls;
 	unsigned int iterMax;
 
 public:
 
-	GRASP(Evaluator<R, ADS, M>& _eval, Constructive<R, ADS>& _constructive, LocalSearch<R, ADS, M>& _ls, int _iterMax) :
+	GRASP(Evaluator<R, ADS, DS>& _eval, Constructive<R, ADS>& _constructive, LocalSearch<R, ADS, DS>& _ls, int _iterMax) :
 		evaluator(_eval), constructive(_constructive), ls(_ls)
 	{
 	   iterMax = _iterMax;
@@ -45,7 +45,7 @@ public:
 	{
 	}
 
-	pair<Solution<R, ADS>&, Evaluation<M>&>* search(double timelimit = 100000000, double target_f = 0)
+	pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0)
 	{
 		long tini = time(NULL);
 
@@ -54,12 +54,12 @@ public:
 		long tnow = time(NULL);
 
 		Solution<R, ADS>& s = constructive.generateSolution();
-		Evaluation<M>& e    = evaluator.evaluate(s);
+		Evaluation<DS>& e    = evaluator.evaluate(s);
 
 		while (iter < iterMax && ((tnow - tini) < timelimit))
 		{
 			Solution<R, ADS>& s1 = constructive.generateSolution();
-			Evaluation<M>& e1 = evaluator.evaluate(s1);
+			Evaluation<DS>& e1 = evaluator.evaluate(s1);
 
 			ls.exec(s1,e1,timelimit, target_f);
 
@@ -78,7 +78,7 @@ public:
 			iter++;
 		}
 
-		return new pair<Solution<R, ADS>&, Evaluation<M>&>(s, e);
+		return new pair<Solution<R, ADS>&, Evaluation<DS>&>(s, e);
 	}
 
 	virtual string id() const
@@ -89,7 +89,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, M>::idComponent() << "grasp";
+		ss << SingleObjSearch<R, ADS, DS>::idComponent() << "grasp";
 		return ss.str();
 
 	}

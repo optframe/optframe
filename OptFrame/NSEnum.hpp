@@ -28,8 +28,8 @@
 
 using namespace std;
 
-template<class R, class ADS, class M> // already defined: ADS = OPTFRAME_DEFAULT_ADS , M = OPTFRAME_DEFAULT_EMEMORY
-class NSEnum: public NSSeq<R, ADS, M>
+template<class R, class ADS, class DS > // already defined: ADS = OPTFRAME_DEFAULT_ADS , M = OPTFRAME_DEFAULT_EMEMORY
+class NSEnum: public NSSeq<R, ADS, DS>
 {
 
 protected:
@@ -37,7 +37,7 @@ protected:
 
 public:
 
-	using NSSeq<R, ADS, M>::move; // prevents name hiding
+	using NSSeq<R, ADS, DS>::move; // prevents name hiding
 
 	NSEnum(RandGen& _rg):rg(_rg)
 	{}
@@ -46,24 +46,25 @@ public:
 	{
 	}
 
-	virtual Move<R, ADS, M>& move(const R&, const ADS&)
+	virtual Move<R, ADS, DS>& move(const R&, const ADS&)
 	{
-		return move( rg.rand(size()));
+		unsigned int x = rg.rand(size());
+		return move(x);
 	}
 
-	virtual NSIterator<R, ADS, M>& getIterator(const R&, const ADS&)
+	virtual NSIterator<R, ADS, DS>& getIterator(const R&, const ADS&)
 	{
-		return *new NSEnumIterator<R, ADS, M> (*this);
+		return *new NSEnumIterator<R, ADS, DS> (*this);
 	}
 
-	virtual Move<R, ADS, M>& move(unsigned int m) = 0;
+	virtual Move<R, ADS, DS>& move(unsigned int m) = 0;
 
 	virtual unsigned int size() const = 0;
 
    static string idComponent()
    {
 		stringstream ss;
-		ss << NSSeq<R, ADS, M>::idComponent() << ":NSEnum";
+		ss << NSSeq<R, ADS, DS>::idComponent() << ":NSEnum";
 		return ss.str();
    }
 
@@ -74,7 +75,7 @@ public:
 
    virtual bool compatible(string s)
    {
-	   return ( s == idComponent() ) || ( NSSeq<R, ADS, M>::compatible(s) );
+	   return ( s == idComponent() ) || ( NSSeq<R, ADS, DS>::compatible(s) );
    }
 };
 

@@ -30,24 +30,24 @@
 #include "../ParetoDominance.hpp"
 #include "../ParetoDominanceWeak.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class MOVNSLevels: public HTrajectory<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class MOVNSLevels: public HTrajectory<R, ADS, DS>
 {
-	typedef vector<Evaluation<M>*> FitnessValues;
+	typedef vector<Evaluation<DS>*> FitnessValues;
 
 private:
-	vector<NSSeq<R, ADS, M>*> neighbors;
-	vector<Evaluator<R, ADS, M>*> v_e;
-	ParetoDominance<R, ADS, M> pDominance;
-	ParetoDominanceWeak<R, ADS, M> pDominanceWeak;
+	vector<NSSeq<R, ADS, DS>*> neighbors;
+	vector<Evaluator<R, ADS, DS>*> v_e;
+	ParetoDominance<R, ADS, DS> pDominance;
+	ParetoDominanceWeak<R, ADS, DS> pDominanceWeak;
 	RandGen& rg;
 	int levelMax;
 	int iterMax;
 
 public:
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, DS>::exec; // prevents name hiding
 
-	MOVNSLevels(vector<Evaluator<R, ADS, M>*> _v_e, vector<NSSeq<R, ADS, M>*> _neighbors, RandGen& _rg, int _iterMax, int _levelMax) :
+	MOVNSLevels(vector<Evaluator<R, ADS, DS>*> _v_e, vector<NSSeq<R, ADS, DS>*> _neighbors, RandGen& _rg, int _iterMax, int _levelMax) :
 		v_e(_v_e), neighbors(_neighbors), rg(_rg)
 	{
 		pDominance.insertEvaluators(_v_e);
@@ -115,7 +115,7 @@ public:
 			for (int m = 0; m < perturbationLevel; m++)
 			{
 				int neigh = rg.rand(neighbors.size());
-				Move<R, ADS, M>* move = &(neighbors[neigh]->move(s1));
+				Move<R, ADS, DS>* move = &(neighbors[neigh]->move(s1));
 
 				while (!(move->canBeApplied(s1)))
 				{
@@ -123,14 +123,14 @@ public:
 					move = &(neighbors[neigh]->move(s1));
 				}
 
-				Move<R, ADS, M>& mov_rev = move->apply(s1);
+				Move<R, ADS, DS>& mov_rev = move->apply(s1);
 				delete &mov_rev;
 				delete move;
 			}
 
 			int neigh = rg.rand(neighbors.size());
 
-			NSIterator<R, ADS, M>& it = neighbors[neigh]->getIterator(s1.getR());
+			NSIterator<R, ADS, DS>& it = neighbors[neigh]->getIterator(s1.getR());
 			it.first();//Primeiro vizinho
 
 			//verifica se existe vizinho a ser gerado
@@ -141,12 +141,12 @@ public:
 			else
 			{
 
-				Move<R, ADS, M>* move = geraMovimentoValido(it, s1);
+				Move<R, ADS, DS>* move = geraMovimentoValido(it, s1);
 				//cout << "!it.isDone() = " << !it.isDone() << " aplly = " << move->canBeApplied(p.at(ind)) << endl;
 				while ((!it.isDone()) && (move->canBeApplied(s1)))
 				{
 					Solution<R, ADS>& s2 = s1.clone();
-					Move<R, ADS, M>& mov_rev = move->apply(s2);
+					Move<R, ADS, DS>& mov_rev = move->apply(s2);
 					delete &mov_rev;
 					delete move;
 
@@ -190,10 +190,10 @@ public:
 		p_0 = D;
 	}
 
-	Move<R, ADS, M>* geraMovimentoValido(NSIterator<R, ADS, M>& it, Solution<R, ADS>& s)
+	Move<R, ADS, DS>* geraMovimentoValido(NSIterator<R, ADS, DS>& it, Solution<R, ADS>& s)
 	{
 
-		Move<R, ADS, M>* move = NULL;
+		Move<R, ADS, DS>* move = NULL;
 
 		if (it.isDone())
 			return NULL;
@@ -218,7 +218,7 @@ public:
 
 	bool addSolution(Population<R, ADS>& p, Solution<R, ADS>& s)
 	{
-		Evaluation<M>& e = v_e[0]->evaluate(s);
+		Evaluation<DS>& e = v_e[0]->evaluate(s);
 		if (!e.isFeasible())
 		{
 			delete &e;

@@ -27,8 +27,8 @@
 
 #include "SystemRunModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class WhileModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class WhileModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -59,7 +59,7 @@ public:
 		return b == "true";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		//cout << "INPUT: '" << input << "'" << endl;
 
@@ -97,10 +97,10 @@ public:
 			return false;
 
 		// check if all the text was used!
-		if(!OptFrameModule<R, ADS, M>::testUnused(id(), scanner))
+		if(!OptFrameModule<R, ADS, DS>::testUnused(id(), scanner))
 			return false;
 
-		string* scond1 = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, boolean_expr.str());
+		string* scond1 = OptFrameModule<R, ADS, DS>::defaultPreprocess(allFunctions, dictionary, ldictionary, boolean_expr.str());
 
 		if(!scond1)
 			return NULL;
@@ -111,13 +111,13 @@ public:
 
 		while(parseBool(scondition))
 		{
-			if(!OptFrameModule<R, ADS, M>::run_module("system.run", allModules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
+			if(!OptFrameModule<R, ADS, DS>::run_module("system.run", allModules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
 			{
 				cout << "while module: error in command!" << endl;
 				return false;
 			}
 
-			string* scond = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, boolean_expr.str());
+			string* scond = OptFrameModule<R, ADS, DS>::defaultPreprocess(allFunctions, dictionary, ldictionary, boolean_expr.str());
 
 			if(!scond)
 				return false;

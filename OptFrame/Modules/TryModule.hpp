@@ -25,11 +25,11 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class TryModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class TryModule: public OptFrameModule<R, ADS, DS>
 {
 private:
-	OptFrameModule<R, ADS, M>* getModule(vector<OptFrameModule<R, ADS, M>*>& modules, string module)
+	OptFrameModule<R, ADS, DS>* getModule(vector<OptFrameModule<R, ADS, DS>*>& modules, string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())
@@ -37,11 +37,11 @@ private:
 		return NULL;
 	}
 
-	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string command)
+	bool exec_command(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string command)
 	{
 		Scanner scanner(command);
 		string module = scanner.next();
-		OptFrameModule<R, ADS, M>* m = getModule(all_modules, module);
+		OptFrameModule<R, ADS, DS>* m = getModule(all_modules, module);
 
 		if (m == NULL)
 			return false;
@@ -74,7 +74,7 @@ public:
 		return "try block_of_try_commands [except block_of_exception_commands]";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -115,7 +115,7 @@ public:
 				return false;
 		}
 
-		if(!OptFrameModule<R, ADS, M>::testUnused(id(), scanner))
+		if(!OptFrameModule<R, ADS, DS>::testUnused(id(), scanner))
 			return false;
 
 		bool ok = true;
@@ -192,7 +192,7 @@ public:
 		for(unsigned k=j; k<input.length(); k++)
 			iend += input.at(k);
 
-		string* ninput = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, ibegin);
+		string* ninput = OptFrameModule<R, ADS, DS>::defaultPreprocess(allFunctions, dictionary, ldictionary, ibegin);
 
 		if(!ninput)
 			return NULL;

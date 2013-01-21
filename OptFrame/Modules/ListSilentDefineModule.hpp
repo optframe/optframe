@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ListSilentDefineModule : public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ListSilentDefineModule : public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -41,7 +41,7 @@ public:
 		return "list.silent_define name list";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, M>&, map<string,string>&, map< string,vector<string> >& ldictionary, string rest)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, DS>&, map<string,string>&, map< string,vector<string> >& ldictionary, string rest)
 	{
 		Scanner scanner(rest);
 
@@ -65,7 +65,7 @@ public:
 				return false;
 			}
 
-			return OptFrameModule<R, ADS, M>::defineList(list_name, list, ldictionary);
+			return OptFrameModule<R, ADS, DS>::defineList(list_name, list, ldictionary);
 		}
 		else
 		{
@@ -105,7 +105,7 @@ public:
 
 		// now proceed as usual
 
-		string* input3 = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+		string* input3 = OptFrameModule<R, ADS, DS>::defaultPreprocess(allFunctions, dictionary, ldictionary, scanner.rest());
 
 		if(!input3)
 			return NULL;

@@ -28,16 +28,16 @@
 
 using namespace std;
 
-template<class T, class M = OPTFRAME_DEFAULT_EMEMORY>
-class IteratorNSSeqTSPOr1Opt: public NSIterator<vector<T> , M>
+template<class T, class DS = OPTFRAME_DEFAULT_EMEMORY>
+class IteratorNSSeqTSPOr1Opt: public NSIterator<vector<T> , DS >
 {
 
 private:
 
 	typedef vector<T> Route;
 
-	MoveTSPOr1Opt<T, M>* m;
-	vector<MoveTSPOr1Opt<T,M>*> moves;
+	MoveTSPOr1Opt<T, DS >* m;
+	vector<MoveTSPOr1Opt<T,DS >*> moves;
 	int index; //index of moves
 	const Route& rep;
 
@@ -63,7 +63,7 @@ public:
 			{
 				if ((c != pos) && (c + 1 != pos))
 				{
-					moves.push_back(new MoveTSPOr1Opt<T, M>(c, pos));
+					moves.push_back(new MoveTSPOr1Opt<T, DS >(c, pos));
 				}
 			}
 		}
@@ -92,7 +92,7 @@ public:
 		return m == NULL;
 	}
 
-	MoveTSPOr1Opt<T, M>& current()
+	MoveTSPOr1Opt<T, DS >& current()
 	{
 		if (isDone())
 		{

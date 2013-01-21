@@ -26,8 +26,8 @@
 
 #include "../MultiObjSearch.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class EmptyMultiObjSearch: public MultiObjSearch<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class EmptyMultiObjSearch: public MultiObjSearch<R, ADS, DS>
 {
 public:
 
@@ -39,7 +39,7 @@ public:
 	{
 	}
 
-	typedef vector<pair<Solution<R, ADS>&, vector<Evaluation<M>*> > > ParetoFront;
+	typedef vector<pair<Solution<R, ADS>&, vector<Evaluation<DS>*> > > ParetoFront;
 
 	ParetoFront* search(double timelimit = 100000000, double target_f = 0)
 	{
@@ -50,7 +50,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MultiObjSearch<R, ADS, M>::idComponent() << "empty";
+		ss << MultiObjSearch<R, ADS, DS>::idComponent() << "empty";
 		return ss.str();
 	}
 

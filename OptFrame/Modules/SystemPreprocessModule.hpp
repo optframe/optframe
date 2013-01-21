@@ -25,8 +25,8 @@
 
 #include "SystemUnsafeDefineModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class SystemPreprocessModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class SystemPreprocessModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -44,7 +44,7 @@ public:
 		return "system.preprocess return_value module_name input";
 	}
 
-	OptFrameModule<R, ADS, M>* getModule(vector<OptFrameModule<R, ADS, M>*>& modules, string module)
+	OptFrameModule<R, ADS, DS>* getModule(vector<OptFrameModule<R, ADS, DS>*>& modules, string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())
@@ -52,7 +52,7 @@ public:
 		return NULL;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -74,7 +74,7 @@ public:
 
 		string inp = scanner.rest();
 
-		OptFrameModule<R, ADS, M>* m = getModule(all_modules, module);
+		OptFrameModule<R, ADS, DS>* m = getModule(all_modules, module);
 
 		if(!m)
 		{
@@ -92,7 +92,7 @@ public:
 
 		delete final;
 
-		return OptFrameModule<R, ADS, M>::run_module("system.unsafe_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
+		return OptFrameModule<R, ADS, DS>::run_module("system.unsafe_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 	}
 
 	// runs raw module without preprocessing

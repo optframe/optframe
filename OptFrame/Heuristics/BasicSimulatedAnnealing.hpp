@@ -24,13 +24,13 @@
 #include "../SingleObjSearch.hpp"
 #include <math.h>
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class BasicSimulatedAnnealing: public SingleObjSearch<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class BasicSimulatedAnnealing: public SingleObjSearch<R, ADS, DS>
 {
 private:
-	Evaluator<R, ADS, M>& evaluator;
+	Evaluator<R, ADS, DS>& evaluator;
 	Constructive<R, ADS>& constructive;
-	vector<NS<R, ADS, M>*> neighbors;
+	vector<NS<R, ADS, DS>*> neighbors;
 	RandGen& rg;
 	double alpha;
 	int SAmax;
@@ -38,7 +38,7 @@ private:
 
 public:
 
-	BasicSimulatedAnnealing(Evaluator<R, ADS, M>& _evaluator, Constructive<R, ADS>& _constructive, vector<NS<R, ADS, M>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(Evaluator<R, ADS, DS>& _evaluator, Constructive<R, ADS>& _constructive, vector<NS<R, ADS, DS>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg)
 	{
 		alpha = (_alpha);
@@ -47,7 +47,7 @@ public:
 
 	}
 
-	BasicSimulatedAnnealing(Evaluator<R, ADS, M>& _evaluator, Constructive<R, ADS>& _constructive, NS<R, ADS, M>* _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(Evaluator<R, ADS, DS>& _evaluator, Constructive<R, ADS>& _constructive, NS<R, ADS, DS>* _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), rg(_rg)
 	{
 		neighbors.push_back(_neighbors);
@@ -60,26 +60,26 @@ public:
 	{
 	}
 
-	pair<Solution<R, ADS>&, Evaluation<M>&>* search(double timelimit = 100000000, double target_f = 0)
+	pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0)
 	{
 		cout << "SA search(" << target_f << "," << timelimit << ")" << endl;
 
 		Timer tnow;
 
 		Solution<R, ADS>& s = constructive.generateSolution();
-		Evaluation<M>& e = evaluator.evaluate(s);
+		Evaluation<DS>& e = evaluator.evaluate(s);
 
 		double T = Ti;
 		int iterT = 0;
 		Solution<R, ADS>* sStar = &s.clone();
-		Evaluation<M>* eStar = &e.clone();
+		Evaluation<DS>* eStar = &e.clone();
 
 		while ((T > 0) && (tnow.now() < timelimit))
 		{
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
 			{
 				int n = rg.rand(neighbors.size());
-				Move<R, ADS, M>* move = &(neighbors[n]->move(s));
+				Move<R, ADS, DS>* move = &(neighbors[n]->move(s));
 
 				while (!(move->canBeApplied(s)))
 				{
@@ -88,7 +88,7 @@ public:
 				}
 
 				Solution<R, ADS>* sCurrent = &s.clone();
-				Evaluation<M>* eCurrent = &e.clone();
+				Evaluation<DS>* eCurrent = &e.clone();
 				delete &move->apply(*eCurrent, *sCurrent);
 				evaluator.evaluate(*eCurrent, *sCurrent);
 
@@ -139,7 +139,7 @@ public:
 		delete sStar;
 		delete eStar;
 
-		return new pair<Solution<R, ADS>&, Evaluation<M>&> (s, e);
+		return new pair<Solution<R, ADS>&, Evaluation<DS>&> (s, e);
 	}
 
 	virtual string id() const
@@ -150,7 +150,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, M>::idComponent() << "SA:basic_sa";
+		ss << SingleObjSearch<R, ADS, DS>::idComponent() << "SA:basic_sa";
 		return ss.str();
 
 	}

@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class SystemEchoModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class SystemEchoModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -42,7 +42,7 @@ public:
 		return "system.echo text";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, M>&, map<string, string>&, map< string,vector<string> >&, string text)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, DS>&, map<string, string>&, map< string,vector<string> >&, string text)
 	{
 		printf("%s\n", text.c_str());
 		return true;

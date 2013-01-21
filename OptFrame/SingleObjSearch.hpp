@@ -32,11 +32,11 @@ using namespace std;
 #include "OptFrameComponent.hpp"
 #include "ComponentBuilder.h"
 
-template< class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY >
+template< class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS >
 class SingleObjSearch : public OptFrameComponent
 {
-   typedef vector<Evaluation<M>*> FitnessValues;
-   typedef const vector<const Evaluation<M>*> ConstFitnessValues;
+   typedef vector<Evaluation<DS>*> FitnessValues;
+   typedef const vector<const Evaluation<DS>*> ConstFitnessValues;
 
 public:
 
@@ -49,7 +49,7 @@ public:
    }
 
    // search method try to find a feasible solution within timelimit, if there is no such solution it returns NULL.
-   virtual pair<Solution<R, ADS>&, Evaluation<M>&>* search(double timelimit = 100000000, double target_f = 0) = 0;
+   virtual pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0) = 0;
 
    virtual string log()
    {
@@ -75,17 +75,17 @@ public:
 
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class SingleObjSearchBuilder: public ComponentBuilder<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class SingleObjSearchBuilder: public ComponentBuilder<R, ADS, DS>
 {
 public:
 	virtual ~SingleObjSearchBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "") = 0;
+	virtual SingleObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "") = 0;
 
-	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
 		return build(scanner, hf, family);
 	}
@@ -97,7 +97,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, M>::idComponent() << "SingleObjSearch:";
+		ss << ComponentBuilder<R, ADS, DS>::idComponent() << "SingleObjSearch:";
 		return ss.str();
 	}
 

@@ -30,8 +30,8 @@ using namespace std;
 
 // Working structure: vector<vector<T> >
 
-template<class T, class M = OPTFRAME_DEFAULT_EMEMORY>
-class NSIteratorVVSwapIntra: public NSIterator<vector<vector<T> > , M>
+template<class T, class DS = OPTFRAME_DEFAULT_EMEMORY>
+class NSIteratorVVSwapIntra: public NSIterator<vector<vector<T> > , DS >
 {
 	typedef vector<vector<T> > Routes;
 	const Routes& routes;
@@ -88,9 +88,9 @@ public:
 			return false;
 	}
 
-	Move<Routes, M>& current()
+	Move<Routes, DS >& current()
 	{
-		return *new MoveVVSwapIntra<T, M> (m_i, m_j, m_k);
+		return *new MoveVVSwapIntra<T, DS > (m_i, m_j, m_k);
 	}
 };
 

@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class SystemDictionaryModule : public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class SystemDictionaryModule : public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -41,7 +41,7 @@ public:
 		return "system.dictionary";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, M>&, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, DS>&, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string)
 	{
 		cout << "Text dictionary: " << endl;
 

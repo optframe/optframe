@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class SystemUnsafeDefineModule : public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class SystemUnsafeDefineModule : public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -41,7 +41,7 @@ public:
 		return "system.unsafe_define new_name text";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string rest)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>&, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string rest)
 	{
 		Scanner scanner(rest);
 
@@ -53,7 +53,7 @@ public:
 		if(new_name != "")
 		{
 			string second_word = scanner.rest();
-			return OptFrameModule<R, ADS, M>::defineText(new_name, second_word, dictionary);
+			return OptFrameModule<R, ADS, DS>::defineText(new_name, second_word, dictionary);
 		}
 		else
 		{

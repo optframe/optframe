@@ -24,8 +24,8 @@
 #include "../OptFrameModule.hpp"
 #include "../LocalSearch.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ComponentExecLocalSearchModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ComponentExecLocalSearchModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -45,7 +45,7 @@ public:
 		return u;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		//cout << "exec_local_search: " << input << endl;
 		Scanner scanner(input);
@@ -66,7 +66,7 @@ public:
 			return NULL;
 		}
 
-		pair<LocalSearch<R, ADS, M>*, string> method = factory.createLocalSearch(scanner.rest());
+		pair<LocalSearch<R, ADS, DS>*, string> method = factory.createLocalSearch(scanner.rest());
 		if(!method.first)
 		{
 			cout << id() << " error: " << "couldn't read LocalSearch: from input." << endl;
@@ -109,7 +109,7 @@ public:
 		if (scanner.hasNext())
 		{
 			string new_name = scanner.next();
-			if(!OptFrameModule<R, ADS, M>::defineText(new_name, s_new_id, dictionary))
+			if(!OptFrameModule<R, ADS, DS>::defineText(new_name, s_new_id, dictionary))
 				return false;
 		}
 
@@ -118,7 +118,7 @@ public:
 			string var_time = scanner.next();
 			stringstream sstime;
 			sstime << time;
-			if(!OptFrameModule<R, ADS, M>::defineText(var_time, sstime.str(), dictionary))
+			if(!OptFrameModule<R, ADS, DS>::defineText(var_time, sstime.str(), dictionary))
 				return false;
 		}
 

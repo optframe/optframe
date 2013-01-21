@@ -77,8 +77,8 @@ using namespace std;
   \endportuguese
 */
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveTSPSwap<T, ADS, M> >
-class NSSeqTSPSwap: public NSSeq<vector<T> , ADS, M>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveTSPSwap<T, ADS, DS > >
+class NSSeqTSPSwap: public NSSeq<vector<T> , ADS, DS >
 {
 	typedef vector<T> Route;
 
@@ -94,7 +94,7 @@ public:
 	{
 	}
 
-	Move<Route, ADS, M>& move(const Route& rep, const ADS&)
+	Move<Route, ADS, DS >& move(const Route& rep, const ADS&)
 	{
 		if (rep.size() < 2)
 			return *new MOVE(-1, -1);
@@ -109,15 +109,15 @@ public:
 		return *new MOVE(p1, p2);
 	}
 
-	virtual NSIterator<Route, ADS, M>& getIterator(const Route& r, const ADS&)
+	virtual NSIterator<Route, ADS, DS >& getIterator(const Route& r, const ADS&)
 	{
-		return *new NSIteratorTSPSwap<T, ADS, M, MOVE> (r.size());
+		return *new NSIteratorTSPSwap<T, ADS, DS, MOVE> (r.size());
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << NSSeq<vector<T>, ADS, M>::idComponent() << ":NSSeqTSPSwap";
+		ss << NSSeq<vector<T>, ADS, DS >::idComponent() << ":NSSeqTSPSwap";
 		return ss.str();
 	}
 
@@ -128,7 +128,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return ( s == idComponent() ) || ( NSSeq<vector<T>, ADS, M>::compatible(s) );
+		return ( s == idComponent() ) || ( NSSeq<vector<T>, ADS, DS >::compatible(s) );
 	}
 
 	virtual string toString() const

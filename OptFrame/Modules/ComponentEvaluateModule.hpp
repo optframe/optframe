@@ -25,8 +25,8 @@
 
 #include "SystemSilentDefineModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ComponentEvaluateModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ComponentEvaluateModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -44,7 +44,7 @@ public:
 		return u;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		//cout << "evaluate: " << input << endl;
 		Scanner scanner(input);
@@ -55,7 +55,7 @@ public:
 			return false;
 		}
 
-		Evaluator<R, ADS, M>* eval = factory.read_ev(scanner);
+		Evaluator<R, ADS, DS>* eval = factory.read_ev(scanner);
 
 		string sol = scanner.next();
 
@@ -72,7 +72,7 @@ public:
 		Solution<R, ADS>* s = NULL;
 		factory.readComponent(s, s2);
 
-		Evaluation<M>* e = &eval->evaluate(*s);
+		Evaluation<DS>* e = &eval->evaluate(*s);
 
 		if(scanner.hasNext())
 		{
@@ -80,7 +80,7 @@ public:
 			stringstream ss;
 			ss << ename << " " << e->evaluation();
 			delete e;
-			return OptFrameModule<R, ADS, M>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
+			return OptFrameModule<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 		}
 		else
 		{

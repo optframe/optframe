@@ -30,21 +30,21 @@
 #include "../ParetoDominance.hpp"
 #include "../ParetoDominanceWeak.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class TwoPhaseParetoLocalSearch: public HTrajectory<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class TwoPhaseParetoLocalSearch: public HTrajectory<R, ADS, DS>
 {
-	typedef vector<Evaluation<M>*> FitnessValues;
+	typedef vector<Evaluation<DS>*> FitnessValues;
 
 private:
-	vector<NSSeq<R, ADS, M>*> neighbors;
-	vector<Evaluator<R, ADS, M>*> v_e;
-	ParetoDominance<R, ADS, M> pDominance;
-	ParetoDominanceWeak<R, ADS, M> pDominanceWeak;
+	vector<NSSeq<R, ADS, DS>*> neighbors;
+	vector<Evaluator<R, ADS, DS>*> v_e;
+	ParetoDominance<R, ADS, DS> pDominance;
+	ParetoDominanceWeak<R, ADS, DS> pDominanceWeak;
 
 public:
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, DS>::exec; // prevents name hiding
 
-	TwoPhaseParetoLocalSearch(vector<Evaluator<R, ADS, M>*> _v_e, vector<NSSeq<R, ADS, M>*> _neighbors) :
+	TwoPhaseParetoLocalSearch(vector<Evaluator<R, ADS, DS>*> _v_e, vector<NSSeq<R, ADS, DS>*> _neighbors) :
 		v_e(_v_e), neighbors(_neighbors)
 	{
 		pDominance.insertEvaluators(_v_e);
@@ -59,7 +59,7 @@ public:
 	{
 		//ACHO Q FALTA APAGAR ALGUMA COISA NO FINAL
 
-		//vector<vector<Evaluation<M>*> > e_pop;
+		//vector<vector<Evaluation<DS>*> > e_pop;
 		FitnessValues& e_pop = *new FitnessValues;
 
 		for (int i = 0; i < p.size(); i++)
@@ -127,7 +127,7 @@ public:
 			for (int ind = 0; ind < p.size(); ind++)
 			{
 
-				NSIterator<R, ADS, M>& it = neighbors[k - 1]->getIterator(p.at(0).getR());
+				NSIterator<R, ADS, DS>& it = neighbors[k - 1]->getIterator(p.at(0).getR());
 				it.first();//Primeiro vizinho
 
 				//verifica se existe vizinho a ser gerado
@@ -138,13 +138,13 @@ public:
 				else
 				{
 
-					Move<R, ADS, M>* move = geraMovimentoValido(it, p.at(ind));
+					Move<R, ADS, DS>* move = geraMovimentoValido(it, p.at(ind));
 					//cout << "!it.isDone() = " << !it.isDone() << " aplly = " << move->canBeApplied(p.at(ind)) << endl;
 					while ((!it.isDone()) && (move->canBeApplied(p.at(ind))))
 					{
 
 						Solution<R, ADS>& s = p.at(ind).clone();
-						Move<R, ADS, M>& mov_rev = move->apply(s);
+						Move<R, ADS, DS>& mov_rev = move->apply(s);
 
 						delete &mov_rev;
 						delete move;
@@ -218,10 +218,10 @@ public:
 
 	}
 
-	Move<R, ADS, M>* geraMovimentoValido(NSIterator<R, ADS, M>& it, Solution<R, ADS>& s, int ind)
+	Move<R, ADS, DS>* geraMovimentoValido(NSIterator<R, ADS, DS>& it, Solution<R, ADS>& s, int ind)
 	{
 
-		Move<R, ADS, M>* move = NULL;
+		Move<R, ADS, DS>* move = NULL;
 
 		if (it.isDone())
 			return NULL;
@@ -244,10 +244,10 @@ public:
 		return move;
 	}
 
-	Move<R, ADS, M>* geraMovimentoValido(NSIterator<R, ADS, M>& it, Solution<R, ADS>& s)
+	Move<R, ADS, DS>* geraMovimentoValido(NSIterator<R, ADS, DS>& it, Solution<R, ADS>& s)
 	{
 
-		Move<R, ADS, M>* move = NULL;
+		Move<R, ADS, DS>* move = NULL;
 
 		if (it.isDone())
 			return NULL;
@@ -274,7 +274,7 @@ public:
 
 	bool addSolution(Population<R, ADS>& p, Solution<R, ADS>& s)
 	{
-		Evaluation<M>& e = v_e[0]->evaluate(s);
+		Evaluation<DS>& e = v_e[0]->evaluate(s);
 		if (!e.isFeasible())
 		{
 			delete &e;
@@ -302,7 +302,7 @@ public:
 
 	bool addSolution(pair<Population<R, ADS> , vector<vector<bool> > >& p, Solution<R, ADS>& s)
 	{
-		Evaluation<M>& e = v_e[0]->evaluate(s);
+		Evaluation<DS>& e = v_e[0]->evaluate(s);
 		if (!e.isFeasible())
 		{
 			delete &e;

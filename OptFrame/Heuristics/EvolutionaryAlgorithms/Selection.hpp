@@ -23,7 +23,7 @@
 
 #include "../../Population.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class Selection
 {
    //private:
@@ -31,7 +31,7 @@ protected:
 
    typedef Solution<R, ADS> chromossome;
    //typedef vector<chromossome*> Population;
-   typedef vector<Evaluation<M>*> FitnessValues;
+   typedef vector<Evaluation<DS>*> FitnessValues;
 
    //Population * population;
    //FitnessValues * fitnessValues;

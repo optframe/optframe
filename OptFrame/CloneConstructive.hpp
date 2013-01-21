@@ -64,15 +64,15 @@ public:
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class CloneConstructiveBuilder : public ComponentBuilder<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class CloneConstructiveBuilder : public ComponentBuilder<R, ADS, DS>
 {
 public:
 	virtual ~CloneConstructiveBuilder()
 	{
 	}
 
-	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
 		Solution<R, ADS>* s;
 		hf.assign(s, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -96,7 +96,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, M>::idComponent() << "CloneConstructive";
+		ss << ComponentBuilder<R, ADS, DS>::idComponent() << "CloneConstructive";
 		return ss.str();
 	}
 

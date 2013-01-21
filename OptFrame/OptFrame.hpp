@@ -229,18 +229,18 @@
 
 // ==================================
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class OptFrame
 {
 private:
-	vector<OptFrameModule<R, ADS, M>*> modules;
+	vector<OptFrameModule<R, ADS, DS>*> modules;
 	vector<OptFrameFunction*> functions;
 	map<string, string> dictionary;
 	map< string, vector<string> > ldictionary;
 
 public:
 
-	HeuristicFactory<R, ADS, M> factory;
+	HeuristicFactory<R, ADS, DS> factory;
 
 	OptFrame()
 	{
@@ -249,7 +249,7 @@ public:
 	}
 
 	OptFrame(RandGen _rg) :
-		factory(HeuristicFactory<R, ADS, M> (_rg))
+		factory(HeuristicFactory<R, ADS, DS> (_rg))
 	{
 		loadDefault();
 		loadComponentBuilders();
@@ -280,7 +280,7 @@ public:
 		functions.clear();
 	}
 
-	void loadModule(OptFrameModule<R, ADS, M>* module)
+	void loadModule(OptFrameModule<R, ADS, DS>* module)
 	{
 		if(module)
 			modules.push_back(module);
@@ -296,7 +296,7 @@ public:
 	{
 		cout << "warning: system.call module loaded!" << endl;
 
-		loadModule(new SystemCallModule<R, ADS, M> );
+		loadModule(new SystemCallModule<R, ADS, DS> );
 	}
 
 	void loadDefault()
@@ -304,83 +304,83 @@ public:
 		unloadModules();
 
 		// to become functions or runtime modules...
-		loadModule(new CreateNumericListModule<R, ADS, M> );
-		loadModule(new EmpiricalModule<R, ADS, M> );
-		loadModule(new TestModule<R, ADS, M> );
-		loadModule(new TestLocalSearchModule<R, ADS, M> );
+		loadModule(new CreateNumericListModule<R, ADS, DS> );
+		loadModule(new EmpiricalModule<R, ADS, DS> );
+		loadModule(new TestModule<R, ADS, DS> );
+		loadModule(new TestLocalSearchModule<R, ADS, DS> );
 
 		// components
-		loadModule(new ComponentBetterThanModule<R, ADS, M> );
-		loadModule(new ComponentBuilderOfComponentModule<R, ADS, M> );
-		loadModule(new ComponentBuildModule<R, ADS, M> );
-		loadModule(new ComponentCheckModule<R, ADS, M> );
-		loadModule(new ComponentCreateListModule<R, ADS, M> );
-		loadModule(new ComponentDropModule<R, ADS, M> );
-		loadModule(new ComponentDropAllModule<R, ADS, M> );
-		loadModule(new ComponentEvaluateModule<R, ADS, M> );
-		loadModule(new ComponentExecConstructiveModule<R, ADS, M> );
-		loadModule(new ComponentExecLocalSearchModule<R, ADS, M> );
-		loadModule(new ComponentExecModule<R, ADS, M> );
-		loadModule(new ComponentExportLogModule<R, ADS, M> );
-		loadModule(new ComponentExportModule<R, ADS, M> );
-		loadModule(new ComponentListBuildersModule<R, ADS, M> );
-		loadModule(new ComponentListFromPopulationModule<R, ADS, M> );
-		loadModule(new ComponentListModule<R, ADS, M> );
-		loadModule(new ComponentNullModule<R, ADS, M> );
-		loadModule(new ComponentToStringModule<R, ADS, M> );
+		loadModule(new ComponentBetterThanModule<R, ADS, DS> );
+		loadModule(new ComponentBuilderOfComponentModule<R, ADS, DS> );
+		loadModule(new ComponentBuildModule<R, ADS, DS> );
+		loadModule(new ComponentCheckModule<R, ADS, DS> );
+		loadModule(new ComponentCreateListModule<R, ADS, DS> );
+		loadModule(new ComponentDropModule<R, ADS, DS> );
+		loadModule(new ComponentDropAllModule<R, ADS, DS> );
+		loadModule(new ComponentEvaluateModule<R, ADS, DS> );
+		loadModule(new ComponentExecConstructiveModule<R, ADS, DS> );
+		loadModule(new ComponentExecLocalSearchModule<R, ADS, DS> );
+		loadModule(new ComponentExecModule<R, ADS, DS> );
+		loadModule(new ComponentExportLogModule<R, ADS, DS> );
+		loadModule(new ComponentExportModule<R, ADS, DS> );
+		loadModule(new ComponentListBuildersModule<R, ADS, DS> );
+		loadModule(new ComponentListFromPopulationModule<R, ADS, DS> );
+		loadModule(new ComponentListModule<R, ADS, DS> );
+		loadModule(new ComponentNullModule<R, ADS, DS> );
+		loadModule(new ComponentToStringModule<R, ADS, DS> );
 
-		loadModule(new FileEchoModule<R, ADS, M> );
-		loadModule(new FileToListModule<R, ADS, M> );
+		loadModule(new FileEchoModule<R, ADS, DS> );
+		loadModule(new FileToListModule<R, ADS, DS> );
 
-		loadModule(new ListAddModule<R, ADS, M> );
-		loadModule(new ListPushBackModule<R, ADS, M> );
-		loadModule(new ListRemoveModule<R, ADS, M> );
-		loadModule(new ListSilentDefineModule<R, ADS, M> );
-		loadModule(new ListSortModule<R, ADS, M> );
+		loadModule(new ListAddModule<R, ADS, DS> );
+		loadModule(new ListPushBackModule<R, ADS, DS> );
+		loadModule(new ListRemoveModule<R, ADS, DS> );
+		loadModule(new ListSilentDefineModule<R, ADS, DS> );
+		loadModule(new ListSortModule<R, ADS, DS> );
 
-		loadModule(new ModuleCreateModule<R, ADS, M> );
-		loadModule(new ModuleCreateRawModule<R, ADS, M> );
-		loadModule(new ModuleExistsModule<R, ADS, M> );
+		loadModule(new ModuleCreateModule<R, ADS, DS> );
+		loadModule(new ModuleCreateRawModule<R, ADS, DS> );
+		loadModule(new ModuleExistsModule<R, ADS, DS> );
 
-		loadModule(new FunctionCreateRawModule<R, ADS, M> );
+		loadModule(new FunctionCreateRawModule<R, ADS, DS> );
 
 		// deprecated
 		#ifdef MaPI
-				loadModule(new InitServersModule<R, ADS, M> );
+				loadModule(new InitServersModule<R, ADS, DS> );
 		#endif
 
-		loadModule(new Plot2AxisModule<R, ADS, M> );
-		loadModule(new PlotViewModule<R, ADS, M> );
+		loadModule(new Plot2AxisModule<R, ADS, DS> );
+		loadModule(new PlotViewModule<R, ADS, DS> );
 
 		// cannot load abstract module
-		//loadModule(new ProblemModule<R, ADS, M> );
+		//loadModule(new ProblemModule<R, ADS, DS> );
 
-		loadModule(new RandGenIntervalModule<R, ADS, M> );
-		loadModule(new RandGenNumberModule<R, ADS, M> );
-		loadModule(new RandGenSetSeedModule<R, ADS, M> );
+		loadModule(new RandGenIntervalModule<R, ADS, DS> );
+		loadModule(new RandGenNumberModule<R, ADS, DS> );
+		loadModule(new RandGenSetSeedModule<R, ADS, DS> );
 
-		loadModule(new SystemDefineModule<R, ADS, M> );
-		loadModule(new SystemDictionaryModule<R, ADS, M> );
-		loadModule(new SystemEchoModule<R, ADS, M> );
-		loadModule(new SystemErrorModule<R, ADS, M> );
-		loadModule(new SystemHelpModule<R, ADS, M> );
-		loadModule(new SystemPauseModule<R, ADS, M> );
-		loadModule(new SystemPreprocessModule<R, ADS, M> );
-		loadModule(new SystemReadModule<R, ADS, M> );
-		loadModule(new SystemRequireModule<R, ADS, M> );
-		loadModule(new SystemRunModule<R, ADS, M> );
-		loadModule(new SystemSilentDefineModule<R, ADS, M> );
-		loadModule(new SystemUndefineModule<R, ADS, M> );
-		loadModule(new SystemUnsafeDefineModule<R, ADS, M> );
-		loadModule(new SystemUsageModule<R, ADS, M> );
-		loadModule(new SystemUseModule<R, ADS, M> );
+		loadModule(new SystemDefineModule<R, ADS, DS> );
+		loadModule(new SystemDictionaryModule<R, ADS, DS> );
+		loadModule(new SystemEchoModule<R, ADS, DS> );
+		loadModule(new SystemErrorModule<R, ADS, DS> );
+		loadModule(new SystemHelpModule<R, ADS, DS> );
+		loadModule(new SystemPauseModule<R, ADS, DS> );
+		loadModule(new SystemPreprocessModule<R, ADS, DS> );
+		loadModule(new SystemReadModule<R, ADS, DS> );
+		loadModule(new SystemRequireModule<R, ADS, DS> );
+		loadModule(new SystemRunModule<R, ADS, DS> );
+		loadModule(new SystemSilentDefineModule<R, ADS, DS> );
+		loadModule(new SystemUndefineModule<R, ADS, DS> );
+		loadModule(new SystemUnsafeDefineModule<R, ADS, DS> );
+		loadModule(new SystemUsageModule<R, ADS, DS> );
+		loadModule(new SystemUseModule<R, ADS, DS> );
 
 		//structural
-		loadModule(new ForModule<R, ADS, M> );
-		loadModule(new ForEachModule<R, ADS, M> );
-		loadModule(new IfElseModule<R, ADS, M> );
-		loadModule(new WhileModule<R, ADS, M> );
-		loadModule(new TryModule<R, ADS, M> );
+		loadModule(new ForModule<R, ADS, DS> );
+		loadModule(new ForEachModule<R, ADS, DS> );
+		loadModule(new IfElseModule<R, ADS, DS> );
+		loadModule(new WhileModule<R, ADS, DS> );
+		loadModule(new TryModule<R, ADS, DS> );
 
 		// ----------------------------------------------
 
@@ -421,7 +421,7 @@ public:
 		loadFunction(new TextNextFunction);
 	}
 
-	OptFrameModule<R, ADS, M>* getModule(string module)
+	OptFrameModule<R, ADS, DS>* getModule(string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())
@@ -432,22 +432,22 @@ public:
 	void loadComponentBuilders()
 	{
 		// Base
-		factory.builders.push_back(new CloneConstructiveBuilder<R, ADS, M>);
+		factory.builders.push_back(new CloneConstructiveBuilder<R, ADS, DS>);
 
 		// LocalSearch
-		factory.builders.push_back(new EmptyLocalSearchBuilder<R, ADS, M>);
-		factory.builders.push_back(new BestImprovementBuilder<R, ADS, M>);
-		factory.builders.push_back(new FirstImprovementBuilder<R, ADS, M>);
-		factory.builders.push_back(new RandomDescentMethodBuilder<R, ADS, M>);
-		factory.builders.push_back(new CircularSearchBuilder<R, ADS, M>);
-		factory.builders.push_back(new VariableNeighborhoodDescentBuilder<R, ADS, M>);
-		factory.builders.push_back(new RVNDBuilder<R, ADS, M>);
-		factory.builders.push_back(new HillClimbingBuilder<R, ADS, M>);
+		factory.builders.push_back(new EmptyLocalSearchBuilder<R, ADS, DS>);
+		factory.builders.push_back(new BestImprovementBuilder<R, ADS, DS>);
+		factory.builders.push_back(new FirstImprovementBuilder<R, ADS, DS>);
+		factory.builders.push_back(new RandomDescentMethodBuilder<R, ADS, DS>);
+		factory.builders.push_back(new CircularSearchBuilder<R, ADS, DS>);
+		factory.builders.push_back(new VariableNeighborhoodDescentBuilder<R, ADS, DS>);
+		factory.builders.push_back(new RVNDBuilder<R, ADS, DS>);
+		factory.builders.push_back(new HillClimbingBuilder<R, ADS, DS>);
 
 		// SingleObjSearch + Parameters
-		factory.builders.push_back(new SimpleLocalSearchBuilder<R, ADS, M>);
-		factory.builders.push_back(new BasicIteratedLocalSearchBuilder<R, ADS, M>);
-		factory.builders.push_back(new BasicILSPerturbationBuilder<R, ADS, M>);
+		factory.builders.push_back(new SimpleLocalSearchBuilder<R, ADS, DS>);
+		factory.builders.push_back(new BasicIteratedLocalSearchBuilder<R, ADS, DS>);
+		factory.builders.push_back(new BasicILSPerturbationBuilder<R, ADS, DS>);
 
 	}
 

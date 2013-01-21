@@ -32,8 +32,8 @@ using namespace std;
 
 // Working structure: vector<vector<T> >
 
-template<class T, class M = OPTFRAME_DEFAULT_EMEMORY>
-class NSSeqVVSwapIntra: public NSSeq<vector<vector<T> > , M>
+template<class T, class DS = OPTFRAME_DEFAULT_EMEMORY>
+class NSSeqVVSwapIntra: public NSSeq<vector<vector<T> > , DS >
 {
 	typedef vector<vector<T> > Routes;
 
@@ -47,7 +47,7 @@ public:
 	{
 	}
 
-	Move<Routes, M>& move(const Routes& rep)
+	Move<Routes, DS >& move(const Routes& rep)
 	{
 		int i = rand() % rep.size();
 
@@ -64,12 +64,12 @@ public:
 			while (k == j)
 				k = rand() % n;
 
-		return *new MoveVVSwapIntra<T, M> (i, j, k);
+		return *new MoveVVSwapIntra<T, DS > (i, j, k);
 	}
 
-	virtual NSIterator<Routes, M>& getIterator(const Routes& r)
+	virtual NSIterator<Routes, DS >& getIterator(const Routes& r)
 	{
-		return *new NSIteratorVVSwapIntra<T, M> (r);
+		return *new NSIteratorVVSwapIntra<T, DS > (r);
 	}
 
 	virtual void print()

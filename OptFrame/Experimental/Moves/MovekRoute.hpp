@@ -26,19 +26,19 @@
 
 using namespace std;
 
-template<class T, class M>
-class MovekRoute: public Move<vector<vector<T> > , M>
+template<class T, class DS >
+class MovekRoute: public Move<vector<vector<T> > , DS >
 {
 	typedef vector<T> Route;
 	typedef vector<vector<T> > MultiRoute;
 
 protected:
 	int k; // route number
-	Move<Route, M>& m;
+	Move<Route, DS >& m;
 
 public:
 
-	MovekRoute(int _k, Move<Route, M>& _m) :
+	MovekRoute(int _k, Move<Route, DS >& _m) :
 		k(_k), m(_m)
 	{
 	}
@@ -53,19 +53,19 @@ public:
 		return m.canBeApplied(rep[k]);
 	}
 
-	Move<MultiRoute, M>& apply(MultiRoute& rep)
+	Move<MultiRoute, DS >& apply(MultiRoute& rep)
 	{
-		return *new MovekRoute<T, M> (k, m.apply(rep[k]));
+		return *new MovekRoute<T, DS > (k, m.apply(rep[k]));
 	}
 
-	Move<MultiRoute, M>& apply(M& mem, MultiRoute& rep)
+	Move<MultiRoute, DS >& apply(DS& mem, MultiRoute& rep)
 	{
-		return *new MovekRoute<T, M> (k, m.apply(mem, rep[k]));
+		return *new MovekRoute<T, DS > (k, m.apply(mem, rep[k]));
 	}
 
-	virtual bool operator==(const Move<MultiRoute, M>& _m) const
+	virtual bool operator==(const Move<MultiRoute, DS >& _m) const
 	{
-		const MovekRoute<T, M>& m1 = (const MovekRoute<T, M>&) _m;
+		const MovekRoute<T, DS >& m1 = (const MovekRoute<T, DS >&) _m;
 		if (k == m1.k)
 			return m == m1.m;
 		else

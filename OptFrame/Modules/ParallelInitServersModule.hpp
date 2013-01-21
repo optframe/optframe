@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class InitServersModule : public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class InitServersModule : public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -41,7 +41,7 @@ public:
 		return "initservers";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string rest)
+	void run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string rest)
 	{
 		factory->mapReduce->initServers(factory->argc,factory->argv);
 	}

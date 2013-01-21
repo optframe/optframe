@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ComponentExportLogModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ComponentExportLogModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -41,7 +41,7 @@ public:
 		return "component.export_log method 0 filename";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& hf, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -66,8 +66,8 @@ public:
 
 		FILE * pFile = fopen(filename.c_str(), "a");
 
-		SingleObjSearch<R, ADS, M>* h = NULL;
-		hf.assign(h, id, SingleObjSearch<R, ADS, M>::idComponent());
+		SingleObjSearch<R, ADS, DS>* h = NULL;
+		hf.assign(h, id, SingleObjSearch<R, ADS, DS>::idComponent());
 
 		stringstream stream;
 

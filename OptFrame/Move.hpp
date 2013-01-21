@@ -28,7 +28,7 @@
 
 using namespace std;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class Move : public OptFrameComponent
 {
 public:
@@ -44,34 +44,34 @@ public:
 
 	virtual bool canBeApplied(const R&, const ADS&) = 0;
 
-	Move<R, ADS, M>& apply(Solution<R, ADS>& s)
+	Move<R, ADS, DS>& apply(Solution<R, ADS>& s)
 	{
 		return apply(s.getR(), s.getADS());
 	}
 
-	Move<R, ADS, M>& apply(Evaluation<M>& e, Solution<R, ADS>& s)
+	Move<R, ADS, DS>& apply(Evaluation<DS>& e, Solution<R, ADS>& s)
 	{
-		return apply(e.getEM(), s.getR(), s.getADS());
+		return apply(e.getDS(), s.getR(), s.getADS());
 	}
 
-	virtual Move<R, ADS, M>& apply(R& r, ADS& ads) = 0;
+	virtual Move<R, ADS, DS>& apply(R& r, ADS& ads) = 0;
 
 	// WARNING: may need to override this! do not make it 'final'!
-	virtual Move<R, ADS, M>& apply(M& m, R& r, ADS& ads)
+	virtual Move<R, ADS, DS>& apply(DS& m, R& r, ADS& ads)
 	{
 		updateDelta(m, r, ads);
 
 		return apply(r, ads);
 	}
 
-	virtual bool updateDelta(M& m, const R& r, const ADS& ads)
+	virtual bool updateDelta(DS& m, const R& r, const ADS& ads)
 	{
 		return false;
 	}
 
-	virtual bool operator==(const Move<R, ADS, M>& m) const = 0;
+	virtual bool operator==(const Move<R, ADS, DS>& m) const = 0;
 
-	bool operator!=(const Move<R, ADS, M>& m) const
+	bool operator!=(const Move<R, ADS, DS>& m) const
 	{
 		return !(*this == m);
 	}

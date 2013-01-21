@@ -23,8 +23,8 @@
 
 #include "../LocalSearch.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class EmptyLocalSearch : public LocalSearch<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class EmptyLocalSearch : public LocalSearch<R, ADS, DS>
 {
 public:
 
@@ -37,7 +37,7 @@ public:
 	}
 
 	virtual void exec(Solution<R, ADS>&, double timelimit, double target_f){};
-	virtual void exec(Solution<R, ADS>&, Evaluation<M>&, double timelimit, double target_f){};
+	virtual void exec(Solution<R, ADS>&, Evaluation<DS>&, double timelimit, double target_f){};
 
 	string log()
 	{
@@ -46,13 +46,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS, M>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<R, ADS, DS>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, M>::idComponent() << "Empty";
+		ss << LocalSearch<R, ADS, DS>::idComponent() << "Empty";
 		return ss.str();
 	}
 
@@ -63,17 +63,17 @@ public:
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class EmptyLocalSearchBuilder : public LocalSearchBuilder<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class EmptyLocalSearchBuilder : public LocalSearchBuilder<R, ADS, DS>
 {
 public:
 	virtual ~EmptyLocalSearchBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	virtual LocalSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
-		return new EmptyLocalSearch<R, ADS, M>;
+		return new EmptyLocalSearch<R, ADS, DS>;
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -85,13 +85,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == EmptyLocalSearch<R, ADS, M>::idComponent();
+		return component == EmptyLocalSearch<R, ADS, DS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, M>::idComponent() << "Empty";
+		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "Empty";
 		return ss.str();
 	}
 

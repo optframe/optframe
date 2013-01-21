@@ -27,7 +27,7 @@
 #include "../NS.hpp"
 #include "../RandGen.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class ILSLPerturbation: public OptFrameComponent
 {
 public:
@@ -36,7 +36,7 @@ public:
 	{
 	}
 
-	virtual void perturb(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f, int level) = 0;
+	virtual void perturb(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f, int level) = 0;
 
 	virtual string id() const
 	{
@@ -52,17 +52,17 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ILSLPerturbationLPlus2: public ILSLPerturbation<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ILSLPerturbationLPlus2: public ILSLPerturbation<R, ADS, DS>
 {
 private:
-	vector<NS<R, ADS, M>*> ns;
-	Evaluator<R, ADS, M>& evaluator;
+	vector<NS<R, ADS, DS>*> ns;
+	Evaluator<R, ADS, DS>& evaluator;
 	int pMax;
 	RandGen& rg;
 
 public:
-	ILSLPerturbationLPlus2(Evaluator<R, ADS, M>& e, int _pMax, NS<R, ADS, M>& _ns, RandGen& _rg) :
+	ILSLPerturbationLPlus2(Evaluator<R, ADS, DS>& e, int _pMax, NS<R, ADS, DS>& _ns, RandGen& _rg) :
 		evaluator(e), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -72,12 +72,12 @@ public:
 	{
 	}
 
-	void add_ns(NS<R, ADS, M>& _ns)
+	void add_ns(NS<R, ADS, DS>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
 
-	void perturb(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f, int level)
+	void perturb(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f, int level)
 	{
 		int f = 0; // number of failures
 		int a = 0; // number of appliable moves
@@ -88,7 +88,7 @@ public:
 		{
 			int x = rg.rand(ns.size());
 
-			Move<R, ADS, M>& m = ns[x]->move(s);
+			Move<R, ADS, DS>& m = ns[x]->move(s);
 
 			if (m.canBeApplied(s))
 			{

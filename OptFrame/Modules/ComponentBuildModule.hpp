@@ -34,8 +34,8 @@
   \sa run()
 */
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ComponentBuildModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ComponentBuildModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -91,7 +91,7 @@ public:
        \endportuguese
    */
 
-   bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+   bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
    {
       //cout << "build module: " << input << endl;
       Scanner scanner1(input);
@@ -112,39 +112,39 @@ public:
       int new_id = -1;
       string base = "";
 
-      if(factory.compareBase(LocalSearchBuilder<R, ADS, M>::idComponent(), type))
+      if(factory.compareBase(LocalSearchBuilder<R, ADS, DS>::idComponent(), type))
       {
-          pair<LocalSearch<R, ADS, M>*, string> method;
+          pair<LocalSearch<R, ADS, DS>*, string> method;
           method = factory.createLocalSearch(scanner.rest());
           scanner = Scanner(method.second);
 
           if(method.first!=NULL)
           {
-        	  base   = LocalSearch<R, ADS, M>::idComponent();
+        	  base   = LocalSearch<R, ADS, DS>::idComponent();
         	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
           }
       }
-      else if(factory.compareBase(SingleObjSearchBuilder<R, ADS, M>::idComponent(), type))
+      else if(factory.compareBase(SingleObjSearchBuilder<R, ADS, DS>::idComponent(), type))
       {
-          pair<SingleObjSearch<R, ADS, M>*, string> method;
+          pair<SingleObjSearch<R, ADS, DS>*, string> method;
           method = factory.createSingleObjSearch(scanner.rest());
           scanner = Scanner(method.second);
 
           if(method.first!=NULL)
           {
-        	  base   = SingleObjSearch<R, ADS, M>::idComponent();
+        	  base   = SingleObjSearch<R, ADS, DS>::idComponent();
         	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
           }
       }
-      else if(factory.compareBase(MultiObjSearchBuilder<R, ADS, M>::idComponent(), type))
+      else if(factory.compareBase(MultiObjSearchBuilder<R, ADS, DS>::idComponent(), type))
       {
-          pair<MultiObjSearch<R, ADS, M>*, string> method;
+          pair<MultiObjSearch<R, ADS, DS>*, string> method;
           method = factory.createMultiObjSearch(scanner.rest());
           scanner = Scanner(method.second);
 
           if(method.first!=NULL)
           {
-        	  base   = MultiObjSearch<R, ADS, M>::idComponent();
+        	  base   = MultiObjSearch<R, ADS, DS>::idComponent();
         	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
           }
       }
@@ -152,7 +152,7 @@ public:
       {
     	  scanner.next(); // drop builder name!
 
-    	  ComponentBuilder<R, ADS, M>* builder = factory.getBuilder(type);
+    	  ComponentBuilder<R, ADS, DS>* builder = factory.getBuilder(type);
     	  OptFrameComponent* comp = builder->buildComponent(scanner, factory);
 
     	  if(comp)
@@ -182,7 +182,7 @@ public:
       if (scanner.hasNext())
       {
          string new_name = scanner.next();
-         return OptFrameModule<R, ADS, M>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, new_name + " " + s_new_id);
+         return OptFrameModule<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, new_name + " " + s_new_id);
       }
 
       return true;

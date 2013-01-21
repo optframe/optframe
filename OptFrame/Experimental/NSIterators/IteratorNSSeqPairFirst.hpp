@@ -36,15 +36,15 @@ public:
 	}
 };
 
-template<class T1, class T2, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MovePairFirst<T1, T2, M> >
-class IteratorNSSeqPairFirst: public NSIterator<pair<T1, T2> , M>
+template<class T1, class T2, class DS = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MovePairFirst<T1, T2, DS > >
+class IteratorNSSeqPairFirst: public NSIterator<pair<T1, T2> , DS >
 {
 private:
-	NSIterator<T1, M>& iterator;
+	NSIterator<T1, DS >& iterator;
 
 public:
 
-	IteratorNSSeqPairFirst(NSIterator<T1, M>& it) :
+	IteratorNSSeqPairFirst(NSIterator<T1, DS >& it) :
 		iterator(it)
 	{
 	}
@@ -69,7 +69,7 @@ public:
 		return iterator.isDone();
 	}
 
-	Move<pair<T1, T2> , M>& current()
+	Move<pair<T1, T2> , DS >& current()
 	{
 
 		if (!iterator.isDone())

@@ -29,19 +29,19 @@
 
 using namespace std;
 
-template<class T, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MovekRoute<T, M> >
-class IteratorNSSeqkRoute: public NSIterator<vector<vector<T> > , M>
+template<class T, class DS = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MovekRoute<T, DS > >
+class IteratorNSSeqkRoute: public NSIterator<vector<vector<T> > , DS >
 {
 	typedef vector<T> Route;
 	typedef vector<vector<T> > MultiRoute;
 
 private:
 	int k;
-	NSIterator<Route, M>& iterator;
+	NSIterator<Route, DS >& iterator;
 
 public:
 
-	IteratorNSSeqkRoute(int _k, NSIterator<Route, M>& it) :
+	IteratorNSSeqkRoute(int _k, NSIterator<Route, DS >& it) :
 		k(_k), iterator(it)
 	{
 	}
@@ -66,7 +66,7 @@ public:
 		return iterator.isDone();
 	}
 
-	Move<MultiRoute, M>& current()
+	Move<MultiRoute, DS >& current()
 	{
 		return *new MOVE(k, iterator.current());
 	}

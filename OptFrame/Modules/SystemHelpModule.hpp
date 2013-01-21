@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class SystemHelpModule : public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class SystemHelpModule : public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -41,7 +41,7 @@ public:
 		return "system.help";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, M>&, map<string,string>&, map< string,vector<string> >&, string)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, DS>&, map<string,string>&, map< string,vector<string> >&, string)
 	{
 		cout << "Available modules are:" << endl;
 		for(unsigned int i=0;i<all_modules.size();i++)

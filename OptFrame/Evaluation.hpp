@@ -21,7 +21,7 @@
 #ifndef OPTFRAME_EVALUATION_HPP_
 #define OPTFRAME_EVALUATION_HPP_
 
-typedef int OPTFRAME_DEFAULT_EMEMORY;
+typedef int OPTFRAME_DEFAULT_DS;
 
 #include <cstdlib>
 #include <iostream>
@@ -45,44 +45,44 @@ using namespace std;
   \endportuguese
 */
 
-template<class EM = OPTFRAME_DEFAULT_EMEMORY>
+template<class DS = OPTFRAME_DEFAULT_DS>
 class Evaluation : OptFrameComponent
 {
 protected:
    double objFunction;
    double infMeasure;
-   EM& em;
+   DS& em;
 
 public:
-	Evaluation(double obj, double inf, EM& _em):
-		objFunction(obj),infMeasure(inf),em(*new EM(_em)){};
+	Evaluation(double obj, double inf, DS& _em):
+		objFunction(obj),infMeasure(inf),em(*new DS(_em)){};
 
-	Evaluation(double obj, EM& _em):
-		em(*new EM(_em))
+	Evaluation(double obj, DS& _em):
+		em(*new DS(_em))
 	{
 	   objFunction = obj;
 	   infMeasure = 0;
 	};
 
 	Evaluation(double obj) :
-      em(*new OPTFRAME_DEFAULT_EMEMORY)
+      em(*new OPTFRAME_DEFAULT_DS)
    {
       objFunction = obj;
       infMeasure = 0;
    }
 
 
-	Evaluation(const Evaluation<EM>& e):
-		objFunction(e.objFunction),infMeasure(e.infMeasure),em(*new EM(e.em)){};
+	Evaluation(const Evaluation<DS>& e):
+		objFunction(e.objFunction),infMeasure(e.infMeasure),em(*new DS(e.em)){};
 
 	virtual ~Evaluation() { delete &em; }
 
-	const EM& getEM() const { return em; }
-	EM& getEM() { return em; }
+	const DS& getDS() const { return em; }
+	DS& getDS() { return em; }
 	double getObjFunction() const { return objFunction; }
 	double getInfMeasure() const  { return infMeasure;  }
 
-	void setEM(const EM& _em){ em = _em; }
+	void setDS(const DS& _em){ em = _em; }
 	void setObjFunction(double obj){ objFunction = obj; }
 	void setInfMeasure (double inf){ infMeasure = inf;  }
 
@@ -120,9 +120,9 @@ public:
 		return *this;
 	}
 
-	virtual Evaluation<EM>& clone() const
+	virtual Evaluation<DS>& clone() const
 	{
-		return * new Evaluation<EM>(*this);
+		return * new Evaluation<DS>(*this);
 	}
 };
 

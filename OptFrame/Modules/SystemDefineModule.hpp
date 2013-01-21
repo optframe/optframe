@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class SystemDefineModule : public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class SystemDefineModule : public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -41,7 +41,7 @@ public:
 		return "system.define new_name text_to_be_substituted_from_the_new_name";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string,string>& dictionary,  map< string,vector<string> >&, string rest)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>&, map<string,string>& dictionary,  map< string,vector<string> >&, string rest)
 	{
 		Scanner scanner(rest);
 
@@ -53,7 +53,7 @@ public:
 		if(new_name != "")
 		{
 			string second_word = scanner.rest();
-			if(OptFrameModule<R, ADS, M>::defineText(new_name, second_word, dictionary))
+			if(OptFrameModule<R, ADS, DS>::defineText(new_name, second_word, dictionary))
 			{
 				cout << "Word '" << new_name << "' now means: '" << dictionary[new_name] << "'" << endl;
 				return true;
@@ -99,7 +99,7 @@ public:
 
 		// now proceed as usual
 
-		string* input3 = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+		string* input3 = OptFrameModule<R, ADS, DS>::defaultPreprocess(allFunctions, dictionary, ldictionary, scanner.rest());
 
 		if(!input3)
 			return NULL;

@@ -25,18 +25,18 @@
 #include "../NSSeq.hpp"
 #include "../Evaluator.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class CircularSearch: public LocalSearch<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class CircularSearch: public LocalSearch<R, ADS, DS>
 {
 private:
-   Evaluator<R, ADS, M>& eval;
-   NSEnum<R, ADS, M>& ns;
+   Evaluator<R, ADS, DS>& eval;
+   NSEnum<R, ADS, DS>& ns;
 
    int initial_w;
 
 public:
 
-	CircularSearch(Evaluator<R, ADS, M>& _eval, NSEnum<R, ADS, M>& _nsEnum) :
+	CircularSearch(Evaluator<R, ADS, DS>& _eval, NSEnum<R, ADS, DS>& _nsEnum) :
 		eval(_eval), ns(_nsEnum)
 	{
            initial_w = 0;
@@ -48,12 +48,12 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
-		Evaluation<M>& e = eval.evaluate(s.getR());
+		Evaluation<DS>& e = eval.evaluate(s.getR());
 		exec(s, e, timelimit, target_f);
 		delete &e;
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
 	{
                 int Wmax = ns.size();
 
@@ -61,7 +61,7 @@ public:
 
                 do
                 {
-                    Move<R, ADS, M>& m = ns.move(w);
+                    Move<R, ADS, DS>& m = ns.move(w);
 
                     if(m.canBeApplied(s))
                     {
@@ -92,13 +92,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS, M>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<R, ADS, DS>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, M>::idComponent() << "CS";
+		ss << LocalSearch<R, ADS, DS>::idComponent() << "CS";
 		return ss.str();
 	}
 
@@ -109,43 +109,43 @@ public:
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class CircularSearchBuilder : public LocalSearchBuilder<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class CircularSearchBuilder : public LocalSearchBuilder<R, ADS, DS>
 {
 public:
 	virtual ~CircularSearchBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	virtual LocalSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
-		Evaluator<R, ADS, M>* eval;
+		Evaluator<R, ADS, DS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NSEnum<R, ADS, M>* nsenum;
+		NSEnum<R, ADS, DS>* nsenum;
 		hf.assign(nsenum, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new CircularSearch<R, ADS, M>(*eval, *nsenum);
+		return new CircularSearch<R, ADS, DS>(*eval, *nsenum);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NSEnum<R, ADS, M>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NSEnum<R, ADS, DS>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}
 
 	virtual bool canBuild(string component)
 	{
-		return component == CircularSearch<R, ADS, M>::idComponent();
+		return component == CircularSearch<R, ADS, DS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, M>::idComponent() << "CS";
+		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "CS";
 		return ss.str();
 	}
 

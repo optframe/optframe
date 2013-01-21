@@ -32,8 +32,8 @@ using namespace std;
 //                           VVSwapk Move
 //============================================================================
 
-template<class T, class M>
-class MoveVVSwapk : public Move<vector<vector<T> >, M>
+template<class T, class DS >
+class MoveVVSwapk : public Move<vector<vector<T> >, DS >
 {
 public:
 	int k1,k2,v1,p1,v2,p2;
@@ -53,7 +53,7 @@ public:
 		return true;
 	}
 
-	virtual Move<vector<vector<T> >, M>& apply(vector<vector<T> >& rep)
+	virtual Move<vector<vector<T> >, DS >& apply(vector<vector<T> >& rep)
 	{
 		pair< pair<int,int> , pair < pair<int,int>,pair<int,int> > > m;
 		m.first.first = k1;
@@ -64,10 +64,10 @@ public:
 		m.second.second.second = p2;
 		NSVector<int>::swapk_apply(rep,m);
 
-		return * new MoveVVSwapk<T,M>(k1,k2,v2,p2,v1,p1);
+		return * new MoveVVSwapk<T,DS >(k1,k2,v2,p2,v1,p1);
 	}
 
-	virtual Move<vector<vector<T> >, M>& apply(M& m, vector<vector<T> > & r)
+	virtual Move<vector<vector<T> >, DS >& apply(DS& m, vector<vector<T> > & r)
 	{
 		if (!m.empty())
 		{
@@ -90,7 +90,7 @@ public:
 		cout << "Move Vector Vector Swapk("<< k1 << " " << k2 << " " << v1 << " " << p1 << " " << v2 << " " << p2 <<")"<<endl;
 	}
 
-	virtual bool operator==(const Move<vector<vector<T> >,M>& m) const
+	virtual bool operator==(const Move<vector<vector<T> >,DS >& m) const
 	{
 		return false; //TODO
 	}

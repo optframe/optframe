@@ -33,18 +33,18 @@
 
 typedef int BasicHistory;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class BasicIteratedLocalSearch: public IteratedLocalSearch<BasicHistory, R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class BasicIteratedLocalSearch: public IteratedLocalSearch<BasicHistory, R, ADS, DS >
 {
 protected:
-	LocalSearch<R, ADS, M>& ls;
-	BasicILSPerturbation<R, ADS, M>& p;
+	LocalSearch<R, ADS, DS>& ls;
+	BasicILSPerturbation<R, ADS, DS>& p;
 	int iterMax;
 
 public:
 
-	BasicIteratedLocalSearch(Evaluator<R, ADS, M>& e, Constructive<R, ADS>& constructive, LocalSearch<R, ADS, M>& _ls, BasicILSPerturbation<R, ADS, M>& _p, int _iterMax) :
-		IteratedLocalSearch<BasicHistory, R, ADS, M> (e, constructive), ls(_ls), p(_p), iterMax(_iterMax)
+	BasicIteratedLocalSearch(Evaluator<R, ADS, DS>& e, Constructive<R, ADS>& constructive, LocalSearch<R, ADS, DS>& _ls, BasicILSPerturbation<R, ADS, DS>& _p, int _iterMax) :
+		IteratedLocalSearch<BasicHistory, R, ADS, DS > (e, constructive), ls(_ls), p(_p), iterMax(_iterMax)
 	{
 	}
 
@@ -60,12 +60,12 @@ public:
 		return iter;
 	}
 
-	virtual void localSearch(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
+	virtual void localSearch(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
 	{
 		ls.exec(s, e, timelimit, target_f);
 	}
 
-	virtual void perturbation(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f, BasicHistory& history)
+	virtual void perturbation(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f, BasicHistory& history)
 	{
 		int iter = history;
 
@@ -80,12 +80,12 @@ public:
 
 	virtual Solution<R, ADS>& acceptanceCriterion(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2, BasicHistory& history)
 	{
-		if (IteratedLocalSearch<BasicHistory, R, ADS, M>::evaluator.betterThan(s2, s1))
+		if (IteratedLocalSearch<BasicHistory, R, ADS, DS >::evaluator.betterThan(s2, s1))
 		{
 			// =======================
 			//   Melhor solucao: 's2'
 			// =======================
-			Evaluation<M>& e = IteratedLocalSearch<BasicHistory, R, ADS, M>::evaluator.evaluate(s2);
+			Evaluation<DS>& e = IteratedLocalSearch<BasicHistory, R, ADS, DS >::evaluator.evaluate(s2);
 			cout << "Best fo: " << e.evaluation();
 			cout << " on [iter " << history << "]" << endl;
 			delete &e;
@@ -120,23 +120,23 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << IteratedLocalSearch<BasicHistory, R, ADS, M>::idComponent() << "BasicILS";
+		ss << IteratedLocalSearch<BasicHistory, R, ADS, DS >::idComponent() << "BasicILS";
 		return ss.str();
 
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class BasicIteratedLocalSearchBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class BasicIteratedLocalSearchBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, DS>
 {
 public:
 	virtual ~BasicIteratedLocalSearchBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	virtual SingleObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
-		Evaluator<R, ADS, M>* eval;
+		Evaluator<R, ADS, DS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		Constructive<R, ADS>* constructive;
@@ -144,28 +144,28 @@ public:
 
 		string rest = scanner.rest();
 
-		pair<LocalSearch<R, ADS, M>*, std::string> method;
+		pair<LocalSearch<R, ADS, DS>*, std::string> method;
 		method = hf.createLocalSearch(rest);
 
-		LocalSearch<R, ADS, M>* h = method.first;
+		LocalSearch<R, ADS, DS>* h = method.first;
 
 		scanner = Scanner(method.second);
 
-		BasicILSPerturbation<R, ADS, M>* pert;
+		BasicILSPerturbation<R, ADS, DS>* pert;
 		hf.assign(pert, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int iterMax = scanner.nextInt();
 
-		return new BasicIteratedLocalSearch<R, ADS, M>(*eval, *constructive, *h, *pert, iterMax);
+		return new BasicIteratedLocalSearch<R, ADS, DS>(*eval, *constructive, *h, *pert, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(Constructive<R, ADS>::idComponent(), "constructive heuristic"));
-		params.push_back(make_pair(LocalSearch<R, ADS, M>::idComponent(), "local search"));
-		params.push_back(make_pair(BasicILSPerturbation<R, ADS, M>::idComponent(), "ils perturbation"));
+		params.push_back(make_pair(LocalSearch<R, ADS, DS>::idComponent(), "local search"));
+		params.push_back(make_pair(BasicILSPerturbation<R, ADS, DS>::idComponent(), "ils perturbation"));
 		params.push_back(make_pair("int", "max number of iterations without improvement"));
 
 		return params;
@@ -173,13 +173,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicIteratedLocalSearch<R, ADS, M>::idComponent();
+		return component == BasicIteratedLocalSearch<R, ADS, DS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS, M>::idComponent() << ILS::family << "BasicILS";
+		ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << ILS::family << "BasicILS";
 		return ss.str();
 	}
 

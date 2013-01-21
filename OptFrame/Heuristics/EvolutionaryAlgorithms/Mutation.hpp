@@ -21,14 +21,14 @@
 #ifndef MUTATION_HPP_
 #define MUTATION_HPP_
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class Mutation
 {
 protected:
 
    typedef Solution<R, ADS> chromossome;
    //typedef vector<chromossome*> Population;
-   //typedef vector<Evaluation<M>*> FitnessValues;
+   //typedef vector<Evaluation<DS>*> FitnessValues;
 
 public:
 

@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ModuleExistsModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ModuleExistsModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -57,7 +57,7 @@ public:
 	   return b == "true";
    }
 
-   OptFrameModule<R, ADS, M>* getModule(vector<OptFrameModule<R, ADS, M>*>& modules, string module)
+   OptFrameModule<R, ADS, DS>* getModule(vector<OptFrameModule<R, ADS, DS>*>& modules, string module)
    {
 	   for (unsigned int i = 0; i < modules.size(); i++)
 		   if (module == modules[i]->id())
@@ -65,7 +65,7 @@ public:
 	   return NULL;
    }
 
-   bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+   bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
    {
       //cout << "module.exists module: " << input << endl;
 
@@ -87,7 +87,7 @@ public:
 
       string variable = scanner.next();
 
-      OptFrameModule<R, ADS, M>* m = getModule(allModules, module_name);
+      OptFrameModule<R, ADS, DS>* m = getModule(allModules, module_name);
 
       //if(m)
       //   cout << "module.exists real id is: " << m->id() << endl;
@@ -96,7 +96,7 @@ public:
 
       //cout << "module.exists result is: " << result << endl;
 
-      return OptFrameModule<R, ADS, M>::defineText(variable, result, dictionary);
+      return OptFrameModule<R, ADS, DS>::defineText(variable, result, dictionary);
    }
 
 };

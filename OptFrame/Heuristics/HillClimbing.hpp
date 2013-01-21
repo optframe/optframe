@@ -25,16 +25,16 @@
 #include "../NSSeq.hpp"
 #include "../Evaluator.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class HillClimbing: public LocalSearch<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class HillClimbing: public LocalSearch<R, ADS, DS>
 {
 private:
-	Evaluator<R, ADS, M>& evaluator;
-	LocalSearch<R, ADS, M>& ls;
+	Evaluator<R, ADS, DS>& evaluator;
+	LocalSearch<R, ADS, DS>& ls;
 
 public:
 
-	HillClimbing(Evaluator<R, ADS, M>& _ev, LocalSearch<R, ADS, M>& _ls) :
+	HillClimbing(Evaluator<R, ADS, DS>& _ev, LocalSearch<R, ADS, DS>& _ls) :
 		evaluator(_ev), ls(_ls)
 	{
 	}
@@ -45,20 +45,20 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
-		Evaluation<M>& e = evaluator.evaluate(s.getR());
+		Evaluation<DS>& e = evaluator.evaluate(s.getR());
 
 		exec(s, e, timelimit, target_f);
 
 		delete &e;
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit,
+	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit,
 			double target_f)
 	{
 		long tini = time(NULL);
 
 		Solution<R, ADS>* s0 = &s.clone();
-		Evaluation<M>* e0 = &e.clone();
+		Evaluation<DS>* e0 = &e.clone();
 
 		ls.exec(s, e, timelimit, target_f);
 
@@ -85,7 +85,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS, M>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<R, ADS, DS>::compatible(s));
 	}
 
 	virtual string id() const
@@ -96,56 +96,56 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, M>::idComponent() << "HC";
+		ss << LocalSearch<R, ADS, DS>::idComponent() << "HC";
 		return ss.str();
 
 	}
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class HillClimbingBuilder : public LocalSearchBuilder<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class HillClimbingBuilder : public LocalSearchBuilder<R, ADS, DS>
 {
 public:
 	virtual ~HillClimbingBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	virtual LocalSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
-		Evaluator<R, ADS, M>* eval;
+		Evaluator<R, ADS, DS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
 
-		pair<LocalSearch<R, ADS, M>*, std::string> method;
+		pair<LocalSearch<R, ADS, DS>*, std::string> method;
 		method = hf.createLocalSearch(rest);
 
-		LocalSearch<R, ADS, M>* h = method.first;
+		LocalSearch<R, ADS, DS>* h = method.first;
 
 		scanner = Scanner(method.second);
 
-		return new HillClimbing<R, ADS, M>(*eval, *h);
+		return new HillClimbing<R, ADS, DS>(*eval, *h);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(LocalSearch<R, ADS, M>::idComponent(), "local search"));
+		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(LocalSearch<R, ADS, DS>::idComponent(), "local search"));
 
 		return params;
 	}
 
 	virtual bool canBuild(string component)
 	{
-		return component == HillClimbing<R, ADS, M>::idComponent();
+		return component == HillClimbing<R, ADS, DS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, M>::idComponent() << "HC";
+		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "HC";
 		return ss.str();
 	}
 

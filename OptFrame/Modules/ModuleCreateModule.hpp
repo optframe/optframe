@@ -25,8 +25,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class GeneralModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class GeneralModule: public OptFrameModule<R, ADS, DS>
 {
 	string name;
 	vector<string> parameters;
@@ -41,7 +41,7 @@ public:
 	}
 
 private:
-	OptFrameModule<R, ADS, M>* getModule(vector<OptFrameModule<R, ADS, M>*>& modules, string module)
+	OptFrameModule<R, ADS, DS>* getModule(vector<OptFrameModule<R, ADS, DS>*>& modules, string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())
@@ -191,11 +191,11 @@ private:
 			return new_command;
 	}
 
-	bool exec_command(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string command)
+	bool exec_command(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string command)
 	{
 		Scanner scanner(command);
 		string module = scanner.next();
-		OptFrameModule<R, ADS, M>* m = getModule(all_modules, module);
+		OptFrameModule<R, ADS, DS>* m = getModule(all_modules, module);
 
 		if (m == NULL)
 			return false;
@@ -235,7 +235,7 @@ public:
 		return u;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		// CHECK IF EXPLICIT LIST IS PASSED AS PARAMETER (CAN'T DO THIS!!!)
 		for(unsigned i=0; i<input.size(); i++)
@@ -291,12 +291,12 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ModuleCreateModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ModuleCreateModule: public OptFrameModule<R, ADS, DS>
 {
 private:
 
-	bool moduleExists(string moduleName, vector<OptFrameModule<R, ADS, M>*>& allModules)
+	bool moduleExists(string moduleName, vector<OptFrameModule<R, ADS, DS>*>& allModules)
 	{
 		for(unsigned i=0; i<allModules.size(); i++)
 			if(allModules[i]->id() == moduleName)
@@ -304,7 +304,7 @@ private:
 		return false;
 	}
 
-	OptFrameModule<R, ADS, M>* getModule(vector<OptFrameModule<R, ADS, M>*>& modules, string module)
+	OptFrameModule<R, ADS, DS>* getModule(vector<OptFrameModule<R, ADS, DS>*>& modules, string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())
@@ -328,7 +328,7 @@ public:
 		return "module.create name list_of_$parameters block_of_commands";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 		//cout << "create_module run: '" << input << "'" << endl;
@@ -387,7 +387,7 @@ public:
 		else
 			return false;
 
-		OptFrameModule<R, ADS, M>* m = getModule(modules, name);
+		OptFrameModule<R, ADS, DS>* m = getModule(modules, name);
 
 		if (m != NULL)
 		{
@@ -396,7 +396,7 @@ public:
 		}
 		else
 		{
-			modules.push_back(new GeneralModule<R, ADS, M> (name, parameters, commands));
+			modules.push_back(new GeneralModule<R, ADS, DS> (name, parameters, commands));
 			//cout << "module '" << name << "' loaded." << endl;
 			return true;
 		}

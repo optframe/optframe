@@ -37,15 +37,15 @@
 
 using namespace std;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class ParetoDominance
 {
 protected:
-	vector<Evaluator<R, ADS, M>*> v_e;
+	vector<Evaluator<R, ADS, DS>*> v_e;
 
 public:
 
-	ParetoDominance(vector<Evaluator<R, ADS, M>*> _v_e) :
+	ParetoDominance(vector<Evaluator<R, ADS, DS>*> _v_e) :
 		v_e(_v_e)
 	{
 
@@ -60,7 +60,7 @@ public:
 	{
 	}
 
-	void insertEvaluators(vector<Evaluator<R, ADS, M>*> _v_e)
+	void insertEvaluators(vector<Evaluator<R, ADS, DS>*> _v_e)
 	{
 		v_e = _v_e;
 	}
@@ -68,8 +68,8 @@ public:
 	// true if 's1' dominates 's2'
 	virtual bool dominates(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2)
 	{
-		vector<Evaluation<M>*> v1;
-		vector<Evaluation<M>*> v2;
+		vector<Evaluation<DS>*> v1;
+		vector<Evaluation<DS>*> v2;
 
 		for (int e = 0; e < v_e.size(); e++)
 		{
@@ -89,7 +89,7 @@ public:
 	}
 
 	// true if 's1' dominates 's2'
-	virtual bool dominates(const vector<Evaluation<M>*> v1, const vector<Evaluation<M>*> v2)
+	virtual bool dominates(const vector<Evaluation<DS>*> v1, const vector<Evaluation<DS>*> v2)
 	{
 		if (!((v_e.size() == v1.size()) && (v1.size() == v2.size())))
 		{

@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class SystemUndefineModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class SystemUndefineModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 	virtual ~SystemUndefineModule()
@@ -41,7 +41,7 @@ public:
 		return "system.undefine word or list";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string rest)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>&, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string rest)
 	{
 		//cout << "undefine module: '" << rest << "'" << endl;
 
@@ -55,8 +55,8 @@ public:
 
 		string word = scanner.next();
 
-		OptFrameModule<R, ADS, M>::undefineText(word, dictionary);
-		OptFrameModule<R, ADS, M>::undefineList(word, ldictionary);
+		OptFrameModule<R, ADS, DS>::undefineText(word, dictionary);
+		OptFrameModule<R, ADS, DS>::undefineList(word, ldictionary);
 
 		return true;
 	}

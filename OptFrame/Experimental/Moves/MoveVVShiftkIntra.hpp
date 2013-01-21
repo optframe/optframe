@@ -32,8 +32,8 @@ using namespace std;
 //                           VVShiftkIntra Move
 //============================================================================
 
-template<class T, class M>
-class MoveVVShiftkIntra : public Move<vector<vector<T> >, M>
+template<class T, class DS >
+class MoveVVShiftkIntra : public Move<vector<vector<T> >, DS >
 {
 public:
 	int k,v,p1,p2;
@@ -51,7 +51,7 @@ public:
 		return true;
 	}
 
-	virtual Move<vector<vector<T> >, M>& apply(vector<vector<T> >& rep)
+	virtual Move<vector<vector<T> >, DS >& apply(vector<vector<T> >& rep)
 	{
 		pair<int,pair<int,int> > m;
 		m.first = k;
@@ -59,10 +59,10 @@ public:
 		m.second.second = p2;
 		NSVector<T>::shiftk_apply(rep[v],m);
 
-		return * new MoveVVShiftkIntra<T,M>(k,v,p2,p1);
+		return * new MoveVVShiftkIntra<T,DS >(k,v,p2,p1);
 	}
 
-	virtual Move<vector<vector<T> >, M>& apply(M& m, vector<vector<T> > & r)
+	virtual Move<vector<vector<T> >, DS >& apply(DS& m, vector<vector<T> > & r)
 	{
 		if (!m.empty())
 		{
@@ -83,7 +83,7 @@ public:
 		cout << "Move VRP ShiftkIntra("<< k << " " << v << " " << p1 << " " << p2 <<")"<<endl;
 	}
 
-	virtual bool operator==(const Move<vector<vector<T> >,M>& m) const
+	virtual bool operator==(const Move<vector<vector<T> >,DS >& m) const
 	{
 		return false; //TODO
 	}

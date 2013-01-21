@@ -30,8 +30,8 @@ using namespace std;
 
 // Working structure: vector<T>
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveTSPSwap<T, ADS, M> >
-class NSIteratorTSPSwap: public NSIterator<vector<T> , ADS, M>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveTSPSwap<T, ADS, DS > >
+class NSIteratorTSPSwap: public NSIterator<vector<T> , ADS, DS >
 {
 	typedef vector<T> Route;
 
@@ -58,7 +58,7 @@ public:
 		{
 			p1 = 0;
 			p2 = 1;
-			m = new MoveTSPSwap<T, ADS, M> (p1, p2);
+			m = new MoveTSPSwap<T, ADS, DS > (p1, p2);
 		}
 		else
 			m = NULL;
@@ -77,7 +77,7 @@ public:
 				p2 = p1 + 1;
 			}
 
-			m = new MoveTSPSwap<T, ADS, M> (p1, p2);
+			m = new MoveTSPSwap<T, ADS, DS > (p1, p2);
 		}
 		else
 			m = NULL;
@@ -88,7 +88,7 @@ public:
 		return (m == NULL);
 	}
 
-	Move<Route, ADS, M>& current()
+	Move<Route, ADS, DS >& current()
 	{
 		if (isDone())
 		{

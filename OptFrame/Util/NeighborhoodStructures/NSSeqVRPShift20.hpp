@@ -28,7 +28,7 @@
 
 using namespace std;
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class MoveVRPShift20: public Move<vector<vector<T> > >
 {
 
@@ -77,7 +77,7 @@ public:
 		return ((r1 >= 0) && (r2 >= 0) && (cli >= 0) && (pos >= 0) && numRoutes);
 	}
 
-	MoveVRPShift20<T, ADS, M>& apply(Routes& rep)
+	MoveVRPShift20<T, ADS, DS >& apply(Routes& rep)
 	{
 		//pegando o cliente
 		int c = rep.at(r1).at(cli);
@@ -91,14 +91,14 @@ public:
 		rep.at(r2).insert(rep.at(r2).begin() + pos, c2);
 		rep.at(r2).insert(rep.at(r2).begin() + pos, c);
 
-		return *new MoveVRPShift20<T, ADS, M>( r2, r1, pos, cli);
+		return *new MoveVRPShift20<T, ADS, DS >( r2, r1, pos, cli);
 	}
 
 
 
 	virtual bool operator==(const Move<Routes>& _m) const
 	{
-		const MoveVRPShift20<T, ADS, M>& m = (const MoveVRPShift20<T, ADS, M>&) _m;
+		const MoveVRPShift20<T, ADS, DS >& m = (const MoveVRPShift20<T, ADS, DS >&) _m;
 		return ((r1 == m.r1) && (r2 == m.r2) && (cli == m.cli) && (pos == m.pos));
 	}
 
@@ -112,7 +112,7 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NSIteratorVRPShift20: public NSIterator<vector<vector<T> > >
 {
 
@@ -120,8 +120,8 @@ class NSIteratorVRPShift20: public NSIterator<vector<vector<T> > >
 
 private:
 
-	MoveVRPShift20<T, ADS, M>* m;
-	vector<MoveVRPShift20<T, ADS, M>*> moves;
+	MoveVRPShift20<T, ADS, DS >* m;
+	vector<MoveVRPShift20<T, ADS, DS >*> moves;
 	int index; //index of moves
 	const Routes& r;
 
@@ -156,7 +156,7 @@ public:
 					{
 						for (int pos = 0; pos <= r.at(r2).size(); pos++)
 						{
-							moves.push_back(new MoveVRPShift20<T, ADS, M>( r1, r2, cli, pos));
+							moves.push_back(new MoveVRPShift20<T, ADS, DS >( r1, r2, cli, pos));
 						}
 					}
 				}
@@ -186,7 +186,7 @@ public:
 		return m == NULL;
 	}
 
-	MoveVRPShift20<T, ADS, M>& current()
+	MoveVRPShift20<T, ADS, DS >& current()
 	{
 		if (isDone())
 		{
@@ -199,7 +199,7 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NSSeqVRPShift20: public NSSeq<vector<vector<T> > >
 {
 
@@ -217,15 +217,15 @@ public:
 	{
 	}
 
-	virtual MoveVRPShift20<T, ADS, M>& move(const Routes& rep)
+	virtual MoveVRPShift20<T, ADS, DS >& move(const Routes& rep)
 	{
 		if (rep.size() < 2)
-			return *new MoveVRPShift20<T, ADS, M>( -1, -1, -1, -1);
+			return *new MoveVRPShift20<T, ADS, DS >( -1, -1, -1, -1);
 
 		int r1 = rand() % rep.size();
 		if (rep.at(r1).size() < 2)
 		{
-			return *new MoveVRPShift20<T, ADS, M>( -1, -1, -1, -1);
+			return *new MoveVRPShift20<T, ADS, DS >( -1, -1, -1, -1);
 		}
 
 		int r2;
@@ -237,12 +237,12 @@ public:
 		int cli = rand() % (rep.at(r1).size() - 1);
 
 		int pos = rand() % (rep.at(r2).size() + 1);
-		return *new MoveVRPShift20<T, ADS, M>( r1, r2, cli, pos); // return a random move
+		return *new MoveVRPShift20<T, ADS, DS >( r1, r2, cli, pos); // return a random move
 	}
 
-	virtual NSIteratorVRPShift20<T, ADS, M>& getIterator(const Routes& r)
+	virtual NSIteratorVRPShift20<T, ADS, DS >& getIterator(const Routes& r)
 	{
-		return *new NSIteratorVRPShift20<T, ADS, M>( r);
+		return *new NSIteratorVRPShift20<T, ADS, DS >( r);
 	}
 
 	virtual void print()

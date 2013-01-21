@@ -29,7 +29,7 @@ using namespace std;
 
 // Working structure: vector<T>
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class MoveVRPCross: public Move<vector<vector<T> > >
 {
 
@@ -76,7 +76,7 @@ public:
 		return all_positive && (rep.size() >= 2) && (rep.at(r1).size() >= 0) && (rep.at(r2).size() >= 0);
 	}
 
-	virtual MoveVRPCross<T, ADS, M>& apply(Routes& rep)
+	virtual MoveVRPCross<T, ADS, DS >& apply(Routes& rep)
 	{
 		vector<int> cross_r1, cross_r2;
 
@@ -94,12 +94,12 @@ public:
 		rep.at(r2).insert(rep.at(r2).end(), cross_r1.begin(), cross_r1.end());
 
 		// p->p, r1->r2, r2->r1, c1->c2, c2->c1, reverse->reverse,
-		return *new MoveVRPCross<T, ADS, M> (r1, r2, p1, p2);
+		return *new MoveVRPCross<T, ADS, DS > (r1, r2, p1, p2);
 	}
 
 	virtual bool operator==(const Move<Routes>& _m) const
 	{
-		const MoveVRPCross<T, ADS, M>& m1 = (const MoveVRPCross<T, ADS, M>&) _m;
+		const MoveVRPCross<T, ADS, DS >& m1 = (const MoveVRPCross<T, ADS, DS >&) _m;
 		return ((m1.r1 == r1) && (m1.r2 == r2) && (m1.p1 == p1) && (m1.p2 == p2));
 	}
 
@@ -111,7 +111,7 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NSIteratorVRPCross: public NSIterator<vector<vector<T> > >
 {
 
@@ -119,8 +119,8 @@ class NSIteratorVRPCross: public NSIterator<vector<vector<T> > >
 
 private:
 
-	MoveVRPCross<T, ADS, M>* m;
-	vector<MoveVRPCross<T, ADS, M>*> moves;
+	MoveVRPCross<T, ADS, DS >* m;
+	vector<MoveVRPCross<T, ADS, DS >*> moves;
 	int index; //index of moves
 	const Routes& r;
 
@@ -150,7 +150,7 @@ public:
 				{
 					for (int p2 = 0; p2 <= r.at(r2).size(); p2++)
 					{
-						moves.push_back(new MoveVRPCross<T, ADS, M> (r1, r2, p1, p2));
+						moves.push_back(new MoveVRPCross<T, ADS, DS > (r1, r2, p1, p2));
 					}
 				}
 
@@ -181,7 +181,7 @@ public:
 		return m == NULL;
 	}
 
-	MoveVRPCross<T, ADS, M>& current()
+	MoveVRPCross<T, ADS, DS >& current()
 	{
 		if (isDone())
 		{
@@ -194,7 +194,7 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NSSeqVRPCross: public NSSeq<vector<vector<T> > >
 {
 
@@ -212,10 +212,10 @@ public:
 	{
 	}
 
-	MoveVRPCross<T, ADS, M>& move(const Routes& rep)
+	MoveVRPCross<T, ADS, DS >& move(const Routes& rep)
 	{
 		if (rep.size() < 2)
-			return *new MoveVRPCross<T, ADS, M> (-1, -1, -1, -1);
+			return *new MoveVRPCross<T, ADS, DS > (-1, -1, -1, -1);
 
 		int r1 = rand() % rep.size();
 
@@ -227,17 +227,17 @@ public:
 		} while (r1 == r2);
 
 		if ((rep.at(r2).size() == 0) && (rep.at(r1).size() == 0))
-			return *new MoveVRPCross<T, ADS, M> (-1, -1, -1, -1);
+			return *new MoveVRPCross<T, ADS, DS > (-1, -1, -1, -1);
 
 		int p1 = rand() % (rep.at(r1).size() + 1);
 		int p2 = rand() % (rep.at(r2).size() + 1);
 
-		return *new MoveVRPCross<T, ADS, M> (r1, r2, p1, p2);
+		return *new MoveVRPCross<T, ADS, DS > (r1, r2, p1, p2);
 	}
 
-	virtual NSIteratorVRPCross<T, ADS, M>& getIterator(const Routes& r)
+	virtual NSIteratorVRPCross<T, ADS, DS >& getIterator(const Routes& r)
 	{
-		return *new NSIteratorVRPCross<T, ADS, M> (r);
+		return *new NSIteratorVRPCross<T, ADS, DS > (r);
 	}
 
 	virtual void print()

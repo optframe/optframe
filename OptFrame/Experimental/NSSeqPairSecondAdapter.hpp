@@ -30,15 +30,15 @@
 
 using namespace std;
 
-template<class T1, class T2, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MovePairSecond<T1, T2, M> >
-class NSSeqPairSecondAdapter: public NSSeq<pair<T1, T2> , M>
+template<class T1, class T2, class DS = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MovePairSecond<T1, T2, DS > >
+class NSSeqPairSecondAdapter: public NSSeq<pair<T1, T2> , DS >
 {
 protected:
-	NSSeq<T2, M>& ns;
+	NSSeq<T2, DS >& ns;
 
 public:
 
-	NSSeqPairSecondAdapter(NSSeq<T2, M>& _ns) :
+	NSSeqPairSecondAdapter(NSSeq<T2, DS >& _ns) :
 		ns(_ns)
 	{
 	}
@@ -47,14 +47,14 @@ public:
 	{
 	}
 
-	Move<pair<T1, T2> , M>& move(const pair<T1, T2>& r)
+	Move<pair<T1, T2> , DS >& move(const pair<T1, T2>& r)
 	{
 		return *new MOVE(ns.move(r.second));
 	}
 
-	virtual NSIterator<pair<T1, T2> , M>& getIterator(const pair<T1, T2>& r)
+	virtual NSIterator<pair<T1, T2> , DS >& getIterator(const pair<T1, T2>& r)
 	{
-		return *new IteratorNSSeqPairSecond<T1, T2, M, MOVE> (ns.getIterator(r.second));
+		return *new IteratorNSSeqPairSecond<T1, T2, DS, MOVE> (ns.getIterator(r.second));
 	}
 
 	virtual void print()

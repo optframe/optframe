@@ -26,7 +26,7 @@
 
 #include "OptFrameComponent.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NS : public OptFrameComponent
 {
 public:
@@ -35,12 +35,12 @@ public:
 	{
 	}
 
-    Move<R, ADS, M>& move(const Solution<R, ADS>& s)
+    Move<R, ADS, DS>& move(const Solution<R, ADS>& s)
     {
     	return move(s.getR(), s.getADS());
     }
 
-    virtual Move<R, ADS, M>& move(const R&, const ADS&) = 0;
+    virtual Move<R, ADS, DS>& move(const R&, const ADS&) = 0;
 
     static string idComponent()
     {

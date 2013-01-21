@@ -26,8 +26,8 @@
 
 using namespace std;
 
-template<class T, class M>
-class MoveTSPOr1Opt: public Move<vector<T>, M>
+template<class T, class DS >
+class MoveTSPOr1Opt: public Move<vector<T>, DS >
 {
 
 private:
@@ -92,7 +92,7 @@ public:
 		return *new MoveTSPOr1Opt(-1, -1);
 	}
 
-	bool operator==(const Move<vector<T>, M>& _m) const
+	bool operator==(const Move<vector<T>, DS >& _m) const
 	{
 		const MoveTSPOr1Opt& m1 = (const MoveTSPOr1Opt&) _m;
 		return (m1.c == c) && (m1.pos == pos);

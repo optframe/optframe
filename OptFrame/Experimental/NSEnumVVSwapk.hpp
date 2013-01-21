@@ -36,8 +36,8 @@ using namespace std;
 //============================================================================
 
 
-template<class T, class M>
-class NSEnumVVSwapk: public NSEnum< vector<vector<T> >, M >
+template<class T, class DS >
+class NSEnumVVSwapk: public NSEnum< vector<vector<T> >, DS >
 {
 protected:
 	int k1,k2;
@@ -45,7 +45,7 @@ protected:
 
 public:	
 
-	using NSEnum<vector<vector<T> >, M>::move; // prevents name hiding
+	using NSEnum<vector<vector<T> >, DS >::move; // prevents name hiding
 
 	NSEnumVVSwapk(int k1, int k2)
 	{
@@ -65,16 +65,16 @@ public:
 		moves = NSVector<int>::Swapk_appliableMoves(rep,k);
 	}*/
 
-	virtual NSIterator<vector<vector<T> > , M>& getIterator(const vector<vector<T> >& rep)
+	virtual NSIterator<vector<vector<T> > , DS >& getIterator(const vector<vector<T> >& rep)
 	{
 		delete moves;
 		moves = NSVector<int>::swapk_appliableMoves(rep,k1,k2);
 		random_shuffle(moves->begin(),moves->end());
 
-		return *new NSEnumIterator<vector<vector<T> > , M> (*this);
+		return *new NSEnumIterator<vector<vector<T> > , DS > (*this);
 	}
 
-	virtual Move<vector<vector<T> >,M>& move(unsigned int _k)
+	virtual Move<vector<vector<T> >,DS >& move(unsigned int _k)
 	{
 		if(_k>size())
 		{
@@ -84,12 +84,12 @@ public:
 			//return NULL;
 		}
 
-		return * new MoveVVSwapk<T,M>((*moves)[_k].first.first,(*moves)[_k].first.second,
+		return * new MoveVVSwapk<T,DS >((*moves)[_k].first.first,(*moves)[_k].first.second,
 				(*moves)[_k].second.first.first,(*moves)[_k].second.first.second,
 				(*moves)[_k].second.second.first,(*moves)[_k].second.second.second);
 	}
 
-	virtual Move<vector<vector<T> >,M>& move(const vector<vector<T> >& rep)
+	virtual Move<vector<vector<T> >,DS >& move(const vector<vector<T> >& rep)
 	{
 		//cout << "*";
 		int v1;
@@ -102,7 +102,7 @@ public:
 
 		int p2 = rand()%(rep[v2].size() - k2 + 1 );
 
-		return * new MoveVVSwapk<T,M>(k1,k2,v1,p1,v2,p2);
+		return * new MoveVVSwapk<T,DS >(k1,k2,v1,p1,v2,p2);
 	};
 
 	virtual unsigned int size()

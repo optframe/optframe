@@ -28,7 +28,7 @@
 using namespace std;
 
 // Working structure: vector<T>
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class MoveVRP2Opt: public Move<vector<vector<T> > >
 {
 	typedef vector<vector<T> > Routes;
@@ -91,7 +91,7 @@ public:
 
 	virtual bool operator==(const Move<Routes>& _m) const
 	{
-		const MoveVRP2Opt<T, ADS, M>& m1 = (const MoveVRP2Opt<T, ADS, M>&) _m;
+		const MoveVRP2Opt<T, ADS, DS >& m1 = (const MoveVRP2Opt<T, ADS, DS >&) _m;
 		return ((m1.p1 == p1) && (m1.p2 == p2) && (m1.r == r));
 	}
 
@@ -103,16 +103,16 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NSIteratorVRP2Opt: public NSIterator<vector<vector<T> > >
 {
 	typedef vector<vector<T> > Routes;
 
 private:
 
-	MoveVRP2Opt<T, ADS, M>* m;
+	MoveVRP2Opt<T, ADS, DS >* m;
 	int index;
-	vector<MoveVRP2Opt<T, ADS, M>*> moves;
+	vector<MoveVRP2Opt<T, ADS, DS >*> moves;
 	const Routes& rep;
 
 public:
@@ -137,7 +137,7 @@ public:
 			{
 				for (int p2 = p1 + 2; p2 < rep.at(r).size(); p2++)
 				{
-					moves.push_back(new MoveVRP2Opt<T, ADS, M> (r, p1, p2));
+					moves.push_back(new MoveVRP2Opt<T, ADS, DS > (r, p1, p2));
 				}
 			}
 		}
@@ -165,7 +165,7 @@ public:
 		return m == NULL;
 	}
 
-	MoveVRP2Opt<T, ADS, M>& current()
+	MoveVRP2Opt<T, ADS, DS >& current()
 	{
 		if (isDone())
 		{
@@ -178,7 +178,7 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NSSeqVRP2Opt: public NSSeq<vector<vector<T> > >
 {
 	typedef vector<vector<T> > Routes;
@@ -195,11 +195,11 @@ public:
 	{
 	}
 
-	MoveVRP2Opt<T, ADS, M>& move(const Routes& rep)
+	MoveVRP2Opt<T, ADS, DS >& move(const Routes& rep)
 	{
 		int r = rand() % rep.size();
 		if (rep.at(r).size() < 3)
-			return *new MoveVRP2Opt<T, ADS, M> (-1, -1, -1);
+			return *new MoveVRP2Opt<T, ADS, DS > (-1, -1, -1);
 
 		int p1 = rand() % (rep.at(r).size() + 1);
 
@@ -211,12 +211,12 @@ public:
 		} while (abs(p1 - p2) < 2);
 
 		// create 2-opt(p1,p2) move
-		return *new MoveVRP2Opt<T, ADS, M> (r, p1, p2);
+		return *new MoveVRP2Opt<T, ADS, DS > (r, p1, p2);
 	}
 
-	virtual NSIteratorVRP2Opt<T, ADS, M>& getIterator(const Routes& r)
+	virtual NSIteratorVRP2Opt<T, ADS, DS >& getIterator(const Routes& r)
 	{
-		return *new NSIteratorVRP2Opt<T, ADS, M> (r);
+		return *new NSIteratorVRP2Opt<T, ADS, DS > (r);
 	}
 
 	virtual void print()

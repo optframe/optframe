@@ -31,15 +31,15 @@
 
 using namespace std;
 
-template<class T1, class T2, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MovePairFirst<T1, T2, M> >
-class NSSeqPairFirstAdapter: public NSSeq<pair<T1, T2> , M>
+template<class T1, class T2, class DS = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MovePairFirst<T1, T2, DS > >
+class NSSeqPairFirstAdapter: public NSSeq<pair<T1, T2> , DS >
 {
 protected:
-	NSSeq<T1, M>& ns;
+	NSSeq<T1, DS >& ns;
 
 public:
 
-	NSSeqPairFirstAdapter(NSSeq<T1, M>& _ns) :
+	NSSeqPairFirstAdapter(NSSeq<T1, DS >& _ns) :
 		ns(_ns)
 	{
 	}
@@ -48,14 +48,14 @@ public:
 	{
 	}
 
-	Move<pair<T1, T2> , M>& move(const pair<T1, T2>& r)
+	Move<pair<T1, T2> , DS >& move(const pair<T1, T2>& r)
 	{
 		return *new MOVE(ns.move(r.first));
 	}
 
-	virtual NSIterator<pair<T1, T2> , M>& getIterator(const pair<T1, T2>& r)
+	virtual NSIterator<pair<T1, T2> , DS >& getIterator(const pair<T1, T2>& r)
 	{
-		return *new IteratorNSSeqPairFirst<T1, T2, M, MOVE> (ns.getIterator(r.first));
+		return *new IteratorNSSeqPairFirst<T1, T2, DS, MOVE> (ns.getIterator(r.first));
 	}
 
 	virtual void print()

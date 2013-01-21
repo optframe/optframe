@@ -32,26 +32,26 @@ using namespace std;
 
 // definition: OrOpt is OrOpt{1..3}
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class NSSeqTSPOrOpt: public NSSeq<vector<T> , ADS, M>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class NSSeqTSPOrOpt: public NSSeq<vector<T> , ADS, DS >
 {
 	typedef vector<T> Route;
 
-	NSSeqTSPOrOptk<T, ADS, M>* OrOpt1;
-	NSSeqTSPOrOptk<T, ADS, M>* OrOpt2;
-	NSSeqTSPOrOptk<T, ADS, M>* OrOpt3;
+	NSSeqTSPOrOptk<T, ADS, DS >* OrOpt1;
+	NSSeqTSPOrOptk<T, ADS, DS >* OrOpt2;
+	NSSeqTSPOrOptk<T, ADS, DS >* OrOpt3;
 
-	NSSeqUnionAdapter<vector<T>, ADS, M>* OrOpt1_2_3;
+	NSSeqUnionAdapter<vector<T>, ADS, DS >* OrOpt1_2_3;
 
 public:
 
 	NSSeqTSPOrOpt()
 	{
-      OrOpt1 = new NSSeqTSPOrOptk<T, ADS, M> (1);
-      OrOpt2 = new NSSeqTSPOrOptk<T, ADS, M> (2);
-      OrOpt3 = new NSSeqTSPOrOptk<T, ADS, M> (3);
+      OrOpt1 = new NSSeqTSPOrOptk<T, ADS, DS > (1);
+      OrOpt2 = new NSSeqTSPOrOptk<T, ADS, DS > (2);
+      OrOpt3 = new NSSeqTSPOrOptk<T, ADS, DS > (3);
 
-      OrOpt1_2_3 = new NSSeqUnionAdapter<vector<T> , ADS, M> (*OrOpt1, *OrOpt2);
+      OrOpt1_2_3 = new NSSeqUnionAdapter<vector<T> , ADS, DS > (*OrOpt1, *OrOpt2);
       OrOpt1_2_3->add_ns(*OrOpt3);
 	}
 
@@ -64,12 +64,12 @@ public:
 		delete OrOpt1_2_3;
 	}
 
-	Move<Route, ADS, M>& move(const Route& rep)
+	Move<Route, ADS, DS >& move(const Route& rep)
 	{
 		return OrOpt1_2_3->move(rep);
 	}
 
-	virtual NSIterator<Route, ADS, M>& getIterator(const Route& rep)
+	virtual NSIterator<Route, ADS, DS >& getIterator(const Route& rep)
 	{
 		return OrOpt1_2_3->getIterator(rep);
 	}
@@ -77,7 +77,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << NSSeq<vector<T>, ADS, M>::idComponent() << ":NSSeqTSPOrOpt";
+		ss << NSSeq<vector<T>, ADS, DS >::idComponent() << ":NSSeqTSPOrOpt";
 		return ss.str();
 	}
 
@@ -88,7 +88,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return ( s == idComponent() ) || ( NSSeq<vector<T>, ADS, M>::compatible(s) );
+		return ( s == idComponent() ) || ( NSSeq<vector<T>, ADS, DS >::compatible(s) );
 	}
 
 	virtual string toString() const

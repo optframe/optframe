@@ -30,7 +30,7 @@ using namespace std;
 
 // Working structure: vector<T>
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class MoveVRPExchange: public Move<vector<vector<T> > >
 {
 
@@ -72,19 +72,19 @@ public:
 		return all_positive && (rep.at(r).size() >= 2);
 	}
 
-	MoveVRPExchange<T, ADS, M>& apply(Routes& rep)
+	MoveVRPExchange<T, ADS, DS >& apply(Routes& rep)
 	{
 
 		int aux = rep.at(r).at(c1);
 		rep.at(r).at(c1) = rep.at(r).at(c2);
 		rep.at(r).at(c2) = aux;
 
-		return *new MoveVRPExchange<T, ADS, M>(r, c1, c2);
+		return *new MoveVRPExchange<T, ADS, DS >(r, c1, c2);
 	}
 
 	virtual bool operator==(const Move<Routes>& _m) const
 	{
-		const MoveVRPExchange<T, ADS, M>& m1 = (const MoveVRPExchange<T, ADS, M>&) _m;
+		const MoveVRPExchange<T, ADS, DS >& m1 = (const MoveVRPExchange<T, ADS, DS >&) _m;
 		return ((m1.c1 == c1) && (m1.c2 == c2) && (m1.r == r));
 	}
 
@@ -96,7 +96,7 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NSIteratorVRPExchange: public NSIterator<vector<vector<T> > >
 {
 
@@ -104,9 +104,9 @@ class NSIteratorVRPExchange: public NSIterator<vector<vector<T> > >
 
 private:
 
-	MoveVRPExchange<T, ADS, M>* m;
+	MoveVRPExchange<T, ADS, DS >* m;
 	int index;
-	vector<MoveVRPExchange<T, ADS, M>*> moves;
+	vector<MoveVRPExchange<T, ADS, DS >*> moves;
 	const Routes& rep;
 
 public:
@@ -131,7 +131,7 @@ public:
 				for (int c2 = 0; c2 < rep.at(r).size(); c2++)
 				{
 					if (c1 != c2)
-						moves.push_back(new MoveVRPExchange<T, ADS, M>( r, c1, c2));
+						moves.push_back(new MoveVRPExchange<T, ADS, DS >( r, c1, c2));
 				}
 			}
 		}
@@ -159,7 +159,7 @@ public:
 		return m == NULL;
 	}
 
-	MoveVRPExchange<T, ADS, M>& current()
+	MoveVRPExchange<T, ADS, DS >& current()
 	{
 		if (isDone())
 		{
@@ -172,7 +172,7 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NSSeqVRPExchange: public NSSeq<vector<vector<T> > >
 {
 
@@ -190,11 +190,11 @@ public:
 	{
 	}
 
-	MoveVRPExchange<T, ADS, M>& move(const Routes& rep)
+	MoveVRPExchange<T, ADS, DS >& move(const Routes& rep)
 	{
 		int r = rand() % rep.size();
 		if (rep.at(r).size() < 2)
-			return *new MoveVRPExchange<T, ADS, M>(-1, -1, -1);
+			return *new MoveVRPExchange<T, ADS, DS >(-1, -1, -1);
 
 		int c1 = rand() % rep.at(r).size();
 
@@ -206,12 +206,12 @@ public:
 		} while (c1 == c2);
 
 		// create exchange(p1,p2) move
-		return *new MoveVRPExchange<T, ADS, M>(r, c1, c2);
+		return *new MoveVRPExchange<T, ADS, DS >(r, c1, c2);
 	}
 
-	virtual NSIteratorVRPExchange<T, ADS, M>& getIterator(const Routes& r)
+	virtual NSIteratorVRPExchange<T, ADS, DS >& getIterator(const Routes& r)
 	{
-		return *new NSIteratorVRPExchange<T, ADS, M>(r);
+		return *new NSIteratorVRPExchange<T, ADS, DS >(r);
 	}
 
 	virtual void print()

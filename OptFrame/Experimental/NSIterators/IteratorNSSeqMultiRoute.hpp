@@ -35,19 +35,19 @@ public:
 	}
 };
 
-template<class T, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveMultiRoute<T, M> >
-class IteratorNSSeqMultiRoute: public NSIterator<vector<vector<T> > , M>
+template<class T, class DS = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveMultiRoute<T, DS > >
+class IteratorNSSeqMultiRoute: public NSIterator<vector<vector<T> > , DS >
 {
 	typedef vector<T> Route;
 	typedef vector<vector<T> > MultiRoute;
 
 private:
-	vector<NSIterator<Route, M>*>& iterators;
+	vector<NSIterator<Route, DS >*>& iterators;
 	int i;
 
 public:
 
-	IteratorNSSeqMultiRoute(vector<NSIterator<Route, M>*>& it) :
+	IteratorNSSeqMultiRoute(vector<NSIterator<Route, DS >*>& it) :
 		iterators(it)
 	{
 		i = 0;
@@ -91,7 +91,7 @@ public:
 		return true;
 	}
 
-	Move<MultiRoute, M>& current()
+	Move<MultiRoute, DS >& current()
 	{
 		if ((i < iterators.size()) && (!iterators[i]->isDone()))
 			return *new MOVE(i, iterators[i]->current());

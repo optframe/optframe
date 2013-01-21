@@ -28,8 +28,8 @@
 
 using namespace std;
 
-template<class M = OPTFRAME_DEFAULT_EMEMORY>
-class TestEvaluation: public Evaluation<M>
+template<class DS = OPTFRAME_DEFAULT_DS>
+class TestEvaluation: public Evaluation<DS>
 {
 private:
 	static const unsigned long long MAX_EV_IN_MEMORY_ERROR = 1000;
@@ -42,8 +42,8 @@ private:
 
 public:
 
-	TestEvaluation(double obj, double inf, M& mm) :
-		Evaluation<M> (obj, inf, mm)
+	TestEvaluation(double obj, double inf, DS& mm) :
+		Evaluation<DS> (obj, inf, mm)
 	{
 		ev_objects++;
 		ev_objects_nodecrement++;
@@ -52,8 +52,8 @@ public:
 		ev_number = ev_objects_nodecrement;
 	}
 
-	TestEvaluation(double obj, M& mm) :
-		Evaluation<M> (obj, mm)
+	TestEvaluation(double obj, DS& mm) :
+		Evaluation<DS> (obj, mm)
 	{
 		ev_objects++;
 		ev_objects_nodecrement++;
@@ -62,8 +62,8 @@ public:
 		ev_number = ev_objects_nodecrement;
 	}
 
-	TestEvaluation(const TestEvaluation<M>& e) :
-		Evaluation<M> (e)
+	TestEvaluation(const TestEvaluation<DS>& e) :
+		Evaluation<DS> (e)
 	{
 		ev_objects++;
 		ev_objects_nodecrement++;
@@ -82,14 +82,14 @@ public:
 
 		if (ev_objects >= MAX_EV_IN_MEMORY_WARNING)
 		{
-			cout << "WARNING: " << TestEvaluation<M>::ev_objects
+			cout << "WARNING: " << TestEvaluation<DS>::ev_objects
 					<< " Evaluation objects in memory!" << endl;
-			TestEvaluation<M>::MAX_EV_IN_MEMORY_WARNING++;
+			TestEvaluation<DS>::MAX_EV_IN_MEMORY_WARNING++;
 		}
 
 		if (ev_objects >= MAX_EV_IN_MEMORY_ERROR)
 		{
-			cout << "ERROR: " << TestEvaluation<M>::ev_objects
+			cout << "ERROR: " << TestEvaluation<DS>::ev_objects
 					<< " Evaluation objects in memory!" << endl;
 			cout << "MAX_EV_IN_MEMORY_ERROR = " << MAX_EV_IN_MEMORY_ERROR
 					<< endl;
@@ -103,46 +103,46 @@ public:
 		cout << "TestEvaluation #" << ev_number << " (" << ev_objects
 				<< " in memory now) - ";
 
-		cout << "Evaluation function value = " << Evaluation<M>::evaluation();
-		cout << (Evaluation<M>::isFeasible() ? " " : " (not feasible) ")
+		cout << "Evaluation function value = " << Evaluation<DS>::evaluation();
+		cout << (Evaluation<DS>::isFeasible() ? " " : " (not feasible) ")
 				<< endl;
 
 		// default - not printing memory
-		//cout << Evaluation<M>::m << endl;
+		//cout << Evaluation<DS>::m << endl;
 	}
 
-	TestEvaluation<M>& operator=(const TestEvaluation<M>& e)
+	TestEvaluation<DS>& operator=(const TestEvaluation<DS>& e)
 	{
 		if (&e == this) // auto ref check
 			return *this;
 
-		*this = Evaluation<M>::operator=(e);
+		*this = Evaluation<DS>::operator=(e);
 
 		// do not copy the 'ev_number'
 
 		return *this;
 	}
 
-	Evaluation<M>& operator=(const Evaluation<M>& e)
+	Evaluation<DS>& operator=(const Evaluation<DS>& e)
 	{
-		return operator=((const TestEvaluation<M>&) e);
+		return operator=((const TestEvaluation<DS>&) e);
 	}
 
-	Evaluation<M>& clone() const
+	Evaluation<DS>& clone() const
 	{
-		Evaluation<M>* e = new TestEvaluation<M> (*this);
+		Evaluation<DS>* e = new TestEvaluation<DS> (*this);
 		return (*e);
 	}
 };
 
-template<class M>
-unsigned long long TestEvaluation<M>::MAX_EV_IN_MEMORY_WARNING = 0.7
+template<class DS >
+unsigned long long TestEvaluation<DS>::MAX_EV_IN_MEMORY_WARNING = 0.7
 		* MAX_EV_IN_MEMORY_ERROR;
 
-template<class M>
-unsigned long long TestEvaluation<M>::ev_objects = 0;
+template<class DS >
+unsigned long long TestEvaluation<DS>::ev_objects = 0;
 
-template<class M>
-unsigned long long TestEvaluation<M>::ev_objects_nodecrement = 0;
+template<class DS >
+unsigned long long TestEvaluation<DS>::ev_objects_nodecrement = 0;
 
 #endif /*OPTFRAME_TESTEVALUATION_HPP_*/

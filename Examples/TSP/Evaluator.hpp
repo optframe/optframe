@@ -80,8 +80,8 @@ public:
 
 	void evaluate(Evaluation<MemTSP>& e, const RepTSP& r, const OPTFRAME_DEFAULT_ADS&)
 	{
-		e.setObjFunction(e.getObjFunction() + e.getEM());
-		e.setEM(0);
+		e.setObjFunction(e.getObjFunction() + e.getDS());
+		e.setDS(0);
 	}
 
 	virtual bool betterThan(double a, double b)

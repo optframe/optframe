@@ -36,11 +36,11 @@
 #endif
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class VShuffle : public HTrajectory<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_EMEMORY>
+class VShuffle : public HTrajectory<R, ADS, DS>
 {
 public:
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, DS>::exec; // prevents name hiding
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
@@ -48,7 +48,7 @@ public:
 		random_shuffle(s.getR().begin(),s.getR().end());
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
 	{
 		cerr << "VShuffle exec("<<target_f<<","<<timelimit<<")" << endl;
 		random_shuffle(s.getR().begin(),s.getR().end());

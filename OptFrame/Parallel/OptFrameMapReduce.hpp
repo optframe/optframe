@@ -33,12 +33,12 @@
 //typedef R KeyA;				// initial solution // TODO memory for reevaluation
 //typedef (int,(double,double)) A;		// search subspace index (timelimit,target_f)
 //typedef int KeyB;				// dummy unique key (integer -1)
-//typedef pair<R, double> B;			// best move in each subspace and its cost // TODO //typedef pair<Move<R, ADS, M>*, double> B;	// best move in each subspace and its cost
+//typedef pair<R, double> B;			// best move in each subspace and its cost // TODO //typedef pair<Move<R, ADS, DS>*, double> B;	// best move in each subspace and its cost
 //typedef R C;					// best solution among all subspaces
 
 typedef pair<int,pair<double,double> > RankAndStop; // A -> int double double
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_EMEMORY>
 class MyMaPISerializer : public MaPI_Serializer<R, RankAndStop, int, pair<R, double> , R>
 {
 public:
@@ -61,19 +61,19 @@ public:
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_EMEMORY>
 class MyMaPIMapper: public MaPI_Mapper<R, RankAndStop, int, pair<R, double> , R>
 {
 private:
-	Evaluator<R, ADS, M>& eval;
-	HTrajectory<R, ADS, M>* hmap;
+	Evaluator<R, ADS, DS>& eval;
+	HTrajectory<R, ADS, DS>* hmap;
 public:
-	MyMaPIMapper(MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mr, MaPI_Serializer<R, RankAndStop, int, pair<R, double> , R> * s, Evaluator<R, ADS, M>& _eval) :
+	MyMaPIMapper(MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mr, MaPI_Serializer<R, RankAndStop, int, pair<R, double> , R> * s, Evaluator<R, ADS, DS>& _eval) :
 		MaPI_Mapper<R, RankAndStop, int, pair<R, double> , R> (mr,s), eval(_eval)
 	{
 	}
 
-	void setHeuristic(HTrajectory<R, ADS, M>* h) {hmap = h;}
+	void setHeuristic(HTrajectory<R, ADS, DS>* h) {hmap = h;}
 
 	virtual vector<pair<int, pair<R, double> > > map(pair<R, RankAndStop> a) // TODO
 	{
@@ -84,7 +84,7 @@ public:
 
 		hmap->exec(s,a.second.second.first,a.second.second.second);
 
-		Evaluation<M> e = eval.evaluate(s);
+		Evaluation<DS> e = eval.evaluate(s);
 
 		R mapped = R(s.getR());
 
@@ -95,19 +95,19 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_EMEMORY>
 class MyMaPIReducer: public MaPI_Reducer<R, RankAndStop, int, pair<R, double> , R>
 {
 private:
-	Evaluator<R, ADS, M>& eval;
-	HTrajectory<R, ADS, M>* hreduce;
+	Evaluator<R, ADS, DS>& eval;
+	HTrajectory<R, ADS, DS>* hreduce;
 public:
-	MyMaPIReducer(MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mr, MaPI_Serializer<R, RankAndStop, int, pair<R, double> , R> * s,Evaluator<R, ADS, M>& _eval) :
+	MyMaPIReducer(MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mr, MaPI_Serializer<R, RankAndStop, int, pair<R, double> , R> * s,Evaluator<R, ADS, DS>& _eval) :
 		MaPI_Reducer<R, RankAndStop, int, pair<R, double> , R> (mr,s),eval(_eval),hreduce(NULL)
 	{
 	}
 
-	void setHeuristic(HTrajectory<R, ADS, M>* h) {hreduce = h;}
+	void setHeuristic(HTrajectory<R, ADS, DS>* h) {hreduce = h;}
 
 	virtual pair<int, R> reduce(pair<int, vector<pair<R, double> > > bs)
 	{
@@ -148,12 +148,12 @@ public:
 			if (pop.size() == 0) return pair<int, R> (bs.first, R());
 			if (pop.size() == 1) return pair<int, R> (bs.first, pop.at(0).getR());
 
-			Evaluation<M>& ebest = eval.evaluate(pop.at(0));
+			Evaluation<DS>& ebest = eval.evaluate(pop.at(0));
 			unsigned bestIndex = 0;
 
 			for (unsigned i = 0 ; i < pop.size() ; i++) // TODO
 			{
-				Evaluation<M>& e = eval.evaluate(pop.at(i).getR());
+				Evaluation<DS>& e = eval.evaluate(pop.at(i).getR());
 
 				if ( eval.betterThan(e,ebest) )
 				{
@@ -174,27 +174,27 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class OptFrameMapReduce: public HTrajectory<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_EMEMORY>
+class OptFrameMapReduce: public HTrajectory<R, ADS, DS>
 {
 private:
-	Evaluator<R, ADS, M>& evaluator;
+	Evaluator<R, ADS, DS>& evaluator;
 
-	MyMaPISerializer<R, ADS, M> &serializer;
+	MyMaPISerializer<R, ADS, DS> &serializer;
 	MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> &mapReduce;
-	MyMaPIMapper<R, ADS, M> &mapper;
-	MyMaPIReducer<R, ADS, M> &reducer;
+	MyMaPIMapper<R, ADS, DS> &mapper;
+	MyMaPIReducer<R, ADS, DS> &reducer;
 
 public:
 
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, DS>::exec; // prevents name hiding
 
 	OptFrameMapReduce(
-			MyMaPISerializer<R, ADS, M> &_serializer,
+			MyMaPISerializer<R, ADS, DS> &_serializer,
 			MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> &_mapReduce,
-			MyMaPIMapper<R, ADS, M> &_mapper,
-			MyMaPIReducer<R, ADS, M> &_reducer,
-			Evaluator<R, ADS, M>& _eval) :
+			MyMaPIMapper<R, ADS, DS> &_mapper,
+			MyMaPIReducer<R, ADS, DS> &_reducer,
+			Evaluator<R, ADS, DS>& _eval) :
 				serializer(_serializer),mapReduce(_mapReduce),mapper(_mapper),reducer(_reducer),
 				evaluator(_eval)
 	{
@@ -202,12 +202,12 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
-		Evaluation<M>& e = evaluator.evaluate(s.getR());
+		Evaluation<DS>& e = evaluator.evaluate(s.getR());
 		exec(s, e, timelimit, target_f);
 		delete &e;
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
 	{
 		vector< pair<R,RankAndStop> > input;
 		for (int i = 0 ; i < mapReduce.getMPISize()-1 ; i++)
@@ -219,7 +219,7 @@ public:
 		if (output.size()>0)
 			s1.setR(output[0].second);
 
-		Evaluation<M>& e1 = evaluator.evaluate(s1);
+		Evaluation<DS>& e1 = evaluator.evaluate(s1);
 
 		if(evaluator.betterThan(e1,e))
 		{

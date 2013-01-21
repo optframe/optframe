@@ -27,9 +27,9 @@
 
 using namespace scannerpp;
 
-template<class R, class ADS, class M> class HeuristicFactory;
+template<class R, class ADS, class DS > class HeuristicFactory;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class ComponentBuilder : public OptFrameComponent
 {
 public:
@@ -37,7 +37,7 @@ public:
 	{
 	}
 
-	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "") = 0;
+	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "") = 0;
 
 	virtual vector<pair<string, string> > parameters() = 0;
 

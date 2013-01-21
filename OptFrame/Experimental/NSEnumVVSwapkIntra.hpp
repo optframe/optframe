@@ -34,8 +34,8 @@ using namespace std;
 //============================================================================
 
 
-template<class T, class M>
-class NSEnumVVSwapkIntra: public NSEnum< vector<vector<T> >, M >
+template<class T, class DS >
+class NSEnumVVSwapkIntra: public NSEnum< vector<vector<T> >, DS >
 {
 protected:
 	int k1,k2;
@@ -44,7 +44,7 @@ protected:
 
 public:	
 
-	using NSEnum<vector<vector<T> >, M>::move; // prevents name hiding
+	using NSEnum<vector<vector<T> >, DS >::move; // prevents name hiding
 
 	NSEnumVVSwapkIntra(int k1,int k2)
 	{
@@ -63,7 +63,7 @@ public:
 		moves = NSVector<int>::SwapkIntra_appliableMoves(rep,k);
 	}*/
 
-	virtual NSIterator<vector<vector<T> > , M>& getIterator(const vector<vector<T> >& rep)
+	virtual NSIterator<vector<vector<T> > , DS >& getIterator(const vector<vector<T> >& rep)
 	{
 		for (int i = 0 ; i < moves.size() ; i++) delete moves[i];
 		moves.clear();
@@ -76,10 +76,10 @@ public:
 				moveindex.push_back(make_pair(i,j));
 		}
 
-		return *new NSEnumIterator<vector<vector<T> > , M> (*this);
+		return *new NSEnumIterator<vector<vector<T> > , DS > (*this);
 	}
 
-	virtual Move<vector<vector<T> >,M>& move(unsigned int _k)
+	virtual Move<vector<vector<T> >,DS >& move(unsigned int _k)
 	{
 		if(_k>size())
 		{
@@ -98,10 +98,10 @@ public:
 		int p1 = moves[i]->at(j).second.first;
 		int p2 = moves[i]->at(j).second.second;
 
-		return * new MoveVVSwapkIntra<T,M>(k1,k2,v,p1,p2);
+		return * new MoveVVSwapkIntra<T,DS >(k1,k2,v,p1,p2);
 	}
 
-	virtual Move<vector<vector<T> >,M>& move(const vector<vector<T> >& rep)//TODO
+	virtual Move<vector<vector<T> >,DS >& move(const vector<vector<T> >& rep)//TODO
 	{
 		//cout << "*";
 		int v;
@@ -111,7 +111,7 @@ public:
 
 		int p2 = rand()%(rep[v].size()+1);
 
-		return * new MoveVVSwapkIntra<T,M>(k1,k2,v,p1,p2);
+		return * new MoveVVSwapkIntra<T,DS >(k1,k2,v,p1,p2);
 	};
 
 	virtual unsigned int size()

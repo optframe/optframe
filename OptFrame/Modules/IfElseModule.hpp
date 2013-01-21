@@ -27,8 +27,8 @@
 
 #include "SystemRunModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class IfElseModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class IfElseModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -46,7 +46,7 @@ public:
 		return "if boolean block_of_if_commands [else block_of_else_commands]";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -102,12 +102,12 @@ public:
 		}
 
 		// check if all the text was used!
-		if(!OptFrameModule<R, ADS, M>::testUnused(id(), scanner))
+		if(!OptFrameModule<R, ADS, DS>::testUnused(id(), scanner))
 			return false;
 
 		if (condition)
 		{
-			if(!OptFrameModule<R, ADS, M>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(lif)))
+			if(!OptFrameModule<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(lif)))
 			{
 				cout << "if module: error in IF command!" << endl;
 				return false;
@@ -117,7 +117,7 @@ public:
 		}
 		else
 		{
-			if(!OptFrameModule<R, ADS, M>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(lelse)))
+			if(!OptFrameModule<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(lelse)))
 			{
 				cout << "if module: error in ELSE command!" << endl;
 				return false;
@@ -145,7 +145,7 @@ public:
 		for(unsigned k=j; k<input.length(); k++)
 			iend += input.at(k);
 
-		string* ninput = OptFrameModule<R, ADS, M>::defaultPreprocess(allFunctions, dictionary, ldictionary, ibegin);
+		string* ninput = OptFrameModule<R, ADS, DS>::defaultPreprocess(allFunctions, dictionary, ldictionary, ibegin);
 
 		if(!ninput)
 			return NULL;

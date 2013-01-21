@@ -26,20 +26,20 @@
 
 using namespace std;
 
-template<class T1, class T2, class M = OPTFRAME_DEFAULT_EMEMORY>
-class MovePairSecond: public Move<pair<T1, T2> , M>
+template<class T1, class T2, class DS = OPTFRAME_DEFAULT_EMEMORY>
+class MovePairSecond: public Move<pair<T1, T2> , DS >
 {
 protected:
-	Move<T2, M>& m;
+	Move<T2, DS >& m;
 
 public:
 
-	MovePairSecond(Move<T2, M>& _m) :
+	MovePairSecond(Move<T2, DS >& _m) :
 		m(_m)
 	{
 	}
 
-	Move<T2, M>& get_m()
+	Move<T2, DS >& get_m()
 	{
 		return m;
 	}
@@ -54,14 +54,14 @@ public:
 		return m.canBeApplied(rep.second);
 	}
 
-	Move<pair<T1, T2> , M>& apply(pair<T1, T2>& rep)
+	Move<pair<T1, T2> , DS >& apply(pair<T1, T2>& rep)
 	{
-		return *new MovePairSecond<T1, T2, M> (m.apply(rep.second));
+		return *new MovePairSecond<T1, T2, DS > (m.apply(rep.second));
 	}
 
-	virtual bool operator==(const Move<pair<T1, T2> , M>& _m) const
+	virtual bool operator==(const Move<pair<T1, T2> , DS >& _m) const
 	{
-		const MovePairSecond<T1, T2, M>& m1 = (const MovePairSecond<T1, T2, M>&) _m;
+		const MovePairSecond<T1, T2, DS >& m1 = (const MovePairSecond<T1, T2, DS >&) _m;
 		return m == m1.m;
 	}
 

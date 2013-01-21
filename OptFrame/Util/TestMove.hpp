@@ -26,8 +26,8 @@
 #include <cstdlib>
 #include <iostream>
 
-template< class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY >
-class TestMove : public Move< R, ADS, M >
+template< class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS >
+class TestMove : public Move< R, ADS, DS >
 {
 private:
    static const unsigned long long MAX_MOVE_IN_MEMORY_ERROR = 100000;
@@ -40,7 +40,7 @@ private:
 
 public:
    TestMove () :
-      Move< R, M > ()
+      Move< R, DS > ()
    {
       testmove_objects++;
       testmove_objects_nodecrement++;
@@ -58,13 +58,13 @@ public:
    {
       if (testmove_objects >= MAX_MOVE_IN_MEMORY_WARNING)
       {
-         cout << "WARNING: " << TestMove< R, M >::testmove_objects << " TestMove objects in memory!" << endl;
-         TestMove< R, M >::MAX_MOVE_IN_MEMORY_WARNING++;
+         cout << "WARNING: " << TestMove< R, DS >::testmove_objects << " TestMove objects in memory!" << endl;
+         TestMove< R, DS >::MAX_MOVE_IN_MEMORY_WARNING++;
       }
 
       if (testmove_objects >= MAX_MOVE_IN_MEMORY_ERROR)
       {
-         cout << "ERROR: " << TestMove< R, M >::testmove_objects << " TestMove objects in memory!" << endl;
+         cout << "ERROR: " << TestMove< R, DS >::testmove_objects << " TestMove objects in memory!" << endl;
          cout << "MAX_MOVE_IN_MEMORY_ERROR = " << MAX_MOVE_IN_MEMORY_ERROR << endl;
          cout << "aborting...";
          exit(1);
@@ -76,37 +76,37 @@ public:
       cout << "TestMove #" << testmove_number << " (" << testmove_objects << " in memory now): \n";
    }
 
-   TestMove< R, M >& operator= (const TestMove< R, M >& m)
+   TestMove< R, DS >& operator= (const TestMove< R, DS >& m)
    {
       if (&m == this) // auto ref check
       return *this;
 
-      *this = Move< R, M >::operator=(m);
+      *this = Move< R, DS >::operator=(m);
 
       // do not copy the 'testmove_number'
 
       return *this;
    }
 
-   Move< R, M >& operator= (const Move< R, M >& m)
+   Move< R, DS >& operator= (const Move< R, DS >& m)
    {
-      return operator=((const TestMove< R, M >&) m);
+      return operator=((const TestMove< R, DS >&) m);
    }
 
-   Move< R, M >& clone () const
+   Move< R, DS >& clone () const
    {
-      Move< R, M >* m = new TestMove< R, M > (*this);
+      Move< R, DS >* m = new TestMove< R, DS > (*this);
       return (*m);
    }
 };
 
-template<class R, class ADS, class M>
-unsigned long long TestMove< R, ADS, M >::MAX_MOVE_IN_MEMORY_WARNING = 0.7 * MAX_MOVE_IN_MEMORY_ERROR;
+template<class R, class ADS, class DS >
+unsigned long long TestMove< R, ADS, DS >::MAX_MOVE_IN_MEMORY_WARNING = 0.7 * MAX_MOVE_IN_MEMORY_ERROR;
 
-template<class R, class ADS, class M>
-unsigned long long TestMove< R, ADS, M >::testmove_objects = 0;
+template<class R, class ADS, class DS >
+unsigned long long TestMove< R, ADS, DS >::testmove_objects = 0;
 
-template<class R, class ADS, class M>
-unsigned long long TestMove< R, ADS, M >::testmove_objects_nodecrement = 0;
+template<class R, class ADS, class DS >
+unsigned long long TestMove< R, ADS, DS >::testmove_objects_nodecrement = 0;
 
 #endif /* TESTMOVE_HPP_ */

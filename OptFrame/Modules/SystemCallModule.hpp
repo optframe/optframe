@@ -28,8 +28,8 @@
  \sa run()
  */
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class SystemCallModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class SystemCallModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -83,7 +83,7 @@ public:
 	 \endportuguese
 	 */
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>&, map<string, string>&, map< string,vector<string> >&, string command)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>&, map<string, string>&, map< string,vector<string> >&, string command)
 	{
 		int c = system(command.c_str());
 		return true; // TODO: get return value from external command!

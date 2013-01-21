@@ -23,8 +23,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class EmpiricalModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class EmpiricalModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -49,7 +49,7 @@ public:
 		return u;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -64,9 +64,9 @@ public:
 		double tf = scanner.nextDouble();
 		double bf = scanner.nextDouble();
 
-		pair<SingleObjSearch<R, ADS, M>*, string> method = factory.createSingleObjSearch(scanner.rest());
+		pair<SingleObjSearch<R, ADS, DS>*, string> method = factory.createSingleObjSearch(scanner.rest());
 
-		SingleObjSearch<R, ADS, M>* h = method.first;
+		SingleObjSearch<R, ADS, DS>* h = method.first;
 
 		string filename = method.second;
 
@@ -98,7 +98,7 @@ public:
 			cout << "Test " << i << " {seed=" << seed << "}... Running";
 			Timer t(false);
 
-			pair<Solution<R, ADS>&, Evaluation<M>&>* result = h->search(timelimit, tf);
+			pair<Solution<R, ADS>&, Evaluation<DS>&>* result = h->search(timelimit, tf);
 
 			if(!result)
 			{

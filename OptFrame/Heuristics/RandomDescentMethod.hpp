@@ -23,17 +23,17 @@
 
 #include "../LocalSearch.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class RandomDescentMethod: public LocalSearch<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class RandomDescentMethod: public LocalSearch<R, ADS, DS>
 {
 private:
-	Evaluator<R, ADS, M>& evaluator;
-	NS<R, ADS, M>& ns;
+	Evaluator<R, ADS, DS>& evaluator;
+	NS<R, ADS, DS>& ns;
 	unsigned int iterMax;
 
 public:
 
-	RandomDescentMethod(Evaluator<R, ADS, M>& _eval, NS<R, ADS, M>& _ns, unsigned int _iterMax) :
+	RandomDescentMethod(Evaluator<R, ADS, DS>& _eval, NS<R, ADS, DS>& _ns, unsigned int _iterMax) :
 		evaluator(_eval), ns(_ns), iterMax(_iterMax)
 	{
 	}
@@ -44,12 +44,12 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
-		Evaluation<M>& e = evaluator.evaluate(s.getR());
+		Evaluation<DS>& e = evaluator.evaluate(s.getR());
 		exec(s, e, timelimit, target_f);
 		delete &e;
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
 	{
 		long tini = time(NULL);
 
@@ -59,7 +59,7 @@ public:
 
 		while (iter < iterMax && ((tnow - tini) < timelimit))
 		{
-			Move<R, ADS, M>& move = ns.move(s);
+			Move<R, ADS, DS>& move = ns.move(s);
 
 			double cost = 0;
 
@@ -91,7 +91,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, M>::idComponent() << "RDM";
+		ss << LocalSearch<R, ADS, DS>::idComponent() << "RDM";
 		return ss.str();
 	}
 
@@ -102,32 +102,32 @@ public:
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class RandomDescentMethodBuilder : public LocalSearchBuilder<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class RandomDescentMethodBuilder : public LocalSearchBuilder<R, ADS, DS>
 {
 public:
 	virtual ~RandomDescentMethodBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	virtual LocalSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
-		Evaluator<R, ADS, M>* eval;
+		Evaluator<R, ADS, DS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NS<R, ADS, M>* ns;
+		NS<R, ADS, DS>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int iterMax = scanner.nextInt();
 
-		return new RandomDescentMethod<R, ADS, M>(*eval, *ns, iterMax);
+		return new RandomDescentMethod<R, ADS, DS>(*eval, *ns, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NS<R, ADS, M>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NS<R, ADS, DS>::idComponent(), "neighborhood structure"));
 		params.push_back(make_pair("int", "max number of iterations without improvement"));
 
 		return params;
@@ -135,13 +135,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == RandomDescentMethod<R, ADS, M>::idComponent();
+		return component == RandomDescentMethod<R, ADS, DS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, M>::idComponent() << "RDM";
+		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "RDM";
 		return ss.str();
 	}
 

@@ -30,22 +30,22 @@
 #include "../OptFrameModule.hpp"
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class SystemRunParallelModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_EMEMORY>
+class SystemRunParallelModule: public OptFrameModule<R, ADS, DS>
 {
 private:
 	// INPUT
 	vector<vector<string> > allCommands;
 
 	// AUXILIAR INPUT
-	vector<OptFrameModule<R, ADS, M>*>* allModules;
+	vector<OptFrameModule<R, ADS, DS>*>* allModules;
 	vector<OptFrameFunction*>* allFunctions;
-	HeuristicFactory<R, ADS, M>* factory;
+	HeuristicFactory<R, ADS, DS>* factory;
 	map<string, string>* dictionary;
 	map< string,vector<string> >* ldictionary;
 
     // AUXILIAR FUNCTION
-    OptFrameModule<R, ADS, M>* getModule(string module)
+    OptFrameModule<R, ADS, DS>* getModule(string module)
     {
     	for (unsigned int i = 0; i < allModules->size(); i++)
     		if (module == allModules->at(i)->id())
@@ -85,7 +85,7 @@ public:
 		return "system.run_parallel block_of_commands_0 [block_of_commands_1] [block_of_commands_2] ... ";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& _allModules, vector<OptFrameFunction*>& _allFunctions, HeuristicFactory<R, ADS, M>& _factory, map<string, string>& _dictionary,  map< string,vector<string> >& _ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& _allModules, vector<OptFrameFunction*>& _allFunctions, HeuristicFactory<R, ADS, DS>& _factory, map<string, string>& _dictionary,  map< string,vector<string> >& _ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -138,7 +138,7 @@ public:
 	        mutexes.push_back(mutex);
 
 	        pthread_mutex_init(&mutexes[t], NULL);
-	        pthread_create(&threads[t], 0, &SystemRunParallelModule<R, ADS, M>::start_thread, this);
+	        pthread_create(&threads[t], 0, &SystemRunParallelModule<R, ADS, DS>::start_thread, this);
 		}
 
 
@@ -170,7 +170,7 @@ public:
 	// for the pthread_create call
 	static void* start_thread(void *obj)
 	{
-		reinterpret_cast<SystemRunParallelModule<R, ADS, M> *>(obj)->exec_command();
+		reinterpret_cast<SystemRunParallelModule<R, ADS, DS> *>(obj)->exec_command();
 		pthread_exit(NULL);
 	}
 
@@ -202,7 +202,7 @@ public:
 
     		Scanner scanner(command);
     		string module = scanner.next();
-    		OptFrameModule<R, ADS, M>* m = getModule(module);
+    		OptFrameModule<R, ADS, DS>* m = getModule(module);
 
     		if (m == NULL)
     			return;

@@ -25,8 +25,8 @@
 
 #include "SystemSilentDefineModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ComponentBetterThanModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ComponentBetterThanModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -53,7 +53,7 @@ public:
 			return "false";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		//cout << "component.better_than: " << input << endl;
 		Scanner scanner(input);
@@ -64,7 +64,7 @@ public:
 			return false;
 		}
 
-		Evaluator<R, ADS, M>* eval = factory.read_ev(scanner);
+		Evaluator<R, ADS, DS>* eval = factory.read_ev(scanner);
 
 		if(!eval)
 		{
@@ -98,7 +98,7 @@ public:
 
 		string result = formatBool(eval->betterThan(value1, value2));
 
-		return OptFrameModule<R, ADS, M>::defineText(variable, result, dictionary);
+		return OptFrameModule<R, ADS, DS>::defineText(variable, result, dictionary);
 	}
 
 };

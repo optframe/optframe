@@ -23,23 +23,23 @@
 
 #include "../HTrajectory.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class PathRelinking: public HTrajectory<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_EMEMORY>
+class PathRelinking: public HTrajectory<R, ADS, DS>
 {
-	typedef vector<Evaluation<M>*> FitnessValues;
-	typedef const vector<const Evaluation<M>*> ConstFitnessValues;
+	typedef vector<Evaluation<DS>*> FitnessValues;
+	typedef const vector<const Evaluation<DS>*> ConstFitnessValues;
 
 protected:
-	Evaluator<R, ADS, M>& evaluator;
+	Evaluator<R, ADS, DS>& evaluator;
 	unsigned int k;
 	bool forward;
-	HTrajectory<R, ADS, M>& localSearch;
+	HTrajectory<R, ADS, DS>& localSearch;
 
 public:
 
-	using HTrajectory<R, ADS, M>::exec; // prevents name hiding
+	using HTrajectory<R, ADS, DS>::exec; // prevents name hiding
 
-	PathRelinking(HTrajectory<R, ADS, M>& localSearch, Evaluator<R, ADS, M>& evaluator, int k = 1, bool forward = false) :
+	PathRelinking(HTrajectory<R, ADS, DS>& localSearch, Evaluator<R, ADS, DS>& evaluator, int k = 1, bool forward = false) :
 		localSearch(localSearch), evaluator(evaluator), k(k), forward(forward)
 	{
 	}
@@ -48,18 +48,18 @@ public:
 	{
 	}
 
-	virtual vector<pair<Move<R, ADS, M>*, double> >& symmetric_difference(Solution<R, ADS>& x, Evaluation<M>& e_x, const Solution<R, ADS>& xt,
-			const Evaluation<M>& e_xt) = 0;
+	virtual vector<pair<Move<R, ADS, DS>*, double> >& symmetric_difference(Solution<R, ADS>& x, Evaluation<DS>& e_x, const Solution<R, ADS>& xt,
+			const Evaluation<DS>& e_xt) = 0;
 
-	virtual void update_delta(vector<pair<Move<R, ADS, M>*, double> >& delta, int index_best, Solution<R, ADS>& x, Evaluation<M>& e_x, const Solution<R, ADS>& xt,
-			const Evaluation<M>& e_xt)
+	virtual void update_delta(vector<pair<Move<R, ADS, DS>*, double> >& delta, int index_best, Solution<R, ADS>& x, Evaluation<DS>& e_x, const Solution<R, ADS>& xt,
+			const Evaluation<DS>& e_xt)
 	{
 		delta.erase(delta.begin() + index_best);
 	}
 
 	// path-relinking from starting solution 'xs' to target solution 'xt'
-	virtual pair<Solution<R, ADS>&, Evaluation<M>&>& path_relinking(const Solution<R, ADS>& xs, const Evaluation<M>& e_xs, const Solution<R, ADS>& xt,
-			const Evaluation<M>& e_xt, double timelimit, double target_f)
+	virtual pair<Solution<R, ADS>&, Evaluation<DS>&>& path_relinking(const Solution<R, ADS>& xs, const Evaluation<DS>& e_xs, const Solution<R, ADS>& xt,
+			const Evaluation<DS>& e_xt, double timelimit, double target_f)
 	{
 		cout << "path_relinking " << (forward ? "forward" : "backward") << endl;
 		cout << "from: ";
@@ -68,14 +68,14 @@ public:
 		e_xt.print();
 
 		Solution<R, ADS>& x = xs.clone();
-		Evaluation<M>& e_x = e_xs.clone();
+		Evaluation<DS>& e_x = e_xs.clone();
 
 		// compute the symmetric difference 'delta' between xs and xt
-		vector<pair<Move<R, ADS, M>*, double> >& delta = symmetric_difference(x, e_x, xt, e_xt);
+		vector<pair<Move<R, ADS, DS>*, double> >& delta = symmetric_difference(x, e_x, xt, e_xt);
 
 		// compute f*
 		Solution<R, ADS>* s_star;
-		Evaluation<M>* e_star;
+		Evaluation<DS>* e_star;
 
 		if (evaluator.betterThan(e_xs, e_xt))
 		{
@@ -104,7 +104,7 @@ public:
 				if (evaluator.betterThan(delta[i].second, delta[index_best].second))
 					index_best = i;
 
-			Move<R, ADS, M>* m_star = delta[index_best].first;
+			Move<R, ADS, DS>* m_star = delta[index_best].first;
 			double f_m_star = delta[index_best].second;
 
 			//2. update 'x' and 'e_x'
@@ -134,7 +134,7 @@ public:
 		delete &x;
 		delete &e_x;
 
-		pair<Solution<R, ADS>&, Evaluation<M>&>& r = *new pair<Solution<R, ADS>&, Evaluation<M>&> (*s_star, *e_star);
+		pair<Solution<R, ADS>&, Evaluation<DS>&>& r = *new pair<Solution<R, ADS>&, Evaluation<DS>&> (*s_star, *e_star);
 		cout << "best path_relinking: ";
 		e_star->print();
 		//getchar();
@@ -162,7 +162,7 @@ public:
 
 	void exec(Population<R, ADS>& p, double timelimit, double target_f)
 	{
-		vector<Evaluation<M>*>& ev = *new vector<Evaluation<M>*> ;
+		vector<Evaluation<DS>*>& ev = *new vector<Evaluation<DS>*> ;
 		for (int i = 0; i < p.size(); i++)
 			ev.push_back(&evaluator.evaluate(p.at(i)));
 
@@ -181,9 +181,9 @@ public:
 		for (unsigned i = 0; i < p.size(); i++)
 			p2->push_back(const_cast<Solution<R, ADS>&> (p.at(i)));
 
-		vector<Evaluation<M>*>* ev2 = new vector<Evaluation<M>*> ;
+		vector<Evaluation<DS>*>* ev2 = new vector<Evaluation<DS>*> ;
 		for (unsigned i = 0; i < p.size(); i++)
-			ev2->push_back(const_cast<Evaluation<M>*> (ev[i]));
+			ev2->push_back(const_cast<Evaluation<DS>*> (ev[i]));
 
 		exec(*p2, *ev2, timelimit, target_f);
 
@@ -192,7 +192,7 @@ public:
 		return *new pair<Population<R, ADS>&, FitnessValues&> (*p2, *ev2);
 	}
 
-	void exec(Population<R, ADS>& p, vector<Evaluation<M>*>& ev, double timelimit, double target_f)
+	void exec(Population<R, ADS>& p, vector<Evaluation<DS>*>& ev, double timelimit, double target_f)
 	{
 		if (p.size() <= 1)
 		{
@@ -205,7 +205,7 @@ public:
 		cout << "Path Relinking starts!" << endl;
 
 		vector<Solution<R, ADS>*> new_s;
-		vector<Evaluation<M>*> new_e;
+		vector<Evaluation<DS>*> new_e;
 
 		int iter = 0;
 
@@ -233,7 +233,7 @@ public:
 				x2 = aux;
 			}
 
-			pair<Solution<R, ADS> &, Evaluation<M>&>& ret_path = path_relinking(p.at(x1), *ev[x1], p.at(x2), *ev[x2], timelimit, target_f);
+			pair<Solution<R, ADS> &, Evaluation<DS>&>& ret_path = path_relinking(p.at(x1), *ev[x1], p.at(x2), *ev[x2], timelimit, target_f);
 
 			new_s.push_back(&ret_path.first);
 			new_e.push_back(&ret_path.second);

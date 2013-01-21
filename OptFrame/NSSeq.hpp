@@ -26,26 +26,26 @@
 
 using namespace std;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class NSSeq: public NS<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class NSSeq: public NS<R, ADS, DS>
 {
 public:
 
-	using NS<R, ADS, M>::move; // prevents name hiding
+	using NS<R, ADS, DS>::move; // prevents name hiding
 
 	virtual ~NSSeq()
 	{
 	}
 
-	virtual Move<R, ADS, M>& move(const R&, const ADS&) = 0;
+	virtual Move<R, ADS, DS>& move(const R&, const ADS&) = 0;
 
-	NSIterator<R, ADS, M>& getIterator(const Solution<R, ADS>& s)
+	NSIterator<R, ADS, DS>& getIterator(const Solution<R, ADS>& s)
 	{
 		return getIterator(s.getR(), s.getADS());
 	}
 
-	virtual NSIterator<R, ADS, M>& getIterator(const R&, const ADS&) = 0;
-	virtual NSIterator<R, ADS, M>& getIterator(const M&, const R& r, const ADS& ads)
+	virtual NSIterator<R, ADS, DS>& getIterator(const R&, const ADS&) = 0;
+	virtual NSIterator<R, ADS, DS>& getIterator(const DS&, const R& r, const ADS& ads)
 	{
 		return getIterator(r, ads);
 	}
@@ -53,7 +53,7 @@ public:
    static string idComponent()
    {
 		stringstream ss;
-		ss << NS<R, ADS, M>::idComponent() << ":NSSeq";
+		ss << NS<R, ADS, DS>::idComponent() << ":NSSeq";
 		return ss.str();
    }
 
@@ -64,7 +64,7 @@ public:
 
    virtual bool compatible(string s)
    {
-	   return ( s == idComponent() ) || ( NS<R, ADS, M>::compatible(s) );
+	   return ( s == idComponent() ) || ( NS<R, ADS, DS>::compatible(s) );
    }
 };
 

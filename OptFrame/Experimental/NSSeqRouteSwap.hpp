@@ -29,8 +29,8 @@ using namespace std;
 
 // Working structure: vector<vector<T> >
 
-template<class T, class M>
-class MoveVVSwapIntra : public Move<vector<vector<T> >, M>
+template<class T, class DS >
+class MoveVVSwapIntra : public Move<vector<vector<T> >, DS >
 {
 private:
 	int i,j,k;
@@ -49,7 +49,7 @@ public:
 		return (rep->size()>0)&&(j != k);
 	}
 
-	Move<vector<vector<T> >, M>* apply(vector<vector<T> >* rep)
+	Move<vector<vector<T> >, DS >* apply(vector<vector<T> >* rep)
 	{
 		T aux = (*rep)[i][j];
 		(*rep)[i][j] = (*rep)[i][k];
@@ -59,7 +59,7 @@ public:
 	}
 
 
-	bool equals(Move<vector<vector<T> >, M>* m)
+	bool equals(Move<vector<vector<T> >, DS >* m)
 	{
 		MoveVVSwapIntra* m1 = (MoveVVSwapIntra*)m;
 
@@ -74,8 +74,8 @@ public:
 
 
 
-template<class T, class M>
-class NSSeqVVSwapIntra: public NSSeq< vector<vector<T> > , M >
+template<class T, class DS >
+class NSSeqVVSwapIntra: public NSSeq< vector<vector<T> > , DS >
 {
 private:
 	int m_i, m_j, m_k;
@@ -84,17 +84,17 @@ public:
 
 	NSSeqVVSwapIntra(){}
 
-	Move<vector<vector<T> > , M >* move(vector<vector<T> >* rep)
+	Move<vector<vector<T> > , DS >* move(vector<vector<T> >* rep)
 	{
 		if(rep->size()==0)
-			return new MoveVVSwapIntra<T,M>(0,0,0);
+			return new MoveVVSwapIntra<T,DS >(0,0,0);
 
 		int i = rand()%rep->size();
 
 		int n = rep->at(i).size();
 
 		if(n==0)
-			return new MoveVVSwapIntra<T,M>(i,0,0);
+			return new MoveVVSwapIntra<T,DS >(i,0,0);
 
 		int j = rand()%n;
 		int k = j;
@@ -103,7 +103,7 @@ public:
 			while(k==j)
 				k = rand()%n;
 
-		return new MoveVVSwapIntra<T,M>(i,j,k);
+		return new MoveVVSwapIntra<T,DS >(i,j,k);
 	}
 
 
@@ -114,7 +114,7 @@ public:
 		m_k = 0;
 	}
 
-	Move<vector<vector<T> > , M>* next(vector<vector<T> >* rep)
+	Move<vector<vector<T> > , DS >* next(vector<vector<T> >* rep)
 	{
 		if(m_i >= rep->size())
 		{
@@ -138,7 +138,7 @@ public:
 				m_k=0;
 			}
 
-		return new MoveVVSwapIntra<T,M>(m_i,m_j,m_k);
+		return new MoveVVSwapIntra<T,DS >(m_i,m_j,m_k);
 	}
 
 	bool hasNext(vector<vector<T> >* rep)

@@ -25,16 +25,16 @@
 #include "../NSSeq.hpp"
 #include "../Evaluator.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class BestImprovement: public LocalSearch<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class BestImprovement: public LocalSearch<R, ADS, DS>
 {
 private:
-	Evaluator<R, ADS, M>& eval;
-	NSSeq<R, ADS, M>& nsSeq;
+	Evaluator<R, ADS, DS>& eval;
+	NSSeq<R, ADS, DS>& nsSeq;
 
 public:
 
-	BestImprovement(Evaluator<R, ADS, M>& _eval, NSSeq<R, ADS, M>& _nsSeq) :
+	BestImprovement(Evaluator<R, ADS, DS>& _eval, NSSeq<R, ADS, DS>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 	}
@@ -45,16 +45,16 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
-		Evaluation<M>& e = eval.evaluate(s.getR());
+		Evaluation<DS>& e = eval.evaluate(s.getR());
 
 		exec(s, e, timelimit, target_f);
 
 		delete &e;
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
 	{
-		NSIterator<R, ADS, M>& it = nsSeq.getIterator(e.getEM(), s.getR(), s.getADS());
+		NSIterator<R, ADS, DS>& it = nsSeq.getIterator(e.getDS(), s.getR(), s.getADS());
 
 		it.first();
 
@@ -64,7 +64,7 @@ public:
 			return;
 		}
 
-		Move<R, ADS, M>* bestMove = &it.current();
+		Move<R, ADS, DS>* bestMove = &it.current();
 		while (!bestMove->canBeApplied(s))
 		{
 			delete bestMove;
@@ -84,7 +84,7 @@ public:
 		it.next();
 		while (!it.isDone())
 		{
-			Move<R, ADS, M>* move = &it.current();
+			Move<R, ADS, DS>* move = &it.current();
 			if (move->canBeApplied(s))
 			{
 				double cost = eval.moveCost(e, *move, s);
@@ -112,13 +112,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS, M>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<R, ADS, DS>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, M>::idComponent() << "BI";
+		ss << LocalSearch<R, ADS, DS>::idComponent() << "BI";
 		return ss.str();
 	}
 
@@ -137,43 +137,43 @@ public:
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class BestImprovementBuilder : public LocalSearchBuilder<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class BestImprovementBuilder : public LocalSearchBuilder<R, ADS, DS>
 {
 public:
 	virtual ~BestImprovementBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	virtual LocalSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
-		Evaluator<R, ADS, M>* eval;
+		Evaluator<R, ADS, DS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NSSeq<R, ADS, M>* nsseq;
+		NSSeq<R, ADS, DS>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BestImprovement<R, ADS, M>(*eval, *nsseq);
+		return new BestImprovement<R, ADS, DS>(*eval, *nsseq);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NSSeq<R, ADS, M>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NSSeq<R, ADS, DS>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}
 
 	virtual bool canBuild(string component)
 	{
-		return component == BestImprovement<R, ADS, M>::idComponent();
+		return component == BestImprovement<R, ADS, DS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, M>::idComponent() << "BI";
+		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "BI";
 		return ss.str();
 	}
 

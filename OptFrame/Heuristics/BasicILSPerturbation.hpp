@@ -30,17 +30,17 @@
 
 #include "ILS.h"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class BasicILSPerturbation: public ILS, public OptFrameComponent
 {
 private:
-	vector<NS<R, ADS, M>*> ns;
-	Evaluator<R, ADS, M>& evaluator;
+	vector<NS<R, ADS, DS>*> ns;
+	Evaluator<R, ADS, DS>& evaluator;
 	int pMax;
 	RandGen& rg;
 
 public:
-	BasicILSPerturbation(Evaluator<R, ADS, M>& e, int _pMax, NS<R, ADS, M>& _ns, RandGen& _rg) :
+	BasicILSPerturbation(Evaluator<R, ADS, DS>& e, int _pMax, NS<R, ADS, DS>& _ns, RandGen& _rg) :
 		evaluator(e), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -50,12 +50,12 @@ public:
 	{
 	}
 
-	void add_ns(NS<R, ADS, M>& _ns)
+	void add_ns(NS<R, ADS, DS>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
 
-	void perturb(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit, double target_f)
+	void perturb(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
 	{
 		int f = 0; // number of failures
 
@@ -63,7 +63,7 @@ public:
 		{
 			int x = rg.rand(ns.size());
 
-			Move<R, ADS, M>& m = ns[x]->move(s);
+			Move<R, ADS, DS>& m = ns[x]->move(s);
 
 			if (m.canBeApplied(s))
 			{
@@ -96,46 +96,46 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class BasicILSPerturbationBuilder : public ComponentBuilder<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class BasicILSPerturbationBuilder : public ComponentBuilder<R, ADS, DS>
 {
 public:
 	virtual ~BasicILSPerturbationBuilder()
 	{
 	}
 
-	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
-		Evaluator<R, ADS, M>* eval;
+		Evaluator<R, ADS, DS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int limit = scanner.nextInt();
 
-		NS<R, ADS, M>* ns;
+		NS<R, ADS, DS>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BasicILSPerturbation<R, ADS, M>(*eval, limit, *ns, hf.getRandGen());
+		return new BasicILSPerturbation<R, ADS, DS>(*eval, limit, *ns, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
 		params.push_back(make_pair("int", "max number of not appliable moves"));
-		params.push_back(make_pair(NS<R, ADS, M>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(NS<R, ADS, DS>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicILSPerturbation<R, ADS, M>::idComponent();
+		return component == BasicILSPerturbation<R, ADS, DS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, M>::idComponent() << ILS::family << "basic_pert";
+		ss << ComponentBuilder<R, ADS, DS>::idComponent() << ILS::family << "basic_pert";
 		return ss.str();
 	}
 

@@ -29,19 +29,19 @@
 
 using namespace std;
 
-template<class T, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MovekRoute<T, M> >
-class NSSeqkRouteAdapter: public NSSeq<vector<vector<T> > , M>
+template<class T, class DS = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MovekRoute<T, DS > >
+class NSSeqkRouteAdapter: public NSSeq<vector<vector<T> > , DS >
 {
 	typedef vector<T> Route;
 	typedef vector<vector<T> > MultiRoute;
 
 private:
 	int k;
-	NSSeq<Route, M>& ns;
+	NSSeq<Route, DS >& ns;
 
 public:
 
-	NSSeqkRouteAdapter(int _k, NSSeq<Route, M>& _ns) :
+	NSSeqkRouteAdapter(int _k, NSSeq<Route, DS >& _ns) :
 		k(_k), ns(_ns)
 	{
 	}
@@ -50,15 +50,15 @@ public:
 	{
 	}
 
-	Move<MultiRoute, M>& move(const MultiRoute& r)
+	Move<MultiRoute, DS >& move(const MultiRoute& r)
 	{
 		return *new MOVE(k, ns.move(r[k]));
 	}
 
-	virtual NSIterator<MultiRoute, M>& getIterator(const MultiRoute& r)
+	virtual NSIterator<MultiRoute, DS >& getIterator(const MultiRoute& r)
 	{
-		NSIterator<Route, M>& iterator = ns.getIterator(r[k]);
-		return *new IteratorNSSeqkRoute<T, M, MOVE> (k, iterator);
+		NSIterator<Route, DS >& iterator = ns.getIterator(r[k]);
+		return *new IteratorNSSeqkRoute<T, DS, MOVE> (k, iterator);
 	}
 
 	virtual void print()

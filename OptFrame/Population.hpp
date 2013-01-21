@@ -28,7 +28,7 @@
 
 #include "OptFrameComponent.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class Population : public OptFrameComponent
 {
 protected:
@@ -164,13 +164,13 @@ public:
 	}
 
 
-	chromossome& cloneBestChromossome(Evaluator<R, ADS, M>& eval)
+	chromossome& cloneBestChromossome(Evaluator<R, ADS, DS>& eval)
 	{
 		vector<pair<Solution<R, ADS> , double> > v;
 
 		for (int i = 0; i < p.size(); i++)
 		{
-			Evaluation<M>& e = eval.evaluate(p[i]);
+			Evaluation<DS>& e = eval.evaluate(p[i]);
 			v.push_back(make_pair(*p[i], e.evaluation()));
 			delete &e;
 		}

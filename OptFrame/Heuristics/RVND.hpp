@@ -27,12 +27,12 @@
 #include "../Evaluator.hpp"
 #include "../RandGen.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class RVND: public LocalSearch<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class RVND: public LocalSearch<R, ADS, DS>
 {
 public:
 
-	RVND(Evaluator<R, ADS, M>& _ev, vector<LocalSearch<R, ADS, M>*> _lsList, RandGen& _rg) :
+	RVND(Evaluator<R, ADS, DS>& _ev, vector<LocalSearch<R, ADS, DS>*> _lsList, RandGen& _rg) :
 		ev(_ev), lsList(_lsList), rg(_rg)
 	{
 	}
@@ -43,12 +43,12 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
-		Evaluation<M>& e = ev.evaluate(s.getR());
+		Evaluation<DS>& e = ev.evaluate(s.getR());
 		exec(s, e, timelimit, target_f);
 		delete &e;
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation<M>& e, double timelimit,
+	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit,
 			double target_f)
 	{
 
@@ -64,7 +64,7 @@ public:
 		while (ev.betterThan(target_f, e.evaluation()) && (k <= r) && ((tnow - tini) < timelimit))
 		{
 			Solution<R, ADS>* s0 = &s.clone();
-			Evaluation<M>* e0 = &e.clone();
+			Evaluation<DS>* e0 = &e.clone();
 
 			lsList[k - 1]->exec(*s0, *e0, timelimit, target_f);
 			if (ev.betterThan(*s0, s))
@@ -90,13 +90,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS, M>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<R, ADS, DS>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, M>::idComponent() << "RVND";
+		ss << LocalSearch<R, ADS, DS>::idComponent() << "RVND";
 		return ss.str();
 	}
 
@@ -121,37 +121,37 @@ public:
 	}
 
 private:
-	Evaluator<R, ADS, M>& ev;
-	vector<LocalSearch<R, ADS, M>*> lsList;
+	Evaluator<R, ADS, DS>& ev;
+	vector<LocalSearch<R, ADS, DS>*> lsList;
 	RandGen& rg;
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class RVNDBuilder : public LocalSearchBuilder<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class RVNDBuilder : public LocalSearchBuilder<R, ADS, DS>
 {
 public:
 	virtual ~RVNDBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	virtual LocalSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
-		Evaluator<R, ADS, M>* eval;
+		Evaluator<R, ADS, DS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<LocalSearch<R, ADS, M>*> hlist;
+		vector<LocalSearch<R, ADS, DS>*> hlist;
 		hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new RVND<R, ADS, M>(*eval, hlist, hf.getRandGen());
+		return new RVND<R, ADS, DS>(*eval, hlist, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, M>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
 		stringstream ss;
-		ss << LocalSearch<R, ADS, M>::idComponent() << "[]";
+		ss << LocalSearch<R, ADS, DS>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of local searches"));
 
 		return params;
@@ -159,13 +159,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == RVND<R, ADS, M>::idComponent();
+		return component == RVND<R, ADS, DS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, M>::idComponent() << "RVND";
+		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "RVND";
 		return ss.str();
 	}
 

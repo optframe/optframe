@@ -25,8 +25,8 @@
 
 #include "../OptFrameModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ListPushBackModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ListPushBackModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -44,7 +44,7 @@ public:
 		return "list.push_back list_name value";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		//cout << "list.push_back module: '" << input << "'" << endl;
 
@@ -89,7 +89,7 @@ public:
 
 		list.push_back(element);
 
-		return OptFrameModule<R, ADS, M>::defineList(list_name, list, ldictionary);
+		return OptFrameModule<R, ADS, DS>::defineList(list_name, list, ldictionary);
 	}
 
 };

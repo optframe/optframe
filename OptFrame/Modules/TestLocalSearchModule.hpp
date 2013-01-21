@@ -26,8 +26,8 @@
 
 #include <math.h>
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class TestLocalSearchModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class TestLocalSearchModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -53,7 +53,7 @@ public:
 		return u;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -68,7 +68,7 @@ public:
 		double tf = scanner.nextDouble();
 		double bf = scanner.nextDouble();
 
-		Evaluator<R, ADS, M>* eval = factory.read_ev(scanner);
+		Evaluator<R, ADS, DS>* eval = factory.read_ev(scanner);
 
 		Constructive<R, ADS>* constructive;
 		factory.readComponent(constructive, scanner);
@@ -78,9 +78,9 @@ public:
 			return false;
 		}
 
-		pair<LocalSearch<R, ADS, M>*, string> method = factory.createLocalSearch(scanner.rest());
+		pair<LocalSearch<R, ADS, DS>*, string> method = factory.createLocalSearch(scanner.rest());
 
-		LocalSearch<R, ADS, M>* h = method.first;
+		LocalSearch<R, ADS, DS>* h = method.first;
 
 		string rest = method.second;
 
@@ -130,7 +130,7 @@ public:
 
 			Solution<R, ADS>& s = constructive->generateSolution();
 			t_now = t.now();
-			Evaluation< M > & e = eval->evaluate(s);
+			Evaluation< DS > & e = eval->evaluate(s);
 			fo_now = e.evaluation();
 			delete &e;
 			fprintf(file, "%.3f\t%.3f\t", fo_now, t_now);
@@ -141,7 +141,7 @@ public:
 			Solution<R, ADS>* s2 = &h->search(s, timelimit, tf);
 			delete &s;
 			t_now = t.now();
-			Evaluation< M > & e2 = eval->evaluate(*s2);
+			Evaluation< DS > & e2 = eval->evaluate(*s2);
 			fo_now = e2.evaluation();
 			delete &e2;
 			s_fo_tests.at(i) = fo_now;
@@ -211,7 +211,7 @@ public:
 		if (scan_rest.hasNext())
 		{
 			string new_name = scan_rest.next();
-			return OptFrameModule<R, ADS, M>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, new_name + " " + s_new_id);
+			return OptFrameModule<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, new_name + " " + s_new_id);
 		}
 
 		return true;

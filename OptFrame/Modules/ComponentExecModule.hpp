@@ -26,8 +26,8 @@
 
 #include "SystemSilentDefineModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ComponentExecModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ComponentExecModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -45,7 +45,7 @@ public:
 		return "component.exec target_fo timelimit sios_method output_solution_name [spent_time]";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		//cout << "exec: " << input << endl;
 		Scanner scanner(input);
@@ -59,7 +59,7 @@ public:
 		double target_fo = scanner.nextDouble();
 		double timelimit = scanner.nextDouble();
 
-		pair<SingleObjSearch<R, ADS, M>*, string> method = factory.createSingleObjSearch(scanner.rest());
+		pair<SingleObjSearch<R, ADS, DS>*, string> method = factory.createSingleObjSearch(scanner.rest());
 		scanner = Scanner(method.second);
 
 		// ---
@@ -67,7 +67,7 @@ public:
 		string s_new_id = "";
 
 		Timer t;
-		pair<Solution<R, ADS>&, Evaluation<M>&>* result = method.first->search(timelimit, target_fo);
+		pair<Solution<R, ADS>&, Evaluation<DS>&>* result = method.first->search(timelimit, target_fo);
 		double time = t.inMilliSecs();
 
 
@@ -90,7 +90,7 @@ public:
 		if (scanner.hasNext())
 		{
 			string new_name = scanner.next();
-			if(!OptFrameModule<R, ADS, M>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, new_name + " " + s_new_id))
+			if(!OptFrameModule<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, new_name + " " + s_new_id))
 				return false;
 		}
 
@@ -99,7 +99,7 @@ public:
 			string var_time = scanner.next();
 			stringstream ss;
 			ss << var_time << " " << time;
-			if(!OptFrameModule<R, ADS, M>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str()))
+			if(!OptFrameModule<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str()))
 				return false;
 		}
 

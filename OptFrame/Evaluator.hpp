@@ -47,7 +47,7 @@ using namespace std;
   \endportuguese
 */
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class Evaluator : public OptFrameComponent
 {
 public:
@@ -56,54 +56,54 @@ public:
 	{
 	}
 
-	Evaluation<M>& evaluate(const Solution<R, ADS>& s)
+	Evaluation<DS>& evaluate(const Solution<R, ADS>& s)
 	{
 		return evaluate(s.getR(), s.getADS());
 	}
 
-	virtual Evaluation<M>& evaluate(const R& r, const ADS&) = 0;
+	virtual Evaluation<DS>& evaluate(const R& r, const ADS&) = 0;
 
-	void evaluate(Evaluation<M>& e, const Solution<R, ADS>& s)
+	void evaluate(Evaluation<DS>& e, const Solution<R, ADS>& s)
 	{
 		evaluate(e, s.getR(), s.getADS());
 	}
 
-	virtual void evaluate(Evaluation<M>& e, const R& r, const ADS& ads)
+	virtual void evaluate(Evaluation<DS>& e, const R& r, const ADS& ads)
 	{
-		Evaluation<M>& e1 = evaluate(r, ads);
+		Evaluation<DS>& e1 = evaluate(r, ads);
 		e = e1;
 		delete &e1;
 	}
 
 	// Apply movement considering a previous evaluation => Faster.
 	// Update evaluation 'e'
-	Move<R, ADS, M>& applyMove(Evaluation<M>& e, Move<R, ADS, M>& m, Solution<R, ADS>& s)
+	Move<R, ADS, DS>& applyMove(Evaluation<DS>& e, Move<R, ADS, DS>& m, Solution<R, ADS>& s)
 	{
-		Move<R, ADS, M>& rev = m.apply(e, s);
+		Move<R, ADS, DS>& rev = m.apply(e, s);
 		evaluate(e, s);
 		return rev;
 	}
 
 	// Apply movement without considering a previous evaluation => Slower.
 	// Return new evaluation 'e'
-	pair<Move<R, ADS, M>&, Evaluation<M>&>& applyMove(Move<R, ADS, M>& m, Solution<R, ADS>& s)
+	pair<Move<R, ADS, DS>&, Evaluation<DS>&>& applyMove(Move<R, ADS, DS>& m, Solution<R, ADS>& s)
 	{
-		Move<R, ADS, M>& rev = m.apply(s);
-		return *new pair<Move<R, ADS, M>&, Evaluation<M>&> (rev, evaluate(s));
+		Move<R, ADS, DS>& rev = m.apply(s);
+		return *new pair<Move<R, ADS, DS>&, Evaluation<DS>&> (rev, evaluate(s));
 	}
 
 	// Movement cost based on reevaluation of 'e'
-	double moveCost(Evaluation<M>& e, Move<R, ADS, M>& m, Solution<R, ADS>& s)
+	double moveCost(Evaluation<DS>& e, Move<R, ADS, DS>& m, Solution<R, ADS>& s)
 	{
 		//double backup_ini = e.evaluation(); // FOR TESTS
 
 		double e_end;
 		double e_ini;
 
-		Evaluation<M>& e2 = e.clone();
+		Evaluation<DS>& e2 = e.clone();
 
 		// do not update 's' => much faster (using updateDelta)
-		if(m.updateDelta(e2.getEM(), s.getR(), s.getADS()))
+		if(m.updateDelta(e2.getDS(), s.getR(), s.getADS()))
 		{
 			evaluate(e2, s); // compute delta
 
@@ -114,10 +114,10 @@ public:
 		}
 		else // need to update 's' together with reevaluation of 'e' => little faster (doesn't use updateDelta, but do reevaluation)
 		{
-			Move<R, ADS, M>& rev = applyMove(e, m, s);
+			Move<R, ADS, DS>& rev = applyMove(e, m, s);
 			e_end = e.evaluation();
 
-			Move<R, ADS, M>& ini = applyMove(e, rev, s);
+			Move<R, ADS, DS>& ini = applyMove(e, rev, s);
 			e_ini = e.evaluation();
 
 			delete &rev;
@@ -144,13 +144,13 @@ public:
 	}
 
 	// Movement cost based on complete evaluation
-	double moveCost(Move<R, ADS, M>& m, Solution<R, ADS>& s)
+	double moveCost(Move<R, ADS, DS>& m, Solution<R, ADS>& s)
 	{
 		cout << "DEPRECATED! USE EVALUATOR::moveCost(e, m, s)" << endl;
 
-		pair<Move<R, ADS, M>&, Evaluation<M>&>& rev = applyMove(m, s);
+		pair<Move<R, ADS, DS>&, Evaluation<DS>&>& rev = applyMove(m, s);
 
-		pair<Move<R, ADS, M>&, Evaluation<M>&>& ini = applyMove(rev.first, s);
+		pair<Move<R, ADS, DS>&, Evaluation<DS>&>& ini = applyMove(rev.first, s);
 
 		// Difference: new - original
 		double diff = rev.second.evaluation() - ini.second.evaluation();
@@ -169,8 +169,8 @@ public:
 	// true if 's1' is better than 's2'
 	bool betterThan(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2)
 	{
-		Evaluation<M>& e1 = evaluate(s1);
-		Evaluation<M>& e2 = evaluate(s2);
+		Evaluation<DS>& e1 = evaluate(s1);
+		Evaluation<DS>& e2 = evaluate(s2);
 
 		double f1 = e1.evaluation();
 		double f2 = e2.evaluation();
@@ -182,7 +182,7 @@ public:
 	}
 
 	// true if 'e1' is better than 'e2'
-	bool betterThan(const Evaluation<M>& e1, const Evaluation<M>& e2)
+	bool betterThan(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
 	{
 		return betterThan(e1.evaluation(), e2.evaluation());
 	}
@@ -199,8 +199,8 @@ public:
 
     bool betterOrEquals(const Solution<R>& s1, const Solution<R>& s2)
 	{
-		Evaluation<M>& e1 = evaluate(s1);
-		Evaluation<M>& e2 = evaluate(s2);
+		Evaluation<DS>& e1 = evaluate(s1);
+		Evaluation<DS>& e2 = evaluate(s2);
 
 		double f1 = e1.evaluation();
 		double f2 = e2.evaluation();
@@ -211,7 +211,7 @@ public:
 		return betterOrEquals(f1, f2);
 	}
 
-	bool betterOrEquals(const Evaluation<M>& e1, const Evaluation<M>& e2)
+	bool betterOrEquals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
 	{
 		return betterOrEquals(e1.evaluation(), e2.evaluation());
 	}

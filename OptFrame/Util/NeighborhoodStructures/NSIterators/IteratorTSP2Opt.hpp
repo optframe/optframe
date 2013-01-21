@@ -30,8 +30,8 @@ using namespace std;
 
 // Working structure: vector<T>
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveTSP2Opt<T, M> >
-class NSIteratorTSP2Opt: public NSIterator<vector<T> , ADS, M>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveTSP2Opt<T, DS > >
+class NSIteratorTSP2Opt: public NSIterator<vector<T> , ADS, DS >
 {
 	typedef vector<T> Route;
 
@@ -59,7 +59,7 @@ public:
 		{
 			p1 = 0;
 			p2 = 2;
-			m = new MoveTSP2Opt<T, ADS, M> (p1, p2);
+			m = new MoveTSP2Opt<T, ADS, DS > (p1, p2);
 		}
 		else
 			m = NULL;
@@ -79,7 +79,7 @@ public:
 				p2 = p1 + 2;
 			}
 
-			m = new MoveTSP2Opt<T, ADS, M> (p1, p2);
+			m = new MoveTSP2Opt<T, ADS, DS > (p1, p2);
 		}
 		else
 			m = NULL;
@@ -90,7 +90,7 @@ public:
 		return m == NULL;
 	}
 
-	Move<Route, ADS, M>& current()
+	Move<Route, ADS, DS >& current()
 	{
 		if (isDone())
 		{

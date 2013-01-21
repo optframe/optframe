@@ -25,8 +25,8 @@
 
 #include "ListSilentDefineModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class FileToListModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class FileToListModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -43,7 +43,7 @@ public:
 		return "file.to_list new_list_name filename";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scan(input);
 		if (!scan.hasNext()) // no file
@@ -97,7 +97,7 @@ public:
 
 		// TODO: should register directly (for performance)!
 
-		return OptFrameModule<R, ADS, M>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, listContent.str());
+		return OptFrameModule<R, ADS, DS>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, listContent.str());
 	}
 
 };

@@ -26,8 +26,8 @@
 
 #include "../SingleObjSearch.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class EmptySingleObjSearch: public SingleObjSearch<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class EmptySingleObjSearch: public SingleObjSearch<R, ADS, DS>
 {
 public:
 
@@ -39,7 +39,7 @@ public:
 	{
 	}
 
-	pair<Solution<R, ADS>&, Evaluation<M>&>* search(double timelimit = 100000000, double target_f = 0)
+	pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0)
 	{
 		cout << "WARNING: RETURNING A EmptySingleObjSearch!" << endl;
 		return NULL;
@@ -48,7 +48,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, M>::idComponent() << "empty";
+		ss << SingleObjSearch<R, ADS, DS>::idComponent() << "empty";
 		return ss.str();
 	}
 

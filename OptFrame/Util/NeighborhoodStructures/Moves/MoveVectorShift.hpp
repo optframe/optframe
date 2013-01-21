@@ -30,8 +30,8 @@ using namespace std;
 //                           Shift Move
 //============================================================================
 
-template<class T, class M>
-class MoveVectorShift : public Move<vector<T>, M>
+template<class T, class DS >
+class MoveVectorShift : public Move<vector<T>, DS >
 {
 private:
 	int t1, t2;
@@ -50,7 +50,7 @@ public:
 		return t1 != t2;
 	}
 
-	Move<vector<T>, M>* apply(Solution<vector<T> >* s)
+	Move<vector<T>, DS >* apply(Solution<vector<T> >* s)
 	{
 		vector<T>* rep = s->getRepresentation();
 
@@ -70,7 +70,7 @@ public:
 				(*rep)[i-1] = aux;
 			}
 
-		MoveVectorShift<T,M> * ms = new MoveVectorShift<T,M>(t2,t1);
+		MoveVectorShift<T,DS > * ms = new MoveVectorShift<T,DS >(t2,t1);
 
 		return ms;
 	}

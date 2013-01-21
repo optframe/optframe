@@ -24,8 +24,8 @@
 #include "../OptFrameModule.hpp"
 #include "../Util/Timer.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ComponentCheckModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ComponentCheckModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -42,7 +42,7 @@ public:
 		return "component.check [initsol id | loadsol id] evaluator ns_seq_list";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary, map< string,vector<string> >&, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >&, string input)
 	{
 		cout << "check: " << input << endl;
 		Scanner scanner(input);
@@ -90,15 +90,15 @@ public:
 			cout << "[Ok]" << endl;
 		}
 
-		Evaluator<R, ADS, M>* eval = factory.read_ev(scanner);
-		//vector<NS<R, ADS, M>*> ns_list = factory.read_ns_list(scanner);
-		vector<NS<R, ADS, M>*> ns_list;
+		Evaluator<R, ADS, DS>* eval = factory.read_ev(scanner);
+		//vector<NS<R, ADS, DS>*> ns_list = factory.read_ns_list(scanner);
+		vector<NS<R, ADS, DS>*> ns_list;
 		cerr << "TODO: FIX CHECK MODULE IMPLEMENTATION!" << endl;
 		return false;
 
-		vector<NSSeq<R, ADS, M>*> ns_seq_list;
+		vector<NSSeq<R, ADS, DS>*> ns_seq_list;
 		for (unsigned int i = 0; i < ns_list.size(); i++)
-			ns_seq_list.push_back((NSSeq<R, ADS, M>*) ns_list[i]);
+			ns_seq_list.push_back((NSSeq<R, ADS, DS>*) ns_list[i]);
 
 		cout << endl;
 
@@ -157,7 +157,7 @@ public:
 		cout << "Step 3: Testing evaluation methods" << endl;
 
 		cout << "3.1 - Evaluate ";
-		Evaluation<M>* e = &eval->evaluate(*s);
+		Evaluation<DS>* e = &eval->evaluate(*s);
 		cout << "[Ok]" << endl;
 
 		cout << "3.2 - Evaluation Value = " << e->evaluation() << " ";
@@ -219,7 +219,7 @@ public:
 
 		 while (ns_seq_list[i]->hasNext(s))
 		 {
-		 Move<R, ADS, M>* m = ns_seq_list[i]->next(s);
+		 Move<R, ADS, DS>* m = ns_seq_list[i]->next(s);
 		 s_total++;
 
 		 if (m->canBeApplied(s)) // Sum of useful moves
@@ -227,9 +227,9 @@ public:
 
 		 if (m->canBeApplied(s)) // First -> checking moves and reverse moves
 		 {
-		 Evaluation<M>* e2 = eval->evaluate(s);
+		 Evaluation<DS>* e2 = eval->evaluate(s);
 
-		 Move<R, ADS, M>* rev = m->apply(s);
+		 Move<R, ADS, DS>* rev = m->apply(s);
 		 if (!rev)
 		 {
 		 cout << "Problem! Reverse move is NULL!" << endl;
@@ -237,10 +237,10 @@ public:
 		 m->print();
 		 return;
 		 }
-		 Move<R, ADS, M>* new_m = rev->apply(s);
+		 Move<R, ADS, DS>* new_m = rev->apply(s);
 		 delete new_m;
 
-		 Evaluation<M>* e3 = eval->evaluate(s);
+		 Evaluation<DS>* e3 = eval->evaluate(s);
 
 		 if (e2->evaluation() != e3->evaluation())
 		 {
@@ -262,10 +262,10 @@ public:
 
 		 if (m->canBeApplied(s)) // Second -> checking evaluation and reevaluation
 		 {
-		 Evaluation<M>* e1 = eval->evaluate(s);
+		 Evaluation<DS>* e1 = eval->evaluate(s);
 		 double f1 = e1->evaluation();
 
-		 Move<R, ADS, M>* rev = m->apply(e1, s);
+		 Move<R, ADS, DS>* rev = m->apply(e1, s);
 		 if (!rev)
 		 {
 		 cout << "Problem! Reverse move is NULL!" << endl;
@@ -273,10 +273,10 @@ public:
 		 m->print();
 		 return;
 		 }
-		 Move<R, ADS, M>* new_m = rev->apply(e1, s);
+		 Move<R, ADS, DS>* new_m = rev->apply(e1, s);
 		 delete new_m;
 
-		 Evaluation<M>* e2 = eval->evaluate(s);
+		 Evaluation<DS>* e2 = eval->evaluate(s);
 
 		 if (e1->evaluation() != e2->evaluation())
 		 {

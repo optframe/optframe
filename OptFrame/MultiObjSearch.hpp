@@ -33,12 +33,12 @@ using namespace std;
 #include "OptFrameComponent.hpp"
 #include "ComponentBuilder.h"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class MultiObjSearch: public OptFrameComponent
 {
 public:
 
-	typedef vector<pair<Solution<R, ADS>&, vector<Evaluation<M>*> > > ParetoFront;
+	typedef vector<pair<Solution<R, ADS>&, vector<Evaluation<DS>*> > > ParetoFront;
 
 	MultiObjSearch()
 	{
@@ -75,17 +75,17 @@ public:
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class MultiObjSearchBuilder: public ComponentBuilder<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class MultiObjSearchBuilder: public ComponentBuilder<R, ADS, DS>
 {
 public:
 	virtual ~MultiObjSearchBuilder()
 	{
 	}
 
-	virtual MultiObjSearch<R, ADS, M>* build(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "") = 0;
+	virtual MultiObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "") = 0;
 
-	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, M>& hf, string family = "")
+	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
 		return build(scanner, hf, family);
 	}
@@ -97,7 +97,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, M>::idComponent() << "MultiObjSearch:";
+		ss << ComponentBuilder<R, ADS, DS>::idComponent() << "MultiObjSearch:";
 		return ss.str();
 	}
 

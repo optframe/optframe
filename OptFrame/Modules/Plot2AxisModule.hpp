@@ -28,8 +28,8 @@
 #include "../OptFrameModule.hpp"
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class Plot2AxisModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class Plot2AxisModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -47,7 +47,7 @@ public:
 		return "plot.2axis 1.list with: title xtitle ytitle 2.list of lists with: title, list of xvalues, list of yvalues 3.output file";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		//cout << "plot.2axis module input: '" << input << "'" << endl;
 

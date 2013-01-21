@@ -30,14 +30,14 @@
 #include "../NSSeq.hpp"
 #include "../ParetoDominance.hpp"
 #define INFINITO 1000000000
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
-class NSGAII: public Heuristic<R, M>
+template<class R, class DS = OPTFRAME_DEFAULT_MEMORY>
+class NSGAII: public Heuristic<R, DS >
 {
-	typedef vector<Evaluation<M>*> FitnessValues;
+	typedef vector<Evaluation<DS>*> FitnessValues;
 
 private:
-	vector<Evaluator<R, M>*> v_e;
-	ParetoDominance<R, M> pDominance;
+	vector<Evaluator<R, DS >*> v_e;
+	ParetoDominance<R, DS > pDominance;
 	int gMax;
 
 	static bool compara(pair<double, int> p1, pair<double, int> p2)
@@ -49,9 +49,9 @@ protected:
 	RandGen& rg;
 public:
 
-	using Heuristic<R, M>::exec; // prevents name hiding
+	using Heuristic<R, DS >::exec; // prevents name hiding
 
-	NSGAII(vector<Evaluator<R, M>*> _v_e, int _gMax, RandGen& _rg) :
+	NSGAII(vector<Evaluator<R, DS >*> _v_e, int _gMax, RandGen& _rg) :
 		v_e(_v_e), rg(_rg)
 	{
 		pDominance.insertEvaluators(_v_e);
@@ -68,7 +68,7 @@ public:
 	{
 		//ACHO Q FALTA APAGAR ALGUMA COISA NO FINAL
 
-		//vector<vector<Evaluation<M>*> > e_pop;
+		//vector<vector<Evaluation<DS>*> > e_pop;
 		FitnessValues& e_pop = *new FitnessValues;
 
 		for (int i = 0; i < p.size(); i++)
@@ -177,7 +177,7 @@ public:
 
 				for (int i = 0; i < N; i++)
 				{
-					Evaluation<M>& e = v_e[m]->evaluate(Fj.at(i));
+					Evaluation<DS>& e = v_e[m]->evaluate(Fj.at(i));
 					fitness.push_back(make_pair(e.evaluation(), i));
 					delete &e;
 				}

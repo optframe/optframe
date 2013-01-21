@@ -23,8 +23,8 @@
 
 #include "../LocalSearch.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class Intensification : public LocalSearch<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class Intensification : public LocalSearch<R, ADS, DS>
 {
 public:
 
@@ -44,7 +44,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, M>::idComponent() << "INTENSIFICATION:";
+		ss << LocalSearch<R, ADS, DS>::idComponent() << "INTENSIFICATION:";
 		return ss.str();
 
 	}

@@ -29,8 +29,8 @@ using namespace std;
 
 // Working structure: vector<vector<T> >
 
-template<class T, class M = OPTFRAME_DEFAULT_EMEMORY>
-class MoveRouteShift: public Move<vector<vector<T> > , M>
+template<class T, class DS = OPTFRAME_DEFAULT_EMEMORY>
+class MoveRouteShift: public Move<vector<vector<T> > , DS >
 {
 	typedef vector<vector<T> > Routes;
 
@@ -103,7 +103,7 @@ public:
 		return all_positive && (r1 < rep.size()) && (r2 < rep.size()) && ((rep.at(r1).size() - n1) >= 0) && ((rep.at(r2).size() - n2) >= 0);
 	}
 
-	Move<Routes, M>& apply(Routes& rep)
+	Move<Routes, DS >& apply(Routes& rep)
 	{
 		vector<T> v1;
 		vector<T> v2;
@@ -127,7 +127,7 @@ public:
 		return *new MoveRouteShift(r1, r2, i1, i2, n2, n1, e1, e2);
 	}
 
-	virtual bool operator==(const Move<Routes, M>& _m) const
+	virtual bool operator==(const Move<Routes, DS >& _m) const
 	{
 		const MoveRouteShift& m1 = (const MoveRouteShift&) _m;
 
@@ -161,8 +161,8 @@ public:
 	}
 };
 
-template<class T, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveRouteShift<T, M> >
-class NSIteratorRoutesShift: public NSIterator<vector<vector<T> > , M>
+template<class T, class DS = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveRouteShift<T, DS > >
+class NSIteratorRoutesShift: public NSIterator<vector<vector<T> > , DS >
 {
 	typedef vector<vector<T> > Routes;
 	const Routes& routes;
@@ -240,7 +240,7 @@ public:
 		return m == NULL;
 	}
 
-	Move<Routes, M>& current()
+	Move<Routes, DS >& current()
 	{
 		if (isDone())
 		{
@@ -253,8 +253,8 @@ public:
 	}
 };
 
-template<class T, class M = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveRouteShift<T, M> >
-class NSSeqRouteShift: public NSSeq<vector<vector<T> > , M>
+template<class T, class DS = OPTFRAME_DEFAULT_EMEMORY, class MOVE = MoveRouteShift<T, DS > >
+class NSSeqRouteShift: public NSSeq<vector<vector<T> > , DS >
 {
 	typedef vector<vector<T> > Routes;
 
@@ -294,7 +294,7 @@ public:
 	{
 	}
 
-	Move<Routes, M>& move(const Routes& rep)
+	Move<Routes, DS >& move(const Routes& rep)
 	{
 		if (rep.size() < 2)
 			return *new MOVE(0, 0, -1, -1, 0, 0, -1, -1);
@@ -333,9 +333,9 @@ public:
 		return *new MOVE(r1, r2, e1, e2, n1, n2, i1, i2);
 	}
 
-	virtual NSIterator<Routes, M>& getIterator(const Routes& r)
+	virtual NSIterator<Routes, DS >& getIterator(const Routes& r)
 	{
-		return *new NSIteratorRoutesShift<T, M, MOVE> (r, n1, n2);
+		return *new NSIteratorRoutesShift<T, DS, MOVE> (r, n1, n2);
 	}
 
 	virtual void print()

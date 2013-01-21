@@ -28,8 +28,8 @@ using namespace std;
 
 // Working structure: vector<vector<T> >
 
-template<class T, class M = OPTFRAME_DEFAULT_EMEMORY>
-class MoveVVSwapIntra: public Move<vector<vector<T> > , M>
+template<class T, class DS = OPTFRAME_DEFAULT_EMEMORY>
+class MoveVVSwapIntra: public Move<vector<vector<T> > , DS >
 {
 	typedef vector<vector<T> > Routes;
 
@@ -54,7 +54,7 @@ public:
 		return (j != k);
 	}
 
-	Move<Routes, M>& apply(Routes& rep)
+	Move<Routes, DS >& apply(Routes& rep)
 	{
 		T aux = rep[i][j];
 		rep[i][j] = rep[i][k];
@@ -63,7 +63,7 @@ public:
 		return *new MoveVVSwapIntra(i, k, j);
 	}
 
-	virtual bool operator==(const Move<Routes, M>& _m) const
+	virtual bool operator==(const Move<Routes, DS >& _m) const
 	{
 		const MoveVVSwapIntra& m = (const MoveVVSwapIntra&) _m;
 		return (m.i == i) && ((m.j == j && m.k == k) || (m.j == k && m.k == j));

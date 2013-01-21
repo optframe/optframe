@@ -58,16 +58,16 @@
  * ToDo : Analisar critérios parada do algoritmo dado um tempo máximo de execução.
  */
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class GeneticAlgorithm: public SingleObjSearch<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class GeneticAlgorithm: public SingleObjSearch<R, ADS, DS>
 {
 protected:
 
    typedef Solution<R, ADS> chromossome;
 
-   typedef vector<Evaluation<M>*> FitnessValues;
+   typedef vector<Evaluation<DS>*> FitnessValues;
 
-   Evaluator<R, ADS, M>& evaluator;
+   Evaluator<R, ADS, DS>& evaluator;
 
 private:
 
@@ -79,20 +79,20 @@ private:
 
    InitialPopulation<R, ADS>& initPop;
 
-   Selection<R, ADS, M> *selection;
+   Selection<R, ADS, DS> *selection;
 
-   Crossover<R, ADS, M> *cross;
+   Crossover<R, ADS, DS> *cross;
 
-   Mutation<R, ADS, M> *mut;
+   Mutation<R, ADS, DS> *mut;
 
-   Elitism<R, ADS, M> *elt;
+   Elitism<R, ADS, DS> *elt;
 
 public:
 
-   GeneticAlgorithm(Evaluator<R, ADS, M>& _evaluator, InitialPopulation<R, ADS>& _initPop,
+   GeneticAlgorithm(Evaluator<R, ADS, DS>& _evaluator, InitialPopulation<R, ADS>& _initPop,
          double crossoverRate, double mutationRate, double elitismRate, unsigned populationSize,
-         unsigned numGenerations, Selection<R, ADS, M>& _selection, Crossover<R, ADS, M>& _cross, Mutation<R,
-               M>& _mut, Elitism<R, ADS, M>& _elt) :
+         unsigned numGenerations, Selection<R, ADS, DS>& _selection, Crossover<R, ADS, DS>& _cross, Mutation<R,
+               DS >& _mut, Elitism<R, ADS, DS>& _elt) :
       evaluator(_evaluator), initPop(_initPop), selection(&_selection), cross(&_cross), mut(&_mut),
             elt(&_elt)
    {

@@ -29,16 +29,16 @@
 
 using namespace std;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class MultiObjectiveEvaluator: public Evaluator<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class MultiObjectiveEvaluator: public Evaluator<R, ADS, DS>
 {
 protected:
-	vector<Evaluator<R, ADS, M>*> partialEvaluators;
+	vector<Evaluator<R, ADS, DS>*> partialEvaluators;
 public:
 
-	using Evaluator<R, ADS, M>::evaluate; // prevents name hiding
+	using Evaluator<R, ADS, DS>::evaluate; // prevents name hiding
 
-	MultiObjectiveEvaluator(Evaluator<R, ADS, M>& e)
+	MultiObjectiveEvaluator(Evaluator<R, ADS, DS>& e)
 	{
 		partialEvaluators.push_back(&e);
 	}
@@ -47,17 +47,17 @@ public:
 	{
 	}
 
-	void add(Evaluator<R, ADS, M>& e)
+	void add(Evaluator<R, ADS, DS>& e)
 	{
 		partialEvaluators.push_back(&e);
 	}
 
-	virtual Evaluation<M>& evaluate(const R& r)
+	virtual Evaluation<DS>& evaluate(const R& r)
 	{
 		double objFunction = 0;
 		double infMeasure = 0;
 
-		Evaluation<M>& e = partialEvaluators.at(0)->evaluate(r);
+		Evaluation<DS>& e = partialEvaluators.at(0)->evaluate(r);
 
 		objFunction += e.getObjFunction();
 		infMeasure += e.getInfMeasure();
@@ -75,7 +75,7 @@ public:
 		return e;
 	}
 
-	virtual void evaluate(Evaluation<M>& e, const R& r)
+	virtual void evaluate(Evaluation<DS>& e, const R& r)
 	{
 		double objFunction = 0;
 		double infMeasure = 0;

@@ -73,7 +73,7 @@ using namespace std;
 
 // design pattern: Factory
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class HeuristicFactory
 {
 private:
@@ -82,10 +82,10 @@ private:
 public:
 
 	map<string, vector<OptFrameComponent*> > components;
-	vector<ComponentBuilder<R, ADS, M>* > builders;
+	vector<ComponentBuilder<R, ADS, DS>* > builders;
 	map<string, vector<vector<OptFrameComponent*> > > componentLists;
 
-	ComponentBuilder<R, ADS, M>* getBuilder(string id)
+	ComponentBuilder<R, ADS, DS>* getBuilder(string id)
 	{
 		for(unsigned i=0; i<builders.size(); i++)
 			if(builders[i]->id() == id)
@@ -446,15 +446,15 @@ public:
 
 
 #ifdef MaPI
-	MyMaPISerializer<R, ADS, M> * serializer;
+	MyMaPISerializer<R, ADS, DS> * serializer;
 	MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mapReduce;
-	MyMaPIMapper<R, ADS, M> * mapper;
-	MyMaPIReducer<R, ADS, M> * reducer;
+	MyMaPIMapper<R, ADS, DS> * mapper;
+	MyMaPIReducer<R, ADS, DS> * reducer;
 	int argc;
 	char **argv;
 
-	void setMapReduce(MyMaPISerializer<R, ADS, M> * serializer, MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mapReduce,
-			MyMaPIMapper<R, ADS, M> * mapper,MyMaPIReducer<R, ADS, M> * reducer,int argc, char **argv)
+	void setMapReduce(MyMaPISerializer<R, ADS, DS> * serializer, MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mapReduce,
+			MyMaPIMapper<R, ADS, DS> * mapper,MyMaPIReducer<R, ADS, DS> * reducer,int argc, char **argv)
 	{
 		this->serializer = serializer;
 		this->mapReduce = mapReduce;
@@ -488,7 +488,7 @@ public:
 	}
 
 	/*
-	vector<NS<R, ADS, M>*> read_ns_list(Scanner& scanner)
+	vector<NS<R, ADS, DS>*> read_ns_list(Scanner& scanner)
 	{
 		vector<string>* plist = OptFrameList::readList(scanner);
 		vector<string>  list;
@@ -503,17 +503,17 @@ public:
 		Scanner* aux;
 		std::string tmp;
 
-		vector<NS<R, ADS, M>*> v_ns;
+		vector<NS<R, ADS, DS>*> v_ns;
 
 		for (unsigned int i = 0; i < list.size(); i++)
 		{
 			aux = new Scanner(list.at(i));
 
-			NS<R, ADS, M>* ns;
+			NS<R, ADS, DS>* ns;
 			readComponent(ns, *aux);
 
 			if(!ns)
-				return vector<NS<R, ADS, M>*>();
+				return vector<NS<R, ADS, DS>*>();
 
 			v_ns.push_back(ns);
 
@@ -523,30 +523,30 @@ public:
 		if (v_ns.size() == 0)
 		{
 			cout << "Error: empty ns list." << endl;
-			return vector<NS<R, ADS, M>*>();
+			return vector<NS<R, ADS, DS>*>();
 		}
 
 		return v_ns;
 	}
 
-	vector<Evaluator<R, ADS, M> *> read_ev_list(Scanner& scanner)
+	vector<Evaluator<R, ADS, DS> *> read_ev_list(Scanner& scanner)
 	{
 		vector < std::string >& list = OptFrameList::readList(scanner);
 
 		Scanner* aux;
 		std::string tmp;
 
-		vector<Evaluator<R, ADS, M> *> v_ev;
+		vector<Evaluator<R, ADS, DS> *> v_ev;
 
 		for (unsigned int i = 0; i < list.size(); i++)
 		{
 			aux = new Scanner(list.at(i));
 
-			Evaluator<R, ADS, M> * ev;
+			Evaluator<R, ADS, DS> * ev;
 			readComponent(ev, aux);
 
 			if(!ev)
-				return vector<Evaluator<R, ADS, M> *>();
+				return vector<Evaluator<R, ADS, DS> *>();
 
 			v_ev.push_back(ev);
 		}
@@ -554,19 +554,19 @@ public:
 		if (v_ev.size() == 0)
 		{
 			cout << "Error: empty ev list." << endl;
-			return vector<Evaluator<R, ADS, M> *>();
+			return vector<Evaluator<R, ADS, DS> *>();
 		}
 
 		delete &list;
 		return v_ev;
 	}
 
-	vector<LocalSearch<R, ADS, M>*> read_local_search_list(Scanner& scanner)
+	vector<LocalSearch<R, ADS, DS>*> read_local_search_list(Scanner& scanner)
 	{
 		vector < std::string >& list = OptFrameList::readList(scanner);
-		vector<LocalSearch<R, ADS, M>*> v_heuristics;
+		vector<LocalSearch<R, ADS, DS>*> v_heuristics;
 
-		pair<LocalSearch<R, ADS, M>*, std::string> method;
+		pair<LocalSearch<R, ADS, DS>*, std::string> method;
 
 		for (unsigned int i = 0; i < list.size(); i++)
 		{
@@ -585,9 +585,9 @@ public:
 	}
 	*/
 
-	Evaluator<R, ADS, M>* read_ev(Scanner& scanner)
+	Evaluator<R, ADS, DS>* read_ev(Scanner& scanner)
 	{
-		Evaluator<R, ADS, M>* ev = NULL;
+		Evaluator<R, ADS, DS>* ev = NULL;
 		readComponent(ev, scanner);
 
 		return ev;
@@ -670,168 +670,168 @@ public:
 	}
 
 
-	pair<LocalSearch<R, ADS, M>*, std::string> createLocalSearch(std::string str)
+	pair<LocalSearch<R, ADS, DS>*, std::string> createLocalSearch(std::string str)
 	{
 		Scanner scanner(str);
 
 		// No heuristic!
 		if (!scanner.hasNext())
-			return make_pair(new EmptyLocalSearch<R, ADS, M> , "");
+			return make_pair(new EmptyLocalSearch<R, ADS, DS> , "");
 
 		string h = scanner.next();
 
-		if (h == LocalSearch<R, ADS, M>::idComponent())
+		if (h == LocalSearch<R, ADS, DS>::idComponent())
 		{
 			unsigned int id = scanner.nextInt();
 
-			LocalSearch<R, ADS, M>* mtd = NULL;
+			LocalSearch<R, ADS, DS>* mtd = NULL;
 
-			assign(mtd, id, LocalSearch<R, ADS, M>::idComponent());
+			assign(mtd, id, LocalSearch<R, ADS, DS>::idComponent());
 
 			if(!mtd)
-				return make_pair(new EmptyLocalSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptyLocalSearch<R, ADS, DS> , scanner.rest());
 
 			return make_pair(mtd, scanner.rest());
 		}
 
-		if (h == EmptyLocalSearch<R, ADS, M>::idComponent())
-			return make_pair(new EmptyLocalSearch<R, ADS, M> , scanner.rest());
+		if (h == EmptyLocalSearch<R, ADS, DS>::idComponent())
+			return make_pair(new EmptyLocalSearch<R, ADS, DS> , scanner.rest());
 
 		for(unsigned i=0; i<builders.size(); i++)
 		{
 			// build local search directly by builder name
 			if(builders[i]->id()==h)
 			{
-				LocalSearch<R, ADS, M>* ls = ((LocalSearchBuilder<R,ADS,M>*)(builders[i]))->build(scanner, *this);
+				LocalSearch<R, ADS, DS>* ls = ((LocalSearchBuilder<R,ADS,DS>*)(builders[i]))->build(scanner, *this);
 				return make_pair(ls, scanner.rest());
 			}
 
 			// locate builder by local search name
 			if(builders[i]->canBuild(h))
 			{
-				LocalSearch<R, ADS, M>* ls = ((LocalSearchBuilder<R,ADS,M>*)(builders[i]))->build(scanner, *this);
+				LocalSearch<R, ADS, DS>* ls = ((LocalSearchBuilder<R,ADS,DS>*)(builders[i]))->build(scanner, *this);
 				return make_pair(ls, scanner.rest());
 			}
 		}
 
 		cout << "Warning: no LocalSearch '" << h << "' found! ignoring..." << endl;
 
-		return make_pair(new EmptyLocalSearch<R, ADS, M> , scanner.rest());
+		return make_pair(new EmptyLocalSearch<R, ADS, DS> , scanner.rest());
 	}
 
 
-	pair<SingleObjSearch<R, ADS, M>*, std::string> createSingleObjSearch(std::string str)
+	pair<SingleObjSearch<R, ADS, DS>*, std::string> createSingleObjSearch(std::string str)
 	{
 		Scanner scanner(str);
 
 		// No heuristic!
 		if (!scanner.hasNext())
 		{
-			SingleObjSearch<R, ADS, M>* sios = new EmptySingleObjSearch<R, ADS, M>;
+			SingleObjSearch<R, ADS, DS>* sios = new EmptySingleObjSearch<R, ADS, DS>;
 			return make_pair(sios , "");
 		}
 
 		string h = scanner.next();
 
-		if (h == SingleObjSearch<R, ADS, M>::idComponent())
+		if (h == SingleObjSearch<R, ADS, DS>::idComponent())
 		{
 			unsigned int id = scanner.nextInt();
 
-			SingleObjSearch<R, ADS, M>* mtd = NULL;
+			SingleObjSearch<R, ADS, DS>* mtd = NULL;
 
-			assign(mtd, id, SingleObjSearch<R, ADS, M>::idComponent());
+			assign(mtd, id, SingleObjSearch<R, ADS, DS>::idComponent());
 
 			if(!mtd)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 			return make_pair(mtd, scanner.rest());
 		}
 
-		if (h == EmptySingleObjSearch<R, ADS, M>::idComponent())
-			return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+		if (h == EmptySingleObjSearch<R, ADS, DS>::idComponent())
+			return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 		for(unsigned i=0; i<builders.size(); i++)
 		{
 			// build local search directly by builder name
 			if(builders[i]->id()==h)
 			{
-				SingleObjSearch<R, ADS, M>* sios = ((SingleObjSearchBuilder<R,ADS,M>*)(builders[i]))->build(scanner, *this);
+				SingleObjSearch<R, ADS, DS>* sios = ((SingleObjSearchBuilder<R,ADS,DS>*)(builders[i]))->build(scanner, *this);
 				return make_pair(sios, scanner.rest());
 			}
 
 			// locate builder by local search name
 			if(builders[i]->canBuild(h))
 			{
-				SingleObjSearch<R, ADS, M>* sios = ((SingleObjSearchBuilder<R,ADS,M>*)(builders[i]))->build(scanner, *this);
+				SingleObjSearch<R, ADS, DS>* sios = ((SingleObjSearchBuilder<R,ADS,DS>*)(builders[i]))->build(scanner, *this);
 				return make_pair(sios, scanner.rest());
 			}
 		}
 
 
 
-		if (h == GRASP<R, ADS, M>::idComponent())
+		if (h == GRASP<R, ADS, DS>::idComponent())
 		{
 			cout << "Heuristic: GRASP" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
+			Evaluator<R, ADS, DS>* evaluator = read_ev(scanner);
 			if(!evaluator)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 			Constructive<R, ADS>* initsol = NULL;
 			readComponent(initsol, scanner);
 			if(!initsol)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 			string rest = scanner.rest();
 
-			pair<LocalSearch<R, ADS, M>*, string> method;
+			pair<LocalSearch<R, ADS, DS>*, string> method;
 			method = createLocalSearch(rest);
 
-			LocalSearch<R, ADS, M>* ls = method.first;
+			LocalSearch<R, ADS, DS>* ls = method.first;
 
 			scanner = Scanner(method.second);
 
 			int iter = scanner.nextInt();
 
-			return make_pair(new GRASP<R, ADS, M> (*evaluator, *initsol, *ls, iter), scanner.rest());
+			return make_pair(new GRASP<R, ADS, DS> (*evaluator, *initsol, *ls, iter), scanner.rest());
 		}
 
-		if (h == TabuSearch<R, ADS, M>::idComponent())
+		if (h == TabuSearch<R, ADS, DS>::idComponent())
 		{
 			cout << "Heuristic: Tabu Search" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
+			Evaluator<R, ADS, DS>* evaluator = read_ev(scanner);
 			if(!evaluator)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 			Constructive<R, ADS>* initsol = NULL;
 			readComponent(initsol, scanner);
 			if(!initsol)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
-			NSSeq<R, ADS, M>* ns_seq = (NSSeq<R, ADS, M>*) getNextComponent(scanner);
+			NSSeq<R, ADS, DS>* ns_seq = (NSSeq<R, ADS, DS>*) getNextComponent(scanner);
 
 			if(!ns_seq)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 			int tamT = scanner.nextInt();
 			int BTmax = scanner.nextInt();
 
-			return make_pair(new TabuSearch<R, ADS, M> (*evaluator, *initsol, *ns_seq, tamT, BTmax), scanner.rest());
+			return make_pair(new TabuSearch<R, ADS, DS> (*evaluator, *initsol, *ns_seq, tamT, BTmax), scanner.rest());
 		}
 
-		if (h == BasicIteratedLocalSearch<R, ADS, M>::idComponent())
+		if (h == BasicIteratedLocalSearch<R, ADS, DS>::idComponent())
 		{
 			cout << "Heuristic: Basic Iterated Local Search" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
+			Evaluator<R, ADS, DS>* evaluator = read_ev(scanner);
 			if(!evaluator)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 			Constructive<R, ADS>* initsol = NULL;
 			readComponent(initsol, scanner);
 			if(!initsol)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 
 			// ===================
@@ -840,64 +840,64 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<LocalSearch<R, ADS, M>*, string> method;
+			pair<LocalSearch<R, ADS, DS>*, string> method;
 			method = createLocalSearch(rest);
 
-			LocalSearch<R, ADS, M>* localSearch = method.first;
+			LocalSearch<R, ADS, DS>* localSearch = method.first;
 
 			scanner = Scanner(method.second);
 
 			// ====================
 
-			BasicILSPerturbation<R, ADS, M>* ils_pert = NULL;
+			BasicILSPerturbation<R, ADS, DS>* ils_pert = NULL;
 			readComponent(ils_pert, scanner);
 
 			if(!ils_pert)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 			int iterMax = scanner.nextInt();
 
-			return make_pair(new BasicIteratedLocalSearch<R, ADS, M> (*evaluator, *initsol, *localSearch, *ils_pert, iterMax), scanner.rest());
+			return make_pair(new BasicIteratedLocalSearch<R, ADS, DS> (*evaluator, *initsol, *localSearch, *ils_pert, iterMax), scanner.rest());
 		}
 
 		/*
-		if (h == BasicSimulatedAnnealing<R, ADS, M>::idComponent())
+		if (h == BasicSimulatedAnnealing<R, ADS, DS>::idComponent())
 		{
 			cout << "Heuristic: Basic Simulated Annealing" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
+			Evaluator<R, ADS, DS>* evaluator = read_ev(scanner);
 			if(!evaluator)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 			Constructive<R, ADS>* initsol = NULL;
 			readComponent(initsol, scanner);
 			if(!initsol)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
-			vector<NS<R, ADS, M>* > ns_list = read_ns_list(scanner);
+			vector<NS<R, ADS, DS>* > ns_list = read_ns_list(scanner);
 			if(ns_list.size()==0)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 			double alpha = scanner.nextDouble();
 			int SAmax = scanner.nextInt();
 			double Ti = scanner.nextDouble();
 
-			return make_pair(new BasicSimulatedAnnealing<R, ADS, M> (*evaluator, *initsol, ns_list, alpha, SAmax, Ti, rg), scanner.rest());
+			return make_pair(new BasicSimulatedAnnealing<R, ADS, DS> (*evaluator, *initsol, ns_list, alpha, SAmax, Ti, rg), scanner.rest());
 		}
 		*/
 
-		if (h == IteratedLocalSearchLevels<R, ADS, M>::idComponent())
+		if (h == IteratedLocalSearchLevels<R, ADS, DS>::idComponent())
 		{
 			cout << "Heuristic: Iterated Local Search (Levels)" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
+			Evaluator<R, ADS, DS>* evaluator = read_ev(scanner);
 			if(!evaluator)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 			Constructive<R, ADS>* initsol = NULL;
 			readComponent(initsol, scanner);
 			if(!initsol)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 
 			// ===================
@@ -906,39 +906,39 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<LocalSearch<R, ADS, M>*, string> method;
+			pair<LocalSearch<R, ADS, DS>*, string> method;
 			method = createLocalSearch(rest);
 
-			LocalSearch<R, ADS, M>* localSearch = method.first;
+			LocalSearch<R, ADS, DS>* localSearch = method.first;
 
 			scanner = Scanner(method.second);
 
 			// ====================
 
-			ILSLPerturbation<R, ADS, M>* ilsl_pert = NULL;
+			ILSLPerturbation<R, ADS, DS>* ilsl_pert = NULL;
 			readComponent(ilsl_pert, scanner);
 
 			if(!ilsl_pert)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 			int iterMax = scanner.nextInt();
 			int levelMax = scanner.nextInt();
 
-			return make_pair(new IteratedLocalSearchLevels<R, ADS, M> (*evaluator, *initsol, *localSearch, *ilsl_pert, iterMax, levelMax), scanner.rest());
+			return make_pair(new IteratedLocalSearchLevels<R, ADS, DS> (*evaluator, *initsol, *localSearch, *ilsl_pert, iterMax, levelMax), scanner.rest());
 		}
 
-		if (h == IntensifiedIteratedLocalSearchLevels<R, ADS, M>::idComponent())
+		if (h == IntensifiedIteratedLocalSearchLevels<R, ADS, DS>::idComponent())
 		{
 			cout << "Heuristic: Intensified Iterated Local Search (Levels)" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(scanner);
+			Evaluator<R, ADS, DS>* evaluator = read_ev(scanner);
 			if(!evaluator)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 			Constructive<R, ADS>* initsol = NULL;
 			readComponent(initsol, scanner);
 			if(!initsol)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 
 			// ===================
@@ -947,10 +947,10 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<LocalSearch<R, ADS, M>*, string> method;
+			pair<LocalSearch<R, ADS, DS>*, string> method;
 			method = createLocalSearch(rest);
 
-			LocalSearch<R, ADS, M>* localSearch = method.first;
+			LocalSearch<R, ADS, DS>* localSearch = method.first;
 
 			scanner = Scanner(method.second);
 
@@ -958,32 +958,32 @@ public:
 
 			/*rest = scanner.rest();
 
-				 pair<HTrajectory<R, ADS, M>*, string> method2;
+				 pair<HTrajectory<R, ADS, DS>*, string> method2;
 				 method2 = createHeuristic(rest);
 
-				 HTrajectory<R, ADS, M>* localSearch2 = method2.first;
+				 HTrajectory<R, ADS, DS>* localSearch2 = method2.first;
 
 				 scanner = Scanner(method2.second);*/
 
-			Intensification<R, ADS, M> * intensification = NULL;
+			Intensification<R, ADS, DS> * intensification = NULL;
 			readComponent(intensification, scanner);
 
 			if(!intensification)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 			// ====================
 
-			ILSLPerturbation<R, ADS, M>* ilsl_pert = NULL;
+			ILSLPerturbation<R, ADS, DS>* ilsl_pert = NULL;
 			readComponent(ilsl_pert, scanner);
 
 			if(!ilsl_pert)
-				return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 
 			int iterMax = scanner.nextInt();
 			int levelMax = scanner.nextInt();
 
-			//return make_pair(new IntensifiedIteratedLocalSearchLevels<R, ADS, M> (*evaluator, *localSearch, *localSearch2, *ilsl_pert, iterMax, levelMax),scanner.rest());
-			return make_pair(new IntensifiedIteratedLocalSearchLevels<R, ADS, M> (*evaluator, *initsol, *localSearch, *intensification, *ilsl_pert, iterMax, levelMax), scanner.rest());
+			//return make_pair(new IntensifiedIteratedLocalSearchLevels<R, ADS, DS> (*evaluator, *localSearch, *localSearch2, *ilsl_pert, iterMax, levelMax),scanner.rest());
+			return make_pair(new IntensifiedIteratedLocalSearchLevels<R, ADS, DS> (*evaluator, *initsol, *localSearch, *intensification, *ilsl_pert, iterMax, levelMax), scanner.rest());
 		}
 
 
@@ -992,7 +992,7 @@ public:
 		{
 			cout << "Heuristic: MapReduce" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, DS>* evaluator = read_ev(&scanner);
 
 			// ===================
 			// Read next heuristic
@@ -1000,10 +1000,10 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<HTrajectory<R, ADS, M>*, string> method;
+			pair<HTrajectory<R, ADS, DS>*, string> method;
 			method = createHeuristic(rest);
 
-			HTrajectory<R, ADS, M>* hmap = method.first;
+			HTrajectory<R, ADS, DS>* hmap = method.first;
 
 			scanner = Scanner(method.second);
 
@@ -1015,7 +1015,7 @@ public:
 
 			method = createHeuristic(rest);
 
-			HTrajectory<R, ADS, M>* hreduce = method.first;
+			HTrajectory<R, ADS, DS>* hreduce = method.first;
 
 			scanner = Scanner(method.second);
 
@@ -1023,14 +1023,14 @@ public:
 			mapper->setHeuristic(hmap);
 			reducer->setHeuristic(hreduce); // reduz usando a heurística hreduce
 
-			return make_pair(new OptFrameMapReduce<R, ADS, M> (*serializer,*mapReduce,*mapper,*reducer,*evaluator), scanner.rest());
+			return make_pair(new OptFrameMapReduce<R, ADS, DS> (*serializer,*mapReduce,*mapper,*reducer,*evaluator), scanner.rest());
 		}
 
 		if (h == "Map")
 		{
 			cout << "Heuristic: Map" << endl;
 
-			Evaluator<R, ADS, M>* evaluator = read_ev(&scanner);
+			Evaluator<R, ADS, DS>* evaluator = read_ev(&scanner);
 
 			// ===================
 			// Read next heuristic
@@ -1038,10 +1038,10 @@ public:
 
 			string rest = scanner.rest();
 
-			pair<HTrajectory<R, ADS, M>*, string> method;
+			pair<HTrajectory<R, ADS, DS>*, string> method;
 			method = createHeuristic(rest);
 
-			HTrajectory<R, ADS, M>* hmap = method.first;
+			HTrajectory<R, ADS, DS>* hmap = method.first;
 
 			scanner = Scanner(method.second);
 
@@ -1050,48 +1050,48 @@ public:
 			// A não especificação da heurística de redução implina na
 			// redução à melhor solução produzida nos mapeamentos
 
-			return make_pair(new OptFrameMapReduce<R, ADS, M> (*serializer,*mapReduce,*mapper,*reducer,*evaluator), scanner.rest());
+			return make_pair(new OptFrameMapReduce<R, ADS, DS> (*serializer,*mapReduce,*mapper,*reducer,*evaluator), scanner.rest());
 		}
 #endif
 
 		cout << "Warning: no SingleObjSearch '" << h << "' found! ignoring..." << endl;
 
-		return make_pair(new EmptySingleObjSearch<R, ADS, M> , scanner.rest());
+		return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
 	}
 
-	pair<MultiObjSearch<R, ADS, M>*, std::string> createMultiObjSearch(std::string str)
+	pair<MultiObjSearch<R, ADS, DS>*, std::string> createMultiObjSearch(std::string str)
 	{
 		Scanner scanner(str);
 
 		// No heuristic!
 		if (!scanner.hasNext())
 		{
-			MultiObjSearch<R, ADS, M>* mios = new EmptyMultiObjSearch<R, ADS,	M>;
+			MultiObjSearch<R, ADS, DS>* mios = new EmptyMultiObjSearch<R, ADS,	DS >;
 			return make_pair(mios, "");
 		}
 
 		string h = scanner.next();
 
-		if (h == MultiObjSearch<R, ADS, M>::idComponent())
+		if (h == MultiObjSearch<R, ADS, DS>::idComponent())
 		{
 			unsigned int id = scanner.nextInt();
 
-			MultiObjSearch<R, ADS, M>* mtd = NULL;
+			MultiObjSearch<R, ADS, DS>* mtd = NULL;
 
-			assign(mtd, id, MultiObjSearch<R, ADS, M>::idComponent());
+			assign(mtd, id, MultiObjSearch<R, ADS, DS>::idComponent());
 
 			if (!mtd)
-				return make_pair(new EmptyMultiObjSearch<R, ADS, M>, scanner.rest());
+				return make_pair(new EmptyMultiObjSearch<R, ADS, DS>, scanner.rest());
 
 			return make_pair(mtd, scanner.rest());
 		}
 
-		if (h == EmptyMultiObjSearch<R, ADS, M>::idComponent())
-			return make_pair(new EmptyMultiObjSearch<R, ADS, M>, scanner.rest());
+		if (h == EmptyMultiObjSearch<R, ADS, DS>::idComponent())
+			return make_pair(new EmptyMultiObjSearch<R, ADS, DS>, scanner.rest());
 
 		cout << "Warning: no MultiObjSearch '" << h << "' found! ignoring..." << endl;
 
-		return make_pair(new EmptyMultiObjSearch<R, ADS, M>, scanner.rest());
+		return make_pair(new EmptyMultiObjSearch<R, ADS, DS>, scanner.rest());
 	}
 
 };

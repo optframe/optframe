@@ -39,11 +39,11 @@
 
 using namespace std;
 
-template<class R, class M = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class DS = OPTFRAME_DEFAULT_MEMORY>
 class UnionNDSets
 {
 protected:
-	vector<Evaluator<R, M>*> v_e;
+	vector<Evaluator<R, DS >*> v_e;
 
 	bool addSolution(vector<vector<double> >& p, vector<double>& s)
 	{
@@ -104,7 +104,7 @@ protected:
 
 public:
 
-	UnionNDSets(vector<Evaluator<R, M>*> _v_e) :
+	UnionNDSets(vector<Evaluator<R, DS >*> _v_e) :
 		v_e(_v_e)
 	{
 

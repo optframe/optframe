@@ -25,8 +25,8 @@
 
 #include "SystemDefineModule.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class M = OPTFRAME_DEFAULT_EMEMORY>
-class ComponentListFromPopulationModule: public OptFrameModule<R, ADS, M>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ComponentListFromPopulationModule: public OptFrameModule<R, ADS, DS>
 {
 public:
 
@@ -44,7 +44,7 @@ public:
 		return "component.list_from_population new_list_name loadpop id";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, M>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, M>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scan(input);
 		if (!scan.hasNext()) // no file
@@ -93,7 +93,7 @@ public:
 
 		listContent << " ]";
 
-		return OptFrameModule<R, ADS, M>::run_module("system.define", all_modules, allFunctions, factory, dictionary, ldictionary, listName + " " + listContent.str());
+		return OptFrameModule<R, ADS, DS>::run_module("system.define", all_modules, allFunctions, factory, dictionary, ldictionary, listName + " " + listContent.str());
 	}
 
 };

@@ -53,8 +53,8 @@ using namespace std;
  */
 
 
-template<class T, class M = OPTFRAME_DEFAULT_EMEMORY>
-class NSSeqTSPOr1Opt: public NSSeq<vector<T> , M>
+template<class T, class DS = OPTFRAME_DEFAULT_EMEMORY>
+class NSSeqTSPOr1Opt: public NSSeq<vector<T> , DS >
 {
 private:
 	typedef vector<T> Route;
@@ -69,24 +69,24 @@ public:
 	{
 	}
 
-	using NSSeq<Route, M>::move;
-	using NSSeq<Route, M>::getIterator;
+	using NSSeq<Route, DS >::move;
+	using NSSeq<Route, DS >::getIterator;
 
-	Move<Route, M>& move(const Route& rep)
+	Move<Route, DS >& move(const Route& rep)
 	{
 		if (rep.size() < 2)
-			return *new MoveTSPOr1Opt<T, M> (-1, -1);
+			return *new MoveTSPOr1Opt<T, DS > (-1, -1);
 
 		int c = rand() % rep.size();
 
 		int pos = rand() % (rep.size() + 1);
 
-		return *new MoveTSPOr1Opt<T, M> (c, pos);
+		return *new MoveTSPOr1Opt<T, DS > (c, pos);
 	}
 
-	virtual NSIterator<Route, M>& getIterator(const Route& r)
+	virtual NSIterator<Route, DS >& getIterator(const Route& r)
 	{
-		return *new IteratorNSSeqTSPOr1Opt<T, M> (r);
+		return *new IteratorNSSeqTSPOr1Opt<T, DS > (r);
 	}
 
 	virtual void print()

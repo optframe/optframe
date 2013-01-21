@@ -86,8 +86,8 @@ public:
 
 	virtual void evaluate(Evaluation<MemEtII>& e, const RepEtII&, const OPTFRAME_DEFAULT_ADS&)
 	{
-		e.setObjFunction(e.getObjFunction() + e.getEM());
-		e.getEM() = 0;
+		e.setObjFunction(e.getObjFunction() + e.getDS());
+		e.getDS() = 0;
 	}
 
 
