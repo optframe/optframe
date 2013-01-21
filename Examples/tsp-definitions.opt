@@ -1,0 +1,26 @@
+%=================================
+% OptFrame example TSP definitions
+%=================================
+
+if operator.compare( _tspdefinitions_opt == true )
+{
+   echo File tspdefinitions.opt already included!;
+   error;
+}
+
+system.silent_define _tspdefinitions_opt  true
+
+if operator.compare( _definitions_opt  != true )   { system.read ../definitions.opt }
+
+undefine bModuleExists
+module.exists problem.general bModuleExists
+
+if bModuleExists
+{
+   error module problem.general already exists!;
+} else
+{
+   module.rename problem.TSP problem.general;
+   silent_define default_file ./TSP/tsplib/berlin52.txt;
+}
+

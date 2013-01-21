@@ -40,7 +40,7 @@ public:
    string usage()
    {
       string u = id();
-      u += "module_name result_variable\n";
+      u += " module_name result_variable\n";
       return u;
    }
 
@@ -87,13 +87,14 @@ public:
 
       string variable = scanner.next();
 
-      if (!scanner.hasNext())
-      {
-         cout << "Usage: " << usage() << endl;
-         return false;
-      }
+      OptFrameModule<R, ADS, M>* m = getModule(allModules, module_name);
 
-      string result = formatBool(getModule(allModules, module_name) == NULL);
+      //if(m)
+      //   cout << "module.exists real id is: " << m->id() << endl;
+
+      string result = formatBool(m != NULL);
+
+      //cout << "module.exists result is: " << result << endl;
 
       return OptFrameModule<R, ADS, M>::defineText(variable, result, dictionary);
    }

@@ -2,7 +2,25 @@
 % OptFrame example file
 %=======================
 
-system.read definitions.opt     % load OptFrame system definitions
+if operator.compare( _definitions_opt  != true )   { system.read definitions.opt }
+
+undefine bModuleExists
+module.exists problem.general bModuleExists
+
+if operator.logic(not bModuleExists)
+{
+   undefine bModuleTSPExists;
+   module.exists problem.TSP bModuleTSPExists;
+
+   if bModuleTSPExists
+   {
+      module.rename problem.TSP problem.general;
+      silent_define default_file ./Examples/TSP/tsplib/berlin52.txt;
+   } else
+   {
+      error no problem.general or problem.TSP exist!;
+   }
+}
 
 silent_define_list lista1 [3,5,4,1,2]
 
@@ -66,7 +84,7 @@ randgen.set_seed 0
 
 %// Optimal value for berlin52 is 7542
 
-problem.TSP load ./Examples/TSP/tsplib/berlin52.txt
+problem.general load default_file
 
 system.dictionary %shows an empty dictionary
 define my_bestimprovement OptFrame:LocalSearch:BI Evaluator 0 NSSeq 0 %define 'my_bestimprovement' as 'BI ev 0 ns 0'
@@ -86,5 +104,5 @@ list_builders OptFrame:
 %display the help
 %help
 
-problem.TSP unload
+problem.general unload
 

@@ -46,7 +46,8 @@ int main(int argc, char **argv)
 {
 	OptFrame<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe;
 	optframe.loadModule(new TSPProblemModule);
-	optframe.execute("system.read example.opt");
+	optframe.execute("system.read tsp-definitions.opt");
+	optframe.execute("system.read ../example.opt");
 	cout << "Program ended successfully" << endl;
 
 	return 0;
