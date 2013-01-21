@@ -86,20 +86,34 @@ randgen.set_seed 0
 
 problem.general load default_file
 
-system.dictionary %shows an empty dictionary
+%system.dictionary %shows an empty dictionary
 define my_bestimprovement OptFrame:LocalSearch:BI Evaluator 0 NSSeq 0 %define 'my_bestimprovement' as 'BI ev 0 ns 0'
 define random Constructive 0 %define 'random' as 'OptFrame:constructive 0'
-system.dictionary %shows the updated dictionary
+%system.dictionary %shows the updated dictionary
 
-testls 5 12 8400 8400 Evaluator 0 random my_bestimprovement out.txt sStar
+
+undefine bMinimization
+component.better_than Evaluator 0 -1000 1000 bMinimization
+
+component.to_string NSSeq 0
+echo min: bMinimization
+
+if bMinimization {
+   define target_f -100000000;
+} else {
+   define target_f  100000000;
+}
+
+file.echo out.txt
+testls 5 12 target_f target_f Evaluator 0 random my_bestimprovement out.txt sStar
 
 export sStar out.sol
 
-print sStar
+%print sStar
 evaluate Evaluator 0 sStar
 
-echo listing builders
-list_builders OptFrame:
+%echo listing builders
+%list_builders OptFrame:
 
 %display the help
 %help

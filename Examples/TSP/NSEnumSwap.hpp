@@ -78,6 +78,8 @@ public:
 		return *new MoveSwap(c2, c1, tsp);
 	}
 
+
+	/*
 	Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& apply(MemTSP& mem, RepTSP& rep, OPTFRAME_DEFAULT_ADS& ads)
 	{
 		int k1, k2;
@@ -141,6 +143,68 @@ public:
 
 		return rev;
 	}
+	*/
+
+
+	bool updateDelta(MemTSP& mem, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	{
+		int k1, k2;
+
+		if (c1 < c2)
+		{
+			k1 = c1;
+			k2 = c2;
+		}
+		else
+		{
+			k1 = c2;
+			k2 = c1;
+		}
+
+		//cout << "Swap k1=" << k1 << "(" << rep[k1] << ")" << " k2=" << k2 << "(" << rep[k2] << ")" << endl;
+
+		// before k2 and k1
+		int bk1 = k1 - 1;
+		int bk2 = k2 - 1;
+		// after k2 and k1
+		int ak1 = k1 + 1;
+		int ak2 = k2 + 1;
+
+		if (k1 == 0)
+			bk1 = rep.size() - 1;
+		if (k2 == ((int)rep.size()) - 1)
+			ak2 = 0;
+
+		int f = 0;
+
+		if (k2 - k1 == 1) // special case, cities are near
+		{
+			f -= (*tsp.dist)(rep[bk1], rep[k1]);
+			f -= (*tsp.dist)(rep[k1], rep[k2]);
+			f -= (*tsp.dist)(rep[k2], rep[ak2]);
+
+			f += (*tsp.dist)(rep[bk1], rep[k2]);
+			f += (*tsp.dist)(rep[k2], rep[k1]);
+			f += (*tsp.dist)(rep[k1], rep[ak2]);
+		}
+		else
+		{
+			f -= (*tsp.dist)(rep[bk1], rep[k1]);
+			f -= (*tsp.dist)(rep[k1], rep[ak1]);
+			f -= (*tsp.dist)(rep[bk2], rep[k2]);
+			f -= (*tsp.dist)(rep[k2], rep[ak2]);
+
+			f += (*tsp.dist)(rep[bk1], rep[k2]);
+			f += (*tsp.dist)(rep[k2], rep[ak1]);
+			f += (*tsp.dist)(rep[bk2], rep[k1]);
+			f += (*tsp.dist)(rep[k1], rep[ak2]);
+		}
+
+		mem += f;
+
+		return true;
+	}
+
 
 	void print() const
 	{

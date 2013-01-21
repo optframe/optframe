@@ -77,7 +77,7 @@ public:
         hf.addComponent(eval, Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::idComponent());
 
         NSEnumSwap& ns = *new NSEnumSwap(p, hf.getRandGen());
-        hf.addComponent(ns);
+        hf.addComponent(ns, "OptFrame:NS:NSSeq");
 
 
         hf.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP>);

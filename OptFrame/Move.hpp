@@ -56,9 +56,17 @@ public:
 
 	virtual Move<R, ADS, M>& apply(R& r, ADS& ads) = 0;
 
+	// WARNING: may need to override this! do not make it 'final'!
 	virtual Move<R, ADS, M>& apply(M& m, R& r, ADS& ads)
 	{
+		updateDelta(m, r, ads);
+
 		return apply(r, ads);
+	}
+
+	virtual bool updateDelta(M& m, const R& r, const ADS& ads)
+	{
+		return false;
 	}
 
 	virtual bool operator==(const Move<R, ADS, M>& m) const = 0;
