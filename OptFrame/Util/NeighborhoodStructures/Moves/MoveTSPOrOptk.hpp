@@ -33,29 +33,34 @@ class MoveTSPOrOptk: public Move<vector<T> , ADS, DS >
 {
 	typedef vector<T> Route;
 
-private:
+protected:
 	int i; // origin
 	int j; // destination
 	int k; // number of elements
 
 public:
 
-	MoveTSPOrOptk(int _i, int _j, int _k) :
+	MoveTSPOrOptk(int _i, int _j, int _k, OPTFRAME_DEFAULT_PROBLEM* problem = NULL) :
 		i(_i), j(_j), k(_k)
 	{
+		if(problem != NULL)
+		{
+			cout << "Warning: unused problem pointer in ";
+			print();
+		}
 	}
 
 	virtual ~MoveTSPOrOptk()
 	{
 	}
 
-	bool canBeApplied(const Route& rep, const ADS&)
+	virtual bool canBeApplied(const Route& rep, const ADS&)
 	{
 		//return (i != j) && (i + k <= rep.size());
 		return (i != j);
 	}
 
-	Move<Route, ADS, DS >& apply(Route& rep, ADS&)
+	virtual Move<Route, ADS, DS >& apply(Route& rep, ADS&)
 	{
 		vector<T> v_aux;
 		v_aux.insert(v_aux.begin(), rep.begin() + i, rep.begin() + i + k);
@@ -71,7 +76,7 @@ public:
 		return (m1.i == i) && (m1.j == j) && (m1.k == k);
 	}
 
-	void print() const
+	virtual void print() const
 	{
 		cout << "MoveTSPOrOpt{K=" << k << "}";
 		cout << "(" << i << ";" << j << ")" << endl;

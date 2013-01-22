@@ -23,6 +23,8 @@
 
 #include "../../OptFrame/Util/NeighborhoodStructures/Moves/MoveTSP2Opt.hpp"
 
+#include <cmath>
+
 using namespace std;
 
 namespace TSP
@@ -30,18 +32,31 @@ namespace TSP
 
 class DeltaMoveTSP2Opt: public MoveTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP >
 {
+	typedef MoveTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP> super;
+
 private:
-	ProblemInstance& tsp;
+	ProblemInstance* tsp;
 
 public:
 
 	DeltaMoveTSP2Opt(int p1, int p2, ProblemInstance* _tsp) :
-		MoveTSP2Opt(p1, p2, _tsp), tsp(*_tsp)
+		 super(p1, p2, _tsp), tsp(_tsp)
 	{
+		if(!tsp)
+		{
+			cout << "Error: tsp problem is NULL!" << endl;
+			print();
+			exit(1);
+		}
 	}
 
 	virtual ~DeltaMoveTSP2Opt()
 	{
+	}
+
+	int myabs(int x)
+	{
+		return std::abs(x);
 	}
 
 	/*
@@ -85,16 +100,16 @@ public:
 
 		double f = 0;
 
-		if(abs(k1-k2) >= 2)
+		if(myabs(k1-k2) >= 2)
 		{
-			f -= (*tsp.dist)(rep[bk1], rep[k1]);
+			f -= (*tsp->dist)(rep[bk1], rep[k1]);
 			//cout << "-d(" << rep[bk1] << "," << rep[k1] << ") ";
-			f -= (*tsp.dist)(rep[bk2], rep[k2]);
+			f -= (*tsp->dist)(rep[bk2], rep[k2]);
 			//cout << "-d(" << rep[bk2] << "," << rep[k2] << ") ";
 
-			f += (*tsp.dist)(rep[bk1], rep[bk2]);
+			f += (*tsp->dist)(rep[bk1], rep[bk2]);
 			//cout << "+d(" << rep[bk1] << "," << rep[bk2] << ") ";
-			f += (*tsp.dist)(rep[k1], rep[k2]);
+			f += (*tsp->dist)(rep[k1], rep[k2]);
 			//cout << "+d(" << rep[k1] << "," << rep[k2] << ") ";
 		}
 		//cout << endl;

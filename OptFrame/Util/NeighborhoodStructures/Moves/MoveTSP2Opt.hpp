@@ -41,6 +41,11 @@ public:
 	MoveTSP2Opt(int _p1, int _p2, OPTFRAME_DEFAULT_PROBLEM* problem = NULL) :
 		p1(_p1), p2(_p2)
 	{
+		if(problem != NULL)
+		{
+			cout << "Warning: unused problem pointer in ";
+			print();
+		}
 	}
 
 	virtual ~MoveTSP2Opt()

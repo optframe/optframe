@@ -20,6 +20,8 @@
 
 #include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSPOrOpt.hpp"
 #include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSPOrOptk.hpp"
+#include "DeltaMoveTSPOrOptk.hpp"
+
 #include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSPSwap.hpp"
 
 using namespace scannerpp;
@@ -89,6 +91,7 @@ public:
 
         hf.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP>, "OptFrame:NS:NSSeq"); // no optimization
 
+        hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP, DeltaMoveTSPOrOptk, ProblemInstance>(1, p), "OptFrame:NS:NSSeq");
         hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(1), "OptFrame:NS:NSSeq");
         hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(2), "OptFrame:NS:NSSeq");
         hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(3), "OptFrame:NS:NSSeq");

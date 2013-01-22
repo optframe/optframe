@@ -293,6 +293,7 @@ public:
 
 						message(moveFrom, iter, "testing reverse.");
 						Move<R, ADS, DS>& rev = move.apply(s);
+						Solution<R, ADS>& sNeighbor = s.clone();
 						Evaluation<DS>& e_rev = evaluators.at(ev)->evaluate(s);
 						Move<R, ADS, DS>& ini = rev.apply(s);
 						Evaluation<DS>& e_ini = evaluators.at(ev)->evaluate(s);
@@ -373,6 +374,8 @@ public:
 								printf("cost() = %.4f\n", cValue);
 								printf("e = %.4f\n", e.evaluation());
 								printf("e_rev = %.4f\n", e_rev.evaluation());
+								s.print();
+								sNeighbor.print();
 								cout << "move: ";
 								move.print();
 								return false;
