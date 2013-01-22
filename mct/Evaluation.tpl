@@ -3,9 +3,9 @@
 
 #include "../../OptFrame/Evaluation.hpp"
 
-#include "Memory.h"
+#include "DeltaStructure.h"
 
-typedef Evaluation<$memproject > Evaluation$project;
+typedef Evaluation<$deltaproject > Evaluation$project;
 
 #endif /*$project_EVALUATION_H_*/
 

@@ -9,7 +9,7 @@
 #include "../../OptFrame/Evaluator.hpp"
 
 #include "Representation.h"
-#include "Memory.h"
+#include "DeltaStructure.h"
 #include "Solution.h"
 #include "Evaluation.h"
 
@@ -20,7 +20,7 @@
 namespace $project
 {
 
-class $projectEvaluator: public Evaluator<Rep$project $commamproject>
+class $projectEvaluator: public Evaluator<Rep$project, OPTFRAME_DEFAULT_ADS $commadproject>
 {
 private:
 	ProblemInstance& p$project;
@@ -38,13 +38,13 @@ public:
 	{
 	}
 
-	Evaluation$project& evaluate(const Rep$project& rep)
+	Evaluation$project& evaluate(const Rep$project& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		// 'rep' is the representation of the solution
 
 		double fo = 0; // Evaluation Function Value
 
-		return * new Evaluation$project(fo $initializememory);
+		return * new Evaluation$project(fo $initializedelta);
 	}
 
 	virtual bool betterThan(double a, double b)

@@ -7,7 +7,7 @@
 #include "../../OptFrame/Scanner++/Scanner.h"
 
 #include "Representation.h"
-#include "Memory.h"
+#include "DeltaStructure.h"
 #include "Solution.h"
 #include "Evaluation.h"
 
@@ -18,7 +18,7 @@ using namespace scannerpp;
 namespace $project
 {
 
-class $projectProblemModule : public ProblemModule<Rep$project , OPTFRAME_DEFAULT_ADS $commamproject>
+class $projectProblemModule : public ProblemModule<Rep$project , OPTFRAME_DEFAULT_ADS $commadproject>
 {
 public:
 
@@ -37,12 +37,12 @@ public:
     
     string id()
     {
-    	string parentId = ProblemModule<Rep$project , OPTFRAME_DEFAULT_ADS $commamproject>::id();
+    	string parentId = ProblemModule<Rep$project , OPTFRAME_DEFAULT_ADS $commadproject>::id();
     	parentId.append("$project"); // implements 'problem.project_name' module
     	return parentId;
     }
 
-	bool load(string filename, HeuristicFactory<Rep$project , OPTFRAME_DEFAULT_ADS $commamproject>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	bool load(string filename, HeuristicFactory<Rep$project , OPTFRAME_DEFAULT_ADS $commadproject>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 	    File* file;
 
@@ -71,7 +71,7 @@ public:
         return true;
     }
     
-    bool unload(HeuristicFactory<Rep$project , OPTFRAME_DEFAULT_ADS $commamproject>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+    bool unload(HeuristicFactory<Rep$project , OPTFRAME_DEFAULT_ADS $commadproject>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
     {
        if(p)
           delete p;

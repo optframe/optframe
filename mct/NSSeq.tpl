@@ -6,17 +6,17 @@
 
 // Own includes
 #include "ProblemInstance.hpp"
-#include "Memory.h"
+#include "DeltaStructure.h"
 #include "Solution.h"
 
 using namespace std;
 
-class Move$neighborhood: public Move< Rep$project $commamproject >
+class Move$neighborhood: public Move< Rep$project , OPTFRAME_DEFAULT_ADS $commadproject >
 {
 public:
 
-	using Move< Rep$project $commamproject >::apply; // prevents name hiding
-	using Move< Rep$project $commamproject >::canBeApplied; // prevents name hiding
+	using Move< Rep$project , OPTFRAME_DEFAULT_ADS $commadproject >::apply; // prevents name hiding
+	using Move< Rep$project , OPTFRAME_DEFAULT_ADS $commadproject >::canBeApplied; // prevents name hiding
 
 	Move$neighborhood()
 	{
@@ -26,12 +26,12 @@ public:
 	{
 	}
 
-	bool canBeApplied(const Rep$project& rep)
+	bool canBeApplied(const Rep$project& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		return true;
 	}
 
-	Move< Rep$project $commamproject >& apply(Rep$project& rep)
+	Move< Rep$project , OPTFRAME_DEFAULT_ADS $commadproject >& apply(Rep$project& rep, OPTFRAME_DEFAULT_ADS&)
 	{
 		// apply this move to 'rep'
 		// rep. (...) = (...)
@@ -39,7 +39,7 @@ public:
 		return * new Move$neighborhood; 
 	}
 
-	virtual bool operator==(const Move< Rep$project $commamproject >& _m) const
+	virtual bool operator==(const Move< Rep$project , OPTFRAME_DEFAULT_ADS $commadproject >& _m) const
 	{
 		const Move$neighborhood& m = (const Move$neighborhood&) _m;
 		return false;
@@ -50,7 +50,7 @@ public:
 	}
 };
 
-class NSIterator$neighborhood: public NSIterator< Rep$project $commamproject >
+class NSIterator$neighborhood: public NSIterator< Rep$project , OPTFRAME_DEFAULT_ADS $commadproject >
 {
 public:
 	NSIterator$neighborhood()
@@ -64,14 +64,14 @@ public:
 	virtual void first(){};
 	virtual void next(){};
 	virtual bool isDone(){};
-	virtual Move< Rep$project $commamproject >& current(){};
+	virtual Move< Rep$project , OPTFRAME_DEFAULT_ADS $commadproject >& current(){};
 };
 
-class NSSeq$neighborhood: public NSSeq< Rep$project $commamproject >
+class NSSeq$neighborhood: public NSSeq< Rep$project , OPTFRAME_DEFAULT_ADS $commadproject >
 {
 public:
 
-	using NSSeq< Rep$project $commamproject >::move; // prevents name hiding
+	using NSSeq< Rep$project , OPTFRAME_DEFAULT_ADS $commadproject >::move; // prevents name hiding
 
 	NSSeq$neighborhood()
 	{
@@ -81,12 +81,12 @@ public:
 	{
 	}
 
-	virtual Move<Rep$project $commamproject>& move(const Rep$project& rep)
+	virtual Move<Rep$project , OPTFRAME_DEFAULT_ADS $commadproject>& move(const Rep$project& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		return * new Move$neighborhood; // return a random move
 	}
 
-	virtual NSIterator<Rep$project $commamproject>& getIterator(const Rep$project& rep)
+	virtual NSIterator<Rep$project , OPTFRAME_DEFAULT_ADS $commadproject>& getIterator(const Rep$project& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		return * new NSIterator$neighborhood; // return an iterator to the neighbors of 'rep' 
 	}

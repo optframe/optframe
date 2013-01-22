@@ -16,7 +16,7 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-    $mem* x;
+    $delta* x;
     x=x;
     return 0;
 }

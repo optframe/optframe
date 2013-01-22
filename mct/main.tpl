@@ -16,7 +16,7 @@ using namespace $project;
 
 int main(int argc, char **argv)
 {
-   OptFrame<Rep$project $commamproject> optframe;
+   OptFrame<Rep$project, OPTFRAME_DEFAULT_ADS $commadproject> optframe;
    //optframe.loadCallModule();
 
    optframe.loadModule(new $projectProblemModule);
