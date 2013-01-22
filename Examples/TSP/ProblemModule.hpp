@@ -16,6 +16,8 @@
 #include "Evaluator.hpp"
 
 #include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSP2Opt.hpp"
+#include "DeltaMoveTSP2Opt.hpp"
+
 #include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSPOrOpt.hpp"
 #include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSPOrOptk.hpp"
 #include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSPSwap.hpp"
@@ -80,11 +82,17 @@ public:
         hf.addComponent(ns, "OptFrame:NS:NSSeq");
 
 
-        hf.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP>);
-        hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(1));
-        hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(2));
-        hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(3));
-        //hf.addComponent(*new NSSeqTSPOrOpt<int, OPTFRAME_DEFAULT_ADS, MemTSP>);
+        int nId2Opt = hf.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP, DeltaMoveTSP2Opt, ProblemInstance>(p), "OptFrame:NS:NSSeq");
+        stringstream id2opt;
+        id2opt << "OptFrame:NS:NSSeq " << nId2Opt;
+        OptFrameModule<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::defineText("nsseq_2opt", id2opt.str(), dictionary);
+
+        hf.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP>, "OptFrame:NS:NSSeq"); // no optimization
+
+        hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(1), "OptFrame:NS:NSSeq");
+        hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(2), "OptFrame:NS:NSSeq");
+        hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(3), "OptFrame:NS:NSSeq");
+        //hf.addComponent(*new NSSeqTSPOrOpt<int, OPTFRAME_DEFAULT_ADS, MemTSP>, "OptFrame:NS:NSSeq");
         hf.addComponent(*new NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS, MemTSP>, "OptFrame:NS:NSSeq");
 
 		

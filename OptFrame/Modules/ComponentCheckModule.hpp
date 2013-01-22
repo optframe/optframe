@@ -37,302 +37,333 @@ public:
 	{
 		return "component.check";
 	}
+
 	string usage()
 	{
-		return "component.check [initsol id | loadsol id] evaluator ns_seq_list";
+		return "component.check OptFrame:Constructive[] OptFrame:Evaluator[] OptFrame:NS[] OptFrame:NS:NSSeq[] OptFrame:NS:NSSeq:NSEnum[] iterMax";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >&, string input)
+	void message(string component, int iter, string text)
+	{
+		cout << "module " << id() << " iter: " << iter << " testing component '" << component << "' => " << text << endl;
+	}
+
+	void error(string text)
+	{
+		cout << "module " << id() << " error: " << text << endl;
+	}
+
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		cout << "check: " << input << endl;
 		Scanner scanner(input);
+
+
+		// -------------------
+		//    Constructive
+		// -------------------
 
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
-
-		string sol = scanner.next();
-
-		if ((sol != "initsol") && (sol != "loadsol"))
+		vector<string>  lConstructive;
+		vector<string>* p_lConstructive = OptFrameList::readList(ldictionary, scanner);
+		if(p_lConstructive)
 		{
-			cout << "First parameter must be either 'initsol' or 'loadsol'!" << endl;
+			lConstructive = vector<string>(*p_lConstructive);
+			delete p_lConstructive;
+		}
+		else
+		{
+			cout << "module " << id() << " error: couldn't read list of OptFrame:Constructive!" << endl;
+			return false;
+		}
+
+
+		// -------------------
+		//     Evaluator
+		// -------------------
+
+		if (!scanner.hasNext())
+		{
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
-
-		string id = scanner.next();
-
-		Solution<R, ADS>* s = NULL;
-
-		if (sol == "loadsol")
+		vector<string>  lEvaluator;
+		vector<string>* p_lEvaluator = OptFrameList::readList(ldictionary, scanner);
+		if(p_lEvaluator)
 		{
-			Scanner s2(sol + " " + id);
-			Solution<R, ADS>* tmp_s = NULL;
-			factory.readComponent(tmp_s, s2);
-			s = &tmp_s->clone();
+			lEvaluator = vector<string>(*p_lEvaluator);
+			delete p_lEvaluator;
 		}
-
-		if (sol == "initsol")
+		else
 		{
-			Scanner s2(sol + " " + id);
-			cout << "Step 1: Testing solution generator... ";
-			Constructive<R, ADS>* initsol = NULL;
-			factory.readComponent(initsol, s2);
-
-			s = &initsol->generateSolution();
-			if (!s)
-			{
-				cout << "NULL Solution. [Failed]" << endl;
-				return false;
-			}
-			cout << "[Ok]" << endl;
-		}
-
-		Evaluator<R, ADS, DS>* eval = factory.read_ev(scanner);
-		//vector<NS<R, ADS, DS>*> ns_list = factory.read_ns_list(scanner);
-		vector<NS<R, ADS, DS>*> ns_list;
-		cerr << "TODO: FIX CHECK MODULE IMPLEMENTATION!" << endl;
-		return false;
-
-		vector<NSSeq<R, ADS, DS>*> ns_seq_list;
-		for (unsigned int i = 0; i < ns_list.size(); i++)
-			ns_seq_list.push_back((NSSeq<R, ADS, DS>*) ns_list[i]);
-
-		cout << endl;
-
-		// ==========================================================
-		// ==========================================================
-
-		cout << "Step 2: Testing Solution methods" << endl;
-
-		cout << "2.1 - Representation [Ok]" << endl;
-
-		Solution<R, ADS>* s2 = &s->clone();
-		if (&s2->getR() == &s->getR())
-		{
-			cout << "Error! Solution has the SAME representation object. Maybe a pointer-based representation?" << endl;
+			cout << "module " << id() << " error: couldn't read list of OptFrame:Evaluator!" << endl;
 			return false;
 		}
-		cout << "2.2 - Representation Copy [Ok]" << endl;
 
-		delete s2;
 
-		int numTests = 5;
-		double totalCopyTime = 0;
-		Timer* timer = new Timer(false);
+		// -------------------
+		//        NS
+		// -------------------
 
-		while (totalCopyTime < 1.0)
+		if (!scanner.hasNext())
 		{
-			numTests *= 2;
-			for (int i = 0; i < numTests; i++)
-			{
-				s2 = &s->clone();
-				delete s2;
-			}
-
-			totalCopyTime = timer->now();
-			delete timer;
-			timer = new Timer(false);
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+		vector<string>  lNS;
+		vector<string>* p_lNS = OptFrameList::readList(ldictionary, scanner);
+		if(p_lNS)
+		{
+			lNS = vector<string>(*p_lNS);
+			delete p_lNS;
+		}
+		else
+		{
+			cout << "module " << id() << " error: couldn't read list of OptFrame:NS!" << endl;
+			return false;
 		}
 
-		delete timer;
 
-		double tPerCopy = totalCopyTime / numTests;
+		// -------------------
+		//     NSSeq
+		// -------------------
 
-		cout << "2.3 - Results" << endl;
-		cout << "Number of tests: " << numTests << endl;
-		cout << "Total test time: " << totalCopyTime << " seconds" << endl;
-		cout << "Time per copy: " << tPerCopy << " seconds" << endl;
-		cout << "Printing solution: " << endl;
-		s->print();
-		cout << "clone() and print() methods [Ok]" << endl;
-
-		cout << endl;
-
-		// ==========================================================
-		// ==========================================================
-
-		cout << "Step 3: Testing evaluation methods" << endl;
-
-		cout << "3.1 - Evaluate ";
-		Evaluation<DS>* e = &eval->evaluate(*s);
-		cout << "[Ok]" << endl;
-
-		cout << "3.2 - Evaluation Value = " << e->evaluation() << " ";
-		cout << "[Ok]" << endl;
-
-		cout << "3.3 - Evaluation print()" << endl;
-		e->print();
-		cout << "[Ok]" << endl;
-
-		cout << "3.4 - Re-evaluation" << endl;
-		eval->evaluate(*e, *s);
-		e->print();
-		delete e;
-		cout << "[Ok]" << endl;
-
-		numTests = 5;
-		double totalEvalTime = 0;
-		timer = new Timer(false);
-
-		while (totalEvalTime < 1.0)
+		if (!scanner.hasNext())
 		{
-			numTests *= 2;
-			for (int i = 0; i < numTests; i++)
-			{
-				e = &eval->evaluate(*s);
-				delete e;
-			}
-
-			totalEvalTime = timer->now();
-			delete timer;
-			timer = new Timer(false);
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+		vector<string>  lNSSeq;
+		vector<string>* p_lNSSeq = OptFrameList::readList(ldictionary, scanner);
+		if(p_lNSSeq)
+		{
+			lNSSeq = vector<string>(*p_lNSSeq);
+			delete p_lNSSeq;
+		}
+		else
+		{
+			cout << "module " << id() << " error: couldn't read list of OptFrame:NS:NSSeq!" << endl;
+			return false;
 		}
 
-		double tPerEval = totalEvalTime / numTests;
 
-		cout << "3.5 - Evaluation Results" << endl;
-		cout << "Number of tests: " << numTests << endl;
-		cout << "Total test time: " << totalEvalTime << " seconds" << endl;
-		cout << "Time per evaluation: " << tPerEval << " seconds" << endl;
+		// -------------------
+		//     NSEnum
+		// -------------------
 
-		cout << endl;
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+		vector<string>  lNSEnum;
+		vector<string>* p_lNSEnum = OptFrameList::readList(ldictionary, scanner);
+		if(p_lNSEnum)
+		{
+			lNSEnum = vector<string>(*p_lNSEnum);
+			delete p_lNSEnum;
+		}
+		else
+		{
+			cout << "module " << id() << " error: couldn't read list of OptFrame:NS:NSSeq:NSEnum!" << endl;
+			return false;
+		}
 
-		// ==========================================================
-		// ==========================================================
 
-		cout << "Step 4: Testing neighborhoods (" << ns_seq_list.size() << ")" << endl;
+		// -------------------
+		//     iterMax
+		// -------------------
 
-		/*
-		 cout << "4.1 - Number of neighbors " << endl;
-		 for (int i = 0; i < ns_seq_list.size(); i++)
-		 {
-		 cout << "neighborhood " << i << ": ";
-		 ns_seq_list[i]->print();
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+		int iterMax = scanner.nextInt();
 
-		 double s_total = 0;
-		 double s_applied = 0;
 
-		 ns_seq_list[i]->init(s);
+		// ======================================
+		//           BEGIN TESTS
+		// ======================================
 
-		 while (ns_seq_list[i]->hasNext(s))
-		 {
-		 Move<R, ADS, DS>* m = ns_seq_list[i]->next(s);
-		 s_total++;
+		// ----------------
+		// read evaluators
+		// ----------------
 
-		 if (m->canBeApplied(s)) // Sum of useful moves
-		 s_applied++;
+		vector<Evaluator<R, ADS, DS>* > evaluators;
+		for(unsigned ev=0; ev<lEvaluator.size(); ev++)
+		{
+			Scanner scan(lEvaluator.at(ev));
+			Evaluator<R, ADS, DS>* evaluator;
+			factory.assign(evaluator, scan.nextInt(), scan.next()); // reversed!
 
-		 if (m->canBeApplied(s)) // First -> checking moves and reverse moves
-		 {
-		 Evaluation<DS>* e2 = eval->evaluate(s);
+			if(!evaluator)
+			{
+				cout << "module " << id() << " error: NULL evaluator!" << endl;
+				return false;
+			}
 
-		 Move<R, ADS, DS>* rev = m->apply(s);
-		 if (!rev)
-		 {
-		 cout << "Problem! Reverse move is NULL!" << endl;
-		 cout << "Move: ";
-		 m->print();
-		 return;
-		 }
-		 Move<R, ADS, DS>* new_m = rev->apply(s);
-		 delete new_m;
+			evaluators.push_back(evaluator);
+		}
 
-		 Evaluation<DS>* e3 = eval->evaluate(s);
+		// ----------------------------------------------------------------------------------------
+		// generate 'iterMax' OptFrame:Solution for each OptFrame:Constructive and store evaluation
+		// ----------------------------------------------------------------------------------------
 
-		 if (e2->evaluation() != e3->evaluation())
-		 {
-		 cout << "Problem with reverse move." << endl;
-		 cout << "Move: ";
-		 m->print();
-		 cout << "Reverse: ";
-		 rev->print();
-		 cout << "First evaluation: " << e2->evaluation() << endl;
-		 cout << "Second evaluation: " << e3->evaluation() << endl;
+		vector<Solution<R, ADS>* > solutions;
+		vector<vector<Evaluation<DS>*> > evaluations(evaluators.size());
 
-		 delete e2;
-		 delete e3;
-		 delete rev;
-		 delete m;
-		 return;
-		 }
-		 }
+		cout << "module " << id() << " will test constructive components (iterMax=" << iterMax << ")" << endl;
+		for(unsigned c=0; c<lConstructive.size(); c++)
+		{
+			Scanner scan(lConstructive.at(c));
+			Constructive<R, ADS>* constructive;
+			factory.assign(constructive, scan.nextInt(), scan.next()); // reversed!
 
-		 if (m->canBeApplied(s)) // Second -> checking evaluation and reevaluation
-		 {
-		 Evaluation<DS>* e1 = eval->evaluate(s);
-		 double f1 = e1->evaluation();
+			if(!constructive)
+			{
+				cout << "module " << id() << " error: NULL constructive!" << endl;
+				return false;
+			}
 
-		 Move<R, ADS, DS>* rev = m->apply(e1, s);
-		 if (!rev)
-		 {
-		 cout << "Problem! Reverse move is NULL!" << endl;
-		 cout << "Move: ";
-		 m->print();
-		 return;
-		 }
-		 Move<R, ADS, DS>* new_m = rev->apply(e1, s);
-		 delete new_m;
+			for(int iter=1; iter<=iterMax; iter++)
+			{
+				message(lConstructive.at(c), iter, "generating solution.");
 
-		 Evaluation<DS>* e2 = eval->evaluate(s);
+				Solution<R, ADS>& s = constructive->generateSolution();
 
-		 if (e1->evaluation() != e2->evaluation())
-		 {
-		 cout << "Problem with evaluation and reevaluation." << endl;
-		 cout << "Move: ";
-		 m->print();
-		 cout << "Reverse: ";
-		 rev->print();
-		 cout << "Reevaluation value: " << e1->evaluation() << endl;
-		 cout << "Evaluation value: " << e2->evaluation() << endl;
+				solutions.push_back(&s);
 
-		 delete e1;
-		 delete e2;
-		 delete rev;
-		 delete m;
-		 return;
-		 }
-		 }
+				for(unsigned ev=0; ev<evaluators.size(); ev++)
+				{
+					message(lEvaluator.at(ev), iter, "evaluating solution.");
+					Evaluation<DS>& e = evaluators.at(ev)->evaluate(s);
 
-		 delete m;
-		 }
+					evaluations.at(ev).push_back(&e);
+				}
+			}
 
-		 cout << "Number of moves: " << s_total << endl;
-		 cout << "Number of useful moves (can be applied): " << s_applied << endl;
-		 cout << "Percentage of useful moves: " << (s_applied / s_total) * 100 << "%" << endl;
-		 if (s_applied < 0.01 * s_total)
-		 cout << "Warning: useful moves less than 1% of total moves." << endl;
-		 }
+			cout << endl << endl;
+		}
 
-		 cout << "4.2 - Best Improvement " << endl;
-		 for (int i = 0; i < ns_seq_list.size(); i++)
-		 {
-		 cout << "neighborhood " << i << ": ";
-		 s2 = s->clone();
-		 Solution<R, ADS>* s3 = ns_seq_list[i]->bestImprovement(eval, s2);
-		 s3->print();
-		 delete s2;
-		 delete s3;
-		 }
-		 cout << "[Ok]" << endl;
+		cout << endl << endl;
 
-		 cout << "4.3 - First Improvement " << endl;
-		 for (int i = 0; i < ns_seq_list.size(); i++)
-		 {
-		 cout << "neighborhood " << i << ": ";
-		 s2 = s->clone();
-		 Solution<R, ADS>* s3 = ns_seq_list[i]->firstImprovement(eval, s2);
-		 s3->print();
-		 delete s2;
-		 delete s3;
-		 }
-		 cout << "[Ok]" << endl;
-		 */
+		cout << "module " << id() << " will test NS components (iterMax=" << iterMax << "; numSolutions=" << solutions.size() << ")" << endl;
+		for(unsigned id_ns=0; id_ns<lNS.size(); id_ns++)
+		{
+			Scanner scan(lNS.at(id_ns));
+			NS<R, ADS, DS>* ns;
+			factory.assign(ns, scan.nextInt(), scan.next()); // reversed!
 
-		// ==========================================================
-		// ==========================================================
+			if(!ns)
+			{
+				cout << "module " << id() << " error: NULL OptFrame:NS!" << endl;
+				return false;
+			}
+
+			for(int iter=1; iter<=iterMax; iter++)
+			{
+				message(lNS.at(id_ns), iter, "starting tests!");
+
+				for(unsigned id_s=0; id_s < solutions.size(); id_s++)
+				{
+					cout << endl;
+					message(lNS.at(id_ns), iter, "generating random move.");
+
+					Solution<R, ADS>& s = *solutions.at(id_s);
+
+					Move<R, ADS, DS>& move = ns->move(s);
+
+					for(unsigned ev=0; ev<evaluators.size(); ev++)
+					{
+						message(lEvaluator.at(ev), iter, "evaluating random move (apply, revert and moveCost).");
+
+						message("Move", iter, "testing reverse.");
+						Move<R, ADS, DS>& rev = move.apply(s);
+						Evaluation<DS>& e_rev = evaluators.at(ev)->evaluate(s);
+						Move<R, ADS, DS>& ini = rev.apply(s);
+						Evaluation<DS>& e_ini = evaluators.at(ev)->evaluate(s);
+
+						if(ini != move)
+						{
+							error("reverse of reverse is not the original move!");
+							cout << "move: ";
+							move.print();
+							cout << "rev: ";
+							rev.print();
+							cout << "ini (reverse of rev): ";
+							ini.print();
+
+							return false;
+						}
+
+						message(lEvaluator.at(ev), iter, "testing reverse value.");
+						Evaluation<DS>& e = *evaluations.at(ev).at(id_s);
+
+						if(abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
+						{
+							error("reverse of reverse has a different evaluation value!");
+							cout << "move: ";
+							move.print();
+							cout << "original: ";
+							e.print();
+							cout << "reverse of reverse:";
+							e_ini.print();
+
+							return false;
+						}
+
+						message(lEvaluator.at(ev), iter, "testing move cost.");
+
+						double revCost = e_rev.evaluation() - e.evaluation();
+
+						double simpleCost = evaluators[ev]->moveCost(move, s);
+
+						double fasterCost = evaluators[ev]->moveCost(e, move, s);
+
+						pair<double, double>* cost = move.cost(e.getDS(), s.getR(), s.getADS());
+
+						if(abs(revCost - simpleCost) > 0.0001)
+						{
+							error("difference between revCost and simpleCost");
+							printf("revCost = %.4f\n", revCost);
+							printf("simpleCost = %.4f\n", simpleCost);
+							return false;
+						}
+
+						if(abs(revCost - fasterCost) > 0.0001)
+						{
+							error("difference between revCost and fasterCost");
+							printf("revCost = %.4f\n", revCost);
+							printf("fasterCost = %.4f\n",  fasterCost);
+							return false;
+						}
+
+						if(cost)
+						{
+							double cValue = cost->first+cost->second;
+							if(abs(revCost - cValue) > 0.0001)
+							{
+								error("difference between revCost and cost()");
+								printf("revCost = %.4f\n", revCost);
+								printf("cost() = %.4f\n", cValue);
+								return false;
+							}
+						}
+
+						message(lEvaluator.at(ev), iter, "all move costs okay!");
+					}
+				}
+			}
+
+			cout << endl << endl;
+		}
+
+
 
 		cout << "Tests finished successfully!" << endl;
 		return true;
