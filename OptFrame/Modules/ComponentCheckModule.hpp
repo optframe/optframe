@@ -278,11 +278,20 @@ public:
 
 					Move<R, ADS, DS>& move = ns->move(s);
 
+					if(!move.canBeApplied(s))
+						continue;
+
 					for(unsigned ev=0; ev<evaluators.size(); ev++)
 					{
 						message(lEvaluator.at(ev), iter, "evaluating random move (apply, revert and moveCost).");
 
-						message("Move", iter, "testing reverse.");
+						string moveFrom = "Move ";
+						moveFrom.append(move.id());
+						moveFrom.append(" from: ");
+						moveFrom.append(ns->id());
+						move.print();
+
+						message(moveFrom, iter, "testing reverse.");
 						Move<R, ADS, DS>& rev = move.apply(s);
 						Evaluation<DS>& e_rev = evaluators.at(ev)->evaluate(s);
 						Move<R, ADS, DS>& ini = rev.apply(s);
@@ -323,7 +332,16 @@ public:
 
 						double simpleCost = evaluators[ev]->moveCost(move, s);
 
-						double fasterCost = evaluators[ev]->moveCost(e, move, s);
+						// fasterCost
+						Move<R, ADS, DS>& rev1 = evaluators[ev]->applyMove(e, move, s);
+						double e_end1 = e.evaluation();
+						Move<R, ADS, DS>& ini1 = evaluators[ev]->applyMove(e, rev1, s);
+						double e_ini1 = e.evaluation();
+
+						delete& rev1;
+						delete& ini1;
+
+						double fasterCost = e_end1 - e_ini1;
 
 						pair<double, double>* cost = move.cost(e.getDS(), s.getR(), s.getADS());
 
@@ -340,6 +358,8 @@ public:
 							error("difference between revCost and fasterCost");
 							printf("revCost = %.4f\n", revCost);
 							printf("fasterCost = %.4f\n",  fasterCost);
+							printf("e = %.4f\n", e.evaluation());
+							printf("e_rev = %.4f\n", e_rev.evaluation());
 							return false;
 						}
 
@@ -351,6 +371,10 @@ public:
 								error("difference between revCost and cost()");
 								printf("revCost = %.4f\n", revCost);
 								printf("cost() = %.4f\n", cValue);
+								printf("e = %.4f\n", e.evaluation());
+								printf("e_rev = %.4f\n", e_rev.evaluation());
+								cout << "move: ";
+								move.print();
 								return false;
 							}
 						}

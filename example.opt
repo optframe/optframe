@@ -12,7 +12,7 @@ if operator.logic(not bModuleExists)
    undefine bModuleTSPExists;
    module.exists problem.TSP bModuleTSPExists;
 
-   if bModuleTSPExists
+   if bModuleTSPExists 
    {
       module.rename problem.TSP problem.general;
       silent_define default_file ./Examples/TSP/tsplib/berlin52.txt;
@@ -86,8 +86,18 @@ randgen.set_seed 0
 
 problem.general load default_file
 
+component.list Constructive lconstructive
+component.list Evaluator levaluator
+component.list OptFrame:NS lns
+component.list NSSeq lnsseq
+component.list NSEnum lnsenum
+
+check lconstructive levaluator lns lnsseq lnsenum 20
+
+exit
+
 %system.dictionary %shows an empty dictionary
-define my_bestimprovement OptFrame:LocalSearch:BI Evaluator 0 NSSeq 0 %define 'my_bestimprovement' as 'BI ev 0 ns 0'
+define my_bestimprovement OptFrame:LocalSearch:BI Evaluator 0 NSSeq 1 %define 'my_bestimprovement' as 'BI ev 0 ns 0'
 define random Constructive 0 %define 'random' as 'OptFrame:constructive 0'
 %system.dictionary %shows the updated dictionary
 
@@ -95,12 +105,13 @@ define random Constructive 0 %define 'random' as 'OptFrame:constructive 0'
 undefine bMinimization
 component.better_than Evaluator 0 -1000 1000 bMinimization
 
-component.to_string NSSeq 0
+component.to_string NSSeq 1
 echo min: bMinimization
 
 if bMinimization {
    define target_f -100000000;
-} else {
+} else
+{
    define target_f  100000000;
 }
 

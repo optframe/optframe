@@ -112,13 +112,14 @@ public:
 			return *new MOVE(-1, -1, p);
 
 		int p1 = rand() % (rep.size() + 1);
-
-		int p2;
+		int p2 = rand() % (rep.size() + 1);
 
 		do
 		{
+			p1 = rand() % (rep.size() + 1);
 			p2 = rand() % (rep.size() + 1);
-		} while (abs(p1 - p2) < 2);
+		}
+		while((abs(p1 - p2) < 2) || (p1 < p2));
 
 		// create 2-opt(p1,p2) move
 		return *new MOVE(p1, p2, p);

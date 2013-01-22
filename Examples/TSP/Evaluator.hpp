@@ -73,18 +73,28 @@ public:
 		double val = (*pI->dist)(k, l);
 		fo += val;
 
-		double mem = 0;
+		MemTSP mem(false, 0);
 
 		return *new Evaluation<MemTSP> (fo, mem);
 	}
 
-/*
-	void evaluate(Evaluation<MemTSP>& e, const RepTSP& r, const OPTFRAME_DEFAULT_ADS&)
+
+	void evaluate(Evaluation<MemTSP>& e, const RepTSP& r, const OPTFRAME_DEFAULT_ADS& ads)
 	{
-		e.setObjFunction(e.getObjFunction() + e.getDS());
-		e.setDS(0);
+		if(!e.getDS().first) // use slower
+		{
+			Evaluation<MemTSP>& e1 = evaluate(r, ads);
+			e.setDS(e1.getDS());
+			e.setObjFunction(e1.getObjFunction());
+			e.setInfMeasure(e1.getInfMeasure());
+			delete &e1;
+			return;
+		}
+
+		e.setObjFunction(e.getObjFunction() + e.getDS().second);
+		e.setDS(make_pair(false, 0));
 	}
-*/
+
 
 	virtual bool betterThan(double a, double b)
 	{

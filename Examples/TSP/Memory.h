@@ -32,7 +32,7 @@
 using namespace std;
 
 // Solution Memory
-typedef double  MemTSP;
+typedef pair<bool, double> MemTSP;
 
 #endif /*TSP_MEMORY_H_*/
 

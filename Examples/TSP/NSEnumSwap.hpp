@@ -106,7 +106,7 @@ public:
 		if (k2 == ((int)rep.size()) - 1)
 			ak2 = 0;
 
-		int f = 0;
+		double f = 0;
 
 		if (k2 - k1 == 1) // special case, cities are near
 		{
@@ -138,7 +138,8 @@ public:
 			f += (*tsp.dist)(rep[k2], rep[ak2]);
 		}
 
-		mem += f;
+		mem.first = true;
+		mem.second += f;
 
 		return rev;
 	}
@@ -169,13 +170,13 @@ public:
 		int ak2 = k2 + 1;
 
 		if (k1 == 0)
-			bk1 = rep.size() - 1;
+			bk1 = ((int)rep.size()) - 1;
 		if (k2 == ((int)rep.size()) - 1)
 			ak2 = 0;
 
 		double f = 0;
 
-		if (k2 - k1 == 1) // special case, cities are near
+		if(k2 - k1 == 1) // special case, cities are near
 		{
 			f -= (*tsp.dist)(rep[bk1], rep[k1]);
 			f -= (*tsp.dist)(rep[k1], rep[k2]);
@@ -184,6 +185,16 @@ public:
 			f += (*tsp.dist)(rep[bk1], rep[k2]);
 			f += (*tsp.dist)(rep[k2], rep[k1]);
 			f += (*tsp.dist)(rep[k1], rep[ak2]);
+		}
+		else if((k1 == 0) && (k2 == ((int)rep.size()) - 1)) // special case, extreme points
+		{
+			f -= (*tsp.dist)(rep[bk2], rep[k2]);
+			f -= (*tsp.dist)(rep[k2], rep[k1]);
+			f -= (*tsp.dist)(rep[k1], rep[ak1]);
+
+			f += (*tsp.dist)(rep[bk2], rep[k1]);
+			f += (*tsp.dist)(rep[k1], rep[k2]);
+			f += (*tsp.dist)(rep[k2], rep[ak1]);
 		}
 		else
 		{

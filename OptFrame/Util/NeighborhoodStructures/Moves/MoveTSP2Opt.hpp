@@ -60,7 +60,8 @@ public:
 	virtual bool canBeApplied(const Route& rep, const ADS&)
 	{
 		bool all_positive = (p1 >= 0) && (p2 >= 0);
-		return all_positive && (rep.size() >= 2);
+		bool less = (p1 < p2);
+		return all_positive && (rep.size() >= 2) && less;
 	}
 
 	virtual Move<Route, ADS, DS >& apply(Route& rep, ADS&)
