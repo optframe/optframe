@@ -76,6 +76,13 @@ public:
 		return (m1.i == i) && (m1.j == j) && (m1.k == k);
 	}
 
+	static string idComponent()
+	{
+		string idComp = Move<vector<T>, ADS, DS>::idComponent();
+		idComp.append("MoveTSPOrOptk");
+		return idComp;
+	}
+
 	virtual void print() const
 	{
 		cout << "MoveTSPOrOpt{K=" << k << "}";

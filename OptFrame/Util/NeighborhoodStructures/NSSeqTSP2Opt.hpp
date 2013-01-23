@@ -150,7 +150,8 @@ public:
 	virtual string toString() const
 	{
 		stringstream ss;
-		ss << "NSSeqTSP2Opt";
+		ss << "NSSeqTSP2Opt with move: " << MOVE::idComponent();
+
 		return ss.str();
 	}
 };

@@ -84,6 +84,13 @@ public:
 		return ((m1.p1 == p1) && (m1.p2 == p2));
 	}
 
+	static string idComponent()
+	{
+		string idComp = Move<vector<T>, ADS, DS>::idComponent();
+		idComp.append("MoveTSP2Opt");
+		return idComp;
+	}
+
 	virtual void print() const
 	{
 		cout << "MoveTSP2Opt( ";

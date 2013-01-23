@@ -95,7 +95,7 @@ public:
 	virtual string toString() const
 	{
 		stringstream ss;
-		ss << "NSSeqTSPOrOpt{K=" << k << "}";
+		ss << "NSSeqTSPOrOpt{K=" << k << "} with move: " << MOVE::idComponent();
 		return ss.str();
 	}
 };

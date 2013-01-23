@@ -77,7 +77,7 @@ public:
 
    static string idComponent()
    {
-      return "OptFrame:move";
+      return "OptFrame:Move:";
    }
 
    virtual string id() const
