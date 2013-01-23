@@ -80,14 +80,14 @@ public:
 			}
 		}
 
-		double bestCost = eval.moveCost(e, *bestMove, s);
+		double bestCost = eval.estimatedMoveCost(e, *bestMove, s);
 		it.next();
 		while (!it.isDone())
 		{
 			Move<R, ADS, DS>* move = &it.current();
 			if (move->canBeApplied(s))
 			{
-				double cost = eval.moveCost(e, *move, s);
+				double cost = eval.estimatedMoveCost(e, *move, s);
 
 				if (eval.betterThan(cost, bestCost))
 				{
@@ -103,11 +103,15 @@ public:
 
 			it.next();
 		}
-		delete &bestMove->apply(e, s);
+
+		if(eval.betterThan(bestCost, 0)) // improvement!
+		{
+			delete &bestMove->apply(e, s);
+			eval.evaluate(e, s); // updates 'e'
+		}
+
 		delete bestMove;
 		delete &it;
-
-		eval.evaluate(e, s); // updates 'e'
 	}
 
 	virtual bool compatible(string s)

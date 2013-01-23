@@ -66,21 +66,32 @@ public:
 		{
 			Move<R, ADS, DS>* move = &it.current();
 
-			if (move->canBeApplied(s) && eval.betterThan(eval.moveCost(e, *move, s), 0))
+			if (move->canBeApplied(s))
 			{
-				delete &move->apply(e, s);
-				delete move;
+				double eCost = eval.estimatedMoveCost(e, *move, s); // estimated cost
 
-				delete &it;
+				if(eval.betterThan(eCost, 0))
+				{
+					double cost = eval.moveCost(e, *move, s); // real cost
 
-				eval.evaluate(e, s); // updates 'e'
-				return;
+					if(eval.betterThan(cost, 0))
+					{
+						delete &move->apply(e, s);
+						delete move;
+
+						delete &it;
+
+						eval.evaluate(e, s); // updates 'e'
+						return;
+					}
+				}
 			}
 
 			delete move;
 
 			it.next();
-		} while (!it.isDone());
+		}
+		while (!it.isDone());
 
 		delete &it;
 	}
