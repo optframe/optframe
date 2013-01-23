@@ -106,6 +106,8 @@ public:
           delete p;
        p = NULL;
        
+       cout << "problem instance for TSP unloaded successfully (use 'drop_all' if you want to remove all components)" << endl;
+
        return true;
     }
 };
