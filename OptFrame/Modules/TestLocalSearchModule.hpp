@@ -42,7 +42,7 @@ public:
 
 	string usage()
 	{
-		string u = "test N T TF BF OptFrame:Evaluator id OptFrame:Constructive id OptFrame:LocalSearch id OUTPUTFILE [solution_name]\n WHERE:\n";
+		string u = "test N T TF BF OptFrame:Evaluator id (OptFrame:Constructive id | OptFrame:Solution id) OptFrame:LocalSearch id OUTPUTFILE [solution_name]\n WHERE:\n";
 		u += "N is the number of tests to be executed;\n";
 		u += "T is the timelimit, in seconds, for each test; (0 for no timelimit)\n";
 		u += "TF is the target evaluation function value;\n";
@@ -62,22 +62,114 @@ public:
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
-
-		int n = scanner.nextInt();
-		int t = scanner.nextDouble();
-		double tf = scanner.nextDouble();
-		double bf = scanner.nextDouble();
-
-		Evaluator<R, ADS, DS>* eval = factory.read_ev(scanner);
-
-		Constructive<R, ADS>* constructive;
-		factory.readComponent(constructive, scanner);
-		if(!constructive)
+		int n;
+		string sn = scanner.next();
+		try
 		{
-			cout << "testls module: ERROR IN TEST LOCAL SEARCH MODULE! NO SUCH CONSTRUCTIVE!" << endl;
+			n = Scanner::parseInt(sn);
+		}
+		catch(ConversionError& e)
+		{
+			cout << "testls error: reading 'N'" << endl;
 			return false;
 		}
 
+
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+		int t;
+		string st = scanner.next();
+		try
+		{
+			t = Scanner::parseInt(st);
+		}
+		catch(ConversionError& e)
+		{
+			cout << "testls error: reading 't'" << endl;
+			return false;
+		}
+
+
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+		double tf;
+		string stf = scanner.next();
+		try
+		{
+			tf = Scanner::parseDouble(stf);
+		}
+		catch(ConversionError& e)
+		{
+			cout << "testls error: reading 'tf'" << endl;
+			return false;
+		}
+
+
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+		double bf;
+		string sbf = scanner.next();
+		try
+		{
+			bf = Scanner::parseDouble(sbf);
+		}
+		catch(ConversionError& e)
+		{
+			cout << "testls error: reading 'bf'" << endl;
+			return false;
+		}
+
+
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+		Evaluator<R, ADS, DS>* eval;
+		factory.assign(eval, scanner.nextInt(), scanner.next());
+
+
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+		string sc = scanner.next();
+
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+		int id = scanner.nextInt();
+
+		Solution<R, ADS>* s1 = NULL;
+		Constructive<R, ADS>* constructive = NULL;
+
+		if(sc == Solution<R, ADS>::idComponent())
+			factory.assign(s1, id, sc);
+		else if(sc == Constructive<R, ADS>::idComponent())
+			factory.assign(constructive, id, sc);
+		else
+		{
+			cout << "testls module: ERROR IN TEST LOCAL SEARCH MODULE! NO SUCH CONSTRUCTIVE! ('" << sc << " " << id << "')" << endl;
+			return false;
+		}
+
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
 		pair<LocalSearch<R, ADS, DS>*, string> method = factory.createLocalSearch(scanner.rest());
 
 		LocalSearch<R, ADS, DS>* h = method.first;
@@ -128,7 +220,8 @@ public:
 			cout << "Test " << i << "... Running";
 			Timer t(false);
 
-			Solution<R, ADS>& s = constructive->generateSolution();
+			Solution<R, ADS>& s = ((s1 != NULL)? s1->clone() : constructive->generateSolution());
+
 			t_now = t.now();
 			Evaluation< DS > & e = eval->evaluate(s);
 			fo_now = e.evaluation();
