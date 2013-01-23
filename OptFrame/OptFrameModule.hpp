@@ -85,6 +85,17 @@ public:
 		if(number)
 		{
 			cout << "OptFrameModule defineText: cannot define a number! ('" << definition << "')" << endl;
+			cout << "Did you forget a command 'undefine variable' before this module?" << endl;
+			return false;
+		}
+
+		Scanner scanType(definition);
+		scanType.useSeparators(":");
+		string optframe = scanType.next();
+		if(optframe == "OptFrame")
+		{
+			cout << "OptFrameModule defineText: cannot define an OptFrame type! ('" << definition << "')" << endl;
+			cout << "Did you forget a command 'undefine variable' before this module?" << endl;
 			return false;
 		}
 
@@ -96,6 +107,7 @@ public:
 			if(definition==next_word)
 			{
 				cout << "defineText: recursive definitions are not allowed! (define: '" << definition << "' as '" << next_word << "')" << endl;
+				cout << "Did you forget a command 'undefine variable' before this module?" << endl;
 				return false;
 			}
 		}
@@ -119,6 +131,17 @@ public:
 		if(number)
 		{
 			cout << "OptFrameModule defineList: cannot define a number! ('" << definition << "')" << endl;
+			cout << "Did you forget a command 'undefine variable' before this module?" << endl;
+			return false;
+		}
+
+		Scanner scanType(definition);
+		scanType.useSeparators(":");
+		string optframe = scanType.next();
+		if(optframe == "OptFrame")
+		{
+			cout << "OptFrameModule defineList: cannot define an OptFrame type! ('" << definition << "')" << endl;
+			cout << "Did you forget a command 'undefine variable' before this module?" << endl;
 			return false;
 		}
 
