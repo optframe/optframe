@@ -279,7 +279,11 @@ public:
 					Move<R, ADS, DS>& move = ns->move(s);
 
 					if(!move.canBeApplied(s))
+					{
+						cout << "move cannot be applied: ";
+						move.print();
 						continue;
+					}
 
 					for(unsigned ev=0; ev<evaluators.size(); ev++)
 					{
@@ -289,6 +293,8 @@ public:
 						moveFrom.append(move.id());
 						moveFrom.append(" from: ");
 						moveFrom.append(ns->id());
+						moveFrom.append(" toString: ");
+						moveFrom.append(ns->toString());
 						move.print();
 
 						message(moveFrom, iter, "testing reverse.");

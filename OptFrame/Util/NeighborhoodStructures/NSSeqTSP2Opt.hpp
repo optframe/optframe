@@ -119,7 +119,7 @@ public:
 			p1 = rand() % (rep.size() + 1);
 			p2 = rand() % (rep.size() + 1);
 		}
-		while((abs(p1 - p2) < 2) || (p1 < p2));
+		while((abs(p1 - p2) < 2) || (p1 > p2));
 
 		// create 2-opt(p1,p2) move
 		return *new MOVE(p1, p2, p);

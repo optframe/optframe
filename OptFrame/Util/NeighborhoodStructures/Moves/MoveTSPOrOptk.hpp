@@ -38,16 +38,13 @@ protected:
 	int j; // destination
 	int k; // number of elements
 
+	OPTFRAME_DEFAULT_PROBLEM* problem;
+
 public:
 
-	MoveTSPOrOptk(int _i, int _j, int _k, OPTFRAME_DEFAULT_PROBLEM* problem = NULL) :
-		i(_i), j(_j), k(_k)
+	MoveTSPOrOptk(int _i, int _j, int _k, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
+		i(_i), j(_j), k(_k), problem(_problem)
 	{
-		if(problem != NULL)
-		{
-			cout << "Warning: unused problem pointer in ";
-			print();
-		}
 	}
 
 	virtual ~MoveTSPOrOptk()

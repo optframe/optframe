@@ -36,16 +36,13 @@ class MoveTSP2Opt: public Move<vector<T> , ADS, DS >
 protected:
 	int p1, p2; // position 1 and position 2, respectively
 
+	OPTFRAME_DEFAULT_PROBLEM* problem;
+
 public:
 
-	MoveTSP2Opt(int _p1, int _p2, OPTFRAME_DEFAULT_PROBLEM* problem = NULL) :
-		p1(_p1), p2(_p2)
+	MoveTSP2Opt(int _p1, int _p2, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
+		p1(_p1), p2(_p2), problem(_problem)
 	{
-		if(problem != NULL)
-		{
-			cout << "Warning: unused problem pointer in ";
-			print();
-		}
 	}
 
 	virtual ~MoveTSP2Opt()
