@@ -150,6 +150,23 @@ public:
 		return diff;
 	}
 
+	// Movement ESTIMATED cost (or REAL cost, if ESTIMATED is not implemented!)
+	double estimatedMoveCost(Evaluation<DS>& e, Move<R, ADS, DS>& m, Solution<R, ADS>& s)
+	{
+		pair<double, double>* p = m.estimatedCost(e.getDS(), s.getR(), s.getADS());
+
+		// using estimatedCost
+		if(p)
+		{
+			double eCost = p->first+p->second;
+			delete p;
+
+			return eCost;
+		}
+		else // default moveCost
+			return moveCost(e, m, s);
+	}
+
 	// true if 's1' is better than 's2'
 	bool betterThan(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2)
 	{
