@@ -35,10 +35,6 @@ using namespace std;
 #include "../OptFrame/OptFrame.hpp"
 #include "TSP.h"
 
-#include "../OptFrame/Util/NeighborhoodStructures/NSSeqTSP2Opt.hpp"
-#include "../OptFrame/Util/NeighborhoodStructures/NSSeqTSPOrOpt.hpp"
-#include "../OptFrame/Util/NeighborhoodStructures/NSSeqTSPSwap.hpp"
-
 using namespace TSP;
 using namespace scannerpp;
 

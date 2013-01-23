@@ -78,16 +78,12 @@ public:
 
         TSPEvaluator& eval = *new TSPEvaluator(p);
         hf.addComponent(eval, Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::idComponent());
-        hf.addComponent(eval, Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::idComponent());
 
         NSEnumSwap& ns = *new NSEnumSwap(p, hf.getRandGen());
         hf.addComponent(ns, "OptFrame:NS:NSSeq");
 
 
-        int nId2Opt = hf.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP, DeltaMoveTSP2Opt, ProblemInstance>(p), "OptFrame:NS:NSSeq");
-        stringstream id2opt;
-        id2opt << "OptFrame:NS:NSSeq " << nId2Opt;
-        OptFrameModule<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::defineText("nsseq_2opt", id2opt.str(), dictionary);
+        hf.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP, DeltaMoveTSP2Opt, ProblemInstance>(p), "OptFrame:NS:NSSeq");
 
         hf.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP>, "OptFrame:NS:NSSeq"); // no optimization
 

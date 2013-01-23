@@ -117,7 +117,12 @@ public:
 		return new pair<double, double>(f, 0);
 	}
 
-
+	static string idComponent()
+	{
+		string idComp = super::idComponent();
+		idComp.append(":DeltaMoveTSP2Opt");
+		return idComp;
+	}
 
 	virtual bool operator==(const Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP >& _m) const
 	{
