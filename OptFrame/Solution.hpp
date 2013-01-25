@@ -52,16 +52,26 @@ protected:
 	ADS& ads;
 
 public:
-	Solution(R& _r, ADS& _ads):r(*new R(_r)), ads(*new ADS(_ads)){};
+	Solution(R& _r, ADS& _ads):
+		r(*new R(_r)), ads(*new ADS(_ads))
+	{
+	}
 
-	Solution(R& _r) :
-      r(*new R(_r)), ads(*new ADS)
-   {
-   }
+	explicit Solution(R& _r) :
+		r(*new R(_r)), ads(*new ADS)
+	{
+	}
 
-	Solution(const Solution<R, ADS>& s):r(*new R(s.r)), ads(*new ADS(s.ads)){}
+	Solution(const Solution<R, ADS>& s):
+		r(*new R(s.r)), ads(*new ADS(s.ads))
+	{
+	}
 
-	virtual ~Solution() { delete &r; delete &ads;}
+	virtual ~Solution()
+	{
+		delete &r;
+		delete &ads;
+	}
 
 	void setR(const R& _r){ r = _r; }
 	void setADS(const ADS& _ads){ ads = _ads; }
