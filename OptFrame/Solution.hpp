@@ -55,7 +55,7 @@ public:
 	Solution(R& _r, ADS& _ads):r(*new R(_r)), ads(*new ADS(_ads)){};
 
 	Solution(R& _r) :
-      r(*new R(_r)), ads(*new OPTFRAME_DEFAULT_ADS)
+      r(*new R(_r)), ads(*new ADS)
    {
    }
 
