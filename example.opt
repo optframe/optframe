@@ -86,13 +86,7 @@ randgen.set_seed 0
 
 problem.general load default_file
 
-component.list Constructive lconstructive
-component.list Evaluator levaluator
-component.list OptFrame:NS lns
-component.list NSSeq lnsseq
-component.list NSEnum lnsenum
-
-check lconstructive levaluator lns lnsseq lnsenum 20
+component.check 20
 
 exit
 

@@ -160,6 +160,13 @@ public:
 		ldictionary.erase(definition);
 	}
 
+	void undefine(string definition, map<string,string>& dictionary, map< string,vector<string> >& ldictionary)
+	{
+		undefineText(definition,  dictionary);
+		undefineList(definition, ldictionary);
+	}
+
+
 	bool testUnused(string id, Scanner& scanner)
 	{
 		if(scanner.hasNext())
