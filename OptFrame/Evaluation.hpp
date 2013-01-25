@@ -43,61 +43,103 @@ using namespace std;
   Também é possível carregar uma medida de inviabilidade infMeasure.
   O método evaluation() retorna a soma da função objetivo objFunction e a infMeasure.
   \endportuguese
-*/
+ */
 
 template<class DS = OPTFRAME_DEFAULT_DS>
 class Evaluation : OptFrameComponent
 {
 protected:
-   double objFunction;
-   double infMeasure;
-   DS& em;
+	double objFunction;
+	double infMeasure;
+	DS* ds; // delta structure
 
 public:
-	Evaluation(double obj, double inf, DS& _em):
-		objFunction(obj),infMeasure(inf),em(*new DS(_em)){};
-
-	Evaluation(double obj, DS& _em):
-		em(*new DS(_em))
+	Evaluation(double obj, double inf, DS& _ds):
+		objFunction(obj),infMeasure(inf),ds(new DS(_ds))
 	{
-	   objFunction = obj;
-	   infMeasure = 0;
+	};
+
+	Evaluation(double obj, DS& _ds):
+		ds(new DS(_ds))
+	{
+		objFunction = obj;
+		infMeasure = 0;
 	};
 
 	Evaluation(double obj) :
-      em(*new OPTFRAME_DEFAULT_DS)
-   {
-      objFunction = obj;
-      infMeasure = 0;
-   }
-
+		ds(new OPTFRAME_DEFAULT_DS)
+	{
+		objFunction = obj;
+		infMeasure = 0;
+	}
 
 	Evaluation(const Evaluation<DS>& e):
-		objFunction(e.objFunction),infMeasure(e.infMeasure),em(*new DS(e.em)){};
+		objFunction(e.objFunction), infMeasure(e.infMeasure), ds(new DS(*e.ds))
+	{
+	};
 
-	virtual ~Evaluation() { delete &em; }
+	virtual ~Evaluation()
+	{
+		delete ds;
+	}
 
-	const DS& getDS() const { return em; }
-	DS& getDS() { return em; }
-	double getObjFunction() const { return objFunction; }
-	double getInfMeasure() const  { return infMeasure;  }
+	const DS& getDS() const
+	{
+		return *ds;
+	}
 
-	void setDS(const DS& _em){ em = _em; }
-	void setObjFunction(double obj){ objFunction = obj; }
-	void setInfMeasure (double inf){ infMeasure = inf;  }
+	DS& getDS()
+	{
+		return *ds;
+	}
 
-	double evaluation() const { return objFunction + infMeasure; }
-	virtual bool   isFeasible() const { return (abs(infMeasure)<0.0001); }
+	double getObjFunction() const
+	{
+		return objFunction;
+	}
 
-   static string idComponent()
-   {
-      return "OptFrame:loadev";
-   }
+	double getInfMeasure() const
+	{
+		return infMeasure;
+	}
 
-   virtual string id() const
-   {
-      return idComponent();
-   }
+	// leave option to rewrite with clone()
+	virtual void setDS(const DS& _ds)
+	{
+		delete ds;
+		ds = new DS(_ds);
+	}
+
+	void setObjFunction(double obj)
+	{
+		objFunction = obj;
+	}
+
+	void setInfMeasure (double inf)
+	{
+		infMeasure = inf;
+	}
+
+	double evaluation() const
+	{
+		return objFunction + infMeasure;
+	}
+
+	// leave option to rewrite tolerance
+	virtual bool isFeasible() const
+	{
+		return (abs(infMeasure)<0.0001);
+	}
+
+	static string idComponent()
+	{
+		return "OptFrame:loadev";
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
 
 	virtual void print() const
 	{
@@ -113,7 +155,7 @@ public:
 		if(&e == this) // auto ref check
 			return *this;
 
-		em = e.em;
+		(*ds) = (*e.ds);
 		objFunction = e.objFunction;
 		infMeasure = e.infMeasure;
 

@@ -42,71 +42,97 @@ typedef int OPTFRAME_DEFAULT_ADS;
   No construtor, uma cópia de R é armazenada dentro da classe Solution.
   O método getR() retorna uma referência à Representação R armazenada.
   \endportuguese
-*/
+ */
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class Solution : public OptFrameComponent
 {
 protected:
-	R& r;
-	ADS& ads;
+	R* r;     // representation
+	ADS* ads; // auxiliary data structure
 
 public:
 	Solution(R& _r, ADS& _ads):
-		r(*new R(_r)), ads(*new ADS(_ads))
+		r(new R(_r)), ads(new ADS(_ads))
 	{
 	}
 
 	explicit Solution(R& _r) :
-		r(*new R(_r)), ads(*new ADS)
+				r(new R(_r)), ads(new ADS)
 	{
 	}
 
 	Solution(const Solution<R, ADS>& s):
-		r(*new R(s.r)), ads(*new ADS(s.ads))
+		r(new R(*s.r)), ads(new ADS(*s.ads))
 	{
 	}
 
 	virtual ~Solution()
 	{
-		delete &r;
-		delete &ads;
+		delete r;
+		delete ads;
 	}
 
-	void setR(const R& _r){ r = _r; }
-	void setADS(const ADS& _ads){ ads = _ads; }
+	// leave option to rewrite with clone()
+	virtual void setR(const R& _r)
+	{
+		delete r;
+		r = new R(_r);
+	}
 
-	const R& getR() const {	return r; }
-	const ADS& getADS() const { return ads; }
+	// leave option to rewrite with clone()
+	virtual void setADS(const ADS& _ads)
+	{
+		delete ads;
+		ads = new ADS(_ads);
+	}
 
-	R& getR() { return r; }
-	ADS& getADS() { return ads; }
+	const R& getR() const
+	{
+		return *r;
+	}
 
-   static string idComponent()
-   {
-      return "OptFrame:Solution";
-   }
+	const ADS& getADS() const
+	{
+		return *ads;
+	}
 
-   virtual string id() const
-   {
-      return idComponent();
-   }
+	R& getR()
+	{
+		return *r;
+	}
 
-   virtual string toString() const
-   {
-	   stringstream ss;
-	   ss << "Solution: "<< r;
-	   //ss << "ADS: "<< ads;
-	   return ss.str();
-   }
+	ADS& getADS()
+	{
+		return *ads;
+	}
 
+	static string idComponent()
+	{
+		return "OptFrame:Solution";
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+
+	virtual string toString() const
+	{
+		stringstream ss;
+		ss << "Solution: "<< (*r);
+		//ss << "ADS: "<< ads;
+		return ss.str();
+	}
+
+	// leave option to rewrite with clone()
 	virtual Solution<R, ADS>& operator= (const Solution<R, ADS>& s)
 	{
 		if(&s == this) // auto ref check
 			return *this;
 
-		r = s.r;
-	   ads = s.ads;
+		(*r) = (*s.r);
+		(*ads) = (*s.ads);
 
 		return *this;
 	}
@@ -115,7 +141,6 @@ public:
 	{
 		return * new Solution<R, ADS>(*this);
 	}
-
 };
 
 #endif /* OPTFRAME_SOLUTION_HPP_ */
