@@ -82,11 +82,6 @@ public:
 	R& getR() { return r; }
 	ADS& getADS() { return ads; }
 
-	virtual bool check() const
-	{
-	   return true;
-	}
-
    static string idComponent()
    {
       return "OptFrame:Solution";
