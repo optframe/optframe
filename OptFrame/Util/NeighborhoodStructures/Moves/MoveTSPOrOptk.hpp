@@ -42,6 +42,9 @@ protected:
 
 public:
 
+	using Move<vector<T> , ADS, DS >::apply;
+	using Move<vector<T> , ADS, DS >::canBeApplied;
+
 	MoveTSPOrOptk(int _i, int _j, int _k, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
 		i(_i), j(_j), k(_k), problem(_problem)
 	{
@@ -49,6 +52,21 @@ public:
 
 	virtual ~MoveTSPOrOptk()
 	{
+	}
+
+	int get_i() const
+	{
+		return i;
+	}
+
+	int get_j() const
+	{
+		return j;
+	}
+
+	int get_k() const
+	{
+		return k;
 	}
 
 	virtual bool canBeApplied(const Route& rep, const ADS&)
