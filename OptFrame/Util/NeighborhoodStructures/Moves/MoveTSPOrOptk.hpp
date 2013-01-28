@@ -72,7 +72,7 @@ public:
 	virtual bool canBeApplied(const Route& rep, const ADS&)
 	{
 		//return (i != j) && (i + k <= rep.size());
-		return (i != j);
+		return abs(i - j) >= k;
 	}
 
 	virtual Move<Route, ADS, DS >& apply(Route& rep, ADS&)
