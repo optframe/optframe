@@ -98,7 +98,7 @@ public:
 		double e_end;
 		double e_ini;
 
-		pair<double, double>* p = m.cost(e.getDS(), s.getR(), s.getADS());
+		pair<double, double>* p = m.cost(e, s.getR(), s.getADS());
 
 		// do not update 's' => much faster (using updateDelta)
 		if(p)
@@ -153,7 +153,7 @@ public:
 	// Movement ESTIMATED cost (or REAL cost, if ESTIMATED is not implemented!)
 	double estimatedMoveCost(Evaluation<DS>& e, Move<R, ADS, DS>& m, Solution<R, ADS>& s)
 	{
-		pair<double, double>* p = m.estimatedCost(e.getDS(), s.getR(), s.getADS());
+		pair<double, double>* p = m.estimatedCost(e, s.getR(), s.getADS());
 
 		// using estimatedCost
 		if(p)

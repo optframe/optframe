@@ -78,7 +78,7 @@ public:
 	*/
 
 
-	pair<double, double>* cost(const MemTSP& mem, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	pair<double, double>* cost(const Evaluation<MemTSP>&, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		if(p1 >= p2)
 			exit(1);

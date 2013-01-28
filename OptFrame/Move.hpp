@@ -63,14 +63,14 @@ public:
 		return apply(r, ads);
 	}
 
-	virtual pair<double, double>* cost(const DS& ds, const R& r, const ADS& ads)
+	virtual pair<double, double>* cost(const Evaluation<DS>& e, const R& r, const ADS& ads)
 	{
 		return NULL;
 	}
 
-	virtual pair<double, double>* estimatedCost(const DS& ds, const R& r, const ADS& ads)
+	virtual pair<double, double>* estimatedCost(const Evaluation<DS>& e, const R& r, const ADS& ads)
 	{
-		return cost(ds, r, ads);
+		return cost(e, r, ads);
 	}
 
 	virtual bool operator==(const Move<R, ADS, DS>& m) const = 0;

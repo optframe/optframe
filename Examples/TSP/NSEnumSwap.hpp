@@ -145,7 +145,7 @@ public:
 	}
 
 
-	pair<double, double>* cost(const MemTSP& mem, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	pair<double, double>* cost(const Evaluation<MemTSP>& e, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		int k1, k2;
 

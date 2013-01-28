@@ -33,7 +33,7 @@ component.list OptFrame:NS lns
 component.list NSSeq lnsseq
 component.list NSEnum lnsenum
 
-%check lconstructive levaluator lns lnsseq lnsenum 20
+check 100
 
 undefine lsBestImp
 build OptFrame:LocalSearch:BI Evaluator 0 NSSeq 0 lsBestImp

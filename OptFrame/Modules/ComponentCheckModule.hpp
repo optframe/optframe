@@ -441,7 +441,7 @@ public:
 
 						double fasterCost = e_end1 - e_ini1;
 
-						pair<double, double>* cost = move.cost(e.getDS(), s.getR(), s.getADS());
+						pair<double, double>* cost = move.cost(e, s.getR(), s.getADS());
 
 						if(abs(revCost - simpleCost) > 0.0001)
 						{
