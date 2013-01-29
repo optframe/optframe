@@ -349,6 +349,9 @@ public:
 		cout << "module " << id() << " will test NS components (iterMax=" << iterMax << "; numSolutions=" << solutions.size() << ")" << endl;
 
 		vector< pair<int, double> > timeNSApply(lNS.size(), make_pair(0,0.0));
+		vector< pair<int, double> > timeNSCostApply(lNS.size(), make_pair(0,0.0));
+		vector< pair<int, double> > timeNSCostApplyDelta(lNS.size(), make_pair(0,0.0));
+		vector< pair<int, double> > timeNSCost(lNS.size(), make_pair(0,0.0));
 
 		for(unsigned id_ns=0; id_ns<lNS.size(); id_ns++)
 		{
@@ -459,7 +462,11 @@ public:
 
 						double revCost = e_rev.evaluation() - e.evaluation();
 
+
+						Timer tMoveCostApply;
 						double simpleCost = evaluators[ev]->moveCost(move, s);
+						timeNSCostApply[id_ns].second += tMoveCostApply.inMilliSecs();
+						timeNSCostApply[id_ns].first++;
 
 						if(abs(revCost - simpleCost) > 0.0001)
 						{
@@ -471,10 +478,13 @@ public:
 						}
 
 						// fasterCost
+						Timer tMoveCostApplyDelta;
 						Move<R, ADS, DS>& rev1 = evaluators[ev]->applyMove(e, move, s);
 						double e_end1 = e.evaluation();
 						Move<R, ADS, DS>& ini1 = evaluators[ev]->applyMove(e, rev1, s);
 						double e_ini1 = e.evaluation();
+						timeNSCostApplyDelta[id_ns].second += tMoveCostApplyDelta.inMilliSecs();
+						timeNSCostApplyDelta[id_ns].first++;
 
 						delete& rev1;
 						delete& ini1;
@@ -492,7 +502,10 @@ public:
 							return false;
 						}
 
+						Timer tMoveCost;
 						pair<double, double>* cost = move.cost(e, s.getR(), s.getADS());
+						timeNSCost[id_ns].second += tMoveCost.inMilliSecs();
+						timeNSCost[id_ns].first++;
 
 						if(cost)
 						{
@@ -551,6 +564,12 @@ public:
 		printSummary(fullTimeEval, "Evaluators", "testing full evaluate(s) of a solution");
 
 		printSummary(timeNSApply, "NS", "testing time of move apply(s)");
+
+		printSummary(timeNSCostApply, "NS", "testing time of cost based on move apply(s)");
+
+		printSummary(timeNSCostApplyDelta, "NS", "testing time of cost based on move apply(e, s)");
+
+		printSummary(timeNSCost, "NS", "testing time of move cost()");
 
 		cout << "component.check module: tests finished successfully!" << endl;
 		return true;
