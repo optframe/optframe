@@ -80,7 +80,6 @@
 // base components
 #include "CloneConstructive.hpp"
 
-
 // local search
 #include "Heuristics/Empty.hpp"
 #include "Heuristics/BestImprovement.hpp"
@@ -97,6 +96,8 @@
 #include "Heuristics/BasicIteratedLocalSearch.hpp"
 #include "Heuristics/BasicILSPerturbation.hpp"
 
+// test local searches
+#include "Heuristics/CompareLocalSearch.hpp"
 
 // ==================================
 
@@ -449,6 +450,8 @@ public:
 		factory.builders.push_back(new BasicIteratedLocalSearchBuilder<R, ADS, DS>);
 		factory.builders.push_back(new BasicILSPerturbationBuilder<R, ADS, DS>);
 
+		// test local searches
+		factory.builders.push_back(new CompareLocalSearchBuilder<R, ADS, DS>);
 	}
 
 	//! \english OptFrame Command Line Interface \endenglish \portuguese Interface de Linha de Comando do OptFrame \endportuguese

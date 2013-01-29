@@ -222,6 +222,16 @@ public:
 		return betterThan(a, b) || (abs(a - b) < OPTFRAME_EPSILON);
 	}
 
+	bool equals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
+	{
+		return equals(e1.evaluation(), e2.evaluation());
+	}
+
+	bool equals(double a, double b)
+	{
+		return (abs(a - b) < OPTFRAME_EPSILON);
+	}
+
     virtual bool compatible(string s)
     {
     	return ( s == idComponent() ) || (OptFrameComponent::compatible(s));
