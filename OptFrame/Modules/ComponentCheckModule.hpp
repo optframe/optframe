@@ -292,12 +292,16 @@ public:
 			evaluators.push_back(evaluator);
 		}
 
+		vector< pair<int, double> > fullTimeEval(evaluators.size(), make_pair(0,0.0));
+
 		// ----------------------------------------------------------------------------------------
 		// generate 'iterMax' OptFrame:Solution for each OptFrame:Constructive and store evaluation
 		// ----------------------------------------------------------------------------------------
 
 		vector<Solution<R, ADS>* > solutions;
 		vector<vector<Evaluation<DS>*> > evaluations(evaluators.size());
+
+		vector< pair<int, double> > timeConstructive(lConstructive.size(), make_pair(0,0.0));
 
 		cout << "module " << id() << " will test constructive components (iterMax=" << iterMax << ")" << endl;
 		for(unsigned c=0; c<lConstructive.size(); c++)
@@ -316,14 +320,20 @@ public:
 			{
 				message(lConstructive.at(c), iter, "generating solution.");
 
+				Timer ts;
 				Solution<R, ADS>& s = constructive->generateSolution();
+				timeConstructive[c].second += ts.inMilliSecs();
+				timeConstructive[c].first++;
 
 				solutions.push_back(&s);
 
 				for(unsigned ev=0; ev<evaluators.size(); ev++)
 				{
 					message(lEvaluator.at(ev), iter, "evaluating solution.");
+					Timer te;
 					Evaluation<DS>& e = evaluators.at(ev)->evaluate(s);
+					fullTimeEval[ev].second += te.inMilliSecs();
+					fullTimeEval[ev].first++;
 
 					evaluations.at(ev).push_back(&e);
 				}
@@ -337,6 +347,9 @@ public:
 			cout << endl << endl;
 
 		cout << "module " << id() << " will test NS components (iterMax=" << iterMax << "; numSolutions=" << solutions.size() << ")" << endl;
+
+		vector< pair<int, double> > timeNSApply(lNS.size(), make_pair(0,0.0));
+
 		for(unsigned id_ns=0; id_ns<lNS.size(); id_ns++)
 		{
 			Scanner scan(lNS.at(id_ns));
@@ -388,11 +401,28 @@ public:
 							move.print();
 
 						message(moveFrom, iter, "testing reverse.");
+
+						Timer tMovApply;
 						Move<R, ADS, DS>& rev = move.apply(s);
-						Solution<R, ADS>& sNeighbor = s.clone();
+						timeNSApply[id_ns].second += tMovApply.inMilliSecs();
+						timeNSApply[id_ns].first++;
+
+						Solution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
+
+						Timer te;
 						Evaluation<DS>& e_rev = evaluators.at(ev)->evaluate(s);
+						fullTimeEval[ev].second += te.inMilliSecs();
+						fullTimeEval[ev].first++;
+
+						Timer tMovRevApply;
 						Move<R, ADS, DS>& ini = rev.apply(s);
+						timeNSApply[id_ns].second += tMovRevApply.inMilliSecs();
+						timeNSApply[id_ns].first++;
+
+						Timer te2;
 						Evaluation<DS>& e_ini = evaluators.at(ev)->evaluate(s);
+						fullTimeEval[ev].second += te2.inMilliSecs();
+						fullTimeEval[ev].first++;
 
 						if(ini != move)
 						{
@@ -512,9 +542,28 @@ public:
 			for(unsigned j=0; j<evaluations[i].size(); j++)
 				delete evaluations[i][j];
 
+		cout << "===============================" << endl;
+		cout << "           SUMMARY             " << endl;
+		cout << "===============================" << endl << endl;
+
+		printSummary(timeConstructive, "Constructive", "testing construction of initial solution");
+
+		printSummary(fullTimeEval, "Evaluators", "testing full evaluate(s) of a solution");
+
+		printSummary(timeNSApply, "NS", "testing time of move apply(s)");
+
 		cout << "component.check module: tests finished successfully!" << endl;
 		return true;
 	}
+
+   void printSummary(const vector< pair<int, double> >& values, string type, string title)
+   {
+      cout << "|"<<type<<"|=" << values.size() << "\t" << title << endl;
+      printf("#id\t#tests\tsum(ms)\tavg(ms)\n");
+		for(unsigned id=0; id<values.size(); id++)
+			printf("#%d\t%d\t%.4f\t%.4f\n", ((int)id), values[id].first, values[id].second, (values[id].second/values[id].first));
+		cout << endl;
+   }
 
 };
 
