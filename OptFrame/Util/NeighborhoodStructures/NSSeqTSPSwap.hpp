@@ -77,16 +77,18 @@ using namespace std;
   \endportuguese
 */
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveTSPSwap<T, ADS, DS > >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveTSPSwap<T, ADS, DS >, class P = OPTFRAME_DEFAULT_PROBLEM  >
 class NSSeqTSPSwap: public NSSeq<vector<T> , ADS, DS >
 {
 	typedef vector<T> Route;
 
 private:
+   P* p; // has to be the last
 
 public:
 
-	NSSeqTSPSwap()
+	NSSeqTSPSwap(P* _p = NULL) :
+      p(_p)
 	{
 	}
 
@@ -94,10 +96,13 @@ public:
 	{
 	}
 
+   using NSSeq<vector<T> , ADS, DS >::move;
+   using NSSeq<vector<T> , ADS, DS >::getIterator;
+
 	Move<Route, ADS, DS >& move(const Route& rep, const ADS&)
 	{
 		if (rep.size() < 2)
-			return *new MOVE(-1, -1);
+			return *new MOVE(-1, -1, p);
 
 		int p1 = rand() % rep.size();
 
@@ -106,12 +111,12 @@ public:
 		while (p2 == p1)
 			p2 = rand() % rep.size();
 
-		return *new MOVE(p1, p2);
+		return *new MOVE(p1, p2, p);
 	}
 
 	virtual NSIterator<Route, ADS, DS >& getIterator(const Route& r, const ADS&)
 	{
-		return *new NSIteratorTSPSwap<T, ADS, DS, MOVE> (r.size());
+		return *new NSIteratorTSPSwap<T, ADS, DS, MOVE, P> (r.size(), p);
 	}
 
 	static string idComponent()

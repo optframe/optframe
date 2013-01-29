@@ -299,8 +299,7 @@ public:
 		vector<Solution<R, ADS>* > solutions;
 		vector<vector<Evaluation<DS>*> > evaluations(evaluators.size());
 
-		if(verbose)
-			cout << "module " << id() << " will test constructive components (iterMax=" << iterMax << ")" << endl;
+		cout << "module " << id() << " will test constructive components (iterMax=" << iterMax << ")" << endl;
 		for(unsigned c=0; c<lConstructive.size(); c++)
 		{
 			Scanner scan(lConstructive.at(c));
@@ -337,8 +336,7 @@ public:
 		if(verbose)
 			cout << endl << endl;
 
-		if(verbose)
-			cout << "module " << id() << " will test NS components (iterMax=" << iterMax << "; numSolutions=" << solutions.size() << ")" << endl;
+		cout << "module " << id() << " will test NS components (iterMax=" << iterMax << "; numSolutions=" << solutions.size() << ")" << endl;
 		for(unsigned id_ns=0; id_ns<lNS.size(); id_ns++)
 		{
 			Scanner scan(lNS.at(id_ns));
@@ -367,8 +365,11 @@ public:
 
 					if(!move.canBeApplied(s))
 					{
-						cout << "move cannot be applied: ";
-						move.print();
+                  if(verbose)
+                  {
+                     cout << "move cannot be applied: ";
+                     move.print();
+                  }
 						continue;
 					}
 
@@ -430,6 +431,15 @@ public:
 
 						double simpleCost = evaluators[ev]->moveCost(move, s);
 
+						if(abs(revCost - simpleCost) > 0.0001)
+						{
+							error("difference between revCost and simpleCost");
+							move.print();
+							printf("revCost = %.4f\n", revCost);
+							printf("simpleCost = %.4f\n", simpleCost);
+							return false;
+						}
+
 						// fasterCost
 						Move<R, ADS, DS>& rev1 = evaluators[ev]->applyMove(e, move, s);
 						double e_end1 = e.evaluation();
@@ -441,17 +451,6 @@ public:
 
 						double fasterCost = e_end1 - e_ini1;
 
-						pair<double, double>* cost = move.cost(e, s.getR(), s.getADS());
-
-						if(abs(revCost - simpleCost) > 0.0001)
-						{
-							error("difference between revCost and simpleCost");
-							move.print();
-							printf("revCost = %.4f\n", revCost);
-							printf("simpleCost = %.4f\n", simpleCost);
-							return false;
-						}
-
 						if(abs(revCost - fasterCost) > 0.0001)
 						{
 							error("difference between revCost and fasterCost");
@@ -462,6 +461,8 @@ public:
 							printf("e_rev = %.4f\n", e_rev.evaluation());
 							return false;
 						}
+
+						pair<double, double>* cost = move.cost(e, s.getR(), s.getADS());
 
 						if(cost)
 						{
