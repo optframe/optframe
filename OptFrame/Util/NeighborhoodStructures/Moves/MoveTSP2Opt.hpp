@@ -49,12 +49,12 @@ public:
 	{
 	}
 
-	int get_p1()
+	int get_p1() const
 	{
 		return p1;
 	}
 
-	int get_p2()
+	int get_p2() const
 	{
 		return p2;
 	}

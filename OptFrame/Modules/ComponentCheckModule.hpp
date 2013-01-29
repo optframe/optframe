@@ -475,7 +475,9 @@ public:
 								printf("cost() = %.4f\n", cValue);
 								printf("e = %.4f\n", e.evaluation());
 								printf("e_rev = %.4f\n", e_rev.evaluation());
+								cout << "s: ";
 								s.print();
+								cout << "s': ";
 								sNeighbor.print();
 								cout << "move: ";
 								move.print();
