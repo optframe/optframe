@@ -293,6 +293,7 @@ public:
 		}
 
 		vector< pair<int, double> > fullTimeEval(evaluators.size(), make_pair(0,0.0));
+		vector< pair<int, double> > timeReeval(evaluators.size(), make_pair(0,0.0));
 
 		// ----------------------------------------------------------------------------------------
 		// generate 'iterMax' OptFrame:Solution for each OptFrame:Constructive and store evaluation
@@ -577,11 +578,19 @@ public:
 
    void printSummary(const vector< pair<int, double> >& values, string type, string title)
    {
+      printf("---------------------------------\n");
       cout << "|"<<type<<"|=" << values.size() << "\t" << title << endl;
-      printf("#id\t#tests\tsum(ms)\tavg(ms)\n");
-		for(unsigned id=0; id<values.size(); id++)
-			printf("#%d\t%d\t%.4f\t%.4f\n", ((int)id), values[id].first, values[id].second, (values[id].second/values[id].first));
-		cout << endl;
+      printf("---------------------------------\n");
+      printf("#id\t#tests\tavg(ms)\tsum(ms)\n");
+      double avg = 0;
+      for(unsigned id=0; id<values.size(); id++)
+      {
+         printf("#%d\t%d\t%.4f\t%.4f\n", ((int)id), values[id].first, (values[id].second/values[id].first), values[id].second);
+         avg += (values[id].second/values[id].first);
+      }
+      printf("---------------------------------\n");
+      printf("all\t-\t%.4f\t-\n", (avg/values.size()));
+      cout << endl;
    }
 
 };
