@@ -505,8 +505,11 @@ public:
 
 						Timer tMoveCost;
 						pair<double, double>* cost = move.cost(e, s.getR(), s.getADS());
-						timeNSCost[id_ns].second += tMoveCost.inMilliSecs();
-						timeNSCost[id_ns].first++;
+						if(cost)
+						{
+							timeNSCost[id_ns].second += tMoveCost.inMilliSecs();
+							timeNSCost[id_ns].first++;
+						}
 
 						if(cost)
 						{
@@ -583,13 +586,20 @@ public:
       printf("---------------------------------\n");
       printf("#id\t#tests\tavg(ms)\tsum(ms)\n");
       double avg = 0;
+      int validValues = 0;
       for(unsigned id=0; id<values.size(); id++)
       {
-         printf("#%d\t%d\t%.4f\t%.4f\n", ((int)id), values[id].first, (values[id].second/values[id].first), values[id].second);
-         avg += (values[id].second/values[id].first);
+    	  if(values[id].first > 0)
+    	  {
+    		  printf("#%d\t%d\t%.4f\t%.4f\n", ((int)id), values[id].first, (values[id].second/values[id].first), values[id].second);
+    		  avg += (values[id].second/values[id].first);
+    		  validValues++;
+    	  }
+    	  else
+    		  printf("#%d\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int)id), 0);
       }
       printf("---------------------------------\n");
-      printf("all\t-\t%.4f\t-\n", (avg/values.size()));
+      printf("all\t-\t%.4f\t-\n", (avg/validValues));
       cout << endl;
    }
 
