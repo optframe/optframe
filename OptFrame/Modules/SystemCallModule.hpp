@@ -86,7 +86,7 @@ public:
 	bool run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>&, map<string, string>&, map< string,vector<string> >&, string command)
 	{
 		int c = system(command.c_str());
-		return true; // TODO: get return value from external command!
+		return c == 0; // TODO: get return value from external command!
 	}
 
 };
