@@ -24,6 +24,8 @@
 #include "../SingleObjSearch.hpp"
 #include "../LocalSearch.hpp"
 
+#include "GRASP.h"
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class GRASP: public SingleObjSearch<R, ADS, DS>
 {
@@ -92,6 +94,65 @@ public:
 		ss << SingleObjSearch<R, ADS, DS>::idComponent() << "grasp";
 		return ss.str();
 
+	}
+};
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class GRASPBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, DS>
+{
+public:
+	virtual ~GRASPBuilder()
+	{
+	}
+
+	virtual SingleObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	{
+		Evaluator<R, ADS, DS>* eval;
+		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		Constructive<R, ADS>* constructive;
+		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		string rest = scanner.rest();
+
+		pair<LocalSearch<R, ADS, DS>*, std::string> method;
+		method = hf.createLocalSearch(rest);
+
+		LocalSearch<R, ADS, DS>* h = method.first;
+
+		scanner = Scanner(method.second);
+
+		int iterMax = scanner.nextInt();
+
+		return new GRASP<R, ADS, DS>(*eval, *constructive, *h, iterMax);
+	}
+
+	virtual vector<pair<string, string> > parameters()
+	{
+		vector<pair<string, string> > params;
+		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Constructive<R, ADS>::idComponent(), "constructive heuristic"));
+		params.push_back(make_pair(LocalSearch<R, ADS, DS>::idComponent(), "local search"));
+		params.push_back(make_pair("int", "max number of iterations"));
+
+		return params;
+	}
+
+	virtual bool canBuild(string component)
+	{
+		return component == GRASPBuilder<R, ADS, DS>::idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << GRASPH::family << "GRASP";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
 	}
 };
 

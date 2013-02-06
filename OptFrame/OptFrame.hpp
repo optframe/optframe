@@ -95,6 +95,7 @@
 #include "Heuristics/SimpleLocalSearch.hpp"
 #include "Heuristics/BasicIteratedLocalSearch.hpp"
 #include "Heuristics/BasicILSPerturbation.hpp"
+#include "Heuristics/GRASP.hpp"
 
 // test local searches
 #include "Heuristics/CompareLocalSearch.hpp"
@@ -449,6 +450,7 @@ public:
 		factory.builders.push_back(new SimpleLocalSearchBuilder<R, ADS, DS>);
 		factory.builders.push_back(new BasicIteratedLocalSearchBuilder<R, ADS, DS>);
 		factory.builders.push_back(new BasicILSPerturbationBuilder<R, ADS, DS>);
+		factory.builders.push_back(new GRASPBuilder<R, ADS, DS>);
 
 		// test local searches
 		factory.builders.push_back(new CompareLocalSearchBuilder<R, ADS, DS>);
