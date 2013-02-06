@@ -61,7 +61,7 @@ public:
 			return false;
 		}
 
-		string text = scanner.nextLine();
+		string text = Scanner::trim(scanner.nextLine());
 
 		fprintf(file, "%s\r\n", text.c_str());
 
