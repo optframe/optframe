@@ -61,7 +61,7 @@ public:
 
 		if (sol != Solution<R,ADS>::idComponent())
 		{
-			cout << "Second parameter must be a 'loadsol'!" << endl;
+			cout << "Second parameter must be a 'OptFrame:Solution'!" << endl;
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
