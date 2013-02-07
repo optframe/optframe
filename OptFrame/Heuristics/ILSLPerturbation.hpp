@@ -118,4 +118,53 @@ public:
 	}
 };
 
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ILSLPerturbationLPlus2Builder: public ComponentBuilder<R, ADS, DS>
+{
+public:
+	virtual ~ILSLPerturbationLPlus2Builder()
+	{
+	}
+
+	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	{
+		Evaluator<R, ADS, DS>* eval;
+		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		int limit = scanner.nextInt();
+
+		NS<R, ADS, DS>* ns;
+		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		return new ILSLPerturbationLPlus2<R, ADS, DS> (*eval, limit, *ns, hf.getRandGen());
+	}
+
+	virtual vector<pair<string, string> > parameters()
+	{
+		vector<pair<string, string> > params;
+		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
+		params.push_back(make_pair("int", "max number of not appliable moves"));
+		params.push_back(make_pair(NS<R, ADS, DS>::idComponent(), "neighborhood structure"));
+
+		return params;
+	}
+
+	virtual bool canBuild(string component)
+	{
+		return component == ILSLPerturbationLPlus2<R, ADS, DS>::idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << ComponentBuilder<R, ADS, DS>::idComponent() << ILS::family << "Lpert";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+};
+
 #endif /*OPTFRAME_ILSLPerturbation_HPP_*/

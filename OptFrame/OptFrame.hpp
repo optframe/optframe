@@ -95,6 +95,8 @@
 #include "Heuristics/SimpleLocalSearch.hpp"
 #include "Heuristics/BasicIteratedLocalSearch.hpp"
 #include "Heuristics/BasicILSPerturbation.hpp"
+#include "Heuristics/IteratedLocalSearchLevels.hpp"
+#include "Heuristics/ILSLPerturbation.hpp"
 #include "Heuristics/GRASP.hpp"
 
 // test local searches

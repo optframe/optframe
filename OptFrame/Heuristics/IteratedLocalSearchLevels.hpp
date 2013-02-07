@@ -148,4 +148,68 @@ public:
 	}
 };
 
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class IteratedLocalSearchLevelsBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, DS>
+{
+public:
+	virtual ~IteratedLocalSearchLevelsBuilder()
+	{
+	}
+
+	virtual SingleObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	{
+		Evaluator<R, ADS, DS>* eval;
+		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		Constructive<R, ADS>* constructive;
+		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		string rest = scanner.rest();
+
+		pair<LocalSearch<R, ADS, DS>*, std::string> method;
+		method = hf.createLocalSearch(rest);
+
+		LocalSearch<R, ADS, DS>* h = method.first;
+
+		scanner = Scanner(method.second);
+
+		ILSLPerturbation<R, ADS, DS>* pert;
+		hf.assign(pert, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		int iterMax = scanner.nextInt();
+		int levelMax = scanner.nextInt();
+		return new IteratedLocalSearchLevels<R, ADS, DS>(*eval, *constructive, *h, *pert, iterMax,levelMax);
+	}
+
+	virtual vector<pair<string, string> > parameters()
+	{
+		vector<pair<string, string> > params;
+		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Constructive<R, ADS>::idComponent(), "constructive heuristic"));
+		params.push_back(make_pair(LocalSearch<R, ADS, DS>::idComponent(), "local search"));
+		params.push_back(make_pair(BasicILSPerturbation<R, ADS, DS>::idComponent(), "ils perturbation"));
+		params.push_back(make_pair("int", "max number of iterations without improvement"));
+		params.push_back(make_pair("int", "levelMax of perturbation"));
+
+		return params;
+	}
+
+	virtual bool canBuild(string component)
+	{
+		return component == IteratedLocalSearchLevels<R, ADS, DS>::idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << ILS::family << "ILSLevels";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+};
+
 #endif /*OPTFRAME_ILSL_HPP_*/
