@@ -95,6 +95,7 @@
 #include "Heuristics/SimpleLocalSearch.hpp"
 #include "Heuristics/BasicIteratedLocalSearch.hpp"
 #include "Heuristics/BasicILSPerturbation.hpp"
+#include "Heuristics/BasicSimulatedAnnealing.hpp"
 #include "Heuristics/IteratedLocalSearchLevels.hpp"
 #include "Heuristics/ILSLPerturbation.hpp"
 #include "Heuristics/GRASP.hpp"
@@ -450,8 +451,11 @@ public:
 
 		// SingleObjSearch + Parameters
 		factory.builders.push_back(new SimpleLocalSearchBuilder<R, ADS, DS>);
+		factory.builders.push_back(new BasicSimulatedAnnealingBuilder<R, ADS, DS>);
 		factory.builders.push_back(new BasicIteratedLocalSearchBuilder<R, ADS, DS>);
 		factory.builders.push_back(new BasicILSPerturbationBuilder<R, ADS, DS>);
+		factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<R, ADS, DS>);
+		factory.builders.push_back(new ILSLPerturbationLPlus2Builder<R, ADS, DS>);
 		factory.builders.push_back(new GRASPBuilder<R, ADS, DS>);
 
 		// test local searches

@@ -27,6 +27,8 @@
 #include "IteratedLocalSearch.hpp"
 #include "ILSLPerturbation.hpp"
 
+#include "ILS.h"
+
 typedef pair<pair<int, int> , pair<int, int> > levelHistory;
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
@@ -187,7 +189,7 @@ public:
 		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(Constructive<R, ADS>::idComponent(), "constructive heuristic"));
 		params.push_back(make_pair(LocalSearch<R, ADS, DS>::idComponent(), "local search"));
-		params.push_back(make_pair(ILSLPerturbation<R, ADS, DS>::idComponent(), "ils perturbation"));
+		params.push_back(make_pair(ILSLPerturbation<R, ADS, DS>::idComponent(), "ilsL perturbation"));
 		params.push_back(make_pair("int", "max number of iterations without improvement"));
 		params.push_back(make_pair("int", "levelMax of perturbation"));
 

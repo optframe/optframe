@@ -27,6 +27,8 @@
 #include "../NS.hpp"
 #include "../RandGen.hpp"
 
+#include "ILS.h"
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class ILSLPerturbation: public OptFrameComponent
 {

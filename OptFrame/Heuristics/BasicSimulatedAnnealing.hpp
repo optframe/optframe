@@ -24,6 +24,8 @@
 #include "../SingleObjSearch.hpp"
 #include <math.h>
 
+#include "SA.h"
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class BasicSimulatedAnnealing: public SingleObjSearch<R, ADS, DS>
 {
@@ -155,6 +157,63 @@ public:
 
 	}
 
+};
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class BasicSimulatedAnnealingBuilder: public ILS, public SingleObjSearchBuilder<R, ADS, DS>
+{
+public:
+	virtual ~BasicSimulatedAnnealingBuilder()
+	{
+	}
+
+	virtual SingleObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	{
+		Evaluator<R, ADS, DS>* eval;
+		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		Constructive<R, ADS>* constructive;
+		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		vector<NS<R, ADS, DS>* > hlist;
+		hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		double alpha = scanner.nextDouble();
+		int SAmax = scanner.nextInt();
+		double Ti = scanner.nextDouble();
+
+		return new BasicSimulatedAnnealing<R, ADS, DS> (*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
+	}
+
+	virtual vector<pair<string, string> > parameters()
+	{
+		vector<pair<string, string> > params;
+		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Constructive<R, ADS>::idComponent(), "constructive heuristic"));
+		params.push_back(make_pair(NS<R, ADS, DS>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair("double", "max number of iterations without improvement"));
+		params.push_back(make_pair("int", "max number of iterations without improvement"));
+		params.push_back(make_pair("double", "max number of iterations without improvement"));
+
+		return params;
+	}
+
+	virtual bool canBuild(string component)
+	{
+		return component == BasicSimulatedAnnealing<R, ADS, DS>::idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << SA::family << "BasicSA";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
 };
 
 /*
