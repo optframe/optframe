@@ -45,7 +45,7 @@ public:
 
 	string usage()
 	{
-		return "component.check iterMax verbose=false [ OptFrame:Constructive[] OptFrame:Evaluator[] OptFrame:NS[] OptFrame:NS:NSSeq[] OptFrame:NS:NSSeq:NSEnum[] ]";
+		return "component.check iterMax verbose=false [ OptFrame:Constructive[] OptFrame:Evaluator[] OptFrame:Move[] OptFrame:NS[] OptFrame:NS:NSSeq[] OptFrame:NS:NSSeq:NSEnum[] ]";
 	}
 
 	void message(string component, int iter, string text)
@@ -118,6 +118,13 @@ public:
 				return false;
 			}
 
+			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lmove", dictionary, ldictionary);
+			if(!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:Move _aux_check_lmove"))
+			{
+				cout << "error: reading list of OptFrame:Move!" << endl;
+				return false;
+			}
+
 			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lns", dictionary, ldictionary);
 			if(!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:NS _aux_check_lns"))
 			{
@@ -139,7 +146,7 @@ public:
 				return false;
 			}
 
-			scanner = Scanner("_aux_check_lconstructive _aux_check_levaluator _aux_check_lns _aux_check_lnsseq _aux_check_lnsenum");
+			scanner = Scanner("_aux_check_lconstructive  _aux_check_levaluator  _aux_check_lmove  _aux_check_lns  _aux_check_lnsseq  _aux_check_lnsenum");
 		}
 
 		//string rest = scanner.rest();
@@ -188,6 +195,29 @@ public:
 		else
 		{
 			cout << "module " << id() << " error: couldn't read list of OptFrame:Evaluator!" << endl;
+			return false;
+		}
+
+
+		// -------------------
+		//        Move
+		// -------------------
+
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+		vector<string>  lMove;
+		vector<string>* p_lMove = OptFrameList::readList(ldictionary, scanner);
+		if(p_lMove)
+		{
+			lMove = vector<string>(*p_lMove);
+			delete p_lMove;
+		}
+		else
+		{
+			cout << "module " << id() << " error: couldn't read list of OptFrame:Move!" << endl;
 			return false;
 		}
 
@@ -263,6 +293,7 @@ public:
 		// cleanup auxiliar list definitions
 		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lconstructive", dictionary, ldictionary);
 		OptFrameModule<R, ADS, DS>::undefine("_aux_check_levaluator", dictionary, ldictionary);
+		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lmove", dictionary, ldictionary);
 		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lns", dictionary, ldictionary);
 		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lnsseq", dictionary, ldictionary);
 		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lnsenum", dictionary, ldictionary);
@@ -346,6 +377,189 @@ public:
 
 		if(verbose)
 			cout << endl << endl;
+
+
+
+		// ====================================================================
+		// testing Move
+		// ====================================================================
+
+		cout << "module " << id() << " will test given Move components (|Move|=" << lMove.size() << "; numSolutions=" << solutions.size() << ")" << endl;
+
+		for(unsigned id_move=0; id_move<lMove.size(); id_move++)
+		{
+			Scanner scan(lMove.at(id_move));
+			Move<R, ADS, DS>* pmove;
+			factory.assign(pmove, scan.nextInt(), scan.next()); // reversed!
+
+			if(!pmove)
+			{
+				cout << "module " << id() << " error: NULL OptFrame:Move!" << endl;
+				return false;
+			}
+
+				for(unsigned id_s=0; id_s < solutions.size(); id_s++)
+				{
+					if(verbose)
+						cout << endl;
+					message(lMove.at(id_move), -1, "working on move.");
+
+					Solution<R, ADS>& s = *solutions.at(id_s);
+
+					Move<R, ADS, DS>& move = *pmove;
+
+					if(!move.canBeApplied(s))
+					{
+                  if(verbose)
+                  {
+                     cout << "move cannot be applied: ";
+                     move.print();
+                  }
+						continue;
+					}
+
+					for(unsigned ev=0; ev<evaluators.size(); ev++)
+					{
+						message(lEvaluator.at(ev), -1, "evaluating move (apply, revert and moveCost).");
+
+						string moveFrom = "Move ";
+						moveFrom.append(move.id());
+
+						if(verbose)
+							move.print();
+
+						message(moveFrom, -1, "testing reverse.");
+
+						Move<R, ADS, DS>& rev = move.apply(s);
+						Solution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
+
+						Evaluation<DS>& e_rev = evaluators.at(ev)->evaluate(s);
+
+						Move<R, ADS, DS>& ini = rev.apply(s);
+
+						Evaluation<DS>& e_ini = evaluators.at(ev)->evaluate(s);
+
+						if(ini != move)
+						{
+							error("reverse of reverse is not the original move!");
+							move.print();
+							cout << "move: ";
+							move.print();
+							cout << "rev: ";
+							rev.print();
+							cout << "ini (reverse of rev): ";
+							ini.print();
+
+							return false;
+						}
+
+						message(lEvaluator.at(ev), -1, "testing reverse value.");
+						Evaluation<DS>& e = *evaluations.at(ev).at(id_s);
+
+						if(abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
+						{
+							error("reverse of reverse has a different evaluation value!");
+							move.print();
+							cout << "move: ";
+							move.print();
+							cout << "original: ";
+							e.print();
+							cout << "reverse of reverse:";
+							e_ini.print();
+
+							return false;
+						}
+
+						message(lEvaluator.at(ev), -1, "testing move cost.");
+
+						double revCost = e_rev.evaluation() - e.evaluation();
+
+						double simpleCost = evaluators[ev]->moveCost(move, s);
+
+						if(abs(revCost - simpleCost) > 0.0001)
+						{
+							error("difference between revCost and simpleCost");
+							move.print();
+							printf("revCost = %.4f\n", revCost);
+							printf("simpleCost = %.4f\n", simpleCost);
+							return false;
+						}
+
+						// fasterCost
+						Move<R, ADS, DS>& rev1 = evaluators[ev]->applyMove(e, move, s);
+						double e_end1 = e.evaluation();
+						Move<R, ADS, DS>& ini1 = evaluators[ev]->applyMove(e, rev1, s);
+						double e_ini1 = e.evaluation();
+
+						delete& rev1;
+						delete& ini1;
+
+						double fasterCost = e_end1 - e_ini1;
+
+						if(abs(revCost - fasterCost) > 0.0001)
+						{
+							error("difference between revCost and fasterCost");
+							move.print();
+							printf("revCost = %.4f\n", revCost);
+							printf("fasterCost = %.4f\n",  fasterCost);
+							printf("e = %.4f\n", e.evaluation());
+							printf("e_rev = %.4f\n", e_rev.evaluation());
+							return false;
+						}
+
+						pair<double, double>* cost = move.cost(e, s.getR(), s.getADS());
+
+						if(cost)
+						{
+							double cValue = cost->first+cost->second;
+							if(abs(revCost - cValue) > 0.0001)
+							{
+								error("difference between expected cost and cost()");
+								move.print();
+								printf("expected =\t %.4f\n", revCost);
+								printf("cost() =\t %.4f\n", cValue);
+								printf("==============\n");
+								printf("CORRECT VALUES \n");
+								printf("==============\n");
+								printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
+								printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
+								cout << "s: ";
+								s.print();
+								cout << "s': ";
+								sNeighbor.print();
+								cout << "move: ";
+								move.print();
+								printf("==============\n");
+								printf("  GOOD LUCK!  \n");
+								printf("==============\n");
+								return false;
+							}
+
+							delete cost;
+						}
+
+						message(lEvaluator.at(ev), -1, "all move costs okay!");
+
+						delete& rev;
+						delete& sNeighbor;
+						delete& e_rev;
+						delete& ini;
+						delete& e_ini;
+					}
+
+					/////delete& move; // NEVER DESTROY THIS OptFrame:Move!
+				}
+
+		}
+
+		if(verbose)
+			cout << endl << endl;
+
+
+
+		// ====================================================================
+		// testing NS
+		// ====================================================================
 
 		cout << "module " << id() << " will test NS components (iterMax=" << iterMax << "; numSolutions=" << solutions.size() << ")" << endl;
 
@@ -516,18 +730,24 @@ public:
 							double cValue = cost->first+cost->second;
 							if(abs(revCost - cValue) > 0.0001)
 							{
-								error("difference between revCost and cost()");
+								error("difference between expected cost and cost()");
 								move.print();
-								printf("revCost = %.4f\n", revCost);
-								printf("cost() = %.4f\n", cValue);
-								printf("e = %.4f\n", e.evaluation());
-								printf("e_rev = %.4f\n", e_rev.evaluation());
+								printf("expected =\t %.4f\n", revCost);
+								printf("cost() =\t %.4f\n", cValue);
+								printf("==============\n");
+								printf("CORRECT VALUES \n");
+								printf("==============\n");
+								printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
+								printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
 								cout << "s: ";
 								s.print();
 								cout << "s': ";
 								sNeighbor.print();
 								cout << "move: ";
 								move.print();
+								printf("==============\n");
+								printf("  GOOD LUCK!  \n");
+								printf("==============\n");
 								return false;
 							}
 
