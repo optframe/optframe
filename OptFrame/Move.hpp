@@ -82,7 +82,7 @@ public:
 
    static string idComponent()
    {
-      return "OptFrame:Move:";
+      return "OptFrame:Move";
    }
 
    virtual string id() const
