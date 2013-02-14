@@ -41,6 +41,14 @@ public:
     	parentId.append("$project"); // implements 'problem.project_name' module
     	return parentId;
     }
+    
+    bool registerComponent(OptFrameComponent& component, string type, string name, HeuristicFactory<Rep$project , OPTFRAME_DEFAULT_ADS $commadproject>& hf, map<string, string>& dictionary)
+    {
+	    int idx = hf.addComponent(component, type);
+	    stringstream ss;
+	    ss << type << " " << idx;
+	    return defineText(name, ss.str(), dictionary);
+    }
 
 	bool load(string filename, HeuristicFactory<Rep$project , OPTFRAME_DEFAULT_ADS $commadproject>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{

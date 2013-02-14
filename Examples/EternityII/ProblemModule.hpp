@@ -44,6 +44,14 @@ public:
     	return parentId;
     }
 
+    bool registerComponent(OptFrameComponent& component, string type, string name, HeuristicFactory<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& hf, map<string, string>& dictionary)
+    {
+       int idx = hf.addComponent(component, type);
+       stringstream ss;
+       ss << type << " " << idx;
+       return defineText(name, ss.str(), dictionary);
+    }
+
 	bool load(string filename, HeuristicFactory<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 	    File* file;
