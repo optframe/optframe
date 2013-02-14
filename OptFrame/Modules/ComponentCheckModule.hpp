@@ -371,6 +371,7 @@ public:
 				}
 			}
 
+			cout << "component.check: " << lConstructive.at(c) << " finished." << endl;
 			if(verbose)
 				cout << endl << endl;
 		}
@@ -767,6 +768,7 @@ public:
 				}
 			}
 
+			cout << "component.check: " << lNS.at(id_ns) << " finished." << endl;
 			if(verbose)
 				cout << endl << endl;
 		}
