@@ -49,7 +49,8 @@ public:
 
 	using Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::evaluate; // prevents name hiding
 
-	TSPEvaluator(ProblemInstance* pI) // If necessary, add more parameters
+	TSPEvaluator(ProblemInstance* pI) :
+		Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>(true) // ALLOW COSTS!
 	{
 		this->pI = pI;
 	}

@@ -508,7 +508,10 @@ public:
 							return false;
 						}
 
-						pair<double, double>* cost = move.cost(e, s.getR(), s.getADS());
+						pair<double, double>* cost = NULL;
+
+						if(evaluators[ev]->getAllowCosts())
+							cost = move.cost(e, s.getR(), s.getADS());
 
 						if(cost)
 						{
@@ -719,7 +722,11 @@ public:
 						}
 
 						Timer tMoveCost;
-						pair<double, double>* cost = move.cost(e, s.getR(), s.getADS());
+						pair<double, double>* cost = NULL;
+
+						if(evaluators[ev]->getAllowCosts())
+							cost = move.cost(e, s.getR(), s.getADS());
+
 						if(cost)
 						{
 							timeNSCost[id_ns].second += tMoveCost.inMilliSecs();

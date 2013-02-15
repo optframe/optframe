@@ -50,10 +50,23 @@ using namespace std;
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class Evaluator : public OptFrameComponent
 {
+protected:
+	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
+
 public:
+
+	Evaluator(bool _allowCosts = false):
+		allowCosts(_allowCosts)
+	{
+	}
 
 	virtual ~Evaluator()
 	{
+	}
+
+	bool getAllowCosts()
+	{
+		return allowCosts;
 	}
 
 	Evaluation<DS>& evaluate(const Solution<R, ADS>& s)
@@ -98,7 +111,9 @@ public:
 		double e_end;
 		double e_ini;
 
-		pair<double, double>* p = m.cost(e, s.getR(), s.getADS());
+		pair<double, double>* p = NULL;
+		if(allowCosts)
+			p = m.cost(e, s.getR(), s.getADS());
 
 		// do not update 's' => much faster (using updateDelta)
 		if(p)
@@ -153,7 +168,9 @@ public:
 	// Movement ESTIMATED cost (or REAL cost, if ESTIMATED is not implemented!)
 	double estimatedMoveCost(Evaluation<DS>& e, Move<R, ADS, DS>& m, Solution<R, ADS>& s)
 	{
-		pair<double, double>* p = m.estimatedCost(e, s.getR(), s.getADS());
+		pair<double, double>* p = NULL;
+		if(allowCosts)
+			p = m.estimatedCost(e, s.getR(), s.getADS());
 
 		// using estimatedCost
 		if(p)
