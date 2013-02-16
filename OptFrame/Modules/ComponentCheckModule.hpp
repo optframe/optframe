@@ -45,7 +45,7 @@ public:
 
 	string usage()
 	{
-		return "component.check iterMax verbose=false [ OptFrame:Constructive[] OptFrame:Evaluator[] OptFrame:Move[] OptFrame:NS[] OptFrame:NS:NSSeq[] OptFrame:NS:NSSeq:NSEnum[] ]";
+		return "component.check iterMax nSolNSSeq verbose=false [ OptFrame:Constructive[] OptFrame:Evaluator[] OptFrame:Move[] OptFrame:NS[] OptFrame:NS:NSSeq[] OptFrame:NS:NSSeq:NSEnum[] ]";
 	}
 
 	void message(string component, int iter, string text)
@@ -79,6 +79,18 @@ public:
 			return false;
 		}
 		int iterMax = scanner.nextInt();
+
+
+		// -----------------------------------------
+		//  number of solutions to apply NSSeq tests
+		// -----------------------------------------
+
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+		int nSolNSSeq = scanner.nextInt();
 
 
 		// -------------------
@@ -781,6 +793,240 @@ public:
 		}
 
 
+		// ====================================================================
+		// testing NSSeq
+		// ====================================================================
+
+		cout << "module " << id() << " will test NSSeq components (nSolNSSeq=" << nSolNSSeq << " of numSolutions=" << solutions.size() << ")" << endl;
+
+		vector< int > vCountMoves(lNSSeq.size());
+		vector< int > vCountValidMoves(lNSSeq.size());
+
+		for(unsigned id_nsseq=0; id_nsseq<lNSSeq.size(); id_nsseq++)
+		{
+			Scanner scan(lNSSeq.at(id_nsseq));
+			NSSeq<R, ADS, DS>* nsseq;
+			factory.assign(nsseq, scan.nextInt(), scan.next()); // reversed!
+
+			if(!nsseq)
+			{
+				cout << "module " << id() << " error: NULL OptFrame:NS:NSSeq!" << endl;
+				return false;
+			}
+
+			int countMoves = 0;
+			int countValidMoves = 0;
+
+			for(int nqs=1; nqs<=nSolNSSeq; nqs++)
+			{
+				message(lNSSeq.at(id_nsseq), nqs, "starting tests!");
+
+				int randomIndex = rand()%solutions.size();
+				Solution<R, ADS>& s = *solutions.at(randomIndex);
+
+				NSIterator<R, ADS, DS>& it = nsseq->getIterator(s);
+
+				for(it.first(); !it.isDone(); it.next())
+				{
+					if(verbose)
+						cout << endl;
+					message(lNSSeq.at(id_nsseq), nqs, "getting current move.");
+
+					Move<R, ADS, DS>& move = it.current();
+					countMoves++;
+
+					if(!move.canBeApplied(s))
+					{
+						if(verbose)
+						{
+							cout << "move cannot be applied: ";
+							move.print();
+						}
+						continue;
+					}
+
+					countValidMoves++;
+
+					for(unsigned ev=0; ev<evaluators.size(); ev++)
+					{
+						message(lEvaluator.at(ev), nqs, "evaluating random move (apply, revert and moveCost).");
+
+						string moveFrom = "Move ";
+						moveFrom.append(move.id());
+						moveFrom.append(" from: ");
+						moveFrom.append(nsseq->id());
+						moveFrom.append(" toString: ");
+						moveFrom.append(nsseq->toString());
+
+						if(verbose)
+							move.print();
+
+						message(moveFrom, nqs, "testing reverse.");
+
+						Timer tMovApply;
+						Move<R, ADS, DS>& rev = move.apply(s);
+						timeNSApply[id_nsseq].second += tMovApply.inMilliSecs();
+						timeNSApply[id_nsseq].first++;
+
+						Solution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
+
+						Timer te;
+						Evaluation<DS>& e_rev = evaluators.at(ev)->evaluate(s);
+						fullTimeEval[ev].second += te.inMilliSecs();
+						fullTimeEval[ev].first++;
+
+						Timer tMovRevApply;
+						Move<R, ADS, DS>& ini = rev.apply(s);
+						timeNSApply[id_nsseq].second += tMovRevApply.inMilliSecs();
+						timeNSApply[id_nsseq].first++;
+
+						Timer te2;
+						Evaluation<DS>& e_ini = evaluators.at(ev)->evaluate(s);
+						fullTimeEval[ev].second += te2.inMilliSecs();
+						fullTimeEval[ev].first++;
+
+						if(ini != move)
+						{
+							error("reverse of reverse is not the original move!");
+							move.print();
+							cout << "move: ";
+							move.print();
+							cout << "rev: ";
+							rev.print();
+							cout << "ini (reverse of rev): ";
+							ini.print();
+
+							return false;
+						}
+
+						message(lEvaluator.at(ev), nqs, "testing reverse value.");
+						Evaluation<DS>& e = *evaluations.at(ev).at(randomIndex);
+
+						if(abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
+						{
+							error("reverse of reverse has a different evaluation value!");
+							move.print();
+							cout << "move: ";
+							move.print();
+							cout << "original: ";
+							e.print();
+							cout << "reverse of reverse:";
+							e_ini.print();
+
+							return false;
+						}
+
+						message(lEvaluator.at(ev), nqs, "testing move cost.");
+
+						double revCost = e_rev.evaluation() - e.evaluation();
+
+
+						Timer tMoveCostApply;
+						double simpleCost = evaluators[ev]->moveCost(move, s);
+						timeNSCostApply[id_nsseq].second += tMoveCostApply.inMilliSecs();
+						timeNSCostApply[id_nsseq].first++;
+
+						if(abs(revCost - simpleCost) > 0.0001)
+						{
+							error("difference between revCost and simpleCost");
+							move.print();
+							printf("revCost = %.4f\n", revCost);
+							printf("simpleCost = %.4f\n", simpleCost);
+							return false;
+						}
+
+						// fasterCost
+						Timer tMoveCostApplyDelta;
+						Move<R, ADS, DS>& rev1 = evaluators[ev]->applyMove(e, move, s);
+						double e_end1 = e.evaluation();
+						Move<R, ADS, DS>& ini1 = evaluators[ev]->applyMove(e, rev1, s);
+						double e_ini1 = e.evaluation();
+						timeNSCostApplyDelta[id_nsseq].second += tMoveCostApplyDelta.inMilliSecs();
+						timeNSCostApplyDelta[id_nsseq].first++;
+
+						delete& rev1;
+						delete& ini1;
+
+						double fasterCost = e_end1 - e_ini1;
+
+						if(abs(revCost - fasterCost) > 0.0001)
+						{
+							error("difference between revCost and fasterCost");
+							move.print();
+							printf("revCost = %.4f\n", revCost);
+							printf("fasterCost = %.4f\n",  fasterCost);
+							printf("e = %.4f\n", e.evaluation());
+							printf("e_rev = %.4f\n", e_rev.evaluation());
+							return false;
+						}
+
+						Timer tMoveCost;
+						pair<double, double>* cost = NULL;
+
+						if(evaluators[ev]->getAllowCosts())
+							cost = move.cost(e, s.getR(), s.getADS());
+
+						if(cost)
+						{
+							timeNSCost[id_nsseq].second += tMoveCost.inMilliSecs();
+							timeNSCost[id_nsseq].first++;
+						}
+
+						if(cost)
+						{
+							double cValue = cost->first+cost->second;
+							if(abs(revCost - cValue) > 0.0001)
+							{
+								error("difference between expected cost and cost()");
+								move.print();
+								printf("expected =\t %.4f\n", revCost);
+								printf("cost() =\t %.4f\n", cValue);
+								printf("==============\n");
+								printf("CORRECT VALUES \n");
+								printf("==============\n");
+								printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
+								printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
+								cout << "s: ";
+								s.print();
+								cout << "s': ";
+								sNeighbor.print();
+								cout << "move: ";
+								move.print();
+								printf("==============\n");
+								printf("  GOOD LUCK!  \n");
+								printf("==============\n");
+								return false;
+							}
+
+							delete cost;
+						}
+
+						message(lEvaluator.at(ev), nqs, "all move costs okay!");
+
+						delete& rev;
+						delete& sNeighbor;
+						delete& e_rev;
+						delete& ini;
+						delete& e_ini;
+					}
+
+					delete& move;
+				}
+
+				delete& it;
+			}
+
+			vCountMoves[id_nsseq] += countMoves;
+			vCountValidMoves[id_nsseq] += countValidMoves;
+
+			cout << "component.check: " << lNSSeq.at(id_nsseq) << " finished." << endl;
+			if(verbose)
+				cout << endl << endl;
+		}
+
+
+
+
 		for(unsigned i=0; i<solutions.size(); i++)
 			delete solutions[i];
 
@@ -803,6 +1049,10 @@ public:
 		printSummary(timeNSCostApplyDelta, "NS", "testing time of cost based on move apply(e, s)");
 
 		printSummary(timeNSCost, "NS", "testing time of move cost()");
+
+		printSummarySimple(vCountMoves, nSolNSSeq, "NSSeq", "counting moves of NSSeq iterator");
+
+		printSummarySimple(vCountValidMoves, nSolNSSeq, "NSSeq", "counting valid moves of NSSeq iterator");
 
 		cout << "component.check module: tests finished successfully!" << endl;
 		return true;
@@ -832,6 +1082,31 @@ public:
       cout << endl;
    }
 
+   void printSummarySimple(const vector< int >& values, int numTests, string type, string title)
+   {
+      printf("---------------------------------\n");
+      cout << "|"<<type<<"|=" << values.size() << "\t" << title << endl;
+      printf("---------------------------------\n");
+      printf("#id\t#tests\tavg of %d tests\n", numTests);
+      double avg = 0;
+      int validValues = 0;
+      for(unsigned id=0; id<values.size(); id++)
+      {
+    	  if(values[id] > 0)
+    	  {
+    		  printf("#%d\t%d\t%d\n", ((int)id), values[id], (values[id]/numTests));
+    		  avg += (values[id]/numTests);
+    		  validValues++;
+    	  }
+    	  else
+    		  printf("#%d\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int)id), 0);
+      }
+      printf("---------------------------------\n");
+      printf("all\t-\t%.4f\t-\n", (avg/validValues));
+      cout << endl;
+   }
+
 };
 
 #endif /* CHECKMODULE_HPP_ */
+
