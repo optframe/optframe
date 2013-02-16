@@ -86,7 +86,7 @@ randgen.set_seed 0
 
 problem.general load default_file
 
-component.check 20
+component.check 20 5 false
 
 exit
 
