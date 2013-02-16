@@ -34,10 +34,8 @@ using namespace std;
 
 class MoveRotate: public Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
 {
-private:
-	int nRot, x, y;
-
 public:
+	int nRot, x, y;
 
 	using Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::apply; // prevents name hiding
 	using Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::canBeApplied; // prevents name hiding
@@ -158,6 +156,7 @@ public:
 	}
 };
 
+template<class MOVE = MoveRotate>
 class NSSeqRotate: public NSSeq<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
 {
 private:
@@ -182,7 +181,7 @@ public:
 		int y = rg.rand((rep.getNumCols() - 2)) + 1;
 		int nRot = rg.rand(3) + 1;
 
-		return *new MoveRotate(nRot, x, y); // return a random move
+		return *new MOVE(nRot, x, y); // return a random move
 	}
 
 	virtual NSIterator<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)

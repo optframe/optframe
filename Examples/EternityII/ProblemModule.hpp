@@ -76,7 +76,7 @@ public:
 
     	SolutionEtII& s = is.generateSolution();
 
-    	NSSeqRotate& nsRotate = * new NSSeqRotate(hf.getRandGen());
+    	NSSeqRotate<DeltaMoveRotate>& nsRotate = * new NSSeqRotate<DeltaMoveRotate>(hf.getRandGen());
     	NSSeqSwapCenter& nsSwapCenter = * new NSSeqSwapCenter(hf.getRandGen());
     	NSSeqSwapCorner& nsSwapCorner = * new NSSeqSwapCorner(hf.getRandGen());
     	NSSeqSwapRotateCenter& nsSwapRotateCenter = * new NSSeqSwapRotateCenter(hf.getRandGen());

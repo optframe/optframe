@@ -52,7 +52,7 @@ public:
 	using Evaluator<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::evaluate;
 
 	EtIIEvaluator(ProblemInstance& _pEtII) :
-		Evaluator<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>(false), pEtII(_pEtII) // DISALLOW COSTS (DEFAULT)
+		Evaluator<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>(true), pEtII(_pEtII) // DISALLOW COSTS (DEFAULT)
 	{
 		// Put the rest of your code here
 	}
