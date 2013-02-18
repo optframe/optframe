@@ -433,160 +433,160 @@ public:
 				return false;
 			}
 
-				for(unsigned id_s=0; id_s < solutions.size(); id_s++)
+			for(unsigned id_s=0; id_s < solutions.size(); id_s++)
+			{
+				if(verbose)
+					cout << endl;
+				message(lMove.at(id_move), -1, "working on move.");
+
+				Solution<R, ADS>& s = *solutions.at(id_s);
+
+				Move<R, ADS, DS>& move = *pmove;
+
+				if(!move.canBeApplied(s))
 				{
 					if(verbose)
-						cout << endl;
-					message(lMove.at(id_move), -1, "working on move.");
-
-					Solution<R, ADS>& s = *solutions.at(id_s);
-
-					Move<R, ADS, DS>& move = *pmove;
-
-					if(!move.canBeApplied(s))
 					{
-                  if(verbose)
-                  {
-                     cout << "move cannot be applied: ";
-                     move.print();
-                  }
-						continue;
+						cout << "move cannot be applied: ";
+						move.print();
 					}
-
-					for(unsigned ev=0; ev<evaluators.size(); ev++)
-					{
-						message(lEvaluator.at(ev), -1, "evaluating move (apply, revert and moveCost).");
-
-						string moveFrom = "Move ";
-						moveFrom.append(move.id());
-
-						if(verbose)
-							move.print();
-
-						message(moveFrom, -1, "testing reverse.");
-
-						Move<R, ADS, DS>& rev = move.apply(s);
-						Solution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
-
-						Evaluation<DS>& e_rev = evaluators.at(ev)->evaluate(s);
-
-						Move<R, ADS, DS>& ini = rev.apply(s);
-
-						Evaluation<DS>& e_ini = evaluators.at(ev)->evaluate(s);
-
-						if(ini != move)
-						{
-							error("reverse of reverse is not the original move!");
-							move.print();
-							cout << "move: ";
-							move.print();
-							cout << "rev: ";
-							rev.print();
-							cout << "ini (reverse of rev): ";
-							ini.print();
-
-							return false;
-						}
-
-						message(lEvaluator.at(ev), -1, "testing reverse value.");
-						Evaluation<DS>& e = *evaluations.at(ev).at(id_s);
-
-						if(abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
-						{
-							error("reverse of reverse has a different evaluation value!");
-							move.print();
-							cout << "move: ";
-							move.print();
-							cout << "original: ";
-							e.print();
-							cout << "reverse of reverse:";
-							e_ini.print();
-
-							return false;
-						}
-
-						message(lEvaluator.at(ev), -1, "testing move cost.");
-
-						double revCost = e_rev.evaluation() - e.evaluation();
-
-						double simpleCost = evaluators[ev]->moveCost(move, s);
-
-						if(abs(revCost - simpleCost) > 0.0001)
-						{
-							error("difference between revCost and simpleCost");
-							move.print();
-							printf("revCost = %.4f\n", revCost);
-							printf("simpleCost = %.4f\n", simpleCost);
-							return false;
-						}
-
-						// fasterCost
-						Move<R, ADS, DS>& rev1 = evaluators[ev]->applyMove(e, move, s);
-						double e_end1 = e.evaluation();
-						Move<R, ADS, DS>& ini1 = evaluators[ev]->applyMove(e, rev1, s);
-						double e_ini1 = e.evaluation();
-
-						delete& rev1;
-						delete& ini1;
-
-						double fasterCost = e_end1 - e_ini1;
-
-						if(abs(revCost - fasterCost) > 0.0001)
-						{
-							error("difference between revCost and fasterCost");
-							move.print();
-							printf("revCost = %.4f\n", revCost);
-							printf("fasterCost = %.4f\n",  fasterCost);
-							printf("e = %.4f\n", e.evaluation());
-							printf("e_rev = %.4f\n", e_rev.evaluation());
-							return false;
-						}
-
-						pair<double, double>* cost = NULL;
-
-						if(evaluators[ev]->getAllowCosts())
-							cost = move.cost(e, s.getR(), s.getADS());
-
-						if(cost)
-						{
-							double cValue = cost->first+cost->second;
-							if(abs(revCost - cValue) > 0.0001)
-							{
-								error("difference between expected cost and cost()");
-								move.print();
-								printf("expected =\t %.4f\n", revCost);
-								printf("cost() =\t %.4f\n", cValue);
-								printf("==============\n");
-								printf("CORRECT VALUES \n");
-								printf("==============\n");
-								printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
-								printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
-								cout << "s: ";
-								s.print();
-								cout << "s': ";
-								sNeighbor.print();
-								cout << "move: ";
-								move.print();
-								printf("==============\n");
-								printf("  GOOD LUCK!  \n");
-								printf("==============\n");
-								return false;
-							}
-
-							delete cost;
-						}
-
-						message(lEvaluator.at(ev), -1, "all move costs okay!");
-
-						delete& rev;
-						delete& sNeighbor;
-						delete& e_rev;
-						delete& ini;
-						delete& e_ini;
-					}
-
-					/////delete& move; // NEVER DESTROY THIS OptFrame:Move!
+					continue;
 				}
+
+				for(unsigned ev=0; ev<evaluators.size(); ev++)
+				{
+					message(lEvaluator.at(ev), -1, "evaluating move (apply, revert and moveCost).");
+
+					string moveFrom = "Move ";
+					moveFrom.append(move.id());
+
+					if(verbose)
+						move.print();
+
+					message(moveFrom, -1, "testing reverse.");
+
+					Move<R, ADS, DS>& rev = move.apply(s);
+					Solution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
+
+					Evaluation<DS>& e_rev = evaluators.at(ev)->evaluate(s);
+
+					Move<R, ADS, DS>& ini = rev.apply(s);
+
+					Evaluation<DS>& e_ini = evaluators.at(ev)->evaluate(s);
+
+					if(ini != move)
+					{
+						error("reverse of reverse is not the original move!");
+						move.print();
+						cout << "move: ";
+						move.print();
+						cout << "rev: ";
+						rev.print();
+						cout << "ini (reverse of rev): ";
+						ini.print();
+
+						return false;
+					}
+
+					message(lEvaluator.at(ev), -1, "testing reverse value.");
+					Evaluation<DS>& e = *evaluations.at(ev).at(id_s);
+
+					if(abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
+					{
+						error("reverse of reverse has a different evaluation value!");
+						move.print();
+						cout << "move: ";
+						move.print();
+						cout << "original: ";
+						e.print();
+						cout << "reverse of reverse:";
+						e_ini.print();
+
+						return false;
+					}
+
+					message(lEvaluator.at(ev), -1, "testing move cost.");
+
+					double revCost = e_rev.evaluation() - e.evaluation();
+
+					double simpleCost = evaluators[ev]->moveCost(move, s);
+
+					if(abs(revCost - simpleCost) > 0.0001)
+					{
+						error("difference between revCost and simpleCost");
+						move.print();
+						printf("revCost = %.4f\n", revCost);
+						printf("simpleCost = %.4f\n", simpleCost);
+						return false;
+					}
+
+					// fasterCost
+					Move<R, ADS, DS>& rev1 = evaluators[ev]->applyMove(e, move, s);
+					double e_end1 = e.evaluation();
+					Move<R, ADS, DS>& ini1 = evaluators[ev]->applyMove(e, rev1, s);
+					double e_ini1 = e.evaluation();
+
+					delete& rev1;
+					delete& ini1;
+
+					double fasterCost = e_end1 - e_ini1;
+
+					if(abs(revCost - fasterCost) > 0.0001)
+					{
+						error("difference between revCost and fasterCost");
+						move.print();
+						printf("revCost = %.4f\n", revCost);
+						printf("fasterCost = %.4f\n",  fasterCost);
+						printf("e = %.4f\n", e.evaluation());
+						printf("e_rev = %.4f\n", e_rev.evaluation());
+						return false;
+					}
+
+					pair<double, double>* cost = NULL;
+
+					if(evaluators[ev]->getAllowCosts())
+						cost = move.cost(e, s.getR(), s.getADS());
+
+					if(cost)
+					{
+						double cValue = cost->first+cost->second;
+						if(abs(revCost - cValue) > 0.0001)
+						{
+							error("difference between expected cost and cost()");
+							move.print();
+							printf("expected =\t %.4f\n", revCost);
+							printf("cost() =\t %.4f\n", cValue);
+							printf("==============\n");
+							printf("CORRECT VALUES \n");
+							printf("==============\n");
+							printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
+							printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
+							cout << "s: ";
+							s.print();
+							cout << "s': ";
+							sNeighbor.print();
+							cout << "move: ";
+							move.print();
+							printf("==============\n");
+							printf("  GOOD LUCK!  \n");
+							printf("==============\n");
+							return false;
+						}
+
+						delete cost;
+					}
+
+					message(lEvaluator.at(ev), -1, "all move costs okay!");
+
+					delete& rev;
+					delete& sNeighbor;
+					delete& e_rev;
+					delete& ini;
+					delete& e_ini;
+				}
+
+				/////delete& move; // NEVER DESTROY THIS OptFrame:Move!
+			}
 
 		}
 
@@ -605,6 +605,8 @@ public:
 		vector< pair<int, double> > timeNSCostApply(lNS.size(), make_pair(0,0.0));
 		vector< pair<int, double> > timeNSCostApplyDelta(lNS.size(), make_pair(0,0.0));
 		vector< pair<int, double> > timeNSCost(lNS.size(), make_pair(0,0.0));
+		vector< pair<int, double> > timeNSEstimatedCost(lNS.size(), make_pair(0,0.0));
+		vector< pair<int, double> > errorNSEstimatedCost(lNS.size(), make_pair(0,0.0));
 
 		for(unsigned id_ns=0; id_ns<lNS.size(); id_ns++)
 		{
@@ -634,11 +636,11 @@ public:
 
 					if(!move.canBeApplied(s))
 					{
-                  if(verbose)
-                  {
-                     cout << "move cannot be applied: ";
-                     move.print();
-                  }
+						if(verbose)
+						{
+							cout << "move cannot be applied: ";
+							move.print();
+						}
 						continue;
 					}
 
@@ -753,6 +755,29 @@ public:
 							printf("e = %.4f\n", e.evaluation());
 							printf("e_rev = %.4f\n", e_rev.evaluation());
 							return false;
+						}
+
+						Timer tMoveEstimatedCost;
+						pair<double, double>* estimatedCost = NULL;
+
+						if(evaluators[ev]->getAllowCosts())
+							estimatedCost = move.estimatedCost(e, s.getR(), s.getADS());
+
+						if(estimatedCost)
+						{
+							timeNSEstimatedCost[id_ns].second += tMoveEstimatedCost.inMilliSecs();
+							timeNSEstimatedCost[id_ns].first++;
+
+							double cValue = estimatedCost->first+estimatedCost->second;
+							double diff = abs(revCost-cValue);
+							double ref  = abs(max(cValue, revCost)); // reference can be max or min! Whatever...
+							if(ref < 0.0001)
+								ref = 0.0001;
+
+							errorNSEstimatedCost[id_ns].second += (diff / ref)*100; // in percentage
+							errorNSEstimatedCost[id_ns].first++;
+
+							delete estimatedCost;
 						}
 
 						Timer tMoveCost;
@@ -1072,6 +1097,10 @@ public:
 
 		printSummary(timeNSCost, "NS", "testing time of move cost()");
 
+		printSummary(timeNSEstimatedCost, "NS", "testing time of move estimatedCost()");
+
+		printSummary(errorNSEstimatedCost, "NS", "testing error (%) of move estimatedCost()");
+
 		printSummarySimple(vCountMoves, nSolNSSeq, "NSSeq", "counting moves of NSSeq iterator");
 
 		printSummarySimple(vCountValidMoves, nSolNSSeq, "NSSeq", "counting valid moves of NSSeq iterator");
@@ -1080,53 +1109,53 @@ public:
 		return true;
 	}
 
-   void printSummary(const vector< pair<int, double> >& values, string type, string title)
-   {
-      printf("---------------------------------\n");
-      cout << "|"<<type<<"|=" << values.size() << "\t" << title << endl;
-      printf("---------------------------------\n");
-      printf("#id\t#tests\tavg(ms)\tsum(ms)\n");
-      double avg = 0;
-      int validValues = 0;
-      for(unsigned id=0; id<values.size(); id++)
-      {
-    	  if(values[id].first > 0)
-    	  {
-    		  printf("#%d\t%d\t%.4f\t%.4f\n", ((int)id), values[id].first, (values[id].second/values[id].first), values[id].second);
-    		  avg += (values[id].second/values[id].first);
-    		  validValues++;
-    	  }
-    	  else
-    		  printf("#%d\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int)id), 0);
-      }
-      printf("---------------------------------\n");
-      printf("all\t-\t%.4f\t-\n", (avg/validValues));
-      cout << endl;
-   }
+	void printSummary(const vector< pair<int, double> >& values, string type, string title)
+	{
+		printf("---------------------------------\n");
+		cout << "|"<<type<<"|=" << values.size() << "\t" << title << endl;
+		printf("---------------------------------\n");
+		printf("#id\t#tests\tavg(ms)\tsum(ms)\n");
+		double avg = 0;
+		int validValues = 0;
+		for(unsigned id=0; id<values.size(); id++)
+		{
+			if(values[id].first > 0)
+			{
+				printf("#%d\t%d\t%.4f\t%.4f\n", ((int)id), values[id].first, (values[id].second/values[id].first), values[id].second);
+				avg += (values[id].second/values[id].first);
+				validValues++;
+			}
+			else
+				printf("#%d\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int)id), 0);
+		}
+		printf("---------------------------------\n");
+		printf("all\t-\t%.4f\t-\n", (avg/validValues));
+		cout << endl;
+	}
 
-   void printSummarySimple(const vector< int >& values, int numTests, string type, string title)
-   {
-      printf("---------------------------------\n");
-      cout << "|"<<type<<"|=" << values.size() << "\t" << title << endl;
-      printf("---------------------------------\n");
-      printf("#id\t#tests\tavg of %d tests\n", numTests);
-      double avg = 0;
-      int validValues = 0;
-      for(unsigned id=0; id<values.size(); id++)
-      {
-    	  if(values[id] > 0)
-    	  {
-    		  printf("#%d\t%d\t%d\n", ((int)id), values[id], (values[id]/numTests));
-    		  avg += (values[id]/numTests);
-    		  validValues++;
-    	  }
-    	  else
-    		  printf("#%d\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int)id), 0);
-      }
-      printf("---------------------------------\n");
-      printf("all\t-\t%.4f\t-\n", (avg/validValues));
-      cout << endl;
-   }
+	void printSummarySimple(const vector< int >& values, int numTests, string type, string title)
+	{
+		printf("---------------------------------\n");
+		cout << "|"<<type<<"|=" << values.size() << "\t" << title << endl;
+		printf("---------------------------------\n");
+		printf("#id\t#tests\tavg of %d tests\n", numTests);
+		double avg = 0;
+		int validValues = 0;
+		for(unsigned id=0; id<values.size(); id++)
+		{
+			if(values[id] > 0)
+			{
+				printf("#%d\t%d\t%d\n", ((int)id), values[id], (values[id]/numTests));
+				avg += (values[id]/numTests);
+				validValues++;
+			}
+			else
+				printf("#%d\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int)id), 0);
+		}
+		printf("---------------------------------\n");
+		printf("all\t-\t%.4f\t-\n", (avg/validValues));
+		cout << endl;
+	}
 
 };
 

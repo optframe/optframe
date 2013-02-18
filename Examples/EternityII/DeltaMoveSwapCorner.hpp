@@ -160,7 +160,7 @@ public:
 				f2++;
 		}
 
-		if ((y1 + 1) < rep.getNumCols())
+		if ((y1 + 1) < ((int)rep.getNumCols()))
 		{
 			if (rep(x1, y1).right == rep(x1, y1 + 1).left)
 				f1++;
@@ -169,7 +169,7 @@ public:
 				f2++;
 		}
 
-		if ((x1 + 1) < rep.getNumRows())
+		if ((x1 + 1) < ((int)rep.getNumRows()))
 		{
 			if (rep(x1, y1).down == rep(x1 + 1, y1).up)
 				f1++;
@@ -200,7 +200,7 @@ public:
 				g2++;
 		}
 
-		if ((y2 + 1) < rep.getNumCols())
+		if ((y2 + 1) < ((int)rep.getNumCols()))
 		{
 			if (rep(x2, y2).right == rep(x2, y2 + 1).left)
 				g1++;
@@ -209,7 +209,7 @@ public:
 				g2++;
 		}
 
-		if ((x2 + 1) < rep.getNumRows())
+		if ((x2 + 1) < ((int)rep.getNumRows()))
 		{
 			if (rep(x2, y2).down == rep(x2 + 1, y2).up)
 				g1++;

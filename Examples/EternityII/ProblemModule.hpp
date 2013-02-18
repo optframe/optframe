@@ -19,9 +19,16 @@
 #include "DeltaMoveRotate.hpp"
 
 #include "NSSeqSwapCenter.hpp"
+#include "DeltaMoveSwapCenter.hpp"
+
 #include "NSSeqSwapCorner.hpp"
+#include "DeltaMoveSwapCorner.hpp"
+
 #include "NSSeqSwapRotateCenter.hpp"
+
 #include "NSSeqSwapSide.hpp"
+#include "DeltaMoveSwapSide.hpp"
+
 using namespace scannerpp;
 
 namespace EtII
@@ -87,7 +94,7 @@ public:
     	NSSeqSwapCenter<DeltaMoveSwapCenter>& nsSwapCenter = * new NSSeqSwapCenter<DeltaMoveSwapCenter>(hf.getRandGen());
     	NSSeqSwapCorner<DeltaMoveSwapCorner>& nsSwapCorner = * new NSSeqSwapCorner<DeltaMoveSwapCorner>(hf.getRandGen());
     	NSSeqSwapRotateCenter<>& nsSwapRotateCenter = * new NSSeqSwapRotateCenter<>(hf.getRandGen());
-    	NSSeqSwapSide<>& nsSwapSide = * new NSSeqSwapSide<>(hf.getRandGen());
+    	NSSeqSwapSide<DeltaMoveSwapSide>& nsSwapSide = * new NSSeqSwapSide<DeltaMoveSwapSide>(hf.getRandGen());
 
     	s.print();
 
