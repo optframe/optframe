@@ -82,11 +82,9 @@ try
 randgen.set_seed 0
 
 
-%// Optimal value for berlin52 is 7542
-
 problem.general load default_file
 
-component.check 20 5 false
+component.check 100 50 false
 
 exit
 
