@@ -78,7 +78,19 @@ public:
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
-		int iterMax = scanner.nextInt();
+
+		int iterMax;
+		string sIterMax = scanner.next();
+		try
+		{
+			iterMax = Scanner::parseInt(sIterMax);
+		}
+		catch(ConversionError& e)
+		{
+			cout << "component.check module error: no such integer 'iterMax' (number of solutions to be build and moves to be tested per solution)" << endl;
+			return false;
+		}
+
 
 
 		// -----------------------------------------
@@ -90,7 +102,17 @@ public:
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
-		int nSolNSSeq = scanner.nextInt();
+		int nSolNSSeq;
+		string sNSolNSSeq = scanner.next();
+		try
+		{
+			nSolNSSeq = Scanner::parseInt(sNSolNSSeq);
+		}
+		catch(ConversionError& e)
+		{
+			cout << "component.check module error: no such integer 'number of solutions to test NSSeq exploration'" << endl;
+			return false;
+		}
 
 
 		// -------------------

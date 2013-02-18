@@ -15,6 +15,13 @@
 
 #include "Evaluator.hpp"
 
+#include "NSSeqRotate.hpp"
+#include "DeltaMoveRotate.hpp"
+
+#include "NSSeqSwapCenter.hpp"
+#include "NSSeqSwapCorner.hpp"
+#include "NSSeqSwapRotateCenter.hpp"
+#include "NSSeqSwapSide.hpp"
 using namespace scannerpp;
 
 namespace EtII
