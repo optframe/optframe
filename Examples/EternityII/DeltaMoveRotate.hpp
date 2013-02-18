@@ -103,12 +103,12 @@ public:
 
 	static string idComponent()
 	{
-		string idComp = MoveRotate::idComponent();
+		string idComp = DeltaMoveRotate::idComponent();
 		idComp.append(":DeltaMoveRotate");
 		return idComp;
 	}
 
-	virtual bool operator==(const MoveRotate& _m) const
+	virtual bool operator==(const DeltaMoveRotate& _m) const
 	{
 		const DeltaMoveRotate& m = (const DeltaMoveRotate&) _m;
 		return (m.nRot == nRot) && (m.x == x) && (m.y == y);

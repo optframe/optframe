@@ -34,8 +34,10 @@ using namespace std;
 
 class MoveRotate: public Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
 {
-public:
+protected:
 	int nRot, x, y;
+
+public:
 
 	using Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::apply; // prevents name hiding
 	using Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::canBeApplied; // prevents name hiding

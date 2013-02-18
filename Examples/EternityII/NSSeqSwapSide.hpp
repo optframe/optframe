@@ -34,7 +34,7 @@ using namespace std;
 
 class MoveSwapSide: public Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
 {
-private:
+protected:
 	int x1, y1, x2, y2;
 
 public:
@@ -257,6 +257,7 @@ public:
 	}
 };
 
+template<class MOVE = MoveSwapSide>
 class NSSeqSwapSide: public NSSeq<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
 {
 private:
@@ -302,7 +303,7 @@ public:
 				y2 = rg.rand((rep.getNumCols() - 2)) + 1;
 			}
 
-		return *new MoveSwapSide(x1, y1, x2, y2);
+		return *new MOVE(x1, y1, x2, y2);
 	}
 
 	virtual NSIterator<RepEtII, MemEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)

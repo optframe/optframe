@@ -84,10 +84,10 @@ public:
     	SolutionEtII& s = is.generateSolution();
 
     	NSSeqRotate<DeltaMoveRotate>& nsRotate = * new NSSeqRotate<DeltaMoveRotate>(hf.getRandGen());
-    	NSSeqSwapCenter& nsSwapCenter = * new NSSeqSwapCenter(hf.getRandGen());
-    	NSSeqSwapCorner& nsSwapCorner = * new NSSeqSwapCorner(hf.getRandGen());
-    	NSSeqSwapRotateCenter& nsSwapRotateCenter = * new NSSeqSwapRotateCenter(hf.getRandGen());
-    	NSSeqSwapSide& nsSwapSide = * new NSSeqSwapSide(hf.getRandGen());
+    	NSSeqSwapCenter<DeltaMoveSwapCenter>& nsSwapCenter = * new NSSeqSwapCenter<DeltaMoveSwapCenter>(hf.getRandGen());
+    	NSSeqSwapCorner<DeltaMoveSwapCorner>& nsSwapCorner = * new NSSeqSwapCorner<DeltaMoveSwapCorner>(hf.getRandGen());
+    	NSSeqSwapRotateCenter<>& nsSwapRotateCenter = * new NSSeqSwapRotateCenter<>(hf.getRandGen());
+    	NSSeqSwapSide<>& nsSwapSide = * new NSSeqSwapSide<>(hf.getRandGen());
 
     	s.print();
 
