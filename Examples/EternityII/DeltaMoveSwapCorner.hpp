@@ -133,11 +133,10 @@ public:
 			}
 		}
 
-
 		Piece p1 = rep(x1, y1);
 		Piece p2 = rep(x2, y2);
 
-			for (int r = 0; r < nRot1; r++)
+		for (int r = 0; r < nRot1; r++)
 			p1.rotate();
 		for (int r = 0; r < nRot2; r++)
 			p2.rotate();
