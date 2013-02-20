@@ -78,7 +78,7 @@ public:
 		return all_positive && (rep.size() >= 2) && (rep.at(r1).size() >= 0) && (rep.at(r2).size() >= 0);
 	}
 
-	virtual MoveVRPCross<T, ADS, DS >& apply(Routes& rep, const ADS&)
+	virtual MoveVRPCross<T, ADS, DS >& apply(Routes& rep, ADS&)
 	{
 		vector<int> cross_r1, cross_r2;
 
@@ -96,12 +96,12 @@ public:
 		rep.at(r2).insert(rep.at(r2).end(), cross_r1.begin(), cross_r1.end());
 
 		// p->p, r1->r2, r2->r1, c1->c2, c2->c1, reverse->reverse,
-		return *new MoveVRPCross<T, ADS, DS > (r1, r2, p1, p2);
+		return *new MoveVRPCross(r1, r2, p1, p2);
 	}
 
-	virtual bool operator==(const Move<Routes>& _m) const
+	virtual bool operator==(const Move<Routes, ADS, DS>& _m) const
 	{
-		const MoveVRPCross<T, ADS, DS >& m1 = (const MoveVRPCross<T, ADS, DS >&) _m;
+		const MoveVRPCross& m1 = (const MoveVRPCross&) _m;
 		return ((m1.r1 == r1) && (m1.r2 == r2) && (m1.p1 == p1) && (m1.p2 == p2));
 	}
 

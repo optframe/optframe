@@ -34,7 +34,7 @@ class MoveVRPShift10: public Move<vector<vector<T> >, ADS, DS >
 
 	typedef vector<vector<T> > Routes;
 
-private:
+protected:
 
 	int r1, r2; //routes id's
 	int cli;//cli shifted in r1
@@ -79,7 +79,7 @@ public:
 		return ((r1 >= 0) && (r2 >= 0) && (cli >= 0) && (pos >= 0) && numRoutes);
 	}
 
-	MoveVRPShift10<T, ADS, DS >& apply(Routes& rep, const ADS&)
+	MoveVRPShift10<T, ADS, DS >& apply(Routes& rep, ADS&)
 	{
 		//pegando o cliente
 		int c = rep.at(r1).at(cli);
@@ -89,13 +89,13 @@ public:
 
 		//fazendo a inserção
 		rep.at(r2).insert(rep.at(r2).begin() + pos, c);
-		return *new MoveVRPShift10<T, ADS, DS >(r2, r1, pos, cli);
+		return *new MoveVRPShift10(r2, r1, pos, cli);
 	}
 
 
-	virtual bool operator==(const Move<Routes>& _m) const
+	virtual bool operator==(const Move<Routes, ADS, DS>& _m) const
 	{
-		const MoveVRPShift10<T, ADS, DS >& m = (const MoveVRPShift10<T, ADS, DS >&) _m;
+		const MoveVRPShift10& m = (const MoveVRPShift10&) _m;
 		return ((r1 == m.r1) && (r2 == m.r2) && (cli == m.cli) && (pos == m.pos));
 	}
 

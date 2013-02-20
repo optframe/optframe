@@ -79,7 +79,7 @@ public:
 		return ((r1 >= 0) && (r2 >= 0) && (cli >= 0) && (pos >= 0) && numRoutes);
 	}
 
-	MoveVRPShift20<T, ADS, DS>& apply(Routes& rep, const ADS&)
+	MoveVRPShift20<T, ADS, DS>& apply(Routes& rep, ADS&)
 	{
 		//pegando o cliente
 		int c = rep.at(r1).at(cli);

@@ -72,7 +72,7 @@ public:
 		return all_positive && (c != pos) && (c + 1 != pos) && (c + 2 != pos);
 	}
 
-	MoveVRPOrOpt2<T, ADS, DS>& apply(Routes& rep, const ADS&)
+	MoveVRPOrOpt2<T, ADS, DS>& apply(Routes& rep, ADS&)
 	{
 		int aux;
 		if (c < pos)

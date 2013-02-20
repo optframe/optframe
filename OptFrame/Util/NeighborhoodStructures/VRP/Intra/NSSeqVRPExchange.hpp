@@ -18,7 +18,6 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-
 #ifndef OPTFRAME_NSSEQVRPEXCHANGE_HPP_
 #define OPTFRAME_NSSEQVRPEXCHANGE_HPP_
 
@@ -75,19 +74,19 @@ public:
 		return all_positive && (rep.at(r).size() >= 2);
 	}
 
-	MoveVRPExchange<T, ADS, DS>& apply(Routes& rep, const ADS&)
+	MoveVRPExchange<T, ADS, DS>& apply(Routes& rep, ADS&)
 	{
 
 		int aux = rep.at(r).at(c1);
 		rep.at(r).at(c1) = rep.at(r).at(c2);
 		rep.at(r).at(c2) = aux;
 
-		return *new MoveVRPExchange<T, ADS, DS> (r, c1, c2);
+		return *new MoveVRPExchange(r, c1, c2);
 	}
 
 	virtual bool operator==(const Move<Routes, ADS, DS>& _m) const
 	{
-		const MoveVRPExchange<T, ADS, DS>& m1 = (const MoveVRPExchange<T, ADS, DS>&) _m;
+		const MoveVRPExchange& m1 = (const MoveVRPExchange&) _m;
 		return ((m1.c1 == c1) && (m1.c2 == c2) && (m1.r == r));
 	}
 
