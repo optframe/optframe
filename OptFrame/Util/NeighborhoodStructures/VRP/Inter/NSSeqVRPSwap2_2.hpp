@@ -88,7 +88,7 @@ public:
 		return all_positive && (rep.size() >= 2) && (rep.at(r1).size() >= 2) && (rep.at(r2).size() >= 2);
 	}
 
-	virtual MoveVRPSwap2_2<T, ADS, DS >& apply(Routes& rep, ADS&)
+	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
 	{
 		int aux;
 

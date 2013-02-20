@@ -78,7 +78,7 @@ public:
 		return all_positive && (rep.size() >= 2) && (rep.at(r1).size() >= 0) && (rep.at(r2).size() >= 0);
 	}
 
-	virtual MoveVRPCross<T, ADS, DS >& apply(Routes& rep, ADS&)
+	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
 	{
 		vector<int> cross_r1, cross_r2;
 

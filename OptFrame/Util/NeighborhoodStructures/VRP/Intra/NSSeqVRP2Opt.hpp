@@ -71,7 +71,7 @@ public:
 		return all_positive && (rep.at(r).size() >= 2);
 	}
 
-	virtual MoveVRP2Opt<T, ADS, DS>& apply(Routes& rep, ADS&)
+	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
 	{
 		int small, bigger;
 		if (p1 <= p2)

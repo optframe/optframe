@@ -74,7 +74,7 @@ public:
 		return all_positive && (c != pos) && (c + 1 != pos);
 	}
 
-	virtual MoveVRPOrOpt1<T, ADS, DS>& apply(Routes& rep, ADS&)
+	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
 	{
 		int aux;
 		int i;

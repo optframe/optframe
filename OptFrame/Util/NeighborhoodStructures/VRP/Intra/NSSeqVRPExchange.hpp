@@ -74,7 +74,7 @@ public:
 		return all_positive && (rep.at(r).size() >= 2);
 	}
 
-	virtual MoveVRPExchange<T, ADS, DS>& apply(Routes& rep, ADS&)
+	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
 	{
 
 		int aux = rep.at(r).at(c1);
