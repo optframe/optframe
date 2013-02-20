@@ -71,7 +71,7 @@ public:
 		return all_positive && (rep.at(r).size() >= 2);
 	}
 
-	MoveVRP2Opt& apply(Routes& rep, ADS&)
+	MoveVRP2Opt<T, ADS, DS>& apply(Routes& rep, ADS&)
 	{
 		int small, bigger;
 		if (p1 <= p2)
@@ -87,12 +87,12 @@ public:
 
 		reverse(rep.at(r).begin() + small, rep.at(r).begin() + bigger);
 
-		return *new MoveVRP2Opt(r, p1, p2);
+		return *new MoveVRP2Opt<T,ADS,DS>(r, p1, p2);
 	}
 
 	virtual bool operator==(const Move<Routes, ADS, DS>& _m) const
 	{
-		const MoveVRP2Opt& m1 = (const MoveVRP2Opt&) _m;
+		const MoveVRP2Opt<T,ADS,DS>& m1 = (const MoveVRP2Opt<T,ADS,DS>&) _m;
 		return ((m1.p1 == p1) && (m1.p2 == p2) && (m1.r == r));
 	}
 

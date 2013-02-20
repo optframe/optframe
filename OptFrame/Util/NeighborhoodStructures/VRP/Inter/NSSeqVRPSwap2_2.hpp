@@ -23,15 +23,15 @@
 #define OPTFRAME_NSSEQVRPSWAP2_2_HPP_
 
 // Framework includes
-#include "../../Move.hpp"
-#include "../../NSSeq.hpp"
+#include "../../../../Move.hpp"
+#include "../../../../NSSeq.hpp"
 
 using namespace std;
 
 // Working structure: vector<T>
 
 template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MoveVRPSwap2_2: public Move<vector<vector<T> > >
+class MoveVRPSwap2_2: public Move<vector<vector<T> >, ADS, DS >
 {
 
 	typedef vector<vector<T> > Routes;
@@ -43,8 +43,8 @@ protected:
 
 public:
 
-	MoveVRPSwap2_2(int _r1, int _r2, int _c1, int _c2, bool _reverseR1, bool _reverseR2) :
-		r1(_r1), r2(_r2), c1(_c1), c2(_c2), reverseR1(_reverseR1), reverseR2(_reverseR2)
+	MoveVRPSwap2_2(int _r1, int _r2, int _c1, int _c2, bool _reverseR1, bool _reverseR2, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
+		r1(_r1), r2(_r2), c1(_c1), c2(_c2), reverseR1(_reverseR1), reverseR2(_reverseR2), problem(_problem)
 	{
 	}
 
@@ -82,13 +82,13 @@ public:
 		return c2;
 	}
 
-	bool canBeApplied(const Routes& rep)
+	bool canBeApplied(const Routes& rep, const ADS&)
 	{
 		bool all_positive = (r1 >= 0) && (r2 >= 0) && (c1 >= 0) && (c2 >= 0);
 		return all_positive && (rep.size() >= 2) && (rep.at(r1).size() >= 2) && (rep.at(r2).size() >= 2);
 	}
 
-	virtual MoveVRPSwap2_2<T, ADS, DS >& apply(Routes& rep)
+	virtual MoveVRPSwap2_2<T, ADS, DS >& apply(Routes& rep, const ADS&)
 	{
 		int aux;
 
@@ -133,7 +133,8 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
+		class MOVE = MoveVRPSwap2_2<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
 class NSIteratorVRPSwap2_2: public NSIterator<vector<vector<T> > >
 {
 
@@ -141,15 +142,16 @@ class NSIteratorVRPSwap2_2: public NSIterator<vector<vector<T> > >
 
 private:
 
-	MoveVRPSwap2_2<T, ADS, DS >* m;
-	vector<MoveVRPSwap2_2<T, ADS, DS >*> moves;
+	MOVE* m;
+	vector<MOVE*> moves;
 	int index; //index of moves
 	const Routes& r;
 
+	P* p; // has to be the last
 public:
 
 	NSIteratorVRPSwap2_2(const Routes& _r) :
-		r(_r)
+		r(_r), p(_p)
 	{
 		m = NULL;
 		index = 0;
@@ -176,10 +178,10 @@ public:
 						{
 							for (int c2 = 0; c2 < r.at(r2).size() - 1; c2++)
 							{
-								moves.push_back(new MoveVRPSwap2_2<T, ADS, DS > (r1, r2, c1, c2, false, false));//normal
-								moves.push_back(new MoveVRPSwap2_2<T, ADS, DS > (r1, r2, c1, c2, true, false));//reverse route 1
-								moves.push_back(new MoveVRPSwap2_2<T, ADS, DS > (r1, r2, c1, c2, false, true));//reverse route 2
-								moves.push_back(new MoveVRPSwap2_2<T, ADS, DS > (r1, r2, c1, c2, true, true));//reverse booth
+								moves.push_back(new MOVE(r1, r2, c1, c2, false, false));//normal
+								moves.push_back(new MOVE(r1, r2, c1, c2, true, false));//reverse route 1
+								moves.push_back(new MOVE(r1, r2, c1, c2, false, true));//reverse route 2
+								moves.push_back(new MOVE(r1, r2, c1, c2, true, true));//reverse booth
 							}
 						}
 					}
@@ -211,7 +213,7 @@ public:
 		return m == NULL;
 	}
 
-	MoveVRPSwap2_2<T, ADS, DS > & current()
+	Move<T, ADS, DS>& current()
 	{
 		if (isDone())
 		{
@@ -224,17 +226,20 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
+		class MOVE = MoveVRPSwap2_2<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
 class NSSeqVRPSwap2_2: public NSSeq<vector<vector<T> > >
 {
 
 	typedef vector<vector<T> > Routes;
 
 private:
+	P* p; // has to be the last
 
 public:
 
-	NSSeqVRPSwap2_2()
+	NSSeqVRPSwap2_2(P* _p = NULL) :
+		p(_p)
 	{
 	}
 
@@ -242,15 +247,15 @@ public:
 	{
 	}
 
-	MoveVRPSwap2_2<T, ADS, DS >& move(const Routes& rep)
+	Move<Routes, ADS, DS>& move(const Routes& rep, const ADS&)
 	{
 		if (rep.size() < 2)
-			return *new MoveVRPSwap2_2<T, ADS, DS > (-1, -1, -1, -1, false, false);
+			return *new MOVE(-1, -1, -1, -1, false, false, p);
 
 		int r1 = rand() % rep.size();
 
 		if (rep.at(r1).size() < 2)
-			return *new MoveVRPSwap2_2<T, ADS, DS > (-1, -1, -1, -1, false, false);
+			return *new MOVE(-1, -1, -1, -1, false, false, p);
 
 		int r2;
 
@@ -260,7 +265,7 @@ public:
 		} while (r1 == r2);
 
 		if (rep.at(r2).size() < 2)
-			return *new MoveVRPSwap2_2<T, ADS, DS > (-1, -1, -1, -1, false, false);
+			return *new MOVE(-1, -1, -1, -1, false, false, p);
 
 		int c1 = rand() % (rep.at(r1).size() - 1);
 		int c2 = rand() % (rep.at(r2).size() - 1);
@@ -268,17 +273,17 @@ public:
 		bool reverseR1 = rand() % 2;
 		bool reverseR2 = rand() % 2;
 
-		return *new MoveVRPSwap2_2<T, ADS, DS > (r1, r2, c1, c2, reverseR1, reverseR2);
+		return *new MOVE(r1, r2, c1, c2, reverseR1, reverseR2, p);
 	}
 
-	virtual NSIteratorVRPSwap2_2<T, ADS, DS >& getIterator(const Routes& r)
+	virtual NSIteratorVRPSwap2_2<T, ADS, DS, MOVE, P >& getIterator(const Routes& r, const ADS&)
 	{
-		return *new NSIteratorVRPSwap2_2<T, ADS, DS > (r);
+		return *new NSIteratorVRPSwap2_2<T, ADS, DS, MOVE, P > (r, p);
 	}
 
 	virtual void print()
 	{
-		cout << "NSSeqVRPSwap2_2" << endl;
+		cout << "NSSeqVRPSwap2_2 with move: " << MOVE::idComponent();
 	}
 };
 

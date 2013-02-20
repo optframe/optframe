@@ -106,7 +106,7 @@ public:
 		///exit(1);
 	}
 
-	bool operator==(const Move<Routes, ADS, DS>& _m) const
+	virtual bool operator==(const Move<Routes, ADS, DS>& _m) const
 	{
 		const MoveVRPOrOpt1<T, ADS, DS>& m1 = (const MoveVRPOrOpt1<T, ADS, DS>&) _m;
 		return (m1.r == r) && (m1.c == c) && (m1.pos == pos);
@@ -193,7 +193,7 @@ public:
 		if (isDone())
 		{
 			cout << "There isnt any current element!" << endl;
-			cout << "VRP1OrOpt. Aborting." << endl;
+			cout << "VRPOrOpt1. Aborting." << endl;
 			exit(1);
 		}
 

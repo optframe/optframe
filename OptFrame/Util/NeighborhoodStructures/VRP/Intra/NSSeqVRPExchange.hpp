@@ -178,7 +178,7 @@ public:
 };
 
 template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
-		class MOVE = MoveVRP2Opt<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+		class MOVE = MoveVRPExchange<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
 class NSSeqVRPExchange: public NSSeq<vector<vector<T> > , ADS, DS>
 {
 

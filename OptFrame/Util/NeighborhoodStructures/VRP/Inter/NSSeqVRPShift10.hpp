@@ -23,13 +23,13 @@
 #define NSSeqVRPShift10_HPP_
 
 // Framework includes
-#include "../../Move.hpp"
-#include "../../NSSeq.hpp"
+#include "../../../../Move.hpp"
+#include "../../../../NSSeq.hpp"
 
 using namespace std;
 
 template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MoveVRPShift10: public Move<vector<vector<T> > >
+class MoveVRPShift10: public Move<vector<vector<T> >, ADS, DS >
 {
 
 	typedef vector<vector<T> > Routes;
@@ -40,10 +40,12 @@ private:
 	int cli;//cli shifted in r1
 	int pos;// insertion position in r2
 
+	OPTFRAME_DEFAULT_PROBLEM* problem;
+
 public:
 
-	MoveVRPShift10(int _r1, int _r2, int _cli, int _pos) :
-	r1(_r1), r2(_r2), cli(_cli), pos(_pos)
+	MoveVRPShift10(int _r1, int _r2, int _cli, int _pos, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
+	r1(_r1), r2(_r2), cli(_cli), pos(_pos), problem(_problem)
 	{
 	}
 
@@ -71,13 +73,13 @@ public:
 		return pos;
 	}
 
-	bool canBeApplied(const Routes& rep)
+	bool canBeApplied(const Routes& rep, const ADS&)
 	{
 		bool numRoutes = rep.size() >= 2;
 		return ((r1 >= 0) && (r2 >= 0) && (cli >= 0) && (pos >= 0) && numRoutes);
 	}
 
-	MoveVRPShift10<T, ADS, DS >& apply(Routes& rep)
+	MoveVRPShift10<T, ADS, DS >& apply(Routes& rep, const ADS&)
 	{
 		//pegando o cliente
 		int c = rep.at(r1).at(cli);
@@ -107,8 +109,9 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class NSIteratorVRPShift10: public NSIterator<vector<vector<T> > >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
+		class MOVE = MoveVRPShift10<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+class NSIteratorVRPShift10: public NSIterator<vector<vector<T> >, ADS, DS >
 {
 
 	typedef vector<vector<T> > Routes;
@@ -120,9 +123,11 @@ private:
 	int index; //index of moves
 	const Routes& r;
 
+	P* p; // has to be the last
+
 public:
 
-	NSIteratorVRPShift10(const Routes& _r) :
+	NSIteratorVRPShift10(const Routes& _r, P* _p = NULL) :
 	r(_r)
 	{
 		m = NULL;
@@ -151,7 +156,7 @@ public:
 					{
 						for (int pos = 0; pos <= r.at(r2).size(); pos++)
 						{
-							moves.push_back(new MoveVRPShift10<T, ADS, DS >(r1, r2, cli, pos));
+							moves.push_back(new MOVE(r1, r2, cli, pos, p));
 						}
 					}
 				}
@@ -181,7 +186,7 @@ public:
 		return m == NULL;
 	}
 
-	MoveVRPShift10<T, ADS, DS >& current()
+	Move<Routes, ADS, DS>& current()
 	{
 		if (isDone())
 		{
@@ -194,17 +199,20 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
+		class MOVE = MoveVRPShift10<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
 class NSSeqVRPShift10: public NSSeq<vector<vector<T> > >
 {
 
 	typedef vector<vector<T> > Routes;
 
 private:
+	P* p; // has to be the last
 
 public:
 
-	NSSeqVRPShift10()
+	NSSeqVRPShift10(P* _p = NULL) :
+		p(_p)
 	{
 	}
 
@@ -212,15 +220,15 @@ public:
 	{
 	}
 
-	virtual MoveVRPShift10<T, ADS, DS >& move(const Routes& rep)
+	virtual Move<Routes, ADS, DS>& move(const Routes& rep, const ADS&)
 	{
 		if (rep.size() < 2)
-			return *new MoveVRPShift10<T, ADS, DS >(-1, -1, -1, -1);
+			return *new MOVE(-1, -1, -1, -1, p);
 
 		int r1 = rand() % rep.size();
 		if (rep.at(r1).size() == 0)
 		{
-			return *new MoveVRPShift10<T, ADS, DS >(-1, -1, -1, -1);
+			return *new MOVE(-1, -1, -1, -1, p);
 		}
 
 		int r2;
@@ -232,17 +240,17 @@ public:
 		int cli = rand() % rep.at(r1).size();
 
 		int pos = rand() % (rep.at(r2).size() + 1);
-		return *new MoveVRPShift10<T, ADS, DS >(r1, r2, cli, pos); // return a random move
+		return *new MOVE(r1, r2, cli, pos, p); // return a random move
 	}
 
-	virtual NSIteratorVRPShift10<T, ADS, DS >& getIterator(const Routes& r)
+	virtual NSIteratorVRPShift10<T, ADS, DS, MOVE, P >& getIterator(const Routes& r, const ADS&)
 	{
-		return *new NSIteratorVRPShift10<T, ADS, DS >(r);
+		return *new NSIteratorVRPShift10<T, ADS, DS, MOVE, P >(r, p);
 	}
 
 	virtual void print()
 	{
-		cout << "NSSeqVRPShift10" << endl;
+		cout << "NSSeqVRPShift10 with move: " << MOVE::idComponent();
 	}
 };
 

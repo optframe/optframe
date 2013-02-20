@@ -22,15 +22,15 @@
 #define OPTFRAME_NSSEQPERIODICCROSS_HPP_
 
 // Framework includes
-#include "../../Move.hpp"
-#include "../../NSSeq.hpp"
+#include "../../../../Move.hpp"
+#include "../../../../NSSeq.hpp"
 
 using namespace std;
 
 // Working structure: vector<T>
 
 template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MoveVRPCross: public Move<vector<vector<T> > >
+class MoveVRPCross: public Move<vector<vector<T> >, ADS, DS >
 {
 
 	typedef vector<vector<T> > Routes;
@@ -39,10 +39,12 @@ protected:
 	int r1, r2; // route 1 and route 2;
 	int p1, p2; // position 1 and position 2 of cross in r1 end r2, respectively
 
+	OPTFRAME_DEFAULT_PROBLEM* problem;
+
 public:
 
-	MoveVRPCross(int _r1, int _r2, int _p1, int _p2) :
-		r1(_r1), r2(_r2), p1(_p1), p2(_p2)
+	MoveVRPCross(int _r1, int _r2, int _p1, int _p2, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
+		r1(_r1), r2(_r2), p1(_p1), p2(_p2), problem(_problem)
 	{
 	}
 
@@ -70,13 +72,13 @@ public:
 		return p2;
 	}
 
-	bool canBeApplied(const Routes& rep)
+	bool canBeApplied(const Routes& rep, const ADS&)
 	{
 		bool all_positive = (r1 >= 0) && (r2 >= 0) && (p1 >= 0) && (p2 >= 0);
 		return all_positive && (rep.size() >= 2) && (rep.at(r1).size() >= 0) && (rep.at(r2).size() >= 0);
 	}
 
-	virtual MoveVRPCross<T, ADS, DS >& apply(Routes& rep)
+	virtual MoveVRPCross<T, ADS, DS >& apply(Routes& rep, const ADS&)
 	{
 		vector<int> cross_r1, cross_r2;
 
@@ -111,7 +113,8 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
+		class MOVE = MoveVRPCross<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
 class NSIteratorVRPCross: public NSIterator<vector<vector<T> > >
 {
 
@@ -124,9 +127,11 @@ private:
 	int index; //index of moves
 	const Routes& r;
 
+	P* p; // has to be the last
+
 public:
 
-	NSIteratorVRPCross(const Routes& _r) :
+	NSIteratorVRPCross(const Routes& _r, P* _p = NULL) :
 		r(_r)
 	{
 		m = NULL;
@@ -150,7 +155,7 @@ public:
 				{
 					for (int p2 = 0; p2 <= r.at(r2).size(); p2++)
 					{
-						moves.push_back(new MoveVRPCross<T, ADS, DS > (r1, r2, p1, p2));
+						moves.push_back(new MOVE(r1, r2, p1, p2, p));
 					}
 				}
 
@@ -181,7 +186,7 @@ public:
 		return m == NULL;
 	}
 
-	MoveVRPCross<T, ADS, DS >& current()
+	Move<Routes, ADS, DS>& current()
 	{
 		if (isDone())
 		{
@@ -194,17 +199,20 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
+		class MOVE = MoveVRPCross<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
 class NSSeqVRPCross: public NSSeq<vector<vector<T> > >
 {
 
 	typedef vector<vector<T> > Routes;
 
 private:
+	P* p; // has to be the last
 
 public:
 
-	NSSeqVRPCross()
+	NSSeqVRPCross(P* _p = NULL) :
+		p(_p)
 	{
 	}
 
@@ -212,10 +220,10 @@ public:
 	{
 	}
 
-	MoveVRPCross<T, ADS, DS >& move(const Routes& rep)
+	Move<Routes, ADS, DS>& move(const Routes& rep, const ADS&)
 	{
 		if (rep.size() < 2)
-			return *new MoveVRPCross<T, ADS, DS > (-1, -1, -1, -1);
+			return *new MOVE(-1, -1, -1, -1, p);
 
 		int r1 = rand() % rep.size();
 
@@ -227,22 +235,22 @@ public:
 		} while (r1 == r2);
 
 		if ((rep.at(r2).size() == 0) && (rep.at(r1).size() == 0))
-			return *new MoveVRPCross<T, ADS, DS > (-1, -1, -1, -1);
+			return *new MOVE(-1, -1, -1, -1, p);
 
 		int p1 = rand() % (rep.at(r1).size() + 1);
 		int p2 = rand() % (rep.at(r2).size() + 1);
 
-		return *new MoveVRPCross<T, ADS, DS > (r1, r2, p1, p2);
+		return *new MOVE(r1, r2, p1, p2, p);
 	}
 
-	virtual NSIteratorVRPCross<T, ADS, DS >& getIterator(const Routes& r)
+	virtual NSIteratorVRPCross<T, ADS, DS, MOVE, P >& getIterator(const Routes& r, const ADS&)
 	{
-		return *new NSIteratorVRPCross<T, ADS, DS > (r);
+		return *new NSIteratorVRPCross<T, ADS, DS, MOVE, P > (r, p);
 	}
 
 	virtual void print()
 	{
-		cout << "NSSeqVRPCross" << endl;
+		cout << "NSSeqVRPCross with move: " << MOVE::idComponent();
 	}
 };
 
