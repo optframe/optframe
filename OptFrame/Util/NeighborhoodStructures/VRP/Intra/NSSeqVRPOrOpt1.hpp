@@ -18,34 +18,38 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_NSSEQVRP0R1OPT_HPP_
-#define OPTFRAME_NSSEQVRP0R1OPT_HPP_
+#ifndef OPTFRAME_NSSEQVRP0ROPT1_HPP_
+#define OPTFRAME_NSSEQVRP0ROPT1_HPP_
 
 // Framework includes
-#include "../../Move.hpp"
-#include "../../NSSeq.hpp"
+#include "../../../../Move.hpp"
+#include "../../../../NSSeq.hpp"
 
 using namespace std;
 
 template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MoveVRPOr1Opt: public Move<vector<vector<T> > >
+class MoveVRPOrOpt1: public Move<vector<vector<T> > , ADS, DS>
 {
 
 	typedef vector<vector<T> > Routes;
 
 private:
+	OPTFRAME_DEFAULT_PROBLEM* problem;
+
+protected:
 	int r; // route id
 	int c; // client
 	int pos; // position
 
+
 public:
 
-	MoveVRPOr1Opt(int _r, int _c, int _pos) :
-		r(_r), c(_c), pos(_pos)
+	MoveVRPOrOpt1(int _r, int _c, int _pos, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
+		r(_r), c(_c), pos(_pos), problem(_problem)
 	{
 	}
 
-	virtual ~MoveVRPOr1Opt()
+	virtual ~MoveVRPOrOpt1()
 	{
 	}
 
@@ -64,13 +68,13 @@ public:
 		return pos;
 	}
 
-	bool canBeApplied(const Routes& rep)
+	bool canBeApplied(const Routes& rep, const ADS&)
 	{
 		bool all_positive = (r >= 0) && (c >= 0) && (pos >= 0);
 		return all_positive && (c != pos) && (c + 1 != pos);
 	}
 
-	MoveVRPOr1Opt<T, ADS, DS >& apply(Routes& rep)
+	MoveVRPOrOpt1<T, ADS, DS>& apply(Routes& rep, const ADS&)
 	{
 		int aux;
 		int i;
@@ -84,7 +88,7 @@ public:
 				//rep.at(r).at(i + 1) = aux;
 			}
 			rep.at(r).at(i) = aux;
-			return *new MoveVRPOr1Opt<T, ADS, DS >(r, pos - 1, c);
+			return *new MoveVRPOrOpt1<T, ADS, DS> (r, pos - 1, c);
 		}
 		else
 		{
@@ -94,50 +98,52 @@ public:
 				rep.at(r).at(i) = rep.at(r).at(i - 1);
 			}
 			rep.at(r).at(i) = aux;
-			return *new MoveVRPOr1Opt<T, ADS, DS >(r, pos, c + 1);
+			return *new MoveVRPOrOpt1<T, ADS, DS> (r, pos, c + 1);
 
 		}
 
-		return *new MoveVRPOr1Opt<T, ADS, DS >(-1, -1, -1);
+		return *new MoveVRPOrOpt1<T, ADS, DS> (-1, -1, -1);
 		///exit(1);
 	}
 
-	bool operator==(const Move<Routes>& _m) const
+	bool operator==(const Move<Routes, ADS, DS>& _m) const
 	{
-		const MoveVRPOr1Opt<T, ADS, DS >& m1 = (const MoveVRPOr1Opt<T, ADS, DS >&) _m;
+		const MoveVRPOrOpt1<T, ADS, DS>& m1 = (const MoveVRPOrOpt1<T, ADS, DS>&) _m;
 		return (m1.r == r) && (m1.c == c) && (m1.pos == pos);
 	}
 
 	void print() const
 	{
-		cout << "MoveVRPOr1Opt";
+		cout << "MoveVRPOrOpt1";
 		cout << "( " << r << " , " << c << " , " << pos << " )" << endl;
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class NSIteratorVRPOr1Opt: public NSIterator<vector<vector<T> > >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
+		class MOVE = MoveVRPOrOpt1<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+class NSIteratorVRPOrOpt1: public NSIterator<vector<vector<T> > , ADS, DS>
 {
 
 	typedef vector<vector<T> > Routes;
 
 private:
 
-	MoveVRPOr1Opt<T, ADS, DS >* m;
-	vector<MoveVRPOr1Opt<T, ADS, DS >*> moves;
+	MOVE* m;
+	vector<MOVE*> moves;
 	int index; //index of moves
 	const Routes& rep;
 
+	P* p; // has to be the last
 public:
 
-	NSIteratorVRPOr1Opt(const Routes& _r) :
-		rep(_r)
+	NSIteratorVRPOrOpt1(const Routes& _r, P* _p = NULL) :
+		rep(_r), p(_p)
 	{
 		m = NULL;
 		index = 0;
 	}
 
-	virtual ~NSIteratorVRPOr1Opt()
+	virtual ~NSIteratorVRPOrOpt1()
 	{
 	}
 
@@ -152,7 +158,7 @@ public:
 				{
 					if ((c != pos) && (c + 1 != pos))
 					{
-						moves.push_back(new MoveVRPOr1Opt<T, ADS, DS >(r, c, pos));
+						moves.push_back(new MOVE(r, c, pos, p));
 					}
 				}
 			}
@@ -182,7 +188,7 @@ public:
 		return m == NULL;
 	}
 
-	MoveVRPOr1Opt<T, ADS, DS >& current()
+	Move<Routes, ADS, DS>& current()
 	{
 		if (isDone())
 		{
@@ -195,45 +201,52 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class NSSeqVRPOr1Opt: public NSSeq<vector<vector<T> > >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
+		class MOVE = MoveVRPOrOpt1<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+class NSSeqVRPOrOpt1: public NSSeq<vector<vector<T> > , ADS, DS>
 {
 
 	typedef vector<vector<T> > Routes;
 
+private:
+	P* p; // has to be the last
+
 public:
 
-	NSSeqVRPOr1Opt()
+	NSSeqVRPOrOpt1(P* _p = NULL) :
+		p(_p)
 	{
 	}
 
-	virtual ~NSSeqVRPOr1Opt()
+	virtual ~NSSeqVRPOrOpt1()
 	{
 	}
 
-	MoveVRPOr1Opt<T, ADS, DS >& move(const Routes& rep)
+	Move<Routes, ADS, DS>& move(const Routes& rep, const ADS&)
 	{
 		int r = rand() % rep.size();
 
 		if (rep.at(r).size() < 2)
-			return *new MoveVRPOr1Opt<T, ADS, DS >(-1, -1, -1);
+			return *new MOVE(-1, -1, -1, p);
 
 		int c = rand() % rep.at(r).size();
 
 		int pos = rand() % (rep.at(r).size() + 1);
 
-		return *new MoveVRPOr1Opt<T, ADS, DS >(r, c, pos);
+		return *new MOVE(r, c, pos, p);
 	}
 
-	virtual NSIteratorVRPOr1Opt<T, ADS, DS >& getIterator(const Routes& r)
+	virtual NSIteratorVRPOrOpt1<T, ADS, DS, MOVE, P>& getIterator(const Routes& r, const ADS&)
 	{
-		return *new NSIteratorVRPOr1Opt<T, ADS, DS >(r);
+		return *new NSIteratorVRPOrOpt1<T, ADS, DS, MOVE, P> (r, p);
 	}
 
-	virtual void print()
+	virtual string toString() const
 	{
-		cout << "NSSeqVRPOr1Opt" << endl;
+		stringstream ss;
+		ss << "NSSeqVRPOrOpt1 with move: " << MOVE::idComponent();
+		return ss.str();
 	}
 };
 
-#endif /*OPTFRAME_NSSEQVRP0R1OPT_HPP_*/
+#endif /*OPTFRAME_NSSEQVRP0ROPT1_HPP_*/

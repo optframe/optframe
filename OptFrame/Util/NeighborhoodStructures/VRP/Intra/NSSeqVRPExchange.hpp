@@ -23,27 +23,30 @@
 #define OPTFRAME_NSSEQVRPEXCHANGE_HPP_
 
 // Framework includes
-#include "../../Move.hpp"
-#include "../../NSSeq.hpp"
+#include "../../../../Move.hpp"
+#include "../../../../NSSeq.hpp"
 
 using namespace std;
 
 // Working structure: vector<T>
 
 template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MoveVRPExchange: public Move<vector<vector<T> > >
+class MoveVRPExchange: public Move<vector<vector<T> > , ADS, DS>
 {
 
 	typedef vector<vector<T> > Routes;
+private:
+	OPTFRAME_DEFAULT_PROBLEM* problem;
 
 protected:
 	int c1, c2; // client 1 and client 2, respectively
 	int r; //route
 
+
 public:
 
-	MoveVRPExchange(int _r, int _c1, int _c2) :
-		r(_r), c1(_c1), c2(_c2)
+	MoveVRPExchange(int _r, int _c1, int _c2, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
+		r(_r), c1(_c1), c2(_c2), problem(_problem)
 	{
 	}
 
@@ -66,25 +69,25 @@ public:
 		return r;
 	}
 
-	bool canBeApplied(const Routes& rep)
+	bool canBeApplied(const Routes& rep, const ADS&)
 	{
 		bool all_positive = (c1 >= 0) && (c2 >= 0) && (r >= 0);
 		return all_positive && (rep.at(r).size() >= 2);
 	}
 
-	MoveVRPExchange<T, ADS, DS >& apply(Routes& rep)
+	MoveVRPExchange<T, ADS, DS>& apply(Routes& rep, const ADS&)
 	{
 
 		int aux = rep.at(r).at(c1);
 		rep.at(r).at(c1) = rep.at(r).at(c2);
 		rep.at(r).at(c2) = aux;
 
-		return *new MoveVRPExchange<T, ADS, DS >(r, c1, c2);
+		return *new MoveVRPExchange<T, ADS, DS> (r, c1, c2);
 	}
 
-	virtual bool operator==(const Move<Routes>& _m) const
+	virtual bool operator==(const Move<Routes, ADS, DS>& _m) const
 	{
-		const MoveVRPExchange<T, ADS, DS >& m1 = (const MoveVRPExchange<T, ADS, DS >&) _m;
+		const MoveVRPExchange<T, ADS, DS>& m1 = (const MoveVRPExchange<T, ADS, DS>&) _m;
 		return ((m1.c1 == c1) && (m1.c2 == c2) && (m1.r == r));
 	}
 
@@ -96,23 +99,25 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class NSIteratorVRPExchange: public NSIterator<vector<vector<T> > >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
+		class MOVE = MoveVRPExchange<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+class NSIteratorVRPExchange: public NSIterator<vector<vector<T> > , ADS, DS>
 {
 
 	typedef vector<vector<T> > Routes;
 
 private:
 
-	MoveVRPExchange<T, ADS, DS >* m;
+	MOVE* m;
 	int index;
-	vector<MoveVRPExchange<T, ADS, DS >*> moves;
+	vector<MOVE*> moves;
 	const Routes& rep;
 
+	P* p; // has to be the last
 public:
 
-	NSIteratorVRPExchange(const Routes& _r) :
-		rep(_r)
+	NSIteratorVRPExchange(const Routes& _r, P* _p = NULL) :
+		rep(_r), p(_p)
 	{
 		index = 0;
 		m = NULL;
@@ -131,7 +136,7 @@ public:
 				for (int c2 = 0; c2 < rep.at(r).size(); c2++)
 				{
 					if (c1 != c2)
-						moves.push_back(new MoveVRPExchange<T, ADS, DS >( r, c1, c2));
+						moves.push_back(new MOVE(r, c1, c2, p));
 				}
 			}
 		}
@@ -159,7 +164,7 @@ public:
 		return m == NULL;
 	}
 
-	MoveVRPExchange<T, ADS, DS >& current()
+	Move<Routes, ADS, DS>& current()
 	{
 		if (isDone())
 		{
@@ -172,17 +177,20 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class NSSeqVRPExchange: public NSSeq<vector<vector<T> > >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
+		class MOVE = MoveVRP2Opt<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+class NSSeqVRPExchange: public NSSeq<vector<vector<T> > , ADS, DS>
 {
 
 	typedef vector<vector<T> > Routes;
 
 private:
+	P* p; // has to be the last
 
 public:
 
-	NSSeqVRPExchange()
+	NSSeqVRPExchange(P* _p = NULL) :
+		p(_p)
 	{
 	}
 
@@ -190,11 +198,11 @@ public:
 	{
 	}
 
-	MoveVRPExchange<T, ADS, DS >& move(const Routes& rep)
+	Move<Routes, ADS, DS>& move(const Routes& rep, const ADS&)
 	{
 		int r = rand() % rep.size();
 		if (rep.at(r).size() < 2)
-			return *new MoveVRPExchange<T, ADS, DS >(-1, -1, -1);
+			return *new MOVE(-1, -1, -1, p);
 
 		int c1 = rand() % rep.at(r).size();
 
@@ -206,17 +214,19 @@ public:
 		} while (c1 == c2);
 
 		// create exchange(p1,p2) move
-		return *new MoveVRPExchange<T, ADS, DS >(r, c1, c2);
+		return *new MOVE(r, c1, c2, p);
 	}
 
-	virtual NSIteratorVRPExchange<T, ADS, DS >& getIterator(const Routes& r)
+	virtual NSIteratorVRPExchange<T, ADS, DS, MOVE, P>& getIterator(const Routes& r, const ADS&)
 	{
-		return *new NSIteratorVRPExchange<T, ADS, DS >(r);
+		return *new NSIteratorVRPExchange<T, ADS, DS, MOVE, P> (r, p);
 	}
 
-	virtual void print()
+	virtual string toString() const
 	{
-		cout << "NSSeqVRPExchange" << endl;
+		stringstream ss;
+		ss << "NSSeqVRPExchange with move: " << MOVE::idComponent();
+		return ss.str();
 	}
 };
 

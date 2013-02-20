@@ -22,8 +22,8 @@
 #define OPTFRAME_NSSEQVRP2OPT_HPP_
 
 // Framework includes
-#include "../../Move.hpp"
-#include "../../NSSeq.hpp"
+#include "../../../../Move.hpp"
+#include "../../../../NSSeq.hpp"
 
 using namespace std;
 
@@ -104,7 +104,8 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRP2Opt<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
+		class MOVE = MoveVRP2Opt<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
 class NSIteratorVRP2Opt: public NSIterator<vector<vector<T> > , ADS, DS>
 {
 	typedef vector<vector<T> > Routes;
@@ -181,8 +182,9 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRP2Opt<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
-class NSSeqVRP2Opt: public NSSeq<vector<vector<T> >, ADS, DS >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
+		class MOVE = MoveVRP2Opt<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+class NSSeqVRP2Opt: public NSSeq<vector<vector<T> > , ADS, DS>
 {
 	typedef vector<vector<T> > Routes;
 
