@@ -66,13 +66,13 @@ public:
 		return pos;
 	}
 
-	bool canBeApplied(const Routes& rep, const ADS&)
+	virtual bool canBeApplied(const Routes& rep, const ADS&)
 	{
 		bool all_positive = (r >= 0) && (c >= 0) && (pos >= 0);
 		return all_positive && (c != pos) && (c + 1 != pos) && (c + 2 != pos);
 	}
 
-	MoveVRPOrOpt2<T, ADS, DS>& apply(Routes& rep, ADS&)
+	virtual MoveVRPOrOpt2<T, ADS, DS>& apply(Routes& rep, ADS&)
 	{
 		int aux;
 		if (c < pos)

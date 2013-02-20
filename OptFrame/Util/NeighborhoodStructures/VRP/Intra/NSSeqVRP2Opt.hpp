@@ -65,7 +65,7 @@ public:
 		return r;
 	}
 
-	bool canBeApplied(const Routes& rep, const ADS&)
+	virtual bool canBeApplied(const Routes& rep, const ADS&)
 	{
 		bool all_positive = (p1 >= 0) && (p2 >= 0) && (r >= 0);
 		return all_positive && (rep.at(r).size() >= 2);

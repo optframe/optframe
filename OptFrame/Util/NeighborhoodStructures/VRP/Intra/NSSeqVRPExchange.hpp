@@ -68,13 +68,13 @@ public:
 		return r;
 	}
 
-	bool canBeApplied(const Routes& rep, const ADS&)
+	virtual bool canBeApplied(const Routes& rep, const ADS&)
 	{
 		bool all_positive = (c1 >= 0) && (c2 >= 0) && (r >= 0);
 		return all_positive && (rep.at(r).size() >= 2);
 	}
 
-	MoveVRPExchange<T, ADS, DS>& apply(Routes& rep, ADS&)
+	virtual MoveVRPExchange<T, ADS, DS>& apply(Routes& rep, ADS&)
 	{
 
 		int aux = rep.at(r).at(c1);
