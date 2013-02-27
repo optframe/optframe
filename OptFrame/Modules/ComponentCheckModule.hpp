@@ -50,8 +50,9 @@ public:
 
 	void message(string component, int iter, string text)
 	{
-		if(verbose)
-			cout << "module " << id() << " iter: " << iter << " testing component '" << component << "' => " << text << endl;
+		if (verbose)
+			cout << "module " << id() << " iter: " << iter << " testing component '" << component
+					<< "' => " << text << endl;
 	}
 
 	void error(string text)
@@ -64,7 +65,10 @@ public:
 		return b == "true";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules,
+			vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<
+					string, string>& dictionary, map<string, vector<string> >& ldictionary,
+			string input)
 	{
 		cout << "check: " << input << endl;
 		Scanner scanner(input);
@@ -84,14 +88,13 @@ public:
 		try
 		{
 			iterMax = Scanner::parseInt(sIterMax);
-		}
-		catch(ConversionError& e)
+		} catch (ConversionError& e)
 		{
-			cout << "component.check module error: no such integer 'iterMax' (number of solutions to be build and moves to be tested per solution)" << endl;
+			cout
+					<< "component.check module error: no such integer 'iterMax' (number of solutions to be build and moves to be tested per solution)"
+					<< endl;
 			return false;
 		}
-
-
 
 		// -----------------------------------------
 		//  number of solutions to apply NSSeq tests
@@ -107,13 +110,13 @@ public:
 		try
 		{
 			nSolNSSeq = Scanner::parseInt(sNSolNSSeq);
-		}
-		catch(ConversionError& e)
+		} catch (ConversionError& e)
 		{
-			cout << "component.check module error: no such integer 'number of solutions to test NSSeq exploration'" << endl;
+			cout
+					<< "component.check module error: no such integer 'number of solutions to test NSSeq exploration'"
+					<< endl;
 			return false;
 		}
-
 
 		// -------------------
 		//     verbose
@@ -127,60 +130,72 @@ public:
 			verbose = parseBool(sverbose);
 		}
 
-
 		// optional parameters taken automatically from the system
-		if(!scanner.hasNext())
+		if (!scanner.hasNext())
 		{
 			// check dependency on 'module.rename' module
-			if(!OptFrameModule<R, ADS, DS>::run_module("system.require", allModules, allFunctions, factory, dictionary, ldictionary, "component.list"))
+			if (!OptFrameModule<R, ADS, DS>::run_module("system.require", allModules, allFunctions,
+					factory, dictionary, ldictionary, "component.list"))
 			{
-				cout << "error: system.use module depends on 'component.list' module, which is not loaded!" << endl;
+				cout
+						<< "error: system.use module depends on 'component.list' module, which is not loaded!"
+						<< endl;
 				return false;
 			}
 
-			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lconstructive", dictionary, ldictionary);
-			if(!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:Constructive _aux_check_lconstructive"))
+			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lconstructive", dictionary,
+					ldictionary);
+			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions,
+					factory, dictionary, ldictionary,
+					"OptFrame:Constructive _aux_check_lconstructive"))
 			{
 				cout << "error: reading list of OptFrame:Constructive!" << endl;
 				return false;
 			}
 
 			OptFrameModule<R, ADS, DS>::undefine("_aux_check_levaluator", dictionary, ldictionary);
-			if(!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:Evaluator _aux_check_levaluator"))
+			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions,
+					factory, dictionary, ldictionary, "OptFrame:Evaluator _aux_check_levaluator"))
 			{
 				cout << "error: reading list of OptFrame:Evaluator!" << endl;
 				return false;
 			}
 
 			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lmove", dictionary, ldictionary);
-			if(!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:Move _aux_check_lmove"))
+			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions,
+					factory, dictionary, ldictionary, "OptFrame:Move _aux_check_lmove"))
 			{
 				cout << "error: reading list of OptFrame:Move!" << endl;
 				return false;
 			}
 
 			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lns", dictionary, ldictionary);
-			if(!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:NS _aux_check_lns"))
+			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions,
+					factory, dictionary, ldictionary, "OptFrame:NS _aux_check_lns"))
 			{
 				cout << "error: reading list of OptFrame:NS!" << endl;
 				return false;
 			}
 
 			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lnsseq", dictionary, ldictionary);
-			if(!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:NS:NSSeq _aux_check_lnsseq"))
+			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions,
+					factory, dictionary, ldictionary, "OptFrame:NS:NSSeq _aux_check_lnsseq"))
 			{
 				cout << "error: reading list of OptFrame:NS:NSSeq!" << endl;
 				return false;
 			}
 
 			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lnsenum", dictionary, ldictionary);
-			if(!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:NS:NSSeq:NSEnum _aux_check_lnsenum"))
+			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions,
+					factory, dictionary, ldictionary, "OptFrame:NS:NSSeq:NSEnum _aux_check_lnsenum"))
 			{
 				cout << "error: reading list of OptFrame:NS:NSSeq:NSEnum!" << endl;
 				return false;
 			}
 
-			scanner = Scanner("_aux_check_lconstructive  _aux_check_levaluator  _aux_check_lmove  _aux_check_lns  _aux_check_lnsseq  _aux_check_lnsenum");
+			scanner
+					= Scanner(
+							"_aux_check_lconstructive  _aux_check_levaluator  _aux_check_lmove  _aux_check_lns  _aux_check_lnsseq  _aux_check_lnsenum");
 		}
 
 		//string rest = scanner.rest();
@@ -196,19 +211,19 @@ public:
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
-		vector<string>  lConstructive;
+		vector<string> lConstructive;
 		vector<string>* p_lConstructive = OptFrameList::readList(ldictionary, scanner);
-		if(p_lConstructive)
+		if (p_lConstructive)
 		{
-			lConstructive = vector<string>(*p_lConstructive);
+			lConstructive = vector<string> (*p_lConstructive);
 			delete p_lConstructive;
 		}
 		else
 		{
-			cout << "module " << id() << " error: couldn't read list of OptFrame:Constructive!" << endl;
+			cout << "module " << id() << " error: couldn't read list of OptFrame:Constructive!"
+					<< endl;
 			return false;
 		}
-
 
 		// -------------------
 		//     Evaluator
@@ -219,19 +234,19 @@ public:
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
-		vector<string>  lEvaluator;
+		vector<string> lEvaluator;
 		vector<string>* p_lEvaluator = OptFrameList::readList(ldictionary, scanner);
-		if(p_lEvaluator)
+		if (p_lEvaluator)
 		{
-			lEvaluator = vector<string>(*p_lEvaluator);
+			lEvaluator = vector<string> (*p_lEvaluator);
 			delete p_lEvaluator;
 		}
 		else
 		{
-			cout << "module " << id() << " error: couldn't read list of OptFrame:Evaluator!" << endl;
+			cout << "module " << id() << " error: couldn't read list of OptFrame:Evaluator!"
+					<< endl;
 			return false;
 		}
-
 
 		// -------------------
 		//        Move
@@ -242,11 +257,11 @@ public:
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
-		vector<string>  lMove;
+		vector<string> lMove;
 		vector<string>* p_lMove = OptFrameList::readList(ldictionary, scanner);
-		if(p_lMove)
+		if (p_lMove)
 		{
-			lMove = vector<string>(*p_lMove);
+			lMove = vector<string> (*p_lMove);
 			delete p_lMove;
 		}
 		else
@@ -254,7 +269,6 @@ public:
 			cout << "module " << id() << " error: couldn't read list of OptFrame:Move!" << endl;
 			return false;
 		}
-
 
 		// -------------------
 		//        NS
@@ -265,11 +279,11 @@ public:
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
-		vector<string>  lNS;
+		vector<string> lNS;
 		vector<string>* p_lNS = OptFrameList::readList(ldictionary, scanner);
-		if(p_lNS)
+		if (p_lNS)
 		{
-			lNS = vector<string>(*p_lNS);
+			lNS = vector<string> (*p_lNS);
 			delete p_lNS;
 		}
 		else
@@ -277,7 +291,6 @@ public:
 			cout << "module " << id() << " error: couldn't read list of OptFrame:NS!" << endl;
 			return false;
 		}
-
 
 		// -------------------
 		//     NSSeq
@@ -288,11 +301,11 @@ public:
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
-		vector<string>  lNSSeq;
+		vector<string> lNSSeq;
 		vector<string>* p_lNSSeq = OptFrameList::readList(ldictionary, scanner);
-		if(p_lNSSeq)
+		if (p_lNSSeq)
 		{
-			lNSSeq = vector<string>(*p_lNSSeq);
+			lNSSeq = vector<string> (*p_lNSSeq);
 			delete p_lNSSeq;
 		}
 		else
@@ -300,7 +313,6 @@ public:
 			cout << "module " << id() << " error: couldn't read list of OptFrame:NS:NSSeq!" << endl;
 			return false;
 		}
-
 
 		// -------------------
 		//     NSEnum
@@ -311,16 +323,17 @@ public:
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
-		vector<string>  lNSEnum;
+		vector<string> lNSEnum;
 		vector<string>* p_lNSEnum = OptFrameList::readList(ldictionary, scanner);
-		if(p_lNSEnum)
+		if (p_lNSEnum)
 		{
-			lNSEnum = vector<string>(*p_lNSEnum);
+			lNSEnum = vector<string> (*p_lNSEnum);
 			delete p_lNSEnum;
 		}
 		else
 		{
-			cout << "module " << id() << " error: couldn't read list of OptFrame:NS:NSSeq:NSEnum!" << endl;
+			cout << "module " << id() << " error: couldn't read list of OptFrame:NS:NSSeq:NSEnum!"
+					<< endl;
 			return false;
 		}
 
@@ -332,7 +345,6 @@ public:
 		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lnsseq", dictionary, ldictionary);
 		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lnsenum", dictionary, ldictionary);
 
-
 		// ======================================
 		//           BEGIN TESTS
 		// ======================================
@@ -341,14 +353,14 @@ public:
 		// read evaluators
 		// ----------------
 
-		vector<Evaluator<R, ADS, DS>* > evaluators;
-		for(unsigned ev=0; ev<lEvaluator.size(); ev++)
+		vector<Evaluator<R, ADS, DS>*> evaluators;
+		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
 		{
 			Scanner scan(lEvaluator.at(ev));
 			Evaluator<R, ADS, DS>* evaluator;
 			factory.assign(evaluator, scan.nextInt(), scan.next()); // reversed!
 
-			if(!evaluator)
+			if (!evaluator)
 			{
 				cout << "module " << id() << " error: NULL evaluator!" << endl;
 				return false;
@@ -357,32 +369,33 @@ public:
 			evaluators.push_back(evaluator);
 		}
 
-		vector< pair<int, double> > fullTimeEval(evaluators.size(), make_pair(0,0.0));
-		vector< pair<int, double> > timeReeval(evaluators.size(), make_pair(0,0.0));
+		vector<pair<int, double> > fullTimeEval(evaluators.size(), make_pair(0, 0.0));
+		vector<pair<int, double> > timeReeval(evaluators.size(), make_pair(0, 0.0));
 
 		// ----------------------------------------------------------------------------------------
 		// generate 'iterMax' OptFrame:Solution for each OptFrame:Constructive and store evaluation
 		// ----------------------------------------------------------------------------------------
 
-		vector<Solution<R, ADS>* > solutions;
+		vector<Solution<R, ADS>*> solutions;
 		vector<vector<Evaluation<DS>*> > evaluations(evaluators.size());
 
-		vector< pair<int, double> > timeConstructive(lConstructive.size(), make_pair(0,0.0));
+		vector<pair<int, double> > timeConstructive(lConstructive.size(), make_pair(0, 0.0));
 
-		cout << "module " << id() << " will test constructive components (iterMax=" << iterMax << ")" << endl;
-		for(unsigned c=0; c<lConstructive.size(); c++)
+		cout << "module " << id() << " will test constructive components (iterMax=" << iterMax
+				<< ")" << endl;
+		for (unsigned c = 0; c < lConstructive.size(); c++)
 		{
 			Scanner scan(lConstructive.at(c));
 			Constructive<R, ADS>* constructive;
 			factory.assign(constructive, scan.nextInt(), scan.next()); // reversed!
 
-			if(!constructive)
+			if (!constructive)
 			{
 				cout << "module " << id() << " error: NULL constructive!" << endl;
 				return false;
 			}
 
-			for(int iter=1; iter<=iterMax; iter++)
+			for (int iter = 1; iter <= iterMax; iter++)
 			{
 				message(lConstructive.at(c), iter, "generating solution.");
 
@@ -393,7 +406,7 @@ public:
 
 				solutions.push_back(&s);
 
-				for(unsigned ev=0; ev<evaluators.size(); ev++)
+				for (unsigned ev = 0; ev < evaluators.size(); ev++)
 				{
 					message(lEvaluator.at(ev), iter, "evaluating solution.");
 					Timer te;
@@ -406,36 +419,35 @@ public:
 			}
 
 			cout << "component.check: " << lConstructive.at(c) << " finished." << endl;
-			if(verbose)
+			if (verbose)
 				cout << endl << endl;
 		}
 
-		if(verbose)
+		if (verbose)
 			cout << endl << endl;
-
-
 
 		// ====================================================================
 		// testing Move
 		// ====================================================================
 
-		cout << "module " << id() << " will test given Move components (|Move|=" << lMove.size() << "; numSolutions=" << solutions.size() << ")" << endl;
+		cout << "module " << id() << " will test given Move components (|Move|=" << lMove.size()
+				<< "; numSolutions=" << solutions.size() << ")" << endl;
 
-		for(unsigned id_move=0; id_move<lMove.size(); id_move++)
+		for (unsigned id_move = 0; id_move < lMove.size(); id_move++)
 		{
 			Scanner scan(lMove.at(id_move));
 			Move<R, ADS, DS>* pmove;
 			factory.assign(pmove, scan.nextInt(), scan.next()); // reversed!
 
-			if(!pmove)
+			if (!pmove)
 			{
 				cout << "module " << id() << " error: NULL OptFrame:Move!" << endl;
 				return false;
 			}
 
-			for(unsigned id_s=0; id_s < solutions.size(); id_s++)
+			for (unsigned id_s = 0; id_s < solutions.size(); id_s++)
 			{
-				if(verbose)
+				if (verbose)
 					cout << endl;
 				message(lMove.at(id_move), -1, "working on move.");
 
@@ -443,9 +455,9 @@ public:
 
 				Move<R, ADS, DS>& move = *pmove;
 
-				if(!move.canBeApplied(s))
+				if (!move.canBeApplied(s))
 				{
-					if(verbose)
+					if (verbose)
 					{
 						cout << "move cannot be applied: ";
 						move.print();
@@ -453,14 +465,14 @@ public:
 					continue;
 				}
 
-				for(unsigned ev=0; ev<evaluators.size(); ev++)
+				for (unsigned ev = 0; ev < evaluators.size(); ev++)
 				{
 					message(lEvaluator.at(ev), -1, "evaluating move (apply, revert and moveCost).");
 
 					string moveFrom = "Move ";
 					moveFrom.append(move.id());
 
-					if(verbose)
+					if (verbose)
 						move.print();
 
 					message(moveFrom, -1, "testing reverse.");
@@ -474,7 +486,7 @@ public:
 
 					Evaluation<DS>& e_ini = evaluators.at(ev)->evaluate(s);
 
-					if(ini != move)
+					if (ini != move)
 					{
 						error("reverse of reverse is not the original move!");
 						move.print();
@@ -491,7 +503,7 @@ public:
 					message(lEvaluator.at(ev), -1, "testing reverse value.");
 					Evaluation<DS>& e = *evaluations.at(ev).at(id_s);
 
-					if(abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
+					if (abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
 					{
 						error("reverse of reverse has a different evaluation value!");
 						move.print();
@@ -511,7 +523,7 @@ public:
 
 					double simpleCost = evaluators[ev]->moveCost(move, s);
 
-					if(abs(revCost - simpleCost) > 0.0001)
+					if (abs(revCost - simpleCost) > 0.0001)
 					{
 						error("difference between revCost and simpleCost");
 						move.print();
@@ -526,17 +538,17 @@ public:
 					Move<R, ADS, DS>& ini1 = evaluators[ev]->applyMove(e, rev1, s);
 					double e_ini1 = e.evaluation();
 
-					delete& rev1;
-					delete& ini1;
+					delete &rev1;
+					delete &ini1;
 
 					double fasterCost = e_end1 - e_ini1;
 
-					if(abs(revCost - fasterCost) > 0.0001)
+					if (abs(revCost - fasterCost) > 0.0001)
 					{
 						error("difference between revCost and fasterCost");
 						move.print();
 						printf("revCost = %.4f\n", revCost);
-						printf("fasterCost = %.4f\n",  fasterCost);
+						printf("fasterCost = %.4f\n", fasterCost);
 						printf("e = %.4f\n", e.evaluation());
 						printf("e_rev = %.4f\n", e_rev.evaluation());
 						return false;
@@ -544,13 +556,13 @@ public:
 
 					pair<double, double>* cost = NULL;
 
-					if(evaluators[ev]->getAllowCosts())
+					if (evaluators[ev]->getAllowCosts())
 						cost = move.cost(e, s.getR(), s.getADS());
 
-					if(cost)
+					if (cost)
 					{
-						double cValue = cost->first+cost->second;
-						if(abs(revCost - cValue) > 0.0001)
+						double cValue = cost->first + cost->second;
+						if (abs(revCost - cValue) > 0.0001)
 						{
 							error("difference between expected cost and cost()");
 							move.print();
@@ -559,8 +571,11 @@ public:
 							printf("==============\n");
 							printf("CORRECT VALUES \n");
 							printf("==============\n");
-							printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
-							printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
+							printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n",
+									e.getObjFunction(), e.getInfMeasure(), e.evaluation());
+							printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n",
+									e_rev.getObjFunction(), e_rev.getInfMeasure(),
+									e_rev.evaluation());
 							cout << "s: ";
 							s.print();
 							cout << "s': ";
@@ -578,11 +593,11 @@ public:
 
 					message(lEvaluator.at(ev), -1, "all move costs okay!");
 
-					delete& rev;
-					delete& sNeighbor;
-					delete& e_rev;
-					delete& ini;
-					delete& e_ini;
+					delete &rev;
+					delete &sNeighbor;
+					delete &e_rev;
+					delete &ini;
+					delete &e_ini;
 				}
 
 				/////delete& move; // NEVER DESTROY THIS OptFrame:Move!
@@ -590,43 +605,42 @@ public:
 
 		}
 
-		if(verbose)
+		if (verbose)
 			cout << endl << endl;
-
-
 
 		// ====================================================================
 		// testing NS
 		// ====================================================================
 
-		cout << "module " << id() << " will test NS components (iterMax=" << iterMax << "; numSolutions=" << solutions.size() << ")" << endl;
+		cout << "module " << id() << " will test NS components (iterMax=" << iterMax
+				<< "; numSolutions=" << solutions.size() << ")" << endl;
 
-		vector< pair<int, double> > timeNSApply(lNS.size(), make_pair(0,0.0));
-		vector< pair<int, double> > timeNSCostApply(lNS.size(), make_pair(0,0.0));
-		vector< pair<int, double> > timeNSCostApplyDelta(lNS.size(), make_pair(0,0.0));
-		vector< pair<int, double> > timeNSCost(lNS.size(), make_pair(0,0.0));
-		vector< pair<int, double> > timeNSEstimatedCost(lNS.size(), make_pair(0,0.0));
-		vector< pair<int, double> > errorNSEstimatedCost(lNS.size(), make_pair(0,0.0));
+		vector<pair<int, double> > timeNSApply(lNS.size(), make_pair(0, 0.0));
+		vector<pair<int, double> > timeNSCostApply(lNS.size(), make_pair(0, 0.0));
+		vector<pair<int, double> > timeNSCostApplyDelta(lNS.size(), make_pair(0, 0.0));
+		vector<pair<int, double> > timeNSCost(lNS.size(), make_pair(0, 0.0));
+		vector<pair<int, double> > timeNSEstimatedCost(lNS.size(), make_pair(0, 0.0));
+		vector<pair<int, double> > errorNSEstimatedCost(lNS.size(), make_pair(0, 0.0));
 
-		for(unsigned id_ns=0; id_ns<lNS.size(); id_ns++)
+		for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++)
 		{
 			Scanner scan(lNS.at(id_ns));
 			NS<R, ADS, DS>* ns;
 			factory.assign(ns, scan.nextInt(), scan.next()); // reversed!
 
-			if(!ns)
+			if (!ns)
 			{
 				cout << "module " << id() << " error: NULL OptFrame:NS!" << endl;
 				return false;
 			}
 
-			for(int iter=1; iter<=iterMax; iter++)
+			for (int iter = 1; iter <= iterMax; iter++)
 			{
 				message(lNS.at(id_ns), iter, "starting tests!");
 
-				for(unsigned id_s=0; id_s < solutions.size(); id_s++)
+				for (unsigned id_s = 0; id_s < solutions.size(); id_s++)
 				{
-					if(verbose)
+					if (verbose)
 						cout << endl;
 					message(lNS.at(id_ns), iter, "generating random move.");
 
@@ -634,9 +648,9 @@ public:
 
 					Move<R, ADS, DS>& move = ns->move(s);
 
-					if(!move.canBeApplied(s))
+					if (!move.canBeApplied(s))
 					{
-						if(verbose)
+						if (verbose)
 						{
 							cout << "move cannot be applied: ";
 							move.print();
@@ -644,9 +658,10 @@ public:
 						continue;
 					}
 
-					for(unsigned ev=0; ev<evaluators.size(); ev++)
+					for (unsigned ev = 0; ev < evaluators.size(); ev++)
 					{
-						message(lEvaluator.at(ev), iter, "evaluating random move (apply, revert and moveCost).");
+						message(lEvaluator.at(ev), iter,
+								"evaluating random move (apply, revert and moveCost).");
 
 						string moveFrom = "Move ";
 						moveFrom.append(move.id());
@@ -655,7 +670,7 @@ public:
 						moveFrom.append(" toString: ");
 						moveFrom.append(ns->toString());
 
-						if(verbose)
+						if (verbose)
 							move.print();
 
 						message(moveFrom, iter, "testing reverse.");
@@ -682,7 +697,7 @@ public:
 						fullTimeEval[ev].second += te2.inMilliSecs();
 						fullTimeEval[ev].first++;
 
-						if(ini != move)
+						if (ini != move)
 						{
 							error("reverse of reverse is not the original move!");
 							move.print();
@@ -699,7 +714,7 @@ public:
 						message(lEvaluator.at(ev), iter, "testing reverse value.");
 						Evaluation<DS>& e = *evaluations.at(ev).at(id_s);
 
-						if(abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
+						if (abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
 						{
 							error("reverse of reverse has a different evaluation value!");
 							move.print();
@@ -717,13 +732,12 @@ public:
 
 						double revCost = e_rev.evaluation() - e.evaluation();
 
-
 						Timer tMoveCostApply;
 						double simpleCost = evaluators[ev]->moveCost(move, s);
 						timeNSCostApply[id_ns].second += tMoveCostApply.inMilliSecs();
 						timeNSCostApply[id_ns].first++;
 
-						if(abs(revCost - simpleCost) > 0.0001)
+						if (abs(revCost - simpleCost) > 0.0001)
 						{
 							error("difference between revCost and simpleCost");
 							move.print();
@@ -741,17 +755,17 @@ public:
 						timeNSCostApplyDelta[id_ns].second += tMoveCostApplyDelta.inMilliSecs();
 						timeNSCostApplyDelta[id_ns].first++;
 
-						delete& rev1;
-						delete& ini1;
+						delete &rev1;
+						delete &ini1;
 
 						double fasterCost = e_end1 - e_ini1;
 
-						if(abs(revCost - fasterCost) > 0.0001)
+						if (abs(revCost - fasterCost) > 0.0001)
 						{
 							error("difference between revCost and fasterCost");
 							move.print();
 							printf("revCost = %.4f\n", revCost);
-							printf("fasterCost = %.4f\n",  fasterCost);
+							printf("fasterCost = %.4f\n", fasterCost);
 							printf("e = %.4f\n", e.evaluation());
 							printf("e_rev = %.4f\n", e_rev.evaluation());
 							return false;
@@ -760,21 +774,21 @@ public:
 						Timer tMoveEstimatedCost;
 						pair<double, double>* estimatedCost = NULL;
 
-						if(evaluators[ev]->getAllowCosts())
+						if (evaluators[ev]->getAllowCosts())
 							estimatedCost = move.estimatedCost(e, s.getR(), s.getADS());
 
-						if(estimatedCost)
+						if (estimatedCost)
 						{
 							timeNSEstimatedCost[id_ns].second += tMoveEstimatedCost.inMilliSecs();
 							timeNSEstimatedCost[id_ns].first++;
 
-							double cValue = estimatedCost->first+estimatedCost->second;
-							double diff = abs(revCost-cValue);
-							double ref  = abs(max(cValue, revCost)); // reference can be max or min! Whatever...
-							if(ref < 0.0001)
+							double cValue = estimatedCost->first + estimatedCost->second;
+							double diff = abs(revCost - cValue);
+							double ref = abs(max(cValue, revCost)); // reference can be max or min! Whatever...
+							if (ref < 0.0001)
 								ref = 0.0001;
 
-							errorNSEstimatedCost[id_ns].second += (diff / ref)*100; // in percentage
+							errorNSEstimatedCost[id_ns].second += (diff / ref) * 100; // in percentage
 							errorNSEstimatedCost[id_ns].first++;
 
 							delete estimatedCost;
@@ -783,19 +797,19 @@ public:
 						Timer tMoveCost;
 						pair<double, double>* cost = NULL;
 
-						if(evaluators[ev]->getAllowCosts())
+						if (evaluators[ev]->getAllowCosts())
 							cost = move.cost(e, s.getR(), s.getADS());
 
-						if(cost)
+						if (cost)
 						{
 							timeNSCost[id_ns].second += tMoveCost.inMilliSecs();
 							timeNSCost[id_ns].first++;
 						}
 
-						if(cost)
+						if (cost)
 						{
-							double cValue = cost->first+cost->second;
-							if(abs(revCost - cValue) > 0.0001)
+							double cValue = cost->first + cost->second;
+							if (abs(revCost - cValue) > 0.0001)
 							{
 								error("difference between expected cost and cost()");
 								move.print();
@@ -804,8 +818,11 @@ public:
 								printf("==============\n");
 								printf("CORRECT VALUES \n");
 								printf("==============\n");
-								printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
-								printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
+								printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n",
+										e.getObjFunction(), e.getInfMeasure(), e.evaluation());
+								printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n",
+										e_rev.getObjFunction(), e_rev.getInfMeasure(),
+										e_rev.evaluation());
 								cout << "s: ";
 								s.print();
 								cout << "s': ";
@@ -823,39 +840,47 @@ public:
 
 						message(lEvaluator.at(ev), iter, "all move costs okay!");
 
-						delete& rev;
-						delete& sNeighbor;
-						delete& e_rev;
-						delete& ini;
-						delete& e_ini;
+						delete &rev;
+						delete &sNeighbor;
+						delete &e_rev;
+						delete &ini;
+						delete &e_ini;
 					}
 
-					delete& move;
+					delete &move;
 				}
 			}
 
 			cout << "component.check: " << lNS.at(id_ns) << " finished." << endl;
-			if(verbose)
+			if (verbose)
 				cout << endl << endl;
 		}
-
 
 		// ====================================================================
 		// testing NSSeq
 		// ====================================================================
 
-		cout << "module " << id() << " will test NSSeq components (nSolNSSeq=" << nSolNSSeq << " of numSolutions=" << solutions.size() << ")" << endl;
+		cout << "module " << id() << " will test NSSeq components (nSolNSSeq=" << nSolNSSeq
+				<< " of numSolutions=" << solutions.size() << ")" << endl;
 
-		vector< int > vCountMoves(lNSSeq.size());
-		vector< int > vCountValidMoves(lNSSeq.size());
+		vector<int> vCountMoves(lNSSeq.size());
+		vector<int> vCountValidMoves(lNSSeq.size());
 
-		for(unsigned id_nsseq=0; id_nsseq<lNSSeq.size(); id_nsseq++)
+		for (unsigned id_nsseq = 0; id_nsseq < lNSSeq.size(); id_nsseq++)
 		{
 			Scanner scan(lNSSeq.at(id_nsseq));
 			NSSeq<R, ADS, DS>* nsseq;
+			NS<R, ADS, DS>* ns;
 			factory.assign(nsseq, scan.nextInt(), scan.next()); // reversed!
 
-			if(!nsseq)
+
+			if (!ns)
+			{
+				cout << "module " << id() << " error: NULL OptFrame:NS!" << endl;
+				return false;
+			}
+
+			if (!nsseq)
 			{
 				cout << "module " << id() << " error: NULL OptFrame:NS:NSSeq!" << endl;
 				return false;
@@ -864,27 +889,41 @@ public:
 			int countMoves = 0;
 			int countValidMoves = 0;
 
-			for(int nqs=1; nqs<=nSolNSSeq; nqs++)
+			for (int nqs = 1; nqs <= nSolNSSeq; nqs++)
 			{
 				message(lNSSeq.at(id_nsseq), nqs, "starting tests!");
 
-				int randomIndex = rand()%solutions.size();
+				int randomIndex = rand() % solutions.size();
 				Solution<R, ADS>& s = *solutions.at(randomIndex);
+
+				Move<R, ADS, DS>& move = ns->move(s);
+
+				if (!move.canBeApplied(s))
+				{
+					if (verbose)
+					{
+						cout << "move cannot be applied: ";
+						move.print();
+					}
+					continue;
+				}
+
+				delete &move.apply(s);
 
 				NSIterator<R, ADS, DS>& it = nsseq->getIterator(s);
 
-				for(it.first(); !it.isDone(); it.next())
+				for (it.first(); !it.isDone(); it.next())
 				{
-					if(verbose)
+					if (verbose)
 						cout << endl;
 					message(lNSSeq.at(id_nsseq), nqs, "getting current move.");
 
 					Move<R, ADS, DS>& move = it.current();
 					countMoves++;
 
-					if(!move.canBeApplied(s))
+					if (!move.canBeApplied(s))
 					{
-						if(verbose)
+						if (verbose)
 						{
 							cout << "move cannot be applied: ";
 							move.print();
@@ -894,9 +933,10 @@ public:
 
 					countValidMoves++;
 
-					for(unsigned ev=0; ev<evaluators.size(); ev++)
+					for (unsigned ev = 0; ev < evaluators.size(); ev++)
 					{
-						message(lEvaluator.at(ev), nqs, "evaluating random move (apply, revert and moveCost).");
+						message(lEvaluator.at(ev), nqs,
+								"evaluating random move (apply, revert and moveCost).");
 
 						string moveFrom = "Move ";
 						moveFrom.append(move.id());
@@ -905,7 +945,7 @@ public:
 						moveFrom.append(" toString: ");
 						moveFrom.append(nsseq->toString());
 
-						if(verbose)
+						if (verbose)
 							move.print();
 
 						message(moveFrom, nqs, "testing reverse.");
@@ -932,7 +972,7 @@ public:
 						fullTimeEval[ev].second += te2.inMilliSecs();
 						fullTimeEval[ev].first++;
 
-						if(ini != move)
+						if (ini != move)
 						{
 							error("reverse of reverse is not the original move!");
 							move.print();
@@ -949,7 +989,7 @@ public:
 						message(lEvaluator.at(ev), nqs, "testing reverse value.");
 						Evaluation<DS>& e = *evaluations.at(ev).at(randomIndex);
 
-						if(abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
+						if (abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
 						{
 							error("reverse of reverse has a different evaluation value!");
 							move.print();
@@ -967,13 +1007,12 @@ public:
 
 						double revCost = e_rev.evaluation() - e.evaluation();
 
-
 						Timer tMoveCostApply;
 						double simpleCost = evaluators[ev]->moveCost(move, s);
 						timeNSCostApply[id_nsseq].second += tMoveCostApply.inMilliSecs();
 						timeNSCostApply[id_nsseq].first++;
 
-						if(abs(revCost - simpleCost) > 0.0001)
+						if (abs(revCost - simpleCost) > 0.0001)
 						{
 							error("difference between revCost and simpleCost");
 							move.print();
@@ -991,17 +1030,17 @@ public:
 						timeNSCostApplyDelta[id_nsseq].second += tMoveCostApplyDelta.inMilliSecs();
 						timeNSCostApplyDelta[id_nsseq].first++;
 
-						delete& rev1;
-						delete& ini1;
+						delete &rev1;
+						delete &ini1;
 
 						double fasterCost = e_end1 - e_ini1;
 
-						if(abs(revCost - fasterCost) > 0.0001)
+						if (abs(revCost - fasterCost) > 0.0001)
 						{
 							error("difference between revCost and fasterCost");
 							move.print();
 							printf("revCost = %.4f\n", revCost);
-							printf("fasterCost = %.4f\n",  fasterCost);
+							printf("fasterCost = %.4f\n", fasterCost);
 							printf("e = %.4f\n", e.evaluation());
 							printf("e_rev = %.4f\n", e_rev.evaluation());
 							return false;
@@ -1010,19 +1049,19 @@ public:
 						Timer tMoveCost;
 						pair<double, double>* cost = NULL;
 
-						if(evaluators[ev]->getAllowCosts())
+						if (evaluators[ev]->getAllowCosts())
 							cost = move.cost(e, s.getR(), s.getADS());
 
-						if(cost)
+						if (cost)
 						{
 							timeNSCost[id_nsseq].second += tMoveCost.inMilliSecs();
 							timeNSCost[id_nsseq].first++;
 						}
 
-						if(cost)
+						if (cost)
 						{
-							double cValue = cost->first+cost->second;
-							if(abs(revCost - cValue) > 0.0001)
+							double cValue = cost->first + cost->second;
+							if (abs(revCost - cValue) > 0.0001)
 							{
 								error("difference between expected cost and cost()");
 								move.print();
@@ -1031,8 +1070,11 @@ public:
 								printf("==============\n");
 								printf("CORRECT VALUES \n");
 								printf("==============\n");
-								printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
-								printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
+								printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n",
+										e.getObjFunction(), e.getInfMeasure(), e.evaluation());
+								printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n",
+										e_rev.getObjFunction(), e_rev.getInfMeasure(),
+										e_rev.evaluation());
 								cout << "s: ";
 								s.print();
 								cout << "s': ";
@@ -1050,35 +1092,32 @@ public:
 
 						message(lEvaluator.at(ev), nqs, "all move costs okay!");
 
-						delete& rev;
-						delete& sNeighbor;
-						delete& e_rev;
-						delete& ini;
-						delete& e_ini;
+						delete &rev;
+						delete &sNeighbor;
+						delete &e_rev;
+						delete &ini;
+						delete &e_ini;
 					}
 
-					delete& move;
+					delete &move;
 				}
 
-				delete& it;
+				delete &it;
 			}
 
 			vCountMoves[id_nsseq] += countMoves;
 			vCountValidMoves[id_nsseq] += countValidMoves;
 
 			cout << "component.check: " << lNSSeq.at(id_nsseq) << " finished." << endl;
-			if(verbose)
+			if (verbose)
 				cout << endl << endl;
 		}
 
-
-
-
-		for(unsigned i=0; i<solutions.size(); i++)
+		for (unsigned i = 0; i < solutions.size(); i++)
 			delete solutions[i];
 
-		for(unsigned i=0; i<evaluations.size(); i++)
-			for(unsigned j=0; j<evaluations[i].size(); j++)
+		for (unsigned i = 0; i < evaluations.size(); i++)
+			for (unsigned j = 0; j < evaluations[i].size(); j++)
 				delete evaluations[i][j];
 
 		cout << "===============================" << endl;
@@ -1103,57 +1142,59 @@ public:
 
 		printSummarySimple(vCountMoves, nSolNSSeq, "NSSeq", "counting moves of NSSeq iterator");
 
-		printSummarySimple(vCountValidMoves, nSolNSSeq, "NSSeq", "counting valid moves of NSSeq iterator");
+		printSummarySimple(vCountValidMoves, nSolNSSeq, "NSSeq",
+				"counting valid moves of NSSeq iterator");
 
 		cout << "component.check module: tests finished successfully!" << endl;
 		return true;
 	}
 
-	void printSummary(const vector< pair<int, double> >& values, string type, string title)
+	void printSummary(const vector<pair<int, double> >& values, string type, string title)
 	{
 		printf("---------------------------------\n");
-		cout << "|"<<type<<"|=" << values.size() << "\t" << title << endl;
+		cout << "|" << type << "|=" << values.size() << "\t" << title << endl;
 		printf("---------------------------------\n");
 		printf("#id\t#tests\tavg(ms)\tsum(ms)\n");
 		double avg = 0;
 		int validValues = 0;
-		for(unsigned id=0; id<values.size(); id++)
+		for (unsigned id = 0; id < values.size(); id++)
 		{
-			if(values[id].first > 0)
+			if (values[id].first > 0)
 			{
-				printf("#%d\t%d\t%.4f\t%.4f\n", ((int)id), values[id].first, (values[id].second/values[id].first), values[id].second);
-				avg += (values[id].second/values[id].first);
+				printf("#%d\t%d\t%.4f\t%.4f\n", ((int) id), values[id].first, (values[id].second
+						/ values[id].first), values[id].second);
+				avg += (values[id].second / values[id].first);
 				validValues++;
 			}
 			else
-				printf("#%d\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int)id), 0);
+				printf("#%d\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int) id), 0);
 		}
 		printf("---------------------------------\n");
-		printf("all\t-\t%.4f\t-\n", (avg/validValues));
+		printf("all\t-\t%.4f\t-\n", (avg / validValues));
 		cout << endl;
 	}
 
-	void printSummarySimple(const vector< int >& values, int numTests, string type, string title)
+	void printSummarySimple(const vector<int>& values, int numTests, string type, string title)
 	{
 		printf("---------------------------------\n");
-		cout << "|"<<type<<"|=" << values.size() << "\t" << title << endl;
+		cout << "|" << type << "|=" << values.size() << "\t" << title << endl;
 		printf("---------------------------------\n");
 		printf("#id\t#tests\tavg of %d tests\n", numTests);
 		double avg = 0;
 		int validValues = 0;
-		for(unsigned id=0; id<values.size(); id++)
+		for (unsigned id = 0; id < values.size(); id++)
 		{
-			if(values[id] > 0)
+			if (values[id] > 0)
 			{
-				printf("#%d\t%d\t%d\n", ((int)id), values[id], (values[id]/numTests));
-				avg += (values[id]/numTests);
+				printf("#%d\t%d\t%d\n", ((int) id), values[id], (values[id] / numTests));
+				avg += (values[id] / numTests);
 				validValues++;
 			}
 			else
-				printf("#%d\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int)id), 0);
+				printf("#%d\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int) id), 0);
 		}
 		printf("---------------------------------\n");
-		printf("all\t-\t%.4f\t-\n", (avg/validValues));
+		printf("all\t-\t%.4f\t-\n", (avg / validValues));
 		cout << endl;
 	}
 
