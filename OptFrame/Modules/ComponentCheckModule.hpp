@@ -51,8 +51,7 @@ public:
 	void message(string component, int iter, string text)
 	{
 		if (verbose)
-			cout << "module " << id() << " iter: " << iter << " testing component '" << component
-					<< "' => " << text << endl;
+			cout << "module " << id() << " iter: " << iter << " testing component '" << component << "' => " << text << endl;
 	}
 
 	void error(string text)
@@ -65,10 +64,7 @@ public:
 		return b == "true";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules,
-			vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<
-					string, string>& dictionary, map<string, vector<string> >& ldictionary,
-			string input)
+	bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)
 	{
 		cout << "check: " << input << endl;
 		Scanner scanner(input);
@@ -90,9 +86,7 @@ public:
 			iterMax = Scanner::parseInt(sIterMax);
 		} catch (ConversionError& e)
 		{
-			cout
-					<< "component.check module error: no such integer 'iterMax' (number of solutions to be build and moves to be tested per solution)"
-					<< endl;
+			cout << "component.check module error: no such integer 'iterMax' (number of solutions to be build and moves to be tested per solution)" << endl;
 			return false;
 		}
 
@@ -112,9 +106,7 @@ public:
 			nSolNSSeq = Scanner::parseInt(sNSolNSSeq);
 		} catch (ConversionError& e)
 		{
-			cout
-					<< "component.check module error: no such integer 'number of solutions to test NSSeq exploration'"
-					<< endl;
+			cout << "component.check module error: no such integer 'number of solutions to test NSSeq exploration'" << endl;
 			return false;
 		}
 
@@ -134,68 +126,55 @@ public:
 		if (!scanner.hasNext())
 		{
 			// check dependency on 'module.rename' module
-			if (!OptFrameModule<R, ADS, DS>::run_module("system.require", allModules, allFunctions,
-					factory, dictionary, ldictionary, "component.list"))
+			if (!OptFrameModule<R, ADS, DS>::run_module("system.require", allModules, allFunctions, factory, dictionary, ldictionary, "component.list"))
 			{
-				cout
-						<< "error: system.use module depends on 'component.list' module, which is not loaded!"
-						<< endl;
+				cout << "error: system.use module depends on 'component.list' module, which is not loaded!" << endl;
 				return false;
 			}
 
-			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lconstructive", dictionary,
-					ldictionary);
-			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions,
-					factory, dictionary, ldictionary,
-					"OptFrame:Constructive _aux_check_lconstructive"))
+			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lconstructive", dictionary, ldictionary);
+			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:Constructive _aux_check_lconstructive"))
 			{
 				cout << "error: reading list of OptFrame:Constructive!" << endl;
 				return false;
 			}
 
 			OptFrameModule<R, ADS, DS>::undefine("_aux_check_levaluator", dictionary, ldictionary);
-			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions,
-					factory, dictionary, ldictionary, "OptFrame:Evaluator _aux_check_levaluator"))
+			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:Evaluator _aux_check_levaluator"))
 			{
 				cout << "error: reading list of OptFrame:Evaluator!" << endl;
 				return false;
 			}
 
 			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lmove", dictionary, ldictionary);
-			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions,
-					factory, dictionary, ldictionary, "OptFrame:Move _aux_check_lmove"))
+			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:Move _aux_check_lmove"))
 			{
 				cout << "error: reading list of OptFrame:Move!" << endl;
 				return false;
 			}
 
 			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lns", dictionary, ldictionary);
-			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions,
-					factory, dictionary, ldictionary, "OptFrame:NS _aux_check_lns"))
+			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:NS _aux_check_lns"))
 			{
 				cout << "error: reading list of OptFrame:NS!" << endl;
 				return false;
 			}
 
 			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lnsseq", dictionary, ldictionary);
-			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions,
-					factory, dictionary, ldictionary, "OptFrame:NS:NSSeq _aux_check_lnsseq"))
+			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:NS:NSSeq _aux_check_lnsseq"))
 			{
 				cout << "error: reading list of OptFrame:NS:NSSeq!" << endl;
 				return false;
 			}
 
 			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lnsenum", dictionary, ldictionary);
-			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions,
-					factory, dictionary, ldictionary, "OptFrame:NS:NSSeq:NSEnum _aux_check_lnsenum"))
+			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:NS:NSSeq:NSEnum _aux_check_lnsenum"))
 			{
 				cout << "error: reading list of OptFrame:NS:NSSeq:NSEnum!" << endl;
 				return false;
 			}
 
-			scanner
-					= Scanner(
-							"_aux_check_lconstructive  _aux_check_levaluator  _aux_check_lmove  _aux_check_lns  _aux_check_lnsseq  _aux_check_lnsenum");
+			scanner = Scanner("_aux_check_lconstructive  _aux_check_levaluator  _aux_check_lmove  _aux_check_lns  _aux_check_lnsseq  _aux_check_lnsenum");
 		}
 
 		//string rest = scanner.rest();
@@ -215,13 +194,12 @@ public:
 		vector<string>* p_lConstructive = OptFrameList::readList(ldictionary, scanner);
 		if (p_lConstructive)
 		{
-			lConstructive = vector<string> (*p_lConstructive);
+			lConstructive = vector<string>(*p_lConstructive);
 			delete p_lConstructive;
 		}
 		else
 		{
-			cout << "module " << id() << " error: couldn't read list of OptFrame:Constructive!"
-					<< endl;
+			cout << "module " << id() << " error: couldn't read list of OptFrame:Constructive!" << endl;
 			return false;
 		}
 
@@ -238,13 +216,12 @@ public:
 		vector<string>* p_lEvaluator = OptFrameList::readList(ldictionary, scanner);
 		if (p_lEvaluator)
 		{
-			lEvaluator = vector<string> (*p_lEvaluator);
+			lEvaluator = vector<string>(*p_lEvaluator);
 			delete p_lEvaluator;
 		}
 		else
 		{
-			cout << "module " << id() << " error: couldn't read list of OptFrame:Evaluator!"
-					<< endl;
+			cout << "module " << id() << " error: couldn't read list of OptFrame:Evaluator!" << endl;
 			return false;
 		}
 
@@ -261,7 +238,7 @@ public:
 		vector<string>* p_lMove = OptFrameList::readList(ldictionary, scanner);
 		if (p_lMove)
 		{
-			lMove = vector<string> (*p_lMove);
+			lMove = vector<string>(*p_lMove);
 			delete p_lMove;
 		}
 		else
@@ -283,7 +260,7 @@ public:
 		vector<string>* p_lNS = OptFrameList::readList(ldictionary, scanner);
 		if (p_lNS)
 		{
-			lNS = vector<string> (*p_lNS);
+			lNS = vector<string>(*p_lNS);
 			delete p_lNS;
 		}
 		else
@@ -305,7 +282,7 @@ public:
 		vector<string>* p_lNSSeq = OptFrameList::readList(ldictionary, scanner);
 		if (p_lNSSeq)
 		{
-			lNSSeq = vector<string> (*p_lNSSeq);
+			lNSSeq = vector<string>(*p_lNSSeq);
 			delete p_lNSSeq;
 		}
 		else
@@ -327,13 +304,12 @@ public:
 		vector<string>* p_lNSEnum = OptFrameList::readList(ldictionary, scanner);
 		if (p_lNSEnum)
 		{
-			lNSEnum = vector<string> (*p_lNSEnum);
+			lNSEnum = vector<string>(*p_lNSEnum);
 			delete p_lNSEnum;
 		}
 		else
 		{
-			cout << "module " << id() << " error: couldn't read list of OptFrame:NS:NSSeq:NSEnum!"
-					<< endl;
+			cout << "module " << id() << " error: couldn't read list of OptFrame:NS:NSSeq:NSEnum!" << endl;
 			return false;
 		}
 
@@ -381,8 +357,7 @@ public:
 
 		vector<pair<int, double> > timeConstructive(lConstructive.size(), make_pair(0, 0.0));
 
-		cout << "module " << id() << " will test constructive components (iterMax=" << iterMax
-				<< ")" << endl;
+		cout << "module " << id() << " will test constructive components (iterMax=" << iterMax << ")" << endl;
 		for (unsigned c = 0; c < lConstructive.size(); c++)
 		{
 			Scanner scan(lConstructive.at(c));
@@ -430,8 +405,7 @@ public:
 		// testing Move
 		// ====================================================================
 
-		cout << "module " << id() << " will test given Move components (|Move|=" << lMove.size()
-				<< "; numSolutions=" << solutions.size() << ")" << endl;
+		cout << "module " << id() << " will test given Move components (|Move|=" << lMove.size() << "; numSolutions=" << solutions.size() << ")" << endl;
 
 		for (unsigned id_move = 0; id_move < lMove.size(); id_move++)
 		{
@@ -571,11 +545,8 @@ public:
 							printf("==============\n");
 							printf("CORRECT VALUES \n");
 							printf("==============\n");
-							printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n",
-									e.getObjFunction(), e.getInfMeasure(), e.evaluation());
-							printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n",
-									e_rev.getObjFunction(), e_rev.getInfMeasure(),
-									e_rev.evaluation());
+							printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
+							printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
 							cout << "s: ";
 							s.print();
 							cout << "s': ";
@@ -612,8 +583,7 @@ public:
 		// testing NS
 		// ====================================================================
 
-		cout << "module " << id() << " will test NS components (iterMax=" << iterMax
-				<< "; numSolutions=" << solutions.size() << ")" << endl;
+		cout << "module " << id() << " will test NS components (iterMax=" << iterMax << "; numSolutions=" << solutions.size() << ")" << endl;
 
 		vector<pair<int, double> > timeNSApply(lNS.size(), make_pair(0, 0.0));
 		vector<pair<int, double> > timeNSCostApply(lNS.size(), make_pair(0, 0.0));
@@ -660,8 +630,7 @@ public:
 
 					for (unsigned ev = 0; ev < evaluators.size(); ev++)
 					{
-						message(lEvaluator.at(ev), iter,
-								"evaluating random move (apply, revert and moveCost).");
+						message(lEvaluator.at(ev), iter, "evaluating random move (apply, revert and moveCost).");
 
 						string moveFrom = "Move ";
 						moveFrom.append(move.id());
@@ -818,11 +787,8 @@ public:
 								printf("==============\n");
 								printf("CORRECT VALUES \n");
 								printf("==============\n");
-								printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n",
-										e.getObjFunction(), e.getInfMeasure(), e.evaluation());
-								printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n",
-										e_rev.getObjFunction(), e_rev.getInfMeasure(),
-										e_rev.evaluation());
+								printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
+								printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
 								cout << "s: ";
 								s.print();
 								cout << "s': ";
@@ -860,8 +826,7 @@ public:
 		// testing NSSeq
 		// ====================================================================
 
-		cout << "module " << id() << " will test NSSeq components (nSolNSSeq=" << nSolNSSeq
-				<< " of numSolutions=" << solutions.size() << ")" << endl;
+		cout << "module " << id() << " will test NSSeq components (nSolNSSeq=" << nSolNSSeq << " of numSolutions=" << solutions.size() << ")" << endl;
 
 		vector<int> vCountMoves(lNSSeq.size());
 		vector<int> vCountValidMoves(lNSSeq.size());
@@ -870,15 +835,7 @@ public:
 		{
 			Scanner scan(lNSSeq.at(id_nsseq));
 			NSSeq<R, ADS, DS>* nsseq;
-			NS<R, ADS, DS>* ns;
 			factory.assign(nsseq, scan.nextInt(), scan.next()); // reversed!
-
-
-			if (!ns)
-			{
-				cout << "module " << id() << " error: NULL OptFrame:NS!" << endl;
-				return false;
-			}
 
 			if (!nsseq)
 			{
@@ -896,19 +853,28 @@ public:
 				int randomIndex = rand() % solutions.size();
 				Solution<R, ADS>& s = *solutions.at(randomIndex);
 
-				Move<R, ADS, DS>& move = ns->move(s);
+				// ===================
+				// apply a single move
+				// ===================
 
-				if (!move.canBeApplied(s))
+				bool moveApplied = false;
+				for(int i=0; i<iterMax; i++)
 				{
-					if (verbose)
+					Move<R, ADS, DS>& move = nsseq->move(s);
+
+					if(move.canBeApplied(s))
 					{
-						cout << "move cannot be applied: ";
-						move.print();
+						delete &move.apply(s);
+						delete &move;
+						moveApplied = true;
+						break;
 					}
-					continue;
+					else
+						delete& move;
 				}
 
-				delete &move.apply(s);
+				if(!moveApplied)
+					message(lNSSeq.at(id_nsseq), nqs, "Warning. Couldn't apply a move before iterator tests.");
 
 				NSIterator<R, ADS, DS>& it = nsseq->getIterator(s);
 
@@ -935,8 +901,9 @@ public:
 
 					for (unsigned ev = 0; ev < evaluators.size(); ev++)
 					{
-						message(lEvaluator.at(ev), nqs,
-								"evaluating random move (apply, revert and moveCost).");
+						message(lEvaluator.at(ev), nqs, "evaluating random move (apply, revert and moveCost).");
+
+						Evaluation<DS>& e = evaluators[ev]->evaluate(s);
 
 						string moveFrom = "Move ";
 						moveFrom.append(move.id());
@@ -987,7 +954,6 @@ public:
 						}
 
 						message(lEvaluator.at(ev), nqs, "testing reverse value.");
-						Evaluation<DS>& e = *evaluations.at(ev).at(randomIndex);
 
 						if (abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
 						{
@@ -1070,11 +1036,8 @@ public:
 								printf("==============\n");
 								printf("CORRECT VALUES \n");
 								printf("==============\n");
-								printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n",
-										e.getObjFunction(), e.getInfMeasure(), e.evaluation());
-								printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n",
-										e_rev.getObjFunction(), e_rev.getInfMeasure(),
-										e_rev.evaluation());
+								printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
+								printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
 								cout << "s: ";
 								s.print();
 								cout << "s': ";
@@ -1091,6 +1054,8 @@ public:
 						}
 
 						message(lEvaluator.at(ev), nqs, "all move costs okay!");
+
+						delete &e;
 
 						delete &rev;
 						delete &sNeighbor;
@@ -1142,8 +1107,7 @@ public:
 
 		printSummarySimple(vCountMoves, nSolNSSeq, "NSSeq", "counting moves of NSSeq iterator");
 
-		printSummarySimple(vCountValidMoves, nSolNSSeq, "NSSeq",
-				"counting valid moves of NSSeq iterator");
+		printSummarySimple(vCountValidMoves, nSolNSSeq, "NSSeq", "counting valid moves of NSSeq iterator");
 
 		cout << "component.check module: tests finished successfully!" << endl;
 		return true;
@@ -1161,8 +1125,7 @@ public:
 		{
 			if (values[id].first > 0)
 			{
-				printf("#%d\t%d\t%.4f\t%.4f\n", ((int) id), values[id].first, (values[id].second
-						/ values[id].first), values[id].second);
+				printf("#%d\t%d\t%.4f\t%.4f\n", ((int) id), values[id].first, (values[id].second / values[id].first), values[id].second);
 				avg += (values[id].second / values[id].first);
 				validValues++;
 			}
