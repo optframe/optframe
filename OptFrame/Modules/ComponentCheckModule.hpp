@@ -612,7 +612,10 @@ public:
 				{
 					if (verbose)
 						cout << endl;
-					message(lNS.at(id_ns), iter, "generating random move.");
+
+					stringstream ss_msg1;
+					ss_msg1 << "generating random move for solution id=" << id_s;
+					message(lNS.at(id_ns), iter, ss_msg1.str());
 
 					Solution<R, ADS>& s = *solutions.at(id_s);
 
@@ -700,9 +703,11 @@ public:
 						message(lEvaluator.at(ev), iter, "testing move cost.");
 
 						double revCost = e_rev.evaluation() - e.evaluation();
+						message(lEvaluator.at(ev), iter, "revCost calculated!");
 
 						Timer tMoveCostApply;
 						double simpleCost = evaluators[ev]->moveCost(move, s);
+						message(lEvaluator.at(ev), iter, "simpleCost calculated!");
 						timeNSCostApply[id_ns].second += tMoveCostApply.inMilliSecs();
 						timeNSCostApply[id_ns].first++;
 
@@ -728,6 +733,7 @@ public:
 						delete &ini1;
 
 						double fasterCost = e_end1 - e_ini1;
+						message(lEvaluator.at(ev), iter, "fasterCost calculated!");
 
 						if (abs(revCost - fasterCost) > 0.0001)
 						{
@@ -745,6 +751,7 @@ public:
 
 						if (evaluators[ev]->getAllowCosts())
 							estimatedCost = move.estimatedCost(e, s.getR(), s.getADS());
+						message(lEvaluator.at(ev), iter, "estimatedCost calculated!");
 
 						if (estimatedCost)
 						{
@@ -763,11 +770,14 @@ public:
 							delete estimatedCost;
 						}
 
+
 						Timer tMoveCost;
 						pair<double, double>* cost = NULL;
 
 						if (evaluators[ev]->getAllowCosts())
 							cost = move.cost(e, s.getR(), s.getADS());
+
+						message(lEvaluator.at(ev), iter, "cost() calculated!");
 
 						if (cost)
 						{
@@ -874,7 +884,7 @@ public:
 				}
 
 				if(!moveApplied)
-					message(lNSSeq.at(id_nsseq), nqs, "Warning. Couldn't apply a move before iterator tests.");
+					message(lNSSeq.at(id_nsseq), nqs, "Warning. Couldn't apply a move before iterator tests (NSSeq tests).");
 
 				NSIterator<R, ADS, DS>& it = nsseq->getIterator(s);
 
@@ -882,7 +892,7 @@ public:
 				{
 					if (verbose)
 						cout << endl;
-					message(lNSSeq.at(id_nsseq), nqs, "getting current move.");
+					message(lNSSeq.at(id_nsseq), nqs, "getting current move (NSSeq tests).");
 
 					Move<R, ADS, DS>& move = it.current();
 					countMoves++;
@@ -891,7 +901,7 @@ public:
 					{
 						if (verbose)
 						{
-							cout << "move cannot be applied: ";
+							cout << "move cannot be applied (NSSeq tests): ";
 							move.print();
 						}
 						continue;
@@ -901,7 +911,7 @@ public:
 
 					for (unsigned ev = 0; ev < evaluators.size(); ev++)
 					{
-						message(lEvaluator.at(ev), nqs, "evaluating random move (apply, revert and moveCost).");
+						message(lEvaluator.at(ev), nqs, "evaluating random move (apply, revert and moveCost) in NSSeq tests.");
 
 						Evaluation<DS>& e = evaluators[ev]->evaluate(s);
 
@@ -953,7 +963,7 @@ public:
 							return false;
 						}
 
-						message(lEvaluator.at(ev), nqs, "testing reverse value.");
+						message(lEvaluator.at(ev), nqs, "testing reverse value (NSSeq tests).");
 
 						if (abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
 						{
@@ -969,7 +979,7 @@ public:
 							return false;
 						}
 
-						message(lEvaluator.at(ev), nqs, "testing move cost.");
+						message(lEvaluator.at(ev), nqs, "testing move cost (NSSeq tests).");
 
 						double revCost = e_rev.evaluation() - e.evaluation();
 
@@ -1053,7 +1063,7 @@ public:
 							delete cost;
 						}
 
-						message(lEvaluator.at(ev), nqs, "all move costs okay!");
+						message(lEvaluator.at(ev), nqs, "all move costs okay (NSSeq tests)!");
 
 						delete &e;
 
