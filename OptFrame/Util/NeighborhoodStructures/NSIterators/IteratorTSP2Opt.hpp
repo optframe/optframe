@@ -35,7 +35,7 @@ class NSIteratorTSP2Opt: public NSIterator<vector<T> , ADS, DS >
 {
 	typedef vector<T> Route;
 
-private:
+protected:
 	MOVE* m;
 
 	int p1, p2; // position 1 and position 2, respectively
@@ -58,7 +58,7 @@ public:
 	{
 	}
 
-	void first()
+	virtual void first()
 	{
 		if (r.size() >= 2)
 		{
@@ -70,7 +70,7 @@ public:
 			m = NULL;
 	}
 
-	void next()
+	virtual void next()
 	{
 		if (!((p1 == ((int)r.size()) - 2) && (p2 == ((int)r.size()) )))
 		{
@@ -90,12 +90,12 @@ public:
 			m = NULL;
 	}
 
-	bool isDone()
+	virtual bool isDone()
 	{
 		return m == NULL;
 	}
 
-	Move<Route, ADS, DS >& current()
+	virtual Move<Route, ADS, DS >& current()
 	{
 		if (isDone())
 		{

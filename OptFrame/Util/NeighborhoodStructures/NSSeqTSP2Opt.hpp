@@ -87,7 +87,7 @@ using namespace std;
 */
 
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveTSP2Opt<T, ADS, DS >, class P = OPTFRAME_DEFAULT_PROBLEM >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveTSP2Opt<T, ADS, DS >, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSP2Opt<T, ADS, DS, MOVE, P> >
 class NSSeqTSP2Opt: public NSSeq<vector<T> , ADS, DS >
 {
 	typedef vector<T> Route;
@@ -127,7 +127,7 @@ public:
 
 	virtual NSIterator<Route, ADS, DS >& getIterator(const Route& r, const ADS&)
 	{
-		return *new NSIteratorTSP2Opt<T, ADS, DS, MOVE, P> (r, p);
+		return *new NSITERATOR (r, p);
 	}
 
 	static string idComponent()

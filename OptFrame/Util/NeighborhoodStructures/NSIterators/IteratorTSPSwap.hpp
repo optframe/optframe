@@ -35,7 +35,7 @@ class NSIteratorTSPSwap: public NSIterator<vector<T> , ADS, DS >
 {
 	typedef vector<T> Route;
 
-private:
+protected:
 	MOVE* m;
 	int p1, p2; // position 1 and position 2, respectively
 	int n;
@@ -47,6 +47,7 @@ public:
 	NSIteratorTSPSwap(int _n, P* _p = NULL) :
       p(_p)
 	{
+		p1=p2=0;
 	   n = _n;
 	   m = NULL;
 	}
@@ -55,7 +56,7 @@ public:
 	{
 	}
 
-	void first()
+	virtual void first()
 	{
 		if (n >= 2)
 		{
@@ -67,7 +68,7 @@ public:
 			m = NULL;
 	}
 
-	void next()
+	virtual void next()
 	{
 		if (!((p1 == n - 2) && (p2 == n - 1)))
 		{
@@ -86,12 +87,12 @@ public:
 			m = NULL;
 	}
 
-	bool isDone()
+	virtual bool isDone()
 	{
 		return (m == NULL);
 	}
 
-	Move<Route, ADS, DS >& current()
+	virtual Move<Route, ADS, DS >& current()
 	{
 		if (isDone())
 		{

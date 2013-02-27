@@ -33,7 +33,7 @@ class NSIteratorTSPOrOptk: public NSIterator<vector<T> , ADS, DS >
 {
 	typedef vector<T> Route;
 
-private:
+protected:
 	int n, k;
 	int i, j;
 
@@ -44,19 +44,20 @@ public:
 	NSIteratorTSPOrOptk(int _n, int _k, P* _p = NULL) :
 		n(_n), k(_k), p(_p)
 	{
+		i=j=0;
 	}
 
 	virtual ~NSIteratorTSPOrOptk()
 	{
 	}
 
-	void first()
+	virtual void first()
 	{
 		i = 0;
 		j = 1;
 	}
 
-	void next()
+	virtual void next()
 	{
 		j++;
 
@@ -70,12 +71,12 @@ public:
 		}
 	}
 
-	bool isDone()
+	virtual bool isDone()
 	{
 		return i > n - k;
 	}
 
-	Move<Route, ADS, DS >& current()
+	virtual Move<Route, ADS, DS >& current()
 	{
 		if (isDone())
 		{

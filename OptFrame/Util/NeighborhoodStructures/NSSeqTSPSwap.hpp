@@ -77,7 +77,7 @@ using namespace std;
   \endportuguese
 */
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveTSPSwap<T, ADS, DS >, class P = OPTFRAME_DEFAULT_PROBLEM  >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveTSPSwap<T, ADS, DS >, class P = OPTFRAME_DEFAULT_PROBLEM , class NSITERATOR = NSIteratorTSPSwap<T, ADS, DS, MOVE, P> >
 class NSSeqTSPSwap: public NSSeq<vector<T> , ADS, DS >
 {
 	typedef vector<T> Route;
@@ -116,7 +116,7 @@ public:
 
 	virtual NSIterator<Route, ADS, DS >& getIterator(const Route& r, const ADS&)
 	{
-		return *new NSIteratorTSPSwap<T, ADS, DS, MOVE, P> (r.size(), p);
+		return *new NSITERATOR (r.size(), p);
 	}
 
 	static string idComponent()

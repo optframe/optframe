@@ -31,7 +31,7 @@ using namespace std;
 
 // Working structure: vector<vector<T> >
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveTSPOrOptk<T, ADS, DS >, class P = OPTFRAME_DEFAULT_PROBLEM >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveTSPOrOptk<T, ADS, DS >, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPOrOptk<T, ADS, DS, MOVE, P> >
 class NSSeqTSPOrOptk : public NSSeq<vector<T> , ADS, DS >
 {
    typedef vector<T> Route;
@@ -72,7 +72,7 @@ public:
 
    virtual NSIterator<Route, ADS, DS >& getIterator(const Route& r, const ADS&)
    {
-      return *new NSIteratorTSPOrOptk<T, ADS, DS, MOVE, P> (r.size(), k, p);
+      return *new NSITERATOR (r.size(), k, p);
    }
 
    static string idComponent()
