@@ -176,7 +176,7 @@ public:
 		return m == NULL;
 	}
 
-	virtual Move<T, ADS, DS>& current()
+	virtual Move<Routes, ADS, DS>& current()
 	{
 		if (isDone())
 		{
