@@ -113,8 +113,7 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
-		class MOVE = MoveVRPCross<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPCross<T, ADS, DS>, class P = OPTFRAME_DEFAULT_PROBLEM>
 class NSIteratorVRPCross: public NSIterator<vector<vector<T> > >
 {
 
@@ -132,7 +131,7 @@ private:
 public:
 
 	NSIteratorVRPCross(const Routes& _r, P* _p = NULL) :
-		r(_r)
+		r(_r), p(_p)
 	{
 		m = NULL;
 		index = 0;
@@ -144,7 +143,7 @@ public:
 		 delete moves[i];*/
 	}
 
-	void first()
+	virtual void first()
 	{
 
 		for (int r1 = 0; r1 < r.size() - 1; r1++)
@@ -170,7 +169,7 @@ public:
 			m = NULL;
 	}
 
-	void next()
+	virtual void next()
 	{
 		index++;
 		if (index < moves.size())
@@ -181,12 +180,12 @@ public:
 			m = NULL;
 	}
 
-	bool isDone()
+	virtual bool isDone()
 	{
 		return m == NULL;
 	}
 
-	Move<Routes, ADS, DS>& current()
+	virtual Move<Routes, ADS, DS>& current()
 	{
 		if (isDone())
 		{
@@ -199,8 +198,7 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
-		class MOVE = MoveVRPCross<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPCross<T, ADS, DS>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPCross<T, ADS, DS, MOVE, P > >
 class NSSeqVRPCross: public NSSeq<vector<vector<T> > >
 {
 
@@ -245,7 +243,7 @@ public:
 
 	virtual NSIteratorVRPCross<T, ADS, DS, MOVE, P >& getIterator(const Routes& r, const ADS&)
 	{
-		return *new NSIteratorVRPCross<T, ADS, DS, MOVE, P > (r, p);
+		return *new NSITERATOR (r, p);
 	}
 
 	virtual void print()

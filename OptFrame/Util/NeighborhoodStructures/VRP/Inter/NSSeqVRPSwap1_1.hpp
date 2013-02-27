@@ -105,9 +105,9 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
-		class MOVE = MoveVRPSwap1_1<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
-class NSIteratorVRPSwap1_1: public NSIterator<vector<vector<T> > , ADS, DS>
+
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPSwap1_1<T, ADS, DS>, class P = OPTFRAME_DEFAULT_PROBLEM>
+class NSIteratorVRPSwap1_1: public NSIterator<vector<vector<T> >, ADS, DS>
 {
 
 	typedef vector<vector<T> > Routes;
@@ -127,6 +127,8 @@ public:
 	NSIteratorVRPSwap1_1(const Routes& _r, P* _p = NULL) :
 		r(_r), p(_p)
 	{
+		c1 = c2 = 0;
+		r1 = r2 = 0;
 		m = NULL;
 	}
 
@@ -134,7 +136,7 @@ public:
 	{
 	}
 
-	void first()
+	virtual void first()
 	{
 		if (r.size() >= 2)
 		{
@@ -157,7 +159,7 @@ public:
 			m = NULL;
 	}
 
-	void next()
+	virtual void next()
 	{
 		if (moves.size() > 0)
 		{
@@ -169,12 +171,12 @@ public:
 
 	}
 
-	bool isDone()
+	virtual bool isDone()
 	{
 		return m == NULL;
 	}
 
-	Move<T, ADS, DS>& current()
+	virtual Move<T, ADS, DS>& current()
 	{
 		if (isDone())
 		{
@@ -187,8 +189,7 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS,
-		class MOVE = MoveVRPSwap1_1<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPSwap1_1<T, ADS, DS>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPSwap1_1<T, ADS, DS, MOVE, P> >
 class NSSeqVRPSwap1_1: public NSSeq<vector<vector<T> > , ADS, DS>
 {
 
@@ -237,7 +238,7 @@ public:
 
 	virtual NSIteratorVRPSwap1_1<T, ADS, DS, MOVE, P>& getIterator(const Routes& r, const ADS&)
 	{
-		return *new NSIteratorVRPSwap1_1<T, ADS, DS, MOVE, P> (r, p);
+		return *new NSITERATOR (r, p);
 	}
 
 	virtual void print()
