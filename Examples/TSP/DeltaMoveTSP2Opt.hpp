@@ -81,13 +81,15 @@ public:
 	pair<double, double>* cost(const Evaluation<MemTSP>&, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		if(p1 >= p2)
+		{
+			cout << "DeltaMoveTSP2Opt FATAL ERROR!" << endl;
 			exit(1);
-
-		if(p2 == ((int)rep.size()))
-			p2 = 0;
-
+		}
 		unsigned k1 = p1;
 		unsigned k2 = p2;
+
+		if(k2 == rep.size())
+			k2 = 0;
 
 		// before k1 and k2
 		unsigned bk1 = k1 - 1;

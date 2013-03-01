@@ -134,6 +134,8 @@
 #include "Functions/StatisticsMinFunction.hpp"
 #include "Functions/StatisticsPairedTTestFunction.hpp"
 #include "Functions/StatisticsShapiroTestFunction.hpp"
+#include "Functions/StatisticsSampleStdDevFunction.hpp"
+#include "Functions/StatisticsStdDevFunction.hpp"
 #include "Functions/StatisticsStudentTTestFunction.hpp"
 #include "Functions/StatisticsWilcoxonTestFunction.hpp"
 
@@ -414,6 +416,8 @@ public:
 		loadFunction(new StatisticsMinFunction);
 		loadFunction(new StatisticsPairedTTestFunction);
 		loadFunction(new StatisticsShapiroTestFunction);
+		loadFunction(new StatisticsSampleStdDevFunction);
+		loadFunction(new StatisticsStdDevFunction);
 		loadFunction(new StatisticsStudentTTestFunction);
 		loadFunction(new StatisticsWilcoxonTestFunction);
 
