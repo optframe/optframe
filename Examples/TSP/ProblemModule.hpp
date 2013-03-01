@@ -15,6 +15,10 @@
 
 #include "Evaluator.hpp"
 
+#include "NearestNeighborConstructive.hpp"
+#include "RandomInitialSolution.hpp"
+
+
 #include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSP2Opt.hpp"
 #include "DeltaMoveTSP2Opt.hpp"
 
@@ -83,6 +87,8 @@ public:
 
         RandomInitialSolutionTSP& is = * new RandomInitialSolutionTSP(p, hf.getRandGen());
         hf.addComponent(is);
+
+        hf.addComponent(* new NearestNeighborConstructive(p, hf.getRandGen()));
 
         TSPEvaluator& eval = *new TSPEvaluator(p);
         hf.addComponent(eval, Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::idComponent());
