@@ -72,10 +72,16 @@ public:
 			delete plist;
 		}
 		else
+        {
+            cout << id() << " function: list of values is invalid!" << endl;
 			return NULL;
+        }
 
 		if(list.size()==0)
+        {
+            cout << id() << " function: list of values is empty!" << endl;
 			return NULL;
+        }
 
 		vector<vector<string> > list2;
 		for(unsigned i=0; i<list.size(); i++)
@@ -89,38 +95,90 @@ public:
 				delete plist1;
 			}
 			else
+            {
+                cout << id() << " function: internal list of values couldn't be read!" << endl;
 				return NULL;
+            }
 
 			list2.push_back(list1);
 		}
 
 		//cout << list2 << endl;
 
-		stringstream scommand;
-		scommand << "echo \"x <- matrix(c(";
-
 		unsigned nrows = list2.at(0).size();
 		unsigned ncols = list2.size();
+
+        unsigned LIMIT = 1000;
+
+		stringstream scommand;
+        FILE* aux;
+
+        if(nrows*ncols > LIMIT) // TOO BIG! USING FILE TO TRANSPORT DATA
+        {
+            cout << id() << " warning: too many data (" << (nrows*ncols) << " > " << LIMIT << ")! Will use 'optframe-friedman.aux' file to transport data." << endl;
+            aux = fopen("optframe-friedman.aux", "w");
+            fprintf(aux, "x <- matrix(c(");
+        }
+        else
+       		scommand << "echo \"x <- matrix(c(";
 
 		for(unsigned j=0; j<nrows; j++)
 			for(unsigned i=0; i<ncols; i++)
 			{
-				scommand << list2.at(i).at(j);
+                string v = list2.at(i).at(j);
+                if(nrows*ncols > LIMIT)
+                    fprintf(aux, "%s", v.c_str());
+                else
+                    scommand << v;
+
 				if(!( (j == nrows-1) && (i == ncols-1)) )
-					scommand << ",";
+                {
+                    if(nrows*ncols > LIMIT)
+                        fprintf(aux, ",");
+                    else
+					    scommand << ",";
+                }
 			}
 
-		scommand << "), nrow=" << nrows << ", byrow=TRUE, ";
-		scommand << "dimnames = list(1 : "<< nrows << ", c(";
+        if(nrows*ncols > LIMIT)
+        {
+		    fprintf(aux, "), nrow=%d, byrow=TRUE, ", nrows);
+		    fprintf(aux, "dimnames = list(1 : %d, c(", nrows);
+        }
+        else
+        {
+		    scommand << "), nrow=" << nrows << ", byrow=TRUE, ";
+		    scommand << "dimnames = list(1 : "<< nrows << ", c(";
+        }
+
 		for(unsigned i=0; i<ncols; i++)
 		{
-			scommand << '\'' << 'T' << i << '\'';
-			if(i != ncols-1)
-				scommand << ',';
-		}
-		scommand << ")))\n";
+            if(nrows*ncols > LIMIT)
+                fprintf(aux, "\'T%d\'",i);
+            else
+			    scommand << '\'' << 'T' << i << '\'';
 
-		scommand << "friedman.test(x)\" | R --no-save | grep p-value";
+			if(i != ncols-1)
+            {
+                if(nrows*ncols > LIMIT)
+                    fprintf(aux, ",");
+                else
+				    scommand << ',';
+            }
+		}
+
+        if(nrows*ncols > LIMIT)
+        {
+            fprintf(aux, ")))\nfriedman.test(x)\n");
+            fclose(aux);
+
+            scommand << "R --slave --no-save -f optframe-friedman.aux | grep p-value";
+        }
+        else
+        {
+		    scommand << ")))\n";
+    		scommand << "friedman.test(x)\" | R --slave --no-save | grep p-value";
+        }
 
 		//cout << "COMMAND: '" << scommand.str() << "'" << endl;
 
@@ -143,9 +201,16 @@ public:
 
 		pclose(pPipe);
 
+        FILE* log = fopen("friedman.log","a");
+        fprintf(log, "%s\n", scommand.str().c_str());
+        fclose(log);
+
 		//cout << "friedman_test function: OUTPUT '" << output << "'" << endl;
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
+        {
+            cout << id() << " function: possible error, no R!" << endl;
 			return NULL;
+        }
 
 		Scanner scan_out(output); //example: 'Friedman chi-squared = 8, df = 2, p-value = 0.01832'
 		scan_out.next(); // drop 'Friedman'
@@ -167,6 +232,10 @@ public:
 		}
 		else
 			pvalue = Scanner::parseDouble(spvalue);
+
+        log = fopen("friedman.log","a");
+        fprintf(log, "pvalue=%.4f\n", pvalue);
+        fclose(log);
 
 		return new string(formatNumber(pvalue));
 	}

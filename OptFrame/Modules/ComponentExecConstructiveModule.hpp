@@ -59,6 +59,12 @@ public:
 		Constructive<R, ADS>* cons;
 		factory.assign(cons, scanner.nextInt(), scanner.next()); // reads backwards!
 
+        if(!cons)
+        {
+            cout << "exec_constructive module: couldn't read OptFrame:Constructive." << endl;
+            return false;
+        }
+
 		Solution<R, ADS>& sFinal = cons->generateSolution();
 
 
