@@ -131,12 +131,14 @@
 #include "Functions/StatisticsFriedmanTestFunction.hpp"
 #include "Functions/StatisticsMannUTestFunction.hpp"
 #include "Functions/StatisticsMaxFunction.hpp"
+#include "Functions/StatisticsMedFunction.hpp"
 #include "Functions/StatisticsMinFunction.hpp"
 #include "Functions/StatisticsPairedTTestFunction.hpp"
 #include "Functions/StatisticsShapiroTestFunction.hpp"
 #include "Functions/StatisticsSampleStdDevFunction.hpp"
 #include "Functions/StatisticsStdDevFunction.hpp"
 #include "Functions/StatisticsStudentTTestFunction.hpp"
+#include "Functions/StatisticsSumFunction.hpp"
 #include "Functions/StatisticsWilcoxonTestFunction.hpp"
 
 #include "Functions/SystemInputFunction.hpp"
@@ -413,12 +415,14 @@ public:
 		loadFunction(new StatisticsFriedmanTestFunction);
 		loadFunction(new StatisticsMannUTestFunction);
 		loadFunction(new StatisticsMaxFunction);
+		loadFunction(new StatisticsMedFunction);
 		loadFunction(new StatisticsMinFunction);
 		loadFunction(new StatisticsPairedTTestFunction);
 		loadFunction(new StatisticsShapiroTestFunction);
 		loadFunction(new StatisticsSampleStdDevFunction);
 		loadFunction(new StatisticsStdDevFunction);
 		loadFunction(new StatisticsStudentTTestFunction);
+		loadFunction(new StatisticsSumFunction);
 		loadFunction(new StatisticsWilcoxonTestFunction);
 
 		loadFunction(new SystemInputFunction);
