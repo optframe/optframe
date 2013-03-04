@@ -49,7 +49,7 @@ public:
    }
 
    // search method try to find a feasible solution within timelimit, if there is no such solution it returns NULL.
-   virtual pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0) = 0;
+   virtual pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL,  const Evaluation<DS>* _e = NULL) = 0;
 
    virtual string log()
    {

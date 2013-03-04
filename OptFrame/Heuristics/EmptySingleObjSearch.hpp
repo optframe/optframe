@@ -39,7 +39,7 @@ public:
 	{
 	}
 
-	pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0)
+	pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0,  const Solution<R, ADS>* _s = NULL,  const Evaluation<DS>* _e = NULL)
 	{
 		cout << "WARNING: RETURNING A EmptySingleObjSearch!" << endl;
 		return NULL;
