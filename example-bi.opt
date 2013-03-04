@@ -27,6 +27,29 @@ randgen.set_seed 0
 
 problem.general load default_file
 
+define BI  OptFrame:ComponentBuilder:LocalSearch:BI
+
+echo Creating BI for each NSSeq component
+create_numeric_list 0 7 all_nsseq
+for_each $nsseq all_nsseq
+{
+   build BI Evaluator 0  OptFrame:NS:NSSeq $nsseq;
+}
+
+echo building VND
+define vnd_list [ OptFrame:LocalSearch: 0 ,  OptFrame:LocalSearch: 1, OptFrame:LocalSearch: 2, OptFrame:LocalSearch: 3 ]
+component.create_list vnd_list OptFrame:LocalSearch: comp_vnd_list
+build OptFrame:LocalSearch:VND   Evaluator 0   comp_vnd_list   vnd
+
+echo building ILS
+build OptFrame:ComponentBuilder:SingleObjSearch:ILS:ILSLevels   Evaluator 0    Constructive 0    vnd   OptFrame:ILS:ilsl_pert_lp2 0    100    8  meu_ils
+
+test 5 30 7000 7000   Evaluator 0   meu_ils   output.txt   solucao_saida
+
+evaluate Evaluator 0 solucao_saida
+
+pause
+
 component.list Constructive lconstructive
 component.list Evaluator levaluator
 component.list OptFrame:NS lns
