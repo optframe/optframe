@@ -194,7 +194,7 @@ public:
 		int new_id = factory.addComponent(*s_star);
 
 		stringstream str;
-		str << "OptFrame:loadsol " << new_id;
+		str << "OptFrame:Solution " << new_id;
 		string s_new_id = str.str();
 
 		cout << "'" << s_new_id << "' added." << endl;
