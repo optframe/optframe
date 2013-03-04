@@ -98,16 +98,25 @@ public:
         hf.addComponent(ns, "OptFrame:NS:NSSeq");
 
 
-        hf.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP, DeltaMoveTSP2Opt, ProblemInstance>(p), "OptFrame:NS:NSSeq");
+        NSSeq<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>* nsseq_delta_2opt = new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP, DeltaMoveTSP2Opt, ProblemInstance>(p);
+        hf.addComponent(*nsseq_delta_2opt, "OptFrame:NS:NSSeq");
 
         hf.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP>, "OptFrame:NS:NSSeq"); // no optimization
 
-        hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP, DeltaMoveTSPOrOptk, ProblemInstance>(1, p), "OptFrame:NS:NSSeq");
+        NSSeq<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>* nsseq_delta_or1 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP, DeltaMoveTSPOrOptk, ProblemInstance>(1, p);
+        hf.addComponent(*nsseq_delta_or1, "OptFrame:NS:NSSeq");
         hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(1), "OptFrame:NS:NSSeq");
         hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(2), "OptFrame:NS:NSSeq");
         hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP>(3), "OptFrame:NS:NSSeq");
         //hf.addComponent(*new NSSeqTSPOrOpt<int, OPTFRAME_DEFAULT_ADS, MemTSP>, "OptFrame:NS:NSSeq");
         hf.addComponent(*new NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS, MemTSP>, "OptFrame:NS:NSSeq");
+
+
+        ILSLPerturbationLPlus2<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>* ilsl_pert;
+        ilsl_pert = new ILSLPerturbationLPlus2<RepTSP,  OPTFRAME_DEFAULT_ADS, MemTSP> (eval, 50, *nsseq_delta_2opt, hf.getRandGen());
+        ilsl_pert->add_ns(*nsseq_delta_or1);
+
+        hf.addComponent(*ilsl_pert);
 
 		
         cout << "problem '" << filename << "' loaded successfully" << endl;
