@@ -28,7 +28,7 @@
 #include "ILSLPerturbation.hpp"
 #include "Intensification.hpp"
 
-#include "../LocalSearch.hpp"
+#include "../../LocalSearch.hpp"
 
 typedef pair<pair<int, int> , pair<int, int> > levelHistory;
 

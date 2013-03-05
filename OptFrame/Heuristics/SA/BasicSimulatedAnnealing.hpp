@@ -21,7 +21,7 @@
 #ifndef OPTFRAME_BSA_HPP_
 #define OPTFRAME_BSA_HPP_
 
-#include "../SingleObjSearch.hpp"
+#include "../../SingleObjSearch.hpp"
 #include <math.h>
 
 #include "SA.h"

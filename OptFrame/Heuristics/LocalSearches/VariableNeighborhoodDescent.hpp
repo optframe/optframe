@@ -18,80 +18,82 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_RDM_HPP_
-#define OPTFRAME_RDM_HPP_
+#ifndef VARIABLENEIGHBORHOODDESCENT_HPP_
+#define VARIABLENEIGHBORHOODDESCENT_HPP_
 
-#include "../LocalSearch.hpp"
+#include "../../LocalSearch.hpp"
+#include "../../NSEnum.hpp"
+#include "../../Evaluator.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class RandomDescentMethod: public LocalSearch<R, ADS, DS>
+class VariableNeighborhoodDescent: public LocalSearch<R, ADS, DS>
 {
-private:
-	Evaluator<R, ADS, DS>& evaluator;
-	NS<R, ADS, DS>& ns;
-	unsigned int iterMax;
-
 public:
 
-	RandomDescentMethod(Evaluator<R, ADS, DS>& _eval, NS<R, ADS, DS>& _ns, unsigned int _iterMax) :
-		evaluator(_eval), ns(_ns), iterMax(_iterMax)
+	VariableNeighborhoodDescent(Evaluator<R, ADS, DS>& _ev, vector<LocalSearch<R, ADS, DS>*> _lsList) :
+		ev(_ev), lsList(_lsList)
 	{
 	}
 
-	virtual ~RandomDescentMethod()
+	virtual ~VariableNeighborhoodDescent()
 	{
 	}
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
-		Evaluation<DS>& e = evaluator.evaluate(s.getR(), s.getADS());
+		Evaluation<DS>& e = ev.evaluate(s.getR(), s.getADS());
+
 		exec(s, e, timelimit, target_f);
+
 		delete &e;
 	}
+
 
 	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
 	{
 		long tini = time(NULL);
 
-		unsigned int iter = 0;
+		int r = lsList.size();
+
+		int k = 1;
 
 		long tnow = time(NULL);
-
-		while (iter < iterMax && ((tnow - tini) < timelimit))
+		while (ev.betterThan(target_f, e.evaluation()) && (k <= r) && ((tnow - tini) < timelimit))
 		{
-			Move<R, ADS, DS>& move = ns.move(s);
+			Solution<R, ADS>* s0 = &s.clone();
+			Evaluation<DS>* e0 = &e.clone();
 
-			double cost = 0;
-
-			if (move.canBeApplied(s))
+			lsList[k - 1]->exec(*s0, *e0, timelimit, target_f);
+			if (ev.betterThan(*s0, s))
 			{
-				cost = evaluator.moveCost(e, move, s);
+				s = *s0;
+				e = *e0;
+				delete s0;
+				delete e0;
+				k = 1;
 			}
 			else
 			{
-				iter++;
-				delete &move;
-				tnow = time(NULL);
-				continue;
+				delete s0;
+				delete e0;
+				k = k + 1;
 			}
+			ev.evaluate(e, s);
 
-			iter++;
-
-			if (evaluator.betterThan(cost, 0))
-			{
-				delete &move.apply(e, s);
-				iter = 0;
-			}
-
-			delete &move;
 			tnow = time(NULL);
 		}
+
+	}
+
+	virtual bool compatible(string s)
+	{
+		return (s == idComponent()) || (LocalSearch<R, ADS, DS>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, DS>::idComponent() << "RDM";
+		ss << LocalSearch<R, ADS, DS>::idComponent() << "VND";
 		return ss.str();
 	}
 
@@ -99,14 +101,33 @@ public:
 	{
 		return idComponent();
 	}
+
+	virtual string toString() const
+	{
+		stringstream ss;
+		ss << "VND: [ ";
+		for(unsigned i=0; i<lsList.size(); i++)
+		{
+			ss << lsList[i]->toString();
+			if(i != lsList.size()-1)
+				ss << ",";
+		}
+		ss << "]";
+
+		return ss.str();
+	}
+
+private:
+	Evaluator<R, ADS, DS>& ev;
+	vector<LocalSearch<R, ADS, DS>*> lsList;
 };
 
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class RandomDescentMethodBuilder : public LocalSearchBuilder<R, ADS, DS>
+class VariableNeighborhoodDescentBuilder : public LocalSearchBuilder<R, ADS, DS>
 {
 public:
-	virtual ~RandomDescentMethodBuilder()
+	virtual ~VariableNeighborhoodDescentBuilder()
 	{
 	}
 
@@ -115,33 +136,32 @@ public:
 		Evaluator<R, ADS, DS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NS<R, ADS, DS>* ns;
-		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
+		vector<LocalSearch<R, ADS, DS>*> hlist;
+		hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		int iterMax = scanner.nextInt();
-
-		return new RandomDescentMethod<R, ADS, DS>(*eval, *ns, iterMax);
+		return new VariableNeighborhoodDescent<R, ADS, DS>(*eval, hlist);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NS<R, ADS, DS>::idComponent(), "neighborhood structure"));
-		params.push_back(make_pair("int", "max number of iterations without improvement"));
+		stringstream ss;
+		ss << LocalSearch<R, ADS, DS>::idComponent() << "[]";
+		params.push_back(make_pair(ss.str(), "list of local searches"));
 
 		return params;
 	}
 
 	virtual bool canBuild(string component)
 	{
-		return component == RandomDescentMethod<R, ADS, DS>::idComponent();
+		return component == VariableNeighborhoodDescent<R, ADS, DS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "RDM";
+		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "VND";
 		return ss.str();
 	}
 
@@ -152,4 +172,4 @@ public:
 };
 
 
-#endif /*OPTFRAME_RDM_HPP_*/
+#endif /*VARIABLENEIGHBORHOODDESCENT_HPP_*/

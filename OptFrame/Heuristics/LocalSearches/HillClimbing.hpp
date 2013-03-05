@@ -18,71 +18,69 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef VARIABLENEIGHBORHOODDESCENT_HPP_
-#define VARIABLENEIGHBORHOODDESCENT_HPP_
+#ifndef OPTFRAME_HILLCLIMBING_HPP_
+#define OPTFRAME_HILLCLIMBING_HPP_
 
-#include "../LocalSearch.hpp"
-#include "../NSEnum.hpp"
-#include "../Evaluator.hpp"
+#include "../../LocalSearch.hpp"
+#include "../../NSSeq.hpp"
+#include "../../Evaluator.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class VariableNeighborhoodDescent: public LocalSearch<R, ADS, DS>
+class HillClimbing: public LocalSearch<R, ADS, DS>
 {
+private:
+	Evaluator<R, ADS, DS>& evaluator;
+	LocalSearch<R, ADS, DS>& ls;
+
 public:
 
-	VariableNeighborhoodDescent(Evaluator<R, ADS, DS>& _ev, vector<LocalSearch<R, ADS, DS>*> _lsList) :
-		ev(_ev), lsList(_lsList)
+	HillClimbing(Evaluator<R, ADS, DS>& _ev, LocalSearch<R, ADS, DS>& _ls) :
+		evaluator(_ev), ls(_ls)
 	{
 	}
 
-	virtual ~VariableNeighborhoodDescent()
+	virtual ~HillClimbing()
 	{
 	}
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
-		Evaluation<DS>& e = ev.evaluate(s.getR(), s.getADS());
+		Evaluation<DS>& e = evaluator.evaluate(s.getR(), s.getADS());
 
 		exec(s, e, timelimit, target_f);
 
 		delete &e;
 	}
 
-
-	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit,
+			double target_f)
 	{
 		long tini = time(NULL);
 
-		int r = lsList.size();
+		Solution<R, ADS>* s0 = &s.clone();
+		Evaluation<DS>* e0 = &e.clone();
 
-		int k = 1;
+		ls.exec(s, e, timelimit, target_f);
 
 		long tnow = time(NULL);
-		while (ev.betterThan(target_f, e.evaluation()) && (k <= r) && ((tnow - tini) < timelimit))
-		{
-			Solution<R, ADS>* s0 = &s.clone();
-			Evaluation<DS>* e0 = &e.clone();
 
-			lsList[k - 1]->exec(*s0, *e0, timelimit, target_f);
-			if (ev.betterThan(*s0, s))
-			{
-				s = *s0;
-				e = *e0;
-				delete s0;
-				delete e0;
-				k = 1;
-			}
-			else
-			{
-				delete s0;
-				delete e0;
-				k = k + 1;
-			}
-			ev.evaluate(e, s);
+		while ((evaluator.betterThan(s, *s0)) && ((tnow - tini) < timelimit))
+		{
+			delete s0;
+			s0 = &s.clone();
+			delete e0;
+			e0 = &e.clone();
+
+			ls.exec(s, e, timelimit, target_f);
 
 			tnow = time(NULL);
 		}
 
+		s = *s0;
+		e = *e0;
+
+		delete s0;
+		delete e0;
 	}
 
 	virtual bool compatible(string s)
@@ -90,44 +88,26 @@ public:
 		return (s == idComponent()) || (LocalSearch<R, ADS, DS>::compatible(s));
 	}
 
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << LocalSearch<R, ADS, DS>::idComponent() << "VND";
-		return ss.str();
-	}
-
 	virtual string id() const
 	{
 		return idComponent();
 	}
 
-	virtual string toString() const
+	static string idComponent()
 	{
 		stringstream ss;
-		ss << "VND: [ ";
-		for(unsigned i=0; i<lsList.size(); i++)
-		{
-			ss << lsList[i]->toString();
-			if(i != lsList.size()-1)
-				ss << ",";
-		}
-		ss << "]";
-
+		ss << LocalSearch<R, ADS, DS>::idComponent() << "HC";
 		return ss.str();
-	}
 
-private:
-	Evaluator<R, ADS, DS>& ev;
-	vector<LocalSearch<R, ADS, DS>*> lsList;
+	}
 };
 
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class VariableNeighborhoodDescentBuilder : public LocalSearchBuilder<R, ADS, DS>
+class HillClimbingBuilder : public LocalSearchBuilder<R, ADS, DS>
 {
 public:
-	virtual ~VariableNeighborhoodDescentBuilder()
+	virtual ~HillClimbingBuilder()
 	{
 	}
 
@@ -136,32 +116,36 @@ public:
 		Evaluator<R, ADS, DS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<LocalSearch<R, ADS, DS>*> hlist;
-		hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
+		string rest = scanner.rest();
 
-		return new VariableNeighborhoodDescent<R, ADS, DS>(*eval, hlist);
+		pair<LocalSearch<R, ADS, DS>*, std::string> method;
+		method = hf.createLocalSearch(rest);
+
+		LocalSearch<R, ADS, DS>* h = method.first;
+
+		scanner = Scanner(method.second);
+
+		return new HillClimbing<R, ADS, DS>(*eval, *h);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
-		stringstream ss;
-		ss << LocalSearch<R, ADS, DS>::idComponent() << "[]";
-		params.push_back(make_pair(ss.str(), "list of local searches"));
+		params.push_back(make_pair(LocalSearch<R, ADS, DS>::idComponent(), "local search"));
 
 		return params;
 	}
 
 	virtual bool canBuild(string component)
 	{
-		return component == VariableNeighborhoodDescent<R, ADS, DS>::idComponent();
+		return component == HillClimbing<R, ADS, DS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "VND";
+		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "HC";
 		return ss.str();
 	}
 
@@ -171,5 +155,4 @@ public:
 	}
 };
 
-
-#endif /*VARIABLENEIGHBORHOODDESCENT_HPP_*/
+#endif /*OPTFRAME_HILLCLIMBING_HPP_*/

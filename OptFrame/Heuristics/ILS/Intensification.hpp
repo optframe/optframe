@@ -21,7 +21,7 @@
 #ifndef INTENSIFICATION_HPP_
 #define INTENSIFICATION_HPP_
 
-#include "../LocalSearch.hpp"
+#include "../../LocalSearch.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class Intensification : public LocalSearch<R, ADS, DS>

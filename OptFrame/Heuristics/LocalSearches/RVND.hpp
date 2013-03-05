@@ -23,9 +23,9 @@
 
 #include <algorithm>
 
-#include "../LocalSearch.hpp"
-#include "../Evaluator.hpp"
-#include "../RandGen.hpp"
+#include "../../LocalSearch.hpp"
+#include "../../Evaluator.hpp"
+#include "../../RandGen.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class RVND: public LocalSearch<R, ADS, DS>

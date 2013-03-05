@@ -21,9 +21,9 @@
 #ifndef OPTFRAME_CS_HPP_
 #define OPTFRAME_CS_HPP_
 
-#include "../LocalSearch.hpp"
-#include "../NSSeq.hpp"
-#include "../Evaluator.hpp"
+#include "../../LocalSearch.hpp"
+#include "../../NSSeq.hpp"
+#include "../../Evaluator.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class CircularSearch: public LocalSearch<R, ADS, DS>

@@ -21,8 +21,8 @@
 #ifndef OPTFRAME_GRASP_HPP_
 #define OPTFRAME_GRASP_HPP_
 
-#include "../SingleObjSearch.hpp"
-#include "../LocalSearch.hpp"
+#include "../../SingleObjSearch.hpp"
+#include "../../LocalSearch.hpp"
 
 #include "GRASP.h"
 

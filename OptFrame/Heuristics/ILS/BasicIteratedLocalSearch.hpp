@@ -24,7 +24,7 @@
 #include <math.h>
 #include <vector>
 
-#include "../LocalSearch.hpp"
+#include "../../LocalSearch.hpp"
 
 #include "IteratedLocalSearch.hpp"
 #include "BasicILSPerturbation.hpp"

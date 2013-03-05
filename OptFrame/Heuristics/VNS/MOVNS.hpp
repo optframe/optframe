@@ -23,13 +23,13 @@
 
 #include <algorithm>
 
-#include "../MultiObjSearch.hpp"
+#include "../../MultiObjSearch.hpp"
 
-#include "../Evaluator.hpp"
-#include "../Population.hpp"
-#include "../NSSeq.hpp"
-#include "../ParetoDominance.hpp"
-#include "../ParetoDominanceWeak.hpp"
+#include "../../Evaluator.hpp"
+#include "../../Population.hpp"
+#include "../../NSSeq.hpp"
+#include "../../ParetoDominance.hpp"
+#include "../../ParetoDominanceWeak.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class MOVNS: public MultiObjSearch<R, ADS, DS>

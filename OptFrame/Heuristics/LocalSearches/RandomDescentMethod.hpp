@@ -18,96 +18,95 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_HILLCLIMBING_HPP_
-#define OPTFRAME_HILLCLIMBING_HPP_
+#ifndef OPTFRAME_RDM_HPP_
+#define OPTFRAME_RDM_HPP_
 
-#include "../LocalSearch.hpp"
-#include "../NSSeq.hpp"
-#include "../Evaluator.hpp"
+#include "../../LocalSearch.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class HillClimbing: public LocalSearch<R, ADS, DS>
+class RandomDescentMethod: public LocalSearch<R, ADS, DS>
 {
 private:
 	Evaluator<R, ADS, DS>& evaluator;
-	LocalSearch<R, ADS, DS>& ls;
+	NS<R, ADS, DS>& ns;
+	unsigned int iterMax;
 
 public:
 
-	HillClimbing(Evaluator<R, ADS, DS>& _ev, LocalSearch<R, ADS, DS>& _ls) :
-		evaluator(_ev), ls(_ls)
+	RandomDescentMethod(Evaluator<R, ADS, DS>& _eval, NS<R, ADS, DS>& _ns, unsigned int _iterMax) :
+		evaluator(_eval), ns(_ns), iterMax(_iterMax)
 	{
 	}
 
-	virtual ~HillClimbing()
+	virtual ~RandomDescentMethod()
 	{
 	}
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<DS>& e = evaluator.evaluate(s.getR(), s.getADS());
-
 		exec(s, e, timelimit, target_f);
-
 		delete &e;
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit,
-			double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
 	{
 		long tini = time(NULL);
 
-		Solution<R, ADS>* s0 = &s.clone();
-		Evaluation<DS>* e0 = &e.clone();
-
-		ls.exec(s, e, timelimit, target_f);
+		unsigned int iter = 0;
 
 		long tnow = time(NULL);
 
-		while ((evaluator.betterThan(s, *s0)) && ((tnow - tini) < timelimit))
+		while (iter < iterMax && ((tnow - tini) < timelimit))
 		{
-			delete s0;
-			s0 = &s.clone();
-			delete e0;
-			e0 = &e.clone();
+			Move<R, ADS, DS>& move = ns.move(s);
 
-			ls.exec(s, e, timelimit, target_f);
+			double cost = 0;
 
+			if (move.canBeApplied(s))
+			{
+				cost = evaluator.moveCost(e, move, s);
+			}
+			else
+			{
+				iter++;
+				delete &move;
+				tnow = time(NULL);
+				continue;
+			}
+
+			iter++;
+
+			if (evaluator.betterThan(cost, 0))
+			{
+				delete &move.apply(e, s);
+				iter = 0;
+			}
+
+			delete &move;
 			tnow = time(NULL);
 		}
-
-		s = *s0;
-		e = *e0;
-
-		delete s0;
-		delete e0;
 	}
 
-	virtual bool compatible(string s)
+	static string idComponent()
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS, DS>::compatible(s));
+		stringstream ss;
+		ss << LocalSearch<R, ADS, DS>::idComponent() << "RDM";
+		return ss.str();
 	}
 
 	virtual string id() const
 	{
 		return idComponent();
 	}
-
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << LocalSearch<R, ADS, DS>::idComponent() << "HC";
-		return ss.str();
-
-	}
 };
 
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class HillClimbingBuilder : public LocalSearchBuilder<R, ADS, DS>
+class RandomDescentMethodBuilder : public LocalSearchBuilder<R, ADS, DS>
 {
 public:
-	virtual ~HillClimbingBuilder()
+	virtual ~RandomDescentMethodBuilder()
 	{
 	}
 
@@ -116,36 +115,33 @@ public:
 		Evaluator<R, ADS, DS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		string rest = scanner.rest();
+		NS<R, ADS, DS>* ns;
+		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		pair<LocalSearch<R, ADS, DS>*, std::string> method;
-		method = hf.createLocalSearch(rest);
+		int iterMax = scanner.nextInt();
 
-		LocalSearch<R, ADS, DS>* h = method.first;
-
-		scanner = Scanner(method.second);
-
-		return new HillClimbing<R, ADS, DS>(*eval, *h);
+		return new RandomDescentMethod<R, ADS, DS>(*eval, *ns, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(LocalSearch<R, ADS, DS>::idComponent(), "local search"));
+		params.push_back(make_pair(NS<R, ADS, DS>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair("int", "max number of iterations without improvement"));
 
 		return params;
 	}
 
 	virtual bool canBuild(string component)
 	{
-		return component == HillClimbing<R, ADS, DS>::idComponent();
+		return component == RandomDescentMethod<R, ADS, DS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "HC";
+		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "RDM";
 		return ss.str();
 	}
 
@@ -155,4 +151,5 @@ public:
 	}
 };
 
-#endif /*OPTFRAME_HILLCLIMBING_HPP_*/
+
+#endif /*OPTFRAME_RDM_HPP_*/

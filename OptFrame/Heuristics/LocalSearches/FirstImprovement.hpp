@@ -18,15 +18,15 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_BI_HPP_
-#define OPTFRAME_BI_HPP_
+#ifndef OPTFRAME_FI_HPP_
+#define OPTFRAME_FI_HPP_
 
-#include "../LocalSearch.hpp"
-#include "../NSSeq.hpp"
-#include "../Evaluator.hpp"
+#include "../../LocalSearch.hpp"
+#include "../../NSSeq.hpp"
+#include "../../Evaluator.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class BestImprovement: public LocalSearch<R, ADS, DS>
+class FirstImprovement: public LocalSearch<R, ADS, DS>
 {
 private:
 	Evaluator<R, ADS, DS>& eval;
@@ -34,21 +34,19 @@ private:
 
 public:
 
-	BestImprovement(Evaluator<R, ADS, DS>& _eval, NSSeq<R, ADS, DS>& _nsSeq) :
+	FirstImprovement(Evaluator<R, ADS, DS>& _eval, NSSeq<R, ADS, DS>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 	}
 
-	virtual ~BestImprovement()
+	virtual ~FirstImprovement()
 	{
 	}
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
 		Evaluation<DS>& e = eval.evaluate(s.getR(), s.getADS());
-
 		exec(s, e, timelimit, target_f);
-
 		delete &e;
 	}
 
@@ -64,53 +62,37 @@ public:
 			return;
 		}
 
-		Move<R, ADS, DS>* bestMove = &it.current();
-		while (!bestMove->canBeApplied(s))
-		{
-			delete bestMove;
-			it.next();
-			if (!it.isDone())
-			{
-				bestMove = &it.current();
-			}
-			else
-			{
-				delete &it;
-				return;
-			}
-		}
-
-		double bestCost = eval.estimatedMoveCost(e, *bestMove, s);
-		it.next();
-		while (!it.isDone())
+		do
 		{
 			Move<R, ADS, DS>* move = &it.current();
+
 			if (move->canBeApplied(s))
 			{
-				double cost = eval.estimatedMoveCost(e, *move, s);
+				double eCost = eval.estimatedMoveCost(e, *move, s); // estimated cost
 
-				if (eval.betterThan(cost, bestCost))
+				if(eval.betterThan(eCost, 0))
 				{
-					delete bestMove;
-					bestMove = move;
-					bestCost = cost;
+					double cost = eval.moveCost(e, *move, s); // real cost
+
+					if(eval.betterThan(cost, 0))
+					{
+						delete &move->apply(e, s);
+						delete move;
+
+						delete &it;
+
+						eval.evaluate(e, s); // updates 'e'
+						return;
+					}
 				}
-				else
-					delete move;
 			}
-			else
-				delete move;
+
+			delete move;
 
 			it.next();
 		}
+		while (!it.isDone());
 
-		if(eval.betterThan(bestCost, 0)) // improvement!
-		{
-			delete &bestMove->apply(e, s);
-			eval.evaluate(e, s); // updates 'e'
-		}
-
-		delete bestMove;
 		delete &it;
 	}
 
@@ -122,7 +104,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, DS>::idComponent() << "BI";
+		ss << LocalSearch<R, ADS, DS>::idComponent() << "FI";
 		return ss.str();
 	}
 
@@ -134,18 +116,17 @@ public:
 	virtual string toString() const
 	{
 		stringstream ss;
-		ss << "BI: " << nsSeq.toString();
+		ss << "FI: " << nsSeq.toString();
 		return ss.str();
 	}
-
 };
 
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class BestImprovementBuilder : public LocalSearchBuilder<R, ADS, DS>
+class FirstImprovementBuilder : public LocalSearchBuilder<R, ADS, DS>
 {
 public:
-	virtual ~BestImprovementBuilder()
+	virtual ~FirstImprovementBuilder()
 	{
 	}
 
@@ -157,7 +138,7 @@ public:
 		NSSeq<R, ADS, DS>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BestImprovement<R, ADS, DS>(*eval, *nsseq);
+		return new FirstImprovement<R, ADS, DS>(*eval, *nsseq);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -171,13 +152,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BestImprovement<R, ADS, DS>::idComponent();
+		return component == FirstImprovement<R, ADS, DS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "BI";
+		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "FI";
 		return ss.str();
 	}
 
@@ -187,4 +168,4 @@ public:
 	}
 };
 
-#endif /*OPTFRAME_BI_HPP_*/
+#endif /*OPTFRAME_FI_HPP_*/

@@ -18,20 +18,44 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_BASICILSPerturbation_HPP_
-#define OPTFRAME_BASICILSPerturbation_HPP_
+#ifndef OPTFRAME_ILSLPerturbation_HPP_
+#define OPTFRAME_ILSLPerturbation_HPP_
 
 #include <math.h>
 #include <vector>
 
-#include "../NS.hpp"
-#include "../RandGen.hpp"
-#include "../ComponentBuilder.h"
+#include "../../NS.hpp"
+#include "../../RandGen.hpp"
 
 #include "ILS.h"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class BasicILSPerturbation: public ILS, public OptFrameComponent
+class ILSLPerturbation: public OptFrameComponent
+{
+public:
+
+	virtual ~ILSLPerturbation()
+	{
+	}
+
+	virtual void perturb(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f, int level) = 0;
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << OptFrameComponent::idComponent() << "ILS:ilsl_pert";
+		return ss.str();
+
+	}
+};
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ILSLPerturbationLPlus2: public ILSLPerturbation<R, ADS, DS>
 {
 private:
 	vector<NS<R, ADS, DS>*> ns;
@@ -40,13 +64,13 @@ private:
 	RandGen& rg;
 
 public:
-	BasicILSPerturbation(Evaluator<R, ADS, DS>& e, int _pMax, NS<R, ADS, DS>& _ns, RandGen& _rg) :
+	ILSLPerturbationLPlus2(Evaluator<R, ADS, DS>& e, int _pMax, NS<R, ADS, DS>& _ns, RandGen& _rg) :
 		evaluator(e), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
 	}
 
-	virtual ~BasicILSPerturbation()
+	virtual ~ILSLPerturbationLPlus2()
 	{
 	}
 
@@ -55,11 +79,14 @@ public:
 		ns.push_back(&_ns);
 	}
 
-	void perturb(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
+	void perturb(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f, int level)
 	{
 		int f = 0; // number of failures
+		int a = 0; // number of appliable moves
 
-		while (f < pMax)
+		level += 2; // level 0 applies 2 moves
+
+		while ((a < level) && (f < pMax))
 		{
 			int x = rg.rand(ns.size());
 
@@ -67,9 +94,8 @@ public:
 
 			if (m.canBeApplied(s))
 			{
+				a++;
 				delete &m.apply(e, s);
-				delete &m;
-				break;
 			}
 			else
 				f++;
@@ -83,24 +109,22 @@ public:
 		evaluator.evaluate(e, s); // updates 'e'
 	}
 
+	static string idComponent()
+	{
+		return "OptFrame:ILS:ilsl_pert_lp2";
+	}
+
 	virtual string id() const
 	{
 		return idComponent();
 	}
-
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << OptFrameComponent::idComponent() << ILS::family << "basic_pert";
-		return ss.str();
-	}
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class BasicILSPerturbationBuilder : public ComponentBuilder<R, ADS, DS>
+class ILSLPerturbationLPlus2Builder: public ComponentBuilder<R, ADS, DS>
 {
 public:
-	virtual ~BasicILSPerturbationBuilder()
+	virtual ~ILSLPerturbationLPlus2Builder()
 	{
 	}
 
@@ -114,7 +138,7 @@ public:
 		NS<R, ADS, DS>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BasicILSPerturbation<R, ADS, DS>(*eval, limit, *ns, hf.getRandGen());
+		return new ILSLPerturbationLPlus2<R, ADS, DS> (*eval, limit, *ns, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -129,13 +153,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicILSPerturbation<R, ADS, DS>::idComponent();
+		return component == ILSLPerturbationLPlus2<R, ADS, DS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, DS>::idComponent() << ILS::family << "basic_pert";
+		ss << ComponentBuilder<R, ADS, DS>::idComponent() << ILS::family << "Lpert";
 		return ss.str();
 	}
 
@@ -145,4 +169,4 @@ public:
 	}
 };
 
-#endif /*OPTFRAME_BASICILSPerturbation_HPP_*/
+#endif /*OPTFRAME_ILSLPerturbation_HPP_*/

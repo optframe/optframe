@@ -82,23 +82,23 @@
 
 // local search
 #include "Heuristics/Empty.hpp"
-#include "Heuristics/BestImprovement.hpp"
-#include "Heuristics/FirstImprovement.hpp"
-#include "Heuristics/RandomDescentMethod.hpp"
-#include "Heuristics/CircularSearch.hpp"
-#include "Heuristics/VariableNeighborhoodDescent.hpp"
-#include "Heuristics/RVND.hpp"
-#include "Heuristics/HillClimbing.hpp"
+#include "Heuristics/LocalSearches/BestImprovement.hpp"
+#include "Heuristics/LocalSearches/FirstImprovement.hpp"
+#include "Heuristics/LocalSearches/RandomDescentMethod.hpp"
+#include "Heuristics/LocalSearches/CircularSearch.hpp"
+#include "Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp"
+#include "Heuristics/LocalSearches/RVND.hpp"
+#include "Heuristics/LocalSearches/HillClimbing.hpp"
 
 
 // single obj search
 #include "Heuristics/SimpleLocalSearch.hpp"
-#include "Heuristics/BasicIteratedLocalSearch.hpp"
-#include "Heuristics/BasicILSPerturbation.hpp"
-#include "Heuristics/BasicSimulatedAnnealing.hpp"
-#include "Heuristics/IteratedLocalSearchLevels.hpp"
-#include "Heuristics/ILSLPerturbation.hpp"
-#include "Heuristics/GRASP.hpp"
+#include "Heuristics/ILS/BasicIteratedLocalSearch.hpp"
+#include "Heuristics/ILS/BasicILSPerturbation.hpp"
+#include "Heuristics/SA/BasicSimulatedAnnealing.hpp"
+#include "Heuristics/ILS/IteratedLocalSearchLevels.hpp"
+#include "Heuristics/ILS/ILSLPerturbation.hpp"
+#include "Heuristics/GRASP/GRASP.hpp"
 
 // test local searches
 #include "Heuristics/CompareLocalSearch.hpp"

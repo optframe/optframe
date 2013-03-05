@@ -21,9 +21,9 @@
 #ifndef OPTFRAME_TABUSEARCH_HPP_
 #define OPTFRAME_TABUSEARCH_HPP_
 
-#include "../SingleObjSearch.hpp"
-#include "../NSEnum.hpp"
-#include "../Evaluator.hpp"
+#include "../../SingleObjSearch.hpp"
+#include "../../NSEnum.hpp"
+#include "../../Evaluator.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class TabuSearch: public SingleObjSearch<R, ADS, DS>
