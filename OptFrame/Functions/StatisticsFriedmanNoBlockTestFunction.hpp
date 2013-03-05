@@ -111,7 +111,7 @@ public:
         unsigned LIMIT = 1000;
 
 		stringstream scommand;
-        FILE* aux;
+        FILE* aux = NULL;
 
         if(nrows*ncols > LIMIT) // TOO BIG! USING FILE TO TRANSPORT DATA
         {

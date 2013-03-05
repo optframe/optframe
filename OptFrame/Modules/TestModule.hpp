@@ -140,6 +140,8 @@ public:
 			s_fo_end += fo_now;
 			s_t_end += t_now;
 
+			delete result;
+
 			if (fo_now < min_fo)
 				min_fo = fo_now;
 			if (t_now < min_t)
