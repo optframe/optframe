@@ -57,7 +57,7 @@ public:
 
 		long tnow = time(NULL);
 
-		while (iter < iterMax && ((tnow - tini) < timelimit))
+		while ((iter < iterMax) && ((tnow - tini) < timelimit) && (evaluator.betterThan(target_f, e.evaluation())))
 		{
 			Move<R, ADS, DS>& move = ns.move(s);
 
@@ -80,6 +80,7 @@ public:
 			if (evaluator.betterThan(cost, 0))
 			{
 				delete &move.apply(e, s);
+				evaluator.evaluate(e, s);
 				iter = 0;
 			}
 
