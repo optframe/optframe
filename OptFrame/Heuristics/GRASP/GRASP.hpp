@@ -98,7 +98,7 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class GRASPBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, DS>
+class GRASPBuilder : public GRASPH, public SingleObjSearchBuilder<R, ADS, DS>
 {
 public:
 	virtual ~GRASPBuilder()
@@ -121,6 +121,9 @@ public:
 		LocalSearch<R, ADS, DS>* h = method.first;
 
 		scanner = Scanner(method.second);
+
+		if(!scanner.hasNext())
+			return NULL;
 
 		int iterMax = scanner.nextInt();
 
