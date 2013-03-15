@@ -74,7 +74,7 @@ public:
 
 	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
 	{
-		int aux;
+		T aux;
 		if (c < pos)
 		{
 			for (int i = c + 1; i < (pos - 1); i++)

@@ -77,7 +77,7 @@ public:
 	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
 	{
 
-		int aux = rep.at(r).at(c1);
+		T aux = rep.at(r).at(c1);
 		rep.at(r).at(c1) = rep.at(r).at(c2);
 		rep.at(r).at(c2) = aux;
 

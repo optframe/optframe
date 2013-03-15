@@ -112,7 +112,7 @@ class NSIteratorVRPSwap1_1: public NSIterator<vector<vector<T> >, ADS, DS>
 
 	typedef vector<vector<T> > Routes;
 
-private:
+protected:
 
 	MOVE* m;
 	vector<MOVE*> moves;
