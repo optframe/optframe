@@ -82,7 +82,7 @@ public:
 
 	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
 	{
-		int aux;
+		T aux;
 		aux = rep.at(r1).at(c1);
 		rep.at(r1).at(c1) = rep.at(r2).at(c2);
 		rep.at(r2).at(c2) = aux;
@@ -113,23 +113,24 @@ class NSIteratorVRPSwap1_1: public NSIterator<vector<vector<T> >, ADS, DS>
 	typedef vector<vector<T> > Routes;
 
 protected:
-
 	MOVE* m;
 	vector<MOVE*> moves;
 	int r1, r2; // route 1 and route 2, respectively
 	int c1, c2; // client in route 1 and client in route 2, respectively
 	const Routes& r;
+	const ADS& ads; //TODO COULD BE A POINTER? WHAT IS THE BEST OPTION?
 
 	P* p; // has to be the last
 
 public:
 
-	NSIteratorVRPSwap1_1(const Routes& _r, P* _p = NULL) :
-		r(_r), p(_p)
+	NSIteratorVRPSwap1_1(const Routes& _r, const ADS& _ads, P* _p = NULL) :
+		r(_r), ads(_ads), p(_p)
 	{
 		c1 = c2 = 0;
 		r1 = r2 = 0;
 		m = NULL;
+
 	}
 
 	virtual ~NSIteratorVRPSwap1_1()
@@ -236,9 +237,9 @@ public:
 		return *new MOVE(r1, r2, c1, c2, p);
 	}
 
-	virtual NSIteratorVRPSwap1_1<T, ADS, DS, MOVE, P>& getIterator(const Routes& r, const ADS&)
+	virtual NSIteratorVRPSwap1_1<T, ADS, DS, MOVE, P>& getIterator(const Routes& r, const ADS& ads)
 	{
-		return *new NSITERATOR (r, p);
+		return *new NSITERATOR (r, ads, p);
 	}
 
 	virtual void print()

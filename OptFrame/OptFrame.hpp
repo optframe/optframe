@@ -39,6 +39,8 @@
 #include "Solution.hpp"
 //#include "Util/TestSolution.hpp"
 
+#include "UpdateADS.hpp"
+
 #include "Population.hpp"
 
 #include "Constructive.h"
@@ -87,6 +89,7 @@
 #include "Heuristics/LocalSearches/RandomDescentMethod.hpp"
 #include "Heuristics/LocalSearches/CircularSearch.hpp"
 #include "Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp"
+#include "Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp"
 #include "Heuristics/LocalSearches/RVND.hpp"
 #include "Heuristics/LocalSearches/HillClimbing.hpp"
 
@@ -454,6 +457,7 @@ public:
 		factory.builders.push_back(new RandomDescentMethodBuilder<R, ADS, DS>);
 		factory.builders.push_back(new CircularSearchBuilder<R, ADS, DS>);
 		factory.builders.push_back(new VariableNeighborhoodDescentBuilder<R, ADS, DS>);
+		factory.builders.push_back(new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS, DS>);
 		factory.builders.push_back(new RVNDBuilder<R, ADS, DS>);
 		factory.builders.push_back(new HillClimbingBuilder<R, ADS, DS>);
 

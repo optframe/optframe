@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef VARIABLENEIGHBORHOODDESCENT_HPP_
-#define VARIABLENEIGHBORHOODDESCENT_HPP_
+#ifndef VARIABLENEIGHBORHOODDESCENTUPDATEADS_HPP_
+#define VARIABLENEIGHBORHOODDESCENTUPDATEADS_HPP_
 
 #include "../../LocalSearch.hpp"
 #include "../../NSEnum.hpp"
@@ -27,17 +27,19 @@
 
 #include "VND.h"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class VariableNeighborhoodDescent: public LocalSearch<R, ADS, DS>
+template<class R, class ADS, class DS = OPTFRAME_DEFAULT_DS>
+class VariableNeighborhoodDescentUpdateADS: public LocalSearch<R, ADS, DS>
 {
+private:
+	UpdateADS<R, ADS>& upADS;
 public:
 
-	VariableNeighborhoodDescent(Evaluator<R, ADS, DS>& _ev, vector<LocalSearch<R, ADS, DS>*> _lsList) :
-		ev(_ev), lsList(_lsList)
+	VariableNeighborhoodDescentUpdateADS(Evaluator<R, ADS, DS>& _ev, UpdateADS<R, ADS>& _upADS, vector<LocalSearch<R, ADS, DS>*> _lsList) :
+		ev(_ev), upADS(_upADS), lsList(_lsList)
 	{
 	}
 
-	virtual ~VariableNeighborhoodDescent()
+	virtual ~VariableNeighborhoodDescentUpdateADS()
 	{
 	}
 
@@ -49,7 +51,6 @@ public:
 
 		delete &e;
 	}
-
 
 	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
 	{
@@ -79,6 +80,7 @@ public:
 				delete s0;
 				delete e0;
 				k = k + 1;
+				upADS.updateADSNeighStatus(s.getADS(), k);
 			}
 			ev.evaluate(e, s);
 
@@ -108,10 +110,10 @@ public:
 	{
 		stringstream ss;
 		ss << "VND: [ ";
-		for(unsigned i=0; i<lsList.size(); i++)
+		for (unsigned i = 0; i < lsList.size(); i++)
 		{
 			ss << lsList[i]->toString();
-			if(i != lsList.size()-1)
+			if (i != lsList.size() - 1)
 				ss << ",";
 		}
 		ss << "]";
@@ -124,12 +126,11 @@ private:
 	vector<LocalSearch<R, ADS, DS>*> lsList;
 };
 
-
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class VariableNeighborhoodDescentBuilder : public LocalSearchBuilder<R, ADS, DS>
+class VariableNeighborhoodDescentUpdateADSBuilder: public LocalSearchBuilder<R, ADS, DS>
 {
 public:
-	virtual ~VariableNeighborhoodDescentBuilder()
+	virtual ~VariableNeighborhoodDescentUpdateADSBuilder()
 	{
 	}
 
@@ -138,16 +139,22 @@ public:
 		Evaluator<R, ADS, DS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
+		UpdateADS<R, ADS>* upADS;
+		hf.assign(upADS, scanner.nextInt(), scanner.next()); // reads backwards!
+
 		vector<LocalSearch<R, ADS, DS>*> hlist;
 		hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new VariableNeighborhoodDescent<R, ADS, DS>(*eval, hlist);
+		return new VariableNeighborhoodDescentUpdateADS<R, ADS, DS> (*eval, *upADS, hlist);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
+
+		params.push_back(make_pair(UpdateADS<R, ADS>::idComponent(), "updateADS function"));
+
 		stringstream ss;
 		ss << LocalSearch<R, ADS, DS>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of local searches"));
@@ -157,13 +164,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == VariableNeighborhoodDescent<R, ADS, DS>::idComponent();
+		return component == VariableNeighborhoodDescentUpdateADS<R, ADS, DS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << VND::family;
+		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << VND::family << "VNDUpdateADS";
 		return ss.str();
 	}
 
@@ -173,5 +180,4 @@ public:
 	}
 };
 
-
-#endif /*VARIABLENEIGHBORHOODDESCENT_HPP_*/
+#endif /*VARIABLENEIGHBORHOODDESCENTUPDATEADS_HPP_*/

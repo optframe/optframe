@@ -22,6 +22,7 @@
 #define OPTFRAME_EVALUATOR_HPP_
 
 #include "Solution.hpp"
+#include "UpdateADS.hpp"
 #include "Evaluation.hpp"
 #include "Move.hpp"
 

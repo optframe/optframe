@@ -49,6 +49,7 @@
 #include "Heuristics/LocalSearches/FirstImprovement.hpp"
 #include "Heuristics/LocalSearches/CircularSearch.hpp"
 #include "Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp"
+#include "Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp"
 #include "Heuristics/LocalSearches/RVND.hpp"
 
 //Metaheuristics
