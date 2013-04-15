@@ -279,7 +279,7 @@ public:
 
 	string version()
 	{
-		return "OptFrame - Development Version 2.0 \nhttp://sourceforge.net/projects/optframe/";
+		return "opti - OptFrame Script Language Interpreter \nDevelopment Version 2.0 \nhttp://sourceforge.net/projects/optframe/";
 	}
 
 	void unloadModules()
@@ -315,130 +315,174 @@ public:
 		loadModule(new SystemCallModule<R, ADS, DS> );
 	}
 
-	void loadDefault()
+	void loadDefault(string prefix = "")
 	{
-		unloadModules();
-
 		// to become functions or runtime modules...
-		loadModule(new CreateNumericListModule<R, ADS, DS> );
-		loadModule(new EmpiricalModule<R, ADS, DS> );
-		loadModule(new TestModule<R, ADS, DS> );
-		loadModule(new TestLocalSearchModule<R, ADS, DS> );
+		if (prefix == "")
+		{
+			loadModule(new CreateNumericListModule<R, ADS, DS>);
+			loadModule(new EmpiricalModule<R, ADS, DS>);
+			loadModule(new TestModule<R, ADS, DS>);
+			loadModule(new TestLocalSearchModule<R, ADS, DS>);
+		}
 
 		// components
-		loadModule(new ComponentBetterThanModule<R, ADS, DS> );
-		loadModule(new ComponentBuilderOfComponentModule<R, ADS, DS> );
-		loadModule(new ComponentBuildModule<R, ADS, DS> );
-		loadModule(new ComponentCheckModule<R, ADS, DS> );
-		loadModule(new ComponentCreateListModule<R, ADS, DS> );
-		loadModule(new ComponentDropModule<R, ADS, DS> );
-		loadModule(new ComponentDropAllModule<R, ADS, DS> );
-		loadModule(new ComponentEvaluateModule<R, ADS, DS> );
-		loadModule(new ComponentExecConstructiveModule<R, ADS, DS> );
-		loadModule(new ComponentExecLocalSearchModule<R, ADS, DS> );
-		loadModule(new ComponentExecModule<R, ADS, DS> );
-		loadModule(new ComponentExportLogModule<R, ADS, DS> );
-		loadModule(new ComponentExportModule<R, ADS, DS> );
-		loadModule(new ComponentListBuildersModule<R, ADS, DS> );
-		loadModule(new ComponentListFromPopulationModule<R, ADS, DS> );
-		loadModule(new ComponentListModule<R, ADS, DS> );
-		loadModule(new ComponentNullModule<R, ADS, DS> );
-		loadModule(new ComponentToStringModule<R, ADS, DS> );
+		if ((prefix == "") || (prefix == "component"))
+		{
+			loadModule(new ComponentBetterThanModule<R, ADS, DS>);
+			loadModule(new ComponentBuilderOfComponentModule<R, ADS, DS>);
+			loadModule(new ComponentBuildModule<R, ADS, DS>);
+			loadModule(new ComponentCheckModule<R, ADS, DS>);
+			loadModule(new ComponentCreateListModule<R, ADS, DS>);
+			loadModule(new ComponentDropModule<R, ADS, DS>);
+			loadModule(new ComponentDropAllModule<R, ADS, DS>);
+			loadModule(new ComponentEvaluateModule<R, ADS, DS>);
+			loadModule(new ComponentExecConstructiveModule<R, ADS, DS>);
+			loadModule(new ComponentExecLocalSearchModule<R, ADS, DS>);
+			loadModule(new ComponentExecModule<R, ADS, DS>);
+			loadModule(new ComponentExportLogModule<R, ADS, DS>);
+			loadModule(new ComponentExportModule<R, ADS, DS>);
+			loadModule(new ComponentListBuildersModule<R, ADS, DS>);
+			loadModule(new ComponentListFromPopulationModule<R, ADS, DS>);
+			loadModule(new ComponentListModule<R, ADS, DS>);
+			loadModule(new ComponentNullModule<R, ADS, DS>);
+			loadModule(new ComponentToStringModule<R, ADS, DS>);
+		}
 
-		loadModule(new FileEchoModule<R, ADS, DS> );
-		loadModule(new FileToListModule<R, ADS, DS> );
+		if ((prefix == "") || (prefix == "file"))
+		{
+			loadModule(new FileEchoModule<R, ADS, DS>);
+			loadModule(new FileToListModule<R, ADS, DS>);
+		}
 
-		loadModule(new ListAddModule<R, ADS, DS> );
-		loadModule(new ListPushBackModule<R, ADS, DS> );
-		loadModule(new ListRemoveModule<R, ADS, DS> );
-		loadModule(new ListSilentDefineModule<R, ADS, DS> );
-		loadModule(new ListSortModule<R, ADS, DS> );
+		if ((prefix == "") || (prefix == "list"))
+		{
+			loadModule(new ListAddModule<R, ADS, DS>);
+			loadModule(new ListPushBackModule<R, ADS, DS>);
+			loadModule(new ListRemoveModule<R, ADS, DS>);
+			loadModule(new ListSilentDefineModule<R, ADS, DS>);
+			loadModule(new ListSortModule<R, ADS, DS>);
+		}
 
-		loadModule(new ModuleCreateModule<R, ADS, DS> );
-		loadModule(new ModuleCreateRawModule<R, ADS, DS> );
-		loadModule(new ModuleExistsModule<R, ADS, DS> );
+		if ((prefix == "") || (prefix == "module"))
+		{
+			loadModule(new ModuleCreateModule<R, ADS, DS>);
+			loadModule(new ModuleCreateRawModule<R, ADS, DS>);
+			loadModule(new ModuleExistsModule<R, ADS, DS>);
+		}
 
-		loadModule(new FunctionCreateRawModule<R, ADS, DS> );
+		if ((prefix == "") || (prefix == "function"))
+		{
+			loadModule(new FunctionCreateRawModule<R, ADS, DS>);
+		}
 
 		// deprecated
 		#ifdef MaPI
 				loadModule(new InitServersModule<R, ADS, DS> );
 		#endif
 
-		loadModule(new Plot2AxisModule<R, ADS, DS> );
-		loadModule(new PlotViewModule<R, ADS, DS> );
+		if ((prefix == "") || (prefix == "plot"))
+		{
+			loadModule(new Plot2AxisModule<R, ADS, DS>);
+			loadModule(new PlotViewModule<R, ADS, DS>);
+		}
 
 		// cannot load abstract module
 		//loadModule(new ProblemModule<R, ADS, DS> );
 
-		loadModule(new RandGenIntervalModule<R, ADS, DS> );
-		loadModule(new RandGenNumberModule<R, ADS, DS> );
-		loadModule(new RandGenSetSeedModule<R, ADS, DS> );
+		if ((prefix == "") || (prefix == "randgen"))
+		{
+			loadModule(new RandGenIntervalModule<R, ADS, DS>);
+			loadModule(new RandGenNumberModule<R, ADS, DS>);
+			loadModule(new RandGenSetSeedModule<R, ADS, DS>);
+		}
 
-		loadModule(new SystemDefineModule<R, ADS, DS> );
-		loadModule(new SystemDictionaryModule<R, ADS, DS> );
-		loadModule(new SystemEchoModule<R, ADS, DS> );
-		loadModule(new SystemErrorModule<R, ADS, DS> );
-		loadModule(new SystemHelpModule<R, ADS, DS> );
-		loadModule(new SystemPauseModule<R, ADS, DS> );
-		loadModule(new SystemPreprocessModule<R, ADS, DS> );
-		loadModule(new SystemReadModule<R, ADS, DS> );
-		loadModule(new SystemRequireModule<R, ADS, DS> );
-		loadModule(new SystemRunModule<R, ADS, DS> );
-		loadModule(new SystemSilentDefineModule<R, ADS, DS> );
-		loadModule(new SystemUndefineModule<R, ADS, DS> );
-		loadModule(new SystemUnsafeDefineModule<R, ADS, DS> );
-		loadModule(new SystemUsageModule<R, ADS, DS> );
-		loadModule(new SystemUseModule<R, ADS, DS> );
+		if ((prefix == "") || (prefix == "system"))
+		{
+			loadModule(new SystemDefineModule<R, ADS, DS>);
+			loadModule(new SystemDictionaryModule<R, ADS, DS>);
+			loadModule(new SystemEchoModule<R, ADS, DS>);
+			loadModule(new SystemErrorModule<R, ADS, DS>);
+			loadModule(new SystemHelpModule<R, ADS, DS>);
+			loadModule(new SystemPauseModule<R, ADS, DS>);
+			loadModule(new SystemPreprocessModule<R, ADS, DS>);
+			loadModule(new SystemReadModule<R, ADS, DS>);
+			loadModule(new SystemRequireModule<R, ADS, DS>);
+			loadModule(new SystemRunModule<R, ADS, DS>);
+			loadModule(new SystemSilentDefineModule<R, ADS, DS>);
+			loadModule(new SystemUndefineModule<R, ADS, DS>);
+			loadModule(new SystemUnsafeDefineModule<R, ADS, DS>);
+			loadModule(new SystemUsageModule<R, ADS, DS>);
+			loadModule(new SystemUseModule<R, ADS, DS>);
+		}
 
-		//structural
-		loadModule(new ForModule<R, ADS, DS> );
-		loadModule(new ForEachModule<R, ADS, DS> );
-		loadModule(new IfElseModule<R, ADS, DS> );
-		loadModule(new WhileModule<R, ADS, DS> );
-		loadModule(new TryModule<R, ADS, DS> );
+		// ==========================================================
+		// language statements (conditional, loop and error handling)
+		// ==========================================================
+		if ((prefix == "") || (prefix == "statements"))
+		{
+			loadModule(new ForModule<R, ADS, DS>);
+			loadModule(new ForEachModule<R, ADS, DS>);
+			loadModule(new IfElseModule<R, ADS, DS>);
+			loadModule(new WhileModule<R, ADS, DS>);
+			loadModule(new TryModule<R, ADS, DS>);
+		}
 
 		// ----------------------------------------------
 
-		unloadFunctions();
-		loadFunction(new ListAppendFunction);
-		loadFunction(new ListDefinitionFunction);
-		loadFunction(new ListElementFunction);
-		loadFunction(new ListLengthFunction);
-		loadFunction(new ListWordsFunction);
+		if ((prefix == "") || (prefix == "list"))
+		{
+			loadFunction(new ListAppendFunction);
+			loadFunction(new ListDefinitionFunction);
+			loadFunction(new ListElementFunction);
+			loadFunction(new ListLengthFunction);
+			loadFunction(new ListWordsFunction);
+		}
 
-		loadFunction(new OperatorAbsFunction);
-		loadFunction(new OperatorCompareFunction);
-		loadFunction(new OperatorComputeFunction);
-		loadFunction(new OperatorInFunction);
-		loadFunction(new OperatorLogicFunction);
+		if ((prefix == "") || (prefix == "operator"))
+		{
+			loadFunction(new OperatorAbsFunction);
+			loadFunction(new OperatorCompareFunction);
+			loadFunction(new OperatorComputeFunction);
+			loadFunction(new OperatorInFunction);
+			loadFunction(new OperatorLogicFunction);
+		}
 
 		// statistics
-		loadFunction(new StatisticsArgMaxFunction);
-		loadFunction(new StatisticsArgMinFunction);
-		loadFunction(new StatisticsANOVAFunction);
-		loadFunction(new StatisticsAvgFunction);
-		loadFunction(new StatisticsFriedmanNoBlockTestFunction);
-		loadFunction(new StatisticsFriedmanTestFunction);
-		loadFunction(new StatisticsMannUTestFunction);
-		loadFunction(new StatisticsMaxFunction);
-		loadFunction(new StatisticsMedFunction);
-		loadFunction(new StatisticsMinFunction);
-		loadFunction(new StatisticsPairedTTestFunction);
-		loadFunction(new StatisticsShapiroTestFunction);
-		loadFunction(new StatisticsSampleStdDevFunction);
-		loadFunction(new StatisticsStdDevFunction);
-		loadFunction(new StatisticsStudentTTestFunction);
-		loadFunction(new StatisticsSumFunction);
-		loadFunction(new StatisticsWilcoxonTestFunction);
+		if ((prefix == "") || (prefix == "statistics"))
+		{
+			loadFunction(new StatisticsArgMaxFunction);
+			loadFunction(new StatisticsArgMinFunction);
+			loadFunction(new StatisticsANOVAFunction);
+			loadFunction(new StatisticsAvgFunction);
+			loadFunction(new StatisticsFriedmanNoBlockTestFunction);
+			loadFunction(new StatisticsFriedmanTestFunction);
+			loadFunction(new StatisticsMannUTestFunction);
+			loadFunction(new StatisticsMaxFunction);
+			loadFunction(new StatisticsMedFunction);
+			loadFunction(new StatisticsMinFunction);
+			loadFunction(new StatisticsPairedTTestFunction);
+			loadFunction(new StatisticsShapiroTestFunction);
+			loadFunction(new StatisticsSampleStdDevFunction);
+			loadFunction(new StatisticsStdDevFunction);
+			loadFunction(new StatisticsStudentTTestFunction);
+			loadFunction(new StatisticsSumFunction);
+			loadFunction(new StatisticsWilcoxonTestFunction);
+		}
 
-		loadFunction(new SystemInputFunction);
-		loadFunction(new SystemPOpenFunction);
-		loadFunction(new SystemTimeFunction);
+		if ((prefix == "") || (prefix == "system"))
+		{
+			loadFunction(new SystemInputFunction);
+			loadFunction(new SystemPOpenFunction);
+			loadFunction(new SystemTimeFunction);
+		}
 
-		loadFunction(new TextConcatFunction);
-		loadFunction(new TextDefinitionFunction);
-		loadFunction(new TextNextFunction);
+		if ((prefix == "") || (prefix == "text"))
+		{
+			loadFunction(new TextConcatFunction);
+			loadFunction(new TextDefinitionFunction);
+			loadFunction(new TextNextFunction);
+		}
 	}
 
 	OptFrameModule<R, ADS, DS>* getModule(string module)
