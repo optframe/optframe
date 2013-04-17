@@ -82,6 +82,7 @@ int main(int argc, char **argv)
 	optframe.unloadFunctions();
 
 	optframe.loadDefault("statements");
+	optframe.loadDefault("deprecated"); // TODO: remove!
 	optframe.loadDefault("system");
 	optframe.loadDefault("file");
 	optframe.loadDefault("list");

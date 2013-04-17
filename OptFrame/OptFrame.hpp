@@ -318,7 +318,7 @@ public:
 	void loadDefault(string prefix = "")
 	{
 		// to become functions or runtime modules...
-		if (prefix == "")
+		if ((prefix == "") || (prefix == "deprecated")) // TODO: remove!
 		{
 			loadModule(new CreateNumericListModule<R, ADS, DS>);
 			loadModule(new EmpiricalModule<R, ADS, DS>);
