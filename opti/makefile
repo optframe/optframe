@@ -1,4 +1,4 @@
-all: build install
+all: build
 
 build:
 	echo Building OptFrame Script Language Interpreter
@@ -8,4 +8,8 @@ install:
 	echo Moving 'opti' to '/usr/bin/'
 	sudo cp opti /usr/bin/
 	echo Installation successful! type: 'opti' to run
-	
+
+uninstall:
+	echo Removing 'opti' from '/usr/bin/'
+	sudo rm /usr/bin/opti
+	echo Uninstallation successful!

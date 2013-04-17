@@ -583,10 +583,31 @@ public:
 				}
 
 			if (notfound)
+			{
 				cout << "Sorry, i couldn't understand the command '" << command << "'." << endl << "Please, type 'system.help' or type the command again." << endl;
+				printOptions(command, modules);
+			}
 		}
 
 		cout << "Goodbye." << endl;
+	}
+
+	static void printOptions(string part_module, vector<OptFrameModule<R, ADS, DS>*>& allModules)
+	{
+		for(unsigned int i=0;i<allModules.size();i++)
+		{
+			bool found = true;
+
+			for(unsigned j=0; j<part_module.length(); j++)
+				if(part_module[j] != allModules[i]->id()[j])
+				{
+					found = false;
+					break;
+				}
+
+			if(found)
+				cout << "option is: '" << allModules[i]->id() << "'" << endl;
+		}
 	}
 
 	//! \english Execute command in OptFrame Command Line Interface \endenglish \portuguese Executa comando na Interface de Linha de Comando do OptFrame \endportuguese
