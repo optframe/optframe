@@ -361,7 +361,10 @@ public:
 			delete plist1;
 		}
 		else
+		{
+			cout << "module.create error: ill-formed parameter list for new module '" << name << "'!" << endl;
 			return false;
+		}
 
 		for (unsigned int i = 0; i < parameters.size(); i++)
 			if (parameters[i][0] != '$')
@@ -385,7 +388,10 @@ public:
 			delete plist;
 		}
 		else
+		{
+			cout << "module.create error: ill-formed command block for new module '" << name << "'!" << endl;
 			return false;
+		}
 
 		OptFrameModule<R, ADS, DS>* m = getModule(modules, name);
 
