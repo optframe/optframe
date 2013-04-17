@@ -135,6 +135,24 @@ create_module print_list_to_file [ $file , $list ] {
   undefine _ilist
 }
 
+module.create head [ $list , $n , $new_list ] {
+  list.silent_define $new_list [ ];
+  create_numeric_list 1 $n _head_indexes;
+  for_each $i _head_indexes {
+     list.push_back $new_list list.element($i $list);
+  };
+  undefine _head_indexes;
+}
+
+module.create tail [ $list , $n , $new_list ] {
+  list.silent_define $new_list [ ];
+  create_numeric_list operator.compute(operator.compute(list.length($list) - $n) + 1) list.length($list) _tail_indexes;
+  for_each $i _tail_indexes {
+     list.push_back $new_list list.element($i $list);
+  };
+  undefine _tail_indexes;
+} 
+
 % --------------------- CONSTANTS ---------------------- 
 
 list.silent_define list.EMPTY [ ]
