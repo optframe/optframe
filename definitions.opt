@@ -53,6 +53,8 @@ use operator
 use statistics
 use text -definition    % text.definition conflict with list.definition (not renamed) 
 
+use math
+
 
 %%% DEPRECATED! GIVE SOME OLD NAMES
 %module.rename system.define        define

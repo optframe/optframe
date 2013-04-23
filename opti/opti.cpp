@@ -93,6 +93,7 @@ int main(int argc, char **argv)
 	optframe.loadDefault("statistics");
 	optframe.loadDefault("text");
 	optframe.loadDefault("operator");
+	optframe.loadDefault("math");
 
 	if(system_calls)
 		optframe.loadCallModule();

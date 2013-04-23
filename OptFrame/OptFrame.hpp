@@ -124,6 +124,9 @@
 #include "Functions/ListLengthFunction.hpp"
 #include "Functions/ListWordsFunction.hpp"
 
+#include "Functions/MathRoundFunction.hpp"
+#include "Functions/MathTruncFunction.hpp"
+
 #include "Functions/OperatorAbsFunction.hpp"
 #include "Functions/OperatorCompareFunction.hpp"
 #include "Functions/OperatorComputeFunction.hpp"
@@ -437,6 +440,12 @@ public:
 			loadFunction(new ListElementFunction);
 			loadFunction(new ListLengthFunction);
 			loadFunction(new ListWordsFunction);
+		}
+
+		if ((prefix == "") || (prefix == "math"))
+		{
+			loadFunction(new MathRoundFunction);
+			loadFunction(new MathTruncFunction);
 		}
 
 		if ((prefix == "") || (prefix == "operator"))
