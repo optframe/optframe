@@ -73,7 +73,7 @@ public:
 			int nk = rand() % ns.size();
 
 			int f = 0; // number of failures
-			while (f < pMax)
+			while (f < limit)
 			{
 				Move<R, ADS, DS>& m = ns[nk]->move(s);
 
@@ -89,9 +89,9 @@ public:
 				delete &m;
 			}
 
-			if (f == pMax)
+			if (f == limit)
 			{
-				cout << "BasicILSPerturbation warning: perturbation had no effect with " << pMax << " failures (!canBeApplied) for neighborhood :";
+				cout << "BasicILSPerturbation warning: perturbation had no effect with " << limit << " failures (!canBeApplied) for neighborhood :";
 				ns[nk]->print();
 			}
 		}
