@@ -34,16 +34,27 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_
 class BasicILSPerturbation: public ILS, public OptFrameComponent
 {
 private:
-	vector<NS<R, ADS, DS>*> ns;
 	Evaluator<R, ADS, DS>& evaluator;
+	int pMin;
 	int pMax;
+	int limit;
+	vector<NS<R, ADS, DS>*> ns;
 	RandGen& rg;
 
 public:
-	BasicILSPerturbation(Evaluator<R, ADS, DS>& e, int _pMax, NS<R, ADS, DS>& _ns, RandGen& _rg) :
-		evaluator(e), pMax(_pMax), rg(_rg)
+	BasicILSPerturbation(Evaluator<R, ADS, DS>& e, int _pMin, int _pMax, int _limit, vector<NS<R, ADS, DS>*>& _ns, RandGen& _rg) :
+		evaluator(e), pMin(_pMin), pMax(_pMax), limit(_limit), ns(_ns), rg(_rg)
 	{
-		ns.push_back(&_ns);
+		if(pMax < pMin)
+		{
+			cout << "BasicILSPerturbation warning: pMax > pMin! Swapping both." << endl;
+			int aux = pMax;
+			pMax = pMin;
+			pMin = aux;
+		}
+
+		if(ns.size()==0)
+			cout << "BasicILSPerturbation warning: empty neighborhood list." << endl;
 	}
 
 	virtual ~BasicILSPerturbation()
@@ -57,28 +68,33 @@ public:
 
 	void perturb(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
 	{
-		int f = 0; // number of failures
-
-		while (f < pMax)
+		for (unsigned i = pMin; pMin < pMax; i++)
 		{
-			int x = rg.rand(ns.size());
+			int nk = rand() % ns.size();
 
-			Move<R, ADS, DS>& m = ns[x]->move(s);
-
-			if (m.canBeApplied(s))
+			int f = 0; // number of failures
+			while (f < pMax)
 			{
-				delete &m.apply(e, s);
+				Move<R, ADS, DS>& m = ns[nk]->move(s);
+
+				if (m.canBeApplied(s))
+				{
+					delete &m.apply(e, s);
+					delete &m;
+					break;
+				}
+				else
+					f++;
+
 				delete &m;
-				break;
 			}
-			else
-				f++;
 
-			delete &m;
+			if (f == pMax)
+			{
+				cout << "BasicILSPerturbation warning: perturbation had no effect with " << pMax << " failures (!canBeApplied) for neighborhood :";
+				ns[nk]->print();
+			}
 		}
-
-		if (f == pMax)
-			cout << "ILS Warning: perturbation had no effect in " << pMax << " tries!" << endl;
 
 		evaluator.evaluate(e, s); // updates 'e'
 	}
@@ -109,20 +125,27 @@ public:
 		Evaluator<R, ADS, DS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
+		int pMin = scanner.nextInt();
+		int pMax = scanner.nextInt();
 		int limit = scanner.nextInt();
 
-		NS<R, ADS, DS>* ns;
-		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
+		vector<NS<R, ADS, DS>*> ns_list;
+		hf.assignList(ns_list, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BasicILSPerturbation<R, ADS, DS>(*eval, limit, *ns, hf.getRandGen());
+		return new BasicILSPerturbation<R, ADS, DS>(*eval, pMin, pMax, limit, ns_list, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair("int", "max number of not appliable moves"));
-		params.push_back(make_pair(NS<R, ADS, DS>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair("int", "pMin: min number of moves"));
+		params.push_back(make_pair("int", "pMax: max number of moves"));
+		params.push_back(make_pair("int", "limit: max number of failures for canBeApplied"));
+		//params.push_back(make_pair(NS<R, ADS, DS>::idComponent(), "neighborhood structure"));
+		stringstream ss;
+		ss << NS<R, ADS, DS>::idComponent() << "[]";
+		params.push_back(make_pair(ss.str(), "list of neighborhood structures"));
 
 		return params;
 	}
