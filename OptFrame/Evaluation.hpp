@@ -31,6 +31,9 @@ typedef int OPTFRAME_DEFAULT_DS;
 
 using namespace std;
 
+// TODO: use enum?
+typedef bool Status; // 'unknown' = false, 'local optimum' = true
+
 //! \english The Evaluation class is a container class for the objective function value and the Memory structure M. \endenglish \portuguese A classe Evaluation é uma classe contêiner para o valor da função objetivo e a estrutura de Memória M. \endportuguese
 
 /*!
@@ -52,6 +55,9 @@ protected:
 	double objFunction;
 	double infMeasure;
 	DS* ds; // delta structure
+
+	map<string, Status> localStatus; // mapping 'move.id()' to 'NeighborhoodStatus'
+	Status globalOptimum;            // for exact methods only
 
 public:
 	Evaluation(double obj, double inf, DS& _ds):
@@ -120,6 +126,35 @@ public:
 		infMeasure = inf;
 	}
 
+	// -----------------
+	// for local optimum
+	// -----------------
+
+	Status getLocalOptimumStatus(string moveId)
+	{
+		return localStatus[moveId];
+	}
+
+	void setLocalOptimumStatus(string moveId, Status status)
+	{
+		localStatus[moveId] = status;
+	}
+
+	// ------------------
+	// for global optimum
+	// ------------------
+
+	Status getGlobalOptimumStatus()
+	{
+		return globalOptimum;
+	}
+
+	void setGlobalOptimumStatus(Status status)
+	{
+		globalOptimum = status;
+	}
+
+	// evaluation = objFunction + infMeasure
 	double evaluation() const
 	{
 		return objFunction + infMeasure;

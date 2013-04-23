@@ -79,8 +79,8 @@ public:
 			{
 				delete s0;
 				delete e0;
-				k = k + 1;
 				upADS.updateADSNeighStatus(s.getADS(), k);
+				k = k + 1;
 			}
 			ev.evaluate(e, s);
 

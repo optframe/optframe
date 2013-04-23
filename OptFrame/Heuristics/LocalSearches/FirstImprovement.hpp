@@ -53,7 +53,7 @@ public:
 	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
 	{
 		NSIterator<R, ADS, DS>& it = nsSeq.getIterator(e.getDS(), s.getR(), s.getADS());
-
+		string bestMoveId = "";
 		it.first();
 
 		if (it.isDone())
@@ -65,6 +65,15 @@ public:
 		do
 		{
 			Move<R, ADS, DS>* move = &it.current();
+
+			if(e.getLocalOptimumStatus(move->id()) == true)
+			{
+				delete &it;
+				delete move;
+				return;
+			}
+
+			bestMoveId = move->id();
 
 			if (move->canBeApplied(s))
 			{
@@ -82,6 +91,9 @@ public:
 						delete &it;
 
 						eval.evaluate(e, s); // updates 'e'
+
+						e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
+
 						return;
 					}
 				}
@@ -92,6 +104,9 @@ public:
 			it.next();
 		}
 		while (!it.isDone());
+
+		if(bestMoveId != "")
+			e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local Optimum
 
 		delete &it;
 	}

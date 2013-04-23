@@ -41,16 +41,9 @@ public:
 
 	}
 
-	virtual void buildADS(const R& _r, ADS& _ads)
-	{
+	virtual void initializeADSNeighStatus(ADS& _ads) = 0;
 
-	}
-
-	virtual void updateADSNeighStatus(ADS& _ads, int k)
-	{
-
-	}
-
+	virtual void updateADSNeighStatus(ADS& _ads, int k) = 0;
 
 	static string idComponent()
 	{

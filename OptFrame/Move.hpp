@@ -60,8 +60,13 @@ public:
 
 	virtual Move<R, ADS, DS>& apply(DS& ds, R& r, ADS& ads)
 	{
-		return apply(r, ads);
+		Move<R, ADS, DS>& rev = apply(r, ads);
+		updateNeighStatus(ads);
+		return rev;
 	}
+
+	virtual void updateNeighStatus(ADS& ads) = 0;
+
 
 	virtual pair<double, double>* cost(const Evaluation<DS>& e, const R& r, const ADS& ads)
 	{

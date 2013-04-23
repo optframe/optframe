@@ -65,6 +65,14 @@ public:
 		}
 
 		Move<R, ADS, DS>* bestMove = &it.current();
+
+		if(e.getLocalOptimumStatus(bestMove->id()) == true)
+		{
+			delete &it;
+			delete bestMove;
+			return;
+		}
+
 		while (!bestMove->canBeApplied(s))
 		{
 			delete bestMove;
@@ -108,7 +116,9 @@ public:
 		{
 			delete &bestMove->apply(e, s);
 			eval.evaluate(e, s); // updates 'e'
-		}
+			e.setLocalOptimumStatus(bestMove->id(), false); //set NS 'id' out of Local Optimum
+		}else
+			e.setLocalOptimumStatus(bestMove->id(), true); //set NS 'id' on Local Optimum
 
 		delete bestMove;
 		delete &it;
