@@ -31,7 +31,9 @@ template<class R, class ADS, class DS = OPTFRAME_DEFAULT_DS>
 class VariableNeighborhoodDescentUpdateADS: public LocalSearch<R, ADS, DS>
 {
 private:
+	Evaluator<R, ADS, DS>& ev;
 	UpdateADS<R, ADS>& upADS;
+	vector<LocalSearch<R, ADS, DS>*> lsList;
 public:
 
 	VariableNeighborhoodDescentUpdateADS(Evaluator<R, ADS, DS>& _ev, UpdateADS<R, ADS>& _upADS, vector<LocalSearch<R, ADS, DS>*> _lsList) :
@@ -121,9 +123,6 @@ public:
 		return ss.str();
 	}
 
-private:
-	Evaluator<R, ADS, DS>& ev;
-	vector<LocalSearch<R, ADS, DS>*> lsList;
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>

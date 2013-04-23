@@ -65,7 +65,9 @@ public:
 		return rev;
 	}
 
-	virtual void updateNeighStatus(ADS& ads) = 0;
+	virtual void updateNeighStatus(ADS& ads)
+	{
+	}
 
 
 	virtual pair<double, double>* cost(const Evaluation<DS>& e, const R& r, const ADS& ads)
