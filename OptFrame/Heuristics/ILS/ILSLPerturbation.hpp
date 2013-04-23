@@ -30,7 +30,7 @@
 #include "ILS.h"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ILSLPerturbation: public OptFrameComponent
+class ILSLPerturbation: public OptFrameComponent, public ILS
 {
 public:
 
@@ -48,7 +48,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << OptFrameComponent::idComponent() << "ILS:ilsl_pert";
+		ss << OptFrameComponent::idComponent() << ILS::family << "LevelPert";
 		return ss.str();
 
 	}
@@ -111,7 +111,9 @@ public:
 
 	static string idComponent()
 	{
-		return "OptFrame:ILS:ilsl_pert_lp2";
+		stringstream ss;
+		ss << ILSLPerturbation<R, ADS, DS>::idComponent() << ":LPlus2";
+		return ss.str();
 	}
 
 	virtual string id() const
@@ -159,7 +161,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, DS>::idComponent() << ILS::family << "Lpert";
+		ss << ComponentBuilder<R, ADS, DS>::idComponent() << ILS::family << "LevelPert:LPlus2";
 		return ss.str();
 	}
 
