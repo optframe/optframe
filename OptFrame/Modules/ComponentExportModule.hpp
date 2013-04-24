@@ -78,7 +78,7 @@ public:
 
 		FILE * pFile;
 
-		pFile = fopen(filename.c_str(), "w");
+		pFile = fopen(filename.c_str(), "a");
 
 		if (id == "*") // Saving all solutions
 		{
