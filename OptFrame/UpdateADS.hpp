@@ -41,13 +41,20 @@ public:
 
 	}
 
-	virtual void initializeADSNeighStatus(ADS& _ads) = 0;
+	virtual void initializeADSNeighStatus(const R& rep, ADS& _ads) = 0;
 
 	virtual void updateADSNeighStatus(ADS& _ads, int k) = 0;
 
+    virtual bool compatible(string s)
+    {
+    	return ( s == idComponent() ) || (OptFrameComponent::compatible(s));
+    }
+
 	static string idComponent()
 	{
-		return "OptFrame:UpdateADS";
+		stringstream ss;
+		ss << OptFrameComponent::idComponent() << "UpdateADS";
+		return ss.str();
 	}
 
 	virtual string id() const

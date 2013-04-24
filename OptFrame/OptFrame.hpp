@@ -93,7 +93,6 @@
 #include "Heuristics/LocalSearches/RVND.hpp"
 #include "Heuristics/LocalSearches/HillClimbing.hpp"
 
-
 // single obj search
 #include "Heuristics/SimpleLocalSearch.hpp"
 #include "Heuristics/ILS/BasicIteratedLocalSearch.hpp"
@@ -255,7 +254,7 @@ private:
 	vector<OptFrameModule<R, ADS, DS>*> modules;
 	vector<OptFrameFunction*> functions;
 	map<string, string> dictionary;
-	map< string, vector<string> > ldictionary;
+	map<string, vector<string> > ldictionary;
 
 public:
 
@@ -301,13 +300,13 @@ public:
 
 	void loadModule(OptFrameModule<R, ADS, DS>* module)
 	{
-		if(module)
+		if (module)
 			modules.push_back(module);
 	}
 
 	void loadFunction(OptFrameFunction* function)
 	{
-		if(function)
+		if (function)
 			functions.push_back(function);
 	}
 
@@ -323,71 +322,71 @@ public:
 		// to become functions or runtime modules...
 		if ((prefix == "") || (prefix == "deprecated")) // TODO: remove!
 		{
-			loadModule(new CreateNumericListModule<R, ADS, DS>);
-			loadModule(new EmpiricalModule<R, ADS, DS>);
-			loadModule(new TestModule<R, ADS, DS>);
-			loadModule(new TestLocalSearchModule<R, ADS, DS>);
+			loadModule(new CreateNumericListModule<R, ADS, DS> );
+			loadModule(new EmpiricalModule<R, ADS, DS> );
+			loadModule(new TestModule<R, ADS, DS> );
+			loadModule(new TestLocalSearchModule<R, ADS, DS> );
 		}
 
 		// components
 		if ((prefix == "") || (prefix == "component"))
 		{
-			loadModule(new ComponentBetterThanModule<R, ADS, DS>);
-			loadModule(new ComponentBuilderOfComponentModule<R, ADS, DS>);
-			loadModule(new ComponentBuildModule<R, ADS, DS>);
-			loadModule(new ComponentCheckModule<R, ADS, DS>);
-			loadModule(new ComponentCreateListModule<R, ADS, DS>);
-			loadModule(new ComponentDropModule<R, ADS, DS>);
-			loadModule(new ComponentDropAllModule<R, ADS, DS>);
-			loadModule(new ComponentEvaluateModule<R, ADS, DS>);
-			loadModule(new ComponentExecConstructiveModule<R, ADS, DS>);
-			loadModule(new ComponentExecLocalSearchModule<R, ADS, DS>);
-			loadModule(new ComponentExecModule<R, ADS, DS>);
-			loadModule(new ComponentExportLogModule<R, ADS, DS>);
-			loadModule(new ComponentExportModule<R, ADS, DS>);
-			loadModule(new ComponentListBuildersModule<R, ADS, DS>);
-			loadModule(new ComponentListFromPopulationModule<R, ADS, DS>);
-			loadModule(new ComponentListModule<R, ADS, DS>);
-			loadModule(new ComponentNullModule<R, ADS, DS>);
-			loadModule(new ComponentToStringModule<R, ADS, DS>);
+			loadModule(new ComponentBetterThanModule<R, ADS, DS> );
+			loadModule(new ComponentBuilderOfComponentModule<R, ADS, DS> );
+			loadModule(new ComponentBuildModule<R, ADS, DS> );
+			loadModule(new ComponentCheckModule<R, ADS, DS> );
+			loadModule(new ComponentCreateListModule<R, ADS, DS> );
+			loadModule(new ComponentDropModule<R, ADS, DS> );
+			loadModule(new ComponentDropAllModule<R, ADS, DS> );
+			loadModule(new ComponentEvaluateModule<R, ADS, DS> );
+			loadModule(new ComponentExecConstructiveModule<R, ADS, DS> );
+			loadModule(new ComponentExecLocalSearchModule<R, ADS, DS> );
+			loadModule(new ComponentExecModule<R, ADS, DS> );
+			loadModule(new ComponentExportLogModule<R, ADS, DS> );
+			loadModule(new ComponentExportModule<R, ADS, DS> );
+			loadModule(new ComponentListBuildersModule<R, ADS, DS> );
+			loadModule(new ComponentListFromPopulationModule<R, ADS, DS> );
+			loadModule(new ComponentListModule<R, ADS, DS> );
+			loadModule(new ComponentNullModule<R, ADS, DS> );
+			loadModule(new ComponentToStringModule<R, ADS, DS> );
 		}
 
 		if ((prefix == "") || (prefix == "file"))
 		{
-			loadModule(new FileEchoModule<R, ADS, DS>);
-			loadModule(new FileToListModule<R, ADS, DS>);
+			loadModule(new FileEchoModule<R, ADS, DS> );
+			loadModule(new FileToListModule<R, ADS, DS> );
 		}
 
 		if ((prefix == "") || (prefix == "list"))
 		{
-			loadModule(new ListAddModule<R, ADS, DS>);
-			loadModule(new ListPushBackModule<R, ADS, DS>);
-			loadModule(new ListRemoveModule<R, ADS, DS>);
-			loadModule(new ListSilentDefineModule<R, ADS, DS>);
-			loadModule(new ListSortModule<R, ADS, DS>);
+			loadModule(new ListAddModule<R, ADS, DS> );
+			loadModule(new ListPushBackModule<R, ADS, DS> );
+			loadModule(new ListRemoveModule<R, ADS, DS> );
+			loadModule(new ListSilentDefineModule<R, ADS, DS> );
+			loadModule(new ListSortModule<R, ADS, DS> );
 		}
 
 		if ((prefix == "") || (prefix == "module"))
 		{
-			loadModule(new ModuleCreateModule<R, ADS, DS>);
-			loadModule(new ModuleCreateRawModule<R, ADS, DS>);
-			loadModule(new ModuleExistsModule<R, ADS, DS>);
+			loadModule(new ModuleCreateModule<R, ADS, DS> );
+			loadModule(new ModuleCreateRawModule<R, ADS, DS> );
+			loadModule(new ModuleExistsModule<R, ADS, DS> );
 		}
 
 		if ((prefix == "") || (prefix == "function"))
 		{
-			loadModule(new FunctionCreateRawModule<R, ADS, DS>);
+			loadModule(new FunctionCreateRawModule<R, ADS, DS> );
 		}
 
 		// deprecated
-		#ifdef MaPI
-				loadModule(new InitServersModule<R, ADS, DS> );
-		#endif
+#ifdef MaPI
+		loadModule(new InitServersModule<R, ADS, DS> );
+#endif
 
 		if ((prefix == "") || (prefix == "plot"))
 		{
-			loadModule(new Plot2AxisModule<R, ADS, DS>);
-			loadModule(new PlotViewModule<R, ADS, DS>);
+			loadModule(new Plot2AxisModule<R, ADS, DS> );
+			loadModule(new PlotViewModule<R, ADS, DS> );
 		}
 
 		// cannot load abstract module
@@ -395,28 +394,28 @@ public:
 
 		if ((prefix == "") || (prefix == "randgen"))
 		{
-			loadModule(new RandGenIntervalModule<R, ADS, DS>);
-			loadModule(new RandGenNumberModule<R, ADS, DS>);
-			loadModule(new RandGenSetSeedModule<R, ADS, DS>);
+			loadModule(new RandGenIntervalModule<R, ADS, DS> );
+			loadModule(new RandGenNumberModule<R, ADS, DS> );
+			loadModule(new RandGenSetSeedModule<R, ADS, DS> );
 		}
 
 		if ((prefix == "") || (prefix == "system"))
 		{
-			loadModule(new SystemDefineModule<R, ADS, DS>);
-			loadModule(new SystemDictionaryModule<R, ADS, DS>);
-			loadModule(new SystemEchoModule<R, ADS, DS>);
-			loadModule(new SystemErrorModule<R, ADS, DS>);
-			loadModule(new SystemHelpModule<R, ADS, DS>);
-			loadModule(new SystemPauseModule<R, ADS, DS>);
-			loadModule(new SystemPreprocessModule<R, ADS, DS>);
-			loadModule(new SystemReadModule<R, ADS, DS>);
-			loadModule(new SystemRequireModule<R, ADS, DS>);
-			loadModule(new SystemRunModule<R, ADS, DS>);
-			loadModule(new SystemSilentDefineModule<R, ADS, DS>);
-			loadModule(new SystemUndefineModule<R, ADS, DS>);
-			loadModule(new SystemUnsafeDefineModule<R, ADS, DS>);
-			loadModule(new SystemUsageModule<R, ADS, DS>);
-			loadModule(new SystemUseModule<R, ADS, DS>);
+			loadModule(new SystemDefineModule<R, ADS, DS> );
+			loadModule(new SystemDictionaryModule<R, ADS, DS> );
+			loadModule(new SystemEchoModule<R, ADS, DS> );
+			loadModule(new SystemErrorModule<R, ADS, DS> );
+			loadModule(new SystemHelpModule<R, ADS, DS> );
+			loadModule(new SystemPauseModule<R, ADS, DS> );
+			loadModule(new SystemPreprocessModule<R, ADS, DS> );
+			loadModule(new SystemReadModule<R, ADS, DS> );
+			loadModule(new SystemRequireModule<R, ADS, DS> );
+			loadModule(new SystemRunModule<R, ADS, DS> );
+			loadModule(new SystemSilentDefineModule<R, ADS, DS> );
+			loadModule(new SystemUndefineModule<R, ADS, DS> );
+			loadModule(new SystemUnsafeDefineModule<R, ADS, DS> );
+			loadModule(new SystemUsageModule<R, ADS, DS> );
+			loadModule(new SystemUseModule<R, ADS, DS> );
 		}
 
 		// ==========================================================
@@ -424,11 +423,11 @@ public:
 		// ==========================================================
 		if ((prefix == "") || (prefix == "statements"))
 		{
-			loadModule(new ForModule<R, ADS, DS>);
-			loadModule(new ForEachModule<R, ADS, DS>);
-			loadModule(new IfElseModule<R, ADS, DS>);
-			loadModule(new WhileModule<R, ADS, DS>);
-			loadModule(new TryModule<R, ADS, DS>);
+			loadModule(new ForModule<R, ADS, DS> );
+			loadModule(new ForEachModule<R, ADS, DS> );
+			loadModule(new IfElseModule<R, ADS, DS> );
+			loadModule(new WhileModule<R, ADS, DS> );
+			loadModule(new TryModule<R, ADS, DS> );
 		}
 
 		// ----------------------------------------------
@@ -505,33 +504,33 @@ public:
 	void loadComponentBuilders()
 	{
 		// Base
-		factory.builders.push_back(new CloneConstructiveBuilder<R, ADS, DS>);
+		factory.builders.push_back(new CloneConstructiveBuilder<R, ADS, DS> );
 
 		// LocalSearch
-		factory.builders.push_back(new EmptyLocalSearchBuilder<R, ADS, DS>);
-		factory.builders.push_back(new BestImprovementBuilder<R, ADS, DS>);
-		factory.builders.push_back(new FirstImprovementBuilder<R, ADS, DS>);
-		factory.builders.push_back(new RandomDescentMethodBuilder<R, ADS, DS>);
-		factory.builders.push_back(new CircularSearchBuilder<R, ADS, DS>);
-		factory.builders.push_back(new VariableNeighborhoodDescentBuilder<R, ADS, DS>);
-		factory.builders.push_back(new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS, DS>);
-		factory.builders.push_back(new RVNDBuilder<R, ADS, DS>);
-		factory.builders.push_back(new HillClimbingBuilder<R, ADS, DS>);
+		factory.builders.push_back(new EmptyLocalSearchBuilder<R, ADS, DS> );
+		factory.builders.push_back(new BestImprovementBuilder<R, ADS, DS> );
+		factory.builders.push_back(new FirstImprovementBuilder<R, ADS, DS> );
+		factory.builders.push_back(new RandomDescentMethodBuilder<R, ADS, DS> );
+		factory.builders.push_back(new CircularSearchBuilder<R, ADS, DS> );
+		factory.builders.push_back(new VariableNeighborhoodDescentBuilder<R, ADS, DS> );
+		factory.builders.push_back(new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS, DS> );
+		factory.builders.push_back(new RVNDBuilder<R, ADS, DS> );
+		factory.builders.push_back(new HillClimbingBuilder<R, ADS, DS> );
 
 		// SingleObjSearch + Parameters
-		factory.builders.push_back(new SimpleLocalSearchBuilder<R, ADS, DS>);
-		factory.builders.push_back(new BasicSimulatedAnnealingBuilder<R, ADS, DS>);
-		factory.builders.push_back(new BasicIteratedLocalSearchBuilder<R, ADS, DS>);
-		factory.builders.push_back(new BasicILSPerturbationBuilder<R, ADS, DS>);
-		factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<R, ADS, DS>);
-		factory.builders.push_back(new ILSLPerturbationLPlus2Builder<R, ADS, DS>);
-		factory.builders.push_back(new GRASPBuilder<R, ADS, DS>);
-		factory.builders.push_back(new BasicVNSBuilder<R, ADS, DS>);
-		factory.builders.push_back(new ReducedVNSBuilder<R, ADS, DS>);
-		factory.builders.push_back(new GeneralVNSBuilder<R, ADS, DS>);
+		factory.builders.push_back(new SimpleLocalSearchBuilder<R, ADS, DS> );
+		factory.builders.push_back(new BasicSimulatedAnnealingBuilder<R, ADS, DS> );
+		factory.builders.push_back(new BasicIteratedLocalSearchBuilder<R, ADS, DS> );
+		factory.builders.push_back(new BasicILSPerturbationBuilder<R, ADS, DS> );
+		factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<R, ADS, DS> );
+		factory.builders.push_back(new ILSLPerturbationLPlus2Builder<R, ADS, DS> );
+		factory.builders.push_back(new GRASPBuilder<R, ADS, DS> );
+		factory.builders.push_back(new BasicVNSBuilder<R, ADS, DS> );
+		factory.builders.push_back(new ReducedVNSBuilder<R, ADS, DS> );
+		factory.builders.push_back(new GeneralVNSBuilder<R, ADS, DS> );
 
 		// test local searches
-		factory.builders.push_back(new CompareLocalSearchBuilder<R, ADS, DS>);
+		factory.builders.push_back(new CompareLocalSearchBuilder<R, ADS, DS> );
 	}
 
 	//! \english OptFrame Command Line Interface \endenglish \portuguese Interface de Linha de Comando do OptFrame \endportuguese
@@ -571,7 +570,7 @@ public:
 				{
 					string* r1 = modules[i]->preprocess(functions, dictionary, ldictionary, s2.rest());
 
-					if(!r1)
+					if (!r1)
 						break;
 
 					string r = *r1;
@@ -584,7 +583,7 @@ public:
 						break;
 					}
 
-					if(!modules[i]->run(modules, functions, factory, dictionary, ldictionary, r))
+					if (!modules[i]->run(modules, functions, factory, dictionary, ldictionary, r))
 						cout << "command failed!" << endl;
 
 					notfound = false;
@@ -603,18 +602,18 @@ public:
 
 	static void printOptions(string part_module, vector<OptFrameModule<R, ADS, DS>*>& allModules)
 	{
-		for(unsigned int i=0;i<allModules.size();i++)
+		for (unsigned int i = 0; i < allModules.size(); i++)
 		{
 			bool found = true;
 
-			for(unsigned j=0; j<part_module.length(); j++)
-				if(part_module[j] != allModules[i]->id()[j])
+			for (unsigned j = 0; j < part_module.length(); j++)
+				if (part_module[j] != allModules[i]->id()[j])
 				{
 					found = false;
 					break;
 				}
 
-			if(found)
+			if (found)
 				cout << "option is: '" << allModules[i]->id() << "'" << endl;
 		}
 	}
@@ -655,7 +654,7 @@ public:
 			{
 				string* r = modules[i]->preprocess(functions, dictionary, ldictionary, s2.rest());
 
-				if(!r)
+				if (!r)
 					break;
 
 				if (*r == "INVALID_PARAM")
@@ -664,7 +663,7 @@ public:
 					exit(1);
 				}
 
-				if(!modules[i]->run(modules, functions, factory, dictionary, ldictionary, *r))
+				if (!modules[i]->run(modules, functions, factory, dictionary, ldictionary, *r))
 					cout << "error in module: '" << modules[i]->id() << "'" << endl;
 
 				delete r;

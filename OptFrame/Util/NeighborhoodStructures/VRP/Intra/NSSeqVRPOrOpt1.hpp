@@ -74,6 +74,10 @@ public:
 		return all_positive && (c != pos) && (c + 1 != pos);
 	}
 
+	virtual void updateNeighStatus(ADS& ads){
+
+	}
+
 	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
 	{
 		int aux;

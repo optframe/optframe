@@ -79,6 +79,8 @@ public:
 		return ((r1 >= 0) && (r2 >= 0) && (cli >= 0) && (pos >= 0) && numRoutes);
 	}
 
+	virtual void updateNeighStatus(ADS& ads);
+
 	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
 	{
 		//pegando o cliente

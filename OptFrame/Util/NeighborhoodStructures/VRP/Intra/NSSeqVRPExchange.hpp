@@ -74,6 +74,10 @@ public:
 		return all_positive && (rep.at(r).size() >= 2);
 	}
 
+	virtual void updateNeighStatus(ADS& ads){
+
+	}
+
 	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
 	{
 
