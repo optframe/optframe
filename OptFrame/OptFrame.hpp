@@ -185,6 +185,7 @@
 #include "Modules/ComponentListBuildersModule.hpp"
 #include "Modules/ComponentListFromPopulationModule.hpp"
 #include "Modules/ComponentListModule.hpp"
+#include "Modules/ComponentLogModule.hpp"
 #include "Modules/ComponentNullModule.hpp"
 #include "Modules/ComponentToStringModule.hpp"
 
@@ -347,6 +348,7 @@ public:
 			loadModule(new ComponentListBuildersModule<R, ADS, DS> );
 			loadModule(new ComponentListFromPopulationModule<R, ADS, DS> );
 			loadModule(new ComponentListModule<R, ADS, DS> );
+			loadModule(new ComponentLogModule<R, ADS, DS> );
 			loadModule(new ComponentNullModule<R, ADS, DS> );
 			loadModule(new ComponentToStringModule<R, ADS, DS> );
 		}

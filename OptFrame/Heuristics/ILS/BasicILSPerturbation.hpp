@@ -68,7 +68,7 @@ public:
 
 	void perturb(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
 	{
-		for (unsigned i = pMin; i < pMax; i++)
+		for (int i = pMin; i < pMax; i++)
 		{
 			int nk = rand() % ns.size();
 

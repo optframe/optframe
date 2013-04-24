@@ -25,6 +25,8 @@
 #include "../../NSSeq.hpp"
 #include "../../Evaluator.hpp"
 
+#include "../../Util/Timer.hpp"
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class BestImprovement: public LocalSearch<R, ADS, DS>
 {
@@ -32,11 +34,17 @@ private:
 	Evaluator<R, ADS, DS>& eval;
 	NSSeq<R, ADS, DS>& nsSeq;
 
+	// logs
+	double sum_time;
+	int num_calls;
+
 public:
 
 	BestImprovement(Evaluator<R, ADS, DS>& _eval, NSSeq<R, ADS, DS>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
+		sum_time = 0.0;
+		num_calls = 0;
 	}
 
 	virtual ~BestImprovement()
@@ -54,6 +62,9 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
 	{
+		num_calls++;
+		Timer t;
+
 		NSIterator<R, ADS, DS>& it = nsSeq.getIterator(e.getDS(), s.getR(), s.getADS());
 
 		it.first();
@@ -61,6 +72,7 @@ public:
 		if (it.isDone())
 		{
 			delete &it;
+			sum_time += t.inMilliSecs();
 			return;
 		}
 
@@ -70,6 +82,8 @@ public:
 		{
 			delete &it;
 			delete bestMove;
+
+			sum_time += t.inMilliSecs();
 			return;
 		}
 
@@ -84,6 +98,8 @@ public:
 			else
 			{
 				delete &it;
+
+				sum_time += t.inMilliSecs();
 				return;
 			}
 		}
@@ -112,16 +128,18 @@ public:
 			it.next();
 		}
 
-		if(eval.betterThan(bestCost, 0)) // improvement!
+		if (eval.betterThan(bestCost, 0)) // improvement!
 		{
 			delete &bestMove->apply(e, s);
 			eval.evaluate(e, s); // updates 'e'
 			e.setLocalOptimumStatus(bestMove->id(), false); //set NS 'id' out of Local Optimum
-		}else
+		}
+		else
 			e.setLocalOptimumStatus(bestMove->id(), true); //set NS 'id' on Local Optimum
 
 		delete bestMove;
 		delete &it;
+		sum_time += t.inMilliSecs();
 	}
 
 	virtual bool compatible(string s)
@@ -145,6 +163,13 @@ public:
 	{
 		stringstream ss;
 		ss << "BI: " << nsSeq.toString();
+		return ss.str();
+	}
+
+	virtual string log() const
+	{
+		stringstream ss;
+		ss << sum_time;
 		return ss.str();
 	}
 

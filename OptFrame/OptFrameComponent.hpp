@@ -60,6 +60,11 @@ public:
       cout << toString() << endl;
    }
 
+   virtual string log() const
+   {
+	   return id();
+   }
+
 };
 
 #endif /* OPTFRAME_COMPONENT_HPP_ */
