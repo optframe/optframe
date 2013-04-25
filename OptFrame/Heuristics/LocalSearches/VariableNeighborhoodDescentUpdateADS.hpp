@@ -69,6 +69,7 @@ public:
 			Evaluation<DS>* e0 = &e.clone();
 
 			lsList[k - 1]->exec(*s0, *e0, timelimit, target_f);
+
 			if (ev.betterThan(*s0, s))
 			{
 				s = *s0;
@@ -79,9 +80,15 @@ public:
 			}
 			else
 			{
+				//Find move ID
+				string localSearchID = lsList[k - 1]->toString();
+				unsigned found = localSearchID.find("OptFrame");
+				string moveID = localSearchID.substr(found);
+				upADS.updateADSNeighStatus(s, moveID);
+
 				delete s0;
 				delete e0;
-				upADS.updateADSNeighStatus(s.getADS(), k);
+
 				k = k + 1;
 			}
 			ev.evaluate(e, s);

@@ -43,12 +43,17 @@ public:
 
 	virtual void initializeADSNeighStatus(const R& rep, ADS& _ads) = 0;
 
-	virtual void updateADSNeighStatus(ADS& _ads, int k) = 0;
+	virtual void updateADSNeighStatus(const R& rep, ADS& _ads, string str) = 0;
 
-    virtual bool compatible(string s)
-    {
-    	return ( s == idComponent() ) || (OptFrameComponent::compatible(s));
-    }
+	virtual void updateADSNeighStatus(Solution<R, ADS>& s, string str)
+	{
+		updateADSNeighStatus(s.getR(), s.getADS(), str);
+	}
+
+	virtual bool compatible(string s)
+	{
+		return (s == idComponent()) || (OptFrameComponent::compatible(s));
+	}
 
 	static string idComponent()
 	{
