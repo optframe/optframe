@@ -34,9 +34,16 @@ class OptFrameList
 {
 public:
 
-	static vector<std::string>* readList(map< string,vector<string> >& ldictionary, Scanner& scanner)
+	static string intToString(int i)
 	{
-		if(!scanner.hasNextChar())
+		stringstream ss;
+		ss << i;
+		return ss.str();
+	}
+
+	static vector<std::string>* readList(map<string, vector<string> >& ldictionary, Scanner& scanner)
+	{
+		if (!scanner.hasNextChar())
 			return NULL;
 
 		char character = scanner.nextChar();
@@ -44,27 +51,71 @@ public:
 
 		while (character == ' ')
 		{
-			if(!scanner.hasNextChar())
+			if (!scanner.hasNextChar())
 				return NULL;
 
 			character = scanner.nextChar();
 		}
 
-		if(character != '[') // read from dictionary
+		if (character != '[') // read from dictionary
 		{
 			stringstream ssword;
-			while(character != ' ')
+			while (character != ' ')
 			{
 				ssword << character;
-				if(!scanner.hasNextChar())
+				if (!scanner.hasNextChar())
 					break;
 				character = scanner.nextChar();
 			}
 
 			string word = ssword.str();
 
-			if(ldictionary.count(word) == 0)
-				return NULL; // not registered
+			if (ldictionary.count(word) == 0)
+			{
+				int begin;
+				try
+				{
+					begin = Scanner::parseInt(word);
+				}
+				catch (ConversionError& e)
+				{
+					return NULL;
+				}
+
+				if (!scanner.hasNext())
+					return NULL;
+
+				string doubledots = scanner.next();
+
+				if (doubledots != "..")
+					return NULL;
+
+				if (!scanner.hasNext())
+					return NULL;
+
+				string send = scanner.next();
+
+				int end;
+				try
+				{
+					end = Scanner::parseInt(send);
+				}
+				catch (ConversionError& e)
+				{
+					return NULL;
+				}
+
+				vector<string>* numeric_list = new vector<string>();
+
+				if (begin < end)
+					for (int i = begin; i <= end; i++)
+						numeric_list->push_back(intToString(i));
+				else
+					for (int i = begin; i >= end; i--)
+						numeric_list->push_back(intToString(i));
+
+				return numeric_list;
+			}
 			else
 			{
 				vector<string>* list = new vector<string>(ldictionary.find(word)->second);
@@ -72,12 +123,12 @@ public:
 			}
 		}
 
-		vector < std::string > *list = new vector<std::string> ;
+		vector<std::string> *list = new vector<std::string>;
 		std::string word;
 
 		numberOfBrackets = 0;
 
-		if(!scanner.hasNextChar())
+		if (!scanner.hasNextChar())
 			return NULL;
 
 		character = scanner.nextChar();
@@ -100,7 +151,7 @@ public:
 				word += character;
 			}
 
-			if(!scanner.hasNextChar())
+			if (!scanner.hasNextChar())
 				return NULL;
 
 			character = scanner.nextChar();
@@ -113,16 +164,15 @@ public:
 		}
 
 		// TODO: error in code, dont know why but list should be empty!
-		if((list->size()==1) && (Scanner::trim(list->at(0))==""))
+		if ((list->size() == 1) && (Scanner::trim(list->at(0)) == ""))
 			list->pop_back();
 
 		return list;
 	}
 
-
 	static vector<std::string>* readBlock(Scanner& scanner)
 	{
-		if(!scanner.hasNextChar())
+		if (!scanner.hasNextChar())
 			return NULL;
 
 		char character = scanner.nextChar();
@@ -131,25 +181,25 @@ public:
 		// trim input
 		while (character == ' ')
 		{
-			if(!scanner.hasNextChar())
+			if (!scanner.hasNextChar())
 				return NULL;
 
 			character = scanner.nextChar();
 		}
 
-		if(character != '{') // can't read block from dictionary
+		if (character != '{') // can't read block from dictionary
 		{
-			if(character == '[')
+			if (character == '[')
 				cout << "OptFrameList::readBlock() error: trying to read block from a possible list structure!" << endl;
 			return NULL;
 		}
 
-		vector<string>* block = new vector<string> ;
+		vector<string>* block = new vector<string>;
 		string word;
 
 		numberOfBrackets = 0;
 
-		if(!scanner.hasNextChar())
+		if (!scanner.hasNextChar())
 			return NULL;
 
 		character = scanner.nextChar();
@@ -172,7 +222,7 @@ public:
 				word += character;
 			}
 
-			if(!scanner.hasNextChar())
+			if (!scanner.hasNextChar())
 				return NULL;
 
 			character = scanner.nextChar();
@@ -183,24 +233,22 @@ public:
 		for (unsigned int i = 0; i < block->size(); i++)
 			block->at(i) = scanner.trim(block->at(i));
 
-
 		// allow last command with semicolon (optional)
-		if((block->size()>0) && (block->at(block->size()-1)==""))
+		if ((block->size() > 0) && (block->at(block->size() - 1) == ""))
 			block->pop_back();
 
 		return block;
 	}
-
 
 	static string listToString(const vector<string>& list)
 	{
 		stringstream ss;
 
 		ss << "[";
-		for(unsigned i=0; i<list.size(); i++)
+		for (unsigned i = 0; i < list.size(); i++)
 		{
 			ss << list.at(i);
-			if(i != list.size()-1)
+			if (i != list.size() - 1)
 				ss << ",";
 		}
 		ss << "]";
@@ -213,17 +261,16 @@ public:
 		stringstream ss;
 
 		ss << "{";
-		for(unsigned i=0; i<block.size(); i++)
+		for (unsigned i = 0; i < block.size(); i++)
 		{
 			ss << block.at(i);
-			if(i != block.size()-1)
+			if (i != block.size() - 1)
 				ss << ";";
 		}
 		ss << "}";
 
 		return ss.str();
 	}
-
 
 };
 

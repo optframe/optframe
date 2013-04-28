@@ -233,6 +233,8 @@
 #include "Modules/SystemUsageModule.hpp"
 #include "Modules/SystemUseModule.hpp"
 
+#include "Modules/OperatorAssignModule.hpp"
+
 //structural
 #include "Modules/IfElseModule.hpp"
 #include "Modules/ForModule.hpp"
@@ -418,6 +420,11 @@ public:
 			loadModule(new SystemUnsafeDefineModule<R, ADS, DS> );
 			loadModule(new SystemUsageModule<R, ADS, DS> );
 			loadModule(new SystemUseModule<R, ADS, DS> );
+		}
+
+		if ((prefix == "") || (prefix == "operator"))
+		{
+			loadModule(new OperatorAssignModule<R, ADS, DS> );
 		}
 
 		// ==========================================================
