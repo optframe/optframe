@@ -230,12 +230,13 @@ public:
 
 			bool notfound = true;
 
+			string original = s2.rest();
+
 			for(unsigned int i=0;i<all_modules.size();i++)
-				if(command == all_modules[i]->id())
+				if(all_modules[i]->canHandle(command, original))
 				{
 					//cout << "READ COMMAND: '" << command << "'" << endl;
 
-					string original = s2.rest();
 					string* after_preprocess = all_modules[i]->preprocess(allFunctions, dictionary, ldictionary, original);
 
 					if(!after_preprocess)

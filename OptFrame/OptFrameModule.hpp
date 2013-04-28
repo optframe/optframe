@@ -50,7 +50,7 @@ protected:
 	bool run_module(string mod, vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& f, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		for(unsigned int i=0;i<allModules.size();i++)
-			if(mod==allModules[i]->id())
+			if(allModules[i]->canHandle(mod, input))
 			{
 				// TODO: NO PREPROCESSING?? WHY?
 				return allModules[i]->run(allModules, allFunctions, f, dictionary, ldictionary, input);
@@ -59,17 +59,31 @@ protected:
 		return false;
 	}
 
-
 public:
+
+	vector<string> handles;
 
 	virtual ~OptFrameModule()
 	{
 	}
 
+	virtual bool canHandle(string module_name, string command_body)
+	{
+		if (id() == module_name)
+			return true;
+
+		for (unsigned i = 0; i < handles.size(); i++)
+			if (handles[i] == module_name)
+				return true;
+
+		return false;
+	}
+
 	virtual string id() = 0;
+
 	virtual string usage() = 0;
 
-	bool defineText(string definition, string value, map<string,string>& dictionary)
+	static bool defineText(string definition, string value, map<string,string>& dictionary)
 	{
 		// will not need this check after better implementation of dictionary with '$' before definitions
 
@@ -117,7 +131,7 @@ public:
 		return true;
 	}
 
-	bool defineList(string definition, vector<string>& list, map< string,vector<string> >& ldictionary)
+	static bool defineList(string definition, vector<string>& list, map< string,vector<string> >& ldictionary)
 	{
 		bool number = true;
 		try
@@ -150,17 +164,17 @@ public:
 		return true;
 	}
 
-	void undefineText(string definition, map<string,string>& dictionary)
+	static void undefineText(string definition, map<string,string>& dictionary)
 	{
 		dictionary.erase(definition);
 	}
 
-	void undefineList(string definition, map< string,vector<string> >& ldictionary)
+	static void undefineList(string definition, map< string,vector<string> >& ldictionary)
 	{
 		ldictionary.erase(definition);
 	}
 
-	void undefine(string definition, map<string,string>& dictionary, map< string,vector<string> >& ldictionary)
+	static void undefine(string definition, map<string,string>& dictionary, map< string,vector<string> >& ldictionary)
 	{
 		undefineText(definition,  dictionary);
 		undefineList(definition, ldictionary);

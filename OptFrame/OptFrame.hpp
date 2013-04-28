@@ -573,11 +573,12 @@ public:
 			}
 
 			bool notfound = true;
+			string command_body = s2.rest();
 
 			for (unsigned int i = 0; i < modules.size(); i++)
-				if (command == modules[i]->id())
+				if (modules[i]->canHandle(command, command_body))
 				{
-					string* r1 = modules[i]->preprocess(functions, dictionary, ldictionary, s2.rest());
+					string* r1 = modules[i]->preprocess(functions, dictionary, ldictionary, command_body);
 
 					if (!r1)
 						break;
@@ -657,11 +658,12 @@ public:
 		}
 
 		bool notfound = true;
+		string command_body = s2.rest();
 
 		for (unsigned int i = 0; i < modules.size(); i++)
-			if (command == modules[i]->id())
+			if (modules[i]->canHandle(command, command_body))
 			{
-				string* r = modules[i]->preprocess(functions, dictionary, ldictionary, s2.rest());
+				string* r = modules[i]->preprocess(functions, dictionary, ldictionary, command_body);
 
 				if (!r)
 					break;

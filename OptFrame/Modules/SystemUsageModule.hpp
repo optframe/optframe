@@ -50,7 +50,7 @@ public:
 		bool notfound = true;
 
 		for(unsigned int i=0;i<all_modules.size();i++)
-			if(command == all_modules[i]->id())
+			if(all_modules[i]->canHandle(command, ""))
 			{
 				cout << "Usage: " << all_modules[i]->usage() << endl;
 				notfound = false;
