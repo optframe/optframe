@@ -29,9 +29,8 @@
 using namespace std;
 
 template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MoveVRPShift10: public Move<vector<vector<T> >, ADS, DS >
+class MoveVRPShift10: public Move<vector<vector<T> > , ADS, DS>
 {
-
 	typedef vector<vector<T> > Routes;
 
 protected:
@@ -45,7 +44,7 @@ protected:
 public:
 
 	MoveVRPShift10(int _r1, int _r2, int _cli, int _pos, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
-	r1(_r1), r2(_r2), cli(_cli), pos(_pos), problem(_problem)
+		r1(_r1), r2(_r2), cli(_cli), pos(_pos), problem(_problem)
 	{
 	}
 
@@ -79,7 +78,10 @@ public:
 		return ((r1 >= 0) && (r2 >= 0) && (cli >= 0) && (pos >= 0) && numRoutes);
 	}
 
-	virtual void updateNeighStatus(ADS& ads);
+	virtual void updateNeighStatus(ADS& ads)
+	{
+
+	}
 
 	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
 	{
@@ -93,7 +95,6 @@ public:
 		rep.at(r2).insert(rep.at(r2).begin() + pos, c);
 		return *new MoveVRPShift10(r2, r1, pos, cli);
 	}
-
 
 	virtual bool operator==(const Move<Routes, ADS, DS>& _m) const
 	{
@@ -111,16 +112,16 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPShift10<T, ADS, DS>, class P = OPTFRAME_DEFAULT_PROBLEM>
-class NSIteratorVRPShift10: public NSIterator<vector<vector<T> >, ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPShift10<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+class NSIteratorVRPShift10: public NSIterator<vector<vector<T> > , ADS, DS>
 {
 
 	typedef vector<vector<T> > Routes;
 
-private:
+protected:
 
-	MoveVRPShift10<T, ADS, DS >* m;
-	vector<MoveVRPShift10<T, ADS, DS >*> moves;
+	MOVE* m;
+	vector<MOVE*> moves;
 	int index; //index of moves
 	const Routes& r;
 
@@ -129,7 +130,7 @@ private:
 public:
 
 	NSIteratorVRPShift10(const Routes& _r, P* _p = NULL) :
-	r(_r), p(_p)
+		r(_r), p(_p)
 	{
 		m = NULL;
 		index = 0;
@@ -200,8 +201,8 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPShift10<T, ADS, DS>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPShift10<T, ADS, DS, MOVE, P > >
-class NSSeqVRPShift10: public NSSeq<vector<vector<T> > >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPShift10<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPShift10<T, ADS, DS, MOVE, P> >
+class NSSeqVRPShift10: public NSSeq<vector<vector<T> > , ADS, DS>
 {
 
 	typedef vector<vector<T> > Routes;
@@ -243,7 +244,7 @@ public:
 		return *new MOVE(r1, r2, cli, pos, p); // return a random move
 	}
 
-	virtual NSIteratorVRPShift10<T, ADS, DS, MOVE, P >& getIterator(const Routes& r, const ADS&)
+	virtual NSITERATOR& getIterator(const Routes& r, const ADS& ads)
 	{
 		return *new NSITERATOR(r, p);
 	}

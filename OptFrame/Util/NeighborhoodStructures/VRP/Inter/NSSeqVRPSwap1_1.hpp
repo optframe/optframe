@@ -35,7 +35,6 @@ using namespace std;
 template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class MoveVRPSwap1_1: public Move<vector<vector<T> > , ADS, DS>
 {
-
 	typedef vector<vector<T> > Routes;
 
 protected:
@@ -104,15 +103,13 @@ public:
 	void print() const
 	{
 		cout << "MoveVRPSwap1_1( ";
-		cout << " route[" << r1 << "] client " << c1 << " <=>  route[" << r2 << "] client " << c2
-				<< ")";
+		cout << " route[" << r1 << "] client " << c1 << " <=>  route[" << r2 << "] client " << c2 << ")";
 		cout << endl;
 	}
 };
 
-
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPSwap1_1<T, ADS, DS>, class P = OPTFRAME_DEFAULT_PROBLEM>
-class NSIteratorVRPSwap1_1: public NSIterator<vector<vector<T> >, ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPSwap1_1<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+class NSIteratorVRPSwap1_1: public NSIterator<vector<vector<T> > , ADS, DS>
 {
 
 	typedef vector<vector<T> > Routes;
@@ -120,8 +117,6 @@ class NSIteratorVRPSwap1_1: public NSIterator<vector<vector<T> >, ADS, DS>
 protected:
 	MOVE* m;
 	vector<MOVE*> moves;
-	int r1, r2; // route 1 and route 2, respectively
-	int c1, c2; // client in route 1 and client in route 2, respectively
 	const Routes& r;
 	const ADS& ads; //TODO COULD BE A POINTER? WHAT IS THE BEST OPTION?
 
@@ -132,8 +127,7 @@ public:
 	NSIteratorVRPSwap1_1(const Routes& _r, const ADS& _ads, P* _p = NULL) :
 		r(_r), ads(_ads), p(_p)
 	{
-		c1 = c2 = 0;
-		r1 = r2 = 0;
+
 		m = NULL;
 
 	}
@@ -147,10 +141,10 @@ public:
 		if (r.size() >= 2)
 		{
 
-			for (r1 = 0; r1 < r.size() - 2; r1++)
-				for (c1 = 0; c1 < r.at(r1).size(); c1++)
-					for (r2 = r1 + 1; r2 < r.size() - 1; r2++)
-						for (c2 = 0; c2 < r.at(r2).size(); c2++)
+			for (int r1 = 0; r1 < r.size() - 2; r1++)
+				for (int c1 = 0; c1 < r.at(r1).size(); c1++)
+					for (int r2 = r1 + 1; r2 < r.size() - 1; r2++)
+						for (int c2 = 0; c2 < r.at(r2).size(); c2++)
 							moves.push_back(new MOVE(r1, r2, c1, c2, p));
 
 			if (moves.size() > 0)
@@ -195,7 +189,7 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPSwap1_1<T, ADS, DS>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPSwap1_1<T, ADS, DS, MOVE, P> >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPSwap1_1<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPSwap1_1<T, ADS, DS, MOVE, P> >
 class NSSeqVRPSwap1_1: public NSSeq<vector<vector<T> > , ADS, DS>
 {
 
@@ -242,9 +236,9 @@ public:
 		return *new MOVE(r1, r2, c1, c2, p);
 	}
 
-	virtual NSIteratorVRPSwap1_1<T, ADS, DS, MOVE, P>& getIterator(const Routes& r, const ADS& ads)
+	virtual NSITERATOR& getIterator(const Routes& r, const ADS& ads)
 	{
-		return *new NSITERATOR (r, ads, p);
+		return *new NSITERATOR(r, ads, p);
 	}
 
 	virtual void print()
