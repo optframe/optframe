@@ -31,6 +31,7 @@ using namespace std;
 template<class R, class ADS>
 class UpdateADS: public OptFrameComponent
 {
+
 public:
 	UpdateADS()
 	{
@@ -40,6 +41,8 @@ public:
 	{
 
 	}
+
+	virtual void initializeADS(const R& rep, ADS& _ads) = 0;
 
 	virtual void initializeADSNeighStatus(const R& rep, ADS& _ads) = 0;
 
