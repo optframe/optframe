@@ -53,6 +53,8 @@ public:
 		updateADSNeighStatus(s.getR(), s.getADS(), str);
 	}
 
+	virtual void compareADS(const ADS& _ads1, const ADS& _ads2) = 0;
+
 	virtual bool compatible(string s)
 	{
 		return (s == idComponent()) || (OptFrameComponent::compatible(s));
