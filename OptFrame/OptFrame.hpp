@@ -560,6 +560,7 @@ public:
 			line = scanner.nextLine();
 
 			Scanner s2(line);
+			s2.useSeparators(" \t\r\n=");
 
 			string command = s2.next();
 
@@ -593,7 +594,7 @@ public:
 						break;
 					}
 
-					if (!modules[i]->run(modules, functions, factory, dictionary, ldictionary, r))
+					if (!modules[i]->run(modules, functions, factory, dictionary, ldictionary, r, command))
 						cout << "command failed!" << endl;
 
 					notfound = false;
@@ -645,6 +646,7 @@ public:
 		//cout << "Welcome to " << version() << endl;
 
 		Scanner s2(line);
+		s2.useSeparators(" \t\r\n=");
 
 		string command = s2.next();
 
@@ -674,7 +676,7 @@ public:
 					exit(1);
 				}
 
-				if (!modules[i]->run(modules, functions, factory, dictionary, ldictionary, *r))
+				if (!modules[i]->run(modules, functions, factory, dictionary, ldictionary, *r, command))
 					cout << "error in module: '" << modules[i]->id() << "'" << endl;
 
 				delete r;

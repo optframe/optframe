@@ -53,7 +53,7 @@ protected:
 			if(allModules[i]->canHandle(mod, input))
 			{
 				// TODO: NO PREPROCESSING?? WHY?
-				return allModules[i]->run(allModules, allFunctions, f, dictionary, ldictionary, input);
+				return allModules[i]->run(allModules, allFunctions, f, dictionary, ldictionary, input, mod);
 			}
 		cout << "Module '"<<mod<<"' not found." << endl;
 		return false;
@@ -190,6 +190,11 @@ public:
 		}
 
 		return true;
+	}
+
+	virtual bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input, string module_name)
+	{
+		return run(allModules, allFunctions, factory, dictionary, ldictionary, input);
 	}
 
 	virtual bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input) = 0;

@@ -39,7 +39,30 @@ public:
 
 	string usage()
 	{
-		return "operator.assign variable = value";
+		return "operator.assign variable = value \nvariable=value (module called implicitly)";
+	}
+
+	virtual bool canHandle(string module_name, string command_body)
+	{
+		if (id() == module_name)
+			return true;
+
+		for (unsigned i = 0; i < OptFrameModule<R, ADS, DS>::handles.size(); i++)
+			if (OptFrameModule<R, ADS, DS>::handles[i] == module_name)
+				return true;
+
+		string tbody = Scanner::trim(command_body);
+		if ((tbody.length() > 0) && tbody[0] == '=')
+			return true;
+
+		return false;
+	}
+
+	virtual bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input, string module_name)
+	{
+		module_name.append(" ");
+		module_name.append(input);
+		return run(allModules, allFunctions, factory, dictionary, ldictionary, module_name);
 	}
 
 	bool run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, DS>&, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)

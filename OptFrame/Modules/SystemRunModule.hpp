@@ -32,7 +32,7 @@ public:
 	OptFrameModule<R, ADS, DS>* getModule(vector<OptFrameModule<R, ADS, DS>*>& modules, string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
-			if (module == modules[i]->id())
+			if (modules[i]->canHandle(module, "")) // TODO: why?
 				return modules[i];
 		return NULL;
 	}
@@ -55,7 +55,7 @@ public:
 		}
 
 		//cout << "RUN LIST COMMAND: '" << module << "' with '" << *rest << "'" << endl;
-		bool b = m->run(all_modules, allFunctions, factory, dictionary, ldictionary, *rest);
+		bool b = m->run(all_modules, allFunctions, factory, dictionary, ldictionary, *rest, module);
 
 		delete rest;
 

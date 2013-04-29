@@ -218,7 +218,7 @@ public:
 			int numLine = commands[i].first;
 
 			Scanner s2(line);
-			s2.useSeparators(" \t\r\n;"); // prevent errors with semicolon
+			s2.useSeparators(" \t\r\n;="); // prevent errors with semicolon
 
 			if(!s2.hasNext()) // no command found in the line
 			{
@@ -247,7 +247,7 @@ public:
 
 					//cout << "READ COMMAND INPUT: '" << after_preprocess << "'" << endl;
 
-					if(!all_modules[i]->run(all_modules, allFunctions, factory, dictionary, ldictionary, *after_preprocess))
+					if(!all_modules[i]->run(all_modules, allFunctions, factory, dictionary, ldictionary, *after_preprocess, command))
 					{
 						delete after_preprocess;
 						cout << "read module on line " << numLine << " of file '" << input << "': error in module '" << command << "'" << endl;
