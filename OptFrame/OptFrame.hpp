@@ -92,6 +92,7 @@
 #include "Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp"
 #include "Heuristics/LocalSearches/RVND.hpp"
 #include "Heuristics/LocalSearches/HillClimbing.hpp"
+#include "Heuristics/LocalSearches/LateAcceptanceHillClimbing.hpp"
 
 // single obj search
 #include "Heuristics/SimpleLocalSearch.hpp"
@@ -525,6 +526,7 @@ public:
 		factory.builders.push_back(new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS, DS> );
 		factory.builders.push_back(new RVNDBuilder<R, ADS, DS> );
 		factory.builders.push_back(new HillClimbingBuilder<R, ADS, DS> );
+		factory.builders.push_back(new LateAcceptanceHillClimbingBuilder<R, ADS, DS> );
 
 		// SingleObjSearch + Parameters
 		factory.builders.push_back(new SimpleLocalSearchBuilder<R, ADS, DS> );
