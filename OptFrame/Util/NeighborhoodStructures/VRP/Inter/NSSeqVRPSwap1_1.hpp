@@ -117,19 +117,19 @@ class NSIteratorVRPSwap1_1: public NSIterator<vector<vector<T> > , ADS, DS>
 protected:
 	MOVE* m;
 	vector<MOVE*> moves;
+	int index; //index of moves
 	const Routes& r;
-	const ADS& ads; //TODO COULD BE A POINTER? WHAT IS THE BEST OPTION?
 
 	P* p; // has to be the last
 
 public:
 
 	NSIteratorVRPSwap1_1(const Routes& _r, const ADS& _ads, P* _p = NULL) :
-		r(_r), ads(_ads), p(_p)
+		r(_r), p(_p)
 	{
 
 		m = NULL;
-
+		index = 0;
 	}
 
 	virtual ~NSIteratorVRPSwap1_1()
@@ -138,33 +138,28 @@ public:
 
 	virtual void first()
 	{
-		if (r.size() >= 2)
+
+		for (int r1 = 0; r1 < r.size() - 2; r1++)
+			for (int c1 = 0; c1 < r.at(r1).size(); c1++)
+				for (int r2 = r1 + 1; r2 < r.size() - 1; r2++)
+					for (int c2 = 0; c2 < r.at(r2).size(); c2++)
+						moves.push_back(new MOVE(r1, r2, c1, c2, p));
+
+		if (moves.size() > 0)
 		{
-
-			for (int r1 = 0; r1 < r.size() - 2; r1++)
-				for (int c1 = 0; c1 < r.at(r1).size(); c1++)
-					for (int r2 = r1 + 1; r2 < r.size() - 1; r2++)
-						for (int c2 = 0; c2 < r.at(r2).size(); c2++)
-							moves.push_back(new MOVE(r1, r2, c1, c2, p));
-
-			if (moves.size() > 0)
-			{
-				m = moves[0];
-				moves.erase(moves.begin() + 0);
-			}
-			else
-				m = NULL;
+			m = moves[index];
 		}
 		else
 			m = NULL;
+
 	}
 
 	virtual void next()
 	{
-		if (moves.size() > 0)
+		index++;
+		if (index < moves.size())
 		{
-			m = moves[0];
-			moves.erase(moves.begin() + 0);
+			m = moves[index];
 		}
 		else
 			m = NULL;

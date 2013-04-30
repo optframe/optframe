@@ -129,7 +129,7 @@ protected:
 
 public:
 
-	NSIteratorVRPShift10(const Routes& _r, P* _p = NULL) :
+	NSIteratorVRPShift10(const Routes& _r, const ADS& _ads, P* _p = NULL) :
 		r(_r), p(_p)
 	{
 		m = NULL;
@@ -164,6 +164,7 @@ public:
 				}
 			}
 		}
+
 		if (moves.size() > 0)
 		{
 			m = moves[index];
@@ -246,7 +247,7 @@ public:
 
 	virtual NSITERATOR& getIterator(const Routes& r, const ADS& ads)
 	{
-		return *new NSITERATOR(r, p);
+		return *new NSITERATOR(r, ads, p);
 	}
 
 	virtual void print()
