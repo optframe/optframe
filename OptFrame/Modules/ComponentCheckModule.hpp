@@ -45,7 +45,7 @@ public:
 
 	string usage()
 	{
-		return "component.check iterMax nSolNSSeq verbose=false [ OptFrame:Constructive[] OptFrame:Evaluator[] OptFrame:Move[] OptFrame:NS[] OptFrame:NS:NSSeq[] OptFrame:NS:NSSeq:NSEnum[] ]";
+		return "component.check iterMax nSolNSSeq verbose=false [ OptFrame:Constructive[] OptFrame:Evaluator[] OptFrame:Move[] OptFrame:NS[] OptFrame:NS:NSSeq[] OptFrame:NS:NSSeq:NSEnum[] OptFrame:UpdateADS[] ]";
 	}
 
 	void message(string component, int iter, string text)
@@ -174,7 +174,15 @@ public:
 				return false;
 			}
 
-			scanner = Scanner("_aux_check_lconstructive  _aux_check_levaluator  _aux_check_lmove  _aux_check_lns  _aux_check_lnsseq  _aux_check_lnsenum");
+			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lupdateads", dictionary, ldictionary);
+			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:UpdateADS _aux_check_lupdateads"))
+			{
+				cout << "error: reading list of OptFrame:UpdateADS!" << endl;
+				return false;
+			}
+
+
+			scanner = Scanner("_aux_check_lconstructive  _aux_check_levaluator  _aux_check_lmove  _aux_check_lns  _aux_check_lnsseq  _aux_check_lnsenum   _aux_check_lupdateads");
 		}
 
 		//string rest = scanner.rest();
@@ -313,6 +321,28 @@ public:
 			return false;
 		}
 
+		// -------------------
+		//     UpdateADS
+		// -------------------
+
+		if (!scanner.hasNext())
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+		vector<string> lUpdateADS;
+		vector<string>* p_lUpdateADS = OptFrameList::readList(ldictionary, scanner);
+		if (p_lUpdateADS)
+		{
+			lUpdateADS = vector<string>(*p_lUpdateADS);
+			delete p_lUpdateADS;
+		}
+		else
+		{
+			cout << "module " << id() << " error: couldn't read list of OptFrame:UpdateADS!" << endl;
+			return false;
+		}
+
 		// cleanup auxiliar list definitions
 		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lconstructive", dictionary, ldictionary);
 		OptFrameModule<R, ADS, DS>::undefine("_aux_check_levaluator", dictionary, ldictionary);
@@ -320,10 +350,23 @@ public:
 		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lns", dictionary, ldictionary);
 		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lnsseq", dictionary, ldictionary);
 		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lnsenum", dictionary, ldictionary);
+		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lupdateads", dictionary, ldictionary);
 
 		// ======================================
 		//           BEGIN TESTS
 		// ======================================
+
+		UpdateADS<R, ADS>* updateADS;
+		if (lUpdateADS.size() > 0)
+		{
+			Scanner scan(lUpdateADS.at(0));
+			factory.assign(updateADS, scan.nextInt(), scan.next()); // reversed!
+
+			if (lUpdateADS.size() > 1)
+				cout << id() << " module warning: more than 1 UpdateADS (" << lUpdateADS.size() << ")" << endl;
+		}
+
+		vector<pair<int, double> > timeInitializeADS(1, make_pair(0, 0.0));
 
 		// ----------------
 		// read evaluators
@@ -378,6 +421,14 @@ public:
 				Solution<R, ADS>& s = constructive->generateSolution();
 				timeConstructive[c].second += ts.inMilliSecs();
 				timeConstructive[c].first++;
+
+				if (updateADS)
+				{
+					Timer ts2;
+					updateADS->initializeADS(s.getR(), s.getADS());
+					timeInitializeADS[0].second += ts2.inMilliSecs();
+					timeInitializeADS[0].first++;
+				}
 
 				solutions.push_back(&s);
 
@@ -490,6 +541,49 @@ public:
 
 						return false;
 					}
+
+					// ===================== tests with UpdateADS ======================
+
+					if (updateADS)
+					{
+						message(lEvaluator.at(ev), -1, "testing ADS.");
+
+						if (!updateADS->compareADS(s.getADS(), sNeighbor.getADS()))
+						{
+							cout << id() << " module error: ADS not updated correctly! Compared apply and reverse for move => ";
+							move.print();
+							return false;
+						}
+
+						ADS ads(sNeighbor.getADS()); // copy
+						Timer ts_ds;
+						updateADS->initializeADS(sNeighbor.getR(), sNeighbor.getADS());
+						timeInitializeADS[0].second += ts_ds.inMilliSecs();
+						timeInitializeADS[0].first++;
+
+						if (!updateADS->compareADS(ads, sNeighbor.getADS()))
+						{
+							cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
+							move.print();
+							return false;
+						}
+
+						ads = ADS(s.getADS()); // copy
+						Timer ts_ds2;
+						updateADS->initializeADS(s.getR(), s.getADS());
+						timeInitializeADS[0].second += ts_ds2.inMilliSecs();
+						timeInitializeADS[0].first++;
+
+						if (!updateADS->compareADS(ads, s.getADS()))
+						{
+							cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
+							rev.print();
+							return false;
+						}
+					}
+
+					// =============================================================
+
 
 					message(lEvaluator.at(ev), -1, "testing move cost.");
 
@@ -699,6 +793,50 @@ public:
 
 							return false;
 						}
+
+
+						// ===================== tests with UpdateADS ======================
+
+						if (updateADS)
+						{
+							message(lEvaluator.at(ev), -1, "testing ADS.");
+
+							if (!updateADS->compareADS(s.getADS(), sNeighbor.getADS()))
+							{
+								cout << id() << " module error: ADS not updated correctly! Compared apply and reverse for move => ";
+								move.print();
+								return false;
+							}
+
+							ADS ads(sNeighbor.getADS()); // copy
+							Timer ts_ds;
+							updateADS->initializeADS(sNeighbor.getR(), sNeighbor.getADS());
+							timeInitializeADS[0].second += ts_ds.inMilliSecs();
+							timeInitializeADS[0].first++;
+
+							if (!updateADS->compareADS(ads, sNeighbor.getADS()))
+							{
+								cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
+								move.print();
+								return false;
+							}
+
+							ads = ADS(s.getADS()); // copy
+							Timer ts_ds2;
+							updateADS->initializeADS(s.getR(), s.getADS());
+							timeInitializeADS[0].second += ts_ds2.inMilliSecs();
+							timeInitializeADS[0].first++;
+
+							if (!updateADS->compareADS(ads, s.getADS()))
+							{
+								cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
+								rev.print();
+								return false;
+							}
+						}
+
+						// =============================================================
+
 
 						message(lEvaluator.at(ev), iter, "testing move cost.");
 
@@ -979,6 +1117,50 @@ public:
 							return false;
 						}
 
+
+						// ===================== tests with UpdateADS ======================
+
+						if (updateADS)
+						{
+							message(lEvaluator.at(ev), -1, "testing ADS (NSSeq tests).");
+
+							if (!updateADS->compareADS(s.getADS(), sNeighbor.getADS()))
+							{
+								cout << id() << " module error: ADS not updated correctly! Compared apply and reverse for move => ";
+								move.print();
+								return false;
+							}
+
+							ADS ads(sNeighbor.getADS()); // copy
+							Timer ts_ds;
+							updateADS->initializeADS(sNeighbor.getR(), sNeighbor.getADS());
+							timeInitializeADS[0].second += ts_ds.inMilliSecs();
+							timeInitializeADS[0].first++;
+
+							if (!updateADS->compareADS(ads, sNeighbor.getADS()))
+							{
+								cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
+								move.print();
+								return false;
+							}
+
+							ads = ADS(s.getADS()); // copy
+							Timer ts_ds2;
+							updateADS->initializeADS(s.getR(), s.getADS());
+							timeInitializeADS[0].second += ts_ds2.inMilliSecs();
+							timeInitializeADS[0].first++;
+
+							if (!updateADS->compareADS(ads, s.getADS()))
+							{
+								cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
+								rev.print();
+								return false;
+							}
+						}
+
+						// =============================================================
+
+
 						message(lEvaluator.at(ev), nqs, "testing move cost (NSSeq tests).");
 
 						double revCost = e_rev.evaluation() - e.evaluation();
@@ -1100,6 +1282,11 @@ public:
 		cout << "===============================" << endl << endl;
 
 		printSummary(timeConstructive, "Constructive", "testing construction of initial solution");
+
+		if(updateADS)
+			printSummary(timeInitializeADS, "UpdateADS::initializeADS()", "testing lazy initializeADS in solutions");
+		else
+			cout << endl << "No UpdateADS was tested." << endl << endl;
 
 		printSummary(fullTimeEval, "Evaluators", "testing full evaluate(s) of a solution");
 
