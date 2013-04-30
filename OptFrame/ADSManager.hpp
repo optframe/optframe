@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_UPDATEADS_HPP_
-#define OPTFRAME_UPDATEADS_HPP_
+#ifndef OPTFRAME_ADSMANAGER_HPP_
+#define OPTFRAME_ADSMANAGER_HPP_
 
 #include <cstdlib>
 #include <iostream>
@@ -29,28 +29,28 @@
 using namespace std;
 
 template<class R, class ADS>
-class UpdateADS: public OptFrameComponent
+class ADSManager: public OptFrameComponent
 {
 
 public:
-	UpdateADS()
+	ADSManager()
 	{
 	}
 
-	virtual ~UpdateADS()
+	virtual ~ADSManager()
 	{
 
 	}
 
 	virtual void initializeADS(const R& rep, ADS& _ads) = 0;
 
-	virtual void initializeADSNeighStatus(const R& rep, ADS& _ads) = 0;
+	virtual void initializeADSNeighStructure(const R& rep, ADS& _ads) = 0;
 
-	virtual void updateADSNeighStatus(const R& rep, ADS& _ads, string str) = 0;
+	virtual void setNeighLocalOptimum(const R& rep, ADS& _ads, string str) = 0;
 
-	virtual void updateADSNeighStatus(Solution<R, ADS>& s, string str)
+	virtual void setNeighLocalOptimum(Solution<R, ADS>& s, string str)
 	{
-		updateADSNeighStatus(s.getR(), s.getADS(), str);
+		setNeighLocalOptimum(s.getR(), s.getADS(), str);
 	}
 
 	virtual bool compareADS(const ADS& _ads1, const ADS& _ads2) = 0;
@@ -63,7 +63,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << OptFrameComponent::idComponent() << "UpdateADS";
+		ss << OptFrameComponent::idComponent() << "ADSManager";
 		return ss.str();
 	}
 
@@ -75,10 +75,10 @@ public:
 	virtual string toString() const
 	{
 		stringstream ss;
-		ss << "Update ADS ";
+		ss << "ADSManager";
 		return ss.str();
 	}
 
 };
 
-#endif /* OPTFRAME_UPDATEADS_HPP_ */
+#endif /* OPTFRAME_ADSMANAGER_HPP_ */

@@ -32,12 +32,12 @@ class VariableNeighborhoodDescentUpdateADS: public LocalSearch<R, ADS, DS>
 {
 private:
 	Evaluator<R, ADS, DS>& ev;
-	UpdateADS<R, ADS>& upADS;
+	ADSManager<R, ADS>& adsMan;
 	vector<LocalSearch<R, ADS, DS>*> lsList;
 public:
 
-	VariableNeighborhoodDescentUpdateADS(Evaluator<R, ADS, DS>& _ev, UpdateADS<R, ADS>& _upADS, vector<LocalSearch<R, ADS, DS>*> _lsList) :
-		ev(_ev), upADS(_upADS), lsList(_lsList)
+	VariableNeighborhoodDescentUpdateADS(Evaluator<R, ADS, DS>& _ev, ADSManager<R, ADS>& _adsMan, vector<LocalSearch<R, ADS, DS>*> _lsList) :
+		ev(_ev), adsMan(_adsMan), lsList(_lsList)
 	{
 	}
 
@@ -84,7 +84,7 @@ public:
 				string localSearchID = lsList[k - 1]->toString();
 				unsigned found = localSearchID.find("OptFrame");
 				string moveID = localSearchID.substr(found);
-				upADS.updateADSNeighStatus(s, moveID);
+				adsMan.setNeighLocalOptimum(s, moveID);
 
 				delete s0;
 				delete e0;
@@ -145,13 +145,13 @@ public:
 		Evaluator<R, ADS, DS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		UpdateADS<R, ADS>* upADS;
-		hf.assign(upADS, scanner.nextInt(), scanner.next()); // reads backwards!
+		ADSManager<R, ADS>* adsMan;
+		hf.assign(adsMan, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<LocalSearch<R, ADS, DS>*> hlist;
 		hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new VariableNeighborhoodDescentUpdateADS<R, ADS, DS> (*eval, *upADS, hlist);
+		return new VariableNeighborhoodDescentUpdateADS<R, ADS, DS> (*eval, *adsMan, hlist);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -159,7 +159,7 @@ public:
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
 
-		params.push_back(make_pair(UpdateADS<R, ADS>::idComponent(), "updateADS function"));
+		params.push_back(make_pair(ADSManager<R, ADS>::idComponent(), "ADSManager function"));
 
 		stringstream ss;
 		ss << LocalSearch<R, ADS, DS>::idComponent() << "[]";

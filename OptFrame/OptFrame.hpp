@@ -39,7 +39,7 @@
 #include "Solution.hpp"
 //#include "Util/TestSolution.hpp"
 
-#include "UpdateADS.hpp"
+#include "ADSManager.hpp"
 
 #include "Population.hpp"
 
