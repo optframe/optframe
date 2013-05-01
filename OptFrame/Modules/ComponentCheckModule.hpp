@@ -356,7 +356,7 @@ public:
 		//           BEGIN TESTS
 		// ======================================
 
-		ADSManager<R, ADS>* adsMan;
+		ADSManager<R, ADS>* adsMan = NULL;
 		if (lADSManager.size() > 0)
 		{
 			Scanner scan(lADSManager.at(0));
