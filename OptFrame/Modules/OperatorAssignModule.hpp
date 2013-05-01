@@ -136,7 +136,7 @@ public:
 	string addSpacesForDoubleDots(string input)
 	{
 		string output = "";
-		int i = 0;
+		unsigned i = 0;
 		while (i < input.length())
 		{
 			if ((input[i] == '.') && ((i + 1) < input.length()) && (input[i + 1] == '.'))
