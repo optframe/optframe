@@ -55,6 +55,8 @@ public:
 
 	virtual bool compareADS(const ADS& _ads1, const ADS& _ads2) = 0;
 
+	virtual void printADS(const ADS& _ads) = 0;
+
 	virtual bool compatible(string s)
 	{
 		return (s == idComponent()) || (OptFrameComponent::compatible(s));

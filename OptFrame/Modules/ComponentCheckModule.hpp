@@ -332,6 +332,7 @@ public:
 		}
 		vector<string> lADSManager;
 		vector<string>* p_lADSManager = OptFrameList::readList(ldictionary, scanner);
+
 		if (p_lADSManager)
 		{
 			lADSManager = vector<string>(*p_lADSManager);
@@ -547,13 +548,6 @@ public:
 					if (adsMan)
 					{
 						message(lEvaluator.at(ev), -1, "testing ADS.");
-
-						if (!adsMan->compareADS(s.getADS(), sNeighbor.getADS()))
-						{
-							cout << id() << " module error: ADS not updated correctly! Compared apply and reverse for move => ";
-							move.print();
-							return false;
-						}
 
 						ADS ads(sNeighbor.getADS()); // copy
 						Timer ts_ds;
@@ -800,13 +794,6 @@ public:
 						if (adsMan)
 						{
 							message(lEvaluator.at(ev), -1, "testing ADS.");
-
-							if (!adsMan->compareADS(s.getADS(), sNeighbor.getADS()))
-							{
-								cout << id() << " module error: ADS not updated correctly! Compared apply and reverse for move => ";
-								move.print();
-								return false;
-							}
 
 							ADS ads(sNeighbor.getADS()); // copy
 							Timer ts_ds;
@@ -1123,13 +1110,6 @@ public:
 						if (adsMan)
 						{
 							message(lEvaluator.at(ev), -1, "testing ADS (NSSeq tests).");
-
-							if (!adsMan->compareADS(s.getADS(), sNeighbor.getADS()))
-							{
-								cout << id() << " module error: ADS not updated correctly! Compared apply and reverse for move => ";
-								move.print();
-								return false;
-							}
 
 							ADS ads(sNeighbor.getADS()); // copy
 							Timer ts_ds;
