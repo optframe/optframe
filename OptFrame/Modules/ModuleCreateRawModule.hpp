@@ -44,7 +44,7 @@ private:
 	OptFrameModule<R, ADS, DS>* getModule(vector<OptFrameModule<R, ADS, DS>*>& modules, string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
-			if (module == modules[i]->id())
+			if (modules[i]->canHandle(module, "")) // TODO: fix
 				return modules[i];
 		return NULL;
 	}

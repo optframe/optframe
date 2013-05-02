@@ -102,18 +102,21 @@ silent_define NSEnum       OptFrame:NS:NSSeq:NSEnum
 % -------------------------------------------------------------
 
 create_module print [ $component , $id ] {
+  undefine optframe_str;
   to_string $component $id optframe_str;
   echo optframe_str;
-  undefine optframe_str
+  undefine optframe_str;
 }
 
 create_module evaluate_to_file [ $evaluator , $idev , $solution , $ids , $file ] {
+  undefine optframe_e;
   evaluate $evaluator $idev $solution $ids optframe_e;
   echo_to_file $file optframe_e;
   undefine optframe_e
 }
 
 create_module print_to_file [ $component , $id , $file ] {
+  undefine optframe_str;
   system.to_string $component $id optframe_str;
   echo_to_file $file optframe_str;
   undefine optframe_str
