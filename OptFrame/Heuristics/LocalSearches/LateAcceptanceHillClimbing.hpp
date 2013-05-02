@@ -112,6 +112,9 @@ public:
 						sStar = s;
 						eStar = e;
 
+						cout << "LAHC: best solution in iter=" << iter << " => ";
+						e.print();
+
 						iter = 0;
 					}
 				}
