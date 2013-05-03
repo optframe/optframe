@@ -53,6 +53,7 @@ public:
 	{
 		int iv = v;
 		stringstream ss;
+		ss << fixed; // disable scientific notation
 		ss << iv;
 		return ss.str();
 	}

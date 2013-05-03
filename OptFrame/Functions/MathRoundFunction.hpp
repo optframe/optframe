@@ -57,6 +57,7 @@ public:
 		else
 			iv = ceil(v - 0.5);
 		stringstream ss;
+		ss << fixed; // disable scientific notation
 		ss << iv;
 
 		return ss.str();

@@ -178,6 +178,7 @@ public:
 
 	virtual void print() const
 	{
+		cout << fixed; // disable scientific notation
 		cout << "Evaluation function value = " << evaluation();
 		cout << (isFeasible()?" ":" (not feasible) ") << endl;
 

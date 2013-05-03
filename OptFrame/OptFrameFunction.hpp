@@ -40,6 +40,9 @@
 
 class OptFrameFunction
 {
+protected:
+	static int precision; // for floats and doubles
+
 public:
 
 	static pair<string, string>* run_function(string func, vector<OptFrameFunction*>& allFunctions, map< string, string >& dictionary, map< string,vector<string> >& ldictionary, string raw_input)
@@ -237,5 +240,7 @@ public:
 		return new string(input6);
 	}
 };
+
+int OptFrameFunction::precision=2;
 
 #endif /* OPTFRAME_FUNCTION_HPP_ */

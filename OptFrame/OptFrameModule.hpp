@@ -46,6 +46,7 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_
 class OptFrameModule
 {
 protected:
+	static int precision; // for floats and doubles
 
 	bool run_module(string mod, vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& f, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
@@ -313,5 +314,8 @@ public:
 		return new string(input6);
 	}
 };
+
+template<class R, class ADS, class DS>
+int OptFrameModule<R,ADS,DS>::precision=2;
 
 #endif /* OPTFRAMEMODULE_HPP_ */

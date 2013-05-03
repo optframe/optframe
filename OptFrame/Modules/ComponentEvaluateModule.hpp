@@ -78,6 +78,8 @@ public:
 		{
 			string ename = scanner.next();
 			stringstream ss;
+			ss.precision(OptFrameModule<R, ADS, DS>::precision); // float precision
+			ss << fixed; // disable scientific notation
 			ss << ename << " " << e->evaluation();
 			delete e;
 			return OptFrameModule<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
