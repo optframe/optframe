@@ -117,6 +117,8 @@ public:
 		{
 			string var_time = scanner.next();
 			stringstream sstime;
+			sstime.precision(OptFrameModule<R, ADS, DS>::precision);
+			sstime << fixed;
 			sstime << time;
 			if(!OptFrameModule<R, ADS, DS>::defineText(var_time, sstime.str(), dictionary))
 				return false;

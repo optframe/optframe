@@ -98,6 +98,8 @@ public:
 		{
 			string var_time = scanner.next();
 			stringstream ss;
+			ss.precision(OptFrameModule<R, ADS, DS>::precision);
+			ss << fixed;
 			ss << var_time << " " << time;
 			if(!OptFrameModule<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str()))
 				return false;
