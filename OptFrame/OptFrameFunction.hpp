@@ -52,7 +52,7 @@ public:
 		//printf("run_function: '%s' with: '%s'\n", func.c_str(), input.c_str());
 
 		for(unsigned int i=0;i<allFunctions.size();i++)
-			if(func==allFunctions[i]->id())
+			if(allFunctions[i]->canHandle(func, "")) // TODO: check
 			{
 				//cout << "found function: '" << func << "'" << endl;
 				string* iprep = allFunctions[i]->preprocess(allFunctions, dictionary, ldictionary, input);
@@ -129,7 +129,7 @@ public:
 	static bool functionExists(string func, vector<OptFrameFunction*>& allFunctions)
 	{
 		for(unsigned int i=0;i<allFunctions.size();i++)
-			if(func==allFunctions[i]->id())
+			if(allFunctions[i]->canHandle(func, "")) // TODO: check
 				return true;
 		return false;
 	}
@@ -138,7 +138,22 @@ public:
 	{
 	}
 
+	vector<string> handles;
+
+	virtual bool canHandle(string f_name, string f_body)
+	{
+		if (id() == f_name)
+			return true;
+
+		for (unsigned i = 0; i < handles.size(); i++)
+			if (handles[i] == f_name)
+				return true;
+
+		return false;
+	}
+
 	virtual string id() = 0;
+
 	virtual string usage() = 0;
 
 	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >& dictionary, map< string,vector<string> >& ldictionary, string body) = 0;
