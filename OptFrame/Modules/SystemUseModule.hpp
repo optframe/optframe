@@ -80,12 +80,14 @@ public:
 		}
 		*/
 
+		/*
 		// check dependency on 'function.rename' module
 		if(!OptFrameModule<R, ADS, DS>::run_module("system.require", allModules, allFunctions, factory, dictionary, ldictionary, "function.rename"))
 		{
 			cout << "error: system.use module depends on 'function.rename' module, which is not loaded!" << endl;
 			return false;
 		}
+		*/
 
 		Scanner scanner(input);
 
@@ -164,6 +166,7 @@ public:
 					continue;
 				}
 
+				/*
 				stringstream ss;
 				ss << allFunctions[i]->id() << " " << smallName;
 
@@ -172,6 +175,9 @@ public:
 					cout << "system.use module error: failed to do a function.rename with parameters '" << ss.str() << "'" << endl;
 					return false;
 				}
+				*/
+
+				allFunctions[i]->handles.push_back(smallName);
 			}
 		}
 
