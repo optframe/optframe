@@ -205,6 +205,61 @@ public:
 		return defaultPreprocess(allFunctions, dictionary, ldictionary, input);
 	}
 
+	static string* solveVars(const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		string result = "";
+		string var = "";
+		bool inVar = false;
+
+		for (unsigned i = 0; i < input.length(); i++)
+		{
+			if (inVar)
+			{
+				if ((input[i] != ' ') && (input[i] != '\t') && (input[i] != '\n') && (input[i] != '$'))
+					var += input[i];
+				else
+				{
+					if (var != "")
+					{
+						if (dictionary.count(var) != 0)
+							result.append(dictionary.find(var)->second);
+						else if (ldictionary.count(var) != 0)
+							result.append(OptFrameList::listToString(ldictionary.find(var)->second));
+						else
+						{
+							cout << "Error: variable '$" << var << "' not defined in any dictionary!" << endl;
+							return NULL; // no variable in dictionary!
+						}
+					}
+
+					var = "";
+					inVar = false;
+				}
+			}
+
+			if ((!inVar) && (input[i] == '$') && (i + 1 < input.length()) && (input[i + 1] != '$')) // avoid double $$
+				inVar = true;
+
+			if (!inVar) // ordinary char
+				result += input[i];
+		}
+
+		if (inVar) // finish inside var
+		{
+			if (dictionary.count(var) != 0)
+				result.append(dictionary.find(var)->second);
+			else if (ldictionary.count(var) != 0)
+				result.append(OptFrameList::listToString(ldictionary.find(var)->second));
+			else
+			{
+				cout << "Error: variable '$" << var << "' not defined in any dictionary!" << endl;
+				return NULL; // no variable in dictionary!
+			}
+		}
+
+		return new string(result);
+	}
+
 	static string* defaultPreprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		stringstream input_func; // add spaces before and after '(', ')', '[', ']', '{', '}', ';' and ','
@@ -225,9 +280,19 @@ public:
 			string new_word = scanner.next();
 			string unused = scanner.getDiscarded();
 
+			input3.append(unused);
+			string* vars = solveVars(dictionary, ldictionary, new_word);
+			if (!vars)
+				return NULL;
+			else
+				input3.append(*vars);
+
+			delete vars;
+
+			/*
 			if(dictionary.count(new_word) == 0) // Not found in dictionary!
 			{
-				input3.append(unused);
+
 				input3.append(new_word);
 			}
 			else
@@ -241,6 +306,7 @@ public:
 				scanner = Scanner(input3);
 				input3 = "";
 			}
+			*/
 		}
 
 		string input4 = Scanner::trim(input3);
