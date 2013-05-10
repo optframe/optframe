@@ -27,7 +27,7 @@
 #include "OptFrameComponent.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class NS : public OptFrameComponent
+class NS: public OptFrameComponent
 {
 public:
 
@@ -35,27 +35,42 @@ public:
 	{
 	}
 
-    Move<R, ADS, DS>& move(const Solution<R, ADS>& s)
-    {
-    	return move(s.getR(), s.getADS());
-    }
+	Move<R, ADS, DS>& move(const Solution<R, ADS>& s)
+	{
+		return move(s.getR(), s.getADS());
+	}
 
-    virtual Move<R, ADS, DS>& move(const R&, const ADS&) = 0;
+	Move<R, ADS, DS>* validMove(const Solution<R, ADS>& s)
+	{
+		return validMove(s.getR(), s.getADS());
+	}
 
-    static string idComponent()
-    {
-       return "OptFrame:NS";
-    }
+	virtual Move<R, ADS, DS>& move(const R&, const ADS&) = 0;
 
-    virtual string id() const
-    {
-       return idComponent();
-    }
+	virtual Move<R, ADS, DS>* validMove(const R& r, const ADS& ads)
+	{
+		Move<R, ADS, DS>* moveValid = &(this->move(r, ads));
+		if (moveValid->canBeApplied(r, ads))
+			return moveValid;
+		else
+			delete moveValid;
 
-    virtual bool compatible(string s)
-    {
-    	return ( s == idComponent() ) || (OptFrameComponent::compatible(s));
-    }
+		return NULL;
+	}
+	static string idComponent()
+	{
+		return "OptFrame:NS";
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+
+	virtual bool compatible(string s)
+	{
+		return (s == idComponent()) || (OptFrameComponent::compatible(s));
+	}
 };
 
 #endif /*OPTFRAME_NS_HPP_*/

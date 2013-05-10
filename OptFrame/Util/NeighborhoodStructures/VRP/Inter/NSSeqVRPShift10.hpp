@@ -245,6 +245,21 @@ public:
 		return *new MOVE(r1, r2, cli, pos, p); // return a random move
 	}
 
+	virtual Move<Routes, ADS, DS>* validMove(const Routes& rep, const ADS& ads)
+	{
+		int maxValidMove = 50;
+		for (int iter = 0; iter < maxValidMove; iter++)
+		{
+			Move<Routes, ADS, DS>* moveValid = &(this->move(rep, ads));
+			if (moveValid->canBeApplied(rep, ads))
+				return moveValid;
+			else
+				delete moveValid;
+		}
+
+		return NULL;
+	}
+
 	virtual NSITERATOR& getIterator(const Routes& r, const ADS& ads)
 	{
 		return *new NSITERATOR(r, ads, p);

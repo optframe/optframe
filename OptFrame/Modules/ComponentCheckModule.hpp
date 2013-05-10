@@ -181,7 +181,6 @@ public:
 				return false;
 			}
 
-
 			scanner = Scanner("_aux_check_lconstructive  _aux_check_levaluator  _aux_check_lmove  _aux_check_lns  _aux_check_lnsseq  _aux_check_lnsenum   _aux_check_ladsmanager");
 		}
 
@@ -202,7 +201,7 @@ public:
 		vector<string>* p_lConstructive = OptFrameList::readList(ldictionary, scanner);
 		if (p_lConstructive)
 		{
-			lConstructive = vector<string>(*p_lConstructive);
+			lConstructive = vector<string> (*p_lConstructive);
 			delete p_lConstructive;
 		}
 		else
@@ -224,7 +223,7 @@ public:
 		vector<string>* p_lEvaluator = OptFrameList::readList(ldictionary, scanner);
 		if (p_lEvaluator)
 		{
-			lEvaluator = vector<string>(*p_lEvaluator);
+			lEvaluator = vector<string> (*p_lEvaluator);
 			delete p_lEvaluator;
 		}
 		else
@@ -246,7 +245,7 @@ public:
 		vector<string>* p_lMove = OptFrameList::readList(ldictionary, scanner);
 		if (p_lMove)
 		{
-			lMove = vector<string>(*p_lMove);
+			lMove = vector<string> (*p_lMove);
 			delete p_lMove;
 		}
 		else
@@ -268,7 +267,7 @@ public:
 		vector<string>* p_lNS = OptFrameList::readList(ldictionary, scanner);
 		if (p_lNS)
 		{
-			lNS = vector<string>(*p_lNS);
+			lNS = vector<string> (*p_lNS);
 			delete p_lNS;
 		}
 		else
@@ -290,7 +289,7 @@ public:
 		vector<string>* p_lNSSeq = OptFrameList::readList(ldictionary, scanner);
 		if (p_lNSSeq)
 		{
-			lNSSeq = vector<string>(*p_lNSSeq);
+			lNSSeq = vector<string> (*p_lNSSeq);
 			delete p_lNSSeq;
 		}
 		else
@@ -312,7 +311,7 @@ public:
 		vector<string>* p_lNSEnum = OptFrameList::readList(ldictionary, scanner);
 		if (p_lNSEnum)
 		{
-			lNSEnum = vector<string>(*p_lNSEnum);
+			lNSEnum = vector<string> (*p_lNSEnum);
 			delete p_lNSEnum;
 		}
 		else
@@ -335,7 +334,7 @@ public:
 
 		if (p_lADSManager)
 		{
-			lADSManager = vector<string>(*p_lADSManager);
+			lADSManager = vector<string> (*p_lADSManager);
 			delete p_lADSManager;
 		}
 		else
@@ -788,7 +787,6 @@ public:
 							return false;
 						}
 
-
 						// ===================== tests with ADSManager ======================
 
 						if (adsMan)
@@ -895,7 +893,6 @@ public:
 							delete estimatedCost;
 						}
 
-
 						Timer tMoveCost;
 						pair<double, double>* cost = NULL;
 
@@ -993,22 +990,24 @@ public:
 				// ===================
 
 				bool moveApplied = false;
-				for(int i=0; i<iterMax; i++)
-				{
-					Move<R, ADS, DS>& move = nsseq->move(s);
+				int shaking = rand() % 5 + 1; //Max moves applied in each nSolNSSeq obtained from solutions vector
 
-					if(move.canBeApplied(s))
+				for (int i = 0; i < shaking; i++)
+				{
+					Move<R, ADS, DS>* moveValid = nsseq->validMove(s);
+
+					if (moveValid != NULL)
 					{
-						delete &move.apply(s);
-						delete &move;
+						delete &moveValid->apply(s);
+						delete moveValid;
 						moveApplied = true;
 						break;
 					}
 					else
-						delete& move;
+						delete moveValid;
 				}
 
-				if(!moveApplied)
+				if (!moveApplied)
 					message(lNSSeq.at(id_nsseq), nqs, "Warning. Couldn't apply a move before iterator tests (NSSeq tests).");
 
 				NSIterator<R, ADS, DS>& it = nsseq->getIterator(s);
@@ -1103,7 +1102,6 @@ public:
 
 							return false;
 						}
-
 
 						// ===================== tests with ADSManager ======================
 
@@ -1263,7 +1261,7 @@ public:
 
 		printSummary(timeConstructive, "Constructive", "testing construction of initial solution");
 
-		if(adsMan)
+		if (adsMan)
 			printSummary(timeInitializeADS, "ADSManager::initializeADS()", "testing lazy initializeADS in solutions");
 		else
 			cout << endl << "No ADSManager was tested." << endl << endl;
