@@ -152,6 +152,7 @@
 #include "Functions/StatisticsWilcoxonTestFunction.hpp"
 
 #include "Functions/SystemDefinedFunction.hpp"
+#include "Functions/SystemDefinitionFunction.hpp"
 #include "Functions/SystemInputFunction.hpp"
 #include "Functions/SystemPOpenFunction.hpp"
 #include "Functions/SystemTimeFunction.hpp"
@@ -446,7 +447,7 @@ public:
 		if ((prefix == "") || (prefix == "list"))
 		{
 			loadFunction(new ListAppendFunction);
-			loadFunction(new ListDefinitionFunction);
+			//loadFunction(new ListDefinitionFunction);
 			loadFunction(new ListElementFunction);
 			loadFunction(new ListLengthFunction);
 			loadFunction(new ListWordsFunction);
@@ -492,6 +493,7 @@ public:
 		if ((prefix == "") || (prefix == "system"))
 		{
 			loadFunction(new SystemDefinedFunction);
+			loadFunction(new SystemDefinitionFunction);
 			loadFunction(new SystemInputFunction);
 			loadFunction(new SystemPOpenFunction);
 			loadFunction(new SystemTimeFunction);
@@ -500,7 +502,7 @@ public:
 		if ((prefix == "") || (prefix == "text"))
 		{
 			loadFunction(new TextConcatFunction);
-			loadFunction(new TextDefinitionFunction);
+			//loadFunction(new TextDefinitionFunction);
 			loadFunction(new TextNextFunction);
 		}
 	}
