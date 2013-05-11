@@ -31,7 +31,7 @@ define BI  OptFrame:ComponentBuilder:LocalSearch:BI
 
 echo Creating BI for each NSSeq component
 create_numeric_list 0 7 all_nsseq
-for_each $nsseq all_nsseq
+for_each nsseq all_nsseq
 {
    build $BI $Evaluator 0  OptFrame:NS:NSSeq $nsseq;
 }

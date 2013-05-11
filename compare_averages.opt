@@ -91,7 +91,7 @@ create_numeric_list 1 length( average1 ) l_average1
 create_numeric_list 1 length( average_ref ) l_average_ref
 
 silent_define_list value_avg0 [ ]
-for_each $k l_average0
+for_each k l_average0
 {
   silent_define_list line words( element( $k average0 ) );
   silent_define new_value_avg0 element( 2 line );
@@ -105,7 +105,7 @@ for_each $k l_average0
 }
 
 silent_define_list value_avg1 [ ]
-for_each $k l_average1
+for_each k l_average1
 {
   silent_define_list line words( element( $k average1 ) );
   silent_define new_value_avg1 element( 2 line );
