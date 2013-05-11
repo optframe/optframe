@@ -87,6 +87,20 @@ public:
 	static bool defineText(string definition, string value, map<string,string>& dictionary)
 	{
 		// will not need this check after better implementation of dictionary with '$' before definitions
+		// TODO
+
+		if(definition.length()==0)
+		{
+			cout << "defineText error: empty variable!" << endl;
+			return false;
+		}
+
+		if(definition[0]=='$')
+		{
+			cout << "defineText error: trying to define variable with dollar '" << definition << "'" << endl;
+			return false;
+		}
+
 
 		bool number = true;
 		try
@@ -134,6 +148,18 @@ public:
 
 	static bool defineList(string definition, vector<string>& list, map< string,vector<string> >& ldictionary)
 	{
+		if(definition.length()==0)
+		{
+			cout << "defineList error: empty variable!" << endl;
+			return false;
+		}
+
+		if(definition[0]=='$')
+		{
+			cout << "defineList error: trying to define variable with dollar '" << definition << "'" << endl;
+			return false;
+		}
+
 		bool number = true;
 		try
 		{
