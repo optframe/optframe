@@ -2,17 +2,17 @@
 % OptFrame example file
 %=======================
 
-if operator.compare( _definitions_opt  != true )   { system.read definitions.opt }
+if operator.logic(not system.defined(_definitions_opt)) { system.read definitions.opt }
 
 undefine bModuleExists
 module.exists problem.general bModuleExists
 
-if operator.logic(not bModuleExists)
+if operator.logic(not $bModuleExists)
 {
    undefine bModuleTSPExists;
    module.exists problem.TSP bModuleTSPExists;
 
-   if bModuleTSPExists 
+   if $bModuleTSPExists 
    {
       module.rename problem.TSP problem.general;
       silent_define default_file ./Examples/TSP/tsplib/berlin52.txt;
@@ -25,7 +25,7 @@ if operator.logic(not bModuleExists)
 %randgen.set_seed time()
 randgen.set_seed 0
 
-problem.general load default_file
+problem.general load $default_file
 
 define BI  OptFrame:ComponentBuilder:LocalSearch:BI
 
@@ -33,7 +33,7 @@ echo Creating BI for each NSSeq component
 create_numeric_list 0 7 all_nsseq
 for_each $nsseq all_nsseq
 {
-   build BI Evaluator 0  OptFrame:NS:NSSeq $nsseq;
+   build $BI $Evaluator 0  OptFrame:NS:NSSeq $nsseq;
 }
 
 echo building VND

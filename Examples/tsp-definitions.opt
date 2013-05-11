@@ -2,7 +2,7 @@
 % OptFrame example TSP definitions
 %=================================
 
-if operator.compare( _tspdefinitions_opt == true )
+if system.defined(_tspdefinitions_opt)
 {
    echo File tspdefinitions.opt already included!;
    error;
@@ -10,12 +10,12 @@ if operator.compare( _tspdefinitions_opt == true )
 
 system.silent_define _tspdefinitions_opt  true
 
-if operator.compare( _definitions_opt  != true )   { system.read ../definitions.opt }
+if operator.logic(not system.defined(_definitions_opt))  { system.read ../definitions.opt }
 
 undefine bModuleExists
 module.exists problem.general bModuleExists
 
-if bModuleExists
+if $bModuleExists
 {
    error module problem.general already exists!;
 } else

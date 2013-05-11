@@ -151,6 +151,7 @@
 #include "Functions/StatisticsSumFunction.hpp"
 #include "Functions/StatisticsWilcoxonTestFunction.hpp"
 
+#include "Functions/SystemDefinedFunction.hpp"
 #include "Functions/SystemInputFunction.hpp"
 #include "Functions/SystemPOpenFunction.hpp"
 #include "Functions/SystemTimeFunction.hpp"
@@ -490,6 +491,7 @@ public:
 
 		if ((prefix == "") || (prefix == "system"))
 		{
+			loadFunction(new SystemDefinedFunction);
 			loadFunction(new SystemInputFunction);
 			loadFunction(new SystemPOpenFunction);
 			loadFunction(new SystemTimeFunction);

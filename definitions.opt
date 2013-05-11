@@ -4,7 +4,7 @@
 % safe inclusion
 % -------------------------------------------------------------
 
-if operator.compare( _definitions_opt == true )
+if system.defined(_definitions_opt)
 {
    echo File definitions.opt already included!;
    error;
