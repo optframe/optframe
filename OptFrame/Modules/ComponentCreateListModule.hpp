@@ -56,7 +56,10 @@ public:
 			delete plist;
 		}
 		else
+		{
+			cout << "module " << id() << " failed to read list!" << endl;
 			return false;
+		}
 
 		string type = scanner.next();
 		string name = scanner.next();

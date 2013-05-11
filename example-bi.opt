@@ -38,34 +38,33 @@ for_each $nsseq all_nsseq
 
 echo building VND
 define vnd_list [ OptFrame:LocalSearch: 0 ,  OptFrame:LocalSearch: 1, OptFrame:LocalSearch: 2, OptFrame:LocalSearch: 3 ]
-component.create_list vnd_list OptFrame:LocalSearch: comp_vnd_list
-build OptFrame:LocalSearch:VND   Evaluator 0   comp_vnd_list   vnd
+component.create_list $vnd_list OptFrame:LocalSearch: comp_vnd_list
+build OptFrame:LocalSearch:VND   $Evaluator 0   $comp_vnd_list   vnd
+
+%component.list
 
 echo building ILS
-build OptFrame:ComponentBuilder:SingleObjSearch:ILS:ILSLevels   Evaluator 0    Constructive 0    vnd   OptFrame:ILS:ilsl_pert_lp2 0    100    8  meu_ils
+build OptFrame:ComponentBuilder:SingleObjSearch:ILS:ILSLevels   $Evaluator 0    $Constructive 0    $vnd   OptFrame:ILS:LevelPert:LPlus2 0    100    8  meu_ils
 
-test 5 30 7000 7000   Evaluator 0   meu_ils   output.txt   solucao_saida
+test 2 3 7000 7000   $Evaluator 0   $meu_ils   output.txt   solucao_saida
 
-evaluate Evaluator 0 solucao_saida
+evaluate $Evaluator 0 $solucao_saida
 
 pause
 
-component.list Constructive lconstructive
-component.list Evaluator levaluator
+component.list $Constructive lconstructive
+component.list $Evaluator levaluator
 component.list OptFrame:NS lns
-component.list NSSeq lnsseq
-component.list NSEnum lnsenum
+component.list $NSSeq lnsseq
+component.list $NSEnum lnsenum
 
-check 100 30 false
+check 10 3 false
 
-undefine lsBestImp
-build OptFrame:LocalSearch:BI Evaluator 0 NSSeq 0 lsBestImp
+build OptFrame:LocalSearch:BI $Evaluator 0 $NSSeq 0 lsBestImp
 
-undefine bestSol;
-testls 10 30 0 0 Evaluator 0 Constructive 0 lsBestImp saida-bi.txt bestSol;
+testls 10 30 0 0 $Evaluator 0 $Constructive 0 $lsBestImp saida-bi.txt bestSol;
 
-undefine bestSol2;
-testls 1 30 0 0 Evaluator 0 bestSol lsBestImp saida-bi.txt bestSol2;
+testls 1 30 0 0 $Evaluator 0 $bestSol $lsBestImp saida-bi.txt bestSol2;
 
 drop_all
 problem.general unload

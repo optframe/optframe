@@ -48,12 +48,12 @@ public:
 	{
 		Scanner scanner(input);
 
-		if(!scanner.hasNext())
-		{
-			return false;
-		}
+		string pattern = "OptFrame:";
 
-		string pattern = scanner.next();
+		if (scanner.hasNext())
+		{
+			pattern = scanner.next();
+		}
 
 		vector<string> components     = factory.listComponents(pattern);
 		vector<string> componentLists = factory.listComponentLists(pattern);
