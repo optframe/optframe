@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 	// parameters: -s, --silent
 	bool silent = false;
 
-	// parameters: -c, --enable-system-calls
+	// parameters: -k, --enable-system-calls
 	bool system_calls = false;
 
 	// parameter: filename
@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 			verbose = true;
 		else if ((params[i] == "-s") || (params[i] == "--silent"))
 			silent = true;
-		else if ((params[i] == "-c") || (params[i] == "--enable-system-calls"))
+		else if ((params[i] == "-k") || (params[i] == "--enable-system-calls"))
 			system_calls = true;
 		else
 			filename = params[i];
@@ -101,7 +101,7 @@ int main(int argc, char **argv)
 	if (help)
 	{
 		cout << optframe.version() << endl;
-		cout << "parameters are: opti [-h, --help] [-v, --verbose] [-s, --silent] [-c, --enable-system-calls] [filename]" << endl;
+		cout << "parameters are: opti [-h, --help] [-v, --verbose] [-s, --silent] [-k, --enable-system-calls] [filename]" << endl;
 		cout << "opti: displaying help" << endl;
 		optframe.execute("system.help");
 	}
