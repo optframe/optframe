@@ -16,15 +16,15 @@ system.silent_define _definitions_opt true
 % create auxiliar modules and functions
 % -------------------------------------------------------------
 
-module.create_raw module.rename [ $module_name , $new_name ] {
+module.create_raw module.rename [ module_name , new_name ] {
    module.create_raw $new_name [ ] {
-      system.preprocess _${new_name}_text $module_name $_all_params_$new_name;
-      system.run $module_name _${new_name}_text;
-      system.undefine _${new_name}_text;
+      system.preprocess _text_${new_name} $module_name $_all_params_${new_name};
+      system.run $module_name $_text_${new_name}; %%% WARNING, CANNOT DO THIS *CORRECTLY* WITHOUT SCOPING =(! TODO
+      system.undefine _text_${new_name};
    }
 }
 
-module.create_raw function.rename [ $function_name , $new_function_name ] {
+module.create_raw function.rename [ function_name , new_function_name ] {
    function.create_raw $new_function_name [ ] = $function_name ( $_all_params_$new_function_name );
 }
 
@@ -101,21 +101,20 @@ silent_define NSEnum       OptFrame:NS:NSSeq:NSEnum
 % create other modules and functions
 % -------------------------------------------------------------
 
-create_module print [ $component , $id ] {
-  undefine optframe_str;
+module.create print [ component , id ] {
   to_string $component $id optframe_str;
-  echo optframe_str;
+  echo $optframe_str;
   undefine optframe_str;
 }
 
-create_module evaluate_to_file [ $evaluator , $idev , $solution , $ids , $file ] {
+create_module evaluate_to_file [ evaluator , idev , solution , ids , file ] {
   undefine optframe_e;
   evaluate $evaluator $idev $solution $ids optframe_e;
   echo_to_file $file optframe_e;
   undefine optframe_e
 }
 
-create_module print_to_file [ $component , $id , $file ] {
+create_module print_to_file [ component , id , file ] {
   undefine optframe_str;
   system.to_string $component $id optframe_str;
   echo_to_file $file optframe_str;
@@ -124,35 +123,35 @@ create_module print_to_file [ $component , $id , $file ] {
 
 % ------------------- lists --------------
 
-create_module print_list [ $list ] {
+create_module print_list [ list ] {
   silent_define_list _ilist $list;
-  for_each $e _ilist {
+  for_each e _ilist {
      echo $e
   };
   undefine _ilist
 } 
 
-create_module print_list_to_file [ $file , $list ] {
+create_module print_list_to_file [ file , list ] {
   silent_define_list _ilist $list;
-  for_each $e _ilist {
+  for_each e _ilist {
      echo_to_file $file $e
   };
   undefine _ilist
 }
 
-module.create head [ $list , $n , $new_list ] {
+module.create head [ list , n , new_list ] {
   list.silent_define $new_list [ ];
   create_numeric_list 1 $n _head_indexes;
-  for_each $i _head_indexes {
+  for_each i _head_indexes {
      list.push_back $new_list list.element($i $list);
   };
   undefine _head_indexes;
 }
 
-module.create tail [ $list , $n , $new_list ] {
+module.create tail [ list , n , new_list ] {
   list.silent_define $new_list [ ];
   create_numeric_list operator.compute(operator.compute(list.length($list) - $n) + 1) list.length($list) _tail_indexes;
-  for_each $i _tail_indexes {
+  for_each i _tail_indexes {
      list.push_back $new_list list.element($i $list);
   };
   undefine _tail_indexes;

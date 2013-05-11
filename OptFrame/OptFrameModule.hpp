@@ -231,47 +231,127 @@ public:
 		return defaultPreprocess(allFunctions, dictionary, ldictionary, input);
 	}
 
-	static string* solveVars(const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	static string* solveVars(const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input, string only_var="")
 	{
+		//cout << "SOLVEVARS WITH '" << input << "' and only_var='" << only_var<< "'" << endl;
 		string result = "";
-		string var = "";
+
 		bool inVar = false;
+		string var = "";
 
 		for (unsigned i = 0; i < input.length(); i++)
 		{
-			if (inVar)
+			// build var
+			if((!inVar) && (var != ""))
 			{
-				if ((input[i] != ' ') && (input[i] != '\t') && (input[i] != '\n') && (input[i] != '$'))
-					var += input[i];
+				// for variables with brackets {}
+				Scanner scanner(var);
+				scanner.useSeparators("{}");
+				string var2 = scanner.next();
+
+				if ((only_var != "") && (var2 != only_var)) // do not solve now!
+				{
+					result += '$';
+					result.append(var);
+					var = "";
+					i--;
+					continue;
+				}
+
+				var = var2;
+
+				if(var == "")
+				{
+					cout << "solveVars error: empty variable ${}!" << endl;
+					return NULL;
+				}
+
+				if (dictionary.count(var) != 0)
+					result.append(dictionary.find(var)->second);
+				else if (ldictionary.count(var) != 0)
+					result.append(OptFrameList::listToString(ldictionary.find(var)->second));
 				else
 				{
-					if (var != "")
-					{
-						if (dictionary.count(var) != 0)
-							result.append(dictionary.find(var)->second);
-						else if (ldictionary.count(var) != 0)
-							result.append(OptFrameList::listToString(ldictionary.find(var)->second));
-						else
-						{
-							cout << "Error: variable '$" << var << "' not defined in any dictionary!" << endl;
-							return NULL; // no variable in dictionary!
-						}
-					}
+					cout << "Error: variable '$" << var << "' not defined in any dictionary!" << endl;
+					return NULL; // no variable in dictionary!
+				}
 
-					var = "";
+				var = "";
+			}
+
+			if (inVar)
+			{
+				if ((input[i] != ' ') && (input[i] != '\t') && (input[i] != '\n') && (input[i] != '$') && (input[i] != '}'))
+				{
+					var += input[i];
+					continue;
+				}
+				else
+				{
 					inVar = false;
+
+					// close variable
+					if (input[i] == '}')
+					{
+						var += '}';
+						continue;
+					}
+					else
+					{
+						i--;
+						continue;
+					}
 				}
 			}
 
-			if ((!inVar) && (input[i] == '$') && (i + 1 < input.length()) && (input[i + 1] != '$')) // avoid double $$
+			// avoid double $$
+			if((!inVar) && (input[i] == '$') && (i + 1 < input.length()) && (input[i + 1] == '$'))
+			{
+				if (only_var == "") // can solve
+				{
+					result += '$';
+					i++;
+				}
+				else // do not solve now
+				{
+					result.append("$$");
+					i += 2;
+				}
+				continue;
+			}
+
+			// capture var
+			if ((!inVar) && (input[i] == '$'))
 				inVar = true;
 
-			if (!inVar) // ordinary char
+			// ordinary char
+			if (!inVar)
 				result += input[i];
 		}
 
-		if (inVar) // finish inside var
+		// build last var
+		if (var != "")
 		{
+			// for variables with brackets {}
+			Scanner scanner(var);
+			scanner.useSeparators("{}");
+			string var2 = scanner.next();
+
+			if ((only_var != "") && (var2 != only_var)) // do not solve now!
+			{
+				result += '$';
+				result.append(var);
+				return new string(result);
+			}
+
+			var = var2;
+
+			if (var == "")
+			{
+				cout << "solveVars error: empty variable ${}!" << endl;
+				return NULL;
+			}
+
 			if (dictionary.count(var) != 0)
 				result.append(dictionary.find(var)->second);
 			else if (ldictionary.count(var) != 0)
@@ -283,11 +363,26 @@ public:
 			}
 		}
 
+
 		return new string(result);
 	}
 
-	static string* defaultPreprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+	static string* defaultPreprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input_vars)
 	{
+		string input = "";
+
+		// ===============
+		// solve variables
+		// ===============
+		string* p_input = solveVars(dictionary, ldictionary, input_vars);
+		if (!p_input)
+			return NULL;
+		else
+		{
+			input = *p_input;
+			delete p_input;
+		}
+
 		stringstream input_func; // add spaces before and after '(', ')', '[', ']', '{', '}', ';' and ','
 		for(unsigned i=0; i<input.size(); i++)
 			if( (input.at(i)=='(') || (input.at(i)==')') || (input.at(i)=='[') || (input.at(i)==']') || (input.at(i)==',') || (input.at(i)=='{') || (input.at(i)=='}') || (input.at(i)==';') )
@@ -295,54 +390,9 @@ public:
 			else
 				input_func << input.at(i);
 
-		Scanner scanner(input_func.str());
+		Scanner scanFunc(input_func.str());
 
 		// Second, use the dictionary
-
-		string input3 = "";
-
-		while(scanner.hasNext())
-		{
-			string new_word = scanner.next();
-			string unused = scanner.getDiscarded();
-
-			input3.append(unused);
-			string* vars = solveVars(dictionary, ldictionary, new_word);
-			if (!vars)
-				return NULL;
-			else
-				input3.append(*vars);
-
-			delete vars;
-
-			/*
-			if(dictionary.count(new_word) == 0) // Not found in dictionary!
-			{
-
-				input3.append(new_word);
-			}
-			else
-			{
-				string found = dictionary.find(new_word)->second;
-
-				input3.append(unused);
-				input3.append(found);
-				input3.append(scanner.rest());
-
-				scanner = Scanner(input3);
-				input3 = "";
-			}
-			*/
-		}
-
-		string input4 = Scanner::trim(input3);
-
-		// Third, locate functions
-
-		Scanner scanFunc(input4);
-
-		if(!scanFunc.hasNext())
-			return new string(input4); // no functions
 
 		string input5 = "";
 
