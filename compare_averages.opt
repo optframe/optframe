@@ -20,17 +20,17 @@ echo
 define total  10
 define inicio 1
 echo teste while:
-while compare( inicio < total )
+while compare( $inicio < $total )
 {
-  echo inicio;
-  silent_define inicio compute( inicio + 1 )
+  echo $inicio;
+  silent_define inicio compute( $inicio + 1 );
 }
 echo fim while
 echo
 
 define mylist1 [1, 2, 3, 4, 5 ,6]
-define shapiro1 shapiro_test( mylist1 ) 
-if compare( shapiro1 <= 0.05 )
+define shapiro1 shapiro_test( $mylist1 ) 
+if compare( $shapiro1 <= 0.05 )
 {
   echo NAO NORMAL!
 } else 
@@ -39,8 +39,8 @@ if compare( shapiro1 <= 0.05 )
 }
 
 define mylist2 [7,8,9,10,11,12,13,14,15,16]
-define shapiro2 shapiro_test( mylist2 ) 
-if compare( shapiro2 <= 0.05 )
+define shapiro2 shapiro_test( $mylist2 ) 
+if compare( $shapiro2 <= 0.05 )
 {
   echo NAO NORMAL!
 } else
@@ -48,17 +48,15 @@ if compare( shapiro2 <= 0.05 )
   echo NORMAL
 }
 
-define pvalue student_t_test( mylist1  mylist2  )
+define pvalue student_t_test( $mylist1  $mylist2  )
 
-if compare( pvalue <= 0.05 )
+if compare( $pvalue <= 0.05 )
 {
   echo DIFERENTES!
 } else
 {
   echo IGUAIS
 }
-
-undefine pvalue
 
 
 define pvalue2 paired_t_test( [1, 1.4, 1.6, 500] [3.9, 2.8, 1.2, 1000]  )
@@ -72,7 +70,7 @@ define pvalue_noblock friedman_noblock_test([ [1, 1.4, 1.6, 500] , [0, 1.3, 1.4,
 
 pause
 
-if compare( pvalue <= 0.05 )
+if compare( $pvalue <= 0.05 )
 {
   echo DIFERENTES!
 } else
@@ -98,26 +96,26 @@ for_each $k l_average0
   silent_define_list line words( element( $k average0 ) );
   silent_define new_value_avg0 element( 2 line );
   silent_define ref element( $k average_ref );
-  silent_define_list value_avg0_2 append( value_avg0 [ compute( compute( compute( ref - new_value_avg0 ) / abs( ref ) ) * 100 ) ] );
+  silent_define_list value_avg0_2 append( value_avg0 [ compute( compute( compute( $ref - $new_value_avg0 ) / abs( $ref ) ) * 100 ) ] );
   %echo TESTANDO NORMALIDADE AVG0 $k : shapiro_test( value_avg0 );
   %echo value_avg0;
-  undefine value_avg0;
+  %undefine value_avg0;
   silent_define_list value_avg0 value_avg0_2;
-  undefine new_value_avg0_2;
+  %undefine new_value_avg0_2;
 }
 
 silent_define_list value_avg1 [ ]
 for_each $k l_average1
 {
-  silent_define_list line words( element( $k average1 ) ),
-  silent_define new_value_avg1 element( 2 line ),
-  silent_define ref element( $k average_ref ),
-  silent_define_list value_avg1_2 append( value_avg1 [ compute( compute( compute( ref - new_value_avg1 ) / abs( ref ) ) * 100 ) ] ),
+  silent_define_list line words( element( $k average1 ) );
+  silent_define new_value_avg1 element( 2 line );
+  silent_define ref element( $k average_ref );
+  silent_define_list value_avg1_2 append( value_avg1 [ compute( compute( compute( $ref - $new_value_avg1 ) / abs( $ref ) ) * 100 ) ] );
   %echo TESTANDO NORMALIDADE AVG1 $k : shapiro_test( value_avg1 ),
   %echo value_avg1,
-  undefine value_avg1,
-  silent_define_list value_avg1 value_avg1_2,
-  undefine new_value_avg1_2
+  %undefine value_avg1,
+  silent_define_list value_avg1 value_avg1_2;
+  %undefine new_value_avg1_2
 }
 
 %echo value_avg0
@@ -152,7 +150,7 @@ define pvalue friedman_noblock_test( [ value_avg0 , value_avg1 ]  )
 
 echo MEDIAS: avg( value_avg0 ) e avg( value_avg1 )
 
-if compare( pvalue <= 0.05 )
+if compare( $pvalue <= 0.05 )
 {
   echo DIFERENTE!
 } else
