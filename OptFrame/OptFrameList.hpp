@@ -43,24 +43,18 @@ public:
 
 	static vector<std::string>* readList(map<string, vector<string> >& ldictionary, Scanner& scanner)
 	{
+		scanner.trimInput();
+
 		if (!scanner.hasNextChar())
 			return NULL;
 
 		char character = scanner.nextChar();
 		int numberOfBrackets;
 
-		while (character == ' ')
-		{
-			if (!scanner.hasNextChar())
-				return NULL;
-
-			character = scanner.nextChar();
-		}
-
 		if (character != '[') // read from dictionary
 		{
 			stringstream ssword;
-			while (character != ' ')
+			while (character != ' ') // or... there is no next char!
 			{
 				ssword << character;
 				if (!scanner.hasNextChar())
@@ -70,7 +64,7 @@ public:
 
 			string word = ssword.str();
 
-			if (ldictionary.count(word) == 0)
+			if (ldictionary.count(word) == 0) // will try numeric list
 			{
 				int begin;
 				try
@@ -79,6 +73,7 @@ public:
 				}
 				catch (ConversionError& e)
 				{
+					cout << "OptFrameList error: variable '" << word << "' not found in list dictionary!" << endl;
 					return NULL;
 				}
 

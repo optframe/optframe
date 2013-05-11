@@ -72,7 +72,10 @@ public:
 			delete plist;
 		}
 		else
+		{
+			cout << "Function " << id() << " error: couldn't read list!" << endl;
 			return NULL;
+		}
 
 		if(list.size()==0)
 			return NULL;
