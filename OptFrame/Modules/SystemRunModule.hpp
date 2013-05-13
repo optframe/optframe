@@ -78,9 +78,9 @@ public:
 
 	bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input1)
 	{
-		//cout << "system.run module: '" << input << "'" << endl;
-
 		string input = Scanner::trim(input1);
+
+		//cout << "system.run module: '" << input << "'" << endl;
 
 		if(input.length()==0)
 		{
@@ -142,14 +142,20 @@ public:
 			if(scanner.hasNext())
 			{
 				string new_word = scanner.next();
-
-				if(dictionary.count(new_word) == 0) // Not found in dictionary!
-					ss << new_word;
-				else
+				if(new_word[0]=='$') // variable?
 				{
-					string found = dictionary.find(new_word)->second;
-					ss << found;
+					string* r = OptFrameModule<R, ADS, DS>::solveVars(dictionary, ldictionary, new_word);
+					if(!r)
+					{
+						cout << "module " << id() << " error: failed to solve variable '" << new_word << "'" << endl;
+						return false;
+					}
+
+					ss << *r;
+					delete r;
 				}
+				else
+					ss << new_word; // simple word
 			}
 
 			ss << scanner.rest();
