@@ -21,13 +21,16 @@
 #ifndef EXECMODULE_HPP_
 #define EXECMODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 #include "../Constructive.h"
 
 #include "SystemSilentDefineModule.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentExecModule: public OptFrameModule<R, ADS, DS>
+class ComponentExecModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -45,7 +48,7 @@ public:
 		return "component.exec target_fo timelimit sios_method output_solution_name [spent_time]";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		//cout << "exec: " << input << endl;
 		Scanner scanner(input);
@@ -90,7 +93,7 @@ public:
 		if (scanner.hasNext())
 		{
 			string new_name = scanner.next();
-			if(!OptFrameModule<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, new_name + " " + s_new_id))
+			if(!Module<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, new_name + " " + s_new_id))
 				return false;
 		}
 
@@ -98,16 +101,23 @@ public:
 		{
 			string var_time = scanner.next();
 			stringstream ss;
-			ss.precision(OptFrameModule<R, ADS, DS>::precision);
+			ss.precision(Module<R, ADS, DS>::precision);
 			ss << fixed;
 			ss << var_time << " " << time;
-			if(!OptFrameModule<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str()))
+			if(!Module<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str()))
 				return false;
 		}
 
 		return true;
 	}
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
 };
+
+}
 
 #endif /* EXECMODULE_HPP_ */

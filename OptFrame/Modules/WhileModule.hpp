@@ -23,12 +23,15 @@
 
 #include <string>
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 
 #include "SystemRunModule.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class WhileModule: public OptFrameModule<R, ADS, DS>
+class WhileModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -59,7 +62,7 @@ public:
 		return b == "true";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& allModules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		//cout << "INPUT: '" << input << "'" << endl;
 
@@ -97,10 +100,10 @@ public:
 			return false;
 
 		// check if all the text was used!
-		if(!OptFrameModule<R, ADS, DS>::testUnused(id(), scanner))
+		if(!Module<R, ADS, DS>::testUnused(id(), scanner))
 			return false;
 
-		string* scond1 = OptFrameModule<R, ADS, DS>::defaultPreprocess(allFunctions, dictionary, ldictionary, boolean_expr.str());
+		string* scond1 = Module<R, ADS, DS>::defaultPreprocess(allFunctions, factory, dictionary, ldictionary, boolean_expr.str());
 
 		if(!scond1)
 			return NULL;
@@ -111,13 +114,13 @@ public:
 
 		while(parseBool(scondition))
 		{
-			if(!OptFrameModule<R, ADS, DS>::run_module("system.run", allModules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
+			if(!Module<R, ADS, DS>::run_module("system.run", allModules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
 			{
 				cout << "while module: error in command!" << endl;
 				return false;
 			}
 
-			string* scond = OptFrameModule<R, ADS, DS>::defaultPreprocess(allFunctions, dictionary, ldictionary, boolean_expr.str());
+			string* scond = Module<R, ADS, DS>::defaultPreprocess(allFunctions, factory, dictionary, ldictionary, boolean_expr.str());
 
 			if(!scond)
 				return false;
@@ -129,12 +132,15 @@ public:
 		return true;
 	}
 
+
 	// should preprocess only until list of commands
-	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&, map< string,vector<string> >&, string input)
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
 	{
 		// disable preprocess!!
 		return new string(input);
 	}
 };
+
+}
 
 #endif /* OPTFRAME_WHILE_MODULE_HPP_ */

@@ -27,25 +27,25 @@
 
 #include <pthread.h>
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_EMEMORY>
-class SystemRunParallelModule: public OptFrameModule<R, ADS, DS>
+class SystemRunParallelModule: public Module<R, ADS, DS>
 {
 private:
 	// INPUT
 	vector<vector<string> > allCommands;
 
 	// AUXILIAR INPUT
-	vector<OptFrameModule<R, ADS, DS>*>* allModules;
-	vector<OptFrameFunction*>* allFunctions;
+	vector<Module<R, ADS, DS>*>* allModules;
+	vector<PreprocessFunction<R, ADS, DS>*>* allFunctions;
 	HeuristicFactory<R, ADS, DS>* factory;
 	map<string, string>* dictionary;
 	map< string,vector<string> >* ldictionary;
 
     // AUXILIAR FUNCTION
-    OptFrameModule<R, ADS, DS>* getModule(string module)
+    Module<R, ADS, DS>* getModule(string module)
     {
     	for (unsigned int i = 0; i < allModules->size(); i++)
     		if (module == allModules->at(i)->id())
@@ -85,7 +85,7 @@ public:
 		return "system.run_parallel block_of_commands_0 [block_of_commands_1] [block_of_commands_2] ... ";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& _allModules, vector<OptFrameFunction*>& _allFunctions, HeuristicFactory<R, ADS, DS>& _factory, map<string, string>& _dictionary,  map< string,vector<string> >& _ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& _allModules, vector<PreprocessFunction<R, ADS, DS>*>& _allFunctions, HeuristicFactory<R, ADS, DS>& _factory, map<string, string>& _dictionary,  map< string,vector<string> >& _ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -157,8 +157,9 @@ public:
 		return r;
 	}
 
+
 	// leave preprocessing to each module
-	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&, map< string,vector<string> >&, string input)
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
 	{
 		return new string(input); // disable pre-processing
 	}
@@ -202,7 +203,7 @@ public:
 
     		Scanner scanner(command);
     		string module = scanner.next();
-    		OptFrameModule<R, ADS, DS>* m = getModule(module);
+    		Module<R, ADS, DS>* m = getModule(module);
 
     		if (m == NULL)
     			return;

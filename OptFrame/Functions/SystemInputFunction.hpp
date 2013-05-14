@@ -29,13 +29,18 @@
 
 #include "../Scanner++/Scanner.h"
 
-#include "../OptFrameFunction.hpp"
+#include "../PreprocessFunction.hpp"
 
 #include "../OptFrameList.hpp"
 
 #include <algorithm>
 
-class SystemInputFunction : public OptFrameFunction
+
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class SystemInputFunction : public PreprocessFunction<R,ADS,DS>
 {
 public:
 
@@ -53,7 +58,7 @@ public:
 		return "system.input() : return user keyboard input";
 	}
 
-	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
+	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(&cin);
 
@@ -64,5 +69,7 @@ public:
 		return new string(input);
 	}
 };
+
+}
 
 #endif /* OPTFRAME_INPUT_FUNCTION_HPP_ */

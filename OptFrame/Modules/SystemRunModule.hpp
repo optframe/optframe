@@ -23,13 +23,17 @@
 
 #include<string>
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemRunModule: public OptFrameModule<R, ADS, DS>
+class SystemRunModule: public Module<R, ADS, DS>
 {
 public:
-	OptFrameModule<R, ADS, DS>* getModule(vector<OptFrameModule<R, ADS, DS>*>& modules, string module)
+	Module<R, ADS, DS>* getModule(vector<Module<R, ADS, DS>*>& modules, string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (modules[i]->canHandle(module, "")) // TODO: why?
@@ -37,16 +41,16 @@ public:
 		return NULL;
 	}
 
-	bool exec_command(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string command)
+	bool exec_command(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string command)
 	{
 		Scanner scanner(command);
 		string module = scanner.next();
-		OptFrameModule<R, ADS, DS>* m = getModule(all_modules, module);
+		Module<R, ADS, DS>* m = getModule(all_modules, module);
 
 		if (m == NULL)
 			return false;
 
-		string* rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+		string* rest = m->preprocess(allFunctions, factory, dictionary, ldictionary, scanner.rest());
 
 		if(!rest)
 		{
@@ -76,7 +80,7 @@ public:
 		return "system.run block_of_commands | module_name [dictionary_entry]";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input1)
+	bool run(vector<Module<R, ADS, DS>*>& allModules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input1)
 	{
 		string input = Scanner::trim(input1);
 
@@ -128,7 +132,7 @@ public:
 					}
 			}
 
-			if(!OptFrameModule<R, ADS, DS>::testUnused(id(), scanner))
+			if(!Module<R, ADS, DS>::testUnused(id(), scanner))
 				return false;
 
 			return true;
@@ -144,7 +148,7 @@ public:
 				string new_word = scanner.next();
 				if(new_word[0]=='$') // variable?
 				{
-					string* r = OptFrameModule<R, ADS, DS>::solveVars(dictionary, ldictionary, new_word);
+					string* r = Module<R, ADS, DS>::solveVars(dictionary, ldictionary, new_word);
 					if(!r)
 					{
 						cout << "module " << id() << " error: failed to solve variable '" << new_word << "'" << endl;
@@ -160,14 +164,14 @@ public:
 
 			ss << scanner.rest();
 
-			if(!OptFrameModule<R, ADS, DS>::run_module(module_name, allModules, allFunctions, factory, dictionary, ldictionary, ss.str()))
+			if(!Module<R, ADS, DS>::run_module(module_name, allModules, allFunctions, factory, dictionary, ldictionary, ss.str()))
 			{
 				cout << "system.run module: error in command!" << endl;
 				return false;
 			}
 			else
 			{
-				if(!OptFrameModule<R, ADS, DS>::testUnused(id(), scanner))
+				if(!Module<R, ADS, DS>::testUnused(id(), scanner))
 					return false;
 
 				return true;
@@ -175,11 +179,14 @@ public:
 		}
 	}
 
+
 	// runs raw module without preprocessing
-	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&, map< string,vector<string> >&, string input)
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
 	{
 		return new string(input); // disable pre-processing
 	}
 };
+
+}
 
 #endif /* OPTFRAME_SYSTEM_RUN_MODULE_HPP_ */

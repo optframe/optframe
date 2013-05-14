@@ -22,11 +22,12 @@
 // Building OptFrame Script Language Interpreter - opti
 // ====================================================
 
-using namespace std;
-
 #include<vector>
 
 #include "../OptFrame/OptFrame.hpp"
+
+using namespace std;
+using namespace optframe;
 
 int main(int argc, char **argv)
 {

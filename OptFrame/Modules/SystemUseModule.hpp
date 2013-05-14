@@ -21,12 +21,15 @@
 #ifndef OPTFRAME_SYSTEM_USE_MODULE_HPP_
 #define OPTFRAME_SYSTEM_USE_MODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 
 #include "SystemRequireModule.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemUseModule : public OptFrameModule<R, ADS, DS>
+class SystemUseModule : public Module<R, ADS, DS>
 {
 public:
 
@@ -44,7 +47,7 @@ public:
 		return "system.use prefix -module_name ...";
 	}
 
-	bool moduleExists(string moduleName, vector<OptFrameModule<R, ADS, DS>*>& allModules)
+	bool moduleExists(string moduleName, vector<Module<R, ADS, DS>*>& allModules)
 	{
 		for(unsigned i=0; i<allModules.size(); i++)
 			if(allModules[i]->id() == moduleName)
@@ -52,7 +55,7 @@ public:
 		return false;
 	}
 
-	bool functionExists(string functionName, vector<OptFrameFunction*>& allFunctions)
+	bool functionExists(string functionName, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions)
 	{
 		for(unsigned i=0; i<allFunctions.size(); i++)
 			if(allFunctions[i]->id() == functionName)
@@ -69,11 +72,11 @@ public:
 	}
 
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& allModules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		/*
 		// check dependency on 'module.rename' module
-		if(!OptFrameModule<R, ADS, DS>::run_module("system.require", allModules, allFunctions, factory, dictionary, ldictionary, "module.rename"))
+		if(!Module<R, ADS, DS>::run_module("system.require", allModules, allFunctions, factory, dictionary, ldictionary, "module.rename"))
 		{
 			cout << "error: system.use module depends on 'module.rename' module, which is not loaded!" << endl;
 			return false;
@@ -82,7 +85,7 @@ public:
 
 		/*
 		// check dependency on 'function.rename' module
-		if(!OptFrameModule<R, ADS, DS>::run_module("system.require", allModules, allFunctions, factory, dictionary, ldictionary, "function.rename"))
+		if(!Module<R, ADS, DS>::run_module("system.require", allModules, allFunctions, factory, dictionary, ldictionary, "function.rename"))
 		{
 			cout << "error: system.use module depends on 'function.rename' module, which is not loaded!" << endl;
 			return false;
@@ -136,7 +139,7 @@ public:
 				ss << allModules[i]->id() << " " << smallName;
 
 
-				if(!OptFrameModule<R, ADS, DS>::run_module("module.rename", allModules, allFunctions, factory, dictionary, ldictionary, ss.str()))
+				if(!Module<R, ADS, DS>::run_module("module.rename", allModules, allFunctions, factory, dictionary, ldictionary, ss.str()))
 				{
 					cout << "system.use module error: failed to do a module.rename with parameters '" << ss.str() << "'" << endl;
 					return false;
@@ -170,7 +173,7 @@ public:
 				stringstream ss;
 				ss << allFunctions[i]->id() << " " << smallName;
 
-				if(!OptFrameModule<R, ADS, DS>::run_module("function.rename", allModules, allFunctions, factory, dictionary, ldictionary, ss.str()))
+				if(!Module<R, ADS, DS>::run_module("function.rename", allModules, allFunctions, factory, dictionary, ldictionary, ss.str()))
 				{
 					cout << "system.use module error: failed to do a function.rename with parameters '" << ss.str() << "'" << endl;
 					return false;
@@ -185,13 +188,16 @@ public:
 		return true;
 	}
 
+
 	// disable preprocess, only need module prefix
-	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&,  map< string,vector<string> >&, string input)
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
 	{
 		// disable preprocess!!
 		return new string(input);
 	}
 
 };
+
+}
 
 #endif /* OPTFRAME_SYSTEM_USE_MODULE_HPP_ */

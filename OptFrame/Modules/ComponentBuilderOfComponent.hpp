@@ -21,12 +21,15 @@
 #ifndef LIST_BUILDER_OF_COMPONENT_MODULE_HPP_
 #define LIST_BUILDER_OF_COMPONENT_MODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 
 #include "SystemSilentDefineModule.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentBuilderOfComponentModule: public OptFrameModule<R, ADS, DS>
+class ComponentBuilderOfComponentModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -44,7 +47,7 @@ public:
 		return "component.builder_of_component component_name [store_list]\nWhere: store_list is an optional variable to store the builders.";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -91,10 +94,18 @@ public:
 			}
 			ss << " ]";
 
-			return OptFrameModule<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
+			return Module<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 		}
 	}
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* LIST_BUILDER_OF_COMPONENT_MODULE_HPP_ */

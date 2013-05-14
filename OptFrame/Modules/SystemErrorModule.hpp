@@ -21,10 +21,13 @@
 #ifndef ERROR_MODULE_HPP_
 #define ERROR_MODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemErrorModule: public OptFrameModule<R, ADS, DS>
+class SystemErrorModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -42,7 +45,8 @@ public:
    {
       return "system.error message";
    }
-   bool run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, DS>&, map<string, string>&, map< string,vector<string> >&, string input)
+
+   bool run(vector<Module<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<string, string>&, map< string,vector<string> >&, string input)
    {
       Scanner scanner(input);
 
@@ -57,6 +61,14 @@ public:
       }
    }
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* ERROR_MODULE_HPP_ */

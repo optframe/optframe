@@ -23,10 +23,13 @@
 
 #include<string>
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class GeneralModule: public OptFrameModule<R, ADS, DS>
+class GeneralModule: public Module<R, ADS, DS>
 {
 	string name;
 	vector<string> parameters;
@@ -42,7 +45,7 @@ public:
 	}
 
 private:
-	OptFrameModule<R, ADS, DS>* getModule(vector<OptFrameModule<R, ADS, DS>*>& modules, string module)
+	Module<R, ADS, DS>* getModule(vector<Module<R, ADS, DS>*>& modules, string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (modules[i]->canHandle(module, "")) // TODO: fix
@@ -51,16 +54,16 @@ private:
 	}
 
 
-	bool exec_command(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string command)
+	bool exec_command(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string command)
 	{
 		Scanner scanner(command);
 		string module = scanner.next();
-		OptFrameModule<R, ADS, DS>* m = getModule(all_modules, module);
+		Module<R, ADS, DS>* m = getModule(all_modules, module);
 
 		if (m == NULL)
 			return false;
 
-		string* rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+		string* rest = m->preprocess(allFunctions, factory, dictionary, ldictionary, scanner.rest());
 		if(!rest)
 			return false;
 
@@ -95,7 +98,7 @@ public:
 		return u;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		// CHECK IF EXPLICIT LIST IS PASSED AS PARAMETER (CAN'T DO THIS!!!)
 		for(unsigned i=0; i<input.size(); i++)
@@ -130,7 +133,7 @@ public:
 		for (unsigned v = 0; v < values.size(); v++)
 		{
 			//cout << "CREATED MODULE " << id() << " DEFINING: '" << parameters[v] << "' as '" << values[v] << "'" << endl;
-			if (!OptFrameModule<R, ADS, DS>::defineText(parameters[v], values[v], dictionary))
+			if (!Module<R, ADS, DS>::defineText(parameters[v], values[v], dictionary))
 			{
 				cout << "module.create error: failed to define parameter '" << parameters[v] << "' to value '" << values[v] << "'" << endl;
 				return false;
@@ -151,7 +154,7 @@ public:
 			for (unsigned int v = 0; v < values.size(); v++)
 			{
 				//cout << "CREATED MODULE " << id() << " SOLVING VARIABLE '" << parameters[v] << "'" << endl;
-				string* r = OptFrameModule<R, ADS, DS>::solveVars(dictionary,ldictionary, command, parameters[v]);
+				string* r = Module<R, ADS, DS>::solveVars(dictionary,ldictionary, command, parameters[v]);
 				if(!r)
 				{
 					cout << "General module '" << id() << "' error: couldn't solve variable '" << parameters[v] << "'" << endl;
@@ -173,14 +176,19 @@ public:
 
 		return true;
 	}
+
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ModuleCreateModule: public OptFrameModule<R, ADS, DS>
+class ModuleCreateModule: public Module<R, ADS, DS>
 {
 private:
 
-	bool moduleExists(string moduleName, vector<OptFrameModule<R, ADS, DS>*>& allModules)
+	bool moduleExists(string moduleName, vector<Module<R, ADS, DS>*>& allModules)
 	{
 		for(unsigned i=0; i<allModules.size(); i++)
 			if(allModules[i]->id() == moduleName)
@@ -188,7 +196,7 @@ private:
 		return false;
 	}
 
-	OptFrameModule<R, ADS, DS>* getModule(vector<OptFrameModule<R, ADS, DS>*>& modules, string module)
+	Module<R, ADS, DS>* getModule(vector<Module<R, ADS, DS>*>& modules, string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())
@@ -212,7 +220,7 @@ public:
 		return "module.create name list_of_$parameters block_of_commands";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 		//cout << "create_module run: '" << input << "'" << endl;
@@ -277,7 +285,7 @@ public:
 			return false;
 		}
 
-		OptFrameModule<R, ADS, DS>* m = getModule(modules, name);
+		Module<R, ADS, DS>* m = getModule(modules, name);
 
 		if (m != NULL)
 		{
@@ -293,7 +301,8 @@ public:
 
 	}
 
-	virtual string* preprocess(vector<OptFrameFunction*>& fs, map<string, string>& d,  map< string,vector<string> >& ld, string input)
+
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& fs, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& d, const map<string, vector<string> >& ld, string input)
 	{
 		int end = -1;
 		string body = "";
@@ -309,7 +318,7 @@ public:
 		if (end < 0)
 			return NULL; // no brackets
 
-		string* pbody = OptFrameModule<R, ADS, DS>::defaultPreprocess(fs, d, ld, body);
+		string* pbody = Module<R, ADS, DS>::defaultPreprocess(fs, hf, d, ld, body);
 
 		if (!pbody)
 			return NULL;
@@ -324,5 +333,7 @@ public:
 		return new string(ninput);
 	}
 };
+
+}
 
 #endif /* CREATEMODULE_HPP_ */

@@ -29,13 +29,17 @@
 
 #include "../Scanner++/Scanner.h"
 
-#include "../OptFrameFunction.hpp"
+#include "../PreprocessFunction.hpp"
 
 #include "../OptFrameList.hpp"
 
 #include <algorithm>
 
-class TextDefinitionFunction : public OptFrameFunction
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class TextDefinitionFunction : public PreprocessFunction<R,ADS,DS>
 {
 public:
 
@@ -53,7 +57,7 @@ public:
 		return "text.definition( var ) : return value of variable in dictionary";
 	}
 
-	virtual string* run(vector<OptFrameFunction*>&, map< string, string >& dictionary, map< string,vector<string> >&, string body)
+	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
@@ -62,8 +66,10 @@ public:
 
 		string var = scanner.next();
 
-		return new string(dictionary[var]);
+		return new string(dictionary.at(var));
 	}
 };
+
+}
 
 #endif /* OPTFRAME_DIC_FUNCTION_HPP_ */

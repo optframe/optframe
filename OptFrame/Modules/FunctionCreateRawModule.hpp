@@ -23,10 +23,14 @@
 
 #include<string>
 
-#include "../OptFrameModule.hpp"
-#include "../OptFrameFunction.hpp"
+#include "../Module.hpp"
+#include "../PreprocessFunction.hpp"
 
-class RawFunction: public OptFrameFunction
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class RawFunction: public PreprocessFunction<R,ADS,DS>
 {
 	string name;
 	vector<string> parameters;
@@ -208,7 +212,7 @@ public:
 		return u;
 	}
 
-	string* run(vector<OptFrameFunction*>& allFunctions, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	string* run(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary,  const map< string,vector<string> >& ldictionary, string input)
 	{
 		// CHECK IF EXPLICIT LIST IS PASSED AS PARAMETER (CAN'T DO THIS!!!) TODO: I DONT KNOW WHY =(
 		for(unsigned i=0; i<input.size(); i++)
@@ -269,9 +273,9 @@ public:
 
 		string brackets = scanBody.next();
 
-		if((brackets == "(") && OptFrameFunction::functionExists(nameOrValue,allFunctions)) // found a function!
+		if((brackets == "(") && PreprocessFunction<R,ADS,DS>::functionExists(nameOrValue,allFunctions)) // found a function!
 		{
-			pair<string, string>* p = OptFrameFunction::run_function(nameOrValue, allFunctions, dictionary, ldictionary, scanBody.rest());
+			pair<string, string>* p = PreprocessFunction<R,ADS,DS>::run_function(nameOrValue, allFunctions, hf, dictionary, ldictionary, scanBody.rest());
 
 			if(p)
 			{
@@ -304,7 +308,7 @@ public:
 
 	// FUNCTIONS ALWAYS NEED DEFAULT PREPROCESSING!!
 	/*
-	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&,  map< string,vector<string> >&, string input)
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>&, map<string, string>&,  map< string,vector<string> >&, string input)
 	{
 		// disable preprocess!!
 		return new string(input);
@@ -313,11 +317,11 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class FunctionCreateRawModule: public OptFrameModule<R, ADS, DS>
+class FunctionCreateRawModule: public Module<R, ADS, DS>
 {
 private:
 
-	bool functionExists(string  functionName, vector<OptFrameFunction*>& allFunctions)
+	bool functionExists(string  functionName, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions)
 	{
 		for(unsigned i=0; i<allFunctions.size(); i++)
 			if(allFunctions[i]->id() == functionName)
@@ -341,7 +345,7 @@ public:
 		return "function.create_raw name list_of_$parameters = body_of_function";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 		//cout << "create_module run: '" << input << "'" << endl;
@@ -404,18 +408,21 @@ public:
 
 		string body = Scanner::trim(scanner.rest());
 
-		allFunctions.push_back(new RawFunction(name, parameters, body));
+		allFunctions.push_back(new RawFunction<R, ADS, DS>(name, parameters, body));
 
 		//cout << "raw_function '" << name << "' loaded with parameters '" << parameters << "' and body: '" << body << "'" << endl;
 
 		return true;
 	}
 
-	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&,  map< string,vector<string> >&, string input)
+
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
 	{
 		// disable preprocess!!
 		return new string(input);
 	}
 };
+
+}
 
 #endif /* OPTFRAME_FUNCTION_CREATE_RAW_MODULE_HPP_ */

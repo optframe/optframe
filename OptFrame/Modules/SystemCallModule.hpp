@@ -21,7 +21,10 @@
 #ifndef OPTFRAME_CALLMODULE_HPP_
 #define OPTFRAME_CALLMODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+namespace optframe
+{
 
 //! \english The CallModule class is a Module that enables the user to do a system call to external software \endenglish \portuguese A classe CallModule é o Módulo que permite o usuário fazer uma chamada de sistema, executando um programa externo. \endportuguese
 /*!
@@ -29,7 +32,7 @@
  */
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemCallModule: public OptFrameModule<R, ADS, DS>
+class SystemCallModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -83,12 +86,20 @@ public:
 	 \endportuguese
 	 */
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>&, map<string, string>&, map< string,vector<string> >&, string command)
+	bool run(vector<Module<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>&, map<string, string>&, map< string,vector<string> >&, string command)
 	{
 		int c = system(command.c_str());
 		return c == 0; // TODO: get return value from external command!
 	}
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* OPTFRAME_CALLMODULE_HPP_ */

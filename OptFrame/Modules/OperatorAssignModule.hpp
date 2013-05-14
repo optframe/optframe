@@ -21,10 +21,13 @@
 #ifndef OPTFRAME_OPERATOR_ASSIGN_MODULE_HPP_
 #define OPTFRAME_OPERATOR_ASSIGN_MODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class OperatorAssignModule: public OptFrameModule<R, ADS, DS>
+class OperatorAssignModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -47,8 +50,8 @@ public:
 		if (id() == module_name)
 			return true;
 
-		for (unsigned i = 0; i < OptFrameModule<R, ADS, DS>::handles.size(); i++)
-			if (OptFrameModule<R, ADS, DS>::handles[i] == module_name)
+		for (unsigned i = 0; i < Module<R, ADS, DS>::handles.size(); i++)
+			if (Module<R, ADS, DS>::handles[i] == module_name)
 				return true;
 
 		string tbody = Scanner::trim(command_body);
@@ -58,14 +61,14 @@ public:
 		return false;
 	}
 
-	virtual bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input, string module_name)
+	virtual bool run(vector<Module<R, ADS, DS>*>& allModules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input, string module_name)
 	{
 		module_name.append(" ");
 		module_name.append(input);
 		return run(allModules, allFunctions, factory, dictionary, ldictionary, module_name);
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, DS>&, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)
 	{
 		//cout << "ASSIGN:'" << rest << "'" << endl;
 
@@ -106,7 +109,7 @@ public:
 			if (dictionary.count(var_name) == 0)
 			{
 				//cout << "DICTIONARY[" << var_name << "]=" << dictionary.count(var_name) << endl;
-				return OptFrameModule<R, ADS, DS>::defineList(var_name, list, ldictionary);
+				return Module<R, ADS, DS>::defineList(var_name, list, ldictionary);
 			}
 			else
 			{
@@ -123,7 +126,7 @@ public:
 			if (ldictionary.count(var_name) == 0)
 			{
 				//cout << "LDICTIONARY[" << var_name << "]=" << ldictionary.count(var_name) << endl;
-				return OptFrameModule<R, ADS, DS>::defineText(var_name, value, dictionary);
+				return Module<R, ADS, DS>::defineText(var_name, value, dictionary);
 			}
 			else
 			{
@@ -154,7 +157,8 @@ public:
 		return output;
 	}
 
-	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)
+
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
 	{
 		// ============================================
 		// add spaces before and after FIRST assignment
@@ -183,7 +187,7 @@ public:
 		// ==========================
 
 		// add spaces before and after double dots '..' and do normal preprocessing
-		string* proc = OptFrameModule<R, ADS, DS>::defaultPreprocess(allFunctions, dictionary, ldictionary, addSpacesForDoubleDots(rest));
+		string* proc = Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, addSpacesForDoubleDots(rest));
 
 		if (!proc)
 			return NULL;
@@ -194,5 +198,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /* OPTFRAME_LIST_DEFINE_MODULE_HPP_ */

@@ -21,10 +21,13 @@
 #ifndef UNDEFINEMODULE_HPP_
 #define UNDEFINEMODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemUndefineModule: public OptFrameModule<R, ADS, DS>
+class SystemUndefineModule: public Module<R, ADS, DS>
 {
 public:
 	virtual ~SystemUndefineModule()
@@ -41,7 +44,7 @@ public:
 		return "system.undefine word or list";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>&, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string rest)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>&, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string rest)
 	{
 		//cout << "undefine module: '" << rest << "'" << endl;
 
@@ -55,13 +58,14 @@ public:
 
 		string word = scanner.next();
 
-		OptFrameModule<R, ADS, DS>::undefineText(word, dictionary);
-		OptFrameModule<R, ADS, DS>::undefineList(word, ldictionary);
+		Module<R, ADS, DS>::undefineText(word, dictionary);
+		Module<R, ADS, DS>::undefineList(word, ldictionary);
 
 		return true;
 	}
 
-	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>&, map< string,vector<string> >&, string input)
+
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -82,5 +86,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /* UNDEFINEMODULE_HPP_ */

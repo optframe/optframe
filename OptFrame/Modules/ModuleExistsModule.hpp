@@ -21,10 +21,14 @@
 #ifndef OPTFRAME_MODULE_EXISTS_MODULE_HPP_
 #define OPTFRAME_MODULE_EXISTS_MODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ModuleExistsModule: public OptFrameModule<R, ADS, DS>
+class ModuleExistsModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -57,7 +61,7 @@ public:
 	   return b == "true";
    }
 
-   OptFrameModule<R, ADS, DS>* getModule(vector<OptFrameModule<R, ADS, DS>*>& modules, string module)
+   Module<R, ADS, DS>* getModule(vector<Module<R, ADS, DS>*>& modules, string module)
    {
 	   for (unsigned int i = 0; i < modules.size(); i++)
 		   if (module == modules[i]->id())
@@ -65,7 +69,7 @@ public:
 	   return NULL;
    }
 
-   bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+   bool run(vector<Module<R, ADS, DS>*>& allModules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
    {
       //cout << "module.exists module: " << input << endl;
 
@@ -87,7 +91,7 @@ public:
 
       string variable = scanner.next();
 
-      OptFrameModule<R, ADS, DS>* m = getModule(allModules, module_name);
+      Module<R, ADS, DS>* m = getModule(allModules, module_name);
 
       //if(m)
       //   cout << "module.exists real id is: " << m->id() << endl;
@@ -96,9 +100,17 @@ public:
 
       //cout << "module.exists result is: " << result << endl;
 
-      return OptFrameModule<R, ADS, DS>::defineText(variable, result, dictionary);
+      return Module<R, ADS, DS>::defineText(variable, result, dictionary);
    }
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* OPTFRAME_MODULE_EXISTS_MODULE_HPP_ */

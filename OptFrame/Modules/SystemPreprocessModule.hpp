@@ -21,12 +21,16 @@
 #ifndef OPTFRAME_SYSTEM_PREPROCESS_MODULE_HPP_
 #define OPTFRAME_SYSTEM_PREPROCESS_MODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 
 #include "SystemUnsafeDefineModule.hpp"
 
+
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemPreprocessModule: public OptFrameModule<R, ADS, DS>
+class SystemPreprocessModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -44,7 +48,7 @@ public:
 		return "system.preprocess return_value module_name input";
 	}
 
-	OptFrameModule<R, ADS, DS>* getModule(vector<OptFrameModule<R, ADS, DS>*>& modules, string module)
+	Module<R, ADS, DS>* getModule(vector<Module<R, ADS, DS>*>& modules, string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())
@@ -52,7 +56,7 @@ public:
 		return NULL;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -74,7 +78,7 @@ public:
 
 		string inp = scanner.rest();
 
-		OptFrameModule<R, ADS, DS>* m = getModule(all_modules, module);
+		Module<R, ADS, DS>* m = getModule(all_modules, module);
 
 		if(!m)
 		{
@@ -82,7 +86,7 @@ public:
 			return false;
 		}
 
-		string* final = m->preprocess(allFunctions,dictionary,ldictionary, inp);
+		string* final = m->preprocess(allFunctions, factory, dictionary, ldictionary, inp);
 
 		if(!final)
 			return false;
@@ -92,15 +96,17 @@ public:
 
 		delete final;
 
-		return OptFrameModule<R, ADS, DS>::run_module("system.unsafe_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
+		return Module<R, ADS, DS>::run_module("system.unsafe_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 	}
 
 	// runs raw module without preprocessing
-	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&, map< string,vector<string> >&, string input)
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
 	{
 		return new string(input); // disable pre-processing
 	}
 
 };
+
+}
 
 #endif /* OPTFRAME_SYSTEM_PREPROCESS_MODULE_HPP_ */

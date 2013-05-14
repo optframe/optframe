@@ -21,11 +21,14 @@
 #ifndef COMPONENT_EXEC_LOCAL_SEARCH_MODULE_HPP_
 #define COMPONENT_EXEC_LOCAL_SEARCH_MODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 #include "../LocalSearch.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentExecLocalSearchModule: public OptFrameModule<R, ADS, DS>
+class ComponentExecLocalSearchModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -45,7 +48,7 @@ public:
 		return u;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		//cout << "exec_local_search: " << input << endl;
 		Scanner scanner(input);
@@ -109,7 +112,7 @@ public:
 		if (scanner.hasNext())
 		{
 			string new_name = scanner.next();
-			if(!OptFrameModule<R, ADS, DS>::defineText(new_name, s_new_id, dictionary))
+			if(!Module<R, ADS, DS>::defineText(new_name, s_new_id, dictionary))
 				return false;
 		}
 
@@ -117,16 +120,23 @@ public:
 		{
 			string var_time = scanner.next();
 			stringstream sstime;
-			sstime.precision(OptFrameModule<R, ADS, DS>::precision);
+			sstime.precision(Module<R, ADS, DS>::precision);
 			sstime << fixed;
 			sstime << time;
-			if(!OptFrameModule<R, ADS, DS>::defineText(var_time, sstime.str(), dictionary))
+			if(!Module<R, ADS, DS>::defineText(var_time, sstime.str(), dictionary))
 				return false;
 		}
 
 		return true;
 	}
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
 };
+
+}
 
 #endif /* COMPONENT_EXEC_LOCAL_SEARCH_MODULE_HPP_ */

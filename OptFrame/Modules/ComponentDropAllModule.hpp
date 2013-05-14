@@ -21,10 +21,13 @@
 #ifndef DROPALLMODULE_HPP_
 #define DROPALLMODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentDropAllModule: public OptFrameModule<R, ADS, DS>
+class ComponentDropAllModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -42,7 +45,7 @@ public:
 		return "component.drop_all";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		cout << "drop_all" << endl;
 
@@ -50,6 +53,14 @@ public:
 		return true;
 	}
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* DROPALLMODULE_HPP_ */

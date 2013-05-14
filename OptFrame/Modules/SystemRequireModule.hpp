@@ -21,10 +21,13 @@
 #ifndef OPTFRAME_SYSTEM_REQUIRE_MODULE_HPP_
 #define OPTFRAME_SYSTEM_REQUIRE_MODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemRequireModule : public OptFrameModule<R, ADS, DS>
+class SystemRequireModule : public Module<R, ADS, DS>
 {
 public:
 
@@ -43,7 +46,7 @@ public:
 	}
 
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& allModules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 		if(!scanner.hasNext()) // no module
@@ -63,13 +66,16 @@ public:
 		return false;
 	}
 
+
 	// disable preprocess, only need module name
-	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&,  map< string,vector<string> >&, string input)
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
 	{
 		// disable preprocess!!
 		return new string(input);
 	}
 
 };
+
+}
 
 #endif /* OPTFRAME_SYSTEM_REQUIRE_MODULE_HPP_ */

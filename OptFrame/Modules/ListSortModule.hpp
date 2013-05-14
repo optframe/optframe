@@ -25,12 +25,15 @@
 
 #include<algorithm>
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 
 #include "ListSilentDefineModule.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ListSortModule: public OptFrameModule<R, ADS, DS>
+class ListSortModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -65,7 +68,7 @@ public:
 		return a.first > b.first;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		//cout << "list_sort module input: '" << input << "'" << endl;
 
@@ -214,9 +217,17 @@ public:
 
 		//TODO: acessar dicionario de listas diretamente!! Bem mais eficiente!
 
-		return OptFrameModule<R, ADS, DS>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
+		return Module<R, ADS, DS>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 	}
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* OPTFRAME_LIST_SORT_MODULE_HPP_ */

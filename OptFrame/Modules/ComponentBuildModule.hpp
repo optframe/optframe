@@ -21,7 +21,7 @@
 #ifndef BUILDMODULE_HPP_
 #define BUILDMODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 
 #include "SystemSilentDefineModule.hpp"
 
@@ -29,13 +29,16 @@
 #include "../SingleObjSearch.hpp"
 #include "../MultiObjSearch.hpp"
 
+namespace optframe
+{
+
 //! \english The BuildModule class is a Module that enables the user to create a heuristic and give a name to it. \endenglish \portuguese A classe BuildModule é o Módulo que permite o usuário criar uma heurística e definir um nome para ela. \endportuguese
 /*!
   \sa run()
 */
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentBuildModule: public OptFrameModule<R, ADS, DS>
+class ComponentBuildModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -91,7 +94,7 @@ public:
        \endportuguese
    */
 
-   bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+   bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
    {
       //cout << "build module: " << input << endl;
       Scanner scanner1(input);
@@ -182,12 +185,20 @@ public:
       if (scanner.hasNext())
       {
          string new_name = scanner.next();
-         return OptFrameModule<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, new_name + " " + s_new_id);
+         return Module<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, new_name + " " + s_new_id);
       }
 
       return true;
    }
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* BUILDMODULE_HPP_ */

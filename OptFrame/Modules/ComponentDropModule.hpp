@@ -21,10 +21,13 @@
 #ifndef OPTFRAME_DROP_MODULE_HPP_
 #define OPTFRAME_DROP_MODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentDropModule: public OptFrameModule<R, ADS, DS>
+class ComponentDropModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -44,7 +47,7 @@ public:
       return u;
    }
 
-   bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+   bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
    {
       //cout << "component.drop module: " << input << endl;
       Scanner scanner(input);
@@ -68,6 +71,14 @@ public:
       return factory.drop(type, id);
    }
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* OPTFRAME_DROP_MODULE_HPP_ */

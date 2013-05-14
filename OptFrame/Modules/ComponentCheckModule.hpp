@@ -21,13 +21,16 @@
 #ifndef CHECKMODULE_HPP_
 #define CHECKMODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 #include "../Util/Timer.hpp"
 
 #include "SystemRequireModule.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentCheckModule: public OptFrameModule<R, ADS, DS>
+class ComponentCheckModule: public Module<R, ADS, DS>
 {
 private:
 	bool verbose;
@@ -64,7 +67,7 @@ public:
 		return b == "true";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& allModules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)
 	{
 		cout << "check: " << input << endl;
 		Scanner scanner(input);
@@ -126,56 +129,56 @@ public:
 		if (!scanner.hasNext())
 		{
 			// check dependency on 'module.rename' module
-			if (!OptFrameModule<R, ADS, DS>::run_module("system.require", allModules, allFunctions, factory, dictionary, ldictionary, "component.list"))
+			if (!Module<R, ADS, DS>::run_module("system.require", allModules, allFunctions, factory, dictionary, ldictionary, "component.list"))
 			{
 				cout << "error: system.use module depends on 'component.list' module, which is not loaded!" << endl;
 				return false;
 			}
 
-			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lconstructive", dictionary, ldictionary);
-			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:Constructive _aux_check_lconstructive"))
+			Module<R, ADS, DS>::undefine("_aux_check_lconstructive", dictionary, ldictionary);
+			if (!Module<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:Constructive _aux_check_lconstructive"))
 			{
 				cout << "error: reading list of OptFrame:Constructive!" << endl;
 				return false;
 			}
 
-			OptFrameModule<R, ADS, DS>::undefine("_aux_check_levaluator", dictionary, ldictionary);
-			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:Evaluator _aux_check_levaluator"))
+			Module<R, ADS, DS>::undefine("_aux_check_levaluator", dictionary, ldictionary);
+			if (!Module<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:Evaluator _aux_check_levaluator"))
 			{
 				cout << "error: reading list of OptFrame:Evaluator!" << endl;
 				return false;
 			}
 
-			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lmove", dictionary, ldictionary);
-			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:Move _aux_check_lmove"))
+			Module<R, ADS, DS>::undefine("_aux_check_lmove", dictionary, ldictionary);
+			if (!Module<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:Move _aux_check_lmove"))
 			{
 				cout << "error: reading list of OptFrame:Move!" << endl;
 				return false;
 			}
 
-			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lns", dictionary, ldictionary);
-			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:NS _aux_check_lns"))
+			Module<R, ADS, DS>::undefine("_aux_check_lns", dictionary, ldictionary);
+			if (!Module<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:NS _aux_check_lns"))
 			{
 				cout << "error: reading list of OptFrame:NS!" << endl;
 				return false;
 			}
 
-			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lnsseq", dictionary, ldictionary);
-			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:NS:NSSeq _aux_check_lnsseq"))
+			Module<R, ADS, DS>::undefine("_aux_check_lnsseq", dictionary, ldictionary);
+			if (!Module<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:NS:NSSeq _aux_check_lnsseq"))
 			{
 				cout << "error: reading list of OptFrame:NS:NSSeq!" << endl;
 				return false;
 			}
 
-			OptFrameModule<R, ADS, DS>::undefine("_aux_check_lnsenum", dictionary, ldictionary);
-			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:NS:NSSeq:NSEnum _aux_check_lnsenum"))
+			Module<R, ADS, DS>::undefine("_aux_check_lnsenum", dictionary, ldictionary);
+			if (!Module<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:NS:NSSeq:NSEnum _aux_check_lnsenum"))
 			{
 				cout << "error: reading list of OptFrame:NS:NSSeq:NSEnum!" << endl;
 				return false;
 			}
 
-			OptFrameModule<R, ADS, DS>::undefine("_aux_check_ladsmanager", dictionary, ldictionary);
-			if (!OptFrameModule<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:ADSManager _aux_check_ladsmanager"))
+			Module<R, ADS, DS>::undefine("_aux_check_ladsmanager", dictionary, ldictionary);
+			if (!Module<R, ADS, DS>::run_module("component.list", allModules, allFunctions, factory, dictionary, ldictionary, "OptFrame:ADSManager _aux_check_ladsmanager"))
 			{
 				cout << "error: reading list of OptFrame:ADSManager!" << endl;
 				return false;
@@ -344,13 +347,13 @@ public:
 		}
 
 		// cleanup auxiliar list definitions
-		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lconstructive", dictionary, ldictionary);
-		OptFrameModule<R, ADS, DS>::undefine("_aux_check_levaluator", dictionary, ldictionary);
-		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lmove", dictionary, ldictionary);
-		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lns", dictionary, ldictionary);
-		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lnsseq", dictionary, ldictionary);
-		OptFrameModule<R, ADS, DS>::undefine("_aux_check_lnsenum", dictionary, ldictionary);
-		OptFrameModule<R, ADS, DS>::undefine("_aux_check_ladsmanager", dictionary, ldictionary);
+		Module<R, ADS, DS>::undefine("_aux_check_lconstructive", dictionary, ldictionary);
+		Module<R, ADS, DS>::undefine("_aux_check_levaluator", dictionary, ldictionary);
+		Module<R, ADS, DS>::undefine("_aux_check_lmove", dictionary, ldictionary);
+		Module<R, ADS, DS>::undefine("_aux_check_lns", dictionary, ldictionary);
+		Module<R, ADS, DS>::undefine("_aux_check_lnsseq", dictionary, ldictionary);
+		Module<R, ADS, DS>::undefine("_aux_check_lnsenum", dictionary, ldictionary);
+		Module<R, ADS, DS>::undefine("_aux_check_ladsmanager", dictionary, ldictionary);
 
 		// ======================================
 		//           BEGIN TESTS
@@ -1336,6 +1339,14 @@ public:
 		cout << endl;
 	}
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* CHECKMODULE_HPP_ */

@@ -23,10 +23,13 @@
 
 #include<string>
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ListPushBackModule: public OptFrameModule<R, ADS, DS>
+class ListPushBackModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -44,7 +47,7 @@ public:
 		return "list.push_back list_name value";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		//cout << "list.push_back module: '" << input << "'" << endl;
 
@@ -89,9 +92,15 @@ public:
 
 		list.push_back(element);
 
-		return OptFrameModule<R, ADS, DS>::defineList(list_name, list, ldictionary);
+		return Module<R, ADS, DS>::defineList(list_name, list, ldictionary);
 	}
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
 };
+
+}
 
 #endif /* OPTFRAME_LIST_PUSH_BACK_MODULE_HPP_ */

@@ -23,15 +23,18 @@
 
 #include<string>
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 
 #include "SystemRunModule.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ForModule: public OptFrameModule<R, ADS, DS>
+class ForModule: public Module<R, ADS, DS>
 {
 private:
-	OptFrameModule<R, ADS, DS>* getModule(vector<OptFrameModule<R, ADS, DS>*>& modules, string module)
+	Module<R, ADS, DS>* getModule(vector<Module<R, ADS, DS>*>& modules, string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())
@@ -39,11 +42,11 @@ private:
 		return NULL;
 	}
 
-	bool exec_command(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string command)
+	bool exec_command(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string command)
 	{
 		Scanner scanner(command);
 		string module = scanner.next();
-		OptFrameModule<R, ADS, DS>* m = getModule(all_modules, module);
+		Module<R, ADS, DS>* m = getModule(all_modules, module);
 
 		if (m == NULL)
 			return false;
@@ -77,7 +80,7 @@ public:
 		return "for var [ = value1 to value2 | = value2 downto value1 ] block_of_commands";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 		//cout << "for run: '" << input << "'" << endl;
@@ -139,7 +142,7 @@ public:
 			return false;
 
 		// check if all the text was used!
-		if(!OptFrameModule<R, ADS, DS>::testUnused(id(), scanner))
+		if(!Module<R, ADS, DS>::testUnused(id(), scanner))
 			return false;
 
 		if(option == "to")
@@ -147,10 +150,10 @@ public:
 			{
 				stringstream ss;
 				ss << var << " " << v;
-				if(!OptFrameModule<R, ADS, DS>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str()))
+				if(!Module<R, ADS, DS>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str()))
 					return false;
 
-				if(!OptFrameModule<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
+				if(!Module<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
 				{
 					cout << "for module: (TO) error in command with value='" << v << "'!" << endl;
 					return false;
@@ -163,10 +166,10 @@ public:
 			{
 				stringstream ss;
 				ss << var << " " << v;
-				if(!OptFrameModule<R, ADS, DS>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str()))
+				if(!Module<R, ADS, DS>::run_module("silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str()))
 					return false;
 
-				if(!OptFrameModule<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
+				if(!Module<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
 				{
 					cout << "for module: (DOWNTO) error in command with value='" << v << "'!" << endl;
 					return false;
@@ -179,8 +182,9 @@ public:
 		return true;
 	}
 
+
 	// should preprocess only until list of commands
-	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -258,5 +262,7 @@ public:
 		return new string(input2);
 	}
 };
+
+}
 
 #endif /* OPTFRAME_FOR_MODULE_HPP_ */

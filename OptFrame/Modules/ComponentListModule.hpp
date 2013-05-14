@@ -21,12 +21,15 @@
 #ifndef OPTFRAME_COMPONENT_LIST_MODULE_HPP_
 #define OPTFRAME_COMPONENT_LIST_MODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 
 #include "SystemDefineModule.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentListModule: public OptFrameModule<R, ADS, DS>
+class ComponentListModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -44,7 +47,7 @@ public:
 		return "component.list pattern [store_list]\nWhere: store_list is an optional variable to store the components.";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -83,18 +86,20 @@ public:
 
 			//cout << "component.list module: CREATING LIST OF COMPONENTS '" << ss.str() << "'" << endl;
 
-			return OptFrameModule<R, ADS, DS>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
+			return Module<R, ADS, DS>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 		}
 
 	}
 
 	// disable preprocess to don't destroy type!
-	virtual string* preprocess(vector<OptFrameFunction*>&, map<string, string>&,  map< string,vector<string> >&, string input)
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
 	{
 		// disable preprocess!!
 		return new string(input);
 	}
 
 };
+
+}
 
 #endif /* OPTFRAME_COMPONENT_LIST_MODULE_HPP_ */

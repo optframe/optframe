@@ -25,11 +25,13 @@
 
 #include<algorithm>
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class Plot2AxisModule: public OptFrameModule<R, ADS, DS>
+class Plot2AxisModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -47,7 +49,7 @@ public:
 		return "plot.2axis 1.list with: title xtitle ytitle 2.list of lists with: title, list of xvalues, list of yvalues 3.output file";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		//cout << "plot.2axis module input: '" << input << "'" << endl;
 
@@ -241,6 +243,14 @@ public:
 		return true;
 	}
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* OPTFRAME_PLOT_2AXIS_MODULE_HPP_ */

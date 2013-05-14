@@ -21,13 +21,16 @@
 #ifndef TESTMODULE_HPP_
 #define TESTMODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 #include "../Constructive.h"
 
 #include <math.h>
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class TestModule: public OptFrameModule<R, ADS, DS>
+class TestModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -55,7 +58,7 @@ public:
 		return u;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -204,12 +207,20 @@ public:
 		if (scan_rest.hasNext())
 		{
 			string new_name = scan_rest.next();
-			return OptFrameModule<R, ADS, DS>::run_module("system.define", all_modules, allFunctions, factory, dictionary, ldictionary, new_name + " " + s_new_id);
+			return Module<R, ADS, DS>::run_module("system.define", all_modules, allFunctions, factory, dictionary, ldictionary, new_name + " " + s_new_id);
 		}
 
 		return true;
 	}
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* TESTMODULE_HPP_ */

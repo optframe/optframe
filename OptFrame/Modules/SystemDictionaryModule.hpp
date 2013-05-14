@@ -21,10 +21,13 @@
 #ifndef DICTIONARYMODULE_HPP_
 #define DICTIONARYMODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemDictionaryModule : public OptFrameModule<R, ADS, DS>
+class SystemDictionaryModule : public Module<R, ADS, DS>
 {
 public:
 
@@ -41,7 +44,7 @@ public:
 		return "system.dictionary";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, DS>&, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string)
+	bool run(vector<Module<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string)
 	{
 		cout << "Text dictionary: " << endl;
 
@@ -74,6 +77,14 @@ public:
 		return true;
 	}
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* DICTIONARYMODULE_HPP_ */

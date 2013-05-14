@@ -29,13 +29,17 @@
 
 #include "../Scanner++/Scanner.h"
 
-#include "../OptFrameFunction.hpp"
+#include "../PreprocessFunction.hpp"
 
 #include "../OptFrameList.hpp"
 
 #include <algorithm>
 
-class StatisticsWilcoxonTestFunction : public OptFrameFunction
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class StatisticsWilcoxonTestFunction : public PreprocessFunction<R,ADS,DS>
 {
 public:
 
@@ -61,7 +65,7 @@ public:
 		return ss.str();
 	}
 
-	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
@@ -203,5 +207,7 @@ public:
 		return new string(formatNumber(pvalue));
 	}
 };
+
+}
 
 #endif /* OPTFRAME_WILCOXON_TEST_FUNCTION_HPP_ */

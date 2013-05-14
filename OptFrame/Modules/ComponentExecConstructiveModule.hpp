@@ -21,13 +21,16 @@
 #ifndef EXEC_CONSTRUCTIVE_MODULE_HPP_
 #define EXEC_CONSTRUCTIVE_MODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 #include "../Constructive.h"
 
 #include "SystemSilentDefineModule.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentExecConstructiveModule: public OptFrameModule<R, ADS, DS>
+class ComponentExecConstructiveModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -45,7 +48,7 @@ public:
 		return "component.exec_constructive OptFrame:Constructive [output_solution_name]";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		//cout << "exec_constructive: " << input << endl;
 		Scanner scanner(input);
@@ -81,12 +84,20 @@ public:
 		if (scanner.hasNext())
 		{
 			string new_name = scanner.next();
-			return OptFrameModule<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, new_name + " " + s_new_id);
+			return Module<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, new_name + " " + s_new_id);
 		}
 
 		return true;
 	}
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* EXEC_CONSTRUCTIVE_MODULE_HPP_ */

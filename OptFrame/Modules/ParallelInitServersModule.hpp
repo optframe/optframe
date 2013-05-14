@@ -21,10 +21,13 @@
 #ifndef InitServersMODULE_HPP_
 #define InitServersMODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class InitServersModule : public OptFrameModule<R, ADS, DS>
+class InitServersModule : public Module<R, ADS, DS>
 {
 public:
 
@@ -41,12 +44,13 @@ public:
 		return "initservers";
 	}
 
-	void run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string rest)
+	void run(vector<Module<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string rest)
 	{
 		factory->mapReduce->initServers(factory->argc,factory->argv);
 	}
 
-	virtual string preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>&,  map< string,vector<string> >&, string input)
+
+	virtual string preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, map<string,string>&,  map< string,vector<string> >&, string input)
 	{
 		Scanner scanner(input);
 
@@ -67,5 +71,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /* InitServersMODULE_HPP_ */

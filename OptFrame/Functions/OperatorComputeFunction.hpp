@@ -29,13 +29,17 @@
 
 #include "../Scanner++/Scanner.h"
 
-#include "../OptFrameFunction.hpp"
+#include "../PreprocessFunction.hpp"
 
 #include "../OptFrameList.hpp"
 
 #include <algorithm>
 
-class OperatorComputeFunction : public OptFrameFunction
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class OperatorComputeFunction : public PreprocessFunction<R,ADS,DS>
 {
 public:
 
@@ -56,13 +60,13 @@ public:
 	virtual string formatNumber(double v)
 	{
 		stringstream ss;
-		ss.precision(OptFrameFunction::precision); // set float precision
+		ss.precision(PreprocessFunction<R,ADS,DS>::precision); // set float precision
 		ss << fixed; // disable scientific notation
 		ss << v;
 		return ss.str();
 	}
 
-	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
+	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
@@ -111,5 +115,7 @@ public:
 		return NULL;
 	}
 };
+
+}
 
 #endif /* OPTFRAME_MATH_FUNCTION_HPP_ */

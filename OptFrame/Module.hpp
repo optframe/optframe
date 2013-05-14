@@ -19,7 +19,7 @@
 // USA.
 
 /*
- * OptFrameModule.hpp
+ * Module.hpp
  *
  * LGPLv3
  *
@@ -36,19 +36,22 @@
 
 #include "Scanner++/Scanner.h"
 
-#include "OptFrameFunction.hpp"
+#include "PreprocessFunction.hpp"
 
 #include "HeuristicFactory.hpp"
 
 #include <algorithm>
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class OptFrameModule
+class Module
 {
 protected:
 	static int precision; // for floats and doubles
 
-	bool run_module(string mod, vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& f, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run_module(string mod, vector<Module<R, ADS, DS>*>& allModules, vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& f, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		for(unsigned int i=0;i<allModules.size();i++)
 			if(allModules[i]->canHandle(mod, input))
@@ -64,7 +67,7 @@ public:
 
 	vector<string> handles;
 
-	virtual ~OptFrameModule()
+	virtual ~Module()
 	{
 	}
 
@@ -113,7 +116,7 @@ public:
 		}
 		if(number)
 		{
-			cout << "OptFrameModule defineText: cannot define a number! ('" << definition << "')" << endl;
+			cout << "Module defineText: cannot define a number! ('" << definition << "')" << endl;
 			cout << "Did you forget a command 'undefine variable' before this module?" << endl;
 			return false;
 		}
@@ -123,7 +126,7 @@ public:
 		string optframe = scanType.next();
 		if(optframe == "OptFrame")
 		{
-			cout << "OptFrameModule defineText: cannot define an OptFrame type! ('" << definition << "')" << endl;
+			cout << "Module defineText: cannot define an OptFrame type! ('" << definition << "')" << endl;
 			cout << "Did you forget a command 'undefine variable' before this module?" << endl;
 			return false;
 		}
@@ -171,7 +174,7 @@ public:
 		}
 		if(number)
 		{
-			cout << "OptFrameModule defineList: cannot define a number! ('" << definition << "')" << endl;
+			cout << "Module defineList: cannot define a number! ('" << definition << "')" << endl;
 			cout << "Did you forget a command 'undefine variable' before this module?" << endl;
 			return false;
 		}
@@ -181,7 +184,7 @@ public:
 		string optframe = scanType.next();
 		if(optframe == "OptFrame")
 		{
-			cout << "OptFrameModule defineList: cannot define an OptFrame type! ('" << definition << "')" << endl;
+			cout << "Module defineList: cannot define an OptFrame type! ('" << definition << "')" << endl;
 			cout << "Did you forget a command 'undefine variable' before this module?" << endl;
 			return false;
 		}
@@ -219,17 +222,18 @@ public:
 		return true;
 	}
 
-	virtual bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input, string module_name)
+	virtual bool run(vector<Module<R, ADS, DS>*>& allModules, vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input, string module_name)
 	{
 		return run(allModules, allFunctions, factory, dictionary, ldictionary, input);
 	}
 
-	virtual bool run(vector<OptFrameModule<R, ADS, DS>*>& allModules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input) = 0;
+	virtual bool run(vector<Module<R, ADS, DS>*>& allModules, vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input) = 0;
 
-	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
-	{
-		return defaultPreprocess(allFunctions, dictionary, ldictionary, input);
-	}
+	virtual string* preprocess(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string,string>& dictionary, const map< string,vector<string> >& ldictionary, string input) = 0;
+
+	//{
+	//	return defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	//}
 
 	static string* solveVars(const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input, string only_var="")
 	{
@@ -367,7 +371,7 @@ public:
 		return new string(result);
 	}
 
-	static string* defaultPreprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input_vars)
+	static string* defaultPreprocess(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string,string>& dictionary, const map< string,vector<string> >& ldictionary, string input_vars)
 	{
 		string input = "";
 
@@ -404,9 +408,9 @@ public:
 			string current    = scanFunc.next();
 			string cdiscarded = scanFunc.getDiscarded();
 
-			if( (current == "(") && OptFrameFunction::functionExists(last, allFunctions) ) // FUNCTION
+			if( (current == "(") && PreprocessFunction<R,ADS,DS>::functionExists(last, allFunctions) ) // FUNCTION
 			{
-				pair<string, string>* p = OptFrameFunction::run_function(last, allFunctions, dictionary, ldictionary, scanFunc.rest());
+				pair<string, string>* p = PreprocessFunction<R,ADS,DS>::run_function(last, allFunctions, hf, dictionary, ldictionary, scanFunc.rest());
 
 				if(p)
 				{
@@ -458,6 +462,8 @@ public:
 };
 
 template<class R, class ADS, class DS>
-int OptFrameModule<R,ADS,DS>::precision=2;
+int Module<R,ADS,DS>::precision=2;
+
+}
 
 #endif /* OPTFRAMEMODULE_HPP_ */

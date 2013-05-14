@@ -21,7 +21,7 @@
 #ifndef OPTFRAME_COMPONENT_TOSTRING_MODULE_HPP_
 #define OPTFRAME_COMPONENT_TOSTRING_MODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 
 #include "SystemSilentDefineModule.hpp"
 
@@ -29,13 +29,16 @@
 #include "../SingleObjSearch.hpp"
 #include "../MultiObjSearch.hpp"
 
+namespace optframe
+{
+
 //! \english The BuildModule class is a Module that enables the user to create a heuristic and give a name to it. \endenglish \portuguese A classe BuildModule é o Módulo que permite o usuário criar uma heurística e definir um nome para ela. \endportuguese
 /*!
   \sa run()
 */
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentToStringModule: public OptFrameModule<R, ADS, DS>
+class ComponentToStringModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -88,7 +91,7 @@ public:
        \endportuguese
    */
 
-   bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+   bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
    {
 	   Scanner scanner(input);
 
@@ -122,10 +125,17 @@ public:
 		   stringstream sstr;
 		   sstr << name << " " << text;
 
-		   return OptFrameModule<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, sstr.str());
+		   return Module<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, sstr.str());
 	   }
    }
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
 };
+
+}
 
 #endif /* OPTFRAME_COMPONENT_TOSTRING_MODULE_HPP_ */

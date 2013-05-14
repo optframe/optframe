@@ -21,10 +21,13 @@
 #ifndef OPTFRAME_SYSTEM_DEFINE_MODULE_HPP_
 #define OPTFRAME_SYSTEM_DEFINE_MODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemDefineModule : public OptFrameModule<R, ADS, DS>
+class SystemDefineModule : public Module<R, ADS, DS>
 {
 public:
 
@@ -41,7 +44,7 @@ public:
 		return "system.define new_name text_to_be_substituted_from_the_new_name";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>&, map<string,string>& dictionary,  map< string,vector<string> >&, string rest)
+	bool run(vector<Module<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>&, map<string,string>& dictionary,  map< string,vector<string> >&, string rest)
 	{
 		Scanner scanner(rest);
 
@@ -53,7 +56,7 @@ public:
 		if(new_name != "")
 		{
 			string second_word = scanner.rest();
-			if(OptFrameModule<R, ADS, DS>::defineText(new_name, second_word, dictionary))
+			if(Module<R, ADS, DS>::defineText(new_name, second_word, dictionary))
 			{
 				cout << "Word '" << new_name << "' now means: '" << dictionary[new_name] << "'" << endl;
 				return true;
@@ -68,7 +71,8 @@ public:
 		}
 	}
 
-	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -99,7 +103,7 @@ public:
 
 		// now proceed as usual
 
-		string* input3 = OptFrameModule<R, ADS, DS>::defaultPreprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+		string* input3 = Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, scanner.rest());
 
 		if(!input3)
 			return NULL;
@@ -118,5 +122,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /* OPTFRAME_SYSTEM_DEFINE_MODULE_HPP_ */

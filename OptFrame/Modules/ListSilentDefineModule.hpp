@@ -21,10 +21,13 @@
 #ifndef OPTFRAME_LIST_DEFINE_MODULE_HPP_
 #define OPTFRAME_LIST_DEFINE_MODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ListSilentDefineModule : public OptFrameModule<R, ADS, DS>
+class ListSilentDefineModule : public Module<R, ADS, DS>
 {
 public:
 
@@ -41,7 +44,7 @@ public:
 		return "list.silent_define name list";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, DS>&, map<string,string>&, map< string,vector<string> >& ldictionary, string rest)
+	bool run(vector<Module<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<string,string>&, map< string,vector<string> >& ldictionary, string rest)
 	{
 		Scanner scanner(rest);
 
@@ -65,7 +68,7 @@ public:
 				return false;
 			}
 
-			return OptFrameModule<R, ADS, DS>::defineList(list_name, list, ldictionary);
+			return Module<R, ADS, DS>::defineList(list_name, list, ldictionary);
 		}
 		else
 		{
@@ -74,7 +77,8 @@ public:
 		}
 	}
 
-	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -105,7 +109,7 @@ public:
 
 		// now proceed as usual
 
-		string* input3 = OptFrameModule<R, ADS, DS>::defaultPreprocess(allFunctions, dictionary, ldictionary, scanner.rest());
+		string* input3 = Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, scanner.rest());
 
 		if(!input3)
 			return NULL;
@@ -125,5 +129,7 @@ public:
 
 
 };
+
+}
 
 #endif /* OPTFRAME_LIST_DEFINE_MODULE_HPP_ */

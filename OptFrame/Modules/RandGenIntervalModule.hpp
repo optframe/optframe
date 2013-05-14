@@ -21,13 +21,16 @@
 #ifndef RANDOM_NUMBER_INTERVAL_MODULE_HPP_
 #define RANDOM_NUMBER_INTERVAL_MODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 #include "../RandGen.hpp"
 
 #include "SystemSilentDefineModule.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class RandGenIntervalModule: public OptFrameModule<R, ADS, DS>
+class RandGenIntervalModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -45,7 +48,7 @@ public:
 		return "randgen.interval begin end [stored_number]\n Where: 'begin' and 'end' are positive integer values; 'stored_number' is the randomized number from [begin,end].";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 		//cout << "random_number_interval module: '" << input << "'" << endl;
@@ -85,7 +88,7 @@ public:
 			string new_name = scanner.next();
 			stringstream ss;
 			ss << new_name << " " << value;
-			return OptFrameModule<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
+			return Module<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 		}
 		else
 		{
@@ -94,6 +97,14 @@ public:
 		}
 	}
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* RANDOM_NUMBER_INTERVAL_MODULE_HPP_ */

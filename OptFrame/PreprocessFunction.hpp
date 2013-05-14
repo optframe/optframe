@@ -19,7 +19,7 @@
 // USA.
 
 /*
- * OptFrameFunction.hpp
+ * PreprocessFunction<R,ADS,DS>.hpp
  *
  * LGPLv3
  *
@@ -38,14 +38,18 @@
 
 #include <algorithm>
 
-class OptFrameFunction
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class PreprocessFunction
 {
 protected:
 	static int precision; // for floats and doubles
 
 public:
 
-	static pair<string, string>* run_function(string func, vector<OptFrameFunction*>& allFunctions, map< string, string >& dictionary, map< string,vector<string> >& ldictionary, string raw_input)
+	static pair<string, string>* run_function(string func, vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string raw_input)
 	{
 		string input = Scanner::trim(raw_input);
 
@@ -55,7 +59,7 @@ public:
 			if(allFunctions[i]->canHandle(func, "")) // TODO: check
 			{
 				//cout << "found function: '" << func << "'" << endl;
-				string* iprep = allFunctions[i]->preprocess(allFunctions, dictionary, ldictionary, input);
+				string* iprep = allFunctions[i]->preprocess(allFunctions, hf, dictionary, ldictionary, input);
 				if(!iprep)
 					return NULL;
 
@@ -109,7 +113,7 @@ public:
 
 				delete iprep;
 
-				string* r = allFunctions[i]->run(allFunctions, dictionary, ldictionary, body);
+				string* r = allFunctions[i]->run(allFunctions, hf, dictionary, ldictionary, body);
 
 				if(!r)
 					return NULL;
@@ -126,7 +130,7 @@ public:
 		return NULL;
 	}
 
-	static bool functionExists(string func, vector<OptFrameFunction*>& allFunctions)
+	static bool functionExists(string func, vector<PreprocessFunction<R,ADS,DS>*>& allFunctions)
 	{
 		for(unsigned int i=0;i<allFunctions.size();i++)
 			if(allFunctions[i]->canHandle(func, "")) // TODO: check
@@ -134,7 +138,7 @@ public:
 		return false;
 	}
 
-	virtual ~OptFrameFunction()
+	virtual ~PreprocessFunction()
 	{
 	}
 
@@ -156,14 +160,15 @@ public:
 
 	virtual string usage() = 0;
 
-	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >& dictionary, map< string,vector<string> >& ldictionary, string body) = 0;
+	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body) = 0;
 
-	virtual string* preprocess(vector<OptFrameFunction*>& allFunctions, map< string, string >& dictionary, map< string,vector<string> >& ldictionary, string input)
+	// SHOULD NOT REIMPLEMENT!! TO BE REMOVED IN FUTURE (TODO)
+	string* preprocess(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string input)
 	{
-		return defaultPreprocess(allFunctions, dictionary, ldictionary, input);
+		return defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
 	}
 
-	static string* defaultPreprocess(vector<OptFrameFunction*>& allFunctions, map< string, string >& dictionary, map< string,vector<string> >& ldictionary, string input)
+	static string* defaultPreprocess(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 
@@ -203,9 +208,9 @@ public:
 			string current    = scanFunc.next();
 			string cdiscarded = scanFunc.getDiscarded();
 
-			if( (current == "(") && OptFrameFunction::functionExists(last, allFunctions) ) // FUNCTION
+			if( (current == "(") && PreprocessFunction<R,ADS,DS>::functionExists(last, allFunctions) ) // FUNCTION
 			{
-				pair<string, string>* p = OptFrameFunction::run_function(last, allFunctions, dictionary, ldictionary, scanFunc.rest());
+				pair<string, string>* p = PreprocessFunction<R,ADS,DS>::run_function(last, allFunctions, hf, dictionary, ldictionary, scanFunc.rest());
 
 				if(p)
 				{
@@ -256,6 +261,9 @@ public:
 	}
 };
 
-int OptFrameFunction::precision=2;
+template<class R, class ADS, class DS>
+int PreprocessFunction<R,ADS,DS>::precision=2;
+
+}
 
 #endif /* OPTFRAME_FUNCTION_HPP_ */

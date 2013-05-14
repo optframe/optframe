@@ -21,12 +21,15 @@
 #ifndef EXPORT_HPP_
 #define EXPORT_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
 
 #include <stdio.h>
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentExportModule: public OptFrameModule<R, ADS, DS>
+class ComponentExportModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -51,7 +54,7 @@ public:
 		return out;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		//cout << "export: " << input << endl;
 		Scanner scanner(input);
@@ -154,6 +157,14 @@ public:
 
 		return true;
 	}
+
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
 };
+
+}
 
 #endif /* EXPORT_HPP_ */

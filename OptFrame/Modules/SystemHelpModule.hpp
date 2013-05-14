@@ -21,10 +21,15 @@
 #ifndef HELPMODULE_HPP_
 #define HELPMODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+using namespace std;
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemHelpModule : public OptFrameModule<R, ADS, DS>
+class SystemHelpModule : public Module<R, ADS, DS>
 {
 public:
 
@@ -41,7 +46,7 @@ public:
 		return "system.help";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, DS>&, map<string,string>&, map< string,vector<string> >&, string)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<string,string>&, map< string,vector<string> >&, string)
 	{
 		cout << "Available modules are:" << endl;
 		for(unsigned int i=0;i<all_modules.size();i++)
@@ -51,6 +56,14 @@ public:
 		return true;
 	}
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* HELPMODULE_HPP_ */

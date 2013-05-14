@@ -21,10 +21,13 @@
 #ifndef READMODULE_HPP_
 #define READMODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemReadModule : public OptFrameModule<R, ADS, DS>
+class SystemReadModule : public Module<R, ADS, DS>
 {
 public:
 
@@ -54,7 +57,7 @@ public:
 		return ss;
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>& all_modules, vector<OptFrameFunction*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner trim(input);
 		if(!trim.hasNext()) // no file
@@ -237,7 +240,7 @@ public:
 				{
 					//cout << "READ COMMAND: '" << command << "'" << endl;
 
-					string* after_preprocess = all_modules[i]->preprocess(allFunctions, dictionary, ldictionary, original);
+					string* after_preprocess = all_modules[i]->preprocess(allFunctions, factory, dictionary, ldictionary, original);
 
 					if(!after_preprocess)
 					{
@@ -277,6 +280,14 @@ public:
 		return true;
 	}
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* READMODULE_HPP_ */

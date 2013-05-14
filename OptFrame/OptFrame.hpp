@@ -112,8 +112,8 @@
 
 // ==================================
 
-#include "OptFrameFunction.hpp"
-#include "OptFrameModule.hpp"
+#include "PreprocessFunction.hpp"
+#include "Module.hpp"
 
 #include "RandGen.hpp"
 #include "Util/RandGenMersenneTwister.hpp"
@@ -253,12 +253,17 @@
 
 // ==================================
 
+using namespace std;
+
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class OptFrame
 {
 private:
-	vector<OptFrameModule<R, ADS, DS>*> modules;
-	vector<OptFrameFunction*> functions;
+	vector<Module<R, ADS, DS>*> modules;
+	vector<PreprocessFunction<R, ADS, DS>*> functions;
 	map<string, string> dictionary;
 	map<string, vector<string> > ldictionary;
 
@@ -304,13 +309,13 @@ public:
 		functions.clear();
 	}
 
-	void loadModule(OptFrameModule<R, ADS, DS>* module)
+	void loadModule(Module<R, ADS, DS>* module)
 	{
 		if (module)
 			modules.push_back(module);
 	}
 
-	void loadFunction(OptFrameFunction* function)
+	void loadFunction(PreprocessFunction<R,ADS,DS>* function)
 	{
 		if (function)
 			functions.push_back(function);
@@ -446,68 +451,68 @@ public:
 
 		if ((prefix == "") || (prefix == "list"))
 		{
-			loadFunction(new ListAppendFunction);
-			//loadFunction(new ListDefinitionFunction);
-			loadFunction(new ListElementFunction);
-			loadFunction(new ListLengthFunction);
-			loadFunction(new ListWordsFunction);
+			loadFunction(new ListAppendFunction<R,ADS,DS>);
+			//loadFunction(new ListDefinitionFunction<R,ADS,DS>);
+			loadFunction(new ListElementFunction<R,ADS,DS>);
+			loadFunction(new ListLengthFunction<R,ADS,DS>);
+			loadFunction(new ListWordsFunction<R,ADS,DS>);
 		}
 
 		if ((prefix == "") || (prefix == "math"))
 		{
-			loadFunction(new MathRoundFunction);
-			loadFunction(new MathTruncFunction);
+			loadFunction(new MathRoundFunction<R,ADS,DS>);
+			loadFunction(new MathTruncFunction<R,ADS,DS>);
 		}
 
 		if ((prefix == "") || (prefix == "operator"))
 		{
-			loadFunction(new OperatorAbsFunction);
-			loadFunction(new OperatorCompareFunction);
-			loadFunction(new OperatorComputeFunction);
-			loadFunction(new OperatorInFunction);
-			loadFunction(new OperatorLogicFunction);
+			loadFunction(new OperatorAbsFunction<R,ADS,DS>);
+			loadFunction(new OperatorCompareFunction<R,ADS,DS>);
+			loadFunction(new OperatorComputeFunction<R,ADS,DS>);
+			loadFunction(new OperatorInFunction<R,ADS,DS>);
+			loadFunction(new OperatorLogicFunction<R,ADS,DS>);
 		}
 
 		// statistics
 		if ((prefix == "") || (prefix == "statistics"))
 		{
-			loadFunction(new StatisticsArgMaxFunction);
-			loadFunction(new StatisticsArgMinFunction);
-			loadFunction(new StatisticsANOVAFunction);
-			loadFunction(new StatisticsAvgFunction);
-			loadFunction(new StatisticsFriedmanNoBlockTestFunction);
-			loadFunction(new StatisticsFriedmanTestFunction);
-			loadFunction(new StatisticsMannUTestFunction);
-			loadFunction(new StatisticsMaxFunction);
-			loadFunction(new StatisticsMedFunction);
-			loadFunction(new StatisticsMinFunction);
-			loadFunction(new StatisticsPairedTTestFunction);
-			loadFunction(new StatisticsShapiroTestFunction);
-			loadFunction(new StatisticsSampleStdDevFunction);
-			loadFunction(new StatisticsStdDevFunction);
-			loadFunction(new StatisticsStudentTTestFunction);
-			loadFunction(new StatisticsSumFunction);
-			loadFunction(new StatisticsWilcoxonTestFunction);
+			loadFunction(new StatisticsArgMaxFunction<R,ADS,DS>);
+			loadFunction(new StatisticsArgMinFunction<R,ADS,DS>);
+			loadFunction(new StatisticsANOVAFunction<R,ADS,DS>);
+			loadFunction(new StatisticsAvgFunction<R,ADS,DS>);
+			loadFunction(new StatisticsFriedmanNoBlockTestFunction<R,ADS,DS>);
+			loadFunction(new StatisticsFriedmanTestFunction<R,ADS,DS>);
+			loadFunction(new StatisticsMannUTestFunction<R,ADS,DS>);
+			loadFunction(new StatisticsMaxFunction<R,ADS,DS>);
+			loadFunction(new StatisticsMedFunction<R,ADS,DS>);
+			loadFunction(new StatisticsMinFunction<R,ADS,DS>);
+			loadFunction(new StatisticsPairedTTestFunction<R,ADS,DS>);
+			loadFunction(new StatisticsShapiroTestFunction<R,ADS,DS>);
+			loadFunction(new StatisticsSampleStdDevFunction<R,ADS,DS>);
+			loadFunction(new StatisticsStdDevFunction<R,ADS,DS>);
+			loadFunction(new StatisticsStudentTTestFunction<R,ADS,DS>);
+			loadFunction(new StatisticsSumFunction<R,ADS,DS>);
+			loadFunction(new StatisticsWilcoxonTestFunction<R,ADS,DS>);
 		}
 
 		if ((prefix == "") || (prefix == "system"))
 		{
-			loadFunction(new SystemDefinedFunction);
-			loadFunction(new SystemDefinitionFunction);
-			loadFunction(new SystemInputFunction);
-			loadFunction(new SystemPOpenFunction);
-			loadFunction(new SystemTimeFunction);
+			loadFunction(new SystemDefinedFunction<R,ADS,DS>);
+			loadFunction(new SystemDefinitionFunction<R,ADS,DS>);
+			loadFunction(new SystemInputFunction<R,ADS,DS>);
+			loadFunction(new SystemPOpenFunction<R,ADS,DS>);
+			loadFunction(new SystemTimeFunction<R,ADS,DS>);
 		}
 
 		if ((prefix == "") || (prefix == "text"))
 		{
-			loadFunction(new TextConcatFunction);
-			//loadFunction(new TextDefinitionFunction);
-			loadFunction(new TextNextFunction);
+			loadFunction(new TextConcatFunction<R,ADS,DS>);
+			//loadFunction(new TextDefinitionFunction<R,ADS,DS>);
+			loadFunction(new TextNextFunction<R,ADS,DS>);
 		}
 	}
 
-	OptFrameModule<R, ADS, DS>* getModule(string module)
+	Module<R, ADS, DS>* getModule(string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())
@@ -585,7 +590,7 @@ public:
 			for (unsigned int i = 0; i < modules.size(); i++)
 				if (modules[i]->canHandle(command, command_body))
 				{
-					string* r1 = modules[i]->preprocess(functions, dictionary, ldictionary, command_body);
+					string* r1 = modules[i]->preprocess(functions, factory, dictionary, ldictionary, command_body);
 
 					if (!r1)
 						break;
@@ -617,7 +622,7 @@ public:
 		cout << "Goodbye." << endl;
 	}
 
-	static void printOptions(string part_module, vector<OptFrameModule<R, ADS, DS>*>& allModules)
+	static void printOptions(string part_module, vector<Module<R, ADS, DS>*>& allModules)
 	{
 		for (unsigned int i = 0; i < allModules.size(); i++)
 		{
@@ -671,7 +676,7 @@ public:
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (modules[i]->canHandle(command, command_body))
 			{
-				string* r = modules[i]->preprocess(functions, dictionary, ldictionary, command_body);
+				string* r = modules[i]->preprocess(functions, factory, dictionary, ldictionary, command_body);
 
 				if (!r)
 					break;
@@ -698,5 +703,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /*OPTFRAME_H_*/

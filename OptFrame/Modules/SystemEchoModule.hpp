@@ -21,10 +21,13 @@
 #ifndef ECHOMODULE_HPP_
 #define ECHOMODULE_HPP_
 
-#include "../OptFrameModule.hpp"
+#include "../Module.hpp"
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SystemEchoModule: public OptFrameModule<R, ADS, DS>
+class SystemEchoModule: public Module<R, ADS, DS>
 {
 public:
 
@@ -42,12 +45,20 @@ public:
 		return "system.echo text";
 	}
 
-	bool run(vector<OptFrameModule<R, ADS, DS>*>&, vector<OptFrameFunction*>&, HeuristicFactory<R, ADS, DS>&, map<string, string>&, map< string,vector<string> >&, string text)
+	bool run(vector<Module<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<string, string>&, map< string,vector<string> >&, string text)
 	{
 		printf("%s\n", text.c_str());
 		return true;
 	}
 
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		return Module<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+	}
+
+
 };
+
+}
 
 #endif /* ECHOMODULE_HPP_ */

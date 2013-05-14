@@ -29,13 +29,17 @@
 
 #include "../Scanner++/Scanner.h"
 
-#include "../OptFrameFunction.hpp"
+#include "../PreprocessFunction.hpp"
 
 #include "../OptFrameList.hpp"
 
 #include <algorithm>
 
-class StatisticsMedFunction : public OptFrameFunction
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class StatisticsMedFunction : public PreprocessFunction<R,ADS,DS>
 {
 public:
 
@@ -53,7 +57,7 @@ public:
 		return "statistics.med( list ) : return list median";
 	}
 
-	virtual string* run(vector<OptFrameFunction*>& allFunctions, map< string, string >&, map< string,vector<string> >& ldictionary, string body)
+	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
 		Scanner scanner(body);
 
@@ -92,5 +96,7 @@ public:
 		return new string(ss.str());
 	}
 };
+
+}
 
 #endif /* OPTFRAME_MEDIAN_FUNCTION_HPP_ */

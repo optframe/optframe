@@ -29,13 +29,18 @@
 
 #include "../Scanner++/Scanner.h"
 
-#include "../OptFrameFunction.hpp"
+#include "../PreprocessFunction.hpp"
 
 #include "../OptFrameList.hpp"
 
 #include <algorithm>
 
-class SystemPOpenFunction : public OptFrameFunction
+
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class SystemPOpenFunction : public PreprocessFunction<R,ADS,DS>
 {
 public:
 
@@ -53,7 +58,7 @@ public:
 		return "system.popen( \"command\" ) : return output";
 	}
 
-	virtual string* run(vector<OptFrameFunction*>&, map< string, string >&, map< string,vector<string> >&, string body)
+	virtual string* run(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, const map< string, string >& dictionary, const map< string,vector<string> >& ldictionary, string body)
 	{
 		//cout << "popen function  POPEN: '" << Scanner::trim(body) << "'" << endl;
 		Scanner scanner(Scanner::trim(body));
@@ -88,5 +93,7 @@ public:
 		return new string(output);
 	}
 };
+
+}
 
 #endif /* OPTFRAME_POPEN_FUNCTION_HPP_ */
