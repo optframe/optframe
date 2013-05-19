@@ -40,7 +40,7 @@ private:
 		return NULL;
 	}
 
-	bool exec_command(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string command)
+	bool exec_command(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string command)
 	{
 		Scanner scanner(command);
 		string module = scanner.next();
@@ -51,7 +51,7 @@ private:
 
 		string* rest = m->preprocess(allFunctions, factory, dictionary, ldictionary, scanner.rest());
 
-		if(!rest)
+		if (!rest)
 			return NULL;
 
 		//cout << "FOR_EACH COMMAND: '" << module << "' input: '" << *rest << "'"<< endl;
@@ -78,7 +78,7 @@ public:
 		return "for_each variable list_of_values block_of_commands";
 	}
 
-	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+	bool run(vector<Module<R, ADS, DS>*>& allModules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
 		//cout << "for_each run: '" << input << "'" << endl;
@@ -98,8 +98,8 @@ public:
 		}
 
 		vector<string>* pvalues = OptFrameList::readList(ldictionary, scanner);
-		vector<string>  values;
-		if(pvalues)
+		vector<string> values;
+		if (pvalues)
 		{
 			values = vector<string>(*pvalues);
 			delete pvalues;
@@ -110,10 +110,9 @@ public:
 			return false;
 		}
 
-
 		vector<string>* pcommands = OptFrameList::readBlock(scanner);
-		vector<string>  commands;
-		if(pcommands)
+		vector<string> commands;
+		if (pcommands)
 		{
 			commands = vector<string>(*pcommands);
 			delete pcommands;
@@ -124,53 +123,26 @@ public:
 			return false;
 		}
 
-		if(!Module<R, ADS, DS>::testUnused(id(), scanner))
+		if (!Module<R, ADS, DS>::testUnused(id(), scanner))
 			return false;
 
 		for (unsigned int v = 0; v < values.size(); v++)
 		{
-			for (unsigned int c = 0; c < commands.size(); c++)
+			if (!Module<R, ADS, DS>::defineText(var, values[v], dictionary))
 			{
-				string command = commands[c];
-				if(command == "")
-				{
-					cout << "for_each module: empty command (possible extra semicolon)!" << endl;
-					return false;
-				}
+				cout << "for_each error: failed to define variable '" << var << "' to value '" << values[v] << "'" << endl;
+				return false;
+			}
 
-				string defCommand = "system.silent_define ";
-				defCommand.append(var);
-				defCommand.append(" ");
-				defCommand.append(values[v]);
-
-				if(!exec_command(all_modules, allFunctions, factory, dictionary, ldictionary, defCommand))
-				{
-					cout << "for_each error: failed to define variable '" << var << "' to value '" << values[v] << "'" << endl;
-					return false;
-				}
-
-				if(command.at(0)=='%') // first line comment
-					command = "";
-
-				//cout << "FOR_EACH COMMAND: '" << command << "'" << endl;
-
-				if (command != "")
-					if(!exec_command(all_modules, allFunctions, factory, dictionary, ldictionary, command))
-					{
-						if(commands.at(c)=="")
-							cout << "for_each module: empty command! (perhaps an extra comma in list?)" << endl;
-						else
-							cout << "for_each module: error in command '" << commands.at(c) << "'" << endl;
-
-						return false;
-					}
-
+			if (!Module<R, ADS, DS>::run_module("system.run", allModules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
+			{
+				cout << "for_each module: error in command!" << endl;
+				return false;
 			}
 		}
 
 		return true;
 	}
-
 
 	// should preprocess only until list of commands
 	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
@@ -181,21 +153,21 @@ public:
 
 		string input2 = "";
 
-		if(!scanner.hasNext())
+		if (!scanner.hasNext())
 			return new string(input2);
 
-		string variable   = scanner.next();
+		string variable = scanner.next();
 		string discarded1 = scanner.getDiscarded();
 		input2.append(discarded1);
 		input2.append(variable);
 
-		if(!scanner.hasNext())
+		if (!scanner.hasNext())
 			return new string(input2);
 
 		string possibleDefinition = scanner.next();
-		string discarded2         = scanner.getDiscarded();
+		string discarded2 = scanner.getDiscarded();
 
-		if(dictionary.count(possibleDefinition) == 0) // Not found in dictionary
+		if (dictionary.count(possibleDefinition) == 0) // Not found in dictionary
 		{
 			input2.append(discarded2);
 			input2.append(possibleDefinition); // EXPLICIT LIST
