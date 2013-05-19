@@ -33,24 +33,31 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_
 class SystemRunModule: public Module<R, ADS, DS>
 {
 public:
-	Module<R, ADS, DS>* getModule(vector<Module<R, ADS, DS>*>& modules, string module)
+	Module<R, ADS, DS>* getModule(vector<Module<R, ADS, DS>*>& modules, string module, string rest)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
-			if (modules[i]->canHandle(module, "")) // TODO: why?
+		{
+			//cout << "run: testing module '" << modules[i]->id() << "'" << endl;
+			if (modules[i]->canHandle(module, rest))
 				return modules[i];
+		}
+		//cout << "run: NULL MODULE! module='" << module << "' rest='" << rest << "'" << endl;
 		return NULL;
 	}
 
 	bool exec_command(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string command)
 	{
 		Scanner scanner(command);
+		scanner.useSeparators(" \t\r\n=");
+
 		string module = scanner.next();
-		Module<R, ADS, DS>* m = getModule(all_modules, module);
+		string tail = scanner.rest();
+		Module<R, ADS, DS>* m = getModule(all_modules, module, tail);
 
 		if (m == NULL)
 			return false;
 
-		string* rest = m->preprocess(allFunctions, factory, dictionary, ldictionary, scanner.rest());
+		string* rest = m->preprocess(allFunctions, factory, dictionary, ldictionary, tail);
 
 		if(!rest)
 		{
