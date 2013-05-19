@@ -34,6 +34,8 @@
 
 #include "OptFrameComponent.hpp"
 
+#include "Action.hpp"
+
 #include "OptFrameContainer.hpp"
 
 #include "SingleObjSearch.hpp"
@@ -84,6 +86,7 @@ public:
 
 	map<string, vector<OptFrameComponent*> > components;
 	vector<ComponentBuilder<R, ADS, DS>* > builders;
+	vector<optframe::Action<R, ADS, DS>* > actions;
 	map<string, vector<vector<OptFrameComponent*> > > componentLists;
 
 	ComponentBuilder<R, ADS, DS>* getBuilder(string id)
@@ -92,6 +95,11 @@ public:
 			if(builders[i]->id() == id)
 				return builders[i];
 		return NULL;
+	}
+
+	optframe::Action<R, ADS, DS>* getAction() // TODO: STUB!
+	{
+		return actions[0];
 	}
 
 	bool inComponents(OptFrameComponent* c)

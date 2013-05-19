@@ -29,35 +29,37 @@
 #include <iostream>
 
 #include "OptFrameComponent.hpp"
+#include "Action.hpp"
 
 #define OPTFRAME_EPSILON 0.0001
 
 using namespace std;
+using namespace scannerpp;
 
 //! \english The Evaluator class is responsible for the attribution of objective values for each Solution \endenglish \portuguese A classe Evaluator é responsável pela atribuição de valores objetivo para cada Solution \endportuguese
 
 /*!
-  \english
-  The Evaluator class is responsible for the attribution of objective values for each Solution
-  This is done by the method evaluate().
-  \endenglish
+ \english
+ The Evaluator class is responsible for the attribution of objective values for each Solution
+ This is done by the method evaluate().
+ \endenglish
 
-  \portuguese
-  A classe Evaluator é responsável pela atribuição de valores objetivo para cada Solution.
-  Isto é feito através do método evaluate().
-  \endportuguese
-*/
+ \portuguese
+ A classe Evaluator é responsável pela atribuição de valores objetivo para cada Solution.
+ Isto é feito através do método evaluate().
+ \endportuguese
+ */
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class Evaluator : public OptFrameComponent
+class Evaluator: public OptFrameComponent
 {
 protected:
 	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
 
 public:
 
-	Evaluator(bool _allowCosts = false):
-		allowCosts(_allowCosts)
+	Evaluator(bool _allowCosts = false) :
+			allowCosts(_allowCosts)
 	{
 	}
 
@@ -103,7 +105,7 @@ public:
 	pair<Move<R, ADS, DS>&, Evaluation<DS>&>& applyMove(Move<R, ADS, DS>& m, Solution<R, ADS>& s)
 	{
 		Move<R, ADS, DS>& rev = m.apply(s);
-		return *new pair<Move<R, ADS, DS>&, Evaluation<DS>&> (rev, evaluate(s));
+		return *new pair<Move<R, ADS, DS>&, Evaluation<DS>&>(rev, evaluate(s));
 	}
 
 	// Movement cost based on reevaluation of 'e'
@@ -113,13 +115,13 @@ public:
 		double e_ini;
 
 		pair<double, double>* p = NULL;
-		if(allowCosts)
+		if (allowCosts)
 			p = m.cost(e, s.getR(), s.getADS());
 
 		// do not update 's' => much faster (using updateDelta)
-		if(p)
+		if (p)
 		{
-			e_end = e.evaluation()+p->first+p->second;
+			e_end = e.evaluation() + p->first + p->second;
 
 			// no need to compute first again, solution is the same
 			e_ini = e.evaluation();
@@ -170,18 +172,19 @@ public:
 	double estimatedMoveCost(Evaluation<DS>& e, Move<R, ADS, DS>& m, Solution<R, ADS>& s)
 	{
 		pair<double, double>* p = NULL;
-		if(allowCosts)
+		if (allowCosts)
 			p = m.estimatedCost(e, s.getR(), s.getADS());
 
 		// using estimatedCost
-		if(p)
+		if (p)
 		{
-			double eCost = p->first+p->second;
+			double eCost = p->first + p->second;
 			delete p;
 
 			return eCost;
 		}
-		else // default moveCost
+		else
+			// default moveCost
 			return moveCost(e, m, s);
 	}
 
@@ -216,7 +219,7 @@ public:
 	 */
 	virtual bool betterThan(double a, double b) = 0;
 
-    bool betterOrEquals(const Solution<R>& s1, const Solution<R>& s2)
+	bool betterOrEquals(const Solution<R>& s1, const Solution<R>& s2)
 	{
 		Evaluation<DS>& e1 = evaluate(s1);
 		Evaluation<DS>& e2 = evaluate(s2);
@@ -250,10 +253,10 @@ public:
 		return (abs(a - b) < OPTFRAME_EPSILON);
 	}
 
-    virtual bool compatible(string s)
-    {
-    	return ( s == idComponent() ) || (OptFrameComponent::compatible(s));
-    }
+	virtual bool compatible(string s)
+	{
+		return (s == idComponent()) || (OptFrameComponent::compatible(s));
+	}
 
 	static string idComponent()
 	{
@@ -268,5 +271,79 @@ public:
 	}
 
 };
+
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class EvaluatorAction: public Action<R, ADS, DS>
+{
+public:
+
+	virtual ~EvaluatorAction()
+	{
+	}
+
+	virtual string usage()
+	{
+		return "OptFrame:Evaluator idx  evaluate   OptFrame:Solution idx  [output_variable] => OptFrame:Evaluation";
+	}
+
+	virtual bool handleComponent(string component)
+	{
+		return (component == Evaluator<R, ADS, DS>::idComponent());
+	}
+
+	virtual bool handleAction(string action)
+	{
+		return (action == "evaluate") || (action == "betterThan") || (action == "betterOrEquals");
+	}
+
+	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	{
+		cout << "Evaluator::doAction '" << content << "'" << endl;
+
+		Scanner scanner(content);
+
+		if (!scanner.hasNext())
+			return false;
+
+		Evaluator<R, ADS, DS>* ev;
+		hf.assign(ev, scanner.nextInt(), scanner.next());
+
+		if (!ev)
+			return false;
+
+		if (!scanner.hasNext())
+			return false;
+
+		string action = scanner.next();
+
+		if (!handleAction(action))
+			return false;
+
+		if (action == "evaluate")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			Solution<R, ADS>* s;
+			hf.assign(s, scanner.nextInt(), scanner.next());
+
+			if (!s)
+				return false;
+
+			Evaluation<DS>& e = ev->evaluate(*s);
+
+			return Action<R, ADS, DS>::addAndRegister(scanner, e, hf, dictionary);
+		}
+
+		// no action found!
+		return false;
+	}
+
+};
+
+}
 
 #endif /*OPTFRAME_EVALUATOR_HPP_*/

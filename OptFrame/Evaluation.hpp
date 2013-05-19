@@ -28,6 +28,7 @@ typedef int OPTFRAME_DEFAULT_DS;
 #include <cmath>
 
 #include "OptFrameComponent.hpp"
+#include "Action.hpp"
 
 using namespace std;
 
@@ -49,7 +50,7 @@ typedef bool Status; // 'unknown' = false, 'local optimum' = true
  */
 
 template<class DS = OPTFRAME_DEFAULT_DS>
-class Evaluation : OptFrameComponent
+class Evaluation : public OptFrameComponent
 {
 protected:
 	double objFunction;
@@ -168,7 +169,7 @@ public:
 
 	static string idComponent()
 	{
-		return "OptFrame:loadev";
+		return "OptFrame:Evaluation";
 	}
 
 	virtual string id() const
@@ -203,5 +204,88 @@ public:
 		return * new Evaluation<DS>(*this);
 	}
 };
+
+
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class EvaluationAction: public Action<R, ADS, DS>
+{
+public:
+
+	virtual ~EvaluationAction()
+	{
+	}
+
+	virtual string usage()
+	{
+		return "OptFrame:Evaluation idx  evaluation  output_variable\nOptFrame:Evaluation idx  print\n";
+	}
+
+	virtual bool handleComponent(string component)
+	{
+		return (component == Evaluation<DS>::idComponent());
+	}
+
+	virtual bool handleAction(string action)
+	{
+		return (action == "evaluation") || (action == "print");
+	}
+
+	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	{
+		//cout << "Evaluation::doAction '" << content << "'" << endl;
+
+		Scanner scanner(content);
+
+		if (!scanner.hasNext())
+			return false;
+
+		Evaluation<DS>* e;
+		hf.assign(e, scanner.nextInt(), scanner.next());
+
+		if (!e)
+			return false;
+
+		if (!scanner.hasNext())
+			return false;
+
+		string action = scanner.next();
+
+		if (!handleAction(action))
+			return false;
+
+		if (action == "evaluation")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			string var = scanner.next();
+
+			stringstream ss;
+			ss << fixed;
+			ss << e->evaluation();
+
+			dictionary[var] = ss.str();
+
+			return true;
+		}
+
+		if (action == "print")
+		{
+			e->print();
+
+			return true;
+		}
+
+		// no action found!
+		return false;
+	}
+
+};
+
+}
+
 
 #endif /*OPTFRAME_EVALUATION_HPP_*/

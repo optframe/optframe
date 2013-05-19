@@ -172,6 +172,8 @@
 
 // component
 
+#include "Modules/ComponentActionModule.hpp"
+#include "Modules/ComponentActionsModule.hpp"
 #include "Modules/ComponentBetterThanModule.hpp"
 #include "Modules/ComponentBuilderOfComponent.hpp"
 #include "Modules/ComponentBuildModule.hpp"
@@ -342,6 +344,8 @@ public:
 		// components
 		if ((prefix == "") || (prefix == "component"))
 		{
+			loadModule(new ComponentActionModule<R, ADS, DS> );
+			loadModule(new ComponentActionsModule<R, ADS, DS> );
 			loadModule(new ComponentBetterThanModule<R, ADS, DS> );
 			loadModule(new ComponentBuilderOfComponentModule<R, ADS, DS> );
 			loadModule(new ComponentBuildModule<R, ADS, DS> );
@@ -520,8 +524,11 @@ public:
 		return NULL;
 	}
 
-	void loadComponentBuilders()
+	void loadComponentBuilders() // TODO: and actions...
 	{
+		factory.actions.push_back(new EvaluatorAction<R, ADS, DS>);
+		factory.actions.push_back(new EvaluationAction<R, ADS, DS>);
+
 		// Base
 		factory.builders.push_back(new CloneConstructiveBuilder<R, ADS, DS> );
 
