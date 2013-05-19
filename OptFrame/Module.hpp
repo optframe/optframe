@@ -371,14 +371,27 @@ public:
 		return new string(result);
 	}
 
-	static string* defaultPreprocess(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string,string>& dictionary, const map< string,vector<string> >& ldictionary, string input_vars)
+	static string* defaultPreprocess(vector<PreprocessFunction<R,ADS,DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string,string>& dictionary, const map< string,vector<string> >& ldictionary, string input)
 	{
-		string input = "";
+		//stringstream input_func; // add spaces before and after '(', ')', '[', ']', '{', '}', ';' and ','
+		string input_func = ""; // add spaces before and after '(', ')'
+		for(unsigned i=0; i<input.size(); i++)
+		{
+			//if( (input.at(i)=='(') || (input.at(i)==')') || (input.at(i)=='[') || (input.at(i)==']') || (input.at(i)==',') || (input.at(i)=='{') || (input.at(i)=='}') || (input.at(i)==';') )
+			if( (input.at(i)=='(') || (input.at(i)==')') )
+			{
+				input_func += ' ';
+				input_func += input.at(i);
+				input_func += ' ';
+			}
+			else
+				input_func += input.at(i);
+		}
 
 		// ===============
 		// solve variables
 		// ===============
-		string* p_input = solveVars(dictionary, ldictionary, input_vars);
+		string* p_input = solveVars(dictionary, ldictionary, input_func);
 		if (!p_input)
 			return NULL;
 		else
@@ -387,14 +400,8 @@ public:
 			delete p_input;
 		}
 
-		stringstream input_func; // add spaces before and after '(', ')', '[', ']', '{', '}', ';' and ','
-		for(unsigned i=0; i<input.size(); i++)
-			if( (input.at(i)=='(') || (input.at(i)==')') || (input.at(i)=='[') || (input.at(i)==']') || (input.at(i)==',') || (input.at(i)=='{') || (input.at(i)=='}') || (input.at(i)==';') )
-				input_func << ' ' << input.at(i) << ' ';
-			else
-				input_func << input.at(i);
 
-		Scanner scanFunc(input_func.str());
+		Scanner scanFunc(input);
 
 		// Second, use the dictionary
 
