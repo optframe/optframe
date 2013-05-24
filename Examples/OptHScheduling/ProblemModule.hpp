@@ -20,6 +20,7 @@
 
 
 using namespace scannerpp;
+using namespace optframe;
 
 namespace OptHS
 {

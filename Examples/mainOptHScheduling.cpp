@@ -44,17 +44,20 @@ int main(int argc, char **argv)
 	optframe.loadModule(new OptHSProblemModule);
 	optframe.execute("system.read ../definitions.opt");
 	optframe.execute("problem.OptHS load Y Z M B E J");
-	optframe.execute("component.exec_constructive Constructive 0  sol-random");
+	optframe.execute("component.exec_constructive $Constructive 0  sol-random");
 	//optframe.execute("to_string OptFrame:Solution 0 optframe_str");
 	//optframe.execute("echo optframe_str");
-	optframe.execute("evaluate Evaluator 0 sol-random");
-	optframe.execute("print sol-random");
+	optframe.execute("evaluate $Evaluator 0 $sol-random");
+	optframe.execute("print $sol-random");
 	optframe.execute("component.create_list [ OptFrame:NS 0 ] OptFrame:NS ns_list");
-	optframe.execute("component.build OptFrame:LocalSearch:LAHC Evaluator 0  ns_list 1000 10000 50 my_lahc");
-	optframe.execute("component.exec_local_search 0 30  sol-random  my_lahc  best-solution  time");
-	optframe.execute("echo found best solution in time milliseconds");
-	optframe.execute("evaluate Evaluator 0 best-solution");
-	optframe.execute("print best-solution");
+	optframe.execute("component.build OptFrame:LocalSearch:LAHC $Evaluator 0  $ns_list 1000 10000 50 my_lahc");
+	optframe.execute("component.exec_local_search 0 30  $sol-random  $my_lahc  best-solution  time");
+	optframe.execute("echo found best solution in $time milliseconds");
+	optframe.execute("evaluate $Evaluator 0 $best-solution");
+	//optframe.execute("print $best-solution");
+	optframe.execute("to_string $best-solution bs_str");
+        optframe.execute("echo $bs_str");
+
 
 	//optframe.execute("system.read ../example-bi.opt");
 	cout << "Program ended successfully" << endl;

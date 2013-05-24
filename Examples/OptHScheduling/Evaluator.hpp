@@ -62,9 +62,16 @@ public:
 		//cout << "MEMBERS: " << p.members << endl;
 
 		// first MUST be 'Y' and 'M'
-		if (r.size() > 0)
+		if (r.size() > 3)
+		{
 			if ((r[0].first != 'Y') || (r[0].second != 'Z'))
-				fo_inv = 1000;
+				fo_inv += 1000;
+			if ((r[1].first != 'E') || (r[1].second != 'J'))
+				fo_inv += 1000;
+			if ((r[2].first != 'M') || (r[2].second != 'B'))
+				fo_inv += 1000;
+
+		}
 
 		for (unsigned i = 0; i < r.size(); i++)
 		{
