@@ -48,7 +48,7 @@ public:
 
 	virtual string usage() = 0;
 
-	virtual bool handleComponent(string component) = 0;
+	virtual bool handleComponent(OptFrameComponent& component) = 0;
 
 	virtual bool handleAction(string action) = 0;
 
@@ -75,6 +75,81 @@ public:
 		}
 
 		return true;
+	}
+
+};
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ComponentAction: public Action<R, ADS, DS>
+{
+public:
+
+	virtual ~ComponentAction()
+	{
+	}
+
+	virtual string usage()
+	{
+		return "OptFrame: idx  log  output_variable\nOptFrame: idx  print";
+	}
+
+	virtual bool handleComponent(OptFrameComponent& component)
+	{
+		return component.compatible(OptFrameComponent::idComponent());
+	}
+
+	virtual bool handleAction(string action)
+	{
+		return (action == "log") || (action == "print");
+	}
+
+	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	{
+		//cout << "Evaluation::doAction '" << content << "'" << endl;
+
+		Scanner scanner(content);
+
+		if (!scanner.hasNext())
+			return false;
+
+		OptFrameComponent* c;
+		hf.assign(c, scanner.nextInt(), scanner.next());
+
+		if (!c)
+			return false;
+
+		if (!scanner.hasNext())
+			return false;
+
+		string action = scanner.next();
+
+		if (!handleAction(action))
+			return false;
+
+		if (action == "log")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			string var = scanner.next();
+
+			stringstream ss;
+			ss << c->log();
+
+			dictionary[var] = ss.str();
+
+			return true;
+		}
+
+		if (action == "print")
+		{
+			c->print();
+
+			return true;
+		}
+
+		// no action found!
+		return false;
 	}
 
 };

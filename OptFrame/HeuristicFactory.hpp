@@ -308,7 +308,8 @@ public:
 	 */
 
 	// Check if 'base' inherits from 'component'
-	bool compareBase(string _base, string _component)
+	// EXAMPLE: compareBase("OptFrame:", "OptFrame:Evaluator") returns TRUE!
+	static bool compareBase(string _base, string _component)
 	{
 		if((_base.length()<3) || (_component.length()<3))
 		{
@@ -364,7 +365,7 @@ public:
 		return sameBase;
 	}
 
-	string typeOfList(string listId)
+	static string typeOfList(string listId)
 	{
 		Scanner scanner(listId);
 		scanner.useSeparators(" \t\n[]");

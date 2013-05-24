@@ -50,9 +50,15 @@ public:
 
 	bool run(vector<Module<R, ADS, DS>*>& allModules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)
 	{
-		cout << "available actions:" << endl;
+		cout << factory.actions.size() << " available action handlers:" << endl;
+		cout << "===============================================" << endl;
+		cout << "Component index  |  action  | action parameters" << endl;
+		cout << "===============================================" << endl;
+
 		for (unsigned a = 0; a < factory.actions.size(); a++)
-			cout << factory.actions[a]->usage() << endl;
+			cout << factory.actions[a]->usage() << endl << endl;
+
+		cout << "===============================================" << endl;
 
 		return true;
 	}

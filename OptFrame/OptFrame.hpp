@@ -526,6 +526,7 @@ public:
 
 	void loadComponentBuilders() // TODO: and actions...
 	{
+		factory.actions.push_back(new ComponentAction<R, ADS, DS>);
 		factory.actions.push_back(new EvaluatorAction<R, ADS, DS>);
 		factory.actions.push_back(new EvaluationAction<R, ADS, DS>);
 

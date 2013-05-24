@@ -289,9 +289,9 @@ public:
 		return "OptFrame:Evaluator idx  evaluate   OptFrame:Solution idx  [output_variable] => OptFrame:Evaluation";
 	}
 
-	virtual bool handleComponent(string component)
+	virtual bool handleComponent(OptFrameComponent& component)
 	{
-		return (component == Evaluator<R, ADS, DS>::idComponent());
+		return component.compatible(Evaluator<R, ADS, DS>::idComponent());
 	}
 
 	virtual bool handleAction(string action)
@@ -301,7 +301,7 @@ public:
 
 	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
-		cout << "Evaluator::doAction '" << content << "'" << endl;
+		//cout << "Evaluator::doAction '" << content << "'" << endl;
 
 		Scanner scanner(content);
 

@@ -90,7 +90,7 @@ public:
 	void print() const
 	{
 		cout << "TestSolution #"<<testsolution_number<<" ("<<testsolution_objects<<" in memory now): ";
-		cout << Solution<R, ADS>::r << endl;
+		cout << (*Solution<R, ADS>::r) << endl;
 	}
 
 	TestSolution<R, ADS>& operator= (const TestSolution<R, ADS>& s)

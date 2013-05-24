@@ -60,20 +60,17 @@ public:
 			return false;
 		}
 
-		string component = scanner.next();
+		OptFrameComponent* comp = factory.getNextComponent(scanner);
 
-
-		if (!scanner.hasNext())
+		if(!comp)
 		{
-			cout << "Usage: " << usage() << endl;
+			cout << "module " << id() << " error: NULL component!" << endl;
 			return false;
 		}
 
-		int index = scanner.nextInt();
-
-
 		if (!scanner.hasNext())
 		{
+			cout << "module " << id() << " error: missing action name!" << endl;
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
@@ -83,14 +80,9 @@ public:
 		//cout << "will look for action: '" << action << "'" << endl;
 
 		for(unsigned a=0; a<factory.actions.size(); a++)
-			if(factory.actions[a]->handleComponent(component) && factory.actions[a]->handleAction(action))
+			if(factory.actions[a]->handleComponent(*comp) && factory.actions[a]->handleAction(action))
 			{
-				//cout << "FOUND!" << endl;
-				stringstream sscontent;
-				sscontent << component << " " << index << " " << action << " ";
-				sscontent << scanner.rest();
-
-				return factory.actions[a]->doAction(sscontent.str(), factory, dictionary, ldictionary);
+				return factory.actions[a]->doAction(input, factory, dictionary, ldictionary);
 			}
 
 		return false;
