@@ -77,6 +77,29 @@ public:
 		return true;
 	}
 
+	static string formatDouble(double d)
+	{
+		stringstream ss;
+		ss << fixed;
+		ss << d;
+		return ss.str();
+	}
+
+	static string formatInt(int i)
+	{
+		stringstream ss;
+		ss << i;
+		return ss.str();
+	}
+
+	static string formatBool(bool b)
+	{
+		if(b)
+			return "true";
+		else
+			return "false";
+	}
+
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>

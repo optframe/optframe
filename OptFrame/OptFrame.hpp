@@ -277,6 +277,7 @@ public:
 	{
 		loadDefault();
 		loadComponentBuilders();
+		loadActions();
 	}
 
 	OptFrame(RandGen _rg) :
@@ -284,6 +285,7 @@ public:
 	{
 		loadDefault();
 		loadComponentBuilders();
+		loadActions();
 	}
 
 	virtual ~OptFrame()
@@ -524,12 +526,16 @@ public:
 		return NULL;
 	}
 
-	void loadComponentBuilders() // TODO: and actions...
+	void loadActions()
 	{
 		factory.actions.push_back(new ComponentAction<R, ADS, DS>);
 		factory.actions.push_back(new EvaluatorAction<R, ADS, DS>);
 		factory.actions.push_back(new EvaluationAction<R, ADS, DS>);
+		factory.actions.push_back(new MoveAction<R, ADS, DS>);
+	}
 
+	void loadComponentBuilders()
+	{
 		// Base
 		factory.builders.push_back(new CloneConstructiveBuilder<R, ADS, DS> );
 

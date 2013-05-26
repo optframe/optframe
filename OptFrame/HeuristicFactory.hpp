@@ -626,6 +626,10 @@ public:
 		for(unsigned i=0; i<builders.size(); i++)
 			delete builders.at(i);
 		builders.clear();
+
+		for(unsigned i=0; i<actions.size(); i++)
+			delete actions.at(i);
+		actions.clear();
 	}
 
 	bool drop(string type, int id)

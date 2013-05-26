@@ -212,7 +212,7 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class EvaluationAction: public ComponentAction<R, ADS, DS>
+class EvaluationAction: public Action<R, ADS, DS>
 {
 public:
 
@@ -265,11 +265,7 @@ public:
 
 			string var = scanner.next();
 
-			stringstream ss;
-			ss << fixed;
-			ss << e->evaluation();
-
-			dictionary[var] = ss.str();
+			dictionary[var] = Action<R, ADS, DS>::formatDouble(e->evaluation());
 
 			return true;
 		}

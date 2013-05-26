@@ -26,6 +26,8 @@
 
 #include "OptFrameComponent.hpp"
 
+#include "Action.hpp"
+
 using namespace std;
 
 typedef void OPTFRAME_DEFAULT_PROBLEM;
@@ -99,5 +101,135 @@ public:
 
 	virtual void print() const = 0;
 };
+
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class MoveAction: public Action<R, ADS, DS>
+{
+public:
+
+	virtual ~MoveAction()
+	{
+	}
+
+	virtual string usage()
+	{
+		string u;
+		u.append("OptFrame:Move idx  canBeApplied   OptFrame:Solution idx  [output_variable] => boolean\n");
+		u.append("OptFrame:Move idx  apply   OptFrame:Solution idx  [output_variable] => OptFrame:Move\n");
+		u.append("OptFrame:Move idx  apply_e  OptFrame:Evaluation idx   OptFrame:Solution idx  [output_variable] => OptFrame:Move\n");
+		return u;
+	}
+
+	virtual bool handleComponent(OptFrameComponent& component)
+	{
+		return component.compatible(Move<R, ADS, DS>::idComponent());
+	}
+
+	virtual bool handleAction(string action)
+	{
+		return (action == "canBeApplied") || (action == "apply") || (action == "apply_e");
+	}
+
+	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	{
+		//cout << "Move::doAction '" << content << "'" << endl;
+
+		Scanner scanner(content);
+
+		if (!scanner.hasNext())
+			return false;
+
+		Move<R, ADS, DS>* m;
+		hf.assign(m, scanner.nextInt(), scanner.next());
+
+		if (!m)
+			return false;
+
+		if (!scanner.hasNext())
+			return false;
+
+		string action = scanner.next();
+
+		if (!handleAction(action))
+			return false;
+
+		if (action == "canBeApplied")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			Solution<R, ADS>* s;
+			hf.assign(s, scanner.nextInt(), scanner.next());
+
+			if (!s)
+				return false;
+
+			bool b = m->canBeApplied(*s);
+
+			if (!scanner.hasNext())
+				return false;
+
+			string var = scanner.next();
+
+			dictionary[var] = Action<R, ADS, DS>::formatBool(b);
+
+			return true;
+		}
+
+		if (action == "apply")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			Solution<R, ADS>* s;
+			hf.assign(s, scanner.nextInt(), scanner.next());
+
+			if (!s)
+				return false;
+
+			Move<R, ADS, DS>& mrev = m->apply(*s);
+
+			return Action<R, ADS, DS>::addAndRegister(scanner, mrev, hf, dictionary);
+		}
+
+		if (action == "apply_e")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			Evaluation<DS>* e;
+			hf.assign(e, scanner.nextInt(), scanner.next());
+
+			if (!e)
+				return false;
+
+			// ------------------
+
+			if (!scanner.hasNext())
+				return false;
+
+			Solution<R, ADS>* s;
+			hf.assign(s, scanner.nextInt(), scanner.next());
+
+			if (!s)
+				return false;
+
+			Move<R, ADS, DS>& mrev = m->apply(*e, *s);
+
+			return Action<R, ADS, DS>::addAndRegister(scanner, mrev, hf, dictionary);
+		}
+
+
+		// no action found!
+		return false;
+	}
+
+};
+
+}
+
 
 #endif /*OPTFRAME_MOVE_HPP_*/
