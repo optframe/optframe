@@ -29,6 +29,7 @@
 #include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSPSwap.hpp"
 
 using namespace scannerpp;
+using namespace optframe;
 
 namespace TSP
 {
