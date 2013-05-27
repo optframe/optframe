@@ -68,4 +68,85 @@ public:
    }
 };
 
+
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class NSSeqAction: public Action<R, ADS, DS>
+{
+public:
+
+	virtual ~NSSeqAction()
+	{
+	}
+
+	virtual string usage()
+	{
+		string u;
+		u.append("OptFrame:NS:NSSeq idx  getIterator   OptFrame:Solution idx  [output_variable] => OptFrame:NSIterator");
+		return u;
+	}
+
+	virtual bool handleComponent(OptFrameComponent& component)
+	{
+		return component.compatible(NSSeq<R, ADS, DS>::idComponent());
+	}
+
+	virtual bool handleAction(string action)
+	{
+		return (action == "getIterator");
+	}
+
+	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	{
+		//cout << "NS::doAction '" << content << "'" << endl;
+
+		Scanner scanner(content);
+
+		if (!scanner.hasNext())
+			return false;
+
+		NSSeq<R, ADS, DS>* nsseq;
+		hf.assign(nsseq, scanner.nextInt(), scanner.next());
+
+		if (!nsseq)
+			return false;
+
+		if (!scanner.hasNext())
+			return false;
+
+		string action = scanner.next();
+
+		if (!handleAction(action))
+			return false;
+
+		if (action == "getIterator")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			Solution<R, ADS>* s;
+			hf.assign(s, scanner.nextInt(), scanner.next());
+
+			if (!s)
+				return false;
+
+			NSIterator<R, ADS, DS>& it = nsseq->getIterator(*s);
+
+			if (!scanner.hasNext())
+				return false;
+
+			return Action<R, ADS, DS>::addAndRegister(scanner, it, hf, dictionary);
+		}
+
+		// no action found!
+		return false;
+	}
+
+};
+
+}
+
+
 #endif /*OPTFRAME_NSSEQ_HPP_*/

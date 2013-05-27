@@ -23,6 +23,9 @@
 
 #include "Move.hpp"
 
+#include "OptFrameComponent.hpp"
+#include "Action.hpp"
+
 using namespace std;
 
 class IteratorOutOfBound
@@ -42,7 +45,7 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class NSIterator
+class NSIterator : public OptFrameComponent
 {
 public:
    virtual ~NSIterator()
@@ -53,7 +56,115 @@ public:
    virtual void next() = 0;
    virtual bool isDone() = 0;
    virtual Move<R, ADS, DS>& current() = 0;
+
+   static string idComponent()
+   {
+		return "OptFrame:NSIterator";
+   }
+
+   virtual string id() const
+   {
+      return idComponent();
+   }
 };
+
+
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class NSIteratorAction: public Action<R, ADS, DS>
+{
+public:
+
+	virtual ~NSIteratorAction()
+	{
+	}
+
+	virtual string usage()
+	{
+		string u;
+		u.append("OptFrame:NSIterator idx  first\n");
+		u.append("OptFrame:NSIterator idx  next\n");
+		u.append("OptFrame:NSIterator idx  isDone   [output_variable] => boolean\n");
+		u.append("OptFrame:NSIterator idx  current  [output_variable] => OptFrame:Move");
+		return u;
+	}
+
+	virtual bool handleComponent(OptFrameComponent& component)
+	{
+		return component.compatible(NSIterator<R, ADS, DS>::idComponent());
+	}
+
+	virtual bool handleAction(string action)
+	{
+		return (action == "first") || (action == "next") || (action == "isDone") || (action == "current");
+	}
+
+	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	{
+		//cout << "NSIterator::doAction '" << content << "'" << endl;
+
+		Scanner scanner(content);
+
+		if (!scanner.hasNext())
+			return false;
+
+		NSIterator<R, ADS, DS>* it;
+		hf.assign(it, scanner.nextInt(), scanner.next());
+
+		if (!it)
+			return false;
+
+		if (!scanner.hasNext())
+			return false;
+
+		string action = scanner.next();
+
+		if (!handleAction(action))
+			return false;
+
+		if (action == "first")
+		{
+			it->first();
+			return true;
+		}
+
+		if (action == "next")
+		{
+			it->next();
+			return true;
+		}
+
+		if (action == "isDone")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			string var = scanner.next();
+
+			dictionary[var] = Action<R, ADS, DS>::formatBool(it->isDone());
+
+			return true;
+		}
+
+		if (action == "current")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			Move<R, ADS, DS>& m = it->current();
+
+			return Action<R, ADS, DS>::addAndRegister(scanner, m, hf, dictionary);
+		}
+
+		// no action found!
+		return false;
+	}
+
+};
+
+}
 
 
 #endif //OPTFRAME_NSITERATOR_HPP_

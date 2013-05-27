@@ -533,6 +533,8 @@ public:
 		factory.actions.push_back(new EvaluationAction<R, ADS, DS>);
 		factory.actions.push_back(new MoveAction<R, ADS, DS>);
 		factory.actions.push_back(new NSAction<R, ADS, DS>);
+		factory.actions.push_back(new NSSeqAction<R, ADS, DS>);
+		factory.actions.push_back(new NSIteratorAction<R, ADS, DS>);
 	}
 
 	void loadComponentBuilders()
