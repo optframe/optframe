@@ -119,7 +119,7 @@ public:
 		string u;
 		u.append("OptFrame:Move idx  canBeApplied   OptFrame:Solution idx  [output_variable] => boolean\n");
 		u.append("OptFrame:Move idx  apply   OptFrame:Solution idx  [output_variable] => OptFrame:Move\n");
-		u.append("OptFrame:Move idx  apply_e  OptFrame:Evaluation idx   OptFrame:Solution idx  [output_variable] => OptFrame:Move\n");
+		u.append("OptFrame:Move idx  apply_e  OptFrame:Evaluation idx   OptFrame:Solution idx  [output_variable] => OptFrame:Move");
 		return u;
 	}
 

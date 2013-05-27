@@ -25,6 +25,7 @@
 #include "Solution.hpp"
 
 #include "OptFrameComponent.hpp"
+#include "Action.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NS: public OptFrameComponent
@@ -72,5 +73,109 @@ public:
 		return (s == idComponent()) || (OptFrameComponent::compatible(s));
 	}
 };
+
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class NSAction: public Action<R, ADS, DS>
+{
+public:
+
+	virtual ~NSAction()
+	{
+	}
+
+	virtual string usage()
+	{
+		string u;
+		u.append("OptFrame:NS idx  move   OptFrame:Solution idx  [output_variable] => OptFrame:Move\n");
+		u.append("OptFrame:NS idx  validMove   OptFrame:Solution idx  [output_variable] => OptFrame:Move|NULL");
+		return u;
+	}
+
+	virtual bool handleComponent(OptFrameComponent& component)
+	{
+		return component.compatible(NS<R, ADS, DS>::idComponent());
+	}
+
+	virtual bool handleAction(string action)
+	{
+		return (action == "move") || (action == "validMove");
+	}
+
+	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	{
+		//cout << "NS::doAction '" << content << "'" << endl;
+
+		Scanner scanner(content);
+
+		if (!scanner.hasNext())
+			return false;
+
+		NS<R, ADS, DS>* ns;
+		hf.assign(ns, scanner.nextInt(), scanner.next());
+
+		if (!ns)
+			return false;
+
+		if (!scanner.hasNext())
+			return false;
+
+		string action = scanner.next();
+
+		if (!handleAction(action))
+			return false;
+
+		if (action == "move")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			Solution<R, ADS>* s;
+			hf.assign(s, scanner.nextInt(), scanner.next());
+
+			if (!s)
+				return false;
+
+			Move<R, ADS, DS>& m = ns->move(*s);
+
+			if (!scanner.hasNext())
+				return false;
+
+			return Action<R, ADS, DS>::addAndRegister(scanner, m, hf, dictionary);
+		}
+
+		if (action == "validMove")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			Solution<R, ADS>* s;
+			hf.assign(s, scanner.nextInt(), scanner.next());
+
+			if (!s)
+				return false;
+
+			Move<R, ADS, DS>* m = ns->validMove(*s);
+
+			if (!scanner.hasNext())
+				return false;
+
+			if (m)
+				return Action<R, ADS, DS>::addAndRegister(scanner, *m, hf, dictionary);
+			else
+				return true; // not adding any component!
+		}
+
+
+		// no action found!
+		return false;
+	}
+
+};
+
+}
+
 
 #endif /*OPTFRAME_NS_HPP_*/
