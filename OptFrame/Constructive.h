@@ -51,4 +51,72 @@ public:
 	}
 };
 
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ConstructiveAction: public Action<R, ADS, DS>
+{
+public:
+
+	virtual ~ConstructiveAction()
+	{
+	}
+
+	virtual string usage()
+	{
+		return "OptFrame:Constructive idx  generateSolution  output_variable => OptFrame:Solution idx";
+	}
+
+	virtual bool handleComponent(OptFrameComponent& component)
+	{
+		return component.compatible(Constructive<R, ADS>::idComponent());
+	}
+
+	virtual bool handleAction(string action)
+	{
+		return (action == "generateSolution");
+	}
+
+	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	{
+		//cout << "Constructive::doAction '" << content << "'" << endl;
+
+		Scanner scanner(content);
+
+		if (!scanner.hasNext())
+			return false;
+
+		Constructive<R, ADS>* c;
+		hf.assign(c, scanner.nextInt(), scanner.next());
+
+		if (!c)
+			return false;
+
+		if (!scanner.hasNext())
+			return false;
+
+		string action = scanner.next();
+
+		if (!handleAction(action))
+			return false;
+
+		if (action == "generateSolution")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			Solution<R, ADS>& s = c->generateSolution();
+
+			return Action<R, ADS, DS>::addAndRegister(scanner, s, hf, dictionary);
+		}
+
+		// no action found!
+		return false;
+	}
+
+};
+
+}
+
 #endif /*OPTFRAME_CONSTRUCTIVE_H_*/
