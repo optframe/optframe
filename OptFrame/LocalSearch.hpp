@@ -130,4 +130,129 @@ public:
 };
 
 
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class LocalSearchAction: public Action<R, ADS, DS>
+{
+public:
+
+	virtual ~LocalSearchAction()
+	{
+	}
+
+	virtual string usage()
+	{
+		return "OptFrame:LocalSearch idx   search   OptFrame:Solution idx  timelimit  target_f  [output_variable] => OptFrame:Solution\nOptFrame:LocalSearch idx   search_e   OptFrame:Solution idx   OptFrame:Evaluation idx   timelimit  target_f   [output_variable] => OptFrame:Solution";
+	}
+
+	virtual bool handleComponent(OptFrameComponent& component)
+	{
+		return component.compatible(LocalSearch<R, ADS, DS>::idComponent());
+	}
+
+	virtual bool handleAction(string action)
+	{
+		return (action == "search") || (action == "search_e");
+	}
+
+	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	{
+		//cout << "LocalSearch::doAction '" << content << "'" << endl;
+
+		Scanner scanner(content);
+
+		if (!scanner.hasNext())
+			return false;
+
+		LocalSearch<R, ADS, DS>* ls;
+		hf.assign(ls, scanner.nextInt(), scanner.next());
+
+		if (!ls)
+			return false;
+
+		if (!scanner.hasNext())
+			return false;
+
+		string action = scanner.next();
+
+		if (!handleAction(action))
+			return false;
+
+		if (action == "search")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			Solution<R, ADS>* s;
+			hf.assign(s, scanner.nextInt(), scanner.next());
+
+			if (!s)
+				return false;
+
+			if (!scanner.hasNext())
+				return false;
+
+			double timelimit = scanner.nextDouble();
+
+			if (!scanner.hasNext())
+				return false;
+
+			double target_f = scanner.nextDouble();
+
+			Solution<R, ADS>& s2 = ls->search(*s, timelimit, target_f);
+
+			return Action<R, ADS, DS>::addAndRegister(scanner, s2, hf, dictionary);
+		}
+
+		if (action == "search_e")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			Solution<R, ADS>* s;
+			hf.assign(s, scanner.nextInt(), scanner.next());
+
+			if (!s)
+				return false;
+
+			if (!scanner.hasNext())
+				return false;
+
+			Evaluation<DS>* e;
+			hf.assign(e, scanner.nextInt(), scanner.next());
+
+			if (!e)
+				return false;
+
+			if (!scanner.hasNext())
+				return false;
+
+			double timelimit = scanner.nextDouble();
+
+			if (!scanner.hasNext())
+				return false;
+
+			double target_f = scanner.nextDouble();
+
+			pair<Solution<R, ADS>&, Evaluation<DS>&>& p = ls->search(*s, *e, timelimit, target_f);
+
+			Solution<R, ADS>& s2 = p.first;
+
+			delete& p.second;
+			delete& p;
+
+			return Action<R, ADS, DS>::addAndRegister(scanner, s2, hf, dictionary);
+		}
+
+		// no action found!
+		return false;
+	}
+
+};
+
+}
+
+
 #endif /* OPTFRAME_LOCAL_SEARCH_HPP_ */

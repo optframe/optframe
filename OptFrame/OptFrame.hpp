@@ -536,6 +536,7 @@ public:
 		factory.actions.push_back(new NSAction<R, ADS, DS>);
 		factory.actions.push_back(new NSSeqAction<R, ADS, DS>);
 		factory.actions.push_back(new NSIteratorAction<R, ADS, DS>);
+		factory.actions.push_back(new LocalSearchAction<R, ADS, DS>);
 	}
 
 	void loadComponentBuilders()
