@@ -32,6 +32,7 @@
 #include "PMedCap.h"
 
 using namespace std;
+using namespace optframe;
 
 int main(int argc, char **argv)
 {

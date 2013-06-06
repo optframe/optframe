@@ -30,6 +30,7 @@
 #include "DeltaMoveSwapSide.hpp"
 
 using namespace scannerpp;
+using namespace optframe;
 
 namespace EtII
 {
