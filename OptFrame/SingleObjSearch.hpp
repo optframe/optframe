@@ -108,4 +108,100 @@ public:
 };
 
 
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class SingleObjSearchAction: public Action<R, ADS, DS>
+{
+public:
+
+	virtual ~SingleObjSearchAction()
+	{
+	}
+
+	virtual string usage()
+	{
+		return "OptFrame:SingleObjSearch idx   search    timelimit  target_f  OptFrame:Solution idx|-1   OptFrame:Evaluation idx|-1   [output_variable] => OptFrame:Solution|NULL";
+	}
+
+	virtual bool handleComponent(OptFrameComponent& component)
+	{
+		return component.compatible(SingleObjSearch<R, ADS, DS>::idComponent());
+	}
+
+	virtual bool handleAction(string action)
+	{
+		return (action == "search");
+	}
+
+	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	{
+		//cout << "LocalSearch::doAction '" << content << "'" << endl;
+
+		Scanner scanner(content);
+
+		if (!scanner.hasNext())
+			return false;
+
+		SingleObjSearch<R, ADS, DS>* sios;
+		hf.assign(sios, scanner.nextInt(), scanner.next());
+
+		if (!sios)
+			return false;
+
+		if (!scanner.hasNext())
+			return false;
+
+		string action = scanner.next();
+
+		if (!handleAction(action))
+			return false;
+
+		if (action == "search")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			double timelimit = scanner.nextDouble();
+
+			if (!scanner.hasNext())
+				return false;
+
+			double target_f = scanner.nextDouble();
+
+			if (!scanner.hasNext())
+				return false;
+
+			Solution<R, ADS>* s;
+			hf.assign(s, scanner.nextInt(), scanner.next());
+
+			if (!scanner.hasNext())
+				return false;
+
+			Evaluation<DS>* e;
+			hf.assign(e, scanner.nextInt(), scanner.next());
+
+			pair<Solution<R, ADS>&, Evaluation<DS>&>* p = sios->search(timelimit, target_f, s, e);
+
+			if(!p)
+				return true;
+
+			Solution<R, ADS>& s2 = p->first;
+
+			delete& p->second;
+			delete p;
+
+			return Action<R, ADS, DS>::addAndRegister(scanner, s2, hf, dictionary);
+		}
+
+		// no action found!
+		return false;
+	}
+
+};
+
+}
+
+
 #endif /* OPTFRAME_SINGLE_OBJ_SEARCH_HPP_ */
