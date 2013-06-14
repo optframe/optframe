@@ -236,6 +236,13 @@ public:
 		return *new NSITERATOR(r, ads, p);
 	}
 
+	virtual string toString() const
+	{
+		stringstream ss;
+		ss << "NSSeqVRPSwap1_1 with move: " << MOVE::idComponent();
+		return ss.str();
+	}
+
 	virtual void print()
 	{
 		cout << "NSSeqVRPSwap1_1 with move: " << MOVE::idComponent();

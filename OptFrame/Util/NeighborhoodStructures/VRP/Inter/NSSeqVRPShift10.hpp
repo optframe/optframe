@@ -265,6 +265,13 @@ public:
 		return *new NSITERATOR(r, ads, p);
 	}
 
+	virtual string toString() const
+	{
+		stringstream ss;
+		ss << "NSSeqVRPShift10 with move: " << MOVE::idComponent();
+		return ss.str();
+	}
+
 	virtual void print()
 	{
 		cout << "NSSeqVRPShift10 with move: " << MOVE::idComponent();
