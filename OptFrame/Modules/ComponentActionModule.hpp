@@ -85,6 +85,7 @@ public:
 				return factory.actions[a]->doAction(input, factory, dictionary, ldictionary);
 			}
 
+        cout << "component.action error: component '" << comp->id() << "' and action '" << action << "' not found!" << endl;
 		return false;
 	}
 

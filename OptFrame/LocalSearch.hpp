@@ -164,40 +164,64 @@ public:
 		Scanner scanner(content);
 
 		if (!scanner.hasNext())
+		{
+            cout << "LocalSearch action: missing component!" << endl;
 			return false;
+		}
 
 		LocalSearch<R, ADS, DS>* ls;
 		hf.assign(ls, scanner.nextInt(), scanner.next());
 
 		if (!ls)
+		{
+            cout << "LocalSearch action: invalid component!" << endl;
 			return false;
+		}
 
 		if (!scanner.hasNext())
+		{
+            cout << "LocalSearch action: missing action!" << endl;
 			return false;
+		}
 
 		string action = scanner.next();
 
 		if (!handleAction(action))
+		{
+            cout << "cannot handle action '" << action << "'" << endl;
 			return false;
+		}
 
 		if (action == "search")
 		{
 			if (!scanner.hasNext())
+			{
+				cout << "missing OptFrame:Solution id  timelimit  target_f  return_variable" << endl;
 				return false;
+			}
 
 			Solution<R, ADS>* s;
 			hf.assign(s, scanner.nextInt(), scanner.next());
 
 			if (!s)
+			{
+				cout << "invalid input solution!" << endl;
 				return false;
+			}
 
 			if (!scanner.hasNext())
+			{
+				cout << "missing timelimit  target_f  return_variable" << endl;
 				return false;
+			}
 
 			double timelimit = scanner.nextDouble();
 
 			if (!scanner.hasNext())
+			{
+				cout << "missing  target_f  return_variable" << endl;
 				return false;
+			}
 
 			double target_f = scanner.nextDouble();
 
