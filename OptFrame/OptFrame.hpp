@@ -564,6 +564,7 @@ public:
 		factory.builders.push_back(new BasicILSPerturbationBuilder<R, ADS, DS> );
 		factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<R, ADS, DS> );
 		factory.builders.push_back(new ILSLPerturbationLPlus2Builder<R, ADS, DS> );
+		factory.builders.push_back(new ILSLPerturbationLPlus2ProbBuilder<R, ADS, DS> );
 		factory.builders.push_back(new GRASPBuilder<R, ADS, DS> );
 		factory.builders.push_back(new BasicVNSBuilder<R, ADS, DS> );
 		factory.builders.push_back(new ReducedVNSBuilder<R, ADS, DS> );
