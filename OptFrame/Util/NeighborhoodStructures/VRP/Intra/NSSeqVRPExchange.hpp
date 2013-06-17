@@ -74,7 +74,8 @@ public:
 		return all_positive && (rep.at(r).size() >= 2);
 	}
 
-	virtual void updateNeighStatus(ADS& ads){
+	virtual void updateNeighStatus(ADS& ads)
+	{
 
 	}
 
@@ -102,14 +103,13 @@ public:
 	}
 };
 
-
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPExchange<T, ADS, DS>, class P = OPTFRAME_DEFAULT_PROBLEM>
-class NSIteratorVRPExchange: public NSIterator<vector<vector<T> >, ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPExchange<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+class NSIteratorVRPExchange: public NSIterator<vector<vector<T> > , ADS, DS>
 {
 
 	typedef vector<vector<T> > Routes;
 
-private:
+protected:
 
 	MOVE* m;
 	int index;
@@ -119,7 +119,7 @@ private:
 	P* p; // has to be the last
 public:
 
-	NSIteratorVRPExchange(const Routes& _r, P* _p = NULL) :
+	NSIteratorVRPExchange(const Routes& _r, const ADS& _ads, P* _p = NULL) :
 		rep(_r), p(_p)
 	{
 		index = 0;
@@ -180,9 +180,8 @@ public:
 	}
 };
 
-
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPExchange<T, ADS, DS>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPExchange<T, ADS, DS, MOVE, P> >
-class NSSeqVRPExchange: public NSSeq<vector<vector<T> >, ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPExchange<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPExchange<T, ADS, DS, MOVE, P> >
+class NSSeqVRPExchange: public NSSeq<vector<vector<T> > , ADS, DS>
 {
 	typedef vector<vector<T> > Routes;
 
@@ -219,9 +218,9 @@ public:
 		return *new MOVE(r, c1, c2, p);
 	}
 
-	virtual NSIteratorVRPExchange<T, ADS, DS, MOVE, P>& getIterator(const Routes& r, const ADS&)
+	virtual NSITERATOR& getIterator(const Routes& r, const ADS& ads)
 	{
-		return *new NSITERATOR(r, p);
+		return *new NSITERATOR(r, ads, p);
 	}
 
 	virtual string toString() const

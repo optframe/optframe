@@ -72,7 +72,8 @@ public:
 		return all_positive && (c != pos) && (c + 1 != pos) && (c + 2 != pos);
 	}
 
-	virtual void updateNeighStatus(ADS& ads){
+	virtual void updateNeighStatus(ADS& ads)
+	{
 
 	}
 
@@ -129,14 +130,13 @@ public:
 	}
 };
 
-
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPOrOpt2<T, ADS, DS>, class P = OPTFRAME_DEFAULT_PROBLEM>
-class NSIteratorVRPOrOpt2: public NSIterator<vector<vector<T> >, ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPOrOpt2<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+class NSIteratorVRPOrOpt2: public NSIterator<vector<vector<T> > , ADS, DS>
 {
 
 	typedef vector<vector<T> > Routes;
 
-private:
+protected:
 
 	MOVE* m;
 	vector<MOVE*> moves;
@@ -146,7 +146,7 @@ private:
 	P* p; // has to be the last
 public:
 
-	NSIteratorVRPOrOpt2(const Routes& _r, P* _p = NULL) :
+	NSIteratorVRPOrOpt2(const Routes& _r, const ADS& _ads, P* _p = NULL) :
 		rep(_r), p(_p)
 	{
 		m = NULL;
@@ -212,9 +212,8 @@ public:
 	}
 };
 
-
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPOrOpt2<T, ADS, DS>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPOrOpt2<T, ADS, DS, MOVE, P> >
-class NSSeqVRPOrOpt2: public NSSeq<vector<vector<T> >, ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPOrOpt2<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPOrOpt2<T, ADS, DS, MOVE, P> >
+class NSSeqVRPOrOpt2: public NSSeq<vector<vector<T> > , ADS, DS>
 {
 	typedef vector<vector<T> > Routes;
 
@@ -250,9 +249,9 @@ public:
 		return *new MOVE(r, c, pos, p);
 	}
 
-	virtual NSIteratorVRPOrOpt2<T, ADS, DS, MOVE, P>& getIterator(const Routes& r, const ADS&)
+	virtual NSITERATOR& getIterator(const Routes& r, const ADS& ads)
 	{
-		return *new NSITERATOR(r, p);
+		return *new NSITERATOR(r, ads, p);
 	}
 
 	virtual string toString() const

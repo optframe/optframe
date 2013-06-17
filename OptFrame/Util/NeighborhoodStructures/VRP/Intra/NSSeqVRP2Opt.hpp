@@ -109,13 +109,12 @@ public:
 	}
 };
 
-
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRP2Opt<T, ADS, DS>, class P = OPTFRAME_DEFAULT_PROBLEM>
-class NSIteratorVRP2Opt: public NSIterator<vector<vector<T> >, ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRP2Opt<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+class NSIteratorVRP2Opt: public NSIterator<vector<vector<T> > , ADS, DS>
 {
 	typedef vector<vector<T> > Routes;
 
-private:
+protected:
 
 	MOVE* m;
 	int index;
@@ -126,7 +125,7 @@ private:
 
 public:
 
-	NSIteratorVRP2Opt(const Routes& _r, P* _p = NULL) :
+	NSIteratorVRP2Opt(const Routes& _r, const ADS& _ads, P* _p = NULL) :
 		rep(_r), p(_p)
 	{
 		index = 0;
@@ -187,9 +186,8 @@ public:
 	}
 };
 
-
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRP2Opt<T, ADS, DS>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRP2Opt<T, ADS, DS, MOVE, P> >
-class NSSeqVRP2Opt: public NSSeq<vector<vector<T> >, ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRP2Opt<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRP2Opt<T, ADS, DS, MOVE, P> >
+class NSSeqVRP2Opt: public NSSeq<vector<vector<T> > , ADS, DS>
 {
 	typedef vector<vector<T> > Routes;
 
@@ -226,9 +224,9 @@ public:
 		return *new MOVE(r, p1, p2, p);
 	}
 
-	virtual NSIteratorVRP2Opt<T, ADS, DS, MOVE, P>& getIterator(const Routes& r, const ADS&)
+	virtual NSITERATOR& getIterator(const Routes& r, const ADS& ads)
 	{
-		return *new NSITERATOR (r, p);
+		return *new NSITERATOR(r, ads, p);
 	}
 
 	virtual string toString() const
