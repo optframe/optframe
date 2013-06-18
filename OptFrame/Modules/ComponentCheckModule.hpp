@@ -416,6 +416,8 @@ public:
 				return false;
 			}
 
+            cout << "component.check module: testing " << constructive->toString() << endl;
+
 			for (int iter = 1; iter <= iterMax; iter++)
 			{
 				message(lConstructive.at(c), iter, "generating solution.");
@@ -472,6 +474,8 @@ public:
 				cout << "module " << id() << " error: NULL OptFrame:Move!" << endl;
 				return false;
 			}
+
+            cout << "component.check module: testing " << pmove->toString() << endl;
 
 			for (unsigned id_s = 0; id_s < solutions.size(); id_s++)
 			{
@@ -694,6 +698,8 @@ public:
 				return false;
 			}
 
+            cout << "component.check module: testing " << ns->toString() << endl;
+
 			for (int iter = 1; iter <= iterMax; iter++)
 			{
 				message(lNS.at(id_ns), iter, "starting tests!");
@@ -710,6 +716,8 @@ public:
 					Solution<R, ADS>& s = *solutions.at(id_s);
 
 					Move<R, ADS, DS>& move = ns->move(s);
+                    if(verbose)
+                        move.print();
 
 					if (!move.canBeApplied(s))
 					{
@@ -977,6 +985,8 @@ public:
 				cout << "module " << id() << " error: NULL OptFrame:NS:NSSeq!" << endl;
 				return false;
 			}
+
+            cout << "component.check module: testing " << nsseq->toString() << endl;
 
 			int countMoves = 0;
 			int countValidMoves = 0;
