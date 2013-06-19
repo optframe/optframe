@@ -213,6 +213,10 @@ public:
 			return false;
 		}
 
+        Constructive<R, ADS>* exConstructive = NULL;
+        vector<Constructive<R, ADS>*> lConstructiveComp = assignVector(lConstructive, exConstructive, factory);
+
+
 		// -------------------
 		//     Evaluator
 		// -------------------
@@ -234,6 +238,10 @@ public:
 			cout << "module " << id() << " error: couldn't read list of OptFrame:Evaluator!" << endl;
 			return false;
 		}
+
+        Evaluator<R, ADS, DS>* exEvaluator = NULL;
+        vector<Evaluator<R, ADS, DS>*> lEvaluatorComp = assignVector(lEvaluator, exEvaluator, factory);
+
 
 		// -------------------
 		//        Move
@@ -257,6 +265,10 @@ public:
 			return false;
 		}
 
+        Move<R, ADS, DS>* exMove = NULL;
+        vector<Move<R, ADS, DS>*> lMoveComp = assignVector(lMove, exMove, factory);
+
+
 		// -------------------
 		//        NS
 		// -------------------
@@ -278,6 +290,10 @@ public:
 			cout << "module " << id() << " error: couldn't read list of OptFrame:NS!" << endl;
 			return false;
 		}
+
+        NS<R, ADS, DS>* exNS = NULL;
+        vector<NS<R, ADS, DS>*> lNSComp = assignVector(lNS, exNS, factory);
+
 
 		// -------------------
 		//     NSSeq
@@ -301,6 +317,9 @@ public:
 			return false;
 		}
 
+        NSSeq<R, ADS, DS>* exNSSeq = NULL;
+        vector<NSSeq<R, ADS, DS>*> lNSSeqComp = assignVector(lNSSeq, exNSSeq, factory);
+
 		// -------------------
 		//     NSEnum
 		// -------------------
@@ -322,6 +341,9 @@ public:
 			cout << "module " << id() << " error: couldn't read list of OptFrame:NS:NSSeq:NSEnum!" << endl;
 			return false;
 		}
+
+        NSEnum<R, ADS, DS>* exNSEnum = NULL;
+        vector<NSEnum<R, ADS, DS>*> lNSEnumComp = assignVector(lNSEnum, exNSEnum, factory);
 
 		// -------------------
 		//     ADSManager
@@ -345,6 +367,9 @@ public:
 			cout << "module " << id() << " error: couldn't read list of OptFrame:ADSManager!" << endl;
 			return false;
 		}
+
+        ADSManager<R, ADS>* exADSManager = NULL;
+        vector<ADSManager<R, ADS>*> lADSManagerComp = assignVector(lADSManager, exADSManager, factory);
 
 		// cleanup auxiliar list definitions
 		Module<R, ADS, DS>::undefine("_aux_check_lconstructive", dictionary, ldictionary);
@@ -1272,80 +1297,111 @@ public:
 		cout << "           SUMMARY             " << endl;
 		cout << "===============================" << endl << endl;
 
-		printSummary(timeConstructive, "Constructive", "testing construction of initial solution");
+		printSummary(convertVector(lConstructiveComp), timeConstructive, "Constructive", "testing construction of initial solution");
 
 		if (adsMan)
-			printSummary(timeInitializeADS, "ADSManager::initializeADS()", "testing lazy initializeADS in solutions");
+			printSummary(convertVector(lADSManagerComp), timeInitializeADS, "ADSManager::initializeADS()", "testing lazy initializeADS in solutions");
 		else
 			cout << endl << "No ADSManager was tested." << endl << endl;
 
-		printSummary(fullTimeEval, "Evaluators", "testing full evaluate(s) of a solution");
+		printSummary(convertVector(lEvaluatorComp),fullTimeEval, "Evaluators", "testing full evaluate(s) of a solution");
 
-		printSummary(timeNSApply, "NS", "testing time of move apply(s)");
+		printSummary(convertVector(lNSComp), timeNSApply, "NS", "testing time of move apply(s)");
 
-		printSummary(timeNSCostApply, "NS", "testing time of cost based on move apply(s)");
+		printSummary(convertVector(lNSComp), timeNSCostApply, "NS", "testing time of cost based on move apply(s)");
 
-		printSummary(timeNSCostApplyDelta, "NS", "testing time of cost based on move apply(e, s)");
+		printSummary(convertVector(lNSComp), timeNSCostApplyDelta, "NS", "testing time of cost based on move apply(e, s)");
 
-		printSummary(timeNSCost, "NS", "testing time of move cost()");
+		printSummary(convertVector(lNSComp), timeNSCost, "NS", "testing time of move cost()");
 
-		printSummary(timeNSEstimatedCost, "NS", "testing time of move estimatedCost()");
+		printSummary(convertVector(lNSComp), timeNSEstimatedCost, "NS", "testing time of move estimatedCost()");
 
-		printSummary(errorNSEstimatedCost, "NS", "testing error (%) of move estimatedCost()");
+		printSummary(convertVector(lNSComp), errorNSEstimatedCost, "NS", "testing error (%) of move estimatedCost()");
 
-		printSummarySimple(vCountMoves, nSolNSSeq, "NSSeq", "counting moves of NSSeq iterator");
+		printSummarySimple(convertVector(lNSSeqComp), vCountMoves, nSolNSSeq, "NSSeq", "counting moves of NSSeq iterator");
 
-		printSummarySimple(vCountValidMoves, nSolNSSeq, "NSSeq", "counting valid moves of NSSeq iterator");
+		printSummarySimple(convertVector(lNSSeqComp), vCountValidMoves, nSolNSSeq, "NSSeq", "counting valid moves of NSSeq iterator");
 
 		cout << "component.check module: tests finished successfully!" << endl;
 		return true;
 	}
 
-	void printSummary(const vector<pair<int, double> >& values, string type, string title)
+    template<class T>
+    vector<T*> assignVector(const vector<string> lComponents, T* type, HeuristicFactory<R, ADS, DS>& factory)
+    {
+         vector<T*> vComp;
+         for(unsigned i=0; i<lComponents.size(); i++)
+         {
+			Scanner scan(lComponents.at(i));
+            type = NULL;
+			factory.assign(type, scan.nextInt(), scan.next()); // reversed!
+
+			if (!type)
+			{
+				cout << "module " << id() << " warning: NULL component " << lComponents[i] << "!" << endl;
+			}
+            else
+                vComp.push_back(type);
+        }
+
+        return vComp;
+    }
+
+    template<class T>
+    vector<OptFrameComponent*> convertVector(const vector<T*>& v)
+    {
+        vector<OptFrameComponent*> vcomp;
+        for(unsigned c=0; c<v.size(); c++)
+            vcomp.push_back((OptFrameComponent*)(v[c]));
+
+        return vcomp;
+    }
+
+	void printSummary(const vector<OptFrameComponent*>& vcomp, const vector<pair<int, double> >& values, string type, string title)
 	{
 		printf("---------------------------------\n");
 		cout << "|" << type << "|=" << values.size() << "\t" << title << endl;
 		printf("---------------------------------\n");
-		printf("#id\t#tests\tavg(ms)\tsum(ms)\n");
+		printf("#id\ttitle\t#tests\tavg(ms)\tsum(ms)\n");
 		double avg = 0;
 		int validValues = 0;
 		for (unsigned id = 0; id < values.size(); id++)
 		{
 			if (values[id].first > 0)
 			{
-				printf("#%d\t%d\t%.4f\t%.4f\n", ((int) id), values[id].first, (values[id].second / values[id].first), values[id].second);
+				printf("#%d\t%s\t%d\t%.4f\t%.4f\n", ((int) id), vcomp[id]->toString().c_str(), values[id].first, (values[id].second / values[id].first), values[id].second);
 				avg += (values[id].second / values[id].first);
 				validValues++;
 			}
 			else
-				printf("#%d\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int) id), 0);
+				printf("#%d\t%s\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int) id),  vcomp[id]->toString().c_str(), 0);
 		}
 		printf("---------------------------------\n");
-		printf("all\t-\t%.4f\t-\n", (avg / validValues));
+		printf("all\t*\t-\t%.4f\t-\n", (avg / validValues));
 		cout << endl;
 	}
 
-	void printSummarySimple(const vector<int>& values, int numTests, string type, string title)
+	void printSummarySimple(const vector<OptFrameComponent*>& vcomp, const vector<int>& values, int numTests, string type, string title)
 	{
 		printf("---------------------------------\n");
 		cout << "|" << type << "|=" << values.size() << "\t" << title << endl;
 		printf("---------------------------------\n");
-		printf("#id\t#tests\tavg of %d tests\n", numTests);
+		printf("#id\ttitle\t#tests\tavg of %d tests\n", numTests);
 		double avg = 0;
 		int validValues = 0;
 		for (unsigned id = 0; id < values.size(); id++)
 		{
 			if (values[id] > 0)
 			{
-				printf("#%d\t%d\t%d\n", ((int) id), values[id], (values[id] / numTests));
+				printf("#%d\t%s\t%d\t%d\n", ((int) id), vcomp[id]->toString().c_str(), values[id], (values[id] / numTests));
 				avg += (values[id] / numTests);
 				validValues++;
 			}
 			else
-				printf("#%d\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int) id), 0);
+				printf("#%d\t%s\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int) id),  vcomp[id]->toString().c_str(), 0);
 		}
 		printf("---------------------------------\n");
-		printf("all\t-\t%.4f\t-\n", (avg / validValues));
+		printf("all\t*\t-\t%.4f\t-\n", (avg / validValues));
 		cout << endl;
 	}
 
