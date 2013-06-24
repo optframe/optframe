@@ -177,6 +177,7 @@
 #include "Modules/ComponentBetterThanModule.hpp"
 #include "Modules/ComponentBuilderOfComponent.hpp"
 #include "Modules/ComponentBuildModule.hpp"
+#include "Modules/ComponentCastModule.hpp"
 #include "Modules/ComponentCheckModule.hpp"
 #include "Modules/ComponentCreateListModule.hpp"
 #include "Modules/ComponentDropModule.hpp"
@@ -352,6 +353,7 @@ public:
 			loadModule(new ComponentBetterThanModule<R, ADS, DS> );
 			loadModule(new ComponentBuilderOfComponentModule<R, ADS, DS> );
 			loadModule(new ComponentBuildModule<R, ADS, DS> );
+			loadModule(new ComponentCastModule<R, ADS, DS> );
 			loadModule(new ComponentCheckModule<R, ADS, DS> );
 			loadModule(new ComponentCreateListModule<R, ADS, DS> );
 			loadModule(new ComponentDropModule<R, ADS, DS> );

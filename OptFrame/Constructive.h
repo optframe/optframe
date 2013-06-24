@@ -83,6 +83,50 @@ public:
 		return (action == "generateSolution");
 	}
 
+	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& d)
+	{
+		if(!handleComponent(type))
+		{
+			cout << "ConstructiveAction::doCast error: can't handle component type '" << type << " " << id << "'" << endl;
+			return false;
+		}
+
+		OptFrameComponent* comp = hf.components[component].at(id);
+
+		if(!comp)
+		{
+			cout << "ConstructiveAction::doCast error: NULL component '" << component << " " << id << "'" << endl;
+			return false;
+		}
+
+		if(!OptFrameComponent::compareBase(comp->id(), type))
+		{
+			cout << "ConstructiveAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
+			return false;
+		}
+
+		// remove old component from factory
+		hf.components[component].at(id) = NULL;
+
+		// cast object to lower type
+		OptFrameComponent* final = NULL;
+
+		if(type == Constructive<R, ADS>::idComponent())
+		{
+			final = (Constructive<R, ADS>*) comp;
+		}
+		else
+		{
+			cout << "ConstructiveAction::doCast error: no cast for type '" << type << "'" << endl;
+			return false;
+		}
+
+		// add new component
+		Scanner scanner(variable);
+		return ComponentAction<R, ADS, DS>::addAndRegister(scanner, *final, hf, d);
+
+	}
+
 	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 		//cout << "Constructive::doAction '" << content << "'" << endl;

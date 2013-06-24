@@ -57,6 +57,8 @@ public:
 
 	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary) = 0;
 
+	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& d) = 0;
+
 	static bool addAndRegister(Scanner& scanner, OptFrameComponent& comp, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& d)
 	{
 		int index = hf.addComponent(comp);
@@ -132,6 +134,41 @@ public:
 	virtual bool handleAction(string action)
 	{
 		return (action == "log") || (action == "print");
+	}
+
+	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& d)
+	{
+		if(!handleComponent(type))
+		{
+			cout << "ComponentAction::doCast error: can't handle component type '" << type << " " << id << "'" << endl;
+			return false;
+		}
+
+		OptFrameComponent* comp = hf.components[component].at(id);
+
+		if(!comp)
+		{
+			cout << "ComponentAction::doCast error: NULL component '" << component << " " << id << "'" << endl;
+			return false;
+		}
+
+		// cast object to upper base
+
+		if(!OptFrameComponent::compareBase(comp->id(), type))
+		{
+			cout << "ComponentAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
+			return false;
+		}
+
+		// cast object to lower type
+		OptFrameComponent* final = (OptFrameComponent*) comp;
+
+		// remove old component from factory
+		hf.components[component].at(id) = NULL;
+
+		// add new component
+		Scanner scanner(variable);
+		return ComponentAction<R, ADS, DS>::addAndRegister(scanner, *final, hf, d);
 	}
 
 	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)

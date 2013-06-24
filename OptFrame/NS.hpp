@@ -109,6 +109,49 @@ public:
 		return (action == "move") || (action == "validMove");
 	}
 
+	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& d)
+	{
+		if(!handleComponent(type))
+		{
+			cout << "NSAction::doCast error: can't handle component type '" << type << " " << id << "'" << endl;
+			return false;
+		}
+
+		OptFrameComponent* comp = hf.components[component].at(id);
+
+		if(!comp)
+		{
+			cout << "NSAction::doCast error: NULL component '" << component << " " << id << "'" << endl;
+			return false;
+		}
+
+		if(!OptFrameComponent::compareBase(comp->id(), type))
+		{
+			cout << "NSAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
+			return false;
+		}
+
+		// remove old component from factory
+		hf.components[component].at(id) = NULL;
+
+		// cast object to lower type
+		OptFrameComponent* final = NULL;
+
+		if(type == NS<R, ADS, DS>::idComponent())
+		{
+			final = (NS<R, ADS, DS>*) comp;
+		}
+		else
+		{
+			cout << "NSAction::doCast error: no cast for type '" << type << "'" << endl;
+			return false;
+		}
+
+		// add new component
+		Scanner scanner(variable);
+		return ComponentAction<R, ADS, DS>::addAndRegister(scanner, *final, hf, d);
+	}
+
 	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 		//cout << "NS::doAction '" << content << "'" << endl;

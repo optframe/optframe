@@ -162,6 +162,49 @@ public:
 		return (action == "search") || (action == "search_e");
 	}
 
+	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& d)
+	{
+		if(!handleComponent(type))
+		{
+			cout << "LocalSearchAction::doCast error: can't handle component type '" << type << " " << id << "'" << endl;
+			return false;
+		}
+
+		OptFrameComponent* comp = hf.components[component].at(id);
+
+		if(!comp)
+		{
+			cout << "LocalSearchAction::doCast error: NULL component '" << component << " " << id << "'" << endl;
+			return false;
+		}
+
+		if(!OptFrameComponent::compareBase(comp->id(), type))
+		{
+			cout << "LocalSearchAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
+			return false;
+		}
+
+		// remove old component from factory
+		hf.components[component].at(id) = NULL;
+
+		// cast object to lower type
+		OptFrameComponent* final = NULL;
+
+		if(type == LocalSearch<R, ADS, DS>::idComponent())
+		{
+			final = (LocalSearch<R, ADS, DS>*) comp;
+		}
+		else
+		{
+			cout << "LocalSearchAction::doCast error: no cast for type '" << type << "'" << endl;
+			return false;
+		}
+
+		// add new component
+		Scanner scanner(variable);
+		return ComponentAction<R, ADS, DS>::addAndRegister(scanner, *final, hf, d);
+	}
+
 	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 		//cout << "LocalSearch::doAction '" << content << "'" << endl;

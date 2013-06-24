@@ -97,10 +97,12 @@ public:
 		return NULL;
 	}
 
+	/*
 	optframe::Action<R, ADS, DS>* getAction() // TODO: STUB!
 	{
 		return actions[0];
 	}
+	*/
 
 	bool inComponents(OptFrameComponent* c)
 	{
