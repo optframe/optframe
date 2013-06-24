@@ -94,6 +94,11 @@ public:
 		return u;
 	}
 
+	virtual bool handleComponent(string type)
+	{
+		return OptFrameComponent::compareBase(NS<R, ADS, DS>::idComponent(), type);
+	}
+
 	virtual bool handleComponent(OptFrameComponent& component)
 	{
 		return component.compatible(NS<R, ADS, DS>::idComponent());

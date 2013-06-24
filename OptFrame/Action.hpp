@@ -48,6 +48,9 @@ public:
 
 	virtual string usage() = 0;
 
+
+	virtual bool handleComponent(string type) = 0;
+
 	virtual bool handleComponent(OptFrameComponent& component) = 0;
 
 	virtual bool handleAction(string action) = 0;
@@ -114,6 +117,11 @@ public:
 	virtual string usage()
 	{
 		return "OptFrame: idx  log  output_variable\nOptFrame: idx  print";
+	}
+
+	virtual bool handleComponent(string type)
+	{
+		return OptFrameComponent::compareBase(OptFrameComponent::idComponent(), type);
 	}
 
 	virtual bool handleComponent(OptFrameComponent& component)

@@ -123,6 +123,11 @@ public:
 		return u;
 	}
 
+	virtual bool handleComponent(string type)
+	{
+		return OptFrameComponent::compareBase(Move<R, ADS, DS>::idComponent(), type);
+	}
+
 	virtual bool handleComponent(OptFrameComponent& component)
 	{
 		return component.compatible(Move<R, ADS, DS>::idComponent());

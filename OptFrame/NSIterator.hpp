@@ -91,6 +91,11 @@ public:
 		return u;
 	}
 
+	virtual bool handleComponent(string type)
+	{
+		return OptFrameComponent::compareBase(NSIterator<R, ADS, DS>::idComponent(), type);
+	}
+
 	virtual bool handleComponent(OptFrameComponent& component)
 	{
 		return component.compatible(NSIterator<R, ADS, DS>::idComponent());

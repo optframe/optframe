@@ -125,6 +125,11 @@ public:
 		return "OptFrame:SingleObjSearch idx   search    timelimit  target_f  OptFrame:Solution idx|-1   OptFrame:Evaluation idx|-1   [output_variable] => OptFrame:Solution|NULL";
 	}
 
+	virtual bool handleComponent(string type)
+	{
+		return OptFrameComponent::compareBase(SingleObjSearch<R, ADS, DS>::idComponent(), type);
+	}
+
 	virtual bool handleComponent(OptFrameComponent& component)
 	{
 		return component.compatible(SingleObjSearch<R, ADS, DS>::idComponent());

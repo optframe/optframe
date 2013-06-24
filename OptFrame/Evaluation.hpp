@@ -225,6 +225,11 @@ public:
 		return "OptFrame:Evaluation idx  evaluation  output_variable";
 	}
 
+	virtual bool handleComponent(string type)
+	{
+		return OptFrameComponent::compareBase(Evaluation<DS>::idComponent(), type);
+	}
+
 	virtual bool handleComponent(OptFrameComponent& component)
 	{
 		return component.compatible(Evaluation<DS>::idComponent());

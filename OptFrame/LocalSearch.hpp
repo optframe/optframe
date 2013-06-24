@@ -147,6 +147,11 @@ public:
 		return "OptFrame:LocalSearch idx   search   OptFrame:Solution idx  timelimit  target_f  [output_variable] => OptFrame:Solution\nOptFrame:LocalSearch idx   search_e   OptFrame:Solution idx   OptFrame:Evaluation idx   timelimit  target_f   [output_variable] => OptFrame:Solution";
 	}
 
+	virtual bool handleComponent(string type)
+	{
+		return OptFrameComponent::compareBase(LocalSearch<R, ADS, DS>::idComponent(), type);
+	}
+
 	virtual bool handleComponent(OptFrameComponent& component)
 	{
 		return component.compatible(LocalSearch<R, ADS, DS>::idComponent());

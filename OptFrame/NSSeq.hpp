@@ -88,6 +88,11 @@ public:
 		return u;
 	}
 
+	virtual bool handleComponent(string type)
+	{
+		return OptFrameComponent::compareBase(NSSeq<R, ADS, DS>::idComponent(), type);
+	}
+
 	virtual bool handleComponent(OptFrameComponent& component)
 	{
 		return component.compatible(NSSeq<R, ADS, DS>::idComponent());

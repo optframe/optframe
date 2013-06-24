@@ -68,6 +68,11 @@ public:
 		return "OptFrame:Constructive idx  generateSolution  output_variable => OptFrame:Solution idx";
 	}
 
+	virtual bool handleComponent(string type)
+	{
+		return OptFrameComponent::compareBase(Constructive<R, ADS>::idComponent(), type);
+	}
+
 	virtual bool handleComponent(OptFrameComponent& component)
 	{
 		return component.compatible(Constructive<R, ADS>::idComponent());
