@@ -206,6 +206,7 @@
 #include "Modules/ModuleCreateModule.hpp"
 #include "Modules/ModuleCreateRawModule.hpp"
 #include "Modules/ModuleExistsModule.hpp"
+#include "Modules/ModuleUnitTestModule.hpp"
 
 #include "Modules/FunctionCreateRawModule.hpp"
 
@@ -389,6 +390,7 @@ public:
 			loadModule(new ModuleCreateModule<R, ADS, DS> );
 			loadModule(new ModuleCreateRawModule<R, ADS, DS> );
 			loadModule(new ModuleExistsModule<R, ADS, DS> );
+			loadModule(new ModuleUnitTestModule<R, ADS, DS> );
 		}
 
 		if ((prefix == "") || (prefix == "function"))
