@@ -77,9 +77,9 @@ public:
 				cout << "create_list_of_components: error, component #" << i << " is NULL! " << endl;
 				return false;
 			}
-			else if(!comp->compatible(factory.typeOfList(type)))
+			else if(!comp->compatible(OptFrameComponent::typeOfList(type)))
 			{
-				cout << "create_list_of_components: error, component #" << i << " ('" << comp->id() <<"') in list incompatible with type '" << factory.typeOfList(type) << "'" << endl;
+				cout << "create_list_of_components: error, component #" << i << " ('" << comp->id() <<"') in list incompatible with type '" << OptFrameComponent::typeOfList(type) << "'" << endl;
 				return false;
 			}
 			else
@@ -90,9 +90,9 @@ public:
 
 		stringstream ss;
 
-		ss << name << " " << factory.typeOfList(type) << "[] " << idx;
+		ss << name << " " << OptFrameComponent::typeOfList(type) << "[] " << idx;
 
-		cout << "'" << factory.typeOfList(type) << "[] " << idx << "' added." << endl;
+		cout << "'" << OptFrameComponent::typeOfList(type) << "[] " << idx << "' added." << endl;
 
 		return Module<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 	}

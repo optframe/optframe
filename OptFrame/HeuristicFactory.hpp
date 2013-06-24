@@ -165,7 +165,7 @@ public:
 
 	template< class T > void assign(T*& component, unsigned number, string id)
 	{
-		if(!compareBase(T::idComponent(), id))
+		if(!OptFrameComponent::compareBase(T::idComponent(), id))
 		{
 			cout << "HeuristicFactory: incompatible assign '" << T::idComponent() << "' <- '" << id << "'" << endl;
 			component = NULL;
@@ -191,11 +191,11 @@ public:
 	template< class T > void assignList(vector<T*>& cList, unsigned number, string _listId)
 	{
 		// type checking for safety!
-		string noList = typeOfList(_listId);
+		string noList = OptFrameComponent::typeOfList(_listId);
 		string listId = noList;
 		listId += "[]";
 
-		if(!compareBase(T::idComponent(), noList))
+		if(!OptFrameComponent::compareBase(T::idComponent(), noList))
 		{
 			cout << "HeuristicFactory: incompatible list assign '[" << T::idComponent() << "]' <- '[" << noList << "]'" << endl;
 			return;
@@ -266,7 +266,7 @@ public:
 	int addComponentList(vector<OptFrameComponent*>& cList, string _listId)
 	{
 		// type checking for safety!
-		string noList = typeOfList(_listId);
+		string noList = OptFrameComponent::typeOfList(_listId);
 		string listId = noList;
 		listId += "[]";
 
@@ -274,7 +274,7 @@ public:
 			if((cList[i]==NULL) || (!cList[i]->compatible(noList)))
 			{
 				cout << "Warning: incompatible components '";
-				cout << cList[i]->id() << "' and '" << typeOfList(listId) << "'!" << endl;
+				cout << cList[i]->id() << "' and '" << OptFrameComponent::typeOfList(listId) << "'!" << endl;
 
 				return -1;
 			}
@@ -302,77 +302,6 @@ public:
 			return -1;
 	}
 
-	//! \english compareBase is an auxiliar method to compare a pattern to a component id. Check if 'component' inherits from 'base'. \endenglish \portuguese compareBase eh um metodo auxiliar para comparar um padrao a um id de componente. Testa se 'component' herda de 'base'. \endportuguese
-	/*!
-		 \sa compareBase(string, string)
-	 */
-
-	// Check if 'base' inherits from 'component'
-	// EXAMPLE: compareBase("OptFrame:", "OptFrame:Evaluator") returns TRUE!
-	static bool compareBase(string _base, string _component)
-	{
-		if((_base.length()<3) || (_component.length()<3))
-		{
-			cout << "HeuristicFactory::compareBase warning: comparing less than 3 characters! with base='" << _base << "' component='" << _component << "'" << endl;
-			return false;
-		}
-
-		bool baseIsList      = (_base.at(_base.length()-2) == '['          ) && (_base.at(_base.length()-1) == ']'          );
-		bool componentIsList = (_component.at(_component.length()-2) == '[') && (_component.at(_component.length()-1) == ']');
-
-		if(baseIsList != componentIsList)
-			return false;
-
-		// remove list (if exists)
-		string base      = typeOfList(_base);
-		string component = typeOfList(_component);
-
-		bool sameBase = true;
-
-		if(base.length() <= component.length())
-		{
-			for(unsigned i=0; i<base.length(); i++)
-				if(base.at(i) != component.at(i))
-					sameBase = false;
-		}
-		else
-			sameBase = false;
-
-		if(sameBase)
-			return true;
-
-		// ------------------
-		// check last family
-		// ------------------
-
-		Scanner scanner(base);
-		scanner.useSeparators(":");
-
-		string family = scanner.next();
-		while(scanner.hasNext())
-			family = scanner.next();
-
-		Scanner scanComponent(component);
-		scanComponent.useSeparators(":");
-		string part;
-		while(scanComponent.hasNext())
-		{
-			part = scanComponent.next();
-			if(part == family)
-				sameBase = true;
-		}
-
-		return sameBase;
-	}
-
-	static string typeOfList(string listId)
-	{
-		Scanner scanner(listId);
-		scanner.useSeparators(" \t\n[]");
-
-		return scanner.next();
-	}
-
 
 	//! \english listComponents lists all available components that match a given pattern. \endenglish \portuguese listComponents lista todos componentes disponiveis que coincidem com um padrao dado. \endportuguese
 	/*!
@@ -389,7 +318,7 @@ public:
 			vector<OptFrameComponent*> v = iter->second;
 
 			for (unsigned int i = 0; i < v.size(); i++)
-				if (compareBase(pattern, v[i]->id()))
+				if (OptFrameComponent::compareBase(pattern, v[i]->id()))
 				{
 					stringstream ss;
 					ss << iter->first << " " << i;
@@ -427,7 +356,7 @@ public:
 			vector<vector<OptFrameComponent*> > vl = iter->second;
 
 			for (unsigned int i = 0; i < vl.size(); i++)
-				if (compareBase(pattern, iter->first))
+				if (OptFrameComponent::compareBase(pattern, iter->first))
 				{
 					stringstream ss;
 					ss << iter->first << " " << i;
@@ -448,7 +377,7 @@ public:
 		vector<pair<string, vector<pair<string,string> > > > list;
 
 		for(unsigned i=0; i<builders.size(); i++)
-			if (compareBase(pattern, builders[i]->id()))
+			if (OptFrameComponent::compareBase(pattern, builders[i]->id()))
 				list.push_back(make_pair(builders[i]->id(), builders[i]->parameters()));
 
 		return list;
