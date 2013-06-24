@@ -85,6 +85,20 @@ public:
 
 	virtual string id() = 0;
 
+	// default: hashing by id()
+    virtual unsigned long hash()
+	{
+    	const char *str = id().c_str();
+
+		unsigned long h = 5381;
+		int c;
+
+		while ((c = *str++))
+			h = ((h << 5) + h) + c; /*option: hash * 33 + c */
+
+		return h;
+	}
+
 	virtual string usage() = 0;
 
 	static bool defineText(string definition, string value, map<string,string>& dictionary)

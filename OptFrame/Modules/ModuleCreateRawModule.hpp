@@ -86,6 +86,35 @@ public:
 		return name;
 	}
 
+	// default: hashing by id()
+	virtual unsigned long hash()
+	{
+		unsigned long h = aux_hash(name);
+
+		for (unsigned p = 0; p < parameters.size(); p++)
+			h += aux_hash(parameters[p]);
+
+		for (unsigned k = 0; k < commands.size(); k++)
+			h += aux_hash(commands[k]);
+
+		return h;
+	}
+
+	// auxiliar hash function
+	unsigned long aux_hash(string s)
+	{
+		const char *str = s.c_str();
+
+		unsigned long h = 5381;
+		int c;
+
+		while ((c = *str++))
+			h = ((h << 5) + h) + c; /*option: hash * 33 + c */
+
+		return h;
+	}
+
+
 	string usage()
 	{
 		string u = name;
