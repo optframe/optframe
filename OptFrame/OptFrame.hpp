@@ -196,6 +196,8 @@
 #include "Modules/ComponentToStringModule.hpp"
 
 #include "Modules/FileEchoModule.hpp"
+#include "Modules/FilePrintModule.hpp"
+#include "Modules/FilePrintlnModule.hpp"
 #include "Modules/FileToListModule.hpp"
 
 #include "Modules/ListAddModule.hpp"
@@ -230,6 +232,8 @@
 #include "Modules/SystemHelpModule.hpp"
 #include "Modules/SystemPauseModule.hpp"
 #include "Modules/SystemPreprocessModule.hpp"
+#include "Modules/SystemPrintModule.hpp"
+#include "Modules/SystemPrintlnModule.hpp"
 #include "Modules/SystemReadModule.hpp"
 #include "Modules/SystemRequireModule.hpp"
 #include "Modules/SystemRunModule.hpp"
@@ -375,6 +379,8 @@ public:
 		if ((prefix == "") || (prefix == "file"))
 		{
 			loadModule(new FileEchoModule<R, ADS, DS> );
+			loadModule(new FilePrintModule<R, ADS, DS> );
+			loadModule(new FilePrintlnModule<R, ADS, DS> );
 			loadModule(new FileToListModule<R, ADS, DS> );
 		}
 
@@ -430,6 +436,8 @@ public:
 			loadModule(new SystemHelpModule<R, ADS, DS> );
 			loadModule(new SystemPauseModule<R, ADS, DS> );
 			loadModule(new SystemPreprocessModule<R, ADS, DS> );
+			loadModule(new SystemPrintModule<R, ADS, DS> );
+			loadModule(new SystemPrintlnModule<R, ADS, DS> );
 			loadModule(new SystemReadModule<R, ADS, DS> );
 			loadModule(new SystemRequireModule<R, ADS, DS> );
 			loadModule(new SystemRunModule<R, ADS, DS> );
