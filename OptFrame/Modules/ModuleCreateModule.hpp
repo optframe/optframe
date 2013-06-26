@@ -151,16 +151,39 @@ public:
 			else
 				values.push_back(scanner.next());
 
+		// -----------------------
+		// FINISHED READING VALUES
+		// -----------------------
 
 		for (unsigned v = 0; v < values.size(); v++)
 		{
 			//cout << "CREATED MODULE " << id() << " DEFINING: '" << parameters[v] << "' as '" << values[v] << "'" << endl;
-			if (!Module<R, ADS, DS>::defineText(parameters[v], values[v], dictionary))
+			string setvar = parameters[v];
+			setvar.append(" ");
+			setvar.append(values[v]);
+
+			if (!Module<R, ADS, DS>::run_module("operator.assign", all_modules, allFunctions, factory, dictionary, ldictionary, setvar))
+			{
+				cout << "module " << id() << " error: calling operator.assign " << setvar << endl;
+				return false;
+			}
+			/*if (!Module<R, ADS, DS>::defineText(parameters[v], values[v], dictionary))
 			{
 				cout << "module.create error: failed to define parameter '" << parameters[v] << "' to value '" << values[v] << "'" << endl;
 				return false;
-			}
+			}*/
 		}
+
+
+		if (!Module<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
+		{
+			cout << "module " << id() << " error: problem running block of commands!" << endl;
+			return false;
+		}
+		else
+			return true;
+
+		// FINISH!
 
 
 		//cout << "MODULE '" << id() << "' (CREATED) VALUES: '" << values << "'" << endl;

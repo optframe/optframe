@@ -63,6 +63,7 @@ public:
 
 	virtual bool run(vector<Module<R, ADS, DS>*>& allModules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input, string module_name)
 	{
+		///cout << "ASSIGN:'" << input << "' and module_name='" << module_name << "'" << endl;
 		module_name.append(" ");
 		module_name.append(input);
 		return run(allModules, allFunctions, factory, dictionary, ldictionary, module_name);
@@ -70,7 +71,7 @@ public:
 
 	bool run(vector<Module<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)
 	{
-		//cout << "ASSIGN:'" << rest << "'" << endl;
+		///cout << "ASSIGN:'" << input << "'" << endl;
 
 		Scanner scanner(input);
 
@@ -80,7 +81,19 @@ public:
 			return false;
 		}
 
-		string var_name = scanner.next();
+		string first = scanner.next();
+		string var_name = first;
+		if ((first == "operator.assign") || (first == "assign"))
+		{
+			// read again the variable
+			if (!scanner.hasNext())
+			{
+				cout << "module " << id() << " missing variable name!" << endl;
+				return false;
+			}
+
+			var_name = scanner.next();
+		}
 
 		if (!scanner.hasNext())
 		{
@@ -89,6 +102,12 @@ public:
 		}
 
 		string assign = scanner.next();
+
+		if(assign != "=")
+		{
+			cout << "module " << id() << " error: expected '='!" << endl;
+			return false;
+		}
 
 		if (!scanner.hasNext())
 		{
