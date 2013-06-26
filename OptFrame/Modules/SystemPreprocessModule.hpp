@@ -48,11 +48,15 @@ public:
 		return "system.preprocess return_value module_name input";
 	}
 
-	Module<R, ADS, DS>* getModule(vector<Module<R, ADS, DS>*>& modules, string module)
+	Module<R, ADS, DS>* getModule(vector<Module<R, ADS, DS>*>& modules, string module, string rest)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
-			if (module == modules[i]->id())
+		{
+			//cout << "run: testing module '" << modules[i]->id() << "'" << endl;
+			if (modules[i]->canHandle(module, rest))
 				return modules[i];
+		}
+		//cout << "run: NULL MODULE! module='" << module << "' rest='" << rest << "'" << endl;
 		return NULL;
 	}
 
@@ -78,7 +82,7 @@ public:
 
 		string inp = scanner.rest();
 
-		Module<R, ADS, DS>* m = getModule(all_modules, module);
+		Module<R, ADS, DS>* m = getModule(all_modules, module, "");
 
 		if(!m)
 		{
