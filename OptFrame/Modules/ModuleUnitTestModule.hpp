@@ -41,11 +41,15 @@ private:
 		return false;
 	}
 
-	Module<R, ADS, DS>* getModule(vector<Module<R, ADS, DS>*>& modules, string module)
+	Module<R, ADS, DS>* getModule(vector<Module<R, ADS, DS>*>& modules, string module, string rest)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
-			if (module == modules[i]->id())
+		{
+			//cout << "run: testing module '" << modules[i]->id() << "'" << endl;
+			if (modules[i]->canHandle(module, rest))
 				return modules[i];
+		}
+		//cout << "run: NULL MODULE! module='" << module << "' rest='" << rest << "'" << endl;
 		return NULL;
 	}
 
@@ -121,7 +125,7 @@ public:
 		// get target module
 		// =================
 
-		Module<R, ADS, DS>* mtarget = getModule(modules, target);
+		Module<R, ADS, DS>* mtarget = getModule(modules, target, "");
 
 		if (!mtarget)
 		{
@@ -136,7 +140,7 @@ public:
 		vector<Module<R, ADS, DS>*> mtesters;
 		for (unsigned i = 0; i < testers.size(); i++)
 		{
-			Module<R, ADS, DS>* m = getModule(modules, testers[i]);
+			Module<R, ADS, DS>* m = getModule(modules, testers[i], "");
 			if (!m)
 			{
 				cout << "module.unit_test error: tester '" << testers[i] << "' doesn't exist!" << endl;
