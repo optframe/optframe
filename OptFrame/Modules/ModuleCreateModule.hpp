@@ -140,12 +140,6 @@ public:
 
 		//cout << "general module '" << id() << "' (created) run: '" << input << "'" << endl;
 
-		if (!scanner.hasNext())
-		{
-			cout << "Usage: " << usage() << endl;
-			return false;
-		}
-
 		vector < string > values;
 
 		for (unsigned int i = 0; i < parameters.size(); i++)
