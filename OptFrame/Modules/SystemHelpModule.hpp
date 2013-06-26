@@ -46,11 +46,30 @@ public:
 		return "system.help";
 	}
 
-	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<string,string>&, map< string,vector<string> >&, string)
+	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& all_functions, HeuristicFactory<R, ADS, DS>&, map<string,string>&, map< string,vector<string> >&, string)
 	{
 		cout << "Available modules are:" << endl;
 		for(unsigned int i=0;i<all_modules.size();i++)
-			cout << all_modules[i]->id() << endl;
+		{
+			cout << all_modules[i]->id();
+			if(all_modules[i]->handles.size() > 0)
+				cout << " =>";
+			for(unsigned h=0; h<all_modules[i]->handles.size(); h++)
+				cout << "\t" << all_modules[i]->handles[h] << " ";
+			cout << endl;
+		}
+
+		cout << "Available functions are:" << endl;
+		for(unsigned int i=0;i<all_functions.size();i++)
+		{
+			cout << all_functions[i]->id();
+			if(all_functions[i]->handles.size() > 0)
+				cout << " =>";
+			for(unsigned h=0; h<all_functions[i]->handles.size(); h++)
+				cout << "\t" << all_functions[i]->handles[h];
+			cout << endl;
+		}
+
 		cout << "Type 'system.usage module_name' to learn how to use the module." << endl;
 
 		return true;
