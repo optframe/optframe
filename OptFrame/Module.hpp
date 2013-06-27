@@ -101,6 +101,26 @@ public:
 
 	virtual string usage() = 0;
 
+	static string solveVar(string variable, map<string, string>& dictionary)
+	{
+		Scanner scanDef(variable);
+		scanDef.useSeparators("$");
+		if(!scanDef.hasNext())
+			return "";
+
+		string var_name = scanDef.next();
+
+		//cout << "pure var_name = " << var_name << endl;
+
+		if(dictionary.count(var_name) == 0)
+		{
+			cout << "Module::solveReference error: variable '" << variable << "' not defined!" << endl;
+			return "";
+		}
+
+		return dictionary.find(var_name)->second;
+	}
+
 	static bool define(string variable, string value, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 		string trimValue = Scanner::trim(value);
@@ -151,8 +171,18 @@ public:
 
 		if(definition[0]=='$')
 		{
-			cout << "defineText error: trying to define variable with dollar '" << definition << "'" << endl;
-			return false;
+			// TODO: WHY?
+			//cout << "defineText error: trying to define variable with dollar '" << definition << "'" << endl;
+			//return false;
+			string newVar = solveVar(definition, dictionary);
+			//cout << "newVar='" << newVar << "'" << endl;
+			if(newVar=="")
+			{
+				cout << "defineText error: variable '" << definition << "' is empty!" << endl;
+				return false;
+			}
+
+			return defineText(newVar, value, dictionary);
 		}
 
 
@@ -210,8 +240,13 @@ public:
 
 		if(definition[0]=='$')
 		{
-			cout << "defineList error: trying to define variable with dollar '" << definition << "'" << endl;
-			return false;
+			//TODO: WHY?
+			cout << "defineList error: trying to define variable with dollar '" << definition << "' (can't use references for lists)" << endl;
+				return false;
+
+			///Scanner scanDef(definition);
+			///scanDef.useSeparators("$");
+			///return defineList(scanDef.next(), list, ldictionary);
 		}
 
 		bool number = true;
