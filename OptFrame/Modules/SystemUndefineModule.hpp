@@ -56,10 +56,11 @@ public:
 			return false;
 		}
 
-		string word = scanner.next();
-
-		Module<R, ADS, DS>::undefineText(word, dictionary);
-		Module<R, ADS, DS>::undefineList(word, ldictionary);
+		while (scanner.hasNext())
+		{
+			string word = scanner.next();
+			Module<R, ADS, DS>::undefine(word, dictionary, ldictionary);
+		}
 
 		return true;
 	}
