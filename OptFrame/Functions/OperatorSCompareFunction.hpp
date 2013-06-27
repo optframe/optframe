@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_COMPARE_FUNCTION_HPP_
-#define OPTFRAME_COMPARE_FUNCTION_HPP_
+#ifndef OPTFRAME_SCOMPARE_FUNCTION_HPP_
+#define OPTFRAME_SCOMPARE_FUNCTION_HPP_
 
 #include <iostream>
 #include <ostream>
@@ -39,22 +39,22 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class OperatorCompareFunction : public PreprocessFunction<R,ADS,DS>
+class OperatorSCompareFunction : public PreprocessFunction<R,ADS,DS>
 {
 public:
 
-	virtual ~OperatorCompareFunction()
+	virtual ~OperatorSCompareFunction()
 	{
 	}
 
 	virtual string id()
 	{
-		return "operator.compare";
+		return "operator.scompare";
 	}
 
 	virtual string usage()
 	{
-		return "operator.compare( A signal B ) : return comparison of numbers A and B according to signal (==, !=, >, >=, <, <=)";
+		return "operator.scompare( A signal B ) : return comparison of numbers A and B according to signal (==, !=, >, >=, <, <=)";
 	}
 
 	string formatBool(bool b)
@@ -90,37 +90,15 @@ public:
 		string sb     = Scanner::trim(scanner.rest());
 		//cout << "SB: " << sb << endl;
 
-		if((signal == ">") || (signal == ">=") || (signal == "<") || (signal == "<=") || (signal == "==") || (signal == "!=")) // compare as number
+		if((signal == "==") || (signal == "!=")) // compare as string
 		{
-			double a;
-			double b;
-
-			try
-			{
-				a = Scanner::parseDouble(sa);
-				b = Scanner::parseDouble(sb);
-			}
-			catch(ConversionError& e)
-			{
-				cout << "compare function: not a number to compare ('" <<sa << "' " << signal << " '" << sb << "')!" << endl;
-				return NULL;
-			}
-
-			if(signal == ">")
-				return new string(formatBool(a>b));
-			if(signal == "<")
-				return new string(formatBool(a<b));
-			if(signal == ">=")
-				return new string(formatBool(a>=b));
-			if(signal == "<=")
-				return new string(formatBool(a<=b));
 			if(signal == "==")
-				return new string(formatBool(a==b));
+				return new string(formatBool(sa == sb));
 			if(signal == "!=")
-				return new string(formatBool(a!=b));
+				return new string(formatBool(sa != sb));
 		}
 
-		cout << "compare function: no such comparison '" << sa << "' '" << signal << "' '" << sb << "'" << endl;
+		cout << "scompare function: no such comparison '" << sa << "' '" << signal << "' '" << sb << "'" << endl;
 
 		return NULL;
 	}

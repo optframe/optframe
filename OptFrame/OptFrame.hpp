@@ -132,6 +132,7 @@
 #include "Functions/OperatorComputeFunction.hpp"
 #include "Functions/OperatorInFunction.hpp"
 #include "Functions/OperatorLogicFunction.hpp"
+#include "Functions/OperatorSCompareFunction.hpp"
 
 #include "Functions/StatisticsArgMaxFunction.hpp"
 #include "Functions/StatisticsArgMinFunction.hpp"
@@ -489,6 +490,7 @@ public:
 			loadFunction(new OperatorComputeFunction<R,ADS,DS>);
 			loadFunction(new OperatorInFunction<R,ADS,DS>);
 			loadFunction(new OperatorLogicFunction<R,ADS,DS>);
+			loadFunction(new OperatorSCompareFunction<R,ADS,DS>);
 		}
 
 		// statistics
