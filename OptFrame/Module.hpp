@@ -101,7 +101,68 @@ public:
 
 	virtual string usage() = 0;
 
-	static string solveVar(string variable, map<string, string>& dictionary)
+	static bool validVariableName(string var)
+	{
+		if(var.length()==0)
+		{
+			//cout << "Module::validVariableName error: empty variable!" << endl;
+			return false;
+		}
+
+		bool number = true;
+		try
+		{
+			Scanner::parseDouble(var);
+		}
+		catch(ConversionError& e)
+		{
+			number = false;
+		}
+
+		if(number)
+		{
+			//cout << "Module::validVariableName error: cannot define a number! ('" << var << "')" << endl;
+			//cout << "Did you forget a command 'undefine variable' before this module?" << endl;
+			return false;
+		}
+
+		Scanner scanType(var);
+		scanType.useSeparators(":");
+		string optframe = scanType.next();
+		if(optframe == "OptFrame")
+		{
+			//cout << "Module defineText: cannot define an OptFrame type! ('" << var << "')" << endl;
+			//cout << "Did you forget a command 'undefine variable' before this module?" << endl;
+			return false;
+		}
+
+		return true;
+	}
+
+	static bool isInDictionary(string var, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	{
+		return (dictionary.count(var) > 0) || (ldictionary.count(var) > 0);
+	}
+
+	// do: new_var => content of target_var
+	static bool pointVars(string new_var, string target_var, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	{
+		if (dictionary.count(target_var) > 0)
+		{
+			return defineText(new_var, dictionary.find(target_var)->second, dictionary);
+		}
+		else if (ldictionary.count(target_var) > 0)
+		{
+			return defineList(new_var, ldictionary.find(target_var)->second, ldictionary);
+		}
+		else
+		{
+			cout << "Module::pointVars error: variable '" << target_var << "' not found!" << endl;
+			return false;
+		}
+	}
+
+	static string solveTextVar(string variable, map<string, string>& dictionary)
 	{
 		Scanner scanDef(variable);
 		scanDef.useSeparators("$");
@@ -163,9 +224,9 @@ public:
 		// will not need this check after better implementation of dictionary with '$' before definitions
 		// TODO
 
-		if(definition.length()==0)
+		if(!validVariableName(definition))
 		{
-			cout << "defineText error: empty variable!" << endl;
+			cout << "Module::defineText error: not a variable name '" << definition << "'" << endl;
 			return false;
 		}
 
@@ -174,7 +235,7 @@ public:
 			// TODO: WHY?
 			//cout << "defineText error: trying to define variable with dollar '" << definition << "'" << endl;
 			//return false;
-			string newVar = solveVar(definition, dictionary);
+			string newVar = solveTextVar(definition, dictionary);
 			//cout << "newVar='" << newVar << "'" << endl;
 			if(newVar=="")
 			{
@@ -183,33 +244,6 @@ public:
 			}
 
 			return defineText(newVar, value, dictionary);
-		}
-
-
-		bool number = true;
-		try
-		{
-			Scanner::parseDouble(definition);
-		}
-		catch(ConversionError& e)
-		{
-			number = false;
-		}
-		if(number)
-		{
-			cout << "Module defineText: cannot define a number! ('" << definition << "')" << endl;
-			cout << "Did you forget a command 'undefine variable' before this module?" << endl;
-			return false;
-		}
-
-		Scanner scanType(definition);
-		scanType.useSeparators(":");
-		string optframe = scanType.next();
-		if(optframe == "OptFrame")
-		{
-			cout << "Module defineText: cannot define an OptFrame type! ('" << definition << "')" << endl;
-			cout << "Did you forget a command 'undefine variable' before this module?" << endl;
-			return false;
 		}
 
 		Scanner scanner(value);
@@ -232,9 +266,9 @@ public:
 
 	static bool defineList(string definition, vector<string>& list, map< string,vector<string> >& ldictionary)
 	{
-		if(definition.length()==0)
+		if(!validVariableName(definition))
 		{
-			cout << "defineList error: empty variable!" << endl;
+			cout << "Module::defineList error: not a variable name '" << definition << "'" << endl;
 			return false;
 		}
 
@@ -247,32 +281,6 @@ public:
 			///Scanner scanDef(definition);
 			///scanDef.useSeparators("$");
 			///return defineList(scanDef.next(), list, ldictionary);
-		}
-
-		bool number = true;
-		try
-		{
-			Scanner::parseDouble(definition);
-		}
-		catch(ConversionError& e)
-		{
-			number = false;
-		}
-		if(number)
-		{
-			cout << "Module defineList: cannot define a number! ('" << definition << "')" << endl;
-			cout << "Did you forget a command 'undefine variable' before this module?" << endl;
-			return false;
-		}
-
-		Scanner scanType(definition);
-		scanType.useSeparators(":");
-		string optframe = scanType.next();
-		if(optframe == "OptFrame")
-		{
-			cout << "Module defineList: cannot define an OptFrame type! ('" << definition << "')" << endl;
-			cout << "Did you forget a command 'undefine variable' before this module?" << endl;
-			return false;
 		}
 
 		ldictionary[definition] = list;

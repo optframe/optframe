@@ -33,6 +33,7 @@ class GeneralModule: public Module<R, ADS, DS>
 {
 	string name;
 	vector<string> parameters;
+	vector<bool> references;
 	vector<string> commands;
 
 public:
@@ -41,6 +42,11 @@ public:
 		name = _name;
 		parameters = _parameters;
 		commands = _commands;
+
+		references = vector<bool>(parameters.size(), false);
+		for(unsigned i=0; i<parameters.size(); i++)
+			if(parameters[i][0]=='&')
+				references[i] = true;
 		//cout << "GENERAL MODULE(" << _name << "," << _parameters << "," << _commands << ")" << endl;
 	}
 
@@ -126,6 +132,13 @@ public:
 		return u;
 	}
 
+	string cleanReference(string ref)
+	{
+		Scanner scanner(ref);
+		scanner.useSeparators("&");
+		return scanner.next();
+	}
+
 	bool run(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
 		// CHECK IF EXPLICIT LIST IS PASSED AS PARAMETER (CAN'T DO THIS!!!)
@@ -158,7 +171,7 @@ public:
 		for (unsigned v = 0; v < values.size(); v++)
 		{
 			//cout << "CREATED MODULE " << id() << " DEFINING: '" << parameters[v] << "' as '" << values[v] << "'" << endl;
-			string setvar = parameters[v];
+			string setvar = cleanReference(parameters[v]);
 			setvar.append(" = ");
 			setvar.append(values[v]);
 			//cout << "ASSIGN: setvar='" << setvar << "'" << endl;
@@ -181,43 +194,19 @@ public:
 			cout << "module " << id() << " error: problem running block of commands!" << endl;
 			return false;
 		}
-		else
-			return true;
 
-		// FINISH!
+		// point reference vars
 
-
-		//cout << "MODULE '" << id() << "' (CREATED) VALUES: '" << values << "'" << endl;
-
-		for (unsigned int c = 0; c < commands.size(); c++)
+		for (unsigned v = 0; v < values.size(); v++)
 		{
-			string command = commands[c];
-			//cout << "CREATED MODULE " << id() << " COMMAND: '" << command << "'" << endl;
-//			command.append(" "); // TODO: why we need this to find variable in the end?
-
-			//cout << "MODULE '" << id() << "' (CREATED) COMMAND: '" << command << "'" << endl;
-
-			for (unsigned int v = 0; v < values.size(); v++)
+			if (references[v] && Module<R, ADS, DS>::validVariableName(values[v]))
 			{
-				//cout << "CREATED MODULE " << id() << " SOLVING VARIABLE '" << parameters[v] << "'" << endl;
-				string* r = Module<R, ADS, DS>::solveVars(dictionary,ldictionary, command, parameters[v]);
-				if(!r)
-				{
-					cout << "General module '" << id() << "' error: couldn't solve variable '" << parameters[v] << "'" << endl;
+				//cout << "module " << id() << " warning: pointing var '" << values[v] << "' to content of '" << parameters[v] << "'" << endl;
+				if (!Module<R, ADS, DS>::pointVars(values[v], cleanReference(parameters[v]), dictionary, ldictionary))
 					return false;
-				}
-				command = *r;
-				//cout << "CREATED MODULE AFTER SOLVE: '" << command << "'" << endl << endl;
-				delete r;
 			}
 
-			//cout << "CREATED MODULE '" << id() << "' EXEC COMMAND: '" << command << "'" << endl;
-
-			if (!exec_command(all_modules, allFunctions, factory, dictionary, ldictionary, command))
-			{
-				cout << "dynamic_module '" << id() << "' error in command: '" << command << "'" << endl;
-				return false;
-			}
+			Module<R, ADS, DS>::undefine(cleanReference(parameters[v]), dictionary, ldictionary);
 		}
 
 		return true;
