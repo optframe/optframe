@@ -159,8 +159,9 @@ public:
 		{
 			//cout << "CREATED MODULE " << id() << " DEFINING: '" << parameters[v] << "' as '" << values[v] << "'" << endl;
 			string setvar = parameters[v];
-			setvar.append(" ");
+			setvar.append(" = ");
 			setvar.append(values[v]);
+			//cout << "ASSIGN: setvar='" << setvar << "'" << endl;
 
 			if (!Module<R, ADS, DS>::run_module("operator.assign", all_modules, allFunctions, factory, dictionary, ldictionary, setvar))
 			{

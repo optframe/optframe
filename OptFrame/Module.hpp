@@ -101,6 +101,43 @@ public:
 
 	virtual string usage() = 0;
 
+	static bool define(string variable, string value, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	{
+		string trimValue = Scanner::trim(value);
+
+		Scanner scanner(trimValue);
+
+		if ((trimValue == "") || (!scanner.hasNext()))
+			return false;
+
+		string next = scanner.next();
+
+		// is list
+		if ((next[0] == '[') || (ldictionary.count(trimValue) > 0))
+		{
+			if(dictionary.count(variable) > 0)
+			{
+				cout << "Module::define error: variable '" << variable << "' already defined in text dictionary!" << endl;
+				return false;
+			}
+
+			vector<string>* p_list = OptFrameList::readList(ldictionary, value);
+			if (p_list)
+			{
+				vector<string> list(*p_list);
+				delete p_list;
+
+				return defineList(variable, list, ldictionary);
+			}
+
+			return false;
+		}
+
+		// is text
+		return defineText(variable, value, dictionary);
+	}
+
+
 	static bool defineText(string definition, string value, map<string,string>& dictionary)
 	{
 		// will not need this check after better implementation of dictionary with '$' before definitions

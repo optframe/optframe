@@ -41,6 +41,12 @@ public:
 		return ss.str();
 	}
 
+	static vector<std::string>* readList(const map<string, vector<string> >& ldictionary, string list)
+	{
+		Scanner scanner(list);
+		return readList(ldictionary, scanner);
+	}
+
 	static vector<std::string>* readList(const map<string, vector<string> >& ldictionary, Scanner& scanner)
 	{
 		scanner.trimInput();

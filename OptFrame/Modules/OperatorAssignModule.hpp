@@ -61,7 +61,7 @@ public:
 		return false;
 	}
 
-	virtual bool run(vector<Module<R, ADS, DS>*>& allModules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input, string module_name)
+	virtual bool run(vector<Module<R, ADS, DS>*>& allModules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input, string module_name)
 	{
 		///cout << "ASSIGN:'" << input << "' and module_name='" << module_name << "'" << endl;
 		module_name.append(" ");
@@ -103,7 +103,7 @@ public:
 
 		string assign = scanner.next();
 
-		if(assign != "=")
+		if (assign != "=")
 		{
 			cout << "module " << id() << " error: expected '='!" << endl;
 			return false;
@@ -115,44 +115,15 @@ public:
 			return false;
 		}
 
-		string rest = scanner.rest();
-		Scanner scanner2(rest);
+		string value = scanner.rest();
 
-		vector<string>* p_list = OptFrameList::readList(ldictionary, scanner2);
-		if (p_list)
+		if (!Module<R, ADS, DS>::define(var_name, value, dictionary, ldictionary))
 		{
-			vector<string> list(*p_list);
-			delete p_list;
-
-			// confirm that is not defined in another dictionary
-			if (dictionary.count(var_name) == 0)
-			{
-				//cout << "DICTIONARY[" << var_name << "]=" << dictionary.count(var_name) << endl;
-				return Module<R, ADS, DS>::defineList(var_name, list, ldictionary);
-			}
-			else
-			{
-				cout << "module " << id() << " error: variable '" << var_name << "' already defined in text dictionary!" << endl;
-				return false;
-			}
+			cout << "module " << id() << " error: failed to define '" << var_name << "' to '" << value << "'" << endl;
+			return false;
 		}
-		else
-		{
-			string value = Scanner::trim(rest);
-			//cout << "VALUE='" << value << "'" << endl;
 
-			// confirm that is not defined in another dictionary
-			if (ldictionary.count(var_name) == 0)
-			{
-				//cout << "LDICTIONARY[" << var_name << "]=" << ldictionary.count(var_name) << endl;
-				return Module<R, ADS, DS>::defineText(var_name, value, dictionary);
-			}
-			else
-			{
-				cout << "module " << id() << " error: variable '" << var_name << "' already defined in list dictionary!" << endl;
-				return false;
-			}
-		}
+		return true;
 	}
 
 	string addSpacesForDoubleDots(string input)
@@ -175,7 +146,6 @@ public:
 
 		return output;
 	}
-
 
 	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
 	{
