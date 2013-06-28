@@ -184,8 +184,12 @@ public:
 			if(check_key == key)
 				return true;
 			else
-				cout << "module.unit_test warning: different key=" << skey << " calculated=";
-			printf("%#lx\n", check_key);
+			{
+				cout << "module.unit_test WARNING: different key=" << skey << " calculated=";
+				printf("%#lx\n", check_key);
+				cout << "Will perform tests! Press any key to continue..." << endl;
+				getchar();
+			}
 		}
 
 		// ================

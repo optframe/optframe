@@ -225,6 +225,7 @@
 #include "Modules/RandGenNumberModule.hpp"
 #include "Modules/RandGenSetSeedModule.hpp"
 
+#include "Modules/SystemAssertModule.hpp"
 #include "Modules/SystemCallModule.hpp"
 #include "Modules/SystemDefineModule.hpp"
 #include "Modules/SystemDictionaryModule.hpp"
@@ -430,6 +431,7 @@ public:
 
 		if ((prefix == "") || (prefix == "system"))
 		{
+			loadModule(new SystemAssertModule<R, ADS, DS> );
 			loadModule(new SystemDefineModule<R, ADS, DS> );
 			loadModule(new SystemDictionaryModule<R, ADS, DS> );
 			loadModule(new SystemEchoModule<R, ADS, DS> );
