@@ -60,7 +60,7 @@ public:
 	virtual string formatNumber(double v)
 	{
 		stringstream ss;
-		ss.precision(PreprocessFunction<R,ADS,DS>::precision); // set float precision
+		//ss.precision(PreprocessFunction<R,ADS,DS>::precision); // set float precision
 		ss << fixed; // disable scientific notation
 		ss << v;
 		return ss.str();
