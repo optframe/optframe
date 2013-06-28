@@ -66,7 +66,7 @@ public:
 
 	string usage()
 	{
-		return "module.unit_test target_module_name list_of_testers [validation_key]";
+		return "module.unit_test list_target_modules_names list_of_testers [validation_key]";
 	}
 
 	bool run(vector<Module<R, ADS, DS>*>& modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)
@@ -80,13 +80,25 @@ public:
 			return false;
 		}
 
-		string target = scanner.next();
-
-		if (!moduleExists(target, modules))
+		vector<string>* plist2 = OptFrameList::readList(ldictionary, scanner);
+		vector<string> targets;
+		if (plist2)
 		{
-			cout << "module.unit_test module: can't test module '" << target << "' because it doesn't exist!" << endl;
+			targets = vector<string>(*plist2);
+			delete plist2;
+		}
+		else
+		{
+			cout << "module.unit_test error: ill-formed targets list!" << endl;
 			return false;
 		}
+
+		for (unsigned t = 0; t < targets.size(); t++)
+			if (!moduleExists(targets[t], modules))
+			{
+				cout << "module.unit_test module: can't test module '" << targets[t] << "' because it doesn't exist!" << endl;
+				return false;
+			}
 
 		if (!scanner.hasNext())
 		{
@@ -103,7 +115,7 @@ public:
 		}
 		else
 		{
-			cout << "module.unit_test error: ill-formed testers list for check of module '" << target << "'!" << endl;
+			cout << "module.unit_test error: ill-formed testers list!" << endl;
 			return false;
 		}
 
@@ -113,8 +125,8 @@ public:
 		if (scanner.hasNext())
 		{
 			skey = scanner.next();
-			istringstream myStream(skey);
-			if (!(myStream >> key))
+			std::istringstream iss(skey);
+			if (!(iss >> std::hex >> key))
 			{
 				cout << "module.unit_test error: failed to convert key '" << skey << "' to unsigned long!" << endl;
 				return false;
@@ -125,12 +137,17 @@ public:
 		// get target module
 		// =================
 
-		Module<R, ADS, DS>* mtarget = getModule(modules, target, "");
-
-		if (!mtarget)
+		vector<Module<R, ADS, DS>*> mtargets;
+		for (unsigned i = 0; i < targets.size(); i++)
 		{
-			cout << "module.unit_test error: target '" << target << "' doesn't exist!" << endl;
-			return false;
+			Module<R, ADS, DS>* m = getModule(modules, targets[i], "");
+			if (!m)
+			{
+				cout << "module.unit_test error: target '" << targets[i] << "' doesn't exist!" << endl;
+				return false;
+			}
+
+			mtargets.push_back(m);
 		}
 
 		// ================
@@ -153,7 +170,10 @@ public:
 		// ============
 		// validate key
 		// ============
-		unsigned long check_key = mtarget->hash();
+		unsigned long check_key = 0;
+
+		for(unsigned i=0; i<mtargets.size(); i++)
+			check_key += mtargets[i]->hash();
 
 		for(unsigned i=0; i<mtesters.size(); i++)
 			check_key += mtesters[i]->hash();
@@ -164,7 +184,8 @@ public:
 			if(check_key == key)
 				return true;
 			else
-				cout << "module.unit_test warning: different key for target '" << target << "'. key=" << key << " calculated=" << check_key << endl;
+				cout << "module.unit_test warning: different key=" << skey << " calculated=";
+			printf("%#lx\n", check_key);
 		}
 
 		// ================
@@ -176,12 +197,13 @@ public:
 			string inp = ""; // no need to preprocess
 			if(!mtesters[i]->run(modules,allFunctions, factory, dictionary, ldictionary, inp))
 			{
-				cout << "module.unit_test error: failed to test '" << target << "' with tester '" << mtesters[i]->id() << "'!" << endl;
+				cout << "module.unit_test error: failed to test with tester '" << mtesters[i]->id() << "'!" << endl;
 				return false;
 			}
 		}
 
-		cout << "module.unit_test message: performed " << mtesters.size() << " tests on module '" << target << "'! validation key is " << check_key << endl;
+		cout << "module.unit_test message: performed " << mtesters.size() << " tests! validation key is: ";
+		printf("%#lx\n", check_key);
 		return true;
 	}
 
