@@ -38,7 +38,7 @@ function.create_raw list.last   [ $list ] = list.element( length($list) $list )
 % -------------------------------------------------------------
 
 system.use system
-use file -echo           % file.echo conflict with system.echo, renamed to 'echo_to_file'
+use file -echo -print -println         % file.echo conflict with system.echo, renamed to 'echo_to_file'
 module.rename file.echo  echo_to_file
 use list -silent_define  % list.silent_define conflict with system.silent_define, renamed to 'silent_define_list'
 module.rename list.silent_define   silent_define_list
