@@ -21,6 +21,9 @@
 #ifndef READMODULE_HPP_
 #define READMODULE_HPP_
 
+#include <unistd.h>
+#include <stdlib.h>
+
 #include "../Module.hpp"
 
 namespace optframe
@@ -215,6 +218,42 @@ public:
 			}
 		}
 
+		// =====================
+		// WILL CHANGE DIRECTORY
+		// =====================
+
+	    char *path=NULL;
+	    size_t size;
+	    path=getcwd(path,size);
+	    //cout<<"current Path"<<path << endl;
+
+		// changing current directory
+
+		const char *symlinkpath = input.c_str();
+		char actualpath [PATH_MAX+1];
+		char *ptr;
+
+		ptr = realpath(symlinkpath, actualpath);
+		string fullpath(ptr);
+
+		//cout << "Target filename is: '" << ptr << "'" << endl;
+
+		size_t found;
+		found=fullpath.find_last_of("/\\");
+		string dir = fullpath.substr(0,found);
+		//cout << " folder: " << fullpath.substr(0,found) << endl;
+		//cout << " file: " << fullpath.substr(found+1) << endl;
+
+		if (chdir(dir.substr(0, found).c_str()) != 0)
+		{
+			cout << "module " << id() << " error: failed to change directory!" << endl;
+			return false;
+		}
+
+		// ==================
+		// WILL EXEC COMMANDS
+		// ==================
+
 		for(unsigned int i = 0; i < commands.size(); i++)
 		{
 			string line = commands[i].second;
@@ -277,6 +316,17 @@ public:
 		}
 
 		delete scanner;
+
+		// ===============================
+		// GOING BACK TO CURRENT DIRECTORY
+		// ===============================
+
+		if (chdir(path) != 0)
+		{
+			cout << "module " << id() << " error: failed to go back to old directory!" << endl;
+			return false;
+		}
+
 		return true;
 	}
 
