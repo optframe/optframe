@@ -31,37 +31,6 @@ namespace optframe
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class ForEachModule: public Module<R, ADS, DS>
 {
-private:
-	Module<R, ADS, DS>* getModule(vector<Module<R, ADS, DS>*>& modules, string module)
-	{
-		for (unsigned int i = 0; i < modules.size(); i++)
-			if (modules[i]->canHandle(module, "")) // TODO: why?
-				return modules[i];
-		return NULL;
-	}
-
-	bool exec_command(vector<Module<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string command)
-	{
-		Scanner scanner(command);
-		string module = scanner.next();
-		Module<R, ADS, DS>* m = getModule(all_modules, module);
-
-		if (m == NULL)
-			return false;
-
-		string* rest = m->preprocess(allFunctions, factory, dictionary, ldictionary, scanner.rest());
-
-		if (!rest)
-			return NULL;
-
-		//cout << "FOR_EACH COMMAND: '" << module << "' input: '" << *rest << "'"<< endl;
-		bool b = m->run(all_modules, allFunctions, factory, dictionary, ldictionary, *rest, module);
-
-		delete rest;
-
-		return b;
-	}
-
 public:
 
 	virtual ~ForEachModule()
@@ -97,6 +66,8 @@ public:
 			return false;
 		}
 
+		bool initialStatusVar = Module<R, ADS, DS>::isInDictionary(var, dictionary, ldictionary);
+
 		vector<string>* pvalues = OptFrameList::readList(ldictionary, scanner);
 		vector<string> values;
 		if (pvalues)
@@ -128,7 +99,9 @@ public:
 
 		for (unsigned int v = 0; v < values.size(); v++)
 		{
-			if (!Module<R, ADS, DS>::defineText(var, values[v], dictionary))
+			Module<R, ADS, DS>::undefine(var, dictionary, ldictionary);
+
+			if (!Module<R, ADS, DS>::define(var, values[v], dictionary, ldictionary))
 			{
 				cout << "for_each error: failed to define variable '" << var << "' to value '" << values[v] << "'" << endl;
 				return false;
@@ -140,6 +113,9 @@ public:
 				return false;
 			}
 		}
+
+		if(!initialStatusVar)
+			Module<R, ADS, DS>::undefine(var, dictionary, ldictionary);
 
 		return true;
 	}
