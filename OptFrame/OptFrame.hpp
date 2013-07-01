@@ -208,6 +208,7 @@
 #include "Modules/ListSortModule.hpp"
 
 #include "Modules/ModuleCreateModule.hpp"
+#include "Modules/ModuleCreateLocalModule.hpp"
 #include "Modules/ModuleCreateRawModule.hpp"
 #include "Modules/ModuleExistsModule.hpp"
 #include "Modules/ModuleUnitTestModule.hpp"
@@ -398,6 +399,7 @@ public:
 		if ((prefix == "") || (prefix == "module"))
 		{
 			loadModule(new ModuleCreateModule<R, ADS, DS> );
+			loadModule(new ModuleCreateLocalModule<R, ADS, DS> );
 			loadModule(new ModuleCreateRawModule<R, ADS, DS> );
 			loadModule(new ModuleExistsModule<R, ADS, DS> );
 			loadModule(new ModuleUnitTestModule<R, ADS, DS> );
