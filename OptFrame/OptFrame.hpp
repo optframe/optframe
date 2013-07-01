@@ -284,6 +284,7 @@ public:
 
 	OptFrame()
 	{
+		setVariables();
 		loadDefault();
 		loadComponentBuilders();
 		loadActions();
@@ -292,6 +293,7 @@ public:
 	OptFrame(RandGen _rg) :
 		factory(HeuristicFactory<R, ADS, DS> (_rg))
 	{
+		setVariables();
 		loadDefault();
 		loadComponentBuilders();
 		loadActions();
@@ -306,6 +308,16 @@ public:
 	string version()
 	{
 		return "opti - OptFrame Script Language Interpreter \nDevelopment Version 2.0 \nhttp://sourceforge.net/projects/optframe/";
+	}
+
+	void setVariables()
+	{
+	    char *path=NULL;
+	    size_t size;
+	    path=getcwd(path,size);
+
+		dictionary["optframe-path"] = path;
+		dictionary["optframe-version"] = "Development 2.0+";
 	}
 
 	void unloadModules()
