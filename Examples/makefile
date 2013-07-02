@@ -1,3 +1,5 @@
+all: examples
+
 examples: tsp eternityII pmedcap opths
 
 tsp:
