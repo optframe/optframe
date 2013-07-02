@@ -30,8 +30,11 @@
 
 #include "ILS.h"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class BasicILSPerturbation: public ILS, public OptFrameComponent
+class BasicILSPerturbation: public ILS, public Component
 {
 private:
 	Evaluator<R, ADS, DS>& evaluator;
@@ -107,7 +110,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << OptFrameComponent::idComponent() << ILS::family << "basic_pert";
+		ss << Component::idComponent() << ILS::family << "basic_pert";
 		return ss.str();
 	}
 };
@@ -120,7 +123,7 @@ public:
 	{
 	}
 
-	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
 		Evaluator<R, ADS, DS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -167,5 +170,7 @@ public:
 		return idComponent();
 	}
 };
+
+}
 
 #endif /*OPTFRAME_BASICILSPerturbation_HPP_*/

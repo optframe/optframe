@@ -27,10 +27,14 @@ typedef int OPTFRAME_DEFAULT_DS;
 #include <iostream>
 #include <cmath>
 
-#include "OptFrameComponent.hpp"
+#include "Component.hpp"
 #include "Action.hpp"
 
 using namespace std;
+
+namespace optframe
+{
+
 
 // TODO: use enum?
 typedef bool Status; // 'unknown' = false, 'local optimum' = true
@@ -50,7 +54,7 @@ typedef bool Status; // 'unknown' = false, 'local optimum' = true
  */
 
 template<class DS = OPTFRAME_DEFAULT_DS>
-class Evaluation: public OptFrameComponent
+class Evaluation: public Component
 {
 protected:
 	double objFunction;
@@ -208,8 +212,6 @@ public:
 	}
 };
 
-namespace optframe
-{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class EvaluationAction: public Action<R, ADS, DS>
@@ -227,10 +229,10 @@ public:
 
 	virtual bool handleComponent(string type)
 	{
-		return OptFrameComponent::compareBase(Evaluation<DS>::idComponent(), type);
+		return Component::compareBase(Evaluation<DS>::idComponent(), type);
 	}
 
-	virtual bool handleComponent(OptFrameComponent& component)
+	virtual bool handleComponent(Component& component)
 	{
 		return component.compatible(Evaluation<DS>::idComponent());
 	}
@@ -248,7 +250,7 @@ public:
 			return false;
 		}
 
-		OptFrameComponent* comp = hf.components[component].at(id);
+		Component* comp = hf.components[component].at(id);
 
 		if(!comp)
 		{
@@ -256,7 +258,7 @@ public:
 			return false;
 		}
 
-		if(!OptFrameComponent::compareBase(comp->id(), type))
+		if(!Component::compareBase(comp->id(), type))
 		{
 			cout << "EvaluationAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
 			return false;
@@ -266,7 +268,7 @@ public:
 		hf.components[component].at(id) = NULL;
 
 		// cast object to lower type
-		OptFrameComponent* final = NULL;
+		Component* final = NULL;
 
 		if(type == Evaluation<DS>::idComponent())
 		{

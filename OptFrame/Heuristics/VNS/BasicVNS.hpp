@@ -27,6 +27,9 @@
 #include "VariableNeighborhoodSearch.hpp"
 #include "VNS.h"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class BasicVNS: public VariableNeighborhoodSearch<R, ADS, DS>
 {
@@ -121,5 +124,7 @@ public:
 		return idComponent();
 	}
 };
+
+}
 
 #endif /*OPTFRAME_BasicVNS_HPP_*/

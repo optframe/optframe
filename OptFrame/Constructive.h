@@ -23,8 +23,12 @@
 
 #include "Solution.hpp"
 
+namespace optframe
+{
+
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class Constructive : public OptFrameComponent
+class Constructive : public Component
 {
 public:
 	virtual ~Constructive()
@@ -35,13 +39,13 @@ public:
 
     virtual bool compatible(string s)
     {
-    	return ( s == idComponent() ) || (OptFrameComponent::compatible(s));
+    	return ( s == idComponent() ) || (Component::compatible(s));
     }
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << OptFrameComponent::idComponent() << "Constructive";
+		ss << Component::idComponent() << "Constructive";
 		return ss.str();
 	}
 
@@ -51,8 +55,6 @@ public:
 	}
 };
 
-namespace optframe
-{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class ConstructiveAction: public Action<R, ADS, DS>
@@ -70,10 +72,10 @@ public:
 
 	virtual bool handleComponent(string type)
 	{
-		return OptFrameComponent::compareBase(Constructive<R, ADS>::idComponent(), type);
+		return Component::compareBase(Constructive<R, ADS>::idComponent(), type);
 	}
 
-	virtual bool handleComponent(OptFrameComponent& component)
+	virtual bool handleComponent(Component& component)
 	{
 		return component.compatible(Constructive<R, ADS>::idComponent());
 	}
@@ -91,7 +93,7 @@ public:
 			return false;
 		}
 
-		OptFrameComponent* comp = hf.components[component].at(id);
+		Component* comp = hf.components[component].at(id);
 
 		if(!comp)
 		{
@@ -99,7 +101,7 @@ public:
 			return false;
 		}
 
-		if(!OptFrameComponent::compareBase(comp->id(), type))
+		if(!Component::compareBase(comp->id(), type))
 		{
 			cout << "ConstructiveAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
 			return false;
@@ -109,7 +111,7 @@ public:
 		hf.components[component].at(id) = NULL;
 
 		// cast object to lower type
-		OptFrameComponent* final = NULL;
+		Component* final = NULL;
 
 		if(type == Constructive<R, ADS>::idComponent())
 		{

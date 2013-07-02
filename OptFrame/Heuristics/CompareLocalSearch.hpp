@@ -19,11 +19,14 @@
 // USA.
 
 #ifndef OPTFRAME_COMPARE_LOCAL_SEARCH_HPP_
-#define OPTFRAME_FI_HPP_
+#define OPTFRAME_COMPARE_LOCAL_SEARCH_HPP_
 
 #include "../LocalSearch.hpp"
 #include "../NSSeq.hpp"
 #include "../Evaluator.hpp"
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class CompareLocalSearch: public LocalSearch<R, ADS, DS>
@@ -160,5 +163,7 @@ public:
 		return idComponent();
 	}
 };
+
+}
 
 #endif /*OPTFRAME_COMPARE_LOCAL_SEARCH_HPP_*/

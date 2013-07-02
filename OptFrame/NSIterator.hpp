@@ -23,10 +23,13 @@
 
 #include "Move.hpp"
 
-#include "OptFrameComponent.hpp"
+#include "Component.hpp"
 #include "Action.hpp"
 
 using namespace std;
+
+namespace optframe
+{
 
 class IteratorOutOfBound
 {
@@ -45,7 +48,7 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class NSIterator : public OptFrameComponent
+class NSIterator : public Component
 {
 public:
    virtual ~NSIterator()
@@ -69,8 +72,6 @@ public:
 };
 
 
-namespace optframe
-{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NSIteratorAction: public Action<R, ADS, DS>
@@ -93,10 +94,10 @@ public:
 
 	virtual bool handleComponent(string type)
 	{
-		return OptFrameComponent::compareBase(NSIterator<R, ADS, DS>::idComponent(), type);
+		return Component::compareBase(NSIterator<R, ADS, DS>::idComponent(), type);
 	}
 
-	virtual bool handleComponent(OptFrameComponent& component)
+	virtual bool handleComponent(Component& component)
 	{
 		return component.compatible(NSIterator<R, ADS, DS>::idComponent());
 	}
@@ -114,7 +115,7 @@ public:
 			return false;
 		}
 
-		OptFrameComponent* comp = hf.components[component].at(id);
+		Component* comp = hf.components[component].at(id);
 
 		if(!comp)
 		{
@@ -122,7 +123,7 @@ public:
 			return false;
 		}
 
-		if(!OptFrameComponent::compareBase(comp->id(), type))
+		if(!Component::compareBase(comp->id(), type))
 		{
 			cout << "NSIteratorAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
 			return false;
@@ -132,7 +133,7 @@ public:
 		hf.components[component].at(id) = NULL;
 
 		// cast object to lower type
-		OptFrameComponent* final = NULL;
+		Component* final = NULL;
 
 		if(type == NSIterator<R, ADS, DS>::idComponent())
 		{

@@ -55,7 +55,7 @@ public:
 
 		string pattern = "OptFrame:ComponentBuilder:";
 		// SKIP "OptFrame:" and replace by "OptFrame:ComponentBuilder:"
-		for(unsigned i=OptFrameComponent::idComponent().length(); i<component_name.size(); i++)
+		for(unsigned i=Component::idComponent().length(); i<component_name.size(); i++)
 			pattern += component_name.at(i);
 
 		vector<pair<string, vector<pair<string,string> > > > builders = factory.listBuilders(pattern);

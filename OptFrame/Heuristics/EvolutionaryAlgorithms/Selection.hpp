@@ -23,6 +23,9 @@
 
 #include "../../Population.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class Selection
 {
@@ -71,5 +74,7 @@ public:
          const Population<R, ADS>& intermediatePopulation, const FitnessValues& fv_intPop, const unsigned elitist_chrm_nb) const = 0;
 
 };
+
+}
 
 #endif /* SELECTION_HPP_ */

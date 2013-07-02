@@ -27,6 +27,9 @@
 #include "../../Evaluator.hpp"
 #include "../../RandGen.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class RVND: public LocalSearch<R, ADS, DS>
 {
@@ -175,5 +178,6 @@ public:
 	}
 };
 
+}
 
 #endif /*RVND_HPP_*/

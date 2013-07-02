@@ -23,12 +23,16 @@
 
 #include "Population.hpp"
 
-#include "OptFrameComponent.hpp"
+#include "Component.hpp"
 
 using namespace std;
 
+namespace optframe
+{
+
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class InitialPopulation : public OptFrameComponent
+class InitialPopulation : public Component
 {
 public:
 
@@ -40,7 +44,7 @@ public:
 
    static string idComponent()
    {
-      return "OptFrame:initpop";
+      return "OptFrame:InitialPopulation";
    }
 
    virtual string id() const
@@ -48,5 +52,7 @@ public:
       return idComponent();
    }
 };
+
+}
 
 #endif /*OPTFRAME_INITIALPOPULATION_H_*/

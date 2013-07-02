@@ -30,6 +30,9 @@
 
 #include "../../LocalSearch.hpp"
 
+namespace optframe
+{
+
 typedef pair<pair<int, int> , pair<int, int> > levelHistory;
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
@@ -177,5 +180,7 @@ public:
 
 	}
 };
+
+}
 
 #endif /*OPTFRAME_IILSL_HPP_*/

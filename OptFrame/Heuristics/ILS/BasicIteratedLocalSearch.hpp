@@ -31,6 +31,9 @@
 
 #include "ILS.h"
 
+namespace optframe
+{
+
 typedef int BasicHistory;
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
@@ -189,5 +192,6 @@ public:
 	}
 };
 
+}
 
 #endif /*OPTFRAME_BASICILS_HPP_*/

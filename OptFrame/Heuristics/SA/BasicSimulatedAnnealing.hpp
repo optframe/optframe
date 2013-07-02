@@ -26,6 +26,9 @@
 
 #include "SA.h"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class BasicSimulatedAnnealing: public SingleObjSearch<R, ADS, DS>
 {
@@ -226,5 +229,7 @@ public:
  LATEX:
 
  */
+
+}
 
 #endif /*OPTFRAME_BSA_HPP_*/

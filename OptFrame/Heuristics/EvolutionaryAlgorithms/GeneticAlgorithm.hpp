@@ -58,6 +58,9 @@
  * ToDo : Analisar critérios parada do algoritmo dado um tempo máximo de execução.
  */
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class GeneticAlgorithm: public SingleObjSearch<R, ADS, DS>
 {
@@ -442,5 +445,7 @@ public:
    }
 
 };
+
+}
 
 #endif /*OPTFRAME_GENETICALGORITHM_HPP_*/

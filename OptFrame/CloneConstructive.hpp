@@ -24,6 +24,9 @@
 #include "Constructive.h"
 #include "Solution.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class CloneConstructive : public Constructive<R, ADS>
 {
@@ -72,7 +75,7 @@ public:
 	{
 	}
 
-	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
 		Solution<R, ADS>* s;
 		hf.assign(s, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -105,5 +108,7 @@ public:
 		return idComponent();
 	}
 };
+
+}
 
 #endif /*OPTFRAME_CLONE_CONSTRUCTIVE_HPP_*/

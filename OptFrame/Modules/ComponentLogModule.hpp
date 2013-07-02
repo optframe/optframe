@@ -59,7 +59,7 @@ public:
 			return false;
 		}
 
-		OptFrameComponent* comp = factory.getNextComponent(scanner);
+		Component* comp = factory.getNextComponent(scanner);
 
 		if(!comp)
 		{

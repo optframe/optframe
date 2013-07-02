@@ -62,7 +62,7 @@ public:
 		double target_fo = scanner.nextDouble();
 		double timelimit = scanner.nextDouble();
 
-		OptFrameComponent* comp = factory.getNextComponent(scanner);
+		Component* comp = factory.getNextComponent(scanner);
 		if(!comp)
 		{
 			cout << id() << " error: " << "couldn't read Solution: or Constructive: from input (NULL Component)." << endl;

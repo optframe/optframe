@@ -27,6 +27,9 @@
 
 #include "VND.h"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class VariableNeighborhoodDescent: public LocalSearch<R, ADS, DS>
 {
@@ -173,5 +176,6 @@ public:
 	}
 };
 
+}
 
 #endif /*VARIABLENEIGHBORHOODDESCENT_HPP_*/

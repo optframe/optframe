@@ -29,6 +29,8 @@
 #include "../LocalSearch.hpp"
 #include "../Evaluator.hpp"
 
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class SimpleLocalSearch: public SingleObjSearch<R, ADS, DS>
@@ -151,5 +153,6 @@ public:
 	}
 };
 
+}
 
 #endif /*OPTFRAME_SIMPLE_LOCAL_SEARCH_HPP_*/

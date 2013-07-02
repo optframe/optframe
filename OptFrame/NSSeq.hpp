@@ -26,6 +26,9 @@
 
 using namespace std;
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NSSeq: public NS<R, ADS, DS>
 {
@@ -69,8 +72,6 @@ public:
 };
 
 
-namespace optframe
-{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NSSeqAction: public Action<R, ADS, DS>
@@ -90,10 +91,10 @@ public:
 
 	virtual bool handleComponent(string type)
 	{
-		return OptFrameComponent::compareBase(NSSeq<R, ADS, DS>::idComponent(), type);
+		return Component::compareBase(NSSeq<R, ADS, DS>::idComponent(), type);
 	}
 
-	virtual bool handleComponent(OptFrameComponent& component)
+	virtual bool handleComponent(Component& component)
 	{
 		return component.compatible(NSSeq<R, ADS, DS>::idComponent());
 	}
@@ -111,7 +112,7 @@ public:
 			return false;
 		}
 
-		OptFrameComponent* comp = hf.components[component].at(id);
+		Component* comp = hf.components[component].at(id);
 
 		if(!comp)
 		{
@@ -119,7 +120,7 @@ public:
 			return false;
 		}
 
-		if(!OptFrameComponent::compareBase(comp->id(), type))
+		if(!Component::compareBase(comp->id(), type))
 		{
 			cout << "NSSeqAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
 			return false;
@@ -129,7 +130,7 @@ public:
 		hf.components[component].at(id) = NULL;
 
 		// cast object to lower type
-		OptFrameComponent* final = NULL;
+		Component* final = NULL;
 
 		if(type == NSSeq<R, ADS, DS>::idComponent())
 		{

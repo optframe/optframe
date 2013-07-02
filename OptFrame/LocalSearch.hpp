@@ -26,15 +26,20 @@
 
 using namespace std;
 
-#include "OptFrameComponent.hpp"
+#include "Component.hpp"
 #include "ComponentBuilder.h"
 
 #include "Solution.hpp"
 #include "Population.hpp"
 #include "Evaluation.hpp"
 
+#include "Component.hpp"
+
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class LocalSearch: public OptFrameComponent
+class LocalSearch: public Component
 {
    typedef vector<Evaluation<DS>*> FitnessValues;
    typedef const vector<const Evaluation<DS>*> ConstFitnessValues;
@@ -79,13 +84,13 @@ public:
 
    virtual bool compatible(string s)
    {
-	   return ( s == idComponent() ) || ( OptFrameComponent::compatible(s) );
+	   return ( s == idComponent() ) || ( Component::compatible(s) );
    }
 
    static string idComponent()
    {
 	   stringstream ss;
-	   ss << OptFrameComponent::idComponent() << "LocalSearch:";
+	   ss << Component::idComponent() << "LocalSearch:";
 	   return ss.str();
    }
 
@@ -107,7 +112,7 @@ public:
 
 	virtual LocalSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "") = 0;
 
-	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
 		return build(scanner, hf, family);
 	}
@@ -130,8 +135,6 @@ public:
 };
 
 
-namespace optframe
-{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class LocalSearchAction: public Action<R, ADS, DS>
@@ -149,10 +152,10 @@ public:
 
 	virtual bool handleComponent(string type)
 	{
-		return OptFrameComponent::compareBase(LocalSearch<R, ADS, DS>::idComponent(), type);
+		return Component::compareBase(LocalSearch<R, ADS, DS>::idComponent(), type);
 	}
 
-	virtual bool handleComponent(OptFrameComponent& component)
+	virtual bool handleComponent(Component& component)
 	{
 		return component.compatible(LocalSearch<R, ADS, DS>::idComponent());
 	}
@@ -170,7 +173,7 @@ public:
 			return false;
 		}
 
-		OptFrameComponent* comp = hf.components[component].at(id);
+		Component* comp = hf.components[component].at(id);
 
 		if(!comp)
 		{
@@ -178,7 +181,7 @@ public:
 			return false;
 		}
 
-		if(!OptFrameComponent::compareBase(comp->id(), type))
+		if(!Component::compareBase(comp->id(), type))
 		{
 			cout << "LocalSearchAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
 			return false;
@@ -188,7 +191,7 @@ public:
 		hf.components[component].at(id) = NULL;
 
 		// cast object to lower type
-		OptFrameComponent* final = NULL;
+		Component* final = NULL;
 
 		if(type == LocalSearch<R, ADS, DS>::idComponent())
 		{

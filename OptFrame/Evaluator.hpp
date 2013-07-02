@@ -28,13 +28,17 @@
 
 #include <iostream>
 
-#include "OptFrameComponent.hpp"
+#include "Component.hpp"
 #include "Action.hpp"
 
 #define OPTFRAME_EPSILON 0.0001
 
 using namespace std;
 using namespace scannerpp;
+
+namespace optframe
+{
+
 
 //! \english The Evaluator class is responsible for the attribution of objective values for each Solution \endenglish \portuguese A classe Evaluator é responsável pela atribuição de valores objetivo para cada Solution \endportuguese
 
@@ -51,7 +55,7 @@ using namespace scannerpp;
  */
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class Evaluator: public OptFrameComponent
+class Evaluator: public Component
 {
 protected:
 	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
@@ -255,13 +259,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (OptFrameComponent::compatible(s));
+		return (s == idComponent()) || (Component::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << OptFrameComponent::idComponent() << "Evaluator";
+		ss << Component::idComponent() << "Evaluator";
 		return ss.str();
 	}
 
@@ -272,8 +276,6 @@ public:
 
 };
 
-namespace optframe
-{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class EvaluatorAction: public Action<R, ADS, DS>
@@ -291,10 +293,10 @@ public:
 
 	virtual bool handleComponent(string type)
 	{
-		return OptFrameComponent::compareBase(Evaluator<R, ADS, DS>::idComponent(), type);
+		return Component::compareBase(Evaluator<R, ADS, DS>::idComponent(), type);
 	}
 
-	virtual bool handleComponent(OptFrameComponent& component)
+	virtual bool handleComponent(Component& component)
 	{
 		return component.compatible(Evaluator<R, ADS, DS>::idComponent());
 	}
@@ -312,7 +314,7 @@ public:
 			return false;
 		}
 
-		OptFrameComponent* comp = hf.components[component].at(id);
+		Component* comp = hf.components[component].at(id);
 
 		if(!comp)
 		{
@@ -320,7 +322,7 @@ public:
 			return false;
 		}
 
-		if(!OptFrameComponent::compareBase(comp->id(), type))
+		if(!Component::compareBase(comp->id(), type))
 		{
 			cout << "EvaluatorAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
 			return false;
@@ -330,7 +332,7 @@ public:
 		hf.components[component].at(id) = NULL;
 
 		// cast object to lower type
-		OptFrameComponent* final = NULL;
+		Component* final = NULL;
 
 		if(type == Evaluator<R, ADS, DS>::idComponent())
 		{

@@ -30,11 +30,15 @@ using namespace std;
 #include "Population.hpp"
 #include "Evaluation.hpp"
 
-#include "OptFrameComponent.hpp"
+#include "Component.hpp"
 #include "ComponentBuilder.h"
 
+namespace optframe
+{
+
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MultiObjSearch: public OptFrameComponent
+class MultiObjSearch: public Component
 {
 public:
 
@@ -57,13 +61,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return ( s == idComponent() ) || ( OptFrameComponent::compatible(s) );
+		return ( s == idComponent() ) || ( Component::compatible(s) );
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << OptFrameComponent::idComponent() << "MultiObjSearch:";
+		ss << Component::idComponent() << "MultiObjSearch:";
 		return ss.str();
 	}
 
@@ -85,7 +89,7 @@ public:
 
 	virtual MultiObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "") = 0;
 
-	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
 		return build(scanner, hf, family);
 	}
@@ -107,5 +111,6 @@ public:
 	}
 };
 
+}
 
 #endif /* OPTFRAME_MULTI_OBJ_SEARCH_HPP_ */

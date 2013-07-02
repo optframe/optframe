@@ -21,6 +21,9 @@
 #ifndef MUTATION_HPP_
 #define MUTATION_HPP_
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class Mutation
 {
@@ -35,5 +38,7 @@ public:
    virtual void mutate(chromossome& individual) = 0;
 
 };
+
+}
 
 #endif /* MUTATION_HPP_ */

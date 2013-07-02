@@ -23,6 +23,9 @@
 
 #include "../../LocalSearch.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class Intensification : public LocalSearch<R, ADS, DS>
 {
@@ -51,5 +54,6 @@ public:
 
 };
 
+}
 
 #endif /*INTENSIFICATION_HPP_*/

@@ -29,11 +29,14 @@ using namespace std;
 #include "Solution.hpp"
 #include "Evaluation.hpp"
 
-#include "OptFrameComponent.hpp"
+#include "Component.hpp"
 #include "ComponentBuilder.h"
 
+namespace optframe
+{
+
 template< class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS >
-class SingleObjSearch : public OptFrameComponent
+class SingleObjSearch : public Component
 {
    typedef vector<Evaluation<DS>*> FitnessValues;
    typedef const vector<const Evaluation<DS>*> ConstFitnessValues;
@@ -58,13 +61,13 @@ public:
 
    virtual bool compatible(string s)
    {
-	   return ( s == idComponent() ) || ( OptFrameComponent::compatible(s) );
+	   return ( s == idComponent() ) || ( Component::compatible(s) );
    }
 
    static string idComponent()
    {
 	   stringstream ss;
-	   ss << OptFrameComponent::idComponent() << "SingleObjSearch:";
+	   ss << Component::idComponent() << "SingleObjSearch:";
 	   return ss.str();
    }
 
@@ -85,7 +88,7 @@ public:
 
 	virtual SingleObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "") = 0;
 
-	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
 		return build(scanner, hf, family);
 	}
@@ -108,8 +111,6 @@ public:
 };
 
 
-namespace optframe
-{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class SingleObjSearchAction: public Action<R, ADS, DS>
@@ -127,10 +128,10 @@ public:
 
 	virtual bool handleComponent(string type)
 	{
-		return OptFrameComponent::compareBase(SingleObjSearch<R, ADS, DS>::idComponent(), type);
+		return Component::compareBase(SingleObjSearch<R, ADS, DS>::idComponent(), type);
 	}
 
-	virtual bool handleComponent(OptFrameComponent& component)
+	virtual bool handleComponent(Component& component)
 	{
 		return component.compatible(SingleObjSearch<R, ADS, DS>::idComponent());
 	}
@@ -148,7 +149,7 @@ public:
 			return false;
 		}
 
-		OptFrameComponent* comp = hf.components[component].at(id);
+		Component* comp = hf.components[component].at(id);
 
 		if(!comp)
 		{
@@ -156,7 +157,7 @@ public:
 			return false;
 		}
 
-		if(!OptFrameComponent::compareBase(comp->id(), type))
+		if(!Component::compareBase(comp->id(), type))
 		{
 			cout << "SingleObjSearchAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
 			return false;
@@ -166,7 +167,7 @@ public:
 		hf.components[component].at(id) = NULL;
 
 		// cast object to lower type
-		OptFrameComponent* final = NULL;
+		Component* final = NULL;
 
 		if(type == SingleObjSearch<R, ADS, DS>::idComponent())
 		{

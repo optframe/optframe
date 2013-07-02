@@ -32,7 +32,7 @@
 
 #include "RandGen.hpp"
 
-#include "OptFrameComponent.hpp"
+#include "Component.hpp"
 
 #include "Action.hpp"
 
@@ -71,8 +71,10 @@
 
 
 using namespace std;
+using namespace optframe;
 
 // design pattern: Factory
+
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class HeuristicFactory
@@ -82,10 +84,10 @@ private:
 
 public:
 
-	map<string, vector<OptFrameComponent*> > components;
+	map<string, vector<Component*> > components;
 	vector<ComponentBuilder<R, ADS, DS>* > builders;
-	vector<optframe::Action<R, ADS, DS>* > actions;
-	map<string, vector<vector<OptFrameComponent*> > > componentLists;
+	vector<Action<R, ADS, DS>* > actions;
+	map<string, vector<vector<Component*> > > componentLists;
 
 	ComponentBuilder<R, ADS, DS>* getBuilder(string id)
 	{
@@ -102,12 +104,12 @@ public:
 	}
 	*/
 
-	bool inComponents(OptFrameComponent* c)
+	bool inComponents(Component* c)
 	{
-		map<std::string, vector<OptFrameComponent*> >::iterator iter;
+		map<std::string, vector<Component*> >::iterator iter;
 		for(iter = components.begin(); iter != components.end(); iter++)
 		{
-			vector<OptFrameComponent*> v = iter->second;
+			vector<Component*> v = iter->second;
 
 			for (unsigned int i = 0; i < v.size(); i++)
 				if(v[i]==c)
@@ -117,7 +119,7 @@ public:
 		return false;
 	}
 
-	OptFrameComponent* getNextComponent(Scanner& scanner)
+	Component* getNextComponent(Scanner& scanner)
 	{
 		std::string id = "";
 		unsigned number = 0;
@@ -148,11 +150,11 @@ public:
 		if((id=="") || (!validNumber))
 			return NULL;
 
-		OptFrameComponent* component = NULL;
+		Component* component = NULL;
 
 		if(components.count(id) > 0)
 		{
-			vector<OptFrameComponent*> v = components[id];
+			vector<Component*> v = components[id];
 
 			if(number < v.size())
 				component = v[number];
@@ -165,7 +167,7 @@ public:
 
 	template< class T > void assign(T*& component, unsigned number, string id)
 	{
-		if(!OptFrameComponent::compareBase(T::idComponent(), id))
+		if(!Component::compareBase(T::idComponent(), id))
 		{
 			cout << "HeuristicFactory: incompatible assign '" << T::idComponent() << "' <- '" << id << "'" << endl;
 			component = NULL;
@@ -174,7 +176,7 @@ public:
 
 		if(components.count(id) > 0)
 		{
-			vector<OptFrameComponent*>& v = components[id];
+			vector<Component*>& v = components[id];
 			if(number < v.size())
 			{
 				component = ((T*) v[number]) ;
@@ -191,11 +193,11 @@ public:
 	template< class T > void assignList(vector<T*>& cList, unsigned number, string _listId)
 	{
 		// type checking for safety!
-		string noList = OptFrameComponent::typeOfList(_listId);
+		string noList = Component::typeOfList(_listId);
 		string listId = noList;
 		listId += "[]";
 
-		if(!OptFrameComponent::compareBase(T::idComponent(), noList))
+		if(!Component::compareBase(T::idComponent(), noList))
 		{
 			cout << "HeuristicFactory: incompatible list assign '[" << T::idComponent() << "]' <- '[" << noList << "]'" << endl;
 			return;
@@ -203,7 +205,7 @@ public:
 
 		if(componentLists.count(listId) > 0)
 		{
-			vector<vector<OptFrameComponent*> >& vv = componentLists[listId];
+			vector<vector<Component*> >& vv = componentLists[listId];
 			if(number < vv.size())
 				for(unsigned i=0; i<vv[number].size(); i++)
 					cList.push_back((T*)vv[number][i]);
@@ -212,7 +214,7 @@ public:
 			cout << "'" << listId << " " << number << "' not found!" << endl;
 	}
 
-	int addComponent(OptFrameComponent& component, string id)
+	int addComponent(Component& component, string id)
 	{
 		if(inComponents(&component))
 		{
@@ -229,7 +231,7 @@ public:
 			return -1;
 		}
 
-		vector<OptFrameComponent*>& v = components[id];
+		vector<Component*>& v = components[id];
 		v.push_back(&component);
 
 		int idx = components[id].size() - 1;
@@ -239,7 +241,7 @@ public:
 		return idx;
 	}
 
-	int addComponent(OptFrameComponent& component)
+	int addComponent(Component& component)
 	{
 		return addComponent(component, component.id());
 	}
@@ -263,10 +265,10 @@ public:
 		assign(component, number, tmp);
 	}
 
-	int addComponentList(vector<OptFrameComponent*>& cList, string _listId)
+	int addComponentList(vector<Component*>& cList, string _listId)
 	{
 		// type checking for safety!
-		string noList = OptFrameComponent::typeOfList(_listId);
+		string noList = Component::typeOfList(_listId);
 		string listId = noList;
 		listId += "[]";
 
@@ -274,12 +276,12 @@ public:
 			if((cList[i]==NULL) || (!cList[i]->compatible(noList)))
 			{
 				cout << "Warning: incompatible components '";
-				cout << cList[i]->id() << "' and '" << OptFrameComponent::typeOfList(listId) << "'!" << endl;
+				cout << cList[i]->id() << "' and '" << Component::typeOfList(listId) << "'!" << endl;
 
 				return -1;
 			}
 
-		vector<vector<OptFrameComponent*> >& v = componentLists[listId];
+		vector<vector<Component*> >& v = componentLists[listId];
 		v.push_back(cList);
 
 		int idx = componentLists[listId].size() - 1;
@@ -289,7 +291,7 @@ public:
 		return idx;
 	}
 
-	int addComponentList(vector<OptFrameComponent*>& cList)
+	int addComponentList(vector<Component*>& cList)
 	{
 		if((cList.size()>0) && (cList[0] != NULL))
 		{
@@ -311,14 +313,14 @@ public:
 	{
 		vector<string> list;
 
-		map<std::string, vector<OptFrameComponent*> >::iterator iter;
+		map<std::string, vector<Component*> >::iterator iter;
 
 		for(iter = components.begin(); iter != components.end(); iter++)
 		{
-			vector<OptFrameComponent*> v = iter->second;
+			vector<Component*> v = iter->second;
 
 			for (unsigned int i = 0; i < v.size(); i++)
-				if (OptFrameComponent::compareBase(pattern, v[i]->id()))
+				if (Component::compareBase(pattern, v[i]->id()))
 				{
 					stringstream ss;
 					ss << iter->first << " " << i;
@@ -349,14 +351,14 @@ public:
 	{
 		vector<string> list;
 
-		map<std::string, vector<vector<OptFrameComponent*> > >::iterator iter;
+		map<std::string, vector<vector<Component*> > >::iterator iter;
 
 		for(iter = componentLists.begin(); iter != componentLists.end(); iter++)
 		{
-			vector<vector<OptFrameComponent*> > vl = iter->second;
+			vector<vector<Component*> > vl = iter->second;
 
 			for (unsigned int i = 0; i < vl.size(); i++)
-				if (OptFrameComponent::compareBase(pattern, iter->first))
+				if (Component::compareBase(pattern, iter->first))
 				{
 					stringstream ss;
 					ss << iter->first << " " << i;
@@ -377,7 +379,7 @@ public:
 		vector<pair<string, vector<pair<string,string> > > > list;
 
 		for(unsigned i=0; i<builders.size(); i++)
-			if (OptFrameComponent::compareBase(pattern, builders[i]->id()))
+			if (Component::compareBase(pattern, builders[i]->id()))
 				list.push_back(make_pair(builders[i]->id(), builders[i]->parameters()));
 
 		return list;
@@ -565,7 +567,7 @@ public:
 	{
 		if(components.count(type) > 0)
 		{
-			vector<OptFrameComponent*> v = components[type];
+			vector<Component*> v = components[type];
 
 			if(id < ((int)v.size())) // else return false?
 			{
@@ -585,11 +587,11 @@ public:
 
 	void drop_all()
 	{
-		map<std::string, vector<OptFrameComponent*> >::iterator iter;
+		map<std::string, vector<Component*> >::iterator iter;
 
 		for(iter = components.begin(); iter != components.end(); iter++)
 		{
-			vector<OptFrameComponent*> v = iter->second;
+			vector<Component*> v = iter->second;
 
 			for (unsigned int i = 0; i < v.size(); i++)
 				delete v[i];
@@ -597,7 +599,7 @@ public:
 			iter->second.clear();
 		}
 
-		map<std::string, vector<vector<OptFrameComponent*> > >::iterator iter2;
+		map<std::string, vector<vector<Component*> > >::iterator iter2;
 
 		for(iter2 = componentLists.begin(); iter2 != componentLists.end(); iter2++)
 		{
@@ -1038,5 +1040,6 @@ public:
 	}
 
 };
+
 
 #endif /* HEURISTICFACTORY_HPP_ */

@@ -27,6 +27,9 @@
 #include "../../SingleObjSearch.hpp"
 #include "../../Evaluator.hpp"
 
+namespace optframe
+{
+
 template<class H, class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class IntensifiedIteratedLocalSearch: public SingleObjSearch<R, ADS, DS>
 {
@@ -135,5 +138,7 @@ public:
 
 	}
 };
+
+}
 
 #endif /*OPTFRAME_IILS_HPP_*/

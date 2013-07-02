@@ -25,6 +25,9 @@
 
 using namespace std;
 
+namespace optframe
+{
+
 class SA
 {
 public:
@@ -36,5 +39,7 @@ public:
 };
 
 const string SA::family = "SA:";
+
+}
 
 #endif /*OPTFRAME_SA_FAMILY_H_*/

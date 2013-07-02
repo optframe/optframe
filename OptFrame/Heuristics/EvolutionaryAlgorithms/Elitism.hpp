@@ -26,6 +26,9 @@
 
 #include "../../Population.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class Elitism
 {
@@ -40,5 +43,7 @@ public:
    virtual Population<R, ADS> & doElitism(const Population<R, ADS> &p, const FitnessValues& fv_p, unsigned popElitistSize) const = 0;
 
 };
+
+}
 
 #endif /*OPTFRAME_ELITISM_HPP_*/

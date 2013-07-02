@@ -30,6 +30,9 @@
 
 #include "ILS.h"
 
+namespace optframe
+{
+
 template<class H, class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class IteratedLocalSearch: public ILS, public SingleObjSearch<R, ADS, DS>
 {
@@ -129,5 +132,7 @@ public:
 		return idComponent();
 	}
 };
+
+}
 
 #endif /*OPTFRAME_ILS_HPP_*/

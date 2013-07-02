@@ -1348,16 +1348,16 @@ public:
     }
 
     template<class T>
-    vector<OptFrameComponent*> convertVector(const vector<T*>& v)
+    vector<Component*> convertVector(const vector<T*>& v)
     {
-        vector<OptFrameComponent*> vcomp;
+        vector<Component*> vcomp;
         for(unsigned c=0; c<v.size(); c++)
-            vcomp.push_back((OptFrameComponent*)(v[c]));
+            vcomp.push_back((Component*)(v[c]));
 
         return vcomp;
     }
 
-	void printSummary(const vector<OptFrameComponent*>& vcomp, const vector<pair<int, double> >& values, string type, string title)
+	void printSummary(const vector<Component*>& vcomp, const vector<pair<int, double> >& values, string type, string title)
 	{
 		printf("---------------------------------\n");
 		cout << "|" << type << "|=" << values.size() << "\t" << title << endl;
@@ -1381,7 +1381,7 @@ public:
 		cout << endl;
 	}
 
-	void printSummarySimple(const vector<OptFrameComponent*>& vcomp, const vector<int>& values, int numTests, string type, string title)
+	void printSummarySimple(const vector<Component*>& vcomp, const vector<int>& values, int numTests, string type, string title)
 	{
 		printf("---------------------------------\n");
 		cout << "|" << type << "|=" << values.size() << "\t" << title << endl;

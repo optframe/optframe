@@ -30,11 +30,14 @@ using namespace scannerpp;
 
 using namespace std;
 
-class OptFrameComponent
+namespace optframe
+{
+
+class Component
 {
 public:
 
-   virtual ~OptFrameComponent()
+   virtual ~Component()
    {
    }
 
@@ -82,7 +85,7 @@ public:
 	{
 		if ((_base.length() < 3) || (_component.length() < 3))
 		{
-			cout << "OptFrameComponent::compareBase warning: comparing less than 3 characters! with base='" << _base << "' component='" << _component << "'" << endl;
+			cout << "Component::compareBase warning: comparing less than 3 characters! with base='" << _base << "' component='" << _component << "'" << endl;
 			return false;
 		}
 
@@ -143,5 +146,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /* OPTFRAME_COMPONENT_HPP_ */

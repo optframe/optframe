@@ -28,6 +28,9 @@
 
 using namespace std;
 
+namespace optframe
+{
+
 template<class DS = OPTFRAME_DEFAULT_DS>
 class TestEvaluation: public Evaluation<DS>
 {
@@ -144,5 +147,7 @@ unsigned long long TestEvaluation<DS>::ev_objects = 0;
 
 template<class DS >
 unsigned long long TestEvaluation<DS>::ev_objects_nodecrement = 0;
+
+}
 
 #endif /*OPTFRAME_TESTEVALUATION_HPP_*/

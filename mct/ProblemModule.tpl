@@ -14,6 +14,7 @@
 #include "ProblemInstance.hpp"
 
 using namespace scannerpp;
+using namespace optframe;
 
 namespace $project
 {
@@ -42,7 +43,7 @@ public:
     	return parentId;
     }
     
-    bool registerComponent(OptFrameComponent& component, string type, string name, HeuristicFactory<Rep$project , OPTFRAME_DEFAULT_ADS $commadproject>& hf, map<string, string>& dictionary)
+    bool registerComponent(Component& component, string type, string name, HeuristicFactory<Rep$project , OPTFRAME_DEFAULT_ADS $commadproject>& hf, map<string, string>& dictionary)
     {
 	    int idx = hf.addComponent(component, type);
 	    stringstream ss;

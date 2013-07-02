@@ -31,6 +31,9 @@
 #include "../../ParetoDominance.hpp"
 #include "../../ParetoDominanceWeak.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class MOVNS: public MultiObjSearch<R, ADS, DS>
 {
@@ -204,5 +207,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /*MULTIOBJECTIVEVNS_HPP_*/

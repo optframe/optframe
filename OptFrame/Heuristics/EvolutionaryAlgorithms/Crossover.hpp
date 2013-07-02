@@ -26,6 +26,9 @@
 
 //#include "../../Population.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class Crossover
 {
@@ -48,5 +51,7 @@ public:
    }
 
 };
+
+}
 
 #endif /*OPTFRAME_CROSSOVER_HPP_*/

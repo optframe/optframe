@@ -24,11 +24,14 @@
 #include "Move.hpp"
 #include "Solution.hpp"
 
-#include "OptFrameComponent.hpp"
+#include "Component.hpp"
 #include "Action.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class NS: public OptFrameComponent
+class NS: public Component
 {
 public:
 
@@ -70,12 +73,10 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (OptFrameComponent::compatible(s));
+		return (s == idComponent()) || (Component::compatible(s));
 	}
 };
 
-namespace optframe
-{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NSAction: public Action<R, ADS, DS>
@@ -96,10 +97,10 @@ public:
 
 	virtual bool handleComponent(string type)
 	{
-		return OptFrameComponent::compareBase(NS<R, ADS, DS>::idComponent(), type);
+		return Component::compareBase(NS<R, ADS, DS>::idComponent(), type);
 	}
 
-	virtual bool handleComponent(OptFrameComponent& component)
+	virtual bool handleComponent(Component& component)
 	{
 		return component.compatible(NS<R, ADS, DS>::idComponent());
 	}
@@ -117,7 +118,7 @@ public:
 			return false;
 		}
 
-		OptFrameComponent* comp = hf.components[component].at(id);
+		Component* comp = hf.components[component].at(id);
 
 		if(!comp)
 		{
@@ -125,7 +126,7 @@ public:
 			return false;
 		}
 
-		if(!OptFrameComponent::compareBase(comp->id(), type))
+		if(!Component::compareBase(comp->id(), type))
 		{
 			cout << "NSAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
 			return false;
@@ -135,7 +136,7 @@ public:
 		hf.components[component].at(id) = NULL;
 
 		// cast object to lower type
-		OptFrameComponent* final = NULL;
+		Component* final = NULL;
 
 		if(type == NS<R, ADS, DS>::idComponent())
 		{

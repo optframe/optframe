@@ -51,7 +51,7 @@ public:
 
 	virtual bool handleComponent(string type) = 0;
 
-	virtual bool handleComponent(OptFrameComponent& component) = 0;
+	virtual bool handleComponent(Component& component) = 0;
 
 	virtual bool handleAction(string action) = 0;
 
@@ -59,7 +59,7 @@ public:
 
 	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& d) = 0;
 
-	static bool addAndRegister(Scanner& scanner, OptFrameComponent& comp, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& d)
+	static bool addAndRegister(Scanner& scanner, Component& comp, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& d)
 	{
 		int index = hf.addComponent(comp);
 
@@ -123,12 +123,12 @@ public:
 
 	virtual bool handleComponent(string type)
 	{
-		return OptFrameComponent::compareBase(OptFrameComponent::idComponent(), type);
+		return Component::compareBase(Component::idComponent(), type);
 	}
 
-	virtual bool handleComponent(OptFrameComponent& component)
+	virtual bool handleComponent(Component& component)
 	{
-		return component.compatible(OptFrameComponent::idComponent());
+		return component.compatible(Component::idComponent());
 	}
 
 	virtual bool handleAction(string action)
@@ -144,7 +144,7 @@ public:
 			return false;
 		}
 
-		OptFrameComponent* comp = hf.components[component].at(id);
+		Component* comp = hf.components[component].at(id);
 
 		if(!comp)
 		{
@@ -154,14 +154,14 @@ public:
 
 		// cast object to upper base
 
-		if(!OptFrameComponent::compareBase(comp->id(), type))
+		if(!Component::compareBase(comp->id(), type))
 		{
 			cout << "ComponentAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
 			return false;
 		}
 
 		// cast object to lower type
-		OptFrameComponent* final = (OptFrameComponent*) comp;
+		Component* final = (Component*) comp;
 
 		// remove old component from factory
 		hf.components[component].at(id) = NULL;
@@ -180,7 +180,7 @@ public:
 		if (!scanner.hasNext())
 			return false;
 
-		OptFrameComponent* c;
+		Component* c;
 		hf.assign(c, scanner.nextInt(), scanner.next());
 
 		if (!c)

@@ -23,6 +23,9 @@
 
 #include "../../LocalSearch.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class RandomDescentMethod: public LocalSearch<R, ADS, DS>
 {
@@ -152,5 +155,6 @@ public:
 	}
 };
 
+}
 
 #endif /*OPTFRAME_RDM_HPP_*/

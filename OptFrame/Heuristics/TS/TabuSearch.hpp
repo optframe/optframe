@@ -25,6 +25,9 @@
 #include "../../NSEnum.hpp"
 #include "../../Evaluator.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class TabuSearch: public SingleObjSearch<R, ADS, DS>
 {
@@ -285,5 +288,7 @@ public:
    }
 
 };
+
+}
 
 #endif /*OPTFRAME_TABUSEARCH_HPP_*/

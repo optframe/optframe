@@ -25,6 +25,9 @@
 #include "../../NSSeq.hpp"
 #include "../../Evaluator.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class HillClimbing: public LocalSearch<R, ADS, DS>
 {
@@ -154,5 +157,7 @@ public:
 		return idComponent();
 	}
 };
+
+}
 
 #endif /*OPTFRAME_HILLCLIMBING_HPP_*/

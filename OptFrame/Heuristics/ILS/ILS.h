@@ -25,6 +25,9 @@
 
 using namespace std;
 
+namespace optframe
+{
+
 class ILS
 {
 public:
@@ -36,5 +39,7 @@ public:
 };
 
 const string ILS::family = "ILS:";
+
+}
 
 #endif /*OPTFRAME_ILS_FAMILY_H_*/

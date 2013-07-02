@@ -24,7 +24,7 @@
 #include "Solution.hpp"
 #include "Evaluation.hpp"
 
-#include "OptFrameComponent.hpp"
+#include "Component.hpp"
 
 #include "Action.hpp"
 
@@ -32,8 +32,11 @@ using namespace std;
 
 typedef void OPTFRAME_DEFAULT_PROBLEM;
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class Move : public OptFrameComponent
+class Move : public Component
 {
 public:
 
@@ -102,8 +105,7 @@ public:
 	virtual void print() const = 0;
 };
 
-namespace optframe
-{
+
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class MoveAction: public Action<R, ADS, DS>
@@ -125,10 +127,10 @@ public:
 
 	virtual bool handleComponent(string type)
 	{
-		return OptFrameComponent::compareBase(Move<R, ADS, DS>::idComponent(), type);
+		return Component::compareBase(Move<R, ADS, DS>::idComponent(), type);
 	}
 
-	virtual bool handleComponent(OptFrameComponent& component)
+	virtual bool handleComponent(Component& component)
 	{
 		return component.compatible(Move<R, ADS, DS>::idComponent());
 	}
@@ -146,7 +148,7 @@ public:
 			return false;
 		}
 
-		OptFrameComponent* comp = hf.components[component].at(id);
+		Component* comp = hf.components[component].at(id);
 
 		if(!comp)
 		{
@@ -154,7 +156,7 @@ public:
 			return false;
 		}
 
-		if(!OptFrameComponent::compareBase(comp->id(), type))
+		if(!Component::compareBase(comp->id(), type))
 		{
 			cout << "MoveAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
 			return false;
@@ -164,7 +166,7 @@ public:
 		hf.components[component].at(id) = NULL;
 
 		// cast object to lower type
-		OptFrameComponent* final = NULL;
+		Component* final = NULL;
 
 		if(type == Move<R, ADS, DS>::idComponent())
 		{

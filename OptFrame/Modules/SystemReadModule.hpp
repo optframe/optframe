@@ -223,7 +223,7 @@ public:
 		// =====================
 
 	    char *path=NULL;
-	    size_t size;
+	    size_t size = 0;
 	    path=getcwd(path,size);
 	    //cout<<"current Path"<<path << endl;
 

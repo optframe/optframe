@@ -29,6 +29,9 @@
 
 #include "ILS.h"
 
+namespace optframe
+{
+
 typedef pair<pair<int, int> , pair<int, int> > levelHistory;
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
@@ -213,5 +216,7 @@ public:
 		return idComponent();
 	}
 };
+
+}
 
 #endif /*OPTFRAME_ILSL_HPP_*/

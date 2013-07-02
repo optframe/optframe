@@ -24,11 +24,14 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "OptFrameComponent.hpp"
+#include "Component.hpp"
 
 using namespace std;
 
 typedef int OPTFRAME_DEFAULT_ADS;
+
+namespace optframe
+{
 
 //! \english The Solution class is a container class for the Representation structure R. \endenglish \portuguese A classe Solution é uma classe contêiner para a Representação R. \endportuguese
 
@@ -45,7 +48,7 @@ typedef int OPTFRAME_DEFAULT_ADS;
  */
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class Solution : public OptFrameComponent
+class Solution : public Component
 {
 protected:
 	R* r;     // representation
@@ -142,5 +145,7 @@ public:
 		return * new Solution<R, ADS>(*this);
 	}
 };
+
+}
 
 #endif /* OPTFRAME_SOLUTION_HPP_ */

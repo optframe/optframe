@@ -28,6 +28,10 @@
 
 using namespace std;
 
+namespace optframe
+{
+
+
 template<class R, class ADS, class DS > // already defined: ADS = OPTFRAME_DEFAULT_ADS , M = OPTFRAME_DEFAULT_EMEMORY
 class NSEnum: public NSSeq<R, ADS, DS>
 {
@@ -78,5 +82,7 @@ public:
 	   return ( s == idComponent() ) || ( NSSeq<R, ADS, DS>::compatible(s) );
    }
 };
+
+}
 
 #endif /*OPTFRAME_NSENUM_HPP_*/

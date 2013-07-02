@@ -92,7 +92,7 @@ public:
 
       if(factory.components.count(type) > 0)
       {
-    	  vector<OptFrameComponent*> v = factory.components[type];
+    	  vector<Component*> v = factory.components[type];
 
     	  if(id < ((int)v.size()))
     	  {

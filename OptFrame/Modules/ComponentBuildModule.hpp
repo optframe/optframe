@@ -115,7 +115,7 @@ public:
       int new_id = -1;
       string base = "";
 
-      if(OptFrameComponent::compareBase(LocalSearchBuilder<R, ADS, DS>::idComponent(), type))
+      if(Component::compareBase(LocalSearchBuilder<R, ADS, DS>::idComponent(), type))
       {
           pair<LocalSearch<R, ADS, DS>*, string> method;
           method = factory.createLocalSearch(scanner.rest());
@@ -127,7 +127,7 @@ public:
         	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
           }
       }
-      else if(OptFrameComponent::compareBase(SingleObjSearchBuilder<R, ADS, DS>::idComponent(), type))
+      else if(Component::compareBase(SingleObjSearchBuilder<R, ADS, DS>::idComponent(), type))
       {
           pair<SingleObjSearch<R, ADS, DS>*, string> method;
           method = factory.createSingleObjSearch(scanner.rest());
@@ -139,7 +139,7 @@ public:
         	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
           }
       }
-      else if(OptFrameComponent::compareBase(MultiObjSearchBuilder<R, ADS, DS>::idComponent(), type))
+      else if(Component::compareBase(MultiObjSearchBuilder<R, ADS, DS>::idComponent(), type))
       {
           pair<MultiObjSearch<R, ADS, DS>*, string> method;
           method = factory.createMultiObjSearch(scanner.rest());
@@ -156,7 +156,7 @@ public:
     	  scanner.next(); // drop builder name!
 
     	  ComponentBuilder<R, ADS, DS>* builder = factory.getBuilder(type);
-    	  OptFrameComponent* comp = builder->buildComponent(scanner, factory);
+    	  Component* comp = builder->buildComponent(scanner, factory);
 
     	  if(comp)
     	  {

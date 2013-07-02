@@ -25,6 +25,10 @@
 
 using namespace std;
 //GRASPH ? TODO FIX THE NAME
+
+namespace optframe
+{
+
 class GRASPH
 {
 public:
@@ -36,5 +40,7 @@ public:
 };
 
 const string GRASPH::family = "GRASPH:";
+
+}
 
 #endif /*OPTFRAME_GRASP_FAMILY_H_*/

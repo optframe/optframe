@@ -67,19 +67,19 @@ public:
 		string type = scanner.next();
 		string name = scanner.next();
 
-		vector<OptFrameComponent*> componentList;
+		vector<Component*> componentList;
 		for(unsigned i=0; i<list.size(); i++)
 		{
 			Scanner scan(list[i]);
-			OptFrameComponent* comp = factory.getNextComponent(scan);
+			Component* comp = factory.getNextComponent(scan);
 			if(!comp)
 			{
 				cout << "create_list_of_components: error, component #" << i << " is NULL! " << endl;
 				return false;
 			}
-			else if(!comp->compatible(OptFrameComponent::typeOfList(type)))
+			else if(!comp->compatible(Component::typeOfList(type)))
 			{
-				cout << "create_list_of_components: error, component #" << i << " ('" << comp->id() <<"') in list incompatible with type '" << OptFrameComponent::typeOfList(type) << "'" << endl;
+				cout << "create_list_of_components: error, component #" << i << " ('" << comp->id() <<"') in list incompatible with type '" << Component::typeOfList(type) << "'" << endl;
 				return false;
 			}
 			else
@@ -90,9 +90,9 @@ public:
 
 		stringstream ss;
 
-		ss << name << " " << OptFrameComponent::typeOfList(type) << "[] " << idx;
+		ss << name << " " << Component::typeOfList(type) << "[] " << idx;
 
-		cout << "'" << OptFrameComponent::typeOfList(type) << "[] " << idx << "' added." << endl;
+		cout << "'" << Component::typeOfList(type) << "[] " << idx << "' added." << endl;
 
 		return Module<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 	}

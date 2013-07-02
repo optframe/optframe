@@ -21,7 +21,7 @@
 #ifndef OPTFRAME_COMPONENT_BUILDER_H_
 #define OPTFRAME_COMPONENT_BUILDER_H_
 
-#include "OptFrameComponent.hpp"
+#include "Component.hpp"
 
 #include "Scanner++/Scanner.h"
 
@@ -29,15 +29,18 @@ using namespace scannerpp;
 
 template<class R, class ADS, class DS > class HeuristicFactory;
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentBuilder : public OptFrameComponent
+class ComponentBuilder : public Component
 {
 public:
 	virtual ~ComponentBuilder()
 	{
 	}
 
-	virtual OptFrameComponent* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "") = 0;
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "") = 0;
 
 	virtual vector<pair<string, string> > parameters() = 0;
 
@@ -46,7 +49,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << OptFrameComponent::idComponent() << "ComponentBuilder:";
+		ss << Component::idComponent() << "ComponentBuilder:";
 		return ss.str();
 	}
 
@@ -55,5 +58,7 @@ public:
 		return idComponent();
 	}
 };
+
+}
 
 #endif /*OPTFRAME_COMPONENT_BUILDER_H_*/

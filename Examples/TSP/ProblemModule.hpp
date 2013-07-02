@@ -58,7 +58,7 @@ public:
     	return parentId;
     }
 
-    bool registerComponent(OptFrameComponent& component, string type, string name, HeuristicFactory<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& hf, map<string, string>& dictionary)
+    bool registerComponent(Component& component, string type, string name, HeuristicFactory<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& hf, map<string, string>& dictionary)
     {
        int idx = hf.addComponent(component, type);
        stringstream ss;

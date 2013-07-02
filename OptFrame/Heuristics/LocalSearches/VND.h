@@ -25,6 +25,9 @@
 
 using namespace std;
 
+namespace optframe
+{
+
 class VND
 {
 public:
@@ -36,5 +39,7 @@ public:
 };
 
 const string VND::family = "VND:";
+
+}
 
 #endif /*OPTFRAME_VND_FAMILY_H_*/

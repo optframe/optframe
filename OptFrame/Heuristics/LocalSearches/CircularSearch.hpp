@@ -25,6 +25,9 @@
 #include "../../NSSeq.hpp"
 #include "../../Evaluator.hpp"
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class CircularSearch: public LocalSearch<R, ADS, DS>
 {
@@ -155,5 +158,6 @@ public:
 	}
 };
 
+}
 
 #endif /*OPTFRAME_CS_HPP_*/

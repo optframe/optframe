@@ -24,12 +24,15 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "OptFrameComponent.hpp"
+#include "Component.hpp"
 
 using namespace std;
 
+namespace optframe
+{
+
 template<class R, class ADS>
-class ADSManager: public OptFrameComponent
+class ADSManager: public Component
 {
 
 public:
@@ -59,13 +62,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (OptFrameComponent::compatible(s));
+		return (s == idComponent()) || (Component::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << OptFrameComponent::idComponent() << "ADSManager";
+		ss << Component::idComponent() << "ADSManager";
 		return ss.str();
 	}
 
@@ -82,5 +85,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /* OPTFRAME_ADSMANAGER_HPP_ */
