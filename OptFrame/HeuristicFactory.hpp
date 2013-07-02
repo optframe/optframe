@@ -36,8 +36,6 @@
 
 #include "Action.hpp"
 
-#include "OptFrameContainer.hpp"
-
 #include "SingleObjSearch.hpp"
 #include "MultiObjSearch.hpp"
 #include "LocalSearch.hpp"
