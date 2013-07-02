@@ -38,7 +38,7 @@ public:
 
    string id()
    {
-      return "module.exists";
+      return "command.exists";
    }
 
    string usage()
@@ -71,7 +71,7 @@ public:
 
    bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
    {
-      //cout << "module.exists module: " << input << endl;
+      //cout << "command.exists command: " << input << endl;
 
       Scanner scanner(input);
 
@@ -94,11 +94,11 @@ public:
       Command<R, ADS, DS>* m = getCommand(allCommands, module_name);
 
       //if(m)
-      //   cout << "module.exists real id is: " << m->id() << endl;
+      //   cout << "command.exists real id is: " << m->id() << endl;
 
       string result = formatBool(m != NULL);
 
-      //cout << "module.exists result is: " << result << endl;
+      //cout << "command.exists result is: " << result << endl;
 
       return Command<R, ADS, DS>::defineText(variable, result, dictionary);
    }

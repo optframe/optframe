@@ -60,7 +60,7 @@ public:
 
 		if(!file)
 		{
-			cout << "file.println module: couldn't open file: '" << filename << "'" << endl;
+			cout << "file.println command: couldn't open file: '" << filename << "'" << endl;
 			return false;
 		}
 

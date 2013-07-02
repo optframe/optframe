@@ -57,7 +57,7 @@ public:
 
 		if (!scanner.hasNext())
 		{
-			cout << "plot.2aix module: no such list!" << endl;
+			cout << "plot.2aix command: no such list!" << endl;
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
@@ -74,7 +74,7 @@ public:
 
 		if (list1.size() != 3)
 		{
-			cout << "plot.2axis module: expected 3 parameters (title, xtitle, ytitle) in first list and found " << list1.size() << endl;
+			cout << "plot.2axis command: expected 3 parameters (title, xtitle, ytitle) in first list and found " << list1.size() << endl;
 			return false;
 		}
 
@@ -84,7 +84,7 @@ public:
 
 		if (!scanner.hasNext())
 		{
-			cout << "plot.2aix module: no such list!" << endl;
+			cout << "plot.2aix command: no such list!" << endl;
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
@@ -120,7 +120,7 @@ public:
 
 			if(list.size() != 3)
 			{
-				cout << "plot.2aix module: internal list size different from 3! expected name, xvalues and yvalues." << endl;
+				cout << "plot.2aix command: internal list size different from 3! expected name, xvalues and yvalues." << endl;
 				cout << "Usage: " << usage() << endl;
 				return false;
 			}
@@ -152,7 +152,7 @@ public:
 
 			if(list_x.size() != list_y.size())
 			{
-				cout << "plot.2aix module: list_x size different from list_y size! (" << list_x.size() << " != " << list_y.size() << ")" << endl;
+				cout << "plot.2aix command: list_x size different from list_y size! (" << list_x.size() << " != " << list_y.size() << ")" << endl;
 				cout << "Usage: " << usage() << endl;
 				return false;
 			}
@@ -171,7 +171,7 @@ public:
 				}
 				catch(ConversionError& e)
 				{
-					cout << "plot.2axis module: error parsing x or y value!" << endl;
+					cout << "plot.2axis command: error parsing x or y value!" << endl;
 					return false;
 				}
 			}
@@ -184,7 +184,7 @@ public:
 			}
 			else
 			{
-				cout << "plot.2axis module: couldn't open file: '" << p.first << "'" << endl;
+				cout << "plot.2axis command: couldn't open file: '" << p.first << "'" << endl;
 				return false;
 			}
 

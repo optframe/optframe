@@ -64,7 +64,7 @@ public:
 			}
 			else
 			{
-				cout << "list.silent_define module: couldn't load list!" << endl;
+				cout << "list.silent_define command: couldn't load list!" << endl;
 				return false;
 			}
 

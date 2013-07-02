@@ -75,10 +75,10 @@ public:
 	bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string,string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		/*
-		// check dependency on 'module.rename' module
-		if(!Command<R, ADS, DS>::run_module("system.require", allCommands, allFunctions, factory, dictionary, ldictionary, "module.rename"))
+		// check dependency on 'command.rename' module
+		if(!Command<R, ADS, DS>::run_module("system.require", allCommands, allFunctions, factory, dictionary, ldictionary, "command.rename"))
 		{
-			cout << "error: system.use module depends on 'module.rename' module, which is not loaded!" << endl;
+			cout << "error: system.use module depends on 'command.rename' module, which is not loaded!" << endl;
 			return false;
 		}
 		*/
@@ -139,9 +139,9 @@ public:
 				ss << allCommands[i]->id() << " " << smallName;
 
 
-				if(!Command<R, ADS, DS>::run_module("module.rename", allCommands, allFunctions, factory, dictionary, ldictionary, ss.str()))
+				if(!Command<R, ADS, DS>::run_module("command.rename", allCommands, allFunctions, factory, dictionary, ldictionary, ss.str()))
 				{
-					cout << "system.use module error: failed to do a module.rename with parameters '" << ss.str() << "'" << endl;
+					cout << "system.use module error: failed to do a command.rename with parameters '" << ss.str() << "'" << endl;
 					return false;
 				}
 				*/

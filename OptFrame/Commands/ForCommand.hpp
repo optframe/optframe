@@ -119,7 +119,7 @@ public:
 
 		if((option != "to") && (option != "downto"))
 		{
-			cout << "for module: unknown option '" << option << "'! Should be 'to' or 'downto'." << endl;
+			cout << "for command: unknown option '" << option << "'! Should be 'to' or 'downto'." << endl;
 			return false;
 		}
 
@@ -155,7 +155,7 @@ public:
 
 				if(!Command<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
 				{
-					cout << "for module: (TO) error in command with value='" << v << "'!" << endl;
+					cout << "for command: (TO) error in command with value='" << v << "'!" << endl;
 					return false;
 				}
 				else
@@ -171,7 +171,7 @@ public:
 
 				if(!Command<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
 				{
-					cout << "for module: (DOWNTO) error in command with value='" << v << "'!" << endl;
+					cout << "for command: (DOWNTO) error in command with value='" << v << "'!" << endl;
 					return false;
 				}
 				else

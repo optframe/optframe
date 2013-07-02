@@ -16,15 +16,15 @@ system.silent_define _definitions_opt true
 % create auxiliar modules and functions
 % -------------------------------------------------------------
 
-module.create_raw module.rename [ module_name , new_name ] {
-   module.create_raw $new_name [ ] {
+command.create_raw command.rename [ module_name , new_name ] {
+   command.create_raw $new_name [ ] {
       system.preprocess _text_${new_name} $module_name $_all_params_${new_name};
       system.run $module_name $_text_${new_name}; %%% WARNING, CANNOT DO THIS *CORRECTLY* WITHOUT SCOPING =(! TODO
       system.undefine _text_${new_name};
    }
 }
 
-module.create_raw function.rename [ function_name , new_function_name ] {
+command.create_raw function.rename [ function_name , new_function_name ] {
    function.create_raw $new_function_name [ ] = $function_name ( $_all_params_$new_function_name );
 }
 
@@ -39,14 +39,14 @@ function.create_raw list.last   [ $list ] = list.element( length($list) $list )
 
 system.use system
 use file -echo -print -println         % file.echo conflict with system.echo, renamed to 'echo_to_file'
-module.rename file.echo  echo_to_file
+command.rename file.echo  echo_to_file
 use list -silent_define  % list.silent_define conflict with system.silent_define, renamed to 'silent_define_list'
-module.rename list.silent_define   silent_define_list
+command.rename list.silent_define   silent_define_list
 use module
 use component
 use randgen
-use function -create_raw -rename % function.create_raw conflict with module.create_raw (renamed to create_function), function.rename with module.rename (not renamed)
-module.rename function.create_raw  create_function
+use function -create_raw -rename % function.create_raw conflict with command.create_raw (renamed to create_function), function.rename with command.rename (not renamed)
+command.rename function.create_raw  create_function
 
 % only functions
 use operator
@@ -57,33 +57,33 @@ use math
 
 
 %%% DEPRECATED! GIVE SOME OLD NAMES
-%module.rename system.define        define
-%module.rename system.echo          echo
-%module.rename system.silent_define silent_define
-%module.rename system.unsafe_define unsafe_define
-%module.rename system.undefine      undefine
-%module.rename system.pause         pause
-%module.rename system.read          read
+%command.rename system.define        define
+%command.rename system.echo          echo
+%command.rename system.silent_define silent_define
+%command.rename system.unsafe_define unsafe_define
+%command.rename system.undefine      undefine
+%command.rename system.pause         pause
+%command.rename system.read          read
 
 
 
-module.rename list.sort            list_sort
-module.rename list.add             list_add
-module.rename list.remove          list_remove
+command.rename list.sort            list_sort
+command.rename list.add             list_add
+command.rename list.remove          list_remove
 
-module.rename module.create        create_module
+command.rename command.create        create_module
 
 
-module.rename component.create_list       create_list_of_components
-%module.rename component.evaluate          evaluate
-%module.rename component.exec              exec
-%module.rename component.exec_constructive exec_constructive
-%module.rename component.export            export
-%module.rename component.to_string         to_string
-%module.rename component.list_builders     list_builders
-module.rename component.list              list_components
+command.rename component.create_list       create_list_of_components
+%command.rename component.evaluate          evaluate
+%command.rename component.exec              exec
+%command.rename component.exec_constructive exec_constructive
+%command.rename component.export            export
+%command.rename component.to_string         to_string
+%command.rename component.list_builders     list_builders
+command.rename component.list              list_components
 
-module.rename randgen.interval            random_number_interval
+command.rename randgen.interval            random_number_interval
 
 
 % -------------------------------------------------------------
@@ -101,7 +101,7 @@ silent_define NSEnum       OptFrame:NS:NSSeq:NSEnum
 % create other modules and functions
 % -------------------------------------------------------------
 
-module.create print [ component , id ] {
+command.create print [ component , id ] {
   to_string $component $id optframe_str;
   echo $optframe_str;
   undefine optframe_str;
@@ -139,7 +139,7 @@ create_module print_list_to_file [ file , list ] {
   undefine _ilist
 }
 
-module.create head [ list , n , new_list ] {
+command.create head [ list , n , new_list ] {
   list.silent_define $new_list [ ];
   create_numeric_list 1 $n _head_indexes;
   for_each i _head_indexes {
@@ -148,7 +148,7 @@ module.create head [ list , n , new_list ] {
   undefine _head_indexes;
 }
 
-module.create tail [ list , n , new_list ] {
+command.create tail [ list , n , new_list ] {
   list.silent_define $new_list [ ];
   create_numeric_list operator.compute(operator.compute(list.length($list) - $n) + 1) list.length($list) _tail_indexes;
   for_each i _tail_indexes {

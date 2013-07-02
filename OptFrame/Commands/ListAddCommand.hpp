@@ -51,7 +51,7 @@ public:
 
 	bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
-		//cout << "list_add module: '" << input << "'" << endl;
+		//cout << "list_add command: '" << input << "'" << endl;
 
 		Scanner scanner(input);
 
@@ -90,13 +90,13 @@ public:
 
 		if((new_name != "") && (new_name.at(0)=='['))
 		{
-			cout << "list_add module: invalid list new name '" << new_name << "'" << endl;
+			cout << "list_add command: invalid list new name '" << new_name << "'" << endl;
 			return false;
 		}
 
 		if( (index < 0) || (index > ((int)list.size())) ) // index can be equal to size (adding)
 		{
-			cout << "list_add module: invalid index '" << index << "'!" << endl;
+			cout << "list_add command: invalid index '" << index << "'!" << endl;
 			return false;
 		}
 

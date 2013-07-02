@@ -76,7 +76,7 @@ public:
 
 		if (!scanner.hasNext())
 		{
-			cout << "list_sort module: no such list!" << endl;
+			cout << "list_sort command: no such list!" << endl;
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
@@ -93,7 +93,7 @@ public:
 
 		if (!scanner.hasNext())
 		{
-			cout << "list_sort module: no new list name!" << endl;
+			cout << "list_sort command: no new list name!" << endl;
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
@@ -110,20 +110,20 @@ public:
 			}
 			catch(ConversionError& e)
 			{
-				cout << "list_sort module: not an index number!" << endl;
+				cout << "list_sort command: not an index number!" << endl;
 				return false;
 			}
 		}
 
 		if((new_name != "") && (new_name.at(0)=='['))
 		{
-			cout << "list_sort module: invalid list new name '" << new_name << "'" << endl;
+			cout << "list_sort command: invalid list new name '" << new_name << "'" << endl;
 			return false;
 		}
 
 		if( (index-1) >= ((int)list.size()) )
 		{
-			cout << "list_sort module: invalid index '" << index << "'!" << endl;
+			cout << "list_sort command: invalid index '" << index << "'!" << endl;
 			return false;
 		}
 
@@ -146,7 +146,7 @@ public:
 				}
 				else
 				{
-					cout << "list_sort module: error processing internal list id=" << i << endl;
+					cout << "list_sort command: error processing internal list id=" << i << endl;
 					return false;
 				}
 
@@ -164,7 +164,7 @@ public:
 						}
 						catch(ConversionError& e)
 						{
-							cout << "list_sort module: problem in conversion of index value in sublist!" << endl;
+							cout << "list_sort command: problem in conversion of index value in sublist!" << endl;
 							return false;
 						}
 					}
@@ -202,7 +202,7 @@ public:
 			}
 			catch(ConversionError& e)
 			{
-				cout << "list_sort module: not a list of numbers!" << endl;
+				cout << "list_sort command: not a list of numbers!" << endl;
 				return false;
 			}
 

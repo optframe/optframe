@@ -70,7 +70,7 @@ public:
 			cout << endl;
 		}
 
-		cout << "Type 'system.usage module_name' to learn how to use the module." << endl;
+		cout << "Type 'system.usage module_name' to learn how to use the command." << endl;
 
 		return true;
 	}

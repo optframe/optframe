@@ -49,7 +49,7 @@ public:
 
 	bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
-		//cout << "list.push_back module: '" << input << "'" << endl;
+		//cout << "list.push_back command: '" << input << "'" << endl;
 
 		Scanner scanner(input);
 

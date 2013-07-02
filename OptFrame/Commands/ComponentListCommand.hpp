@@ -63,7 +63,7 @@ public:
 
 		components.insert(components.end(), componentLists.begin(), componentLists.end());
 
-		//cout << "component.list module: NUM. COMPONENTS IS " << components.size() << endl;
+		//cout << "component.list command: NUM. COMPONENTS IS " << components.size() << endl;
 
 		if(!scanner.hasNext())
 		{
@@ -76,15 +76,15 @@ public:
 		{
 			string new_name = scanner.next();
 
-			//cout << "component.list module: NEW_NAME = '" << new_name << "'" << endl;
+			//cout << "component.list command: NEW_NAME = '" << new_name << "'" << endl;
 
 			stringstream ss;
 
-			//cout << "components.list module: COMPONENTS '" << components << "'" << endl;
+			//cout << "components.list command: COMPONENTS '" << components << "'" << endl;
 
 			ss << new_name << " " << OptFrameList::listToString(components);
 
-			//cout << "component.list module: CREATING LIST OF COMPONENTS '" << ss.str() << "'" << endl;
+			//cout << "component.list command: CREATING LIST OF COMPONENTS '" << ss.str() << "'" << endl;
 
 			return Command<R, ADS, DS>::run_module("list.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 		}

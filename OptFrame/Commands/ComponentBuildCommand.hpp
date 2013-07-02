@@ -96,7 +96,7 @@ public:
 
    bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
    {
-      //cout << "build module: " << input << endl;
+      //cout << "build command: " << input << endl;
       Scanner scanner1(input);
 
       if (!scanner1.hasNext())
@@ -172,7 +172,7 @@ public:
 
       if(new_id < 0)
       {
-    	  cout << "build module: couldn't build component!" << endl;
+    	  cout << "build command: couldn't build component!" << endl;
     	  return false;
       }
 

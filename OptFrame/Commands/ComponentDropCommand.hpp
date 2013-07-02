@@ -49,7 +49,7 @@ public:
 
    bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
    {
-      //cout << "component.drop module: " << input << endl;
+      //cout << "component.drop command: " << input << endl;
       Scanner scanner(input);
 
       if (!scanner.hasNext())

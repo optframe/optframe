@@ -91,7 +91,7 @@ public:
 	{
 		string input = Scanner::trim(input1);
 
-		//cout << "system.run module: '" << input << "'" << endl;
+		//cout << "system.run command: '" << input << "'" << endl;
 
 		if(input.length()==0)
 		{
@@ -119,7 +119,7 @@ public:
 			}
 			else
 			{
-				cout << "system.run module: error reading block of commands!" << endl;
+				cout << "system.run command: error reading block of commands!" << endl;
 				return false;
 			}
 
@@ -131,9 +131,9 @@ public:
 					if (!exec_command(allCommands, allFunctions, factory, dictionary, ldictionary, command))
 					{
 						if (lcommands.at(c) == "")
-							cout << "system.run module: empty command! (perhaps an extra semicolon in block?)" << endl;
+							cout << "system.run command: empty command! (perhaps an extra semicolon in block?)" << endl;
 						else
-							cout << "system.run module: error in command '" << lcommands.at(c) << "'" << endl;
+							cout << "system.run command: error in command '" << lcommands.at(c) << "'" << endl;
 
 						return false;
 					}
@@ -173,7 +173,7 @@ public:
 
 			if(!Command<R, ADS, DS>::run_module(module_name, allCommands, allFunctions, factory, dictionary, ldictionary, ss.str()))
 			{
-				cout << "system.run module: error in command!" << endl;
+				cout << "system.run command: error in command!" << endl;
 				return false;
 			}
 			else

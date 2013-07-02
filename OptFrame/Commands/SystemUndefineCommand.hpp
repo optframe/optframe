@@ -46,7 +46,7 @@ public:
 
 	bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>&, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string rest)
 	{
-		//cout << "undefine module: '" << rest << "'" << endl;
+		//cout << "undefine command: '" << rest << "'" << endl;
 
 		Scanner scanner(rest);
 

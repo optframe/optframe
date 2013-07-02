@@ -61,18 +61,18 @@ public:
 
 	string id()
 	{
-		return "module.unit_test";
+		return "command.unit_test";
 	}
 
 	string usage()
 	{
-		return "module.unit_test list_target_modules_names list_of_testers [validation_key]";
+		return "command.unit_test list_target_modules_names list_of_testers [validation_key]";
 	}
 
 	bool run(vector<Command<R, ADS, DS>*>& modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
-		//cout << "module.unit_test run: '" << input << "'" << endl;
+		//cout << "command.unit_test run: '" << input << "'" << endl;
 
 		if (!scanner.hasNext())
 		{
@@ -89,14 +89,14 @@ public:
 		}
 		else
 		{
-			cout << "module.unit_test error: ill-formed targets list!" << endl;
+			cout << "command.unit_test error: ill-formed targets list!" << endl;
 			return false;
 		}
 
 		for (unsigned t = 0; t < targets.size(); t++)
 			if (!moduleExists(targets[t], modules))
 			{
-				cout << "module.unit_test module: can't test module '" << targets[t] << "' because it doesn't exist!" << endl;
+				cout << "command.unit_test command: can't test module '" << targets[t] << "' because it doesn't exist!" << endl;
 				return false;
 			}
 
@@ -115,7 +115,7 @@ public:
 		}
 		else
 		{
-			cout << "module.unit_test error: ill-formed testers list!" << endl;
+			cout << "command.unit_test error: ill-formed testers list!" << endl;
 			return false;
 		}
 
@@ -128,7 +128,7 @@ public:
 			std::istringstream iss(skey);
 			if (!(iss >> std::hex >> key))
 			{
-				cout << "module.unit_test error: failed to convert key '" << skey << "' to unsigned long!" << endl;
+				cout << "command.unit_test error: failed to convert key '" << skey << "' to unsigned long!" << endl;
 				return false;
 			}
 		}
@@ -143,7 +143,7 @@ public:
 			Command<R, ADS, DS>* m = getCommand(modules, targets[i], "");
 			if (!m)
 			{
-				cout << "module.unit_test error: target '" << targets[i] << "' doesn't exist!" << endl;
+				cout << "command.unit_test error: target '" << targets[i] << "' doesn't exist!" << endl;
 				return false;
 			}
 
@@ -160,7 +160,7 @@ public:
 			Command<R, ADS, DS>* m = getCommand(modules, testers[i], "");
 			if (!m)
 			{
-				cout << "module.unit_test error: tester '" << testers[i] << "' doesn't exist!" << endl;
+				cout << "command.unit_test error: tester '" << testers[i] << "' doesn't exist!" << endl;
 				return false;
 			}
 
@@ -185,7 +185,7 @@ public:
 				return true;
 			else
 			{
-				cout << "module.unit_test WARNING: different key=" << skey << " calculated=";
+				cout << "command.unit_test WARNING: different key=" << skey << " calculated=";
 				printf("%#lx\n", check_key);
 				cout << "Will perform tests! Press any key to continue..." << endl;
 				getchar();
@@ -201,12 +201,12 @@ public:
 			string inp = ""; // no need to preprocess
 			if(!mtesters[i]->run(modules,allFunctions, factory, dictionary, ldictionary, inp))
 			{
-				cout << "module.unit_test error: failed to test with tester '" << mtesters[i]->id() << "'!" << endl;
+				cout << "command.unit_test error: failed to test with tester '" << mtesters[i]->id() << "'!" << endl;
 				return false;
 			}
 		}
 
-		cout << "module.unit_test message: performed " << mtesters.size() << " tests! validation key is: ";
+		cout << "command.unit_test message: performed " << mtesters.size() << " tests! validation key is: ";
 		printf("%#lx\n", check_key);
 		return true;
 	}

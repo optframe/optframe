@@ -68,7 +68,7 @@ public:
 			condition = false;
 		else
 		{
-			cout << "if module: no such boolean '" << sbool << "'" << endl;
+			cout << "if command: no such boolean '" << sbool << "'" << endl;
 			return false;
 		}
 
@@ -90,7 +90,7 @@ public:
 
 			if(text_else != "else")
 			{
-				cout << "if module: expected else and found '" << text_else << "'" << endl;
+				cout << "if command: expected else and found '" << text_else << "'" << endl;
 				return false;
 			}
 
@@ -112,7 +112,7 @@ public:
 		{
 			if(!Command<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(lif)))
 			{
-				cout << "if module: error in IF command!" << endl;
+				cout << "if command: error in IF command!" << endl;
 				return false;
 			}
 			else
@@ -122,7 +122,7 @@ public:
 		{
 			if(!Command<R, ADS, DS>::run_module("system.run", all_modules, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(lelse)))
 			{
-				cout << "if module: error in ELSE command!" << endl;
+				cout << "if command: error in ELSE command!" << endl;
 				return false;
 			}
 			else

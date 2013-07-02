@@ -60,7 +60,7 @@ public:
 
 		if (!scanner.hasNext())
 		{
-			cout << "plot.view module: no filename!" << endl;
+			cout << "plot.view command: no filename!" << endl;
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}

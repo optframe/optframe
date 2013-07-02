@@ -156,7 +156,7 @@ public:
 			//cout << "RAW MODULE " << id() << " DEFINING: '" << parameters[v] << "' as '" << values[v] << "'" << endl;
 			if (!Command<R, ADS, DS>::defineText(parameters[v], values[v], dictionary))
 			{
-				cout << "module.create_raw error: failed to define parameter '" << parameters[v] << "' to value '" << values[v] << "'" << endl;
+				cout << "command.create_raw error: failed to define parameter '" << parameters[v] << "' to value '" << values[v] << "'" << endl;
 				return false;
 			}
 		}
@@ -231,12 +231,12 @@ public:
 
 	string id()
 	{
-		return "module.create_raw";
+		return "command.create_raw";
 	}
 
 	string usage()
 	{
-		return "module.create_raw name list_of_$parameters block_of_commands";
+		return "command.create_raw name list_of_$parameters block_of_commands";
 	}
 
 	bool run(vector<Command<R, ADS, DS>*>& modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
@@ -254,7 +254,7 @@ public:
 
 		if(moduleExists(name, modules))
 		{
-			cout << "module.create_raw module: couldn't create module '" << name << "' because it already exists!" << endl;
+			cout << "command.create_raw command: couldn't create module '" << name << "' because it already exists!" << endl;
 			return false;
 		}
 
@@ -283,7 +283,7 @@ public:
 		for (unsigned int i = 0; i < parameters.size(); i++)
 			if (parameters[i][0] == '$')
 			{
-				cout << "module.create_raw error: operator $ in variable: '" << parameters[i] << "'" << endl;
+				cout << "command.create_raw error: operator $ in variable: '" << parameters[i] << "'" << endl;
 				return false;
 			}
 
@@ -308,7 +308,7 @@ public:
 
 		if (m != NULL)
 		{
-			cout << "module.create_raw error: module with name '" << name << "' already exists!" << endl;
+			cout << "command.create_raw error: module with name '" << name << "' already exists!" << endl;
 			return false;
 		}
 		else

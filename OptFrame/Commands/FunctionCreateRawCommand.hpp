@@ -360,7 +360,7 @@ public:
 
 		if(functionExists(name, allFunctions))
 		{
-			cout << "function.create_raw module: couldn't create function '" << name << "' because it already exists!" << endl;
+			cout << "function.create_raw command: couldn't create function '" << name << "' because it already exists!" << endl;
 			return false;
 		}
 

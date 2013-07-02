@@ -64,7 +64,7 @@ public:
 
         if(!cons)
         {
-            cout << "exec_constructive module: couldn't read OptFrame:Constructive." << endl;
+            cout << "exec_constructive command: couldn't read OptFrame:Constructive." << endl;
             return false;
         }
 

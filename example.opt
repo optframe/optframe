@@ -5,16 +5,16 @@
 if operator.compare( _definitions_opt  != true )   { system.read definitions.opt }
 
 undefine bCommandExists
-module.exists problem.general bCommandExists
+command.exists problem.general bCommandExists
 
 if operator.logic(not bCommandExists)
 {
    undefine bCommandTSPExists;
-   module.exists problem.TSP bCommandTSPExists;
+   command.exists problem.TSP bCommandTSPExists;
 
    if bCommandTSPExists 
    {
-      module.rename problem.TSP problem.general;
+      command.rename problem.TSP problem.general;
       silent_define default_file ./Examples/TSP/tsplib/berlin52.txt;
    } else
    {

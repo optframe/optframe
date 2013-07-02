@@ -116,7 +116,7 @@ public:
 		{
 			if(!Command<R, ADS, DS>::run_module("system.run", allCommands, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
 			{
-				cout << "while module: error in command!" << endl;
+				cout << "while command: error in command!" << endl;
 				return false;
 			}
 

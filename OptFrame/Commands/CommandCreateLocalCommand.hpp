@@ -191,7 +191,7 @@ public:
 			}
 			/*if (!Command<R, ADS, DS>::defineText(parameters[v], values[v], dictionary))
 			 {
-			 cout << "module.create error: failed to define parameter '" << parameters[v] << "' to value '" << values[v] << "'" << endl;
+			 cout << "command.create error: failed to define parameter '" << parameters[v] << "' to value '" << values[v] << "'" << endl;
 			 return false;
 			 }*/
 		}
@@ -288,12 +288,12 @@ public:
 
 	string id()
 	{
-		return "module.create_local";
+		return "command.create_local";
 	}
 
 	string usage()
 	{
-		return "module.create_local name list_of_$parameters block_of_commands";
+		return "command.create_local name list_of_$parameters block_of_commands";
 	}
 
 	bool run(vector<Command<R, ADS, DS>*>& modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)

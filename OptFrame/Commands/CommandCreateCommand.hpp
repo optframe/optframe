@@ -183,7 +183,7 @@ public:
 			}
 			/*if (!Command<R, ADS, DS>::defineText(parameters[v], values[v], dictionary))
 			{
-				cout << "module.create error: failed to define parameter '" << parameters[v] << "' to value '" << values[v] << "'" << endl;
+				cout << "command.create error: failed to define parameter '" << parameters[v] << "' to value '" << values[v] << "'" << endl;
 				return false;
 			}*/
 		}
@@ -247,12 +247,12 @@ public:
 
 	string id()
 	{
-		return "module.create";
+		return "command.create";
 	}
 
 	string usage()
 	{
-		return "module.create name list_of_$parameters block_of_commands";
+		return "command.create name list_of_$parameters block_of_commands";
 	}
 
 	bool run(vector<Command<R, ADS, DS>*>& modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
@@ -270,7 +270,7 @@ public:
 
 		if(moduleExists(name, modules))
 		{
-			cout << "module.create module: couldn't create module '" << name << "' because it already exists!" << endl;
+			cout << "command.create command: couldn't create module '" << name << "' because it already exists!" << endl;
 			return false;
 		}
 
@@ -289,14 +289,14 @@ public:
 		}
 		else
 		{
-			cout << "module.create error: ill-formed parameter list for new module '" << name << "'!" << endl;
+			cout << "command.create error: ill-formed parameter list for new module '" << name << "'!" << endl;
 			return false;
 		}
 
 		for (unsigned int i = 0; i < parameters.size(); i++)
 			if (parameters[i][0] == '$')
 			{
-				cout << "module.create error: operator $ in variable: '" << parameters[i] << "'" << endl;
+				cout << "command.create error: operator $ in variable: '" << parameters[i] << "'" << endl;
 				return false;
 			}
 
@@ -316,7 +316,7 @@ public:
 		}
 		else
 		{
-			cout << "module.create error: ill-formed command block for new module '" << name << "'!" << endl;
+			cout << "command.create error: ill-formed command block for new module '" << name << "'!" << endl;
 			return false;
 		}
 
@@ -324,7 +324,7 @@ public:
 
 		if (m != NULL)
 		{
-			cout << "module.create error: module with name '" << name << "' already exists!" << endl;
+			cout << "command.create error: module with name '" << name << "' already exists!" << endl;
 			return false;
 		}
 		else

@@ -164,7 +164,7 @@ public:
 			factory.assign(constructive, id, sc);
 		else
 		{
-			cout << "testls module: ERROR IN TEST LOCAL SEARCH MODULE! NO SUCH CONSTRUCTIVE! ('" << sc << " " << id << "')" << endl;
+			cout << "testls command: ERROR IN TEST LOCAL SEARCH MODULE! NO SUCH CONSTRUCTIVE! ('" << sc << " " << id << "')" << endl;
 			return false;
 		}
 

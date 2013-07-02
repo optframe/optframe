@@ -99,7 +99,7 @@ public:
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
 		if (pPipe == NULL)
 		{
-		    cout << "shapiro_test module: PIPE NOT OPEN!" << endl;
+		    cout << "shapiro_test command: PIPE NOT OPEN!" << endl;
 		    return NULL;
 		}
 
@@ -115,7 +115,7 @@ public:
 
 		pclose(pPipe);
 
-		//cout << "shapiro_test module: OUTPUT '" << output << "'" << endl;
+		//cout << "shapiro_test command: OUTPUT '" << output << "'" << endl;
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
 			return NULL;
 

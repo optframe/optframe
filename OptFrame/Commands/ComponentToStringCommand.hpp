@@ -109,7 +109,7 @@ public:
 	   else
 	   {
 		   //text = "NULL Component!";
-		   cout << "component.to_string module: NULL Component!" << endl;
+		   cout << "component.to_string command: NULL Component!" << endl;
 		   return false;
 	   }
 

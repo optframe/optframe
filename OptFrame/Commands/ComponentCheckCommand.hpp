@@ -128,7 +128,7 @@ public:
 		// optional parameters taken automatically from the system
 		if (!scanner.hasNext())
 		{
-			// check dependency on 'module.rename' module
+			// check dependency on 'command.rename' module
 			if (!Command<R, ADS, DS>::run_module("system.require", allCommands, allFunctions, factory, dictionary, ldictionary, "component.list"))
 			{
 				cout << "error: system.use module depends on 'component.list' module, which is not loaded!" << endl;
@@ -441,7 +441,7 @@ public:
 				return false;
 			}
 
-            cout << "component.check module: testing " << constructive->toString() << endl;
+            cout << "component.check command: testing " << constructive->toString() << endl;
 
 			for (int iter = 1; iter <= iterMax; iter++)
 			{
@@ -500,7 +500,7 @@ public:
 				return false;
 			}
 
-            cout << "component.check module: testing " << pmove->toString() << endl;
+            cout << "component.check command: testing " << pmove->toString() << endl;
 
 			for (unsigned id_s = 0; id_s < solutions.size(); id_s++)
 			{
@@ -723,7 +723,7 @@ public:
 				return false;
 			}
 
-            cout << "component.check module: testing " << ns->toString() << endl;
+            cout << "component.check command: testing " << ns->toString() << endl;
 
 			for (int iter = 1; iter <= iterMax; iter++)
 			{
@@ -1011,7 +1011,7 @@ public:
 				return false;
 			}
 
-            cout << "component.check module: testing " << nsseq->toString() << endl;
+            cout << "component.check command: testing " << nsseq->toString() << endl;
 
 			int countMoves = 0;
 			int countValidMoves = 0;
@@ -1322,7 +1322,7 @@ public:
 
 		printSummarySimple(convertVector(lNSSeqComp), vCountValidMoves, nSolNSSeq, "NSSeq", "counting valid moves of NSSeq iterator");
 
-		cout << "component.check module: tests finished successfully!" << endl;
+		cout << "component.check command: tests finished successfully!" << endl;
 		return true;
 	}
 

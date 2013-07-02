@@ -109,7 +109,7 @@ public:
 
 			if (!Command<R, ADS, DS>::run_module("system.run", allCommands, allFunctions, factory, dictionary, ldictionary, OptFrameList::blockToString(commands)))
 			{
-				cout << "for_each module: error in command!" << endl;
+				cout << "for_each command: error in command!" << endl;
 				return false;
 			}
 		}

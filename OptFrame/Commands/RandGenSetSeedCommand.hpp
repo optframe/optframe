@@ -60,7 +60,7 @@ public:
 
 		unsigned long seed = scanner.nextInt();
 
-		cout << "randgen.set_seed module: setting system random number generator seed to: " << seed << endl;
+		cout << "randgen.set_seed command: setting system random number generator seed to: " << seed << endl;
 
 		RandGen& rg = factory.getRandGen();
 		rg.setSeed(seed);

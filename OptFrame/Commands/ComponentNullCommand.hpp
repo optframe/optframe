@@ -62,7 +62,7 @@ public:
 
    bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
    {
-      //cout << "component.null module: " << input << endl;
+      //cout << "component.null command: " << input << endl;
 
       Scanner scanner(input);
 
@@ -102,7 +102,7 @@ public:
     	  }
       }
 
-      cout << "component.null module: component '" << type << " " << id << "' not found!" << endl;
+      cout << "component.null command: component '" << type << " " << id << "' not found!" << endl;
 
       return false;
    }

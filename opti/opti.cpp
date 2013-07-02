@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 	optframe.loadDefault("system");
 	optframe.loadDefault("file");
 	optframe.loadDefault("list");
-	optframe.loadDefault("module");
+	optframe.loadDefault("command");
 	optframe.loadDefault("function");
 	optframe.loadDefault("plot");
 	optframe.loadDefault("randgen");

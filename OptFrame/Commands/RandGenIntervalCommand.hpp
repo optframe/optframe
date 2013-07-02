@@ -51,7 +51,7 @@ public:
 	bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
 	{
 		Scanner scanner(input);
-		//cout << "random_number_interval module: '" << input << "'" << endl;
+		//cout << "random_number_interval command: '" << input << "'" << endl;
 
 		if (!scanner.hasNext())
 		{
@@ -92,7 +92,7 @@ public:
 		}
 		else
 		{
-			cout << "random_number_interval module: random number is " << value << endl;
+			cout << "random_number_interval command: random number is " << value << endl;
 			return true;
 		}
 	}

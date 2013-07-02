@@ -86,7 +86,7 @@ public:
 
 		if(!m)
 		{
-			cout << "preprocess module: NULL module!" << endl;
+			cout << "preprocess command: NULL module!" << endl;
 			return false;
 		}
 

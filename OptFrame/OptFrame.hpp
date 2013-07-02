@@ -408,7 +408,7 @@ public:
 			loadCommand(new ListSortCommand<R, ADS, DS> );
 		}
 
-		if ((prefix == "") || (prefix == "module"))
+		if ((prefix == "") || (prefix == "command"))
 		{
 			loadCommand(new CommandCreateCommand<R, ADS, DS> );
 			loadCommand(new CommandCreateLocalCommand<R, ADS, DS> );
@@ -673,14 +673,14 @@ public:
 		cout << "Goodbye." << endl;
 	}
 
-	static void printOptions(string part_module, vector<Command<R, ADS, DS>*>& allCommands)
+	static void printOptions(string part_command, vector<Command<R, ADS, DS>*>& allCommands)
 	{
 		for (unsigned int i = 0; i < allCommands.size(); i++)
 		{
 			bool found = true;
 
-			for (unsigned j = 0; j < part_module.length(); j++)
-				if (part_module[j] != allCommands[i]->id()[j])
+			for (unsigned j = 0; j < part_command.length(); j++)
+				if (part_command[j] != allCommands[i]->id()[j])
 				{
 					found = false;
 					break;
@@ -739,7 +739,7 @@ public:
 				}
 
 				if (!modules[i]->run(modules, functions, factory, dictionary, ldictionary, *r, command))
-					cout << "error in module: '" << modules[i]->id() << "'" << endl;
+					cout << "error in command: '" << modules[i]->id() << "'" << endl;
 
 				delete r;
 

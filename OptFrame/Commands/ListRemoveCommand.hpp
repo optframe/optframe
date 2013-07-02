@@ -88,13 +88,13 @@ public:
 
 		if((new_name != "") && (new_name.at(0)=='['))
 		{
-			cout << "list_remove module: invalid list new name '" << new_name << "'" << endl;
+			cout << "list_remove command: invalid list new name '" << new_name << "'" << endl;
 			return false;
 		}
 
 		if( (index < 0) || (index >= ((int)list.size())) )
 		{
-			cout << "list_remove module: invalid index '" << index << "'!" << endl;
+			cout << "list_remove command: invalid index '" << index << "'!" << endl;
 			return false;
 		}
 

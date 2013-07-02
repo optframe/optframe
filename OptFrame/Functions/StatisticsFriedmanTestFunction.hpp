@@ -170,7 +170,7 @@ public:
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
 		if (pPipe == NULL)
 		{
-		    cout << "friedman_test module: PIPE NOT OPEN!" << endl;
+		    cout << "friedman_test command: PIPE NOT OPEN!" << endl;
 		    return NULL;
 		}
 

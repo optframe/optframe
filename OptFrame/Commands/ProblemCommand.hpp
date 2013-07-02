@@ -63,7 +63,7 @@ public:
 		if(mode == "unload")
 			return unload(factory, dictionary, ldictionary);
 
-		cout << "problem module: unknown mode '" << mode << "'! (should be 'load instance_path' or 'unload')";
+		cout << "problem command: unknown mode '" << mode << "'! (should be 'load instance_path' or 'unload')";
 
 		return false;
 	}

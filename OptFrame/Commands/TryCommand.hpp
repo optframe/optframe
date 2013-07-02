@@ -104,7 +104,7 @@ public:
 
 			if(text_except != "except")
 			{
-				cout << "try module: error expecting word 'except' and got '" << text_except << "'" << endl;
+				cout << "try command: error expecting word 'except' and got '" << text_except << "'" << endl;
 				return false;
 			}
 
@@ -136,9 +136,9 @@ public:
 					// EXPECTED ERROR, NO MESSAGE!
 					/*
 					if (ltry.at(c) == "")
-						cout << "try module: (TRY) empty command! (perhaps an extra comma in list?)" << endl;
+						cout << "try command: (TRY) empty command! (perhaps an extra comma in list?)" << endl;
 					else
-						cout << "try module: (TRY) problem in command '" << ltry.at(c) << "'" << endl;
+						cout << "try command: (TRY) problem in command '" << ltry.at(c) << "'" << endl;
 					*/
 
 					ok = false;
@@ -151,7 +151,7 @@ public:
 			// DEBUG MESSAGE ONLY
 			/*
 			if(lcatch.size()>0)
-				cout << "try_catch module: calling CATCH block" << endl;
+				cout << "try_catch command: calling CATCH block" << endl;
 			*/
 
 			for (unsigned int c = 0; c < lcatch.size(); c++)
@@ -165,9 +165,9 @@ public:
 					if(!exec_command(allCommands, allFunctions, factory, dictionary, ldictionary, command))
 					{
 						if(lcatch.at(c)=="")
-							cout << "try module: (AFTER ERROR) empty command! (perhaps an extra comma in list?)" << endl;
+							cout << "try command: (AFTER ERROR) empty command! (perhaps an extra comma in list?)" << endl;
 						else
-							cout << "try module: (AFTER ERROR) error in command '" << lcatch.at(c) << "'!" << endl;
+							cout << "try command: (AFTER ERROR) error in command '" << lcatch.at(c) << "'!" << endl;
 
 						return false;
 					}

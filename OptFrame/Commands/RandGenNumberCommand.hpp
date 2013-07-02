@@ -80,7 +80,7 @@ public:
 		}
 		else
 		{
-			cout << "random_number module: random number is " << value << endl;
+			cout << "random_number command: random number is " << value << endl;
 			return true;
 		}
 	}

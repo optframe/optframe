@@ -1,7 +1,7 @@
 
 system.read definitions.opt
 
-system.require module.rename
+system.require command.rename
 system.require function.rename
 
 function.rename compare comp
