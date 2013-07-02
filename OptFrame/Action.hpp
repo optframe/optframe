@@ -27,7 +27,7 @@
 
 #include "Scanner++/Scanner.h"
 
-//#include "Module.hpp"
+//#include "Command.hpp"
 
 using namespace std;
 using namespace scannerpp;
@@ -76,7 +76,7 @@ public:
 			d[varName] = sscomp.str(); // TODO: fix!!
 
 			return true;
-			//return Module<R, ADS, DS>::defineText(varName, sscomp.str(), d);
+			//return Command<R, ADS, DS>::defineText(varName, sscomp.str(), d);
 		}
 
 		return true;

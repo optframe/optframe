@@ -32,6 +32,6 @@
 #include "./TSP/DeltaMoveTSP2Opt.hpp"
 #include "./TSP/RandomInitialSolution.hpp"
 #include "./TSP/PerturbationTSP.h"
-#include "./TSP/ProblemModule.hpp"
+#include "./TSP/ProblemCommand.hpp"
 
 #endif /*TSP_H_*/

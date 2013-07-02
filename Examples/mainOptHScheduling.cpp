@@ -41,7 +41,7 @@ using namespace scannerpp;
 int main(int argc, char **argv)
 {
 	OptFrame<RepOptHS, OPTFRAME_DEFAULT_ADS, MemOptHS> optframe;
-	optframe.loadModule(new OptHSProblemModule);
+	optframe.loadCommand(new OptHSProblemCommand);
 	optframe.execute("system.read ../definitions.opt");
 	optframe.execute("problem.OptHS load Y Z M B E J");
 	optframe.execute("component.exec_constructive $Constructive 0  sol-random");

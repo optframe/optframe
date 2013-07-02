@@ -417,15 +417,15 @@ done
 
 
 ##############################################
-#               Problem Module
+#               Problem Command
 ##############################################
 
-var_inc="./$project/ProblemModule.hpp"
-var="./MyProjects/$project/ProblemModule.hpp"
+var_inc="./$project/ProblemCommand.hpp"
+var="./MyProjects/$project/ProblemCommand.hpp"
 var_tmp=$var".tmp"
 
-if cp ./mct/ProblemModule.tpl $var
-then echo "9. Creating ProblemModule...[ok]"
+if cp ./mct/ProblemCommand.tpl $var
+then echo "9. Creating ProblemCommand...[ok]"
 
      t="s/\$project/$project/g"
      sed -e "$t" < $var > $var_tmp
@@ -440,7 +440,7 @@ then echo "9. Creating ProblemModule...[ok]"
      mv $var_tmp $var
 
      echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
-else echo "9. Creating ProblemModule...[fail]"
+else echo "9. Creating ProblemCommand...[fail]"
      exit
 fi
 

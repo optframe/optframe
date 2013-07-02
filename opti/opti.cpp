@@ -79,7 +79,7 @@ int main(int argc, char **argv)
 		cout << "verbose mode enabled (but not fully supported yet...)" << endl;
 	}
 
-	optframe.unloadModules();
+	optframe.unloadCommands();
 	optframe.unloadFunctions();
 
 	optframe.loadDefault("statements");
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
 	optframe.loadDefault("math");
 
 	if(system_calls)
-		optframe.loadCallModule();
+		optframe.loadCallCommand();
 
 	if (help)
 	{

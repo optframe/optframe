@@ -43,7 +43,7 @@ using namespace scannerpp;
 int main(int argc, char **argv)
 {
 	OptFrame<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe;
-	optframe.loadModule(new TSPProblemModule);
+	optframe.loadCommand(new TSPProblemCommand);
 	optframe.execute("system.read example.opt");
 
 	cout << "Program ended successfully" << endl;

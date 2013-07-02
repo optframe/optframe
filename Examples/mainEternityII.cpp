@@ -40,7 +40,7 @@ using namespace EtII;
 int main(int argc, char **argv)
 {
 	OptFrame<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII> optframe;
-	optframe.loadModule(new EtIIProblemModule);
+	optframe.loadCommand(new EtIIProblemCommand);
 	optframe.execute("system.read etii-definitions.opt");
 	optframe.execute("system.read ../example.opt");
 	cout << "Program ended successfully" << endl;

@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "../../OptFrame/Modules/ProblemModule.hpp"
+#include "../../OptFrame/Commands/ProblemCommand.hpp"
 #include "../../OptFrame/Scanner++/Scanner.h"
 
 #include "Representation.h"
@@ -25,18 +25,18 @@ using namespace optframe;
 namespace OptHS
 {
 
-class OptHSProblemModule : public ProblemModule<RepOptHS, OPTFRAME_DEFAULT_ADS, MemOptHS>
+class OptHSProblemCommand : public ProblemCommand<RepOptHS, OPTFRAME_DEFAULT_ADS, MemOptHS>
 {
 public:
 
     ProblemInstance* p;
     
-    OptHSProblemModule()
+    OptHSProblemCommand()
     {
         p = NULL;
     }
 
-    virtual ~OptHSProblemModule()
+    virtual ~OptHSProblemCommand()
     {
         if(p)
            delete p;    
@@ -44,7 +44,7 @@ public:
 
     string id()
     {
-    	string parentId = ProblemModule<RepOptHS, OPTFRAME_DEFAULT_ADS, MemOptHS>::id();
+    	string parentId = ProblemCommand<RepOptHS, OPTFRAME_DEFAULT_ADS, MemOptHS>::id();
     	parentId.append("OptHS");
     	return parentId;
     }

@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "../../OptFrame/Modules/ProblemModule.hpp"
+#include "../../OptFrame/Commands/ProblemCommand.hpp"
 #include "../../OptFrame/Scanner++/Scanner.h"
 
 #include "Representation.h"
@@ -35,18 +35,18 @@ using namespace optframe;
 namespace EtII
 {
 
-class EtIIProblemModule : public ProblemModule<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
+class EtIIProblemCommand : public ProblemCommand<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
 {
 public:
 
     ProblemInstance* p;
     
-    EtIIProblemModule()
+    EtIIProblemCommand()
     {
         p = NULL;
     }
 
-    virtual ~EtIIProblemModule()
+    virtual ~EtIIProblemCommand()
     {
         if(p)
            delete p;    
@@ -54,7 +54,7 @@ public:
 
     string id()
     {
-    	string parentId = ProblemModule<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::id();
+    	string parentId = ProblemCommand<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::id();
     	parentId.append("EtII");
     	return parentId;
     }

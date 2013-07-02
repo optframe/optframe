@@ -28,6 +28,6 @@
 #include "./OptHScheduling/ProblemInstance.hpp"
 #include "./OptHScheduling/Evaluator.hpp"
 #include "./OptHScheduling/ConstructiveRandom.hpp"
-#include "./OptHScheduling/ProblemModule.hpp"
+#include "./OptHScheduling/ProblemCommand.hpp"
 
 #endif /*OPTHSCHEDULING_H_*/

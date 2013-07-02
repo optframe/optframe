@@ -12,10 +12,10 @@ system.silent_define _etiidefinitions_opt  true
 
 if operator.compare( _definitions_opt  != true )   { system.read ../definitions.opt }
 
-undefine bModuleExists
-module.exists problem.general bModuleExists
+undefine bCommandExists
+module.exists problem.general bCommandExists
 
-if bModuleExists
+if bCommandExists
 {
    error module problem.general already exists!;
 } else

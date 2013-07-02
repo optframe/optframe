@@ -549,15 +549,15 @@ public class MCT
 
 
 	//##############################################
-	//#               Problem Module
+	//#               Problem Command
 	//##############################################
 
-	var_inc = "./"+project+"/ProblemModule.hpp" ;
-	var = "./MyProjects/"+project+"/ProblemModule.hpp";
+	var_inc = "./"+project+"/ProblemCommand.hpp" ;
+	var = "./MyProjects/"+project+"/ProblemCommand.hpp";
 
-	if ( copyfile ( "./mct/ProblemModule.tpl", var ) )
+	if ( copyfile ( "./mct/ProblemCommand.tpl", var ) )
 	{
-	    System.out.println("9. Creating Problem Module...[ok]");
+	    System.out.println("9. Creating Problem Command...[ok]");
 
 	    String sVar = loadfile( var );
 
@@ -571,7 +571,7 @@ public class MCT
 	} 
 	else 
 	{ 
-	    System.out.println( "9. Creating Problem Module...[fail]" );
+	    System.out.println( "9. Creating Problem Command...[fail]" );
 	    return;
 	}
 

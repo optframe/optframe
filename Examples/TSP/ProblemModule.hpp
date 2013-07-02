@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "../../OptFrame/Modules/ProblemModule.hpp"
+#include "../../OptFrame/Commands/ProblemCommand.hpp"
 #include "../../OptFrame/Scanner++/Scanner.h"
 
 #include "Representation.h"
@@ -34,18 +34,18 @@ using namespace optframe;
 namespace TSP
 {
 
-class TSPProblemModule : public ProblemModule<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>
+class TSPProblemCommand : public ProblemCommand<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>
 {
 public:
 
     ProblemInstance* p;
     
-    TSPProblemModule()
+    TSPProblemCommand()
     {
         p = NULL;
     }
 
-    virtual ~TSPProblemModule()
+    virtual ~TSPProblemCommand()
     {
         if(p)
            delete p;    
@@ -53,7 +53,7 @@ public:
 
     string id()
     {
-    	string parentId = ProblemModule<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::id();
+    	string parentId = ProblemCommand<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::id();
     	parentId.append("TSP");
     	return parentId;
     }

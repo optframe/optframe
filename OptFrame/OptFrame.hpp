@@ -113,7 +113,7 @@
 // ==================================
 
 #include "PreprocessFunction.hpp"
-#include "Module.hpp"
+#include "Command.hpp"
 
 #include "RandGen.hpp"
 #include "Util/RandGenMersenneTwister.hpp"
@@ -166,95 +166,95 @@
 
 // to become functions or runtime modules...
 
-#include "Modules/CreateNumericListModule.hpp"
-#include "Modules/EmpiricalModule.hpp"
-#include "Modules/TestModule.hpp"
-#include "Modules/TestLocalSearchModule.hpp"
+#include "Commands/CreateNumericListCommand.hpp"
+#include "Commands/EmpiricalCommand.hpp"
+#include "Commands/TestCommand.hpp"
+#include "Commands/TestLocalSearchCommand.hpp"
 
 // component
 
-#include "Modules/ComponentActionModule.hpp"
-#include "Modules/ComponentActionsModule.hpp"
-#include "Modules/ComponentBetterThanModule.hpp"
-#include "Modules/ComponentBuilderOfComponent.hpp"
-#include "Modules/ComponentBuildModule.hpp"
-#include "Modules/ComponentCastModule.hpp"
-#include "Modules/ComponentCheckModule.hpp"
-#include "Modules/ComponentCreateListModule.hpp"
-#include "Modules/ComponentDropModule.hpp"
-#include "Modules/ComponentDropAllModule.hpp"
-#include "Modules/ComponentEvaluateModule.hpp"
-#include "Modules/ComponentExecConstructiveModule.hpp"
-#include "Modules/ComponentExecLocalSearchModule.hpp"
-#include "Modules/ComponentExecModule.hpp"
-#include "Modules/ComponentExportLogModule.hpp"
-#include "Modules/ComponentExportModule.hpp"
-#include "Modules/ComponentListBuildersModule.hpp"
-#include "Modules/ComponentListFromPopulationModule.hpp"
-#include "Modules/ComponentListModule.hpp"
-#include "Modules/ComponentLogModule.hpp"
-#include "Modules/ComponentNullModule.hpp"
-#include "Modules/ComponentToStringModule.hpp"
+#include "Commands/ComponentActionCommand.hpp"
+#include "Commands/ComponentActionsCommand.hpp"
+#include "Commands/ComponentBetterThanCommand.hpp"
+#include "Commands/ComponentBuilderOfComponent.hpp"
+#include "Commands/ComponentBuildCommand.hpp"
+#include "Commands/ComponentCastCommand.hpp"
+#include "Commands/ComponentCheckCommand.hpp"
+#include "Commands/ComponentCreateListCommand.hpp"
+#include "Commands/ComponentDropCommand.hpp"
+#include "Commands/ComponentDropAllCommand.hpp"
+#include "Commands/ComponentEvaluateCommand.hpp"
+#include "Commands/ComponentExecConstructiveCommand.hpp"
+#include "Commands/ComponentExecLocalSearchCommand.hpp"
+#include "Commands/ComponentExecCommand.hpp"
+#include "Commands/ComponentExportLogCommand.hpp"
+#include "Commands/ComponentExportCommand.hpp"
+#include "Commands/ComponentListBuildersCommand.hpp"
+#include "Commands/ComponentListFromPopulationCommand.hpp"
+#include "Commands/ComponentListCommand.hpp"
+#include "Commands/ComponentLogCommand.hpp"
+#include "Commands/ComponentNullCommand.hpp"
+#include "Commands/ComponentToStringCommand.hpp"
 
-#include "Modules/FileEchoModule.hpp"
-#include "Modules/FilePrintModule.hpp"
-#include "Modules/FilePrintlnModule.hpp"
-#include "Modules/FileToListModule.hpp"
+#include "Commands/FileEchoCommand.hpp"
+#include "Commands/FilePrintCommand.hpp"
+#include "Commands/FilePrintlnCommand.hpp"
+#include "Commands/FileToListCommand.hpp"
 
-#include "Modules/ListAddModule.hpp"
-#include "Modules/ListPushBackModule.hpp"
-#include "Modules/ListRemoveModule.hpp"
-#include "Modules/ListSilentDefineModule.hpp"
-#include "Modules/ListSortModule.hpp"
+#include "Commands/ListAddCommand.hpp"
+#include "Commands/ListPushBackCommand.hpp"
+#include "Commands/ListRemoveCommand.hpp"
+#include "Commands/ListSilentDefineCommand.hpp"
+#include "Commands/ListSortCommand.hpp"
 
-#include "Modules/ModuleCreateModule.hpp"
-#include "Modules/ModuleCreateLocalModule.hpp"
-#include "Modules/ModuleCreateRawModule.hpp"
-#include "Modules/ModuleExistsModule.hpp"
-#include "Modules/ModuleUnitTestModule.hpp"
+#include "Commands/CommandCreateCommand.hpp"
+#include "Commands/CommandCreateLocalCommand.hpp"
+#include "Commands/CommandCreateRawCommand.hpp"
+#include "Commands/CommandExistsCommand.hpp"
+#include "Commands/CommandUnitTestCommand.hpp"
 
-#include "Modules/FunctionCreateRawModule.hpp"
+#include "Commands/FunctionCreateRawCommand.hpp"
 
-#include "Modules/ParallelInitServersModule.hpp"
+#include "Commands/ParallelInitServersCommand.hpp"
 
-#include "Modules/Plot2AxisModule.hpp"
-#include "Modules/PlotViewModule.hpp"
+#include "Commands/Plot2AxisCommand.hpp"
+#include "Commands/PlotViewCommand.hpp"
 
-#include "Modules/ProblemModule.hpp"
+#include "Commands/ProblemCommand.hpp"
 
-#include "Modules/RandGenIntervalModule.hpp"
-#include "Modules/RandGenNumberModule.hpp"
-#include "Modules/RandGenSetSeedModule.hpp"
+#include "Commands/RandGenIntervalCommand.hpp"
+#include "Commands/RandGenNumberCommand.hpp"
+#include "Commands/RandGenSetSeedCommand.hpp"
 
-#include "Modules/SystemAssertModule.hpp"
-#include "Modules/SystemCallModule.hpp"
-#include "Modules/SystemDefineModule.hpp"
-#include "Modules/SystemDictionaryModule.hpp"
-#include "Modules/SystemEchoModule.hpp"
-#include "Modules/SystemErrorModule.hpp"
-#include "Modules/SystemHelpModule.hpp"
-#include "Modules/SystemPauseModule.hpp"
-#include "Modules/SystemPreprocessModule.hpp"
-#include "Modules/SystemPrintModule.hpp"
-#include "Modules/SystemPrintlnModule.hpp"
-#include "Modules/SystemReadModule.hpp"
-#include "Modules/SystemRequireModule.hpp"
-#include "Modules/SystemRunModule.hpp"
-#include "Modules/SystemRunParallelModule.hpp"
-#include "Modules/SystemSilentDefineModule.hpp"
-#include "Modules/SystemUndefineModule.hpp"
-#include "Modules/SystemUnsafeDefineModule.hpp"
-#include "Modules/SystemUsageModule.hpp"
-#include "Modules/SystemUseModule.hpp"
+#include "Commands/SystemAssertCommand.hpp"
+#include "Commands/SystemCallCommand.hpp"
+#include "Commands/SystemDefineCommand.hpp"
+#include "Commands/SystemDictionaryCommand.hpp"
+#include "Commands/SystemEchoCommand.hpp"
+#include "Commands/SystemErrorCommand.hpp"
+#include "Commands/SystemHelpCommand.hpp"
+#include "Commands/SystemPauseCommand.hpp"
+#include "Commands/SystemPreprocessCommand.hpp"
+#include "Commands/SystemPrintCommand.hpp"
+#include "Commands/SystemPrintlnCommand.hpp"
+#include "Commands/SystemReadCommand.hpp"
+#include "Commands/SystemRequireCommand.hpp"
+#include "Commands/SystemRunCommand.hpp"
+#include "Commands/SystemRunParallelCommand.hpp"
+#include "Commands/SystemSilentDefineCommand.hpp"
+#include "Commands/SystemUndefineCommand.hpp"
+#include "Commands/SystemUnsafeDefineCommand.hpp"
+#include "Commands/SystemUsageCommand.hpp"
+#include "Commands/SystemUseCommand.hpp"
 
-#include "Modules/OperatorAssignModule.hpp"
+#include "Commands/OperatorAssignCommand.hpp"
 
 //structural
-#include "Modules/IfElseModule.hpp"
-#include "Modules/ForModule.hpp"
-#include "Modules/ForEachModule.hpp"
-#include "Modules/WhileModule.hpp"
-#include "Modules/TryModule.hpp"
+#include "Commands/IfElseCommand.hpp"
+#include "Commands/ForCommand.hpp"
+#include "Commands/ForEachCommand.hpp"
+#include "Commands/WhileCommand.hpp"
+#include "Commands/TryCommand.hpp"
 
 // ==================================
 //            Serializer
@@ -273,7 +273,7 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_
 class OptFrame
 {
 private:
-	vector<Module<R, ADS, DS>*> modules;
+	vector<Command<R, ADS, DS>*> modules;
 	vector<PreprocessFunction<R, ADS, DS>*> functions;
 	map<string, string> dictionary;
 	map<string, vector<string> > ldictionary;
@@ -301,7 +301,7 @@ public:
 
 	virtual ~OptFrame()
 	{
-		unloadModules();
+		unloadCommands();
 		unloadFunctions();
 	}
 
@@ -320,7 +320,7 @@ public:
 		dictionary["optframe-version"] = "Development 2.0+";
 	}
 
-	void unloadModules()
+	void unloadCommands()
 	{
 		for (unsigned int i = 0; i < modules.size(); ++i)
 			delete modules.at(i);
@@ -334,7 +334,7 @@ public:
 		functions.clear();
 	}
 
-	void loadModule(Module<R, ADS, DS>* module)
+	void loadCommand(Command<R, ADS, DS>* module)
 	{
 		if (module)
 			modules.push_back(module);
@@ -346,11 +346,11 @@ public:
 			functions.push_back(function);
 	}
 
-	void loadCallModule()
+	void loadCallCommand()
 	{
 		cout << "warning: system.call module loaded!" << endl;
 
-		loadModule(new SystemCallModule<R, ADS, DS> );
+		loadCommand(new SystemCallCommand<R, ADS, DS> );
 	}
 
 	void loadDefault(string prefix = "")
@@ -358,116 +358,116 @@ public:
 		// to become functions or runtime modules...
 		if ((prefix == "") || (prefix == "deprecated")) // TODO: remove!
 		{
-			loadModule(new CreateNumericListModule<R, ADS, DS> );
-			loadModule(new EmpiricalModule<R, ADS, DS> );
-			loadModule(new TestModule<R, ADS, DS> );
-			loadModule(new TestLocalSearchModule<R, ADS, DS> );
+			loadCommand(new CreateNumericListCommand<R, ADS, DS> );
+			loadCommand(new EmpiricalCommand<R, ADS, DS> );
+			loadCommand(new TestCommand<R, ADS, DS> );
+			loadCommand(new TestLocalSearchCommand<R, ADS, DS> );
 		}
 
 		// components
 		if ((prefix == "") || (prefix == "component"))
 		{
-			loadModule(new ComponentActionModule<R, ADS, DS> );
-			loadModule(new ComponentActionsModule<R, ADS, DS> );
-			loadModule(new ComponentBetterThanModule<R, ADS, DS> );
-			loadModule(new ComponentBuilderOfComponentModule<R, ADS, DS> );
-			loadModule(new ComponentBuildModule<R, ADS, DS> );
-			loadModule(new ComponentCastModule<R, ADS, DS> );
-			loadModule(new ComponentCheckModule<R, ADS, DS> );
-			loadModule(new ComponentCreateListModule<R, ADS, DS> );
-			loadModule(new ComponentDropModule<R, ADS, DS> );
-			loadModule(new ComponentDropAllModule<R, ADS, DS> );
-			loadModule(new ComponentEvaluateModule<R, ADS, DS> );
-			loadModule(new ComponentExecConstructiveModule<R, ADS, DS> );
-			loadModule(new ComponentExecLocalSearchModule<R, ADS, DS> );
-			loadModule(new ComponentExecModule<R, ADS, DS> );
-			loadModule(new ComponentExportLogModule<R, ADS, DS> );
-			loadModule(new ComponentExportModule<R, ADS, DS> );
-			loadModule(new ComponentListBuildersModule<R, ADS, DS> );
-			loadModule(new ComponentListFromPopulationModule<R, ADS, DS> );
-			loadModule(new ComponentListModule<R, ADS, DS> );
-			loadModule(new ComponentLogModule<R, ADS, DS> );
-			loadModule(new ComponentNullModule<R, ADS, DS> );
-			loadModule(new ComponentToStringModule<R, ADS, DS> );
+			loadCommand(new ComponentActionCommand<R, ADS, DS> );
+			loadCommand(new ComponentActionsCommand<R, ADS, DS> );
+			loadCommand(new ComponentBetterThanCommand<R, ADS, DS> );
+			loadCommand(new ComponentBuilderOfComponentCommand<R, ADS, DS> );
+			loadCommand(new ComponentBuildCommand<R, ADS, DS> );
+			loadCommand(new ComponentCastCommand<R, ADS, DS> );
+			loadCommand(new ComponentCheckCommand<R, ADS, DS> );
+			loadCommand(new ComponentCreateListCommand<R, ADS, DS> );
+			loadCommand(new ComponentDropCommand<R, ADS, DS> );
+			loadCommand(new ComponentDropAllCommand<R, ADS, DS> );
+			loadCommand(new ComponentEvaluateCommand<R, ADS, DS> );
+			loadCommand(new ComponentExecConstructiveCommand<R, ADS, DS> );
+			loadCommand(new ComponentExecLocalSearchCommand<R, ADS, DS> );
+			loadCommand(new ComponentExecCommand<R, ADS, DS> );
+			loadCommand(new ComponentExportLogCommand<R, ADS, DS> );
+			loadCommand(new ComponentExportCommand<R, ADS, DS> );
+			loadCommand(new ComponentListBuildersCommand<R, ADS, DS> );
+			loadCommand(new ComponentListFromPopulationCommand<R, ADS, DS> );
+			loadCommand(new ComponentListCommand<R, ADS, DS> );
+			loadCommand(new ComponentLogCommand<R, ADS, DS> );
+			loadCommand(new ComponentNullCommand<R, ADS, DS> );
+			loadCommand(new ComponentToStringCommand<R, ADS, DS> );
 		}
 
 		if ((prefix == "") || (prefix == "file"))
 		{
-			loadModule(new FileEchoModule<R, ADS, DS> );
-			loadModule(new FilePrintModule<R, ADS, DS> );
-			loadModule(new FilePrintlnModule<R, ADS, DS> );
-			loadModule(new FileToListModule<R, ADS, DS> );
+			loadCommand(new FileEchoCommand<R, ADS, DS> );
+			loadCommand(new FilePrintCommand<R, ADS, DS> );
+			loadCommand(new FilePrintlnCommand<R, ADS, DS> );
+			loadCommand(new FileToListCommand<R, ADS, DS> );
 		}
 
 		if ((prefix == "") || (prefix == "list"))
 		{
-			loadModule(new ListAddModule<R, ADS, DS> );
-			loadModule(new ListPushBackModule<R, ADS, DS> );
-			loadModule(new ListRemoveModule<R, ADS, DS> );
-			loadModule(new ListSilentDefineModule<R, ADS, DS> );
-			loadModule(new ListSortModule<R, ADS, DS> );
+			loadCommand(new ListAddCommand<R, ADS, DS> );
+			loadCommand(new ListPushBackCommand<R, ADS, DS> );
+			loadCommand(new ListRemoveCommand<R, ADS, DS> );
+			loadCommand(new ListSilentDefineCommand<R, ADS, DS> );
+			loadCommand(new ListSortCommand<R, ADS, DS> );
 		}
 
 		if ((prefix == "") || (prefix == "module"))
 		{
-			loadModule(new ModuleCreateModule<R, ADS, DS> );
-			loadModule(new ModuleCreateLocalModule<R, ADS, DS> );
-			loadModule(new ModuleCreateRawModule<R, ADS, DS> );
-			loadModule(new ModuleExistsModule<R, ADS, DS> );
-			loadModule(new ModuleUnitTestModule<R, ADS, DS> );
+			loadCommand(new CommandCreateCommand<R, ADS, DS> );
+			loadCommand(new CommandCreateLocalCommand<R, ADS, DS> );
+			loadCommand(new CommandCreateRawCommand<R, ADS, DS> );
+			loadCommand(new CommandExistsCommand<R, ADS, DS> );
+			loadCommand(new CommandUnitTestCommand<R, ADS, DS> );
 		}
 
 		if ((prefix == "") || (prefix == "function"))
 		{
-			loadModule(new FunctionCreateRawModule<R, ADS, DS> );
+			loadCommand(new FunctionCreateRawCommand<R, ADS, DS> );
 		}
 
 		// deprecated
 #ifdef MaPI
-		loadModule(new InitServersModule<R, ADS, DS> );
+		loadCommand(new InitServersCommand<R, ADS, DS> );
 #endif
 
 		if ((prefix == "") || (prefix == "plot"))
 		{
-			loadModule(new Plot2AxisModule<R, ADS, DS> );
-			loadModule(new PlotViewModule<R, ADS, DS> );
+			loadCommand(new Plot2AxisCommand<R, ADS, DS> );
+			loadCommand(new PlotViewCommand<R, ADS, DS> );
 		}
 
 		// cannot load abstract module
-		//loadModule(new ProblemModule<R, ADS, DS> );
+		//loadCommand(new ProblemCommand<R, ADS, DS> );
 
 		if ((prefix == "") || (prefix == "randgen"))
 		{
-			loadModule(new RandGenIntervalModule<R, ADS, DS> );
-			loadModule(new RandGenNumberModule<R, ADS, DS> );
-			loadModule(new RandGenSetSeedModule<R, ADS, DS> );
+			loadCommand(new RandGenIntervalCommand<R, ADS, DS> );
+			loadCommand(new RandGenNumberCommand<R, ADS, DS> );
+			loadCommand(new RandGenSetSeedCommand<R, ADS, DS> );
 		}
 
 		if ((prefix == "") || (prefix == "system"))
 		{
-			loadModule(new SystemAssertModule<R, ADS, DS> );
-			loadModule(new SystemDefineModule<R, ADS, DS> );
-			loadModule(new SystemDictionaryModule<R, ADS, DS> );
-			loadModule(new SystemEchoModule<R, ADS, DS> );
-			loadModule(new SystemErrorModule<R, ADS, DS> );
-			loadModule(new SystemHelpModule<R, ADS, DS> );
-			loadModule(new SystemPauseModule<R, ADS, DS> );
-			loadModule(new SystemPreprocessModule<R, ADS, DS> );
-			loadModule(new SystemPrintModule<R, ADS, DS> );
-			loadModule(new SystemPrintlnModule<R, ADS, DS> );
-			loadModule(new SystemReadModule<R, ADS, DS> );
-			loadModule(new SystemRequireModule<R, ADS, DS> );
-			loadModule(new SystemRunModule<R, ADS, DS> );
-			loadModule(new SystemSilentDefineModule<R, ADS, DS> );
-			loadModule(new SystemUndefineModule<R, ADS, DS> );
-			loadModule(new SystemUnsafeDefineModule<R, ADS, DS> );
-			loadModule(new SystemUsageModule<R, ADS, DS> );
-			loadModule(new SystemUseModule<R, ADS, DS> );
+			loadCommand(new SystemAssertCommand<R, ADS, DS> );
+			loadCommand(new SystemDefineCommand<R, ADS, DS> );
+			loadCommand(new SystemDictionaryCommand<R, ADS, DS> );
+			loadCommand(new SystemEchoCommand<R, ADS, DS> );
+			loadCommand(new SystemErrorCommand<R, ADS, DS> );
+			loadCommand(new SystemHelpCommand<R, ADS, DS> );
+			loadCommand(new SystemPauseCommand<R, ADS, DS> );
+			loadCommand(new SystemPreprocessCommand<R, ADS, DS> );
+			loadCommand(new SystemPrintCommand<R, ADS, DS> );
+			loadCommand(new SystemPrintlnCommand<R, ADS, DS> );
+			loadCommand(new SystemReadCommand<R, ADS, DS> );
+			loadCommand(new SystemRequireCommand<R, ADS, DS> );
+			loadCommand(new SystemRunCommand<R, ADS, DS> );
+			loadCommand(new SystemSilentDefineCommand<R, ADS, DS> );
+			loadCommand(new SystemUndefineCommand<R, ADS, DS> );
+			loadCommand(new SystemUnsafeDefineCommand<R, ADS, DS> );
+			loadCommand(new SystemUsageCommand<R, ADS, DS> );
+			loadCommand(new SystemUseCommand<R, ADS, DS> );
 		}
 
 		if ((prefix == "") || (prefix == "operator"))
 		{
-			loadModule(new OperatorAssignModule<R, ADS, DS> );
+			loadCommand(new OperatorAssignCommand<R, ADS, DS> );
 		}
 
 		// ==========================================================
@@ -475,11 +475,11 @@ public:
 		// ==========================================================
 		if ((prefix == "") || (prefix == "statements"))
 		{
-			loadModule(new ForModule<R, ADS, DS> );
-			loadModule(new ForEachModule<R, ADS, DS> );
-			loadModule(new IfElseModule<R, ADS, DS> );
-			loadModule(new WhileModule<R, ADS, DS> );
-			loadModule(new TryModule<R, ADS, DS> );
+			loadCommand(new ForCommand<R, ADS, DS> );
+			loadCommand(new ForEachCommand<R, ADS, DS> );
+			loadCommand(new IfElseCommand<R, ADS, DS> );
+			loadCommand(new WhileCommand<R, ADS, DS> );
+			loadCommand(new TryCommand<R, ADS, DS> );
 		}
 
 		// ----------------------------------------------
@@ -548,7 +548,7 @@ public:
 		}
 	}
 
-	Module<R, ADS, DS>* getModule(string module)
+	Command<R, ADS, DS>* getCommand(string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())
@@ -673,21 +673,21 @@ public:
 		cout << "Goodbye." << endl;
 	}
 
-	static void printOptions(string part_module, vector<Module<R, ADS, DS>*>& allModules)
+	static void printOptions(string part_module, vector<Command<R, ADS, DS>*>& allCommands)
 	{
-		for (unsigned int i = 0; i < allModules.size(); i++)
+		for (unsigned int i = 0; i < allCommands.size(); i++)
 		{
 			bool found = true;
 
 			for (unsigned j = 0; j < part_module.length(); j++)
-				if (part_module[j] != allModules[i]->id()[j])
+				if (part_module[j] != allCommands[i]->id()[j])
 				{
 					found = false;
 					break;
 				}
 
 			if (found)
-				cout << "option is: '" << allModules[i]->id() << "'" << endl;
+				cout << "option is: '" << allCommands[i]->id() << "'" << endl;
 		}
 	}
 
