@@ -32,7 +32,7 @@ using namespace std;
 
 #include <set>
 
-#include "../OptFrame/OptFrame.hpp"
+#include "../OptFrame/Interpreter.hpp"
 #include "OptHScheduling.h"
 
 using namespace OptHS;
@@ -40,7 +40,7 @@ using namespace scannerpp;
 
 int main(int argc, char **argv)
 {
-	OptFrame<RepOptHS, OPTFRAME_DEFAULT_ADS, MemOptHS> optframe;
+	Interpreter<RepOptHS, OPTFRAME_DEFAULT_ADS, MemOptHS> optframe;
 	optframe.loadCommand(new OptHSProblemCommand);
 	optframe.execute("system.read ../definitions.opt");
 	optframe.execute("problem.OptHS load Y Z M B E J");

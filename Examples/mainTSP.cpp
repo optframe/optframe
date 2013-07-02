@@ -32,7 +32,7 @@ using namespace std;
 
 #include <set>
 
-#include "../OptFrame/OptFrame.hpp"
+#include "../OptFrame/Interpreter.hpp"
 #include "TSP.h"
 
 using namespace TSP;
@@ -40,7 +40,7 @@ using namespace scannerpp;
 
 int main(int argc, char **argv)
 {
-	OptFrame<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe;
+	Interpreter<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe;
 	optframe.loadCommand(new TSPProblemCommand);
 	optframe.execute("system.read tsp-definitions.opt");
 	optframe.execute("system.read ../example-bi.opt");

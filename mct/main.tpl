@@ -7,16 +7,16 @@
 #include <math.h>
 #include <iostream>
 
-#include "../OptFrame/OptFrame.hpp"
+#include "../OptFrame/Interpreter.hpp"
 #include "$project.h"
 
 using namespace std;
-
+using namespace optframe;
 using namespace $project;
 
 int main(int argc, char **argv)
 {
-   OptFrame<Rep$project, OPTFRAME_DEFAULT_ADS $commadproject> optframe;
+   Interpreter<Rep$project, OPTFRAME_DEFAULT_ADS $commadproject> optframe;
    //optframe.loadCallCommand();
 
    optframe.loadCommand(new $projectProblemCommand);

@@ -36,7 +36,7 @@ using namespace std;
 
 #include <set>
 
-#include "../../OptFrame/OptFrame.hpp"
+#include "../../OptFrame/Interpreter.hpp"
 #include "../../OptFrame/Experimental/VShuffle.hpp"
 #include "../TSP.h"
 
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
 	e->print();
 	cout << endl;
 
-	OptFrame<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe(rg);
+	Interpreter<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe(rg);
 	optframe.factory.add_initsol(&is);
 	optframe.factory.add_ev(&eval);
 	optframe.factory.add_ns(new NSEnumSwap(p, rg));

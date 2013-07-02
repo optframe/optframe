@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_H_
-#define OPTFRAME_H_
+#ifndef OPTFRAME_INTERPRETER_HPP_
+#define OPTFRAME_INTERPRETER_HPP_
 
 /*! \mainpage OptFrame
  * This is the OptFrame documentation.
@@ -270,7 +270,7 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class OptFrame
+class Interpreter
 {
 private:
 	vector<Command<R, ADS, DS>*> modules;
@@ -282,7 +282,7 @@ public:
 
 	HeuristicFactory<R, ADS, DS> factory;
 
-	OptFrame()
+	Interpreter()
 	{
 		setVariables();
 		loadDefault();
@@ -290,7 +290,7 @@ public:
 		loadActions();
 	}
 
-	OptFrame(RandGen _rg) :
+	Interpreter(RandGen _rg) :
 		factory(HeuristicFactory<R, ADS, DS> (_rg))
 	{
 		setVariables();
@@ -299,7 +299,7 @@ public:
 		loadActions();
 	}
 
-	virtual ~OptFrame()
+	virtual ~Interpreter()
 	{
 		unloadCommands();
 		unloadFunctions();
@@ -757,4 +757,4 @@ public:
 
 }
 
-#endif /*OPTFRAME_H_*/
+#endif /*OPTFRAME_INTERPRETER_HPP_*/

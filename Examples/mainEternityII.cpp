@@ -32,14 +32,14 @@ using namespace std;
 
 #include <set>
 
-#include "../OptFrame/OptFrame.hpp"
+#include "../OptFrame/Interpreter.hpp"
 #include "EternityII.h"
 
 using namespace EtII;
 
 int main(int argc, char **argv)
 {
-	OptFrame<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII> optframe;
+	Interpreter<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII> optframe;
 	optframe.loadCommand(new EtIIProblemCommand);
 	optframe.execute("system.read etii-definitions.opt");
 	optframe.execute("system.read ../example.opt");
