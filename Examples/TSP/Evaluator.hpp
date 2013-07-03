@@ -97,9 +97,14 @@ public:
 	}
 
 
-	virtual bool betterThan(double a, double b)
+	virtual bool betterThan(const Evaluation<MemTSP>& e1, const Evaluation<MemTSP>& e2)
 	{
-		return (a < (b - TSP_EPSILON));
+		return (e1.evaluation() < (e2.evaluation() - TSP_EPSILON));
+	}
+
+	virtual bool isMinimization()
+	{
+		return true;
 	}
 
 	virtual string id() const

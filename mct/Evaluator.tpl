@@ -47,11 +47,17 @@ public:
 		return * new Evaluation$project(fo $initializedelta);
 	}
 
-	virtual bool betterThan(double a, double b)
+	virtual bool betterThan(const Evaluation< $deltaproject >& e1, const Evaluation< $deltaproject >& e2)
 	{
 		// $minmax
 		return $epsilon
 	}
+	
+    virtual bool isMinimization()
+    {
+        // $minmax
+    	return " $minmax " == " MINIMIZATION ";
+    }
 
 };
 

@@ -102,10 +102,18 @@ public:
 		return *new Evaluation<MemOptHS>(0, fo_inv, mem);
 	}
 
-	virtual bool betterThan(double a, double b)
+
+	virtual bool betterThan(const Evaluation< >& e1, const Evaluation< >& e2)
 	{
-		return (a < (b - OptHS_EPSILON));
+		// MINIMIZATION
+		return (e1.evaluation() < (e2.evaluation() - OptHS_EPSILON));
 	}
+
+	virtual bool isMinimization()
+	{
+		return true;
+	}
+
 
 	virtual string id() const
 	{

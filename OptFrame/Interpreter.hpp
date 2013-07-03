@@ -175,7 +175,6 @@
 
 #include "Commands/ComponentActionCommand.hpp"
 #include "Commands/ComponentActionsCommand.hpp"
-#include "Commands/ComponentBetterThanCommand.hpp"
 #include "Commands/ComponentBuilderOfComponent.hpp"
 #include "Commands/ComponentBuildCommand.hpp"
 #include "Commands/ComponentCastCommand.hpp"
@@ -369,7 +368,6 @@ public:
 		{
 			loadCommand(new ComponentActionCommand<R, ADS, DS> );
 			loadCommand(new ComponentActionsCommand<R, ADS, DS> );
-			loadCommand(new ComponentBetterThanCommand<R, ADS, DS> );
 			loadCommand(new ComponentBuilderOfComponentCommand<R, ADS, DS> );
 			loadCommand(new ComponentBuildCommand<R, ADS, DS> );
 			loadCommand(new ComponentCastCommand<R, ADS, DS> );

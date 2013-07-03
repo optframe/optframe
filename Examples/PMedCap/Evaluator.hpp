@@ -100,12 +100,16 @@ public:
 		return *new EvaluationPCAP(fo, fo_Inv, *new int);
 	}
 
-	virtual bool betterThan(double a, double b)
+	virtual bool betterThan(const Evaluation< >& e1, const Evaluation< >& e2)
 	{
 		// MINIMIZATION
-		return (a < (b - EPSILON_PCAP));
+		return (e1.evaluation() < (e2.evaluation() - EPSILON_PCAP));
 	}
 
+	virtual bool isMinimization()
+	{
+		return true;
+	}
 };
 
 #endif /*PCAP_EVALUATOR_HPP_*/

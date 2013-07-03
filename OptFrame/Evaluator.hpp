@@ -208,12 +208,16 @@ public:
 	}
 
 	// true if 'e1' is better than 'e2'
-	bool betterThan(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
+	virtual bool betterThan(const Evaluation<DS>& e1, const Evaluation<DS>& e2) = 0;
+
+	virtual bool isMinimization() = 0;
+
+	bool isMaximization()
 	{
-		return betterThan(e1.evaluation(), e2.evaluation());
+		return !isMinimization();
 	}
 
-	//! abstract method betterThan: true when a < b for minimization problems; and true when a > b for maximization problems.
+	//! REMOVED (DUE TO POSSIBLE LEXICOGRAPHIC COMPARISON) abstract method betterThan: true when a < b for minimization problems; and true when a > b for maximization problems.
 	/*!
 	 betterThan is the method in OptFrame used to guide the search methods into the solution space.
 	 with betterThan the search methods are able to compare good and poor solutions, in one of the two directions: minimization and maximization.
@@ -221,7 +225,7 @@ public:
 	 - for minimization problems, returns a < b;
 	 - for maximization problems, returns a > b.
 	 */
-	virtual bool betterThan(double a, double b) = 0;
+	//virtual bool betterThan(double a, double b) = 0;
 
 	bool betterOrEquals(const Solution<R>& s1, const Solution<R>& s2)
 	{
@@ -239,23 +243,29 @@ public:
 
 	bool betterOrEquals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
 	{
-		return betterOrEquals(e1.evaluation(), e2.evaluation());
+		return betterThan(e1, e2) || equals(e1, e2);
+		//return betterOrEquals(e1.evaluation(), e2.evaluation());
 	}
 
+	/* FAVORING Lexicographic Comparison
 	bool betterOrEquals(double a, double b)
 	{
 		return betterThan(a, b) || (abs(a - b) < OPTFRAME_EPSILON);
 	}
+	*/
 
 	bool equals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
 	{
-		return equals(e1.evaluation(), e2.evaluation());
+		return (abs(e1.evaluation() - e2.evaluation()) < OPTFRAME_EPSILON);
+		//return equals(e1.evaluation(), e2.evaluation());
 	}
 
+	/* FAVORING Lexicographic Comparison
 	bool equals(double a, double b)
 	{
 		return (abs(a - b) < OPTFRAME_EPSILON);
 	}
+	*/
 
 	virtual bool compatible(string s)
 	{

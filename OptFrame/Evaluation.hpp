@@ -80,7 +80,7 @@ public:
 	;
 
 	Evaluation(double obj) :
-			ds(new OPTFRAME_DEFAULT_DS)
+			ds(new DS)
 	{
 		objFunction = obj;
 		infMeasure = 0;

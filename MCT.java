@@ -418,9 +418,9 @@ public class MCT
 	String minmax = input.readLine();
 
 	if ( minmax.equals("MINIMIZATION") )
-	    epsilon="(a < (b - EPSILON_"+project+"));";
+	    epsilon="(e1.evaluation() < (e2.evaluation() - EPSILON_"+project+"));";
 	else
-	    epsilon="(a > (b + EPSILON_"+project+"));";
+	    epsilon="(e1.evaluation() > (e2.evaluation() + EPSILON_"+project+"));";
 
 
 	var_inc = "./"+project+"/Evaluator.hpp" ;
