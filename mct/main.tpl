@@ -7,7 +7,7 @@
 #include <math.h>
 #include <iostream>
 
-#include "../OptFrame/Interpreter.hpp"
+#include "../OptFrame/Interactive.hpp"
 #include "$project.h"
 
 using namespace std;
@@ -16,7 +16,7 @@ using namespace $project;
 
 int main(int argc, char **argv)
 {
-   Interpreter<Rep$project, OPTFRAME_DEFAULT_ADS $commadproject> optframe;
+   Interactive<Rep$project, OPTFRAME_DEFAULT_ADS $commadproject> optframe;
    //optframe.loadCallCommand();
 
    optframe.loadCommand(new $projectProblemCommand);

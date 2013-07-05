@@ -28,7 +28,7 @@
 #include <iostream>
 
 
-#include "../OptFrame/Interpreter.hpp"
+#include "../OptFrame/Interactive.hpp"
 #include "PMedCap.h"
 
 using namespace std;
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 
 	PCAPSolCheck(p, s);
 
-	Interpreter<RepPCAP> optframe(rg);
+	Interactive<RepPCAP> optframe(rg);
 	optframe.factory.addComponent(is_greedy);
 	optframe.factory.addComponent(e);
 	optframe.factory.addComponent(nsSwap);

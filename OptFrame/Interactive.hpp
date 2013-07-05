@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_INTERPRETER_HPP_
-#define OPTFRAME_INTERPRETER_HPP_
+#ifndef OPTFRAME_INTERACTIVE_HPP_
+#define OPTFRAME_INTERACTIVE_HPP_
 
 /*! \mainpage OptFrame
  * This is the OptFrame documentation.
@@ -269,7 +269,7 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class Interpreter
+class Interactive
 {
 private:
 	vector<Command<R, ADS, DS>*> modules;
@@ -281,7 +281,7 @@ public:
 
 	HeuristicFactory<R, ADS, DS> factory;
 
-	Interpreter()
+	Interactive()
 	{
 		setVariables();
 		loadDefault();
@@ -289,7 +289,7 @@ public:
 		loadActions();
 	}
 
-	Interpreter(RandGen _rg) :
+	Interactive(RandGen _rg) :
 		factory(HeuristicFactory<R, ADS, DS> (_rg))
 	{
 		setVariables();
@@ -298,15 +298,23 @@ public:
 		loadActions();
 	}
 
-	virtual ~Interpreter()
+	virtual ~Interactive()
 	{
 		unloadCommands();
 		unloadFunctions();
 	}
 
+	string welcome()
+	{
+		string w = "opti - OptFrame Script Language - Interactive Move\nVersion: ";
+		w.append(version());
+		w.append("\nLGPLv3\nhttp://sourceforge.net/projects/optframe/\n");
+		return w;
+	}
+
 	string version()
 	{
-		return "opti - OptFrame Script Language Interpreter \nDevelopment Version 2.0 \nhttp://sourceforge.net/projects/optframe/";
+		return "Development 2.0+";
 	}
 
 	void setVariables()
@@ -316,7 +324,7 @@ public:
 	    path=getcwd(path,size);
 
 		dictionary["optframe-path"] = path;
-		dictionary["optframe-version"] = "Development 2.0+";
+		dictionary["optframe-version"] = version();
 	}
 
 	void unloadCommands()
@@ -609,7 +617,7 @@ public:
 
 	void execute()
 	{
-		cout << "Welcome to " << version() << endl;
+		cout << "Welcome to " << welcome() << endl;
 
 		Scanner scanner(&cin);
 		string line;
@@ -755,4 +763,4 @@ public:
 
 }
 
-#endif /*OPTFRAME_INTERPRETER_HPP_*/
+#endif /*OPTFRAME_INTERACTIVE_HPP_*/

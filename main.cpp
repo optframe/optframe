@@ -30,11 +30,8 @@
 
 using namespace std;
 
-#include <set>
-
-#include "./OptFrame/Interpreter.hpp"
+#include "./OptFrame/Interactive.hpp"
 #include "./Examples/TSP.h"
-
 
 using namespace TSP;
 using namespace scannerpp;
@@ -42,7 +39,7 @@ using namespace scannerpp;
 
 int main(int argc, char **argv)
 {
-	Interpreter<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe;
+	Interactive<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe;
 	optframe.loadCommand(new TSPProblemCommand);
 	optframe.execute("system.read example.opt");
 
