@@ -22,7 +22,7 @@
 #define CHECKMODULE_HPP_
 
 #include "../Command.hpp"
-#include "../Util/Timer.hpp"
+#include "../Timer.hpp"
 
 #include "SystemRequireCommand.hpp"
 
