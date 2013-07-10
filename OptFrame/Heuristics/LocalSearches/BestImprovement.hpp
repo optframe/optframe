@@ -25,7 +25,7 @@
 #include "../../NSSeq.hpp"
 #include "../../Evaluator.hpp"
 
-//#include "../../Util/Timer.hpp"
+#include "../../Timer.hpp"
 
 namespace optframe
 {

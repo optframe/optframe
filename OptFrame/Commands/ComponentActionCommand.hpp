@@ -57,6 +57,17 @@ public:
 		if (!scanner.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
+
+			cout << factory.actions.size() << " available action handlers:" << endl;
+			cout << "===============================================" << endl;
+			cout << "Component index  |  action  | action parameters" << endl;
+			cout << "===============================================" << endl;
+
+			for (unsigned a = 0; a < factory.actions.size(); a++)
+				cout << factory.actions[a]->usage() << endl << endl;
+
+			cout << "===============================================" << endl;
+
 			return false;
 		}
 

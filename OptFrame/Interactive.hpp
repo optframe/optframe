@@ -178,7 +178,6 @@
 // component
 
 #include "Commands/ComponentActionCommand.hpp"
-#include "Commands/ComponentActionsCommand.hpp"
 #include "Commands/ComponentBuilderOfComponent.hpp"
 #include "Commands/ComponentBuildCommand.hpp"
 #include "Commands/ComponentCastCommand.hpp"
@@ -186,16 +185,9 @@
 #include "Commands/ComponentCreateListCommand.hpp"
 #include "Commands/ComponentDropCommand.hpp"
 #include "Commands/ComponentDropAllCommand.hpp"
-#include "Commands/ComponentEvaluateCommand.hpp"
-#include "Commands/ComponentExecConstructiveCommand.hpp"
-#include "Commands/ComponentExecLocalSearchCommand.hpp"
-#include "Commands/ComponentExecCommand.hpp"
-#include "Commands/ComponentExportLogCommand.hpp"
-#include "Commands/ComponentExportCommand.hpp"
 #include "Commands/ComponentListBuildersCommand.hpp"
 #include "Commands/ComponentListFromPopulationCommand.hpp"
 #include "Commands/ComponentListCommand.hpp"
-#include "Commands/ComponentLogCommand.hpp"
 #include "Commands/ComponentNullCommand.hpp"
 #include "Commands/ComponentToStringCommand.hpp"
 
@@ -379,7 +371,6 @@ public:
 		if ((prefix == "") || (prefix == "component"))
 		{
 			loadCommand(new ComponentActionCommand<R, ADS, DS> );
-			loadCommand(new ComponentActionsCommand<R, ADS, DS> );
 			loadCommand(new ComponentBuilderOfComponentCommand<R, ADS, DS> );
 			loadCommand(new ComponentBuildCommand<R, ADS, DS> );
 			loadCommand(new ComponentCastCommand<R, ADS, DS> );
@@ -387,16 +378,9 @@ public:
 			loadCommand(new ComponentCreateListCommand<R, ADS, DS> );
 			loadCommand(new ComponentDropCommand<R, ADS, DS> );
 			loadCommand(new ComponentDropAllCommand<R, ADS, DS> );
-			loadCommand(new ComponentEvaluateCommand<R, ADS, DS> );
-			loadCommand(new ComponentExecConstructiveCommand<R, ADS, DS> );
-			loadCommand(new ComponentExecLocalSearchCommand<R, ADS, DS> );
-			loadCommand(new ComponentExecCommand<R, ADS, DS> );
-			loadCommand(new ComponentExportLogCommand<R, ADS, DS> );
-			loadCommand(new ComponentExportCommand<R, ADS, DS> );
 			loadCommand(new ComponentListBuildersCommand<R, ADS, DS> );
 			loadCommand(new ComponentListFromPopulationCommand<R, ADS, DS> );
 			loadCommand(new ComponentListCommand<R, ADS, DS> );
-			loadCommand(new ComponentLogCommand<R, ADS, DS> );
 			loadCommand(new ComponentNullCommand<R, ADS, DS> );
 			loadCommand(new ComponentToStringCommand<R, ADS, DS> );
 		}
