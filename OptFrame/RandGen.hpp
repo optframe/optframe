@@ -402,7 +402,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, DS>::idComponent() << ":RandGen";
+		ss << ComponentBuilder<R, ADS, DS>::idComponent() << "RandGen";
 		return ss.str();
 	}
 

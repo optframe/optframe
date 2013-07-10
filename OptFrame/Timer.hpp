@@ -290,7 +290,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, DS>::idComponent() << ":Timer";
+		ss << ComponentBuilder<R, ADS, DS>::idComponent() << "Timer";
 		return ss.str();
 	}
 
