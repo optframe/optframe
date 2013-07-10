@@ -36,9 +36,6 @@
 #include "Scanner++/Scanner.h"
 
 
-//#include "RandGen.hpp"
-#include "Timer.hpp"
-
 #include "Solution.hpp"
 //#include "Util/TestSolution.hpp"
 
@@ -58,6 +55,10 @@
 #include "MultiObjectiveEvaluator.hpp"
 
 #include "Util/TestEvaluation.hpp"
+
+//#include "RandGen.hpp"
+#include "Timer.hpp"
+
 
 // ==================================
 //       Neighborhood Structure
@@ -569,6 +570,7 @@ public:
 	{
 		factory.actions.push_back(new ComponentAction<R, ADS, DS>);
 		factory.actions.push_back(new RandGenAction<R, ADS, DS>);
+		factory.actions.push_back(new TimerAction<R, ADS, DS>);
 		factory.actions.push_back(new ConstructiveAction<R, ADS, DS>);
 		factory.actions.push_back(new EvaluatorAction<R, ADS, DS>);
 		factory.actions.push_back(new EvaluationAction<R, ADS, DS>);
