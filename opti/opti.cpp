@@ -95,6 +95,18 @@ int main(int argc, char **argv)
 	optframe.loadDefault("text");
 	optframe.loadDefault("operator");
 	optframe.loadDefault("math");
+	optframe.loadDefault("component");
+
+	optframe.unloadBuilders();
+	optframe.unloadActions();
+
+	// Independent components
+	optframe.factory.builders.push_back(new RandGenBuilder<RepGeneral> );
+	optframe.factory.builders.push_back(new TimerBuilder<RepGeneral> );
+
+	optframe.factory.actions.push_back(new ComponentAction<RepGeneral>);
+	optframe.factory.actions.push_back(new RandGenAction<RepGeneral>);
+	optframe.factory.actions.push_back(new TimerAction<RepGeneral>);
 
 	if(system_calls)
 		optframe.loadCallCommand();
