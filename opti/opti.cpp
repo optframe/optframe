@@ -24,7 +24,7 @@
 
 #include<vector>
 
-#include "../OptFrame/Interpreter.hpp"
+#include "../OptFrame/Interactive.hpp"
 
 using namespace std;
 using namespace optframe;
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
 	// ==============
 
 	typedef int RepGeneral;
-	Interpreter<RepGeneral> optframe; // do not load 'component' prefix
+	Interactive<RepGeneral> optframe; // do not load 'component' prefix
 
 	if (verbose)
 	{
