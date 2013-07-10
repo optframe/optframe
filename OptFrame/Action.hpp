@@ -82,6 +82,25 @@ public:
 		return true;
 	}
 
+	static bool registerText(Scanner& scanner, string value, map<string, string>& d)
+	{
+		if (scanner.hasNext())
+		{
+			string varName = scanner.next();
+
+			d[varName] = value; // TODO: fix!!
+
+			return true;
+			//return Command<R, ADS, DS>::defineText(varName, sscomp.str(), d);
+		}
+		else
+		{
+			cout << "Action error: no variable to store value '" << value << "'" << endl;
+			return false;
+		}
+	}
+
+
 	static string formatDouble(double d)
 	{
 		stringstream ss;

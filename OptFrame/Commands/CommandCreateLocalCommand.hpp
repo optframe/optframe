@@ -230,7 +230,7 @@ public:
 		for (unsigned v = 0; v < values.size(); v++)
 			if (references[v] && Command<R, ADS, DS>::validVariableName(values[v]))
 			{
-				if (!isInDictionary(cleanReference(parameters[v]), dictionary1, ldictionary1))
+				if (!this->isInDictionary(cleanReference(parameters[v]), dictionary1, ldictionary1))
 				{
 					cout << "module " << id() << " error: parameter '" << cleanReference(parameters[v]) << "' not in local dictionary!" << endl;
 					return false;
