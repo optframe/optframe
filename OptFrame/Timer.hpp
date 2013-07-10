@@ -31,6 +31,7 @@
 
 #include "Component.hpp"
 #include "Action.hpp"
+#include "ComponentBuilder.h"
 
 namespace optframe
 {
@@ -260,6 +261,43 @@ public:
 		return false;
 	}
 
+};
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class TimerBuilder : public ComponentBuilder<R, ADS, DS>
+{
+public:
+	virtual ~TimerBuilder()
+	{
+	}
+
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	{
+		return new Timer;
+	}
+
+	virtual vector<pair<string, string> > parameters()
+	{
+		vector<pair<string, string> > params;
+		return params;
+	}
+
+	virtual bool canBuild(string component)
+	{
+		return component == Timer::idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << ComponentBuilder<R, ADS, DS>::idComponent() << ":Timer";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
 };
 
 }

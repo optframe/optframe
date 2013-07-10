@@ -584,6 +584,10 @@ public:
 
 	void loadComponentBuilders()
 	{
+		// Independent components
+		factory.builders.push_back(new RandGenBuilder<R, ADS, DS> );
+		factory.builders.push_back(new TimerBuilder<R, ADS, DS> );
+
 		// Base
 		factory.builders.push_back(new CloneConstructiveBuilder<R, ADS, DS> );
 

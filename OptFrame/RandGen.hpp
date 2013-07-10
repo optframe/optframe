@@ -28,6 +28,7 @@
 
 #include "Component.hpp"
 #include "Action.hpp"
+#include "ComponentBuilder.h"
 
 #include<vector>
 
@@ -364,6 +365,51 @@ public:
 		return false;
 	}
 
+};
+
+
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class RandGenBuilder : public ComponentBuilder<R, ADS, DS>
+{
+public:
+	virtual ~RandGenBuilder()
+	{
+	}
+
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	{
+		if(!scanner.hasNext())
+			return NULL;
+
+		long seed = scanner.nextLong();
+
+		return new RandGen(seed);
+	}
+
+	virtual vector<pair<string, string> > parameters()
+	{
+		vector<pair<string, string> > params;
+		params.push_back(make_pair("long", "seed"));
+		return params;
+	}
+
+	virtual bool canBuild(string component)
+	{
+		return component == RandGen::idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << ComponentBuilder<R, ADS, DS>::idComponent() << ":RandGen";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
 };
 
 }
