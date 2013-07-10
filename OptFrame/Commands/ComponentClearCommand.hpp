@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef DROPALLMODULE_HPP_
-#define DROPALLMODULE_HPP_
+#ifndef OPTFRAME_COMPONENT_CLEAR_COMMAND_HPP_
+#define OPTFRAME_COMPONENT_CLEAR_COMMAND_HPP_
 
 #include "../Command.hpp"
 
@@ -27,29 +27,27 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ComponentDropAllCommand: public Command<R, ADS, DS>
+class ComponentClearCommand: public Command<R, ADS, DS>
 {
 public:
 
-	virtual ~ComponentDropAllCommand()
+	virtual ~ComponentClearCommand()
 	{
 	}
 
 	string id()
 	{
-		return "component.drop_all";
+		return "component.clear";
 	}
 
 	string usage()
 	{
-		return "component.drop_all";
+		return "component.clear";
 	}
 
 	bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
 	{
-		cout << "drop_all" << endl;
-
-		factory.drop_all();
+		factory.clear();
 		return true;
 	}
 
@@ -57,10 +55,8 @@ public:
 	{
 		return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
 	}
-
-
 };
 
 }
 
-#endif /* DROPALLMODULE_HPP_ */
+#endif /* OPTFRAME_COMPONENT_CLEAR_COMMAND_HPP_ */

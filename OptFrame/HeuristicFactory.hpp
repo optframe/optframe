@@ -550,7 +550,7 @@ public:
 
 	virtual ~HeuristicFactory()
 	{
-		drop_all();
+		clear();
 
 		delete& rg;
 
@@ -585,7 +585,9 @@ public:
 		return false;
 	}
 
-	void drop_all()
+	// EMPTY ALL LISTS!
+	// Components, Builders and Actions
+	void clear()
 	{
 		map<std::string, vector<Component*> >::iterator iter;
 

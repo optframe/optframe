@@ -182,9 +182,9 @@
 #include "Commands/ComponentBuildCommand.hpp"
 #include "Commands/ComponentCastCommand.hpp"
 #include "Commands/ComponentCheckCommand.hpp"
+#include "Commands/ComponentClearCommand.hpp"
 #include "Commands/ComponentCreateListCommand.hpp"
 #include "Commands/ComponentDropCommand.hpp"
-#include "Commands/ComponentDropAllCommand.hpp"
 #include "Commands/ComponentListBuildersCommand.hpp"
 #include "Commands/ComponentListFromPopulationCommand.hpp"
 #include "Commands/ComponentListCommand.hpp"
@@ -337,6 +337,20 @@ public:
 		functions.clear();
 	}
 
+	void unloadBuilders()
+	{
+		for (unsigned int i = 0; i < factory.builders.size(); ++i)
+			delete factory.builders.at(i);
+		factory.builders.clear();
+	}
+
+	void unloadActions()
+	{
+		for (unsigned int i = 0; i < factory.actions.size(); ++i)
+			delete factory.actions.at(i);
+		factory.actions.clear();
+	}
+
 	void loadCommand(Command<R, ADS, DS>* module)
 	{
 		if (module)
@@ -375,9 +389,9 @@ public:
 			loadCommand(new ComponentBuildCommand<R, ADS, DS> );
 			loadCommand(new ComponentCastCommand<R, ADS, DS> );
 			loadCommand(new ComponentCheckCommand<R, ADS, DS> );
+			loadCommand(new ComponentClearCommand<R, ADS, DS> );
 			loadCommand(new ComponentCreateListCommand<R, ADS, DS> );
 			loadCommand(new ComponentDropCommand<R, ADS, DS> );
-			loadCommand(new ComponentDropAllCommand<R, ADS, DS> );
 			loadCommand(new ComponentListBuildersCommand<R, ADS, DS> );
 			loadCommand(new ComponentListFromPopulationCommand<R, ADS, DS> );
 			loadCommand(new ComponentListCommand<R, ADS, DS> );
