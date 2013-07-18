@@ -223,6 +223,7 @@
 
 #include "Commands/SystemAssertCommand.hpp"
 #include "Commands/SystemCallCommand.hpp"
+#include "Commands/SystemChDirCommand.hpp"
 #include "Commands/SystemDefineCommand.hpp"
 #include "Commands/SystemDictionaryCommand.hpp"
 #include "Commands/SystemEchoCommand.hpp"
@@ -319,8 +320,8 @@ public:
 	    size_t size =0;
 	    path=getcwd(path,size);
 
-		dictionary["optframe-path"] = path;
-		dictionary["optframe-version"] = version();
+		dictionary["optframepath"] = path;
+		dictionary["optframeversion"] = version();
 	}
 
 	void unloadCommands()
@@ -454,6 +455,7 @@ public:
 		if ((prefix == "") || (prefix == "system"))
 		{
 			loadCommand(new SystemAssertCommand<R, ADS, DS> );
+			loadCommand(new SystemChDirCommand<R, ADS, DS> );
 			loadCommand(new SystemDefineCommand<R, ADS, DS> );
 			loadCommand(new SystemDictionaryCommand<R, ADS, DS> );
 			loadCommand(new SystemEchoCommand<R, ADS, DS> );
