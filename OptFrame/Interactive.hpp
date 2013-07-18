@@ -31,6 +31,9 @@
 #include <vector>
 #include <map>
 
+#include <unistd.h>
+#include <stdlib.h>
+
 #include "Util/printable.h"
 #include "Util/Matrix.hpp"
 #include "Scanner++/Scanner.h"
@@ -293,6 +296,27 @@ public:
 		loadDefault();
 		loadComponentBuilders();
 		loadActions();
+	}
+
+	void setAppPath(string appPath)
+	{
+		if (appPath != "")
+		{
+			const char *symlinkpath = appPath.c_str();
+			char actualpath[PATH_MAX + 1];
+			char *ptr;
+
+			ptr = realpath(symlinkpath, actualpath);
+			string fullpath(ptr);
+
+			dictionary["optframeapp"] = fullpath;
+
+			size_t found;
+			found=fullpath.find_last_of("/\\");
+			string dir = fullpath.substr(0,found);
+
+			dictionary["optframeappdir"] = dir;
+		}
 	}
 
 	virtual ~Interactive()

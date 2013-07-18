@@ -72,6 +72,7 @@ int main(int argc, char **argv)
 
 	typedef int RepGeneral;
 	Interactive<RepGeneral> optframe; // do not load 'component' prefix
+	optframe.setAppPath(argv[0]);
 
 	if (verbose)
 	{
