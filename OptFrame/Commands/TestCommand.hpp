@@ -73,7 +73,12 @@ public:
 		double tf = scanner.nextDouble();
 		double bf = scanner.nextDouble();
 
-		Evaluator<R, ADS, DS>* eval = factory.read_ev(scanner);
+		// Read evaluator
+		Component* comp = factory.getNextComponent(scanner);
+
+		Evaluator<R, ADS, DS>* eval = (Evaluator<R, ADS, DS>*) comp;//factory.read_ev(scanner);
+
+
 		pair<SingleObjSearch<R, ADS, DS>*, string> method = factory.createSingleObjSearch(scanner.rest());
 
 		SingleObjSearch<R, ADS, DS>* h = method.first;
