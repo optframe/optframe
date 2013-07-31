@@ -204,7 +204,7 @@ public:
 		vector<string>* p_lConstructive = OptFrameList::readList(ldictionary, scanner);
 		if (p_lConstructive)
 		{
-			lConstructive = vector<string> (*p_lConstructive);
+			lConstructive = vector<string>(*p_lConstructive);
 			delete p_lConstructive;
 		}
 		else
@@ -213,9 +213,8 @@ public:
 			return false;
 		}
 
-        Constructive<R, ADS>* exConstructive = NULL;
-        vector<Constructive<R, ADS>*> lConstructiveComp = assignVector(lConstructive, exConstructive, factory);
-
+		Constructive<R, ADS>* exConstructive = NULL;
+		vector<Constructive<R, ADS>*> lConstructiveComp = assignVector(lConstructive, exConstructive, factory);
 
 		// -------------------
 		//     Evaluator
@@ -230,7 +229,7 @@ public:
 		vector<string>* p_lEvaluator = OptFrameList::readList(ldictionary, scanner);
 		if (p_lEvaluator)
 		{
-			lEvaluator = vector<string> (*p_lEvaluator);
+			lEvaluator = vector<string>(*p_lEvaluator);
 			delete p_lEvaluator;
 		}
 		else
@@ -239,9 +238,8 @@ public:
 			return false;
 		}
 
-        Evaluator<R, ADS, DS>* exEvaluator = NULL;
-        vector<Evaluator<R, ADS, DS>*> lEvaluatorComp = assignVector(lEvaluator, exEvaluator, factory);
-
+		Evaluator<R, ADS, DS>* exEvaluator = NULL;
+		vector<Evaluator<R, ADS, DS>*> lEvaluatorComp = assignVector(lEvaluator, exEvaluator, factory);
 
 		// -------------------
 		//        Move
@@ -256,7 +254,7 @@ public:
 		vector<string>* p_lMove = OptFrameList::readList(ldictionary, scanner);
 		if (p_lMove)
 		{
-			lMove = vector<string> (*p_lMove);
+			lMove = vector<string>(*p_lMove);
 			delete p_lMove;
 		}
 		else
@@ -265,9 +263,8 @@ public:
 			return false;
 		}
 
-        Move<R, ADS, DS>* exMove = NULL;
-        vector<Move<R, ADS, DS>*> lMoveComp = assignVector(lMove, exMove, factory);
-
+		Move<R, ADS, DS>* exMove = NULL;
+		vector<Move<R, ADS, DS>*> lMoveComp = assignVector(lMove, exMove, factory);
 
 		// -------------------
 		//        NS
@@ -282,7 +279,7 @@ public:
 		vector<string>* p_lNS = OptFrameList::readList(ldictionary, scanner);
 		if (p_lNS)
 		{
-			lNS = vector<string> (*p_lNS);
+			lNS = vector<string>(*p_lNS);
 			delete p_lNS;
 		}
 		else
@@ -291,9 +288,8 @@ public:
 			return false;
 		}
 
-        NS<R, ADS, DS>* exNS = NULL;
-        vector<NS<R, ADS, DS>*> lNSComp = assignVector(lNS, exNS, factory);
-
+		NS<R, ADS, DS>* exNS = NULL;
+		vector<NS<R, ADS, DS>*> lNSComp = assignVector(lNS, exNS, factory);
 
 		// -------------------
 		//     NSSeq
@@ -308,7 +304,7 @@ public:
 		vector<string>* p_lNSSeq = OptFrameList::readList(ldictionary, scanner);
 		if (p_lNSSeq)
 		{
-			lNSSeq = vector<string> (*p_lNSSeq);
+			lNSSeq = vector<string>(*p_lNSSeq);
 			delete p_lNSSeq;
 		}
 		else
@@ -317,8 +313,8 @@ public:
 			return false;
 		}
 
-        NSSeq<R, ADS, DS>* exNSSeq = NULL;
-        vector<NSSeq<R, ADS, DS>*> lNSSeqComp = assignVector(lNSSeq, exNSSeq, factory);
+		NSSeq<R, ADS, DS>* exNSSeq = NULL;
+		vector<NSSeq<R, ADS, DS>*> lNSSeqComp = assignVector(lNSSeq, exNSSeq, factory);
 
 		// -------------------
 		//     NSEnum
@@ -333,7 +329,7 @@ public:
 		vector<string>* p_lNSEnum = OptFrameList::readList(ldictionary, scanner);
 		if (p_lNSEnum)
 		{
-			lNSEnum = vector<string> (*p_lNSEnum);
+			lNSEnum = vector<string>(*p_lNSEnum);
 			delete p_lNSEnum;
 		}
 		else
@@ -342,8 +338,8 @@ public:
 			return false;
 		}
 
-        NSEnum<R, ADS, DS>* exNSEnum = NULL;
-        vector<NSEnum<R, ADS, DS>*> lNSEnumComp = assignVector(lNSEnum, exNSEnum, factory);
+		NSEnum<R, ADS, DS>* exNSEnum = NULL;
+		vector<NSEnum<R, ADS, DS>*> lNSEnumComp = assignVector(lNSEnum, exNSEnum, factory);
 
 		// -------------------
 		//     ADSManager
@@ -359,7 +355,7 @@ public:
 
 		if (p_lADSManager)
 		{
-			lADSManager = vector<string> (*p_lADSManager);
+			lADSManager = vector<string>(*p_lADSManager);
 			delete p_lADSManager;
 		}
 		else
@@ -368,8 +364,8 @@ public:
 			return false;
 		}
 
-        ADSManager<R, ADS>* exADSManager = NULL;
-        vector<ADSManager<R, ADS>*> lADSManagerComp = assignVector(lADSManager, exADSManager, factory);
+		ADSManager<R, ADS>* exADSManager = NULL;
+		vector<ADSManager<R, ADS>*> lADSManagerComp = assignVector(lADSManager, exADSManager, factory);
 
 		// cleanup auxiliar list definitions
 		Command<R, ADS, DS>::undefine("_aux_check_lconstructive", dictionary, ldictionary);
@@ -441,7 +437,7 @@ public:
 				return false;
 			}
 
-            cout << "component.check command: testing " << constructive->toString() << endl;
+			cout << "component.check command: testing " << constructive->toString() << endl;
 
 			for (int iter = 1; iter <= iterMax; iter++)
 			{
@@ -500,7 +496,7 @@ public:
 				return false;
 			}
 
-            cout << "component.check command: testing " << pmove->toString() << endl;
+			cout << "component.check command: testing " << pmove->toString() << endl;
 
 			for (unsigned id_s = 0; id_s < solutions.size(); id_s++)
 			{
@@ -537,9 +533,50 @@ public:
 					Move<R, ADS, DS>& rev = move.apply(s);
 					Solution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
 
+					// ===================== tests with ADSManager ======================
+
+					if (adsMan)
+					{
+						message(lEvaluator.at(ev), -1, "testing ADS.");
+
+						ADS ads(sNeighbor.getADS()); // copy
+						Timer ts_ds;
+						adsMan->initializeADS(sNeighbor.getR(), sNeighbor.getADS());
+						timeInitializeADS[0].second += ts_ds.inMilliSecs();
+						timeInitializeADS[0].first++;
+
+						if (!adsMan->compareADS(ads, sNeighbor.getADS()))
+						{
+							cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
+							move.print();
+							return false;
+						}
+
+					}
+
 					Evaluation<DS>& e_rev = evaluators.at(ev)->evaluate(s);
 
 					Move<R, ADS, DS>& ini = rev.apply(s);
+
+					// ===================== tests with ADSManager ======================
+
+					if (adsMan)
+					{
+						message(lEvaluator.at(ev), -1, "testing ADS.");
+
+						ADS ads(s.getADS()); // copy
+						Timer ts_ds2;
+						adsMan->initializeADS(s.getR(), s.getADS());
+						timeInitializeADS[0].second += ts_ds2.inMilliSecs();
+						timeInitializeADS[0].first++;
+
+						if (!adsMan->compareADS(ads, s.getADS()))
+						{
+							cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
+							rev.print();
+							return false;
+						}
+					}
 
 					Evaluation<DS>& e_ini = evaluators.at(ev)->evaluate(s);
 
@@ -574,41 +611,7 @@ public:
 						return false;
 					}
 
-					// ===================== tests with ADSManager ======================
-
-					if (adsMan)
-					{
-						message(lEvaluator.at(ev), -1, "testing ADS.");
-
-						ADS ads(sNeighbor.getADS()); // copy
-						Timer ts_ds;
-						adsMan->initializeADS(sNeighbor.getR(), sNeighbor.getADS());
-						timeInitializeADS[0].second += ts_ds.inMilliSecs();
-						timeInitializeADS[0].first++;
-
-						if (!adsMan->compareADS(ads, sNeighbor.getADS()))
-						{
-							cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
-							move.print();
-							return false;
-						}
-
-						ads = ADS(s.getADS()); // copy
-						Timer ts_ds2;
-						adsMan->initializeADS(s.getR(), s.getADS());
-						timeInitializeADS[0].second += ts_ds2.inMilliSecs();
-						timeInitializeADS[0].first++;
-
-						if (!adsMan->compareADS(ads, s.getADS()))
-						{
-							cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
-							rev.print();
-							return false;
-						}
-					}
-
 					// =============================================================
-
 
 					message(lEvaluator.at(ev), -1, "testing move cost.");
 
@@ -723,7 +726,7 @@ public:
 				return false;
 			}
 
-            cout << "component.check command: testing " << ns->toString() << endl;
+			cout << "component.check command: testing " << ns->toString() << endl;
 
 			for (int iter = 1; iter <= iterMax; iter++)
 			{
@@ -741,8 +744,8 @@ public:
 					Solution<R, ADS>& s = *solutions.at(id_s);
 
 					Move<R, ADS, DS>& move = ns->move(s);
-                    if(verbose)
-                        move.print();
+					if (verbose)
+						move.print();
 
 					if (!move.canBeApplied(s))
 					{
@@ -770,12 +773,40 @@ public:
 
 						message(moveFrom, iter, "testing reverse.");
 
+						Solution<R, ADS>& sOriginal = s.clone(); // remove if not verbose
+
 						Timer tMovApply;
 						Move<R, ADS, DS>& rev = move.apply(s);
 						timeNSApply[id_ns].second += tMovApply.inMilliSecs();
 						timeNSApply[id_ns].first++;
 
 						Solution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
+
+						// ===================== tests with ADSManager ======================
+
+						if (adsMan)
+						{
+							message(lEvaluator.at(ev), -1, "testing ADS.");
+
+							ADS ads(sNeighbor.getADS()); // copy
+							Timer ts_ds;
+							adsMan->initializeADS(sNeighbor.getR(), sNeighbor.getADS());
+							timeInitializeADS[0].second += ts_ds.inMilliSecs();
+							timeInitializeADS[0].first++;
+
+							if (!adsMan->compareADS(ads, sNeighbor.getADS()))
+							{
+								cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
+								move.print();
+								cout << "S (sOriginal.getADS()): " << endl;
+								adsMan->printADS(sOriginal.getADS());
+								cout << "WRONG: (sNeighbor.getADS())" << endl;
+								adsMan->printADS(ads);
+								cout << "RIGHT (re-initialized): " << endl;
+								adsMan->printADS(sNeighbor.getADS());
+								return false;
+							}
+						}
 
 						Timer te;
 						Evaluation<DS>& e_rev = evaluators.at(ev)->evaluate(s);
@@ -786,6 +817,32 @@ public:
 						Move<R, ADS, DS>& ini = rev.apply(s);
 						timeNSApply[id_ns].second += tMovRevApply.inMilliSecs();
 						timeNSApply[id_ns].first++;
+
+						// ===================== tests with ADSManager ======================
+
+						if (adsMan)
+						{
+							message(lEvaluator.at(ev), -1, "testing ADS.");
+
+							ADS ads(s.getADS()); // copy
+							Timer ts_ds2;
+							adsMan->initializeADS(s.getR(), s.getADS());
+							timeInitializeADS[0].second += ts_ds2.inMilliSecs();
+							timeInitializeADS[0].first++;
+
+							if (!adsMan->compareADS(ads, s.getADS()))
+							{
+								cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
+								rev.print();
+								cout << "S (sOriginal.getADS()): " << endl;
+								adsMan->printADS(sOriginal.getADS());
+								cout << "WRONG (s.getADS()): " << endl;
+								adsMan->printADS(ads);
+								cout << "RIGHT (re-initialized): " << endl;
+								adsMan->printADS(s.getADS());
+								return false;
+							}
+						}
 
 						Timer te2;
 						Evaluation<DS>& e_ini = evaluators.at(ev)->evaluate(s);
@@ -823,41 +880,7 @@ public:
 							return false;
 						}
 
-						// ===================== tests with ADSManager ======================
-
-						if (adsMan)
-						{
-							message(lEvaluator.at(ev), -1, "testing ADS.");
-
-							ADS ads(sNeighbor.getADS()); // copy
-							Timer ts_ds;
-							adsMan->initializeADS(sNeighbor.getR(), sNeighbor.getADS());
-							timeInitializeADS[0].second += ts_ds.inMilliSecs();
-							timeInitializeADS[0].first++;
-
-							if (!adsMan->compareADS(ads, sNeighbor.getADS()))
-							{
-								cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
-								move.print();
-								return false;
-							}
-
-							ads = ADS(s.getADS()); // copy
-							Timer ts_ds2;
-							adsMan->initializeADS(s.getR(), s.getADS());
-							timeInitializeADS[0].second += ts_ds2.inMilliSecs();
-							timeInitializeADS[0].first++;
-
-							if (!adsMan->compareADS(ads, s.getADS()))
-							{
-								cout << id() << " module error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
-								rev.print();
-								return false;
-							}
-						}
-
 						// =============================================================
-
 
 						message(lEvaluator.at(ev), iter, "testing move cost.");
 
@@ -1011,7 +1034,7 @@ public:
 				return false;
 			}
 
-            cout << "component.check command: testing " << nsseq->toString() << endl;
+			cout << "component.check command: testing " << nsseq->toString() << endl;
 
 			int countMoves = 0;
 			int countValidMoves = 0;
@@ -1176,7 +1199,6 @@ public:
 
 						// =============================================================
 
-
 						message(lEvaluator.at(ev), nqs, "testing move cost (NSSeq tests).");
 
 						double revCost = e_rev.evaluation() - e.evaluation();
@@ -1304,7 +1326,7 @@ public:
 		else
 			cout << endl << "No ADSManager was tested." << endl << endl;
 
-		printSummary(convertVector(lEvaluatorComp),fullTimeEval, "Evaluators", "testing full evaluate(s) of a solution");
+		printSummary(convertVector(lEvaluatorComp), fullTimeEval, "Evaluators", "testing full evaluate(s) of a solution");
 
 		printSummary(convertVector(lNSComp), timeNSApply, "NS", "testing time of move apply(s)");
 
@@ -1326,36 +1348,36 @@ public:
 		return true;
 	}
 
-    template<class T>
-    vector<T*> assignVector(const vector<string> lComponents, T* type, HeuristicFactory<R, ADS, DS>& factory)
-    {
-         vector<T*> vComp;
-         for(unsigned i=0; i<lComponents.size(); i++)
-         {
+	template<class T>
+	vector<T*> assignVector(const vector<string> lComponents, T* type, HeuristicFactory<R, ADS, DS>& factory)
+	{
+		vector<T*> vComp;
+		for (unsigned i = 0; i < lComponents.size(); i++)
+		{
 			Scanner scan(lComponents.at(i));
-            type = NULL;
+			type = NULL;
 			factory.assign(type, scan.nextInt(), scan.next()); // reversed!
 
 			if (!type)
 			{
 				cout << "module " << id() << " warning: NULL component " << lComponents[i] << "!" << endl;
 			}
-            else
-                vComp.push_back(type);
-        }
+			else
+				vComp.push_back(type);
+		}
 
-        return vComp;
-    }
+		return vComp;
+	}
 
-    template<class T>
-    vector<Component*> convertVector(const vector<T*>& v)
-    {
-        vector<Component*> vcomp;
-        for(unsigned c=0; c<v.size(); c++)
-            vcomp.push_back((Component*)(v[c]));
+	template<class T>
+	vector<Component*> convertVector(const vector<T*>& v)
+	{
+		vector<Component*> vcomp;
+		for (unsigned c = 0; c < v.size(); c++)
+			vcomp.push_back((Component*) (v[c]));
 
-        return vcomp;
-    }
+		return vcomp;
+	}
 
 	void printSummary(const vector<Component*>& vcomp, const vector<pair<int, double> >& values, string type, string title)
 	{
@@ -1374,7 +1396,7 @@ public:
 				validValues++;
 			}
 			else
-				printf("#%d\t%s\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int) id),  vcomp[id]->toString().c_str(), 0);
+				printf("#%d\t%s\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int) id), vcomp[id]->toString().c_str(), 0);
 		}
 		printf("---------------------------------\n");
 		printf("all\t*\t-\t%.4f\t-\n", (avg / validValues));
@@ -1398,7 +1420,7 @@ public:
 				validValues++;
 			}
 			else
-				printf("#%d\t%s\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int) id),  vcomp[id]->toString().c_str(), 0);
+				printf("#%d\t%s\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int) id), vcomp[id]->toString().c_str(), 0);
 		}
 		printf("---------------------------------\n");
 		printf("all\t*\t-\t%.4f\t-\n", (avg / validValues));
@@ -1409,7 +1431,6 @@ public:
 	{
 		return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
 	}
-
 
 };
 
