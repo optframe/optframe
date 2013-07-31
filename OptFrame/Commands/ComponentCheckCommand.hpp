@@ -380,6 +380,9 @@ public:
 		//           BEGIN TESTS
 		// ======================================
 
+		// time to clone a solution
+		pair<int, double> timeCloneSolution(0, 0.0);
+
 		ADSManager<R, ADS>* adsMan = NULL;
 		if (lADSManager.size() > 0)
 		{
@@ -531,7 +534,11 @@ public:
 					message(moveFrom, -1, "testing reverse.");
 
 					Move<R, ADS, DS>& rev = move.apply(s);
+
+					Timer t_clone;
 					Solution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
+					timeCloneSolution.second += t_clone.inMilliSecs();
+					timeCloneSolution.first++;
 
 					// ===================== tests with ADSManager ======================
 
@@ -773,14 +780,20 @@ public:
 
 						message(moveFrom, iter, "testing reverse.");
 
+						Timer t_clone;
 						Solution<R, ADS>& sOriginal = s.clone(); // remove if not verbose
+						timeCloneSolution.second += t_clone.inMilliSecs();
+						timeCloneSolution.first++;
 
 						Timer tMovApply;
 						Move<R, ADS, DS>& rev = move.apply(s);
 						timeNSApply[id_ns].second += tMovApply.inMilliSecs();
 						timeNSApply[id_ns].first++;
 
+						Timer t_clone2;
 						Solution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
+						timeCloneSolution.second += t_clone2.inMilliSecs();
+						timeCloneSolution.first++;
 
 						// ===================== tests with ADSManager ======================
 
@@ -1117,7 +1130,10 @@ public:
 						timeNSApply[id_nsseq].second += tMovApply.inMilliSecs();
 						timeNSApply[id_nsseq].first++;
 
+						Timer t_clone;
 						Solution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
+						timeCloneSolution.second += t_clone.inMilliSecs();
+						timeCloneSolution.first++;
 
 						Timer te;
 						Evaluation<DS>& e_rev = evaluators.at(ev)->evaluate(s);
@@ -1319,6 +1335,8 @@ public:
 		cout << "           SUMMARY             " << endl;
 		cout << "===============================" << endl << endl;
 
+		printSingleSummary("Solution", timeCloneSolution, "Time to clone a solution");
+
 		printSummary(convertVector(lConstructiveComp), timeConstructive, "Constructive", "testing construction of initial solution");
 
 		if (adsMan)
@@ -1377,6 +1395,27 @@ public:
 			vcomp.push_back((Component*) (v[c]));
 
 		return vcomp;
+	}
+
+	void printSingleSummary(string component, const pair<int, double>& value, string title)
+	{
+		printf("---------------------------------\n");
+		cout << component << "\t" << title << endl;
+		printf("---------------------------------\n");
+		printf("title\t#tests\tavg(ms)\tsum(ms)\n");
+		double avg = 0;
+		int validValues = 0;
+		if (value.first > 0)
+		{
+			printf("%s\t%d\t%.4f\t%.4f\n", component.c_str(), value.first, (value.second / value.first), value.second);
+			avg += (value.second / value.first);
+			validValues++;
+		}
+		else
+			printf("%s\t%d\tUNTESTED OR UNIMPLEMENTED\n", component.c_str(), 0);
+		printf("---------------------------------\n");
+		printf("all\t-\t%.4f\t-\n", (avg / validValues));
+		cout << endl;
 	}
 
 	void printSummary(const vector<Component*>& vcomp, const vector<pair<int, double> >& values, string type, string title)
