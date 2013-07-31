@@ -72,6 +72,14 @@ public:
 		{
 			Scanner scan(list[i]);
 			Component* comp = factory.getNextComponent(scan);
+			string rest = Scanner::trim(scan.rest());
+			if(rest != "")
+			{
+				cout << "command " << id() << " error: extra text after component name '" << rest << "'!" << endl;
+				cout << "PROBABLY MISSING A COLON ',' IN THE LIST!" << endl;
+				return false;
+			}
+
 			if(!comp)
 			{
 				cout << "create_list_of_components: error, component #" << i << " is NULL! " << endl;
