@@ -63,6 +63,9 @@ public:
 
 		while ((iter < iterMax) && ((tnow - tini) < timelimit) && (evaluator.betterThan(target_f, e.evaluation())))
 		{
+			if(Component::verbose)
+				cout << "GRASP::iter=" << iter << endl;
+
 			Solution<R, ADS>& s1 = constructive.generateSolution();
 			Evaluation<DS>& e1 = evaluator.evaluate(s1);
 
@@ -72,8 +75,11 @@ public:
 			{
 				s = s1;
 				e = e1;
-				cout << "GRASP iter "<<iter<<": ";
-				e.print();
+				if (Component::information)
+				{
+					cout << "GRASP iter " << iter << ": ";
+					e.print();
+				}
 			}
 
 			delete &s1;

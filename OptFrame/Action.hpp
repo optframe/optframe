@@ -152,7 +152,7 @@ public:
 
 	virtual bool handleAction(string action)
 	{
-		return (action == "log") || (action == "print");
+		return (action == "log") || (action == "print") || (action == "setVerboseLevel") || (action == "getVerboseLevel");
 	}
 
 	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& d)
@@ -234,6 +234,34 @@ public:
 
 			return true;
 		}
+
+		if (action == "setVerboseLevel")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			int verboseLevel = scanner.nextInt();
+
+			c->setVerboseLevel(verboseLevel);
+
+			return true;
+		}
+
+		if (action == "getVerboseLevel")
+		{
+			if (!scanner.hasNext())
+				return false;
+
+			string var = scanner.next();
+
+			stringstream ss;
+			ss << c->getVerboseLevel();
+
+			dictionary[var] = ss.str();
+
+			return true;
+		}
+
 
 		// no action found!
 		return false;

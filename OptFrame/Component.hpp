@@ -37,42 +37,104 @@ class Component
 {
 public:
 
-   virtual ~Component()
-   {
-   }
+	int verboseLevel;
+	bool information;
+	bool warning;
+	bool verbose;
+	bool debug;
 
-   static string idComponent()
-   {
-      return "OptFrame:";
-   }
+	Component()
+	{
+		verboseLevel = 1;
+		information = true;
+		warning = false;
+		verbose = false;
+		debug = false;
+	}
 
-   virtual string id() const
-   {
-      return idComponent();
-   }
+	virtual ~Component()
+	{
+	}
 
-   virtual bool compatible(string s)
-   {
-      return (s == id()) || (s == idComponent()); // equal to this component or "OptFrame:" base
-   }
+	static string idComponent()
+	{
+		return "OptFrame:";
+	}
 
-   virtual string toString() const
-   {
-	   return id();
-   }
+	virtual string id() const
+	{
+		return idComponent();
+	}
 
-   virtual void print() const
-   {
-      cout << toString() << endl;
-   }
+	virtual bool compatible(string s)
+	{
+		return (s == id()) || (s == idComponent()); // equal to this component or "OptFrame:" base
+	}
 
-   virtual string log() const
-   {
-	   return id();
-   }
+	virtual string toString() const
+	{
+		return id();
+	}
 
+	virtual void print() const
+	{
+		cout << toString() << endl;
+	}
 
-    // taken from HeuristicFactory
+	virtual string log() const
+	{
+		return id();
+	}
+
+	void setVerboseLevel(int vl)
+	{
+		verboseLevel = vl;
+		switch (verboseLevel)
+		{
+		case 0:
+			information = false;
+			warning = false;
+			verbose = false;
+			debug = false;
+			break;
+		case 1:
+			information = true;
+			warning = false;
+			verbose = false;
+			debug = false;
+			break;
+		case 2:
+			information = true;
+			warning = true;
+			verbose = false;
+			debug = false;
+			break;
+		case 3:
+			information = true;
+			warning = true;
+			verbose = true;
+			debug = false;
+			break;
+		case 4:
+			information = true;
+			warning = true;
+			verbose = true;
+			debug = true;
+			break;
+		default:
+			information = false;
+			warning = false;
+			verbose = false;
+			debug = false;
+		}
+	}
+
+	bool getVerboseLevel()
+	{
+		return verboseLevel;
+	}
+
+	// taken from HeuristicFactory
 
 	//! \english compareBase is an auxiliar method to compare a pattern to a component id. Check if 'component' inherits from 'base'. \endenglish \portuguese compareBase eh um metodo auxiliar para comparar um padrao a um id de componente. Testa se 'component' herda de 'base'. \endportuguese
 	/*!
