@@ -47,6 +47,12 @@ public:
 
 	void print() const
 	{
+		cout << id() << "with params: '" << "" << "'" << endl;
+	}
+
+	string id() const
+	{
+		return Move<Rep$project , OPTFRAME_DEFAULT_ADS $commadproject>::idComponent().append(":Move$neighborhood");
 	}
 };
 
