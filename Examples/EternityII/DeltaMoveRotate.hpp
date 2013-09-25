@@ -120,6 +120,11 @@ public:
 		cout << nRot << " rotations on (" << x << "," << y << ")" << endl;
 		cout << endl;
 	}
+
+	string id() const
+	{
+		return "OptFrame:Move:DeltaMoveRotate";
+	}
 };
 }
 #endif /*EtII_Delta_Move_Rotate_HPP_*/

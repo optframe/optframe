@@ -70,6 +70,11 @@ public:
 	{
 		cout << "DeltaMoveSwapRotateCenter: (" << x1 << "," << y1 << ") r=" << r1 << " <=> (" << x2 << "," << y2 << ") r=" << r2 << endl;
 	}
+
+	string id() const
+	{
+		return "OptFrame:Move:DeltaMoveSwapRotateCenter";
+	}
 };
 }
 #endif /*EtII_Delta_Move_Swap_Rotate_Center_HPP_*/

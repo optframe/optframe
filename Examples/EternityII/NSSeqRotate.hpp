@@ -32,6 +32,9 @@
 
 using namespace std;
 
+namespace EtII
+{
+
 class MoveRotate: public Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
 {
 protected:
@@ -64,6 +67,7 @@ public:
 		return *new MoveRotate(4 - nRot, x, y);
 	}
 
+
 	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& apply(MemEtII& mem, RepEtII& rep, OPTFRAME_DEFAULT_ADS& ads)
 	{
 		int f = 0;
@@ -93,6 +97,7 @@ public:
 		return rev;
 	}
 
+
 	virtual bool operator==(const Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& _m) const
 	{
 		const MoveRotate& m = (const MoveRotate&) _m;
@@ -102,6 +107,11 @@ public:
 	void print() const
 	{
 		cout << "MoveRotate: " << nRot << " rotations on (" << x << "," << y << ")" << endl;
+	}
+
+	string id() const
+	{
+		return "OptFrame:Move:MoveRotate";
 	}
 };
 
@@ -196,7 +206,14 @@ public:
 	{
 		cout << "NSSeqRotate" << endl;
 	}
+
+	string id() const
+	{
+		return "OptFrame:NS:NSSeqRotate";
+	}
 };
+
+}
 
 #endif /*EtII_NSSEQRotate_HPP_*/
 

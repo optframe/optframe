@@ -2,25 +2,24 @@
 % OptFrame example EtII definitions
 %==================================
 
-if operator.compare( _etiidefinitions_opt == true )
+if system.defined( _etiidefinitions_opt )
 {
    echo File etii-definitions.opt already included!;
    error;
 }
 
-system.silent_define _etiidefinitions_opt  true
+_etiidefinitions_opt=true
 
-if operator.compare( _definitions_opt  != true )   { system.read ../definitions.opt }
+if operator.logic(not system.defined( _definitions_opt ) )   { system.read ../definitions.opt }
 
-undefine bCommandExists
 command.exists problem.general bCommandExists
 
-if bCommandExists
+if $bCommandExists
 {
    error module problem.general already exists!;
 } else
 {
    command.rename problem.EtII problem.general;
-   silent_define default_file ./EternityII/pieces_set_2/pieces_10x10.txt;
+   default_file=./Examples/EternityII/pieces_set_2/pieces_10x10.txt;
 }
 

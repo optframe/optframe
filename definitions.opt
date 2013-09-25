@@ -16,17 +16,19 @@ system.silent_define _definitions_opt true
 % create auxiliar modules and functions
 % -------------------------------------------------------------
 
-command.create_raw command.rename [ module_name , new_name ] {
-   command.create_raw $new_name [ ] {
-      system.preprocess _text_${new_name} $module_name $_all_params_${new_name};
-      system.run $module_name $_text_${new_name}; %%% WARNING, CANNOT DO THIS *CORRECTLY* WITHOUT SCOPING =(! TODO
-      system.undefine _text_${new_name};
-   }
-}
 
-command.create_raw function.rename [ function_name , new_function_name ] {
-   function.create_raw $new_function_name [ ] = $function_name ( $_all_params_$new_function_name );
-}
+%%% TODO: FIX! SORRY =(
+%command.create_raw command.rename [ module_name , new_name ] {
+%   command.create_raw $new_name [ ] {
+%      system.preprocess _text_${new_name} $module_name $_all_params_${new_name};
+%      system.run $module_name $_text_${new_name}; %%% WARNING, CANNOT DO THIS *CORRECTLY* WITHOUT SCOPING =(! TODO
+%      system.undefine _text_${new_name};
+%   }
+%}
+
+%command.create_raw function.rename [ function_name , new_function_name ] {
+%   function.create_raw $new_function_name [ ] = $function_name ( $_all_params_$new_function_name );
+%}
 
 function.create_raw list.first  [ $list ] = list.element( 1 $list )
 function.create_raw list.second [ $list ] = list.element( 2 $list )

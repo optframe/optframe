@@ -239,6 +239,11 @@ public:
 	{
 		cout << "DeltaMoveSwapCorner: (" << x1 << "," << y1 << ") <=> (" << x2 << "," << y2 << ")" << endl;
 	}
+
+	string id() const
+	{
+		return "OptFrame:Move:MoveMoveSwapCorner";
+	}
 };
 }
 #endif /*EtII_Delta_Move_SwapCorner_HPP_*/

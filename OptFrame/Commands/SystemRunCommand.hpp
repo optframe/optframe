@@ -55,7 +55,10 @@ public:
 		Command<R, ADS, DS>* m = getCommand(all_modules, module, tail);
 
 		if (m == NULL)
+		{
+			cout << "system.run module: command '" << module << "' not found!" << endl;
 			return false;
+		}
 
 		string* rest = m->preprocess(allFunctions, factory, dictionary, ldictionary, tail);
 

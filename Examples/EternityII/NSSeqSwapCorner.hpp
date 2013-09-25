@@ -32,6 +32,9 @@
 
 using namespace std;
 
+namespace EtII
+{
+
 class MoveSwapCorner: public Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
 {
 protected:
@@ -139,6 +142,11 @@ public:
 	void print() const
 	{
 		cout << "MoveSwapCorner: (" << x1 << "," << y1 << ") <=> (" << x2 << "," << y2 << ")" << endl;
+	}
+
+	string id() const
+	{
+		return "OptFrame:Move:MoveSwapCorner";
 	}
 };
 
@@ -259,7 +267,14 @@ public:
 	{
 		cout << "NSSeqSwapCorner" << endl;
 	}
+
+	string id() const
+	{
+		return "OptFrame:NS:NSSeqSwapCorner";
+	}
 };
+
+}
 
 #endif /*EtII_NSSEQSwapCorner_HPP_*/
 

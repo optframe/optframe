@@ -71,6 +71,11 @@ public:
 	{
 		cout << "DeltaMoveSwapSide: (" << x1 << "," << y1 << ") <=> (" << x2 << "," << y2 << ")" << endl;
 	}
+
+	string id() const
+	{
+		return "OptFrame:Move:DeltaMoveSwapSide";
+	}
 };
 }
 #endif /*EtII_Delta_Move_SwapSide_HPP_*/

@@ -18,48 +18,22 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_MODULE_EXISTS_MODULE_HPP_
-#define OPTFRAME_MODULE_EXISTS_MODULE_HPP_
+#ifndef OPTFRAME_COMMAND_RENAME_MODULE_HPP_
+#define OPTFRAME_COMMAND_RENAME_MODULE_HPP_
 
 #include "../Command.hpp"
-
 
 namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class CommandExistsCommand: public Command<R, ADS, DS>
+class CommandRenameCommand: public Command<R, ADS, DS>
 {
 public:
 
-   virtual ~CommandExistsCommand()
-   {
-   }
-
-   string id()
-   {
-      return "command.exists";
-   }
-
-   string usage()
-   {
-      string u = id();
-      u += " module_name result_variable\n";
-      return u;
-   }
-
-   string formatBool(bool b)
-   {
-	   if(b)
-		   return "true";
-	   else
-		   return "false";
-   }
-
-   bool parseBool(string b)
-   {
-	   return b == "true";
-   }
+	virtual ~CommandRenameCommand()
+	{
+	}
 
 	Command<R, ADS, DS>* getCommand(vector<Command<R, ADS, DS>*>& modules, string module, string rest)
 	{
@@ -73,48 +47,58 @@ public:
 		return NULL;
 	}
 
-   bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
-   {
-      //cout << "command.exists command: " << input << endl;
-
-      Scanner scanner(input);
-
-      if (!scanner.hasNext())
-      {
-         cout << "Usage: " << usage() << endl;
-         return false;
-      }
-
-      string module_name = scanner.next();
-
-      if (!scanner.hasNext())
-      {
-         cout << "Usage: " << usage() << endl;
-         return false;
-      }
-
-      string variable = scanner.next();
-
-      Command<R, ADS, DS>* m = getCommand(allCommands, module_name, "");
-
-      //if(m)
-      //   cout << "command.exists real id is: " << m->id() << endl;
-
-      string result = formatBool(m != NULL);
-
-      //cout << "command.exists result is: " << result << endl;
-
-      return Command<R, ADS, DS>::defineText(variable, result, dictionary);
-   }
-
-	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	string id()
 	{
-		return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+		return "command.rename";
 	}
 
+	string usage()
+	{
+		return "command.rename command_name new_name";
+	}
+
+	bool run(vector<Command<R, ADS, DS>*>& allCommands, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string input)
+	{
+		Scanner scanner(input);
+
+		if (!scanner.hasNext()) // no module
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+
+		string command_name = scanner.next();
+
+		if (!scanner.hasNext()) // no module
+		{
+			cout << "Usage: " << usage() << endl;
+			return false;
+		}
+
+		string new_name = scanner.next();
+
+		Command<R, ADS, DS>* m = getCommand(allCommands, command_name, "");
+
+		if (!m)
+		{
+			cout << "command " << id() << " error: command '" << command_name << "' not found!" << endl;
+			return false;
+		}
+
+		m->handles.push_back(new_name);
+
+		return true;
+	}
+
+	// disable preprocess, only need module prefix
+	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
+	{
+		// disable preprocess!!
+		return new string(input);
+	}
 
 };
 
 }
 
-#endif /* OPTFRAME_MODULE_EXISTS_MODULE_HPP_ */
+#endif /* OPTFRAME_COMMAND_RENAME_MODULE_HPP_ */

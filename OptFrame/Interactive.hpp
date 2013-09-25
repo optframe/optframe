@@ -209,6 +209,7 @@
 #include "Commands/CommandCreateLocalCommand.hpp"
 #include "Commands/CommandCreateRawCommand.hpp"
 #include "Commands/CommandExistsCommand.hpp"
+#include "Commands/CommandRenameCommand.hpp"
 #include "Commands/CommandUnitTestCommand.hpp"
 
 #include "Commands/FunctionCreateRawCommand.hpp"
@@ -447,6 +448,7 @@ public:
 			loadCommand(new CommandCreateLocalCommand<R, ADS, DS> );
 			loadCommand(new CommandCreateRawCommand<R, ADS, DS> );
 			loadCommand(new CommandExistsCommand<R, ADS, DS> );
+			loadCommand(new CommandRenameCommand<R, ADS, DS> );
 			loadCommand(new CommandUnitTestCommand<R, ADS, DS> );
 		}
 
