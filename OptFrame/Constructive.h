@@ -22,6 +22,7 @@
 #define OPTFRAME_CONSTRUCTIVE_H_
 
 #include "Solution.hpp"
+#include "Evaluation.hpp" // because of the action
 
 namespace optframe
 {

@@ -22,7 +22,7 @@
 #define OPTFRAME_CS_HPP_
 
 #include "../../LocalSearch.hpp"
-#include "../../NSSeq.hpp"
+#include "../../NSEnum.hpp"
 #include "../../Evaluator.hpp"
 
 namespace optframe

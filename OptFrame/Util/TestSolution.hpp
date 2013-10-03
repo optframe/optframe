@@ -26,6 +26,9 @@
 #include <cstdlib>
 #include <iostream>
 
+namespace optframe
+{
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class TestSolution : public Solution<R, ADS>
 {
@@ -125,5 +128,7 @@ unsigned long long TestSolution<R, ADS>::testsolution_objects = 0;
 
 template<class R, class ADS>
 unsigned long long TestSolution<R, ADS>::testsolution_objects_nodecrement = 0;
+
+}
 
 #endif /* OPTFRAME_TESTSOLUTION_HPP_ */

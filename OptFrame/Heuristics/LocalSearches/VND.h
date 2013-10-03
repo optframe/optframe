@@ -31,14 +31,16 @@ namespace optframe
 class VND
 {
 public:
-	static const string family;
+
+	static string family()
+	{
+		return "VND:";
+	}
 
 	virtual ~VND()
 	{
 	}
 };
-
-const string VND::family = "VND:";
 
 }
 

@@ -23,6 +23,8 @@
 
 #include "../../LocalSearch.hpp"
 
+#include "../../NS.hpp"
+
 namespace optframe
 {
 

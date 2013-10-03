@@ -31,14 +31,15 @@ namespace optframe
 class ILS
 {
 public:
-	static const string family;
+	static string family()
+	{
+		return "ILS:";
+	}
 
 	virtual ~ILS()
 	{
 	}
 };
-
-const string ILS::family = "ILS:";
 
 }
 

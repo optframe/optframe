@@ -27,6 +27,9 @@
 
 #include "Scanner++/Scanner.h"
 
+#include "Solution.hpp"
+#include "Evaluation.hpp"
+
 //#include "Command.hpp"
 
 using namespace std;

@@ -31,14 +31,15 @@ namespace optframe
 class SA
 {
 public:
-	static const string family;
+	static string family()
+	{
+		return "SA:";
+	}
 
 	virtual ~SA()
 	{
 	}
 };
-
-const string SA::family = "SA:";
 
 }
 

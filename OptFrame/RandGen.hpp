@@ -35,6 +35,7 @@
 namespace optframe
 {
 
+/*
 // reuse of function 'rand()' by using function 'randgen_sys_rand()'
 unsigned int randgen_sys_rand()
 {
@@ -45,6 +46,7 @@ float system_log(float v)
 {
 	return log(v);
 }
+*/
 
 class RandGen: public Component
 {
@@ -94,8 +96,8 @@ public:
 			initialize();
 			init = true;
 		}
-		// reuse of function 'rand()' by using function 'randgen_sys_rand()'
-		return (int) randgen_sys_rand();
+
+		return (int) ::rand();
 	}
 
 	// random positive integer between 0 and n-1
@@ -106,8 +108,8 @@ public:
 			initialize();
 			init = true;
 		}
-		// reuse of function 'rand()' by using function 'randgen_sys_rand()'
-		return randgen_sys_rand() % n;
+
+		return ::rand() % n;
 	}
 
 	// random uniform between [0,1)
@@ -119,7 +121,7 @@ public:
 			init = true;
 		}
 		// reuse of function 'rand()' by using function 'randgen_sys_rand()'
-		return (double) randgen_sys_rand() / RAND_MAX;
+		return (double) ::rand() / RAND_MAX;
 	}
 
 	// random gaussian mean 0.0 stdev 1.0
@@ -147,7 +149,7 @@ public:
 			}
 			while (w >= 1.0);
 
-			w = sqrt((-2.0 * system_log(w)) / w);
+			w = sqrt((-2.0 * ::log(w)) / w);
 			y1 = x1 * w;
 			y2 = x2 * w;
 			nextG = y2; // store y2

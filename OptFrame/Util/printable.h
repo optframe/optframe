@@ -38,6 +38,8 @@ static bool string_aspas_25072009_ctrl = true;
 // aparecam entre aspas duplas.
 // Fora desta classe nenhuma outra string e afetada.
 // ===================================================
+// DEPRECATED!!
+/*
 ostream& operator<< (ostream &os, const string &obj)
 {
 	if(string_aspas_25072009 && string_aspas_25072009_ctrl)
@@ -58,7 +60,7 @@ ostream& operator<< (ostream &os, const string &obj)
 	}
   	return os;
 }
-
+*/
 
 // ===================================================
 //     Impressao de vectors

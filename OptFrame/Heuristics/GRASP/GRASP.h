@@ -32,14 +32,15 @@ namespace optframe
 class GRASPH
 {
 public:
-	static const string family;
+	static string family()
+	{
+		return "GRASPH:";
+	}
 
 	virtual ~GRASPH()
 	{
 	}
 };
-
-const string GRASPH::family = "GRASPH:";
 
 }
 

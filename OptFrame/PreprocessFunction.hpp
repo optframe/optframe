@@ -34,6 +34,9 @@
 #include <vector>
 #include <map>
 
+#include "Solution.hpp"
+#include "Evaluation.hpp"
+
 #include "Scanner++/Scanner.h"
 
 #include <algorithm>
