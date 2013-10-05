@@ -1,5 +1,5 @@
-#ifndef $project_EVALUATOR_HPP_
-#define $project_EVALUATOR_HPP_
+#ifndef $project_EVALUATOR_H_
+#define $project_EVALUATOR_H_
 
 //#include <cmath>
 #include <stdlib.h>
@@ -13,14 +13,15 @@
 #include "Solution.h"
 #include "Evaluation.h"
 
-#include "ProblemInstance.hpp"
+#include "ProblemInstance.h"
 
 #define EPSILON_$project 0.0001
+
 
 namespace $project
 {
 
-class $projectEvaluator: public Evaluator<Rep$project, OPTFRAME_DEFAULT_ADS $commadproject>
+class $projectEvaluator: public Evaluator<Rep$project, MY_ADS $commadproject>
 {
 private:
 	ProblemInstance& p$project;
@@ -28,40 +29,18 @@ private:
 	// Your private vars
 
 public:
-	$projectEvaluator(ProblemInstance& _p$project): // If necessary, add more parameters
-	p$project(_p$project)
-	{
-		// Put the rest of your code here
-	}
+	$projectEvaluator(ProblemInstance& _p$project);
 	
-	virtual ~$projectEvaluator()
-	{
-	}
+	virtual ~$projectEvaluator();
 
-	Evaluation$project& evaluate(const Rep$project& rep, const OPTFRAME_DEFAULT_ADS&)
-	{
-		// 'rep' is the representation of the solution
+	Evaluation$project& evaluate(const Rep$project& rep, const MY_ADS&);
 
-		double fo = 0; // Evaluation Function Value
-
-		return * new Evaluation$project(fo $initializedelta);
-	}
-
-	virtual bool betterThan(const Evaluation< $deltaproject >& e1, const Evaluation< $deltaproject >& e2)
-	{
-		// $minmax
-		return $epsilon
-	}
+	virtual bool betterThan(const Evaluation< $deltaproject >& e1, const Evaluation< $deltaproject >& e2);
 	
-    virtual bool isMinimization()
-    {
-        // $minmax
-    	return " $minmax " == " MINIMIZATION ";
-    }
-
+    virtual bool isMinimization();
 };
 
 }
 
-#endif /*$project_EVALUATOR_HPP_*/
+#endif /*$project_EVALUATOR_H_*/
 

@@ -1,15 +1,15 @@
-#ifndef $project_CONSTRUCTIVE_$constructive_HPP_
-#define $project_CONSTRUCTIVE_$constructive_HPP_
+#ifndef $project_CONSTRUCTIVE_$constructive_H_
+#define $project_CONSTRUCTIVE_$constructive_H_
 
 #include "../../OptFrame/Constructive.h"
 #include "../../OptFrame/Util/TestSolution.hpp"
 
-#include "ProblemInstance.hpp"
+#include "ProblemInstance.h"
 
 #include "Representation.h"
 #include "Solution.h"
 
-#include "Evaluator.hpp"
+#include "Evaluator.h"
 
 #include <list>
 
@@ -18,10 +18,12 @@
 
 using namespace std;
 
+using namespace optframe;
+
 namespace $project
 {
 
-class Constructive$constructive: public Constructive<Rep$project>
+class Constructive$constructive: public Constructive<Rep$project, MY_ADS>
 {
 private:
    ProblemInstance& p$project;
@@ -30,24 +32,13 @@ private:
 
 public:
 	
-	Constructive$constructive(ProblemInstance& _p$project): // If necessary, add more parameters
-        p$project(_p$project)
-	{
-	}
+	Constructive$constructive(ProblemInstance& _p$project);
 	
-	virtual ~Constructive$constructive()
-	{
-	}
+	virtual ~Constructive$constructive();
 
-	Solution<Rep$project>& generateSolution()
-	{
-	   Rep$project newRep;
-
-	   return * new TestSolution<Rep$project>(newRep);			
-	}
-	
+	Solution<Rep$project, MY_ADS>& generateSolution();
 };
 
 }
 
-#endif /*$project_CONTRUCTIVE_$constructive_HPP_*/
+#endif /*$project_CONTRUCTIVE_$constructive_H_*/

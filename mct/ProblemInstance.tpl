@@ -1,5 +1,5 @@
-#ifndef $project_PROBLEMINSTANCE_HPP_
-#define $project_PROBLEMINSTANCE_HPP_
+#ifndef $project_PROBLEMINSTANCE_H_
+#define $project_PROBLEMINSTANCE_H_
 
 #include <iostream>
 
@@ -17,18 +17,12 @@ private:
 	// Your private vars
 
 public:
-	ProblemInstance(Scanner& scanner)
-	{
-		// Put here your code
-		// You can read the input data from the 'scanner' object
-	}
+	ProblemInstance(Scanner& scanner);
 	
-	virtual ~ProblemInstance()
-	{
-	}
+	virtual ~ProblemInstance();
 };
 
 }
 
-#endif /*$project_PROBLEMINSTANCE_HPP_*/
+#endif /*$project_PROBLEMINSTANCE_H_*/
 

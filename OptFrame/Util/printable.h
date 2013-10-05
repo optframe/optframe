@@ -29,8 +29,8 @@
 using namespace std;
 
 // Variaveis estaticas com nomes grandes para evitar conflitos externos!
-static bool string_aspas_25072009 = false;
-static bool string_aspas_25072009_ctrl = true;
+//static bool string_aspas_25072009 = false;
+//static bool string_aspas_25072009_ctrl = true;
 
 // ===================================================
 // Reescreve a impressao de strings, para
@@ -69,7 +69,7 @@ template<class T>
 ostream& operator<< (ostream &os, const vector<T> &obj)
 {
 	// Se houver string interna, sera impressa com aspas
-	string_aspas_25072009 = true;
+	//string_aspas_25072009 = true;
 	
 	os << "vector(" << obj.size() << ") [";
 	
@@ -83,7 +83,7 @@ ostream& operator<< (ostream &os, const vector<T> &obj)
 	os << "]";	
 	
 	// Libera a impressao normal de strings
-	string_aspas_25072009 = false;
+	//string_aspas_25072009 = false;
 
   	return os;
 }
@@ -96,7 +96,7 @@ template<class T>
 ostream& operator<< (ostream &os, const vector<T*> &obj)
 {
 	// Se houver string interna, sera impressa com aspas
-	string_aspas_25072009 = true;
+	//string_aspas_25072009 = true;
 	
 	os << "vector(" << obj.size() << ") [";
 
@@ -120,7 +120,7 @@ ostream& operator<< (ostream &os, const vector<T*> &obj)
 	os << "]";		
 
 	// Libera a impressao normal de strings
-	string_aspas_25072009 = false;
+	//string_aspas_25072009 = false;
 
   	return os;
 }
@@ -133,12 +133,12 @@ template<class T1, class T2>
 ostream& operator<< (ostream &os, const pair<T1,T2> &obj)
 {
 	// Se houver string interna, sera impressa com aspas
-	string_aspas_25072009 = true;
+	//string_aspas_25072009 = true;
 	
 	os << "pair(" << obj.first << " , " << obj.second << ")";
 
 	// Libera a impressao normal de strings
-	string_aspas_25072009 = false;
+	//string_aspas_25072009 = false;
 	
   	return os;
 }
@@ -150,7 +150,7 @@ template<class T1, class T2>
 ostream& operator<< (ostream &os, const pair<T1,T2*> &obj)
 {
 	// Se houver string interna, sera impressa com aspas
-	string_aspas_25072009 = true;
+	//string_aspas_25072009 = true;
 	
 	os << "pair(" << obj.first << " , ";
 	
@@ -160,7 +160,7 @@ ostream& operator<< (ostream &os, const pair<T1,T2*> &obj)
 		os << (*obj.second) << ")";
 	
 	// Libera a impressao normal de strings
-	string_aspas_25072009 = false;
+	//string_aspas_25072009 = false;
 	
   	return os;
 }
@@ -172,7 +172,7 @@ template<class T1, class T2>
 ostream& operator<< (ostream &os, const pair<T1*,T2> &obj)
 {
 	// Se houver string interna, sera impressa com aspas
-	string_aspas_25072009 = true;
+	//string_aspas_25072009 = true;
 	
 	os << "pair(";
 	
@@ -184,7 +184,7 @@ ostream& operator<< (ostream &os, const pair<T1*,T2> &obj)
 	os << " , " << obj.second << ")";
 	
 	// Libera a impressao normal de strings
-	string_aspas_25072009 = false;
+	//string_aspas_25072009 = false;
 	
   	return os;
 }
@@ -196,7 +196,7 @@ template<class T1, class T2>
 ostream& operator<< (ostream &os, const pair<T1*,T2*> &obj)
 {
 	// Se houver string interna, sera impressa com aspas
-	string_aspas_25072009 = true;
+	//string_aspas_25072009 = true;
 	
 	os << "pair(";
 
@@ -213,7 +213,7 @@ ostream& operator<< (ostream &os, const pair<T1*,T2*> &obj)
 		os << (*obj.second) << ")";
 	
 	// Libera a impressao normal de strings
-	string_aspas_25072009 = false;
+	//string_aspas_25072009 = false;
 	
 	return os;
 }
@@ -226,7 +226,7 @@ template<class Key, class T>
 ostream& operator<< (ostream &os, multimap<Key,T> &obj)
 {
 	// Se houver string interna, sera impressa com aspas
-	string_aspas_25072009 = true;
+	//string_aspas_25072009 = true;
 	
 	os << "multimap(" << obj.size() << ") [";
 	
@@ -244,7 +244,7 @@ ostream& operator<< (ostream &os, multimap<Key,T> &obj)
 	os << "]";	
 	
 	// Libera a impressao normal de strings
-	string_aspas_25072009 = false;
+	//string_aspas_25072009 = false;
 
   	return os;
 }
@@ -256,7 +256,7 @@ template<class Key, class T>
 ostream& operator<< (ostream &os, map<Key,T> &obj)
 {
 	// Se houver string interna, sera impressa com aspas
-	string_aspas_25072009 = true;
+	//string_aspas_25072009 = true;
 	
 	os << "map(" << obj.size() << ") [";
 	
@@ -274,7 +274,7 @@ ostream& operator<< (ostream &os, map<Key,T> &obj)
 	os << "]";	
 	
 	// Libera a impressao normal de strings
-	string_aspas_25072009 = false;
+	//string_aspas_25072009 = false;
 
   	return os;
 }

@@ -1,5 +1,5 @@
-#ifndef $project_PROBLEMMODULE_HPP_
-#define $project_PROBLEMMODULE_HPP_
+#ifndef $project_PROBLEMMODULE_H_
+#define $project_PROBLEMMODULE_H_
 
 #include <iostream>
 
@@ -11,7 +11,11 @@
 #include "Solution.h"
 #include "Evaluation.h"
 
-#include "ProblemInstance.hpp"
+#include "Evaluator.h"
+#include "Constructive$constructive.h"
+#include "NSSeq$neighborhood.h"
+
+#include "ProblemInstance.h"
 
 using namespace scannerpp;
 using namespace optframe;
@@ -19,81 +23,26 @@ using namespace optframe;
 namespace $project
 {
 
-class $projectProblemCommand : public ProblemCommand<Rep$project , OPTFRAME_DEFAULT_ADS $commadproject>
+class $projectProblemCommand : public ProblemCommand<Rep$project , MY_ADS $commadproject>
 {
 public:
 
     ProblemInstance* p;
     
-    $projectProblemCommand()
-    {
-        p = NULL;
-    }
+    $projectProblemCommand();
 
-    virtual ~$projectProblemCommand()
-    {
-        if(p)
-           delete p;    
-    }
+    virtual ~$projectProblemCommand();
     
-    string id()
-    {
-    	string parentId = ProblemCommand<Rep$project , OPTFRAME_DEFAULT_ADS $commadproject>::id();
-    	parentId.append("$project"); // implements 'problem.project_name' module
-    	return parentId;
-    }
+    string id();
     
-    bool registerComponent(Component& component, string type, string name, HeuristicFactory<Rep$project , OPTFRAME_DEFAULT_ADS $commadproject>& hf, map<string, string>& dictionary)
-    {
-	    int idx = hf.addComponent(component, type);
-	    stringstream ss;
-	    ss << type << " " << idx;
-	    return defineText(name, ss.str(), dictionary);
-    }
-
-	bool load(string filename, HeuristicFactory<Rep$project , OPTFRAME_DEFAULT_ADS $commadproject>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
-	{
-	    File* file;
-
-        try
-        {
-           file = new File(filename);
-        }
-        catch (FileNotFound& f)
-        {
-           cout << "File '" << filename <<"' not found" << endl;
-           return false;
-        }
-
-        Scanner scanner(file);
-
-        p = new ProblemInstance(scanner);
-
-        // add everything to the HeuristicFactory 'hf'
-
-        hf.addComponent(*new $projectEvaluator(*p));
-
-        hf.addComponent(*new Constructive$constructive(*p));
-		
-        cout << "problem '" << filename << "' loaded successfully" << endl;
-        
-        return true;
-    }
+    bool registerComponent(Component& component, string type, string name, HeuristicFactory<Rep$project , MY_ADS $commadproject>& hf, map<string, string>& dictionary);
     
-    bool unload(HeuristicFactory<Rep$project , OPTFRAME_DEFAULT_ADS $commadproject>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
-    {
-       if(p)
-          delete p;
-       p = NULL;
-       
-       cout << "problem instance for $project unloaded successfully (use 'drop_all' if you want to remove all components)" << endl;
-       
-       
-       return true;
-    }
+	bool load(string filename, HeuristicFactory<Rep$project , MY_ADS $commadproject>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary);
+	    
+    bool unload(HeuristicFactory<Rep$project , MY_ADS $commadproject>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary);
 };
 
 }
 
-#endif /*$project_PROBLEMMODULE_HPP_*/
+#endif /*$project_PROBLEMMODULE_H_*/
 

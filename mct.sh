@@ -267,8 +267,8 @@ fi
 #             Problem Instance
 ##############################################
 
-var_inc="./$project/ProblemInstance.hpp"
-var="./MyProjects/$project/ProblemInstance.hpp"
+var_inc="./$project/ProblemInstance.h"
+var="./MyProjects/$project/ProblemInstance.h"
 var_tmp=$var".tmp"
 
 if cp ./mct/ProblemInstance.tpl $var
@@ -278,6 +278,16 @@ then echo "5. Creating Problem Instance...[ok]"
      mv $var_tmp $var
      echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
 else echo "5. Creating Problem Instance...[fail]"
+     exit
+fi
+
+var_inc="./$project/ProblemInstance.cpp"
+var="./MyProjects/$project/ProblemInstance.cpp"
+var_tmp=$var".tmp"
+
+if cp ./mct/ProblemInstanceCpp.tpl $var
+then echo "5. Creating Problem Instance (CPP)...[ok]"
+else echo "5. Creating Problem Instance (CPP)...[fail]"
      exit
 fi
 
@@ -296,8 +306,8 @@ if [ "$minmax" = "MINIMIZATION" ];
   else epsilon="(e1.evaluation() > (e2.evaluation() + EPSILON_$project));"
 fi
 
-var_inc="./$project/Evaluator.hpp"
-var="./MyProjects/$project/Evaluator.hpp"
+var_inc="./$project/Evaluator.h"
+var="./MyProjects/$project/Evaluator.h"
 var_tmp=$var".tmp"
 
 if cp ./mct/Evaluator.tpl $var
@@ -323,10 +333,50 @@ then echo "6. Creating Evaluator...[ok]"
      sed -e "$t" < $var > $var_tmp
      mv $var_tmp $var
 
+     t="s/\$deltaproject/$deltaproject/g"
+     sed -e "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
      echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
 else echo "6. Creating Evaluator...[fail]"
      exit
 fi
+
+var_inc="./$project/Evaluator.cpp"
+var="./MyProjects/$project/Evaluator.cpp"
+var_tmp=$var".tmp"
+
+if cp ./mct/EvaluatorCpp.tpl $var
+then echo "6. Creating Evaluator (CPP)...[ok]"
+
+     t="s/\$project/$project/g"
+     sed -e "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
+     t="s/\$epsilon/$epsilon/g"
+     sed -e "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
+     t="s/\$initializedelta/$initializedelta/g"
+     sed -e "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
+     t="s/\$minmax/$minmax/g"
+     sed -e "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
+     t="s/\$commadproject/$commadproject/g"
+     sed -e "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
+     t="s/\$deltaproject/$deltaproject/g"
+     sed -e "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
+else echo "6. Creating Evaluator (CPP)...[fail]"
+     exit
+fi
+
 
 ##############################################
 #               Neighborhood
@@ -349,8 +399,8 @@ do
 
     read neighborhood
 
-    var_inc="./$project/NSSeq$neighborhood.hpp"
-    var="./MyProjects/$project/NSSeq$neighborhood.hpp"
+    var_inc="./$project/NSSeq$neighborhood.h"
+    var="./MyProjects/$project/NSSeq$neighborhood.h"
     var_tmp=$var".tmp"
 
     if cp ./mct/NSSeq.tpl $var
@@ -371,11 +421,34 @@ do
     else echo "7.$i Creating Neighborhood Structure $neighborhood ...[fail]"
          exit
     fi
+    
+    var_inc="./$project/NSSeq$neighborhood.cpp"
+    var="./MyProjects/$project/NSSeq$neighborhood.cpp"
+    var_tmp=$var".tmp"
+
+    if cp ./mct/NSSeqCpp.tpl $var
+    then echo "7.$i Creating Neighborhood Structure $neighborhood (CPP) ...[ok]"
+         t="s/\$project/$project/g"  
+         sed -e "$t" < $var > $var_tmp
+         mv $var_tmp $var
+         
+         t="s/\$neighborhood/$neighborhood/g"  
+         sed -e "$t" < $var > $var_tmp
+         mv $var_tmp $var
+
+         t="s/\$commadproject/$commadproject/g"  
+         sed -e "$t" < $var > $var_tmp
+         mv $var_tmp $var
+         
+    else echo "7.$i Creating Neighborhood Structure $neighborhood (CPP) ...[fail]"
+         exit
+    fi
+    
 done
 
 
 ##############################################
-#             Initial Solution
+#             Constructives
 ##############################################
 
 echo -e "\nHow many Constructive methods will be there in your project?"
@@ -395,8 +468,8 @@ do
 
     read constructive
 
-    var_inc="./$project/Constructive${constructive}.hpp"
-    var="./MyProjects/$project/Constructive${constructive}.hpp"
+    var_inc="./$project/Constructive${constructive}.h"
+    var="./MyProjects/$project/Constructive${constructive}.h"
     var_tmp=$var".tmp"
 
     if cp ./mct/Constructive.tpl $var
@@ -413,6 +486,25 @@ do
     else echo "8.$i Creating Constructive $constructive ...[fail]"
          exit
     fi
+
+    var_inc="./$project/Constructive${constructive}.cpp"
+    var="./MyProjects/$project/Constructive${constructive}.cpp"
+    var_tmp=$var".tmp"
+
+    if cp ./mct/ConstructiveCpp.tpl $var
+    then echo "8.$i Creating Constructive $constructive (CPP)...[ok]"
+         t="s/\$project/$project/g"  
+         sed $t < $var > $var_tmp
+         mv $var_tmp $var
+         
+         t="s/\$constructive/$constructive/g"  
+         sed $t < $var > $var_tmp
+         mv $var_tmp $var
+    else echo "8.$i Creating Constructive $constructive (CPP)...[fail]"
+         exit
+    fi
+
+
 done
 
 
@@ -420,8 +512,8 @@ done
 #               Problem Command
 ##############################################
 
-var_inc="./$project/ProblemCommand.hpp"
-var="./MyProjects/$project/ProblemCommand.hpp"
+var_inc="./$project/ProblemCommand.h"
+var="./MyProjects/$project/ProblemCommand.h"
 var_tmp=$var".tmp"
 
 if cp ./mct/ProblemCommand.tpl $var
@@ -439,8 +531,40 @@ then echo "9. Creating ProblemCommand...[ok]"
      sed "$t" < $var > $var_tmp
      mv $var_tmp $var
 
+     t="s/\$neighborhood/$neighborhood/g"  
+     sed "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
      echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
 else echo "9. Creating ProblemCommand...[fail]"
+     exit
+fi
+
+
+var_inc="./$project/ProblemCommand.cpp"
+var="./MyProjects/$project/ProblemCommand.cpp"
+var_tmp=$var".tmp"
+
+if cp ./mct/ProblemCommandCpp.tpl $var
+then echo "9. Creating ProblemCommand (CPP)...[ok]"
+
+     t="s/\$project/$project/g"
+     sed -e "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
+     t="s/\$commadproject/$commadproject/g"
+     sed -e "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
+     t="s/\$constructive/$constructive/g"  
+     sed "$t" < $var > $var_tmp
+     mv $var_tmp $var
+     
+     t="s/\$neighborhood/$neighborhood/g"  
+     sed "$t" < $var > $var_tmp
+     mv $var_tmp $var
+     
+else echo "9. Creating ProblemCommand (CPP)...[fail]"
      exit
 fi
 
@@ -482,13 +606,21 @@ fi
 ##############################################
 #          makefile
 ##############################################
-var="./makefile"
+var="./MyProjects/makefile"
 var_tmp="makefile.tmp"
 
 if cp ./mct/makefile.tpl $var
 then echo "makefile file...[ok]"
      
      t="s/\$project/$project/g"  
+     sed "$t" < $var > $var_tmp
+     mv $var_tmp $var
+     
+     t="s/\$constructive/$constructive/g"  
+     sed "$t" < $var > $var_tmp
+     mv $var_tmp $var
+     
+     t="s/\$neighborhood/$neighborhood/g"  
      sed "$t" < $var > $var_tmp
      mv $var_tmp $var
 
@@ -498,8 +630,8 @@ fi
 
 echo
 echo "Congratulations! You can use the following command to compile your project:"
-echo "g++ ./MyProjects/main$project.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/main$project"
-echo "or you can simply type: \"make\""
+echo "g++ ./MyProjects/main$project.cpp ./MyProjects/$project/ProblemInstance.cpp ./MyProjects/$project/Evaluator.cpp ./MyProjects/$project/ProblemCommand.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/main$project"
+echo "or you can simply type: \"cd MyProjects && make\""
 
 echo
 echo "Goodbye!"

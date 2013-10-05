@@ -5,6 +5,8 @@
 
 #include "DeltaStructure.h"
 
+using namespace optframe;
+
 typedef Evaluation<$deltaproject > Evaluation$project;
 
 #endif /*$project_EVALUATION_H_*/
