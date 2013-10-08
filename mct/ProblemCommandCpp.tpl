@@ -1,6 +1,6 @@
 #include "ProblemCommand.h"
 
-using namespace Teste;
+using namespace $project;
 
 $projectProblemCommand::$projectProblemCommand()
 {

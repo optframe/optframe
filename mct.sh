@@ -287,6 +287,9 @@ var_tmp=$var".tmp"
 
 if cp ./mct/ProblemInstanceCpp.tpl $var
 then echo "5. Creating Problem Instance (CPP)...[ok]"
+     t="s/\$project/$project/g"  
+     sed $t < $var > $var_tmp
+     mv $var_tmp $var
 else echo "5. Creating Problem Instance (CPP)...[fail]"
      exit
 fi

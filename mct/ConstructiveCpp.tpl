@@ -1,6 +1,6 @@
 #include "Constructive$constructive.h"
 
-using namespace Teste;
+using namespace $project;
 
 Constructive$constructive::Constructive$constructive(ProblemInstance& _p$project): 
         p$project(_p$project)

@@ -1,6 +1,6 @@
 #include "ProblemInstance.h"
 
-using namespace Teste;
+using namespace $project;
 
 ProblemInstance::ProblemInstance(Scanner& scanner)
 {
