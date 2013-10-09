@@ -23,6 +23,8 @@ string $projectProblemCommand::id()
 bool $projectProblemCommand::registerComponent(Component& component, string type, string name, HeuristicFactory<Rep$project , MY_ADS $commadproject>& hf, map<string, string>& dictionary)
 {
     int idx = hf.addComponent(component, type);
+    if(idx < 0)
+        return false;
     stringstream ss;
     ss << type << " " << idx;
     return defineText(name, ss.str(), dictionary);
