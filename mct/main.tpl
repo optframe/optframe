@@ -16,7 +16,7 @@ using namespace $project;
 
 int main(int argc, char **argv)
 {
-   Interactive<Rep$project, OPTFRAME_DEFAULT_ADS $commadproject> optframe;
+   Interactive<Rep$project, MY_ADS $commadproject> optframe;
    //optframe.loadCallCommand();
 
    optframe.loadCommand(new $projectProblemCommand);

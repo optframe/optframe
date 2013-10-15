@@ -3,6 +3,7 @@
 
 // Framework includes
 #include "../../OptFrame/NSSeq.hpp"
+#include "../../OptFrame/RandGen.hpp"
 
 // Own includes
 #include "ProblemInstance.h"
@@ -16,54 +17,111 @@ namespace $project
 
 class Move$neighborhood: public Move< Rep$project , MY_ADS $commadproject >
 {
+protected:
+    // MOVE PARAMETERS
+
 public:
+    using Move< Rep$project , MY_ADS $commadproject >::apply; // prevents name hiding
+    using Move< Rep$project , MY_ADS $commadproject >::canBeApplied; // prevents name hiding
 
-	using Move< Rep$project , MY_ADS $commadproject >::apply; // prevents name hiding
-	using Move< Rep$project , MY_ADS $commadproject >::canBeApplied; // prevents name hiding
+    Move$neighborhood() // ADD PARAMETERS
+    {
+    }
 
-	Move$neighborhood();
+    virtual ~Move$neighborhood()
+    {
+    }
+    
+    void print() const
+    {
+        cout << id() << " with params: '" << "ADD MY PARAMETERS" << "'" << endl;
+    }
+    
+    string id() const
+    {
+        return Move<Rep$project , MY_ADS $commadproject>::idComponent().append(":Move$neighborhood");
+    }
+    
+    virtual bool operator==(const Move< Rep$project , MY_ADS $commadproject >& _m) const
+    {
+        const Move$neighborhood& m = (const Move$neighborhood&) _m;
+        // COMPARE PARAMETERS AND RETURN TRUE IF EQUALS
+        return false;
+    }
+    
+    // Implement these methods in the .cpp file
+    
+    bool canBeApplied(const Rep$project& rep, const MY_ADS&);
 
-	virtual ~Move$neighborhood();
-
-	bool canBeApplied(const Rep$project& rep, const MY_ADS&);
-
-	Move< Rep$project , MY_ADS $commadproject >& apply(Rep$project& rep, MY_ADS&);
-
-	virtual bool operator==(const Move< Rep$project , MY_ADS $commadproject >& _m) const;
-	
-	void print() const;
-
-	string id() const;
+    Move< Rep$project , MY_ADS $commadproject >& apply(Rep$project& rep, MY_ADS&);
 };
+
+
 
 class NSIterator$neighborhood: public NSIterator< Rep$project , MY_ADS $commadproject >
 {
+protected:
+    // ITERATOR PARAMETERS
+
 public:
-	NSIterator$neighborhood();
+    NSIterator$neighborhood() // ADD ITERATOR PARAMETERS
+    {
+    }
 
-	virtual ~NSIterator$neighborhood();
+    virtual ~NSIterator$neighborhood()
+    {
+    }
+    
+    // Implement these methods in the .cpp file
 
-	virtual void first();
-	virtual void next();
-	virtual bool isDone();
-	virtual Move< Rep$project , MY_ADS $commadproject >& current();
+    virtual void first();
+    virtual void next();
+    virtual bool isDone();
+    virtual Move< Rep$project , MY_ADS $commadproject >& current();
 };
+
+
 
 class NSSeq$neighborhood: public NSSeq< Rep$project , MY_ADS $commadproject >
 {
+protected:
+    // YOU MAY REMOVE THESE PARAMETERS IF YOU DON'T NEED (BUT PROBABLY WILL...)
+    ProblemInstance& p$project; // problem instance data
+    RandGen& rg;                // random number generator
+
 public:
 
-	using NSSeq< Rep$project , MY_ADS $commadproject >::move; // prevents name hiding
+    using NSSeq< Rep$project , MY_ADS $commadproject >::move; // prevents name hiding
 
-	NSSeq$neighborhood();
+    // YOU MAY REMOVE THESE PARAMETERS IF YOU DON'T NEED (BUT PROBABLY WILL...)
+    NSSeq$neighborhood(ProblemInstance& _p$project, RandGen& _rg):
+        p$project(_p$project), rg(_rg)
+    {
+    }
 
-	virtual ~NSSeq$neighborhood();
+    virtual ~NSSeq$neighborhood()
+    {
+    }
+    
+    virtual void print() const
+    {
+        cout << "NSSeq$neighborhood" << endl;
+    }
+    
+    virtual string id() const
+    {
+        return NSSeq<Rep$project , MY_ADS $commadproject>::idComponent().append(":NSSeq$neighborhood");
+    }
+    
+    virtual NSIterator<Rep$project , MY_ADS $commadproject>& getIterator(const Rep$project& rep, const MY_ADS&)
+    {
+        // return an iterator to the neighbors of 'rep' 
+        return * new NSIterator$neighborhood;  // ADD POSSIBLE ITERATOR PARAMETERS
+    }
+        
+    // Implement this method in the .cpp file
 
-	virtual Move<Rep$project , MY_ADS $commadproject>& move(const Rep$project& rep, const MY_ADS&);
-	
-	virtual NSIterator<Rep$project , MY_ADS $commadproject>& getIterator(const Rep$project& rep, const MY_ADS&);
-	
-	virtual void print() const;
+    virtual Move<Rep$project , MY_ADS $commadproject>& move(const Rep$project& rep, const MY_ADS&);
 };
 
 }

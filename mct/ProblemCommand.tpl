@@ -29,13 +29,23 @@ public:
 
     ProblemInstance* p;
     
-    $projectProblemCommand();
+    $projectProblemCommand()
+    {
+        p = NULL;
+    }
 
-    virtual ~$projectProblemCommand();
+    virtual ~$projectProblemCommand()
+    {
+        if(p)
+            delete p;  
+    }
     
-    string id();
+    string id()
+    {
+        return "problem.$project";
+    }
     
-    bool registerComponent(Component& component, string type, string name, HeuristicFactory<Rep$project , MY_ADS $commadproject>& hf, map<string, string>& dictionary);
+    // Implement 'load' and 'unload' methods in .cpp file
     
 	bool load(string filename, HeuristicFactory<Rep$project , MY_ADS $commadproject>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary);
 	    

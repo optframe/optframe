@@ -68,6 +68,22 @@ public:
 		return false;
 	}
 
+	bool registerComponent(Component& component, string name, string type, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary)
+	{
+		int idx = hf.addComponent(component, type);
+		if (idx < 0)
+			return false;
+		stringstream ss;
+		ss << type << " " << idx;
+		return Command<R, ADS, DS>::defineText(name, ss.str(), dictionary);
+	}
+
+	bool registerComponent(Component& component, string name, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary)
+	{
+		string type = component.id();
+		return registerComponent(component, name, type, hf, dictionary);
+	}
+
 	virtual bool load(string filename, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary) = 0;
 
 	virtual bool unload(HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary) = 0;

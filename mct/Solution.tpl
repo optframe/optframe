@@ -6,9 +6,9 @@
 
 using namespace optframe;
 
-typedef Solution<Rep$project> Solution$project;
-
 typedef int MY_ADS;
+
+typedef Solution<Rep$project, MY_ADS> Solution$project;
 
 #endif /*$project_SOLUTION_H_*/
 

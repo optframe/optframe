@@ -2,34 +2,6 @@
 
 using namespace $project;
 
-$projectProblemCommand::$projectProblemCommand()
-{
-    p = NULL;
-}
-
-$projectProblemCommand::~$projectProblemCommand()
-{
-    if(p)
-        delete p;    
-}
-    
-string $projectProblemCommand::id()
-{
-    string parentId = ProblemCommand<Rep$project , MY_ADS $commadproject>::id();
-    parentId.append("$project"); // implements 'problem.project_name' module
-    return parentId;
-}
-    
-bool $projectProblemCommand::registerComponent(Component& component, string type, string name, HeuristicFactory<Rep$project , MY_ADS $commadproject>& hf, map<string, string>& dictionary)
-{
-    int idx = hf.addComponent(component, type);
-    if(idx < 0)
-        return false;
-    stringstream ss;
-    ss << type << " " << idx;
-    return defineText(name, ss.str(), dictionary);
-}
-
 bool $projectProblemCommand::load(string filename, HeuristicFactory<Rep$project , MY_ADS $commadproject>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 {
     File* file;
@@ -46,16 +18,24 @@ bool $projectProblemCommand::load(string filename, HeuristicFactory<Rep$project 
 
     Scanner scanner(file);
 
+    // STEP 1: IMPLEMENT ProblemInstance.h/.cpp (YOU MUST READ THE PROBLEM DATA AND STORE INSIDE)
     p = new ProblemInstance(scanner);
 
-    // add everything to the HeuristicFactory 'hf'
+    // STEP 2: IMPLEMENT Evaluator.h/.cpp (THIS IS YOUR EVALUATION FUNCTION)
+    registerComponent(*new $projectEvaluator(*p), "myEvaluator", hf, dictionary);
 
-    hf.addComponent(*new $projectEvaluator(*p));
-
-    hf.addComponent(*new Constructive$constructive(*p));
+    // STEP 3: IMPLEMENT Constructive$constructive.h/.cpp (THIS IS YOUR CONSTRUCTIVE METHOD)
+    registerComponent(*new Constructive$constructive(*p), "constructive_$constructive", hf, dictionary);
     
-    hf.addComponent(*new NSSeq$neighborhood);
-		
+    // STEP 3.1 (EXERCISE): DO THE SAME FOR OTHER ALTERNATIVE CONSTRUCTIVE METHODS (REMEMBER TO ADD THE .cpp IN THE makefile)
+    // ...
+    
+    // STEP 4: IMPLEMENT NSSeq$neighborhood.h/.cpp (THIS IS YOUR NEIGHBORHOOD STRUCTURE, YOU HAVE TO IMPLEMENT THE CLASSES: Move, NSIterator and NSSeq)
+    registerComponent(*new NSSeq$neighborhood(*p, hf.getRandGen()), "nsseq_$neighborhood", hf, dictionary);
+
+    // STEP 4.1 (EXERCISE): DO THE SAME FOR OTHER ALTERNATIVE NEIGHBORHOOD STRUCTURES (REMEMBER TO ADD THE .cpp IN THE makefile)
+    // ...
+
     cout << "problem '" << filename << "' loaded successfully" << endl;
         
     return true;
