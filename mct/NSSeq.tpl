@@ -17,7 +17,7 @@ namespace $project
 
 class Move$neighborhood: public Move< Rep$project , MY_ADS $commadproject >
 {
-protected:
+private:
     // MOVE PARAMETERS
 
 public:
@@ -42,7 +42,7 @@ public:
         return Move<Rep$project , MY_ADS $commadproject>::idComponent().append(":Move$neighborhood");
     }
     
-    virtual bool operator==(const Move< Rep$project , MY_ADS $commadproject >& _m) const
+    bool operator==(const Move< Rep$project , MY_ADS $commadproject >& _m) const
     {
         const Move$neighborhood& m = (const Move$neighborhood&) _m;
         // COMPARE PARAMETERS AND RETURN TRUE IF EQUALS
@@ -54,13 +54,15 @@ public:
     bool canBeApplied(const Rep$project& rep, const MY_ADS&);
 
     Move< Rep$project , MY_ADS $commadproject >& apply(Rep$project& rep, MY_ADS&);
+    
+    pair<double, double>* cost(const Evaluation< $deltaproject >&, const Rep$project& rep, const MY_ADS& ads);
 };
 
 
 
 class NSIterator$neighborhood: public NSIterator< Rep$project , MY_ADS $commadproject >
 {
-protected:
+private:
     // ITERATOR PARAMETERS
 
 public:
@@ -74,17 +76,17 @@ public:
     
     // Implement these methods in the .cpp file
 
-    virtual void first();
-    virtual void next();
-    virtual bool isDone();
-    virtual Move< Rep$project , MY_ADS $commadproject >& current();
+    void first();
+    void next();
+    bool isDone();
+    Move< Rep$project , MY_ADS $commadproject >& current();
 };
 
 
 
 class NSSeq$neighborhood: public NSSeq< Rep$project , MY_ADS $commadproject >
 {
-protected:
+private:
     // YOU MAY REMOVE THESE PARAMETERS IF YOU DON'T NEED (BUT PROBABLY WILL...)
     ProblemInstance& p$project; // problem instance data
     RandGen& rg;                // random number generator
@@ -103,17 +105,17 @@ public:
     {
     }
     
-    virtual void print() const
+    void print() const
     {
         cout << "NSSeq$neighborhood" << endl;
     }
     
-    virtual string id() const
+    string id() const
     {
         return NSSeq<Rep$project , MY_ADS $commadproject>::idComponent().append(":NSSeq$neighborhood");
     }
     
-    virtual NSIterator<Rep$project , MY_ADS $commadproject>& getIterator(const Rep$project& rep, const MY_ADS&)
+    NSIterator<Rep$project , MY_ADS $commadproject>& getIterator(const Rep$project& rep, const MY_ADS&)
     {
         // return an iterator to the neighbors of 'rep' 
         return * new NSIterator$neighborhood;  // ADD POSSIBLE ITERATOR PARAMETERS
@@ -121,7 +123,7 @@ public:
         
     // Implement this method in the .cpp file
 
-    virtual Move<Rep$project , MY_ADS $commadproject>& move(const Rep$project& rep, const MY_ADS&);
+    Move<Rep$project , MY_ADS $commadproject>& move(const Rep$project& rep, const MY_ADS&);
 };
 
 }

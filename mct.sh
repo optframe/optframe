@@ -419,6 +419,10 @@ do
          t="s/\$commadproject/$commadproject/g"  
          sed -e "$t" < $var > $var_tmp
          mv $var_tmp $var
+
+         t="s/\$deltaproject/$deltaproject/g"  
+         sed -e "$t" < $var > $var_tmp
+         mv $var_tmp $var
          
          echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
     else echo "7.$i Creating Neighborhood Structure $neighborhood ...[fail]"
@@ -440,6 +444,10 @@ do
          mv $var_tmp $var
 
          t="s/\$commadproject/$commadproject/g"  
+         sed -e "$t" < $var > $var_tmp
+         mv $var_tmp $var
+
+         t="s/\$deltaproject/$deltaproject/g"  
          sed -e "$t" < $var > $var_tmp
          mv $var_tmp $var
          
