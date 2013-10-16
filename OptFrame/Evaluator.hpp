@@ -25,6 +25,7 @@
 #include "ADSManager.hpp"
 #include "Evaluation.hpp"
 #include "Move.hpp"
+#include "MoveCost.hpp"
 
 #include <iostream>
 
@@ -192,6 +193,18 @@ public:
 			return moveCost(e, m, s);
 	}
 
+	// ============ betterThan ===========
+
+	//! abstract method betterThan: true when a < b for minimization problems; and true when a > b for maximization problems.
+	/*!
+	 betterThan is the method in OptFrame used to guide the search methods into the solution space.
+	 with betterThan the search methods are able to compare good and poor solutions, in one of the two directions: minimization and maximization.
+	 It must be implemented by the final user in one of these ways:
+	 - for minimization problems, returns a < b;
+	 - for maximization problems, returns a > b.
+	 */
+	virtual bool betterThan(double a, double b) = 0;
+
 	// true if 's1' is better than 's2'
 	bool betterThan(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2)
 	{
@@ -207,28 +220,19 @@ public:
 		return betterThan(f1, f2);
 	}
 
+	// true if 'mc1' is better than 'mc2'
+	virtual bool betterThan(const MoveCost& mc1, const MoveCost& mc2)
+	{
+		return betterThan(mc1.cost(), mc2.cost());
+	}
+
 	// true if 'e1' is better than 'e2'
 	virtual bool betterThan(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
 	{
 		return betterThan(e1.evaluation(), e2.evaluation());
 	}
 
-	virtual bool isMinimization() = 0;
-
-	bool isMaximization()
-	{
-		return !isMinimization();
-	}
-
-	//! abstract method betterThan: true when a < b for minimization problems; and true when a > b for maximization problems.
-	/*!
-	 betterThan is the method in OptFrame used to guide the search methods into the solution space.
-	 with betterThan the search methods are able to compare good and poor solutions, in one of the two directions: minimization and maximization.
-	 It must be implemented by the final user in one of these ways:
-	 - for minimization problems, returns a < b;
-	 - for maximization problems, returns a > b.
-	 */
-	virtual bool betterThan(double a, double b) = 0;
+	// ============ betterOrEquals ===========
 
 	bool betterOrEquals(const Solution<R>& s1, const Solution<R>& s2)
 	{
@@ -244,9 +248,13 @@ public:
 		return betterOrEquals(f1, f2);
 	}
 
+	bool betterOrEquals(const MoveCost& mc1, const MoveCost& mc2)
+	{
+		return betterOrEquals(mc1.cost(), mc2.cost());
+	}
+
 	bool betterOrEquals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
 	{
-		//return betterThan(e1, e2) || equals(e1, e2);
 		return betterOrEquals(e1.evaluation(), e2.evaluation());
 	}
 
@@ -255,9 +263,15 @@ public:
 		return betterThan(a, b) || (abs(a - b) < OPTFRAME_EPSILON);
 	}
 
+	// ============ equals ============
+
+	virtual bool equals(const MoveCost& mc1, const MoveCost& mc2)
+	{
+		return equals(mc1.cost(), mc2.cost());
+	}
+
 	virtual bool equals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
 	{
-		//return (abs(e1.evaluation() - e2.evaluation()) < OPTFRAME_EPSILON);
 		return equals(e1.evaluation(), e2.evaluation());
 	}
 
@@ -265,6 +279,20 @@ public:
 	{
 		return (abs(a - b) < OPTFRAME_EPSILON);
 	}
+
+	// ============= direction ==============
+
+	bool isMinimization()
+	{
+		return betterThan(0, 1);
+	}
+
+	bool isMaximization()
+	{
+		return !isMinimization();
+	}
+
+	// ============= Component ===============
 
 	virtual bool compatible(string s)
 	{

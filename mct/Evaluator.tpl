@@ -36,8 +36,6 @@ public:
 	Evaluation$project& evaluate(const Rep$project& rep, const MY_ADS&);
 
 	virtual bool betterThan(double f1, double f2);
-	
-    virtual bool isMinimization();
 };
 
 }
