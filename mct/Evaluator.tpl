@@ -35,7 +35,7 @@ public:
 
 	Evaluation$project& evaluate(const Rep$project& rep, const MY_ADS&);
 
-	virtual bool betterThan(const Evaluation< $deltaproject >& e1, const Evaluation< $deltaproject >& e2);
+	virtual bool betterThan(double f1, double f2);
 	
     virtual bool isMinimization();
 };

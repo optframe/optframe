@@ -103,10 +103,10 @@ public:
 	}
 
 
-	virtual bool betterThan(const Evaluation< >& e1, const Evaluation< >& e2)
+	virtual bool betterThan(double f1, double f2)
 	{
 		// MINIMIZATION
-		return (e1.evaluation() < (e2.evaluation() - OptHS_EPSILON));
+		return (f1 < (f2 - OptHS_EPSILON));
 	}
 
 	virtual bool isMinimization()

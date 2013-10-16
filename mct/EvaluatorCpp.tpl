@@ -21,7 +21,7 @@ Evaluation$project& $projectEvaluator::evaluate(const Rep$project& rep, const MY
     return * new Evaluation$project(fo $initializedelta);
 }
 
-bool $projectEvaluator::betterThan(const Evaluation< $deltaproject >& e1, const Evaluation< $deltaproject >& e2)
+bool $projectEvaluator::betterThan(double f1, double f2)
 {
     // $minmax
     return $epsilon

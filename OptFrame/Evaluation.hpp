@@ -68,29 +68,34 @@ public:
 	Evaluation(double obj, double inf, DS& _ds) :
 			objFunction(obj), infMeasure(inf), ds(new DS(_ds))
 	{
+		globalOptimum = false;
 	}
-	;
+
 
 	Evaluation(double obj, DS& _ds) :
 			ds(new DS(_ds))
 	{
 		objFunction = obj;
 		infMeasure = 0;
-	}
-	;
 
-	Evaluation(double obj) :
+		globalOptimum = false;
+	}
+
+
+	explicit Evaluation(double obj) :
 			ds(new DS)
 	{
 		objFunction = obj;
 		infMeasure = 0;
+
+		globalOptimum = false;
 	}
 
 	Evaluation(const Evaluation<DS>& e) :
-			objFunction(e.objFunction), infMeasure(e.infMeasure), ds(new DS(*e.ds))
+			objFunction(e.objFunction), infMeasure(e.infMeasure), ds(new DS(*e.ds)), globalOptimum(e.globalOptimum)
 	{
 	}
-	;
+
 
 	virtual ~Evaluation()
 	{

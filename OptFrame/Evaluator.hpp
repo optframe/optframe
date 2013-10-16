@@ -208,7 +208,10 @@ public:
 	}
 
 	// true if 'e1' is better than 'e2'
-	virtual bool betterThan(const Evaluation<DS>& e1, const Evaluation<DS>& e2) = 0;
+	virtual bool betterThan(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
+	{
+		return betterThan(e1.evaluation(), e2.evaluation());
+	}
 
 	virtual bool isMinimization() = 0;
 
@@ -217,7 +220,7 @@ public:
 		return !isMinimization();
 	}
 
-	//! REMOVED (DUE TO POSSIBLE LEXICOGRAPHIC COMPARISON) abstract method betterThan: true when a < b for minimization problems; and true when a > b for maximization problems.
+	//! abstract method betterThan: true when a < b for minimization problems; and true when a > b for maximization problems.
 	/*!
 	 betterThan is the method in OptFrame used to guide the search methods into the solution space.
 	 with betterThan the search methods are able to compare good and poor solutions, in one of the two directions: minimization and maximization.
@@ -225,7 +228,7 @@ public:
 	 - for minimization problems, returns a < b;
 	 - for maximization problems, returns a > b.
 	 */
-	//virtual bool betterThan(double a, double b) = 0;
+	virtual bool betterThan(double a, double b) = 0;
 
 	bool betterOrEquals(const Solution<R>& s1, const Solution<R>& s2)
 	{

@@ -305,8 +305,8 @@ echo -e "\nIs this a MINIMIZATION or MAXIMIZATION problem?"
 read minmax
 
 if [ "$minmax" = "MINIMIZATION" ];
-  then epsilon="(e1.evaluation() < (e2.evaluation() - EPSILON_$project));"
-  else epsilon="(e1.evaluation() > (e2.evaluation() + EPSILON_$project));"
+  then epsilon="(f1 < (f2 - EPSILON_$project));"
+  else epsilon="(f1 > (f2 + EPSILON_$project));"
 fi
 
 var_inc="./$project/Evaluator.h"

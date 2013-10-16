@@ -91,9 +91,9 @@ public:
 	}
 
 
-	virtual bool betterThan(const Evaluation<MemEtII>& e1, const Evaluation<MemEtII>& e2)
+	virtual bool betterThan(double f1, double f2)
 	{
-		return (e1.evaluation() > (e2.evaluation() - EPSILON_EtII));
+		return (f1 > (f2 - EPSILON_EtII));
 	}
 
 	virtual bool isMinimization()
