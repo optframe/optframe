@@ -62,7 +62,7 @@ protected:
 
 public:
 
-	Evaluator(bool _allowCosts = false) :
+	Evaluator(bool _allowCosts = true) :
 			allowCosts(_allowCosts)
 	{
 	}
@@ -246,29 +246,25 @@ public:
 
 	bool betterOrEquals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
 	{
-		return betterThan(e1, e2) || equals(e1, e2);
-		//return betterOrEquals(e1.evaluation(), e2.evaluation());
+		//return betterThan(e1, e2) || equals(e1, e2);
+		return betterOrEquals(e1.evaluation(), e2.evaluation());
 	}
 
-	/* FAVORING Lexicographic Comparison
 	bool betterOrEquals(double a, double b)
 	{
 		return betterThan(a, b) || (abs(a - b) < OPTFRAME_EPSILON);
 	}
-	*/
 
-	bool equals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
+	virtual bool equals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
 	{
-		return (abs(e1.evaluation() - e2.evaluation()) < OPTFRAME_EPSILON);
-		//return equals(e1.evaluation(), e2.evaluation());
+		//return (abs(e1.evaluation() - e2.evaluation()) < OPTFRAME_EPSILON);
+		return equals(e1.evaluation(), e2.evaluation());
 	}
 
-	/* FAVORING Lexicographic Comparison
-	bool equals(double a, double b)
+	virtual bool equals(double a, double b)
 	{
 		return (abs(a - b) < OPTFRAME_EPSILON);
 	}
-	*/
 
 	virtual bool compatible(string s)
 	{
