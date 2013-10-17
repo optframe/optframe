@@ -45,7 +45,7 @@ public:
 	{
 	}
 
-	pair<double, double>* cost(const Evaluation<MemEtII>&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost* cost(const Evaluation<MemEtII>&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		// Calculus for the slot (x1, y1)
 		double f1 = 0;
@@ -108,7 +108,7 @@ public:
 
 		double f = (f2 - f1) + (g2 - g1);
 
-		return new pair<double, double> (f, 0);
+		return new MoveCost (f, 0);
 	}
 
 	static string idComponent()

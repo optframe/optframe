@@ -119,14 +119,14 @@ public:
 		double e_end;
 		double e_ini;
 
-		pair<double, double>* p = NULL;
+		MoveCost* p = NULL;
 		if (allowCosts)
 			p = m.cost(e, s.getR(), s.getADS());
 
 		// do not update 's' => much faster (using updateDelta)
 		if (p)
 		{
-			e_end = e.evaluation() + p->first + p->second;
+			e_end = e.evaluation() + p->cost();
 
 			// no need to compute first again, solution is the same
 			e_ini = e.evaluation();

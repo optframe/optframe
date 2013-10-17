@@ -45,11 +45,11 @@ public:
 	{
 	}
 
-	pair<double, double>* cost(const Evaluation<MemEtII>&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost* cost(const Evaluation<MemEtII>&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		double f = 0;
 
-		return new pair<double, double> (f, 0);
+		return new MoveCost (f, 0);
 	}
 
 	static string idComponent()

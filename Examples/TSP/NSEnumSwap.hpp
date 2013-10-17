@@ -145,7 +145,7 @@ public:
 	}
 
 
-	pair<double, double>* cost(const Evaluation<MemTSP>& e, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost* cost(const Evaluation<MemTSP>& e, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		int k1, k2;
 
@@ -209,7 +209,7 @@ public:
 			f += (*tsp.dist)(rep[k1], rep[ak2]);
 		}
 
-		return new pair<double, double>(f, 0);
+		return new MoveCost(f, 0);
 	}
 
 

@@ -23,6 +23,7 @@
 
 #include "Solution.hpp"
 #include "Evaluation.hpp"
+#include "MoveCost.hpp"
 
 #include "Component.hpp"
 
@@ -75,14 +76,9 @@ public:
 	}
 
 
-	virtual pair<double, double>* cost(const Evaluation<DS>& e, const R& r, const ADS& ads)
+	virtual MoveCost* cost(const Evaluation<DS>& e, const R& r, const ADS& ads)
 	{
 		return NULL;
-	}
-
-	virtual pair<double, double>* estimatedCost(const Evaluation<DS>& e, const R& r, const ADS& ads)
-	{
-		return cost(e, r, ads);
 	}
 
 	virtual bool operator==(const Move<R, ADS, DS>& m) const = 0;

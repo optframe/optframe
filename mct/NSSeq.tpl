@@ -55,7 +55,7 @@ public:
 
     Move< Rep$project , MY_ADS $commadproject >& apply(Rep$project& rep, MY_ADS&);
     
-    pair<double, double>* cost(const Evaluation< $deltaproject >&, const Rep$project& rep, const MY_ADS& ads);
+    MoveCost* cost(const Evaluation< $deltaproject >&, const Rep$project& rep, const MY_ADS& ads);
 };
 
 

@@ -662,14 +662,14 @@ public:
 						return false;
 					}
 
-					pair<double, double>* cost = NULL;
+					MoveCost* cost = NULL;
 
 					if (evaluators[ev]->getAllowCosts())
 						cost = move.cost(e, s.getR(), s.getADS());
 
 					if (cost)
 					{
-						double cValue = cost->first + cost->second;
+						double cValue = cost->getObjFunctionCost() + cost->getInfMeasureCost();
 						if (abs(revCost - cValue) > 0.0001)
 						{
 							error("difference between expected cost and cost()");
@@ -950,47 +950,30 @@ public:
 							return false;
 						}
 
-						Timer tMoveEstimatedCost;
-						pair<double, double>* estimatedCost = NULL;
-
-						if (evaluators[ev]->getAllowCosts())
-							estimatedCost = move.estimatedCost(e, s.getR(), s.getADS());
-						message(lEvaluator.at(ev), iter, "estimatedCost calculated!");
-
-						if (estimatedCost)
-						{
-							timeNSEstimatedCost[id_ns].second += tMoveEstimatedCost.inMilliSecs();
-							timeNSEstimatedCost[id_ns].first++;
-
-							double cValue = estimatedCost->first + estimatedCost->second;
-							double diff = abs(revCost - cValue);
-							double ref = abs(max(cValue, revCost)); // reference can be max or min! Whatever...
-							if (ref < 0.0001)
-								ref = 0.0001;
-
-							errorNSEstimatedCost[id_ns].second += (diff / ref) * 100; // in percentage
-							errorNSEstimatedCost[id_ns].first++;
-
-							delete estimatedCost;
-						}
 
 						Timer tMoveCost;
-						pair<double, double>* cost = NULL;
+						MoveCost* cost = NULL;
 
 						if (evaluators[ev]->getAllowCosts())
 							cost = move.cost(e, s.getR(), s.getADS());
 
 						message(lEvaluator.at(ev), iter, "cost() calculated!");
 
-						if (cost)
+						if (cost && !cost->isEstimated())
 						{
 							timeNSCost[id_ns].second += tMoveCost.inMilliSecs();
 							timeNSCost[id_ns].first++;
 						}
 
+						if (cost && cost->isEstimated())
+						{
+							timeNSEstimatedCost[id_ns].second += tMoveCost.inMilliSecs();
+							timeNSEstimatedCost[id_ns].first++;
+						}
+
 						if (cost)
 						{
-							double cValue = cost->first + cost->second;
+							double cValue = cost->cost();
 							if (abs(revCost - cValue) > 0.0001)
 							{
 								error("difference between expected cost and cost()");
@@ -1272,20 +1255,26 @@ public:
 						}
 
 						Timer tMoveCost;
-						pair<double, double>* cost = NULL;
+						MoveCost* cost = NULL;
 
 						if (evaluators[ev]->getAllowCosts())
 							cost = move.cost(e, s.getR(), s.getADS());
 
-						if (cost)
+						if (cost && !cost->isEstimated())
 						{
 							timeNSCost[id_nsseq].second += tMoveCost.inMilliSecs();
 							timeNSCost[id_nsseq].first++;
 						}
 
+						if (cost && cost->isEstimated())
+						{
+							timeNSEstimatedCost[id_nsseq].second += tMoveCost.inMilliSecs();
+							timeNSEstimatedCost[id_nsseq].first++;
+						}
+
 						if (cost)
 						{
-							double cValue = cost->first + cost->second;
+							double cValue = cost->cost();
 							if (abs(revCost - cValue) > 0.0001)
 							{
 								error("difference between expected cost and cost()");

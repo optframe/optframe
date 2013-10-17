@@ -45,7 +45,7 @@ public:
 	{
 	}
 
-	pair<double, double>* cost(const Evaluation<MemEtII>&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost* cost(const Evaluation<MemEtII>&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		//considering the puzzle huge than 2x2
 		// corner0 -------------------------------- corner1
@@ -219,7 +219,7 @@ public:
 
 		f = (f2 - f1) + (g2 - g1);
 
-		return new pair<double, double> (f, 0);
+		return new MoveCost (f, 0);
 	}
 
 	static string idComponent()

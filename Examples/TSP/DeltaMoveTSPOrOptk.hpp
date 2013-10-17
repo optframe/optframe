@@ -78,7 +78,7 @@ public:
 	*/
 
 
-	pair<double, double>* cost(const Evaluation<MemTSP>&, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost* cost(const Evaluation<MemTSP>&, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		// before i and j
 		int bi = i - 1;
@@ -149,7 +149,7 @@ public:
 
 		//cout << endl;
 
-		return new pair<double, double>(f, 0);
+		return new MoveCost(f, 0);
 	}
 
 	static string idComponent()

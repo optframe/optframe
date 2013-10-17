@@ -17,13 +17,13 @@ Move< Rep$project , MY_ADS $commadproject >& Move$neighborhood::apply(Rep$projec
     return * new Move$neighborhood; 
 }
 
-pair<double, double>* Move$neighborhood::cost(const Evaluation< $deltaproject >&, const Rep$project& rep, const MY_ADS& ads)
+MoveCost* Move$neighborhood::cost(const Evaluation< $deltaproject >&, const Rep$project& rep, const MY_ADS& ads)
 {
    return NULL;
    // Implement if a more efficient evaluation of the move is available
    //double move_cost = ...;
    //double move_cost_infeasible = ...;
-   //return new pair<double, double>(move_cost, move_cost_infeasible);
+   //return new MoveCost(move_cost, move_cost_infeasible);
 }
 
 
