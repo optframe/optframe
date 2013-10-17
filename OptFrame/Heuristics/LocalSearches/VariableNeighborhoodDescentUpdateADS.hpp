@@ -179,7 +179,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << VND::family << "VNDUpdateADS";
+		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << VND::family() << "VNDUpdateADS";
 		return ss.str();
 	}
 

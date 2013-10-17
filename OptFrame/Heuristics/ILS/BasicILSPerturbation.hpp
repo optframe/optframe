@@ -110,7 +110,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Component::idComponent() << ILS::family << "basic_pert";
+		ss << Component::idComponent() << ILS::family() << "basic_pert";
 		return ss.str();
 	}
 };
@@ -161,7 +161,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, DS>::idComponent() << ILS::family << "basic_pert";
+		ss << ComponentBuilder<R, ADS, DS>::idComponent() << ILS::family() << "basic_pert";
 		return ss.str();
 	}
 

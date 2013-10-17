@@ -117,7 +117,12 @@ public:
 		cout << fixed; // disable scientific notation
 		cout << "Move cost = " << cost() << endl;
 		if (alternatives.size() > 0)
-			cout << "Alternative Costs: " << alternatives << endl;
+		{
+			cout << "Alternative Costs: ";
+			for (unsigned i = 0; i < alternatives.size(); i++)
+				cout << "(" << alternatives[i].first << ";" << alternatives[i].second << ") ";
+			cout << endl;
+		}
 	}
 
 	virtual MoveCost& operator=(const MoveCost& mc)

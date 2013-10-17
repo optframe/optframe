@@ -43,6 +43,11 @@ public:
 
 	virtual void perturb(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f, int level) = 0;
 
+	virtual bool compatible(string s)
+	{
+		return (s == idComponent()) || (Component::compatible(s));
+	}
+
 	virtual string id() const
 	{
 		return idComponent();
@@ -51,7 +56,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Component::idComponent() << ILS::family << "LevelPert";
+		ss << Component::idComponent() << ILS::family() << "LevelPert";
 		return ss.str();
 
 	}
@@ -68,7 +73,7 @@ private:
 
 public:
 	ILSLPerturbationLPlus2(Evaluator<R, ADS, DS>& e, int _pMax, NS<R, ADS, DS>& _ns, RandGen& _rg) :
-		evaluator(e), pMax(_pMax), rg(_rg)
+			evaluator(e), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
 	}
@@ -112,6 +117,11 @@ public:
 		evaluator.evaluate(e, s); // updates 'e'
 	}
 
+	virtual bool compatible(string s)
+	{
+		return (s == idComponent()) || (ILSLPerturbation<R, ADS, DS>::compatible(s));
+	}
+
 	static string idComponent()
 	{
 		stringstream ss;
@@ -137,7 +147,7 @@ private:
 
 public:
 	ILSLPerturbationLPlus2Prob(Evaluator<R, ADS, DS>& e, int _pMax, NS<R, ADS, DS>& _ns, RandGen& _rg) :
-		evaluator(e), pMax(_pMax), rg(_rg)
+			evaluator(e), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
 		pNS.push_back(make_pair(1, 1));
@@ -172,7 +182,7 @@ public:
 		for (int i = 0; i < nNeighborhoods; i++)
 		{
 			pNS[i].first = pri[i];
-			soma +=  pri[i];
+			soma += pri[i];
 		}
 
 		for (int i = 0; i < ns.size(); i++)
@@ -251,7 +261,7 @@ public:
 		NS<R, ADS, DS>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new ILSLPerturbationLPlus2<R, ADS, DS> (*eval, limit, *ns, hf.getRandGen());
+		return new ILSLPerturbationLPlus2<R, ADS, DS>(*eval, limit, *ns, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -272,7 +282,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, DS>::idComponent() << ILS::family << "LevelPert:LPlus2";
+		ss << ComponentBuilder<R, ADS, DS>::idComponent() << ILS::family() << "LevelPert:LPlus2";
 		return ss.str();
 	}
 
@@ -300,7 +310,7 @@ public:
 		NS<R, ADS, DS>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new ILSLPerturbationLPlus2Prob<R, ADS, DS> (*eval, limit, *ns, hf.getRandGen());
+		return new ILSLPerturbationLPlus2Prob<R, ADS, DS>(*eval, limit, *ns, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -321,7 +331,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, DS>::idComponent() << ILS::family << "LevelPert:LPlus2Prob";
+		ss << ComponentBuilder<R, ADS, DS>::idComponent() << ILS::family() << "LevelPert:LPlus2Prob";
 		return ss.str();
 	}
 

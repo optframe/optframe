@@ -28,13 +28,14 @@ using namespace std;
 class VNS
 {
 public:
-	static const string family;
+	static string family()
+	{
+		return "VNS:";
+	}
 
 	virtual ~VNS()
 	{
 	}
 };
-
-const string VNS::family = "VNS:";
 
 #endif /*OPTFRAME_VNS_FAMILY_H_*/

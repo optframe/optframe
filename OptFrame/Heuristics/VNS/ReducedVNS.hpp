@@ -116,7 +116,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << VNS::family << "RVNS";
+		ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << VNS::family() << "RVNS";
 		return ss.str();
 	}
 

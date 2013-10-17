@@ -207,7 +207,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << ILS::family << "ILSLevels";
+		ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << ILS::family() << "ILSLevels";
 		return ss.str();
 	}
 

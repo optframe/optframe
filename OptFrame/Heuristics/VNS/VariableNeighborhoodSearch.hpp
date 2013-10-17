@@ -131,7 +131,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, DS>::idComponent() << VNS::family;
+		ss << SingleObjSearch<R, ADS, DS>::idComponent() << VNS::family();
 		//ss << SingleObjSearch<R, ADS, DS>::idComponent() << VNS::family << "VariableNeighborhoodSearch:";
 		return ss.str();
 	}
