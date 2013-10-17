@@ -629,7 +629,7 @@ public:
 
 					MoveCost& mcSimpleCost = evaluators[ev]->moveCost(move, s);
 					double simpleCost = mcSimpleCost.cost();
-					delete& mcSimpleCost;
+					delete &mcSimpleCost;
 
 					if (abs(revCost - simpleCost) > 0.0001)
 					{
@@ -910,7 +910,7 @@ public:
 						Timer tMoveCostApply;
 						MoveCost& mcSimpleCost = evaluators[ev]->moveCost(move, s);
 						double simpleCost = mcSimpleCost.cost();
-						delete& mcSimpleCost;
+						delete &mcSimpleCost;
 						message(lEvaluator.at(ev), iter, "simpleCost calculated!");
 						timeNSCostApply[id_ns].second += tMoveCostApply.inMilliSecs();
 						timeNSCostApply[id_ns].first++;
@@ -949,7 +949,6 @@ public:
 							printf("e_rev = %.4f\n", e_rev.evaluation());
 							return false;
 						}
-
 
 						Timer tMoveCost;
 						MoveCost* cost = NULL;
@@ -996,6 +995,40 @@ public:
 								printf("==============\n");
 								return false;
 							}
+
+							// testing double move costs! (for MoveCost betterThan)
+
+							Move<R, ADS, DS>& move2 = ns->move(s);
+							if (verbose)
+							{
+								cout << "testing double move!" << endl;
+								move2.print();
+							}
+
+							if (!move2.canBeApplied(s))
+							{
+								if (verbose)
+								{
+									cout << "double move cannot be applied: ";
+									move2.print();
+								}
+							}
+							else
+							{
+								MoveCost* cost2 = NULL;
+								if (evaluators[ev]->getAllowCosts())
+								{
+									cost2 = move2.cost(e, s.getR(), s.getADS());
+									if (cost2)
+									{
+										evaluators[ev]->betterThan(*cost, *cost2);
+										delete& move2;
+										delete cost2;
+									}
+								}
+							}
+
+							// finish double cost test
 
 							delete cost;
 						}
@@ -1216,7 +1249,7 @@ public:
 						Timer tMoveCostApply;
 						MoveCost& mcSimpleCost = evaluators[ev]->moveCost(move, s);
 						double simpleCost = mcSimpleCost.cost();
-						delete& mcSimpleCost;
+						delete &mcSimpleCost;
 						timeNSCostApply[id_nsseq].second += tMoveCostApply.inMilliSecs();
 						timeNSCostApply[id_nsseq].first++;
 
