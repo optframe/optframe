@@ -66,11 +66,11 @@ public:
 		{
 			Move<R, ADS, DS>& move = ns.move(s);
 
-			double cost = 0;
+			MoveCost* cost = NULL;
 
 			if (move.canBeApplied(s))
 			{
-				cost = evaluator.moveCost(e, move, s);
+				cost = &evaluator.moveCost(e, move, s);
 			}
 			else
 			{
@@ -82,12 +82,15 @@ public:
 
 			iter++;
 
-			if (evaluator.betterThan(cost, 0))
+			if (cost && evaluator.betterThan(cost->cost(), 0))
 			{
 				delete &move.apply(e, s);
 				evaluator.evaluate(e, s);
 				iter = 0;
 			}
+
+			if(cost)
+				delete cost;
 
 			delete &move;
 			tnow = time(NULL);

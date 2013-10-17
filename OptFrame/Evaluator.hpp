@@ -114,7 +114,7 @@ public:
 	}
 
 	// Movement cost based on reevaluation of 'e'
-	double moveCost(Evaluation<DS>& e, Move<R, ADS, DS>& m, Solution<R, ADS>& s)
+	MoveCost& moveCost(Evaluation<DS>& e, Move<R, ADS, DS>& m, Solution<R, ADS>& s)
 	{
 		double e_end;
 		double e_ini;
@@ -148,12 +148,12 @@ public:
 		// Difference: new - original
 		double diff = e_end - e_ini;
 
-		return diff;
+		return * new MoveCost(diff);
 	}
 
 	// Movement cost based on complete evaluation
 	// USE ONLY FOR VALIDATION OF CODE! OTHERWISE, USE moveCost(e, m, s)
-	double moveCost(Move<R, ADS, DS>& m, Solution<R, ADS>& s)
+	MoveCost& moveCost(Move<R, ADS, DS>& m, Solution<R, ADS>& s)
 	{
 		pair<Move<R, ADS, DS>&, Evaluation<DS>&>& rev = applyMove(m, s);
 
@@ -170,28 +170,9 @@ public:
 		delete &rev;
 		delete &ini;
 
-		return diff;
+		return * new MoveCost(diff);
 	}
 
-	// Movement ESTIMATED cost (or REAL cost, if ESTIMATED is not implemented!)
-	double estimatedMoveCost(Evaluation<DS>& e, Move<R, ADS, DS>& m, Solution<R, ADS>& s)
-	{
-		pair<double, double>* p = NULL;
-		if (allowCosts)
-			p = m.estimatedCost(e, s.getR(), s.getADS());
-
-		// using estimatedCost
-		if (p)
-		{
-			double eCost = p->first + p->second;
-			delete p;
-
-			return eCost;
-		}
-		else
-			// default moveCost
-			return moveCost(e, m, s);
-	}
 
 	// ============ betterThan ===========
 

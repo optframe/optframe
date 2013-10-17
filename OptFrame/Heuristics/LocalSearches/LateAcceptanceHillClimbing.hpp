@@ -100,10 +100,10 @@ public:
 
 			if (move->canBeApplied(s))
 			{
-				double cost = ev.moveCost(e, *move, s);
+				MoveCost& cost = ev.moveCost(e, *move, s);
 
 				// test for current index
-				if (ev.betterThan(cost + e.evaluation(), eList[index]))
+				if (ev.betterThan(cost.cost() + e.evaluation(), eList[index]))
 				{
 					delete &move->apply(e, s);
 					ev.evaluate(e, s);
@@ -121,6 +121,8 @@ public:
 						iter = 0;
 					}
 				}
+
+				delete& cost;
 			}
 
 			iter++;

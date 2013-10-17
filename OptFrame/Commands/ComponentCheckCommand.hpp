@@ -440,7 +440,8 @@ public:
 				return false;
 			}
 
-			cout << "component.check command: testing " << constructive->toString() << endl;
+			cout << "component.check command: testing " << constructive->toString();
+			cout << endl;
 
 			for (int iter = 1; iter <= iterMax; iter++)
 			{
@@ -485,7 +486,8 @@ public:
 		// testing Move
 		// ====================================================================
 
-		cout << "module " << id() << " will test given Move components (|Move|=" << lMove.size() << "; numSolutions=" << solutions.size() << ")" << endl;
+		cout << "module " << id() << " will test given Move components (|Move|=" << lMove.size() << "; numSolutions=" << solutions.size() << ")";
+		cout << endl;
 
 		for (unsigned id_move = 0; id_move < lMove.size(); id_move++)
 		{
@@ -499,7 +501,8 @@ public:
 				return false;
 			}
 
-			cout << "component.check command: testing " << pmove->toString() << endl;
+			cout << "component.check command: testing " << pmove->toString();
+			cout << endl;
 
 			for (unsigned id_s = 0; id_s < solutions.size(); id_s++)
 			{
@@ -624,7 +627,9 @@ public:
 
 					double revCost = e_rev.evaluation() - e.evaluation();
 
-					double simpleCost = evaluators[ev]->moveCost(move, s);
+					MoveCost& mcSimpleCost = evaluators[ev]->moveCost(move, s);
+					double simpleCost = mcSimpleCost.cost();
+					delete& mcSimpleCost;
 
 					if (abs(revCost - simpleCost) > 0.0001)
 					{
@@ -712,7 +717,8 @@ public:
 		// testing NS
 		// ====================================================================
 
-		cout << "module " << id() << " will test NS components (iterMax=" << iterMax << "; numSolutions=" << solutions.size() << ")" << endl;
+		cout << "module " << id() << " will test NS components (iterMax=" << iterMax << "; numSolutions=" << solutions.size() << ")";
+		cout << endl;
 
 		vector<pair<int, double> > timeNSApply(lNS.size(), make_pair(0, 0.0));
 		vector<pair<int, double> > timeNSCostApply(lNS.size(), make_pair(0, 0.0));
@@ -733,7 +739,8 @@ public:
 				return false;
 			}
 
-			cout << "component.check command: testing " << ns->toString() << endl;
+			cout << "component.check command: testing " << ns->toString();
+			cout << endl;
 
 			for (int iter = 1; iter <= iterMax; iter++)
 			{
@@ -901,7 +908,9 @@ public:
 						message(lEvaluator.at(ev), iter, "revCost calculated!");
 
 						Timer tMoveCostApply;
-						double simpleCost = evaluators[ev]->moveCost(move, s);
+						MoveCost& mcSimpleCost = evaluators[ev]->moveCost(move, s);
+						double simpleCost = mcSimpleCost.cost();
+						delete& mcSimpleCost;
 						message(lEvaluator.at(ev), iter, "simpleCost calculated!");
 						timeNSCostApply[id_ns].second += tMoveCostApply.inMilliSecs();
 						timeNSCostApply[id_ns].first++;
@@ -1030,7 +1039,8 @@ public:
 		// testing NSSeq
 		// ====================================================================
 
-		cout << "module " << id() << " will test NSSeq components (nSolNSSeq=" << nSolNSSeq << " of numSolutions=" << solutions.size() << ")" << endl;
+		cout << "module " << id() << " will test NSSeq components (nSolNSSeq=" << nSolNSSeq << " of numSolutions=" << solutions.size() << ")";
+		cout << endl;
 
 		vector<int> vCountMoves(lNSSeq.size());
 		vector<int> vCountValidMoves(lNSSeq.size());
@@ -1047,7 +1057,8 @@ public:
 				return false;
 			}
 
-			cout << "component.check command: testing " << nsseq->toString() << endl;
+			cout << "component.check command: testing " << nsseq->toString();
+			cout << endl;
 
 			int countMoves = 0;
 			int countValidMoves = 0;
@@ -1220,7 +1231,9 @@ public:
 						double revCost = e_rev.evaluation() - e.evaluation();
 
 						Timer tMoveCostApply;
-						double simpleCost = evaluators[ev]->moveCost(move, s);
+						MoveCost& mcSimpleCost = evaluators[ev]->moveCost(move, s);
+						double simpleCost = mcSimpleCost.cost();
+						delete& mcSimpleCost;
 						timeNSCostApply[id_nsseq].second += tMoveCostApply.inMilliSecs();
 						timeNSCostApply[id_nsseq].first++;
 

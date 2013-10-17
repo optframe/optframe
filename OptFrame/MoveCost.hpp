@@ -57,6 +57,11 @@ public:
 	{
 	}
 
+	bool isEstimated() const
+	{
+		return estimated;
+	}
+
 	const vector<pair<double, double> >& getAlternativeCosts() const
 	{
 		return alternatives;
@@ -70,6 +75,11 @@ public:
 	double getInfMeasureCost() const
 	{
 		return infMeasure;
+	}
+
+	void addAlternativeCost(const pair<double, double>& alternativeCost)
+	{
+		alternatives.push_back(alternativeCost);
 	}
 
 	void setAlternativeCosts(const vector<pair<double, double> >& alternativeCosts)

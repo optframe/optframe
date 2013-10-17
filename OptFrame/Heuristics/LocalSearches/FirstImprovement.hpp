@@ -80,14 +80,20 @@ public:
 
 			if (move->canBeApplied(s))
 			{
-				double eCost = eval.estimatedMoveCost(e, *move, s); // estimated cost
+				MoveCost* eCost = &eval.moveCost(e, *move, s); // estimated cost
 
-				if(eval.betterThan(eCost, 0))
+				if(eval.betterThan(eCost->cost(), 0))
 				{
-					double cost = eval.moveCost(e, *move, s); // real cost
-
-					if(eval.betterThan(cost, 0))
+					if(eCost->isEstimated())
 					{
+						//double cost = eval.moveCost(e, *move, s); // real cost
+						// TODO: find a real cost value...
+					}
+
+					if(eval.betterThan(eCost->cost(), 0))
+					{
+						delete eCost;
+
 						delete &move->apply(e, s);
 						delete move;
 
@@ -99,7 +105,10 @@ public:
 
 						return;
 					}
+
 				}
+
+				delete eCost;
 			}
 
 			delete move;

@@ -107,23 +107,27 @@ public:
 			}
 		}
 
-		double bestCost = eval.estimatedMoveCost(e, *bestMove, s);
+		MoveCost* bestCost = &eval.moveCost(e, *bestMove, s);
 		it.next();
 		while (!it.isDone())
 		{
 			Move<R, ADS, DS>* move = &it.current();
 			if (move->canBeApplied(s))
 			{
-				double cost = eval.estimatedMoveCost(e, *move, s);
+				MoveCost* cost = &eval.moveCost(e, *move, s);
 
-				if (eval.betterThan(cost, bestCost))
+				if (eval.betterThan(*cost, *bestCost))
 				{
 					delete bestMove;
+					delete bestCost;
 					bestMove = move;
 					bestCost = cost;
 				}
 				else
+				{
 					delete move;
+					delete cost;
+				}
 			}
 			else
 				delete move;
@@ -131,8 +135,13 @@ public:
 			it.next();
 		}
 
-		if (eval.betterThan(bestCost, 0)) // improvement!
+		if (eval.betterThan(bestCost->cost(), 0)) // improvement!
 		{
+			if(bestCost->isEstimated())
+			{
+				// TODO: have to test if bestMove is ACTUALLY an improvement move...
+			}
+
 			delete &bestMove->apply(e, s);
 			eval.evaluate(e, s); // updates 'e'
 			e.setLocalOptimumStatus(bestMove->id(), false); //set NS 'id' out of Local Optimum
@@ -140,6 +149,7 @@ public:
 		else
 			e.setLocalOptimumStatus(bestMove->id(), true); //set NS 'id' on Local Optimum
 
+		delete bestCost;
 		delete bestMove;
 		delete &it;
 		sum_time += t.inMilliSecs();
