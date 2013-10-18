@@ -111,7 +111,8 @@ public:
 						delete eStar;
 						eStar = &e.clone();
 
-						cout << "Best fo: " << e.evaluation() << " Found on Iter = " << iterT << " and T = " << T << endl;
+						cout << "Best fo: " << e.evaluation() << " Found on Iter = " << iterT << " and T = " << T;
+						cout << endl;
 					}
 				}
 				else

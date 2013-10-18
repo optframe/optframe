@@ -70,7 +70,7 @@ public:
 			{
 				MoveCost& cost = eval.moveCost(e, m, s);
 
-				if (eval.betterThan(cost.cost(), 0))
+				if (eval.isImprovement(cost))
 				{
 					//double old_f = e.evaluation();
 

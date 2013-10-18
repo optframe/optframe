@@ -261,6 +261,13 @@ public:
 		return (abs(a - b) < OPTFRAME_EPSILON);
 	}
 
+	// ============= improvement =============
+
+	virtual bool isImprovement(const MoveCost& mc)
+	{
+		return betterThan(mc.cost(), 0);
+	}
+
 	// ============= direction ==============
 
 	bool isMinimization()

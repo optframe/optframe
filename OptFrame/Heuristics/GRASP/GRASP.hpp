@@ -100,7 +100,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, DS>::idComponent() << "grasp";
+		ss << SingleObjSearch<R, ADS, DS>::idComponent() << GRASPH::family() << "GRASP";
 		return ss.str();
 
 	}
@@ -158,7 +158,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << GRASPH::family << "GRASP";
+		ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << GRASPH::family() << "GRASP";
 		return ss.str();
 	}
 

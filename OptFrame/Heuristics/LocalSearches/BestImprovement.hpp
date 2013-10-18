@@ -135,7 +135,7 @@ public:
 			it.next();
 		}
 
-		if (eval.betterThan(bestCost->cost(), 0)) // improvement!
+		if (eval.isImprovement(*bestCost))
 		{
 			if(bestCost->isEstimated())
 			{

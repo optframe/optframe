@@ -82,7 +82,7 @@ public:
 			{
 				MoveCost* eCost = &eval.moveCost(e, *move, s); // estimated cost
 
-				if(eval.betterThan(eCost->cost(), 0))
+				if(eval.isImprovement(*eCost))
 				{
 					if(eCost->isEstimated())
 					{
@@ -90,7 +90,7 @@ public:
 						// TODO: find a real cost value...
 					}
 
-					if(eval.betterThan(eCost->cost(), 0))
+					if(eval.isImprovement(*eCost))
 					{
 						delete eCost;
 

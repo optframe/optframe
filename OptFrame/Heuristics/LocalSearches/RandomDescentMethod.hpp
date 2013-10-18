@@ -82,7 +82,7 @@ public:
 
 			iter++;
 
-			if (cost && evaluator.betterThan(cost->cost(), 0))
+			if (cost && evaluator.isImprovement(*cost))
 			{
 				delete &move.apply(e, s);
 				evaluator.evaluate(e, s);
