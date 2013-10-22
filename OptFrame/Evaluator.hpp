@@ -263,6 +263,11 @@ public:
 
 	// ============= improvement =============
 
+	virtual bool isImprovement(const MoveCost& mc, const Evaluation<DS>& e)
+	{
+		return isImprovement(mc);
+	}
+
 	virtual bool isImprovement(const MoveCost& mc)
 	{
 		return betterThan(mc.cost(), 0);

@@ -68,7 +68,7 @@ public:
 	{
 		long tini = time(NULL);
 
-		vector<double> eList(L, eStar.evaluation());
+		vector<Evaluation<DS>* > eList(L, NULL);
 
 		int iter = 1;
 		unsigned index = 0;
@@ -103,12 +103,15 @@ public:
 				MoveCost& cost = ev.moveCost(e, *move, s);
 
 				// test for current index
-				if (ev.betterThan(cost.cost() + e.evaluation(), eList[index]))
+				if ((!eList[index]) || (eList[index] && ev.isImprovement(cost, *eList[index])))
 				{
 					delete &move->apply(e, s);
 					ev.evaluate(e, s);
 
-					eList[index] = e.evaluation();
+					if(eList[index])
+						delete eList[index];
+
+					eList[index] = &e.clone();
 
 					if (ev.betterThan(e, eStar))
 					{
@@ -139,6 +142,11 @@ public:
         delete& e;
         delete& s;
 
+        // free list
+        for (unsigned i = 0; i < eList.size(); i++)
+			if (eList[i])
+				delete eList[i];
+        eList.clear();
 	}
 
 	virtual bool compatible(string s)
