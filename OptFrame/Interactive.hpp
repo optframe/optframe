@@ -347,6 +347,8 @@ public:
 
 		dictionary["optframepath"] = path;
 		dictionary["optframeversion"] = version();
+
+        free(path);
 	}
 
 	void unloadCommands()

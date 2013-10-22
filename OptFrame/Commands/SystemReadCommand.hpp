@@ -327,6 +327,8 @@ public:
 			return false;
 		}
 
+        free(path);
+
 		return true;
 	}
 
