@@ -36,8 +36,6 @@ public:
 
     virtual ~$projectProblemCommand()
     {
-        if(p)
-            delete p;  
     }
     
     string id()
