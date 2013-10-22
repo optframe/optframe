@@ -125,6 +125,8 @@ public:
 				delete& cost;
 			}
 
+            delete move;
+
 			iter++;
 
 			index++;
@@ -133,6 +135,9 @@ public:
 
 			tnow = time(NULL);
 		}
+
+        delete& e;
+        delete& s;
 
 	}
 
