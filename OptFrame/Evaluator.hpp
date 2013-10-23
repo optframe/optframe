@@ -291,11 +291,9 @@ public:
 	virtual bool isImprovement(const MoveCost& mc, const Evaluation<DS>& e1, const Evaluation<DS>& e2)
 	{
 		double ec1 = mc.cost() + e1.evaluation();
-		if (!betterThan(ec1, e2.evaluation()))
-			return false;
-		else if (betterThan(ec1, e2.evaluation()))
+		if (betterThan(ec1, e2.evaluation()))
 			return true;
-		else
+		else if (equals(ec1, e2.evaluation()))
 		{
 			if (e1.getAlternativeCosts().size() != e2.getAlternativeCosts().size())
 				return false;
@@ -309,6 +307,8 @@ public:
 			}
 			return betterThan(altCosts1, e2.getAlternativeCosts());
 		}
+		else
+			return false;
 	}
 
 	virtual bool isImprovement(const MoveCost& mc)
