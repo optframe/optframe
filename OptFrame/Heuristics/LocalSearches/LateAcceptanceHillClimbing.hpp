@@ -25,6 +25,8 @@
 #include "../../NS.hpp"
 #include "../../Evaluator.hpp"
 
+#define BRAND_NEW
+
 namespace optframe
 {
 
@@ -68,7 +70,13 @@ public:
 	{
 		long tini = time(NULL);
 
-		vector<Evaluation<DS>* > eList(L, NULL);
+#ifdef BRAND_NEW
+		vector<Evaluation<DS>* > eList;
+		for(int i=0; i<L; i++)
+			eList.push_back(&eStar.clone());
+#else
+		vector<double > eList(L, eStar.evaluation());
+#endif
 
 		int iter = 1;
 		unsigned index = 0;
@@ -103,15 +111,21 @@ public:
 				MoveCost& cost = ev.moveCost(e, *move, s);
 
 				// test for current index
-				if ((!eList[index]) || (eList[index] && ev.isImprovement(cost, *eList[index], e)))
+#ifdef BRAND_NEW
+				if (ev.isImprovement(cost, e, *eList[index]))
+#else
+				if (ev.betterThan(cost.cost()+e.evaluation(), eList[index]))
+#endif
 				{
 					delete &move->apply(e, s);
 					ev.evaluate(e, s);
 
-					if(eList[index])
-						delete eList[index];
-
+#ifdef BRAND_NEW
+					delete eList[index];
 					eList[index] = &e.clone();
+#else
+					eList[index] = e.evaluation();
+#endif
 
 					if (ev.betterThan(e, eStar))
 					{
@@ -143,9 +157,12 @@ public:
         delete& s;
 
         // free list
+
+#ifdef BRAND_NEW
         for (unsigned i = 0; i < eList.size(); i++)
-			if (eList[i])
-				delete eList[i];
+			delete eList[i];
+#endif
+
         eList.clear();
 	}
 
