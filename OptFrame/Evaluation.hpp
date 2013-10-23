@@ -64,6 +64,8 @@ protected:
 	map<string, Status> localStatus; // mapping 'move.id()' to 'NeighborhoodStatus'
 	Status globalOptimum;            // for exact methods only
 
+	vector<pair<double, double> > alternatives; // for lexicographic approaches
+
 public:
 	Evaluation(double obj, double inf, DS& _ds) :
 			objFunction(obj), infMeasure(inf), ds(new DS(_ds))
@@ -122,6 +124,11 @@ public:
 		return infMeasure;
 	}
 
+	const vector<pair<double, double> >& getAlternativeCosts() const
+	{
+		return alternatives;
+	}
+
 	// leave option to rewrite with clone()
 	virtual void setDS(const DS& _ds)
 	{
@@ -137,6 +144,16 @@ public:
 	void setInfMeasure(double inf)
 	{
 		infMeasure = inf;
+	}
+
+	void addAlternativeCost(const pair<double, double>& alternativeCost)
+	{
+		alternatives.push_back(alternativeCost);
+	}
+
+	void setAlternativeCosts(const vector<pair<double, double> >& alternativeCosts)
+	{
+		alternatives = alternativeCosts;
 	}
 
 	// -----------------

@@ -103,7 +103,7 @@ public:
 				MoveCost& cost = ev.moveCost(e, *move, s);
 
 				// test for current index
-				if ((!eList[index]) || (eList[index] && ev.isImprovement(cost, *eList[index])))
+				if ((!eList[index]) || (eList[index] && ev.isImprovement(cost, *eList[index], e)))
 				{
 					delete &move->apply(e, s);
 					ev.evaluate(e, s);
