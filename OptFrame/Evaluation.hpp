@@ -94,7 +94,7 @@ public:
 	}
 
 	Evaluation(const Evaluation<DS>& e) :
-			objFunction(e.objFunction), infMeasure(e.infMeasure), ds(new DS(*e.ds)), globalOptimum(e.globalOptimum)
+			objFunction(e.objFunction), infMeasure(e.infMeasure), ds(new DS(*e.ds)), globalOptimum(e.globalOptimum), alternatives(e.alternatives)
 	{
 	}
 
@@ -210,7 +210,14 @@ public:
 	{
 		cout << fixed; // disable scientific notation
 		cout << "Evaluation function value = " << evaluation();
-		cout << (isFeasible() ? " " : " (not feasible) ") << endl;
+		cout << (isFeasible() ? " " : " (not feasible) ");
+		if (alternatives.size() > 0)
+		{
+			cout << " alternative costs: ";
+			for (unsigned i = 0; i < alternatives.size(); i++)
+				cout << "(" << alternatives[i].first << ";" << alternatives[i].second << ") ";
+		}
+		cout << endl;
 
 		// default - not printing ememory
 		// cout << m << endl;
@@ -224,6 +231,7 @@ public:
 		(*ds) = (*e.ds);
 		objFunction = e.objFunction;
 		infMeasure = e.infMeasure;
+		alternatives = e.alternatives;
 
 		return *this;
 	}
