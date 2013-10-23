@@ -116,39 +116,40 @@ public:
 	// Movement cost based on reevaluation of 'e'
 	MoveCost& moveCost(Evaluation<DS>& e, Move<R, ADS, DS>& m, Solution<R, ADS>& s)
 	{
-		double e_end;
-		double e_ini;
-
 		MoveCost* p = NULL;
 		if (allowCosts)
 			p = m.cost(e, s.getR(), s.getADS());
 
 		// do not update 's' => much faster (using updateDelta)
 		if (p)
-		{
-			e_end = e.evaluation() + p->cost();
-
-			// no need to compute first again, solution is the same
-			e_ini = e.evaluation();
-
-			delete p;
-		}
+			return *p;
 		else // need to update 's' together with reevaluation of 'e' => little faster (doesn't use updateDelta, but do reevaluation)
 		{
 			Move<R, ADS, DS>& rev = applyMove(e, m, s);
-			e_end = e.evaluation();
+			pair<double, double> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
+
+			vector<pair<double, double> > alternatives;
+
+			for (unsigned i = 0; i < e.getAlternativeCosts().size(); i++)
+				alternatives.push_back(make_pair(e.getAlternativeCosts()[i].first, e.getAlternativeCosts()[i].second));
 
 			Move<R, ADS, DS>& ini = applyMove(e, rev, s);
-			e_ini = e.evaluation();
+			pair<double, double> e_ini = make_pair(e.getObjFunction(), e.getInfMeasure());
+
+			for (unsigned i = 0; i < alternatives.size(); i++)
+			{
+				alternatives[i].first -= e.getAlternativeCosts()[i].first;
+				alternatives[i].second -= e.getAlternativeCosts()[i].second;
+			}
 
 			delete &rev;
 			delete &ini;
+
+			p = new MoveCost(e_end.first - e_ini.first, e_end.second - e_end.second);
+			p->setAlternativeCosts(alternatives);
+
+			return *p;
 		}
-
-		// Difference: new - original
-		double diff = e_end - e_ini;
-
-		return * new MoveCost(diff);
 	}
 
 	// Movement cost based on complete evaluation
@@ -169,6 +170,9 @@ public:
 
 		delete &rev;
 		delete &ini;
+
+		cout << "EVALUATOR TODO: correct MoveCost! DO NOT USE!" << endl;
+		exit(1);
 
 		return * new MoveCost(diff);
 	}
@@ -296,9 +300,21 @@ public:
 		else if (equals(ec1, e2.evaluation()))
 		{
 			if (e1.getAlternativeCosts().size() != e2.getAlternativeCosts().size())
+			{
+				cout << "Evaluator Error: |e1.alternatives|=" << e1.getAlternativeCosts().size() << " |e2.alternatives|=" << e2.getAlternativeCosts().size();
+				cout << endl;
+				exit(1);
 				return false;
+			}
+
 			if (mc.getAlternativeCosts().size() != e1.getAlternativeCosts().size())
+			{
+				cout << "Evaluator Error: |mc.alternatives|=" << mc.getAlternativeCosts().size() << " |e1.alternatives|=" << e1.getAlternativeCosts().size();
+				cout << endl;
+				exit(1);
 				return false;
+			}
+
 			vector<pair<double, double> > altCosts1(e1.getAlternativeCosts());
 			for (unsigned i = 0; i < altCosts1.size(); i++)
 			{
