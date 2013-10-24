@@ -44,13 +44,13 @@ protected:
 	virtual Move<R, ADS, DS>& move(const R&, const ADS&) = 0;
 
 public:
-	NSIterator<R, ADS, DS>& getIterator(const Solution<R, ADS>& s, const Evaluation<DS>& e)
+	NSIterator<R, ADS, DS>& getIterator(const Solution<R, ADS>& s)
 	{
-		return getIterator(s.getR(), s.getADS(), e.getDS());
+		return getIterator(s.getR(), s.getADS());
 	}
 
 protected:
-	virtual NSIterator<R, ADS, DS>& getIterator(const R& r, const ADS& ads, const DS& ds) = 0;
+	virtual NSIterator<R, ADS, DS>& getIterator(const R& r, const ADS& ads) = 0;
 
 public:
 	static string idComponent()
@@ -83,7 +83,7 @@ public:
 	virtual string usage()
 	{
 		string u;
-		u.append("OptFrame:NS:NSSeq idx  getIterator   OptFrame:Solution idx  OptFrame:Evaluation idx  [output_variable] => OptFrame:NSIterator");
+		u.append("OptFrame:NS:NSSeq idx  getIterator   OptFrame:Solution idx   [output_variable] => OptFrame:NSIterator");
 		return u;
 	}
 
@@ -179,13 +179,7 @@ public:
 			if(!s)
 				return false;
 
-			Evaluation<DS>* e;
-			hf.assign(e, scanner.nextInt(), scanner.next());
-
-			if(!e)
-				return false;
-
-			NSIterator<R, ADS, DS>& it = nsseq->getIterator(*s, *e);
+			NSIterator<R, ADS, DS>& it = nsseq->getIterator(*s);
 
 			if(!scanner.hasNext())
 				return false;

@@ -68,7 +68,7 @@ public:
 		num_calls++;
 		Timer t;
 
-		NSIterator<R, ADS, DS>& it = nsSeq.getIterator(s, e);
+		NSIterator<R, ADS, DS>& it = nsSeq.getIterator(s);
 
 		it.first();
 

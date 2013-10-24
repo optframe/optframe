@@ -247,7 +247,7 @@ public:
 		return *new MOVE(x1, y1, x2, y2);
 	}
 
-	virtual NSIterator<RepEtII, MemEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&, const MemEtII&)
+	virtual NSIterator<RepEtII, MemEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		// return an iterator to the neighbors of 'rep'
 		return *new NSIteratorSwapCenter(rep.getNumRows() - 2, rep.getNumCols() - 2);

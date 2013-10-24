@@ -1090,7 +1090,6 @@ public:
 
 				int randomIndex = rand() % solutions.size();
 				Solution<R, ADS>& s = *solutions.at(randomIndex);
-				Evaluation<DS>& e = *evaluations.at(0).at(randomIndex); // evaluator '0'
 
 				// ===================
 				// apply a single move
@@ -1119,7 +1118,7 @@ public:
 					message(lNSSeq.at(id_nsseq), nqs, "Warning. Couldn't apply a move before iterator tests (NSSeq tests).");
 				*/
 
-				NSIterator<R, ADS, DS>& it = nsseq->getIterator(s, e);
+				NSIterator<R, ADS, DS>& it = nsseq->getIterator(s);
 
 				for (it.first(); !it.isDone(); it.next())
 				{

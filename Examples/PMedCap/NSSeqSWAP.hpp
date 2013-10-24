@@ -145,7 +145,7 @@ public:
 		return *new MoveSWAP(cidade, mediana); // return a random move
 	}
 
-	virtual NSIterator<RepPCAP>& getIterator(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS&, const OPTFRAME_DEFAULT_DS&)
+	virtual NSIterator<RepPCAP>& getIterator(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		return *new NSIteratorSWAP(p); // return an iterator to the neighbors of 'rep'
 	}
