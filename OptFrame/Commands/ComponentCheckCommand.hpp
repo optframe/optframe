@@ -768,6 +768,8 @@ public:
 							cout << "move cannot be applied: ";
 							move.print();
 						}
+
+						delete& move;
 						continue;
 					}
 
@@ -863,6 +865,8 @@ public:
 								return false;
 							}
 						}
+
+						delete& sOriginal;
 
 						Timer te2;
 						Evaluation<DS>& e_ini = evaluators.at(ev)->evaluate(s);
