@@ -4,14 +4,16 @@
 #include <iostream>
 
 #include "../../OptFrame/Scanner++/Scanner.h"
+#include "../../OptFrame/Component.hpp"
 
 using namespace std;
 using namespace scannerpp;
+using namespace optframe;
 
 namespace $project
 {
 
-class ProblemInstance
+class ProblemInstance : public Component
 {
 private:
 	// Your private vars

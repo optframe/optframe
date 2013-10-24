@@ -73,7 +73,8 @@ echo
 #          Solution Representation
 ##############################################
 
-echo "What's your Solution Representation?"
+echo "The Representation is the data structure that defines/implements the Solution Space."
+echo "What's your Representation?"
 read rep
 rep=`echo "$rep" | sed "s/>/ > /g"`
 rep=`echo "$rep" | sed "s/</ < /g"`
@@ -163,6 +164,7 @@ commadproject=""
 typeproject=""
 initializedelta=""
 echo "What's your Delta Structure? It is used for fast re-evaluation. (if it is not necessary leave this field empty)"
+echo "WARNING: The Delta Structure is deprecated and you should consider using an Auxiliar Data Structure (ADS) together with the Representation (in this case, just leave this field empty)."
 read delta
 
 if [ -n "$delta" ];
@@ -617,7 +619,7 @@ fi
 ##############################################
 #          makefile
 ##############################################
-var="./MyProjects/makefile"
+var="./MyProjects/makefile_prj"
 var_tmp="makefile.tmp"
 
 if cp ./mct/makefile.tpl $var
@@ -635,13 +637,31 @@ then echo "makefile file...[ok]"
      sed "$t" < $var > $var_tmp
      mv $var_tmp $var
 
-else echo "make file...[fail]"
+else echo "makefile...[fail]"
      exit
 fi
 
+if [ -f ./MyProjects/makefile ]
+then
+    echo Makefile already exists, just adding the project.
+else
+    echo Creating basic makefile with the project.
+    if cp ./mct/makefile_base.tpl ./MyProjects/makefile
+    then echo "basic makefile file...[ok]"
+    else echo "basic makefile...[fail]"
+      exit
+    fi
+fi
+
+mv  ./MyProjects/makefile ./MyProjects/makefile.tmp
+
+cat $var ./MyProjects/makefile.tmp > ./MyProjects/makefile
+rm -f $var
+rm -f ./MyProjects/makefile.tmp
+
 echo
 echo "Congratulations! You can use the following command to compile your project:"
-echo "g++ ./MyProjects/main$project.cpp ./MyProjects/$project/ProblemInstance.cpp ./MyProjects/$project/Evaluator.cpp ./MyProjects/$project/ProblemCommand.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/main$project"
+echo "g++ ./MyProjects/main$project.cpp ./MyProjects/$project/ProblemInstance.cpp ./MyProjects/$project/Evaluator.cpp ./MyProjects/$project/Constructive$constructive.cpp ./MyProjects/$project/NSSeq$neighborhood.cpp ./MyProjects/$project/ProblemCommand.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
 echo "or you can simply type: \"cd MyProjects && make\""
 
 echo

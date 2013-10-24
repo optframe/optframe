@@ -21,6 +21,8 @@
 #ifndef OPTFRAME_EVALUATION_HPP_
 #define OPTFRAME_EVALUATION_HPP_
 
+// TODO: Delta Structure (DS) will be abandoned soon...
+// TODO: use ADS instead.
 typedef int OPTFRAME_DEFAULT_DS;
 
 #include <cstdlib>

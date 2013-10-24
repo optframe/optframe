@@ -127,10 +127,14 @@ public class MCT
 	BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
 	System.out.println("====================================================");
+	System.out.println("DEPRECATED!!!!!! USE SHELL VERSION...               ");
 	System.out.println("OptFrame development version - Project Generator MCT");
 	System.out.println("             \"Make a Compilable Thing!\"           ");
 	System.out.println("      http://sourceforge.net/projects/optframe/     ");
 	System.out.println("====================================================");
+	String saida = input.readLine();
+    if(saida != "")
+        return;
 	System.out.println();
 	System.out.println("1. What's the name of your project? (Step 1 of 9)");
 	String name = input.readLine();
