@@ -1022,11 +1022,12 @@ public:
 									if (cost2)
 									{
 										evaluators[ev]->betterThan(*cost, *cost2);
-										delete& move2;
 										delete cost2;
 									}
 								}
 							}
+
+							delete& move2;
 
 							// finish double cost test
 
