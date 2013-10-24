@@ -39,6 +39,7 @@ public:
 	{
 	}
 
+public:
 	Move<R, ADS, DS>& move(const Solution<R, ADS>& s)
 	{
 		return move(s.getR(), s.getADS());
@@ -49,18 +50,21 @@ public:
 		return validMove(s.getR(), s.getADS());
 	}
 
+protected:
 	virtual Move<R, ADS, DS>& move(const R&, const ADS&) = 0;
 
 	virtual Move<R, ADS, DS>* validMove(const R& r, const ADS& ads)
 	{
 		Move<R, ADS, DS>* moveValid = &(this->move(r, ads));
-		if (moveValid->canBeApplied(r, ads))
+		if(moveValid->canBeApplied(r, ads))
 			return moveValid;
 		else
 			delete moveValid;
 
 		return NULL;
 	}
+
+public:
 	static string idComponent()
 	{
 		return "OptFrame:NS";
@@ -76,7 +80,6 @@ public:
 		return (s == idComponent()) || (Component::compatible(s));
 	}
 };
-
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NSAction: public Action<R, ADS, DS>
@@ -159,64 +162,63 @@ public:
 
 		Scanner scanner(content);
 
-		if (!scanner.hasNext())
+		if(!scanner.hasNext())
 			return false;
 
 		NS<R, ADS, DS>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next());
 
-		if (!ns)
+		if(!ns)
 			return false;
 
-		if (!scanner.hasNext())
+		if(!scanner.hasNext())
 			return false;
 
 		string action = scanner.next();
 
-		if (!handleAction(action))
+		if(!handleAction(action))
 			return false;
 
-		if (action == "move")
+		if(action == "move")
 		{
-			if (!scanner.hasNext())
+			if(!scanner.hasNext())
 				return false;
 
 			Solution<R, ADS>* s;
 			hf.assign(s, scanner.nextInt(), scanner.next());
 
-			if (!s)
+			if(!s)
 				return false;
 
 			Move<R, ADS, DS>& m = ns->move(*s);
 
-			if (!scanner.hasNext())
+			if(!scanner.hasNext())
 				return false;
 
 			return Action<R, ADS, DS>::addAndRegister(scanner, m, hf, dictionary);
 		}
 
-		if (action == "validMove")
+		if(action == "validMove")
 		{
-			if (!scanner.hasNext())
+			if(!scanner.hasNext())
 				return false;
 
 			Solution<R, ADS>* s;
 			hf.assign(s, scanner.nextInt(), scanner.next());
 
-			if (!s)
+			if(!s)
 				return false;
 
 			Move<R, ADS, DS>* m = ns->validMove(*s);
 
-			if (!scanner.hasNext())
+			if(!scanner.hasNext())
 				return false;
 
-			if (m)
+			if(m)
 				return Action<R, ADS, DS>::addAndRegister(scanner, *m, hf, dictionary);
 			else
 				return true; // not adding any component!
 		}
-
 
 		// no action found!
 		return false;
@@ -225,6 +227,5 @@ public:
 };
 
 }
-
 
 #endif /*OPTFRAME_NS_HPP_*/

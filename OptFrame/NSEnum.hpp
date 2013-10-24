@@ -56,7 +56,7 @@ public:
 		return move(x);
 	}
 
-	virtual NSIterator<R, ADS, DS>& getIterator(const R&, const ADS&)
+	virtual NSIterator<R, ADS, DS>& getIterator(const R&, const ADS&, const DS&)
 	{
 		return *new NSEnumIterator<R, ADS, DS> (*this);
 	}

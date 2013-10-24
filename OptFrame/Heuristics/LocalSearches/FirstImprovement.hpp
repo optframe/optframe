@@ -55,7 +55,7 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
 	{
-		NSIterator<R, ADS, DS>& it = nsSeq.getIterator(e.getDS(), s.getR(), s.getADS());
+		NSIterator<R, ADS, DS>& it = nsSeq.getIterator(s, e);
 		string bestMoveId = "";
 		it.first();
 

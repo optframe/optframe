@@ -196,7 +196,7 @@ public:
 		return *new MOVE(nRot, x, y); // return a random move
 	}
 
-	virtual NSIterator<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
+	virtual NSIterator<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&, const MemEtII&)
 	{
 		// return an iterator to the neighbors of 'rep'
 		return *new NSIteratorRotate(rep.getNumRows() - 2, rep.getNumCols() - 2);

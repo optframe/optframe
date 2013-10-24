@@ -314,7 +314,7 @@ public:
 		return *new MOVE(x1, y1, x2, y2);
 	}
 
-	virtual NSIterator<RepEtII, MemEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
+	virtual NSIterator<RepEtII, MemEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&, const MemEtII&)
 	{
 		return *new NSIteratorSwapSide(rep.getNumRows(), rep.getNumCols());
 	}

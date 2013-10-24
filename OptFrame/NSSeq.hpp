@@ -40,38 +40,36 @@ public:
 	{
 	}
 
+protected:
 	virtual Move<R, ADS, DS>& move(const R&, const ADS&) = 0;
 
-	NSIterator<R, ADS, DS>& getIterator(const Solution<R, ADS>& s)
+public:
+	NSIterator<R, ADS, DS>& getIterator(const Solution<R, ADS>& s, const Evaluation<DS>& e)
 	{
-		return getIterator(s.getR(), s.getADS());
+		return getIterator(s.getR(), s.getADS(), e.getDS());
 	}
 
-	virtual NSIterator<R, ADS, DS>& getIterator(const R&, const ADS&) = 0;
-	virtual NSIterator<R, ADS, DS>& getIterator(const DS&, const R& r, const ADS& ads)
-	{
-		return getIterator(r, ads);
-	}
+protected:
+	virtual NSIterator<R, ADS, DS>& getIterator(const R& r, const ADS& ads, const DS& ds) = 0;
 
-   static string idComponent()
-   {
+public:
+	static string idComponent()
+	{
 		stringstream ss;
 		ss << NS<R, ADS, DS>::idComponent() << ":NSSeq";
 		return ss.str();
-   }
+	}
 
-   virtual string id() const
-   {
-      return idComponent();
-   }
+	virtual string id() const
+	{
+		return idComponent();
+	}
 
-   virtual bool compatible(string s)
-   {
-	   return ( s == idComponent() ) || ( NS<R, ADS, DS>::compatible(s) );
-   }
+	virtual bool compatible(string s)
+	{
+		return (s == idComponent()) || (NS<R, ADS, DS>::compatible(s));
+	}
 };
-
-
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NSSeqAction: public Action<R, ADS, DS>
@@ -85,7 +83,7 @@ public:
 	virtual string usage()
 	{
 		string u;
-		u.append("OptFrame:NS:NSSeq idx  getIterator   OptFrame:Solution idx  [output_variable] => OptFrame:NSIterator");
+		u.append("OptFrame:NS:NSSeq idx  getIterator   OptFrame:Solution idx  OptFrame:Evaluation idx  [output_variable] => OptFrame:NSIterator");
 		return u;
 	}
 
@@ -153,37 +151,43 @@ public:
 
 		Scanner scanner(content);
 
-		if (!scanner.hasNext())
+		if(!scanner.hasNext())
 			return false;
 
 		NSSeq<R, ADS, DS>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next());
 
-		if (!nsseq)
+		if(!nsseq)
 			return false;
 
-		if (!scanner.hasNext())
+		if(!scanner.hasNext())
 			return false;
 
 		string action = scanner.next();
 
-		if (!handleAction(action))
+		if(!handleAction(action))
 			return false;
 
-		if (action == "getIterator")
+		if(action == "getIterator")
 		{
-			if (!scanner.hasNext())
+			if(!scanner.hasNext())
 				return false;
 
 			Solution<R, ADS>* s;
 			hf.assign(s, scanner.nextInt(), scanner.next());
 
-			if (!s)
+			if(!s)
 				return false;
 
-			NSIterator<R, ADS, DS>& it = nsseq->getIterator(*s);
+			Evaluation<DS>* e;
+			hf.assign(e, scanner.nextInt(), scanner.next());
 
-			if (!scanner.hasNext())
+			if(!e)
+				return false;
+
+			NSIterator<R, ADS, DS>& it = nsseq->getIterator(*s, *e);
+
+			if(!scanner.hasNext())
 				return false;
 
 			return Action<R, ADS, DS>::addAndRegister(scanner, it, hf, dictionary);
@@ -196,6 +200,5 @@ public:
 };
 
 }
-
 
 #endif /*OPTFRAME_NSSEQ_HPP_*/

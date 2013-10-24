@@ -1090,10 +1090,12 @@ public:
 
 				int randomIndex = rand() % solutions.size();
 				Solution<R, ADS>& s = *solutions.at(randomIndex);
+				Evaluation<DS>& e = *evaluations.at(0).at(randomIndex); // evaluator '0'
 
 				// ===================
 				// apply a single move
 				// ===================
+				/*
 
 				bool moveApplied = false;
 				int shaking = rand() % 5 + 1; //Max moves applied in each nSolNSSeq obtained from solutions vector
@@ -1115,8 +1117,9 @@ public:
 
 				if (!moveApplied)
 					message(lNSSeq.at(id_nsseq), nqs, "Warning. Couldn't apply a move before iterator tests (NSSeq tests).");
+				*/
 
-				NSIterator<R, ADS, DS>& it = nsseq->getIterator(s);
+				NSIterator<R, ADS, DS>& it = nsseq->getIterator(s, e);
 
 				for (it.first(); !it.isDone(); it.next())
 				{

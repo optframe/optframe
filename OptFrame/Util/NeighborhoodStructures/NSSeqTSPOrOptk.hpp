@@ -70,7 +70,7 @@ public:
       return *new MOVE(i, j, k, p);
    }
 
-   virtual NSIterator<Route, ADS, DS >& getIterator(const Route& r, const ADS&)
+   virtual NSIterator<Route, ADS, DS >& getIterator(const Route& r, const ADS&, const DS&)
    {
       return *new NSITERATOR (r.size(), k, p);
    }

@@ -115,7 +115,7 @@ public:
         return NSSeq<Rep$project , MY_ADS $commadproject>::idComponent().append(":NSSeq$neighborhood");
     }
     
-    NSIterator<Rep$project , MY_ADS $commadproject>& getIterator(const Rep$project& rep, const MY_ADS&)
+    NSIterator<Rep$project , MY_ADS $commadproject>& getIterator(const Rep$project& rep, const MY_ADS&, const $deltaproject&)
     {
         // return an iterator to the neighbors of 'rep' 
         return * new NSIterator$neighborhood;  // ADD POSSIBLE ITERATOR PARAMETERS
