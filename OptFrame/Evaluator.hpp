@@ -128,10 +128,13 @@ public:
 			Move<R, ADS, DS>& rev = applyMove(e, m, s);
 			pair<double, double> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
 
-			vector<pair<double, double> > alternatives;
+			vector<pair<double, double> > alternatives(e.getAlternativeCosts().size());
 
-			for (unsigned i = 0; i < e.getAlternativeCosts().size(); i++)
-				alternatives.push_back(make_pair(e.getAlternativeCosts()[i].first, e.getAlternativeCosts()[i].second));
+			for (unsigned i = 0; i < alternatives.size(); i++)
+			{
+				alternatives[i].first = e.getAlternativeCosts()[i].first;
+				alternatives[i].second = e.getAlternativeCosts()[i].second;
+			}
 
 			Move<R, ADS, DS>& ini = applyMove(e, rev, s);
 			pair<double, double> e_ini = make_pair(e.getObjFunction(), e.getInfMeasure());
@@ -161,7 +164,20 @@ public:
 		pair<Move<R, ADS, DS>&, Evaluation<DS>&>& ini = applyMove(rev.first, s);
 
 		// Difference: new - original
-		double diff = rev.second.evaluation() - ini.second.evaluation();
+
+		double obj = rev.second.getObjFunction() - ini.second.getObjFunction();
+		double inf = rev.second.getInfMeasure() - ini.second.getInfMeasure();
+
+		vector<pair<double, double> > alternatives(rev.second.getAlternativeCosts().size());
+
+		for (unsigned i = 0; i < alternatives.size(); i++)
+		{
+			alternatives[i].first = rev.second.getAlternativeCosts()[i].first - ini.second.getAlternativeCosts()[i].first;
+			alternatives[i].second = rev.second.getAlternativeCosts()[i].second - ini.second.getAlternativeCosts()[i].second;
+		}
+
+		MoveCost* p = new MoveCost(obj, inf);
+		p->setAlternativeCosts(alternatives);
 
 		delete &rev.first;
 		delete &rev.second;
@@ -171,10 +187,7 @@ public:
 		delete &rev;
 		delete &ini;
 
-		cout << "EVALUATOR TODO: correct MoveCost! DO NOT USE!" << endl;
-		exit(1);
-
-		return * new MoveCost(diff);
+		return *p;
 	}
 
 
