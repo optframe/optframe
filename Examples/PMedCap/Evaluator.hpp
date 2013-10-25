@@ -53,7 +53,7 @@ public:
 		// Put the rest of your code here
 	}
 
-	EvaluationPCAP& evaluate(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS&)
+	EvaluationPCAP& evaluate(const RepPCAP& rep)
 	{
 		// 'rep' is the representation of the solution
 

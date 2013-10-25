@@ -12,7 +12,7 @@ $projectEvaluator::~$projectEvaluator()
 {
 }
 
-Evaluation$project& $projectEvaluator::evaluate(const Rep$project& rep, const MY_ADS&)
+Evaluation$project& $projectEvaluator::evaluate(const Rep$project& rep)
 {
     // 'rep' is the representation of the solution
 

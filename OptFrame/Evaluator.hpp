@@ -82,19 +82,30 @@ public:
 		return evaluate(s.getR(), s.getADS());
 	}
 
-	virtual Evaluation<DS>& evaluate(const R& r, const ADS&) = 0;
+protected:
 
+	virtual Evaluation<DS>& evaluate(const R& r) = 0;
+
+	virtual Evaluation<DS>& evaluate(const R& r, const ADS&)
+	{
+		return evaluate(r);
+	}
+
+public:
 	void evaluate(Evaluation<DS>& e, const Solution<R, ADS>& s)
 	{
 		evaluate(e, s.getR(), s.getADS());
 	}
 
+protected:
 	virtual void evaluate(Evaluation<DS>& e, const R& r, const ADS& ads)
 	{
 		Evaluation<DS>& e1 = evaluate(r, ads);
 		e = e1;
 		delete &e1;
 	}
+
+public:
 
 	// Apply movement considering a previous evaluation => Faster.
 	// Update evaluation 'e'

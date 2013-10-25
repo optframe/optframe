@@ -50,8 +50,10 @@ public:
 		return canBeApplied(s.getR(), s.getADS());
 	}
 
+//protected: // TODO: protect...
 	virtual bool canBeApplied(const R&, const ADS&) = 0;
 
+public:
 	Move<R, ADS, DS>& apply(Solution<R, ADS>& s)
 	{
 		return apply(s.getR(), s.getADS());
@@ -62,6 +64,7 @@ public:
 		return apply(e.getDS(), s.getR(), s.getADS());
 	}
 
+protected:
 	virtual Move<R, ADS, DS>& apply(R& r, ADS& ads) = 0;
 
 	virtual Move<R, ADS, DS>& apply(DS& ds, R& r, ADS& ads)
@@ -71,6 +74,12 @@ public:
 		return rev;
 	}
 
+	// TODO: coming in one of the next versions..
+	//virtual pair<Move<R, ADS, DS>&, MoveCost*> apply(const Evaluation<DS>& e, R& r, ADS& ads) = 0;
+
+public:
+
+	// TODO: deprecated
 	virtual void updateNeighStatus(ADS& ads)
 	{
 	}

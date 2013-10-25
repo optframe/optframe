@@ -33,7 +33,9 @@ public:
 	
 	virtual ~$projectEvaluator();
 
-	Evaluation$project& evaluate(const Rep$project& rep, const MY_ADS&);
+	Evaluation$project& evaluate(const Rep$project& rep);
+	
+	//Evaluation$project& evaluate(const Rep$project& rep, const MY_ADS&);
 
 	virtual bool betterThan(double f1, double f2);
 };

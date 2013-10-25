@@ -55,7 +55,7 @@ public:
 		this->pI = pI;
 	}
 
-	Evaluation<MemTSP>& evaluate(const RepTSP& r, const OPTFRAME_DEFAULT_ADS&)
+	Evaluation<MemTSP>& evaluate(const RepTSP& r)
 	{
 		double fo = 0; // Evaluation Function Value
 

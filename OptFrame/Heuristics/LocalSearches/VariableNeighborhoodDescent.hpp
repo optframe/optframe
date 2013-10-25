@@ -46,7 +46,7 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
-		Evaluation<DS>& e = ev.evaluate(s.getR(), s.getADS());
+		Evaluation<DS>& e = ev.evaluate(s);
 
 		exec(s, e, timelimit, target_f);
 

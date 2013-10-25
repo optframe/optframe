@@ -57,7 +57,7 @@ public:
 		// Put the rest of your code here
 	}
 
-	EvaluationEtII& evaluate(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
+	EvaluationEtII& evaluate(const RepEtII& rep)
 	{
 		//counting evaluations.
 		numEvs++;
