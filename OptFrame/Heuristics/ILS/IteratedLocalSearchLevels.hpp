@@ -91,7 +91,8 @@ public:
 		{
 			iter = 0;
 			level++;
-			cout << "level " << level << ".." << endl;
+			if(Component::information)
+				cout << "ILSL::level " << level << ".." << endl;
 		}
 
 		// Atualiza o historico
@@ -109,8 +110,11 @@ public:
 			//   Melhor solucao: 's2'
 			// =======================
 			Evaluation<DS>& e = IteratedLocalSearch<levelHistory, R, ADS, DS >::evaluator.evaluate(s2);
-			cout << "Best fo: " << e.evaluation();
-			cout << " on [iter " << history.first.first << " of level " << history.first.second << "]" << endl;
+			if(Component::information)
+			{
+				cout << "ILSL::Best fo: on [iter " << history.first.first << " of level " << history.first.second << "] => ";
+				e.print();
+			}
 			delete &e;
 
 			// =======================
