@@ -336,7 +336,7 @@ public:
 
 	string version()
 	{
-		return "Development 2.0+";
+		return "Development 2.1+";
 	}
 
 	void setVariables()
