@@ -81,34 +81,66 @@ public:
 
 		Move<R, ADS, DS>* bestMove = &it.current();
 
-		if(e.getLocalOptimumStatus(bestMove->id()) == true)
+		/*if(e.getLocalOptimumStatus(bestMove->id()) == true)
 		{
 			delete &it;
 			delete bestMove;
 
 			sum_time += t.inMilliSecs();
 			return;
-		}
+		}*/
 
-		while (!bestMove->canBeApplied(s))
+		MoveCost* bestCost = NULL;
+
+		while (true)
 		{
-			delete bestMove;
-			it.next();
-			if (!it.isDone())
+			while (!bestMove->canBeApplied(s))
 			{
-				bestMove = &it.current();
+				delete bestMove;
+				it.next();
+				if (!it.isDone())
+				{
+					bestMove = &it.current();
+				}
+				else
+				{
+					delete &it;
+
+					sum_time += t.inMilliSecs();
+					return;
+				}
+			}
+
+			bestCost = &eval.moveCost(e, *bestMove, s);
+			if (eval.isImprovement(*bestCost))
+			{
+				it.next();
+				break;
 			}
 			else
 			{
-				delete &it;
+				delete bestCost;
+				delete bestMove;
+				it.next();
 
-				sum_time += t.inMilliSecs();
-				return;
+				if (!it.isDone())
+				{
+					bestMove = &it.current();
+				}
+				else
+				{
+					delete &it;
+
+					sum_time += t.inMilliSecs();
+					return;
+				}
 			}
+
 		}
 
-		MoveCost* bestCost = &eval.moveCost(e, *bestMove, s);
-		it.next();
+
+		//MoveCost* bestCost = &eval.moveCost(e, *bestMove, s);
+		//it.next();
 		while (!it.isDone())
 		{
 			Move<R, ADS, DS>* move = &it.current();
@@ -137,22 +169,33 @@ public:
 
 		if (eval.isImprovement(*bestCost))
 		{
+			//cout << "MOVE IS IMPROVEMENT! cost=";
+			//bestCost->print();
+
 			if(bestCost->isEstimated())
 			{
 				// TODO: have to test if bestMove is ACTUALLY an improvement move...
 			}
 
 			delete &bestMove->apply(e, s);
+
 			eval.evaluate(e, s); // updates 'e'
-			e.setLocalOptimumStatus(bestMove->id(), false); //set NS 'id' out of Local Optimum
+			//e.setLocalOptimumStatus(bestMove->id(), false); //set NS 'id' out of Local Optimum
 		}
-		else
-			e.setLocalOptimumStatus(bestMove->id(), true); //set NS 'id' on Local Optimum
+		else{
+			//bestMove->updateNeighStatus(s.getADS());
+			//e.setLocalOptimumStatus(bestMove->id(), true); //set NS 'id' on Local Optimum
+		}
+		//cout << "#" << num_calls << " out_bi:";
+		//bestMove->print();
+	    //nsSeq.print();
+		//e.print();
 
 		delete bestCost;
 		delete bestMove;
 		delete &it;
 		sum_time += t.inMilliSecs();
+
 	}
 
 	virtual bool compatible(string s)
@@ -170,6 +213,11 @@ public:
 	virtual string id() const
 	{
 		return idComponent();
+	}
+
+	virtual void print() const
+	{
+		cout << toString() << endl;
 	}
 
 	virtual string toString() const
