@@ -644,6 +644,10 @@ fi
 if [ -f ./MyProjects/makefile ]
 then
     echo Makefile already exists, just adding the project.
+    # removing the option all from the old makefile
+    sed '1,3d' ./MyProjects/makefile > ./MyProjects/makefile.tmp    
+    #getting the name of the other projects
+    otherProj=`cat ./MyProjects/makefile | sed -n 3p | sed 's/.*://'`
 else
     echo Creating basic makefile with the project.
     if cp ./mct/makefile_base.tpl ./MyProjects/makefile
@@ -651,11 +655,17 @@ else
     else echo "basic makefile...[fail]"
       exit
     fi
+    otherProj=NONE
+    mv  ./MyProjects/makefile ./MyProjects/makefile.tmp
 fi
 
-mv  ./MyProjects/makefile ./MyProjects/makefile.tmp
-
 cat $var ./MyProjects/makefile.tmp > ./MyProjects/makefile
+
+if [ "$otherProj" != "NONE" ]
+then
+    sed -i "s/all: mctApp$project/all: $otherProj mctApp$project/" ./MyProjects/makefile
+fi
+
 rm -f $var
 rm -f ./MyProjects/makefile.tmp
 
