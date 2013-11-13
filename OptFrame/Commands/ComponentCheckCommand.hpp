@@ -974,7 +974,7 @@ public:
 							timeNSEstimatedCost[id_ns].first++;
 						}
 
-						if (cost)
+						if (cost && !cost->isEstimated())
 						{
 							double cValue = cost->cost();
 							if (abs(revCost - cValue) > 0.0001)
@@ -1312,7 +1312,7 @@ public:
 							timeNSEstimatedCost[id_nsseq].first++;
 						}
 
-						if (cost)
+						if (cost && !cost->isEstimated())
 						{
 							double cValue = cost->cost();
 							if (abs(revCost - cValue) > 0.0001)
