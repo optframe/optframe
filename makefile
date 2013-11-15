@@ -13,7 +13,7 @@ pmedcap:
 	g++ -Wall ./Examples/mainPMedCap.cpp ./OptFrame/Scanner++/Scanner.cpp -o Examples/PMedCapExample
 	
 clean: 
-	rm mainOptFrame
-	rm Examples/TSPExample
-	rm Examples/EternityIIExample
-	rm Examples/PMedCapIIExample
+	rm -f mainOptFrame
+	rm -f Examples/TSPExample
+	rm -f Examples/EternityIIExample
+	rm -f Examples/PMedCapIIExample
