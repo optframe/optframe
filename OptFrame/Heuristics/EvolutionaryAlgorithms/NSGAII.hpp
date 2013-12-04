@@ -23,20 +23,24 @@
 
 #include <algorithm>
 
-#include "../Heuristic.hpp"
-#include "../Evaluator.hpp"
-#include "../Evaluation.hpp"
-#include "../Population.hpp"
-#include "../NSSeq.hpp"
-#include "../ParetoDominance.hpp"
+#include "../../MultiObjSearch.hpp"
+#include "../../Evaluator.hpp"
+#include "../../Evaluation.hpp"
+#include "../../Population.hpp"
+#include "../../NSSeq.hpp"
+#include "../../ParetoDominance.hpp"
 #define INFINITO 1000000000
-template<class R, class DS = OPTFRAME_DEFAULT_MEMORY>
-class NSGAII: public Heuristic<R, DS >
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class NSGAII: public MultiObjSearch<R, ADS, DS >
 {
 	typedef vector<Evaluation<DS>*> FitnessValues;
 
 private:
 	vector<Evaluator<R, DS >*> v_e;
+
+	InitialPopulation<R, ADS>& init_pop;
+	int init_pop_size;
+
 	ParetoDominance<R, DS > pDominance;
 	int gMax;
 
@@ -49,10 +53,10 @@ protected:
 	RandGen& rg;
 public:
 
-	using Heuristic<R, DS >::exec; // prevents name hiding
+	//using Heuristic<R, ADS, DS >::exec; // prevents name hiding
 
-	NSGAII(vector<Evaluator<R, DS >*> _v_e, int _gMax, RandGen& _rg) :
-		v_e(_v_e), rg(_rg)
+	NSGAII(vector<Evaluator<R, DS >*> _v_e, InitialPopulation<R, ADS>& _init_pop, int _init_pop_size, int _gMax, RandGen& _rg) :
+		v_e(_v_e), init_pop(_init_pop), init_pop_size(_init_pop_size), rg(_rg)
 	{
 		pDominance.insertEvaluators(_v_e);
 		gMax = _gMax;
@@ -64,6 +68,7 @@ public:
 
 	virtual void basicGeneticOperators(Population<R>& p) = 0;
 
+	/*
 	virtual void exec(Population<R>& p, double timelimit, double target_f)
 	{
 		//ACHO Q FALTA APAGAR ALGUMA COISA NO FINAL
@@ -88,12 +93,16 @@ public:
 		}
 		delete &e_pop;
 	}
+	*/
 
-	virtual void exec(Population<R>& p, FitnessValues& e_pop, double timelimit, double target_f)
+	//virtual void exec(Population<R>& p, FitnessValues& e_pop, double timelimit, double target_f)
+	virtual ParetoFront<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0)
 	{
 		Timer tnow;
 
 		cout << "exec: Non Sorting Genetic Algorithm Search " << endl;
+
+		Population<R, ADS> p = init_pop.generatePopulation(init_pop_size);
 		int N = p.size();
 
 		Population<R> q = p;
@@ -160,6 +169,22 @@ public:
 			g++;
 		}
 
+
+		ParetoFront<R, ADS, DS>* pf = new ParetoFront<R, ADS, DS>;
+		for(unsigned i=0; i<p.size(); i++)
+		{
+			Solution<R, ADS>* s = &p.at(i);
+			vector<Evaluation<DS>*> e;
+			for(unsigned ev=0; ev<v_e.size(); ev++)
+			{
+				Evaluator<R, ADS, DS>* evtr = v_e[ev];
+				//evtr->evaluate(s);
+				Evaluation<DS>& e1 = evtr->evaluate(*s);
+				e.push_back(&e1);
+			}
+			pf->push_back(*s, e);
+		}
+		return pf;
 	}
 
 	void crowdingDistanceOrder(vector<double>& CD, const Population<R>& Fj)

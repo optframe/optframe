@@ -36,13 +36,39 @@ using namespace std;
 namespace optframe
 {
 
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class ParetoFront
+{
+private:
+	vector<pair<Solution<R, ADS>*, vector<Evaluation<DS>*> > > pf;
+
+public:
+
+	ParetoFront()
+	{
+	}
+
+	virtual ~ParetoFront()
+	{
+	}
+
+	void push_back(Solution<R, ADS>& s, vector<Evaluation<DS>*>& v_e)
+	{
+		pf.push_back(make_pair(&s, v_e));
+	}
+
+	pair<Solution<R, ADS>&, vector<Evaluation<DS>*> > at(unsigned index)
+	{
+		return make_pair(*pf.at(index).first, pf.at(index).second);
+	}
+
+};
+
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class MultiObjSearch: public Component
 {
 public:
-
-	typedef vector<pair<Solution<R, ADS>&, vector<Evaluation<DS>*> > > ParetoFront;
 
 	MultiObjSearch()
 	{
@@ -52,7 +78,7 @@ public:
 	{
 	}
 
-	virtual ParetoFront* search(double timelimit = 100000000, double target_f = 0) = 0;
+	virtual ParetoFront<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0) = 0;
 
 	virtual string log()
 	{

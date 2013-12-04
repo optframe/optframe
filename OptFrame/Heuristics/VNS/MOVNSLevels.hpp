@@ -23,21 +23,24 @@
 
 #include <algorithm>
 
-#include "../HTrajectory.hpp"
-#include "../Evaluator.hpp"
-#include "../Population.hpp"
-#include "../NSSeq.hpp"
-#include "../ParetoDominance.hpp"
-#include "../ParetoDominanceWeak.hpp"
+#include "../../MultiObjSearch.hpp"
+#include "../../Evaluator.hpp"
+#include "../../Population.hpp"
+#include "../../NSSeq.hpp"
+#include "../../ParetoDominance.hpp"
+#include "../../ParetoDominanceWeak.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MOVNSLevels: public HTrajectory<R, ADS, DS>
+class MOVNSLevels: public MultiObjSearch<R, ADS, DS>
 {
 	typedef vector<Evaluation<DS>*> FitnessValues;
 
 private:
 	vector<NSSeq<R, ADS, DS>*> neighbors;
 	vector<Evaluator<R, ADS, DS>*> v_e;
+	InitialPopulation<R, ADS>& init_pop;
+	int init_pop_size;
+
 	ParetoDominance<R, ADS, DS> pDominance;
 	ParetoDominanceWeak<R, ADS, DS> pDominanceWeak;
 	RandGen& rg;
@@ -45,10 +48,10 @@ private:
 	int iterMax;
 
 public:
-	using HTrajectory<R, ADS, DS>::exec; // prevents name hiding
+	//using HTrajectory<R, ADS, DS>::exec; // prevents name hiding
 
-	MOVNSLevels(vector<Evaluator<R, ADS, DS>*> _v_e, vector<NSSeq<R, ADS, DS>*> _neighbors, RandGen& _rg, int _iterMax, int _levelMax) :
-		v_e(_v_e), neighbors(_neighbors), rg(_rg)
+	MOVNSLevels(vector<Evaluator<R, ADS, DS>*> _v_e, InitialPopulation<R, ADS>& _init_pop, int _init_pop_size, vector<NSSeq<R, ADS, DS>*> _neighbors, RandGen& _rg, int _iterMax, int _levelMax) :
+		v_e(_v_e), init_pop(_init_pop), init_pop_size(_init_pop_size), neighbors(_neighbors), rg(_rg)
 	{
 		pDominance.insertEvaluators(_v_e);
 		pDominanceWeak.insertEvaluators(_v_e);
@@ -60,6 +63,7 @@ public:
 	{
 	}
 
+	/*
 	virtual void exec(Population<R, ADS>& p, double timelimit, double target_f)
 	{
 		FitnessValues& e_pop = *new FitnessValues;
@@ -74,12 +78,16 @@ public:
 
 		delete &e_pop;
 	}
+	*/
 
-	virtual void exec(Population<R, ADS>& p_0, FitnessValues& e_pop, double timelimit, double target_f)
+	//virtual void exec(Population<R, ADS>& p_0, FitnessValues& e_pop, double timelimit, double target_f)
+	virtual ParetoFront<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0)
 	{
 		Timer tnow;
 		cout << "exec: MOVNS " << endl;
 		int r = neighbors.size();
+
+		Population<R, ADS> p_0 = init_pop.generatePopulation(init_pop_size);
 
 		Population<R, ADS> D;
 		for (int ind = 0; ind < p_0.size(); ind++)
@@ -130,7 +138,7 @@ public:
 
 			int neigh = rg.rand(neighbors.size());
 
-			NSIterator<R, ADS, DS>& it = neighbors[neigh]->getIterator(s1.getR());
+			NSIterator<R, ADS, DS>& it = neighbors[neigh]->getIterator(s1);
 			it.first();//Primeiro vizinho
 
 			//verifica se existe vizinho a ser gerado
@@ -154,7 +162,8 @@ public:
 					if (added)
 					{
 						cout << "Sol ADCIONADA NA POOL" << endl;
-						cout << "Conjunto eficiente size = " << D.size() << endl;
+						cout << "Conjunto eficiente size = " << D.size();
+						cout << endl;
 						perturbation = 1;
 						perturbationLevel = 1;
 					}
@@ -188,6 +197,22 @@ public:
 		}
 
 		p_0 = D;
+
+		ParetoFront<R, ADS, DS>* pf = new ParetoFront<R, ADS, DS>;
+		for(unsigned i=0; i<p_0.size(); i++)
+		{
+			Solution<R, ADS>* s = &p_0.at(i);
+			vector<Evaluation<DS>*> e;
+			for(unsigned ev=0; ev<v_e.size(); ev++)
+			{
+				Evaluator<R, ADS, DS>* evtr = v_e[ev];
+				//evtr->evaluate(s);
+				Evaluation<DS>& e1 = evtr->evaluate(*s);
+				e.push_back(&e1);
+			}
+			pf->push_back(*s, e);
+		}
+		return pf;
 	}
 
 	Move<R, ADS, DS>* geraMovimentoValido(NSIterator<R, ADS, DS>& it, Solution<R, ADS>& s)

@@ -53,6 +53,41 @@ public:
    }
 };
 
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class BasicInitialPopulation: public InitialPopulation<R, ADS>
+{
+public:
+
+	Constructive<R, ADS>& constructive;
+
+	BasicInitialPopulation(Constructive<R, ADS>& _constructive) :
+			constructive(_constructive)
+	{
+	}
+
+	virtual ~BasicInitialPopulation()
+	{
+	}
+
+	virtual Population<R, ADS>& generatePopulation(unsigned populationSize)
+	{
+		Population<R, ADS>* p = new Population<R, ADS>;
+		for (unsigned i = 0; i < populationSize; i++)
+			p->push_back(constructive.generateSolution());
+		return *p;
+	}
+
+	static string idComponent()
+	{
+		return "OptFrame:InitialPopulation:BasicInitialPopulation";
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+};
+
 }
 
 #endif /*OPTFRAME_INITIALPOPULATION_H_*/

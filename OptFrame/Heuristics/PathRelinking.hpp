@@ -21,10 +21,14 @@
 #ifndef OPTFRAME_PATHRELINKING_HPP_
 #define OPTFRAME_PATHRELINKING_HPP_
 
-#include "../HTrajectory.hpp"
+#include "../Component.hpp"
+#include "../LocalSearch.hpp"
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_EMEMORY>
-class PathRelinking: public HTrajectory<R, ADS, DS>
+namespace optframe
+{
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class PathRelinking: public Component//LocalSearch<R, ADS, DS>
 {
 	typedef vector<Evaluation<DS>*> FitnessValues;
 	typedef const vector<const Evaluation<DS>*> ConstFitnessValues;
@@ -33,13 +37,13 @@ protected:
 	Evaluator<R, ADS, DS>& evaluator;
 	unsigned int k;
 	bool forward;
-	HTrajectory<R, ADS, DS>& localSearch;
+	LocalSearch<R, ADS, DS>& localSearch;
 
 public:
 
-	using HTrajectory<R, ADS, DS>::exec; // prevents name hiding
+	//using HTrajectory<R, ADS, DS>::exec; // prevents name hiding
 
-	PathRelinking(HTrajectory<R, ADS, DS>& localSearch, Evaluator<R, ADS, DS>& evaluator, int k = 1, bool forward = false) :
+	PathRelinking(LocalSearch<R, ADS, DS>& localSearch, Evaluator<R, ADS, DS>& evaluator, int k = 1, bool forward = false) :
 		localSearch(localSearch), evaluator(evaluator), k(k), forward(forward)
 	{
 	}
@@ -253,5 +257,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /*OPTFRAME_PATHRELINKING_HPP_*/
