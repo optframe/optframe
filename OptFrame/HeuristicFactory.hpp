@@ -169,7 +169,8 @@ public:
 	{
 		if(!Component::compareBase(T::idComponent(), id))
 		{
-			cout << "HeuristicFactory: incompatible assign '" << T::idComponent() << "' <- '" << id << "'" << endl;
+			cout << "HeuristicFactory: incompatible assign '" << T::idComponent() << "' <- '" << id << "'";
+			cout << endl;
 			component = NULL;
 			return;
 		}
@@ -199,7 +200,8 @@ public:
 
 		if(!Component::compareBase(T::idComponent(), noList))
 		{
-			cout << "HeuristicFactory: incompatible list assign '[" << T::idComponent() << "]' <- '[" << noList << "]'" << endl;
+			cout << "HeuristicFactory: incompatible list assign '[" << T::idComponent() << "]' <- '[" << noList << "]'";
+			cout << endl;
 			return;
 		}
 
@@ -252,7 +254,8 @@ public:
 
 		if(tmp != T::idComponent())
 		{
-			cout << "Error: expected '" << T::idComponent() << "' and found '" << tmp << "'." << endl;
+			cout << "Error: expected '" << T::idComponent() << "' and found '" << tmp << "'.";
+			cout << endl;
 			component = NULL;
 
 			return;
