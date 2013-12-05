@@ -41,7 +41,7 @@ class MultiEvaluator: public Component
 {
 protected:
 	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
-	vector<Evaluator<R, ADS, DS>*> sngEvaluators; // single evaluators
+	nevector<Evaluator<R, ADS, DS>*> sngEvaluators; // single evaluators
 
 public:
 
@@ -50,7 +50,7 @@ public:
 	{
 	}
 
-	MultiEvaluator(vector<Evaluator<R, ADS, DS>*> _sngEvaluators, bool _allowCosts = true) :
+	MultiEvaluator(nevector<Evaluator<R, ADS, DS>*> _sngEvaluators, bool _allowCosts = true) :
 			sngEvaluators(_sngEvaluators), allowCosts(_allowCosts)
 	{
 	}
@@ -64,7 +64,13 @@ public:
 		return allowCosts;
 	}
 
-	vector<Evaluator<R, ADS, DS>*> getEvaluators()
+	nevector<Evaluator<R, ADS, DS>*>& getEvaluators()
+	{
+		return sngEvaluators;
+	}
+
+	// TODO: check
+	const nevector<const Evaluator<R, ADS, DS>*>& getEvaluators() const
 	{
 		return sngEvaluators;
 	}
