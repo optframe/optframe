@@ -37,18 +37,18 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ParetoFront
+class Pareto
 {
 private:
 	vector<pair<Solution<R, ADS>*, vector<Evaluation<DS>*> > > pf;
 
 public:
 
-	ParetoFront()
+	Pareto()
 	{
 	}
 
-	virtual ~ParetoFront()
+	virtual ~Pareto()
 	{
 	}
 
@@ -78,7 +78,7 @@ public:
 	{
 	}
 
-	virtual ParetoFront<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0) = 0;
+	virtual Pareto<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS, DS>* _pf = NULL) = 0;
 
 	virtual string log()
 	{

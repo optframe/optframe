@@ -66,10 +66,10 @@ public:
 	{
 	}
 
-	virtual void basicGeneticOperators(Population<R>& p) = 0;
+	virtual void basicGeneticOperators(Population<R, ADS>& p) = 0;
 
 	/*
-	virtual void exec(Population<R>& p, double timelimit, double target_f)
+	virtual void exec(Population<R, ADS>& p, double timelimit, double target_f)
 	{
 		//ACHO Q FALTA APAGAR ALGUMA COISA NO FINAL
 
@@ -95,8 +95,8 @@ public:
 	}
 	*/
 
-	//virtual void exec(Population<R>& p, FitnessValues& e_pop, double timelimit, double target_f)
-	virtual ParetoFront<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0)
+	//virtual void exec(Population<R, ADS>& p, FitnessValues& e_pop, double timelimit, double target_f)
+	virtual Pareto<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS, DS>* _pf = NULL)
 	{
 		Timer tnow;
 
@@ -105,7 +105,7 @@ public:
 		Population<R, ADS> p = init_pop.generatePopulation(init_pop_size);
 		int N = p.size();
 
-		Population<R> q = p;
+		Population<R, ADS> q = p;
 		basicGeneticOperators(q);
 
 		int g = 0;
@@ -113,16 +113,16 @@ public:
 		{
 			cout << "Generation = " << g << endl;
 
-			Population<R> r = p;
+			Population<R, ADS> r = p;
 
 			for (int i = 0; i < q.size(); i++)
 				r.push_back(q.at(i));
 
 			//Start NonDominance Order by sets
-			vector<Population<R>*> F;
+			vector<Population<R, ADS>*> F;
 			nonDominanceOrder(F, r);
 
-			Population<R> popTemp;
+			Population<R, ADS> popTemp;
 			int j = 0;
 
 			vector<double> cD; //Crowding Distance
@@ -170,7 +170,7 @@ public:
 		}
 
 
-		ParetoFront<R, ADS, DS>* pf = new ParetoFront<R, ADS, DS>;
+		Pareto<R, ADS, DS>* pf = new Pareto<R, ADS, DS>;
 		for(unsigned i=0; i<p.size(); i++)
 		{
 			Solution<R, ADS>* s = &p.at(i);
@@ -187,7 +187,7 @@ public:
 		return pf;
 	}
 
-	void crowdingDistanceOrder(vector<double>& CD, const Population<R>& Fj)
+	void crowdingDistanceOrder(vector<double>& CD, const Population<R, ADS>& Fj)
 	{
 		int N = Fj.size();
 		if (N > 0)
@@ -226,11 +226,11 @@ public:
 	}
 
 
-	void nonDominanceOrder(vector<Population<R>*>& F, const Population<R>& p)
+	void nonDominanceOrder(vector<Population<R, ADS>*>& F, const Population<R, ADS>& p)
 	{
 
-		Population<R> pAtual = p;
-		Population<R>* F0 = new Population<R> ;
+		Population<R, ADS> pAtual = p;
+		Population<R, ADS>* F0 = new Population<R, ADS> ;
 		F.push_back(F0);
 
 		vector<int> nd;
@@ -268,7 +268,7 @@ public:
 		{
 			k++;
 
-			Population<R>* uTemp = new Population<R> ;
+			Population<R, ADS>* uTemp = new Population<R, ADS> ;
 			F.push_back(uTemp);
 
 			for (int i = 0; i < pAtual.size(); i++)
@@ -299,9 +299,9 @@ public:
 
 	}
 
-	virtual Population<R> basicSelection(const Population<R>& p, vector<double> cD)
+	virtual Population<R, ADS> basicSelection(const Population<R, ADS>& p, vector<double> cD)
 	{
-		Population<R> q;
+		Population<R, ADS> q;
 		for (int i = 0; i < p.size(); i++)
 		{
 			int j = rg.rand(p.size());

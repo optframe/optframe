@@ -81,7 +81,7 @@ public:
 	*/
 
 	//virtual void exec(Population<R, ADS>& p_0, FitnessValues& e_pop, double timelimit, double target_f)
-	virtual ParetoFront<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0)
+	virtual Pareto<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS, DS>* _pf = NULL)
 	{
 		Timer tnow;
 		cout << "exec: MOVNS " << endl;
@@ -198,7 +198,7 @@ public:
 
 		p_0 = D;
 
-		ParetoFront<R, ADS, DS>* pf = new ParetoFront<R, ADS, DS>;
+		Pareto<R, ADS, DS>* pf = new Pareto<R, ADS, DS>;
 		for(unsigned i=0; i<p_0.size(); i++)
 		{
 			Solution<R, ADS>* s = &p_0.at(i);

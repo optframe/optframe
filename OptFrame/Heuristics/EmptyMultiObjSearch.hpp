@@ -42,7 +42,9 @@ public:
 	{
 	}
 
-	ParetoFront<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0)
+	typedef vector<pair<Solution<R, ADS>&, vector<Evaluation<DS>*> > > ParetoFront;
+
+	ParetoFront* search(double timelimit = 100000000, double target_f = 0)
 	{
 		cout << "WARNING: RETURNING A EmptyMultiObjSearch!" << endl;
 		return NULL;
