@@ -30,6 +30,8 @@ using namespace std;
 #include "Population.hpp"
 #include "Evaluation.hpp"
 
+#include "MultiEvaluator.hpp"
+
 #include "Component.hpp"
 #include "ComponentBuilder.h"
 
