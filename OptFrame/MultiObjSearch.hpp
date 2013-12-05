@@ -40,7 +40,8 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_
 class Pareto
 {
 private:
-	vector<pair<Solution<R, ADS>*, vector<Evaluation<DS>*> > > pf;
+	vector<Solution<R, ADS>*> paretoSet;
+	vector<vector<Evaluation<DS>*> > paretoFront;
 
 public:
 
@@ -54,12 +55,36 @@ public:
 
 	void push_back(Solution<R, ADS>& s, vector<Evaluation<DS>*>& v_e)
 	{
-		pf.push_back(make_pair(&s, v_e));
+		paretoSet.push_back(&s);
+		paretoFront.push_back(v_e);
+	}
+
+	unsigned size()
+	{
+		return paretoSet.size();
+	}
+
+	pair<Solution<R, ADS>&, vector<Evaluation<DS>*> > erase(unsigned index)
+	{
+		pair<Solution<R, ADS>&, vector<Evaluation<DS>*> > p(*paretoSet.at(index), paretoFront.at(index));
+		paretoSet.erase(paretoSet.begin() + index);
+		paretoSet.erase(paretoFront.begin() + index);
+		return p;
 	}
 
 	pair<Solution<R, ADS>&, vector<Evaluation<DS>*> > at(unsigned index)
 	{
-		return make_pair(*pf.at(index).first, pf.at(index).second);
+		return make_pair(*paretoSet.at(index), paretoFront.at(index));
+	}
+
+	vector<Solution<R, ADS>*> getParetoSet()
+	{
+		return paretoSet;
+	}
+
+	vector<vector<Evaluation<DS>*> > getParetoFront()
+	{
+		return paretoFront;
 	}
 
 };
