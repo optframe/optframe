@@ -35,9 +35,18 @@ protected:
 	vector<T> v;
 
 public:
-	nevector(const T& t)
+	nevector(const T t)
 	{
 		v.push_back(t);
+	}
+
+
+	nevector(const T discard, const vector<T>& _v)
+	{
+		if (_v.size() > 0)
+			v = _v;
+		else
+			v.push_back(discard);
 	}
 
 	nevector(const nevector<T>& nev) :
@@ -49,7 +58,7 @@ public:
 	{
 	}
 
-	void push_back(T& t)
+	void push_back(T t)
 	{
 		v.push_back(t);
 	}
@@ -73,13 +82,24 @@ public:
 
 	T& at(unsigned index)
 	{
-		return v[index];
+		return v.at(index);
 	}
 
 	const T& at(unsigned index) const
 	{
+		return v.at(index);
+	}
+
+	T& operator[](unsigned index)
+	{
 		return v[index];
 	}
+
+	const T& operator[](unsigned index) const
+	{
+		return v[index];
+	}
+
 
 	const vector<T>& getVector() const
 	{

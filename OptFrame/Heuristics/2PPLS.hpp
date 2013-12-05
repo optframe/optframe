@@ -38,20 +38,19 @@ class TwoPhaseParetoLocalSearch: public MultiObjSearch<R, ADS, DS>
 
 private:
 	vector<NSSeq<R, ADS, DS>*> neighbors;
-	vector<Evaluator<R, ADS, DS>*> v_e;
+	MultiEvaluator<R, ADS, DS>& mev;
 	InitialPopulation<R, ADS>& init_pop;
 	int init_pop_size;
 	ParetoDominance<R, ADS, DS> pDominance;
 	ParetoDominanceWeak<R, ADS, DS> pDominanceWeak;
 
 public:
-	//using HTrajectory<R, ADS, DS>::exec; // prevents name hiding
 
-	TwoPhaseParetoLocalSearch(vector<Evaluator<R, ADS, DS>*> _v_e, InitialPopulation<R, ADS>& _init_pop, int _init_pop_size, vector<NSSeq<R, ADS, DS>*> _neighbors) :
-		v_e(_v_e), init_pop(_init_pop), init_pop_size(_init_pop_size), neighbors(_neighbors)
+	TwoPhaseParetoLocalSearch(MultiEvaluator<R, ADS, DS>& _mev, InitialPopulation<R, ADS>& _init_pop, int _init_pop_size, vector<NSSeq<R, ADS, DS>*> _neighbors) :
+			mev(_mev), init_pop(_init_pop), init_pop_size(_init_pop_size), neighbors(_neighbors), pDominance(ParetoDominance<R, ADS, DS>(*_mev.getEvaluators())), pDominanceWeak(ParetoDominanceWeak<R, ADS, DS>(*_mev.getEvaluators()))
 	{
-		pDominance.insertEvaluators(_v_e);
-		pDominanceWeak.insertEvaluators(_v_e);
+		////pDominance.insertEvaluators(*_mev.getEvaluators());
+		////pDominanceWeak.insertEvaluators(*_mev.getEvaluators());
 	}
 
 	virtual ~TwoPhaseParetoLocalSearch()
@@ -227,6 +226,15 @@ public:
 			}
 		}
 
+		nevector<Evaluator<R, ADS, DS>*>* _v_e = mev.getEvaluators();
+		if (!_v_e)
+		{
+			cout << "2PPLS::search error: not using separated evaluators!" << endl;
+			exit(1);
+		}
+		nevector<Evaluator<R, ADS, DS>*> v_e(*_v_e);
+		delete _v_e;
+
 		Pareto<R, ADS, DS>* pf = new Pareto<R, ADS, DS>;
 		for(unsigned i=0; i<p_0.size(); i++)
 		{
@@ -300,6 +308,15 @@ public:
 
 	bool addSolution(Population<R, ADS>& p, Solution<R, ADS>& s)
 	{
+		nevector<Evaluator<R, ADS, DS>*>* _v_e = mev.getEvaluators();
+		if (!_v_e)
+		{
+			cout << "2PPLS::addSolution (1) error: not using separated evaluators!" << endl;
+			exit(1);
+		}
+		nevector<Evaluator<R, ADS, DS>*> v_e(*_v_e);
+		delete _v_e;
+
 		Evaluation<DS>& e = v_e[0]->evaluate(s);
 		if (!e.isFeasible())
 		{
@@ -311,7 +328,6 @@ public:
 		bool added = true;
 		for (int ind = 0; ind < p.size(); ind++)
 		{
-
 			if (pDominanceWeak.dominates(p.at(ind), s))
 				return false;
 
@@ -323,11 +339,19 @@ public:
 			p.push_back(s);
 
 		return added;
-
 	}
 
 	bool addSolution(pair<Population<R, ADS> , vector<vector<bool> > >& p, Solution<R, ADS>& s)
 	{
+		nevector<Evaluator<R, ADS, DS>*>* _v_e = mev.getEvaluators();
+		if (!_v_e)
+		{
+			cout << "2PPLS::addSolution (2) error: not using separated evaluators!" << endl;
+			exit(1);
+		}
+		nevector<Evaluator<R, ADS, DS>*> v_e(*_v_e);
+		delete _v_e;
+
 		Evaluation<DS>& e = v_e[0]->evaluate(s);
 		if (!e.isFeasible())
 		{

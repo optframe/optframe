@@ -41,17 +41,17 @@ class MultiEvaluator: public Component
 {
 protected:
 	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
-	nevector<Evaluator<R, ADS, DS>*> sngEvaluators; // single evaluators
+	vector<Evaluator<R, ADS, DS>*> sngEvaluators; // single evaluators
 
 public:
 
-	MultiEvaluator(bool _allowCosts = true) :
+	MultiEvaluator(bool _allowCosts = false) :
 			allowCosts(_allowCosts)
 	{
 	}
 
-	MultiEvaluator(nevector<Evaluator<R, ADS, DS>*> _sngEvaluators, bool _allowCosts = true) :
-			sngEvaluators(_sngEvaluators), allowCosts(_allowCosts)
+	MultiEvaluator(nevector<Evaluator<R, ADS, DS>*> _sngEvaluators) :
+			sngEvaluators(_sngEvaluators.getVector()), allowCosts(false)
 	{
 	}
 
@@ -64,15 +64,23 @@ public:
 		return allowCosts;
 	}
 
-	nevector<Evaluator<R, ADS, DS>*>& getEvaluators()
+	nevector<Evaluator<R, ADS, DS>*>* getEvaluators()
 	{
-		return sngEvaluators;
+		if(sngEvaluators.size()>0)
+		{
+			return new nevector<Evaluator<R, ADS, DS>*>(sngEvaluators[0], sngEvaluators);
+		}
+		else
+			return NULL;
 	}
 
 	// TODO: check
-	const nevector<const Evaluator<R, ADS, DS>*>& getEvaluators() const
+	const nevector<const Evaluator<R, ADS, DS>*>* getEvaluators() const
 	{
-		return sngEvaluators;
+		if(sngEvaluators.size()>0)
+			return new nevector<const Evaluator<R, ADS, DS>*>(sngEvaluators[0], sngEvaluators);
+		else
+			return NULL;
 	}
 
 	MultiEvaluation<DS> evaluate(const Solution<R, ADS>& s)
@@ -82,7 +90,14 @@ public:
 
 protected:
 
-	virtual MultiEvaluation<DS> evaluate(const R& r) = 0;
+	// TODO: make virtual "= 0"
+	virtual MultiEvaluation<DS> evaluate(const R& r)
+	{
+		nevector<Evaluation<DS>*> nev(&sngEvaluators[0]->evaluate(r));
+		for(unsigned i=1; i<sngEvaluators.size(); i++)
+			nev.push_back(&sngEvaluators[i]->evaluate(r));
+		return MultiEvaluation<DS>(nev);
+	}
 
 	virtual MultiEvaluation<DS> evaluate(const R& r, const ADS&)
 	{

@@ -82,7 +82,8 @@ public:
 		return evaluate(s.getR(), s.getADS());
 	}
 
-protected:
+//protected:
+public: // because of MultiEvaluator... otherwise, make it 'friend'
 
 	virtual Evaluation<DS>& evaluate(const R& r) = 0;
 
@@ -97,7 +98,8 @@ public:
 		evaluate(e, s.getR(), s.getADS());
 	}
 
-protected:
+//protected:
+public: // because of MultiEvaluator... otherwise, make it 'friend'
 	virtual void evaluate(Evaluation<DS>& e, const R& r, const ADS& ads)
 	{
 		Evaluation<DS>& e1 = evaluate(r, ads);

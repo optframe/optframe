@@ -44,17 +44,12 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_
 class ParetoDominance
 {
 protected:
-	vector<Evaluator<R, ADS, DS>*> v_e;
+	nevector<Evaluator<R, ADS, DS>*> v_e;
 
 public:
 
-	ParetoDominance(vector<Evaluator<R, ADS, DS>*> _v_e) :
+	ParetoDominance(nevector<Evaluator<R, ADS, DS>*> _v_e) :
 		v_e(_v_e)
-	{
-
-	}
-
-	ParetoDominance()
 	{
 
 	}
@@ -63,7 +58,7 @@ public:
 	{
 	}
 
-	void insertEvaluators(vector<Evaluator<R, ADS, DS>*> _v_e)
+	void insertEvaluators(nevector<Evaluator<R, ADS, DS>*> _v_e)
 	{
 		v_e = _v_e;
 	}

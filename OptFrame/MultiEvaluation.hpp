@@ -32,8 +32,14 @@ namespace optframe
 template<class DS>
 class MultiEvaluation: public nevector<Evaluation<DS>*>
 {
+public:
+	MultiEvaluation(const nevector<Evaluation<DS>*>& nev) :
+			nevector<Evaluation<DS>*>(nev)
+	{
+	}
+
 	MultiEvaluation(const MultiEvaluation<DS>& mev) :
-			nevector<DS>::v(mev.v)
+			nevector<Evaluation<DS>*>(mev)
 	{
 	}
 
@@ -46,7 +52,7 @@ class MultiEvaluation: public nevector<Evaluation<DS>*>
 		if (&mev == this) // auto ref check
 			return *this;
 
-		nevector<DS>::v = mev.v;
+		this->v = mev.v;
 
 		return *this;
 	}
