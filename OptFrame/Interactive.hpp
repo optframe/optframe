@@ -55,7 +55,6 @@
 #include "Evaluation.hpp"
 //#include "Util/TestEvaluation.hpp"
 #include "Evaluator.hpp"
-#include "MultiObjectiveEvaluator.hpp"
 
 #include "Util/TestEvaluation.hpp"
 
@@ -734,7 +733,8 @@ public:
 				}
 
 			if (found)
-				cout << "option is: '" << allCommands[i]->id() << "'" << endl;
+				cout << "option is: '" << allCommands[i]->id() << "'";
+			cout << endl;
 		}
 	}
 
@@ -786,7 +786,10 @@ public:
 				}
 
 				if (!modules[i]->run(modules, functions, factory, dictionary, ldictionary, *r, command))
-					cout << "error in command: '" << modules[i]->id() << "'" << endl;
+				{
+					cout << "error in command: '" << modules[i]->id() << "'";
+					cout << endl;
+				}
 
 				delete r;
 
