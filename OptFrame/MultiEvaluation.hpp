@@ -22,29 +22,85 @@
 #define OPTFRAME_MULTI_EVALUATION_HPP_
 
 #include "Evaluation.hpp"
-#include "nevector.hpp"
 
 using namespace std;
 
 namespace optframe
 {
 
-template<class DS>
-class MultiEvaluation: public nevector<Evaluation<DS>*>
+template<class DS = OPTFRAME_DEFAULT_DS>
+class MultiEvaluation: public Component //nevector<Evaluation<DS>*>
 {
+protected:
+	vector<Evaluation<DS>*> vev;
+
 public:
-	MultiEvaluation(const nevector<Evaluation<DS>*>& nev) :
-			nevector<Evaluation<DS>*>(nev)
+
+	MultiEvaluation(Evaluation<DS>& ev)
+	{
+		vev.push_back(&ev);
+	}
+
+	MultiEvaluation(const vector<Evaluation<DS>*>& _vev) :
+			vev(_vev)
 	{
 	}
 
-	MultiEvaluation(const MultiEvaluation<DS>& mev) :
-			nevector<Evaluation<DS>*>(mev)
+	MultiEvaluation(const MultiEvaluation<DS>& mev)
 	{
+		vev = mev.vev;
 	}
 
 	virtual ~MultiEvaluation()
 	{
+	}
+
+	void addEvaluation(Evaluation<DS>& ev)
+	{
+		vev.push_back(&ev);
+	}
+
+	unsigned size()
+	{
+		return vev.size();
+	}
+
+	void erase(unsigned index)
+	{
+		if (vev.size() > 1)
+			vev.erase(vev.begin() + index);
+		else
+		{
+			cerr << "MultiEvaluation::erase error: not enough elements do delete (" << vev.size() << ")";
+			cerr << endl;
+			exit(1); // TODO: throw exception
+		}
+	}
+
+	Evaluation<DS>& at(unsigned index)
+	{
+		return *vev.at(index);
+	}
+
+	const Evaluation<DS>& at(unsigned index) const
+	{
+		return *vev.at(index);
+	}
+
+	Evaluation<DS>& operator[](unsigned index)
+	{
+		return vev[index];
+	}
+
+	const Evaluation<DS>& operator[](unsigned index) const
+	{
+		return vev[index];
+	}
+
+
+	const vector<Evaluation<DS>*>& getVector() const
+	{
+		return vev;
 	}
 
 	virtual MultiEvaluation<DS>& operator=(const MultiEvaluation<DS>& mev)
@@ -52,7 +108,8 @@ public:
 		if (&mev == this) // auto ref check
 			return *this;
 
-		this->v = mev.v;
+		//this->v = mev.v;
+		this->vev = mev.vev;
 
 		return *this;
 	}

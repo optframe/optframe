@@ -37,7 +37,7 @@ class MOVNSLevels: public MultiObjSearch<R, ADS, DS>
 
 private:
 	vector<NSSeq<R, ADS, DS>*> neighbors;
-	nevector<Evaluator<R, ADS, DS>*> v_e;
+	vector<Evaluator<R, ADS, DS>*> v_e;
 	InitialPopulation<R, ADS>& init_pop;
 	int init_pop_size;
 
@@ -50,7 +50,7 @@ private:
 public:
 	//using HTrajectory<R, ADS, DS>::exec; // prevents name hiding
 
-	MOVNSLevels(nevector<Evaluator<R, ADS, DS>*> _v_e, InitialPopulation<R, ADS>& _init_pop, int _init_pop_size, vector<NSSeq<R, ADS, DS>*> _neighbors, RandGen& _rg, int _iterMax, int _levelMax) :
+	MOVNSLevels(vector<Evaluator<R, ADS, DS>*> _v_e, InitialPopulation<R, ADS>& _init_pop, int _init_pop_size, vector<NSSeq<R, ADS, DS>*> _neighbors, RandGen& _rg, int _iterMax, int _levelMax) :
 		v_e(_v_e), init_pop(_init_pop), init_pop_size(_init_pop_size), neighbors(_neighbors), rg(_rg), pDominance(ParetoDominance<R, ADS, DS>(_v_e)), pDominanceWeak(ParetoDominanceWeak<R, ADS, DS>(_v_e))
 	{
 		////pDominance.insertEvaluators(_v_e);

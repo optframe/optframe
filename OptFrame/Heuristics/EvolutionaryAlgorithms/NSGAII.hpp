@@ -36,7 +36,7 @@ class NSGAII: public MultiObjSearch<R, ADS, DS >
 	typedef vector<Evaluation<DS>*> FitnessValues;
 
 private:
-	nevector<Evaluator<R, ADS, DS>*> v_e;
+	vector<Evaluator<R, ADS, DS>*> v_e;
 
 	InitialPopulation<R, ADS>& init_pop;
 	int init_pop_size;
@@ -55,7 +55,7 @@ public:
 
 	//using Heuristic<R, ADS, DS >::exec; // prevents name hiding
 
-	NSGAII(nevector<Evaluator<R, ADS, DS>*> _v_e, InitialPopulation<R, ADS>& _init_pop, int _init_pop_size, int _gMax, RandGen& _rg) :
+	NSGAII(vector<Evaluator<R, ADS, DS>*> _v_e, InitialPopulation<R, ADS>& _init_pop, int _init_pop_size, int _gMax, RandGen& _rg) :
 		v_e(_v_e), init_pop(_init_pop), init_pop_size(_init_pop_size), pDominance(ParetoDominance<R, ADS, DS>(_v_e)), rg(_rg)
 	{
 		pDominance.insertEvaluators(_v_e);

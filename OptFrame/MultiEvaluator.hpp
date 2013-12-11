@@ -50,8 +50,8 @@ public:
 	{
 	}
 
-	MultiEvaluator(nevector<Evaluator<R, ADS, DS>*> _sngEvaluators) :
-			sngEvaluators(_sngEvaluators.getVector()), allowCosts(false)
+	MultiEvaluator(vector<Evaluator<R, ADS, DS>*> _sngEvaluators) :
+			sngEvaluators(_sngEvaluators), allowCosts(false)
 	{
 	}
 
@@ -64,21 +64,21 @@ public:
 		return allowCosts;
 	}
 
-	nevector<Evaluator<R, ADS, DS>*>* getEvaluators()
+	vector<Evaluator<R, ADS, DS>*>* getEvaluators()
 	{
 		if(sngEvaluators.size()>0)
 		{
-			return new nevector<Evaluator<R, ADS, DS>*>(sngEvaluators[0], sngEvaluators);
+			return new vector<Evaluator<R, ADS, DS>*>(sngEvaluators);
 		}
 		else
 			return NULL;
 	}
 
 	// TODO: check
-	const nevector<const Evaluator<R, ADS, DS>*>* getEvaluators() const
+	const vector<const Evaluator<R, ADS, DS>*>* getEvaluators() const
 	{
 		if(sngEvaluators.size()>0)
-			return new nevector<const Evaluator<R, ADS, DS>*>(sngEvaluators[0], sngEvaluators);
+			return new vector<const Evaluator<R, ADS, DS>*>(sngEvaluators);
 		else
 			return NULL;
 	}
@@ -88,18 +88,19 @@ public:
 		return evaluate(s.getR(), s.getADS());
 	}
 
-protected:
+
+public: // protected: not possible because of GeneralizedMultiEvaluator
 
 	// TODO: make virtual "= 0"
-	virtual MultiEvaluation<DS> evaluate(const R& r)
+	virtual MultiEvaluation<DS>& evaluate(const R& r)
 	{
-		nevector<Evaluation<DS>*> nev(&sngEvaluators[0]->evaluate(r));
-		for(unsigned i=1; i<sngEvaluators.size(); i++)
+		vector<Evaluation<DS>*> nev;
+		for(unsigned i=0; i<sngEvaluators.size(); i++)
 			nev.push_back(&sngEvaluators[i]->evaluate(r));
-		return MultiEvaluation<DS>(nev);
+		return * new MultiEvaluation<DS>(nev);
 	}
 
-	virtual MultiEvaluation<DS> evaluate(const R& r, const ADS&)
+	virtual MultiEvaluation<DS>& evaluate(const R& r, const ADS&)
 	{
 		return evaluate(r);
 	}
@@ -113,14 +114,14 @@ public:
 protected:
 	virtual void evaluate(MultiEvaluation<DS>& mev, const R& r, const ADS& ads)
 	{
-		MultiEvaluation<DS> ve1 = evaluate(r, ads);
+		MultiEvaluation<DS>& ve1 = evaluate(r, ads);
 
 		for (unsigned i = 0; i < ve1.size(); i++)
 		{
-			(*mev.at(i)) = (*ve1.at(i));
+			mev.at(i) = ve1.at(i);
 		}
 
-		/////delete &ve1;
+		delete &ve1;
 	}
 
 	/*

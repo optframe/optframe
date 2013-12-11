@@ -226,13 +226,13 @@ public:
 			}
 		}
 
-		nevector<Evaluator<R, ADS, DS>*>* _v_e = mev.getEvaluators();
+		vector<Evaluator<R, ADS, DS>*>* _v_e = mev.getEvaluators();
 		if (!_v_e)
 		{
 			cout << "2PPLS::search error: not using separated evaluators!" << endl;
 			exit(1);
 		}
-		nevector<Evaluator<R, ADS, DS>*> v_e(*_v_e);
+		vector<Evaluator<R, ADS, DS>*> v_e(*_v_e);
 		delete _v_e;
 
 		Pareto<R, ADS, DS>* pf = new Pareto<R, ADS, DS>;
@@ -308,13 +308,13 @@ public:
 
 	bool addSolution(Population<R, ADS>& p, Solution<R, ADS>& s)
 	{
-		nevector<Evaluator<R, ADS, DS>*>* _v_e = mev.getEvaluators();
+		vector<Evaluator<R, ADS, DS>*>* _v_e = mev.getEvaluators();
 		if (!_v_e)
 		{
 			cout << "2PPLS::addSolution (1) error: not using separated evaluators!" << endl;
 			exit(1);
 		}
-		nevector<Evaluator<R, ADS, DS>*> v_e(*_v_e);
+		vector<Evaluator<R, ADS, DS>*> v_e(*_v_e);
 		delete _v_e;
 
 		Evaluation<DS>& e = v_e[0]->evaluate(s);
@@ -343,13 +343,13 @@ public:
 
 	bool addSolution(pair<Population<R, ADS> , vector<vector<bool> > >& p, Solution<R, ADS>& s)
 	{
-		nevector<Evaluator<R, ADS, DS>*>* _v_e = mev.getEvaluators();
+		vector<Evaluator<R, ADS, DS>*>* _v_e = mev.getEvaluators();
 		if (!_v_e)
 		{
 			cout << "2PPLS::addSolution (2) error: not using separated evaluators!" << endl;
 			exit(1);
 		}
-		nevector<Evaluator<R, ADS, DS>*> v_e(*_v_e);
+		vector<Evaluator<R, ADS, DS>*> v_e(*_v_e);
 		delete _v_e;
 
 		Evaluation<DS>& e = v_e[0]->evaluate(s);

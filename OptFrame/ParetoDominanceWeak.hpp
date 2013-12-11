@@ -46,7 +46,7 @@ public:
 
 	using ParetoDominance<R, ADS, DS>::dominates;
 
-	ParetoDominanceWeak(nevector<Evaluator<R, ADS, DS>*> _v_e) :
+	ParetoDominanceWeak(vector<Evaluator<R, ADS, DS>*> _v_e) :
 		ParetoDominance<R, ADS, DS> (_v_e)
 	{
 	}
@@ -55,7 +55,7 @@ public:
 	{
 	}
 
-	void insertEvaluators(nevector<Evaluator<R, ADS, DS>*> _v_e)
+	void insertEvaluators(vector<Evaluator<R, ADS, DS>*> _v_e)
 	{
 		ParetoDominance<R, ADS, DS>::v_e = _v_e;
 	}
@@ -63,7 +63,7 @@ public:
 	// true if 's1' weakly dominates 's2'
 	virtual bool dominates(const vector<Evaluation<DS>*> v1, const vector<Evaluation<DS>*> v2)
 	{
-		nevector<Evaluator<R, ADS, DS>*>& v_e = ParetoDominance<R, ADS, DS>::v_e;
+		vector<Evaluator<R, ADS, DS>*>& v_e = ParetoDominance<R, ADS, DS>::v_e;
 
 		if (!((v_e.size() == v1.size()) && (v1.size() == v2.size())))
 		{
