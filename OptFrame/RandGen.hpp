@@ -124,6 +124,11 @@ public:
 		return (double) ::rand() / RAND_MAX;
 	}
 
+	virtual double randG(double mean, double stdev)
+	{
+		return randG() * stdev + mean;
+	}
+
 	// random gaussian mean 0.0 stdev 1.0
 	virtual double randG()
 	{
