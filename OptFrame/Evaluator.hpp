@@ -32,7 +32,7 @@
 #include "Component.hpp"
 #include "Action.hpp"
 
-#define OPTFRAME_EPSILON 0.0001
+//#define OPTFRAME_EPSILON 0.0001
 
 using namespace std;
 using namespace scannerpp;

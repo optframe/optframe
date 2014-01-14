@@ -30,7 +30,9 @@
 
 #include "Solution.hpp"
 #include "Evaluation.hpp"
-#include "Move.hpp"
+
+#include "Evaluator.hpp"
+#include "Direction.hpp"
 
 #include <iostream>
 #include <cmath>
@@ -44,14 +46,20 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_
 class ParetoDominance
 {
 protected:
+	// TODO: make Evaluator inherit from Direction!
 	vector<Evaluator<R, ADS, DS>*> v_e;
+	vector<Direction<DS>*> v_d;
 
 public:
 
 	ParetoDominance(vector<Evaluator<R, ADS, DS>*> _v_e) :
-		v_e(_v_e)
+			v_e(_v_e)
 	{
+	}
 
+	ParetoDominance(vector<Direction<DS>*> _v_d) :
+			v_d(_v_d)
+	{
 	}
 
 	virtual ~ParetoDominance()
@@ -66,10 +74,16 @@ public:
 	// true if 's1' dominates 's2'
 	virtual bool dominates(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2)
 	{
+		if(v_e.size() == 0)
+		{
+			cout << "ParetoDominance::error! not implemented for direction only!" << endl;
+			exit(1);
+		}
+
 		vector<Evaluation<DS>*> v1;
 		vector<Evaluation<DS>*> v2;
 
-		for (int e = 0; e < v_e.size(); e++)
+		for(int e = 0; e < v_e.size(); e++)
 		{
 			v1.push_back(&v_e[e]->evaluate(s1));
 			v2.push_back(&v_e[e]->evaluate(s2));
@@ -77,7 +91,7 @@ public:
 
 		bool r = dominates(v1, v2);
 
-		for (int e = 0; e < v_e.size(); e++)
+		for(int e = 0; e < v_e.size(); e++)
 		{
 			delete v1[e];
 			delete v2[e];
@@ -89,25 +103,48 @@ public:
 	// true if 's1' dominates 's2'
 	virtual bool dominates(const vector<Evaluation<DS>*> v1, const vector<Evaluation<DS>*> v2)
 	{
-		if (!((v_e.size() == v1.size()) && (v1.size() == v2.size())))
+		if((v1.size() != v2.size()) || (v1.size() == 0) || (v2.size() == 0))
 		{
-			cout << "WARNING in ParetoDominance: different sizes." << endl;
+			// TODO: throw exception!
+			cout << "WARNING in ParetoDominance: different sizes or empty!" << endl;
 			return false;
 		}
 
 		int better = 0;
 		int equals = 0;
 
-		for (int e = 0; e < v1.size(); e++)
+		// TODO: make inheritance!
+		if(v_e.size() == v1.size())
 		{
-			if (v_e[e]->betterThan(*v1[e], *v2[e]))
-				better++;
+			for(int e = 0; e < v1.size(); e++)
+			{
+				if(v_e[e]->betterThan(*v1[e], *v2[e]))
+					better++;
 
-			if (abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
-				equals++;
+				if(abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
+					equals++;
+			}
+		}
+		else // TODO: make inheritance!
+		{
+			if(v_d.size() != v1.size())
+			{
+				// TODO: throw exception!
+				cout << "WARNING in ParetoDominance: different sizes." << endl;
+				return false;
+			}
+
+			for(int e = 0; e < v1.size(); e++)
+			{
+				if(v_d[e]->betterThan(*v1[e], *v2[e]))
+					better++;
+
+				if(abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
+					equals++;
+			}
 		}
 
-		return ((better + equals == v_e.size()) && (better > 0));
+		return ((better + equals == v1.size()) && (better > 0));
 	}
 
 };
