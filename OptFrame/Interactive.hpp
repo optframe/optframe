@@ -115,6 +115,8 @@
 #include "Heuristics/VNS/ReducedVNS.hpp"
 #include "Heuristics/VNS/GeneralVNS.hpp"
 
+#include "Heuristics/EvolutionaryAlgorithms/DecoderNSGAII.hpp"
+
 // test local searches
 #include "Heuristics/CompareLocalSearch.hpp"
 

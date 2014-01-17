@@ -25,6 +25,8 @@
 
 #include "Component.hpp"
 
+#include "Constructive.h"
+
 using namespace std;
 
 namespace optframe

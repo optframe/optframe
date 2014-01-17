@@ -25,18 +25,11 @@
 
 #include "Component.hpp"
 #include "Solution.hpp"
-#include "Evaluation.hpp"
+#include "MultiEvaluation.hpp"
 
 
 namespace optframe
 {
-
-template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-struct DecodedValues
-{
-	vector<Solution<X, ADS>*> solutions;
-	vector<Evaluation<DS>*> evaluations;
-};
 
 template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class Decoder: public Component
@@ -47,7 +40,7 @@ public:
 	{
 	}
 
-	pair<vector<Solution<X, ADS>*>, vector<Evaluation<DS>*> > decode(const Solution<R>& solution) = 0;
+	virtual pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation<DS>*> > decode(const Solution<R>& solution) = 0;
 };
 
 }

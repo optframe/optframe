@@ -94,6 +94,15 @@ public:
 		return c;
 	}
 
+	void add(const Population<R, ADS, DS>& pop)
+	{
+		for(unsigned i=0; i<pop.size(); i++)
+		{
+			const chromossome& s = pop.at(i);
+			push_back(s);
+		}
+	}
+
 	void clear()
 	{
 		for(unsigned i=0;i<p.size();i++)
@@ -158,7 +167,8 @@ public:
 
 	virtual void print() const
 	{
-		cout << "Population("<<p.size()<<")" << endl;
+		cout << "Population("<<p.size()<<")";
+		cout << endl;
 
 		for (unsigned i = 0; i < p.size(); i++)
 		{

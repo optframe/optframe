@@ -119,6 +119,13 @@ public:
 		return *new MultiEvaluation<DS>(*this);
 	}
 
+	virtual void print() const
+	{
+		cout << "MultiEvaluation (" << vev.size() << "):";
+		for(unsigned i=0; i<vev.size(); i++)
+			vev[i]->print();
+	}
+
 };
 
 }
