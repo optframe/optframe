@@ -61,7 +61,8 @@ public:
 		Solution<R, ADS>& s = constructive.generateSolution();
 		Evaluation<DS>& e  = evaluator.evaluate(s);
 
-		e.print();
+		if (Component::information)
+			e.print();
 
 		while ((iter < iterMax) && ((tnow - tini) < timelimit) && (evaluator.betterThan(target_f, e.evaluation())))
 		{
