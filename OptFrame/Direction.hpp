@@ -21,6 +21,9 @@
 #ifndef OPTFRAME_OPTIMIZATION_DIRECTION_HPP_
 #define OPTFRAME_OPTIMIZATION_DIRECTION_HPP_
 
+#include <float.h>
+#include <limits>
+
 #include "Solution.hpp"
 #include "ADSManager.hpp"
 #include "Evaluation.hpp"
@@ -181,6 +184,30 @@ public:
 		return !isMinimization();
 	}
 
+	// ============ estimation =============
+
+	// bad approximation!
+	virtual double min()
+	{
+		////return -DBL_MAX;
+
+		if(numeric_limits<double>::has_infinity)
+			return -numeric_limits<double>::infinity();
+		else
+			return -numeric_limits<double>::max();
+	}
+
+	// bad approximation!
+	virtual double max()
+	{
+		////return DBL_MAX;
+
+		if(numeric_limits<double>::has_infinity)
+			return numeric_limits<double>::infinity();
+		else
+			return numeric_limits<double>::max();
+	}
+
 	// ============= Component ===============
 
 	virtual bool compatible(string s)
@@ -211,7 +238,7 @@ public:
 	{
 	}
 
-	bool betterThan(double f1, double f2)
+	virtual bool betterThan(double f1, double f2)
 	{
 		// MINIMIZATION
 		return (f1 < (f2 - OPTFRAME_EPSILON));
@@ -232,7 +259,7 @@ public:
 	{
 	}
 
-	bool betterThan(double f1, double f2)
+	virtual bool betterThan(double f1, double f2)
 	{
 		// MAXIMIZATION
 		return (f1 > (f2 + OPTFRAME_EPSILON));

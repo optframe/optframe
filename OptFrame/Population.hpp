@@ -54,12 +54,7 @@ public:
 
 	virtual ~Population()
 	{
-		unsigned sizePop = p.size();
-
-		for (unsigned i = 0; i < sizePop; i++)
-		{
-			delete p.at(i);
-		}
+		clear();
 	}
 
 	unsigned size() const
@@ -80,6 +75,12 @@ public:
 	void insert(unsigned pos, chromossome& c)
 	{
 		p.insert(p.begin() + pos, new chromossome(c));
+	}
+
+	void push_back(chromossome* c)
+	{
+		if(c) // not null
+			p.push_back(c);
 	}
 
 	void push_back(const chromossome& c)
@@ -103,11 +104,17 @@ public:
 		}
 	}
 
+	// clear and kill
 	void clear()
 	{
 		for(unsigned i=0;i<p.size();i++)
 			delete p.at(i);
 
+		p.clear();
+	}
+
+	void clearNoKill()
+	{
 		p.clear();
 	}
 

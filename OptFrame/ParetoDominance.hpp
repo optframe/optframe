@@ -101,7 +101,13 @@ public:
 	}
 
 	// true if 's1' dominates 's2'
-	virtual bool dominates(const vector<Evaluation<DS>*> v1, const vector<Evaluation<DS>*> v2)
+	virtual bool dominates(const MultiEvaluation<DS>& mev1, const MultiEvaluation<DS>& mev2)
+	{
+		return dominates(mev1.getVector(), mev2.getVector());
+	}
+
+	// true if 's1' dominates 's2'
+	virtual bool dominates(const vector<Evaluation<DS>*>& v1, const vector<Evaluation<DS>*>& v2)
 	{
 		if((v1.size() != v2.size()) || (v1.size() == 0) || (v2.size() == 0))
 		{

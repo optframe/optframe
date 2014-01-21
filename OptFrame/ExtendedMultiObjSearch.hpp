@@ -89,6 +89,12 @@ public:
 		return paretoFront;
 	}
 
+	void print() const
+	{
+		cout << "ExtendedPareto size=" << paretoFront.size();
+		cout << endl;
+	}
+
 };
 
 

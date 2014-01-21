@@ -36,29 +36,46 @@ protected:
 
 public:
 
-	MultiEvaluation(Evaluation<DS>& ev)
+
+	MultiEvaluation(Evaluation<DS>* ev)
 	{
-		vev.push_back(&ev);
+		vev.push_back(ev);
 	}
 
-	MultiEvaluation(const vector<Evaluation<DS>*>& _vev) :
-			vev(_vev)
+	MultiEvaluation(const Evaluation<DS>& ev)
 	{
+		vev.push_back(&ev.clone());
+	}
+
+	MultiEvaluation(const vector<Evaluation<DS>*>& _vev)
+	{
+		for(unsigned i = 0; i < _vev.size(); i++)
+			vev.push_back(&_vev[i]->clone());
 	}
 
 	MultiEvaluation(const MultiEvaluation<DS>& mev)
 	{
-		vev = mev.vev;
+		for(unsigned i = 0; i < mev.vev.size(); i++)
+			vev.push_back(&mev.vev[i]->clone());
 	}
 
 	virtual ~MultiEvaluation()
 	{
+		for(unsigned i = 0; i < vev.size(); i++)
+			delete vev[i];
+		vev.clear();
 	}
 
-	void addEvaluation(Evaluation<DS>& ev)
+	void addEvaluation(const Evaluation<DS>& ev)
 	{
-		vev.push_back(&ev);
+		vev.push_back(&ev.clone());
 	}
+
+	void addEvaluation(Evaluation<DS>* ev)
+	{
+		vev.push_back(ev);
+	}
+
 
 	unsigned size()
 	{
@@ -67,14 +84,9 @@ public:
 
 	void erase(unsigned index)
 	{
-		if (vev.size() > 1)
-			vev.erase(vev.begin() + index);
-		else
-		{
-			cerr << "MultiEvaluation::erase error: not enough elements do delete (" << vev.size() << ")";
-			cerr << endl;
-			exit(1); // TODO: throw exception
-		}
+		delete vev.at(index);
+		vev.at(index) = NULL;
+		vev.erase(vev.begin() + index);
 	}
 
 	Evaluation<DS>& at(unsigned index)
@@ -97,7 +109,6 @@ public:
 		return vev[index];
 	}
 
-
 	const vector<Evaluation<DS>*>& getVector() const
 	{
 		return vev;
@@ -105,11 +116,11 @@ public:
 
 	virtual MultiEvaluation<DS>& operator=(const MultiEvaluation<DS>& mev)
 	{
-		if (&mev == this) // auto ref check
+		if(&mev == this) // auto ref check
 			return *this;
 
-		//this->v = mev.v;
-		this->vev = mev.vev;
+		for(unsigned i = 0; i < mev.vev.size(); i++)
+			this->vev.push_back(&mev.vev[i]->clone());
 
 		return *this;
 	}
@@ -122,7 +133,7 @@ public:
 	virtual void print() const
 	{
 		cout << "MultiEvaluation (" << vev.size() << "):";
-		for(unsigned i=0; i<vev.size(); i++)
+		for(unsigned i = 0; i < vev.size(); i++)
 			vev[i]->print();
 	}
 

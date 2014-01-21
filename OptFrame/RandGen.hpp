@@ -112,6 +112,12 @@ public:
 		return ::rand() % n;
 	}
 
+	// random with probability 'p'
+	virtual double randP(double p)
+	{
+		return (rand01() < p);
+	}
+
 	// random uniform between [0,1)
 	virtual double rand01()
 	{

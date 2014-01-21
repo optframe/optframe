@@ -30,7 +30,7 @@
 #include "../../InitialPopulation.h"
 #include "../../RandGen.hpp"
 #include "../../NSSeq.hpp"
-#include "../../ExtendedParetoDominance.hpp"
+#include "../../ParetoDominance.hpp"
 
 #include "../../Decoder.hpp"
 
@@ -44,19 +44,84 @@ namespace optframe
 {
 
 template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class IndividualExtNSGAII
+{
+public:
+	Solution<R>* s;
+	int rank;
+	double distance;
+
+	vector<Solution<X, ADS>*> genSols;
+	vector<MultiEvaluation<DS>*> genSolsEval;
+	vector<double> vDist; // crowding distance for each part of evaluation
+	vector<int> vRank;    // ranking for each part of evaluation
+
+	IndividualExtNSGAII(Solution<R>* _s) :
+			s(_s)
+	{
+		rank = -1;
+		distance = -1;
+		if(s == NULL)
+		{
+			cout << "IndividualExtNSGAII error: not expecting NULL solution (and not using references for now)!" << endl;
+			exit(1);
+		}
+	}
+
+	virtual ~IndividualExtNSGAII()
+	{
+	}
+
+	void updateDist()
+	{
+		// find 'max' of parts
+		double max = vDist[0];
+		for(unsigned i=1; i<vDist.size(); i++)
+			if(vDist[i]>max)
+				max = vDist[i];
+		distance = max;
+	}
+
+	void updateRank()
+	{
+		// find 'min' of parts
+		double min = vRank[0];
+		for(unsigned i=1; i<vRank.size(); i++)
+			if(vRank[i]< min)
+				min = vRank[i];
+		rank = min;
+	}
+
+	IndividualExtNSGAII<R, X, ADS, DS>& clone() const
+	{
+		IndividualExtNSGAII<R, X, ADS, DS>* ind = new IndividualExtNSGAII<R, X, ADS, DS>(&s->clone());
+		ind->rank = rank;
+		ind->distance = distance;
+		for(unsigned i = 0; i < genSols.size(); i++)
+			ind->genSols.push_back(&genSols[i]->clone());
+		for(unsigned i = 0; i < genSolsEval.size(); i++)
+			ind->genSolsEval.push_back(&genSolsEval[i]->clone());
+
+		return *ind;
+	}
+
+};
+
+template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class DecoderNSGAII: public ExtendedMultiObjSearch<R, ADS, DS>
 {
 private:
 	Decoder<R, X, ADS, DS>& decoder;
+	vector<Direction<DS>*>& v_d;
 	unsigned nObjectives;
 
 	InitialPopulation<R>& init_pop;
-	int init_pop_size;
+	int N;
 
-	ExtendedParetoDominance<R, X, ADS, DS> pDominance;
+	ParetoDominance<R, ADS, DS> pDominance;
 	int gMax;
 
-	static bool compara(pair<double, int> p1, pair<double, int> p2)
+	static bool compara(pair<double, pair<int, int> > p1, pair<double, pair<int, int> > p2)
 	{
 		return p1.first > p2.first;
 	}
@@ -68,7 +133,7 @@ public:
 	//using Heuristic<R, ADS, DS >::exec; // prevents name hiding
 
 	DecoderNSGAII(Decoder<R, X, ADS, DS>& _decoder, vector<Direction<DS>*>& _v_d, InitialPopulation<R>& _init_pop, int _init_pop_size, int _gMax, RandGen& _rg) :
-			decoder(_decoder), nObjectives(_v_d.size()), init_pop(_init_pop), init_pop_size(_init_pop_size), pDominance(ExtendedParetoDominance<R, X, ADS, DS>(_v_d, _decoder)), rg(_rg)
+			decoder(_decoder), v_d(_v_d), nObjectives(_v_d.size()), init_pop(_init_pop), N(_init_pop_size), pDominance(ParetoDominance<R, ADS, DS>(_v_d)), rg(_rg)
 	{
 		gMax = _gMax;
 		//cout << "pDOMINANCE OBJ FUNCTIONS: " << pDominance.v_d.size() << endl;
@@ -78,14 +143,39 @@ public:
 	{
 	}
 
-	virtual void basicGeneticOperators(Population<R>& p) = 0;
+	// base population 'p' and desired final population size 'p_size'
+	virtual vector<IndividualExtNSGAII<R, X, ADS, DS>*> basicGeneticOperators(const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& p, int p_size) = 0;
 
-	void printFronts(const vector<Population<R>*>& F)
+	void freeFronts(vector<vector<int>*>& F)
+	{
+		for(unsigned i = 0; i < F.size(); i++)
+			delete F[i];
+		F.clear();
+	}
+
+	void printFronts(const vector<vector<int>*>& F)
 	{
 		cout << "Fronts(" << F.size() << ") => ";
-		for(unsigned i=0; i<F.size(); i++)
+		for(unsigned i = 0; i < F.size(); i++)
 			cout << i << ": " << F[i]->size() << " ";
 		cout << endl;
+	}
+
+	vector<IndividualExtNSGAII<R, X, ADS, DS>*>* convert(Population<R>& p)
+	{
+		vector<IndividualExtNSGAII<R, X, ADS, DS>*>* vp = new vector<IndividualExtNSGAII<R, X, ADS, DS>*>;
+		for(unsigned i = 0; i < p.size(); i++)
+		{
+			Solution<R>* s = &p.at(i);
+			vp->push_back(new IndividualExtNSGAII<R, X, ADS, DS>(s));
+		}
+		return vp;
+	}
+
+	// compare if 'ind1' is better than 'ind2'
+	static bool crowdedComparison(const IndividualExtNSGAII<R, X, ADS, DS>& ind1, const IndividualExtNSGAII<R, X, ADS, DS>& ind2)
+	{
+		return (ind1.rank < ind2.rank) || ((ind1.rank == ind2.rank) && (ind1.distance > ind2.distance));
 	}
 
 	virtual ExtendedPareto<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, ExtendedPareto<R, ADS, DS>* _pf = NULL)
@@ -94,74 +184,88 @@ public:
 
 		cout << "search: DECODER version of Non Sorting Genetic Algorithm Search II" << endl;
 
-		Population<R> p = init_pop.generatePopulation(init_pop_size);
-		int N = p.size();
+		// 1. create population 'p0' of size 'N'
+		Population<R>* p0 = &init_pop.generatePopulation(N);
 
-		Population<R> q = p;
-		basicGeneticOperators(q);
+		vector<IndividualExtNSGAII<R, X, ADS, DS>*>* p = convert(*p0);
+		p0->clearNoKill();
+		delete p0;
 
-		int g = 0;
-		while((g <= gMax) && (tnow.now() < timelimit))
+		// 2. sort population by non domination
+		vector<vector<int>*> F = fastNonDominatedSort(*p);
+
+		// 3. update archive (how??)
+
+		// 4. create offspring of size 'N'
+		vector<IndividualExtNSGAII<R, X, ADS, DS>*> q = makeNewPopulation(*p);
+
+		int t = 0;
+		while((t <= gMax) && (tnow.now() < timelimit))
 		{
-			cout << "Generation = " << g << endl;
+			cout << "Generation = " << t << endl;
 
-			Population<R> r = p;
-			r.add(q);
-
-			cout << "* p=" << p.size() << " q=" << q.size() << " r=" << r.size();
+			cout << "N=" << N << " p.size()=" << p->size() << " q.size()=" << q.size();
 			cout << endl;
 
-			//Start NonDominance Order by sets
-			vector<Population<R>*> F;
-			//cout << "calling fastNonDominanatedSort()" << endl;
-			fastNonDominanatedSort(F, r);
-			//cout << "finished fastNonDominanatedSort()" << endl;
+			// 1. combine populations in 'Rt': Rt = Pt U Qt;
+			vector<IndividualExtNSGAII<R, X, ADS, DS>*>* r = p;
+			r->insert(r->end(), q.begin(), q.end());
 
+			// 2. sort population by non domination
+			freeFronts(F);
+			F = fastNonDominatedSort(*r);
 			printFronts(F);
 
-			Population<R> popTemp;
-			int j = 0;
+			// 3. Pt+1 = {}
+			vector<IndividualExtNSGAII<R, X, ADS, DS>*>* nextPop = new vector<IndividualExtNSGAII<R, X, ADS, DS>*>;
 
-			vector<double> cD; //Crowding Distance
+			// 4. i=1
+			int i = 0;
 
-			while((popTemp.size() + F[j]->size()) < N)
+			//vector<double> cD;
+			while((nextPop->size() + F[i]->size()) <= N)
 			{
-				crowdingDistanceOrder(cD, *F[j]);
+				crowdingDistanceAssignment(*F[i], *r);
 
-				for(int i = 0; i < F[j]->size(); i++)
-					popTemp.push_back(F[j]->at(i));
-				j++;
+				for(int j = 0; j < F[i]->size(); j++)
+					nextPop->push_back(F[i]->at(j));
+				i = i + 1;
 			}
 
 			vector<double> cDTemp;
-			crowdingDistanceOrder(cDTemp, *F[j]);
+			crowdingDistanceOrder(cDTemp, *F[i]);
 
 			vector<pair<double, int> > cDOrdenated;
-			for(int i = 0; i < cDTemp.size(); i++)
-				cDOrdenated.push_back(make_pair(cDTemp[i], i));
+			for(int j = 0; j < cDTemp.size(); j++)
+				cDOrdenated.push_back(make_pair(cDTemp[j], j));
 
 			sort(cDOrdenated.begin(), cDOrdenated.end(), compara);
 
-			int popTempSize = popTemp.size();
-			for(int i = 0; i < (N - popTempSize); i++)
+			int popTempSize = nextPop->size();
+			for(int j = 0; j < (N - popTempSize); j++)
 			{
-				cD.push_back(cDOrdenated[i].first);
-				popTemp.push_back(F[j]->at(cDOrdenated[i].second));
+				cD.push_back(cDOrdenated[j].first);
+				nextPop->push_back(F[i]->at(cDOrdenated[j].second)); //todo: leak
 			}
 
-			p.clear();
-			p = popTemp;
-			popTemp.clear();
+			delete r; // also deleted 'p'
+			r = NULL;
+
+			p = nextPop;
 
 			q.clear();
-			q = basicSelection(p, cD);
 
+			q = *p;
 			basicGeneticOperators(q);
 
-			for(int i = 0; i < F.size(); i++)
-				F[i]->clear();
+			// TODO: fixing..
+			//q =
+			vector<IndividualExtNSGAII<R, X, ADS, DS>*> q1 = basicSelection(*p1);
 
-			r.clear();
+			for(int k = 0; k < F.size(); k++)
+				delete F[k];
+
+			//r.clear();
 
 			g++;
 		}
@@ -169,9 +273,9 @@ public:
 		// FINISH ALGORITHM!
 
 		ExtendedPareto<R, ADS, DS>* pf = new ExtendedPareto<R, ADS, DS>;
-		for(unsigned i = 0; i < p.size(); i++)
+		while(p->size() > 0)
 		{
-			Solution<R>* s = &p.at(i);
+			Solution<R>* s = &p->remove(0);
 
 			// CALL DECODER TO EVALUATE SOLUTIONS!
 
@@ -186,174 +290,195 @@ public:
 			pf->push_back(*s, dec_vs.second);
 		}
 
+		delete p;
+
 		return pf;
 	}
 
-	void crowdingDistanceOrder(vector<double>& CD, const Population<R>& Fj)
+	void crowdingDistanceAssignment(const vector<int>& I, vector<IndividualExtNSGAII<R, X, ADS, DS>*>& r)
 	{
-		int N = Fj.size();
-		if(N > 0)
+		int l = I.size();
+		if(l == 0)
+			return;
+
+		// for each 'i', ...
+		for(unsigned k = 0; k < I.size(); k++)
 		{
-			int CDOldSize = CD.size();
-			for(int i = 0; i < N; i++)
-				CD.push_back(0);
+			int i = I[k];
+			// ... set I[i].distance = 0
+			r[i]->distance = 0;
+			for(unsigned z = 0; z < r[i]->vDist.size(); z++)
+				r[i]->vDist[z] = 0;
+		}
 
-			for(unsigned m = 0; m < nObjectives; m++)
+		// for each objective 'm'
+		for(unsigned m = 0; m < nObjectives; m++)
+		{
+			// I = sort(I, m)
+			vector<pair<double, pair<int, int> > > fitness;  // (fitness, (id_s, id_x))
+
+			for(int z = 0; z < I.size(); z++)
 			{
-				vector<pair<double, int> > fitness;
+				int i = I[z];
 
-				for(int i = 0; i < N; i++)
+				for(unsigned k = 0; k < r[i]->genSolsEval.size(); k++)
 				{
-					pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation<DS>*> > dec_vs = decoder.decode(Fj.at(i));
+					double fit = r[i]->genSolsEval[k]->at(m).evaluation();
+					fitness.push_back(make_pair(fit, make_pair(i, k)));
+				}
+			}
 
-					if(dec_vs.first.size() > 0)
+			sort(fitness.begin(), fitness.end(), compara);
+
+			// I[1] dist = I[l] dist = 'infinity'
+			// ADAPTATION
+			/*
+			 r[fitness[0].second]->distance = numeric_limits<double>::infinity();
+			 r[fitness[l - 1].second]->distance = numeric_limits<double>::infinity();
+			 */
+
+			// for i=2 to l-1
+			// ADAPTATION WITH ANOTHER LOOP
+			for(int k = 0; k < fitness.size(); k++)
+			{
+				int i = fitness[k].second.first;
+				int i_part = fitness[k].second.second;
+
+				int idx_before = -1;
+				for(int e = k - 1; e >= 0; e--)
+					if(fitness[e].second.first != i)
 					{
-						cout << "DecoderNSGAII::error: crowding not expecting generated solutions!" << endl;
-						exit(1);
+						idx_before = e;
+						break;
 					}
 
-					double sum_fit = 0;
-					for(unsigned k = 0; k < dec_vs.second.size(); k++)
+				if(idx_before == -1)
+				{
+					r[i]->vDist[i_part] += numeric_limits<double>::infinity();
+					continue;
+				}
+
+				int idx_after = -1;
+				for(int e = k + 1; e < fitness.size(); e++)
+					if(fitness[e].second.first != i)
 					{
-						sum_fit += dec_vs.second[k]->at(m).evaluation();
-						delete dec_vs.second[k];
+						idx_after = e;
+						break;
 					}
 
-					fitness.push_back(make_pair(sum_fit, i));
-				}
-
-				sort(fitness.begin(), fitness.end(), compara);
-
-				CD[CDOldSize + fitness[0].second] = INFINITO;
-				CD[CDOldSize + fitness[N - 1].second] = INFINITO;
-
-				for(int i = (CDOldSize + 1); i < (CDOldSize + N - 1); i++)
+				if(idx_after == -1)
 				{
-					if((fitness[0].first - fitness[N - 1].first) < 0.000001)
-						CD[CDOldSize + fitness[i].second] = INFINITO;
-					else
-						CD[CDOldSize + fitness[i].second] = CD[CDOldSize + fitness[i].second] + (fitness[i - 1].first - fitness[i + 1].first) / (fitness[0].first - fitness[N - 1].first);
-
+					r[i]->vDist[i_part] += numeric_limits<double>::infinity();
+					continue;
 				}
 
+				// I[i] dist += (I[i+1].m - I[i-1].m)/(fmax_m - fmin_m)
+				// ADAPTATION
+				r[i]->vDist[i_part] += (fitness[idx_after].first - fitness[idx_before].first) / (v_d[m]->max() - v_d[m]->min());
+			}
+
+
+			// ADAPTATION (getBest)
+			// for each 'i', ...
+			for(unsigned k = 0; k < I.size(); k++)
+			{
+				int i = I[k];
+				// ... set I[i].distance = max of parts
+				r[i]->updateDist();
 			}
 		}
 	}
 
-	void fastNonDominanatedSort(vector<Population<R>*>& F, const Population<R>& p)
+
+	vector<vector<int>*> fastNonDominatedSort(vector<IndividualExtNSGAII<R, X, ADS, DS>*>& Pop)
 	{
-		//cout << "begin fastNonDominanatedSort" << endl;
-		Population<R> pAtual = p;
-		Population<R>* F0 = new Population<R>;
-		F.push_back(F0);
+		// create a map for solutions
+		vector< pair<int,int> > P;
 
-		vector<int> v_nd;
-		vector<int> deleteds;
+		for(unsigned i=0; i<P.size(); i++)
+			for(unsigned j=0; j<Pop[i]->genSols.size(); j++)
+				P.push_back(make_pair(i, j));
 
-		for(int i = 0; i < pAtual.size(); i++)
+		vector<vector<int>*> F;
+		F.push_back(new vector<int>);
+		vector<vector<int> > S(P.size());
+		vector<int> n(P.size());
+
+		// for each 'p' in 'P'
+		for(unsigned p = 0; p < P.size(); p++)
 		{
-			//cout << "i=" << i << "/" << pAtual.size();
-			//cout << endl;
+			S[p].clear(); // Sp = {}
+			n[p] = 0;     // np = 0
 
-			int nd = 0;
-
-			for(int j = 0; j < pAtual.size(); j++)
-				if(j != i)
+			// for each 'q' in 'P'
+			for(unsigned q = 0; q < P.size(); q++)
+				if(p != q)
 				{
-					if(pDominance.dominates(pAtual.at(j), pAtual.at(i)))
+					int p_i = P[p].first;
+					int p_j = P[p].second;
+
+					int q_i = P[q].first;
+					int q_j = P[q].second;
+
+					// if (p << q)
+					if(pDominance.dominates(*Pop.at(p_i)->genSolsEval[p_j], *Pop.at(q_i)->genSolsEval[q_j]))
+						S[p].push_back(q); // Sp = Sp U {q}
+					// else if (q << p)
+					else if(pDominance.dominates(*Pop.at(q_i)->genSolsEval[q_j], *Pop.at(p_i)->genSolsEval[p_j]))
+						n[p]++; // np = np + 1
+
+					if(n[p] == 0)
 					{
-						//cout << j << " dominates " << i << endl;
-						nd++;
-					}
-					else
-					{
-						//cout <<  "ELSE: " << j << " not dominates " << i << endl;
+						Pop[p_i]->vRank[p_j] = 0; // p rank = 1
+						F[0]->push_back(p);  // F1 = F1 U {p}
 					}
 				}
-
-			if(nd == 0)
-			{
-				F[0]->push_back(pAtual.at(i));
-				deleteds.push_back(i);
-			}
 		}
 
-		int nMax = p.size() / 2;
-		int nAtual = F[0]->size();
-
-		//cout << "delete list: " << deleteds << endl;
-		for(int i = 0; i < deleteds.size(); i++)
-			delete &pAtual.remove(deleteds[i] - i);
-
-		deleteds.clear();
-
-		int k = 0;
-
-		//cout << "entering main loop.." << endl;
-		while((F[k]->size() != 0) && (nAtual <= nMax))
+		int i = 0; // i=1
+		while(F[i]->size() != 0) // while Fi != {}
 		{
-			k++;
+			vector<int>* Q = new vector<int>;  // Q = {}
 
-			Population<R>* uTemp = new Population<R>;
-			F.push_back(uTemp);
-
-			for(int i = 0; i < pAtual.size(); i++)
+			//for each 'p' in 'Fi'
+			for(unsigned k = 0; k < F[i]->size(); k++)
 			{
-				int nd = 0;
+				int p = F[i]->at(k);
+				int p_i = P[p].first;
+				int p_j = P[p].second;
 
-				for(int j = 0; j < pAtual.size(); j++)
+				// for each 'q' in 'Sp'
+				for(unsigned j = 0; j < S[p].size(); j++)
 				{
-					if(j != i)
-						if(pDominance.dominates(pAtual.at(j), pAtual.at(i)))
-							nd++;
+					int q = S[p][j];
+					int q_i = P[q].first;
+					int q_j = P[q].second;
+
+					// nq = nq - 1
+					n[q]--;
+
+					// if nq = 0
+					if(n[q] == 0)
+					{
+						Pop[q_i]->vRank[q_j] = i + 1;  // q rank = i+1
+						Q->push_back(q);    // Q = Q U {q}
+					}
 				}
 
-				if(nd == 0)
-				{
-					F[k]->push_back(pAtual.at(i));
-					deleteds.push_back(i);
-				}
 			}
 
-			for(int i = 0; i < deleteds.size(); i++)
-				delete &pAtual.remove(deleteds[i] - i);
-
-			nAtual += F[k]->size();
-
-			deleteds.clear();
+			i++; // i = i + 1
+			F[i] = Q; // Fi = Q
 		}
 
-		//cout << "finish fastNonDominanatedSort" << endl;
+		// update all ranks
+		for(unsigned p = 0; p < Pop.size(); p++)
+			Pop[p]->updateRank();
+
+		return F;
 	}
 
-	virtual Population<R> basicSelection(const Population<R>& p, vector<double> cD)
-	{
-		Population<R> q;
-		for(int i = 0; i < p.size(); i++)
-		{
-			int j = rg.rand(p.size());
-			while(i == j)
-				j = rg.rand(p.size());
-
-			bool A = pDominance.dominates(p.at(i), p.at(j));
-			if(A)
-				q.push_back(p.at(i));
-
-			bool B = pDominance.dominates(p.at(j), p.at(i));
-			if(B)
-				q.push_back(p.at(j));
-
-			if(A == B)
-			{
-				if(cD[i] >= cD[j])
-					q.push_back(p.at(i));
-				else
-					q.push_back(p.at(j));
-			}
-		}
-
-		return q;
-	}
+	virtual vector<IndividualExtNSGAII<R, X, ADS, DS>*> makeNewPopulation(const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& p) = 0;
 
 };
 
