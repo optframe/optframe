@@ -38,18 +38,40 @@ class Component
 public:
 
 	int verboseLevel;
-	bool information;
+
+	bool error;
 	bool warning;
-	bool verbose;
-	bool debug;
+	bool information;
+	bool debug, verbose; // same thing for 'debug' or 'verbose'
+
+	// Mode: SILENT  = 0
+	// |      0      |      1      |      2      |      3      |
+	// |    error    |   warning   | information | debug/verb. |
+	// |      -      |      -      |      -      |      -      |
+
+	// Mode: ERROR = 1
+	// |      0      |      1      |      2      |      3      |
+	// |    error    |   warning   | information | debug/verb. |
+	// |      x      |      -      |      -      |      -      |
+
+	// Mode: WARNING = 2 (DEFAULT)
+	// |      0      |      1      |      2      |      3      |
+	// |    error    |   warning   | information | debug/verb. |
+	// |      x      |      x      |      -      |      -      |
+
+	// Mode: INFORMATION = 3
+	// |      0      |      1      |      2      |      3      |
+	// |    error    |   warning   | information | debug/verb. |
+	// |      x      |      x      |      x      |      -      |
+
+	// Mode: VERBOSE/DEBUG = 4
+	// |      0      |      1      |      2      |      3      |
+	// |    error    |   warning   | information | debug/verb. |
+	// |      x      |      x      |      x      |      x      |
 
 	Component()
 	{
-		verboseLevel = 1;
-		information = true;
-		warning = false;
-		verbose = false;
-		debug = false;
+		setMessageLevel(2);
 	}
 
 	virtual ~Component()
@@ -86,47 +108,42 @@ public:
 		return id();
 	}
 
-	void setVerboseLevel(int vl)
+	void setSilent()
 	{
+		setMessageLevel(0);
+	}
+
+	void setVerbose()
+	{
+		setMessageLevel(4);
+	}
+
+	void setMessageLevel(int vl)
+	{
+		error = warning = information = verbose = debug = false;
+
 		verboseLevel = vl;
 		switch (verboseLevel)
 		{
-		case 0:
-			information = false;
-			warning = false;
-			verbose = false;
-			debug = false;
+		case 0: // SILENT
 			break;
-		case 1:
-			information = true;
-			warning = false;
-			verbose = false;
-			debug = false;
+		case 1: // ERROR
+			error = true;
 			break;
-		case 2:
+		case 3: // INFORMATION
 			information = true;
+			break;
+		case 4: // VERBOSE
+			debug = verbose = true;
+			break;
+		default: // 2: WARNING (default)
 			warning = true;
-			verbose = false;
-			debug = false;
-			break;
-		case 3:
-			information = true;
-			warning = true;
-			verbose = true;
-			debug = false;
-			break;
-		case 4:
-			information = true;
-			warning = true;
-			verbose = true;
-			debug = true;
-			break;
-		default:
-			information = false;
-			warning = false;
-			verbose = false;
-			debug = false;
 		}
+
+		debug = verbose;
+		error = error || warning || information || debug;
+		warning =  warning || information || debug;
+		information =  information || debug;
 	}
 
 	bool getVerboseLevel()

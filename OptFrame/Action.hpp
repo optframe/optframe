@@ -245,7 +245,7 @@ public:
 
 			int verboseLevel = scanner.nextInt();
 
-			c->setVerboseLevel(verboseLevel);
+			c->setMessageLevel(verboseLevel);
 
 			return true;
 		}
