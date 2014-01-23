@@ -24,12 +24,47 @@
 #include <algorithm>
 
 #include "../../MultiObjSearch.hpp"
+#include "../../Solution.hpp"
 #include "../../Evaluator.hpp"
 #include "../../Evaluation.hpp"
 #include "../../Population.hpp"
 #include "../../NSSeq.hpp"
 #include "../../ParetoDominance.hpp"
+
+namespace optframe
+{
 #define INFINITO 1000000000
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+struct IndividualNSGAII
+{
+	Solution<R, ADS>& s;
+	MultiEvaluation<DS>* mev; // TODO: remove?
+	int rank;
+	double distance;
+
+	IndividualNSGAII(Solution<R, ADS>& _s) :
+			s(_s)
+	{
+		mev = NULL;
+		rank = -1;
+		distance = -1;
+	}
+
+	virtual ~IndividualNSGAII()
+	{
+		delete &s;
+		if(mev)
+			delete mev;
+	}
+
+	void print()
+	{
+		cout << "IndNSGAII: rank=" << rank << "\tdist=" << distance << endl;
+	}
+};
+
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NSGAII: public MultiObjSearch<R, ADS, DS >
 {
@@ -329,5 +364,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /*NONSORTINGGENETICALGORITHMII_HPP_*/

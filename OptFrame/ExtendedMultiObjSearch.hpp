@@ -53,12 +53,31 @@ public:
 
 	virtual ~ExtendedPareto()
 	{
+		for(unsigned i = 0; i < paretoSet.size(); i++)
+			delete paretoSet[i];
+		paretoSet.clear();
+		for(unsigned i = 0; i < paretoFront.size(); i++)
+		{
+			for(unsigned j = 0; j < paretoFront[i].size(); j++)
+				delete paretoFront[i][j];
+			paretoFront[i].clear();
+		}
+		paretoFront.clear();
 	}
 
-	void push_back(Solution<R, ADS>& s, vector<MultiEvaluation<DS>*>& v_e)
+	void push_back(Solution<R, ADS>* s, vector<MultiEvaluation<DS>*>& v_e)
 	{
-		paretoSet.push_back(&s);
+		paretoSet.push_back(s);
 		paretoFront.push_back(v_e);
+	}
+
+	void push_back(const Solution<R, ADS>& s, const vector<MultiEvaluation<DS>*>& v_e)
+	{
+		paretoSet.push_back(&s->clone());
+		vector<MultiEvaluation<DS>*> ve;
+		for(unsigned mev=0; mev<v_e.size(); mev++)
+			ve.push_back(&v_e[mev]->clone());
+		paretoFront.push_back(ve);
 	}
 
 	unsigned size()

@@ -214,6 +214,10 @@ public:
 		return make_pair(b1, b2);
 	}
 
+	virtual pair<bool, bool> birelation(const MultiEvaluation<DS>& mev1, const MultiEvaluation<DS>& mev2)
+	{
+		return birelation(mev1.getVector(), mev2.getVector());
+	}
 };
 
 }
