@@ -75,7 +75,7 @@ public:
 	{
 		Population<R, ADS>* p = new Population<R, ADS>;
 		for (unsigned i = 0; i < populationSize; i++)
-			p->push_back(constructive.generateSolution());
+			p->push_back(&constructive.generateSolution());
 		return *p;
 	}
 
