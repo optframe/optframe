@@ -38,12 +38,13 @@ using namespace std;
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class ExtendedPareto
 {
 private:
-	vector<Solution<R, ADS>*> paretoSet;
+	vector<Solution<R>*> paretoSet;
 	vector<vector<MultiEvaluation<DS>*> > paretoFront;
+	vector<Population<X, ADS>*> decodedSolutions;
 
 public:
 
@@ -56,6 +57,7 @@ public:
 		for(unsigned i = 0; i < paretoSet.size(); i++)
 			delete paretoSet[i];
 		paretoSet.clear();
+
 		for(unsigned i = 0; i < paretoFront.size(); i++)
 		{
 			for(unsigned j = 0; j < paretoFront[i].size(); j++)
@@ -63,21 +65,27 @@ public:
 			paretoFront[i].clear();
 		}
 		paretoFront.clear();
+
+		for(unsigned i = 0; i < decodedSolutions.size(); i++)
+			delete decodedSolutions[i];
+		decodedSolutions.clear();
 	}
 
-	void push_back(Solution<R, ADS>* s, vector<MultiEvaluation<DS>*>& v_e)
+	void push_back(Solution<R>* s, vector<MultiEvaluation<DS>*>& v_e, Population<X, ADS>* v_x)
 	{
 		paretoSet.push_back(s);
 		paretoFront.push_back(v_e);
+		decodedSolutions.push_back(v_x);
 	}
 
-	void push_back(const Solution<R, ADS>& s, const vector<MultiEvaluation<DS>*>& v_e)
+	void push_back(const Solution<R, ADS>& s, const vector<MultiEvaluation<DS>*>& v_e, const Population<X, ADS>& v_x)
 	{
 		paretoSet.push_back(&s->clone());
 		vector<MultiEvaluation<DS>*> ve;
-		for(unsigned mev=0; mev<v_e.size(); mev++)
+		for(unsigned mev = 0; mev < v_e.size(); mev++)
 			ve.push_back(&v_e[mev]->clone());
 		paretoFront.push_back(ve);
+		decodedSolutions.push_back(&v_x.clone());
 	}
 
 	unsigned size()
@@ -90,6 +98,8 @@ public:
 		pair<Solution<R, ADS>&, vector<MultiEvaluation<DS>*> > p(*paretoSet.at(index), paretoFront.at(index));
 		paretoSet.erase(paretoSet.begin() + index);
 		paretoSet.erase(paretoFront.begin() + index);
+
+		decodedSolutions.erase(decodedSolutions.begin() + index);
 		return p;
 	}
 
@@ -116,8 +126,7 @@ public:
 
 };
 
-
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class ExtendedMultiObjSearch: public Component
 {
 public:
@@ -130,7 +139,7 @@ public:
 	{
 	}
 
-	virtual ExtendedPareto<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, ExtendedPareto<R, ADS, DS>* _pf = NULL) = 0;
+	virtual ExtendedPareto<R, X, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, ExtendedPareto<R, X, ADS, DS>* _pf = NULL) = 0;
 
 	virtual string log()
 	{
@@ -139,7 +148,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return ( s == idComponent() ) || ( Component::compatible(s) );
+		return (s == idComponent()) || (Component::compatible(s));
 	}
 
 	static string idComponent()
@@ -156,8 +165,7 @@ public:
 
 };
 
-
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class ExtendedMultiObjSearchBuilder: public ComponentBuilder<R, ADS, DS>
 {
 public:
@@ -165,7 +173,7 @@ public:
 	{
 	}
 
-	virtual ExtendedMultiObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "") = 0;
+	virtual ExtendedMultiObjSearch<R, X, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "") = 0;
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{

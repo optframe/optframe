@@ -143,7 +143,7 @@ public:
 };
 
 template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class DecoderNSGAII: public ExtendedMultiObjSearch<R, ADS, DS>
+class DecoderNSGAII: public ExtendedMultiObjSearch<R, X, ADS, DS>
 {
 private:
 	Decoder<R, X, ADS, DS>& decoder;
@@ -295,7 +295,7 @@ public:
 	}
 
 	// main method for the class, 'search' method returns a pareto front of solutions
-	virtual ExtendedPareto<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, ExtendedPareto<R, ADS, DS>* _pf = NULL)
+	virtual ExtendedPareto<R, X, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, ExtendedPareto<R, X, ADS, DS>* _pf = NULL)
 	{
 		Timer tnow;
 
@@ -534,7 +534,7 @@ public:
 		if(Component::information)
 			cout << id() << ": memory clean!" << endl;
 
-		ExtendedPareto<R, ADS, DS>* pf = new ExtendedPareto<R, ADS, DS>;
+		ExtendedPareto<R, X, ADS, DS>* pf = new ExtendedPareto<R, X, ADS, DS>;
 		while(ps->size() > 0)
 		{
 			Solution<R>* s = &ps->at(0)->s.clone();
@@ -545,15 +545,16 @@ public:
 
 			pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation<DS>*> > dec_vs = decoder.decode(*s);
 
+			Population<X, ADS>* popx = new Population<X, ADS>;
 			if(dec_vs.first.size() > 0)
 			{
 				// free unused solutions
 				for(unsigned i = 0; i < dec_vs.first.size(); i++)
-					delete dec_vs.first[i];
+					popx->push_back(dec_vs.first[i]);
 				dec_vs.first.clear();
 			}
 
-			pf->push_back(s, dec_vs.second);
+			pf->push_back(s, dec_vs.second, popx);
 		}
 
 		delete ps;
