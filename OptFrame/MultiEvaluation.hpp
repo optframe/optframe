@@ -132,9 +132,16 @@ public:
 
 	virtual void print() const
 	{
-		cout << "MultiEvaluation (" << vev.size() << "):";
+		cout << toString() << endl;
+	}
+
+	virtual string toString() const
+	{
+		stringstream ss;
+		ss << "MultiEvaluation (" << vev.size() << "):";
 		for(unsigned i = 0; i < vev.size(); i++)
-			vev[i]->print();
+			ss << vev[i]->toString() << endl;
+		return ss.str();
 	}
 
 };

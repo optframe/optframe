@@ -210,21 +210,30 @@ public:
 		return idComponent();
 	}
 
+
 	virtual void print() const
 	{
-		cout << fixed; // disable scientific notation
-		cout << "Evaluation function value = " << evaluation();
-		cout << (isFeasible() ? " " : " (not feasible) ");
-		if (alternatives.size() > 0)
+		cout << toString() << endl;
+	}
+
+	virtual string toString() const
+	{
+		stringstream ss;
+		ss << fixed; // disable scientific notation
+		ss << "Evaluation function value = " << evaluation();
+		ss << (isFeasible() ? " " : " (not feasible) ");
+		if(alternatives.size() > 0)
 		{
-			cout << " alternative costs: ";
-			for (unsigned i = 0; i < alternatives.size(); i++)
-				cout << "(" << alternatives[i].first << ";" << alternatives[i].second << ") ";
+			ss << " alternative costs: ";
+			for(unsigned i = 0; i < alternatives.size(); i++)
+				ss << "(" << alternatives[i].first << ";" << alternatives[i].second << ") ";
 		}
-		cout << endl;
+		// ss << endl;
 
 		// default - not printing ememory
-		// cout << m << endl;
+		// ss << m << endl;
+
+		return ss.str();
 	}
 
 	virtual Evaluation& operator=(const Evaluation& e)

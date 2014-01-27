@@ -53,18 +53,18 @@ public:
 	{
 	}
 
-	Move<R, ADS, DS>& move(const R& r)
+	Move<R, ADS, DS>& move(const R& r, const ADS& ads)
 	{
       int x = rand() % ns.size();
 
-      return *new MOVE(x, ns[x]->move(r));
+      return *new MOVE(x, ns[x]->move(r, ads));
    }
 
-	virtual NSIterator<R, ADS, DS>& getIterator(const R& r)
+	virtual NSIterator<R, ADS, DS>& getIterator(const R& r, const ADS& ads)
 	{
       vector<NSIterator<R, ADS, DS>*> it;
       for(unsigned int i = 0; i < ns.size(); i++)
-         it.push_back(&ns[i]->getIterator(r));
+         it.push_back(&ns[i]->getIterator(r, ads));
 
       return *new IteratorNSSeqUnion<R, ADS, DS, MOVE> (it);
    }

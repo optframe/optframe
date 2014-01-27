@@ -40,7 +40,7 @@ public:
 	{
 	}
 
-protected:
+////protected:
 	virtual Move<R, ADS, DS>& move(const R&, const ADS&) = 0;
 
 public:
@@ -49,7 +49,7 @@ public:
 		return getIterator(s.getR(), s.getADS());
 	}
 
-protected:
+////protected:
 	virtual NSIterator<R, ADS, DS>& getIterator(const R& r, const ADS& ads) = 0;
 
 public:

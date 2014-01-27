@@ -55,14 +55,14 @@ public:
 		delete &m;
 	}
 
-	bool canBeApplied(const R& r)
+	bool canBeApplied(const R& r, const ADS& ads)
 	{
-		return m.canBeApplied(r);
+		return m.canBeApplied(r, ads);
 	}
 
-	Move<R, ADS, DS>& apply(R& r)
+	Move<R, ADS, DS>& apply(R& r, ADS& ads)
 	{
-		return *new MoveNSSeqUnion<R, ADS, DS> (id, m.apply(r));
+		return *new MoveNSSeqUnion<R, ADS, DS> (id, m.apply(r, ads));
 	}
 
 	Move<R, ADS, DS>& apply(DS& mem, R& rep)

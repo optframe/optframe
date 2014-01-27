@@ -64,7 +64,7 @@ public:
 		return apply(e.getDS(), s.getR(), s.getADS());
 	}
 
-protected:
+////protected:
 	virtual Move<R, ADS, DS>& apply(R& r, ADS& ads) = 0;
 
 	virtual Move<R, ADS, DS>& apply(DS& ds, R& r, ADS& ads)

@@ -33,9 +33,63 @@ using namespace std;
 namespace optframe
 {
 
+struct Log
+{
+	stringstream data;
+
+	void clear()
+	{
+		data.clear();
+	}
+
+	void append(string s)
+	{
+		data << s;
+	}
+
+	string log()
+	{
+		return data.str();
+	}
+
+	bool toFile(string file, bool append = true)
+	{
+		FILE* f;
+		if(append)
+			f = fopen(file.c_str(), "a");
+		else
+			f = fopen(file.c_str(), "w");
+
+		if(!f)
+			return false;
+
+		fprintf(f, data.str().c_str());
+
+		fclose(f);
+
+		return true;
+	}
+};
+
 class Component
 {
 public:
+
+	Log* logdata;
+
+	void initializeLog()
+	{
+		logdata = new Log;
+	}
+
+	void destroyLog()
+	{
+		if(logdata)
+		{
+			delete logdata;
+			logdata = NULL;
+		}
+	}
 
 	int verboseLevel;
 
@@ -72,6 +126,7 @@ public:
 	Component()
 	{
 		setMessageLevel(2);
+		logdata = NULL;
 	}
 
 	virtual ~Component()
@@ -101,6 +156,16 @@ public:
 	virtual void print() const
 	{
 		cout << toString() << endl;
+	}
+
+	virtual Log* getLog()
+	{
+		return logdata;
+	}
+
+	virtual const Log* getLog() const
+	{
+		return logdata;
 	}
 
 	virtual string log() const

@@ -93,19 +93,26 @@ public:
 		return paretoSet.size();
 	}
 
-	pair<Solution<R, ADS>&, vector<MultiEvaluation<DS>*> > erase(unsigned index)
+	pair<Solution<R>*, pair<vector<MultiEvaluation<DS>*>, vector<Population<X, ADS>*> > > erase(unsigned index)
 	{
-		pair<Solution<R, ADS>&, vector<MultiEvaluation<DS>*> > p(*paretoSet.at(index), paretoFront.at(index));
+		vector<MultiEvaluation<DS>*> vme = paretoFront.at(index);
+		Population<X, ADS>* pop = decodedSolutions.at(index);
+		pair<vector<MultiEvaluation<DS>*>, Population<X, ADS>*> p1 = make_pair(vme, pop);
+		pair<Solution<R>*, pair<vector<MultiEvaluation<DS>*>, Population<X, ADS>*> > p;
+		p = make_pair(paretoSet.at(index), p1);
 		paretoSet.erase(paretoSet.begin() + index);
 		paretoSet.erase(paretoFront.begin() + index);
-
 		decodedSolutions.erase(decodedSolutions.begin() + index);
+
 		return p;
 	}
 
-	pair<Solution<R, ADS>&, vector<MultiEvaluation<DS>*> > at(unsigned index)
+	pair<Solution<R>*, pair<vector<MultiEvaluation<DS>*>, Population<X, ADS>*> > at(unsigned index)
 	{
-		return make_pair(*paretoSet.at(index), paretoFront.at(index));
+		vector<MultiEvaluation<DS>*> vme = paretoFront.at(index);
+		Population<X, ADS>* pop = decodedSolutions.at(index);
+		pair<vector<MultiEvaluation<DS>*>, Population<X, ADS>*> p1 = make_pair(vme, pop);
+		return make_pair(paretoSet.at(index), p1);
 	}
 
 	vector<Solution<R, ADS>*> getParetoSet()

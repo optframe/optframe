@@ -332,8 +332,9 @@ public:
 		if(Component::information)
 			cout << id() << ": first crowding distance calculation applied!" << endl;
 
-		if(Component::information)
-			IndividualExtNSGAII<R, X, ADS, DS>::print(*px);
+		//if(Component::information)
+		//	IndividualExtNSGAII<R, X, ADS, DS>::print(*px);
+		logPopulation(*px, -1, tnow.now(), "first pop");
 
 		// 3. create offspring of size 'N'
 		if(Component::information)
@@ -342,6 +343,8 @@ public:
 		if(Component::information)
 			cout << id() << ": will decode first children!" << endl;
 		vector<IndividualExtNSGAII<R, X, ADS, DS>*> qx = decode(qs);
+
+		logPopulation(qx, -1, tnow.now(), "first pop qx");
 
 		if(Component::information)
 			cout << id() << ": main loop" << endl;
@@ -382,6 +385,8 @@ public:
 			freeFronts(F);
 			F = fastNonDominatedSort(*rx);
 			IndividualExtNSGAII<R, X, ADS, DS>::updateRanks(*rx); // update parents' ranks
+
+			logPopulation(*rx, t, tnow.now(), "rx sorted");
 
 			// 3. Pt+1 = {}
 			if(Component::information)
@@ -484,6 +489,7 @@ public:
 
 			//if(Component::information)
 			//	IndividualExtNSGAII<R, X, ADS, DS>::print(*nextPopX);
+			logPopulation(*nextPopX, t, tnow.now(), "nextPopX final");
 
 			// delete unused elements (quadratic)
 			for(unsigned k = 0; k < rs->size(); k++)
@@ -504,6 +510,8 @@ public:
 
 			qs = makeNewPopulation(*ps);
 			qx = decode(qs);
+
+			logPopulation(qx, t, tnow.now(), "new pop qx");
 
 			cout << "Finished Generation = " << t << endl;
 			cout << "===========================================" << endl << endl;
@@ -758,6 +766,11 @@ public:
 
 	// creates a brand new population based on population 'p'
 	virtual vector<IndividualNSGAII<R>*> makeNewPopulation(const vector<IndividualNSGAII<R>*>& p) = 0;
+
+	// function to log data from the population
+	virtual void logPopulation(const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& px, int generation, double time, string other)
+	{
+	}
 
 	// returns id() of class
 	string id() const

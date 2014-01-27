@@ -64,14 +64,14 @@ public:
 		delete OrOpt1_2_3;
 	}
 
-	Move<Route, ADS, DS >& move(const Route& rep)
+	Move<Route, ADS, DS >& move(const Route& rep, const ADS& ads)
 	{
-		return OrOpt1_2_3->move(rep);
+		return OrOpt1_2_3->move(rep, ads);
 	}
 
-	virtual NSIterator<Route, ADS, DS >& getIterator(const Route& rep)
+	virtual NSIterator<Route, ADS, DS >& getIterator(const Route& rep, const ADS& ads)
 	{
-		return OrOpt1_2_3->getIterator(rep);
+		return OrOpt1_2_3->getIterator(rep, ads);
 	}
 
 	static string idComponent()
