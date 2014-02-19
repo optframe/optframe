@@ -28,22 +28,37 @@
 #ifndef OPTFRAME_PARETODOMINANCE_STRICT_HPP_
 #define OPTFRAME_PARETODOMINANCE_STRICT_HPP_
 
+
+#include "Solution.hpp"
+#include "Evaluation.hpp"
+
+#include "Evaluator.hpp"
+#include "Direction.hpp"
+
 #include "ParetoDominance.hpp"
+
 
 #include <iostream>
 
 
 using namespace std;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_EMEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class ParetoDominanceStrict: public ParetoDominance<R, ADS, DS>
 {
 public:
 
         using ParetoDominance<R, ADS, DS>::dominates;
+        using ParetoDominance<R, ADS, DS>::birelation;
 
 	ParetoDominanceStrict(vector<Evaluator<R, ADS, DS>*> _v_e) :
 		ParetoDominance<R, ADS, DS> (_v_e)
+	{
+
+	}
+
+	ParetoDominanceStrict(vector<Direction<DS>*> _v_d) :
+		ParetoDominance<R, ADS, DS> (_v_d)
 	{
 
 	}
@@ -63,7 +78,7 @@ public:
 	}
 
 	// true if 's1' weakly dominates 's2'
-	virtual bool dominates(const vector<Evaluation<DS>*> v1, const vector<Evaluation<DS>*> v2)
+	virtual bool dominates(const vector<Evaluation<DS>*>& v1, const vector<Evaluation<DS>*>& v2)
 	{
 		vector<Evaluator<R, ADS, DS>*>& v_e = ParetoDominance<R, ADS, DS>::v_e;
 
@@ -76,6 +91,10 @@ public:
 		int better = 0;
 		//int equals = 0;
 
+// TODO: make inheritance!
+		if(v_e.size() == v1.size())
+		{
+
 		for (int e = 0; e < v1.size(); e++)
 		{
 			if (v_e[e]->betterThan(*v1[e], *v2[e]))
@@ -83,7 +102,24 @@ public:
 
 		}
 
+		}
+		else
+		{
+		for (int e = 0; e < v1.size(); e++)
+		{
+			if (this->v_d[e]->betterThan(*v1[e], *v2[e]))
+				better++;
+
+		}
+
+		}
+
 		return (better == v_e.size());
+	}
+
+	virtual pair<bool, bool> birelation(const vector<Evaluation<DS>*>& v1, const vector<Evaluation<DS>*>& v2)
+	{
+		return make_pair(dominates(v1,v2), dominates(v2, v1));
 	}
 
 };

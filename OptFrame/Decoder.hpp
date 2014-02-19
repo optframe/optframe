@@ -27,7 +27,6 @@
 #include "Solution.hpp"
 #include "MultiEvaluation.hpp"
 
-
 namespace optframe
 {
 
@@ -40,7 +39,12 @@ public:
 	{
 	}
 
-	virtual pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation<DS>*> > decode(const Solution<R>& solution) = 0;
+	pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation<DS>*> > decode(const Solution<R>& solution)
+	{
+		return decode(solution.getR());
+	}
+
+	virtual pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation<DS>*> > decode(const R& r) = 0;
 };
 
 }

@@ -50,7 +50,7 @@ public:
 		return validMove(s.getR(), s.getADS());
 	}
 
-protected:
+////protected:
 	virtual Move<R, ADS, DS>& move(const R&, const ADS&) = 0;
 
 	virtual Move<R, ADS, DS>* validMove(const R& r, const ADS& ads)

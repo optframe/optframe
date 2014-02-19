@@ -29,11 +29,15 @@ using namespace std;
 #include "Solution.hpp"
 #include "Population.hpp"
 #include "Evaluation.hpp"
+#include "Direction.hpp"
 
 #include "MultiEvaluator.hpp"
 
 #include "Component.hpp"
 #include "ComponentBuilder.h"
+
+#include "ParetoDominance.hpp"
+#include "ParetoDominanceWeak.hpp"
 
 namespace optframe
 {
@@ -89,8 +93,37 @@ public:
 		return paretoFront;
 	}
 
-};
+	static vector<MultiEvaluation<DS>*> filterDominated(vector<Direction<DS>*>& vdir, const vector<MultiEvaluation<DS>*>& candidates)
+	{
+		vector<MultiEvaluation<DS>*> nonDom;
 
+		ParetoDominance<R, ADS, DS> pDom(vdir);
+		ParetoDominanceWeak<R, ADS, DS> pDomWeak(vdir);
+
+		for(unsigned i = 0; i < candidates.size(); i++)
+			addSolution(pDom, pDomWeak, nonDom, candidates[i]);
+
+		return nonDom;
+	}
+
+	static void addSolution(ParetoDominance<R, ADS, DS>& dom, ParetoDominanceWeak<R, ADS, DS>& domWeak, vector<MultiEvaluation<DS>*>& nonDom, MultiEvaluation<DS>* candidate)
+	{
+		for(int ind = 0; ind < nonDom.size(); ind++)
+		{
+			if(domWeak.dominates(*nonDom.at(ind), *candidate))
+				return;
+
+			if(dom.dominates(*candidate, *nonDom.at(ind)))
+			{
+				nonDom.erase(nonDom.begin()+ind);
+				ind--;
+			}
+		}
+
+ 		nonDom.push_back(candidate);
+	}
+
+};
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class MultiObjSearch: public Component
@@ -114,7 +147,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return ( s == idComponent() ) || ( Component::compatible(s) );
+		return (s == idComponent()) || (Component::compatible(s));
 	}
 
 	static string idComponent()
@@ -130,7 +163,6 @@ public:
 	}
 
 };
-
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class MultiObjSearchBuilder: public ComponentBuilder<R, ADS, DS>

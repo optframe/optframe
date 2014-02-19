@@ -25,7 +25,6 @@
  *
  */
 
-
 #ifndef OPTFRAME_PARETODOMINANCE_WEAK_HPP_
 #define OPTFRAME_PARETODOMINANCE_WEAK_HPP_
 
@@ -43,11 +42,15 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_
 class ParetoDominanceWeak: public ParetoDominance<R, ADS, DS>
 {
 public:
-
 	using ParetoDominance<R, ADS, DS>::dominates;
 
 	ParetoDominanceWeak(vector<Evaluator<R, ADS, DS>*> _v_e) :
-		ParetoDominance<R, ADS, DS> (_v_e)
+			ParetoDominance<R, ADS, DS>(_v_e)
+	{
+	}
+
+	ParetoDominanceWeak(vector<Direction<DS>*> _v_d) :
+			ParetoDominance<R, ADS, DS>(_v_d)
 	{
 	}
 
@@ -61,30 +64,55 @@ public:
 	}
 
 	// true if 's1' weakly dominates 's2'
-	virtual bool dominates(const vector<Evaluation<DS>*> v1, const vector<Evaluation<DS>*> v2)
+	virtual bool dominates(const vector<Evaluation<DS>*>& v1, const vector<Evaluation<DS>*>& v2)
 	{
 		vector<Evaluator<R, ADS, DS>*>& v_e = ParetoDominance<R, ADS, DS>::v_e;
-
-		if (!((v_e.size() == v1.size()) && (v1.size() == v2.size())))
-		{
-			cout << "WARNING in ParetoDominanceWeak: different sizes." << endl;
-			return false;
-		}
+		vector<Direction<DS>*>& v_d = ParetoDominance<R, ADS, DS>::v_d;
+		// TODO: make inheritance
 
 		int better = 0;
 		int equals = 0;
 
-		for (int e = 0; e < v1.size(); e++)
+		if(v_e.size() > 0)
 		{
-			if (v_e[e]->betterThan(*v1[e], *v2[e]))
-				better++;
+			if(!((v_e.size() == v1.size()) && (v1.size() == v2.size())))
+			{
+				cout << "WARNING in ParetoDominanceWeak: different sizes." << endl;
+				return false;
+			}
 
-			if (abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
-				equals++;
+			for(int e = 0; e < v1.size(); e++)
+			{
+				if(v_e[e]->betterThan(*v1[e], *v2[e]))
+					better++;
 
+				if(abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
+					equals++;
+
+			}
 		}
+		else if(v_d.size() > 0)
+		{
+			if(!((v_d.size() == v1.size()) && (v1.size() == v2.size())))
+			{
+				cout << "WARNING in ParetoDominanceWeak: different sizes." << endl;
+				return false;
+			}
 
-		return (better + equals == v_e.size());
+			for(int e = 0; e < v1.size(); e++)
+			{
+				if(v_d[e]->betterThan(*v1[e], *v2[e]))
+					better++;
+
+				if(abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
+					equals++;
+
+			}
+		}
+		else
+			cout << "WARNING: ParetoDominanceWeak unsupported!" << endl;
+
+		return (better + equals == v1.size());
 	}
 
 };

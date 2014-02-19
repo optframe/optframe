@@ -63,7 +63,7 @@ struct Log
 		if(!f)
 			return false;
 
-		fprintf(f, data.str().c_str());
+		fprintf(f, "%s", data.str().c_str());
 
 		fclose(f);
 

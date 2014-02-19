@@ -43,12 +43,45 @@ struct IndividualNSGAII
 	int rank;
 	double distance;
 
+	bool isChild;
+	bool isRandom;
+	bool isCross;
+	bool isMutation;
+
+	int id; // for debug reasons
+	int num_children; // for tests
+
 	IndividualNSGAII(Solution<R, ADS>& _s) :
 			s(_s)
 	{
 		mev = NULL;
 		rank = -1;
 		distance = -1;
+		id = -1;
+		num_children = -1;
+
+		isChild = false;
+		isCross = false;
+		isRandom = false;
+		isMutation = false;
+	}
+
+	IndividualNSGAII(const IndividualNSGAII<R, ADS>& ind) :
+			s(ind.s.clone())
+	{
+		mev = NULL;
+		if(ind.mev)
+			mev = &ind.mev->clone();
+		rank = ind.rank;
+		distance = ind.distance;
+
+		isChild = ind.isChild;
+		id = ind.id;
+		num_children = ind.num_children;
+
+		isRandom = ind.isRandom;
+		isCross = ind.isCross;
+		isMutation = ind.isMutation;
 	}
 
 	virtual ~IndividualNSGAII()
@@ -58,9 +91,47 @@ struct IndividualNSGAII
 			delete mev;
 	}
 
-	void print()
+	void print() const
 	{
-		cout << "IndNSGAII: rank=" << rank << "\tdist=" << distance << endl;
+		cout << "IndNSGAII: rank=" << rank << "\tdist=" << distance;
+		cout << "\t[ ";
+		if(mev)
+			for(unsigned e = 0; e < mev->size(); e++)
+				cout << mev->at(e).evaluation() << " ; ";
+		cout << " ]";
+
+		cout << "\tisChild=" << isChild << " Crs=" << isCross << " Rdm=" << isRandom << " Mut=" << isMutation << "\t |x|=" << num_children << endl;
+		//cout << s.getR() << endl;
+	}
+
+	IndividualNSGAII<R, ADS>& clone() const
+	{
+		return *new IndividualNSGAII<R, ADS>(*this);
+	}
+
+	static void printResume(const vector<IndividualNSGAII<R, ADS>*>& v)
+	{
+		int count_child = 0;
+		int count_cross = 0;
+		int count_random = 0;
+		int count_mutation = 0;
+		for(unsigned i=0; i<v.size(); i++)
+		{
+			if(v[i]->isChild)
+				count_child++;
+			if(v[i]->isRandom)
+				count_random++;
+			if(v[i]->isCross)
+				count_cross++;
+			if(v[i]->isMutation)
+				count_mutation++;
+		}
+		cout << "|S|=" << v.size();
+                cout << "\tchild=" << count_child << "(" << (count_child*100/v.size()) << "%) |";
+                cout << "\trandom=" << count_random << "(" << (count_random*100/v.size()) << "%)";
+                cout << "\tcross=" << count_cross << "(" << (count_cross*100/v.size()) << "%)";
+                cout << "\tmutation=" << count_mutation << "(" << (count_mutation*100/v.size()) << "%)";
+		cout << endl;
 	}
 };
 

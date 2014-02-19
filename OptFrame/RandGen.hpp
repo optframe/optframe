@@ -112,6 +112,15 @@ public:
 		return ::rand() % n;
 	}
 
+	// randomized number between [i, j]
+	virtual int rand(unsigned i, unsigned j)
+	{
+		int k = j - i + 1;
+		int number = rand(k) + i;
+
+		return number;
+	}
+
 	// random with probability 'p'
 	virtual double randP(double p)
 	{
