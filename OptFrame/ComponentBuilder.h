@@ -49,7 +49,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Component::idComponent() << "ComponentBuilder:";
+		ss << Component::idComponent() << ":ComponentBuilder:";
 		return ss.str();
 	}
 

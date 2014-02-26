@@ -140,7 +140,7 @@ public:
 
 	static string idComponent()
 	{
-		return "OptFrame:";
+		return "OptFrame";
 	}
 
 	virtual string id() const

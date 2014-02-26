@@ -32,27 +32,28 @@ using namespace std;
 namespace optframe
 {
 
-
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class InitialPopulation : public Component
+class InitialPopulation: public Component
 {
 public:
 
-   virtual ~InitialPopulation()
-   {
-   }
+	virtual ~InitialPopulation()
+	{
+	}
 
-   virtual Population<R, ADS>& generatePopulation(unsigned populationSize) = 0;
+	virtual Population<R, ADS>& generatePopulation(unsigned populationSize) = 0;
 
-   static string idComponent()
-   {
-      return "OptFrame:InitialPopulation";
-   }
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << Component::idComponent() << ":InitialPopulation";
+		return ss.str();
+	}
 
-   virtual string id() const
-   {
-      return idComponent();
-   }
+	virtual string id() const
+	{
+		return idComponent();
+	}
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
@@ -74,14 +75,16 @@ public:
 	virtual Population<R, ADS>& generatePopulation(unsigned populationSize)
 	{
 		Population<R, ADS>* p = new Population<R, ADS>;
-		for (unsigned i = 0; i < populationSize; i++)
+		for(unsigned i = 0; i < populationSize; i++)
 			p->push_back(&constructive.generateSolution());
 		return *p;
 	}
 
 	static string idComponent()
 	{
-		return "OptFrame:InitialPopulation:BasicInitialPopulation";
+		stringstream ss;
+		ss << Population<R, ADS>::idComponent() << ":BasicInitialPopulation";
+		return ss.str();
 	}
 
 	virtual string id() const

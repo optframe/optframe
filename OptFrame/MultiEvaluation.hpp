@@ -130,9 +130,16 @@ public:
 		return *new MultiEvaluation<DS>(*this);
 	}
 
-	virtual void print() const
+	static string idComponent()
 	{
-		cout << toString() << endl;
+		stringstream ss;
+		ss << Component::idComponent() << ":MultiEvaluation";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
 	}
 
 	virtual string toString() const

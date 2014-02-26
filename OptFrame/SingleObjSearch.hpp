@@ -67,7 +67,7 @@ public:
    static string idComponent()
    {
 	   stringstream ss;
-	   ss << Component::idComponent() << "SingleObjSearch:";
+	   ss << Component::idComponent() << ":SingleObjSearch:";
 	   return ss.str();
    }
 

@@ -108,7 +108,9 @@ public:
 
 	static string idComponent()
 	{
-		return "OptFrame:Timer";
+		stringstream ss;
+		ss << Component::idComponent() << ":Timer";
+		return ss.str();
 	}
 
 	virtual string id() const

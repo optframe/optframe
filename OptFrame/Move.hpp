@@ -99,7 +99,9 @@ public:
 
    static string idComponent()
    {
-      return "OptFrame:Move";
+		stringstream ss;
+		ss << Component::idComponent() << ":Move";
+		return ss.str();
    }
 
    virtual string id() const

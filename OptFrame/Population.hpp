@@ -32,7 +32,7 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class Population : public Component
+class Population: public Component
 {
 protected:
 	typedef Solution<R, ADS> chromossome;
@@ -48,7 +48,7 @@ public:
 
 	Population(const Population& pop)
 	{
-		for (unsigned i = 0; i < pop.size(); i++)
+		for(unsigned i = 0; i < pop.size(); i++)
 			p.push_back(&pop.at(i).clone());
 	}
 
@@ -97,7 +97,7 @@ public:
 
 	void add(const Population<R, ADS, DS>& pop)
 	{
-		for(unsigned i=0; i<pop.size(); i++)
+		for(unsigned i = 0; i < pop.size(); i++)
 		{
 			const chromossome& s = pop.at(i);
 			push_back(s);
@@ -107,7 +107,7 @@ public:
 	// clear and kill
 	void clear()
 	{
-		for(unsigned i=0;i<p.size();i++)
+		for(unsigned i = 0; i < p.size(); i++)
 			delete p.at(i);
 
 		p.clear();
@@ -125,14 +125,14 @@ public:
 
 	virtual Population<R, ADS>& operator=(const Population<R, ADS>& p)
 	{
-		if (&p == this) // auto ref check
+		if(&p == this) // auto ref check
 			return *this;
 
 		unsigned sizePop = this->p.size();
 
-		for (unsigned i = 0; i < sizePop; i++)
+		for(unsigned i = 0; i < sizePop; i++)
 		{
-			if (this->p.at(i)) // If no NULL pointing.
+			if(this->p.at(i)) // If no NULL pointing.
 			{
 				delete this->p.at(i);
 			}
@@ -142,9 +142,9 @@ public:
 
 		sizePop = p.size();
 
-		for (unsigned i = 0; i < sizePop; i++)
+		for(unsigned i = 0; i < sizePop; i++)
 		{
-			if (&p.at(i)) // If no NULL pointing.
+			if(&p.at(i)) // If no NULL pointing.
 			{
 				this->p.push_back(new chromossome(p.at(i)));
 			}
@@ -159,36 +159,37 @@ public:
 
 	virtual Population<R, ADS>& clone() const
 	{
-		return *new Population<R, ADS> (*this);
+		return *new Population<R, ADS>(*this);
 	}
 
-   static string idComponent()
-   {
-      return "OptFrame:Population";
-   }
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << Component::idComponent() << ":Population";
+		return ss.str();
+	}
 
-   virtual string id() const
-   {
-      return idComponent();
-   }
+	virtual string id() const
+	{
+		return idComponent();
+	}
 
 	virtual void print() const
 	{
-		cout << "Population("<<p.size()<<")";
+		cout << "Population(" << p.size() << ")";
 		cout << endl;
 
-		for (unsigned i = 0; i < p.size(); i++)
+		for(unsigned i = 0; i < p.size(); i++)
 		{
 			p.at(i)->print();
 		}
 	}
 
-
 	chromossome& cloneBestChromossome(Evaluator<R, ADS, DS>& eval)
 	{
-		vector<pair<Solution<R, ADS> , double> > v;
+		vector<pair<Solution<R, ADS>, double> > v;
 
-		for (int i = 0; i < p.size(); i++)
+		for(int i = 0; i < p.size(); i++)
 		{
 			Evaluation<DS>& e = eval.evaluate(p[i]);
 			v.push_back(make_pair(*p[i], e.evaluation()));
@@ -196,8 +197,8 @@ public:
 		}
 
 		int bestC = 0;
-		for (int i = 0; i < (v.size() - 1); i++)
-			if (eval.betterThan(v[i + 1].second, v[i].second))
+		for(int i = 0; i < (v.size() - 1); i++)
+			if(eval.betterThan(v[i + 1].second, v[i].second))
 				bestC = i + 1;
 
 		return v[bestC].first;

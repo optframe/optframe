@@ -90,7 +90,7 @@ public:
    static string idComponent()
    {
 	   stringstream ss;
-	   ss << Component::idComponent() << "LocalSearch:";
+	   ss << Component::idComponent() << ":LocalSearch:";
 	   return ss.str();
    }
 

@@ -34,44 +34,44 @@ namespace optframe
 class IteratorOutOfBound
 {
 private:
-   int id;
+	int id;
 public:
-   IteratorOutOfBound(int _id) :
-      id(_id)
-   {
-   }
+	IteratorOutOfBound(int _id) :
+			id(_id)
+	{
+	}
 
-   int getId()
-   {
-      return id;
-   }
+	int getId()
+	{
+		return id;
+	}
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class NSIterator : public Component
+class NSIterator: public Component
 {
 public:
-   virtual ~NSIterator()
-   {
-   }
+	virtual ~NSIterator()
+	{
+	}
 
-   virtual void first() = 0;
-   virtual void next() = 0;
-   virtual bool isDone() = 0;
-   virtual Move<R, ADS, DS>& current() = 0;
+	virtual void first() = 0;
+	virtual void next() = 0;
+	virtual bool isDone() = 0;
+	virtual Move<R, ADS, DS>& current() = 0;
 
-   static string idComponent()
-   {
-		return "OptFrame:NSIterator";
-   }
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << Component::idComponent() << ":NSIterator";
+		return ss.str();
+	}
 
-   virtual string id() const
-   {
-      return idComponent();
-   }
+	virtual string id() const
+	{
+		return idComponent();
+	}
 };
-
-
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class NSIteratorAction: public Action<R, ADS, DS>
@@ -156,38 +156,38 @@ public:
 
 		Scanner scanner(content);
 
-		if (!scanner.hasNext())
+		if(!scanner.hasNext())
 			return false;
 
 		NSIterator<R, ADS, DS>* it;
 		hf.assign(it, scanner.nextInt(), scanner.next());
 
-		if (!it)
+		if(!it)
 			return false;
 
-		if (!scanner.hasNext())
+		if(!scanner.hasNext())
 			return false;
 
 		string action = scanner.next();
 
-		if (!handleAction(action))
+		if(!handleAction(action))
 			return false;
 
-		if (action == "first")
+		if(action == "first")
 		{
 			it->first();
 			return true;
 		}
 
-		if (action == "next")
+		if(action == "next")
 		{
 			it->next();
 			return true;
 		}
 
-		if (action == "isDone")
+		if(action == "isDone")
 		{
-			if (!scanner.hasNext())
+			if(!scanner.hasNext())
 				return false;
 
 			string var = scanner.next();
@@ -197,9 +197,9 @@ public:
 			return true;
 		}
 
-		if (action == "current")
+		if(action == "current")
 		{
-			if (!scanner.hasNext())
+			if(!scanner.hasNext())
 				return false;
 
 			Move<R, ADS, DS>& m = it->current();
@@ -214,6 +214,5 @@ public:
 };
 
 }
-
 
 #endif //OPTFRAME_NSITERATOR_HPP_

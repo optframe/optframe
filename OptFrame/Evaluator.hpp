@@ -380,7 +380,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Component::idComponent() << "Evaluator";
+		ss << Component::idComponent() << ":Evaluator";
 		return ss.str();
 	}
 

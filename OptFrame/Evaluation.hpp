@@ -202,7 +202,9 @@ public:
 
 	static string idComponent()
 	{
-		return "OptFrame:Evaluation";
+		stringstream ss;
+		ss << Component::idComponent() << ":Evaluation";
+		return ss.str();
 	}
 
 	virtual string id() const

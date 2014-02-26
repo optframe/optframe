@@ -59,15 +59,18 @@ public:
 		if(moveValid->canBeApplied(r, ads))
 			return moveValid;
 		else
+		{
 			delete moveValid;
-
-		return NULL;
+			return NULL;
+		}
 	}
 
 public:
 	static string idComponent()
 	{
-		return "OptFrame:NS";
+		stringstream ss;
+		ss << Component::idComponent() << ":NS";
+		return ss.str();
 	}
 
 	virtual string id() const

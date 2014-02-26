@@ -46,7 +46,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Component::idComponent() << "Constructive";
+		ss << Component::idComponent() << ":Constructive";
 		return ss.str();
 	}
 
