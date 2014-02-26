@@ -22,6 +22,7 @@
 #define TSP_PROBLEMINSTANCE_HPP_
 
 #include <iostream>
+#include <cmath>
 
 #include "../../OptFrame/Scanner++/Scanner.h"
 #include "../../OptFrame/Util/Matrix.hpp"

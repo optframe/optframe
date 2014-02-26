@@ -22,10 +22,15 @@
 #define TSP_DELTA_MOVETSP2OPT_HPP_
 
 #include "../../OptFrame/Util/NeighborhoodStructures/Moves/MoveTSP2Opt.hpp"
+#include "Memory.h"
+#include "ProblemInstance.h"
+#include "Solution.h"
+
 
 #include <cmath>
 
 using namespace std;
+using namespace optframe;
 
 namespace TSP
 {

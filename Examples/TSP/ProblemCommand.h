@@ -11,22 +11,25 @@
 #include "Solution.h"
 #include "Evaluation.h"
 
-#include "ProblemInstance.hpp"
+#include "ProblemInstance.h"
 
-#include "Evaluator.hpp"
+#include "Evaluator.h"
 
-#include "RandomInitialSolution.hpp"
-#include "NearestNeighborConstructive.hpp"
-#include "ConstructiveBestInsertion.hpp"
+#include "RandomInitialSolution.h"
+#include "NearestNeighborConstructive.h"
+#include "ConstructiveBestInsertion.h"
 
 #include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSP2Opt.hpp"
-#include "DeltaMoveTSP2Opt.hpp"
+#include "DeltaMoveTSP2Opt.h"
 
 #include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSPOrOpt.hpp"
 #include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSPOrOptk.hpp"
-#include "DeltaMoveTSPOrOptk.hpp"
+#include "DeltaMoveTSPOrOptk.h"
 
 #include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSPSwap.hpp"
+
+#include "NSEnumSwap.h"
+#include "NSEnumShift.h"
 
 using namespace scannerpp;
 using namespace optframe;

@@ -25,6 +25,8 @@
 
 #include "Memory.h"
 
+using namespace optframe;
+
 typedef Evaluation<MemTSP> EvaluationTSP;
 
 #endif /*TSP_EVALUATION_H_*/

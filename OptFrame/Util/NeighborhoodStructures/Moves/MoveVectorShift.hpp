@@ -25,6 +25,7 @@
 #include "../../../Move.hpp"
 
 using namespace std;
+using namespace optframe;
 
 //============================================================================
 //                           Shift Move

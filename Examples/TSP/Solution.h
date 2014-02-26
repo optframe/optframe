@@ -24,6 +24,8 @@
 #include "../../OptFrame/Solution.hpp"
 #include "Representation.h"
 
+using namespace optframe;
+
 typedef Solution<RepTSP> SolutionTSP;
 
 #endif /*TSP_SOLUTION_H_*/

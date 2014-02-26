@@ -27,6 +27,8 @@
 
 #include "Scanner++/Scanner.h"
 
+#include "Component.hpp"
+
 #include "Solution.hpp"
 #include "Evaluation.hpp"
 

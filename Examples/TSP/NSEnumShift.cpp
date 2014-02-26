@@ -18,20 +18,4 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef TSP_H_
-#define TSP_H_
-
-#include "./TSP/Representation.h"
-#include "./TSP/Solution.h"
-#include "./TSP/Memory.h"
-#include "./TSP/Evaluation.h"
-#include "./TSP/ProblemInstance.h"
-#include "./TSP/Evaluator.h"
-#include "./TSP/NSEnumSwap.h"
-#include "./TSP/NSEnumShift.h"
-#include "./TSP/DeltaMoveTSP2Opt.h"
-#include "./TSP/RandomInitialSolution.h"
-#include "./TSP/PerturbationTSP.h"
-#include "./TSP/ProblemCommand.h"
-
-#endif /*TSP_H_*/
+#include "NSEnumShift.h"

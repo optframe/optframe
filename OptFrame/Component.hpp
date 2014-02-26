@@ -33,6 +33,11 @@ using namespace std;
 namespace optframe
 {
 
+// OPTFRAME ALGORITHM COMPREHENSION FLAG
+#ifndef OPTFRAME_FAST
+#define OPTFRAME_AC
+#endif
+
 struct Log
 {
 	stringstream data;

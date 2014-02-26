@@ -22,6 +22,9 @@
 #define TSP_DELTA_MOVETSP_OROPTK_HPP_
 
 #include "../../OptFrame/Util/NeighborhoodStructures/Moves/MoveTSPOrOptk.hpp"
+#include "Memory.h"
+#include "Solution.h"
+#include "ProblemInstance.h"
 
 #include <cmath>
 

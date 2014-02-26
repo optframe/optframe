@@ -26,7 +26,7 @@
 #include "../../OptFrame/NSEnum.hpp"
 
 // Own includes
-#include "ProblemInstance.hpp"
+#include "ProblemInstance.h"
 #include "Memory.h"
 #include "Solution.h"
 #include "../../OptFrame/RandGen.hpp"

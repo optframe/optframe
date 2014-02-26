@@ -33,7 +33,7 @@
 #include "Solution.h"
 #include "Evaluation.h"
 
-#include "ProblemInstance.hpp"
+#include "ProblemInstance.h"
 
 #define TSP_EPSILON 0.0001
 
