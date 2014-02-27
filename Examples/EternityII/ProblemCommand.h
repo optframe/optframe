@@ -11,23 +11,25 @@
 #include "Solution.h"
 #include "Evaluation.h"
 
-#include "ProblemInstance.hpp"
+#include "ProblemInstance.h"
 
-#include "Evaluator.hpp"
+#include "Evaluator.h"
 
-#include "NSSeqRotate.hpp"
-#include "DeltaMoveRotate.hpp"
+#include "NSSeqRotate.h"
+#include "DeltaMoveRotate.h"
 
-#include "NSSeqSwapCenter.hpp"
-#include "DeltaMoveSwapCenter.hpp"
+#include "NSSeqSwapCenter.h"
+#include "DeltaMoveSwapCenter.h"
 
-#include "NSSeqSwapCorner.hpp"
-#include "DeltaMoveSwapCorner.hpp"
+#include "NSSeqSwapCorner.h"
+#include "DeltaMoveSwapCorner.h"
 
-#include "NSSeqSwapRotateCenter.hpp"
+#include "NSSeqSwapRotateCenter.h"
 
-#include "NSSeqSwapSide.hpp"
-#include "DeltaMoveSwapSide.hpp"
+#include "NSSeqSwapSide.h"
+#include "DeltaMoveSwapSide.h"
+
+#include "InitialSolutionGreedy.h"
 
 using namespace scannerpp;
 using namespace optframe;

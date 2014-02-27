@@ -21,7 +21,7 @@
 #ifndef EtII_Delta_Move_Rotate_HPP_
 #define EtII_Delta_Move_Rotate_HPP_
 
-#include "./NSSeqRotate.hpp"
+#include "./NSSeqRotate.h"
 
 #include <cmath>
 

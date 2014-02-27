@@ -33,11 +33,13 @@
 #include "Solution.h"
 #include "Evaluation.h"
 
-#include "ProblemInstance.hpp"
+#include "ProblemInstance.h"
+
+using namespace optframe;
 
 #define EPSILON_EtII 0.0001
 
-int numEvs = 0;
+extern int numEvs;
 
 namespace EtII
 {

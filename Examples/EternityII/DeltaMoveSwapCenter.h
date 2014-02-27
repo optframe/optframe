@@ -21,7 +21,7 @@
 #ifndef EtII_Delta_Move_SwapCenter_HPP_
 #define EtII_Delta_Move_SwapCenter_HPP_
 
-#include "./NSSeqSwapCenter.hpp"
+#include "./NSSeqSwapCenter.h"
 
 #include <cmath>
 

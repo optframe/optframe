@@ -25,17 +25,14 @@
 #include "./EternityII/Solution.h"
 #include "./EternityII/Memory.h"
 #include "./EternityII/Evaluation.h"
-#include "./EternityII/ProblemInstance.hpp"
-#include "./EternityII/Evaluator.hpp"
-#include "./EternityII/NSSeqRotate.hpp"
-#include "./EternityII/NSSeqSwapCenter.hpp"
-#include "./EternityII/NSSeqSwapSide.hpp"
-#include "./EternityII/NSSeqSwapCorner.hpp"
-#include "./EternityII/NSSeqSwapRotateCenter.hpp"
-#include "./EternityII/InitialSolutionRandom.hpp"
-#include "./EternityII/InitialSolutionGreedy.hpp"
-#include "./EternityII/ProblemCommand.hpp"
+#include "./EternityII/ProblemInstance.h"
+#include "./EternityII/Evaluator.h"
+#include "./EternityII/NSSeqRotate.h"
+#include "./EternityII/NSSeqSwapCenter.h"
+#include "./EternityII/NSSeqSwapSide.h"
+#include "./EternityII/NSSeqSwapCorner.h"
+#include "./EternityII/NSSeqSwapRotateCenter.h"
+#include "./EternityII/InitialSolutionRandom.h"
+#include "./EternityII/InitialSolutionGreedy.h"
+#include "./EternityII/ProblemCommand.h"
 #endif /*EternityII_H_*/
-
-
-

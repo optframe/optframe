@@ -21,7 +21,7 @@
 #ifndef EtII_Delta_Move_SwapCorner_HPP_
 #define EtII_Delta_Move_SwapCorner_HPP_
 
-#include "./NSSeqSwapCorner.hpp"
+#include "./NSSeqSwapCorner.h"
 
 #include <cmath>
 

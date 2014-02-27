@@ -26,11 +26,12 @@
 #include "../../OptFrame/RandGen.hpp"
 
 // Own includes
-#include "ProblemInstance.hpp"
+#include "ProblemInstance.h"
 #include "Memory.h"
 #include "Solution.h"
 
 using namespace std;
+using namespace optframe;
 
 namespace EtII
 {

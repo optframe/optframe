@@ -1,51 +1,66 @@
-all: app_TSP
+all: app_EtII
 
 CC=g++
 CFLAGS=-O3 -Wall
 
-app_TSP:  TSPmain.o  TSPScanner.o  TSPConstructiveBestInsertion.o  TSPDeltaMoveTSP2Opt.o  TSPDeltaMoveTSPOrOptk.o  TSPEvaluator.o  TSPNearestNeighborConstructive.o  TSPNSEnumShift.o  TSPNSEnumSwap.o  TSPProblemCommand.o  TSPProblemInstance.o  TSPRandomInitialSolution.o  
-	$(CC) $(CFLAGS) TSP*.o -o $@
+app_EtII:  EtIImain.o  EtIIScanner.o  EtIIInitialSolutionGreedy.o EtIIInitialSolutionRandom.o EtIIDeltaMoveRotate.o  EtIIDeltaMoveSwapCenter.o  EtIIDeltaMoveSwapCorner.o  EtIIDeltaMoveSwapRotateCenter.o  EtIIDeltaMoveSwapSide.o  EtIIEvaluator.o  EtIINSSeqRotate.o  EtIINSSeqSwapCenter.o  EtIINSSeqSwapCorner.o  EtIINSSeqSwapRotateCenter.o  EtIINSSeqSwapSide.o    EtIIProblemCommand.o  EtIIProblemInstance.o   
+	$(CC) $(CFLAGS) EtII*.o -o $@
 
-TSPScanner.o: ../OptFrame/Scanner++/Scanner.cpp  ../OptFrame/Scanner++/Scanner.h
-	$(CC) -c $(CFLAGS) ../OptFrame/Scanner++/Scanner.cpp -o TSPScanner.o
+EtIIScanner.o: ../OptFrame/Scanner++/Scanner.cpp  ../OptFrame/Scanner++/Scanner.h
+	$(CC) -c $(CFLAGS) ../OptFrame/Scanner++/Scanner.cpp -o EtIIScanner.o
 
-TSPmain.o: mainTSP.cpp
-	$(CC) -c $(CFLAGS) mainTSP.cpp -o $@
+EtIImain.o: mainEternityII.cpp
+	$(CC) -c $(CFLAGS) mainEternityII.cpp -o $@
 	
-TSPConstructiveBestInsertion.o: TSP/ConstructiveBestInsertion.cpp TSP/ConstructiveBestInsertion.h
-	$(CC) -c $(CFLAGS) TSP/ConstructiveBestInsertion.cpp -o $@
-
-TSPDeltaMoveTSP2Opt.o: TSP/DeltaMoveTSP2Opt.cpp TSP/DeltaMoveTSP2Opt.h
-	$(CC) -c $(CFLAGS) TSP/DeltaMoveTSP2Opt.cpp -o $@
-
-TSPDeltaMoveTSPOrOptk.o: TSP/DeltaMoveTSPOrOptk.cpp TSP/DeltaMoveTSPOrOptk.h
-	$(CC) -c $(CFLAGS) TSP/DeltaMoveTSPOrOptk.cpp -o $@
-
-TSPEvaluator.o: TSP/Evaluator.cpp TSP/Evaluator.h
-	$(CC) -c $(CFLAGS) TSP/Evaluator.cpp -o $@
-
-TSPNearestNeighborConstructive.o: TSP/NearestNeighborConstructive.cpp TSP/NearestNeighborConstructive.h
-	$(CC) -c $(CFLAGS) TSP/NearestNeighborConstructive.cpp -o $@
+EtIIInitialSolutionGreedy.o: EternityII/InitialSolutionGreedy.cpp EternityII/InitialSolutionGreedy.h
+	$(CC) -c $(CFLAGS) EternityII/InitialSolutionGreedy.cpp -o $@
 	
-TSPNSEnumShift.o: TSP/NSEnumShift.cpp TSP/NSEnumShift.h
-	$(CC) -c $(CFLAGS) TSP/NSEnumShift.cpp -o $@
+EtIIInitialSolutionRandom.o: EternityII/InitialSolutionRandom.cpp EternityII/InitialSolutionRandom.h
+	$(CC) -c $(CFLAGS) EternityII/InitialSolutionRandom.cpp -o $@
+
+EtIIDeltaMoveRotate.o: EternityII/DeltaMoveRotate.cpp EternityII/DeltaMoveRotate.h
+	$(CC) -c $(CFLAGS) EternityII/DeltaMoveRotate.cpp -o $@
 	
-TSPNSEnumSwap.o: TSP/NSEnumSwap.cpp TSP/NSEnumSwap.h
-	$(CC) -c $(CFLAGS) TSP/NSEnumSwap.cpp -o $@
+EtIIDeltaMoveSwapCenter.o: EternityII/DeltaMoveSwapCenter.cpp EternityII/DeltaMoveSwapCenter.h
+	$(CC) -c $(CFLAGS) EternityII/DeltaMoveSwapCenter.cpp -o $@
 
-TSPProblemCommand.o: TSP/ProblemCommand.cpp TSP/ProblemCommand.h
-	$(CC) -c $(CFLAGS) TSP/ProblemCommand.cpp -o $@
+EtIIDeltaMoveSwapCorner.o: EternityII/DeltaMoveSwapCorner.cpp EternityII/DeltaMoveSwapCorner.h
+	$(CC) -c $(CFLAGS) EternityII/DeltaMoveSwapCorner.cpp -o $@
 
-TSPProblemInstance.o: TSP/ProblemInstance.cpp TSP/ProblemInstance.h
-	$(CC) -c $(CFLAGS) TSP/ProblemInstance.cpp -o $@
+EtIIDeltaMoveSwapRotateCenter.o: EternityII/DeltaMoveSwapRotateCenter.cpp EternityII/DeltaMoveSwapRotateCenter.h
+	$(CC) -c $(CFLAGS) EternityII/DeltaMoveSwapRotateCenter.cpp -o $@
 
-TSPRandomInitialSolution.o: TSP/RandomInitialSolution.cpp TSP/RandomInitialSolution.h
-	$(CC) -c $(CFLAGS) TSP/RandomInitialSolution.cpp -o $@
+EtIIDeltaMoveSwapSide.o: EternityII/DeltaMoveSwapSide.cpp EternityII/DeltaMoveSwapSide.h
+	$(CC) -c $(CFLAGS) EternityII/DeltaMoveSwapSide.cpp -o $@
+
+EtIIEvaluator.o: EternityII/Evaluator.cpp EternityII/Evaluator.h
+	$(CC) -c $(CFLAGS) EternityII/Evaluator.cpp -o $@
+
+EtIINSSeqRotate.o: EternityII/NSSeqRotate.cpp EternityII/NSSeqRotate.h
+	$(CC) -c $(CFLAGS) EternityII/NSSeqRotate.cpp -o $@
 	
+EtIINSSeqSwapCenter.o: EternityII/NSSeqSwapCenter.cpp EternityII/NSSeqSwapCenter.h
+	$(CC) -c $(CFLAGS) EternityII/NSSeqSwapCenter.cpp -o $@
+	
+EtIINSSeqSwapCorner.o: EternityII/NSSeqSwapCorner.cpp EternityII/NSSeqSwapCorner.h
+	$(CC) -c $(CFLAGS) EternityII/NSSeqSwapCorner.cpp -o $@
+	
+EtIINSSeqSwapRotateCenter.o: EternityII/NSSeqSwapRotateCenter.cpp EternityII/NSSeqSwapRotateCenter.h
+	$(CC) -c $(CFLAGS) EternityII/NSSeqSwapRotateCenter.cpp -o $@
+	
+EtIINSSeqSwapSide.o: EternityII/NSSeqSwapSide.cpp EternityII/NSSeqSwapSide.h
+	$(CC) -c $(CFLAGS) EternityII/NSSeqSwapSide.cpp -o $@
+	
+EtIIProblemCommand.o: EternityII/ProblemCommand.cpp EternityII/ProblemCommand.h
+	$(CC) -c $(CFLAGS) EternityII/ProblemCommand.cpp -o $@
+
+EtIIProblemInstance.o: EternityII/ProblemInstance.cpp EternityII/ProblemInstance.h
+	$(CC) -c $(CFLAGS) EternityII/ProblemInstance.cpp -o $@
+
 	
 .PHONY: all clean
 
 clean: 
-	rm -f app_TSP
-	rm -f TSP*.o
+	rm -f app_EtII
+	rm -f EtII*.o
 	

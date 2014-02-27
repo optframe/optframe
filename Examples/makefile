@@ -1,6 +1,6 @@
 all: examples
 
-examples: tsp opths etii pmedcap
+examples: tsp etii pmedcap opths
 
 tsp:
 	make -f makeTSP.mk

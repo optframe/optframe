@@ -18,20 +18,19 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef EtII_INITIALSOLUTION_Random_HPP_
-#define EtII_INITIALSOLUTION_Random_HPP_
+#ifndef EtII_INITIALSOLUTION_Greedy_HPP_
+#define EtII_INITIALSOLUTION_Greedy_HPP_
 
 #include "../../OptFrame/Constructive.h"
 #include "../../OptFrame/Util/TestSolution.hpp"
-
 #include "../../OptFrame/RandGen.hpp"
 
-#include "ProblemInstance.hpp"
+#include "ProblemInstance.h"
 
 #include "Representation.h"
 #include "Solution.h"
 
-#include "Evaluator.hpp"
+#include "Evaluator.h"
 
 #include <list>
 
@@ -39,20 +38,20 @@
 #include <stdlib.h>
 
 using namespace std;
+using namespace optframe;
 
 namespace EtII
 {
 
-class EtIIInitialSolutionRandom: public Constructive<RepEtII>
+class EtIIInitialSolutionGreedy: public Constructive<RepEtII>
 {
 private:
 	ProblemInstance& pEtII;
 	RandGen& rg;
-	// Your private vars
 
 public:
 
-	EtIIInitialSolutionRandom(ProblemInstance& _pEtII, RandGen& _rg) : // If necessary, add more parameters
+	EtIIInitialSolutionGreedy(ProblemInstance& _pEtII,RandGen& _rg) : // If necessary, add more parameters
 		pEtII(_pEtII), rg(_rg)
 	{
 	}
@@ -85,6 +84,11 @@ public:
 			if (zeros == 0)
 				center_pieces.push_back(pEtII.pieces[i]);
 		}
+
+		// shuffle elements
+		rg.shuffle(corner_pieces);
+		rg.shuffle(side_pieces);
+		rg.shuffle(center_pieces);
 
 		int x;
 		Piece p;
@@ -129,22 +133,60 @@ public:
 
 		(*tab)(tab->getNumRows() - 1, 0) = p;
 
-		// random the pieces for upper-bottom sides
+		// choose the pieces for upper-bottom sides
 		for (unsigned int i = 1; i < tab->getNumCols() - 1; i++)
 		{
 			// top
-			x = rg.rand(side_pieces.size());
-			p = side_pieces[x];
-			side_pieces.erase(side_pieces.begin() + x);
+			//int max = 0;
+			int best = 0;
+			for (unsigned int j = 0; j < side_pieces.size(); j++)
+			{
+				p = side_pieces[j];
+
+				while (p.up != 0)
+					p.rotate();
+
+				int f = 0;
+				if (p.left == (*tab)(0, i - 1).right)
+				{
+					f++;
+					// best found!
+					//max = f;
+					best = j;
+					break;
+				}
+			}
+
+			p = side_pieces[best];
+			side_pieces.erase(side_pieces.begin() + best);
 
 			while (p.up != 0)
 				p.rotate();
 			(*tab)(0, i) = p;
 
 			// bottom
-			x = rg.rand(side_pieces.size());
-			p = side_pieces[x];
-			side_pieces.erase(side_pieces.begin() + x);
+			//max = 0;
+			best = 0;
+			for (unsigned int j = 0; j < side_pieces.size(); j++)
+			{
+				p = side_pieces[j];
+
+				while (p.down != 0)
+					p.rotate();
+
+				int f = 0;
+				if (p.left == (*tab)(tab->getNumRows() - 1, i - 1).right)
+				{
+					f++;
+					// best found!
+					//max = f;
+					best = j;
+					break;
+				}
+			}
+
+			p = side_pieces[best];
+			side_pieces.erase(side_pieces.begin() + best);
 
 			while (p.down != 0)
 				p.rotate();
@@ -155,36 +197,106 @@ public:
 		for (unsigned int i = 1; i < tab->getNumRows() - 1; i++)
 		{
 			// left
-			x = rg.rand(side_pieces.size());
-			p = side_pieces[x];
-			side_pieces.erase(side_pieces.begin() + x);
+			//int max = 0;
+			int best = 0;
+			for (unsigned int j = 0; j < side_pieces.size(); j++)
+			{
+				p = side_pieces[j];
+
+				while (p.left != 0)
+					p.rotate();
+
+				int f = 0;
+				if (p.up == (*tab)(i - 1, 0).down)
+				{
+					f++;
+					// best found!
+					//max = f;
+					best = j;
+					break;
+				}
+			}
+
+			p = side_pieces[best];
+			side_pieces.erase(side_pieces.begin() + best);
 
 			while (p.left != 0)
 				p.rotate();
 			(*tab)(i, 0) = p;
 
 			// right
-			x = rg.rand(side_pieces.size());
-			p = side_pieces[x];
-			side_pieces.erase(side_pieces.begin() + x);
+			//max = 0;
+			best = 0;
+			for (unsigned int j = 0; j < side_pieces.size(); j++)
+			{
+				p = side_pieces[j];
+
+				while (p.right != 0)
+					p.rotate();
+
+				int f = 0;
+				if (p.up == (*tab)(i - 1, tab->getNumCols() - 1).down)
+				{
+					f++;
+					// best found!
+					//max = f;
+					best = j;
+					break;
+				}
+			}
+
+			p = side_pieces[best];
+			side_pieces.erase(side_pieces.begin() + best);
 
 			while (p.right != 0)
 				p.rotate();
 			(*tab)(i, tab->getNumCols() - 1) = p;
 		}
 
-		// random the center pieces
+		// choose the center pieces
 		for (unsigned int i = 1; i < tab->getNumRows() - 1; i++)
 			for (unsigned int j = 1; j < tab->getNumCols() - 1; j++)
 			{
-				x = rg.rand(center_pieces.size());
-				p = center_pieces[x];
-				center_pieces.erase(center_pieces.begin() + x);
-				(*tab)(i, j) = p;
+				int max = -1;
+				int best_k = -1;
+				int best_r = -1;
 
-				int nRotation = rg.rand(4);
-				for (int r = 0; r < nRotation; r++)
-					(*tab)(i, j).rotate();
+				for (unsigned int k = 0; k < center_pieces.size(); k++)
+				{
+					p = center_pieces[k];
+
+					for (int r = 0; r < 4; r++)
+					{
+						int f = 0;
+						if (p.left == (*tab)(i, j - 1).right)
+							f++;
+						if (p.up == (*tab)(i - 1, j).down)
+							f++;
+
+						if (f > max)
+						{
+							max = f;
+							best_k = k;
+							best_r = r;
+						}
+
+						p.rotate();
+					}
+
+					// last rotation
+					p.rotate();
+
+					if (max == 2) // best piece
+						break;
+				}
+
+				p = center_pieces[best_k];
+				center_pieces.erase(center_pieces.begin() + best_k);
+
+				for (int r = 0; r < best_r; r++)
+					p.rotate();
+
+				(*tab)(i, j) = p;
 			}
 
 		if (corner_pieces.size() > 0 || side_pieces.size() > 0 || center_pieces.size() > 0)
@@ -195,10 +307,11 @@ public:
 		int ads;
 
 		return *new TestSolution<RepEtII> (*tab, ads);
+
 	}
 
 };
 
 }
 
-#endif /*EtII_INITIALSOLUTION_Random_HPP_*/
+#endif /*EtII_INITIALSOLUTION_Greedy_HPP_*/
