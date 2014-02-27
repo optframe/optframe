@@ -26,6 +26,9 @@
 #include <cstdlib>
 #include <iostream>
 
+namespace optframe
+{
+
 template< class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS >
 class TestMove : public Move< R, ADS, DS >
 {
@@ -108,5 +111,7 @@ unsigned long long TestMove< R, ADS, DS >::testmove_objects = 0;
 
 template<class R, class ADS, class DS >
 unsigned long long TestMove< R, ADS, DS >::testmove_objects_nodecrement = 0;
+
+}
 
 #endif /* TESTMOVE_HPP_ */

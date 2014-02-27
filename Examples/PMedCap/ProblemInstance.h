@@ -26,7 +26,9 @@
 #include "../../OptFrame/Scanner++/Scanner.h"
 #include "./cidade.h"
 
+using namespace scannerpp;
 using namespace std;
+
 
 class PCAPProblemInstance
 {

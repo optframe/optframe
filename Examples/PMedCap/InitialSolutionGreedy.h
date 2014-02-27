@@ -23,13 +23,14 @@
 
 #include "../../OptFrame/Constructive.h"
 #include "../../OptFrame/Util/TestSolution.hpp"
+#include "../../OptFrame/RandGen.hpp"
 
-#include "ProblemInstance.hpp"
+#include "ProblemInstance.h"
 
 #include "Representation.h"
 #include "Solution.h"
 
-#include "Evaluator.hpp"
+#include "Evaluator.h"
 
 #include <list>
 
@@ -37,6 +38,7 @@
 #include <stdlib.h>
 
 using namespace std;
+using namespace optframe;
 
 class PCAPInitialSolutionGreedy: public Constructive<RepPCAP>
 {

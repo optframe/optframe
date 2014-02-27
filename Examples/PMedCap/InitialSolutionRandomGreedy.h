@@ -18,18 +18,19 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef PCAP_INITIALSOLUTION_RandomInitalSolution_HPP_
-#define PCAP_INITIALSOLUTION_RandomInitalSolution_HPP_
+#ifndef PCAP_INITIALSOLUTION_RandomInitalSolutionGreedy_HPP_
+#define PCAP_INITIALSOLUTION_RandomInitalSolutionGreedy_HPP_
 
 #include "../../OptFrame/Constructive.h"
 #include "../../OptFrame/Util/TestSolution.hpp"
+#include "../../OptFrame/RandGen.hpp"
 
-#include "ProblemInstance.hpp"
+#include "ProblemInstance.h"
 
 #include "Representation.h"
 #include "Solution.h"
 
-#include "Evaluator.hpp"
+#include "Evaluator.h"
 
 #include <list>
 
@@ -37,8 +38,9 @@
 #include <stdlib.h>
 
 using namespace std;
+using namespace optframe;
 
-class PCAPInitialSolutionRandom: public Constructive<RepPCAP> {
+class PCAPInitialSolutionRandomGreedy: public Constructive<RepPCAP> {
 private:
 	PCAPProblemInstance& pPCAP;
 	RandGen& rg;
@@ -46,7 +48,7 @@ private:
 
 public:
 
-	PCAPInitialSolutionRandom(PCAPProblemInstance& _pPCAP, RandGen& _rg) : // If necessary, add more parameters
+	PCAPInitialSolutionRandomGreedy(PCAPProblemInstance& _pPCAP, RandGen& _rg) : // If necessary, add more parameters
 		pPCAP(_pPCAP), rg(_rg) {
 	}
 
@@ -66,16 +68,31 @@ public:
 			newRep.first.push_back(x);
 		}
 
-		for (int i = 0; i < pPCAP.nCidades; i++) {
+		vector<int> utilizacao;
+		for (int i = 0; i < pPCAP.nMedianas; i++)
+			utilizacao.push_back(0);
+
+		for (int i = 0; i < pPCAP.nCidades; i++)
 			newRep.second.push_back(-1);
 
-			for (int j = 0; j < pPCAP.nMedianas; j++) {
-				if (i == newRep.first[j])
-					newRep.second[i] = j;
+		for (int i = 0; i < pPCAP.nMedianas; i++) {
+			int cidade = newRep.first[i];
+			newRep.second[cidade] = i;
+			utilizacao[i] += pPCAP.vecCidades[cidade].demanda;
+		}
+
+		for (int i = 0; i < pPCAP.nCidades; i++) {
+			if (newRep.second[i] == -1) {
+				int x = rg.rand(pPCAP.nMedianas);
+				while ((utilizacao[x] + pPCAP.vecCidades[i].demanda)
+						> pPCAP.vecCidades[x].capacidade) {
+					x = rg.rand(pPCAP.nMedianas);
+				}
+
+				newRep.second[i] = x;
+				utilizacao[x] += pPCAP.vecCidades[i].demanda;
 			}
 
-			if(newRep.second[i]==-1)
-				newRep.second[i] = rg.rand(pPCAP.nMedianas);
 		}
 
 		int ads;
@@ -85,4 +102,4 @@ public:
 
 };
 
-#endif /*PCAP_INITIALSOLUTION_RandomInitalSolution_HPP_*/
+#endif /*PCAP_INITIALSOLUTION_RandomInitalSolutionGreedy_HPP_*/

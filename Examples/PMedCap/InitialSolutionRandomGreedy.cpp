@@ -18,36 +18,4 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef CIDADE_H_
-#define CIDADE_H_
-#include <math.h>
-class Cidade
-{
-
-private:
-
-public:
-	double x, y;
-	int capacidade;
-	int demanda;
-
-	Cidade(double a, double b,int c, int d)
-	{
-		x = a;
-		y = b;
-		capacidade = c;
-		demanda = d;
-	}
-
-
-	Cidade()
-	{
-		x = -5;
-		y = -5;
-	}
-
-
-};
-
-
-#endif /* CIDADE_H_ */
+#include "InitialSolutionRandomGreedy.h"
