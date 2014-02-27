@@ -1,51 +1,36 @@
-all: app_TSP
+all: app_OptHS
 
 CC=g++
 CFLAGS=-O3 -Wall
 
-app_TSP:  TSPmain.o  TSPScanner.o  TSPConstructiveBestInsertion.o  TSPDeltaMoveTSP2Opt.o  TSPDeltaMoveTSPOrOptk.o  TSPEvaluator.o  TSPNearestNeighborConstructive.o  TSPNSEnumShift.o  TSPNSEnumSwap.o  TSPProblemCommand.o  TSPProblemInstance.o  TSPRandomInitialSolution.o  
-	$(CC) $(CFLAGS) TSP*.o -o $@
+app_OptHS:  OptHSmain.o  OptHSScanner.o  OptHSConstructiveRandom.o  OptHSEvaluator.o  OptHSNSSwap.o  OptHSProblemCommand.o  OptHSProblemInstance.o  
+	$(CC) $(CFLAGS) OptHS*.o -o $@
 
-TSPScanner.o: ../OptFrame/Scanner++/Scanner.cpp  ../OptFrame/Scanner++/Scanner.h
-	$(CC) -c $(CFLAGS) ../OptFrame/Scanner++/Scanner.cpp -o TSPScanner.o
+OptHSScanner.o: ../OptFrame/Scanner++/Scanner.cpp  ../OptFrame/Scanner++/Scanner.h
+	$(CC) -c $(CFLAGS) ../OptFrame/Scanner++/Scanner.cpp -o OptHSScanner.o
 
-TSPmain.o: mainTSP.cpp
-	$(CC) -c $(CFLAGS) mainTSP.cpp -o $@
+OptHSmain.o: mainOptHScheduling.cpp
+	$(CC) -c $(CFLAGS) mainOptHScheduling.cpp -o $@
 	
-TSPConstructiveBestInsertion.o: TSP/ConstructiveBestInsertion.cpp TSP/ConstructiveBestInsertion.h
-	$(CC) -c $(CFLAGS) TSP/ConstructiveBestInsertion.cpp -o $@
+OptHSConstructiveRandom.o: OptHScheduling/ConstructiveRandom.cpp OptHScheduling/ConstructiveRandom.h
+	$(CC) -c $(CFLAGS) OptHScheduling/ConstructiveRandom.cpp -o $@
 
-TSPDeltaMoveTSP2Opt.o: TSP/DeltaMoveTSP2Opt.cpp TSP/DeltaMoveTSP2Opt.h
-	$(CC) -c $(CFLAGS) TSP/DeltaMoveTSP2Opt.cpp -o $@
+OptHSEvaluator.o: OptHScheduling/Evaluator.cpp OptHScheduling/Evaluator.h
+	$(CC) -c $(CFLAGS) OptHScheduling/Evaluator.cpp -o $@
 
-TSPDeltaMoveTSPOrOptk.o: TSP/DeltaMoveTSPOrOptk.cpp TSP/DeltaMoveTSPOrOptk.h
-	$(CC) -c $(CFLAGS) TSP/DeltaMoveTSPOrOptk.cpp -o $@
-
-TSPEvaluator.o: TSP/Evaluator.cpp TSP/Evaluator.h
-	$(CC) -c $(CFLAGS) TSP/Evaluator.cpp -o $@
-
-TSPNearestNeighborConstructive.o: TSP/NearestNeighborConstructive.cpp TSP/NearestNeighborConstructive.h
-	$(CC) -c $(CFLAGS) TSP/NearestNeighborConstructive.cpp -o $@
+OptHSNSSwap.o: OptHScheduling/NSSwap.cpp OptHScheduling/NSSwap.h
+	$(CC) -c $(CFLAGS) OptHScheduling/NSSwap.cpp -o $@
 	
-TSPNSEnumShift.o: TSP/NSEnumShift.cpp TSP/NSEnumShift.h
-	$(CC) -c $(CFLAGS) TSP/NSEnumShift.cpp -o $@
-	
-TSPNSEnumSwap.o: TSP/NSEnumSwap.cpp TSP/NSEnumSwap.h
-	$(CC) -c $(CFLAGS) TSP/NSEnumSwap.cpp -o $@
+OptHSProblemCommand.o: OptHScheduling/ProblemCommand.cpp OptHScheduling/ProblemCommand.h
+	$(CC) -c $(CFLAGS) OptHScheduling/ProblemCommand.cpp -o $@
 
-TSPProblemCommand.o: TSP/ProblemCommand.cpp TSP/ProblemCommand.h
-	$(CC) -c $(CFLAGS) TSP/ProblemCommand.cpp -o $@
+OptHSProblemInstance.o: OptHScheduling/ProblemInstance.cpp OptHScheduling/ProblemInstance.h
+	$(CC) -c $(CFLAGS) OptHScheduling/ProblemInstance.cpp -o $@
 
-TSPProblemInstance.o: TSP/ProblemInstance.cpp TSP/ProblemInstance.h
-	$(CC) -c $(CFLAGS) TSP/ProblemInstance.cpp -o $@
-
-TSPRandomInitialSolution.o: TSP/RandomInitialSolution.cpp TSP/RandomInitialSolution.h
-	$(CC) -c $(CFLAGS) TSP/RandomInitialSolution.cpp -o $@
-	
 	
 .PHONY: all clean
 
 clean: 
-	rm -f app_TSP
-	rm -f TSP*.o
+	rm -f app_OptHS
+	rm -f OptHS*.o
 	

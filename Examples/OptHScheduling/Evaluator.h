@@ -33,9 +33,11 @@
 #include "Solution.h"
 #include "Evaluation.h"
 
-#include "ProblemInstance.hpp"
+#include "ProblemInstance.h"
 
 #define OptHS_EPSILON 0.0001
+
+using namespace optframe;
 
 namespace OptHS
 {

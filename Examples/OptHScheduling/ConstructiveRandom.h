@@ -24,12 +24,12 @@
 #include "../../OptFrame/Constructive.h"
 #include "../../OptFrame/Util/TestSolution.hpp"
 
-#include "ProblemInstance.hpp"
+#include "ProblemInstance.h"
 
 #include "Representation.h"
 #include "Solution.h"
 
-#include "Evaluator.hpp"
+#include "Evaluator.h"
 #include "../../OptFrame/RandGen.hpp"
 #include <list>
 
@@ -37,6 +37,7 @@
 #include <stdlib.h>
 
 using namespace std;
+using namespace optframe;
 
 namespace OptHS
 {
