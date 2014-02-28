@@ -8,5 +8,5 @@ examples:
 	make -C ./Examples/
 	
 clean:
-	make clean -C ./Examples/
+	#make clean -C ./Examples/
 	rm -f mainOptFrame

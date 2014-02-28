@@ -113,7 +113,7 @@ public:
 		return false;
 	}
 
-	Component* getNextComponent(Scanner& scanner)
+	Component* getNextComponent(Scanner& scanner, string* compName = NULL, int* compNumber = NULL)
 	{
 		if(!scanner.hasNext())
 			return NULL;
@@ -132,15 +132,45 @@ public:
 
 		Component* component = NULL;
 
-		if(components.count(id) > 0)
+		if(id[0] == ':')
 		{
-			vector<Component*> v = components[id];
+			// COMPONENT SHORTCUT!
+			// look for pattern
+			map<std::string, vector<Component*> >::iterator iter;
+			for(iter = components.begin(); iter != components.end(); iter++)
+			{
+				string name = iter->first;
 
-			if(number < v.size())
-				component = v[number];
+				int p = name.find(id, 0);
+				if((p > 0) && (p + id.length() == name.length())) // exact match after position 'p'
+				{
+					component = iter->second.at(number);
+					id = name;
+					break;
+				}
+			}
+			if(!component)
+				cout << "HeuristicFactory warning: pattern of component '" << id << " " << number << "' not found" << endl;
 		}
 		else
-			cout << "HeuristicFactory warning: component '" << id << " " << number << "' not found!" << endl;
+		{
+			// look for exact
+			if(components.count(id) > 0)
+			{
+				vector<Component*> v = components[id];
+
+				if(number < v.size())
+					component = v[number];
+			}
+			else
+				cout << "HeuristicFactory warning: component '" << id << " " << number << "' not found!" << endl;
+		}
+
+		if(compName && compNumber)
+		{
+			(*compName) = id;
+			(*compNumber) = number;
+		}
 
 		return component;
 	}

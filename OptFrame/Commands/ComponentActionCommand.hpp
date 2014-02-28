@@ -71,7 +71,9 @@ public:
 			return false;
 		}
 
-		Component* comp = factory.getNextComponent(scanner);
+		string compName; // component name (or translated shortcut)
+		int compNumber;  // component index
+		Component* comp = factory.getNextComponent(scanner, &compName, &compNumber);
 
 		if(!comp)
 		{
@@ -88,15 +90,19 @@ public:
 
 		string action = scanner.next();
 
+		//cout << "FOUND COMPONENT '" << compName << "' and action '" << action << "'" << endl;
 		//cout << "will look for action: '" << action << "'" << endl;
 
 		for(unsigned a=0; a<factory.actions.size(); a++)
-			if(factory.actions[a]->handleComponent(*comp) && factory.actions[a]->handleAction(action))
+			if(factory.actions[a]->handleComponent(compName) && factory.actions[a]->handleAction(action))
 			{
-				return factory.actions[a]->doAction(input, factory, dictionary, ldictionary);
+				stringstream ssaction;
+				ssaction << compName << " " << compNumber << " " << action << scanner.rest();
+
+				return factory.actions[a]->doAction(ssaction.str(), factory, dictionary, ldictionary);
 			}
 
-        cout << "component.action error: component '" << comp->id() << "' and action '" << action << "' not found!" << endl;
+        cout << "component.action error: component '" << compName << "' and action '" << action << "' not found!" << endl;
 		return false;
 	}
 

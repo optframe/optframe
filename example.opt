@@ -82,6 +82,11 @@ randgen.set_seed 0
 
 problem.general load $default_file
 
+component.list
+
+print SHORTCUT TEST: looking for action 'print' of component ':Evaluator 0' => 
+action :Evaluator 0 print
+
 component.check 100 50 false
 
 exit
