@@ -97,12 +97,6 @@ public:
 		return NULL;
 	}
 
-	/*
-	optframe::Action<R, ADS, DS>* getAction() // TODO: STUB!
-	{
-		return actions[0];
-	}
-	*/
 
 	bool inComponents(Component* c)
 	{
@@ -121,34 +115,20 @@ public:
 
 	Component* getNextComponent(Scanner& scanner)
 	{
-		std::string id = "";
-		unsigned number = 0;
-
-		if(scanner.hasNext())
-			id = scanner.next();
-
-		// safety for unsigned!
-		bool validNumber = true;
-
-		if(scanner.hasNext())
-		{
-			string snum = scanner.next();
-			for(unsigned i=0; i<snum.size(); i++)
-				if( (snum.at(i)!='.') && ((snum.at(i)<'0') || (snum.at(i)>'9')) )
-				{
-					// not a number
-					validNumber = false;
-					break;
-				}
-
-			if(validNumber)
-				number = Scanner::parseInt(snum);
-		}
-		else
-			validNumber = false;
-
-		if((id=="") || (!validNumber))
+		if(!scanner.hasNext())
 			return NULL;
+
+		std::string id = scanner.next();
+
+		if(!scanner.hasNextInt())
+			return NULL;
+
+		int inumber = scanner.nextInt();
+
+		if(inumber < 0)
+			return NULL;
+
+		unsigned number = inumber;
 
 		Component* component = NULL;
 
