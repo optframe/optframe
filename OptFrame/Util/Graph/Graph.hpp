@@ -49,7 +49,7 @@ public:
 	}
 
 	// get null value (standard is zero)
-	inline void setNullValue(const X& v)
+	virtual void setNullValue(const X& v)
 	{
 		nullVal = v;
 	}
@@ -58,6 +58,11 @@ public:
 	inline X getNullValue() const
 	{
 		return nullVal;
+	}
+
+	inline bool isNull(const X& x) const
+	{
+		return x == nullVal;
 	}
 
 	// insert node and return id number (should increase node count)
@@ -90,6 +95,28 @@ public:
 			insertEdge(n1, n2, v);
 	}
 
+	// return true if arc exists
+	inline bool hasArc(unsigned n1, unsigned n2) const
+	{
+		if(!directed)
+			return false;
+		return getValue(n1, n2) != nullVal;
+	}
+
+	// return true if arc exists
+	inline bool hasEdge(unsigned n1, unsigned n2) const
+	{
+		if(directed)
+			return false;
+		return getValue(n1, n2) != nullVal;
+	}
+
+	// return true if arc/edge exists
+	inline bool exists(unsigned n1, unsigned n2) const
+	{
+		return getValue(n1, n2) != nullVal;
+	}
+
 	// get all arcs/edges
 	virtual vector<pair<pair<unsigned, unsigned>, X> > getAll() const
 	{
@@ -114,6 +141,7 @@ public:
 		return r;
 	}
 
+private:
 	// comparison for sorting in ascending order
 	static bool compAsc(const pair<pair<unsigned, unsigned>, X>& v1, const pair<pair<unsigned, unsigned>, X>& v2)
 	{
@@ -126,6 +154,7 @@ public:
 		return v1.second > v2.second;
 	}
 
+public:
 	// get all arcs/edges sorted
 	virtual vector<pair<pair<unsigned, unsigned>, X> > getAllSorted(bool ascending = true) const
 	{

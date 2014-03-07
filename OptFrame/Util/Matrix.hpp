@@ -218,7 +218,7 @@ public:
       for (unsigned int i = 0; i < obj.getNumRows(); i++)
       {
          for (unsigned int j = 0; j < obj.getNumCols(); j++)
-            os << obj(i, j) << " ";
+            os << obj(i, j) << "\t";
          os << endl;
       }
       return os;

@@ -165,6 +165,12 @@ public:
 		mapAll[make_pair(n1, n2)] = v;
 	}
 
+	virtual void setNullValue(const double& v)
+	{
+		mapAll.clear();
+		nullVal = v;
+	}
+
 	// class id (for printing)
 	string id() const
 	{

@@ -20,7 +20,6 @@ public:
 			m(new Matrix<double>(nNodes)), Graph<double>(_nNodes, _isDirected)
 	{
 		setNullValue(0);
-		m->fill(nullVal);
 	}
 
 	virtual ~GraphMatrix()
@@ -156,10 +155,59 @@ public:
 		(*m)(n1, n2) = v;
 	}
 
+	virtual void setNullValue(const double& v)
+	{
+		m->fill(v);
+		nullVal = v;
+	}
+
 	// class id (for printing)
 	string id() const
 	{
-		return "GraphMap";
+		return "GraphMatrix";
+	}
+
+	virtual void print() const
+	{
+		if(directed)
+		{
+			cout << id() << ": |V|=" << nNodes << " |A|=" << nArcs << ":" << endl;
+			cout << "*\t";
+			for(unsigned i = 0; i < nNodes; i++)
+				cout << "(" << i << ")\t";
+			cout << endl;
+			for(unsigned i = 0; i < nNodes; i++)
+			{
+				cout << "(" << i << ")\t";
+				for(unsigned j = 0; j < nNodes; j++)
+					cout << (*m)(i, j) << "\t";
+				cout << endl;
+			}
+		}
+		else
+		{
+			cout << id() << ": |V|=" << nNodes << " |E|=" << nEdges << " (symmetric matrix; '.'=null; '-'=unused)" << endl;
+			cout << "*\t";
+			for(unsigned i = 0; i < nNodes; i++)
+				cout << "(" << i << ")\t";
+			cout << endl;
+			for(unsigned i = 0; i < nNodes; i++)
+			{
+				cout << "(" << i << ")\t";
+				for(unsigned j = 0; j < nNodes; j++)
+					if(j < i)
+						cout << "-\t";
+					else
+					{
+						if(!isNull((*m)(i, j)))
+							cout << (*m)(i, j) << "\t";
+						else
+							cout << ".\t";
+					}
+				cout << endl;
+			}
+		}
+
 	}
 
 };
