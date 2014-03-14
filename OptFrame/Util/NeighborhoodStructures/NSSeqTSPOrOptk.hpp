@@ -31,66 +31,90 @@ using namespace std;
 
 // Working structure: vector<vector<T> >
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveTSPOrOptk<T, ADS, DS >, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPOrOptk<T, ADS, DS, MOVE, P> >
-class NSSeqTSPOrOptk : public NSSeq<vector<T> , ADS, DS >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveTSPOrOptk<T, ADS, DS>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPOrOptk<T, ADS, DS, MOVE, P> >
+class NSSeqTSPOrOptk: public NSSeq<vector<T>, ADS, DS>
 {
-   typedef vector<T> Route;
+	typedef vector<T> Route;
 
 private:
-   int k;
-   P* p; // has to be the last
+	int k;
+	P* p; // has to be the last
 
 public:
 
-   NSSeqTSPOrOptk(int _k, P* _p = NULL)
-   : k(_k), p(_p)
-   {
-   }
+	NSSeqTSPOrOptk(int _k, P* _p = NULL) :
+			k(_k), p(_p)
+	{
+	}
 
-   virtual ~NSSeqTSPOrOptk()
-   {
-   }
+	virtual ~NSSeqTSPOrOptk()
+	{
+	}
 
-   using NSSeq<vector<T> , ADS, DS >::move;
-   using NSSeq<vector<T> , ADS, DS >::getIterator;
+	using NSSeq<vector<T>, ADS, DS>::move;
+	using NSSeq<vector<T>, ADS, DS>::getIterator;
 
-   Move<Route, ADS, DS >& move(const Route& rep, const ADS&)
-   {
-      int n = rep.size();
+	Move<Route, ADS, DS>& move(const Route& rep, const ADS& ads)
+	{
+		int n = rep.size();
 
-      if(n - k <= 0)
-         return *new MOVE(0, 0, k, p);
+		if(n - k <= 0)
+		{
+			// THROW EXCEPTION!
+			cerr << "CANNOT GENERATE MOVE OPTK FOR SOLUTION " << rep << endl;
+			exit(1);
+			//return *new MOVE(0, 0, k, p);
+		}
 
-      int i = rand() % ( n - k + 1 );
+		int i = rand() % (n - k + 1);
 
-      int j = i;
-      while(i == j)
-         j = rand() % ( n - k + 1 );
+		int j = i;
+		while(abs(i - j) < k)
+			j = rand() % (n - k + 1);
 
-      return *new MOVE(i, j, k, p);
-   }
+		Move<Route, ADS, DS>* m = new MOVE(i, j, k, p);
+		if(!m->canBeApplied(rep, ads))
+		{
+			cout << "ERROR IN GENERATION!" << endl;
+			m->print();
+			exit(1);
+		}
+		return *m;
+	}
 
-   virtual NSIterator<Route, ADS, DS >& getIterator(const Route& r, const ADS&)
-   {
-      return *new NSITERATOR (r.size(), k, p);
-   }
+	Move<Route, ADS, DS>* validMove(const Route& r, const ADS& ads)
+	{
+		Move<Route, ADS, DS>* m = &move(r, ads);
+		if(m->canBeApplied(r, ads))
+			return m;
+		else
+		{
+			delete m;
+			return NULL;
+		}
+	}
 
-   static string idComponent()
-   {
-	   stringstream ss;
-	   ss << NSSeq<vector<T>, ADS, DS >::idComponent() << ":NSSeqTSPOrOptk";
-	   return ss.str();
-   }
+	virtual NSIterator<Route, ADS, DS>& getIterator(const Route& r, const ADS&)
+	{
+		return *new NSITERATOR(r.size(), k, p);
+	}
 
-   virtual string id() const
-   {
-	   return idComponent();
-   }
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << NSSeq<vector<T>, ADS, DS>::idComponent() << ":NSSeqTSPOrOptk";
+		return ss.str();
+	}
 
-   virtual bool compatible(string s)
-   {
-	   return ( s == idComponent() ) || ( NSSeq<vector<T>, ADS, DS >::compatible(s) );
-   }
+	virtual string id() const
+	{
+		return idComponent();
+	}
+
+	virtual bool compatible(string s)
+	{
+		return (s == idComponent()) || (NSSeq<vector<T>, ADS, DS>::compatible(s));
+	}
 
 	virtual string toString() const
 	{

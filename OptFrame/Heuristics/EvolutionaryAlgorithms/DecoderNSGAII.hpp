@@ -566,8 +566,14 @@ public:
 		delete& pDominance;
 	}
 
+	typedef vector<IndividualExtNSGAII<R, X, ADS, DS>*> PX;
+	typedef vector<IndividualNSGAII<R>*> PS;
+
 	// base population 'p' and desired final population size 'p_size'
-	virtual vector<IndividualNSGAII<R>*> basicGeneticOperators(const vector<IndividualNSGAII<R>*>& p, int p_size) = 0;
+	////virtual PS basicGeneticOperators(const vector<IndividualNSGAII<R>*>& p, int p_size) = 0;
+
+	// creates a brand new population based on population 'p'
+	virtual pair<PS, PX> makeNewPopulation(const PS&, const PX&) = 0;
 
 	// free pareto front 'F'
 	template<class T>
@@ -588,8 +594,9 @@ public:
 		cout << endl;
 	}
 
+
 	// convert a population 'p' of Solution to a vector of 'IndividualNSGAII'
-	vector<IndividualNSGAII<R>*>* convert(Population<R>& p)
+	PS* convert(Population<R>& p)
 	{
 		vector<IndividualNSGAII<R>*>* vp = new vector<IndividualNSGAII<R>*>;
 		for(unsigned i = 0; i < p.size(); i++)
@@ -601,7 +608,7 @@ public:
 	}
 
 	// decode each element from 'ps' and create a list of 'IndividualExtNSGAII'
-	vector<IndividualExtNSGAII<R, X, ADS, DS>*> decode(vector<IndividualNSGAII<R>*>& ps)
+	PX decode(PS& ps)
 	{
 		vector<IndividualExtNSGAII<R, X, ADS, DS>*> px;
 
@@ -619,6 +626,73 @@ public:
 				px.push_back(new IndividualExtNSGAII<R, X, ADS, DS>(*ps[i], dx.first[x], dx.second[x]));
 		}
 		return px;
+	}
+
+
+	pair<PS, PX> generateFirstPopulation(unsigned pSize)
+	{
+		// 1. create population 'p0' of size 'pMax' (will calculate 'N')
+		Population<R> *p0 = &init_pop.generatePopulation(pSize);
+
+		if(Component::information)
+			cout << id() << ": population of " << p0->size() << " generated!" << endl;
+
+		PS* ps_base = convert(*p0);
+		p0->clearNoKill();
+		delete p0;
+
+		// will calculate 'N' population size, based on limits 'pMin', 'pMax', 'xTarget'
+
+		PS ps(*ps_base);
+		/*
+		for(unsigned i = 0; i < ((unsigned) pMin); i++)
+		{
+			ps_base->at(i)->isRandom = true;
+			ps.push_back(ps_base->at(i));
+		}
+		*/
+		PX px = decode(ps);
+
+		/*
+		for(unsigned i = ps.size(); i < ps_base->size(); i++)
+			if(px.size() > xTarget)
+				break;
+			else
+			{
+				vector<IndividualNSGAII<R>*> ns(1, ps_base->at(i));
+				vector<IndividualExtNSGAII<R, X, ADS, DS>*> nx = decode(ns);
+				ps.push_back(ns[0]);
+				px.insert(px.end(), nx.begin(), nx.end());
+			}
+
+		N = ps.size(); // keep the same population size
+
+		// erase unused solutions from 'ps'
+		for(unsigned i = ps.size(); i < ps_base->size(); i++)
+			delete ps_base->at(i);
+		*/
+		delete ps_base;
+
+		for(unsigned i = 0; i < ps.size(); i++)
+			ps.at(i)->id = i;
+
+		if(Component::information)
+			cout << id() << ": first decode okay! generated " << ps.size() << " => " << px.size() << endl;
+
+		// update values that may be used in later selection of individuals
+		updateParentsObjectives(ps, px);
+
+		return make_pair(ps, px);
+	}
+
+	pair<PS, PX> generateNextPopulation(const PS& ps, const PX& px)
+	{
+		pair<PS, PX> p = makeNewPopulation(ps, px);
+		//PX qx = decode(qs);
+		// update values that may be used in later selection of individuals
+		updateParentsObjectives(p.first, p.second);
+
+		return p;
 	}
 
 	// compare if 'ind1' is better than 'ind2'
@@ -682,7 +756,7 @@ public:
 		return false;
 	}
 
-	virtual void updateParentsObjectives(vector<IndividualNSGAII<R>*>& ps, const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& px)
+	virtual void updateParentsObjectives(PS& ps, const PX& px)
 	{
 	}
 
@@ -697,63 +771,22 @@ public:
 		firstRatio = lastRatio = 0.0;
 		bool fast = true;
 
-	 timeSort = 0;
-	 timeSTLSort = 0;
-	 timeDist= 0;
-	 timeLoop = 0;
-	 timeNewPop = 0;
+		timeSort = 0;
+		timeSTLSort = 0;
+		timeDist = 0;
+		timeLoop = 0;
+		timeNewPop = 0;
 
-		// 1. create population 'p0' of size 'pMax' (will calculate 'N')
-		Population<R>* p0 = &init_pop.generatePopulation(pMax);
+		// 1. create population 'p0'
+		pair<PS, PX> fPop = generateFirstPopulation(pMax);
 
-		if(Component::information)
-			cout << id() << ": population of " << p0->size() << " generated!" << endl;
-
-		vector<IndividualNSGAII<R>*>* ps_base = convert(*p0);
-		p0->clearNoKill();
-		delete p0;
-
-		// will calculate 'N' population size, based on limits 'pMin', 'pMax', 'xTarget'
-
-		vector<IndividualNSGAII<R>*>* ps = new vector<IndividualNSGAII<R>*>;
-		for(unsigned i = 0; i < ((unsigned)pMin); i++)
-		{
-			ps_base->at(i)->isRandom = true;
-			ps->push_back(ps_base->at(i));
-		}
-		vector<IndividualExtNSGAII<R, X, ADS, DS>*> _px = decode(*ps);
-
-		for(unsigned i = ps->size(); i < ps_base->size(); i++)
-			if(_px.size() > xTarget)
-				break;
-			else
-			{
-				vector<IndividualNSGAII<R>*> ns(1, ps_base->at(i));
-				vector<IndividualExtNSGAII<R, X, ADS, DS>*> nx = decode(ns);
-				ps->push_back(ns[0]);
-				_px.insert(_px.end(), nx.begin(), nx.end());
-			}
-
-		// erase unused solutions from 'ps'
-		for(unsigned i = ps->size(); i < ps_base->size(); i++)
-			delete ps_base->at(i);
-		delete ps_base;
-
-		vector<IndividualExtNSGAII<R, X, ADS, DS>*>* px = new vector<IndividualExtNSGAII<R, X, ADS, DS>*>(_px);
+		PS* ps = new PS(fPop.first);
+		PX* px = new PX(fPop.second);
 
 		N = ps->size(); // keep the same population size
 
 		IndividualExtNSGAII<R, X, ADS, DS>::zeroRanks(*ps); // update parents' ranks
 		IndividualExtNSGAII<R, X, ADS, DS>::zeroDistances(*ps); // update parents' distances
-
-		for(unsigned i = 0; i < ps->size(); i++)
-			ps->at(i)->id = i;
-
-		if(Component::information)
-			cout << id() << ": first decode okay! generated " << ps->size() << " => " << px->size() << endl;
-
-		// update values that may be used in later selection of individuals
-		updateParentsObjectives(*ps, *px);
 
 		firstRatio = px->size() / ((double) ps->size());
 
@@ -778,13 +811,17 @@ public:
 		// 3. create offspring of size 'N'
 		if(Component::information)
 			cout << id() << ": will generate first children!" << endl;
-		vector<IndividualNSGAII<R>*> qs = makeNewPopulation(*ps, N);
-		if(Component::information)
-			cout << id() << ": will decode first children!" << endl;
-		vector<IndividualExtNSGAII<R, X, ADS, DS>*> qx = decode(qs);
 
-		// update values that may be used in later selection of individuals
-		updateParentsObjectives(qs, qx);
+		pair<PS, PX> pChildren = generateNextPopulation(*ps, *px);
+		PS qs = pChildren.first;
+		PX qx = pChildren.second;
+
+		//vector<IndividualNSGAII<R>*> qs = makeNewPopulation(*ps, N);
+		//if(Component::information)
+		//	cout << id() << ": will decode first children!" << endl;
+		//vector<IndividualExtNSGAII<R, X, ADS, DS>*> qx = decode(qs);
+		//// update values that may be used in later selection of individuals
+		//updateParentsObjectives(qs, qx);
 
 		logPopulation(qx, -1, tnow.now(), "first pop qx");
 
@@ -874,13 +911,13 @@ public:
 						break;
 					}
 
-/*
+
 					if(dmin > limits[k])
 					{
 						cout << "ERROR: algorithm lost better solution for OBJ " << k << " '" << limits[k] << "' for '" << dmin << "'" << endl;
 						exit(1);
 					}
-*/
+
 				}
 				else
 				{
@@ -1260,39 +1297,11 @@ public:
 				cout << id() <<": will generate next population!" << endl;
 
 
-/*
-			if(fast && (t==gMax))
-			{
-				fast = false;
-				N*=5;
-				t = 0;
-			}
-*/
-
-			int gen = N;
-			if(adaptative_pop)
-			{
-				double ratio = px->size()/((double)ps->size());
-				int missing = 2*(xTarget) - px->size();
-				gen = missing / ratio;
-                                if(gen < pMin)
-                                    gen = pMin;
-                                if(gen > pMax)
-                                    gen = pMax;
-				N = (gen + ps->size())/2;
-			}
-
 			Timer tNewPop;
-			qs = makeNewPopulation(*ps, gen);
+			pair<PS, PX> pChildren = generateNextPopulation(*ps, *px);
+			qs = pChildren.first;
+			qx = pChildren.second;
 			timeNewPop += tNewPop.now();
-			Timer tdecode;
-			qx = decode(qs);
-			// update values that may be used in later selection of individuals
-			updateParentsObjectives(qs, qx);
-
-			if(DISPLAY_GENERAL)
-			cout << "decode time = " << tdecode.inMilliSecs() << " ms" << endl;
-			timeNewPop += tdecode.now();
 
 			logPopulation(qx, t, tnow.now(), "new pop qx");
 
@@ -1782,8 +1791,6 @@ public:
 	{
 	}
 
-	// creates a brand new population based on population 'p'
-	virtual vector<IndividualNSGAII<R>*> makeNewPopulation(const vector<IndividualNSGAII<R>*>& p, unsigned target_size) = 0;
 
 	// function to log data from the population
 	virtual void logPopulation(const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& px, int generation, double time, string other)

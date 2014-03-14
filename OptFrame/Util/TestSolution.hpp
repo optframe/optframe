@@ -33,8 +33,9 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class TestSolution : public Solution<R, ADS>
 {
 private:
-	static const unsigned long long MAX_SOL_IN_MEMORY_ERROR = 1000000;
+	static const unsigned long long MAX_SOL_IN_MEMORY_ERROR = 100000;
 	static unsigned long long MAX_SOL_IN_MEMORY_WARNING;
+	static int LAST_WARNING_RATIO;
 
 	static unsigned long long testsolution_objects;
 	static unsigned long long testsolution_objects_nodecrement;
@@ -75,8 +76,11 @@ public:
 
 	void memcheck() // check number of TestSolution objects in memory
 	{
-		if(testsolution_objects >= MAX_SOL_IN_MEMORY_WARNING)
+		double dratio = ((double) testsolution_objects) / MAX_SOL_IN_MEMORY_ERROR;
+		int ratio =  (int)(dratio * 100);
+		if((testsolution_objects >= MAX_SOL_IN_MEMORY_WARNING) && (ratio % 10 == 0) && (ratio > LAST_WARNING_RATIO))
 		{
+			LAST_WARNING_RATIO = ratio;
 			cout << "WARNING: " << TestSolution<R, ADS>::testsolution_objects << " TestSolution objects in memory!" << endl;
 			TestSolution<R, ADS>::MAX_SOL_IN_MEMORY_WARNING++;
 		}
@@ -121,7 +125,10 @@ public:
 };
 
 template<class R, class ADS>
-unsigned long long TestSolution<R, ADS>::MAX_SOL_IN_MEMORY_WARNING = 0.7*MAX_SOL_IN_MEMORY_ERROR;
+unsigned long long TestSolution<R, ADS>::MAX_SOL_IN_MEMORY_WARNING = 0.6*MAX_SOL_IN_MEMORY_ERROR;
+
+template<class R, class ADS>
+int TestSolution<R, ADS>::LAST_WARNING_RATIO = 59; // SMALLER THAN 0.6
 
 template<class R, class ADS>
 unsigned long long TestSolution<R, ADS>::testsolution_objects = 0;

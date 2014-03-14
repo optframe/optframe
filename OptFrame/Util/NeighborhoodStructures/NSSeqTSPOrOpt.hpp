@@ -69,6 +69,18 @@ public:
 		return OrOpt1_2_3->move(rep, ads);
 	}
 
+	virtual Move<Route, ADS, DS>* validMove(const Route& r, const ADS& ads)
+	{
+		Move<Route, ADS, DS>* m = &move(r, ads);
+		if(m->canBeApplied(r, ads))
+			return m;
+		else
+		{
+			delete m;
+			return NULL;
+		}
+	}
+
 	virtual NSIterator<Route, ADS, DS >& getIterator(const Route& rep, const ADS& ads)
 	{
 		return OrOpt1_2_3->getIterator(rep, ads);

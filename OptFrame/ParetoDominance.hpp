@@ -100,6 +100,13 @@ public:
 		return r;
 	}
 
+
+	// true if 's1' dominates 's2'
+	virtual bool dominates(const MultiEvaluation<DS>* mev1, const MultiEvaluation<DS>* mev2)
+	{
+		return dominates(mev1->getVector(), mev2->getVector());
+	}
+
 	// true if 's1' dominates 's2'
 	virtual bool dominates(const MultiEvaluation<DS>& mev1, const MultiEvaluation<DS>& mev2)
 	{
@@ -108,6 +115,27 @@ public:
 
 	// true if 's1' dominates 's2'
 	virtual bool dominates(const vector<Evaluation<DS>*>& v1, const vector<Evaluation<DS>*>& v2)
+	{
+		if(v1.size() != v2.size())
+			return false;
+
+		vector<double> vd1(v1.size());
+		vector<double> vd2(v1.size());
+		for(unsigned i = 0; i < v1.size(); i++)
+		{
+			vd1[i] = v1[i]->evaluation();
+			vd2[i] = v2[i]->evaluation();
+		}
+
+		return dominates(vd1, vd2);
+	}
+
+	virtual bool dominates(const vector<double>* v1, const vector<double>* v2)
+	{
+		return dominates(*v1, *v2);
+	}
+
+	virtual bool dominates(const vector<double>& v1, const vector<double>& v2)
 	{
 		if((v1.size() != v2.size()) || (v1.size() == 0) || (v2.size() == 0))
 		{
@@ -124,10 +152,10 @@ public:
 		{
 			for(int e = 0; e < v1.size(); e++)
 			{
-				if(v_e[e]->betterThan(*v1[e], *v2[e]))
+				if(v_e[e]->betterThan(v1[e], v2[e]))
 					better++;
 
-				if(abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
+				if(abs(v1[e] - v2[e]) < 0.0001)
 					equals++;
 			}
 		}
@@ -142,10 +170,10 @@ public:
 
 			for(int e = 0; e < v1.size(); e++)
 			{
-				if(v_d[e]->betterThan(*v1[e], *v2[e]))
+				if(v_d[e]->betterThan(v1[e], v2[e]))
 					better++;
 
-				if(abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
+				if(abs(v1[e] - v2[e]) < 0.0001)
 					equals++;
 			}
 		}

@@ -78,7 +78,7 @@ public:
 	}
 
 	// true if 's1' weakly dominates 's2'
-	virtual bool dominates(const vector<Evaluation<DS>*>& v1, const vector<Evaluation<DS>*>& v2)
+	virtual bool dominates(const vector<double>& v1, const vector<double>& v2)
 	{
 		vector<Evaluator<R, ADS, DS>*>& v_e = ParetoDominance<R, ADS, DS>::v_e;
 
@@ -97,7 +97,7 @@ public:
 
 		for (int e = 0; e < v1.size(); e++)
 		{
-			if (v_e[e]->betterThan(*v1[e], *v2[e]))
+			if (v_e[e]->betterThan(v1[e], v2[e]))
 				better++;
 
 		}
@@ -107,7 +107,7 @@ public:
 		{
 		for (int e = 0; e < v1.size(); e++)
 		{
-			if (this->v_d[e]->betterThan(*v1[e], *v2[e]))
+			if (this->v_d[e]->betterThan(v1[e], v2[e]))
 				better++;
 
 		}
