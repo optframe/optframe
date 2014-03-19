@@ -65,6 +65,14 @@ public:
 		paretoFront.push_back(v_e);
 	}
 
+	void push_back(Solution<R, ADS>* s, MultiEvaluation<DS>* mev)
+	{
+		paretoSet.push_back(&s);
+		vector<Evaluation<DS>*> v_e = mev->getCloneVector();
+		paretoFront.push_back(v_e);
+		delete mev;
+	}
+
 	unsigned size()
 	{
 		return paretoSet.size();
@@ -106,21 +114,67 @@ public:
 		return nonDom;
 	}
 
-	static void addSolution(ParetoDominance<R, ADS, DS>& dom, ParetoDominanceWeak<R, ADS, DS>& domWeak, vector<MultiEvaluation<DS>*>& nonDom, MultiEvaluation<DS>* candidate)
+
+
+	// T. Lust et al (method addSolution)
+
+	// class T must be handled by ParetoDominance operators (candidate: vector<double>, vector<Evaluation*>, MultiEvaluation*)
+
+	template<class T>
+	static bool addSolution(vector<Direction<DS>*>& vDir, vector<T*>& nonDom, T* candidate)
+	{
+		ParetoDominance<R, ADS, DS> dom(vDir);
+		ParetoDominanceWeak<R, ADS, DS> domWeak(vDir);
+		return addSolution(dom, domWeak, nonDom, candidate);
+	}
+
+	template<class T>
+	static bool addSolution(ParetoDominance<R, ADS, DS>& dom, ParetoDominanceWeak<R, ADS, DS>& domWeak, vector<T*>& nonDom, T* candidate)
 	{
 		for(int ind = 0; ind < nonDom.size(); ind++)
 		{
 			if(domWeak.dominates(*nonDom.at(ind), *candidate))
-				return;
+				return false;
 
 			if(dom.dominates(*candidate, *nonDom.at(ind)))
 			{
-				nonDom.erase(nonDom.begin()+ind);
+				nonDom.erase(nonDom.begin() + ind);
 				ind--;
 			}
 		}
 
- 		nonDom.push_back(candidate);
+		nonDom.push_back(candidate);
+		return true;
+	}
+
+	static vector<pair<Solution<R>*, MultiEvaluation<DS>*> > filterDominated(vector<Direction<DS>*>& vdir, const vector<pair<Solution<R>*, MultiEvaluation<DS>*> >& candidates)
+	{
+		vector<pair<Solution<R>*, MultiEvaluation<DS>*> > nonDom;
+
+		ParetoDominance<R, ADS, DS> pDom(vdir);
+		ParetoDominanceWeak<R, ADS, DS> pDomWeak(vdir);
+
+		for(unsigned i = 0; i < candidates.size(); i++)
+			addSolution(pDom, pDomWeak, nonDom, candidates[i]);
+
+		return nonDom;
+	}
+
+	static void addSolution(ParetoDominance<R, ADS, DS>& dom, ParetoDominanceWeak<R, ADS, DS>& domWeak, vector<pair<Solution<R>*, MultiEvaluation<DS>*> >& nonDom, pair<Solution<R>*, MultiEvaluation<DS>*> candidate)
+	{
+		for(int ind = 0; ind < nonDom.size(); ind++)
+		{
+			if(domWeak.dominates(*nonDom.at(ind).second, *candidate.second))
+				return;
+
+			if(dom.dominates(*candidate.second, *nonDom.at(ind).second))
+			{
+				nonDom.erase(nonDom.begin() + ind);
+				ind--;
+			}
+		}
+
+		nonDom.push_back(candidate);
 	}
 
 };

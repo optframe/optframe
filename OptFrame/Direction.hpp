@@ -186,6 +186,14 @@ public:
 
 	// ============ estimation =============
 
+	double worst()
+	{
+		if(isMinimization())
+			return max();
+		else
+			return min();
+	}
+
 	// bad approximation!
 	virtual double min()
 	{

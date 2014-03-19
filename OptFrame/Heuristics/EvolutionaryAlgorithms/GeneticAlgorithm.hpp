@@ -88,14 +88,14 @@ private:
 
    Mutation<R, ADS, DS> *mut;
 
-   Elitism<R, ADS, DS> *elt;
+   ElitismOld<R, ADS, DS> *elt;
 
 public:
 
    GeneticAlgorithm(Evaluator<R, ADS, DS>& _evaluator, InitialPopulation<R, ADS>& _initPop,
          double crossoverRate, double mutationRate, double elitismRate, unsigned populationSize,
          unsigned numGenerations, Selection<R, ADS, DS>& _selection, Crossover<R, ADS, DS>& _cross, Mutation<R,
-               DS >& _mut, Elitism<R, ADS, DS>& _elt) :
+               DS >& _mut, ElitismOld<R, ADS, DS>& _elt) :
       evaluator(_evaluator), initPop(_initPop), selection(&_selection), cross(&_cross), mut(&_mut),
             elt(&_elt)
    {

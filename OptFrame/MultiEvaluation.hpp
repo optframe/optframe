@@ -47,6 +47,12 @@ public:
 		vev.push_back(&ev.clone());
 	}
 
+	MultiEvaluation(const vector<double>& vd)
+	{
+		for(unsigned i = 0; i < vd.size(); i++)
+			vev.push_back(new Evaluation<DS>(vd[i]));
+	}
+
 	MultiEvaluation(const vector<Evaluation<DS>*>& _vev)
 	{
 		for(unsigned i = 0; i < _vev.size(); i++)
@@ -114,6 +120,15 @@ public:
 		return vev;
 	}
 
+	vector<Evaluation<DS>*> getCloneVector() const
+	{
+		vector<Evaluation<DS>*> v_e;
+		for(unsigned i=0; i<vev.size(); i++)
+			v_e.push_back(&vev[i]->clone());
+		return v_e;
+	}
+
+
 	virtual MultiEvaluation<DS>& operator=(const MultiEvaluation<DS>& mev)
 	{
 		if(&mev == this) // auto ref check
@@ -130,16 +145,9 @@ public:
 		return *new MultiEvaluation<DS>(*this);
 	}
 
-	static string idComponent()
+	virtual void print() const
 	{
-		stringstream ss;
-		ss << Component::idComponent() << ":MultiEvaluation";
-		return ss.str();
-	}
-
-	virtual string id() const
-	{
-		return idComponent();
+		cout << toString() << endl;
 	}
 
 	virtual string toString() const

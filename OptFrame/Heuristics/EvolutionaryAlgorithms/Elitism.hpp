@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_ELITISM_HPP_
-#define OPTFRAME_ELITISM_HPP_
+#ifndef OPTFRAME_ELITISM_OLD_HPP_
+#define OPTFRAME_ELITISM_OLD_HPP_
 
 #include "../../Solution.hpp"
 #include "../../Evaluation.hpp"
@@ -30,7 +30,7 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class Elitism
+class ElitismOld
 {
 protected:
 
@@ -46,4 +46,4 @@ public:
 
 }
 
-#endif /*OPTFRAME_ELITISM_HPP_*/
+#endif /*OPTFRAME_ELITISM_OLD_HPP_*/
