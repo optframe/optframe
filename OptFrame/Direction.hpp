@@ -63,18 +63,18 @@ public:
 	virtual bool betterThan(double a, double b) = 0;
 
 	// true if 'mc1' is better than 'mc2'
-	virtual bool betterThan(const MoveCost& mc1, const MoveCost& mc2)
+	virtual inline bool betterThan(const MoveCost& mc1, const MoveCost& mc2)
 	{
 		return betterThan(mc1.cost(), mc2.cost());
 	}
 
 	// true if 'e1' is better than 'e2'
-	virtual bool betterThan(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
+	virtual inline bool betterThan(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
 	{
 		return betterThan(e1.evaluation(), e2.evaluation());
 	}
 
-	virtual bool betterThan(const vector<pair<double, double> >& altCosts1, const vector<pair<double, double> >& altCosts2)
+	virtual inline bool betterThan(const vector<pair<double, double> >& altCosts1, const vector<pair<double, double> >& altCosts2)
 	{
 		if(altCosts1.size() != altCosts2.size())
 			return false;
@@ -86,29 +86,29 @@ public:
 
 	// ============ betterOrEquals ===========
 
-	bool betterOrEquals(const vector<pair<double, double> >& altCosts1, const vector<pair<double, double> >& altCosts2)
+	inline bool betterOrEquals(const vector<pair<double, double> >& altCosts1, const vector<pair<double, double> >& altCosts2)
 	{
 		return betterThan(altCosts1, altCosts2) || equals(altCosts1, altCosts2);
 	}
 
-	bool betterOrEquals(const MoveCost& mc1, const MoveCost& mc2)
+	inline bool betterOrEquals(const MoveCost& mc1, const MoveCost& mc2)
 	{
 		return betterThan(mc1, mc2) || equals(mc1, mc2);
 	}
 
-	bool betterOrEquals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
+	inline bool betterOrEquals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
 	{
 		return betterThan(e1, e2) || equals(e1, e2);
 	}
 
-	bool betterOrEquals(double a, double b)
+	inline bool betterOrEquals(double a, double b)
 	{
 		return betterThan(a, b) || equals(a, b);
 	}
 
 	// ============ equals ============
 
-	virtual bool equals(const vector<pair<double, double> >& altCosts1, const vector<pair<double, double> >& altCosts2)
+	virtual inline bool equals(const vector<pair<double, double> >& altCosts1, const vector<pair<double, double> >& altCosts2)
 	{
 		if(altCosts1.size() != altCosts2.size())
 			return false;
@@ -118,17 +118,17 @@ public:
 		return true;
 	}
 
-	virtual bool equals(const MoveCost& mc1, const MoveCost& mc2)
+	virtual inline bool equals(const MoveCost& mc1, const MoveCost& mc2)
 	{
 		return equals(mc1.cost(), mc2.cost());
 	}
 
-	virtual bool equals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
+	virtual inline bool equals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
 	{
 		return equals(e1.evaluation(), e2.evaluation());
 	}
 
-	virtual bool equals(double a, double b)
+	virtual inline bool equals(double a, double b)
 	{
 		return (abs(a - b) < OPTFRAME_EPSILON);
 	}
@@ -170,23 +170,23 @@ public:
 			return false;
 	}
 
-	virtual bool isImprovement(const MoveCost& mc)
+	virtual inline bool isImprovement(const MoveCost& mc)
 	{
 		return betterThan(mc.cost(), 0);
 	}
 
 	// ============= direction ==============
 
-	virtual bool isMinimization() = 0;
+	virtual bool isMinimization() const = 0;
 
-	bool isMaximization()
+	inline bool isMaximization() const
 	{
 		return !isMinimization();
 	}
 
 	// ============ estimation =============
 
-	double worst()
+	inline double worst()
 	{
 		if(isMinimization())
 			return max();
@@ -195,7 +195,7 @@ public:
 	}
 
 	// bad approximation!
-	virtual double min()
+	virtual inline double min()
 	{
 		////return -DBL_MAX;
 
@@ -206,7 +206,7 @@ public:
 	}
 
 	// bad approximation!
-	virtual double max()
+	virtual inline double max()
 	{
 		////return DBL_MAX;
 
@@ -235,6 +235,19 @@ public:
 		return idComponent();
 	}
 
+	virtual string toString() const
+	{
+		if(isMinimization())
+			return "Direction:MIN";
+		else
+			return "Direction:MAX";
+	}
+
+	virtual void print() const
+	{
+		cout << toString() << endl;
+	}
+
 };
 
 template<class DS = OPTFRAME_DEFAULT_DS>
@@ -246,13 +259,13 @@ public:
 	{
 	}
 
-	virtual bool betterThan(double f1, double f2)
+	inline bool betterThan(double f1, double f2)
 	{
 		// MINIMIZATION
 		return (f1 < (f2 - OPTFRAME_EPSILON));
 	}
 
-	bool isMinimization()
+	inline bool isMinimization() const
 	{
 		return true;
 	}
@@ -267,13 +280,13 @@ public:
 	{
 	}
 
-	virtual bool betterThan(double f1, double f2)
+	inline bool betterThan(double f1, double f2)
 	{
 		// MAXIMIZATION
 		return (f1 > (f2 + OPTFRAME_EPSILON));
 	}
 
-	bool isMinimization()
+	inline bool isMinimization() const
 	{
 		return false;
 	}

@@ -27,7 +27,7 @@
 
 #include <iostream>
 
-#include "Component.hpp"
+#include "MultiDirection.hpp"
 #include "Action.hpp"
 
 using namespace std;
@@ -37,7 +37,7 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MultiEvaluator: public Component
+class MultiEvaluator: public MultiDirection<DS>
 {
 protected:
 	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
@@ -50,8 +50,18 @@ public:
 	{
 	}
 
+	MultiEvaluator(MultiDirection<DS>& mDir, bool _allowCosts = false) :
+			MultiDirection<DS>(mDir), allowCosts(_allowCosts)
+	{
+	}
+
+	MultiEvaluator(vector<Direction<DS>*>& vDir, bool _allowCosts = false) :
+			MultiDirection<DS>(vDir), allowCosts(_allowCosts)
+	{
+	}
+
 	MultiEvaluator(vector<Evaluator<R, ADS, DS>*> _sngEvaluators) :
-			sngEvaluators(_sngEvaluators), allowCosts(false)
+			MultiDirection<DS>(_sngEvaluators), sngEvaluators(_sngEvaluators), allowCosts(false)
 	{
 	}
 
@@ -124,274 +134,17 @@ protected:
 		delete &ve1;
 	}
 
-	/*
-	 public:
-
-	 // Apply movement considering a previous evaluation => Faster.
-	 // Update evaluation 'e'
-	 Move<R, ADS, DS>& applyMove(Evaluation<DS>& e, Move<R, ADS, DS>& m, Solution<R, ADS>& s)
-	 {
-	 Move<R, ADS, DS>& rev = m.apply(e, s);
-	 evaluate(e, s);
-	 return rev;
-	 }
-
-	 // Apply movement without considering a previous evaluation => Slower.
-	 // Return new evaluation 'e'
-	 pair<Move<R, ADS, DS>&, Evaluation<DS>&>& applyMove(Move<R, ADS, DS>& m, Solution<R, ADS>& s)
-	 {
-	 Move<R, ADS, DS>& rev = m.apply(s);
-	 return *new pair<Move<R, ADS, DS>&, Evaluation<DS>&>(rev, evaluate(s));
-	 }
-
-	 // Movement cost based on reevaluation of 'e'
-	 MoveCost& moveCost(Evaluation<DS>& e, Move<R, ADS, DS>& m, Solution<R, ADS>& s)
-	 {
-	 MoveCost* p = NULL;
-	 if (allowCosts)
-	 p = m.cost(e, s.getR(), s.getADS());
-
-	 // do not update 's' => much faster (using updateDelta)
-	 if (p)
-	 return *p;
-	 else // need to update 's' together with reevaluation of 'e' => little faster (doesn't use updateDelta, but do reevaluation)
-	 {
-	 Move<R, ADS, DS>& rev = applyMove(e, m, s);
-	 pair<double, double> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
-
-	 vector<pair<double, double> > alternatives(e.getAlternativeCosts().size());
-
-	 for (unsigned i = 0; i < alternatives.size(); i++)
-	 {
-	 alternatives[i].first = e.getAlternativeCosts()[i].first;
-	 alternatives[i].second = e.getAlternativeCosts()[i].second;
-	 }
-
-	 Move<R, ADS, DS>& ini = applyMove(e, rev, s);
-	 pair<double, double> e_ini = make_pair(e.getObjFunction(), e.getInfMeasure());
-
-	 for (unsigned i = 0; i < alternatives.size(); i++)
-	 {
-	 alternatives[i].first -= e.getAlternativeCosts()[i].first;
-	 alternatives[i].second -= e.getAlternativeCosts()[i].second;
-	 }
-
-	 delete &rev;
-	 delete &ini;
-
-	 p = new MoveCost(e_end.first - e_ini.first, e_end.second - e_end.second);
-	 p->setAlternativeCosts(alternatives);
-
-	 return *p;
-	 }
-	 }
-
-	 // Movement cost based on complete evaluation
-	 // USE ONLY FOR VALIDATION OF CODE! OTHERWISE, USE moveCost(e, m, s)
-	 MoveCost& moveCost(Move<R, ADS, DS>& m, Solution<R, ADS>& s)
-	 {
-	 pair<Move<R, ADS, DS>&, Evaluation<DS>&>& rev = applyMove(m, s);
-
-	 pair<Move<R, ADS, DS>&, Evaluation<DS>&>& ini = applyMove(rev.first, s);
-
-	 // Difference: new - original
-
-	 double obj = rev.second.getObjFunction() - ini.second.getObjFunction();
-	 double inf = rev.second.getInfMeasure() - ini.second.getInfMeasure();
-
-	 vector<pair<double, double> > alternatives(rev.second.getAlternativeCosts().size());
-
-	 for (unsigned i = 0; i < alternatives.size(); i++)
-	 {
-	 alternatives[i].first = rev.second.getAlternativeCosts()[i].first - ini.second.getAlternativeCosts()[i].first;
-	 alternatives[i].second = rev.second.getAlternativeCosts()[i].second - ini.second.getAlternativeCosts()[i].second;
-	 }
-
-	 MoveCost* p = new MoveCost(obj, inf);
-	 p->setAlternativeCosts(alternatives);
-
-	 delete &rev.first;
-	 delete &rev.second;
-	 delete &ini.first;
-	 delete &ini.second;
-
-	 delete &rev;
-	 delete &ini;
-
-	 return *p;
-	 }
-
-
-	 // ============ betterThan ===========
-
-	 virtual bool betterThan(double a, double b) = 0;
-
-	 // true if 's1' is better than 's2'
-	 bool betterThan(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2)
-	 {
-	 Evaluation<DS>& e1 = evaluate(s1);
-	 Evaluation<DS>& e2 = evaluate(s2);
-
-	 double f1 = e1.evaluation();
-	 double f2 = e2.evaluation();
-
-	 delete &e1;
-	 delete &e2;
-
-	 return betterThan(f1, f2);
-	 }
-
-	 // true if 'mc1' is better than 'mc2'
-	 virtual bool betterThan(const MoveCost& mc1, const MoveCost& mc2)
-	 {
-	 return betterThan(mc1.cost(), mc2.cost());
-	 }
-
-	 // true if 'e1' is better than 'e2'
-	 virtual bool betterThan(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
-	 {
-	 return betterThan(e1.evaluation(), e2.evaluation());
-	 }
-
-	 virtual bool betterThan(const vector<pair<double, double> >& altCosts1, const vector<pair<double, double> >& altCosts2)
-	 {
-	 if (altCosts1.size() != altCosts2.size())
-	 return false;
-	 for (unsigned i = 0; i < altCosts1.size(); i++)
-	 if (!betterThan(altCosts1[i].first + altCosts1[i].second, altCosts2[i].first + altCosts2[i].second))
-	 return false;
-	 return true;
-	 }
-
-	 // ============ betterOrEquals ===========
-
-	 bool betterOrEquals(const Solution<R>& s1, const Solution<R>& s2)
-	 {
-	 Evaluation<DS>& e1 = evaluate(s1);
-	 Evaluation<DS>& e2 = evaluate(s2);
-
-	 double f1 = e1.evaluation();
-	 double f2 = e2.evaluation();
-
-	 delete &e1;
-	 delete &e2;
-
-	 return betterOrEquals(f1, f2);
-	 }
-
-	 bool betterOrEquals(const vector<pair<double, double> >& altCosts1, const vector<pair<double, double> >& altCosts2)
-	 {
-	 return betterThan(altCosts1, altCosts2) || equals(altCosts1, altCosts2);
-	 }
-
-	 bool betterOrEquals(const MoveCost& mc1, const MoveCost& mc2)
-	 {
-	 return betterThan(mc1, mc2) || equals(mc1, mc2);
-	 }
-
-	 bool betterOrEquals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
-	 {
-	 return betterThan(e1, e2) || equals(e1, e2);
-	 }
-
-	 bool betterOrEquals(double a, double b)
-	 {
-	 return betterThan(a, b) || equals(a, b);
-	 }
-
-	 // ============ equals ============
-
-	 virtual bool equals(const vector<pair<double, double> >& altCosts1, const vector<pair<double, double> >& altCosts2)
-	 {
-	 if (altCosts1.size() != altCosts2.size())
-	 return false;
-	 for (unsigned i = 0; i < altCosts1.size(); i++)
-	 if (!equals(altCosts1[i].first + altCosts1[i].second, altCosts2[i].first + altCosts2[i].second))
-	 return false;
-	 return true;
-	 }
-
-	 virtual bool equals(const MoveCost& mc1, const MoveCost& mc2)
-	 {
-	 return equals(mc1.cost(), mc2.cost());
-	 }
-
-	 virtual bool equals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
-	 {
-	 return equals(e1.evaluation(), e2.evaluation());
-	 }
-
-	 virtual bool equals(double a, double b)
-	 {
-	 return (abs(a - b) < OPTFRAME_EPSILON);
-	 }
-
-	 // ============= improvement =============
-
-	 virtual bool isImprovement(const MoveCost& mc, const Evaluation<DS>& e1, const Evaluation<DS>& e2)
-	 {
-	 double ec1 = mc.cost() + e1.evaluation();
-	 if (betterThan(ec1, e2.evaluation()))
-	 return true;
-	 else if (equals(ec1, e2.evaluation()))
-	 {
-	 if (e1.getAlternativeCosts().size() != e2.getAlternativeCosts().size())
-	 {
-	 cout << "Evaluator Error: |e1.alternatives|=" << e1.getAlternativeCosts().size() << " |e2.alternatives|=" << e2.getAlternativeCosts().size();
-	 cout << endl;
-	 exit(1);
-	 return false;
-	 }
-
-	 if (mc.getAlternativeCosts().size() != e1.getAlternativeCosts().size())
-	 {
-	 cout << "Evaluator Error: |mc.alternatives|=" << mc.getAlternativeCosts().size() << " |e1.alternatives|=" << e1.getAlternativeCosts().size();
-	 cout << endl;
-	 exit(1);
-	 return false;
-	 }
-
-	 vector<pair<double, double> > altCosts1(e1.getAlternativeCosts());
-	 for (unsigned i = 0; i < altCosts1.size(); i++)
-	 {
-	 altCosts1[i].first += mc.getAlternativeCosts()[i].first;
-	 altCosts1[i].second += mc.getAlternativeCosts()[i].second;
-	 }
-	 return betterThan(altCosts1, e2.getAlternativeCosts());
-	 }
-	 else
-	 return false;
-	 }
-
-	 virtual bool isImprovement(const MoveCost& mc)
-	 {
-	 return betterThan(mc.cost(), 0);
-	 }
-
-	 // ============= direction ==============
-
-	 bool isMinimization()
-	 {
-	 return betterThan(0, 1);
-	 }
-
-	 bool isMaximization()
-	 {
-	 return !isMinimization();
-	 }
-
-	 */
 
 	// ============= Component ===============
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (Component::compatible(s));
+		return (s == idComponent()) || (MultiDirection<DS>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Component::idComponent() << "MultiEvaluator";
+		ss << MultiDirection<DS>::idComponent() << ":MultiEvaluator";
 		return ss.str();
 	}
 
@@ -413,7 +166,7 @@ public:
 
 	virtual string usage()
 	{
-		return "OptFrame:Evaluator idx  evaluate   OptFrame:Solution idx  [output_variable] => OptFrame:Evaluation";
+		return ":MultiEvaluator idx  evaluate   :Solution idx  [output_variable] => OptFrame:Evaluation";
 	}
 
 	virtual bool handleComponent(string type)

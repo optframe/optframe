@@ -128,6 +128,17 @@ public:
 		return v_e;
 	}
 
+	bool sameValues(const MultiEvaluation<DS>& mev)
+	{
+		if(vev.size() != mev.vev.size())
+			return false;
+
+		for(unsigned i = 0; i < vev.size(); i++)
+			if(vev[i]->evaluation() != mev.vev[i]->evaluation())
+				return false;
+		return true;
+	}
+
 
 	virtual MultiEvaluation<DS>& operator=(const MultiEvaluation<DS>& mev)
 	{

@@ -29,7 +29,7 @@
 
 #include <iostream>
 
-#include "Component.hpp"
+#include "Direction.hpp"
 #include "Action.hpp"
 
 //#define OPTFRAME_EPSILON 0.0001
@@ -56,7 +56,7 @@ namespace optframe
  */
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class Evaluator: public Component
+class Evaluator: public Direction<DS>
 {
 protected:
 	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
@@ -206,6 +206,8 @@ public:
 
 	// ============ betterThan ===========
 
+	using Direction<DS>::betterThan;
+
 	//! abstract method betterThan: true when a < b for minimization problems; and true when a > b for maximization problems.
 	/*!
 	 betterThan is the method in OptFrame used to guide the search methods into the solution space.
@@ -216,171 +218,27 @@ public:
 	 */
 	virtual bool betterThan(double a, double b) = 0;
 
-	// true if 's1' is better than 's2'
-	bool betterThan(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2)
+	virtual bool betterThan(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2)
 	{
 		Evaluation<DS>& e1 = evaluate(s1);
 		Evaluation<DS>& e2 = evaluate(s2);
-
-		double f1 = e1.evaluation();
-		double f2 = e2.evaluation();
-
+		bool r = betterThan(e1, e2);
 		delete &e1;
 		delete &e2;
-
-		return betterThan(f1, f2);
-	}
-
-	// true if 'mc1' is better than 'mc2'
-	virtual bool betterThan(const MoveCost& mc1, const MoveCost& mc2)
-	{
-		return betterThan(mc1.cost(), mc2.cost());
-	}
-
-	// true if 'e1' is better than 'e2'
-	virtual bool betterThan(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
-	{
-		return betterThan(e1.evaluation(), e2.evaluation());
-	}
-
-	virtual bool betterThan(const vector<pair<double, double> >& altCosts1, const vector<pair<double, double> >& altCosts2)
-	{
-		if (altCosts1.size() != altCosts2.size())
-			return false;
-		for (unsigned i = 0; i < altCosts1.size(); i++)
-			if (!betterThan(altCosts1[i].first + altCosts1[i].second, altCosts2[i].first + altCosts2[i].second))
-				return false;
-		return true;
-	}
-
-	// ============ betterOrEquals ===========
-
-	bool betterOrEquals(const Solution<R>& s1, const Solution<R>& s2)
-	{
-		Evaluation<DS>& e1 = evaluate(s1);
-		Evaluation<DS>& e2 = evaluate(s2);
-
-		double f1 = e1.evaluation();
-		double f2 = e2.evaluation();
-
-		delete &e1;
-		delete &e2;
-
-		return betterOrEquals(f1, f2);
-	}
-
-	bool betterOrEquals(const vector<pair<double, double> >& altCosts1, const vector<pair<double, double> >& altCosts2)
-	{
-		return betterThan(altCosts1, altCosts2) || equals(altCosts1, altCosts2);
-	}
-
-	bool betterOrEquals(const MoveCost& mc1, const MoveCost& mc2)
-	{
-		return betterThan(mc1, mc2) || equals(mc1, mc2);
-	}
-
-	bool betterOrEquals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
-	{
-		return betterThan(e1, e2) || equals(e1, e2);
-	}
-
-	bool betterOrEquals(double a, double b)
-	{
-		return betterThan(a, b) || equals(a, b);
-	}
-
-	// ============ equals ============
-
-	virtual bool equals(const vector<pair<double, double> >& altCosts1, const vector<pair<double, double> >& altCosts2)
-	{
-		if (altCosts1.size() != altCosts2.size())
-			return false;
-		for (unsigned i = 0; i < altCosts1.size(); i++)
-			if (!equals(altCosts1[i].first + altCosts1[i].second, altCosts2[i].first + altCosts2[i].second))
-				return false;
-		return true;
-	}
-
-	virtual bool equals(const MoveCost& mc1, const MoveCost& mc2)
-	{
-		return equals(mc1.cost(), mc2.cost());
-	}
-
-	virtual bool equals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
-	{
-		return equals(e1.evaluation(), e2.evaluation());
-	}
-
-	virtual bool equals(double a, double b)
-	{
-		return (abs(a - b) < OPTFRAME_EPSILON);
-	}
-
-	// ============= improvement =============
-
-	virtual bool isImprovement(const MoveCost& mc, const Evaluation<DS>& e1, const Evaluation<DS>& e2)
-	{
-		double ec1 = mc.cost() + e1.evaluation();
-		if (betterThan(ec1, e2.evaluation()))
-			return true;
-		else if (equals(ec1, e2.evaluation()))
-		{
-			if (e1.getAlternativeCosts().size() != e2.getAlternativeCosts().size())
-			{
-				cout << "Evaluator Error: |e1.alternatives|=" << e1.getAlternativeCosts().size() << " |e2.alternatives|=" << e2.getAlternativeCosts().size();
-				cout << endl;
-				exit(1);
-				return false;
-			}
-
-			if (mc.getAlternativeCosts().size() != e1.getAlternativeCosts().size())
-			{
-				cout << "Evaluator Error: |mc.alternatives|=" << mc.getAlternativeCosts().size() << " |e1.alternatives|=" << e1.getAlternativeCosts().size();
-				cout << endl;
-				exit(1);
-				return false;
-			}
-
-			vector<pair<double, double> > altCosts1(e1.getAlternativeCosts());
-			for (unsigned i = 0; i < altCosts1.size(); i++)
-			{
-				altCosts1[i].first += mc.getAlternativeCosts()[i].first;
-				altCosts1[i].second += mc.getAlternativeCosts()[i].second;
-			}
-			return betterThan(altCosts1, e2.getAlternativeCosts());
-		}
-		else
-			return false;
-	}
-
-	virtual bool isImprovement(const MoveCost& mc)
-	{
-		return betterThan(mc.cost(), 0);
-	}
-
-	// ============= direction ==============
-
-	bool isMinimization()
-	{
-		return betterThan(0, 1);
-	}
-
-	bool isMaximization()
-	{
-		return !isMinimization();
+		return r;
 	}
 
 	// ============= Component ===============
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (Component::compatible(s));
+		return (s == idComponent()) || (Direction<DS>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Component::idComponent() << ":Evaluator";
+		ss << Component::idComponent() << "Evaluator";
 		return ss.str();
 	}
 

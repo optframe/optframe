@@ -57,9 +57,6 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_
 class BasicPopulationManagement: public PopulationManagement<R, ADS, DS>
 {
 public:
-
-	MultiEvaluator<R, ADS, DS>* muev;    // first option
-	vector<Evaluator<R, ADS, DS>*> vev;  // second option
 	InitialPopulation<R, ADS>& initPop;
 	vector<NS<RepCARP>*> mutations;
 	double mutationRate; // probability of applying a mutation
@@ -67,17 +64,8 @@ public:
 	double renewRate; // percentage of children population to be entirely reconstructed
 	RandGen& rg;
 
-	BasicPopulationManagement(MultiEvaluator<R, ADS, DS>& _muev, InitialPopulation<R, ADS>& _initPop, vector<NS<RepCARP>*> _mutations, double _mutationRate, vector<GeneralCrossover<RepCARP>*> _crossovers, double _renewRate, RandGen& _rg) :
-			muev(&_muev), initPop(_initPop), mutations(_mutations), mutationRate(_mutationRate), crossovers(_crossovers), renewRate(_renewRate), rg(_rg)
-	{
-		if(renewRate > 1)
-			renewRate = 1;
-		if(renewRate < 0)
-			renewRate = 0;
-	}
-
-	BasicPopulationManagement(vector<Evaluator<R, ADS, DS>*> _vev, InitialPopulation<R, ADS>& _initPop, vector<NS<RepCARP>*> _mutations, double _mutationRate, vector<GeneralCrossover<RepCARP>*> _crossovers, double _renewRate, RandGen& _rg) :
-			muev(NULL), vev(_vev), initPop(_initPop), mutations(_mutations), mutationRate(_mutationRate), crossovers(_crossovers), renewRate(_renewRate), rg(_rg)
+	BasicPopulationManagement(InitialPopulation<R, ADS>& _initPop, vector<NS<RepCARP>*> _mutations, double _mutationRate, vector<GeneralCrossover<RepCARP>*> _crossovers, double _renewRate, RandGen& _rg) :
+			initPop(_initPop), mutations(_mutations), mutationRate(_mutationRate), crossovers(_crossovers), renewRate(_renewRate), rg(_rg)
 	{
 		if(renewRate > 1)
 			renewRate = 1;
@@ -91,14 +79,9 @@ public:
 
 	virtual MOSIndividual<R, ADS, DS>* createIndividual(Solution<R, ADS>* s)
 	{
-		MultiEvaluation<DS>* mev;
+		MultiEvaluation<DS>* mev = NULL;
 
-		if(muev)
-			mev = &muev->evaluate(*s);
-		else
-		{
-			mev = NULL; // TODO: LOOP EVALUATOR VECTOR AND DO PROPERLY
-		}
+		// no evaluation here!
 
 		return new MOSIndividual<R, ADS, DS>(s, mev);
 	}

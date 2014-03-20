@@ -41,15 +41,18 @@ class MOSIndividual
 public:
 
 	Solution<R, ADS>& s;
-	MultiEvaluation<DS>& mev;
+	MultiEvaluation<DS>* mev; // temporarily kept without evaluation
 
 	double fitness;
 	double diversity;
 
 	int id; // for debug reasons
 
+	// individuals with same evaluation values (used for compression of population)
+	vector<MOSIndividual<R, ADS, DS>*> copies;
+
 	MOSIndividual(Solution<R, ADS>* _s, MultiEvaluation<DS>* _mev) :
-			s(*_s), mev(*_mev)
+			s(*_s), mev(_mev)
 	{
 		fitness = -1;
 		diversity = -1;
@@ -58,7 +61,7 @@ public:
 	}
 
 	MOSIndividual(Solution<R, ADS>& _s, MultiEvaluation<DS>& _mev) :
-			s(_s.clone()), mev(_mev.clone())
+			s(_s.clone()), mev(&_mev.clone())
 	{
 		fitness = -1;
 		diversity = -1;
@@ -67,7 +70,7 @@ public:
 	}
 
 	MOSIndividual(const MOSIndividual<R, ADS>& ind) :
-			s(ind.s.clone()), mev(ind.mev.clone())
+			s(ind.s.clone()), mev(&ind.mev->clone())
 	{
 		fitness = ind.rank;
 		diversity = ind.distance;
@@ -78,7 +81,8 @@ public:
 	virtual ~MOSIndividual()
 	{
 		delete &s;
-		delete &mev;
+		if(mev)
+			delete mev;
 	}
 
 	virtual bool betterThan(const MOSIndividual<R, ADS>& ind)
@@ -91,19 +95,65 @@ public:
 		return false;
 	}
 
+	virtual bool betterFitness(const MOSIndividual<R, ADS>& ind)
+	{
+		// assuming minimization of fitness
+		return fitness < ind.fitness;
+	}
+
+	virtual bool betterDiversity(const MOSIndividual<R, ADS>& ind)
+	{
+		// assuming maximization of diversity
+		return diversity > ind.diversity;
+	}
+
+	// assuming minimization of fitness
+	virtual bool minFitness()
+	{
+		return true;
+	}
+
+	// assuming maximization of diversity
+	virtual bool maxDiversity()
+	{
+		return true;
+	}
+
 	virtual void print() const
 	{
 		cout << "MOSIndividual: fitness=" << fitness << "\t diversity=" << diversity;
 		cout << "\t[ ";
-		for(unsigned e = 0; e < mev.size(); e++)
-			cout << mev.at(e).evaluation() << (e == mev.size() - 1 ? " " : " ; ");
+		for(unsigned e = 0; e < mev->size(); e++)
+			cout << mev->at(e).evaluation() << (e == mev->size() - 1 ? " " : " ; ");
 		cout << " ]";
 		cout << endl;
 	}
 
-	virtual MOSIndividual<R, ADS>& clone() const
+	virtual MOSIndividual<R, ADS, DS>& clone() const
 	{
-		return *new MOSIndividual<R, ADS>(*this);
+		return *new MOSIndividual<R, ADS, DS>(*this);
+	}
+
+	static void compress(vector<MOSIndividual<R, ADS, DS>*>& P)
+	{
+		for(int s = 0; s < ((int) P.size()) - 1; s++)
+			for(int j = s + 1; j < ((int) P.size()); j++)
+				if(P[s]->mev->sameValues(*P[j]->mev))
+				{
+					P[s]->copies.push_back(P[j]);
+					P.erase(P.begin() + j);
+					j--;
+				}
+	}
+
+	static void spreadToCopies(vector<MOSIndividual<R, ADS, DS>*>& P)
+	{
+		for(unsigned s = 0; s < P.size(); s++)
+			for(int j = 0; j < P[s]->copies.size(); j++)
+			{
+				P[s]->copies[j]->fitness = P[s]->fitness;
+				P[s]->copies[j]->distance = P[s]->distance;
+			}
 	}
 
 };

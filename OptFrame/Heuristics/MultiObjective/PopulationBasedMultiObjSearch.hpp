@@ -37,7 +37,7 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_
 class PopulationBasedMultiObjSearch: public MultiObjSearch<R, ADS, DS>
 {
 protected:
-	vector<Direction<DS>*> vDir;
+	MultiEvaluator<R, ADS, DS>& mevr;
 
 	FitnessAssignment<R, ADS, DS>& fa;
 	DiversityManagement<R, ADS, DS>& dm;
@@ -51,13 +51,19 @@ protected:
 	int maxIter; // generations without improvement
 
 public:
-	PopulationBasedMultiObjSearch(vector<Direction<DS>*> _vDir, FitnessAssignment<R, ADS, DS>& _fa, DiversityManagement<R, ADS, DS>& _dm, Elitism<R, ADS, DS>& _elitism, PopulationManagement<R, ADS, DS>& _popMan, unsigned _popSize, int _maxIter, int _maxGen = 100000000) :
-			vDir(_vDir), fa(_fa), dm(_dm), elitism(_elitism), popMan(_popMan), popSize(_popSize), maxGen(_maxGen), maxIter(_maxIter)
+	PopulationBasedMultiObjSearch(MultiEvaluator<R, ADS, DS>& _mevr, FitnessAssignment<R, ADS, DS>& _fa, DiversityManagement<R, ADS, DS>& _dm, Elitism<R, ADS, DS>& _elitism, PopulationManagement<R, ADS, DS>& _popMan, unsigned _popSize, int _maxIter, int _maxGen = 100000000) :
+			mevr(_mevr), fa(_fa), dm(_dm), elitism(_elitism), popMan(_popMan), popSize(_popSize), maxGen(_maxGen), maxIter(_maxIter)
 	{
 	}
 
 	virtual ~PopulationBasedMultiObjSearch()
 	{
+	}
+
+	void evaluate(vector<MOSIndividual<R, ADS, DS>*>& P)
+	{
+		for(unsigned s = 0; s < P.size(); s++)
+			P[s]->mev = mevr.evaluate(P[s]->s);
 	}
 
 	virtual Pareto<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS, DS>* _pf = NULL)
@@ -78,16 +84,18 @@ public:
 		vector<MOSIndividual<R, ADS, DS>*> archive;
 
 		vector<MOSIndividual<R, ADS, DS>*> P = popMan.initialize(popSize);
+		evaluate(P);
 		fa.assignFitness(P);
 		dm.assignDiversity(P);
 
 		vector<MOSIndividual<R, ADS, DS>*> Q = popMan.createNext(popSize, P);
+		evaluate(Q);
 
 		int t = 0;
 		int tImp = 0;
-		vector<double> bestObj(vDir.size());
+		vector<double> bestObj(mevr.nObjectives);
 		for(unsigned i = 0; i < bestObj.size(); i++)
-			bestObj[i] = vDir[i]->worst();
+			bestObj[i] = mevr.worst(i);
 
 		while((timer.now() < timelimit) && (t <= maxGen) && (tImp <= maxIter))
 		{
@@ -104,7 +112,7 @@ public:
 			bool improved = false;
 			for(unsigned s = 0; s < archive.size(); s++)
 				for(unsigned i = 0; i < bestObj.size(); i++)
-					if(vDir[i]->betterThan(archive[s]->mev.at(i).evaluation(), bestObj[i]))
+					if(mevr.betterThan(i, archive[s]->mev.at(i).evaluation(), bestObj[i]))
 					{
 						// IMPROVEMENT IN ONE OBJECTIVE
 						improved = true;
@@ -119,6 +127,7 @@ public:
 
 			// generating next population
 			Q = popMan.createNext(popSize, P);
+			evaluate(Q);
 			t++;
 			tImp++;
 		}
