@@ -157,6 +157,43 @@ public:
 
 };
 
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+struct MOSPopulation
+{
+	vector<MOSIndividual<R, ADS, DS>*> P;
+
+	MOSPopulation()
+	{
+	}
+
+	MOSPopulation(MOSIndividual<R, ADS, DS>* ind)
+	{
+		P.push_back(ind);
+	}
+
+	MOSPopulation(const vector<MOSIndividual<R, ADS, DS>*>& _P) :
+			P(_P)
+	{
+	}
+
+	void add(MOSPopulation<R, ADS, DS>& Pop)
+	{
+		P.insert(P.end(), Pop.P.begin(), Pop.P.end());
+	}
+
+	virtual ~MOSPopulation()
+	{
+	}
+
+	virtual void free()
+	{
+		for(unsigned i = 0; i < P.size(); i++)
+			if(P[i])
+				delete P[i];
+		P.clear();
+	}
+};
+
 }
 
 #endif /*OPTFRAME_MOS_INDIVIDUAL_HPP_*/

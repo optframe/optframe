@@ -40,11 +40,45 @@ public:
 	{
 	}
 
-	virtual void assignDiversity(vector<MOSIndividual<R, ADS, DS>*>& p) = 0;
+	// assign diversity to individual 's' according to population 'P'
+	virtual void assignDiversityIndividual(MOSIndividual<R, ADS, DS>& s, const MOSPopulation<R, ADS, DS>& P)
+	{
+		MOSPopulation<R, ADS, DS> v(&s);
+		assignDiversityGroup(v, P);
+	}
+
+	// assign diversity to all individuals from population 'P'
+	virtual void assignDiversityAll(MOSPopulation<R, ADS, DS>& P)
+	{
+		assignDiversityGroup(P, P);
+	}
+
+	// assign diversity to group of individuals 'g' according to population 'P'
+	virtual void assignDiversityGroup(MOSPopulation<R, ADS, DS>& g, const MOSPopulation<R, ADS, DS>& P) = 0;
 
 	virtual void print() const
 	{
 		cout << "DiversityManagement" << endl;
+	}
+};
+
+template<class DS = OPTFRAME_DEFAULT_DS>
+struct DiversityIndividual
+{
+	int idx;
+	double diversity;
+	MultiEvaluation<DS>* mev;
+
+	DiversityIndividual()
+	{
+		idx = -1;
+		diversity = 0;
+		mev = NULL;
+	}
+
+	DiversityIndividual(int _idx, double _diversity, MultiEvaluation<DS>* _mev) :
+			idx(_idx), diversity(_diversity), mev(_mev)
+	{
 	}
 };
 
@@ -69,93 +103,79 @@ public:
 		return p1.first < p2.first;
 	}
 
-	virtual void assignDiversity(vector<MOSIndividual<R, ADS, DS>*>& I)
+	virtual void assignDiversityGroup(MOSPopulation<R, ADS, DS>& gPop, const MOSPopulation<R, ADS, DS>& mosPop)
 	{
-		int max_rank = 0;
-		for(unsigned i = 0; i < I.size(); i++)
-			if(I[i]->fitness > max_rank)
-				max_rank = I[i]->fitness;
-		unsigned nranks = max_rank + 1; // include 0
+		vector<MOSIndividual<R, ADS, DS>*> P(mosPop.P);
+		vector<MOSIndividual<R, ADS, DS>*> g(gPop.P);
+
+		const int INF = 10000000;
+
+		vector<DiversityIndividual<DS> > I(P.size());
+		for(unsigned s = 0; s < I.size(); s++)
+			I[s] = DiversityIndividual<DS>(s, 0, P[s]->mev);
 
 		int l = I.size();
 		if(l == 0)
 			return;
 
-		// for each 'i', ...
-		for(unsigned i = 0; i < I.size(); i++)
-		{
-			// ... set I[i].distance = 0
-			I[i]->diversity = 0;
-		}
-
 		// for each objective 'm'
 		for(unsigned m = 0; m < vDir.size(); m++)
 		{
-			for(unsigned r = 0; r < nranks; r++)
+			// I = sort(I, m)
+			vector<pair<double, int> > fitness;  // (fitness, id)
+
+			for(int i = 0; i < I.size(); i++)
 			{
-				// I = sort(I, m)
-				vector<pair<double, int> > fitness;  // (fitness, id)
+				double fit = I[i].mev->at(m).evaluation();
+				fitness.push_back(make_pair(fit, i));
+			}
 
-				for(int i = 0; i < I.size(); i++)
-					if(I[i]->fitness == r)
-					{
-						double fit = I[i]->mev->at(m).evaluation();
-						fitness.push_back(make_pair(fit, i));
-					}
+			sort(fitness.begin(), fitness.end(), compare);
 
-				sort(fitness.begin(), fitness.end(), compare);
+			// I[1] dist = I[l] dist = 'infinity'
+			// ADAPTATION
+			/*
+			 r[fitness[0].second]->diversity = numeric_limits<double>::infinity();
+			 r[fitness[l - 1].second]->diversity = numeric_limits<double>::infinity();
+			 */
 
-				// I[1] dist = I[l] dist = 'infinity'
-				// ADAPTATION
-				/*
-				 r[fitness[0].second]->diversity = numeric_limits<double>::infinity();
-				 r[fitness[l - 1].second]->diversity = numeric_limits<double>::infinity();
-				 */
+			////cout << "ORDER: (rank=" << r << ") " << fitness << endl;
+			// for i=2 to l-1
+			// ADAPTATION WITH ANOTHER LOOP
+			for(int k = 0; k < fitness.size(); k++)
+			{
+				int i = fitness[k].second;
 
-				////cout << "ORDER: (rank=" << r << ") " << fitness << endl;
-				// for i=2 to l-1
-				// ADAPTATION WITH ANOTHER LOOP
-				for(int k = 0; k < fitness.size(); k++)
+				if(k == 0)
 				{
-					int i = fitness[k].second;
-
-					int idx_before = -1;
-					for(int e = k - 1; e >= 0; e--)
-						if(&I[i]->s != &I[fitness[e].second]->s)
-						{
-							idx_before = e;
-							break;
-						}
-
-					if(idx_before == -1)
-					{
-						I[i]->diversity += numeric_limits<double>::infinity();
-						continue;
-					}
-
-					int idx_after = -1;
-					for(int e = k + 1; e < fitness.size(); e++)
-						if(&I[i]->s != &I[fitness[e].second]->s)
-						{
-							idx_after = e;
-							break;
-						}
-
-					if(idx_after == -1)
-					{
-						I[i]->diversity += numeric_limits<double>::infinity();
-						continue;
-					}
-
-					// I[i] dist += (I[i+1].m - I[i-1].m)/(fmax_m - fmin_m)
-					// ADAPTATION
-					I[i]->diversity += abs(fitness[idx_after].first - fitness[idx_before].first) / abs(vDir[m]->max() - vDir[m]->min());
+					I[i].diversity += numeric_limits<double>::infinity();
+					continue;
 				}
 
-			} // for each front
+				int im1 = fitness[k - 1].second;
+
+				if(k == ((int) fitness.size()) - 1)
+				{
+					I[i].diversity += numeric_limits<double>::infinity();
+					continue;
+				}
+
+				int ip1 = fitness[k + 1].second;
+
+				// I[i] dist += (I[i+1].m - I[i-1].m)/(fmax_m - fmin_m)
+				// ADAPTATION
+				I[i].diversity += abs(fitness[ip1].first - fitness[im1].first) / abs(vDir[m]->max() - vDir[m]->min());
+			}
+
 		} // for each objective
 
-		//MOSIndividual<R, ADS, DS>::updateDistances(I); // update parents' ranks
+		for(unsigned s = 0; s < g.size(); s++)
+			for(unsigned k = 0; k < I.size(); k++)
+				if(g[s]->id == P[I[k].idx]->id)
+				{
+					g[s]->diversity = I[k].diversity;
+					break;
+				}
 	} // end function
 
 };

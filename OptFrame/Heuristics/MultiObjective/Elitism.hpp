@@ -41,10 +41,10 @@ public:
 	}
 
 	// select individuals and keep archive updated
-	virtual void select(unsigned target_size, vector<MOSIndividual<R, ADS, DS>*>& p, vector<MOSIndividual<R, ADS, DS>*>& archive) = 0;
+	virtual void select(unsigned target_size, MOSPopulation<R, ADS, DS>& p, MOSPopulation<R, ADS, DS>& archive) = 0;
 
 	// free individuals from population and keep archive updated
-	virtual void free(vector<MOSIndividual<R, ADS, DS>*>& p, vector<MOSIndividual<R, ADS, DS>*>& archive) = 0;
+	virtual void free(MOSPopulation<R, ADS, DS>& p, MOSPopulation<R, ADS, DS>& archive) = 0;
 
 	virtual void print() const
 	{
@@ -70,42 +70,42 @@ public:
 		return ind1->betterThan(*ind2);
 	}
 
-	virtual void select(unsigned target_size, vector<MOSIndividual<R, ADS, DS>*>& P, vector<MOSIndividual<R, ADS, DS>*>& archive)
+	virtual void select(unsigned target_size, MOSPopulation<R, ADS, DS>& Pop, MOSPopulation<R, ADS, DS>& archive)
 	{
 		int f = 0;
 		unsigned count = 0;
 		vector<vector<MOSIndividual<R, ADS, DS>*> > F;
-		while(count != P.size())
+		while(count != Pop.P.size())
 		{
 			vector<MOSIndividual<R, ADS, DS>*> front;
-			for(unsigned i = 0; i < P.size(); i++)
-				if(P[i]->fitness == f)
-					front.push_back(P[i]);
+			for(unsigned i = 0; i < Pop.P.size(); i++)
+				if(Pop.P[i]->fitness == f)
+					front.push_back(Pop.P[i]);
 			F.push_back(front);
 			count += front.size();
 			f++;
 		}
 
-		P.clear();
+		Pop.P.clear();
 
 		unsigned i = 0;
-		while((P.size() + F[i].size()) <= target_size)
+		while((Pop.P.size() + F[i].size()) <= target_size)
 		{
 			// Pt+1 = Pt+1 U Fi
-			P.insert(P.end(), F[i].begin(), F[i].end());
+			Pop.P.insert(Pop.P.end(), F[i].begin(), F[i].end());
 			F[i].clear();
 
 			i = i + 1;
 		}
 
-		if(P.size() < target_size)
+		if(Pop.P.size() < target_size)
 		{
 			sort(F[i].begin(), F[i].end(), compare);
 
-			unsigned missing = target_size - P.size();
+			unsigned missing = target_size - Pop.P.size();
 			for(unsigned j = 0; j < missing; j++)
 			{
-				P.push_back(F[i][j]);
+				Pop.P.push_back(F[i][j]);
 				F[i][j] = NULL;
 			}
 		}
@@ -115,13 +115,13 @@ public:
 				if(F[i][j])
 					delete F[i][j];
 
-		archive = P; // no other archiving
+		archive.P = Pop.P; // no other archiving
 	}
 
-	virtual void free(vector<MOSIndividual<R, ADS, DS>*>& P, vector<MOSIndividual<R, ADS, DS>*>& archive)
+	virtual void free(MOSPopulation<R, ADS, DS>& Pop, MOSPopulation<R, ADS, DS>& archive)
 	{
-		archive = P;
-		P.clear();
+		archive.P = Pop.P;
+		Pop.P.clear();
 	}
 
 };

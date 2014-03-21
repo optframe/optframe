@@ -60,37 +60,31 @@ public:
 	{
 	}
 
-	void evaluate(vector<MOSIndividual<R, ADS, DS>*>& P)
+	void evaluate(MOSPopulation<R, ADS, DS>& Pop)
 	{
+		vector<MOSIndividual<R, ADS, DS>*>& P = Pop.P;
 		for(unsigned s = 0; s < P.size(); s++)
 			P[s]->mev = &mevr.evaluate(P[s]->s);
 	}
 
+	virtual void assignFitness(MOSPopulation<R, ADS, DS>& P) = 0;
+
+	virtual void assignDiversity(MOSPopulation<R, ADS, DS>& P) = 0;
 
 	virtual Pareto<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS, DS>* _pf = NULL)
 	{
 		Timer timer;
 
-		cout << "Population Based Multi Objective Search search() with" << endl;
-		cout << "FitnessAssignment: ";
-		fa.print();
-		cout << "DiversityManagement: ";
-		dm.print();
-		cout << "Elitism: ";
-		elitism.print();
-		cout << "|Population| = " << popSize << endl;
-		cout << "PopulationManagement: ";
-		popMan.print();
+		cout << "Population Based Multi Objective Search search()" << endl;
 
-		vector<MOSIndividual<R, ADS, DS>*> archive;
+		MOSPopulation<R, ADS, DS> archive;
 
-		vector<MOSIndividual<R, ADS, DS>*> P = popMan.initialize(popSize);
+		MOSPopulation<R, ADS, DS>& P = popMan.initialize(popSize);
 		evaluate(P);
 		fa.assignFitnessAll(P);
-		dm.assignDiversity(P);
+		dm.assignDiversityAll(P);
 
-		vector<const MOSIndividual<R, ADS, DS>*> Pconst(P.begin(), P.end());
-		vector<MOSIndividual<R, ADS, DS>*> Q = popMan.createNext(popSize, Pconst);
+		MOSPopulation<R, ADS, DS>& Q = popMan.createNext(popSize, P);
 		evaluate(Q);
 
 		int t = 0;
@@ -101,10 +95,10 @@ public:
 
 		while((timer.now() < timelimit) && (t <= maxGen) && (tImp <= maxIter))
 		{
-			P.insert(P.end(), Q.begin(), Q.end());
+			P.add(Q);
 
 			fa.assignFitnessAll(P);
-			dm.assignDiversity(P);
+			dm.assignDiversityAll(P);
 
 			elitism.select(popSize, P, archive);
 
@@ -112,13 +106,13 @@ public:
 			// unused already free'd
 
 			bool improved = false;
-			for(unsigned s = 0; s < archive.size(); s++)
+			for(unsigned s = 0; s < archive.P.size(); s++)
 				for(unsigned i = 0; i < bestObj.size(); i++)
-					if(mevr.betterThan(i, archive[s]->mev->at(i).evaluation(), bestObj[i]))
+					if(mevr.betterThan(i, archive.P[s]->mev->at(i).evaluation(), bestObj[i]))
 					{
 						// IMPROVEMENT IN ONE OBJECTIVE
 						improved = true;
-						bestObj[i] = archive[s]->mev->at(i).evaluation();
+						bestObj[i] = archive.P[s]->mev->at(i).evaluation();
 					}
 
 			if(improved)
@@ -128,8 +122,10 @@ public:
 			}
 
 			// generating next population
-			Pconst = vector<const MOSIndividual<R, ADS, DS>*>(P.begin(), P.end());
-			Q = popMan.createNext(popSize, Pconst);
+			MOSPopulation<R, ADS, DS>& Q2 = popMan.createNext(popSize, P);
+			Q.P.clear();
+			Q.add(Q2);
+			delete &Q2;
 			evaluate(Q);
 			t++;
 			tImp++;
@@ -138,10 +134,10 @@ public:
 		elitism.free(P, archive);
 
 		Pareto<R, ADS, DS>* pf = new Pareto<R, ADS, DS>;
-		for(unsigned i = 0; i < archive.size(); i++)
+		for(unsigned i = 0; i < archive.P.size(); i++)
 		{
-			Solution<R, ADS>* s = &archive.at(i)->s;
-			MultiEvaluation<DS>* mev = archive.at(i)->mev;
+			Solution<R, ADS>* s = &archive.P.at(i)->s;
+			MultiEvaluation<DS>* mev = archive.P.at(i)->mev;
 			pf->push_back(s, mev);
 		}
 		return pf;
@@ -154,7 +150,7 @@ class ClassicNSGAII: public PopulationBasedMultiObjSearch<R, ADS, DS>
 {
 public:
 	ClassicNSGAII(MultiEvaluator<R, ADS, DS>& muev, InitialPopulation<R, ADS>& initPop, vector<NS<RepCARP>*> mutations, double mutationRate, vector<GeneralCrossover<RepCARP>*> crossovers, double renewRate, RandGen& rg, unsigned popSize, int maxIter, int maxGen = 100000000) :
-			PopulationBasedMultiObjSearch<R, ADS, DS>(muev, (muev.nObjectives == 2 ? (FitnessAssignment<R, ADS, DS>&)*new BiObjNonDominatedSort<R, ADS, DS>(muev.getDirections()) : (FitnessAssignment<R, ADS, DS>&)*new NonDominatedSort<R, ADS, DS>(muev.getDirections())), *new CrowdingDistance<R, ADS, DS>(muev.getDirections()), *new NSGAIISelection<R, ADS, DS>, *new BasicPopulationManagement<R, ADS, DS>(initPop, mutations, mutationRate, crossovers, renewRate, rg), popSize, maxIter, maxGen)
+			PopulationBasedMultiObjSearch<R, ADS, DS>(muev, (muev.nObjectives == 2 ? (FitnessAssignment<R, ADS, DS>&) *new BiObjNonDominatedSort<R, ADS, DS>(muev.getDirections()) : (FitnessAssignment<R, ADS, DS>&) *new NonDominatedSort<R, ADS, DS>(muev.getDirections())), *new CrowdingDistance<R, ADS, DS>(muev.getDirections()), *new NSGAIISelection<R, ADS, DS>, *new BasicPopulationManagement<R, ADS, DS>(initPop, mutations, mutationRate, crossovers, renewRate, rg), popSize, maxIter, maxGen)
 	{
 	}
 
@@ -167,6 +163,17 @@ public:
 	}
 
 	using PopulationBasedMultiObjSearch<R, ADS, DS>::search;
+
+	virtual void assignFitness(MOSPopulation<R, ADS, DS>& P)
+	{
+
+	}
+
+	virtual void assignDiversity(MOSPopulation<R, ADS, DS>& P)
+	{
+
+	}
+
 };
 
 }

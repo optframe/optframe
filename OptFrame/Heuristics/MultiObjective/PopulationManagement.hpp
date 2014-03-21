@@ -42,10 +42,10 @@ public:
 	}
 
 	// create a new population
-	virtual vector<MOSIndividual<R, ADS, DS>*> initialize(unsigned pSize) = 0;
+	virtual MOSPopulation<R, ADS, DS>& initialize(unsigned pSize) = 0;
 
 	// create next population
-	virtual vector<MOSIndividual<R, ADS, DS>*> createNext(unsigned target_size, const vector<const MOSIndividual<R, ADS, DS>*>& P) = 0;
+	virtual MOSPopulation<R, ADS, DS>& createNext(unsigned target_size, const MOSPopulation<R, ADS, DS>& P) = 0;
 
 	virtual void print() const
 	{
@@ -86,7 +86,7 @@ public:
 		return new MOSIndividual<R, ADS, DS>(s, mev);
 	}
 
-	virtual vector<MOSIndividual<R, ADS, DS>*> initialize(unsigned pSize)
+	virtual MOSPopulation<R, ADS, DS>& initialize(unsigned pSize)
 	{
 		Population<R, ADS> *p = &initPop.generatePopulation(pSize);
 
@@ -97,41 +97,46 @@ public:
 		p->clearNoKill();
 		delete p;
 
-		return r;
+		return *new MOSPopulation<R, ADS, DS>(r);
 	}
 
 	// multiple crossovers in a binary tournament and apply many mutations
-	virtual vector<MOSIndividual<R, ADS, DS>*> createNext(unsigned target_size, const vector<const MOSIndividual<R, ADS, DS>*>& P)
+	virtual MOSPopulation<R, ADS, DS>& createNext(unsigned target_size, const MOSPopulation<R, ADS, DS>& P)
 	{
-		vector<MOSIndividual<R, ADS, DS>*> children;
+		MOSPopulation<R, ADS, DS>* children = NULL;
 
 		unsigned size_renew = renewRate * target_size;
 
 		if(size_renew > 0)
-			children = initialize(size_renew);
+			children = &initialize(size_renew);
+		else
+			children = new MOSPopulation<R, ADS, DS>();
 
 		unsigned rest = target_size - size_renew;
 
-		vector<const MOSIndividual<R, ADS, DS>*> Pconst(P.begin(), P.end());
-		vector<const MOSIndividual<R, ADS, DS>*> pool = binaryTournment(rest, Pconst);
+		const MOSPopulation<R, ADS, DS>& pool = binaryTournment(rest, P);
 
-		vector<MOSIndividual<R, ADS, DS>*> crossMut = basicCrossoverMutation(pool);
+		MOSPopulation<R, ADS, DS>& crossMut = basicCrossoverMutation(pool);
 
-		children.insert(children.end(), crossMut.begin(), crossMut.end());
+		children->add(crossMut);
 
-		if(children.size() != target_size)
+		delete &crossMut;
+
+		if(children->P.size() != target_size)
 			if(Component::warning)
 			{
-				cout << "WARNING: BasicPopulationManagement::createNext() tried to create population of " << target_size << " but got " << children.size();
+				cout << "WARNING: BasicPopulationManagement::createNext() tried to create population of " << target_size << " but got " << children->P.size();
 				cout << endl;
 			}
 
-		return children;
+		return *children;
 	}
 
-	vector<const MOSIndividual<R, ADS, DS>*> binaryTournment(unsigned poolSize, const vector<const MOSIndividual<R, ADS, DS>*>& P)
+	const MOSPopulation<R, ADS, DS>& binaryTournment(unsigned poolSize, const MOSPopulation<R, ADS, DS>& mosPop)
 	{
-		vector<const MOSIndividual<R, ADS, DS>*> pool;
+		const vector<MOSIndividual<R, ADS, DS>*>& P = mosPop.P;
+
+		vector<MOSIndividual<R, ADS, DS>*> pool;
 
 		for(unsigned t = 1; t <= poolSize; t++)
 		{
@@ -146,15 +151,16 @@ public:
 				pool.push_back(P[j]);
 		}
 
-		return pool;
+		return *new MOSPopulation<R, ADS, DS>(pool);
 	}
 
-	vector<MOSIndividual<R, ADS, DS>*> basicCrossoverMutation(const vector<const MOSIndividual<R, ADS, DS>*>& pool)
+	MOSPopulation<R, ADS, DS>& basicCrossoverMutation(const MOSPopulation<R, ADS, DS>& mosPool)
 	{
-		vector<MOSIndividual<R, ADS, DS>*> children;
+		const vector<MOSIndividual<R, ADS, DS>*>& pool = mosPool.P;
+		MOSPopulation<R, ADS, DS>* children = new MOSPopulation<R, ADS, DS>();
 
 		if(pool.size() == 0)
-			return children;
+			return *children;
 
 		for(unsigned i = 0; i < pool.size(); i++)
 		{
@@ -191,11 +197,11 @@ public:
 					}
 				}
 
-				children.push_back(new MOSIndividual<R, ADS, DS>(vChildren[c], NULL));
+				children->P.push_back(new MOSIndividual<R, ADS, DS>(vChildren[c], NULL));
 			}
 		}
 
-		return children;
+		return *children;
 	}
 };
 
