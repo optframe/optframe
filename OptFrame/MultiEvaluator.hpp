@@ -93,7 +93,7 @@ public:
 			return NULL;
 	}
 
-	MultiEvaluation<DS> evaluate(const Solution<R, ADS>& s)
+	MultiEvaluation<DS>& evaluate(const Solution<R, ADS>& s)
 	{
 		return evaluate(s.getR(), s.getADS());
 	}

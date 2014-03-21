@@ -80,7 +80,7 @@ public:
 			vector<MOSIndividual<R, ADS, DS>*> front;
 			for(unsigned i = 0; i < P.size(); i++)
 				if(P[i]->fitness == f)
-					F.push_back(P[i]);
+					front.push_back(P[i]);
 			F.push_back(front);
 			count += front.size();
 			f++;

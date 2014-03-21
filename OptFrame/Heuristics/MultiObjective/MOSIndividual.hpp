@@ -45,8 +45,7 @@ public:
 
 	double fitness;
 	double diversity;
-
-	int id; // for debug reasons
+	int id;           // each element should have an unique identifier inside a population
 
 	// individuals with same evaluation values (used for compression of population)
 	vector<MOSIndividual<R, ADS, DS>*> copies;
@@ -72,8 +71,8 @@ public:
 	MOSIndividual(const MOSIndividual<R, ADS>& ind) :
 			s(ind.s.clone()), mev(&ind.mev->clone())
 	{
-		fitness = ind.rank;
-		diversity = ind.distance;
+		fitness = ind.fitness;
+		diversity = ind.diversity;
 
 		id = ind.id;
 	}
@@ -85,7 +84,7 @@ public:
 			delete mev;
 	}
 
-	virtual bool betterThan(const MOSIndividual<R, ADS>& ind)
+	virtual bool betterThan(const MOSIndividual<R, ADS>& ind) const
 	{
 		// assuming minimization of fitness and maximization of diversity
 		if(fitness < ind.fitness)
@@ -95,33 +94,33 @@ public:
 		return false;
 	}
 
-	virtual bool betterFitness(const MOSIndividual<R, ADS>& ind)
+	virtual bool betterFitness(const MOSIndividual<R, ADS>& ind) const
 	{
 		// assuming minimization of fitness
 		return fitness < ind.fitness;
 	}
 
-	virtual bool betterDiversity(const MOSIndividual<R, ADS>& ind)
+	virtual bool betterDiversity(const MOSIndividual<R, ADS>& ind) const
 	{
 		// assuming maximization of diversity
 		return diversity > ind.diversity;
 	}
 
 	// assuming minimization of fitness
-	virtual bool minFitness()
+	virtual bool minFitness() const
 	{
 		return true;
 	}
 
 	// assuming maximization of diversity
-	virtual bool maxDiversity()
+	virtual bool maxDiversity() const
 	{
 		return true;
 	}
 
 	virtual void print() const
 	{
-		cout << "MOSIndividual: fitness=" << fitness << "\t diversity=" << diversity;
+		cout << "MOSIndividual #" << id << " fitness=" << fitness << "\t diversity=" << diversity;
 		cout << "\t[ ";
 		for(unsigned e = 0; e < mev->size(); e++)
 			cout << mev->at(e).evaluation() << (e == mev->size() - 1 ? " " : " ; ");

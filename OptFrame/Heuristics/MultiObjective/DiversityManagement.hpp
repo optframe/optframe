@@ -28,7 +28,7 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class DiversityManagement: Component
+class DiversityManagement: public Component
 {
 public:
 
@@ -99,7 +99,7 @@ public:
 				for(int i = 0; i < I.size(); i++)
 					if(I[i]->fitness == r)
 					{
-						double fit = I[i]->mev.at(m).evaluation();
+						double fit = I[i]->mev->at(m).evaluation();
 						fitness.push_back(make_pair(fit, i));
 					}
 

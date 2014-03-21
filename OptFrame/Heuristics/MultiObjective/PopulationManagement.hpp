@@ -29,7 +29,7 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class PopulationManagement: Component
+class PopulationManagement: public Component
 {
 public:
 
@@ -112,7 +112,8 @@ public:
 
 		unsigned rest = target_size - size_renew;
 
-		vector<MOSIndividual<R, ADS, DS>*> pool = binaryTournment(rest, P);
+		vector<const MOSIndividual<R, ADS, DS>*> Pconst(P.begin(), P.end());
+		vector<const MOSIndividual<R, ADS, DS>*> pool = binaryTournment(rest, Pconst);
 
 		vector<MOSIndividual<R, ADS, DS>*> crossMut = basicCrossoverMutation(pool);
 
@@ -166,10 +167,10 @@ public:
 			if(crossovers.size() > 0)
 			{
 				int crossId = rg.rand(crossovers.size());
-				crossChildren = crossovers[crossId].cross(*pool[i], *pool[j]);
+				crossChildren = crossovers[crossId]->cross(pool[i]->s, pool[j]->s);
 			}
 			else
-				crossChildren = make_pair(&pool[i]->clone(), &pool[j]->clone());
+				crossChildren = make_pair(&pool[i]->s.clone(), &pool[j]->s.clone());
 
 			vector<Solution<R, ADS>*> vChildren(2, NULL);
 			vChildren[0] = crossChildren.first;
@@ -190,7 +191,7 @@ public:
 					}
 				}
 
-				children.push_back(vChildren[c]);
+				children.push_back(new MOSIndividual<R, ADS, DS>(vChildren[c], NULL));
 			}
 		}
 

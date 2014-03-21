@@ -28,7 +28,7 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class FitnessAssignment: Component
+class FitnessAssignment: public Component
 {
 public:
 
@@ -40,7 +40,22 @@ public:
 	{
 	}
 
-	virtual void assignFitness(vector<MOSIndividual<R, ADS, DS>*>& p) = 0;
+	// assign fitness to individual 's' according to population 'P'
+	void assignFitnessIndividual(MOSIndividual<R, ADS, DS>& s, const vector<const MOSIndividual<R, ADS, DS>*>& P)
+	{
+		vector<MOSIndividual<R, ADS, DS>*> v(&s);
+		assignFitness(v, P);
+	}
+
+	// assign fitness to all individuals from population 'P'
+	void assignFitnessAll(vector<MOSIndividual<R, ADS, DS>*>& P)
+	{
+		vector<const MOSIndividual<R, ADS, DS>*> Pop(P.begin(), P.end());
+		assignFitness(P, Pop);
+	}
+
+	// assign fitness to group of individuals 'g' according to population 'P'
+	virtual void assignFitness(vector<MOSIndividual<R, ADS, DS>*>& g, const vector<const MOSIndividual<R, ADS, DS>*>& P) = 0;
 
 	virtual void print() const
 	{
@@ -50,6 +65,26 @@ public:
 	virtual string id() const
 	{
 		return "FitnessAssignment";
+	}
+};
+
+template<class DS = OPTFRAME_DEFAULT_DS>
+struct FitnessIndividual
+{
+	int idx;
+	double fitness;
+	MultiEvaluation<DS>* mev;
+
+	FitnessIndividual()
+	{
+		idx = -1;
+		fitness = 0;
+		mev = NULL;
+	}
+
+	FitnessIndividual(int _idx, double _fitness, MultiEvaluation<DS>* _mev) :
+			idx(_idx), fitness(_fitness), mev(_mev)
+	{
 	}
 };
 
@@ -69,32 +104,29 @@ public:
 	{
 	}
 
-	static bool sortByFirst(const MOSIndividual<R, ADS, DS>* ind1, const MOSIndividual<R, ADS, DS>* ind2)
+	static bool sortByFirst(const FitnessIndividual<DS>& ind1, const FitnessIndividual<DS>& ind2)
 	{
-		return ind1->mev.at(0).evaluation() < ind2->mev.at(0).evaluation();
+		return ind1.mev->at(0).evaluation() < ind2.mev->at(0).evaluation();
 	}
 
-	static bool sortBySecond(const MOSIndividual<R, ADS, DS>* ind1, const MOSIndividual<R, ADS, DS>* ind2)
+	static bool sortBySecond(const FitnessIndividual<DS>& ind1, const FitnessIndividual<DS>& ind2)
 	{
-		return ind1->mev.at(1).evaluation() < ind2->mev.at(1).evaluation();
+		return ind1.mev->at(1).evaluation() < ind1.mev->at(1).evaluation();
 	}
 
-	virtual void assignFitness(vector<MOSIndividual<R, ADS, DS>*>& P)
+	virtual void assignFitness(vector<MOSIndividual<R, ADS, DS>*>& g, const vector<const MOSIndividual<R, ADS, DS>*>& Pop)
 	{
-		// ASSUMES UNIQUE ELEMENTS
+		// ASSUMES UNIQUE ELEMENTS IN 'Pop'
+
+		const int INF = 10000000;
+
+		vector<FitnessIndividual<DS> > P(Pop.size());
+		for(unsigned s = 0; s < P.size(); s++)
+			P[s] = FitnessIndividual<DS>(s, INF, Pop[s]->mev);
 
 		sort(P.begin(), P.end(), sortBySecond); // any sort is good!
 		stable_sort(P.begin(), P.end(), sortByFirst); // necessary to be stable!!
 		// (otherwise, when first objective is equal then the second may be downgraded in future and destroy dominance)
-
-		for(unsigned i = 0; i < P.size(); i++)
-			P[i]->fitness = 10000000; // INF
-
-		for(unsigned i = 0; i < P.size(); i++)
-		{
-			//cout << "i:" << i << " ";
-			//P[i]->print();
-		}
 
 		unsigned count_x = 0;
 		int rank = 0;
@@ -103,12 +135,12 @@ public:
 			// find first
 			unsigned j = 0;
 			for(j = 0; j < P.size(); j++)
-				if(P[j]->fitness == 10000000)
+				if(P[j].fitness == INF)
 					break;
-			P[j]->fitness = rank;
+			P[j].fitness = rank;
 			//cout << "rank: " << rank << " to ";
 			//P[j]->print();
-			int max_obj2 = P[j]->mev.at(1).evaluation();
+			int max_obj2 = P[j].mev->at(1).evaluation();
 			int min_obj2 = max_obj2;
 			//cout << "max_obj2: " << max_obj2 << " min_obj2: " << min_obj2 << endl;
 			count_x++;
@@ -116,19 +148,19 @@ public:
 			m.push_back(j);
 
 			for(unsigned r = j + 1; r < P.size(); r++)
-				if(P[r]->fitness == 10000000)
+				if(P[r].fitness == INF)
 				{
-					if(P[r]->mev.at(1).evaluation() > max_obj2)
+					if(P[r].mev->at(1).evaluation() > max_obj2)
 						continue; // discard element (is dominated!)
 
-					if(P[r]->mev.at(1).evaluation() < min_obj2) // add element (improves the best obj2!)
+					if(P[r].mev->at(1).evaluation() < min_obj2) // add element (improves the best obj2!)
 					{
 						//cout << "r:" << r << " ";
-						P[r]->fitness = rank;
+						P[r].fitness = rank;
 						//cout << "rank: " << rank << " to ";
 						//P[r]->print();
 						//cout << "min_obj2: " << min_obj2 << " => ";
-						min_obj2 = P[r]->mev.at(1).evaluation();
+						min_obj2 = P[r].mev->at(1).evaluation();
 						//cout << min_obj2 << endl;
 						count_x++;
 						m.push_back(r);
@@ -138,7 +170,7 @@ public:
 					// otherwise, check on list
 					bool nonDom = true;
 					for(unsigned z = 0; z < m.size(); z++)
-						if(P[m[z]]->mev.at(1).evaluation() <= P[r]->mev.at(1).evaluation()) // <= is enough, because distance is better (and values are unique)
+						if(P[m[z]].mev->at(1).evaluation() <= P[r].mev->at(1).evaluation()) // <= is enough, because distance is better (and values are unique)
 						{
 							//cout << "r: " << r << " dominated by " << m[z] << " m=" << m << endl;
 							nonDom = false;
@@ -148,7 +180,7 @@ public:
 					if(nonDom)
 					{
 						//cout << "*r:" << r << " ";
-						P[r]->fitness = rank;
+						P[r].fitness = rank;
 						//cout << "rank: " << rank << " to ";
 						//P[r]->print();
 						//cout << "m=" << m << endl;
@@ -167,29 +199,13 @@ public:
 			rank++;
 		}
 
-		// SELECTION SCHEME
-		/*
-		 vector<vector<IndividualNSGAII<R>*>*> fronts;
-		 unsigned count_check = 0;
-		 for(int r = 0; r < rank; r++)
-		 {
-		 fronts.push_back(new vector<IndividualNSGAII<R>*>);
-		 for(unsigned i = 0; i < Ps.size(); i++)
-		 if(Ps[i]->fitness == r)
-		 {
-		 fronts[r]->push_back(Ps[i]);
-		 count_check++;
-		 }
-		 }
-
-		 if(count_check != Ps.size())
-		 {
-		 cout << "ERROR in nonDominatedSort! count_check=" << count_check << " |Ps|=" << Ps.size() << endl;
-		 exit(1);
-		 }
-
-		 return fronts;
-		 */
+		for(unsigned s = 0; s < g.size(); s++)
+			for(unsigned k = 0; k < P.size(); k++)
+				if(g[s]->id == Pop[P[k].idx]->id)
+				{
+					g[s]->fitness = P[k].fitness;
+					break;
+				}
 	}
 
 };
@@ -210,9 +226,13 @@ public:
 	{
 	}
 
-	virtual void assignFitness(vector<MOSIndividual<R, ADS, DS>*>& P)
+	virtual void assignFitness(vector<MOSIndividual<R, ADS, DS>*>& g, const vector<const MOSIndividual<R, ADS, DS>*>& Pop)
 	{
 		ParetoDominance<R, ADS, DS> pDominance(vDir);
+
+		vector<FitnessIndividual<DS> > P(Pop.size());
+		for(unsigned s = 0; s < P.size(); s++)
+			P[s] = FitnessIndividual<DS>(s, -1, Pop[s]->mev);
 
 		if(Component::information)
 			cout << this->id() << "::fastNonDominatedSort |P|=" << P.size() << " begin" << endl;
@@ -234,7 +254,7 @@ public:
 			for(unsigned q = 0; q < P.size(); q++)
 				if(p != q)
 				{
-					pair<bool, bool> v = pDominance.birelation(P.at(p)->mev, P.at(q)->mev);
+					pair<bool, bool> v = pDominance.birelation(*P.at(p).mev, *P.at(q).mev);
 
 					// if (p << q)
 					if(v.first)
@@ -247,7 +267,7 @@ public:
 			// if n_p = 0, p belongs to the first front
 			if(n[p] == 0)
 			{
-				P[p]->fitness = 0; // p rank = 1
+				P[p].fitness = 0; // p rank = 1
 				F[0]->push_back(p);  // F_1 = F_1 U {p}
 			}
 		}
@@ -275,7 +295,7 @@ public:
 					// if nq = 0
 					if(n[q] == 0)
 					{
-						P[q]->fitness = i + 1;  // q rank = i+1
+						P[q].fitness = i + 1;  // q rank = i+1
 						Q->push_back(q);    // Q = Q U {q}
 					}
 				}
@@ -289,7 +309,15 @@ public:
 				cout << "fastNonDominatedSort i=" << i << " |Q|=" << Q->size() << endl;
 		}
 
-		// finished, P is updated
+		// finished, P is updated, update group 'g'
+		for(unsigned s = 0; s < g.size(); s++)
+			for(unsigned k = 0; k < P.size(); k++)
+				if(g[s]->id == Pop[P[k].idx]->id)
+				{
+					g[s]->fitness = P[k].fitness;
+					break;
+				}
+
 	}
 };
 

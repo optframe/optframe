@@ -71,13 +71,18 @@ public:
 	{
 	}
 
-	MultiDirection<DS>& addObjective(Direction<DS>* ds)
+	virtual MultiDirection<DS>& addObjective(Direction<DS>* ds)
 	{
 		if(ds)
 			vDir.push_back(ds);
 		nObjectives = vDir.size();
 
 		return *this;
+	}
+
+	vector<Direction<DS>*>& getDirections()
+	{
+		return vDir;
 	}
 
 	// ============ betterThan ===========

@@ -63,8 +63,9 @@ public:
 	void evaluate(vector<MOSIndividual<R, ADS, DS>*>& P)
 	{
 		for(unsigned s = 0; s < P.size(); s++)
-			P[s]->mev = mevr.evaluate(P[s]->s);
+			P[s]->mev = &mevr.evaluate(P[s]->s);
 	}
+
 
 	virtual Pareto<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS, DS>* _pf = NULL)
 	{
@@ -85,10 +86,11 @@ public:
 
 		vector<MOSIndividual<R, ADS, DS>*> P = popMan.initialize(popSize);
 		evaluate(P);
-		fa.assignFitness(P);
+		fa.assignFitnessAll(P);
 		dm.assignDiversity(P);
 
-		vector<MOSIndividual<R, ADS, DS>*> Q = popMan.createNext(popSize, P);
+		vector<const MOSIndividual<R, ADS, DS>*> Pconst(P.begin(), P.end());
+		vector<MOSIndividual<R, ADS, DS>*> Q = popMan.createNext(popSize, Pconst);
 		evaluate(Q);
 
 		int t = 0;
@@ -101,10 +103,10 @@ public:
 		{
 			P.insert(P.end(), Q.begin(), Q.end());
 
-			fa.assignFitness(P);
+			fa.assignFitnessAll(P);
 			dm.assignDiversity(P);
 
-			elitism.select(P, archive);
+			elitism.select(popSize, P, archive);
 
 			// archive is updated
 			// unused already free'd
@@ -112,11 +114,11 @@ public:
 			bool improved = false;
 			for(unsigned s = 0; s < archive.size(); s++)
 				for(unsigned i = 0; i < bestObj.size(); i++)
-					if(mevr.betterThan(i, archive[s]->mev.at(i).evaluation(), bestObj[i]))
+					if(mevr.betterThan(i, archive[s]->mev->at(i).evaluation(), bestObj[i]))
 					{
 						// IMPROVEMENT IN ONE OBJECTIVE
 						improved = true;
-						bestObj[i] = archive[s]->mev.at(i).evaluation();
+						bestObj[i] = archive[s]->mev->at(i).evaluation();
 					}
 
 			if(improved)
@@ -126,7 +128,8 @@ public:
 			}
 
 			// generating next population
-			Q = popMan.createNext(popSize, P);
+			Pconst = vector<const MOSIndividual<R, ADS, DS>*>(P.begin(), P.end());
+			Q = popMan.createNext(popSize, Pconst);
 			evaluate(Q);
 			t++;
 			tImp++;
@@ -138,7 +141,7 @@ public:
 		for(unsigned i = 0; i < archive.size(); i++)
 		{
 			Solution<R, ADS>* s = &archive.at(i)->s;
-			MultiEvaluation<DS>* mev = &archive.at(i)->mev;
+			MultiEvaluation<DS>* mev = archive.at(i)->mev;
 			pf->push_back(s, mev);
 		}
 		return pf;
@@ -150,8 +153,8 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_
 class ClassicNSGAII: public PopulationBasedMultiObjSearch<R, ADS, DS>
 {
 public:
-	ClassicNSGAII(vector<Direction<DS>*> vDir, MultiEvaluator<R, ADS, DS>& muev, InitialPopulation<R, ADS>& initPop, vector<NS<RepCARP>*> mutations, double mutationRate, vector<GeneralCrossover<RepCARP>*> crossovers, double renewRate, RandGen& rg, unsigned popSize, int maxIter, int maxGen = 100000000) :
-			PopulationBasedMultiObjSearch<R, ADS, DS>(vDir, (vDir.size() == 2 ? *new BiObjNonDominatedSort<R, ADS, DS>(vDir) : *new NonDominatedSort<R, ADS, DS>(vDir)), *new CrowdingDistance<R, ADS, DS>(vDir), *new NSGAIISelection<R, ADS, DS>, *new BasicPopulationManagement<R, ADS, DS>(muev, initPop, mutations, mutationRate, crossovers, renewRate, rg), popSize, maxIter, maxGen)
+	ClassicNSGAII(MultiEvaluator<R, ADS, DS>& muev, InitialPopulation<R, ADS>& initPop, vector<NS<RepCARP>*> mutations, double mutationRate, vector<GeneralCrossover<RepCARP>*> crossovers, double renewRate, RandGen& rg, unsigned popSize, int maxIter, int maxGen = 100000000) :
+			PopulationBasedMultiObjSearch<R, ADS, DS>(muev, (muev.nObjectives == 2 ? (FitnessAssignment<R, ADS, DS>&)*new BiObjNonDominatedSort<R, ADS, DS>(muev.getDirections()) : (FitnessAssignment<R, ADS, DS>&)*new NonDominatedSort<R, ADS, DS>(muev.getDirections())), *new CrowdingDistance<R, ADS, DS>(muev.getDirections()), *new NSGAIISelection<R, ADS, DS>, *new BasicPopulationManagement<R, ADS, DS>(initPop, mutations, mutationRate, crossovers, renewRate, rg), popSize, maxIter, maxGen)
 	{
 	}
 
@@ -162,6 +165,8 @@ public:
 		delete &this->elitism;
 		delete &this->popMan;
 	}
+
+	using PopulationBasedMultiObjSearch<R, ADS, DS>::search;
 };
 
 }

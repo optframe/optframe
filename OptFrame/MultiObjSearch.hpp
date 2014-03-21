@@ -67,7 +67,7 @@ public:
 
 	void push_back(Solution<R, ADS>* s, MultiEvaluation<DS>* mev)
 	{
-		paretoSet.push_back(&s);
+		paretoSet.push_back(s);
 		vector<Evaluation<DS>*> v_e = mev->getCloneVector();
 		paretoFront.push_back(v_e);
 		delete mev;
