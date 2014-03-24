@@ -41,20 +41,22 @@ public:
 	}
 
 	// assign fitness to individual 's' according to population 'P'
-	virtual void assignFitnessIndividual(MOSIndividual<R, ADS, DS>& s, const MOSPopulation<R, ADS, DS>& P)
+	virtual void assignFitnessIndividual(MOSIndividual<R, ADS, DS>& s, const vector<const MOSIndividual<R, ADS, DS>*>& P)
 	{
-		MOSPopulation<R, ADS, DS> v(&s);
+		vector<MOSIndividual<R, ADS, DS>*> v;
+		v.push_back(&s);
 		assignFitnessGroup(v, P);
 	}
 
 	// assign fitness to all individuals from population 'P'
-	virtual void assignFitnessAll(MOSPopulation<R, ADS, DS>& P)
+	virtual void assignFitnessAll(vector<MOSIndividual<R, ADS, DS>*>& P)
 	{
-		assignFitnessGroup(P, P);
+		vector<const MOSIndividual<R, ADS, DS>*> Pconst(P.begin(), P.end());
+		assignFitnessGroup(P, Pconst);
 	}
 
 	// assign fitness to group of individuals 'g' according to population 'P'
-	virtual void assignFitnessGroup(MOSPopulation<R, ADS, DS>& g, const MOSPopulation<R, ADS, DS>& P) = 0;
+	virtual void assignFitnessGroup(vector<MOSIndividual<R, ADS, DS>*>& g, const vector<const MOSIndividual<R, ADS, DS>*>& P) = 0;
 
 	virtual void print() const
 	{
@@ -113,11 +115,8 @@ public:
 		return ind1.mev->at(1).evaluation() < ind1.mev->at(1).evaluation();
 	}
 
-	virtual void assignFitnessGroup(MOSPopulation<R, ADS, DS>& gPop, const MOSPopulation<R, ADS, DS>& mosPop)
+	virtual void assignFitnessGroup(vector<MOSIndividual<R, ADS, DS>*>& g, const vector<const MOSIndividual<R, ADS, DS>*>& Pop)
 	{
-		vector<MOSIndividual<R, ADS, DS>*> Pop(mosPop.P);
-		vector<MOSIndividual<R, ADS, DS>*> g(gPop.P);
-
 		// ASSUMES UNIQUE ELEMENTS IN 'Pop'
 
 		const int INF = 10000000;
@@ -228,11 +227,8 @@ public:
 	{
 	}
 
-	virtual void assignFitnessGroup(MOSPopulation<R, ADS, DS>& gPop, const MOSPopulation<R, ADS, DS>& mosPop)
+	virtual void assignFitnessGroup(vector<MOSIndividual<R, ADS, DS>*>& g, const vector<const MOSIndividual<R, ADS, DS>*>& Pop)
 	{
-		vector<MOSIndividual<R, ADS, DS>*> Pop(mosPop.P);
-		vector<MOSIndividual<R, ADS, DS>*> g(gPop.P);
-
 		ParetoDominance<R, ADS, DS> pDominance(vDir);
 
 		vector<FitnessIndividual<DS> > P(Pop.size());

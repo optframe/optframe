@@ -71,6 +71,11 @@ public:
 		decodedSolutions.clear();
 	}
 
+	Pareto<X>* getPareto()
+	{
+		return NULL;
+	}
+
 	void push_back(Solution<R>* s, vector<MultiEvaluation<DS>*>& v_e, Population<X, ADS>* v_x)
 	{
 		paretoSet.push_back(s);

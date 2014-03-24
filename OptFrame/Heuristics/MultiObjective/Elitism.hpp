@@ -40,11 +40,8 @@ public:
 	{
 	}
 
-	// select individuals and keep archive updated
-	virtual void select(unsigned target_size, MOSPopulation<R, ADS, DS>& p, MOSPopulation<R, ADS, DS>& archive) = 0;
-
-	// free individuals from population and keep archive updated
-	virtual void free(MOSPopulation<R, ADS, DS>& p, MOSPopulation<R, ADS, DS>& archive) = 0;
+	// keep archive updated
+	virtual void updateArchive(const vector<const MOSIndividual<R, ADS, DS>*>& P, vector<MOSIndividual<R, ADS, DS>*>& archive) = 0;
 
 	virtual void print() const
 	{
@@ -52,78 +49,86 @@ public:
 	}
 };
 
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class NSGAIISelection: public Elitism<R, ADS, DS>
+class NoArchiving: public Elitism<R, ADS, DS>
 {
 public:
 
-	NSGAIISelection()
+	NoArchiving()
 	{
 	}
 
-	virtual ~NSGAIISelection()
+	virtual ~NoArchiving()
 	{
 	}
 
-	static bool compare(MOSIndividual<R, ADS, DS>* ind1, MOSIndividual<R, ADS, DS>* ind2)
+	void updateArchive(const vector<const MOSIndividual<R, ADS, DS>*>& P, vector<MOSIndividual<R, ADS, DS>*>& archive)
 	{
-		return ind1->betterThan(*ind2);
+		// DO ANYTHING! NSGA-II STYLE
 	}
 
-	virtual void select(unsigned target_size, MOSPopulation<R, ADS, DS>& Pop, MOSPopulation<R, ADS, DS>& archive)
+	virtual void print() const
 	{
-		int f = 0;
-		unsigned count = 0;
-		vector<vector<MOSIndividual<R, ADS, DS>*> > F;
-		while(count != Pop.P.size())
-		{
-			vector<MOSIndividual<R, ADS, DS>*> front;
-			for(unsigned i = 0; i < Pop.P.size(); i++)
-				if(Pop.P[i]->fitness == f)
-					front.push_back(Pop.P[i]);
-			F.push_back(front);
-			count += front.size();
-			f++;
-		}
+		cout << "NoArchiving" << endl;
+	}
+};
 
-		Pop.P.clear();
 
-		unsigned i = 0;
-		while((Pop.P.size() + F[i].size()) <= target_size)
-		{
-			// Pt+1 = Pt+1 U Fi
-			Pop.P.insert(Pop.P.end(), F[i].begin(), F[i].end());
-			F[i].clear();
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class BoundedArchiving: public Elitism<R, ADS, DS>
+{
+protected:
+	unsigned limit;
+	MultiDirection<DS>& mDir;
+public:
 
-			i = i + 1;
-		}
-
-		if(Pop.P.size() < target_size)
-		{
-			sort(F[i].begin(), F[i].end(), compare);
-
-			unsigned missing = target_size - Pop.P.size();
-			for(unsigned j = 0; j < missing; j++)
-			{
-				Pop.P.push_back(F[i][j]);
-				F[i][j] = NULL;
-			}
-		}
-
-		for(i = 0; i < F.size(); i++)
-			for(unsigned j = 0; j < F[i].size(); j++)
-				if(F[i][j])
-					delete F[i][j];
-
-		archive.P = Pop.P; // no other archiving
+	BoundedArchiving(unsigned _limit, MultiDirection<DS>& _mDir) :
+			limit(_limit), mDir(_mDir)
+	{
 	}
 
-	virtual void free(MOSPopulation<R, ADS, DS>& Pop, MOSPopulation<R, ADS, DS>& archive)
+	virtual ~BoundedArchiving()
 	{
-		archive.P = Pop.P;
-		Pop.P.clear();
 	}
 
+	virtual void updateArchive(const vector<const MOSIndividual<R, ADS, DS>*>& P, vector<MOSIndividual<R, ADS, DS>*>& archive)
+	{
+		// USE DOMINANCE TO KEEP ARCHIVING SUBJECT TO LIMIT
+	}
+
+	virtual void print() const
+	{
+		cout << "BoundedArchiving(" << limit << ")" << endl;
+	}
+};
+
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class UnboundedArchiving: public Elitism<R, ADS, DS>
+{
+protected:
+	MultiDirection<DS>& mDir;
+public:
+
+	UnboundedArchiving(MultiDirection<DS>& _mDir) :
+			mDir(_mDir)
+	{
+	}
+
+	virtual ~UnboundedArchiving()
+	{
+	}
+
+	virtual void updateArchive(const vector<const MOSIndividual<R, ADS, DS>*>& P, vector<MOSIndividual<R, ADS, DS>*>& archive)
+	{
+		// USE DOMINANCE TO KEEP ARCHIVING
+	}
+
+	virtual void print() const
+	{
+		cout << "UnboundedArchiving" << endl;
+	}
 };
 
 }

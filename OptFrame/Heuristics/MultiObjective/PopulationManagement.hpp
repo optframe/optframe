@@ -42,10 +42,10 @@ public:
 	}
 
 	// create a new population
-	virtual MOSPopulation<R, ADS, DS>& initialize(unsigned pSize) = 0;
+	virtual vector<MOSIndividual<R, ADS, DS>*>& initialize(unsigned pSize) = 0;
 
 	// create next population
-	virtual MOSPopulation<R, ADS, DS>& createNext(unsigned target_size, const MOSPopulation<R, ADS, DS>& P) = 0;
+	virtual vector<MOSIndividual<R, ADS, DS>*>& createNext(unsigned target_size, const vector<const MOSIndividual<R, ADS, DS>*>& P) = 0;
 
 	virtual void print() const
 	{
@@ -86,7 +86,7 @@ public:
 		return new MOSIndividual<R, ADS, DS>(s, mev);
 	}
 
-	virtual MOSPopulation<R, ADS, DS>& initialize(unsigned pSize)
+	virtual vector<MOSIndividual<R, ADS, DS>*>& initialize(unsigned pSize)
 	{
 		Population<R, ADS> *p = &initPop.generatePopulation(pSize);
 
@@ -97,46 +97,45 @@ public:
 		p->clearNoKill();
 		delete p;
 
-		return *new MOSPopulation<R, ADS, DS>(r);
+		return *new vector<MOSIndividual<R, ADS, DS>*>(r);
 	}
 
 	// multiple crossovers in a binary tournament and apply many mutations
-	virtual MOSPopulation<R, ADS, DS>& createNext(unsigned target_size, const MOSPopulation<R, ADS, DS>& P)
+	virtual vector<MOSIndividual<R, ADS, DS>*>& createNext(unsigned target_size, const vector<const MOSIndividual<R, ADS, DS>*>& P)
 	{
-		MOSPopulation<R, ADS, DS>* children = NULL;
+		vector<MOSIndividual<R, ADS, DS>*>* children = NULL;
 
 		unsigned size_renew = renewRate * target_size;
 
 		if(size_renew > 0)
 			children = &initialize(size_renew);
 		else
-			children = new MOSPopulation<R, ADS, DS>();
+			children = new vector<MOSIndividual<R, ADS, DS>*>();
 
 		unsigned rest = target_size - size_renew;
 
-		const MOSPopulation<R, ADS, DS>& pool = binaryTournment(rest, P);
+		vector<const MOSIndividual<R, ADS, DS>*> Pconst(P.begin(), P.end());
+		vector<const MOSIndividual<R, ADS, DS>*>& pool = binaryTournment(rest, Pconst);
 
-		MOSPopulation<R, ADS, DS>& crossMut = basicCrossoverMutation(pool);
+		vector<MOSIndividual<R, ADS, DS>*>& crossMut = basicCrossoverMutation(pool);
 
-		children->add(crossMut);
+		children->insert(children->end(), crossMut.begin(), crossMut.end());
 
 		delete &crossMut;
 
-		if(children->P.size() != target_size)
+		if(children->size() != target_size)
 			if(Component::warning)
 			{
-				cout << "WARNING: BasicPopulationManagement::createNext() tried to create population of " << target_size << " but got " << children->P.size();
+				cout << "WARNING: BasicPopulationManagement::createNext() tried to create population of " << target_size << " but got " << children->size();
 				cout << endl;
 			}
 
 		return *children;
 	}
 
-	const MOSPopulation<R, ADS, DS>& binaryTournment(unsigned poolSize, const MOSPopulation<R, ADS, DS>& mosPop)
+	vector<const MOSIndividual<R, ADS, DS>*>& binaryTournment(unsigned poolSize, const vector<const MOSIndividual<R, ADS, DS>*>& P)
 	{
-		const vector<MOSIndividual<R, ADS, DS>*>& P = mosPop.P;
-
-		vector<MOSIndividual<R, ADS, DS>*> pool;
+		vector<const MOSIndividual<R, ADS, DS>*>& pool = * new vector<const MOSIndividual<R, ADS, DS>*>;
 
 		for(unsigned t = 1; t <= poolSize; t++)
 		{
@@ -151,13 +150,12 @@ public:
 				pool.push_back(P[j]);
 		}
 
-		return *new MOSPopulation<R, ADS, DS>(pool);
+		return pool;
 	}
 
-	MOSPopulation<R, ADS, DS>& basicCrossoverMutation(const MOSPopulation<R, ADS, DS>& mosPool)
+	vector<MOSIndividual<R, ADS, DS>*>& basicCrossoverMutation(const vector<const MOSIndividual<R, ADS, DS>*>& pool)
 	{
-		const vector<MOSIndividual<R, ADS, DS>*>& pool = mosPool.P;
-		MOSPopulation<R, ADS, DS>* children = new MOSPopulation<R, ADS, DS>();
+		vector<MOSIndividual<R, ADS, DS>*>* children = new vector<MOSIndividual<R, ADS, DS>*>();
 
 		if(pool.size() == 0)
 			return *children;
@@ -173,10 +171,10 @@ public:
 			if(crossovers.size() > 0)
 			{
 				int crossId = rg.rand(crossovers.size());
-				crossChildren = crossovers[crossId]->cross(pool[i]->s, pool[j]->s);
+				crossChildren = crossovers[crossId]->cross(*pool[i]->s, *pool[j]->s);
 			}
 			else
-				crossChildren = make_pair(&pool[i]->s.clone(), &pool[j]->s.clone());
+				crossChildren = make_pair(&pool[i]->s->clone(), &pool[j]->s->clone());
 
 			vector<Solution<R, ADS>*> vChildren(2, NULL);
 			vChildren[0] = crossChildren.first;
@@ -197,7 +195,7 @@ public:
 					}
 				}
 
-				children->P.push_back(new MOSIndividual<R, ADS, DS>(vChildren[c], NULL));
+				children->push_back(new MOSIndividual<R, ADS, DS>(vChildren[c], NULL));
 			}
 		}
 

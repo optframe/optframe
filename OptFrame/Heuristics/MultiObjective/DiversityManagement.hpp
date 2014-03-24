@@ -41,20 +41,22 @@ public:
 	}
 
 	// assign diversity to individual 's' according to population 'P'
-	virtual void assignDiversityIndividual(MOSIndividual<R, ADS, DS>& s, const MOSPopulation<R, ADS, DS>& P)
+	virtual void assignDiversityIndividual(MOSIndividual<R, ADS, DS>& s, const vector<const MOSIndividual<R, ADS, DS>*>& P)
 	{
-		MOSPopulation<R, ADS, DS> v(&s);
+		vector<MOSIndividual<R, ADS, DS>*> v;
+		v.push_back(&s);
 		assignDiversityGroup(v, P);
 	}
 
 	// assign diversity to all individuals from population 'P'
-	virtual void assignDiversityAll(MOSPopulation<R, ADS, DS>& P)
+	virtual void assignDiversityAll(vector<MOSIndividual<R, ADS, DS>*>& P)
 	{
-		assignDiversityGroup(P, P);
+		vector<const MOSIndividual<R, ADS, DS>*> Pconst(P.begin(), P.end());
+		assignDiversityGroup(P, Pconst);
 	}
 
 	// assign diversity to group of individuals 'g' according to population 'P'
-	virtual void assignDiversityGroup(MOSPopulation<R, ADS, DS>& g, const MOSPopulation<R, ADS, DS>& P) = 0;
+	virtual void assignDiversityGroup(vector<MOSIndividual<R, ADS, DS>*>& g, const vector<const MOSIndividual<R, ADS, DS>*>& P) = 0;
 
 	virtual void print() const
 	{
@@ -103,11 +105,8 @@ public:
 		return p1.first < p2.first;
 	}
 
-	virtual void assignDiversityGroup(MOSPopulation<R, ADS, DS>& gPop, const MOSPopulation<R, ADS, DS>& mosPop)
+	virtual void assignDiversityGroup(vector<MOSIndividual<R, ADS, DS>*>& g, const vector<const MOSIndividual<R, ADS, DS>*>& P)
 	{
-		vector<MOSIndividual<R, ADS, DS>*> P(mosPop.P);
-		vector<MOSIndividual<R, ADS, DS>*> g(gPop.P);
-
 		const int INF = 10000000;
 
 		vector<DiversityIndividual<DS> > I(P.size());

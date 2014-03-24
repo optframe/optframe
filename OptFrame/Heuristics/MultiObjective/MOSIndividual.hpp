@@ -40,7 +40,7 @@ class MOSIndividual
 {
 public:
 
-	Solution<R, ADS>& s;
+	Solution<R, ADS>* s;
 	MultiEvaluation<DS>* mev; // temporarily kept without evaluation
 
 	double fitness;
@@ -51,7 +51,7 @@ public:
 	vector<MOSIndividual<R, ADS, DS>*> copies;
 
 	MOSIndividual(Solution<R, ADS>* _s, MultiEvaluation<DS>* _mev) :
-			s(*_s), mev(_mev)
+			s(_s), mev(_mev)
 	{
 		fitness = -1;
 		diversity = -1;
@@ -60,7 +60,7 @@ public:
 	}
 
 	MOSIndividual(Solution<R, ADS>& _s, MultiEvaluation<DS>& _mev) :
-			s(_s.clone()), mev(&_mev.clone())
+			s(&_s.clone()), mev(&_mev.clone())
 	{
 		fitness = -1;
 		diversity = -1;
@@ -69,7 +69,7 @@ public:
 	}
 
 	MOSIndividual(const MOSIndividual<R, ADS>& ind) :
-			s(ind.s.clone()), mev(&ind.mev->clone())
+			s(&ind.s->clone()), mev(&ind.mev->clone())
 	{
 		fitness = ind.fitness;
 		diversity = ind.diversity;
@@ -79,7 +79,8 @@ public:
 
 	virtual ~MOSIndividual()
 	{
-		delete &s;
+		if(s)
+			delete s;
 		if(mev)
 			delete mev;
 	}
@@ -157,11 +158,14 @@ public:
 
 };
 
+/*
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-struct MOSPopulation
+class MOSPopulation
 {
+protected:
 	vector<MOSIndividual<R, ADS, DS>*> P;
 
+public:
 	MOSPopulation()
 	{
 	}
@@ -176,13 +180,53 @@ struct MOSPopulation
 	{
 	}
 
-	void add(MOSPopulation<R, ADS, DS>& Pop)
+	virtual ~MOSPopulation()
+	{
+	}
+
+	virtual void setVector(vector<MOSIndividual<R, ADS, DS>*>& v)
+	{
+		P = v;
+	}
+
+	virtual vector<MOSIndividual<R, ADS, DS>*>& getVector()
+	{
+		return P;
+	}
+
+	virtual vector<MOSIndividual<R, ADS, DS>*> getVector() const
+	{
+		return P;
+	}
+
+	virtual MOSIndividual<R, ADS, DS>* at(unsigned id) const
+	{
+		return P[id];
+	}
+
+	virtual unsigned size() const
+	{
+		return P.size();
+	}
+
+	virtual void add(MOSIndividual<R, ADS, DS>* ind)
+	{
+		P.push_back(ind);
+	}
+
+	virtual void add(MOSPopulation<R, ADS, DS>& Pop)
 	{
 		P.insert(P.end(), Pop.P.begin(), Pop.P.end());
 	}
 
-	virtual ~MOSPopulation()
+	virtual void add(vector<MOSIndividual<R, ADS, DS>*>& v)
 	{
+		P.insert(P.end(), v.begin(), v.end());
+	}
+
+	virtual void clear()
+	{
+		P.clear();
 	}
 
 	virtual void free()
@@ -193,6 +237,7 @@ struct MOSPopulation
 		P.clear();
 	}
 };
+*/
 
 }
 

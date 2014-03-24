@@ -24,256 +24,287 @@
 #include "../../MultiObjSearch.hpp"
 #include "../../Timer.hpp"
 
-#include "MOSIndividual.hpp"
+// EXTENDED PARETO
+#include "../../ExtendedMultiObjSearch.hpp"
+
+#include "PopulationBasedMultiObjSearch.hpp"
+
+#include "MOSExtIndividual.hpp"
+
 #include "FitnessAssignment.hpp"
 #include "DiversityManagement.hpp"
 #include "Elitism.hpp"
 #include "PopulationManagement.hpp"
+#include "ExtMOSSelection.hpp"
 
 namespace optframe
 {
 
-// MultiObjSearch Extended Individual
 template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MOSExtIndividual : public MOSIndividual<X, ADS, DS>
-{
-public:
-
-	MOSIndividual<R>& parent;
-
-	MOSExtIndividual(Solution<X, ADS>* s, MultiEvaluation<DS>* mev, MOSIndividual<R>* _parent) :
-		MOSIndividual<X, ADS, DS>(s, mev), parent(*_parent)
-	{
-	}
-
-	MOSExtIndividual(Solution<R, ADS>& s, MultiEvaluation<DS>& mev, MOSIndividual<R>* _parent) :
-		MOSIndividual<X, ADS, DS>(s, mev), parent(*_parent)
-	{
-	}
-
-	MOSExtIndividual(const MOSExtIndividual<R, X, ADS, DS>& ind) :
-			s(ind.s.clone()), mev(ind.mev.clone()), parent(ind.parent)
-	{
-		fitness = ind.rank;
-		diversity = ind.distance;
-
-		id = ind.id;
-	}
-
-	virtual ~MOSExtIndividual()
-	{
-	}
-
-	virtual void print() const
-	{
-		cout << "MOSExtIndividual: parent=" << &parent << " fitness=" << fitness << "\t diversity=" << diversity;
-		cout << "\t[ ";
-		for(unsigned e = 0; e < mev.size(); e++)
-			cout << mev.at(e).evaluation() << (e == mev.size() - 1 ? " " : " ; ");
-		cout << " ]";
-		cout << endl;
-	}
-
-	virtual MOSIndividual<R, ADS>& clone() const
-	{
-		return *new MOSExtIndividual<R, ADS>(*this);
-	}
-
-};
-
-
-template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class DecoderPopulationMultiObjSearch: public MultiObjSearch<R, ADS, DS>
+class DecodedPopulationMultiObjSearch: public PopulationBasedMultiObjSearch<X>
 {
 protected:
-	Decoder<R, X, ADS, DS>& decoder;
-
-	vector<Direction<DS>*> vDir;
-
-	FitnessAssignment<X, ADS>& fa;
-	DiversityManagement<X, ADS>& dm;
-	Elitism<X, ADS>& elitism;
+	Decoder<R, X>& decoder;
 	PopulationManagement<R>& popMan;
+	FitnessAssignment<X>& fa;
+	DiversityManagement<X>& dm;
+	Elitism<X>& elitism;
+	ExtMOSSelection<R, X>& sel;
 
 	unsigned popSize;
-
-	// stopping criteria (-1: indicates unused)
-	int maxGen;  // total number of generations
-	int maxIter; // generations without improvement
+	int maxIter;
+	int maxGen;
 
 public:
-	DecoderPopulationMultiObjSearch(Decoder<R, X, ADS, DS>& _decoder, vector<Direction<DS>*> _vDir, FitnessAssignment<R, ADS, DS>& _fa, DiversityManagement<R, ADS, DS>& _dm, Elitism<R, ADS, DS>& _elitism, PopulationManagement<R, ADS, DS>& _popMan, unsigned _popSize, int _maxIter, int _maxGen = 100000000) :
-			decoder(_decoder), vDir(_vDir), fa(_fa), dm(_dm), elitism(_elitism), popMan(_popMan), popSize(_popSize), maxGen(_maxGen), maxIter(_maxIter)
+	DecodedPopulationMultiObjSearch(MultiDirection<>& mDir, Decoder<R, X>& _decoder, PopulationManagement<R>& _popMan, FitnessAssignment<X>& _fa, DiversityManagement<X>& _dm, Elitism<X>& _elitism, ExtMOSSelection<R, X>& _sel, unsigned _popSize, int _maxIter, int _maxGen = 100000000) :
+			PopulationBasedMultiObjSearch<X>(mDir), decoder(_decoder), popMan(_popMan), fa(_fa), dm(_dm), elitism(_elitism), sel(_sel), popSize(_popSize), maxIter(_maxIter), maxGen(_maxGen)
 	{
 	}
 
-	virtual ~DecoderPopulationMultiObjSearch()
+	virtual ~DecodedPopulationMultiObjSearch()
 	{
 	}
 
-	inline vector<MOSExtIndividual<X, ADS, DS>*> decode(const vector<const MOSIndividual<R>*>& PS)
+	virtual vector<MOSExtIndividual<R, X>*>& decode(vector<MOSIndividual<R>*>& PS)
 	{
-		vector<MOSExtIndividual<X, ADS, DS>*> PX;
+		vector<MOSExtIndividual<R, X>*>* PX = new vector<MOSExtIndividual<R, X>*>;
+
 		for(unsigned s = 0; s < PS.size(); s++)
 		{
-			pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation<DS>*> > dx = decoder.decode(PS[i]->s);
+			pair<vector<Solution<X>*>, vector<MultiEvaluation<>*> > dx = decoder.decode(*PS.at(s)->s);
 
 			for(unsigned x = 0; x < dx.first.size(); x++)
 			{
-				PX.push_back(new MOSExtIndividual<R, X, ADS, DS>(dx.first[x], dx.second[x], PS[i]));
+				Solution<X>* ss = dx.first[x];
+				MultiEvaluation<>* ee = dx.second[x];
+				MOSIndividual<R>* ind = PS.at(s);
+				MOSExtIndividual<R, X>* extind = new MOSExtIndividual<R, X>(ss, ee, ind);
+				PX->push_back(extind);
 			}
 		}
-		return PX;
+
+		return *PX;
 	}
 
-	void spreadBestFitness(vector<MOSIndividual<X, ADS, DS>*>& PS, const vector<MOSExtIndividual<X, ADS, DS>*>& PX)
+	virtual void assignFitness(vector<MOSIndividual<X>*>& g, const vector<const MOSIndividual<X>*>& PX)
 	{
-		if(PS.size() == 0)
-			return;
+		fa.assignFitnessGroup(g, PX);
+	}
 
-		double worst = PS.at(0)->minFitness()?10000000:-10000000;
-		for(unsigned s=0; s<PS.size(); s++)
-			PS[s]->fitness = worst;
+	inline void assignBestFitness(vector<MOSIndividual<R>*>& PS, vector<MOSExtIndividual<R, X>*>& PX)
+	{
+		// set worst value in 'PS'
+		// get best from 'PX'
+	}
 
+	virtual void extendedAssignFitness(vector<MOSIndividual<R>*>& PS, vector<MOSExtIndividual<R, X>*>& PX)
+	{
+		// simple, use classic fitness assignment
+
+		vector<MOSIndividual<X>*> PXind;
+		vector<const MOSIndividual<X>*> PXconst;
 		for(unsigned x = 0; x < PX.size(); x++)
 		{
-			for(unsigned j = 0; j < PX[x]->ls.size(); j++)
-			{
-				if(PX[x]->rank < PX[x]->ls.at(j)->rank)
-				{
-					//cout << "update id " << vx[x]->ls.at(j)->id << ": " << vx[x]->ls.at(j)->rank;
-					vx[x]->ls.at(j)->rank = vx[x]->rank;
-					//cout << " => " << vx[x]->ls.at(j)->rank << endl;
-				}
-			}
-			// spread to twins
-			for(unsigned t = 0; t < vx[x]->lx.size(); t++)
-				vx[x]->lx[t]->rank = vx[x]->rank;
+			PXind.push_back(PX[x]);
+			PXconst.push_back(PX[x]);
 		}
+		assignFitness(PXind, PXconst);
+		// get best
+		assignBestFitness(PS, PX);
 	}
 
-	static void zeroDistances(vector<IndividualNSGAII<R>*>& vs)
+	virtual void assignDiversity(vector<MOSIndividual<X>*>& g, const vector<const MOSIndividual<X>*>& PX)
 	{
-		for(unsigned s = 0; s < vs.size(); s++)
-			vs[s]->distance = -1; // -INF
+		vector<const MOSIndividual<X>*> PXconst(PX.begin(), PX.end());
+		dm.assignDiversityGroup(g, PXconst);
 	}
 
-	static void updateDistances(const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& vx)
+	virtual void extendedAssignDiversity(vector<MOSIndividual<R>*>& PS, vector<MOSExtIndividual<R, X>*>& PX)
 	{
-		// 'max' value
-		for(unsigned x = 0; x < vx.size(); x++)
+		// tricky, separate individuals and then apply classic diversity techniques
+		for(unsigned x = 0; x < PX.size(); x++)
 		{
-			for(unsigned j = 0; j < vx[x]->ls.size(); j++)
-				if(vx[x]->distance > vx[x]->ls.at(j)->distance)
-					vx[x]->ls.at(j)->distance = vx[x]->distance;
-			// spread to twins
-			for(unsigned t = 0; t < vx[x]->lx.size(); t++)
-				vx[x]->lx[t]->distance = vx[x]->distance;
+			// filter solutions that come from same parent
+			vector<const MOSIndividual<X>*> PXfilter;
+			PXfilter.push_back(PX[x]);
+			for(unsigned i = 0; i < PX.size(); i++)
+				if((i != x) && (&PX[x]->parent != &PX[i]->parent))
+					PXfilter.push_back(PX[i]);
+
+			vector<MOSIndividual<X>*> v;
+			v.push_back(PX[x]);
+			assignDiversity(v, PXfilter);
 		}
+
+		// GET BEST!
+		assignBestDiversity(PS, PX);
+	}
+
+	inline void assignBestDiversity(vector<MOSIndividual<R>*>& PS, vector<MOSExtIndividual<R, X>*>& PX)
+	{
+		// set worst value in 'PS'
+		// get best from 'PX'
+	}
+
+	void updateArchive(const vector<const MOSIndividual<X>*>& PX, vector<MOSIndividual<X>*>& archiveX)
+	{
+		// GET 'PX'
+		elitism.updateArchive(PX, archiveX);
+
+		// UPDATE ARCHIVE IN 'S' TOO
+	}
+
+	virtual void extendedUpdateArchive(vector<MOSIndividual<R>*>& PS, vector<MOSExtIndividual<R, X>*>& PX, vector<MOSIndividual<R>*>& archiveS, vector<MOSExtIndividual<R, X>*>& archiveX)
+	{
+		vector<const MOSIndividual<X>*> vPX;
+		for(unsigned x = 0; x < PX.size(); x++)
+			vPX.push_back(PX[x]);
+
+		vector<MOSIndividual<X>*> varchiveX;
+		for(unsigned x = 0; x < varchiveX.size(); x++)
+			varchiveX.push_back(archiveX[x]);
+
+		// CLASSIC ARCHIVING IN 'X'
+		updateArchive(vPX, varchiveX);
+
+		// UPDATE ARCHIVE IN 'S' TOO
+		// TODO: USE INFORMATION FROM PAPER
 	}
 
 
+	// free populations and update archives for the last time
+	virtual void freePopulations(vector<MOSIndividual<R>*>& PS, vector<MOSExtIndividual<R, X>*>& PX, vector<MOSIndividual<R>*>& archiveS, vector<MOSExtIndividual<R, X>*>& archiveX)
+	{
+		extendedUpdateArchive(PS, PX, archiveS, archiveX);
 
-	virtual Pareto<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS, DS>* _pf = NULL)
+		for(unsigned i = 0; i < PS.size(); i++)
+			delete PS[i];
+		for(unsigned i = 0; i < PX.size(); i++)
+			delete PX[i];
+	}
+
+	vector<MOSIndividual<X>*> getBase(vector<MOSExtIndividual<R, X>*> v)
+	{
+		vector<MOSIndividual<X>*> vbase(v.size());
+		for(unsigned i = 0; i < v.size(); i++)
+			vbase[i] = v[i];
+		return vbase;
+	}
+
+	Pareto<X>* search(double timelimit = 100000000, double target_f = 0, Pareto<X>* _pf = NULL)
+	{
+		ExtendedPareto<R, X, ADS, DS>* extp = searchX(timelimit, target_f, NULL);
+		Pareto<X>* p = extp->getPareto();
+		delete extp;
+		return p;
+	}
+
+	ExtendedPareto<R, X, ADS, DS>* searchX(double timelimit = 100000000, double target_f = 0, ExtendedPareto<R, X, ADS, DS>* _pf = NULL)
 	{
 		Timer timer;
 
-		cout << "Population Based Multi Objective Search search() with" << endl;
-		cout << "FitnessAssignment: ";
-		fa.print();
-		cout << "DiversityManagement: ";
-		dm.print();
-		cout << "Elitism: ";
-		elitism.print();
-		cout << "|Population| = " << popSize << endl;
-		cout << "PopulationManagement: ";
-		popMan.print();
+		cout << "Population Based Multi Objective Search search()" << endl;
 
+		vector<double> best = this->initializeBounds();
+
+		// initialize archives
 		vector<MOSIndividual<R>*> archiveS;
-		vector<MOSIndividual<X>*> archiveX;
+		vector<MOSExtIndividual<R, X>*> archiveX;
 
-		vector<MOSIndividual<R>*> PS = popMan.initialize(popSize);
-		vector<MOSExtIndividual<X, ADS, DS>*> PX = decode(PS);
-		vector<MOSExtIndividual<X, ADS, DS>*> CX = PX;
-		MOSIndividual<X, ADS, DS>::compress(CX);
+		// initilize populations
+		vector<MOSIndividual<R>*>& PS = popMan.initialize(popSize);
+		vector<MOSExtIndividual<R, X>*>& PX = decode(PS);
 
-		fa.assignFitness(CX);
-		dm.assignDiversity(CX);
+		extendedAssignFitness(PS, PX);
+		extendedAssignDiversity(PS, PX);
 
-		vector<MOSIndividual<R>*> QS = popMan.createNext(popSize, PS);
-		vector<MOSIndividual<X, ADS, DS>*> QX = decode(QS);
+		vector<MOSIndividual<X>*> PXbase = getBase(PX);
+		this->updateBounds(PXbase, best);
+
+		vector<const MOSIndividual<R>*> PSconst(PS.begin(), PS.end());
+		vector<MOSIndividual<R>*>& QS = popMan.createNext(popSize, PSconst);
+		vector<MOSExtIndividual<R, X>*>& QX = decode(QS);
+
+		vector<MOSIndividual<X>*> QXbase = getBase(QX);
+		this->updateBounds(QXbase, best);
 
 		int t = 0;
 		int tImp = 0;
-		vector<double> bestObj(vDir.size());
-		for(unsigned i = 0; i < bestObj.size(); i++)
-			bestObj[i] = vDir[i]->worst();
 
 		while((timer.now() < timelimit) && (t <= maxGen) && (tImp <= maxIter))
 		{
-			P.insert(P.end(), Q.begin(), Q.end());
+			PS.insert(PS.end(), QS.begin(), QS.end());
+			QS.clear();
+			PX.insert(PX.end(), QX.begin(), QX.end());
+			QX.clear();
 
-			fa.assignFitness(P);
-			dm.assignDiversity(P);
+			extendedAssignFitness(PS, PX);
+			extendedAssignDiversity(PS, PX);
 
-			elitism.select(P, archive);
+			// select and free unused individuals in PS and PX
+			// can also use archive, but update will come next
+			sel.extSelect(popSize, PS, PX, archiveX);
 
-			// archive is updated
-			// unused already free'd
+			extendedUpdateArchive(PS, PX, archiveS, archiveX);
 
-			bool improved = false;
-			for(unsigned s = 0; s < archive.size(); s++)
-				for(unsigned i = 0; i < bestObj.size(); i++)
-					if(vDir[i]->betterThan(archive[s]->mev.at(i).evaluation(), bestObj[i]))
-					{
-						// IMPROVEMENT IN ONE OBJECTIVE
-						improved = true;
-						bestObj[i] = archive[s]->mev.at(i).evaluation();
-					}
+			// generating next population
+			vector<const MOSIndividual<R>*> PSconst(PS.begin(), PS.end());
+			QS = popMan.createNext(popSize, PSconst);
+			QX = decode(QS);
+
+			vector<MOSIndividual<X>*> QXbase = getBase(QX);
+			bool improved = this->updateBounds(QXbase, best);
 
 			if(improved)
 			{
 				tImp = -1;
-				cout << "t=" << t << " improved bounds: " << bestObj << endl;
+				cout << "t=" << t << " improved bounds: " << best << endl;
 			}
 
-			// generating next population
-			Q = popMan.createNext(popSize, P);
 			t++;
 			tImp++;
 		}
 
-		elitism.free(P, archive);
+		// populations 'PS' and 'PX' will be deleted
+		freePopulations(PS, PX, archiveS, archiveX);
 
-		Pareto<R, ADS, DS>* pf = new Pareto<R, ADS, DS>;
-		for(unsigned i = 0; i < archive.size(); i++)
+		ExtendedPareto<R, X, ADS, DS>* pf = new ExtendedPareto<R, X, ADS, DS>;
+		// TODO: update 'pf' properly with all information
+		/*
+		for(unsigned i = 0; i < archiveS.size(); i++)
 		{
-			Solution<R, ADS>* s = &archive.at(i)->s;
-			MultiEvaluation<DS>* mev = &archive.at(i)->mev;
+			Solution<R>* s = archiveS.at(i)->s;
+			MultiEvaluation<>* mev = archiveS.at(i)->mev;
 			pf->push_back(s, mev);
 		}
+		*/
+
 		return pf;
 	}
 
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class DecoderClassicNSGAII: public PopulationBasedMultiObjSearch<R, ADS, DS>
-{
-public:
-	DecoderClassicNSGAII(vector<Direction<DS>*> vDir, MultiEvaluator<R, ADS, DS>& muev, InitialPopulation<R, ADS>& initPop, vector<NS<RepCARP>*> mutations, double mutationRate, vector<GeneralCrossover<RepCARP>*> crossovers, double renewRate, RandGen& rg, unsigned popSize, int maxIter, int maxGen = 100000000) :
-			DecoderPopulationBasedMultiObjSearch<R, ADS, DS>(vDir, (vDir.size() == 2 ? *new BiObjNonDominatedSort<R, ADS, DS>(vDir) : *new NonDominatedSort<R, ADS, DS>(vDir)), *new CrowdingDistance<R, ADS, DS>(vDir), *new NSGAIISelection<R, ADS, DS>, *new BasicPopulationManagement<R, ADS, DS>(muev, initPop, mutations, mutationRate, crossovers, renewRate, rg), popSize, maxIter, maxGen)
-	{
-	}
+/*
 
-	virtual ~DecoderClassicNSGAII()
-	{
-		delete &this->fa;
-		delete &this->dm;
-		delete &this->elitism;
-		delete &this->popMan;
-	}
-};
+ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+ class DecoderClassicNSGAII: public PopulationBasedMultiObjSearch<R, ADS, DS>
+ {
+ public:
+ DecoderClassicNSGAII(vector<Direction<DS>*> vDir, MultiEvaluator<R, ADS, DS>& muev, InitialPopulation<R, ADS>& initPop, vector<NS<RepCARP>*> mutations, double mutationRate, vector<GeneralCrossover<RepCARP>*> crossovers, double renewRate, RandGen& rg, unsigned popSize, int maxIter, int maxGen = 100000000) :
+ DecoderPopulationBasedMultiObjSearch<R, ADS, DS>(vDir, (vDir.size() == 2 ? *new BiObjNonDominatedSort<R, ADS, DS>(vDir) : *new NonDominatedSort<R, ADS, DS>(vDir)), *new CrowdingDistance<R, ADS, DS>(vDir), *new NSGAIISelection<R, ADS, DS>, *new BasicPopulationManagement<R, ADS, DS>(muev, initPop, mutations, mutationRate, crossovers, renewRate, rg), popSize, maxIter, maxGen)
+ {
+ }
+
+ virtual ~DecoderClassicNSGAII()
+ {
+ delete &this->fa;
+ delete &this->dm;
+ delete &this->elitism;
+ delete &this->popMan;
+ }
+ };
+
+ */
 
 }
 
