@@ -35,6 +35,8 @@ using namespace std;
 #include "Component.hpp"
 #include "ComponentBuilder.h"
 
+#include "MultiObjSearch.hpp"
+
 namespace optframe
 {
 
