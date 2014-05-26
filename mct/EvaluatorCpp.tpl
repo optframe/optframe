@@ -27,3 +27,8 @@ bool $projectEvaluator::betterThan(double f1, double f2)
     return $epsilon
 }
 
+bool $projectEvaluator::isMinimization() const
+{
+	// $minmax
+	return $isMin
+}

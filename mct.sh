@@ -302,13 +302,16 @@ fi
 ##############################################
 
 epsilon=""
+isMin=""
 
 echo -e "\nIs this a MINIMIZATION or MAXIMIZATION problem?"
 read minmax
 
 if [ "$minmax" = "MINIMIZATION" ];
   then epsilon="(f1 < (f2 - EPSILON_$project));"
+       isMin="true;"
   else epsilon="(f1 > (f2 + EPSILON_$project));"
+       isMin="false;"
 fi
 
 var_inc="./$project/Evaluator.h"
@@ -323,6 +326,10 @@ then echo "6. Creating Evaluator...[ok]"
      mv $var_tmp $var
 
      t="s/\$epsilon/$epsilon/g"
+     sed -e "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
+     t="s/\$isMin/$isMin/g"
      sed -e "$t" < $var > $var_tmp
      mv $var_tmp $var
 
@@ -359,6 +366,10 @@ then echo "6. Creating Evaluator (CPP)...[ok]"
      mv $var_tmp $var
 
      t="s/\$epsilon/$epsilon/g"
+     sed -e "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
+     t="s/\$isMin/$isMin/g"
      sed -e "$t" < $var > $var_tmp
      mv $var_tmp $var
 
