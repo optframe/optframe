@@ -32,7 +32,7 @@ using namespace std;
 
 #include <set>
 
-#include "../OptFrame/Interactive.hpp"
+#include "../OptFrame/Loader.hpp"
 #include "EternityII.h"
 
 using namespace EtII;

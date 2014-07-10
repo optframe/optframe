@@ -30,7 +30,7 @@
 
 using namespace std;
 
-#include "./OptFrame/Interactive.hpp"
+#include "./OptFrame/Loader.hpp"
 #include "./OptFrame/Util/CheckCommand.hpp"
 #include "./OptFrame/Util/BuildCommand.hpp"
 #include "./Examples/TSP.h"

@@ -28,7 +28,8 @@
 #include <iostream>
 
 
-#include "../OptFrame/Interactive.hpp"
+#include "../OptFrame/Loader.hpp"
+#include "../OptFrame/Timer.hpp"
 #include "PMedCap.h"
 
 using namespace std;
