@@ -102,7 +102,7 @@ public:
 		return (f1 < (f2 - TSP_EPSILON));
 	}
 
-	virtual bool isMinimization()
+	virtual bool isMinimization() const
 	{
 		return true;
 	}

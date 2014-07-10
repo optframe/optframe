@@ -99,7 +99,7 @@ public:
 			//cout << "ITER (FINISH)" << i << ": " << lastClean << endl;
 		}
 
-		MemOptHS mem;
+		MemOptHS mem = 0;
 
 		return *new Evaluation<MemOptHS>(0, fo_inv, mem);
 	}
@@ -111,7 +111,7 @@ public:
 		return (f1 < (f2 - OptHS_EPSILON));
 	}
 
-	virtual bool isMinimization()
+	virtual bool isMinimization() const
 	{
 		return true;
 	}

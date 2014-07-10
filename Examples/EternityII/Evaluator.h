@@ -98,7 +98,7 @@ public:
 		return (f1 > (f2 - EPSILON_EtII));
 	}
 
-	virtual bool isMinimization()
+	virtual bool isMinimization() const
 	{
 		return false;
 	}

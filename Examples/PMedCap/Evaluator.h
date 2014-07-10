@@ -108,7 +108,7 @@ public:
 		return (f1 < (f2 - EPSILON_PCAP));
 	}
 
-	virtual bool isMinimization()
+	virtual bool isMinimization() const
 	{
 		return true;
 	}
