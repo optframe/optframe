@@ -1,7 +1,7 @@
 all: mainOptFrame  examples
 	@echo "BUILT SUCCESSFULLY!"
 
-mainOptFrame:
+mainOptFrame: main.cpp
 	g++ -Wall main.cpp ./OptFrame/Scanner++/Scanner.cpp -o mainOptFrame
 
 examples:
