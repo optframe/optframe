@@ -23,7 +23,6 @@
 
 #include <iostream>
 
-#include "../../OptFrame/Commands/ProblemCommand.hpp"
 #include "../../OptFrame/Scanner++/Scanner.h"
 
 #include "Representation.h"
@@ -38,6 +37,7 @@
 #include "ConstructiveRandom.h"
 #include "NSSwap.h"
 
+#include "../../OptFrame/HeuristicFactory.hpp"
 
 using namespace scannerpp;
 using namespace optframe;
@@ -45,7 +45,7 @@ using namespace optframe;
 namespace OptHS
 {
 
-class OptHSProblemCommand : public ProblemCommand<RepOptHS, OPTFRAME_DEFAULT_ADS, MemOptHS>
+class OptHSProblemCommand
 {
 public:
 
@@ -64,9 +64,7 @@ public:
 
     string id()
     {
-    	string parentId = ProblemCommand<RepOptHS, OPTFRAME_DEFAULT_ADS, MemOptHS>::id();
-    	parentId.append("OptHS");
-    	return parentId;
+    	return "problem.OptHS";
     }
 
     bool registerComponent(Component& component, string type, string name, HeuristicFactory<RepOptHS, OPTFRAME_DEFAULT_ADS, MemOptHS>& hf, map<string, string>& dictionary)
@@ -74,7 +72,7 @@ public:
        int idx = hf.addComponent(component, type);
        stringstream ss;
        ss << type << " " << idx;
-       return defineText(name, ss.str(), dictionary);
+       return true; //defineText(name, ss.str(), dictionary);
     }
 
 	bool load(string members, HeuristicFactory<RepOptHS, OPTFRAME_DEFAULT_ADS, MemOptHS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)

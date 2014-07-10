@@ -39,10 +39,11 @@ using namespace EtII;
 
 int main(int argc, char **argv)
 {
-	Interactive<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII> optframe;
-	optframe.loadCommand(new EtIIProblemCommand);
-	optframe.execute("system.read etii-definitions.opt");
-	optframe.execute("system.read ../example.opt");
+	Loader<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII> optframe;
+	EtIIProblemCommand etii;
+	etii.load("./EternityII/pieces_set_2/pieces_10x10.txt", optframe.factory, optframe.dictionary, optframe.ldictionary);
+
+
 	cout << "Program ended successfully" << endl;
 
 	return 0;

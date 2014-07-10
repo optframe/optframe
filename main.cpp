@@ -31,6 +31,8 @@
 using namespace std;
 
 #include "./OptFrame/Interactive.hpp"
+#include "./OptFrame/Util/CheckCommand.hpp"
+#include "./OptFrame/Util/BuildCommand.hpp"
 #include "./Examples/TSP.h"
 
 using namespace TSP;
@@ -39,9 +41,22 @@ using namespace scannerpp;
 
 int main(int argc, char **argv)
 {
-	Interactive<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe;
-	optframe.loadCommand(new TSPProblemCommand);
-	optframe.execute("system.read example.opt");
+	Loader<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe;
+	TSPProblemCommand tsp;
+	tsp.load("./Examples/TSP/tsplib/berlin52.txt", optframe.factory, optframe.dictionary, optframe.ldictionary);
+
+	CheckCommand<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> check;
+
+	check.run(optframe.factory, optframe.dictionary, optframe.ldictionary, "100 10 true");
+
+	BuildCommand<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> build;
+	for(unsigned i = 0; i <= 7; i++)
+	{
+		stringstream ss;
+		ss << "OptFrame:ComponentBuilder:LocalSearch:BI  OptFrame:Evaluator 0  OptFrame:NS:NSSeq " << i;
+		string name = build.run(optframe.factory, optframe.dictionary, optframe.ldictionary, ss.str());
+		cout << "BUILT: '" << name << "'" << endl;
+	}
 
 	cout << "Program ended successfully" << endl;
 

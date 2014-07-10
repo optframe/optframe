@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-#include "../../OptFrame/Commands/ProblemCommand.hpp"
 #include "../../OptFrame/Scanner++/Scanner.h"
 
 #include "Representation.h"
@@ -19,6 +18,7 @@
 #include "NearestNeighborConstructive.h"
 #include "ConstructiveBestInsertion.h"
 
+#include "../../OptFrame/HeuristicFactory.hpp"
 #include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSP2Opt.hpp"
 #include "DeltaMoveTSP2Opt.h"
 
@@ -37,7 +37,7 @@ using namespace optframe;
 namespace TSP
 {
 
-class TSPProblemCommand : public ProblemCommand<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>
+class TSPProblemCommand
 {
 public:
 
@@ -56,9 +56,7 @@ public:
 
     string id()
     {
-    	string parentId = ProblemCommand<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::id();
-    	parentId.append("TSP");
-    	return parentId;
+    	return "problem.TSP";
     }
 
     bool registerComponent(Component& component, string type, string name, HeuristicFactory<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& hf, map<string, string>& dictionary)
@@ -66,7 +64,7 @@ public:
        int idx = hf.addComponent(component, type);
        stringstream ss;
        ss << type << " " << idx;
-       return defineText(name, ss.str(), dictionary);
+       return true; //defineText(name, ss.str(), dictionary);
     }
 
 	bool load(string filename, HeuristicFactory<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)

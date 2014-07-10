@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-#include "../../OptFrame/Commands/ProblemCommand.hpp"
 #include "../../OptFrame/Scanner++/Scanner.h"
 
 #include "Representation.h"
@@ -31,13 +30,15 @@
 
 #include "InitialSolutionGreedy.h"
 
+#include "../../OptFrame/HeuristicFactory.hpp"
+
 using namespace scannerpp;
 using namespace optframe;
 
 namespace EtII
 {
 
-class EtIIProblemCommand : public ProblemCommand<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
+class EtIIProblemCommand
 {
 public:
 
@@ -56,9 +57,7 @@ public:
 
     string id()
     {
-    	string parentId = ProblemCommand<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::id();
-    	parentId.append("EtII");
-    	return parentId;
+    	return "problem.EtII";
     }
 
     bool registerComponent(Component& component, string type, string name, HeuristicFactory<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& hf, map<string, string>& dictionary)
@@ -66,7 +65,7 @@ public:
        int idx = hf.addComponent(component, type);
        stringstream ss;
        ss << type << " " << idx;
-       return defineText(name, ss.str(), dictionary);
+       return true; //defineText(name, ss.str(), dictionary);
     }
 
 	bool load(string filename, HeuristicFactory<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)

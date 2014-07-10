@@ -33,6 +33,8 @@ using namespace std;
 #include <set>
 
 #include "../OptFrame/Interactive.hpp"
+#include "../OptFrame/Util/CheckCommand.hpp"
+#include "../OptFrame/Util/BuildCommand.hpp"
 #include "TSP.h"
 
 using namespace TSP;
@@ -40,11 +42,41 @@ using namespace scannerpp;
 
 int main(int argc, char **argv)
 {
-	Interactive<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe;
-	optframe.loadCommand(new TSPProblemCommand);
-	optframe.execute("system.read tsp-definitions.opt");
-	optframe.execute("system.read ../example-bi.opt");
+	Loader<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe;
+	TSPProblemCommand tsp;
+	tsp.load("./TSP/tsplib/berlin52.txt", optframe.factory, optframe.dictionary, optframe.ldictionary);
+
+	CheckCommand<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> check;
+
+	check.run(optframe.factory, optframe.dictionary, optframe.ldictionary, "100 10 true");
+
+	BuildCommand<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> build;
+	for(unsigned i = 0; i <= 7; i++)
+	{
+		stringstream ss;
+		ss << "OptFrame:ComponentBuilder:LocalSearch:BI  OptFrame:Evaluator 0  OptFrame:NS:NSSeq " << i;
+		string name = build.run(optframe.factory, optframe.dictionary, optframe.ldictionary, ss.str());
+		cout << "BUILT: '" << name << "'" << endl;
+	}
+
+	/*
+	echo building VND
+	define vnd_list [ OptFrame:LocalSearch: 0 ,  OptFrame:LocalSearch: 1, OptFrame:LocalSearch: 2, OptFrame:LocalSearch: 3 ]
+	component.create_list $vnd_list OptFrame:LocalSearch: comp_vnd_list
+	build OptFrame:LocalSearch:VND   $Evaluator 0   $comp_vnd_list   vnd
+
+	%component.list
+
+	echo building ILS
+	build OptFrame:ComponentBuilder:SingleObjSearch:ILS:ILSLevels   $Evaluator 0    $Constructive 0    $vnd   OptFrame:ILS:LevelPert:LPlus2 0    100    8  meu_ils
+
+	test 2 3 7000 7000   $Evaluator 0   $meu_ils   output.txt   solucao_saida
+
+	evaluate $Evaluator 0 $solucao_saida
+	*/
+
 	cout << "Program ended successfully" << endl;
+
 
 	return 0;
 }

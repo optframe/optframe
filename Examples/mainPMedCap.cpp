@@ -61,11 +61,12 @@ int main(int argc, char **argv)
 
 	PCAPSolCheck(p, s);
 
-	Interactive<RepPCAP> optframe(rg);
+	Loader<RepPCAP> optframe(rg);
 	optframe.factory.addComponent(is_greedy);
 	optframe.factory.addComponent(e);
 	optframe.factory.addComponent(nsSwap);
-	optframe.execute();
+
+	// do something!
 
 	cout << "Program ended successfully" << endl;
 
