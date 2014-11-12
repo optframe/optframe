@@ -34,7 +34,7 @@ public:
 
 	static string family()
 	{
-		return "VND:";
+		return "VND(UNUSED):";
 	}
 
 	virtual ~VND()

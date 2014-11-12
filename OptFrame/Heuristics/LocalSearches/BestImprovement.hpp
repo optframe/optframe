@@ -247,9 +247,13 @@ public:
 
 	virtual LocalSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
+		if(!scanner.hasNext())
+			return NULL;
 		Evaluator<R, ADS, DS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
+		if(!scanner.hasNext())
+			return NULL;
 		NSSeq<R, ADS, DS>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
@@ -273,7 +277,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "BI";
+		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << ":BI";
 		return ss.str();
 	}
 

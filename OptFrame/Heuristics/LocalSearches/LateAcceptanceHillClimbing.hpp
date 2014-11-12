@@ -174,7 +174,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, DS>::idComponent() << "LAHC";
+		ss << LocalSearch<R, ADS, DS>::idComponent() << ":LAHC";
 		return ss.str();
 	}
 
@@ -231,9 +231,9 @@ public:
 		stringstream ss;
 		ss << NS<R, ADS, DS>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of NS's"));
-		params.push_back(make_pair("int", "L: list size"));
-		params.push_back(make_pair("int", "iterMax: max iterations without improvement"));
-		params.push_back(make_pair("int", "limit: max moves that cannot be applied"));
+		params.push_back(make_pair("OptFrame:int", "list size L"));
+		params.push_back(make_pair("OptFrame:int", "iterMax iterations without improvement"));
+		params.push_back(make_pair("OptFrame:int", "limitMax moves that cannot be applied"));
 
 		return params;
 	}
@@ -246,7 +246,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "LAHC";
+		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << ":LAHC";
 		return ss.str();
 	}
 

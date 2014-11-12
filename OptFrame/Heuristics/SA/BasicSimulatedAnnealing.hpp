@@ -156,7 +156,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, DS>::idComponent() << "SA:basic_sa";
+		ss << SingleObjSearch<R, ADS, DS>::idComponent() << ":SA:BasicSA";
 		return ss.str();
 
 	}
@@ -210,7 +210,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << SA::family() << "BasicSA";
+		ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << ":" << SA::family() << "BasicSA";
 		return ss.str();
 	}
 

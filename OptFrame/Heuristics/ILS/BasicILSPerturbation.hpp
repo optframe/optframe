@@ -110,7 +110,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Component::idComponent() << ILS::family() << "basic_pert";
+		ss << Component::idComponent() << ":" << ILS::family() << "basic_pert";
 		return ss.str();
 	}
 };
@@ -142,9 +142,9 @@ public:
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair("int", "pMin: min number of moves"));
-		params.push_back(make_pair("int", "pMax: max number of moves"));
-		params.push_back(make_pair("int", "limit: max number of failures for canBeApplied"));
+		params.push_back(make_pair("OptFrame:int", "pMin: min number of moves"));
+		params.push_back(make_pair("OptFrame:int", "pMax: max number of moves"));
+		params.push_back(make_pair("OptFrame:int", "limit: max number of failures for canBeApplied"));
 		//params.push_back(make_pair(NS<R, ADS, DS>::idComponent(), "neighborhood structure"));
 		stringstream ss;
 		ss << NS<R, ADS, DS>::idComponent() << "[]";

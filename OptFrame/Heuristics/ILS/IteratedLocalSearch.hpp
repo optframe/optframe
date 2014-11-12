@@ -122,7 +122,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, DS>::idComponent() << ILS::family();
+		ss << SingleObjSearch<R, ADS, DS>::idComponent() << ":" << ILS::family();
 		//ss << SingleObjSearch<R, ADS, DS>::idComponent() << ILS::family << "IteratedLocalSearch:";
 		return ss.str();
 	}

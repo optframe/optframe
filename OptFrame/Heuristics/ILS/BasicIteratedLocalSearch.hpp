@@ -115,6 +115,11 @@ public:
 		return (iter >= iterMax);
 	}
 
+	virtual bool compatible(string s)
+	{
+		return (s == idComponent()) || (SingleObjSearch<R, ADS, DS>::compatible(s));
+	}
+
 	virtual string id() const
 	{
 		return idComponent();
@@ -182,7 +187,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << ILS::family() << "BasicILS";
+		ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << ":" << ILS::family() << "BasicILS";
 		return ss.str();
 	}
 

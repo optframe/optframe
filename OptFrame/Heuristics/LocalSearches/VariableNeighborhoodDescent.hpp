@@ -98,7 +98,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, DS>::idComponent() << "VND";
+		ss << LocalSearch<R, ADS, DS>::idComponent() << ":VND";
 		return ss.str();
 	}
 
@@ -166,7 +166,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << VND::family() << "BasicVND";
+		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << ":VND";
 		return ss.str();
 	}
 

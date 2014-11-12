@@ -99,7 +99,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, DS>::idComponent() << "HC";
+		ss << LocalSearch<R, ADS, DS>::idComponent() << ":HC";
 		return ss.str();
 
 	}
@@ -148,7 +148,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "HC";
+		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << ":HC";
 		return ss.str();
 	}
 

@@ -177,6 +177,14 @@ public:
 
 	template< class T > void assign(T*& component, unsigned number, string id)
 	{
+		// check prefix "OptFrame:"
+		if (id[0] != 'O')
+		{
+			string id2 = id;
+			id = "OptFrame:";
+			id.append(id2);
+		}
+
 		if(!Component::compareBase(T::idComponent(), id))
 		{
 			cout << "HeuristicFactory: incompatible assign '" << T::idComponent() << "' <- '" << id << "'";
@@ -491,7 +499,7 @@ public:
 
 		string h = scanner.next();
 
-		if (h == LocalSearch<R, ADS, DS>::idComponent())
+		if ((h == LocalSearch<R, ADS, DS>::idComponent()) || (h == "LocalSearch"))
 		{
 			unsigned int id = scanner.nextInt();
 
