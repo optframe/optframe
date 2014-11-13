@@ -1,0 +1,32 @@
+randgen.set_seed 0
+
+system.use system
+use component
+
+problem.PN load ./PN/Instances/95/95_1.txt
+
+action $grdSum generateSolution sol
+action $myEvaluator evaluate $sol e
+action $e print
+action $sol print
+
+create_list [ OptFrame:NS:NSSeq:NSSeqSwap 0, OptFrame:NS:NSSeq:NSSeqShift 0] OptFrame:NS  lista_de_ns
+
+build OptFrame:ComponentBuilder:LocalSearch:BI	$myEvaluator OptFrame:NS:NSSeq:NSSeqShift 0
+build OptFrame:ComponentBuilder:LocalSearch:BI	$myEvaluator OptFrame:NS:NSSeq:NSSeqSwap 0
+
+create_list [ OptFrame:LocalSearch: 0, OptFrame:LocalSearch: 1] OptFrame:LocalSearch:  lista_de_buscas
+
+%%%%Construir e executar RVND
+build OptFrame:ComponentBuilder:LocalSearch:RVND $myEvaluator $lista_de_buscas rvnd
+%action $rvnd search_e  $sol  $e  5000  0.0  sol_melhor2
+
+%%%%Construir e executar ILS  
+build OptFrame:ComponentBuilder:ILS:basic_pert $myEvaluator 1 10 1000 $lista_de_ns perturb
+build OptFrame:ComponentBuilder:SingleObjSearch:ILS:BasicILS $myEvaluator $grdSum $rvnd $perturb 500 ils
+action $ils search 10000  0.0 $sol  $e  sol_melhor2
+
+%%%%Imprimir a solucao final
+action $myEvaluator evaluate $sol_melhor2 veryBest
+action $veryBest print
+action $sol_melhor2 print
