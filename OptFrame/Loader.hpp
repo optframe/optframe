@@ -109,7 +109,7 @@
 #include "Heuristics/SA/BasicSimulatedAnnealing.hpp"
 #include "Heuristics/ILS/IteratedLocalSearchLevels.hpp"
 #include "Heuristics/ILS/ILSLPerturbation.hpp"
-#include "Heuristics/GRASP/GRASP.hpp"
+#include "Heuristics/GRASP/BasicGRASP.hpp"
 #include "Heuristics/VNS/VariableNeighborhoodSearch.hpp"
 #include "Heuristics/VNS/BasicVNS.hpp"
 #include "Heuristics/VNS/ReducedVNS.hpp"
@@ -199,7 +199,7 @@ public:
 		factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<R, ADS, DS> );
 		factory.builders.push_back(new ILSLPerturbationLPlus2Builder<R, ADS, DS> );
 		factory.builders.push_back(new ILSLPerturbationLPlus2ProbBuilder<R, ADS, DS> );
-		factory.builders.push_back(new GRASPBuilder<R, ADS, DS> );
+		factory.builders.push_back(new BasicGRASPBuilder<R, ADS, DS> );
 		factory.builders.push_back(new BasicVNSBuilder<R, ADS, DS> );
 		factory.builders.push_back(new ReducedVNSBuilder<R, ADS, DS> );
 		factory.builders.push_back(new GeneralVNSBuilder<R, ADS, DS> );

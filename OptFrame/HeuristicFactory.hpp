@@ -59,9 +59,9 @@
 #include "Heuristics/ILS/IteratedLocalSearchLevels.hpp"
 #include "Heuristics/ILS/IntensifiedIteratedLocalSearchLevels.hpp"
 #include "Heuristics/ILS/Intensification.hpp"
-#include "Heuristics/GRASP/GRASP.hpp"
-#include "Heuristics/TS/TabuSearch.hpp"
-#include "Heuristics/EvolutionaryAlgorithms/GeneticAlgorithm.hpp"
+#include "Heuristics/GRASP/BasicGRASP.hpp"
+#include "Heuristics/TS/BasicTabuSearch.hpp"
+#include "Heuristics/EvolutionaryAlgorithms/BasicGeneticAlgorithm.hpp"
 #include "Heuristics/SA/BasicSimulatedAnnealing.hpp"
 
 #include "Heuristics/EmptyMultiObjSearch.hpp"

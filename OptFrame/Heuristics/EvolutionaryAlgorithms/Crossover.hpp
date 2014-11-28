@@ -18,40 +18,47 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_CROSSOVER_HPP_
-#define OPTFRAME_CROSSOVER_HPP_
+#ifndef OPTFRAME_GENERAL_CROSSOVER_HPP_
+#define OPTFRAME_GENERAL_CROSSOVER_HPP_
 
 #include "../../Solution.hpp"
 #include "../../Evaluation.hpp"
 
-//#include "../../Population.hpp"
+#include "EA.h"
 
 namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class Crossover
+class Crossover: public Component, public EA
 {
-protected:
-
-   typedef Solution<R, ADS> chromossome;
-   //typedef vector<chromossome*> Population;
-   typedef vector<Evaluation<DS>*> FitnessValues;
-
 public:
 
-   //virtual pair<chromossome &, chromossome *>& offspring(chromossome&, chromossome&) = 0;
+	virtual ~Crossover()
+	{
+	}
 
-   virtual pair<chromossome &, chromossome *>
-   & offspring(const chromossome&, const chromossome&) const = 0;
+	virtual pair<Solution<R, ADS>*, Solution<R, ADS>*> cross(const Solution<R, ADS>&, const Solution<R, ADS>&) = 0;
 
-   pair<chromossome &, chromossome *>& offspring(pair<const chromossome&, const chromossome&>& off) const
-   {
-      return offspring(off.first, off.second);
-   }
+	virtual bool compatible(string s)
+	{
+		return (s == idComponent()) || (Component::compatible(s));
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << Component::idComponent() << ":" << EA::family() << ":Crossover";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
 
 };
 
 }
 
-#endif /*OPTFRAME_CROSSOVER_HPP_*/
+#endif /*OPTFRAME_GENERAL_CROSSOVER_HPP_*/

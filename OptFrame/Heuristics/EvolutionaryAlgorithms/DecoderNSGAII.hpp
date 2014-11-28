@@ -27,7 +27,7 @@
 #include "../../Evaluator.hpp"
 #include "../../Evaluation.hpp"
 #include "../../Population.hpp"
-#include "../../InitialPopulation.h"
+#include "InitialPopulation.hpp"
 #include "../../RandGen.hpp"
 #include "../../NSSeq.hpp"
 #include "../../ParetoDominance.hpp"

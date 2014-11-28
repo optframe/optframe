@@ -28,6 +28,7 @@
 #include "TSP2/ConstructiveRandom.h"
 #include "TSP2/ConstructiveNearestNeighbor.h"
 #include "TSP2/ConstructiveBestInsertion.h"
+#include "TSP2/CrossoverOX.hpp"
 //#include "./TSP2/ProblemCommand.h"
 
 #endif /*TSP2_H_*/

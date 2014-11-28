@@ -18,50 +18,26 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef SELECTION_HPP_
-#define SELECTION_HPP_
+#ifndef OPTFRAME_GREEDY_RANDOMIZED_CONSTRUCTIVE_H_
+#define OPTFRAME_GREEDY_RANDOMIZED_CONSTRUCTIVE_H_
 
-#include "../../MultiSolution.hpp"
-#include "EA.h"
+#include "../../Solution.hpp"
+
+#include "GRASPFamily.h"
 
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class Selection : public Component, public EA
+// Greedy Randomized Constructive
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class GRConstructive: public Component, public GRASP
 {
 public:
-
-	virtual ~Selection()
+	virtual ~GRConstructive()
 	{
 	}
 
-	virtual pair<unsigned, unsigned> select(const MultiSolution<R, ADS>& population, const MultiEvaluation<DS>& mev, const vector<double>& fv) = 0;
-
-
-	static double getMax(const vector<double>& fv)
-	{
-		double lmax = -10000000;
-		for (int i = 0; i < fv.size(); i++)
-			if (fv[i] > lmax)
-				lmax = fv[i];
-		return lmax;
-	}
-
-	static double getSum(const vector<double>& fv)
-	{
-		double s = 0;
-		for (int i = 0; i < fv.size(); i++)
-			s += fv[i];
-		return s;
-	}
-
-	static void normalize(vector<double>& fv)
-	{
-		double sum = getSum(fv);
-		for (int i = 0; i < fv.size(); i++)
-			fv[i] = fv[i] / sum;
-	}
+	virtual Solution<R, ADS>& generateSolution(float alpha) = 0;
 
 	virtual bool compatible(string s)
 	{
@@ -71,7 +47,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Component::idComponent() << ":" << EA::family() << ":Selection";
+		ss << Component::idComponent() << ":" << GRASP::family() << ":GRConstructive";
 		return ss.str();
 	}
 
@@ -83,4 +59,4 @@ public:
 
 }
 
-#endif /* SELECTION_HPP_ */
+#endif /*OPTFRAME_GREEDY_RANDOMIZED_CONSTRUCTIVE_H_*/

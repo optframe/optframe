@@ -21,22 +21,134 @@
 #ifndef MUTATION_HPP_
 #define MUTATION_HPP_
 
+#include "../../Component.hpp"
+#include "../../Solution.hpp"
+#include "../../Evaluation.hpp"
+#include "../../NS.hpp"
+
+#include "EA.h"
+
 namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class Mutation
+class Mutation: public Component, public EA
 {
-protected:
-
-   typedef Solution<R, ADS> chromossome;
-   //typedef vector<chromossome*> Population;
-   //typedef vector<Evaluation<DS>*> FitnessValues;
 
 public:
 
-   virtual void mutate(chromossome& individual) = 0;
+	virtual ~Mutation()
+	{
+	}
 
+	virtual void mutate(Solution<R, ADS>& individual, Evaluation<DS>& e) = 0;
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << Component::idComponent() << ":" << EA::family() << ":Mutation";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+};
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class BasicMutation: public Mutation<R, ADS, DS>
+{
+protected:
+	unsigned n;
+	vector<NS<R, ADS, DS>*> vNS;
+	RandGen& rg;
+
+public:
+
+	BasicMutation(unsigned _n, vector<NS<R, ADS, DS>*> _vNS, RandGen& _rg) :
+			n(_n), vNS(_vNS), rg(_rg)
+	{
+	}
+
+	virtual ~BasicMutation()
+	{
+	}
+
+	virtual void mutate(Solution<R, ADS>& s, Evaluation<DS>& e)
+	{
+		for (unsigned i = 0; i < n; i++)
+		{
+			int x = rg.rand(vNS.size());
+			Move<R, ADS, DS>* mp = vNS[x]->validMove(s);
+			if (!mp)
+				cout << "Warning: no move in BasicMutation!" << endl;
+			else
+			{
+				delete &mp->apply(e, s);
+				delete mp;
+			}
+		}
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << Component::idComponent() << ":" << EA::family() << ":Mutation";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+};
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class BasicMutationBuilder: public ComponentBuilder<R, ADS, DS>
+{
+public:
+	virtual ~BasicMutationBuilder()
+	{
+	}
+
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	{
+		int n = scanner.nextInt();
+
+		vector<NS<R, ADS, DS>*> ns_list;
+		hf.assignList(ns_list, scanner.nextInt(), scanner.next()); // reads backwards!
+
+		return new BasicMutation<R, ADS, DS>(n, ns_list, hf.getRandGen());
+	}
+
+	virtual vector<pair<string, string> > parameters()
+	{
+		vector<pair<string, string> > params;
+		params.push_back(make_pair("OptFrame:int", "number of moves"));
+		stringstream ss;
+		ss << NS<R, ADS, DS>::idComponent() << "[]";
+		params.push_back(make_pair(ss.str(), "list of neighborhood structures"));
+
+		return params;
+	}
+
+	virtual bool canBuild(string component)
+	{
+		return component == BasicMutation<R, ADS, DS>::idComponent();
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << ComponentBuilder<R, ADS, DS>::idComponent() << "" << EA::family() << ":BasicMutation";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
 };
 
 }

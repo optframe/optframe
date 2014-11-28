@@ -16,32 +16,31 @@
 // You should have received a copy of the GNU Lesser General Public License v3
 // along with this library; see the file COPYING.  If not, write to the Free
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// UEA.
 
-#ifndef OPTFRAME_GENERAL_CROSSOVER_HPP_
-#define OPTFRAME_GENERAL_CROSSOVER_HPP_
+#ifndef OPTFRAME_EA_FAMILY_H_
+#define OPTFRAME_EA_FAMILY_H_
 
-#include "../../Solution.hpp"
-#include "../../Evaluation.hpp"
+#include <string.h>
 
-//#include "../../Population.hpp"
+using namespace std;
 
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class GeneralCrossover
+class EA
 {
 public:
-
-	virtual ~GeneralCrossover()
+	static string family()
 	{
+		return "EA";
 	}
 
-	virtual pair<Solution<R, ADS>*, Solution<R, ADS>*> cross(const Solution<R, ADS>&, const Solution<R, ADS>&) = 0;
-
+	virtual ~EA()
+	{
+	}
 };
 
 }
 
-#endif /*OPTFRAME_GENERAL_CROSSOVER_HPP_*/
+#endif /*OPTFRAME_EA_FAMILY_H_*/

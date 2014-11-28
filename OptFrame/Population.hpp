@@ -21,10 +21,11 @@
 #ifndef OPTFRAME_POPULATION_HPP_
 #define OPTFRAME_POPULATION_HPP_
 
+#include <vector>
+
 #include "Solution.hpp"
 #include "Evaluation.hpp"
 #include "Evaluator.hpp"
-#include <vector>
 
 #include "Component.hpp"
 
@@ -32,7 +33,7 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class Population: public Component
+class Population: public Component, public EA
 {
 protected:
 	typedef Solution<R, ADS> chromossome;
@@ -42,6 +43,8 @@ protected:
 
 public:
 
+	vector<double> fitness;
+
 	Population()
 	{
 	}
@@ -49,7 +52,10 @@ public:
 	Population(const Population& pop)
 	{
 		for(unsigned i = 0; i < pop.size(); i++)
+		{
 			p.push_back(&pop.at(i).clone());
+			fitness.push_back(0); // TODO: fix
+		}
 	}
 
 	virtual ~Population()
@@ -75,23 +81,29 @@ public:
 	void insert(unsigned pos, chromossome& c)
 	{
 		p.insert(p.begin() + pos, new chromossome(c));
+		fitness.insert(fitness.begin() + pos, 0.0);
 	}
 
 	void push_back(chromossome* c)
 	{
 		if(c) // not null
+		{
 			p.push_back(c);
+			fitness.push_back(0);
+		}
 	}
 
 	void push_back(const chromossome& c)
 	{
 		p.push_back(&c.clone());
+		fitness.push_back(0);
 	}
 
 	chromossome& remove(unsigned pos)
 	{
 		chromossome& c = *p.at(pos);
 		p.erase(p.begin() + pos);
+		fitness.erase(fitness.begin() + pos);
 		return c;
 	}
 
@@ -111,11 +123,13 @@ public:
 			delete p.at(i);
 
 		p.clear();
+		fitness.clear();
 	}
 
 	void clearNoKill()
 	{
 		p.clear();
+		fitness.clear();
 	}
 
 	bool empty()
@@ -129,6 +143,8 @@ public:
 			return *this;
 
 		unsigned sizePop = this->p.size();
+
+		fitness = p.fitness;
 
 		for(unsigned i = 0; i < sizePop; i++)
 		{

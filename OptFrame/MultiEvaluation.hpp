@@ -36,6 +36,9 @@ protected:
 
 public:
 
+	MultiEvaluation()
+	{
+	}
 
 	MultiEvaluation(Evaluation<DS>* ev)
 	{
@@ -83,7 +86,7 @@ public:
 	}
 
 
-	unsigned size()
+	unsigned size() const
 	{
 		return vev.size();
 	}
@@ -154,6 +157,18 @@ public:
 	virtual MultiEvaluation<DS>& clone() const
 	{
 		return *new MultiEvaluation<DS>(*this);
+	}
+
+	void clearNoKill()
+	{
+		this->vev.clear();
+	}
+
+	void clear()
+	{
+		for(unsigned i=0; i<vev.size(); i++)
+			delete vev[i];
+		this->vev.clear();
 	}
 
 	virtual void print() const

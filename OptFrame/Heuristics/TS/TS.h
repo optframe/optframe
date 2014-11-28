@@ -16,32 +16,31 @@
 // You should have received a copy of the GNU Lesser General Public License v3
 // along with this library; see the file COPYING.  If not, write to the Free
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// UTS.
 
-#ifndef OPTFRAME_GRASP_FAMILY_H_
-#define OPTFRAME_GRASP_FAMILY_H_
+#ifndef OPTFRAME_TS_FAMILY_H_
+#define OPTFRAME_TS_FAMILY_H_
 
 #include <string.h>
 
 using namespace std;
-//GRASPH ? TODO FIX THE NAME
 
 namespace optframe
 {
 
-class GRASPH
+class TS
 {
 public:
 	static string family()
 	{
-		return "GRASPH:";
+		return "TS";
 	}
 
-	virtual ~GRASPH()
+	virtual ~TS()
 	{
 	}
 };
 
 }
 
-#endif /*OPTFRAME_GRASP_FAMILY_H_*/
+#endif /*OPTFRAME_TS_FAMILY_H_*/

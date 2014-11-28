@@ -18,32 +18,30 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_ELITISM_OLD_HPP_
-#define OPTFRAME_ELITISM_OLD_HPP_
+#ifndef OPTFRAME_GRASP_FAMILY_H_
+#define OPTFRAME_GRASP_FAMILY_H_
 
-#include "../../Solution.hpp"
-#include "../../Evaluation.hpp"
+#include <string.h>
 
-#include "../../Population.hpp"
+using namespace std;
+//GRASPH ? TODO FIX THE NAME
 
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ElitismOld
+class GRASP
 {
-protected:
-
-   typedef Solution<R, ADS> chromossome;
-   //typedef vector<chromossome*> Population;
-   typedef vector<Evaluation<DS>*> FitnessValues;
-
 public:
+	static string family()
+	{
+		return "GRASP";
+	}
 
-   virtual Population<R, ADS> & doElitism(const Population<R, ADS> &p, const FitnessValues& fv_p, unsigned popElitistSize) const = 0;
-
+	virtual ~GRASP()
+	{
+	}
 };
 
 }
 
-#endif /*OPTFRAME_ELITISM_OLD_HPP_*/
+#endif /*OPTFRAME_GRASP_FAMILY_H_*/
