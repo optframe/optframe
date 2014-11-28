@@ -38,18 +38,17 @@ private:
 	vector<NS<R, ADS, DS>*> lns;
 	int L;       // size of list
 	int iterMax; // max iterations without improvement
-	int limit;   // max number of moves without being appliable
 
 public:
 
-	LateAcceptanceHillClimbing(Evaluator<R, ADS, DS>& _ev, NS<R, ADS, DS>& _ns, int _L, int _iterMax, int _limit) :
-			ev(_ev), L(_L), iterMax(_iterMax), limit(_limit)
+	LateAcceptanceHillClimbing(Evaluator<R, ADS, DS>& _ev, NS<R, ADS, DS>& _ns, int _L, int _iterMax) :
+			ev(_ev), L(_L), iterMax(_iterMax)
 	{
 		lns.push_back(&_ns);
 	}
 
-	LateAcceptanceHillClimbing(Evaluator<R, ADS, DS>& _ev, vector<NS<R, ADS, DS>*> _lns, int _L, int _iterMax, int _limit) :
-			ev(_ev), lns(_lns), L(_L), iterMax(_iterMax), limit(_limit)
+	LateAcceptanceHillClimbing(Evaluator<R, ADS, DS>& _ev, vector<NS<R, ADS, DS>*> _lns, int _L, int _iterMax) :
+			ev(_ev), lns(_lns), L(_L), iterMax(_iterMax)
 	{
 	}
 
@@ -91,22 +90,15 @@ public:
 			// choose random neighborhood
 			int ns_k = rand() % lns.size();
 
-			Move<R, ADS, DS>* move = &lns[ns_k]->move(s);
-			int move_tries = 1;
-			while ((!move->canBeApplied(s)) && (move_tries <= limit))
+			Move<R, ADS, DS>* move = lns[ns_k]->validMove(s);
+	
+			if (!move)
 			{
-				delete move;
-				move = &lns[ns_k]->move(s);
-				move_tries++;
-			}
-
-			if (move_tries == limit)
-			{
-				cout << "Warning in LAHC: cannot find an appliable move (in " << limit << " tries) for neighborhood ";
+				cout << "Warning in LAHC: cannot find an appliable move for neighborhood ";
 				lns[ns_k]->print();
 			}
 
-			if (move->canBeApplied(s))
+			if (move && move->canBeApplied(s))
 			{
 				MoveCost& cost = ev.moveCost(e, *move, s);
 
@@ -142,7 +134,8 @@ public:
 				delete& cost;
 			}
 
-            delete move;
+	    		if(move)
+	            		delete move;
 
 			iter++;
 
@@ -219,9 +212,7 @@ public:
 
 		int iterMax = scanner.nextInt();
 
-		int limit = scanner.nextInt();
-
-		return new LateAcceptanceHillClimbing<R, ADS, DS>(*eval, nslist, L, iterMax, limit);
+		return new LateAcceptanceHillClimbing<R, ADS, DS>(*eval, nslist, L, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -230,10 +221,9 @@ public:
 		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
 		stringstream ss;
 		ss << NS<R, ADS, DS>::idComponent() << "[]";
-		params.push_back(make_pair(ss.str(), "list of NS's"));
+		params.push_back(make_pair(ss.str(), "list of NS"));
 		params.push_back(make_pair("OptFrame:int", "list size L"));
 		params.push_back(make_pair("OptFrame:int", "iterMax iterations without improvement"));
-		params.push_back(make_pair("OptFrame:int", "limitMax moves that cannot be applied"));
 
 		return params;
 	}

@@ -37,6 +37,11 @@ public:
 	virtual ~ConstructiveRandom();
 
 	Solution<RepPN, MY_ADS>& generateSolution();
+
+	void print() const
+	{
+		cout << "ConstructiveRandom" << endl;
+	}
 };
 
 }

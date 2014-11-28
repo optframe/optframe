@@ -19,8 +19,8 @@ class MoveSwap: public Move< RepPN , MY_ADS  >
 {
 private:
     // MOVE PARAMETERS
-    ProblemInstance& pPN;
     int i, j;
+    ProblemInstance& pPN;
 
 public:
     using Move< RepPN , MY_ADS  >::apply; // prevents name hiding
@@ -129,6 +129,20 @@ public:
     // Implement this method in the .cpp file
 
     Move<RepPN , MY_ADS >& move(const RepPN& rep, const MY_ADS&);
+
+    Move<RepPN , MY_ADS >* validMove(const RepPN& rep, const MY_ADS& ads)
+    {
+	for(unsigned i=0; i<100; i++)
+	{
+		Move<RepPN , MY_ADS >& m = move(rep, ads);
+		if(m.canBeApplied(rep, ads))
+			return &m;
+		else
+			delete &m;
+	}
+	return NULL;
+    }
+
 };
 
 }

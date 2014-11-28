@@ -194,10 +194,12 @@ public:
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(Constructive<R, ADS>::idComponent(), "constructive heuristic"));
-		params.push_back(make_pair(NS<R, ADS, DS>::idComponent(), "neighborhood structure"));
-		params.push_back(make_pair("double", "max number of iterations without improvement"));
-		params.push_back(make_pair("int", "max number of iterations without improvement"));
-		params.push_back(make_pair("double", "max number of iterations without improvement"));
+		stringstream ss;
+		ss << NS<R, ADS, DS>::idComponent() << "[]";
+		params.push_back(make_pair(ss.str(), "list of NS"));
+		params.push_back(make_pair("OptFrame:double", "cooling factor"));
+		params.push_back(make_pair("OptFrame:int", "number of iterations for each temperature"));
+		params.push_back(make_pair("OptFrame:double", "initial temperature"));
 
 		return params;
 	}

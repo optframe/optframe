@@ -25,8 +25,8 @@ class PNEvaluator: public Evaluator<RepPN, MY_ADS >
 {
 private:
 	ProblemInstance& pPN;
-
-	// Your private vars
+public:
+	long long evaluations;
 
 public:
 	PNEvaluator(ProblemInstance& _pPN);
@@ -38,6 +38,16 @@ public:
 	//EvaluationPN& evaluate(const RepPN& rep, const MY_ADS&);
 
 	virtual bool betterThan(double f1, double f2);
+
+	virtual bool isMinimization() const
+	{
+		return true;
+	}
+
+	void print() const
+	{
+		cout << "Evaluation function for the Partition for Numbers (PN)" << endl;
+	}
 };
 
 }

@@ -53,7 +53,13 @@ public:
 	ProblemInstance(Scanner& scanner) :
 			dist(Matrix<double>(1))
 	{
+		scanner.nextLine();
+		scanner.nextLine();
+		scanner.nextLine();
+		scanner.next();
 		n = scanner.nextInt();
+		scanner.nextLine();
+		scanner.nextLine();
 
 		cout << n << endl;
 

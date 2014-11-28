@@ -11,5 +11,7 @@
 #include "./PN/NSSeqShift.h"
 #include "./PN/ConstructiveGreedySum.h"
 #include "./PN/ConstructiveGreedyHalfSum.h"
-#include "./PN/ProblemCommand.h"
+#include "./PN/ConstructiveRandomGreedy.h"
+#include "./PN/ConstructiveRandom.h"
+//#include "./PN/ProblemCommand.h"
 #endif /*PN_H_*/

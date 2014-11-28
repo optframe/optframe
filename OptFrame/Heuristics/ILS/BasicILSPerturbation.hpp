@@ -40,13 +40,12 @@ private:
 	Evaluator<R, ADS, DS>& evaluator;
 	int pMin;
 	int pMax;
-	int limit;
 	vector<NS<R, ADS, DS>*> ns;
 	RandGen& rg;
 
 public:
-	BasicILSPerturbation(Evaluator<R, ADS, DS>& e, int _pMin, int _pMax, int _limit, vector<NS<R, ADS, DS>*>& _ns, RandGen& _rg) :
-		evaluator(e), pMin(_pMin), pMax(_pMax), limit(_limit), ns(_ns), rg(_rg)
+	BasicILSPerturbation(Evaluator<R, ADS, DS>& e, int _pMin, int _pMax, vector<NS<R, ADS, DS>*>& _ns, RandGen& _rg) :
+		evaluator(e), pMin(_pMin), pMax(_pMax), ns(_ns), rg(_rg)
 	{
 		if(pMax < pMin)
 		{
@@ -75,27 +74,18 @@ public:
 		{
 			int nk = rand() % ns.size();
 
-			int f = 0; // number of failures
-			while (f < limit)
+			Move<R, ADS, DS>* mp = ns[nk]->validMove(s);
+
+			if (!mp)
 			{
-				Move<R, ADS, DS>& m = ns[nk]->move(s);
-
-				if (m.canBeApplied(s))
-				{
-					delete &m.apply(e, s);
-					delete &m;
-					break;
-				}
-				else
-					f++;
-
-				delete &m;
-			}
-
-			if (f == limit)
-			{
-				cout << "BasicILSPerturbation warning: perturbation had no effect with " << limit << " failures (!canBeApplied) for neighborhood :";
+				cout << "BasicILSPerturbation warning: perturbation found no valid move for neighborhood: ";
 				ns[nk]->print();
+			}
+			else
+			{
+				Move<R, ADS, DS>& m = *mp;
+				delete &m.apply(e, s);
+				delete &m;
 			}
 		}
 
@@ -130,12 +120,11 @@ public:
 
 		int pMin = scanner.nextInt();
 		int pMax = scanner.nextInt();
-		int limit = scanner.nextInt();
 
 		vector<NS<R, ADS, DS>*> ns_list;
 		hf.assignList(ns_list, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BasicILSPerturbation<R, ADS, DS>(*eval, pMin, pMax, limit, ns_list, hf.getRandGen());
+		return new BasicILSPerturbation<R, ADS, DS>(*eval, pMin, pMax, ns_list, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -144,8 +133,6 @@ public:
 		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
 		params.push_back(make_pair("OptFrame:int", "pMin: min number of moves"));
 		params.push_back(make_pair("OptFrame:int", "pMax: max number of moves"));
-		params.push_back(make_pair("OptFrame:int", "limit: max number of failures for canBeApplied"));
-		//params.push_back(make_pair(NS<R, ADS, DS>::idComponent(), "neighborhood structure"));
 		stringstream ss;
 		ss << NS<R, ADS, DS>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of neighborhood structures"));

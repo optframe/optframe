@@ -14,6 +14,7 @@ PNEvaluator::~PNEvaluator()
 
 EvaluationPN& PNEvaluator::evaluate(const RepPN& rep)
 {
+    evaluations++;
     double fo = 0, soma1=0, soma2=0;
 
     for(int i=0; i < rep.size(); i++)

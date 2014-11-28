@@ -45,7 +45,7 @@ private:
 
 public:
 
-	int evaluations;
+	long long evaluations;
 
 	using Evaluator<RepTSP>::evaluate; // prevents name hiding
 

@@ -37,6 +37,11 @@ public:
 	virtual ~ConstructiveGreedySum();
 
 	Solution<RepPN, MY_ADS>& generateSolution();
+
+	void print() const
+	{
+		cout << "ConstructiveGreedySum" << endl;
+	}
 };
 
 }

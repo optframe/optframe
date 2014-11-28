@@ -37,6 +37,11 @@ public:
 	virtual ~ConstructiveRandomGreedy();
 
 	Solution<RepPN, MY_ADS>& generateSolution();
+
+	void print() const
+	{
+		cout << "ConstructiveRandomGreedy" << endl;
+	}
 };
 
 }
