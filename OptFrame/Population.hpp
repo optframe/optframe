@@ -26,14 +26,13 @@
 #include "Solution.hpp"
 #include "Evaluation.hpp"
 #include "Evaluator.hpp"
-
 #include "Component.hpp"
 
 namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class Population: public Component, public EA
+class Population: public Component
 {
 protected:
 	typedef Solution<R, ADS> chromossome;
