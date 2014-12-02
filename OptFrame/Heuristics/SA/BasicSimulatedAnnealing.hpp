@@ -79,7 +79,7 @@ public:
 		Solution<R, ADS>* sStar = &s.clone();
 		Evaluation<DS>* eStar = &e.clone();
 
-		while ((T > 0) && (tnow.now() < timelimit))
+		while ((T > 0.000001) && (tnow.now() < timelimit))
 		{
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
 			{
@@ -139,6 +139,7 @@ public:
 			T = alpha * T;
 			iterT = 0;
 		}
+                cout << "T=" << T << endl;
 
 		s = *sStar;
 		e = *eStar;
@@ -164,7 +165,7 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class BasicSimulatedAnnealingBuilder: public ILS, public SingleObjSearchBuilder<R, ADS, DS>
+class BasicSimulatedAnnealingBuilder: public SA, public SingleObjSearchBuilder<R, ADS, DS>
 {
 public:
 	virtual ~BasicSimulatedAnnealingBuilder()

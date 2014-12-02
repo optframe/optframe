@@ -71,10 +71,11 @@ public:
 		while (s2 == s1)
 		{
 			trye++;
-			if(trye >= 10*p.size())
+			if(trye >= 100*p.size())
 			{
 				cout << "LOOP IN BINARYSELECTION??" << endl;
-				getchar();
+				cout << fv << " = " << Selection<R, ADS, DS>::getSum(fv) << endl;
+				exit(1);
 			}
 			x = rg.rand01();
 			//cout << "x2=" << x << endl;

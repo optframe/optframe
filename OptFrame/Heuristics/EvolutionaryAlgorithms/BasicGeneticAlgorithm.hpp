@@ -110,6 +110,15 @@ public:
 		return best;
 	}
 
+	// basic implementation of low diversity scheme that prevents populations of clones (TODO: improve!)
+	bool lowDiversity(const MultiSolution<R, ADS> &p, const MultiEvaluation<DS>& mev)
+	{
+		for(unsigned i=1; i<mev.size(); i++)
+			if(mev.at(i-1).evaluation() != mev.at(i).evaluation())
+				return false;
+		return true;
+	}
+
 	/*
 	 * In the canonical genetic algorithm, fitness (maximization) is defined by: fi/f
 	 * where: fi: is the evaluation associated with the i-th Chromossome.
@@ -133,9 +142,20 @@ public:
 		// calculate average
 		double sumEvals = Selection<R, ADS, DS>::getSum(fv);
 		double avgEvalsPop = sumEvals / p.size();
+		if(avgEvalsPop == 0)
+			avgEvalsPop = 1;
 
 		for (int i = 0; i < fv.size(); i++)
+		{
 			fv[i] = (fv[i] / avgEvalsPop);
+			if(fv[i] != fv[i]) // is nan
+			{
+				cout << "Selection::setFitness()::NAN VALUE!" << endl;
+				cout << "average=" << avgEvalsPop << endl;
+				cout << fv << endl;
+				exit(1);
+			}
+		}
 
 		// normalize to [0,1]
 		Selection<R, ADS, DS>::normalize(fv);
@@ -158,7 +178,7 @@ public:
 	pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL, const Evaluation<DS>* _e = NULL)
 	{
 		Timer t;
-		cout << id() << "(" << timelimit << ";" << target_f << ")" << endl;
+		cout << id() << "(timelimit=" << timelimit << "; target_f=" << target_f << ")" << endl;
 		cout << "Population Size: " << popSize << " Total of Generations: " << numGenerations << endl;
 		cout << "Crossover Rate: " << pCross << " Mutation Rate: " << pMut << " Local Search Rate: " << pLS << endl;
 
@@ -182,6 +202,13 @@ public:
 
 		while ((g < numGenerations) && (evaluator.betterThan(target_f, eStar->evaluation()) && (t.now() < timelimit)))
 		{
+			if(lowDiversity(*p, *mev))
+			{
+				//cout << "WARNING: Genetic Algorithm leaving with low diversity at iteration g=" << g << endl;
+				//cout << "Try different solution generators or better mutation and crossover operators!" << endl;
+				break;
+			}
+
 			MultiSolution<R, ADS>* p2 = new MultiSolution<R, ADS>;
 			MultiEvaluation<DS>* mev2 = new MultiEvaluation<DS>;
 

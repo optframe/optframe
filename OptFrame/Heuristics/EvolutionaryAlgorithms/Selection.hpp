@@ -59,8 +59,18 @@ public:
 	static void normalize(vector<double>& fv)
 	{
 		double sum = getSum(fv);
+		if(sum == 0)
+			sum = 1;
 		for (int i = 0; i < fv.size(); i++)
+		{
 			fv[i] = fv[i] / sum;
+			if(fv[i] != fv[i]) // is nan
+			{
+				cout << "Selection::normalize()::NAN VALUE!" << endl;
+				cout << fv << endl;
+				exit(1);
+			}
+		}
 	}
 
 	virtual bool compatible(string s)
