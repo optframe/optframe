@@ -7,7 +7,7 @@
 #include <math.h>
 #include <iostream>
 
-#include "../OptFrame/Interactive.hpp"
+#include "../OptFrame/Loader.hpp"
 #include "$project.h"
 
 using namespace std;
@@ -16,12 +16,11 @@ using namespace $project;
 
 int main(int argc, char **argv)
 {
-   Interactive<Rep$project, MY_ADS $commadproject> optframe;
-   //optframe.loadCallCommand();
-
-   optframe.loadCommand(new $projectProblemCommand);
-
-   optframe.execute();
+   RandGen rg;
+   
+   Loader<Rep$project, MY_ADS $commadproject> optframe(rg);
+   
+   $projectProblemCommand pc(rg);
 
    cout << "Program ended successfully" << endl;
    

@@ -23,6 +23,10 @@
 
 #include "../Timer.hpp"
 
+#include "../OptFrameList.hpp"
+
+#include "../NSEnum.hpp"
+
 namespace optframe
 {
 

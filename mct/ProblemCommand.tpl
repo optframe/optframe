@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-#include "../../OptFrame/Commands/ProblemCommand.hpp"
 #include "../../OptFrame/Scanner++/Scanner.h"
 
 #include "Representation.h"
@@ -17,21 +16,35 @@
 
 #include "ProblemInstance.h"
 
+#include "../../OptFrame/RandGen.hpp"
+#include "../../OptFrame/Util/CheckCommand.hpp"
+
 using namespace scannerpp;
 using namespace optframe;
 
 namespace $project
 {
 
-class $projectProblemCommand : public ProblemCommand<Rep$project , MY_ADS $commadproject>
+class $projectProblemCommand
 {
 public:
 
+    CheckCommand<Rep$project, MY_ADS $commadproject>* check;
+    RandGen& rg;
+    vector<Component*> vd;
+    
+    void registerComponent(Component* c, string s)
+    {
+        vd.push_back(c);
+    }
+
     ProblemInstance* p;
     
-    $projectProblemCommand()
-    {
+    $projectProblemCommand(RandGen& _rg) 
+        : rg(_rg)
+    { 
         p = NULL;
+        check = NULL;
     }
 
     virtual ~$projectProblemCommand()
@@ -44,10 +57,9 @@ public:
     }
     
     // Implement 'load' and 'unload' methods in .cpp file
-    
-	bool load(string filename, HeuristicFactory<Rep$project , MY_ADS $commadproject>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary);
-	    
-    bool unload(HeuristicFactory<Rep$project , MY_ADS $commadproject>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary);
+    bool load(string filename);
+
+    bool unload();
 };
 
 }
