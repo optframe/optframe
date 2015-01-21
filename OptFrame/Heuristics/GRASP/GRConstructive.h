@@ -22,6 +22,7 @@
 #define OPTFRAME_GREEDY_RANDOMIZED_CONSTRUCTIVE_H_
 
 #include "../../Solution.hpp"
+#include "../../Constructive.h"
 
 #include "GRASPFamily.h"
 
@@ -30,7 +31,7 @@ namespace optframe
 
 // Greedy Randomized Constructive
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class GRConstructive: public Component, public GRASP
+class GRConstructive: public Constructive<R, ADS>, public GRASP
 {
 public:
 	virtual ~GRConstructive()
@@ -38,6 +39,8 @@ public:
 	}
 
 	virtual Solution<R, ADS>& generateSolution(float alpha) = 0;
+
+	virtual Solution<R, ADS>& generateSolution() = 0;
 
 	virtual bool compatible(string s)
 	{
