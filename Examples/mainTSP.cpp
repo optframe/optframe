@@ -46,9 +46,37 @@ int main(int argc, char **argv)
 	TSPProblemCommand tsp;
 	tsp.load("./TSP/tsplib/berlin52.txt", optframe.factory, optframe.dictionary, optframe.ldictionary);
 
-	CheckCommand<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> check;
+	CheckCommand<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> check(false);
 
-	check.run(optframe.factory, optframe.dictionary, optframe.ldictionary, "100 10 true");
+	RandGen rg;
+	RandomInitialSolutionTSP random(tsp.p, rg);
+	NearestNeighborConstructive cnn(tsp.p, rg);
+	ConstructiveBestInsertion cbi(tsp.p, rg);
+	TSPEvaluator eval(tsp.p);
+	NSEnumSwap enumswap(tsp.p, rg);
+
+	NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);
+	NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP> tsp2opt;
+	NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP, DeltaMoveTSPOrOptk, ProblemInstance> nsseq_delta_or1(1, tsp.p);
+	NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP> tspor1(1);
+	NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP> tspor2(2);
+	NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP> tspor3(3);
+	NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS, MemTSP> tspswap;
+
+	check.add(random);
+	check.add(cnn);
+	check.add(cbi);
+	check.add(eval);
+	check.add(enumswap);
+	check.add(nsseq_delta_2opt);
+	check.add(tsp2opt);
+	check.add(nsseq_delta_or1);
+	check.add(tspor1);
+	check.add(tspor2);
+	check.add(tspor3);
+	check.add(tspswap);
+
+	check.run(100, 10);
 
 	BuildCommand<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> build;
 	for(unsigned i = 0; i <= 7; i++)
