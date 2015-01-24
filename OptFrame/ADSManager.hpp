@@ -25,6 +25,7 @@
 #include <iostream>
 
 #include "Component.hpp"
+#include "Solution.hpp"
 
 using namespace std;
 
