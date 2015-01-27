@@ -76,14 +76,14 @@ public:
 		return abs(i - j) >= k;
 	}
 
-	virtual Move<Route, ADS, DS >& apply(Route& rep, ADS&)
+	virtual Move<Route, ADS, DS >* apply(Route& rep, ADS&)
 	{
 		vector<T> v_aux;
 		v_aux.insert(v_aux.begin(), rep.begin() + i, rep.begin() + i + k);
 		rep.erase(rep.begin() + i, rep.begin() + i + k);
 		rep.insert(rep.begin() + j, v_aux.begin(), v_aux.end());
 
-		return *new MoveTSPOrOptk(j, i, k);
+		return new MoveTSPOrOptk(j, i, k);
 	}
 
 	virtual bool operator==(const Move<Route, ADS, DS >& _m) const

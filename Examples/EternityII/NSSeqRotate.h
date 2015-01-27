@@ -60,16 +60,16 @@ public:
 		return true;
 	}
 
-	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS&)
+	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>* apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS&)
 	{
 		for (int i = 0; i < nRot; i++)
 			rep(x, y).rotate();
 
-		return *new MoveRotate(4 - nRot, x, y);
+		return new MoveRotate(4 - nRot, x, y);
 	}
 
 
-	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& apply(MemEtII& mem, RepEtII& rep, OPTFRAME_DEFAULT_ADS& ads)
+	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>* apply(MemEtII& mem, RepEtII& rep, OPTFRAME_DEFAULT_ADS& ads)
 	{
 		int f = 0;
 		if (rep(x, y).left == rep(x, y - 1).right)
@@ -81,7 +81,7 @@ public:
 		if (rep(x, y).down == rep(x + 1, y).up)
 			f++;
 
-		Move<RepEtII, MemEtII>& rev = apply(rep, ads);
+		Move<RepEtII, MemEtII>& rev = *apply(rep, ads);
 
 		int f2 = 0;
 		if (rep(x, y).left == rep(x, y - 1).right)
@@ -95,7 +95,7 @@ public:
 
 		mem += (f2 - f);
 
-		return rev;
+		return &rev;
 	}
 
 

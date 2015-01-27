@@ -94,7 +94,7 @@ public:
 					{
 						delete eCost;
 
-						delete &move->apply(e, s);
+						Component::safe_delete(move->apply(e, s));
 						delete move;
 
 						delete &it;

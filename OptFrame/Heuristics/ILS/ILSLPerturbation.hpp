@@ -103,7 +103,7 @@ public:
 			if (m.canBeApplied(s))
 			{
 				a++;
-				delete &m.apply(e, s);
+				Component::safe_delete(m.apply(e, s));
 			}
 			else
 				f++;
@@ -216,7 +216,7 @@ public:
 			if (m.canBeApplied(s))
 			{
 				a++;
-				delete &m.apply(e, s);
+				Component::safe_delete(m.apply(e, s));
 			}
 			else
 				f++;

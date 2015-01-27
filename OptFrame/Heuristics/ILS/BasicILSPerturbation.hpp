@@ -84,7 +84,7 @@ public:
 			else
 			{
 				Move<R, ADS, DS>& m = *mp;
-				delete &m.apply(e, s);
+				Component::safe_delete(m.apply(e, s));
 				delete &m;
 			}
 		}

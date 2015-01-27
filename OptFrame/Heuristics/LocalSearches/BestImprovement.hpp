@@ -177,7 +177,7 @@ public:
 				// TODO: have to test if bestMove is ACTUALLY an improvement move...
 			}
 
-			delete &bestMove->apply(e, s);
+			Component::safe_delete(bestMove->apply(e, s));
 
 			eval.evaluate(e, s); // updates 'e'
 			//e.setLocalOptimumStatus(bestMove->id(), false); //set NS 'id' out of Local Optimum

@@ -269,7 +269,7 @@ public:
 
 					message(moveFrom, -1, "testing reverse.");
 
-					Move<R, ADS, DS>& rev = move.apply(s);
+					Move<R, ADS, DS>* rev = move.apply(s);
 
 					Timer t_clone;
 					Solution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
@@ -299,7 +299,10 @@ public:
 
 					Evaluation<DS>& e_rev = evaluators.at(ev)->evaluate(s);
 
-					Move<R, ADS, DS>& ini = rev.apply(s);
+					Move<R, ADS, DS>* ini = NULL;
+
+					if (rev)
+						ini = rev->apply(s);
 
 					// ===================== tests with ADSManager ======================
 
@@ -316,23 +319,27 @@ public:
 						if (!adsMan->compareADS(ads, s.getADS()))
 						{
 							cout << " checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
-							rev.print();
+
+							if (rev)
+								rev->print();
+							else
+								cout << "NULL Move" << endl;
 							return false;
 						}
 					}
 
 					Evaluation<DS>& e_ini = evaluators.at(ev)->evaluate(s);
 
-					if (ini != move)
+					if (ini && (*ini != move))
 					{
 						error("reverse of reverse is not the original move!");
 						move.print();
 						cout << "move: ";
 						move.print();
 						cout << "rev: ";
-						rev.print();
+						Component::safe_print(rev);
 						cout << "ini (reverse of rev): ";
-						ini.print();
+						Component::safe_print(ini);
 
 						return false;
 					}
@@ -520,7 +527,7 @@ public:
 						timeCloneSolution.first++;
 
 						Timer tMovApply;
-						Move<R, ADS, DS>& rev = move.apply(s);
+						Move<R, ADS, DS>* rev = move.apply(s);
 						timeNSApply[id_ns].second += tMovApply.inMilliSecs();
 						timeNSApply[id_ns].first++;
 
@@ -561,7 +568,9 @@ public:
 						fullTimeEval[ev].first++;
 
 						Timer tMovRevApply;
-						Move<R, ADS, DS>& ini = rev.apply(s);
+						Move<R, ADS, DS>* ini = NULL;
+						if (rev)
+							ini = rev->apply(s);
 						timeNSApply[id_ns].second += tMovRevApply.inMilliSecs();
 						timeNSApply[id_ns].first++;
 
@@ -580,7 +589,7 @@ public:
 							if (!adsMan->compareADS(ads, s.getADS()))
 							{
 								cout << "checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
-								rev.print();
+								Component::safe_print(rev);
 								cout << "S (sOriginal.getADS()): " << endl;
 								adsMan->printADS(sOriginal.getADS());
 								cout << "WRONG (s.getADS()): " << endl;
@@ -598,16 +607,16 @@ public:
 						fullTimeEval[ev].second += te2.inMilliSecs();
 						fullTimeEval[ev].first++;
 
-						if (ini != move)
+						if (ini && (*ini != move))
 						{
 							error("reverse of reverse is not the original move!");
 							move.print();
 							cout << "move: ";
 							move.print();
 							cout << "rev: ";
-							rev.print();
+							Component::safe_print(rev);
 							cout << "ini (reverse of rev): ";
-							ini.print();
+							Component::safe_print(ini);
 
 							return false;
 						}
@@ -877,7 +886,7 @@ public:
 						message(moveFrom, nqs, "testing reverse.");
 
 						Timer tMovApply;
-						Move<R, ADS, DS>& rev = move.apply(s);
+						Move<R, ADS, DS>* rev = move.apply(s);
 						timeNSApply[id_nsseq].second += tMovApply.inMilliSecs();
 						timeNSApply[id_nsseq].first++;
 
@@ -892,7 +901,9 @@ public:
 						fullTimeEval[ev].first++;
 
 						Timer tMovRevApply;
-						Move<R, ADS, DS>& ini = rev.apply(s);
+						Move<R, ADS, DS>* ini = NULL;
+						if(rev)
+							ini = rev->apply(s);
 						timeNSApply[id_nsseq].second += tMovRevApply.inMilliSecs();
 						timeNSApply[id_nsseq].first++;
 
@@ -901,16 +912,16 @@ public:
 						fullTimeEval[ev].second += te2.inMilliSecs();
 						fullTimeEval[ev].first++;
 
-						if (ini != move)
+						if (ini && (*ini != move))
 						{
 							error("reverse of reverse is not the original move!");
 							move.print();
 							cout << "move: ";
 							move.print();
 							cout << "rev: ";
-							rev.print();
+							Component::safe_print(rev);
 							cout << "ini (reverse of rev): ";
-							ini.print();
+							Component::safe_print(ini);
 
 							return false;
 						}
@@ -959,7 +970,7 @@ public:
 							if (!adsMan->compareADS(ads, s.getADS()))
 							{
 								cout << "checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
-								rev.print();
+								Component::safe_print(rev);
 								return false;
 							}
 						}

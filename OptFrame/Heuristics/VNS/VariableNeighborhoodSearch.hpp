@@ -62,7 +62,7 @@ public:
 			Move<R, ADS, DS>& move = vshake.at(k_shake)->move(s);
 			if(move.canBeApplied(s))
 			{
-				delete& move.apply(e, s);
+				Component::safe_delete(move.apply(e, s));
 				evaluator.evaluate(e, s); // refresh 'e'
 				delete& move;
 				break;

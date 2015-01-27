@@ -66,13 +66,13 @@ public:
 		return all_positive && size_ok && (rep.size() >= 2);
 	}
 
-	Move<Route, ADS, DS >& apply(Route& rep, ADS&)
+	Move<Route, ADS, DS >* apply(Route& rep, ADS&)
 	{
 		T t = rep[p1];
 		rep[p1] = rep[p2];
 		rep[p2] = t;
 
-		return *new MoveTSPSwap(p1, p2);
+		return new MoveTSPSwap(p1, p2);
 	}
 
 	virtual bool operator==(const Move<Route, ADS, DS >& _m) const

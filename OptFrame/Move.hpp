@@ -53,23 +53,29 @@ public:
 //protected: // TODO: protect...
 	virtual bool canBeApplied(const R&, const ADS&) = 0;
 
+	// returns true if the apply returns a non-null pointer
+	virtual bool hasReverse()
+	{
+		return true; // TODO: make it pure virtual "= 0"
+	}
+
 public:
-	Move<R, ADS, DS>& apply(Solution<R, ADS>& s)
+	Move<R, ADS, DS>* apply(Solution<R, ADS>& s)
 	{
 		return apply(s.getR(), s.getADS());
 	}
 
-	Move<R, ADS, DS>& apply(Evaluation<DS>& e, Solution<R, ADS>& s)
+	Move<R, ADS, DS>* apply(Evaluation<DS>& e, Solution<R, ADS>& s)
 	{
 		return apply(e.getDS(), s.getR(), s.getADS());
 	}
 
 ////protected:
-	virtual Move<R, ADS, DS>& apply(R& r, ADS& ads) = 0;
+	virtual Move<R, ADS, DS>* apply(R& r, ADS& ads) = 0;
 
-	virtual Move<R, ADS, DS>& apply(DS& ds, R& r, ADS& ads)
+	virtual Move<R, ADS, DS>* apply(DS& ds, R& r, ADS& ads)
 	{
-		Move<R, ADS, DS>& rev = apply(r, ads);
+		Move<R, ADS, DS>* rev = apply(r, ads);
 		updateNeighStatus(ads);
 		return rev;
 	}
@@ -247,9 +253,9 @@ public:
 			if (!s)
 				return false;
 
-			Move<R, ADS, DS>& mrev = m->apply(*s);
+			Move<R, ADS, DS>* mrev = m->apply(*s);
 
-			return Action<R, ADS, DS>::addAndRegister(scanner, mrev, hf, dictionary);
+			return Action<R, ADS, DS>::addAndRegister(scanner, *mrev, hf, dictionary);
 		}
 
 		if (action == "apply_e")
@@ -274,9 +280,9 @@ public:
 			if (!s)
 				return false;
 
-			Move<R, ADS, DS>& mrev = m->apply(*e, *s);
+			Move<R, ADS, DS>* mrev = m->apply(*e, *s);
 
-			return Action<R, ADS, DS>::addAndRegister(scanner, mrev, hf, dictionary);
+			return Action<R, ADS, DS>::addAndRegister(scanner, *mrev, hf, dictionary);
 		}
 
 

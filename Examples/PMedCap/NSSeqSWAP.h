@@ -62,11 +62,11 @@ public:
 		return true;
 	}
 
-	Move<RepPCAP>& apply(RepPCAP& rep, OPTFRAME_DEFAULT_ADS&)
+	Move<RepPCAP>* apply(RepPCAP& rep, OPTFRAME_DEFAULT_ADS&)
 	{
 		int aux = rep.second[x];
 		rep.second[x] = med;
-		return *new MoveSWAP(x, aux);
+		return new MoveSWAP(x, aux);
 	}
 
 	virtual bool operator==(const Move<RepPCAP>& _m) const

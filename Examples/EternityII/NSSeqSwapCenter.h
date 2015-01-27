@@ -59,16 +59,16 @@ public:
 		return true;
 	}
 
-	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS&)
+	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>* apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS&)
 	{
 		Piece p = rep(x1, y1);
 		rep(x1, y1) = rep(x2, y2);
 		rep(x2, y2) = p;
 
-		return *new MoveSwapCenter(x2, y2, x1, y1);
+		return new MoveSwapCenter(x2, y2, x1, y1);
 	}
 
-	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& apply(MemEtII& mem, RepEtII& rep, OPTFRAME_DEFAULT_ADS& ads)
+	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>* apply(MemEtII& mem, RepEtII& rep, OPTFRAME_DEFAULT_ADS& ads)
 	{
 		int f = 0;
 		if (rep(x1, y1).left == rep(x1, y1 - 1).right)
@@ -90,7 +90,7 @@ public:
 		if ((rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
 			g++;
 
-		Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& rev = apply(rep, ads);
+		Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& rev = *apply(rep, ads);
 
 		int f2 = 0;
 		if (rep(x1, y1).left == rep(x1, y1 - 1).right)
@@ -115,7 +115,7 @@ public:
 		mem += (f2 - f);
 		mem += (g2 - g);
 
-		return rev;
+		return &rev;
 	}
 
 	virtual bool operator==(const Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& _m) const

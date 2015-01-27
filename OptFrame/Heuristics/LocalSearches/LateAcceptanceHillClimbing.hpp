@@ -109,7 +109,7 @@ public:
 				if (ev.betterThan(cost.cost()+e.evaluation(), eList[index]))
 #endif
 				{
-					delete &move->apply(e, s);
+					Component::safe_delete(move->apply(e, s));
 					ev.evaluate(e, s);
 
 #ifdef BRAND_NEW

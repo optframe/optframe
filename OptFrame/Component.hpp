@@ -82,6 +82,25 @@ public:
 
 	Log* logdata;
 
+	static bool safe_delete(Component* c)
+	{
+		if (c)
+		{
+			delete c;
+			return true;
+		}
+		else
+			return false;
+	}
+
+	static void safe_print(Component* c)
+	{
+		if(c)
+			c->print();
+		else
+			cout << "NULL Component" << endl;
+	}
+
 	void initializeLog()
 	{
 		logdata = new Log;

@@ -94,7 +94,7 @@ public:
 
 				Solution<R, ADS>* sCurrent = &s.clone();
 				Evaluation<DS>* eCurrent = &e.clone();
-				delete &move->apply(*eCurrent, *sCurrent);
+				Component::safe_delete(move->apply(*eCurrent, *sCurrent));
 				evaluator.evaluate(*eCurrent, *sCurrent);
 
 				if (evaluator.betterThan(*eCurrent, e))

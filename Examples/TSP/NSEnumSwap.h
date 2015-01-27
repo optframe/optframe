@@ -66,7 +66,7 @@ public:
 		return true;
 	}
 
-	Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& apply(RepTSP& rep, OPTFRAME_DEFAULT_ADS&)
+	Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>* apply(RepTSP& rep, OPTFRAME_DEFAULT_ADS&)
 	{
 		// Specify how the move "MoveSwap" will be applied
 
@@ -75,11 +75,11 @@ public:
 		rep[c2] = aux;
 
 		// return the reverse move
-		return *new MoveSwap(c2, c1, tsp);
+		return new MoveSwap(c2, c1, tsp);
 	}
 
 
-	Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& apply(MemTSP& mem, RepTSP& rep, OPTFRAME_DEFAULT_ADS& ads)
+	Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>* apply(MemTSP& mem, RepTSP& rep, OPTFRAME_DEFAULT_ADS& ads)
 	{
 		int k1, k2;
 
@@ -122,7 +122,7 @@ public:
 			f -= (*tsp.dist)(rep[k2], rep[ak2]);
 		}
 
-		Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& rev = apply(rep, ads);
+		Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& rev = *apply(rep, ads);
 
 		if (k2 - k1 == 1) // special case, cities are near
 		{
@@ -141,7 +141,7 @@ public:
 		mem.first = true;
 		mem.second += f;
 
-		return rev;
+		return &rev;
 	}
 
 

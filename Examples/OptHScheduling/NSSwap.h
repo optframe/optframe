@@ -62,12 +62,12 @@ public:
 		return w1 != w2;
 	}
 
-	Move<RepOptHS>& apply(RepOptHS& rep, OPTFRAME_DEFAULT_ADS&)
+	Move<RepOptHS>* apply(RepOptHS& rep, OPTFRAME_DEFAULT_ADS&)
 	{
 		pair<char, char> aux = rep[w1];
 		rep[w1] = rep[w2];
 		rep[w2] = aux;
-		return *new MoveSwap(w2,  w1);
+		return new MoveSwap(w2,  w1);
 	}
 
 	virtual bool operator==(const Move<RepOptHS>& _m) const

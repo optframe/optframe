@@ -67,13 +67,13 @@ public:
 		return all_positive && (rep.size() >= 2) && less;
 	}
 
-	virtual Move<Route, ADS, DS >& apply(Route& rep, ADS&)
+	virtual Move<Route, ADS, DS >* apply(Route& rep, ADS&)
 	{
 
 		reverse(rep.begin() + p1, rep.begin() + p2);
 
 		// r1->r1, r2->r2, e1->i1, e2->i2, n1->n2, n2->n1, i1->e1, i2->e2
-		return *new MoveTSP2Opt(p1, p2);
+		return new MoveTSP2Opt(p1, p2);
 	}
 
 	virtual bool operator==(const Move<Route, ADS, DS >& _m) const

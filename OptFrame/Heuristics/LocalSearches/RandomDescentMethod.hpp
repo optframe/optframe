@@ -84,7 +84,7 @@ public:
 
 			if (cost && evaluator.isImprovement(*cost))
 			{
-				delete &move.apply(e, s);
+				Component::safe_delete(move.apply(e, s));
 				evaluator.evaluate(e, s);
 				iter = 0;
 			}

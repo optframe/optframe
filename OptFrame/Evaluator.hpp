@@ -113,17 +113,27 @@ public:
 	// Update evaluation 'e'
 	Move<R, ADS, DS>& applyMove(Evaluation<DS>& e, Move<R, ADS, DS>& m, Solution<R, ADS>& s)
 	{
-		Move<R, ADS, DS>& rev = m.apply(e, s);
+		Move<R, ADS, DS>* rev = m.apply(e, s);
+		if(!rev)
+		{
+			cout << "Evaluator error(1)! Expected reverse move, but it is NULL! TODO: FIX" << endl;
+			exit(1);
+		}
 		evaluate(e, s);
-		return rev;
+		return *rev;
 	}
 
 	// Apply movement without considering a previous evaluation => Slower.
 	// Return new evaluation 'e'
 	pair<Move<R, ADS, DS>&, Evaluation<DS>&>& applyMove(Move<R, ADS, DS>& m, Solution<R, ADS>& s)
 	{
-		Move<R, ADS, DS>& rev = m.apply(s);
-		return *new pair<Move<R, ADS, DS>&, Evaluation<DS>&>(rev, evaluate(s));
+		Move<R, ADS, DS>* rev = m.apply(s);
+		if(!rev)
+		{
+			cout << "Evaluator error(2)! Expected reverse move, but it is NULL! TODO: FIX" << endl;
+			exit(1);
+		}
+		return *new pair<Move<R, ADS, DS>&, Evaluation<DS>&>(*rev, evaluate(s));
 	}
 
 	// Movement cost based on reevaluation of 'e'
