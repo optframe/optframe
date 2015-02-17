@@ -37,9 +37,10 @@ class Population: public Component
 protected:
 	typedef Solution<R, ADS> chromossome;
 	typedef vector<chromossome*> population;
+	typedef vector<vector<double> > populationFitness;
 
 	population p;
-
+	populationFitness pFitness;
 public:
 
 	vector<double> fitness;
@@ -50,10 +51,12 @@ public:
 
 	Population(const Population& pop)
 	{
-		for(unsigned i = 0; i < pop.size(); i++)
+		for (unsigned i = 0; i < pop.size(); i++)
 		{
 			p.push_back(&pop.at(i).clone());
 			fitness.push_back(0); // TODO: fix
+			vector<double> a;
+			pFitness.push_back(a);
 		}
 	}
 
@@ -81,14 +84,18 @@ public:
 	{
 		p.insert(p.begin() + pos, new chromossome(c));
 		fitness.insert(fitness.begin() + pos, 0.0);
+		vector<double> a;
+		pFitness.insert(pFitness.begin() + pos, a);
 	}
 
 	void push_back(chromossome* c)
 	{
-		if(c) // not null
+		if (c) // not null
 		{
 			p.push_back(c);
 			fitness.push_back(0);
+			vector<double> a;
+			pFitness.push_back(a);
 		}
 	}
 
@@ -96,6 +103,15 @@ public:
 	{
 		p.push_back(&c.clone());
 		fitness.push_back(0);
+		vector<double> a;
+		pFitness.push_back(a);
+	}
+
+	void push_back(const chromossome& c, vector<double> chromossomeFitness)
+	{
+		p.push_back(&c.clone());
+		fitness.push_back(0);
+		pFitness.push_back(chromossomeFitness);
 	}
 
 	chromossome& remove(unsigned pos)
@@ -103,12 +119,18 @@ public:
 		chromossome& c = *p.at(pos);
 		p.erase(p.begin() + pos);
 		fitness.erase(fitness.begin() + pos);
+		pFitness.erase(pFitness.begin() + pos);
 		return c;
+	}
+
+	vector<double> getFitness(int pos)
+	{
+		return pFitness[pos];
 	}
 
 	void add(const Population<R, ADS, DS>& pop)
 	{
-		for(unsigned i = 0; i < pop.size(); i++)
+		for (unsigned i = 0; i < pop.size(); i++)
 		{
 			const chromossome& s = pop.at(i);
 			push_back(s);
@@ -118,17 +140,20 @@ public:
 	// clear and kill
 	void clear()
 	{
-		for(unsigned i = 0; i < p.size(); i++)
+		for (unsigned i = 0; i < p.size(); i++)
 			delete p.at(i);
 
 		p.clear();
 		fitness.clear();
+		pFitness.clear();
+
 	}
 
 	void clearNoKill()
 	{
 		p.clear();
 		fitness.clear();
+		pFitness.clear();
 	}
 
 	bool empty()
@@ -138,16 +163,18 @@ public:
 
 	virtual Population<R, ADS>& operator=(const Population<R, ADS>& p)
 	{
-		if(&p == this) // auto ref check
+		if (&p == this) // auto ref check
 			return *this;
 
 		unsigned sizePop = this->p.size();
 
 		fitness = p.fitness;
 
-		for(unsigned i = 0; i < sizePop; i++)
+		pFitness = p.pFitness;
+
+		for (unsigned i = 0; i < sizePop; i++)
 		{
-			if(this->p.at(i)) // If no NULL pointing.
+			if (this->p.at(i)) // If no NULL pointing.
 			{
 				delete this->p.at(i);
 			}
@@ -157,9 +184,9 @@ public:
 
 		sizePop = p.size();
 
-		for(unsigned i = 0; i < sizePop; i++)
+		for (unsigned i = 0; i < sizePop; i++)
 		{
-			if(&p.at(i)) // If no NULL pointing.
+			if (&p.at(i)) // If no NULL pointing.
 			{
 				this->p.push_back(new chromossome(p.at(i)));
 			}
@@ -194,7 +221,7 @@ public:
 		cout << "Population(" << p.size() << ")";
 		cout << endl;
 
-		for(unsigned i = 0; i < p.size(); i++)
+		for (unsigned i = 0; i < p.size(); i++)
 		{
 			p.at(i)->print();
 		}
@@ -204,7 +231,7 @@ public:
 	{
 		vector<pair<Solution<R, ADS>, double> > v;
 
-		for(int i = 0; i < p.size(); i++)
+		for (int i = 0; i < p.size(); i++)
 		{
 			Evaluation<DS>& e = eval.evaluate(p[i]);
 			v.push_back(make_pair(*p[i], e.evaluation()));
@@ -212,8 +239,8 @@ public:
 		}
 
 		int bestC = 0;
-		for(int i = 0; i < (v.size() - 1); i++)
-			if(eval.betterThan(v[i + 1].second, v[i].second))
+		for (int i = 0; i < (v.size() - 1); i++)
+			if (eval.betterThan(v[i + 1].second, v[i].second))
 				bestC = i + 1;
 
 		return v[bestC].first;
