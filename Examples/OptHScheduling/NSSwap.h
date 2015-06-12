@@ -29,7 +29,6 @@
 
 // Own includes
 #include "ProblemInstance.h"
-#include "Memory.h"
 #include "Solution.h"
 
 using namespace std;

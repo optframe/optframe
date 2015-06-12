@@ -6,7 +6,6 @@
 #include "../../OptFrame/Scanner++/Scanner.h"
 
 #include "Representation.h"
-#include "Memory.h"
 #include "Solution.h"
 #include "Evaluation.h"
 
@@ -60,7 +59,7 @@ public:
     	return "problem.EtII";
     }
 
-    bool registerComponent(Component& component, string type, string name, HeuristicFactory<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& hf, map<string, string>& dictionary)
+    bool registerComponent(Component& component, string type, string name, HeuristicFactory<RepEtII>& hf, map<string, string>& dictionary)
     {
        int idx = hf.addComponent(component, type);
        stringstream ss;
@@ -68,7 +67,7 @@ public:
        return true; //defineText(name, ss.str(), dictionary);
     }
 
-	bool load(string filename, HeuristicFactory<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	bool load(string filename, HeuristicFactory<RepEtII>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 	    File* file;
 
@@ -90,7 +89,7 @@ public:
 
     	EtIIInitialSolutionGreedy& is = * new EtIIInitialSolutionGreedy(*p, hf.getRandGen());
 
-    	SolutionEtII& s = is.generateSolution();
+    	Solution<RepEtII>& s = is.generateSolution();
 
     	NSSeqRotate<DeltaMoveRotate>& nsRotate = * new NSSeqRotate<DeltaMoveRotate>(hf.getRandGen());
     	NSSeqSwapCenter<DeltaMoveSwapCenter>& nsSwapCenter = * new NSSeqSwapCenter<DeltaMoveSwapCenter>(hf.getRandGen());
@@ -101,7 +100,7 @@ public:
     	s.print();
 
     	EtIIEvaluator& eval = * new EtIIEvaluator(*p);
-    	EvaluationEtII* e;
+    	Evaluation* e;
 
     	e = &eval.evaluate(s);
 
@@ -121,7 +120,7 @@ public:
         return true;
     }
     
-    bool unload(HeuristicFactory<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+    bool unload(HeuristicFactory<RepEtII>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
     {
        if(p)
           delete p;

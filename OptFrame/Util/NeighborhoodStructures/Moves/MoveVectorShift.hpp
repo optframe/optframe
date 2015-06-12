@@ -31,8 +31,8 @@ using namespace optframe;
 //                           Shift Move
 //============================================================================
 
-template<class T, class DS >
-class MoveVectorShift : public Move<vector<T>, DS >
+template<class T>
+class MoveVectorShift : public Move<vector<T> >
 {
 private:
 	int t1, t2;
@@ -51,7 +51,7 @@ public:
 		return t1 != t2;
 	}
 
-	Move<vector<T>, DS >* apply(Solution<vector<T> >* s)
+	Move<vector<T> >* apply(Solution<vector<T> >* s)
 	{
 		vector<T>* rep = s->getRepresentation();
 
@@ -71,7 +71,7 @@ public:
 				(*rep)[i-1] = aux;
 			}
 
-		MoveVectorShift<T,DS > * ms = new MoveVectorShift<T,DS >(t2,t1);
+		MoveVectorShift<T> * ms = new MoveVectorShift<T>(t2,t1);
 
 		return ms;
 	}

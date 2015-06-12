@@ -40,16 +40,15 @@ using namespace scannerpp;
 namespace optframe
 {
 
-template<class DS = OPTFRAME_DEFAULT_DS>
 class MultiDirection: public Component
 {
 protected:
-	vector<Direction<DS>*> vDir;
+	vector<Direction*> vDir;
 
 public:
 	unsigned nObjectives;
 
-	MultiDirection(vector<Direction<DS>*>& _vDir)
+	MultiDirection(vector<Direction*>& _vDir)
 	{
 		for(unsigned i = 0; i < _vDir.size(); i++)
 			if(_vDir[i])
@@ -57,7 +56,7 @@ public:
 		nObjectives = vDir.size();
 	}
 
-	MultiDirection(MultiDirection<DS>& mDir) :
+	MultiDirection(MultiDirection& mDir) :
 			vDir(mDir.vDir), nObjectives(mDir.nObjectives)
 	{
 	}
@@ -71,7 +70,7 @@ public:
 	{
 	}
 
-	virtual MultiDirection<DS>& addObjective(Direction<DS>* ds)
+	virtual MultiDirection& addObjective(Direction* ds)
 	{
 		if(ds)
 			vDir.push_back(ds);
@@ -80,7 +79,7 @@ public:
 		return *this;
 	}
 
-	vector<Direction<DS>*>& getDirections()
+	vector<Direction*>& getDirections()
 	{
 		return vDir;
 	}
@@ -98,7 +97,7 @@ public:
 	template<class T>
 	inline bool betterOrEquals(unsigned obj, const T& a, const T& b)
 	{
-		return vDir[obj]->betterOrEquals(obj, a, b);
+		return vDir[obj]->betterOrEquals(a, b);
 	}
 
 	// ============ equals ============
@@ -111,14 +110,14 @@ public:
 
 	// ============= improvement =============
 
-	inline bool isImprovement(unsigned obj, const MoveCost& mc, const Evaluation<DS>& e1, const Evaluation<DS>& e2)
+	inline bool isImprovement(unsigned obj, const MoveCost& mc, const Evaluation& e1, const Evaluation& e2)
 	{
-		return vDir[obj]->isImprovement(obj, mc, e1, e2);
+		return vDir[obj]->isImprovement(mc, e1, e2);
 	}
 
 	inline bool isImprovement(unsigned obj, const MoveCost& mc)
 	{
-		return vDir[obj]->isImprovement(obj, mc);
+		return vDir[obj]->isImprovement(mc);
 	}
 
 	// ============= direction ==============

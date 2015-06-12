@@ -29,7 +29,6 @@
 #include "../../OptFrame/Evaluator.hpp"
 
 #include "Representation.h"
-#include "Memory.h"
 #include "Solution.h"
 #include "Evaluation.h"
 
@@ -40,22 +39,22 @@
 namespace TSP
 {
 
-class TSPEvaluator: public Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>
+class TSPEvaluator: public Evaluator<RepTSP>
 {
 private:
 	ProblemInstance* pI;
 
 public:
 
-	using Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::evaluate; // prevents name hiding
+	using Evaluator<RepTSP>::evaluate; // prevents name hiding
 
 	TSPEvaluator(ProblemInstance* pI) :
-		Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>(true) // ALLOW COSTS!
+		Evaluator<RepTSP>(true) // ALLOW COSTS!
 	{
 		this->pI = pI;
 	}
 
-	Evaluation<MemTSP>& evaluate(const RepTSP& r)
+	Evaluation& evaluate(const RepTSP& r)
 	{
 		double fo = 0; // Evaluation Function Value
 
@@ -74,28 +73,8 @@ public:
 		double val = (*pI->dist)(k, l);
 		fo += val;
 
-		MemTSP mem(false, 0);
-
-		return *new Evaluation<MemTSP> (fo, mem);
+		return *new Evaluation (fo);
 	}
-
-
-	void evaluate(Evaluation<MemTSP>& e, const RepTSP& r, const OPTFRAME_DEFAULT_ADS& ads)
-	{
-		if(!e.getDS().first) // use slower
-		{
-			Evaluation<MemTSP>& e1 = evaluate(r, ads);
-			e.setDS(e1.getDS());
-			e.setObjFunction(e1.getObjFunction());
-			e.setInfMeasure(e1.getInfMeasure());
-			delete &e1;
-			return;
-		}
-
-		e.setObjFunction(e.getObjFunction() + e.getDS().second);
-		e.setDS(make_pair(false, 0));
-	}
-
 
 	virtual bool betterThan(double f1, double f2)
 	{
@@ -109,7 +88,7 @@ public:
 
 	virtual string id() const
 	{
-		string pai = Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::idComponent();
+		string pai = Evaluator<RepTSP>::idComponent();
 		pai.append(":TSPEvaluator");
 		return pai;
 	}

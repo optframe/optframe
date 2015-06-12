@@ -28,17 +28,17 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class CompareLocalSearch: public LocalSearch<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class CompareLocalSearch: public LocalSearch<R, ADS>
 {
 private:
-	Evaluator<R, ADS, DS>& eval;
-	LocalSearch<R, ADS, DS>& ls1;
-	LocalSearch<R, ADS, DS>& ls2;
+	Evaluator<R, ADS>& eval;
+	LocalSearch<R, ADS>& ls1;
+	LocalSearch<R, ADS>& ls2;
 
 public:
 
-	CompareLocalSearch(Evaluator<R, ADS, DS>& _eval, LocalSearch<R, ADS, DS>& _ls1,  LocalSearch<R, ADS, DS>& _ls2) :
+	CompareLocalSearch(Evaluator<R, ADS>& _eval, LocalSearch<R, ADS>& _ls1,  LocalSearch<R, ADS>& _ls2) :
 		eval(_eval), ls1(_ls1), ls2(_ls2)
 	{
 	}
@@ -49,15 +49,15 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
-		Evaluation<DS>& e = eval.evaluate(s);
+		Evaluation& e = eval.evaluate(s);
 		exec(s, e, timelimit, target_f);
 		delete &e;
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
 	{
 		Solution<R, ADS>& s2 = s.clone();
-		Evaluation<DS>& e2   = e.clone();
+		Evaluation& e2   = e.clone();
 
 		ls1.exec(s, e, timelimit, target_f);
 		ls2.exec(s2, e2, timelimit, target_f);
@@ -78,13 +78,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS, DS>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<R, ADS>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, DS>::idComponent() << "CompareLocalSearch";
+		ss << LocalSearch<R, ADS>::idComponent() << "CompareLocalSearch";
 		return ss.str();
 	}
 
@@ -103,58 +103,58 @@ public:
 
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class CompareLocalSearchBuilder : public LocalSearchBuilder<R, ADS, DS>
+class CompareLocalSearchBuilder : public LocalSearchBuilder<R, ADS>
 {
 public:
 	virtual ~CompareLocalSearchBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	virtual LocalSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
-		Evaluator<R, ADS, DS>* eval;
+		Evaluator<R, ADS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
 
-		pair<LocalSearch<R, ADS, DS>*, std::string> method;
+		pair<LocalSearch<R, ADS>*, std::string> method;
 		method = hf.createLocalSearch(rest);
 
-		LocalSearch<R, ADS, DS>* h = method.first;
+		LocalSearch<R, ADS>* h = method.first;
 
 		scanner = Scanner(method.second);
 
 		string rest2 = scanner.rest();
 
-		pair<LocalSearch<R, ADS, DS>*, std::string> method2;
+		pair<LocalSearch<R, ADS>*, std::string> method2;
 		method2 = hf.createLocalSearch(rest2);
 
-		LocalSearch<R, ADS, DS>* h2 = method2.first;
+		LocalSearch<R, ADS>* h2 = method2.first;
 
 		scanner = Scanner(method2.second);
 
-		return new CompareLocalSearch<R, ADS, DS>(*eval, *h, *h2);
+		return new CompareLocalSearch<R, ADS>(*eval, *h, *h2);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(LocalSearch<R, ADS, DS>::idComponent(), "local search 1"));
-		params.push_back(make_pair(LocalSearch<R, ADS, DS>::idComponent(), "local search 2"));
+		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(LocalSearch<R, ADS>::idComponent(), "local search 1"));
+		params.push_back(make_pair(LocalSearch<R, ADS>::idComponent(), "local search 2"));
 
 		return params;
 	}
 
 	virtual bool canBuild(string component)
 	{
-		return component == FirstImprovement<R, ADS, DS>::idComponent();
+		return component == FirstImprovement<R, ADS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "CompareLocalSearch";
+		ss << LocalSearchBuilder<R, ADS>::idComponent() << "CompareLocalSearch";
 		return ss.str();
 	}
 

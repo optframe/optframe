@@ -34,21 +34,21 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MOVNS: public MultiObjSearch<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class MOVNS: public MultiObjSearch<R, ADS>
 {
-	typedef vector<Evaluation<DS>*> FitnessValues;
+	typedef vector<Evaluation*> FitnessValues;
 
 private:
-	vector<NSSeq<R, ADS, DS>*> neighbors;
-	vector<Evaluator<R, ADS, DS>*> v_e;
-	ParetoDominance<R, ADS, DS> pDominance;
-	ParetoDominanceWeak<R, ADS, DS> pDominanceWeak;
+	vector<NSSeq<R, ADS>*> neighbors;
+	vector<Evaluator<R, ADS>*> v_e;
+	ParetoDominance<R, ADS> pDominance;
+	ParetoDominanceWeak<R, ADS> pDominanceWeak;
 	RandGen& rg;
 
 public:
 
-	MOVNS(vector<Evaluator<R, ADS, DS>*> _v_e, vector<NSSeq<R, ADS, DS>*> _neighbors, RandGen& _rg) :
+	MOVNS(vector<Evaluator<R, ADS>*> _v_e, vector<NSSeq<R, ADS>*> _neighbors, RandGen& _rg) :
 		v_e(_v_e), neighbors(_neighbors), rg(_rg)
 	{
 		pDominance.insertEvaluators(_v_e);
@@ -88,7 +88,7 @@ public:
 			visited[ind] = true;
 
 			int neigh = rg.rand(neighbors.size());
-			Move<R, ADS, DS>* move = &(neighbors[neigh]->move(D.at(ind)));
+			Move<R, ADS>* move = &(neighbors[neigh]->move(D.at(ind)));
 
 			while (!(move->canBeApplied(D.at(ind))))
 			{
@@ -97,10 +97,10 @@ public:
 			}
 
 			Solution<R, ADS>& s1 = D.at(ind).clone();
-			Move<R, ADS, DS>& mov_rev = move->apply(s1);
+			Move<R, ADS>& mov_rev = move->apply(s1);
 			delete &mov_rev;
 
-			NSIterator<R, ADS, DS>& it = neighbors[neigh]->getIterator(s1.getR());
+			NSIterator<R, ADS>& it = neighbors[neigh]->getIterator(s1.getR());
 			it.first();//Primeiro vizinho
 
 			//verifica se existe vizinho a ser gerado
@@ -111,12 +111,12 @@ public:
 			else
 			{
 
-				Move<R, ADS, DS>* move = geraMovimentoValido(it, s1);
+				Move<R, ADS>* move = geraMovimentoValido(it, s1);
 				//cout << "!it.isDone() = " << !it.isDone() << " aplly = " << move->canBeApplied(p.at(ind)) << endl;
 				while ((!it.isDone()) && (move->canBeApplied(s1)))
 				{
 					Solution<R, ADS>& s2 = s1.clone();
-					Move<R, ADS, DS>& mov_rev = move->apply(s2);
+					Move<R, ADS>& mov_rev = move->apply(s2);
 					delete &mov_rev;
 					delete move;
 
@@ -153,10 +153,10 @@ public:
 		p_0 = D;
 	}
 
-	Move<R, ADS, DS>* geraMovimentoValido(NSIterator<R, ADS, DS>& it, Solution<R, ADS>& s)
+	Move<R, ADS>* geraMovimentoValido(NSIterator<R, ADS>& it, Solution<R, ADS>& s)
 	{
 
-		Move<R, ADS, DS>* move = NULL;
+		Move<R, ADS>* move = NULL;
 
 		if (it.isDone())
 			return NULL;
@@ -181,7 +181,7 @@ public:
 
 	bool addSolution(Population<R, ADS>& p, Solution<R, ADS>& s)
 	{
-		Evaluation<DS>& e = v_e[0]->evaluate(s);
+		Evaluation& e = v_e[0]->evaluate(s);
 		if (!e.isFeasible())
 		{
 			delete &e;

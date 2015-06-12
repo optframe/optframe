@@ -41,7 +41,6 @@ using namespace scannerpp;
 namespace optframe
 {
 
-template<class DS = OPTFRAME_DEFAULT_DS>
 class Direction: public Component
 {
 public:
@@ -69,7 +68,7 @@ public:
 	}
 
 	// true if 'e1' is better than 'e2'
-	virtual inline bool betterThan(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
+	virtual inline bool betterThan(const Evaluation& e1, const Evaluation& e2)
 	{
 		return betterThan(e1.evaluation(), e2.evaluation());
 	}
@@ -96,7 +95,7 @@ public:
 		return betterThan(mc1, mc2) || equals(mc1, mc2);
 	}
 
-	inline bool betterOrEquals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
+	inline bool betterOrEquals(const Evaluation& e1, const Evaluation& e2)
 	{
 		return betterThan(e1, e2) || equals(e1, e2);
 	}
@@ -123,7 +122,7 @@ public:
 		return equals(mc1.cost(), mc2.cost());
 	}
 
-	virtual inline bool equals(const Evaluation<DS>& e1, const Evaluation<DS>& e2)
+	virtual inline bool equals(const Evaluation& e1, const Evaluation& e2)
 	{
 		return equals(e1.evaluation(), e2.evaluation());
 	}
@@ -135,7 +134,7 @@ public:
 
 	// ============= improvement =============
 
-	virtual bool isImprovement(const MoveCost& mc, const Evaluation<DS>& e1, const Evaluation<DS>& e2)
+	virtual bool isImprovement(const MoveCost& mc, const Evaluation& e1, const Evaluation& e2)
 	{
 		double ec1 = mc.cost() + e1.evaluation();
 		if(betterThan(ec1, e2.evaluation()))
@@ -250,8 +249,7 @@ public:
 
 };
 
-template<class DS = OPTFRAME_DEFAULT_DS>
-class Minimization: public Direction<DS>
+class Minimization: public Direction
 {
 public:
 
@@ -271,8 +269,7 @@ public:
 	}
 };
 
-template<class DS = OPTFRAME_DEFAULT_DS>
-class Maximization: public Direction<DS>
+class Maximization: public Direction
 {
 public:
 

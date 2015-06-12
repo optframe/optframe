@@ -26,8 +26,6 @@
 
 #include "../../OptFrame/Util/Matrix.hpp"
 
-#include "Memory.h"
-
 #include <vector>
 
 using namespace std;

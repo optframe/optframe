@@ -45,7 +45,7 @@ public:
 	{
 	}
 
-	MoveCost* cost(const Evaluation<MemEtII>&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost* cost(const Evaluation&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		//considering the puzzle huge than 2x2
 		// corner0 -------------------------------- corner1

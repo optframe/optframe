@@ -29,8 +29,8 @@ using namespace optframe;
 
 // Working structure: vector<vector<T> >
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MoveTSPOrOptk: public Move<vector<T> , ADS, DS >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
+class MoveTSPOrOptk: public Move<vector<T>, ADS>
 {
 	typedef vector<T> Route;
 
@@ -43,11 +43,11 @@ protected:
 
 public:
 
-	using Move<vector<T> , ADS, DS >::apply;
-	using Move<vector<T> , ADS, DS >::canBeApplied;
+	using Move<vector<T>, ADS>::apply;
+	using Move<vector<T>, ADS>::canBeApplied;
 
 	MoveTSPOrOptk(int _i, int _j, int _k, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
-		i(_i), j(_j), k(_k), problem(_problem)
+			i(_i), j(_j), k(_k), problem(_problem)
 	{
 	}
 
@@ -76,7 +76,7 @@ public:
 		return abs(i - j) >= k;
 	}
 
-	virtual Move<Route, ADS, DS >* apply(Route& rep, ADS&)
+	virtual Move<Route, ADS>* apply(Route& rep, ADS&)
 	{
 		vector<T> v_aux;
 		v_aux.insert(v_aux.begin(), rep.begin() + i, rep.begin() + i + k);
@@ -86,15 +86,15 @@ public:
 		return new MoveTSPOrOptk(j, i, k);
 	}
 
-	virtual bool operator==(const Move<Route, ADS, DS >& _m) const
-	{
+	virtual bool operator==(const Move<Route, ADS>& _m) const
+			{
 		const MoveTSPOrOptk& m1 = (const MoveTSPOrOptk&) _m;
 		return (m1.i == i) && (m1.j == j) && (m1.k == k);
 	}
 
 	static string idComponent()
 	{
-		string idComp = Move<vector<T>, ADS, DS>::idComponent();
+		string idComp = Move<vector<T>, ADS>::idComponent();
 		idComp.append("MoveTSPOrOptk");
 		return idComp;
 	}

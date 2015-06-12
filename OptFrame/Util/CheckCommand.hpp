@@ -38,12 +38,12 @@ private:
 
 	bool convertNS;
 
-	vector<Evaluator<R, ADS, DS>*> lEvaluator;
+	vector<Evaluator<R, ADS>*> lEvaluator;
 	vector<Constructive<R, ADS>*> lConstructive;
-	vector<Move<R, ADS, DS>*> lMove;
-	vector<NS<R, ADS, DS>*> lNS;
-	vector<NSSeq<R, ADS, DS>*> lNSSeq;
-	//vector<NSEnum<R, ADS, DS>*> lNSEnum;
+	vector<Move<R, ADS>*> lMove;
+	vector<NS<R, ADS>*> lNS;
+	vector<NSSeq<R, ADS>*> lNSSeq;
+	//vector<NSEnum<R, ADS>*> lNSEnum;
 
 public:
 
@@ -66,40 +66,40 @@ public:
 			cout << "checkcommand: Constructive " << lConstructive.size() << " added!" << endl;
 	}
 
-	void add(Evaluator<R, ADS, DS>& c)
+	void add(Evaluator<R, ADS>& c)
 	{
 		lEvaluator.push_back(&c);
 		if (verbose)
 			cout << "checkcommand: Evaluator " << lEvaluator.size() << " added!" << endl;
 	}
 
-	void add(Move<R, ADS, DS>& c)
+	void add(Move<R, ADS>& c)
 	{
 		lMove.push_back(&c);
 		if (verbose)
 			cout << "checkcommand: Move " << lMove.size() << " added!" << endl;
 	}
 
-	void add(NS<R, ADS, DS>& c)
+	void add(NS<R, ADS>& c)
 	{
 		lNS.push_back(&c);
 		if (verbose)
 			cout << "checkcommand: NS " << lNS.size() << " added!" << endl;
 	}
 
-	void add(NSSeq<R, ADS, DS>& c)
+	void add(NSSeq<R, ADS>& c)
 	{
 		lNSSeq.push_back(&c);
 		if (verbose)
 			cout << "checkcommand: NSSeq " << lNSSeq.size() << " added!" << endl;
 		if (convertNS)
-			add((NS<R, ADS, DS>&) c);
+			add((NS<R, ADS>&) c);
 	}
 
-	void add(NSEnum<R, ADS, DS>& c)
+	void add(NSEnum<R, ADS>& c)
 	{
 		if (convertNS)
-			add((NSSeq<R, ADS, DS>&) c);
+			add((NSSeq<R, ADS>&) c);
 		else
 			cout << "checkcommand warning! NSEnum not used!" << endl;
 	}
@@ -160,7 +160,7 @@ public:
 		// read evaluators
 		// ----------------
 
-		vector<Evaluator<R, ADS, DS>*> evaluators;
+		vector<Evaluator<R, ADS>*> evaluators;
 		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
 			evaluators.push_back(lEvaluator[ev]);
 
@@ -172,7 +172,7 @@ public:
 		// ----------------------------------------------------------------------------------------
 
 		vector<Solution<R, ADS>*> solutions;
-		vector<vector<Evaluation<DS>*> > evaluations(evaluators.size());
+		vector<vector<Evaluation*> > evaluations(evaluators.size());
 
 		vector<pair<int, double> > timeConstructive(lConstructive.size(), make_pair(0, 0.0));
 
@@ -207,7 +207,7 @@ public:
 				{
 					message(lEvaluator.at(ev), iter, "evaluating solution.");
 					Timer te;
-					Evaluation<DS>& e = evaluators.at(ev)->evaluate(s);
+					Evaluation& e = evaluators.at(ev)->evaluate(s);
 					fullTimeEval[ev].second += te.inMilliSecs();
 					fullTimeEval[ev].first++;
 
@@ -232,7 +232,7 @@ public:
 
 		for (unsigned id_move = 0; id_move < lMove.size(); id_move++)
 		{
-			Move<R, ADS, DS>* pmove = lMove.at(id_move);
+			Move<R, ADS>* pmove = lMove.at(id_move);
 
 			cout << "checkcommand: testing " << pmove->toString();
 			cout << endl;
@@ -245,7 +245,7 @@ public:
 
 				Solution<R, ADS>& s = *solutions.at(id_s);
 
-				Move<R, ADS, DS>& move = *pmove;
+				Move<R, ADS>& move = *pmove;
 
 				if (!move.canBeApplied(s))
 				{
@@ -269,7 +269,7 @@ public:
 
 					message(moveFrom, -1, "testing reverse.");
 
-					Move<R, ADS, DS>* rev = move.apply(s);
+					Move<R, ADS>* rev = move.apply(s);
 
 					Timer t_clone;
 					Solution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
@@ -297,9 +297,9 @@ public:
 
 					}
 
-					Evaluation<DS>& e_rev = evaluators.at(ev)->evaluate(s);
+					Evaluation& e_rev = evaluators.at(ev)->evaluate(s);
 
-					Move<R, ADS, DS>* ini = NULL;
+					Move<R, ADS>* ini = NULL;
 
 					if (rev)
 						ini = rev->apply(s);
@@ -328,7 +328,7 @@ public:
 						}
 					}
 
-					Evaluation<DS>& e_ini = evaluators.at(ev)->evaluate(s);
+					Evaluation& e_ini = evaluators.at(ev)->evaluate(s);
 
 					if (ini && (*ini != move))
 					{
@@ -345,7 +345,7 @@ public:
 					}
 
 					message(lEvaluator.at(ev), -1, "testing reverse value.");
-					Evaluation<DS>& e = *evaluations.at(ev).at(id_s);
+					Evaluation& e = *evaluations.at(ev).at(id_s);
 
 					if (abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
 					{
@@ -381,9 +381,9 @@ public:
 					}
 
 					// fasterCost
-					Move<R, ADS, DS>& rev1 = evaluators[ev]->applyMove(e, move, s);
+					Move<R, ADS>& rev1 = evaluators[ev]->applyMove(e, move, s);
 					double e_end1 = e.evaluation();
-					Move<R, ADS, DS>& ini1 = evaluators[ev]->applyMove(e, rev1, s);
+					Move<R, ADS>& ini1 = evaluators[ev]->applyMove(e, rev1, s);
 					double e_ini1 = e.evaluation();
 
 					delete &rev1;
@@ -469,7 +469,7 @@ public:
 
 		for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++)
 		{
-			NS<R, ADS, DS>* ns = lNS.at(id_ns);
+			NS<R, ADS>* ns = lNS.at(id_ns);
 
 			cout << "checkcommand: testing " << ns->toString();
 			cout << endl;
@@ -489,7 +489,7 @@ public:
 
 					Solution<R, ADS>& s = *solutions.at(id_s);
 
-					Move<R, ADS, DS>& move = ns->move(s);
+					Move<R, ADS>& move = ns->move(s);
 					if (verbose)
 						move.print();
 
@@ -527,7 +527,7 @@ public:
 						timeCloneSolution.first++;
 
 						Timer tMovApply;
-						Move<R, ADS, DS>* rev = move.apply(s);
+						Move<R, ADS>* rev = move.apply(s);
 						timeNSApply[id_ns].second += tMovApply.inMilliSecs();
 						timeNSApply[id_ns].first++;
 
@@ -563,12 +563,12 @@ public:
 						}
 
 						Timer te;
-						Evaluation<DS>& e_rev = evaluators.at(ev)->evaluate(s);
+						Evaluation& e_rev = evaluators.at(ev)->evaluate(s);
 						fullTimeEval[ev].second += te.inMilliSecs();
 						fullTimeEval[ev].first++;
 
 						Timer tMovRevApply;
-						Move<R, ADS, DS>* ini = NULL;
+						Move<R, ADS>* ini = NULL;
 						if (rev)
 							ini = rev->apply(s);
 						timeNSApply[id_ns].second += tMovRevApply.inMilliSecs();
@@ -603,7 +603,7 @@ public:
 						delete &sOriginal;
 
 						Timer te2;
-						Evaluation<DS>& e_ini = evaluators.at(ev)->evaluate(s);
+						Evaluation& e_ini = evaluators.at(ev)->evaluate(s);
 						fullTimeEval[ev].second += te2.inMilliSecs();
 						fullTimeEval[ev].first++;
 
@@ -622,7 +622,7 @@ public:
 						}
 
 						message(lEvaluator.at(ev), iter, "testing reverse value.");
-						Evaluation<DS>& e = *evaluations.at(ev).at(id_s);
+						Evaluation& e = *evaluations.at(ev).at(id_s);
 
 						if (abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
 						{
@@ -664,9 +664,9 @@ public:
 
 						// fasterCost
 						Timer tMoveCostApplyDelta;
-						Move<R, ADS, DS>& rev1 = evaluators[ev]->applyMove(e, move, s);
+						Move<R, ADS>& rev1 = evaluators[ev]->applyMove(e, move, s);
 						double e_end1 = e.evaluation();
-						Move<R, ADS, DS>& ini1 = evaluators[ev]->applyMove(e, rev1, s);
+						Move<R, ADS>& ini1 = evaluators[ev]->applyMove(e, rev1, s);
 						double e_ini1 = e.evaluation();
 						timeNSCostApplyDelta[id_ns].second += tMoveCostApplyDelta.inMilliSecs();
 						timeNSCostApplyDelta[id_ns].first++;
@@ -736,7 +736,7 @@ public:
 
 							// testing double move costs! (for MoveCost betterThan)
 
-							Move<R, ADS, DS>& move2 = ns->move(s);
+							Move<R, ADS>& move2 = ns->move(s);
 							if (verbose)
 							{
 								cout << "testing double move!" << endl;
@@ -802,7 +802,7 @@ public:
 
 		for (unsigned id_nsseq = 0; id_nsseq < lNSSeq.size(); id_nsseq++)
 		{
-			NSSeq<R, ADS, DS>* nsseq = lNSSeq.at(id_nsseq);
+			NSSeq<R, ADS>* nsseq = lNSSeq.at(id_nsseq);
 
 			cout << "checkcommand: testing " << nsseq->toString();
 			cout << endl;
@@ -827,7 +827,7 @@ public:
 
 				 for (int i = 0; i < shaking; i++)
 				 {
-				 Move<R, ADS, DS>* moveValid = nsseq->validMove(s);
+				 Move<R, ADS>* moveValid = nsseq->validMove(s);
 
 				 if (moveValid != NULL)
 				 {
@@ -844,7 +844,7 @@ public:
 				 message(lNSSeq.at(id_nsseq), nqs, "Warning. Couldn't apply a move before iterator tests (NSSeq tests).");
 				 */
 
-				NSIterator<R, ADS, DS>& it = nsseq->getIterator(s);
+				NSIterator<R, ADS>& it = nsseq->getIterator(s);
 
 				for (it.first(); !it.isDone(); it.next())
 				{
@@ -852,7 +852,7 @@ public:
 						cout << endl;
 					message(lNSSeq.at(id_nsseq), nqs, "getting current move (NSSeq tests).");
 
-					Move<R, ADS, DS>& move = it.current();
+					Move<R, ADS>& move = it.current();
 					countMoves++;
 
 					if (!move.canBeApplied(s))
@@ -871,7 +871,7 @@ public:
 					{
 						message(lEvaluator.at(ev), nqs, "evaluating random move (apply, revert and moveCost) in NSSeq tests.");
 
-						Evaluation<DS>& e = evaluators[ev]->evaluate(s);
+						Evaluation& e = evaluators[ev]->evaluate(s);
 
 						string moveFrom = "Move ";
 						moveFrom.append(move.id());
@@ -886,7 +886,7 @@ public:
 						message(moveFrom, nqs, "testing reverse.");
 
 						Timer tMovApply;
-						Move<R, ADS, DS>* rev = move.apply(s);
+						Move<R, ADS>* rev = move.apply(s);
 						timeNSApply[id_nsseq].second += tMovApply.inMilliSecs();
 						timeNSApply[id_nsseq].first++;
 
@@ -896,19 +896,19 @@ public:
 						timeCloneSolution.first++;
 
 						Timer te;
-						Evaluation<DS>& e_rev = evaluators.at(ev)->evaluate(s);
+						Evaluation& e_rev = evaluators.at(ev)->evaluate(s);
 						fullTimeEval[ev].second += te.inMilliSecs();
 						fullTimeEval[ev].first++;
 
 						Timer tMovRevApply;
-						Move<R, ADS, DS>* ini = NULL;
+						Move<R, ADS>* ini = NULL;
 						if(rev)
 							ini = rev->apply(s);
 						timeNSApply[id_nsseq].second += tMovRevApply.inMilliSecs();
 						timeNSApply[id_nsseq].first++;
 
 						Timer te2;
-						Evaluation<DS>& e_ini = evaluators.at(ev)->evaluate(s);
+						Evaluation& e_ini = evaluators.at(ev)->evaluate(s);
 						fullTimeEval[ev].second += te2.inMilliSecs();
 						fullTimeEval[ev].first++;
 
@@ -999,9 +999,9 @@ public:
 
 						// fasterCost
 						Timer tMoveCostApplyDelta;
-						Move<R, ADS, DS>& rev1 = evaluators[ev]->applyMove(e, move, s);
+						Move<R, ADS>& rev1 = evaluators[ev]->applyMove(e, move, s);
 						double e_end1 = e.evaluation();
-						Move<R, ADS, DS>& ini1 = evaluators[ev]->applyMove(e, rev1, s);
+						Move<R, ADS>& ini1 = evaluators[ev]->applyMove(e, rev1, s);
 						double e_ini1 = e.evaluation();
 						timeNSCostApplyDelta[id_nsseq].second += tMoveCostApplyDelta.inMilliSecs();
 						timeNSCostApplyDelta[id_nsseq].first++;
@@ -1137,7 +1137,7 @@ public:
 	}
 
 	template<class T>
-	vector<T*> assignVector(const vector<string> lComponents, T* type, HeuristicFactory<R, ADS, DS>& factory)
+	vector<T*> assignVector(const vector<string> lComponents, T* type, HeuristicFactory<R, ADS>& factory)
 	{
 		vector<T*> vComp;
 		for (unsigned i = 0; i < lComponents.size(); i++)

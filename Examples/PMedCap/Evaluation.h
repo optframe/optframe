@@ -22,11 +22,9 @@
 #define PCAP_EVALUATION_H_
 
 #include "../../OptFrame/Evaluation.hpp"
-#include "../../OptFrame/Util/TestEvaluation.hpp"
+//#include "../../OptFrame/Util/TestEvaluation.hpp"
 
-#include "Memory.h"
-
-typedef Evaluation< > EvaluationPCAP;
+typedef Evaluation EvaluationPCAP;
 
 #endif /*PCAP_EVALUATION_H_*/
 

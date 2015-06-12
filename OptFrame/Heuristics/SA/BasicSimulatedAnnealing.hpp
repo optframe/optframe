@@ -29,13 +29,13 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class BasicSimulatedAnnealing: public SingleObjSearch<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class BasicSimulatedAnnealing: public SingleObjSearch<R, ADS>
 {
 private:
-	Evaluator<R, ADS, DS>& evaluator;
+	Evaluator<R, ADS>& evaluator;
 	Constructive<R, ADS>& constructive;
-	vector<NS<R, ADS, DS>*> neighbors;
+	vector<NS<R, ADS>*> neighbors;
 	RandGen& rg;
 	double alpha;
 	int SAmax;
@@ -43,7 +43,7 @@ private:
 
 public:
 
-	BasicSimulatedAnnealing(Evaluator<R, ADS, DS>& _evaluator, Constructive<R, ADS>& _constructive, vector<NS<R, ADS, DS>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(Evaluator<R, ADS>& _evaluator, Constructive<R, ADS>& _constructive, vector<NS<R, ADS>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg)
 	{
 		alpha = (_alpha);
@@ -52,7 +52,7 @@ public:
 
 	}
 
-	BasicSimulatedAnnealing(Evaluator<R, ADS, DS>& _evaluator, Constructive<R, ADS>& _constructive, NS<R, ADS, DS>* _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(Evaluator<R, ADS>& _evaluator, Constructive<R, ADS>& _constructive, NS<R, ADS>* _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), rg(_rg)
 	{
 		neighbors.push_back(_neighbors);
@@ -65,26 +65,26 @@ public:
 	{
 	}
 
-	pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL,  const Evaluation<DS>* _e = NULL)
+	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL,  const Evaluation* _e = NULL)
 	{
 		cout << "SA search(" << target_f << "," << timelimit << ")" << endl;
 
 		Timer tnow;
 
 		Solution<R, ADS>& s = constructive.generateSolution();
-		Evaluation<DS>& e = evaluator.evaluate(s);
+		Evaluation& e = evaluator.evaluate(s);
 
 		double T = Ti;
 		int iterT = 0;
 		Solution<R, ADS>* sStar = &s.clone();
-		Evaluation<DS>* eStar = &e.clone();
+		Evaluation* eStar = &e.clone();
 
 		while ((T > 0.000001) && (tnow.now() < timelimit))
 		{
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
 			{
 				int n = rg.rand(neighbors.size());
-				Move<R, ADS, DS>* move = &(neighbors[n]->move(s));
+				Move<R, ADS>* move = &(neighbors[n]->move(s));
 
 				while (!(move->canBeApplied(s)))
 				{
@@ -93,7 +93,7 @@ public:
 				}
 
 				Solution<R, ADS>* sCurrent = &s.clone();
-				Evaluation<DS>* eCurrent = &e.clone();
+				Evaluation* eCurrent = &e.clone();
 				Component::safe_delete(move->apply(*eCurrent, *sCurrent));
 				evaluator.evaluate(*eCurrent, *sCurrent);
 
@@ -146,7 +146,7 @@ public:
 		delete sStar;
 		delete eStar;
 
-		return new pair<Solution<R, ADS>&, Evaluation<DS>&> (s, e);
+		return new pair<Solution<R, ADS>&, Evaluation&> (s, e);
 	}
 
 	virtual string id() const
@@ -157,7 +157,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, DS>::idComponent() << ":SA:BasicSA";
+		ss << SingleObjSearch<R, ADS>::idComponent() << ":SA:BasicSA";
 		return ss.str();
 
 	}
@@ -165,38 +165,38 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class BasicSimulatedAnnealingBuilder: public SA, public SingleObjSearchBuilder<R, ADS, DS>
+class BasicSimulatedAnnealingBuilder: public SA, public SingleObjSearchBuilder<R, ADS>
 {
 public:
 	virtual ~BasicSimulatedAnnealingBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	virtual SingleObjSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
-		Evaluator<R, ADS, DS>* eval;
+		Evaluator<R, ADS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		Constructive<R, ADS>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<NS<R, ADS, DS>* > hlist;
+		vector<NS<R, ADS>* > hlist;
 		hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		double alpha = scanner.nextDouble();
 		int SAmax = scanner.nextInt();
 		double Ti = scanner.nextDouble();
 
-		return new BasicSimulatedAnnealing<R, ADS, DS> (*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
+		return new BasicSimulatedAnnealing<R, ADS> (*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(Constructive<R, ADS>::idComponent(), "constructive heuristic"));
 		stringstream ss;
-		ss << NS<R, ADS, DS>::idComponent() << "[]";
+		ss << NS<R, ADS>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of NS"));
 		params.push_back(make_pair("OptFrame:double", "cooling factor"));
 		params.push_back(make_pair("OptFrame:int", "number of iterations for each temperature"));
@@ -207,13 +207,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicSimulatedAnnealing<R, ADS, DS>::idComponent();
+		return component == BasicSimulatedAnnealing<R, ADS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << ":" << SA::family() << "BasicSA";
+		ss << SingleObjSearchBuilder<R, ADS>::idComponent() << ":" << SA::family() << "BasicSA";
 		return ss.str();
 	}
 

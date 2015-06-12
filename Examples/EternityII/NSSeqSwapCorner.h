@@ -27,7 +27,6 @@
 
 // Own includes
 #include "ProblemInstance.h"
-#include "Memory.h"
 #include "Solution.h"
 
 using namespace std;
@@ -36,15 +35,15 @@ using namespace optframe;
 namespace EtII
 {
 
-class MoveSwapCorner: public Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
+class MoveSwapCorner: public Move<RepEtII>
 {
 protected:
 	int x1, y1, x2, y2;
 
 public:
 
-	using Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::apply; // prevents name hiding
-	using Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::canBeApplied; // prevents name hiding
+	using Move<RepEtII>::apply; // prevents name hiding
+	using Move<RepEtII>::canBeApplied; // prevents name hiding
 
 	MoveSwapCorner(int _x1, int _y1, int _x2, int _y2) :
 		x1(_x1), y1(_y1), x2(_x2), y2(_y2)
@@ -60,7 +59,7 @@ public:
 		return true;
 	}
 
-	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>* apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS&)
+	Move<RepEtII>* apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS&)
 	{
 		Piece p = rep(x1, y1);
 		rep(x1, y1) = rep(x2, y2);
@@ -81,7 +80,7 @@ public:
 		return new MoveSwapCorner(x2, y2, x1, y1);
 	}
 
-	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>* apply(MemEtII& mem, RepEtII& rep, OPTFRAME_DEFAULT_ADS& ads)
+	Move<RepEtII>* apply(Evaluation& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS& ads)
 	{
 		int f = 0;
 
@@ -105,7 +104,7 @@ public:
 		if (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).up == rep(rep.getNumRows() - 2, rep.getNumCols() - 1).down)
 			f++;
 
-		Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& rev = *apply(rep, ads);
+		Move<RepEtII>& rev = *apply(rep, ads);
 
 		int f2 = 0;
 
@@ -129,12 +128,12 @@ public:
 		if (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).up == rep(rep.getNumRows() - 2, rep.getNumCols() - 1).down)
 			f2++;
 
-		mem += (f2 - f);
+		e.setObjFunction(e.getObjFunction()+(f2 - f));
 
 		return &rev;
 	}
 
-	virtual bool operator==(const Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& _m) const
+	virtual bool operator==(const Move<RepEtII>& _m) const
 	{
 		const MoveSwapCorner& m = (const MoveSwapCorner&) _m;
 		return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2);
@@ -151,7 +150,7 @@ public:
 	}
 };
 
-class NSIteratorSwapCorner: public NSIterator<RepEtII, MemEtII>
+class NSIteratorSwapCorner: public NSIterator<RepEtII>
 {
 private:
 	int x1, y1, x2, y2;
@@ -217,21 +216,21 @@ public:
 		return x2 > 1;
 	}
 
-	virtual Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& current()
+	virtual Move<RepEtII>& current()
 	{
 		return *new MoveSwapCorner(x1 * (nRows - 1), y1 * (nCols - 1), x2 * (nRows - 1), y2 * (nCols - 1));
 	}
 };
 
 template<class MOVE = MoveSwapCorner>
-class NSSeqSwapCorner: public NSSeq<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
+class NSSeqSwapCorner: public NSSeq<RepEtII>
 {
 private:
 	RandGen& rg;
 
 public:
 
-	using NSSeq<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::move; // prevents name hiding
+	using NSSeq<RepEtII>::move; // prevents name hiding
 
 	NSSeqSwapCorner(RandGen& _rg):rg(_rg)
 	{
@@ -241,7 +240,7 @@ public:
 	{
 	}
 
-	virtual Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& move(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
+	virtual Move<RepEtII>& move(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		int x1 = (rg.rand(2)) * (rep.getNumRows() - 1);
 		int y1 = (rg.rand(2)) * (rep.getNumCols() - 1);
@@ -258,7 +257,7 @@ public:
 		return *new MOVE(x1, y1, x2, y2);
 	}
 
-	virtual NSIterator<RepEtII, MemEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
+	virtual NSIterator<RepEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		// return an iterator to the neighbors of 'rep'
 		return *new NSIteratorSwapCorner(rep.getNumRows(), rep.getNumCols());

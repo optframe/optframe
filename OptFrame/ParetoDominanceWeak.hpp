@@ -38,19 +38,19 @@ using namespace std;
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ParetoDominanceWeak: public ParetoDominance<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class ParetoDominanceWeak: public ParetoDominance<R, ADS>
 {
 public:
-	using ParetoDominance<R, ADS, DS>::dominates;
+	using ParetoDominance<R, ADS>::dominates;
 
-	ParetoDominanceWeak(vector<Evaluator<R, ADS, DS>*> _v_e) :
-			ParetoDominance<R, ADS, DS>(_v_e)
+	ParetoDominanceWeak(vector<Evaluator<R, ADS>*> _v_e) :
+			ParetoDominance<R, ADS>(_v_e)
 	{
 	}
 
-	ParetoDominanceWeak(vector<Direction<DS>*> _v_d) :
-			ParetoDominance<R, ADS, DS>(_v_d)
+	ParetoDominanceWeak(vector<Direction*> _v_d) :
+			ParetoDominance<R, ADS>(_v_d)
 	{
 	}
 
@@ -58,16 +58,16 @@ public:
 	{
 	}
 
-	void insertEvaluators(vector<Evaluator<R, ADS, DS>*> _v_e)
+	void insertEvaluators(vector<Evaluator<R, ADS>*> _v_e)
 	{
-		ParetoDominance<R, ADS, DS>::v_e = _v_e;
+		ParetoDominance<R, ADS>::v_e = _v_e;
 	}
 
 	// true if 's1' weakly dominates 's2'
 	virtual bool dominates(const vector<double>& v1, const vector<double>& v2)
 	{
-		vector<Evaluator<R, ADS, DS>*>& v_e = ParetoDominance<R, ADS, DS>::v_e;
-		vector<Direction<DS>*>& v_d = ParetoDominance<R, ADS, DS>::v_d;
+		vector<Evaluator<R, ADS>*>& v_e = ParetoDominance<R, ADS>::v_e;
+		vector<Direction*>& v_d = ParetoDominance<R, ADS>::v_d;
 		// TODO: make inheritance
 
 		int better = 0;

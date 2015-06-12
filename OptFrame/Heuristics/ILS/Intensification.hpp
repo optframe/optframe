@@ -26,8 +26,8 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class Intensification : public LocalSearch<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class Intensification : public LocalSearch<R, ADS>
 {
 public:
 
@@ -47,7 +47,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, DS>::idComponent() << "INTENSIFICATION:";
+		ss << LocalSearch<R, ADS>::idComponent() << "INTENSIFICATION:";
 		return ss.str();
 
 	}

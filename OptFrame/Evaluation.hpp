@@ -57,13 +57,12 @@ typedef bool Status; // 'unknown' = false, 'local optimum' = true
  \endportuguese
  */
 
-template<class DS = OPTFRAME_DEFAULT_DS>
 class Evaluation: public Component
 {
 protected:
+	// pair<double,double>: OST (Objective Space Type)
 	double objFunction;
 	double infMeasure;
-	DS* ds; // delta structure
 
 	map<string, Status> localStatus; // mapping 'move.id()' to 'NeighborhoodStatus'
 	Status globalOptimum;            // for exact methods only
@@ -71,25 +70,14 @@ protected:
 	vector<pair<double, double> > alternatives; // for lexicographic approaches
 
 public:
-	Evaluation(double obj, double inf, DS& _ds) :
-			objFunction(obj), infMeasure(inf), ds(new DS(_ds))
+	Evaluation(double obj, double inf) :
+			objFunction(obj), infMeasure(inf)
 	{
 		globalOptimum = false;
 	}
 
 
-	Evaluation(double obj, DS& _ds) :
-			ds(new DS(_ds))
-	{
-		objFunction = obj;
-		infMeasure = 0;
-
-		globalOptimum = false;
-	}
-
-
-	explicit Evaluation(double obj) :
-			ds(new DS)
+	Evaluation(double obj)
 	{
 		objFunction = obj;
 		infMeasure = 0;
@@ -97,25 +85,15 @@ public:
 		globalOptimum = false;
 	}
 
-	Evaluation(const Evaluation<DS>& e) :
-			objFunction(e.objFunction), infMeasure(e.infMeasure), ds(new DS(*e.ds)), globalOptimum(e.globalOptimum), alternatives(e.alternatives)
+
+	Evaluation(const Evaluation& e) :
+			objFunction(e.objFunction), infMeasure(e.infMeasure), globalOptimum(e.globalOptimum), alternatives(e.alternatives)
 	{
 	}
 
 
 	virtual ~Evaluation()
 	{
-		delete ds;
-	}
-
-	const DS& getDS() const
-	{
-		return *ds;
-	}
-
-	DS& getDS()
-	{
-		return *ds;
 	}
 
 	double getObjFunction() const
@@ -131,13 +109,6 @@ public:
 	const vector<pair<double, double> >& getAlternativeCosts() const
 	{
 		return alternatives;
-	}
-
-	// leave option to rewrite with clone()
-	virtual void setDS(const DS& _ds)
-	{
-		delete ds;
-		ds = new DS(_ds);
 	}
 
 	void setObjFunction(double obj)
@@ -243,7 +214,6 @@ public:
 		if (&e == this) // auto ref check
 			return *this;
 
-		(*ds) = (*e.ds);
 		objFunction = e.objFunction;
 		infMeasure = e.infMeasure;
 		alternatives = e.alternatives;
@@ -251,123 +221,10 @@ public:
 		return *this;
 	}
 
-	virtual Evaluation<DS>& clone() const
+	virtual Evaluation& clone() const
 	{
-		return *new Evaluation<DS>(*this);
+		return *new Evaluation(*this);
 	}
-};
-
-
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class EvaluationAction: public Action<R, ADS, DS>
-{
-public:
-
-	virtual ~EvaluationAction()
-	{
-	}
-
-	virtual string usage()
-	{
-		return "OptFrame:Evaluation idx  evaluation  output_variable";
-	}
-
-	virtual bool handleComponent(string type)
-	{
-		return Component::compareBase(Evaluation<DS>::idComponent(), type);
-	}
-
-	virtual bool handleComponent(Component& component)
-	{
-		return component.compatible(Evaluation<DS>::idComponent());
-	}
-
-	virtual bool handleAction(string action)
-	{
-		return (action == "evaluation");
-	}
-
-	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& d)
-	{
-		if(!handleComponent(type))
-		{
-			cout << "EvaluationAction::doCast error: can't handle component type '" << type << " " << id << "'" << endl;
-			return false;
-		}
-
-		Component* comp = hf.components[component].at(id);
-
-		if(!comp)
-		{
-			cout << "EvaluationAction::doCast error: NULL component '" << component << " " << id << "'" << endl;
-			return false;
-		}
-
-		if(!Component::compareBase(comp->id(), type))
-		{
-			cout << "EvaluationAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
-			return false;
-		}
-
-		// remove old component from factory
-		hf.components[component].at(id) = NULL;
-
-		// cast object to lower type
-		Component* final = NULL;
-
-		if(type == Evaluation<DS>::idComponent())
-		{
-			final = (Evaluation<DS>*) comp;
-		}
-		else
-		{
-			cout << "EvaluationAction::doCast error: no cast for type '" << type << "'" << endl;
-			return false;
-		}
-
-		// add new component
-		Scanner scanner(variable);
-		return ComponentAction<R, ADS, DS>::addAndRegister(scanner, *final, hf, d);
-	}
-
-	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
-	{
-		//cout << "Evaluation::doAction '" << content << "'" << endl;
-
-		Scanner scanner(content);
-
-		if (!scanner.hasNext())
-			return false;
-
-		Evaluation<DS>* e;
-		hf.assign(e, scanner.nextInt(), scanner.next());
-
-		if (!e)
-			return false;
-
-		if (!scanner.hasNext())
-			return false;
-
-		string action = scanner.next();
-
-		if (!handleAction(action))
-			return false;
-
-		if (action == "evaluation")
-		{
-			if (!scanner.hasNext())
-				return false;
-
-			string var = scanner.next();
-
-			dictionary[var] = Action<R, ADS, DS>::formatDouble(e->evaluation());
-
-			return true;
-		}
-		else
-			return false;
-	}
-
 };
 
 }

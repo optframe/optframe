@@ -31,7 +31,7 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class Population: public Component
 {
 protected:
@@ -128,7 +128,7 @@ public:
 		return pFitness[pos];
 	}
 
-	void add(const Population<R, ADS, DS>& pop)
+	void add(const Population<R, ADS>& pop)
 	{
 		for (unsigned i = 0; i < pop.size(); i++)
 		{
@@ -227,13 +227,13 @@ public:
 		}
 	}
 
-	chromossome& cloneBestChromossome(Evaluator<R, ADS, DS>& eval)
+	chromossome& cloneBestChromossome(Evaluator<R, ADS>& eval)
 	{
 		vector<pair<Solution<R, ADS>, double> > v;
 
 		for (int i = 0; i < p.size(); i++)
 		{
-			Evaluation<DS>& e = eval.evaluate(p[i]);
+			Evaluation& e = eval.evaluate(p[i]);
 			v.push_back(make_pair(*p[i], e.evaluation()));
 			delete &e;
 		}

@@ -31,8 +31,7 @@ using namespace std;
 namespace optframe
 {
 
-template<class DS = OPTFRAME_DEFAULT_DS>
-class TestEvaluation: public Evaluation<DS>
+class TestEvaluation: public Evaluation
 {
 private:
 	static const unsigned long long MAX_EV_IN_MEMORY_ERROR = 1000;
@@ -45,8 +44,8 @@ private:
 
 public:
 
-	TestEvaluation(double obj, double inf, DS& mm) :
-		Evaluation<DS> (obj, inf, mm)
+	TestEvaluation(double obj, double inf) :
+			Evaluation(obj, inf)
 	{
 		ev_objects++;
 		ev_objects_nodecrement++;
@@ -55,8 +54,8 @@ public:
 		ev_number = ev_objects_nodecrement;
 	}
 
-	TestEvaluation(double obj, DS& mm) :
-		Evaluation<DS> (obj, mm)
+	TestEvaluation(double obj) :
+			Evaluation(obj)
 	{
 		ev_objects++;
 		ev_objects_nodecrement++;
@@ -65,8 +64,8 @@ public:
 		ev_number = ev_objects_nodecrement;
 	}
 
-	TestEvaluation(const TestEvaluation<DS>& e) :
-		Evaluation<DS> (e)
+	TestEvaluation(const TestEvaluation& e) :
+			Evaluation(e)
 	{
 		ev_objects++;
 		ev_objects_nodecrement++;
@@ -85,14 +84,14 @@ public:
 
 		if (ev_objects >= MAX_EV_IN_MEMORY_WARNING)
 		{
-			cout << "WARNING: " << TestEvaluation<DS>::ev_objects
+			cout << "WARNING: " << TestEvaluation::ev_objects
 					<< " Evaluation objects in memory!" << endl;
-			TestEvaluation<DS>::MAX_EV_IN_MEMORY_WARNING++;
+			TestEvaluation::MAX_EV_IN_MEMORY_WARNING++;
 		}
 
 		if (ev_objects >= MAX_EV_IN_MEMORY_ERROR)
 		{
-			cout << "ERROR: " << TestEvaluation<DS>::ev_objects
+			cout << "ERROR: " << TestEvaluation::ev_objects
 					<< " Evaluation objects in memory!" << endl;
 			cout << "MAX_EV_IN_MEMORY_ERROR = " << MAX_EV_IN_MEMORY_ERROR
 					<< endl;
@@ -106,47 +105,43 @@ public:
 		cout << "TestEvaluation #" << ev_number << " (" << ev_objects
 				<< " in memory now) - ";
 
-		cout << "Evaluation function value = " << Evaluation<DS>::evaluation();
-		cout << (Evaluation<DS>::isFeasible() ? " " : " (not feasible) ")
+		cout << "Evaluation function value = " << Evaluation::evaluation();
+		cout << (Evaluation::isFeasible() ? " " : " (not feasible) ")
 				<< endl;
 
 		// default - not printing memory
-		//cout << Evaluation<DS>::m << endl;
+		//cout << Evaluation::m << endl;
 	}
 
-	TestEvaluation<DS>& operator=(const TestEvaluation<DS>& e)
+	TestEvaluation& operator=(const TestEvaluation& e)
 	{
 		if (&e == this) // auto ref check
 			return *this;
 
-		*this = Evaluation<DS>::operator=(e);
+		*this = Evaluation::operator=(e);
 
 		// do not copy the 'ev_number'
 
 		return *this;
 	}
 
-	Evaluation<DS>& operator=(const Evaluation<DS>& e)
+	Evaluation& operator=(const Evaluation& e)
 	{
-		return operator=((const TestEvaluation<DS>&) e);
+		return operator=((const TestEvaluation&) e);
 	}
 
-	Evaluation<DS>& clone() const
+	Evaluation& clone() const
 	{
-		Evaluation<DS>* e = new TestEvaluation<DS> (*this);
+		Evaluation* e = new TestEvaluation(*this);
 		return (*e);
 	}
 };
 
-template<class DS >
-unsigned long long TestEvaluation<DS>::MAX_EV_IN_MEMORY_WARNING = 0.7
-		* MAX_EV_IN_MEMORY_ERROR;
+unsigned long long TestEvaluation::MAX_EV_IN_MEMORY_WARNING = 0.7 * MAX_EV_IN_MEMORY_ERROR;
 
-template<class DS >
-unsigned long long TestEvaluation<DS>::ev_objects = 0;
+unsigned long long TestEvaluation::ev_objects = 0;
 
-template<class DS >
-unsigned long long TestEvaluation<DS>::ev_objects_nodecrement = 0;
+unsigned long long TestEvaluation::ev_objects_nodecrement = 0;
 
 }
 

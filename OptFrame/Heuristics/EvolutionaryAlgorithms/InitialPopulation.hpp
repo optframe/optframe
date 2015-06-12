@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_INITIALPOPULATION_H_
-#define OPTFRAME_INITIALPOPULATION_H_
+#ifndef OPTFRAME_INITIALPOPULATION_HPP_
+#define OPTFRAME_INITIALPOPULATION_HPP_
 
 #include "../../Component.hpp"
 #include "../../Constructive.h"
@@ -103,15 +103,15 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class BasicInitialPopulationBuilder: public ComponentBuilder<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class BasicInitialPopulationBuilder: public ComponentBuilder<R, ADS>
 {
 public:
 	virtual ~BasicInitialPopulationBuilder()
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
 		Constructive<R, ADS>* c;
 		hf.assign(c, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -134,7 +134,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, DS>::idComponent() << "" << EA::family() << ":BasicInitialPopulation";
+		ss << ComponentBuilder<R, ADS>::idComponent() << "" << EA::family() << ":BasicInitialPopulation";
 		return ss.str();
 	}
 
@@ -145,4 +145,4 @@ public:
 };
 }
 
-#endif /*OPTFRAME_INITIALPOPULATION_H_*/
+#endif /*OPTFRAME_INITIALPOPULATION_HPP_*/

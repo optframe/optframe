@@ -34,8 +34,8 @@ using namespace std;
 //============================================================================
 
 
-template<class T, class DS >
-class NSEnumVectorShift: public NSEnum< vector<T>, DS >
+template<class T >
+class NSEnumVectorShift: public NSEnum< vector<T> >
 {
 private:
 	int n;
@@ -48,7 +48,7 @@ public:
 	}
 
 
-	virtual Move<vector<T>,DS >* kmove(int k)
+	virtual Move<vector<T> >* kmove(int k)
 	{
 		if(k>size())
 		{
@@ -58,7 +58,7 @@ public:
 			return NULL;
 		}
 
-		return new MoveVectorShift<T,DS >((k/n), (k%n) );
+		return new MoveVectorShift<T >((k/n), (k%n) );
 	}
 
 

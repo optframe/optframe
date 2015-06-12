@@ -23,9 +23,7 @@
 
 #include "../../OptFrame/Evaluation.hpp"
 
-#include "Memory.h"
-
-typedef Evaluation<MemOptHS> EvaluationOptHS;
+typedef Evaluation EvaluationOptHS;
 
 #endif /*OptHS_EVALUATION_H_*/
 

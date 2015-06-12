@@ -22,7 +22,6 @@
 #define TSP_DELTA_MOVETSP_OROPTK_HPP_
 
 #include "../../OptFrame/Util/NeighborhoodStructures/Moves/MoveTSPOrOptk.hpp"
-#include "Memory.h"
 #include "Solution.h"
 #include "ProblemInstance.h"
 
@@ -34,9 +33,9 @@ using namespace std;
 namespace TSP
 {
 
-class DeltaMoveTSPOrOptk: public MoveTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP >
+class DeltaMoveTSPOrOptk: public MoveTSPOrOptk<int >
 {
-	typedef MoveTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP> super;
+	typedef MoveTSPOrOptk<int> super;
 
 private:
 	ProblemInstance* tsp;
@@ -82,7 +81,7 @@ public:
 	*/
 
 
-	MoveCost* cost(const Evaluation<MemTSP>&, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost* cost(const Evaluation&, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		// before i and j
 		int bi = i - 1;
@@ -163,7 +162,7 @@ public:
 		return idComp;
 	}
 
-	virtual bool operator==(const Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP >& _m) const
+	virtual bool operator==(const Move<RepTSP>& _m) const
 	{
 		const DeltaMoveTSPOrOptk& m1 = (const DeltaMoveTSPOrOptk&) _m;
 		return (m1.i == i) && (m1.j == j) && (m1.k == k);

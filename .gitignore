@@ -1,3 +1,5 @@
 *~
 *.o
 app_*
+.project
+.cproject

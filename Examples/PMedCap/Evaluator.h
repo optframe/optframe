@@ -29,7 +29,6 @@
 #include "../../OptFrame/Evaluator.hpp"
 
 #include "Representation.h"
-#include "Memory.h"
 #include "Solution.h"
 #include "Evaluation.h"
 
@@ -99,7 +98,7 @@ public:
 
 		fo_Inv = fo_Inv * 10000 + fo_medAlocada;
 
-		return *new EvaluationPCAP(fo, fo_Inv, *new int);
+		return *new Evaluation(fo, fo_Inv);
 	}
 
 	virtual bool betterThan(double f1, double f2)

@@ -42,11 +42,11 @@ using namespace scannerpp;
 
 int main(int argc, char **argv)
 {
-	Loader<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe;
+	Loader<RepTSP> optframe;
 	TSPProblemCommand tsp;
 	tsp.load("./TSP/tsplib/berlin52.txt", optframe.factory, optframe.dictionary, optframe.ldictionary);
 
-	CheckCommand<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> check(false);
+	CheckCommand<RepTSP> check(false);
 
 	RandGen rg;
 	RandomInitialSolutionTSP random(tsp.p, rg);
@@ -55,20 +55,20 @@ int main(int argc, char **argv)
 	TSPEvaluator eval(tsp.p);
 	NSEnumSwap enumswap(tsp.p, rg);
 
-	NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);
-	NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP> tsp2opt;
-	NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP, DeltaMoveTSPOrOptk, ProblemInstance> nsseq_delta_or1(1, tsp.p);
-	NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP> tspor1(1);
-	NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP> tspor2(2);
-	NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, MemTSP> tspor3(3);
-	NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS, MemTSP> tspswap;
+	NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);
+	NSSeqTSP2Opt<int> tsp2opt;
+	NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSPOrOptk, ProblemInstance> nsseq_delta_or1(1, tsp.p);
+	NSSeqTSPOrOptk<int> tspor1(1);
+	NSSeqTSPOrOptk<int> tspor2(2);
+	NSSeqTSPOrOptk<int> tspor3(3);
+	NSSeqTSPSwap<int> tspswap;
 
 	check.add(random);
 	check.add(cnn);
 	check.add(cbi);
 	check.add(eval);
 	check.add(enumswap);
-	check.add(nsseq_delta_2opt);
+    check.add(nsseq_delta_2opt);
 	check.add(tsp2opt);
 	check.add(nsseq_delta_or1);
 	check.add(tspor1);
@@ -78,7 +78,7 @@ int main(int argc, char **argv)
 
 	check.run(100, 10);
 
-	BuildCommand<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> build;
+	BuildCommand<RepTSP> build;
 	for(unsigned i = 0; i <= 7; i++)
 	{
 		stringstream ss;

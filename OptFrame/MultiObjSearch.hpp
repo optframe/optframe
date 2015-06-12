@@ -42,12 +42,12 @@ using namespace std;
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class Pareto
 {
 private:
 	vector<Solution<R, ADS>*> paretoSet;
-	vector<vector<Evaluation<DS>*> > paretoFront;
+	vector<vector<Evaluation*> > paretoFront;
 
 public:
 
@@ -59,16 +59,16 @@ public:
 	{
 	}
 
-	void push_back(Solution<R, ADS>& s, vector<Evaluation<DS>*>& v_e)
+	void push_back(Solution<R, ADS>& s, vector<Evaluation*>& v_e)
 	{
 		paretoSet.push_back(&s);
 		paretoFront.push_back(v_e);
 	}
 
-	void push_back(Solution<R, ADS>* s, MultiEvaluation<DS>* mev)
+	void push_back(Solution<R, ADS>* s, MultiEvaluation* mev)
 	{
 		paretoSet.push_back(s);
-		vector<Evaluation<DS>*> v_e = mev->getCloneVector();
+		vector<Evaluation*> v_e = mev->getCloneVector();
 		paretoFront.push_back(v_e);
 		delete mev;
 	}
@@ -78,15 +78,15 @@ public:
 		return paretoSet.size();
 	}
 
-	pair<Solution<R, ADS>&, vector<Evaluation<DS>*> > erase(unsigned index)
+	pair<Solution<R, ADS>&, vector<Evaluation*> > erase(unsigned index)
 	{
-		pair<Solution<R, ADS>&, vector<Evaluation<DS>*> > p(*paretoSet.at(index), paretoFront.at(index));
+		pair<Solution<R, ADS>&, vector<Evaluation*> > p(*paretoSet.at(index), paretoFront.at(index));
 		paretoSet.erase(paretoSet.begin() + index);
 		paretoSet.erase(paretoFront.begin() + index);
 		return p;
 	}
 
-	pair<Solution<R, ADS>&, vector<Evaluation<DS>*> > at(unsigned index)
+	pair<Solution<R, ADS>&, vector<Evaluation*> > at(unsigned index)
 	{
 		return make_pair(*paretoSet.at(index), paretoFront.at(index));
 	}
@@ -96,17 +96,17 @@ public:
 		return paretoSet;
 	}
 
-	vector<vector<Evaluation<DS>*> > getParetoFront()
+	vector<vector<Evaluation*> > getParetoFront()
 	{
 		return paretoFront;
 	}
 
-	static vector<MultiEvaluation<DS>*> filterDominated(vector<Direction<DS>*>& vdir, const vector<MultiEvaluation<DS>*>& candidates)
+	static vector<MultiEvaluation*> filterDominated(vector<Direction*>& vdir, const vector<MultiEvaluation*>& candidates)
 	{
-		vector<MultiEvaluation<DS>*> nonDom;
+		vector<MultiEvaluation*> nonDom;
 
-		ParetoDominance<R, ADS, DS> pDom(vdir);
-		ParetoDominanceWeak<R, ADS, DS> pDomWeak(vdir);
+		ParetoDominance<R, ADS> pDom(vdir);
+		ParetoDominanceWeak<R, ADS> pDomWeak(vdir);
 
 		for(unsigned i = 0; i < candidates.size(); i++)
 			addSolution(pDom, pDomWeak, nonDom, candidates[i]);
@@ -121,15 +121,15 @@ public:
 	// class T must be handled by ParetoDominance operators (candidate: vector<double>, vector<Evaluation*>, MultiEvaluation*)
 
 	template<class T>
-	static bool addSolution(vector<Direction<DS>*>& vDir, vector<T*>& nonDom, T* candidate)
+	static bool addSolution(vector<Direction*>& vDir, vector<T*>& nonDom, T* candidate)
 	{
-		ParetoDominance<R, ADS, DS> dom(vDir);
-		ParetoDominanceWeak<R, ADS, DS> domWeak(vDir);
+		ParetoDominance<R, ADS> dom(vDir);
+		ParetoDominanceWeak<R, ADS> domWeak(vDir);
 		return addSolution(dom, domWeak, nonDom, candidate);
 	}
 
 	template<class T>
-	static bool addSolution(ParetoDominance<R, ADS, DS>& dom, ParetoDominanceWeak<R, ADS, DS>& domWeak, vector<T*>& nonDom, T* candidate)
+	static bool addSolution(ParetoDominance<R, ADS>& dom, ParetoDominanceWeak<R, ADS>& domWeak, vector<T*>& nonDom, T* candidate)
 	{
 		for(int ind = 0; ind < nonDom.size(); ind++)
 		{
@@ -147,12 +147,12 @@ public:
 		return true;
 	}
 
-	static vector<pair<Solution<R>*, MultiEvaluation<DS>*> > filterDominated(vector<Direction<DS>*>& vdir, const vector<pair<Solution<R>*, MultiEvaluation<DS>*> >& candidates)
+	static vector<pair<Solution<R>*, MultiEvaluation*> > filterDominated(vector<Direction*>& vdir, const vector<pair<Solution<R>*, MultiEvaluation*> >& candidates)
 	{
-		vector<pair<Solution<R>*, MultiEvaluation<DS>*> > nonDom;
+		vector<pair<Solution<R>*, MultiEvaluation*> > nonDom;
 
-		ParetoDominance<R, ADS, DS> pDom(vdir);
-		ParetoDominanceWeak<R, ADS, DS> pDomWeak(vdir);
+		ParetoDominance<R, ADS> pDom(vdir);
+		ParetoDominanceWeak<R, ADS> pDomWeak(vdir);
 
 		for(unsigned i = 0; i < candidates.size(); i++)
 			addSolution(pDom, pDomWeak, nonDom, candidates[i]);
@@ -160,7 +160,7 @@ public:
 		return nonDom;
 	}
 
-	static void addSolution(ParetoDominance<R, ADS, DS>& dom, ParetoDominanceWeak<R, ADS, DS>& domWeak, vector<pair<Solution<R>*, MultiEvaluation<DS>*> >& nonDom, pair<Solution<R>*, MultiEvaluation<DS>*> candidate)
+	static void addSolution(ParetoDominance<R, ADS>& dom, ParetoDominanceWeak<R, ADS>& domWeak, vector<pair<Solution<R>*, MultiEvaluation*> >& nonDom, pair<Solution<R>*, MultiEvaluation*> candidate)
 	{
 		for(int ind = 0; ind < nonDom.size(); ind++)
 		{
@@ -192,7 +192,7 @@ public:
 	{
 	}
 
-	virtual Pareto<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS, DS>* _pf = NULL) = 0;
+	virtual Pareto<R, ADS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS>* _pf = NULL) = 0;
 
 	virtual string log()
 	{
@@ -219,16 +219,16 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MultiObjSearchBuilder: public ComponentBuilder<R, ADS, DS>
+class MultiObjSearchBuilder: public ComponentBuilder<R, ADS>
 {
 public:
 	virtual ~MultiObjSearchBuilder()
 	{
 	}
 
-	virtual MultiObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "") = 0;
+	virtual MultiObjSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "") = 0;
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
 		return build(scanner, hf, family);
 	}
@@ -240,7 +240,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, DS>::idComponent() << "MultiObjSearch:";
+		ss << ComponentBuilder<R, ADS>::idComponent() << "MultiObjSearch:";
 		return ss.str();
 	}
 

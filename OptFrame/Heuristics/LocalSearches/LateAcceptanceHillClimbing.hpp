@@ -30,24 +30,24 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class LateAcceptanceHillClimbing: public LocalSearch<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class LateAcceptanceHillClimbing: public LocalSearch<R, ADS>
 {
 private:
-	Evaluator<R, ADS, DS>& ev;
-	vector<NS<R, ADS, DS>*> lns;
+	Evaluator<R, ADS>& ev;
+	vector<NS<R, ADS>*> lns;
 	int L;       // size of list
 	int iterMax; // max iterations without improvement
 
 public:
 
-	LateAcceptanceHillClimbing(Evaluator<R, ADS, DS>& _ev, NS<R, ADS, DS>& _ns, int _L, int _iterMax) :
+	LateAcceptanceHillClimbing(Evaluator<R, ADS>& _ev, NS<R, ADS>& _ns, int _L, int _iterMax) :
 			ev(_ev), L(_L), iterMax(_iterMax)
 	{
 		lns.push_back(&_ns);
 	}
 
-	LateAcceptanceHillClimbing(Evaluator<R, ADS, DS>& _ev, vector<NS<R, ADS, DS>*> _lns, int _L, int _iterMax) :
+	LateAcceptanceHillClimbing(Evaluator<R, ADS>& _ev, vector<NS<R, ADS>*> _lns, int _L, int _iterMax) :
 			ev(_ev), lns(_lns), L(_L), iterMax(_iterMax)
 	{
 	}
@@ -58,19 +58,19 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
-		Evaluation<DS>& e = ev.evaluate(s);
+		Evaluation& e = ev.evaluate(s);
 
 		exec(s, e, timelimit, target_f);
 
 		delete &e;
 	}
 
-	virtual void exec(Solution<R, ADS>& sStar, Evaluation<DS>& eStar, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& sStar, Evaluation& eStar, double timelimit, double target_f)
 	{
 		long tini = time(NULL);
 
 #ifdef BRAND_NEW
-		vector<Evaluation<DS>* > eList;
+		vector<Evaluation* > eList;
 		for(int i=0; i<L; i++)
 			eList.push_back(&eStar.clone());
 #else
@@ -81,7 +81,7 @@ public:
 		unsigned index = 0;
 
 		Solution<R, ADS>& s = sStar.clone();
-		Evaluation<DS>& e = eStar.clone();
+		Evaluation& e = eStar.clone();
 
 		long tnow = time(NULL);
 
@@ -90,7 +90,7 @@ public:
 			// choose random neighborhood
 			int ns_k = rand() % lns.size();
 
-			Move<R, ADS, DS>* move = lns[ns_k]->validMove(s);
+			Move<R, ADS>* move = lns[ns_k]->validMove(s);
 	
 			if (!move)
 			{
@@ -161,13 +161,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS, DS>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<R, ADS>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, DS>::idComponent() << ":LAHC";
+		ss << LocalSearch<R, ADS>::idComponent() << ":LAHC";
 		return ss.str();
 	}
 
@@ -193,34 +193,34 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class LateAcceptanceHillClimbingBuilder: public LocalSearchBuilder<R, ADS, DS>
+class LateAcceptanceHillClimbingBuilder: public LocalSearchBuilder<R, ADS>
 {
 public:
 	virtual ~LateAcceptanceHillClimbingBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	virtual LocalSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
-		Evaluator<R, ADS, DS>* eval;
+		Evaluator<R, ADS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<NS<R, ADS, DS>*> nslist;
+		vector<NS<R, ADS>*> nslist;
 		hf.assignList(nslist, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int L = scanner.nextInt();
 
 		int iterMax = scanner.nextInt();
 
-		return new LateAcceptanceHillClimbing<R, ADS, DS>(*eval, nslist, L, iterMax);
+		return new LateAcceptanceHillClimbing<R, ADS>(*eval, nslist, L, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
 		stringstream ss;
-		ss << NS<R, ADS, DS>::idComponent() << "[]";
+		ss << NS<R, ADS>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of NS"));
 		params.push_back(make_pair("OptFrame:int", "list size L"));
 		params.push_back(make_pair("OptFrame:int", "iterMax iterations without improvement"));
@@ -230,13 +230,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == LateAcceptanceHillClimbing<R, ADS, DS>::idComponent();
+		return component == LateAcceptanceHillClimbing<R, ADS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << ":LAHC";
+		ss << LocalSearchBuilder<R, ADS>::idComponent() << ":LAHC";
 		return ss.str();
 	}
 

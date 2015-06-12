@@ -28,8 +28,8 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class BinarySelection: public Selection<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class BinarySelection: public Selection<R, ADS>
 {
 private:
 	RandGen& rg;
@@ -45,11 +45,11 @@ public:
 	{
 	}
 
-	pair<unsigned, unsigned> select(const MultiSolution<R, ADS>& p, const MultiEvaluation<DS>& mev, const vector<double>& fv)
+	pair<unsigned, unsigned> select(const MultiSolution<R, ADS>& p, const MultiEvaluation& mev, const vector<double>& fv)
 	{
 		assert(p.size() > 1);
 		//cout << "SELECT: " << p.size() << endl;
-		//cout << fv << " = " << Selection<R, ADS, DS>::getSum(fv) << endl;
+		//cout << fv << " = " << Selection<R, ADS>::getSum(fv) << endl;
 
 		unsigned s1 = 0;
 
@@ -74,7 +74,7 @@ public:
 			if(trye >= 100*p.size())
 			{
 				cout << "LOOP IN BINARYSELECTION??" << endl;
-				cout << fv << " = " << Selection<R, ADS, DS>::getSum(fv) << endl;
+				cout << fv << " = " << Selection<R, ADS>::getSum(fv) << endl;
 				exit(1);
 			}
 			x = rg.rand01();
@@ -95,13 +95,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (Selection<R, ADS, DS>::compatible(s));
+		return (s == idComponent()) || (Selection<R, ADS>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Selection<R, ADS, DS>::idComponent() << ":BinarySelection";
+		ss << Selection<R, ADS>::idComponent() << ":BinarySelection";
 		return ss.str();
 	}
 

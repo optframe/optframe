@@ -29,7 +29,6 @@
 #include "../../OptFrame/Evaluator.hpp"
 
 #include "Representation.h"
-#include "Memory.h"
 #include "Solution.h"
 #include "Evaluation.h"
 
@@ -42,21 +41,21 @@ using namespace optframe;
 namespace OptHS
 {
 
-class OptHSEvaluator: public Evaluator<RepOptHS, OPTFRAME_DEFAULT_ADS, MemOptHS>
+class OptHSEvaluator: public Evaluator<RepOptHS>
 {
 private:
 	ProblemInstance& p;
 
 public:
 
-	using Evaluator<RepOptHS, OPTFRAME_DEFAULT_ADS, MemOptHS>::evaluate; // prevents name hiding
+	using Evaluator<RepOptHS>::evaluate; // prevents name hiding
 
 	OptHSEvaluator(ProblemInstance& _p) :
 			p(_p)
 	{
 	}
 
-	Evaluation<MemOptHS>& evaluate(const RepOptHS& r)
+	Evaluation& evaluate(const RepOptHS& r)
 	{
 		int fo_inv = 0; // Infeasible Value
 
@@ -99,9 +98,7 @@ public:
 			//cout << "ITER (FINISH)" << i << ": " << lastClean << endl;
 		}
 
-		MemOptHS mem = 0;
-
-		return *new Evaluation<MemOptHS>(0, fo_inv, mem);
+		return *new Evaluation(0, fo_inv);
 	}
 
 
@@ -119,7 +116,7 @@ public:
 
 	virtual string id() const
 	{
-		string pai = Evaluator<RepOptHS, OPTFRAME_DEFAULT_ADS, MemOptHS>::idComponent();
+		string pai = Evaluator<RepOptHS>::idComponent();
 		pai.append(":OptHSEvaluator");
 		return pai;
 	}

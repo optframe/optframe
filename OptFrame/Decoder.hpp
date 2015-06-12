@@ -30,7 +30,7 @@
 namespace optframe
 {
 
-template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS>
 class Decoder: public Component
 {
 public:
@@ -39,12 +39,12 @@ public:
 	{
 	}
 
-	pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation<DS>*> > decode(const Solution<R>& solution)
+	pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation*> > decode(const Solution<R>& solution)
 	{
 		return decode(solution.getR());
 	}
 
-	virtual pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation<DS>*> > decode(const R& r) = 0;
+	virtual pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation*> > decode(const R& r) = 0;
 };
 
 }

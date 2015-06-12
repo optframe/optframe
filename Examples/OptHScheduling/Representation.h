@@ -23,10 +23,7 @@
 
 #include <vector>
 #include "../../OptFrame/Util/printable.h"
-
 #include "../../OptFrame/Util/Matrix.hpp"
-
-#include "Memory.h"
 
 #include <vector>
 

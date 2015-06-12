@@ -29,88 +29,88 @@
 namespace optframe
 {
 
-template< class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS >
-class TestMove : public Move< R, ADS, DS >
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class TestMove: public Move<R, ADS>
 {
 private:
-   static const unsigned long long MAX_MOVE_IN_MEMORY_ERROR = 100000;
-   static unsigned long long MAX_MOVE_IN_MEMORY_WARNING;
+	static const unsigned long long MAX_MOVE_IN_MEMORY_ERROR = 100000;
+	static unsigned long long MAX_MOVE_IN_MEMORY_WARNING;
 
-   static unsigned long long testmove_objects;
-   static unsigned long long testmove_objects_nodecrement;
+	static unsigned long long testmove_objects;
+	static unsigned long long testmove_objects_nodecrement;
 
-   unsigned long long testmove_number;
+	unsigned long long testmove_number;
 
 public:
-   TestMove () :
-      Move< R, DS > ()
-   {
-      testmove_objects++;
-      testmove_objects_nodecrement++;
-      check();
+	TestMove() :
+			Move<R, ADS>()
+	{
+		testmove_objects++;
+		testmove_objects_nodecrement++;
+		check();
 
-      testmove_number = testmove_objects_nodecrement;
-   }
+		testmove_number = testmove_objects_nodecrement;
+	}
 
-   virtual ~TestMove ()
-   {
-      testmove_objects--;
-   }
+	virtual ~TestMove()
+	{
+		testmove_objects--;
+	}
 
-   void check () // check number of TestMove objects in memory
-   {
-      if (testmove_objects >= MAX_MOVE_IN_MEMORY_WARNING)
-      {
-         cout << "WARNING: " << TestMove< R, DS >::testmove_objects << " TestMove objects in memory!" << endl;
-         TestMove< R, DS >::MAX_MOVE_IN_MEMORY_WARNING++;
-      }
+	void check() // check number of TestMove objects in memory
+	{
+		if (testmove_objects >= MAX_MOVE_IN_MEMORY_WARNING)
+		{
+			cout << "WARNING: " << TestMove<R, ADS>::testmove_objects << " TestMove objects in memory!" << endl;
+			TestMove<R, ADS>::MAX_MOVE_IN_MEMORY_WARNING++;
+		}
 
-      if (testmove_objects >= MAX_MOVE_IN_MEMORY_ERROR)
-      {
-         cout << "ERROR: " << TestMove< R, DS >::testmove_objects << " TestMove objects in memory!" << endl;
-         cout << "MAX_MOVE_IN_MEMORY_ERROR = " << MAX_MOVE_IN_MEMORY_ERROR << endl;
-         cout << "aborting...";
-         exit(1);
-      }
-   }
+		if (testmove_objects >= MAX_MOVE_IN_MEMORY_ERROR)
+		{
+			cout << "ERROR: " << TestMove<R, ADS>::testmove_objects << " TestMove objects in memory!" << endl;
+			cout << "MAX_MOVE_IN_MEMORY_ERROR = " << MAX_MOVE_IN_MEMORY_ERROR << endl;
+			cout << "aborting...";
+			exit(1);
+		}
+	}
 
-   void print () const
-   {
-      cout << "TestMove #" << testmove_number << " (" << testmove_objects << " in memory now): \n";
-   }
+	void print() const
+	{
+		cout << "TestMove #" << testmove_number << " (" << testmove_objects << " in memory now): \n";
+	}
 
-   TestMove< R, DS >& operator= (const TestMove< R, DS >& m)
-   {
-      if (&m == this) // auto ref check
-      return *this;
+	TestMove<R, ADS>& operator=(const TestMove<R, ADS>& m)
+	{
+		if (&m == this) // auto ref check
+			return *this;
 
-      *this = Move< R, DS >::operator=(m);
+		*this = Move<R, ADS>::operator=(m);
 
-      // do not copy the 'testmove_number'
+		// do not copy the 'testmove_number'
 
-      return *this;
-   }
+		return *this;
+	}
 
-   Move< R, DS >& operator= (const Move< R, DS >& m)
-   {
-      return operator=((const TestMove< R, DS >&) m);
-   }
+	Move<R, ADS>& operator=(const Move<R, ADS>& m)
+	{
+		return operator=((const TestMove<R, ADS>&) m);
+	}
 
-   Move< R, DS >& clone () const
-   {
-      Move< R, DS >* m = new TestMove< R, DS > (*this);
-      return (*m);
-   }
+	Move<R, ADS>& clone() const
+	{
+		Move<R, ADS>* m = new TestMove<R, ADS>(*this);
+		return (*m);
+	}
 };
 
-template<class R, class ADS, class DS >
-unsigned long long TestMove< R, ADS, DS >::MAX_MOVE_IN_MEMORY_WARNING = 0.7 * MAX_MOVE_IN_MEMORY_ERROR;
+template<class R, class ADS>
+unsigned long long TestMove<R, ADS>::MAX_MOVE_IN_MEMORY_WARNING = 0.7 * MAX_MOVE_IN_MEMORY_ERROR;
 
-template<class R, class ADS, class DS >
-unsigned long long TestMove< R, ADS, DS >::testmove_objects = 0;
+template<class R, class ADS>
+unsigned long long TestMove<R, ADS>::testmove_objects = 0;
 
-template<class R, class ADS, class DS >
-unsigned long long TestMove< R, ADS, DS >::testmove_objects_nodecrement = 0;
+template<class R, class ADS>
+unsigned long long TestMove<R, ADS>::testmove_objects_nodecrement = 0;
 
 }
 

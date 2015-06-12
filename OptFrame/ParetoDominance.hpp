@@ -42,22 +42,22 @@ using namespace std;
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class ParetoDominance
 {
 protected:
 	// TODO: make Evaluator inherit from Direction!
-	vector<Evaluator<R, ADS, DS>*> v_e;
-	vector<Direction<DS>*> v_d;
+	vector<Evaluator<R, ADS>*> v_e;
+	vector<Direction*> v_d;
 
 public:
 
-	ParetoDominance(vector<Evaluator<R, ADS, DS>*> _v_e) :
+	ParetoDominance(vector<Evaluator<R, ADS>*> _v_e) :
 			v_e(_v_e)
 	{
 	}
 
-	ParetoDominance(vector<Direction<DS>*> _v_d) :
+	ParetoDominance(vector<Direction*> _v_d) :
 			v_d(_v_d)
 	{
 	}
@@ -66,7 +66,7 @@ public:
 	{
 	}
 
-	void insertEvaluators(vector<Evaluator<R, ADS, DS>*> _v_e)
+	void insertEvaluators(vector<Evaluator<R, ADS>*> _v_e)
 	{
 		v_e = _v_e;
 	}
@@ -80,8 +80,8 @@ public:
 			exit(1);
 		}
 
-		vector<Evaluation<DS>*> v1;
-		vector<Evaluation<DS>*> v2;
+		vector<Evaluation*> v1;
+		vector<Evaluation*> v2;
 
 		for(int e = 0; e < v_e.size(); e++)
 		{
@@ -102,19 +102,19 @@ public:
 
 
 	// true if 's1' dominates 's2'
-	virtual bool dominates(const MultiEvaluation<DS>* mev1, const MultiEvaluation<DS>* mev2)
+	virtual bool dominates(const MultiEvaluation* mev1, const MultiEvaluation* mev2)
 	{
 		return dominates(mev1->getVector(), mev2->getVector());
 	}
 
 	// true if 's1' dominates 's2'
-	virtual bool dominates(const MultiEvaluation<DS>& mev1, const MultiEvaluation<DS>& mev2)
+	virtual bool dominates(const MultiEvaluation& mev1, const MultiEvaluation& mev2)
 	{
 		return dominates(mev1.getVector(), mev2.getVector());
 	}
 
 	// true if 's1' dominates 's2'
-	virtual bool dominates(const vector<Evaluation<DS>*>& v1, const vector<Evaluation<DS>*>& v2)
+	virtual bool dominates(const vector<Evaluation*>& v1, const vector<Evaluation*>& v2)
 	{
 		if(v1.size() != v2.size())
 			return false;
@@ -182,14 +182,14 @@ public:
 	}
 
 	// returns pair: (true, if 's1' dominates 's2'; true, if 's2' dominates 's1')
-	//virtual pair<bool, bool> birelation(const vector<Evaluation<DS>*>& v1, const vector<Evaluation<DS>*>& v2)
+	//virtual pair<bool, bool> birelation(const vector<Evaluation*>& v1, const vector<Evaluation*>& v2)
 	//{
 	//	bool b1 = dominates(v1, v2);
 	//	bool b2 = dominates(v2, v1);
 	//	return make_pair(b1, b2);
 	//}
 
-	virtual pair<bool, bool> birelation(const vector<Evaluation<DS>*>& v1, const vector<Evaluation<DS>*>& v2)
+	virtual pair<bool, bool> birelation(const vector<Evaluation*>& v1, const vector<Evaluation*>& v2)
 	{
 		int N = v1.size();
 		if((N != v2.size()) || (N == 0) || (v2.size() == 0))
@@ -242,7 +242,7 @@ public:
 		return make_pair(b1, b2);
 	}
 
-	virtual pair<bool, bool> birelation(const MultiEvaluation<DS>& mev1, const MultiEvaluation<DS>& mev2)
+	virtual pair<bool, bool> birelation(const MultiEvaluation& mev1, const MultiEvaluation& mev2)
 	{
 		return birelation(mev1.getVector(), mev2.getVector());
 	}

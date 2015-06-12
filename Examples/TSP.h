@@ -23,7 +23,6 @@
 
 #include "./TSP/Representation.h"
 #include "./TSP/Solution.h"
-#include "./TSP/Memory.h"
 #include "./TSP/Evaluation.h"
 #include "./TSP/ProblemInstance.h"
 #include "./TSP/Evaluator.h"

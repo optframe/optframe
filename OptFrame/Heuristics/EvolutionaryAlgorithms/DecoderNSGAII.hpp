@@ -46,7 +46,7 @@ namespace optframe
 
 template<class R> class NSGAIICrowdingComparison;
 
-template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS>
 struct IndividualExtNSGAII
 {
 public:
@@ -58,21 +58,21 @@ public:
 	vector<IndividualNSGAII<R>*> ls;
 
 	// list of twins
-	vector<IndividualExtNSGAII<R, X, ADS, DS>*> lx;
+	vector<IndividualExtNSGAII<R, X, ADS>*> lx;
 
 	Solution<X, ADS>& x;
-	MultiEvaluation<DS>& mev;
+	MultiEvaluation& mev;
 
 	int rank;
 	double distance;
 
-	IndividualExtNSGAII(IndividualNSGAII<R>& _s, Solution<X, ADS>* _x, MultiEvaluation<DS>* _mev, int _rank = -1, double _distance = -1) :
+	IndividualExtNSGAII(IndividualNSGAII<R>& _s, Solution<X, ADS>* _x, MultiEvaluation* _mev, int _rank = -1, double _distance = -1) :
 			s(_s), x(*_x), mev(*_mev), rank(_rank), distance(_distance)
 	{
 		resetList();
 	}
 
-	IndividualExtNSGAII(IndividualNSGAII<R>& _s, vector<IndividualNSGAII<R>*>& _vs, vector<IndividualExtNSGAII<R, X, ADS, DS>*>& _lx, Solution<X, ADS>* _x, MultiEvaluation<DS>* _mev, int _rank = -1, double _distance = -1) :
+	IndividualExtNSGAII(IndividualNSGAII<R>& _s, vector<IndividualNSGAII<R>*>& _vs, vector<IndividualExtNSGAII<R, X, ADS>*>& _lx, Solution<X, ADS>* _x, MultiEvaluation* _mev, int _rank = -1, double _distance = -1) :
 			s(_s), ls(_vs), lx(_lx), x(*_x), mev(*_mev), rank(_rank), distance(_distance)
 	{
 		// using pre-created 'ls' list!
@@ -91,9 +91,9 @@ public:
 		delete &mev;
 	}
 
-	IndividualExtNSGAII<R, X, ADS, DS>& clone() const
+	IndividualExtNSGAII<R, X, ADS>& clone() const
 	{
-		IndividualExtNSGAII<R, X, ADS, DS>* ind = new IndividualExtNSGAII<R, X, ADS, DS>(s, ls, lx, &x.clone(), &mev.clone(), rank, distance);
+		IndividualExtNSGAII<R, X, ADS>* ind = new IndividualExtNSGAII<R, X, ADS>(s, ls, lx, &x.clone(), &mev.clone(), rank, distance);
 		return *ind;
 	}
 
@@ -103,7 +103,7 @@ public:
 			vs[s]->rank = 1000000; // INF
 	}
 
-	static void updateRanks(const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& vx)
+	static void updateRanks(const vector<IndividualExtNSGAII<R, X, ADS>*>& vx)
 	{
 		// 'min' value
 		for(unsigned x = 0; x < vx.size(); x++)
@@ -129,7 +129,7 @@ public:
 			vs[s]->distance = -1; // -INF
 	}
 
-	static void updateDistances(const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& vx)
+	static void updateDistances(const vector<IndividualExtNSGAII<R, X, ADS>*>& vx)
 	{
 		// 'max' value
 		for(unsigned x = 0; x < vx.size(); x++)
@@ -154,7 +154,7 @@ public:
 		ls[0]->print();
 	}
 
-	static void print(const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& v)
+	static void print(const vector<IndividualExtNSGAII<R, X, ADS>*>& v)
 	{
 		cout << "Population of IndExtNSGAII (" << v.size() << "):" << endl;
 		for(unsigned i = 0; i < v.size(); i++)
@@ -164,7 +164,7 @@ public:
 		}
 	}
 
-	static void print(const vector<IndividualNSGAII<R>*>& ps, const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& px)
+	static void print(const vector<IndividualNSGAII<R>*>& ps, const vector<IndividualExtNSGAII<R, X, ADS>*>& px)
 	{
 		cout << "Details of Population: |PS|=" << ps.size() << " |PX|=" << px.size() << endl;
 		for(unsigned s=0; s<ps.size(); s++)
@@ -181,7 +181,7 @@ public:
 	}
 
 
-	static bool compareMev(MultiEvaluation<DS>& mev1, MultiEvaluation<DS>& mev2)
+	static bool compareMev(MultiEvaluation& mev1, MultiEvaluation& mev2)
 	{
 		for(unsigned i = 0; i < mev1.size(); i++)
 			if(mev1.at(i).evaluation() != mev2.at(i).evaluation())
@@ -189,9 +189,9 @@ public:
 		return true;
 	}
 
-	static void mergeSameParents(vector<IndividualExtNSGAII<R, X, ADS, DS>*>& vx)
+	static void mergeSameParents(vector<IndividualExtNSGAII<R, X, ADS>*>& vx)
 	{
-		vector<IndividualExtNSGAII<R, X, ADS, DS>*> vReduced;
+		vector<IndividualExtNSGAII<R, X, ADS>*> vReduced;
 		for(unsigned i = 0; i < vx.size(); i++)
 			if(vx[i]) // not null
 			{
@@ -232,7 +232,7 @@ public:
 		return m;
 	}
 
-	static void printLimits(unsigned n_objs, const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& vx)
+	static void printLimits(unsigned n_objs, const vector<IndividualExtNSGAII<R, X, ADS>*>& vx)
 	{
 		for(unsigned k = 0; k < n_objs; k++)
 		{
@@ -279,7 +279,7 @@ public:
 				}
 	}
 
-	static int countEquals(unsigned n_objs, const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& vx)
+	static int countEquals(unsigned n_objs, const vector<IndividualExtNSGAII<R, X, ADS>*>& vx)
 	{
 		vector<vector<double> > list;
 		for(unsigned k = 0; k < vx.size(); k++)
@@ -293,7 +293,7 @@ public:
 		return list.size();
 	}
 
-	static int countCrowdingValues(const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& vx)
+	static int countCrowdingValues(const vector<IndividualExtNSGAII<R, X, ADS>*>& vx)
 	{
 		vector<double> list;
 		for(unsigned k = 0; k < vx.size(); k++)
@@ -341,7 +341,7 @@ public:
 		return false; // default is false
 	}
 
-	static void printToDisk(const vector<IndividualNSGAII<R>*>& ps, const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& px)
+	static void printToDisk(const vector<IndividualNSGAII<R>*>& ps, const vector<IndividualExtNSGAII<R, X, ADS>*>& px)
 	{
 		if(ps[0]->mev->size() != 2)
 		{
@@ -483,11 +483,11 @@ public:
 
 
 template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class DecoderNSGAII: public ExtendedMultiObjSearch<R, X, ADS, DS>
+class DecoderNSGAII: public ExtendedMultiObjSearch<R, X, ADS>
 {
 protected:
-	Decoder<R, X, ADS, DS>& decoder;
-	vector<Direction<DS>*>& v_d;
+	Decoder<R, X, ADS>& decoder;
+	vector<Direction*>& v_d;
 	unsigned nObjectives;
 
 	InitialPopulation<R>& init_pop;
@@ -520,12 +520,12 @@ public:
 
 protected:
 
-     virtual void printToDisk(const vector<IndividualNSGAII<R>*>& ps, const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& px)
+     virtual void printToDisk(const vector<IndividualNSGAII<R>*>& ps, const vector<IndividualExtNSGAII<R, X, ADS>*>& px)
      {
      }
 
 
-	ParetoDominance<R, ADS, DS>& pDominance;
+	ParetoDominance<R, ADS>& pDominance;
 	int gMax;
 
 	static bool compara(pair<double, int> p1, pair<double, int> p2)
@@ -539,8 +539,8 @@ protected:
 public:
 
 	// constructor of class 'DecoderNSGAII'
-	DecoderNSGAII(Decoder<R, X, ADS, DS>& _decoder, vector<Direction<DS>*>& _v_d, InitialPopulation<R>& _init_pop, int _pMin, int _pMax, int _xTarget, int _gMax, RandGen& _rg, NSGAIICrowdingComparison<R>* uec = NULL) :
-			decoder(_decoder), v_d(_v_d), nObjectives(_v_d.size()), init_pop(_init_pop), pMin(_pMin), pMax(_pMax), xTarget(_xTarget), gMax(_gMax), pDominance(* new ParetoDominance<R, ADS, DS>(_v_d)), rg(_rg), userSpecificComparison(uec)
+	DecoderNSGAII(Decoder<R, X, ADS>& _decoder, vector<Direction*>& _v_d, InitialPopulation<R>& _init_pop, int _pMin, int _pMax, int _xTarget, int _gMax, RandGen& _rg, NSGAIICrowdingComparison<R>* uec = NULL) :
+			decoder(_decoder), v_d(_v_d), nObjectives(_v_d.size()), init_pop(_init_pop), pMin(_pMin), pMax(_pMax), xTarget(_xTarget), gMax(_gMax), pDominance(* new ParetoDominance<R, ADS>(_v_d)), rg(_rg), userSpecificComparison(uec)
 	{
 		N = -1;
 		firstRatio = lastRatio = 0;
@@ -548,8 +548,8 @@ public:
                 lastMin0 = 0;
 	}
 
-	DecoderNSGAII(Decoder<R, X, ADS, DS>& _decoder, vector<Direction<DS>*>& _v_d, InitialPopulation<R>& _init_pop, int _N, int _gMax, RandGen& _rg, NSGAIICrowdingComparison<R>* uec) :
-			decoder(_decoder), v_d(_v_d), nObjectives(_v_d.size()), init_pop(_init_pop), N(_N), gMax(_gMax), pDominance(* new ParetoDominance<R, ADS, DS>(_v_d)), rg(_rg), userSpecificComparison(uec)
+	DecoderNSGAII(Decoder<R, X, ADS>& _decoder, vector<Direction*>& _v_d, InitialPopulation<R>& _init_pop, int _N, int _gMax, RandGen& _rg, NSGAIICrowdingComparison<R>* uec) :
+			decoder(_decoder), v_d(_v_d), nObjectives(_v_d.size()), init_pop(_init_pop), N(_N), gMax(_gMax), pDominance(* new ParetoDominance<R, ADS>(_v_d)), rg(_rg), userSpecificComparison(uec)
 	{
 		pMin = pMax = N;
 		xTarget = 0;
@@ -566,7 +566,7 @@ public:
 		delete& pDominance;
 	}
 
-	typedef vector<IndividualExtNSGAII<R, X, ADS, DS>*> PX;
+	typedef vector<IndividualExtNSGAII<R, X, ADS>*> PX;
 	typedef vector<IndividualNSGAII<R>*> PS;
 
 	// base population 'p' and desired final population size 'p_size'
@@ -610,11 +610,11 @@ public:
 	// decode each element from 'ps' and create a list of 'IndividualExtNSGAII'
 	PX decode(PS& ps)
 	{
-		vector<IndividualExtNSGAII<R, X, ADS, DS>*> px;
+		vector<IndividualExtNSGAII<R, X, ADS>*> px;
 
 		for(unsigned i = 0; i < ps.size(); i++)
 		{
-			pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation<DS>*> > dx = decoder.decode(ps[i]->s);
+			pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation*> > dx = decoder.decode(ps[i]->s);
 			if(dx.first.size() != dx.second.size())
 			{
 				// TODO: change format?
@@ -623,7 +623,7 @@ public:
 			}
 
 			for(unsigned x = 0; x < dx.first.size(); x++)
-				px.push_back(new IndividualExtNSGAII<R, X, ADS, DS>(*ps[i], dx.first[x], dx.second[x]));
+				px.push_back(new IndividualExtNSGAII<R, X, ADS>(*ps[i], dx.first[x], dx.second[x]));
 		}
 		return px;
 	}
@@ -660,7 +660,7 @@ public:
 			else
 			{
 				vector<IndividualNSGAII<R>*> ns(1, ps_base->at(i));
-				vector<IndividualExtNSGAII<R, X, ADS, DS>*> nx = decode(ns);
+				vector<IndividualExtNSGAII<R, X, ADS>*> nx = decode(ns);
 				ps.push_back(ns[0]);
 				px.insert(px.end(), nx.begin(), nx.end());
 			}
@@ -696,7 +696,7 @@ public:
 	}
 
 	// compare if 'ind1' is better than 'ind2'
-	static bool crowdedComparisonX(const IndividualExtNSGAII<R, X, ADS, DS>* ind1, const IndividualExtNSGAII<R, X, ADS, DS>* ind2)
+	static bool crowdedComparisonX(const IndividualExtNSGAII<R, X, ADS>* ind1, const IndividualExtNSGAII<R, X, ADS>* ind2)
 	{
 		return (ind1->rank < ind2->rank) || ((ind1->rank == ind2->rank) && (ind1->distance > ind2->distance));
 	}
@@ -721,7 +721,7 @@ public:
 	}
 
 	// count all 's' solutions parents in 'rx' that do not appear in 'rs'
-	unsigned countNewParents(const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& rx, const vector<IndividualNSGAII<R>*>& rs)
+	unsigned countNewParents(const vector<IndividualExtNSGAII<R, X, ADS>*>& rx, const vector<IndividualNSGAII<R>*>& rs)
 	{
 		vector<IndividualNSGAII<R>*> vs = rs; // copy
 		unsigned count = 0;
@@ -739,7 +739,7 @@ public:
 	}
 
 	// add to list 'rs' all 's' solutions parents in 'rx' that do not appear in 'rs'
-	void addNewParents(const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& rx, vector<IndividualNSGAII<R>*>& rs)
+	void addNewParents(const vector<IndividualExtNSGAII<R, X, ADS>*>& rx, vector<IndividualNSGAII<R>*>& rs)
 	{
 		for(unsigned i = 0; i < rx.size(); i++)
 			if(!in(rs, &rx[i]->s))
@@ -761,7 +761,7 @@ public:
 	}
 
 	// main method for the class, 'search' method returns a pareto front of solutions
-	virtual ExtendedPareto<R, X, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, ExtendedPareto<R, X, ADS, DS>* _pf = NULL)
+	virtual ExtendedPareto<R, X, ADS>* search(double timelimit = 100000000, double target_f = 0, ExtendedPareto<R, X, ADS>* _pf = NULL)
 	{
 		Timer tnow;
 
@@ -785,13 +785,13 @@ public:
 
 		N = ps->size(); // keep the same population size
 
-		IndividualExtNSGAII<R, X, ADS, DS>::zeroRanks(*ps); // update parents' ranks
-		IndividualExtNSGAII<R, X, ADS, DS>::zeroDistances(*ps); // update parents' distances
+		IndividualExtNSGAII<R, X, ADS>::zeroRanks(*ps); // update parents' ranks
+		IndividualExtNSGAII<R, X, ADS>::zeroDistances(*ps); // update parents' distances
 
 		firstRatio = px->size() / ((double) ps->size());
 
-		vector<IndividualExtNSGAII<R, X, ADS, DS>*> grouped_px(*px);
-		IndividualExtNSGAII<R, X, ADS, DS>::mergeSameParents(grouped_px);
+		vector<IndividualExtNSGAII<R, X, ADS>*> grouped_px(*px);
+		IndividualExtNSGAII<R, X, ADS>::mergeSameParents(grouped_px);
 
 		// 2. sort population by non domination
 		vector<vector<IndividualNSGAII<R>*>*> F = fastNonDominatedSort(grouped_px, *ps);
@@ -805,7 +805,7 @@ public:
 			cout << id() << ": first crowding distance calculation applied!" << endl;
 
 		//if(Component::information)
-		//	IndividualExtNSGAII<R, X, ADS, DS>::print(*px);
+		//	IndividualExtNSGAII<R, X, ADS>::print(*px);
 		logPopulation(*px, -1, tnow.now(), "first pop");
 
 		// 3. create offspring of size 'N'
@@ -819,7 +819,7 @@ public:
 		//vector<IndividualNSGAII<R>*> qs = makeNewPopulation(*ps, N);
 		//if(Component::information)
 		//	cout << id() << ": will decode first children!" << endl;
-		//vector<IndividualExtNSGAII<R, X, ADS, DS>*> qx = decode(qs);
+		//vector<IndividualExtNSGAII<R, X, ADS>*> qx = decode(qs);
 		//// update values that may be used in later selection of individuals
 		//updateParentsObjectives(qs, qx);
 
@@ -835,9 +835,9 @@ public:
 			for(unsigned i=0; i<px->size(); i++)
 				c.push_back(px->at(i)->mev.at(k).evaluation());
 			if(v_d[k]->isMinimization())
-				limits[k] = IndividualExtNSGAII<R, X, ADS, DS>::min(c);
+				limits[k] = IndividualExtNSGAII<R, X, ADS>::min(c);
 			else
-				limits[k] = IndividualExtNSGAII<R, X, ADS, DS>::max(c);
+				limits[k] = IndividualExtNSGAII<R, X, ADS>::max(c);
 		}
 
 		tMax = 1;
@@ -852,16 +852,16 @@ public:
 			cout << "N=" << N << " ps=" << ps->size() << " qs=" << qs.size() << " px=" << px->size() << " qx=" << qx.size() << endl;
 			cout << "RATIO(|X|/|S|)=" << ((px->size() + qx.size()) / ((double) ps->size() + qs.size())) << endl;
 			cout << "|F|=" << F.size() << " |F_0|=" << F[0]->size() << endl;
-			double diff_cd = IndividualExtNSGAII<R, X, ADS, DS>::countCrowdingValues(*px);
+			double diff_cd = IndividualExtNSGAII<R, X, ADS>::countCrowdingValues(*px);
 			cout << "UNIQUE CROWDING VALUES(PX): " << diff_cd << "/" << px->size() << " (" << (diff_cd * 100 / px->size()) << "%)" << endl;
-			diff_cd = IndividualExtNSGAII<R, X, ADS, DS>::countCrowdingValuesPS(*ps);
+			diff_cd = IndividualExtNSGAII<R, X, ADS>::countCrowdingValuesPS(*ps);
 			cout << "UNIQUE CROWDING VALUES(PS): " << diff_cd << "/" << ps->size() << " (" << (diff_cd * 100 / ps->size()) << "%)" << endl;
 
 			if(diff_cd == 1)
 			{
 				/*
 				cout <<"WARNING: TOO LOW DIVERSITY (" << diff_cd << "), DEBUGGING: " << endl;
-				IndividualExtNSGAII<R, X, ADS, DS>::print(*ps, *px);
+				IndividualExtNSGAII<R, X, ADS>::print(*ps, *px);
 				printToDisk(*ps, *px);
 
 				exit(1);
@@ -872,7 +872,7 @@ public:
 				/*
 				cout << "BETTER DIVERSITY!! " << diff_cd << endl;
 				cout << "REALLY???" << endl;
-				IndividualExtNSGAII<R, X, ADS, DS>::print(*ps, *px);
+				IndividualExtNSGAII<R, X, ADS>::print(*ps, *px);
 				printToDisk(*ps, *px);
 				exit(1);
 				*/
@@ -880,9 +880,9 @@ public:
 
 
 			cout << "PX LIMITS: ";
-			IndividualExtNSGAII<R, X, ADS, DS>::printLimits(nObjectives, *px);
+			IndividualExtNSGAII<R, X, ADS>::printLimits(nObjectives, *px);
 			cout << "PS LIMITS: ";
-			IndividualExtNSGAII<R, X, ADS, DS>::printLimits(nObjectives, *ps);
+			IndividualExtNSGAII<R, X, ADS>::printLimits(nObjectives, *ps);
 			}
 
 			for(unsigned k = 0; k < nObjectives; k++)
@@ -893,7 +893,7 @@ public:
 
 				if(v_d[k]->isMinimization())
 				{
-					double dmin = IndividualExtNSGAII<R, X, ADS, DS>::min(c);
+					double dmin = IndividualExtNSGAII<R, X, ADS>::min(c);
 					if(dmin < limits[k])
 					{
 						if(DISPLAY_IMPROVEMENT)
@@ -921,7 +921,7 @@ public:
 				}
 				else
 				{
-					double dmax = IndividualExtNSGAII<R, X, ADS, DS>::max(c);
+					double dmax = IndividualExtNSGAII<R, X, ADS>::max(c);
 					if(dmax < limits[k])
 					{
 						if(DISPLAY_IMPROVEMENT)
@@ -952,13 +952,13 @@ public:
 
 			if(LOG_POPULATIONS)
 			{
-				vector<MultiEvaluation<DS>*> mev_px;
+				vector<MultiEvaluation*> mev_px;
 				for(unsigned i = 0; i < px->size(); i++)
 				{
-					IndividualExtNSGAII<R, X, ADS, DS>& ind = *px->at(i);
+					IndividualExtNSGAII<R, X, ADS>& ind = *px->at(i);
 					mev_px.push_back(&ind.mev);
 				}
-				vector<MultiEvaluation<DS>*> nonDom = Pareto<R>::filterDominated(v_d, mev_px);
+				vector<MultiEvaluation*> nonDom = Pareto<R>::filterDominated(v_d, mev_px);
 				stringstream ss1;
 				ss1 << "generation_" << t << "_dist.log";
 				FILE* f1 = fopen(ss1.str().c_str(), "w");
@@ -990,7 +990,7 @@ public:
 
 				Population<R>* prand = &init_pop.generatePopulation(pMax);
 				vector<IndividualNSGAII<R>*>* ps_rand = convert(*prand);
-				vector<IndividualExtNSGAII<R,X,ADS,DS>*> dx = decode(*ps_rand);
+				vector<IndividualExtNSGAII<R,X,ADS>*> dx = decode(*ps_rand);
 				stringstream ss6;
 				ss6 << "generation_rand.log";
 				FILE* f6 = (t == 1 ? fopen(ss6.str().c_str(), "w") : fopen(ss6.str().c_str(), "a"));
@@ -1013,32 +1013,32 @@ public:
 			}
 			vector<IndividualNSGAII<R>*>* rs = ps;
 			ps = NULL;
-			vector<IndividualExtNSGAII<R, X, ADS, DS>*>* rx = px;
+			vector<IndividualExtNSGAII<R, X, ADS>*>* rx = px;
 			px = NULL;
 			rs->insert(rs->end(), qs.begin(), qs.end());
 			rx->insert(rx->end(), qx.begin(), qx.end());
 
-			IndividualExtNSGAII<R, X, ADS, DS>::zeroRanks(*rs); // update parents' ranks
-			IndividualExtNSGAII<R, X, ADS, DS>::zeroDistances(*rs); // update parents' ranks
+			IndividualExtNSGAII<R, X, ADS>::zeroRanks(*rs); // update parents' ranks
+			IndividualExtNSGAII<R, X, ADS>::zeroDistances(*rs); // update parents' ranks
 
 			for(unsigned i=0; i < rs->size(); i++)
 				rs->at(i)->id = i;
 
-			double diff = IndividualExtNSGAII<R, X, ADS, DS>::countEquals(nObjectives, *rx);
+			double diff = IndividualExtNSGAII<R, X, ADS>::countEquals(nObjectives, *rx);
 			if(DISPLAY_GENERAL)
 			cout << "UNIQUE ELEMENTS(RX): " << diff << "/" << rx->size() << " (" << (diff * 100 / rx->size()) << "%)" << endl;
 
 			if(Component::information)
 			{
 				cout << id() << ": joint populations |rs|=" << rs->size() << " |rx|=" << rx->size() << endl;
-				//IndividualExtNSGAII<R, X, ADS, DS>::print(*rx);
+				//IndividualExtNSGAII<R, X, ADS>::print(*rx);
 			}
 
 			if(Component::information)
 				cout << id() << ": compressing elements" << endl;
 			Timer tcompress;
-			vector<IndividualExtNSGAII<R, X, ADS, DS>*> grouped_rx(*rx);
-			IndividualExtNSGAII<R, X, ADS, DS>::mergeSameParents(grouped_rx);
+			vector<IndividualExtNSGAII<R, X, ADS>*> grouped_rx(*rx);
+			IndividualExtNSGAII<R, X, ADS>::mergeSameParents(grouped_rx);
 			if(DISPLAY_GENERAL)
 			cout << "|GROUPED|: " << grouped_rx.size() << " |RX|:" << rx->size() << ": compression of " << (((rx->size()-grouped_rx.size())*100.0)/rx->size()) << "% (took " << tcompress.inMilliSecs() << "ms)" << endl;
 
@@ -1067,7 +1067,7 @@ public:
 			for(unsigned i = 0; i < F.size(); i++)
 			{
 				cout << "S LIMITS FOR F[" << i << "/" << F.size() << "]: " << "|F[i]|=" << F[i]->size() << endl;
-				IndividualExtNSGAII<R, X, ADS, DS>::printLimits(nObjectives, *F[i]);
+				IndividualExtNSGAII<R, X, ADS>::printLimits(nObjectives, *F[i]);
 				for(unsigned j=0; j<F[i]->size(); j++)
 					cout << "#" << F[i]->at(j)->id << " ";
                                 cout << endl;
@@ -1093,7 +1093,7 @@ public:
 				//cout << "WHILE: |S|:" << nextPopS->size() << " + |F_i|:" << F[i]->size() << " <= " << N << " for i=" << i << endl;
 				// do crowding distance assignment (already done!)
 				////crowdingDistanceAssignment(*F[i]);
-				////IndividualExtNSGAII<R, X, ADS, DS>::updateDistances(*F[i]); // update parents' ranks
+				////IndividualExtNSGAII<R, X, ADS>::updateDistances(*F[i]); // update parents' ranks
 
 				// Pt+1 = Pt+1 U Fi
 				////addNewParents(*F[i], *nextPopS);
@@ -1129,7 +1129,7 @@ public:
 
 				// sort by last elements by crowding comparison (already sorted)
 				////crowdingDistanceAssignment(*F[i]);
-				////IndividualExtNSGAII<R, X, ADS, DS>::updateDistances(*F[i]); // update parents' dists
+				////IndividualExtNSGAII<R, X, ADS>::updateDistances(*F[i]); // update parents' dists
 
 				if(Component::information)
 					cout << id() << ": sorting!" << endl;
@@ -1140,17 +1140,17 @@ public:
  
                                 //NSGAIICrowdingComparison<R> comp(userSpecificComparison);
 
-				sort(toSort.begin(), toSort.end(), IndividualExtNSGAII<R, X, ADS, DS>::simpleCompare);
+				sort(toSort.begin(), toSort.end(), IndividualExtNSGAII<R, X, ADS>::simpleCompare);
 /*
 				cout << "t=1 print sort!" << endl;
 				for(unsigned z=0; z<toSort.size(); z++)
 					toSort[z]->print();
 				cout << "t=" << t << " PS LIMITS AFTER SORT:";
-				IndividualExtNSGAII<R, X, ADS, DS>::printLimits(nObjectives, toSort);
+				IndividualExtNSGAII<R, X, ADS>::printLimits(nObjectives, toSort);
 				cout << "t=" << t << " FIRST IN LIST:";
 				toSort[0]->print();
 */
-				//IndividualExtNSGAII<R, X, ADS, DS>::mysort(toSort, comp);
+				//IndividualExtNSGAII<R, X, ADS>::mysort(toSort, comp);
 
 				// Pt+1 = Pt+1 U Fi[1:(N - |Pt+1|) ]
 
@@ -1183,7 +1183,7 @@ public:
 			}
 
 			//cout << "Next pop PS LIMITS: ";
-			//IndividualExtNSGAII<R, X, ADS, DS>::printLimits(nObjectives, *nextPopS);
+			//IndividualExtNSGAII<R, X, ADS>::printLimits(nObjectives, *nextPopS);
 
 		// TEST ESTAGNATION!
 		bool stagnated = true;
@@ -1202,12 +1202,12 @@ public:
 			sj->print();
 			*/
 
-				if(IndividualExtNSGAII<R, X, ADS, DS>::simpleCompare(nextPopS->at(i), nextPopS->at(j)))
+				if(IndividualExtNSGAII<R, X, ADS>::simpleCompare(nextPopS->at(i), nextPopS->at(j)))
 				{
 					stagnated = false;
 					break;
 				}
-				if(IndividualExtNSGAII<R, X, ADS, DS>::simpleCompare(nextPopS->at(j), nextPopS->at(i)))
+				if(IndividualExtNSGAII<R, X, ADS>::simpleCompare(nextPopS->at(j), nextPopS->at(i)))
 				{
 					stagnated = false;
 					break;
@@ -1218,21 +1218,21 @@ public:
 		if(stagnated && false)
 		{
 			cout << "STAGNATED AT t=" << t << "/" << gMax << " N=" << N << endl;
-			//IndividualExtNSGAII<R, X, ADS, DS>::printLimits(nObjectives, *nextPopS);
+			//IndividualExtNSGAII<R, X, ADS>::printLimits(nObjectives, *nextPopS);
 			
 			while(nextPopS->size()>N/3)
 				nextPopS->erase(nextPopS->begin()+(rand()%nextPopS->size()));
 
 			cout << "REDUCED TO A THIRD: " << nextPopS->size() << endl;
-			//IndividualExtNSGAII<R, X, ADS, DS>::printLimits(nObjectives, *nextPopS);
+			//IndividualExtNSGAII<R, X, ADS>::printLimits(nObjectives, *nextPopS);
 			
 		}
 
 
-			vector<IndividualExtNSGAII<R, X, ADS, DS>*>* nextPopX = new vector<IndividualExtNSGAII<R, X, ADS, DS>*>;
+			vector<IndividualExtNSGAII<R, X, ADS>*>* nextPopX = new vector<IndividualExtNSGAII<R, X, ADS>*>;
 			for(unsigned x = 0; x < rx->size(); x++)
 			{
-				IndividualExtNSGAII<R, X, ADS, DS>* ind_x = rx->at(x);
+				IndividualExtNSGAII<R, X, ADS>* ind_x = rx->at(x);
 				IndividualNSGAII<R>* ind_s = &ind_x->s;
 				bool rank_elitism = (ind_x->rank == ind_x->s.rank) || true;
 				if(in(*nextPopS, ind_s) && rank_elitism)
@@ -1258,7 +1258,7 @@ public:
 
 	
 			//if(Component::information)
-			//	IndividualExtNSGAII<R, X, ADS, DS>::print(*nextPopX);
+			//	IndividualExtNSGAII<R, X, ADS>::print(*nextPopX);
 			logPopulation(*nextPopX, t, tnow.now(), "nextPopX final");
 
 			// delete unused elements (quadratic)
@@ -1276,7 +1276,7 @@ public:
 			px = nextPopX;
 
 	/*
-			vector<IndividualExtNSGAII<R, X, ADS, DS>*> check_px = decode(*ps);
+			vector<IndividualExtNSGAII<R, X, ADS>*> check_px = decode(*ps);
 			if(check_px.size() != px->size())
 			{
 				cout << "ERROR! LOST 'X' INDIVIDUALS!" << endl;
@@ -1337,7 +1337,7 @@ public:
 		if(Component::information)
 			cout << id() << ": memory clean!" << endl;
 
-		ExtendedPareto<R, X, ADS, DS>* pf = new ExtendedPareto<R, X, ADS, DS>;
+		ExtendedPareto<R, X, ADS>* pf = new ExtendedPareto<R, X, ADS>;
 		while(ps->size() > 0)
 		{
 			Solution<R>* s = &ps->at(0)->s.clone();
@@ -1346,7 +1346,7 @@ public:
 
 			// CALL DECODER TO EVALUATE SOLUTIONS!
 
-			pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation<DS>*> > dec_vs = decoder.decode(*s);
+			pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation*> > dec_vs = decoder.decode(*s);
 
 			Population<X, ADS>* popx = new Population<X, ADS>;
 			if(dec_vs.first.size() > 0)
@@ -1369,7 +1369,7 @@ public:
 	}
 
 	// calculates de crowding distance for each element of vector 'I', and stores in I[i].distance
-	void crowdingDistanceAssignment(vector<IndividualExtNSGAII<R, X, ADS, DS>*>& I, vector<IndividualNSGAII<R>*>& Ps)
+	void crowdingDistanceAssignment(vector<IndividualExtNSGAII<R, X, ADS>*>& I, vector<IndividualNSGAII<R>*>& Ps)
 	{
 		int max_rank = 0;
 		for(unsigned i = 0; i < I.size(); i++)
@@ -1456,7 +1456,7 @@ public:
 			} // for each front
 		} // for each objective
 
-		IndividualExtNSGAII<R, X, ADS, DS>::updateDistances(I); // update parents' ranks
+		IndividualExtNSGAII<R, X, ADS>::updateDistances(I); // update parents' ranks
 
 /*
 		specificDistanceAssignment(Ps);
@@ -1473,25 +1473,25 @@ public:
 
 	} // end function
 
-	static bool sortByFirst(const IndividualExtNSGAII<R, X, ADS, DS>* ind1, const IndividualExtNSGAII<R, X, ADS, DS>* ind2)
+	static bool sortByFirst(const IndividualExtNSGAII<R, X, ADS>* ind1, const IndividualExtNSGAII<R, X, ADS>* ind2)
 	{
 		return ind1->mev.at(0).evaluation() < ind2->mev.at(0).evaluation();
 	}
 
-	static bool sortBySecond(const IndividualExtNSGAII<R, X, ADS, DS>* ind1, const IndividualExtNSGAII<R, X, ADS, DS>* ind2)
+	static bool sortBySecond(const IndividualExtNSGAII<R, X, ADS>* ind1, const IndividualExtNSGAII<R, X, ADS>* ind2)
 	{
 		return ind1->mev.at(1).evaluation() < ind2->mev.at(1).evaluation();
 	}
 
 
 	// calculates de ranking for each element of vector 'I', and updates in I[i].rank
-	vector<vector<IndividualNSGAII<R>*>*> fastNonDominatedSort(vector<IndividualExtNSGAII<R, X, ADS, DS>*>& P, vector<IndividualNSGAII<R>*>& Ps)
+	vector<vector<IndividualNSGAII<R>*>*> fastNonDominatedSort(vector<IndividualExtNSGAII<R, X, ADS>*>& P, vector<IndividualNSGAII<R>*>& Ps)
 	{
 		Timer tNonDomSort;
 
 		checkUnique(P);
 
-		vector<IndividualExtNSGAII<R, X, ADS, DS>*> Px(P);
+		vector<IndividualExtNSGAII<R, X, ADS>*> Px(P);
 
 		sort(Px.begin(), Px.end(), sortBySecond); // any sort is good!
 		stable_sort(Px.begin(), Px.end(), sortByFirst); // necessary to be stable!!
@@ -1577,7 +1577,7 @@ public:
 			rank++;
 		}
 
-		IndividualExtNSGAII<R, X, ADS, DS>::updateRanks(P); // update parents' ranks
+		IndividualExtNSGAII<R, X, ADS>::updateRanks(P); // update parents' ranks
 
 		//cout << "WILL CHECK IMPROVED SORT!" << endl;
 		//testNonDominationSort(P, rank);
@@ -1588,7 +1588,7 @@ public:
 		for(unsigned i=0; i<vRank.size(); i++)
 			vRank[i] = P[i]->rank;
 
-		IndividualExtNSGAII<R, X, ADS, DS>::zeroRanks(Ps); // update parents' ranks
+		IndividualExtNSGAII<R, X, ADS>::zeroRanks(Ps); // update parents' ranks
 
 		vector<vector<IndividualNSGAII<R>*>*> F = fastNonDominatedSortClassical(P, Ps);
                 freeFronts(F);
@@ -1605,14 +1605,14 @@ public:
 				cout << "vRank: " << vRank[i] << " Px_i:" << P[i]->rank << endl;
 
 				cout << "will print first!" << endl;
-	                        IndividualExtNSGAII<R, X, ADS, DS>::printToDisk(Ps, P);
+	                        IndividualExtNSGAII<R, X, ADS>::printToDisk(Ps, P);
 
 				cout << "will return to last" << endl;
 				for(unsigned z=0; z < P.size(); z++)
 					P.at(z)->rank = vRank.at(z);
 
 				cout << "will print second!" << endl;
-	                        IndividualExtNSGAII<R, X, ADS, DS>::printToDisk(Ps, P);
+	                        IndividualExtNSGAII<R, X, ADS>::printToDisk(Ps, P);
 				exit(1);
 			}	
 */
@@ -1641,7 +1641,7 @@ public:
 
 
 	// calculates de ranking for each element of vector 'I', and updates in I[i].rank
-	vector<vector<IndividualNSGAII<R>*>*> fastNonDominatedSortClassical(vector<IndividualExtNSGAII<R, X, ADS, DS>*>& P, vector<IndividualNSGAII<R>*>& Ps)
+	vector<vector<IndividualNSGAII<R>*>*> fastNonDominatedSortClassical(vector<IndividualExtNSGAII<R, X, ADS>*>& P, vector<IndividualNSGAII<R>*>& Ps)
 	{
 		Timer tNonDomSort;
 		if(Component::information)
@@ -1736,7 +1736,7 @@ public:
 		//	cout << "#" << Ps[i]->id << " " << Ps[i]->rank << " ";
 		//cout << endl;
 
-		IndividualExtNSGAII<R, X, ADS, DS>::updateRanks(P); // update parents' ranks
+		IndividualExtNSGAII<R, X, ADS>::updateRanks(P); // update parents' ranks
 
 		//cout << "printing ranks (" << Ps.size() << ") : ";
 		//for(unsigned i=0; i<Ps.size(); i++)
@@ -1793,11 +1793,11 @@ public:
 
 
 	// function to log data from the population
-	virtual void logPopulation(const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& px, int generation, double time, string other)
+	virtual void logPopulation(const vector<IndividualExtNSGAII<R, X, ADS>*>& px, int generation, double time, string other)
 	{
 	}
 
-	virtual void checkUnique(const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& P)
+	virtual void checkUnique(const vector<IndividualExtNSGAII<R, X, ADS>*>& P)
 	{
 		for(unsigned i=0; i<P.size()-1; i++)
 			for(unsigned j=i+1; j<P.size(); j++)
@@ -1810,7 +1810,7 @@ public:
 				}
 	}
 
-	virtual void testNonDominationSort(const vector<IndividualExtNSGAII<R, X, ADS, DS>*>& P, int rank) // 'rank' is the number of ranks
+	virtual void testNonDominationSort(const vector<IndividualExtNSGAII<R, X, ADS>*>& P, int rank) // 'rank' is the number of ranks
 	{
 		// first test, elements from same front can't dominate each other
 		for(int r=0; r<rank; r++)

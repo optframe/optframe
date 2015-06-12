@@ -35,11 +35,11 @@ namespace optframe
 {
 #define INFINITO 1000000000
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 struct IndividualNSGAII
 {
 	Solution<R, ADS>& s;
-	MultiEvaluation<DS>* mev; // TODO: remove?
+	MultiEvaluation* mev; // TODO: remove?
 	int rank;
 	double distance;
 
@@ -136,18 +136,18 @@ struct IndividualNSGAII
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class NSGAII: public MultiObjSearch<R, ADS, DS >
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class NSGAII: public MultiObjSearch<R, ADS >
 {
-	typedef vector<Evaluation<DS>*> FitnessValues;
+	typedef vector<Evaluation*> FitnessValues;
 
 private:
-	vector<Evaluator<R, ADS, DS>*> v_e;
+	vector<Evaluator<R, ADS>*> v_e;
 
 	InitialPopulation<R, ADS>& init_pop;
 	int init_pop_size;
 
-	ParetoDominance<R, ADS, DS> pDominance;
+	ParetoDominance<R, ADS> pDominance;
 	int gMax;
 
 	static bool compara(pair<double, int> p1, pair<double, int> p2)
@@ -159,10 +159,10 @@ protected:
 	RandGen& rg;
 public:
 
-	//using Heuristic<R, ADS, DS >::exec; // prevents name hiding
+	//using Heuristic<R, ADS >::exec; // prevents name hiding
 
-	NSGAII(vector<Evaluator<R, ADS, DS>*> _v_e, InitialPopulation<R, ADS>& _init_pop, int _init_pop_size, int _gMax, RandGen& _rg) :
-		v_e(_v_e), init_pop(_init_pop), init_pop_size(_init_pop_size), pDominance(ParetoDominance<R, ADS, DS>(_v_e)), rg(_rg)
+	NSGAII(vector<Evaluator<R, ADS>*> _v_e, InitialPopulation<R, ADS>& _init_pop, int _init_pop_size, int _gMax, RandGen& _rg) :
+		v_e(_v_e), init_pop(_init_pop), init_pop_size(_init_pop_size), pDominance(ParetoDominance<R, ADS>(_v_e)), rg(_rg)
 	{
 		pDominance.insertEvaluators(_v_e);
 		gMax = _gMax;
@@ -179,7 +179,7 @@ public:
 	{
 		//ACHO Q FALTA APAGAR ALGUMA COISA NO FINAL
 
-		//vector<vector<Evaluation<DS>*> > e_pop;
+		//vector<vector<Evaluation*> > e_pop;
 		FitnessValues& e_pop = *new FitnessValues;
 
 		for (int i = 0; i < p.size(); i++)
@@ -202,7 +202,7 @@ public:
 	*/
 
 	//virtual void exec(Population<R, ADS>& p, FitnessValues& e_pop, double timelimit, double target_f)
-	virtual Pareto<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS, DS>* _pf = NULL)
+	virtual Pareto<R, ADS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS>* _pf = NULL)
 	{
 		Timer tnow;
 
@@ -276,16 +276,16 @@ public:
 		}
 
 
-		Pareto<R, ADS, DS>* pf = new Pareto<R, ADS, DS>;
+		Pareto<R, ADS>* pf = new Pareto<R, ADS>;
 		for(unsigned i=0; i<p.size(); i++)
 		{
 			Solution<R, ADS>* s = &p.at(i);
-			vector<Evaluation<DS>*> e;
+			vector<Evaluation*> e;
 			for(unsigned ev=0; ev<v_e.size(); ev++)
 			{
-				Evaluator<R, ADS, DS>* evtr = v_e[ev];
+				Evaluator<R, ADS>* evtr = v_e[ev];
 				//evtr->evaluate(s);
-				Evaluation<DS>& e1 = evtr->evaluate(*s);
+				Evaluation& e1 = evtr->evaluate(*s);
 				e.push_back(&e1);
 			}
 			pf->push_back(*s, e);
@@ -308,7 +308,7 @@ public:
 
 				for (int i = 0; i < N; i++)
 				{
-					Evaluation<DS>& e = v_e[m]->evaluate(Fj.at(i));
+					Evaluation& e = v_e[m]->evaluate(Fj.at(i));
 					fitness.push_back(make_pair(e.evaluation(), i));
 					delete &e;
 				}

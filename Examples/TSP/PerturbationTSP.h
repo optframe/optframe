@@ -22,7 +22,6 @@
 #define PERTURBATIONTSP_H_
 
 #include "Representation.h"
-#include "Memory.h"
 
 //typedef PerturbationLPlus2<RepTSP,MemTSP> PerturbationTSP;
 

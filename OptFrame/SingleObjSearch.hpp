@@ -35,11 +35,11 @@ using namespace std;
 namespace optframe
 {
 
-template< class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS >
+template< class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class SingleObjSearch : public Component
 {
-   typedef vector<Evaluation<DS>*> FitnessValues;
-   typedef const vector<const Evaluation<DS>*> ConstFitnessValues;
+   typedef vector<Evaluation*> FitnessValues;
+   typedef const vector<const Evaluation*> ConstFitnessValues;
 
 public:
 
@@ -52,7 +52,7 @@ public:
    }
 
    // search method try to find a feasible solution within timelimit, if there is no such solution it returns NULL.
-   virtual pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL,  const Evaluation<DS>* _e = NULL) = 0;
+   virtual pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL,  const Evaluation* _e = NULL) = 0;
 
    virtual string log()
    {
@@ -79,16 +79,16 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SingleObjSearchBuilder: public ComponentBuilder<R, ADS, DS>
+class SingleObjSearchBuilder: public ComponentBuilder<R, ADS>
 {
 public:
 	virtual ~SingleObjSearchBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "") = 0;
+	virtual SingleObjSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "") = 0;
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
 		return build(scanner, hf, family);
 	}
@@ -100,7 +100,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, DS>::idComponent() << "SingleObjSearch";
+		ss << ComponentBuilder<R, ADS>::idComponent() << "SingleObjSearch";
 		return ss.str();
 	}
 
@@ -113,7 +113,7 @@ public:
 
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SingleObjSearchAction: public Action<R, ADS, DS>
+class SingleObjSearchAction: public Action<R, ADS>
 {
 public:
 
@@ -128,12 +128,12 @@ public:
 
 	virtual bool handleComponent(string type)
 	{
-		return Component::compareBase(SingleObjSearch<R, ADS, DS>::idComponent(), type);
+		return Component::compareBase(SingleObjSearch<R, ADS>::idComponent(), type);
 	}
 
 	virtual bool handleComponent(Component& component)
 	{
-		return component.compatible(SingleObjSearch<R, ADS, DS>::idComponent());
+		return component.compatible(SingleObjSearch<R, ADS>::idComponent());
 	}
 
 	virtual bool handleAction(string action)
@@ -141,7 +141,7 @@ public:
 		return (action == "search");
 	}
 
-	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& d)
+	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS>& hf, map<string, string>& d)
 	{
 		if(!handleComponent(type))
 		{
@@ -169,9 +169,9 @@ public:
 		// cast object to lower type
 		Component* final = NULL;
 
-		if(type == SingleObjSearch<R, ADS, DS>::idComponent())
+		if(type == SingleObjSearch<R, ADS>::idComponent())
 		{
-			final = (SingleObjSearch<R, ADS, DS>*) comp;
+			final = (SingleObjSearch<R, ADS>*) comp;
 		}
 		else
 		{
@@ -181,10 +181,10 @@ public:
 
 		// add new component
 		Scanner scanner(variable);
-		return ComponentAction<R, ADS, DS>::addAndRegister(scanner, *final, hf, d);
+		return ComponentAction<R, ADS>::addAndRegister(scanner, *final, hf, d);
 	}
 
-	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	virtual bool doAction(string content, HeuristicFactory<R, ADS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 		//cout << "LocalSearch::doAction '" << content << "'" << endl;
 
@@ -193,7 +193,7 @@ public:
 		if (!scanner.hasNext())
 			return false;
 
-		SingleObjSearch<R, ADS, DS>* sios;
+		SingleObjSearch<R, ADS>* sios;
 		hf.assign(sios, scanner.nextInt(), scanner.next());
 
 		if (!sios)
@@ -228,10 +228,10 @@ public:
 			if (!scanner.hasNext())
 				return false;
 
-			Evaluation<DS>* e;
+			Evaluation* e;
 			hf.assign(e, scanner.nextInt(), scanner.next());
 
-			pair<Solution<R, ADS>&, Evaluation<DS>&>* p = sios->search(timelimit, target_f, s, e);
+			pair<Solution<R, ADS>&, Evaluation&>* p = sios->search(timelimit, target_f, s, e);
 
 			if(!p)
 				return true;
@@ -241,7 +241,7 @@ public:
 			delete& p->second;
 			delete p;
 
-			return Action<R, ADS, DS>::addAndRegister(scanner, s2, hf, dictionary);
+			return Action<R, ADS>::addAndRegister(scanner, s2, hf, dictionary);
 		}
 
 		// no action found!

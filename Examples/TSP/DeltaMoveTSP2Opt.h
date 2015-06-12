@@ -22,7 +22,6 @@
 #define TSP_DELTA_MOVETSP2OPT_HPP_
 
 #include "../../OptFrame/Util/NeighborhoodStructures/Moves/MoveTSP2Opt.hpp"
-#include "Memory.h"
 #include "ProblemInstance.h"
 #include "Solution.h"
 
@@ -35,9 +34,9 @@ using namespace optframe;
 namespace TSP
 {
 
-class DeltaMoveTSP2Opt: public MoveTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP >
+class DeltaMoveTSP2Opt: public MoveTSP2Opt<int, OPTFRAME_DEFAULT_ADS >
 {
-	typedef MoveTSP2Opt<int, OPTFRAME_DEFAULT_ADS, MemTSP> super;
+	typedef MoveTSP2Opt<int, OPTFRAME_DEFAULT_ADS> super;
 
 private:
 	ProblemInstance* tsp;
@@ -83,7 +82,7 @@ public:
 	*/
 
 
-	MoveCost* cost(const Evaluation<MemTSP>&, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost* cost(const Evaluation&, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		if(p1 >= p2)
 		{
@@ -131,7 +130,7 @@ public:
 		return idComp;
 	}
 
-	virtual bool operator==(const Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP >& _m) const
+	virtual bool operator==(const Move<RepTSP>& _m) const
 	{
 		const DeltaMoveTSP2Opt& m1 = (const DeltaMoveTSP2Opt&) _m;
 		return ((m1.p1 == p1) && (m1.p2 == p2));

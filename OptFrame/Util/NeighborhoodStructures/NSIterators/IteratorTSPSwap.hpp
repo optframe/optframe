@@ -30,8 +30,8 @@ using namespace std;
 
 // Working structure: vector<T>
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveTSPSwap<T, ADS, DS >, class P = OPTFRAME_DEFAULT_PROBLEM  >
-class NSIteratorTSPSwap: public NSIterator<vector<T> , ADS, DS >
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM>
+class NSIteratorTSPSwap: public NSIterator<vector<T>, ADS>
 {
 	typedef vector<T> Route;
 
@@ -45,11 +45,11 @@ protected:
 public:
 
 	NSIteratorTSPSwap(int _n, P* _p = NULL) :
-      p(_p)
+			p(_p)
 	{
-		p1=p2=0;
-	   n = _n;
-	   m = NULL;
+		p1 = p2 = 0;
+		n = _n;
+		m = NULL;
 	}
 
 	virtual ~NSIteratorTSPSwap()
@@ -92,7 +92,7 @@ public:
 		return (m == NULL);
 	}
 
-	virtual Move<Route, ADS, DS >& current()
+	virtual Move<Route, ADS>& current()
 	{
 		if (isDone())
 		{

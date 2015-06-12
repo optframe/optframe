@@ -27,7 +27,6 @@
 
 // Own includes
 #include "ProblemInstance.h"
-#include "Memory.h"
 #include "Solution.h"
 #include "../../OptFrame/RandGen.hpp"
 
@@ -42,7 +41,7 @@ using namespace std;
 namespace TSP
 {
 
-class MoveSwap: public Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>
+class MoveSwap: public Move<RepTSP>
 {
 private:
 	int c1, c2;
@@ -51,7 +50,7 @@ private:
 public:
 
 	MoveSwap(int c1, int c2, ProblemInstance& _tsp) :
-		tsp(_tsp)
+			tsp(_tsp)
 	{
 		this->c1 = c1;
 		this->c2 = c2;
@@ -66,7 +65,7 @@ public:
 		return true;
 	}
 
-	Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>* apply(RepTSP& rep, OPTFRAME_DEFAULT_ADS&)
+	Move<RepTSP>* apply(RepTSP& rep, OPTFRAME_DEFAULT_ADS&)
 	{
 		// Specify how the move "MoveSwap" will be applied
 
@@ -78,8 +77,7 @@ public:
 		return new MoveSwap(c2, c1, tsp);
 	}
 
-
-	Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>* apply(MemTSP& mem, RepTSP& rep, OPTFRAME_DEFAULT_ADS& ads)
+	Move<RepTSP>* apply(Evaluation& e, RepTSP& rep, OPTFRAME_DEFAULT_ADS& ads)
 	{
 		int k1, k2;
 
@@ -103,7 +101,7 @@ public:
 
 		if (k1 == 0)
 			bk1 = rep.size() - 1;
-		if (k2 == ((int)rep.size()) - 1)
+		if (k2 == ((int) rep.size()) - 1)
 			ak2 = 0;
 
 		double f = 0;
@@ -122,7 +120,7 @@ public:
 			f -= (*tsp.dist)(rep[k2], rep[ak2]);
 		}
 
-		Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& rev = *apply(rep, ads);
+		Move<RepTSP>& rev = *apply(rep, ads);
 
 		if (k2 - k1 == 1) // special case, cities are near
 		{
@@ -138,14 +136,12 @@ public:
 			f += (*tsp.dist)(rep[k2], rep[ak2]);
 		}
 
-		mem.first = true;
-		mem.second += f;
+		e.setObjFunction(e.getObjFunction() + f);
 
 		return &rev;
 	}
 
-
-	MoveCost* cost(const Evaluation<MemTSP>& e, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost* cost(const Evaluation& e, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		int k1, k2;
 
@@ -170,13 +166,13 @@ public:
 		int ak2 = k2 + 1;
 
 		if (k1 == 0)
-			bk1 = ((int)rep.size()) - 1;
-		if (k2 == ((int)rep.size()) - 1)
+			bk1 = ((int) rep.size()) - 1;
+		if (k2 == ((int) rep.size()) - 1)
 			ak2 = 0;
 
 		double f = 0;
 
-		if(k2 - k1 == 1) // special case, cities are near
+		if (k2 - k1 == 1) // special case, cities are near
 		{
 			f -= (*tsp.dist)(rep[bk1], rep[k1]);
 			f -= (*tsp.dist)(rep[k1], rep[k2]);
@@ -186,7 +182,7 @@ public:
 			f += (*tsp.dist)(rep[k2], rep[k1]);
 			f += (*tsp.dist)(rep[k1], rep[ak2]);
 		}
-		else if((k1 == 0) && (k2 == ((int)rep.size()) - 1)) // special case, extreme points
+		else if ((k1 == 0) && (k2 == ((int) rep.size()) - 1)) // special case, extreme points
 		{
 			f -= (*tsp.dist)(rep[bk2], rep[k2]);
 			f -= (*tsp.dist)(rep[k2], rep[k1]);
@@ -212,14 +208,13 @@ public:
 		return new MoveCost(f, 0);
 	}
 
-
 	void print() const
 	{
 		cout << "MoveSwap between " << c1 << " and " << c2 << endl;
 	}
 
-	virtual bool operator==(const Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& _m) const
-	{
+	virtual bool operator==(const Move<RepTSP>& _m) const
+			{
 		const MoveSwap& m = (const MoveSwap&) _m; // You can only compare if types are equal
 
 		if ((c1 == m.c1 && c2 == m.c2) || (c1 == m.c2 && c2 == m.c1))
@@ -234,8 +229,7 @@ public:
 //                  Swap Neighborhood Structure
 //============================================================================
 
-
-class NSEnumSwap: public NSEnum<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>
+class NSEnumSwap: public NSEnum<RepTSP>
 {
 private:
 	ProblemInstance* pI;
@@ -245,16 +239,16 @@ private:
 
 public:
 
-	using NSEnum<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>::move; // prevents name hiding
+	using NSEnum<RepTSP>::move; // prevents name hiding
 
 	NSEnumSwap(ProblemInstance* pI, RandGen& _rg) :
-		NSEnum<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> (_rg)
+			NSEnum<RepTSP>(_rg)
 	{
 		this->pI = pI;
 		this->n = pI->n;
 	}
 
-	virtual Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& move(unsigned int k)
+	virtual Move<RepTSP>& move(unsigned int k)
 	{
 		return busca(k, 1, 2 * n);
 	}
@@ -270,7 +264,6 @@ public:
 	}
 
 	// Auxiliar methods
-
 
 	int corresp(int d)
 	{
@@ -312,7 +305,7 @@ public:
 		return comeca(d) + numElem(d) - 1;
 	}
 
-	Move<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>& busca(int k, int a, int b)
+	Move<RepTSP>& busca(int k, int a, int b)
 	{
 		int d = (a + b) / 2;
 

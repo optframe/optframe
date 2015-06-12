@@ -27,7 +27,6 @@
 
 // Own includes
 #include "ProblemInstance.h"
-#include "Memory.h"
 #include "Solution.h"
 
 using namespace std;
@@ -36,17 +35,17 @@ using namespace optframe;
 namespace EtII
 {
 
-class MoveSwapCenter: public Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
+class MoveSwapCenter: public Move<RepEtII>
 {
 protected:
 	int x1, y1, x2, y2;
-public:
+	public:
 
-	using Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::apply; // prevents name hiding
-	using Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::canBeApplied; // prevents name hiding
+	using Move<RepEtII>::apply; // prevents name hiding
+	using Move<RepEtII>::canBeApplied; // prevents name hiding
 
 	MoveSwapCenter(int _x1, int _y1, int _x2, int _y2) :
-		x1(_x1), y1(_y1), x2(_x2), y2(_y2)
+			x1(_x1), y1(_y1), x2(_x2), y2(_y2)
 	{
 	}
 
@@ -59,7 +58,7 @@ public:
 		return true;
 	}
 
-	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>* apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS&)
+	Move<RepEtII>* apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS&)
 	{
 		Piece p = rep(x1, y1);
 		rep(x1, y1) = rep(x2, y2);
@@ -68,7 +67,7 @@ public:
 		return new MoveSwapCenter(x2, y2, x1, y1);
 	}
 
-	Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>* apply(MemEtII& mem, RepEtII& rep, OPTFRAME_DEFAULT_ADS& ads)
+	Move<RepEtII>* apply(Evaluation& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS& ads)
 	{
 		int f = 0;
 		if (rep(x1, y1).left == rep(x1, y1 - 1).right)
@@ -90,7 +89,7 @@ public:
 		if ((rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
 			g++;
 
-		Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& rev = *apply(rep, ads);
+		Move<RepEtII>& rev = *apply(rep, ads);
 
 		int f2 = 0;
 		if (rep(x1, y1).left == rep(x1, y1 - 1).right)
@@ -112,14 +111,14 @@ public:
 		if ((rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
 			g2++;
 
-		mem += (f2 - f);
-		mem += (g2 - g);
+		e.setObjFunction(e.getObjFunction() + (f2 - f));
+		e.setObjFunction(e.getObjFunction() + (g2 - g));
 
 		return &rev;
 	}
 
-	virtual bool operator==(const Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& _m) const
-	{
+	virtual bool operator==(const Move<RepEtII>& _m) const
+			{
 		const MoveSwapCenter& m = (const MoveSwapCenter&) _m;
 		return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2);
 	}
@@ -135,7 +134,7 @@ public:
 	}
 };
 
-class NSIteratorSwapCenter: public NSIterator<RepEtII, MemEtII>
+class NSIteratorSwapCenter: public NSIterator<RepEtII>
 {
 private:
 	int nIntraRows, nIntraCols;
@@ -143,7 +142,7 @@ private:
 
 public:
 	NSIteratorSwapCenter(int _nIntraRows, int _nIntraCols) :
-		nIntraRows(_nIntraRows), nIntraCols(_nIntraCols)
+			nIntraRows(_nIntraRows), nIntraCols(_nIntraCols)
 	{
 	}
 
@@ -203,24 +202,24 @@ public:
 		return (x1 >= nIntraRows) || (y1 >= nIntraCols) || (x2 >= nIntraRows) || (y2 >= nIntraCols);
 	}
 
-	virtual Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& current()
+	virtual Move<RepEtII>& current()
 	{
 		return *new MoveSwapCenter(x1 + 1, y1 + 1, x2 + 1, y2 + 1);
 	}
 };
 
 template<class MOVE = MoveSwapCenter>
-class NSSeqSwapCenter: public NSSeq<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
+class NSSeqSwapCenter: public NSSeq<RepEtII>
 {
 private:
 	RandGen& rg;
-public:
+	public:
 
-	using NSSeq<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::move; // prevents name hiding
-	using NSSeq<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::getIterator; // prevents name hiding
+	using NSSeq<RepEtII>::move; // prevents name hiding
+	using NSSeq<RepEtII>::getIterator; // prevents name hiding
 
 	NSSeqSwapCenter(RandGen& _rg) :
-		rg(_rg)
+			rg(_rg)
 	{
 	}
 
@@ -228,7 +227,7 @@ public:
 	{
 	}
 
-	virtual Move<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>& move(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
+	virtual Move<RepEtII>& move(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		if ((rep.getNumRows() == 3) && (rep.getNumCols() == 3))
 			return *new MoveSwapCenter(1, 1, 1, 1);
@@ -248,7 +247,7 @@ public:
 		return *new MOVE(x1, y1, x2, y2);
 	}
 
-	virtual NSIterator<RepEtII, MemEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
+	virtual NSIterator<RepEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
 	{
 		// return an iterator to the neighbors of 'rep'
 		return *new NSIteratorSwapCenter(rep.getNumRows() - 2, rep.getNumCols() - 2);

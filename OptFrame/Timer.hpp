@@ -124,156 +124,16 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class TimerAction: public Action<R, ADS, DS>
-{
-public:
 
-	virtual ~TimerAction()
-	{
-	}
-
-	virtual string usage()
-	{
-		string u;
-		u.append("OptFrame:Timer idx   now   output_variable => double\n");
-		u.append("OptFrame:Timer idx   inSecs   output_variable => double\n");
-		u.append("OptFrame:Timer idx   inMilliSecs   output_variable => double\n");
-		u.append("OptFrame:Timer idx   inMicroSecs   output_variable => double\n");
-		return u;
-	}
-
-	virtual bool handleComponent(string type)
-	{
-		return Component::compareBase(Timer::idComponent(), type);
-	}
-
-	virtual bool handleComponent(Component& component)
-	{
-		return component.compatible(Timer::idComponent());
-	}
-
-	virtual bool handleAction(string action)
-	{
-		return (action == "now") || (action == "inSecs") || (action == "inMilliSecs") || (action == "inMicroSecs");
-	}
-
-	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& d)
-	{
-		if (!handleComponent(type))
-		{
-			cout << "TimerAction::doCast error: can't handle component type '" << type << " " << id << "'" << endl;
-			return false;
-		}
-
-		Component* comp = hf.components[component].at(id);
-
-		if (!comp)
-		{
-			cout << "TimerAction::doCast error: NULL component '" << component << " " << id << "'" << endl;
-			return false;
-		}
-
-		if (!Component::compareBase(comp->id(), type))
-		{
-			cout << "TimerAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
-			return false;
-		}
-
-		// remove old component from factory
-		hf.components[component].at(id) = NULL;
-
-		// cast object to lower type
-		Component* final = NULL;
-
-		if (type == Timer::idComponent())
-		{
-			final = (Timer*) comp;
-		}
-		else
-		{
-			cout << "TimerAction::doCast error: no cast for type '" << type << "'" << endl;
-			return false;
-		}
-
-		// add new component
-		Scanner scanner(variable);
-		return ComponentAction<R, ADS, DS>::addAndRegister(scanner, *final, hf, d);
-	}
-
-	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
-	{
-		//cout << "Timer::doAction '" << content << "'" << endl;
-
-		Scanner scanner(content);
-
-		if (!scanner.hasNext())
-			return false;
-
-		Timer* timer;
-		hf.assign(timer, scanner.nextInt(), scanner.next());
-
-		if (!timer)
-			return false;
-
-		if (!scanner.hasNext())
-			return false;
-
-		string action = scanner.next();
-
-		if (!handleAction(action))
-			return false;
-
-		if (action == "now")
-		{
-			double v = timer->now();
-			stringstream ss;
-			ss << v;
-
-			return Action<R, ADS, DS>::registerText(scanner, ss.str(), dictionary);
-		}
-
-		if (action == "inSecs")
-		{
-			double v = timer->inSecs();
-			stringstream ss;
-			ss << v;
-
-			return Action<R, ADS, DS>::registerText(scanner, ss.str(), dictionary);
-		}
-
-		if (action == "inMilliSecs")
-		{
-			double v = timer->inMilliSecs();
-			stringstream ss;
-			ss << v;
-
-			return Action<R, ADS, DS>::registerText(scanner, ss.str(), dictionary);
-		}
-
-		if (action == "inMicroSecs")
-		{
-			double v = timer->inMicroSecs();
-			stringstream ss;
-			ss << v;
-
-			return Action<R, ADS, DS>::registerText(scanner, ss.str(), dictionary);
-		}
-		// no action found!
-		return false;
-	}
-
-};
-
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class TimerBuilder : public ComponentBuilder<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class TimerBuilder : public ComponentBuilder<R, ADS>
 {
 public:
 	virtual ~TimerBuilder()
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
 		return new Timer;
 	}
@@ -292,7 +152,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, DS>::idComponent() << "Timer";
+		ss << ComponentBuilder<R, ADS>::idComponent() << "Timer";
 		return ss.str();
 	}
 

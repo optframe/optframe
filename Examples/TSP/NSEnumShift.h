@@ -28,12 +28,11 @@
 
 // Own includes
 #include "ProblemInstance.h"
-#include "Memory.h"
 #include "Solution.h"
 
 using namespace std;
 
-typedef MoveVectorShift<int, MemTSP> MoveShiftTSP;
-typedef NSEnumVectorShift<int, MemTSP> NSEnumShiftTSP;
+typedef MoveVectorShift<int> MoveShiftTSP;
+typedef NSEnumVectorShift<int> NSEnumShiftTSP;
 
 #endif /*TSP_NSENUMShift_HPP_*/

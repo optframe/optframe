@@ -26,8 +26,8 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class EmptyLocalSearch : public LocalSearch<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class EmptyLocalSearch : public LocalSearch<R, ADS>
 {
 public:
 
@@ -40,7 +40,7 @@ public:
 	}
 
 	virtual void exec(Solution<R, ADS>&, double timelimit, double target_f){};
-	virtual void exec(Solution<R, ADS>&, Evaluation<DS>&, double timelimit, double target_f){};
+	virtual void exec(Solution<R, ADS>&, Evaluation&, double timelimit, double target_f){};
 
 	string log()
 	{
@@ -49,13 +49,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS, DS>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<R, ADS>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, DS>::idComponent() << ":Empty";
+		ss << LocalSearch<R, ADS>::idComponent() << ":Empty";
 		return ss.str();
 	}
 
@@ -67,16 +67,16 @@ public:
 
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class EmptyLocalSearchBuilder : public LocalSearchBuilder<R, ADS, DS>
+class EmptyLocalSearchBuilder : public LocalSearchBuilder<R, ADS>
 {
 public:
 	virtual ~EmptyLocalSearchBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	virtual LocalSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
-		return new EmptyLocalSearch<R, ADS, DS>;
+		return new EmptyLocalSearch<R, ADS>;
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -88,13 +88,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == EmptyLocalSearch<R, ADS, DS>::idComponent();
+		return component == EmptyLocalSearch<R, ADS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << ":Empty";
+		ss << LocalSearchBuilder<R, ADS>::idComponent() << ":Empty";
 		return ss.str();
 	}
 

@@ -34,15 +34,15 @@ namespace optframe
 {
 
 template<class H, class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class IteratedLocalSearch: public ILS, public SingleObjSearch<R, ADS, DS>
+class IteratedLocalSearch: public ILS, public SingleObjSearch<R, ADS>
 {
 protected:
-	Evaluator<R, ADS, DS>& evaluator;
+	Evaluator<R, ADS>& evaluator;
 	Constructive<R, ADS>& constructive;
 
 public:
 
-	IteratedLocalSearch(Evaluator<R, ADS, DS>& _evaluator, Constructive<R, ADS>& _constructive) :
+	IteratedLocalSearch(Evaluator<R, ADS>& _evaluator, Constructive<R, ADS>& _constructive) :
 		evaluator(_evaluator), constructive(_constructive)
 	{
 	}
@@ -53,22 +53,22 @@ public:
 
 	virtual H& initializeHistory() = 0;
 
-	virtual void localSearch(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f) = 0;
+	virtual void localSearch(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f) = 0;
 
-	virtual void perturbation(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f, H& history) = 0;
+	virtual void perturbation(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f, H& history) = 0;
 
 	virtual Solution<R, ADS>& acceptanceCriterion(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2, H& history) = 0;
 
 	virtual bool terminationCondition(H& history) = 0;
 
-	pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0,  const Solution<R, ADS>* _s = NULL,  const Evaluation<DS>* _e = NULL)
+	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0,  const Solution<R, ADS>* _s = NULL,  const Evaluation* _e = NULL)
 	{
 		cout << "ILS search(" << target_f << "," << timelimit << ")" << endl;
 
 		Timer tnow;
 
 		Solution<R, ADS>& s = constructive.generateSolution();
-		Evaluation<DS>& e = evaluator.evaluate(s);
+		Evaluation& e = evaluator.evaluate(s);
 
 		H* history = &initializeHistory();
 
@@ -79,7 +79,7 @@ public:
 		localSearch(s, e, (timelimit - (tnow.now())), target_f);
 
 		Solution<R, ADS>* sStar = &s.clone();
-		Evaluation<DS>* eStar = &e.clone();
+		Evaluation* eStar = &e.clone();
 
 		cout << "ILS starts: ";
 		e.print();
@@ -87,14 +87,14 @@ public:
 		do
 		{
 			Solution<R, ADS>* s1 = &sStar->clone();
-			Evaluation<DS>* e1 = &eStar->clone();
+			Evaluation* e1 = &eStar->clone();
 
 			perturbation(*s1, *e1, (timelimit - (tnow.now())), target_f, *history);
 
 			localSearch(*s1, *e1, (timelimit - (tnow.now())), target_f);
 
 			Solution<R, ADS>* s2 = s1;
-			Evaluation<DS>* e2 = e1;
+			Evaluation* e2 = e1;
 
 			Solution<R, ADS>* sStar1 = &acceptanceCriterion(*sStar, *s2, *history);
 
@@ -116,14 +116,14 @@ public:
 
 		delete history;
 
-		return new pair<Solution<R, ADS>&, Evaluation<DS>&> (s, e);
+		return new pair<Solution<R, ADS>&, Evaluation&> (s, e);
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, DS>::idComponent() << ":" << ILS::family();
-		//ss << SingleObjSearch<R, ADS, DS>::idComponent() << ILS::family << "IteratedLocalSearch:";
+		ss << SingleObjSearch<R, ADS>::idComponent() << ":" << ILS::family();
+		//ss << SingleObjSearch<R, ADS>::idComponent() << ILS::family << "IteratedLocalSearch:";
 		return ss.str();
 	}
 

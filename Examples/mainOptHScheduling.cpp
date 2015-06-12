@@ -40,7 +40,7 @@ using namespace scannerpp;
 
 int main(int argc, char **argv)
 {
-	Loader<RepOptHS, OPTFRAME_DEFAULT_ADS, MemOptHS> loader;
+	Loader<RepOptHS> loader;
 	OptHSProblemCommand opths;
 	//optframe.execute("system.read ../definitions.opt");
 	//optframe.execute("problem.OptHS load Y Z M B E J");

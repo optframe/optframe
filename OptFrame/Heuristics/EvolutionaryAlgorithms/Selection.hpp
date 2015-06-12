@@ -27,7 +27,7 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class Selection : public Component, public EA
 {
 public:
@@ -36,7 +36,7 @@ public:
 	{
 	}
 
-	virtual pair<unsigned, unsigned> select(const MultiSolution<R, ADS>& population, const MultiEvaluation<DS>& mev, const vector<double>& fv) = 0;
+	virtual pair<unsigned, unsigned> select(const MultiSolution<R, ADS>& population, const MultiEvaluation& mev, const vector<double>& fv) = 0;
 
 
 	static double getMax(const vector<double>& fv)

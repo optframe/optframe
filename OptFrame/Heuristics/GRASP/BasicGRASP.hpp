@@ -30,19 +30,19 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class BasicGRASP: public SingleObjSearch<R, ADS, DS>, public GRASP
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class BasicGRASP: public SingleObjSearch<R, ADS>, public GRASP
 {
 private:
-	Evaluator<R, ADS, DS>& evaluator;
+	Evaluator<R, ADS>& evaluator;
 	GRConstructive<R, ADS>& constructive;
-	LocalSearch<R, ADS, DS>& ls;
+	LocalSearch<R, ADS>& ls;
 	float alpha;
 	unsigned int iterMax;
 
 public:
 
-	BasicGRASP(Evaluator<R, ADS, DS>& _eval, GRConstructive<R, ADS>& _constructive, LocalSearch<R, ADS, DS>& _ls, float _alpha, int _iterMax) :
+	BasicGRASP(Evaluator<R, ADS>& _eval, GRConstructive<R, ADS>& _constructive, LocalSearch<R, ADS>& _ls, float _alpha, int _iterMax) :
 			evaluator(_eval), constructive(_constructive), ls(_ls)
 	{
 		if (_iterMax <= 0)
@@ -57,7 +57,7 @@ public:
 	{
 	}
 
-	pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL, const Evaluation<DS>* _e = NULL)
+	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
 	{
 		long tini = time(NULL);
 
@@ -66,7 +66,7 @@ public:
 		long tnow = time(NULL);
 
 		Solution<R, ADS>& s = constructive.generateSolution(alpha);
-		Evaluation<DS>& e = evaluator.evaluate(s);
+		Evaluation& e = evaluator.evaluate(s);
 
 		if (Component::information)
 			e.print();
@@ -77,7 +77,7 @@ public:
 				cout << "GRASP::iter=" << iter << endl;
 
 			Solution<R, ADS>& s1 = constructive.generateSolution(alpha);
-			Evaluation<DS>& e1 = evaluator.evaluate(s1);
+			Evaluation& e1 = evaluator.evaluate(s1);
 
 			ls.exec(s1, e1, timelimit, target_f);
 
@@ -99,7 +99,7 @@ public:
 			iter++;
 		}
 
-		return new pair<Solution<R, ADS>&, Evaluation<DS>&>(s, e);
+		return new pair<Solution<R, ADS>&, Evaluation&>(s, e);
 	}
 
 	virtual string id() const
@@ -110,23 +110,23 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, DS>::idComponent() << ":" << GRASP::family() << ":BasicGRASP";
+		ss << SingleObjSearch<R, ADS>::idComponent() << ":" << GRASP::family() << ":BasicGRASP";
 		return ss.str();
 
 	}
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class BasicGRASPBuilder: public GRASP, public SingleObjSearchBuilder<R, ADS, DS>
+class BasicGRASPBuilder: public GRASP, public SingleObjSearchBuilder<R, ADS>
 {
 public:
 	virtual ~BasicGRASPBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	virtual SingleObjSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
-		Evaluator<R, ADS, DS>* eval;
+		Evaluator<R, ADS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		GRConstructive<R, ADS>* constructive;
@@ -134,10 +134,10 @@ public:
 
 		string rest = scanner.rest();
 
-		pair<LocalSearch<R, ADS, DS>*, std::string> method;
+		pair<LocalSearch<R, ADS>*, std::string> method;
 		method = hf.createLocalSearch(rest);
 
-		LocalSearch<R, ADS, DS>* h = method.first;
+		LocalSearch<R, ADS>* h = method.first;
 
 		scanner = Scanner(method.second);
 
@@ -151,15 +151,15 @@ public:
 
 		int iterMax = scanner.nextInt();
 
-		return new BasicGRASP<R, ADS, DS>(*eval, *constructive, *h, alpha, iterMax);
+		return new BasicGRASP<R, ADS>(*eval, *constructive, *h, alpha, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(GRConstructive<R, ADS>::idComponent(), "greedy randomized constructive heuristic"));
-		params.push_back(make_pair(LocalSearch<R, ADS, DS>::idComponent(), "local search"));
+		params.push_back(make_pair(LocalSearch<R, ADS>::idComponent(), "local search"));
 		params.push_back(make_pair("OptFrame:float", "alpha parameter [0,1]"));
 		params.push_back(make_pair("OptFrame:int", "max number of iterations"));
 
@@ -168,13 +168,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicGRASPBuilder<R, ADS, DS>::idComponent();
+		return component == BasicGRASPBuilder<R, ADS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << ":" << GRASP::family() << ":BasicGRASP";
+		ss << SingleObjSearchBuilder<R, ADS>::idComponent() << ":" << GRASP::family() << ":BasicGRASP";
 		return ss.str();
 	}
 

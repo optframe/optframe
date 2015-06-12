@@ -23,9 +23,7 @@
 
 #include "../../OptFrame/Evaluation.hpp"
 
-#include "Memory.h"
-
-typedef Evaluation<MemEtII> EvaluationEtII;
+//typedef Evaluation EvaluationEtII;
 
 #endif /*EtII_EVALUATION_H_*/
 

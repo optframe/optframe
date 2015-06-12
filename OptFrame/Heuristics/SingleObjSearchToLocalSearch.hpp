@@ -32,16 +32,16 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SingleObjSearchToLocalSearch: public LocalSearch<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class SingleObjSearchToLocalSearch: public LocalSearch<R, ADS>
 {
 protected:
-	Evaluator<R, ADS, DS>& evaluator;
-	SingleObjSearch<R, ADS, DS>& sios;
+	Evaluator<R, ADS>& evaluator;
+	SingleObjSearch<R, ADS>& sios;
 
 public:
 
-	SingleObjSearchToLocalSearch(Evaluator<R, ADS, DS>& _evaluator, SingleObjSearch<R, ADS, DS>& _sios) :
+	SingleObjSearchToLocalSearch(Evaluator<R, ADS>& _evaluator, SingleObjSearch<R, ADS>& _sios) :
 			evaluator(_evaluator), sios(_sios)
 	{
 	}
@@ -52,16 +52,16 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
-		Evaluation<DS>& e = evaluator.evaluate(s);
+		Evaluation& e = evaluator.evaluate(s);
 
 		exec(s, e, timelimit, target_f);
 
 		delete &e;
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation<DS>& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
 	{
-		pair<Solution<R, ADS>&, Evaluation<DS>&>* r = sios.search(timelimit, target_f, &s, &e);
+		pair<Solution<R, ADS>&, Evaluation&>* r = sios.search(timelimit, target_f, &s, &e);
 
 		if(r)
 		{
@@ -75,13 +75,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS, DS>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<R, ADS>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, DS>::idComponent() << "SingleObjSearchToLocalSearch";
+		ss << SingleObjSearch<R, ADS>::idComponent() << "SingleObjSearchToLocalSearch";
 		return ss.str();
 	}
 
@@ -99,48 +99,48 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class SingleObjSearchToLocalSearchBuilder: public LocalSearchBuilder<R, ADS, DS>
+class SingleObjSearchToLocalSearchBuilder: public LocalSearchBuilder<R, ADS>
 {
 public:
 	virtual ~SingleObjSearchToLocalSearchBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
+	virtual LocalSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
-		Evaluator<R, ADS, DS>* eval;
+		Evaluator<R, ADS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
 
-		pair<SingleObjSearch<R, ADS, DS>*, std::string> method;
+		pair<SingleObjSearch<R, ADS>*, std::string> method;
 		method = hf.createSingleObjSearch(rest);
 
-		SingleObjSearch<R, ADS, DS>* h = method.first;
+		SingleObjSearch<R, ADS>* h = method.first;
 
 		scanner = Scanner(method.second);
 
-		return new SingleObjSearchToLocalSearch<R, ADS, DS>(*eval, *h);
+		return new SingleObjSearchToLocalSearch<R, ADS>(*eval, *h);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(SingleObjSearch<R, ADS, DS>::idComponent(), "single obj search"));
+		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(SingleObjSearch<R, ADS>::idComponent(), "single obj search"));
 
 		return params;
 	}
 
 	virtual bool canBuild(string component)
 	{
-		return component == SingleObjSearchToLocalSearch<R, ADS, DS>::idComponent();
+		return component == SingleObjSearchToLocalSearch<R, ADS>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, DS>::idComponent() << "SingleObjSearchToLocalSearch";
+		ss << LocalSearchBuilder<R, ADS>::idComponent() << "SingleObjSearchToLocalSearch";
 		return ss.str();
 	}
 

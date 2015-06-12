@@ -23,7 +23,6 @@
 
 #include "./EternityII/Representation.h"
 #include "./EternityII/Solution.h"
-#include "./EternityII/Memory.h"
 #include "./EternityII/Evaluation.h"
 #include "./EternityII/ProblemInstance.h"
 #include "./EternityII/Evaluator.h"

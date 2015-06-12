@@ -33,11 +33,11 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class InitialPopulation: public Component
+class InitialPopulation2: public Component
 {
 public:
 
-	virtual ~InitialPopulation()
+	virtual ~InitialPopulation2()
 	{
 	}
 
@@ -57,18 +57,18 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BasicInitialPopulation: public InitialPopulation<R, ADS>
+class BasicInitialPopulation2: public InitialPopulation2<R, ADS>
 {
 public:
 
 	Constructive<R, ADS>& constructive;
 
-	BasicInitialPopulation(Constructive<R, ADS>& _constructive) :
+	BasicInitialPopulation2(Constructive<R, ADS>& _constructive) :
 			constructive(_constructive)
 	{
 	}
 
-	virtual ~BasicInitialPopulation()
+	virtual ~BasicInitialPopulation2()
 	{
 	}
 

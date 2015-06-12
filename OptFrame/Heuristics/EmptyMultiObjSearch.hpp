@@ -29,8 +29,8 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class EmptyMultiObjSearch: public MultiObjSearch<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class EmptyMultiObjSearch: public MultiObjSearch<R, ADS>
 {
 public:
 
@@ -42,7 +42,7 @@ public:
 	{
 	}
 
-	Pareto<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS, DS>* _pf = NULL)
+	Pareto<R, ADS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS>* _pf = NULL)
 	{
 		cout << "WARNING: RETURNING A EmptyMultiObjSearch!" << endl;
 		return NULL;
@@ -51,7 +51,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MultiObjSearch<R, ADS, DS>::idComponent() << "empty";
+		ss << MultiObjSearch<R, ADS>::idComponent() << "empty";
 		return ss.str();
 	}
 

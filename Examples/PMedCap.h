@@ -23,7 +23,6 @@
 
 #include "./PMedCap/Representation.h"
 #include "./PMedCap/Solution.h"
-#include "./PMedCap/Memory.h"
 #include "./PMedCap/Evaluation.h"
 #include "./PMedCap/ProblemInstance.h"
 #include "./PMedCap/Evaluator.h"

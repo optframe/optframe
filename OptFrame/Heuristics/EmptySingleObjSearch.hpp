@@ -29,8 +29,8 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class EmptySingleObjSearch: public SingleObjSearch<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class EmptySingleObjSearch: public SingleObjSearch<R, ADS>
 {
 public:
 
@@ -42,7 +42,7 @@ public:
 	{
 	}
 
-	pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0,  const Solution<R, ADS>* _s = NULL,  const Evaluation<DS>* _e = NULL)
+	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0,  const Solution<R, ADS>* _s = NULL,  const Evaluation* _e = NULL)
 	{
 		cout << "WARNING: RETURNING A EmptySingleObjSearch!" << endl;
 		return NULL;
@@ -51,7 +51,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, DS>::idComponent() << "empty";
+		ss << SingleObjSearch<R, ADS>::idComponent() << "empty";
 		return ss.str();
 	}
 

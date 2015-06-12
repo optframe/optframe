@@ -30,21 +30,21 @@
 
 using namespace std;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveNSSeqUnion<R, ADS, DS> >
-class NSSeqUnionAdapter: public NSSeq<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveNSSeqUnion<R, ADS> >
+class NSSeqUnionAdapter: public NSSeq<R, ADS>
 {
 private:
-	vector<NSSeq<R, ADS, DS>*> ns;
+	vector<NSSeq<R, ADS>*> ns;
 
 public:
 
-	NSSeqUnionAdapter(NSSeq<R, ADS, DS>& _n1, NSSeq<R, ADS, DS>& _n2)
+	NSSeqUnionAdapter(NSSeq<R, ADS>& _n1, NSSeq<R, ADS>& _n2)
 	{
 		ns.push_back(&_n1);
 		ns.push_back(&_n2);
 	}
 
-	void add_ns(NSSeq<R, ADS, DS>& _ns)
+	void add_ns(NSSeq<R, ADS>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
@@ -53,16 +53,16 @@ public:
 	{
 	}
 
-	Move<R, ADS, DS>& move(const R& r, const ADS& ads)
+	Move<R, ADS>& move(const R& r, const ADS& ads)
 	{
 		int x = rand() % ns.size();
 
 		return *new MOVE(x, ns[x]->move(r, ads));
 	}
 
-	Move<R, ADS, DS>* validMove(const R& r, const ADS& ads)
+	Move<R, ADS>* validMove(const R& r, const ADS& ads)
 	{
-		Move<R, ADS, DS>* m = &move(r, ads);
+		Move<R, ADS>* m = &move(r, ads);
 		if(m->canBeApplied(r, ads))
 			return m;
 		else
@@ -72,13 +72,13 @@ public:
 		}
 	}
 
-	virtual NSIterator<R, ADS, DS>& getIterator(const R& r, const ADS& ads)
+	virtual NSIterator<R, ADS>& getIterator(const R& r, const ADS& ads)
 	{
-		vector<NSIterator<R, ADS, DS>*> it;
+		vector<NSIterator<R, ADS>*> it;
 		for(unsigned int i = 0; i < ns.size(); i++)
 			it.push_back(&ns[i]->getIterator(r, ads));
 
-		return *new IteratorNSSeqUnion<R, ADS, DS, MOVE>(it);
+		return *new IteratorNSSeqUnion<R, ADS, MOVE>(it);
 	}
 
 	virtual string toString() const

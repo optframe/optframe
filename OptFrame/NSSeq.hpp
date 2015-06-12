@@ -29,34 +29,34 @@ using namespace std;
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class NSSeq: public NS<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class NSSeq: public NS<R, ADS>
 {
 public:
 
-	using NS<R, ADS, DS>::move; // prevents name hiding
+	using NS<R, ADS>::move; // prevents name hiding
 
 	virtual ~NSSeq()
 	{
 	}
 
 ////protected:
-	virtual Move<R, ADS, DS>& move(const R&, const ADS&) = 0;
+	virtual Move<R, ADS>& move(const R&, const ADS&) = 0;
 
 public:
-	NSIterator<R, ADS, DS>& getIterator(const Solution<R, ADS>& s)
+	NSIterator<R, ADS>& getIterator(const Solution<R, ADS>& s)
 	{
 		return getIterator(s.getR(), s.getADS());
 	}
 
 ////protected:
-	virtual NSIterator<R, ADS, DS>& getIterator(const R& r, const ADS& ads) = 0;
+	virtual NSIterator<R, ADS>& getIterator(const R& r, const ADS& ads) = 0;
 
 public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << NS<R, ADS, DS>::idComponent() << ":NSSeq";
+		ss << NS<R, ADS>::idComponent() << ":NSSeq";
 		return ss.str();
 	}
 
@@ -67,130 +67,8 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (NS<R, ADS, DS>::compatible(s));
+		return (s == idComponent()) || (NS<R, ADS>::compatible(s));
 	}
-};
-
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class NSSeqAction: public Action<R, ADS, DS>
-{
-public:
-
-	virtual ~NSSeqAction()
-	{
-	}
-
-	virtual string usage()
-	{
-		string u;
-		u.append("OptFrame:NS:NSSeq idx  getIterator   OptFrame:Solution idx   [output_variable] => OptFrame:NSIterator");
-		return u;
-	}
-
-	virtual bool handleComponent(string type)
-	{
-		return Component::compareBase(NSSeq<R, ADS, DS>::idComponent(), type);
-	}
-
-	virtual bool handleComponent(Component& component)
-	{
-		return component.compatible(NSSeq<R, ADS, DS>::idComponent());
-	}
-
-	virtual bool handleAction(string action)
-	{
-		return (action == "getIterator");
-	}
-
-	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& d)
-	{
-		if(!handleComponent(type))
-		{
-			cout << "NSSeqAction::doCast error: can't handle component type '" << type << " " << id << "'" << endl;
-			return false;
-		}
-
-		Component* comp = hf.components[component].at(id);
-
-		if(!comp)
-		{
-			cout << "NSSeqAction::doCast error: NULL component '" << component << " " << id << "'" << endl;
-			return false;
-		}
-
-		if(!Component::compareBase(comp->id(), type))
-		{
-			cout << "NSSeqAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
-			return false;
-		}
-
-		// remove old component from factory
-		hf.components[component].at(id) = NULL;
-
-		// cast object to lower type
-		Component* final = NULL;
-
-		if(type == NSSeq<R, ADS, DS>::idComponent())
-		{
-			final = (NSSeq<R, ADS, DS>*) comp;
-		}
-		else
-		{
-			cout << "NSSeqAction::doCast error: no cast for type '" << type << "'" << endl;
-			return false;
-		}
-
-		// add new component
-		Scanner scanner(variable);
-		return ComponentAction<R, ADS, DS>::addAndRegister(scanner, *final, hf, d);
-	}
-
-	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
-	{
-		//cout << "NS::doAction '" << content << "'" << endl;
-
-		Scanner scanner(content);
-
-		if(!scanner.hasNext())
-			return false;
-
-		NSSeq<R, ADS, DS>* nsseq;
-		hf.assign(nsseq, scanner.nextInt(), scanner.next());
-
-		if(!nsseq)
-			return false;
-
-		if(!scanner.hasNext())
-			return false;
-
-		string action = scanner.next();
-
-		if(!handleAction(action))
-			return false;
-
-		if(action == "getIterator")
-		{
-			if(!scanner.hasNext())
-				return false;
-
-			Solution<R, ADS>* s;
-			hf.assign(s, scanner.nextInt(), scanner.next());
-
-			if(!s)
-				return false;
-
-			NSIterator<R, ADS, DS>& it = nsseq->getIterator(*s);
-
-			if(!scanner.hasNext())
-				return false;
-
-			return Action<R, ADS, DS>::addAndRegister(scanner, it, hf, dictionary);
-		}
-
-		// no action found!
-		return false;
-	}
-
 };
 
 }

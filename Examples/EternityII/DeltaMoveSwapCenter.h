@@ -45,7 +45,7 @@ public:
 	{
 	}
 
-	MoveCost* cost(const Evaluation<MemEtII>&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost* cost(const Evaluation&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		// Calculus for the slot (x1, y1)
 		double f1 = 0;

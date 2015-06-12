@@ -23,7 +23,6 @@
 
 #include "./OptHScheduling/Representation.h"
 #include "./OptHScheduling/Solution.h"
-#include "./OptHScheduling/Memory.h"
 #include "./OptHScheduling/Evaluation.h"
 #include "./OptHScheduling/ProblemInstance.h"
 #include "./OptHScheduling/Evaluator.h"

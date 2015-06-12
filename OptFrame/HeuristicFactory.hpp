@@ -76,7 +76,7 @@ using namespace optframe;
 // design pattern: Factory
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class HeuristicFactory
 {
 private:
@@ -85,11 +85,11 @@ private:
 public:
 
 	map<string, vector<Component*> > components;
-	vector<ComponentBuilder<R, ADS, DS>* > builders;
-	vector<Action<R, ADS, DS>* > actions;
+	vector<ComponentBuilder<R, ADS>* > builders;
+	vector<Action<R, ADS>* > actions;
 	map<string, vector<vector<Component*> > > componentLists;
 
-	ComponentBuilder<R, ADS, DS>* getBuilder(string id)
+	ComponentBuilder<R, ADS>* getBuilder(string id)
 	{
 		for(unsigned i=0; i<builders.size(); i++)
 			if(builders[i]->id() == id)
@@ -489,96 +489,96 @@ public:
 	}
 
 
-	pair<LocalSearch<R, ADS, DS>*, std::string> createLocalSearch(std::string str)
+	pair<LocalSearch<R, ADS>*, std::string> createLocalSearch(std::string str)
 	{
 		Scanner scanner(str);
 
 		// No heuristic!
 		if (!scanner.hasNext())
-			return pair<LocalSearch<R, ADS, DS>*, std::string>(NULL, "");
+			return pair<LocalSearch<R, ADS>*, std::string>(NULL, "");
 
 		string h = scanner.next();
 
-		if ((h == LocalSearch<R, ADS, DS>::idComponent()) || (h == "LocalSearch"))
+		if ((h == LocalSearch<R, ADS>::idComponent()) || (h == "LocalSearch"))
 		{
 			unsigned int id = scanner.nextInt();
 
-			LocalSearch<R, ADS, DS>* mtd = NULL;
+			LocalSearch<R, ADS>* mtd = NULL;
 
-			assign(mtd, id, LocalSearch<R, ADS, DS>::idComponent());
+			assign(mtd, id, LocalSearch<R, ADS>::idComponent());
 
 			if(!mtd)
-				return make_pair(new EmptyLocalSearch<R, ADS, DS> , scanner.rest());
+				return make_pair(new EmptyLocalSearch<R, ADS> , scanner.rest());
 
 			return make_pair(mtd, scanner.rest());
 		}
 
-		if (h == EmptyLocalSearch<R, ADS, DS>::idComponent())
-			return make_pair(new EmptyLocalSearch<R, ADS, DS> , scanner.rest());
+		if (h == EmptyLocalSearch<R, ADS>::idComponent())
+			return make_pair(new EmptyLocalSearch<R, ADS> , scanner.rest());
 
 		for(unsigned i=0; i<builders.size(); i++)
 		{
 			// build local search directly by builder name
 			if(builders[i]->id()==h)
 			{
-				LocalSearch<R, ADS, DS>* ls = ((LocalSearchBuilder<R,ADS,DS>*)(builders[i]))->build(scanner, *this);
+				LocalSearch<R, ADS>* ls = ((LocalSearchBuilder<R,ADS>*)(builders[i]))->build(scanner, *this);
 				return make_pair(ls, scanner.rest());
 			}
 
 			// locate builder by local search name
 			if(builders[i]->canBuild(h))
 			{
-				LocalSearch<R, ADS, DS>* ls = ((LocalSearchBuilder<R,ADS,DS>*)(builders[i]))->build(scanner, *this);
+				LocalSearch<R, ADS>* ls = ((LocalSearchBuilder<R,ADS>*)(builders[i]))->build(scanner, *this);
 				return make_pair(ls, scanner.rest());
 			}
 		}
 
 		cout << "HeuristicFactory::createLocalSearch warning: no LocalSearch '" << h << "' found! ignoring..." << endl;
 
-		return pair<LocalSearch<R, ADS, DS>*, std::string>(NULL, scanner.rest());
+		return pair<LocalSearch<R, ADS>*, std::string>(NULL, scanner.rest());
 	}
 
 
-	pair<SingleObjSearch<R, ADS, DS>*, std::string> createSingleObjSearch(std::string str)
+	pair<SingleObjSearch<R, ADS>*, std::string> createSingleObjSearch(std::string str)
 	{
 		Scanner scanner(str);
 
 		// No heuristic!
 		if (!scanner.hasNext())
-			return pair<SingleObjSearch<R, ADS, DS>*, std::string>(NULL, "");
+			return pair<SingleObjSearch<R, ADS>*, std::string>(NULL, "");
 
 		string h = scanner.next();
 
-		if (h == SingleObjSearch<R, ADS, DS>::idComponent())
+		if (h == SingleObjSearch<R, ADS>::idComponent())
 		{
 			unsigned int id = scanner.nextInt();
 
-			SingleObjSearch<R, ADS, DS>* mtd = NULL;
+			SingleObjSearch<R, ADS>* mtd = NULL;
 
-			assign(mtd, id, SingleObjSearch<R, ADS, DS>::idComponent());
+			assign(mtd, id, SingleObjSearch<R, ADS>::idComponent());
 
 			if(!mtd)
-				return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<R, ADS> , scanner.rest());
 
 			return make_pair(mtd, scanner.rest());
 		}
 
-		if (h == EmptySingleObjSearch<R, ADS, DS>::idComponent())
-			return make_pair(new EmptySingleObjSearch<R, ADS, DS> , scanner.rest());
+		if (h == EmptySingleObjSearch<R, ADS>::idComponent())
+			return make_pair(new EmptySingleObjSearch<R, ADS> , scanner.rest());
 
 		for(unsigned i=0; i<builders.size(); i++)
 		{
 			// build local search directly by builder name
 			if(builders[i]->id()==h)
 			{
-				SingleObjSearch<R, ADS, DS>* sios = ((SingleObjSearchBuilder<R,ADS,DS>*)(builders[i]))->build(scanner, *this);
+				SingleObjSearch<R, ADS>* sios = ((SingleObjSearchBuilder<R,ADS>*)(builders[i]))->build(scanner, *this);
 				return make_pair(sios, scanner.rest());
 			}
 
 			// locate builder by local search name
 			if(builders[i]->canBuild(h))
 			{
-				SingleObjSearch<R, ADS, DS>* sios = ((SingleObjSearchBuilder<R,ADS,DS>*)(builders[i]))->build(scanner, *this);
+				SingleObjSearch<R, ADS>* sios = ((SingleObjSearchBuilder<R,ADS>*)(builders[i]))->build(scanner, *this);
 				return make_pair(sios, scanner.rest());
 			}
 		}
@@ -586,39 +586,39 @@ public:
 
 		cout << "HeuristicFactory::createSingleObjSearch warning: no SingleObjSearch '" << h << "' found! ignoring..." << endl;
 
-		return pair<SingleObjSearch<R, ADS, DS>*, std::string>(NULL, scanner.rest());
+		return pair<SingleObjSearch<R, ADS>*, std::string>(NULL, scanner.rest());
 	}
 
-	pair<MultiObjSearch<R, ADS, DS>*, std::string> createMultiObjSearch(std::string str)
+	pair<MultiObjSearch<R, ADS>*, std::string> createMultiObjSearch(std::string str)
 	{
 		Scanner scanner(str);
 
 		// No heuristic!
 		if (!scanner.hasNext())
-			return pair<MultiObjSearch<R, ADS, DS>*, std::string>(NULL, "");
+			return pair<MultiObjSearch<R, ADS>*, std::string>(NULL, "");
 
 		string h = scanner.next();
 
-		if (h == MultiObjSearch<R, ADS, DS>::idComponent())
+		if (h == MultiObjSearch<R, ADS>::idComponent())
 		{
 			unsigned int id = scanner.nextInt();
 
-			MultiObjSearch<R, ADS, DS>* mtd = NULL;
+			MultiObjSearch<R, ADS>* mtd = NULL;
 
-			assign(mtd, id, MultiObjSearch<R, ADS, DS>::idComponent());
+			assign(mtd, id, MultiObjSearch<R, ADS>::idComponent());
 
 			if (!mtd)
-				return make_pair(new EmptyMultiObjSearch<R, ADS, DS>, scanner.rest());
+				return make_pair(new EmptyMultiObjSearch<R, ADS>, scanner.rest());
 
 			return make_pair(mtd, scanner.rest());
 		}
 
-		if (h == EmptyMultiObjSearch<R, ADS, DS>::idComponent())
-			return make_pair(new EmptyMultiObjSearch<R, ADS, DS>, scanner.rest());
+		if (h == EmptyMultiObjSearch<R, ADS>::idComponent())
+			return make_pair(new EmptyMultiObjSearch<R, ADS>, scanner.rest());
 
 		cout << "HeuristicFactory::createMultiObjSearch warning: no MultiObjSearch '" << h << "' found! ignoring..." << endl;
 
-		return pair<MultiObjSearch<R, ADS, DS>*, std::string>(NULL, scanner.rest());
+		return pair<MultiObjSearch<R, ADS>*, std::string>(NULL, scanner.rest());
 	}
 
 };

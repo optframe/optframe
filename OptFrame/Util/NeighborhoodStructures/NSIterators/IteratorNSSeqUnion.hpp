@@ -31,67 +31,67 @@ using namespace std;
 class NSSeqUnionAdapterOutOfBound
 {
 public:
-   NSSeqUnionAdapterOutOfBound()
-   {
-   }
+	NSSeqUnionAdapterOutOfBound()
+	{
+	}
 };
 
-template< class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveNSSeqUnion<R, ADS, DS> >
-class IteratorNSSeqUnion :
-      public NSIterator<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveNSSeqUnion<R, ADS> >
+class IteratorNSSeqUnion:
+		public NSIterator<R, ADS>
 {
 private:
-   vector<NSIterator<R, ADS, DS>*> it;
-   int k;
+	vector<NSIterator<R, ADS>*> it;
+	int k;
 
 public:
 
-   IteratorNSSeqUnion(vector<NSIterator<R, ADS, DS>*> _it) :
-      it(_it)
-   {
-      k = 0;
-   }
+	IteratorNSSeqUnion(vector<NSIterator<R, ADS>*> _it) :
+			it(_it)
+	{
+		k = 0;
+	}
 
-   virtual ~IteratorNSSeqUnion()
-   {
-      for(unsigned int i = 0; i < it.size(); i++)
-         delete it[i];
-   }
+	virtual ~IteratorNSSeqUnion()
+	{
+		for (unsigned int i = 0; i < it.size(); i++)
+			delete it[i];
+	}
 
-   void first()
-   {
-      for(unsigned int i = 0; i < it.size(); i++)
-         it[i]->first();
-      k = 0;
-   }
+	void first()
+	{
+		for (unsigned int i = 0; i < it.size(); i++)
+			it[i]->first();
+		k = 0;
+	}
 
-   void next()
-   {
-      if(!it[k]->isDone())
-         it[k]->next();
-      else
-      {
-         k++;
-         it[k]->next();
-      }
-   }
+	void next()
+	{
+		if (!it[k]->isDone())
+			it[k]->next();
+		else
+		{
+			k++;
+			it[k]->next();
+		}
+	}
 
-   bool isDone()
-   {
-      for(unsigned int i = 0; i < it.size(); i++)
-         if(!it[i]->isDone())
-            return false;
+	bool isDone()
+	{
+		for (unsigned int i = 0; i < it.size(); i++)
+			if (!it[i]->isDone())
+				return false;
 
-      return true;
-   }
+		return true;
+	}
 
-   Move<R, ADS, DS>& current()
-   {
-      if(!it[k]->isDone())
-         return *new MOVE(k, it[k]->current());
-      else
-         throw NSSeqUnionAdapterOutOfBound();
-   }
+	Move<R, ADS>& current()
+	{
+		if (!it[k]->isDone())
+			return *new MOVE(k, it[k]->current());
+		else
+			throw NSSeqUnionAdapterOutOfBound();
+	}
 };
 
 #endif /*OPTFRAME_ITERATORNSSEQUNION_HPP_*/

@@ -29,7 +29,6 @@
 #include "../../OptFrame/Evaluator.hpp"
 
 #include "Representation.h"
-#include "Memory.h"
 #include "Solution.h"
 #include "Evaluation.h"
 
@@ -44,22 +43,22 @@ extern int numEvs;
 namespace EtII
 {
 
-class EtIIEvaluator: public Evaluator<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>
+class EtIIEvaluator: public Evaluator<RepEtII>
 {
 private:
 	ProblemInstance& pEtII;
 
 public:
 
-	using Evaluator<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>::evaluate;
+	using Evaluator<RepEtII>::evaluate;
 
 	EtIIEvaluator(ProblemInstance& _pEtII) :
-		Evaluator<RepEtII, OPTFRAME_DEFAULT_ADS, MemEtII>(true), pEtII(_pEtII) // DISALLOW COSTS (DEFAULT)
+		Evaluator<RepEtII>(true), pEtII(_pEtII) // DISALLOW COSTS (DEFAULT)
 	{
 		// Put the rest of your code here
 	}
 
-	EvaluationEtII& evaluate(const RepEtII& rep)
+	Evaluation& evaluate(const RepEtII& rep)
 	{
 		//counting evaluations.
 		numEvs++;
@@ -79,17 +78,7 @@ public:
 				if (rep(i, j).down == rep(i + 1, j).up)
 					fo++;
 
-		int& mem = *new int;
-		mem = 0;
-
-		return *new EvaluationEtII(fo, mem);
-	}
-
-
-	virtual void evaluate(Evaluation<MemEtII>& e, const RepEtII&, const OPTFRAME_DEFAULT_ADS&)
-	{
-		e.setObjFunction(e.getObjFunction() + e.getDS());
-		e.getDS() = 0;
+		return *new Evaluation(fo);
 	}
 
 

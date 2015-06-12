@@ -55,8 +55,8 @@ namespace optframe
  \endportuguese
  */
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class Evaluator: public Direction<DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class Evaluator: public Direction
 {
 protected:
 	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
@@ -77,7 +77,7 @@ public:
 		return allowCosts;
 	}
 
-	Evaluation<DS>& evaluate(const Solution<R, ADS>& s)
+	Evaluation& evaluate(const Solution<R, ADS>& s)
 	{
 		return evaluate(s.getR(), s.getADS());
 	}
@@ -85,24 +85,24 @@ public:
 //protected:
 public: // because of MultiEvaluator... otherwise, make it 'friend'
 
-	virtual Evaluation<DS>& evaluate(const R& r) = 0;
+	virtual Evaluation& evaluate(const R& r) = 0;
 
-	virtual Evaluation<DS>& evaluate(const R& r, const ADS&)
+	virtual Evaluation& evaluate(const R& r, const ADS&)
 	{
 		return evaluate(r);
 	}
 
 public:
-	void evaluate(Evaluation<DS>& e, const Solution<R, ADS>& s)
+	void evaluate(Evaluation& e, const Solution<R, ADS>& s)
 	{
 		evaluate(e, s.getR(), s.getADS());
 	}
 
 //protected:
 public: // because of MultiEvaluator... otherwise, make it 'friend'
-	virtual void evaluate(Evaluation<DS>& e, const R& r, const ADS& ads)
+	virtual void evaluate(Evaluation& e, const R& r, const ADS& ads)
 	{
-		Evaluation<DS>& e1 = evaluate(r, ads);
+		Evaluation& e1 = evaluate(r, ads);
 		e = e1;
 		delete &e1;
 	}
@@ -111,9 +111,9 @@ public:
 
 	// Apply movement considering a previous evaluation => Faster.
 	// Update evaluation 'e'
-	Move<R, ADS, DS>& applyMove(Evaluation<DS>& e, Move<R, ADS, DS>& m, Solution<R, ADS>& s)
+	Move<R, ADS>& applyMove(Evaluation& e, Move<R, ADS>& m, Solution<R, ADS>& s)
 	{
-		Move<R, ADS, DS>* rev = m.apply(e, s);
+		Move<R, ADS>* rev = m.apply(e, s);
 		if(!rev)
 		{
 			cout << "Evaluator error(1)! Expected reverse move, but it is NULL! TODO: FIX" << endl;
@@ -125,19 +125,19 @@ public:
 
 	// Apply movement without considering a previous evaluation => Slower.
 	// Return new evaluation 'e'
-	pair<Move<R, ADS, DS>&, Evaluation<DS>&>& applyMove(Move<R, ADS, DS>& m, Solution<R, ADS>& s)
+	pair<Move<R, ADS>&, Evaluation&>& applyMove(Move<R, ADS>& m, Solution<R, ADS>& s)
 	{
-		Move<R, ADS, DS>* rev = m.apply(s);
+		Move<R, ADS>* rev = m.apply(s);
 		if(!rev)
 		{
 			cout << "Evaluator error(2)! Expected reverse move, but it is NULL! TODO: FIX" << endl;
 			exit(1);
 		}
-		return *new pair<Move<R, ADS, DS>&, Evaluation<DS>&>(*rev, evaluate(s));
+		return *new pair<Move<R, ADS>&, Evaluation&>(*rev, evaluate(s));
 	}
 
 	// Movement cost based on reevaluation of 'e'
-	MoveCost& moveCost(Evaluation<DS>& e, Move<R, ADS, DS>& m, Solution<R, ADS>& s)
+	MoveCost& moveCost(Evaluation& e, Move<R, ADS>& m, Solution<R, ADS>& s)
 	{
 		MoveCost* p = NULL;
 		if (allowCosts)
@@ -148,7 +148,7 @@ public:
 			return *p;
 		else // need to update 's' together with reevaluation of 'e' => little faster (doesn't use updateDelta, but do reevaluation)
 		{
-			Move<R, ADS, DS>& rev = applyMove(e, m, s);
+			Move<R, ADS>& rev = applyMove(e, m, s);
 			pair<double, double> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
 
 			vector<pair<double, double> > alternatives(e.getAlternativeCosts().size());
@@ -159,7 +159,7 @@ public:
 				alternatives[i].second = e.getAlternativeCosts()[i].second;
 			}
 
-			Move<R, ADS, DS>& ini = applyMove(e, rev, s);
+			Move<R, ADS>& ini = applyMove(e, rev, s);
 			pair<double, double> e_ini = make_pair(e.getObjFunction(), e.getInfMeasure());
 
 			for (unsigned i = 0; i < alternatives.size(); i++)
@@ -180,11 +180,11 @@ public:
 
 	// Movement cost based on complete evaluation
 	// USE ONLY FOR VALIDATION OF CODE! OTHERWISE, USE moveCost(e, m, s)
-	MoveCost& moveCost(Move<R, ADS, DS>& m, Solution<R, ADS>& s)
+	MoveCost& moveCost(Move<R, ADS>& m, Solution<R, ADS>& s)
 	{
-		pair<Move<R, ADS, DS>&, Evaluation<DS>&>& rev = applyMove(m, s);
+		pair<Move<R, ADS>&, Evaluation&>& rev = applyMove(m, s);
 
-		pair<Move<R, ADS, DS>&, Evaluation<DS>&>& ini = applyMove(rev.first, s);
+		pair<Move<R, ADS>&, Evaluation&>& ini = applyMove(rev.first, s);
 
 		// Difference: new - original
 
@@ -216,7 +216,7 @@ public:
 
 	// ============ betterThan ===========
 
-	using Direction<DS>::betterThan;
+	using Direction::betterThan;
 
 	//! abstract method betterThan: true when a < b for minimization problems; and true when a > b for maximization problems.
 	/*!
@@ -230,8 +230,8 @@ public:
 
 	virtual bool betterThan(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2)
 	{
-		Evaluation<DS>& e1 = evaluate(s1);
-		Evaluation<DS>& e2 = evaluate(s2);
+		Evaluation& e1 = evaluate(s1);
+		Evaluation& e2 = evaluate(s2);
 		bool r = betterThan(e1, e2);
 		delete &e1;
 		delete &e2;
@@ -242,7 +242,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (Direction<DS>::compatible(s));
+		return (s == idComponent()) || (Direction::compatible(s));
 	}
 
 	static string idComponent()
@@ -255,124 +255,6 @@ public:
 	virtual string id() const
 	{
 		return idComponent();
-	}
-
-};
-
-
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class EvaluatorAction: public Action<R, ADS, DS>
-{
-public:
-
-	virtual ~EvaluatorAction()
-	{
-	}
-
-	virtual string usage()
-	{
-		return "OptFrame:Evaluator idx  evaluate   OptFrame:Solution idx  [output_variable] => OptFrame:Evaluation";
-	}
-
-	virtual bool handleComponent(string type)
-	{
-		return Component::compareBase(Evaluator<R, ADS, DS>::idComponent(), type);
-	}
-
-	virtual bool handleComponent(Component& component)
-	{
-		return component.compatible(Evaluator<R, ADS, DS>::idComponent());
-	}
-
-	virtual bool handleAction(string action)
-	{
-		return (action == "evaluate") || (action == "betterThan") || (action == "betterOrEquals");
-	}
-
-	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& d)
-	{
-		if(!handleComponent(type))
-		{
-			cout << "EvaluatorAction::doCast error: can't handle component type '" << type << " " << id << "'" << endl;
-			return false;
-		}
-
-		Component* comp = hf.components[component].at(id);
-
-		if(!comp)
-		{
-			cout << "EvaluatorAction::doCast error: NULL component '" << component << " " << id << "'" << endl;
-			return false;
-		}
-
-		if(!Component::compareBase(comp->id(), type))
-		{
-			cout << "EvaluatorAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
-			return false;
-		}
-
-		// remove old component from factory
-		hf.components[component].at(id) = NULL;
-
-		// cast object to lower type
-		Component* final = NULL;
-
-		if(type == Evaluator<R, ADS, DS>::idComponent())
-		{
-			final = (Evaluator<R, ADS, DS>*) comp;
-		}
-		else
-		{
-			cout << "EvaluatorAction::doCast error: no cast for type '" << type << "'" << endl;
-			return false;
-		}
-
-		// add new component
-		Scanner scanner(variable);
-		return ComponentAction<R, ADS, DS>::addAndRegister(scanner, *final, hf, d);
-	}
-
-	virtual bool doAction(string content, HeuristicFactory<R, ADS, DS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
-	{
-		//cout << "Evaluator::doAction '" << content << "'" << endl;
-
-		Scanner scanner(content);
-
-		if (!scanner.hasNext())
-			return false;
-
-		Evaluator<R, ADS, DS>* ev;
-		hf.assign(ev, scanner.nextInt(), scanner.next());
-
-		if (!ev)
-			return false;
-
-		if (!scanner.hasNext())
-			return false;
-
-		string action = scanner.next();
-
-		if (!handleAction(action))
-			return false;
-
-		if (action == "evaluate")
-		{
-			if (!scanner.hasNext())
-				return false;
-
-			Solution<R, ADS>* s;
-			hf.assign(s, scanner.nextInt(), scanner.next());
-
-			if (!s)
-				return false;
-
-			Evaluation<DS>& e = ev->evaluate(*s);
-
-			return Action<R, ADS, DS>::addAndRegister(scanner, e, hf, dictionary);
-		}
-
-		// no action found!
-		return false;
 	}
 
 };
