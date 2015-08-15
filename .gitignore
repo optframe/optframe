@@ -3,3 +3,4 @@
 app_*
 .project
 .cproject
+.settings
