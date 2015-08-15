@@ -1,6 +1,6 @@
 all: examples
 
-examples: tsp etii pmedcap opths
+examples: tsp etii pmedcap opths svrpdsp
 
 tsp:
 	make -f makeTSP.mk
@@ -13,6 +13,9 @@ etii:
 	
 pmedcap:
 	make -f makePMedCap.mk
+	
+svrpdsp:
+	make -f makeSVRPDSP.mk
 	
 clean:
 	rm -f app_*
