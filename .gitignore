@@ -1,5 +1,6 @@
 *~
 *.o
+*.out
 app_*
 .project
 .cproject
