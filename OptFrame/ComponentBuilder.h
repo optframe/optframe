@@ -22,6 +22,7 @@
 #define OPTFRAME_COMPONENT_BUILDER_H_
 
 #include "Component.hpp"
+#include "Solution.hpp"
 
 #include "Scanner++/Scanner.h"
 
