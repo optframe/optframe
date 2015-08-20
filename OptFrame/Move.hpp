@@ -27,7 +27,7 @@
 
 #include "Component.hpp"
 
-#include "Action.hpp"
+//#include "Action.hpp"
 
 using namespace std;
 
@@ -90,6 +90,26 @@ public:
 	{
 	}
 
+	// ================== move independence and local search marking
+
+	virtual bool isIndependent(const Move<R, ADS>& m)
+	{
+	    // example: in VRP, move1 changes one route and move2 changes another... they are independent.
+	    // move1.isIndependent(move2) should return true.
+	    // by default, it is false (no move is independent)
+	    return false;
+	}
+
+
+	virtual bool isPartialLocalOptimum(const Solution<R, ADS>& s)
+	{
+	    // the idea is to use this flag to ignore moves that are useless,
+	    // given that the solution is already in a (full) local optimum (or partial).
+
+	    return false;
+	}
+
+	// ================== cost calculation
 
 	virtual MoveCost* cost(const Evaluation& e, const R& r, const ADS& ads)
 	{

@@ -23,14 +23,31 @@
 
 #include "Move.hpp"
 
+#include "Solution.hpp"
+
 #include "Component.hpp"
-#include "Action.hpp"
+//#include "Action.hpp"
 
 using namespace std;
 
 namespace optframe
 {
 
+// Local Optimum Status
+enum LOS
+{
+    los_yes, los_no, los_unknown, los_partial
+};
+
+// exemplo: mochila NSSeq de incrementos (+1).
+// Comeca 'unknown'.
+// Se nao pode mais incrementar nada vira 'yes'.
+// Se perturba um pouquinho vira 'no' (pq sabe como voltar).
+
+// 'partial' indicates that the solution is partially in a local optimum (maybe the word semi-local optimum is better...)
+// it may happen for example in a VRP, where a route is in LO while others are not.
+
+// TODO: unused?
 class IteratorOutOfBound
 {
 private:
@@ -59,6 +76,11 @@ public:
 	virtual void next() = 0;
 	virtual bool isDone() = 0;
 	virtual Move<R, ADS>& current() = 0;
+
+    // INSERT LOCAL OPTIMUM INFORMATION IN SOLUTION (IN ADS? USER DECIDES.)
+    virtual void setLOS(LOS status, Solution<R, ADS>& s)
+    {
+    }
 
 	static string idComponent()
 	{

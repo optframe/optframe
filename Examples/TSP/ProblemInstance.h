@@ -61,6 +61,12 @@ public:
 			//cout << (*yvalues)[i] << endl;
 		}
 
+		for(int i=0; i<n; i++)
+		{
+		    (*xvalues)[i] = i;
+		    (*yvalues)[i] = i;
+		}
+
 		cout << "All data read ok!" << endl;
 
 

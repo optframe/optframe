@@ -23,6 +23,7 @@
 
 #include "NS.hpp"
 #include "NSIterator.hpp"
+#include "NSBlockIterator.hpp"
 
 using namespace std;
 
@@ -34,41 +35,61 @@ class NSSeq: public NS<R, ADS>
 {
 public:
 
-	using NS<R, ADS>::move; // prevents name hiding
+    using NS<R, ADS>::move; // prevents name hiding
 
-	virtual ~NSSeq()
-	{
-	}
-
-////protected:
-	virtual Move<R, ADS>& move(const R&, const ADS&) = 0;
-
-public:
-	NSIterator<R, ADS>& getIterator(const Solution<R, ADS>& s)
-	{
-		return getIterator(s.getR(), s.getADS());
-	}
+    virtual ~NSSeq()
+    {
+    }
 
 ////protected:
-	virtual NSIterator<R, ADS>& getIterator(const R& r, const ADS& ads) = 0;
+    virtual Move<R, ADS>& move(const R&, const ADS&) = 0;
 
 public:
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << NS<R, ADS>::idComponent() << ":NSSeq";
-		return ss.str();
-	}
+    NSIterator<R, ADS>& getIterator(const Solution<R, ADS>& s)
+    {
+        return getIterator(s.getR(), s.getADS());
+    }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
+////protected:
+    virtual NSIterator<R, ADS>& getIterator(const R& r, const ADS& ads) = 0;
 
-	virtual bool compatible(string s)
-	{
-		return (s == idComponent()) || (NS<R, ADS>::compatible(s));
-	}
+    virtual NSBlockIterator<R, ADS>& getBlockIterator(const Solution<R, ADS>& s)
+    {
+        NSIterator<R, ADS>& it = getIterator(s);
+        return *new DefaultNSBlockIterator<R, ADS>(it);
+    }
+
+    // ============= For 'Local Optimum'-based methods =============
+
+    // GET LOCAL OPTIMUM INFORMATION FROM SOLUTION (ADS PREFERED?)
+    virtual LOS getLOS(const Solution<R, ADS>& s)
+    {
+        return los_unknown;
+    }
+
+    // INSERT LOCAL OPTIMUM INFORMATION IN SOLUTION (IN ADS? USER DECIDES.)
+    // MAYBE IT's BETTER TO USE ONLY IN ITERATORS! TODO: THINK ABOUT IT...
+    //virtual void setLOS(LOS status, Solution<R, ADS>& s)
+    //{
+    //}
+
+public:
+    static string idComponent()
+    {
+        stringstream ss;
+        ss << NS<R, ADS>::idComponent() << ":NSSeq";
+        return ss.str();
+    }
+
+    virtual string id() const
+    {
+        return idComponent();
+    }
+
+    virtual bool compatible(string s)
+    {
+        return (s == idComponent()) || (NS<R, ADS>::compatible(s));
+    }
 };
 
 }

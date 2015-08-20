@@ -42,69 +42,126 @@ using namespace scannerpp;
 
 int main(int argc, char **argv)
 {
-	Loader<RepTSP> optframe;
-	TSPProblemCommand tsp;
-	tsp.load("./TSP/tsplib/berlin52.txt", optframe.factory, optframe.dictionary, optframe.ldictionary);
+    Loader<RepTSP> optframe;
+    TSPProblemCommand tsp;
+    tsp.load("./TSP/tsplib/berlin52.txt", optframe.factory, optframe.dictionary, optframe.ldictionary);
 
-	CheckCommand<RepTSP> check(false);
+    CheckCommand<RepTSP> check(false);
 
-	RandGen rg;
-	RandomInitialSolutionTSP random(tsp.p, rg);
-	NearestNeighborConstructive cnn(tsp.p, rg);
-	ConstructiveBestInsertion cbi(tsp.p, rg);
-	TSPEvaluator eval(tsp.p);
-	NSEnumSwap enumswap(tsp.p, rg);
+    RandGen rg;
+    RandomInitialSolutionTSP random(tsp.p, rg);
+    NearestNeighborConstructive cnn(tsp.p, rg);
+    ConstructiveBestInsertion cbi(tsp.p, rg);
+    TSPEvaluator eval(tsp.p);
+    NSEnumSwap enumswap(tsp.p, rg);
 
-	NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);
-	NSSeqTSP2Opt<int> tsp2opt;
-	NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSPOrOptk, ProblemInstance> nsseq_delta_or1(1, tsp.p);
-	NSSeqTSPOrOptk<int> tspor1(1);
-	NSSeqTSPOrOptk<int> tspor2(2);
-	NSSeqTSPOrOptk<int> tspor3(3);
-	NSSeqTSPSwap<int> tspswap;
+    NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);
+    NSSeqTSP2Opt<int> tsp2opt;
+    NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSPOrOptk, ProblemInstance> nsseq_delta_or1(1, tsp.p);
+    NSSeqTSPOrOptk<int> tspor1(1);
+    NSSeqTSPOrOptk<int> tspor2(2);
+    NSSeqTSPOrOptk<int> tspor3(3);
+    NSSeqTSPSwap<int> tspswap;
 
-	check.add(random);
-	check.add(cnn);
-	check.add(cbi);
-	check.add(eval);
-	check.add(enumswap);
+    check.add(random);
+    check.add(cnn);
+    check.add(cbi);
+    check.add(eval);
+    check.add(enumswap);
     check.add(nsseq_delta_2opt);
-	check.add(tsp2opt);
-	check.add(nsseq_delta_or1);
-	check.add(tspor1);
-	check.add(tspor2);
-	check.add(tspor3);
-	check.add(tspswap);
+    check.add(tsp2opt);
+    check.add(nsseq_delta_or1);
+    check.add(tspor1);
+    check.add(tspor2);
+    check.add(tspor3);
+    check.add(tspswap);
 
-	check.run(100, 10);
+    //check.run(100, 10);
 
-	BuildCommand<RepTSP> build;
-	for(unsigned i = 0; i <= 7; i++)
-	{
-		stringstream ss;
-		ss << "OptFrame:ComponentBuilder:LocalSearch:BI  OptFrame:Evaluator 0  OptFrame:NS:NSSeq " << i;
-		string name = build.run(optframe.factory, optframe.dictionary, optframe.ldictionary, ss.str());
-		cout << "BUILT: '" << name << "'" << endl;
-	}
+    BuildCommand<RepTSP> build;
+    for (unsigned i = 0; i <= 7; i++)
+    {
+        stringstream ss;
+        ss << "OptFrame:ComponentBuilder:LocalSearch:BI  OptFrame:Evaluator 0  OptFrame:NS:NSSeq " << i;
+        string name = build.run(optframe.factory, optframe.dictionary, optframe.ldictionary, ss.str());
+        cout << "BUILT: '" << name << "'" << endl;
+    }
 
-	/*
-	echo building VND
-	define vnd_list [ OptFrame:LocalSearch: 0 ,  OptFrame:LocalSearch: 1, OptFrame:LocalSearch: 2, OptFrame:LocalSearch: 3 ]
-	component.create_list $vnd_list OptFrame:LocalSearch: comp_vnd_list
-	build OptFrame:LocalSearch:VND   $Evaluator 0   $comp_vnd_list   vnd
+    vector<LocalSearch<RepTSP>*> ns_list;
+    ns_list.push_back(new BestImprovement<RepTSP>(eval, tsp2opt));
+    ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor1));
+    ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor2));
+    ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor3));
+    ns_list.push_back(new BestImprovement<RepTSP>(eval, tspswap));
 
-	%component.list
+    VariableNeighborhoodDescent<RepTSP> VND(eval, ns_list);
 
-	echo building ILS
-	build OptFrame:ComponentBuilder:SingleObjSearch:ILS:ILSLevels   $Evaluator 0    $Constructive 0    $vnd   OptFrame:ILS:LevelPert:LPlus2 0    100    8  meu_ils
+    ILSLPerturbationLPlus2<RepTSP> pert(eval, 10, tsp2opt, rg);
+    pert.add_ns(tspor1);
+    pert.add_ns(tspor2);
+    pert.add_ns(tspor3);
+    pert.add_ns(tspswap);
 
-	test 2 3 7000 7000   $Evaluator 0   $meu_ils   output.txt   solucao_saida
+    IteratedLocalSearchLevels<RepTSP> ils(eval, random, VND, pert, 3, 2);
+    ils.setMessageLevel(4);
 
-	evaluate $Evaluator 0 $solucao_saida
-	*/
+    cout << "will run ils" << endl;
+    pair<Solution<RepTSP>&, Evaluation&>& psol = *ils.search(1000, 0, NULL, NULL);
+    eval.Minimizing = false;
+    pair<Solution<RepTSP>&, Evaluation&>& psol2 = *ils.search(1000, 99999999, NULL, NULL);
 
-	cout << "Program ended successfully" << endl;
+    psol.first.print();
+    psol.second.print();
 
+    cout << "solMin=" << eval.solMin << endl;
+    cout << "solMax=" << eval.solMax << endl;
 
-	return 0;
+    int count = 0;
+    for (int i = eval.solMin; i <= eval.solMax; i++)
+        if (eval.solutions[i] > 0)
+            count += eval.solutions[i];
+    cout << "COUNT=" << count << endl;
+
+    cout << "count min = " << eval.solutions[eval.solMin] << endl;
+    cout << "count max = " << eval.solutions[eval.solMax] << endl;
+
+    int countun = 0;
+    for (int i = eval.solMin; i <= eval.solMax; i++)
+        if (eval.solutions[i] > 0)
+            countun++;
+    cout << "COUNT_UNIQUE=" << countun << endl;
+
+    FILE* fstat = fopen("stat.txt", "w");
+    fprintf(fstat, "x=c(");
+    for (int i = eval.solMin; i <= eval.solMax; i++)
+        if (eval.solutions[i] > 0)
+            fprintf(fstat, "%d,", i);
+    fclose(fstat);
+
+    FILE* fstatti = fopen("stat_total_imp.txt", "w");
+    fprintf(fstatti, "x=c(");
+    for (int i = eval.solMin; i <= eval.solMax; i++)
+        if (eval.solutions[i] > 0)
+            fprintf(fstat, "%d\t%lld\t%lld\t%.5f\n,", i, eval.solNSTotal[i], eval.solNSImp[i], 100 * float(eval.solNSImp[i]) / float(eval.solNSTotal[i]));
+    fclose(fstatti);
+
+    /*
+     echo building VND
+     define vnd_list [ OptFrame:LocalSearch: 0 ,  OptFrame:LocalSearch: 1, OptFrame:LocalSearch: 2, OptFrame:LocalSearch: 3 ]
+     component.create_list $vnd_list OptFrame:LocalSearch: comp_vnd_list
+     build OptFrame:LocalSearch:VND   $Evaluator 0   $comp_vnd_list   vnd
+
+     %component.list
+
+     echo building ILS
+     build OptFrame:ComponentBuilder:SingleObjSearch:ILS:ILSLevels   $Evaluator 0    $Constructive 0    $vnd   OptFrame:ILS:LevelPert:LPlus2 0    100    8  meu_ils
+
+     test 2 3 7000 7000   $Evaluator 0   $meu_ils   output.txt   solucao_saida
+
+     evaluate $Evaluator 0 $solucao_saida
+     */
+
+    cout << "Program ended successfully" << endl;
+
+    return 0;
 }

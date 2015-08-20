@@ -69,12 +69,15 @@ public:
 		{
 			Move<R, ADS>* move = &it.current();
 
+			// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
+			/*
 			if(e.getLocalOptimumStatus(move->id()) == true)
 			{
 				delete &it;
 				delete move;
 				return;
 			}
+			*/
 
 			bestMoveId = move->id();
 
@@ -101,7 +104,8 @@ public:
 
 						eval.evaluate(e, s); // updates 'e'
 
-						e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
+						// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
+						//e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
 
 						return;
 					}
@@ -117,8 +121,9 @@ public:
 		}
 		while (!it.isDone());
 
-		if(bestMoveId != "")
-			e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local Optimum
+		// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
+		//if(bestMoveId != "")
+		//	e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local Optimum
 
 		delete &it;
 	}

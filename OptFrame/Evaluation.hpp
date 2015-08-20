@@ -39,9 +39,11 @@ using namespace std;
 namespace optframe
 {
 
-
-// TODO: use enum?
-typedef bool Status; // 'unknown' = false, 'local optimum' = true
+// GlobalOptimumStatus
+enum GOS
+{
+    gos_yes, gos_no, gos_unknown
+};
 
 //! \english The Evaluation class is a container class for the objective function value and the Memory structure M. \endenglish \portuguese A classe Evaluation é uma classe contêiner para o valor da função objetivo e a estrutura de Memória M. \endportuguese
 
@@ -64,8 +66,8 @@ protected:
 	double objFunction;
 	double infMeasure;
 
-	map<string, Status> localStatus; // mapping 'move.id()' to 'NeighborhoodStatus'
-	Status globalOptimum;            // for exact methods only
+	// map<string, bool> localStatus; // mapping 'move.id()' to 'NeighborhoodStatus' TODO: REMOVE!
+	GOS gos;            // for exact methods only
 
 	vector<pair<double, double> > alternatives; // for lexicographic approaches
 
@@ -73,21 +75,20 @@ public:
 	Evaluation(double obj, double inf) :
 			objFunction(obj), infMeasure(inf)
 	{
-		globalOptimum = false;
+		gos = gos_unknown;
 	}
-
 
 	Evaluation(double obj)
 	{
 		objFunction = obj;
 		infMeasure = 0;
 
-		globalOptimum = false;
+		gos = gos_unknown;
 	}
 
 
 	Evaluation(const Evaluation& e) :
-			objFunction(e.objFunction), infMeasure(e.infMeasure), globalOptimum(e.globalOptimum), alternatives(e.alternatives)
+			objFunction(e.objFunction), infMeasure(e.infMeasure), gos(e.gos), alternatives(e.alternatives)
 	{
 	}
 
@@ -135,28 +136,31 @@ public:
 	// for local optimum
 	// -----------------
 
-	Status getLocalOptimumStatus(string moveId)
+	// TODO: remove! LOS management is now on NSSeq and NSSeqIterators
+	/*
+	bool getLocalOptimumStatus(string moveId)
 	{
 		return localStatus[moveId];
 	}
 
-	void setLocalOptimumStatus(string moveId, Status status)
+	void setLocalOptimumStatus(string moveId, bool status)
 	{
 		localStatus[moveId] = status;
 	}
+	*/
 
 	// ------------------
 	// for global optimum
 	// ------------------
 
-	Status getGlobalOptimumStatus()
+	GOS getGlobalOptimumStatus()
 	{
-		return globalOptimum;
+		return gos;
 	}
 
-	void setGlobalOptimumStatus(Status status)
+	void setGlobalOptimumStatus(GOS status)
 	{
-		globalOptimum = status;
+		gos = status;
 	}
 
 	// evaluation = objFunction + infMeasure
@@ -217,6 +221,8 @@ public:
 		objFunction = e.objFunction;
 		infMeasure = e.infMeasure;
 		alternatives = e.alternatives;
+
+		gos = e.gos;
 
 		return *this;
 	}

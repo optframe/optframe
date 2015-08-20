@@ -17,6 +17,8 @@
 #include "SVRPDSP/DeltaMoveSwap.hpp"
 #include "SVRPDSP/DeltaMoveOrOptk.hpp"
 
+#include "../OptFrame/Heuristics/LocalSearches/BestImprovementLOS.hpp"
+
 using namespace std;
 using namespace optframe;
 using namespace SVRPDSP;
@@ -256,6 +258,8 @@ int main(int argc, char **argv)
 	 }
 	 delete &s;
 	 */
+
+	BestImprovementLOS<RepSVRPDSP, AdsSVRPDSP> BILOS(*evlr, *delta_swap);
 
 	//cudaInitialize();
 	cout << "problem.SVRPDSP '" << path_p << "' loaded successfully" << endl;
