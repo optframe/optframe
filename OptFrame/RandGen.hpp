@@ -31,22 +31,23 @@
 #include "ComponentBuilder.h"
 
 #include<vector>
+#include <tr1/random>
 
 namespace optframe
 {
 
 /*
-// reuse of function 'rand()' by using function 'randgen_sys_rand()'
-unsigned int randgen_sys_rand()
-{
-	return rand();
-}
+ // reuse of function 'rand()' by using function 'randgen_sys_rand()'
+ unsigned int randgen_sys_rand()
+ {
+ return rand();
+ }
 
-float system_log(float v)
-{
-	return log(v);
-}
-*/
+ float system_log(float v)
+ {
+ return log(v);
+ }
+ */
 
 class RandGen: public Component
 {
@@ -139,9 +140,29 @@ public:
 		return (double) ::rand() / RAND_MAX;
 	}
 
+	virtual int randBinomial(double p, int tries)
+	{
+		std::tr1::variate_generator<std::tr1::mt19937,
+				std::tr1::binomial_distribution<> > rngB(std::tr1::mt19937(123),
+				std::tr1::binomial_distribution<>(tries, p));
+		return rngB();
+	}
+
+	virtual int randBinomialWithNegative(double p, int tries)
+	{
+		std::tr1::variate_generator<std::tr1::mt19937,
+				std::tr1::binomial_distribution<> > rngB(std::tr1::mt19937(123),
+				std::tr1::binomial_distribution<>(tries, p));
+		int y = rngB();
+		int sign = this->rand(2);
+		if (sign == 1)
+			y *= -1;
+		return y;
+	}
+
 	virtual double randG(double mean, double stdev)
 	{
-		return randG() * stdev  + mean;
+		return randG() * stdev + mean;
 	}
 
 	// random gaussian mean 0.0 stdev 1.0
@@ -166,8 +187,7 @@ public:
 				x1 = 2.0 * rand01() - 1.0;
 				x2 = 2.0 * rand01() - 1.0;
 				w = x1 * x1 + x2 * x2;
-			}
-			while (w >= 1.0);
+			} while (w >= 1.0);
 
 			w = sqrt((-2.0 * ::log(w)) / w);
 			y1 = x1 * w;
@@ -220,19 +240,19 @@ public:
 	}
 };
 
-
-
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class RandGenBuilder : public ComponentBuilder<R, ADS>
+class RandGenBuilder: public ComponentBuilder<R, ADS>
 {
 public:
 	virtual ~RandGenBuilder()
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual Component*
+	buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf,
+			string family = "")
 	{
-		if(!scanner.hasNext())
+		if (!scanner.hasNext())
 			return NULL;
 
 		long seed = scanner.nextLong();
