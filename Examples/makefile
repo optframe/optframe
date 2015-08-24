@@ -1,4 +1,4 @@
-all: examples
+all: opmop
 
 examples: tsp etii pmedcap opths svrpdsp
 
@@ -16,6 +16,9 @@ pmedcap:
 	
 svrpdsp:
 	make -f makeSVRPDSP.mk
+	
+opmop:
+	make -f makeOPMOP.mk
 	
 clean:
 	rm -f app_*

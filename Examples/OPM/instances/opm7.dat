@@ -1,0 +1,304 @@
+#
+#
+#=============================#
+#    Modelo polad03 - AMPL    #
+#=============================#
+###############################
+#          Producao            
+###############################
+set EM := esteril minerio;
+param: pl pr pu:=
+esteril 0 1640 1640
+minerio 0 4100 6000;
+#Conversao
+param parEstMin :=
+esteril 0
+minerio 1;
+# -----------------------------
+#            Pesos             
+# -----------------------------
+# Peso por desvio negativo para a producao
+param wnp := esteril 100
+minerio 100;
+# Peso por desvio positivo para a producao
+param wpp := esteril 100
+minerio 100;
+###############################
+#          Parametros          
+###############################
+# Parametros
+set Parametros :=  Par0 Par1 Par2 Par3 Par4 ;
+param: tu tr tl :=
+Par0	1.0000	0.4791	0.0000
+Par1	1.0000	0.0047	0.0000
+Par2	1.0000	0.0026	0.0000
+Par3	1.0000	0.0004	0.0000
+Par4	1.0000	0.0004	0.0000;
+# -----------------------------
+#            Pesos             
+# -----------------------------
+param: wnm wpm :=
+Par0	1	1
+Par1	1	1
+Par2	1	1
+Par3	1	1
+Par4	1	1;
+###############################
+#           Frentes            
+###############################
+# Frentes
+set Frentes :=
+Frente0
+Frente1
+Frente2
+Frente3
+Frente4
+Frente5
+Frente6
+Frente7
+Frente8
+Frente9
+Frente10
+Frente11
+Frente12
+Frente13
+Frente14
+Frente15
+Frente16
+Frente17
+Frente18
+Frente19
+Frente20
+Frente21
+Frente22
+Frente23
+Frente24
+Frente25
+Frente26
+Frente27
+Frente28
+Frente29
+Frente30
+Frente31
+;
+# Massa de cada frente
+param: qu, estMin:=
+Frente0	20000	1
+Frente1	20000	1
+Frente2	20000	1
+Frente3	20000	1
+Frente4	20000	1
+Frente5	20000	1
+Frente6	20000	1
+Frente7	20000	1
+Frente8	20000	1
+Frente9	20000	1
+Frente10	20000	1
+Frente11	20000	1
+Frente12	20000	1
+Frente13	20000	1
+Frente14	20000	1
+Frente15	20000	1
+Frente16	20000	1
+Frente17	20000	1
+Frente18	20000	1
+Frente19	20000	1
+Frente20	20000	1
+Frente21	20000	1
+Frente22	20000	1
+Frente23	20000	1
+Frente24	20000	1
+Frente25	20000	1
+Frente26	20000	1
+Frente27	20000	1
+Frente28	20000	1
+Frente29	20000	1
+Frente30	20000	1
+Frente31	20000	1;
+###############################
+#           Carregadeiras      
+###############################
+# Carregadeiras
+set Carregadeiras := Car0 Car1 Car2 Car3 Car4 Car5 Car6 ;
+# Producao Maxima da Carregadeira k (em t/h)
+param: cMin, cMax:=
+Car0 300 500
+Car1 300 400
+Car2 300 400
+Car3 300 500
+Car4 350 800
+Car5 350 900
+Car6 400 600;
+###############################
+#           Caminhoes          
+###############################
+# Caminhoes
+set Caminhoes :=
+Cam0
+Cam1
+Cam2
+Cam3
+Cam4
+Cam5
+Cam6
+Cam7
+Cam8
+Cam9
+Cam10
+Cam11
+Cam12
+Cam13
+Cam14
+Cam15
+Cam16
+Cam17
+Cam18
+Cam19
+Cam20
+Cam21
+Cam22
+Cam23
+Cam24
+Cam25
+Cam26
+Cam27
+Cam28
+Cam29
+;
+# Taxa maxima de utilizacao
+param txUtilCam := 0.75;
+# Capacidade do Caminhao l
+param capacidade :=
+Cam0	50
+Cam1	50
+Cam2	50
+Cam3	50
+Cam4	50
+Cam5	50
+Cam6	50
+Cam7	50
+Cam8	50
+Cam9	50
+Cam10	50
+Cam11	50
+Cam12	50
+Cam13	50
+Cam14	50
+Cam15	50
+Cam16	50
+Cam17	50
+Cam18	50
+Cam19	50
+Cam20	50
+Cam21	50
+Cam22	50
+Cam23	50
+Cam24	50
+Cam25	50
+Cam26	50
+Cam27	50
+Cam28	50
+Cam29	50;
+###############################
+#           Matrizes           
+###############################
+# Teor dos Parametros das Frentes
+param teor: Par0 Par1 Par2 Par3 Par4 :=
+Frente0	0.4743	0.0048	0.0027	0.0004	0.0004	
+Frente1	0.5112	0.0038	0.0022	0.0004	0.0004	
+Frente2	0.3789	0.0051	0.0028	0.0004	0.0004	
+Frente3	0.4224	0.0053	0.0029	0.0003	0.0003	
+Frente4	0.4550	0.0130	0.0064	0.0007	0.0007	
+Frente5	0.4742	0.0088	0.0045	0.0005	0.0005	
+Frente6	0.5954	0.0055	0.0030	0.0005	0.0005	
+Frente7	0.5000	0.0070	0.0037	0.0004	0.0005	
+Frente8	0.5641	0.0122	0.0061	0.0006	0.0006	
+Frente9	0.4589	0.0046	0.0026	0.0002	0.0002	
+Frente10	0.4561	0.0059	0.0032	0.0004	0.0004	
+Frente11	0.5829	0.0128	0.0063	0.0006	0.0006	
+Frente12	0.4578	0.0034	0.0020	0.0002	0.0003	
+Frente13	0.4580	0.0032	0.0019	0.0002	0.0003	
+Frente14	0.5596	0.0063	0.0033	0.0004	0.0004	
+Frente15	0.5575	0.0043	0.0024	0.0007	0.0007	
+Frente16	0.5150	0.0048	0.0027	0.0005	0.0005	
+Frente17	0.4344	0.0039	0.0022	0.0002	0.0003	
+Frente18	0.4329	0.0022	0.0015	0.0004	0.0006	
+Frente19	0.4482	0.0019	0.0013	0.0001	0.0002	
+Frente20	0.4406	0.0036	0.0021	0.0004	0.0007	
+Frente21	0.4722	0.0036	0.0021	0.0002	0.0003	
+Frente22	0.5428	0.0036	0.0021	0.0003	0.0005	
+Frente23	0.4917	0.0054	0.0029	0.0002	0.0004	
+Frente24	0.4307	0.0026	0.0016	0.0002	0.0003	
+Frente25	0.4459	0.0029	0.0018	0.0004	0.0006	
+Frente26	0.4420	0.0033	0.0020	0.0006	0.0010	
+Frente27	0.4224	0.0024	0.0016	0.0002	0.0003	
+Frente28	0.4971	0.0034	0.0020	0.0004	0.0004	
+Frente29	0.4802	0.0104	0.0052	0.0006	0.0006	
+Frente30	0.4648	0.0031	0.0019	0.0004	0.0004	
+Frente31	0.4691	0.0037	0.0022	0.0004	0.0005;
+# = 1 se Caminhao l eh compativel com Carregadeira k, 0 caso contrario
+param comp: Car0 Car1 Car2 Car3 Car4 Car5 Car6 :=
+Cam0	1	1	1	1	1	1	1	
+Cam1	1	1	1	1	1	1	1	
+Cam2	1	1	1	1	1	1	1	
+Cam3	1	1	1	1	1	1	1	
+Cam4	1	1	1	1	1	1	1	
+Cam5	1	1	1	1	1	1	1	
+Cam6	1	1	1	1	1	1	1	
+Cam7	1	1	1	1	1	1	1	
+Cam8	1	1	1	1	1	1	1	
+Cam9	1	1	1	1	1	1	1	
+Cam10	1	1	1	1	1	1	1	
+Cam11	1	1	1	1	1	1	1	
+Cam12	1	1	1	1	1	1	1	
+Cam13	1	1	1	1	1	1	1	
+Cam14	1	1	1	1	1	1	1	
+Cam15	1	1	1	1	1	1	1	
+Cam16	1	1	1	1	1	1	1	
+Cam17	1	1	1	1	1	1	1	
+Cam18	1	1	1	1	1	1	1	
+Cam19	1	1	1	1	1	1	1	
+Cam20	1	1	1	1	1	1	1	
+Cam21	1	1	1	1	1	1	1	
+Cam22	1	1	1	1	1	1	1	
+Cam23	1	1	1	1	1	1	1	
+Cam24	1	1	1	1	1	1	1	
+Cam25	1	1	1	1	1	1	1	
+Cam26	1	1	1	1	1	1	1	
+Cam27	1	1	1	1	1	1	1	
+Cam28	1	1	1	1	1	1	1	
+Cam29	1	1	1	1	1	1	1;
+# Tempo de ciclo para a Frente i
+param tempo:=
+Frente0	9.20
+Frente1	9.80
+Frente2	9.40
+Frente3	9.70
+Frente4	9.50
+Frente5	9.20
+Frente6	8.70
+Frente7	9.50
+Frente8	9.60
+Frente9	9.10
+Frente10	9.20
+Frente11	9.10
+Frente12	9.20
+Frente13	9.60
+Frente14	9.30
+Frente15	8.50
+Frente16	9.30
+Frente17	8.70
+Frente18	9.50
+Frente19	9.30
+Frente20	9.20
+Frente21	9.50
+Frente22	9.00
+Frente23	9.30
+Frente24	9.10
+Frente25	9.50
+Frente26	9.40
+Frente27	9.40
+Frente28	9.10
+Frente29	9.00
+Frente30	9.20
+Frente31	9.20;

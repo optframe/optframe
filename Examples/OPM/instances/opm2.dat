@@ -1,0 +1,256 @@
+#
+#
+#=============================#
+#    Modelo polad02 - AMPL    #
+#=============================#
+###############################
+#          Producao            
+###############################
+set EM := esteril minerio;
+param: pl pr pu:=
+esteril 1740 1798 2320
+minerio 4000 5800 7000;
+#Conversao
+param parEstMin :=
+esteril 0
+minerio 1;
+# -----------------------------
+#            Pesos             
+# -----------------------------
+# Peso por desvio negativo para a producao
+param wnp := esteril 100
+minerio 100;
+# Peso por desvio positivo para a producao
+param wpp := esteril 100
+minerio 100;
+###############################
+#          Parametros          
+###############################
+# Parametros
+set Parametros :=  Par0 Par1 Par2 Par3 Par4 Par5 Par6 Par7 Par8 Par9 ;
+param: tu tr tl :=
+Par0	0.0420	0.0330	0.0240
+Par1	0.0500	0.0424	0.0347
+Par2	0.0275	0.0163	0.0050
+Par3	0.0513	0.0392	0.0270
+Par4	0.0120	0.0107	0.0093
+Par5	0.0325	0.0303	0.0280
+Par6	0.0140	0.0113	0.0086
+Par7	0.0137	0.0124	0.0110
+Par8	0.0253	0.0177	0.0100
+Par9	0.0220	0.0171	0.0121;
+# -----------------------------
+#            Pesos             
+# -----------------------------
+param: wnm wpm :=
+Par0	1	1
+Par1	1	1
+Par2	1	1
+Par3	1	1
+Par4	1	1
+Par5	1	1
+Par6	1	1
+Par7	1	1
+Par8	1	1
+Par9	1	1;
+###############################
+#           Frentes            
+###############################
+# Frentes
+set Frentes :=
+Frente0
+Frente1
+Frente2
+Frente3
+Frente4
+Frente5
+Frente6
+Frente7
+Frente8
+Frente9
+Frente10
+Frente11
+Frente12
+Frente13
+Frente14
+Frente15
+Frente16
+;
+# Massa de cada frente
+param: qu, estMin:=
+Frente0	2000	1
+Frente1	2000	1
+Frente2	2000	1
+Frente3	2000	1
+Frente4	2000	1
+Frente5	2000	1
+Frente6	2000	1
+Frente7	2000	1
+Frente8	2000	1
+Frente9	2000	1
+Frente10	2000	1
+Frente11	2000	1
+Frente12	2000	0
+Frente13	2000	0
+Frente14	2000	0
+Frente15	2000	0
+Frente16	2000	0;
+###############################
+#           Carregadeiras      
+###############################
+# Carregadeiras
+set Carregadeiras := Car0 Car1 Car2 Car3 Car4 Car5 Car6 Car7 ;
+# Producao Maxima da Carregadeira k (em t/h)
+param: cMin, cMax:=
+Car0 250 900
+Car1 300 900
+Car2 250 900
+Car3 300 900
+Car4 350 1000
+Car5 300 1000
+Car6 400 1100
+Car7 400 1100;
+###############################
+#           Caminhoes          
+###############################
+# Caminhoes
+set Caminhoes :=
+Cam0
+Cam1
+Cam2
+Cam3
+Cam4
+Cam5
+Cam6
+Cam7
+Cam8
+Cam9
+Cam10
+Cam11
+Cam12
+Cam13
+Cam14
+Cam15
+Cam16
+Cam17
+Cam18
+Cam19
+Cam20
+Cam21
+Cam22
+Cam23
+Cam24
+Cam25
+Cam26
+Cam27
+Cam28
+Cam29
+;
+# Taxa maxima de utilizacao
+param txUtilCam := 0.75;
+# Capacidade do Caminhao l
+param capacidade :=
+Cam0	50
+Cam1	50
+Cam2	50
+Cam3	50
+Cam4	50
+Cam5	50
+Cam6	50
+Cam7	50
+Cam8	50
+Cam9	50
+Cam10	50
+Cam11	50
+Cam12	50
+Cam13	50
+Cam14	50
+Cam15	80
+Cam16	80
+Cam17	80
+Cam18	80
+Cam19	80
+Cam20	80
+Cam21	80
+Cam22	80
+Cam23	80
+Cam24	80
+Cam25	80
+Cam26	80
+Cam27	80
+Cam28	80
+Cam29	80;
+###############################
+#           Matrizes           
+###############################
+# Teor dos Parametros das Frentes
+param teor: Par0 Par1 Par2 Par3 Par4 Par5 Par6 Par7 Par8 Par9 :=
+Frente0	0.0417	0.0350	0.0223	0.0447	0.0122	0.0291	0.0142	0.0113	0.0215	0.0114	
+Frente1	0.0434	0.0344	0.0213	0.0502	0.0112	0.0305	0.0095	0.0115	0.0096	0.0220	
+Frente2	0.0355	0.0495	0.0255	0.0417	0.0113	0.0287	0.0096	0.0116	0.0174	0.0199	
+Frente3	0.0265	0.0439	0.0246	0.0302	0.0107	0.0285	0.0121	0.0126	0.0130	0.0194	
+Frente4	0.0324	0.0492	0.0217	0.0471	0.0108	0.0294	0.0137	0.0123	0.0146	0.0191	
+Frente5	0.0422	0.0468	0.0155	0.0407	0.0109	0.0330	0.0114	0.0112	0.0242	0.0114	
+Frente6	0.0435	0.0484	0.0294	0.0530	0.0117	0.0291	0.0129	0.0112	0.0158	0.0199	
+Frente7	0.0357	0.0507	0.0149	0.0366	0.0094	0.0313	0.0098	0.0116	0.0230	0.0115	
+Frente8	0.0425	0.0347	0.0072	0.0532	0.0100	0.0312	0.0084	0.0123	0.0115	0.0230	
+Frente9	0.0231	0.0346	0.0091	0.0501	0.0104	0.0283	0.0083	0.0114	0.0261	0.0185	
+Frente10	0.0382	0.0397	0.0239	0.0376	0.0112	0.0283	0.0093	0.0108	0.0252	0.0201	
+Frente11	0.0246	0.0331	0.0065	0.0353	0.0100	0.0300	0.0128	0.0116	0.0197	0.0222	
+Frente12	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	
+Frente13	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	
+Frente14	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	
+Frente15	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	
+Frente16	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000	0.0000;
+# = 1 se Caminhao l eh compativel com Carregadeira k, 0 caso contrario
+param comp: Car0 Car1 Car2 Car3 Car4 Car5 Car6 Car7 :=
+Cam0	1	1	1	1	0	0	0	0	
+Cam1	1	1	1	1	0	0	0	0	
+Cam2	1	1	1	1	0	0	0	0	
+Cam3	1	1	1	1	0	0	0	0	
+Cam4	1	1	1	1	0	0	0	0	
+Cam5	1	1	1	1	0	0	0	0	
+Cam6	1	1	1	1	0	0	0	0	
+Cam7	1	1	1	1	0	0	0	0	
+Cam8	1	1	1	1	0	0	0	0	
+Cam9	1	1	1	1	0	0	0	0	
+Cam10	1	1	1	1	0	0	0	0	
+Cam11	1	1	1	1	0	0	0	0	
+Cam12	1	1	1	1	0	0	0	0	
+Cam13	1	1	1	1	0	0	0	0	
+Cam14	1	1	1	1	0	0	0	0	
+Cam15	0	0	0	0	1	1	1	1	
+Cam16	0	0	0	0	1	1	1	1	
+Cam17	0	0	0	0	1	1	1	1	
+Cam18	0	0	0	0	1	1	1	1	
+Cam19	0	0	0	0	1	1	1	1	
+Cam20	0	0	0	0	1	1	1	1	
+Cam21	0	0	0	0	1	1	1	1	
+Cam22	0	0	0	0	1	1	1	1	
+Cam23	0	0	0	0	1	1	1	1	
+Cam24	0	0	0	0	1	1	1	1	
+Cam25	0	0	0	0	1	1	1	1	
+Cam26	0	0	0	0	1	1	1	1	
+Cam27	0	0	0	0	1	1	1	1	
+Cam28	0	0	0	0	1	1	1	1	
+Cam29	0	0	0	0	1	1	1	1;
+# Tempo de ciclo para a Frente i
+param tempo:=
+Frente0	8.80
+Frente1	9.00
+Frente2	9.20
+Frente3	9.40
+Frente4	9.60
+Frente5	8.70
+Frente6	9.10
+Frente7	9.40
+Frente8	8.80
+Frente9	9.40
+Frente10	9.00
+Frente11	9.30
+Frente12	9.60
+Frente13	9.00
+Frente14	8.90
+Frente15	9.20
+Frente16	9.90;
+

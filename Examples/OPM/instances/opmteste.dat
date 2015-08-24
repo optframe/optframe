@@ -1,0 +1,319 @@
+#
+#
+#=============================#
+#     Modelo Polad - AMPL     #
+#=============================#
+###############################
+#          Producao            
+###############################
+set EM := esteril minerio;
+param: pl pr pu:=
+esteril 1383 1446 1824
+minerio 3207 4654 5598;
+#Conversao
+param parEstMin :=
+esteril 0
+minerio 1;
+# -----------------------------
+#            Pesos             
+# -----------------------------
+# Peso por desvio negativo para a producao
+param wnp := esteril 100
+minerio 100;
+# Peso por desvio positivo para a producao
+param wpp := esteril 100
+minerio 100;
+###############################
+#          Parametros          
+###############################
+# Parametros
+set Parametros := Par0 Par1 Par2 Par3 Par4 Par5 Par6 Par7 Par8 Par9 ;
+param: tu tr tl :=
+Par0 0.0480 0.0351 0.0222
+Par1 0.0466 0.0458 0.0450
+Par2 0.0380 0.0233 0.0086
+Par3 0.0439 0.0432 0.0425
+Par4 0.0122 0.0109 0.0096
+Par5 0.0302 0.0301 0.0300
+Par6 0.0143 0.0110 0.0078
+Par7 0.0115 0.0115 0.0114
+Par8 0.0261 0.0169 0.0077
+Par9 0.0189 0.0184 0.0180;
+# -----------------------------
+#            Pesos             
+# -----------------------------
+param: wnm wpm :=
+Par0	1	1
+Par1	1	1
+Par2	1	1
+Par3	1	1
+Par4	1	1
+Par5	1	1
+Par6	1	1
+Par7	1	1
+Par8	1	1
+Par9	1	1;
+###############################
+#           Frentes            
+###############################
+# Frentes
+set Frentes :=
+Frente0
+Frente1
+Frente2
+Frente3
+Frente4
+Frente5
+Frente6
+Frente7
+Frente8
+Frente9
+Frente10
+Frente11
+Frente12
+Frente13
+Frente14
+Frente15
+Frente16
+Frente17
+Frente18
+Frente19
+Frente20
+Frente21
+Frente22
+Frente23
+Frente24
+Frente25
+Frente26
+Frente27
+Frente28
+Frente29
+;
+# Massa de cada frente
+param: qu, estMin:=
+Frente0	1105	1
+Frente1	1591	1
+Frente2	1776	1
+Frente3	1141	1
+Frente4	320	1
+Frente5	1788	1
+Frente6	1207	1
+Frente7	474	1
+Frente8	1528	1
+Frente9	1799	1
+Frente10	813	1
+Frente11	1211	1
+Frente12	1098	1
+Frente13	903	1
+Frente14	429	1
+Frente15	1198	1
+Frente16	637	1
+Frente17	1535	1
+Frente18	630	1
+Frente19	470	1
+Frente20	1654	1
+Frente21	1554	0
+Frente22	1126	0
+Frente23	1334	0
+Frente24	1482	0
+Frente25	394	0
+Frente26	647	0
+Frente27	1363	0
+Frente28	1222	0
+Frente29	1695	0;
+###############################
+#         Carregadeiras        
+###############################
+# Carregadeiras
+set Carregadeiras := Car0 Car1 Car2 Car3 Car4 Car5 Car6 Car7 Car8 ;
+# Producao Maxima da Carregadeira k (em t/h)
+param: cMin, cMax:=
+Car0	240	1200
+Car1	108	540
+Car2	54	270
+Car3	240	1200
+Car4	240	1200
+Car5	160	800
+Car6	54	270
+Car7	54	270
+Car8	108	540;
+###############################
+#           Caminhoes          
+###############################
+# Caminhoes
+set Caminhoes := Cam0 Cam1 Cam2 Cam3 Cam4 Cam5 Cam6 Cam7 Cam8 Cam9 Cam10 Cam11 Cam12 Cam13 Cam14 Cam15 Cam16 Cam17 Cam18 Cam19 Cam20 Cam21 Cam22 Cam23 Cam24 Cam25 Cam26 Cam27 Cam28 Cam29 Cam30 Cam31 Cam32 Cam33 Cam34 Cam35 Cam36 Cam37 Cam38 Cam39 Cam40 Cam41 Cam42 Cam43 Cam44 Cam45 Cam46 Cam47 Cam48 Cam49 Cam50 ;
+# Taxa maxima de utilizacao
+param txUtilCam := 0.75;
+# Capacidade do Caminhao l
+param capacidade :=
+Cam0	35
+Cam1	35
+Cam2	35
+Cam3	35
+Cam4	35
+Cam5	35
+Cam6	35
+Cam7	35
+Cam8	35
+Cam9	35
+Cam10	35
+Cam11	35
+Cam12	35
+Cam13	35
+Cam14	35
+Cam15	35
+Cam16	35
+Cam17	35
+Cam18	35
+Cam19	35
+Cam20	35
+Cam21	35
+Cam22	35
+Cam23	50
+Cam24	50
+Cam25	50
+Cam26	50
+Cam27	50
+Cam28	50
+Cam29	50
+Cam30	50
+Cam31	50
+Cam32	50
+Cam33	50
+Cam34	50
+Cam35	50
+Cam36	80
+Cam37	80
+Cam38	80
+Cam39	80
+Cam40	80
+Cam41	80
+Cam42	80
+Cam43	80
+Cam44	80
+Cam45	80
+Cam46	130
+Cam47	130
+Cam48	130
+Cam49	130
+Cam50	130;
+###############################
+#           Matrizes           
+###############################
+# Teor dos Parametros das Frentes
+param teor: Par0 Par1 Par2 Par3 Par4 Par5 Par6 Par7 Par8 Par9 :=
+Frente0  0.0344  0.0434  0.0223  0.0415  0.0113  0.0301  0.0122  0.0117  0.0161  0.0202
+Frente1  0.0274  0.0466  0.0221  0.0379  0.0114  0.0312  0.0124  0.0121  0.0213  0.0228
+Frente2  0.0397  0.0383  0.0107  0.0447  0.0122  0.0302  0.0141  0.0123  0.0156  0.0149
+Frente3  0.0218  0.0365  0.0156  0.0288  0.0103  0.0314  0.0132  0.0123  0.0122  0.0206
+Frente4  0.0215  0.0378  0.0250  0.0396  0.0099  0.0296  0.0134  0.0112  0.0171  0.0184
+Frente5  0.0371  0.0451  0.0087  0.0569  0.0098  0.0312  0.0094  0.0121  0.0266  0.0236
+Frente6  0.0269  0.0416  0.0194  0.0463  0.0122  0.0292  0.0138  0.0116  0.0137  0.0212
+Frente7  0.0487  0.0453  0.0365  0.0448  0.0103  0.0307  0.0131  0.0117  0.0208  0.0220
+Frente8  0.0344  0.0611  0.0169  0.0576  0.0096  0.0300  0.0144  0.0119  0.0248  0.0194
+Frente9  0.0415  0.0407  0.0142  0.0465  0.0102  0.0295  0.0105  0.0121  0.0172  0.0195
+Frente10  0.0325  0.0377  0.0388  0.0364  0.0108  0.0293  0.0129  0.0119  0.0258  0.0199
+Frente11  0.0401  0.0550  0.0159  0.0393  0.0118  0.0280  0.0089  0.0120  0.0260  0.0143
+Frente12  0.0396  0.0459  0.0222  0.0359  0.0108  0.0300  0.0100  0.0124  0.0072  0.0173
+Frente13  0.0298  0.0361  0.0208  0.0431  0.0110  0.0294  0.0100  0.0110  0.0099  0.0190
+Frente14  0.0391  0.0475  0.0208  0.0433  0.0102  0.0294  0.0076  0.0114  0.0126  0.0097
+Frente15  0.0425  0.0433  0.0198  0.0495  0.0123  0.0322  0.0122  0.0113  0.0232  0.0179
+Frente16  0.0278  0.0327  0.0137  0.0523  0.0109  0.0303  0.0083  0.0115  0.0176  0.0185
+Frente17  0.0330  0.0438  0.0134  0.0407  0.0101  0.0302  0.0119  0.0125  0.0231  0.0177
+Frente18  0.0374  0.0486  0.0078  0.0475  0.0106  0.0288  0.0131  0.0105  0.0166  0.0272
+Frente19  0.0367  0.0306  0.0205  0.0509  0.0106  0.0300  0.0130  0.0115  0.0153  0.0171
+Frente20  0.0282  0.0425  0.0242  0.0389  0.0107  0.0300  0.0102  0.0106  0.0151  0.0150
+Frente21  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+Frente22  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+Frente23  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+Frente24  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+Frente25  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+Frente26  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+Frente27  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+Frente28  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+Frente29  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000;
+# = 1 se Caminhao l eh compativel com Carregadeira k, 0 caso contrario
+param comp:  Car0 Car1 Car2 Car3 Car4 Car5 Car6 Car7 Car8 :=
+Cam0 1 1 1 1 1 1 1 1 1
+Cam1 1 1 1 1 1 1 1 1 1
+Cam2 1 1 1 1 1 1 1 1 1
+Cam3 1 1 1 1 1 1 1 1 1
+Cam4 1 1 1 1 1 1 1 1 1
+Cam5 1 1 1 1 1 1 1 1 1
+Cam6 1 1 1 1 1 1 1 1 1
+Cam7 1 1 1 1 1 1 1 1 1
+Cam8 1 1 1 1 1 1 1 1 1
+Cam9 1 1 1 1 1 1 1 1 1
+Cam10 1 1 1 1 1 1 1 1 1
+Cam11 1 1 1 1 1 1 1 1 1
+Cam12 1 1 1 1 1 1 1 1 1
+Cam13 1 1 1 1 1 1 1 1 1
+Cam14 1 1 1 1 1 1 1 1 1
+Cam15 1 1 1 1 1 1 1 1 1
+Cam16 1 1 1 1 1 1 1 1 1
+Cam17 1 1 1 1 1 1 1 1 1
+Cam18 1 1 1 1 1 1 1 1 1
+Cam19 1 1 1 1 1 1 1 1 1
+Cam20 1 1 1 1 1 1 1 1 1
+Cam21 1 1 1 1 1 1 1 1 1
+Cam22 1 1 1 1 1 1 1 1 1
+Cam23 1 1 1 1 1 1 1 1 1
+Cam24 1 1 1 1 1 1 1 1 1
+Cam25 1 1 1 1 1 1 1 1 1
+Cam26 1 1 1 1 1 1 1 1 1
+Cam27 1 1 1 1 1 1 1 1 1
+Cam28 1 1 1 1 1 1 1 1 1
+Cam29 1 1 1 1 1 1 1 1 1
+Cam30 1 1 1 1 1 1 1 1 1
+Cam31 1 1 1 1 1 1 1 1 1
+Cam32 1 1 1 1 1 1 1 1 1
+Cam33 1 1 1 1 1 1 1 1 1
+Cam34 1 1 1 1 1 1 1 1 1
+Cam35 1 1 1 1 1 1 1 1 1
+Cam36 1 1 0 1 1 1 0 0 1
+Cam37 1 1 0 1 1 1 0 0 1
+Cam38 1 1 0 1 1 1 0 0 1
+Cam39 1 1 0 1 1 1 0 0 1
+Cam40 1 1 0 1 1 1 0 0 1
+Cam41 1 1 0 1 1 1 0 0 1
+Cam42 1 1 0 1 1 1 0 0 1
+Cam43 1 1 0 1 1 1 0 0 1
+Cam44 1 1 0 1 1 1 0 0 1
+Cam45 1 1 0 1 1 1 0 0 1
+Cam46 1 0 0 1 1 1 0 0 0
+Cam47 1 0 0 1 1 1 0 0 0
+Cam48 1 0 0 1 1 1 0 0 0
+Cam49 1 0 0 1 1 1 0 0 0
+Cam50 1 0 0 1 1 1 0 0 0;
+# Tempo de ciclo para a Frente i
+param tempo:=
+Frente0	9.62
+Frente1	9.51
+Frente2	13.08
+Frente3	12.79
+Frente4	13.99
+Frente5	5.15
+Frente6	14.49
+Frente7	5.78
+Frente8	14.07
+Frente9	12.29
+Frente10	9.38
+Frente11	13.58
+Frente12	7.41
+Frente13	14.70
+Frente14	8.11
+Frente15	10.88
+Frente16	6.99
+Frente17	13.30
+Frente18	6.35
+Frente19	14.57
+Frente20	11.50
+Frente21	8.64
+Frente22	7.67
+Frente23	14.74
+Frente24	11.10
+Frente25	7.41
+Frente26	7.99
+Frente27	8.17
+Frente28	6.55
+Frente29	9.81;
