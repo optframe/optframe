@@ -1,4 +1,4 @@
-all: gfp
+all: examples
 
 examples: tsp etii pmedcap opths svrpdsp
 
