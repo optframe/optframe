@@ -27,8 +27,8 @@
 
 using namespace std;
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MoveVRPOrOpt1: public Move<vector<vector<T> > , ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
+class MoveVRPOrOpt1: public Move<vector<vector<T> > , ADS>
 {
 
 	typedef vector<vector<T> > Routes;
@@ -79,7 +79,7 @@ public:
 
 	}
 
-	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
+	virtual Move<Routes, ADS>* apply(Routes& rep, ADS&)
 	{
 		int aux;
 		int i;
@@ -93,7 +93,7 @@ public:
 				//rep.at(r).at(i + 1) = aux;
 			}
 			rep.at(r).at(i) = aux;
-			return *new MoveVRPOrOpt1<T, ADS, DS> (r, pos - 1, c);
+			return new MoveVRPOrOpt1<T, ADS> (r, pos - 1, c);
 		}
 		else
 		{
@@ -103,17 +103,17 @@ public:
 				rep.at(r).at(i) = rep.at(r).at(i - 1);
 			}
 			rep.at(r).at(i) = aux;
-			return *new MoveVRPOrOpt1<T, ADS, DS> (r, pos, c + 1);
+			return new MoveVRPOrOpt1<T, ADS> (r, pos, c + 1);
 
 		}
 
-		return *new MoveVRPOrOpt1<T, ADS, DS> (-1, -1, -1);
+		return new MoveVRPOrOpt1<T, ADS> (-1, -1, -1);
 		///exit(1);
 	}
 
-	virtual bool operator==(const Move<Routes, ADS, DS>& _m) const
+	virtual bool operator==(const Move<Routes, ADS>& _m) const
 	{
-		const MoveVRPOrOpt1<T, ADS, DS>& m1 = (const MoveVRPOrOpt1<T, ADS, DS>&) _m;
+		const MoveVRPOrOpt1<T, ADS>& m1 = (const MoveVRPOrOpt1<T, ADS>&) _m;
 		return (m1.r == r) && (m1.c == c) && (m1.pos == pos);
 	}
 
@@ -124,8 +124,8 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPOrOpt1<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
-class NSIteratorVRPOrOpt1: public NSIterator<vector<vector<T> > , ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPOrOpt1<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+class NSIteratorVRPOrOpt1: public NSIterator<vector<vector<T> > , ADS>
 {
 	typedef vector<vector<T> > Routes;
 
@@ -191,7 +191,7 @@ public:
 		return m == NULL;
 	}
 
-	virtual Move<Routes, ADS, DS>& current()
+	virtual Move<Routes, ADS>& current()
 	{
 		if (isDone())
 		{
@@ -204,8 +204,8 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPOrOpt1<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPOrOpt1<T, ADS, DS, MOVE, P> >
-class NSSeqVRPOrOpt1: public NSSeq<vector<vector<T> > , ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPOrOpt1<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPOrOpt1<T, ADS, MOVE, P> >
+class NSSeqVRPOrOpt1: public NSSeq<vector<vector<T> > , ADS>
 {
 	typedef vector<vector<T> > Routes;
 
@@ -223,7 +223,7 @@ public:
 	{
 	}
 
-	Move<Routes, ADS, DS>& move(const Routes& rep, const ADS&)
+	Move<Routes, ADS>& move(const Routes& rep, const ADS&)
 	{
 		int r = rand() % rep.size();
 

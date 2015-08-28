@@ -28,8 +28,8 @@
 using namespace std;
 
 // Working structure: vector<T>
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MoveVRP2Opt: public Move<vector<vector<T> > , ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
+class MoveVRP2Opt: public Move<vector<vector<T> > , ADS>
 {
 	typedef vector<vector<T> > Routes;
 
@@ -76,7 +76,7 @@ public:
 
 	}
 
-	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
+	virtual Move<Routes, ADS>* apply(Routes& rep, ADS&)
 	{
 		int small, bigger;
 		if (p1 <= p2)
@@ -92,10 +92,10 @@ public:
 
 		reverse(rep.at(r).begin() + small, rep.at(r).begin() + bigger);
 
-		return *new MoveVRP2Opt(r, p1, p2);
+		return new MoveVRP2Opt(r, p1, p2);
 	}
 
-	virtual bool operator==(const Move<Routes, ADS, DS>& _m) const
+	virtual bool operator==(const Move<Routes, ADS>& _m) const
 	{
 		const MoveVRP2Opt& m1 = (const MoveVRP2Opt&) _m;
 		return ((m1.p1 == p1) && (m1.p2 == p2) && (m1.r == r));
@@ -109,8 +109,8 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRP2Opt<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
-class NSIteratorVRP2Opt: public NSIterator<vector<vector<T> > , ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRP2Opt<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+class NSIteratorVRP2Opt: public NSIterator<vector<vector<T> > , ADS>
 {
 	typedef vector<vector<T> > Routes;
 
@@ -173,7 +173,7 @@ public:
 		return m == NULL;
 	}
 
-	virtual Move<Routes, ADS, DS>& current()
+	virtual Move<Routes, ADS>& current()
 	{
 		if (isDone())
 		{
@@ -186,8 +186,8 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRP2Opt<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRP2Opt<T, ADS, DS, MOVE, P> >
-class NSSeqVRP2Opt: public NSSeq<vector<vector<T> > , ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRP2Opt<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRP2Opt<T, ADS, MOVE, P> >
+class NSSeqVRP2Opt: public NSSeq<vector<vector<T> > , ADS>
 {
 	typedef vector<vector<T> > Routes;
 
@@ -205,7 +205,7 @@ public:
 	{
 	}
 
-	Move<Routes, ADS, DS>& move(const Routes& rep, const ADS&)
+	Move<Routes, ADS>& move(const Routes& rep, const ADS&)
 	{
 		int r = rand() % rep.size();
 		if (rep.at(r).size() < 3)

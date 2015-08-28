@@ -27,6 +27,7 @@
 #include "../../Constructive.h"
 #include "../../SingleObjSearch.hpp"
 #include "../../Evaluator.hpp"
+#include "../../Timer.hpp"
 
 #include "ILS.h"
 

@@ -32,8 +32,8 @@
 
 using namespace std;
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MoveVRPSwap1_1: public Move<vector<vector<T> > , ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
+class MoveVRPSwap1_1: public Move<vector<vector<T> > , ADS>
 {
 	typedef vector<vector<T> > Routes;
 
@@ -84,17 +84,17 @@ public:
 
 	}
 
-	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
+	virtual Move<Routes, ADS>* apply(Routes& rep, ADS&)
 	{
 		T aux;
 		aux = rep.at(r1).at(c1);
 		rep.at(r1).at(c1) = rep.at(r2).at(c2);
 		rep.at(r2).at(c2) = aux;
 
-		return *new MoveVRPSwap1_1(r2, r1, c2, c1);
+		return new MoveVRPSwap1_1(r2, r1, c2, c1);
 	}
 
-	virtual bool operator==(const Move<Routes, ADS, DS>& _m) const
+	virtual bool operator==(const Move<Routes, ADS>& _m) const
 	{
 		const MoveVRPSwap1_1& m1 = (const MoveVRPSwap1_1&) _m;
 		return ((m1.r1 == r1) && (m1.r2 == r2) && (m1.c1 == c1) && (m1.c2 == c2));
@@ -108,8 +108,8 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPSwap1_1<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM>
-class NSIteratorVRPSwap1_1: public NSIterator<vector<vector<T> > , ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPSwap1_1<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+class NSIteratorVRPSwap1_1: public NSIterator<vector<vector<T> > , ADS>
 {
 
 	typedef vector<vector<T> > Routes;
@@ -171,7 +171,7 @@ public:
 		return m == NULL;
 	}
 
-	virtual Move<Routes, ADS, DS>& current()
+	virtual Move<Routes, ADS>& current()
 	{
 		if (isDone())
 		{
@@ -184,8 +184,8 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS, class MOVE = MoveVRPSwap1_1<T, ADS, DS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPSwap1_1<T, ADS, DS, MOVE, P> >
-class NSSeqVRPSwap1_1: public NSSeq<vector<vector<T> > , ADS, DS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPSwap1_1<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPSwap1_1<T, ADS, MOVE, P> >
+class NSSeqVRPSwap1_1: public NSSeq<vector<vector<T> > , ADS>
 {
 
 	typedef vector<vector<T> > Routes;
@@ -204,7 +204,7 @@ public:
 	{
 	}
 
-	Move<Routes, ADS, DS>& move(const Routes& rep, const ADS&)
+	Move<Routes, ADS>& move(const Routes& rep, const ADS&)
 	{
 		//getchar();
 		if (rep.size() < 2)
