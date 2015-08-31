@@ -162,7 +162,7 @@ public:
 				p->at(param).sigmaN = 0;
 			if (p->at(param).sigmaN > 3)
 				p->at(param).sigmaN = 3;
-			p->at(param).pr += rg.randG(0, p->at(0).sigmaN);
+			p->at(param).pr += rg.randG(0, p->at(param).sigmaN);
 			if (p->at(param).pr < 0)
 				p->at(param).pr = 0;
 			if (p->at(param).pr > 1)
@@ -173,7 +173,7 @@ public:
 				p->at(param).sigmaB = 0;
 			if (p->at(param).sigmaB > 1)
 				p->at(param).sigmaB = 1;
-			p->at(param).nap += rg.randBinomialWithNegative(p->at(0).sigmaB, 10);
+			p->at(param).nap += rg.randBinomialWithNegative(p->at(param).sigmaB, 10);
 			if (p->at(param).nap < 1)
 				p->at(param).nap = 1;
 			if (p->at(param).nap > vNSeqMaxApplication[param])
@@ -352,28 +352,30 @@ public:
 			cout << "]\t";
 			cout << p->at(0).vNSInd << endl;
 
-			stringstream ss;
-			ss << outputFile << "_" << "best";
-			string outputBest = ss.str();
-			FILE* arquivo = fopen(outputBest.c_str(), "a");
-			if (!arquivo)
+			if (Component::debug)
 			{
-				cout << "ERRO: falha ao criar arquivo \"outputBest.txt\"" << endl;
-			}
-			else
-			{
-				fprintf(arquivo, "%d\t%d\t%d\t", batch, gAtual, iterWithoutImprovement);
-				for (int param = 0; param < nNS; param++)
+				stringstream ss;
+				ss << outputFile << "_" << "best";
+				string outputBest = ss.str();
+				FILE* arquivo = fopen(outputBest.c_str(), "a");
+				if (!arquivo)
 				{
-					double pr = p->at(0).vEsStructureInd->at(param).pr;
-					int nap = p->at(0).vEsStructureInd->at(param).nap;
-					double prNap = pr * nap;
-					fprintf(arquivo, "%f\t%d\t%f\t", pr, nap, prNap);
+					cout << "ERRO: falha ao criar arquivo \"outputBest.txt\"" << endl;
 				}
-				fprintf(arquivo, "\n");
-				fclose(arquivo);
+				else
+				{
+					fprintf(arquivo, "%d\t%d\t%d\t", batch, gAtual, iterWithoutImprovement);
+					for (int param = 0; param < nNS; param++)
+					{
+						double pr = p->at(0).vEsStructureInd->at(param).pr;
+						int nap = p->at(0).vEsStructureInd->at(param).nap;
+						double prNap = pr * nap;
+						fprintf(arquivo, "%f\t%d\t%f\t", pr, nap, prNap);
+					}
+					fprintf(arquivo, "\n");
+					fclose(arquivo);
+				}
 			}
-
 			iterWithoutImprovement = 0;
 
 		}
@@ -575,26 +577,29 @@ public:
 
 			}
 			//cout << endl;
-			FILE* arquivo = fopen(outputFile.c_str(), "a");
-			if (!arquivo)
-			{
-				cout << "ERRO: falha ao criar arquivo \"outputFileES.txt\"" << endl;
-			}
-			else
-			{
-				fprintf(arquivo, "%d\t%d\t", batch, gAtual);
-				for (int param = 0; param < nNS; param++)
-				{
-					double pr = meanParams[param].first;
-					double nap = meanParams[param].second;
-					double prNap = meanParams[param].second * meanParams[param].first;
-					fprintf(arquivo, "%f\t%f\t%f\t", pr, nap, prNap);
-				}
-				fprintf(arquivo, "\n");
-				fclose(arquivo);
-			}
-
 			meanParamsGenerations.push_back(meanParams);
+
+			if (Component::debug)
+			{
+				FILE* arquivo = fopen(outputFile.c_str(), "a");
+				if (!arquivo)
+				{
+					cout << "ERRO: falha ao criar arquivo \"outputFileES.txt\"" << endl;
+				}
+				else
+				{
+					fprintf(arquivo, "%d\t%d\t", batch, gAtual);
+					for (int param = 0; param < nNS; param++)
+					{
+						double pr = meanParams[param].first;
+						double nap = meanParams[param].second;
+						double prNap = meanParams[param].second * meanParams[param].first;
+						fprintf(arquivo, "%f\t%f\t%f\t", pr, nap, prNap);
+					}
+					fprintf(arquivo, "\n");
+					fclose(arquivo);
+				}
+			}
 
 			// ====================================================
 
