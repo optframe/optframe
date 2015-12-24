@@ -33,11 +33,11 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class InitialPopulation: public Component, public EA
+class InitialMultiSolution: public Component, public EA
 {
 public:
 
-	virtual ~InitialPopulation()
+	virtual ~InitialMultiSolution()
 	{
 	}
 
@@ -62,18 +62,18 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BasicInitialPopulation: public InitialPopulation<R, ADS>
+class BasicInitialMultiSolution: public InitialMultiSolution<R, ADS>
 {
 public:
 
 	Constructive<R, ADS>& constructive;
 
-	BasicInitialPopulation(Constructive<R, ADS>& _constructive) :
+	BasicInitialMultiSolution(Constructive<R, ADS>& _constructive) :
 			constructive(_constructive)
 	{
 	}
 
-	virtual ~BasicInitialPopulation()
+	virtual ~BasicInitialMultiSolution()
 	{
 	}
 
@@ -87,13 +87,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (InitialPopulation<R, ADS>::compatible(s));
+		return (s == idComponent()) || (InitialMultiSolution<R, ADS>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << InitialPopulation<R, ADS>::idComponent() << ":BasicInitialPopulation";
+		ss << InitialMultiSolution<R, ADS>::idComponent() << ":BasicInitialPopulation";
 		return ss.str();
 	}
 
@@ -116,7 +116,7 @@ public:
 		Constructive<R, ADS>* c;
 		hf.assign(c, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BasicInitialPopulation<R, ADS>(*c);
+		return new BasicInitialMultiSolution<R, ADS>(*c);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -128,7 +128,7 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicInitialPopulation<R, ADS>::idComponent();
+		return component == BasicInitialMultiSolution<R, ADS>::idComponent();
 	}
 
 	static string idComponent()

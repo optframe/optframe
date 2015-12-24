@@ -60,9 +60,13 @@ public:
 	{
 	}
 
-	MultiEvaluator(vector<Evaluator<R, ADS>*> _sngEvaluators) :
-			MultiDirection(_sngEvaluators), sngEvaluators(_sngEvaluators), allowCosts(false)
+	MultiEvaluator(vector<Evaluator<R, ADS>*> _vDir) :
+			sngEvaluators(_vDir), allowCosts(false)
 	{
+		for (unsigned i = 0; i < _vDir.size(); i++)
+			if (_vDir[i])
+				vDir.push_back(_vDir[i]);
+		nObjectives = vDir.size();
 	}
 
 	virtual ~MultiEvaluator()
@@ -76,7 +80,7 @@ public:
 
 	vector<Evaluator<R, ADS>*>* getEvaluators()
 	{
-		if(sngEvaluators.size()>0)
+		if (sngEvaluators.size() > 0)
 		{
 			return new vector<Evaluator<R, ADS>*>(sngEvaluators);
 		}
@@ -87,7 +91,7 @@ public:
 	// TODO: check
 	const vector<const Evaluator<R, ADS>*>* getEvaluators() const
 	{
-		if(sngEvaluators.size()>0)
+		if (sngEvaluators.size() > 0)
 			return new vector<const Evaluator<R, ADS>*>(sngEvaluators);
 		else
 			return NULL;
@@ -98,16 +102,16 @@ public:
 		return evaluate(s.getR(), s.getADS());
 	}
 
-
-public: // protected: not possible because of GeneralizedMultiEvaluator
+public:
+	// protected: not possible because of GeneralizedMultiEvaluator
 
 	// TODO: make virtual "= 0"
 	virtual MultiEvaluation& evaluate(const R& r)
 	{
 		vector<Evaluation*> nev;
-		for(unsigned i=0; i<sngEvaluators.size(); i++)
+		for (unsigned i = 0; i < sngEvaluators.size(); i++)
 			nev.push_back(&sngEvaluators[i]->evaluate(r));
-		return * new MultiEvaluation(nev);
+		return *new MultiEvaluation(nev);
 	}
 
 	virtual MultiEvaluation& evaluate(const R& r, const ADS&)
@@ -133,7 +137,6 @@ protected:
 
 		delete &ve1;
 	}
-
 
 	// ============= Component ===============
 	virtual bool compatible(string s)
@@ -191,8 +194,7 @@ public:
 
 		if (!handleComponent(type))
 		{
-			cout << "EvaluatorAction::doCast error: can't handle component type '" << type
-					<< " " << id << "'" << endl;
+			cout << "EvaluatorAction::doCast error: can't handle component type '" << type << " " << id << "'" << endl;
 			return false;
 		}
 
@@ -200,15 +202,13 @@ public:
 
 		if (!comp)
 		{
-			cout << "EvaluatorAction::doCast error: NULL component '" << component << " "
-					<< id << "'" << endl;
+			cout << "EvaluatorAction::doCast error: NULL component '" << component << " " << id << "'" << endl;
 			return false;
 		}
 
 		if (!Component::compareBase(comp->id(), type))
 		{
-			cout << "EvaluatorAction::doCast error: component '" << comp->id()
-					<< " is not base of " << type << "'" << endl;
+			cout << "EvaluatorAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
 			return false;
 		}
 
@@ -224,8 +224,7 @@ public:
 		}
 		else
 		{
-			cout << "EvaluatorAction::doCast error: no cast for type '" << type << "'"
-					<< endl;
+			cout << "EvaluatorAction::doCast error: no cast for type '" << type << "'" << endl;
 			return false;
 		}
 
@@ -234,7 +233,7 @@ public:
 		return ComponentAction<R, ADS>::addAndRegister(scanner, *final, hf, d);
 	}
 
-	virtual bool doAction(string content, HeuristicFactory<R, ADS>& hf,	map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	virtual bool doAction(string content, HeuristicFactory<R, ADS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 		cout << "MultiEvaluator::doAction: NOT IMPLEMENTED!" << endl;
 		return false;

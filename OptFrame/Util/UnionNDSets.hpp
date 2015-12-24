@@ -1,6 +1,6 @@
 // OptFrame - Optimization Framework
 
-// Copyright (C) 2009-2015
+// Copyright (C) 2009, 2010, 2011
 // http://optframe.sourceforge.net/
 //
 // This file is part of the OptFrame optimization framework. This framework
@@ -42,11 +42,11 @@ using namespace std;
 namespace optframe
 {
 
-template<class R, class ADS  = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class UnionNDSets
 {
 protected:
-	vector<Evaluator<R, ADS, DS>*> v_e;
+	vector<Evaluator<R, ADS>*> v_e;
 
 	bool addSolution(vector<vector<double> >& p, vector<double>& s)
 	{
@@ -110,8 +110,8 @@ protected:
 
 public:
 
-	UnionNDSets(vector<Evaluator<R, ADS, DS>*> _v_e) :
-		v_e(_v_e)
+	UnionNDSets(vector<Evaluator<R, ADS>*> _v_e) :
+			v_e(_v_e)
 	{
 
 	}
@@ -140,12 +140,12 @@ public:
 			{
 				double eval1 = scanner.nextDouble();
 				double eval2 = scanner.nextDouble();
-				double eval3 = scanner.nextDouble();
+				//double eval3 = scanner.nextDouble();
 
 				vector<double> ind;
 				ind.push_back(eval1);
 				ind.push_back(eval2);
-				ind.push_back(eval3);
+				//ind.push_back(eval3);
 
 				addSolution(D, ind);
 			}
@@ -197,6 +197,72 @@ public:
 		return frentes;
 	}
 
+	double deltaMetric(vector<vector<double> > pareto, vector<double> utopicEval)
+	{
+
+		vector<double> vDist;
+
+		int nObj = utopicEval.size();
+		int nSol = pareto.size();
+		vector<double> minEval(nObj, 1000000);
+		double dMean = 0;
+		for (int nS = 0; nS < nSol; nS++)
+		{
+			//vector with the evaluation of solution nS
+			vector<double> eval = pareto[nS];
+			for (int e = 0; e < nObj; e++)
+			{
+				if (eval[e] < minEval[e])
+					minEval[e] = eval[e];
+			}
+
+			double minDist = 10000000;
+			for (int nS2 = 0; nS2 < pareto.size(); nS2++)
+			{
+				double dist = 0;
+				if (nS2 != nS)
+				{
+					vector<double> eval2 = pareto[nS2];
+					for (int e = 0; e < nObj; e++)
+						dist += pow(eval[e] - eval2[e], 2);
+					dist = sqrt(dist);
+					if (dist < minDist)
+						minDist = dist;
+				}
+
+			}
+
+			vDist.push_back(minDist);
+			dMean += minDist;
+
+		}
+		dMean /= nSol;
+
+		double dUtopic = 0;
+		for (int e = 0; e < nObj; e++)
+		{
+			dUtopic += pow(minEval[e] - utopicEval[e], 2);
+			//cout<<minEval[e]<<endl;
+			//cout<<utopicEval[e]<<endl;
+		}
+
+		dUtopic = sqrt(dUtopic);
+		//cout<<dUtopic<<endl;
+		//getchar();
+
+		double sumDist = 0;
+		for (int nS = 0; nS < nSol; nS++)
+		{
+			sumDist += vDist[nS] - dMean;
+		}
+
+		double delta = (dUtopic + sumDist) / (nSol * dMean + dUtopic);
+		return delta;
+		//cout << "delta = " << delta << endl;
+		//getchar();
+
+	}
+
 	vector<vector<double> > unionSets(vector<vector<double> > D1, vector<vector<double> > D2)
 	{
 
@@ -229,7 +295,6 @@ public:
 
 		return card;
 	}
-
 
 	double setCoverage(vector<vector<double> > a, vector<vector<double> > b)
 	{

@@ -26,7 +26,7 @@
 #include "../../SingleObjSearch.hpp"
 #include "../../MultiSolution.hpp"
 
-#include "InitialPopulation.hpp"
+#include "InitialMultiSolution.hpp"
 
 #include "Crossover.hpp"
 
@@ -57,7 +57,7 @@ private:
 
 	unsigned numGenerations;
 
-	InitialPopulation<R, ADS>& initPop;
+	InitialMultiSolution<R, ADS>& initPop;
 
 	Selection<R, ADS>& selection;
 	Crossover<R, ADS>& cross;
@@ -76,7 +76,7 @@ public:
 			return f;
 	}
 
-	BasicGeneticAlgorithm(Evaluator<R, ADS>& _evaluator, InitialPopulation<R, ADS>& _initPop, unsigned populationSize, float crossoverRate, float mutationRate, float _pLS, unsigned numGenerations, Selection<R, ADS>& _selection, Crossover<R, ADS>& _cross, Mutation<R>& _mut, LocalSearch<R, ADS>& _ls, RandGen& _rg) :
+	BasicGeneticAlgorithm(Evaluator<R, ADS>& _evaluator, InitialMultiSolution<R, ADS>& _initPop, unsigned populationSize, float crossoverRate, float mutationRate, float _pLS, unsigned numGenerations, Selection<R, ADS>& _selection, Crossover<R, ADS>& _cross, Mutation<R>& _mut, LocalSearch<R, ADS>& _ls, RandGen& _rg) :
 			evaluator(_evaluator), initPop(_initPop), selection(_selection), cross(_cross), mut(_mut), ls(_ls), rg(_rg)
 	{
 		maxim = !evaluator.isMinimization();
@@ -327,7 +327,7 @@ public:
 		Evaluator<R, ADS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		InitialPopulation<R, ADS>* initPop;
+		InitialMultiSolution<R, ADS>* initPop;
 		hf.assign(initPop, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int popSize = scanner.nextInt();
@@ -358,7 +358,7 @@ public:
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(InitialPopulation<R, ADS>::idComponent(), "generator for initial population"));
+		params.push_back(make_pair(InitialMultiSolution<R, ADS>::idComponent(), "generator for initial population"));
 		params.push_back(make_pair("OptFrame:int", "population size"));
 		params.push_back(make_pair("OptFrame:float", "cross probability"));
 		params.push_back(make_pair("OptFrame:float", "mutation probability"));

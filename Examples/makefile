@@ -1,4 +1,4 @@
-all: examples
+all: modm
 
 examples: tsp etii pmedcap opths svrpdsp
 
@@ -25,6 +25,9 @@ gfp:
 	
 hfvrpmt:
 	make -f makeHFVRPMT.mk
+	
+modm:
+	make -f makeMODM.mk
 		
 clean:
 	rm -f app_*

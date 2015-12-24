@@ -1,6 +1,6 @@
 // OptFrame - Optimization Framework
 
-// Copyright (C) 2009-2015
+// Copyright (C) 2009, 2010, 2011
 // http://optframe.sourceforge.net/
 //
 // This file is part of the OptFrame optimization framework. This framework
@@ -24,8 +24,9 @@
 #include "Population.hpp"
 
 #include "Component.hpp"
-
+#include "RandGen.hpp"
 #include "Constructive.h"
+#include "Heuristics/GRASP/GRConstructive.h"
 
 using namespace std;
 
@@ -33,11 +34,11 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class InitialPopulation2: public Component
+class InitialPopulation: public Component
 {
 public:
 
-	virtual ~InitialPopulation2()
+	virtual ~InitialPopulation()
 	{
 	}
 
@@ -57,25 +58,25 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BasicInitialPopulation2: public InitialPopulation2<R, ADS>
+class BasicInitialPopulation: public InitialPopulation<R, ADS>
 {
 public:
 
 	Constructive<R, ADS>& constructive;
 
-	BasicInitialPopulation2(Constructive<R, ADS>& _constructive) :
+	BasicInitialPopulation(Constructive<R, ADS>& _constructive) :
 			constructive(_constructive)
 	{
 	}
 
-	virtual ~BasicInitialPopulation2()
+	virtual ~BasicInitialPopulation()
 	{
 	}
 
 	virtual Population<R, ADS>& generatePopulation(unsigned populationSize)
 	{
 		Population<R, ADS>* p = new Population<R, ADS>;
-		for(unsigned i = 0; i < populationSize; i++)
+		for (unsigned i = 0; i < populationSize; i++)
 			p->push_back(&constructive.generateSolution());
 		return *p;
 	}
@@ -84,6 +85,54 @@ public:
 	{
 		stringstream ss;
 		ss << Population<R, ADS>::idComponent() << ":BasicInitialPopulation";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+};
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class GRInitialPopulation: public InitialPopulation<R, ADS>
+{
+public:
+	GRConstructive<R, ADS>& constructive;
+	RandGen& rg;
+	double maxAlpha; // limit the solution to be not so random
+
+	GRInitialPopulation(GRConstructive<R, ADS>& _constructive, RandGen& _rg, double _maxAlpha) :
+			constructive(_constructive), rg(_rg), maxAlpha(_maxAlpha)
+	{
+	}
+
+	virtual ~GRInitialPopulation()
+	{
+	}
+
+	virtual Population<R, ADS>& generatePopulation(unsigned populationSize)
+	{
+		Population<R, ADS>* p = new Population<R, ADS>;
+		for (unsigned i = 0; i < populationSize; i++)
+		{
+			float alpha = rg.rand01();
+			while (alpha > maxAlpha)
+			{
+				alpha = rg.rand01();
+			}
+
+			if (alpha == 0)
+				alpha = 0.00001;
+			p->push_back(&constructive.generateSolution(alpha));
+		}
+		return *p;
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << Population<R, ADS>::idComponent() << ":GRInitialPopulation";
 		return ss.str();
 	}
 
