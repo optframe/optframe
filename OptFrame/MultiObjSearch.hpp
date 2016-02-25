@@ -59,9 +59,9 @@ public:
 	{
 	}
 
-	void push_back(Solution<R, ADS>& s, vector<Evaluation*>& v_e)
+	void push_back(Solution<R, ADS>* s, vector<Evaluation*>& v_e)
 	{
-		paretoSet.push_back(&s);
+		paretoSet.push_back(&s->clone()); // clone, otherwise it is deleted
 		paretoFront.push_back(v_e);
 	}
 

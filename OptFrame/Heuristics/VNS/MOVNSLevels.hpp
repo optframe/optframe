@@ -235,7 +235,7 @@ public:
 				Evaluation& e1 = evtr->evaluate(*s);
 				e.push_back(&e1);
 			}
-			pf->push_back(*s, e);
+			pf->push_back(s, e);
 		}
 		return pf;
 	}

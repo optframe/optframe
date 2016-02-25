@@ -289,6 +289,7 @@ public:
 		for (unsigned i = 0; i < p_0.size(); i++)
 		{
 			Solution<R, ADS>* s = &p_0.at(i);
+
 			vector<Evaluation*> e;
 			for (unsigned ev = 0; ev < v_e.size(); ev++)
 			{
@@ -297,7 +298,7 @@ public:
 				Evaluation& e1 = evtr->evaluate(*s);
 				e.push_back(&e1);
 			}
-			pf->push_back(*s, e);
+			pf->push_back(s, e);
 		}
 
 		cout << "Two Phase Pareto Local Search Finished" << endl;

@@ -255,6 +255,18 @@ int main(int argc, char **argv)
 	MOVNSLevels<RepMODM, AdsMODM> multiobjectvns(v_e, bip, initial_population_size, neighboors, rg, 10, 10);
 	TwoPhaseParetoLocalSearch<RepMODM, AdsMODM> paretoSearch(mev, bip, initial_population_size, neighboors);
 
+	Pareto<RepMODM, AdsMODM>* pf;
+	int time2PPLS = 120;
+	for (int exec = 0; exec < 1; exec++)
+	{
+
+
+		pf = paretoSearch.search(time2PPLS, 0);
+		pf = multiobjectvns.search(300, 0);
+	}
+
+cout<<"Oi"<<endl;
+getchar();
 	UnionNDSets<RepMODM, AdsMODM> US(v_e);
 	vector<vector<double> > PF1 = US.unionSets("./paretoCorsTesteS3-1", 291);
 
@@ -276,14 +288,6 @@ int main(int argc, char **argv)
 
 //
 //	getchar();
-	Pareto<RepMODM, AdsMODM>* pf;
-	int time2PPLS = 120;
-	for (int exec = 0; exec < 1; exec++)
-	{
-		//pf = multiobjectvns.search(300, 0);
-
-		pf = paretoSearch.search(time2PPLS, 0);
-	}
 
 	vector<vector<Evaluation*> > vEval = pf->getParetoFront();
 	vector<Solution<RepMODM, AdsMODM>*> vSolPf = pf->getParetoSet();
