@@ -9,15 +9,15 @@ bool Move$neighborhood::canBeApplied(const Rep$project& rep, const MY_ADS&)
     return true;
 }
 
-Move< Rep$project , MY_ADS $commadproject >& Move$neighborhood::apply(Rep$project& rep, MY_ADS&)
+Move< Rep$project , MY_ADS $commadproject >* Move$neighborhood::apply(Rep$project& rep, MY_ADS&)
 {
     // apply this move to 'rep'
     // rep. (...) = (...)
     // return reverse move
-    return * new Move$neighborhood; 
+    return new Move$neighborhood; 
 }
 
-MoveCost* Move$neighborhood::cost(const Evaluation< $deltaproject >&, const Rep$project& rep, const MY_ADS& ads)
+MoveCost* Move$neighborhood::cost(const Evaluation&, const Rep$project& rep, const MY_ADS& ads)
 {
    return NULL;
    // Implement if a more efficient evaluation of the move is available

@@ -7,7 +7,7 @@
 
 using namespace optframe;
 
-typedef Evaluation<$deltaproject > Evaluation$project;
+typedef Evaluation Evaluation$project;
 
 #endif /*$project_EVALUATION_H_*/
 

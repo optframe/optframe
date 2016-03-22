@@ -53,9 +53,9 @@ public:
     
     bool canBeApplied(const Rep$project& rep, const MY_ADS&);
 
-    Move< Rep$project , MY_ADS $commadproject >& apply(Rep$project& rep, MY_ADS&);
+    Move< Rep$project , MY_ADS $commadproject >* apply(Rep$project& rep, MY_ADS&);
     
-    MoveCost* cost(const Evaluation< $deltaproject >&, const Rep$project& rep, const MY_ADS& ads);
+    MoveCost* cost(const Evaluation&, const Rep$project& rep, const MY_ADS& ads);
 };
 
 
