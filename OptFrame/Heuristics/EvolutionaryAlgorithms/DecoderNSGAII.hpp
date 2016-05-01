@@ -440,7 +440,7 @@ public:
 	// only basic definition
 	static bool compare(const IndividualNSGAII<R>* ind1, const IndividualNSGAII<R>* ind2)
 	{
-		if(ind1->rank < ind2->rank)
+		if((ind1->rank) < (ind2->rank))
 			return true;
 		else if(ind1->rank == ind2->rank)
 		{
@@ -463,7 +463,7 @@ public:
 		if(ind1 == ind2)
 			return false;
 
-		if(ind1->rank < ind2->rank)
+		if((ind1->rank) < (ind2->rank))
 			return true;
 		else if(ind1->rank == ind2->rank)
 		{
@@ -698,7 +698,7 @@ public:
 	// compare if 'ind1' is better than 'ind2'
 	static bool crowdedComparisonX(const IndividualExtNSGAII<R, X, ADS>* ind1, const IndividualExtNSGAII<R, X, ADS>* ind2)
 	{
-		return (ind1->rank < ind2->rank) || ((ind1->rank == ind2->rank) && (ind1->distance > ind2->distance));
+		return ((ind1->rank) < (ind2->rank)) || ((ind1->rank == ind2->rank) && (ind1->distance > ind2->distance));
 	}
 
 
@@ -717,7 +717,7 @@ public:
 			exit(1);
 		}
 
-		return (ind1.rank < ind2.rank) || ((ind1.rank == ind2.rank) && (ind1.distance > ind2.distance));
+		return ((ind1.rank) < (ind2.rank)) || ((ind1.rank == ind2.rank) && (ind1.distance > ind2.distance));
 	}
 
 	// count all 's' solutions parents in 'rx' that do not appear in 'rs'

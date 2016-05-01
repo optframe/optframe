@@ -11,7 +11,7 @@ MODMScanner.o: ../OptFrame/Scanner++/Scanner.cpp
 -include $(SRC_MODM:%.cpp=%.d)
 
 CPPFLAGS = -O3
-CPPFLAGS += -MD -MP
+CPPFLAGS += -MD -MP -std=c++11
 
 	
 clean: 

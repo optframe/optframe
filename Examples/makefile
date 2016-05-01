@@ -1,6 +1,6 @@
-all: modm
+all: examples
 
-examples: tsp etii pmedcap opths svrpdsp
+examples: tsp etii pmedcap opths svrpdsp gfp hfvrpmt modm
 
 tsp:
 	make -f makeTSP.mk
