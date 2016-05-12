@@ -18,7 +18,7 @@ Evaluation$project& $projectEvaluator::evaluate(const Rep$project& rep)
 
     double fo = 0; // Evaluation Function Value
 
-    return * new Evaluation$project(fo $initializedelta);
+    return * new Evaluation$project(fo);
 }
 
 bool $projectEvaluator::betterThan(double f1, double f2)

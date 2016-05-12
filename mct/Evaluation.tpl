@@ -3,7 +3,7 @@
 
 #include "../../OptFrame/Evaluation.hpp"
 
-#include "DeltaStructure.h"
+// Delta Structure is deprecated. This file is probably useless...
 
 using namespace optframe;
 

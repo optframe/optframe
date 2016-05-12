@@ -158,89 +158,7 @@ fi
 ##############################################
 #          Delta Structure
 ##############################################
-
-deltaproject=""
-commadproject=""
-typeproject=""
-initializedelta=""
-echo "What's your Delta Structure? It is used for fast re-evaluation. (if it is not necessary leave this field empty)"
-echo "WARNING: The Delta Structure is deprecated and you should consider using an Auxiliar Data Structure (ADS) together with the Representation (in this case, just leave this field empty)."
-read delta
-
-if [ -n "$delta" ];
-  then
-
-  mem=`echo "$delta" | sed "s/>/ > /g"`
-  mem=`echo "$delta" | sed "s/</ < /g"`
-
-  echo "Do you need any extra include? (ex.: \"xyz.h\" or <vector>)"
-
-  include=""
-  read incl
-  while [ -n "$incl" ]
-  do
-    include="$include\n#include $incl"
-    read incl
-  done
-
-  cp ./mct/DeltaTest.tpl ./DeltaTest.cpp
-
-  t1="s/\$delta/$delta/g"  
-  t2="s/\$include/$include/g"  
-
-  sed -e "$t1" < DeltaTest.cpp > DeltaTest.cpp.2
-  mv DeltaTest.cpp.2 DeltaTest.cpp
-
-  sed -e "$t2" < DeltaTest.cpp > DeltaTest.cpp.2
-  mv DeltaTest.cpp.2 DeltaTest.cpp
-
-  if g++ DeltaTest.cpp -o DeltaTest
-  then echo "Solution Delta Test...[ok]"
-     rm DeltaTest.cpp
-     rm DeltaTest
-  else echo "Solution Delta Test...[fail]"
-  fi
-
-  typeproject="typedef $delta Delta$project;"
-  deltaproject="Delta$project"
-  commadproject=" , Delta$project"
-  initializedelta=" , * new Delta$project"
-
-else echo "No delta structure!"
-     typeproject=""
-     deltaproject=""
-     commadproject=""
-     initializedelta=" , * new int"
-fi
-
-echo
-
-
-## Creating Delta file
-
-var_inc="./$project/DeltaStructure.h"
-var="./MyProjects/$project/DeltaStructure.h"
-var_tmp=$var".tmp"
-
-if cp ./mct/DeltaStructure.tpl $var
-then echo "3. Creating Delta File...[ok]"
-
-     tproject="s/\$typeproject/$typeproject/g"  
-     sed -e "$tproject" < $var > $var_tmp
-     mv $var_tmp $var
-
-     sed -e "$t2" < $var > $var_tmp
-     mv $var_tmp $var
-
-     t="s/\$project/$project/g"  
-     sed $t < $var > $var_tmp
-     mv $var_tmp $var
-
-     echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
-else echo "3. Creating Delta File...[fail]"
-     exit
-fi
-
+echo "3. Delta Structure is deprecated, use the Solution ADS instead. Moving to next question..."
 
 ## Creating Evaluation file
 
@@ -250,10 +168,6 @@ var_tmp=$var".tmp"
 
 if cp ./mct/Evaluation.tpl $var
 then echo "4. Creating Evaluation File...[ok]"
-
-     dproject="s/\$deltaproject/$deltaproject/g"  
-     sed -e "$dproject" < $var > $var_tmp
-     mv $var_tmp $var
 
      t="s/\$project/$project/g"  
      sed $t < $var > $var_tmp
@@ -333,19 +247,7 @@ then echo "6. Creating Evaluator...[ok]"
      sed -e "$t" < $var > $var_tmp
      mv $var_tmp $var
 
-     t="s/\$initializedelta/$initializedelta/g"
-     sed -e "$t" < $var > $var_tmp
-     mv $var_tmp $var
-
      t="s/\$minmax/$minmax/g"
-     sed -e "$t" < $var > $var_tmp
-     mv $var_tmp $var
-
-     t="s/\$commadproject/$commadproject/g"
-     sed -e "$t" < $var > $var_tmp
-     mv $var_tmp $var
-
-     t="s/\$deltaproject/$deltaproject/g"
      sed -e "$t" < $var > $var_tmp
      mv $var_tmp $var
 
@@ -373,19 +275,7 @@ then echo "6. Creating Evaluator (CPP)...[ok]"
      sed -e "$t" < $var > $var_tmp
      mv $var_tmp $var
 
-     t="s/\$initializedelta/$initializedelta/g"
-     sed -e "$t" < $var > $var_tmp
-     mv $var_tmp $var
-
      t="s/\$minmax/$minmax/g"
-     sed -e "$t" < $var > $var_tmp
-     mv $var_tmp $var
-
-     t="s/\$commadproject/$commadproject/g"
-     sed -e "$t" < $var > $var_tmp
-     mv $var_tmp $var
-
-     t="s/\$deltaproject/$deltaproject/g"
      sed -e "$t" < $var > $var_tmp
      mv $var_tmp $var
 
@@ -428,14 +318,6 @@ do
          t="s/\$neighborhood/$neighborhood/g"  
          sed -e "$t" < $var > $var_tmp
          mv $var_tmp $var
-
-         t="s/\$commadproject/$commadproject/g"  
-         sed -e "$t" < $var > $var_tmp
-         mv $var_tmp $var
-
-         t="s/\$deltaproject/$deltaproject/g"  
-         sed -e "$t" < $var > $var_tmp
-         mv $var_tmp $var
          
          echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
     else echo "7.$i Creating Neighborhood Structure $neighborhood ...[fail]"
@@ -453,14 +335,6 @@ do
          mv $var_tmp $var
          
          t="s/\$neighborhood/$neighborhood/g"  
-         sed -e "$t" < $var > $var_tmp
-         mv $var_tmp $var
-
-         t="s/\$commadproject/$commadproject/g"  
-         sed -e "$t" < $var > $var_tmp
-         mv $var_tmp $var
-
-         t="s/\$deltaproject/$deltaproject/g"  
          sed -e "$t" < $var > $var_tmp
          mv $var_tmp $var
          
@@ -532,66 +406,7 @@ do
 done
 
 
-##############################################
-#               Problem Command
-##############################################
-
-var_inc="./$project/ProblemCommand.h"
-var="./MyProjects/$project/ProblemCommand.h"
-var_tmp=$var".tmp"
-
-if cp ./mct/ProblemCommand.tpl $var
-then echo "9. Creating ProblemCommand...[ok]"
-
-     t="s/\$project/$project/g"
-     sed -e "$t" < $var > $var_tmp
-     mv $var_tmp $var
-
-     t="s/\$commadproject/$commadproject/g"
-     sed -e "$t" < $var > $var_tmp
-     mv $var_tmp $var
-
-     t="s/\$constructive/$constructive/g"  
-     sed "$t" < $var > $var_tmp
-     mv $var_tmp $var
-
-     t="s/\$neighborhood/$neighborhood/g"  
-     sed "$t" < $var > $var_tmp
-     mv $var_tmp $var
-
-     echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
-else echo "9. Creating ProblemCommand...[fail]"
-     exit
-fi
-
-
-var_inc="./$project/ProblemCommand.cpp"
-var="./MyProjects/$project/ProblemCommand.cpp"
-var_tmp=$var".tmp"
-
-if cp ./mct/ProblemCommandCpp.tpl $var
-then echo "9. Creating ProblemCommand (CPP)...[ok]"
-
-     t="s/\$project/$project/g"
-     sed -e "$t" < $var > $var_tmp
-     mv $var_tmp $var
-
-     t="s/\$commadproject/$commadproject/g"
-     sed -e "$t" < $var > $var_tmp
-     mv $var_tmp $var
-
-     t="s/\$constructive/$constructive/g"  
-     sed "$t" < $var > $var_tmp
-     mv $var_tmp $var
-     
-     t="s/\$neighborhood/$neighborhood/g"  
-     sed "$t" < $var > $var_tmp
-     mv $var_tmp $var
-     
-else echo "9. Creating ProblemCommand (CPP)...[fail]"
-     exit
-fi
-
+echo "9. ProblemCommand is deprecated, ignoring..."
 
 # Closing project file
 
@@ -609,10 +424,6 @@ then echo "Main file...[ok]"
      
      t="s/\$project/$project/g"  
      sed "$t" < $var > $var_tmp
-     mv $var_tmp $var
-
-     t="s/\$commadproject/$commadproject/g"
-     sed -e "$t" < $var > $var_tmp
      mv $var_tmp $var
 
      t="s/\$initialsolution/$initialsolution/g"  
@@ -682,7 +493,7 @@ rm -f ./MyProjects/makefile.tmp
 
 echo
 echo "Congratulations! You can use the following command to compile your project:"
-echo "g++ ./MyProjects/main$project.cpp ./MyProjects/$project/ProblemInstance.cpp ./MyProjects/$project/Evaluator.cpp ./MyProjects/$project/Constructive$constructive.cpp ./MyProjects/$project/NSSeq$neighborhood.cpp ./MyProjects/$project/ProblemCommand.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
+echo "g++ ./MyProjects/main$project.cpp ./MyProjects/$project/ProblemInstance.cpp ./MyProjects/$project/Evaluator.cpp ./MyProjects/$project/Constructive$constructive.cpp ./MyProjects/$project/NSSeq$neighborhood.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
 echo "or you can simply type: \"cd MyProjects && make\""
 
 echo

@@ -9,7 +9,6 @@
 #include "../../OptFrame/Evaluator.hpp"
 
 #include "Representation.h"
-#include "DeltaStructure.h"
 #include "Solution.h"
 #include "Evaluation.h"
 
@@ -21,7 +20,7 @@
 namespace $project
 {
 
-class $projectEvaluator: public Evaluator<Rep$project, MY_ADS $commadproject>
+class $projectEvaluator: public Evaluator<Rep$project, MY_ADS >
 {
 private:
 	ProblemInstance& p$project;

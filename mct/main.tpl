@@ -7,7 +7,9 @@
 #include <math.h>
 #include <iostream>
 
-#include "../OptFrame/Loader.hpp"
+// LOADER IS NOT DEFAULT ANYMORE. USE ONLY IF YOU NEED...
+//#include "../OptFrame/Loader.hpp"
+
 #include "$project.h"
 
 using namespace std;
@@ -18,9 +20,8 @@ int main(int argc, char **argv)
 {
    RandGen rg;
    
-   Loader<Rep$project, MY_ADS $commadproject> optframe(rg);
-   
-   $projectProblemCommand pc(rg);
+   // Initialize here all your OptFrame components 
+   // (ProblemInstance, Evaluator, Constructive, ...)
 
    cout << "Program ended successfully" << endl;
    
