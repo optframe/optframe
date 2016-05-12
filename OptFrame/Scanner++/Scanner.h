@@ -295,7 +295,7 @@ public:
 
 		std::istringstream ss(s);
 
-		return (ss >> x);
+		return bool(ss >> x);
 	}
 
 	string rest(); // Returns the rest of the input as string
