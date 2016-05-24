@@ -32,6 +32,9 @@ using namespace std;
 
 #include <set>
 
+#include "../OptFrame/Solution.hpp"
+#include "../OptFrame/Util/TestSolution.hpp"
+
 #include "../OptFrame/Loader.hpp"
 #include "../OptFrame/Util/CheckCommand.hpp"
 #include "../OptFrame/Util/BuildCommand.hpp"
@@ -40,128 +43,290 @@ using namespace std;
 using namespace TSP;
 using namespace scannerpp;
 
+/*
+ class X
+ {
+ public:
+
+ int* p;
+ int size;
+
+ X(int k)
+ {
+ cout << __PRETTY_FUNCTION__ << endl;
+ p = new int[k];
+ size = k;
+ }
+
+ X(const X& a)
+ {
+ cout << __PRETTY_FUNCTION__ << endl;
+ size = a.size;
+ p = new int[size];
+ for(int i=0; i<size; i++)
+ p[i] = a.p[i];
+ }
+
+
+ X(X&& a)
+ {
+ cout << __PRETTY_FUNCTION__ << endl;
+ size = a.size;
+ p = a.p;
+
+ a.p = NULL;
+ a.size = 0;
+ }
+
+ virtual ~X()
+ {
+ cout << __PRETTY_FUNCTION__ << endl;
+ if(p != NULL)
+ delete[] p;
+ }
+
+ string id() const
+ {
+ return "oi";
+ }
+
+ friend ostream& operator<<(ostream& os, const X& a)
+ {
+ os << "X:" << a.id() << endl;
+ return os;
+ }
+ };
+ */
+
+class A
+{
+public:
+	int x;
+
+	A(int k) :
+			x(k)
+	{
+		cout << __PRETTY_FUNCTION__ << endl;
+	}
+
+	A(const A& a) :
+			x(a.x)
+	{
+		cout << __PRETTY_FUNCTION__ << endl;
+	}
+
+	A(A&& a) :
+			x(a.x)
+	{
+		a.x = -1;
+		cout << __PRETTY_FUNCTION__ << endl;
+	}
+
+	A& operator=(const A& a)
+	{
+		x = a.x;
+		return *this;
+	}
+
+	friend ostream& operator<<(ostream& os, const A& a)
+	{
+		os << "x:" << a.x;
+		return os;
+	}
+
+};
+
+A getA()
+{
+	A a(5);
+	return std::move(a);
+}
+
+A ref(A a)
+{
+	return a;
+}
+
+vector<int> getV()
+{
+	return vector<int>(10, 2);
+}
+
+//Solution<vector<int>> gen()
+Solution<A> gen()
+{
+	cout << "begin gen()" << endl;
+	//Solution<vector<int>> sl(getV());
+	//Solution<int> sl(5);
+
+	//Solution<A> sl(getA());
+	//cout << "s': ";
+	//sl.print();
+
+//	return std::move(sl);
+	A a(2);
+	return std::move(a);
+	//return Solution<A>(a);
+}
+
+
 int main(int argc, char **argv)
 {
-    Loader<RepTSP> optframe;
-    TSPProblemCommand tsp;
-    tsp.load("./TSP/tsplib/berlin52.txt", optframe.factory, optframe.dictionary, optframe.ldictionary);
 
-    CheckCommand<RepTSP> check(false);
+	auto s = gen();
 
-    RandGen rg;
-    RandomInitialSolutionTSP random(tsp.p, rg);
-    NearestNeighborConstructive cnn(tsp.p, rg);
-    ConstructiveBestInsertion cbi(tsp.p, rg);
-    TSPEvaluator eval(tsp.p);
-    NSEnumSwap enumswap(tsp.p, rg);
+	cout << "after return" << endl;
 
-    NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);
-    NSSeqTSP2Opt<int> tsp2opt;
-    NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSPOrOptk, ProblemInstance> nsseq_delta_or1(1, tsp.p);
-    NSSeqTSPOrOptk<int> tspor1(1);
-    NSSeqTSPOrOptk<int> tspor2(2);
-    NSSeqTSPOrOptk<int> tspor3(3);
-    NSSeqTSPSwap<int> tspswap;
+	vector<Solution<A>> v;
+	v.push_back(s);
 
-    check.add(random);
-    check.add(cnn);
-    check.add(cbi);
-    check.add(eval);
-    check.add(enumswap);
-    check.add(nsseq_delta_2opt);
-    check.add(tsp2opt);
-    check.add(nsseq_delta_or1);
-    check.add(tspor1);
-    check.add(tspor2);
-    check.add(tspor3);
-    check.add(tspswap);
+	cout << "after vector" << endl;
 
-    //check.run(100, 10);
+	cout << "s: ";
+	s.print();
 
-    BuildCommand<RepTSP> build;
-    for (unsigned i = 0; i <= 7; i++)
-    {
-        stringstream ss;
-        ss << "OptFrame:ComponentBuilder:LocalSearch:BI  OptFrame:Evaluator 0  OptFrame:NS:NSSeq " << i;
-        string name = build.run(optframe.factory, optframe.dictionary, optframe.ldictionary, ss.str());
-        cout << "BUILT: '" << name << "'" << endl;
-    }
+	cout << endl << "COPY" << endl;
 
-    vector<LocalSearch<RepTSP>*> ns_list;
-    ns_list.push_back(new BestImprovement<RepTSP>(eval, tsp2opt));
-    ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor1));
-    ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor2));
-    ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor3));
-    ns_list.push_back(new BestImprovement<RepTSP>(eval, tspswap));
+	auto s2 = std::move(s);
+	//s2.getR() = 6;
 
-    VariableNeighborhoodDescent<RepTSP> VND(eval, ns_list);
+	cout << "s2: ";
+	s2.print();
+	cout << "s: ";
+	s.print();
 
-    ILSLPerturbationLPlus2<RepTSP> pert(eval, 10, tsp2opt, rg);
-    pert.add_ns(tspor1);
-    pert.add_ns(tspor2);
-    pert.add_ns(tspor3);
-    pert.add_ns(tspswap);
+	cout << endl << "ASSIGN" << endl;
+	s = s2;
 
-    IteratedLocalSearchLevels<RepTSP> ils(eval, random, VND, pert, 3, 2);
-    ils.setMessageLevel(4);
+	cout << "s2: ";
+	s2.print();
+	cout << "s: ";
+	s.print();
 
-    cout << "will run ils" << endl;
-    pair<Solution<RepTSP>&, Evaluation&>& psol = *ils.search(1000, 0, NULL, NULL);
-    eval.Minimizing = false;
-    pair<Solution<RepTSP>&, Evaluation&>& psol2 = *ils.search(1000, 99999999, NULL, NULL);
+	cout << "FINISHED!" << endl;
+	return 0;
 
-    psol.first.print();
-    psol.second.print();
+	Loader<RepTSP> optframe;
+	TSPProblemCommand tsp;
+	tsp.load("./TSP/tsplib/berlin52.txt", optframe.factory, optframe.dictionary, optframe.ldictionary);
 
-    cout << "solMin=" << eval.solMin << endl;
-    cout << "solMax=" << eval.solMax << endl;
+	CheckCommand<RepTSP> check(false);
 
-    int count = 0;
-    for (int i = eval.solMin; i <= eval.solMax; i++)
-        if (eval.solutions[i] > 0)
-            count += eval.solutions[i];
-    cout << "COUNT=" << count << endl;
+	RandGen rg;
+	RandomInitialSolutionTSP random(tsp.p, rg);
+	NearestNeighborConstructive cnn(tsp.p, rg);
+	ConstructiveBestInsertion cbi(tsp.p, rg);
+	TSPEvaluator eval(tsp.p);
+	NSEnumSwap enumswap(tsp.p, rg);
 
-    cout << "count min = " << eval.solutions[eval.solMin] << endl;
-    cout << "count max = " << eval.solutions[eval.solMax] << endl;
+	NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);
+	NSSeqTSP2Opt<int> tsp2opt;
+	NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSPOrOptk, ProblemInstance> nsseq_delta_or1(1, tsp.p);
+	NSSeqTSPOrOptk<int> tspor1(1);
+	NSSeqTSPOrOptk<int> tspor2(2);
+	NSSeqTSPOrOptk<int> tspor3(3);
+	NSSeqTSPSwap<int> tspswap;
 
-    int countun = 0;
-    for (int i = eval.solMin; i <= eval.solMax; i++)
-        if (eval.solutions[i] > 0)
-            countun++;
-    cout << "COUNT_UNIQUE=" << countun << endl;
+	check.add(random);
+	check.add(cnn);
+	check.add(cbi);
+	check.add(eval);
+	check.add(enumswap);
+	check.add(nsseq_delta_2opt);
+	check.add(tsp2opt);
+	check.add(nsseq_delta_or1);
+	check.add(tspor1);
+	check.add(tspor2);
+	check.add(tspor3);
+	check.add(tspswap);
 
-    FILE* fstat = fopen("stat.txt", "w");
-    fprintf(fstat, "x=c(");
-    for (int i = eval.solMin; i <= eval.solMax; i++)
-        if (eval.solutions[i] > 0)
-            fprintf(fstat, "%d,", i);
-    fclose(fstat);
+	//check.run(100, 10);
 
-    FILE* fstatti = fopen("stat_total_imp.txt", "w");
-    fprintf(fstatti, "x=c(");
-    for (int i = eval.solMin; i <= eval.solMax; i++)
-        if (eval.solutions[i] > 0)
-            fprintf(fstat, "%d\t%lld\t%lld\t%.5f\n,", i, eval.solNSTotal[i], eval.solNSImp[i], 100 * float(eval.solNSImp[i]) / float(eval.solNSTotal[i]));
-    fclose(fstatti);
+	BuildCommand<RepTSP> build;
+	for (unsigned i = 0; i <= 7; i++)
+	{
+		stringstream ss;
+		ss << "OptFrame:ComponentBuilder:LocalSearch:BI  OptFrame:Evaluator 0  OptFrame:NS:NSSeq " << i;
+		string name = build.run(optframe.factory, optframe.dictionary, optframe.ldictionary, ss.str());
+		cout << "BUILT: '" << name << "'" << endl;
+	}
 
-    /*
-     echo building VND
-     define vnd_list [ OptFrame:LocalSearch: 0 ,  OptFrame:LocalSearch: 1, OptFrame:LocalSearch: 2, OptFrame:LocalSearch: 3 ]
-     component.create_list $vnd_list OptFrame:LocalSearch: comp_vnd_list
-     build OptFrame:LocalSearch:VND   $Evaluator 0   $comp_vnd_list   vnd
+	vector<LocalSearch<RepTSP>*> ns_list;
+	ns_list.push_back(new BestImprovement<RepTSP>(eval, tsp2opt));
+	ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor1));
+	ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor2));
+	ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor3));
+	ns_list.push_back(new BestImprovement<RepTSP>(eval, tspswap));
 
-     %component.list
+	VariableNeighborhoodDescent<RepTSP> VND(eval, ns_list);
 
-     echo building ILS
-     build OptFrame:ComponentBuilder:SingleObjSearch:ILS:ILSLevels   $Evaluator 0    $Constructive 0    $vnd   OptFrame:ILS:LevelPert:LPlus2 0    100    8  meu_ils
+	ILSLPerturbationLPlus2<RepTSP> pert(eval, 10, tsp2opt, rg);
+	pert.add_ns(tspor1);
+	pert.add_ns(tspor2);
+	pert.add_ns(tspor3);
+	pert.add_ns(tspswap);
 
-     test 2 3 7000 7000   $Evaluator 0   $meu_ils   output.txt   solucao_saida
+	IteratedLocalSearchLevels<RepTSP> ils(eval, random, VND, pert, 3, 2);
+	ils.setMessageLevel(4);
 
-     evaluate $Evaluator 0 $solucao_saida
-     */
+	cout << "will run ils" << endl;
+	pair<Solution<RepTSP>&, Evaluation&>& psol = *ils.search(1000, 0, NULL, NULL);
+	eval.Minimizing = false;
+	//pair<Solution<RepTSP>&, Evaluation&>& psol2 = *ils.search(1000, 99999999, NULL, NULL);
+	ils.search(1000, 99999999, NULL, NULL);
 
-    cout << "Program ended successfully" << endl;
+	psol.first.print();
+	psol.second.print();
 
-    return 0;
+	cout << "solMin=" << eval.solMin << endl;
+	cout << "solMax=" << eval.solMax << endl;
+
+	int count = 0;
+	for (int i = eval.solMin; i <= eval.solMax; i++)
+		if (eval.solutions[i] > 0)
+			count += eval.solutions[i];
+	cout << "COUNT=" << count << endl;
+
+	cout << "count min = " << eval.solutions[eval.solMin] << endl;
+	cout << "count max = " << eval.solutions[eval.solMax] << endl;
+
+	int countun = 0;
+	for (int i = eval.solMin; i <= eval.solMax; i++)
+		if (eval.solutions[i] > 0)
+			countun++;
+	cout << "COUNT_UNIQUE=" << countun << endl;
+
+	FILE* fstat = fopen("stat.txt", "w");
+	fprintf(fstat, "x=c(");
+	for (int i = eval.solMin; i <= eval.solMax; i++)
+		if (eval.solutions[i] > 0)
+			fprintf(fstat, "%d,", i);
+	fclose(fstat);
+
+	FILE* fstatti = fopen("stat_total_imp.txt", "w");
+	fprintf(fstatti, "x=c(");
+	for (int i = eval.solMin; i <= eval.solMax; i++)
+		if (eval.solutions[i] > 0)
+			fprintf(fstat, "%d\t%lld\t%lld\t%.5f\n,", i, eval.solNSTotal[i], eval.solNSImp[i], 100 * float(eval.solNSImp[i]) / float(eval.solNSTotal[i]));
+	fclose(fstatti);
+
+	/*
+	 echo building VND
+	 define vnd_list [ OptFrame:LocalSearch: 0 ,  OptFrame:LocalSearch: 1, OptFrame:LocalSearch: 2, OptFrame:LocalSearch: 3 ]
+	 component.create_list $vnd_list OptFrame:LocalSearch: comp_vnd_list
+	 build OptFrame:LocalSearch:VND   $Evaluator 0   $comp_vnd_list   vnd
+
+	 %component.list
+
+	 echo building ILS
+	 build OptFrame:ComponentBuilder:SingleObjSearch:ILS:ILSLevels   $Evaluator 0    $Constructive 0    $vnd   OptFrame:ILS:LevelPert:LPlus2 0    100    8  meu_ils
+
+	 test 2 3 7000 7000   $Evaluator 0   $meu_ils   output.txt   solucao_saida
+
+	 evaluate $Evaluator 0 $solucao_saida
+	 */
+
+	cout << "Program ended successfully" << endl;
+
+	return 0;
 }

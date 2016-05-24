@@ -1,7 +1,7 @@
 all: app_TSP
 
 CC=g++
-CFLAGS=-O3 -Wall --std=c++11
+CFLAGS= -g -O0 -Wall --std=c++11
 
 app_TSP:  TSPmain.o  TSPScanner.o  TSPConstructiveBestInsertion.o  TSPDeltaMoveTSP2Opt.o  TSPDeltaMoveTSPOrOptk.o  TSPEvaluator.o  TSPNearestNeighborConstructive.o  TSPNSEnumShift.o  TSPNSEnumSwap.o  TSPProblemCommand.o  TSPProblemInstance.o  TSPRandomInitialSolution.o  
 	$(CC) $(CFLAGS) TSP*.o -o $@
@@ -9,7 +9,7 @@ app_TSP:  TSPmain.o  TSPScanner.o  TSPConstructiveBestInsertion.o  TSPDeltaMoveT
 TSPScanner.o: ../OptFrame/Scanner++/Scanner.cpp  ../OptFrame/Scanner++/Scanner.h
 	$(CC) -c $(CFLAGS) ../OptFrame/Scanner++/Scanner.cpp -o TSPScanner.o
 
-TSPmain.o: mainTSP.cpp
+TSPmain.o: mainTSP.cpp ../OptFrame/Solution.hpp
 	$(CC) -c $(CFLAGS) mainTSP.cpp -o $@
 	
 TSPConstructiveBestInsertion.o: TSP/ConstructiveBestInsertion.cpp TSP/ConstructiveBestInsertion.h

@@ -1,4 +1,4 @@
-all: examples
+all: tsp
 
 examples: tsp etii pmedcap opths svrpdsp gfp hfvrpmt modm
 

@@ -149,8 +149,8 @@ public:
 
 	Component()
 	{
-		setMessageLevel(2);
-		logdata = NULL;
+		//setMessageLevel(2);
+		//logdata = NULL;
 	}
 
 	virtual ~Component()
