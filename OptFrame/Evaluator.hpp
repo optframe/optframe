@@ -149,9 +149,9 @@ public:
 		else // need to update 's' together with reevaluation of 'e' => little faster (doesn't use updateDelta, but do reevaluation)
 		{
 			Move<R, ADS>& rev = applyMove(e, m, s);
-			pair<double, double> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
+			pair<evtype, evtype> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
 
-			vector<pair<double, double> > alternatives(e.getAlternativeCosts().size());
+			vector<pair<evtype, evtype> > alternatives(e.getAlternativeCosts().size());
 
 			for (unsigned i = 0; i < alternatives.size(); i++)
 			{
@@ -160,7 +160,7 @@ public:
 			}
 
 			Move<R, ADS>& ini = applyMove(e, rev, s);
-			pair<double, double> e_ini = make_pair(e.getObjFunction(), e.getInfMeasure());
+			pair<evtype, evtype> e_ini = make_pair(e.getObjFunction(), e.getInfMeasure());
 
 			for (unsigned i = 0; i < alternatives.size(); i++)
 			{
@@ -188,10 +188,10 @@ public:
 
 		// Difference: new - original
 
-		double obj = rev.second.getObjFunction() - ini.second.getObjFunction();
-		double inf = rev.second.getInfMeasure() - ini.second.getInfMeasure();
+		evtype obj = rev.second.getObjFunction() - ini.second.getObjFunction();
+		evtype inf = rev.second.getInfMeasure() - ini.second.getInfMeasure();
 
-		vector<pair<double, double> > alternatives(rev.second.getAlternativeCosts().size());
+		vector<pair<evtype, evtype> > alternatives(rev.second.getAlternativeCosts().size());
 
 		for (unsigned i = 0; i < alternatives.size(); i++)
 		{
@@ -226,7 +226,7 @@ public:
 	 - for minimization problems, returns a < b;
 	 - for maximization problems, returns a > b.
 	 */
-	virtual bool betterThan(double a, double b) = 0;
+	virtual bool betterThan(evtype a, evtype b) = 0;
 
 	virtual bool betterThan(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2)
 	{

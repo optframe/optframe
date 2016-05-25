@@ -21,7 +21,7 @@ TSPDeltaMoveTSP2Opt.o: TSP/DeltaMoveTSP2Opt.cpp TSP/DeltaMoveTSP2Opt.h
 TSPDeltaMoveTSPOrOptk.o: TSP/DeltaMoveTSPOrOptk.cpp TSP/DeltaMoveTSPOrOptk.h
 	$(CC) -c $(CFLAGS) TSP/DeltaMoveTSPOrOptk.cpp -o $@
 
-TSPEvaluator.o: TSP/Evaluator.cpp TSP/Evaluator.h
+TSPEvaluator.o: TSP/Evaluator.cpp TSP/Evaluator.h ../OptFrame/Evaluation.hpp ../OptFrame/Evaluator.hpp
 	$(CC) -c $(CFLAGS) TSP/Evaluator.cpp -o $@
 
 TSPNearestNeighborConstructive.o: TSP/NearestNeighborConstructive.cpp TSP/NearestNeighborConstructive.h

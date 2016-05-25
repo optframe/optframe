@@ -35,15 +35,15 @@ namespace optframe
 class MoveCost: public Component
 {
 protected:
-	double objFunction;
-	double infMeasure;
+	evtype objFunction;
+	evtype infMeasure;
 
 	bool estimated;
 
-	vector<pair<double, double> > alternatives; // for lexicographic approaches
+	vector<pair<evtype, evtype> > alternatives; // for lexicographic approaches
 
 public:
-	explicit MoveCost(double obj, double inf = 0.0, bool est = false) :
+	explicit MoveCost(evtype obj, evtype inf = 0.0, bool est = false) :
 			objFunction(obj), infMeasure(inf), estimated(est)
 	{
 	}
@@ -62,42 +62,42 @@ public:
 		return estimated;
 	}
 
-	const vector<pair<double, double> >& getAlternativeCosts() const
+	const vector<pair<evtype, evtype> >& getAlternativeCosts() const
 	{
 		return alternatives;
 	}
 
-	double getObjFunctionCost() const
+	evtype getObjFunctionCost() const
 	{
 		return objFunction;
 	}
 
-	double getInfMeasureCost() const
+	evtype getInfMeasureCost() const
 	{
 		return infMeasure;
 	}
 
-	void addAlternativeCost(const pair<double, double>& alternativeCost)
+	void addAlternativeCost(const pair<evtype, evtype>& alternativeCost)
 	{
 		alternatives.push_back(alternativeCost);
 	}
 
-	void setAlternativeCosts(const vector<pair<double, double> >& alternativeCosts)
+	void setAlternativeCosts(const vector<pair<evtype, evtype> >& alternativeCosts)
 	{
 		alternatives = alternativeCosts;
 	}
 
-	void setObjFunctionCost(double obj)
+	void setObjFunctionCost(evtype obj)
 	{
 		objFunction = obj;
 	}
 
-	void setInfMeasureCost(double inf)
+	void setInfMeasureCost(evtype inf)
 	{
 		infMeasure = inf;
 	}
 
-	double cost() const
+	evtype cost() const
 	{
 		return objFunction + infMeasure;
 	}

@@ -59,26 +59,39 @@ enum GOS
  \endportuguese
  */
 
+//#include "Util/PackTypes.hpp"
+//#define EVALUATION_TYPE PackTypes
+
+#ifndef EVALUATION_TYPE
+#define EVALUATION_TYPE double
+#endif
+
+typedef EVALUATION_TYPE evtype;
+
+// note: for multi-objective problems with distinct objective space types
+// such as (int, evtype, long long) you can use PackTypes in Utils or overload
+// manually each of the numeric operators +, -, *
+
 class Evaluation: public Component
 {
 protected:
-	// pair<double,double>: OST (Objective Space Type)
-	double objFunction;
-	double infMeasure;
+	// pair<evtype, evtype>: OST (Objective Space Type)
+	evtype objFunction;
+	evtype infMeasure;
 
 	// map<string, bool> localStatus; // mapping 'move.id()' to 'NeighborhoodStatus' TODO: REMOVE!
 	GOS gos;            // for exact methods only
 
-	vector<pair<double, double> > alternatives; // for lexicographic approaches
+	vector<pair<evtype, evtype> > alternatives; // for lexicographic approaches
 
 public:
-	Evaluation(double obj, double inf) :
+	Evaluation(evtype obj, evtype inf) :
 			objFunction(obj), infMeasure(inf)
 	{
 		gos = gos_unknown;
 	}
 
-	Evaluation(double obj)
+	Evaluation(evtype obj)
 	{
 		objFunction = obj;
 		infMeasure = 0;
@@ -97,37 +110,60 @@ public:
 	{
 	}
 
-	double getObjFunction() const
+
+	virtual Evaluation& operator=(const Evaluation& e)
+	{
+		if (&e == this) // auto ref check
+			return *this;
+
+		objFunction = e.objFunction;
+		infMeasure = e.infMeasure;
+		alternatives = e.alternatives;
+
+		gos = e.gos;
+
+		return *this;
+	}
+
+	virtual Evaluation& clone() const
+	{
+		return *new Evaluation(*this);
+	}
+
+	// end canonical part
+	// begin Evaluation methods
+
+	evtype getObjFunction() const
 	{
 		return objFunction;
 	}
 
-	double getInfMeasure() const
+	evtype getInfMeasure() const
 	{
 		return infMeasure;
 	}
 
-	const vector<pair<double, double> >& getAlternativeCosts() const
+	const vector<pair<evtype, evtype> >& getAlternativeCosts() const
 	{
 		return alternatives;
 	}
 
-	void setObjFunction(double obj)
+	void setObjFunction(evtype obj)
 	{
 		objFunction = obj;
 	}
 
-	void setInfMeasure(double inf)
+	void setInfMeasure(evtype inf)
 	{
 		infMeasure = inf;
 	}
 
-	void addAlternativeCost(const pair<double, double>& alternativeCost)
+	void addAlternativeCost(const pair<evtype, evtype>& alternativeCost)
 	{
 		alternatives.push_back(alternativeCost);
 	}
 
-	void setAlternativeCosts(const vector<pair<double, double> >& alternativeCosts)
+	void setAlternativeCosts(const vector<pair<evtype, evtype> >& alternativeCosts)
 	{
 		alternatives = alternativeCosts;
 	}
@@ -164,7 +200,7 @@ public:
 	}
 
 	// evaluation = objFunction + infMeasure
-	double evaluation() const
+	evtype evaluation() const
 	{
 		return objFunction + infMeasure;
 	}
@@ -172,8 +208,12 @@ public:
 	// leave option to rewrite tolerance
 	virtual bool isFeasible() const
 	{
-		return (abs(infMeasure) < 0.0001);
+		return (::abs(infMeasure) < 0.0001);
 	}
+
+	// ======================
+	// Object specific part
+	// ======================
 
 	static string idComponent()
 	{
@@ -211,25 +251,6 @@ public:
 		// ss << m << endl;
 
 		return ss.str();
-	}
-
-	virtual Evaluation& operator=(const Evaluation& e)
-	{
-		if (&e == this) // auto ref check
-			return *this;
-
-		objFunction = e.objFunction;
-		infMeasure = e.infMeasure;
-		alternatives = e.alternatives;
-
-		gos = e.gos;
-
-		return *this;
-	}
-
-	virtual Evaluation& clone() const
-	{
-		return *new Evaluation(*this);
 	}
 };
 

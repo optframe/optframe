@@ -118,7 +118,7 @@ public:
 				else
 				{
 					double x = rg.rand01();
-					double delta = fabs(eCurrent->evaluation() - e.evaluation());
+					double delta = ::fabs(eCurrent->evaluation() - e.evaluation());
 
 					if (x < exp(-delta / T))
 					{

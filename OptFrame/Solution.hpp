@@ -59,26 +59,22 @@ public:
 	Solution(const R& _r) :
 			r(_r), ads(nullptr)
 	{
-		cout << __PRETTY_FUNCTION__ << endl;
 	}
 
 	Solution(R&& _r) noexcept :
 			r(std::move(_r)), ads(nullptr)
 	{
-		cout << __PRETTY_FUNCTION__ << endl;
 	}
 
 
 	Solution(const R& _r, const ADS& _ads) :
 			r(_r), ads(new ADS(_ads))
 	{
-		cout << __PRETTY_FUNCTION__ << endl;
 	}
 
 	Solution(R&& _r, ADS&& _ads) noexcept :
 			r(_r), ads(new ADS(std::move(_ads)))
 	{
-		cout << __PRETTY_FUNCTION__ << endl;
 	}
 
 	Solution(const Solution<R, ADS>& s) :
@@ -99,15 +95,12 @@ public:
 	Solution(Solution<R, ADS> && s) noexcept :
 			r(std::move(s.r)), ads(s.ads)
 	{
-		cout << __PRETTY_FUNCTION__ << endl;
-		//s.r = nullptr;
 		s.ads = nullptr;
 	}
 
 	// leave option to rewrite with clone()
 	virtual Solution<R, ADS>& operator=(const Solution<R, ADS>& s)
 	{
-		cout << "hi " << __PRETTY_FUNCTION__ << endl;
 		if (&s == this) // auto ref check
 			return *this;
 
@@ -127,10 +120,11 @@ public:
 	 */
 	virtual Solution<R, ADS>& operator=(Solution<R, ADS> && s) noexcept
 	{
-		cout << __PRETTY_FUNCTION__ << endl;
+		// transform s in a rhs
 		r = std::move(s.r);
+		// steal pointer from s
 		ads = s.ads;
-		//s.r = nullptr;
+		// make sure s forgets about its ads (if it existed before)
 		s.ads = nullptr;
 
 		return *this;
@@ -138,6 +132,7 @@ public:
 
 	virtual ~Solution()
 	{
+		// if ads not null
 		if (ads)
 			delete ads;
 	}
@@ -148,6 +143,7 @@ public:
 
 	virtual Solution<R, ADS>& clone() const
 	{
+		// if ads not null
 		if (ads)
 			return *new Solution<R, ADS>(r, *ads);
 		else
@@ -157,38 +153,51 @@ public:
 	// leave option to rewrite with clone()
 	virtual void setR(const R& _r)
 	{
+		// shallow copy
 		r = _r;
 	}
 
 	// leave option to rewrite with clone()
 	virtual void setR(const R&& _r)
 	{
+		// move content from rhs param _r
 		r = std::move(_r);
 	}
 
 	// leave option to rewrite with clone()
 	virtual void setADS(const ADS& _ads)
 	{
+		// if ads not null, destroy it
 		if (ads)
 			delete ads;
+		// store a new copy of _ads
 		ads = new ADS(_ads);
 	}
 
+	bool hasADS() const
+	{
+		return ads != nullptr;
+	}
+
+	// get const reference of r
 	const R& getR() const
 	{
 		return r;
 	}
 
+	// get ADS (depends on hasADS() positive result)
 	const ADS& getADS() const
 	{
 		return *ads;
 	}
 
+	// get reference of r
 	R& getR()
 	{
 		return r;
 	}
 
+	// get ADS (depends on hasADS() positive result)
 	ADS& getADS()
 	{
 		return *ads;

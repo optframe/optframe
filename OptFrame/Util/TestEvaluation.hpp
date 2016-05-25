@@ -28,6 +28,8 @@
 
 using namespace std;
 
+/*
+
 namespace optframe
 {
 
@@ -144,5 +146,7 @@ unsigned long long TestEvaluation::ev_objects = 0;
 unsigned long long TestEvaluation::ev_objects_nodecrement = 0;
 
 }
+
+*/
 
 #endif /*OPTFRAME_TESTEVALUATION_HPP_*/

@@ -347,7 +347,7 @@ public:
 					message(lEvaluator.at(ev), -1, "testing reverse value.");
 					Evaluation& e = *evaluations.at(ev).at(id_s);
 
-					if (abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
+					if (::abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
 					{
 						error("reverse of reverse has a different evaluation value!");
 						move.print();
@@ -624,7 +624,7 @@ public:
 						message(lEvaluator.at(ev), iter, "testing reverse value.");
 						Evaluation& e = *evaluations.at(ev).at(id_s);
 
-						if (abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
+						if (::abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
 						{
 							error("reverse of reverse has a different evaluation value!");
 							move.print();
@@ -928,7 +928,7 @@ public:
 
 						message(lEvaluator.at(ev), nqs, "testing reverse value (NSSeq tests).");
 
-						if (abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
+						if (::abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
 						{
 							error("reverse of reverse has a different evaluation value!");
 							move.print();

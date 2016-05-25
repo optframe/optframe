@@ -1450,7 +1450,7 @@ public:
 
 					// I[i] dist += (I[i+1].m - I[i-1].m)/(fmax_m - fmin_m)
 					// ADAPTATION
-					I[i]->distance += abs(fitness[idx_after].first - fitness[idx_before].first) / abs(v_d[m]->max() - v_d[m]->min());
+					I[i]->distance += ::abs(fitness[idx_after].first - fitness[idx_before].first) / ::abs(v_d[m]->max() - v_d[m]->min());
 				}
 
 			} // for each front

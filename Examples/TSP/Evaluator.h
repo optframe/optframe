@@ -163,7 +163,7 @@ public:
 
     }
 
-    virtual bool betterThan(double f1, double f2)
+    virtual bool betterThan(evtype f1, evtype f2)
     {
         if (Minimizing)
             return (f1 < (f2 - TSP_EPSILON));

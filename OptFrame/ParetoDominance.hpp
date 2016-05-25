@@ -210,7 +210,7 @@ public:
 				if(v_e[e]->betterThan(*v1[e], *v2[e]))
 					better++;
 
-				if(abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
+				if(::abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
 					equals++;
 			}
 		}
@@ -228,7 +228,7 @@ public:
 				if(v_d[e]->betterThan(*v1[e], *v2[e]))
 					better++;
 
-				if(abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
+				if(::abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
 					equals++;
 			}
 		}

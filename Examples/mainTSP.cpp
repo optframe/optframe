@@ -43,6 +43,7 @@ using namespace std;
 using namespace TSP;
 using namespace scannerpp;
 
+
 /*
  class X
  {
@@ -130,7 +131,7 @@ public:
 
 	friend ostream& operator<<(ostream& os, const A& a)
 	{
-		os << "x:" << a.x;
+		os << "a:" << a.x;
 		return os;
 	}
 
@@ -169,10 +170,11 @@ Solution<A> gen()
 	//return Solution<A>(a);
 }
 
+#include "../OptFrame/Util/PackTypes.hpp"
+
 
 int main(int argc, char **argv)
 {
-
 	auto s = gen();
 
 	cout << "after return" << endl;
