@@ -108,13 +108,11 @@ public:
 		ParetoDominance<R, ADS> pDom(vdir);
 		ParetoDominanceWeak<R, ADS> pDomWeak(vdir);
 
-		for(unsigned i = 0; i < candidates.size(); i++)
+		for (unsigned i = 0; i < candidates.size(); i++)
 			addSolution(pDom, pDomWeak, nonDom, candidates[i]);
 
 		return nonDom;
 	}
-
-
 
 	// T. Lust et al (method addSolution)
 
@@ -131,12 +129,31 @@ public:
 	template<class T>
 	static bool addSolution(ParetoDominance<R, ADS>& dom, ParetoDominanceWeak<R, ADS>& domWeak, vector<T*>& nonDom, T* candidate)
 	{
-		for(int ind = 0; ind < nonDom.size(); ind++)
+		for (int ind = 0; ind < nonDom.size(); ind++)
 		{
-			if(domWeak.dominates(*nonDom.at(ind), *candidate))
+			if (domWeak.dominates(*nonDom.at(ind), *candidate))
 				return false;
 
-			if(dom.dominates(*candidate, *nonDom.at(ind)))
+			if (dom.dominates(*candidate, *nonDom.at(ind)))
+			{
+				nonDom.erase(nonDom.begin() + ind);
+				ind--;
+			}
+		}
+
+		nonDom.push_back(candidate);
+		return true;
+	}
+
+	template<class T>
+	static bool addSolution(ParetoDominance<R, ADS>& dom, ParetoDominanceWeak<R, ADS>& domWeak, vector<T>& nonDom, T candidate)
+	{
+		for (int ind = 0; ind < nonDom.size(); ind++)
+		{
+			if (domWeak.dominates(nonDom[ind], candidate))
+				return false;
+
+			if (dom.dominates(candidate, nonDom[ind]))
 			{
 				nonDom.erase(nonDom.begin() + ind);
 				ind--;
@@ -154,7 +171,7 @@ public:
 		ParetoDominance<R, ADS> pDom(vdir);
 		ParetoDominanceWeak<R, ADS> pDomWeak(vdir);
 
-		for(unsigned i = 0; i < candidates.size(); i++)
+		for (unsigned i = 0; i < candidates.size(); i++)
 			addSolution(pDom, pDomWeak, nonDom, candidates[i]);
 
 		return nonDom;
@@ -162,12 +179,12 @@ public:
 
 	static void addSolution(ParetoDominance<R, ADS>& dom, ParetoDominanceWeak<R, ADS>& domWeak, vector<pair<Solution<R>*, MultiEvaluation*> >& nonDom, pair<Solution<R>*, MultiEvaluation*> candidate)
 	{
-		for(int ind = 0; ind < nonDom.size(); ind++)
+		for (int ind = 0; ind < nonDom.size(); ind++)
 		{
-			if(domWeak.dominates(*nonDom.at(ind).second, *candidate.second))
+			if (domWeak.dominates(*nonDom.at(ind).second, *candidate.second))
 				return;
 
-			if(dom.dominates(*candidate.second, *nonDom.at(ind).second))
+			if (dom.dominates(*candidate.second, *nonDom.at(ind).second))
 			{
 				nonDom.erase(nonDom.begin() + ind);
 				ind--;
@@ -184,87 +201,105 @@ class MOMETRICS
 {
 protected:
 	vector<Evaluator<R, ADS>*> v_e;
+	ParetoDominance<R, ADS>* pDom;
+	ParetoDominanceWeak<R, ADS>* pDomWeak;
+	Pareto<R, ADS> p;
 
-	bool addSolution(vector<vector<double> >& p, vector<double>& s)
-	{
-		bool added = true;
-		for (int ind = 0; ind < p.size(); ind++)
-		{
-
-			if (weakDominates(p[ind], s))
-				return false;
-
-			if (dominates(s, p.at(ind)))
-			{
-				p.erase(p.begin() + ind); //Esta perdendo o individuo retornado,tem problema? todo
-				ind--;
-			}
-		}
-
-		if (added == true)
-			p.push_back(s);
-
-		return added;
-	}
-
-	// true if 's1' dominates 's2'
-	virtual bool weakDominates(const vector<double>& s1, const vector<double>& s2)
-	{
-
-		int better = 0;
-		int equals = 0;
-
-		for (int e = 0; e < s1.size(); e++)
-		{
-			if (v_e[e]->betterThan(s1[e], s2[e]))
-				better++;
-
-			if (abs(s1[e] - s2[e]) < 0.0001)
-				equals++;
-		}
-
-		return ((better + equals == v_e.size()));
-	}
-
-	// true if 's1' weak dominates 's2'
-	virtual bool dominates(const vector<double>& s1, const vector<double>& s2)
-	{
-
-		int better = 0;
-		int equals = 0;
-
-		for (int e = 0; e < s1.size(); e++)
-		{
-			if (v_e[e]->betterThan(s1[e], s2[e]))
-				better++;
-
-			if (abs(s1[e] - s2[e]) < 0.0001)
-				equals++;
-		}
-
-		return ((better + equals == v_e.size()) && (better > 0));
-	}
+//	bool addSolution(vector<vector<double> >& p, vector<double>& s)
+//	{
+//		bool added = true;
+//		for (int ind = 0; ind < p.size(); ind++)
+//		{
+//
+//			if (weakDominates(p[ind], s))
+//				return false;
+//
+//			if (dominates(s, p.at(ind)))
+//			{
+//				p.erase(p.begin() + ind); //Esta perdendo o individuo retornado,tem problema? todo
+//				ind--;
+//			}
+//		}
+//
+//		if (added == true)
+//			p.push_back(s);
+//
+//		return added;
+//	}
+//
+//	// true if 's1' dominates 's2'
+//	virtual bool weakDominates(const vector<double>& s1, const vector<double>& s2)
+//	{
+//
+//		int better = 0;
+//		int equals = 0;
+//
+//		for (int e = 0; e < s1.size(); e++)
+//		{
+//			if (v_e[e]->betterThan(s1[e], s2[e]))
+//				better++;
+//
+//			if (abs(s1[e] - s2[e]) < 0.0001)
+//				equals++;
+//		}
+//
+//		return ((better + equals == v_e.size()));
+//	}
+//
+//	// true if 's1' weak dominates 's2'
+//	virtual bool dominates(const vector<double>& s1, const vector<double>& s2)
+//	{
+//
+//		int better = 0;
+//		int equals = 0;
+//
+//		for (int e = 0; e < s1.size(); e++)
+//		{
+//			if (v_e[e]->betterThan(s1[e], s2[e]))
+//				better++;
+//
+//			if (abs(s1[e] - s2[e]) < 0.0001)
+//				equals++;
+//		}
+//
+//		return ((better + equals == v_e.size()) && (better > 0));
+//	}
 
 public:
 
 	MOMETRICS(vector<Evaluator<R, ADS>*> _v_e) :
 			v_e(_v_e)
 	{
-
+		pDom = new ParetoDominance<R, ADS>(v_e);
+		pDomWeak = new ParetoDominanceWeak<R, ADS>(v_e);
 	}
 
-	MOMETRICS()
-	{
-
-	}
+//	MOMETRICS()
+//	{
+//
+//	}
 
 	virtual ~MOMETRICS()
 	{
 	}
 
+	File* createFile(string filename)
+	{
+		File* file;
+
+		try
+		{
+			file = new File(filename);
+		} catch (FileNotFound& f)
+		{
+			cout << "File '" << filename << "' not found" << endl;
+			exit(1);
+		}
+		return file;
+	}
+
 	vector<vector<double> > readPF(string caminho, int nTests, int nOF)
 	{
-
 		vector<vector<double> > D;
 
 		for (int e = 0; e < nTests; e++)
@@ -272,15 +307,14 @@ public:
 			stringstream ss;
 			ss << caminho;
 
-			Scanner scanner(new File(ss.str()));
+			Scanner scanner(createFile(caminho));
 			while (scanner.hasNext())
 			{
 				vector<double> ind;
 				for (int o = 0; o < nOF; o++)
 					ind.push_back(scanner.nextDouble());
 
-
-				addSolution(D, ind);
+				p.addSolution(*pDom, *pDomWeak, D, ind);
 			}
 
 		}
@@ -293,7 +327,7 @@ public:
 		vector<vector<double> > ref = D1;
 
 		for (int ind = 0; ind < D2.size(); ind++)
-			addSolution(ref, D2[ind]);
+			p.addSolution(*pDom, *pDomWeak, ref, D2[ind]);
 
 		return ref;
 	}
@@ -305,7 +339,8 @@ public:
 		{
 			for (int j = 0; j < ref.size(); j++)
 			{
-				if (weakDominates(D[i], ref[j]))
+
+				if (pDomWeak->dominates(D[i], ref[j]))
 				{
 					card++;
 					j = ref.size();
@@ -324,7 +359,7 @@ public:
 		{
 			for (int j = 0; j < a.size(); j++)
 			{
-				bool wD = weakDominates(a[j], b[i]);
+				bool wD = pDomWeak->dominates(a[j], b[i]);
 				if (wD)
 				{
 					j = a.size();
