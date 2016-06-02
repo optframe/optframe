@@ -46,6 +46,7 @@ private:
 	RandGen& rg;
 	int levelMax;
 	int iterMax;
+	Pareto<R, ADS> pfMethod;
 
 public:
 	//using HTrajectory<R, ADS>::exec; // prevents name hiding
@@ -53,8 +54,6 @@ public:
 	MOVNSLevels(vector<Evaluator<R, ADS>*> _v_e, InitialPopulation<R, ADS>& _init_pop, int _init_pop_size, vector<NSSeq<R, ADS>*> _neighbors, RandGen& _rg, int _iterMax, int _levelMax) :
 			v_e(_v_e), init_pop(_init_pop), init_pop_size(_init_pop_size), neighbors(_neighbors), rg(_rg), pDominance(ParetoDominance<R, ADS>(_v_e)), pDominanceWeak(ParetoDominanceWeak<R, ADS>(_v_e))
 	{
-		////pDominance.insertEvaluators(_v_e);
-		////pDominanceWeak.insertEvaluators(_v_e);
 		levelMax = _levelMax;
 		iterMax = _iterMax;
 	}
@@ -95,7 +94,7 @@ public:
 		for (int ind = 0; ind < p_0.size(); ind++)
 		{
 			Solution<R, ADS>& s = p_0.at(ind).clone();
-			if (!addSolution(D, s))
+			if (!pfMethod.addSolution(pDominance, pDominanceWeak, D, s))
 				delete &s;
 		}
 		cout << "Initial efficient set size = " << D.size() << endl;
@@ -173,7 +172,7 @@ public:
 					delete mov_rev;
 					delete move;
 
-					bool added = addSolution(D, s2);
+					bool added = pfMethod.addSolution(pDominance, pDominanceWeak, D, s2);
 					if (added)
 					{
 						cout << "New solution added to the pareto front! \t ";
@@ -264,48 +263,6 @@ public:
 		}
 
 		return move;
-	}
-
-	bool addSolution(Population<R, ADS>& p, Solution<R, ADS>& s)
-	{
-		vector<double> fitnessNewInd;
-
-		for (int evalIndex = 0; evalIndex < v_e.size(); evalIndex++)
-		{
-			Evaluation &e = v_e[evalIndex]->evaluate(s);
-
-			if (!e.isFeasible())
-			{
-				delete &e;
-				return false;
-			}
-
-			fitnessNewInd.push_back(e.evaluation());
-			delete &e;
-		}
-
-		bool added = true;
-		for (int ind = 0; ind < p.size(); ind++)
-		{
-
-			vector<double> popIndFitness = p.getFitness(ind);
-			if (pDominanceWeak.dominates(popIndFitness, fitnessNewInd))
-				return false;
-
-			if (pDominance.dominates(fitnessNewInd, popIndFitness))
-				delete &p.remove(ind);
-
-//			if (pDominanceWeak.dominates(p.at(ind), s))
-//				return false;
-//
-//			if (pDominance.dominates(s, p.at(ind)))
-//				delete &p.remove(ind);
-
-		}
-		if (added == true)
-			p.push_back(s, fitnessNewInd);
-
-		return added;
 	}
 
 };

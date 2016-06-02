@@ -164,6 +164,95 @@ public:
 		return true;
 	}
 
+	static bool addSolution(ParetoDominance<R, ADS>& dom, ParetoDominanceWeak<R, ADS>& domWeak, Population<R, ADS>& p, Solution<R, ADS>& s)
+	{
+		vector<Evaluator<R, ADS>*> v_e = dom.getEvaluators();
+		vector<double> fitnessNewInd;
+
+		for (int evalIndex = 0; evalIndex < v_e.size(); evalIndex++)
+		{
+			Evaluation &e = v_e[evalIndex]->evaluate(s);
+
+			if (!e.isFeasible())
+			{
+				delete &e;
+				return false;
+			}
+
+			fitnessNewInd.push_back(e.evaluation());
+			delete &e;
+		}
+
+		bool added = true;
+		for (int ind = 0; ind < p.size(); ind++)
+		{
+
+			vector<double> popIndFitness = p.getFitness(ind);
+			if (domWeak.dominates(popIndFitness, fitnessNewInd))
+				return false;
+
+			if (dom.dominates(fitnessNewInd, popIndFitness))
+			{
+				delete &p.remove(ind);
+				ind--;
+			}
+
+		}
+		if (added == true)
+			p.push_back(s, fitnessNewInd);
+
+		return added;
+	}
+
+	//Special addSolution used in the 2PPLS speedUp
+	static bool addSolution(ParetoDominance<R, ADS>& dom, ParetoDominanceWeak<R, ADS>& domWeak, pair<Population<R, ADS>, vector<vector<bool> > >& p, Solution<R, ADS>& s, int neighboorsSize)
+	{
+		vector<Evaluator<R, ADS>*> v_e = dom.getEvaluators();
+		vector<double> fitnessNewInd;
+
+		for (int evalIndex = 0; evalIndex < v_e.size(); evalIndex++)
+		{
+			Evaluation &e = v_e[evalIndex]->evaluate(s);
+
+			if (!e.isFeasible())
+			{
+				delete &e;
+				return false;
+			}
+
+			fitnessNewInd.push_back(e.evaluation());
+			delete &e;
+		}
+
+		bool added = true;
+		for (int ind = 0; ind < p.first.size(); ind++)
+		{
+
+			vector<double> popIndFitness = p.first.getFitness(ind);
+			if (domWeak.dominates(popIndFitness, fitnessNewInd))
+				return false;
+
+			if (dom.dominates(fitnessNewInd, popIndFitness))
+			{
+				delete &p.first.remove(ind);
+				p.second.erase(p.second.begin() + ind);
+				ind--;
+			}
+
+		}
+
+		if (added == true)
+		{
+			p.first.push_back(s, fitnessNewInd);
+			vector<bool> neigh;
+			for (int n = 0; n < neighboorsSize; n++)
+				neigh.push_back(false);
+			p.second.push_back(neigh);
+		}
+
+		return added;
+	}
+
 	static vector<pair<Solution<R>*, MultiEvaluation*> > filterDominated(vector<Direction*>& vdir, const vector<pair<Solution<R>*, MultiEvaluation*> >& candidates)
 	{
 		vector<pair<Solution<R>*, MultiEvaluation*> > nonDom;
@@ -276,7 +365,7 @@ public:
 
 	MOMETRICS()
 	{
-		cout << "Be carefull, some methods of MOMETRICS might results in error! pDom and pDomWeak were not initialized." << endl;
+		cout << "Be careful, some methods of MOMETRICS might results in error! \n pDom and pDomWeak were not initialized." << endl;
 	}
 
 	virtual ~MOMETRICS()
@@ -671,4 +760,3 @@ public:
 }
 
 #endif /* OPTFRAME_MULTI_OBJ_SEARCH_HPP_ */
-
