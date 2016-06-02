@@ -210,6 +210,158 @@ public:
 		return sCover;
 	}
 
+double deltaMetric(vector<vector<double> > pareto, vector<double> utopicEval)
+	{
+
+		vector<double> vDist;
+
+		int nObj = utopicEval.size();
+		int nSol = pareto.size();
+		vector<double> minEval(nObj, 1000000);
+		double dMean = 0;
+		for (int nS = 0; nS < nSol; nS++)
+		{
+			//vector with the evaluation of solution nS
+			vector<double> eval = pareto[nS];
+			for (int e = 0; e < nObj; e++)
+			{
+				if (eval[e] < minEval[e])
+					minEval[e] = eval[e];
+			}
+
+			double minDist = 10000000;
+			for (int nS2 = 0; nS2 < pareto.size(); nS2++)
+			{
+				double dist = 0;
+				if (nS2 != nS)
+				{
+					vector<double> eval2 = pareto[nS2];
+					for (int e = 0; e < nObj; e++)
+						dist += pow(eval[e] - eval2[e], 2);
+					dist = sqrt(dist);
+					if (dist < minDist)
+						minDist = dist;
+				}
+
+			}
+
+			vDist.push_back(minDist);
+			dMean += minDist;
+
+		}
+		dMean /= nSol;
+
+		double dUtopic = 0;
+		for (int e = 0; e < nObj; e++)
+		{
+			dUtopic += pow(minEval[e] - utopicEval[e], 2);
+			//cout<<minEval[e]<<endl;
+			//cout<<utopicEval[e]<<endl;
+		}
+
+		dUtopic = sqrt(dUtopic);
+		//cout<<dUtopic<<endl;
+		//getchar();
+
+		double sumDist = 0;
+		for (int nS = 0; nS < nSol; nS++)
+		{
+			sumDist += vDist[nS] - dMean;
+		}
+
+		double delta = (dUtopic + sumDist) / (nSol * dMean + dUtopic);
+		return delta;
+		//cout << "delta = " << delta << endl;
+		//getchar();
+
+	}
+	double spacing(vector<vector<double> > a)
+	{
+		double ss = 0;
+		vector<double> distMin;
+		int N = a.size();
+		int m = a[0].size();
+		for (int i = 0; i < a.size(); i++)
+		{
+			double di = 100000000;
+
+			for (int j = 0; j < a.size(); j++)
+			{
+				if (i != j)
+				{
+					double diMin = 0;
+					for (int eval = 0; eval < m; eval++)
+						diMin += abs(a[i][eval] - a[j][eval]);
+
+					if (diMin < di)
+						di = diMin;
+				}
+			}
+			distMin.push_back(di);
+		}
+
+		double dMean = 0;
+
+		for (int i = 0; i < N; i++)
+			dMean += distMin[i];
+
+		dMean = dMean / N;
+
+		for (int i = 0; i < N; i++)
+			ss += pow(distMin[i] - dMean, 2);
+
+		ss = ss / N;
+		ss = sqrt(ss);
+
+		return ss;
+	}
+
+	vector<double> spacing2(vector<vector<vector<double> > > D)
+	{
+		vector<double> spacings;
+		for (int frente = 0; frente < D.size(); frente++)
+		{
+			vector<vector<double> > a = D[frente];
+			double ss = 0;
+			vector<double> distMin;
+			int N = a.size();
+			int m = a[0].size();
+			for (int i = 0; i < a.size(); i++)
+			{
+				double di = 100000000;
+
+				for (int j = 0; j < a.size(); j++)
+				{
+					if (i != j)
+					{
+						double diMin = 0;
+						for (int eval = 0; eval < m; eval++)
+							diMin += abs(a[i][eval] - a[j][eval]);
+
+						if (diMin < di)
+							di = diMin;
+					}
+				}
+				distMin.push_back(di);
+			}
+
+			double dMean = 0;
+
+			for (int i = 0; i < N; i++)
+				dMean += distMin[i];
+
+			dMean = dMean / N;
+
+			for (int i = 0; i < N; i++)
+				ss += pow(distMin[i] - dMean, 2);
+
+			ss = ss / N;
+			ss = sqrt(ss);
+			spacings.push_back(ss);
+		}
+		return spacings;
+	}
+
 };
 
 #endif /*OPTFRAME_MOMETRICS_HPP_*/
