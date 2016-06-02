@@ -55,7 +55,10 @@ protected:
 				return false;
 
 			if (dominates(s, p.at(ind)))
+			{
 				p.erase(p.begin() + ind); //Esta perdendo o individuo retornado,tem problema? todo
+				ind--;
+			}
 		}
 
 		if (added == true)
