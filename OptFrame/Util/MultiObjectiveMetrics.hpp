@@ -39,11 +39,11 @@
 
 using namespace std;
 
-template<class R, class DS = OPTFRAME_DEFAULT_MEMORY>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class UnionNDSets
 {
 protected:
-	vector<Evaluator<R, DS >*> v_e;
+	vector<Evaluator<R, ADS>*> v_e;
 
 	bool addSolution(vector<vector<double> >& p, vector<double>& s)
 	{
@@ -68,7 +68,7 @@ protected:
 	}
 
 	// true if 's1' dominates 's2'
-	virtual bool weakDominates(vector<double>& s1, const vector<double>& s2)
+	virtual bool weakDominates(const vector<double>& s1, const vector<double>& s2)
 	{
 
 		int better = 0;
@@ -87,7 +87,7 @@ protected:
 	}
 
 	// true if 's1' weak dominates 's2'
-	virtual bool dominates(vector<double>& s1, const vector<double>& s2)
+	virtual bool dominates(const vector<double>& s1, const vector<double>& s2)
 	{
 
 		int better = 0;
@@ -107,8 +107,8 @@ protected:
 
 public:
 
-	UnionNDSets(vector<Evaluator<R, DS >*> _v_e) :
-		v_e(_v_e)
+	UnionNDSets(vector<Evaluator<R, ADS>*> _v_e) :
+			v_e(_v_e)
 	{
 
 	}
@@ -122,7 +122,7 @@ public:
 	{
 	}
 
-	vector<vector<double> > unionSets(string caminho, int nTests)
+	vector<vector<double> > readPF(string caminho, int nTests, int nOF)
 	{
 
 		vector<vector<double> > D;
@@ -132,17 +132,13 @@ public:
 			stringstream ss;
 			ss << caminho;
 
-
 			Scanner scanner(new File(ss.str()));
 			while (scanner.hasNext())
 			{
-				double eval1 = scanner.nextDouble();
-				double eval2 = scanner.nextDouble();
-				double eval3 = scanner.nextDouble();
 				vector<double> ind;
-				ind.push_back(eval1);
-				ind.push_back(eval2);
-				ind.push_back(eval3);
+				for (int o = 0; o < nOF; o++)
+					ind.push_back(scanner.nextDouble());
+
 
 				addSolution(D, ind);
 			}
@@ -154,7 +150,6 @@ public:
 
 	vector<vector<double> > unionSets(vector<vector<double> > D1, vector<vector<double> > D2)
 	{
-
 		vector<vector<double> > ref = D1;
 
 		for (int ind = 0; ind < D2.size(); ind++)
@@ -170,14 +165,11 @@ public:
 		{
 			for (int j = 0; j < ref.size(); j++)
 			{
-				int equal = 0;
-				for (int eval = 0; eval < D[0].size(); eval++)
+				if (weakDominates(D[i], ref[j]))
 				{
-					if (D[i][eval] == ref[j][eval])
-						equal++;
-				}
-				if (equal == D[0].size())
 					card++;
+					j = ref.size();
+				}
 			}
 		}
 
@@ -210,7 +202,7 @@ public:
 		return sCover;
 	}
 
-double deltaMetric(vector<vector<double> > pareto, vector<double> utopicEval)
+	double deltaMetric(vector<vector<double> > pareto, vector<double> utopicEval)
 	{
 
 		vector<double> vDist;
@@ -275,6 +267,7 @@ double deltaMetric(vector<vector<double> > pareto, vector<double> utopicEval)
 		//getchar();
 
 	}
+
 	double spacing(vector<vector<double> > a)
 	{
 		double ss = 0;
@@ -362,6 +355,72 @@ double deltaMetric(vector<vector<double> > pareto, vector<double> utopicEval)
 		return spacings;
 	}
 
+	char* execCommand(const char* command)
+	{
+
+		FILE* fp;
+		char* line = NULL;
+		// Following initialization is equivalent to char* result = ""; and just
+		// initializes result to an empty string, only it works with
+		// -Werror=write-strings and is so much less clear.
+		char* result = (char*) calloc(1, 1);
+		size_t len = 0;
+
+		fflush(NULL);
+		fp = popen(command, "r");
+		if (fp == NULL)
+		{
+			printf("Cannot execute command:\n%s\n", command);
+			return NULL;
+		}
+
+		while (getline(&line, &len, fp) != -1)
+		{
+			// +1 below to allow room for null terminator.
+			result = (char*) realloc(result, strlen(result) + strlen(line) + 1);
+			// +1 below so we copy the final null terminator.
+			strncpy(result + strlen(result), line, strlen(line) + 1);
+			free(line);
+			line = NULL;
+		}
+
+		fflush(fp);
+		if (pclose(fp) != 0)
+		{
+			perror("Cannot close stream.\n");
+		}
+
+		return result;
+	}
+
+	double hipervolumeWithExecRequested(vector<vector<double> > v, vector<double> refPoints)
+	{
+		int nSol = v.size();
+		int nObj = v[0].size();
+		string tempFile = "tempFileHipervolueFunc";
+		FILE* fTempHV = fopen(tempFile.c_str(), "w");
+
+		for (int s = 0; s < nSol; s++)
+		{
+			for (int o = 0; o < nObj; o++)
+			{
+				fprintf(fTempHV, "%.7f\t", v[s][o]);
+			}
+			fprintf(fTempHV, "\n");
+		}
+
+		fclose(fTempHV);
+		stringstream ss;
+		ss << "./hv\t -r \"";
+		for (int o = 0; o < nObj; o++)
+			ss << refPoints[o] << " ";
+		ss << "\" \t" << tempFile.c_str();
+		string hvValueString = execCommand(ss.str().c_str());
+		double hvValue = atof(hvValueString.c_str());
+		return hvValue;
+	}
+
 };
 
 #endif /*OPTFRAME_MOMETRICS_HPP_*/
+
