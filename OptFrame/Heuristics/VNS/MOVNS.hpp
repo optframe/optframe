@@ -45,20 +45,19 @@ private:
 	ParetoDominance<R, ADS> pDominance;
 	ParetoDominanceWeak<R, ADS> pDominanceWeak;
 	RandGen& rg;
+	Pareto<R, ADS> pfMethod;
 
 public:
 
 	MOVNS(vector<Evaluator<R, ADS>*> _v_e, vector<NSSeq<R, ADS>*> _neighbors, RandGen& _rg) :
-		v_e(_v_e), neighbors(_neighbors), rg(_rg)
+			v_e(_v_e), neighbors(_neighbors), rg(_rg), pDominance(ParetoDominance<R, ADS>(_v_e)), pDominanceWeak(ParetoDominanceWeak<R, ADS>(_v_e))
 	{
-		pDominance.insertEvaluators(_v_e);
-		pDominanceWeak.insertEvaluators(_v_e);
+
 	}
 
 	virtual ~MOVNS()
 	{
 	}
-
 
 	virtual void exec(Population<R, ADS>& p_0, FitnessValues& e_pop, double timelimit, double target_f)
 	{
@@ -70,10 +69,10 @@ public:
 		for (int ind = 0; ind < p_0.size(); ind++)
 		{
 			Solution<R, ADS>& s = p_0.at(ind).clone();
-			if (!addSolution(D, s))
+			if (!pfMethod.addSolution(pDominance, pDominanceWeak, D, s))
 				delete &s;
 		}
-		cout << "Number of Inicial Non-Dominated solutions = "<<D.size()<<endl;
+		cout << "Number of Inicial Non-Dominated solutions = " << D.size() << endl;
 
 		vector<bool> visited;
 		for (int ind = 0; ind < D.size(); ind++)
@@ -101,7 +100,7 @@ public:
 			delete &mov_rev;
 
 			NSIterator<R, ADS>& it = neighbors[neigh]->getIterator(s1.getR());
-			it.first();//Primeiro vizinho
+			it.first(); //Primeiro vizinho
 
 			//verifica se existe vizinho a ser gerado
 			if (it.isDone())
@@ -120,7 +119,8 @@ public:
 					delete &mov_rev;
 					delete move;
 
-					bool added = addSolution(D, s2);
+					bool added = pfMethod.addSolution(pDominance, pDominanceWeak, D, s2);
+
 					if (added)
 						cout << "Sol ADCIONADA NA POOL" << endl;
 					delete &s2;
@@ -177,33 +177,6 @@ public:
 		}
 
 		return move;
-	}
-
-	bool addSolution(Population<R, ADS>& p, Solution<R, ADS>& s)
-	{
-		Evaluation& e = v_e[0]->evaluate(s);
-		if (!e.isFeasible())
-		{
-			delete &e;
-			return false;
-		}
-		delete &e;
-
-		bool added = true;
-		for (int ind = 0; ind < p.size(); ind++)
-		{
-
-			if (pDominanceWeak.dominates(p.at(ind), s))
-				return false;
-
-			if (pDominance.dominates(s, p.at(ind)))
-				delete &p.remove(ind);
-
-		}
-		if (added == true)
-			p.push_back(s);
-
-		return added;
 	}
 
 };
