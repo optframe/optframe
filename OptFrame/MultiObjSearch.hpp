@@ -274,10 +274,10 @@ public:
 		pDomWeak = new ParetoDominanceWeak<R, ADS>(v_e);
 	}
 
-//	MOMETRICS()
-//	{
-//
-//	}
+	MOMETRICS()
+	{
+		cout << "Be carefull, some methods of MOMETRICS might results in error! pDom and pDomWeak were not initialized." << endl;
+	}
 
 	virtual ~MOMETRICS()
 	{
