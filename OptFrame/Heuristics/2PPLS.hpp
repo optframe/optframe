@@ -43,7 +43,6 @@ private:
 	int init_pop_size;
 	ParetoDominance<R, ADS> pDominance;
 	ParetoDominanceWeak<R, ADS> pDominanceWeak;
-	Pareto<R, ADS> pfBegin;
 
 public:
 
@@ -89,23 +88,50 @@ public:
 	{
 		Timer tnow;
 
-		cout << "exec: Two Phase Pareto Local Search " << endl;
+		cout << "exec: Two Phase Pareto Local Search (tL:" << timelimit << ")" << endl;
 		int r = neighbors.size();
 
-		Population<R, ADS> p_0 = init_pop.generatePopulation(init_pop_size);
+		Pareto<R, ADS> p_0;
 
-		pair<Population<R, ADS>, vector<vector<bool> > > x_e;
-		for (int ind = 0; ind < p_0.size(); ind++)
+		if (_pf == NULL)
 		{
-			Solution<R, ADS>& s = p_0.at(ind).clone();
-			if (!pfBegin.addSolution(pDominance,pDominanceWeak,x_e, s,neighbors.size()));
-				delete &s;
+			cout << "Creating initial population using a constructive method..." << endl;
+			Population<R, ADS> tempPop = init_pop.generatePopulation(init_pop_size);
+
+			for (int ind = 0; ind < tempPop.size(); ind++)
+			{
+				Solution<R, ADS>* s = &tempPop.at(ind).clone();
+				if (!p_0.addSolution(pDominance, pDominanceWeak, p_0, s))
+					delete s;
+
+			}
+
+			cout << "Population generated with " << p_0.size() << " individuals" << endl;
+		}
+		else
+		{
+			cout << "Extracting Pareto _pf ..." << endl;
+//			vector<Solution<R, ADS>*> tempPop = _pf->getParetoSet();
+//			for (int i = 0; i < tempPop.size(); i++)
+//				p_0.push_back(tempPop[i]);
+			p_0 = *_pf;
+			cout << "Population extracted with " << p_0.size() << " individuals" << endl;
 		}
 
-		Population<R, ADS> p = x_e.first;
-		Population<R, ADS> p_a;
+		pair<Pareto<R, ADS>, vector<vector<bool> > > x_e;
+		Pareto<R, ADS> p;
+		Pareto<R, ADS> p_a;
+		for (int ind = 0; ind < p_0.size(); ind++)
+		{
+			Solution<R, ADS>* s = &p_0.getNonDominatedSol(ind).clone();
+			if (!p_0.addSolution(pDominance, pDominanceWeak, x_e, s, neighbors.size()))
+				delete s;
+		}
+		p = x_e.first;
+		p_0.clear();
 
-		cout << "Number of Inicial Non-Dominated solutions = " << x_e.first.size() << endl;
+
+		cout << "Number of Inicial non-dominated solutions = " << x_e.first.size() << endl;
 
 //		for (int i = 0; i < x_e.first.size(); i++)
 //		{
@@ -121,7 +147,7 @@ public:
 		{
 			cout << "k = " << k << endl;
 
-			//Marca como visitados todos os vizinhos adcionados recentemente
+			//Marca como visitados todos os vizinhos que serao visitados
 			for (int pareto = 0; pareto < x_e.first.size(); pareto++)
 			{
 				int lastAdded = x_e.second.size() - pareto - 1;
@@ -133,7 +159,7 @@ public:
 			{
 				//cout<<"2PPLS ind= "<<ind<<endl;
 
-				NSIterator<R, ADS>& it = neighbors[k - 1]->getIterator(p.at(ind));
+				NSIterator<R, ADS>& it = neighbors[k - 1]->getIterator(p.getNonDominatedSol(ind));
 				it.first();		//Primeiro vizinho
 
 				//verifica se existe vizinho a ser gerado
@@ -143,29 +169,29 @@ public:
 				}
 				else
 				{
-					Move<R, ADS>* move = geraMovimentoValido(it, p.at(ind));
+					Move<R, ADS>* move = geraMovimentoValido(it, p.getNonDominatedSol(ind));
 
-					while ((!it.isDone()) && (move->canBeApplied(p.at(ind))))
+					while ((!it.isDone()) && (move->canBeApplied(p.getNonDominatedSol(ind))))
 					{
-						Solution<R, ADS>& s = p.at(ind).clone();
-						Move<R, ADS>* mov_rev = move->apply(s);
+						Solution<R, ADS>* s = &p.getNonDominatedSol(ind).clone();
+						Move<R, ADS>* mov_rev = move->apply(*s);
 
 						delete mov_rev;
 						delete move;
 
-						if (!pDominanceWeak.dominates(p.at(ind), s))
-						{
-							bool added = pfBegin.addSolution(pDominance,pDominanceWeak,x_e, s,neighbors.size());
+//						if (!pDominanceWeak.dominates(p.at(ind), s))
+//						{
+						bool added = p.addSolution(pDominance, pDominanceWeak, x_e, s, neighbors.size());
 
-							if (added)
-								pfBegin.addSolution(pDominance,pDominanceWeak, p_a, s);
-						}
+						if (added)
+							p.addSolution(pDominance, pDominanceWeak, p_a, s);
+//						}
 
-						delete &s;
+						delete s;
 
 						it.next();
 						if (!it.isDone())
-							move = geraMovimentoValido(it, p.at(ind));
+							move = geraMovimentoValido(it, p.getNonDominatedSol(ind));
 
 					}
 				}
@@ -242,7 +268,7 @@ public:
 				p.clear(); // verificar se pode-se limpar a populacao p
 				p = x_e.first;
 
-				//speed-up
+				//speed-up - Thibauuuut Lust - Nice guy
 				if (k <= r)
 				{
 
@@ -251,7 +277,7 @@ public:
 					{
 						if (x_e.second[i][k - 1] == true)
 						{
-							delete &p.remove(i - removed);
+							p.remove(i - removed);
 							removed++;
 						}
 					}
@@ -260,50 +286,50 @@ public:
 			}
 		}
 
-		p_0 = x_e.first;
+//		p = x_e.first;
 
-		for (int i = 0; i < p_0.size(); i++)
-		{
-			for (int j = 0; j < p_0.size(); j++)
-			{
-				if ((i != j) && pDominanceWeak.dominates(p_0.at(i), p_0.at(j)))
-				{
-					cout << "ERRO DOMINANCIA" << endl;
-					getchar();
-				}
-			}
-		}
+//		for (int i = 0; i < p_0.size(); i++)
+//		{
+//			for (int j = 0; j < p_0.size(); j++)
+//			{
+//				if ((i != j) && pDominanceWeak.dominates(p_0.at(i), p_0.at(j)))
+//				{
+//					cout << "ERRO DOMINANCIA" << endl;
+//					getchar();
+//				}
+//			}
+//		}
+//
+//		vector<Evaluator<R, ADS>*>* _v_e = mev.getEvaluators();
+//		if (!_v_e)
+//		{
+//			cout << "2PPLS::search error: not using separated evaluators!" << endl;
+//			exit(1);
+//		}
+//
+//		vector<Evaluator<R, ADS>*> v_e(*_v_e);
+//		delete _v_e;
 
-		vector<Evaluator<R, ADS>*>* _v_e = mev.getEvaluators();
-		if (!_v_e)
-		{
-			cout << "2PPLS::search error: not using separated evaluators!" << endl;
-			exit(1);
-		}
-
-		vector<Evaluator<R, ADS>*> v_e(*_v_e);
-		delete _v_e;
-
-		Pareto<R, ADS>* pf = new Pareto<R, ADS>;
-
-		for (unsigned i = 0; i < p_0.size(); i++)
-		{
-			Solution<R, ADS>* s = &p_0.at(i);
-
-			vector<Evaluation*> e;
-			for (unsigned ev = 0; ev < v_e.size(); ev++)
-			{
-				Evaluator<R, ADS>* evtr = v_e[ev];
-				//evtr->evaluate(s);
-				Evaluation& e1 = evtr->evaluate(*s);
-				e.push_back(&e1);
-			}
-			pf->push_back(s, e);
-		}
+//		Pareto<R, ADS>* pf = new Pareto<R, ADS>;
+//
+//		for (unsigned i = 0; i < p_0.size(); i++)
+//		{
+//			Solution<R, ADS>* s = &p_0.at(i);
+//
+//			vector<Evaluation*> e;
+//			for (unsigned ev = 0; ev < v_e.size(); ev++)
+//			{
+//				Evaluator<R, ADS>* evtr = v_e[ev];
+//				//evtr->evaluate(s);
+//				Evaluation& e1 = evtr->evaluate(*s);
+//				e.push_back(&e1);
+//			}
+//			pf->push_back(s, e);
+//		}
 
 		cout << "Two Phase Pareto Local Search Finished" << endl;
 
-		return pf;
+		return new Pareto<R, ADS>(x_e.first);
 	}
 
 	Move<R, ADS>* geraMovimentoValido(NSIterator<R, ADS>& it, Solution<R, ADS>& s)
@@ -335,7 +361,7 @@ public:
 		return move;
 	}
 
-
 };
 
 #endif /*TWOPHASEPARETOLOCALSEARCHPPLS_HPP_*/
+
