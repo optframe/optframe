@@ -168,6 +168,7 @@ public:
 		return *new MultiEvaluation(*this);
 	}
 
+
 	void clearNoKill()
 	{
 		this->vev.clear();

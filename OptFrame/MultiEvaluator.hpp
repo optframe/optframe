@@ -148,13 +148,11 @@ public:
 		return *nev;
 	}
 
-public:
 	void evaluate(MultiEvaluation& mev, const Solution<R, ADS>& s)
 	{
 		evaluate(mev, s.getR(), s.getADS());
 	}
 
-protected:
 	virtual void evaluate(MultiEvaluation& mev, const R& r, const ADS& ads)
 	{
 		for (unsigned i = 0; i < sngEvaluators.size(); i++)
@@ -163,6 +161,8 @@ protected:
 		}
 
 	}
+
+protected:
 
 	// ============= Component ===============
 	virtual bool compatible(string s)

@@ -47,7 +47,7 @@ class Pareto
 {
 private:
 	vector<Solution<R, ADS>*> paretoSet;
-	vector<vector<Evaluation*> > paretoFront;
+	vector<MultiEvaluation*> paretoFront;
 
 public:
 
@@ -62,18 +62,16 @@ public:
 	void push_back(Solution<R, ADS>* s, vector<Evaluation*>& v_e)
 	{
 		paretoSet.push_back(&s->clone()); // clone, otherwise it is deleted
-		vector<Evaluation*> v_eNew;
-		for (unsigned i = 0; i < v_e.size(); i++)
-			v_eNew.push_back(&v_e[i]->clone());
-		paretoFront.push_back(v_eNew);
+		MultiEvaluation* tempMev = new MultiEvaluation(v_e);
+		paretoFront.push_back(tempMev);
 	}
 
 	void push_back(Solution<R, ADS>* s, MultiEvaluation* mev)
 	{
 		paretoSet.push_back(&s->clone()); //TODO clone
-		vector<Evaluation*> v_e = mev->getCloneVector();
-		paretoFront.push_back(v_e);
-		delete mev;
+		MultiEvaluation* tempMev = new MultiEvaluation(mev->getVector());
+		paretoFront.push_back(tempMev);
+//		delete mev;
 	}
 
 //	void push_backClone(Solution<R, ADS>* s, vector<Evaluation*> v_eOld)
@@ -109,7 +107,7 @@ public:
 		return paretoSet;
 	}
 
-	vector<vector<Evaluation*> > getParetoFront()
+	vector<MultiEvaluation*> getParetoFront()
 	{
 		return paretoFront;
 	}
@@ -129,22 +127,34 @@ public:
 		return *paretoSet[ind];
 	}
 
-	vector<Evaluation*> getIndEvaluations(int ind)
+	Solution<R, ADS>& getCloneNonDominatedSol(int ind) const
 	{
-		return paretoFront[ind];
+		return paretoSet[ind]->clone();
 	}
 
-	Evaluation& getIndEvaluation(int ind, int e)
+	MultiEvaluation& getIndEvaluations(int ind)
 	{
-		return *paretoFront.at(ind).at(e);
+		return *paretoFront[ind];
 	}
+
+	MultiEvaluation& getCloneIndEvaluations(int ind) const
+	{
+		MultiEvaluation* mev = new MultiEvaluation(paretoFront[ind]->getVector());
+
+		return *mev;
+	}
+
+//	Evaluation& getIndEvaluation(int ind, int e)
+//	{
+//		return *paretoFront.at(ind).at(e);
+//	}
 
 	void remove(unsigned pos)
 	{
 //		cout<<"error on remove..."<<endl;
 		delete paretoSet[pos];
-		for (int e = 0; e < paretoFront[pos].size(); e++)
-			delete paretoFront[pos][e];
+		for (int e = 0; e < paretoFront[pos]->size(); e++)
+			delete &paretoFront[pos][e];
 		paretoSet.erase(paretoSet.begin() + pos);
 		paretoFront.erase(paretoFront.begin() + pos);
 //		cout<<"revemod finished.."<<endl;
@@ -156,43 +166,25 @@ public:
 	}
 
 	//How to change P to const ? TODO
-	virtual Pareto<R, ADS>& operator=(Pareto<R, ADS>& p)
+
+	virtual Pareto<R, ADS>& operator=(const Pareto<R, ADS>& pCopy)
 	{
-		if (&p == this) // auto ref check
+		if (&pCopy == this) // auto ref check
 			return *this;
 
 		this->paretoSet.clear();
 		this->paretoFront.clear();
 
-		unsigned sizeNewPop = p.paretoSet.size();
+		unsigned sizeNewPop = pCopy.paretoSet.size();
 		for (unsigned i = 0; i < sizeNewPop; i++)
 		{
 
-			Solution<R, ADS>& sNew = p.getNonDominatedSol(i);
-			if (&sNew) // If no NULL pointing.
-			{
-				this->paretoSet.push_back(new Solution<R, ADS>(sNew));
-			}
-			else
-			{
-				this->paretoSet.push_back(NULL);
-			}
+			Solution<R, ADS>& sNew = pCopy.getCloneNonDominatedSol(i);
+			this->paretoSet.push_back(&sNew);
 
-			for (int e = 0; e < p.paretoFront.at(i).size(); e++)
-			{
-				vector<Evaluation*> vENew;
-				Evaluation& newEval = p.getIndEvaluation(i, e);
-				if (&newEval) // If no NULL pointing.
-				{
-					vENew.push_back(new Evaluation(newEval));
-				}
-				else
-				{
-					vENew.push_back(NULL);
-				}
-				paretoFront.push_back(vENew);
-			}
+			MultiEvaluation& mev = pCopy.getCloneIndEvaluations(i);
 
+			this->paretoFront.push_back(&mev);
 		}
 
 		return (*this);
@@ -203,8 +195,8 @@ public:
 		for (unsigned i = 0; i < paretoSet.size(); i++)
 		{
 			delete paretoSet.at(i);
-			for (int e = 0; e < paretoFront.at(i).size(); e++)
-				delete paretoFront[i].at(e);
+			for (int e = 0; e < paretoFront[i]->size(); e++)
+				delete &paretoFront[i][e];
 		}
 
 		paretoSet.clear();
@@ -279,7 +271,7 @@ public:
 		bool added = true;
 		for (int ind = 0; ind < p.size(); ind++)
 		{
-			vector<Evaluation*> popIndFitness = p.getIndEvaluations(ind);
+			MultiEvaluation popIndFitness = p.getIndEvaluations(ind);
 
 			if (domWeak.dominates(popIndFitness, fitnessNewInd))
 			{
@@ -328,7 +320,7 @@ public:
 		bool added = true;
 		for (int ind = 0; ind < p.first.size(); ind++)
 		{
-			vector<Evaluation*> popIndFitness = p.first.getIndEvaluations(ind);
+			MultiEvaluation popIndFitness = p.first.getIndEvaluations(ind);
 
 			if (domWeak.dominates(popIndFitness, fitnessNewInd))
 			{
@@ -557,7 +549,7 @@ public:
 		bool added = true;
 		for (int ind = 0; ind < p.size(); ind++)
 		{
-			vector<Evaluation*> popIndFitness = p.getIndEvaluations(ind);
+			MultiEvaluation popIndFitness = p.getIndEvaluations(ind);
 
 			if (domWeak.dominates(popIndFitness, fitnessNewInd))
 				return false;

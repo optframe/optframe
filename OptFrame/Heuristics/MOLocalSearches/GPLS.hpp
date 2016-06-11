@@ -53,19 +53,18 @@ public:
 	}
 
 	//Special addSolution used in the 2PPLS speedUp
-	bool addSolution(Solution<R, ADS>* candidate, MultiEvaluation* mev)
+	bool addSolution(Solution<R, ADS>* candidate, MultiEvaluation* candidateMev)
 	{
-		vector<Evaluation*> fitnessNewInd = mev->getVector();
 
 		bool added = true;
 		for (int ind = 0; ind < x_e.first.size(); ind++)
 		{
-			vector<Evaluation*> popIndFitness = x_e.first.getIndEvaluations(ind);
+			MultiEvaluation popIndFitness = x_e.first.getIndEvaluations(ind);
 
-			if (paretoManager<R, ADS>::domWeak.dominates(popIndFitness, fitnessNewInd))
+			if (paretoManager<R, ADS>::domWeak.dominates(popIndFitness, *candidateMev))
 				return false;
 
-			if (paretoManager<R, ADS>::dom.dominates(fitnessNewInd, popIndFitness))
+			if (paretoManager<R, ADS>::dom.dominates(*candidateMev, popIndFitness))
 			{
 				x_e.first.remove(ind);
 				x_e.second.erase(x_e.second.begin() + ind);
@@ -76,13 +75,13 @@ public:
 
 		if (added == true)
 		{
-			x_e.first.push_back(candidate, fitnessNewInd);
+			x_e.first.push_back(candidate, candidateMev);
 			vector<bool> neigh;
 			for (int n = 0; n < r; n++)
 				neigh.push_back(false);
 			x_e.second.push_back(neigh);
 
-			paretoManager<R, ADS>::addSolution(p_a, candidate, mev);
+			paretoManager<R, ADS>::addSolution(p_a, candidate, candidateMev);
 		}
 
 		return added;
@@ -90,6 +89,11 @@ public:
 
 };
 
+//General Two-Phase Pareto Local Search
+// "We call this general local search approach to multiobjective problems the Pareto local search (PLS)."
+//  A Dynasearch Neighborhood for the Bicriteria Traveling Salesman Problem , by Angel (2004) and Paquete(2004)
+// "Generalization in the multiobjective case of the most simple metaheuristic: the hill-climbing method. "
+//  Speed-up techniques for solving large-scale biobjective TSP, by Lust (2010)
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class GeneralParetoLocalSearch: public MultiObjSearch<R, ADS>
 {
@@ -135,7 +139,6 @@ public:
 				Solution<R, ADS>* s = &tempPop.at(ind).clone();
 				MultiEvaluation& mev = multiEval.evaluate(*s);
 				pMan2PPLS.paretoManager<R, ADS>::addSolution(p_0, s, &mev);
-
 				delete s;
 
 			}
@@ -150,28 +153,19 @@ public:
 			//			for (int i = 0; i < tempPop.size(); i++)
 			//				p_0.push_back(tempPop[i]);
 			p_0 = *_pf;
+
 			cout << "Population extracted with " << p_0.size() << " individuals" << endl;
 		}
 
-		for (int ind = 0; ind < p_0.size(); ind++)
-		{
-			Solution<R, ADS>* s = &p_0.getNonDominatedSol(ind).clone();
-			pMan2PPLS.paretoManager<R, ADS>::addSolution(s);
-			delete s;
-		}
+		pMan2PPLS.x_e.first = p_0;
 
-		//It should be noticed why it does not work with the following codes
-//		pMan2PPLS.x_e.first.clear();
-//		pMan2PPLS.x_e.second.clear();
-//		pMan2PPLS.x_e.first = p_0;
-//		cout << pMan2PPLS.x_e.second << endl;
-//		for (int i = 0; i < pMan2PPLS.x_e.first.size(); i++)
-//		{
-//			vector<bool> neigh;
-//			for (int n = 0; n < r; n++)
-//				neigh.push_back(false);
-//			pMan2PPLS.x_e.second.push_back(neigh);
-//		}
+		for (int i = 0; i < pMan2PPLS.x_e.first.size(); i++)
+		{
+			vector<bool> neigh;
+			for (int n = 0; n < r; n++)
+				neigh.push_back(false);
+			pMan2PPLS.x_e.second.push_back(neigh);
+		}
 
 		p = pMan2PPLS.x_e.first;
 		p_0.clear();
@@ -240,48 +234,7 @@ public:
 			}
 		}
 
-		//		p = x_e.first;
-
-		//		for (int i = 0; i < p_0.size(); i++)
-		//		{
-		//			for (int j = 0; j < p_0.size(); j++)
-		//			{
-		//				if ((i != j) && pDominanceWeak.dominates(p_0.at(i), p_0.at(j)))
-		//				{
-		//					cout << "ERRO DOMINANCIA" << endl;
-		//					getchar();
-		//				}
-		//			}
-		//		}
-		//
-		//		vector<Evaluator<R, ADS>*>* _v_e = mev.getEvaluators();
-		//		if (!_v_e)
-		//		{
-		//			cout << "2PPLS::search error: not using separated evaluators!" << endl;
-		//			exit(1);
-		//		}
-		//
-		//		vector<Evaluator<R, ADS>*> v_e(*_v_e);
-		//		delete _v_e;
-
-		//		Pareto<R, ADS>* pf = new Pareto<R, ADS>;
-		//
-		//		for (unsigned i = 0; i < p_0.size(); i++)
-		//		{
-		//			Solution<R, ADS>* s = &p_0.at(i);
-		//
-		//			vector<Evaluation*> e;
-		//			for (unsigned ev = 0; ev < v_e.size(); ev++)
-		//			{
-		//				Evaluator<R, ADS>* evtr = v_e[ev];
-		//				//evtr->evaluate(s);
-		//				Evaluation& e1 = evtr->evaluate(*s);
-		//				e.push_back(&e1);
-		//			}
-		//			pf->push_back(s, e);
-		//		}
-
-		cout << "Two Phase Pareto Local Search Finished" << endl;
+		cout << "General Two-Phase Pareto Local Search Finished" << endl;
 
 		return new Pareto<R, ADS>(pMan2PPLS.x_e.first);
 	}
