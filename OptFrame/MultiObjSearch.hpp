@@ -503,6 +503,123 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class paretoManager
+{
+public:
+	MultiEvaluator<R, ADS>& multiEval;
+	ParetoDominance<R, ADS> dom;
+	ParetoDominanceWeak<R, ADS> domWeak;
+
+public:
+
+	paretoManager(MultiEvaluator<R, ADS>& _multiEval) :
+			multiEval(_multiEval), dom(ParetoDominance<R, ADS>(*_multiEval.getEvaluators())), domWeak(ParetoDominanceWeak<R, ADS>(*_multiEval.getEvaluators()))
+	{
+	}
+
+	virtual ~paretoManager()
+	{
+	}
+
+//	MultiEvaluator<R, ADS>& getMultiEvaluator()
+//	{
+//		return multiEval;
+//	}
+
+	//Special addSolution used in the 2PPLS speedUp
+	bool addSolution(Solution<R, ADS>* candidate)
+	{
+		MultiEvaluation& mev = multiEval.evaluate(*candidate);
+		bool added = addSolution(candidate, &mev);
+		for (unsigned i = 0; i < mev.size(); i++)
+			delete &mev[i];
+		return added;
+
+	}
+
+	virtual bool addSolution(Solution<R, ADS>* candidate, MultiEvaluation* mev)
+	{
+//		cout<<"Something wrong has happen! \n It is inside addSolution candidate,mev! \n This should be reimplemented"<<endl;
+//		exit(1);
+//		return false;
+	}
+
+	bool addSolution(Pareto<R, ADS>& p, Solution<R, ADS>* candidate)
+	{
+		MultiEvaluation& mev = multiEval.evaluate(*candidate);
+		return addSolution(p, candidate, &mev);
+	}
+
+	virtual bool addSolution(Pareto<R, ADS>& p, Solution<R, ADS>* candidate, MultiEvaluation* mev)
+	{
+		vector<Evaluation*> fitnessNewInd = mev->getVector();
+
+		bool added = true;
+		for (int ind = 0; ind < p.size(); ind++)
+		{
+			vector<Evaluation*> popIndFitness = p.getIndEvaluations(ind);
+
+			if (domWeak.dominates(popIndFitness, fitnessNewInd))
+				return false;
+
+			if (dom.dominates(fitnessNewInd, popIndFitness))
+			{
+				p.remove(ind);
+				ind--;
+			}
+
+		}
+		if (added == true)
+			p.push_back(candidate, fitnessNewInd);
+
+		//Check if it is also not deleted in the origin todo
+//		for (int eI = 0; eI < fitnessNewInd.size(); eI++)
+//			delete fitnessNewInd[eI];
+
+		return added;
+	}
+
+//	template<class T>
+//	bool addSolution(vector<T>& nonDom, T candidate)
+//	{
+//		for (int ind = 0; ind < nonDom.size(); ind++)
+//		{
+//			if (domWeak.dominates(nonDom[ind], candidate))
+//				return false;
+//
+//			if (dom.dominates(candidate, nonDom[ind]))
+//			{
+//				nonDom.erase(nonDom.begin() + ind);
+//				ind--;
+//			}
+//		}
+//
+//		nonDom.push_back(candidate);
+//		return true;
+//	}
+
+	//	template<class T>
+	//	bool addSolution(vector<T*>& nonDom, T* candidate)
+	//	{
+	//		for (int ind = 0; ind < nonDom.size(); ind++)
+	//		{
+	//			if (domWeak.dominates(*nonDom.at(ind), *candidate))
+	//				return false;
+	//
+	//			if (dom.dominates(*candidate, *nonDom.at(ind)))
+	//			{
+	//				nonDom.erase(nonDom.begin() + ind);
+	//				ind--;
+	//			}
+	//		}
+	//
+	//		nonDom.push_back(candidate);
+	//		return true;
+	//	}
+
+};
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class MOMETRICS
 {
 protected:
@@ -977,4 +1094,3 @@ public:
 }
 
 #endif /* OPTFRAME_MULTI_OBJ_SEARCH_HPP_ */
-

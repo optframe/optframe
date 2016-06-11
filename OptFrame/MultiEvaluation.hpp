@@ -51,27 +51,34 @@ public:
 
 	MultiEvaluation(const vector<double>& vd)
 	{
-		for(unsigned i = 0; i < vd.size(); i++)
+		for (unsigned i = 0; i < vd.size(); i++)
 			vev.push_back(new Evaluation(vd[i]));
 	}
 
 	MultiEvaluation(const vector<Evaluation*>& _vev)
 	{
-		for(unsigned i = 0; i < _vev.size(); i++)
+		for (unsigned i = 0; i < _vev.size(); i++)
 			vev.push_back(&_vev[i]->clone());
 	}
 
 	MultiEvaluation(const MultiEvaluation& mev)
 	{
-		for(unsigned i = 0; i < mev.vev.size(); i++)
+		for (unsigned i = 0; i < mev.vev.size(); i++)
 			vev.push_back(&mev.vev[i]->clone());
 	}
 
 	virtual ~MultiEvaluation()
 	{
-		for(unsigned i = 0; i < vev.size(); i++)
+		for (unsigned i = 0; i < vev.size(); i++)
 			delete vev[i];
 		vev.clear();
+	}
+
+	void print()
+	{
+		for (unsigned i = 0; i < vev.size(); i++)
+			vev[i]->print();
+
 	}
 
 	void addEvaluation(const Evaluation& ev)
@@ -84,6 +91,10 @@ public:
 		vev.push_back(ev);
 	}
 
+	void addEvaluation(Evaluation& ev)
+	{
+		vev.push_back(&ev);
+	}
 
 	unsigned size() const
 	{
@@ -125,29 +136,28 @@ public:
 	vector<Evaluation*> getCloneVector() const
 	{
 		vector<Evaluation*> v_e;
-		for(unsigned i=0; i<vev.size(); i++)
+		for (unsigned i = 0; i < vev.size(); i++)
 			v_e.push_back(&vev[i]->clone());
 		return v_e;
 	}
 
 	bool sameValues(const MultiEvaluation& mev)
 	{
-		if(vev.size() != mev.vev.size())
+		if (vev.size() != mev.vev.size())
 			return false;
 
-		for(unsigned i = 0; i < vev.size(); i++)
-			if(vev[i]->evaluation() != mev.vev[i]->evaluation())
+		for (unsigned i = 0; i < vev.size(); i++)
+			if (vev[i]->evaluation() != mev.vev[i]->evaluation())
 				return false;
 		return true;
 	}
 
-
 	virtual MultiEvaluation& operator=(const MultiEvaluation& mev)
 	{
-		if(&mev == this) // auto ref check
+		if (&mev == this) // auto ref check
 			return *this;
 
-		for(unsigned i = 0; i < mev.vev.size(); i++)
+		for (unsigned i = 0; i < mev.vev.size(); i++)
 			this->vev.push_back(&mev.vev[i]->clone());
 
 		return *this;
@@ -165,7 +175,7 @@ public:
 
 	void clear()
 	{
-		for(unsigned i=0; i<vev.size(); i++)
+		for (unsigned i = 0; i < vev.size(); i++)
 			delete vev[i];
 		this->vev.clear();
 	}
@@ -179,12 +189,13 @@ public:
 	{
 		stringstream ss;
 		ss << "MultiEvaluation (" << vev.size() << "):";
-		for(unsigned i = 0; i < vev.size(); i++)
+		for (unsigned i = 0; i < vev.size(); i++)
 			ss << vev[i]->toString() << endl;
 		return ss.str();
 	}
 
-};
+}
+;
 
 }
 

@@ -69,6 +69,10 @@ public:
 		nObjectives = vDir.size();
 	}
 
+	unsigned size()
+	{
+		return sngEvaluators.size();
+	}
 	virtual ~MultiEvaluator()
 	{
 	}
@@ -86,6 +90,26 @@ public:
 		}
 		else
 			return NULL;
+	}
+
+	Evaluator<R, ADS>& at(unsigned index)
+	{
+		return *sngEvaluators.at(index);
+	}
+
+	const Evaluator<R, ADS>& at(unsigned index) const
+	{
+		return *sngEvaluators.at(index);
+	}
+
+	Evaluator<R, ADS>& operator[](unsigned index)
+	{
+		return *sngEvaluators[index];
+	}
+
+	const Evaluator<R, ADS>& operator[](unsigned index) const
+	{
+		return *sngEvaluators[index];
 	}
 
 	// TODO: check
@@ -114,9 +138,14 @@ public:
 		return *new MultiEvaluation(nev);
 	}
 
-	virtual MultiEvaluation& evaluate(const R& r, const ADS&)
+	virtual MultiEvaluation& evaluate(const R& r, const ADS& ads)
 	{
-		return evaluate(r);
+		MultiEvaluation* nev = new MultiEvaluation(sngEvaluators[0]->evaluate(r, ads));
+
+		for (unsigned i = 1; i < sngEvaluators.size(); i++)
+			nev->addEvaluation(sngEvaluators[i]->evaluate(r, ads));
+
+		return *nev;
 	}
 
 public:
@@ -128,14 +157,11 @@ public:
 protected:
 	virtual void evaluate(MultiEvaluation& mev, const R& r, const ADS& ads)
 	{
-		MultiEvaluation& ve1 = evaluate(r, ads);
-
-		for (unsigned i = 0; i < ve1.size(); i++)
+		for (unsigned i = 0; i < sngEvaluators.size(); i++)
 		{
-			mev.at(i) = ve1.at(i);
+			sngEvaluators[i]->evaluate(mev[i], r, ads);
 		}
 
-		delete &ve1;
 	}
 
 	// ============= Component ===============
