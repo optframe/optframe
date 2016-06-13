@@ -25,6 +25,7 @@
 
 #include "../MultiObjSearch.hpp"
 #include "../MOLocalSearch.hpp"
+#include "../Heuristics/MOLocalSearches/MOBestImprovement.hpp"
 #include "../Evaluator.hpp"
 #include "../Population.hpp"
 #include "../NSSeq.hpp"
@@ -95,8 +96,6 @@ public:
 				neigh.push_back(false);
 			gplsData.nsParetoOptimum.push_back(neigh);
 			gplsData.newSol.push_back(added);
-
-//			paretoManager<R, ADS>::addSolution(p_a, candidate, candidateMev);
 		}
 
 		return added;
@@ -181,15 +180,18 @@ public:
 		cout << "Number of Inicial x_e non-dominated solutions = " << pMan2PPLS.gplsData.x_e.size() << endl;
 
 		int k = 1;
-
+		cout << "Starting search with k = " << k << endl;
 		while ((k <= r) && (tnow.now() < timelimit))
 		{
-			cout << "k = " << k << endl;
 
-			//Marca como visitados todos os vizinhos que serao visitados
 			for (int ind = 0; ind < pMan2PPLS.gplsData.x_e.size(); ind++)
 			{
-				pMan2PPLS.gplsData.nsParetoOptimum[ind][k - 1] = true;
+				//All individuals from NS k-1 will be visited
+				string localSearchId = vLS[k - 1]->id();
+				//Speed-up only if it is an exaustive search through the whole NS
+				if (localSearchId == "OptFrame:MOLocalSearch:MO-BI")
+					pMan2PPLS.gplsData.nsParetoOptimum[ind][k - 1] = true;
+				//Ensure that all individuals are maked are old solutions - Only the new ones will be marked as true
 				pMan2PPLS.gplsData.newSol[ind] = false;
 			}
 
@@ -199,6 +201,7 @@ public:
 
 			p.clear();
 
+			//Updated current Pareto p with the individuals added in this current iteration
 			for (int ind = 0; ind < pMan2PPLS.gplsData.x_e.size(); ind++)
 				if (pMan2PPLS.gplsData.newSol[ind])
 					p.push_back(&pMan2PPLS.gplsData.x_e.getNonDominatedSol(ind), &pMan2PPLS.gplsData.x_e.getIndMultiEvaluation(ind));
@@ -227,12 +230,14 @@ public:
 				}
 				//end of the speed-up
 
+				//Another option for speed-up, which only add instead of delete
 				//for (int ind = 0; ind < pMan2PPLS.gplsData.x_e.size(); ind++)
 				//	if (pMan2PPLS.gplsData.nsParetoOptimum[ind][k-1] == false) //speed-up - Thibauuuut Lust - Nice guy
 				//		p.push_back(&pMan2PPLS.gplsData.x_e.getNonDominatedSol(ind), &pMan2PPLS.gplsData.x_e.getIndMultiEvaluation(ind));
 
 			}
-			cout << "p.size() = " << p.size() << "\t pMan2PPLS.gplsData.x_e.size() = " << pMan2PPLS.gplsData.x_e.size() << endl;
+			cout << "p.size() = " << p.size() << "\t pMan2PPLS.gplsData.x_e.size() = " << pMan2PPLS.gplsData.x_e.size();
+			cout << "\t k = " << k << endl;
 		}
 
 		Pareto<R, ADS>* pReturn = new Pareto<R, ADS>(pMan2PPLS.gplsData.x_e);
