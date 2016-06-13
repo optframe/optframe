@@ -33,14 +33,27 @@
 #include "../InitialPopulation.h"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+struct gplsStructure
+{
+	Pareto<R, ADS> x_e;
+	vector<vector<bool> > nsParetoOptimum;
+	vector<bool> newSol;
+
+	gplsStructure()
+	{
+	}
+};
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class paretoManager2PPLS: public paretoManager<R, ADS>
 {
 private:
 	int r;
 
 public:
-	pair<Pareto<R, ADS>, vector<vector<bool> > > x_e;
-	Pareto<R, ADS> p_a;
+//	pair<Pareto<R, ADS>, vector<vector<bool> > > x_e;
+//	Pareto<R, ADS> p_a;
+	gplsStructure<R, ADS> gplsData;
 
 	paretoManager2PPLS(MultiEvaluator<R, ADS>& _mev, int _r) :
 			paretoManager<R, ADS>(_mev), r(_r)
@@ -57,31 +70,33 @@ public:
 	{
 
 		bool added = true;
-		for (int ind = 0; ind < x_e.first.size(); ind++)
+		for (int ind = 0; ind < gplsData.x_e.size(); ind++)
 		{
-			MultiEvaluation popIndFitness = x_e.first.getIndEvaluations(ind);
+			MultiEvaluation popIndFitness = gplsData.x_e.getIndMultiEvaluation(ind);
 
 			if (paretoManager<R, ADS>::domWeak.dominates(popIndFitness, *candidateMev))
 				return false;
 
 			if (paretoManager<R, ADS>::dom.dominates(*candidateMev, popIndFitness))
 			{
-				x_e.first.remove(ind);
-				x_e.second.erase(x_e.second.begin() + ind);
+				gplsData.x_e.erase(ind);
+				gplsData.nsParetoOptimum.erase(gplsData.nsParetoOptimum.begin() + ind);
+				gplsData.newSol.erase(gplsData.newSol.begin() + ind);
 				ind--;
 			}
 
 		}
 
-		if (added == true)
+		if (added)
 		{
-			x_e.first.push_back(candidate, candidateMev);
+			gplsData.x_e.push_back(candidate, candidateMev);
 			vector<bool> neigh;
 			for (int n = 0; n < r; n++)
 				neigh.push_back(false);
-			x_e.second.push_back(neigh);
+			gplsData.nsParetoOptimum.push_back(neigh);
+			gplsData.newSol.push_back(added);
 
-			paretoManager<R, ADS>::addSolution(p_a, candidate, candidateMev);
+//			paretoManager<R, ADS>::addSolution(p_a, candidate, candidateMev);
 		}
 
 		return added;
@@ -123,10 +138,11 @@ public:
 	{
 		Timer tnow;
 
-		cout << "exec: Two Phase Pareto Local Search with Pareto Manager (tL:" << timelimit << ")" << endl;
+		cout << "exec: General 2PPLS with Pareto Manager (tL:" << timelimit << ")" << endl;
 		int r = vLS.size();
 
-		Pareto<R, ADS> p_0;
+		gplsStructure<R, ADS> gPLSData;
+		Pareto<R, ADS>* p_0;
 		Pareto<R, ADS> p;
 
 		if (_pf == NULL)
@@ -136,42 +152,33 @@ public:
 
 			for (int ind = 0; ind < tempPop.size(); ind++)
 			{
-				Solution<R, ADS>* s = &tempPop.at(ind).clone();
-				MultiEvaluation& mev = multiEval.evaluate(*s);
-				pMan2PPLS.paretoManager<R, ADS>::addSolution(p_0, s, &mev);
-				delete s;
-
+				pMan2PPLS.paretoManager<R, ADS>::addSolution(*p_0, &tempPop.at(ind));
 			}
 
-			cout << "Population generated with " << p_0.size() << " individuals" << endl;
-			//			return new Pareto<R, ADS>(p_0);
+			cout << "Population generated with " << p_0->size() << " individuals!" << endl;
 		}
 		else
 		{
-			cout << "Extracting Pareto _pf ..." << endl;
-			//			vector<Solution<R, ADS>*> tempPop = _pf->getParetoSet();
-			//			for (int i = 0; i < tempPop.size(); i++)
-			//				p_0.push_back(tempPop[i]);
-			p_0 = *_pf;
+			cout << "Extracting Pareto Front given as parameters..." << endl;
+			p_0 = _pf;
 
-			cout << "Population extracted with " << p_0.size() << " individuals" << endl;
+			cout << "Population extracted with " << p_0->size() << " individuals!" << endl;
 		}
+		pMan2PPLS.gplsData.x_e = *p_0;
+		p = pMan2PPLS.gplsData.x_e;
+		delete p_0;
 
-		pMan2PPLS.x_e.first = p_0;
-
-		for (int i = 0; i < pMan2PPLS.x_e.first.size(); i++)
+		//Initializing auxiliar data structures -- Pareto Optimum and NewSol (guides auxiliar population p_a)
+		for (int i = 0; i < pMan2PPLS.gplsData.x_e.size(); i++)
 		{
 			vector<bool> neigh;
 			for (int n = 0; n < r; n++)
 				neigh.push_back(false);
-			pMan2PPLS.x_e.second.push_back(neigh);
+			pMan2PPLS.gplsData.nsParetoOptimum.push_back(neigh);
+			pMan2PPLS.gplsData.newSol.push_back(true);
 		}
 
-		p = pMan2PPLS.x_e.first;
-		p_0.clear();
-		pMan2PPLS.p_a.clear();
-
-		cout << "Number of Inicial x_e non-dominated solutions = " << pMan2PPLS.x_e.first.size() << endl;
+		cout << "Number of Inicial x_e non-dominated solutions = " << pMan2PPLS.gplsData.x_e.size() << endl;
 
 		int k = 1;
 
@@ -180,92 +187,61 @@ public:
 			cout << "k = " << k << endl;
 
 			//Marca como visitados todos os vizinhos que serao visitados
-			for (int pareto = 0; pareto < pMan2PPLS.x_e.first.size(); pareto++)
+			for (int ind = 0; ind < pMan2PPLS.gplsData.x_e.size(); ind++)
 			{
-				int lastAdded = pMan2PPLS.x_e.second.size() - pareto - 1;
-				pMan2PPLS.x_e.second[lastAdded][k - 1] = true;
+				pMan2PPLS.gplsData.nsParetoOptimum[ind][k - 1] = true;
+				pMan2PPLS.gplsData.newSol[ind] = false;
 			}
 
-			//Gera todos os vizinhos de cada individuo da populacao
+			//Run local search for each individual of the population - Pareto Manager, pMan2PPLS, updates population
 			for (int ind = 0; ind < p.size(); ind++)
+				vLS[k - 1]->exec(p.getNonDominatedSol(ind), p.getIndMultiEvaluation(ind), pMan2PPLS, timelimit - tnow.now(), target_f);
+
+			p.clear();
+
+			for (int ind = 0; ind < pMan2PPLS.gplsData.x_e.size(); ind++)
+				if (pMan2PPLS.gplsData.newSol[ind])
+					p.push_back(&pMan2PPLS.gplsData.x_e.getNonDominatedSol(ind), &pMan2PPLS.gplsData.x_e.getIndMultiEvaluation(ind));
+
+			if (p.size() != 0)
 			{
-				Solution<R, ADS>* s = &p.getNonDominatedSol(ind).clone();
-				vLS[k - 1]->exec(*s, pMan2PPLS, timelimit - tnow.now(), target_f);
-
-				//				bool added = p.addSolution(pDominance, pDominanceWeak, x_e, s, r);
-				//
-				//				if (added)
-				//					p.addSolution(pDominance, pDominanceWeak, p_a, s);
-
-				delete s;
-			}
-
-			cout << "p_a.size() = " << pMan2PPLS.p_a.size();
-			cout << " , x_e.first.size() = " << pMan2PPLS.x_e.first.size() << endl;
-
-			if (pMan2PPLS.p_a.size() != 0)
-			{
-				p.clear();  // verificar se pode-se limpar a populacao p
-				p = pMan2PPLS.p_a;
-				pMan2PPLS.p_a.clear();
 				k = 1;
 			}
 			else
 			{
 				k++;
-				p.clear(); // verificar se pode-se limpar a populacao p
-				p = pMan2PPLS.x_e.first;
+				p = pMan2PPLS.gplsData.x_e;
 
 				//speed-up - Thibauuuut Lust - Nice guy
 				if (k <= r)
 				{
 
 					int removed = 0;
-					for (int i = 0; i < pMan2PPLS.x_e.second.size(); i++)
-					{
-						if (pMan2PPLS.x_e.second[i][k - 1] == true)
+					for (int i = 0; i < pMan2PPLS.gplsData.nsParetoOptimum.size(); i++)
+						if (pMan2PPLS.gplsData.nsParetoOptimum[i][k - 1] == true)
 						{
-							p.remove(i - removed);
+							p.erase(i - removed);
 							removed++;
 						}
-					}
+
 				}
 				//end of the speed-up
+
+				//for (int ind = 0; ind < pMan2PPLS.gplsData.x_e.size(); ind++)
+				//	if (pMan2PPLS.gplsData.nsParetoOptimum[ind][k-1] == false) //speed-up - Thibauuuut Lust - Nice guy
+				//		p.push_back(&pMan2PPLS.gplsData.x_e.getNonDominatedSol(ind), &pMan2PPLS.gplsData.x_e.getIndMultiEvaluation(ind));
+
 			}
+			cout << "p.size() = " << p.size() << "\t pMan2PPLS.gplsData.x_e.size() = " << pMan2PPLS.gplsData.x_e.size() << endl;
 		}
+
+		Pareto<R, ADS>* pReturn = new Pareto<R, ADS>(pMan2PPLS.gplsData.x_e);
+		p.clear();
+		pMan2PPLS.gplsData.x_e.clear();
 
 		cout << "General Two-Phase Pareto Local Search Finished" << endl;
 
-		return new Pareto<R, ADS>(pMan2PPLS.x_e.first);
-	}
-
-	Move<R, ADS>* geraMovimentoValido(NSIterator<R, ADS>& it, Solution<R, ADS>& s)
-	{
-
-		Move<R, ADS>* move = NULL;
-
-		if (it.isDone())
-			return NULL;
-		else
-			move = &it.current();
-
-		while (!move->canBeApplied(s))
-		{
-			delete move;
-			it.next();
-			if (!it.isDone())
-			{
-				move = &it.current();
-			}
-			else
-			{
-//				cout << "finished" << endl;
-//				getchar();
-				return NULL;
-			}
-		}
-
-		return move;
+		return pReturn;
 	}
 
 };

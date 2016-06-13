@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_MOBI_HPP_
-#define OPTFRAME_MOBI_HPP_
+#ifndef OPTFRAME_MORI_HPP_
+#define OPTFRAME_MORI_HPP_
 
 #include "../../MOLocalSearch.hpp"
 #include "../../NSSeq.hpp"
@@ -32,26 +32,26 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class MOBestImprovement: public MOLocalSearch<R, ADS>
+class MORandomImprovement: public MOLocalSearch<R, ADS>
 {
 private:
 	MultiEvaluator<R, ADS>& v_e;
-	NSSeq<R, ADS>& nsSeq;
+	NS<R, ADS>& ns;
 
 	// logs
 	double sum_time;
 	int num_calls;
-
+	unsigned int iterMax;
 public:
 
-	MOBestImprovement(MultiEvaluator<R, ADS>& _v_e, NSSeq<R, ADS>& _nsSeq) :
-			v_e(_v_e), nsSeq(_nsSeq)
+	MORandomImprovement(MultiEvaluator<R, ADS>& _v_e, NS<R, ADS>& _ns, unsigned int _iterMax) :
+			v_e(_v_e), ns(_ns), iterMax(_iterMax)
 	{
 		sum_time = 0.0;
 		num_calls = 0;
 	}
 
-	virtual ~MOBestImprovement()
+	virtual ~MORandomImprovement()
 	{
 	}
 
@@ -71,54 +71,24 @@ public:
 		num_calls++;
 		Timer t;
 
-		NSIterator<R, ADS>& it = nsSeq.getIterator(s);
-
-		it.first();
-
-		if (it.isDone())
+		int iter = 0;
+		while ((iter < iterMax) && ((t.now() - timelimit) < 0))
 		{
-			delete &it;
-			sum_time += t.inMilliSecs();
-			return;
+			Move<R, ADS>& move = ns.move(s);
+			Move<R, ADS>* mov_rev = move.apply(s);
+
+			v_e.evaluate(sMev, s);
+
+			bool added = pManager.addSolution(&s, &sMev);
+
+			delete mov_rev->apply(s);
+			delete mov_rev;
+			delete &move;
+
+			v_e.evaluate(sMev, s);
+			iter++;
 		}
 
-		bool added;
-
-		while (!it.isDone())
-		{
-			Move<R, ADS>* move = &it.current();
-			if (move->canBeApplied(s))
-			{
-//				cout << "before anything" << endl;
-//				sMev.print();
-				Move<R, ADS>* mov_rev = move->apply(s);
-				v_e.evaluate(sMev, s);
-
-//				cout << "after move" << endl;
-//				sMev.print();
-
-				bool added = pManager.addSolution(&s, &sMev);
-
-				delete mov_rev->apply(s);
-				delete mov_rev;
-				delete move;
-
-				v_e.evaluate(sMev, s);
-
-//				cout << "reverse move" << endl;
-//				sMev.print();
-//				getchar();
-//				for (int eI = 0; eI < sMev.size(); eI++)
-//					delete &sMev[eI];
-
-			}
-			else
-				delete move;
-
-			it.next();
-		}
-
-		delete &it;
 		sum_time += t.inMilliSecs();
 	}
 	virtual bool compatible(string s)
@@ -129,7 +99,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS>::idComponent() << "MO-BI";
+		ss << LocalSearch<R, ADS>::idComponent() << "MO-RI";
 		return ss.str();
 	}
 
@@ -146,7 +116,7 @@ public:
 	virtual string toString() const
 	{
 		stringstream ss;
-		ss << "MOBI: " << nsSeq.toString();
+		ss << "MORI: " << ns.toString();
 		return ss.str();
 	}
 
@@ -161,4 +131,4 @@ public:
 
 }
 
-#endif /*OPTFRAME_MOBI_HPP_*/
+#endif /*OPTFRAME_MORI_HPP_*/

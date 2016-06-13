@@ -132,17 +132,19 @@ public:
 	// TODO: make virtual "= 0"
 	virtual MultiEvaluation& evaluate(const R& r)
 	{
-		vector<Evaluation*> nev;
+		MultiEvaluation* nev = new MultiEvaluation;
+
 		for (unsigned i = 0; i < sngEvaluators.size(); i++)
-			nev.push_back(&sngEvaluators[i]->evaluate(r));
-		return *new MultiEvaluation(nev);
+			nev->addEvaluation(sngEvaluators[i]->evaluate(r));
+
+		return *nev;
 	}
 
 	virtual MultiEvaluation& evaluate(const R& r, const ADS& ads)
 	{
-		MultiEvaluation* nev = new MultiEvaluation(sngEvaluators[0]->evaluate(r, ads));
+		MultiEvaluation* nev = new MultiEvaluation;
 
-		for (unsigned i = 1; i < sngEvaluators.size(); i++)
+		for (unsigned i = 0; i < sngEvaluators.size(); i++)
 			nev->addEvaluation(sngEvaluators[i]->evaluate(r, ads));
 
 		return *nev;

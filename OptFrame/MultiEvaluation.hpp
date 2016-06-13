@@ -69,16 +69,13 @@ public:
 
 	virtual ~MultiEvaluation()
 	{
-		for (unsigned i = 0; i < vev.size(); i++)
-			delete vev[i];
-		vev.clear();
+		this->clear();
 	}
 
 	void print()
 	{
 		for (unsigned i = 0; i < vev.size(); i++)
 			vev[i]->print();
-
 	}
 
 	void addEvaluation(const Evaluation& ev)
@@ -157,8 +154,10 @@ public:
 		if (&mev == this) // auto ref check
 			return *this;
 
+		this->vev.clear();
+		this->vev.resize(mev.vev.size());
 		for (unsigned i = 0; i < mev.vev.size(); i++)
-			this->vev.push_back(&mev.vev[i]->clone());
+			this->vev[i] = &(mev.vev[i]->clone());
 
 		return *this;
 	}
@@ -167,7 +166,6 @@ public:
 	{
 		return *new MultiEvaluation(*this);
 	}
-
 
 	void clearNoKill()
 	{
