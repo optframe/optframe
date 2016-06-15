@@ -85,15 +85,15 @@ protected:
 	vector<pair<evtype, evtype> > alternatives; // for lexicographic approaches
 
 public:
-	Evaluation(evtype obj, evtype inf) :
+	Evaluation(const evtype& obj, const evtype& inf) :
 			objFunction(obj), infMeasure(inf)
 	{
 		gos = gos_unknown;
 	}
 
-	Evaluation(evtype obj)
+	Evaluation(const evtype& obj) :
+		objFunction(obj)
 	{
-		objFunction = obj;
 		infMeasure = 0;
 
 		gos = gos_unknown;
@@ -129,6 +129,8 @@ public:
 	{
 		return *new Evaluation(*this);
 	}
+
+	// ======================================
 
 	// end canonical part
 	// begin Evaluation methods

@@ -23,11 +23,12 @@
 
 #include <iostream>
 #include <vector>
+#include <cstring>
 
 using namespace std;
 
 #include "Solution.hpp"
-//#include "Population.hpp"
+#include "Population.hpp"
 #include "Evaluation.hpp"
 #include "Direction.hpp"
 
@@ -957,7 +958,7 @@ public:
 		while (getline(&line, &len, fp) != -1)
 		{
 			// +1 below to allow room for null terminator.
-			result = (char*) realloc(result, strlen(result) + strlen(line) + 1);
+			result = (char*) realloc(result, ::strlen(result) + strlen(line) + 1);
 			// +1 below so we copy the final null terminator.
 			strncpy(result + strlen(result), line, strlen(line) + 1);
 			free(line);
