@@ -967,6 +967,18 @@ public:
 		return hvValue;
 	}
 
+	double hipervolumeWithExecRequested(string filename, vector<double> refPoints)
+	{
+		stringstream ss;
+		ss << "./hv\t -r \"";
+		for (int o = 0; o < refPoints.size(); o++)
+			ss << refPoints[o] << " ";
+		ss << "\" \t" << filename.c_str();
+		string hvValueString = execCommand(ss.str().c_str());
+		double hvValue = atof(hvValueString.c_str());
+		return hvValue;
+	}
+
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
