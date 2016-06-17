@@ -890,47 +890,13 @@ public:
 		return ss;
 	}
 
-	vector<double> spacing2(vector<vector<vector<double> > > D)
+	vector<double> spacingMultiplePF(vector<vector<vector<double> > > D)
 	{
 		vector<double> spacings;
 		for (int frente = 0; frente < D.size(); frente++)
 		{
 			vector<vector<double> > a = D[frente];
-			double ss = 0;
-			vector<double> distMin;
-			int N = a.size();
-			int m = a[0].size();
-			for (int i = 0; i < a.size(); i++)
-			{
-				double di = 100000000;
-
-				for (int j = 0; j < a.size(); j++)
-				{
-					if (i != j)
-					{
-						double diMin = 0;
-						for (int eval = 0; eval < m; eval++)
-							diMin += abs(a[i][eval] - a[j][eval]);
-
-						if (diMin < di)
-							di = diMin;
-					}
-				}
-				distMin.push_back(di);
-			}
-
-			double dMean = 0;
-
-			for (int i = 0; i < N; i++)
-				dMean += distMin[i];
-
-			dMean = dMean / N;
-
-			for (int i = 0; i < N; i++)
-				ss += pow(distMin[i] - dMean, 2);
-
-			ss = ss / N;
-			ss = sqrt(ss);
+			double ss = spacing(a);
 			spacings.push_back(ss);
 		}
 		return spacings;
