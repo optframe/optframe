@@ -142,6 +142,8 @@ public:
 	{
 		return *new MoveCost(*this);
 	}
+
+	friend class MultiMoveCost; // TODO: remove! experiment for MO problems
 };
 
 }

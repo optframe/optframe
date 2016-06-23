@@ -65,6 +65,9 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
 	{
+		if(Component::information)
+			cout << "BI::starts for " << nsSeq.toString() << endl;
+
 		num_calls++;
 		Timer t;
 

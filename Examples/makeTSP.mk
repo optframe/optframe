@@ -1,7 +1,7 @@
 all: app_TSP
 
 CC=g++
-CFLAGS= -g -O0 -Wall --std=c++11
+CFLAGS= -g -Wall -O3 --std=c++11
 
 app_TSP:  TSPmain.o  TSPScanner.o  TSPConstructiveBestInsertion.o  TSPDeltaMoveTSP2Opt.o  TSPDeltaMoveTSPOrOptk.o  TSPEvaluator.o  TSPNearestNeighborConstructive.o  TSPNSEnumShift.o  TSPNSEnumSwap.o  TSPProblemCommand.o  TSPProblemInstance.o  TSPRandomInitialSolution.o  
 	$(CC) $(CFLAGS) TSP*.o -o $@

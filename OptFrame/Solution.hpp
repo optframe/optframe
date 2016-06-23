@@ -80,7 +80,7 @@ public:
 	Solution(const Solution<R, ADS>& s) :
 			r(s.r)
 	{
-		cout << __PRETTY_FUNCTION__ << endl;
+		//cout << __PRETTY_FUNCTION__ << endl;
 		if (s.ads)
 			ads = new ADS(*s.ads);
 		else

@@ -129,7 +129,7 @@ public:
 
 	Solution<R, ADS>& operator=(const Solution<R, ADS>& s)
 	{
-		cout << __PRETTY_FUNCTION__ << endl;
+		//cout << __PRETTY_FUNCTION__ << endl;
 		return operator=((const TestSolution<R, ADS>&) s);
 	}
 

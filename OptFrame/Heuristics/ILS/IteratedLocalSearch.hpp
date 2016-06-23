@@ -76,7 +76,11 @@ public:
         // 's0' <- GenerateSolution
         // 's*' <- localSearch 's'
 
+        if(Component::information)
+        	cout << "ILS::performing first local search" << endl;
         localSearch(s, e, (timelimit - (tnow.now())), target_f);
+        if(Component::information)
+            cout << "ILS::finished first local search" << endl;
 
         Solution<R, ADS>* sStar = &s.clone();
         Evaluation* eStar = &e.clone();

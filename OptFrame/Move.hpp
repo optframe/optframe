@@ -27,6 +27,9 @@
 
 #include "Component.hpp"
 
+#include "MultiMoveCost.hpp"
+#include "MultiEvaluation.hpp"
+
 //#include "Action.hpp"
 
 using namespace std;
@@ -112,6 +115,12 @@ public:
 	// ================== cost calculation
 
 	virtual MoveCost* cost(const Evaluation& e, const R& r, const ADS& ads)
+	{
+		return NULL;
+	}
+
+	// experiment for multi objective problems
+	virtual MultiMoveCost* cost(const MultiEvaluation& e, const R& r, const ADS& ads)
 	{
 		return NULL;
 	}

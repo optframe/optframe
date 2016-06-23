@@ -175,6 +175,7 @@ Solution<A> gen()
 
 int main(int argc, char **argv)
 {
+	/*
 	auto s = gen();
 
 	cout << "after return" << endl;
@@ -207,6 +208,7 @@ int main(int argc, char **argv)
 
 	cout << "FINISHED!" << endl;
 	return 0;
+	*/
 
 	Loader<RepTSP> optframe;
 	TSPProblemCommand tsp;
@@ -214,7 +216,7 @@ int main(int argc, char **argv)
 
 	CheckCommand<RepTSP> check(false);
 
-	RandGen rg;
+	RandGen rg(0);
 	RandomInitialSolutionTSP random(tsp.p, rg);
 	NearestNeighborConstructive cnn(tsp.p, rg);
 	ConstructiveBestInsertion cbi(tsp.p, rg);
@@ -259,8 +261,11 @@ int main(int argc, char **argv)
 	ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor2));
 	ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor3));
 	ns_list.push_back(new BestImprovement<RepTSP>(eval, tspswap));
+	for(unsigned i=0; i<ns_list.size(); i++)
+		ns_list[i]->setVerbose();
 
 	VariableNeighborhoodDescent<RepTSP> VND(eval, ns_list);
+	VND.setVerbose();
 
 	ILSLPerturbationLPlus2<RepTSP> pert(eval, 10, tsp2opt, rg);
 	pert.add_ns(tspor1);
@@ -269,13 +274,19 @@ int main(int argc, char **argv)
 	pert.add_ns(tspswap);
 
 	IteratedLocalSearchLevels<RepTSP> ils(eval, random, VND, pert, 3, 2);
-	ils.setMessageLevel(4);
+	//ils.setMessageLevel(4);
+	ils.setVerbose();
+	if (ils.information)
+		cout << "infomation is on for ILS" << endl;
 
 	cout << "will run ils" << endl;
+	Timer tim;
 	pair<Solution<RepTSP>&, Evaluation&>& psol = *ils.search(1000, 0, NULL, NULL);
 	eval.Minimizing = false;
 	//pair<Solution<RepTSP>&, Evaluation&>& psol2 = *ils.search(1000, 99999999, NULL, NULL);
 	ils.search(1000, 99999999, NULL, NULL);
+
+	cout << tim.now() << " secs" << endl;
 
 	psol.first.print();
 	psol.second.print();
