@@ -140,7 +140,7 @@ public:
 
 };
 
-template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS>
 class ExtendedMultiObjSearch: public Component
 {
 public:
@@ -179,7 +179,7 @@ public:
 
 };
 
-template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS>
 class ExtendedMultiObjSearchBuilder: public ComponentBuilder<R, ADS>
 {
 public:

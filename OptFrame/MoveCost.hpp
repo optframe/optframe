@@ -35,21 +35,25 @@ namespace optframe
 class MoveCost: public Component
 {
 protected:
+	// objective function value (cost difference)
 	evtype objFunction;
+	// infeasibility measure value (cost difference)
 	evtype infMeasure;
-
+	// flag indicating if Evaluation was outdated
+	bool outdated;
+	// flag indicating if cost is estimated
 	bool estimated;
-
-	vector<pair<evtype, evtype> > alternatives; // for lexicographic approaches
+	// storing costs for lexicographic approaches
+	vector<pair<evtype, evtype> > alternatives;
 
 public:
-	explicit MoveCost(evtype obj, evtype inf = 0.0, bool est = false) :
-			objFunction(obj), infMeasure(inf), estimated(est)
+	explicit MoveCost(evtype obj, evtype inf = 0.0, bool outd = true, bool est = false) :
+			objFunction(obj), infMeasure(inf), outdated(outd), estimated(est)
 	{
 	}
 
 	MoveCost(const MoveCost& mc) :
-			objFunction(mc.objFunction), infMeasure(mc.infMeasure), estimated(mc.estimated), alternatives(mc.alternatives)
+			objFunction(mc.objFunction), infMeasure(mc.infMeasure), outdated(mc.outdated), estimated(mc.estimated), alternatives(mc.alternatives)
 	{
 	}
 
@@ -102,6 +106,20 @@ public:
 		return objFunction + infMeasure;
 	}
 
+	// update Evaluation with costs
+	virtual void update(Evaluation& e)
+	{
+		// update objective function value
+		e.setObjFunction(e.getObjFunction()+objFunction);
+		// update infeasibility measure value
+		e.setInfMeasure(e.getInfMeasure()+infMeasure);
+		// restore previous 'outdated' status, if Evaluation wasn't outdated before
+		if(!outdated)
+			e.outdated = outdated;
+
+		// may also update lexicographic costs...
+	}
+
 	static string idComponent()
 	{
 		return "OptFrame:MoveCost";
@@ -130,9 +148,10 @@ public:
 		if (&mc == this) // auto ref check
 			return *this;
 
-		objFunction = mc.objFunction;
-		infMeasure = mc.infMeasure;
-		estimated = mc.estimated;
+		objFunction  = mc.objFunction;
+		infMeasure   = mc.infMeasure;
+		outdated     = mc.outdated;
+		estimated    = mc.estimated;
 		alternatives = mc.alternatives;
 
 		return *this;

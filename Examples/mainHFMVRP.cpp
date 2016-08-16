@@ -83,7 +83,7 @@ int main(int argc, char **argv)
 
 	ILSLPerturbationLPlus2Prob<RepHFMVRP, AdsHFMVRP>* ilsl_pert;
 
-	ilsl_pert = new ILSLPerturbationLPlus2Prob<RepHFMVRP, AdsHFMVRP, OPTFRAME_DEFAULT_DS>(*eval, 100000, *nsseq_deltaIterator_shift10, rg);
+	ilsl_pert = new ILSLPerturbationLPlus2Prob<RepHFMVRP, AdsHFMVRP>(*eval, 100000, *nsseq_deltaIterator_shift10, rg);
 	ilsl_pert->add_ns(*nsseq_deltaIterator_swap11);
 	ilsl_pert->add_ns(*nsseq_deltaIterator_delta_2opt);
 	ilsl_pert->add_ns(*nsseq_deltaIterator_delta_or1);

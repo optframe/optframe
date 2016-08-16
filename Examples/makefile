@@ -1,6 +1,8 @@
-all: tsp
+all: examples
 
-examples: tsp etii pmedcap opths svrpdsp gfp hfvrpmt modm
+examples: tsp etii pmedcap opths  gfp hfvrpmt
+
+fix_examples: svrpdsp modm
 
 tsp:
 	make -f makeTSP.mk

@@ -102,9 +102,12 @@ public:
 public: // because of MultiEvaluator... otherwise, make it 'friend'
 	virtual void evaluate(Evaluation& e, const R& r, const ADS& ads)
 	{
-		Evaluation& e1 = evaluate(r, ads);
-		e = e1;
-		delete &e1;
+		if (e.outdated)
+		{
+			Evaluation& e1 = evaluate(r, ads);
+			e = e1;
+			delete &e1;
+		}
 	}
 
 public:
@@ -143,37 +146,48 @@ public:
 		if (allowCosts)
 			p = m.cost(e, s.getR(), s.getADS());
 
-		// do not update 's' => much faster (using updateDelta)
+		// if p not null, do not update 's' => much faster (using cost)
 		if (p)
 			return *p;
-		else // need to update 's' together with reevaluation of 'e' => little faster (doesn't use updateDelta, but do reevaluation)
+		else
 		{
+			// need to update 's' together with reevaluation of 'e' => slower (may perform reevaluation)
+
+			// saving 'outdated' status to avoid inefficient re-evaluations
+			bool outdated = e.outdated;
+			// apply move to both Evaluation and Solution
 			Move<R, ADS>& rev = applyMove(e, m, s);
+			// get final values
 			pair<evtype, evtype> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
-
+			// get final values for lexicographic part
 			vector<pair<evtype, evtype> > alternatives(e.getAlternativeCosts().size());
-
 			for (unsigned i = 0; i < alternatives.size(); i++)
 			{
 				alternatives[i].first = e.getAlternativeCosts()[i].first;
 				alternatives[i].second = e.getAlternativeCosts()[i].second;
 			}
-
+			// apply reverse move in order to get the original solution back
 			Move<R, ADS>& ini = applyMove(e, rev, s);
+			// if Evaluation wasn't 'outdated' before, restore its previous status
+			if(!outdated)
+				e.outdated = outdated;
+			// get original values (also could be calculated in the begin of function)
 			pair<evtype, evtype> e_ini = make_pair(e.getObjFunction(), e.getInfMeasure());
-
+			// do the same for lexicographic part
 			for (unsigned i = 0; i < alternatives.size(); i++)
 			{
 				alternatives[i].first -= e.getAlternativeCosts()[i].first;
 				alternatives[i].second -= e.getAlternativeCosts()[i].second;
 			}
-
+			// destroy reverse move
 			delete &rev;
+			// destroy initial move
 			delete &ini;
-
+			// create a MoveCost object...
 			p = new MoveCost(e_end.first - e_ini.first, e_end.second - e_end.second);
+			// ... and set the lexicographic costs
 			p->setAlternativeCosts(alternatives);
-
+			// return a MoveCost object pointer
 			return *p;
 		}
 	}

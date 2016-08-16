@@ -1,7 +1,7 @@
 all: app_PMedCap
 
 CC=g++
-CFLAGS=-O3 -Wall
+CFLAGS=-O3 -Wall --std=c++11
 
 app_PMedCap:  PMedCapmain.o  PMedCapScanner.o  PMedCapInitialSolutionGreedy.o PMedCapInitialSolutionRandom.o  PMedCapInitialSolutionRandomGreedy.o  PMedCapNSSeqSwap.o  PMedCapEvaluator.o  PMedCapNSSeqSwap.o   PMedCapProblemInstance.o   
 	$(CC) $(CFLAGS) PMedCap*.o -o $@

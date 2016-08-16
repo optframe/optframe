@@ -34,7 +34,7 @@
 namespace optframe
 {
 
-template<class H, class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class H, class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class IteratedLocalSearch: public ILS, public SingleObjSearch<R, ADS>
 {
 protected:

@@ -135,7 +135,7 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class ILSLPerturbationLPlus2Prob: public ILSLPerturbation<R, ADS>
 {
 private:
@@ -243,7 +243,7 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class ILSLPerturbationLPlus2Builder: public ComponentBuilder<R, ADS>
 {
 public:
@@ -292,7 +292,7 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class ILSLPerturbationLPlus2ProbBuilder: public ComponentBuilder<R, ADS>
 {
 public:

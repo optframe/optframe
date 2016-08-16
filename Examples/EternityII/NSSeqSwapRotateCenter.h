@@ -208,6 +208,8 @@ public:
 		e.setObjFunction(e.getObjFunction()+ (f2 - f));
 		e.setObjFunction(e.getObjFunction()+ (g2 - g));
 
+		// keeping 'outdated' status untouched... should avoid re-evaluations!
+
 		return &rev;
 	}
 

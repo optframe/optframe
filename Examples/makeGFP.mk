@@ -7,5 +7,5 @@ CCLNFLAGS = -L$(CPLEXDIR)/lib/x86-64_sles10_4.1/static_pic -DIL_STD -lilocplex -
 CCINCFLAG = -I$(CPLEXDIR)/include -I$(CONCERTDIR)/include 
 
 gfp:
-	g++ mainEFP.cpp ../OptFrame/Scanner++/Scanner.cpp -O3 -o app_EFP
+	g++ --std=c++11 mainEFP.cpp ../OptFrame/Scanner++/Scanner.cpp -O3 -o app_EFP
 	

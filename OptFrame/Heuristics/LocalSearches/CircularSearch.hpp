@@ -114,7 +114,7 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class CircularSearchBuilder: public LocalSearchBuilder<R, ADS>
 {
 public:

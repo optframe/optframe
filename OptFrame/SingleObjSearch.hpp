@@ -78,7 +78,7 @@ public:
 
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class SingleObjSearchBuilder: public ComponentBuilder<R, ADS>
 {
 public:
@@ -112,7 +112,7 @@ public:
 
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class SingleObjSearchAction: public Action<R, ADS>
 {
 public:

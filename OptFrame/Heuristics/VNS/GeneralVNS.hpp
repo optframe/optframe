@@ -30,7 +30,7 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class GeneralVNS: public VariableNeighborhoodSearch<R, ADS>
 {
 public:

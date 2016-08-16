@@ -21,29 +21,20 @@
 #ifndef OPTFRAME_EVALUATION_HPP_
 #define OPTFRAME_EVALUATION_HPP_
 
-// TODO: Delta Structure (DS) will be abandoned soon...
-// TODO: use ADS instead.
-typedef int OPTFRAME_DEFAULT_DS;
-
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
 
 #include "Component.hpp"
-#include "Action.hpp"
 
+#ifndef OPTFRAME_EPSILON
 #define OPTFRAME_EPSILON 0.0001
+#endif
 
 using namespace std;
 
 namespace optframe
 {
-
-// GlobalOptimumStatus
-enum GOS
-{
-    gos_yes, gos_no, gos_unknown
-};
 
 //! \english The Evaluation class is a container class for the objective function value and the Memory structure M. \endenglish \portuguese A classe Evaluation é uma classe contêiner para o valor da função objetivo e a estrutura de Memória M. \endportuguese
 
@@ -75,20 +66,35 @@ typedef EVALUATION_TYPE evtype;
 class Evaluation: public Component
 {
 protected:
-	// pair<evtype, evtype>: OST (Objective Space Type)
+	// ==== Objective Space type: pair<evtype, evtype> ====
+	// objective function value (default = double)
 	evtype objFunction;
+	// infeasibility measure value (default = double)
 	evtype infMeasure;
+	// for lexicographic approaches, use these extra evaluation values
+	vector<pair<evtype, evtype> > alternatives;
 
-	// map<string, bool> localStatus; // mapping 'move.id()' to 'NeighborhoodStatus' TODO: REMOVE!
-	GOS gos;            // for exact methods only
-
-	vector<pair<evtype, evtype> > alternatives; // for lexicographic approaches
+	// ==== Objective Space auxiliary information ====
+	// LocalOptimum Status: mapping 'move.id()' to 'NeighborhoodStatus'
+	// map<string, bool> localStatus; // TODO: REMOVE!
+	// GlobalOptimumStatus (for exact methods only)
+	enum GOS
+	{
+		gos_yes, gos_no, gos_unknown
+	} gos;
 
 public:
+	// boolean field to indicate if Evaluation needs an update
+	bool outdated;
+
+	// ======================================
+	// begin canonical part
+
 	Evaluation(const evtype& obj, const evtype& inf) :
 			objFunction(obj), infMeasure(inf)
 	{
 		gos = gos_unknown;
+		outdated = false;
 	}
 
 	Evaluation(const evtype& obj) :
@@ -97,11 +103,12 @@ public:
 		infMeasure = 0;
 
 		gos = gos_unknown;
+		outdated = false;
 	}
 
 
 	Evaluation(const Evaluation& e) :
-			objFunction(e.objFunction), infMeasure(e.infMeasure), gos(e.gos), alternatives(e.alternatives)
+			objFunction(e.objFunction), infMeasure(e.infMeasure), alternatives(e.alternatives), gos(e.gos), outdated(e.outdated)
 	{
 	}
 
@@ -116,11 +123,11 @@ public:
 		if (&e == this) // auto ref check
 			return *this;
 
-		objFunction = e.objFunction;
-		infMeasure = e.infMeasure;
+		objFunction  = e.objFunction;
+		infMeasure   = e.infMeasure;
+		outdated     = e.outdated;
 		alternatives = e.alternatives;
-
-		gos = e.gos;
+		gos          = e.gos;
 
 		return *this;
 	}
@@ -130,9 +137,8 @@ public:
 		return *new Evaluation(*this);
 	}
 
-	// ======================================
-
 	// end canonical part
+	// ======================================
 	// begin Evaluation methods
 
 	evtype getObjFunction() const
@@ -207,7 +213,7 @@ public:
 		return objFunction + infMeasure;
 	}
 
-	// leave option to rewrite tolerance
+	// leave option to rewrite tolerance (or consider lexicographic values)
 	virtual bool isFeasible() const
 	{
 		return (::abs(infMeasure) < 0.0001);
@@ -241,6 +247,7 @@ public:
 		ss << fixed; // disable scientific notation
 		ss << "Evaluation function value = " << evaluation();
 		ss << (isFeasible() ? " " : " (not feasible) ");
+		ss << (outdated ? " OUTDATED " : " ");
 		if(alternatives.size() > 0)
 		{
 			ss << " alternative costs: ";
@@ -248,9 +255,6 @@ public:
 				ss << "(" << alternatives[i].first << ";" << alternatives[i].second << ") ";
 		}
 		// ss << endl;
-
-		// default - not printing ememory
-		// ss << m << endl;
 
 		return ss.str();
 	}
