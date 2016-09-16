@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_FI_HPP_
-#define OPTFRAME_FI_HPP_
+#ifndef OPTFRAME_FI_SLOW_HPP_
+#define OPTFRAME_FI_SLOW_HPP_
 
 #include "../../LocalSearch.hpp"
 #include "../../NSSeq.hpp"
@@ -29,7 +29,7 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class FirstImprovement: public LocalSearch<R, ADS>
+class FirstImprovementSlow: public LocalSearch<R, ADS>
 {
 private:
 	Evaluator<R, ADS>& eval;
@@ -37,12 +37,12 @@ private:
 
 public:
 
-	FirstImprovement(Evaluator<R, ADS>& _eval, NSSeq<R, ADS>& _nsSeq) :
+	FirstImprovementSlow(Evaluator<R, ADS>& _eval, NSSeq<R, ADS>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 	}
 
-	virtual ~FirstImprovement()
+	virtual ~FirstImprovementSlow()
 	{
 	}
 
@@ -83,16 +83,36 @@ public:
 
 			if (move->canBeApplied(s))
 			{
-				if(eval.acceptsImprove(*move,s,e))
+				MoveCost* eCost = &eval.moveCost(e, *move, s); // estimated cost
+
+				if(eval.isImprovement(*eCost))
 				{
-					delete move;
+					if(eCost->isEstimated())
+					{
+						//double cost = eval.moveCost(e, *move, s); // real cost
+						// TODO: find a real cost value...
+					}
 
-					delete &it;
-					// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-					//e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
+					if(eval.isImprovement(*eCost))
+					{
+						delete eCost;
 
-					return;
+						Component::safe_delete(move->apply(e, s));
+						delete move;
+
+						delete &it;
+
+						eval.evaluate(e, s); // updates 'e'
+
+						// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
+						//e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
+
+						return;
+					}
+
 				}
+
+				delete eCost;
 			}
 
 			delete move;
@@ -116,7 +136,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS>::idComponent() << ":FI";
+		ss << LocalSearch<R, ADS>::idComponent() << ":FISlow";
 		return ss.str();
 	}
 
@@ -128,58 +148,12 @@ public:
 	virtual string toString() const
 	{
 		stringstream ss;
-		ss << "FI: " << nsSeq.toString();
+		ss << "FISlow: " << nsSeq.toString();
 		return ss.str();
 	}
 };
 
-
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class FirstImprovementBuilder : public LocalSearchBuilder<R, ADS>
-{
-public:
-	virtual ~FirstImprovementBuilder()
-	{
-	}
-
-	virtual LocalSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
-	{
-		Evaluator<R, ADS>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
-
-		NSSeq<R, ADS>* nsseq;
-		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
-
-		return new FirstImprovement<R, ADS>(*eval, *nsseq);
-	}
-
-	virtual vector<pair<string, string> > parameters()
-	{
-		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NSSeq<R, ADS>::idComponent(), "neighborhood structure"));
-
-		return params;
-	}
-
-	virtual bool canBuild(string component)
-	{
-		return component == FirstImprovement<R, ADS>::idComponent();
-	}
-
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS>::idComponent() << ":FI";
-		return ss.str();
-	}
-
-	virtual string id() const
-	{
-		return idComponent();
-	}
-};
 
 }
 
-#endif /*OPTFRAME_FI_HPP_*/
+#endif /*OPTFRAME_FI_SLOW_HPP_*/

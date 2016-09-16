@@ -47,7 +47,7 @@ protected:
 	vector<pair<evtype, evtype> > alternatives;
 
 public:
-	explicit MoveCost(evtype obj, evtype inf = 0.0, bool outd = true, bool est = false) :
+	explicit MoveCost(evtype obj, evtype inf = 0, bool outd = true, bool est = false) :
 			objFunction(obj), infMeasure(inf), outdated(outd), estimated(est)
 	{
 	}

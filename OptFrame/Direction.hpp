@@ -23,6 +23,8 @@
 
 #include <float.h>
 #include <limits>
+#include <iostream>
+#include <assert.h>
 
 #include "Solution.hpp"
 #include "ADSManager.hpp"
@@ -30,7 +32,6 @@
 #include "Move.hpp"
 #include "MoveCost.hpp"
 
-#include <iostream>
 
 #include "Component.hpp"
 #include "Action.hpp"
@@ -43,7 +44,15 @@ namespace optframe
 
 class Direction: public Component
 {
+protected:
+	MoveCost nullCost;
+
 public:
+
+	Direction() :
+			nullCost(MoveCost(0))
+	{
+	}
 
 	virtual ~Direction()
 	{
@@ -59,20 +68,27 @@ public:
 	 - for minimization problems, returns a < b;
 	 - for maximization problems, returns a > b.
 	 */
-	virtual bool betterThan(evtype a, evtype b) = 0;
+	//virtual bool betterThan(evtype a, evtype b) = 0;
 
 	// true if 'mc1' is better than 'mc2'
 	virtual inline bool betterThan(const MoveCost& mc1, const MoveCost& mc2)
 	{
-		return betterThan(mc1.cost(), mc2.cost());
+		if(isMinimization())
+			return mc1.cost() < mc2.cost();
+		else
+			return mc1.cost() > mc2.cost();
 	}
 
 	// true if 'e1' is better than 'e2'
 	virtual inline bool betterThan(const Evaluation& e1, const Evaluation& e2)
 	{
-		return betterThan(e1.evaluation(), e2.evaluation());
+		if(isMinimization())
+			return e1.evaluation() < e2.evaluation();
+		else
+			return e1.evaluation() > e2.evaluation();
 	}
 
+	/*
 	virtual inline bool betterThan(const vector<pair<evtype, evtype> >& altCosts1, const vector<pair<evtype, evtype> >& altCosts2)
 	{
 		if(altCosts1.size() != altCosts2.size())
@@ -82,13 +98,16 @@ public:
 				return false;
 		return true;
 	}
+	*/
 
 	// ============ betterOrEquals ===========
 
+	/*
 	inline bool betterOrEquals(const vector<pair<evtype, evtype> >& altCosts1, const vector<pair<evtype, evtype> >& altCosts2)
 	{
 		return betterThan(altCosts1, altCosts2) || equals(altCosts1, altCosts2);
 	}
+	*/
 
 	inline bool betterOrEquals(const MoveCost& mc1, const MoveCost& mc2)
 	{
@@ -100,40 +119,49 @@ public:
 		return betterThan(e1, e2) || equals(e1, e2);
 	}
 
+	/*
 	inline bool betterOrEquals(evtype a, evtype b)
 	{
 		return betterThan(a, b) || equals(a, b);
 	}
+	*/
 
 	// ============ equals ============
 
-	virtual inline bool equals(const vector<pair<evtype, evtype> >& altCosts1, const vector<pair<evtype, evtype> >& altCosts2)
+protected:
+	virtual inline bool equals(const evtype& t1, const evtype& t2, const vector<pair<evtype, evtype> >& altCosts1, const vector<pair<evtype, evtype> >& altCosts2)
 	{
+		if(t1 != t2)
+			return false;
 		if(altCosts1.size() != altCosts2.size())
 			return false;
 		for(unsigned i = 0; i < altCosts1.size(); i++)
-			if(!equals(altCosts1[i].first + altCosts1[i].second, altCosts2[i].first + altCosts2[i].second))
+			if((altCosts1[i].first + altCosts1[i].second) != (altCosts2[i].first + altCosts2[i].second))
 				return false;
 		return true;
 	}
 
+public:
 	virtual inline bool equals(const MoveCost& mc1, const MoveCost& mc2)
 	{
-		return equals(mc1.cost(), mc2.cost());
+		return equals(mc1.cost(), mc2.cost(), mc1.getAlternativeCosts(), mc2.getAlternativeCosts());
 	}
 
 	virtual inline bool equals(const Evaluation& e1, const Evaluation& e2)
 	{
-		return equals(e1.evaluation(), e2.evaluation());
+		return equals(e1.evaluation(), e2.evaluation(), e1.getAlternativeCosts(), e2.getAlternativeCosts());
 	}
 
+	/*
 	virtual inline bool equals(evtype a, evtype b)
 	{
 		return (::abs(a - b) < OPTFRAME_EPSILON);
 	}
+	*/
 
 	// ============= improvement =============
 
+	/*
 	virtual bool isImprovement(const MoveCost& mc, const Evaluation& e1, const Evaluation& e2)
 	{
 		evtype ec1 = mc.cost() + e1.evaluation();
@@ -141,21 +169,8 @@ public:
 			return true;
 		else if(equals(ec1, e2.evaluation()))
 		{
-			if(e1.getAlternativeCosts().size() != e2.getAlternativeCosts().size())
-			{
-				cout << "Evaluator Error: |e1.alternatives|=" << e1.getAlternativeCosts().size() << " |e2.alternatives|=" << e2.getAlternativeCosts().size();
-				cout << endl;
-				exit(1);
-				return false;
-			}
-
-			if(mc.getAlternativeCosts().size() != e1.getAlternativeCosts().size())
-			{
-				cout << "Evaluator Error: |mc.alternatives|=" << mc.getAlternativeCosts().size() << " |e1.alternatives|=" << e1.getAlternativeCosts().size();
-				cout << endl;
-				exit(1);
-				return false;
-			}
+			assert(e1.getAlternativeCosts().size() == e2.getAlternativeCosts().size());
+			assert(mc.getAlternativeCosts().size() == e1.getAlternativeCosts().size());
 
 			vector<pair<evtype, evtype> > altCosts1(e1.getAlternativeCosts());
 			for(unsigned i = 0; i < altCosts1.size(); i++)
@@ -168,10 +183,12 @@ public:
 		else
 			return false;
 	}
+	*/
+
 
 	virtual inline bool isImprovement(const MoveCost& mc)
 	{
-		return betterThan(mc.cost(), 0);
+		return betterThan(mc, nullCost);
 	}
 
 	// ============= direction ==============

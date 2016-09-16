@@ -86,6 +86,8 @@ protected:
 public:
 	// boolean field to indicate if Evaluation needs an update
 	bool outdated;
+	// boolean field to indicate if Evaluation value is an estimation (not exact)
+	bool estimated;
 
 	// ======================================
 	// begin canonical part
@@ -95,6 +97,7 @@ public:
 	{
 		gos = gos_unknown;
 		outdated = false;
+		estimated = false;
 	}
 
 	Evaluation(const evtype& obj) :
@@ -104,11 +107,13 @@ public:
 
 		gos = gos_unknown;
 		outdated = false;
+		estimated = false;
 	}
 
 
 	Evaluation(const Evaluation& e) :
-			objFunction(e.objFunction), infMeasure(e.infMeasure), alternatives(e.alternatives), gos(e.gos), outdated(e.outdated)
+			objFunction(e.objFunction), infMeasure(e.infMeasure), alternatives(e.alternatives),
+			gos(e.gos), outdated(e.outdated), estimated(e.estimated)
 	{
 	}
 
@@ -126,6 +131,7 @@ public:
 		objFunction  = e.objFunction;
 		infMeasure   = e.infMeasure;
 		outdated     = e.outdated;
+		estimated    = e.estimated;
 		alternatives = e.alternatives;
 		gos          = e.gos;
 
@@ -248,6 +254,7 @@ public:
 		ss << "Evaluation function value = " << evaluation();
 		ss << (isFeasible() ? " " : " (not feasible) ");
 		ss << (outdated ? " OUTDATED " : " ");
+		ss << (estimated ? " ESTIMATED " : " ");
 		if(alternatives.size() > 0)
 		{
 			ss << " alternative costs: ";
