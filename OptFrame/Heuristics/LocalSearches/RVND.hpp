@@ -70,7 +70,7 @@ public:
 			Evaluation* e0 = &e.clone();
 
 			lsList[k - 1]->exec(*s0, *e0, timelimit, target_f);
-			if (ev.betterThan(*s0, s))
+			if (ev.betterThan(*e0, e))
 			{
 				s = *s0;
 				e = *e0;

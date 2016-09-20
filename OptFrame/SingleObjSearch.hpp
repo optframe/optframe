@@ -28,6 +28,7 @@ using namespace std;
 
 #include "Solution.hpp"
 #include "Evaluation.hpp"
+#include "Action.hpp"
 
 #include "Component.hpp"
 #include "ComponentBuilder.h"

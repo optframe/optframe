@@ -27,8 +27,15 @@
 #include "../../Constructive.h"
 #include "../../SingleObjSearch.hpp"
 #include "../../Evaluator.hpp"
+#include "../../NS.hpp"
+#include "../../NSSeq.hpp"
+#include "../../LocalSearch.hpp"
+#include "../../Timer.hpp"
 
 #include "VNS.h"
+
+namespace optframe
+{
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class VariableNeighborhoodSearch: public VNS, public SingleObjSearch<R, ADS>
@@ -44,10 +51,10 @@ protected:
 public:
 
 	VariableNeighborhoodSearch(Evaluator<R, ADS>& _evaluator, Constructive<R, ADS>& _constructive, vector<NS<R, ADS>*> _vNS, vector<NSSeq<R, ADS>*> _vNSSeq) :
-			evaluator(_evaluator), constructive(_constructive), vshake(_vNS), vsearch(_vNSSeq)
-	{
+		evaluator(_evaluator), constructive(_constructive), vshake(_vNS), vsearch(_vNSSeq)
+{
 		shakeTries = 50;
-	}
+}
 
 	virtual ~VariableNeighborhoodSearch()
 	{
@@ -73,7 +80,7 @@ public:
 	}
 
 	virtual pair<pair<Solution<R, ADS>&, Evaluation&>, unsigned int> neighborhoodChange(const Solution<R, ADS>& sStar, const Evaluation& eStar, const Solution<R, ADS>& s2, const Evaluation& e2, unsigned int k)
-	{
+			{
 		if (evaluator.betterThan(e2, eStar))
 		{
 			// IMPROVEMENT!
@@ -85,12 +92,12 @@ public:
 			pair<Solution<R, ADS>&, Evaluation&> p(sStar.clone(), eStar.clone());
 			return make_pair(p, k+1);
 		}
-	}
+			}
 
 	virtual LocalSearch<R, ADS>& buildSearch(unsigned k_search) = 0;
 
 	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0,  const Solution<R, ADS>* _s = NULL,  const Evaluation* _e = NULL)
-	{
+			{
 		cout << id() << " search(" << target_f << "," << timelimit << ")" << endl;
 
 		Timer tnow;
@@ -126,7 +133,7 @@ public:
 		}
 
 		return new pair<Solution<R, ADS>&, Evaluation&> (sStar, eStar);
-	}
+			}
 
 	static string idComponent()
 	{
@@ -141,5 +148,7 @@ public:
 		return idComponent();
 	}
 };
+
+}
 
 #endif /*OPTFRAME_VNS_HPP_*/

@@ -1,6 +1,6 @@
 // OptFrame - Optimization Framework
 
-// Copyright (C) 2009-2015
+// Copyright (C) 2009, 2010, 2011
 // http://optframe.sourceforge.net/
 //
 // This file is part of the OptFrame optimization framework. This framework
@@ -18,29 +18,32 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_VNS_FAMILY_H_
-#define OPTFRAME_VNS_FAMILY_H_
+#ifndef OPTFRAME_ELITISM_HPP_
+#define OPTFRAME_ELITISM_HPP_
 
-#include <string.h>
+#include "../../Solution.hpp"
+#include "../../Evaluation.hpp"
 
-using namespace std;
+#include "../../Population.hpp"
 
 namespace optframe
 {
 
-class VNS
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class Elitism
 {
-public:
-	static string family()
-	{
-		return "VNS:";
-	}
+protected:
 
-	virtual ~VNS()
-	{
-	}
+   typedef Solution<R, ADS> chromossome;
+   //typedef vector<chromossome*> Population;
+   typedef vector<Evaluation<DS>*> FitnessValues;
+
+public:
+
+   virtual Population<R, ADS> & doElitism(const Population<R, ADS> &p, const FitnessValues& fv_p, unsigned popElitistSize) const = 0;
+
 };
 
 }
 
-#endif /*OPTFRAME_VNS_FAMILY_H_*/
+#endif /*OPTFRAME_ELITISM_HPP_*/

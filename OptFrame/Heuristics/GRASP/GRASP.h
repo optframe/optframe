@@ -1,6 +1,6 @@
 // OptFrame - Optimization Framework
 
-// Copyright (C) 2009-2015
+// Copyright (C) 2009, 2010, 2011
 // http://optframe.sourceforge.net/
 //
 // This file is part of the OptFrame optimization framework. This framework
@@ -18,29 +18,30 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_VNS_FAMILY_H_
-#define OPTFRAME_VNS_FAMILY_H_
+#ifndef OPTFRAME_GRASP_FAMILY_H_
+#define OPTFRAME_GRASP_FAMILY_H_
 
 #include <string.h>
 
 using namespace std;
+//GRASPH ? TODO FIX THE NAME
 
 namespace optframe
 {
 
-class VNS
+class GRASPH
 {
 public:
 	static string family()
 	{
-		return "VNS:";
+		return "GRASPH:";
 	}
 
-	virtual ~VNS()
+	virtual ~GRASPH()
 	{
 	}
 };
 
 }
 
-#endif /*OPTFRAME_VNS_FAMILY_H_*/
+#endif /*OPTFRAME_GRASP_FAMILY_H_*/

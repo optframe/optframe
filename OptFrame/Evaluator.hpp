@@ -294,7 +294,7 @@ public:
 			// TODO: check outdated and estimated!
 			MoveCost mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, false, false);
 			// guarantee that alternative costs have same size
-			assert(alt_begin.size() == e.alternatives.size());
+			assert(alt_begin.size() == e.getAlternativeCosts().size());
 			// compute alternative costs
 			for (unsigned i = 0; i < alt_begin.size(); i++)
 				mcost.addAlternativeCost(make_pair(e.getAlternativeCosts()[i].first - alt_begin[i].first, e.getAlternativeCosts()[i].second - alt_begin[i].second));
@@ -311,16 +311,18 @@ public:
 			// must return to original situation
 
 			// apply reverse move in order to get the original solution back
-			Move<R, ADS>* ini = applyMove(*rev, s);
-			// destroy 'ini'
-			if(ini)
-				delete ini;
+			pair<Move<R, ADS>&, Evaluation&>& ini = applyMove(*rev, s);
+
 			// if Evaluation wasn't 'outdated' before, restore its previous status
 			if(!outdated)
 				e.outdated = outdated;
 
 			// go back to original evaluation
-			e = ev_begin;
+			e = ini.second;
+
+			delete &ini.first;
+			delete &ini.second;
+			delete &ini;
 
 			return false;
 		}
