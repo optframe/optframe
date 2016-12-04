@@ -74,18 +74,18 @@ public:
 	virtual inline bool betterThan(const MoveCost& mc1, const MoveCost& mc2)
 	{
 		if(isMinimization())
-			return mc1.cost() < mc2.cost();
+			return mc1.cost() < (mc2.cost() - OPTFRAME_EPSILON);
 		else
-			return mc1.cost() > mc2.cost();
+			return mc1.cost() > (mc2.cost() + OPTFRAME_EPSILON);
 	}
 
 	// true if 'e1' is better than 'e2'
 	virtual inline bool betterThan(const Evaluation& e1, const Evaluation& e2)
 	{
 		if(isMinimization())
-			return e1.evaluation() < e2.evaluation();
+			return e1.evaluation() < (e2.evaluation() - OPTFRAME_EPSILON);
 		else
-			return e1.evaluation() > e2.evaluation();
+			return e1.evaluation() > (e2.evaluation() + OPTFRAME_EPSILON);
 	}
 
 	/*
@@ -161,29 +161,18 @@ public:
 
 	// ============= improvement =============
 
-	/*
 	virtual bool isImprovement(const MoveCost& mc, const Evaluation& e1, const Evaluation& e2)
 	{
 		evtype ec1 = mc.cost() + e1.evaluation();
-		if(betterThan(ec1, e2.evaluation()))
-			return true;
-		else if(equals(ec1, e2.evaluation()))
-		{
-			assert(e1.getAlternativeCosts().size() == e2.getAlternativeCosts().size());
-			assert(mc.getAlternativeCosts().size() == e1.getAlternativeCosts().size());
 
-			vector<pair<evtype, evtype> > altCosts1(e1.getAlternativeCosts());
-			for(unsigned i = 0; i < altCosts1.size(); i++)
-			{
-				altCosts1[i].first += mc.getAlternativeCosts()[i].first;
-				altCosts1[i].second += mc.getAlternativeCosts()[i].second;
-			}
-			return betterThan(altCosts1, e2.getAlternativeCosts());
-		}
-		else
-			return false;
+		if(isMinimization() && ec1 < (e2.evaluation() - OPTFRAME_EPSILON))
+			return true;
+
+		if(!isMinimization() && ec1 > (e2.evaluation() + OPTFRAME_EPSILON))
+			return true;
+
+		return false;
 	}
-	*/
 
 
 	virtual inline bool isImprovement(const MoveCost& mc)
@@ -274,11 +263,12 @@ public:
 	{
 	}
 
+	/*
 	inline bool betterThan(evtype f1, evtype f2)
 	{
 		// MINIMIZATION
 		return (f1 < (f2 - OPTFRAME_EPSILON));
-	}
+	}*/
 
 	inline bool isMinimization() const
 	{
@@ -294,11 +284,12 @@ public:
 	{
 	}
 
+	/*
 	inline bool betterThan(evtype f1, evtype f2)
 	{
 		// MAXIMIZATION
 		return (f1 > (f2 + OPTFRAME_EPSILON));
-	}
+	}*/
 
 	inline bool isMinimization() const
 	{

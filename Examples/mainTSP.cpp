@@ -244,7 +244,10 @@ int main(int argc, char **argv)
 	check.add(tspor3);
 	check.add(tspswap);
 
-	//check.run(100, 10);
+	check.run(100, 10);
+
+	return 0;
+
 
 	BuildCommand<RepTSP> build;
 	for (unsigned i = 0; i <= 7; i++)

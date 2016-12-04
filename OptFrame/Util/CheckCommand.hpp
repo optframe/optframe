@@ -543,6 +543,8 @@ public:
 
 						// ===================== tests with ADSManager ======================
 
+						// DEPRECATED ADSManager
+#if 0
 						if (adsMan)
 						{
 							message(lEvaluator.at(ev), -1, "testing ADS.");
@@ -566,6 +568,7 @@ public:
 								return false;
 							}
 						}
+#endif
 
 						Timer te;
 						Evaluation& e_rev = evaluators.at(ev)->evaluate(s);
@@ -581,6 +584,7 @@ public:
 
 						// ===================== tests with ADSManager ======================
 
+#if 0
 						if (adsMan)
 						{
 							message(lEvaluator.at(ev), -1, "testing ADS.");
@@ -604,6 +608,11 @@ public:
 								return false;
 							}
 						}
+#endif
+
+						// go back by copy (if necessary!)
+						if(!rev)
+							s = sOriginal;
 
 						delete &sOriginal;
 
@@ -779,10 +788,12 @@ public:
 
 						message(lEvaluator.at(ev), iter, "all move costs okay!");
 
-						delete &rev;
+						if(rev)
+							delete rev;
 						delete &sNeighbor;
 						delete &e_rev;
-						delete &ini;
+						if(ini)
+							delete ini;
 						delete &e_ini;
 					}
 
@@ -890,6 +901,8 @@ public:
 
 						message(moveFrom, nqs, "testing reverse.");
 
+						Solution<R, ADS>& sOriginal = s.clone(); // remove if not verbose
+
 						Timer tMovApply;
 						Move<R, ADS>* rev = move.apply(s);
 						timeNSApply[id_nsseq].second += tMovApply.inMilliSecs();
@@ -912,6 +925,10 @@ public:
 						timeNSApply[id_nsseq].second += tMovRevApply.inMilliSecs();
 						timeNSApply[id_nsseq].first++;
 
+						if(!rev)
+							s = sOriginal;
+						delete& sOriginal;
+
 						Timer te2;
 						Evaluation& e_ini = evaluators.at(ev)->evaluate(s);
 						fullTimeEval[ev].second += te2.inMilliSecs();
@@ -931,6 +948,7 @@ public:
 							return false;
 						}
 
+
 						message(lEvaluator.at(ev), nqs, "testing reverse value (NSSeq tests).");
 
 						if (::abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
@@ -949,6 +967,7 @@ public:
 
 						// ===================== tests with ADSManager ======================
 
+#if 0
 						if (adsMan)
 						{
 							message(lEvaluator.at(ev), -1, "testing ADS (NSSeq tests).");
@@ -979,7 +998,7 @@ public:
 								return false;
 							}
 						}
-
+#endif
 						// =============================================================
 
 						message(lEvaluator.at(ev), nqs, "testing move cost (NSSeq tests).");
@@ -1078,10 +1097,12 @@ public:
 
 						delete &e;
 
-						delete &rev;
+						if(rev)
+							delete rev;
 						delete &sNeighbor;
 						delete &e_rev;
-						delete &ini;
+						if(ini)
+							delete ini;
 						delete &e_ini;
 					}
 
