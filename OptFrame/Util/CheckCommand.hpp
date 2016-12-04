@@ -25,7 +25,12 @@
 
 #include "../OptFrameList.hpp"
 
+#include "../Evaluator.hpp"
+#include "../Constructive.h"
+#include "../NS.hpp"
+#include "../NSSeq.hpp"
 #include "../NSEnum.hpp"
+
 
 namespace optframe
 {
@@ -49,7 +54,7 @@ public:
 
 	vector<ADSManager<R, ADS>*> lADSManagerComp; // optional
 
-	CheckCommand(bool _verbose = true) :
+	CheckCommand(bool _verbose = false) :
 			verbose(_verbose)
 	{
 		convertNS = true;
@@ -381,9 +386,9 @@ public:
 					}
 
 					// fasterCost
-					Move<R, ADS>& rev1 = evaluators[ev]->applyMove(e, move, s);
+					Move<R, ADS>& rev1 = *evaluators[ev]->applyMove(e, move, s);
 					double e_end1 = e.evaluation();
-					Move<R, ADS>& ini1 = evaluators[ev]->applyMove(e, rev1, s);
+					Move<R, ADS>& ini1 = *evaluators[ev]->applyMove(e, rev1, s);
 					double e_ini1 = e.evaluation();
 
 					delete &rev1;
@@ -664,9 +669,9 @@ public:
 
 						// fasterCost
 						Timer tMoveCostApplyDelta;
-						Move<R, ADS>& rev1 = evaluators[ev]->applyMove(e, move, s);
+						Move<R, ADS>& rev1 = *evaluators[ev]->applyMove(e, move, s);
 						double e_end1 = e.evaluation();
-						Move<R, ADS>& ini1 = evaluators[ev]->applyMove(e, rev1, s);
+						Move<R, ADS>& ini1 = *evaluators[ev]->applyMove(e, rev1, s);
 						double e_ini1 = e.evaluation();
 						timeNSCostApplyDelta[id_ns].second += tMoveCostApplyDelta.inMilliSecs();
 						timeNSCostApplyDelta[id_ns].first++;
@@ -999,9 +1004,9 @@ public:
 
 						// fasterCost
 						Timer tMoveCostApplyDelta;
-						Move<R, ADS>& rev1 = evaluators[ev]->applyMove(e, move, s);
+						Move<R, ADS>& rev1 = *evaluators[ev]->applyMove(e, move, s);
 						double e_end1 = e.evaluation();
-						Move<R, ADS>& ini1 = evaluators[ev]->applyMove(e, rev1, s);
+						Move<R, ADS>& ini1 = *evaluators[ev]->applyMove(e, rev1, s);
 						double e_ini1 = e.evaluation();
 						timeNSCostApplyDelta[id_nsseq].second += tMoveCostApplyDelta.inMilliSecs();
 						timeNSCostApplyDelta[id_nsseq].first++;

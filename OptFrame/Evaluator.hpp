@@ -116,8 +116,10 @@ public:
 	// Update evaluation 'e'
 	Move<R, ADS>* applyMove(Evaluation& e, Move<R, ADS>& m, Solution<R, ADS>& s)
 	{
-		// apply move and get reverse move (for now, must be not NULL)
+		// apply move and get reverse move
 		Move<R, ADS>* rev = m.apply(e, s);
+		// for now, must be not NULL
+		assert(rev != NULL);
 		// consolidate 'outdated' evaluation data on 'e'
 		evaluate(e, s);
 		// create pair
@@ -128,8 +130,10 @@ public:
 	// Return new evaluation 'e'
 	pair<Move<R, ADS>&, Evaluation&>& applyMove(Move<R, ADS>& m, Solution<R, ADS>& s)
 	{
-		// apply move and get reverse move (for now, must be not NULL)
+		// apply move and get reverse move
 		Move<R, ADS>* rev = m.apply(s);
+		// for now, must be not NULL
+		assert(rev != NULL);
 		// TODO: include management for 'false' hasReverse()
 		assert(m.hasReverse() && rev);
 		// create pair
