@@ -10,6 +10,8 @@
 // LOADER IS NOT DEFAULT ANYMORE. USE ONLY IF YOU NEED...
 //#include "../OptFrame/Loader.hpp"
 
+#include "../OptFrame/Util/CheckCommand.hpp"
+
 #include "$project.h"
 
 using namespace std;
@@ -22,6 +24,22 @@ int main(int argc, char **argv)
    
    // Initialize here all your OptFrame components 
    // (ProblemInstance, Evaluator, Constructive, ...)
+   
+   Scanner scanner("");
+   ProblemInstance p(scanner);
+
+   MyEvaluator ev(p);
+
+   NSSeq$neighborhood ns1(p, rg);
+   
+   Constructive$constructive c1(p);
+   
+   CheckCommand<Rep$project> check;
+   check.add(ev);
+   check.add(c1);
+   check.add(ns1);
+   
+   check.run(10,10);
 
    cout << "Program ended successfully" << endl;
    

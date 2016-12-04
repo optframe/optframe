@@ -20,7 +20,7 @@
 namespace $project
 {
 
-class $projectEvaluator: public Evaluator<Rep$project, MY_ADS >
+class MyEvaluator: public Evaluator<Rep$project, MY_ADS >
 {
 private:
 	ProblemInstance& p$project;
@@ -28,9 +28,9 @@ private:
 	// Your private vars
 
 public:
-	$projectEvaluator(ProblemInstance& _p$project);
+	MyEvaluator(ProblemInstance& _p$project);
 	
-	virtual ~$projectEvaluator();
+	virtual ~MyEvaluator();
 
 	Evaluation$project& evaluate(const Rep$project& rep);
 	

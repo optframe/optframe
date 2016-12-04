@@ -2,17 +2,17 @@
 
 using namespace $project;
 
-$projectEvaluator::$projectEvaluator(ProblemInstance& _p$project): // If necessary, add more parameters
+MyEvaluator::MyEvaluator(ProblemInstance& _p$project): // If necessary, add more parameters
 p$project(_p$project)
 {
 	// Put the rest of your code here
 }
 	
-$projectEvaluator::~$projectEvaluator()
+MyEvaluator::~MyEvaluator()
 {
 }
 
-Evaluation$project& $projectEvaluator::evaluate(const Rep$project& rep)
+Evaluation$project& MyEvaluator::evaluate(const Rep$project& rep)
 {
     // 'rep' is the representation of the solution
 
@@ -21,13 +21,13 @@ Evaluation$project& $projectEvaluator::evaluate(const Rep$project& rep)
     return * new Evaluation$project(fo);
 }
 
-bool $projectEvaluator::betterThan(double f1, double f2)
+bool MyEvaluator::betterThan(double f1, double f2)
 {
     // $minmax
     return $epsilon
 }
 
-bool $projectEvaluator::isMinimization() const
+bool MyEvaluator::isMinimization() const
 {
 	// $minmax
 	return $isMin

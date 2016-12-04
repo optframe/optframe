@@ -430,6 +430,14 @@ then echo "Main file...[ok]"
      sed "$t" < $var > $var_tmp
      mv $var_tmp $var
 
+     t="s/\$constructive/$constructive/g"  
+     sed "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
+     t="s/\$neighborhood/$neighborhood/g"  
+     sed "$t" < $var > $var_tmp
+     mv $var_tmp $var
+
      t="s/\$name/$name/g"  
      sed "$t" < $var > $var_tmp
      mv $var_tmp $var
