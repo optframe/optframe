@@ -338,6 +338,7 @@ public:
 		vector<pair<int, double> > timeNSCost;
 		vector<pair<int, double> > timeNSEstimatedCost;
 		vector<pair<int, double> > errorNSEstimatedCost;
+		bool overestimate, underestimate;
 	};
 
 
@@ -553,6 +554,10 @@ public:
 			{
 				timeNS.timeNSEstimatedCost[id_ns].second += tMoveCost.inMilliSecs();
 				timeNS.timeNSEstimatedCost[id_ns].first++;
+				if(cost->cost() > revCost)
+					timeNS.overestimate = true;
+				if(cost->cost() < revCost)
+					timeNS.underestimate = true;
 			}
 
 			if (cost && !cost->isEstimated())
@@ -817,6 +822,10 @@ public:
 			{
 				timeNS.timeNSEstimatedCost[id_nsseq].second += tMoveCost.inMilliSecs();
 				timeNS.timeNSEstimatedCost[id_nsseq].first++;
+				if(cost->cost() > revCost)
+					timeNS.overestimate = true;
+				if(cost->cost() < revCost)
+					timeNS.underestimate = true;
 			}
 
 			if (cost && !cost->isEstimated())
@@ -954,6 +963,16 @@ public:
 					fullTimeEval[ev].first++;
 
 					evaluations.at(ev).push_back(&e);
+
+					if (lEvaluator.at(ev)->betterThan(e, e)) {
+						cout << "checkcommand: error in betterThan(X,X)=true for Evaluator " << ev << endl;
+						return false;
+					}
+
+					if (!lEvaluator.at(ev)->betterOrEquals(e, e)) {
+						cout << "checkcommand: error in betterOrEquals(X,X)=false for Evaluator " << ev << endl;
+						return false;
+					}
 				}
 			}
 
@@ -1023,6 +1042,7 @@ public:
 		timeNS.timeNSCost = vector<pair<int, double> > (lNS.size(), make_pair(0, 0.0));
 		timeNS.timeNSEstimatedCost = vector<pair<int, double> > (lNS.size(), make_pair(0, 0.0));
 		timeNS.errorNSEstimatedCost = vector<pair<int, double> > (lNS.size(), make_pair(0, 0.0));
+		timeNS.overestimate = timeNS.underestimate = false;
 
 		for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++)
 		{
