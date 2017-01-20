@@ -330,7 +330,7 @@ public:
 	} // testMove
 
 
-	struct TimeNS
+	struct TimeNS // TODO: rename to TimeCheckNS
 	{
 		vector<pair<int, double> > timeNSApply;
 		vector<pair<int, double> > timeNSCostApply;
@@ -874,6 +874,306 @@ public:
 	}
 
 
+    struct TimeCheckSol {
+		pair<int, double> timeCloneSolution;
+		vector<pair<int, double> > timeInitializeADS;
+		vector<pair<int, double> > fullTimeEval;
+		vector<pair<int, double> > timeReeval;
+	};
+
+
+	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
+	{
+		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
+		{
+			message(lEvaluator.at(ev), iter, "evaluating random move (apply, revert and moveCost).");
+
+			Evaluation& e = lEvaluator[ev]->evaluate(s);
+
+			string moveFrom = "Move ";
+			moveFrom.append(move.id());
+			moveFrom.append(" from: ");
+			moveFrom.append(ns->id());
+			moveFrom.append(" toString: ");
+			moveFrom.append(ns->toString());
+
+			if (verbose)
+				move.print();
+
+			message(moveFrom, iter, "testing reverse.");
+
+			Timer t_clone;
+			Solution<R, ADS>& sOriginal = s.clone(); // remove if not verbose
+			timeSol.timeCloneSolution.second += t_clone.inMilliSecs();
+			timeSol.timeCloneSolution.first++;
+
+			Timer tMovApply;
+			Move<R, ADS>* rev = move.apply(s);
+			timeNS.timeNSApply[id_ns].second += tMovApply.inMilliSecs();
+			timeNS.timeNSApply[id_ns].first++;
+
+			Timer t_clone2;
+			Solution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
+			timeSol.timeCloneSolution.second += t_clone2.inMilliSecs();
+			timeSol.timeCloneSolution.first++;
+
+			// ===================== tests with ADSManager ======================
+
+			// DEPRECATED ADSManager
+#if 1
+			if (adsMan) {
+				message(lEvaluator.at(ev), -1, "testing ADS.");
+
+				ADS ads(sNeighbor.getADS()); // copy
+				Timer ts_ds;
+				adsMan->initializeADS(sNeighbor.getR(), sNeighbor.getADS());
+				timeSol.timeInitializeADS[0].second += ts_ds.inMilliSecs();
+				timeSol.timeInitializeADS[0].first++;
+
+				if (!adsMan->compareADS(ads, sNeighbor.getADS())) {
+					cout
+							<< "checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
+					move.print();
+					cout << "S (sOriginal.getADS()): " << endl;
+					adsMan->printADS(sOriginal.getADS());
+					cout << "WRONG: (sNeighbor.getADS())" << endl;
+					adsMan->printADS(ads);
+					cout << "RIGHT (re-initialized): " << endl;
+					adsMan->printADS(sNeighbor.getADS());
+					return false;
+				}
+			}
+#endif
+
+			Timer te;
+			Evaluation& e_rev = lEvaluator.at(ev)->evaluate(s);
+			timeSol.fullTimeEval[ev].second += te.inMilliSecs();
+			timeSol.fullTimeEval[ev].first++;
+
+			Timer tMovRevApply;
+			Move<R, ADS>* ini = NULL;
+			if (rev)
+				ini = rev->apply(s);
+			timeNS.timeNSApply[id_ns].second += tMovRevApply.inMilliSecs();
+			timeNS.timeNSApply[id_ns].first++;
+
+			// ===================== tests with ADSManager ======================
+
+#if 1
+			if (adsMan) {
+				message(lEvaluator.at(ev), -1, "testing ADS.");
+
+				ADS ads(s.getADS()); // copy
+				Timer ts_ds2;
+				adsMan->initializeADS(s.getR(), s.getADS());
+				timeSol.timeInitializeADS[0].second += ts_ds2.inMilliSecs();
+				timeSol.timeInitializeADS[0].first++;
+
+				if (!adsMan->compareADS(ads, s.getADS())) {
+					cout
+							<< "checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
+					Component::safe_print(rev);
+					cout << "S (sOriginal.getADS()): " << endl;
+					adsMan->printADS(sOriginal.getADS());
+					cout << "WRONG (s.getADS()): " << endl;
+					adsMan->printADS(ads);
+					cout << "RIGHT (re-initialized): " << endl;
+					adsMan->printADS(s.getADS());
+					return false;
+				}
+			}
+#endif
+
+			// go back by copy (if necessary!)
+			if (!rev)
+				s = sOriginal;
+
+			delete &sOriginal;
+
+			Timer te2;
+			Evaluation& e_ini = lEvaluator.at(ev)->evaluate(s);
+			timeSol.fullTimeEval[ev].second += te2.inMilliSecs();
+			timeSol.fullTimeEval[ev].first++;
+
+			if (ini && (*ini != move)) {
+				error("reverse of reverse is not the original move!");
+				move.print();
+				cout << "move: ";
+				move.print();
+				cout << "rev: ";
+				Component::safe_print(rev);
+				cout << "ini (reverse of rev): ";
+				Component::safe_print(ini);
+
+				return false;
+			}
+
+			message(lEvaluator.at(ev), iter, "testing reverse value.");
+
+			if (::abs(e_ini.evaluation() - e.evaluation()) > 0.0001) {
+				error("reverse of reverse has a different evaluation value!");
+				move.print();
+				cout << "move: ";
+				move.print();
+				cout << "original: ";
+				e.print();
+				cout << "reverse of reverse:";
+				e_ini.print();
+
+				return false;
+			}
+
+			// =============================================================
+
+			message(lEvaluator.at(ev), iter, "testing move cost.");
+
+			double revCost = e_rev.evaluation() - e.evaluation();
+			message(lEvaluator.at(ev), iter, "revCost calculated!");
+
+			Timer tMoveCostApply;
+			MoveCost& mcSimpleCost = lEvaluator[ev]->moveCost(move, s);
+			double simpleCost = mcSimpleCost.cost();
+			delete &mcSimpleCost;
+			message(lEvaluator.at(ev), iter, "simpleCost calculated!");
+			timeNS.timeNSCostApply[id_ns].second +=
+					tMoveCostApply.inMilliSecs();
+			timeNS.timeNSCostApply[id_ns].first++;
+
+			if (abs(revCost - simpleCost) > 0.0001) {
+				error("difference between revCost and simpleCost");
+				move.print();
+				printf("revCost = %.4f\n", revCost);
+				printf("simpleCost = %.4f\n", simpleCost);
+				return false;
+			}
+
+			// fasterCost
+			Timer tMoveCostApplyDelta;
+			Move<R, ADS>& rev1 = *lEvaluator[ev]->applyMove(e, move, s);
+			double e_end1 = e.evaluation();
+			Move<R, ADS>& ini1 = *lEvaluator[ev]->applyMove(e, rev1, s);
+			double e_ini1 = e.evaluation();
+			timeNS.timeNSCostApplyDelta[id_ns].second +=
+					tMoveCostApplyDelta.inMilliSecs();
+			timeNS.timeNSCostApplyDelta[id_ns].first++;
+
+			delete &rev1;
+			delete &ini1;
+
+			double fasterCost = e_end1 - e_ini1;
+			message(lEvaluator.at(ev), iter, "fasterCost calculated!");
+
+			if (abs(revCost - fasterCost) > 0.0001) {
+				error("difference between revCost and fasterCost");
+				move.print();
+				printf("revCost = %.4f\n", revCost);
+				printf("fasterCost = %.4f\n", fasterCost);
+				printf("e = %.4f\n", e.evaluation());
+				printf("e_rev = %.4f\n", e_rev.evaluation());
+				return false;
+			}
+
+			Timer tMoveCost;
+			MoveCost* cost = NULL;
+
+			if (lEvaluator[ev]->getAllowCosts())
+				cost = move.cost(e, s.getR(), s.getADS());
+
+			message(lEvaluator.at(ev), iter, "cost() calculated!");
+
+			if (cost && !cost->isEstimated()) {
+				timeNS.timeNSCost[id_ns].second += tMoveCost.inMilliSecs();
+				timeNS.timeNSCost[id_ns].first++;
+			}
+
+			if (cost && cost->isEstimated()) {
+				timeNS.timeNSEstimatedCost[id_ns].second +=
+						tMoveCost.inMilliSecs();
+				timeNS.timeNSEstimatedCost[id_ns].first++;
+				if (cost->cost() > revCost)
+					timeNS.overestimate = true;
+				if (cost->cost() < revCost)
+					timeNS.underestimate = true;
+			}
+
+			if (cost && !cost->isEstimated()) {
+				double cValue = cost->cost();
+				if (abs(revCost - cValue) > 0.0001) {
+					error("difference between expected cost and cost()");
+					move.print();
+					printf("expected =\t %.4f\n", revCost);
+					printf("cost() =\t %.4f\n", cValue);
+					printf("==============\n");
+					printf("CORRECT VALUES \n");
+					printf("==============\n");
+					printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n",
+							e.getObjFunction(), e.getInfMeasure(),
+							e.evaluation());
+					printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n",
+							e_rev.getObjFunction(), e_rev.getInfMeasure(),
+							e_rev.evaluation());
+					cout << "s: ";
+					s.print();
+					cout << "s': ";
+					sNeighbor.print();
+					cout << "move: ";
+					move.print();
+					printf("==============\n");
+					printf("  GOOD LUCK!  \n");
+					printf("==============\n");
+					return false;
+				}
+
+				// testing double move costs! (for MoveCost betterThan)
+
+				Move<R, ADS>& move2 = ns->move(s);
+				if (verbose) {
+					cout << "testing double move!" << endl;
+					move2.print();
+				}
+
+				if (!move2.canBeApplied(s)) {
+					if (verbose) {
+						cout << "double move cannot be applied: ";
+						move2.print();
+					}
+				} else {
+					MoveCost* cost2 = NULL;
+					if (lEvaluator[ev]->getAllowCosts()) {
+						cost2 = move2.cost(e, s.getR(), s.getADS());
+						if (cost2) {
+							lEvaluator[ev]->betterThan(*cost, *cost2);
+							delete cost2;
+						}
+					}
+				}
+
+				delete &move2;
+
+				// finish double cost test
+
+				delete cost;
+			}
+
+			message(lEvaluator.at(ev), iter, "all move costs okay!");
+
+			delete &e;
+
+			if (rev)
+				delete rev;
+			delete &sNeighbor;
+			delete &e_rev;
+			if (ini)
+				delete ini;
+			delete &e_ini;
+		}
+
+		//delete &move;  // ONLY IF NECESSARY!
+
+		return true;
+	}
+
+
 	bool run(int iterMax, int nSolNSSeq)
 	{
 		// ======================================
@@ -892,8 +1192,9 @@ public:
 		cout << "DEPRECATED:adsmanager=" << lADSManagerComp.size() << endl;
 		cout << "---------------------------------------" << endl << endl;
 
+		TimeCheckSol timeSol;
 		// time to clone a solution
-		pair<int, double> timeCloneSolution(0, 0.0);
+		timeSol.timeCloneSolution = pair<int, double>(0, 0.0);
 
 		adsMan = NULL;
 		if (lADSManagerComp.size() > 0)
@@ -904,7 +1205,7 @@ public:
 				cout << " checkcommand warning: more than 1 ADSManager (" << lADSManagerComp.size() << ")" << endl;
 		}
 
-		vector<pair<int, double> > timeInitializeADS(1, make_pair(0, 0.0));
+		timeSol.timeInitializeADS = vector<pair<int, double> >(1, make_pair(0, 0.0));
 
 		// ----------------
 		// read evaluators
@@ -914,8 +1215,8 @@ public:
 		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
 			evaluators.push_back(lEvaluator[ev]);
 
-		vector<pair<int, double> > fullTimeEval(evaluators.size(), make_pair(0, 0.0));
-		vector<pair<int, double> > timeReeval(evaluators.size(), make_pair(0, 0.0));
+		timeSol.fullTimeEval = vector<pair<int, double> >(evaluators.size(), make_pair(0, 0.0));
+		timeSol.timeReeval = vector<pair<int, double> >(evaluators.size(), make_pair(0, 0.0));
 
 		// ----------------------------------------------------------------------------------------
 		// generate 'iterMax' OptFrame:Solution for each OptFrame:Constructive and store evaluation
@@ -948,8 +1249,8 @@ public:
 				{
 					Timer ts2;
 					adsMan->initializeADS(s.getR(), s.getADS());
-					timeInitializeADS[0].second += ts2.inMilliSecs();
-					timeInitializeADS[0].first++;
+					timeSol.timeInitializeADS[0].second += ts2.inMilliSecs();
+					timeSol.timeInitializeADS[0].first++;
 				}
 
 				solutions.push_back(&s);
@@ -959,8 +1260,8 @@ public:
 					message(lEvaluator.at(ev), iter, "evaluating solution.");
 					Timer te;
 					Evaluation& e = evaluators.at(ev)->evaluate(s);
-					fullTimeEval[ev].second += te.inMilliSecs();
-					fullTimeEval[ev].first++;
+					timeSol.fullTimeEval[ev].second += te.inMilliSecs();
+					timeSol.fullTimeEval[ev].first++;
 
 					evaluations.at(ev).push_back(&e);
 
@@ -1017,10 +1318,10 @@ public:
 					continue;
 				}
 
-				if(!testMove(s, id_s, move, evaluations, timeCloneSolution, timeInitializeADS))
+				if(!testMove(s, id_s, move, evaluations, timeSol.timeCloneSolution, timeSol.timeInitializeADS))
 					return false;
 
-				/////delete& move; // NEVER DESTROY THIS OptFrame:Move!
+				/////delete& move; // TODO NEVER DESTROY THIS OptFrame:Move!
 			}
 
 		}
@@ -1085,9 +1386,15 @@ public:
 					// EXEC TESTS HERE
 
 					// bool testMoveNS(int iter, NS<R,ADS>* ns, int id_ns, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
-					if(!testMoveNS(iter, ns, id_ns, s, id_s, move, evaluations, timeCloneSolution, timeInitializeADS, fullTimeEval, timeReeval, timeNS))
+					// bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
 
+					if(!testMoveGeneral(iter, ns, id_ns, s, id_s, move, evaluations, timeSol, timeNS))
+					{
+						delete &move;
 						return false;
+					}
+
+					delete &move;
 				}
 			}
 
@@ -1122,6 +1429,7 @@ public:
 
 				int randomIndex = rand() % solutions.size();
 				Solution<R, ADS>& s = *solutions.at(randomIndex);
+				int id_s = randomIndex;
 
 				// ===================
 				// apply a single move
@@ -1154,8 +1462,13 @@ public:
 					// EXEC MOVES HERE
 
 					//	bool testMoveNSSeq(int iter, NSSeq<R,ADS>* nsseq, int nqs, int id_nsseq, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
-					testMoveNSSeq(nsseq, nqs, id_nsseq, s, move, evaluations, timeCloneSolution, timeInitializeADS, fullTimeEval, timeReeval, timeNS);
+					// 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
 
+					if(!testMoveGeneral(nqs, nsseq, id_nsseq, s, id_s, move, evaluations, timeSol, timeNS))
+					{
+						delete &move;
+						return false;
+					}
 
 					delete &move;
 				}
@@ -1182,16 +1495,16 @@ public:
 		cout << "           SUMMARY             " << endl;
 		cout << "===============================" << endl << endl;
 
-		printSingleSummary("Solution", timeCloneSolution, "Time to clone a solution");
+		printSingleSummary("Solution", timeSol.timeCloneSolution, "Time to clone a solution");
 
 		printSummary(convertVector(lConstructive), timeConstructive, "Constructive", "testing construction of initial solution");
 
 		if (adsMan)
-			printSummary(convertVector(lADSManagerComp), timeInitializeADS, "ADSManager::initializeADS()", "testing lazy initializeADS in solutions");
+			printSummary(convertVector(lADSManagerComp), timeSol.timeInitializeADS, "ADSManager::initializeADS()", "testing lazy initializeADS in solutions");
 		else
 			cout << endl << "No ADSManager was tested." << endl << endl;
 
-		printSummary(convertVector(lEvaluator), fullTimeEval, "Evaluators", "testing full evaluate(s) of a solution");
+		printSummary(convertVector(lEvaluator), timeSol.fullTimeEval, "Evaluators", "testing full evaluate(s) of a solution");
 
 		printSummary(convertVector(lNS), timeNS.timeNSApply, "NS", "testing time of move apply(s)");
 
