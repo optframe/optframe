@@ -134,203 +134,7 @@ public:
 	}
 
 
-	bool testMove(Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS)
-	{
-		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
-		{
-			message(lEvaluator.at(ev), -1, "evaluating move (apply, revert and moveCost).");
-
-			string moveFrom = "Move ";
-			moveFrom.append(move.id());
-
-			if (verbose)
-				move.print();
-
-			message(moveFrom, -1, "testing reverse.");
-
-			Move<R, ADS>* rev = move.apply(s);
-
-			Timer t_clone;
-			Solution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
-			timeCloneSolution.second += t_clone.inMilliSecs();
-			timeCloneSolution.first++;
-
-			// ===================== tests with ADSManager ======================
-
-			if (adsMan)
-			{
-				message(lEvaluator.at(ev), -1, "testing ADS.");
-
-				ADS ads(sNeighbor.getADS()); // copy
-				Timer ts_ds;
-				adsMan->initializeADS(sNeighbor.getR(), sNeighbor.getADS());
-				timeInitializeADS[0].second += ts_ds.inMilliSecs();
-				timeInitializeADS[0].first++;
-
-				if (!adsMan->compareADS(ads, sNeighbor.getADS()))
-				{
-					cout << "checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
-					move.print();
-					return false;
-				}
-
-			}
-
-			Evaluation& e_rev = lEvaluator.at(ev)->evaluate(s);
-
-			Move<R, ADS>* ini = NULL;
-
-			if (rev)
-				ini = rev->apply(s);
-
-			// ===================== tests with ADSManager ======================
-
-			if (adsMan)
-			{
-				message(lEvaluator.at(ev), -1, "testing ADS.");
-
-				ADS ads(s.getADS()); // copy
-				Timer ts_ds2;
-				adsMan->initializeADS(s.getR(), s.getADS());
-				timeInitializeADS[0].second += ts_ds2.inMilliSecs();
-				timeInitializeADS[0].first++;
-
-				if (!adsMan->compareADS(ads, s.getADS()))
-				{
-					cout << " checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
-
-					if (rev)
-						rev->print();
-					else
-						cout << "NULL Move" << endl;
-					return false;
-				}
-			}
-
-			Evaluation& e_ini = lEvaluator.at(ev)->evaluate(s);
-
-			if (ini && (*ini != move))
-			{
-				error("reverse of reverse is not the original move!");
-				move.print();
-				cout << "move: ";
-				move.print();
-				cout << "rev: ";
-				Component::safe_print(rev);
-				cout << "ini (reverse of rev): ";
-				Component::safe_print(ini);
-
-				return false;
-			}
-
-			message(lEvaluator.at(ev), -1, "testing reverse value.");
-			Evaluation& e = *evaluations.at(ev).at(id_s);
-
-			if (::abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
-			{
-				error("reverse of reverse has a different evaluation value!");
-				move.print();
-				cout << "move: ";
-				move.print();
-				cout << "original: ";
-				e.print();
-				cout << "reverse of reverse:";
-				e_ini.print();
-
-				return false;
-			}
-
-			// =============================================================
-
-			message(lEvaluator.at(ev), -1, "testing move cost.");
-
-			double revCost = e_rev.evaluation() - e.evaluation();
-
-			MoveCost& mcSimpleCost = lEvaluator[ev]->moveCost(move, s);
-			double simpleCost = mcSimpleCost.cost();
-			delete &mcSimpleCost;
-
-			if (abs(revCost - simpleCost) > 0.0001)
-			{
-				error("difference between revCost and simpleCost");
-				move.print();
-				printf("revCost = %.4f\n", revCost);
-				printf("simpleCost = %.4f\n", simpleCost);
-				return false;
-			}
-
-			// fasterCost
-			Move<R, ADS>& rev1 = *lEvaluator[ev]->applyMove(e, move, s);
-			double e_end1 = e.evaluation();
-			Move<R, ADS>& ini1 = *lEvaluator[ev]->applyMove(e, rev1, s);
-			double e_ini1 = e.evaluation();
-
-			delete &rev1;
-			delete &ini1;
-
-			double fasterCost = e_end1 - e_ini1;
-
-			if (abs(revCost - fasterCost) > 0.0001)
-			{
-				error("difference between revCost and fasterCost");
-				move.print();
-				printf("revCost = %.4f\n", revCost);
-				printf("fasterCost = %.4f\n", fasterCost);
-				printf("e = %.4f\n", e.evaluation());
-				printf("e_rev = %.4f\n", e_rev.evaluation());
-				return false;
-			}
-
-			MoveCost* cost = NULL;
-
-			if (lEvaluator[ev]->getAllowCosts())
-				cost = move.cost(e, s.getR(), s.getADS());
-
-			if (cost)
-			{
-				double cValue = cost->getObjFunctionCost() + cost->getInfMeasureCost();
-				if (abs(revCost - cValue) > 0.0001)
-				{
-					error("difference between expected cost and cost()");
-					move.print();
-					printf("expected =\t %.4f\n", revCost);
-					printf("cost() =\t %.4f\n", cValue);
-					printf("==============\n");
-					printf("CORRECT VALUES \n");
-					printf("==============\n");
-					printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
-					printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
-					cout << "s: ";
-					s.print();
-					cout << "s': ";
-					sNeighbor.print();
-					cout << "move: ";
-					move.print();
-					printf("==============\n");
-					printf("  GOOD LUCK!  \n");
-					printf("==============\n");
-					return false;
-				}
-
-				delete cost;
-			}
-
-			message(lEvaluator.at(ev), -1, "all move costs okay!");
-
-			if(rev)
-				delete rev;
-			delete &sNeighbor;
-			delete &e_rev;
-			if(ini)
-				delete ini;
-			delete &e_ini;
-		}
-
-		return true;
-	} // testMove
-
-
-	struct TimeNS // TODO: rename to TimeCheckNS
+	struct TimeCheckNS
 	{
 		vector<pair<int, double> > timeNSApply;
 		vector<pair<int, double> > timeNSCostApply;
@@ -342,538 +146,6 @@ public:
 	};
 
 
-	bool testMoveNS(int iter, NS<R,ADS>* ns, int id_ns, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
-	{
-		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
-		{
-			message(lEvaluator.at(ev), iter, "evaluating random move (apply, revert and moveCost).");
-
-			string moveFrom = "Move ";
-			moveFrom.append(move.id());
-			moveFrom.append(" from: ");
-			moveFrom.append(ns->id());
-			moveFrom.append(" toString: ");
-			moveFrom.append(ns->toString());
-
-			if (verbose)
-				move.print();
-
-			message(moveFrom, iter, "testing reverse.");
-
-			Timer t_clone;
-			Solution<R, ADS>& sOriginal = s.clone(); // remove if not verbose
-			timeCloneSolution.second += t_clone.inMilliSecs();
-			timeCloneSolution.first++;
-
-			Timer tMovApply;
-			Move<R, ADS>* rev = move.apply(s);
-			timeNS.timeNSApply[id_ns].second += tMovApply.inMilliSecs();
-			timeNS.timeNSApply[id_ns].first++;
-
-			Timer t_clone2;
-			Solution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
-			timeCloneSolution.second += t_clone2.inMilliSecs();
-			timeCloneSolution.first++;
-
-			// ===================== tests with ADSManager ======================
-
-			// DEPRECATED ADSManager
-#if 1
-			if (adsMan)
-			{
-				message(lEvaluator.at(ev), -1, "testing ADS.");
-
-				ADS ads(sNeighbor.getADS()); // copy
-				Timer ts_ds;
-				adsMan->initializeADS(sNeighbor.getR(), sNeighbor.getADS());
-				timeInitializeADS[0].second += ts_ds.inMilliSecs();
-				timeInitializeADS[0].first++;
-
-				if (!adsMan->compareADS(ads, sNeighbor.getADS()))
-				{
-					cout << "checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
-					move.print();
-					cout << "S (sOriginal.getADS()): " << endl;
-					adsMan->printADS(sOriginal.getADS());
-					cout << "WRONG: (sNeighbor.getADS())" << endl;
-					adsMan->printADS(ads);
-					cout << "RIGHT (re-initialized): " << endl;
-					adsMan->printADS(sNeighbor.getADS());
-					return false;
-				}
-			}
-#endif
-
-			Timer te;
-			Evaluation& e_rev = lEvaluator.at(ev)->evaluate(s);
-			fullTimeEval[ev].second += te.inMilliSecs();
-			fullTimeEval[ev].first++;
-
-			Timer tMovRevApply;
-			Move<R, ADS>* ini = NULL;
-			if (rev)
-				ini = rev->apply(s);
-			timeNS.timeNSApply[id_ns].second += tMovRevApply.inMilliSecs();
-			timeNS.timeNSApply[id_ns].first++;
-
-			// ===================== tests with ADSManager ======================
-
-#if 1
-			if (adsMan)
-			{
-				message(lEvaluator.at(ev), -1, "testing ADS.");
-
-				ADS ads(s.getADS()); // copy
-				Timer ts_ds2;
-				adsMan->initializeADS(s.getR(), s.getADS());
-				timeInitializeADS[0].second += ts_ds2.inMilliSecs();
-				timeInitializeADS[0].first++;
-
-				if (!adsMan->compareADS(ads, s.getADS()))
-				{
-					cout << "checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
-					Component::safe_print(rev);
-					cout << "S (sOriginal.getADS()): " << endl;
-					adsMan->printADS(sOriginal.getADS());
-					cout << "WRONG (s.getADS()): " << endl;
-					adsMan->printADS(ads);
-					cout << "RIGHT (re-initialized): " << endl;
-					adsMan->printADS(s.getADS());
-					return false;
-				}
-			}
-#endif
-
-			// go back by copy (if necessary!)
-			if(!rev)
-				s = sOriginal;
-
-			delete &sOriginal;
-
-			Timer te2;
-			Evaluation& e_ini = lEvaluator.at(ev)->evaluate(s);
-			fullTimeEval[ev].second += te2.inMilliSecs();
-			fullTimeEval[ev].first++;
-
-			if (ini && (*ini != move))
-			{
-				error("reverse of reverse is not the original move!");
-				move.print();
-				cout << "move: ";
-				move.print();
-				cout << "rev: ";
-				Component::safe_print(rev);
-				cout << "ini (reverse of rev): ";
-				Component::safe_print(ini);
-
-				return false;
-			}
-
-			message(lEvaluator.at(ev), iter, "testing reverse value.");
-			Evaluation& e = *evaluations.at(ev).at(id_s);
-
-			if (::abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
-			{
-				error("reverse of reverse has a different evaluation value!");
-				move.print();
-				cout << "move: ";
-				move.print();
-				cout << "original: ";
-				e.print();
-				cout << "reverse of reverse:";
-				e_ini.print();
-
-				return false;
-			}
-
-			// =============================================================
-
-			message(lEvaluator.at(ev), iter, "testing move cost.");
-
-			double revCost = e_rev.evaluation() - e.evaluation();
-			message(lEvaluator.at(ev), iter, "revCost calculated!");
-
-			Timer tMoveCostApply;
-			MoveCost& mcSimpleCost = lEvaluator[ev]->moveCost(move, s);
-			double simpleCost = mcSimpleCost.cost();
-			delete &mcSimpleCost;
-			message(lEvaluator.at(ev), iter, "simpleCost calculated!");
-			timeNS.timeNSCostApply[id_ns].second += tMoveCostApply.inMilliSecs();
-			timeNS.timeNSCostApply[id_ns].first++;
-
-			if (abs(revCost - simpleCost) > 0.0001)
-			{
-				error("difference between revCost and simpleCost");
-				move.print();
-				printf("revCost = %.4f\n", revCost);
-				printf("simpleCost = %.4f\n", simpleCost);
-				return false;
-			}
-
-			// fasterCost
-			Timer tMoveCostApplyDelta;
-			Move<R, ADS>& rev1 = *lEvaluator[ev]->applyMove(e, move, s);
-			double e_end1 = e.evaluation();
-			Move<R, ADS>& ini1 = *lEvaluator[ev]->applyMove(e, rev1, s);
-			double e_ini1 = e.evaluation();
-			timeNS.timeNSCostApplyDelta[id_ns].second += tMoveCostApplyDelta.inMilliSecs();
-			timeNS.timeNSCostApplyDelta[id_ns].first++;
-
-			delete &rev1;
-			delete &ini1;
-
-			double fasterCost = e_end1 - e_ini1;
-			message(lEvaluator.at(ev), iter, "fasterCost calculated!");
-
-			if (abs(revCost - fasterCost) > 0.0001)
-			{
-				error("difference between revCost and fasterCost");
-				move.print();
-				printf("revCost = %.4f\n", revCost);
-				printf("fasterCost = %.4f\n", fasterCost);
-				printf("e = %.4f\n", e.evaluation());
-				printf("e_rev = %.4f\n", e_rev.evaluation());
-				return false;
-			}
-
-			Timer tMoveCost;
-			MoveCost* cost = NULL;
-
-			if (lEvaluator[ev]->getAllowCosts())
-				cost = move.cost(e, s.getR(), s.getADS());
-
-			message(lEvaluator.at(ev), iter, "cost() calculated!");
-
-			if (cost && !cost->isEstimated())
-			{
-				timeNS.timeNSCost[id_ns].second += tMoveCost.inMilliSecs();
-				timeNS.timeNSCost[id_ns].first++;
-			}
-
-			if (cost && cost->isEstimated())
-			{
-				timeNS.timeNSEstimatedCost[id_ns].second += tMoveCost.inMilliSecs();
-				timeNS.timeNSEstimatedCost[id_ns].first++;
-				if(cost->cost() > revCost)
-					timeNS.overestimate = true;
-				if(cost->cost() < revCost)
-					timeNS.underestimate = true;
-			}
-
-			if (cost && !cost->isEstimated())
-			{
-				double cValue = cost->cost();
-				if (abs(revCost - cValue) > 0.0001)
-				{
-					error("difference between expected cost and cost()");
-					move.print();
-					printf("expected =\t %.4f\n", revCost);
-					printf("cost() =\t %.4f\n", cValue);
-					printf("==============\n");
-					printf("CORRECT VALUES \n");
-					printf("==============\n");
-					printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
-					printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
-					cout << "s: ";
-					s.print();
-					cout << "s': ";
-					sNeighbor.print();
-					cout << "move: ";
-					move.print();
-					printf("==============\n");
-					printf("  GOOD LUCK!  \n");
-					printf("==============\n");
-					return false;
-				}
-
-				// testing double move costs! (for MoveCost betterThan)
-
-				Move<R, ADS>& move2 = ns->move(s);
-				if (verbose)
-				{
-					cout << "testing double move!" << endl;
-					move2.print();
-				}
-
-				if (!move2.canBeApplied(s))
-				{
-					if (verbose)
-					{
-						cout << "double move cannot be applied: ";
-						move2.print();
-					}
-				}
-				else
-				{
-					MoveCost* cost2 = NULL;
-					if (lEvaluator[ev]->getAllowCosts())
-					{
-						cost2 = move2.cost(e, s.getR(), s.getADS());
-						if (cost2)
-						{
-							lEvaluator[ev]->betterThan(*cost, *cost2);
-							delete cost2;
-						}
-					}
-				}
-
-				delete &move2;
-
-				// finish double cost test
-
-				delete cost;
-			}
-
-			message(lEvaluator.at(ev), iter, "all move costs okay!");
-
-			if(rev)
-				delete rev;
-			delete &sNeighbor;
-			delete &e_rev;
-			if(ini)
-				delete ini;
-			delete &e_ini;
-		}
-
-		delete &move;
-
-		return true;
-	}
-
-	bool testMoveNSSeq(NSSeq<R,ADS>* nsseq, int nqs, int id_nsseq, Solution<R, ADS>& s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
-	{
-
-		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
-		{
-			message(lEvaluator.at(ev), nqs, "evaluating random move (apply, revert and moveCost) in NSSeq tests.");
-
-			Evaluation& e = lEvaluator[ev]->evaluate(s);
-
-			string moveFrom = "Move ";
-			moveFrom.append(move.id());
-			moveFrom.append(" from: ");
-			moveFrom.append(nsseq->id());
-			moveFrom.append(" toString: ");
-			moveFrom.append(nsseq->toString());
-
-			if (verbose)
-				move.print();
-
-			message(moveFrom, nqs, "testing reverse.");
-
-			Solution<R, ADS>& sOriginal = s.clone(); // remove if not verbose
-
-			Timer tMovApply;
-			Move<R, ADS>* rev = move.apply(s);
-			timeNS.timeNSApply[id_nsseq].second += tMovApply.inMilliSecs();
-			timeNS.timeNSApply[id_nsseq].first++;
-
-			Timer t_clone;
-			Solution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
-			timeCloneSolution.second += t_clone.inMilliSecs();
-			timeCloneSolution.first++;
-
-			Timer te;
-			Evaluation& e_rev = lEvaluator.at(ev)->evaluate(s);
-			fullTimeEval[ev].second += te.inMilliSecs();
-			fullTimeEval[ev].first++;
-
-			Timer tMovRevApply;
-			Move<R, ADS>* ini = NULL;
-			if(rev)
-				ini = rev->apply(s);
-			timeNS.timeNSApply[id_nsseq].second += tMovRevApply.inMilliSecs();
-			timeNS.timeNSApply[id_nsseq].first++;
-
-			if(!rev)
-				s = sOriginal;
-			delete& sOriginal;
-
-			Timer te2;
-			Evaluation& e_ini = lEvaluator.at(ev)->evaluate(s);
-			fullTimeEval[ev].second += te2.inMilliSecs();
-			fullTimeEval[ev].first++;
-
-			if (ini && (*ini != move))
-			{
-				error("reverse of reverse is not the original move!");
-				move.print();
-				cout << "move: ";
-				move.print();
-				cout << "rev: ";
-				Component::safe_print(rev);
-				cout << "ini (reverse of rev): ";
-				Component::safe_print(ini);
-
-				return false;
-			}
-
-
-			message(lEvaluator.at(ev), nqs, "testing reverse value (NSSeq tests).");
-
-			if (::abs(e_ini.evaluation() - e.evaluation()) > 0.0001)
-			{
-				error("reverse of reverse has a different evaluation value!");
-				move.print();
-				cout << "move: ";
-				move.print();
-				cout << "original: ";
-				e.print();
-				cout << "reverse of reverse:";
-				e_ini.print();
-
-				return false;
-			}
-
-			// ===================== tests with ADSManager ======================
-
-#if 1
-			if (adsMan)
-			{
-				message(lEvaluator.at(ev), -1, "testing ADS (NSSeq tests).");
-
-				ADS ads(sNeighbor.getADS()); // copy
-				Timer ts_ds;
-				adsMan->initializeADS(sNeighbor.getR(), sNeighbor.getADS());
-				timeInitializeADS[0].second += ts_ds.inMilliSecs();
-				timeInitializeADS[0].first++;
-
-				if (!adsMan->compareADS(ads, sNeighbor.getADS()))
-				{
-					cout << "checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
-					move.print();
-					return false;
-				}
-
-				ads = ADS(s.getADS()); // copy
-				Timer ts_ds2;
-				adsMan->initializeADS(s.getR(), s.getADS());
-				timeInitializeADS[0].second += ts_ds2.inMilliSecs();
-				timeInitializeADS[0].first++;
-
-				if (!adsMan->compareADS(ads, s.getADS()))
-				{
-					cout << "checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
-					Component::safe_print(rev);
-					return false;
-				}
-			}
-#endif
-			// =============================================================
-
-			message(lEvaluator.at(ev), nqs, "testing move cost (NSSeq tests).");
-
-			double revCost = e_rev.evaluation() - e.evaluation();
-
-			Timer tMoveCostApply;
-			MoveCost& mcSimpleCost = lEvaluator[ev]->moveCost(move, s);
-			double simpleCost = mcSimpleCost.cost();
-			delete &mcSimpleCost;
-			timeNS.timeNSCostApply[id_nsseq].second += tMoveCostApply.inMilliSecs();
-			timeNS.timeNSCostApply[id_nsseq].first++;
-
-			if (abs(revCost - simpleCost) > 0.0001)
-			{
-				error("difference between revCost and simpleCost");
-				move.print();
-				printf("revCost = %.4f\n", revCost);
-				printf("simpleCost = %.4f\n", simpleCost);
-				return false;
-			}
-
-			// fasterCost
-			Timer tMoveCostApplyDelta;
-			Move<R, ADS>& rev1 = *lEvaluator[ev]->applyMove(e, move, s);
-			double e_end1 = e.evaluation();
-			Move<R, ADS>& ini1 = *lEvaluator[ev]->applyMove(e, rev1, s);
-			double e_ini1 = e.evaluation();
-			timeNS.timeNSCostApplyDelta[id_nsseq].second += tMoveCostApplyDelta.inMilliSecs();
-			timeNS.timeNSCostApplyDelta[id_nsseq].first++;
-
-			delete &rev1;
-			delete &ini1;
-
-			double fasterCost = e_end1 - e_ini1;
-
-			if (abs(revCost - fasterCost) > 0.0001)
-			{
-				error("difference between revCost and fasterCost");
-				move.print();
-				printf("revCost = %.4f\n", revCost);
-				printf("fasterCost = %.4f\n", fasterCost);
-				printf("e = %.4f\n", e.evaluation());
-				printf("e_rev = %.4f\n", e_rev.evaluation());
-				return false;
-			}
-
-			Timer tMoveCost;
-			MoveCost* cost = NULL;
-
-			if (lEvaluator[ev]->getAllowCosts())
-				cost = move.cost(e, s.getR(), s.getADS());
-
-			if (cost && !cost->isEstimated())
-			{
-				timeNS.timeNSCost[id_nsseq].second += tMoveCost.inMilliSecs();
-				timeNS.timeNSCost[id_nsseq].first++;
-			}
-
-			if (cost && cost->isEstimated())
-			{
-				timeNS.timeNSEstimatedCost[id_nsseq].second += tMoveCost.inMilliSecs();
-				timeNS.timeNSEstimatedCost[id_nsseq].first++;
-				if(cost->cost() > revCost)
-					timeNS.overestimate = true;
-				if(cost->cost() < revCost)
-					timeNS.underestimate = true;
-			}
-
-			if (cost && !cost->isEstimated())
-			{
-				double cValue = cost->cost();
-				if (abs(revCost - cValue) > 0.0001)
-				{
-					error("difference between expected cost and cost()");
-					move.print();
-					printf("expected =\t %.4f\n", revCost);
-					printf("cost() =\t %.4f\n", cValue);
-					printf("==============\n");
-					printf("CORRECT VALUES \n");
-					printf("==============\n");
-					printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n", e.getObjFunction(), e.getInfMeasure(), e.evaluation());
-					printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n", e_rev.getObjFunction(), e_rev.getInfMeasure(), e_rev.evaluation());
-					cout << "s: ";
-					s.print();
-					cout << "s': ";
-					sNeighbor.print();
-					cout << "move: ";
-					move.print();
-					printf("==============\n");
-					printf("  GOOD LUCK!  \n");
-					printf("==============\n");
-					return false;
-				}
-
-				delete cost;
-			}
-
-			message(lEvaluator.at(ev), nqs, "all move costs okay (NSSeq tests)!");
-
-			delete &e;
-
-			if(rev)
-				delete rev;
-			delete &sNeighbor;
-			delete &e_rev;
-			if(ini)
-				delete ini;
-			delete &e_ini;
-		}
-
-		return true;
-	}
-
-
     struct TimeCheckSol {
 		pair<int, double> timeCloneSolution;
 		vector<pair<int, double> > timeInitializeADS;
@@ -882,7 +154,7 @@ public:
 	};
 
 
-	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
+	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, TimeCheckSol& timeSol, TimeCheckNS& timeNS)
 	{
 		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
 		{
@@ -892,10 +164,14 @@ public:
 
 			string moveFrom = "Move ";
 			moveFrom.append(move.id());
-			moveFrom.append(" from: ");
-			moveFrom.append(ns->id());
-			moveFrom.append(" toString: ");
-			moveFrom.append(ns->toString());
+			// not printing NS for single Move test
+			if (ns)
+			{
+				moveFrom.append(" from: ");
+				moveFrom.append(ns->id());
+				moveFrom.append(" toString: ");
+				moveFrom.append(ns->toString());
+			}
 
 			if (verbose)
 				move.print();
@@ -1125,31 +401,32 @@ public:
 				}
 
 				// testing double move costs! (for MoveCost betterThan)
-
-				Move<R, ADS>& move2 = ns->move(s);
-				if (verbose) {
-					cout << "testing double move!" << endl;
-					move2.print();
-				}
-
-				if (!move2.canBeApplied(s)) {
+				if (ns) // not testing for single Move
+				{
+					Move<R, ADS>& move2 = ns->move(s);
 					if (verbose) {
-						cout << "double move cannot be applied: ";
+						cout << "testing double move!" << endl;
 						move2.print();
 					}
-				} else {
-					MoveCost* cost2 = NULL;
-					if (lEvaluator[ev]->getAllowCosts()) {
-						cost2 = move2.cost(e, s.getR(), s.getADS());
-						if (cost2) {
-							lEvaluator[ev]->betterThan(*cost, *cost2);
-							delete cost2;
+
+					if (!move2.canBeApplied(s)) {
+						if (verbose) {
+							cout << "double move cannot be applied: ";
+							move2.print();
+						}
+					} else {
+						MoveCost* cost2 = NULL;
+						if (lEvaluator[ev]->getAllowCosts()) {
+							cost2 = move2.cost(e, s.getR(), s.getADS());
+							if (cost2) {
+								lEvaluator[ev]->betterThan(*cost, *cost2);
+								delete cost2;
+							}
 						}
 					}
+
+					delete &move2;
 				}
-
-				delete &move2;
-
 				// finish double cost test
 
 				delete cost;
@@ -1168,7 +445,7 @@ public:
 			delete &e_ini;
 		}
 
-		//delete &move;  // ONLY IF NECESSARY!
+		//delete &move;  // ONLY IF NECESSARY! DO IT OUTSIDE...
 
 		return true;
 	}
@@ -1192,6 +469,16 @@ public:
 		cout << "DEPRECATED:adsmanager=" << lADSManagerComp.size() << endl;
 		cout << "---------------------------------------" << endl << endl;
 
+
+		// ----------------
+		// read evaluators
+		// ----------------
+
+		vector<Evaluator<R, ADS>*> evaluators;
+		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
+			evaluators.push_back(lEvaluator[ev]);
+
+
 		TimeCheckSol timeSol;
 		// time to clone a solution
 		timeSol.timeCloneSolution = pair<int, double>(0, 0.0);
@@ -1206,17 +493,18 @@ public:
 		}
 
 		timeSol.timeInitializeADS = vector<pair<int, double> >(1, make_pair(0, 0.0));
-
-		// ----------------
-		// read evaluators
-		// ----------------
-
-		vector<Evaluator<R, ADS>*> evaluators;
-		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
-			evaluators.push_back(lEvaluator[ev]);
-
 		timeSol.fullTimeEval = vector<pair<int, double> >(evaluators.size(), make_pair(0, 0.0));
 		timeSol.timeReeval = vector<pair<int, double> >(evaluators.size(), make_pair(0, 0.0));
+
+		TimeCheckNS timeNS;
+		timeNS.timeNSApply = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
+		timeNS.timeNSCostApply = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
+		timeNS.timeNSCostApplyDelta = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
+		timeNS.timeNSCost = vector<pair<int, double> > (lNS.size(), make_pair(0, 0.0));
+		timeNS.timeNSEstimatedCost = vector<pair<int, double> > (lNS.size(), make_pair(0, 0.0));
+		timeNS.errorNSEstimatedCost = vector<pair<int, double> > (lNS.size(), make_pair(0, 0.0));
+		timeNS.overestimate = timeNS.underestimate = false;
+
 
 		// ----------------------------------------------------------------------------------------
 		// generate 'iterMax' OptFrame:Solution for each OptFrame:Constructive and store evaluation
@@ -1318,7 +606,9 @@ public:
 					continue;
 				}
 
-				if(!testMove(s, id_s, move, evaluations, timeSol.timeCloneSolution, timeSol.timeInitializeADS))
+				// 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
+
+				if(!testMoveGeneral(-1, NULL, -1, s, id_s, move, evaluations, timeSol, timeNS))
 					return false;
 
 				/////delete& move; // TODO NEVER DESTROY THIS OptFrame:Move!
@@ -1336,14 +626,6 @@ public:
 		if(lNS.size() > 0)
 			cout << "checkcommand  will test " << lNS.size() << " NS components (iterMax=" << iterMax << "; numSolutions=" << solutions.size() << ")" << endl;
 
-		TimeNS timeNS;
-		timeNS.timeNSApply = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
-		timeNS.timeNSCostApply = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
-		timeNS.timeNSCostApplyDelta = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
-		timeNS.timeNSCost = vector<pair<int, double> > (lNS.size(), make_pair(0, 0.0));
-		timeNS.timeNSEstimatedCost = vector<pair<int, double> > (lNS.size(), make_pair(0, 0.0));
-		timeNS.errorNSEstimatedCost = vector<pair<int, double> > (lNS.size(), make_pair(0, 0.0));
-		timeNS.overestimate = timeNS.underestimate = false;
 
 		for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++)
 		{
