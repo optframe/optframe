@@ -73,6 +73,11 @@ public:
 		return apply(e, s.getR(), s.getADS());
 	}
 
+	Move<R, ADS>* apply(MultiEvaluation& mev, Solution<R, ADS>& s)
+	{
+		return apply(mev, s.getR(), s.getADS());
+	}
+
 ////protected:
 	virtual Move<R, ADS>* apply(R& r, ADS& ads) = 0;
 
@@ -83,6 +88,22 @@ public:
 		// the outdated status set to true. So more efficient approaches may rewrite this
 		// method, or implement efficient re-evaluation by means of the 'cost' method.
 		e.outdated = true;
+		// apply the move to R and ADS, saving the reverse (or undo) move
+		Move<R, ADS>* rev = apply(r, ads);
+		// update neighborhood local optimum status TODO:deprecated
+		updateNeighStatus(ads);
+		// return reverse move (or null)
+		return rev;
+	}
+
+	virtual Move<R, ADS>* apply(MultiEvaluation& mev, R& r, ADS& ads)
+	{
+		// boolean 'outdated' indicates that Evaluation needs update (after Solution change)
+		// note that even if the reverse move is applied, the Evaluation will continue with
+		// the outdated status set to true. So more efficient approaches may rewrite this
+		// method, or implement efficient re-evaluation by means of the 'cost' method.
+		for (int nE = 0; nE < mev.size(); nE++)
+			mev[nE].outdated = true;
 		// apply the move to R and ADS, saving the reverse (or undo) move
 		Move<R, ADS>* rev = apply(r, ads);
 		// update neighborhood local optimum status TODO:deprecated
