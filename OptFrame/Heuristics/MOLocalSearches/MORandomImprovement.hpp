@@ -75,7 +75,7 @@ public:
 		while ((iter < iterMax) && ((t.now() - timelimit) < 0))
 		{
 			Move<R, ADS>& move = ns.move(s);
-			Move<R, ADS>* mov_rev = move.apply(s);
+			Move<R, ADS>* mov_rev = move.apply(sMev, s);
 			v_e.evaluate(sMev, s);
 //			vector<MoveCost*> vMoveCost;
 //			for (int ev = 0; ev < v_e.size(); ev++)

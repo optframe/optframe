@@ -91,13 +91,13 @@ public:
 			{
 //				cout << "before anything" << endl;
 //				sMev.print();
-				Move<R, ADS>* mov_rev = move->apply(s);
+				Move<R, ADS>* mov_rev = move->apply(sMev, s);
 				v_e.evaluate(sMev, s);
 
 //				cout << "after move" << endl;
 //				sMev.print();
 
-				 bool added = pManager.addSolution(&s, &sMev);
+				bool added = pManager.addSolution(&s, &sMev);
 
 				delete mov_rev->apply(s);
 				delete mov_rev;
