@@ -97,13 +97,13 @@ public:
 //				cout << "after move" << endl;
 //				sMev.print();
 
-				bool added = pManager.addSolution(&s, &sMev);
+				 bool added = pManager.addSolution(&s, &sMev);
 
 				delete mov_rev->apply(s);
 				delete mov_rev;
 				delete move;
 
-				v_e.evaluate(sMev, s);
+//				v_e.evaluate(sMev, s);
 
 //				cout << "reverse move" << endl;
 //				sMev.print();
@@ -129,7 +129,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS>::idComponent() << "MO-BI";
+		ss << MOLocalSearch<R, ADS>::idComponent() << ":MO-BI";
 		return ss.str();
 	}
 

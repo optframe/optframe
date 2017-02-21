@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef MULTIOBJECTIVEVNSLEVELS_HPP_
-#define MULTIOBJECTIVEVNSLEVELS_HPP_
+#ifndef MULTIOBJECTIVEVNSLEVELSLOCALSEARCH_HPP_
+#define MULTIOBJECTIVEVNSLEVELSLOCALSEARCH_HPP_
 
 #include <algorithm>
 
@@ -31,9 +31,8 @@
 #include "../../ParetoDominanceWeak.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class MOVNSLevels: public MultiObjSearch<R, ADS>
+class MOVNSLevelsLocalSearch: public MultiObjSearch<R, ADS>
 {
-	typedef vector<Evaluation*> FitnessValues;
 
 private:
 	vector<NSSeq<R, ADS>*> neighbors;
@@ -51,14 +50,14 @@ private:
 public:
 	//using HTrajectory<R, ADS>::exec; // prevents name hiding
 
-	MOVNSLevels(vector<Evaluator<R, ADS>*> _v_e, InitialPopulation<R, ADS>& _init_pop, int _init_pop_size, vector<NSSeq<R, ADS>*> _neighbors, RandGen& _rg, int _iterMax, int _levelMax) :
+	MOVNSLevelsLocalSearch(vector<Evaluator<R, ADS>*> _v_e, InitialPopulation<R, ADS>& _init_pop, int _init_pop_size, vector<LocalSearch<R, ADS>*> _neighbors, RandGen& _rg, int _iterMax, int _levelMax) :
 			v_e(_v_e), init_pop(_init_pop), init_pop_size(_init_pop_size), neighbors(_neighbors), rg(_rg), pDominance(ParetoDominance<R, ADS>(_v_e)), pDominanceWeak(ParetoDominanceWeak<R, ADS>(_v_e))
 	{
 		levelMax = _levelMax;
 		iterMax = _iterMax;
 	}
 
-	virtual ~MOVNSLevels()
+	virtual ~MOVNSLevelsLocalSearch()
 	{
 	}
 
@@ -239,21 +238,16 @@ public:
 		for (unsigned i = 0; i < p_0.size(); i++)
 		{
 			Solution<R, ADS>* s = &p_0.at(i);
-			vector<Evaluation*> vev;
+			vector<Evaluation*> e;
 			for (unsigned ev = 0; ev < v_e.size(); ev++)
 			{
 				Evaluator<R, ADS>* evtr = v_e[ev];
+				//evtr->evaluate(s);
 				Evaluation& e1 = evtr->evaluate(*s);
-				vev.push_back(&e1);
-
+				e.push_back(&e1);
 			}
-
-			MultiEvaluation* e = new MultiEvaluation(vev);
-
 			pf->push_back(s, e);
-
 		}
-
 		return pf;
 	}
 
@@ -285,4 +279,4 @@ public:
 
 };
 
-#endif /*MULTIOBJECTIVEVNSLEVELS_HPP_*/
+#endif /*MULTIOBJECTIVEVNSLEVELSLOCALSEARCH_HPP_*/

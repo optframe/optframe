@@ -63,56 +63,13 @@ public:
 		ParetoDominance<R, ADS>::v_e = _v_e;
 	}
 
-	// true if 's1' weakly dominates 's2'
-	virtual bool dominates(const vector<double>& v1, const vector<double>& v2)
+	virtual bool dominates(const vector<Evaluation*>& v1, const vector<Evaluation*>& v2)
 	{
-		vector<Evaluator<R, ADS>*>& v_e = ParetoDominance<R, ADS>::v_e;
-		vector<Direction*>& v_d = ParetoDominance<R, ADS>::v_d;
-		// TODO: make inheritance
+		pair<int,int> betterEquals = ParetoDominance<R, ADS>::checkDominates(v1,v2);
+		int better = betterEquals.first;
+		int equals = betterEquals.second;
 
-		int better = 0;
-		int equals = 0;
-
-		if(v_e.size() > 0)
-		{
-			if(!((v_e.size() == v1.size()) && (v1.size() == v2.size())))
-			{
-				cout << "WARNING in ParetoDominanceWeak: different sizes." << endl;
-				return false;
-			}
-
-			for(int e = 0; e < v1.size(); e++)
-			{
-				if(v_e[e]->betterThan(v1[e], v2[e]))
-					better++;
-
-				if(abs(v1[e] - v2[e]) < 0.0001)
-					equals++;
-
-			}
-		}
-		else if(v_d.size() > 0)
-		{
-			if(!((v_d.size() == v1.size()) && (v1.size() == v2.size())))
-			{
-				cout << "WARNING in ParetoDominanceWeak: different sizes." << endl;
-				return false;
-			}
-
-			for(int e = 0; e < v1.size(); e++)
-			{
-				if(v_d[e]->betterThan(v1[e], v2[e]))
-					better++;
-
-				if(abs(v1[e] - v2[e]) < 0.0001)
-					equals++;
-
-			}
-		}
-		else
-			cout << "WARNING: ParetoDominanceWeak unsupported!" << endl;
-
-		return (better + equals == v1.size());
+		return ((better + equals == v1.size()));
 	}
 
 };

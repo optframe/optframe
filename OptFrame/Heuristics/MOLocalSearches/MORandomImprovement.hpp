@@ -76,8 +76,14 @@ public:
 		{
 			Move<R, ADS>& move = ns.move(s);
 			Move<R, ADS>* mov_rev = move.apply(s);
-
 			v_e.evaluate(sMev, s);
+//			vector<MoveCost*> vMoveCost;
+//			for (int ev = 0; ev < v_e.size(); ev++)
+//			{
+//				vMoveCost.push_back(&v_e[ev].moveCost(sMev[ev], move, s));
+//			}
+//			bool itsWorthAdding = pManager.checkDominance(pManager.getParetoInsideManager(), &sMev);
+//			if (itsWorthAdding)
 
 			bool added = pManager.addSolution(&s, &sMev);
 
@@ -85,7 +91,7 @@ public:
 			delete mov_rev;
 			delete &move;
 
-			v_e.evaluate(sMev, s);
+//			v_e.evaluate(sMev, s);
 			iter++;
 		}
 
@@ -99,7 +105,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS>::idComponent() << "MO-RI";
+		ss << MOLocalSearch<R, ADS>::idComponent() << "MO-RI";
 		return ss.str();
 	}
 

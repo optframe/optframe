@@ -1145,4 +1145,3 @@ public:
 }
 
 #endif /* OPTFRAME_MULTI_OBJ_SEARCH_HPP_ */
-

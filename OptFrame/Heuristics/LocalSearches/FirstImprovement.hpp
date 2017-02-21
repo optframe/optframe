@@ -83,16 +83,36 @@ public:
 
 			if (move->canBeApplied(s))
 			{
-				if(eval.acceptsImprove(*move,s,e))
+				MoveCost* eCost = &eval.moveCost(e, *move, s); // estimated cost
+
+				if(eval.isImprovement(*eCost))
 				{
-					delete move;
+					if(eCost->isEstimated())
+					{
+						//double cost = eval.moveCost(e, *move, s); // real cost
+						// TODO: find a real cost value...
+					}
 
-					delete &it;
-					// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-					//e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
+					if(eval.isImprovement(*eCost))
+					{
+						delete eCost;
 
-					return;
+						Component::safe_delete(move->apply(e, s));
+						delete move;
+
+						delete &it;
+
+						eval.evaluate(e, s); // updates 'e'
+
+						// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
+						//e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
+
+						return;
+					}
+
 				}
+
+				delete eCost;
 			}
 
 			delete move;

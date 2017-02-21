@@ -107,6 +107,7 @@ public:
 			}
 
 			cout << "Population generated with " << p_0.size() << " individuals" << endl;
+//			return new Pareto<R, ADS>(p_0);
 		}
 		else
 		{
@@ -124,12 +125,11 @@ public:
 		for (int ind = 0; ind < p_0.size(); ind++)
 		{
 			Solution<R, ADS>* s = &p_0.getNonDominatedSol(ind).clone();
-			if (!p_0.addSolution(pDominance, pDominanceWeak, x_e, s, neighbors.size()))
-				delete s;
+			p.addSolution(pDominance, pDominanceWeak, x_e, s, neighbors.size());
+			delete s;
 		}
 		p = x_e.first;
 		p_0.clear();
-
 
 		cout << "Number of Inicial non-dominated solutions = " << x_e.first.size() << endl;
 
@@ -277,7 +277,7 @@ public:
 					{
 						if (x_e.second[i][k - 1] == true)
 						{
-							p.remove(i - removed);
+							p.erase(i - removed);
 							removed++;
 						}
 					}
@@ -364,4 +364,3 @@ public:
 };
 
 #endif /*TWOPHASEPARETOLOCALSEARCHPPLS_HPP_*/
-

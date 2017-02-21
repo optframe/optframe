@@ -71,10 +71,15 @@ public:
 		v_e = _v_e;
 	}
 
+	vector<Evaluator<R, ADS>*> getEvaluators()
+	{
+		return v_e;
+	}
+
 	// true if 's1' dominates 's2'
 	virtual bool dominates(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2)
 	{
-		if(v_e.size() == 0)
+		if (v_e.size() == 0)
 		{
 			cout << "ParetoDominance::error! not implemented for direction only!" << endl;
 			exit(1);
@@ -83,7 +88,7 @@ public:
 		vector<Evaluation*> v1;
 		vector<Evaluation*> v2;
 
-		for(int e = 0; e < v_e.size(); e++)
+		for (int e = 0; e < v_e.size(); e++)
 		{
 			v1.push_back(&v_e[e]->evaluate(s1));
 			v2.push_back(&v_e[e]->evaluate(s2));
@@ -91,7 +96,7 @@ public:
 
 		bool r = dominates(v1, v2);
 
-		for(int e = 0; e < v_e.size(); e++)
+		for (int e = 0; e < v_e.size(); e++)
 		{
 			delete v1[e];
 			delete v2[e];
@@ -99,7 +104,6 @@ public:
 
 		return r;
 	}
-
 
 	// true if 's1' dominates 's2'
 	virtual bool dominates(const MultiEvaluation* mev1, const MultiEvaluation* mev2)
@@ -113,70 +117,60 @@ public:
 		return dominates(mev1.getVector(), mev2.getVector());
 	}
 
-	// true if 's1' dominates 's2'
-	virtual bool dominates(const vector<Evaluation*>& v1, const vector<Evaluation*>& v2)
+	//return a pair of better and equals
+	pair<int, int> checkDominates(const vector<Evaluation*>& v1, const vector<Evaluation*>& v2)
 	{
-		if(v1.size() != v2.size())
-			return false;
-
-		vector<double> vd1(v1.size());
-		vector<double> vd2(v1.size());
-		for(unsigned i = 0; i < v1.size(); i++)
-		{
-			vd1[i] = v1[i]->evaluation();
-			vd2[i] = v2[i]->evaluation();
-		}
-
-		return dominates(vd1, vd2);
-	}
-
-	virtual bool dominates(const vector<double>* v1, const vector<double>* v2)
-	{
-		return dominates(*v1, *v2);
-	}
-
-	virtual bool dominates(const vector<double>& v1, const vector<double>& v2)
-	{
-		if((v1.size() != v2.size()) || (v1.size() == 0) || (v2.size() == 0))
+		if ((v1.size() != v2.size()) || (v1.size() == 0) || (v2.size() == 0))
 		{
 			// TODO: throw exception!
 			cout << "WARNING in ParetoDominance: different sizes or empty!" << endl;
-			return false;
+			return make_pair(-1, -1);
 		}
 
 		int better = 0;
 		int equals = 0;
 
 		// TODO: make inheritance!
-		if(v_e.size() == v1.size())
+		if (v_e.size() == v1.size())
 		{
-			for(int e = 0; e < v1.size(); e++)
+			for (int e = 0; e < v1.size(); e++)
 			{
-				if(v_e[e]->betterThan(v1[e], v2[e]))
+				if (v_e[e]->betterThan(*v1[e], *v2[e]))
 					better++;
 
-				if(abs(v1[e] - v2[e]) < 0.0001)
+				if (abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
 					equals++;
 			}
+
 		}
 		else // TODO: make inheritance!
 		{
-			if(v_d.size() != v1.size())
+			if (v_d.size() != v1.size())
 			{
 				// TODO: throw exception!
 				cout << "WARNING in ParetoDominance: different sizes." << endl;
-				return false;
+				return make_pair(-1, -1);
 			}
 
-			for(int e = 0; e < v1.size(); e++)
+			for (int e = 0; e < v1.size(); e++)
 			{
-				if(v_d[e]->betterThan(v1[e], v2[e]))
+				if (v_d[e]->betterThan(*v1[e], *v2[e]))
 					better++;
 
-				if(abs(v1[e] - v2[e]) < 0.0001)
+				if (abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
 					equals++;
 			}
 		}
+
+		return make_pair(better, equals);
+	}
+
+	// true if 's1' dominates 's2'
+	virtual bool dominates(const vector<Evaluation*>& v1, const vector<Evaluation*>& v2)
+	{
+		pair<int, int> betterEquals = checkDominates(v1, v2);
+		int better = betterEquals.first;
+		int equals = betterEquals.second;
 
 		return ((better + equals == v1.size()) && (better > 0));
 	}
@@ -192,7 +186,7 @@ public:
 	virtual pair<bool, bool> birelation(const vector<Evaluation*>& v1, const vector<Evaluation*>& v2)
 	{
 		int N = v1.size();
-		if((N != v2.size()) || (N == 0) || (v2.size() == 0))
+		if ((N != v2.size()) || (N == 0) || (v2.size() == 0))
 		{
 			// TODO: throw exception!
 			cout << "WARNING in ParetoDominance: different sizes or empty!" << endl;
@@ -203,32 +197,32 @@ public:
 		int equals = 0;
 
 		// TODO: make inheritance!
-		if(v_e.size() == v1.size())
+		if (v_e.size() == v1.size())
 		{
-			for(int e = 0; e < v1.size(); e++)
+			for (int e = 0; e < v1.size(); e++)
 			{
-				if(v_e[e]->betterThan(*v1[e], *v2[e]))
+				if (v_e[e]->betterThan(*v1[e], *v2[e]))
 					better++;
 
-				if(::abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
+				if (abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
 					equals++;
 			}
 		}
 		else // TODO: make inheritance!
 		{
-			if(v_d.size() != v1.size())
+			if (v_d.size() != v1.size())
 			{
 				// TODO: throw exception!
 				cout << "WARNING in ParetoDominance: different sizes." << endl;
 				return make_pair(false, false);
 			}
 
-			for(int e = 0; e < v1.size(); e++)
+			for (int e = 0; e < v1.size(); e++)
 			{
-				if(v_d[e]->betterThan(*v1[e], *v2[e]))
+				if (v_d[e]->betterThan(*v1[e], *v2[e]))
 					better++;
 
-				if(::abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
+				if (abs(v1[e]->evaluation() - v2[e]->evaluation()) < 0.0001)
 					equals++;
 			}
 		}
