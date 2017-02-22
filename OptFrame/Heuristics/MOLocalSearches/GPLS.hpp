@@ -172,7 +172,7 @@ public:
 			pMan2PPLS.gplsData.newSol.push_back(true);
 		}
 
-		cout << "Number of Inicial x_e non-dominated solutions = " << pMan2PPLS.x_e.size() << endl;
+		cout << "Number of initial x_e non-dominated solutions = " << pMan2PPLS.x_e.size() << endl;
 
 		int k = 1;
 		cout << "Starting search with k = " << k << endl;

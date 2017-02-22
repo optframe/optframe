@@ -84,6 +84,20 @@ public:
 		paretoFront.push_back(&mev->clone());
 	}
 
+	void push_back(Solution<R, ADS>* s, MultiEvaluator<R, ADS>& mEval)
+	{
+		MultiEvaluation mev;
+		for (int eval = 0; eval < mEval.size(); eval++)
+		{
+			Evaluation& ev = mEval[eval].evaluate(*s);
+			mev.addEvaluation(ev);
+		}
+
+		push_back(s,&mev);
+
+		mev.clear();
+	}
+
 	unsigned size()
 	{
 		return paretoSet.size();

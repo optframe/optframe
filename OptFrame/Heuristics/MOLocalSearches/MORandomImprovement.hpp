@@ -75,8 +75,12 @@ public:
 		while ((iter < iterMax) && ((t.now() - timelimit) < 0))
 		{
 			Move<R, ADS>& move = ns.move(s);
-			Move<R, ADS>* mov_rev = move.apply(sMev, s);
-			v_e.evaluate(sMev, s);
+			if (move.canBeApplied(s))
+			{
+
+				Move<R, ADS>* mov_rev = move.apply(sMev, s);
+				v_e.evaluate(sMev, s);
+
 //			vector<MoveCost*> vMoveCost;
 //			for (int ev = 0; ev < v_e.size(); ev++)
 //			{
@@ -85,10 +89,11 @@ public:
 //			bool itsWorthAdding = pManager.checkDominance(pManager.getParetoInsideManager(), &sMev);
 //			if (itsWorthAdding)
 
-			bool added = pManager.addSolution(&s, &sMev);
+				bool added = pManager.addSolution(&s, &sMev);
 
-			delete mov_rev->apply(s);
-			delete mov_rev;
+				delete mov_rev->apply(s);
+				delete mov_rev;
+			}
 			delete &move;
 
 //			v_e.evaluate(sMev, s);
