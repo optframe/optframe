@@ -55,11 +55,18 @@ public:
 			vev.push_back(new Evaluation(vd[i]));
 	}
 
-	MultiEvaluation(const vector<Evaluation*>& _vev)
-	{
-		for (unsigned i = 0; i < _vev.size(); i++)
-			vev.push_back(&_vev[i]->clone());
-	}
+//	MultiEvaluation(const vector<Evaluation*>& _vev)
+//	{
+//		for (unsigned i = 0; i < _vev.size(); i++)
+//			vev.push_back(&_vev[i]->clone());
+//	}
+
+//	MultiEvaluation(MultiEvaluation&& mev)
+//	{
+//		cout<<"finally here..."<<endl;
+//		for (unsigned i = 0; i < mev.vev.size(); i++)
+//			vev.push_back(std::move(mev.vev[i]));
+//	}
 
 	MultiEvaluation(const MultiEvaluation& mev)
 	{
@@ -125,29 +132,29 @@ public:
 		return *vev[index];
 	}
 
-	const vector<Evaluation*>& getVector() const
-	{
-		return vev;
-	}
+//	const vector<Evaluation*>& getVector() const
+//	{
+//		return vev;
+//	}
 
-	vector<Evaluation*> getCloneVector() const
-	{
-		vector<Evaluation*> v_e;
-		for (unsigned i = 0; i < vev.size(); i++)
-			v_e.push_back(&vev[i]->clone());
-		return v_e;
-	}
+//	vector<Evaluation*> getCloneVector() const
+//	{
+//		vector<Evaluation*> v_e;
+//		for (unsigned i = 0; i < vev.size(); i++)
+//			v_e.push_back(&vev[i]->clone());
+//		return v_e;
+//	}
 
-	bool sameValues(const MultiEvaluation& mev)
-	{
-		if (vev.size() != mev.vev.size())
-			return false;
-
-		for (unsigned i = 0; i < vev.size(); i++)
-			if (vev[i]->evaluation() != mev.vev[i]->evaluation())
-				return false;
-		return true;
-	}
+//	bool sameValues(const MultiEvaluation& mev)
+//	{
+//		if (vev.size() != mev.vev.size())
+//			return false;
+//
+//		for (unsigned i = 0; i < vev.size(); i++)
+//			if (vev[i]->evaluation() != mev.vev[i]->evaluation())
+//				return false;
+//		return true;
+//	}
 
 	virtual MultiEvaluation& operator=(const MultiEvaluation& mev)
 	{
@@ -167,10 +174,10 @@ public:
 		return *new MultiEvaluation(*this);
 	}
 
-	void clearNoKill()
-	{
-		this->vev.clear();
-	}
+//	void clearNoKill()
+//	{
+//		this->vev.clear();
+//	}
 
 	void clear()
 	{

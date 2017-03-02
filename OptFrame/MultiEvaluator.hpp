@@ -45,52 +45,80 @@ protected:
 
 public:
 
+	MultiEvaluator(vector<Evaluator<R, ADS>*> _veval) :
+			sngEvaluators(_veval), allowCosts(false)
+	{
+		for (unsigned i = 0; i < _veval.size(); i++)
+			if (_veval[i])
+				vDir.push_back(_veval[i]);
+		nObjectives = vDir.size();
+	}
+
 	MultiEvaluator(bool _allowCosts = false) :
 			allowCosts(_allowCosts)
 	{
 	}
 
-	MultiEvaluator(MultiDirection& mDir, bool _allowCosts = false) :
-			MultiDirection(mDir), allowCosts(_allowCosts)
-	{
-	}
 
-	MultiEvaluator(vector<Direction*>& vDir, bool _allowCosts = false) :
-			MultiDirection(vDir), allowCosts(_allowCosts)
-	{
-	}
 
-	MultiEvaluator(vector<Evaluator<R, ADS>*> _vDir) :
-			sngEvaluators(_vDir), allowCosts(false)
+//	MultiEvaluator(MultiDirection& mDir, bool _allowCosts = false) :
+//			MultiDirection(mDir), allowCosts(_allowCosts)
+//	{
+//	}
+//
+//	MultiEvaluator(vector<Direction*>& vDir, bool _allowCosts = false) :
+//			MultiDirection(vDir), allowCosts(_allowCosts)
+//	{
+//	}
+
+
+
+//	MultiEvaluator(MultiEvaluator<R, ADS>& _mev) :
+//			sngEvaluators(*_mev.getEvaluators2()), allowCosts(false)
+//	{
+//		cout<<"sngEvaluators.size():"<<sngEvaluators.size()<<endl;
+//		for (unsigned i = 0; i < sngEvaluators.size(); i++)
+//			if (sngEvaluators[i])
+//				vDir.push_back(sngEvaluators[i]);
+//		nObjectives = vDir.size();
+//	}
+
+	virtual ~MultiEvaluator()
 	{
-		for (unsigned i = 0; i < _vDir.size(); i++)
-			if (_vDir[i])
-				vDir.push_back(_vDir[i]);
-		nObjectives = vDir.size();
 	}
 
 	unsigned size()
 	{
 		return sngEvaluators.size();
 	}
-	virtual ~MultiEvaluator()
-	{
-	}
 
-	bool getAllowCosts()
+	unsigned clear()
 	{
-		return allowCosts;
-	}
-
-	vector<Evaluator<R, ADS>*>* getEvaluators()
-	{
-		if (sngEvaluators.size() > 0)
+		for(int e=0;e<int(sngEvaluators.size());e++)
 		{
-			return new vector<Evaluator<R, ADS>*>(sngEvaluators);
+			delete sngEvaluators[e];
 		}
-		else
-			return NULL;
 	}
+
+
+//	bool getAllowCosts()
+//	{
+//		return allowCosts;
+//	}
+
+//	vector<Evaluator<R, ADS>*> getEvaluators2()
+//	{
+//		return sngEvaluators;
+//	}
+
+	//	// TODO: check
+//	const vector<const Evaluator<R, ADS>*>* getEvaluatorsConstTest() const
+//	{
+//		if (sngEvaluators.size() > 0)
+//			return new vector<const Evaluator<R, ADS>*>(sngEvaluators);
+//		else
+//			return NULL;
+//	}
 
 	Evaluator<R, ADS>& at(unsigned index)
 	{
@@ -112,13 +140,29 @@ public:
 		return *sngEvaluators[index];
 	}
 
-	// TODO: check
-	const vector<const Evaluator<R, ADS>*>* getEvaluators() const
+//	void addEvaluator(const Evaluator<R, ADS>& ev)
+//	{
+//		sngEvaluators.push_back(&ev.clone());
+//	}
+
+	void addEvaluator(Evaluator<R, ADS>& ev)
 	{
-		if (sngEvaluators.size() > 0)
-			return new vector<const Evaluator<R, ADS>*>(sngEvaluators);
-		else
-			return NULL;
+		sngEvaluators.push_back(&ev);
+	}
+
+	unsigned size() const
+	{
+		return sngEvaluators.size();
+	}
+
+	virtual bool betterThan(const Evaluation& ev1, const Evaluation& ev2, int index)
+	{
+		return sngEvaluators[index]->betterThan(ev1, ev2);
+	}
+
+	virtual bool equals(const Evaluation& ev1, const Evaluation& ev2, int index)
+	{
+		return sngEvaluators[index]->equals(ev1, ev2);
 	}
 
 	MultiEvaluation& evaluate(const Solution<R, ADS>& s)

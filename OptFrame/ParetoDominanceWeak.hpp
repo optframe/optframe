@@ -44,13 +44,8 @@ class ParetoDominanceWeak: public ParetoDominance<R, ADS>
 public:
 	using ParetoDominance<R, ADS>::dominates;
 
-	ParetoDominanceWeak(vector<Evaluator<R, ADS>*> _v_e) :
-			ParetoDominance<R, ADS>(_v_e)
-	{
-	}
-
-	ParetoDominanceWeak(vector<Direction*> _v_d) :
-			ParetoDominance<R, ADS>(_v_d)
+	ParetoDominanceWeak(MultiEvaluator<R, ADS>& _mev) :
+			ParetoDominance<R, ADS>(_mev)
 	{
 	}
 
@@ -58,18 +53,13 @@ public:
 	{
 	}
 
-	void insertEvaluators(vector<Evaluator<R, ADS>*> _v_e)
+	virtual bool dominates(const MultiEvaluation& mev1, const MultiEvaluation& mev2)
 	{
-		ParetoDominance<R, ADS>::v_e = _v_e;
-	}
-
-	virtual bool dominates(const vector<Evaluation*>& v1, const vector<Evaluation*>& v2)
-	{
-		pair<int,int> betterEquals = ParetoDominance<R, ADS>::checkDominates(v1,v2);
+		pair<int,int> betterEquals = ParetoDominance<R, ADS>::checkDominates(mev1,mev2);
 		int better = betterEquals.first;
 		int equals = betterEquals.second;
 
-		return ((better + equals == v1.size()));
+		return ((better + equals == mev1.size()));
 	}
 
 };

@@ -35,7 +35,7 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class MORandomImprovement: public MOLocalSearch<R, ADS>
 {
 private:
-	MultiEvaluator<R, ADS>& v_e;
+	MultiEvaluator<R, ADS>& mev;
 	NS<R, ADS>& ns;
 
 	// logs
@@ -44,8 +44,8 @@ private:
 	unsigned int iterMax;
 public:
 
-	MORandomImprovement(MultiEvaluator<R, ADS>& _v_e, NS<R, ADS>& _ns, unsigned int _iterMax) :
-			v_e(_v_e), ns(_ns), iterMax(_iterMax)
+	MORandomImprovement(MultiEvaluator<R, ADS>& _mev, NS<R, ADS>& _ns, unsigned int _iterMax) :
+			mev(_mev), ns(_ns), iterMax(_iterMax)
 	{
 		sum_time = 0.0;
 		num_calls = 0;
@@ -55,33 +55,34 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>& s, paretoManager<R, ADS>& pManager, double timelimit, double target_f)
+	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, paretoManager<R, ADS>* pManager, double timelimit, double target_f)
 	{
-		MultiEvaluation& sMev = v_e.evaluate(s);
+		MultiEvaluation* sMev = &mev.evaluate(*s);
 
-		exec(s, sMev, pManager, timelimit, target_f);
+		exec(p, s, sMev, pManager, timelimit, target_f);
 
-		sMev.clear();
-		delete &sMev;
+//		sMev.clear();
+		delete sMev;
 	}
 
-	virtual void exec(Solution<R, ADS>& s, MultiEvaluation& sMev, paretoManager<R, ADS>& pManager, double timelimit, double target_f)
+	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, MultiEvaluation* sMev, paretoManager<R, ADS>* pManager, double timelimit, double target_f)
 	{
-
 		num_calls++;
 		Timer t;
 
 		int iter = 0;
 		while ((iter < iterMax) && ((t.now() - timelimit) < 0))
 		{
-			Move<R, ADS>& move = ns.move(s);
-			if (move.canBeApplied(s))
+			Move<R, ADS>& move = ns.move(*s);
+			if (move.canBeApplied(*s))
 			{
 
-				Move<R, ADS>* mov_rev = move.apply(sMev, s);
-				v_e.evaluate(sMev, s);
+				Move<R, ADS>* mov_rev = move.apply(*sMev, *s);
+				bool added = pManager->addSolution(p, *s);
+				delete mov_rev->apply(*s);
+				delete mov_rev;
 
-//			vector<MoveCost*> vMoveCost;
+				//			vector<MoveCost*> vMoveCost;
 //			for (int ev = 0; ev < v_e.size(); ev++)
 //			{
 //				vMoveCost.push_back(&v_e[ev].moveCost(sMev[ev], move, s));
@@ -89,14 +90,10 @@ public:
 //			bool itsWorthAdding = pManager.checkDominance(pManager.getParetoInsideManager(), &sMev);
 //			if (itsWorthAdding)
 
-				bool added = pManager.addSolution(&s, &sMev);
 
-				delete mov_rev->apply(s);
-				delete mov_rev;
 			}
 			delete &move;
 
-//			v_e.evaluate(sMev, s);
 			iter++;
 		}
 

@@ -131,13 +131,19 @@ public:
 protected:
 	virtual inline bool equals(const evtype& t1, const evtype& t2, const vector<pair<evtype, evtype> >& altCosts1, const vector<pair<evtype, evtype> >& altCosts2)
 	{
+		if(abs(t1 - t2) < OPTFRAME_EPSILON)
+			return true;
+
 		if(t1 != t2)
 			return false;
+
 		if(altCosts1.size() != altCosts2.size())
 			return false;
+
 		for(unsigned i = 0; i < altCosts1.size(); i++)
 			if((altCosts1[i].first + altCosts1[i].second) != (altCosts2[i].first + altCosts2[i].second))
 				return false;
+
 		return true;
 	}
 

@@ -72,11 +72,11 @@ public:
 
 // core methods
 
-// 1
-	virtual void exec(Solution<R, ADS>& s, paretoManager<R, ADS>& pManager, double timelimit, double target_f) = 0;
+    // 1
+	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, paretoManager<R, ADS>* pManager, double timelimit, double target_f) = 0;
 
 	// 2
-	virtual void exec(Solution<R, ADS>& s, MultiEvaluation& mev, paretoManager<R, ADS>& pManager, double timelimit, double target_f) =0;
+	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, MultiEvaluation* mev, paretoManager<R, ADS>* pManager, double timelimit, double target_f) =0;
 
 	virtual bool compatible(string s)
 	{
