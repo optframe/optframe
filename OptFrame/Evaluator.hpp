@@ -60,11 +60,12 @@ class Evaluator: public Direction
 {
 protected:
 	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
+	evtype weight;   // defaults to 1
 
 public:
 
-	Evaluator(bool _allowCosts = true) :
-			allowCosts(_allowCosts)
+	Evaluator(bool _allowCosts = true, evtype w = 1) :
+			allowCosts(_allowCosts), weight(w)
 	{
 	}
 
@@ -75,6 +76,16 @@ public:
 	bool getAllowCosts()
 	{
 		return allowCosts;
+	}
+	
+	evtype getWeight() const
+	{
+		return weight;
+	}
+	
+	void setWeight(const evtype& w)
+	{
+		weight = w;
 	}
 
 	Evaluation& evaluate(const Solution<R, ADS>& s)

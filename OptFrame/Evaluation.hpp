@@ -88,12 +88,14 @@ public:
 	bool outdated;
 	// boolean field to indicate if Evaluation value is an estimation (not exact)
 	bool estimated;
+	// constant to mutiply infeasibility weight
+	evtype weight;
 
 	// ======================================
 	// begin canonical part
 
-	Evaluation(const evtype& obj, const evtype& inf) :
-			objFunction(obj), infMeasure(inf)
+	Evaluation(const evtype& obj, const evtype& inf, const evtype& w = 1) :
+			objFunction(obj), infMeasure(inf), weight(w)
 	{
 		gos = gos_unknown;
 		outdated = false;
@@ -103,6 +105,7 @@ public:
 	Evaluation(const evtype& obj) :
 		objFunction(obj)
 	{
+		weight = 1;
 		infMeasure = 0;
 
 		gos = gos_unknown;
@@ -113,7 +116,7 @@ public:
 
 	Evaluation(const Evaluation& e) :
 			objFunction(e.objFunction), infMeasure(e.infMeasure), alternatives(e.alternatives),
-			gos(e.gos), outdated(e.outdated), estimated(e.estimated)
+			gos(e.gos), outdated(e.outdated), estimated(e.estimated), weight(e.weight)
 	{
 	}
 
@@ -132,6 +135,7 @@ public:
 		infMeasure   = e.infMeasure;
 		outdated     = e.outdated;
 		estimated    = e.estimated;
+		weight       = e.weight;
 		alternatives = e.alternatives;
 		gos          = e.gos;
 
@@ -156,6 +160,11 @@ public:
 	{
 		return infMeasure;
 	}
+	
+	evtype getWeight() const
+	{
+		return weight;
+	}
 
 	const vector<pair<evtype, evtype> >& getAlternativeCosts() const
 	{
@@ -170,6 +179,11 @@ public:
 	void setInfMeasure(evtype inf)
 	{
 		infMeasure = inf;
+	}
+	
+	void setWeight(const evtype& w)
+	{
+		weight = w;
 	}
 
 	void addAlternativeCost(const pair<evtype, evtype>& alternativeCost)
@@ -213,10 +227,10 @@ public:
 		gos = status;
 	}
 
-	// evaluation = objFunction + infMeasure
+	// evaluation = objFunction + weight*infMeasure
 	evtype evaluation() const
 	{
-		return objFunction + infMeasure;
+		return objFunction + weight*infMeasure;
 	}
 
 	// leave option to rewrite tolerance (or consider lexicographic values)
