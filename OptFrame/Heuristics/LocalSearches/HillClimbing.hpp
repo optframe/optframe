@@ -69,8 +69,6 @@ public:
 
 		while ((evaluator.betterThan(e, *e0)) && ((tnow - tini) < timelimit))
 		{
-			delete s0;
-			s0 = &s.clone();
 			delete e0;
 			e0 = &e.clone();
 
@@ -79,9 +77,6 @@ public:
 			tnow = time(NULL);
 		}
 		
-		if(!evaluator.betterThan(e, *e0)) {
-		    s = *s0;
-		    e = *e0;
 	    }	
 
 		delete s0;
