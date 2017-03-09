@@ -74,9 +74,7 @@ public:
 			ls.exec(s, e, timelimit, target_f);
 
 			tnow = time(NULL);
-		}
-		
-	    }	
+		}	
 
 		delete e0;
 	}
