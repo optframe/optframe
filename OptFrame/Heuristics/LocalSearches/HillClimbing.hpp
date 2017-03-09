@@ -60,7 +60,6 @@ public:
 	{
 		long tini = time(NULL);
 
-		Solution<R, ADS>* s0 = &s.clone();
 		Evaluation* e0 = &e.clone();
 
 		ls.exec(s, e, timelimit, target_f);
@@ -79,7 +78,6 @@ public:
 		
 	    }	
 
-		delete s0;
 		delete e0;
 	}
 
