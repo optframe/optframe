@@ -5,7 +5,7 @@ all: mctApp$project
 mctApp$project:      main$project.o  $projectProblemInstance.o  $projectEvaluator.o $projectConstructive$constructive.o  $projectNSSeq$neighborhood.o   $projectScanner.o  
 	g++ $(GCC_FLAGS) main$project.o  $projectProblemInstance.o  $projectEvaluator.o $projectConstructive$constructive.o  $projectNSSeq$neighborhood.o   $projectScanner.o -o app_$project
 
-main$project.o: main$project.cpp  $project/Evaluation.h  $project/Representation.h  $project/Solution.h 
+main$project.o: main$project.cpp  $project/Representation.h  $project/Solution.h 
 	g++ -c $(GCC_FLAGS) main$project.cpp -o main$project.o
 	
 $projectProblemInstance.o: $project/ProblemInstance.cpp $project/ProblemInstance.h

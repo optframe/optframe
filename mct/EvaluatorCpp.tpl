@@ -12,20 +12,15 @@ MyEvaluator::~MyEvaluator()
 {
 }
 
-Evaluation$project& MyEvaluator::evaluate(const Rep$project& rep)
+Evaluation& MyEvaluator::evaluate(const Rep$project& rep)
 {
     // 'rep' is the representation of the solution
 
     double fo = 0; // Evaluation Function Value
 
-    return * new Evaluation$project(fo);
+    return * new Evaluation(fo);
 }
 
-bool MyEvaluator::betterThan(double f1, double f2)
-{
-    // $minmax
-    return $epsilon
-}
 
 bool MyEvaluator::isMinimization() const
 {

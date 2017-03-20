@@ -10,7 +10,6 @@
 
 #include "Representation.h"
 #include "Solution.h"
-#include "Evaluation.h"
 
 #include "ProblemInstance.h"
 
@@ -32,11 +31,9 @@ public:
 	
 	virtual ~MyEvaluator();
 
-	Evaluation$project& evaluate(const Rep$project& rep);
+	Evaluation& evaluate(const Rep$project& rep);
 	
-	//Evaluation$project& evaluate(const Rep$project& rep, const MY_ADS&);
-
-	virtual bool betterThan(double f1, double f2);
+	//Evaluation& evaluate(const Rep$project& rep, const MY_ADS&);
 	
 	virtual bool isMinimization() const;
 };

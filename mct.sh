@@ -160,24 +160,6 @@ fi
 ##############################################
 echo "3. Delta Structure is deprecated, use the Solution ADS instead. Moving to next question..."
 
-## Creating Evaluation file
-
-var_inc="./$project/Evaluation.h"
-var="./MyProjects/$project/Evaluation.h"
-var_tmp=$var".tmp"
-
-if cp ./mct/Evaluation.tpl $var
-then echo "4. Creating Evaluation File...[ok]"
-
-     t="s/\$project/$project/g"  
-     sed $t < $var > $var_tmp
-     mv $var_tmp $var
-
-     echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
-else echo "4. Creating Evaluation File...[fail]"
-     exit
-fi
-
 
 ##############################################
 #             Problem Instance
@@ -501,7 +483,7 @@ rm -f ./MyProjects/makefile.tmp
 
 echo
 echo "Congratulations! You can use the following command to compile your project:"
-echo "g++ ./MyProjects/main$project.cpp ./MyProjects/$project/ProblemInstance.cpp ./MyProjects/$project/Evaluator.cpp ./MyProjects/$project/Constructive$constructive.cpp ./MyProjects/$project/NSSeq$neighborhood.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
+echo "g++ --std=c++11 ./MyProjects/main$project.cpp ./MyProjects/$project/ProblemInstance.cpp ./MyProjects/$project/Evaluator.cpp ./MyProjects/$project/Constructive$constructive.cpp ./MyProjects/$project/NSSeq$neighborhood.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
 echo "or you can simply type: \"cd MyProjects && make\""
 
 echo
