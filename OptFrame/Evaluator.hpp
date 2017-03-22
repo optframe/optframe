@@ -201,7 +201,7 @@ public:
 			// destroy initial move
 			delete &ini;
 			// create a MoveCost object...
-			p = new MoveCost(e_end.first - e_ini.first, e_end.second - e_end.second);
+			p = new MoveCost(e_end.first - e_ini.first, e_end.second - e_ini.second, e.weight);
 			// ... and set the lexicographic costs
 			p->setAlternativeCosts(alternatives);
 			// return a MoveCost object pointer
@@ -307,7 +307,7 @@ public:
 			// apply move to both Evaluation and Solution
 			Move<R, ADS>* rev = applyMove(e, m, s);
 			// TODO: check outdated and estimated!
-			MoveCost mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, false, false);
+			MoveCost mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1, false, false);
 			// guarantee that alternative costs have same size
 			assert(alt_begin.size() == e.getAlternativeCosts().size());
 			// compute alternative costs

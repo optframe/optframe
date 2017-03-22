@@ -92,7 +92,7 @@ public:
 		return sngEvaluators.size();
 	}
 
-	unsigned clear()
+	void clear()
 	{
 		for(int e=0;e<int(sngEvaluators.size());e++)
 		{

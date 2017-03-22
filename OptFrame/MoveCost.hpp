@@ -45,15 +45,19 @@ protected:
 	bool estimated;
 	// storing costs for lexicographic approaches
 	vector<pair<evtype, evtype> > alternatives;
+	// constant to mutiply infeasibility weight
+	evtype weight;
 
 public:
-	explicit MoveCost(evtype obj, evtype inf = 0, bool outd = true, bool est = false) :
-			objFunction(obj), infMeasure(inf), outdated(outd), estimated(est)
+	explicit MoveCost(evtype obj, evtype inf = 0, evtype w = 1, bool _outdated = true, bool _estimated = false) :
+			objFunction(obj), infMeasure(inf), weight(w), outdated(_outdated), estimated(_estimated)
 	{
 	}
 
 	MoveCost(const MoveCost& mc) :
-			objFunction(mc.objFunction), infMeasure(mc.infMeasure), outdated(mc.outdated), estimated(mc.estimated), alternatives(mc.alternatives)
+			objFunction(mc.objFunction), infMeasure(mc.infMeasure),
+			outdated(mc.outdated), estimated(mc.estimated),
+			alternatives(mc.alternatives), weight(mc.weight)
 	{
 	}
 
@@ -103,7 +107,7 @@ public:
 
 	evtype cost() const
 	{
-		return objFunction + infMeasure;
+		return objFunction + weight * infMeasure;
 	}
 
 	// update Evaluation with costs
@@ -153,6 +157,7 @@ public:
 		outdated     = mc.outdated;
 		estimated    = mc.estimated;
 		alternatives = mc.alternatives;
+		weight       = mc.weight;
 
 		return *this;
 	}
@@ -168,3 +173,4 @@ public:
 }
 
 #endif /*OPTFRAME_MOVE_COST_HPP_*/
+

@@ -45,6 +45,7 @@ private:
 
 	vector<Evaluator<R, ADS>*> lEvaluator;
 	vector<Constructive<R, ADS>*> lConstructive;
+	vector<Solution<R, ADS>*> lSolution;
 	vector<Move<R, ADS>*> lMove;
 	vector<NS<R, ADS>*> lNS;
 	vector<NSSeq<R, ADS>*> lNSSeq;
@@ -79,6 +80,13 @@ public:
 		lEvaluator.push_back(&c);
 		if (verbose)
 			cout << "checkcommand: Evaluator " << lEvaluator.size() << " added!" << endl;
+	}
+
+	void add(Solution<R, ADS>& c)
+	{
+		lSolution.push_back(&c);
+		if (verbose)
+			cout << "checkcommand: Solution " << lSolution.size() << " added!" << endl;
 	}
 
 	void add(Move<R, ADS>& c)
@@ -579,6 +587,22 @@ public:
 
 		if(lMove.size() > 0)
 			cout << "checkcommand  will test given Move components (|Move|=" << lMove.size() << "; numSolutions=" << solutions.size() << ")" << endl;
+
+		for (unsigned p = 0; p < lSolution.size(); p++)
+		{
+			solutions.push_back(&lSolution[p]->clone());
+
+			for (unsigned ev = 0; ev < evaluators.size(); ev++)
+			{
+				message(lEvaluator.at(ev), p, "evaluating input solution.");
+				Timer te;
+				Evaluation& e = evaluators.at(ev)->evaluate(*lSolution[p]);
+				timeSol.fullTimeEval[ev].second += te.inMilliSecs();
+				timeSol.fullTimeEval[ev].first++;
+
+				evaluations.at(ev).push_back(&e);
+			}
+		}
 
 		for (unsigned id_move = 0; id_move < lMove.size(); id_move++)
 		{

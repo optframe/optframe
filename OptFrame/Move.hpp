@@ -102,7 +102,7 @@ public:
 		// note that even if the reverse move is applied, the Evaluation will continue with
 		// the outdated status set to true. So more efficient approaches may rewrite this
 		// method, or implement efficient re-evaluation by means of the 'cost' method.
-		for (int nE = 0; nE < mev.size(); nE++)
+		for (unsigned nE = 0; nE < mev.size(); nE++)
 			mev[nE].outdated = true;
 		// apply the move to R and ADS, saving the reverse (or undo) move
 		Move<R, ADS>* rev = apply(r, ads);
