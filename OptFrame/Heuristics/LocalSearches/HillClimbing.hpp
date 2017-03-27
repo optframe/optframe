@@ -68,8 +68,9 @@ public:
 
 		while ((evaluator.betterThan(e, *e0)) && ((tnow - tini) < timelimit))
 		{
-			delete e0;
-			e0 = &e.clone();
+			//delete e0;
+			//e0 = &e.clone();
+            (*e0) = e;
 
 			ls.exec(s, e, timelimit, target_f);
 

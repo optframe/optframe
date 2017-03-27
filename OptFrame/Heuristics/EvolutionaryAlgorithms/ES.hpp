@@ -152,6 +152,7 @@ public:
 			}
 
 			iter_swap(vNSInd.begin() + posX, vNSInd.begin() + posY);
+			//TODO - Bring together the respective EsStructure
 		}
 
 		for (int param = 0; param < nNS; param++) // 8 vizinhancas
@@ -334,7 +335,7 @@ public:
 		//AVALIA MELHOR INDIVIDUO
 		double fo = v[0].e->evaluation();
 
-		if (eval.betterThan(fo, eStar->evaluation()))
+		if (eval.betterThan(fo, eStar->evaluation()))  // pass the evaluation instead of double TODO
 		{
 			delete eStar;
 			delete sStar;
@@ -482,6 +483,7 @@ public:
 
 				// Cria Filho e Tuple de Parametros (pi,nap,vizinhança)
 				Solution<R, ADS>* filho = &pop[x].sInd->clone();
+//				Evaluation* eFilho = &pop[x].e->clone();
 				vector<EsStructure<R, ADS> >* vt = new vector<EsStructure<R, ADS> >(*pop[x].vEsStructureInd);
 				vector<int> vNSInd = pop[x].vNSInd;
 
@@ -492,6 +494,7 @@ public:
 
 				// application dos parametros para gerar filho completo
 				applyMutationOperators(filho, vt, vNSInd, nNS);
+//TODO give eFilho to the apply move inside applyMytatuibOperators
 
 				// Optional -- Local Search in each Offspring.
 

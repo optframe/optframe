@@ -66,34 +66,29 @@ public:
 		int k = 1;
 
 		long tnow = time(NULL);
+		Evaluation* e0 = &e.clone();
 		while (ev.betterThan(target_f, e.evaluation()) && (k <= r) && ((tnow - tini) < timelimit))
 		{
-			Solution<R, ADS>* s0 = &s.clone();
-			Evaluation* e0 = &e.clone();
+			(*e0) = e; //check TODO if this clone is right
 
-			lsList[k - 1]->exec(*s0, *e0, timelimit, target_f);
-			if (ev.betterThan(*s0, s))
+			lsList[k - 1]->exec(s, e, timelimit, target_f);
+
+			if (ev.betterThan(e, *e0))
 			{
-				s = *s0;
-				e = *e0;
-				delete s0;
-				delete e0;
 				k = 1;
 			}
 			else
 			{
-				delete s0;
-				delete e0;
 				k = k + 1;
 
 				if(Component::information)
 					cout << "VND::k=" << k << endl;
 			}
-			ev.evaluate(e, s);
+
 
 			tnow = time(NULL);
 		}
-
+		delete e0;
 	}
 
 	virtual bool compatible(string s)

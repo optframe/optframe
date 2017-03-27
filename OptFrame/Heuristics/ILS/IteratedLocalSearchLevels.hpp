@@ -87,7 +87,7 @@ public:
 		// Incrementa a iteracao
 		iter++;
 
-		if(Component::information)
+		if(Component::debug)
 			cout << "ILSL::iter " << iter << endl;
 
 		if (iter >= iterMax)
