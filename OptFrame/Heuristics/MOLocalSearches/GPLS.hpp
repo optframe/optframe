@@ -254,7 +254,7 @@ public:
 		p.clear();
 		x_e.clear();
 
-		cout << "General Two-Phase Pareto Local Search Finished" << endl;
+		cout << "General Two-Phase Pareto Local Search finished with" << x_e.size() << " non-dominated solutions.\n" << endl;
 
 		return pReturn;
 	}
