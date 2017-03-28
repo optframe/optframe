@@ -77,6 +77,7 @@ struct IndividuoES
 	{
 
 	}
+
 };
 
 //CADA INDIVIDUO EH UM PAR DE SOLUCAO E UMA TUPLE COM O PARAMETROS DA ESTRATEGIA
@@ -104,7 +105,7 @@ private:
 	int selectionMethod;
 	double mutationRate;
 
-	typedef vector<IndividuoES<R, ADS> > Populacao;
+	typedef vector<IndividuoES<R, ADS> > PopulationNSES;
 
 	static bool compareESIndividuo(IndividuoES<R, ADS> p1, IndividuoES<R, ADS> p2)
 	{
@@ -249,7 +250,7 @@ public:
 	 }
 	 }*/
 
-	void aplicaBuscaLocalBests(Populacao& p, int nBuscas)
+	void aplicaBuscaLocalBests(PopulationNSES& p, int nBuscas)
 	{
 
 		bool aux[nBuscas];
@@ -296,7 +297,7 @@ public:
 		}
 	}
 
-	Populacao& competicao(Populacao& pais, Populacao& filhos)
+	PopulationNSES& competicao(PopulationNSES& pais, PopulationNSES& filhos)
 	{
 		vector<IndividuoES<R, ADS> > v;
 
@@ -308,7 +309,7 @@ public:
 
 		sort(v.begin(), v.end(), compareESIndividuo); // ordena com QuickSort
 
-		Populacao* p = new Populacao;
+		PopulationNSES* p = new PopulationNSES;
 
 		double fo_pop = 0;
 		int nIndComp = v.size();
@@ -323,6 +324,7 @@ public:
 			else
 			{
 				delete v[i].sInd; // Solution
+				v[i].vEsStructureInd->clear();
 				delete v[i].vEsStructureInd; // vectors de mutacao e prob
 				delete v[i].e; // vectors de mutacao e prob
 			}
@@ -335,23 +337,26 @@ public:
 		//AVALIA MELHOR INDIVIDUO
 		double fo = v[0].e->evaluation();
 
-		if (eval.betterThan(fo, eStar->evaluation()))  // pass the evaluation instead of double TODO
+		if (eval.betterThan(fo, eStar->evaluation())) // pass the evaluation instead of double TODO
 		{
 			delete eStar;
 			delete sStar;
 			eStar = &v[0].e->clone();
 			sStar = &v[0].sInd->clone();
 
-			cout << "Gen:" << gAtual << " | noImp: " << iterWithoutImprovement;
-			cout << " | Best: " << eStar->evaluation() << "\t [";
-			for (int param = 0; param < nNS; param++)
+			if (Component::information)
 			{
-				cout << "(" << p->at(0).vEsStructureInd->at(param).pr;
-				cout << ",";
-				cout << p->at(0).vEsStructureInd->at(param).nap << ") ";
+				cout << "Gen:" << gAtual << " | noImp: " << iterWithoutImprovement;
+				cout << " | Best: " << eStar->evaluation() << "\t [";
+				for (int param = 0; param < nNS; param++)
+				{
+					cout << "(" << p->at(0).vEsStructureInd->at(param).pr;
+					cout << ",";
+					cout << p->at(0).vEsStructureInd->at(param).nap << ") ";
+				}
+				cout << "]\t";
+				cout << p->at(0).vNSInd << endl;
 			}
-			cout << "]\t";
-			cout << p->at(0).vNSInd << endl;
 
 			if (Component::debug)
 			{
@@ -386,11 +391,11 @@ public:
 		return *p;
 	}
 
-	Populacao& lowSelectivePression(Populacao& pop, Populacao& pop_filhos)
+	PopulationNSES& lowSelectivePression(PopulationNSES& pop, PopulationNSES& pop_filhos)
 	{
 		//onlyOffsprings
-		Populacao pop_nula;
-		Populacao& pNova = competicao(pop_nula, pop_filhos);
+		PopulationNSES pop_nula;
+		PopulationNSES& pNova = competicao(pop_nula, pop_filhos);
 		pop_nula.clear();
 
 		for (int i = 0; i < pop.size(); i++)
@@ -403,10 +408,9 @@ public:
 		return pNova;
 	}
 
-	Populacao&
-	highSelectivePression(Populacao& pop, Populacao& pop_filhos)
+	PopulationNSES& highSelectivePression(PopulationNSES& pop, PopulationNSES& pop_filhos)
 	{
-		Populacao& pNova = competicao(pop, pop_filhos);
+		PopulationNSES& pNova = competicao(pop, pop_filhos);
 		return pNova;
 	}
 
@@ -422,7 +426,7 @@ public:
 
 		Timer tnow;
 
-		Populacao pop;
+		PopulationNSES pop;
 		double fo_inicial = 0;
 
 		//GERANDO VETOR DE POPULACAO INICIAL
@@ -462,8 +466,11 @@ public:
 
 		}
 
-		cout << "Valor Medio das FO's da POP inicial: " << fo_inicial / mi << endl;
-		cout << " eStar = " << (double) eStar->evaluation() << endl;
+		if (Component::information)
+		{
+			cout << "Initial population average fitness: " << fo_inicial / mi << endl;
+			cout << "Best individual:" << (double) eStar->evaluation() << endl;
+		}
 		// ===============================
 //
 
@@ -473,7 +480,7 @@ public:
 		iterWithoutImprovement = 0;
 		while ((iterWithoutImprovement < gMaxWithoutImprovement) && ((tnow.now()) < timelimit) && eval.betterThan(target_f, eStar->evaluation()))
 		{
-			Populacao pop_filhos;
+			PopulationNSES pop_filhos;
 			double fo_filhos = 0;
 
 			//GERA OS OFFSPRINGS
@@ -522,7 +529,7 @@ public:
 
 			// =====================Selection ==================
 
-			Populacao* pNew;
+			PopulationNSES* pNew;
 
 			switch (selectionMethod)
 			{
@@ -551,39 +558,40 @@ public:
 			pop.clear();
 			pop_filhos.clear();
 			pop = *pNew;
-			pNew->clear(); //TODO check if something should be deleted
+			pNew->clear();
+			delete pNew;
 			// =====================End Selection ==================
 
 			// ====================================================
-			//Statitics about evolution of the params
+			//Statistics regarding the evolution of the params
 
 			vector<pair<double, double> > meanParams;
 
-			for (int param = 0; param < nNS; param++)
-			{
-				double meanPR = 0;
-				double meanNAP = 0;
-				for (int i = 0; i < mi; i++)
-				{
-					meanPR += pop[i].vEsStructureInd->at(param).pr;
-					meanNAP += pop[i].vEsStructureInd->at(param).nap;
-					//					cout << "(" << pop[i].second->at(param).pr;
-					//					cout << ",";
-					//					cout << pop[i].second->at(param).nap << ") ";
-				}
-				meanPR /= mi;
-				meanNAP /= mi;
-				meanParams.push_back(make_pair(meanPR, meanNAP));
-				//				cout << "(" << meanPR;
-				//				cout << ",";
-				//				cout << meanNAP << ") ";
-
-			}
-			//cout << endl;
-			meanParamsGenerations.push_back(meanParams);
-
 			if (Component::debug)
 			{
+				for (int param = 0; param < nNS; param++)
+				{
+					double meanPR = 0;
+					double meanNAP = 0;
+					for (int i = 0; i < mi; i++)
+					{
+						meanPR += pop[i].vEsStructureInd->at(param).pr;
+						meanNAP += pop[i].vEsStructureInd->at(param).nap;
+						//					cout << "(" << pop[i].second->at(param).pr;
+						//					cout << ",";
+						//					cout << pop[i].second->at(param).nap << ") ";
+					}
+					meanPR /= mi;
+					meanNAP /= mi;
+					meanParams.push_back(make_pair(meanPR, meanNAP));
+					//				cout << "(" << meanPR;
+					//				cout << ",";
+					//				cout << meanNAP << ") ";
+
+				}
+				//cout << endl;
+				meanParamsGenerations.push_back(meanParams);
+
 				FILE* arquivo = fopen(outputFile.c_str(), "a");
 				if (!arquivo)
 				{
@@ -617,11 +625,25 @@ public:
 		 cout << "eStar = " << (double) eStar->evaluation() << endl;*/
 
 		cout << "tnow.now() = " << tnow.now() << " timelimit = " << timelimit << endl;
-		cout << "Acabou ES = iterWithoutImprovement = " << iterWithoutImprovement << " gMaxWithoutImprovement = " << gMaxWithoutImprovement << endl;
+		cout << "NSES finished! Iterations without imp: " << iterWithoutImprovement << " gMaxWithoutImprovement = " << gMaxWithoutImprovement << endl;
 		cout << "target_f = " << target_f << " eStar->evaluation() = " << eStar->evaluation() << endl;
 		//getchar();
 
-		return new pair<Solution<R, ADS>&, Evaluation&>(*sStar, *eStar);
+		//deleting individuals from the working population
+		for (int ind = 0; ind < pop.size(); ind++)
+		{
+			delete pop[ind].sInd; // Solution
+			pop[ind].vEsStructureInd->clear();
+			delete pop[ind].vEsStructureInd; // vectors de mutacao e prob
+			delete pop[ind].e; // vectors de mutacao e prob
+		}
+		pop.clear();
+
+		pair<Solution<R, ADS>&, Evaluation&>* pairToReturn = new pair<Solution<R, ADS>&, Evaluation&>(*sStar, *eStar);
+		delete sStar;
+		delete eStar;
+		return pairToReturn;
+//		return new pair<Solution<R, ADS>&, Evaluation&>(*sStar, *eStar);
 	}
 
 	static string idComponent()

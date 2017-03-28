@@ -149,8 +149,6 @@ public:
 
 		gplsStructure<R, ADS> gPLSData;
 		Pareto<R, ADS> p_0;
-		Pareto<R, ADS> p;
-		Pareto<R, ADS> x_e;
 
 		if (_pf == NULL)
 		{
@@ -168,11 +166,8 @@ public:
 			cout << "Extracted initial constains " << p_0.size() << " individuals!" << endl;
 		}
 
-//		TODO REmove this printing
-//		p_0.print();
-
-		x_e = p_0;
-		p = x_e;
+		Pareto<R, ADS> x_e = p_0;
+		Pareto<R, ADS> p = x_e;
 		p_0.clear();
 
 		//Initializing auxiliar data structures -- Pareto Optimum and NewSol (guides auxiliar population p_a)

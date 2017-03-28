@@ -154,12 +154,9 @@ public:
 	void erase(unsigned pos)
 	{
 		delete paretoSet[pos];
-		for (int e = 0; e < paretoFront[pos]->size(); e++)
-			delete &paretoFront[pos]->at(e);
-//		delete paretoFront[pos]; // invalid error valgrid 8
+		delete paretoFront[pos];
 		paretoSet.erase(paretoSet.begin() + pos);
 		paretoFront.erase(paretoFront.begin() + pos);
-//		cout<<"revemod finished.."<<endl;
 	}
 
 	virtual Pareto<R, ADS>& clone() const
@@ -559,12 +556,21 @@ public:
 
 	bool addSolution(Pareto<R, ADS>& p, const Solution<R, ADS>& candidate)
 	{
-		MultiEvaluation& mev = multiEval.evaluate(candidate);
+		const MultiEvaluation& mev = multiEval.evaluate(candidate);
 		bool added = addSolution(p, candidate, mev);
 
 		delete &mev;
 		return added;
 	}
+
+	bool addSolution(Pareto<R, ADS>& p, MultiEvaluation& candidateMev, const Solution<R, ADS>& candidate)
+	{
+		multiEval.evaluate(candidateMev,candidate);
+		bool added = addSolution(p, candidate, candidateMev);
+
+		return added;
+	}
+
 
 	virtual bool addSolution(Pareto<R, ADS>& p, const Solution<R, ADS>& candidate, const MultiEvaluation& candidateMev)
 	{
