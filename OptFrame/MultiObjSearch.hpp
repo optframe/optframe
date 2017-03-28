@@ -207,6 +207,19 @@ public:
 
 	}
 
+	void exportParetoFront(string output)
+	{
+		FILE* fPF = fopen(output.c_str(), "a");
+		for (int i = 0; i < paretoFront.size(); i++)
+		{
+			for (int e = 0; e < paretoFront[i]->size(); e++)
+				fprintf(fPF, "%.7f\t", paretoFront[i]->at(e).evaluation());
+			fprintf(fPF, "\n");
+		}
+
+		fclose(fPF);
+	}
+
 	static vector<MultiEvaluation*> filterDominated(vector<Direction*>& vdir, const vector<MultiEvaluation*>& candidates)
 	{
 		vector<MultiEvaluation*> nonDom;

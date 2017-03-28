@@ -165,7 +165,7 @@ public:
 			cout << "Extracting Pareto Front given as parameters..." << endl;
 			p_0 = *_pf;
 
-			cout << "Population extracted with " << p_0.size() << " individuals!" << endl;
+			cout << "Extracted initial constains " << p_0.size() << " individuals!" << endl;
 		}
 
 //		TODO REmove this printing
