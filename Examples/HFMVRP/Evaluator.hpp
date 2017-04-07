@@ -279,10 +279,6 @@ public:
 		//getchar();
 	}
 
-	virtual bool betterThan(double a, double b) {
-		// MINIMIZATION
-		return (a < (b - EPSILON_HFMVRP));
-	}
 
 	virtual bool isMinimization() const {
 		return true;

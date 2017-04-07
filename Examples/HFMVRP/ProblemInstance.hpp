@@ -95,7 +95,7 @@ public:
 		//cout<<"nullDist = "<<nullDist<<endl;
 		//getchar();
 
-		cout << "dist: " << (*dist);
+//		cout << "dist: " << (*dist);
 
 		//Demands
 		double sumDemand = 0;

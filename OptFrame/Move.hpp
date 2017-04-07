@@ -144,13 +144,13 @@ public:
 
 	// ================== cost calculation
 
-	virtual MoveCost* cost(const Evaluation& e, const R& r, const ADS& ads, bool allowEstimated = false)
+	virtual MoveCost* cost(const Evaluation& e, const R& r, const ADS& ads, bool allowEstimated)
 	{
 		return NULL;
 	}
 
 	// experiment for multi objective problems
-	virtual MultiMoveCost* cost(const MultiEvaluation& e, const R& r, const ADS& ads, bool allowEstimated = false)
+	virtual MultiMoveCost* cost(const MultiEvaluation& e, const R& r, const ADS& ads, bool allowEstimated)
 	{
 		return NULL;
 	}

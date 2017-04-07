@@ -177,7 +177,7 @@ public:
 		return new DeltaMoveVRP2Opt(r, p1, p2, hfmvrp);
 	}
 
-	MoveCost* cost(const Evaluation&, const RepHFMVRP& rep, const AdsHFMVRP& ads)
+	MoveCost* cost(const Evaluation&, const RepHFMVRP& rep, const AdsHFMVRP& ads, bool allowEstimated = false)
 	{
 		vector<int> route = rep[r];
 		int vType = -1;

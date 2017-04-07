@@ -498,12 +498,10 @@ public:
 
 		}
 
-		//cout << "Initialize ADS..." << endl;
-		//getchar();
+
 		adsMan.initializeADS(newRep, newAds);
 		adsMan.initializeADSNeighStructure(newRep, newAds); //general initialization according to your neighborhoods
-		//cout << "OK Initialize ADS...." << endl;
-		//getchar();
+
 		/*
 		 cout << "newAds.cumulativeDemand" << newAds.cumulativeDemand << endl;
 		 cout << "newAds.maxDemand" << newAds.maxDemand << endl;
@@ -522,7 +520,7 @@ public:
 		 cout << "newAds.minPairDemand" << newAds.minPairDemand << endl;
 		 cout << "newAds.sumDemand" << newAds.sumDemand << endl;
 		 */
-		return *new TestSolution<RepHFMVRP, AdsHFMVRP>(newRep, newAds);
+		return *new Solution<RepHFMVRP, AdsHFMVRP>(newRep, newAds);
 	}
 
 };

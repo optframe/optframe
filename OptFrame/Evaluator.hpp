@@ -40,7 +40,6 @@ using namespace scannerpp;
 namespace optframe
 {
 
-
 //! \english The Evaluator class is responsible for the attribution of objective values for each Solution \endenglish \portuguese A classe Evaluator é responsável pela atribuição de valores objetivo para cada Solution \endportuguese
 
 /*!
@@ -77,12 +76,12 @@ public:
 	{
 		return allowCosts;
 	}
-	
+
 	evtype getWeight() const
 	{
 		return weight;
 	}
-	
+
 	void setWeight(const evtype& w)
 	{
 		weight = w;
@@ -94,7 +93,8 @@ public:
 	}
 
 //protected:
-public: // because of MultiEvaluator... otherwise, make it 'friend'
+public:
+	// because of MultiEvaluator... otherwise, make it 'friend'
 
 	virtual Evaluation& evaluate(const R& r) = 0;
 
@@ -110,7 +110,8 @@ public:
 	}
 
 //protected:
-public: // because of MultiEvaluator... otherwise, make it 'friend'
+public:
+	// because of MultiEvaluator... otherwise, make it 'friend'
 	virtual void evaluate(Evaluation& e, const R& r, const ADS& ads)
 	{
 		if (e.outdated)
@@ -158,7 +159,7 @@ public:
 
 		MoveCost* p = NULL;
 		if (allowCosts)
-			p = m.cost(e, s.getR(), s.getADS());
+			p = m.cost(e, s.getR(), s.getADS(), allowEstimated);
 
 		// if p not null, do not update 's' => much faster (using cost)
 		if (p)
@@ -186,7 +187,7 @@ public:
 			// apply reverse move in order to get the original solution back
 			Move<R, ADS>& ini = *applyMove(e, rev, s);
 			// if Evaluation wasn't 'outdated' before, restore its previous status
-			if(!outdated)
+			if (!outdated)
 				e.outdated = outdated;
 			// get original values (also could be calculated in the begin of function)
 			pair<evtype, evtype> e_ini = make_pair(e.getObjFunction(), e.getInfMeasure());
@@ -249,7 +250,6 @@ public:
 		return *p;
 	}
 
-
 	// Accept and apply move if it improves parameter moveCost
 	bool acceptsImprove(Move<R, ADS>& m, Solution<R, ADS>& s, Evaluation& e, MoveCost* mc = NULL, bool allowEstimated = false)
 	{
@@ -265,11 +265,11 @@ public:
 		if (p)
 		{
 			// verify if m is an improving move
-			if(isImprovement(*p))
+			if (isImprovement(*p))
 			{
 				// apply move and get reverse
 				Move<R, ADS>* rev = m.apply(s);
-				if(rev)
+				if (rev)
 					delete rev;
 				// update evaluation with MoveCost
 				p->update(e);
@@ -315,10 +315,10 @@ public:
 				mcost.addAlternativeCost(make_pair(e.getAlternativeCosts()[i].first - alt_begin[i].first, e.getAlternativeCosts()[i].second - alt_begin[i].second));
 
 			// check if it is improvement
-			if(isImprovement(mcost))
+			if (isImprovement(mcost))
 			{
 				// delete reverse move
-				if(rev)
+				if (rev)
 					delete rev;
 				return true;
 			}
@@ -329,7 +329,7 @@ public:
 			pair<Move<R, ADS>&, Evaluation&>& ini = applyMove(*rev, s);
 
 			// if Evaluation wasn't 'outdated' before, restore its previous status
-			if(!outdated)
+			if (!outdated)
 				e.outdated = outdated;
 
 			// go back to original evaluation
@@ -342,8 +342,6 @@ public:
 			return false;
 		}
 	}
-
-
 
 	// ============ betterThan ===========
 
@@ -358,7 +356,6 @@ public:
 	 - for maximization problems, returns a > b.
 	 */
 	//virtual bool betterThan(evtype a, evtype b) = 0;
-
 	virtual bool betterThan(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2)
 	{
 		Evaluation& e1 = evaluate(s1);

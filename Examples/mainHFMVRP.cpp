@@ -21,6 +21,7 @@
 #include "../OptFrame/CloneConstructive.hpp"
 #include "../OptFrame/NSSeq.hpp"
 #include "../OptFrame/Timer.hpp"
+#include "../OptFrame/Util/CheckCommand.hpp"
 
 using namespace std;
 
@@ -31,7 +32,7 @@ int main(int argc, char **argv)
 	cout << argv[0] << endl;
 	RandGenMersenneTwister rg;
 	long seed = time(NULL);
-	// seed = 100;
+	seed = 100;
 	cout << "Seed = " << seed << endl;
 	srand(seed);
 	rg.setSeed(seed);
@@ -76,8 +77,8 @@ int main(int argc, char **argv)
 	NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_deltaIterator_delta_or1 = new NSSeqVRPOrOpt1<int, AdsHFMVRP, DeltaMoveVRPOrOpt1, ProblemInstance, DeltaNSIteratorVRPOrOpt1<DeltaMoveVRPOrOpt1> >(p);
 	NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_deltaIterator_delta_or2 = new NSSeqVRPOrOpt2<int, AdsHFMVRP, DeltaMoveVRPOrOpt2, ProblemInstance, DeltaNSIteratorVRPOrOpt2<DeltaMoveVRPOrOpt2> >(p);
 	NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_deltaIterator_delta_exchange = new NSSeqVRPExchange<int, AdsHFMVRP, DeltaMoveVRPExchange, ProblemInstance, DeltaNSIteratorVRPExchange<DeltaMoveVRPExchange> >(p);
-	//NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_delta_shift10 = new NSSeqVRPShift10<int, AdsHFMVRP, DeltaMoveVRPShift10, ProblemInstance> (p);
-	//NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_delta_swap11 = new NSSeqVRPSwap1_1<int, AdsHFMVRP, DeltaMoveVRPSwap1_1, ProblemInstance> (p);
+	NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_delta_shift10 = new NSSeqVRPShift10<int, AdsHFMVRP, DeltaMoveVRPShift10, ProblemInstance>(p);
+	NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_delta_swap11 = new NSSeqVRPSwap1_1<int, AdsHFMVRP, DeltaMoveVRPSwap1_1, ProblemInstance>(p);
 	NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_deltaIterator_swap11 = new NSSeqVRPSwap1_1<int, AdsHFMVRP, DeltaMoveVRPSwap1_1, ProblemInstance, DeltaNSIteratorVRPSwap1_1<DeltaMoveVRPSwap1_1> >(p);
 	NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_deltaIterator_shift10 = new NSSeqVRPShift10<int, AdsHFMVRP, DeltaMoveVRPShift10, ProblemInstance, DeltaNSIteratorVRPShift10<DeltaMoveVRPShift10> >(p);
 
@@ -108,6 +109,22 @@ int main(int argc, char **argv)
 	vLS.push_back(&fiV);
 	vLS.push_back(&fiVI);
 
+	CheckCommand<RepHFMVRP, AdsHFMVRP> cc;
+	cc.add(*eval);
+//	cc.add(p);
+	cc.add(is);
+	cc.add(*nsseq_delta_shift10);
+	cc.add(*nsseq_delta_swap11);
+	cc.add(*nsseq_deltaIterator_swap11);
+	cc.add(*nsseq_deltaIterator_shift10);
+	cc.add(*nsseq_deltaIterator_delta_2opt);
+	cc.add(*nsseq_deltaIterator_delta_or1);
+	cc.add(*nsseq_deltaIterator_delta_or2);
+	cc.add(*nsseq_deltaIterator_delta_exchange);
+	cc.add(*adsMan);
+	cc.run(1, 1);
+	getchar();
+
 	RVND<RepHFMVRP, AdsHFMVRP> newVND(*eval, vLS, rg);
 	VariableNeighborhoodDescentUpdateADS<RepHFMVRP, AdsHFMVRP> newVNDUpdateADS(*eval, *adsMan, vLS);
 	BasicGRASP<RepHFMVRP, AdsHFMVRP> basicGrasp(*eval, is, newVNDUpdateADS, alpha, 1000);
@@ -122,6 +139,7 @@ int main(int argc, char **argv)
 	vNSeq.push_back(nsseq_deltaIterator_shift10);
 
 	pair<Solution<RepHFMVRP, AdsHFMVRP>&, Evaluation&>* initialPairGrasp = basicGrasp.search(10, 0);
+
 	CloneConstructive<RepHFMVRP, AdsHFMVRP> cloneSolAsConstructive(initialPairGrasp->first);
 
 	vector<int> vNSeqMaxApplication(vNSeq.size(), 1000);
@@ -129,7 +147,7 @@ int main(int argc, char **argv)
 //	double mutationRate = 1;
 //	int mi = 5;
 	//int batach = 5;
-	ES<RepHFMVRP, AdsHFMVRP> es(*eval, cloneSolAsConstructive, vNSeq, vNSeqMaxApplication, emptyLS, selectionType, mutationRate, rg, mi, 6 * mi, 50000, "./MyProjects/Results/esOutput", batch);
+	ES<RepHFMVRP, AdsHFMVRP> es(*eval, cloneSolAsConstructive, vNSeq, vNSeqMaxApplication, emptyLS, selectionType, mutationRate, rg, mi, 6 * mi, 50000, "./esOutput", batch);
 	es.setMessageLevel(4);
 
 	pair<Solution<RepHFMVRP, AdsHFMVRP>&, Evaluation&>* initialSol = es.search(180, 0);

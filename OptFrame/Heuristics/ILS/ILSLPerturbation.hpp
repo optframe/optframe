@@ -188,8 +188,10 @@ public:
 		for (int i = 0; i < ns.size(); i++)
 			pNS[i].second = pNS[i].first / soma;
 
+		cout<<"Printing probabilities ILSLPerturbationLPlus2Prob:"<<endl;
 		for (int i = 0; i < ns.size(); i++)
 			cout << "pNS[i].first: " << pNS[i].first << "\t pNS[i].second: " << pNS[i].second << endl;
+		cout<<endl;
 	}
 
 	void perturb(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f, int level)

@@ -75,6 +75,13 @@ public:
 			cout << "checkcommand: Constructive " << lConstructive.size() << " added!" << endl;
 	}
 
+	void add(ADSManager<R, ADS>& adsMan)
+	{
+		lADSManagerComp.push_back(&adsMan);
+		if (verbose)
+			cout << "checkcommand: AdsMan " << lADSManagerComp.size() << " added!" << endl;
+	}
+
 	void add(Evaluator<R, ADS>& c)
 	{
 		lEvaluator.push_back(&c);
@@ -361,7 +368,7 @@ public:
 			MoveCost* cost = NULL;
 
 			if (lEvaluator[ev]->getAllowCosts())
-				cost = move.cost(e, s.getR(), s.getADS());
+				cost = move.cost(e, s.getR(), s.getADS(),false);
 
 			message(lEvaluator.at(ev), iter, "cost() calculated!");
 
@@ -385,7 +392,7 @@ public:
 				if (abs(revCost - cValue) > 0.0001) {
 					error("difference between expected cost and cost()");
 					move.print();
-					printf("expected =\t %.4f\n", revCost);
+					printf("expected: (e' - e) =\t %.4f\n", revCost);
 					printf("cost() =\t %.4f\n", cValue);
 					printf("==============\n");
 					printf("CORRECT VALUES \n");
@@ -396,6 +403,7 @@ public:
 					printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n",
 							e_rev.getObjFunction(), e_rev.getInfMeasure(),
 							e_rev.evaluation());
+
 					cout << "s: ";
 					s.print();
 					cout << "s': ";
@@ -425,7 +433,7 @@ public:
 					} else {
 						MoveCost* cost2 = NULL;
 						if (lEvaluator[ev]->getAllowCosts()) {
-							cost2 = move2.cost(e, s.getR(), s.getADS());
+							cost2 = move2.cost(e, s.getR(), s.getADS(),false);
 							if (cost2) {
 								lEvaluator[ev]->betterThan(*cost, *cost2);
 								delete cost2;

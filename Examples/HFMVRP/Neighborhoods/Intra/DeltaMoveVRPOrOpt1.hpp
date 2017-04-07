@@ -80,7 +80,8 @@ public:
 	{
 		for (map<string, vector<bool> >::iterator iter = ads.neighborhoodStatus.begin(); iter != ads.neighborhoodStatus.end(); iter++)
 		{
-			ads.neighborhoodStatus[iter->first][r] = false;
+//			cout<<r<<"\titer->first: "<<iter->first<<endl;
+			ads.neighborhoodStatus.at(iter->first).at(r) = false;
 		}
 	}
 
@@ -142,10 +143,11 @@ public:
 	Move<RepHFMVRP, AdsHFMVRP>* apply(RepHFMVRP& rep, AdsHFMVRP& ads)
 	{
 		//Update NeightStatus
+//		print();
 		updateNeighStatus(ads);
 
 		int aux;
-		int i;
+		int i = 0;
 		if (c < pos)
 		{
 			aux = rep.at(r).at(c);
@@ -176,13 +178,13 @@ public:
 			//Update minDemand,maxDemand, minPairDemand, maxPairDemand, cumulative and sum
 			updateModifiedRoutes(rep, ads);
 
-		}
+			return new DeltaMoveVRPOrOpt1(r, pos, c+1, hfmvrp);
 
-		return new DeltaMoveVRPOrOpt1(-1, -1, -1, hfmvrp);
+		}
 
 	}
 
-	MoveCost* cost(const Evaluation&, const RepHFMVRP& rep, const AdsHFMVRP& ads)
+	MoveCost* cost(const Evaluation&, const RepHFMVRP& rep, const AdsHFMVRP& ads, bool allowEstimated = false)
 	{
 
 		vector<int> route = rep[r];
