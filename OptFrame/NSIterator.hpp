@@ -74,6 +74,25 @@ public:
 
 	virtual void first() = 0;
 	virtual void next() = 0;
+
+	virtual void nextValid(const Solution<R, ADS>& s)
+	{
+		next();
+
+		while(!isDone())
+		{
+			Move<R, ADS>& m = current();
+			if(m.canBeApplied(s))
+			{
+				delete &m;
+				break;
+			}
+
+			delete &m;
+			next();
+		}
+	}
+
 	virtual bool isDone() = 0;
 	virtual Move<R, ADS>& current() = 0;
 

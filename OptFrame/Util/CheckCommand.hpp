@@ -768,6 +768,7 @@ public:
 							cout << "move cannot be applied (NSSeq tests): ";
 							move.print();
 						}
+						delete &move;
 						continue;
 					}
 
