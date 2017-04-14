@@ -26,6 +26,10 @@
 #include "../RandGen.hpp"
 #include <limits.h>
 
+namespace optframe
+{
+
+
 class RandGenMersenneTwister: public RandGen
 {
 private:
@@ -128,5 +132,6 @@ public:
 		return (double) mt_rand() / UINT_MAX;
 	}
 };
+}
 
 #endif /* RANDGENMersenneTwister_HPP_ */
