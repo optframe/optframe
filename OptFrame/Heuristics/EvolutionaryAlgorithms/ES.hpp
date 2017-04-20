@@ -152,8 +152,8 @@ public:
 				}
 			}
 
+			//Swaps only NS order, since the index are preserved for function applyMutationOperators
 			iter_swap(vNSInd.begin() + posX, vNSInd.begin() + posY);
-			//TODO - Bring together the respective EsStructure
 		}
 
 		for (int param = 0; param < nNS; param++) // 8 vizinhancas
@@ -188,7 +188,7 @@ public:
 	{
 		for (int i = 0; i < nNS; i++)
 		{
-			int param = vNSInd[i];
+			int param = vNSInd[i]; //Extract index
 			double rx = rg.rand01();
 			if (rx < p->at(param).pr)
 				for (int a = 1; a <= p->at(param).nap; a++)
