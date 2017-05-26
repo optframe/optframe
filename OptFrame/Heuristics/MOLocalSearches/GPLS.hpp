@@ -198,7 +198,6 @@ public:
 				pMan2PPLS.gplsData.newSol[ind] = false;
 			}
 
-
 			//Run local search for each individual of the population - Pareto Manager, pMan2PPLS, updates population
 			for (int ind = 0; ind < p.size(); ind++)
 				vLS[k]->exec(x_e, &p.getNonDominatedSol(ind), &p.getIndMultiEvaluation(ind), &pMan2PPLS, timelimit - tnow.now(), target_f);
@@ -208,7 +207,6 @@ public:
 //				x_e.getIndMultiEvaluation(e).print();
 //			}
 //			getchar();
-
 
 			p.clear();
 
@@ -253,6 +251,9 @@ public:
 		Pareto<R, ADS>* pReturn = new Pareto<R, ADS>(x_e);
 		p.clear();
 		x_e.clear();
+
+		//checking possible dominance problems -- TODO - Remove for a faster code
+		pMan2PPLS.checkDominance(*pReturn);
 
 		cout << "General Two-Phase Pareto Local Search finished with" << x_e.size() << " non-dominated solutions.\n" << endl;
 
