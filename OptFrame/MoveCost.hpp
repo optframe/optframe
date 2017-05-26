@@ -39,14 +39,15 @@ protected:
 	evtype objFunction;
 	// infeasibility measure value (cost difference)
 	evtype infMeasure;
+	// constant to mutiply infeasibility weight
+	evtype weight;
 	// flag indicating if Evaluation was outdated
 	bool outdated;
 	// flag indicating if cost is estimated
 	bool estimated;
 	// storing costs for lexicographic approaches
 	vector<pair<evtype, evtype> > alternatives;
-	// constant to mutiply infeasibility weight
-	evtype weight;
+
 
 public:
 	explicit MoveCost(evtype obj, evtype inf = 0, evtype w = 1, bool _outdated = true, bool _estimated = false) :
@@ -56,8 +57,8 @@ public:
 
 	MoveCost(const MoveCost& mc) :
 			objFunction(mc.objFunction), infMeasure(mc.infMeasure),
-			outdated(mc.outdated), estimated(mc.estimated),
-			alternatives(mc.alternatives), weight(mc.weight)
+			weight(mc.weight), outdated(mc.outdated), estimated(mc.estimated),
+			alternatives(mc.alternatives)
 	{
 	}
 

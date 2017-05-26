@@ -74,18 +74,18 @@ public:
 	virtual inline bool betterThan(const MoveCost& mc1, const MoveCost& mc2)
 	{
 		if(isMinimization())
-			return mc1.cost() < (mc2.cost() - OPTFRAME_EPSILON);
+			return (mc2.cost() - mc1.cost()) >= EVALUATION_ZERO;
 		else
-			return mc1.cost() > (mc2.cost() + OPTFRAME_EPSILON);
+			return (mc1.cost() - mc2.cost()) >= EVALUATION_ZERO;
 	}
 
 	// true if 'e1' is better than 'e2'
 	virtual inline bool betterThan(const Evaluation& e1, const Evaluation& e2)
 	{
 		if(isMinimization())
-			return e1.evaluation() < (e2.evaluation() - OPTFRAME_EPSILON);
+			return (e2.evaluation() - e1.evaluation()) >= EVALUATION_ZERO;
 		else
-			return e1.evaluation() > (e2.evaluation() + OPTFRAME_EPSILON);
+			return (e1.evaluation() - e2.evaluation()) >= EVALUATION_ZERO;
 	}
 
 	/*
@@ -131,14 +131,13 @@ public:
 protected:
 	virtual inline bool equals(const evtype& t1, const evtype& t2, const vector<pair<evtype, evtype> >& altCosts1, const vector<pair<evtype, evtype> >& altCosts2)
 	{
-		if(abs(t1 - t2) < OPTFRAME_EPSILON)
+		if(EVALUATION_ABS(t1 - t2) <= EVALUATION_ZERO)
 			return true;
 
 		if(t1 != t2)
 			return false;
 
-		if(altCosts1.size() != altCosts2.size())
-			return false;
+		assert(altCosts1.size() == altCosts2.size());
 
 		for(unsigned i = 0; i < altCosts1.size(); i++)
 			if((altCosts1[i].first + altCosts1[i].second) != (altCosts2[i].first + altCosts2[i].second))
@@ -171,10 +170,10 @@ public:
 	{
 		evtype ec1 = mc.cost() + e1.evaluation();
 
-		if(isMinimization() && ec1 < (e2.evaluation() - OPTFRAME_EPSILON))
+		if(isMinimization()  && (e2.evaluation() - ec1) >= EVALUATION_ZERO)
 			return true;
 
-		if(!isMinimization() && ec1 > (e2.evaluation() + OPTFRAME_EPSILON))
+		if(!isMinimization() && (ec1 - e2.evaluation()) >= EVALUATION_ZERO)
 			return true;
 
 		return false;

@@ -27,10 +27,6 @@
 
 #include "Component.hpp"
 
-#ifndef OPTFRAME_EPSILON
-#define OPTFRAME_EPSILON 0.0001
-#endif
-
 using namespace std;
 
 namespace optframe
@@ -58,6 +54,15 @@ namespace optframe
 #endif
 
 typedef EVALUATION_TYPE evtype;
+
+#ifndef EVALUATION_ZERO
+#define EVALUATION_ZERO 0.0001
+#endif
+
+#ifndef EVALUATION_ABS
+#define EVALUATION_ABS ::fabs
+#endif
+
 
 // note: for multi-objective problems with distinct objective space types
 // such as (int, evtype, long long) you can use PackTypes in Utils or overload
@@ -236,7 +241,7 @@ public:
 	// leave option to rewrite tolerance (or consider lexicographic values)
 	virtual bool isFeasible() const
 	{
-		return (::abs(infMeasure) < 0.0001);
+		return (EVALUATION_ABS(infMeasure) <= EVALUATION_ZERO);
 	}
 
 	// ======================

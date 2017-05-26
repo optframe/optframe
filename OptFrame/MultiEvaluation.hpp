@@ -200,8 +200,7 @@ public:
 		return ss.str();
 	}
 
-}
-;
+};
 
 }
 
