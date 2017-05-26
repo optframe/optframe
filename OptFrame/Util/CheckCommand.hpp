@@ -31,13 +31,23 @@
 #include "../NSSeq.hpp"
 #include "../NSEnum.hpp"
 
-
 namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class CheckCommand
 {
+
+	static const int CMERR_EV_BETTERTHAN = 2001;
+	static const int CMERR_EV_BETTEREQUALS = 2002;
+	static const int CMERR_MOVE_EQUALS = 3001;
+	static const int CMERR_MOVE_HASREVERSE = 3002;
+	static const int CMERR_MOVE_REVREV_VALUE = 3004;
+	static const int CMERR_MOVE_REVSIMPLE = 3005;
+	static const int CMERR_MOVE_REVFASTER = 3006;
+	static const int CMERR_MOVE_COST = 3007;
+
+
 private:
 	bool verbose;
 
@@ -143,6 +153,11 @@ public:
 		cout << "checkcommand error: " << text << endl;
 	}
 
+	void errormsg(string component, int code, string scode, int iter, string text)
+	{
+		cout << "checkcommand ERROR " << code << " (" << scode << "): iter=" << iter << " testing component '" << component << "' MSG: " << text << endl;
+	}
+
 	bool parseBool(string b)
 	{
 		return b == "true";
@@ -200,6 +215,12 @@ public:
 
 			Timer tMovApply;
 			Move<R, ADS>* rev = move.apply(s);
+			if((!move.hasReverse() && rev) || (move.hasReverse() && !rev))
+			{
+				errormsg(moveFrom, CMERR_MOVE_HASREVERSE, "CMERR_MOVE_HASREVERSE", iter, " conflict between apply result and hasReverse()");
+				return false;
+			}
+
 			timeNS.timeNSApply[id_ns].second += tMovApply.inMilliSecs();
 			timeNS.timeNSApply[id_ns].first++;
 
@@ -287,7 +308,7 @@ public:
 			timeSol.fullTimeEval[ev].first++;
 
 			if (ini && (*ini != move)) {
-				error("reverse of reverse is not the original move!");
+				errormsg(moveFrom, CMERR_MOVE_EQUALS, "CMERR_MOVE_EQUALS", iter, "reverse of reverse is not the original move!");
 				move.print();
 				cout << "move: ";
 				move.print();
@@ -301,8 +322,8 @@ public:
 
 			message(lEvaluator.at(ev), iter, "testing reverse value.");
 
-			if (::abs(e_ini.evaluation() - e.evaluation()) > 0.0001) {
-				error("reverse of reverse has a different evaluation value!");
+			if(EVALUATION_ABS(e_ini.evaluation() - e.evaluation()) >= EVALUATION_ZERO) {
+				errormsg(moveFrom, CMERR_MOVE_REVREV_VALUE, "CMERR_MOVE_REVREV_VALUE", iter, "reverse of reverse has a different evaluation value!");
 				move.print();
 				cout << "move: ";
 				move.print();
@@ -318,51 +339,59 @@ public:
 
 			message(lEvaluator.at(ev), iter, "testing move cost.");
 
-			double revCost = e_rev.evaluation() - e.evaluation();
+			// ==============
+
+			evtype revCost = e_rev.evaluation() - e.evaluation();
 			message(lEvaluator.at(ev), iter, "revCost calculated!");
 
 			Timer tMoveCostApply;
 			MoveCost& mcSimpleCost = lEvaluator[ev]->moveCost(move, s);
-			double simpleCost = mcSimpleCost.cost();
+			evtype simpleCost = mcSimpleCost.cost();
 			delete &mcSimpleCost;
 			message(lEvaluator.at(ev), iter, "simpleCost calculated!");
 			timeNS.timeNSCostApply[id_ns].second +=
 					tMoveCostApply.inMilliSecs();
 			timeNS.timeNSCostApply[id_ns].first++;
 
-			if (abs(revCost - simpleCost) > 0.0001) {
-				error("difference between revCost and simpleCost");
+			if (EVALUATION_ABS(revCost - simpleCost) >= EVALUATION_ZERO) {
+				errormsg(moveFrom, CMERR_MOVE_REVSIMPLE, "CMERR_MOVE_REVSIMPLE", iter, "difference between revCost and simpleCost");
+				cout << "move: ";
 				move.print();
-				printf("revCost = %.4f\n", revCost);
-				printf("simpleCost = %.4f\n", simpleCost);
+				cout << "revCost = " << revCost << endl;
+				cout << "simpleCost = " << simpleCost << endl;
 				return false;
 			}
 
+			// ==============
 			// fasterCost
 			Timer tMoveCostApplyDelta;
 			Move<R, ADS>& rev1 = *lEvaluator[ev]->applyMove(e, move, s);
-			double e_end1 = e.evaluation();
+			evtype e_end1 = e.evaluation();
+			// TODO: check outdated status
+			// TODO: if(e.outdated), it means that user did not implement Move::apply(e,R,ADS)!
 			Move<R, ADS>& ini1 = *lEvaluator[ev]->applyMove(e, rev1, s);
-			double e_ini1 = e.evaluation();
-			timeNS.timeNSCostApplyDelta[id_ns].second +=
-					tMoveCostApplyDelta.inMilliSecs();
+			evtype e_ini1 = e.evaluation();
+			timeNS.timeNSCostApplyDelta[id_ns].second += tMoveCostApplyDelta.inMilliSecs();
 			timeNS.timeNSCostApplyDelta[id_ns].first++;
 
 			delete &rev1;
 			delete &ini1;
 
-			double fasterCost = e_end1 - e_ini1;
+			evtype fasterCost = e_end1 - e_ini1;
 			message(lEvaluator.at(ev), iter, "fasterCost calculated!");
 
-			if (abs(revCost - fasterCost) > 0.0001) {
-				error("difference between revCost and fasterCost");
+			if (EVALUATION_ABS(revCost - fasterCost) >= EVALUATION_ZERO) {
+				errormsg(moveFrom, CMERR_MOVE_REVFASTER, "CMERR_MOVE_REVFASTER", iter, "difference between revCost and fasterCost!");
+				cout << "move: ";
 				move.print();
-				printf("revCost = %.4f\n", revCost);
-				printf("fasterCost = %.4f\n", fasterCost);
-				printf("e = %.4f\n", e.evaluation());
-				printf("e_rev = %.4f\n", e_rev.evaluation());
+				cout << "revCost = " << revCost << endl;
+				cout << "fasterCost = " << fasterCost << endl;
+				cout << "e = " << e.evaluation() << endl;
+				cout << "e_rev = " << e_rev.evaluation() << endl;
 				return false;
 			}
+
+			// ==============
 
 			Timer tMoveCost;
 			MoveCost* cost = NULL;
@@ -378,8 +407,7 @@ public:
 			}
 
 			if (cost && cost->isEstimated()) {
-				timeNS.timeNSEstimatedCost[id_ns].second +=
-						tMoveCost.inMilliSecs();
+				timeNS.timeNSEstimatedCost[id_ns].second += tMoveCost.inMilliSecs();
 				timeNS.timeNSEstimatedCost[id_ns].first++;
 				if (cost->cost() > revCost)
 					timeNS.overestimate = true;
@@ -389,30 +417,24 @@ public:
 
 			if (cost && !cost->isEstimated()) {
 				double cValue = cost->cost();
-				if (abs(revCost - cValue) > 0.0001) {
-					error("difference between expected cost and cost()");
+				if (EVALUATION_ABS(revCost - cValue) >= EVALUATION_ZERO) {
+					errormsg(moveFrom, CMERR_MOVE_COST, "CMERR_MOVE_COST", iter, "difference between expected cost and cost()");
+					cout << "move: ";
 					move.print();
-					printf("expected: (e' - e) =\t %.4f\n", revCost);
-					printf("cost() =\t %.4f\n", cValue);
-					printf("==============\n");
-					printf("CORRECT VALUES \n");
-					printf("==============\n");
-					printf("e: \t obj:%.4f \t inf:%.4f \t total:%.4f\n",
-							e.getObjFunction(), e.getInfMeasure(),
-							e.evaluation());
-					printf("e':\t obj:%.4f \t inf:%.4f \t total:%.4f\n",
-							e_rev.getObjFunction(), e_rev.getInfMeasure(),
-							e_rev.evaluation());
-
+					cout << "expected cost: (e' - e) =\t" << revCost << endl;
+					cout << "cost() =\t" <<  cValue << endl;
+					cout << "e: \t obj:" << e.getObjFunction() << "\t inf: " << e.getInfMeasure() << " \t total:" << e.evaluation() << endl;
+					cout << "e':\t obj:" << e_rev.getObjFunction() << "\t inf:" << e_rev.getInfMeasure() <<" \t total:" << e_rev.evaluation() << endl;
+					cout << "e+cost():\t obj:" << e.getObjFunction()+cost->getObjFunctionCost() << "\t inf:" << e.getInfMeasure()+cost->getInfMeasureCost() << "\t total:" << e.evaluation()+cost->cost() << endl;
 					cout << "s: ";
 					s.print();
 					cout << "s': ";
 					sNeighbor.print();
 					cout << "move: ";
 					move.print();
-					printf("==============\n");
-					printf("  GOOD LUCK!  \n");
-					printf("==============\n");
+					cout << "==============" << endl;
+					cout << "  GOOD LUCK!  " << endl;
+					cout << "==============" << endl;
 					return false;
 				}
 
@@ -570,12 +592,12 @@ public:
 					evaluations.at(ev).push_back(&e);
 
 					if (lEvaluator.at(ev)->betterThan(e, e)) {
-						cout << "checkcommand: error in betterThan(X,X)=true for Evaluator " << ev << endl;
+						errormsg(lEvaluator.at(ev)->toString(), CMERR_EV_BETTERTHAN, "CMERR_EV_BETTERTHAN", iter, "error in betterThan(X,X)=true");
 						return false;
 					}
 
 					if (!lEvaluator.at(ev)->betterOrEquals(e, e)) {
-						cout << "checkcommand: error in betterOrEquals(X,X)=false for Evaluator " << ev << endl;
+						errormsg(lEvaluator.at(ev)->toString(), CMERR_EV_BETTEREQUALS, "CMERR_EV_BETTEREQUALS", iter, "error in betterOrEquals(X,X)=false");
 						return false;
 					}
 				}
