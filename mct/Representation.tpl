@@ -13,6 +13,9 @@ using namespace std;
 // Solution Representation
 typedef $rep Rep$project;
 
+// Auxiliary Data Structures (default 'int')
+typedef int MY_ADS;
+
 //#include <ostream>
 //ostream & operator<< (ostream & s, Rep$project){}
 

@@ -2,14 +2,10 @@
 #define $project_CONSTRUCTIVE_$constructive_H_
 
 #include "../../OptFrame/Constructive.h"
-#include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.h"
 
 #include "Representation.h"
-#include "Solution.h"
-
-#include "Evaluator.h"
 
 #include <list>
 

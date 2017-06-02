@@ -7,8 +7,7 @@
 #include <math.h>
 #include <iostream>
 
-// LOADER IS NOT DEFAULT ANYMORE. USE ONLY IF YOU NEED...
-//#include "../OptFrame/Loader.hpp"
+#include "../OptFrame/Util/RandGenMersenneTwister.hpp"
 
 #include "../OptFrame/Util/CheckCommand.hpp"
 
@@ -20,7 +19,7 @@ using namespace $project;
 
 int main(int argc, char **argv)
 {
-   RandGen rg;
+   RandGenMersenneTwister rg; // not using system rand() anymore
    
    // Initialize here all your OptFrame components 
    // (ProblemInstance, Evaluator, Constructive, ...)

@@ -7,7 +7,7 @@
 
 // Own includes
 #include "ProblemInstance.h"
-#include "Solution.h"
+#include "Representation.h"
 
 using namespace std;
 

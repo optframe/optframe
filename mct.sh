@@ -1,6 +1,7 @@
 #!/bin/bash
 #######################################################################
 # OptFrame - Project Generator MCT - "Make a Compilable Thing!"
+# Copyright (C) 2009-2017
 # http://optframe.sourceforge.net           
 #######################################################################
 #
@@ -136,29 +137,10 @@ else echo "1. Creating Representation File...[fail]"
 fi
 
 
-## Creating Solution file
-
-var_inc="./$project/Solution.h"
-var="./MyProjects/$project/Solution.h"
-var_tmp=$var".tmp"
-
-if cp ./mct/Solution.tpl $var
-then echo "2. Creating Solution File...[ok]"
-
-     t="s/\$project/$project/g"  
-     sed $t < $var > $var_tmp
-     mv $var_tmp $var
-
-     echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
-else echo "2. Creating Solution File...[fail]"
-     exit
-fi
-
-
 ##############################################
 #          Delta Structure
 ##############################################
-echo "3. Delta Structure is deprecated, use the Solution ADS instead. Moving to next question..."
+echo "2-3-4. Delta Structure and Solution files are deprecated, use the Solution ADS instead. Moving to next question..."
 
 
 ##############################################
@@ -405,10 +387,6 @@ if cp ./mct/main.tpl $var
 then echo "Main file...[ok]"
      
      t="s/\$project/$project/g"  
-     sed "$t" < $var > $var_tmp
-     mv $var_tmp $var
-
-     t="s/\$initialsolution/$initialsolution/g"  
      sed "$t" < $var > $var_tmp
      mv $var_tmp $var
 

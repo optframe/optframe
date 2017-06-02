@@ -1,9 +1,9 @@
 // OptFrame - Optimization Framework
 
-// Copyright (C) 2009, 2010, 2011
+// Copyright (C) 2009-2017
 // http://optframe.sourceforge.net/
 //
-// This file is part of the OptFrame optimization framework. This framework
+// This file is part of the OptFrame optimization framework. This framework 
 // is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License v3 as published by the
 // Free Software Foundation.
@@ -19,7 +19,7 @@
 // USA.
 
 //#######################################################################
-//# OptFrame - Project Generator MCT - "Make a Compilable Thing!"
+//# OptFrame - Project Generator MCT - "Make a Compilable Thing!" (Java)
 //# http://optframe.sourceforge.net           
 //#######################################################################
 //#
@@ -127,14 +127,10 @@ public class MCT
 	BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
 	System.out.println("====================================================");
-	System.out.println("DEPRECATED!!!!!! USE SHELL VERSION...               ");
 	System.out.println("OptFrame development version - Project Generator MCT");
 	System.out.println("             \"Make a Compilable Thing!\"           ");
 	System.out.println("      http://sourceforge.net/projects/optframe/     ");
 	System.out.println("====================================================");
-	String saida = input.readLine();
-    if(saida != "")
-        return;
 	System.out.println();
 	System.out.println("1. What's the name of your project? (Step 1 of 9)");
 	String name = input.readLine();
@@ -200,7 +196,7 @@ public class MCT
 	// #          Solution Representation
 	// ##############################################
 
-	System.out.println("What's your Solution Representation?");
+	System.out.println("The Representation is the data structure that defines/implements the Solution Space.\nWhat's your Representation?");
 	String rep = input.readLine();
 	rep = rep.replaceAll(">", " > ");
 	rep = rep.replaceAll("<", " < ");
@@ -224,9 +220,33 @@ public class MCT
 
 	writeToFile(sRepTest,"RepTest.cpp");
 
-	System.out.println("Warning: cannot compile the source code");
-	System.out.println();
-
+        try {
+          //Runtime r = Runtime.getRuntime();
+          Process p = Runtime.getRuntime().exec("g++ RepTest.cpp -o RepTest");
+          BufferedReader b = new BufferedReader(new InputStreamReader(p.getInputStream()));
+          BufferedReader e = new BufferedReader(new 
+     InputStreamReader(p.getErrorStream()));
+          String line = "";
+          while ((line = b.readLine()) != null)
+             System.out.println(line);
+          while ((line = e.readLine()) != null)
+             System.out.println(line);
+          b.close();
+          e.close();
+          p.waitFor();
+          if(p.exitValue() == 0) {
+             System.out.println("Solution Representation Test...[ok]");
+	     System.out.println();
+          }
+          else {
+	     System.out.println("Solution Representation Test...[fail] error code:" + p.exitValue());
+	     System.out.println();
+          }
+        }
+        catch(Throwable t) {
+           t.printStackTrace();
+           System.out.println("Solution Representation Test...[fail] JAVA EXCEPTION");
+        }
 
 	// ## Creating Representation file
 
@@ -255,143 +275,19 @@ public class MCT
 	}
 
 
-	// ## Creating Solution file
-
-	var_inc="./"+project+"/Solution.h";
-	var="./MyProjects/"+project+"/Solution.h";
-
-	if ( copyfile( "./mct/Solution.tpl", var ))
-	{ 
-	    System.out.println( "2. Creating Solution File...[ok]" );
-
-	    String sVar = loadfile( var );
-
-	    sVar = sVar.replaceAll("\\$project", project);
-
-	    writeToFile(sVar,var);
-
-	    appendToFile( "#include \""+var_inc+"\""+"\n" , "./MyProjects/"+project+".h") ;
-	} 
-	else 
-	{
-	    System.out.println( "2. Creating Solution File...[fail]" );
-	    return;
-	}
-
-
 	//##############################################
-	//#          Memory Structure
+	//#          Auxiliary Data Structure
 	//##############################################
 
-	String memproject;
-	String commamproject;
-	String typeproject;
-	String initializememory;
+	System.out.println("2-3-4. Delta Structure and Solution files are deprecated, use the Solution ADS instead. Moving to next question...");
 
-	System.out.println("What's your Memory Structure? It is used for fast re-evaluation. (if it is not necessary leave this field empty)");
-	String mem = input.readLine();
-
-	if ( ! mem.equals("") )
-	{
-	    mem = mem.replaceAll(">", " > ");
-	    mem = mem.replaceAll("<", " < ");
-
-	    System.out.println("Do you need any extra include? (ex.: \"xyz.h\" or <vector>)");
-	    include = "";
-	    incl = input.readLine();
-
-	    while ( ! incl.equals("") )//
-	    {
-		include += "\n#include " + incl;
-		incl = input.readLine();
-	    }
-
-	    copyfile("./mct/MemTest.tpl","./MemTest.cpp");
-
-	    String sMemTest = loadfile("MemTest.cpp");
-
-	    sRepTest = sRepTest.replaceAll("\\$mem", mem);
-	    sRepTest = sRepTest.replaceAll("\\$include", include);
-
-	    writeToFile(sRepTest,"RepTest.cpp");
-
-	    System.out.println("Warning: cannot compile the source code");
-	    System.out.println();
-
-
-	    typeproject="typedef "+mem+" Mem"+project+";";
-	    memproject="Mem"+project;
-	    commamproject=" , Mem"+project;
-	    initializememory=" , * new Mem"+project;
-	}
-	else
-	{
-	    System.out.println("No memory structure!");
-	    typeproject="";
-	    memproject="";
-	    commamproject="";
-	    initializememory=" , * new int";
-	}
-
-	System.out.println();
-
-
-	//## Creating Memory file
-
-	var_inc = "./"+project+"/Memory.h" ;
-	var = "./MyProjects/"+project+"/Memory.h";
-
-	if ( copyfile ( "./mct/Memory.tpl", var ) )
-	{
-	    System.out.println("3. Creating Memory File...[ok]");
-
-	    String sVar = loadfile( var );
-
-	    sVar = sVar.replaceAll("\\$typeproject", typeproject);
-	    sVar = sVar.replaceAll("\\$include", include);
-	    sVar = sVar.replaceAll("\\$project", project);
-
-	    writeToFile(sVar,var);
-
-	    appendToFile( "#include \""+var_inc+"\""+"\n" , "./MyProjects/"+project+".h");
-	} 
-	else 
-	{ 
-	    System.out.println( "3. Creating Memory File...[fail]" );
-	    return;
-	}
-
-
-	//## Creating Evaluation file
-
-	var_inc = "./"+project+"/Evaluation.h" ;
-	var = "./MyProjects/"+project+"/Evaluation.h";
-
-	if ( copyfile ( "./mct/Evaluation.tpl", var ) )
-	{
-	    System.out.println("4. Creating Evaluation File...[ok]");
-
-	    String sVar = loadfile( var );
-
-	    sVar = sVar.replaceAll("\\$memproject", memproject);
-	    sVar = sVar.replaceAll("\\$project", project);
-
-	    writeToFile(sVar,var);
-
-	    appendToFile( "#include \""+var_inc+"\""+"\n" , "./MyProjects/"+project+".h");
-	}
-	else 
-	{ 
-	    System.out.println( "4. Creating Evaluation File...[fail]" );
-	    return;
-	}
 
 	//##############################################
 	//#             Problem Instance
 	//##############################################
 
-	var_inc = "./"+project+"/ProblemInstance.hpp" ;
-	var = "./MyProjects/"+project+"/ProblemInstance.hpp";
+	var_inc = "./"+project+"/ProblemInstance.h" ;
+	var = "./MyProjects/"+project+"/ProblemInstance.h";
 
 	if ( copyfile ( "./mct/ProblemInstance.tpl", var ) )
 	{
@@ -411,6 +307,24 @@ public class MCT
 	    return;
 	}
 
+	var = "./MyProjects/"+project+"/ProblemInstance.cpp";
+
+	if ( copyfile ( "./mct/ProblemInstanceCpp.tpl", var ) )
+	{
+	    System.out.println("5. Creating Problem Instance (CPP)...[ok]");
+
+	    String sVar = loadfile( var );
+
+	    sVar = sVar.replaceAll("\\$project", project);
+
+	    writeToFile(sVar,var);
+	} 
+	else 
+	{ 
+	    System.out.println( "5. Creating Problem Instance (CPP)...[fail]" );
+	    return;
+	}
+
 
 	//##############################################
 	//#             Evaluator
@@ -420,15 +334,19 @@ public class MCT
 
 	System.out.println("\nIs this a MINIMIZATION or MAXIMIZATION problem?");
 	String minmax = input.readLine();
+        String isMin = "";
 
-	if ( minmax.equals("MINIMIZATION") )
-	    epsilon="(e1.evaluation() < (e2.evaluation() - EPSILON_"+project+"));";
-	else
-	    epsilon="(e1.evaluation() > (e2.evaluation() + EPSILON_"+project+"));";
+	if ( minmax.equals("MINIMIZATION") ) {
+	    epsilon="(f1 < (f2 - EPSILON_"+project+"));";
+            isMin="true;";
+        }
+	else {
+	    epsilon="(f1 > (f2 + EPSILON_"+project+"));";
+            isMin="false;";
+        }
 
-
-	var_inc = "./"+project+"/Evaluator.hpp" ;
-	var = "./MyProjects/"+project+"/Evaluator.hpp";
+	var_inc = "./"+project+"/Evaluator.h" ;
+	var = "./MyProjects/"+project+"/Evaluator.h";
 
 	if ( copyfile ( "./mct/Evaluator.tpl", var ) )
 	{
@@ -438,9 +356,9 @@ public class MCT
 
 	    sVar = sVar.replaceAll("\\$epsilon", epsilon);
 	    sVar = sVar.replaceAll("\\$project", project);
-	    sVar = sVar.replaceAll("\\$initializememory", initializememory);
+	    sVar = sVar.replaceAll("\\$isMin", isMin);
 	    sVar = sVar.replaceAll("\\$minmax", minmax);
-	    sVar = sVar.replaceAll("\\$commamproject", commamproject);
+	    //sVar = sVar.replaceAll("\\$commamproject", commamproject);
 
 	    writeToFile(sVar,var);
 
@@ -449,6 +367,30 @@ public class MCT
 	else 
 	{ 
 	    System.out.println( "6. Creating Evaluator...[fail]" );
+	    return;
+	}
+
+	var = "./MyProjects/"+project+"/Evaluator.cpp";
+
+	if ( copyfile ( "./mct/EvaluatorCpp.tpl", var ) )
+	{
+	    System.out.println("6. Creating Evaluator (CPP)...[ok]");
+
+	    String sVar = loadfile( var );
+
+	    sVar = sVar.replaceAll("\\$epsilon", epsilon);
+	    sVar = sVar.replaceAll("\\$project", project);
+	    sVar = sVar.replaceAll("\\$isMin", isMin);
+	    sVar = sVar.replaceAll("\\$minmax", minmax);
+	    //sVar = sVar.replaceAll("\\$commamproject", commamproject);
+
+	    writeToFile(sVar,var);
+
+	    appendToFile( "#include \""+var_inc+"\""+"\n" , "./MyProjects/"+project+".h") ;
+	} 
+	else 
+	{ 
+	    System.out.println( "6. Creating Evaluator (CPP)...[fail]" );
 	    return;
 	}
 
@@ -463,6 +405,7 @@ public class MCT
 	Scanner toInt = new Scanner(str_nbNS);
 	int nbNS = toInt.nextInt();
 
+        String neighborhood = "";
 	for (int i=1; i<=nbNS; i++)
 	{
 	    if (i==1)
@@ -474,10 +417,10 @@ public class MCT
 	    else 
 		System.out.println("Type the name of your "+i+"th Neighborhood Structure:");
 
-	    String neighborhood = input.readLine();
+	    neighborhood = input.readLine();
 
-	    var_inc = "./"+project+"/NSSeq"+neighborhood+".hpp";
-	    var = "./MyProjects/"+project+"/NSSeq"+neighborhood+".hpp";
+	    var_inc = "./"+project+"/NSSeq"+neighborhood+".h";
+	    var = "./MyProjects/"+project+"/NSSeq"+neighborhood+".h";
 
 	    if ( copyfile ( "./mct/NSSeq.tpl", var ) )
 	    {
@@ -487,7 +430,7 @@ public class MCT
 
 		sVar = sVar.replaceAll("\\$project", project);
 		sVar = sVar.replaceAll("\\$neighborhood", neighborhood);
-		sVar = sVar.replaceAll("\\$commamproject", commamproject);
+		//sVar = sVar.replaceAll("\\$commamproject", commamproject);
 
 		writeToFile(sVar,var);
 
@@ -498,6 +441,27 @@ public class MCT
 		System.out.println( "7."+i+" Creating Neighborhood Structure "+neighborhood+" ...[fail]" );
 		return;
 	    }
+
+	    var_inc = "./"+project+"/NSSeq"+neighborhood+".cpp";
+	    var = "./MyProjects/"+project+"/NSSeq"+neighborhood+".cpp";
+
+	    if ( copyfile ( "./mct/NSSeqCpp.tpl", var ) )
+	    {
+		System.out.println("7."+i+" Creating Neighborhood Structure "+neighborhood+" (CPP) ...[ok]");
+
+		String sVar = loadfile( var );
+
+		sVar = sVar.replaceAll("\\$project", project);
+		sVar = sVar.replaceAll("\\$neighborhood", neighborhood);
+		//sVar = sVar.replaceAll("\\$commamproject", commamproject);
+
+		writeToFile(sVar,var);
+	    } 
+	    else 
+	    { 
+		System.out.println( "7."+i+" Creating Neighborhood Structure "+neighborhood+" (CPP) ...[fail]" );
+		return;
+	    }
 	}
 
 
@@ -505,13 +469,13 @@ public class MCT
 	//#             Initial Solution
 	//##############################################
 
-	System.out.println("\nHow many Initial Solution Generators will be there in your project?");
+	System.out.println("\nHow many Constructive methods will be there in your project?");
 	String str_nbISG = input.readLine();
 
 	toInt = new Scanner(str_nbISG);
 	int nbISG = toInt.nextInt();
 
-	String initialsolution = "";
+	String constructive = "";
 
 	for (int i=1; i<=nbISG; i++ )
 	{
@@ -525,20 +489,20 @@ public class MCT
 		System.out.println("Type the name of your "+i+"th Initial Solution Generator:");
 
 
-	    initialsolution = input.readLine();
+	    constructive = input.readLine();
 
 
-	    var_inc = "./"+project+"/InitialSolution"+initialsolution+".hpp";
-	    var = "./MyProjects/"+project+"/InitialSolution"+initialsolution+".hpp";
+	    var_inc = "./"+project+"/Constructive"+constructive+".h";
+	    var = "./MyProjects/"+project+"/Constructive"+constructive+".h";
 
-	    if ( copyfile ( "./mct/InitialSolution.tpl", var ) )
+	    if ( copyfile ( "./mct/Constructive.tpl", var ) )
 	    {
-		System.out.println("8."+i+" Creating Initial Solution Generator "+initialsolution+" ...[ok]");
+		System.out.println("8."+i+" Creating Constructive "+constructive+" ...[ok]");
 
 		String sVar = loadfile( var );
 
 		sVar = sVar.replaceAll("\\$project", project);
-		sVar = sVar.replaceAll("\\$initialsolution", initialsolution);
+		sVar = sVar.replaceAll("\\$constructive", constructive);
 
 		writeToFile(sVar,var);
 
@@ -546,39 +510,31 @@ public class MCT
 	    } 
 	    else 
 	    { 
-		System.out.println( "8."+i+" Creating Initial Solution Generator "+initialsolution+" ...[fail]" );
+		System.out.println( "8."+i+" Creating Constructive "+constructive+" ...[fail]" );
+		return;
+	    }
+
+	    var = "./MyProjects/"+project+"/Constructive"+constructive+".cpp";
+
+	    if ( copyfile ( "./mct/ConstructiveCpp.tpl", var ) )
+	    {
+		System.out.println("8."+i+" Creating Constructive "+constructive+" (CPP) ...[ok]");
+
+		String sVar = loadfile( var );
+
+		sVar = sVar.replaceAll("\\$project", project);
+		sVar = sVar.replaceAll("\\$constructive", constructive);
+
+		writeToFile(sVar,var);
+	    } 
+	    else 
+	    { 
+		System.out.println( "8."+i+" Creating Constructive "+constructive+" (CPP) ...[fail]" );
 		return;
 	    }
 	}
 
-
-	//##############################################
-	//#               Problem Command
-	//##############################################
-
-	var_inc = "./"+project+"/ProblemCommand.hpp" ;
-	var = "./MyProjects/"+project+"/ProblemCommand.hpp";
-
-	if ( copyfile ( "./mct/ProblemCommand.tpl", var ) )
-	{
-	    System.out.println("9. Creating Problem Command...[ok]");
-
-	    String sVar = loadfile( var );
-
-	    sVar = sVar.replaceAll("\\$project", project);
-	    sVar = sVar.replaceAll("\\$commamproject", commamproject);
-	    sVar = sVar.replaceAll("\\$initialsolution", initialsolution);
-
-	    writeToFile(sVar,var);
-
-	    appendToFile( "#include \""+var_inc+"\""+"\n" , "./MyProjects/"+project+".h");
-	} 
-	else 
-	{ 
-	    System.out.println( "9. Creating Problem Command...[fail]" );
-	    return;
-	}
-
+        System.out.println("9. Problem Command is deprecated, ignoring...");
 
 	//# Closing project file
 
@@ -597,8 +553,8 @@ public class MCT
 	    String sVar = loadfile( var );
 
 	    sVar = sVar.replaceAll("\\$project", project);
-	    sVar = sVar.replaceAll("\\$commamproject", commamproject);
-	    sVar = sVar.replaceAll("\\$initialsolution", initialsolution);
+	    sVar = sVar.replaceAll("\\$neighborhood", neighborhood);
+	    sVar = sVar.replaceAll("\\$constructive", constructive);
 	    sVar = sVar.replaceAll("\\$name", name);
 
 	    writeToFile(sVar,var);
@@ -614,7 +570,7 @@ public class MCT
 	//#          makefile
 	//##############################################
 
-	var="./makefile";
+	var="./MyProjects/makefile";
 
 	if ( copyfile ( "./mct/makefile.tpl", var ) )
 	{
@@ -623,8 +579,11 @@ public class MCT
 	    String sVar = loadfile( var );
 
 	    sVar = sVar.replaceAll("\\$project", project);
-
+	    sVar = sVar.replaceAll("\\$constructive", constructive);
+	    sVar = sVar.replaceAll("\\$neighborhood", neighborhood);
+            
 	    writeToFile(sVar,var);
+            appendToFile("GCC_FLAGS=-O3 --std=c++11\n", var);
 	} 
 	else 
 	{ 
@@ -634,9 +593,11 @@ public class MCT
 
 
 	System.out.println();
+        System.out.println("Warning: MCT Java may not properly prepare makefiles for multiple projects. A manual fix may be needed.");
+	System.out.println();
 	System.out.println("Congratulations! You can use the following command to compile your project:");
-	System.out.println("g++ ./MyProjects/main"+project+".cpp ./OptFrame/Scanner++/Scanner.cpp -o main"+project);
-	System.out.println("or you can simply type: \"make\"");
+	System.out.println("g++ --std=c++11 ./MyProjects/main"+project+".cpp ./MyProjects/"+project+"/ProblemInstance.cpp ./MyProjects/"+project+"/Evaluator.cpp ./MyProjects/"+project+"/Constructive"+constructive+".cpp ./MyProjects/"+project+"/NSSeq"+neighborhood+".cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_"+project);
+	System.out.println("or you can simply type: \"cd MyProjects && make\"");
 
 	System.out.println();
 	System.out.println("Goodbye!");

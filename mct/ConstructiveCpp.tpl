@@ -15,5 +15,5 @@ Solution<Rep$project, MY_ADS>& Constructive$constructive::generateSolution()
 {
     Rep$project newRep;
 
-    return * new TestSolution<Rep$project, MY_ADS>(newRep);			
+    return * new Solution<Rep$project, MY_ADS>(newRep);			
 }

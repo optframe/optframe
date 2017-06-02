@@ -9,11 +9,7 @@
 #include "../../OptFrame/Evaluator.hpp"
 
 #include "Representation.h"
-#include "Solution.h"
-
 #include "ProblemInstance.h"
-
-#define EPSILON_$project 0.0001
 
 
 namespace $project
