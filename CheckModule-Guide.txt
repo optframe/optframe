@@ -1,7 +1,7 @@
 
 OptFrame Check Module Troubleshooting Guide
 
-Last Update: 16/05/2017   980416120
+Last Update: 16/05/2017
 
 ======
 
@@ -83,5 +83,4 @@ The next line should show which move had problems "move: MoveX". If it is not di
 Check function MoveX::cost(e, R, ADS, estimated). Probably move cost recalculation has an error. The current version only supports 'estimated=false' flag in test, but future versions could also test for estimated move costs.
 
 -----
-
 
