@@ -29,14 +29,14 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class Elitism
 {
 protected:
 
    typedef Solution<R, ADS> chromossome;
    //typedef vector<chromossome*> Population;
-   typedef vector<Evaluation<DS>*> FitnessValues;
+   typedef vector<Evaluation*> FitnessValues;
 
 public:
 

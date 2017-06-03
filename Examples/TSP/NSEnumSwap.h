@@ -137,6 +137,7 @@ public:
 		}
 
 		e.setObjFunction(e.getObjFunction() + f);
+		e.outdated = false;
 
 		return &rev;
 	}

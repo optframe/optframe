@@ -22,7 +22,7 @@
 #define TSP_INITIALSOLUTION_Random_HPP_
 
 #include "../../OptFrame/Constructive.h"
-#include "../../OptFrame/Util/TestSolution.hpp"
+//#include "../../OptFrame/Util/TestSolution.hpp" // DEPRECATED
 
 #include "ProblemInstance.h"
 
@@ -74,7 +74,7 @@ public:
 		for(unsigned int i=0;i<newRep.size();i++)
 			newRep[i] = r[i];
 
-		return * new TestSolution<RepTSP>(newRep);
+		return * new Solution<RepTSP>(newRep);
 	}
 
 };

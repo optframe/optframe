@@ -84,12 +84,13 @@ public:
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
 			{
 				int n = rg.rand(neighbors.size());
-				Move<R, ADS>* move = &(neighbors[n]->move(s));
+				Move<R, ADS>* move = neighbors[n]->validMove(s);
 
-				while (!(move->canBeApplied(s)))
+				if(!move)
 				{
-					delete move;
-					move = &(neighbors[n]->move(s));
+					if(Component::warning)
+						cout << "SA warning: no move in iter=" << iterT << " T=" << T << "! continue..." << endl;
+					continue;
 				}
 
 				Solution<R, ADS>* sCurrent = &s.clone();
@@ -135,6 +136,7 @@ public:
 				}
 
 				iterT++;
+				delete move;
 			}
 			T = alpha * T;
 			iterT = 0;

@@ -74,6 +74,17 @@ public:
         doStats = true;
     }
 
+    bool verify(const RepTSP& r)
+    {
+    	assert(int(r.size()) == pI->n);
+    	vector<bool> count(pI->n, false);
+    	for(int i=0; i<pI->n; i++)
+    		count[r[i]] = true;
+    	for(int i=0; i<pI->n; i++)
+    		assert(count[i]);
+    	return true;
+    }
+
     Evaluation& evaluate(const RepTSP& r)
     {
         double fo = 0; // Evaluation Function Value
@@ -93,8 +104,8 @@ public:
         double val = (*pI->dist)(k, l);
         fo += val;
 
-        fo = int(fo); // cast to int
-
+        //fo = int(fo); // cast to int
+        /*
         if (doStats)
         {
             int ifo = int(fo);
@@ -126,6 +137,7 @@ public:
             solNSTotal[ifo] += total;
             solNSImp[ifo] += impSols;
         }
+        */
 
         return *new Evaluation(fo);
     }

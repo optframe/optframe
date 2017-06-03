@@ -149,7 +149,7 @@ public:
 
 	Component()
 	{
-		//setMessageLevel(2);
+		setMessageLevel(2);
 		//logdata = NULL;
 	}
 

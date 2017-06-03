@@ -1,11 +1,14 @@
-all: hfvrpmt #examples
+all: kp tsp #hfvrpmt #examples
 
-examples: tsp etii pmedcap opths  gfp hfvrpmt
+examples: kp tsp etii pmedcap opths  gfp hfvrpmt
 
 fix_examples: svrpdsp modm
 
 tsp:
 	make -f makeTSP.mk
+
+kp:
+	make -f makeKP.mk
 
 opths:
 	make -f makeOptHS.mk

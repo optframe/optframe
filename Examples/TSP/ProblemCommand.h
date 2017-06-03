@@ -114,7 +114,7 @@ public:
 
 
         ILSLPerturbationLPlus2<RepTSP, OPTFRAME_DEFAULT_ADS>* ilsl_pert;
-        ilsl_pert = new ILSLPerturbationLPlus2<RepTSP,  OPTFRAME_DEFAULT_ADS> (eval, 50, *nsseq_delta_2opt, hf.getRandGen());
+        ilsl_pert = new ILSLPerturbationLPlus2<RepTSP,  OPTFRAME_DEFAULT_ADS> (eval, *nsseq_delta_2opt, hf.getRandGen());
         ilsl_pert->add_ns(*nsseq_delta_or1);
 
         hf.addComponent(*ilsl_pert);

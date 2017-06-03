@@ -123,9 +123,19 @@ public:
 		return c;
 	}
 
-	vector<double> getFitness(int pos)
+	vector<double> getFitness(int pos) const
 	{
 		return pFitness[pos];
+	}
+
+	double getSingleFitness(int pos) const
+	{
+		return fitness[pos];
+	}
+
+	void setFitness(unsigned i, double v)
+	{
+		fitness[i] = v;
 	}
 
 	void add(const Population<R, ADS>& pop)
@@ -159,6 +169,31 @@ public:
 	bool empty()
 	{
 		return p.empty();
+	}
+
+	// operates for Single Obj Populations
+	// TODO: divide class in SOPop and MOPop
+	void sort(bool isMin)
+	{
+		// basic selection sort
+		for(int i=0; i<int(p.size())-1; i++)
+		{
+			int best = i;
+			for(int j=i+1; j<int(p.size()); j++)
+				if((isMin && fitness[j] < fitness[best]) || (!isMin && fitness[j] > fitness[best] ))
+					best = j;
+			// swap best
+			if(best != i)
+			{
+				Solution<R>* si = p[i];
+				p[i] = p[best];
+				p[best] = si;
+
+				double di = fitness[i];
+				fitness[i] = fitness[best];
+				fitness[best] = di;
+			}
+		}
 	}
 
 	virtual Population<R, ADS>& operator=(const Population<R, ADS>& p)

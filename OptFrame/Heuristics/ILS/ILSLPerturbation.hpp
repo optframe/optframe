@@ -68,12 +68,11 @@ class ILSLPerturbationLPlus2: public ILSLPerturbation<R, ADS>
 private:
 	vector<NS<R, ADS>*> ns;
 	Evaluator<R, ADS>& evaluator;
-	int pMax;
 	RandGen& rg;
 
 public:
-	ILSLPerturbationLPlus2(Evaluator<R, ADS>& e, int _pMax, NS<R, ADS>& _ns, RandGen& _rg) :
-			evaluator(e), pMax(_pMax), rg(_rg)
+	ILSLPerturbationLPlus2(Evaluator<R, ADS>& e, NS<R, ADS>& _ns, RandGen& _rg) :
+			evaluator(e), rg(_rg)
 	{
 		ns.push_back(&_ns);
 	}
@@ -89,30 +88,27 @@ public:
 
 	void perturb(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f, int level)
 	{
-		int f = 0; // number of failures
 		int a = 0; // number of appliable moves
 
 		level += 2; // level 0 applies 2 moves
 
-		while ((a < level) && (f < pMax))
+		while (a < level)
 		{
 			int x = rg.rand(ns.size());
 
-			Move<R, ADS>& m = ns[x]->move(s);
+			Move<R, ADS>* m = ns[x]->validMove(s);
 
-			if (m.canBeApplied(s))
+			if (m)
 			{
 				a++;
-				Component::safe_delete(m.apply(e, s));
+				Component::safe_delete(m->apply(e, s));
 			}
 			else
-				f++;
+				if(Component::warning)
+					cout << "ILS Warning: perturbation had no effect in level " << a << "!" << endl;
 
-			delete &m;
+			delete m;
 		}
-
-		if (f == pMax)
-			cout << "ILS Warning: perturbation had no effect in " << pMax << " tries!" << endl;
 
 		evaluator.evaluate(e, s); // updates 'e'
 	}
@@ -142,12 +138,11 @@ private:
 	vector<NS<R, ADS>*> ns;
 	vector<pair<int, double> > pNS;
 	Evaluator<R, ADS>& evaluator;
-	int pMax;
 	RandGen& rg;
 
 public:
-	ILSLPerturbationLPlus2Prob(Evaluator<R, ADS>& e, int _pMax, NS<R, ADS>& _ns, RandGen& _rg) :
-			evaluator(e), pMax(_pMax), rg(_rg)
+	ILSLPerturbationLPlus2Prob(Evaluator<R, ADS>& e, NS<R, ADS>& _ns, RandGen& _rg) :
+			evaluator(e), rg(_rg)
 	{
 		ns.push_back(&_ns);
 		pNS.push_back(make_pair(1, 1));
@@ -196,12 +191,11 @@ public:
 
 	void perturb(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f, int level)
 	{
-		int f = 0; // number of failures
 		int a = 0; // number of appliable moves
 
 		level += 2; // level 0 applies 2 moves
 
-		while ((a < level) && (f < pMax))
+		while (a < level)
 		{
 			double prob = rg.rand01();
 			int x = 0;
@@ -213,21 +207,19 @@ public:
 				sum += pNS[x].second;
 			}
 
-			Move<R, ADS>& m = ns[x]->move(s);
+			Move<R, ADS>* m = ns[x]->validMove(s);
 
-			if (m.canBeApplied(s))
+			if (m)
 			{
 				a++;
-				Component::safe_delete(m.apply(e, s));
+				Component::safe_delete(m->apply(e, s));
 			}
 			else
-				f++;
+				if(Component::warning)
+					cout << "ILS Warning: perturbation had no effect in level " << a << "!" << endl;
 
-			delete &m;
+			delete m;
 		}
-
-		if (f == pMax)
-			cout << "ILS Warning: perturbation had no effect in " << pMax << " tries!" << endl;
 
 		evaluator.evaluate(e, s); // updates 'e'
 	}
@@ -258,19 +250,16 @@ public:
 		Evaluator<R, ADS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		int limit = scanner.nextInt();
-
 		NS<R, ADS>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new ILSLPerturbationLPlus2<R, ADS>(*eval, limit, *ns, hf.getRandGen());
+		return new ILSLPerturbationLPlus2<R, ADS>(*eval, *ns, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair("int", "max number of not appliable moves"));
 		params.push_back(make_pair(NS<R, ADS>::idComponent(), "neighborhood structure"));
 
 		return params;
@@ -307,19 +296,16 @@ public:
 		Evaluator<R, ADS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		int limit = scanner.nextInt();
-
 		NS<R, ADS>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new ILSLPerturbationLPlus2Prob<R, ADS>(*eval, limit, *ns, hf.getRandGen());
+		return new ILSLPerturbationLPlus2Prob<R, ADS>(*eval, *ns, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair("int", "max number of not appliable moves"));
 		params.push_back(make_pair(NS<R, ADS>::idComponent(), "neighborhood structure"));
 
 		return params;

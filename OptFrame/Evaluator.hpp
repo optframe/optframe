@@ -327,6 +327,7 @@ public:
 
 			// apply reverse move in order to get the original solution back
 			pair<Move<R, ADS>&, Evaluation&>& ini = applyMove(*rev, s);
+			delete rev;
 
 			// if Evaluation wasn't 'outdated' before, restore its previous status
 			if (!outdated)

@@ -23,6 +23,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <assert.h>
 
 #include "Component.hpp"
 
@@ -51,34 +52,41 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class Solution: public Component
 {
 protected:
-	R r;     // representation
+	R* r;     // representation
 	ADS* ads; // auxiliary data structure
 
 public:
 
-	Solution(const R& _r) :
+	Solution(R* _r) :
 			r(_r), ads(nullptr)
+	{
+		assert(r);
+	}
+
+	Solution(const R& _r) :
+			r(new R(_r)), ads(nullptr)
 	{
 	}
 
-	Solution(R&& _r) noexcept :
-			r(std::move(_r)), ads(nullptr)
+
+	Solution(R&& _r) :
+			r(new R(std::move(_r))), ads(nullptr)
 	{
 	}
 
 
 	Solution(const R& _r, const ADS& _ads) :
-			r(_r), ads(new ADS(_ads))
+			r(new R(_r)), ads(new ADS(_ads))
 	{
 	}
 
-	Solution(R&& _r, ADS&& _ads) noexcept :
-			r(_r), ads(new ADS(std::move(_ads)))
+	Solution(R&& _r, ADS&& _ads) :
+			r(new R(std::move(_r))), ads(new ADS(std::move(_ads)))
 	{
 	}
 
 	Solution(const Solution<R, ADS>& s) :
-			r(s.r)
+			r(new R(*s.r))
 	{
 		//cout << __PRETTY_FUNCTION__ << endl;
 		if (s.ads)
@@ -92,9 +100,10 @@ public:
 	 Solution move constructor will steal the pointers from the object to itself
 	 and set them to null in the object
 	 */
-	Solution(Solution<R, ADS> && s) noexcept :
-			r(std::move(s.r)), ads(s.ads)
+	Solution(Solution<R, ADS>&& s) :
+			r(s.r), ads(s.ads)
 	{
+		s.r = nullptr;
 		s.ads = nullptr;
 	}
 
@@ -104,7 +113,7 @@ public:
 		if (&s == this) // auto ref check
 			return *this;
 
-		r = s.r;
+		(*r) = (*s.r);
 		if (ads)
 			(*ads) = (*s.ads);
 		else
@@ -120,11 +129,12 @@ public:
 	 */
 	virtual Solution<R, ADS>& operator=(Solution<R, ADS> && s) noexcept
 	{
-		// transform s in a rhs
-		r = std::move(s.r);
+		// steal pointer from s
+		r = s.r;
 		// steal pointer from s
 		ads = s.ads;
-		// make sure s forgets about its ads (if it existed before)
+		// make sure s forgets about its r and ads (if it existed before)
+		s.r = nullptr;
 		s.ads = nullptr;
 
 		return *this;
@@ -132,6 +142,9 @@ public:
 
 	virtual ~Solution()
 	{
+		// if r not null
+		if(r)
+			delete r;
 		// if ads not null
 		if (ads)
 			delete ads;
@@ -145,33 +158,36 @@ public:
 	{
 		// if ads not null
 		if (ads)
-			return *new Solution<R, ADS>(r, *ads);
+			return *new Solution<R, ADS>(*r, *ads);
 		else
-			return *new Solution<R, ADS>(r);
+			return *new Solution<R, ADS>(*r);
 	}
 
 	// leave option to rewrite with clone()
 	virtual void setR(const R& _r)
 	{
 		// shallow copy
-		r = _r;
+		(*r) = _r;
 	}
 
 	// leave option to rewrite with clone()
+	/*
 	virtual void setR(const R&& _r)
 	{
 		// move content from rhs param _r
 		r = std::move(_r);
 	}
+	*/
 
 	// leave option to rewrite with clone()
 	virtual void setADS(const ADS& _ads)
 	{
 		// if ads not null, destroy it
-		if (ads)
-			delete ads;
+		//if (ads)
+		//	delete ads;
 		// store a new copy of _ads
-		ads = new ADS(_ads);
+		//ads = new ADS(_ads);
+		(*ads) = _ads;
 	}
 
 	bool hasADS() const
@@ -182,7 +198,7 @@ public:
 	// get const reference of r
 	const R& getR() const
 	{
-		return r;
+		return *r;
 	}
 
 	// get ADS (depends on hasADS() positive result)
@@ -194,7 +210,7 @@ public:
 	// get reference of r
 	R& getR()
 	{
-		return r;
+		return *r;
 	}
 
 	// get ADS (depends on hasADS() positive result)
@@ -222,7 +238,7 @@ public:
 	virtual string toString() const
 	{
 		stringstream ss;
-		ss << "Solution: " << r;
+		ss << "Solution: " << *r;
 		//ss << "ADS: "<< ads;
 		return ss.str();
 	}

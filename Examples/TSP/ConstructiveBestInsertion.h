@@ -22,7 +22,7 @@
 #define TSP_BEST_INSERTION_CONSTRUCTIVE_HPP_
 
 #include "../../OptFrame/Constructive.h"
-#include "../../OptFrame/Util/TestSolution.hpp"
+//#include "../../OptFrame/Util/TestSolution.hpp" // DEPRECATED
 
 #include "ProblemInstance.h"
 
@@ -153,7 +153,7 @@ public:
             //cout << "after sort: " << newRep << endl;
         }
 
-		return * new TestSolution<RepTSP>(newRep);
+		return * new Solution<RepTSP>(newRep);
 	}
 
 };

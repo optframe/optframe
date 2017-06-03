@@ -33,11 +33,12 @@ using namespace std;
 #include <set>
 
 #include "../OptFrame/Solution.hpp"
-#include "../OptFrame/Util/TestSolution.hpp"
+//#include "../OptFrame/Util/TestSolution.hpp"
 
 #include "../OptFrame/Loader.hpp"
 #include "../OptFrame/Util/CheckCommand.hpp"
 #include "../OptFrame/Util/BuildCommand.hpp"
+#include "../OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp"
 #include "TSP.h"
 
 using namespace TSP;
@@ -51,9 +52,22 @@ int main(int argc, char **argv)
 	TSPProblemCommand tsp;
 	tsp.load("./TSP/tsplib/berlin52.txt", optframe.factory, optframe.dictionary, optframe.ldictionary);
 
+	/*
+	FILE* outf = fopen("berlin52.mtx","w");
+	fprintf(outf, "%d\n", tsp.p->n);
+	for(unsigned i=0; i<tsp.p->n; i++) {
+		for(unsigned j=0; j<tsp.p->n; j++)
+			fprintf(outf, "%d\t",int(100*(*tsp.p->dist)(i,j)));
+		fprintf(outf, "\n");
+	}
+
+	fclose(outf);
+	exit(1);
+	*/
+
 	CheckCommand<RepTSP> check(false);
 
-	RandGen rg(0);
+	RandGenMersenneTwister rg(0);
 	RandomInitialSolutionTSP random(tsp.p, rg);
 	NearestNeighborConstructive cnn(tsp.p, rg);
 	ConstructiveBestInsertion cbi(tsp.p, rg);
@@ -81,10 +95,29 @@ int main(int argc, char **argv)
 	check.add(tspor3);
 	check.add(tspswap);
 
-	check.run(100, 10);
+	//check.run(100, 10);
 
-	return 0;
+	cout << "will test BRKGA (n=" << tsp.p->n << ")" << endl;
+	EvaluatorPermutationRandomKeys eprk(eval, 0, tsp.p->n-1);
+	BRKGA<RepTSP> brkga(eprk, tsp.p->n, 10000, 10, 0.4, 0.3, 0.6);
 
+	pair<Solution<random_keys>&, Evaluation&>* r2 = brkga.search();
+	r2->first.print();
+
+	pair<Evaluation&, Solution<vector<int>>*> pd = eprk.decode(r2->first.getR());
+	pd.second->print();
+	if(eval.verify(pd.second->getR()))
+		cout << "CHECK: OK" << endl;
+	pd.first.print();
+	delete &pd.first;
+	delete pd.second;
+
+	r2->second.print();
+	delete &r2->first;
+	delete &r2->second;
+	delete r2;
+
+	cout << "end BRKGA tests" << endl;
 
 	BuildCommand<RepTSP> build;
 	for (unsigned i = 0; i <= 7; i++)
@@ -107,7 +140,7 @@ int main(int argc, char **argv)
 	VariableNeighborhoodDescent<RepTSP> VND(eval, ns_list);
 	VND.setVerbose();
 
-	ILSLPerturbationLPlus2<RepTSP> pert(eval, 10, tsp2opt, rg);
+	ILSLPerturbationLPlus2<RepTSP> pert(eval, tsp2opt, rg);
 	pert.add_ns(tspor1);
 	pert.add_ns(tspor2);
 	pert.add_ns(tspor3);
@@ -122,47 +155,12 @@ int main(int argc, char **argv)
 	cout << "will run ils" << endl;
 	Timer tim;
 	pair<Solution<RepTSP>&, Evaluation&>& psol = *ils.search(1000, 0, NULL, NULL);
-	eval.Minimizing = false;
-	//pair<Solution<RepTSP>&, Evaluation&>& psol2 = *ils.search(1000, 99999999, NULL, NULL);
-	ils.search(1000, 99999999, NULL, NULL);
-
 	cout << tim.now() << " secs" << endl;
 
 	psol.first.print();
 	psol.second.print();
 
-	cout << "solMin=" << eval.solMin << endl;
-	cout << "solMax=" << eval.solMax << endl;
-
-	int count = 0;
-	for (int i = eval.solMin; i <= eval.solMax; i++)
-		if (eval.solutions[i] > 0)
-			count += eval.solutions[i];
-	cout << "COUNT=" << count << endl;
-
-	cout << "count min = " << eval.solutions[eval.solMin] << endl;
-	cout << "count max = " << eval.solutions[eval.solMax] << endl;
-
-	int countun = 0;
-	for (int i = eval.solMin; i <= eval.solMax; i++)
-		if (eval.solutions[i] > 0)
-			countun++;
-	cout << "COUNT_UNIQUE=" << countun << endl;
-
-	FILE* fstat = fopen("stat.txt", "w");
-	fprintf(fstat, "x=c(");
-	for (int i = eval.solMin; i <= eval.solMax; i++)
-		if (eval.solutions[i] > 0)
-			fprintf(fstat, "%d,", i);
-	fclose(fstat);
-
-	FILE* fstatti = fopen("stat_total_imp.txt", "w");
-	fprintf(fstatti, "x=c(");
-	for (int i = eval.solMin; i <= eval.solMax; i++)
-		if (eval.solutions[i] > 0)
-			fprintf(fstat, "%d\t%lld\t%lld\t%.5f\n,", i, eval.solNSTotal[i], eval.solNSImp[i], 100 * float(eval.solNSImp[i]) / float(eval.solNSTotal[i]));
-	fclose(fstatti);
-
+	// Remember the old times...
 	/*
 	 echo building VND
 	 define vnd_list [ OptFrame:LocalSearch: 0 ,  OptFrame:LocalSearch: 1, OptFrame:LocalSearch: 2, OptFrame:LocalSearch: 3 ]
