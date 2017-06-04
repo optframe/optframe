@@ -156,6 +156,7 @@ public:
 	MoveCost& moveCost(Evaluation& e, Move<R, ADS>& m, Solution<R, ADS>& s, bool allowEstimated = false)
 	{
 		// TODO: in the future, consider 'allowEstimated' parameter
+		// TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
 
 		MoveCost* p = NULL;
 		if (allowCosts)
@@ -215,6 +216,7 @@ public:
 	MoveCost& moveCost(Move<R, ADS>& m, Solution<R, ADS>& s, bool allowEstimated = false)
 	{
 		// TODO: in the future, consider 'allowEstimated' parameter
+		// TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
 
 		// TODO: in the future, consider moves with NULL reverse (must save original solution/evaluation)
 		assert(m.hasReverse());

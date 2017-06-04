@@ -22,6 +22,7 @@
 #define OPTFRAME_CHECK_COMMAND_HPP_
 
 #include "../Timer.hpp"
+#include "Matrix.hpp"
 
 #include "../OptFrameList.hpp"
 
@@ -53,13 +54,16 @@ private:
 
 	bool convertNS;
 
+	// independent moves
+	bool checkIndependent;
+
 	vector<Evaluator<R, ADS>*> lEvaluator;
 	vector<Constructive<R, ADS>*> lConstructive;
 	vector<Solution<R, ADS>*> lSolution;
 	vector<Move<R, ADS>*> lMove;
 	vector<NS<R, ADS>*> lNS;
 	vector<NSSeq<R, ADS>*> lNSSeq;
-	//vector<NSEnum<R, ADS>*> lNSEnum;
+	vector<NSEnum<R, ADS>*> lNSEnum;
 
 	ADSManager<R, ADS>* adsMan;
 
@@ -72,6 +76,7 @@ public:
 	{
 		convertNS = true;
 		adsMan = NULL;
+		checkIndependent = true;
 	}
 
 	virtual ~CheckCommand()
@@ -131,10 +136,11 @@ public:
 
 	void add(NSEnum<R, ADS>& c)
 	{
+		lNSEnum.push_back(&c);
+		if (verbose)
+			cout << "checkcommand: NSEnum " << lNSEnum.size() << " added!" << endl;
 		if (convertNS)
 			add((NSSeq<R, ADS>&) c);
-		else
-			cout << "checkcommand warning! NSEnum not used!" << endl;
 	}
 
 	void message(Component* c, int iter, string text)
@@ -503,6 +509,7 @@ public:
 		cout << "moves=" << lMove.size() << endl;
 		cout << "ns=" << lNS.size() << endl;
 		cout << "nsseq=" << lNSSeq.size() << endl;
+		cout << "nsenum=" << lNSEnum.size() << endl;
 		// ADSManager is deprecated!
 		cout << "DEPRECATED:adsmanager=" << lADSManagerComp.size() << endl;
 		cout << "---------------------------------------" << endl << endl;
@@ -821,6 +828,180 @@ public:
 				cout << endl << endl;
 		}
 
+		// ====================================================================
+		// testing NSEnum
+		// ====================================================================
+
+		if(lNSEnum.size() > 0 )
+			cout << "checkcommand  will test " << lNSEnum.size() << " NSEnum components (nSolNSSeq=" << nSolNSSeq << " of numSolutions=" << solutions.size() << ")" << endl;
+
+		vector<int> vCountMovesEnum(lNSEnum.size());
+		vector<int> vCountValidMovesEnum(lNSEnum.size());
+
+		vector<int> vCountIndependentEnum(lNSEnum.size());
+		vector<int> vCountMovePairsEnum(lNSEnum.size());
+
+		for (unsigned id_nsenum = 0; id_nsenum < lNSEnum.size(); id_nsenum++)
+		{
+			NSEnum<R, ADS>* nsenum = lNSEnum.at(id_nsenum);
+
+			cout << "checkcommand: testing NSEnum " << id_nsenum << " => " << nsenum->toString();
+			cout << endl;
+
+			int countMoves = 0;
+			int countValidMoves = 0;
+
+			for (int nqs = 1; nqs <= nSolNSSeq; nqs++)
+			{
+				message(lNSEnum.at(id_nsenum), nqs, "starting tests!");
+
+				int randomIndex = rand() % solutions.size();
+				Solution<R, ADS>& s = *solutions.at(randomIndex);
+				int id_s = randomIndex;
+
+				// ===================
+				// apply a single move
+				// ===================
+
+				NSIterator<R, ADS>& it = nsenum->getIterator(s);
+
+				for (it.first(); !it.isDone(); it.next())
+				{
+					if (verbose)
+						cout << endl;
+					message(lNSEnum.at(id_nsenum), nqs, "getting current move (NSEnum tests).");
+
+					Move<R, ADS>& move = it.current();
+					countMoves++;
+
+
+					if (!move.canBeApplied(s))
+					{
+						if (verbose)
+						{
+							cout << "move cannot be applied (NSEnum tests): ";
+							move.print();
+						}
+						delete &move;
+						continue;
+					}
+
+					countValidMoves++;
+
+					// EXEC MOVES HERE
+
+					//	bool testMoveNSSeq(int iter, NSSeq<R,ADS>* nsseq, int nqs, int id_nsseq, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
+					// 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
+
+					if(!testMoveGeneral(nqs, nsenum, id_nsenum, s, id_s, move, evaluations, timeSol, timeNS))
+					{
+						delete &move;
+						return false;
+					}
+
+					delete &move;
+				}
+
+				delete &it;
+			}
+
+			vCountMovesEnum[id_nsenum] += countMoves;
+			vCountValidMovesEnum[id_nsenum] += countValidMoves;
+
+
+			if (checkIndependent)
+			{
+				cout << "checkcommand: will try to identify independent moves (can take some time... deactivate with 'checkIndependent=false')" << endl;
+				// indicate possible independent moves
+
+				// adopting Evaluator 0...
+				Evaluator<R, ADS>& ev = *evaluators.at(0);
+
+				// check for independence between moves m1 and m2
+				for (int m1 = 0; m1 < int(nsenum->size()) - 1; m1++)
+				{
+					// slow...
+					cout << "checkcommand: independence test for move " << m1 << " / " << nsenum->size() << endl;
+					int count_ind_m1 = 0;
+					for (int m2 = m1 + 1; m2 < int(nsenum->size()); m2++)
+					{
+						bool conflict = false;
+						// compute another move pair
+						vCountMovePairsEnum[id_nsenum]++;
+
+						if (!conflict)
+						{
+							// TODO: increase performance of this method
+							for (unsigned sol = 0; sol < solutions.size(); sol++)
+							{
+								Solution<R, ADS>& s = *solutions.at(sol);
+								Move<R, ADS>& move1 = nsenum->move(m1);
+								Move<R, ADS>& move2 = nsenum->move(m2);
+								// moves must be valid
+								if (!(move1.canBeApplied(s) && move2.canBeApplied(s)))
+									break;
+								// move 1 must have reverse
+								if (!move1.hasReverse())
+								{
+									cout << "checkcommand: NSEnum independent check expected reverse move... (deactivate with 'checkIndependent=false')" << endl;
+									break;
+								}
+
+								// calculate cost for move 2
+								MoveCost& cost_m2 = ev.moveCost(move2, s);
+
+								// apply move 1 (consider reverse is not NULL)
+								Move<R, ADS>& rev_m1 = *move1.apply(s);
+
+								// calculate new cost for move 2
+								MoveCost& cost2_m2 = ev.moveCost(move2, s);
+
+								// return solution to original value and free
+								delete rev_m1.apply(s);
+								delete &rev_m1;
+								delete &move1;
+								delete &move2;
+
+								// if costs differ, moves are not independent
+								if (!ev.equals(cost2_m2, cost_m2))
+								{
+									// mark conflict between m1 and m2
+									conflict = true;
+									delete &cost2_m2;
+									delete &cost_m2;
+									break;
+								}
+								delete &cost2_m2;
+								delete &cost_m2;
+							}
+
+							if (!conflict)
+							{
+								// if here, m1 'could' be independent from m2
+								vCountIndependentEnum[id_nsenum]++;
+								count_ind_m1++;
+								if(verbose)
+								{
+									cout << "independent(m1=" << m1 << ";m2=" << m2 << ")" << endl;
+									nsenum->move(m1).print(); // TODO: fix leak
+									nsenum->move(m2).print(); // TODO: fix leak
+									cout << endl;
+								}
+							}
+
+						}
+					}
+					cout << "checkcommand: found " << count_ind_m1 << " independent move pairs." << endl;
+				}
+
+			}
+
+			cout << "checkcommand: " << lNSEnum.at(id_nsenum)->id() << " finished." << endl;
+			if (verbose)
+				cout << endl << endl;
+		}
+
+
 		for (unsigned i = 0; i < solutions.size(); i++)
 			delete solutions[i];
 
@@ -858,6 +1039,14 @@ public:
 		printSummarySimple(convertVector(lNSSeq), vCountMoves, nSolNSSeq, "NSSeq", "counting moves of NSSeq iterator");
 
 		printSummarySimple(convertVector(lNSSeq), vCountValidMoves, nSolNSSeq, "NSSeq", "counting valid moves of NSSeq iterator");
+
+		printSummarySimple(convertVector(lNSEnum), vCountMovesEnum, nSolNSSeq, "NSEnum", "counting moves of NSEnum iterator");
+
+		printSummarySimple(convertVector(lNSEnum), vCountValidMovesEnum, nSolNSSeq, "NSEnum", "counting valid moves of NSEnum iterator");
+
+		printSummarySimple(convertVector(lNSEnum), vCountMovePairsEnum, 1, "NSEnum", "counting general move pairs for NSEnum");
+
+		printSummarySimple(convertVector(lNSEnum), vCountIndependentEnum, 1, "NSEnum", "counting independent move pairs for NSEnum");
 
 		cout << "checkcommand: tests finished successfully!" << endl;
 		return true;

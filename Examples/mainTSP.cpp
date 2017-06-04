@@ -65,7 +65,8 @@ int main(int argc, char **argv)
 	exit(1);
 	*/
 
-	CheckCommand<RepTSP> check(false);
+	bool check_verbose = false;
+	CheckCommand<RepTSP> check(check_verbose);
 
 	RandGenMersenneTwister rg(0);
 	RandomInitialSolutionTSP random(tsp.p, rg);
@@ -95,7 +96,7 @@ int main(int argc, char **argv)
 	check.add(tspor3);
 	check.add(tspswap);
 
-	//check.run(100, 10);
+	check.run(100, 10);
 
 	cout << "will test BRKGA (n=" << tsp.p->n << ")" << endl;
 	EvaluatorPermutationRandomKeys eprk(eval, 0, tsp.p->n-1);
@@ -159,6 +160,9 @@ int main(int argc, char **argv)
 
 	psol.first.print();
 	psol.second.print();
+
+	for(unsigned i=0; i<ns_list.size(); i++)
+		delete ns_list[i];
 
 	// Remember the old times...
 	/*

@@ -142,7 +142,7 @@ public:
 		return &rev;
 	}
 
-	MoveCost* cost(const Evaluation& e, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost* cost(const Evaluation& e, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads, bool allowEstimated)
 	{
 		int k1, k2;
 
@@ -173,7 +173,7 @@ public:
 
 		double f = 0;
 
-		if (k2 - k1 == 1) // special case, cities are near
+		if (k2 - k1 == 1) // special case, cities are near (in fact, a 3-opt case... TODO remove this)
 		{
 			f -= (*tsp.dist)(rep[bk1], rep[k1]);
 			f -= (*tsp.dist)(rep[k1], rep[k2]);
@@ -215,7 +215,7 @@ public:
 	}
 
 	virtual bool operator==(const Move<RepTSP>& _m) const
-			{
+	{
 		const MoveSwap& m = (const MoveSwap&) _m; // You can only compare if types are equal
 
 		if ((c1 == m.c1 && c2 == m.c2) || (c1 == m.c2 && c2 == m.c1))
@@ -249,9 +249,25 @@ public:
 		this->n = pI->n;
 	}
 
+	// given index, returns (i,j), with 0 < i < j < n-1
 	virtual Move<RepTSP>& move(unsigned int k)
 	{
-		return busca(k, 1, 2 * n);
+		int i = k / (n-1);
+		int j = k % (n-1) + 1;
+
+		// last special detail...
+		if(i >= j)
+		{
+			i = (n-1) - i;
+			j = (n-1) - j + 1;
+		}
+
+		return * new MoveSwap(i,j,*pI);
+
+		// Please, keep 'busca' for historical (and emotional) purposes :)
+		// This was created in the night before the TCC presentation of OptFrame (in 2009)
+		// And now, in 2017, a beautiful calculation is presented.
+		//return busca(k, 1, 2 * n);
 	}
 
 	unsigned int size() const
@@ -261,7 +277,7 @@ public:
 
 	virtual void print() const
 	{
-		cout << "\nNSEnum Swap (" << size() << ")\n";
+		cout << "NSEnum Swap (" << size() << ")\n";
 	}
 
 	// Auxiliar methods

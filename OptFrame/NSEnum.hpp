@@ -42,6 +42,7 @@ protected:
 public:
 
 	using NSSeq<R, ADS>::move; // prevents name hiding
+	using NSSeq<R, ADS>::getIterator; // prevents name hiding
 
 	NSEnum(RandGen& _rg):rg(_rg)
 	{}
