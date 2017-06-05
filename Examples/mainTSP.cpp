@@ -96,7 +96,7 @@ int main(int argc, char **argv)
 	check.add(tspor3);
 	check.add(tspswap);
 
-	check.run(100, 10);
+	//check.run(100, 10);
 
 	cout << "will test BRKGA (n=" << tsp.p->n << ")" << endl;
 	EvaluatorPermutationRandomKeys eprk(eval, 0, tsp.p->n-1);
@@ -161,8 +161,27 @@ int main(int argc, char **argv)
 	psol.first.print();
 	psol.second.print();
 
+
+	// ===========
+
 	for(unsigned i=0; i<ns_list.size(); i++)
 		delete ns_list[i];
+
+	vector<NS<RepTSP>*> v_ns;
+	vector<NSSeq<RepTSP>*> v_nsseq;
+	v_nsseq.push_back(&tsp2opt);
+	v_nsseq.push_back(&tspor1);
+	v_nsseq.push_back(&tspor2);
+	v_nsseq.push_back(&tspor3);
+	v_nsseq.push_back(&tspswap);
+	for(unsigned i=0; i<v_nsseq.size(); i++)
+		v_ns.push_back(v_nsseq[i]);
+
+	BasicVNS<RepTSP> vns(eval, random, v_ns, v_nsseq);
+	vns.setMessageLevel(3); // INFORMATION
+	pair<Solution<RepTSP>&, Evaluation&>& psol2 = *vns.search(0, 8000, NULL, NULL);
+	psol2.first.print();
+	psol2.second.print();
 
 	// Remember the old times...
 	/*

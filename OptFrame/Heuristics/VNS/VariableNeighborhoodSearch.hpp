@@ -46,15 +46,12 @@ protected:
 	vector<NS<R, ADS>*> vshake;
 	vector<NSSeq<R, ADS>*> vsearch;
 
-	unsigned shakeTries;
-
 public:
 
 	VariableNeighborhoodSearch(Evaluator<R, ADS>& _evaluator, Constructive<R, ADS>& _constructive, vector<NS<R, ADS>*> _vNS, vector<NSSeq<R, ADS>*> _vNSSeq) :
 		evaluator(_evaluator), constructive(_constructive), vshake(_vNS), vsearch(_vNSSeq)
-{
-		shakeTries = 50;
-}
+	{
+	}
 
 	virtual ~VariableNeighborhoodSearch()
 	{
@@ -64,27 +61,23 @@ public:
 
 	virtual void shake(Solution<R, ADS>& s, Evaluation& e, unsigned int k_shake, double timelimit, double target_f)
 	{
-		for(unsigned t=0; t<shakeTries; t++)
+		Move<R, ADS>* move = vshake.at(k_shake)->validMove(s);
+		if(move)
 		{
-			Move<R, ADS>& move = vshake.at(k_shake)->move(s);
-			if(move.canBeApplied(s))
-			{
-				Component::safe_delete(move.apply(e, s));
-				evaluator.evaluate(e, s); // refresh 'e'
-				delete& move;
-				break;
-			}
-			else
-				delete &move;
+			Component::safe_delete(move->apply(e, s));
+			evaluator.evaluate(e, s); // refresh 'e'
+			delete move;
 		}
 	}
 
 	virtual pair<pair<Solution<R, ADS>&, Evaluation&>, unsigned int> neighborhoodChange(const Solution<R, ADS>& sStar, const Evaluation& eStar, const Solution<R, ADS>& s2, const Evaluation& e2, unsigned int k)
-			{
+	{
 		if (evaluator.betterThan(e2, eStar))
 		{
 			// IMPROVEMENT!
 			pair<Solution<R, ADS>&, Evaluation&> p(s2.clone(), e2.clone());
+			if(Component::information)
+				cout << "VNS: improvement at NS " << k << " => " << e2.evaluation() << endl;
 			return make_pair(p, 0); // k <- 0
 		}
 		else
@@ -92,18 +85,23 @@ public:
 			pair<Solution<R, ADS>&, Evaluation&> p(sStar.clone(), eStar.clone());
 			return make_pair(p, k+1);
 		}
-			}
+	}
 
 	virtual LocalSearch<R, ADS>& buildSearch(unsigned k_search) = 0;
 
 	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0,  const Solution<R, ADS>* _s = NULL,  const Evaluation* _e = NULL)
-			{
-		cout << id() << " search(" << target_f << "," << timelimit << ")" << endl;
+	{
+		if(timelimit == 0)
+			timelimit = 36000; // 10 hours
+		cout << id() << " search(target=" << target_f << ", timelimit=" << timelimit << ")" << endl;
 
 		Timer tnow;
 
 		Solution<R, ADS>& sStar = constructive.generateSolution();
 		Evaluation&   eStar = evaluator.evaluate(sStar);
+
+		if(Component::information)
+			cout << "VNS starts: " << eStar.evaluation() << endl;
 
 		while(evaluator.betterThan(target_f, eStar.evaluation()) && ((tnow.now()) < timelimit))
 		{
@@ -128,12 +126,15 @@ public:
 				delete& nc.first.first;
 				delete& nc.first.second;
 
+				delete& s;
+				delete& e;
+
 				k = nc.second;
 			}
 		}
 
 		return new pair<Solution<R, ADS>&, Evaluation&> (sStar, eStar);
-			}
+	}
 
 	static string idComponent()
 	{
