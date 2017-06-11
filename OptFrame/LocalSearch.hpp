@@ -81,6 +81,17 @@ public:
    // 2
    virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f) = 0;
 
+   // optional: set local optimum status (LOS)
+   virtual void setLOS(LOS los, string nsid, Solution<R, ADS>& s, Evaluation& e)
+   {
+   }
+
+   // optional: get local optimum status (LOS)
+   virtual LOS getLOS(string nsid, Solution<R, ADS>& s, Evaluation& e)
+   {
+	   return los_unknown;
+   }
+
    virtual bool compatible(string s)
    {
 	   return ( s == idComponent() ) || ( Component::compatible(s) );

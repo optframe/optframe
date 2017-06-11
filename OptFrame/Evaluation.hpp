@@ -88,6 +88,12 @@ protected:
 		gos_yes, gos_no, gos_unknown
 	} gos;
 
+	// LocalOptimumStatus
+	enum LOS
+	{
+		los_yes, los_no, los_unknown
+	}; // do not declare here (keep in ADS or R)
+
 public:
 	// boolean field to indicate if Evaluation needs an update
 	bool outdated;

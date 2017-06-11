@@ -117,31 +117,6 @@ public:
 
 public:
 
-	// TODO: deprecated
-	virtual void updateNeighStatus(ADS& ads)
-	{
-	}
-
-	// ================== move independence and local search marking
-
-	virtual bool independentOf(const Move<R, ADS>& m)
-	{
-	    // example: in VRP, move1 changes one route and move2 changes another... they are independent.
-	    // move1.isIndependent(move2) should return true.
-	    // by default, it is false (no move is independent)
-	    return false;
-	}
-
-
-	// TODO: rethink!
-	virtual bool isPartialLocalOptimum(const Solution<R, ADS>& s)
-	{
-	    // the idea is to use this flag to ignore moves that are useless,
-	    // given that the solution is already in a (full) local optimum (or partial).
-
-	    return false;
-	}
-
 	// ================== cost calculation
 
 	virtual MoveCost* cost(const Evaluation& e, const R& r, const ADS& ads, bool allowEstimated)
@@ -154,6 +129,39 @@ public:
 	{
 		return NULL;
 	}
+
+	// ================== move independence and local search marking
+
+	virtual bool independentOf(const Move<R, ADS>& m)
+	{
+	    // example: in VRP, move1 changes one route and move2 changes another... they are independent.
+	    // move1.isIndependent(move2) should return true.
+	    // by default, it is false (no move is independent)
+	    return false;
+	}
+
+	// ================== local search marking
+
+	// TODO: deprecated. replaced by updateLOS?
+	virtual void updateNeighStatus(ADS& ads)
+	{
+	}
+
+	// TODO: force before apply(R,ADS) and after apply(S)?
+	virtual void updateLOS(R& r, ADS& ads, Evaluation& e)
+	{
+	}
+
+	// TODO: rethink!
+	virtual bool isPartialLocalOptimum(const Solution<R, ADS>& s)
+	{
+	    // the idea is to use this flag to ignore moves that are useless,
+	    // given that the solution is already in a (full) local optimum (or partial).
+
+	    return false;
+	}
+
+	// ================== basic comparison
 
 	virtual bool operator==(const Move<R, ADS>& m) const = 0;
 
