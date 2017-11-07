@@ -68,7 +68,7 @@ typedef EVALUATION_TYPE evtype;
 // such as (int, evtype, long long) you can use PackTypes in Utils or overload
 // manually each of the numeric operators +, -, *
 
-class Evaluation: public Component
+class Evaluation final: public Component
 {
 protected:
 	// ==== Objective Space type: pair<evtype, evtype> ====
