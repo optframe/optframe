@@ -133,7 +133,7 @@ public:
 	Move<R, ADS>* applyMove(Evaluation& e, Move<R, ADS>& m, Solution<R, ADS>& s)
 	{
 		// apply move and get reverse move
-		Move<R, ADS>* rev = m.applyUpdate(e, s);
+		Move<R, ADS>* rev = m.applyUpdateSolution(e, s);
 		// for now, must be not NULL
 		assert(rev != NULL);
 		// consolidate 'outdated' evaluation data on 'e'
