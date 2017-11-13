@@ -40,22 +40,22 @@ public:
 	}
 
 public:
-	Move<R, ADS>& move(const Solution<R, ADS>& s)
+	Move<R, ADS>* randomMoveSolution(const Solution<R, ADS>& s)
 	{
-		return move(s.getR(), s.getADS());
+		return randomMove(s.getR(), s.getADSptr());
 	}
 
-	Move<R, ADS>* validMove(const Solution<R, ADS>& s)
+	Move<R, ADS>* validRandomMoveSolution(const Solution<R, ADS>& s)
 	{
-		return validMove(s.getR(), s.getADS());
+		return validRandomMove(s.getR(), s.getADSptr());
 	}
 
 ////protected:
-	virtual Move<R, ADS>& move(const R&, const ADS&) = 0;
+	virtual Move<R, ADS>* randomMove(const R&, const ADS*) = 0;
 
-	virtual Move<R, ADS>* validMove(const R& r, const ADS& ads)
+	virtual Move<R, ADS>* validRandomMove(const R& r, const ADS* ads)
 	{
-		Move<R, ADS>* moveValid = &(this->move(r, ads));
+		Move<R, ADS>* moveValid = this->randomMove(r, ads);
 		if(moveValid->canBeApplied(r, ads))
 			return moveValid;
 		else

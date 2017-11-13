@@ -41,9 +41,6 @@ protected:
 
 public:
 
-	using NSSeq<R, ADS>::move; // prevents name hiding
-	using NSSeq<R, ADS>::getIterator; // prevents name hiding
-
 	NSEnum(RandGen& _rg):rg(_rg)
 	{}
 
@@ -51,18 +48,18 @@ public:
 	{
 	}
 
-	virtual Move<R, ADS>& move(const R&, const ADS&)
+	virtual Move<R, ADS>* randomMove(const R&, const ADS*)
 	{
 		unsigned int x = rg.rand(size());
-		return move(x);
+		return indexMove(x);
 	}
 
-	virtual NSIterator<R, ADS>& getIterator(const R&, const ADS&)
+	virtual NSIterator<R, ADS>* getIterator(const R&, const ADS*)
 	{
-		return *new NSEnumIterator<R, ADS> (*this);
+		return new NSEnumIterator<R, ADS> (*this);
 	}
 
-	virtual Move<R, ADS>& move(unsigned int m) = 0;
+	virtual Move<R, ADS>* indexMove(unsigned int index) = 0;
 
 	virtual unsigned int size() const = 0;
 

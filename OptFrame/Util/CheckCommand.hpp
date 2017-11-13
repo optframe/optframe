@@ -196,7 +196,7 @@ public:
 		{
 			message(lEvaluator.at(ev), iter, "evaluating random move (apply, revert and moveCost).");
 
-			Evaluation& e = lEvaluator[ev]->evaluate(s);
+			Evaluation e = lEvaluator[ev]->evaluateSolution(s);
 
 			string moveFrom = "Move ";
 			moveFrom.append(move.id());
@@ -220,7 +220,7 @@ public:
 			timeSol.timeCloneSolution.first++;
 
 			Timer tMovApply;
-			Move<R, ADS>* rev = move.apply(s);
+			Move<R, ADS>* rev = move.applySolution(s);
 			if((!move.hasReverse() && rev) || (move.hasReverse() && !rev))
 			{
 				errormsg(moveFrom, CMERR_MOVE_HASREVERSE, "CMERR_MOVE_HASREVERSE", iter, " conflict between apply result and hasReverse()");
@@ -264,14 +264,14 @@ public:
 #endif
 
 			Timer te;
-			Evaluation& e_rev = lEvaluator.at(ev)->evaluate(s);
+			Evaluation e_rev = lEvaluator.at(ev)->evaluateSolution(s);
 			timeSol.fullTimeEval[ev].second += te.inMilliSecs();
 			timeSol.fullTimeEval[ev].first++;
 
 			Timer tMovRevApply;
 			Move<R, ADS>* ini = NULL;
 			if (rev)
-				ini = rev->apply(s);
+				ini = rev->applySolution(s);
 			timeNS.timeNSApply[id_ns].second += tMovRevApply.inMilliSecs();
 			timeNS.timeNSApply[id_ns].first++;
 
@@ -309,7 +309,7 @@ public:
 			delete &sOriginal;
 
 			Timer te2;
-			Evaluation& e_ini = lEvaluator.at(ev)->evaluate(s);
+			Evaluation e_ini = lEvaluator.at(ev)->evaluateSolution(s);
 			timeSol.fullTimeEval[ev].second += te2.inMilliSecs();
 			timeSol.fullTimeEval[ev].first++;
 
@@ -351,9 +351,9 @@ public:
 			message(lEvaluator.at(ev), iter, "revCost calculated!");
 
 			Timer tMoveCostApply;
-			MoveCost& mcSimpleCost = lEvaluator[ev]->moveCost(move, s);
-			evtype simpleCost = mcSimpleCost.cost();
-			delete &mcSimpleCost;
+			MoveCost* mcSimpleCost = lEvaluator[ev]->moveCost(move, s);
+			evtype simpleCost = mcSimpleCost->cost();
+			delete mcSimpleCost;
 			message(lEvaluator.at(ev), iter, "simpleCost calculated!");
 			timeNS.timeNSCostApply[id_ns].second +=
 					tMoveCostApply.inMilliSecs();
@@ -403,7 +403,7 @@ public:
 			MoveCost* cost = NULL;
 
 			if (lEvaluator[ev]->getAllowCosts())
-				cost = move.cost(e, s.getR(), s.getADS(),false);
+				cost = move.cost(e, s.getR(), s.getADSptr(),false);
 
 			message(lEvaluator.at(ev), iter, "cost() calculated!");
 
@@ -447,13 +447,14 @@ public:
 				// testing double move costs! (for MoveCost betterThan)
 				if (ns) // not testing for single Move
 				{
-					Move<R, ADS>& move2 = ns->move(s);
+					// TODO: consider that randomMove can be null
+					Move<R, ADS>& move2 = *ns->randomMoveSolution(s);
 					if (verbose) {
 						cout << "testing double move!" << endl;
 						move2.print();
 					}
 
-					if (!move2.canBeApplied(s)) {
+					if (!move2.canBeAppliedToSolution(s)) {
 						if (verbose) {
 							cout << "double move cannot be applied: ";
 							move2.print();
@@ -461,7 +462,7 @@ public:
 					} else {
 						MoveCost* cost2 = NULL;
 						if (lEvaluator[ev]->getAllowCosts()) {
-							cost2 = move2.cost(e, s.getR(), s.getADS(),false);
+							cost2 = move2.cost(e, s.getR(), s.getADSptr(),false);
 							if (cost2) {
 								lEvaluator[ev]->betterThan(*cost, *cost2);
 								delete cost2;
@@ -478,15 +479,11 @@ public:
 
 			message(lEvaluator.at(ev), iter, "all move costs okay!");
 
-			delete &e;
-
 			if (rev)
 				delete rev;
 			delete &sNeighbor;
-			delete &e_rev;
 			if (ini)
 				delete ini;
-			delete &e_ini;
 		}
 
 		//delete &move;  // ONLY IF NECESSARY! DO IT OUTSIDE...
@@ -592,11 +589,11 @@ public:
 				{
 					message(lEvaluator.at(ev), iter, "evaluating solution.");
 					Timer te;
-					Evaluation& e = evaluators.at(ev)->evaluate(s);
+					Evaluation e = evaluators.at(ev)->evaluateSolution(s);
 					timeSol.fullTimeEval[ev].second += te.inMilliSecs();
 					timeSol.fullTimeEval[ev].first++;
 
-					evaluations.at(ev).push_back(&e);
+					evaluations.at(ev).push_back(new Evaluation(e));
 
 					if (lEvaluator.at(ev)->betterThan(e, e)) {
 						errormsg(lEvaluator.at(ev)->toString(), CMERR_EV_BETTERTHAN, "CMERR_EV_BETTERTHAN", iter, "error in betterThan(X,X)=true");
@@ -633,11 +630,11 @@ public:
 			{
 				message(lEvaluator.at(ev), p, "evaluating input solution.");
 				Timer te;
-				Evaluation& e = evaluators.at(ev)->evaluate(*lSolution[p]);
+				Evaluation e = evaluators.at(ev)->evaluateSolution(*lSolution[p]);
 				timeSol.fullTimeEval[ev].second += te.inMilliSecs();
 				timeSol.fullTimeEval[ev].first++;
 
-				evaluations.at(ev).push_back(&e);
+				evaluations.at(ev).push_back(new Evaluation(e));
 			}
 		}
 
@@ -657,7 +654,7 @@ public:
 
 				Move<R, ADS>& move = *pmove;
 
-				if (!move.canBeApplied(s))
+				if (!move.canBeAppliedToSolution(s))
 				{
 					if (verbose)
 					{
@@ -710,11 +707,12 @@ public:
 
 					Solution<R, ADS>& s = *solutions.at(id_s);
 
-					Move<R, ADS>& move = ns->move(s);
+					// TODO: consider that randomMove can be null
+					Move<R, ADS>& move = *ns->randomMoveSolution(s);
 					if (verbose)
 						move.print();
 
-					if (!move.canBeApplied(s))
+					if (!move.canBeAppliedToSolution(s))
 					{
 						if (verbose)
 						{
@@ -778,7 +776,8 @@ public:
 				// apply a single move
 				// ===================
 
-				NSIterator<R, ADS>& it = nsseq->getIterator(s);
+				// TODO: consider that iterator can be null!
+				NSIterator<R, ADS>& it = *nsseq->getIteratorSolution(s);
 
 				for (it.first(); !it.isDone(); it.next())
 				{
@@ -786,11 +785,12 @@ public:
 						cout << endl;
 					message(lNSSeq.at(id_nsseq), nqs, "getting current move (NSSeq tests).");
 
-					Move<R, ADS>& move = it.current();
+					// TODO: verify if it's not null!
+					Move<R, ADS>& move = *it.current();
 					countMoves++;
 
 
-					if (!move.canBeApplied(s))
+					if (!move.canBeAppliedToSolution(s))
 					{
 						if (verbose)
 						{
@@ -863,7 +863,8 @@ public:
 				// apply a single move
 				// ===================
 
-				NSIterator<R, ADS>& it = nsenum->getIterator(s);
+				// TODO: consider that iterator can be null!
+				NSIterator<R, ADS>& it = *nsenum->getIteratorSolution(s);
 
 				for (it.first(); !it.isDone(); it.next())
 				{
@@ -871,11 +872,12 @@ public:
 						cout << endl;
 					message(lNSEnum.at(id_nsenum), nqs, "getting current move (NSEnum tests).");
 
-					Move<R, ADS>& move = it.current();
+					// TODO: verify if it's not null!
+					Move<R, ADS>& move = *it.current();
 					countMoves++;
 
 
-					if (!move.canBeApplied(s))
+					if (!move.canBeAppliedToSolution(s))
 					{
 						if (verbose)
 						{
@@ -935,10 +937,11 @@ public:
 							for (unsigned sol = 0; sol < solutions.size(); sol++)
 							{
 								Solution<R, ADS>& s = *solutions.at(sol);
-								Move<R, ADS>& move1 = nsenum->move(m1);
-								Move<R, ADS>& move2 = nsenum->move(m2);
+								// TODO: verify if return is return is not null!
+								Move<R, ADS>& move1 = *nsenum->indexMove(m1);
+								Move<R, ADS>& move2 = *nsenum->indexMove(m2);
 								// moves must be valid
-								if (!(move1.canBeApplied(s) && move2.canBeApplied(s)))
+								if (!(move1.canBeAppliedToSolution(s) && move2.canBeAppliedToSolution(s)))
 									break;
 								// move 1 must have reverse
 								if (!move1.hasReverse())
@@ -948,31 +951,31 @@ public:
 								}
 
 								// calculate cost for move 2
-								MoveCost& cost_m2 = ev.moveCost(move2, s);
+								MoveCost* cost_m2 = ev.moveCost(move2, s);
 
 								// apply move 1 (consider reverse is not NULL)
-								Move<R, ADS>& rev_m1 = *move1.apply(s);
+								Move<R, ADS>& rev_m1 = *move1.applySolution(s);
 
 								// calculate new cost for move 2
-								MoveCost& cost2_m2 = ev.moveCost(move2, s);
+								MoveCost* cost2_m2 = ev.moveCost(move2, s);
 
 								// return solution to original value and free
-								delete rev_m1.apply(s);
+								delete rev_m1.applySolution(s);
 								delete &rev_m1;
 								delete &move1;
 								delete &move2;
 
 								// if costs differ, moves are not independent
-								if (!ev.equals(cost2_m2, cost_m2))
+								if (!ev.equals(*cost2_m2, *cost_m2))
 								{
 									// mark conflict between m1 and m2
 									conflict = true;
-									delete &cost2_m2;
-									delete &cost_m2;
+									delete cost2_m2;
+									delete cost_m2;
 									break;
 								}
-								delete &cost2_m2;
-								delete &cost_m2;
+								delete cost2_m2;
+								delete cost_m2;
 							}
 
 							if (!conflict)
@@ -983,8 +986,8 @@ public:
 								if(verbose)
 								{
 									cout << "independent(m1=" << m1 << ";m2=" << m2 << ")" << endl;
-									nsenum->move(m1).print(); // TODO: fix leak
-									nsenum->move(m2).print(); // TODO: fix leak
+									nsenum->indexMove(m1)->print(); // TODO: fix leak
+									nsenum->indexMove(m2)->print(); // TODO: fix leak
 									cout << endl;
 								}
 							}

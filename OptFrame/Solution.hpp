@@ -276,6 +276,19 @@ public:
 		return *ads;
 	}
 
+	// get ADS pointer
+	ADS* getADSptr()
+	{
+		return ads;
+	}
+
+	// get ADS pointer (const)
+	const ADS* getADSptr() const
+	{
+		return ads;
+	}
+
+
 	// =================
 	// begin Object part
 	// =================

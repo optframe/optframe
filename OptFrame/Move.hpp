@@ -48,13 +48,13 @@ public:
 	{
 	}
 
-	bool canBeApplied(const Solution<R, ADS>& s)
+	bool canBeAppliedToSolution(const Solution<R, ADS>& s)
 	{
-		return canBeApplied(s.getR(), s.getADS());
+		return canBeApplied(s.getR(), s.getADSptr());
 	}
 
 //protected: // TODO: protect...
-	virtual bool canBeApplied(const R&, const ADS&) = 0;
+	virtual bool canBeApplied(const R&, const ADS*) = 0;
 
 	// returns true if the apply returns a non-null pointer
 	virtual bool hasReverse()
@@ -63,25 +63,25 @@ public:
 	}
 
 public:
-	Move<R, ADS>* apply(Solution<R, ADS>& s)
+	Move<R, ADS>* applySolution(Solution<R, ADS>& s)
 	{
-		return apply(s.getR(), s.getADS());
+		return apply(s.getR(), s.getADSptr());
 	}
 
-	Move<R, ADS>* apply(Evaluation& e, Solution<R, ADS>& s)
+	Move<R, ADS>* applyUpdate(Evaluation& e, Solution<R, ADS>& s)
 	{
-		return apply(e, s.getR(), s.getADS());
+		return apply(e, s.getR(), s.getADSptr());
 	}
 
-	Move<R, ADS>* apply(MultiEvaluation& mev, Solution<R, ADS>& s)
+	Move<R, ADS>* applyMEVUpdate(MultiEvaluation& mev, Solution<R, ADS>& s)
 	{
-		return apply(mev, s.getR(), s.getADS());
+		return apply(mev, s.getR(), s.getADSptr());
 	}
 
 ////protected:
-	virtual Move<R, ADS>* apply(R& r, ADS& ads) = 0;
+	virtual Move<R, ADS>* apply(R& r, ADS* ads) = 0;
 
-	virtual Move<R, ADS>* apply(Evaluation& e, R& r, ADS& ads)
+	virtual Move<R, ADS>* apply(Evaluation& e, R& r, ADS* ads)
 	{
 		// boolean 'outdated' indicates that Evaluation needs update (after Solution change)
 		// note that even if the reverse move is applied, the Evaluation will continue with
@@ -96,7 +96,7 @@ public:
 		return rev;
 	}
 
-	virtual Move<R, ADS>* apply(MultiEvaluation& mev, R& r, ADS& ads)
+	virtual Move<R, ADS>* apply(MultiEvaluation& mev, R& r, ADS* ads)
 	{
 		// boolean 'outdated' indicates that Evaluation needs update (after Solution change)
 		// note that even if the reverse move is applied, the Evaluation will continue with
@@ -119,13 +119,13 @@ public:
 
 	// ================== cost calculation
 
-	virtual MoveCost* cost(const Evaluation& e, const R& r, const ADS& ads, bool allowEstimated)
+	virtual MoveCost* cost(const Evaluation& e, const R& r, const ADS* ads, bool allowEstimated)
 	{
 		return NULL;
 	}
 
 	// experiment for multi objective problems
-	virtual MultiMoveCost* cost(const MultiEvaluation& e, const R& r, const ADS& ads, bool allowEstimated)
+	virtual MultiMoveCost* cost(const MultiEvaluation& e, const R& r, const ADS* ads, bool allowEstimated)
 	{
 		return NULL;
 	}
@@ -143,7 +143,7 @@ public:
 	// ================== local search marking
 
 	// TODO: deprecated. replaced by updateLOS?
-	virtual void updateNeighStatus(ADS& ads)
+	virtual void updateNeighStatus(ADS* ads)
 	{
 	}
 

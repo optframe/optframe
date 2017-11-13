@@ -35,28 +35,26 @@ class NSSeq: public NS<R, ADS>
 {
 public:
 
-    using NS<R, ADS>::move; // prevents name hiding
-
     virtual ~NSSeq()
     {
     }
 
 ////protected:
-    virtual Move<R, ADS>& move(const R&, const ADS&) = 0;
+    virtual Move<R, ADS>* randomMove(const R&, const ADS*) = 0;
 
 public:
-    NSIterator<R, ADS>& getIterator(const Solution<R, ADS>& s)
+    NSIterator<R, ADS>* getIteratorSolution(const Solution<R, ADS>& s)
     {
-        return getIterator(s.getR(), s.getADS());
+        return this->getIterator(s.getR(), s.getADSptr());
     }
 
 ////protected:
-    virtual NSIterator<R, ADS>& getIterator(const R& r, const ADS& ads) = 0;
+    virtual NSIterator<R, ADS>* getIterator(const R& r, const ADS* ads) = 0;
 
-    virtual NSBlockIterator<R, ADS>& getBlockIterator(const Solution<R, ADS>& s)
+    virtual NSBlockIterator<R, ADS>* getBlockIterator(const Solution<R, ADS>& s)
     {
-        NSIterator<R, ADS>& it = getIterator(s);
-        return *new DefaultNSBlockIterator<R, ADS>(it);
+        NSIterator<R, ADS>* it = this->getIteratorSolution(s);
+        return new DefaultNSBlockIterator<R, ADS>(*it);
     }
 
     // ============= For 'Local Optimum'-based methods =============

@@ -80,8 +80,9 @@ public:
 
 		while(!isDone())
 		{
-			Move<R, ADS>& m = current();
-			if(m.canBeApplied(s))
+			// TODO: verify if it's not null!
+			Move<R, ADS>& m = *current();
+			if(m.canBeAppliedToSolution(s))
 			{
 				delete &m;
 				break;
@@ -100,8 +101,9 @@ public:
 
 		while(!isDone())
 		{
-			Move<R, ADS>& m = current();
-			if(m.canBeApplied(s))
+			// TODO: verify if it's not null!
+			Move<R, ADS>& m = *current();
+			if(m.canBeAppliedToSolution(s))
 			{
 				delete &m;
 				break;
@@ -113,7 +115,7 @@ public:
 	}
 
 	virtual bool isDone() = 0;
-	virtual Move<R, ADS>& current() = 0;
+	virtual Move<R, ADS>* current() = 0;
 
     // INSERT LOCAL OPTIMUM INFORMATION IN SOLUTION (IN ADS? USER DECIDES.)
     virtual void setLOS(LOS status, Solution<R, ADS>& s)
