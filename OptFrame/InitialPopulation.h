@@ -24,9 +24,9 @@
 #include "Population.hpp"
 
 #include "Component.hpp"
+#include "Constructive.hpp"
+#include "Heuristics/GRASP/GRConstructive.hpp"
 #include "RandGen.hpp"
-#include "Constructive.h"
-#include "Heuristics/GRASP/GRConstructive.h"
 
 using namespace std;
 

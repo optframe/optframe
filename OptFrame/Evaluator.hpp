@@ -92,8 +92,7 @@ public:
 		return evaluate(s.getR(), s.getADSptr());
 	}
 
-//protected:
-public:
+protected:
 	// because of MultiEvaluator... otherwise, make it 'friend'
 
 	// TODO: make it obligatory to have two implementations? beautiful (only R should be used if it's correct), but not practical!
@@ -113,8 +112,7 @@ public:
 		reevaluate(e, s.getR(), s.getADSptr());
 	}
 
-//protected:
-public:
+protected:
 	// because of MultiEvaluator... otherwise, make it 'friend'
 
 	virtual void reevaluate(Evaluation& e, const R& r, const ADS* ads)
@@ -273,7 +271,7 @@ public:
 			if (isImprovement(*p))
 			{
 				// apply move and get reverse
-				Move<R, ADS>* rev = m.apply(s);
+				Move<R, ADS>* rev = m.applySolution(s);
 				if (rev)
 					delete rev;
 				// update evaluation with MoveCost

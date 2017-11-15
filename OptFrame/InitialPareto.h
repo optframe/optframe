@@ -22,10 +22,10 @@
 #define OPTFRAME_INITIALPARETO_H_
 
 #include "Component.hpp"
+#include "Constructive.hpp"
+#include "Heuristics/GRASP/GRConstructive.hpp"
 #include "RandGen.hpp"
 #include "MultiObjSearch.hpp"
-#include "Constructive.h"
-#include "Heuristics/GRASP/GRConstructive.h"
 #include "MultiEvaluator.hpp"
 #include "MultiEvaluation.hpp"
 #include "Timer.hpp"

@@ -21,7 +21,7 @@
 #ifndef OPTFRAME_CLONE_CONSTRUCTIVE_HPP_
 #define OPTFRAME_CLONE_CONSTRUCTIVE_HPP_
 
-#include "Constructive.h"
+#include "Constructive.hpp"
 #include "Solution.hpp"
 
 namespace optframe
@@ -43,9 +43,12 @@ public:
 		delete &base;
 	}
 
-	virtual Solution<R, ADS>& generateSolution()
+	virtual Solution<R, ADS> generateSolution()
 	{
-		return base.clone();
+		Solution<R,ADS>& s = base.clone();
+		Solution<R,ADS> sc = s;
+		delete &s;
+		return sc;
 	}
 
     virtual bool compatible(string s)

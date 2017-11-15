@@ -36,6 +36,33 @@ using namespace std;
 namespace optframe
 {
 
+// Single Objective Stopping Criteria
+// Must include GENERAL stopping criteria
+// specific stopping criteria for metaheuristics can be included in their constructors
+class SOSC : public Component
+{
+public:
+	// maximum timelimit (seconds)
+	double timelimit;
+	// target objective function
+	double target_f;
+
+	SOSC(double _timelimit = 100000000.0, double _target_f = 0.0):
+		timelimit(_timelimit), target_f(_target_f)
+	{
+	}
+
+	virtual ~SOSC()
+	{
+	}
+
+	virtual string id() const
+	{
+		return "SOSC";
+	}
+};
+
+
 template< class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class SingleObjSearch : public Component
 {
@@ -53,7 +80,7 @@ public:
    }
 
    // search method try to find a feasible solution within timelimit, if there is no such solution it returns NULL.
-   virtual pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL,  const Evaluation* _e = NULL) = 0;
+   virtual pair<Solution<R, ADS>, Evaluation>* search(const SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL,  const Evaluation* _e = NULL) = 0;
 
    virtual string log()
    {
@@ -76,7 +103,6 @@ public:
    {
       return idComponent();
    }
-
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
@@ -232,17 +258,17 @@ public:
 			Evaluation* e;
 			hf.assign(e, scanner.nextInt(), scanner.next());
 
-			pair<Solution<R, ADS>&, Evaluation&>* p = sios->search(timelimit, target_f, s, e);
+			pair<Solution<R, ADS>, Evaluation>* p = sios->search(SOSC(timelimit, target_f), s, e);
 
 			if(!p)
 				return true;
 
-			Solution<R, ADS>& s2 = p->first;
+			// TODO: use Move Semantics
+			Solution<R, ADS>* s2 = new Solution<R,ADS>(p->first);
 
-			delete& p->second;
 			delete p;
 
-			return Action<R, ADS>::addAndRegister(scanner, s2, hf, dictionary);
+			return Action<R, ADS>::addAndRegister(scanner, *s2, hf, dictionary);
 		}
 
 		// no action found!

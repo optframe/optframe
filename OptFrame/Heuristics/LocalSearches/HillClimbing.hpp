@@ -48,15 +48,12 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
-		Evaluation& e = evaluator.evaluate(s);
+		Evaluation e = evaluator.evaluateSolution(s);
 
 		exec(s, e, timelimit, target_f);
-
-		delete &e;
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit,
-			double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
 	{
 		long tini = time(NULL);
 

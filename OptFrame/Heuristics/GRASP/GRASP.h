@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_GRASP_FAMILY_H_
-#define OPTFRAME_GRASP_FAMILY_H_
+#ifndef OPTFRAME_GRASPH_H_
+#define OPTFRAME_GRASPH_H_
 
 #include <string.h>
 
@@ -44,4 +44,4 @@ public:
 
 }
 
-#endif /*OPTFRAME_GRASP_FAMILY_H_*/
+#endif /*OPTFRAME_GRASPH_H_*/

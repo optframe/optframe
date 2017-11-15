@@ -18,14 +18,14 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_GRASP_HPP_
-#define OPTFRAME_GRASP_HPP_
+#ifndef OPTFRAME_BASIC_GRASP_HPP_
+#define OPTFRAME_BASIC_GRASP_HPP_
 
 #include "../../SingleObjSearch.hpp"
 #include "../../LocalSearch.hpp"
 
 #include "GRASPFamily.h"
-#include "GRConstructive.h"
+#include "GRConstructive.hpp"
 
 namespace optframe
 {
@@ -57,16 +57,19 @@ public:
 	{
 	}
 
-	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
+	pair<Solution<R, ADS>, Evaluation>* search(const SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
 	{
+		double timelimit = stopCriteria.timelimit;
+		double target_f = stopCriteria.target_f;
+
 		long tini = time(NULL);
 
 		unsigned int iter = 0;
 
 		long tnow = time(NULL);
 
-		Solution<R, ADS>& s = constructive.generateSolution(alpha);
-		Evaluation& e = evaluator.evaluate(s);
+		Solution<R, ADS> s = constructive.generateGRSolution(alpha);
+		Evaluation e = evaluator.evaluateSolution(s);
 
 		if (Component::information)
 			e.print();
@@ -76,8 +79,8 @@ public:
 			if (Component::verbose)
 				cout << "GRASP::iter=" << iter << endl;
 
-			Solution<R, ADS>& s1 = constructive.generateSolution(alpha);
-			Evaluation& e1 = evaluator.evaluate(s1);
+			Solution<R, ADS> s1 = constructive.generateGRSolution(alpha);
+			Evaluation e1 = evaluator.evaluateSolution(s1);
 
 			ls.exec(s1, e1, timelimit, target_f);
 
@@ -92,14 +95,11 @@ public:
 				}
 			}
 
-			delete &s1;
-			delete &e1;
-
 			tnow = time(NULL);
 			iter++;
 		}
 
-		return new pair<Solution<R, ADS>&, Evaluation&>(s, e);
+		return new pair<Solution<R, ADS>, Evaluation>(s, e);
 	}
 
 	virtual string id() const
@@ -186,4 +186,4 @@ public:
 
 }
 
-#endif /*OPTFRAME_GRASP_HPP_*/
+#endif /*OPTFRAME_BASIC_GRASP_HPP_*/

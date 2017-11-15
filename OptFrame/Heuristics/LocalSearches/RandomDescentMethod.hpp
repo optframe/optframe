@@ -49,9 +49,8 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
-		Evaluation& e = evaluator.evaluate(s);
+		Evaluation e = evaluator.evaluateSolution(s);
 		exec(s, e, timelimit, target_f);
-		delete &e;
 	}
 
 	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
@@ -64,13 +63,14 @@ public:
 
 		while ((iter < iterMax) && ((tnow - tini) < timelimit) && (evaluator.betterThan(target_f, e.evaluation())))
 		{
-			Move<R, ADS>& move = ns.move(s);
+			// TODO: verify if it's not null!
+			Move<R, ADS>& move = *ns.randomMoveSolution(s);
 
 			MoveCost* cost = NULL;
 
-			if (move.canBeApplied(s))
+			if (move.canBeAppliedToSolution(s))
 			{
-				cost = &evaluator.moveCost(e, move, s);
+				cost = evaluator.moveCost(e, move, s);
 			}
 			else
 			{
@@ -84,8 +84,8 @@ public:
 
 			if (cost && evaluator.isImprovement(*cost))
 			{
-				Component::safe_delete(move.apply(e, s));
-				evaluator.evaluate(e, s);
+				Component::safe_delete(move.applyUpdateSolution(e, s));
+				evaluator.reevaluateSolution(e, s);
 				iter = 0;
 			}
 

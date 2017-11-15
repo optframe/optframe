@@ -59,6 +59,23 @@ public:
 			cout << "BasicILSPerturbation warning: empty neighborhood list." << endl;
 	}
 
+	BasicILSPerturbation(Evaluator<R, ADS>& e, int _pMin, int _pMax, NS<R, ADS>& _ns, RandGen& _rg) :
+		evaluator(e), pMin(_pMin), pMax(_pMax), rg(_rg)
+	{
+		ns.push_back(&_ns);
+		if(pMax < pMin)
+		{
+			cout << "BasicILSPerturbation warning: pMax > pMin! Swapping both." << endl;
+			int aux = pMax;
+			pMax = pMin;
+			pMin = aux;
+		}
+
+		if(ns.size()==0)
+			cout << "BasicILSPerturbation warning: empty neighborhood list." << endl;
+	}
+
+
 	virtual ~BasicILSPerturbation()
 	{
 	}
@@ -74,7 +91,7 @@ public:
 		{
 			int nk = rand() % ns.size();
 
-			Move<R, ADS>* mp = ns[nk]->validMove(s);
+			Move<R, ADS>* mp = ns[nk]->validRandomMoveSolution(s);
 
 			if (!mp)
 			{
@@ -84,12 +101,12 @@ public:
 			else
 			{
 				Move<R, ADS>& m = *mp;
-				Component::safe_delete(m.apply(e, s));
+				Component::safe_delete(m.applyUpdateSolution(e, s));
 				delete &m;
 			}
 		}
 
-		evaluator.evaluate(e, s); // updates 'e'
+		evaluator.reevaluateSolution(e, s); // updates 'e'
 	}
 
 	virtual string id() const

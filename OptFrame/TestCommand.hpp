@@ -22,9 +22,8 @@
 #define TESTMODULE_HPP_
 
 #include "../Command.hpp"
-#include "../Constructive.h"
-
 #include <math.h>
+#include "Constructive.hpp"
 
 namespace optframe
 {

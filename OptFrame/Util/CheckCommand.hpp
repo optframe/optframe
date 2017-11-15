@@ -27,7 +27,7 @@
 #include "../OptFrameList.hpp"
 
 #include "../Evaluator.hpp"
-#include "../Constructive.h"
+#include "../Constructive.hpp"
 #include "../NS.hpp"
 #include "../NSSeq.hpp"
 #include "../NSEnum.hpp"
@@ -571,7 +571,7 @@ public:
 				message(lConstructive.at(c), iter, "generating solution.");
 
 				Timer ts;
-				Solution<R, ADS>& s = constructive->generateSolution();
+				Solution<R, ADS> s = constructive->generateSolution();
 				timeConstructive[c].second += ts.inMilliSecs();
 				timeConstructive[c].first++;
 
@@ -583,7 +583,7 @@ public:
 					timeSol.timeInitializeADS[0].first++;
 				}
 
-				solutions.push_back(&s);
+				solutions.push_back(new Solution<R,ADS>(s));
 
 				for (unsigned ev = 0; ev < evaluators.size(); ev++)
 				{

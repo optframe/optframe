@@ -18,39 +18,34 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_GREEDY_RANDOMIZED_CONSTRUCTIVE_H_
-#define OPTFRAME_GREEDY_RANDOMIZED_CONSTRUCTIVE_H_
+#ifndef OPTFRAME_CONSTRUCTIVE_HPP_
+#define OPTFRAME_CONSTRUCTIVE_HPP_
 
-#include "../../Solution.hpp"
-#include "../../Constructive.h"
-
-#include "GRASPFamily.h"
+#include "Solution.hpp"
 
 namespace optframe
 {
 
-// Greedy Randomized Constructive
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class GRConstructive: public Constructive<R, ADS>, public GRASP
+class Constructive : public Component
 {
 public:
-	virtual ~GRConstructive()
+	virtual ~Constructive()
 	{
 	}
 
-	virtual Solution<R, ADS>& generateSolution(float alpha) = 0;
+	virtual Solution<R, ADS> generateSolution() = 0;
 
-	virtual Solution<R, ADS>& generateSolution() = 0;
-
-	virtual bool compatible(string s)
-	{
-		return (s == idComponent()) || (Component::compatible(s));
-	}
+    virtual bool compatible(string s)
+    {
+    	return ( s == idComponent() ) || (Component::compatible(s));
+    }
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Component::idComponent() << ":" << GRASP::family() << ":GRConstructive";
+		ss << Component::idComponent() << ":Constructive";
 		return ss.str();
 	}
 
@@ -60,6 +55,7 @@ public:
 	}
 };
 
+
 }
 
-#endif /*OPTFRAME_GREEDY_RANDOMIZED_CONSTRUCTIVE_H_*/
+#endif /*OPTFRAME_CONSTRUCTIVE_HPP_*/

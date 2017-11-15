@@ -88,10 +88,9 @@ public:
 			// =======================
 			//   Melhor solucao: 's2'
 			// =======================
-			Evaluation& e = IteratedLocalSearch<BasicHistory, R, ADS >::evaluator.evaluate(s2);
+			Evaluation e = IteratedLocalSearch<BasicHistory, R, ADS >::evaluator.evaluateSolution(s2);
 			cout << "Best fo: " << e.evaluation();
 			cout << " on [iter " << history << "]" << endl;
-			delete &e;
 
 			// =======================
 			//  Atualiza o historico
@@ -130,7 +129,6 @@ public:
 		stringstream ss;
 		ss << IteratedLocalSearch<BasicHistory, R, ADS >::idComponent() << "BasicILS";
 		return ss.str();
-
 	}
 };
 

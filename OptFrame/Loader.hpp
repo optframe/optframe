@@ -46,7 +46,6 @@
 
 #include "Population.hpp"
 
-#include "Constructive.h"
 #include "InitialPopulation.h"
 
 #include "Move.hpp"
@@ -87,6 +86,7 @@
 
 // base components
 #include "CloneConstructive.hpp"
+#include "Constructive.hpp"
 
 // local search
 #include "Heuristics/Empty.hpp"

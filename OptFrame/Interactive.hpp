@@ -46,7 +46,6 @@
 
 #include "Population.hpp"
 
-#include "Constructive.h"
 #include "InitialPopulation.h"
 
 #include "Move.hpp"
@@ -256,6 +255,7 @@
 #include "Commands/ForEachCommand.hpp"
 #include "Commands/WhileCommand.hpp"
 #include "Commands/TryCommand.hpp"
+#include "Constructive.hpp"
 
 // ==================================
 //            Serializer

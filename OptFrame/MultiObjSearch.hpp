@@ -1114,6 +1114,31 @@ public:
 	}
 };
 
+
+// Multi Objective Stopping Criteria
+// Must include GENERAL stopping criteria
+// specific stopping criteria for metaheuristics can be included in their constructors
+class MOSC : public Component
+{
+public:
+	// maximum timelimit (seconds)
+	double timelimit;
+
+	MOSC(double _timelimit = 100000000.0):
+		timelimit(_timelimit)
+	{
+	}
+
+	virtual ~MOSC()
+	{
+	}
+
+	virtual string id() const
+	{
+		return "MOSC";
+	}
+};
+
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class MultiObjSearch: public Component
 {
@@ -1127,7 +1152,7 @@ public:
 	{
 	}
 
-	virtual Pareto<R, ADS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS>* _pf = NULL) = 0;
+	virtual Pareto<R, ADS>* search(const MOSC& stopCriteria, Pareto<R, ADS>* _pf = NULL) = 0;
 
 	virtual string log()
 	{

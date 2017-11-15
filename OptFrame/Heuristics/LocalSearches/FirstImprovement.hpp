@@ -48,14 +48,13 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
-		Evaluation& e = eval.evaluate(s);
+		Evaluation e = eval.evaluateSolution(s);
 		exec(s, e, timelimit, target_f);
-		delete &e;
 	}
 
 	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
 	{
-		NSIterator<R, ADS>& it = nsSeq.getIterator(s);
+		NSIterator<R, ADS>& it = *nsSeq.getIteratorSolution(s);
 		string bestMoveId = "";
 		it.first();
 
@@ -67,7 +66,7 @@ public:
 
 		do
 		{
-			Move<R, ADS>* move = &it.current();
+			Move<R, ADS>* move = it.current();
 
 			// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
 			/*
@@ -81,7 +80,7 @@ public:
 
 			bestMoveId = move->id();
 
-			if (move->canBeApplied(s))
+			if (move->canBeAppliedToSolution(s))
 			{
 				if(eval.acceptsImprove(*move,s,e))
 				{

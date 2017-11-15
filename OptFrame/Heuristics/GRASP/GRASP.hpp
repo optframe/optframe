@@ -29,18 +29,18 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class GRASP: public SingleObjSearch<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class GRASP: public SingleObjSearch<R, ADS>
 {
 private:
-	Evaluator<R, ADS, DS>& evaluator;
+	Evaluator<R, ADS>& evaluator;
 	Constructive<R, ADS>& constructive;
-	LocalSearch<R, ADS, DS>& ls;
+	LocalSearch<R, ADS>& ls;
 	unsigned int iterMax;
 
 public:
 
-	GRASP(Evaluator<R, ADS, DS>& _eval, Constructive<R, ADS>& _constructive, LocalSearch<R, ADS, DS>& _ls, int _iterMax) :
+	GRASP(Evaluator& _eval, Constructive<R, ADS>& _constructive, LocalSearch<R, ADS>& _ls, int _iterMax) :
 		evaluator(_eval), constructive(_constructive), ls(_ls)
 	{
 	   iterMax = _iterMax;
@@ -59,7 +59,7 @@ public:
 		long tnow = time(NULL);
 
 		Solution<R, ADS>& s = constructive.generateSolution();
-		Evaluation<DS>& e    = evaluator.evaluate(s);
+		Evaluation& e    = evaluator.evaluate(s);
 
 		while ((iter < iterMax) && ((tnow - tini) < timelimit) && (evaluator.betterThan(target_f, e.evaluation())))
 		{
@@ -102,7 +102,6 @@ public:
 		stringstream ss;
 		ss << SingleObjSearch<R, ADS, DS>::idComponent() << GRASPH::family() << "GRASP";
 		return ss.str();
-
 	}
 };
 

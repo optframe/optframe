@@ -24,7 +24,7 @@
 #include <math.h>
 #include <vector>
 
-#include "../../Constructive.h"
+#include "../../Constructive.hpp"
 #include "../../SingleObjSearch.hpp"
 #include "../../Evaluator.hpp"
 #include "../../Timer.hpp"
@@ -62,8 +62,10 @@ public:
 
 	virtual bool terminationCondition(H& history) = 0;
 
-	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
+	pair<Solution<R, ADS>, Evaluation>* search(const SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
 	{
+		double timelimit = stopCriteria.timelimit;
+		double target_f = stopCriteria.target_f;
 		cout << "ILS search(" << target_f << "," << timelimit << ")" << endl;
 
 		Timer tnow;
@@ -72,9 +74,9 @@ public:
 		if (_s != NULL)
 			s = &_s->clone();
 		else
-			s = &constructive.generateSolution();
+			s = new Solution<R,ADS>(constructive.generateSolution());
 
-		Evaluation& e = evaluator.evaluate(*s);
+		Evaluation e = evaluator.evaluateSolution(*s);
 
 		if (Component::information)
 		{
@@ -119,7 +121,7 @@ public:
 			delete e2;
 
 			sStar = sStar1;
-			eStar = &evaluator.evaluate(*sStar);
+			eStar = new Evaluation(evaluator.evaluateSolution(*sStar));
 
 		} while (evaluator.betterThan(target_f, eStar->evaluation()) && !terminationCondition(*history) && ((tnow.now()) < timelimit));
 
@@ -134,7 +136,7 @@ public:
 
 		delete history;
 
-		return new pair<Solution<R, ADS>&, Evaluation&>(*s, e);
+		return new pair<Solution<R, ADS>, Evaluation>(*s, e);
 	}
 
 	static string idComponent()

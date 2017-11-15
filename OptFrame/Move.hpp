@@ -53,7 +53,6 @@ public:
 		return canBeApplied(s.getR(), s.getADSptr());
 	}
 
-//protected: // TODO: protect...
 	virtual bool canBeApplied(const R&, const ADS*) = 0;
 
 	// returns true if the apply returns a non-null pointer
@@ -62,7 +61,6 @@ public:
 		return true; // TODO: make it pure virtual "= 0"
 	}
 
-public:
 	Move<R, ADS>* applySolution(Solution<R, ADS>& s)
 	{
 		return apply(s.getR(), s.getADSptr());
@@ -78,7 +76,6 @@ public:
 		return applyMEV(mev, s.getR(), s.getADSptr());
 	}
 
-////protected:
 	virtual Move<R, ADS>* apply(R& r, ADS* ads) = 0;
 
 	virtual Move<R, ADS>* applyUpdate(Evaluation& e, R& r, ADS* ads)
@@ -114,8 +111,6 @@ public:
 
 	// TODO: coming in one of the next versions..
 	//virtual pair<Move<R, ADS>&, MoveCost*> apply(const Evaluation& e, R& r, ADS& ads) = 0;
-
-public:
 
 	// ================== cost calculation
 
