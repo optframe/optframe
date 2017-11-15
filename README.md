@@ -1,4 +1,4 @@
-OptFrame 2.3 - Optimization Framework
+OptFrame 3.0 (development version) - Optimization Framework
 
 To get started (MCT for Windows/Linux):
 - compile and run MCT.java application;
