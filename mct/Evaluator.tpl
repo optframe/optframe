@@ -15,7 +15,8 @@
 namespace $project
 {
 
-class MyEvaluator: public Evaluator<Rep$project, MY_ADS >
+// If you need ADS, you can inherit Evaluator<Rep$project, YourADS>
+class MyEvaluator: public Evaluator<Rep$project>
 {
 private:
 	ProblemInstance& p$project;
@@ -27,9 +28,8 @@ public:
 	
 	virtual ~MyEvaluator();
 
-	Evaluation& evaluate(const Rep$project& rep);
-	
-	//Evaluation& evaluate(const Rep$project& rep, const MY_ADS&);
+    // you can replace OptFrameADS with your prefered ADS
+	Evaluation evaluate(const Rep$project& rep, const OptFrameADS* ads);
 	
 	virtual bool isMinimization() const;
 };

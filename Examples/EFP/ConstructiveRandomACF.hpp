@@ -1,10 +1,7 @@
 #ifndef EFP_CONTRUCTIVE_ACF_HPP_
 #define EFP_CONTRUCTIVE_ACF_HPP_
 
-#include "../../OptFrame/Constructive.h"
 #include "../../OptFrame/Util/TestSolution.hpp"
-#include "../../OptFrame/Heuristics/GRASP/GRConstructive.h"
-
 #include "ProblemInstance.hpp"
 
 #include "Representation.h"
@@ -22,6 +19,8 @@
 #include "./lregress.cpp"
 
 #include "./autocorr.h"
+#include "../../OptFrame/Constructive.hpp"
+#include "../../OptFrame/Heuristics/GRASP/GRConstructive.hpp"
 
 using namespace std;
 

@@ -13,8 +13,10 @@ using namespace std;
 // Solution Representation
 typedef $rep Rep$project;
 
+// Remember that Rep$project must implement: (i) copy constructor and (ii) operator<<
+
 // Auxiliary Data Structures (default 'int')
-typedef int MY_ADS;
+//typedef int MY_ADS; // maybe try again in the future something like ADS$project...
 
 //#include <ostream>
 //ostream & operator<< (ostream & s, Rep$project){}

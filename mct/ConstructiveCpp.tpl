@@ -11,9 +11,9 @@ Constructive$constructive::~Constructive$constructive()
 {
 }
 
-Solution<Rep$project, MY_ADS>& Constructive$constructive::generateSolution()
+Solution<Rep$project> Constructive$constructive::generateSolution()
 {
     Rep$project newRep;
 
-    return * new Solution<Rep$project, MY_ADS>(newRep);			
+    return Solution<Rep$project>(newRep);			
 }

@@ -1,7 +1,6 @@
 #ifndef EFP_CONTRUCTIVE_CALCULATEMEANS_HPP_
 #define EFP_CONTRUCTIVE_CALCULATEMEANS_HPP_
 
-#include "../../OptFrame/Constructive.h"
 #include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.hpp"
@@ -16,6 +15,7 @@
 #include <algorithm>
 #include <stdlib.h>
 #include <set>
+#include "../../OptFrame/Constructive.hpp"
 
 using namespace std;
 

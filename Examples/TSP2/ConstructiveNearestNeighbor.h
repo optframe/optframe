@@ -21,7 +21,6 @@
 #ifndef TSP_NN_CONSTRUCTIVE_HPP_
 #define TSP_NN_CONSTRUCTIVE_HPP_
 
-#include "../../OptFrame/Constructive.h"
 #include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.h"
@@ -34,6 +33,7 @@
 
 #include <algorithm>
 #include <stdlib.h>
+#include "../../OptFrame/Constructive.hpp"
 
 using namespace std;
 

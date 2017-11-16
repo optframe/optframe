@@ -14,14 +14,12 @@ using namespace std;
 namespace $project
 {
 
-class Move$neighborhood: public Move< Rep$project , MY_ADS  >
+class Move$neighborhood: public Move< Rep$project >
 {
 private:
     // MOVE PARAMETERS
 
 public:
-    using Move< Rep$project , MY_ADS  >::apply; // prevents name hiding
-    using Move< Rep$project , MY_ADS  >::canBeApplied; // prevents name hiding
 
     Move$neighborhood() // ADD PARAMETERS
     {
@@ -38,10 +36,10 @@ public:
     
     string id() const
     {
-        return Move<Rep$project , MY_ADS >::idComponent().append(":Move$neighborhood");
+        return Move<Rep$project >::idComponent().append(":Move$neighborhood");
     }
     
-    bool operator==(const Move< Rep$project , MY_ADS  >& _m) const
+    bool operator==(const Move< Rep$project >& _m) const
     {
         const Move$neighborhood& m = (const Move$neighborhood&) _m;
         // COMPARE PARAMETERS AND RETURN TRUE IF EQUALS
@@ -50,16 +48,16 @@ public:
     
     // Implement these methods in the .cpp file
     
-    bool canBeApplied(const Rep$project& rep, const MY_ADS&);
+    bool canBeApplied(const Rep$project& rep, const OptFrameADS* ads);
 
-    Move< Rep$project , MY_ADS  >* apply(Rep$project& rep, MY_ADS&);
+    Move< Rep$project >* apply(Rep$project& rep, OptFrameADS* ads);
     
-    MoveCost* cost(const Evaluation&, const Rep$project& rep, const MY_ADS& ads);
+    MoveCost* cost(const Evaluation&, const Rep$project& rep, const OptFrameADS* ads, bool allowEstimated);
 };
 
 
 
-class NSIterator$neighborhood: public NSIterator< Rep$project , MY_ADS  >
+class NSIterator$neighborhood: public NSIterator< Rep$project >
 {
 private:
     // ITERATOR PARAMETERS
@@ -78,12 +76,12 @@ public:
     void first();
     void next();
     bool isDone();
-    Move< Rep$project , MY_ADS  >& current();
+    Move< Rep$project >* current();
 };
 
 
 
-class NSSeq$neighborhood: public NSSeq< Rep$project , MY_ADS  >
+class NSSeq$neighborhood: public NSSeq< Rep$project >
 {
 private:
     // YOU MAY REMOVE THESE PARAMETERS IF YOU DON'T NEED (BUT PROBABLY WILL...)
@@ -91,8 +89,6 @@ private:
     RandGen& rg;                // random number generator
 
 public:
-
-    using NSSeq< Rep$project , MY_ADS  >::move; // prevents name hiding
 
     // YOU MAY REMOVE THESE PARAMETERS IF YOU DON'T NEED (BUT PROBABLY WILL...)
     NSSeq$neighborhood(ProblemInstance& _p$project, RandGen& _rg):
@@ -111,18 +107,20 @@ public:
     
     string id() const
     {
-        return NSSeq<Rep$project , MY_ADS >::idComponent().append(":NSSeq$neighborhood");
+        return NSSeq<Rep$project >::idComponent().append(":NSSeq$neighborhood");
     }
     
-    NSIterator<Rep$project , MY_ADS >& getIterator(const Rep$project& rep, const MY_ADS&)
+    NSIterator<Rep$project >* getIterator(const Rep$project& rep, const OptFrameADS* ads)
     {
         // return an iterator to the neighbors of 'rep' 
-        return * new NSIterator$neighborhood;  // ADD POSSIBLE ITERATOR PARAMETERS
+        return new NSIterator$neighborhood;  // ADD POSSIBLE ITERATOR PARAMETERS
     }
         
     // Implement this method in the .cpp file
 
-    Move<Rep$project , MY_ADS >& move(const Rep$project& rep, const MY_ADS&);
+    Move<Rep$project >* randomMove(const Rep$project& rep, const OptFrameADS* ads);
+    
+    // Move<Rep$project >* validRandomMove(const Rep$project& rep, const OptFrameADS* ads);
 };
 
 }

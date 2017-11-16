@@ -12,13 +12,14 @@ MyEvaluator::~MyEvaluator()
 {
 }
 
-Evaluation& MyEvaluator::evaluate(const Rep$project& rep)
+Evaluation MyEvaluator::evaluate(const Rep$project& rep, const OptFrameADS* ads)
 {
+    // you can ignore parameter 'ads'
     // 'rep' is the representation of the solution
 
     double fo = 0; // Evaluation Function Value
 
-    return * new Evaluation(fo);
+    return Evaluation(fo);
 }
 
 

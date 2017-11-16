@@ -1,7 +1,7 @@
 #ifndef $project_CONSTRUCTIVE_$constructive_H_
 #define $project_CONSTRUCTIVE_$constructive_H_
 
-#include "../../OptFrame/Constructive.h"
+#include "../../OptFrame/Constructive.hpp"
 
 #include "ProblemInstance.h"
 
@@ -19,7 +19,8 @@ using namespace optframe;
 namespace $project
 {
 
-class Constructive$constructive: public Constructive<Rep$project, MY_ADS>
+// If you need ADS, you can inherit Constructive<Rep$project, YourADS>
+class Constructive$constructive: public Constructive<Rep$project>
 {
 private:
    ProblemInstance& p$project;
@@ -32,7 +33,7 @@ public:
 	
 	virtual ~Constructive$constructive();
 
-	Solution<Rep$project, MY_ADS>& generateSolution();
+	Solution<Rep$project> generateSolution();
 };
 
 }

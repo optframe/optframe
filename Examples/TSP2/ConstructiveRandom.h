@@ -21,7 +21,7 @@
 #ifndef TSP2_CONSTRUCTIVE_RANDOM_H_
 #define TSP2_CONSTRUCTIVE_RANDOM_H_
 
-#include "../../OptFrame/Constructive.h"
+#include "../../OptFrame/Constructive.hpp"
 #include "../../OptFrame/RandGen.hpp"
 
 #include "ProblemInstance.h"

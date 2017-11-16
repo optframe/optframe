@@ -1,7 +1,6 @@
 #ifndef HFMVRP_CONSTRUCTIVE_Savings_HPP_
 #define HFMVRP_CONSTRUCTIVE_Savings_HPP_
 
-#include "../../OptFrame/Constructive.h"
 #include "../../OptFrame/RandGen.hpp"
 #include "../../OptFrame/Util/TestSolution.hpp"
 #include "ProblemInstance.hpp"
@@ -13,6 +12,7 @@
 
 #include <algorithm>
 #include <stdlib.h>
+#include "../../OptFrame/Constructive.hpp"
 
 #define EXT1 4
 #define EXT2 5

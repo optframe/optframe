@@ -1,7 +1,6 @@
 #ifndef SVRPDSP_CONSTRUCTIVE_Random_HPP_
 #define SVRPDSP_CONSTRUCTIVE_Random_HPP_
 
-#include "../../OptFrame/Constructive.h"
 #include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.hpp"
@@ -16,6 +15,7 @@
 
 #include <algorithm>
 #include <stdlib.h>
+#include "../../OptFrame/Constructive.hpp"
 
 using namespace std;
 
