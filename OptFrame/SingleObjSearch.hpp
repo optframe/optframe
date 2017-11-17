@@ -80,7 +80,7 @@ public:
    }
 
    // search method try to find a feasible solution within timelimit, if there is no such solution it returns NULL.
-   virtual pair<Solution<R, ADS>, Evaluation>* search(const SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL,  const Evaluation* _e = NULL) = 0;
+   virtual pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL,  const Evaluation* _e = NULL) = 0;
 
    virtual string log()
    {

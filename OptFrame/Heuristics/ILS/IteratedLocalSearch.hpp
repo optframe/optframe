@@ -62,7 +62,7 @@ public:
 
 	virtual bool terminationCondition(H& history) = 0;
 
-	pair<Solution<R, ADS>, Evaluation>* search(const SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
+	pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
 	{
 		double timelimit = stopCriteria.timelimit;
 		double target_f = stopCriteria.target_f;
