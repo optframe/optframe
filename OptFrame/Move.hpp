@@ -100,7 +100,7 @@ public:
 		// the outdated status set to true. So more efficient approaches may rewrite this
 		// method, or implement efficient re-evaluation by means of the 'cost' method.
 		for (unsigned nE = 0; nE < mev.size(); nE++)
-			mev[nE].outdated = true;
+			mev.setOutdated(nE,true);
 		// apply the move to R and ADS, saving the reverse (or undo) move
 		Move<R, ADS>* rev = apply(r, ads);
 		// update neighborhood local optimum status TODO:deprecated

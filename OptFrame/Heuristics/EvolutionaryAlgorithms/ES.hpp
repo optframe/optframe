@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_ES_HPP_
-#define OPTFRAME_ES_HPP_
+#ifndef OPTFRAME_NGES_HPP_
+#define OPTFRAME_NGES_HPP_
 
 #include <math.h>
 #include <vector>
@@ -27,7 +27,8 @@
 #include "../../LocalSearch.hpp"
 #include "../../NSSeq.hpp"
 #include "../../Evaluator.hpp"
-#include "../../Constructive.h"
+#include "../../Evaluation.hpp"
+#include "../../Constructive.hpp"
 #include "../../RandGen.hpp"
 #include "../../SingleObjSearch.hpp"
 //#include <gsl/gsl_rng.h>
@@ -42,28 +43,47 @@ namespace optframe
 {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-struct EsStructure
+struct NGESIndStructure
 {
 	double pr; // probability
 	int nap; // number of applications
 	double sigmaN;
 	double sigmaB;
 
-	EsStructure(double _pr, int _nap, double _sigmaN, double _sigmaB) :
+	NGESIndStructure(double _pr, int _nap, double _sigmaN, double _sigmaB) :
 			pr(_pr), nap(_nap), sigmaN(_sigmaN), sigmaB(_sigmaB)
 	{
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-struct IndividuoES
+//vNSeqMaxApplication -- vector with the max number of moves of each neigh
+//optional local search, selectionMethod, mutationRate, others...
+struct NGESParams
 {
-	Solution<R, ADS>* sInd; // probability
-	Evaluation* e;
-	vector<EsStructure<R, ADS> >* vEsStructureInd; // number of applications
+	vector<int> vNSeqMaxApplication;
+	int selectionMethod;
+	double mutationRate;
+	int mi;
+	int lambda;
+	int gMaxWithoutImprovement;
+	string outputFile;
+	int batch;
+
+	NGESParams(vector<int> _vNSeqMaxApplication, int _selectionMethod, double _mutationRate, int _mi, int _lambda, int _gMaxWithoutImprovement, string _outputFile, int _batch) :
+			vNSeqMaxApplication(_vNSeqMaxApplication), selectionMethod(_selectionMethod), mutationRate(_mutationRate), mi(_mi), lambda(_lambda), gMaxWithoutImprovement(_gMaxWithoutImprovement), outputFile(_outputFile), batch(_batch)
+	{
+	}
+};
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+struct NGESInd
+{
+	Solution<R, ADS> sInd; // probability
+	Evaluation e;
+	vector<NGESIndStructure<R, ADS> > vEsStructureInd; // number of applications
 	vector<int> vNSInd;
 
-	IndividuoES(Solution<R, ADS>* _sInd, Evaluation* _e, vector<EsStructure<R, ADS> >* _vEsStructureInd, int nNS) :
+	NGESInd(Solution<R, ADS> _sInd, Evaluation _e, vector<NGESIndStructure<R, ADS> > _vEsStructureInd, int nNS) :
 			sInd(_sInd), e(_e), vEsStructureInd(_vEsStructureInd)
 	{
 		for (int i = 0; i < nNS; i++)
@@ -72,10 +92,14 @@ struct IndividuoES
 		random_shuffle(vNSInd.begin(), vNSInd.end());
 	}
 
-	IndividuoES(Solution<R, ADS>* _sInd, Evaluation* _e, vector<EsStructure<R, ADS> >* _vEsStructureInd, vector<int> _vNSInd) :
+	NGESInd(Solution<R, ADS> _sInd, Evaluation _e, vector<NGESIndStructure<R, ADS> > _vEsStructureInd, vector<int> _vNSInd) :
 			sInd(_sInd), e(_e), vEsStructureInd(_vEsStructureInd), vNSInd(_vNSInd)
 	{
 
+	}
+
+	~NGESInd()
+	{
 	}
 
 };
@@ -85,62 +109,43 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class ES: public SingleObjSearch<R, ADS>
 {
 private:
-	string path, outputFile;
-	int batch;
-	Solution<R, ADS>* sStar;
-	Evaluation* eStar;
+	typedef vector<NGESInd<R, ADS> > NGESPopulation;
+
 	Evaluator<R, ADS>& eval;
 	Constructive<R, ADS>& constructive;
-	vector<NSSeq<R, ADS>*> vNS;
-	vector<int> vNSeqMaxApplication;
+	vector<NSSeq<R, ADS>*> vNSeq;
 	LocalSearch<R, ADS>& ls;
 	RandGen& rg;
+	NGESParams& ngesParams;
 
+	//Local variables
 	int nNS;
-	const int mi;
-	const int lambda;
-	const int gMaxWithoutImprovement;
-	int iterWithoutImprovement;
-	int gAtual;
-	int selectionMethod;
-	double mutationRate;
 
-	typedef vector<IndividuoES<R, ADS> > PopulationNSES;
-
-	static bool compareESIndividuo(IndividuoES<R, ADS> p1, IndividuoES<R, ADS> p2)
+	static bool compareESIndividuo(NGESInd<R, ADS> p1, NGESInd<R, ADS> p2)
 	{
-		double eP1 = p1.e->evaluation();
-		double eP2 = p2.e->evaluation();
+		double eP1 = p1.e.evaluation();
+		double eP2 = p2.e.evaluation();
 		return eP1 < eP2;
 	}
 
 public:
 
 	//Evaluator, constructive, vNS -- vector with neighboorhods strucutures able to move solution,
-	//vNSeqMaxApplication -- vector with the max number of moves of each neigh
-	//optional local search, selectionMethod, mutationRate, others...
-	ES(Evaluator<R, ADS>& _eval, Constructive<R, ADS>& _constructive, vector<NSSeq<R, ADS>*> _vNS, vector<int> _vNSeqMaxApplication, LocalSearch<R, ADS>& _ls, int _selectionMethod, double _mutationRate, RandGen& _rg, int _mi, int _lambda, int _gMaxWithoutImprovement, string _outputFile, int _batch) :
-			eval(_eval), constructive(_constructive), vNS(_vNS), vNSeqMaxApplication(_vNSeqMaxApplication), ls(_ls), selectionMethod(_selectionMethod), mutationRate(_mutationRate), rg(_rg), mi(_mi), lambda(_lambda), gMaxWithoutImprovement(_gMaxWithoutImprovement), outputFile(_outputFile), batch(_batch)
+	// selectionMethod: 0-low selection pressure (mi,lambda);1 selection pressure (mi+lambda)
+	ES(Evaluator<R, ADS>& _eval, Constructive<R, ADS>& _constructive, vector<NSSeq<R, ADS>*> _vNSeq, LocalSearch<R, ADS>& _ls, RandGen& _rg, NGESParams& _ngesParams) :
+			eval(_eval), constructive(_constructive), vNSeq(_vNSeq), ls(_ls), rg(_rg), ngesParams(_ngesParams)
 	{
-		nNS = vNS.size();
-		sStar = NULL;
-		eStar = NULL;
-
-		iterWithoutImprovement = 0;
-		gAtual = 0;
-
-		// selectionMethod == 0 low selection pressure (mi,lambda)
-		// selectionMethod == 1 selection pressure (mi+lambda)
+		nNS = vNSeq.size();
 	}
 
 	virtual ~ES()
 	{
 	}
 
-	void mutateESParams(vector<EsStructure<R, ADS> >* p, vector<int>& vNSInd, int nNS)
+	void mutateESParams(vector<NGESIndStructure<R, ADS> >& p, vector<int>& vNSInd, const int nNS)
 	{
 		double z = rg.rand01();
-		if (z <= mutationRate)
+		if (z <= ngesParams.mutationRate)
 		{
 			int posX = rg.rand(nNS);
 			int posY = rg.rand(nNS);
@@ -159,41 +164,41 @@ public:
 		for (int param = 0; param < nNS; param++) // 8 vizinhancas
 		{
 
-			p->at(param).sigmaN += rg.randG(0, 0.1) / 100.0;
-			if (p->at(param).sigmaN < 0)
-				p->at(param).sigmaN = 0;
-			if (p->at(param).sigmaN > 3)
-				p->at(param).sigmaN = 3;
-			p->at(param).pr += rg.randG(0, p->at(param).sigmaN);
-			if (p->at(param).pr < 0)
-				p->at(param).pr = 0;
-			if (p->at(param).pr > 1)
-				p->at(param).pr = 1;
+			p[param].sigmaN += rg.randG(0, 0.1) / 100.0;
+			if (p[param].sigmaN < 0)
+				p[param].sigmaN = 0;
+			if (p[param].sigmaN > 3)
+				p[param].sigmaN = 3;
+			p[param].pr += rg.randG(0, p[param].sigmaN);
+			if (p[param].pr < 0)
+				p[param].pr = 0;
+			if (p[param].pr > 1)
+				p[param].pr = 1;
 
-			p->at(param).sigmaB += rg.randG(0, 0.1) / 100.0;
-			if (p->at(param).sigmaB < 0)
-				p->at(param).sigmaB = 0;
-			if (p->at(param).sigmaB > 1)
-				p->at(param).sigmaB = 1;
-			p->at(param).nap += rg.randBinomialWithNegative(p->at(param).sigmaB, 10);
-			if (p->at(param).nap < 1)
-				p->at(param).nap = 1;
-			if (p->at(param).nap > vNSeqMaxApplication[param])
-				p->at(param).nap = vNSeqMaxApplication[param];
+			p[param].sigmaB += rg.randG(0, 0.1) / 100.0;
+			if (p[param].sigmaB < 0)
+				p[param].sigmaB = 0;
+			if (p[param].sigmaB > 1)
+				p[param].sigmaB = 1;
+			p[param].nap += rg.randBinomialWithNegative(p[param].sigmaB, 10);
+			if (p[param].nap < 1)
+				p[param].nap = 1;
+			if (p[param].nap > ngesParams.vNSeqMaxApplication[param])
+				p[param].nap = ngesParams.vNSeqMaxApplication[param];
 		}
 
 	}
 
-	void applyMutationOperators(Solution<R, ADS>* s, vector<EsStructure<R, ADS> >* p, vector<int> vNSInd, int nNS)
+	void applyMutationOperators(Solution<R, ADS>& s, const vector<NGESIndStructure<R, ADS> >& p, const vector<int> vNSInd, const int nNS)
 	{
 		for (int i = 0; i < nNS; i++)
 		{
 			int param = vNSInd[i]; //Extract index
 			double rx = rg.rand01();
-			if (rx < p->at(param).pr)
-				for (int a = 1; a <= p->at(param).nap; a++)
+			if (rx < p[param].pr)
+				for (int a = 1; a <= p[param].nap; a++)
 				{
-					Move<R, ADS>* mov_tmp = &vNS[param]->move(*s);
+					Move<R, ADS>* mov_tmp = vNSeq[param]->randomMoveSolution(s);
 
 //					int tries = 0;
 //					int maxTries = 1;
@@ -205,9 +210,9 @@ public:
 //						tries++;
 //					}
 
-					if (mov_tmp->canBeApplied(*s))
+					if (mov_tmp->canBeAppliedToSolution(s))
 					{
-						Move<R, ADS>* mov_rev = mov_tmp->apply(*s);
+						Move<R, ADS>* mov_rev = mov_tmp->applySolution(s);
 						delete mov_rev;
 					}
 					else
@@ -250,7 +255,7 @@ public:
 	 }
 	 }*/
 
-	void aplicaBuscaLocalBests(PopulationNSES& p, int nBuscas)
+	void aplicaBuscaLocalBests(NGESPopulation& p, const int nBuscas)
 	{
 
 		bool aux[nBuscas];
@@ -258,7 +263,7 @@ public:
 			aux[i] = false;
 
 		//ORDECAO QuickSort
-		vector<IndividuoES<R, ADS> > v;
+		vector<NGESInd<R, ADS> > v;
 
 		for (int i = 0; i < p.size(); i++)
 		{
@@ -295,39 +300,32 @@ public:
 				n++;
 			}
 		}
+
+//		ls.exec(s, e, timelimit, target_f);
 	}
 
-	PopulationNSES& competicao(PopulationNSES& pais, PopulationNSES& filhos)
+	NGESPopulation competicao(NGESPopulation& pais, NGESPopulation& filhos, Solution<R, ADS>& sStar, Evaluation& eStar, int& iterWithoutImprovement, const int& gCurrent)
 	{
-		vector<IndividuoES<R, ADS> > v;
+		NGESPopulation v;
 
-		for (int i = 0; i < pais.size(); i++)
+		for (int i = 0; i < int(pais.size()); i++)
 			v.push_back(pais[i]);
 
-		for (int i = 0; i < filhos.size(); i++)
+		for (int i = 0; i < int(filhos.size()); i++)
 			v.push_back(filhos[i]);
 
 		sort(v.begin(), v.end(), compareESIndividuo); // ordena com QuickSort
 
-		PopulationNSES* p = new PopulationNSES;
+		NGESPopulation p;
 
 		double fo_pop = 0;
-		int nIndComp = v.size();
 
-		for (int i = 0; i < nIndComp; i++)
+		for (int i = 0; i < ngesParams.mi; i++)
 		{
-			if (i < mi)
-			{
-				p->push_back(v[i]);
-				fo_pop += v[i].e->evaluation();
-			}
-			else
-			{
-				delete v[i].sInd; // Solution
-				v[i].vEsStructureInd->clear();
-				delete v[i].vEsStructureInd; // vectors de mutacao e prob
-				delete v[i].e; // vectors de mutacao e prob
-			}
+			p.push_back(v[i]); //TODO MAKE STD::MOVE
+//			cout << "v[i].e.evaluation():" << v[i].e.evaluation() << "/" << p[i].e.evaluation() << endl;
+//			cout << "p[i].sIND&:" << &v << "/" << &p[i] << "/" << &pais[i] << endl;
+			fo_pop += v[i].e.evaluation(); //Todo ERROR WILL BE produced here CHECK MOVE
 		}
 
 //		fo_pop = fo_pop / mi;
@@ -335,33 +333,33 @@ public:
 //		getchar();
 
 		//AVALIA MELHOR INDIVIDUO
-		double fo = v[0].e->evaluation();
+		Evaluation evBest = p[0].e.evaluation();
 
-		if (eval.betterThan(fo, eStar->evaluation())) // pass the evaluation instead of double TODO
+		if (eval.betterThan(evBest, eStar))
 		{
-			delete eStar;
-			delete sStar;
-			eStar = &v[0].e->clone();
-			sStar = &v[0].sInd->clone();
-
+//			delete &eStar;
+//			delete &sStar;
+			eStar = p[0].e;
+			sStar = p[0].sInd;
+//			cout << "inside comp:" << &eStar << "/" << eStar.evaluation() << endl;
 			if (Component::information)
 			{
-				cout << "Gen:" << gAtual << " | noImp: " << iterWithoutImprovement;
-				cout << " | Best: " << eStar->evaluation() << "\t [";
+				cout << "Gen:" << gCurrent << " | noImp: " << iterWithoutImprovement;
+				cout << " | Best: " << eStar.evaluation() << "\t [";
 				for (int param = 0; param < nNS; param++)
 				{
-					cout << "(" << p->at(0).vEsStructureInd->at(param).pr;
+					cout << "(" << p[0].vEsStructureInd[param].pr;
 					cout << ",";
-					cout << p->at(0).vEsStructureInd->at(param).nap << ") ";
+					cout << p[0].vEsStructureInd[param].nap << ") ";
 				}
 				cout << "]\t";
-				cout << p->at(0).vNSInd << endl;
+				cout << p[0].vNSInd << endl;
 			}
 
 			if (Component::debug)
 			{
 				stringstream ss;
-				ss << outputFile << "_" << "best";
+				ss << ngesParams.outputFile << "_" << "best";
 				string outputBest = ss.str();
 				FILE* arquivo = fopen(outputBest.c_str(), "a");
 				if (!arquivo)
@@ -370,11 +368,11 @@ public:
 				}
 				else
 				{
-					fprintf(arquivo, "%d\t%d\t%d\t", batch, gAtual, iterWithoutImprovement);
+					fprintf(arquivo, "%d\t%d\t%d\t", ngesParams.batch, gCurrent, iterWithoutImprovement);
 					for (int param = 0; param < nNS; param++)
 					{
-						double pr = p->at(0).vEsStructureInd->at(param).pr;
-						int nap = p->at(0).vEsStructureInd->at(param).nap;
+						double pr = p[0].vEsStructureInd[param].pr;
+						int nap = p[0].vEsStructureInd[param].nap;
 						double prNap = pr * nap;
 						fprintf(arquivo, "%f\t%d\t%f\t", pr, nap, prNap);
 					}
@@ -388,79 +386,61 @@ public:
 		else
 			iterWithoutImprovement++;
 
-		return *p;
+		return p;
 	}
 
-	PopulationNSES& lowSelectivePression(PopulationNSES& pop, PopulationNSES& pop_filhos)
+	//clean master population
+	NGESPopulation lowSelectivePression(NGESPopulation& pop, NGESPopulation& pop_filhos, Solution<R, ADS>& sStar, Evaluation& eStar, int& iterWithoutImprovement, const int& gCurrent)
 	{
 		//onlyOffsprings
-		PopulationNSES pop_nula;
-		PopulationNSES& pNova = competicao(pop_nula, pop_filhos);
-		pop_nula.clear();
-
-		for (int i = 0; i < pop.size(); i++)
-		{
-			delete pop[i].sInd;
-			delete pop[i].vEsStructureInd;
-			delete pop[i].e;
-		}
-
-		return pNova;
+		NGESPopulation empty_pop;
+		return competicao(empty_pop, pop_filhos, sStar, eStar, iterWithoutImprovement, gCurrent);
 	}
 
-	PopulationNSES& highSelectivePression(PopulationNSES& pop, PopulationNSES& pop_filhos)
+	NGESPopulation highSelectivePression(NGESPopulation& pop, NGESPopulation& pop_filhos, Solution<R, ADS>& sStar, Evaluation& eStar, int& iterWithoutImprovement, const int& gCurrent)
 	{
-		PopulationNSES& pNova = competicao(pop, pop_filhos);
-		return pNova;
+		return competicao(pop, pop_filhos, sStar, eStar, iterWithoutImprovement, gCurrent);
 	}
 
-	virtual void localSearch(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
+	pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
 	{
-		ls.exec(s, e, timelimit, target_f);
-	}
-
-	pair<Solution<R, ADS>&, Evaluation&>*
-	search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
-	{
-		cout << "ES search(" << target_f << "," << timelimit << ")" << endl;
-
 		Timer tnow;
+		NGESPopulation pop;
+		Solution<R, ADS>* sStar;
+		Evaluation* eStar;
 
-		PopulationNSES pop;
-		double fo_inicial = 0;
+		int iterWithoutImprovement = 0, gCurrent = 0;
 
-		//GERANDO VETOR DE POPULACAO INICIAL
-		for (int i = 0; i < mi; i++)
+		cout << "NGES search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
+
+		double inititPopFitness = 0;
+		//Generating initial population
+		for (int i = 0; i < ngesParams.mi; i++)
 		{
 			//PartialGreedyInitialSolutionOPM is(opm, 0.4, 0.4, 0.4); // waste, ore, shovel
-			Solution<R, ADS>* s = &constructive.generateSolution();
-			vector<EsStructure<R, ADS> >* m = new vector<EsStructure<R, ADS> >;
+			Solution<R, ADS> s = constructive.generateSolution(); //MAKE MOVE TODO
+			vector<NGESIndStructure<R, ADS> > m;
 
+			//probability, application, sigmaNomal, sigmaBinomial
 			for (int aux = 0; aux < nNS; aux++)
-			{
-				//probability, application, sigmaNomal, sigmaBinomial
-				m->push_back(EsStructure<R, ADS>(rg.rand01(), rg.randBinomial(0.5, 10) + 1, rg.rand01(), rg.rand01()));
-			}
+				m.push_back(NGESIndStructure<R, ADS>(rg.rand01(), rg.randBinomial(0.5, 10) + 1, rg.rand01(), rg.rand01()));
 
-			Evaluation* e = &eval.evaluate(*s);
-			IndividuoES<R, ADS> ind(s, e, m, nNS);
+			Evaluation e = eval.evaluateSolution(s);
+			NGESInd<R, ADS> ind(s, e, m, nNS); //TODO MAKE MOVE
 			pop.push_back(ind);
-
-			fo_inicial += e->evaluation();
+			inititPopFitness += ind.e.evaluation();
 
 			if (i == 0)
 			{
-				eStar = &pop[i].e->clone();
-				sStar = &pop[i].sInd->clone();
+				eStar = new Evaluation(pop[i].e);
+				sStar = new Solution<R, ADS>(pop[i].sInd);
 			}
 			else
 			{
-				if (eval.betterThan(pop[i].e->evaluation(), eStar->evaluation()))
+				if (eval.betterThan(pop[i].e, *eStar))
 				{
-					delete sStar;
-					delete eStar;
-					eStar = &pop[i].e->clone();
-					sStar = &pop[i].sInd->clone();
+					(*eStar) = pop[i].e;
+					(*sStar) = pop[i].sInd;
 				}
 			}
 
@@ -468,8 +448,7 @@ public:
 
 		if (Component::information)
 		{
-			cout << "Initial population average fitness: " << fo_inicial / mi << endl;
-			cout << "Best individual:" << (double) eStar->evaluation() << endl;
+			cout << "InitialPop avg: " << inititPopFitness / ngesParams.mi << "\t eStar:" << (double) eStar->evaluation() << endl;
 		}
 		// ===============================
 //
@@ -478,20 +457,20 @@ public:
 		vector<vector<pair<double, double> > > meanParamsGenerations;
 
 		iterWithoutImprovement = 0;
-		while ((iterWithoutImprovement < gMaxWithoutImprovement) && ((tnow.now()) < timelimit) && eval.betterThan(target_f, eStar->evaluation()))
+		while ((iterWithoutImprovement < ngesParams.gMaxWithoutImprovement) && ((tnow.now()) < stopCriteria.timelimit) && eval.betterThan(stopCriteria.target_f, (double) eStar->evaluation()))
 		{
-			PopulationNSES pop_filhos;
+			NGESPopulation pop_filhos;
 			double fo_filhos = 0;
 
 			//GERA OS OFFSPRINGS
-			for (int l = 1; l <= lambda; l++)
+			for (int l = 1; l <= ngesParams.lambda; l++)
 			{
-				int x = rg.rand(mi);
+				int x = rg.rand(ngesParams.mi);
 
 				// Cria Filho e Tuple de Parametros (pi,nap,vizinhança)
-				Solution<R, ADS>* filho = &pop[x].sInd->clone();
-//				Evaluation* eFilho = &pop[x].e->clone();
-				vector<EsStructure<R, ADS> >* vt = new vector<EsStructure<R, ADS> >(*pop[x].vEsStructureInd);
+				Solution<R, ADS> filho = pop[x].sInd;
+
+				vector<NGESIndStructure<R, ADS> > vt = pop[x].vEsStructureInd;
 				vector<int> vNSInd = pop[x].vNSInd;
 
 				// Mutacao dos parametros l
@@ -499,19 +478,17 @@ public:
 
 				mutateESParams(vt, vNSInd, nNS);
 
-				// application dos parametros para gerar filho completo
+				// applying Neighborhood Operators for generating Mutated Offspring
 				applyMutationOperators(filho, vt, vNSInd, nNS);
-//TODO give eFilho to the apply move inside applyMytatuibOperators
 
 				// Optional -- Local Search in each Offspring.
+				//Do anything you want with filho and return filho_ls
+				Solution<R, ADS> filho_ls = filho;
 
-				// Sem Busca Local
-				Solution<R, ADS>* filho_bl = filho;
+				Evaluation e = eval.evaluateSolution(filho_ls);
+				fo_filhos += e.evaluation();
 
-				Evaluation* e = &eval.evaluate(*filho_bl);
-				fo_filhos += e->evaluation();
-
-				IndividuoES<R, ADS> ind(filho_bl, e, vt, vNSInd);
+				NGESInd<R, ADS> ind(filho_ls, e, vt, vNSInd);
 				pop_filhos.push_back(ind);
 			}
 
@@ -529,17 +506,17 @@ public:
 
 			// =====================Selection ==================
 
-			PopulationNSES* pNew;
-
-			switch (selectionMethod)
+//			cout << "beforeanything:" << eStar << endl;
+			//TODO MAKE MOVE
+			switch (ngesParams.selectionMethod)
 			{
 			case 0:
-				pNew = &lowSelectivePression(pop, pop_filhos); //Estrategia (Mi,Lamda)
+				pop = lowSelectivePression(pop, pop_filhos, *sStar, *eStar, iterWithoutImprovement, gCurrent);
 //				cout << "Selection low selective pression!" << endl;
 //				getchar();
 				break;
 			case 1:
-				pNew = &highSelectivePression(pop, pop_filhos); //Estrategia (Mi+Lamda)
+				pop = highSelectivePression(pop, pop_filhos, *sStar, *eStar, iterWithoutImprovement, gCurrent);
 				break;
 //			case 2:
 //
@@ -555,11 +532,9 @@ public:
 				getchar();
 			}
 
-			pop.clear();
-			pop_filhos.clear();
-			pop = *pNew;
-			pNew->clear();
-			delete pNew;
+//			cout << "current eStar:" << eStar->evaluation() << endl;
+//			cout << "search:" << eStar << endl;
+//			getchar();
 			// =====================End Selection ==================
 
 			// ====================================================
@@ -573,16 +548,16 @@ public:
 				{
 					double meanPR = 0;
 					double meanNAP = 0;
-					for (int i = 0; i < mi; i++)
+					for (int i = 0; i < ngesParams.mi; i++)
 					{
-						meanPR += pop[i].vEsStructureInd->at(param).pr;
-						meanNAP += pop[i].vEsStructureInd->at(param).nap;
+						meanPR += pop[i].vEsStructureInd[param].pr;
+						meanNAP += pop[i].vEsStructureInd[param].nap;
 						//					cout << "(" << pop[i].second->at(param).pr;
 						//					cout << ",";
 						//					cout << pop[i].second->at(param).nap << ") ";
 					}
-					meanPR /= mi;
-					meanNAP /= mi;
+					meanPR /= ngesParams.mi;
+					meanNAP /= ngesParams.mi;
 					meanParams.push_back(make_pair(meanPR, meanNAP));
 					//				cout << "(" << meanPR;
 					//				cout << ",";
@@ -592,14 +567,14 @@ public:
 				//cout << endl;
 				meanParamsGenerations.push_back(meanParams);
 
-				FILE* arquivo = fopen(outputFile.c_str(), "a");
+				FILE* arquivo = fopen(ngesParams.outputFile.c_str(), "a");
 				if (!arquivo)
 				{
 					cout << "ERRO: falha ao criar arquivo \"outputFileES.txt\"" << endl;
 				}
 				else
 				{
-					fprintf(arquivo, "%d\t%d\t", batch, gAtual);
+					fprintf(arquivo, "%d\t%d\t", ngesParams.batch, gCurrent);
 					for (int param = 0; param < nNS; param++)
 					{
 						double pr = meanParams[param].first;
@@ -614,7 +589,7 @@ public:
 
 			// ====================================================
 
-			gAtual++;
+			gCurrent++;
 		}
 
 		//BUSCA LOCAL NO MELHOR INDIVIDUO
@@ -624,29 +599,23 @@ public:
 		 cout << "eStarBL = " << (double) eStarBL.evaluation() << endl;
 		 cout << "eStar = " << (double) eStar->evaluation() << endl;*/
 
-		cout << "tnow.now() = " << tnow.now() << " timelimit = " << timelimit << endl;
-		cout << "NSES finished! Iterations without imp: " << iterWithoutImprovement << " gMaxWithoutImprovement = " << gMaxWithoutImprovement << endl;
-		cout << "target_f = " << target_f << " eStar->evaluation() = " << eStar->evaluation() << endl;
+		cout << "Fishing NGES search:\nIterWithoutImp: " << iterWithoutImprovement << "/" << ngesParams.gMaxWithoutImprovement << endl;
+		cout << "BestSol::" << eStar->evaluation() << "/" << stopCriteria.target_f << endl;
+		cout << "tnow.now():" << tnow.now() << "/" << stopCriteria.timelimit << endl;
+		cout << "NGES Finished" << endl;
+		cout << "--------------------------------------------------------------------------" << endl;
 		//getchar();
 
-		//deleting individuals from the working population
-		for (int ind = 0; ind < pop.size(); ind++)
-		{
-			delete pop[ind].sInd; // Solution
-			pop[ind].vEsStructureInd->clear();
-			delete pop[ind].vEsStructureInd; // vectors de mutacao e prob
-			delete pop[ind].e; // vectors de mutacao e prob
-		}
-		pop.clear();
-
-
-		return  new pair<Solution<R, ADS>&, Evaluation&>(*sStar, *eStar);
+		pair<Solution<R, ADS>, Evaluation>* pairToReturn = new pair<Solution<R, ADS>, Evaluation>(make_pair(*sStar, *eStar));
+		delete sStar;
+		delete eStar;
+		return pairToReturn;
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS>::idComponent() << "ES";
+		ss << SingleObjSearch<R, ADS>::idComponent() << "NGES";
 		return ss.str();
 	}
 

@@ -86,8 +86,8 @@ public:
 			exit(1);
 		}
 
-		MultiEvaluation& mev1 = mev.evaluate(s1);
-		MultiEvaluation& mev2 = mev.evaluate(s2);
+		MultiEvaluation& mev1 = mev.evaluateSolution(s1);
+		MultiEvaluation& mev2 = mev.evaluateSolution(s2);
 
 
 		bool r = dominates(mev1, mev2);
@@ -112,7 +112,7 @@ public:
 		int better = betterEquals.first;
 		int equals = betterEquals.second;
 
-		return ((better + equals == mev1.size()) && (better > 0));
+		return ((better + equals == (int) mev1.size()) && (better > 0));
 	}
 
 	//return a pair of better and equals
@@ -128,7 +128,7 @@ public:
 		int better = 0;
 		int equals = 0;
 
-		for (int e = 0; e < mev1.size(); e++)
+		for (int e = 0; e < (int) mev1.size(); e++)
 		{
 			if (mev.betterThan(mev1[e], mev2[e], e))
 				better++;

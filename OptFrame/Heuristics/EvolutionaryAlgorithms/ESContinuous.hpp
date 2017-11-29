@@ -28,7 +28,7 @@
 #include "../../NSSeq.hpp"
 #include "../../SingleObjSearch.hpp"
 #include "../../Evaluator.hpp"
-#include "../../Constructive.h"
+#include "../../Constructive.hpp"
 
 #include "../../Timer.hpp"
 namespace optframe

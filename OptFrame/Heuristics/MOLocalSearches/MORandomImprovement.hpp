@@ -41,7 +41,7 @@ private:
 	// logs
 	double sum_time;
 	int num_calls;
-	unsigned int iterMax;
+	int iterMax;
 public:
 
 	MORandomImprovement(MultiEvaluator<R, ADS>& _mev, NS<R, ADS>& _ns, unsigned int _iterMax) :
@@ -55,31 +55,31 @@ public:
 	{
 	}
 
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, paretoManager<R, ADS>* pManager, double timelimit, double target_f)
+	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, paretoManager<R, ADS>* pManager, MOSC& stopCriteria)
 	{
-		MultiEvaluation* sMev = &mev.evaluate(*s);
+		MultiEvaluation* sMev = &mev.evaluateSolution(*s);
 
-		exec(p, s, sMev, pManager, timelimit, target_f);
+		exec(p, s, sMev, pManager, stopCriteria);
 
 //		sMev.clear();
 		delete sMev;
 	}
 
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, MultiEvaluation* sMev, paretoManager<R, ADS>* pManager, double timelimit, double target_f)
+	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, MultiEvaluation* sMev, paretoManager<R, ADS>* pManager,  MOSC& stopCriteria)
 	{
 		num_calls++;
 		Timer t;
 
 		int iter = 0;
-		while ((iter < iterMax) && ((t.now() - timelimit) < 0))
+		while ((iter < iterMax) && ((t.now() - stopCriteria.timelimit) < 0))
 		{
-			Move<R, ADS>& move = ns.move(*s);
-			if (move.canBeApplied(*s))
+			Move<R, ADS>* move = ns.randomMoveSolution(*s);
+			if (move->canBeAppliedToSolution(*s))
 			{
 
-				Move<R, ADS>* mov_rev = move.apply(*sMev, *s);
+				Move<R, ADS>* mov_rev = move->applyMEVUpdateSolution(*sMev, *s);
 				bool added = pManager->addSolution(p, *sMev,*s);
-				delete mov_rev->apply(*s);
+				delete mov_rev->applySolution(*s);
 				delete mov_rev;
 
 				//			vector<MoveCost*> vMoveCost;
@@ -92,7 +92,7 @@ public:
 
 
 			}
-			delete &move;
+			delete move;
 
 			iter++;
 		}

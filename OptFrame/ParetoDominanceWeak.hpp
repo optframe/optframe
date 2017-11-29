@@ -59,7 +59,7 @@ public:
 		int better = betterEquals.first;
 		int equals = betterEquals.second;
 
-		return ((better + equals == mev1.size()));
+		return (((unsigned) better + equals ==  mev1.size()));
 	}
 
 };

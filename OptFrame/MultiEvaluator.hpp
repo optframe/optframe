@@ -40,8 +40,8 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class MultiEvaluator: public MultiDirection
 {
 protected:
-	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
 	vector<Evaluator<R, ADS>*> sngEvaluators; // single evaluators
+	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
 
 public:
 
@@ -165,48 +165,56 @@ public:
 		return sngEvaluators[index]->equals(ev1, ev2);
 	}
 
-	MultiEvaluation& evaluate(const Solution<R, ADS>& s)
+//	MultiEvaluation& evaluateSolution(const Solution<R, ADS>& s)
+//	{
+//		return evaluate(s.getR(), s.getADSptr());
+//	}
+
+	MultiEvaluation& evaluateSolution(const Solution<R, ADS>& s)
 	{
-		return evaluate(s.getR(), s.getADS());
+		MultiEvaluation* nev = new MultiEvaluation;
+		for (unsigned i = 0; i < sngEvaluators.size(); i++)
+		{
+			Evaluation ev = sngEvaluators[i]->evaluateSolution(s);
+			nev->addEvaluation(ev);
+		}
+
+//		return evaluate(s.getR(), s.getADSptr());
+		return *nev;
 	}
 
 public:
 	// protected: not possible because of GeneralizedMultiEvaluator
 
 	// TODO: make virtual "= 0"
-	virtual MultiEvaluation& evaluate(const R& r)
-	{
-		MultiEvaluation* nev = new MultiEvaluation;
 
-		for (unsigned i = 0; i < sngEvaluators.size(); i++)
-			nev->addEvaluation(sngEvaluators[i]->evaluate(r));
+//	virtual MultiEvaluation& evaluate(const R& r, const ADS* ads)
+//	{
+//		MultiEvaluation* nev = new MultiEvaluation;
+//
+//		for (unsigned i = 0; i < sngEvaluators.size(); i++)
+//			nev->addEvaluation(sngEvaluators[i]->evaluate(r, ads));
+//
+//		return *nev;
+//	}
 
-		return *nev;
-	}
-
-	virtual MultiEvaluation& evaluate(const R& r, const ADS& ads)
-	{
-		MultiEvaluation* nev = new MultiEvaluation;
-
-		for (unsigned i = 0; i < sngEvaluators.size(); i++)
-			nev->addEvaluation(sngEvaluators[i]->evaluate(r, ads));
-
-		return *nev;
-	}
-
-	void evaluate(MultiEvaluation& mev, const Solution<R, ADS>& s)
-	{
-		evaluate(mev, s.getR(), s.getADS());
-	}
-
-	virtual void evaluate(MultiEvaluation& mev, const R& r, const ADS& ads)
+	void reevaluateSolutionMEV(MultiEvaluation& mev, const Solution<R, ADS>& s)
 	{
 		for (unsigned i = 0; i < sngEvaluators.size(); i++)
-		{
-			sngEvaluators[i]->evaluate(mev[i], r, ads);
-		}
+				{
+					sngEvaluators[i]->reevaluateSolution(mev[i], s);
+				}
 
 	}
+
+//	virtual void reevaluateMEV(MultiEvaluation& mev, const R& r, const ADS* ads)
+//	{
+//		for (unsigned i = 0; i < sngEvaluators.size(); i++)
+//		{
+//			sngEvaluators[i]->reevaluate(mev[i], r, ads);
+//		}
+//
+//	}
 
 protected:
 

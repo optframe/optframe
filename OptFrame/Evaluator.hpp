@@ -115,7 +115,7 @@ public:
 protected:
 	// because of MultiEvaluator... otherwise, make it 'friend'
 
-	virtual void reevaluate(Evaluation& e, const R& r, const ADS* ads)
+	virtual void reevaluate(Evaluation e, const R& r, const ADS* ads)
 	{
 		if (e.outdated)
 		{

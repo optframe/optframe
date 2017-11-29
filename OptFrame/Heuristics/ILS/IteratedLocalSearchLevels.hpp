@@ -112,7 +112,7 @@ public:
 			// =======================
 			//   Melhor solucao: 's2'
 			// =======================
-			Evaluation& e = IteratedLocalSearch<levelHistory, R, ADS >::evaluator.evaluate(s2);
+			Evaluation e = IteratedLocalSearch<levelHistory, R, ADS >::evaluator.evaluateSolution(s2);
 			if(Component::information)
 			{
 				cout << "ILSL::Best fo: on [iter " << history.first.first << " of level " << history.first.second << "] => ";

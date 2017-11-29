@@ -68,7 +68,7 @@ public:
 	bool addSolution(Pareto<R, ADS>& p, const Solution<R, ADS>& candidate, const MultiEvaluation& candidateMev)
 	{
 		bool added = true;
-		for (int ind = 0; ind < p.size(); ind++)
+		for (unsigned ind = 0; ind < p.size(); ind++)
 		{
 			const MultiEvaluation& popIndFitness = p.getIndMultiEvaluation(ind);
 
@@ -129,22 +129,22 @@ public:
 	{
 	}
 
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, paretoManager<R, ADS>* pManager, double timelimit, double target_f)
+	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, paretoManager<R, ADS>* pManager, MOSC& stopCriteria)
 	{
 
 	}
 
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, MultiEvaluation* sMev, paretoManager<R, ADS>* pManager, double timelimit, double target_f)
+	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, MultiEvaluation* sMev, paretoManager<R, ADS>* pManager,MOSC& stopCriteria)
 	{
 
 	}
 
 	//virtual void exec(Population<R, ADS>& p_0, FitnessValues& e_pop, double timelimit, double target_f)
-	virtual Pareto<R, ADS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS>* _pf = NULL)
+	virtual Pareto<R, ADS>* search(MOSC& stopCriteria, Pareto<R, ADS>* _pf = NULL)
 	{
 		Timer tnow;
 
-		cout << "exec: General 2PPLS with Pareto Manager (tL:" << timelimit << ")" << endl;
+		cout << "exec: General 2PPLS with Pareto Manager (tL:" << stopCriteria.timelimit << ")" << endl;
 		int r = vLS.size();
 
 		gplsStructure<R, ADS> gPLSData;
@@ -153,8 +153,8 @@ public:
 		if (_pf == NULL)
 		{
 			cout << "Creating initial population using a initial pareto method:" << init_pop_size << endl;
-			if (tnow.now() < timelimit)
-				p_0 = init_pareto.generatePareto(init_pop_size, timelimit - tnow.now());
+			if (tnow.now() < stopCriteria.timelimit)
+				p_0 = init_pareto.generatePareto(init_pop_size, stopCriteria.timelimit - tnow.now());
 
 			cout << "Population generated with " << p_0.size() << " individuals!" << endl;
 		}
@@ -171,7 +171,7 @@ public:
 		p_0.clear();
 
 		//Initializing auxiliar data structures -- Pareto Optimum and NewSol (guides auxiliar population p_a)
-		for (int i = 0; i < x_e.size(); i++)
+		for (int i = 0; i < (int) x_e.size(); i++)
 		{
 			vector<bool> neigh;
 			for (int n = 0; n < r; n++)
@@ -184,10 +184,10 @@ public:
 
 		int k = 0;
 		cout << "Starting search with k = " << k << endl;
-		while ((k < r) && (tnow.now() < timelimit))
+		while ((k < r) && (tnow.now() < stopCriteria.timelimit))
 		{
 
-			for (int ind = 0; ind < x_e.size(); ind++)
+			for (int ind = 0; ind < (int) x_e.size(); ind++)
 			{
 				//All individuals from NS k-1 will be visited
 				string localSearchId = vLS[k]->id();
@@ -199,8 +199,11 @@ public:
 			}
 
 			//Run local search for each individual of the population - Pareto Manager, pMan2PPLS, updates population
-			for (int ind = 0; ind < p.size(); ind++)
-				vLS[k]->exec(x_e, &p.getNonDominatedSol(ind), &p.getIndMultiEvaluation(ind), &pMan2PPLS, timelimit - tnow.now(), target_f);
+			MOSC stopCriteriaLS;
+			stopCriteriaLS.timelimit = stopCriteria.timelimit;
+
+			for (int ind = 0; ind < (int) p.size(); ind++)
+				vLS[k]->exec(x_e, &p.getNonDominatedSol(ind), &p.getIndMultiEvaluation(ind), &pMan2PPLS, stopCriteriaLS);
 
 //			for(int e=0;e<x_e.size();e++)
 //			{
@@ -211,7 +214,7 @@ public:
 			p.clear();
 
 			//Updated current Pareto p with the individuals added in this current iteration
-			for (int ind = 0; ind < x_e.size(); ind++)
+			for (int ind = 0; ind < (int) x_e.size(); ind++)
 				if (pMan2PPLS.gplsData.newSol[ind])
 					p.push_back(x_e.getNonDominatedSol(ind), x_e.getIndMultiEvaluation(ind));
 
@@ -228,7 +231,7 @@ public:
 				{
 
 					int removed = 0;
-					for (int i = 0; i < pMan2PPLS.gplsData.nsParetoOptimum.size(); i++)
+					for (int i = 0; i < (int) pMan2PPLS.gplsData.nsParetoOptimum.size(); i++)
 						if (pMan2PPLS.gplsData.nsParetoOptimum[i][k - 1] == true)
 						{
 							p.erase(i - removed);
