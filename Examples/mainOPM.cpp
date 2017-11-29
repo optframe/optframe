@@ -8,10 +8,10 @@
 #include <iostream>
 #include <iomanip>
 
-#include "../OptFrame/Heuristics/EvolutionaryAlgorithms/ES.hpp"
 #include "../OptFrame/Heuristics/Empty.hpp"
 #include "./OPM/NSEnumLD.hpp"
 #include "./OPM.h"
+#include "../OptFrame/Heuristics/EvolutionaryAlgorithms/NGES.hpp"
 
 using namespace std;
 using namespace optframe;
