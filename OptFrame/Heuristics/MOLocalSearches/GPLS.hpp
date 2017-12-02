@@ -52,7 +52,7 @@ private:
 
 public:
 	gplsStructure<R, ADS> gplsData;
-	Pareto<R, ADS> x_e;
+//	Pareto<R, ADS> x_e;
 
 	paretoManager2PPLS(MultiEvaluator<R, ADS>& _mev, int _r) :
 			paretoManager<R, ADS>(_mev), r(_r)
@@ -134,7 +134,7 @@ public:
 
 	}
 
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, MultiEvaluation* sMev, paretoManager<R, ADS>* pManager,MOSC& stopCriteria)
+	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, MultiEvaluation* sMev, paretoManager<R, ADS>* pManager, MOSC& stopCriteria)
 	{
 
 	}
@@ -148,27 +148,28 @@ public:
 		int r = vLS.size();
 
 		gplsStructure<R, ADS> gPLSData;
-		Pareto<R, ADS> p_0;
+		Pareto<R, ADS> x_e;
 
 		if (_pf == NULL)
 		{
 			cout << "Creating initial population using a initial pareto method:" << init_pop_size << endl;
 			if (tnow.now() < stopCriteria.timelimit)
-				p_0 = init_pareto.generatePareto(init_pop_size, stopCriteria.timelimit - tnow.now());
+				x_e = std::move(init_pareto.generatePareto(init_pop_size, stopCriteria.timelimit - tnow.now()));
 
-			cout << "Population generated with " << p_0.size() << " individuals!" << endl;
+			cout << "Population generated with " << x_e.size() << " individuals!" << endl;
 		}
 		else
 		{
-			cout << "Extracting Pareto Front given as parameters..." << endl;
-			p_0 = *_pf;
+			cout << "Extracting Pareto Front given as parameter..." << endl;
+			x_e = std::move(*_pf); //check this move with AIIIGOR
 
-			cout << "Extracted initial constains " << p_0.size() << " individuals!" << endl;
+			cout << "Extracting PF contains " << x_e.size() << " individuals." << endl;
 		}
 
-		Pareto<R, ADS> x_e = p_0;
+		//TODO - create a new method that does not copy
+		//instead, it updated p during loop and do not perform neighborhood search in indivuals that were dominated
+		//copy x_e to p
 		Pareto<R, ADS> p = x_e;
-		p_0.clear();
 
 		//Initializing auxiliar data structures -- Pareto Optimum and NewSol (guides auxiliar population p_a)
 		for (int i = 0; i < (int) x_e.size(); i++)
@@ -199,12 +200,12 @@ public:
 			}
 
 			//Run local search for each individual of the population - Pareto Manager, pMan2PPLS, updates population
-			MOSC stopCriteriaLS;
-			stopCriteriaLS.timelimit = stopCriteria.timelimit;
+			MOSC* stopCriteriaLS = new MOSC;
+			stopCriteriaLS->timelimit = stopCriteria.timelimit;
 
 			for (int ind = 0; ind < (int) p.size(); ind++)
-				vLS[k]->exec(x_e, &p.getNonDominatedSol(ind), &p.getIndMultiEvaluation(ind), &pMan2PPLS, stopCriteriaLS);
-
+				vLS[k]->exec(x_e, &p.getNonDominatedSol(ind), &p.getIndMultiEvaluation(ind), &pMan2PPLS, *stopCriteriaLS);
+			delete stopCriteriaLS;
 //			for(int e=0;e<x_e.size();e++)
 //			{
 //				x_e.getIndMultiEvaluation(e).print();
@@ -216,7 +217,11 @@ public:
 			//Updated current Pareto p with the individuals added in this current iteration
 			for (int ind = 0; ind < (int) x_e.size(); ind++)
 				if (pMan2PPLS.gplsData.newSol[ind])
-					p.push_back(x_e.getNonDominatedSol(ind), x_e.getIndMultiEvaluation(ind));
+				{
+					Solution<R, ADS>* sNew = new Solution<R, ADS>(x_e.getNonDominatedSol(ind));
+					MultiEvaluation* mevNew = new MultiEvaluation(x_e.getIndMultiEvaluation(ind));
+					p.add_ind(sNew, mevNew);
+				}
 
 			if (p.size() != 0)
 			{
@@ -247,18 +252,20 @@ public:
 				//		p.push_back(&pMan2PPLS.gplsData.x_e.getNonDominatedSol(ind), &pMan2PPLS.gplsData.x_e.getIndMultiEvaluation(ind));
 
 			}
-			cout << "p.size() = " << p.size() << "\t pMan2PPLS.x_e.size() = " << x_e.size();
+			cout << "p.size() = " << p.size();
+			cout<<"\t pMan2PPLS.x_e.size() = " << x_e.size();
 			cout << "\t k = " << k << endl;
 		}
 
-		Pareto<R, ADS>* pReturn = new Pareto<R, ADS>(x_e);
+		Pareto<R, ADS>* pReturn = new Pareto<R, ADS>(std::move(x_e));
+//		pReturn->print();
 		p.clear();
-		x_e.clear();
 
 		//checking possible dominance problems -- TODO - Remove for a faster code
 		pMan2PPLS.checkDominance(*pReturn);
 
-		cout << "General Two-Phase Pareto Local Search finished with" << x_e.size() << " non-dominated solutions.\n" << endl;
+		cout << "General Two-Phase Pareto Local Search finished with " << pReturn->size() << " non-dominated solutions." << endl;
+
 
 		return pReturn;
 	}

@@ -31,6 +31,7 @@
 namespace optframe
 {
 
+//Basic MORI does not considering valid move, parameter iterMax only.
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class MORandomImprovement: public MOLocalSearch<R, ADS>
 {
@@ -57,7 +58,7 @@ public:
 
 	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, paretoManager<R, ADS>* pManager, MOSC& stopCriteria)
 	{
-		MultiEvaluation* sMev = &mev.evaluateSolution(*s);
+		MultiEvaluation* sMev = mev.evaluateSolution(*s);
 
 		exec(p, s, sMev, pManager, stopCriteria);
 
@@ -73,12 +74,14 @@ public:
 		int iter = 0;
 		while ((iter < iterMax) && ((t.now() - stopCriteria.timelimit) < 0))
 		{
+
 			Move<R, ADS>* move = ns.randomMoveSolution(*s);
 			if (move->canBeAppliedToSolution(*s))
 			{
-
+				//Move and mark sMev as outdated
 				Move<R, ADS>* mov_rev = move->applyMEVUpdateSolution(*sMev, *s);
-				bool added = pManager->addSolution(p, *sMev,*s);
+				//Call method to reevaluate sMev and try to include
+				pManager->addSolutionWithMEVReevaluation(p, *s,*sMev);
 				delete mov_rev->applySolution(*s);
 				delete mov_rev;
 

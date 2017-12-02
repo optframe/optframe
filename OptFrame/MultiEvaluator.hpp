@@ -59,8 +59,6 @@ public:
 	{
 	}
 
-
-
 //	MultiEvaluator(MultiDirection& mDir, bool _allowCosts = false) :
 //			MultiDirection(mDir), allowCosts(_allowCosts)
 //	{
@@ -70,8 +68,6 @@ public:
 //			MultiDirection(vDir), allowCosts(_allowCosts)
 //	{
 //	}
-
-
 
 //	MultiEvaluator(MultiEvaluator<R, ADS>& _mev) :
 //			sngEvaluators(*_mev.getEvaluators2()), allowCosts(false)
@@ -94,12 +90,11 @@ public:
 
 	void clear()
 	{
-		for(int e=0;e<int(sngEvaluators.size());e++)
+		for (int e = 0; e < int(sngEvaluators.size()); e++)
 		{
 			delete sngEvaluators[e];
 		}
 	}
-
 
 //	bool getAllowCosts()
 //	{
@@ -170,7 +165,7 @@ public:
 //		return evaluate(s.getR(), s.getADSptr());
 //	}
 
-	MultiEvaluation& evaluateSolution(const Solution<R, ADS>& s)
+	MultiEvaluation* evaluateSolution(const Solution<R, ADS>& s)
 	{
 		MultiEvaluation* nev = new MultiEvaluation;
 		for (unsigned i = 0; i < sngEvaluators.size(); i++)
@@ -180,7 +175,7 @@ public:
 		}
 
 //		return evaluate(s.getR(), s.getADSptr());
-		return *nev;
+		return nev;
 	}
 
 public:
@@ -201,10 +196,7 @@ public:
 	void reevaluateSolutionMEV(MultiEvaluation& mev, const Solution<R, ADS>& s)
 	{
 		for (unsigned i = 0; i < sngEvaluators.size(); i++)
-				{
-					sngEvaluators[i]->reevaluateSolution(mev[i], s);
-				}
-
+			sngEvaluators[i]->reevaluateSolution(mev[i], s);
 	}
 
 //	virtual void reevaluateMEV(MultiEvaluation& mev, const R& r, const ADS* ads)

@@ -71,7 +71,7 @@ public:
 	MultiEvaluation(const MultiEvaluation& mev)
 	{
 		for (unsigned i = 0; i < mev.vev.size(); i++)
-			vev.push_back(mev.vev[i].clone());
+			vev.push_back(mev.vev[i]);
 	}
 
 	virtual ~MultiEvaluation()

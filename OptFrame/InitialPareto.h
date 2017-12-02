@@ -44,7 +44,7 @@ public:
 	{
 	}
 
-	virtual Pareto<R, ADS>& generatePareto(unsigned populationSize, double timeLimit = 10000000) = 0;
+	virtual Pareto<R, ADS> generatePareto(unsigned populationSize, double timeLimit = 10000000) = 0;
 
 
 	static string idComponent()
@@ -77,12 +77,16 @@ public:
 	{
 	}
 
-	virtual Pareto<R, ADS>& generatePareto(unsigned populationSize, double timelimit = 100000000)
+	virtual Pareto<R, ADS> generatePareto(unsigned populationSize, double timelimit = 100000000)
 	{
-		Pareto<R, ADS>* p = new Pareto<R, ADS>;
+		Pareto<R, ADS> p;
 		for (unsigned i = 0; i < populationSize; i++)
-			pMan.addSolution(*p, constructive.generateSolution());
-		return *p;
+		{
+			Solution<R,ADS>* sToAdd = new Solution<R,ADS>(std::move(constructive.generateSolution()));
+			pMan.addSolution(p, *sToAdd);
+		}
+
+		return p;
 	}
 
 	static string idComponent()

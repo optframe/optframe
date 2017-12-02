@@ -98,6 +98,30 @@ struct NGESInd
 
 	}
 
+	NGESInd(NGESInd<R, ADS> && nges) :
+			sInd(std::move(nges.sInd)), e(std::move(nges.e)), vEsStructureInd(std::move(nges.vEsStructureInd)), vNSInd(std::move(nges.vNSInd))
+
+	{
+
+	}
+
+	NGESInd(const NGESInd<R, ADS>& nges) :
+			sInd(nges.sInd), e(nges.e), vEsStructureInd(nges.vEsStructureInd), vNSInd(nges.vNSInd)
+
+	{
+
+	}
+
+	NGESInd& operator=(const NGESInd<R, ADS>& nges)
+	{
+		sInd = nges.sInd;
+		e = nges.e;
+		vEsStructureInd = nges.vEsStructureInd;
+		vNSInd = nges.vNSInd;
+		return (*this);
+
+	}
+
 	~NGESInd()
 	{
 	}
@@ -109,7 +133,7 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class ES: public SingleObjSearch<R, ADS>
 {
 private:
-	typedef vector<NGESInd<R, ADS> > NGESPopulation;
+	typedef vector<NGESInd<R, ADS>*> NGESPopulation;
 
 	Evaluator<R, ADS>& eval;
 	Constructive<R, ADS>& constructive;
@@ -120,13 +144,6 @@ private:
 
 	//Local variables
 	int nNS;
-
-	static bool compareESIndividuo(NGESInd<R, ADS> p1, NGESInd<R, ADS> p2)
-	{
-		double eP1 = p1.e.evaluation();
-		double eP2 = p2.e.evaluation();
-		return eP1 < eP2;
-	}
 
 public:
 
@@ -228,119 +245,43 @@ public:
 
 	}
 
-	/*
-	 void applyLocalSearch(Populacao& p, int nBuscas, int lambda)
-	 {
-
-	 bool aux[lambda];
-	 for (int i = 0; i++; i < lambda)
-	 aux[i] = false;
-	 int n = 0;
-
-	 while (n < nBuscas)
-	 {
-	 int ind;
-	 ind = rand() % lambda;
-
-	 if (aux[ind] == false)
-	 {
-
-	 Solution<R, ADS>* filhoo = vnd.search(p[ind].first);
-	 delete p[ind].first;
-	 p[ind].first = filhoo;
-
-	 aux[ind] = true;
-	 n++;
-	 }
-	 }
-	 }*/
-
-	void aplicaBuscaLocalBests(NGESPopulation& p, const int nBuscas)
+	void competition(NGESPopulation& pop, NGESPopulation& offsprings, Solution<R, ADS>& sStar, Evaluation& eStar, int& iterWithoutImprovement, const int& gCurrent, int selectionType)
 	{
 
-		bool aux[nBuscas];
-		for (int i = 0; i < nBuscas; i++)
-			aux[i] = false;
-
-		//ORDECAO QuickSort
-		vector<NGESInd<R, ADS> > v;
-
-		for (int i = 0; i < p.size(); i++)
+		if (selectionType == 1)
 		{
-			v.push_back(p[i]);
+			offsprings.reserve(offsprings.size() + ngesParams.mi);
+			for (int i = 0; i < ngesParams.mi; i++)
+				offsprings.push_back(std::move(pop[i]));
 		}
 
-		sort(v.begin(), v.end(), compareESIndividuo); // ordena com QuickSort
-
-		int n = 0;
-
-		while (n < nBuscas)
+		auto compInd = [&](NGESInd<R,ADS>* indA, NGESInd<R,ADS>* indB)-> bool
 		{
-			int ind;
-			ind = rand() % nBuscas;
+			return eval.betterThan(indA->e,indB->e);
+		};
 
-			if (aux[ind] == false)
-			{
+		sort(offsprings.begin(), offsprings.end(), compInd); // ordena com QuickSort
 
-				//EvaluationOPM* e = eval.evaluate(p[ind].first);
-
-				//cout << "VALOR DA FO ANTES DA BL= " << e->evaluation() << endl;
-
-				Solution<R, ADS>* filhoo = &ls.search(*p[ind].first);
-				delete p[ind].first;
-				p[ind].first = filhoo;
-
-				//EvaluationOPM* ee = eval.evaluate(p[ind].first);
-				//cout << "VALOR DA FO DPS DA BL= " << ee->evaluation() << endl;
-
-				//delete e;
-				//delete ee;
-
-				aux[ind] = true;
-				n++;
-			}
-		}
-
-//		ls.exec(s, e, timelimit, target_f);
-	}
-
-	NGESPopulation competicao(NGESPopulation& pais, NGESPopulation& filhos, Solution<R, ADS>& sStar, Evaluation& eStar, int& iterWithoutImprovement, const int& gCurrent)
-	{
-		NGESPopulation v;
-
-		for (int i = 0; i < int(pais.size()); i++)
-			v.push_back(pais[i]);
-
-		for (int i = 0; i < int(filhos.size()); i++)
-			v.push_back(filhos[i]);
-
-		sort(v.begin(), v.end(), compareESIndividuo); // ordena com QuickSort
-
-		NGESPopulation p;
-
+		pop.clear();
+		pop.reserve(ngesParams.mi);
 		double fo_pop = 0;
-
 		for (int i = 0; i < ngesParams.mi; i++)
 		{
-			p.push_back(v[i]); //TODO MAKE STD::MOVE
-//			cout << "v[i].e.evaluation():" << v[i].e.evaluation() << "/" << p[i].e.evaluation() << endl;
-//			cout << "p[i].sIND&:" << &v << "/" << &p[i] << "/" << &pais[i] << endl;
-			fo_pop += v[i].e.evaluation(); //Todo ERROR WILL BE produced here CHECK MOVE
+			pop.push_back(offsprings[i]);
+			fo_pop += pop[i]->e.evaluation();
 		}
 
-//		fo_pop = fo_pop / mi;
-//		cout << "Average fo after competition:" << fo_pop << endl;
-//		getchar();
+		for (int i = 0; i < ngesParams.lambda; i++)
+			delete offsprings[i + ngesParams.mi];
 
-		//AVALIA MELHOR INDIVIDUO
-		Evaluation evBest = p[0].e.evaluation();
+		Evaluation evBest = pop[0]->e.evaluation();
 
 		if (eval.betterThan(evBest, eStar))
 		{
 //			delete &eStar;
 //			delete &sStar;
-			eStar = p[0].e;
-			sStar = p[0].sInd;
+			eStar = pop[0]->e;
+			sStar = pop[0]->sInd;
 //			cout << "inside comp:" << &eStar << "/" << eStar.evaluation() << endl;
 			if (Component::information)
 			{
@@ -348,12 +289,12 @@ public:
 				cout << " | Best: " << eStar.evaluation() << "\t [";
 				for (int param = 0; param < nNS; param++)
 				{
-					cout << "(" << p[0].vEsStructureInd[param].pr;
+					cout << "(" << pop[0]->vEsStructureInd[param].pr;
 					cout << ",";
-					cout << p[0].vEsStructureInd[param].nap << ") ";
+					cout << pop[0]->vEsStructureInd[param].nap << ") ";
 				}
 				cout << "]\t";
-				cout << p[0].vNSInd << endl;
+				cout << pop[0]->vNSInd << endl;
 			}
 
 			if (Component::debug)
@@ -371,8 +312,8 @@ public:
 					fprintf(arquivo, "%d\t%d\t%d\t", ngesParams.batch, gCurrent, iterWithoutImprovement);
 					for (int param = 0; param < nNS; param++)
 					{
-						double pr = p[0].vEsStructureInd[param].pr;
-						int nap = p[0].vEsStructureInd[param].nap;
+						double pr = pop[0]->vEsStructureInd[param].pr;
+						int nap = pop[0]->vEsStructureInd[param].nap;
 						double prNap = pr * nap;
 						fprintf(arquivo, "%f\t%d\t%f\t", pr, nap, prNap);
 					}
@@ -385,21 +326,6 @@ public:
 		}
 		else
 			iterWithoutImprovement++;
-
-		return p;
-	}
-
-	//clean master population
-	NGESPopulation lowSelectivePression(NGESPopulation& pop, NGESPopulation& pop_filhos, Solution<R, ADS>& sStar, Evaluation& eStar, int& iterWithoutImprovement, const int& gCurrent)
-	{
-		//onlyOffsprings
-		NGESPopulation empty_pop;
-		return competicao(empty_pop, pop_filhos, sStar, eStar, iterWithoutImprovement, gCurrent);
-	}
-
-	NGESPopulation highSelectivePression(NGESPopulation& pop, NGESPopulation& pop_filhos, Solution<R, ADS>& sStar, Evaluation& eStar, int& iterWithoutImprovement, const int& gCurrent)
-	{
-		return competicao(pop, pop_filhos, sStar, eStar, iterWithoutImprovement, gCurrent);
 	}
 
 	pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
@@ -415,6 +341,7 @@ public:
 
 		double inititPopFitness = 0;
 		//Generating initial population
+		pop.reserve(ngesParams.mi);
 		for (int i = 0; i < ngesParams.mi; i++)
 		{
 			//PartialGreedyInitialSolutionOPM is(opm, 0.4, 0.4, 0.4); // waste, ore, shovel
@@ -426,24 +353,24 @@ public:
 				m.push_back(NGESIndStructure<R, ADS>(rg.rand01(), rg.randBinomial(0.5, 10) + 1, rg.rand01(), rg.rand01()));
 
 			Evaluation e = eval.evaluateSolution(s);
-			NGESInd<R, ADS> ind(s, e, m, nNS); //TODO MAKE MOVE
+			NGESInd<R, ADS>* ind = new NGESInd<R, ADS>(s, e, m, nNS); //TODO MAKE MOVE
 			pop.push_back(ind);
-			inititPopFitness += ind.e.evaluation();
 
 			if (i == 0)
 			{
-				eStar = new Evaluation(pop[i].e);
-				sStar = new Solution<R, ADS>(pop[i].sInd);
+				eStar = new Evaluation(pop[i]->e);
+				sStar = new Solution<R, ADS>(pop[i]->sInd);
 			}
 			else
 			{
-				if (eval.betterThan(pop[i].e, *eStar))
+				if (eval.betterThan(pop[i]->e, *eStar))
 				{
-					(*eStar) = pop[i].e;
-					(*sStar) = pop[i].sInd;
+					(*eStar) = pop[i]->e;
+					(*sStar) = pop[i]->sInd;
 				}
 			}
 
+			inititPopFitness += pop[i]->e.evaluation();
 		}
 
 		if (Component::information)
@@ -459,99 +386,76 @@ public:
 		iterWithoutImprovement = 0;
 		while ((iterWithoutImprovement < ngesParams.gMaxWithoutImprovement) && ((tnow.now()) < stopCriteria.timelimit) && eval.betterThan(stopCriteria.target_f, (double) eStar->evaluation()))
 		{
-			NGESPopulation pop_filhos;
+			NGESPopulation popOffsprings(ngesParams.lambda);
 			double fo_filhos = 0;
 
 			//GERA OS OFFSPRINGS
-			for (int l = 1; l <= ngesParams.lambda; l++)
+			for (int l = 0; l < ngesParams.lambda; l++)
 			{
 				int x = rg.rand(ngesParams.mi);
 
 				// Cria Filho e Tuple de Parametros (pi,nap,vizinhança)
-				Solution<R, ADS> filho = pop[x].sInd;
+				Solution<R, ADS> filho = pop[x]->sInd;
 
-				vector<NGESIndStructure<R, ADS> > vt = pop[x].vEsStructureInd;
-				vector<int> vNSInd = pop[x].vNSInd;
+				vector<NGESIndStructure<R, ADS> > vt = pop[x]->vEsStructureInd;
+				vector<int> vNSOffspring = pop[x]->vNSInd;
 
 				// Mutacao dos parametros l
-				//mutaParametros(vt);
-
-				mutateESParams(vt, vNSInd, nNS);
+				mutateESParams(vt, vNSOffspring, nNS);
 
 				// applying Neighborhood Operators for generating Mutated Offspring
-				applyMutationOperators(filho, vt, vNSInd, nNS);
+				applyMutationOperators(filho, vt, vNSOffspring, nNS);
 
-				// Optional -- Local Search in each Offspring.
+				// TODO: Optional -- Local Search in each Offspring.
 				//Do anything you want with filho and return filho_ls
-				Solution<R, ADS> filho_ls = filho;
+				//Solution<R, ADS> filho_ls = filho;
 
-				Evaluation e = eval.evaluateSolution(filho_ls);
+				Evaluation e = eval.evaluateSolution(filho);
 				fo_filhos += e.evaluation();
 
-				NGESInd<R, ADS> ind(filho_ls, e, vt, vNSInd);
-				pop_filhos.push_back(ind);
+				NGESInd<R, ADS>* ind = new NGESInd<R, ADS>(filho, e, vt, vNSOffspring); //TODO MAKE MOVE
+
+				popOffsprings[l] = ind;
 			}
 
 			//cout << "Offspring mean FO, iter " << gAtual << ":\t" << fo_filhos / mi << endl;
 
-			//APLICA B.L VND EM 'nb' INDIVIDUOS DA POP_FILHOS
+			//TODO: optionally apply LS in the best individuals
 			//aplicaBuscaLocalBests(pop_filhos, 2);
 			//cout<<"Applying local Search ..."<<endl;
 
-			//applyLocalSearch(pop_filhos, nb, lambda);
-
-			//cout<<" local search finished!"<<endl;
-			//getchar();
-			// ETAPA DE SELECAO - MI,LAMBDA ou MI + LAMBDA // ATUALIZA BEST
 
 			// =====================Selection ==================
-
-//			cout << "beforeanything:" << eStar << endl;
-			//TODO MAKE MOVE
+			// MI,LAMBDA or MI + LAMBDA
 			switch (ngesParams.selectionMethod)
 			{
 			case 0:
-				pop = lowSelectivePression(pop, pop_filhos, *sStar, *eStar, iterWithoutImprovement, gCurrent);
-//				cout << "Selection low selective pression!" << endl;
-//				getchar();
+				competition(pop, popOffsprings, *sStar, *eStar, iterWithoutImprovement, gCurrent, 0);
 				break;
 			case 1:
-				pop = highSelectivePression(pop, pop_filhos, *sStar, *eStar, iterWithoutImprovement, gCurrent);
+				competition(pop, popOffsprings, *sStar, *eStar, iterWithoutImprovement, gCurrent, 1);
 				break;
-//			case 2:
-//
-//				if (iterWithoutImprovement < 500)
-//					pNew = highSelectivePression(pop, pop_filhos); //Estrategia (Mi,Lamda)
-//				else
-//					pNew = lowSelectivePression(pop, pop_filhos); //Estrategia (Mi,Lamda)
-//
-//				break;
+		    //TODO create other selection strategies
 
 			default:
 				cout << "Error! Selection not performed!" << endl;
 				getchar();
 			}
-
-//			cout << "current eStar:" << eStar->evaluation() << endl;
-//			cout << "search:" << eStar << endl;
-//			getchar();
 			// =====================End Selection ==================
 
 			// ====================================================
 			//Statistics regarding the evolution of the params
-
-			vector<pair<double, double> > meanParams;
-
 			if (Component::debug)
 			{
+				vector<pair<double, double> > meanParams;
 				for (int param = 0; param < nNS; param++)
 				{
 					double meanPR = 0;
 					double meanNAP = 0;
 					for (int i = 0; i < ngesParams.mi; i++)
 					{
-						meanPR += pop[i].vEsStructureInd[param].pr;
-						meanNAP += pop[i].vEsStructureInd[param].nap;
+						meanPR += pop[i]->vEsStructureInd[param].pr;
+						meanNAP += pop[i]->vEsStructureInd[param].nap;
 						//					cout << "(" << pop[i].second->at(param).pr;
 						//					cout << ",";
 						//					cout << pop[i].second->at(param).nap << ") ";
@@ -592,16 +496,13 @@ public:
 			gCurrent++;
 		}
 
-		//BUSCA LOCAL NO MELHOR INDIVIDUO
-
-		/*Solution<R, ADS>* sStarBL = &ls.search(*sStar);
-		 Evaluation& eStarBL = eval.evaluate(*sStarBL);
-		 cout << "eStarBL = " << (double) eStarBL.evaluation() << endl;
-		 cout << "eStar = " << (double) eStar->evaluation() << endl;*/
+		for (int i = 0; i < ngesParams.mi; i++)
+			delete pop[i];
 
 		cout << "Fishing NGES search:\nIterWithoutImp: " << iterWithoutImprovement << "/" << ngesParams.gMaxWithoutImprovement << endl;
 		cout << "BestSol::" << eStar->evaluation() << "/" << stopCriteria.target_f << endl;
 		cout << "tnow.now():" << tnow.now() << "/" << stopCriteria.timelimit << endl;
+		cout << "g:" << gCurrent << endl;
 		cout << "NGES Finished" << endl;
 		cout << "--------------------------------------------------------------------------" << endl;
 		//getchar();
@@ -628,4 +529,4 @@ public:
 
 }
 
-#endif /* ES_HPP_ */
+#endif /* NGES_HPP_ */

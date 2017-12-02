@@ -59,10 +59,38 @@ public:
 
 	Pareto(const Pareto<R, ADS>& _pf)
 	{
+		this->clear();
 		unsigned sizeNewPop = _pf.paretoSet.size();
-		for (unsigned i = 0; i < sizeNewPop; i++)
-			this->push_back(_pf.getNonDominatedSol(i), _pf.getIndMultiEvaluation(i));
 
+		for (unsigned i = 0; i < sizeNewPop; i++)
+		{
+			Solution<R, ADS>* sNew = new Solution<R, ADS>(_pf.getNonDominatedSol(i));
+			MultiEvaluation* mevNew = new MultiEvaluation(_pf.getIndMultiEvaluation(i));
+			this->add_ind(sNew, mevNew);
+		}
+	}
+
+	Pareto(Pareto<R, ADS> && _pf) :
+			paretoSet(std::move(_pf.paretoSet)), paretoFront(std::move(_pf.paretoFront))
+	{
+	}
+
+	virtual Pareto<R, ADS>& operator=(const Pareto<R, ADS>& _pf)
+	{
+		if (&_pf == this) // auto ref check
+			return *this;
+
+		this->clear();
+		unsigned sizeNewPop = _pf.paretoSet.size();
+
+		for (unsigned i = 0; i < sizeNewPop; i++)
+		{
+			Solution<R, ADS>* sNew = new Solution<R, ADS>(_pf.getNonDominatedSol(i));
+			MultiEvaluation* mevNew = new MultiEvaluation(_pf.getIndMultiEvaluation(i));
+			this->add_ind(sNew, mevNew);
+		}
+
+		return (*this);
 	}
 
 	virtual ~Pareto()
@@ -78,17 +106,16 @@ public:
 //		paretoFront.push_back(new MultiEvaluation(v_e));
 //	}
 
-	void push_back(const Solution<R, ADS>& s, MultiEvaluator<R, ADS>& mEval)
+	void push_back(Solution<R, ADS>* s, MultiEvaluator<R, ADS>& mEval)
 	{
-		MultiEvaluation& mev = mEval.evaluate(s);
-		push_back(s, mev);
-		delete &mev;
+		MultiEvaluation* mev = mEval.evaluateSolution(s);
+		add_ind(s, mev);
 	}
 
-	void push_back(const Solution<R, ADS>& s, const MultiEvaluation& mev)
+	void add_ind(Solution<R, ADS>* s, MultiEvaluation* mev)
 	{
-		paretoSet.push_back(&s.clone());
-		paretoFront.push_back(&mev.clone());
+		paretoSet.push_back(s);
+		paretoFront.push_back(mev);
 	}
 
 	unsigned size() const
@@ -113,12 +140,12 @@ public:
 
 	void setParetoSet(vector<Solution<R, ADS>*> pSNew)
 	{
-		paretoSet = pSNew;
+		paretoSet = std::move(pSNew);
 	}
 
 	void setParetoFront(vector<MultiEvaluation*> pFNew)
 	{
-		paretoFront = pFNew;
+		paretoFront = std::move(pFNew);
 	}
 
 	Solution<R, ADS>& getNonDominatedSol(int ind)
@@ -164,23 +191,6 @@ public:
 		return *new Pareto<R, ADS>(*this);
 	}
 
-	//How to change P to const ? TODO
-
-	virtual Pareto<R, ADS>& operator=(const Pareto<R, ADS>& pCopy)
-	{
-		if (&pCopy == this) // auto ref check
-			return *this;
-
-		this->clear();
-
-		unsigned sizeNewPop = pCopy.paretoSet.size();
-
-		for (unsigned i = 0; i < sizeNewPop; i++)
-			this->push_back(pCopy.getNonDominatedSol(i), pCopy.getIndMultiEvaluation(i));
-
-		return (*this);
-	}
-
 	void clear()
 	{
 		for (unsigned i = 0; i < paretoSet.size(); i++)
@@ -196,6 +206,8 @@ public:
 	void print()
 	{
 		cout << "Printing Pareto!" << endl;
+		cout << "paretoSet.size():" << paretoSet.size() << endl;
+		cout << "paretoSet.size():" << paretoFront.size() << endl;
 		for (unsigned i = 0; i < paretoSet.size(); i++)
 		{
 			cout << paretoSet[i]->getR() << endl;
@@ -204,13 +216,16 @@ public:
 
 	}
 
+	//TODO fix export with new evaluation type
 	void exportParetoFront(string output, const char* exportType)
 	{
 		FILE* fPF = fopen(output.c_str(), exportType);
+		assert(fPF);
 		for (int i = 0; i < (int) paretoFront.size(); i++)
 		{
 			for (int e = 0; e < (int) paretoFront[i]->size(); e++)
-				fprintf(fPF, "%.7f\t", paretoFront[i]->at(e).evaluation());
+				fprintf(fPF, "%.7f\t", double(paretoFront.at(i)->at(e).evaluation()));
+
 			fprintf(fPF, "\n");
 		}
 
@@ -554,24 +569,15 @@ public:
 ////		return false;
 //	}
 
-	bool addSolution(Pareto<R, ADS>& p, const Solution<R, ADS>& candidate)
+	bool addSolution(Pareto<R, ADS>& p, Solution<R, ADS>& candidate)
 	{
-		const MultiEvaluation& mev = multiEval.evaluateSolution(candidate);
-		bool added = addSolution(p, candidate, mev);
-
-		delete &mev;
-		return added;
-	}
-
-	bool addSolution(Pareto<R, ADS>& p, MultiEvaluation& candidateMev, const Solution<R, ADS>& candidate)
-	{
-		multiEval.reevaluateSolutionMEV(candidateMev, candidate);
-		bool added = addSolution(p, candidate, candidateMev);
+		MultiEvaluation* mev = multiEval.evaluateSolution(candidate);
+		bool added = addSolutionWithMEV(p, candidate, *mev);
 
 		return added;
 	}
 
-	virtual bool addSolution(Pareto<R, ADS>& p, const Solution<R, ADS>& candidate, const MultiEvaluation& candidateMev)
+	virtual bool addSolutionWithMEV(Pareto<R, ADS>& p, Solution<R, ADS>& candidate, MultiEvaluation& candidateMev)
 	{
 		bool added = true;
 		for (int ind = 0; ind < (int) p.size(); ind++)
@@ -589,7 +595,15 @@ public:
 
 		}
 		if (added == true)
-			p.push_back(candidate, candidateMev);
+			p.add_ind(&candidate, &candidateMev);
+
+		return added;
+	}
+
+	bool addSolutionWithMEVReevaluation(Pareto<R, ADS>& p, Solution<R, ADS>& candidate, MultiEvaluation& candidateMev)
+	{
+		multiEval.reevaluateSolutionMEV(candidateMev, candidate);
+		bool added = addSolutionWithMEV(p, candidate, candidateMev);
 
 		return added;
 	}
@@ -600,7 +614,9 @@ public:
 		int nInd = p.size();
 		for (int ind = 0; ind < nInd; ind++)
 		{
-			addSolution(pFiltered, p.getNonDominatedSol(ind), p.getIndMultiEvaluation(ind));
+			Solution<R, ADS>* sNew = new Solution<R, ADS>(p.getNonDominatedSol(ind));
+			MultiEvaluation* mevNew = new MultiEvaluation(p.getIndMultiEvaluation(ind));
+			addSolutionWithMEV(pFiltered, *sNew, *mevNew);
 		}
 
 		if ((int) pFiltered.size() == nInd)
@@ -1114,18 +1130,17 @@ public:
 	}
 };
 
-
 // Multi Objective Stopping Criteria
 // Must include GENERAL stopping criteria
 // specific stopping criteria for metaheuristics can be included in their constructors
-class MOSC : public Component
+class MOSC: public Component
 {
 public:
 	// maximum timelimit (seconds)
 	double timelimit;
 
-	MOSC(double _timelimit = 100000000.0):
-		timelimit(_timelimit)
+	MOSC(double _timelimit = 100000000.0) :
+			timelimit(_timelimit)
 	{
 	}
 

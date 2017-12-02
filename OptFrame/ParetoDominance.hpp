@@ -86,8 +86,8 @@ public:
 			exit(1);
 		}
 
-		MultiEvaluation& mev1 = mev.evaluateSolution(s1);
-		MultiEvaluation& mev2 = mev.evaluateSolution(s2);
+		MultiEvaluation* mev1 = mev.evaluateSolution(s1);
+		MultiEvaluation* mev2 = mev.evaluateSolution(s2);
 
 
 		bool r = dominates(mev1, mev2);
