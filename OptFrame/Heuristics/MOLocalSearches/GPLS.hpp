@@ -48,7 +48,7 @@ struct gplsStructure
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class paretoManager2PPLS: public paretoManager<R, ADS>
+class paretoManagerGPLS: public paretoManager<R, ADS>
 {
 private:
 	int r;
@@ -57,13 +57,13 @@ public:
 	gplsStructure<R, ADS> gplsData;
 //	Pareto<R, ADS> x_e;
 
-	paretoManager2PPLS(MultiEvaluator<R, ADS>& _mev, int _r) :
+	paretoManagerGPLS(MultiEvaluator<R, ADS>& _mev, int _r) :
 			paretoManager<R, ADS>(_mev), r(_r)
 	{
 
 	}
 
-	virtual ~paretoManager2PPLS()
+	virtual ~paretoManagerGPLS()
 	{
 	}
 
@@ -119,12 +119,12 @@ private:
 	InitialPareto<R, ADS>& init_pareto;
 	int init_pop_size;
 	vector<MOLocalSearch<R, ADS>*> vLS;
-	paretoManager2PPLS<R, ADS> pMan2PPLS;
+	paretoManagerGPLS<R, ADS> pMan2PPLS;
 
 public:
 
 	GeneralParetoLocalSearch(MultiEvaluator<R, ADS>& _mev, InitialPareto<R, ADS>& _init_pareto, int _init_pop_size, vector<MOLocalSearch<R, ADS>*> _vLS) :
-			init_pareto(_init_pareto), init_pop_size(_init_pop_size), vLS(_vLS), pMan2PPLS(paretoManager2PPLS<R, ADS>(_mev, _vLS.size()))
+			init_pareto(_init_pareto), init_pop_size(_init_pop_size), vLS(_vLS), pMan2PPLS(paretoManagerGPLS<R, ADS>(_mev, _vLS.size()))
 	{
 
 	}
