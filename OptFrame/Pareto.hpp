@@ -50,11 +50,13 @@ class Pareto
 private:
 	vector<Solution<R, ADS>*> paretoSet;
 	vector<MultiEvaluation*> paretoFront;
+	bool added; //mark if solution was added
 
 public:
 
 	Pareto()
 	{
+		added = false;
 	}
 
 	Pareto(const Pareto<R, ADS>& _pf)
@@ -69,11 +71,17 @@ public:
 //			MultiEvaluation* mevNew = new MultiEvaluation(_pf.getIndMultiEvaluation(i));
 //			this->add_indWithMev(sNew, mevNew);
 		}
+		added = true;
 	}
 
 	Pareto(Pareto<R, ADS> && _pf) :
 			paretoSet(std::move(_pf.paretoSet)), paretoFront(std::move(_pf.paretoFront))
 	{
+		added = false;
+
+		if (paretoSet.size() > 0)
+			added = true;
+
 	}
 
 	virtual Pareto<R, ADS>& operator=(const Pareto<R, ADS>& _pf)
@@ -87,12 +95,25 @@ public:
 		for (unsigned i = 0; i < sizeNewPop; i++)
 			this->add_indWithMev(_pf.getNonDominatedSol(i), _pf.getIndMultiEvaluation(i));
 
+		if (sizeNewPop > 0)
+			added = true;
+
 		return (*this);
 	}
 
 	virtual ~Pareto()
 	{
 		this->clear();
+	}
+
+	bool getNewNonDominatedSolutionsStatus() const
+	{
+		return added;
+	}
+
+	void setNewNonDominatedSolutionsStatus(bool _added)
+	{
+		added = _added;
 	}
 
 //	void push_back(Solution<R, ADS>* s, vector<Evaluation*>& v_e)
@@ -113,6 +134,8 @@ public:
 	{
 		paretoSet.push_back(new Solution<R, ADS>(s));
 		paretoFront.push_back(new MultiEvaluation(mev));
+
+		added = true;
 	}
 
 	unsigned size() const
@@ -143,6 +166,7 @@ public:
 	void setParetoFront(vector<MultiEvaluation*> pFNew)
 	{
 		paretoFront = std::move(pFNew);
+
 	}
 
 	Solution<R, ADS>& getNonDominatedSol(int ind)
@@ -592,7 +616,7 @@ public:
 			}
 
 		}
-		if (added == true)
+		if (added)
 			p.add_indWithMev(candidate, candidateMev);
 
 		return added;

@@ -21,12 +21,11 @@
 #ifndef OPTFRAME_MULTI_EVALUATOR_HPP_
 #define OPTFRAME_MULTI_EVALUATOR_HPP_
 
+#include <iostream>
+
 #include "Solution.hpp"
 #include "Evaluator.hpp"
 #include "MultiEvaluation.hpp"
-
-#include <iostream>
-
 #include "MultiDirection.hpp"
 #include "Action.hpp"
 
@@ -186,20 +185,20 @@ public:
 
 	// TODO: make virtual "= 0"
 
-//	void reevaluateSolutionMEV(MultiEvaluation& mev, const Solution<R, ADS>& s)
-//	{
-//		for (unsigned i = 0; i < sngEvaluators.size(); i++)
-//			sngEvaluators[i]->reevaluateSolution(mev[i], s);
-//	}
+	void reevaluateSolutionMEV(MultiEvaluation& mev, const Solution<R, ADS>& s)
+	{
+		for (unsigned i = 0; i < sngEvaluators.size(); i++)
+			sngEvaluators[i]->reevaluateSolution(mev[i], s);
+	}
 
-//	virtual void reevaluateMEV(MultiEvaluation& mev, const R& r, const ADS* ads)
-//	{
-//		for (unsigned i = 0; i < sngEvaluators.size(); i++)
-//		{
-//			sngEvaluators[i]->reevaluate(mev[i], r, ads);
-//		}
-//
-//	}
+	void reevaluateMEV(MultiEvaluation& mev, const R& r, const ADS* ads)
+	{
+		for (unsigned i = 0; i < sngEvaluators.size(); i++)
+		{
+			sngEvaluators[i]->reevaluate(mev[i], r, ads);
+		}
+
+	}
 
 protected:
 

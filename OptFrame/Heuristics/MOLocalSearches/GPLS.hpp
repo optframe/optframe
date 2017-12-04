@@ -148,7 +148,7 @@ public:
 	{
 		Timer tnow;
 
-		cout << "exec: General 2PPLS with Pareto Manager (tL:" << stopCriteria.timelimit << ")" << endl;
+		cout << "exec: Generic 2PPLS (tL:" << stopCriteria.timelimit << ")" << endl;
 		int r = vLS.size();
 
 		gplsStructure<R, ADS> gPLSData;
@@ -274,7 +274,7 @@ public:
 		//checking possible dominance problems -- TODO - Remove for a faster code
 		pMan2PPLS.checkDominance(*pReturn);
 
-		cout << "General Two-Phase Pareto Local Search finished with " << pReturn->size() << " non-dominated solutions." << endl;
+		cout << "Generic Two-Phase Pareto Local Search finished with " << pReturn->size() << " non-dominated solutions." << endl;
 
 
 		return pReturn;
