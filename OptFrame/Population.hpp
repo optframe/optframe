@@ -37,7 +37,7 @@ class Population: public Component
 protected:
 	typedef Solution<R, ADS> chromossome;
 	typedef vector<chromossome*> population;
-	typedef vector<vector<double> > populationFitness;
+	typedef vector<vector<Evaluation> > populationFitness;
 
 	population p;
 	populationFitness pFitness;
@@ -55,7 +55,7 @@ public:
 		{
 			p.push_back(&pop.at(i).clone());
 			fitness.push_back(0); // TODO: fix
-			vector<double> a;
+			vector<Evaluation> a;
 			pFitness.push_back(a);
 		}
 	}
@@ -84,7 +84,7 @@ public:
 	{
 		p.insert(p.begin() + pos, new chromossome(c));
 		fitness.insert(fitness.begin() + pos, 0.0);
-		vector<double> a;
+		vector<Evaluation> a;
 		pFitness.insert(pFitness.begin() + pos, a);
 	}
 
@@ -94,7 +94,7 @@ public:
 		{
 			p.push_back(c);
 			fitness.push_back(0);
-			vector<double> a;
+			vector<Evaluation> a;
 			pFitness.push_back(a);
 		}
 	}
@@ -103,11 +103,11 @@ public:
 	{
 		p.push_back(&c.clone());
 		fitness.push_back(0);
-		vector<double> a;
+		vector<Evaluation> a;
 		pFitness.push_back(a);
 	}
 
-	void push_back(const chromossome& c, vector<double> chromossomeFitness)
+	void push_back(const chromossome& c, vector<Evaluation> chromossomeFitness)
 	{
 		p.push_back(&c.clone());
 		fitness.push_back(0);

@@ -72,16 +72,19 @@ public:
 		Timer t;
 
 		int iter = 0;
+
 		while ((iter < iterMax) && ((t.now() - stopCriteria.timelimit) < 0))
 		{
-
 			Move<R, ADS>* move = ns.randomMoveSolution(*s);
 			if (move->canBeAppliedToSolution(*s))
 			{
 				//Move and mark sMev as outdated
-				Move<R, ADS>* mov_rev = move->applyMEVUpdateSolution(*sMev, *s);
-				//Call method to reevaluate sMev and try to include
-				pManager->addSolutionWithMEVReevaluation(p, *s,*sMev);
+				Move<R, ADS>* mov_rev = move->applySolution(*s);
+
+				//Call method to reevaluate sMev and try to include TODO
+//				pManager->addSolutionWithMEVReevaluation(p, *s,*sMev);
+
+				pManager->addSolution(p, *s);
 				delete mov_rev->applySolution(*s);
 				delete mov_rev;
 

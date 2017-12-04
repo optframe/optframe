@@ -31,14 +31,19 @@ namespace optframe
 
 // Greedy Randomized Constructive
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class GRConstructive: public Component, public GRASP
+class GRConstructive: public Constructive<R,ADS>, public GRASP
 {
 public:
 	virtual ~GRConstructive()
 	{
 	}
 
-	virtual Solution<R, ADS> generateGRSolution(float alpha) = 0;
+	virtual Solution<R, ADS>* generateGRSolution(float alpha, double timelimit) = 0;
+
+	virtual Solution<R, ADS>* generateSolution(double timelimit)
+	{
+		return generateGRSolution(1.0);
+	}
 
 	virtual bool compatible(string s)
 	{
@@ -73,7 +78,7 @@ public:
 	{
 	}
 
-	virtual Solution<R, ADS> generateGRSolution(float alpha)
+	virtual Solution<R, ADS>* generateGRSolution(float alpha)
 	{
 		// ignoring alpha
 		return c.generateSolution();

@@ -37,7 +37,6 @@ namespace optframe
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class MOVNS: public MultiObjSearch<R, ADS>
 {
-	typedef vector<Evaluation*> FitnessValues;
 
 private:
 	vector<NSSeq<R, ADS>*> neighbors;

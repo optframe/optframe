@@ -237,7 +237,9 @@ ostream& operator<< (ostream &os, multimap<Key,T> &obj)
 		for(it = obj.begin(); it != obj.end(); ++it) 
 		{
 			os << *it;
-			if (i != obj.size()-1) os << " , "; i++;
+			if (i != obj.size()-1)
+				os << " , ";
+			i++;
 		}		
 	}
 	
@@ -267,7 +269,9 @@ ostream& operator<< (ostream &os, map<Key,T> &obj)
 		for(it = obj.begin(); it != obj.end(); ++it) 
 		{
 			os << *it;
-			if (i != ((int)obj.size())-1) os << " , "; i++;
+			if (i != ((int)obj.size())-1)
+				os << " , ";
+			i++;
 		}		
 	}
 	

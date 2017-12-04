@@ -92,7 +92,7 @@ public:
 		return evaluate(s.getR(), s.getADSptr());
 	}
 
-protected:
+public:
 	// because of MultiEvaluator... otherwise, make it 'friend'
 
 	// TODO: make it obligatory to have two implementations? beautiful (only R should be used if it's correct), but not practical!

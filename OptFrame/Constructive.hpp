@@ -35,7 +35,8 @@ public:
 	{
 	}
 
-	virtual Solution<R, ADS> generateSolution() = 0;
+	// timelimit in seconds, accepting fractions (millisecs, ...)
+	virtual Solution<R, ADS>* generateSolution(double timelimit) = 0;
 
     virtual bool compatible(string s)
     {

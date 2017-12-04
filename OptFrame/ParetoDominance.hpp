@@ -128,12 +128,12 @@ public:
 		int better = 0;
 		int equals = 0;
 
-		for (int e = 0; e < (int) mev1.size(); e++)
+		for (int eIndex = 0; eIndex < (int) mev1.size(); eIndex++)
 		{
-			if (mev.betterThan(mev1[e], mev2[e], e))
+			if (mev.betterThan(mev1[eIndex], mev2[eIndex], eIndex))
 				better++;
 
-			if (mev.equals(mev1[e], mev2[e], e))
+			if (mev.equals(mev1[eIndex], mev2[eIndex], eIndex))
 				equals++;
 
 //			if (abs(mev1[e].evaluation() - mev2[e].evaluation()) < 0.0001)

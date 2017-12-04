@@ -59,6 +59,11 @@ public:
 	{
 	}
 
+	virtual void addEvaluator(Evaluator<R, ADS>& ev)
+	{
+		sngEvaluators.push_back(&ev);
+	}
+
 //	MultiEvaluator(MultiDirection& mDir, bool _allowCosts = false) :
 //			MultiDirection(mDir), allowCosts(_allowCosts)
 //	{
@@ -88,12 +93,47 @@ public:
 		return sngEvaluators.size();
 	}
 
+
+	unsigned size() const
+	{
+		return sngEvaluators.size();
+	}
+
+	virtual bool betterThan(const Evaluation& ev1, const Evaluation& ev2, int index)
+	{
+		return sngEvaluators[index]->betterThan(ev1, ev2);
+	}
+
+	virtual bool equals(const Evaluation& ev1, const Evaluation& ev2, int index)
+	{
+		return sngEvaluators[index]->equals(ev1, ev2);
+	}
+
+	MultiEvaluation* evaluateSolution(const Solution<R, ADS>& s)
+	{
+		return evaluate(s.getR(), s.getADSptr());
+
+	}
+
+	virtual MultiEvaluation* evaluate(const R& r, const ADS* ads)
+	{
+		cout << "inside mother class" << endl;
+		getchar();
+		MultiEvaluation* nev = new MultiEvaluation;
+		for (unsigned i = 0; i < sngEvaluators.size(); i++)
+		{
+			Evaluation ev = sngEvaluators[i]->evaluate(r, ads);
+			nev->addEvaluation(ev);
+		}
+
+		return nev;
+	}
+
+
 	void clear()
 	{
 		for (int e = 0; e < int(sngEvaluators.size()); e++)
-		{
 			delete sngEvaluators[e];
-		}
 	}
 
 //	bool getAllowCosts()
@@ -115,89 +155,42 @@ public:
 //			return NULL;
 //	}
 
-	Evaluator<R, ADS>& at(unsigned index)
-	{
-		return *sngEvaluators.at(index);
-	}
-
-	const Evaluator<R, ADS>& at(unsigned index) const
-	{
-		return *sngEvaluators.at(index);
-	}
-
-	Evaluator<R, ADS>& operator[](unsigned index)
-	{
-		return *sngEvaluators[index];
-	}
-
-	const Evaluator<R, ADS>& operator[](unsigned index) const
-	{
-		return *sngEvaluators[index];
-	}
+//	Evaluator<R, ADS>& at(unsigned index)
+//	{
+//		return *sngEvaluators.at(index);
+//	}
+//
+//	const Evaluator<R, ADS>& at(unsigned index) const
+//	{
+//		return *sngEvaluators.at(index);
+//	}
+//
+//	Evaluator<R, ADS>& operator[](unsigned index)
+//	{
+//		return *sngEvaluators[index];
+//	}
+//
+//	const Evaluator<R, ADS>& operator[](unsigned index) const
+//	{
+//		return *sngEvaluators[index];
+//	}
 
 //	void addEvaluator(const Evaluator<R, ADS>& ev)
 //	{
 //		sngEvaluators.push_back(&ev.clone());
 //	}
 
-	void addEvaluator(Evaluator<R, ADS>& ev)
-	{
-		sngEvaluators.push_back(&ev);
-	}
 
-	unsigned size() const
-	{
-		return sngEvaluators.size();
-	}
 
-	virtual bool betterThan(const Evaluation& ev1, const Evaluation& ev2, int index)
-	{
-		return sngEvaluators[index]->betterThan(ev1, ev2);
-	}
-
-	virtual bool equals(const Evaluation& ev1, const Evaluation& ev2, int index)
-	{
-		return sngEvaluators[index]->equals(ev1, ev2);
-	}
-
-//	MultiEvaluation& evaluateSolution(const Solution<R, ADS>& s)
-//	{
-//		return evaluate(s.getR(), s.getADSptr());
-//	}
-
-	MultiEvaluation* evaluateSolution(const Solution<R, ADS>& s)
-	{
-		MultiEvaluation* nev = new MultiEvaluation;
-		for (unsigned i = 0; i < sngEvaluators.size(); i++)
-		{
-			Evaluation ev = sngEvaluators[i]->evaluateSolution(s);
-			nev->addEvaluation(ev);
-		}
-
-//		return evaluate(s.getR(), s.getADSptr());
-		return nev;
-	}
-
-public:
 	// protected: not possible because of GeneralizedMultiEvaluator
 
 	// TODO: make virtual "= 0"
 
-//	virtual MultiEvaluation& evaluate(const R& r, const ADS* ads)
+//	void reevaluateSolutionMEV(MultiEvaluation& mev, const Solution<R, ADS>& s)
 //	{
-//		MultiEvaluation* nev = new MultiEvaluation;
-//
 //		for (unsigned i = 0; i < sngEvaluators.size(); i++)
-//			nev->addEvaluation(sngEvaluators[i]->evaluate(r, ads));
-//
-//		return *nev;
+//			sngEvaluators[i]->reevaluateSolution(mev[i], s);
 //	}
-
-	void reevaluateSolutionMEV(MultiEvaluation& mev, const Solution<R, ADS>& s)
-	{
-		for (unsigned i = 0; i < sngEvaluators.size(); i++)
-			sngEvaluators[i]->reevaluateSolution(mev[i], s);
-	}
 
 //	virtual void reevaluateMEV(MultiEvaluation& mev, const R& r, const ADS* ads)
 //	{

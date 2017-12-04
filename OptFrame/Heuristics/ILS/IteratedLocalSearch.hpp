@@ -74,7 +74,7 @@ public:
 		if (_s != NULL)
 			s = &_s->clone();
 		else
-			s = new Solution<R,ADS>(constructive.generateSolution());
+			s = constructive.generateSolution(timelimit);
 
 		Evaluation e = evaluator.evaluateSolution(*s);
 

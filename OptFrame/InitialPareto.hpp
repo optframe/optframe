@@ -18,17 +18,17 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_INITIALPARETO_H_
-#define OPTFRAME_INITIALPARETO_H_
+#ifndef OPTFRAME_INITIALPARETO_HPP_
+#define OPTFRAME_INITIALPARETO_HPP_
 
 #include "Component.hpp"
 #include "Constructive.hpp"
 #include "Heuristics/GRASP/GRConstructive.hpp"
 #include "RandGen.hpp"
-#include "MultiObjSearch.hpp"
+#include "Pareto.hpp"
 #include "MultiEvaluator.hpp"
-#include "MultiEvaluation.hpp"
-#include "Timer.hpp"
+//#include "MultiEvaluation.hpp"
+//#include "Timer.hpp"
 
 using namespace std;
 
@@ -81,10 +81,7 @@ public:
 	{
 		Pareto<R, ADS> p;
 		for (unsigned i = 0; i < populationSize; i++)
-		{
-			Solution<R,ADS>* sToAdd = new Solution<R,ADS>(std::move(constructive.generateSolution()));
-			pMan.addSolution(p, *sToAdd);
-		}
+			pMan.addSolution(p, *constructive.generateSolution(timelimit));
 
 		return p;
 	}
@@ -159,4 +156,4 @@ public:
 
 }
 
-#endif /*OPTFRAME_INITIALPOPULATION_H_*/
+#endif /*OPTFRAME_INITIALPARETO_H_*/

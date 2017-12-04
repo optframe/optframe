@@ -42,7 +42,7 @@ public:
 	{
 	}
 
-	virtual Population<R, ADS>& generatePopulation(unsigned populationSize) = 0;
+	virtual Population<R, ADS> generatePopulation(unsigned populationSize, double timelimit) = 0;
 
 	static string idComponent()
 	{
@@ -73,11 +73,11 @@ public:
 	{
 	}
 
-	virtual Population<R, ADS>& generatePopulation(unsigned populationSize)
+	virtual Population<R, ADS> generatePopulation(unsigned populationSize, double timelimit)
 	{
 		Population<R, ADS>* p = new Population<R, ADS>;
 		for (unsigned i = 0; i < populationSize; i++)
-			p->push_back(constructive.generateSolution());
+			p->push_back(constructive.generateSolution(timelimit));
 		return *p;
 	}
 
@@ -111,7 +111,7 @@ public:
 	{
 	}
 
-	virtual Population<R, ADS>& generatePopulation(unsigned populationSize)
+	virtual Population<R, ADS> generatePopulation(unsigned populationSize, double timelimit)
 	{
 		Population<R, ADS>* p = new Population<R, ADS>;
 		for (unsigned i = 0; i < populationSize; i++)
@@ -124,7 +124,7 @@ public:
 
 			if (alpha == 0)
 				alpha = 0.00001;
-			p->push_back(constructive.generateGRSolution(alpha));
+			p->push_back(constructive.generateGRSolution(alpha, timelimit));
 		}
 		return *p;
 	}

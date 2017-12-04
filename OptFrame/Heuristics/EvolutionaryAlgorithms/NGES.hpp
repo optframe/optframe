@@ -36,8 +36,7 @@
 
 #include "../../Timer.hpp"
 
-//ESTRUTURA DA ESTRATEGIA EVOLUTIVA
-//CONSTITUIDA POR PROBABILIDADE DE APLICACAO, N APLICACOES, MOVIMENTO]
+// NGES - Neighborhood Guided Evolution Strategies
 
 namespace optframe
 {
@@ -83,8 +82,8 @@ struct NGESInd
 	vector<NGESIndStructure<R, ADS> > vEsStructureInd; // number of applications
 	vector<int> vNSInd;
 
-	NGESInd(Solution<R, ADS> _sInd, Evaluation _e, vector<NGESIndStructure<R, ADS> > _vEsStructureInd, int nNS) :
-			sInd(_sInd), e(_e), vEsStructureInd(_vEsStructureInd)
+	NGESInd(Solution<R, ADS>& _sInd, Evaluation& _e, vector<NGESIndStructure<R, ADS> >& _vEsStructureInd, int nNS) :
+			sInd(std::move(_sInd)), e(std::move(_e)), vEsStructureInd(std::move(_vEsStructureInd))
 	{
 		for (int i = 0; i < nNS; i++)
 			vNSInd.push_back(i);
@@ -92,8 +91,8 @@ struct NGESInd
 		random_shuffle(vNSInd.begin(), vNSInd.end());
 	}
 
-	NGESInd(Solution<R, ADS> _sInd, Evaluation _e, vector<NGESIndStructure<R, ADS> > _vEsStructureInd, vector<int> _vNSInd) :
-			sInd(_sInd), e(_e), vEsStructureInd(_vEsStructureInd), vNSInd(_vNSInd)
+	NGESInd(Solution<R, ADS>& _sInd, Evaluation& _e, vector<NGESIndStructure<R, ADS> >& _vEsStructureInd, vector<int>& _vNSInd) :
+			sInd(std::move(_sInd)), e(std::move(_e)), vEsStructureInd(std::move(_vEsStructureInd)), vNSInd(std::move(_vNSInd))
 	{
 
 	}
@@ -105,22 +104,22 @@ struct NGESInd
 
 	}
 
-	NGESInd(const NGESInd<R, ADS>& nges) :
-			sInd(nges.sInd), e(nges.e), vEsStructureInd(nges.vEsStructureInd), vNSInd(nges.vNSInd)
-
-	{
-
-	}
-
-	NGESInd& operator=(const NGESInd<R, ADS>& nges)
-	{
-		sInd = nges.sInd;
-		e = nges.e;
-		vEsStructureInd = nges.vEsStructureInd;
-		vNSInd = nges.vNSInd;
-		return (*this);
-
-	}
+//	NGESInd(const NGESInd<R, ADS>& nges) :
+//			sInd(nges.sInd), e(nges.e), vEsStructureInd(nges.vEsStructureInd), vNSInd(nges.vNSInd)
+//
+//	{
+//
+//	}
+//
+//	NGESInd& operator=(const NGESInd<R, ADS>& nges)
+//	{
+//		sInd = nges.sInd;
+//		e = nges.e;
+//		vEsStructureInd = nges.vEsStructureInd;
+//		vNSInd = nges.vNSInd;
+//		return (*this);
+//
+//	}
 
 	~NGESInd()
 	{
@@ -252,7 +251,7 @@ public:
 		{
 			offsprings.reserve(offsprings.size() + ngesParams.mi);
 			for (int i = 0; i < ngesParams.mi; i++)
-				offsprings.push_back(std::move(pop[i]));
+				offsprings.push_back(pop[i]);
 		}
 
 		auto compInd = [&](NGESInd<R,ADS>* indA, NGESInd<R,ADS>* indB)-> bool
@@ -263,13 +262,15 @@ public:
 		sort(offsprings.begin(), offsprings.end(), compInd); // ordena com QuickSort
 
 		pop.clear();
-		pop.reserve(ngesParams.mi);
+		pop.resize(ngesParams.mi);
 		double fo_pop = 0;
+
 		for (int i = 0; i < ngesParams.mi; i++)
 		{
-			pop.push_back(offsprings[i]);
+			pop[i] = offsprings[i];
 			fo_pop += pop[i]->e.evaluation();
 		}
+
 
 		for (int i = 0; i < ngesParams.lambda; i++)
 			delete offsprings[i + ngesParams.mi];
@@ -332,8 +333,8 @@ public:
 	{
 		Timer tnow;
 		NGESPopulation pop;
-		Solution<R, ADS>* sStar;
-		Evaluation* eStar;
+		Solution<R, ADS>* sStar = nullptr;
+		Evaluation* eStar = nullptr;
 
 		int iterWithoutImprovement = 0, gCurrent = 0;
 
@@ -345,15 +346,16 @@ public:
 		for (int i = 0; i < ngesParams.mi; i++)
 		{
 			//PartialGreedyInitialSolutionOPM is(opm, 0.4, 0.4, 0.4); // waste, ore, shovel
-			Solution<R, ADS> s = constructive.generateSolution(); //MAKE MOVE TODO
+			Solution<R, ADS>* s = constructive.generateSolution(stopCriteria.timelimit); //MAKE MOVE TODO
 			vector<NGESIndStructure<R, ADS> > m;
 
 			//probability, application, sigmaNomal, sigmaBinomial
 			for (int aux = 0; aux < nNS; aux++)
 				m.push_back(NGESIndStructure<R, ADS>(rg.rand01(), rg.randBinomial(0.5, 10) + 1, rg.rand01(), rg.rand01()));
 
-			Evaluation e = eval.evaluateSolution(s);
-			NGESInd<R, ADS>* ind = new NGESInd<R, ADS>(s, e, m, nNS); //TODO MAKE MOVE
+			Evaluation e = eval.evaluateSolution(*s);
+			NGESInd<R, ADS>* ind = new NGESInd<R, ADS>(*s, e, m, nNS); //TODO MAKE MOVE
+
 			pop.push_back(ind);
 
 			if (i == 0)
@@ -371,6 +373,8 @@ public:
 			}
 
 			inititPopFitness += pop[i]->e.evaluation();
+
+			delete s;
 		}
 
 		if (Component::information)
@@ -386,7 +390,7 @@ public:
 		iterWithoutImprovement = 0;
 		while ((iterWithoutImprovement < ngesParams.gMaxWithoutImprovement) && ((tnow.now()) < stopCriteria.timelimit) && eval.betterThan(stopCriteria.target_f, (double) eStar->evaluation()))
 		{
-			NGESPopulation popOffsprings(ngesParams.lambda);
+			NGESPopulation popOffsprings(ngesParams.lambda,nullptr);
 			double fo_filhos = 0;
 
 			//GERA OS OFFSPRINGS
