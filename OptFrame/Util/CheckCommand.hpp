@@ -46,6 +46,7 @@ class CheckCommand
 	static const int CMERR_MOVE_REVREV_VALUE = 3004;
 	static const int CMERR_MOVE_REVSIMPLE = 3005;
 	static const int CMERR_MOVE_REVFASTER = 3006;
+	static const int CMERR_MOVE_REALREVFASTER = 3008;
 	static const int CMERR_MOVE_COST = 3007;
 
 private:
@@ -173,6 +174,7 @@ public:
 		vector<pair<int, double> > timeNSApply;
 		vector<pair<int, double> > timeNSCostApply;
 		vector<pair<int, double> > timeNSCostApplyDelta;
+		vector<pair<int, double> > timeNSCostApplyRealDelta;
 		vector<pair<int, double> > timeNSCost;
 		vector<pair<int, double> > timeNSEstimatedCost;
 		vector<pair<int, double> > errorNSEstimatedCost;
@@ -375,7 +377,7 @@ public:
 			Move<R, ADS>& rev1 = *lEvaluator[ev]->applyMoveReevaluate(e, move, s);
 			evtype e_end1 = e.evaluation();
 			// TODO: check outdated status
-			// TODO: if(e.outdated), it means that user did not implement Move::apply(e,R,ADS)!
+			// TODO: if(e.outdated), it means that user did not implement Move::applyMoveReevaluate(e,R,ADS)!
 			Move<R, ADS>& ini1 = *lEvaluator[ev]->applyMoveReevaluate(e, rev1, s);
 			evtype e_ini1 = e.evaluation();
 			timeNS.timeNSCostApplyDelta[id_ns].second += tMoveCostApplyDelta.inMilliSecs();
@@ -399,6 +401,31 @@ public:
 				return false;
 			}
 
+			// ==============
+
+			// ==============
+			// real fasterCost
+			Timer tMoveCostApplyRealDelta;
+			bool oldAllowCostsStatus = lEvaluator[ev]->getAllowCosts();
+			lEvaluator[ev]->setAllowCosts(false);
+			MoveCost* mcRealFasterCost = lEvaluator[ev]->moveCost(e, move, s);
+			lEvaluator[ev]->setAllowCosts(oldAllowCostsStatus);
+			evtype realFasterCost = mcRealFasterCost->cost();
+			delete mcRealFasterCost;
+			message(lEvaluator.at(ev), iter, "realFasterCost calculated!");
+			timeNS.timeNSCostApplyRealDelta[id_ns].second += tMoveCostApplyRealDelta.inMilliSecs();
+			timeNS.timeNSCostApplyRealDelta[id_ns].first++;
+			message(lEvaluator.at(ev), iter, "realfasterCost calculated!");
+
+			if (EVALUATION_ABS(revCost - realFasterCost) >= EVALUATION_ZERO)
+			{
+				errormsg(moveFrom, CMERR_MOVE_REALREVFASTER, "CMERR_MOVE_REALREVFASTER", iter, "difference between revCost and realfasterCost!");
+				cout << "move: ";
+				move.print();
+				cout << "revCost = " << revCost << endl;
+				cout << "simpleCost = " << realFasterCost << endl;
+				return false;
+			}
 			// ==============
 
 			Timer tMoveCost;
@@ -552,6 +579,7 @@ public:
 		timeNS.timeNSApply = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
 		timeNS.timeNSCostApply = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
 		timeNS.timeNSCostApplyDelta = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
+		timeNS.timeNSCostApplyRealDelta = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
 		timeNS.timeNSCost = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
 		timeNS.timeNSEstimatedCost = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
 		timeNS.errorNSEstimatedCost = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
@@ -1038,6 +1066,8 @@ public:
 		printSummary(convertVector(lNS), timeNS.timeNSCostApply, "NS", "testing time of cost based on move apply(s)");
 
 		printSummary(convertVector(lNS), timeNS.timeNSCostApplyDelta, "NS", "testing time of cost based on move apply(e, s)");
+
+		printSummary(convertVector(lNS), timeNS.timeNSCostApplyRealDelta, "NS", "testing time of real cost based on move apply(e, s)");
 
 		printSummary(convertVector(lNS), timeNS.timeNSCost, "NS", "testing time of move cost()");
 

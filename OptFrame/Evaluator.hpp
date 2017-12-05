@@ -80,6 +80,11 @@ public:
 		return allowCosts;
 	}
 
+	void setAllowCosts(bool _allowCosts)
+	{
+		allowCosts = _allowCosts;
+	}
+
 	evtype getWeight() const
 	{
 		return weight;
@@ -172,7 +177,9 @@ public:
 
 		// if p not null, do not update 's' => much faster (using cost)
 		if (p)
+		{
 			return p;
+		}
 		else
 		{
 			// need to update 's' together with reevaluation of 'e' => slower (may perform reevaluation)
@@ -180,10 +187,11 @@ public:
 			// TODO: in the future, consider moves with NULL reverse (must save original solution/evaluation)
 			assert(m.hasReverse());
 
+			Evaluation ev_begin = e; //TODO: VITOR removing last evaluation
 			// saving 'outdated' status to avoid inefficient re-evaluations
-			bool outdated = e.outdated;
+//			bool outdated = e.outdated;
 			// apply move to both Evaluation and Solution
-			Move<R, ADS>* rev = applyMove(e, m, s);
+			Move<R, ADS>* rev = applyMoveReevaluate(e, m, s);
 			// get final values
 			pair<evtype, evtype> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
 			// get final values for lexicographic part
@@ -193,11 +201,27 @@ public:
 				alternatives[i].first = e.getAlternativeCosts()[i].first;
 				alternatives[i].second = e.getAlternativeCosts()[i].second;
 			}
+
 			// apply reverse move in order to get the original solution back
-			Move<R, ADS>* ini = applyMoveReevaluate(e, *rev, s); //TODO - Why do not save ev at the begin? Extra evaluation
-			// if Evaluation wasn't 'outdated' before, restore its previous status
-			if (!outdated)
-				e.outdated = outdated;
+			 //TODO - Why do not save ev at the begin? Extra evaluation
+			//Even if reevaluate is implemented - It would be hard to design an strategy that is faster than copying previous evaluation
+			//==================================================================
+//			Move<R, ADS>* ini = applyMoveReevaluate(e, *rev, s);
+//
+//			// if Evaluation wasn't 'outdated' before, restore its previous status
+//			if (!outdated)
+//				e.outdated = outdated;
+
+			Move<R, ADS>* ini = rev->applySolution(s);
+			// for now, must be not NULL
+			assert(rev != NULL);
+			// TODO: include management for 'false' hasReverse()
+			assert(m.hasReverse() && rev);
+
+			e = std::move(ev_begin);
+			//==================================================================
+
+
 			// get original values (also could be calculated in the begin of function)
 			pair<evtype, evtype> e_ini = make_pair(e.getObjFunction(), e.getInfMeasure());
 			// do the same for lexicographic part
@@ -217,6 +241,8 @@ public:
 			// return a MoveCost object pointer
 			return p;
 		}
+
+
 	}
 
 	// Movement cost based on complete evaluation
@@ -301,7 +327,7 @@ public:
 			// saving previous evaluation
 			Evaluation ev_begin = e;
 			// saving 'outdated' status to avoid inefficient re-evaluations
-			bool outdated = e.outdated;
+//			bool outdated = e.outdated;
 			// get original obj function values
 			pair<evtype, evtype> e_begin = make_pair(e.getObjFunction(), e.getInfMeasure());
 			// get original values for lexicographic part
@@ -334,17 +360,29 @@ public:
 
 			// apply reverse move in order to get the original solution back
 			//TODO - Vitor, Why apply Move with e is not used???
-			pair<Move<R, ADS>*, Evaluation> ini = applyMove(*rev, s);
-			delete rev;
+			//Even if reevaluate is implemented - It would be hard to design an strategy that is faster than copying previous evaluation
+			//==================================================================
+			//pair<Move<R, ADS>*, Evaluation> ini = applyMove(*rev, s);
 
 			// if Evaluation wasn't 'outdated' before, restore its previous status
-			if (!outdated)
-				e.outdated = outdated;
+//			if (!outdated)
+//				e.outdated = outdated;
 
 			// go back to original evaluation
-			e = ini.second;
+//			e = ini.second;
+//			delete ini.first;
 
-			delete ini.first;
+
+			Move<R, ADS>* ini = rev->applySolution(s);
+			// for now, must be not NULL
+			assert(rev != NULL);
+			// TODO: include management for 'false' hasReverse()
+			assert(m.hasReverse() && rev);
+			e = std::move(ev_begin);
+			delete ini;
+			//==================================================================
+
+			delete rev;
 
 			return false;
 		}
