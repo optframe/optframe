@@ -112,6 +112,7 @@ public:
 	{
 		return evaluate(s.getR(), s.getADSptr());
 	}
+
 //changed to Meval without point TODO
 	virtual MultiEvaluation evaluate(const R& r, const ADS* ads)
 	{
@@ -184,16 +185,18 @@ public:
 
 	// TODO: make virtual "= 0"
 
-	void reevaluateSolutionMEV(MultiEvaluation mev, const Solution<R, ADS>& s)
+	void reevaluateSolutionMEV(MultiEvaluation& mev, const Solution<R, ADS>& s)
 	{
 		reevaluateMEV(mev, s.getR(),s.getADSptr());
 	}
 
-	virtual void reevaluateMEV(MultiEvaluation mev, const R& r, const ADS* ads)
+	virtual void reevaluateMEV(MultiEvaluation& mev, const R& r, const ADS* ads)
 	{
 		for (unsigned i = 0; i < sngEvaluators.size(); i++)
 		{
-			sngEvaluators[i]->reevaluate(mev[i], r, ads);
+			Evaluation e = std::move(mev[i]);
+			sngEvaluators[i]->reevaluate(e, r, ads);
+			mev[i] = std::move(e);
 		}
 	}
 

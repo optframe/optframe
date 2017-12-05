@@ -48,7 +48,6 @@ class CheckCommand
 	static const int CMERR_MOVE_REVFASTER = 3006;
 	static const int CMERR_MOVE_COST = 3007;
 
-
 private:
 	bool verbose;
 
@@ -169,7 +168,6 @@ public:
 		return b == "true";
 	}
 
-
 	struct TimeCheckNS
 	{
 		vector<pair<int, double> > timeNSApply;
@@ -181,16 +179,15 @@ public:
 		bool overestimate, underestimate;
 	};
 
-
-    struct TimeCheckSol {
+	struct TimeCheckSol
+	{
 		pair<int, double> timeCloneSolution;
 		vector<pair<int, double> > timeInitializeADS;
 		vector<pair<int, double> > fullTimeEval;
 		vector<pair<int, double> > timeReeval;
 	};
 
-
-	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, TimeCheckSol& timeSol, TimeCheckNS& timeNS)
+	bool testMoveGeneral(int iter, NS<R, ADS>* ns, int id_ns, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, TimeCheckSol& timeSol, TimeCheckNS& timeNS)
 	{
 		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
 		{
@@ -221,7 +218,7 @@ public:
 
 			Timer tMovApply;
 			Move<R, ADS>* rev = move.applySolution(s);
-			if((!move.hasReverse() && rev) || (move.hasReverse() && !rev))
+			if ((!move.hasReverse() && rev) || (move.hasReverse() && !rev))
 			{
 				errormsg(moveFrom, CMERR_MOVE_HASREVERSE, "CMERR_MOVE_HASREVERSE", iter, " conflict between apply result and hasReverse()");
 				return false;
@@ -239,7 +236,8 @@ public:
 
 			// DEPRECATED ADSManager
 #if 1
-			if (adsMan) {
+			if (adsMan)
+			{
 				message(lEvaluator.at(ev), -1, "testing ADS.");
 
 				ADS ads(sNeighbor.getADS()); // copy
@@ -248,9 +246,9 @@ public:
 				timeSol.timeInitializeADS[0].second += ts_ds.inMilliSecs();
 				timeSol.timeInitializeADS[0].first++;
 
-				if (!adsMan->compareADS(ads, sNeighbor.getADS())) {
-					cout
-							<< "checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
+				if (!adsMan->compareADS(ads, sNeighbor.getADS()))
+				{
+					cout << "checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from move => ";
 					move.print();
 					cout << "S (sOriginal.getADS()): " << endl;
 					adsMan->printADS(sOriginal.getADS());
@@ -278,7 +276,8 @@ public:
 			// ===================== tests with ADSManager ======================
 
 #if 1
-			if (adsMan) {
+			if (adsMan)
+			{
 				message(lEvaluator.at(ev), -1, "testing ADS.");
 
 				ADS ads(s.getADS()); // copy
@@ -287,9 +286,9 @@ public:
 				timeSol.timeInitializeADS[0].second += ts_ds2.inMilliSecs();
 				timeSol.timeInitializeADS[0].first++;
 
-				if (!adsMan->compareADS(ads, s.getADS())) {
-					cout
-							<< "checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
+				if (!adsMan->compareADS(ads, s.getADS()))
+				{
+					cout << "checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
 					Component::safe_print(rev);
 					cout << "S (sOriginal.getADS()): " << endl;
 					adsMan->printADS(sOriginal.getADS());
@@ -313,7 +312,8 @@ public:
 			timeSol.fullTimeEval[ev].second += te2.inMilliSecs();
 			timeSol.fullTimeEval[ev].first++;
 
-			if (ini && (*ini != move)) {
+			if (ini && (*ini != move))
+			{
 				errormsg(moveFrom, CMERR_MOVE_EQUALS, "CMERR_MOVE_EQUALS", iter, "reverse of reverse is not the original move!");
 				move.print();
 				cout << "move: ";
@@ -328,7 +328,8 @@ public:
 
 			message(lEvaluator.at(ev), iter, "testing reverse value.");
 
-			if(EVALUATION_ABS(e_ini.evaluation() - e.evaluation()) >= EVALUATION_ZERO) {
+			if (EVALUATION_ABS(e_ini.evaluation() - e.evaluation()) >= EVALUATION_ZERO)
+			{
 				errormsg(moveFrom, CMERR_MOVE_REVREV_VALUE, "CMERR_MOVE_REVREV_VALUE", iter, "reverse of reverse has a different evaluation value!");
 				move.print();
 				cout << "move: ";
@@ -351,15 +352,19 @@ public:
 			message(lEvaluator.at(ev), iter, "revCost calculated!");
 
 			Timer tMoveCostApply;
-			MoveCost* mcSimpleCost = lEvaluator[ev]->moveCost(move, s);
+
+			//TODO - There are problems when move is dynamic
+			//Then, the first move might be different
+			//An initial idea would be using the reverse and adapting this simpleCost
+			MoveCost* mcSimpleCost = lEvaluator[ev]->moveCostComplete(move, s);
 			evtype simpleCost = mcSimpleCost->cost();
 			delete mcSimpleCost;
 			message(lEvaluator.at(ev), iter, "simpleCost calculated!");
-			timeNS.timeNSCostApply[id_ns].second +=
-					tMoveCostApply.inMilliSecs();
+			timeNS.timeNSCostApply[id_ns].second += tMoveCostApply.inMilliSecs();
 			timeNS.timeNSCostApply[id_ns].first++;
 
-			if (EVALUATION_ABS(revCost - simpleCost) >= EVALUATION_ZERO) {
+			if (EVALUATION_ABS(revCost - simpleCost) >= EVALUATION_ZERO)
+			{
 				errormsg(moveFrom, CMERR_MOVE_REVSIMPLE, "CMERR_MOVE_REVSIMPLE", iter, "difference between revCost and simpleCost");
 				cout << "move: ";
 				move.print();
@@ -371,11 +376,11 @@ public:
 			// ==============
 			// fasterCost
 			Timer tMoveCostApplyDelta;
-			Move<R, ADS>& rev1 = *lEvaluator[ev]->applyMove(e, move, s);
+			Move<R, ADS>& rev1 = *lEvaluator[ev]->applyMoveReevaluate(e, move, s);
 			evtype e_end1 = e.evaluation();
 			// TODO: check outdated status
 			// TODO: if(e.outdated), it means that user did not implement Move::apply(e,R,ADS)!
-			Move<R, ADS>& ini1 = *lEvaluator[ev]->applyMove(e, rev1, s);
+			Move<R, ADS>& ini1 = *lEvaluator[ev]->applyMoveReevaluate(e, rev1, s);
 			evtype e_ini1 = e.evaluation();
 			timeNS.timeNSCostApplyDelta[id_ns].second += tMoveCostApplyDelta.inMilliSecs();
 			timeNS.timeNSCostApplyDelta[id_ns].first++;
@@ -386,7 +391,8 @@ public:
 			evtype fasterCost = e_end1 - e_ini1;
 			message(lEvaluator.at(ev), iter, "fasterCost calculated!");
 
-			if (EVALUATION_ABS(revCost - fasterCost) >= EVALUATION_ZERO) {
+			if (EVALUATION_ABS(revCost - fasterCost) >= EVALUATION_ZERO)
+			{
 				errormsg(moveFrom, CMERR_MOVE_REVFASTER, "CMERR_MOVE_REVFASTER", iter, "difference between revCost and fasterCost!");
 				cout << "move: ";
 				move.print();
@@ -403,16 +409,18 @@ public:
 			MoveCost* cost = NULL;
 
 			if (lEvaluator[ev]->getAllowCosts())
-				cost = move.cost(e, s.getR(), s.getADSptr(),false);
+				cost = move.cost(e, s.getR(), s.getADSptr(), false);
 
 			message(lEvaluator.at(ev), iter, "cost() calculated!");
 
-			if (cost && !cost->isEstimated()) {
+			if (cost && !cost->isEstimated())
+			{
 				timeNS.timeNSCost[id_ns].second += tMoveCost.inMilliSecs();
 				timeNS.timeNSCost[id_ns].first++;
 			}
 
-			if (cost && cost->isEstimated()) {
+			if (cost && cost->isEstimated())
+			{
 				timeNS.timeNSEstimatedCost[id_ns].second += tMoveCost.inMilliSecs();
 				timeNS.timeNSEstimatedCost[id_ns].first++;
 				if (cost->cost() > revCost)
@@ -421,17 +429,19 @@ public:
 					timeNS.underestimate = true;
 			}
 
-			if (cost && !cost->isEstimated()) {
+			if (cost && !cost->isEstimated())
+			{
 				double cValue = cost->cost();
-				if (EVALUATION_ABS(revCost - cValue) >= EVALUATION_ZERO) {
+				if (EVALUATION_ABS(revCost - cValue) >= EVALUATION_ZERO)
+				{
 					errormsg(moveFrom, CMERR_MOVE_COST, "CMERR_MOVE_COST", iter, "difference between expected cost and cost()");
 					cout << "move: ";
 					move.print();
 					cout << "expected cost: (e' - e) =\t" << revCost << endl;
-					cout << "cost() =\t" <<  cValue << endl;
+					cout << "cost() =\t" << cValue << endl;
 					cout << "e: \t obj:" << e.getObjFunction() << "\t inf: " << e.getInfMeasure() << " \t total:" << e.evaluation() << endl;
-					cout << "e':\t obj:" << e_rev.getObjFunction() << "\t inf:" << e_rev.getInfMeasure() <<" \t total:" << e_rev.evaluation() << endl;
-					cout << "e+cost():\t obj:" << e.getObjFunction()+cost->getObjFunctionCost() << "\t inf:" << e.getInfMeasure()+cost->getInfMeasureCost() << "\t total:" << e.evaluation()+cost->cost() << endl;
+					cout << "e':\t obj:" << e_rev.getObjFunction() << "\t inf:" << e_rev.getInfMeasure() << " \t total:" << e_rev.evaluation() << endl;
+					cout << "e+cost():\t obj:" << e.getObjFunction() + cost->getObjFunctionCost() << "\t inf:" << e.getInfMeasure() + cost->getInfMeasureCost() << "\t total:" << e.evaluation() + cost->cost() << endl;
 					cout << "s: ";
 					s.print();
 					cout << "s': ";
@@ -449,21 +459,28 @@ public:
 				{
 					// TODO: consider that randomMove can be null
 					Move<R, ADS>& move2 = *ns->randomMoveSolution(s);
-					if (verbose) {
+					if (verbose)
+					{
 						cout << "testing double move!" << endl;
 						move2.print();
 					}
 
-					if (!move2.canBeAppliedToSolution(s)) {
-						if (verbose) {
+					if (!move2.canBeAppliedToSolution(s))
+					{
+						if (verbose)
+						{
 							cout << "double move cannot be applied: ";
 							move2.print();
 						}
-					} else {
+					}
+					else
+					{
 						MoveCost* cost2 = NULL;
-						if (lEvaluator[ev]->getAllowCosts()) {
-							cost2 = move2.cost(e, s.getR(), s.getADSptr(),false);
-							if (cost2) {
+						if (lEvaluator[ev]->getAllowCosts())
+						{
+							cost2 = move2.cost(e, s.getR(), s.getADSptr(), false);
+							if (cost2)
+							{
 								lEvaluator[ev]->betterThan(*cost, *cost2);
 								delete cost2;
 							}
@@ -491,7 +508,6 @@ public:
 		return true;
 	}
 
-
 	bool run(int iterMax, int nSolNSSeq)
 	{
 		// ======================================
@@ -511,7 +527,6 @@ public:
 		cout << "DEPRECATED:adsmanager=" << lADSManagerComp.size() << endl;
 		cout << "---------------------------------------" << endl << endl;
 
-
 		// ----------------
 		// read evaluators
 		// ----------------
@@ -519,7 +534,6 @@ public:
 		vector<Evaluator<R, ADS>*> evaluators;
 		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
 			evaluators.push_back(lEvaluator[ev]);
-
 
 		TimeCheckSol timeSol;
 		// time to clone a solution
@@ -542,11 +556,10 @@ public:
 		timeNS.timeNSApply = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
 		timeNS.timeNSCostApply = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
 		timeNS.timeNSCostApplyDelta = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
-		timeNS.timeNSCost = vector<pair<int, double> > (lNS.size(), make_pair(0, 0.0));
-		timeNS.timeNSEstimatedCost = vector<pair<int, double> > (lNS.size(), make_pair(0, 0.0));
-		timeNS.errorNSEstimatedCost = vector<pair<int, double> > (lNS.size(), make_pair(0, 0.0));
+		timeNS.timeNSCost = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
+		timeNS.timeNSEstimatedCost = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
+		timeNS.errorNSEstimatedCost = vector<pair<int, double> >(lNS.size(), make_pair(0, 0.0));
 		timeNS.overestimate = timeNS.underestimate = false;
-
 
 		// ----------------------------------------------------------------------------------------
 		// generate 'iterMax' OptFrame:Solution for each OptFrame:Constructive and store evaluation
@@ -571,7 +584,7 @@ public:
 				message(lConstructive.at(c), iter, "generating solution.");
 
 				Timer ts;
-				Solution<R, ADS> s = constructive->generateSolution();
+				Solution<R, ADS> s = *constructive->generateSolution(10000000);
 				timeConstructive[c].second += ts.inMilliSecs();
 				timeConstructive[c].first++;
 
@@ -583,7 +596,7 @@ public:
 					timeSol.timeInitializeADS[0].first++;
 				}
 
-				solutions.push_back(new Solution<R,ADS>(s));
+				solutions.push_back(new Solution<R, ADS>(s));
 
 				for (unsigned ev = 0; ev < evaluators.size(); ev++)
 				{
@@ -595,12 +608,14 @@ public:
 
 					evaluations.at(ev).push_back(new Evaluation(e));
 
-					if (lEvaluator.at(ev)->betterThan(e, e)) {
+					if (lEvaluator.at(ev)->betterThan(e, e))
+					{
 						errormsg(lEvaluator.at(ev)->toString(), CMERR_EV_BETTERTHAN, "CMERR_EV_BETTERTHAN", iter, "error in betterThan(X,X)=true");
 						return false;
 					}
 
-					if (!lEvaluator.at(ev)->betterOrEquals(e, e)) {
+					if (!lEvaluator.at(ev)->betterOrEquals(e, e))
+					{
 						errormsg(lEvaluator.at(ev)->toString(), CMERR_EV_BETTEREQUALS, "CMERR_EV_BETTEREQUALS", iter, "error in betterOrEquals(X,X)=false");
 						return false;
 					}
@@ -619,7 +634,7 @@ public:
 		// testing Move
 		// ====================================================================
 
-		if(lMove.size() > 0)
+		if (lMove.size() > 0)
 			cout << "checkcommand  will test given Move components (|Move|=" << lMove.size() << "; numSolutions=" << solutions.size() << ")" << endl;
 
 		for (unsigned p = 0; p < lSolution.size(); p++)
@@ -666,7 +681,7 @@ public:
 
 				// 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
 
-				if(!testMoveGeneral(-1, NULL, -1, s, id_s, move, evaluations, timeSol, timeNS))
+				if (!testMoveGeneral(-1, NULL, -1, s, id_s, move, evaluations, timeSol, timeNS))
 					return false;
 
 				/////delete& move; // TODO NEVER DESTROY THIS OptFrame:Move!
@@ -681,9 +696,8 @@ public:
 		// testing NS
 		// ====================================================================
 
-		if(lNS.size() > 0)
-			cout << "checkcommand  will test " << lNS.size() << " NS components (iterMax=" << iterMax << "; numSolutions=" << solutions.size() << ")" << endl;
-
+		if (lNS.size() > 0)
+			cout << "checkcommand  will test " << lNS.size() << " NS components (iterMax=" << iterMax << " Solutions=" << solutions.size() << ")" << endl;
 
 		for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++)
 		{
@@ -729,7 +743,7 @@ public:
 					// bool testMoveNS(int iter, NS<R,ADS>* ns, int id_ns, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
 					// bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
 
-					if(!testMoveGeneral(iter, ns, id_ns, s, id_s, move, evaluations, timeSol, timeNS))
+					if (!testMoveGeneral(iter, ns, id_ns, s, id_s, move, evaluations, timeSol, timeNS))
 					{
 						delete &move;
 						return false;
@@ -748,7 +762,7 @@ public:
 		// testing NSSeq
 		// ====================================================================
 
-		if(lNSSeq.size() > 0 )
+		if (lNSSeq.size() > 0)
 			cout << "checkcommand  will test " << lNSSeq.size() << " NSSeq components (nSolNSSeq=" << nSolNSSeq << " of numSolutions=" << solutions.size() << ")" << endl;
 
 		vector<int> vCountMoves(lNSSeq.size());
@@ -789,7 +803,6 @@ public:
 					Move<R, ADS>& move = *it.current();
 					countMoves++;
 
-
 					if (!move.canBeAppliedToSolution(s))
 					{
 						if (verbose)
@@ -808,7 +821,7 @@ public:
 					//	bool testMoveNSSeq(int iter, NSSeq<R,ADS>* nsseq, int nqs, int id_nsseq, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
 					// 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
 
-					if(!testMoveGeneral(nqs, nsseq, id_nsseq, s, id_s, move, evaluations, timeSol, timeNS))
+					if (!testMoveGeneral(nqs, nsseq, id_nsseq, s, id_s, move, evaluations, timeSol, timeNS))
 					{
 						delete &move;
 						return false;
@@ -832,7 +845,7 @@ public:
 		// testing NSEnum
 		// ====================================================================
 
-		if(lNSEnum.size() > 0 )
+		if (lNSEnum.size() > 0)
 			cout << "checkcommand  will test " << lNSEnum.size() << " NSEnum components (nSolNSSeq=" << nSolNSSeq << " of numSolutions=" << solutions.size() << ")" << endl;
 
 		vector<int> vCountMovesEnum(lNSEnum.size());
@@ -876,7 +889,6 @@ public:
 					Move<R, ADS>& move = *it.current();
 					countMoves++;
 
-
 					if (!move.canBeAppliedToSolution(s))
 					{
 						if (verbose)
@@ -895,7 +907,7 @@ public:
 					//	bool testMoveNSSeq(int iter, NSSeq<R,ADS>* nsseq, int nqs, int id_nsseq, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
 					// 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
 
-					if(!testMoveGeneral(nqs, nsenum, id_nsenum, s, id_s, move, evaluations, timeSol, timeNS))
+					if (!testMoveGeneral(nqs, nsenum, id_nsenum, s, id_s, move, evaluations, timeSol, timeNS))
 					{
 						delete &move;
 						return false;
@@ -909,7 +921,6 @@ public:
 
 			vCountMovesEnum[id_nsenum] += countMoves;
 			vCountValidMovesEnum[id_nsenum] += countValidMoves;
-
 
 			if (checkIndependent)
 			{
@@ -951,13 +962,13 @@ public:
 								}
 
 								// calculate cost for move 2
-								MoveCost* cost_m2 = ev.moveCost(move2, s);
+								MoveCost* cost_m2 = ev.moveCostComplete(move2, s);
 
 								// apply move 1 (consider reverse is not NULL)
 								Move<R, ADS>& rev_m1 = *move1.applySolution(s);
 
 								// calculate new cost for move 2
-								MoveCost* cost2_m2 = ev.moveCost(move2, s);
+								MoveCost* cost2_m2 = ev.moveCostComplete(move2, s);
 
 								// return solution to original value and free
 								delete rev_m1.applySolution(s);
@@ -983,7 +994,7 @@ public:
 								// if here, m1 'could' be independent from m2
 								vCountIndependentEnum[id_nsenum]++;
 								count_ind_m1++;
-								if(verbose)
+								if (verbose)
 								{
 									cout << "independent(m1=" << m1 << ";m2=" << m2 << ")" << endl;
 									nsenum->indexMove(m1)->print(); // TODO: fix leak
@@ -1003,7 +1014,6 @@ public:
 			if (verbose)
 				cout << endl << endl;
 		}
-
 
 		for (unsigned i = 0; i < solutions.size(); i++)
 			delete solutions[i];

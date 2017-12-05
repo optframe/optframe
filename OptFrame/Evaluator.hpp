@@ -57,9 +57,12 @@ namespace optframe
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class Evaluator: public Direction
 {
+
+
 protected:
 	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
 	evtype weight;   // defaults to 1
+
 
 public:
 
@@ -107,7 +110,7 @@ public:
 	*/
 
 public:
-	void reevaluateSolution(Evaluation e, const Solution<R, ADS>& s)
+	void reevaluateSolution(Evaluation& e, const Solution<R, ADS>& s)
 	{
 		reevaluate(e, s.getR(), s.getADSptr());
 	}
@@ -115,7 +118,7 @@ public:
 public:
 	// because of MultiEvaluator... otherwise, make it 'friend'
 
-	virtual void reevaluate(Evaluation e, const R& r, const ADS* ads)
+	virtual void reevaluate(Evaluation& e, const R& r, const ADS* ads)
 	{
 		if (e.outdated)
 		{
@@ -136,6 +139,7 @@ public:
 		assert(rev != NULL);
 		// consolidate 'outdated' evaluation data on 'e'
 		reevaluateSolution(e, s);
+
 		// create pair
 		return rev;
 	}
