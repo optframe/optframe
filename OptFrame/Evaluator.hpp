@@ -204,8 +204,7 @@ public:
 
 			// apply reverse move in order to get the original solution back
 			 //TODO - Why do not save ev at the begin? Extra evaluation
-			//Even if reevaluate is implemented - It would be hard to design an strategy that is faster than copying previous evaluation
-			//==================================================================
+			//Even when reevaluate is implemented, It would be hard to design a strategy that is faster than copying previous evaluation//==================================================================
 //			Move<R, ADS>* ini = applyMoveReevaluate(e, *rev, s);
 //
 //			// if Evaluation wasn't 'outdated' before, restore its previous status
@@ -360,7 +359,7 @@ public:
 
 			// apply reverse move in order to get the original solution back
 			//TODO - Vitor, Why apply Move with e is not used???
-			//Even if reevaluate is implemented - It would be hard to design an strategy that is faster than copying previous evaluation
+//			Even when reevaluate is implemented, It would be hard to design a strategy that is faster than copying previous evaluation
 			//==================================================================
 			//pair<Move<R, ADS>*, Evaluation> ini = applyMove(*rev, s);
 

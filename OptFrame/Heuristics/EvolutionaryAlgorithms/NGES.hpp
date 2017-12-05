@@ -25,16 +25,18 @@
 #include <vector>
 
 #include "../../LocalSearch.hpp"
-#include "../../NSSeq.hpp"
+#include "../../NS.hpp"
 #include "../../Evaluator.hpp"
 #include "../../Evaluation.hpp"
 #include "../../Constructive.hpp"
 #include "../../RandGen.hpp"
 #include "../../SingleObjSearch.hpp"
+#include "../../Timer.hpp"
 //#include <gsl/gsl_rng.h>
 //#include <gsl/gsl_randist.h>
+//#include "../../NSSeq.hpp"
 
-#include "../../Timer.hpp"
+
 
 // NGES - Neighborhood Guided Evolution Strategies
 
@@ -89,6 +91,7 @@ struct NGESInd
 			vNSInd.push_back(i);
 
 		random_shuffle(vNSInd.begin(), vNSInd.end());
+		//change to rg shuffle, because seed may influence result
 	}
 
 	NGESInd(Solution<R, ADS>& _sInd, Evaluation& _e, vector<NGESIndStructure<R, ADS> >& _vEsStructureInd, vector<int>& _vNSInd) :
@@ -129,14 +132,14 @@ struct NGESInd
 
 //CADA INDIVIDUO EH UM PAR DE SOLUCAO E UMA TUPLE COM O PARAMETROS DA ESTRATEGIA
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class ES: public SingleObjSearch<R, ADS>
+class NGES: public SingleObjSearch<R, ADS>
 {
 private:
 	typedef vector<NGESInd<R, ADS>*> NGESPopulation;
 
 	Evaluator<R, ADS>& eval;
 	Constructive<R, ADS>& constructive;
-	vector<NSSeq<R, ADS>*> vNSeq;
+	vector<NS<R, ADS>*> vNS;
 	LocalSearch<R, ADS>& ls;
 	RandGen& rg;
 	NGESParams& ngesParams;
@@ -148,13 +151,14 @@ public:
 
 	//Evaluator, constructive, vNS -- vector with neighboorhods strucutures able to move solution,
 	// selectionMethod: 0-low selection pressure (mi,lambda);1 selection pressure (mi+lambda)
-	ES(Evaluator<R, ADS>& _eval, Constructive<R, ADS>& _constructive, vector<NSSeq<R, ADS>*> _vNSeq, LocalSearch<R, ADS>& _ls, RandGen& _rg, NGESParams& _ngesParams) :
-			eval(_eval), constructive(_constructive), vNSeq(_vNSeq), ls(_ls), rg(_rg), ngesParams(_ngesParams)
+	//TODO - Check why vector<NSSeq*> can not be passed as parameter - Tried but failled
+	NGES(Evaluator<R, ADS>& _eval, Constructive<R, ADS>& _constructive, vector<NS<R, ADS>*> _vNS, LocalSearch<R, ADS>& _ls, RandGen& _rg, NGESParams& _ngesParams) :
+			eval(_eval), constructive(_constructive), vNS(_vNS), ls(_ls), rg(_rg), ngesParams(_ngesParams)
 	{
-		nNS = vNSeq.size();
+		nNS = vNS.size();
 	}
 
-	virtual ~ES()
+	virtual ~NGES()
 	{
 	}
 
@@ -214,7 +218,7 @@ public:
 			if (rx < p[param].pr)
 				for (int a = 1; a <= p[param].nap; a++)
 				{
-					Move<R, ADS>* mov_tmp = vNSeq[param]->randomMoveSolution(s);
+					Move<R, ADS>* mov_tmp = vNS[param]->randomMoveSolution(s);
 
 //					int tries = 0;
 //					int maxTries = 1;
