@@ -73,7 +73,10 @@ public:
 
 		Timer tnow;
 
-		Solution<R, ADS> s = constructive.generateSolution();
+                // store initial value in s (TODO: remove workaround to deal with pointer directly)
+		Solution<R, ADS>* sP = constructive.generateSolution(timelimit);
+		Solution<R, ADS> s(std::move(*sP)); // workaround
+                delete sP;                         // workaround
 		Evaluation e = evaluator.evaluateSolution(s);
 
 		double T = Ti;

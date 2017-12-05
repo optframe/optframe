@@ -68,7 +68,10 @@ public:
 
 		long tnow = time(NULL);
 
-		Solution<R, ADS> s = constructive.generateGRSolution(alpha);
+                // store initial value in s (TODO: remove workaround to deal with pointer directly)
+		Solution<R, ADS>* sP = constructive.generateGRSolution(alpha, timelimit);
+                Solution<R, ADS> s = std::move(*sP);  //workaround
+                delete sP;                           //workaround
 		Evaluation e = evaluator.evaluateSolution(s);
 
 		if (Component::information)
@@ -79,7 +82,11 @@ public:
 			if (Component::verbose)
 				cout << "GRASP::iter=" << iter << endl;
 
-			Solution<R, ADS> s1 = constructive.generateGRSolution(alpha);
+                        // store initial value in s1 (TODO: remove workaround to deal with pointer directly)
+			Solution<R, ADS>* sTmp = constructive.generateGRSolution(alpha, timelimit);
+                        Solution<R, ADS> s1(std::move(*sTmp)); // workaround
+                        delete sTmp;                          // workaround
+ 
 			Evaluation e1 = evaluator.evaluateSolution(s1);
 
 			ls.exec(s1, e1, timelimit, target_f);

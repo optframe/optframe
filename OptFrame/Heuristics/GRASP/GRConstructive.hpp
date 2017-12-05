@@ -42,7 +42,7 @@ public:
 
 	virtual Solution<R, ADS>* generateSolution(double timelimit)
 	{
-		return generateGRSolution(1.0);
+		return generateGRSolution(1.0, timelimit);
 	}
 
 	virtual bool compatible(string s)
@@ -78,10 +78,10 @@ public:
 	{
 	}
 
-	virtual Solution<R, ADS>* generateGRSolution(float alpha)
+	virtual Solution<R, ADS>* generateGRSolution(float alpha, double timelimit)
 	{
 		// ignoring alpha
-		return c.generateSolution();
+		return c.generateSolution(timelimit);
 	}
 
 	virtual bool compatible(string s)
