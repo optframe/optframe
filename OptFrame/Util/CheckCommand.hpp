@@ -352,10 +352,6 @@ public:
 			message(lEvaluator.at(ev), iter, "revCost calculated!");
 
 			Timer tMoveCostApply;
-
-			//TODO - There are problems when move is dynamic
-			//Then, the first move might be different
-			//An initial idea would be using the reverse and adapting this simpleCost
 			MoveCost* mcSimpleCost = lEvaluator[ev]->moveCostComplete(move, s);
 			evtype simpleCost = mcSimpleCost->cost();
 			delete mcSimpleCost;
