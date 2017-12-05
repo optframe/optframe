@@ -24,21 +24,26 @@
 #include "../../LocalSearch.hpp"
 #include "../../NSEnum.hpp"
 #include "../../Evaluator.hpp"
+#include "../../RandGen.hpp"
 
 #include "VND.h"
 
 namespace optframe
 {
 
+//When RandGen is given as parameter it performs RVND
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class VariableNeighborhoodDescent: public LocalSearch<R, ADS>
 {
 private:
-	bool shuffle;
+	Evaluator<R, ADS>& ev;
+	vector<LocalSearch<R, ADS>*> lsList;
+	RandGen* rg;
+
 public:
 
-	VariableNeighborhoodDescent(Evaluator<R, ADS>& _ev, vector<LocalSearch<R, ADS>*> _lsList, bool _shuffle = false) :
-		ev(_ev), lsList(_lsList), shuffle(_shuffle)
+	VariableNeighborhoodDescent(Evaluator<R, ADS>& _ev, vector<LocalSearch<R, ADS>*> _lsList, RandGen* _rg = NULL) :
+		ev(_ev), lsList(_lsList), rg(_rg)
 	{
 	}
 
@@ -61,14 +66,14 @@ public:
 
 		Timer tNow;
 
-		if(shuffle)
-			rg.shuffle(lsList); // shuffle elements
+		if(rg)
+			rg->shuffle(lsList); // shuffle elements
 
 		int r = lsList.size();
 
 		int k = 1;
 
-		Evaluation eCurrent;
+		Evaluation eCurrent(e);
 		while (ev.betterThan(target_f, e.evaluation()) && (k <= r) && (tNow.now() < timelimit))
 		{
 			eCurrent = e;
@@ -120,9 +125,7 @@ public:
 		return ss.str();
 	}
 
-private:
-	Evaluator<R, ADS>& ev;
-	vector<LocalSearch<R, ADS>*> lsList;
+
 };
 
 
