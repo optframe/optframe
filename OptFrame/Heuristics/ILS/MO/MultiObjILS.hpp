@@ -109,25 +109,17 @@ public:
 			Solution<R, ADS> rS = x_e.getNonDominatedSol(ind);
 			MultiEvaluation rMev = x_e.getIndMultiEvaluation(ind);
 
-			MOSC* stopCriteriaPert = new MOSC;
-			stopCriteriaPert->timelimit = stopCriteria.timelimit;
-			perturbation(rS, rMev, *stopCriteriaPert, *history);
-			delete stopCriteriaPert;
+			MOSC stopCriteriaPert;
+			stopCriteriaPert.timelimit = stopCriteria.timelimit;
+			perturbation(rS, rMev, stopCriteriaPert, *history);
 
+			//Try to add the neighbor solution that was obtained from the perturbation
 			pMan.addSolutionWithMEV(x_e, rS, rMev);
-			//move individual
-//			Move<R, ADS>* move = &(neighbors[neigh]->move(x_e.at(ind)));
-//
-//			while (!(move->canBeApplied(x_e.at(ind))))
-//			{
-//				delete move;
-//				move = &(neighbors[neigh]->move(x_e.at(ind)));
-//			}
 
-			MOSC* stopCriteriaLS = new MOSC;
-			stopCriteriaLS->timelimit = stopCriteria.timelimit;
-			ls->exec(x_e, &rS, &rMev, &pMan, *stopCriteriaLS);
-			delete stopCriteriaLS;
+			MOSC stopCriteriaLS;
+			stopCriteriaLS.timelimit = stopCriteria.timelimit;
+			ls->exec(x_e, rS, rMev, pMan, stopCriteriaLS);
+
 
 			acceptanceCriterion(x_e, *history);
 			x_e.setNewNonDominatedSolutionsStatus(false);

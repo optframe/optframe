@@ -56,17 +56,14 @@ public:
 	{
 	}
 
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, paretoManager<R, ADS>* pManager, MOSC& stopCriteria)
+	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>& s, paretoManager<R, ADS>& pManager, MOSC& stopCriteria)
 	{
-		MultiEvaluation* sMev = mev.evaluateSolution(*s);
+		MultiEvaluation sMev(std::move(mev.evaluateSolution(s)));
 
 		exec(p, s, sMev, pManager, stopCriteria);
-
-//		sMev.clear();
-		delete sMev;
 	}
 
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, MultiEvaluation* sMev, paretoManager<R, ADS>* pManager,  MOSC& stopCriteria)
+	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>& s, MultiEvaluation& sMev, paretoManager<R, ADS>& pManager, MOSC& stopCriteria)
 	{
 		num_calls++;
 		Timer t;
@@ -75,17 +72,17 @@ public:
 
 		while ((iter < iterMax) && ((t.now() - stopCriteria.timelimit) < 0))
 		{
-			Move<R, ADS>* move = ns.randomMoveSolution(*s);
-			if (move->canBeAppliedToSolution(*s))
+			Move<R, ADS>* move = ns.randomMoveSolution(s);
+			if (move->canBeAppliedToSolution(s))
 			{
 				//Move and mark sMev as outdated
-				Move<R, ADS>* mov_rev = move->applySolution(*s);
+				Move<R, ADS>* mov_rev = move->applySolution(s);
 
 				//Call method to reevaluate sMev and try to include TODO
 //				pManager->addSolutionWithMEVReevaluation(p, *s,*sMev);
 
-				pManager->addSolution(p, *s);
-				delete mov_rev->applySolution(*s);
+				pManager.addSolution(p, s);
+				delete mov_rev->applySolution(s);
 				delete mov_rev;
 
 				//			vector<MoveCost*> vMoveCost;
@@ -95,7 +92,6 @@ public:
 //			}
 //			bool itsWorthAdding = pManager.checkDominance(pManager.getParetoInsideManager(), &sMev);
 //			if (itsWorthAdding)
-
 
 			}
 			delete move;

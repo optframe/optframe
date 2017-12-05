@@ -592,9 +592,8 @@ public:
 
 	bool addSolution(Pareto<R, ADS>& p, const Solution<R, ADS>& candidate)
 	{
-		MultiEvaluation* mev = multiEval.evaluateSolution(candidate);
-		bool added = addSolutionWithMEV(p, candidate, *mev);
-		delete mev;
+		MultiEvaluation mev(std::move(multiEval.evaluateSolution(candidate)));
+		bool added = addSolutionWithMEV(p, candidate, mev);
 
 		return added;
 	}

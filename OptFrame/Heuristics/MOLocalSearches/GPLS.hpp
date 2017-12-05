@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef GENERALPARETOLOCALSEARCH_HPP_
-#define GENERALPARETOLOCALSEARCH_HPP_
+#ifndef OPTFRAME_GENERALPARETOLOCALSEARCH_HPP_
+#define OPTFRAME_GENERALPARETOLOCALSEARCH_HPP_
 
 #include <algorithm>
 
@@ -33,8 +33,6 @@
 #include "../../Heuristics/MOLocalSearches/MOBestImprovement.hpp"
 #include "../../InitialPareto.hpp"
 
-//#include "../../MOMetrics.hpp"
-//#include "../../MultiObjSearch.hpp"
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 struct gplsStructure
@@ -55,7 +53,7 @@ private:
 
 public:
 	gplsStructure<R, ADS> gplsData;
-//	Pareto<R, ADS> x_e;
+//	Pareto<R, ADS> x_e; //TODO -- possibility of embedding Pareto here
 
 	paretoManagerGPLS(MultiEvaluator<R, ADS>& _mev, int _r) :
 			paretoManager<R, ADS>(_mev), r(_r)
@@ -105,17 +103,17 @@ public:
 };
 
 //General Two-Phase Pareto Local Search
-// "We call this general local search approach to multiobjective problems the Pareto local search (PLS)."
+// "We call this General local search approach to multiobjective problems the Pareto local search (PLS)."
 //  A Dynasearch Neighborhood for the Bicriteria Traveling Salesman Problem , by Angel (2004) and Paquete(2004)
 // "Generalization in the multiobjective case of the most simple metaheuristic: the hill-climbing method. "
 //  Speed-up techniques for solving large-scale biobjective TSP, by Lust (2010)
+
+//GPLS is a kind of Multi-Objective version of the VND
+//However, it is designed in an efficient manner for iteratively exploring the obtained non-dominated solution
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class GeneralParetoLocalSearch: public MOLocalSearch<R, ADS>
 {
-	typedef vector<Evaluation*> FitnessValues;
-
 private:
-//	MultiEvaluator<R, ADS>& multiEval;
 	InitialPareto<R, ADS>& init_pareto;
 	int init_pop_size;
 	vector<MOLocalSearch<R, ADS>*> vLS;
@@ -133,22 +131,25 @@ public:
 	{
 	}
 
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, paretoManager<R, ADS>* pManager, MOSC& stopCriteria)
+	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>& s, paretoManager<R, ADS>& pManager, MOSC& stopCriteria)
 	{
-
+		Pareto<R, ADS> _pf;
+		pManager.addSolution(_pf,s);
+		searchWithOptionalPareto(stopCriteria,&_pf);
 	}
 
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, MultiEvaluation* sMev, paretoManager<R, ADS>* pManager, MOSC& stopCriteria)
+	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>& s, MultiEvaluation& sMev, paretoManager<R, ADS>& pManager, MOSC& stopCriteria)
 	{
-
+		Pareto<R, ADS> _pf;
+		pManager.addSolutionWithMEV(_pf,s,sMev);
+		searchWithOptionalPareto(stopCriteria,&_pf);
 	}
 
-	//virtual void exec(Population<R, ADS>& p_0, FitnessValues& e_pop, double timelimit, double target_f)
-	virtual Pareto<R, ADS>* search(MOSC& stopCriteria, Pareto<R, ADS>* _pf = NULL)
+	virtual Pareto<R, ADS>* searchWithOptionalPareto(MOSC& stopCriteria, Pareto<R, ADS>* _pf = NULL)
 	{
 		Timer tnow;
 
-		cout << "exec: Generic 2PPLS (tL:" << stopCriteria.timelimit << ")" << endl;
+		cout << "exec: General 2PPLS (tL:" << stopCriteria.timelimit << ")" << endl;
 		int r = vLS.size();
 
 		gplsStructure<R, ADS> gPLSData;
@@ -207,12 +208,12 @@ public:
 			}
 
 			//Run local search for each individual of the population - Pareto Manager, pMan2PPLS, updates population
-			MOSC* stopCriteriaLS = new MOSC;
-			stopCriteriaLS->timelimit = stopCriteria.timelimit;
+			MOSC stopCriteriaLS;
+			stopCriteriaLS.timelimit = stopCriteria.timelimit;
 
 			for (int ind = 0; ind < (int) p.size(); ind++)
-				vLS[k]->exec(x_e, &p.getNonDominatedSol(ind), &p.getIndMultiEvaluation(ind), &pMan2PPLS, *stopCriteriaLS);
-			delete stopCriteriaLS;
+				vLS[k]->exec(x_e, p.getNonDominatedSol(ind), p.getIndMultiEvaluation(ind), pMan2PPLS, stopCriteriaLS);
+
 
 //			for(int e=0;e<x_e.size();e++)
 //			{
@@ -274,7 +275,7 @@ public:
 		//checking possible dominance problems -- TODO - Remove for a faster code
 		pMan2PPLS.checkDominance(*pReturn);
 
-		cout << "Generic Two-Phase Pareto Local Search finished with " << pReturn->size() << " non-dominated solutions." << endl;
+		cout << "General Two-Phase Pareto Local Search finished with " << pReturn->size() << " non-dominated solutions." << endl;
 
 
 		return pReturn;
@@ -282,5 +283,5 @@ public:
 
 };
 
-#endif /*GENERALPARETOLOCALSEARCH_HPP_*/
+#endif /*OPTFRAME_GENERALPARETOLOCALSEARCH_HPP_*/
 

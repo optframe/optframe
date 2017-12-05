@@ -74,6 +74,12 @@ public:
 			vev.push_back(mev.vev[i]);
 	}
 
+	MultiEvaluation(MultiEvaluation&& mev):
+		vev(std::move(mev.vev))
+	{
+
+	}
+
 	virtual ~MultiEvaluation()
 	{
 		this->clear();
@@ -161,7 +167,7 @@ public:
 
 		this->vev.clear();
 		for (unsigned i = 0; i < mev.vev.size(); i++)
-			this->vev.push_back(mev.vev[i].clone());
+			this->vev.push_back(mev.vev[i]);
 
 		return *this;
 	}

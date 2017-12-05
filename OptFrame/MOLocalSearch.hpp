@@ -73,10 +73,10 @@ public:
 // core methods
 
     // 1
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, paretoManager<R, ADS>* pManager, MOSC& stopCriteria) = 0;
+	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>& s, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) = 0;
 
 	// 2
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>* s, MultiEvaluation* mev, paretoManager<R, ADS>* pManager, MOSC& stopCriteria) =0;
+	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>& s, MultiEvaluation& mev, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) =0;
 
 	virtual bool compatible(string s)
 	{

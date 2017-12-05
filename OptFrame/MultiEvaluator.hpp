@@ -108,21 +108,20 @@ public:
 		return sngEvaluators[index]->equals(ev1, ev2);
 	}
 
-	MultiEvaluation* evaluateSolution(const Solution<R, ADS>& s)
+	MultiEvaluation evaluateSolution(const Solution<R, ADS>& s)
 	{
 		return evaluate(s.getR(), s.getADSptr());
-
 	}
-
-	virtual MultiEvaluation* evaluate(const R& r, const ADS* ads)
+//changed to Meval without point TODO
+	virtual MultiEvaluation evaluate(const R& r, const ADS* ads)
 	{
 		cout << "inside mother class" << endl;
 		getchar();
-		MultiEvaluation* nev = new MultiEvaluation;
+		MultiEvaluation nev;
 		for (unsigned i = 0; i < sngEvaluators.size(); i++)
 		{
 			Evaluation ev = sngEvaluators[i]->evaluate(r, ads);
-			nev->addEvaluation(ev);
+			nev.addEvaluation(ev);
 		}
 
 		return nev;
@@ -185,19 +184,17 @@ public:
 
 	// TODO: make virtual "= 0"
 
-	void reevaluateSolutionMEV(MultiEvaluation& mev, const Solution<R, ADS>& s)
+	void reevaluateSolutionMEV(MultiEvaluation mev, const Solution<R, ADS>& s)
 	{
-		for (unsigned i = 0; i < sngEvaluators.size(); i++)
-			sngEvaluators[i]->reevaluateSolution(mev[i], s);
+		reevaluateMEV(mev, s.getR(),s.getADSptr());
 	}
 
-	void reevaluateMEV(MultiEvaluation& mev, const R& r, const ADS* ads)
+	virtual void reevaluateMEV(MultiEvaluation mev, const R& r, const ADS* ads)
 	{
 		for (unsigned i = 0; i < sngEvaluators.size(); i++)
 		{
 			sngEvaluators[i]->reevaluate(mev[i], r, ads);
 		}
-
 	}
 
 protected:

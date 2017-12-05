@@ -112,7 +112,7 @@ public:
 		reevaluate(e, s.getR(), s.getADSptr());
 	}
 
-protected:
+public:
 	// because of MultiEvaluator... otherwise, make it 'friend'
 
 	virtual void reevaluate(Evaluation e, const R& r, const ADS* ads)
