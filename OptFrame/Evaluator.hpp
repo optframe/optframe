@@ -128,7 +128,7 @@ public:
 
 	// Apply movement considering a previous evaluation => Faster.
 	// Update evaluation 'e'
-	Move<R, ADS>* applyMove(Evaluation& e, Move<R, ADS>& m, Solution<R, ADS>& s)
+	Move<R, ADS>* applyMoveReevaluate(Evaluation& e, Move<R, ADS>& m, Solution<R, ADS>& s)
 	{
 		// apply move and get reverse move
 		Move<R, ADS>* rev = m.applyUpdateSolution(e, s);
@@ -190,7 +190,7 @@ public:
 				alternatives[i].second = e.getAlternativeCosts()[i].second;
 			}
 			// apply reverse move in order to get the original solution back
-			Move<R, ADS>* ini = applyMove(e, *rev, s);
+			Move<R, ADS>* ini = applyMoveReevaluate(e, *rev, s); //TODO - Why do not save ev at the begin? Extra evaluation
 			// if Evaluation wasn't 'outdated' before, restore its previous status
 			if (!outdated)
 				e.outdated = outdated;
@@ -217,7 +217,7 @@ public:
 
 	// Movement cost based on complete evaluation
 	// USE ONLY FOR VALIDATION OF CODE! OTHERWISE, USE moveCost(e, m, s)
-	MoveCost* moveCost(Move<R, ADS>& m, Solution<R, ADS>& s, bool allowEstimated = false)
+	MoveCost* moveCostComplete(Move<R, ADS>& m, Solution<R, ADS>& s, bool allowEstimated = false)
 	{
 		// TODO: in the future, consider 'allowEstimated' parameter
 		// TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
@@ -308,7 +308,7 @@ public:
 				alt_begin[i].second = e.getAlternativeCosts()[i].second;
 			}
 			// apply move to both Evaluation and Solution
-			Move<R, ADS>* rev = applyMove(e, m, s);
+			Move<R, ADS>* rev = applyMoveReevaluate(e, m, s);
 			// TODO: check outdated and estimated!
 			MoveCost mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1, false, false);
 			// guarantee that alternative costs have same size
@@ -329,6 +329,7 @@ public:
 			// must return to original situation
 
 			// apply reverse move in order to get the original solution back
+			//TODO - Vitor, Why apply Move with e is not used???
 			pair<Move<R, ADS>*, Evaluation> ini = applyMove(*rev, s);
 			delete rev;
 
