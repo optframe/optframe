@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef VARIABLENEIGHBORHOODDESCENT_HPP_
-#define VARIABLENEIGHBORHOODDESCENT_HPP_
+#ifndef OPTFRAME_VARIABLENEIGHBORHOODDESCENT_HPP_
+#define OPTFRAME_VARIABLENEIGHBORHOODDESCENT_HPP_
 
 #include "../../LocalSearch.hpp"
 #include "../../NSEnum.hpp"
@@ -33,10 +33,12 @@ namespace optframe
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class VariableNeighborhoodDescent: public LocalSearch<R, ADS>
 {
+private:
+	bool shuffle;
 public:
 
-	VariableNeighborhoodDescent(Evaluator<R, ADS>& _ev, vector<LocalSearch<R, ADS>*> _lsList) :
-		ev(_ev), lsList(_lsList)
+	VariableNeighborhoodDescent(Evaluator<R, ADS>& _ev, vector<LocalSearch<R, ADS>*> _lsList, bool _shuffle = false) :
+		ev(_ev), lsList(_lsList), shuffle(_shuffle)
 	{
 	}
 
@@ -46,7 +48,7 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
 	{
-		Evaluation e = ev.evaluateSolution(s);
+		Evaluation e = std::move(ev.evaluateSolution(s));
 
 		exec(s, e, timelimit, target_f);
 	}
@@ -57,21 +59,22 @@ public:
 		if(Component::information)
 			cout << "VND::starts" << endl;
 
-		long tini = time(NULL);
+		Timer tNow;
+
+		if(shuffle)
+			rg.shuffle(lsList); // shuffle elements
 
 		int r = lsList.size();
 
 		int k = 1;
 
-		long tnow = time(NULL);
-		Evaluation* e0 = &e.clone();
-		while (ev.betterThan(target_f, e.evaluation()) && (k <= r) && ((tnow - tini) < timelimit))
+		Evaluation eCurrent;
+		while (ev.betterThan(target_f, e.evaluation()) && (k <= r) && (tNow.now() < timelimit))
 		{
-			(*e0) = e; //check TODO if this clone is right
-
+			eCurrent = e;
 			lsList[k - 1]->exec(s, e, timelimit, target_f);
 
-			if (ev.betterThan(e, *e0))
+			if (ev.betterThan(e, eCurrent))
 			{
 				k = 1;
 			}
@@ -82,11 +85,7 @@ public:
 				if(Component::information)
 					cout << "VND::k=" << k << endl;
 			}
-
-
-			tnow = time(NULL);
 		}
-		delete e0;
 	}
 
 	virtual bool compatible(string s)
@@ -177,4 +176,4 @@ public:
 
 }
 
-#endif /*VARIABLENEIGHBORHOODDESCENT_HPP_*/
+#endif /*OPTFRAME_VARIABLENEIGHBORHOODDESCENT_HPP_*/
