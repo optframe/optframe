@@ -33,7 +33,7 @@ public:
 	
 	virtual ~Constructive$constructive();
 
-	Solution<Rep$project> generateSolution();
+	Solution<Rep$project>* generateSolution(double timelimit);
 };
 
 }
