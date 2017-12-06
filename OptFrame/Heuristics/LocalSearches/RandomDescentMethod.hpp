@@ -55,13 +55,11 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
 	{
-		long tini = time(NULL);
+		Timer tNow;
 
 		unsigned int iter = 0;
 
-		long tnow = time(NULL);
-
-		while ((iter < iterMax) && ((tnow - tini) < timelimit) && (evaluator.betterThan(target_f, e.evaluation())))
+		while ((iter < iterMax) && (tNow.now() < timelimit) && (evaluator.betterThan(target_f, e.evaluation())))
 		{
 			// TODO: verify if it's not null!
 			Move<R, ADS>& move = *ns.randomMoveSolution(s);
@@ -76,7 +74,6 @@ public:
 			{
 				iter++;
 				delete &move;
-				tnow = time(NULL);
 				continue;
 			}
 
@@ -93,7 +90,6 @@ public:
 				delete cost;
 
 			delete &move;
-			tnow = time(NULL);
 		}
 	}
 

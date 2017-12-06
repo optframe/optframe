@@ -213,9 +213,9 @@ public:
 
 			Move<R, ADS>* ini = rev->applySolution(s);
 			// for now, must be not NULL
-			assert(rev != NULL);
+			assert(ini != NULL);
 			// TODO: include management for 'false' hasReverse()
-			assert(m.hasReverse() && rev);
+			assert(rev->hasReverse() && ini);
 
 			e = std::move(ev_begin);
 			//==================================================================
@@ -374,9 +374,9 @@ public:
 
 			Move<R, ADS>* ini = rev->applySolution(s);
 			// for now, must be not NULL
-			assert(rev != NULL);
+			assert(ini != NULL);
 			// TODO: include management for 'false' hasReverse()
-			assert(m.hasReverse() && rev);
+			assert(rev->hasReverse() && ini);
 			e = std::move(ev_begin);
 			delete ini;
 			//==================================================================

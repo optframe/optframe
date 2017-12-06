@@ -78,14 +78,13 @@ public:
 			}
 			*/
 
-			bestMoveId = move->id();
+//			bestMoveId = move->id();
 
 			if (move->canBeAppliedToSolution(s))
 			{
 				if(eval.acceptsImprove(*move,s,e))
 				{
 					delete move;
-
 					delete &it;
 					// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
 					//e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
