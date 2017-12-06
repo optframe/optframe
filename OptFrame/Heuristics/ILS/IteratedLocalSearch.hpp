@@ -58,7 +58,7 @@ public:
 
 	virtual void perturbation(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f, H& history) = 0;
 
-	virtual Solution<R, ADS>& acceptanceCriterion(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2, H& history) = 0;
+	virtual bool acceptanceCriterion(const Evaluation& e1, const Evaluation& e2, H& history) = 0;
 
 	virtual bool terminationCondition(H& history) = 0;
 
@@ -66,22 +66,29 @@ public:
 	{
 		double timelimit = stopCriteria.timelimit;
 		double target_f = stopCriteria.target_f;
-		cout << "ILS search(" << target_f << "," << timelimit << ")" << endl;
+		cout << "ILS opt search(" << target_f << "," << timelimit << ")" << endl;
 
 		Timer tnow;
 
-		Solution<R, ADS>* s;
-		if (_s != NULL)
-			s = &_s->clone();
-		else
-			s = constructive.generateSolution(timelimit);
+		Solution<R, ADS>* sStar = nullptr;
+		Evaluation* eStar = nullptr;
 
-		Evaluation e = evaluator.evaluateSolution(*s);
+		//If solution is given it should contain an evaluation: TODO - Implement search with Solution
+		if (_s != NULL)
+		{
+			(*sStar) = (*_s);
+			(*eStar) = (*_e);
+		}
+		else
+		{
+			sStar = new Solution<R, ADS>(std::move(*constructive.generateSolution(timelimit)));
+			eStar = new Evaluation(evaluator.evaluateSolution(*sStar));
+		}
 
 		if (Component::information)
 		{
 			cout << "ILS::starting with FO:" << endl;
-			e.print();
+			eStar->print();
 		}
 
 		H* history = &initializeHistory();
@@ -91,52 +98,44 @@ public:
 
 		if (Component::information)
 			cout << "ILS::performing first local search" << endl;
-		localSearch(*s, e, (timelimit - (tnow.now())), target_f);
+		localSearch(*sStar, *eStar, (timelimit - (tnow.now())), target_f);
 		if (Component::information)
 			cout << "ILS::finished first local search" << endl;
 
-		Solution<R, ADS>* sStar = &s->clone();
-		Evaluation* eStar = &e.clone();
-
-		cout << "ILS starts: ";
-		e.print();
+		cout << "ILS optimized starts: ";
+		eStar->print();
 
 		do
 		{
-			Solution<R, ADS>* s1 = &sStar->clone();
-			Evaluation* e1 = &eStar->clone();
+			Solution<R, ADS> s1(*sStar);
+			Evaluation e1(*eStar);
 
-			perturbation(*s1, *e1, (timelimit - (tnow.now())), target_f, *history);
+			perturbation(s1, e1, (timelimit - (tnow.now())), target_f, *history);
 
-			localSearch(*s1, *e1, (timelimit - (tnow.now())), target_f);
+			localSearch(s1, e1, (timelimit - (tnow.now())), target_f);
 
-			Solution<R, ADS>* s2 = s1;
-			Evaluation* e2 = e1;
+			(*eStar) = evaluator.evaluateSolution(*sStar);
+			bool improvement = acceptanceCriterion(e1, *eStar, *history);
 
-			Solution<R, ADS>* sStar1 = &acceptanceCriterion(*sStar, *s2, *history);
-
-			delete sStar;
-			delete eStar;
-			delete s2;
-			delete e2;
-
-			sStar = sStar1;
-			eStar = new Evaluation(evaluator.evaluateSolution(*sStar));
+			if (improvement)
+			{
+				(*eStar) = e1;
+				(*sStar) = s1;
+			}
 
 		} while (evaluator.betterThan(target_f, eStar->evaluation()) && !terminationCondition(*history) && ((tnow.now()) < timelimit));
 
 		if (evaluator.betterThan(eStar->evaluation(), target_f))
 			cout << "ILS exit by target_f: " << eStar->evaluation() << " better than " << target_f << endl;
 
-		e = *eStar;
-		(*s) = *sStar;
+		pair<Solution<R, ADS>, Evaluation>* pairToReturn = new pair<Solution<R, ADS>, Evaluation>(make_pair(std::move(*sStar), std::move(*eStar)));
 
 		delete eStar;
 		delete sStar;
 
 		delete history;
 
-		return new pair<Solution<R, ADS>, Evaluation>(*s, e);
+		return pairToReturn;
 	}
 
 	static string idComponent()

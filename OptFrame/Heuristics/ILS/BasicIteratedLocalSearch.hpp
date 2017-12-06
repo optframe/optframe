@@ -81,15 +81,14 @@ public:
 		history = iter;
 	}
 
-	virtual Solution<R, ADS>& acceptanceCriterion(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2, BasicHistory& history)
+	virtual bool acceptanceCriterion(const Evaluation& e1, const Evaluation& e2, BasicHistory& history)
 	{
-		if (IteratedLocalSearch<BasicHistory, R, ADS >::evaluator.betterThan(s2, s1))
+		if (IteratedLocalSearch<BasicHistory, R, ADS >::evaluator.betterThan(e1, e2))
 		{
 			// =======================
 			//   Melhor solucao: 's2'
 			// =======================
-			Evaluation e = IteratedLocalSearch<BasicHistory, R, ADS >::evaluator.evaluateSolution(s2);
-			cout << "Best fo: " << e.evaluation();
+			cout << "Best fo: " << e1.evaluation();
 			cout << " on [iter " << history << "]" << endl;
 
 			// =======================
@@ -101,10 +100,10 @@ public:
 			// =======================
 			//    Retorna s2
 			// =======================
-			return s2.clone();
+			return true;
 		}
 		else
-			return s1.clone();
+			return false;
 	}
 
 	virtual bool terminationCondition(BasicHistory& history)

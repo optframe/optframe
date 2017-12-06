@@ -43,7 +43,7 @@ private:
 public:
 
 	VariableNeighborhoodDescent(Evaluator<R, ADS>& _ev, vector<LocalSearch<R, ADS>*> _lsList, RandGen* _rg = NULL) :
-		ev(_ev), lsList(_lsList), rg(_rg)
+			ev(_ev), lsList(_lsList), rg(_rg)
 	{
 	}
 
@@ -58,15 +58,14 @@ public:
 		exec(s, e, timelimit, target_f);
 	}
 
-
 	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
 	{
-		if(Component::information)
+		if (Component::information)
 			cout << "VND::starts" << endl;
 
 		Timer tNow;
 
-		if(rg)
+		if (rg)
 			rg->shuffle(lsList); // shuffle elements
 
 		int r = lsList.size();
@@ -82,12 +81,14 @@ public:
 			if (ev.betterThan(e, eCurrent))
 			{
 				k = 1;
+				if (Component::information)
+					e.print();
 			}
 			else
 			{
 				k = k + 1;
 
-				if(Component::information)
+				if (Component::information)
 					cout << "VND::k=" << k << endl;
 			}
 		}
@@ -114,10 +115,10 @@ public:
 	{
 		stringstream ss;
 		ss << "VND: [ ";
-		for(unsigned i=0; i<lsList.size(); i++)
+		for (unsigned i = 0; i < lsList.size(); i++)
 		{
 			ss << lsList[i]->toString();
-			if(i != lsList.size()-1)
+			if (i != lsList.size() - 1)
 				ss << ",";
 		}
 		ss << "]";
@@ -125,12 +126,10 @@ public:
 		return ss.str();
 	}
 
-
 };
 
-
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class VariableNeighborhoodDescentBuilder : public LocalSearchBuilder<R, ADS>
+class VariableNeighborhoodDescentBuilder: public LocalSearchBuilder<R, ADS>
 {
 public:
 	virtual ~VariableNeighborhoodDescentBuilder()

@@ -103,22 +103,17 @@ public:
 		history.first.second = level;
 	}
 
-	virtual Solution<R, ADS>& acceptanceCriterion(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2, levelHistory& history)
+	virtual bool acceptanceCriterion(const Evaluation& e1, const Evaluation& e2, levelHistory& history)
 	{
 		//cout << "acceptanceCriterion(.)" << endl;
 
-		if (IteratedLocalSearch<levelHistory, R, ADS >::evaluator.betterThan(s2, s1))
+		if (IteratedLocalSearch<levelHistory, R, ADS >::evaluator.betterThan(e1, e2))
 		{
-			// =======================
-			//   Melhor solucao: 's2'
-			// =======================
-			Evaluation e = IteratedLocalSearch<levelHistory, R, ADS >::evaluator.evaluateSolution(s2);
 			if(Component::information)
 			{
 				cout << "ILSL::Best fo: on [iter " << history.first.first << " of level " << history.first.second << "] => ";
-				e.print();
+				e1.print();
 			}
-			delete &e;
 
 			// =======================
 			//  Atualiza o historico
@@ -131,10 +126,10 @@ public:
 			// =======================
 			//    Retorna s2
 			// =======================
-			return s2.clone();
+			return true;
 		}
 		else
-			return s1.clone();
+			return false;
 	}
 
 	virtual bool terminationCondition(levelHistory& history)
