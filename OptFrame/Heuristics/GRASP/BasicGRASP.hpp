@@ -23,6 +23,7 @@
 
 #include "../../SingleObjSearch.hpp"
 #include "../../LocalSearch.hpp"
+#include "../../Timer.hpp"
 
 #include "GRASPFamily.h"
 #include "GRConstructive.hpp"
@@ -62,39 +63,32 @@ public:
 		double timelimit = stopCriteria.timelimit;
 		double target_f = stopCriteria.target_f;
 
-		long tini = time(NULL);
+		Timer tNow;
 
 		unsigned int iter = 0;
 
-		long tnow = time(NULL);
-
-                // store initial value in s (TODO: remove workaround to deal with pointer directly)
-		Solution<R, ADS>* sP = constructive.generateGRSolution(alpha, timelimit);
-                Solution<R, ADS> s = std::move(*sP);  //workaround
-                delete sP;                           //workaround
-		Evaluation e = evaluator.evaluateSolution(s);
+		Solution<R, ADS>* s = constructive.generateGRSolution(alpha, timelimit);
+		Evaluation e = evaluator.evaluateSolution(*s);
 
 		if (Component::information)
 			e.print();
 
-		while ((iter < iterMax) && ((tnow - tini) < timelimit) && (evaluator.betterThan(target_f, e.evaluation())))
+		while ((iter < iterMax) && (tNow.now() < timelimit) && (evaluator.betterThan(target_f, e.evaluation())))
 		{
 			if (Component::verbose)
 				cout << "GRASP::iter=" << iter << endl;
 
-                        // store initial value in s1 (TODO: remove workaround to deal with pointer directly)
-			Solution<R, ADS>* sTmp = constructive.generateGRSolution(alpha, timelimit);
-                        Solution<R, ADS> s1(std::move(*sTmp)); // workaround
-                        delete sTmp;                          // workaround
- 
-			Evaluation e1 = evaluator.evaluateSolution(s1);
+			Solution<R, ADS>* s1 = constructive.generateGRSolution(alpha,timelimit - tNow.now());
 
-			ls.exec(s1, e1, timelimit, target_f);
+			Evaluation e1 = evaluator.evaluateSolution(*s1);
+
+			ls.exec(*s1, e1, timelimit - tNow.now(), target_f);
 
 			if (evaluator.betterThan(e1, e))
 			{
-				s = s1;
-				e = e1;
+				(*s) = std::move(*s1);
+				delete s1;
+				e = std::move(e1);
 				if (Component::information)
 				{
 					cout << "GRASP iter " << iter << ": ";
@@ -102,11 +96,12 @@ public:
 				}
 			}
 
-			tnow = time(NULL);
 			iter++;
 		}
+		Solution<R, ADS> sFinal = std::move(*s);
+		delete s;
 
-		return new pair<Solution<R, ADS>, Evaluation>(s, e);
+		return new pair<Solution<R, ADS>, Evaluation>(sFinal, e);
 	}
 
 	virtual string id() const

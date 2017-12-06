@@ -33,6 +33,7 @@ using namespace std;
 #include "Evaluation.hpp"
 
 #include "Component.hpp"
+#include "NSIterator.hpp"
 
 namespace optframe
 {

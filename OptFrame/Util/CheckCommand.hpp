@@ -374,11 +374,14 @@ public:
 			// ==============
 			// fasterCost
 			Timer tMoveCostApplyDelta;
+			Evaluation evBeginFasterCost = e;
 			Move<R, ADS>& rev1 = *lEvaluator[ev]->applyMoveReevaluate(e, move, s);
 			evtype e_end1 = e.evaluation();
 			// TODO: check outdated status
 			// TODO: if(e.outdated), it means that user did not implement Move::applyMoveReevaluate(e,R,ADS)!
-			Move<R, ADS>& ini1 = *lEvaluator[ev]->applyMoveReevaluate(e, rev1, s);
+//			Move<R, ADS>& ini1 = *lEvaluator[ev]->applyMoveReevaluate(e, rev1, s);
+			Move<R, ADS>& ini1 = *rev1.applySolution(s);
+			e = std::move(evBeginFasterCost);
 			evtype e_ini1 = e.evaluation();
 			timeNS.timeNSCostApplyDelta[id_ns].second += tMoveCostApplyDelta.inMilliSecs();
 			timeNS.timeNSCostApplyDelta[id_ns].first++;
@@ -400,7 +403,6 @@ public:
 				cout << "e_rev = " << e_rev.evaluation() << endl;
 				return false;
 			}
-
 			// ==============
 
 			// ==============
@@ -1067,7 +1069,7 @@ public:
 
 		printSummary(convertVector(lNS), timeNS.timeNSCostApplyDelta, "NS", "testing time of cost based on move apply(e, s)");
 
-		printSummary(convertVector(lNS), timeNS.timeNSCostApplyRealDelta, "NS", "testing time of real cost based on move apply(e, s)");
+		printSummary(convertVector(lNS), timeNS.timeNSCostApplyRealDelta, "NS", "testing time of real cost based on move apply(e, s) - forcing allowCosts to False");
 
 		printSummary(convertVector(lNS), timeNS.timeNSCost, "NS", "testing time of move cost()");
 
