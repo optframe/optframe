@@ -346,7 +346,7 @@ public:
 //
 //		}
 //
-//		if (added == true)
+//		if (added)
 //			p.push_back(candidate, &mevCandidate);
 //
 //		delete &mevCandidate;
@@ -396,7 +396,7 @@ public:
 //
 //		}
 //
-//		if (added == true)
+//		if (added)
 //		{
 //			p.first.push_back(candidate, fitnessNewInd);
 //			vector<bool> neigh;
@@ -465,7 +465,7 @@ public:
 //			}
 //
 //		}
-//		if (added == true)
+//		if (added)
 //			p.push_back(s, fitnessNewInd);
 //
 //		return added;
@@ -508,7 +508,7 @@ public:
 //
 //		}
 //
-//		if (added == true)
+//		if (added)
 //		{
 //			p.first.push_back(s, fitnessNewInd);
 //			vector<bool> neigh;

@@ -68,7 +68,7 @@ protected:
 //			}
 //		}
 //
-//		if (added == true)
+//		if (added)
 //			p.push_back(s);
 //
 //		return added;

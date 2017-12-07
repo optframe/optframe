@@ -67,7 +67,7 @@ public:
 
 		foo.open(filename.c_str());
 
-    	if(foo.is_open() == true)
+    	if(foo.is_open())
        		foo.close();
     	else
     	{ 

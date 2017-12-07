@@ -71,7 +71,7 @@ public:
 
 			// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
 			/*
-			if(e.getLocalOptimumStatus(move->id()) == true)
+			if(e.getLocalOptimumStatus(move->id()))
 			{
 				delete &it;
 				delete move;

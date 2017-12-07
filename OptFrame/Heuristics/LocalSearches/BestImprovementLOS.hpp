@@ -81,7 +81,7 @@ public:
 
 		Move<R, ADS>* bestMove = &it.current();
 
-		/*if(e.getLocalOptimumStatus(bestMove->id()) == true)
+		/*if(e.getLocalOptimumStatus(bestMove->id()))
 		{
 			delete &it;
 			delete bestMove;

@@ -87,7 +87,7 @@ public:
 
 		bool hasATrue = false;
 		for (unsigned i = 0 ; i < values.size() && !hasATrue ; i++)
-			if (values[i] == true) 
+			if (values[i]) 
 				hasATrue = true;
 
 		if (!hasATrue)
