@@ -81,12 +81,12 @@ public:
 
     void next()
     {
-        it = NULL;
+        it = nullptr;
     }
 
     bool isDone()
     {
-        return it == NULL;
+        return it == nullptr;
     }
 
     virtual NSIterator<R, ADS>& current()

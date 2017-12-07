@@ -56,7 +56,7 @@ private:
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (modules[i]->canHandle(module, "")) // TODO: fix
 				return modules[i];
-		return NULL;
+		return nullptr;
 	}
 
 	bool exec_command(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary, string command)
@@ -65,7 +65,7 @@ private:
 		string module = scanner.next();
 		Command<R, ADS, DS>* m = getCommand(all_modules, module);
 
-		if (m == NULL
+		if (m == nullptr
 			)
 			return false;
 
@@ -277,7 +277,7 @@ private:
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())
 				return modules[i];
-		return NULL;
+		return nullptr;
 	}
 
 public:
@@ -363,7 +363,7 @@ public:
 
 		Command<R, ADS, DS>* m = getCommand(modules, name);
 
-		if (m != NULL)
+		if (m != nullptr)
 		{
 			cout << "module " << id() << " error: module with name '" << name << "' already exists!" << endl;
 			return false;
@@ -391,12 +391,12 @@ public:
 				body += input[i];
 
 		if (end < 0)
-			return NULL; // no brackets
+			return nullptr; // no brackets
 
 		string* pbody = Command<R, ADS, DS>::defaultPreprocess(fs, hf, d, ld, body);
 
 		if (!pbody)
-			return NULL;
+			return nullptr;
 
 		string ninput = *pbody;
 

@@ -79,7 +79,7 @@ public:
 
 	virtual MOSIndividual<R, ADS, DS>* createIndividual(Solution<R, ADS>* s)
 	{
-		MultiEvaluation<DS>* mev = NULL;
+		MultiEvaluation<DS>* mev = nullptr;
 
 		// no evaluation here!
 
@@ -103,7 +103,7 @@ public:
 	// multiple crossovers in a binary tournament and apply many mutations
 	virtual vector<MOSIndividual<R, ADS, DS>*>& createNext(unsigned target_size, const vector<const MOSIndividual<R, ADS, DS>*>& P)
 	{
-		vector<MOSIndividual<R, ADS, DS>*>* children = NULL;
+		vector<MOSIndividual<R, ADS, DS>*>* children = nullptr;
 
 		unsigned size_renew = renewRate * target_size;
 
@@ -176,7 +176,7 @@ public:
 			else
 				crossChildren = make_pair(&pool[i]->s->clone(), &pool[j]->s->clone());
 
-			vector<Solution<R, ADS>*> vChildren(2, NULL);
+			vector<Solution<R, ADS>*> vChildren(2, nullptr);
 			vChildren[0] = crossChildren.first;
 			vChildren[1] = crossChildren.second;
 
@@ -191,11 +191,11 @@ public:
 					{
 						delete &move->apply(*vChildren[c]);
 						delete move;
-						move = NULL;
+						move = nullptr;
 					}
 				}
 
-				children->push_back(new MOSIndividual<R, ADS, DS>(vChildren[c], NULL));
+				children->push_back(new MOSIndividual<R, ADS, DS>(vChildren[c], nullptr));
 			}
 		}
 

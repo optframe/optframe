@@ -106,7 +106,7 @@ public:
 		string* scond1 = Command<R, ADS, DS>::defaultPreprocess(allFunctions, factory, dictionary, ldictionary, boolean_expr.str());
 
 		if(!scond1)
-			return NULL;
+			return nullptr;
 
 		string scondition = *scond1;
 

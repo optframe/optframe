@@ -44,7 +44,7 @@ protected:
 
 public:
 
-	MoveVRPOrOpt1(int _r, int _c, int _pos, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
+	MoveVRPOrOpt1(int _r, int _c, int _pos, OPTFRAME_DEFAULT_PROBLEM* _problem = nullptr) :
 		r(_r), c(_c), pos(_pos), problem(_problem)
 	{
 	}
@@ -139,10 +139,10 @@ protected:
 	P* p; // has to be the last
 public:
 
-	NSIteratorVRPOrOpt1(const Routes& _r, const ADS& _ads, P* _p = NULL) :
+	NSIteratorVRPOrOpt1(const Routes& _r, const ADS& _ads, P* _p = nullptr) :
 		rep(_r), p(_p)
 	{
-		m = NULL;
+		m = nullptr;
 		index = 0;
 	}
 
@@ -172,7 +172,7 @@ public:
 			m = moves[index];
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	virtual void next()
@@ -183,12 +183,12 @@ public:
 			m = moves[index];
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	virtual bool isDone()
 	{
-		return m == NULL;
+		return m == nullptr;
 	}
 
 	virtual Move<Routes, ADS>& current()
@@ -214,7 +214,7 @@ private:
 
 public:
 
-	NSSeqVRPOrOpt1(P* _p = NULL) :
+	NSSeqVRPOrOpt1(P* _p = nullptr) :
 		p(_p)
 	{
 	}

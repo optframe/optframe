@@ -80,7 +80,7 @@ public:
 			cerr << "Neighborhood Shift Error! Move " << _k << " does not exist! Valid Interval from 0 to " << (size()-1) << "." << endl;
 			exit(1);
 
-			//return NULL;
+			//return nullptr;
 		}
 
 		return * new MoveVVShiftk<T,DS >((*moves)[_k].first,

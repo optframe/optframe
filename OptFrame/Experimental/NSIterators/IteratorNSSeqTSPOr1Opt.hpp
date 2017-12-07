@@ -46,7 +46,7 @@ public:
 	IteratorNSSeqTSPOr1Opt(const Route& _r) :
 		rep(_r)
 	{
-		m = NULL;
+		m = nullptr;
 		index = 0;
 	}
 
@@ -73,7 +73,7 @@ public:
 			m = moves[index];
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	void next()
@@ -84,12 +84,12 @@ public:
 			m = moves[index];
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	bool isDone()
 	{
-		return m == NULL;
+		return m == nullptr;
 	}
 
 	MoveTSPOr1Opt<T, DS >& current()

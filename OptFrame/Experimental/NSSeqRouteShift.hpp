@@ -178,7 +178,7 @@ public:
 	NSIteratorRoutesShift(const Routes& r, int _n1, int _n2) :
 		routes(r), n1(_n1), n2(_n2)
 	{
-		m = NULL;
+		m = nullptr;
 	}
 
 	virtual ~NSIteratorRoutesShift()
@@ -221,7 +221,7 @@ public:
 			moves.erase(moves.begin() + 0);
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	void next()
@@ -232,12 +232,12 @@ public:
 			moves.erase(moves.begin() + 0);
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	bool isDone()
 	{
-		return m == NULL;
+		return m == nullptr;
 	}
 
 	Move<Routes, DS >& current()

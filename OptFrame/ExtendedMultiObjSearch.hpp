@@ -75,7 +75,7 @@ public:
 
 	Pareto<X>* getPareto()
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	void push_back(Solution<R>* s, vector<MultiEvaluation*>& v_e, Population<X, ADS>* v_x)
@@ -153,7 +153,7 @@ public:
 	{
 	}
 
-	virtual ExtendedPareto<R, X, ADS>* search(double timelimit = 100000000, double target_f = 0, ExtendedPareto<R, X, ADS>* _pf = NULL) = 0;
+	virtual ExtendedPareto<R, X, ADS>* search(double timelimit = 100000000, double target_f = 0, ExtendedPareto<R, X, ADS>* _pf = nullptr) = 0;
 
 	virtual string log()
 	{

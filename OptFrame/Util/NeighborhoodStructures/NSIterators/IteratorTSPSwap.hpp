@@ -44,12 +44,12 @@ protected:
 
 public:
 
-	NSIteratorTSPSwap(int _n, P* _p = NULL) :
+	NSIteratorTSPSwap(int _n, P* _p = nullptr) :
 			p(_p)
 	{
 		p1 = p2 = 0;
 		n = _n;
-		m = NULL;
+		m = nullptr;
 	}
 
 	virtual ~NSIteratorTSPSwap()
@@ -65,7 +65,7 @@ public:
 			m = new MOVE(p1, p2, p);
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	virtual void next()
@@ -84,12 +84,12 @@ public:
 			m = new MOVE(p1, p2, p);
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	virtual bool isDone()
 	{
-		return (m == NULL);
+		return (m == nullptr);
 	}
 
 	virtual Move<Route, ADS>& current()

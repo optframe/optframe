@@ -52,7 +52,7 @@ public:
 		scanner.trimInput();
 
 		if (!scanner.hasNextChar())
-			return NULL;
+			return nullptr;
 
 		char character = scanner.nextChar();
 		int numberOfBrackets;
@@ -80,19 +80,19 @@ public:
 				catch (ConversionError& e)
 				{
 					cout << "OptFrameList error: variable '" << word << "' not found in list dictionary!" << endl;
-					return NULL;
+					return nullptr;
 				}
 
 				if (!scanner.hasNext())
-					return NULL;
+					return nullptr;
 
 				string doubledots = scanner.next();
 
 				if (doubledots != "..")
-					return NULL;
+					return nullptr;
 
 				if (!scanner.hasNext())
-					return NULL;
+					return nullptr;
 
 				string send = scanner.next();
 
@@ -103,7 +103,7 @@ public:
 				}
 				catch (ConversionError& e)
 				{
-					return NULL;
+					return nullptr;
 				}
 
 				vector<string>* numeric_list = new vector<string>();
@@ -130,7 +130,7 @@ public:
 		numberOfBrackets = 0;
 
 		if (!scanner.hasNextChar())
-			return NULL;
+			return nullptr;
 
 		character = scanner.nextChar();
 
@@ -153,7 +153,7 @@ public:
 			}
 
 			if (!scanner.hasNextChar())
-				return NULL;
+				return nullptr;
 
 			character = scanner.nextChar();
 		}
@@ -174,7 +174,7 @@ public:
 	static vector<std::string>* readBlock(Scanner& scanner)
 	{
 		if (!scanner.hasNextChar())
-			return NULL;
+			return nullptr;
 
 		char character = scanner.nextChar();
 		int numberOfBrackets;
@@ -183,7 +183,7 @@ public:
 		while (character == ' ')
 		{
 			if (!scanner.hasNextChar())
-				return NULL;
+				return nullptr;
 
 			character = scanner.nextChar();
 		}
@@ -192,7 +192,7 @@ public:
 		{
 			if (character == '[')
 				cout << "OptFrameList::readBlock() error: trying to read block from a possible list structure!" << endl;
-			return NULL;
+			return nullptr;
 		}
 
 		vector<string>* block = new vector<string>;
@@ -201,7 +201,7 @@ public:
 		numberOfBrackets = 0;
 
 		if (!scanner.hasNextChar())
-			return NULL;
+			return nullptr;
 
 		character = scanner.nextChar();
 
@@ -224,7 +224,7 @@ public:
 			}
 
 			if (!scanner.hasNextChar())
-				return NULL;
+				return nullptr;
 
 			character = scanner.nextChar();
 		}

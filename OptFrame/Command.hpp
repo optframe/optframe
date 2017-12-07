@@ -361,7 +361,7 @@ public:
 				if(var == "")
 				{
 					cout << "solveVars error: empty variable ${}!" << endl;
-					return NULL;
+					return nullptr;
 				}
 
 				if (dictionary.count(var) != 0)
@@ -371,7 +371,7 @@ public:
 				else
 				{
 					cout << "Error: variable '$" << var << "' not defined in any dictionary!" << endl;
-					return NULL; // no variable in dictionary!
+					return nullptr; // no variable in dictionary!
 				}
 
 				var = "";
@@ -447,7 +447,7 @@ public:
 			if (var == "")
 			{
 				cout << "solveVars error: empty variable ${}!" << endl;
-				return NULL;
+				return nullptr;
 			}
 
 			if (dictionary.count(var) != 0)
@@ -457,7 +457,7 @@ public:
 			else
 			{
 				cout << "Error: variable '$" << var << "' not defined in any dictionary!" << endl;
-				return NULL; // no variable in dictionary!
+				return nullptr; // no variable in dictionary!
 			}
 		}
 
@@ -487,7 +487,7 @@ public:
 		// ===============
 		string* p_input = solveVars(dictionary, ldictionary, input_func);
 		if (!p_input)
-			return NULL;
+			return nullptr;
 		else
 		{
 			input = *p_input;
@@ -539,7 +539,7 @@ public:
 				else
 				{
 					cout << "module preprocessing error in function '" << last << "'" << endl;
-					return NULL; // error in valid function!
+					return nullptr; // error in valid function!
 				}
 			}
 			else

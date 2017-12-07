@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_COMPONENT_NULL_MODULE_HPP_
-#define OPTFRAME_COMPONENT_NULL_MODULE_HPP_
+#ifndef OPTFRAME_COMPONENT_NULLPTR_MODULE_HPP_
+#define OPTFRAME_COMPONENT_NULLPTR_MODULE_HPP_
 
 #include "../Command.hpp"
 
@@ -96,7 +96,7 @@ public:
 
     	  if(id < ((int)v.size()))
     	  {
-    		  string result = formatBool(v[id]==NULL);
+    		  string result = formatBool(v[id]==nullptr);
 
     		  return Command<R, ADS, DS>::defineText(variable,result,dictionary);
     	  }
@@ -116,4 +116,4 @@ public:
 
 }
 
-#endif /* OPTFRAME_COMPONENT_NULL_MODULE_HPP_ */
+#endif /* OPTFRAME_COMPONENT_NULLPTR_MODULE_HPP_ */

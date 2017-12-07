@@ -145,7 +145,7 @@ public:
 		searchWithOptionalPareto(stopCriteria,&_pf);
 	}
 
-	virtual Pareto<R, ADS>* searchWithOptionalPareto(MOSC& stopCriteria, Pareto<R, ADS>* _pf = NULL)
+	virtual Pareto<R, ADS>* searchWithOptionalPareto(MOSC& stopCriteria, Pareto<R, ADS>* _pf = nullptr)
 	{
 		Timer tnow;
 
@@ -155,7 +155,7 @@ public:
 		gplsStructure<R, ADS> gPLSData;
 		Pareto<R, ADS> x_e;
 
-		if (_pf == NULL)
+		if (_pf == nullptr)
 		{
 			cout << "Creating initial population using a initial pareto method:" << init_pop_size << endl;
 			if (tnow.now() < stopCriteria.timelimit)

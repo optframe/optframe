@@ -56,8 +56,8 @@ public:
 			if (modules[i]->canHandle(module, rest))
 				return modules[i];
 		}
-		//cout << "run: NULL MODULE! module='" << module << "' rest='" << rest << "'" << endl;
-		return NULL;
+		//cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest << "'" << endl;
+		return nullptr;
 	}
 
 	bool run(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
@@ -86,7 +86,7 @@ public:
 
 		if(!m)
 		{
-			cout << "preprocess command: NULL module!" << endl;
+			cout << "preprocess command: nullptr module!" << endl;
 			return false;
 		}
 

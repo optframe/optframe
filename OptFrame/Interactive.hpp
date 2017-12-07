@@ -342,7 +342,7 @@ public:
 
 	void setVariables()
 	{
-	    char *path=NULL;
+	    char *path=nullptr;
 	    size_t size =0;
 	    path=getcwd(path,size);
 
@@ -592,7 +592,7 @@ public:
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())
 				return modules[i];
-		return NULL;
+		return nullptr;
 	}
 
 	void loadActions()

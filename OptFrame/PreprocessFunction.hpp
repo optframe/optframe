@@ -64,7 +64,7 @@ public:
 				//cout << "found function: '" << func << "'" << endl;
 				string* iprep = allFunctions[i]->preprocess(allFunctions, hf, dictionary, ldictionary, input);
 				if(!iprep)
-					return NULL;
+					return nullptr;
 
 				//printf("function_after_prep (%s): '%s'\n", func.c_str(), iprep->c_str());
 
@@ -119,7 +119,7 @@ public:
 				string* r = allFunctions[i]->run(allFunctions, hf, dictionary, ldictionary, body);
 
 				if(!r)
-					return NULL;
+					return nullptr;
 				else
 				{
 					string r1 = *r;
@@ -130,7 +130,7 @@ public:
 
 		cout << "Function '" << func << "' not found." << endl;
 
-		return NULL;
+		return nullptr;
 	}
 
 	static bool functionExists(string func, vector<PreprocessFunction<R,ADS,DS>*>& allFunctions)
@@ -241,7 +241,7 @@ public:
 				else
 				{
 					cout << "function error in '" << last << "'" << endl;
-					return NULL; // error in valid function!
+					return nullptr; // error in valid function!
 				}
 			}
 			else

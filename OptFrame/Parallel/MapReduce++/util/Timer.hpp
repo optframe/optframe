@@ -38,18 +38,18 @@ protected:
 public:
 	Timer()
 	{ 
-		gettimeofday(&time1, NULL); 
+		gettimeofday(&time1, nullptr); 
 		showMessageOnDestroy=true; 
 	};
 	Timer(bool m)
 	{ 
-		gettimeofday(&time1, NULL); 
+		gettimeofday(&time1, nullptr); 
 		showMessageOnDestroy=m; 
 	};
 	virtual ~Timer(){ if(showMessageOnDestroy) printf("Elapsed time: %.3f secs\n", now()); };
 	virtual double now() 
 	{ 
-		gettimeofday(&time2, NULL);
+		gettimeofday(&time2, nullptr);
 	    elapsed_seconds  = time2.tv_sec  - time1.tv_sec;
 	    elapsed_useconds = time2.tv_usec - time1.tv_usec;
 	    elapsed_utime = (elapsed_seconds) * 1000000 + elapsed_useconds;

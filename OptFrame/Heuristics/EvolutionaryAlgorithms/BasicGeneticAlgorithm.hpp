@@ -175,7 +175,7 @@ public:
 			ls.exec(c, e, timelimit, target_f);
 	}
 
-	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
+	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = nullptr, const Evaluation* _e = nullptr)
 	{
 		Timer t;
 		cout << id() << "(timelimit=" << timelimit << "; target_f=" << target_f << ")" << endl;
@@ -253,8 +253,8 @@ public:
 					exit(1);
 				}
 
-				Evaluation* e1 = NULL;
-				Evaluation* e2 = NULL;
+				Evaluation* e1 = nullptr;
+				Evaluation* e2 = nullptr;
 
 				if (rCross.first)
 				{

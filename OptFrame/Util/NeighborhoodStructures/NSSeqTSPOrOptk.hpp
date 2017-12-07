@@ -42,7 +42,7 @@ private:
 
 public:
 
-	NSSeqTSPOrOptk(int _k, P* _p = NULL) :
+	NSSeqTSPOrOptk(int _k, P* _p = nullptr) :
 			k(_k), p(_p)
 	{
 	}
@@ -90,7 +90,7 @@ public:
 		else
 		{
 			delete m;
-			return NULL;
+			return nullptr;
 		}
 	}
 

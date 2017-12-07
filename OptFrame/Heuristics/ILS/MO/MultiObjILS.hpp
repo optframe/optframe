@@ -64,13 +64,13 @@ public:
 
 	virtual bool terminationCondition(H& history) = 0;
 
-	virtual Pareto<R, ADS>* search(MOSC& stopCriteria, Pareto<R, ADS>* _pf = NULL)
+	virtual Pareto<R, ADS>* search(MOSC& stopCriteria, Pareto<R, ADS>* _pf = nullptr)
 	{
 		Timer tnow;
 		Pareto<R, ADS> x_e;
 		cout << "exec: MOILS (tL:" << stopCriteria.timelimit << ")" << endl;
 
-		if (_pf == NULL)
+		if (_pf == nullptr)
 		{
 			if (Component::information)
 				cout << "Creating initial population using a initial pareto method:" << init_pop_size << endl;

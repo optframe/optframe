@@ -69,7 +69,7 @@ public:
 			delete plist;
 		}
 		else
-			return NULL;
+			return nullptr;
 
 		return new string(OptFrameList::listToString(list));
 	}

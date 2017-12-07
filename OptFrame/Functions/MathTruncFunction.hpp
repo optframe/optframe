@@ -68,7 +68,7 @@ public:
 		Scanner scanner(body);
 
 		if(!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		double v;
 		string a = scanner.next();
@@ -80,7 +80,7 @@ public:
 		catch(ConversionError& e)
 		{
 			cout << id() << " function error: not a number! ('" << a << "')" << endl;
-			return NULL;
+			return nullptr;
 		}
 
 		return new string(truncNumber(v));

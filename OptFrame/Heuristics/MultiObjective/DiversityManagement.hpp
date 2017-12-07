@@ -75,7 +75,7 @@ struct DiversityIndividual
 	{
 		idx = -1;
 		diversity = 0;
-		mev = NULL;
+		mev = nullptr;
 	}
 
 	DiversityIndividual(int _idx, double _diversity, MultiEvaluation<DS>* _mev) :

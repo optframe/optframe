@@ -44,7 +44,7 @@ protected:
 
 public:
 
-	MoveVRPExchange(int _r, int _c1, int _c2, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
+	MoveVRPExchange(int _r, int _c1, int _c2, OPTFRAME_DEFAULT_PROBLEM* _problem = nullptr) :
 		r(_r), c1(_c1), c2(_c2), problem(_problem)
 	{
 	}
@@ -119,11 +119,11 @@ protected:
 	P* p; // has to be the last
 public:
 
-	NSIteratorVRPExchange(const Routes& _r, const ADS& _ads, P* _p = NULL) :
+	NSIteratorVRPExchange(const Routes& _r, const ADS& _ads, P* _p = nullptr) :
 		rep(_r), p(_p)
 	{
 		index = 0;
-		m = NULL;
+		m = nullptr;
 	}
 
 	virtual ~NSIteratorVRPExchange()
@@ -148,7 +148,7 @@ public:
 			m = moves[index];
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	virtual void next()
@@ -159,12 +159,12 @@ public:
 			m = moves[index];
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	virtual bool isDone()
 	{
-		return m == NULL;
+		return m == nullptr;
 	}
 
 	virtual Move<Routes, ADS>& current()
@@ -190,7 +190,7 @@ private:
 
 public:
 
-	NSSeqVRPExchange(P* _p = NULL) :
+	NSSeqVRPExchange(P* _p = nullptr) :
 		p(_p)
 	{
 	}

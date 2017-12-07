@@ -51,7 +51,7 @@ public:
 		for(unsigned i = 0; i < vm.size(); i++)
 			if(!vm[i]->canBeApplied(r, ads))
 				return false;
-		// MAY STILL BE UNAPPLIABLE!! SOLVE THIS WITH RETURN NULL IN APPLY?? TODO
+		// MAY STILL BE UNAPPLIABLE!! SOLVE THIS WITH RETURN nullptr IN APPLY?? TODO
 		// OR... return an UNKNOWN state here (may be pointer, but better a tri-state element).
 		return true;
 	}

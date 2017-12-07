@@ -76,10 +76,10 @@ public:
 			delete plist;
 		}
 		else
-			return NULL;
+			return nullptr;
 
 		if(list.size()==0)
-			return NULL;
+			return nullptr;
 
 		vector<vector<string> > list2;
 		for(unsigned i=0; i<list.size(); i++)
@@ -93,7 +93,7 @@ public:
 				delete plist1;
 			}
 			else
-				return NULL;
+				return nullptr;
 
 			list2.push_back(list1);
 		}
@@ -144,17 +144,17 @@ public:
 		//cout << "COMMAND: '" << scommand.str() << "'" << endl;
 
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
-		if (pPipe == NULL)
+		if (pPipe == nullptr)
 		{
 		    cout << "anova function: PIPE NOT OPEN!" << endl;
-		    return NULL;
+		    return nullptr;
 		}
 
 		char line[100];
 
 		string output = "";
 
-		while(fgets(line, 100, pPipe) != NULL)
+		while(fgets(line, 100, pPipe) != nullptr)
 		{
 			string sline = line;
 			output.append(sline);
@@ -164,7 +164,7 @@ public:
 
 		//cout << "anova function: OUTPUT '" << output << "'" << endl;
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
-			return NULL;
+			return nullptr;
 
 		Scanner scan_out(output);
 		//example: '> fv <- ... all values

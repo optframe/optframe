@@ -69,7 +69,7 @@ public:
 			delete plist;
 		}
 		else
-			return NULL;
+			return nullptr;
 
 		int ilen = list.size();
 

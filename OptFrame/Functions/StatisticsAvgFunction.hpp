@@ -69,10 +69,10 @@ public:
 			delete plist;
 		}
 		else
-			return NULL;
+			return nullptr;
 
 		if(list.size()==0)
-			return NULL;
+			return nullptr;
 
 		double sum = 0;
 		for(unsigned i=0; i<list.size(); i++)

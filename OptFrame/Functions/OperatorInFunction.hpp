@@ -83,7 +83,7 @@ public:
 		Scanner scanner(body);
 
 		if(!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
 		vector<string>  list;
@@ -95,11 +95,11 @@ public:
 		else
 		{
 			cout << "function in: '" << body << "'" << endl;
-			return NULL;
+			return nullptr;
 		}
 
 		if(!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		string value = Scanner::trim(scanner.rest());
 

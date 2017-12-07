@@ -72,17 +72,17 @@ public:
 		//cout << "popen function COMMAND: '" << command << "'" << endl;
 
 		FILE* pPipe = popen(command.c_str(), "r"); //popen("echo -e \"x <- c(1,2,3,4,5,6) \n shapiro.test(x)\" | R --no-save", "rt");
-		if (pPipe == NULL)
+		if (pPipe == nullptr)
 		{
 			cout << "popen function: PIPE NOT OPEN!" << endl;
-			return NULL;
+			return nullptr;
 		}
 
 		char line[100];
 
 		string output = "";
 
-		while(fgets(line, 100, pPipe) != NULL)
+		while(fgets(line, 100, pPipe) != nullptr)
 		{
 			string sline = line;
 			output.append(sline);

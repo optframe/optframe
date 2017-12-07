@@ -41,7 +41,7 @@ protected:
 
 public:
 
-	NSIteratorTSPOrOptk(int _n, int _k, P* _p = NULL) :
+	NSIteratorTSPOrOptk(int _n, int _k, P* _p = nullptr) :
 			n(_n), k(_k), p(_p)
 	{
 		i = j = 0;

@@ -82,7 +82,7 @@ public:
 
 			if(!comp)
 			{
-				cout << "create_list_of_components: error, component #" << i << " is NULL! " << endl;
+				cout << "create_list_of_components: error, component #" << i << " is nullptr! " << endl;
 				return false;
 			}
 			else if(!comp->compatible(Component::typeOfList(type)))

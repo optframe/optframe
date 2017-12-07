@@ -170,9 +170,9 @@ public:
       cout << "GA exec(" << target_f << "," << timelimit << ")" << endl;
 #endif
 
-      //long tini = time(NULL);
+      //long tini = time(nullptr);
 
-      //long tnow = time(NULL);
+      //long tnow = time(nullptr);
 
 #ifdef DBG_GA
       cout << "Executing Genetic Algorithm with specified parameters:\n" << "Crossover Rate: "
@@ -286,7 +286,7 @@ public:
          {
             pair<const chromossome&, const chromossome&>& parents = selectParents(p);
 
-            pair<chromossome&, chromossome*>* offspring = NULL;
+            pair<chromossome&, chromossome*>* offspring = nullptr;
 
             unsigned doCross = rand() % 101; // numbers 0 to 100
 
@@ -426,7 +426,7 @@ public:
 
          g++;
 
-         //tnow = time(NULL);
+         //tnow = time(nullptr);
 
       }
 

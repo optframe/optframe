@@ -70,10 +70,10 @@ public:
 			delete plist;
 		}
 		else
-			return NULL;
+			return nullptr;
 
 		if(list.size()==0)
-			return NULL;
+			return nullptr;
 
 		int len = list.size();
 

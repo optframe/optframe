@@ -165,15 +165,15 @@ public:
 
 	virtual SingleObjSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
-		Evaluator<R, ADS>* eval = NULL;
+		Evaluator<R, ADS>* eval = nullptr;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!eval)
-			return NULL;
+			return nullptr;
 
-		Constructive<R, ADS>* constructive = NULL;
+		Constructive<R, ADS>* constructive = nullptr;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!constructive)
-			return NULL;
+			return nullptr;
 
 		string rest = scanner.rest();
 
@@ -184,12 +184,12 @@ public:
 
 		scanner = Scanner(method.second);
 		if(!h)
-			return NULL;
+			return nullptr;
 
 		ILSLPerturbation<R, ADS>* pert;
 		hf.assign(pert, scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!pert)
-			return NULL;
+			return nullptr;
 
 		int iterMax = -1;
 		try
@@ -198,7 +198,7 @@ public:
 		}
 		catch (ConversionError& e)
 		{
-			return NULL;
+			return nullptr;
 		}
 
 		int levelMax = -1;
@@ -208,7 +208,7 @@ public:
 		}
 		catch (ConversionError& e)
 		{
-			return NULL;
+			return nullptr;
 		}
 
 		return new IteratedLocalSearchLevels<R, ADS>(*eval, *constructive, *h, *pert, iterMax,levelMax);

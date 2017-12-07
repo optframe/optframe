@@ -59,7 +59,7 @@ public:
 		Scanner scanner(body);
 
 		if(!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		string s1 = scanner.next();
 		string s2 = scanner.next();

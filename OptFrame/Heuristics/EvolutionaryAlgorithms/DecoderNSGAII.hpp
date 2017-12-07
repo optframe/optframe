@@ -200,14 +200,14 @@ public:
 					if(compareMev(vx[i]->mev, vReduced[r]->mev))
 					{
 						vReduced[r]->ls.insert(vReduced[r]->ls.end(), vx[i]->ls.begin(), vx[i]->ls.end());
-						vx[i] = NULL;
+						vx[i] = nullptr;
 						break;
 					}
 
 				if(vx[i])
 				{
 					vReduced.push_back(vx[i]);
-					vx[i] = NULL;
+					vx[i] = nullptr;
 				}
 			}
 
@@ -255,7 +255,7 @@ public:
 				if(vs[i]->mev)
 					c.push_back(vs[i]->mev->at(k).evaluation());
 				else
-					cout << "WARNING::printLimits i=" << i << " IS NULL!" << endl;
+					cout << "WARNING::printLimits i=" << i << " IS nullptr!" << endl;
 			}
 			cout << "OBJ " << k << ": MIN=" << min(c) << " MAX=" << max(c) << "\t";
 		}
@@ -428,7 +428,7 @@ private:
 	NSGAIICrowdingComparison<R>* userSpecific;
 
 public:
-	NSGAIICrowdingComparison(NSGAIICrowdingComparison<R>* _userSpecific = NULL) :
+	NSGAIICrowdingComparison(NSGAIICrowdingComparison<R>* _userSpecific = nullptr) :
 			userSpecific(_userSpecific)
 	{
 	}
@@ -539,7 +539,7 @@ protected:
 public:
 
 	// constructor of class 'DecoderNSGAII'
-	DecoderNSGAII(Decoder<R, X, ADS>& _decoder, vector<Direction*>& _v_d, InitialMultiSolution<R>& _init_pop, int _pMin, int _pMax, int _xTarget, int _gMax, RandGen& _rg, NSGAIICrowdingComparison<R>* uec = NULL) :
+	DecoderNSGAII(Decoder<R, X, ADS>& _decoder, vector<Direction*>& _v_d, InitialMultiSolution<R>& _init_pop, int _pMin, int _pMax, int _xTarget, int _gMax, RandGen& _rg, NSGAIICrowdingComparison<R>* uec = nullptr) :
 			decoder(_decoder), v_d(_v_d), nObjectives(_v_d.size()), init_pop(_init_pop), pMin(_pMin), pMax(_pMax), xTarget(_xTarget), gMax(_gMax), pDominance(* new ParetoDominance<R, ADS>(_v_d)), rg(_rg), userSpecificComparison(uec)
 	{
 		N = -1;
@@ -761,7 +761,7 @@ public:
 	}
 
 	// main method for the class, 'search' method returns a pareto front of solutions
-	virtual ExtendedPareto<R, X, ADS>* search(double timelimit = 100000000, double target_f = 0, ExtendedPareto<R, X, ADS>* _pf = NULL)
+	virtual ExtendedPareto<R, X, ADS>* search(double timelimit = 100000000, double target_f = 0, ExtendedPareto<R, X, ADS>* _pf = nullptr)
 	{
 		Timer tnow;
 
@@ -1012,9 +1012,9 @@ public:
 				cout << id() << ": joining population!" << endl;
 			}
 			vector<IndividualNSGAII<R>*>* rs = ps;
-			ps = NULL;
+			ps = nullptr;
 			vector<IndividualExtNSGAII<R, X, ADS>*>* rx = px;
-			px = NULL;
+			px = nullptr;
 			rs->insert(rs->end(), qs.begin(), qs.end());
 			rx->insert(rx->end(), qx.begin(), qx.end());
 
@@ -1242,7 +1242,7 @@ public:
 				else
 				{
 					delete rx->at(x);
-					rx->at(x) = NULL;
+					rx->at(x) = nullptr;
 				}
 			}
 
@@ -1724,7 +1724,7 @@ public:
 			}
 
 			i++; // i = i + 1
-			F.push_back(NULL);
+			F.push_back(nullptr);
 			F[i] = Q; // Fi = Q
 			if(Component::debug)
 				cout << "fastNonDominatedSort i=" << i << " |Q|=" << Q->size() << endl;

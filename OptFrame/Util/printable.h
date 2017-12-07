@@ -103,15 +103,15 @@ ostream& operator<< (ostream &os, const vector<T*> &obj)
 	if(obj.size()>0)
 	{	
 		for(unsigned int i = 0; i < obj.size()-1; i++)
-			if (obj.at(i) == NULL)
-				os << "NULL" << " , ";
+			if (obj.at(i) == nullptr)
+				os << "nullptr" << " , ";
 			else
 				os << (*obj.at(i)) << " , ";
 	
 		if(obj.size()>0)
 		{
-			if (obj.at(obj.size()-1) == NULL)
-				os << "NULL";
+			if (obj.at(obj.size()-1) == nullptr)
+				os << "nullptr";
 			else
 				os << (*obj.at(obj.size()-1));
 		}
@@ -154,8 +154,8 @@ ostream& operator<< (ostream &os, const pair<T1,T2*> &obj)
 	
 	os << "pair(" << obj.first << " , ";
 	
-	if(obj.second == NULL)
-		os << "NULL" << ")";
+	if(obj.second == nullptr)
+		os << "nullptr" << ")";
 	else
 		os << (*obj.second) << ")";
 	
@@ -176,8 +176,8 @@ ostream& operator<< (ostream &os, const pair<T1*,T2> &obj)
 	
 	os << "pair(";
 	
-	if(obj.first == NULL)
-		os << "NULL";
+	if(obj.first == nullptr)
+		os << "nullptr";
 	else
 		os << (*obj.first);	
 
@@ -200,15 +200,15 @@ ostream& operator<< (ostream &os, const pair<T1*,T2*> &obj)
 	
 	os << "pair(";
 
-	if(obj.first == NULL)
-		os << "NULL";
+	if(obj.first == nullptr)
+		os << "nullptr";
 	else
 		os << (*obj.first);	
 
 	os << " , ";
 	
-	if(obj.second == NULL)
-		os << "NULL" << ")";
+	if(obj.second == nullptr)
+		os << "nullptr" << ")";
 	else
 		os << (*obj.second) << ")";
 	

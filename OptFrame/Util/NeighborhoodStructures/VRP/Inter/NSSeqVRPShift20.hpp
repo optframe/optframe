@@ -44,7 +44,7 @@ private:
 
 public:
 
-	MoveVRPShift20(int _r1, int _r2, int _cli, int _pos, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
+	MoveVRPShift20(int _r1, int _r2, int _cli, int _pos, OPTFRAME_DEFAULT_PROBLEM* _problem = nullptr) :
 		r1(_r1), r2(_r2), cli(_cli), pos(_pos), problem(_problem)
 	{
 	}
@@ -128,10 +128,10 @@ private:
 	P* p; // has to be the last
 public:
 
-	NSIteratorVRPShift20(const Routes& _r, P* _p = NULL) :
+	NSIteratorVRPShift20(const Routes& _r, P* _p = nullptr) :
 		r(_r), p(_p)
 	{
-		m = NULL;
+		m = nullptr;
 		index = 0;
 	}
 
@@ -168,7 +168,7 @@ public:
 			m = moves[index];
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	virtual void next()
@@ -179,12 +179,12 @@ public:
 			m = moves[index];
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	virtual bool isDone()
 	{
-		return m == NULL;
+		return m == nullptr;
 	}
 
 	virtual Move<Routes, ADS, DS>& current()
@@ -211,7 +211,7 @@ private:
 
 public:
 
-	NSSeqVRPShift20(P* _p = NULL) :
+	NSSeqVRPShift20(P* _p = nullptr) :
 		p(_p)
 	{
 	}

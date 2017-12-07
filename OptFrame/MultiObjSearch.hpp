@@ -86,7 +86,7 @@ public:
 	{
 	}
 
-	virtual Pareto<R, ADS>* search(MOSC& stopCriteria, Pareto<R, ADS>* _pf = NULL) = 0;
+	virtual Pareto<R, ADS>* search(MOSC& stopCriteria, Pareto<R, ADS>* _pf = nullptr) = 0;
 
 	virtual string log()
 	{

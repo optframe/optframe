@@ -103,7 +103,7 @@ public:
 			for(unsigned j = 0; j < missing; j++)
 			{
 				Pop.push_back(F[i][j]);
-				F[i][j] = NULL;
+				F[i][j] = nullptr;
 			}
 		}
 

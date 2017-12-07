@@ -69,12 +69,12 @@ public:
 			delete plist;
 		}
 		else
-			return NULL;
+			return nullptr;
 
 		if(list.size()==0)
 		{
 			cout << "function " << id() << " error: empty list!" << endl;
-			return NULL;
+			return nullptr;
 		}
 
 		double max = Scanner::parseDouble(list[0]);

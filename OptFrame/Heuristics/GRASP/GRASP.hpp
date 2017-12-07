@@ -50,13 +50,13 @@ public:
 	{
 	}
 
-	pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL,  const Evaluation<DS>* _e = NULL)
+	pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = nullptr,  const Evaluation<DS>* _e = nullptr)
 	{
-		long tini = time(NULL);
+		long tini = time(nullptr);
 
 		unsigned int iter = 0;
 
-		long tnow = time(NULL);
+		long tnow = time(nullptr);
 
 		Solution<R, ADS>& s = constructive.generateSolution();
 		Evaluation& e    = evaluator.evaluate(s);
@@ -85,7 +85,7 @@ public:
 			delete &s1;
 			delete &e1;
 
-			tnow = time(NULL);
+			tnow = time(nullptr);
 			iter++;
 		}
 
@@ -131,7 +131,7 @@ public:
 		scanner = Scanner(method.second);
 
 		if(!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		int iterMax = scanner.nextInt();
 

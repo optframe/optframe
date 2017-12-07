@@ -138,7 +138,7 @@ public:
 		else
 		{
 			cout << "next function: no such option '" << option << "'" << endl;
-			return NULL;
+			return nullptr;
 		}
 		*/
 

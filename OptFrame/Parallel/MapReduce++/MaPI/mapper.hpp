@@ -171,7 +171,7 @@ class MaPI_StrMapper : public MaPI_Mapper<string,string,string,string,string>
 public:
 	///Constructor.
 	MaPI_StrMapper(	MaPI_MapReduce<string,string,string,string,string> * _mapReduce)
-		:MaPI_Mapper<string,string,string,string,string>(_mapReduce,NULL) { serializer = new MaPI_StrSerializer(); deleteSerializer = true; };
+		:MaPI_Mapper<string,string,string,string,string>(_mapReduce,nullptr) { serializer = new MaPI_StrSerializer(); deleteSerializer = true; };
 	///Constructor.
 	MaPI_StrMapper(	MaPI_MapReduce<string,string,string,string,string> * _mapReduce, 
 					MaPI_Serializer<string,string,string,string,string> * _serializer)

@@ -63,7 +63,7 @@ protected:
 public:
 	RandGen()
 	{
-		seed = time(NULL);
+		seed = time(nullptr);
 		init = false;
 		hasNextG = false;
 		nextG = 0.0;
@@ -242,7 +242,7 @@ public:
 
 	unsigned long generateRandomSeed()
 	{
-		return mix(clock(), time(NULL), getpid());
+		return mix(clock(), time(nullptr), getpid());
 	}
 
 	template<class T>
@@ -286,7 +286,7 @@ public:
 	buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
 		if (!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		long seed = scanner.nextLong();
 

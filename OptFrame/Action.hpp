@@ -172,7 +172,7 @@ public:
 
 		if(!comp)
 		{
-			cout << "ComponentAction::doCast error: NULL component '" << component << " " << id << "'" << endl;
+			cout << "ComponentAction::doCast error: nullptr component '" << component << " " << id << "'" << endl;
 			return false;
 		}
 
@@ -188,7 +188,7 @@ public:
 		Component* final = (Component*) comp;
 
 		// remove old component from factory
-		hf.components[component].at(id) = NULL;
+		hf.components[component].at(id) = nullptr;
 
 		// add new component
 		Scanner scanner(variable);

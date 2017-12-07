@@ -43,7 +43,7 @@ protected:
 
 public:
 
-	MoveVRPSwap2_2(int _r1, int _r2, int _c1, int _c2, bool _reverseR1, bool _reverseR2, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
+	MoveVRPSwap2_2(int _r1, int _r2, int _c1, int _c2, bool _reverseR1, bool _reverseR2, OPTFRAME_DEFAULT_PROBLEM* _problem = nullptr) :
 		r1(_r1), r2(_r2), c1(_c1), c2(_c2), reverseR1(_reverseR1), reverseR2(_reverseR2), problem(_problem)
 	{
 	}
@@ -152,7 +152,7 @@ public:
 	NSIteratorVRPSwap2_2(const Routes& _r) :
 		r(_r), p(_p)
 	{
-		m = NULL;
+		m = nullptr;
 		index = 0;
 	}
 
@@ -193,7 +193,7 @@ public:
 			m = moves[index];
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	virtual void next()
@@ -204,12 +204,12 @@ public:
 			m = moves[index];
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	virtual bool isDone()
 	{
-		return m == NULL;
+		return m == nullptr;
 	}
 
 	virtual Move<T, ADS, DS>& current()
@@ -236,7 +236,7 @@ private:
 
 public:
 
-	NSSeqVRPSwap2_2(P* _p = NULL) :
+	NSSeqVRPSwap2_2(P* _p = nullptr) :
 		p(_p)
 	{
 	}

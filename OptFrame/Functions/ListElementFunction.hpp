@@ -64,7 +64,7 @@ public:
 		if (!scan.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return NULL;
+			return nullptr;
 		}
 
 		int n = scan.nextInt();
@@ -72,14 +72,14 @@ public:
 		if (n < 0)
 		{
 			cout << "N must be a positive value!" << endl;
-			return NULL;
+			return nullptr;
 		}
 
 		if (n == 0)
 		{
 			cout << "sorry, this is not C language :)" << endl;
 			cout << "0 not included, try a number from 1 to the size of the list" << endl;
-			return NULL;
+			return nullptr;
 		}
 
 		n--;
@@ -87,7 +87,7 @@ public:
 		if (!scan.hasNext())
 		{
 			cout << "Usage: " << usage() << endl;
-			return NULL;
+			return nullptr;
 		}
 
 		vector<string>* plist = OptFrameList::readList(ldictionary, scan);
@@ -98,12 +98,12 @@ public:
 			delete plist;
 		}
 		//else
-		//	return NULL;
+		//	return nullptr;
 
 		if (n >= ((int) list.size()))
 		{
 			cout << "N is too big! " << (n + 1) << " > " << list.size() << endl;
-			return NULL;
+			return nullptr;
 		}
 
 		string element = list.at(n);

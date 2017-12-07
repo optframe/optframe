@@ -72,20 +72,20 @@ public:
 		scanner.useSeparators("=+><!");
 
 		if(!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		string sa     = Scanner::trim(scanner.next());
 		//cout << "SA: " << sa << endl;
 
 		scanner.useDefaultSeparators();
 		if(!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		string signal = scanner.next();
 		//cout << "OP: " << signal << endl;
 
 		if(!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		string sb     = Scanner::trim(scanner.rest());
 		//cout << "SB: " << sb << endl;
@@ -100,7 +100,7 @@ public:
 
 		cout << "scompare function: no such comparison '" << sa << "' '" << signal << "' '" << sb << "'" << endl;
 
-		return NULL;
+		return nullptr;
 	}
 };
 

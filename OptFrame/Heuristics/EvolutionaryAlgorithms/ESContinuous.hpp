@@ -88,8 +88,8 @@ public:
 	ESContinous(Evaluator<R, ADS>& _eval, Constructive<R, ADS>& _constructive, vector<NSSeq<R, ADS>*> _vNS, LocalSearch<R, ADS>& _ls, int _mi, int _lambda, int _gMax) :
 			eval(_eval), constructive(_constructive), vNS(_vNS), ls(_ls), mi(_mi), lambda(_lambda), gMax(_gMax)
 	{
-		sStar = NULL;
-		eStar = NULL;
+		sStar = nullptr;
+		eStar = nullptr;
 
 		iterSemMelhora = 0;
 		gAtual = 0;
@@ -262,7 +262,7 @@ public:
 		ls.exec(s, e, stopCriteria);
 	}
 
-	pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
+	pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = nullptr, const Evaluation* _e = nullptr)
 	{
 		cout << "ES search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 

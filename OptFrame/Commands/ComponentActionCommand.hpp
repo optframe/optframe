@@ -77,7 +77,7 @@ public:
 
 		if(!comp)
 		{
-			cout << "module " << id() << " error: NULL component!" << endl;
+			cout << "module " << id() << " error: nullptr component!" << endl;
 			return false;
 		}
 

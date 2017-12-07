@@ -69,7 +69,7 @@ public:
 			delete plist1;
 		}
 		else
-			return NULL;
+			return nullptr;
 
 
 		vector<string>* plist2 = OptFrameList::readList(ldictionary, scanner);
@@ -80,7 +80,7 @@ public:
 			delete plist2;
 		}
 		else
-			return NULL;
+			return nullptr;
 
 
 		list1.insert(list1.end(), list2.begin(), list2.end());

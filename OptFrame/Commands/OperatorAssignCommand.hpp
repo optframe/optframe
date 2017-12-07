@@ -179,7 +179,7 @@ public:
 		string* proc = Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, addSpacesForDoubleDots(rest));
 
 		if (!proc)
-			return NULL;
+			return nullptr;
 
 		new_input.append(*proc);
 		delete proc;

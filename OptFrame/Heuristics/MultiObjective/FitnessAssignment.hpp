@@ -80,7 +80,7 @@ struct FitnessIndividual
 	{
 		idx = -1;
 		fitness = 0;
-		mev = NULL;
+		mev = nullptr;
 	}
 
 	FitnessIndividual(int _idx, double _fitness, MultiEvaluation<DS>* _mev) :
@@ -304,7 +304,7 @@ public:
 			}
 
 			i++; // i = i + 1
-			F.push_back(NULL);
+			F.push_back(nullptr);
 			F[i] = Q; // Fi = Q
 			if(Component::debug)
 				cout << "fastNonDominatedSort i=" << i << " |Q|=" << Q->size() << endl;

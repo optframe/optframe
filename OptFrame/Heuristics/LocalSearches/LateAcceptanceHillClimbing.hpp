@@ -67,7 +67,7 @@ public:
 
 	virtual void exec(Solution<R, ADS>& sStar, Evaluation& eStar, double timelimit, double target_f)
 	{
-		long tini = time(NULL);
+		long tini = time(nullptr);
 
 #ifdef BRAND_NEW
 		vector<Evaluation* > eList;
@@ -83,7 +83,7 @@ public:
 		Solution<R, ADS>& s = sStar.clone();
 		Evaluation& e = eStar.clone();
 
-		long tnow = time(NULL);
+		long tnow = time(nullptr);
 
 		while (ev.betterThan(target_f, eStar.evaluation()) && (iter <= iterMax) && ((tnow - tini) < timelimit))
 		{
@@ -143,7 +143,7 @@ public:
 			if (index == eList.size())
 				index = 0;
 
-			tnow = time(NULL);
+			tnow = time(nullptr);
 		}
 
         delete& e;

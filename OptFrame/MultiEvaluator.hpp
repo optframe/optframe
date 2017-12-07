@@ -166,7 +166,7 @@ public:
 //		if (sngEvaluators.size() > 0)
 //			return new vector<const Evaluator<R, ADS>*>(sngEvaluators);
 //		else
-//			return NULL;
+//			return nullptr;
 //	}
 
 //	Evaluator<R, ADS>& at(unsigned index)
@@ -262,7 +262,7 @@ public:
 
 		if (!comp)
 		{
-			cout << "EvaluatorAction::doCast error: NULL component '" << component << " " << id << "'" << endl;
+			cout << "EvaluatorAction::doCast error: nullptr component '" << component << " " << id << "'" << endl;
 			return false;
 		}
 
@@ -273,10 +273,10 @@ public:
 		}
 
 		// remove old component from factory
-		hf.components[component].at(id) = NULL;
+		hf.components[component].at(id) = nullptr;
 
 		// cast object to lower type
-		Component* final = NULL;
+		Component* final = nullptr;
 
 		if (type == Evaluator<R, ADS>::idComponent())
 		{

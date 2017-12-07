@@ -108,8 +108,8 @@ public:
 		   text = comp->toString();
 	   else
 	   {
-		   //text = "NULL Component!";
-		   cout << "component.to_string command: NULL Component!" << endl;
+		   //text = "nullptr Component!";
+		   cout << "component.to_string command: nullptr Component!" << endl;
 		   return false;
 	   }
 

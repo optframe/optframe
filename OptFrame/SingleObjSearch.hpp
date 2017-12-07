@@ -91,8 +91,8 @@ public:
 	{
 	}
 
-	// search method try to find a feasible solution within timelimit, if there is no such solution it returns NULL.
-	virtual pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL) = 0;
+	// search method try to find a feasible solution within timelimit, if there is no such solution it returns nullptr.
+	virtual pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = nullptr, const Evaluation* _e = nullptr) = 0;
 
 	virtual string log()
 	{
@@ -160,7 +160,7 @@ public:
 
 	virtual string usage()
 	{
-		return "OptFrame:SingleObjSearch idx   search    timelimit  target_f  OptFrame:Solution idx|-1   OptFrame:Evaluation idx|-1   [output_variable] => OptFrame:Solution|NULL";
+		return "OptFrame:SingleObjSearch idx   search    timelimit  target_f  OptFrame:Solution idx|-1   OptFrame:Evaluation idx|-1   [output_variable] => OptFrame:Solution|nullptr";
 	}
 
 	virtual bool handleComponent(string type)
@@ -190,7 +190,7 @@ public:
 
 		if (!comp)
 		{
-			cout << "SingleObjSearchAction::doCast error: NULL component '" << component << " " << id << "'" << endl;
+			cout << "SingleObjSearchAction::doCast error: nullptr component '" << component << " " << id << "'" << endl;
 			return false;
 		}
 
@@ -201,10 +201,10 @@ public:
 		}
 
 		// remove old component from factory
-		hf.components[component].at(id) = NULL;
+		hf.components[component].at(id) = nullptr;
 
 		// cast object to lower type
-		Component* final = NULL;
+		Component* final = nullptr;
 
 		if (type == SingleObjSearch<R, ADS>::idComponent())
 		{

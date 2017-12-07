@@ -59,13 +59,13 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
 	{
-		long tini = time(NULL);
+		long tini = time(nullptr);
 
 		int r = lsList.size();
 
 		int k = 1;
 
-		long tnow = time(NULL);
+		long tnow = time(nullptr);
 		while (ev.betterThan(target_f, e.evaluation()) && (k <= r) && ((tnow - tini) < timelimit))
 		{
 			Solution<R, ADS>* s0 = &s.clone();
@@ -96,7 +96,7 @@ public:
 			}
 			ev.evaluate(e, s);
 
-			tnow = time(NULL);
+			tnow = time(nullptr);
 		}
 
 	}

@@ -61,7 +61,7 @@ public:
 		else
 		{
 			delete moveValid;
-			return NULL;
+			return nullptr;
 		}
 	}
 

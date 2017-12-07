@@ -49,14 +49,14 @@ Scanner::Scanner(File* inputfile)
 
 Scanner::Scanner(istream* input)
 {
-	this->inputfile = NULL;
+	this->inputfile = nullptr;
 	this->input = input;
 	useDefaultSeparators();
 }
 
 Scanner::Scanner(string input)
 {
-	this->inputfile = NULL;
+	this->inputfile = nullptr;
 	this->input = new istringstream(input);
 	useDefaultSeparators();
 }
@@ -277,6 +277,6 @@ void Scanner::close()
 	if(inputfile)
 	{
 		delete inputfile;
-		inputfile = NULL;	
+		inputfile = nullptr;	
 	}	
 }

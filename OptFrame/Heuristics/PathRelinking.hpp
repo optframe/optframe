@@ -204,7 +204,7 @@ public:
 			return;
 		}
 
-		long tini = time(NULL);
+		long tini = time(nullptr);
 
 		cout << "Path Relinking starts!" << endl;
 
@@ -213,7 +213,7 @@ public:
 
 		int iter = 0;
 
-		long tnow = time(NULL);
+		long tnow = time(nullptr);
 
 		while (iter < k && ((tnow - tini) < timelimit))
 		{
@@ -244,7 +244,7 @@ public:
 
 			delete &ret_path;
 
-			tnow = time(NULL);
+			tnow = time(nullptr);
 			iter++;
 		}
 

@@ -94,7 +94,7 @@ public:
 		for(unsigned i=0; i<builders.size(); i++)
 			if(builders[i]->id() == id)
 				return builders[i];
-		return NULL;
+		return nullptr;
 	}
 
 
@@ -113,24 +113,24 @@ public:
 		return false;
 	}
 
-	Component* getNextComponent(Scanner& scanner, string* compName = NULL, int* compNumber = NULL)
+	Component* getNextComponent(Scanner& scanner, string* compName = nullptr, int* compNumber = nullptr)
 	{
 		if(!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		std::string id = scanner.next();
 
 		if(!scanner.hasNextInt())
-			return NULL;
+			return nullptr;
 
 		int inumber = scanner.nextInt();
 
 		if(inumber < 0)
-			return NULL;
+			return nullptr;
 
 		unsigned number = inumber;
 
-		Component* component = NULL;
+		Component* component = nullptr;
 
 		if(id[0] == ':')
 		{
@@ -189,7 +189,7 @@ public:
 		{
 			cout << "HeuristicFactory: incompatible assign '" << T::idComponent() << "' <- '" << id << "'";
 			cout << endl;
-			component = NULL;
+			component = nullptr;
 			return;
 		}
 
@@ -206,7 +206,7 @@ public:
 			cout << "'" << id << "' not found!" << endl;
 
 		// not found!
-		component = NULL;
+		component = nullptr;
 	}
 
 	template< class T > void assignList(vector<T*>& cList, unsigned number, string _listId)
@@ -274,14 +274,14 @@ public:
 		{
 			cout << "Error: expected '" << T::idComponent() << "' and found '" << tmp << "'.";
 			cout << endl;
-			component = NULL;
+			component = nullptr;
 
 			return;
 		}
 
 		unsigned int number = scanner.nextInt();
 
-		component = NULL;
+		component = nullptr;
 
 		assign(component, number, tmp);
 	}
@@ -294,7 +294,7 @@ public:
 		listId += "[]";
 
 		for(unsigned i=0; i<cList.size(); i++)
-			if((cList[i]==NULL) || (!cList[i]->compatible(noList)))
+			if((cList[i]==nullptr) || (!cList[i]->compatible(noList)))
 			{
 				cout << "Warning: incompatible components '";
 				cout << cList[i]->id() << "' and '" << Component::typeOfList(listId) << "'!" << endl;
@@ -314,7 +314,7 @@ public:
 
 	int addComponentList(vector<Component*>& cList)
 	{
-		if((cList.size()>0) && (cList[0] != NULL))
+		if((cList.size()>0) && (cList[0] != nullptr))
 		{
 			string listId = cList[0]->id();
 			listId += "[]";
@@ -443,10 +443,10 @@ public:
 
 			if(id < ((int)v.size())) // else return false?
 			{
-				if(v[id] != NULL) // else return false?
+				if(v[id] != nullptr) // else return false?
 				{
 					delete v[id];
-					v[id] = NULL;
+					v[id] = nullptr;
 					components[type] = v;
 
 					return true;
@@ -495,7 +495,7 @@ public:
 
 		// No heuristic!
 		if (!scanner.hasNext())
-			return pair<LocalSearch<R, ADS>*, std::string>(NULL, "");
+			return pair<LocalSearch<R, ADS>*, std::string>(nullptr, "");
 
 		string h = scanner.next();
 
@@ -503,7 +503,7 @@ public:
 		{
 			unsigned int id = scanner.nextInt();
 
-			LocalSearch<R, ADS>* mtd = NULL;
+			LocalSearch<R, ADS>* mtd = nullptr;
 
 			assign(mtd, id, LocalSearch<R, ADS>::idComponent());
 
@@ -535,7 +535,7 @@ public:
 
 		cout << "HeuristicFactory::createLocalSearch warning: no LocalSearch '" << h << "' found! ignoring..." << endl;
 
-		return pair<LocalSearch<R, ADS>*, std::string>(NULL, scanner.rest());
+		return pair<LocalSearch<R, ADS>*, std::string>(nullptr, scanner.rest());
 	}
 
 
@@ -545,7 +545,7 @@ public:
 
 		// No heuristic!
 		if (!scanner.hasNext())
-			return pair<SingleObjSearch<R, ADS>*, std::string>(NULL, "");
+			return pair<SingleObjSearch<R, ADS>*, std::string>(nullptr, "");
 
 		string h = scanner.next();
 
@@ -553,7 +553,7 @@ public:
 		{
 			unsigned int id = scanner.nextInt();
 
-			SingleObjSearch<R, ADS>* mtd = NULL;
+			SingleObjSearch<R, ADS>* mtd = nullptr;
 
 			assign(mtd, id, SingleObjSearch<R, ADS>::idComponent());
 
@@ -586,7 +586,7 @@ public:
 
 		cout << "HeuristicFactory::createSingleObjSearch warning: no SingleObjSearch '" << h << "' found! ignoring..." << endl;
 
-		return pair<SingleObjSearch<R, ADS>*, std::string>(NULL, scanner.rest());
+		return pair<SingleObjSearch<R, ADS>*, std::string>(nullptr, scanner.rest());
 	}
 
 	pair<MultiObjSearch<R, ADS>*, std::string> createMultiObjSearch(std::string str)
@@ -595,7 +595,7 @@ public:
 
 		// No heuristic!
 		if (!scanner.hasNext())
-			return pair<MultiObjSearch<R, ADS>*, std::string>(NULL, "");
+			return pair<MultiObjSearch<R, ADS>*, std::string>(nullptr, "");
 
 		string h = scanner.next();
 
@@ -603,7 +603,7 @@ public:
 		{
 			unsigned int id = scanner.nextInt();
 
-			MultiObjSearch<R, ADS>* mtd = NULL;
+			MultiObjSearch<R, ADS>* mtd = nullptr;
 
 			assign(mtd, id, MultiObjSearch<R, ADS>::idComponent());
 
@@ -618,7 +618,7 @@ public:
 
 		cout << "HeuristicFactory::createMultiObjSearch warning: no MultiObjSearch '" << h << "' found! ignoring..." << endl;
 
-		return pair<MultiObjSearch<R, ADS>*, std::string>(NULL, scanner.rest());
+		return pair<MultiObjSearch<R, ADS>*, std::string>(nullptr, scanner.rest());
 	}
 
 };

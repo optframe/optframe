@@ -191,15 +191,15 @@ public:
 		return vbase;
 	}
 
-	Pareto<X>* search(double timelimit = 100000000, double target_f = 0, Pareto<X>* _pf = NULL)
+	Pareto<X>* search(double timelimit = 100000000, double target_f = 0, Pareto<X>* _pf = nullptr)
 	{
-		ExtendedPareto<R, X, ADS, DS>* extp = searchX(timelimit, target_f, NULL);
+		ExtendedPareto<R, X, ADS, DS>* extp = searchX(timelimit, target_f, nullptr);
 		Pareto<X>* p = extp->getPareto();
 		delete extp;
 		return p;
 	}
 
-	ExtendedPareto<R, X, ADS, DS>* searchX(double timelimit = 100000000, double target_f = 0, ExtendedPareto<R, X, ADS, DS>* _pf = NULL)
+	ExtendedPareto<R, X, ADS, DS>* searchX(double timelimit = 100000000, double target_f = 0, ExtendedPareto<R, X, ADS, DS>* _pf = nullptr)
 	{
 		Timer timer;
 

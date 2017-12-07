@@ -54,7 +54,7 @@ struct IndividualNSGAII
 	IndividualNSGAII(Solution<R, ADS>& _s) :
 			s(_s)
 	{
-		mev = NULL;
+		mev = nullptr;
 		rank = -1;
 		distance = -1;
 		id = -1;
@@ -69,7 +69,7 @@ struct IndividualNSGAII
 	IndividualNSGAII(const IndividualNSGAII<R, ADS>& ind) :
 			s(ind.s.clone())
 	{
-		mev = NULL;
+		mev = nullptr;
 		if(ind.mev)
 			mev = &ind.mev->clone();
 		rank = ind.rank;
@@ -202,7 +202,7 @@ public:
 	*/
 
 	//virtual void exec(Population<R, ADS>& p, FitnessValues& e_pop, double timelimit, double target_f)
-	virtual Pareto<R, ADS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS>* _pf = NULL)
+	virtual Pareto<R, ADS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS>* _pf = nullptr)
 	{
 		Timer tnow;
 

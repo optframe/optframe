@@ -41,8 +41,8 @@ public:
 			if (modules[i]->canHandle(module, rest))
 				return modules[i];
 		}
-		//cout << "run: NULL MODULE! module='" << module << "' rest='" << rest << "'" << endl;
-		return NULL;
+		//cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest << "'" << endl;
+		return nullptr;
 	}
 
 	bool exec_command(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string command)
@@ -54,7 +54,7 @@ public:
 		string tail = scanner.rest();
 		Command<R, ADS, DS>* m = getCommand(all_modules, module, tail);
 
-		if (m == NULL)
+		if (m == nullptr)
 		{
 			cout << "system.run module: command '" << module << "' not found!" << endl;
 			return false;

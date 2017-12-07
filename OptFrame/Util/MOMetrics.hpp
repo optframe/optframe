@@ -403,19 +403,19 @@ public:
 	{
 
 		FILE* fp;
-		char* line = NULL;
+		char* line = nullptr;
 		// Following initialization is equivalent to char* result = ""; and just
 		// initializes result to an empty string, only it works with
 		// -Werror=write-strings and is so much less clear.
 		char* result = (char*) calloc(1, 1);
 		size_t len = 0;
 
-		fflush(NULL);
+		fflush(nullptr);
 		fp = popen(command, "r");
-		if (fp == NULL)
+		if (fp == nullptr)
 		{
 			printf("Cannot execute command:\n%s\n", command);
-			return NULL;
+			return nullptr;
 		}
 
 		while (getline(&line, &len, fp) != -1)
@@ -425,7 +425,7 @@ public:
 			// +1 below so we copy the final null terminator.
 			strncpy(result + strlen(result), line, strlen(line) + 1);
 			free(line);
-			line = NULL;
+			line = nullptr;
 		}
 
 		fflush(fp);

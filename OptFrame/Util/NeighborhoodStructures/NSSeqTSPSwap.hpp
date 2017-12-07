@@ -87,7 +87,7 @@ private:
 
 public:
 
-	NSSeqTSPSwap(P* _p = NULL) :
+	NSSeqTSPSwap(P* _p = nullptr) :
 			p(_p)
 	{
 	}

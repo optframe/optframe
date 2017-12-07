@@ -98,7 +98,7 @@ public:
 		if(c)
 			c->print();
 		else
-			cout << "NULL Component" << endl;
+			cout << "nullptr Component" << endl;
 	}
 
 	void initializeLog()
@@ -111,7 +111,7 @@ public:
 		if(logdata)
 		{
 			delete logdata;
-			logdata = NULL;
+			logdata = nullptr;
 		}
 	}
 
@@ -150,7 +150,7 @@ public:
 	Component()
 	{
 		setMessageLevel(2);
-		//logdata = NULL;
+		//logdata = nullptr;
 	}
 
 	virtual ~Component()

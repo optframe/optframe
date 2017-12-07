@@ -112,7 +112,7 @@ public:
 		string* input3 = Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, scanner.rest());
 
 		if(!input3)
-			return NULL;
+			return nullptr;
 
 		string input4;
 		input4.append(discarded);

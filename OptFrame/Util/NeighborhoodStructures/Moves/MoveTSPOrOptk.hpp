@@ -46,7 +46,7 @@ public:
 	using Move<vector<T>, ADS>::apply;
 	using Move<vector<T>, ADS>::canBeApplied;
 
-	MoveTSPOrOptk(int _i, int _j, int _k, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
+	MoveTSPOrOptk(int _i, int _j, int _k, OPTFRAME_DEFAULT_PROBLEM* _problem = nullptr) :
 			i(_i), j(_j), k(_k), problem(_problem)
 	{
 	}

@@ -57,7 +57,7 @@ public:
 		}
 		*/
 		//printf("Completed join with thread %d status= %ld\n",t, (long)status);
-		//pthread_exit(NULL);
+		//pthread_exit(nullptr);
 	}
 
 	virtual void run() = 0;
@@ -95,7 +95,7 @@ void * _run(void * arg)
 	Runnable * runnable = (Runnable*) arg;
 	runnable->run();
 	runnable->finished_last_job = true;
-	return NULL;
+	return nullptr;
 };
 
 #endif /* RUNNABLE_HPP_ */

@@ -213,7 +213,7 @@ public:
 			return false;
 		}
 
-		Constructive<R, ADS>* exConstructive = NULL;
+		Constructive<R, ADS>* exConstructive = nullptr;
 		vector<Constructive<R, ADS>*> lConstructiveComp = assignVector(lConstructive, exConstructive, factory);
 
 		// -------------------
@@ -238,7 +238,7 @@ public:
 			return false;
 		}
 
-		Evaluator<R, ADS, DS>* exEvaluator = NULL;
+		Evaluator<R, ADS, DS>* exEvaluator = nullptr;
 		vector<Evaluator<R, ADS, DS>*> lEvaluatorComp = assignVector(lEvaluator, exEvaluator, factory);
 
 		// -------------------
@@ -263,7 +263,7 @@ public:
 			return false;
 		}
 
-		Move<R, ADS, DS>* exMove = NULL;
+		Move<R, ADS, DS>* exMove = nullptr;
 		vector<Move<R, ADS, DS>*> lMoveComp = assignVector(lMove, exMove, factory);
 
 		// -------------------
@@ -288,7 +288,7 @@ public:
 			return false;
 		}
 
-		NS<R, ADS, DS>* exNS = NULL;
+		NS<R, ADS, DS>* exNS = nullptr;
 		vector<NS<R, ADS, DS>*> lNSComp = assignVector(lNS, exNS, factory);
 
 		// -------------------
@@ -313,7 +313,7 @@ public:
 			return false;
 		}
 
-		NSSeq<R, ADS, DS>* exNSSeq = NULL;
+		NSSeq<R, ADS, DS>* exNSSeq = nullptr;
 		vector<NSSeq<R, ADS, DS>*> lNSSeqComp = assignVector(lNSSeq, exNSSeq, factory);
 
 		// -------------------
@@ -338,7 +338,7 @@ public:
 			return false;
 		}
 
-		NSEnum<R, ADS, DS>* exNSEnum = NULL;
+		NSEnum<R, ADS, DS>* exNSEnum = nullptr;
 		vector<NSEnum<R, ADS, DS>*> lNSEnumComp = assignVector(lNSEnum, exNSEnum, factory);
 
 		// -------------------
@@ -364,7 +364,7 @@ public:
 			return false;
 		}
 
-		ADSManager<R, ADS>* exADSManager = NULL;
+		ADSManager<R, ADS>* exADSManager = nullptr;
 		vector<ADSManager<R, ADS>*> lADSManagerComp = assignVector(lADSManager, exADSManager, factory);
 
 		// cleanup auxiliar list definitions
@@ -383,7 +383,7 @@ public:
 		// time to clone a solution
 		pair<int, double> timeCloneSolution(0, 0.0);
 
-		ADSManager<R, ADS>* adsMan = NULL;
+		ADSManager<R, ADS>* adsMan = nullptr;
 		if (lADSManager.size() > 0)
 		{
 			Scanner scan(lADSManager.at(0));
@@ -408,7 +408,7 @@ public:
 
 			if (!evaluator)
 			{
-				cout << "module " << id() << " error: NULL evaluator!" << endl;
+				cout << "module " << id() << " error: nullptr evaluator!" << endl;
 				return false;
 			}
 
@@ -436,7 +436,7 @@ public:
 
 			if (!constructive)
 			{
-				cout << "module " << id() << " error: NULL constructive!" << endl;
+				cout << "module " << id() << " error: nullptr constructive!" << endl;
 				return false;
 			}
 
@@ -497,7 +497,7 @@ public:
 
 			if (!pmove)
 			{
-				cout << "module " << id() << " error: NULL OptFrame:Move!" << endl;
+				cout << "module " << id() << " error: nullptr OptFrame:Move!" << endl;
 				return false;
 			}
 
@@ -662,7 +662,7 @@ public:
 						return false;
 					}
 
-					MoveCost* cost = NULL;
+					MoveCost* cost = nullptr;
 
 					if (evaluators[ev]->getAllowCosts())
 						cost = move.cost(e, s.getR(), s.getADS());
@@ -735,7 +735,7 @@ public:
 
 			if (!ns)
 			{
-				cout << "module " << id() << " error: NULL OptFrame:NS!" << endl;
+				cout << "module " << id() << " error: nullptr OptFrame:NS!" << endl;
 				return false;
 			}
 
@@ -955,7 +955,7 @@ public:
 						}
 
 						Timer tMoveCost;
-						MoveCost* cost = NULL;
+						MoveCost* cost = nullptr;
 
 						if (evaluators[ev]->getAllowCosts())
 							cost = move.cost(e, s.getR(), s.getADS());
@@ -1019,7 +1019,7 @@ public:
 							}
 							else
 							{
-								MoveCost* cost2 = NULL;
+								MoveCost* cost2 = nullptr;
 								if (evaluators[ev]->getAllowCosts())
 								{
 									cost2 = move2.cost(e, s.getR(), s.getADS());
@@ -1074,7 +1074,7 @@ public:
 
 			if (!nsseq)
 			{
-				cout << "module " << id() << " error: NULL OptFrame:NS:NSSeq!" << endl;
+				cout << "module " << id() << " error: nullptr OptFrame:NS:NSSeq!" << endl;
 				return false;
 			}
 
@@ -1103,7 +1103,7 @@ public:
 				{
 					Move<R, ADS, DS>* moveValid = nsseq->validMove(s);
 
-					if (moveValid != NULL)
+					if (moveValid != nullptr)
 					{
 						delete &moveValid->apply(s);
 						delete moveValid;
@@ -1295,7 +1295,7 @@ public:
 						}
 
 						Timer tMoveCost;
-						MoveCost* cost = NULL;
+						MoveCost* cost = nullptr;
 
 						if (evaluators[ev]->getAllowCosts())
 							cost = move.cost(e, s.getR(), s.getADS());
@@ -1415,12 +1415,12 @@ public:
 		for (unsigned i = 0; i < lComponents.size(); i++)
 		{
 			Scanner scan(lComponents.at(i));
-			type = NULL;
+			type = nullptr;
 			factory.assign(type, scan.nextInt(), scan.next()); // reversed!
 
 			if (!type)
 			{
-				cout << "module " << id() << " warning: NULL component " << lComponents[i] << "!" << endl;
+				cout << "module " << id() << " warning: nullptr component " << lComponents[i] << "!" << endl;
 			}
 			else
 				vComp.push_back(type);

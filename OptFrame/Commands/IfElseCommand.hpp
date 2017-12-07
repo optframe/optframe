@@ -151,7 +151,7 @@ public:
 		string* ninput = Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, ibegin);
 
 		if(!ninput)
-			return NULL;
+			return nullptr;
 
 		ninput->append(" "); // after boolean value
 		ninput->append(iend);

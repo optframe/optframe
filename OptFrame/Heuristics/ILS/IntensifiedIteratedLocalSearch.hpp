@@ -65,7 +65,7 @@ public:
 
 	virtual bool terminationCondition(H& history) = 0;
 
-	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0,  const Solution<R, ADS>* _s = NULL,  const Evaluation* _e = NULL)
+	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0,  const Solution<R, ADS>* _s = nullptr,  const Evaluation* _e = nullptr)
 	{
 		cout << "IILS search(" << target_f << "," << timelimit << ")" << endl;
 

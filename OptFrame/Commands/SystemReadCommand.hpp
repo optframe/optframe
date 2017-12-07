@@ -222,7 +222,7 @@ public:
 		// WILL CHANGE DIRECTORY
 		// =====================
 
-	    char *path=NULL;
+	    char *path=nullptr;
 	    size_t size = 0;
 	    path=getcwd(path,size);
 	    //cout<<"current Path"<<path << endl;

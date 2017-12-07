@@ -95,7 +95,7 @@ private:
 
 public:
 
-	NSSeqTSP2Opt(P* _p = NULL)
+	NSSeqTSP2Opt(P* _p = nullptr)
 	:
 			p(_p)
 	{

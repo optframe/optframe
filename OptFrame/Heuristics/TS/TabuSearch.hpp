@@ -49,11 +49,11 @@ public:
 	{
 	}
 
-	pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL, const Evaluation<DS>* _e = NULL)
+	pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = nullptr, const Evaluation<DS>* _e = nullptr)
 	{
 		//cout << "TabuSearch exec(" << target_f << "," << timelimit << ")" << endl;
 
-		long tini = time(NULL);
+		long tini = time(nullptr);
 
 		Solution<R, ADS>& s = constructive.generateSolution();
 		Evaluation<DS>& e    = evaluator.evaluate(s);
@@ -70,7 +70,7 @@ public:
 		const vector<Move<R, ADS, DS>*> emptyList;
 		vector<Move<R, ADS, DS>*> tabuList;
 
-		long tnow = time(NULL);
+		long tnow = time(nullptr);
 
 		int estimative_BTmax = 0;
 
@@ -165,7 +165,7 @@ public:
 				//cout << "Improvement on " << BestIter << ": fo=" << evalSStar->evaluation() << endl;
 			}
 
-			tnow = time(NULL);
+			tnow = time(nullptr);
 		}
 
 		while (tabuList.size() > 0)
@@ -207,7 +207,7 @@ public:
 		if (it.isDone())
 		{
 			delete &it;
-			return NULL;
+			return nullptr;
 		}
 
 		Move<R, ADS, DS>* bestMove = &it.current();
@@ -224,7 +224,7 @@ public:
 			else
 			{
 				delete &it;
-				return NULL;
+				return nullptr;
 			}
 		}
 

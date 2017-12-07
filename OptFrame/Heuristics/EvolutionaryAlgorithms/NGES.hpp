@@ -335,7 +335,7 @@ public:
 			iterWithoutImprovement++;
 	}
 
-	pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
+	pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = nullptr, const Evaluation* _e = nullptr)
 	{
 		Timer tnow;
 		NGESPopulation pop;

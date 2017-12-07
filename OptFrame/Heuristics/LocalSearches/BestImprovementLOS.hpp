@@ -90,7 +90,7 @@ public:
 			return;
 		}*/
 
-		MoveCost* bestCost = NULL;
+		MoveCost* bestCost = nullptr;
 
 		while (true)
 		{
@@ -239,12 +239,12 @@ public:
 	virtual LocalSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
 		if(!scanner.hasNext())
-			return NULL;
+			return nullptr;
 		Evaluator<R, ADS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		if(!scanner.hasNext())
-			return NULL;
+			return nullptr;
 		NSSeq<R, ADS>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 

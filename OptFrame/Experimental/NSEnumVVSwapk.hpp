@@ -81,7 +81,7 @@ public:
 			cerr << "Neighborhood Swap Error! Move " << _k << " does not exist! Valid Interval from 0 to " << (size()-1) << "." << endl;
 			exit(1);
 
-			//return NULL;
+			//return nullptr;
 		}
 
 		return * new MoveVVSwapk<T,DS >((*moves)[_k].first.first,(*moves)[_k].first.second,

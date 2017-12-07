@@ -114,7 +114,7 @@ public:
 
 	virtual void freePopulation(vector<MOSIndividual<R, ADS, DS>*>& P, vector<MOSIndividual<R, ADS, DS>*>& archive) = 0;
 
-	Pareto<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS, DS>* _pf = NULL)
+	Pareto<R, ADS, DS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS, DS>* _pf = nullptr)
 	{
 		Timer timer;
 
@@ -236,7 +236,7 @@ public:
 			best[i] = mevr.worst(i);
 
 		for(unsigned s = 0; s < P.size(); s++)
-			if(!P[s]->mev) // not evaluated (NULL)
+			if(!P[s]->mev) // not evaluated (nullptr)
 			{
 				P[s]->mev = &mevr.evaluate(*P[s]->s);
 				for(unsigned i = 0; i < best.size(); i++)

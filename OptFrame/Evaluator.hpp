@@ -140,8 +140,8 @@ public:
 	{
 		// apply move and get reverse move
 		Move<R, ADS>* rev = m.applyUpdateSolution(e, s);
-		// for now, must be not NULL
-		assert(rev != NULL);
+		// for now, must be not nullptr
+		assert(rev != nullptr);
 		// consolidate 'outdated' evaluation data on 'e'
 		reevaluateSolution(e, s);
 
@@ -155,8 +155,8 @@ public:
 	{
 		// apply move and get reverse move
 		Move<R, ADS>* rev = m.applySolution(s);
-		// for now, must be not NULL
-		assert(rev != NULL);
+		// for now, must be not nullptr
+		assert(rev != nullptr);
 		// TODO: include management for 'false' hasReverse()
 		assert(m.hasReverse() && rev);
 		// create pair
@@ -169,7 +169,7 @@ public:
 		// TODO: in the future, consider 'allowEstimated' parameter
 		// TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
 
-		MoveCost* p = NULL;
+		MoveCost* p = nullptr;
 		if (allowCosts)
 		{
 			p = m.cost(e, s.getR(), s.getADSptr(), allowEstimated);
@@ -184,7 +184,7 @@ public:
 		{
 			// need to update 's' together with reevaluation of 'e' => slower (may perform reevaluation)
 
-			// TODO: in the future, consider moves with NULL reverse (must save original solution/evaluation)
+			// TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
 			assert(m.hasReverse());
 
 			Evaluation ev_begin = e; //TODO: VITOR removing last evaluation
@@ -212,8 +212,8 @@ public:
 //				e.outdated = outdated;
 
 			Move<R, ADS>* ini = rev->applySolution(s);
-			// for now, must be not NULL
-			assert(ini != NULL);
+			// for now, must be not nullptr
+			assert(ini != nullptr);
 			// TODO: include management for 'false' hasReverse()
 			assert(rev->hasReverse() && ini);
 
@@ -251,7 +251,7 @@ public:
 		// TODO: in the future, consider 'allowEstimated' parameter
 		// TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
 
-		// TODO: in the future, consider moves with NULL reverse (must save original solution/evaluation)
+		// TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
 		assert(m.hasReverse());
 
 		pair<Move<R, ADS>*, Evaluation> rev = applyMove(m, s);
@@ -281,12 +281,12 @@ public:
 	}
 
 	// Accept and apply move if it improves parameter moveCost
-	bool acceptsImprove(Move<R, ADS>& m, Solution<R, ADS>& s, Evaluation& e, MoveCost* mc = NULL, bool allowEstimated = false)
+	bool acceptsImprove(Move<R, ADS>& m, Solution<R, ADS>& s, Evaluation& e, MoveCost* mc = nullptr, bool allowEstimated = false)
 	{
 		// TODO: in the future, consider 'allowEstimated' parameter
 
 		// initialize MoveCost pointer
-		MoveCost* p = NULL;
+		MoveCost* p = nullptr;
 		// try to get a cost (should consider estimated moves in the future)
 		if (allowCosts)
 		{
@@ -320,7 +320,7 @@ public:
 		{
 			// need to update 's' together with reevaluation of 'e' => slower (may perform reevaluation)
 
-			// TODO: in the future, consider moves with NULL reverse (must save original solution/evaluation)
+			// TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
 			assert(m.hasReverse());
 
 			// saving previous evaluation
@@ -373,8 +373,8 @@ public:
 
 
 			Move<R, ADS>* ini = rev->applySolution(s);
-			// for now, must be not NULL
-			assert(ini != NULL);
+			// for now, must be not nullptr
+			assert(ini != nullptr);
 			// TODO: include management for 'false' hasReverse()
 			assert(rev->hasReverse() && ini);
 			e = std::move(ev_begin);

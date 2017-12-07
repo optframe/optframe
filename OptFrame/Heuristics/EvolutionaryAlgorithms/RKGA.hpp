@@ -84,7 +84,7 @@ protected:
 public:
 
 	RKGA(DecoderRandomKeys<R>& _decoder, InitialPopulation<random_keys>& _initPop, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT) :
-			decoder(_decoder), evaluator(NULL), initPop(_initPop), sz(-1), popSize(_popSize), eliteSize(fracTOP * _popSize), randomSize(fracBOT * _popSize)
+			decoder(_decoder), evaluator(nullptr), initPop(_initPop), sz(-1), popSize(_popSize), eliteSize(fracTOP * _popSize), randomSize(fracBOT * _popSize)
 	{
 		this->numGenerations = numGenerations;
 		assert(eliteSize < popSize);
@@ -92,7 +92,7 @@ public:
 	}
 
 	RKGA(DecoderRandomKeys<R>& _decoder, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT) :
-			decoder(_decoder), evaluator(NULL), initPop(*new RandomKeysInitPop(key_size)), sz(key_size), popSize(_popSize), eliteSize(fracTOP * _popSize), randomSize(fracBOT * _popSize)
+			decoder(_decoder), evaluator(nullptr), initPop(*new RandomKeysInitPop(key_size)), sz(key_size), popSize(_popSize), eliteSize(fracTOP * _popSize), randomSize(fracBOT * _popSize)
 	{
 		this->numGenerations = numGenerations;
 		assert(eliteSize < popSize);
@@ -145,7 +145,7 @@ public:
 		return *new Solution<random_keys>(v);
 	}
 
-	pair<Solution<random_keys>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const Solution<random_keys>* _s = NULL, const Evaluation* _e = NULL)
+	pair<Solution<random_keys>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const Solution<random_keys>* _s = nullptr, const Evaluation* _e = nullptr)
 	{
 		// count generations
 		int count_gen = 0;

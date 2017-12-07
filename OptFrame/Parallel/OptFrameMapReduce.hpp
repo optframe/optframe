@@ -103,7 +103,7 @@ private:
 	HTrajectory<R, ADS, DS>* hreduce;
 public:
 	MyMaPIReducer(MaPI_MapReduce<R, RankAndStop, int, pair<R, double> , R> * mr, MaPI_Serializer<R, RankAndStop, int, pair<R, double> , R> * s,Evaluator<R, ADS, DS>& _eval) :
-		MaPI_Reducer<R, RankAndStop, int, pair<R, double> , R> (mr,s),eval(_eval),hreduce(NULL)
+		MaPI_Reducer<R, RankAndStop, int, pair<R, double> , R> (mr,s),eval(_eval),hreduce(nullptr)
 	{
 	}
 
@@ -117,7 +117,7 @@ public:
 
 		R reduced;
 
-		if (hreduce == NULL) { // reduction best solution
+		if (hreduce == nullptr) { // reduction best solution
 
 			int bestIndex = 0;
 			double bestCost = bs.second[bestIndex].second;

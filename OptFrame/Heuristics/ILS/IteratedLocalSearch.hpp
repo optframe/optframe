@@ -62,7 +62,7 @@ public:
 
 	virtual bool terminationCondition(H& history) = 0;
 
-	pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
+	pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = nullptr, const Evaluation* _e = nullptr)
 	{
 		cout << "ILS opt search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
@@ -72,7 +72,7 @@ public:
 		Evaluation* eStar = nullptr;
 
 		//If solution is given it should contain an evaluation: TODO - Implement search with Solution
-		if (_s != NULL)
+		if (_s != nullptr)
 		{
 			(*sStar) = (*_s);
 			(*eStar) = (*_e);

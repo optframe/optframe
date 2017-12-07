@@ -58,7 +58,7 @@ public:
 	{
 	}
 
-	pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
+	pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = nullptr, const Evaluation* _e = nullptr)
 	{
 		double timelimit = stopCriteria.timelimit;
 		double target_f = stopCriteria.target_f;
@@ -144,12 +144,12 @@ public:
 		scanner = Scanner(method.second);
 
 		if (!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		float alpha = scanner.nextFloat();
 
 		if (!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		int iterMax = scanner.nextInt();
 

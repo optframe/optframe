@@ -123,7 +123,7 @@ public:
           method = factory.createLocalSearch(scanner.rest());
           scanner = Scanner(method.second);
 
-          if(method.first!=NULL)
+          if(method.first!=nullptr)
           {
         	  base   = LocalSearch<R, ADS, DS>::idComponent();
         	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
@@ -135,7 +135,7 @@ public:
           method = factory.createSingleObjSearch(scanner.rest());
           scanner = Scanner(method.second);
 
-          if(method.first!=NULL)
+          if(method.first!=nullptr)
           {
         	  base   = SingleObjSearch<R, ADS, DS>::idComponent();
         	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
@@ -147,7 +147,7 @@ public:
           method = factory.createMultiObjSearch(scanner.rest());
           scanner = Scanner(method.second);
 
-          if(method.first!=NULL)
+          if(method.first!=nullptr)
           {
         	  base   = MultiObjSearch<R, ADS, DS>::idComponent();
         	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?

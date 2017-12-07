@@ -68,7 +68,7 @@ public:
 		else if (ldictionary.count(var) != 0)
 			return new string(OptFrameList::listToString(ldictionary.find(var)->second));
 		else
-			return NULL;
+			return nullptr;
 	}
 };
 

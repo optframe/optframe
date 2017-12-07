@@ -43,7 +43,7 @@ protected:
 
 public:
 
-	MoveVRPShift10(int _r1, int _r2, int _cli, int _pos, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
+	MoveVRPShift10(int _r1, int _r2, int _cli, int _pos, OPTFRAME_DEFAULT_PROBLEM* _problem = nullptr) :
 		r1(_r1), r2(_r2), cli(_cli), pos(_pos), problem(_problem)
 	{
 	}
@@ -129,10 +129,10 @@ protected:
 
 public:
 
-	NSIteratorVRPShift10(const Routes& _r, const ADS& _ads, P* _p = NULL) :
+	NSIteratorVRPShift10(const Routes& _r, const ADS& _ads, P* _p = nullptr) :
 		r(_r), p(_p)
 	{
-		m = NULL;
+		m = nullptr;
 		index = 0;
 	}
 
@@ -170,7 +170,7 @@ public:
 			m = moves[index];
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	virtual void next()
@@ -181,12 +181,12 @@ public:
 			m = moves[index];
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	virtual bool isDone()
 	{
-		return m == NULL;
+		return m == nullptr;
 	}
 
 	virtual Move<Routes, ADS>& current()
@@ -213,7 +213,7 @@ private:
 
 public:
 
-	NSSeqVRPShift10(P* _p = NULL) :
+	NSSeqVRPShift10(P* _p = nullptr) :
 		p(_p)
 	{
 	}
@@ -257,7 +257,7 @@ public:
 				delete moveValid;
 		}
 
-		return NULL;
+		return nullptr;
 	}
 
 	virtual NSITERATOR& getIterator(const Routes& r, const ADS& ads)

@@ -95,7 +95,7 @@ public:
 
 		for (int i = 0; i < n; i++)
 		{
-			long seed = time(NULL) + i;
+			long seed = time(nullptr) + i;
 			fprintf(file, "%ld\t", seed);
 
 			cout << "Test " << i << " {seed=" << seed << "}... Running";

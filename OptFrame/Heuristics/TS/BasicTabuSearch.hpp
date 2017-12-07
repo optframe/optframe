@@ -51,11 +51,11 @@ public:
 	{
 	}
 
-	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
+	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = nullptr, const Evaluation* _e = nullptr)
 	{
 		//cout << "BasicTabuSearch exec(" << target_f << "," << timelimit << ")" << endl;
 
-		long tini = time(NULL);
+		long tini = time(nullptr);
 
 		Solution<R, ADS>& s = constructive.generateSolution();
 		Evaluation& e = evaluator.evaluate(s);
@@ -72,7 +72,7 @@ public:
 		const vector<Move<R, ADS>*> emptyList;
 		vector<Move<R, ADS>*> tabuList;
 
-		long tnow = time(NULL);
+		long tnow = time(nullptr);
 
 		int estimative_BTmax = 0;
 
@@ -166,7 +166,7 @@ public:
 				//cout << "Improvement on " << BestIter << ": fo=" << evalSStar->evaluation() << endl;
 			}
 
-			tnow = time(NULL);
+			tnow = time(nullptr);
 		}
 
 		while (tabuList.size() > 0)
@@ -208,7 +208,7 @@ public:
 		if (it.isDone())
 		{
 			delete &it;
-			return NULL;
+			return nullptr;
 		}
 
 		Move<R, ADS>* bestMove = &it.current();
@@ -225,7 +225,7 @@ public:
 			else
 			{
 				delete &it;
-				return NULL;
+				return nullptr;
 			}
 		}
 
@@ -305,12 +305,12 @@ public:
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		if (!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		int tl = scanner.nextInt();
 
 		if (!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		int tsMax = scanner.nextInt();
 

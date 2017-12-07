@@ -155,8 +155,8 @@ public:
 		}
 		int id = scanner.nextInt();
 
-		Solution<R, ADS>* s1 = NULL;
-		Constructive<R, ADS>* constructive = NULL;
+		Solution<R, ADS>* s1 = nullptr;
+		Constructive<R, ADS>* constructive = nullptr;
 
 		if(sc == Solution<R, ADS>::idComponent())
 			factory.assign(s1, id, sc);
@@ -201,7 +201,7 @@ public:
 		fprintf(file, "PARAMETERS:%s\n", input.c_str());
 
 		//bool minimization = eval->betterThan(1, 2); // TODO
-		Solution<R, ADS>* s_star = NULL;
+		Solution<R, ADS>* s_star = nullptr;
 
 		double s_fo_ini = 0;
 		double s_t_ini = 0;
@@ -223,7 +223,7 @@ public:
 			cout << "Test " << i << "... Running";
 			Timer t(false);
 
-			Solution<R, ADS>& s = ((s1 != NULL)? s1->clone() : constructive->generateSolution());
+			Solution<R, ADS>& s = ((s1 != nullptr)? s1->clone() : constructive->generateSolution());
 
 			t_now = t.now();
 			Evaluation< DS > & e = eval->evaluate(s);

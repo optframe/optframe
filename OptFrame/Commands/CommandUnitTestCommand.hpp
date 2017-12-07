@@ -49,8 +49,8 @@ private:
 			if (modules[i]->canHandle(module, rest))
 				return modules[i];
 		}
-		//cout << "run: NULL MODULE! module='" << module << "' rest='" << rest << "'" << endl;
-		return NULL;
+		//cout << "run: nullptr MODULE! module='" << module << "' rest='" << rest << "'" << endl;
+		return nullptr;
 	}
 
 public:

@@ -42,10 +42,10 @@ public:
 	{
 	}
 
-	Pareto<R, ADS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS>* _pf = NULL)
+	Pareto<R, ADS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS>* _pf = nullptr)
 	{
 		cout << "WARNING: RETURNING A EmptyMultiObjSearch!" << endl;
-		return NULL;
+		return nullptr;
 	}
 
 	static string idComponent()

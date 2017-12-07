@@ -76,10 +76,10 @@ public:
 			delete plist1;
 		}
 		else
-			return NULL;
+			return nullptr;
 
 		if(list1.size()==0)
-			return NULL;
+			return nullptr;
 
 		vector<string>* plist2 = OptFrameList::readList(ldictionary, scanner);
 		vector<string>  list2;
@@ -89,10 +89,10 @@ public:
 			delete plist2;
 		}
 		else
-			return NULL;
+			return nullptr;
 
 		if(list2.size()==0)
-			return NULL;
+			return nullptr;
 
 		stringstream scommand;
 		scommand << "echo \"t.test( x=c(";
@@ -118,17 +118,17 @@ public:
 		//cout << scommand.str() << endl;
 
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
-		if (pPipe == NULL)
+		if (pPipe == nullptr)
 		{
 		    cout << "general_t_test function: PIPE NOT OPEN!" << endl;
-		    return NULL;
+		    return nullptr;
 		}
 
 		char line[100];
 
 		string output = "";
 
-		while(fgets(line, 100, pPipe) != NULL)
+		while(fgets(line, 100, pPipe) != nullptr)
 		{
 			string sline = line;
 			output.append(sline);
@@ -138,7 +138,7 @@ public:
 
 		//cout << "general_t_test function: OUTPUT '" << output << "'" << endl;
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
-			return NULL;
+			return nullptr;
 
 		Scanner scan_out(output); //example: 't = -2.2156, df = 18, p-value = 0.01992'
 		scan_out.next(); // drop 't'

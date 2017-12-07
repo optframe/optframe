@@ -45,13 +45,13 @@ protected:
 
 public:
 
-	NSIteratorTSP2Opt(const Route& _r, P* _p = NULL) :
+	NSIteratorTSP2Opt(const Route& _r, P* _p = nullptr) :
 			r(_r), p(_p)
 	{
 		p1 = 0; // avoid non-initialization warning
 		p2 = 2; // avoid non-initialization warning
 
-		m = NULL;
+		m = nullptr;
 	}
 
 	virtual ~NSIteratorTSP2Opt()
@@ -67,7 +67,7 @@ public:
 			m = new MOVE(p1, p2, p);
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	virtual void next()
@@ -87,12 +87,12 @@ public:
 			m = new MOVE(p1, p2, p);
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	virtual bool isDone()
 	{
-		return m == NULL;
+		return m == nullptr;
 	}
 
 	virtual Move<Route, ADS>& current()

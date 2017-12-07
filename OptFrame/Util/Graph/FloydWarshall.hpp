@@ -11,7 +11,7 @@ namespace optframe
 {
 struct FloydWarshall
 {
-	static Matrix<double>& run(const Graph<double>& g, Matrix<int>* pred = NULL)
+	static Matrix<double>& run(const Graph<double>& g, Matrix<int>* pred = nullptr)
 	{
 		unsigned n = g.numNodes();
 		Matrix<double>* mDist = new Matrix<double>(n);
@@ -53,7 +53,7 @@ struct FloydWarshall
 	 * 0 => 3: 0	{1}18	{3}3	SUM=4	OK!
 	 vector(1) [18]
 
-	 0 => 4: 0	(NULL)3	{2}4	SUM=1000002	ERROR! EXPECTED 6
+	 0 => 4: 0	(nullptr)3	{2}4	SUM=1000002	ERROR! EXPECTED 6
 	 vector(1) [18]
 	 */
 

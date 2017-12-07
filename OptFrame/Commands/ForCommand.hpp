@@ -39,7 +39,7 @@ private:
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())
 				return modules[i];
-		return NULL;
+		return nullptr;
 	}
 
 	bool exec_command(vector<Command<R, ADS, DS>*>& all_modules, vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string command)
@@ -48,13 +48,13 @@ private:
 		string module = scanner.next();
 		Command<R, ADS, DS>* m = getCommand(all_modules, module);
 
-		if (m == NULL)
+		if (m == nullptr)
 			return false;
 
 		string* rest = m->preprocess(allFunctions, dictionary, ldictionary, scanner.rest());
 
 		if(!rest)
-			return NULL;
+			return nullptr;
 
 		//cout << "FOR COMMAND: '" << module << "' input: '" << *rest << "'"<< endl;
 		bool b = m->run(all_modules, allFunctions, factory, dictionary, ldictionary, *rest);

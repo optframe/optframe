@@ -77,10 +77,10 @@ public:
 			delete plistb;
 		}
 		else
-			return NULL;
+			return nullptr;
 
 		if(listb.size()==0)
-			return NULL;
+			return nullptr;
 
 		vector<string>* plist = OptFrameList::readList(ldictionary, scanner);
 		vector<string>  list;
@@ -90,10 +90,10 @@ public:
 			delete plist;
 		}
 		else
-			return NULL;
+			return nullptr;
 
 		if(list.size()==0)
-			return NULL;
+			return nullptr;
 
 		vector<vector<string> > list2;
 		for(unsigned i=0; i<list.size(); i++)
@@ -107,7 +107,7 @@ public:
 				delete plist1;
 			}
 			else
-				return NULL;
+				return nullptr;
 
 			list2.push_back(list1);
 		}
@@ -115,7 +115,7 @@ public:
 		//cout << list2 << endl;
 
 		if(list2.size()==0)
-			return NULL;
+			return nullptr;
 
 		unsigned sizes = list2.at(0).size();
 
@@ -123,13 +123,13 @@ public:
 			if(list2.at(i).size() != sizes)
 			{
 				cout << "statistics.friedman_test error: different sizes!" << endl;
-				return NULL;
+				return nullptr;
 			}
 
 		if(listb.size() != sizes)
 		{
 			cout << "statistics.friedman_test error: block with different size!" << endl;
-			return NULL;
+			return nullptr;
 		}
 
 		stringstream scommand;
@@ -168,17 +168,17 @@ public:
 		//cout << "COMMAND: '" << scommand.str() << "'" << endl;
 
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
-		if (pPipe == NULL)
+		if (pPipe == nullptr)
 		{
 		    cout << "friedman_test command: PIPE NOT OPEN!" << endl;
-		    return NULL;
+		    return nullptr;
 		}
 
 		char line[100];
 
 		string output = "";
 
-		while(fgets(line, 100, pPipe) != NULL)
+		while(fgets(line, 100, pPipe) != nullptr)
 		{
 			string sline = line;
 			output.append(sline);
@@ -188,7 +188,7 @@ public:
 
 		//cout << "friedman_test function: OUTPUT '" << output << "'" << endl;
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
-			return NULL;
+			return nullptr;
 
 		Scanner scan_out(output); //example: 'Friedman chi-squared = 8, df = 2, p-value = 0.01832'
 		scan_out.next(); // drop 'Friedman'

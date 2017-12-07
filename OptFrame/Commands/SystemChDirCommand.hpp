@@ -64,7 +64,7 @@ public:
 			return false;
 		}
 
-		char *path = NULL;
+		char *path = nullptr;
 		size_t size = 0;
 		path = getcwd(path, size);
 

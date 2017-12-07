@@ -77,7 +77,7 @@ public:
 		else
 		{
 			delete m;
-			return NULL;
+			return nullptr;
 		}
 	}
 

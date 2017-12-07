@@ -78,11 +78,11 @@ public:
 		else
 		{
 			cout << "Function " << id() << " error: couldn't read list!" << endl;
-			return NULL;
+			return nullptr;
 		}
 
 		if(list.size()==0)
-			return NULL;
+			return nullptr;
 
 		stringstream scommand;
 		scommand << "echo \"x <- c(";
@@ -97,17 +97,17 @@ public:
 		scommand << ") \n shapiro.test(x)\" | R --no-save | grep p-value";
 
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
-		if (pPipe == NULL)
+		if (pPipe == nullptr)
 		{
 		    cout << "shapiro_test command: PIPE NOT OPEN!" << endl;
-		    return NULL;
+		    return nullptr;
 		}
 
 		char line[100];
 
 		string output = "";
 
-		while(fgets(line, 100, pPipe) != NULL)
+		while(fgets(line, 100, pPipe) != nullptr)
 		{
 			string sline = line;
 			output.append(sline);
@@ -117,7 +117,7 @@ public:
 
 		//cout << "shapiro_test command: OUTPUT '" << output << "'" << endl;
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
-			return NULL;
+			return nullptr;
 
 		Scanner scan_out(output); //example: 'W = 0.9819, p-value = 0.9606'
 		scan_out.next(); // drop 'W'

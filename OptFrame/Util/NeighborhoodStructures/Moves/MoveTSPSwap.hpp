@@ -40,7 +40,7 @@ protected:
 
 public:
 
-	MoveTSPSwap(int _p1, int _p2, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
+	MoveTSPSwap(int _p1, int _p2, OPTFRAME_DEFAULT_PROBLEM* _problem = nullptr) :
 			p1(_p1), p2(_p2), problem(_problem)
 	{
 	}

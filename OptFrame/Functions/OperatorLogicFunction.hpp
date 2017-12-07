@@ -75,7 +75,7 @@ public:
 		Scanner scanner(body);
 
 		if(!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		string first = scanner.next();
 
@@ -99,7 +99,7 @@ public:
 
 			cout << "logic function: no such operation '" << op << "'" << endl;
 
-			return NULL;
+			return nullptr;
 		}
 	}
 };

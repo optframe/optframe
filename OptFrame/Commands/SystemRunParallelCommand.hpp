@@ -50,7 +50,7 @@ private:
     	for (unsigned int i = 0; i < allCommands->size(); i++)
     		if (module == allCommands->at(i)->id())
     			return allCommands->at(i);
-    	return NULL;
+    	return nullptr;
     }
 
 	// RESULTS
@@ -64,11 +64,11 @@ public:
 
 	SystemRunParallelCommand()
 	{
-		allCommands   = NULL;
-		allFunctions = NULL;
-		factory      = NULL;
-		dictionary   = NULL;
-		ldictionary  = NULL;
+		allCommands   = nullptr;
+		allFunctions = nullptr;
+		factory      = nullptr;
+		dictionary   = nullptr;
+		ldictionary  = nullptr;
 	}
 
 	virtual ~SystemRunParallelCommand()
@@ -137,7 +137,7 @@ public:
 	        threads.push_back(thread);
 	        mutexes.push_back(mutex);
 
-	        pthread_mutex_init(&mutexes[t], NULL);
+	        pthread_mutex_init(&mutexes[t], nullptr);
 	        pthread_create(&threads[t], 0, &SystemRunParallelCommand<R, ADS, DS>::start_thread, this);
 		}
 
@@ -172,7 +172,7 @@ public:
 	static void* start_thread(void *obj)
 	{
 		reinterpret_cast<SystemRunParallelCommand<R, ADS, DS> *>(obj)->exec_command();
-		pthread_exit(NULL);
+		pthread_exit(nullptr);
 	}
 
     void exec_command()
@@ -205,7 +205,7 @@ public:
     		string module = scanner.next();
     		Command<R, ADS, DS>* m = getCommand(module);
 
-    		if (m == NULL)
+    		if (m == nullptr)
     			return;
 
     		string* rest1 = m->preprocess(*allFunctions, *dictionary, *ldictionary, scanner.rest());

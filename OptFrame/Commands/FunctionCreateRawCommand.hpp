@@ -219,7 +219,7 @@ public:
 			if(input.at(i)=='[')
 			{
 				cout << "raw_function '" << id() << "' error: can't have explicit list as parameter, sorry! Please use 'list.silent_define' before calling this!" << endl;
-				return NULL;
+				return nullptr;
 			}
 
 		string backup_input = input;
@@ -237,7 +237,7 @@ public:
 			if (!scanner.hasNext())
 			{
 				cout << "Usage: " << usage() << endl;
-				return NULL;
+				return nullptr;
 			}
 			else
 				values.push_back(scanner.next());
@@ -293,7 +293,7 @@ public:
 			else
 			{
 				cout << "preprocessing error in raw_function '" << name << "'" << endl;
-				return NULL; // error in valid function!
+				return nullptr; // error in valid function!
 			}
 		}
 		else

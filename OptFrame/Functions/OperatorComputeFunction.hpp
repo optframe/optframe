@@ -71,17 +71,17 @@ public:
 		Scanner scanner(body);
 
 		if(!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		string sa = scanner.next();
 
 		if(!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		string op = scanner.next();
 
 		if(!scanner.hasNext())
-			return NULL;
+			return nullptr;
 
 		string sb = scanner.next();
 
@@ -96,7 +96,7 @@ public:
 		catch(ConversionError& e)
 		{
 			cout << "math function: not a number to operate ('" <<sa << "' " << op << " '" << sb << "')!" << endl;
-			return NULL;
+			return nullptr;
 		}
 
 		if(op == "+")
@@ -112,7 +112,7 @@ public:
 
 		cout << "math function: no such operation '" << op << "'" << endl;
 
-		return NULL;
+		return nullptr;
 	}
 };
 

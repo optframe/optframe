@@ -209,7 +209,7 @@ public:
 
 		for (unsigned i = 0; i < sizePop; i++)
 		{
-			if (this->p.at(i)) // If no NULL pointing.
+			if (this->p.at(i)) // If no nullptr pointing.
 			{
 				delete this->p.at(i);
 			}
@@ -221,13 +221,13 @@ public:
 
 		for (unsigned i = 0; i < sizePop; i++)
 		{
-			if (&p.at(i)) // If no NULL pointing.
+			if (&p.at(i)) // If no nullptr pointing.
 			{
 				this->p.push_back(new chromossome(p.at(i)));
 			}
 			else
 			{
-				this->p.push_back(NULL);
+				this->p.push_back(nullptr);
 			}
 		}
 

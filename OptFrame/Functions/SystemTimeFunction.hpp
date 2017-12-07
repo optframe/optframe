@@ -61,7 +61,7 @@ public:
 	{
 		Scanner scanner(body);
 
-		long r = time(NULL);
+		long r = time(nullptr);
 
 		stringstream ss;
 		ss << r;

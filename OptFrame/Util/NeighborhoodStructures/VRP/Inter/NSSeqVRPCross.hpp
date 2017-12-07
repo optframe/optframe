@@ -43,7 +43,7 @@ protected:
 
 public:
 
-	MoveVRPCross(int _r1, int _r2, int _p1, int _p2, OPTFRAME_DEFAULT_PROBLEM* _problem = NULL) :
+	MoveVRPCross(int _r1, int _r2, int _p1, int _p2, OPTFRAME_DEFAULT_PROBLEM* _problem = nullptr) :
 		r1(_r1), r2(_r2), p1(_p1), p2(_p2), problem(_problem)
 	{
 	}
@@ -132,10 +132,10 @@ private:
 
 public:
 
-	NSIteratorVRPCross(const Routes& _r, P* _p = NULL) :
+	NSIteratorVRPCross(const Routes& _r, P* _p = nullptr) :
 		r(_r), p(_p)
 	{
-		m = NULL;
+		m = nullptr;
 		index = 0;
 	}
 
@@ -168,7 +168,7 @@ public:
 			m = moves[index];
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	virtual void next()
@@ -179,12 +179,12 @@ public:
 			m = moves[index];
 		}
 		else
-			m = NULL;
+			m = nullptr;
 	}
 
 	virtual bool isDone()
 	{
-		return m == NULL;
+		return m == nullptr;
 	}
 
 	virtual Move<Routes, ADS, DS>& current()
@@ -211,7 +211,7 @@ private:
 
 public:
 
-	NSSeqVRPCross(P* _p = NULL) :
+	NSSeqVRPCross(P* _p = nullptr) :
 		p(_p)
 	{
 	}

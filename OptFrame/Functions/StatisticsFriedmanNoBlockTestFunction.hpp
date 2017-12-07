@@ -78,13 +78,13 @@ public:
 		else
         {
             cout << id() << " function: list of values is invalid!" << endl;
-			return NULL;
+			return nullptr;
         }
 
 		if(list.size()==0)
         {
             cout << id() << " function: list of values is empty!" << endl;
-			return NULL;
+			return nullptr;
         }
 
 		vector<vector<string> > list2;
@@ -101,7 +101,7 @@ public:
 			else
             {
                 cout << id() << " function: internal list of values couldn't be read!" << endl;
-				return NULL;
+				return nullptr;
             }
 
 			list2.push_back(list1);
@@ -115,7 +115,7 @@ public:
         unsigned LIMIT = 1000;
 
 		stringstream scommand;
-        FILE* aux = NULL;
+        FILE* aux = nullptr;
 
         if(nrows*ncols > LIMIT) // TOO BIG! USING FILE TO TRANSPORT DATA
         {
@@ -187,17 +187,17 @@ public:
 		//cout << "COMMAND: '" << scommand.str() << "'" << endl;
 
 		FILE* pPipe = popen(scommand.str().c_str(), "r");
-		if (pPipe == NULL)
+		if (pPipe == nullptr)
 		{
 		    cout << "friedman_test command: PIPE NOT OPEN!" << endl;
-		    return NULL;
+		    return nullptr;
 		}
 
 		char line[100];
 
 		string output = "";
 
-		while(fgets(line, 100, pPipe) != NULL)
+		while(fgets(line, 100, pPipe) != nullptr)
 		{
 			string sline = line;
 			output.append(sline);
@@ -213,7 +213,7 @@ public:
 		if(output=="") // POSSIBLE ERROR: 'sh: R: not found'
         {
             cout << id() << " function: possible error, no R!" << endl;
-			return NULL;
+			return nullptr;
         }
 
 		Scanner scan_out(output); //example: 'Friedman chi-squared = 8, df = 2, p-value = 0.01832'
