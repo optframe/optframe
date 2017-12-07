@@ -47,24 +47,24 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, SOSC& stopCriteria)
 	{
 		Evaluation e = evaluator.evaluateSolution(s);
-		exec(s, e, timelimit, target_f);
+		exec(s, e, stopCriteria);
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria)
 	{
 		Timer tNow;
 
 		unsigned int iter = 0;
 
-		while ((iter < iterMax) && (tNow.now() < timelimit) && (evaluator.betterThan(target_f, e.evaluation())))
+		while ((iter < iterMax) && (tNow.now() < stopCriteria.timelimit) && (evaluator.betterThan(stopCriteria.target_f, e.evaluation())))
 		{
 			// TODO: verify if it's not null!
 			Move<R, ADS>& move = *ns.randomMoveSolution(s);
 
-			MoveCost* cost = NULL;
+			MoveCost* cost = nullptr;
 
 			if (move.canBeAppliedToSolution(s))
 			{

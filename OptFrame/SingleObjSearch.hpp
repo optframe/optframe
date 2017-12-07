@@ -39,7 +39,7 @@ namespace optframe
 // Single Objective Stopping Criteria
 // Must include GENERAL stopping criteria
 // specific stopping criteria for metaheuristics can be included in their constructors
-class SOSC : public Component
+class SOSC: public Component
 {
 public:
 	// maximum timelimit (seconds)
@@ -47,8 +47,8 @@ public:
 	// target objective function
 	double target_f;
 
-	SOSC(double _timelimit = 100000000.0, double _target_f = 0.0):
-		timelimit(_timelimit), target_f(_target_f)
+	SOSC(double _timelimit = 100000000.0, double _target_f = 0.0) :
+			timelimit(_timelimit), target_f(_target_f)
 	{
 	}
 
@@ -56,53 +56,65 @@ public:
 	{
 	}
 
+	void updateTimeLimit(double subtrTL)
+	{
+		timelimit -= subtrTL;
+	}
+
+	SOSC newStopCriteriaWithTL(double subtrTL)
+	{
+		SOSC newStopCriteria = (*this);
+		newStopCriteria.timelimit -= subtrTL;
+		return newStopCriteria;
+	}
+
+
 	virtual string id() const
 	{
 		return "SOSC";
 	}
 };
 
-
-template< class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class SingleObjSearch : public Component
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class SingleObjSearch: public Component
 {
-   typedef vector<Evaluation*> FitnessValues;
-   typedef const vector<const Evaluation*> ConstFitnessValues;
+	typedef vector<Evaluation*> FitnessValues;
+	typedef const vector<const Evaluation*> ConstFitnessValues;
 
 public:
 
-   SingleObjSearch()
-   {
-   }
+	SingleObjSearch()
+	{
+	}
 
-   virtual ~SingleObjSearch()
-   {
-   }
+	virtual ~SingleObjSearch()
+	{
+	}
 
-   // search method try to find a feasible solution within timelimit, if there is no such solution it returns NULL.
-   virtual pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL,  const Evaluation* _e = NULL) = 0;
+	// search method try to find a feasible solution within timelimit, if there is no such solution it returns NULL.
+	virtual pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL) = 0;
 
-   virtual string log()
-   {
-      return "Empty heuristic log.";
-   }
+	virtual string log()
+	{
+		return "Empty heuristic log.";
+	}
 
-   virtual bool compatible(string s)
-   {
-	   return ( s == idComponent() ) || ( Component::compatible(s) );
-   }
+	virtual bool compatible(string s)
+	{
+		return (s == idComponent()) || (Component::compatible(s));
+	}
 
-   static string idComponent()
-   {
-	   stringstream ss;
-	   ss << Component::idComponent() << ":SingleObjSearch";
-	   return ss.str();
-   }
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << Component::idComponent() << ":SingleObjSearch";
+		return ss.str();
+	}
 
-   virtual string id() const
-   {
-      return idComponent();
-   }
+	virtual string id() const
+	{
+		return idComponent();
+	}
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
@@ -137,8 +149,6 @@ public:
 	}
 };
 
-
-
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class SingleObjSearchAction: public Action<R, ADS>
 {
@@ -170,7 +180,7 @@ public:
 
 	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS>& hf, map<string, string>& d)
 	{
-		if(!handleComponent(type))
+		if (!handleComponent(type))
 		{
 			cout << "SingleObjSearchAction::doCast error: can't handle component type '" << type << " " << id << "'" << endl;
 			return false;
@@ -178,13 +188,13 @@ public:
 
 		Component* comp = hf.components[component].at(id);
 
-		if(!comp)
+		if (!comp)
 		{
 			cout << "SingleObjSearchAction::doCast error: NULL component '" << component << " " << id << "'" << endl;
 			return false;
 		}
 
-		if(!Component::compareBase(comp->id(), type))
+		if (!Component::compareBase(comp->id(), type))
 		{
 			cout << "SingleObjSearchAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
 			return false;
@@ -196,7 +206,7 @@ public:
 		// cast object to lower type
 		Component* final = NULL;
 
-		if(type == SingleObjSearch<R, ADS>::idComponent())
+		if (type == SingleObjSearch<R, ADS>::idComponent())
 		{
 			final = (SingleObjSearch<R, ADS>*) comp;
 		}
@@ -260,11 +270,11 @@ public:
 
 			pair<Solution<R, ADS>, Evaluation>* p = sios->search(SOSC(timelimit, target_f), s, e);
 
-			if(!p)
+			if (!p)
 				return true;
 
 			// TODO: use Move Semantics
-			Solution<R, ADS>* s2 = new Solution<R,ADS>(p->first);
+			Solution<R, ADS>* s2 = new Solution<R, ADS>(p->first);
 
 			delete p;
 
@@ -278,6 +288,5 @@ public:
 };
 
 }
-
 
 #endif /* OPTFRAME_SINGLE_OBJ_SEARCH_HPP_ */

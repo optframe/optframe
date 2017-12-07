@@ -64,13 +64,13 @@ public:
 		return *new levelHistory(vars, maxs);
 	}
 
-	virtual void localSearch(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
+	virtual void localSearch(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria)
 	{
 		//cout << "localSearch(.)" << endl;
-		ls.exec(s, e, timelimit, target_f);
+		ls.exec(s, e, stopCriteria);
 	}
 
-	virtual void perturbation(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f, levelHistory& history)
+	virtual void perturbation(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria, levelHistory& history)
 	{
 		//cout << "perturbation(.)" << endl;
 
@@ -82,7 +82,7 @@ public:
 		//cout << "level = " << level << " e iter = " << iter << endl;
 
 		// nivel atual: 'level'
-		p.perturb(s, e, timelimit, target_f, level);
+		p.perturb(s, e, stopCriteria, level);
 
 		// Incrementa a iteracao
 		iter++;

@@ -764,6 +764,8 @@ public:
 
 		vector<int> vCountMoves(lNSSeq.size());
 		vector<int> vCountValidMoves(lNSSeq.size());
+		vector<vector<int> > vCountMovesSamples(lNSSeq.size());
+		vector<vector<int> > vCountValidMovesSamples(lNSSeq.size());
 
 		for (unsigned id_nsseq = 0; id_nsseq < lNSSeq.size(); id_nsseq++)
 		{
@@ -789,6 +791,9 @@ public:
 
 				// TODO: consider that iterator can be null!
 				NSIterator<R, ADS>& it = *nsseq->getIteratorSolution(s);
+
+				int countMovesNSSeq = 0;
+				int countValidMovesNSSeq = 0;
 
 				for (it.first(); !it.isDone(); it.next())
 				{
@@ -827,11 +832,14 @@ public:
 					delete &move;
 				}
 
+				vCountMovesSamples[id_nsseq].push_back(countMovesNSSeq);
+				vCountValidMovesSamples[id_nsseq].push_back(countValidMovesNSSeq);
 				delete &it;
 			}
 
 			vCountMoves[id_nsseq] += countMoves;
 			vCountValidMoves[id_nsseq] += countValidMoves;
+
 
 			cout << "checkcommand: " << lNSSeq.at(id_nsseq)->id() << " finished." << endl;
 			if (verbose)
@@ -850,6 +858,12 @@ public:
 
 		vector<int> vCountIndependentEnum(lNSEnum.size());
 		vector<int> vCountMovePairsEnum(lNSEnum.size());
+
+		vector<vector<int>> vCountMovesEnumSamples(lNSEnum.size());
+		vector<vector<int>> vCountValidMovesEnumSamples(lNSEnum.size());
+
+		vector<vector<int>> vCountIndependentEnumSamples(lNSEnum.size());
+		vector<vector<int>> vCountMovePairsEnumSamples(lNSEnum.size());
 
 		for (unsigned id_nsenum = 0; id_nsenum < lNSEnum.size(); id_nsenum++)
 		{
@@ -875,6 +889,8 @@ public:
 
 				// TODO: consider that iterator can be null!
 				NSIterator<R, ADS>& it = *nsenum->getIteratorSolution(s);
+				int countMovesNSEnum = 0;
+				int countValidMovesNSEnum = 0;
 
 				for (it.first(); !it.isDone(); it.next())
 				{
@@ -885,6 +901,7 @@ public:
 					// TODO: verify if it's not null!
 					Move<R, ADS>& move = *it.current();
 					countMoves++;
+					countMovesNSEnum++;
 
 					if (!move.canBeAppliedToSolution(s))
 					{
@@ -898,7 +915,7 @@ public:
 					}
 
 					countValidMoves++;
-
+					countValidMovesNSEnum++;
 					// EXEC MOVES HERE
 
 					//	bool testMoveNSSeq(int iter, NSSeq<R,ADS>* nsseq, int nqs, int id_nsseq, Solution<R, ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
@@ -913,11 +930,15 @@ public:
 					delete &move;
 				}
 
+				vCountMovesEnumSamples[id_nsenum].push_back(countMovesNSEnum);
+				vCountValidMovesEnumSamples[id_nsenum].push_back(countValidMovesNSEnum);
+
 				delete &it;
 			}
 
 			vCountMovesEnum[id_nsenum] += countMoves;
 			vCountValidMovesEnum[id_nsenum] += countValidMoves;
+
 
 			if (checkIndependent)
 			{
@@ -926,7 +947,8 @@ public:
 
 				// adopting Evaluator 0...
 				Evaluator<R, ADS>& ev = *evaluators.at(0);
-
+				int countMovePairsEnum = 0;
+				int countMoveIndependentEnum = 0;
 				// check for independence between moves m1 and m2
 				for (int m1 = 0; m1 < int(nsenum->size()) - 1; m1++)
 				{
@@ -938,6 +960,7 @@ public:
 						bool conflict = false;
 						// compute another move pair
 						vCountMovePairsEnum[id_nsenum]++;
+						countMovePairsEnum++;
 
 						if (!conflict)
 						{
@@ -990,6 +1013,7 @@ public:
 							{
 								// if here, m1 'could' be independent from m2
 								vCountIndependentEnum[id_nsenum]++;
+								countMoveIndependentEnum++;
 								count_ind_m1++;
 								if (verbose)
 								{
@@ -1005,6 +1029,9 @@ public:
 					cout << "checkcommand: found " << count_ind_m1 << " independent move pairs." << endl;
 				}
 
+				//Aigor - Check if this counter is right - Any example was tested here
+				vCountMovePairsEnumSamples[id_nsenum].push_back(countMovePairsEnum);
+				vCountIndependentEnumSamples[id_nsenum].push_back(countMoveIndependentEnum);
 			}
 
 			cout << "checkcommand: " << lNSEnum.at(id_nsenum)->id() << " finished." << endl;
@@ -1060,6 +1087,18 @@ public:
 
 		printSummarySimple(convertVector(lNSEnum), vCountIndependentEnum, 1, "NSEnum", "counting independent move pairs for NSEnum");
 
+		printSummarySimpleSamples(convertVector(lNSSeq), vCountMovesSamples, "NSSeq", "counting moves of NSSeq iterator");
+
+		printSummarySimpleSamples(convertVector(lNSSeq), vCountValidMovesSamples, "NSSeq", "counting valid moves of NSSeq iterator");
+
+		printSummarySimpleSamples(convertVector(lNSEnum), vCountMovesEnumSamples, "NSEnum", "counting moves of NSEnum iterator");
+
+		printSummarySimpleSamples(convertVector(lNSEnum), vCountValidMovesEnumSamples, "NSEnum", "counting valid moves of NSEnum iterator");
+
+		printSummarySimpleSamples(convertVector(lNSEnum), vCountMovePairsEnumSamples, "NSEnum", "counting general move pairs for NSEnum");
+
+		printSummarySimpleSamples(convertVector(lNSEnum), vCountIndependentEnumSamples, "NSEnum", "counting independent move pairs for NSEnum");
+
 		cout << "checkcommand: tests finished successfully!" << endl;
 		return true;
 	}
@@ -1109,6 +1148,37 @@ public:
 			{
 				printf("#%d\t%s\t%d\t%d\n", ((int) id), vcomp[id]->toString().c_str(), values[id], (values[id] / numTests));
 				avg += (values[id] / numTests);
+				validValues++;
+			}
+			else
+				printf("#%d\t%s\t%d\tUNTESTED OR UNIMPLEMENTED\n", ((int) id), vcomp[id]->toString().c_str(), 0);
+		}
+		printf("---------------------------------\n");
+		printf("all\t*\t-\t%.4f\t-\n", (avg / validValues));
+		cout << endl;
+	}
+
+	void printSummarySimpleSamples(const vector<Component*>& vcomp, const vector<vector<int>>& vMoveSamples, string type, string title)
+	{
+		unsigned nComponents = vMoveSamples.size();
+		printf("---------------------------------\n");
+		cout << "|" << type << "|=" << nComponents << "\t" << title << endl;
+		printf("---------------------------------\n");
+		printf("#id\ttitle\t#tests\ttotal\tavg\tstd \n");
+		double avg = 0;
+		int validValues = 0;
+		for (unsigned id = 0; id < nComponents; id++)
+		{
+			int nSamples = vMoveSamples[id].size();
+			if (nSamples > 0)
+			{
+				vector<double> vMoveSamplesIDDouble(vMoveSamples[id].begin(), vMoveSamples[id].end());
+				KahanAccumulation init =
+				{ 0 };
+				KahanAccumulation kahanSum = accumulate(vMoveSamplesIDDouble.begin(), vMoveSamplesIDDouble.end(), init, KahanSum);
+				pair<double, double> avgStd = calculateAvgStd(vMoveSamplesIDDouble);
+				printf("#%d\t%s\t%d\t%.4f\t%.4f\t%.4f\n", ((int) id), vcomp[id]->toString().c_str(), nSamples, kahanSum.sum, avgStd.first, avgStd.second);
+				avg += avgStd.first;
 				validValues++;
 			}
 			else
@@ -1185,7 +1255,11 @@ public:
 			stdev += (d - avg) * (d - avg);
 		});
 
-		stdev = sqrt(stdev / (nSamples - 1));
+		if ((nSamples - 1) == 0)
+			stdev = 0;
+		else
+			stdev = sqrt(stdev / (nSamples - 1));
+
 		return make_pair(avg, stdev);
 	}
 

@@ -54,9 +54,9 @@ public:
 
 	virtual H& initializeHistory() = 0;
 
-	virtual void localSearch(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f) = 0;
+	virtual void localSearch(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria) = 0;
 
-	virtual void perturbation(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f, H& history) = 0;
+	virtual void perturbation(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria, H& history) = 0;
 
 	virtual bool acceptanceCriterion(const Evaluation& e1, const Evaluation& e2, H& history) = 0;
 
@@ -64,9 +64,7 @@ public:
 
 	pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
 	{
-		double timelimit = stopCriteria.timelimit;
-		double target_f = stopCriteria.target_f;
-		cout << "ILS opt search(" << target_f << "," << timelimit << ")" << endl;
+		cout << "ILS opt search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
 		Timer tnow;
 
@@ -81,7 +79,7 @@ public:
 		}
 		else
 		{
-			sStar = new Solution<R, ADS>(std::move(*constructive.generateSolution(timelimit)));
+			sStar = new Solution<R, ADS>(std::move(*constructive.generateSolution(stopCriteria.timelimit)));
 			eStar = new Evaluation(evaluator.evaluateSolution(*sStar));
 		}
 
@@ -98,7 +96,9 @@ public:
 
 		if (Component::information)
 			cout << "ILS::performing first local search" << endl;
-		localSearch(*sStar, *eStar, (timelimit - (tnow.now())), target_f);
+		SOSC stopCriteriaLS = stopCriteria;
+		stopCriteriaLS.updateTimeLimit(tnow.now());
+		localSearch(*sStar, *eStar, stopCriteriaLS);
 		if (Component::information)
 			cout << "ILS::finished first local search" << endl;
 
@@ -110,9 +110,13 @@ public:
 			Solution<R, ADS> s1(*sStar);
 			Evaluation e1(*eStar);
 
-			perturbation(s1, e1, (timelimit - (tnow.now())), target_f, *history);
+			SOSC stopCriteriaPert = stopCriteria;
+			stopCriteriaPert.updateTimeLimit(tnow.now());
+			perturbation(s1, e1, stopCriteriaPert, *history);
 
-			localSearch(s1, e1, (timelimit - (tnow.now())), target_f);
+			SOSC stopCriteriaLS2 = stopCriteria;
+			stopCriteriaLS2.updateTimeLimit(tnow.now());
+			localSearch(s1, e1, stopCriteriaLS2);
 
 			(*eStar) = evaluator.evaluateSolution(*sStar);
 			bool improvement = acceptanceCriterion(e1, *eStar, *history);
@@ -123,10 +127,10 @@ public:
 				(*sStar) = s1;
 			}
 
-		} while (evaluator.betterThan(target_f, eStar->evaluation()) && !terminationCondition(*history) && ((tnow.now()) < timelimit));
+		} while (evaluator.betterThan(stopCriteria.target_f, eStar->evaluation()) && !terminationCondition(*history) && ((tnow.now()) < stopCriteria.timelimit));
 
-		if (evaluator.betterThan(eStar->evaluation(), target_f))
-			cout << "ILS exit by target_f: " << eStar->evaluation() << " better than " << target_f << endl;
+		if (evaluator.betterThan(eStar->evaluation(), stopCriteria.target_f))
+			cout << "ILS exit by target_f: " << eStar->evaluation() << " better than " << stopCriteria.target_f << endl;
 
 		pair<Solution<R, ADS>, Evaluation>* pairToReturn = new pair<Solution<R, ADS>, Evaluation>(make_pair(std::move(*sStar), std::move(*eStar)));
 

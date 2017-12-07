@@ -46,13 +46,13 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, SOSC& stopCriteria)
 	{
 		Evaluation e = eval.evaluateSolution(s);
-		exec(s, e, timelimit, target_f);
+		exec(s, e, stopCriteria);
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria)
 	{
 		NSIterator<R, ADS>& it = *nsSeq.getIteratorSolution(s);
 		string bestMoveId = "";

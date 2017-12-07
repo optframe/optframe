@@ -141,12 +141,12 @@ public:
 	{
 		vector<pair<Individuo, double> > v;
 
-		for (int i = 0; i < pais.size(); i++)
+		for (int i = 0; i < (int) pais.size(); i++)
 		{
 			v.push_back(make_pair(pais[i].first, pais[i].second));
 		}
 
-		for (int i = 0; i < filhos.size(); i++)
+		for (int i = 0; i < (int) filhos.size(); i++)
 		{
 			v.push_back(make_pair(filhos[i].first, filhos[i].second));
 		}
@@ -157,7 +157,7 @@ public:
 
 		double fo_pop = 0;
 
-		for (int i = 0; i < v.size(); i++)
+		for (int i = 0; i < (int) v.size(); i++)
 			if (i < mi)
 			{
 				p->push_back(make_pair(v[i].first, v[i].second));
@@ -185,7 +185,7 @@ public:
 			delete sStar;
 
 			sStar = &v[0].first.first->clone();
-			eStar = &eval.evaluate(*sStar);
+			(*eStar) = eval.evaluateSolution(*sStar);
 
 			/*
 			 cout << "vRealClone = " << (&eval.evaluate(*v[0].first.first))->evaluation() << endl;
@@ -257,14 +257,14 @@ public:
 		return pNova;
 	}
 
-	virtual void localSearch(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
+	virtual void localSearch(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria)
 	{
-		ls.exec(s, e, timelimit, target_f);
+		ls.exec(s, e, stopCriteria);
 	}
 
-	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
+	pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = NULL, const Evaluation* _e = NULL)
 	{
-		cout << "ES search(" << target_f << "," << timelimit << ")" << endl;
+		cout << "ES search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
 		Timer tnow;
 
@@ -275,7 +275,7 @@ public:
 		//GERANDO VETOR DE POPULACAO INICIAL
 		for (int i = 0; i < mi; i++)
 		{
-			Solution<R, ADS>* s = &constructive.generateSolution();
+			Solution<R, ADS>* s = constructive.generateSolution(stopCriteria.timelimit);
 
 			ESStruct a = generateInitialESStructure(s);
 			//cout << a;
@@ -283,7 +283,7 @@ public:
 
 			ESContinuousStructure<ESStruct>* m = new ESContinuousStructure<ESStruct>(a);
 
-			Evaluation& e = eval.evaluate(*s);
+			Evaluation e = eval.evaluateSolution(*s);
 
 			pop[i] = make_pair(make_pair(s, m), e.evaluation());
 
@@ -325,7 +325,7 @@ public:
 		//double sumEval = 0;
 		//int counter = 1;
 
-		while ((iterSemMelhora < gMax) && ((tnow.now()) < timelimit) && eval.betterThan(target_f, eStar->evaluation()))
+		while ((iterSemMelhora < gMax) && ((tnow.now()) < stopCriteria.timelimit) && eval.betterThan(stopCriteria.target_f, eStar->evaluation()))
 		{
 			//cout << "gAtual = " << gAtual << endl;
 			//getchar();
@@ -358,14 +358,13 @@ public:
 				Solution<R, ADS>* filho_bl = filho;
 
 				//double tEval = tnowClone.now();
-				Evaluation& e = eval.evaluate(*filho_bl);
+				Evaluation e = eval.evaluateSolution(*filho_bl);
 				//sumEval += tnowClone.now() - tEval;
 				//counter++;
 
 				pop_filhos.push_back(make_pair(make_pair(filho_bl, vt), e.evaluation()));
 
 				fo_filhos += e.evaluation();
-				delete &e;
 
 			}
 
@@ -405,12 +404,12 @@ public:
 		cout << tnow.now() << endl;
 		getchar();*/
 
-		cout << "tnow.now() = " << tnow.now() << " timelimit = " << timelimit << endl;
+		cout << "tnow.now() = " << tnow.now() << " timelimit = " << stopCriteria.timelimit << endl;
 		cout << "Acabou ES = iterSemMelhor = " << iterSemMelhora << " gMax = " << gMax << endl;
-		cout << "target_f = " << target_f << " eStar->evaluation() = " << (double) eStar->evaluation() << endl;
+		cout << "target_f = " << stopCriteria.target_f << " eStar->evaluation() = " << (double) eStar->evaluation() << endl;
 		//getchar();
 
-		for (int i = 0; i < pop.size(); i++)
+		for (int i = 0; i < (int) pop.size(); i++)
 		{
 			delete pop[i].first.first;
 			delete pop[i].first.second;
@@ -424,7 +423,7 @@ public:
 		//delete eStar;
 		//delete sStar;
 
-		return new pair<Solution<R, ADS>&, Evaluation&>(s, e);
+		return new pair<Solution<R, ADS>, Evaluation>(s, e);
 	}
 
 	static string idComponent()

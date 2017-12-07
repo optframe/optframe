@@ -42,7 +42,7 @@ private:
 
 public:
 
-	VariableNeighborhoodDescent(Evaluator<R, ADS>& _ev, vector<LocalSearch<R, ADS>*> _lsList, RandGen* _rg = NULL) :
+	VariableNeighborhoodDescent(Evaluator<R, ADS>& _ev, vector<LocalSearch<R, ADS>*> _lsList, RandGen* _rg = nullptr) :
 			ev(_ev), lsList(_lsList), rg(_rg)
 	{
 	}
@@ -51,14 +51,14 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, SOSC& stopCriteria)
 	{
 		Evaluation e = std::move(ev.evaluateSolution(s));
 
-		exec(s, e, timelimit, target_f);
+		exec(s, e, stopCriteria);
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria)
 	{
 		if (Component::information)
 			cout << "VND::starts" << endl;
@@ -73,10 +73,12 @@ public:
 		int k = 1;
 
 		Evaluation eCurrent(e);
-		while (ev.betterThan(target_f, e.evaluation()) && (k <= r) && (tNow.now() < timelimit))
+		while (ev.betterThan(stopCriteria.target_f, e.evaluation()) && (k <= r) && (tNow.now() < stopCriteria.timelimit))
 		{
 			eCurrent = e;
-			lsList[k - 1]->exec(s, e, timelimit, target_f);
+			SOSC stopCriteriaNextLS = stopCriteria;
+			stopCriteriaNextLS.updateTimeLimit(tNow.now());
+			lsList[k - 1]->exec(s, e, stopCriteriaNextLS);
 
 			if (ev.betterThan(e, eCurrent))
 			{

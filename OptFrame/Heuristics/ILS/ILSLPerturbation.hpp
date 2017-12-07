@@ -41,7 +41,7 @@ public:
 	{
 	}
 
-	virtual void perturb(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f, int level) = 0;
+	virtual void perturb(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria, int level) = 0;
 
 	virtual bool compatible(string s)
 	{
@@ -86,7 +86,7 @@ public:
 		ns.push_back(&_ns);
 	}
 
-	void perturb(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f, int level)
+	void perturb(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria, int level)
 	{
 		int a = 0; // number of appliable moves
 
@@ -189,7 +189,7 @@ public:
 		cout<<endl;
 	}
 
-	void perturb(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f, int level)
+	void perturb(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria, int level)
 	{
 		int a = 0; // number of appliable moves
 

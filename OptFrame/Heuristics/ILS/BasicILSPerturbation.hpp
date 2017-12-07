@@ -85,7 +85,7 @@ public:
 		ns.push_back(&_ns);
 	}
 
-	void perturb(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
+	void perturb(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria)
 	{
 		for (int i = pMin; i < pMax; i++)
 		{

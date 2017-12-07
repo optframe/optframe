@@ -300,6 +300,8 @@ public:
 				}
 				cout << "]\t";
 				cout << pop[0]->vNSInd << endl;
+//				cout<<sStar.getR()<<endl;
+//				getchar();
 			}
 
 			if (Component::debug)

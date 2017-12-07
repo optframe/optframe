@@ -39,8 +39,8 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>&, double timelimit, double target_f){};
-	virtual void exec(Solution<R, ADS>&, Evaluation&, double timelimit, double target_f){};
+	virtual void exec(Solution<R, ADS>&, SOSC& stopCriteria){};
+	virtual void exec(Solution<R, ADS>&, Evaluation&, SOSC& stopCriteria){};
 
 	string log()
 	{
