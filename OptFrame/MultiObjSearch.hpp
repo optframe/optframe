@@ -88,7 +88,7 @@ public:
 
 	virtual Pareto<R, ADS>* search(MOSC& stopCriteria, Pareto<R, ADS>* _pf = nullptr) = 0;
 
-	virtual string log()
+	virtual string log() const
 	{
 		return "Empty heuristic log.";
 	}

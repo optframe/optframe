@@ -47,7 +47,7 @@ private:
 
 	void GenNum()
 	{
-		register int i;
+		int i;
 		unsigned int y;
 		for (i = 0; i < ((int)GEN_STATE_LENGTH); i++)
 		{
@@ -101,7 +101,7 @@ public:
 	// initialize random number generation
 	void initialize()
 	{
-		register int i;
+		int i;
 
 		index = 0;
 		MT[0] = seed;

@@ -42,7 +42,7 @@ public:
 	virtual void exec(Solution<R, ADS>&, SOSC& stopCriteria){};
 	virtual void exec(Solution<R, ADS>&, Evaluation&, SOSC& stopCriteria){};
 
-	string log()
+	string log() const
 	{
 		return "Heuristic Empty: no log.";
 	}

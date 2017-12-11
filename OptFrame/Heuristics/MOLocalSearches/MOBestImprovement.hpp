@@ -82,8 +82,6 @@ public:
 			return;
 		}
 
-		bool added;
-
 		while (!it.isDone())
 		{
 			Move<R, ADS>* move = &it.current();
@@ -97,7 +95,7 @@ public:
 //				cout << "after move" << endl;
 //				sMev.print();
 
-				bool added = pManager.addSolution(&s, &sMev);
+				pManager.addSolution(&s, &sMev);
 
 				delete mov_rev->apply(s);
 				delete mov_rev;
