@@ -57,6 +57,26 @@ public:
       message(m), row(_row), col(_col), maxRow(_maxRow), maxCol(_maxCol)
    {
    }
+
+   unsigned getMaxRow() const
+   {
+	   return maxRow;
+   }
+
+   unsigned getMaxCol() const
+   {
+	   return maxCol;
+   }
+
+   unsigned getRow() const
+   {
+	   return row;
+   }
+
+   unsigned getCol() const
+   {
+	   return col;
+   }
 };
 
 template<class T>
