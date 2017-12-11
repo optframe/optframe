@@ -82,7 +82,8 @@ public:
 
 			Evaluation e1 = evaluator.evaluateSolution(*s1);
 
-			ls.exec(*s1, e1, timelimit - tNow.now(), target_f);
+			SOSC stopCriteriaLS = stopCriteria.newStopCriteriaWithTL(tNow.now());
+			ls.exec(*s1, e1, stopCriteriaLS);
 
 			if (evaluator.betterThan(e1, e))
 			{

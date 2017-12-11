@@ -216,10 +216,9 @@ public:
 			int param = vNSInd[i]; //Extract index
 			double rx = rg.rand01();
 			if (rx < p[param].pr)
-				for (int a = 1; a <= p[param].nap; a++)
+				for (int a = 0; a < p[param].nap; a++)
 				{
 					Move<R, ADS>* mov_tmp = vNS[param]->randomMoveSolution(s);
-
 //					int tries = 0;
 //					int maxTries = 1;
 //
@@ -241,6 +240,7 @@ public:
 //						cout << "\tnumber of tries:" << tries << endl;
 //						getchar();
 					}
+
 
 					delete mov_tmp;
 				}

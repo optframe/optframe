@@ -32,7 +32,8 @@
 #include "ComponentBuilder.h"
 
 #include<vector>
-#include <tr1/random>
+//#include <tr1/random>
+#include <random>
 
 namespace optframe
 {
@@ -143,14 +144,22 @@ public:
 
 	virtual int randBinomial(double p, int tries)
 	{
-		std::tr1::variate_generator<std::tr1::mt19937, std::tr1::binomial_distribution<> > rngB(std::tr1::mt19937(123), std::tr1::binomial_distribution<>(tries, p));
-		return rngB();
+		std::default_random_engine generator;
+		std::binomial_distribution<int> distribution(tries, p);
+		int y = distribution(generator);
+
+//		std::tr1::variate_generator<std::tr1::mt19937, std::tr1::binomial_distribution<> > rngB(std::tr1::mt19937(123), std::tr1::binomial_distribution<>(tries, p));
+//		int y= rngB();
+
+		return y;
 	}
 
 	virtual int randBinomialWithNegative(double p, int tries)
 	{
-		std::tr1::variate_generator<std::tr1::mt19937, std::tr1::binomial_distribution<> > rngB(std::tr1::mt19937(123), std::tr1::binomial_distribution<>(tries, p));
-		int y = rngB();
+//		std::tr1::variate_generator<std::tr1::mt19937, std::tr1::binomial_distribution<> > rngB(std::tr1::mt19937(123), std::tr1::binomial_distribution<>(tries, p));
+//		int y = rngB();
+		int y = randBinomial(p, tries);
+
 		int sign = this->rand(2);
 		if (sign == 1)
 			y *= -1;

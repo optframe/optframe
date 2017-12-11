@@ -240,28 +240,29 @@ public:
 				//speed-up - Ideas from our great friend Thibaut Lust
 				//Instead of delete non-optimum, only include those that should be explored.
 				//TODO - This copy can be avoid and system optimized with some smart strategy
-				for (int ind = 0; ind < (int) x_e.size(); ind++)
-					if (!pMan2PPLS.gplsData.nsParetoOptimum[ind][k]) //speed-up - Thibauuuut Lust - Nice guy
-						p.add_indWithMev(x_e.getNonDominatedSol(ind), x_e.getIndMultiEvaluation(ind));
-				//end of the speed-up
+				//TODO CHECK THIS
+//				for (int ind = 0; ind < (int) x_e.size(); ind++)
+//					if (!pMan2PPLS.gplsData.nsParetoOptimum[ind][k]) //speed-up - Thibauuuut Lust - Nice guy
+//						p.add_indWithMev(x_e.getNonDominatedSol(ind), x_e.getIndMultiEvaluation(ind));
+//				//end of the speed-up
 
 //				cout<<"Non-optimum regarding k and optimals:"<<p.size()<<"/"<<x_e.size()<<endl;
 
 				//OLD Copy/Delete - Deprecated
-//				p = x_e;
-//
-//				if (k < r)
-//				{
-//
-//					int removed = 0;
-//					for (int i = 0; i < (int) pMan2PPLS.gplsData.nsParetoOptimum.size(); i++)
-//						if (pMan2PPLS.gplsData.nsParetoOptimum[i][k - 1])
-//						{
-//							p.erase(i - removed);
-//							removed++;
-//						}
-//
-//				}
+				p = x_e;
+
+				if (k < r)
+				{
+
+					int removed = 0;
+					for (int i = 0; i < (int) pMan2PPLS.gplsData.nsParetoOptimum.size(); i++)
+						if (pMan2PPLS.gplsData.nsParetoOptimum[i][k - 1])
+						{
+							p.erase(i - removed);
+							removed++;
+						}
+
+				}
 			}
 
 			cout << "p.size() = " << p.size();
