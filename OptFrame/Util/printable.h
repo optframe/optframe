@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef PRINTABLE_H_
-#define PRINTABLE_H_
+#ifndef OPTFRAME_PRINTABLE_H_
+#define OPTFRAME_PRINTABLE_H_
 
 #include <iostream>
 #include <ostream>
@@ -255,4 +255,4 @@ ostream& operator<<(ostream &os, map<Key, T> &obj)
 
 }
 
-#endif /*PRINTABLE_H_*/
+#endif /*OPTFRAME_PRINTABLE_H_*/
