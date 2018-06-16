@@ -123,6 +123,8 @@ public:
 		if (n < 0)
 			n *= (-1);
 
+      // TODO: https://ericlippert.com/2013/12/16/how-much-bias-is-introduced-by-the-remainder-technique/
+
 		return mt_rand() % n;
 	}
 

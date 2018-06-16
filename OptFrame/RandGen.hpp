@@ -112,6 +112,8 @@ public:
 			init = true;
 		}
 
+		// TODO: https://ericlippert.com/2013/12/16/how-much-bias-is-introduced-by-the-remainder-technique/
+
 		return ::rand() % n;
 	}
 
