@@ -1,4 +1,4 @@
-#OptFrame 3.0 (development version) - Optimization Framework
+# OptFrame 3.0 (development version) - Optimization Framework
 
 OptFrame is an optimization framework focussed project, in which researchers generalizes concepts related to metaheuristics and mathematical programming models.
 In particular, the resolution fo NP-Hard problems if within the scope of this projects.
@@ -33,6 +33,6 @@ Thanks a lot SourceForge/GitHub!
 
 *OptFrame current maintainers* [@igormcoelho](https://github.com/igormcoelho) and [@vncoelho](https://github.com/vncoelho)
 
-Copyright (C) 2009-2017
+Copyright (C) 2009-2018
 
 The OptFrame team
