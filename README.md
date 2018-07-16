@@ -1,21 +1,9 @@
-# OptFrame 3.0 (development version) - Optimization Framework
+## OptFrame portal
+[https://optframe.github.io](https://optframe.github.io)
 
-OptFrame is an optimization framework focussed project, in which researchers generalizes concepts related to metaheuristics and mathematical programming models.
-In particular, the resolution fo NP-Hard problems if within the scope of this projects.
+## OptFrame 3.0 (development version) - Optimization Framework
 
-To get started (MCT stable version for Linux only):
-- `run MCT.sh` script (shell version)
-- `java-mct.sh` script (java version)
-
-To get started (MCT for Windows/Linux):
-- compile and run MCT.java application;
-- this can be done like this: javac MCT.java && java MCT
-
-
-Valuable information can be found in `CheckModule-Guide.txt` regarding 
-the output of `CheckCommand` in `main()`. 
-
-Good luck!
+Check [https://optframe.github.io/docs/quick-start-guide/](https://optframe.github.io/docs/quick-start-guide/)
 
 ## Special thanks for SourceForge.net
 
