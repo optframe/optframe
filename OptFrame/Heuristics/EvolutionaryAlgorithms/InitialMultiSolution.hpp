@@ -22,7 +22,7 @@
 #define OPTFRAME_INITIALPOPULATION_HPP_
 
 #include "../../Component.hpp"
-#include "../../Constructive.h"
+#include "../../Constructive.hpp"
 #include "../../MultiSolution.hpp"
 
 #include "EA.h"

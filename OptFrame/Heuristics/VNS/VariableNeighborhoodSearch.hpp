@@ -24,7 +24,7 @@
 #include <math.h>
 #include <vector>
 
-#include "../../Constructive.h"
+#include "../../Constructive.hpp"
 #include "../../SingleObjSearch.hpp"
 #include "../../Evaluator.hpp"
 #include "../../NS.hpp"

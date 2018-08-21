@@ -55,7 +55,7 @@
 //#include "Util/TestEvaluation.hpp"
 #include "Evaluator.hpp"
 
-#include "Util/TestEvaluation.hpp"
+//#include "Util/TestEvaluation.hpp"
 
 //#include "RandGen.hpp"
 #include "Timer.hpp"
@@ -96,7 +96,6 @@
 #include "Heuristics/LocalSearches/CircularSearch.hpp"
 #include "Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp"
 #include "Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp"
-#include "Heuristics/LocalSearches/RVND.hpp"
 #include "Heuristics/LocalSearches/HillClimbing.hpp"
 #include "Heuristics/LocalSearches/LateAcceptanceHillClimbing.hpp"
 
@@ -115,7 +114,8 @@
 #include "Heuristics/VNS/ReducedVNS.hpp"
 #include "Heuristics/VNS/GeneralVNS.hpp"
 
-#include "Heuristics/EvolutionaryAlgorithms/DecoderNSGAII.hpp"
+//TODO ERROR on DecoderNSGAII
+//#include "Heuristics/EvolutionaryAlgorithms/DecoderNSGAII.hpp"
 
 // test local searches
 #include "Heuristics/CompareLocalSearch.hpp"
@@ -168,7 +168,7 @@ public:
 		factory.builders.push_back(new CircularSearchBuilder<R, ADS> );
 		factory.builders.push_back(new VariableNeighborhoodDescentBuilder<R, ADS> );
 		factory.builders.push_back(new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS> );
-		factory.builders.push_back(new RVNDBuilder<R, ADS> );
+		//factory.builders.push_back(new RVNDBuilder<R, ADS> );
 		factory.builders.push_back(new HillClimbingBuilder<R, ADS> );
 		factory.builders.push_back(new LateAcceptanceHillClimbingBuilder<R, ADS> );
 		factory.builders.push_back(new SingleObjSearchToLocalSearchBuilder<R, ADS> );

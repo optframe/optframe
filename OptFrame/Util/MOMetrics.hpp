@@ -32,25 +32,62 @@ using namespace std;
 //#include "Evaluation.hpp"
 //#include "Direction.hpp"
 
-#include "MultiEvaluator.hpp"
-#include "MultiEvaluation.hpp"
+#include "../MultiEvaluator.hpp"
+#include "../MultiEvaluation.hpp"
 
-#include "Pareto.hpp"
-#include "ParetoDominance.hpp"
-#include "ParetoDominanceWeak.hpp"
+#include "../Pareto.hpp"
+#include "../ParetoDominance.hpp"
+#include "../ParetoDominanceWeak.hpp"
 
 namespace optframe
 {
 
+typedef vector<double> ParetoFitness;
+
+class EmptyParetoEvaluatorMinimizer: public Evaluator<int>
+{
+public:
+    using Evaluator<int>::evaluate; // prevents name hiding
+
+    EmptyParetoEvaluatorMinimizer():
+            Evaluator<int>(false) // ALLOW COSTS!
+    {
+    }
+
+	virtual ~EmptyParetoEvaluatorMinimizer()
+	{
+
+	}
+
+	Evaluation evaluate(const int&, const OPTFRAME_DEFAULT_ADS*)
+	{
+		//SimbolicEvaluator
+		cout << "It should not have reached inside EmptyParetoEvaluatorMinimizer evaluate function " <<endl;
+		exit(1);
+		return Evaluation(-1);
+	}
+
+	virtual bool isMinimization() const
+	{
+		return true;
+	}
+
+	static string idComponent()
+	{
+		stringstream ss;
+		ss << Component::idComponent() << ":EmptyParetoEvaluatorMinimizer";
+		return ss.str();
+	}
+
+};
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class MOMETRICS
 {
 protected:
 //	vector<Direction*> v_d;
-	ParetoDominance<R, ADS>* pDom;
-	ParetoDominanceWeak<R, ADS>* pDomWeak;
-	Pareto<R, ADS> p;
+	paretoManager<int>* pMan;
+	Pareto<int> p;
 
 //	bool addSolution(vector<vector<double> >& p, vector<double>& s)
 //	{
@@ -113,33 +150,27 @@ protected:
 //	}
 
 public:
-
-	MOMETRICS(vector<Direction*> _v_d)
-	{
-		pDom = new ParetoDominance<R, ADS>(_v_d);
-		pDomWeak = new ParetoDominanceWeak<R, ADS>(_v_d);
-	}
-
-	MOMETRICS(vector<Evaluator<R, ADS>*> _v_e)
+	/*
+	MOMETRICS(vector<Evaluator<ParetoFitness>*> _v_e)
 	{
 		pDom = new ParetoDominance<R, ADS>(_v_e);
 		pDomWeak = new ParetoDominanceWeak<R, ADS>(_v_e);
 	}
+	*/
 
 	MOMETRICS(int nObj)
 	{
 		cout << "Be careful, some methods of MOMETRICS might results in error! \n Direction is being created only as Minimization! " << endl;
-		vector<Direction*> v_d;
+		vector<Evaluator<int>* > v_e;
 		for (int o = 0; o < nObj; o++)
 		{
-			Minimization* m = new Minimization;
-			v_d.push_back(m);
+			EmptyParetoEvaluatorMinimizer* paretoEval = new EmptyParetoEvaluatorMinimizer();
+			v_e.push_back(paretoEval);
 		}
 
-		pDom = new ParetoDominance<R, ADS>(v_d);
-		pDomWeak = new ParetoDominanceWeak<R, ADS>(v_d);
+		MultiEvaluator<int> mev(v_e);
 
-		//		cout << "Be careful, some methods of MOMETRICS might results in error! \n pDom and pDomWeak were not initialized." << endl;
+		pMan = new paretoManager<int>(mev);
 	}
 
 	File* createFile(string filename)
@@ -157,9 +188,10 @@ public:
 		return file;
 	}
 
-	vector<vector<double> > readPF(string caminho, int nTests, int nOF)
+	Pareto<int> readPF(string caminho, int nTests, int nOF)
 	{
-		vector<vector<double> > D;
+		//vector<vector<double> > D;
+		Pareto<int> pAux;
 
 		for (int e = 0; e < nTests; e++)
 		{
@@ -169,39 +201,62 @@ public:
 			Scanner scanner(createFile(caminho));
 			while (scanner.hasNext())
 			{
-				vector<double> ind;
+				ParetoFitness ind;
 				for (int o = 0; o < nOF; o++)
 					ind.push_back(scanner.nextDouble());
-
-				p.addSolution(*pDom, *pDomWeak, D, ind);
+				addWithEmptySol(pAux,ind);
 			}
 
 		}
 
-		return D;
+		return pAux;
 	}
 
-	void addSol(vector<vector<double> >& D, vector<double> ind)
+	void addWithEmptySol(Pareto<int>& pAux, ParetoFitness ind)
 	{
-		p.addSolution(*pDom, *pDomWeak, D, ind);
+		MultiEvaluation mev(ind);
+		int a = -1;
+		Solution<int>* emptySol = new Solution<int>(a);
+
+		pMan->addSolutionWithMEV(pAux, *emptySol, mev);
 	}
 
-	vector<vector<double> > unionSets(vector<vector<double> > D1, vector<vector<double> > D2)
+	vector<ParetoFitness> unionSetsReturnEvaluations(vector<ParetoFitness> D1, vector<ParetoFitness> D2)
 	{
-		vector<vector<double> > ref = D1;
+		Pareto<int> ref = createParetoSetFromEvaluations(D1);
 
 		for (int ind = 0; ind < D2.size(); ind++)
-			p.addSolution(*pDom, *pDomWeak, ref, D2[ind]);
+			addWithEmptySol(ref,D2[ind]);
+
+		return getParetoEvaluations(ref,ref.size());
+	}
+
+	Pareto<int> createParetoSetFromEvaluations(vector<ParetoFitness> popParetoFitness)
+	{
+		Pareto<int> ref;
+
+		for (int ind = 0; ind < popParetoFitness.size(); ind++)
+			addWithEmptySol(ref,popParetoFitness[ind]);
 
 		return ref;
 	}
 
-	vector<vector<double> > getParetoEvaluations(Pareto<R, ADS>& pf, int nEv)
+	vector<ParetoFitness> createParetoSetAndReturnEvaluations(vector<ParetoFitness> popParetoFitness)
+	{
+		Pareto<int> ref = createParetoSetFromEvaluations(popParetoFitness);
+
+		return getParetoEvaluations(ref,ref.size());
+	}
+
+
+
+
+	vector<ParetoFitness> getParetoEvaluations(Pareto<R, ADS>& pf, int nEv)
 	{
 		vector<MultiEvaluation*> vEval = pf.getParetoFront();
 		int nObtainedParetoSol = vEval.size();
 
-		vector<vector<double> > paretoDoubleEval;
+		vector<ParetoFitness > paretoDoubleEval;
 
 		for (int i = 0; i < nObtainedParetoSol; i++)
 		{
@@ -215,25 +270,16 @@ public:
 		return paretoDoubleEval;
 	}
 
-	vector<vector<double> > createParetoSet(vector<vector<double> > D2)
-	{
-		vector<vector<double> > ref;
 
-		for (int ind = 0; ind < D2.size(); ind++)
-			p.addSolution(*pDom, *pDomWeak, ref, D2[ind]);
 
-		return ref;
-	}
-
-	int cardinalite(vector<vector<double> > D, vector<vector<double> > ref)
+	int cardinalite(vector<ParetoFitness > D, vector<ParetoFitness > ref)
 	{
 		int card = 0;
 		for (int i = 0; i < D.size(); i++)
 		{
 			for (int j = 0; j < ref.size(); j++)
 			{
-
-				if (pDomWeak->dominates(D[i], ref[j]))
+				if (pMan->domWeak.dominates(D[i], ref[j]))
 				{
 					card++;
 					j = ref.size();
@@ -244,7 +290,7 @@ public:
 		return card;
 	}
 
-	double setCoverage(vector<vector<double> > a, vector<vector<double> > b)
+	double setCoverage(vector<ParetoFitness > a, vector<ParetoFitness > b)
 	{
 		double cover = 0;
 
@@ -252,7 +298,7 @@ public:
 		{
 			for (int j = 0; j < a.size(); j++)
 			{
-				bool wD = pDomWeak->dominates(a[j], b[i]);
+				bool wD = pMan->domWeak.dominates(a[j], b[i]);
 				if (wD)
 				{
 					j = a.size();
@@ -271,7 +317,7 @@ public:
 	}
 
 	//Delta Metric and Hipervolume are working requires Minimization problems
-	double deltaMetric(vector<vector<double> > pareto, vector<double> utopicEval, bool minimization)
+	double deltaMetric(vector<ParetoFitness> pareto, vector<double> utopicEval, bool minimization)
 	{
 		int nSol = pareto.size();
 		int nObj = utopicEval.size();

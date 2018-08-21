@@ -50,22 +50,24 @@
 #include "Heuristics/LocalSearches/CircularSearch.hpp"
 #include "Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp"
 #include "Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp"
-#include "Heuristics/LocalSearches/RVND.hpp"
+//#include "Heuristics/LocalSearches/RVND.hpp"
 
 //Metaheuristics
 #include "Heuristics/EmptySingleObjSearch.hpp"
 #include "Heuristics/ILS/IteratedLocalSearch.hpp"
 #include "Heuristics/ILS/BasicIteratedLocalSearch.hpp"
 #include "Heuristics/ILS/IteratedLocalSearchLevels.hpp"
-#include "Heuristics/ILS/IntensifiedIteratedLocalSearchLevels.hpp"
+//TODO ERROR on IntensifiedIteratedLocalSearchLevels
+//#include "Heuristics/ILS/IntensifiedIteratedLocalSearchLevels.hpp"
 #include "Heuristics/ILS/Intensification.hpp"
 #include "Heuristics/GRASP/BasicGRASP.hpp"
 #include "Heuristics/TS/BasicTabuSearch.hpp"
-#include "Heuristics/EvolutionaryAlgorithms/BasicGeneticAlgorithm.hpp"
+//TODO ERROR on BasicGeneticAlgorithm
+//#include "Heuristics/EvolutionaryAlgorithms/BasicGeneticAlgorithm.hpp"
 #include "Heuristics/SA/BasicSimulatedAnnealing.hpp"
 
 #include "Heuristics/EmptyMultiObjSearch.hpp"
-#include "Heuristics/VNS/MOVNS.hpp"
+//#include "Heuristics/VNS/MOVNS.hpp"
 
 #include "ComponentBuilder.h"
 
