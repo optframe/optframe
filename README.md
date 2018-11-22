@@ -21,6 +21,6 @@ Thanks a lot SourceForge/GitHub!
 
 *OptFrame current maintainers* [@igormcoelho](https://github.com/igormcoelho) and [@vncoelho](https://github.com/vncoelho)
 
-Copyright (C) 2009-2018
+Copyright (C) 2007-2018
 
 The OptFrame team
