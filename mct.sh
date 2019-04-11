@@ -390,14 +390,28 @@ then echo "Main file...[ok]"
      sed "$t" < $var > $var_tmp
      mv $var_tmp $var
 
-     t="s/\$constructive/$constructive/g"  
-     sed "$t" < $var > $var_tmp
+     if [ $nbISG -eq 0 ];
+     then t="/Constructive\$constructive c1(p);/,+1 d"  
+	  sed "$t" < $var > $var_tmp
+    	  mv $var_tmp $var
+	  t="/check.add(c1);/d"
+	  sed "$t" < $var > $var_tmp
+     else t="s/\$constructive/$constructive/g"  
+          sed "$t" < $var > $var_tmp
+     fi
      mv $var_tmp $var
 
-     t="s/\$neighborhood/$neighborhood/g"  
-     sed "$t" < $var > $var_tmp
+     if [ $nbNS -eq 0 ];
+     then t="/NSSeq\$neighborhood ns1(p, rg);/,+1 d"
+	  sed "$t" < $var > $var_tmp
+    	  mv $var_tmp $var
+	  t="/check.add(ns1);/d"
+	  sed "$t" < $var > $var_tmp
+     else t="s/\$neighborhood/$neighborhood/g"
+	  sed "$t" < $var > $var_tmp	
+     fi
      mv $var_tmp $var
-
+    	  
      t="s/\$name/$name/g"  
      sed "$t" < $var > $var_tmp
      mv $var_tmp $var
@@ -414,16 +428,30 @@ var_tmp="makefile.tmp"
 
 if cp ./mct/makefile.tpl $var
 then echo "makefile file...[ok]"
+
+     if [ $nbISG -eq 0 ];
+     then t="/Constructive\$constructive.cpp/,+2 d"  
+	  sed "$t" < $var > $var_tmp
+     	  mv $var_tmp $var
+	  t="s/\ \$projectConstructive\$constructive.o\ //g"
+          sed "$t" < $var > $var_tmp
+     else t="s/\$constructive/$constructive/g"  
+          sed "$t" < $var > $var_tmp
+     fi
+     mv $var_tmp $var
+     
+     if [ $nbNS -eq 0 ];
+     then t="/NSSeq\$neighborhood.cpp/,+2 d"
+	  sed "$t" < $var > $var_tmp
+     	  mv $var_tmp $var
+	  t="s/\ \$projectNSSeq\$neighborhood.o\ //g"
+          sed "$t" < $var > $var_tmp
+     else t="s/\$neighborhood/$neighborhood/g"
+	  sed "$t" < $var > $var_tmp	
+     fi
+     mv $var_tmp $var
      
      t="s/\$project/$project/g"  
-     sed "$t" < $var > $var_tmp
-     mv $var_tmp $var
-     
-     t="s/\$constructive/$constructive/g"  
-     sed "$t" < $var > $var_tmp
-     mv $var_tmp $var
-     
-     t="s/\$neighborhood/$neighborhood/g"  
      sed "$t" < $var > $var_tmp
      mv $var_tmp $var
 
@@ -461,7 +489,14 @@ rm -f ./MyProjects/makefile.tmp
 
 echo
 echo "Congratulations! You can use the following command to compile your project:"
-echo "g++ --std=c++11 ./MyProjects/main$project.cpp ./MyProjects/$project/ProblemInstance.cpp ./MyProjects/$project/Evaluator.cpp ./MyProjects/$project/Constructive$constructive.cpp ./MyProjects/$project/NSSeq$neighborhood.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
+if [ $nbNS -eq 0 ] && [ $nbISG -eq 0 ];
+then echo "g++ --std=c++11 ./MyProjects/main$project.cpp ./MyProjects/$project/ProblemInstance.cpp ./MyProjects/$project/Evaluator.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
+elif [ $nbNS -eq 0 ];
+then echo "g++ --std=c++11 ./MyProjects/main$project.cpp ./MyProjects/$project/ProblemInstance.cpp ./MyProjects/$project/Evaluator.cpp ./MyProjects/$project/Constructive$constructive.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
+elif [ $nbISG -eq 0 ];
+then echo "g++ --std=c++11 ./MyProjects/main$project.cpp ./MyProjects/$project/ProblemInstance.cpp ./MyProjects/$project/Evaluator.cpp ./MyProjects$project/NSSeq$neighborhood.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
+else echo "g++ --std=c++11 ./MyProjects/main$project.cpp ./MyProjects/$project/ProblemInstance.cpp ./MyProjects/$project/Evaluator.cpp ./MyProjects/$project/Constructive$constructive.cpp ./MyProjects$project/NSSeq$neighborhood.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
+fi
 echo "or you can simply type: \"cd MyProjects && make\""
 
 echo
