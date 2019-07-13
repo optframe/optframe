@@ -1,5 +1,6 @@
-gtestlib
 *.so
 *.tar.gz
 *appTest
 *.test
+*.gcno
+*.gcda
