@@ -60,7 +60,8 @@ typedef OPTFRAME_DEFAULT_ADS OptFrameADS; // more beautiful :)
  */
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class Solution final : public Component
+//class Solution final : public Component
+class Solution : public Component
 {
 protected:
 	R* r;     // representation
