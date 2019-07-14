@@ -32,188 +32,180 @@
 using namespace std;
 using namespace optframe;
 
-namespace EtII
-{
+namespace EtII {
 
-class MoveRotate: public Move<RepEtII>
+class MoveRotate : public Move<RepEtII>
 {
 protected:
-	int nRot, x, y;
+   int nRot, x, y;
 
 public:
+   using Move<RepEtII>::apply;        // prevents name hiding
+   using Move<RepEtII>::canBeApplied; // prevents name hiding
 
-	using Move<RepEtII>::apply; // prevents name hiding
-	using Move<RepEtII>::canBeApplied; // prevents name hiding
+   MoveRotate(int _nRot, int _x, int _y)
+     : nRot(_nRot)
+     , x(_x)
+     , y(_y)
+   {
+   }
 
-	MoveRotate(int _nRot, int _x, int _y) :
-		nRot(_nRot), x(_x), y(_y)
-	{
-	}
+   virtual ~MoveRotate()
+   {
+   }
 
-	virtual ~MoveRotate()
-	{
-	}
+   bool canBeApplied(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
+   {
+      return true;
+   }
 
-	bool canBeApplied(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
-	{
-		return true;
-	}
+   Move<RepEtII>* apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS*) override
+   {
+      for (int i = 0; i < nRot; i++)
+         rep(x, y).rotate();
 
-	Move<RepEtII>* apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS&)
-	{
-		for (int i = 0; i < nRot; i++)
-			rep(x, y).rotate();
+      return new MoveRotate(4 - nRot, x, y);
+   }
 
-		return new MoveRotate(4 - nRot, x, y);
-	}
+   Move<RepEtII>* applyUpdate(Evaluation& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS* ads) override
+   {
+      int f = 0;
+      if (rep(x, y).left == rep(x, y - 1).right)
+         f++;
+      if (rep(x, y).up == rep(x - 1, y).down)
+         f++;
+      if (rep(x, y).right == rep(x, y + 1).left)
+         f++;
+      if (rep(x, y).down == rep(x + 1, y).up)
+         f++;
 
+      Move<RepEtII>& rev = *apply(rep, ads);
 
-	Move<RepEtII>* apply(Evaluation& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS& ads)
-	{
-		int f = 0;
-		if (rep(x, y).left == rep(x, y - 1).right)
-			f++;
-		if (rep(x, y).up == rep(x - 1, y).down)
-			f++;
-		if (rep(x, y).right == rep(x, y + 1).left)
-			f++;
-		if (rep(x, y).down == rep(x + 1, y).up)
-			f++;
+      int f2 = 0;
+      if (rep(x, y).left == rep(x, y - 1).right)
+         f2++;
+      if (rep(x, y).up == rep(x - 1, y).down)
+         f2++;
+      if (rep(x, y).right == rep(x, y + 1).left)
+         f2++;
+      if (rep(x, y).down == rep(x + 1, y).up)
+         f2++;
 
-		Move<RepEtII>& rev = *apply(rep, ads);
+      e.setObjFunction(e.getObjFunction() + (f2 - f));
 
-		int f2 = 0;
-		if (rep(x, y).left == rep(x, y - 1).right)
-			f2++;
-		if (rep(x, y).up == rep(x - 1, y).down)
-			f2++;
-		if (rep(x, y).right == rep(x, y + 1).left)
-			f2++;
-		if (rep(x, y).down == rep(x + 1, y).up)
-			f2++;
+      return &rev;
+   }
 
-		e.setObjFunction(e.getObjFunction()+(f2 - f));
+   virtual bool operator==(const Move<RepEtII>& _m) const
+   {
+      const MoveRotate& m = (const MoveRotate&)_m;
+      return (m.nRot == nRot) && (m.x == x) && (m.y == y);
+   }
 
-		return &rev;
-	}
+   void print() const
+   {
+      cout << "MoveRotate: " << nRot << " rotations on (" << x << "," << y << ")" << endl;
+   }
 
-
-	virtual bool operator==(const Move<RepEtII>& _m) const
-	{
-		const MoveRotate& m = (const MoveRotate&) _m;
-		return (m.nRot == nRot) && (m.x == x) && (m.y == y);
-	}
-
-	void print() const
-	{
-		cout << "MoveRotate: " << nRot << " rotations on (" << x << "," << y << ")" << endl;
-	}
-
-	string id() const
-	{
-		return "OptFrame:Move:MoveRotate";
-	}
+   string id() const
+   {
+      return "OptFrame:Move:MoveRotate";
+   }
 };
 
-class NSIteratorRotate: public NSIterator<RepEtII>
+class NSIteratorRotate : public NSIterator<RepEtII>
 {
 private:
-	int nIntraRows, nIntraCols;
-	int nRot, x, y;
+   int nIntraRows, nIntraCols;
+   int nRot, x, y;
 
 public:
+   NSIteratorRotate(int _nIntraRows, int _nIntraCols)
+     : nIntraRows(_nIntraRows)
+     , nIntraCols(_nIntraCols)
+   {
+      x = 0;
+      y = 0;
+      nRot = 1;
+   }
 
-	NSIteratorRotate(int _nIntraRows, int _nIntraCols) :
-		nIntraRows(_nIntraRows), nIntraCols(_nIntraCols)
-	{
-		x = 0;
-		y = 0;
-		nRot = 1;
-	}
+   virtual ~NSIteratorRotate()
+   {
+   }
 
-	virtual ~NSIteratorRotate()
-	{
-	}
+   virtual void first() override
+   {
+      x = 0;
+      y = 0;
+      nRot = 1;
+   }
 
-	virtual void first()
-	{
-		x = 0;
-		y = 0;
-		nRot = 1;
-	}
+   virtual void next() override
+   {
+      nRot++;
+      if (nRot > 3) {
+         nRot = 1;
+         y++;
+         if (y >= nIntraCols) {
+            y = 0;
+            x++;
+         }
+      }
+   }
 
-	virtual void next()
-	{
-		nRot++;
-		if (nRot > 3)
-		{
-			nRot = 1;
-			y++;
-			if (y >= nIntraCols)
-			{
-				y = 0;
-				x++;
-			}
-		}
-	}
+   virtual bool isDone() override
+   {
+      return x >= nIntraRows;
+   }
 
-	virtual bool isDone()
-	{
-		return x >= nIntraRows;
-	}
-
-	virtual Move<RepEtII>& current()
-	{
-		return *new MoveRotate(nRot, x + 1, y + 1);
-	}
+   virtual Move<RepEtII>* current() override
+   {
+      return new MoveRotate(nRot, x + 1, y + 1);
+   }
 };
 
 template<class MOVE = MoveRotate>
-class NSSeqRotate: public NSSeq<RepEtII>
+class NSSeqRotate : public NSSeq<RepEtII>
 {
 private:
-	RandGen& rg;
+   RandGen& rg;
+
 public:
+   NSSeqRotate(RandGen& _rg)
+     : rg(_rg)
+   {
+   }
 
-	using NSSeq<RepEtII>::move; // prevents name hiding
+   virtual ~NSSeqRotate()
+   {
+   }
 
-	NSSeqRotate(RandGen& _rg) :
-		rg(_rg)
-	{
-	}
+   virtual Move<RepEtII>* randomMove(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
+   {
+      // line 'x' and col 'y'
+      int x = rg.rand((rep.getNumRows() - 2)) + 1;
+      int y = rg.rand((rep.getNumCols() - 2)) + 1;
+      int nRot = rg.rand(3) + 1;
 
-	virtual ~NSSeqRotate()
-	{
-	}
+      return new MOVE(nRot, x, y); // return a random move
+   }
 
-	virtual Move<RepEtII>& move(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
-	{
-		// line 'x' and col 'y'
-		int x = rg.rand((rep.getNumRows() - 2)) + 1;
-		int y = rg.rand((rep.getNumCols() - 2)) + 1;
-		int nRot = rg.rand(3) + 1;
+   virtual NSIterator<RepEtII>* getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
+   {
+      // return an iterator to the neighbors of 'rep'
+      return new NSIteratorRotate(rep.getNumRows() - 2, rep.getNumCols() - 2);
+   }
 
-		return *new MOVE(nRot, x, y); // return a random move
-	}
+   virtual void print() const
+   {
+      cout << "NSSeqRotate" << endl;
+   }
 
-	virtual NSIterator<RepEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
-	{
-		// return an iterator to the neighbors of 'rep'
-		return *new NSIteratorRotate(rep.getNumRows() - 2, rep.getNumCols() - 2);
-	}
-
-	virtual void print() const
-	{
-		cout << "NSSeqRotate" << endl;
-	}
-
-	string id() const
-	{
-		return "OptFrame:NS:NSSeqRotate";
-	}
+   string id() const
+   {
+      return "OptFrame:NS:NSSeqRotate";
+   }
 };
-
 }
 
 #endif /*EtII_NSSEQRotate_HPP_*/
-

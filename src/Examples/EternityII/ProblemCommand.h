@@ -89,7 +89,7 @@ public:
 
     	EtIIInitialSolutionGreedy& is = * new EtIIInitialSolutionGreedy(*p, hf.getRandGen());
 
-    	Solution<RepEtII>& s = is.generateSolution();
+    	Solution<RepEtII>& s = *is.generateSolution(10); // TODO: fix time
 
     	NSSeqRotate<DeltaMoveRotate>& nsRotate = * new NSSeqRotate<DeltaMoveRotate>(hf.getRandGen());
     	NSSeqSwapCenter<DeltaMoveSwapCenter>& nsSwapCenter = * new NSSeqSwapCenter<DeltaMoveSwapCenter>(hf.getRandGen());
@@ -100,11 +100,10 @@ public:
     	s.print();
 
     	EtIIEvaluator& eval = * new EtIIEvaluator(*p);
-    	Evaluation* e;
+    	
+    	Evaluation e = eval.evaluateSolution(s);
 
-    	e = &eval.evaluate(s);
-
-    	e->print();
+    	e.print();
     	cout << endl;
 
     	hf.addComponent(is);

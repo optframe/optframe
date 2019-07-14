@@ -32,249 +32,239 @@
 using namespace std;
 using namespace optframe;
 
-namespace EtII
-{
+namespace EtII {
 
-class MoveSwapCorner: public Move<RepEtII>
+class MoveSwapCorner : public Move<RepEtII>
 {
 protected:
-	int x1, y1, x2, y2;
+   int x1, y1, x2, y2;
 
 public:
+   using Move<RepEtII>::apply;        // prevents name hiding
+   using Move<RepEtII>::canBeApplied; // prevents name hiding
 
-	using Move<RepEtII>::apply; // prevents name hiding
-	using Move<RepEtII>::canBeApplied; // prevents name hiding
+   MoveSwapCorner(int _x1, int _y1, int _x2, int _y2)
+     : x1(_x1)
+     , y1(_y1)
+     , x2(_x2)
+     , y2(_y2)
+   {
+   }
 
-	MoveSwapCorner(int _x1, int _y1, int _x2, int _y2) :
-		x1(_x1), y1(_y1), x2(_x2), y2(_y2)
-	{
-	}
+   virtual ~MoveSwapCorner()
+   {
+   }
 
-	virtual ~MoveSwapCorner()
-	{
-	}
+   bool canBeApplied(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
+   {
+      return true;
+   }
 
-	bool canBeApplied(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
-	{
-		return true;
-	}
+   Move<RepEtII>* apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS*) override
+   {
+      Piece p = rep(x1, y1);
+      rep(x1, y1) = rep(x2, y2);
+      rep(x2, y2) = p;
 
-	Move<RepEtII>* apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS&)
-	{
-		Piece p = rep(x1, y1);
-		rep(x1, y1) = rep(x2, y2);
-		rep(x2, y2) = p;
+      while ((rep(0, 0).left != 0) || (rep(0, 0).up != 0))
+         rep(0, 0).rotate();
 
-		while ((rep(0, 0).left != 0) || (rep(0, 0).up != 0))
-			rep(0, 0).rotate();
+      while ((rep(0, rep.getNumCols() - 1).right != 0) || (rep(0, rep.getNumCols() - 1).up != 0))
+         rep(0, rep.getNumCols() - 1).rotate();
 
-		while ((rep(0, rep.getNumCols() - 1).right != 0) || (rep(0, rep.getNumCols() - 1).up != 0))
-			rep(0, rep.getNumCols() - 1).rotate();
+      while ((rep(rep.getNumRows() - 1, 0).left != 0) || (rep(rep.getNumRows() - 1, 0).down != 0))
+         rep(rep.getNumRows() - 1, 0).rotate();
 
-		while ((rep(rep.getNumRows() - 1, 0).left != 0) || (rep(rep.getNumRows() - 1, 0).down != 0))
-			rep(rep.getNumRows() - 1, 0).rotate();
+      while ((rep(rep.getNumRows() - 1, rep.getNumCols() - 1).right != 0) || (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).down != 0))
+         rep(rep.getNumRows() - 1, rep.getNumCols() - 1).rotate();
 
-		while ((rep(rep.getNumRows() - 1, rep.getNumCols() - 1).right != 0) || (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).down != 0))
-			rep(rep.getNumRows() - 1, rep.getNumCols() - 1).rotate();
+      return new MoveSwapCorner(x2, y2, x1, y1);
+   }
 
-		return new MoveSwapCorner(x2, y2, x1, y1);
-	}
+   Move<RepEtII>* applyUpdate(Evaluation& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS* ads) override
+   {
+      int f = 0;
 
-	Move<RepEtII>* apply(Evaluation& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS& ads)
-	{
-		int f = 0;
+      if (rep(0, 0).right == rep(0, 1).left)
+         f++;
+      if (rep(0, 0).down == rep(1, 0).up)
+         f++;
 
-		if (rep(0, 0).right == rep(0, 1).left)
-			f++;
-		if (rep(0, 0).down == rep(1, 0).up)
-			f++;
+      if (rep(0, rep.getNumCols() - 1).left == rep(0, rep.getNumCols() - 2).right)
+         f++;
+      if (rep(0, rep.getNumCols() - 1).down == rep(1, rep.getNumCols() - 1).up)
+         f++;
 
-		if (rep(0, rep.getNumCols() - 1).left == rep(0, rep.getNumCols() - 2).right)
-			f++;
-		if (rep(0, rep.getNumCols() - 1).down == rep(1, rep.getNumCols() - 1).up)
-			f++;
+      if (rep(rep.getNumRows() - 1, 0).right == rep(rep.getNumRows() - 1, 1).left)
+         f++;
+      if (rep(rep.getNumRows() - 1, 0).up == rep(rep.getNumRows() - 2, 0).down)
+         f++;
 
-		if (rep(rep.getNumRows() - 1, 0).right == rep(rep.getNumRows() - 1, 1).left)
-			f++;
-		if (rep(rep.getNumRows() - 1, 0).up == rep(rep.getNumRows() - 2, 0).down)
-			f++;
+      if (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).left == rep(rep.getNumRows() - 1, rep.getNumCols() - 2).right)
+         f++;
+      if (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).up == rep(rep.getNumRows() - 2, rep.getNumCols() - 1).down)
+         f++;
 
-		if (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).left == rep(rep.getNumRows() - 1, rep.getNumCols() - 2).right)
-			f++;
-		if (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).up == rep(rep.getNumRows() - 2, rep.getNumCols() - 1).down)
-			f++;
+      Move<RepEtII>& rev = *apply(rep, ads);
 
-		Move<RepEtII>& rev = *apply(rep, ads);
+      int f2 = 0;
 
-		int f2 = 0;
+      if (rep(0, 0).right == rep(0, 1).left)
+         f2++;
+      if (rep(0, 0).down == rep(1, 0).up)
+         f2++;
 
-		if (rep(0, 0).right == rep(0, 1).left)
-			f2++;
-		if (rep(0, 0).down == rep(1, 0).up)
-			f2++;
+      if (rep(0, rep.getNumCols() - 1).left == rep(0, rep.getNumCols() - 2).right)
+         f2++;
+      if (rep(0, rep.getNumCols() - 1).down == rep(1, rep.getNumCols() - 1).up)
+         f2++;
 
-		if (rep(0, rep.getNumCols() - 1).left == rep(0, rep.getNumCols() - 2).right)
-			f2++;
-		if (rep(0, rep.getNumCols() - 1).down == rep(1, rep.getNumCols() - 1).up)
-			f2++;
+      if (rep(rep.getNumRows() - 1, 0).right == rep(rep.getNumRows() - 1, 1).left)
+         f2++;
+      if (rep(rep.getNumRows() - 1, 0).up == rep(rep.getNumRows() - 2, 0).down)
+         f2++;
 
-		if (rep(rep.getNumRows() - 1, 0).right == rep(rep.getNumRows() - 1, 1).left)
-			f2++;
-		if (rep(rep.getNumRows() - 1, 0).up == rep(rep.getNumRows() - 2, 0).down)
-			f2++;
+      if (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).left == rep(rep.getNumRows() - 1, rep.getNumCols() - 2).right)
+         f2++;
+      if (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).up == rep(rep.getNumRows() - 2, rep.getNumCols() - 1).down)
+         f2++;
 
-		if (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).left == rep(rep.getNumRows() - 1, rep.getNumCols() - 2).right)
-			f2++;
-		if (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).up == rep(rep.getNumRows() - 2, rep.getNumCols() - 1).down)
-			f2++;
+      e.setObjFunction(e.getObjFunction() + (f2 - f));
 
-		e.setObjFunction(e.getObjFunction()+(f2 - f));
+      return &rev;
+   }
 
-		return &rev;
-	}
+   virtual bool operator==(const Move<RepEtII>& _m) const
+   {
+      const MoveSwapCorner& m = (const MoveSwapCorner&)_m;
+      return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2);
+   }
 
-	virtual bool operator==(const Move<RepEtII>& _m) const
-	{
-		const MoveSwapCorner& m = (const MoveSwapCorner&) _m;
-		return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2);
-	}
+   void print() const
+   {
+      cout << "MoveSwapCorner: (" << x1 << "," << y1 << ") <=> (" << x2 << "," << y2 << ")" << endl;
+   }
 
-	void print() const
-	{
-		cout << "MoveSwapCorner: (" << x1 << "," << y1 << ") <=> (" << x2 << "," << y2 << ")" << endl;
-	}
-
-	string id() const
-	{
-		return "OptFrame:Move:MoveSwapCorner";
-	}
+   string id() const
+   {
+      return "OptFrame:Move:MoveSwapCorner";
+   }
 };
 
-class NSIteratorSwapCorner: public NSIterator<RepEtII>
+class NSIteratorSwapCorner : public NSIterator<RepEtII>
 {
 private:
-	int x1, y1, x2, y2;
-	int nRows, nCols;
+   int x1, y1, x2, y2;
+   int nRows, nCols;
 
 public:
-	NSIteratorSwapCorner(int _nRows, int _nCols) :
-		nRows(_nRows), nCols(_nCols)
-	{
-	}
+   NSIteratorSwapCorner(int _nRows, int _nCols)
+     : nRows(_nRows)
+     , nCols(_nCols)
+   {
+   }
 
-	virtual ~NSIteratorSwapCorner()
-	{
-	}
+   virtual ~NSIteratorSwapCorner()
+   {
+   }
 
-	virtual void first()
-	{
-		x1 = 0;
-		y1 = 0;
-		x2 = 0;
-		y2 = 1;
-	}
+   virtual void first() override
+   {
+      x1 = 0;
+      y1 = 0;
+      x2 = 0;
+      y2 = 1;
+   }
 
-	virtual void next()
-	{
-		y2++;
-		if (y2 > 1)
-		{
-			y2 = 0;
-			x2++;
-			if (x2 > 1)
-			{
-				y1++;
-				if (y1 > 1)
-				{
-					y1 = 0;
-					x1++;
+   virtual void next() override
+   {
+      y2++;
+      if (y2 > 1) {
+         y2 = 0;
+         x2++;
+         if (x2 > 1) {
+            y1++;
+            if (y1 > 1) {
+               y1 = 0;
+               x1++;
 
-					x2 = x1;
-					y2 = y1 + 1;
-					if (y2 > 1)
-					{
-						y2 = 0;
-						x2++;
-					}
-				}
-				else
-				{
-					x2 = x1;
-					y2 = y1 + 1;
-					if (y2 > 1)
-					{
-						y2 = 0;
-						x2++;
-					}
-				}
-			}
-		}
-	}
+               x2 = x1;
+               y2 = y1 + 1;
+               if (y2 > 1) {
+                  y2 = 0;
+                  x2++;
+               }
+            } else {
+               x2 = x1;
+               y2 = y1 + 1;
+               if (y2 > 1) {
+                  y2 = 0;
+                  x2++;
+               }
+            }
+         }
+      }
+   }
 
-	virtual bool isDone()
-	{
-		return x2 > 1;
-	}
+   virtual bool isDone() override
+   {
+      return x2 > 1;
+   }
 
-	virtual Move<RepEtII>& current()
-	{
-		return *new MoveSwapCorner(x1 * (nRows - 1), y1 * (nCols - 1), x2 * (nRows - 1), y2 * (nCols - 1));
-	}
+   virtual Move<RepEtII>* current() override
+   {
+      return new MoveSwapCorner(x1 * (nRows - 1), y1 * (nCols - 1), x2 * (nRows - 1), y2 * (nCols - 1));
+   }
 };
 
 template<class MOVE = MoveSwapCorner>
-class NSSeqSwapCorner: public NSSeq<RepEtII>
+class NSSeqSwapCorner : public NSSeq<RepEtII>
 {
 private:
-	RandGen& rg;
+   RandGen& rg;
 
 public:
+   NSSeqSwapCorner(RandGen& _rg)
+     : rg(_rg)
+   {
+   }
 
-	using NSSeq<RepEtII>::move; // prevents name hiding
+   virtual ~NSSeqSwapCorner()
+   {
+   }
 
-	NSSeqSwapCorner(RandGen& _rg):rg(_rg)
-	{
-	}
+   virtual Move<RepEtII>* randomMove(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
+   {
+      int x1 = (rg.rand(2)) * (rep.getNumRows() - 1);
+      int y1 = (rg.rand(2)) * (rep.getNumCols() - 1);
 
-	virtual ~NSSeqSwapCorner()
-	{
-	}
+      int x2 = x1;
+      int y2 = y1;
 
-	virtual Move<RepEtII>& move(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
-	{
-		int x1 = (rg.rand(2)) * (rep.getNumRows() - 1);
-		int y1 = (rg.rand(2)) * (rep.getNumCols() - 1);
+      while ((x2 == x1) && (y2 == y1)) {
+         x2 = (rg.rand(2)) * (rep.getNumRows() - 1);
+         y2 = (rg.rand(2)) * (rep.getNumCols() - 1);
+      }
 
-		int x2 = x1;
-		int y2 = y1;
+      return new MOVE(x1, y1, x2, y2);
+   }
 
-		while ((x2 == x1) && (y2 == y1))
-		{
-			x2 = (rg.rand(2)) * (rep.getNumRows() - 1);
-			y2 = (rg.rand(2)) * (rep.getNumCols() - 1);
-		}
+   virtual NSIterator<RepEtII>* getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
+   {
+      // return an iterator to the neighbors of 'rep'
+      return new NSIteratorSwapCorner(rep.getNumRows(), rep.getNumCols());
+   }
 
-		return *new MOVE(x1, y1, x2, y2);
-	}
+   virtual void print() const
+   {
+      cout << "NSSeqSwapCorner" << endl;
+   }
 
-	virtual NSIterator<RepEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
-	{
-		// return an iterator to the neighbors of 'rep'
-		return *new NSIteratorSwapCorner(rep.getNumRows(), rep.getNumCols());
-	}
-
-	virtual void print() const
-	{
-		cout << "NSSeqSwapCorner" << endl;
-	}
-
-	string id() const
-	{
-		return "OptFrame:NS:NSSeqSwapCorner";
-	}
+   string id() const
+   {
+      return "OptFrame:NS:NSSeqSwapCorner";
+   }
 };
-
 }
 
 #endif /*EtII_NSSEQSwapCorner_HPP_*/
-

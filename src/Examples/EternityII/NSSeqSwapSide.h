@@ -42,9 +42,6 @@ protected:
 
 public:
 
-	using Move<RepEtII>::apply; // prevents name hiding
-	using Move<RepEtII>::canBeApplied; // prevents name hiding
-
 	MoveSwapSide(int _x1, int _y1, int _x2, int _y2) :
 		x1(_x1), y1(_y1), x2(_x2), y2(_y2)
 	{
@@ -54,7 +51,7 @@ public:
 	{
 	}
 
-	bool canBeApplied(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
+	bool canBeApplied(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		bool left_upper = ((x1 == 0) && (y1 == 0)) || ((x2 == 0) && (y2 == 0));
 		bool right_upper = ((x1 == 0) && (y1 == (int)rep.getNumCols() - 1)) || ((x2 == 0) && (y2 == (int)rep.getNumCols() - 1));
@@ -64,7 +61,7 @@ public:
 		return !left_upper && !right_upper && !left_lower && !right_lower;
 	}
 
-	Move<RepEtII>* apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS&)
+	Move<RepEtII>* apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS*) override
 	{
 		Piece p = rep(x1, y1);
 		rep(x1, y1) = rep(x2, y2);
@@ -109,7 +106,7 @@ public:
 		return new MoveSwapSide(x2, y2, x1, y1);
 	}
 
-	Move<RepEtII>* apply(Evaluation& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS& ads)
+	Move<RepEtII>* applyUpdate(Evaluation& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS* ads) override
 	{
 		int f = 0;
 		if (((y1 - 1) >= 0) && (rep(x1, y1).left == rep(x1, y1 - 1).right))
@@ -191,7 +188,7 @@ public:
 	{
 	}
 
-	virtual void first()
+	virtual void first() override
 	{
 		x1 = 0;
 		y1 = 1;
@@ -199,7 +196,7 @@ public:
 		y2 = 2;
 	}
 
-	virtual void next()
+	virtual void next() override
 	{
 		int inc = nCols - 1;
 		if ((x2 == 0) || (x2 == nRows - 1))
@@ -254,14 +251,14 @@ public:
 		}
 	}
 
-	virtual bool isDone()
+	virtual bool isDone() override
 	{
 		return x2 >= nRows;
 	}
 
-	virtual Move<RepEtII>& current()
+	virtual Move<RepEtII>* current() override
 	{
-		return *new MoveSwapSide(x1, y1, x2, y2);
+		return new MoveSwapSide(x1, y1, x2, y2);
 	}
 };
 
@@ -272,8 +269,7 @@ private:
 	RandGen& rg;
 public:
 
-	using NSSeq<RepEtII>::move; // prevents name hiding
-
+	
 	NSSeqSwapSide(RandGen& _rg): rg(_rg)
 	{
 	}
@@ -282,7 +278,7 @@ public:
 	{
 	}
 
-	virtual Move<RepEtII>& move(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
+	virtual Move<RepEtII>* randomMove(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		int x1, y1;
 
@@ -293,7 +289,7 @@ public:
 		}
 		else // horz
 		{
-			x1 = (rg.rand(2)) * (rep.getNumRows() - 1);
+		x1 = (rg.rand(2)) * (rep.getNumRows() - 1);
 			y1 = rg.rand((rep.getNumCols() - 2)) + 1;
 		}
 
@@ -311,12 +307,12 @@ public:
 				y2 = rg.rand((rep.getNumCols() - 2)) + 1;
 			}
 
-		return *new MOVE(x1, y1, x2, y2);
+		return new MOVE(x1, y1, x2, y2);
 	}
 
-	virtual NSIterator<RepEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
+	virtual NSIterator<RepEtII>* getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
 	{
-		return *new NSIteratorSwapSide(rep.getNumRows(), rep.getNumCols());
+		return new NSIteratorSwapSide(rep.getNumRows(), rep.getNumCols());
 	}
 
 	virtual void print() const

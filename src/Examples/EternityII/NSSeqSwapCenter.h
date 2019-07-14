@@ -53,12 +53,12 @@ protected:
 	{
 	}
 
-	bool canBeApplied(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
+	bool canBeApplied(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		return true;
 	}
 
-	Move<RepEtII>* apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS&)
+	Move<RepEtII>* apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS*)
 	{
 		Piece p = rep(x1, y1);
 		rep(x1, y1) = rep(x2, y2);
@@ -67,7 +67,7 @@ protected:
 		return new MoveSwapCenter(x2, y2, x1, y1);
 	}
 
-	Move<RepEtII>* apply(Evaluation& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS& ads)
+	Move<RepEtII>* applyUpdate(Evaluation& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS* ads) override
 	{
 		int f = 0;
 		if (rep(x1, y1).left == rep(x1, y1 - 1).right)
@@ -150,7 +150,7 @@ public:
 	{
 	}
 
-	virtual void first()
+	virtual void first() override
 	{
 		x1 = 0;
 		y1 = 0;
@@ -159,7 +159,7 @@ public:
 		y2 = 1;
 	}
 
-	virtual void next()
+	virtual void next() override
 	{
 		y2++;
 		if (y2 >= nIntraCols)
@@ -197,14 +197,14 @@ public:
 		}
 	}
 
-	virtual bool isDone()
+	virtual bool isDone() override
 	{
 		return (x1 >= nIntraRows) || (y1 >= nIntraCols) || (x2 >= nIntraRows) || (y2 >= nIntraCols);
 	}
 
-	virtual Move<RepEtII>& current()
+	virtual Move<RepEtII>* current() override
 	{
-		return *new MoveSwapCenter(x1 + 1, y1 + 1, x2 + 1, y2 + 1);
+		return new MoveSwapCenter(x1 + 1, y1 + 1, x2 + 1, y2 + 1);
 	}
 };
 
@@ -215,9 +215,7 @@ private:
 	RandGen& rg;
 	public:
 
-	using NSSeq<RepEtII>::move; // prevents name hiding
-	using NSSeq<RepEtII>::getIterator; // prevents name hiding
-
+	
 	NSSeqSwapCenter(RandGen& _rg) :
 			rg(_rg)
 	{
@@ -227,10 +225,10 @@ private:
 	{
 	}
 
-	virtual Move<RepEtII>& move(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
+	virtual Move<RepEtII>* randomMove(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		if ((rep.getNumRows() == 3) && (rep.getNumCols() == 3))
-			return *new MoveSwapCenter(1, 1, 1, 1);
+			return new MoveSwapCenter(1, 1, 1, 1);
 
 		// line 'x' and col 'y'
 		int x1 = rg.rand((rep.getNumRows() - 2)) + 1;
@@ -244,13 +242,13 @@ private:
 			y2 = rg.rand((rep.getNumCols() - 2)) + 1;
 		}
 
-		return *new MOVE(x1, y1, x2, y2);
+		return new MOVE(x1, y1, x2, y2);
 	}
 
-	virtual NSIterator<RepEtII>& getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS&)
+	virtual NSIterator<RepEtII>* getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		// return an iterator to the neighbors of 'rep'
-		return *new NSIteratorSwapCenter(rep.getNumRows() - 2, rep.getNumCols() - 2);
+		return new NSIteratorSwapCenter(rep.getNumRows() - 2, rep.getNumCols() - 2);
 	}
 
 	virtual void print() const
