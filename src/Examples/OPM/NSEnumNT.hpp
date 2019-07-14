@@ -20,9 +20,6 @@ private:
 
 public:
 
-	using Move<RepOPM>::apply; // prevents name hiding
-	using Move<RepOPM>::canBeApplied; // prevents name hiding
-
 	MoveNT(int _i, int _j, int _inc_dec, OPMProblemInstance& _opm) :
 			i(_i), j(_j), inc_dec(_inc_dec), opm(_opm)
 	{
@@ -32,13 +29,13 @@ public:
 	{
 	}
 
-	bool canBeApplied(const RepOPM& rep, const OPTFRAME_DEFAULT_ADS&)
+	bool canBeApplied(const RepOPM& rep, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		bool nao_negativo = !((rep.second(i, j) + inc_dec) < 0);
 		return (nao_negativo && (rep.first.at(i) > -1) && (opm.isCompatible(j, rep.first.at(i))));
 	}
 
-	Move<RepOPM>* apply(RepOPM& rep, OPTFRAME_DEFAULT_ADS&)
+	Move<RepOPM>* apply(RepOPM& rep, OPTFRAME_DEFAULT_ADS*) override
 	{
 		rep.second(i, j) += inc_dec;
 
@@ -84,8 +81,6 @@ private:
 	OPMProblemInstance& opm;
 public:
 
-	using NSSeq<RepOPM>::move; // prevents name hiding
-
 	NSEnumNT(OPMProblemInstance& _opm, RandGen& _rg) :
 			NSEnum<RepOPM>(_rg), opm(_opm)
 	{
@@ -95,7 +90,7 @@ public:
 	{
 	}
 
-	Move<RepOPM>& move(unsigned int m)
+	Move<RepOPM>* indexMove(unsigned int m) override
 	{
 		int num_i = opm.getNumFrentes();
 		int num_j = opm.getNumCaminhoes();
@@ -108,7 +103,7 @@ public:
 			int c = ((int) floor((double) m / 2)) % num_j;
 			int inc_dec = ((m % 2) == 0) ? -1 : 1;
 
-			return *new MoveNT(f, c, inc_dec, opm);
+			return new MoveNT(f, c, inc_dec, opm);
 		}
 		else
 		{

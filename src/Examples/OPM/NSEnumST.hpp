@@ -34,12 +34,12 @@ public:
 	{
 	}
 
-	bool canBeApplied(const RepOPM& rep, const OPTFRAME_DEFAULT_ADS&)
+	bool canBeApplied(const RepOPM& rep, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		return (f1 != f2) && (c1 != c2) && (rep.second(f1, c1) > 0) && (rep.first.at(f2) > -1) && (opm.isCompatible(c2, rep.first.at(f2)));
 	}
 
-	Move<RepOPM>* apply(RepOPM& rep, OPTFRAME_DEFAULT_ADS&)
+	Move<RepOPM>* apply(RepOPM& rep, OPTFRAME_DEFAULT_ADS*) override
 	{
 		rep.second(f1, c1)--;
 		rep.second(f2, c2)++;
@@ -65,8 +65,6 @@ private:
 	OPMProblemInstance& opm;
 public:
 
-	using NSSeq<RepOPM>::move; // prevents name hiding
-
 	NSEnumST(OPMProblemInstance& _opm, RandGen& _rg) :
 		NSEnum<RepOPM>(_rg), opm(_opm)
 	{
@@ -76,7 +74,7 @@ public:
 	{
 	}
 
-	Move<RepOPM>& move(unsigned int k)
+	Move<RepOPM>* indexMove(unsigned int k) override
 	{
 		if (k > size())
 		{
@@ -109,7 +107,7 @@ public:
 
 		d = m;
 
-		return *new MoveST(a, b, c, d, opm);
+		return new MoveST(a, b, c, d, opm);
 	}
 
 	unsigned int size() const

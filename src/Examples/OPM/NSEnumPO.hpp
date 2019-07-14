@@ -26,9 +26,6 @@ private:
 
 public:
 
-	using Move<RepOPM>::apply; // prevents name hiding
-	using Move<RepOPM>::canBeApplied; // prevents name hiding
-
 	MovePO(int f)
 	{
 		this->f = f;
@@ -41,12 +38,12 @@ public:
 			delete mem;
 	}
 
-	bool canBeApplied(const RepOPM& rep, const OPTFRAME_DEFAULT_ADS&)
+	bool canBeApplied(const RepOPM& rep, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		return true;
 	}
 
-	Move<RepOPM>* apply(RepOPM& rep, OPTFRAME_DEFAULT_ADS&)
+	Move<RepOPM>* apply(RepOPM& rep, OPTFRAME_DEFAULT_ADS*) override
 	{
 		vector<int>* anterior;
 
@@ -92,8 +89,6 @@ private:
 	OPMProblemInstance& opm;
 public:
 
-	using NSSeq<RepOPM>::move; // prevents name hiding
-
 	NSEnumPO(OPMProblemInstance& _opm, RandGen& _rg) :
 		NSEnum<RepOPM>(_rg), opm(_opm)
 	{
@@ -103,7 +98,7 @@ public:
 	{
 	}
 
-	Move<RepOPM>& move(unsigned int m)
+	Move<RepOPM>* indexMove(unsigned int m) override
 	{
 		if (m > size())
 		{
@@ -112,7 +107,7 @@ public:
 
 		}
 
-		return *new MovePO(m);
+		return new MovePO(m);
 	}
 
 	unsigned int size() const

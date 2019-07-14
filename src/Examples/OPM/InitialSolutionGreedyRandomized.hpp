@@ -1,8 +1,8 @@
 #ifndef OPM_INITIALSOLUTION_GreedyRandomized_HPP_
 #define OPM_INITIALSOLUTION_GreedyRandomized_HPP_
 
-#include "../../OptFrame/Constructive.h"
-#include "../../OptFrame/Util/TestSolution.hpp"
+#include "../../OptFrame/Constructive.hpp"
+//#include "../../OptFrame/Util/TestSolution.hpp"
 #include "../../OptFrame/RandGen.hpp"
 
 #include "ProblemInstance.hpp"
@@ -53,7 +53,7 @@ public:
 
 	}
 
-	SolutionOPM& generateSolution()
+	SolutionOPM* generateSolution(double timelimit) override
 	{
 		double alpha_w = rg.rand01(); // for waste rock pits
 		double alpha_o = rg.rand01(); // for ore pits
@@ -68,7 +68,7 @@ public:
 		return generateSolution(alpha_w, alpha_o, alpha_s);
 	}
 
-	SolutionOPM& generateSolution(double alpha_w, double alpha_o, double alpha_s)
+	SolutionOPM* generateSolution(double alpha_w, double alpha_o, double alpha_s)
 	{
 		// Create new vector for shovels
 		vector<int> vs(opm.numFrentes, -1);
@@ -80,7 +80,7 @@ public:
 		generateWasteRockSolution(&vs, &trips, alpha_w, alpha_s);
 		generateOreSolution(&vs, &trips, alpha_o, alpha_s);
 
-		return *new TestSolution<RepOPM>(*new pair<vector<int>, Matrix<int> >(vs, trips));
+		return new Solution<RepOPM>(*new pair<vector<int>, Matrix<int> >(vs, trips));
 	}
 
 	void generateWasteRockSolution(vector<int>* vs, Matrix<int>* trips, double alpha_w, double alpha_s)

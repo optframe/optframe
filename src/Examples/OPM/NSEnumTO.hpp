@@ -26,9 +26,6 @@ private:
 	}
 public:
 
-	using Move<RepOPM>::apply; // prevents name hiding
-	using Move<RepOPM>::canBeApplied; // prevents name hiding
-
 	MoveTO(int _f, int _c) :
 			f(_f), c(_c)
 	{
@@ -39,12 +36,12 @@ public:
 	{
 	}
 
-	bool canBeApplied(const RepOPM& rep, const OPTFRAME_DEFAULT_ADS&)
+	bool canBeApplied(const RepOPM& rep, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		return true;
 	}
 
-	Move<RepOPM>* apply(RepOPM& rep, OPTFRAME_DEFAULT_ADS&)
+	Move<RepOPM>* apply(RepOPM& rep, OPTFRAME_DEFAULT_ADS*) override
 	{
 		int valor_ant = rep.second(f, c);
 
@@ -71,8 +68,6 @@ private:
 	OPMProblemInstance& opm;
 public:
 
-	using NSSeq<RepOPM>::move; // prevents name hiding
-
 	NSEnumTO(OPMProblemInstance& _opm, RandGen& _rg) :
 			NSEnum<RepOPM>(_rg), opm(_opm)
 	{
@@ -82,7 +77,7 @@ public:
 	{
 	}
 
-	Move<RepOPM>& move(unsigned int k)
+	Move<RepOPM>* indexMove(unsigned int k) override
 	{
 		if (k > size())
 		{
@@ -96,7 +91,7 @@ public:
 		int f = k / nc;
 		int c = k % nc;
 
-		return *new MoveTO(f, c);
+		return new MoveTO(f, c);
 	}
 
 	unsigned int size() const

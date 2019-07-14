@@ -30,9 +30,6 @@ private:
 
 public:
 
-	using Move<RepOPM>::apply; // prevents name hiding
-	using Move<RepOPM>::canBeApplied; // prevents name hiding
-
 	MoveSS(int _f1, int _f2, OPMProblemInstance& _opm) :
 		f1(_f1), f2(_f2), opm(_opm)
 	{
@@ -48,12 +45,12 @@ public:
 			delete vf2;
 	}
 
-	bool canBeApplied(const RepOPM& rep, const OPTFRAME_DEFAULT_ADS&)
+	bool canBeApplied(const RepOPM& rep, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		return f1 < f2;
 	}
 
-	Move<RepOPM>* apply(RepOPM& rep,  OPTFRAME_DEFAULT_ADS&)
+	Move<RepOPM>* apply(RepOPM& rep,  OPTFRAME_DEFAULT_ADS*) override
 	{
 		int aux = rep.first[f1];
 		rep.first[f1] = rep.first[f2];
@@ -109,8 +106,6 @@ private:
 	OPMProblemInstance& opm;
 public:
 
-	using NSSeq<RepOPM>::move; // prevents name hiding
-
 	NSEnumSS(OPMProblemInstance& _opm, RandGen& _rg) :
 		NSEnum<RepOPM>(_rg), opm(_opm)
 	{
@@ -120,7 +115,7 @@ public:
 	{
 	}
 
-	Move<RepOPM>& move(unsigned int m)
+	Move<RepOPM>* indexMove(unsigned int m) override
 	{
 		if (m > size())
 		{
@@ -145,7 +140,7 @@ public:
 		{
 			int i = floor((double) m / num_f);
 			int j = m % num_f;
-			return *new MoveSS(i, j, opm);
+			return new MoveSS(i, j, opm);
 		} /**/
 
 		cerr << "Erro: estouro da vizinhanca SS. Nao existe o movimento " << m << ". Intervalo de 0.." << (size() - 1) << "." << endl;
