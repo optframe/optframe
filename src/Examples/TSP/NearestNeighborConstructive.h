@@ -21,8 +21,8 @@
 #ifndef TSP_NN_CONSTRUCTIVE_HPP_
 #define TSP_NN_CONSTRUCTIVE_HPP_
 
-#include "../../OptFrame/Constructive.h"
-#include "../../OptFrame/Util/TestSolution.hpp"
+#include "../../OptFrame/Constructive.hpp"
+//#include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.h"
 
@@ -64,7 +64,7 @@ public:
 	{
 	}
 
-	SolutionTSP& generateSolution()
+	Solution<RepTSP>* generateSolution(double timelimit) override
 	{
         //cout << "Generating solution" << endl;
 		RepTSP newRep;
@@ -103,7 +103,7 @@ public:
                     break;
             }
 
-		return * new TestSolution<RepTSP>(newRep);
+		return new Solution<RepTSP>(newRep);
 	}
 
 };

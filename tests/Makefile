@@ -10,13 +10,17 @@ GMOCK_INCLUDE=./gtestlib/googlemock/include
 all:
 	@echo "please type 'make test'"
 
-test: clean OptFrame.test
+test: clean OptFrame.test Examples.test
 	@echo "Executing tests"
 	./OptFrame.test
+	./Examples.test
 
 
 OptFrame.test : OptFrame.Test.cpp
-	g++ --coverage -g -O0 --std=c++11 -I$(SRC_PATH)/OptFrame -I$(LIBS_PATH) -I$(GTEST_INCLUDE) -I$(GMOCK_INCLUDE) $< -o $@ $(GMOCK_PATH)/gtest/libgtest_main.a $(GMOCK_PATH)/gtest/libgtest.a $(GMOCK_PATH)/libgmock.a $(LIBS_PATH)/scannerpplib/Scanner.cpp -lpthread -ldl
+	g++ --coverage -g -O0 -fconcepts -std=c++17 -I$(SRC_PATH)/OptFrame -I$(LIBS_PATH) -I$(GTEST_INCLUDE) -I$(GMOCK_INCLUDE) $< -o $@ $(GMOCK_PATH)/gtest/libgtest_main.a $(GMOCK_PATH)/gtest/libgtest.a $(GMOCK_PATH)/libgmock.a $(LIBS_PATH)/scannerpplib/Scanner.cpp -lpthread -ldl
+
+Examples.test : Examples.Test.cpp
+	g++ --coverage -g -O0 -fconcepts -std=c++17 -I$(SRC_PATH)/Examples -I$(LIBS_PATH) -I$(GTEST_INCLUDE) -I$(GMOCK_INCLUDE) $< -o $@ $(GMOCK_PATH)/gtest/libgtest_main.a $(GMOCK_PATH)/gtest/libgtest.a $(GMOCK_PATH)/libgmock.a $(LIBS_PATH)/scannerpplib/Scanner.cpp -lpthread -ldl
 
 
 test-coverage:

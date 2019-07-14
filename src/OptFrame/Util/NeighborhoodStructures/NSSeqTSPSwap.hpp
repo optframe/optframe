@@ -96,13 +96,13 @@ public:
 	{
 	}
 
-	using NSSeq<vector<T>, ADS>::move;
-	using NSSeq<vector<T>, ADS>::getIterator;
+	//using NSSeq<vector<T>, ADS>::move;
+	//using NSSeq<vector<T>, ADS>::getIterator;
 
-	Move<Route, ADS>& move(const Route& rep, const ADS&)
+	Move<Route, ADS>* randomMove(const Route& rep, const ADS*) override
 	{
 		if (rep.size() < 2)
-			return *new MOVE(-1, -1, p);
+			return new MOVE(-1, -1, p);
 
 		int p1 = rand() % rep.size();
 
@@ -111,12 +111,12 @@ public:
 		while (p2 == p1)
 			p2 = rand() % rep.size();
 
-		return *new MOVE(p1, p2, p);
+		return new MOVE(p1, p2, p);
 	}
 
-	virtual NSIterator<Route, ADS>& getIterator(const Route& r, const ADS&)
+	virtual NSIterator<Route, ADS>* getIterator(const Route& r, const ADS*) override
 	{
-		return *new NSITERATOR(r.size(), p);
+		return new NSITERATOR(r.size(), p);
 	}
 
 	static string idComponent()

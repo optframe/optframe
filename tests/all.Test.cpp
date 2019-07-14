@@ -1,5 +1,5 @@
 
-// collection of 'csBigInteger' project tests
+// collection of 'OptFrame' tests
 
 #include "Examples.Test.cpp"
 #include "MyProjects.Test.cpp"

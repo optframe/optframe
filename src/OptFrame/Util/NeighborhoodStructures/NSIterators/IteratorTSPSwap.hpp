@@ -56,7 +56,7 @@ public:
 	{
 	}
 
-	virtual void first()
+	virtual void first() override
 	{
 		if (n >= 2)
 		{
@@ -68,7 +68,7 @@ public:
 			m = nullptr;
 	}
 
-	virtual void next()
+	virtual void next() override
 	{
 		if (!((p1 == n - 2) && (p2 == n - 1)))
 		{
@@ -87,12 +87,12 @@ public:
 			m = nullptr;
 	}
 
-	virtual bool isDone()
+	virtual bool isDone() override
 	{
 		return (m == nullptr);
 	}
 
-	virtual Move<Route, ADS>& current()
+	virtual Move<Route, ADS>* current() override
 	{
 		if (isDone())
 		{
@@ -101,7 +101,7 @@ public:
 			exit(1);
 		}
 
-		return *m;
+		return m;
 	}
 };
 

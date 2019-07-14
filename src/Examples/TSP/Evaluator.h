@@ -147,7 +147,7 @@ public:
         NSSeqTSPSwap<int> tspswap;
 
         int ads;
-        NSIterator<RepTSP>& it = tspswap.getIterator(r, ads);
+        NSIterator<RepTSP>& it = *tspswap.getIterator(r, &ads);
         it.first();
 
         //cout << "got iterator: " << it.toString() << endl;
@@ -157,12 +157,13 @@ public:
         {
             //cout << "will get move" << endl;
             totalNeigh++;
-            Move<RepTSP>& m = it.current();
+            Move<RepTSP>& m = *it.current();
             //m.print();
-            if (m.canBeApplied(r, ads))
+            if (m.canBeApplied(r, &ads))
             {
                 doStats = false;
-                MoveCost& mc = this->moveCost(m, base);
+                Evaluation* e = nullptr; // dummy // TODO:
+                MoveCost& mc = *this->moveCost(*e, m, base);
                 doStats = true;
                 if (mc.getObjFunctionCost() < 0)
                     improvingSols++;

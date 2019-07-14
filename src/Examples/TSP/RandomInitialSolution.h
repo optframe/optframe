@@ -21,7 +21,7 @@
 #ifndef TSP_INITIALSOLUTION_Random_HPP_
 #define TSP_INITIALSOLUTION_Random_HPP_
 
-#include "../../OptFrame/Constructive.h"
+#include "../../OptFrame/Constructive.hpp"
 //#include "../../OptFrame/Util/TestSolution.hpp" // DEPRECATED
 
 #include "ProblemInstance.h"

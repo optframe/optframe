@@ -1,5 +1,5 @@
 
-// collection of 'csBigInteger' project tests
+// collection of 'OptFrame' core tests
 
 #include "./OptFrame-tests/Matrix.Test.cpp"
 
