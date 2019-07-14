@@ -27,7 +27,7 @@ using namespace optframe;
 
 namespace TSP2
 {
-typedef Evaluation<> EvaluationTSP;
+//typedef Evaluation<> EvaluationTSP;
 }
 
 #endif /*TSP2_EVALUATION_H_*/

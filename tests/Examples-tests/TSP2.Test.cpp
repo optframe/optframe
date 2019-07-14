@@ -4,8 +4,8 @@
 #include <limits>
 
 // core includes
-#include <TSP/NearestNeighborConstructive.h>
-#include <TSP.h>
+#include <TSP2/ConstructiveNearestNeighbor.h>
+#include <TSP2.h>
 
 using namespace std;
 //using namespace optframe;
@@ -16,7 +16,7 @@ using namespace std;
 // memory management tests
 // =======================
 
-TEST(ExamplesTSPTest, Matrix_Is_Zero)
+TEST(ExamplesTSP2Tests, Matrix_Is_Zero)
 {
    //BigInteger big;
    //EXPECT_EQ(big.Length(), 1);

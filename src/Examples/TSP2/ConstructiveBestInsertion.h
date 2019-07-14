@@ -21,7 +21,7 @@
 #ifndef TSP2_BEST_INSERTION_CONSTRUCTIVE_HPP_
 #define TSP2_BEST_INSERTION_CONSTRUCTIVE_HPP_
 
-#include "../../OptFrame/Util/TestSolution.hpp"
+//#include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.h"
 

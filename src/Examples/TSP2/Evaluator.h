@@ -55,7 +55,7 @@ public:
 		evaluations = 0;
 	}
 
-	Evaluation<>& evaluate(const RepTSP& r)
+	Evaluation evaluate(const RepTSP& r, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		evaluations++;
 		double fo = 0; // Evaluation Function Value
@@ -75,7 +75,7 @@ public:
 		double val = pTSP.dist(k, l);
 		fo += val;
 
-		return *new Evaluation<>(fo);
+		return Evaluation(fo);
 	}
 
 	virtual bool betterThan(double f1, double f2)
