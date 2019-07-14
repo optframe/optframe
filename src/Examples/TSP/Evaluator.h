@@ -85,7 +85,7 @@ public:
     	return true;
     }
 
-    Evaluation& evaluate(const RepTSP& r)
+    Evaluation evaluate(const RepTSP& r, const OPTFRAME_DEFAULT_ADS*) override
     {
         double fo = 0; // Evaluation Function Value
 

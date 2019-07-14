@@ -60,14 +60,14 @@ public:
 		return p2;
 	}
 
-	virtual bool canBeApplied(const Route& rep, const ADS&)
+	virtual bool canBeApplied(const Route& rep, const ADS*) override
 	{
 		bool all_positive = (p1 >= 0) && (p2 >= 0);
 		bool less = (p1 < p2);
 		return all_positive && (rep.size() >= 2) && less;
 	}
 
-	virtual Move<Route, ADS>* apply(Route& rep, ADS&)
+	virtual Move<Route, ADS>* apply(Route& rep, ADS*) override
 	{
 
 		reverse(rep.begin() + p1, rep.begin() + p2);

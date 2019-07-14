@@ -61,7 +61,7 @@ public:
 	{
 	}
 
-	SolutionTSP& generateSolution()
+	Solution<RepTSP>* generateSolution(double timelimit) override
 	{
 		RepTSP newRep(pI->n);
 
@@ -74,7 +74,7 @@ public:
 		for(unsigned int i=0;i<newRep.size();i++)
 			newRep[i] = r[i];
 
-		return * new Solution<RepTSP>(newRep);
+		return new Solution<RepTSP>(newRep);
 	}
 
 };

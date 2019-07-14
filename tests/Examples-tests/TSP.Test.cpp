@@ -5,6 +5,7 @@
 
 // core includes
 #include <TSP/NearestNeighborConstructive.h>
+#include <TSP.h>
 
 using namespace std;
 //using namespace optframe;

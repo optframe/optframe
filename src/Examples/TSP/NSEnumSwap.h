@@ -26,9 +26,9 @@
 #include "../../OptFrame/NSEnum.hpp"
 
 // Own includes
+#include "../../OptFrame/RandGen.hpp"
 #include "ProblemInstance.h"
 #include "Solution.h"
-#include "../../OptFrame/RandGen.hpp"
 
 //#define MOV_Swap_DEBUG
 
@@ -38,346 +38,314 @@ using namespace std;
 //                           Swap MOVE
 //============================================================================
 
-namespace TSP
-{
+namespace TSP {
 
-class MoveSwap: public Move<RepTSP>
+class MoveSwap : public Move<RepTSP>
 {
 private:
-	int c1, c2;
-	ProblemInstance& tsp;
+   int c1, c2;
+   ProblemInstance& tsp;
 
 public:
+   MoveSwap(int c1, int c2, ProblemInstance& _tsp)
+     : tsp(_tsp)
+   {
+      this->c1 = c1;
+      this->c2 = c2;
 
-	MoveSwap(int c1, int c2, ProblemInstance& _tsp) :
-			tsp(_tsp)
-	{
-		this->c1 = c1;
-		this->c2 = c2;
+      // Put the rest of your code here
+   }
 
-		// Put the rest of your code here
-	}
+   bool canBeApplied(const RepTSP& rep, const OPTFRAME_DEFAULT_ADS*) override
+   {
+      // If there are some move "MoveSwap" that can't be applied, implement this method
 
-	bool canBeApplied(const RepTSP& rep, const OPTFRAME_DEFAULT_ADS&)
-	{
-		// If there are some move "MoveSwap" that can't be applied, implement this method
+      return true;
+   }
 
-		return true;
-	}
+   Move<RepTSP>* apply(RepTSP& rep, OPTFRAME_DEFAULT_ADS*) override
+   {
+      // Specify how the move "MoveSwap" will be applied
 
-	Move<RepTSP>* apply(RepTSP& rep, OPTFRAME_DEFAULT_ADS&)
-	{
-		// Specify how the move "MoveSwap" will be applied
+      int aux = rep.at(c1);
+      rep[c1] = rep[c2];
+      rep[c2] = aux;
 
-		int aux = rep.at(c1);
-		rep[c1] = rep[c2];
-		rep[c2] = aux;
+      // return the reverse move
+      return new MoveSwap(c2, c1, tsp);
+   }
 
-		// return the reverse move
-		return new MoveSwap(c2, c1, tsp);
-	}
+   Move<RepTSP>* applyUpdate(Evaluation& e, RepTSP& rep, OPTFRAME_DEFAULT_ADS* ads) override
+   {
+      int k1, k2;
 
-	Move<RepTSP>* apply(Evaluation& e, RepTSP& rep, OPTFRAME_DEFAULT_ADS& ads)
-	{
-		int k1, k2;
+      if (c1 < c2) {
+         k1 = c1;
+         k2 = c2;
+      } else {
+         k1 = c2;
+         k2 = c1;
+      }
 
-		if (c1 < c2)
-		{
-			k1 = c1;
-			k2 = c2;
-		}
-		else
-		{
-			k1 = c2;
-			k2 = c1;
-		}
+      // before k2 and k1
+      int bk1 = k1 - 1;
+      int bk2 = k2 - 1;
+      // after k2 and k1
+      int ak1 = k1 + 1;
+      int ak2 = k2 + 1;
 
-		// before k2 and k1
-		int bk1 = k1 - 1;
-		int bk2 = k2 - 1;
-		// after k2 and k1
-		int ak1 = k1 + 1;
-		int ak2 = k2 + 1;
+      if (k1 == 0)
+         bk1 = rep.size() - 1;
+      if (k2 == ((int)rep.size()) - 1)
+         ak2 = 0;
 
-		if (k1 == 0)
-			bk1 = rep.size() - 1;
-		if (k2 == ((int) rep.size()) - 1)
-			ak2 = 0;
+      double f = 0;
 
-		double f = 0;
+      if (k2 - k1 == 1) // special case, cities are near
+      {
+         f -= (*tsp.dist)(rep[bk1], rep[k1]);
+         f -= (*tsp.dist)(rep[k1], rep[k2]);
+         f -= (*tsp.dist)(rep[k2], rep[ak2]);
+      } else {
+         f -= (*tsp.dist)(rep[bk1], rep[k1]);
+         f -= (*tsp.dist)(rep[k1], rep[ak1]);
+         f -= (*tsp.dist)(rep[bk2], rep[k2]);
+         f -= (*tsp.dist)(rep[k2], rep[ak2]);
+      }
 
-		if (k2 - k1 == 1) // special case, cities are near
-		{
-			f -= (*tsp.dist)(rep[bk1], rep[k1]);
-			f -= (*tsp.dist)(rep[k1], rep[k2]);
-			f -= (*tsp.dist)(rep[k2], rep[ak2]);
-		}
-		else
-		{
-			f -= (*tsp.dist)(rep[bk1], rep[k1]);
-			f -= (*tsp.dist)(rep[k1], rep[ak1]);
-			f -= (*tsp.dist)(rep[bk2], rep[k2]);
-			f -= (*tsp.dist)(rep[k2], rep[ak2]);
-		}
+      Move<RepTSP>& rev = *apply(rep, ads);
 
-		Move<RepTSP>& rev = *apply(rep, ads);
+      if (k2 - k1 == 1) // special case, cities are near
+      {
+         f += (*tsp.dist)(rep[bk1], rep[k1]);
+         f += (*tsp.dist)(rep[k1], rep[k2]);
+         f += (*tsp.dist)(rep[k2], rep[ak2]);
+      } else {
+         f += (*tsp.dist)(rep[bk1], rep[k1]);
+         f += (*tsp.dist)(rep[k1], rep[ak1]);
+         f += (*tsp.dist)(rep[bk2], rep[k2]);
+         f += (*tsp.dist)(rep[k2], rep[ak2]);
+      }
 
-		if (k2 - k1 == 1) // special case, cities are near
-		{
-			f += (*tsp.dist)(rep[bk1], rep[k1]);
-			f += (*tsp.dist)(rep[k1], rep[k2]);
-			f += (*tsp.dist)(rep[k2], rep[ak2]);
-		}
-		else
-		{
-			f += (*tsp.dist)(rep[bk1], rep[k1]);
-			f += (*tsp.dist)(rep[k1], rep[ak1]);
-			f += (*tsp.dist)(rep[bk2], rep[k2]);
-			f += (*tsp.dist)(rep[k2], rep[ak2]);
-		}
+      e.setObjFunction(e.getObjFunction() + f);
+      e.outdated = false;
 
-		e.setObjFunction(e.getObjFunction() + f);
-		e.outdated = false;
+      return &rev;
+   }
 
-		return &rev;
-	}
+   MoveCost* cost(const Evaluation& e, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS* ads, bool allowEstimated) override
+   {
+      int k1, k2;
 
-	MoveCost* cost(const Evaluation& e, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads, bool allowEstimated)
-	{
-		int k1, k2;
+      if (c1 < c2) {
+         k1 = c1;
+         k2 = c2;
+      } else {
+         k1 = c2;
+         k2 = c1;
+      }
 
-		if (c1 < c2)
-		{
-			k1 = c1;
-			k2 = c2;
-		}
-		else
-		{
-			k1 = c2;
-			k2 = c1;
-		}
+      //cout << "Swap k1=" << k1 << "(" << rep[k1] << ")" << " k2=" << k2 << "(" << rep[k2] << ")" << endl;
 
-		//cout << "Swap k1=" << k1 << "(" << rep[k1] << ")" << " k2=" << k2 << "(" << rep[k2] << ")" << endl;
+      // before k2 and k1
+      int bk1 = k1 - 1;
+      int bk2 = k2 - 1;
+      // after k2 and k1
+      int ak1 = k1 + 1;
+      int ak2 = k2 + 1;
 
-		// before k2 and k1
-		int bk1 = k1 - 1;
-		int bk2 = k2 - 1;
-		// after k2 and k1
-		int ak1 = k1 + 1;
-		int ak2 = k2 + 1;
+      if (k1 == 0)
+         bk1 = ((int)rep.size()) - 1;
+      if (k2 == ((int)rep.size()) - 1)
+         ak2 = 0;
 
-		if (k1 == 0)
-			bk1 = ((int) rep.size()) - 1;
-		if (k2 == ((int) rep.size()) - 1)
-			ak2 = 0;
+      double f = 0;
 
-		double f = 0;
+      if (k2 - k1 == 1) // special case, cities are near (in fact, a 3-opt case... TODO remove this)
+      {
+         f -= (*tsp.dist)(rep[bk1], rep[k1]);
+         f -= (*tsp.dist)(rep[k1], rep[k2]);
+         f -= (*tsp.dist)(rep[k2], rep[ak2]);
 
-		if (k2 - k1 == 1) // special case, cities are near (in fact, a 3-opt case... TODO remove this)
-		{
-			f -= (*tsp.dist)(rep[bk1], rep[k1]);
-			f -= (*tsp.dist)(rep[k1], rep[k2]);
-			f -= (*tsp.dist)(rep[k2], rep[ak2]);
+         f += (*tsp.dist)(rep[bk1], rep[k2]);
+         f += (*tsp.dist)(rep[k2], rep[k1]);
+         f += (*tsp.dist)(rep[k1], rep[ak2]);
+      } else if ((k1 == 0) && (k2 == ((int)rep.size()) - 1)) // special case, extreme points
+      {
+         f -= (*tsp.dist)(rep[bk2], rep[k2]);
+         f -= (*tsp.dist)(rep[k2], rep[k1]);
+         f -= (*tsp.dist)(rep[k1], rep[ak1]);
 
-			f += (*tsp.dist)(rep[bk1], rep[k2]);
-			f += (*tsp.dist)(rep[k2], rep[k1]);
-			f += (*tsp.dist)(rep[k1], rep[ak2]);
-		}
-		else if ((k1 == 0) && (k2 == ((int) rep.size()) - 1)) // special case, extreme points
-		{
-			f -= (*tsp.dist)(rep[bk2], rep[k2]);
-			f -= (*tsp.dist)(rep[k2], rep[k1]);
-			f -= (*tsp.dist)(rep[k1], rep[ak1]);
+         f += (*tsp.dist)(rep[bk2], rep[k1]);
+         f += (*tsp.dist)(rep[k1], rep[k2]);
+         f += (*tsp.dist)(rep[k2], rep[ak1]);
+      } else {
+         f -= (*tsp.dist)(rep[bk1], rep[k1]);
+         f -= (*tsp.dist)(rep[k1], rep[ak1]);
+         f -= (*tsp.dist)(rep[bk2], rep[k2]);
+         f -= (*tsp.dist)(rep[k2], rep[ak2]);
 
-			f += (*tsp.dist)(rep[bk2], rep[k1]);
-			f += (*tsp.dist)(rep[k1], rep[k2]);
-			f += (*tsp.dist)(rep[k2], rep[ak1]);
-		}
-		else
-		{
-			f -= (*tsp.dist)(rep[bk1], rep[k1]);
-			f -= (*tsp.dist)(rep[k1], rep[ak1]);
-			f -= (*tsp.dist)(rep[bk2], rep[k2]);
-			f -= (*tsp.dist)(rep[k2], rep[ak2]);
+         f += (*tsp.dist)(rep[bk1], rep[k2]);
+         f += (*tsp.dist)(rep[k2], rep[ak1]);
+         f += (*tsp.dist)(rep[bk2], rep[k1]);
+         f += (*tsp.dist)(rep[k1], rep[ak2]);
+      }
 
-			f += (*tsp.dist)(rep[bk1], rep[k2]);
-			f += (*tsp.dist)(rep[k2], rep[ak1]);
-			f += (*tsp.dist)(rep[bk2], rep[k1]);
-			f += (*tsp.dist)(rep[k1], rep[ak2]);
-		}
+      return new MoveCost(f, 0);
+   }
 
-		return new MoveCost(f, 0);
-	}
+   void print() const
+   {
+      cout << "MoveSwap between " << c1 << " and " << c2 << endl;
+   }
 
-	void print() const
-	{
-		cout << "MoveSwap between " << c1 << " and " << c2 << endl;
-	}
+   virtual bool operator==(const Move<RepTSP>& _m) const
+   {
+      const MoveSwap& m = (const MoveSwap&)_m; // You can only compare if types are equal
 
-	virtual bool operator==(const Move<RepTSP>& _m) const
-	{
-		const MoveSwap& m = (const MoveSwap&) _m; // You can only compare if types are equal
-
-		if ((c1 == m.c1 && c2 == m.c2) || (c1 == m.c2 && c2 == m.c1))
-			return true;
-		else
-			return false;
-	}
-
+      if ((c1 == m.c1 && c2 == m.c2) || (c1 == m.c2 && c2 == m.c1))
+         return true;
+      else
+         return false;
+   }
 };
 
 //============================================================================
 //                  Swap Neighborhood Structure
 //============================================================================
 
-class NSEnumSwap: public NSEnum<RepTSP>
+class NSEnumSwap : public NSEnum<RepTSP>
 {
 private:
-	ProblemInstance* pI;
-	int n;
+   ProblemInstance* pI;
+   int n;
 
-	// Your private vars
+   // Your private vars
 
 public:
 
-	using NSEnum<RepTSP>::move; // prevents name hiding
+   NSEnumSwap(ProblemInstance* pI, RandGen& _rg)
+     : NSEnum<RepTSP>(_rg)
+   {
+      this->pI = pI;
+      this->n = pI->n;
+   }
 
-	NSEnumSwap(ProblemInstance* pI, RandGen& _rg) :
-			NSEnum<RepTSP>(_rg)
-	{
-		this->pI = pI;
-		this->n = pI->n;
-	}
+   // given index, returns (i,j), with 0 < i < j < n-1
+   virtual Move<RepTSP>* indexMove(unsigned int k) override
+   {
+      int i = k / (n - 1);
+      int j = k % (n - 1) + 1;
 
-	// given index, returns (i,j), with 0 < i < j < n-1
-	virtual Move<RepTSP>& move(unsigned int k)
-	{
-		int i = k / (n-1);
-		int j = k % (n-1) + 1;
+      // last special detail...
+      if (i >= j) {
+         i = (n - 1) - i;
+         j = (n - 1) - j + 1;
+      }
 
-		// last special detail...
-		if(i >= j)
-		{
-			i = (n-1) - i;
-			j = (n-1) - j + 1;
-		}
+      return new MoveSwap(i, j, *pI);
 
-		return * new MoveSwap(i,j,*pI);
+      // Please, keep 'busca' for historical (and emotional) purposes :)
+      // This was created in the night before the TCC presentation of OptFrame (in 2009)
+      // And now, in 2017, a beautiful calculation is presented.
+      //return busca(k, 1, 2 * n);
+   }
 
-		// Please, keep 'busca' for historical (and emotional) purposes :)
-		// This was created in the night before the TCC presentation of OptFrame (in 2009)
-		// And now, in 2017, a beautiful calculation is presented.
-		//return busca(k, 1, 2 * n);
-	}
+   unsigned int size() const
+   {
+      return n * (n - 1) / 2;
+   }
 
-	unsigned int size() const
-	{
-		return n * (n - 1) / 2;
-	}
+   virtual void print() const
+   {
+      cout << "NSEnum Swap (" << size() << ")\n";
+   }
 
-	virtual void print() const
-	{
-		cout << "NSEnum Swap (" << size() << ")\n";
-	}
+   // Auxiliar methods
 
-	// Auxiliar methods
+   int corresp(int d)
+   {
+      return d - ((d - (n - 1)) - 1) * 2;
+   }
 
-	int corresp(int d)
-	{
-		return d - ((d - (n - 1)) - 1) * 2;
-	}
+   int numElem(int d)
+   {
+      if (d <= n)
+         return (d / 2);
+      else
+         return numElem(corresp(d));
+   }
 
-	int numElem(int d)
-	{
-		if (d <= n)
-			return (d / 2);
-		else
-			return numElem(corresp(d));
-	}
+   int comeca(int d)
+   {
 
-	int comeca(int d)
-	{
+      if (d <= n) {
+         int z = (d / 2);
 
-		if (d <= n)
-		{
-			int z = (d / 2);
+         int ant = z * (z - 1);
 
-			int ant = z * (z - 1);
+         // Se impar, soma mais 'z'
+         if (d % 2 == 1)
+            ant += z;
 
-			// Se impar, soma mais 'z'
-			if (d % 2 == 1)
-				ant += z;
+         return ant;
+      } else {
+         return 2 * (comeca(n)) - comeca(corresp(d) + 1) + numElem(n);
+      }
+   }
 
-			return ant;
-		}
-		else
-		{
-			return 2 * (comeca(n)) - comeca(corresp(d) + 1) + numElem(n);
-		}
+   int termina(int d)
+   {
+      return comeca(d) + numElem(d) - 1;
+   }
 
-	}
+   Move<RepTSP>& busca(int k, int a, int b)
+   {
+      int d = (a + b) / 2;
 
-	int termina(int d)
-	{
-		return comeca(d) + numElem(d) - 1;
-	}
+      //cout << "busca "<<k<<" na diagonal "<<d<<"entre ["<<a<<","<<b<<"]"<<endl;
 
-	Move<RepTSP>& busca(int k, int a, int b)
-	{
-		int d = (a + b) / 2;
+      int c = comeca(d);
+      int t = termina(d);
 
-		//cout << "busca "<<k<<" na diagonal "<<d<<"entre ["<<a<<","<<b<<"]"<<endl;
+      //cout <<"comeca em "<<c<<" e termina em "<<t<<endl;
 
-		int c = comeca(d);
-		int t = termina(d);
+      //int p;
+      //cin >>p;
 
-		//cout <<"comeca em "<<c<<" e termina em "<<t<<endl;
+      if (k < c) {
+         //cout << "k<c"<<endl;
+         return busca(k, a, d);
+      }
 
-		//int p;
-		//cin >>p;
+      if (k > t) {
+         //cout << "k>t"<<endl;
 
-		if (k < c)
-		{
-			//cout << "k<c"<<endl;
-			return busca(k, a, d);
-		}
+         if (a == d)
+            d++;
 
-		if (k > t)
-		{
-			//cout << "k>t"<<endl;
+         return busca(k, d, b);
+      }
 
-			if (a == d)
-				d++;
+      if (d <= n) {
 
-			return busca(k, d, b);
-		}
+         for (int i = 0; i < numElem(d); i++)
+            if (k == c + i)
+               return *new MoveSwap(i, d - i - 1, *pI);
+      } else {
 
-		if (d <= n)
-		{
+         for (int i = 0; i < numElem(d); i++)
+            if (k == c + i) {
+               int j = d - n;
+               return *new MoveSwap(i + j, d - i - 1 - j, *pI);
+            }
+      }
 
-			for (int i = 0; i < numElem(d); i++)
-				if (k == c + i)
-					return *new MoveSwap(i, d - i - 1, *pI);
-		}
-		else
-		{
-
-			for (int i = 0; i < numElem(d); i++)
-				if (k == c + i)
-				{
-					int j = d - n;
-					return *new MoveSwap(i + j, d - i - 1 - j, *pI);
-				}
-
-		}
-
-		cout << "Error!" << endl;
-		return *new MoveSwap(0, 0, *pI);
-	}
-
+      cout << "Error!" << endl;
+      return *new MoveSwap(0, 0, *pI);
+   }
 };
 
 } // end namespace TSP
 
 #endif /*TSP_NSENUMSwap_HPP_*/
-

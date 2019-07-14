@@ -24,6 +24,7 @@
 #include "../../LocalSearch.hpp"
 
 #include "../../NS.hpp"
+#include "../../Timer.hpp"
 
 namespace optframe
 {

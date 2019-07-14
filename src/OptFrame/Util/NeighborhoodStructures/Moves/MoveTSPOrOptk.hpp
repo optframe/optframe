@@ -70,13 +70,13 @@ public:
 		return k;
 	}
 
-	virtual bool canBeApplied(const Route& rep, const ADS&)
+	virtual bool canBeApplied(const Route& rep, const ADS*) override
 	{
 		//return (i != j) && (i + k <= rep.size());
 		return abs(i - j) >= k;
 	}
 
-	virtual Move<Route, ADS>* apply(Route& rep, ADS&)
+	virtual Move<Route, ADS>* apply(Route& rep, ADS*) override
 	{
 		vector<T> v_aux;
 		v_aux.insert(v_aux.begin(), rep.begin() + i, rep.begin() + i + k);

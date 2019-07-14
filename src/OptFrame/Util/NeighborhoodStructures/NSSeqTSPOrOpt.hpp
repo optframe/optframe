@@ -64,12 +64,12 @@ public:
 		delete OrOpt1_2_3;
 	}
 
-	Move<Route, ADS>& move(const Route& rep, const ADS& ads)
+	Move<Route, ADS>* randomMove(const Route& rep, const ADS* ads) override
 	{
 		return OrOpt1_2_3->move(rep, ads);
 	}
 
-	virtual Move<Route, ADS>* validMove(const Route& r, const ADS& ads)
+	virtual Move<Route, ADS>* validMove(const Route& r, const ADS* ads) override
 	{
 		Move<Route, ADS>* m = &move(r, ads);
 		if (m->canBeApplied(r, ads))
@@ -81,7 +81,7 @@ public:
 		}
 	}
 
-	virtual NSIterator<Route, ADS>& getIterator(const Route& rep, const ADS& ads)
+	virtual NSIterator<Route, ADS>* getIterator(const Route& rep, const ADS* ads) override
 	{
 		return OrOpt1_2_3->getIterator(rep, ads);
 	}

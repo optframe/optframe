@@ -64,7 +64,7 @@ public:
 	{
 	}
 
-	SolutionTSP& generateSolution()
+	Solution<RepTSP>* generateSolution(double timelimit) override
 	{
         //cout << "Generating solution" << endl;
 		RepTSP newRep;
@@ -153,7 +153,7 @@ public:
             //cout << "after sort: " << newRep << endl;
         }
 
-		return * new Solution<RepTSP>(newRep);
+		return new Solution<RepTSP>(newRep);
 	}
 
 };

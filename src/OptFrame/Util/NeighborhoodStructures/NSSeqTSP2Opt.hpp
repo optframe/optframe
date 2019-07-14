@@ -105,10 +105,10 @@ public:
 	{
 	}
 
-	Move<Route, ADS>& move(const Route& rep, const ADS&)
+	Move<Route, ADS>* randomMove(const Route& rep, const ADS*) override
 	{
 		if (rep.size() < 2)
-			return *new MOVE(-1, -1, p);
+			return new MOVE(-1, -1, p);
 
 		int p1 = rand() % (rep.size() + 1);
 		int p2 = rand() % (rep.size() + 1);
@@ -121,12 +121,12 @@ public:
 		while ((abs(p1 - p2) < 2) || (p1 > p2));
 
 		// create 2-opt(p1,p2) move
-		return *new MOVE(p1, p2, p);
+		return new MOVE(p1, p2, p);
 	}
 
-	virtual NSIterator<Route, ADS>& getIterator(const Route& r, const ADS&)
+	virtual NSIterator<Route, ADS>* getIterator(const Route& r, const ADS*) override
 	{
-		return *new NSITERATOR(r, p);
+		return new NSITERATOR(r, p);
 	}
 
 	static string idComponent()

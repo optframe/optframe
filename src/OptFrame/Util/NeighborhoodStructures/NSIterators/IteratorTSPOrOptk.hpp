@@ -51,13 +51,13 @@ public:
 	{
 	}
 
-	virtual void first()
+	virtual void first() override
 	{
 		i = 0;
 		j = 1;
 	}
 
-	virtual void next()
+	virtual void next() override
 	{
 		j++;
 
@@ -71,12 +71,12 @@ public:
 		}
 	}
 
-	virtual bool isDone()
+	virtual bool isDone() override
 	{
 		return i > n - k;
 	}
 
-	virtual Move<Route, ADS>& current()
+	virtual Move<Route, ADS>* current() override
 	{
 		if (isDone())
 		{
@@ -85,7 +85,7 @@ public:
 			exit(1);
 		}
 
-		return *new MOVE(i, j, k, p);
+		return new MOVE(i, j, k, p);
 	}
 };
 

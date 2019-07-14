@@ -52,26 +52,26 @@ public:
    {
    }
 
-   void first()
+   void first() override
    {
       move = 0;
    }
 
-   void next()
+   void next() override
    {
       move++;
    }
 
-   bool isDone()
+   bool isDone() override
    {
       return move >= nsSize;
    }
 
-   Move<R, ADS>& current()
+   Move<R, ADS>* current() override
    {
       if (isDone())
          throw IteratorOutOfBound(move);
-      return ns.move(move);
+      return ns.indexMove(move);
    }
 
    Move<R, ADS>& at(unsigned int m)
