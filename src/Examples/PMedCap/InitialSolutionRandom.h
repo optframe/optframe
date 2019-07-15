@@ -21,8 +21,8 @@
 #ifndef PCAP_INITIALSOLUTION_RandomInitalSolution_HPP_
 #define PCAP_INITIALSOLUTION_RandomInitalSolution_HPP_
 
-#include "../../OptFrame/Constructive.h"
-#include "../../OptFrame/Util/TestSolution.hpp"
+#include "../../OptFrame/Constructive.hpp"
+//#include "../../OptFrame/Util/TestSolution.hpp"
 #include "../../OptFrame/RandGen.hpp"
 
 #include "ProblemInstance.h"
@@ -40,51 +40,54 @@
 using namespace std;
 using namespace optframe;
 
-class PCAPInitialSolutionRandom: public Constructive<RepPCAP> {
+class PCAPInitialSolutionRandom : public Constructive<RepPCAP>
+{
 private:
-	PCAPProblemInstance& pPCAP;
-	RandGen& rg;
-	// Your private vars
+   PCAPProblemInstance& pPCAP;
+   RandGen& rg;
+   // Your private vars
 
 public:
+   PCAPInitialSolutionRandom(PCAPProblemInstance& _pPCAP, RandGen& _rg)
+     : // If necessary, add more parameters
+     pPCAP(_pPCAP)
+     , rg(_rg)
+   {
+   }
 
-	PCAPInitialSolutionRandom(PCAPProblemInstance& _pPCAP, RandGen& _rg) : // If necessary, add more parameters
-		pPCAP(_pPCAP), rg(_rg) {
-	}
+   Solution<RepPCAP>* generateSolution(double timelimit) override
+   {
+      RepPCAP newRep;
+      bool med[pPCAP.nCidades];
+      for (int i = 0; i < pPCAP.nCidades; i++) {
+         med[i] = false;
+      }
 
-	SolutionPCAP& generateSolution() {
-		RepPCAP newRep;
-		bool med[pPCAP.nCidades];
-		for (int i = 0; i < pPCAP.nCidades; i++) {
-			med[i] = false;
-		}
+      for (int i = 0; i < pPCAP.nMedianas; i++) {
 
-		for (int i = 0; i < pPCAP.nMedianas; i++) {
+         int x = rg.rand(pPCAP.nCidades);
+         while (med[x] == true)
+            x = rg.rand(pPCAP.nCidades);
 
-			int x = rg.rand(pPCAP.nCidades);
-			while (med[x] == true)
-				x = rg.rand(pPCAP.nCidades);
+         newRep.first.push_back(x);
+      }
 
-			newRep.first.push_back(x);
-		}
+      for (int i = 0; i < pPCAP.nCidades; i++) {
+         newRep.second.push_back(-1);
 
-		for (int i = 0; i < pPCAP.nCidades; i++) {
-			newRep.second.push_back(-1);
+         for (int j = 0; j < pPCAP.nMedianas; j++) {
+            if (i == newRep.first[j])
+               newRep.second[i] = j;
+         }
 
-			for (int j = 0; j < pPCAP.nMedianas; j++) {
-				if (i == newRep.first[j])
-					newRep.second[i] = j;
-			}
+         if (newRep.second[i] == -1)
+            newRep.second[i] = rg.rand(pPCAP.nMedianas);
+      }
 
-			if(newRep.second[i]==-1)
-				newRep.second[i] = rg.rand(pPCAP.nMedianas);
-		}
+      int ads;
 
-		int ads;
-
-		return *new TestSolution<RepPCAP> (newRep, ads);
-	}
-
+      return new Solution<RepPCAP>(newRep, ads);
+   }
 };
 
 #endif /*PCAP_INITIALSOLUTION_RandomInitalSolution_HPP_*/

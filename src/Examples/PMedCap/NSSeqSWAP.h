@@ -24,7 +24,7 @@
 // Framework includes
 #include "../../OptFrame/NSSeq.hpp"
 
-#include "../../OptFrame/Util/TestMove.hpp"
+//#include "../../OptFrame/Util/TestMove.hpp"
 
 #include "../../OptFrame/RandGen.hpp"
 
@@ -35,127 +35,122 @@
 using namespace std;
 using namespace optframe;
 
-class MoveSWAP: public Move<RepPCAP>
-//class MoveSWAP: public TestMove<RepPCAP>
+namespace pmedcap
+{
+
+class MoveSWAP : public Move<RepPCAP>
 {
 public:
+   int x;
+   int med;
+   MoveSWAP(int _x, int _med)
+   {
+      x = _x;
+      med = _med;
+   }
 
-	using Move<RepPCAP>::apply; // prevents name hiding
-	using Move<RepPCAP>::canBeApplied; // prevents name hiding
+   virtual ~MoveSWAP()
+   {
+   }
 
-	int x;
-	int med;
-	MoveSWAP(int _x, int _med)
-	{
-		x = _x;
-		med = _med;
+   bool canBeApplied(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS*) override
+   {
+      return true;
+   }
 
-	}
+   Move<RepPCAP>* apply(RepPCAP& rep, OPTFRAME_DEFAULT_ADS*) override
+   {
+      int aux = rep.second[x];
+      rep.second[x] = med;
+      return new MoveSWAP(x, aux);
+   }
 
-	virtual ~MoveSWAP()
-	{
-	}
+   virtual bool operator==(const Move<RepPCAP>& _m) const
+   {
+      const MoveSWAP& m = (const MoveSWAP&)_m;
+      return x == m.x;
+   }
 
-	bool canBeApplied(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS&)
-	{
-		return true;
-	}
-
-	Move<RepPCAP>* apply(RepPCAP& rep, OPTFRAME_DEFAULT_ADS&)
-	{
-		int aux = rep.second[x];
-		rep.second[x] = med;
-		return new MoveSWAP(x, aux);
-	}
-
-	virtual bool operator==(const Move<RepPCAP>& _m) const
-	{
-		const MoveSWAP& m = (const MoveSWAP&) _m;
-		return x == m.x;
-	}
-
-	void print() const
-	{
-		cout << "MoveSwapMediana: (" << x << "," << med << ")" << endl;
-	}
+   void print() const
+   {
+      cout << "MoveSwapMediana: (" << x << "," << med << ")" << endl;
+   }
 };
 
-class NSIteratorSWAP: public NSIterator<RepPCAP>
+class NSIteratorSWAP : public NSIterator<RepPCAP>
 {
 public:
-	PCAPProblemInstance& p;
-	int x;
-	int mediana;
-	NSIteratorSWAP(PCAPProblemInstance& _p) :
-		p(_p)
-	{
-	}
+   PCAPProblemInstance& p;
+   int x;
+   int mediana;
+   NSIteratorSWAP(PCAPProblemInstance& _p)
+     : p(_p)
+   {
+   }
 
-	virtual ~NSIteratorSWAP()
-	{
-	}
+   virtual ~NSIteratorSWAP()
+   {
+   }
 
-	virtual void first()
-	{
-		x = 0;
-		mediana = 0;
-	}
+   virtual void first() override
+   {
+      x = 0;
+      mediana = 0;
+   }
 
-	virtual void next()
-	{
-		mediana++;
-		if (mediana == (p.nMedianas - 1))
-		{
-			mediana = 0;
-			x++;
-		}
-	}
+   virtual void next() override
+   {
+      mediana++;
+      if (mediana == (p.nMedianas - 1)) {
+         mediana = 0;
+         x++;
+      }
+   }
 
-	virtual bool isDone()
-	{
-		return x == p.nCidades;
-	}
+   virtual bool isDone() override
+   {
+      return x == p.nCidades;
+   }
 
-	virtual Move<RepPCAP>& current()
-	{
-		return *new MoveSWAP(x, mediana);
-	}
-
+   virtual Move<RepPCAP>* current() override
+   {
+      return new MoveSWAP(x, mediana);
+   }
 };
 
-class NSSeqSWAP: public NSSeq<RepPCAP>
+class NSSeqSWAP : public NSSeq<RepPCAP>
 {
 public:
+   PCAPProblemInstance& p;
+   RandGen& rg;
 
-	using NSSeq<RepPCAP>::move; // prevents name hiding
-	PCAPProblemInstance& p;
-	RandGen& rg;
+   NSSeqSWAP(PCAPProblemInstance& _p, RandGen& _rg)
+     : p(_p)
+     , rg(_rg)
+   {
+   }
 
-	NSSeqSWAP(PCAPProblemInstance& _p, RandGen& _rg) :
-		p(_p), rg(_rg)
-	{
-	}
+   virtual ~NSSeqSWAP()
+   {
+   }
 
-	virtual ~NSSeqSWAP()
-	{
-	}
+   virtual Move<RepPCAP>* randomMove(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS*) override
+   {
+      int cidade = rg.rand(rep.second.size());
+      int mediana = rg.rand(rep.first.size());
+      return new MoveSWAP(cidade, mediana); // return a random move
+   }
 
-	virtual Move<RepPCAP>& move(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS&)
-	{
-		int cidade = rg.rand(rep.second.size());
-		int mediana = rg.rand(rep.first.size());
-		return *new MoveSWAP(cidade, mediana); // return a random move
-	}
+   virtual NSIterator<RepPCAP>* getIterator(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS*) override
+   {
+      return new NSIteratorSWAP(p); // return an iterator to the neighbors of 'rep'
+   }
 
-	virtual NSIterator<RepPCAP>& getIterator(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS&)
-	{
-		return *new NSIteratorSWAP(p); // return an iterator to the neighbors of 'rep'
-	}
-
-	virtual void print() const
-	{
-	}
+   virtual void print() const
+   {
+   }
 };
+
+}
 
 #endif /*PCAP_NSSEQSWAP_HPP_*/
-

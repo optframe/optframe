@@ -6,6 +6,7 @@
 #include "./Examples-tests/MODM.Test.cpp"
 #include "./Examples-tests/OPM.Test.cpp"
 #include "./Examples-tests/OptHScheduling.Test.cpp"
+#include "./Examples-tests/PMedCap.Test.cpp"
 #include "./Examples-tests/PN.Test.cpp"
 #include "./Examples-tests/SVRPDSP.Test.cpp"
 #include "./Examples-tests/TSP.Test.cpp"
