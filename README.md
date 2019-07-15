@@ -1,5 +1,14 @@
-## OptFrame portal
-[https://optframe.github.io](https://optframe.github.io)
+OptFrame
+========
+
+<p align="center">
+  <a href="https://github.com/optframe/optframe">
+    <img src="https://tokei.rs/b1/github/optframe/optframe?category=lines" alt="Current total lines.">
+  </a>
+  <a href="https://github.com/optframe/optframe/blob/master/LICENSE">
+    <img src="https://img.shields.io/badge/License-LGPL%20v3-blue.svg" alt="License.">
+  </a>
+</p>
 
 ## OptFrame 4.0-dev - Optimization Framework
 
@@ -21,18 +30,18 @@ To build `gtestlib`, just `cd gtestlib/build && cmake .. && make`.
 
 ## Using MCT script - Make a Compilable Thing!
 
-Just type `./bin/mct.sh` (or `make mct`) and follow the instructions on screen. 
+Just type `./bin/mct.sh` (or `make mct`) and follow the instructions on screen.
 You can find your new project on `src/MyProjects/` (and tests on `tests/MyProjects/`).
 
 ## Special thanks for SourceForge.net
 
-The OptFrame project was hosted in SourceForge.net for 8 years and we are 
+The OptFrame project was hosted in SourceForge.net for 8 years and we are
 very grateful for all support during this time. Thanks to this support, we
 have published several academic papers and solved many large scale problems
 during these years. In order to easily interact with new project collaborators
 the project is now moved to GitHub platform.
 
-Thanks a lot SourceForge/GitHub! 
+Thanks a lot SourceForge/GitHub!
 
 --
 
@@ -40,6 +49,6 @@ Thanks a lot SourceForge/GitHub!
 
 *OptFrame maintainers* [@igormcoelho](https://github.com/igormcoelho) and [@vncoelho](https://github.com/vncoelho)
 
-Copyright (C) 2007-2018
+Copyright (C) 2007-2019
 
 The OptFrame team
