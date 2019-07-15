@@ -2,6 +2,7 @@
 // examples
 
 #include "./Examples-tests/EternityII.Test.cpp"
+#include "./Examples-tests/HFM.Test.cpp"
 #include "./Examples-tests/KP.Test.cpp"
 #include "./Examples-tests/MODM.Test.cpp"
 #include "./Examples-tests/OPM.Test.cpp"
