@@ -36,7 +36,7 @@ public:
 	virtual ~HFMVRPEvaluator() {
 	}
 
-	EvaluationHFMVRP& evaluate(const RepHFMVRP& rep) {
+	EvaluationHFMVRP evaluate(const RepHFMVRP& rep, const AdsHFMVRP*) override {
 		// 'rep' is the representation of the solution
 
 		double fo_q = 0;
@@ -127,7 +127,7 @@ public:
 		// ============================================
 		fo_inv = fo_cap_inv + fo_comp_inv;
 
-		return *new EvaluationHFMVRP(fo_q, fo_inv);
+		return Evaluation(fo_q, fo_inv);
 	}
 
 	void exportEvaluation(const RepHFMVRP& rep, string outFile) {

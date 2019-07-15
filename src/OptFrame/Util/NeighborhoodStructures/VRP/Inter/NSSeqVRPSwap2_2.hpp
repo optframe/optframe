@@ -82,13 +82,13 @@ public:
 		return c2;
 	}
 
-	virtual bool canBeApplied(const Routes& rep, const ADS&)
+	virtual bool canBeApplied(const Routes& rep, const ADS*) override
 	{
 		bool all_positive = (r1 >= 0) && (r2 >= 0) && (c1 >= 0) && (c2 >= 0);
 		return all_positive && (rep.size() >= 2) && (rep.at(r1).size() >= 2) && (rep.at(r2).size() >= 2);
 	}
 
-	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
+	virtual Move<Routes, ADS, DS>* apply(Routes& rep, ADS*) override
 	{
 		int aux;
 
@@ -116,7 +116,7 @@ public:
 		rep.at(r2).at(c2 + 1) = aux;
 
 		// p->p, r1->r2, r2->r1, c1->c2, c2->c1, reverse->reverse,
-		return *new MoveVRPSwap2_2<T, ADS, DS > (r2, r1, c2, c1, reverseR1, reverseR2);
+		return new MoveVRPSwap2_2<T, ADS, DS > (r2, r1, c2, c1, reverseR1, reverseR2);
 	}
 
 	virtual bool operator==(const Move<Routes>& _m) const
@@ -162,7 +162,7 @@ public:
 		 delete moves[i];*/
 	}
 
-	virtual void first()
+	virtual void first() override
 	{
 
 		for (int r1 = 0; r1 < r.size() - 1; r1++)
@@ -196,7 +196,7 @@ public:
 			m = nullptr;
 	}
 
-	virtual void next()
+	virtual void next() override
 	{
 		index++;
 		if (index < moves.size())
@@ -207,12 +207,12 @@ public:
 			m = nullptr;
 	}
 
-	virtual bool isDone()
+	virtual bool isDone() override
 	{
 		return m == nullptr;
 	}
 
-	virtual Move<T, ADS, DS>& current()
+	virtual Move<T, ADS, DS>* current() override
 	{
 		if (isDone())
 		{
@@ -221,7 +221,7 @@ public:
 			exit(1);
 		}
 
-		return *m;
+		return m;
 	}
 };
 
@@ -245,15 +245,15 @@ public:
 	{
 	}
 
-	Move<Routes, ADS, DS>& move(const Routes& rep, const ADS&)
+	Move<Routes, ADS, DS>* randomMove(const Routes& rep, const ADS*) override
 	{
 		if (rep.size() < 2)
-			return *new MOVE(-1, -1, -1, -1, false, false, p);
+			return new MOVE(-1, -1, -1, -1, false, false, p);
 
 		int r1 = rand() % rep.size();
 
 		if (rep.at(r1).size() < 2)
-			return *new MOVE(-1, -1, -1, -1, false, false, p);
+			return new MOVE(-1, -1, -1, -1, false, false, p);
 
 		int r2;
 
@@ -263,7 +263,7 @@ public:
 		} while (r1 == r2);
 
 		if (rep.at(r2).size() < 2)
-			return *new MOVE(-1, -1, -1, -1, false, false, p);
+			return new MOVE(-1, -1, -1, -1, false, false, p);
 
 		int c1 = rand() % (rep.at(r1).size() - 1);
 		int c2 = rand() % (rep.at(r2).size() - 1);
@@ -274,9 +274,9 @@ public:
 		return *new MOVE(r1, r2, c1, c2, reverseR1, reverseR2, p);
 	}
 
-	virtual NSIteratorVRPSwap2_2<T, ADS, DS, MOVE, P >& getIterator(const Routes& r, const ADS&)
+	virtual NSIteratorVRPSwap2_2<T, ADS, DS, MOVE, P >* getIterator(const Routes& r, const ADS*) override
 	{
-		return *new NSITERATOR (r, p);
+		return new NSITERATOR (r, p);
 	}
 
 	virtual void print()

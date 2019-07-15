@@ -72,7 +72,7 @@ public:
 		return p2;
 	}
 
-	virtual bool canBeApplied(const Routes& rep, const ADS&)
+	virtual bool canBeApplied(const Routes& rep, const ADS*) override
 	{
 		bool all_positive = (r1 >= 0) && (r2 >= 0) && (p1 >= 0) && (p2 >= 0);
 		return all_positive && (rep.size() >= 2) && (rep.at(r1).size() >= 0) && (rep.at(r2).size() >= 0);
@@ -80,7 +80,7 @@ public:
 
 	virtual void updateNeighStatus(ADS& ads);
 
-	virtual Move<Routes, ADS, DS>& apply(Routes& rep, ADS&)
+	virtual Move<Routes, ADS, DS>* apply(Routes& rep, ADS*) override
 	{
 		vector<int> cross_r1, cross_r2;
 
@@ -98,7 +98,7 @@ public:
 		rep.at(r2).insert(rep.at(r2).end(), cross_r1.begin(), cross_r1.end());
 
 		// p->p, r1->r2, r2->r1, c1->c2, c2->c1, reverse->reverse,
-		return *new MoveVRPCross(r1, r2, p1, p2);
+		return new MoveVRPCross(r1, r2, p1, p2);
 	}
 
 	virtual bool operator==(const Move<Routes, ADS, DS>& _m) const
@@ -145,7 +145,7 @@ public:
 		 delete moves[i];*/
 	}
 
-	virtual void first()
+	virtual void first() override
 	{
 
 		for (int r1 = 0; r1 < r.size() - 1; r1++)
@@ -171,7 +171,7 @@ public:
 			m = nullptr;
 	}
 
-	virtual void next()
+	virtual void next() override
 	{
 		index++;
 		if (index < moves.size())
@@ -182,12 +182,12 @@ public:
 			m = nullptr;
 	}
 
-	virtual bool isDone()
+	virtual bool isDone() override
 	{
 		return m == nullptr;
 	}
 
-	virtual Move<Routes, ADS, DS>& current()
+	virtual Move<Routes, ADS, DS>* current() override
 	{
 		if (isDone())
 		{
@@ -196,7 +196,7 @@ public:
 			exit(1);
 		}
 
-		return *m;
+		return m;
 	}
 };
 
@@ -220,7 +220,7 @@ public:
 	{
 	}
 
-	Move<Routes, ADS, DS>& move(const Routes& rep, const ADS&)
+	Move<Routes, ADS, DS>* randomMove(const Routes& rep, const ADS*) override
 	{
 		if (rep.size() < 2)
 			return *new MOVE(-1, -1, -1, -1, p);
@@ -235,17 +235,17 @@ public:
 		} while (r1 == r2);
 
 		if ((rep.at(r2).size() == 0) && (rep.at(r1).size() == 0))
-			return *new MOVE(-1, -1, -1, -1, p);
+			return new MOVE(-1, -1, -1, -1, p);
 
 		int p1 = rand() % (rep.at(r1).size() + 1);
 		int p2 = rand() % (rep.at(r2).size() + 1);
 
-		return *new MOVE(r1, r2, p1, p2, p);
+		return new MOVE(r1, r2, p1, p2, p);
 	}
 
-	virtual NSIteratorVRPCross<T, ADS, DS, MOVE, P >& getIterator(const Routes& r, const ADS&)
+	virtual NSIteratorVRPCross<T, ADS, DS, MOVE, P >* getIterator(const Routes& r, const ADS*) override
 	{
-		return *new NSITERATOR (r, p);
+		return new NSITERATOR (r, p);
 	}
 
 	virtual void print()

@@ -68,7 +68,7 @@ public:
 		return pos;
 	}
 
-	virtual bool canBeApplied(const Routes& rep, const ADS&)
+	virtual bool canBeApplied(const Routes& rep, const ADS*) override
 	{
 		bool all_positive = (r >= 0) && (c >= 0) && (pos >= 0);
 		return all_positive && (c != pos) && (c + 1 != pos);
@@ -79,7 +79,7 @@ public:
 
 	}
 
-	virtual Move<Routes, ADS>* apply(Routes& rep, ADS&)
+	virtual Move<Routes, ADS>* apply(Routes& rep, ADS*) override
 	{
 		int aux;
 		int i;
@@ -150,7 +150,7 @@ public:
 	{
 	}
 
-	virtual void first()
+	virtual void first() override
 	{
 
 		for (int r = 0; r < rep.size(); r++)
@@ -175,7 +175,7 @@ public:
 			m = nullptr;
 	}
 
-	virtual void next()
+	virtual void next() override
 	{
 		index++;
 		if (index < moves.size())
@@ -186,12 +186,12 @@ public:
 			m = nullptr;
 	}
 
-	virtual bool isDone()
+	virtual bool isDone() override
 	{
 		return m == nullptr;
 	}
 
-	virtual Move<Routes, ADS>& current()
+	virtual Move<Routes, ADS>* current() override
 	{
 		if (isDone())
 		{
@@ -200,7 +200,7 @@ public:
 			exit(1);
 		}
 
-		return *m;
+		return m;
 	}
 };
 
@@ -223,7 +223,7 @@ public:
 	{
 	}
 
-	Move<Routes, ADS>& move(const Routes& rep, const ADS&)
+	Move<Routes, ADS>* randomMove(const Routes& rep, const ADS*)
 	{
 		int r = rand() % rep.size();
 
@@ -237,9 +237,9 @@ public:
 		return *new MOVE(r, c, pos, p);
 	}
 
-	virtual NSITERATOR& getIterator(const Routes& r, const ADS& ads)
+	virtual NSITERATOR& getIterator(const Routes& r, const ADS& ads) override
 	{
-		return *new NSITERATOR(r, ads, p);
+		return new NSITERATOR(r, ads, p);
 	}
 
 	virtual string toString() const

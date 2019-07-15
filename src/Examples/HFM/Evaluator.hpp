@@ -83,7 +83,7 @@ public:
    {
    }
 
-   EvaluationEFP evaluate(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*)
+   EvaluationEFP evaluate(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*) override
    {
       //Fo vector with different metrics calculations
       vector<double>* foIndicator = evaluateAll(rep, optMetric);

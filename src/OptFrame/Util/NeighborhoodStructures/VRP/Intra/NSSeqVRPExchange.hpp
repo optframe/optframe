@@ -68,7 +68,7 @@ public:
 		return r;
 	}
 
-	virtual bool canBeApplied(const Routes& rep, const ADS&)
+	virtual bool canBeApplied(const Routes& rep, const ADS*) override
 	{
 		bool all_positive = (c1 >= 0) && (c2 >= 0) && (r >= 0);
 		return all_positive && (rep.at(r).size() >= 2);
@@ -79,7 +79,7 @@ public:
 
 	}
 
-	virtual Move<Routes, ADS>* apply(Routes& rep, ADS&)
+	virtual Move<Routes, ADS>* apply(Routes& rep, ADS*) override
 	{
 
 		T aux = rep.at(r).at(c1);
@@ -130,7 +130,7 @@ public:
 	{
 	}
 
-	virtual void first()
+	virtual void first() override
 	{
 		for (int r = 0; r < rep.size(); r++)
 		{
@@ -151,7 +151,7 @@ public:
 			m = nullptr;
 	}
 
-	virtual void next()
+	virtual void next() override
 	{
 		index++;
 		if (index < moves.size())
@@ -162,12 +162,12 @@ public:
 			m = nullptr;
 	}
 
-	virtual bool isDone()
+	virtual bool isDone() override
 	{
 		return m == nullptr;
 	}
 
-	virtual Move<Routes, ADS>& current()
+	virtual Move<Routes, ADS>* current() override
 	{
 		if (isDone())
 		{
@@ -176,7 +176,7 @@ public:
 			exit(1);
 		}
 
-		return *m;
+		return m;
 	}
 };
 
@@ -199,7 +199,7 @@ public:
 	{
 	}
 
-	Move<Routes, ADS>& move(const Routes& rep, const ADS&)
+	Move<Routes, ADS>* randomMove(const Routes& rep, const ADS*) override
 	{
 		int r = rand() % rep.size();
 		if (rep.at(r).size() < 2)
@@ -215,12 +215,12 @@ public:
 		} while (c1 == c2);
 
 		// create exchange(p1,p2) move
-		return *new MOVE(r, c1, c2, p);
+		return new MOVE(r, c1, c2, p);
 	}
 
-	virtual NSITERATOR& getIterator(const Routes& r, const ADS& ads)
+	virtual NSITERATOR* getIterator(const Routes& r, const ADS* ads) override
 	{
-		return *new NSITERATOR(r, ads, p);
+		return new NSITERATOR(r, ads, p);
 	}
 
 	virtual string toString() const

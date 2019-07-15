@@ -2,9 +2,9 @@
 #ifndef HFMVRP_CONSTRUCTIVE_SavingsRandomized__HPP_
 #define HFMVRP_CONSTRUCTIVE_SavingsRandomized_HPP_
 
-#include "../../OptFrame/Constructive.h"
+#include "../../OptFrame/Constructive.hpp"
 #include "../../OptFrame/Heuristics/GRASP/GRConstructive.hpp"
-#include "../../OptFrame/Util/TestSolution.hpp"
+//#include "../../OptFrame/Util/TestSolution.hpp"
 #include "../../OptFrame/RandGen.hpp"
 #include "ProblemInstance.hpp"
 #include "Representation.h"
@@ -372,11 +372,11 @@ public:
 	{
 	}
 
-	Solution<RepHFMVRP, AdsHFMVRP>& generateSolution()
+	Solution<RepHFMVRP, AdsHFMVRP>* generateSolution(double timelimit) override
 	{
-		return generateSolution(0);
+		return &generateSolution(timelimit, 0);
 	}
-	Solution<RepHFMVRP, AdsHFMVRP>& generateSolution(float alpha)
+	Solution<RepHFMVRP, AdsHFMVRP>& generateSolution(double timelimite, float alpha)
 	{
 		if (alpha == 0)
 			alpha = 0.00001;

@@ -72,7 +72,7 @@ public:
 		return pos;
 	}
 
-	virtual bool canBeApplied(const Routes& rep, const ADS&)
+	virtual bool canBeApplied(const Routes& rep, const ADS*) override
 	{
 		bool numRoutes = rep.size() >= 2;
 		return ((r1 >= 0) && (r2 >= 0) && (cli >= 0) && (pos >= 0) && numRoutes);
@@ -83,7 +83,7 @@ public:
 
 	}
 
-	virtual Move<Routes, ADS>* apply(Routes& rep, ADS&)
+	virtual Move<Routes, ADS>* apply(Routes& rep, ADS*) override
 	{
 		//pegando o cliente
 		int c = rep.at(r1).at(cli);
@@ -146,7 +146,7 @@ public:
 		 }*/
 	}
 
-	virtual void first()
+	virtual void first() override
 	{
 		for (int r1 = 0; r1 < r.size(); r1++)
 		{
@@ -173,7 +173,7 @@ public:
 			m = nullptr;
 	}
 
-	virtual void next()
+	virtual void next() override
 	{
 		index++;
 		if (index < moves.size())
@@ -184,12 +184,12 @@ public:
 			m = nullptr;
 	}
 
-	virtual bool isDone()
+	virtual bool isDone() override
 	{
 		return m == nullptr;
 	}
 
-	virtual Move<Routes, ADS>& current()
+	virtual Move<Routes, ADS>* current() override
 	{
 		if (isDone())
 		{
@@ -198,7 +198,7 @@ public:
 			exit(1);
 		}
 
-		return *m;
+		return m;
 	}
 };
 
@@ -222,15 +222,15 @@ public:
 	{
 	}
 
-	virtual Move<Routes, ADS>& move(const Routes& rep, const ADS&)
+	virtual Move<Routes, ADS>* randomMove(const Routes& rep, const ADS*) override
 	{
 		if (rep.size() < 2)
-			return *new MOVE(-1, -1, -1, -1, p);
+			return new MOVE(-1, -1, -1, -1, p);
 
 		int r1 = rand() % rep.size();
 		if (rep.at(r1).size() == 0)
 		{
-			return *new MOVE(-1, -1, -1, -1, p);
+			return new MOVE(-1, -1, -1, -1, p);
 		}
 
 		int r2;
@@ -260,9 +260,9 @@ public:
 		return nullptr;
 	}
 
-	virtual NSITERATOR& getIterator(const Routes& r, const ADS& ads)
+	virtual NSITERATOR* getIterator(const Routes& r, const ADS* ads) override
 	{
-		return *new NSITERATOR(r, ads, p);
+		return new NSITERATOR(r, ads, p);
 	}
 
 	virtual string toString() const

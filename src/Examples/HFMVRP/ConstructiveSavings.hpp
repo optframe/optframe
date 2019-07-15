@@ -2,7 +2,7 @@
 #define HFMVRP_CONSTRUCTIVE_Savings_HPP_
 
 #include "../../OptFrame/RandGen.hpp"
-#include "../../OptFrame/Util/TestSolution.hpp"
+//#include "../../OptFrame/Util/TestSolution.hpp"
 #include "ProblemInstance.hpp"
 #include "Representation.h"
 #include "Solution.h"
@@ -361,7 +361,7 @@ public:
 	{
 	}
 
-	Solution<RepHFMVRP>& generateSolution()
+	Solution<RepHFMVRP>* generateSolution(double timelimit) override
 	{
 		vector<vector<int> > newRep;
 		bool feasibleSol = false;
@@ -450,7 +450,7 @@ public:
 		}
 		cout << "teste" << endl;
 		getchar();
-		return *new TestSolution<RepHFMVRP> (newRep);
+		return new Solution<RepHFMVRP> (newRep);
 	}
 
 };
