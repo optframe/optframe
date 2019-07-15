@@ -2,18 +2,19 @@
 
 using namespace KP;
 
-ConstructiveGreedy::ConstructiveGreedy(ProblemInstance& _pKP): 
-        pKP(_pKP)
+ConstructiveGreedy::ConstructiveGreedy(ProblemInstance& _pKP)
+  : pKP(_pKP)
 {
 }
-	
+
 ConstructiveGreedy::~ConstructiveGreedy()
 {
 }
 
-Solution<RepKP, MY_ADS>& ConstructiveGreedy::generateSolution()
+Solution<RepKP, MY_ADS>*
+ConstructiveGreedy::generateSolution(double timelimit) override
 {
-    RepKP newRep;
+   RepKP newRep;
 
-    return * new TestSolution<RepKP, MY_ADS>(newRep);			
+   return new Solution<RepKP, MY_ADS>(newRep);
 }

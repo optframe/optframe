@@ -1,8 +1,8 @@
 #ifndef KP_CONSTRUCTIVE_Greedy_H_
 #define KP_CONSTRUCTIVE_Greedy_H_
 
-#include "../../OptFrame/Constructive.h"
-#include "../../OptFrame/Util/TestSolution.hpp"
+#include "../../OptFrame/Constructive.hpp"
+//#include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.h"
 
@@ -36,7 +36,7 @@ public:
 	
 	virtual ~ConstructiveGreedy();
 
-	Solution<RepKP, MY_ADS>& generateSolution();
+	Solution<RepKP, MY_ADS>* generateSolution(double timelimit) override;
 };
 
 }
