@@ -40,6 +40,6 @@ Thanks a lot SourceForge/GitHub!
 
 *OptFrame maintainers* [@igormcoelho](https://github.com/igormcoelho) and [@vncoelho](https://github.com/vncoelho)
 
-Copyright (C) 2007-2018
+Copyright (C) 2007-2019
 
 The OptFrame team
