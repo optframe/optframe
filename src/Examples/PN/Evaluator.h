@@ -33,7 +33,7 @@ public:
 	
 	virtual ~PNEvaluator();
 
-	EvaluationPN& evaluate(const RepPN& rep);
+	EvaluationPN evaluate(const RepPN& rep, const OPTFRAME_DEFAULT_ADS*);
 	
 	//EvaluationPN& evaluate(const RepPN& rep, const MY_ADS&);
 

@@ -11,7 +11,7 @@ ConstructiveRandom::~ConstructiveRandom()
 {
 }
 
-Solution<RepPN, MY_ADS>& ConstructiveRandom::generateSolution()
+Solution<RepPN, MY_ADS>* ConstructiveRandom::generateSolution(double timelimit)
 {
     	RepPN sol = vector<bool>(pPN.nums.size());
 
@@ -26,5 +26,5 @@ Solution<RepPN, MY_ADS>& ConstructiveRandom::generateSolution()
 	}
 
 
-    	return * new TestSolution<RepPN, MY_ADS>(sol);			
+    	return new Solution<RepPN, MY_ADS>(sol);			
 }

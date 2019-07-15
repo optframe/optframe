@@ -12,7 +12,7 @@ PNEvaluator::~PNEvaluator()
 {
 }
 
-EvaluationPN& PNEvaluator::evaluate(const RepPN& rep)
+EvaluationPN PNEvaluator::evaluate(const RepPN& rep, const OPTFRAME_DEFAULT_ADS*)
 {
     evaluations++;
     double fo = 0, soma1=0, soma2=0;
@@ -27,7 +27,7 @@ EvaluationPN& PNEvaluator::evaluate(const RepPN& rep)
 
     fo = abs(soma1 - soma2);
 
-    return * new EvaluationPN(fo);
+    return EvaluationPN(fo);
 }
 
 bool PNEvaluator::betterThan(double f1, double f2)
