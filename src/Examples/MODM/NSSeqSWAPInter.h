@@ -25,9 +25,6 @@ private:
 
 public:
 
-	using Move<RepMODM, AdsMODM>::apply; // prevents name hiding
-	using Move<RepMODM, AdsMODM>::canBeApplied; // prevents name hiding
-
 	MoveSWAPInter(int _y1, int _y2, int _c1, int _c2, ProblemInstance* _dmproblem) :
 			y1(_y1), y2(_y2), c1(_c1), c2(_c2), dmproblem(_dmproblem)
 	{
@@ -38,9 +35,9 @@ public:
 	{
 	}
 
-	bool canBeApplied(const RepMODM& rep, const AdsMODM& ads)
+	bool canBeApplied(const RepMODM& rep, const AdsMODM* _ads) override
 	{
-
+      const AdsMODM& ads = *_ads;
 		//cout<<"canBeApplied!"<<endl;
 		//cout<<"y1 = "<<y1<<endl;
 		//cout<<"y2 = "<<y2<<endl;
@@ -104,8 +101,9 @@ public:
 		return restr && ((usedProduct1 > 0) && (usedProduct2 > 0) && differentProducts && differentOffers && !c1Saturado && !c2Saturado);
 	}
 
-	MoveCost* cost(const Evaluation&, const RepMODM& rep, const AdsMODM& ads)
+	MoveCost* cost(const Evaluation&, const RepMODM& rep, const AdsMODM* _ads, bool mayEstimate)
 	{
+      const AdsMODM& ads = *_ads;
 		double f = 0;
 
 		double diffCostC1Y1 = (rep[c2][y2] - rep[c1][y1]) * dmproblem->getCost(c1, y1);
@@ -163,8 +161,9 @@ public:
 		return new MoveCost(f, fInv + foInvBud * (-100000));
 	}
 
-	Move<RepMODM, AdsMODM>* apply(RepMODM& rep, AdsMODM& ads)
+	Move<RepMODM, AdsMODM>* apply(RepMODM& rep, AdsMODM* _ads) override
 	{
+      AdsMODM& ads = *_ads;
 		//cout<<rep<<endl;
 		//cout<<ads.clientOffers<<endl;
 		//cout<<ads.productOffers<<endl;
@@ -225,7 +224,7 @@ public:
 	{
 	}
 
-	void first()
+	void first() override
 	{
 		y1 = 0;
 		y2 = 1;
@@ -233,7 +232,7 @@ public:
 		c2 = 0;
 	}
 
-	void next()
+	void next() override
 	{
 		c2++;
 		if (c2 >= nClients)
@@ -259,12 +258,12 @@ public:
 
 	}
 
-	bool isDone()
+	bool isDone() override
 	{
 		return (y1 == nProducts - 1);
 	}
 
-	Move<RepMODM, AdsMODM>& current()
+	Move<RepMODM, AdsMODM>* current() override
 	{
 		if (isDone())
 		{
@@ -273,7 +272,7 @@ public:
 			exit(1);
 		}
 
-		return *new MoveSWAPInter(y1, y2, c1, c2, dmproblem);
+		return new MoveSWAPInter(y1, y2, c1, c2, dmproblem);
 	}
 
 };
@@ -285,8 +284,6 @@ private:
 	RandGen& rg;
 public:
 
-	using NSSeq<RepMODM, AdsMODM>::move; // prevents name hiding
-
 	NSSeqSWAPInter(RandGen& _rg, ProblemInstance* _dmproblem) :
 			rg(_rg), dmproblem(_dmproblem)
 	{
@@ -296,8 +293,9 @@ public:
 	{
 	}
 
-	virtual Move<RepMODM, AdsMODM>& move(const RepMODM& rep, const AdsMODM& ads)
+	virtual Move<RepMODM, AdsMODM>* randomMove(const RepMODM& rep, const AdsMODM* _ads) override
 	{
+      const AdsMODM& ads = *_ads;
 		int nProduts = dmproblem->getNumberOfProducts();
 
 		int y1 = rg.rand(nProduts);
@@ -317,12 +315,12 @@ public:
 		int c1 = rg.rand(nClients);
 		int c2 = rg.rand(nClients);
 
-		return *new MoveSWAPInter(y1, y2, c1, c2, dmproblem); // return a random move
+		return new MoveSWAPInter(y1, y2, c1, c2, dmproblem); // return a random move
 	}
 
-	virtual NSIterator<RepMODM, AdsMODM>& getIterator(const RepMODM& rep, const AdsMODM& ads)
+	virtual NSIterator<RepMODM, AdsMODM>* getIterator(const RepMODM& rep, const AdsMODM* ads)
 	{
-		return *new NSIteratorSWAPInter(dmproblem); // return an iterator to the neighbors of 'rep'
+		return new NSIteratorSWAPInter(dmproblem); // return an iterator to the neighbors of 'rep'
 	}
 
 	static string idComponent()
