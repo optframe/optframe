@@ -55,7 +55,7 @@ public:
 	{
 	}
 
-	Evaluation& evaluate(const RepOptHS& r)
+	Evaluation evaluate(const RepOptHS& r, const OPTFRAME_DEFAULT_ADS*)
 	{
 		int fo_inv = 0; // Infeasible Value
 
@@ -98,7 +98,7 @@ public:
 			//cout << "ITER (FINISH)" << i << ": " << lastClean << endl;
 		}
 
-		return *new Evaluation(0, fo_inv);
+		return Evaluation(0, fo_inv);
 	}
 
 

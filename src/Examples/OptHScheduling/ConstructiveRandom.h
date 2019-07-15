@@ -21,8 +21,8 @@
 #ifndef OptHS_INITIALSOLUTION_Random_HPP_
 #define OptHS_INITIALSOLUTION_Random_HPP_
 
-#include "../../OptFrame/Constructive.h"
-#include "../../OptFrame/Util/TestSolution.hpp"
+#include "../../OptFrame/Constructive.hpp"
+//#include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.h"
 
@@ -59,7 +59,7 @@ public:
 	{
 	}
 
-	SolutionOptHS& generateSolution()
+	Solution<RepOptHS>* generateSolution(double timelimit) override
 	{
 		RepOptHS newRep;
 
@@ -69,7 +69,7 @@ public:
 
 		rg.shuffle(newRep); // shuffle elements of newRep
 
-		return *new TestSolution<RepOptHS>(newRep);
+		return new Solution<RepOptHS>(newRep);
 	}
 
 };

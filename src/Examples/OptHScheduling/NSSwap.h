@@ -24,7 +24,7 @@
 // Framework includes
 #include "../../OptFrame/NSSeq.hpp"
 
-#include "../../OptFrame/Util/TestMove.hpp"
+//#include "../../OptFrame/Util/TestMove.hpp"
 #include "../../OptFrame/RandGen.hpp"
 
 // Own includes
@@ -41,9 +41,6 @@ class MoveSwap: public Move<RepOptHS>
 {
 public:
 
-	using Move<RepOptHS>::apply; // prevents name hiding
-	using Move<RepOptHS>::canBeApplied; // prevents name hiding
-
 	int w1;
 	int w2;
 
@@ -56,12 +53,12 @@ public:
 	{
 	}
 
-	bool canBeApplied(const RepOptHS& rep, const OPTFRAME_DEFAULT_ADS&)
+	bool canBeApplied(const RepOptHS& rep, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		return w1 != w2;
 	}
 
-	Move<RepOptHS>* apply(RepOptHS& rep, OPTFRAME_DEFAULT_ADS&)
+	Move<RepOptHS>* apply(RepOptHS& rep, OPTFRAME_DEFAULT_ADS*) override
 	{
 		pair<char, char> aux = rep[w1];
 		rep[w1] = rep[w2];
@@ -85,8 +82,6 @@ class NSSwap: public NS<RepOptHS>
 {
 public:
 
-	using NS<RepOptHS>::move; // prevents name hiding
-
 	ProblemInstance& p;
 	RandGen& rg;
 
@@ -99,14 +94,14 @@ public:
 	{
 	}
 
-	virtual Move<RepOptHS>& move(const RepOptHS& rep, const OPTFRAME_DEFAULT_ADS&)
+	virtual Move<RepOptHS>* randomMove(const RepOptHS& rep, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		int w1 = rg.rand(rep.size());
 		int w2 = w1;
 		while(w2==w1)
 			w2 = rg.rand(rep.size());
 
-		return *new MoveSwap(w1, w2);
+		return new MoveSwap(w1, w2);
 	}
 
 	virtual void print() const
