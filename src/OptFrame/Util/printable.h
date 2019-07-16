@@ -24,6 +24,7 @@
 #include <iostream>
 #include <map>
 #include <ostream>
+#include <sstream> // stringstream
 #include <vector>
 
 using namespace std;

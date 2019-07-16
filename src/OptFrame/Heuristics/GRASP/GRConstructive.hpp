@@ -40,7 +40,7 @@ public:
 
 	virtual Solution<R, ADS>* generateGRSolution(float alpha, double timelimit) = 0;
 
-	virtual Solution<R, ADS>* generateSolution(double timelimit)
+	virtual Solution<R, ADS>* generateSolution(double timelimit) override
 	{
 		return generateGRSolution(1.0, timelimit);
 	}

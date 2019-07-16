@@ -209,7 +209,7 @@ public:
 	{
 		int r = rand() % rep.size();
 		if (rep.at(r).size() < 3)
-			return *new MOVE(-1, -1, -1, p);
+			return new MOVE(-1, -1, -1, p);
 
 		int p1 = rand() % (rep.at(r).size() + 1);
 
@@ -226,7 +226,7 @@ public:
 
 	virtual NSITERATOR* getIterator(const Routes& r, const ADS* ads) override
 	{
-		return new NSITERATOR(r, ads, p);
+		return new NSITERATOR(r, *ads, p);
 	}
 
 	virtual string toString() const

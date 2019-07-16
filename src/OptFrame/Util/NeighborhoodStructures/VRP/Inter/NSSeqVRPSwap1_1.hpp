@@ -204,16 +204,16 @@ public:
 	{
 	}
 
-	Move<Routes, ADS>* move(const Routes& rep, const ADS*) override
+	Move<Routes, ADS>* randomMove(const Routes& rep, const ADS*) override
 	{
 		//getchar();
 		if (rep.size() < 2)
-			return *new MOVE(-1, -1, -1, -1, p);
+			return new MOVE(-1, -1, -1, -1, p);
 
 		int r1 = rand() % rep.size();
 
 		if (rep.at(r1).size() == 0)
-			return *new MOVE(-1, -1, -1, -1, p);
+			return new MOVE(-1, -1, -1, -1, p);
 
 		int r2;
 
@@ -223,7 +223,7 @@ public:
 		} while (r1 == r2);
 
 		if (rep.at(r2).size() == 0)
-			return *new MOVE(-1, -1, -1, -1, p);
+			return new MOVE(-1, -1, -1, -1, p);
 
 		int c1 = rand() % rep.at(r1).size();
 		int c2 = rand() % rep.at(r2).size();
@@ -233,7 +233,7 @@ public:
 
 	virtual NSITERATOR* getIterator(const Routes& r, const ADS* ads) override
 	{
-		return new NSITERATOR(r, ads, p);
+		return new NSITERATOR(r, *ads, p);
 	}
 
 	virtual string toString() const

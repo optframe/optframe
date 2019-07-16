@@ -23,6 +23,7 @@
 
 #include "Constructive.hpp"
 #include "Solution.hpp"
+#include "ComponentBuilder.h"
 
 namespace optframe {
 

@@ -242,15 +242,15 @@ public:
 		int cli = rand() % rep.at(r1).size();
 
 		int pos = rand() % (rep.at(r2).size() + 1);
-		return *new MOVE(r1, r2, cli, pos, p); // return a random move
+		return new MOVE(r1, r2, cli, pos, p); // return a random move
 	}
 
-	virtual Move<Routes, ADS>* validMove(const Routes& rep, const ADS& ads)
+	virtual Move<Routes, ADS>* validRandomMove(const Routes& rep, const ADS* ads) override
 	{
 		int maxValidMove = 50;
 		for (int iter = 0; iter < maxValidMove; iter++)
 		{
-			Move<Routes, ADS>* moveValid = &(this->move(rep, ads));
+			Move<Routes, ADS>* moveValid = this->randomMove(rep, ads);
 			if (moveValid->canBeApplied(rep, ads))
 				return moveValid;
 			else
@@ -262,7 +262,7 @@ public:
 
 	virtual NSITERATOR* getIterator(const Routes& r, const ADS* ads) override
 	{
-		return new NSITERATOR(r, ads, p);
+		return new NSITERATOR(r, *ads, p);
 	}
 
 	virtual string toString() const

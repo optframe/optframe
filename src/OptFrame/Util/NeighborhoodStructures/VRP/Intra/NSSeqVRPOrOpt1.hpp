@@ -223,23 +223,23 @@ public:
 	{
 	}
 
-	Move<Routes, ADS>* randomMove(const Routes& rep, const ADS*)
+	Move<Routes, ADS>* randomMove(const Routes& rep, const ADS*) override
 	{
 		int r = rand() % rep.size();
 
 		if (rep.at(r).size() < 2)
-			return *new MOVE(-1, -1, -1, p);
+			return new MOVE(-1, -1, -1, p);
 
 		int c = rand() % rep.at(r).size();
 
 		int pos = rand() % (rep.at(r).size() + 1);
 
-		return *new MOVE(r, c, pos, p);
+		return new MOVE(r, c, pos, p);
 	}
 
-	virtual NSITERATOR& getIterator(const Routes& r, const ADS& ads) override
+	virtual NSITERATOR* getIterator(const Routes& r, const ADS* ads) override
 	{
-		return new NSITERATOR(r, ads, p);
+		return new NSITERATOR(r, *ads, p);
 	}
 
 	virtual string toString() const

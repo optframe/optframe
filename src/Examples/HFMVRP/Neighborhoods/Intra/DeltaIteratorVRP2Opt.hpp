@@ -53,7 +53,7 @@ public:
 	{
 	}
 
-	void first()
+	void first() override
 	{
 
 		for (int r = 0; r < rep.size(); r++)
@@ -76,7 +76,7 @@ public:
 			m = NULL;
 	}
 
-	void next()
+	void next() override
 	{
 		index++;
 		if (index < moves.size())
@@ -88,12 +88,12 @@ public:
 
 	}
 
-	bool isDone()
+	bool isDone() override
 	{
 		return m == NULL;
 	}
 
-	Move<RepHFMVRP, AdsHFMVRP>& current()
+	Move<RepHFMVRP, AdsHFMVRP>* current() override
 	{
 		if (isDone())
 		{
@@ -102,7 +102,7 @@ public:
 			exit(1);
 		}
 
-		return *m;
+		return m;
 	}
 };
 

@@ -1,4 +1,4 @@
-all: kp tsp #hfvrpmt #examples
+all: kp tsp hfvrpmt #examples
 
 examples: kp tsp etii pmedcap opths  gfp hfvrpmt
 

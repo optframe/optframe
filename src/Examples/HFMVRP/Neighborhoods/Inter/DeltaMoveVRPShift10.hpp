@@ -71,8 +71,9 @@ public:
 	{
 		return std::abs(x);
 	}
-	virtual bool canBeApplied(const RepHFMVRP& rep, const AdsHFMVRP& ads)
+	virtual bool canBeApplied(const RepHFMVRP& rep, const AdsHFMVRP* _ads) override
 	{
+      const AdsHFMVRP& ads = *_ads;
 		if (r1 >= 0)
 		{
 			bool all_positive = (r1 >= 0) && (r2 >= 0) && (cli >= 1) && (cli < (rep[r1].size() - 1)) && (pos >= 1) && (pos < (rep[r2].size() - 1));
@@ -219,8 +220,9 @@ public:
 			}
 		}
 	}
-	Move<RepHFMVRP, AdsHFMVRP>* apply(RepHFMVRP& rep, AdsHFMVRP& ads)
+	Move<RepHFMVRP, AdsHFMVRP>* apply(RepHFMVRP& rep, AdsHFMVRP* _ads) override
 	{
+      AdsHFMVRP& ads = *_ads;
 		//getting client
 		int c = rep.at(r1).at(cli);
 
