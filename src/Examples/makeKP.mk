@@ -34,7 +34,7 @@ KPScanner.o: ../OptFrame/Scanner++/Scanner.cpp
 
 GCC_FLAGS= -g -Wall -O3 --std=c++11 #--std=c++17 -fconcepts
 
-.PHONY: all clean
+.PHONY: all #clean
 	
 clean: 
 	rm -f app_KP

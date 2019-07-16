@@ -54,7 +54,7 @@ public:
 		// Put the rest of your code here
 	}
 
-	EvaluationPCAP& evaluate(const RepPCAP& rep)
+	Evaluation evaluate(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		// 'rep' is the representation of the solution
 
@@ -98,7 +98,7 @@ public:
 
 		fo_Inv = fo_Inv * 10000 + fo_medAlocada;
 
-		return *new Evaluation(fo, fo_Inv);
+		return Evaluation(fo, fo_Inv);
 	}
 
 	virtual bool betterThan(double f1, double f2)

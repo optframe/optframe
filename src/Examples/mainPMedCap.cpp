@@ -32,8 +32,10 @@
 #include "../OptFrame/Timer.hpp"
 #include "PMedCap.h"
 
+
 using namespace std;
 using namespace optframe;
+using namespace pmedcap;
 
 int main(int argc, char **argv)
 {
@@ -50,7 +52,7 @@ int main(int argc, char **argv)
 	PCAPProblemInstance p(scanner);
 	PCAPEvaluator e(p);
 	PCAPInitialSolutionGreedy is_greedy(p, rg);
-	SolutionPCAP& s = is_greedy.generateSolution();
+	SolutionPCAP& s = *is_greedy.generateSolution(100); // timelimit 100
 
 
 	NSSeqSWAP nsSwap(p, rg);
@@ -58,7 +60,7 @@ int main(int argc, char **argv)
 
 	s.print();
 
-	e.evaluate(s).print();
+	e.evaluateSolution(s).print();
 
 	PCAPSolCheck(p, s);
 
