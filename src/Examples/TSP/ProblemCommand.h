@@ -66,22 +66,8 @@ public:
        return true; //defineText(name, ss.str(), dictionary);
     }
 
-	bool load(string filename, HeuristicFactory<RepTSP, OPTFRAME_DEFAULT_ADS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	bool load(Scanner& scanner, HeuristicFactory<RepTSP, OPTFRAME_DEFAULT_ADS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
-	    File* file;
-
-        try
-        {
-           file = new File(filename);
-        }
-        catch (FileNotFound& f)
-        {
-           cout << "File '" << filename <<"' not found" << endl;
-           return false;
-        }
-
-        Scanner scanner(file);
-
         p = new ProblemInstance(scanner);
 
         // add everything to the HeuristicFactory 'hf'
@@ -120,7 +106,7 @@ public:
         hf.addComponent(*ilsl_pert);
 
 		
-        cout << "problem '" << filename << "' loaded successfully" << endl;
+        cout << "TSP problem loaded successfully" << endl;
         
         return true;
     }

@@ -23,8 +23,8 @@
 // Project Traveling Salesman Problem
 // ===================================
 
-#include <stdlib.h>
 #include <math.h>
+#include <stdlib.h>
 
 #include <iostream>
 
@@ -35,10 +35,10 @@ using namespace std;
 #include "../OptFrame/Solution.hpp"
 //#include "../OptFrame/Util/TestSolution.hpp"
 
-#include "../OptFrame/Loader.hpp"
-#include "../OptFrame/Util/CheckCommand.hpp"
-#include "../OptFrame/Util/BuildCommand.hpp"
 #include "../OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp"
+#include "../OptFrame/Loader.hpp"
+#include "../OptFrame/Util/BuildCommand.hpp"
+#include "../OptFrame/Util/CheckCommand.hpp"
 #include "TSP.h"
 
 using namespace TSP;
@@ -46,13 +46,25 @@ using namespace scannerpp;
 
 #include "../OptFrame/Util/PackTypes.hpp"
 
-int main(int argc, char **argv)
+int
+main(int argc, char** argv)
 {
-	Loader<RepTSP> optframe;
-	TSPProblemCommand tsp;
-	tsp.load("./TSP/tsplib/berlin52.txt", optframe.factory, optframe.dictionary, optframe.ldictionary);
+   Loader<RepTSP> optframe;
+   TSPProblemCommand tsp;
 
-	/*
+   File* file;
+
+   try {
+      file = new File("./TSP/tsplib/berlin52.txt");
+   } catch (FileNotFound& f) {
+      cout << "File not found" << endl;
+      return 1;
+   }
+
+   Scanner scanner(file);
+   tsp.load(scanner, optframe.factory, optframe.dictionary, optframe.ldictionary);
+
+   /*
 	FILE* outf = fopen("berlin52.mtx","w");
 	fprintf(outf, "%d\n", tsp.p->n);
 	for(unsigned i=0; i<tsp.p->n; i++) {
@@ -65,126 +77,124 @@ int main(int argc, char **argv)
 	exit(1);
 	*/
 
-	bool check_verbose = false;
-	CheckCommand<RepTSP> check(check_verbose);
+   bool check_verbose = false;
+   CheckCommand<RepTSP> check(check_verbose);
 
-	RandGenMersenneTwister rg(0);
-	RandomInitialSolutionTSP random(tsp.p, rg);
-	NearestNeighborConstructive cnn(tsp.p, rg);
-	ConstructiveBestInsertion cbi(tsp.p, rg);
-	TSPEvaluator eval(tsp.p);
-	NSEnumSwap enumswap(tsp.p, rg);
+   RandGenMersenneTwister rg(0);
+   RandomInitialSolutionTSP random(tsp.p, rg);
+   NearestNeighborConstructive cnn(tsp.p, rg);
+   ConstructiveBestInsertion cbi(tsp.p, rg);
+   TSPEvaluator eval(tsp.p);
+   NSEnumSwap enumswap(tsp.p, rg);
 
-	NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);
-	NSSeqTSP2Opt<int> tsp2opt;
-	NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSPOrOptk, ProblemInstance> nsseq_delta_or1(1, tsp.p);
-	NSSeqTSPOrOptk<int> tspor1(1);
-	NSSeqTSPOrOptk<int> tspor2(2);
-	NSSeqTSPOrOptk<int> tspor3(3);
-	NSSeqTSPSwap<int> tspswap;
+   NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);
+   NSSeqTSP2Opt<int> tsp2opt;
+   NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSPOrOptk, ProblemInstance> nsseq_delta_or1(1, tsp.p);
+   NSSeqTSPOrOptk<int> tspor1(1);
+   NSSeqTSPOrOptk<int> tspor2(2);
+   NSSeqTSPOrOptk<int> tspor3(3);
+   NSSeqTSPSwap<int> tspswap;
 
-	check.add(random);
-	check.add(cnn);
-	check.add(cbi);
-	check.add(eval);
-	check.add(enumswap);
-	check.add(nsseq_delta_2opt);
-	check.add(tsp2opt);
-	check.add(nsseq_delta_or1);
-	check.add(tspor1);
-	check.add(tspor2);
-	check.add(tspor3);
-	check.add(tspswap);
+   check.add(random);
+   check.add(cnn);
+   check.add(cbi);
+   check.add(eval);
+   check.add(enumswap);
+   check.add(nsseq_delta_2opt);
+   check.add(tsp2opt);
+   check.add(nsseq_delta_or1);
+   check.add(tspor1);
+   check.add(tspor2);
+   check.add(tspor3);
+   check.add(tspswap);
 
-	//check.run(100, 10);
+   //check.run(100, 10);
 
-	cout << "will test BRKGA (n=" << tsp.p->n << ")" << endl;
-	EvaluatorPermutationRandomKeys eprk(eval, 0, tsp.p->n-1);
-	BRKGA<RepTSP> brkga(eprk, tsp.p->n, 10000, 10, 0.4, 0.3, 0.6);
+   cout << "will test BRKGA (n=" << tsp.p->n << ")" << endl;
+   EvaluatorPermutationRandomKeys eprk(eval, 0, tsp.p->n - 1);
+   BRKGA<RepTSP> brkga(eprk, tsp.p->n, 10000, 10, 0.4, 0.3, 0.6);
 
-	pair<Solution<random_keys>&, Evaluation&>* r2 = brkga.search();
-	r2->first.print();
+   pair<Solution<random_keys>&, Evaluation&>* r2 = brkga.search();
+   r2->first.print();
 
-	pair<Evaluation&, Solution<vector<int>>*> pd = eprk.decode(r2->first.getR());
-	pd.second->print();
-	if(eval.verify(pd.second->getR()))
-		cout << "CHECK: OK" << endl;
-	pd.first.print();
-	delete &pd.first;
-	delete pd.second;
+   pair<Evaluation&, Solution<vector<int>>*> pd = eprk.decode(r2->first.getR());
+   pd.second->print();
+   if (eval.verify(pd.second->getR()))
+      cout << "CHECK: OK" << endl;
+   pd.first.print();
+   delete &pd.first;
+   delete pd.second;
 
-	r2->second.print();
-	delete &r2->first;
-	delete &r2->second;
-	delete r2;
+   r2->second.print();
+   delete &r2->first;
+   delete &r2->second;
+   delete r2;
 
-	cout << "end BRKGA tests" << endl;
+   cout << "end BRKGA tests" << endl;
 
-	BuildCommand<RepTSP> build;
-	for (unsigned i = 0; i <= 7; i++)
-	{
-		stringstream ss;
-		ss << "OptFrame:ComponentBuilder:LocalSearch:BI  OptFrame:Evaluator 0  OptFrame:NS:NSSeq " << i;
-		string name = build.run(optframe.factory, optframe.dictionary, optframe.ldictionary, ss.str());
-		cout << "BUILT: '" << name << "'" << endl;
-	}
+   BuildCommand<RepTSP> build;
+   for (unsigned i = 0; i <= 7; i++) {
+      stringstream ss;
+      ss << "OptFrame:ComponentBuilder:LocalSearch:BI  OptFrame:Evaluator 0  OptFrame:NS:NSSeq " << i;
+      string name = build.run(optframe.factory, optframe.dictionary, optframe.ldictionary, ss.str());
+      cout << "BUILT: '" << name << "'" << endl;
+   }
 
-	vector<LocalSearch<RepTSP>*> ns_list;
-	ns_list.push_back(new BestImprovement<RepTSP>(eval, tsp2opt));
-	ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor1));
-	ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor2));
-	ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor3));
-	ns_list.push_back(new BestImprovement<RepTSP>(eval, tspswap));
-	for(unsigned i=0; i<ns_list.size(); i++)
-		ns_list[i]->setVerbose();
+   vector<LocalSearch<RepTSP>*> ns_list;
+   ns_list.push_back(new BestImprovement<RepTSP>(eval, tsp2opt));
+   ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor1));
+   ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor2));
+   ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor3));
+   ns_list.push_back(new BestImprovement<RepTSP>(eval, tspswap));
+   for (unsigned i = 0; i < ns_list.size(); i++)
+      ns_list[i]->setVerbose();
 
-	VariableNeighborhoodDescent<RepTSP> VND(eval, ns_list);
-	VND.setVerbose();
+   VariableNeighborhoodDescent<RepTSP> VND(eval, ns_list);
+   VND.setVerbose();
 
-	ILSLPerturbationLPlus2<RepTSP> pert(eval, tsp2opt, rg);
-	pert.add_ns(tspor1);
-	pert.add_ns(tspor2);
-	pert.add_ns(tspor3);
-	pert.add_ns(tspswap);
+   ILSLPerturbationLPlus2<RepTSP> pert(eval, tsp2opt, rg);
+   pert.add_ns(tspor1);
+   pert.add_ns(tspor2);
+   pert.add_ns(tspor3);
+   pert.add_ns(tspswap);
 
-	IteratedLocalSearchLevels<RepTSP> ils(eval, random, VND, pert, 3, 2);
-	//ils.setMessageLevel(4);
-	ils.setVerbose();
-	if (ils.information)
-		cout << "infomation is on for ILS" << endl;
+   IteratedLocalSearchLevels<RepTSP> ils(eval, random, VND, pert, 3, 2);
+   //ils.setMessageLevel(4);
+   ils.setVerbose();
+   if (ils.information)
+      cout << "infomation is on for ILS" << endl;
 
-	cout << "will run ils" << endl;
-	Timer tim;
-	pair<Solution<RepTSP>&, Evaluation&>& psol = *ils.search(1000, 0, NULL, NULL);
-	cout << tim.now() << " secs" << endl;
+   cout << "will run ils" << endl;
+   Timer tim;
+   pair<Solution<RepTSP>&, Evaluation&>& psol = *ils.search(1000, 0, NULL, NULL);
+   cout << tim.now() << " secs" << endl;
 
-	psol.first.print();
-	psol.second.print();
+   psol.first.print();
+   psol.second.print();
 
+   // ===========
 
-	// ===========
+   for (unsigned i = 0; i < ns_list.size(); i++)
+      delete ns_list[i];
 
-	for(unsigned i=0; i<ns_list.size(); i++)
-		delete ns_list[i];
+   vector<NS<RepTSP>*> v_ns;
+   vector<NSSeq<RepTSP>*> v_nsseq;
+   v_nsseq.push_back(&tsp2opt);
+   v_nsseq.push_back(&tspor1);
+   v_nsseq.push_back(&tspor2);
+   v_nsseq.push_back(&tspor3);
+   v_nsseq.push_back(&tspswap);
+   for (unsigned i = 0; i < v_nsseq.size(); i++)
+      v_ns.push_back(v_nsseq[i]);
 
-	vector<NS<RepTSP>*> v_ns;
-	vector<NSSeq<RepTSP>*> v_nsseq;
-	v_nsseq.push_back(&tsp2opt);
-	v_nsseq.push_back(&tspor1);
-	v_nsseq.push_back(&tspor2);
-	v_nsseq.push_back(&tspor3);
-	v_nsseq.push_back(&tspswap);
-	for(unsigned i=0; i<v_nsseq.size(); i++)
-		v_ns.push_back(v_nsseq[i]);
+   BasicVNS<RepTSP> vns(eval, random, v_ns, v_nsseq);
+   vns.setMessageLevel(3); // INFORMATION
+   pair<Solution<RepTSP>&, Evaluation&>& psol2 = *vns.search(0, 8000, NULL, NULL);
+   psol2.first.print();
+   psol2.second.print();
 
-	BasicVNS<RepTSP> vns(eval, random, v_ns, v_nsseq);
-	vns.setMessageLevel(3); // INFORMATION
-	pair<Solution<RepTSP>&, Evaluation&>& psol2 = *vns.search(0, 8000, NULL, NULL);
-	psol2.first.print();
-	psol2.second.print();
-
-	// Remember the old times...
-	/*
+   // Remember the old times...
+   /*
 	 echo building VND
 	 define vnd_list [ OptFrame:LocalSearch: 0 ,  OptFrame:LocalSearch: 1, OptFrame:LocalSearch: 2, OptFrame:LocalSearch: 3 ]
 	 component.create_list $vnd_list OptFrame:LocalSearch: comp_vnd_list
@@ -200,7 +210,7 @@ int main(int argc, char **argv)
 	 evaluate $Evaluator 0 $solucao_saida
 	 */
 
-	cout << "Program ended successfully" << endl;
+   cout << "Program ended successfully" << endl;
 
-	return 0;
+   return 0;
 }

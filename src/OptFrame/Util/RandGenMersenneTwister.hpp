@@ -26,113 +26,103 @@
 #include "../RandGen.hpp"
 #include <limits.h>
 
-namespace optframe
-{
+namespace optframe {
 
-
-class RandGenMersenneTwister: public RandGen
+class RandGenMersenneTwister : public RandGen
 {
 private:
-	static const unsigned int GEN_STATE_LENGTH = 624;
-	static const unsigned int MASK_1 = 0xffffffff; //4294967295
-	static const unsigned int MASK_2 = 0x80000000; //2147483648
-	static const unsigned int MASK_3 = 0x7fffffff; //2147483647
+   static const unsigned int GEN_STATE_LENGTH = 624;
+   static const unsigned int MASK_1 = 0xffffffff; //4294967295
+   static const unsigned int MASK_2 = 0x80000000; //2147483648
+   static const unsigned int MASK_3 = 0x7fffffff; //2147483647
 
-	static const unsigned int CONSTANT_1 = 0x6c078965; //1812433253
-	static const unsigned int CONSTANT_2 = 0x9d2c5680; //2636928640
-	static const unsigned int CONSTANT_3 = 0xefc60000; //4022730752
-	static const unsigned int CONSTANT_4 = 0x9908b0df; //2567483615
-	unsigned int MT[GEN_STATE_LENGTH];
-	int index;
+   static const unsigned int CONSTANT_1 = 0x6c078965; //1812433253
+   static const unsigned int CONSTANT_2 = 0x9d2c5680; //2636928640
+   static const unsigned int CONSTANT_3 = 0xefc60000; //4022730752
+   static const unsigned int CONSTANT_4 = 0x9908b0df; //2567483615
+   unsigned int MT[GEN_STATE_LENGTH];
+   int index;
 
-	void GenNum()
-	{
-		int i;
-		unsigned int y;
-		for (i = 0; i < ((int)GEN_STATE_LENGTH); i++)
-		{
-			y = (MT[i] ^ MASK_2) + (MT[(i + 1) % GEN_STATE_LENGTH] ^ MASK_3);
-			MT[i] = MT[(i + 397) % GEN_STATE_LENGTH] ^ (y >> 1);
-			if ((y % 2) == 1)
-			{
-				MT[i] = MT[i] ^ CONSTANT_4;
-			}
-		}
-	}
+   void GenNum()
+   {
+      int i;
+      unsigned int y;
+      for (i = 0; i < ((int)GEN_STATE_LENGTH); i++) {
+         y = (MT[i] ^ MASK_2) + (MT[(i + 1) % GEN_STATE_LENGTH] ^ MASK_3);
+         MT[i] = MT[(i + 397) % GEN_STATE_LENGTH] ^ (y >> 1);
+         if ((y % 2) == 1) {
+            MT[i] = MT[i] ^ CONSTANT_4;
+         }
+      }
+   }
 
-	unsigned mt_rand()
-	{
-		if (!RandGen::init)
-		{
-			initialize();
-			RandGen::init = true;
-		}
+   unsigned mt_rand()
+   {
+      unsigned int y;
 
-		unsigned int y;
+      if (index == 0)
+         GenNum();
 
-		if (index == 0)
-			GenNum();
+      y = MT[index];
+      y = y ^ (y >> 11);
+      y = y ^ ((y << 7) & CONSTANT_2);
+      y = y ^ ((y << 15) & CONSTANT_3);
+      y = y ^ (y >> 18);
 
-		y = MT[index];
-		y = y ^ (y >> 11);
-		y = y ^ ((y << 7) & CONSTANT_2);
-		y = y ^ ((y << 15) & CONSTANT_3);
-		y = y ^ (y >> 18);
+      index = (index + 1) % GEN_STATE_LENGTH;
 
-		index = (index + 1) % GEN_STATE_LENGTH;
-
-		return y;
-	}
+      return y;
+   }
 
 public:
+   RandGenMersenneTwister()
+     : RandGen()
+   {
+      initialize();
+   }
 
-	RandGenMersenneTwister() :
-		RandGen()
-	{
-	}
+   RandGenMersenneTwister(unsigned seed)
+     : RandGen(seed)
+   {
+      initialize();
+   }
 
-	RandGenMersenneTwister(long seed) :
-		RandGen(seed)
-	{
-	}
+   using RandGen::rand;
 
-	using RandGen::rand;
+   // initialize random number generation
+   void initialize() override
+   {
+      int i;
 
-	// initialize random number generation
-	void initialize()
-	{
-		int i;
+      index = 0;
+      MT[0] = seed;
+      for (i = 1; i < ((int)GEN_STATE_LENGTH); i++) {
+         MT[i] = ((CONSTANT_1 * (MT[i - 1] ^ (MT[i - 1] >> 30))) + i) & MASK_1;
+      }
+   }
 
-		index = 0;
-		MT[0] = seed;
-		for (i = 1; i < ((int)GEN_STATE_LENGTH); i++)
-		{
-			MT[i] = ((CONSTANT_1 * (MT[i - 1] ^ (MT[i - 1] >> 30))) + i) & MASK_1;
-		}
-	}
+   // generate random number
+   int rand() override
+   {
+      return mt_rand();
+   }
 
-	// generate random number
-	int rand()
-	{
-		return mt_rand();
-	}
-
-	// generate random number between 0 and n-1
-	int rand(int n)
-	{
-		if (n < 0)
-			n *= (-1);
+   // generate random number between 0 and n-1
+   unsigned rand(unsigned n) override
+   {
+      if (n < 0)
+         n *= (-1);
 
       // TODO: https://ericlippert.com/2013/12/16/how-much-bias-is-introduced-by-the-remainder-technique/
 
-		return mt_rand() % n;
-	}
+      return mt_rand() % n;
+   }
 
-	// random uniform between [0,1)
-	double rand01()
-	{
-		return (double) mt_rand() / UINT_MAX;
-	}
+   // random uniform between [0,1)
+   double rand01() override
+   {
+      return (double)mt_rand() / UINT_MAX;
+   }
 };
 }
 
