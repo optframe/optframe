@@ -200,7 +200,7 @@ public:
 				p[param].sigmaB = 0;
 			if (p[param].sigmaB > 1)
 				p[param].sigmaB = 1;
-			p[param].nap += rg.randBinomialWithNegative(p[param].sigmaB, 10);
+			p[param].nap += rg.randBN(p[param].sigmaB, 10);
 			if (p[param].nap < 1)
 				p[param].nap = 1;
 			if (p[param].nap > ngesParams.vNSeqMaxApplication[param])
@@ -357,7 +357,7 @@ public:
 
 			//probability, application, sigmaNomal, sigmaBinomial
 			for (int aux = 0; aux < nNS; aux++)
-				m.push_back(NGESIndStructure<R, ADS>(rg.rand01(), rg.randBinomial(0.5, 10) + 1, rg.rand01(), rg.rand01()));
+				m.push_back(NGESIndStructure<R, ADS>(rg.rand01(), rg.randB(0.5, 10) + 1, rg.rand01(), rg.rand01()));
 
 			Evaluation e = eval.evaluateSolution(*s);
 			NGESInd<R, ADS>* ind = new NGESInd<R, ADS>(*s, e, m, nNS); //TODO MAKE MOVE
