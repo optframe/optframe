@@ -72,7 +72,8 @@ TEST(OptFrameUtilsTests, RandGen_20000_10_Is_Balanced_1_percent)
 TEST(OptFrameUtilsTests, RandGenMT_20000_10_Is_Balanced_1_percent)
 {
    std::map<int, int> hist;
-   RandGenMersenneTwister rg;
+   RandGenMersenneTwister rg1;
+   RandGen& rg = rg1;
    for (int n = 0; n < 20000; ++n) {
       ++hist[rg.rand(10)]; // 0 to 9
    }

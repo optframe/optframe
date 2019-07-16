@@ -24,6 +24,8 @@
 #include "../../MultiSolution.hpp"
 #include "EA.h"
 
+#include "../../Util/printable.h"
+
 namespace optframe
 {
 

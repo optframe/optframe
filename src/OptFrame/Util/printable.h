@@ -22,237 +22,249 @@
 #define OPTFRAME_PRINTABLE_H_
 
 #include <iostream>
+#include <map>
 #include <ostream>
 #include <vector>
-#include <map>
 
 using namespace std;
 
-namespace optframe
-{
+namespace optframe {
 
 template<class T1, class T2>
-ostream& operator<<(ostream &os, const pair<T1, T2> &obj);
-
+ostream&
+operator<<(ostream& os, const pair<T1, T2>& obj);
 
 // ===================================================
 //     Impressao de vectors
 // ===================================================
 template<class T>
-ostream& operator<<(ostream &os, const vector<T> &obj)
+ostream&
+operator<<(ostream& os, const vector<T>& obj)
 {
-	// Se houver string interna, sera impressa com aspas
-	//string_aspas_25072009 = true;
+   // Se houver string interna, sera impressa com aspas
+   //string_aspas_25072009 = true;
 
-	os << "vector(" << obj.size() << ") [";
+   os << "vector(" << obj.size() << ") [";
 
-	if (obj.size() > 0)
-	{
-		for (unsigned int i = 0; i < obj.size() - 1; i++)
-			os << obj.at(i) << " , ";
-		os << obj.at(obj.size() - 1);
-	}
+   if (obj.size() > 0) {
+      for (unsigned int i = 0; i < obj.size() - 1; i++)
+         os << obj.at(i) << " , ";
+      os << obj.at(obj.size() - 1);
+   }
 
-	os << "]";
+   os << "]";
 
-	// Libera a impressao normal de strings
-	//string_aspas_25072009 = false;
+   // Libera a impressao normal de strings
+   //string_aspas_25072009 = false;
 
-	return os;
+   return os;
 }
 
 // ===================================================
 //   Impressao de vectors (com parametro ponteiro)
 // ===================================================
 template<class T>
-ostream& operator<<(ostream &os, const vector<T*> &obj)
+ostream&
+operator<<(ostream& os, const vector<T*>& obj)
 {
-	// Se houver string interna, sera impressa com aspas
-	//string_aspas_25072009 = true;
+   // Se houver string interna, sera impressa com aspas
+   //string_aspas_25072009 = true;
 
-	os << "vector(" << obj.size() << ") [";
+   os << "vector(" << obj.size() << ") [";
 
-	if (obj.size() > 0)
-	{
-		for (unsigned int i = 0; i < obj.size() - 1; i++)
-			if (obj.at(i) == nullptr)
-				os << "nullptr" << " , ";
-			else
-				os << (*obj.at(i)) << " , ";
+   if (obj.size() > 0) {
+      for (unsigned int i = 0; i < obj.size() - 1; i++)
+         if (obj.at(i) == nullptr)
+            os << "nullptr"
+               << " , ";
+         else
+            os << (*obj.at(i)) << " , ";
 
-		if (obj.size() > 0)
-		{
-			if (obj.at(obj.size() - 1) == nullptr)
-				os << "nullptr";
-			else
-				os << (*obj.at(obj.size() - 1));
-		}
-	}
+      if (obj.size() > 0) {
+         if (obj.at(obj.size() - 1) == nullptr)
+            os << "nullptr";
+         else
+            os << (*obj.at(obj.size() - 1));
+      }
+   }
 
-	os << "]";
+   os << "]";
 
-	// Libera a impressao normal de strings
-	//string_aspas_25072009 = false;
+   // Libera a impressao normal de strings
+   //string_aspas_25072009 = false;
 
-	return os;
+   return os;
 }
 
 // ===================================================
 //     Impressao de pares
 // ===================================================
 template<class T1, class T2>
-ostream& operator<<(ostream &os, const pair<T1, T2> &obj)
+ostream&
+operator<<(ostream& os, const pair<T1, T2>& obj)
 {
-	// Se houver string interna, sera impressa com aspas
-	//string_aspas_25072009 = true;
+   // Se houver string interna, sera impressa com aspas
+   //string_aspas_25072009 = true;
 
-	os << "pair(" << obj.first << " , " << obj.second << ")";
+   os << "pair(" << obj.first << " , " << obj.second << ")";
 
-	// Libera a impressao normal de strings
-	//string_aspas_25072009 = false;
+   // Libera a impressao normal de strings
+   //string_aspas_25072009 = false;
 
-	return os;
+   return os;
 }
 
 // ===================================================
 //  Impressao de pares (com segundo elemento ponteiro)
 // ===================================================
 template<class T1, class T2>
-ostream& operator<<(ostream &os, const pair<T1, T2*> &obj)
+ostream&
+operator<<(ostream& os, const pair<T1, T2*>& obj)
 {
-	// Se houver string interna, sera impressa com aspas
-	//string_aspas_25072009 = true;
+   // Se houver string interna, sera impressa com aspas
+   //string_aspas_25072009 = true;
 
-	os << "pair(" << obj.first << " , ";
+   os << "pair(" << obj.first << " , ";
 
-	if (obj.second == nullptr)
-		os << "nullptr" << ")";
-	else
-		os << (*obj.second) << ")";
+   if (obj.second == nullptr)
+      os << "nullptr"
+         << ")";
+   else
+      os << (*obj.second) << ")";
 
-	// Libera a impressao normal de strings
-	//string_aspas_25072009 = false;
+   // Libera a impressao normal de strings
+   //string_aspas_25072009 = false;
 
-	return os;
+   return os;
 }
 
 // ===================================================
 // Impressao de pares (com primeiro elemento ponteiro)
 // ===================================================
 template<class T1, class T2>
-ostream& operator<<(ostream &os, const pair<T1*, T2> &obj)
+ostream&
+operator<<(ostream& os, const pair<T1*, T2>& obj)
 {
-	// Se houver string interna, sera impressa com aspas
-	//string_aspas_25072009 = true;
+   // Se houver string interna, sera impressa com aspas
+   //string_aspas_25072009 = true;
 
-	os << "pair(";
+   os << "pair(";
 
-	if (obj.first == nullptr)
-		os << "nullptr";
-	else
-		os << (*obj.first);
+   if (obj.first == nullptr)
+      os << "nullptr";
+   else
+      os << (*obj.first);
 
-	os << " , " << obj.second << ")";
+   os << " , " << obj.second << ")";
 
-	// Libera a impressao normal de strings
-	//string_aspas_25072009 = false;
+   // Libera a impressao normal de strings
+   //string_aspas_25072009 = false;
 
-	return os;
+   return os;
 }
 
 // ===================================================
 //  Impressao de pares (com ambos elementos ponteiros)
 // ===================================================
 template<class T1, class T2>
-ostream& operator<<(ostream &os, const pair<T1*, T2*> &obj)
+ostream&
+operator<<(ostream& os, const pair<T1*, T2*>& obj)
 {
-	// Se houver string interna, sera impressa com aspas
-	//string_aspas_25072009 = true;
+   // Se houver string interna, sera impressa com aspas
+   //string_aspas_25072009 = true;
 
-	os << "pair(";
+   os << "pair(";
 
-	if (obj.first == nullptr)
-		os << "nullptr";
-	else
-		os << (*obj.first);
+   if (obj.first == nullptr)
+      os << "nullptr";
+   else
+      os << (*obj.first);
 
-	os << " , ";
+   os << " , ";
 
-	if (obj.second == nullptr)
-		os << "nullptr" << ")";
-	else
-		os << (*obj.second) << ")";
+   if (obj.second == nullptr)
+      os << "nullptr"
+         << ")";
+   else
+      os << (*obj.second) << ")";
 
-	// Libera a impressao normal de strings
-	//string_aspas_25072009 = false;
+   // Libera a impressao normal de strings
+   //string_aspas_25072009 = false;
 
-	return os;
+   return os;
 }
 
 // ===================================================
 //     Impressao de multimaps
 // ===================================================
 template<class Key, class T>
-ostream& operator<<(ostream &os, multimap<Key, T> &obj)
+ostream&
+operator<<(ostream& os, multimap<Key, T>& obj)
 {
-	// Se houver string interna, sera impressa com aspas
-	//string_aspas_25072009 = true;
+   // Se houver string interna, sera impressa com aspas
+   //string_aspas_25072009 = true;
 
-	os << "multimap(" << obj.size() << ") [";
+   os << "multimap(" << obj.size() << ") [";
 
-	if (obj.size() > 0)
-	{
-		typename multimap<Key, T>::iterator it;
-		int i = 0;
-		for (it = obj.begin(); it != obj.end(); ++it)
-		{
-			os << *it;
-			if (i != obj.size() - 1)
-				os << " , ";
-			i++;
-		}
-	}
+   if (obj.size() > 0) {
+      typename multimap<Key, T>::iterator it;
+      int i = 0;
+      for (it = obj.begin(); it != obj.end(); ++it) {
+         os << *it;
+         if (i != obj.size() - 1)
+            os << " , ";
+         i++;
+      }
+   }
 
-	os << "]";
+   os << "]";
 
-	// Libera a impressao normal de strings
-	//string_aspas_25072009 = false;
+   // Libera a impressao normal de strings
+   //string_aspas_25072009 = false;
 
-	return os;
+   return os;
 }
 
 // ===================================================
 //     Impressao de multimaps
 // ===================================================
 template<class Key, class T>
-ostream& operator<<(ostream &os, map<Key, T> &obj)
+ostream&
+operator<<(ostream& os, map<Key, T>& obj)
 {
-	// Se houver string interna, sera impressa com aspas
-	//string_aspas_25072009 = true;
+   // Se houver string interna, sera impressa com aspas
+   //string_aspas_25072009 = true;
 
-	os << "map(" << obj.size() << ") [";
+   os << "map(" << obj.size() << ") [";
 
-	if (obj.size() > 0)
-	{
-		typename map<Key, T>::iterator it;
-		int i = 0;
-		for (it = obj.begin(); it != obj.end(); ++it)
-		{
-			os << *it;
-			if (i != ((int) obj.size()) - 1)
-				os << " , ";
-			i++;
-		}
-	}
+   if (obj.size() > 0) {
+      typename map<Key, T>::iterator it;
+      int i = 0;
+      for (it = obj.begin(); it != obj.end(); ++it) {
+         os << *it;
+         if (i != ((int)obj.size()) - 1)
+            os << " , ";
+         i++;
+      }
+   }
 
-	os << "]";
+   os << "]";
 
-	// Libera a impressao normal de strings
-	//string_aspas_25072009 = false;
+   // Libera a impressao normal de strings
+   //string_aspas_25072009 = false;
 
-	return os;
+   return os;
 }
 
+template<class T>
+std::string
+toString(const std::vector<T>& v)
+{
+   std::stringstream ss;
+   ss << v;
+   return ss.str();
 }
+
+} // namespace
 
 #endif /*OPTFRAME_PRINTABLE_H_*/

@@ -46,20 +46,22 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, SOSC& sosc) override
 	{
 		Evaluation e = evaluator.evaluateSolution(s);
 
-		exec(s, e, timelimit, target_f);
+		exec(s, e, sosc);
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation& e, SOSC& sosc) override
 	{
+      double timelimit = sosc.timelimit;
+
 		long tini = time(nullptr);
 
 		Evaluation* e0 = &e.clone();
 
-		ls.exec(s, e, timelimit, target_f);
+		ls.exec(s, e, sosc);
 
 		long tnow = time(nullptr);
 
@@ -69,7 +71,7 @@ public:
 			//e0 = &e.clone();
             (*e0) = e;
 
-			ls.exec(s, e, timelimit, target_f);
+			ls.exec(s, e, sosc);
 
 			tnow = time(nullptr);
 		}	

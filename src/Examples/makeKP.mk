@@ -5,12 +5,12 @@ all: mctAppKP
 CC=g++
 
 mctAppKP:      mainKP.o  KPProblemInstance.o  KPEvaluator.o KPConstructiveGreedy.o KPConstructiveRandom.o  KPNSSeqBitFlip.o   KPScanner.o  
-	g++ $(GCC_FLAGS) mainKP.o  KPProblemInstance.o  KPEvaluator.o KPConstructiveGreedy.o KPConstructiveRandom.o KPNSSeqBitFlip.o   KPScanner.o -o app_KP
+	g++ $(GCC_FLAGS) mainKP.o  KPProblemInstance.o  KPEvaluator.o KPConstructiveGreedy.o KPConstructiveRandom.o KPNSSeqBitFlip.o   KPScanner.o  -o app_KP
 
 mainKP.o: mainKP.cpp  KP/Representation.h  KP/Solution.h 
 	g++ -c $(GCC_FLAGS) mainKP.cpp -o mainKP.o
 	
-KPProblemInstance.o: KP/ProblemInstance.cpp KP/ProblemInstance.h
+KPProblemInstance.o: KP/ProblemInstance.cpp KP/ProblemInstance.h 
 	g++ -c $(GCC_FLAGS) KP/ProblemInstance.cpp -o KPProblemInstance.o
 	
 KPEvaluator.o: KP/Evaluator.cpp KP/Evaluator.h
@@ -28,9 +28,11 @@ KPNSSeqBitFlip.o: KP/NSSeqBitFlip.cpp KP/NSSeqBitFlip.h
 KPScanner.o: ../OptFrame/Scanner++/Scanner.cpp
 	g++ -c $(GCC_FLAGS) ../OptFrame/Scanner++/Scanner.cpp -o KPScanner.o
 
+#KPprintable.o: ../OptFrame/Util/printable.cpp
+#	g++ -c $(GCC_FLAGS) ../OptFrame/Util/printable.cpp -o KPprintable.o
 
 
-GCC_FLAGS= -g -Wall -O3 --std=c++11
+GCC_FLAGS= -g -Wall -O3 --std=c++11 #--std=c++17 -fconcepts
 
 .PHONY: all clean
 	

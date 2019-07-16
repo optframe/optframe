@@ -12,7 +12,7 @@ ConstructiveRandom::~ConstructiveRandom()
 }
 
 Solution<RepKP, MY_ADS>*
-ConstructiveRandom::generateSolution(double timelimit) override
+ConstructiveRandom::generateSolution(double timelimit)
 {
    srand(5);
    RepKP newRep(pKP.N);

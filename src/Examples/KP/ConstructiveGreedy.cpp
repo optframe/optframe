@@ -12,7 +12,7 @@ ConstructiveGreedy::~ConstructiveGreedy()
 }
 
 Solution<RepKP, MY_ADS>*
-ConstructiveGreedy::generateSolution(double timelimit) override
+ConstructiveGreedy::generateSolution(double timelimit)
 {
    RepKP newRep;
 

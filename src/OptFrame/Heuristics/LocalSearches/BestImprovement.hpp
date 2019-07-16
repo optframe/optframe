@@ -54,15 +54,18 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, SOSC& sosc) override
 	{
 		Evaluation e = eval.evaluateSolution(s);
 
-		exec(s, e, timelimit, target_f);
+		exec(s, e, sosc);
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation& e, SOSC& sosc) override
 	{
+      //double timelimit = sosc.timelimit;
+      //double target_f = sosc.target_f;
+
 		if(Component::information)
 			cout << "BI::starts for " << nsSeq.toString() << endl;
 

@@ -11,7 +11,7 @@ MyEvaluator::~MyEvaluator()
 {
 }
 
-Evaluation& MyEvaluator::evaluate(const RepKP& rep)
+Evaluation MyEvaluator::evaluate(const RepKP& rep, const MY_ADS*) 
 {
     double fo = 0; // parcela viável
     for(int i=0; i<pKP.N; i++)

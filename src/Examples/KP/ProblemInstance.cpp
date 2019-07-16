@@ -1,6 +1,9 @@
 #include "ProblemInstance.h"
 
+#include "../../OptFrame/Util/printable.h"
+
 using namespace KP;
+using namespace optframe;
 
 ProblemInstance::ProblemInstance(Scanner& scanner)
 {
@@ -14,8 +17,8 @@ ProblemInstance::ProblemInstance(Scanner& scanner)
     W = scanner.nextDouble();
 
     cout << "N=" << N << endl;
-    cout << "profit:" << p << endl;
-    cout << "weight:" << w << endl;
+    cout << "profit:" << toString(p) << endl;
+    cout << "weight:" << toString(w) << endl;
     cout << "W=" << W << endl;
 }
 	
