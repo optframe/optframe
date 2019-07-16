@@ -137,7 +137,7 @@ public:
          random_keys& rk = p.at(i).getR();
          pair<Evaluation, Solution<R>*> pe = decoder.decode(rk);
          p.setFitness(i, pe.first.evaluation());
-         delete &pe.first;
+         //delete &pe.first;
          if (pe.second)
             delete pe.second;
       }
