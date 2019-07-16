@@ -114,20 +114,17 @@ main(int argc, char** argv)
    EvaluatorPermutationRandomKeys eprk(eval, 0, tsp.p->n - 1);
    BRKGA<RepTSP> brkga(eprk, tsp.p->n, 10000, 10, 0.4, 0.3, 0.6);
 
-   pair<Solution<random_keys>&, Evaluation&>* r2 = brkga.search();
+   SOSC sosc;
+   pair<Solution<random_keys>, Evaluation>* r2 = brkga.search(sosc);
    r2->first.print();
 
-   pair<Evaluation&, Solution<vector<int>>*> pd = eprk.decode(r2->first.getR());
+   pair<Evaluation, Solution<vector<int>>*> pd = eprk.decode(r2->first.getR());
    pd.second->print();
    if (eval.verify(pd.second->getR()))
       cout << "CHECK: OK" << endl;
    pd.first.print();
-   delete &pd.first;
-   delete pd.second;
-
+   
    r2->second.print();
-   delete &r2->first;
-   delete &r2->second;
    delete r2;
 
    cout << "end BRKGA tests" << endl;
@@ -166,7 +163,10 @@ main(int argc, char** argv)
 
    cout << "will run ils" << endl;
    Timer tim;
-   pair<Solution<RepTSP>&, Evaluation&>& psol = *ils.search(1000, 0, NULL, NULL);
+   SOSC soscILS;
+   soscILS.timelimit = 1000;
+   soscILS.target_f = 0;
+   pair<Solution<RepTSP>, Evaluation>& psol = *ils.search(soscILS, NULL, NULL);
    cout << tim.now() << " secs" << endl;
 
    psol.first.print();
@@ -189,7 +189,10 @@ main(int argc, char** argv)
 
    BasicVNS<RepTSP> vns(eval, random, v_ns, v_nsseq);
    vns.setMessageLevel(3); // INFORMATION
-   pair<Solution<RepTSP>&, Evaluation&>& psol2 = *vns.search(0, 8000, NULL, NULL);
+   SOSC soscVNS;
+   soscVNS.timelimit = 0;
+   soscVNS.target_f = 8000;
+   pair<Solution<RepTSP>, Evaluation>& psol2 = *vns.search(sosc, NULL, NULL);
    psol2.first.print();
    psol2.second.print();
 

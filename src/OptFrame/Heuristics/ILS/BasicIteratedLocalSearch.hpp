@@ -63,16 +63,16 @@ public:
 		return iter;
 	}
 
-	virtual void localSearch(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
+	virtual void localSearch(Solution<R, ADS>& s, Evaluation& e, SOSC& sosc) override
 	{
-		ls.exec(s, e, timelimit, target_f);
+		ls.exec(s, e, sosc);
 	}
 
-	virtual void perturbation(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f, BasicHistory& history)
+	virtual void perturbation(Solution<R, ADS>& s, Evaluation& e, SOSC& sosc, BasicHistory& history) override
 	{
 		int iter = history;
 
-		p.perturb(s, e, timelimit, target_f);
+		p.perturb(s, e, sosc);
 
 		// Incrementa a iteracao
 		iter++;

@@ -47,20 +47,19 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, SOSC& sosc)
 	{
-		Evaluation& e = eval.evaluate(s);
-		exec(s, e, timelimit, target_f);
-		delete &e;
+		Evaluation e = eval.evaluateSolution(s);
+		exec(s, e, sosc);
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation& e, SOSC& sosc)
 	{
 		Solution<R, ADS>& s2 = s.clone();
 		Evaluation& e2   = e.clone();
 
-		ls1.exec(s, e, timelimit, target_f);
-		ls2.exec(s2, e2, timelimit, target_f);
+		ls1.exec(s, e, sosc);
+		ls2.exec(s2, e2, sosc);
 
 		if(!eval.equals(e, e2))
 		{

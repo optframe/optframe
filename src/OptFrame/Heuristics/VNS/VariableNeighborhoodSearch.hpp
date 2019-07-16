@@ -61,11 +61,12 @@ public:
 
 	virtual void shake(Solution<R, ADS>& s, Evaluation& e, unsigned int k_shake, double timelimit, double target_f)
 	{
-		Move<R, ADS>* move = vshake.at(k_shake)->validMove(s);
+		Move<R, ADS>* move = vshake.at(k_shake)->validRandomMoveSolution(s);
 		if(move)
 		{
-			Component::safe_delete(move->apply(e, s));
-			evaluator.evaluate(e, s); // refresh 'e'
+         Move<R,ADS>* rev = move->applyUpdateSolution(e, s);
+			Component::safe_delete(rev);
+			evaluator.reevaluateSolution(e, s); // refresh 'e'
 			delete move;
 		}
 	}
@@ -89,16 +90,18 @@ public:
 
 	virtual LocalSearch<R, ADS>& buildSearch(unsigned k_search) = 0;
 
-	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0,  const Solution<R, ADS>* _s = nullptr,  const Evaluation* _e = nullptr)
+	pair<Solution<R, ADS>, Evaluation>* search(SOSC& sosc,  const Solution<R, ADS>* _s = nullptr,  const Evaluation* _e = nullptr) override
 	{
+      double timelimit = sosc.timelimit;
+      double target_f = sosc.target_f;
 		if(timelimit == 0)
 			timelimit = 36000; // 10 hours
 		cout << id() << " search(target=" << target_f << ", timelimit=" << timelimit << ")" << endl;
 
 		Timer tnow;
 
-		Solution<R, ADS>& sStar = constructive.generateSolution();
-		Evaluation&   eStar = evaluator.evaluate(sStar);
+		Solution<R, ADS>& sStar = *constructive.generateSolution(sosc.timelimit);
+		Evaluation   eStar = evaluator.evaluateSolution(sStar);
 
 		if(Component::information)
 			cout << "VNS starts: " << eStar.evaluation() << endl;
@@ -115,7 +118,7 @@ public:
 				shake(s, e, k, timelimit, target_f);
 
 				LocalSearch<R, ADS>& improve = buildSearch(k);
-				improve.exec(s, e, timelimit, target_f);
+				improve.exec(s, e, sosc);
 				delete& improve; // save trajectory history?
 
 				pair<pair<Solution<R, ADS>&, Evaluation&>, unsigned int> nc = neighborhoodChange(sStar, eStar, s, e, k);
@@ -133,7 +136,7 @@ public:
 			}
 		}
 
-		return new pair<Solution<R, ADS>&, Evaluation&> (sStar, eStar);
+		return new pair<Solution<R, ADS>, Evaluation> (sStar, eStar);
 	}
 
 	static string idComponent()

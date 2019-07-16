@@ -207,12 +207,12 @@ public:
 				sum += pNS[x].second;
 			}
 
-			Move<R, ADS>* m = ns[x]->validMove(s);
+			Move<R, ADS>* m = ns[x]->validRandomMoveSolution(s);
 
 			if (m)
 			{
 				a++;
-				Component::safe_delete(m->apply(e, s));
+				Component::safe_delete(m->applyUpdateSolution(e, s));
 			}
 			else
 				if(Component::warning)
@@ -221,7 +221,7 @@ public:
 			delete m;
 		}
 
-		evaluator.evaluate(e, s); // updates 'e'
+		evaluator.reevaluateSolution(e, s); // updates 'e'
 	}
 
 	static string idComponent()

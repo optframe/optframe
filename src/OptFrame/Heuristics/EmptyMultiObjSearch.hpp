@@ -42,7 +42,7 @@ public:
 	{
 	}
 
-	Pareto<R, ADS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS>* _pf = nullptr)
+	Pareto<R, ADS>* search(MOSC& mosc, Pareto<R, ADS>* _pf = nullptr) override
 	{
 		cout << "WARNING: RETURNING A EmptyMultiObjSearch!" << endl;
 		return nullptr;

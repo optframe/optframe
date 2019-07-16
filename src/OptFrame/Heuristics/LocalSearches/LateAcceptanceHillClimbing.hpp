@@ -56,17 +56,18 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, SOSC& sosc)
 	{
-		Evaluation& e = ev.evaluate(s);
+		Evaluation e = ev.evaluateSolution(s);
 
-		exec(s, e, timelimit, target_f);
-
-		delete &e;
+		exec(s, e, sosc);
 	}
 
-	virtual void exec(Solution<R, ADS>& sStar, Evaluation& eStar, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& sStar, Evaluation& eStar, SOSC& sosc) override
 	{
+      double timelimit = sosc.timelimit;
+      double target_f = sosc.target_f;
+
 		long tini = time(nullptr);
 
 #ifdef BRAND_NEW
@@ -90,7 +91,7 @@ public:
 			// choose random neighborhood
 			int ns_k = rand() % lns.size();
 
-			Move<R, ADS>* move = lns[ns_k]->validMove(s);
+			Move<R, ADS>* move = lns[ns_k]->validRandomMoveSolution(s);
 	
 			if (!move)
 			{
@@ -98,9 +99,10 @@ public:
 				lns[ns_k]->print();
 			}
 
-			if (move && move->canBeApplied(s))
+			if (move && move->canBeAppliedToSolution(s))
 			{
-				MoveCost& cost = ev.moveCost(e, *move, s);
+            bool mayEstimate = false;
+				MoveCost& cost = *ev.moveCost(e, *move, s, mayEstimate);
 
 				// test for current index
 #ifdef BRAND_NEW
@@ -109,8 +111,8 @@ public:
 				if (ev.betterThan(cost.cost()+e.evaluation(), eList[index]))
 #endif
 				{
-					Component::safe_delete(move->apply(e, s));
-					ev.evaluate(e, s);
+					Component::safe_delete(move->applyUpdateSolution(e, s));
+					ev.reevaluateSolution(e, s);
 
 #ifdef BRAND_NEW
 					delete eList[index];

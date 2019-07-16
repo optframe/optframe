@@ -42,7 +42,7 @@ public:
 	{
 	}
 
-	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0,  const Solution<R, ADS>* _s = nullptr,  const Evaluation* _e = nullptr)
+	pair<Solution<R, ADS>, Evaluation>* search(SOSC& sosc,  const Solution<R, ADS>* _s = nullptr,  const Evaluation* _e = nullptr) override
 	{
 		cout << "WARNING: RETURNING A EmptySingleObjSearch!" << endl;
 		return nullptr;
