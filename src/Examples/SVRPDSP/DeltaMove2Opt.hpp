@@ -53,9 +53,10 @@ public:
 	{
 	}
 
-   virtual bool canBeApplied(const RepSVRPDSP& rep, const AdsSVRPDSP& ads)
+   virtual bool canBeApplied(const RepSVRPDSP& rep, const AdsSVRPDSP* _ads) override
    {
-      if(!super::canBeApplied(rep, ads))
+      const AdsSVRPDSP& ads = *_ads;
+      if(!super::canBeApplied(rep, _ads))
          return false;
 
       int i = p1;
@@ -81,10 +82,11 @@ public:
    }
 
 
-   virtual Move<RepSVRPDSP, AdsSVRPDSP>* apply(RepSVRPDSP& rep, AdsSVRPDSP& ads)
+   virtual Move<RepSVRPDSP, AdsSVRPDSP>* apply(RepSVRPDSP& rep, AdsSVRPDSP* _ads) override
    {
+      AdsSVRPDSP& ads = *_ads;
       // apply move
-      Move<RepSVRPDSP, AdsSVRPDSP>& rev = *super::apply(rep, ads);
+      Move<RepSVRPDSP, AdsSVRPDSP>& rev = *super::apply(rep, _ads);
       MySolution::syncADS(*svrpdsp, rep, ads); // syncronize ADS
 
       super& sRev = (super&)rev;
@@ -94,7 +96,7 @@ public:
       return myMove;
    }
 
-	MoveCost* cost(const Evaluation& e, const RepSVRPDSP& rep, const AdsSVRPDSP& ads)
+	MoveCost* cost(const Evaluation& e, const RepSVRPDSP& rep, const AdsSVRPDSP* ads, bool mayEstimate) override
 	{
 		return NULL;
 	}

@@ -30,10 +30,14 @@
 // basic elements of an OptFrame Component
 #include "Component.hpp"
 
-#include "BaseSolution.h" // concepts c++20
-
 namespace optframe
 {
+
+// the default ADS type is 'int'
+// adopting 'void' type would cause troubles in constructor/copy/move operations
+// if not used, it can be ignored with few impacts (hoping compiler will help us!)
+typedef int OPTFRAME_DEFAULT_ADS;
+typedef OPTFRAME_DEFAULT_ADS OptFrameADS; // more beautiful :)
 
 //! \english The Solution class is a container class for the Representation structure (R) and Advanced Data Structure (ADS). \endenglish \portuguese A classe Solution é uma classe contêiner para a Representação (R) e Estrutura de Dados Avançada (ADS). \endportuguese
 
@@ -55,12 +59,11 @@ namespace optframe
  \endportuguese
  */
 
-
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 //class Solution final : public Component
 // TODO: replace final by concept
 //class Solution final : public Component
-class Solution: public Component
+class Solution : public Component
 {
 protected:
 	R* r;     // representation

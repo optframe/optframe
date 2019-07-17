@@ -55,7 +55,7 @@ public:
 	{
 	}
 
-	Solution<RepSVRPDSP, AdsSVRPDSP>& generateSolution()
+	Solution<RepSVRPDSP, AdsSVRPDSP>* generateSolution(double timelimit) override
 	{
 		Scanner tsp(str_tsp);
 		Scanner knapsack(str_knapsack);
@@ -235,7 +235,7 @@ public:
          exit(1);
       }
 
-      return *s;
+      return s;
 	}
 
 };

@@ -34,16 +34,17 @@ public:
 	{
 	}
 
-	Evaluation& evaluate(const RepSVRPDSP& rep)
+	Evaluation evaluate(const RepSVRPDSP& rep)
 	{
 		cout << "DEPRECATED:DO NOT USE THIS METHOD!" << endl;
 		exit(1);
 		const AdsSVRPDSP ads1;
-		return evaluate(rep, ads1);
+		return evaluate(rep, &ads1);
 	}
 
-	Evaluation& evaluate(const RepSVRPDSP& rep2, const AdsSVRPDSP& ads)
+	Evaluation evaluate(const RepSVRPDSP& rep2, const AdsSVRPDSP* _ads) override
 	{
+      const AdsSVRPDSP& ads = *_ads;
 #ifdef  ALL_INTEGER
                 int INF_CAP_WEIGHT = 100000;
                 int INF_NO_DELIVERY_WEIGHT = 100000*100;

@@ -48,28 +48,26 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, SOSC& sosc) override
 	{
-		Evaluation& e = eval.evaluate(s);
+		Evaluation e = eval.evaluateSolution(s);
 
-		exec(s, e, timelimit, target_f);
-
-		delete &e;
+		exec(s, e, sosc);
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, Evaluation& e, SOSC& sosc) override
 	{
 		Timer t;
 
 		//TODO: use block iterator and manage each partial local optima discovered
 
-		NSBlockIterator<R, ADS>& itb = nsSeq.getBlockIterator(s);
+		NSBlockIterator<R, ADS>& itb = *nsSeq.getBlockIterator(s);
 
 		cout << "TODO: BestImprovementLOS UNIMPLEMENTED!" << endl;
 
 		return;
 
-		NSIterator<R, ADS>& it = nsSeq.getIterator(s);
+		NSIterator<R, ADS>& it = *nsSeq.getIteratorSolution(s);
 
 		it.first();
 
@@ -79,7 +77,7 @@ public:
 			return;
 		}
 
-		Move<R, ADS>* bestMove = &it.current();
+		Move<R, ADS>* bestMove = it.current();
 
 		/*if(e.getLocalOptimumStatus(bestMove->id()))
 		{
@@ -94,13 +92,13 @@ public:
 
 		while (true)
 		{
-			while (!bestMove->canBeApplied(s))
+			while (!bestMove->canBeAppliedToSolution(s))
 			{
 				delete bestMove;
 				it.next();
 				if (!it.isDone())
 				{
-					bestMove = &it.current();
+					bestMove = it.current();
 				}
 				else
 				{
@@ -109,7 +107,7 @@ public:
 				}
 			}
 
-			bestCost = &eval.moveCost(e, *bestMove, s);
+			bestCost = eval.moveCost(e, *bestMove, s);
 			if (eval.isImprovement(*bestCost))
 			{
 				it.next();
@@ -123,7 +121,7 @@ public:
 
 				if (!it.isDone())
 				{
-					bestMove = &it.current();
+					bestMove = it.current();
 				}
 				else
 				{
@@ -139,10 +137,11 @@ public:
 		//it.next();
 		while (!it.isDone())
 		{
-			Move<R, ADS>* move = &it.current();
-			if (move->canBeApplied(s))
+			Move<R, ADS>* move = it.current();
+			if (move->canBeAppliedToSolution(s))
 			{
-				MoveCost* cost = &eval.moveCost(e, *move, s);
+            bool mayEstimate = false;
+				MoveCost* cost = eval.moveCost(e, *move, s, mayEstimate);
 
 				if (eval.betterThan(*cost, *bestCost))
 				{
@@ -173,9 +172,9 @@ public:
 				// TODO: have to test if bestMove is ACTUALLY an improvement move...
 			}
 
-			Component::safe_delete(bestMove->apply(e, s));
+			Component::safe_delete(bestMove->applyUpdateSolution(e, s));
 
-			eval.evaluate(e, s); // updates 'e'
+			eval.reevaluateSolution(e, s); // updates 'e'
 			//e.setLocalOptimumStatus(bestMove->id(), false); //set NS 'id' out of Local Optimum
 		}
 		else{

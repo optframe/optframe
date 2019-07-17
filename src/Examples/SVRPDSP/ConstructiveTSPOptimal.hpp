@@ -41,7 +41,7 @@ public:
 	{
 	}
 
-	Solution<RepSVRPDSP, AdsSVRPDSP>& generateSolution()
+	Solution<RepSVRPDSP, AdsSVRPDSP>* generateSolution(double timelimit) override
 	{
 		RepSVRPDSP rep;
 
@@ -107,7 +107,7 @@ public:
          exit(1);
       }
 
-      return *s;
+      return s;
 	}
 
 };

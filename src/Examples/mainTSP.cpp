@@ -46,9 +46,18 @@ using namespace scannerpp;
 
 #include "../OptFrame/Util/PackTypes.hpp"
 
+template<BaseSolution<double> S>
+class TestSol
+{
+public:
+};
+
 int
 main(int argc, char** argv)
 {
+   TestSol<IsSolution<double>> t;
+   TestSol<Solution<double>> t1;
+
    Loader<RepTSP> optframe;
    TSPProblemCommand tsp;
 
@@ -123,7 +132,7 @@ main(int argc, char** argv)
    if (eval.verify(pd.second->getR()))
       cout << "CHECK: OK" << endl;
    pd.first.print();
-   
+
    r2->second.print();
    delete r2;
 

@@ -90,14 +90,13 @@ int main(int argc, char **argv)
 	S_TSPEvaluator* evlr_tsp = new S_TSPEvaluator(*p);
 	S_KNPEvaluator* evlr_knp = new S_KNPEvaluator(*p);
 
-	Solution<RepSVRPDSP, AdsSVRPDSP>& s_lb = is_tspopt->generateSolution();
+	Solution<RepSVRPDSP, AdsSVRPDSP>& s_lb = *is_tspopt->generateSolution(1000); // time 1000
 	cout << "Possible optimal solution" << endl;
 	//s_lb.print();
 	//s_lb.getADS().print();
-	Evaluation& etmp = evlr->evaluate(s_lb);
+	Evaluation etmp = evlr->evaluateSolution(s_lb);
 	etmp.print();
-	delete &etmp;
-
+	
 	// ===================================================
 	// ===================================================
 
@@ -106,12 +105,10 @@ int main(int argc, char **argv)
 
 	// Lower bound estimative
 
-	Evaluation& etsp1 = evlr_tsp->evaluate(s_lb);
+	Evaluation etsp1 = evlr_tsp->evaluateSolution(s_lb);
 	double tsp_value = etsp1.evaluation();
-	Evaluation& eknp1 = evlr_knp->evaluate(s_lb);
+	Evaluation eknp1 = evlr_knp->evaluateSolution(s_lb);
 	double knp_value = eknp1.evaluation();
-	delete &etsp1;
-	delete &eknp1;
 
 	double lower_bound = tsp_value - knp_value;
 	cout << "lower bound: " << lower_bound << " (" << tsp_value << " - " << knp_value << ")" << endl;
@@ -119,22 +116,21 @@ int main(int argc, char **argv)
 	fprintf(ftsp, "%.2f\n", tsp_value);
 	fclose(ftsp);
 	cout << "tsp: ";
-	Evaluation& etsp = evlr_tsp->evaluate(s_lb);
+	Evaluation etsp = evlr_tsp->evaluateSolution(s_lb);
 	etsp.print();
-	delete &etsp;
-
+	
 	FILE* fknp = fopen("lower_knp.out", "a");
 	fprintf(fknp, "%.2f\n", knp_value);
 	fclose(fknp);
 	cout << "knapsack: ";
-	Evaluation& eknp = evlr_knp->evaluate(s_lb);
+	Evaluation eknp = evlr_knp->evaluateSolution(s_lb);
 	eknp.print();
-	delete &eknp;
+	
 
 	//s_lb.print();
-	Evaluation& e = evlr->evaluate(s_lb);
+	Evaluation e = evlr->evaluateSolution(s_lb);
 	e.print();
-	delete &e;
+	
 	cout << endl;
 	delete &s_lb;
 
