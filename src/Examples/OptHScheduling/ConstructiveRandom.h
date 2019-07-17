@@ -59,7 +59,7 @@ public:
 	{
 	}
 
-	Solution<RepOptHS>* generateSolution(double timelimit) override
+	SolutionOptHS* generateSolution(double timelimit) override
 	{
 		RepOptHS newRep;
 
@@ -69,7 +69,7 @@ public:
 
 		rg.shuffle(newRep); // shuffle elements of newRep
 
-		return new Solution<RepOptHS>(newRep);
+		return new SolutionOptHS(newRep);
 	}
 
 };

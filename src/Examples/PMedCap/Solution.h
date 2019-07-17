@@ -26,7 +26,7 @@
 
 using namespace optframe;
 
-typedef Solution<RepPCAP> SolutionPCAP;
+typedef CopySolution<RepPCAP> SolutionPCAP;
 
 #endif /*PCAP_SOLUTION_H_*/
 

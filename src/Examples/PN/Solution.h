@@ -8,7 +8,7 @@ using namespace optframe;
 
 typedef int MY_ADS;
 
-typedef Solution<RepPN, MY_ADS> SolutionPN;
+typedef CopySolution<RepPN, MY_ADS> SolutionPN;
 
 #endif /*PN_SOLUTION_H_*/
 

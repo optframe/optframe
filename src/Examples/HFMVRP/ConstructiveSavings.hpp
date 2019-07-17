@@ -22,7 +22,7 @@ using namespace std;
 namespace HFMVRP
 {
 
-class ConstructiveSavings: public Constructive<RepHFMVRP>
+class ConstructiveSavings: public Constructive<RepHFMVRP, AdsHFMVRP>
 {
 private:
 	ProblemInstance& pHFMVRP;
@@ -361,7 +361,7 @@ public:
 	{
 	}
 
-	Solution<RepHFMVRP>* generateSolution(double timelimit) override
+	SolutionHFMVRP* generateSolution(double timelimit) override
 	{
 		vector<vector<int> > newRep;
 		bool feasibleSol = false;
@@ -450,7 +450,7 @@ public:
 		}
 		cout << "teste" << endl;
 		getchar();
-		return new Solution<RepHFMVRP> (newRep);
+		return new SolutionHFMVRP(newRep);
 	}
 
 };
