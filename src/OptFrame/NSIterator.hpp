@@ -64,7 +64,7 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class NSIterator: public Component
 {
 public:
@@ -74,14 +74,14 @@ public:
 
 	virtual void first() = 0;
 
-	virtual void firstValid(const Solution<R, ADS>& s)
+	virtual void firstValid(const S& s)
 	{
 		first();
 
 		while(!isDone())
 		{
 			// TODO: verify if it's not null!
-			Move<R, ADS>& m = *current();
+			Move<R, ADS, S>& m = *current();
 			if(m.canBeAppliedToSolution(s))
 			{
 				delete &m;
@@ -95,14 +95,14 @@ public:
 
 	virtual void next() = 0;
 
-	virtual void nextValid(const Solution<R, ADS>& s)
+	virtual void nextValid(const S& s)
 	{
 		next();
 
 		while(!isDone())
 		{
 			// TODO: verify if it's not null!
-			Move<R, ADS>& m = *current();
+			Move<R, ADS, S>& m = *current();
 			if(m.canBeAppliedToSolution(s))
 			{
 				delete &m;
@@ -115,10 +115,10 @@ public:
 	}
 
 	virtual bool isDone() = 0;
-	virtual Move<R, ADS>* current() = 0;
+	virtual Move<R, ADS, S>* current() = 0;
 
     // INSERT LOCAL OPTIMUM INFORMATION IN SOLUTION (IN ADS? USER DECIDES.)
-    virtual void setLOS(LOS status, Solution<R, ADS>& s)
+    virtual void setLOS(LOS status, S& s)
     {
     }
 

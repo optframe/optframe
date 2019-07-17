@@ -21,7 +21,7 @@ using namespace std;
 
 namespace SVRPDSP {
 
-class ConstructiveRandom : public Constructive<RepSVRPDSP, AdsSVRPDSP>
+class ConstructiveRandom : public Constructive<RepSVRPDSP, AdsSVRPDSP, MySolution>
 {
 private:
    ProblemInstance& pSVRPDSP;
@@ -39,7 +39,7 @@ public:
    {
    }
 
-   Solution<RepSVRPDSP, AdsSVRPDSP>* generateSolution(double timelimit) override
+   MySolution* generateSolution(double timelimit) override
    {
       vector<int> d_cust(pSVRPDSP.n);
       for (unsigned int i = 0; i < pSVRPDSP.n; i++)

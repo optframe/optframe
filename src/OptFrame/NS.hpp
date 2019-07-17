@@ -30,7 +30,7 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class NS: public Component
 {
 public:
@@ -40,22 +40,22 @@ public:
 	}
 
 public:
-	Move<R, ADS>* randomMoveSolution(const Solution<R, ADS>& s)
+	Move<R, ADS, S>* randomMoveSolution(const S& s)
 	{
 		return randomMove(s.getR(), s.getADSptr());
 	}
 
-	Move<R, ADS>* validRandomMoveSolution(const Solution<R, ADS>& s)
+	Move<R, ADS, S>* validRandomMoveSolution(const S& s)
 	{
 		return validRandomMove(s.getR(), s.getADSptr());
 	}
 
 ////protected:
-	virtual Move<R, ADS>* randomMove(const R&, const ADS*) = 0;
+	virtual Move<R, ADS, S>* randomMove(const R&, const ADS*) = 0;
 
-	virtual Move<R, ADS>* validRandomMove(const R& r, const ADS* ads)
+	virtual Move<R, ADS, S>* validRandomMove(const R& r, const ADS* ads)
 	{
-		Move<R, ADS>* moveValid = this->randomMove(r, ads);
+		Move<R, ADS, S>* moveValid = this->randomMove(r, ads);
 		if(moveValid->canBeApplied(r, ads))
 			return moveValid;
 		else

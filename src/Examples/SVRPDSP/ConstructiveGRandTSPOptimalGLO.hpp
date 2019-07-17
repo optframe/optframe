@@ -22,7 +22,7 @@ using namespace std;
 namespace SVRPDSP
 {
 
-class ConstructiveGRandTSPOptimalGLO: public Constructive<RepSVRPDSP, AdsSVRPDSP>
+class ConstructiveGRandTSPOptimalGLO: public Constructive<RepSVRPDSP, AdsSVRPDSP, MySolution>
 {
 private:
 	ProblemInstance& pSVRPDSP;
@@ -55,7 +55,7 @@ public:
 	{
 	}
 
-	Solution<RepSVRPDSP, AdsSVRPDSP>* generateSolution(double timelimit) override
+	MySolution* generateSolution(double timelimit) override
 	{
 		Scanner tsp(str_tsp);
 		Scanner knapsack(str_knapsack);

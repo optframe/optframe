@@ -23,17 +23,18 @@
 
 #include "Component.hpp"
 #include "Solution.hpp"
+#include "Solutions/CopySolution.hpp"
 
 #include "Scanner++/Scanner.h"
 
 using namespace scannerpp;
 
-template<class R, class ADS> class HeuristicFactory;
+template<class R, class ADS, BaseSolution<R,ADS> S> class HeuristicFactory;
 
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class ComponentBuilder : public Component
 {
 public:
@@ -41,7 +42,7 @@ public:
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "") = 0;
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "") = 0;
 
 	virtual vector<pair<string, string> > parameters() = 0;
 

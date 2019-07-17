@@ -30,6 +30,7 @@
 #include "Component.hpp"
 
 #include "Solution.hpp"
+#include "Solutions/CopySolution.hpp"
 #include "Evaluation.hpp"
 
 //#include "Command.hpp"
@@ -37,12 +38,12 @@
 using namespace std;
 using namespace scannerpp;
 
-template<class R, class ADS> class HeuristicFactory;
+template<class R, class ADS, BaseSolution<R,ADS> S> class HeuristicFactory;
 
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class Action
 {
 public:
@@ -60,11 +61,11 @@ public:
 
 	virtual bool handleAction(string action) = 0;
 
-	virtual bool doAction(string content, HeuristicFactory<R, ADS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary) = 0;
+	virtual bool doAction(string content, HeuristicFactory<R, ADS, S>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary) = 0;
 
-	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS>& hf, map<string, string>& d) = 0;
+	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, S>& hf, map<string, string>& d) = 0;
 
-	static bool addAndRegister(Scanner& scanner, Component& comp, HeuristicFactory<R, ADS>& hf, map<string, string>& d)
+	static bool addAndRegister(Scanner& scanner, Component& comp, HeuristicFactory<R, ADS, S>& hf, map<string, string>& d)
 	{
 		int index = hf.addComponent(comp);
 
@@ -81,7 +82,7 @@ public:
 			d[varName] = sscomp.str(); // TODO: fix!!
 
 			return true;
-			//return Command<R, ADS>::defineText(varName, sscomp.str(), d);
+			//return Command<R, ADS, S>::defineText(varName, sscomp.str(), d);
 		}
 
 		return true;
@@ -96,7 +97,7 @@ public:
 			d[varName] = value; // TODO: fix!!
 
 			return true;
-			//return Command<R, ADS>::defineText(varName, sscomp.str(), d);
+			//return Command<R, ADS, S>::defineText(varName, sscomp.str(), d);
 		}
 		else
 		{
@@ -131,8 +132,8 @@ public:
 
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class ComponentAction: public Action<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class ComponentAction: public Action<R, ADS, S>
 {
 public:
 
@@ -160,7 +161,7 @@ public:
 		return (action == "log") || (action == "print") || (action == "setVerboseLevel") || (action == "getVerboseLevel");
 	}
 
-	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS>& hf, map<string, string>& d)
+	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, S>& hf, map<string, string>& d)
 	{
 		if(!handleComponent(type))
 		{
@@ -192,10 +193,10 @@ public:
 
 		// add new component
 		Scanner scanner(variable);
-		return ComponentAction<R, ADS>::addAndRegister(scanner, *final, hf, d);
+		return ComponentAction<R, ADS, S>::addAndRegister(scanner, *final, hf, d);
 	}
 
-	virtual bool doAction(string content, HeuristicFactory<R, ADS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	virtual bool doAction(string content, HeuristicFactory<R, ADS, S>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 		//cout << "Evaluation::doAction '" << content << "'" << endl;
 

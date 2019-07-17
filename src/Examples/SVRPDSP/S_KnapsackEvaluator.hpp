@@ -20,14 +20,14 @@
 namespace SVRPDSP
 {
 
-class S_KNPEvaluator: public Evaluator<RepSVRPDSP, AdsSVRPDSP>
+class S_KNPEvaluator: public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution>
 {
 private:
 	ProblemInstance& pSVRPDSP;
 
 public:
 
-	using Evaluator<RepSVRPDSP, AdsSVRPDSP>::evaluate;
+	using Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution>::evaluate;
 
 	S_KNPEvaluator(ProblemInstance& _pSVRPDSP) : // If necessary, add more parameters
 		pSVRPDSP(_pSVRPDSP)

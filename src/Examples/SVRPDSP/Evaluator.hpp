@@ -21,7 +21,7 @@
 namespace SVRPDSP
 {
 
-class SVRPDSPEvaluator: public Evaluator<RepSVRPDSP, AdsSVRPDSP>
+class SVRPDSPEvaluator: public Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution>
 {
 private:
 	ProblemInstance& pSVRPDSP;
@@ -30,10 +30,10 @@ private:
 
 public:
 
-	using Evaluator<RepSVRPDSP, AdsSVRPDSP>::evaluate;
+	using Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution>::evaluate;
 
 	SVRPDSPEvaluator(ProblemInstance& _pSVRPDSP) :
-			pSVRPDSP(_pSVRPDSP), Evaluator<RepSVRPDSP, AdsSVRPDSP>(true) // ALLOW COSTS
+			pSVRPDSP(_pSVRPDSP), Evaluator<RepSVRPDSP, AdsSVRPDSP, MySolution>(true) // ALLOW COSTS
 	{
 	}
 

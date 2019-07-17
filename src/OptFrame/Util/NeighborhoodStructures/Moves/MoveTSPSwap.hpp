@@ -28,8 +28,8 @@ using namespace std;
 
 // Working structure: vector<T>
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
-class MoveTSPSwap : public Move<vector<T>, ADS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>>
+class MoveTSPSwap : public Move<vector<T>, ADS, S>
 {
    typedef vector<T> Route;
 
@@ -67,7 +67,7 @@ public:
       return all_positive && size_ok && (rep.size() >= 2);
    }
 
-   Move<Route, ADS>* apply(Route& rep, ADS*) override
+   Move<Route, ADS, S>* apply(Route& rep, ADS*) override
    {
       T t = rep[p1];
       rep[p1] = rep[p2];
@@ -76,7 +76,7 @@ public:
       return new MoveTSPSwap(p1, p2);
    }
 
-   virtual bool operator==(const Move<Route, ADS>& _m) const
+   virtual bool operator==(const Move<Route, ADS, S>& _m) const
    {
       const MoveTSPSwap& m1 = (const MoveTSPSwap&)_m;
       return ((m1.p1 == p1) && (m1.p2 == p2));

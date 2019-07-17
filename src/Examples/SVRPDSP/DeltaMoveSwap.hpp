@@ -14,9 +14,9 @@ using namespace std;
 namespace SVRPDSP
 {
 
-class DeltaMoveSwap: public MoveTSPSwap<int, AdsSVRPDSP>
+class DeltaMoveSwap: public MoveTSPSwap<int, AdsSVRPDSP, MySolution>
 {
-	typedef MoveTSPSwap<int, AdsSVRPDSP> super;
+	typedef MoveTSPSwap<int, AdsSVRPDSP, MySolution> super;
 
 private:
 	ProblemInstance* svrpdsp;
@@ -80,11 +80,11 @@ public:
    }
 
 
-   virtual Move<RepSVRPDSP, AdsSVRPDSP>* apply(RepSVRPDSP& rep, AdsSVRPDSP* _ads) override
+   virtual Move<RepSVRPDSP, AdsSVRPDSP, MySolution>* apply(RepSVRPDSP& rep, AdsSVRPDSP* _ads) override
    {
       AdsSVRPDSP& ads = *_ads;
       // apply move
-      Move<RepSVRPDSP, AdsSVRPDSP>& rev = *super::apply(rep, _ads);
+      Move<RepSVRPDSP, AdsSVRPDSP, MySolution>& rev = *super::apply(rep, _ads);
       MySolution::syncADS(*svrpdsp, rep, ads); // syncronize ADS
 
       super& sRev = (super&)rev;
@@ -248,7 +248,7 @@ public:
 		return idComp;
 	}
 
-	virtual bool operator==(const Move<RepSVRPDSP, AdsSVRPDSP >& _m) const
+	virtual bool operator==(const Move<RepSVRPDSP, AdsSVRPDSP, MySolution>& _m) const
 	{
 		const DeltaMoveSwap& m1 = (const DeltaMoveSwap&) _m;
 		return (m1.p1 == p1) && (m1.p2 == p2);

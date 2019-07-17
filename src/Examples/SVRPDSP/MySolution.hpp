@@ -2,6 +2,7 @@
 #define SVRPDSP_SOLUTION_H_
 
 #include "../../OptFrame/Solution.hpp"
+#include "../../OptFrame/Solutions/CopySolution.hpp"
 #include "Representation.h"
 #include "ADS.h"
 
@@ -15,14 +16,14 @@ namespace SVRPDSP
 {
 ////static int mysolution_count = 0;
 
-class MySolution : public Solution<RepSVRPDSP, AdsSVRPDSP>
+class MySolution : public CopySolution<RepSVRPDSP, AdsSVRPDSP>
 {
 private:
    static const bool verbose = false;
 
 public:
    MySolution(RepSVRPDSP& r, AdsSVRPDSP& ads):
-      Solution<RepSVRPDSP, AdsSVRPDSP>(r, ads)
+      CopySolution<RepSVRPDSP, AdsSVRPDSP>(r, ads)
    {
 /*
        mysolution_count++;
@@ -40,7 +41,7 @@ public:
    }
 
    explicit MySolution(RepSVRPDSP& r):
-      Solution<RepSVRPDSP, AdsSVRPDSP>(r)
+      CopySolution<RepSVRPDSP, AdsSVRPDSP>(r)
    {
 /*
        mysolution_count++;
@@ -58,7 +59,7 @@ public:
    }
 
    MySolution(const MySolution& sol):
-      Solution<RepSVRPDSP, AdsSVRPDSP>(sol)
+      CopySolution<RepSVRPDSP, AdsSVRPDSP>(sol)
    {
 /*
        mysolution_count++;
@@ -217,7 +218,7 @@ public:
    void print() const
    {
       cout << "SVRPDSP Solution => ";
-      Solution<RepSVRPDSP, AdsSVRPDSP>::print();
+      CopySolution<RepSVRPDSP, AdsSVRPDSP>::print();
       //cout << "ADS: ";
       //getADS().print();
    }
@@ -236,7 +237,7 @@ public:
       return *this;
    }
 
-   Solution<RepSVRPDSP, AdsSVRPDSP>& operator=(const Solution<RepSVRPDSP, AdsSVRPDSP>& s)
+   CopySolution<RepSVRPDSP, AdsSVRPDSP>& operator=(const CopySolution<RepSVRPDSP, AdsSVRPDSP>& s)
    {
       //cout << "MyS: S=S" << endl;
       if(&s == this) // auto ref check
@@ -250,10 +251,10 @@ public:
       return *this;
    }
 
-   Solution<RepSVRPDSP, AdsSVRPDSP>& clone() const
+   CopySolution<RepSVRPDSP, AdsSVRPDSP>& clone() const
    {
       //cout << "MyS: clone()" << endl;
-      Solution<RepSVRPDSP, AdsSVRPDSP>* s = new MySolution(*this);
+      CopySolution<RepSVRPDSP, AdsSVRPDSP>* s = new MySolution(*this);
       return (*s);
    }
 

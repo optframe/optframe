@@ -90,7 +90,7 @@ int main(int argc, char **argv)
 	S_TSPEvaluator* evlr_tsp = new S_TSPEvaluator(*p);
 	S_KNPEvaluator* evlr_knp = new S_KNPEvaluator(*p);
 
-	Solution<RepSVRPDSP, AdsSVRPDSP>& s_lb = *is_tspopt->generateSolution(1000); // time 1000
+	MySolution& s_lb = *is_tspopt->generateSolution(1000); // time 1000
 	cout << "Possible optimal solution" << endl;
 	//s_lb.print();
 	//s_lb.getADS().print();
@@ -162,7 +162,7 @@ int main(int argc, char **argv)
 
 	//registerComponent(*new DeltaMove2Opt(5, 20, p), "OptFrame:Move", "move_2opt_5-20", hf, dictionary);
 
-	NSSeq<RepSVRPDSP, AdsSVRPDSP>* delta_swap = new NSSeqTSPSwap<int, AdsSVRPDSP, DeltaMoveSwap, ProblemInstance>(p);
+	NSSeq<RepSVRPDSP, AdsSVRPDSP, MySolution>* delta_swap = new NSSeqTSPSwap<int, AdsSVRPDSP, MySolution, DeltaMoveSwap, ProblemInstance>(p);
 	//if(!registerComponent(*delta_swap, "OptFrame:NS:NSSeq", "nsseq_delta_swap", hf, dictionary))
 	//   return false;
 
@@ -255,7 +255,7 @@ int main(int argc, char **argv)
 	 delete &s;
 	 */
 
-	BestImprovementLOS<RepSVRPDSP, AdsSVRPDSP> BILOS(*evlr, *delta_swap);
+	BestImprovementLOS<RepSVRPDSP, AdsSVRPDSP, MySolution> BILOS(*evlr, *delta_swap);
 
 	//cudaInitialize();
 	cout << "problem.SVRPDSP '" << path_p << "' loaded successfully" << endl;

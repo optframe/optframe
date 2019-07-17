@@ -23,40 +23,36 @@
 
 #include "Solution.hpp"
 
-namespace optframe
-{
+namespace optframe {
 
-
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R, ADS> S = Solution<R, ADS>>
 class Constructive : public Component
 {
 public:
-	virtual ~Constructive()
-	{
-	}
+   virtual ~Constructive()
+   {
+   }
 
-	// timelimit in seconds, accepting fractions (millisecs, ...)
-	virtual Solution<R, ADS>* generateSolution(double timelimit) = 0;
+   // timelimit in seconds, accepting fractions (millisecs, ...)
+   virtual S* generateSolution(double timelimit) = 0;
 
-    virtual bool compatible(string s)
-    {
-    	return ( s == idComponent() ) || (Component::compatible(s));
-    }
+   virtual bool compatible(string s)
+   {
+      return (s == idComponent()) || (Component::compatible(s));
+   }
 
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << Component::idComponent() << ":Constructive";
-		return ss.str();
-	}
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << Component::idComponent() << ":Constructive";
+      return ss.str();
+   }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
+   virtual string id() const
+   {
+      return idComponent();
+   }
 };
-
-
 }
 
 #endif /*OPTFRAME_CONSTRUCTIVE_HPP_*/

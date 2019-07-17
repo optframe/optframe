@@ -23,6 +23,7 @@
 
 #include "../../Move.hpp"
 #include "../../NSSeq.hpp"
+#include "../../Solution.hpp"
 
 #include "Moves/MoveTSPSwap.hpp"
 #include "NSIterators/IteratorTSPSwap.hpp"
@@ -77,8 +78,8 @@ using namespace std;
  \endportuguese
  */
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, MOVE, P> >
-class NSSeqTSPSwap: public NSSeq<vector<T>, ADS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P> >
+class NSSeqTSPSwap: public NSSeq<vector<T>, ADS, S>
 {
 	typedef vector<T> Route;
 
@@ -99,7 +100,7 @@ public:
 	//using NSSeq<vector<T>, ADS>::move;
 	//using NSSeq<vector<T>, ADS>::getIterator;
 
-	Move<Route, ADS>* randomMove(const Route& rep, const ADS*) override
+	Move<Route, ADS, S>* randomMove(const Route& rep, const ADS*) override
 	{
 		if (rep.size() < 2)
 			return new MOVE(-1, -1, p);
@@ -114,7 +115,7 @@ public:
 		return new MOVE(p1, p2, p);
 	}
 
-	virtual NSIterator<Route, ADS>* getIterator(const Route& r, const ADS*) override
+	virtual NSIterator<Route, ADS, S>* getIterator(const Route& r, const ADS*) override
 	{
 		return new NSITERATOR(r.size(), p);
 	}
@@ -122,7 +123,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << NSSeq<vector<T>, ADS>::idComponent() << ":NSSeqTSPSwap";
+		ss << NSSeq<vector<T>, ADS, S>::idComponent() << ":NSSeqTSPSwap";
 		return ss.str();
 	}
 
@@ -133,7 +134,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (NSSeq<vector<T>, ADS>::compatible(s));
+		return (s == idComponent()) || (NSSeq<vector<T>, ADS, S>::compatible(s));
 	}
 
 	virtual string toString() const

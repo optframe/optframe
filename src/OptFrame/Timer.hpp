@@ -125,15 +125,15 @@ public:
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class TimerBuilder : public ComponentBuilder<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class TimerBuilder : public ComponentBuilder<R, ADS, S>
 {
 public:
 	virtual ~TimerBuilder()
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
 		return new Timer;
 	}
@@ -152,7 +152,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS>::idComponent() << "Timer";
+		ss << ComponentBuilder<R, ADS, S>::idComponent() << "Timer";
 		return ss.str();
 	}
 

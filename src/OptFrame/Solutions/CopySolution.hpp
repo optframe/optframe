@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_SOLUTION_HPP_
-#define OPTFRAME_SOLUTION_HPP_
+#ifndef OPTFRAME_COPY_SOLUTION_HPP_
+#define OPTFRAME_COPY_SOLUTION_HPP_
 
 #include <cstdlib>
 #include <iostream>
@@ -28,42 +28,18 @@
 #include <assert.h>
 
 // basic elements of an OptFrame Component
-#include "Component.hpp"
+#include "../Component.hpp"
+
+#include "../BaseSolution.h"
+
+
+// copy-based solution
 
 namespace optframe
 {
 
-// the default ADS type is 'int'
-// adopting 'void' type would cause troubles in constructor/copy/move operations
-// if not used, it can be ignored with few impacts (hoping compiler will help us!)
-typedef int OPTFRAME_DEFAULT_ADS;
-typedef OPTFRAME_DEFAULT_ADS OptFrameADS; // more beautiful :)
-
-//! \english The Solution class is a container class for the Representation structure (R) and Advanced Data Structure (ADS). \endenglish \portuguese A classe Solution é uma classe contêiner para a Representação (R) e Estrutura de Dados Avançada (ADS). \endportuguese
-
-/*!
- \english
- In the constructor, a copy of R (and ADS, optionally) is stored inside the Solution class.
- The getR() method returns a reference to the stored Representation (R).
- The getADS() method returns a reference to the stored Advanced Data Structure (ADS).
- Solution container expects that R and ADS: (i) implement copy constructor; (ii) implement operator<<; (iii) implement move constructor; (iv) implement move assignment.
- Perhaps (iii) and (iv) can be relaxed with #DEFINE options.
- \endenglish
-
- \portuguese
- No construtor, uma cópia de R (e ADS, opcionalmente) é armazenada dentro da classe Solution.
- O método getR() retorna uma referência à Representação (R) armazenada.
- O método getADS() retorna uma referência à Estrutura de Dados Avançada (ADS) armazenada.
- O contâiner Solution espera que R e ADS: (i) implementem o construtor de cópia; (ii) implementem o operator<<; (iii) implementem o move constructor; (iv) implementem o move assignment.
- Talvez (iii) e (iv) sejam relaxadas no futuro através de opções de #DEFINE.
- \endportuguese
- */
-
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-//class Solution final : public Component
-// TODO: replace final by concept
-//class Solution final : public Component
-class Solution : public Component
+class CopySolution : public Component
 {
 protected:
 	R* r;     // representation
@@ -71,63 +47,47 @@ protected:
 
 public:
 
-	Solution(R* _r, ADS* _ads = nullptr) :
+	CopySolution(R* _r, ADS* _ads = nullptr) :
 			r(_r), ads(_ads)
 	{
 		assert(r);
 	}
 
-	// copy constructor (implemented via copy constructor for R)
-	// TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
-	Solution(const R& _r) :
+	CopySolution(const R& _r) :
 			r(new R(_r)), ads(nullptr)
 	{
 	}
 
-	// copy constructor (implemented via copy constructor for R and ADS)
-	// TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
-	Solution(const R& _r, const ADS& _ads) :
+	CopySolution(const R& _r, const ADS& _ads) :
 			r(new R(_r)), ads(new ADS(_ads))
 	{
 	}
 
 	// move constructor (implemented via move constructor for R)
-	Solution(R&& _r) :
+	CopySolution(R&& _r) :
 			r(new R(std::move(_r))), ads(nullptr)
 	{
 	}
 
 	// move constructor (implemented via move constructor for R and ADS)
-	Solution(R&& _r, ADS&& _ads) :
+	CopySolution(R&& _r, ADS&& _ads) :
 			r(new R(std::move(_r))), ads(new ADS(std::move(_ads)))
 	{
 	}
 
-	//! copy constructor
-	/*!
-	 Solution copy constructor will use copy constructor for R and ADS
-	 TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
-	 */
-	Solution(const Solution<R, ADS>& s) :
+	CopySolution(const CopySolution<R, ADS>& s) :
 			r(new R(*s.r)), ads(s.ads ? new ADS(*s.ads) : nullptr)
 	{
 	}
 
-	//! move constructor
-	/*!
-	 Solution move constructor will steal the pointers from the object to itself
-	 and set them to null in the object
-	 */
-	Solution(Solution<R, ADS> && s) :
+	CopySolution(CopySolution<R, ADS> && s) :
 			r(s.r), ads(s.ads)
 	{
 		s.r = nullptr;
 		s.ads = nullptr;
 	}
 
-	// assignment operator (implemented via copy constructors for R and ADS)
-	// TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
-	Solution<R, ADS>& operator=(const Solution<R, ADS>& s)
+	CopySolution<R, ADS>& operator=(const CopySolution<R, ADS>& s)
 	{
 		if (&s == this) // auto ref check
 			return *this;
@@ -149,12 +109,7 @@ public:
 		return *this;
 	}
 
-	//! move operator
-	/*!
-	 Solution move operator will steal the pointers from the object to itself
-	 and set them to null in the object
-	 */
-	Solution<R, ADS>& operator=(Solution<R, ADS> && s) noexcept
+	CopySolution<R, ADS>& operator=(CopySolution<R, ADS> && s) noexcept
 	{
 		// steal pointer from s
 		r = s.r;
@@ -168,7 +123,7 @@ public:
 	}
 
 	// destructor for Solution (must free R and ADS objects)
-	virtual ~Solution()
+	virtual ~CopySolution()
 	{
 		// if r not null
 		if (r)
@@ -182,7 +137,9 @@ public:
 	// end canonical part
 	// ==================
 
-	Solution<R, ADS>& clone() const
+   // no clone here!
+/*
+	CopySolution<R, ADS>& clone() const
 	{
 		// if ads not null
 		if (ads)
@@ -190,7 +147,7 @@ public:
 		else
 			return *new Solution<R, ADS>(*r);
 	}
-
+*/
 	// returns true if ads is not null
 	bool hasADS() const
 	{
@@ -300,7 +257,7 @@ public:
 	static string idComponent()
 	{
 		std::stringstream ss;
-		ss << Component::idComponent() << ":Solution";
+		ss << Component::idComponent() << ":CopySolution";
 		return ss.str();
 	}
 
@@ -312,7 +269,7 @@ public:
 	virtual string toString() const
 	{
 		std::stringstream ss;
-		ss << "Solution: " << *r;
+		ss << "CopySolution: " << *r;
 		if (ads)
 			ss << "ADS: " << ads;
 		return ss.str();
@@ -320,6 +277,12 @@ public:
 
 };
 
+template<class R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+struct _Testing
+{
+   S s;
+};
+
 }
 
-#endif /* OPTFRAME_SOLUTION_HPP_ */
+#endif /* OPTFRAME_COPY_SOLUTION_HPP_ */

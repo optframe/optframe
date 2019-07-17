@@ -39,7 +39,7 @@ using namespace std;
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class LocalSearch: public Component
 {
    typedef vector<Evaluation*> FitnessValues;
@@ -58,38 +58,38 @@ public:
    // core methods
 
    // no-optimization
-   Solution<R, ADS>& search(const Solution<R, ADS>& s, SOSC& stopCriteria)
+   S& search(const S& s, SOSC& stopCriteria)
    {
-      Solution<R, ADS>& s2 = s.clone();
+      S& s2 = s.clone();
       exec(s2, stopCriteria);
       return s2;
    }
 
    // optimizated version
-   pair<Solution<R, ADS>&, Evaluation&>& search(const Solution<R, ADS>& s, const Evaluation& e, SOSC& stopCriteria)
+   pair<S&, Evaluation&>& search(const S& s, const Evaluation& e, SOSC& stopCriteria)
    {
-      Solution<R, ADS>& s2 = s.clone();
+      S& s2 = s.clone();
       Evaluation& e2 = e.clone();
       exec(s2, e2, stopCriteria);
-      return *new pair<Solution<R, ADS>&, Evaluation&> (s2, e2);
+      return *new pair<S&, Evaluation&> (s2, e2);
    }
 
 
    // core methods
 
    // 1
-   virtual void exec(Solution<R, ADS>& s, SOSC& stopCriteria) = 0;
+   virtual void exec(S& s, SOSC& stopCriteria) = 0;
 
    // 2
-   virtual void exec(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria) = 0;
+   virtual void exec(S& s, Evaluation& e, SOSC& stopCriteria) = 0;
 
    // optional: set local optimum status (LOS)
-   virtual void setLOS(LOS los, string nsid, Solution<R, ADS>& s, Evaluation& e)
+   virtual void setLOS(LOS los, string nsid, S& s, Evaluation& e)
    {
    }
 
    // optional: get local optimum status (LOS)
-   virtual LOS getLOS(string nsid, Solution<R, ADS>& s, Evaluation& e)
+   virtual LOS getLOS(string nsid, S& s, Evaluation& e)
    {
 	   return los_unknown;
    }
@@ -114,17 +114,17 @@ public:
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class LocalSearchBuilder : public ComponentBuilder<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class LocalSearchBuilder : public ComponentBuilder<R, ADS, S>
 {
 public:
 	virtual ~LocalSearchBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "") = 0;
+	virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "") = 0;
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
 		return build(scanner, hf, family);
 	}
@@ -136,7 +136,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS>::idComponent() << "LocalSearch";
+		ss << ComponentBuilder<R, ADS, S>::idComponent() << "LocalSearch";
 		return ss.str();
 	}
 

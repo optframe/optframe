@@ -220,8 +220,8 @@ public:
    }
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class RandGenBuilder : public ComponentBuilder<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class RandGenBuilder : public ComponentBuilder<R, ADS, S>
 {
 public:
    virtual ~RandGenBuilder()
@@ -229,7 +229,7 @@ public:
    }
 
    virtual Component*
-   buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+   buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
    {
       if (!scanner.hasNext())
          return nullptr;
@@ -254,7 +254,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << ComponentBuilder<R, ADS>::idComponent() << "RandGen";
+      ss << ComponentBuilder<R, ADS, S>::idComponent() << "RandGen";
       return ss.str();
    }
 

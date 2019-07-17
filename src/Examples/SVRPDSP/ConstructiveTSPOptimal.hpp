@@ -22,7 +22,7 @@ using namespace std;
 namespace SVRPDSP
 {
 
-class ConstructiveTSPOptimal: public Constructive<RepSVRPDSP, AdsSVRPDSP>
+class ConstructiveTSPOptimal: public Constructive<RepSVRPDSP, AdsSVRPDSP, MySolution>
 {
 private:
 	ProblemInstance& pSVRPDSP;
@@ -41,7 +41,7 @@ public:
 	{
 	}
 
-	Solution<RepSVRPDSP, AdsSVRPDSP>* generateSolution(double timelimit) override
+	MySolution* generateSolution(double timelimit) override
 	{
 		RepSVRPDSP rep;
 
