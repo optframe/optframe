@@ -22,6 +22,7 @@
 #define OPTFRAME_MOVE_HPP_
 
 #include "Solution.hpp"
+#include "Solutions/CopySolution.hpp"
 #include "Evaluation.hpp"
 #include "MoveCost.hpp"
 

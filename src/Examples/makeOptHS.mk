@@ -1,7 +1,7 @@
 all: app_OptHS
 
 CC=g++
-CFLAGS=-O3 -Wall --std=c++11
+CFLAGS=-O3 -Wall --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
 
 app_OptHS:  OptHSmain.o  OptHSScanner.o  OptHSConstructiveRandom.o  OptHSEvaluator.o  OptHSNSSwap.o  OptHSProblemCommand.o  OptHSProblemInstance.o  
 	$(CC) $(CFLAGS) OptHS*.o -o $@

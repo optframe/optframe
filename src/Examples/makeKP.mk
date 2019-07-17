@@ -32,7 +32,7 @@ KPScanner.o: ../OptFrame/Scanner++/Scanner.cpp
 #	g++ -c $(GCC_FLAGS) ../OptFrame/Util/printable.cpp -o KPprintable.o
 
 
-GCC_FLAGS= -g -Wall -O3 --std=c++17 -fconcepts
+GCC_FLAGS= -g -Wall -O3 --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
 
 #.PHONY: all #clean
 	

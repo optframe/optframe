@@ -11,7 +11,7 @@ MODMScanner.o: ../OptFrame/Scanner++/Scanner.cpp
 -include $(SRC_MODM:%.cpp=%.d)
 
 CPPFLAGS = -O3
-CPPFLAGS += -MD -MP -std=c++11
+CPPFLAGS += -MD -MP --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
 
 	
 clean: 

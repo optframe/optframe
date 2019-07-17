@@ -56,7 +56,7 @@ public:
    {
    }
 
-   Solution<RepEtII>* generateSolution(double timelimit) override
+   CopySolution<RepEtII>* generateSolution(double timelimit) override
    {
       RepEtII* tab = new RepEtII(pEtII.height, pEtII.width);
 
@@ -288,9 +288,7 @@ public:
          cout << "Warning: construction problem!" << endl;
       }
 
-      int ads;
-
-      return new Solution<RepEtII>(*tab, ads);
+      return new CopySolution<RepEtII>(*tab);
    }
 };
 }

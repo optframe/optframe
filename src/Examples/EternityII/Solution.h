@@ -22,11 +22,12 @@
 #define EtII_SOLUTION_H_
 
 #include "../../OptFrame/Solution.hpp"
+#include "../../OptFrame/Solutions/CopySolution.hpp"
 #include "Representation.h"
 
 using namespace optframe;
 
-typedef Solution<RepEtII> SolutionEtII;
+typedef CopySolution<RepEtII> SolutionEtII;
 
 #endif /*EtII_SOLUTION_H_*/
 

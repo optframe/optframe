@@ -1,7 +1,7 @@
 all: app_EtII
 
 CC=g++
-CFLAGS=-O3 -Wall --std=c++11
+CFLAGS=-O3 -Wall --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
 
 app_EtII:  EtIImain.o  EtIIScanner.o  EtIIInitialSolutionGreedy.o EtIIInitialSolutionRandom.o EtIIDeltaMoveRotate.o  EtIIDeltaMoveSwapCenter.o  EtIIDeltaMoveSwapCorner.o  EtIIDeltaMoveSwapRotateCenter.o  EtIIDeltaMoveSwapSide.o  EtIIEvaluator.o  EtIINSSeqRotate.o  EtIINSSeqSwapCenter.o  EtIINSSeqSwapCorner.o  EtIINSSeqSwapRotateCenter.o  EtIINSSeqSwapSide.o    EtIIProblemCommand.o  EtIIProblemInstance.o   
 	$(CC) $(CFLAGS) EtII*.o -o $@

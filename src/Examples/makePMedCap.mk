@@ -1,7 +1,7 @@
 all: app_PMedCap
 
 CC=g++
-CFLAGS=-O3 -Wall --std=c++11
+CFLAGS=-O3 -Wall --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
 
 app_PMedCap:  PMedCapmain.o  PMedCapScanner.o  PMedCapInitialSolutionGreedy.o PMedCapInitialSolutionRandom.o  PMedCapInitialSolutionRandomGreedy.o  PMedCapNSSeqSwap.o  PMedCapEvaluator.o  PMedCapNSSeqSwap.o   PMedCapProblemInstance.o   
 	$(CC) $(CFLAGS) PMedCap*.o -o $@
