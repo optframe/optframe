@@ -32,11 +32,11 @@ namespace optframe {
 
 // Population is 'final'
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class Population final : public Component
 {
 protected:
-   typedef Solution<R, ADS> chromossome;
+   typedef S chromossome;
    typedef vector<chromossome*> population;
    typedef vector<vector<Evaluation>> populationFitness;
 
@@ -53,7 +53,7 @@ public:
    Population(const Population& pop)
    {
       for (unsigned i = 0; i < pop.size(); i++) {
-         p.push_back(&pop.at(i).clone());
+         p.push_back(new S(pop.at(i))); // implicity copy constructor
          fitness.push_back(0); // TODO: fix
          vector<Evaluation> a;
          pFitness.push_back(a);
@@ -138,7 +138,7 @@ public:
       fitness[i] = v;
    }
 
-   void add(const Population<R, ADS>& pop)
+   void add(const Population<R, ADS, S>& pop)
    {
       for (unsigned i = 0; i < pop.size(); i++) {
          const chromossome& s = pop.at(i);
@@ -181,7 +181,7 @@ public:
                best = j;
          // swap best
          if (best != i) {
-            Solution<R>* si = p[i];
+            S* si = p[i];
             p[i] = p[best];
             p[best] = si;
 
@@ -192,7 +192,7 @@ public:
       }
    }
 
-   virtual Population<R, ADS>& operator=(const Population<R, ADS>& p)
+   virtual Population<R, ADS, S>& operator=(const Population<R, ADS, S>& p)
    {
       if (&p == this) // auto ref check
          return *this;
@@ -226,9 +226,9 @@ public:
       return (*this);
    }
 
-   virtual Population<R, ADS>& clone() const
+   virtual Population<R, ADS, S>& clone() const
    {
-      return *new Population<R, ADS>(*this);
+      return *new Population<R, ADS, S>(*this);
    }
 
    static string idComponent()
@@ -253,9 +253,9 @@ public:
       }
    }
 
-   chromossome& cloneBestChromossome(Evaluator<R, ADS>& eval)
+   chromossome& cloneBestChromossome(Evaluator<R, ADS, S>& eval)
    {
-      vector<pair<Solution<R, ADS>, double>> v;
+      vector<pair<S, double>> v;
 
       for (int i = 0; i < p.size(); i++) {
          Evaluation& e = eval.evaluate(p[i]);

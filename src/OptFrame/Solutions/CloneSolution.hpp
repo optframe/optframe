@@ -59,7 +59,7 @@ typedef OPTFRAME_DEFAULT_ADS OptFrameADS; // more beautiful :)
  \endportuguese
  */
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<Representation R, Structure ADS = _ADS>
 //class Solution final : public Component
 // TODO: replace final by concept
 //class Solution final : public Component

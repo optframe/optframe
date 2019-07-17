@@ -30,12 +30,12 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BestImprovement: public LocalSearch<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class BestImprovement: public LocalSearch<R, ADS, S>
 {
 private:
-	Evaluator<R, ADS>& eval;
-	NSSeq<R, ADS>& nsSeq;
+	Evaluator<R, ADS, S>& eval;
+	NSSeq<R, ADS, S>& nsSeq;
 
 	// logs
 	double sum_time;
@@ -43,7 +43,7 @@ private:
 
 public:
 
-	BestImprovement(Evaluator<R, ADS>& _eval, NSSeq<R, ADS>& _nsSeq) :
+	BestImprovement(Evaluator<R, ADS, S>& _eval, NSSeq<R, ADS, S>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 		sum_time = 0.0;
@@ -54,14 +54,14 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>& s, SOSC& sosc) override
+	virtual void exec(S& s, SOSC& sosc) override
 	{
 		Evaluation e = eval.evaluateSolution(s);
 
 		exec(s, e, sosc);
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation& e, SOSC& sosc) override
+	virtual void exec(S& s, Evaluation& e, SOSC& sosc) override
 	{
       //double timelimit = sosc.timelimit;
       //double target_f = sosc.target_f;
@@ -73,7 +73,7 @@ public:
 		Timer t;
 
 		// TODO: verify if it's not null
-		NSIterator<R, ADS>& it = *nsSeq.getIteratorSolution(s);
+		NSIterator<R, ADS, S>& it = *nsSeq.getIteratorSolution(s);
 
 		it.first();
 
@@ -84,7 +84,7 @@ public:
 			return;
 		}
 
-		Move<R, ADS>* bestMove = it.current();
+		Move<R, ADS, S>* bestMove = it.current();
 
 		/*if(e.getLocalOptimumStatus(bestMove->id()))
 		{
@@ -148,7 +148,7 @@ public:
 		//it.next();
 		while (!it.isDone())
 		{
-			Move<R, ADS>* move = it.current();
+			Move<R, ADS, S>* move = it.current();
 			if (move->canBeAppliedToSolution(s))
 			{
 				MoveCost* cost = eval.moveCost(e, *move, s);
@@ -205,13 +205,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<R, ADS, S>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS>::idComponent() << "BI";
+		ss << LocalSearch<R, ADS, S>::idComponent() << "BI";
 		return ss.str();
 	}
 
@@ -242,47 +242,47 @@ public:
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BestImprovementBuilder : public LocalSearchBuilder<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class BestImprovementBuilder : public LocalSearchBuilder<R, ADS, S>
 {
 public:
 	virtual ~BestImprovementBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
 		if(!scanner.hasNext())
 			return nullptr;
-		Evaluator<R, ADS>* eval;
+		Evaluator<R, ADS, S>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		if(!scanner.hasNext())
 			return nullptr;
-		NSSeq<R, ADS>* nsseq;
+		NSSeq<R, ADS, S>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BestImprovement<R, ADS>(*eval, *nsseq);
+		return new BestImprovement<R, ADS, S>(*eval, *nsseq);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NSSeq<R, ADS>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NSSeq<R, ADS, S>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}
 
 	virtual bool canBuild(string component)
 	{
-		return component == BestImprovement<R, ADS>::idComponent();
+		return component == BestImprovement<R, ADS, S>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS>::idComponent() << ":BI";
+		ss << LocalSearchBuilder<R, ADS, S>::idComponent() << ":BI";
 		return ss.str();
 	}
 

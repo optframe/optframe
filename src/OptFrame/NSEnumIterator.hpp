@@ -29,19 +29,19 @@ namespace optframe
 {
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS> class NSEnum;
+template<Representation R, Structure ADS, BaseSolution<R,ADS> S> class NSEnum;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class NSEnumIterator: public NSIterator<R, ADS>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class NSEnumIterator: public NSIterator<R, ADS, S>
 {
 private:
-   NSEnum<R, ADS>& ns;
+   NSEnum<R, ADS, S>& ns;
    unsigned int move;
    unsigned int nsSize;
 
 public:
 
-   NSEnumIterator(NSEnum<R, ADS>& _ns) :
+   NSEnumIterator(NSEnum<R, ADS, S>& _ns) :
       ns(_ns)
    {
       move = 0;
@@ -67,14 +67,14 @@ public:
       return move >= nsSize;
    }
 
-   Move<R, ADS>* current() override
+   Move<R, ADS, S>* current() override
    {
       if (isDone())
          throw IteratorOutOfBound(move);
       return ns.indexMove(move);
    }
 
-   Move<R, ADS>& at(unsigned int m)
+   Move<R, ADS, S>& at(unsigned int m)
    {
       // TODO: throw exception if m >= size
       return ns.move(m);

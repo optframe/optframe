@@ -37,18 +37,18 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class VariableNeighborhoodSearch: public VNS, public SingleObjSearch<R, ADS>
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class VariableNeighborhoodSearch: public VNS, public SingleObjSearch<R, ADS, S>
 {
 protected:
-	Evaluator<R, ADS>& evaluator;
-	Constructive<R, ADS>& constructive;
-	vector<NS<R, ADS>*> vshake;
-	vector<NSSeq<R, ADS>*> vsearch;
+	Evaluator<R, ADS, S>& evaluator;
+	Constructive<R, ADS, S>& constructive;
+	vector<NS<R, ADS, S>*> vshake;
+	vector<NSSeq<R, ADS, S>*> vsearch;
 
 public:
 
-	VariableNeighborhoodSearch(Evaluator<R, ADS>& _evaluator, Constructive<R, ADS>& _constructive, vector<NS<R, ADS>*> _vNS, vector<NSSeq<R, ADS>*> _vNSSeq) :
+	VariableNeighborhoodSearch(Evaluator<R, ADS, S>& _evaluator, Constructive<R, ADS, S>& _constructive, vector<NS<R, ADS, S>*> _vNS, vector<NSSeq<R, ADS, S>*> _vNSSeq) :
 		evaluator(_evaluator), constructive(_constructive), vshake(_vNS), vsearch(_vNSSeq)
 	{
 	}
@@ -57,11 +57,11 @@ public:
 	{
 	}
 
-	//virtual void improvement(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f) = 0;
+	//virtual void improvement(S& s, Evaluation& e, double timelimit, double target_f) = 0;
 
-	virtual void shake(Solution<R, ADS>& s, Evaluation& e, unsigned int k_shake, double timelimit, double target_f)
+	virtual void shake(S& s, Evaluation& e, unsigned int k_shake, double timelimit, double target_f)
 	{
-		Move<R, ADS>* move = vshake.at(k_shake)->validRandomMoveSolution(s);
+		Move<R, ADS, S>* move = vshake.at(k_shake)->validRandomMoveSolution(s);
 		if(move)
 		{
          Move<R,ADS>* rev = move->applyUpdateSolution(e, s);
@@ -71,26 +71,26 @@ public:
 		}
 	}
 
-	virtual pair<pair<Solution<R, ADS>&, Evaluation&>, unsigned int> neighborhoodChange(const Solution<R, ADS>& sStar, const Evaluation& eStar, const Solution<R, ADS>& s2, const Evaluation& e2, unsigned int k)
+	virtual pair<pair<S&, Evaluation&>, unsigned int> neighborhoodChange(const S& sStar, const Evaluation& eStar, const S& s2, const Evaluation& e2, unsigned int k)
 	{
 		if (evaluator.betterThan(e2, eStar))
 		{
 			// IMPROVEMENT!
-			pair<Solution<R, ADS>&, Evaluation&> p(s2.clone(), e2.clone());
+			pair<S&, Evaluation&> p(s2.clone(), e2.clone());
 			if(Component::information)
 				cout << "VNS: improvement at NS " << k << " => " << e2.evaluation() << endl;
 			return make_pair(p, 0); // k <- 0
 		}
 		else
 		{
-			pair<Solution<R, ADS>&, Evaluation&> p(sStar.clone(), eStar.clone());
+			pair<S&, Evaluation&> p(sStar.clone(), eStar.clone());
 			return make_pair(p, k+1);
 		}
 	}
 
-	virtual LocalSearch<R, ADS>& buildSearch(unsigned k_search) = 0;
+	virtual LocalSearch<R, ADS, S>& buildSearch(unsigned k_search) = 0;
 
-	pair<Solution<R, ADS>, Evaluation>* search(SOSC& sosc,  const Solution<R, ADS>* _s = nullptr,  const Evaluation* _e = nullptr) override
+	pair<S, Evaluation>* search(SOSC& sosc,  const S* _s = nullptr,  const Evaluation* _e = nullptr) override
 	{
       double timelimit = sosc.timelimit;
       double target_f = sosc.target_f;
@@ -100,7 +100,7 @@ public:
 
 		Timer tnow;
 
-		Solution<R, ADS>& sStar = *constructive.generateSolution(sosc.timelimit);
+		S& sStar = *constructive.generateSolution(sosc.timelimit);
 		Evaluation   eStar = evaluator.evaluateSolution(sStar);
 
 		if(Component::information)
@@ -112,16 +112,16 @@ public:
 
 			while(k < vshake.size())
 			{
-				Solution<R, ADS>& s = sStar.clone();
+				S& s = *new S(sStar); // implicit clone on copy constructor
 				Evaluation&   e = eStar.clone();
 
 				shake(s, e, k, timelimit, target_f);
 
-				LocalSearch<R, ADS>& improve = buildSearch(k);
+				LocalSearch<R, ADS, S>& improve = buildSearch(k);
 				improve.exec(s, e, sosc);
 				delete& improve; // save trajectory history?
 
-				pair<pair<Solution<R, ADS>&, Evaluation&>, unsigned int> nc = neighborhoodChange(sStar, eStar, s, e, k);
+				pair<pair<S&, Evaluation&>, unsigned int> nc = neighborhoodChange(sStar, eStar, s, e, k);
 
 				sStar = nc.first.first;
 				eStar = nc.first.second;
@@ -136,14 +136,14 @@ public:
 			}
 		}
 
-		return new pair<Solution<R, ADS>, Evaluation> (sStar, eStar);
+		return new pair<S, Evaluation> (sStar, eStar);
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS>::idComponent() << VNS::family();
-		//ss << SingleObjSearch<R, ADS>::idComponent() << VNS::family << "VariableNeighborhoodSearch:";
+		ss << SingleObjSearch<R, ADS, S>::idComponent() << VNS::family();
+		//ss << SingleObjSearch<R, ADS, S>::idComponent() << VNS::family << "VariableNeighborhoodSearch:";
 		return ss.str();
 	}
 

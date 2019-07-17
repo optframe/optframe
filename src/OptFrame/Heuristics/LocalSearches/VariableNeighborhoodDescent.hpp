@@ -32,17 +32,17 @@ namespace optframe
 {
 
 //When RandGen is given as parameter it performs RVND
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class VariableNeighborhoodDescent: public LocalSearch<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class VariableNeighborhoodDescent: public LocalSearch<R, ADS, S>
 {
 private:
-	Evaluator<R, ADS>& ev;
-	vector<LocalSearch<R, ADS>*> lsList;
+	Evaluator<R, ADS, S>& ev;
+	vector<LocalSearch<R, ADS, S>*> lsList;
 	RandGen* rg;
 
 public:
 
-	VariableNeighborhoodDescent(Evaluator<R, ADS>& _ev, vector<LocalSearch<R, ADS>*> _lsList, RandGen* _rg = nullptr) :
+	VariableNeighborhoodDescent(Evaluator<R, ADS, S>& _ev, vector<LocalSearch<R, ADS, S>*> _lsList, RandGen* _rg = nullptr) :
 			ev(_ev), lsList(_lsList), rg(_rg)
 	{
 	}
@@ -51,14 +51,14 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>& s, SOSC& stopCriteria)
+	virtual void exec(S& s, SOSC& stopCriteria)
 	{
 		Evaluation e = std::move(ev.evaluateSolution(s));
 
 		exec(s, e, stopCriteria);
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria)
+	virtual void exec(S& s, Evaluation& e, SOSC& stopCriteria)
 	{
 		if (Component::information)
 			cout << "VND::starts" << endl;
@@ -98,13 +98,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<R, ADS, S>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS>::idComponent() << ":VND";
+		ss << LocalSearch<R, ADS, S>::idComponent() << ":VND";
 		return ss.str();
 	}
 
@@ -130,31 +130,31 @@ public:
 
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class VariableNeighborhoodDescentBuilder: public LocalSearchBuilder<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class VariableNeighborhoodDescentBuilder: public LocalSearchBuilder<R, ADS, S>
 {
 public:
 	virtual ~VariableNeighborhoodDescentBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS>* eval;
+		Evaluator<R, ADS, S>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<LocalSearch<R, ADS>*> hlist;
+		vector<LocalSearch<R, ADS, S>*> hlist;
 		hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new VariableNeighborhoodDescent<R, ADS>(*eval, hlist);
+		return new VariableNeighborhoodDescent<R, ADS, S>(*eval, hlist);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
 		stringstream ss;
-		ss << LocalSearch<R, ADS>::idComponent() << "[]";
+		ss << LocalSearch<R, ADS, S>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of local searches"));
 
 		return params;
@@ -162,13 +162,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == VariableNeighborhoodDescent<R, ADS>::idComponent();
+		return component == VariableNeighborhoodDescent<R, ADS, S>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS>::idComponent() << ":VND";
+		ss << LocalSearchBuilder<R, ADS, S>::idComponent() << ":VND";
 		return ss.str();
 	}
 

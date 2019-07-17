@@ -43,22 +43,22 @@
 
 using namespace std;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ParetoDominanceStrict: public ParetoDominance<R, ADS, DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class ParetoDominanceStrict: public ParetoDominance<R, ADS, S>
 {
 public:
 
-        using ParetoDominance<R, ADS, DS>::dominates;
-        using ParetoDominance<R, ADS, DS>::birelation;
+        using ParetoDominance<R, ADS, S>::dominates;
+        using ParetoDominance<R, ADS, S>::birelation;
 
-	ParetoDominanceStrict(vector<Evaluator<R, ADS, DS>*> _v_e) :
-		ParetoDominance<R, ADS, DS> (_v_e)
+	ParetoDominanceStrict(vector<Evaluator<R, ADS, S>*> _v_e) :
+		ParetoDominance<R, ADS, S> (_v_e)
 	{
 
 	}
 
-	ParetoDominanceStrict(vector<Direction<DS>*> _v_d) :
-		ParetoDominance<R, ADS, DS> (_v_d)
+	ParetoDominanceStrict(vector<Direction*> _v_d) :
+		ParetoDominance<R, ADS, S> (_v_d)
 	{
 
 	}
@@ -72,15 +72,15 @@ public:
 	{
 	}
 
-	void insertEvaluators(vector<Evaluator<R, ADS, DS>*> _v_e)
+	void insertEvaluators(vector<Evaluator<R, ADS, S>*> _v_e)
 	{
-		ParetoDominance<R, ADS, DS>::v_e = _v_e;
+		ParetoDominance<R, ADS, S>::v_e = _v_e;
 	}
 
 	// true if 's1' weakly dominates 's2'
 	virtual bool dominates(const vector<double>& v1, const vector<double>& v2)
 	{
-		vector<Evaluator<R, ADS, DS>*>& v_e = ParetoDominance<R, ADS, DS>::v_e;
+		vector<Evaluator<R, ADS, S>*>& v_e = ParetoDominance<R, ADS, S>::v_e;
 
 		if (!((v_e.size() == v1.size()) && (v1.size() == v2.size())))
 		{

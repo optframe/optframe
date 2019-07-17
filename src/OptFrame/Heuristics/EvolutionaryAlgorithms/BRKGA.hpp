@@ -34,7 +34,7 @@
 namespace optframe
 {
 
-template<class R=random_keys>
+template<Representation R>
 class BRKGA: public RKGA<R>
 {
 protected:
@@ -42,7 +42,7 @@ protected:
 
 public:
 
-	BRKGA(DecoderRandomKeys<R>& _decoder, InitialPopulation<random_keys>& _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double probElielitismRate, double _probElitism) :
+	BRKGA(DecoderRandomKeys<R>& _decoder, InitialPopulation<R>& _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double probElielitismRate, double _probElitism) :
 		RKGA<R>(_decoder, _initPop, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
@@ -56,7 +56,7 @@ public:
 		assert(probElitism <= 1.0);
 	}
 
-	BRKGA(Evaluator<random_keys>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
+	BRKGA(Evaluator<R>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
 			RKGA<R>(_evaluator, key_size, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
@@ -67,12 +67,12 @@ public:
 	{
 	}
 
-	virtual Solution<random_keys>& cross(const Population<random_keys>& pop) const
+	virtual CopySolution<random_keys>& cross(const Population<random_keys>& pop) const
 	{
 		assert(this->sz > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
 
-		const Solution<random_keys>& p1 = pop.at(rand() % this->eliteSize);
-		const Solution<random_keys>& p2 = pop.at(this->eliteSize + rand() % (pop.size()-this->eliteSize));
+		const CopySolution<random_keys>& p1 = pop.at(rand() % this->eliteSize);
+		const CopySolution<random_keys>& p2 = pop.at(this->eliteSize + rand() % (pop.size()-this->eliteSize));
 
 		random_keys* v = new random_keys(this->sz, 0.0);
 		for (int i = 0; i < this->sz; i++)
@@ -80,7 +80,7 @@ public:
 				v->at(i) = p1.getR()[i];
 			else
 				v->at(i) = p2.getR()[i];
-		return *new Solution<random_keys>(v);
+		return *new CopySolution<random_keys>(v);
 	}
 
 };

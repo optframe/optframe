@@ -31,7 +31,7 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class Mutation: public Component, public EA
 {
 
@@ -41,7 +41,7 @@ public:
 	{
 	}
 
-	virtual void mutate(Solution<R, ADS>& individual, Evaluation& e) = 0;
+	virtual void mutate(S& individual, Evaluation& e) = 0;
 
 	static string idComponent()
 	{
@@ -56,17 +56,17 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BasicMutation: public Mutation<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class BasicMutation: public Mutation<R, ADS, S>
 {
 protected:
 	unsigned n;
-	vector<NS<R, ADS>*> vNS;
+	vector<NS<R, ADS, S>*> vNS;
 	RandGen& rg;
 
 public:
 
-	BasicMutation(unsigned _n, vector<NS<R, ADS>*> _vNS, RandGen& _rg) :
+	BasicMutation(unsigned _n, vector<NS<R, ADS, S>*> _vNS, RandGen& _rg) :
 			n(_n), vNS(_vNS), rg(_rg)
 	{
 	}
@@ -75,12 +75,12 @@ public:
 	{
 	}
 
-	virtual void mutate(Solution<R, ADS>& s, Evaluation& e)
+	virtual void mutate(S& s, Evaluation& e)
 	{
 		for (unsigned i = 0; i < n; i++)
 		{
 			int x = rg.rand(vNS.size());
-			Move<R, ADS>* mp = vNS[x]->validMove(s);
+			Move<R, ADS, S>* mp = vNS[x]->validMove(s);
 			if (!mp)
 				cout << "Warning: no move in BasicMutation!" << endl;
 			else
@@ -104,22 +104,22 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BasicMutationBuilder: public ComponentBuilder<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class BasicMutationBuilder: public ComponentBuilder<R, ADS, S>
 {
 public:
 	virtual ~BasicMutationBuilder()
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
 		int n = scanner.nextInt();
 
-		vector<NS<R, ADS>*> ns_list;
+		vector<NS<R, ADS, S>*> ns_list;
 		hf.assignList(ns_list, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BasicMutation<R, ADS>(n, ns_list, hf.getRandGen());
+		return new BasicMutation<R, ADS, S>(n, ns_list, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -127,7 +127,7 @@ public:
 		vector<pair<string, string> > params;
 		params.push_back(make_pair("OptFrame:int", "number of moves"));
 		stringstream ss;
-		ss << NS<R, ADS>::idComponent() << "[]";
+		ss << NS<R, ADS, S>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of neighborhood structures"));
 
 		return params;
@@ -135,13 +135,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicMutation<R, ADS>::idComponent();
+		return component == BasicMutation<R, ADS, S>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS>::idComponent() << "" << EA::family() << ":BasicMutation";
+		ss << ComponentBuilder<R, ADS, S>::idComponent() << "" << EA::family() << ":BasicMutation";
 		return ss.str();
 	}
 

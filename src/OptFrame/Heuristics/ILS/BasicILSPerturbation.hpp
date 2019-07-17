@@ -33,18 +33,18 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class BasicILSPerturbation: public ILS, public Component
 {
 private:
-	Evaluator<R, ADS>& evaluator;
+	Evaluator<R, ADS, S>& evaluator;
 	int pMin;
 	int pMax;
-	vector<NS<R, ADS>*> ns;
+	vector<NS<R, ADS, S>*> ns;
 	RandGen& rg;
 
 public:
-	BasicILSPerturbation(Evaluator<R, ADS>& e, int _pMin, int _pMax, vector<NS<R, ADS>*>& _ns, RandGen& _rg) :
+	BasicILSPerturbation(Evaluator<R, ADS, S>& e, int _pMin, int _pMax, vector<NS<R, ADS, S>*>& _ns, RandGen& _rg) :
 		evaluator(e), pMin(_pMin), pMax(_pMax), ns(_ns), rg(_rg)
 	{
 		if(pMax < pMin)
@@ -59,7 +59,7 @@ public:
 			cout << "BasicILSPerturbation warning: empty neighborhood list." << endl;
 	}
 
-	BasicILSPerturbation(Evaluator<R, ADS>& e, int _pMin, int _pMax, NS<R, ADS>& _ns, RandGen& _rg) :
+	BasicILSPerturbation(Evaluator<R, ADS, S>& e, int _pMin, int _pMax, NS<R, ADS, S>& _ns, RandGen& _rg) :
 		evaluator(e), pMin(_pMin), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -80,18 +80,18 @@ public:
 	{
 	}
 
-	void add_ns(NS<R, ADS>& _ns)
+	void add_ns(NS<R, ADS, S>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
 
-	void perturb(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria)
+	void perturb(S& s, Evaluation& e, SOSC& stopCriteria)
 	{
 		for (int i = pMin; i < pMax; i++)
 		{
 			int nk = rand() % ns.size();
 
-			Move<R, ADS>* mp = ns[nk]->validRandomMoveSolution(s);
+			Move<R, ADS, S>* mp = ns[nk]->validRandomMoveSolution(s);
 
 			if (!mp)
 			{
@@ -100,7 +100,7 @@ public:
 			}
 			else
 			{
-				Move<R, ADS>& m = *mp;
+				Move<R, ADS, S>& m = *mp;
 				Component::safe_delete(m.applyUpdateSolution(e, s));
 				delete &m;
 			}
@@ -122,36 +122,36 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BasicILSPerturbationBuilder : public ComponentBuilder<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class BasicILSPerturbationBuilder : public ComponentBuilder<R, ADS, S>
 {
 public:
 	virtual ~BasicILSPerturbationBuilder()
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS>* eval;
+		Evaluator<R, ADS, S>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int pMin = scanner.nextInt();
 		int pMax = scanner.nextInt();
 
-		vector<NS<R, ADS>*> ns_list;
+		vector<NS<R, ADS, S>*> ns_list;
 		hf.assignList(ns_list, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BasicILSPerturbation<R, ADS>(*eval, pMin, pMax, ns_list, hf.getRandGen());
+		return new BasicILSPerturbation<R, ADS, S>(*eval, pMin, pMax, ns_list, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
 		params.push_back(make_pair("OptFrame:int", "pMin: min number of moves"));
 		params.push_back(make_pair("OptFrame:int", "pMax: max number of moves"));
 		stringstream ss;
-		ss << NS<R, ADS>::idComponent() << "[]";
+		ss << NS<R, ADS, S>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of neighborhood structures"));
 
 		return params;
@@ -159,13 +159,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicILSPerturbation<R, ADS>::idComponent();
+		return component == BasicILSPerturbation<R, ADS, S>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS>::idComponent() << ILS::family() << "basic_pert";
+		ss << ComponentBuilder<R, ADS, S>::idComponent() << ILS::family() << "basic_pert";
 		return ss.str();
 	}
 

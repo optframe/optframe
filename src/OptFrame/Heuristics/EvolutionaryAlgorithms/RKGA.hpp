@@ -58,7 +58,7 @@ public:
          vector<double>* d = new vector<double>(sz);
          for (int j = 0; j < sz; j++)
             d->at(j) = (rand() % 100000) / 100000.0;
-         Solution<random_keys>* sol = new Solution<random_keys>(d);
+         CopySolution<random_keys>* sol = new CopySolution<random_keys>(d);
          pop.push_back(sol);
       }
 
@@ -66,12 +66,12 @@ public:
    }
 };
 
-template<class R = random_keys>
+template<Representation R>
 class RKGA : public SingleObjSearch<random_keys>
 {
 protected:
    DecoderRandomKeys<R>& decoder;
-   Evaluator<R>* evaluator; // Check to avoid memory leaks
+   Evaluator<random_keys>* evaluator; // Check to avoid memory leaks
 
    InitialPopulation<random_keys>& initPop;
    int sz; // Check to avoid memory leaks
@@ -109,7 +109,7 @@ public:
    }
 
    RKGA(Evaluator<random_keys>& _evaluator, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
-     : decoder(*new DecoderRandomKeysEvaluator(_evaluator))
+     : decoder(*new DecoderRandomKeysEvaluator<random_keys>(_evaluator))
      , evaluator(&_evaluator)
      , initPop(*new RandomKeysInitPop(key_size))
      , sz(key_size)
@@ -135,7 +135,7 @@ public:
       for (unsigned i = 0; i < p.size(); ++i) {
          //p.at(i).print();
          random_keys& rk = p.at(i).getR();
-         pair<Evaluation, Solution<R>*> pe = decoder.decode(rk);
+         pair<Evaluation, CopySolution<R>*> pe = decoder.decode(rk);
          p.setFitness(i, pe.first.evaluation());
          //delete &pe.first;
          if (pe.second)
@@ -143,12 +143,12 @@ public:
       }
    }
 
-   virtual Solution<random_keys>& cross(const Population<random_keys>& pop) const
+   virtual CopySolution<random_keys>& cross(const Population<random_keys>& pop) const
    {
       assert(sz > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
 
-      const Solution<random_keys>& p1 = pop.at(rand() % pop.size());
-      const Solution<random_keys>& p2 = pop.at(rand() % pop.size());
+      const CopySolution<random_keys>& p1 = pop.at(rand() % pop.size());
+      const CopySolution<random_keys>& p2 = pop.at(rand() % pop.size());
 
       random_keys* v = new random_keys(sz, 0.0);
       for (int i = 0; i < sz; i++)
@@ -156,11 +156,11 @@ public:
             v->at(i) = p1.getR()[i];
          else
             v->at(i) = p2.getR()[i];
-      return *new Solution<random_keys>(v);
+      return *new CopySolution<random_keys>(v);
    }
 
-   //pair<Solution<random_keys>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const Solution<random_keys>* _s = nullptr, const Evaluation* _e = nullptr)
-   virtual pair<Solution<random_keys>, Evaluation>* search(SOSC& stopCriteria, const Solution<random_keys>* _s = nullptr, const Evaluation* _e = nullptr) override
+   //pair<CopySolution<random_keys>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const CopySolution<random_keys>* _s = nullptr, const Evaluation* _e = nullptr)
+   virtual pair<CopySolution<random_keys>, Evaluation>* search(SOSC& stopCriteria, const CopySolution<random_keys>* _s = nullptr, const Evaluation* _e = nullptr) override
    {
       // count generations
       int count_gen = 0;
@@ -190,7 +190,7 @@ public:
 
          // populate the rest
          while (nextPop.size() < popSize) {
-            Solution<random_keys>* s = &cross(p);
+            CopySolution<random_keys>* s = &cross(p);
             nextPop.push_back(s);
          }
 
@@ -223,8 +223,8 @@ public:
       // sort to get best (not necessary)
       p.sort(decoder.isMinimization());
 
-      Solution<random_keys>& best = p.remove(0);
-      pair<Evaluation, Solution<R>*> pe = decoder.decode(best.getR());
+      CopySolution<random_keys>& best = p.remove(0);
+      pair<Evaluation, CopySolution<R>*> pe = decoder.decode(best.getR());
       Evaluation& e = pe.first;
       // ignoring second value
       if (pe.second)
@@ -233,7 +233,7 @@ public:
       //delete p;
       p.clear();
 
-      return new pair<Solution<random_keys>, Evaluation>(best, e);
+      return new pair<CopySolution<random_keys>, Evaluation>(best, e);
    }
 };
 }

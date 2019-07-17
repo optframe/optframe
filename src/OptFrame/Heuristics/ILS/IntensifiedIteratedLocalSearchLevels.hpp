@@ -35,18 +35,18 @@ namespace optframe
 
 typedef pair<pair<int, int> , pair<int, int> > levelHistory;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class IntensifiedIteratedLocalSearchLevels: public IntensifiedIteratedLocalSearch<levelHistory, R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class IntensifiedIteratedLocalSearchLevels: public IntensifiedIteratedLocalSearch<levelHistory, R, ADS, S>
 {
 protected:
-	LocalSearch<R, ADS>& ls;
-	Intensification<R, ADS>& h2;
-	ILSLPerturbation<R, ADS>& p;
+	LocalSearch<R, ADS, S>& ls;
+	Intensification<R, ADS, S>& h2;
+	ILSLPerturbation<R, ADS, S>& p;
 	int iterMax, levelMax;
 
 public:
 
-	IntensifiedIteratedLocalSearchLevels(Evaluator<R, ADS>& e, Constructive<R, ADS>& constructive, LocalSearch<R, ADS>& _ls, Intensification<R, ADS>& _h2, ILSLPerturbation<R, ADS>& _p, int _iterMax, int _levelMax) :
+	IntensifiedIteratedLocalSearchLevels(Evaluator<R, ADS, S>& e, Constructive<R, ADS, S>& constructive, LocalSearch<R, ADS, S>& _ls, Intensification<R, ADS, S>& _h2, ILSLPerturbation<R, ADS, S>& _p, int _iterMax, int _levelMax) :
 		IntensifiedIteratedLocalSearch<levelHistory, R, ADS > (e, constructive), ls(_ls), h2(_h2), p(_p)
 	{
 		iterMax = _iterMax;
@@ -68,15 +68,15 @@ public:
 		return *new levelHistory(vars, maxs);
 	}
 
-	virtual void intensification(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f, levelHistory& history)
+	virtual void intensification(S& s, Evaluation& e, double timelimit, double target_f, levelHistory& history)
 	{
 		h2.addSolution(s);
 
 		if (history.first.first == history.second.first-1) //TODO intensification applied only at last iteration of each level
 		{
-			Solution<R, ADS>& s1 = h2.search(s);
+			S& s1 = h2.search(s);
 
-			Evaluator<R, ADS> & ev = this->getEvaluator();
+			Evaluator<R, ADS, S> & ev = this->getEvaluator();
 			Evaluation& s1_e = ev.evaluate(s1);
 
 			if (ev.betterThan(s1_e, e))
@@ -91,13 +91,13 @@ public:
 
 	}
 
-	virtual void localSearch(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f)
+	virtual void localSearch(S& s, Evaluation& e, double timelimit, double target_f)
 	{
 		//cout << "localSearch(.)" << endl;
 		ls.exec(s, e, timelimit, target_f);
 	}
 
-	virtual void perturbation(Solution<R, ADS>& s, Evaluation& e, double timelimit, double target_f, levelHistory& history)
+	virtual void perturbation(S& s, Evaluation& e, double timelimit, double target_f, levelHistory& history)
 	{
 		//cout << "perturbation(.)" << endl;
 

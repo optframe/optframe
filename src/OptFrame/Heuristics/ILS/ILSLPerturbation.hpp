@@ -32,7 +32,7 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class ILSLPerturbation: public Component, public ILS
 {
 public:
@@ -41,7 +41,7 @@ public:
 	{
 	}
 
-	virtual void perturb(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria, int level) = 0;
+	virtual void perturb(S& s, Evaluation& e, SOSC& stopCriteria, int level) = 0;
 
 	virtual bool compatible(string s)
 	{
@@ -62,16 +62,16 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class ILSLPerturbationLPlus2: public ILSLPerturbation<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class ILSLPerturbationLPlus2: public ILSLPerturbation<R, ADS, S>
 {
 private:
-	vector<NS<R, ADS>*> ns;
-	Evaluator<R, ADS>& evaluator;
+	vector<NS<R, ADS, S>*> ns;
+	Evaluator<R, ADS, S>& evaluator;
 	RandGen& rg;
 
 public:
-	ILSLPerturbationLPlus2(Evaluator<R, ADS>& e, NS<R, ADS>& _ns, RandGen& _rg) :
+	ILSLPerturbationLPlus2(Evaluator<R, ADS, S>& e, NS<R, ADS, S>& _ns, RandGen& _rg) :
 			evaluator(e), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -81,12 +81,12 @@ public:
 	{
 	}
 
-	void add_ns(NS<R, ADS>& _ns)
+	void add_ns(NS<R, ADS, S>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
 
-	void perturb(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria, int level)
+	void perturb(S& s, Evaluation& e, SOSC& stopCriteria, int level)
 	{
 		int a = 0; // number of appliable moves
 
@@ -96,7 +96,7 @@ public:
 		{
 			int x = rg.rand(ns.size());
 
-			Move<R, ADS>* m = ns[x]->validRandomMoveSolution(s);
+			Move<R, ADS, S>* m = ns[x]->validRandomMoveSolution(s);
 
 			if (m)
 			{
@@ -115,13 +115,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (ILSLPerturbation<R, ADS>::compatible(s));
+		return (s == idComponent()) || (ILSLPerturbation<R, ADS, S>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ILSLPerturbation<R, ADS>::idComponent() << ":LPlus2";
+		ss << ILSLPerturbation<R, ADS, S>::idComponent() << ":LPlus2";
 		return ss.str();
 	}
 
@@ -131,17 +131,17 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class ILSLPerturbationLPlus2Prob: public ILSLPerturbation<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class ILSLPerturbationLPlus2Prob: public ILSLPerturbation<R, ADS, S>
 {
 private:
-	vector<NS<R, ADS>*> ns;
+	vector<NS<R, ADS, S>*> ns;
 	vector<pair<int, double> > pNS;
-	Evaluator<R, ADS>& evaluator;
+	Evaluator<R, ADS, S>& evaluator;
 	RandGen& rg;
 
 public:
-	ILSLPerturbationLPlus2Prob(Evaluator<R, ADS>& e, NS<R, ADS>& _ns, RandGen& _rg) :
+	ILSLPerturbationLPlus2Prob(Evaluator<R, ADS, S>& e, NS<R, ADS, S>& _ns, RandGen& _rg) :
 			evaluator(e), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -152,7 +152,7 @@ public:
 	{
 	}
 
-	void add_ns(NS<R, ADS>& _ns)
+	void add_ns(NS<R, ADS, S>& _ns)
 	{
 		ns.push_back(&_ns);
 		pNS.push_back(make_pair(1, 1));
@@ -189,7 +189,7 @@ public:
 		cout<<endl;
 	}
 
-	void perturb(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria, int level)
+	void perturb(S& s, Evaluation& e, SOSC& stopCriteria, int level)
 	{
 		int a = 0; // number of appliable moves
 
@@ -207,7 +207,7 @@ public:
 				sum += pNS[x].second;
 			}
 
-			Move<R, ADS>* m = ns[x]->validRandomMoveSolution(s);
+			Move<R, ADS, S>* m = ns[x]->validRandomMoveSolution(s);
 
 			if (m)
 			{
@@ -227,7 +227,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ILSLPerturbation<R, ADS>::idComponent() << ":LPlus2Prob";
+		ss << ILSLPerturbation<R, ADS, S>::idComponent() << ":LPlus2Prob";
 		return ss.str();
 	}
 
@@ -237,43 +237,43 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class ILSLPerturbationLPlus2Builder: public ComponentBuilder<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class ILSLPerturbationLPlus2Builder: public ComponentBuilder<R, ADS, S>
 {
 public:
 	virtual ~ILSLPerturbationLPlus2Builder()
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS>* eval;
+		Evaluator<R, ADS, S>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NS<R, ADS>* ns;
+		NS<R, ADS, S>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new ILSLPerturbationLPlus2<R, ADS>(*eval, *ns, hf.getRandGen());
+		return new ILSLPerturbationLPlus2<R, ADS, S>(*eval, *ns, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NS<R, ADS>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NS<R, ADS, S>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}
 
 	virtual bool canBuild(string component)
 	{
-		return component == ILSLPerturbationLPlus2<R, ADS>::idComponent();
+		return component == ILSLPerturbationLPlus2<R, ADS, S>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS>::idComponent() << ILS::family() << "LevelPert:LPlus2";
+		ss << ComponentBuilder<R, ADS, S>::idComponent() << ILS::family() << "LevelPert:LPlus2";
 		return ss.str();
 	}
 
@@ -283,43 +283,43 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class ILSLPerturbationLPlus2ProbBuilder: public ComponentBuilder<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class ILSLPerturbationLPlus2ProbBuilder: public ComponentBuilder<R, ADS, S>
 {
 public:
 	virtual ~ILSLPerturbationLPlus2ProbBuilder()
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS>* eval;
+		Evaluator<R, ADS, S>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NS<R, ADS>* ns;
+		NS<R, ADS, S>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new ILSLPerturbationLPlus2Prob<R, ADS>(*eval, *ns, hf.getRandGen());
+		return new ILSLPerturbationLPlus2Prob<R, ADS, S>(*eval, *ns, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NS<R, ADS>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NS<R, ADS, S>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}
 
 	virtual bool canBuild(string component)
 	{
-		return component == ILSLPerturbationLPlus2Prob<R, ADS>::idComponent();
+		return component == ILSLPerturbationLPlus2Prob<R, ADS, S>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS>::idComponent() << ILS::family() << "LevelPert:LPlus2Prob";
+		ss << ComponentBuilder<R, ADS, S>::idComponent() << ILS::family() << "LevelPert:LPlus2Prob";
 		return ss.str();
 	}
 

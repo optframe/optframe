@@ -44,11 +44,11 @@ using namespace std;
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class Pareto
 {
 private:
-	vector<Solution<R, ADS>*> paretoSet;
+	vector<S*> paretoSet;
 	vector<MultiEvaluation*> paretoFront;
 	bool added; //mark if solution was added
 
@@ -59,7 +59,7 @@ public:
 		added = false;
 	}
 
-	Pareto(const Pareto<R, ADS>& _pf)
+	Pareto(const Pareto<R, ADS, S>& _pf)
 	{
 		this->clear();
 		unsigned sizeNewPop = _pf.paretoSet.size();
@@ -67,14 +67,14 @@ public:
 		for (unsigned i = 0; i < sizeNewPop; i++)
 		{
 			this->add_indWithMev(_pf.getNonDominatedSol(i), _pf.getIndMultiEvaluation(i));
-//			Solution<R, ADS>* sNew = new Solution<R, ADS>(_pf.getNonDominatedSol(i));
+//			S* sNew = new S(_pf.getNonDominatedSol(i));
 //			MultiEvaluation* mevNew = new MultiEvaluation(_pf.getIndMultiEvaluation(i));
 //			this->add_indWithMev(sNew, mevNew);
 		}
 		added = true;
 	}
 
-	Pareto(Pareto<R, ADS> && _pf) :
+	Pareto(Pareto<R, ADS, S> && _pf) :
 			paretoSet(std::move(_pf.paretoSet)), paretoFront(std::move(_pf.paretoFront))
 	{
 		added = false;
@@ -84,7 +84,7 @@ public:
 
 	}
 
-	virtual Pareto<R, ADS>& operator=(const Pareto<R, ADS>& _pf)
+	virtual Pareto<R, ADS, S>& operator=(const Pareto<R, ADS, S>& _pf)
 	{
 		if (&_pf == this) // auto ref check
 			return *this;
@@ -116,7 +116,7 @@ public:
 		added = _added;
 	}
 
-//	void push_back(Solution<R, ADS>* s, vector<Evaluation*>& v_e)
+//	void push_back(S* s, vector<Evaluation*>& v_e)
 //	{
 //		cout << "something is called inside strange push_back" << endl;
 //		getchar();
@@ -124,15 +124,15 @@ public:
 //		paretoFront.push_back(new MultiEvaluation(v_e));
 //	}
 
-//	void add_ind(const Solution<R, ADS>* s, const MultiEvaluator<R, ADS>& mEval)
+//	void add_ind(const S* s, const MultiEvaluator<R, ADS, S>& mEval)
 //	{
 //		MultiEvaluation* mev = mEval.evaluateSolution(s);
 //		add_ind(s, mev);
 //	}
 
-	void add_indWithMev(const Solution<R, ADS>& s, const MultiEvaluation& mev)
+	void add_indWithMev(const S& s, const MultiEvaluation& mev)
 	{
-		paretoSet.push_back(new Solution<R, ADS>(s));
+		paretoSet.push_back(new S(s));
 		paretoFront.push_back(new MultiEvaluation(mev));
 
 		added = true;
@@ -143,12 +143,12 @@ public:
 		return paretoSet.size();
 	}
 
-	pair<Solution<R, ADS>&, vector<Evaluation*> > at(unsigned index)
+	pair<S&, vector<Evaluation*> > at(unsigned index)
 	{
 		return make_pair(*paretoSet.at(index), paretoFront.at(index));
 	}
 
-	vector<Solution<R, ADS>*> getParetoSet()
+	vector<S*> getParetoSet()
 	{
 		return paretoSet;
 	}
@@ -158,7 +158,7 @@ public:
 		return paretoFront;
 	}
 
-	void setParetoSet(vector<Solution<R, ADS>*> pSNew)
+	void setParetoSet(vector<S*> pSNew)
 	{
 		paretoSet = std::move(pSNew);
 	}
@@ -169,17 +169,17 @@ public:
 
 	}
 
-	Solution<R, ADS>& getNonDominatedSol(int ind)
+	S& getNonDominatedSol(int ind)
 	{
 		return *paretoSet[ind];
 	}
 
-	Solution<R, ADS>& getNonDominatedSol(int ind) const
+	S& getNonDominatedSol(int ind) const
 	{
 		return *paretoSet[ind];
 	}
 
-	Solution<R, ADS>& getCloneNonDominatedSol(int ind) const
+	S& getCloneNonDominatedSol(int ind) const
 	{
 		return paretoSet[ind]->clone();
 	}
@@ -207,9 +207,9 @@ public:
 		paretoFront.erase(paretoFront.begin() + pos);
 	}
 
-	virtual Pareto<R, ADS>& clone() const
+	virtual Pareto<R, ADS, S>& clone() const
 	{
-		return *new Pareto<R, ADS>(*this);
+		return *new Pareto<R, ADS, S>(*this);
 	}
 
 	void clear()
@@ -257,8 +257,8 @@ public:
 	{
 		vector<MultiEvaluation*> nonDom;
 
-		ParetoDominance<R, ADS> pDom(vdir);
-		ParetoDominanceWeak<R, ADS> pDomWeak(vdir);
+		ParetoDominance<R, ADS, S> pDom(vdir);
+		ParetoDominanceWeak<R, ADS, S> pDomWeak(vdir);
 
 		for (unsigned i = 0; i < candidates.size(); i++)
 			addSolution(pDom, pDomWeak, nonDom, candidates[i]);
@@ -270,8 +270,8 @@ public:
 	{
 		vector<pair<Solution<R>*, MultiEvaluation*> > nonDom;
 
-		ParetoDominance<R, ADS> pDom(vdir);
-		ParetoDominanceWeak<R, ADS> pDomWeak(vdir);
+		ParetoDominance<R, ADS, S> pDom(vdir);
+		ParetoDominanceWeak<R, ADS, S> pDomWeak(vdir);
 
 		for (unsigned i = 0; i < candidates.size(); i++)
 			addSolution(pDom, pDomWeak, nonDom, candidates[i]);
@@ -288,13 +288,13 @@ public:
 //	template<class T>
 //	static bool addSolution(vector<Direction*>& vDir, vector<T*>& nonDom, T* candidate)
 //	{
-//		ParetoDominance<R, ADS> dom(vDir);
-//		ParetoDominanceWeak<R, ADS> domWeak(vDir);
+//		ParetoDominance<R, ADS, S> dom(vDir);
+//		ParetoDominanceWeak<R, ADS, S> domWeak(vDir);
 //		return addSolution(dom, domWeak, nonDom, candidate);
 //	}
 //
 //	template<class T>
-//	static bool addSolution(ParetoDominance<R, ADS>& dom, ParetoDominanceWeak<R, ADS>& domWeak, vector<T*>& nonDom, T* candidate)
+//	static bool addSolution(ParetoDominance<R, ADS, S>& dom, ParetoDominanceWeak<R, ADS, S>& domWeak, vector<T*>& nonDom, T* candidate)
 //	{
 //		for (int ind = 0; ind < nonDom.size(); ind++)
 //		{
@@ -312,9 +312,9 @@ public:
 //		return true;
 //	}
 
-//	static bool addSolution(ParetoDominance<R, ADS>& dom, ParetoDominanceWeak<R, ADS>& domWeak, Pareto<R, ADS>& p, Solution<R, ADS>* candidate)
+//	static bool addSolution(ParetoDominance<R, ADS, S>& dom, ParetoDominanceWeak<R, ADS, S>& domWeak, Pareto<R, ADS, S>& p, S* candidate)
 //	{
-//		MultiEvaluator<R, ADS>& mEval = dom.getMultiEvaluator();
+//		MultiEvaluator<R, ADS, S>& mEval = dom.getMultiEvaluator();
 //		MultiEvaluation& mevCandidate = mEval.evaluate(*candidate);
 //
 //		for (int eI = 0; eI < mevCandidate.size(); eI++)
@@ -354,10 +354,10 @@ public:
 //		return added;
 //	}
 
-//	static bool addSolution(ParetoDominance<R, ADS>& dom, ParetoDominanceWeak<R, ADS>& domWeak, pair<Pareto<R, ADS>, vector<vector<bool> > >& p, Solution<R, ADS>* candidate, int neighboorsSize)
+//	static bool addSolution(ParetoDominance<R, ADS, S>& dom, ParetoDominanceWeak<R, ADS, S>& domWeak, pair<Pareto<R, ADS, S>, vector<vector<bool> > >& p, S* candidate, int neighboorsSize)
 //
 //	{
-//		vector<Evaluator<R, ADS>*> v_e = dom.getEvaluators();
+//		vector<Evaluator<R, ADS, S>*> v_e = dom.getEvaluators();
 //		vector<Evaluation*> fitnessNewInd;
 //
 //		for (int evalIndex = 0; evalIndex < v_e.size(); evalIndex++)
@@ -413,7 +413,7 @@ public:
 //	}
 
 //	template<class T>
-//	static bool addSolution(ParetoDominance<R, ADS>& dom, ParetoDominanceWeak<R, ADS>& domWeak, vector<T>& nonDom, T candidate)
+//	static bool addSolution(ParetoDominance<R, ADS, S>& dom, ParetoDominanceWeak<R, ADS, S>& domWeak, vector<T>& nonDom, T candidate)
 //	{
 //		for (int ind = 0; ind < nonDom.size(); ind++)
 //		{
@@ -431,9 +431,9 @@ public:
 //		return true;
 //	}
 
-//	static bool addSolution(ParetoDominance<R, ADS>& dom, ParetoDominanceWeak<R, ADS>& domWeak, Population<R, ADS>& p, Solution<R, ADS>& s)
+//	static bool addSolution(ParetoDominance<R, ADS, S>& dom, ParetoDominanceWeak<R, ADS, S>& domWeak, Population<R, ADS, S>& p, S& s)
 //	{
-//		vector<Evaluator<R, ADS>*> v_e = dom.getEvaluators();
+//		vector<Evaluator<R, ADS, S>*> v_e = dom.getEvaluators();
 //		vector<double> fitnessNewInd;
 //
 //		for (int evalIndex = 0; evalIndex < v_e.size(); evalIndex++)
@@ -472,9 +472,9 @@ public:
 //	}
 
 	//Special addSolution used in the 2PPLS speedUp
-//	static bool addSolution(ParetoDominance<R, ADS>& dom, ParetoDominanceWeak<R, ADS>& domWeak, pair<Population<R, ADS>, vector<vector<bool> > >& p, Solution<R, ADS>& s, int neighboorsSize)
+//	static bool addSolution(ParetoDominance<R, ADS, S>& dom, ParetoDominanceWeak<R, ADS, S>& domWeak, pair<Population<R, ADS, S>, vector<vector<bool> > >& p, S& s, int neighboorsSize)
 //	{
-//		vector<Evaluator<R, ADS>*> v_e = dom.getEvaluators();
+//		vector<Evaluator<R, ADS, S>*> v_e = dom.getEvaluators();
 //		vector<double> fitnessNewInd;
 //
 //		for (int evalIndex = 0; evalIndex < v_e.size(); evalIndex++)
@@ -520,7 +520,7 @@ public:
 //		return added;
 //	}
 //
-//	static void addSolution(ParetoDominance<R, ADS>& dom, ParetoDominanceWeak<R, ADS>& domWeak, vector<pair<Solution<R>*, MultiEvaluation*> >& nonDom, pair<Solution<R>*, MultiEvaluation*> candidate)
+//	static void addSolution(ParetoDominance<R, ADS, S>& dom, ParetoDominanceWeak<R, ADS, S>& domWeak, vector<pair<Solution<R>*, MultiEvaluation*> >& nonDom, pair<Solution<R>*, MultiEvaluation*> candidate)
 //	{
 //		for (int ind = 0; ind < nonDom.size(); ind++)
 //		{
@@ -542,19 +542,19 @@ public:
 
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class paretoManager
 {
 public:
-	MultiEvaluator<R, ADS>& multiEval;
-	ParetoDominance<R, ADS> dom;
-	ParetoDominanceWeak<R, ADS> domWeak;
-//	Pareto<R, ADS> x_e;
+	MultiEvaluator<R, ADS, S>& multiEval;
+	ParetoDominance<R, ADS, S> dom;
+	ParetoDominanceWeak<R, ADS, S> domWeak;
+//	Pareto<R, ADS, S> x_e;
 
 public:
 
-	paretoManager(MultiEvaluator<R, ADS>& _multiEval) :
-			multiEval(_multiEval), dom(ParetoDominance<R, ADS>(_multiEval)), domWeak(ParetoDominanceWeak<R, ADS>(_multiEval))
+	paretoManager(MultiEvaluator<R, ADS, S>& _multiEval) :
+			multiEval(_multiEval), dom(ParetoDominance<R, ADS, S>(_multiEval)), domWeak(ParetoDominanceWeak<R, ADS, S>(_multiEval))
 	{
 	}
 
@@ -563,18 +563,18 @@ public:
 
 	}
 
-//	virtual Pareto<R, ADS>& getParetoInsideManager()
+//	virtual Pareto<R, ADS, S>& getParetoInsideManager()
 //	{
 //		return x_e;
 //	}
 
-//	MultiEvaluator<R, ADS>& getMultiEvaluator()
+//	MultiEvaluator<R, ADS, S>& getMultiEvaluator()
 //	{
 //		return multiEval;
 //	}
 
 //	//Special addSolution used in the 2PPLS speedUp
-//	bool addSolution(Solution<R, ADS>* candidate)
+//	bool addSolution(S* candidate)
 //	{
 //		MultiEvaluation& mev = multiEval.evaluate(*candidate);
 //		bool added = addSolution(candidate, &mev);
@@ -582,7 +582,7 @@ public:
 //		return added;
 //	}
 //
-//	virtual bool addSolution(const Solution<R, ADS>* candidate, const MultiEvaluation* mev)
+//	virtual bool addSolution(const S* candidate, const MultiEvaluation* mev)
 //	{
 //		cout << "Something wrong has happen! \n It is inside addSolution candidate,mev! \n This should be reimplemented" << endl;
 //		getchar();
@@ -590,7 +590,7 @@ public:
 ////		return false;
 //	}
 
-	bool addSolution(Pareto<R, ADS>& p, const Solution<R, ADS>& candidate)
+	bool addSolution(Pareto<R, ADS, S>& p, const S& candidate)
 	{
 		MultiEvaluation mev(std::move(multiEval.evaluateSolution(candidate)));
 		bool added = addSolutionWithMEV(p, candidate, mev);
@@ -598,7 +598,7 @@ public:
 		return added;
 	}
 
-	virtual bool addSolutionWithMEV(Pareto<R, ADS>& p, const Solution<R, ADS>& candidate, const MultiEvaluation& candidateMev)
+	virtual bool addSolutionWithMEV(Pareto<R, ADS, S>& p, const S& candidate, const MultiEvaluation& candidateMev)
 	{
 		bool added = true;
 		for (int ind = 0; ind < (int) p.size(); ind++)
@@ -621,7 +621,7 @@ public:
 		return added;
 	}
 
-	bool addSolutionWithMEVReevaluation(Pareto<R, ADS>& p, Solution<R, ADS>& candidate, MultiEvaluation& candidateMev)
+	bool addSolutionWithMEVReevaluation(Pareto<R, ADS, S>& p, S& candidate, MultiEvaluation& candidateMev)
 	{
 		multiEval.reevaluateSolutionMEV(candidateMev, candidate);
 		bool added = addSolutionWithMEV(p, candidate, candidateMev);
@@ -629,9 +629,9 @@ public:
 		return added;
 	}
 
-	bool checkDominance(const Pareto<R, ADS>& p)
+	bool checkDominance(const Pareto<R, ADS, S>& p)
 	{
-		Pareto<R, ADS> pFiltered;
+		Pareto<R, ADS, S> pFiltered;
 		int nInd = p.size();
 		for (int ind = 0; ind < nInd; ind++)
 			addSolutionWithMEV(pFiltered, p.getNonDominatedSol(ind), p.getIndMultiEvaluation(ind));
@@ -644,7 +644,7 @@ public:
 		return false;
 	}
 
-//	virtual bool checkDominance(Pareto<R, ADS>& p, MultiEvaluation* candidateMev, vector<MoveCost*>& candidateMovCost)
+//	virtual bool checkDominance(Pareto<R, ADS, S>& p, MultiEvaluation* candidateMev, vector<MoveCost*>& candidateMovCost)
 //	{
 //		MultiEvaluation* tempMev = new MultiEvaluation(*candidateMev);
 //
@@ -653,7 +653,7 @@ public:
 //		return checkedValue;
 //	}
 //
-//	virtual bool checkDominance(Pareto<R, ADS>& p, MultiEvaluation* candidateMev)
+//	virtual bool checkDominance(Pareto<R, ADS, S>& p, MultiEvaluation* candidateMev)
 //	{
 //		for (int ind = 0; ind < x_e.size(); ind++)
 //		{

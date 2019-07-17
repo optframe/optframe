@@ -27,13 +27,13 @@
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class CloneConstructive : public Constructive<R, ADS>
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class CloneConstructive : public Constructive<R, ADS, S>
 {
-   Solution<R, ADS>& base;
+   S& base;
 
 public:
-   CloneConstructive(Solution<R, ADS>& _base)
+   CloneConstructive(S& _base)
      : base(_base.clone())
    {
    }
@@ -43,23 +43,23 @@ public:
       delete &base;
    }
 
-   virtual Solution<R, ADS>* generateSolution(double timelimit) override
+   virtual S* generateSolution(double timelimit) override
    {
-      Solution<R, ADS>& s = base.clone();
-      Solution<R, ADS> sc = s;
+      S& s = base.clone();
+      S sc = s;
       delete &s;
-      return new Solution<R, ADS>(sc);
+      return new S(sc);
    }
 
    virtual bool compatible(string s)
    {
-      return (s == idComponent()) || (Constructive<R, ADS>::compatible(s));
+      return (s == idComponent()) || (Constructive<R, ADS, S>::compatible(s));
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << Constructive<R, ADS>::idComponent() << ":CloneConstructive";
+      ss << Constructive<R, ADS, S>::idComponent() << ":CloneConstructive";
       return ss.str();
    }
 
@@ -69,39 +69,39 @@ public:
    }
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class CloneConstructiveBuilder : public ComponentBuilder<R, ADS>
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class CloneConstructiveBuilder : public ComponentBuilder<R, ADS, S>
 {
 public:
    virtual ~CloneConstructiveBuilder()
    {
    }
 
-   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
    {
-      Solution<R, ADS>* s;
+      S* s;
       hf.assign(s, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      return new CloneConstructive<R, ADS>(*s);
+      return new CloneConstructive<R, ADS, S>(*s);
    }
 
    virtual vector<pair<string, string>> parameters()
    {
       vector<pair<string, string>> params;
-      params.push_back(make_pair(Solution<R, ADS>::idComponent(), "solution"));
+      params.push_back(make_pair(S::idComponent(), "solution"));
 
       return params;
    }
 
    virtual bool canBuild(string component)
    {
-      return component == CloneConstructive<R, ADS>::idComponent();
+      return component == CloneConstructive<R, ADS, S>::idComponent();
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << ComponentBuilder<R, ADS>::idComponent() << "CloneConstructive";
+      ss << ComponentBuilder<R, ADS, S>::idComponent() << "CloneConstructive";
       return ss.str();
    }
 

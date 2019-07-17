@@ -34,17 +34,17 @@ namespace optframe
 
 typedef pair<pair<int, int> , pair<int, int> > levelHistory;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class IteratedLocalSearchLevels: public IteratedLocalSearch<levelHistory, R, ADS >
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class IteratedLocalSearchLevels: public IteratedLocalSearch<levelHistory, R, ADS, S>
 {
 protected:
-	LocalSearch<R, ADS>& ls;
-	ILSLPerturbation<R, ADS>& p;
+	LocalSearch<R, ADS, S>& ls;
+	ILSLPerturbation<R, ADS, S>& p;
 	int iterMax, levelMax;
 
 public:
 
-	IteratedLocalSearchLevels(Evaluator<R, ADS>& e, Constructive<R, ADS>& constructive, LocalSearch<R, ADS>& _ls, ILSLPerturbation<R, ADS>& _p, int _iterMax, int _levelMax) :
+	IteratedLocalSearchLevels(Evaluator<R, ADS, S>& e, Constructive<R, ADS, S>& constructive, LocalSearch<R, ADS, S>& _ls, ILSLPerturbation<R, ADS, S>& _p, int _iterMax, int _levelMax) :
 		IteratedLocalSearch<levelHistory, R, ADS > (e, constructive), ls(_ls), p(_p), iterMax(_iterMax), levelMax(_levelMax)
 	{
 	}
@@ -64,13 +64,13 @@ public:
 		return *new levelHistory(vars, maxs);
 	}
 
-	virtual void localSearch(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria)
+	virtual void localSearch(S& s, Evaluation& e, SOSC& stopCriteria)
 	{
 		//cout << "localSearch(.)" << endl;
 		ls.exec(s, e, stopCriteria);
 	}
 
-	virtual void perturbation(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria, levelHistory& history)
+	virtual void perturbation(S& s, Evaluation& e, SOSC& stopCriteria, levelHistory& history)
 	{
 		//cout << "perturbation(.)" << endl;
 
@@ -155,38 +155,38 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class IteratedLocalSearchLevelsBuilder : public ILS, public SingleObjSearchBuilder<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class IteratedLocalSearchLevelsBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, S>
 {
 public:
 	virtual ~IteratedLocalSearchLevelsBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual SingleObjSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS>* eval = nullptr;
+		Evaluator<R, ADS, S>* eval = nullptr;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!eval)
 			return nullptr;
 
-		Constructive<R, ADS>* constructive = nullptr;
+		Constructive<R, ADS, S>* constructive = nullptr;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!constructive)
 			return nullptr;
 
 		string rest = scanner.rest();
 
-		pair<LocalSearch<R, ADS>*, std::string> method;
+		pair<LocalSearch<R, ADS, S>*, std::string> method;
 		method = hf.createLocalSearch(rest);
 
-		LocalSearch<R, ADS>* h = method.first;
+		LocalSearch<R, ADS, S>* h = method.first;
 
 		scanner = Scanner(method.second);
 		if(!h)
 			return nullptr;
 
-		ILSLPerturbation<R, ADS>* pert;
+		ILSLPerturbation<R, ADS, S>* pert;
 		hf.assign(pert, scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!pert)
 			return nullptr;
@@ -211,16 +211,16 @@ public:
 			return nullptr;
 		}
 
-		return new IteratedLocalSearchLevels<R, ADS>(*eval, *constructive, *h, *pert, iterMax,levelMax);
+		return new IteratedLocalSearchLevels<R, ADS, S>(*eval, *constructive, *h, *pert, iterMax,levelMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(Constructive<R, ADS>::idComponent(), "constructive heuristic"));
-		params.push_back(make_pair(LocalSearch<R, ADS>::idComponent(), "local search"));
-		params.push_back(make_pair(ILSLPerturbation<R, ADS>::idComponent(), "ilsL perturbation"));
+		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Constructive<R, ADS, S>::idComponent(), "constructive heuristic"));
+		params.push_back(make_pair(LocalSearch<R, ADS, S>::idComponent(), "local search"));
+		params.push_back(make_pair(ILSLPerturbation<R, ADS, S>::idComponent(), "ilsL perturbation"));
 		params.push_back(make_pair("int", "max number of iterations without improvement"));
 		params.push_back(make_pair("int", "levelMax of perturbation"));
 
@@ -229,13 +229,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == IteratedLocalSearchLevels<R, ADS>::idComponent();
+		return component == IteratedLocalSearchLevels<R, ADS, S>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS>::idComponent() << ILS::family() << "ILSLevels";
+		ss << SingleObjSearchBuilder<R, ADS, S>::idComponent() << ILS::family() << "ILSLevels";
 		return ss.str();
 	}
 

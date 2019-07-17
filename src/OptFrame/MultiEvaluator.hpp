@@ -35,16 +35,16 @@ using namespace scannerpp;
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class MultiEvaluator: public MultiDirection
 {
 protected:
-	vector<Evaluator<R, ADS>*> sngEvaluators; // single evaluators
+	vector<Evaluator<R, ADS, S>*> sngEvaluators; // single evaluators
 	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
 
 public:
 
-	MultiEvaluator(vector<Evaluator<R, ADS>*> _veval) :
+	MultiEvaluator(vector<Evaluator<R, ADS, S>*> _veval) :
 			sngEvaluators(_veval), allowCosts(false)
 	{
 		for (unsigned i = 0; i < _veval.size(); i++)
@@ -58,7 +58,7 @@ public:
 	{
 	}
 
-	virtual void addEvaluator(Evaluator<R, ADS>& ev)
+	virtual void addEvaluator(Evaluator<R, ADS, S>& ev)
 	{
 		sngEvaluators.push_back(&ev);
 	}
@@ -73,7 +73,7 @@ public:
 //	{
 //	}
 
-//	MultiEvaluator(MultiEvaluator<R, ADS>& _mev) :
+//	MultiEvaluator(MultiEvaluator<R, ADS, S>& _mev) :
 //			sngEvaluators(*_mev.getEvaluators2()), allowCosts(false)
 //	{
 //		cout<<"sngEvaluators.size():"<<sngEvaluators.size()<<endl;
@@ -108,7 +108,7 @@ public:
 		return sngEvaluators[index]->equals(ev1, ev2);
 	}
 
-	MultiEvaluation evaluateSolution(const Solution<R, ADS>& s)
+	MultiEvaluation evaluateSolution(const S& s)
 	{
 		return evaluate(s.getR(), s.getADSptr());
 	}
@@ -135,7 +135,7 @@ public:
 			delete sngEvaluators[e];
 	}
 
-	void reevaluateSolutionMEV(MultiEvaluation& mev, const Solution<R, ADS>& s)
+	void reevaluateSolutionMEV(MultiEvaluation& mev, const S& s)
 	{
 		reevaluateMEV(mev, s.getR(),s.getADSptr());
 	}
@@ -155,41 +155,41 @@ public:
 //		return allowCosts;
 //	}
 
-//	vector<Evaluator<R, ADS>*> getEvaluators2()
+//	vector<Evaluator<R, ADS, S>*> getEvaluators2()
 //	{
 //		return sngEvaluators;
 //	}
 
 	//	// TODO: check
-//	const vector<const Evaluator<R, ADS>*>* getEvaluatorsConstTest() const
+//	const vector<const Evaluator<R, ADS, S>*>* getEvaluatorsConstTest() const
 //	{
 //		if (sngEvaluators.size() > 0)
-//			return new vector<const Evaluator<R, ADS>*>(sngEvaluators);
+//			return new vector<const Evaluator<R, ADS, S>*>(sngEvaluators);
 //		else
 //			return nullptr;
 //	}
 
-//	Evaluator<R, ADS>& at(unsigned index)
+//	Evaluator<R, ADS, S>& at(unsigned index)
 //	{
 //		return *sngEvaluators.at(index);
 //	}
 //
-//	const Evaluator<R, ADS>& at(unsigned index) const
+//	const Evaluator<R, ADS, S>& at(unsigned index) const
 //	{
 //		return *sngEvaluators.at(index);
 //	}
 //
-//	Evaluator<R, ADS>& operator[](unsigned index)
+//	Evaluator<R, ADS, S>& operator[](unsigned index)
 //	{
 //		return *sngEvaluators[index];
 //	}
 //
-//	const Evaluator<R, ADS>& operator[](unsigned index) const
+//	const Evaluator<R, ADS, S>& operator[](unsigned index) const
 //	{
 //		return *sngEvaluators[index];
 //	}
 
-//	void addEvaluator(const Evaluator<R, ADS>& ev)
+//	void addEvaluator(const Evaluator<R, ADS, S>& ev)
 //	{
 //		sngEvaluators.push_back(&ev.clone());
 //	}
@@ -218,8 +218,8 @@ protected:
 
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class MultiEvaluatorAction: public Action<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class MultiEvaluatorAction: public Action<R, ADS, S>
 {
 public:
 
@@ -234,12 +234,12 @@ public:
 
 	virtual bool handleComponent(string type)
 	{
-		return Component::compareBase(MultiEvaluator<R, ADS>::idComponent(), type);
+		return Component::compareBase(MultiEvaluator<R, ADS, S>::idComponent(), type);
 	}
 
 	virtual bool handleComponent(Component& component)
 	{
-		return component.compatible(MultiEvaluator<R, ADS>::idComponent());
+		return component.compatible(MultiEvaluator<R, ADS, S>::idComponent());
 	}
 
 	virtual bool handleAction(string action)
@@ -247,7 +247,7 @@ public:
 		return (action == "evaluate"); //|| (action == "betterThan") || (action == "betterOrEquals");
 	}
 
-	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS>& hf, map<string, string>& d)
+	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, S>& hf, map<string, string>& d)
 	{
 		cout << "MultiEvaluator::doCast: NOT IMPLEMENTED!" << endl;
 		return false;
@@ -278,9 +278,9 @@ public:
 		// cast object to lower type
 		Component* final = nullptr;
 
-		if (type == Evaluator<R, ADS>::idComponent())
+		if (type == Evaluator<R, ADS, S>::idComponent())
 		{
-			final = (Evaluator<R, ADS>*) comp;
+			final = (Evaluator<R, ADS, S>*) comp;
 		}
 		else
 		{
@@ -290,10 +290,10 @@ public:
 
 		// add new component
 		Scanner scanner(variable);
-		return ComponentAction<R, ADS>::addAndRegister(scanner, *final, hf, d);
+		return ComponentAction<R, ADS, S>::addAndRegister(scanner, *final, hf, d);
 	}
 
-	virtual bool doAction(string content, HeuristicFactory<R, ADS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	virtual bool doAction(string content, HeuristicFactory<R, ADS, S>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 		cout << "MultiEvaluator::doAction: NOT IMPLEMENTED!" << endl;
 		return false;
@@ -305,7 +305,7 @@ public:
 		if (!scanner.hasNext())
 			return false;
 
-		Evaluator<R, ADS>* ev;
+		Evaluator<R, ADS, S>* ev;
 		hf.assign(ev, scanner.nextInt(), scanner.next());
 
 		if (!ev)
@@ -324,7 +324,7 @@ public:
 			if (!scanner.hasNext())
 				return false;
 
-			Solution<R, ADS>* s;
+			S* s;
 			hf.assign(s, scanner.nextInt(), scanner.next());
 
 			if (!s)
@@ -332,7 +332,7 @@ public:
 
 			Evaluation& e = ev->evaluate(*s);
 
-			return Action<R, ADS>::addAndRegister(scanner, e, hf, dictionary);
+			return Action<R, ADS, S>::addAndRegister(scanner, e, hf, dictionary);
 		}
 
 		// no action found!

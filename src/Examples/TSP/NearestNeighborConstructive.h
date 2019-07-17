@@ -64,7 +64,7 @@ public:
 	{
 	}
 
-	Solution<RepTSP>* generateSolution(double timelimit) override
+	CopySolution<RepTSP>* generateSolution(double timelimit) override
 	{
         //cout << "Generating solution" << endl;
 		RepTSP newRep;
@@ -103,7 +103,7 @@ public:
                     break;
             }
 
-		return new Solution<RepTSP>(newRep);
+		return new CopySolution<RepTSP>(newRep);
 	}
 
 };

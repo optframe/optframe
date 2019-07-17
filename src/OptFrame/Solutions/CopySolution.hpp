@@ -38,7 +38,7 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<Representation R, Structure ADS = _ADS>
 class CopySolution : public Component
 {
 protected:
@@ -137,17 +137,18 @@ public:
 	// end canonical part
 	// ==================
 
-   // no clone here!
-/*
+   // shouldn't clone here!
+
+   // TODO: remove!!!
 	CopySolution<R, ADS>& clone() const
 	{
 		// if ads not null
 		if (ads)
-			return *new Solution<R, ADS>(*r, *ads);
+			return *new CopySolution<R, ADS>(*r, *ads);
 		else
-			return *new Solution<R, ADS>(*r);
+			return *new CopySolution<R, ADS>(*r);
 	}
-*/
+
 	// returns true if ads is not null
 	bool hasADS() const
 	{
@@ -277,7 +278,7 @@ public:
 
 };
 
-template<class R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 struct _Testing
 {
    S s;

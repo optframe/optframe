@@ -43,17 +43,17 @@ using namespace std;
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class ParetoDominance
 {
 public:
 	// TODO: make Evaluator inherit from Direction!
 	vector<Direction*> v_d;
-	MultiEvaluator<R, ADS>& mev;
+	MultiEvaluator<R, ADS, S>& mev;
 
 public:
 
-	ParetoDominance(MultiEvaluator<R, ADS>& _mev) :
+	ParetoDominance(MultiEvaluator<R, ADS, S>& _mev) :
 			mev(_mev)
 	{
 	}
@@ -62,23 +62,23 @@ public:
 	{
 	}
 
-//	void insertEvaluators(vector<Evaluator<R, ADS>*> _v_e)
+//	void insertEvaluators(vector<Evaluator<R, ADS, S>*> _v_e)
 //	{
 //		mev.addEvaluator(_v_e);
 //	}
 
-//	vector<Evaluator<R, ADS>*> getEvaluators()
+//	vector<Evaluator<R, ADS, S>*> getEvaluators()
 //	{
 //		return v_e;
 //	}
 
-	MultiEvaluator<R, ADS>& getMultiEvaluator()
+	MultiEvaluator<R, ADS, S>& getMultiEvaluator()
 	{
 		return mev;
 	}
 
 // true if 's1' dominates 's2'
-	virtual bool dominates(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2)
+	virtual bool dominates(const S& s1, const S& s2)
 	{
 		if (mev.size() == 0)
 		{

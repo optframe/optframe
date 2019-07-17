@@ -32,8 +32,8 @@ namespace optframe
 {
 
 
-template<class R, class ADS> // already defined: ADS = OPTFRAME_DEFAULT_ADS , M = OPTFRAME_DEFAULT_EMEMORY
-class NSEnum: public NSSeq<R, ADS>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class NSEnum: public NSSeq<R, ADS, S>
 {
 
 protected:
@@ -48,25 +48,25 @@ public:
 	{
 	}
 
-	virtual Move<R, ADS>* randomMove(const R&, const ADS*)
+	virtual Move<R, ADS, S>* randomMove(const R&, const ADS*)
 	{
 		unsigned int x = rg.rand(size());
 		return indexMove(x);
 	}
 
-	virtual NSIterator<R, ADS>* getIterator(const R&, const ADS*)
+	virtual NSIterator<R, ADS, S>* getIterator(const R&, const ADS*)
 	{
-		return new NSEnumIterator<R, ADS> (*this);
+		return new NSEnumIterator<R, ADS, S> (*this);
 	}
 
-	virtual Move<R, ADS>* indexMove(unsigned int index) = 0;
+	virtual Move<R, ADS, S>* indexMove(unsigned int index) = 0;
 
 	virtual unsigned int size() const = 0;
 
    static string idComponent()
    {
 		stringstream ss;
-		ss << NSSeq<R, ADS>::idComponent() << ":NSEnum";
+		ss << NSSeq<R, ADS, S>::idComponent() << ":NSEnum";
 		return ss.str();
    }
 
@@ -77,7 +77,7 @@ public:
 
    virtual bool compatible(string s)
    {
-	   return ( s == idComponent() ) || ( NSSeq<R, ADS>::compatible(s) );
+	   return ( s == idComponent() ) || ( NSSeq<R, ADS, S>::compatible(s) );
    }
 };
 

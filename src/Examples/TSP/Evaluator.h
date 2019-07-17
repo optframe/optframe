@@ -146,20 +146,20 @@ public:
     {
         NSSeqTSPSwap<int> tspswap;
 
-        int ads;
-        NSIterator<RepTSP>& it = *tspswap.getIterator(r, &ads);
+        //int ads;
+        NSIterator<RepTSP>& it = *tspswap.getIterator(r, nullptr);
         it.first();
 
         //cout << "got iterator: " << it.toString() << endl;
 
-        Solution<RepTSP> base(r, ads);
+        CopySolution<RepTSP> base(r, nullptr);
         while (!it.isDone())
         {
             //cout << "will get move" << endl;
             totalNeigh++;
             Move<RepTSP>& m = *it.current();
             //m.print();
-            if (m.canBeApplied(r, &ads))
+            if (m.canBeApplied(r, nullptr))
             {
                 doStats = false;
                 Evaluation* e = nullptr; // dummy // TODO:

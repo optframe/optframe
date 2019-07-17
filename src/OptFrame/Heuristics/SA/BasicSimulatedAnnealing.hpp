@@ -29,13 +29,13 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BasicSimulatedAnnealing: public SingleObjSearch<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class BasicSimulatedAnnealing: public SingleObjSearch<R, ADS, S>
 {
 private:
-	Evaluator<R, ADS>& evaluator;
-	Constructive<R, ADS>& constructive;
-	vector<NS<R, ADS>*> neighbors;
+	Evaluator<R, ADS, S>& evaluator;
+	Constructive<R, ADS, S>& constructive;
+	vector<NS<R, ADS, S>*> neighbors;
 	RandGen& rg;
 	double alpha;
 	int SAmax;
@@ -43,7 +43,7 @@ private:
 
 public:
 
-	BasicSimulatedAnnealing(Evaluator<R, ADS>& _evaluator, Constructive<R, ADS>& _constructive, vector<NS<R, ADS>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(Evaluator<R, ADS, S>& _evaluator, Constructive<R, ADS, S>& _constructive, vector<NS<R, ADS, S>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg)
 	{
 		alpha = (_alpha);
@@ -52,7 +52,7 @@ public:
 
 	}
 
-	BasicSimulatedAnnealing(Evaluator<R, ADS>& _evaluator, Constructive<R, ADS>& _constructive, NS<R, ADS>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(Evaluator<R, ADS, S>& _evaluator, Constructive<R, ADS, S>& _constructive, NS<R, ADS, S>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), rg(_rg)
 	{
 		neighbors.push_back(&_neighbors);
@@ -65,7 +65,7 @@ public:
 	{
 	}
 
-	pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = nullptr,  const Evaluation* _e = nullptr)
+	pair<S, Evaluation>* search(SOSC& stopCriteria, const S* _s = nullptr,  const Evaluation* _e = nullptr)
 	{
 		double timelimit = stopCriteria.timelimit;
 		double target_f = stopCriteria.target_f;
@@ -74,14 +74,14 @@ public:
 		Timer tnow;
 
                 // store initial value in s (TODO: remove workaround to deal with pointer directly)
-		Solution<R, ADS>* sP = constructive.generateSolution(timelimit);
-		Solution<R, ADS> s(std::move(*sP)); // workaround
+		S* sP = constructive.generateSolution(timelimit);
+		S s(std::move(*sP)); // workaround
                 delete sP;                         // workaround
 		Evaluation e = evaluator.evaluateSolution(s);
 
 		double T = Ti;
 		int iterT = 0;
-		Solution<R, ADS>* sStar = &s.clone();
+		S* sStar = &s.clone();
 		Evaluation* eStar = &e.clone();
 
 		while ((T > 0.000001) && (tnow.now() < timelimit))
@@ -89,7 +89,7 @@ public:
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
 			{
 				int n = rg.rand(neighbors.size());
-				Move<R, ADS>* move = neighbors[n]->validRandomMoveSolution(s);
+				Move<R, ADS, S>* move = neighbors[n]->validRandomMoveSolution(s);
 
 				if(!move)
 				{
@@ -98,7 +98,7 @@ public:
 					continue;
 				}
 
-				Solution<R, ADS>* sCurrent = &s.clone();
+				S* sCurrent = &s.clone();
 				Evaluation* eCurrent = &e.clone();
 				Component::safe_delete(move->applyUpdateSolution(*eCurrent, *sCurrent));
 				evaluator.reevaluateSolution(*eCurrent, *sCurrent);
@@ -153,7 +153,7 @@ public:
 		delete sStar;
 		delete eStar;
 
-		return new pair<Solution<R, ADS>, Evaluation> (s, e);
+		return new pair<S, Evaluation> (s, e);
 	}
 
 	virtual string id() const
@@ -164,44 +164,44 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS>::idComponent() << ":SA:BasicSA";
+		ss << SingleObjSearch<R, ADS, S>::idComponent() << ":SA:BasicSA";
 		return ss.str();
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BasicSimulatedAnnealingBuilder: public SA, public SingleObjSearchBuilder<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class BasicSimulatedAnnealingBuilder: public SA, public SingleObjSearchBuilder<R, ADS, S>
 {
 public:
 	virtual ~BasicSimulatedAnnealingBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual SingleObjSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS>* eval;
+		Evaluator<R, ADS, S>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		Constructive<R, ADS>* constructive;
+		Constructive<R, ADS, S>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<NS<R, ADS>* > hlist;
+		vector<NS<R, ADS, S>* > hlist;
 		hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		double alpha = scanner.nextDouble();
 		int SAmax = scanner.nextInt();
 		double Ti = scanner.nextDouble();
 
-		return new BasicSimulatedAnnealing<R, ADS> (*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
+		return new BasicSimulatedAnnealing<R, ADS, S> (*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(Constructive<R, ADS>::idComponent(), "constructive heuristic"));
+		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Constructive<R, ADS, S>::idComponent(), "constructive heuristic"));
 		stringstream ss;
-		ss << NS<R, ADS>::idComponent() << "[]";
+		ss << NS<R, ADS, S>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of NS"));
 		params.push_back(make_pair("OptFrame:double", "cooling factor"));
 		params.push_back(make_pair("OptFrame:int", "number of iterations for each temperature"));
@@ -212,13 +212,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicSimulatedAnnealing<R, ADS>::idComponent();
+		return component == BasicSimulatedAnnealing<R, ADS, S>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS>::idComponent() << ":" << SA::family() << "BasicSA";
+		ss << SingleObjSearchBuilder<R, ADS, S>::idComponent() << ":" << SA::family() << "BasicSA";
 		return ss.str();
 	}
 

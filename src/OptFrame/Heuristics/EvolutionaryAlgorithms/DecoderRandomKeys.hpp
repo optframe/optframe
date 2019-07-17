@@ -24,12 +24,13 @@
 #include "../../Evaluation.hpp"
 #include "../../Evaluator.hpp"
 #include "../../Solution.hpp"
+#include "../../Solutions/CopySolution.hpp"
 
 namespace optframe {
 
 typedef vector<double> random_keys;
 
-template<class R = random_keys>
+template<Representation R>
 class DecoderRandomKeys
 {
 public:
@@ -37,7 +38,7 @@ public:
    {
    }
 
-   virtual pair<Evaluation, Solution<R>*> decode(const random_keys& rk) = 0;
+   virtual pair<Evaluation, CopySolution<R>*> decode(const random_keys& rk) = 0;
 
    virtual bool isMinimization() const = 0;
 };
@@ -46,7 +47,8 @@ public:
 // Basic implementation to use class Evaluator<random_keys>
 // ========================================================
 
-class DecoderRandomKeysEvaluator : public DecoderRandomKeys<random_keys>
+template<Representation R>
+class DecoderRandomKeysEvaluator : public DecoderRandomKeys<R>
 {
 public:
    Evaluator<random_keys>& evaluator;
@@ -60,9 +62,9 @@ public:
    {
    }
 
-   virtual pair<Evaluation, Solution<random_keys>*> decode(const random_keys& rk) override
+   virtual pair<Evaluation, CopySolution<R>*> decode(const random_keys& rk) override
    {
-      return pair<Evaluation, Solution<random_keys>*>(evaluator.evaluate(rk, nullptr), nullptr);
+      return pair<Evaluation, CopySolution<R>*>(evaluator.evaluate(rk, nullptr), nullptr);
    }
 
    virtual bool isMinimization() const
@@ -85,7 +87,7 @@ public:
       assert(a <= b);
    }
 
-   virtual pair<Evaluation, Solution<vector<int>>*> decode(const random_keys& rk) override
+   virtual pair<Evaluation, CopySolution<vector<int>>*> decode(const random_keys& rk) override
    {
       int sz = b - a + 1;
       vector<pair<double, int>> v(sz);
@@ -104,7 +106,7 @@ public:
       Evaluation e = ev.evaluate(p, nullptr);
 
       // you have the option to actually return a Solution<vector<int>> for post-decoding purposes
-      return pair<Evaluation, Solution<vector<int>>*>(e, new Solution<vector<int>>(p));
+      return pair<Evaluation, CopySolution<vector<int>>*>(e, new CopySolution<vector<int>>(p));
    }
 
    virtual bool isMinimization() const
@@ -129,7 +131,7 @@ public:
       assert(a <= b);
    }
 
-   virtual pair<Evaluation, Solution<vector<bool>>*> decode(const random_keys& rk) override
+   virtual pair<Evaluation, CopySolution<vector<bool>>*> decode(const random_keys& rk) override
    {
       vector<bool> v(b - a + 1);
       for (unsigned i = 0; i < v.size(); i++)
@@ -138,7 +140,7 @@ public:
       Evaluation e = ev.evaluate(v, nullptr);
 
       // you have the option to actually return a Solution<vector<bool>> for post-decoding purposes
-      return pair<Evaluation&, Solution<vector<bool>>*>(e, nullptr);
+      return pair<Evaluation&, CopySolution<vector<bool>>*>(e, nullptr);
    }
 
    virtual bool isMinimization() const

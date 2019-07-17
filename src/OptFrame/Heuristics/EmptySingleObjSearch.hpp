@@ -29,8 +29,8 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class EmptySingleObjSearch: public SingleObjSearch<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class EmptySingleObjSearch: public SingleObjSearch<R, ADS, S>
 {
 public:
 
@@ -42,7 +42,7 @@ public:
 	{
 	}
 
-	pair<Solution<R, ADS>, Evaluation>* search(SOSC& sosc,  const Solution<R, ADS>* _s = nullptr,  const Evaluation* _e = nullptr) override
+	pair<S, Evaluation>* search(SOSC& sosc,  const S* _s = nullptr,  const Evaluation* _e = nullptr) override
 	{
 		cout << "WARNING: RETURNING A EmptySingleObjSearch!" << endl;
 		return nullptr;
@@ -51,7 +51,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS>::idComponent() << "empty";
+		ss << SingleObjSearch<R, ADS, S>::idComponent() << "empty";
 		return ss.str();
 	}
 

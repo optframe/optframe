@@ -34,16 +34,16 @@
 namespace optframe
 {
 
-template<class H, class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class IteratedLocalSearch: public ILS, public SingleObjSearch<R, ADS>
+template<class H, class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class IteratedLocalSearch: public ILS, public SingleObjSearch<R, ADS, S>
 {
 protected:
-	Evaluator<R, ADS>& evaluator;
-	Constructive<R, ADS>& constructive;
+	Evaluator<R, ADS, S>& evaluator;
+	Constructive<R, ADS, S>& constructive;
 
 public:
 
-	IteratedLocalSearch(Evaluator<R, ADS>& _evaluator, Constructive<R, ADS>& _constructive) :
+	IteratedLocalSearch(Evaluator<R, ADS, S>& _evaluator, Constructive<R, ADS, S>& _constructive) :
 			evaluator(_evaluator), constructive(_constructive)
 	{
 	}
@@ -54,21 +54,21 @@ public:
 
 	virtual H& initializeHistory() = 0;
 
-	virtual void localSearch(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria) = 0;
+	virtual void localSearch(S& s, Evaluation& e, SOSC& stopCriteria) = 0;
 
-	virtual void perturbation(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria, H& history) = 0;
+	virtual void perturbation(S& s, Evaluation& e, SOSC& stopCriteria, H& history) = 0;
 
 	virtual bool acceptanceCriterion(const Evaluation& e1, const Evaluation& e2, H& history) = 0;
 
 	virtual bool terminationCondition(H& history) = 0;
 
-	pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = nullptr, const Evaluation* _e = nullptr) override
+	pair<S, Evaluation>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation* _e = nullptr) override
 	{
 		cout << "ILS opt search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
 		Timer tnow;
 
-		Solution<R, ADS>* sStar = nullptr;
+		S* sStar = nullptr;
 		Evaluation* eStar = nullptr;
 
 		//If solution is given it should contain an evaluation: TODO - Implement search with Solution
@@ -79,7 +79,7 @@ public:
 		}
 		else
 		{
-			sStar = new Solution<R, ADS>(std::move(*constructive.generateSolution(stopCriteria.timelimit)));
+			sStar = new S(std::move(*constructive.generateSolution(stopCriteria.timelimit)));
 			eStar = new Evaluation(evaluator.evaluateSolution(*sStar));
 		}
 
@@ -107,7 +107,7 @@ public:
 
 		do
 		{
-			Solution<R, ADS> s1(*sStar);
+			S s1(*sStar);
 			Evaluation e1(*eStar);
 
 			SOSC stopCriteriaPert = stopCriteria;
@@ -132,7 +132,7 @@ public:
 		if (evaluator.betterThan(eStar->evaluation(), stopCriteria.target_f))
 			cout << "ILS exit by target_f: " << eStar->evaluation() << " better than " << stopCriteria.target_f << endl;
 
-		pair<Solution<R, ADS>, Evaluation>* pairToReturn = new pair<Solution<R, ADS>, Evaluation>(make_pair(std::move(*sStar), std::move(*eStar)));
+		pair<S, Evaluation>* pairToReturn = new pair<S, Evaluation>(make_pair(std::move(*sStar), std::move(*eStar)));
 
 		delete eStar;
 		delete sStar;
@@ -145,8 +145,8 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS>::idComponent() << ":" << ILS::family();
-		//ss << SingleObjSearch<R, ADS>::idComponent() << ILS::family << "IteratedLocalSearch:";
+		ss << SingleObjSearch<R, ADS, S>::idComponent() << ":" << ILS::family();
+		//ss << SingleObjSearch<R, ADS, S>::idComponent() << ILS::family << "IteratedLocalSearch:";
 		return ss.str();
 	}
 

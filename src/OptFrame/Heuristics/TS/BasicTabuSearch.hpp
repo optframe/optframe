@@ -30,19 +30,19 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BasicTabuSearch: public SingleObjSearch<R, ADS>, public TS
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class BasicTabuSearch: public SingleObjSearch<R, ADS, S>, public TS
 {
 private:
-	Evaluator<R, ADS>& evaluator;
-	Constructive<R, ADS>& constructive;
-	NSSeq<R, ADS>& nsSeq;
+	Evaluator<R, ADS, S>& evaluator;
+	Constructive<R, ADS, S>& constructive;
+	NSSeq<R, ADS, S>& nsSeq;
 	int tlSize;
 	int tsMax;
 
 public:
 
-	BasicTabuSearch(Evaluator<R, ADS>& _ev, Constructive<R, ADS>& _constructive, NSSeq<R, ADS>& _nsSeq, int _tlSize, int _tsMax) :
+	BasicTabuSearch(Evaluator<R, ADS, S>& _ev, Constructive<R, ADS, S>& _constructive, NSSeq<R, ADS, S>& _nsSeq, int _tlSize, int _tsMax) :
 			evaluator(_ev), constructive(_constructive), nsSeq(_nsSeq), tlSize(_tlSize), tsMax(_tsMax)
 	{
 	}
@@ -51,16 +51,16 @@ public:
 	{
 	}
 
-	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = nullptr, const Evaluation* _e = nullptr)
+	pair<S&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const S* _s = nullptr, const Evaluation* _e = nullptr)
 	{
 		//cout << "BasicTabuSearch exec(" << target_f << "," << timelimit << ")" << endl;
 
 		long tini = time(nullptr);
 
-		Solution<R, ADS>& s = constructive.generateSolution();
+		S& s = constructive.generateSolution();
 		Evaluation& e = evaluator.evaluate(s);
 
-		Solution<R, ADS>* sStar = &s.clone();
+		S* sStar = &s.clone();
 		Evaluation* evalSStar = &evaluator.evaluate(*sStar);
 
 		//evalSStar->print();
@@ -69,8 +69,8 @@ public:
 
 		int BestIter = 0;
 
-		const vector<Move<R, ADS>*> emptyList;
-		vector<Move<R, ADS>*> tabuList;
+		const vector<Move<R, ADS, S>*> emptyList;
+		vector<Move<R, ADS, S>*> tabuList;
 
 		long tnow = time(nullptr);
 
@@ -89,11 +89,11 @@ public:
 			// First: aspiration
 			// ==================
 
-			Move<R, ADS>* bestMove = tabuBestMove(s, e, emptyList);
+			Move<R, ADS, S>* bestMove = tabuBestMove(s, e, emptyList);
 
-			Solution<R, ADS>* s1 = &s.clone();
+			S* s1 = &s.clone();
 
-			Move<R, ADS>* newTabu = &bestMove->apply(*s1);
+			Move<R, ADS, S>* newTabu = &bestMove->apply(*s1);
 			Evaluation* evalS1 = &evaluator.evaluate(*s1);
 
 			if (evaluator.betterThan(*evalS1, *evalSStar))
@@ -196,12 +196,12 @@ public:
 			fclose(ftabu);
 		}
 
-		return new pair<Solution<R, ADS>&, Evaluation&>(s, e);
+		return new pair<S&, Evaluation&>(s, e);
 	}
 
-	Move<R, ADS>* tabuBestMove(Solution<R, ADS>& s, Evaluation& e, const vector<Move<R, ADS>*>& tabuList)
+	Move<R, ADS, S>* tabuBestMove(S& s, Evaluation& e, const vector<Move<R, ADS, S>*>& tabuList)
 	{
-		NSIterator<R, ADS>& it = nsSeq.getIterator(s.getR(), s.getADS());
+		NSIterator<R, ADS, S>& it = nsSeq.getIterator(s.getR(), s.getADS());
 
 		it.first();
 
@@ -211,7 +211,7 @@ public:
 			return nullptr;
 		}
 
-		Move<R, ADS>* bestMove = &it.current();
+		Move<R, ADS, S>* bestMove = &it.current();
 
 		while (!bestMove->canBeApplied(s) || inList(bestMove, tabuList))
 		{
@@ -233,7 +233,7 @@ public:
 		it.next();
 		while (!it.isDone())
 		{
-			Move<R, ADS>* move = &it.current();
+			Move<R, ADS, S>* move = &it.current();
 			if (move->canBeApplied(s) && !inList(bestMove, tabuList))
 			{
 				MoveCost* cost = &evaluator.moveCost(e, *move, s);
@@ -263,7 +263,7 @@ public:
 		return bestMove;
 	}
 
-	bool inList(Move<R, ADS>* m, const vector<Move<R, ADS>*>& v)
+	bool inList(Move<R, ADS, S>* m, const vector<Move<R, ADS, S>*>& v)
 	{
 		for (unsigned int i = 0; i < v.size(); i++)
 			if ((*m) == (*v[i]))
@@ -274,7 +274,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS>::idComponent() << "TS:BasicTabuSearch";
+		ss << SingleObjSearch<R, ADS, S>::idComponent() << "TS:BasicTabuSearch";
 		return ss.str();
 	}
 
@@ -285,23 +285,23 @@ public:
 
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BasicTabuSearchBuilder: public TS, public SingleObjSearchBuilder<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class BasicTabuSearchBuilder: public TS, public SingleObjSearchBuilder<R, ADS, S>
 {
 public:
 	virtual ~BasicTabuSearchBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual SingleObjSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS>* eval;
+		Evaluator<R, ADS, S>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		Constructive<R, ADS>* constructive;
+		Constructive<R, ADS, S>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NSSeq<R, ADS>* nsseq;
+		NSSeq<R, ADS, S>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		if (!scanner.hasNext())
@@ -314,15 +314,15 @@ public:
 
 		int tsMax = scanner.nextInt();
 
-		return new BasicTabuSearch<R, ADS>(*eval, *constructive, *nsseq, tl, tsMax);
+		return new BasicTabuSearch<R, ADS, S>(*eval, *constructive, *nsseq, tl, tsMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(Constructive<R, ADS>::idComponent(), "constructive heuristic"));
-		params.push_back(make_pair(NSSeq<R, ADS>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Constructive<R, ADS, S>::idComponent(), "constructive heuristic"));
+		params.push_back(make_pair(NSSeq<R, ADS, S>::idComponent(), "neighborhood structure"));
 		params.push_back(make_pair("OptFrame:int", "tabu list size"));
 		params.push_back(make_pair("OptFrame:int", "max number of iterations"));
 
@@ -331,13 +331,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicTabuSearchBuilder<R, ADS>::idComponent();
+		return component == BasicTabuSearchBuilder<R, ADS, S>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS>::idComponent() << ":" << TS::family() << ":BasicTabuSearch";
+		ss << SingleObjSearchBuilder<R, ADS, S>::idComponent() << ":" << TS::family() << ":BasicTabuSearch";
 		return ss.str();
 	}
 

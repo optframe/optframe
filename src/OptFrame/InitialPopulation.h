@@ -33,7 +33,7 @@ using namespace std;
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class InitialPopulation: public Component
 {
 public:
@@ -42,7 +42,7 @@ public:
 	{
 	}
 
-	virtual Population<R, ADS> generatePopulation(unsigned populationSize, double timelimit) = 0;
+	virtual Population<R, ADS, S> generatePopulation(unsigned populationSize, double timelimit) = 0;
 
 	static string idComponent()
 	{
@@ -57,14 +57,14 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BasicInitialPopulation: public InitialPopulation<R, ADS>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class BasicInitialPopulation: public InitialPopulation<R, ADS, S>
 {
 public:
 
-	Constructive<R, ADS>& constructive;
+	Constructive<R, ADS, S>& constructive;
 
-	BasicInitialPopulation(Constructive<R, ADS>& _constructive) :
+	BasicInitialPopulation(Constructive<R, ADS, S>& _constructive) :
 			constructive(_constructive)
 	{
 	}
@@ -73,9 +73,9 @@ public:
 	{
 	}
 
-	virtual Population<R, ADS> generatePopulation(unsigned populationSize, double timelimit)
+	virtual Population<R, ADS, S> generatePopulation(unsigned populationSize, double timelimit)
 	{
-		Population<R, ADS>* p = new Population<R, ADS>;
+		Population<R, ADS, S>* p = new Population<R, ADS, S>;
 		for (unsigned i = 0; i < populationSize; i++)
 			p->push_back(constructive.generateSolution(timelimit));
 		return *p;
@@ -84,7 +84,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Population<R, ADS>::idComponent() << ":BasicInitialPopulation";
+		ss << Population<R, ADS, S>::idComponent() << ":BasicInitialPopulation";
 		return ss.str();
 	}
 
@@ -94,15 +94,15 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class GRInitialPopulation: public InitialPopulation<R, ADS>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class GRInitialPopulation: public InitialPopulation<R, ADS, S>
 {
 public:
-	GRConstructive<R, ADS>& constructive;
+	GRConstructive<R, ADS, S>& constructive;
 	RandGen& rg;
 	double maxAlpha; // limit the solution to be not so random
 
-	GRInitialPopulation(GRConstructive<R, ADS>& _constructive, RandGen& _rg, double _maxAlpha) :
+	GRInitialPopulation(GRConstructive<R, ADS, S>& _constructive, RandGen& _rg, double _maxAlpha) :
 			constructive(_constructive), rg(_rg), maxAlpha(_maxAlpha)
 	{
 	}
@@ -111,9 +111,9 @@ public:
 	{
 	}
 
-	virtual Population<R, ADS> generatePopulation(unsigned populationSize, double timelimit)
+	virtual Population<R, ADS, S> generatePopulation(unsigned populationSize, double timelimit)
 	{
-		Population<R, ADS>* p = new Population<R, ADS>;
+		Population<R, ADS, S>* p = new Population<R, ADS, S>;
 		for (unsigned i = 0; i < populationSize; i++)
 		{
 			float alpha = rg.rand01();
@@ -132,7 +132,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Population<R, ADS>::idComponent() << ":GRInitialPopulation";
+		ss << Population<R, ADS, S>::idComponent() << ":GRInitialPopulation";
 		return ss.str();
 	}
 

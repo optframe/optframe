@@ -26,13 +26,14 @@
 
 #include "Component.hpp"
 #include "Solution.hpp"
+#include "Solutions/CopySolution.hpp"
 
 using namespace std;
 
 namespace optframe
 {
 
-template<class R, class ADS>
+template<class R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class ADSManager: public Component
 {
 
@@ -52,7 +53,7 @@ public:
 
 	virtual void setNeighLocalOptimum(const R& rep, ADS& _ads, string str) = 0;
 
-	virtual void setNeighLocalOptimum(Solution<R, ADS>& s, string str)
+	virtual void setNeighLocalOptimum(S& s, string str)
 	{
 		setNeighLocalOptimum(s.getR(), s.getADS(), str);
 	}

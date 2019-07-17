@@ -28,16 +28,16 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class FirstImprovement: public LocalSearch<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class FirstImprovement: public LocalSearch<R, ADS, S>
 {
 private:
-	Evaluator<R, ADS>& eval;
-	NSSeq<R, ADS>& nsSeq;
+	Evaluator<R, ADS, S>& eval;
+	NSSeq<R, ADS, S>& nsSeq;
 
 public:
 
-	FirstImprovement(Evaluator<R, ADS>& _eval, NSSeq<R, ADS>& _nsSeq) :
+	FirstImprovement(Evaluator<R, ADS, S>& _eval, NSSeq<R, ADS, S>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 	}
@@ -46,15 +46,15 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>& s, SOSC& stopCriteria)
+	virtual void exec(S& s, SOSC& stopCriteria)
 	{
 		Evaluation e = eval.evaluateSolution(s);
 		exec(s, e, stopCriteria);
 	}
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria)
+	virtual void exec(S& s, Evaluation& e, SOSC& stopCriteria)
 	{
-		NSIterator<R, ADS>& it = *nsSeq.getIteratorSolution(s);
+		NSIterator<R, ADS, S>& it = *nsSeq.getIteratorSolution(s);
 		string bestMoveId = "";
 		it.first();
 
@@ -66,7 +66,7 @@ public:
 
 		do
 		{
-			Move<R, ADS>* move = it.current();
+			Move<R, ADS, S>* move = it.current();
 
 			// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
 			/*
@@ -108,13 +108,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<R, ADS, S>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS>::idComponent() << ":FI";
+		ss << LocalSearch<R, ADS, S>::idComponent() << ":FI";
 		return ss.str();
 	}
 
@@ -132,43 +132,43 @@ public:
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class FirstImprovementBuilder : public LocalSearchBuilder<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class FirstImprovementBuilder : public LocalSearchBuilder<R, ADS, S>
 {
 public:
 	virtual ~FirstImprovementBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS>* eval;
+		Evaluator<R, ADS, S>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NSSeq<R, ADS>* nsseq;
+		NSSeq<R, ADS, S>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new FirstImprovement<R, ADS>(*eval, *nsseq);
+		return new FirstImprovement<R, ADS, S>(*eval, *nsseq);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NSSeq<R, ADS>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NSSeq<R, ADS, S>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}
 
 	virtual bool canBuild(string component)
 	{
-		return component == FirstImprovement<R, ADS>::idComponent();
+		return component == FirstImprovement<R, ADS, S>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS>::idComponent() << ":FI";
+		ss << LocalSearchBuilder<R, ADS, S>::idComponent() << ":FI";
 		return ss.str();
 	}
 

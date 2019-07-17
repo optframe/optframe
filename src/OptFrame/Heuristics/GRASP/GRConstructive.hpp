@@ -30,17 +30,17 @@ namespace optframe
 {
 
 // Greedy Randomized Constructive
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class GRConstructive: public Constructive<R,ADS>, public GRASP
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R, ADS> S = CopySolution<R, ADS>>
+class GRConstructive: public Constructive<R,ADS, S>, public GRASP
 {
 public:
 	virtual ~GRConstructive()
 	{
 	}
 
-	virtual Solution<R, ADS>* generateGRSolution(float alpha, double timelimit) = 0;
+	virtual S* generateGRSolution(float alpha, double timelimit) = 0;
 
-	virtual Solution<R, ADS>* generateSolution(double timelimit) override
+	virtual S* generateSolution(double timelimit) override
 	{
 		return generateGRSolution(1.0, timelimit);
 	}
@@ -64,13 +64,13 @@ public:
 };
 
 // BasicGRConstructive can envelop a Constructive
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BasicGRConstructive: public GRConstructive<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R, ADS> S = CopySolution<R, ADS>>
+class BasicGRConstructive: public GRConstructive<R, ADS, S>
 {
 public:
-	Constructive<R,ADS>& c;
+	Constructive<R, ADS, S>& c;
 
-	BasicGRConstructive(Constructive<R,ADS>& _c) : c(_c)
+	BasicGRConstructive(Constructive<R, ADS, S>& _c) : c(_c)
 	{
 	}
 
@@ -78,7 +78,7 @@ public:
 	{
 	}
 
-	virtual Solution<R, ADS>* generateGRSolution(float alpha, double timelimit)
+	virtual S* generateGRSolution(float alpha, double timelimit)
 	{
 		// ignoring alpha
 		return c.generateSolution(timelimit);

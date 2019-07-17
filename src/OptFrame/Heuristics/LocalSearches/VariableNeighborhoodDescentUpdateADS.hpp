@@ -29,16 +29,16 @@
 
 namespace optframe {
 
-template<class R, class ADS>
-class VariableNeighborhoodDescentUpdateADS : public LocalSearch<R, ADS>
+template<class R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class VariableNeighborhoodDescentUpdateADS : public LocalSearch<R, ADS, S>
 {
 private:
-   Evaluator<R, ADS>& ev;
-   ADSManager<R, ADS>& adsMan;
-   vector<LocalSearch<R, ADS>*> lsList;
+   Evaluator<R, ADS, S>& ev;
+   ADSManager<R, ADS, S>& adsMan;
+   vector<LocalSearch<R, ADS, S>*> lsList;
 
 public:
-   VariableNeighborhoodDescentUpdateADS(Evaluator<R, ADS>& _ev, ADSManager<R, ADS>& _adsMan, vector<LocalSearch<R, ADS>*> _lsList)
+   VariableNeighborhoodDescentUpdateADS(Evaluator<R, ADS, S>& _ev, ADSManager<R, ADS, S>& _adsMan, vector<LocalSearch<R, ADS, S>*> _lsList)
      : ev(_ev)
      , adsMan(_adsMan)
      , lsList(_lsList)
@@ -49,14 +49,14 @@ public:
    {
    }
 
-   virtual void exec(Solution<R, ADS>& s, SOSC& sosc) override
+   virtual void exec(S& s, SOSC& sosc) override
    {
       Evaluation e = ev.evaluateSolution(s);
 
       exec(s, e, sosc);
    }
 
-   virtual void exec(Solution<R, ADS>& s, Evaluation& e, SOSC& sosc) override
+   virtual void exec(S& s, Evaluation& e, SOSC& sosc) override
    {
       double timelimit = sosc.timelimit;
       double target_f = sosc.target_f;
@@ -68,7 +68,7 @@ public:
 
       long tnow = time(nullptr);
       while (ev.betterThan(target_f, e.evaluation()) && (k <= r) && ((tnow - tini) < timelimit)) {
-         Solution<R, ADS>* s0 = &s.clone();
+         S* s0 = &s.clone();
          Evaluation* e0 = &e.clone();
 
          lsList[k - 1]->exec(*s0, *e0, sosc);
@@ -99,13 +99,13 @@ public:
 
    virtual bool compatible(string s)
    {
-      return (s == idComponent()) || (LocalSearch<R, ADS>::compatible(s));
+      return (s == idComponent()) || (LocalSearch<R, ADS, S>::compatible(s));
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << LocalSearch<R, ADS>::idComponent() << ":VNDUpdateADS";
+      ss << LocalSearch<R, ADS, S>::idComponent() << ":VNDUpdateADS";
       return ss.str();
    }
 
@@ -129,37 +129,37 @@ public:
    }
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<R, ADS, S>
 {
 public:
    virtual ~VariableNeighborhoodDescentUpdateADSBuilder()
    {
    }
 
-   virtual LocalSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+   virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
    {
-      Evaluator<R, ADS>* eval;
+      Evaluator<R, ADS, S>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      ADSManager<R, ADS>* adsMan;
+      ADSManager<R, ADS, S>* adsMan;
       hf.assign(adsMan, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      vector<LocalSearch<R, ADS>*> hlist;
+      vector<LocalSearch<R, ADS, S>*> hlist;
       hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      return new VariableNeighborhoodDescentUpdateADS<R, ADS>(*eval, *adsMan, hlist);
+      return new VariableNeighborhoodDescentUpdateADS<R, ADS, S>(*eval, *adsMan, hlist);
    }
 
    virtual vector<pair<string, string>> parameters()
    {
       vector<pair<string, string>> params;
-      params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
+      params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
 
-      params.push_back(make_pair(ADSManager<R, ADS>::idComponent(), "ADSManager function"));
+      params.push_back(make_pair(ADSManager<R, ADS, S>::idComponent(), "ADSManager function"));
 
       stringstream ss;
-      ss << LocalSearch<R, ADS>::idComponent() << "[]";
+      ss << LocalSearch<R, ADS, S>::idComponent() << "[]";
       params.push_back(make_pair(ss.str(), "list of local searches"));
 
       return params;
@@ -167,13 +167,13 @@ public:
 
    virtual bool canBuild(string component)
    {
-      return component == VariableNeighborhoodDescentUpdateADS<R, ADS>::idComponent();
+      return component == VariableNeighborhoodDescentUpdateADS<R, ADS, S>::idComponent();
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << LocalSearchBuilder<R, ADS>::idComponent() << ":VNDUpdateADS";
+      ss << LocalSearchBuilder<R, ADS, S>::idComponent() << ":VNDUpdateADS";
       return ss.str();
    }
 

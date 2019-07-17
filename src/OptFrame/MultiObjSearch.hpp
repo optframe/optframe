@@ -73,7 +73,7 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class MultiObjSearch: public Component
 {
 public:
@@ -86,7 +86,7 @@ public:
 	{
 	}
 
-	virtual Pareto<R, ADS>* search(MOSC& stopCriteria, Pareto<R, ADS>* _pf = nullptr) = 0;
+	virtual Pareto<R, ADS, S>* search(MOSC& stopCriteria, Pareto<R, ADS, S>* _pf = nullptr) = 0;
 
 	virtual string log() const
 	{
@@ -112,17 +112,17 @@ public:
 
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class MultiObjSearchBuilder: public ComponentBuilder<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class MultiObjSearchBuilder: public ComponentBuilder<R, ADS, S>
 {
 public:
 	virtual ~MultiObjSearchBuilder()
 	{
 	}
 
-	virtual MultiObjSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "") = 0;
+	virtual MultiObjSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "") = 0;
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
 		return build(scanner, hf, family);
 	}
@@ -134,7 +134,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS>::idComponent() << "MultiObjSearch:";
+		ss << ComponentBuilder<R, ADS, S>::idComponent() << "MultiObjSearch:";
 		return ss.str();
 	}
 

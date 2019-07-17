@@ -22,10 +22,11 @@
 #define OPTFRAME_CONSTRUCTIVE_HPP_
 
 #include "Solution.hpp"
+#include "Solutions/CopySolution.hpp"
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R, ADS> S = Solution<R, ADS>>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R, ADS> S = CopySolution<R, ADS>>
 class Constructive : public Component
 {
 public:

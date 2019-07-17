@@ -23,8 +23,19 @@ using namespace std;
 using namespace optframe;
 using namespace SVRPDSP;
 
+template<class R = int, class ADS = nullptr_t, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class Teste
+{
+   public: 
+   ADS* a;
+
+};
+
 int main(int argc, char **argv)
 {
+   Teste t;
+   t.a = nullptr;
+
 	// seed
 	int seed = 0;
 	RandGen rg(seed);

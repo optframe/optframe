@@ -4,11 +4,18 @@
 // the default ADS type is 'int'
 // adopting 'void' type would cause troubles in constructor/copy/move operations
 // if not used, it can be ignored with few impacts (hoping compiler will help us!)
-typedef int OPTFRAME_DEFAULT_ADS;
+typedef nullptr_t OPTFRAME_DEFAULT_ADS;
 typedef OPTFRAME_DEFAULT_ADS OptFrameADS; // more beautiful :)
 typedef OPTFRAME_DEFAULT_ADS _ADS;        // more beautiful :)
 
-template<class S, class R>
+template<class R>
+concept bool Representation = true;
+
+template<class ADS>
+concept bool Structure = true;
+
+
+template<class S, Representation R>
 concept bool HasGetR = requires(S a)
 {
    {
@@ -17,7 +24,7 @@ concept bool HasGetR = requires(S a)
    ->R&;
 };
 
-template<class S, class ADS = _ADS>
+template<class S, Structure ADS = _ADS>
 concept bool HasGetADS = requires(S a)
 {
    {
@@ -26,12 +33,12 @@ concept bool HasGetADS = requires(S a)
    ->ADS*;
 };
 
-template<class S, class R, class ADS = _ADS>
+template<class S, Representation R, Structure ADS = _ADS>
 concept bool BaseSolution = HasGetR<S, R>&& HasGetADS<S, ADS>;
 
 // Example of valid struct satisfying solution properties
 
-template<class R, class ADS = _ADS>
+template<Representation R, Structure ADS = _ADS>
 struct IsSolution
 {
    R& getR();
