@@ -1,0 +1,6 @@
+[submodule "tests/gtestlib"]
+	path = tests/gtestlib
+	url = https://github.com/google/googletest.git
+[submodule "libs/scannerpplib"]
+	path = libs/scannerpplib
+	url = https://github.com/optframe/scannerpp.git
