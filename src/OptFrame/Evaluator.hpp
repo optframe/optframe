@@ -402,6 +402,22 @@ public:
       return idComponent();
    }
 };
+
+template<class R>
+class BasicEvaluator : public Evaluator<R>{
+
+   /* Use this if don't need ADS */
+   /* Use isto se você não precisa do ADS */
+
+   using ADS = OPTFRAME_DEFAULT_ADS;
+private:
+   Evaluation evaluate(const R& r, const ADS* ads) override{
+      return evaluate(r);
+   } 
+public:
+   virtual Evaluation evaluate(const R&) = 0;
+};
+
 }
 
 #endif /*OPTFRAME_EVALUATOR_HPP_*/

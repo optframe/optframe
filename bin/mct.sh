@@ -21,6 +21,7 @@ read name
 project=$name
 project=`echo $project | sed 's/ //g'` #remove white spaces
 project=`echo $project | sed 's_/__g'` #remove slashes
+workdir=../src/MyProjects
 
 echo -e "\nIs \"$project\" a good abbreviation for your project?\nType the abbreviation or leave it blank."
 read p2
@@ -37,10 +38,22 @@ echo "Project file will be named $project.h"
 echo
 
 ##############################################
-#  Creating directory
+#  Creating workdirectory
 ##############################################
 
-if mkdir ./MyProjects/$project
+if mkdir $workdir
+then
+  echo "Creating workdir...[ok]"
+else
+  echo "Creating workdir...[fail]"
+  exit
+fi
+
+##############################################
+#  Creating project directory
+##############################################
+
+if mkdir $workdir/$project
 then
   echo "Creating project directory...[ok]"
 else
@@ -52,7 +65,7 @@ fi
 #  Creating files
 ##############################################
 
-if echo > "./MyProjects/$project.h"
+if echo > "$workdir/$project.h"
 then
   echo "Project file: $project.h [ok]"
 else
@@ -66,7 +79,7 @@ echo "Creating project \"$name\""
 var="#ifndef "$project"_H_
 #define "$project"_H_
 "
-echo "$var" > "./MyProjects/$project.h"
+echo "$var" > "$workdir/$project.h"
 echo
 
 
@@ -90,21 +103,21 @@ do
   read incl
 done
 
-cp ./mct/RepTest.tpl ./RepTest.cpp
+cp ./mct/RepTest.tpl $workdir/RepTest.cpp
 
 t1="s/\$rep/$rep/g"  
 t2="s/\$include/$include/g"  
 
-sed -e "$t1" < RepTest.cpp > RepTest.cpp.2
-mv RepTest.cpp.2 RepTest.cpp
+sed -e "$t1" < $workdir/RepTest.cpp > $workdir/RepTest.cpp.2
+mv $workdir/RepTest.cpp.2 $workdir/RepTest.cpp
 
-sed -e "$t2" < RepTest.cpp > RepTest.cpp.2
-mv RepTest.cpp.2 RepTest.cpp
+sed -e "$t2" < $workdir/RepTest.cpp > $workdir/RepTest.cpp.2
+mv $workdir/RepTest.cpp.2 $workdir/RepTest.cpp
 
-if g++ RepTest.cpp -o RepTest
+if g++ $workdir/RepTest.cpp -o $workdir/RepTest
 then echo "Solution Representation Test...[ok]"
-     rm RepTest.cpp
-     rm RepTest
+     rm $workdir/RepTest.cpp
+     rm $workdir/RepTest
 else echo "Solution Representation Test...[fail]"
 fi
 
@@ -115,7 +128,7 @@ echo
 
 
 var_inc="./$project/Representation.h"
-var="./MyProjects/$project/Representation.h"
+var="$workdir/$project/Representation.h"
 var_tmp=$var".tmp"
 
 if cp ./mct/Representation.tpl $var
@@ -131,7 +144,7 @@ then echo "1. Creating Representation File...[ok]"
      sed $t < $var > $var_tmp
      mv $var_tmp $var
 
-     echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
+     echo "#include \"$var_inc\"" >> $workdir/$project.h
 else echo "1. Creating Representation File...[fail]"
      exit
 fi
@@ -148,7 +161,7 @@ echo "2-3-4. Delta Structure and Solution files are deprecated, use the Solution
 ##############################################
 
 var_inc="./$project/ProblemInstance.h"
-var="./MyProjects/$project/ProblemInstance.h"
+var="$workdir/$project/ProblemInstance.h"
 var_tmp=$var".tmp"
 
 if cp ./mct/ProblemInstance.tpl $var
@@ -156,13 +169,13 @@ then echo "5. Creating Problem Instance...[ok]"
      t="s/\$project/$project/g"  
      sed $t < $var > $var_tmp
      mv $var_tmp $var
-     echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
+     echo "#include \"$var_inc\"" >> $workdir/$project.h
 else echo "5. Creating Problem Instance...[fail]"
      exit
 fi
 
 var_inc="./$project/ProblemInstance.cpp"
-var="./MyProjects/$project/ProblemInstance.cpp"
+var="$workdir/$project/ProblemInstance.cpp"
 var_tmp=$var".tmp"
 
 if cp ./mct/ProblemInstanceCpp.tpl $var
@@ -193,7 +206,7 @@ if [ "$minmax" = "MINIMIZATION" ];
 fi
 
 var_inc="./$project/Evaluator.h"
-var="./MyProjects/$project/Evaluator.h"
+var="$workdir/$project/Evaluator.h"
 var_tmp=$var".tmp"
 
 if cp ./mct/Evaluator.tpl $var
@@ -215,13 +228,13 @@ then echo "6. Creating Evaluator...[ok]"
      sed -e "$t" < $var > $var_tmp
      mv $var_tmp $var
 
-     echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
+     echo "#include \"$var_inc\"" >> $workdir/$project.h
 else echo "6. Creating Evaluator...[fail]"
      exit
 fi
 
 var_inc="./$project/Evaluator.cpp"
-var="./MyProjects/$project/Evaluator.cpp"
+var="$workdir/$project/Evaluator.cpp"
 var_tmp=$var".tmp"
 
 if cp ./mct/EvaluatorCpp.tpl $var
@@ -270,7 +283,7 @@ do
     read neighborhood
 
     var_inc="./$project/NSSeq$neighborhood.h"
-    var="./MyProjects/$project/NSSeq$neighborhood.h"
+    var="$workdir/$project/NSSeq$neighborhood.h"
     var_tmp=$var".tmp"
 
     if cp ./mct/NSSeq.tpl $var
@@ -283,13 +296,13 @@ do
          sed -e "$t" < $var > $var_tmp
          mv $var_tmp $var
          
-         echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
+         echo "#include \"$var_inc\"" >> $workdir/$project.h
     else echo "7.$i Creating Neighborhood Structure $neighborhood ...[fail]"
          exit
     fi
     
     var_inc="./$project/NSSeq$neighborhood.cpp"
-    var="./MyProjects/$project/NSSeq$neighborhood.cpp"
+    var="$workdir/$project/NSSeq$neighborhood.cpp"
     var_tmp=$var".tmp"
 
     if cp ./mct/NSSeqCpp.tpl $var
@@ -331,7 +344,7 @@ do
     read constructive
 
     var_inc="./$project/Constructive${constructive}.h"
-    var="./MyProjects/$project/Constructive${constructive}.h"
+    var="$workdir/$project/Constructive${constructive}.h"
     var_tmp=$var".tmp"
 
     if cp ./mct/Constructive.tpl $var
@@ -344,13 +357,13 @@ do
          sed $t < $var > $var_tmp
          mv $var_tmp $var
          
-         echo "#include \"$var_inc\"" >> ./MyProjects/$project.h
+         echo "#include \"$var_inc\"" >> $workdir/$project.h
     else echo "8.$i Creating Constructive $constructive ...[fail]"
          exit
     fi
 
     var_inc="./$project/Constructive${constructive}.cpp"
-    var="./MyProjects/$project/Constructive${constructive}.cpp"
+    var="$workdir/$project/Constructive${constructive}.cpp"
     var_tmp=$var".tmp"
 
     if cp ./mct/ConstructiveCpp.tpl $var
@@ -374,13 +387,13 @@ echo "9. ProblemCommand is deprecated, ignoring..."
 
 # Closing project file
 
-echo "#endif /*${project}_H_*/" >> "./MyProjects/$project.h"
+echo "#endif /*${project}_H_*/" >> "$workdir/$project.h"
 
 ##############################################
 #             Main file
 ##############################################
 
-var="./MyProjects/main$project.cpp"
+var="$workdir/main$project.cpp"
 var_tmp=$var".tmp"
 
 if cp ./mct/main.tpl $var
@@ -423,7 +436,7 @@ fi
 ##############################################
 #          makefile
 ##############################################
-var="./MyProjects/makefile_prj"
+var="$workdir/makefile_prj"
 var_tmp="makefile.tmp"
 
 if cp ./mct/makefile.tpl $var
@@ -459,45 +472,45 @@ else echo "makefile...[fail]"
      exit
 fi
 
-if [ -f ./MyProjects/makefile ]
+if [ -f .$workdir/makefile ]
 then
     echo Makefile already exists, just adding the project.
     # removing the option all from the old makefile
-    sed '1,3d' ./MyProjects/makefile > ./MyProjects/makefile.tmp    
+    sed '1,3d' $workdir/makefile > $workdir/makefile.tmp    
     #getting the name of the other projects
-    otherProj=`cat ./MyProjects/makefile | sed -n 3p | sed 's/.*://'`
+    otherProj=`cat $workdir/makefile | sed -n 3p | sed 's/.*://'`
 else
     echo Creating basic makefile with the project.
-    if cp ./mct/makefile_base.tpl ./MyProjects/makefile
+    if cp ./mct/makefile_base.tpl $workdir/makefile
     then echo "basic makefile file...[ok]"
     else echo "basic makefile...[fail]"
       exit
     fi
     otherProj=NONE
-    mv  ./MyProjects/makefile ./MyProjects/makefile.tmp
+    mv  $workdir/makefile $workdir/makefile.tmp
 fi
 
-cat $var ./MyProjects/makefile.tmp > ./MyProjects/makefile
+cat $var $workdir/makefile.tmp > $workdir/makefile
 
 if [ "$otherProj" != "NONE" ]
 then
-    sed -i "s/all: mctApp$project/all: $otherProj mctApp$project/" ./MyProjects/makefile
+    sed -i "s/all: mctApp$project/all: $otherProj mctApp$project/" $workdir/makefile
 fi
 
 rm -f $var
-rm -f ./MyProjects/makefile.tmp
+rm -f $workdir/makefile.tmp
 
 echo
 echo "Congratulations! You can use the following command to compile your project:"
 if [ $nbNS -eq 0 ] && [ $nbISG -eq 0 ];
-then echo "g++ --std=c++11 ./MyProjects/main$project.cpp ./MyProjects/$project/ProblemInstance.cpp ./MyProjects/$project/Evaluator.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
+then echo "g++ --std=c++17 -fconcepts $workdir/main$project.cpp $workdir/$project/ProblemInstance.cpp $workdir/$project/Evaluator.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
 elif [ $nbNS -eq 0 ];
-then echo "g++ --std=c++11 ./MyProjects/main$project.cpp ./MyProjects/$project/ProblemInstance.cpp ./MyProjects/$project/Evaluator.cpp ./MyProjects/$project/Constructive$constructive.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
+then echo "g++ --std=c++17 -fconcepts $workdir/main$project.cpp $workdir/$project/ProblemInstance.cpp $workdir/$project/Evaluator.cpp $workdir/$project/Constructive$constructive.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
 elif [ $nbISG -eq 0 ];
-then echo "g++ --std=c++11 ./MyProjects/main$project.cpp ./MyProjects/$project/ProblemInstance.cpp ./MyProjects/$project/Evaluator.cpp ./MyProjects$project/NSSeq$neighborhood.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
-else echo "g++ --std=c++11 ./MyProjects/main$project.cpp ./MyProjects/$project/ProblemInstance.cpp ./MyProjects/$project/Evaluator.cpp ./MyProjects/$project/Constructive$constructive.cpp ./MyProjects$project/NSSeq$neighborhood.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
+then echo "g++ --std=c++17 -fconcepts $workdir/main$project.cpp $workdir/$project/ProblemInstance.cpp $workdir/$project/Evaluator.cpp $workdir$project/NSSeq$neighborhood.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
+else echo "g++ --std=c++17 -fconcepts $workdir/main$project.cpp $workdir/$project/ProblemInstance.cpp $workdir/$project/Evaluator.cpp $workdir/$project/Constructive$constructive.cpp $workdir$project/NSSeq$neighborhood.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
 fi
-echo "or you can simply type: \"cd MyProjects && make\""
+echo "or you can simply type: \"cd ../src/MyProjects && make\""
 
 echo
 echo "Goodbye!"
