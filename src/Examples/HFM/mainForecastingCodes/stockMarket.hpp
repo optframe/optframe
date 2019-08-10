@@ -166,7 +166,7 @@ int stockMarketForecasting(int argc, char **argv)
 		if (b == 1)
 			methodParam.setEvalFOMinimizer(MAPE_INV_INDEX);
 		forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
-		pair<Solution<RepHFM, OPTFRAME_DEFAULT_ADS>, Evaluation>* sol = forecastObject->run(timeES, 0, 0);
+		pair<SolutionHFM, Evaluation>* sol = forecastObject->run(timeES, 0, 0);
 //		pair<Solution<RepEFP, OPTFRAME_DEFAULT_ADS>, Evaluation>* sol = forecastObject->runGILS(0, timeES);
 //		cout << "Bye bye..see u soon." << endl;
 //		exit(1);
@@ -183,7 +183,7 @@ int stockMarketForecasting(int argc, char **argv)
 	forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
 
 	vector<MultiEvaluation*> vEvalPF = pf->getParetoFront();
-	vector<Solution<RepHFM>*> vSolPF = pf->getParetoSet();
+	vector<SolutionHFM*> vSolPF = pf->getParetoSet();
 	int nObtainedParetoSol = vEvalPF.size();
 
 	vector<vector<double> > dataForFeedingValidationTest;

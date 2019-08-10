@@ -110,7 +110,7 @@ int microGridLiuAppliedEnergy(int argc, char **argv)
 
 	vector<vector<double> > vfoIndicatorCalibration; //vector with the FO of each batch
 
-	vector<SolutionEFP> vSolutionsBatches; //vector with the solution of each batch
+	vector<SolutionHFM> vSolutionsBatches; //vector with the solution of each batch
 
 	for (int n = 0; n < nBatches; n++)
 	{
@@ -209,7 +209,7 @@ int microGridLiuAppliedEnergy(int argc, char **argv)
 
 		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-		pair<Solution<RepHFM>, Evaluation>* sol;
+		pair<SolutionHFM, Evaluation>* sol;
 
 		int timeES = argvTimeES;
 		int timeVND = 0;

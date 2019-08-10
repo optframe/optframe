@@ -32,8 +32,8 @@ namespace optframe
 
 typedef pair<pair<int, int>, pair<int, int> > levelHistory;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class MOILSLevels: public MultiObjILS<levelHistory, R, ADS>
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class MOILSLevels: public MultiObjILS<levelHistory, R, ADS, S>
 {
 
 private:
@@ -63,7 +63,7 @@ public:
 		return *new levelHistory(vars, maxs);
 	}
 
-	virtual void perturbation(Solution<R, ADS>& s, MultiEvaluation& mev, MOSC& stopCriteria, levelHistory& history)
+	virtual void perturbation(S& s, MultiEvaluation& mev, MOSC& stopCriteria, levelHistory& history)
 	{
 		//cout << "perturbation(.)" << endl;
 

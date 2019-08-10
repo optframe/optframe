@@ -168,7 +168,7 @@ int loadCompetitionBlind(int argc, char **argv)
 
 			ForecastClass pFC(tForecastings, problemParam, rg, methodParam);
 
-			pair<Solution<RepHFM>, Evaluation>* sol;
+			pair<SolutionHFM, Evaluation>* sol;
 			sol = pFC.run(timeES, timeVND, timeILS);
 			vector<double> dayBlindForecasts;
 			int maxLag = problemParam.getMaxLag(0);
@@ -346,7 +346,8 @@ int loadCompetitionCalibrationMode(int argc, char **argv)
 
 	vector<vector<double> > batchOfBlindResults;
 
-	vector<SolutionEFP> vSolutionsBatches;
+	//vector<SolutionEFP> vSolutionsBatches;
+   vector<SolutionHFM> vSolutionsBatches;
 	vector<vector<double> > vfoIndicatorCalibration;
 
 	for (int n = 0; n < nBatches; n++)
@@ -401,7 +402,7 @@ int loadCompetitionCalibrationMode(int argc, char **argv)
 			ForecastClass pFC(trainningSetDay, problemParam, rg, methodParam);
 			//dayBlindForecasts = priceForecastMainLoopCompetition(tForecastings, validationBlindForecastings, problemParam, rg, mu, lambda, initialDesv, mutationDesv);
 
-			pair<Solution<RepHFM>, Evaluation>* sol;
+			pair<SolutionHFM, Evaluation>* sol;
 			sol = pFC.run(timeES, timeVND, timeILS);
 			vector<double> dayBlindForecasts;
 			dayBlindForecasts = *pFC.returnBlind(sol->first.getR(), validationBlindForecastingsDay);

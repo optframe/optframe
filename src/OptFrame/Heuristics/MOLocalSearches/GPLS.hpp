@@ -45,7 +45,7 @@ struct gplsStructure
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class paretoManagerGPLS: public paretoManager<R, ADS>
 {
 private:
@@ -66,7 +66,7 @@ public:
 	}
 
 	//Special addSolution used in the GPLS speedUp
-	virtual bool addSolutionWithMEV(Pareto<R, ADS>& p, const Solution<R, ADS>& candidate, const MultiEvaluation& candidateMev)
+	virtual bool addSolutionWithMEV(Pareto<R, ADS>& p, const S& candidate, const MultiEvaluation& candidateMev)
 	{
 		bool added = true;
 		for (unsigned ind = 0; ind < p.size(); ind++)
@@ -110,13 +110,13 @@ public:
 
 //GPLS is a kind of Multi-Objective version of the VND
 //However, it is designed in an efficient manner for iteratively exploring the obtained non-dominated solution
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class GeneralParetoLocalSearch: public MOLocalSearch<R, ADS>
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class GeneralParetoLocalSearch: public MOLocalSearch<R, ADS, S>
 {
 private:
 	InitialPareto<R, ADS>& init_pareto;
 	int init_pop_size;
-	vector<MOLocalSearch<R, ADS>*> vLS;
+	vector<MOLocalSearch<R, ADS, S>*> vLS;
 	paretoManagerGPLS<R, ADS> pMan2PPLS;
 
 public:
@@ -131,14 +131,14 @@ public:
 	{
 	}
 
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>& s, paretoManager<R, ADS>& pManager, MOSC& stopCriteria)
+	virtual void exec(Pareto<R, ADS>& p, S& s, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) override
 	{
 		Pareto<R, ADS> _pf;
 		pManager.addSolution(_pf,s);
 		searchWithOptionalPareto(stopCriteria,&_pf);
 	}
 
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>& s, MultiEvaluation& sMev, paretoManager<R, ADS>& pManager, MOSC& stopCriteria)
+	virtual void exec(Pareto<R, ADS>& p, S& s, MultiEvaluation& sMev, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) override
 	{
 		Pareto<R, ADS> _pf;
 		pManager.addSolutionWithMEV(_pf,s,sMev);

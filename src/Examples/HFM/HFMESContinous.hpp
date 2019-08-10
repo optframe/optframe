@@ -10,6 +10,8 @@
 
 #include "../../OptFrame/Heuristics/EvolutionaryAlgorithms/ESContinuous.hpp"
 
+using namespace optframe;
+
 namespace HFM
 {
 

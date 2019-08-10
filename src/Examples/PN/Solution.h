@@ -2,6 +2,7 @@
 #define PN_SOLUTION_H_
 
 #include "../../OptFrame/Solution.hpp"
+#include "../../OptFrame/Solutions/CopySolution.hpp"
 #include "Representation.h"
 
 using namespace optframe;

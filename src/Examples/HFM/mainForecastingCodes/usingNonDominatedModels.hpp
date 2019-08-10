@@ -142,7 +142,7 @@ int usingNonDominatedHFMModels(int argc, char **argv)
 		if (b == 1)
 			methodParam.setEvalFOMinimizer(MAPE_INV_INDEX);
 		forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
-		pair<Solution<RepHFM>, Evaluation>* sol = forecastObject->run(timeES, 0, 0);
+		pair<SolutionHFM, Evaluation>* sol = forecastObject->run(timeES, 0, 0);
 		forecastObject->addSolToParetoWithParetoManager(*pf, sol->first);
 		Pareto<RepHFM>* pfNew = forecastObject->runMultiObjSearch(timeGPLS, pf);
 		delete pf;
@@ -155,7 +155,7 @@ int usingNonDominatedHFMModels(int argc, char **argv)
 	forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
 
 	vector<MultiEvaluation*> vEvalPF = pf->getParetoFront();
-	vector<Solution<RepHFM>*> vSolPF = pf->getParetoSet();
+	vector<SolutionHFM*> vSolPF = pf->getParetoSet();
 	int nObtainedParetoSol = vEvalPF.size();
 
 	int targetFile = problemParam.getTargetFile();

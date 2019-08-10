@@ -36,7 +36,7 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class BasicMOILSPerturbation: public MOILS, public Component
 {
 private:
@@ -88,7 +88,7 @@ public:
 		ns.push_back(&_ns);
 	}
 
-	void perturb(Solution<R, ADS>& s, MultiEvaluation& mev, MOSC& stopCriteria)
+	void perturb(S& s, MultiEvaluation& mev, MOSC& stopCriteria)
 	{
 		for (int i = pMin; i < pMax; i++)
 		{

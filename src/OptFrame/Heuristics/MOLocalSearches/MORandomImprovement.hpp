@@ -32,8 +32,8 @@ namespace optframe
 {
 
 //Basic MORI does not considering valid move, parameter iterMax only.
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class MORandomImprovement: public MOLocalSearch<R, ADS>
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class MORandomImprovement: public MOLocalSearch<R, ADS, S>
 {
 private:
 	MultiEvaluator<R, ADS>& mev;
@@ -56,14 +56,14 @@ public:
 	{
 	}
 
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>& s, paretoManager<R, ADS>& pManager, MOSC& stopCriteria)
+	virtual void exec(Pareto<R, ADS>& p, S& s, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) override
 	{
 		MultiEvaluation sMev(std::move(mev.evaluateSolution(s)));
 
 		exec(p, s, sMev, pManager, stopCriteria);
 	}
 
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>& s, MultiEvaluation& sMev, paretoManager<R, ADS>& pManager, MOSC& stopCriteria)
+	virtual void exec(Pareto<R, ADS>& p, S& s, MultiEvaluation& sMev, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) override
 	{
 		num_calls++;
 		Timer t;
