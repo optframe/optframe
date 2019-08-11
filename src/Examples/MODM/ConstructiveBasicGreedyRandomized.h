@@ -60,14 +60,15 @@ public:
    {
    }
 
-   Solution<RepMODM, AdsMODM>* generateSolution(double timelimit) override
+   SolutionMODM* generateSolution(double timelimit) override
    {
       float alpha = 0.1;
 
-      return &generateSolution(alpha);
+      return generateGRSolution(alpha, timelimit);
    }
 
-   Solution<RepMODM, AdsMODM>& generateSolution(float alpha)
+   //virtual S* generateGRSolution(float alpha, double timelimit) = 0;
+   SolutionMODM* generateGRSolution(float alpha, double timelimit) override
    {
       if (alpha == 0)
          alpha = 0.00001;
@@ -347,7 +348,7 @@ public:
 
       //cout << "Tempo Atual: " << t.now() << endl;
       //getchar();
-      return *new Solution<RepMODM, AdsMODM>(newRep, newAds);
+      return new SolutionMODM(newRep, newAds);
    }
 
    static string idComponent()

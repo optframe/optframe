@@ -9,8 +9,8 @@
 
 #include "../OptFrame/Loader.hpp"
 #include "MODM/Evaluator.cpp"
-#include "../OptFrame/Heuristics/VNS/MOVNSLevels.hpp"
-#include "../OptFrame/Heuristics/2PPLS.hpp"
+//#include "../OptFrame/Heuristics/VNS/MOVNSLevels.hpp"
+//#include "../OptFrame/Heuristics/2PPLS.hpp"
 #include "../OptFrame/MultiEvaluator.hpp"
 #include "../OptFrame/MultiObjSearch.hpp"
 //#include "../OptFrame/Util/UnionNDSets.hpp"
@@ -206,7 +206,8 @@ int main(int argc, char **argv)
 	VariableNeighborhoodDescent<RepMODM, AdsMODM> vnd(eval, vLS);
 
 	//ILSLPerturbationLPlus2<RepMODM, AdsMODM> ilsl_pert(eval, 100000, nsseq_invert, rg);
-	ILSLPerturbationLPlus2<RepMODM, AdsMODM> ilsl_pert(eval, 100000, nsseq_arProduct, rg);
+   Evaluator<RepMODM, AdsMODM>& eval2 = eval;
+	ILSLPerturbationLPlus2<RepMODM, AdsMODM> ilsl_pert(eval2, nsseq_arProduct, rg);
 	//ILSLPerturbationLPlus2<RepMODM, AdsMODM> ilsl_pert(eval, 100000, nsseq_add, rg);
 	ilsl_pert.add_ns(nsseq_add);
 	ilsl_pert.add_ns(nsseq_swapInter);
@@ -252,10 +253,14 @@ int main(int argc, char **argv)
 	initial_population_size = 10;
 	MultiEvaluator<RepMODM, AdsMODM> mev(v_e);
 
+   // MOVNSLevels (??)
+   /*
 	MOVNSLevels<RepMODM, AdsMODM> multiobjectvns(v_e, bip, initial_population_size, neighboors, rg, 10, 10);
 	TwoPhaseParetoLocalSearch<RepMODM, AdsMODM> paretoSearch(mev, bip, initial_population_size, neighboors);
 
+   */
 	Pareto<RepMODM, AdsMODM>* pf;
+   /*
 	int time2PPLS = 120;
 	for (int exec = 0; exec < 1; exec++)
 	{
@@ -264,6 +269,11 @@ int main(int argc, char **argv)
 		pf = paretoSearch.search(time2PPLS, 0);
 		pf = multiobjectvns.search(300, 0);
 	}
+   */
+
+   // 2PPLS (???)
+   // UnionNDSets (???)
+   /*
 
 cout<<"Oi"<<endl;
 getchar();
@@ -286,8 +296,14 @@ getchar();
 		refMin[p][1]*=-1;
 	}
 
+   */
+
 //
 //	getchar();
+
+// How to get these to compile??
+
+/*
 
 	vector<vector<Evaluation*> > vEval = pf->getParetoFront();
 	vector<Solution<RepMODM, AdsMODM>*> vSolPf = pf->getParetoSet();
@@ -351,6 +367,9 @@ getchar();
 	fprintf(fGeral, "%s \t %d \t %.7f \t %.7f \t %d \t %d \t %.7f \t %.7f \t %.7f \t %.7f \t %ld \n", instName.c_str(), pop, alphaBuilder, alphaNeighARProduct, nObtainedParetoSol, card, sCToRef, sCFromRef, hv, delta, seed);
 
 	fclose(fGeral);
+*/
+
+// what else?
 
 	//getchar();
 	//===========================================

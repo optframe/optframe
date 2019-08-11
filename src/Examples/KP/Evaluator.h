@@ -19,7 +19,7 @@
 namespace KP
 {
 
-class MyEvaluator: public Evaluator<RepKP, MY_ADS >
+class MyEvaluator: public Evaluator<RepKP >
 {
 private:
 	ProblemInstance& pKP;
@@ -31,11 +31,11 @@ public:
 	
 	virtual ~MyEvaluator();
 
-	Evaluation evaluate(const RepKP& rep, const MY_ADS*) override;
+	Evaluation evaluate(const RepKP& rep, const OPTFRAME_DEFAULT_ADS*) override;
 	
 	//Evaluation& evaluate(const RepKP& rep, const MY_ADS&);
 	
-	virtual bool isMinimization() const;
+	virtual bool isMinimization() const override;
 };
 
 }

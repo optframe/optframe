@@ -31,14 +31,15 @@ main(int argc, char** argv)
    ConstructiveRandom c1(p);
    NSSeqBitFlip ns1(p, rg);
    cout << "will generate solution" << endl;
-   Solution<RepKP>& s = *c1.generateSolution(10); // timelimit (10???)
+   SolutionKP& s = *c1.generateSolution(10); // timelimit (10???)
    s.print();
    Evaluation e = ev.evaluate(s.getR(), s.getADSptr());
    e.print();
    cout << "GUD" << endl;
 
    CheckCommand<RepKP> check; // cria o módulo de testes (opcional)
-   check.add(ev);             // carrega a avaliação para testes
+   Evaluator<RepKP >& ev1 = ev;
+   check.add(ev1);             // carrega a avaliação para testes
    check.add(c1);             // carrega o construtivo para testes
    check.add(ns1);            // carrega a vizinhança para testes
    check.run(100, 10);        // executa testes com 10 iterações
@@ -47,7 +48,7 @@ main(int argc, char** argv)
 
    BasicSimulatedAnnealing<RepKP, MY_ADS> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
    SOSC sosc; // stop criteria
-   pair<Solution<RepKP, MY_ADS>, Evaluation>* r = sa.search(sosc);
+   pair<SolutionKP, Evaluation>* r = sa.search(sosc);
    r->first.print();
    r->second.print();
    delete r;
@@ -63,10 +64,10 @@ main(int argc, char** argv)
 
    delete &s;
 
-   EvaluatorSubsetRandomKeys eprk(ev, 0, p.N - 1);
+   EvaluatorSubsetRandomKeys eprk(ev1, 0, p.N - 1);
    BRKGA<RepKP> brkga(eprk, p.N, 1000, 30, 0.4, 0.3, 0.6);
 
-   pair<Solution<random_keys>, Evaluation>* r2 = brkga.search(sosc);
+   pair<CopySolution<random_keys>, Evaluation>* r2 = brkga.search(sosc);
    r2->first.print();
    r2->second.print();
    delete r2;

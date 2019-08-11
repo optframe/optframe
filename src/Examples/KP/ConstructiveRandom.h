@@ -23,7 +23,7 @@ using namespace optframe;
 namespace KP
 {
 
-class ConstructiveRandom: public Constructive<RepKP, MY_ADS>
+class ConstructiveRandom: public Constructive<RepKP>
 {
 private:
    ProblemInstance& pKP;
@@ -36,7 +36,7 @@ public:
 	
 	virtual ~ConstructiveRandom();
 
-	Solution<RepKP, MY_ADS>* generateSolution(double timelimit) override;
+	SolutionKP* generateSolution(double timelimit) override;
 };
 
 }

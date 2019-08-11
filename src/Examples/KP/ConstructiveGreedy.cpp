@@ -11,10 +11,10 @@ ConstructiveGreedy::~ConstructiveGreedy()
 {
 }
 
-Solution<RepKP, MY_ADS>*
+SolutionKP*
 ConstructiveGreedy::generateSolution(double timelimit)
 {
    RepKP newRep;
 
-   return new Solution<RepKP, MY_ADS>(newRep);
+   return new SolutionKP(newRep);
 }

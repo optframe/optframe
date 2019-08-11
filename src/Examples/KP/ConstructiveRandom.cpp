@@ -11,7 +11,7 @@ ConstructiveRandom::~ConstructiveRandom()
 {
 }
 
-Solution<RepKP, MY_ADS>*
+SolutionKP*
 ConstructiveRandom::generateSolution(double timelimit)
 {
    srand(5);
@@ -20,5 +20,5 @@ ConstructiveRandom::generateSolution(double timelimit)
    for (int i = 0; i < pKP.N; i++)
       newRep[i] = rand() % 2;
 
-   return new Solution<RepKP, MY_ADS>(newRep);
+   return new SolutionKP(newRep);
 }

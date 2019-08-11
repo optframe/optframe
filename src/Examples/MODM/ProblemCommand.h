@@ -18,7 +18,10 @@
 #include "ProblemInstance.h"
 
 #include "../../OptFrame/RandGen.hpp"
-#include "../../OptFrame/Util/CheckCommand.hpp"
+//#include "../../OptFrame/Util/CheckCommand.hpp"
+
+// Problem adding KahanSummation twice on binary...
+// it shouln't be on pure .hpp... or require a class at least (with static method, better)
 
 using namespace scannerpp;
 using namespace optframe;
@@ -30,7 +33,7 @@ class MODMProblemCommand
 {
 public:
 
-    CheckCommand<RepMODM, AdsMODM >* check;
+    //CheckCommand<RepMODM, AdsMODM >* check;
     RandGen& rg;
     vector<Component*> vd;
     
@@ -45,7 +48,7 @@ public:
         : rg(_rg)
     { 
         p = NULL;
-        check = NULL;
+        //check = NULL;
     }
 
     virtual ~MODMProblemCommand()
