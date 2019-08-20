@@ -505,12 +505,12 @@ rm -f $workdir/makefile.tmp
 echo
 echo "Congratulations! You can use the following command to compile your project:"
 if [ $nbNS -eq 0 ] && [ $nbISG -eq 0 ];
-then echo "g++ --std=c++17 -fconcepts $workdir/main$project.cpp $workdir/$project/ProblemInstance.cpp $workdir/$project/Evaluator.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
+then echo "g++ --std=c++17 -fconcepts $workdir/main$project.cpp $workdir/$project/ProblemInstance.cpp $workdir/$project/Evaluator.cpp ../src/OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
 elif [ $nbNS -eq 0 ];
-then echo "g++ --std=c++17 -fconcepts $workdir/main$project.cpp $workdir/$project/ProblemInstance.cpp $workdir/$project/Evaluator.cpp $workdir/$project/Constructive$constructive.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
+then echo "g++ --std=c++17 -fconcepts $workdir/main$project.cpp $workdir/$project/ProblemInstance.cpp $workdir/$project/Evaluator.cpp $workdir/$project/Constructive$constructive.cpp ../src/OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
 elif [ $nbISG -eq 0 ];
-then echo "g++ --std=c++17 -fconcepts $workdir/main$project.cpp $workdir/$project/ProblemInstance.cpp $workdir/$project/Evaluator.cpp $workdir/$project/NSSeq$neighborhood.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
-else echo "g++ --std=c++17 -fconcepts $workdir/main$project.cpp $workdir/$project/ProblemInstance.cpp $workdir/$project/Evaluator.cpp $workdir/$project/Constructive$constructive.cpp $workdir/$project/NSSeq$neighborhood.cpp ./OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
+then echo "g++ --std=c++17 -fconcepts $workdir/main$project.cpp $workdir/$project/ProblemInstance.cpp $workdir/$project/Evaluator.cpp $workdir/$project/NSSeq$neighborhood.cpp ../src/OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
+else echo "g++ --std=c++17 -fconcepts $workdir/main$project.cpp $workdir/$project/ProblemInstance.cpp $workdir/$project/Evaluator.cpp $workdir/$project/Constructive$constructive.cpp $workdir/$project/NSSeq$neighborhood.cpp ../src/OptFrame/Scanner++/Scanner.cpp -o MyProjects/app_$project"
 fi
 echo "or you can simply type: \"cd ../src/MyProjects && make\""
 

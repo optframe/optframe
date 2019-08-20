@@ -12,6 +12,8 @@ $include
 
 using namespace std;
 
+using namespace optframe;
+
 // Solution Representation
 typedef $rep Rep$project;
 
