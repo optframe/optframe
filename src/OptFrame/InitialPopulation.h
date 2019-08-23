@@ -21,14 +21,27 @@
 #ifndef OPTFRAME_INITIALPOPULATION_H_
 #define OPTFRAME_INITIALPOPULATION_H_
 
+#include<utility>
+#include <chrono>
+#include <random>
+
+
 #include "Population.hpp"
 
 #include "Component.hpp"
 #include "Constructive.hpp"
 #include "Heuristics/GRASP/GRConstructive.hpp"
 #include "RandGen.hpp"
+#include "Evaluator.hpp"
+#include "Evaluation.hpp"
 
-using namespace std;
+#ifndef _OPTFRAME_DBG_INITIAL_POP_
+#   ifdef OPTFRAME_DEBUG
+#       define _OPTFRAME_DBG_INITIAL_POP_ 
+#   else
+#       define _OPTFRAME_DBG_INITIAL_POP_ while(false)
+#   endif /* OPTFRAME_DEBUG */
+#endif /* _OPTFRAME_DBG_INITIAL_POP_ */
 
 namespace optframe
 {
@@ -140,6 +153,55 @@ public:
 	{
 		return idComponent();
 	}
+};
+
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class SimpleInitialPopulation {
+protected:
+	using Individual = Solution<R, ADS>;
+    using Chromossome = R;
+    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Population = vector< pair<Individual, Fitness> >;
+
+public:
+    unsigned int initialPopSize;
+
+	SimpleInitialPopulation(unsigned int _initialPopSize) : initialPopSize(_initialPopSize) { assert(initialPopSize >= 2); };
+	virtual ~SimpleInitialPopulation() = default;
+
+	virtual Population generate() = 0;
+};
+
+/**********************/
+/* INITIAL POPULATION EXAMPLES */
+/**********************/
+
+//generates random individuals based on user programmed method
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class RandomInitialPopulation : public SimpleInitialPopulation<R, ADS> {
+protected:
+	using Individual = Solution<R, ADS>;
+    using Chromossome = R;
+    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Population = vector< pair<Individual, Fitness> >;
+
+public:
+	RandomInitialPopulation() = delete;
+	RandomInitialPopulation(unsigned int initialPopSize) : SimpleInitialPopulation<R, ADS>(initialPopSize) { };
+	virtual ~RandomInitialPopulation() = default;
+
+	virtual Individual generateIndividual() = 0;
+
+	virtual Population generate() {
+		_OPTFRAME_DBG_INITIAL_POP_ std::cerr << "-OptDebug- Generating Initial Population with RandomInitialPopulation of size " << this->initialPopSize << std::endl;
+
+		Population pop; //won't reserve memory, in applications with a very heavy empty constructor can be costly... I will take the cost of reallocating the pop
+		for(int i = 0; i < this->initialPopSize; ++i)
+			pop.emplace_back(std::make_pair<Individual, Fitness>(generateIndividual(), nullptr)); //maybe reserve memory... but i don't know how costly is the empty constructor for the solution
+
+		_OPTFRAME_DBG_INITIAL_POP_ std::cerr << "-OptDebug- RandomInitialPopulation finished with a population of " << pop.size() << " individuals" << std::endl; 
+		return pop;
+	};
 };
 
 }

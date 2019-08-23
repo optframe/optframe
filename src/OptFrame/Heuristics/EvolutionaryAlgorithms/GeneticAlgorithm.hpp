@@ -21,429 +21,309 @@
 #ifndef OPTFRAME_GENETICALGORITHM_HPP_
 #define OPTFRAME_GENETICALGORITHM_HPP_
 
+#include <iostream>
 #include <algorithm>
+#include <cassert>
+#include <chrono>
+#include <limits>
+#include <utility>
 
 #include "../../SingleObjSearch.hpp"
-
-#include "../../Population.hpp"
-
 #include "../../InitialPopulation.h"
-
 #include "Crossover.hpp"
-
 #include "Mutation.hpp"
-
 #include "Selection.hpp"
+#include "Election.hpp"
 
-#include "Elitism.hpp"
-
-//#define DBG_GA
-
-/*
- * TODO
- *
- * Terminar de implementar as mensagens padrão que, no caso de estarem ativadas, devem ser impressas.
- * Ex. Qdo melhora-se a melhor solução, deve-se imprimir uma mensagem.
- *
- */
-
-/*
- * TODO
- *
- * Criar um outro algoritmo genético que retorne apenas a melhor solução.
- *
- */
-
-/*
- * ToDo : Analisar critérios parada do algoritmo dado um tempo máximo de execução.
- */
+#ifndef _OPTFRAME_DBG_GA_
+#   ifdef OPTFRAME_DEBUG
+#       define _OPTFRAME_DBG_GA_ 
+#   else
+#       define _OPTFRAME_DBG_GA_ while(false)
+#   endif /* OPTFRAME_DEBUG */
+#endif /* _OPTFRAME_DBG_GA_ */
 
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class GeneticAlgorithm: public SingleObjSearch<R, ADS, DS>
-{
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class GeneticAlgorithm {
 protected:
+    using Individual = Solution<R, ADS>;
+    using Chromossome = R;
+    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Population = std::vector< pair<Individual, Fitness> >;
 
-   typedef Solution<R, ADS> chromossome;
+    Evaluator<R, ADS>& evaluator; //standard problem evaluator
+    SimpleInitialPopulation<R, ADS>& initPop; //operator that generates the initial population
+                                        //It is expected that the initial population will have at least 2 individuals.
+                                        //It is expected that the initial population size wont surpass the population max size
+    SimpleSelection<R, ADS>& selection; //operator that selects a portion (or entirety) of the current population for the current generation
+                                            //It is expected that the size of the selected popluation will be at least 2.
+                                            //It is expected that the selected population size wont surpass the population max size
+                                            //It is expected that the size of the population will be equal or lower
+                                            //Though most applications will have a mindset that the selected population will have 'selectionRate*populationMaxSize' individuals, this rule isn't enforced. 
+    SimpleElection<R, ADS>& election; //operator that will return a population to serve as parents for crossover
+                                    //It is expected at least 2 parents
+    SimpleCrossover<R, ADS>& cross; //operator that will use a population as parents for offspring generation
+                                  //It is expected that at least 1 offspring will be generated
+                                  //if too many offspring is returned due to max population size, then extra ones will be discarded
+    SimpleMutation<R, ADS>* mut; //optional operator that acts over a population to change it unpredicatelly
 
-   typedef vector<Evaluation<DS>*> FitnessValues;
+    unsigned populationMaxSize; //parameter that needs to b calibrated, this is used a various asserts
+                                //It is expected to be at least 2
+    unsigned numGenerations; //parameter that dictates the standard stopping criteria for GA
+                             //if this equals to zero, then the best solution will be the one found in the initial population
+    double timelimit_ms; //parameter that dictates the standard stopping criteria for GA
+                      //if this is too low, then the best solution will be the one found in the initial population
+    //Evaluation target; //parameter that dictates the standard stopping criteria for GA TODO
 
-   Evaluator<R, ADS, DS>& evaluator;
+public:
+    //optional parameters
+    bool mutateSelectedPop = true; //leaving this as true will allow the entire population to be mutated.
+                                   //otherwise, selected population will be preserved and only offspring will be mutated
+    bool sortPopulationAfterEvaluation = true; //leaving this as true will allow the genetic algorithm to sort the population to rank each individual when evaluating them
+    Population lastExecutionPopulation; //last execution full population, for analytical puporses
+    double lastExecutionTime = 0.0; //total execution time from last run in seconds
 
-private:
-
-   unsigned pSize;
-
-   double crossoverRate, mutationRate, elitismRate;
-
-   unsigned numGenerations;
-
-   InitialPopulation<R, ADS>& initPop;
-
-   Selection<R, ADS, DS> *selection;
-
-   Crossover<R, ADS, DS> *cross;
-
-   Mutation<R, ADS, DS> *mut;
-
-   Elitism<R, ADS, DS> *elt;
+protected:
+    virtual void clearLastExecutionPopulation(){
+        for(auto& x : lastExecutionPopulation)
+            if(x.second)
+                delete x.second;
+        lastExecutionPopulation.clear();
+    }
 
 public:
 
-   GeneticAlgorithm(Evaluator<R, ADS, DS>& _evaluator, InitialPopulation<R, ADS>& _initPop,
-         double crossoverRate, double mutationRate, double elitismRate, unsigned populationSize,
-         unsigned numGenerations, Selection<R, ADS, DS>& _selection, Crossover<R, ADS, DS>& _cross, Mutation<R,
-               DS >& _mut, Elitism<R, ADS, DS>& _elt) :
-      evaluator(_evaluator), initPop(_initPop), selection(&_selection), cross(&_cross), mut(&_mut),
-            elt(&_elt)
-   {
-#ifdef DBG_GA
-      cout << "Genetic Algorithm constructor started .. .\n";
-#endif
 
-      this->crossoverRate = crossoverRate;
-      this->mutationRate = mutationRate;
-      this->elitismRate = elitismRate;
-      pSize = populationSize;
-      this->numGenerations = numGenerations;
+    GeneticAlgorithm(Evaluator<R, ADS>& _evaluator,
+                     SimpleInitialPopulation<R, ADS>& _initPop,
+                     SimpleSelection<R, ADS>& _selection,
+                     SimpleElection<R, ADS>&  _election,
+                     SimpleCrossover<R, ADS>& _cross,
+                     SimpleMutation<R, ADS>* _mut = nullptr,
+                     unsigned populationMaxSize = 30, unsigned numGenerations = 10, double timelimit_ms = numeric_limits<double>::max()) //, Evaluation<DS> target)
+    : evaluator(_evaluator), initPop(_initPop), selection(_selection), election(_election), cross(_cross) {
+    
+        _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Genetic Algorithm constructor started" << std::endl;
 
-#ifdef DBG_GA
-      cout << "Genetic Algorithm was correctly initialized.. .\n";
-#endif
+        this->mut = _mut;
+        this->populationMaxSize = populationMaxSize;
+        this->numGenerations = numGenerations;  
+        this->timelimit_ms = timelimit_ms;  
 
+        _OPTFRAME_DBG_GA_{
+            std::cerr << "-OptDebug- Genetic Algorithm was initialized with the following parameters: " << std::endl;
+            std::cerr << "-OptDebug- Max pop size: " << populationMaxSize << std::endl;
+            std::cerr << "-OptDebug- Number of generations: " << numGenerations << std::endl;
+            std::cerr << "-OptDebug- timelimit: " << timelimit_ms << std::endl;
+        }
    }
 
-   virtual void evaluateFitness(const Population<R, ADS> &p, FitnessValues &fv) const
-   {
-      /*
-       * In the canonical genetic algorithm, fitness is defined by:
-       *
-       * fi/f
-       *
-       * where:
-       *
-       *    fi: is the evaluation associated with the i-th chromossome.
-       *    f: is the average population evaluation.
-       *
-       */
+   //evaluates fitness and return the position of the best
+    virtual int evaluateFitness(Population& p) const {
+        int most_fit_pos = 0;
+        evtype sum = static_cast<evtype>(0);
+        if(!p[0].second) {
+            _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- calculating fitness of individual 0 " << std::endl;
+            p[0].second = new Evaluation(evaluator.evaluate(p[0].first.getR(), p[0].first.getADSptr())); //todo: make this better!!!
+        }
+        _OPTFRAME_DBG_GA_{
+            std::cerr << "-OptDebug- Individual 0 fitness: " << p[0].second->getObjFunction() << std::endl;
+            sum += static_cast<evtype>(p[0].second->getObjFunction());  
+        } 
 
-      double sumEvals = 0;
-
-      for (int i = 0; i < p.size(); i++)
-      {
-         fv.push_back(&evaluator.evaluate(p.at(i)));
-         sumEvals += fv.at(i)->evaluation();
-      }
-
-      double avgEvalsPop = sumEvals / p.size();
-
-      for (int i = 0; i < p.size(); i++)
-      {
-         fv.at(i)->setObjFunction(fv.at(i)->evaluation() / avgEvalsPop);
-      }
-   }
-
-   // Means Sufficient OffSprings Created
-   virtual const unsigned suffOffCreated(const Population<R, ADS> &p) const
-   {
-      return p.size() / 2;
-   }
-
-   virtual pair<const chromossome&, const chromossome&>& selectParents(const Population<R, ADS> &p) const
-   {
-      unsigned p1 = rand() % (p.size());
-      unsigned p2 = p1;
-
-      while (p1 == p2)
-      {
-         p2 = rand() % (p.size());
-      }
-
-      return *new pair<const chromossome&, const chromossome&> (p.at(p1), p.at(p2));
-   }
-
-   void exec(Population<R, ADS> &p, double timelimit, double target_f)
-   {
-#ifdef DBG_GA
-      cout << "GA exec(" << target_f << "," << timelimit << ")" << endl;
-#endif
-
-      //long tini = time(nullptr);
-
-      //long tnow = time(nullptr);
-
-#ifdef DBG_GA
-      cout << "Executing Genetic Algorithm with specified parameters:\n" << "Crossover Rate: "
-            << crossoverRate << endl << "Mutation Rate: " << mutationRate << endl
-            << "Elitism Rate: " << elitismRate << endl << "Population Size: " << p.size() << endl
-            << "Total of Generations: " << numGenerations << endl;
-
-      cout << "Generating the Initial Population .. .\n";
-#endif
-
-      p = initPop.generatePopulation(pSize);
-
-#ifdef DBG_GA
-      cout << "Initial Population successfully generated.\n";
-
-      cout << "Calculating the fitness of each chromossome from Initial Population.. .\n";
-#endif
-
-      FitnessValues fv;
-      evaluateFitness(p, fv);
-
-#ifdef DBG_GA
-      cout << "Fitness values calculated.\n";
-#endif
-
-      chromossome* cStar = new chromossome(p.at(0));
-
-      unsigned g = 0;
-
-      unsigned suffIters = suffOffCreated(p);
-
-      //while (g < numGenerations && ((tnow - tini) < timelimit))
-      while (g < numGenerations)
-      {
-#ifdef DBG_GA
-         cout << "GA generation: " << g << endl;
-#endif
-
-#ifdef DBG_GA
-         /*
-          cout << "Population in generation " << g << endl;
-
-          for (unsigned i = 0; i < p.size(); i++)
-          {
-          p.at(i).print();
-          cout << "Evaluation: " << (evaluator.evaluate((p.at(i)))).evaluation() << endl;
-          }
-
-          cout << endl;
-
-          */
-
-         /*
-          for (unsigned i = 0; i < populationSize; i++)
-          cout << (evaluator.evaluate(*(p.at(i)))).evaluation() << endl;
-          */
-#endif
-
-         // ---
-
-         // Finding the best chromossome in the initial population.
-
-         unsigned pos_cStar = 0;
-         cStar = new chromossome(p.at(pos_cStar));
-
-         bool improved = false;
-
-         for (int i = 1; i < fv.size(); i++)
-         {
-            if (evaluator.betterThan(*fv.at(i), *fv.at(pos_cStar)))
-            {
-               pos_cStar = i;
-               improved = true;
+        for (int i = 1; i < p.size(); ++i){
+            if(!p[i].second){
+                _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- calculating fitness of individual " << i << std::endl;
+                p[i].second = new Evaluation(evaluator.evaluate(p[i].first.getR(), p[i].first.getADSptr())); //todo: make this better!!!
             }
-         }
-
-         if (improved)
-         {
-            delete cStar;
-            cStar = new chromossome(p.at(pos_cStar));
-         }
-
-         // ---
-         Population<R, ADS> p_elitist;
-         // ---
-
-         // Recalculating the number of best individuals (chromossomes) to carried to the next generation.
-         unsigned best_chromossomes_this_generation = elitismRate / 100 * p.size();
-
-         if (best_chromossomes_this_generation >= 1)
-         {
-#ifdef DBG_GA
-            cout << "ELITISM\n";
-#endif
-            p_elitist = elt->doElitism(p, fv, best_chromossomes_this_generation);
-         }
-
-         Population<R, ADS> intermediatePop;
-
-         unsigned iter = 0;
-
-         /*
-          *
-          *  ToDo : Corrigir a implementação do laço abaixo. Do jeito que está, sempre vão ser gerados
-          *  todos os individuos especificados pelo <suffIters>. Passando uma taxa de cross baixa, o que
-          *  vai acontecer é que o laço vai demorar mais para finalizar. Isso esta errado. Talvez seja necessário
-          *  criar versões específicas para as possibilidades de se realizar as operações de cross e mutação.
-          *
-          */
-         do
-         {
-            pair<const chromossome&, const chromossome&>& parents = selectParents(p);
-
-            pair<chromossome&, chromossome*>* offspring = nullptr;
-
-            unsigned doCross = rand() % 101; // numbers 0 to 100
-
-            // Crossover condition
-            if (doCross < crossoverRate)
-            {
-#ifdef DBG_GA
-               cout << " >> CROSSOVER";
-#endif
-               offspring = &cross->offspring(parents);
-            }
-            else
-            {
-               continue;
+            _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Individual " << i << " fitness: " << p[i].second->getObjFunction() << std::endl;
+            if(evaluator.betterThan(*p[i].second, *p[most_fit_pos].second)){
+                most_fit_pos = i;
+                 _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- New best individual" << std::endl;
             }
 
-            // Mutation condition
-            unsigned doMut = rand() % 101; // numbers 0 to 100
+            _OPTFRAME_DBG_GA_ sum += static_cast<evtype>(p[i].second->getObjFunction());;
+        }
 
-            if (doMut < mutationRate)
-            {
-#ifdef DBG_GA
-               cout << ", MUTATION";
-#endif
-               mut->mutate(offspring->first);
+        _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Average fitness of population: " << sum/p.size() << std::endl;
+    }
 
-               if (offspring->second)
-               {
-                  mut->mutate(*offspring->second);
-               }
+    virtual void sortPopulation(Population& population){
+        auto compare = [&](const pair<Individual, Fitness>& a, const pair<Individual, Fitness>& b)->bool{
+            if(a.second && b.second)
+                return evaluator.betterThan(*a.second, *b.second);
+            else return a.second != nullptr;
+        };
+
+        std::sort(population.begin(), population.end(), compare);
+    }
+
+    virtual pair<Solution<R, ADS>, Evaluation> exec(){
+        std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+
+
+        _OPTFRAME_DBG_GA_{
+            std::cerr << "-OptDebug- GA exec for " << numGenerations << " generations with time limited by " << timelimit_ms << " seconds." << std::endl;
+            std::cerr << "-OptDebug- Generaring init pop" << std::endl;
+        }
+
+        Population currentPopulation = initPop.generate();
+        assert(currentPopulation.size() > 1);
+        assert(currentPopulation.size() <= populationMaxSize);
+
+        _OPTFRAME_DBG_GA_{
+            std::cerr << "-OptDebug- Initial Population successfully generated." << std::endl;
+            std::cerr << "-OptDebug- Calculating the fitness of each chromossome from Initial Population." << std::endl;
+        }
+
+        int best_individual_pos = evaluateFitness(currentPopulation);
+
+        _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Fitness calculated." << std::endl;
+
+        if(sortPopulationAfterEvaluation){
+            _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Ranking each individual based on fitness rating." << std::endl;
+            sortPopulation(currentPopulation);
+            _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Current population sorted." << std::endl;
+            best_individual_pos = 0;
+        }
+
+        Individual best_individual(currentPopulation[best_individual_pos].first); //copy the best individual, as operators can lose it
+        Evaluation best_individual_eval(*currentPopulation[best_individual_pos].second); //copy the best eval, as operators can lose it
+
+        _OPTFRAME_DBG_GA_{
+            std::cerr << "-OptDebug- Best Individual fitness: " << best_individual_eval.getObjFunction() << std::endl;
+            std::cerr << "-OptDebug- Starting generations " << std::endl;
+        }
+
+        unsigned g = 1;
+        double time_passed = (std::chrono::steady_clock::now() - start).count();
+        while (g++ < numGenerations && time_passed < timelimit_ms){
+
+            _OPTFRAME_DBG_GA_{
+                std::cerr << std::endl << "-OptDebug- Starting generation: " << g-1 << std::endl;
+                std::cerr << std::endl << "-OptDebug- Applying selection operator" << std::endl;
             }
 
-#ifdef DBG_GA
-            cout << endl;
-#endif
+            int size_before_selection = currentPopulation.size();
+            selection.select(currentPopulation);
+            int size_after_selection = currentPopulation.size();
+            assert(currentPopulation.size() > 2);
+            assert(currentPopulation.size() <= populationMaxSize);
+            assert(size_before_selection >= size_after_selection);
 
-            intermediatePop.push_back(offspring->first);
-
-            if (offspring->second)
-            {
-               intermediatePop.push_back(*offspring->second);
-               iter++;
+            _OPTFRAME_DBG_GA_{
+                std::cerr << "-OptDebug- Size of selected population: " << currentPopulation.size() << std::endl;
+                std::cerr << "-OptDebug- Filling the remainder with offspring" << std::endl;
             }
 
-            iter++;
+            Population offspring;
+            int to_fill = populationMaxSize - currentPopulation.size();
+            while(offspring.size() < to_fill){
+                _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Electing new parents" << std::endl;
 
-         } while (iter < suffIters); // Suffient Offsprings created
+                std::vector<Individual*> electedParents = election.elect(currentPopulation);
 
-#ifdef DBG_GA
-         cout << "Sufficient Offsprings created in generation " << g << endl;
-#endif
+                _OPTFRAME_DBG_GA_{
+                    std::cerr << electedParents.size() << " parents elected." << std::endl;                
+                    std::cerr << "-OptDebug- Performing crossover" << std::endl;
+                }
 
-         FitnessValues fv_intPop;
-         evaluateFitness(intermediatePop, fv_intPop);
+                Population newOffspring = cross.cross(electedParents);
 
-#ifdef DBG_GA
-         cout << "Intermediate Population Evaluated. " << endl;
+                _OPTFRAME_DBG_GA_{
+                    std::cerr << newOffspring.size() << " offsprings generated." << std::endl;   
+                    std::cerr << "-OptDebug- Storing them" << std::endl;
+                }
 
-         cout << "SELECTION\n";
-#endif
+                assert(newOffspring.size() > 0);
+                int to_keep = to_fill - offspring.size();
+                std::move(std::begin(newOffspring), (to_keep >= newOffspring.size()) ? std::end(newOffspring) : std::begin(newOffspring) + to_keep, std::back_inserter(offspring));
+                newOffspring.clear();
+            }   
 
-         // The selection specified by the user can return a new population with different size (nb. of chromossomes).
-         Population<R, ADS> next_p = selection->select(p, fv, intermediatePop, fv_intPop,
-               best_chromossomes_this_generation);
+            _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Crossover terminated with " << offspring.size() << " offsprings." << std::endl;
 
-         if (!p_elitist.empty())
-         {
-            for (unsigned i = 0; i < p_elitist.size(); i++)
-            {
-               next_p.push_back(p_elitist.at(i));
+            if(mutateSelectedPop){ //I will mutate the entire population
+                _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Mutate selected pop is on. Moving all offspring to current population" << std::endl;
+
+                std::move(std::begin(offspring), std::end(offspring), std::back_inserter(currentPopulation));
+                offspring.clear();
+
+                _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Calling the mutation operator on current population" << std::endl;
+
+                assert(mut != nullptr); //why would you change 'mutateSelectedPop' option if no mutation is required?
+                if(mut) mut->mutate(currentPopulation);
+                assert(currentPopulation.size() > 2);
+                assert(currentPopulation.size() <= populationMaxSize);
             }
-         }
+            else{ //only mutate the new offspring
+                _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Mutate selected pop is off. Calling mutation before moving offspring to current population." << std::endl;
+                
+                if(mut) mut->mutate(offspring);
+                assert(currentPopulation.size() > 2);
+                assert(currentPopulation.size() <= populationMaxSize);
 
-#ifdef DBG_GA
-         cout << "Next Population Chosen and Evaluated." << endl;
-#endif
+                _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Moving offspring to current population" << std::endl;
 
-         // ---
-
-         // Checking the new population size.
-
-         bool break_it = false;
-
-         if (p.size() < next_p.size())
-         {
-            cout << "WARNNING: Population's size is increasing.\n";
-         }
-         else if (p.size() > next_p.size())
-         {
-            cout << "WARNNING: Population's size is decreasing.\n";
-
-            /*
-             *
-             *  When the population's size is decreasing, verify at each generation if the size reached size one.
-             *
-             *  If yes, break the two main loops.
-             *
-             */
-
-            if (next_p.size() == 1)
-            {
-               cout << "THIS EXECUTION WILL GO BREAK" << endl;
-               break_it = true;
+                std::move(std::begin(offspring), std::end(offspring), std::back_inserter(currentPopulation));
+                offspring.clear();
             }
 
-         }
+            _OPTFRAME_DBG_GA_{
+                std::cerr << "-OptDebug- Current population size: " << currentPopulation.size() << std::endl;
+                _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Evaluating population" << std::endl;
+            }
 
-         // ---
 
-         for (int i = 0; i < fv.size(); i++)
-         {
-            delete fv.at(i);
-         }
+            int best_of_generation_pos = evaluateFitness(currentPopulation);
 
-         fv.clear();
+            _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Fitness calculated." << std::endl;
 
-         for (int i = 0; i < fv_intPop.size(); i++)
-         {
-            delete &intermediatePop.at(i);
-            delete fv_intPop.at(i);
-         }
+            if(sortPopulationAfterEvaluation){
+                _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Ranking each individual based on fitness rating." << std::endl;
+                sortPopulation(currentPopulation);
+                _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Current generation ranked." << std::endl;
+                best_of_generation_pos = 0;
+            }
 
-         intermediatePop.clear();
-         fv_intPop.clear();
+            //Won't keep the best, but it will be stored in lastExecutionPopulation
+            _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Checking time limit condition" << std::endl;
+            time_passed = (std::chrono::steady_clock::now() - start).count();
+            if(time_passed > timelimit_ms){
+                _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Leaving due to timelimit_ms" << std::endl;
+                break;
+            }
 
-         p = next_p;
+            _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Checking most fit" << std::endl;
 
-         // Here, we have already past the unique solution to p. Then we stop the algorithm execution.
-         if (break_it)
-         {
-            break;
-         }
+            if(evaluator.betterThan(*currentPopulation[best_of_generation_pos].second, best_individual_eval)){
+                best_individual = currentPopulation[best_of_generation_pos].first;
+                best_individual_eval = *currentPopulation[best_of_generation_pos].second;
+                _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- New best individual: " << best_individual_eval.getObjFunction() << std::endl;
+            } //keeping best
 
-         evaluateFitness(p, fv);
+            _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Generation " << g-1 << " finished with most fit individual being " << best_individual_eval.getObjFunction() << " and the most fit of the generation is " << currentPopulation[best_of_generation_pos].second->getObjFunction() << std::endl;
+        }
 
-         // ---
+        _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Stopping criterium achieved. Keeping time passed and population" << std::endl;
 
-         g++;
+        std::chrono::duration<double> duration = std::chrono::steady_clock::now() - start;
+        lastExecutionTime = duration.count();
+        clearLastExecutionPopulation();
+        std::move(std::begin(currentPopulation), std::end(currentPopulation), std::back_inserter(lastExecutionPopulation));
+        currentPopulation.clear();    
 
-         //tnow = time(nullptr);
+        _OPTFRAME_DBG_GA_ std::cerr << "-OptDebug- Best evaluation found: " << best_individual_eval.getObjFunction() << std::endl;
 
-      }
+        return {best_individual, best_individual_eval};
+    }
 
-      // Adding the best chromossome found in GA execution.
-      p.push_back(*cStar);
-
-#ifdef DBG_GA
-      cout << "Best chromossome's evaluation found: " << (evaluator.evaluate(*(cStar))).evaluation() << endl;
-#endif
-
-   }
-
-   void exec(Population<R, ADS> &p, FitnessValues &ev, double timelimit, double target_f)
-   {
-      exec(p, timelimit, target_f);
-   }
-
+    virtual ~GeneticAlgorithm(){
+        clearLastExecutionPopulation();
+    }
 };
 
 }

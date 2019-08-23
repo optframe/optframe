@@ -21,12 +21,25 @@
 #ifndef MUTATION_HPP_
 #define MUTATION_HPP_
 
+#include <vector>
+#include <chrono>
+#include <random>
+
 #include "../../Component.hpp"
 #include "../../Solution.hpp"
 #include "../../Evaluation.hpp"
+#include "../../RandGen.hpp"
 #include "../../NS.hpp"
 
 #include "EA.h"
+
+#ifndef _OPTFRAME_DBG_MUTATION_
+#   ifdef OPTFRAME_DEBUG
+#       define _OPTFRAME_DBG_MUTATION_ 
+#   else
+#       define _OPTFRAME_DBG_MUTATION_ while(false)
+#   endif /* OPTFRAME_DEBUG */
+#endif /* _OPTFRAME_DBG_MUTATION_ */
 
 namespace optframe
 {
@@ -150,6 +163,66 @@ public:
 		return idComponent();
 	}
 };
+
+//temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class SimpleMutation {
+protected:
+	using Individual = Solution<R, ADS>;
+    using Chromossome = R;
+    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Population = std::vector< std::pair<Individual, Fitness> >;
+
+public:
+	SimpleMutation() = default;
+	virtual ~SimpleMutation() = default;
+
+	virtual void mutate(Population& population) = 0;
+};
+
+/**********************/
+/* MUTATION EXAMPLES */
+/**********************/
+
+//changes 100beta% individuals chosen randomly -- may choose the same individual more than once
+//user should program the function that changes the individual
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class DefaultMutation : public SimpleMutation<R, ADS> {
+protected:
+	using Individual = Solution<R, ADS>;
+    using Chromossome = R;
+    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Population = std::vector< std::pair<Individual, Fitness> >;
+	double omega;
+
+public:
+	DefaultMutation() = delete;
+	DefaultMutation(double mutationRate) : omega(mutationRate) { assert(mutationRate >= 0.0 && mutationRate <= 1.0); };
+	virtual ~DefaultMutation() = default;
+
+	virtual void mutate(Chromossome&) = 0; //Should change the solution unpredicatelly
+										  //Individual is passed so the user may change ADS if he wants to
+
+	virtual void mutate(Population& population) override {
+		_OPTFRAME_DBG_MUTATION_  std::cerr << "-OptDebug- Starting mutation operator. Will insert " << static_cast<int>(population.size() * omega) << " mutants into the population." << std::endl;
+
+		//todo: use randgen
+		std::mt19937 mersenne_twister(std::chrono::steady_clock::now().time_since_epoch().count());
+		std::uniform_int_distribution<unsigned int> dist(0u, population.size()-1);
+		int iteration_count = population.size() * omega;
+		for(int i = 0; i < iteration_count; ++i){
+			int mut_pos = dist(mersenne_twister);
+			_OPTFRAME_DBG_MUTATION_  std::cerr << "-OptDebug- Mutating individual " << mut_pos << std::endl;
+			mutate(population[mut_pos].first.getR());
+			if(population[mut_pos].second) delete population[mut_pos].second;
+			population[mut_pos].second = nullptr;
+		}
+
+		_OPTFRAME_DBG_MUTATION_  std::cerr << "-OptDebug- Mutation operator ended" << std::endl;
+	}	
+
+};
+
 
 }
 

@@ -21,10 +21,20 @@
 #ifndef OPTFRAME_GENERAL_CROSSOVER_HPP_
 #define OPTFRAME_GENERAL_CROSSOVER_HPP_
 
+#include <vector>
+
 #include "../../Solution.hpp"
 #include "../../Evaluation.hpp"
 
 #include "EA.h"
+
+#ifndef _OPTFRAME_DBG_CROSSOVER_
+#   ifdef OPTFRAME_DEBUG
+#       define _OPTFRAME_DBG_CROSSOVER_ 
+#   else
+#       define _OPTFRAME_DBG_CROSSOVER_ while(false)
+#   endif /* OPTFRAME_DEBUG */
+#endif /* _OPTFRAME_DBG_CROSSOVER_ */
 
 namespace optframe
 {
@@ -57,6 +67,50 @@ public:
 		return idComponent();
 	}
 
+};
+
+//temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class SimpleCrossover {
+protected:
+	using Individual = Solution<R, ADS>;
+    using Chromossome = R;
+    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Population = std::vector< pair<Individual, Fitness> >;
+
+public:
+	SimpleCrossover() = default;
+	virtual ~SimpleCrossover() = default;
+
+	virtual Population cross(const std::vector<Individual*>& parents) = 0;
+};
+
+
+/**********************/
+/* CROSSOVER EXAMPLES */
+/**********************/
+
+//receives two parents to return offspring with user programmed operator
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class TwoParentsCrossover : public SimpleCrossover<R, ADS> {
+protected:
+	using Individual = Solution<R, ADS>;
+    using Chromossome = R;
+    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Population = std::vector< std::pair<Individual, Fitness> >;
+
+public:
+	TwoParentsCrossover() = default;
+	virtual ~TwoParentsCrossover() = default;
+
+	virtual Population cross(const Individual& parent1, const Individual& parent2) = 0;
+
+	virtual Population cross(const std::vector<Individual*>& parents){
+		assert(parents.size() == 2);
+		assert(parents[0] != nullptr);
+		assert(parents[1] != nullptr);
+		return cross(*parents[0], *parents[1]);
+	}
 };
 
 }
