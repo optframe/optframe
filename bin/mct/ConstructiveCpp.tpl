@@ -11,10 +11,10 @@ Constructive$constructive::~Constructive$constructive()
 {
 }
 
-Solution<Rep$project>* Constructive$constructive::generateSolution(double timelimit)
+Solution$project* Constructive$constructive::generateSolution(double timelimit)
 {
     Rep$project newRep;
 
     // if no Solution can be built in timelimit, return nullptr.
-    return new Solution<Rep$project>(newRep);			
+    return new Solution$project(newRep);			
 }

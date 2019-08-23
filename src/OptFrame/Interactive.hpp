@@ -56,7 +56,7 @@
 #include "Evaluator.hpp"
 #include "MultiObjectiveEvaluator.hpp"
 
-#include "Util/TestEvaluation.hpp"
+//#include "Util/TestEvaluation.hpp"
 
 //#include "RandGen.hpp"
 #include "Timer.hpp"
@@ -96,7 +96,7 @@
 #include "Heuristics/LocalSearches/CircularSearch.hpp"
 #include "Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp"
 #include "Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp"
-#include "Heuristics/LocalSearches/RVND.hpp"
+#include "Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp"
 #include "Heuristics/LocalSearches/HillClimbing.hpp"
 #include "Heuristics/LocalSearches/LateAcceptanceHillClimbing.hpp"
 
@@ -112,7 +112,6 @@
 #include "Heuristics/VNS/BasicVNS.hpp"
 #include "Heuristics/VNS/ReducedVNS.hpp"
 #include "Heuristics/VNS/GeneralVNS.hpp"
-#include "Heuristics/VNS/RandVNS.hpp"
 
 // test local searches
 #include "Heuristics/CompareLocalSearch.hpp"
@@ -175,8 +174,8 @@
 
 #include "Commands/CreateNumericListCommand.hpp"
 #include "Commands/EmpiricalCommand.hpp"
-#include "Commands/TestCommand.hpp"
-#include "Commands/TestLocalSearchCommand.hpp"
+//#include "Commands/TestCommand.hpp"
+//#include "Commands/TestLocalSearchCommand.hpp"
 
 // component
 
@@ -270,18 +269,18 @@ using namespace std;
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class Interactive
 {
 private:
-	vector<Command<R, ADS, DS>*> modules;
-	vector<PreprocessFunction<R, ADS, DS>*> functions;
+	vector<Command<R, ADS>*> modules;
+	vector<PreprocessFunction<R, ADS>*> functions;
 	map<string, string> dictionary;
 	map<string, vector<string> > ldictionary;
 
 public:
 
-	HeuristicFactory<R, ADS, DS> factory;
+	HeuristicFactory<R, ADS> factory;
 
 	Interactive()
 	{
@@ -292,7 +291,7 @@ public:
 	}
 
 	Interactive(RandGen _rg) :
-		factory(HeuristicFactory<R, ADS, DS> (_rg))
+		factory(HeuristicFactory<R, ADS> (_rg))
 	{
 		setVariables();
 		loadDefault();
@@ -380,7 +379,7 @@ public:
 		factory.actions.clear();
 	}
 
-	void loadCommand(Command<R, ADS, DS>* module)
+	void loadCommand(Command<R, ADS>* module)
 	{
 		if (module)
 			modules.push_back(module);
@@ -396,7 +395,7 @@ public:
 	{
 		cout << "warning: system.call module loaded!" << endl;
 
-		loadCommand(new SystemCallCommand<R, ADS, DS> );
+		loadCommand(new SystemCallCommand<R, ADS> );
 	}
 
 	void loadDefault(string prefix = "")
@@ -404,109 +403,109 @@ public:
 		// to become functions or runtime modules...
 		if ((prefix == "") || (prefix == "deprecated")) // TODO: remove!
 		{
-			loadCommand(new CreateNumericListCommand<R, ADS, DS> );
-			loadCommand(new EmpiricalCommand<R, ADS, DS> );
-			loadCommand(new TestCommand<R, ADS, DS> );
-			loadCommand(new TestLocalSearchCommand<R, ADS, DS> );
+			loadCommand(new CreateNumericListCommand<R, ADS> );
+			loadCommand(new EmpiricalCommand<R, ADS> );
+			loadCommand(new TestCommand<R, ADS> );
+			loadCommand(new TestLocalSearchCommand<R, ADS> );
 		}
 
 		// components
 		if ((prefix == "") || (prefix == "component"))
 		{
-			loadCommand(new ComponentActionCommand<R, ADS, DS> );
-			loadCommand(new ComponentBuilderOfComponentCommand<R, ADS, DS> );
-			loadCommand(new ComponentBuildCommand<R, ADS, DS> );
-			loadCommand(new ComponentCastCommand<R, ADS, DS> );
-			loadCommand(new ComponentCheckCommand<R, ADS, DS> );
-			loadCommand(new ComponentClearCommand<R, ADS, DS> );
-			loadCommand(new ComponentCreateListCommand<R, ADS, DS> );
-			loadCommand(new ComponentDropCommand<R, ADS, DS> );
-			loadCommand(new ComponentListBuildersCommand<R, ADS, DS> );
-			loadCommand(new ComponentListFromPopulationCommand<R, ADS, DS> );
-			loadCommand(new ComponentListCommand<R, ADS, DS> );
-			loadCommand(new ComponentNullCommand<R, ADS, DS> );
-			loadCommand(new ComponentToStringCommand<R, ADS, DS> );
+			loadCommand(new ComponentActionCommand<R, ADS> );
+			loadCommand(new ComponentBuilderOfComponentCommand<R, ADS> );
+			loadCommand(new ComponentBuildCommand<R, ADS> );
+			loadCommand(new ComponentCastCommand<R, ADS> );
+			loadCommand(new ComponentCheckCommand<R, ADS> );
+			loadCommand(new ComponentClearCommand<R, ADS> );
+			loadCommand(new ComponentCreateListCommand<R, ADS> );
+			loadCommand(new ComponentDropCommand<R, ADS> );
+			loadCommand(new ComponentListBuildersCommand<R, ADS> );
+			loadCommand(new ComponentListFromPopulationCommand<R, ADS> );
+			loadCommand(new ComponentListCommand<R, ADS> );
+			loadCommand(new ComponentNullCommand<R, ADS> );
+			loadCommand(new ComponentToStringCommand<R, ADS> );
 		}
 
 		if ((prefix == "") || (prefix == "file"))
 		{
-			loadCommand(new FileEchoCommand<R, ADS, DS> );
-			loadCommand(new FilePrintCommand<R, ADS, DS> );
-			loadCommand(new FilePrintlnCommand<R, ADS, DS> );
-			loadCommand(new FileToListCommand<R, ADS, DS> );
+			loadCommand(new FileEchoCommand<R, ADS> );
+			loadCommand(new FilePrintCommand<R, ADS> );
+			loadCommand(new FilePrintlnCommand<R, ADS> );
+			loadCommand(new FileToListCommand<R, ADS> );
 		}
 
 		if ((prefix == "") || (prefix == "list"))
 		{
-			loadCommand(new ListAddCommand<R, ADS, DS> );
-			loadCommand(new ListPushBackCommand<R, ADS, DS> );
-			loadCommand(new ListRemoveCommand<R, ADS, DS> );
-			loadCommand(new ListSilentDefineCommand<R, ADS, DS> );
-			loadCommand(new ListSortCommand<R, ADS, DS> );
+			loadCommand(new ListAddCommand<R, ADS> );
+			loadCommand(new ListPushBackCommand<R, ADS> );
+			loadCommand(new ListRemoveCommand<R, ADS> );
+			loadCommand(new ListSilentDefineCommand<R, ADS> );
+			loadCommand(new ListSortCommand<R, ADS> );
 		}
 
 		if ((prefix == "") || (prefix == "command"))
 		{
-			loadCommand(new CommandCreateCommand<R, ADS, DS> );
-			loadCommand(new CommandCreateLocalCommand<R, ADS, DS> );
-			loadCommand(new CommandCreateRawCommand<R, ADS, DS> );
-			loadCommand(new CommandExistsCommand<R, ADS, DS> );
-			loadCommand(new CommandRenameCommand<R, ADS, DS> );
-			loadCommand(new CommandUnitTestCommand<R, ADS, DS> );
+			loadCommand(new CommandCreateCommand<R, ADS> );
+			loadCommand(new CommandCreateLocalCommand<R, ADS> );
+			loadCommand(new CommandCreateRawCommand<R, ADS> );
+			loadCommand(new CommandExistsCommand<R, ADS> );
+			loadCommand(new CommandRenameCommand<R, ADS> );
+			loadCommand(new CommandUnitTestCommand<R, ADS> );
 		}
 
 		if ((prefix == "") || (prefix == "function"))
 		{
-			loadCommand(new FunctionCreateRawCommand<R, ADS, DS> );
+			loadCommand(new FunctionCreateRawCommand<R, ADS> );
 		}
 
 		// deprecated
 #ifdef MaPI
-		loadCommand(new InitServersCommand<R, ADS, DS> );
+		loadCommand(new InitServersCommand<R, ADS> );
 #endif
 
 		if ((prefix == "") || (prefix == "plot"))
 		{
-			loadCommand(new Plot2AxisCommand<R, ADS, DS> );
-			loadCommand(new PlotViewCommand<R, ADS, DS> );
+			loadCommand(new Plot2AxisCommand<R, ADS> );
+			loadCommand(new PlotViewCommand<R, ADS> );
 		}
 
 		// cannot load abstract module
-		//loadCommand(new ProblemCommand<R, ADS, DS> );
+		//loadCommand(new ProblemCommand<R, ADS> );
 
 		if ((prefix == "") || (prefix == "randgen"))
 		{
-			loadCommand(new RandGenIntervalCommand<R, ADS, DS> );
-			loadCommand(new RandGenNumberCommand<R, ADS, DS> );
-			loadCommand(new RandGenSetSeedCommand<R, ADS, DS> );
+			loadCommand(new RandGenIntervalCommand<R, ADS> );
+			loadCommand(new RandGenNumberCommand<R, ADS> );
+			loadCommand(new RandGenSetSeedCommand<R, ADS> );
 		}
 
 		if ((prefix == "") || (prefix == "system"))
 		{
-			loadCommand(new SystemAssertCommand<R, ADS, DS> );
-			loadCommand(new SystemChDirCommand<R, ADS, DS> );
-			loadCommand(new SystemDefineCommand<R, ADS, DS> );
-			loadCommand(new SystemDictionaryCommand<R, ADS, DS> );
-			loadCommand(new SystemEchoCommand<R, ADS, DS> );
-			loadCommand(new SystemErrorCommand<R, ADS, DS> );
-			loadCommand(new SystemHelpCommand<R, ADS, DS> );
-			loadCommand(new SystemPauseCommand<R, ADS, DS> );
-			loadCommand(new SystemPreprocessCommand<R, ADS, DS> );
-			loadCommand(new SystemPrintCommand<R, ADS, DS> );
-			loadCommand(new SystemPrintlnCommand<R, ADS, DS> );
-			loadCommand(new SystemReadCommand<R, ADS, DS> );
-			loadCommand(new SystemRequireCommand<R, ADS, DS> );
-			loadCommand(new SystemRunCommand<R, ADS, DS> );
-			loadCommand(new SystemSilentDefineCommand<R, ADS, DS> );
-			loadCommand(new SystemUndefineCommand<R, ADS, DS> );
-			loadCommand(new SystemUnsafeDefineCommand<R, ADS, DS> );
-			loadCommand(new SystemUsageCommand<R, ADS, DS> );
-			loadCommand(new SystemUseCommand<R, ADS, DS> );
+			loadCommand(new SystemAssertCommand<R, ADS> );
+			loadCommand(new SystemChDirCommand<R, ADS> );
+			loadCommand(new SystemDefineCommand<R, ADS> );
+			loadCommand(new SystemDictionaryCommand<R, ADS> );
+			loadCommand(new SystemEchoCommand<R, ADS> );
+			loadCommand(new SystemErrorCommand<R, ADS> );
+			loadCommand(new SystemHelpCommand<R, ADS> );
+			loadCommand(new SystemPauseCommand<R, ADS> );
+			loadCommand(new SystemPreprocessCommand<R, ADS> );
+			loadCommand(new SystemPrintCommand<R, ADS> );
+			loadCommand(new SystemPrintlnCommand<R, ADS> );
+			loadCommand(new SystemReadCommand<R, ADS> );
+			loadCommand(new SystemRequireCommand<R, ADS> );
+			loadCommand(new SystemRunCommand<R, ADS> );
+			loadCommand(new SystemSilentDefineCommand<R, ADS> );
+			loadCommand(new SystemUndefineCommand<R, ADS> );
+			loadCommand(new SystemUnsafeDefineCommand<R, ADS> );
+			loadCommand(new SystemUsageCommand<R, ADS> );
+			loadCommand(new SystemUseCommand<R, ADS> );
 		}
 
 		if ((prefix == "") || (prefix == "operator"))
 		{
-			loadCommand(new OperatorAssignCommand<R, ADS, DS> );
+			loadCommand(new OperatorAssignCommand<R, ADS> );
 		}
 
 		// ==========================================================
@@ -514,11 +513,11 @@ public:
 		// ==========================================================
 		if ((prefix == "") || (prefix == "statements"))
 		{
-			loadCommand(new ForCommand<R, ADS, DS> );
-			loadCommand(new ForEachCommand<R, ADS, DS> );
-			loadCommand(new IfElseCommand<R, ADS, DS> );
-			loadCommand(new WhileCommand<R, ADS, DS> );
-			loadCommand(new TryCommand<R, ADS, DS> );
+			loadCommand(new ForCommand<R, ADS> );
+			loadCommand(new ForEachCommand<R, ADS> );
+			loadCommand(new IfElseCommand<R, ADS> );
+			loadCommand(new WhileCommand<R, ADS> );
+			loadCommand(new TryCommand<R, ADS> );
 		}
 
 		// ----------------------------------------------
@@ -587,7 +586,7 @@ public:
 		}
 	}
 
-	Command<R, ADS, DS>* getCommand(string module)
+	Command<R, ADS>* getCommand(string module)
 	{
 		for (unsigned int i = 0; i < modules.size(); i++)
 			if (module == modules[i]->id())
@@ -597,57 +596,57 @@ public:
 
 	void loadActions()
 	{
-		factory.actions.push_back(new ComponentAction<R, ADS, DS>);
-		factory.actions.push_back(new RandGenAction<R, ADS, DS>);
-		factory.actions.push_back(new TimerAction<R, ADS, DS>);
-		factory.actions.push_back(new ConstructiveAction<R, ADS, DS>);
-		factory.actions.push_back(new EvaluatorAction<R, ADS, DS>);
-		factory.actions.push_back(new EvaluationAction<R, ADS, DS>);
-		factory.actions.push_back(new MoveAction<R, ADS, DS>);
-		factory.actions.push_back(new NSAction<R, ADS, DS>);
-		factory.actions.push_back(new NSSeqAction<R, ADS, DS>);
-		factory.actions.push_back(new NSIteratorAction<R, ADS, DS>);
-		factory.actions.push_back(new LocalSearchAction<R, ADS, DS>);
-		factory.actions.push_back(new SingleObjSearchAction<R, ADS, DS>);
+		factory.actions.push_back(new ComponentAction<R, ADS>);
+		factory.actions.push_back(new RandGenAction<R, ADS>);
+		factory.actions.push_back(new TimerAction<R, ADS>);
+		factory.actions.push_back(new ConstructiveAction<R, ADS>);
+		factory.actions.push_back(new EvaluatorAction<R, ADS>);
+		factory.actions.push_back(new EvaluationAction<R, ADS>);
+		factory.actions.push_back(new MoveAction<R, ADS>);
+		factory.actions.push_back(new NSAction<R, ADS>);
+		factory.actions.push_back(new NSSeqAction<R, ADS>);
+		factory.actions.push_back(new NSIteratorAction<R, ADS>);
+		factory.actions.push_back(new LocalSearchAction<R, ADS>);
+		factory.actions.push_back(new SingleObjSearchAction<R, ADS>);
 	}
 
 	void loadComponentBuilders()
 	{
 		// Independent components
-		factory.builders.push_back(new RandGenBuilder<R, ADS, DS> );
-		factory.builders.push_back(new TimerBuilder<R, ADS, DS> );
+		factory.builders.push_back(new RandGenBuilder<R, ADS> );
+		factory.builders.push_back(new TimerBuilder<R, ADS> );
 
 		// Base
-		factory.builders.push_back(new CloneConstructiveBuilder<R, ADS, DS> );
+		factory.builders.push_back(new CloneConstructiveBuilder<R, ADS> );
 
 		// LocalSearch
-		factory.builders.push_back(new EmptyLocalSearchBuilder<R, ADS, DS> );
-		factory.builders.push_back(new BestImprovementBuilder<R, ADS, DS> );
-		factory.builders.push_back(new FirstImprovementBuilder<R, ADS, DS> );
-		factory.builders.push_back(new RandomDescentMethodBuilder<R, ADS, DS> );
-		factory.builders.push_back(new CircularSearchBuilder<R, ADS, DS> );
-		factory.builders.push_back(new VariableNeighborhoodDescentBuilder<R, ADS, DS> );
-		factory.builders.push_back(new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS, DS> );
-		factory.builders.push_back(new RVNDBuilder<R, ADS, DS> );
-		factory.builders.push_back(new HillClimbingBuilder<R, ADS, DS> );
-		factory.builders.push_back(new LateAcceptanceHillClimbingBuilder<R, ADS, DS> );
+		factory.builders.push_back(new EmptyLocalSearchBuilder<R, ADS> );
+		factory.builders.push_back(new BestImprovementBuilder<R, ADS> );
+		factory.builders.push_back(new FirstImprovementBuilder<R, ADS> );
+		factory.builders.push_back(new RandomDescentMethodBuilder<R, ADS> );
+		factory.builders.push_back(new CircularSearchBuilder<R, ADS> );
+		factory.builders.push_back(new VariableNeighborhoodDescentBuilder<R, ADS> );
+		factory.builders.push_back(new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS> );
+		factory.builders.push_back(new RVNDBuilder<R, ADS> );
+		factory.builders.push_back(new HillClimbingBuilder<R, ADS> );
+		factory.builders.push_back(new LateAcceptanceHillClimbingBuilder<R, ADS> );
 
 		// SingleObjSearch + Parameters
-		factory.builders.push_back(new SimpleLocalSearchBuilder<R, ADS, DS> );
-		factory.builders.push_back(new BasicSimulatedAnnealingBuilder<R, ADS, DS> );
-		factory.builders.push_back(new BasicIteratedLocalSearchBuilder<R, ADS, DS> );
-		factory.builders.push_back(new BasicILSPerturbationBuilder<R, ADS, DS> );
-		factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<R, ADS, DS> );
-		factory.builders.push_back(new ILSLPerturbationLPlus2Builder<R, ADS, DS> );
-		factory.builders.push_back(new ILSLPerturbationLPlus2ProbBuilder<R, ADS, DS> );
-		factory.builders.push_back(new GRASPBuilder<R, ADS, DS> );
-		factory.builders.push_back(new BasicVNSBuilder<R, ADS, DS> );
-		factory.builders.push_back(new ReducedVNSBuilder<R, ADS, DS> );
-		factory.builders.push_back(new GeneralVNSBuilder<R, ADS, DS> );
-		factory.builders.push_back(new RandVNSBuilder<R, ADS, DS> );
+		factory.builders.push_back(new SimpleLocalSearchBuilder<R, ADS> );
+		factory.builders.push_back(new BasicSimulatedAnnealingBuilder<R, ADS> );
+		factory.builders.push_back(new BasicIteratedLocalSearchBuilder<R, ADS> );
+		factory.builders.push_back(new BasicILSPerturbationBuilder<R, ADS> );
+		factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<R, ADS> );
+		factory.builders.push_back(new ILSLPerturbationLPlus2Builder<R, ADS> );
+		factory.builders.push_back(new ILSLPerturbationLPlus2ProbBuilder<R, ADS> );
+		factory.builders.push_back(new GRASPBuilder<R, ADS> );
+		factory.builders.push_back(new BasicVNSBuilder<R, ADS> );
+		factory.builders.push_back(new ReducedVNSBuilder<R, ADS> );
+		factory.builders.push_back(new GeneralVNSBuilder<R, ADS> );
+		factory.builders.push_back(new RandVNSBuilder<R, ADS> );
 
 		// test local searches
-		factory.builders.push_back(new CompareLocalSearchBuilder<R, ADS, DS> );
+		factory.builders.push_back(new CompareLocalSearchBuilder<R, ADS> );
 	}
 
 	//! \english OptFrame Command Line Interface \endenglish \portuguese Interface de Linha de Comando do OptFrame \endportuguese
@@ -719,7 +718,7 @@ public:
 		cout << "Goodbye." << endl;
 	}
 
-	static void printOptions(string part_command, vector<Command<R, ADS, DS>*>& allCommands)
+	static void printOptions(string part_command, vector<Command<R, ADS>*>& allCommands)
 	{
 		for (unsigned int i = 0; i < allCommands.size(); i++)
 		{

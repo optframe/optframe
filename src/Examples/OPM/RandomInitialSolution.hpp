@@ -20,7 +20,7 @@ using namespace std;
 
 namespace POLAD
 {
-class RandomInitialSolutionOPM: public Constructive<RepOPM,OPTFRAME_DEFAULT_ADS>
+class RandomInitialSolutionOPM: public Constructive<RepOPM>
 {
 private:
 	OPMProblemInstance* polad;
@@ -36,7 +36,7 @@ public:
 		// Put the rest of your code here
 	};
 
-	SolutionOPM& generateSolution()
+	SolutionOPM* generateSolution(double timelimit) override
 	{
 		// Inicialmente sem nenhuma carregadeira alocada
 		vector<int> frentes(polad->getNumFrentes(),-1);
@@ -89,7 +89,7 @@ public:
 		RepOPM* rep = new pair<vector<int> , Matrix<int> >(frentes, viagens);
 
 		// Retorna a nova solucao.
-		return new TestSolution<RepOPM>(rep);
+		return new SolutionOPM(rep);
 	}
 
 };

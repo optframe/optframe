@@ -21,6 +21,10 @@ bool MODMProblemCommand::load(string filename)
 	p = new ProblemInstance(scanner);
 	MODMADSManager adsMan(*p);
 
+   // TODO: fix KahanSummation double defined method... then uncomment here
+
+   /*
+
 	// OPTIONAL: FOR TESTING
 	check = new CheckCommand<RepMODM, AdsMODM>;
 
@@ -41,7 +45,8 @@ bool MODMProblemCommand::load(string filename)
 
 	// STEP 4.1 (EXERCISE): DO THE SAME FOR OTHER ALTERNATIVE NEIGHBORHOOD STRUCTURES (REMEMBER TO ADD THE .cpp IN THE makefile)
 	// ...
-
+   */
+  
 	cout << "problem '" << filename << "' loaded successfully" << endl;
 
 	return true;

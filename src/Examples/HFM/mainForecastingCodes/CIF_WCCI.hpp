@@ -189,7 +189,7 @@ int CIFWCCICalibration(int argc, char **argv)
 
 //		forecastObject.runMultiObjSearch();
 //		getchar();
-		pair<Solution<RepHFM>, Evaluation>* sol;
+		pair<SolutionHFM, Evaluation>* sol;
 		sol = forecastObject.run(timeES, 0, 0);
 
 
@@ -429,7 +429,7 @@ int CIFWCCIGeneratingForecasts(int argc, char **argv)
 
 //		forecastObject.runMultiObjSearch();
 //		getchar();
-		pair<Solution<RepHFM>, Evaluation>* sol;
+		pair<SolutionHFM, Evaluation>* sol;
 		sol = forecastObject.run(timeES, 0, 0);
 
 

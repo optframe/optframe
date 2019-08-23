@@ -3,6 +3,7 @@
 
 #include "../../OptFrame/Constructive.hpp"
 #include "../../OptFrame/Heuristics/GRASP/GRConstructive.hpp"
+#include "../../OptFrame/RandGen.hpp"
 
 #include "ProblemInstance.hpp"
 
@@ -18,11 +19,12 @@
 #include <set>
 
 using namespace std;
+using namespace optframe;
 
 namespace HFM
 {
 
-class ConstructiveRandom: public Constructive<RepHFM,OPTFRAME_DEFAULT_ADS>
+class ConstructiveRandom: public Constructive<RepHFM>
 {
 private:
 	HFMProblemInstance& pEFP;
@@ -58,12 +60,12 @@ public:
 	{
 	}
 
-	Solution<RepHFM>* generateSolution(double timelimit)
+	SolutionHFM* generateSolution(double timelimit) override
 	{
 		return generateSolutionAlpha(0.0, timelimit);
 	}
 
-	Solution<RepHFM>* generateSolutionAlpha(float notUsed, double timelimit)
+	SolutionHFM* generateSolutionAlpha(float notUsed, double timelimit)
 	{
 
 		//cout << "ACF generating solution.." << endl;
@@ -268,7 +270,7 @@ public:
 
 //		cout << "End of Random Hybrid Fuzzy Model Sol generation!" << endl;
 //		getchar();
-		return new Solution<RepHFM>(newRep);
+		return new SolutionHFM(newRep);
 	}
 
 };

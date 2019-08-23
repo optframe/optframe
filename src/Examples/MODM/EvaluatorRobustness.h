@@ -60,11 +60,11 @@ public:
 	{
 	}
 
-	EvaluationMODM& evaluate(const RepMODM& rep)
+	Evaluation evaluate(const RepMODM& rep)
 	{
 		AdsMODM ads;
 		adsMan.initializeADS(rep, ads);
-		return evaluate(rep, ads);
+		return evaluate(rep, &ads);
 	}
 
 	vector<int> checkNClientsPerCategory(const RepMODM& rep, const AdsMODM& ads)
@@ -116,8 +116,9 @@ public:
 
 	}
 
-	EvaluationMODM& evaluate(const RepMODM& rep, const AdsMODM& ads)
+	Evaluation evaluate(const RepMODM& rep, const AdsMODM* _ads) override
 	{
+      const AdsMODM& ads = *_ads;
 		Timer t;
 		// 'rep' is the representation of the solution
 		int maxC = pMODM.getNumberOfClients();
@@ -265,12 +266,12 @@ public:
 //
 //		variableProfit /= nMonteCarlo;
 
-		return *new EvaluationMODM(sharpeRatio, foInv);
+		return Evaluation(sharpeRatio, foInv);
 	}
 
 	void exportEvaluation(const RepMODM& rep, const AdsMODM& ads, string filename, string outFile)
 	{
-		EvaluationMODM& e = evaluate(rep, ads);
+		Evaluation e = evaluate(rep, &ads);
 
 		double fo = e.evaluation();
 
@@ -281,13 +282,15 @@ public:
 		fclose(f);
 	}
 
+   /*
 	virtual bool betterThan(double a, double b)
 	{
 		// MAXIMIZATION
 		return (a > (b + EPSILON_MODM));
 	}
+   */
 
-	virtual bool isMinimization() const
+	virtual bool isMinimization() const override
 	{
 		return false;
 	}

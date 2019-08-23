@@ -63,7 +63,7 @@ private:
 	vector<Constructive<R, ADS>*> lConstructive;
 	vector<CopySolution<R,ADS>*> lSolution;
 	vector<Move<R, ADS>*> lMove;
-	vector<NS<R, ADS>*> lNS;
+	vector<NS<R, ADS, S>*> lNS;
 	vector<NSSeq<R, ADS>*> lNSSeq;
 	vector<NSEnum<R, ADS>*> lNSEnum;
 
@@ -85,7 +85,7 @@ public:
 	{
 	}
 
-	void add(Constructive<R, ADS>& c)
+	void add(Constructive<R, ADS, S>& c)
 	{
 		lConstructive.push_back(&c);
 		if (verbose)
@@ -99,7 +99,7 @@ public:
 			cout << "checkcommand: AdsMan " << lADSManagerComp.size() << " added!" << endl;
 	}
 
-	void add(Evaluator<R, ADS>& c)
+	void add(Evaluator<R, ADS, S>& c)
 	{
 		lEvaluator.push_back(&c);
 		if (verbose)
@@ -113,30 +113,30 @@ public:
 			cout << "checkcommand: Solution " << lSolution.size() << " added!" << endl;
 	}
 
-	void add(Move<R, ADS>& c)
+	void add(Move<R, ADS, S>& c)
 	{
 		lMove.push_back(&c);
 		if (verbose)
 			cout << "checkcommand: Move " << lMove.size() << " added!" << endl;
 	}
 
-	void add(NS<R, ADS>& c)
+	void add(NS<R, ADS, S>& c)
 	{
 		lNS.push_back(&c);
 		if (verbose)
 			cout << "checkcommand: NS " << lNS.size() << " added!" << endl;
 	}
 
-	void add(NSSeq<R, ADS>& c)
+	void add(NSSeq<R, ADS, S>& c)
 	{
 		lNSSeq.push_back(&c);
 		if (verbose)
 			cout << "checkcommand: NSSeq " << lNSSeq.size() << " added!" << endl;
 		if (convertNS)
-			add((NS<R, ADS>&) c);
+			add((NS<R, ADS, S>&) c);
 	}
 
-	void add(NSEnum<R, ADS>& c)
+	void add(NSEnum<R, ADS, S>& c)
 	{
 		lNSEnum.push_back(&c);
 		if (verbose)
@@ -189,7 +189,7 @@ public:
 		bool overestimate, underestimate;
 	};
 
-	bool testMoveGeneral(int iter, NS<R, ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, TimeCheckWithSamples& timeSamples)
+	bool testMoveGeneral(int iter, NS<R, ADS, S>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<R, ADS>& move, vector<vector<Evaluation*> >& evaluations, TimeCheckWithSamples& timeSamples)
 	{
 		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
 		{
@@ -700,7 +700,7 @@ public:
 
 		for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++)
 		{
-			NS<R, ADS>* ns = lNS.at(id_ns);
+			NS<R, ADS, S>* ns = lNS.at(id_ns);
 
 			cout << "checkcommand: testing NS " << id_ns << " => " << ns->toString();
 			cout << endl;

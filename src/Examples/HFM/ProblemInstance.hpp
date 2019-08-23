@@ -8,6 +8,7 @@
 
 using namespace std;
 using namespace scannerpp;
+using namespace optframe;
 
 namespace HFM
 {

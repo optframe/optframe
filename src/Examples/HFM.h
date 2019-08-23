@@ -18,16 +18,17 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef PCAP_SOLUTION_H_
-#define PCAP_SOLUTION_H_
+#ifndef HFM_H_
+#define HFM_H_
 
-#include "../../OptFrame/Solution.hpp"
-#include "../../OptFrame/Solutions/CopySolution.hpp"
-#include "Representation.h"
-
-using namespace optframe;
-
-typedef CopySolution<RepPCAP> SolutionPCAP;
-
-#endif /*PCAP_SOLUTION_H_*/
-
+#include "./HFM/ConstructiveRandom.hpp"
+#include "./HFM/ConstructiveRandomACF.hpp"
+#include "./HFM/Evaluation.h"
+#include "./HFM/Evaluator.hpp"
+#include "./HFM/ForecastClass.hpp"
+#include "./HFM/NS/NSSeqHFMModifyRules.hpp"
+#include "./HFM/ProblemInstance.hpp"
+#include "./HFM/Representation.h"
+#include "./HFM/Solution.h"
+// what else?
+#endif /*HFM_H_*/

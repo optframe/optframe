@@ -16,7 +16,7 @@
 #include <cstdint>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sndfile.h>
+#include <sndfile.h> // sudo apt install libsndfile1-dev
 
 using namespace std;
 using namespace optframe;

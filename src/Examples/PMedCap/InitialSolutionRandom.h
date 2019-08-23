@@ -55,7 +55,7 @@ public:
    {
    }
 
-   Solution<RepPCAP>* generateSolution(double timelimit) override
+   SolutionPCAP* generateSolution(double timelimit) override
    {
       RepPCAP newRep;
       bool med[pPCAP.nCidades];
@@ -84,9 +84,7 @@ public:
             newRep.second[i] = rg.rand(pPCAP.nMedianas);
       }
 
-      int ads;
-
-      return new Solution<RepPCAP>(newRep, ads);
+      return new SolutionPCAP(newRep);
    }
 };
 

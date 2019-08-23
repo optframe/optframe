@@ -2,13 +2,16 @@
 #define KP_SOLUTION_H_
 
 #include "../../OptFrame/Solution.hpp"
+#include "../../OptFrame/Solutions/CopySolution.hpp"
+
 #include "Representation.h"
 
 using namespace optframe;
 
-typedef int MY_ADS;
+// int (?)
+typedef OPTFRAME_DEFAULT_ADS MY_ADS;
 
-typedef Solution<RepKP, MY_ADS> SolutionKP;
+typedef CopySolution<RepKP> SolutionKP;
 
 #endif /*KP_SOLUTION_H_*/
 

@@ -16,14 +16,14 @@ using namespace PN;
 
 int main(int argc, char **argv)
 {
-   Interactive<RepPN, MY_ADS > optframe;
+   Interactive<RepPN, MY_ADS > optf;
    //optframe.loadCallCommand();
 
-   optframe.loadCommand(new PNProblemCommand);
+   optf.loadCommand(new PNProblemCommand);
 
-   optframe.execute("system.read ./execPN.opt");
+   optf.execute("system.read ./execPN.opt");
 
-   optframe.execute();
+   optf.execute();
 
    cout << "Program ended successfully" << endl;
    

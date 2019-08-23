@@ -14,7 +14,6 @@ concept bool Representation = true;
 template<class ADS>
 concept bool Structure = true;
 
-
 template<class S, Representation R>
 concept bool HasGetR = requires(S a)
 {

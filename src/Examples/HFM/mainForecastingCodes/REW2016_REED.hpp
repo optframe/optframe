@@ -173,7 +173,7 @@ int APEN_SI_DemandForecasting(int argc, char **argv)
 
 			ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-			pair<Solution<RepHFM>, Evaluation>* sol;
+			pair<SolutionHFM, Evaluation>* sol;
 			sol = forecastObject.run(timeES, 0, 0);
 
 			vector<vector<double> > validationSet; //validation set for calibration
@@ -381,7 +381,7 @@ int APEN_SI_SpeedUp_DemandForecasting(int argc, char **argv)
 
 			ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-			pair<Solution<RepHFM>, Evaluation>* sol;
+			pair<SolutionHFM, Evaluation>* sol;
 			sol = forecastObject.run(timeES, 0, 0);
 
 			vector<vector<double> > validationSet; //validation set for calibration

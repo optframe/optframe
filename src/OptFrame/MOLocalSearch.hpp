@@ -37,7 +37,7 @@ using namespace std;
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class MOLocalSearch: public Component
 {
 
@@ -54,29 +54,29 @@ public:
 	// core methods
 
 	// no-optimization
-//	Solution<R, ADS>& search(const Solution<R, ADS>& s, Pareto<R, ADS>& pf, double timelimit = 100000000, double target_f = 0)
+//	S& search(const S& s, Pareto<R, ADS>& pf, double timelimit = 100000000, double target_f = 0)
 //	{
-//		Solution<R, ADS>& s2 = s.clone();
+//		S& s2 = s.clone();
 //		exec(s2, pf, timelimit, target_f);
 //		return s2;
 //	}
 //
 //	// optimizated version
-//	pair<Solution<R, ADS>&, Evaluation&>& search(const Solution<R, ADS>& s, const Evaluation& e, Pareto<R, ADS>& pf, double timelimit = 100000000, double target_f = 0)
+//	pair<S&, Evaluation&>& search(const S& s, const Evaluation& e, Pareto<R, ADS>& pf, double timelimit = 100000000, double target_f = 0)
 //	{
-//		Solution<R, ADS>& s2 = s.clone();
+//		S& s2 = s.clone();
 //		Evaluation& e2 = e.clone();
 //		exec(s2, e2, pf, timelimit, target_f);
-//		return *new pair<Solution<R, ADS>&, Evaluation&>(s2, e2);
+//		return *new pair<S&, Evaluation&>(s2, e2);
 //	}
 
 // core methods
 
     // 1
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>& s, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) = 0;
+	virtual void exec(Pareto<R, ADS>& p, S& s, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) = 0;
 
 	// 2
-	virtual void exec(Pareto<R, ADS>& p, Solution<R, ADS>& s, MultiEvaluation& mev, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) =0;
+	virtual void exec(Pareto<R, ADS>& p, S& s, MultiEvaluation& mev, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) =0;
 
 	virtual bool compatible(string s)
 	{

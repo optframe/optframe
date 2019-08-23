@@ -131,7 +131,7 @@ int hosseinBlindForecasts(int argc, char **argv)
 
 		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-		pair<Solution<RepHFM>, Evaluation>* sol;
+		pair<SolutionHFM, Evaluation>* sol;
 		sol = forecastObject.run(timeES, 0, 0);
 //		cout<<sol->first.getR()<<endl;
 //		getchar();

@@ -32,8 +32,8 @@ namespace optframe
 
 typedef int BasicHistory;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BasicMOILS: public MultiObjILS<BasicHistory, R, ADS>
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class BasicMOILS: public MultiObjILS<BasicHistory, R, ADS, S>
 {
 
 private:
@@ -60,7 +60,7 @@ public:
 		return iter;
 	}
 
-	virtual void perturbation(Solution<R, ADS>& s, MultiEvaluation& e, MOSC& stopCriteria, BasicHistory& history)
+	virtual void perturbation(S& s, MultiEvaluation& e, MOSC& stopCriteria, BasicHistory& history)
 	{
 		int iter = history;
 

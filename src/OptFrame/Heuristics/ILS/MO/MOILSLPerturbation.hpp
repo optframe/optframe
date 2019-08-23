@@ -34,7 +34,7 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class MOILSLPerturbation: public Component, public MOILS
 {
 public:
@@ -43,7 +43,7 @@ public:
 	{
 	}
 
-	virtual void perturb(Solution<R, ADS>& s, MultiEvaluation& mev, MOSC& stopCriteria, int level) = 0;
+	virtual void perturb(S& s, MultiEvaluation& mev, MOSC& stopCriteria, int level) = 0;
 
 	virtual bool compatible(string s)
 	{
@@ -64,8 +64,8 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class MOILSLPerturbationLPlus2: public MOILSLPerturbation<R, ADS>
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class MOILSLPerturbationLPlus2: public MOILSLPerturbation<R, ADS, S>
 {
 private:
 	vector<NS<R, ADS>*> ns;
@@ -88,7 +88,7 @@ public:
 		ns.push_back(&_ns);
 	}
 
-	void perturb(Solution<R, ADS>& s, MultiEvaluation& mev, MOSC& stopCriteria, int level)
+	void perturb(S& s, MultiEvaluation& mev, MOSC& stopCriteria, int level)
 	{
 		int a = 0; // number of appliable moves
 
@@ -133,8 +133,8 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class MOILSLPerturbationLPlus2Prob: public MOILSLPerturbation<R, ADS>
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class MOILSLPerturbationLPlus2Prob: public MOILSLPerturbation<R, ADS, S>
 {
 private:
 	vector<NS<R, ADS>*> ns;
@@ -191,7 +191,7 @@ public:
 		cout<<endl;
 	}
 
-	void perturb(Solution<R, ADS>& s, MultiEvaluation& mev, MOSC& stopCriteria, int level)
+	void perturb(S& s, MultiEvaluation& mev, MOSC& stopCriteria, int level)
 	{
 		int a = 0; // number of appliable moves
 

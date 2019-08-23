@@ -80,7 +80,7 @@ public:
 		generateWasteRockSolution(&vs, &trips, alpha_w, alpha_s);
 		generateOreSolution(&vs, &trips, alpha_o, alpha_s);
 
-		return new Solution<RepOPM>(*new pair<vector<int>, Matrix<int> >(vs, trips));
+		return new SolutionOPM(*new pair<vector<int>, Matrix<int> >(vs, trips));
 	}
 
 	void generateWasteRockSolution(vector<int>* vs, Matrix<int>* trips, double alpha_w, double alpha_s)

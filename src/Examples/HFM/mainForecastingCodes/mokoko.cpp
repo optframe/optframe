@@ -89,7 +89,7 @@ int mokokoProbabilisticForecastWindPower(int argc, char **argv)
 
 	vector<vector<double> > vfoIndicatorCalibration; //vector with the FO of each batch
 
-	vector<SolutionEFP> vSolutionsBatches; //vector with the solution of each batch
+	vector<SolutionHFM> vSolutionsBatches; //vector with the solution of each batch
 	// Matrix with forecasts of each batch of training and validation
 	vector<vector<double> > batchOfResults;
 	int nBatches = 5;
@@ -162,7 +162,7 @@ int mokokoProbabilisticForecastWindPower(int argc, char **argv)
 
 		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-		pair<Solution<RepHFM>, Evaluation>* sol;
+		pair<SolutionHFM, Evaluation>* sol;
 
 		sol = forecastObject.run(timeES, 0, 0);
 

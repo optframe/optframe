@@ -48,12 +48,13 @@ struct ESContinuousStructure
 };
 
 //CADA INDIVIDUO EH UM PAR DE SOLUCAO E UMA TUPLE COM O PARAMETROS DA ESTRATEGIA
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class ESStruct = double>
-class ESContinous: public SingleObjSearch<R, ADS>
+//template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class ESStruct = double>
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, class ESStruct = double, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class ESContinous: public SingleObjSearch<R, ADS, S>
 {
 private:
 
-	Solution<R, ADS>* sStar;
+	S* sStar;
 	Evaluation* eStar;
 	Evaluator<R, ADS>& eval;
 	Constructive<R, ADS>& constructive;
@@ -66,7 +67,7 @@ private:
 	int iterSemMelhora;
 	int gAtual;
 
-	typedef pair<Solution<R, ADS>*, ESContinuousStructure<ESStruct>*> Individuo;
+	typedef pair<S*, ESContinuousStructure<ESStruct>*> Individuo;
 
 	typedef vector<pair<Individuo, double> > Populacao;
 
@@ -79,9 +80,9 @@ private:
 
 	virtual void changeParameters(ESContinuousStructure<ESStruct>* p) = 0;
 
-	virtual void applyParameters(Solution<R, ADS>* s, ESContinuousStructure<ESStruct>* p) = 0;
+	virtual void applyParameters(S* s, ESContinuousStructure<ESStruct>* p) = 0;
 
-	virtual ESStruct generateInitialESStructure(Solution<R, ADS>* s) = 0;
+	virtual ESStruct generateInitialESStructure(S* s) = 0;
 
 public:
 
@@ -127,7 +128,7 @@ public:
 
 			if (aux[ind] == false)
 			{
-				Solution<R, ADS>* filhoo = &ls.search(*p[ind].first);
+				S* filhoo = &ls.search(*p[ind].first);
 				delete p[ind].first;
 				p[ind].first = filhoo;
 
@@ -257,12 +258,12 @@ public:
 		return pNova;
 	}
 
-	virtual void localSearch(Solution<R, ADS>& s, Evaluation& e, SOSC& stopCriteria)
+	virtual void localSearch(S& s, Evaluation& e, SOSC& stopCriteria)
 	{
 		ls.exec(s, e, stopCriteria);
 	}
 
-	pair<Solution<R, ADS>, Evaluation>* search(SOSC& stopCriteria, const Solution<R, ADS>* _s = nullptr, const Evaluation* _e = nullptr)
+	pair<S, Evaluation>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation* _e = nullptr) override
 	{
 		cout << "ES search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
@@ -275,7 +276,7 @@ public:
 		//GERANDO VETOR DE POPULACAO INICIAL
 		for (int i = 0; i < mi; i++)
 		{
-			Solution<R, ADS>* s = constructive.generateSolution(stopCriteria.timelimit);
+			S* s = constructive.generateSolution(stopCriteria.timelimit);
 
 			ESStruct a = generateInitialESStructure(s);
 			//cout << a;
@@ -340,7 +341,7 @@ public:
 
 				// Cria Filho e Tuple de Parametros (pi,nap,vizinhança)
 				//double tClone = tnowClone.now();
-				Solution<R, ADS>* filho = &pop[x].first.first->clone();
+				S* filho = &pop[x].first.first->clone();
 				//sumClone += tnowClone.now() - tClone;
 
 				ESContinuousStructure<ESStruct>* vt = new ESContinuousStructure<ESStruct>(*pop[x].first.second);
@@ -355,7 +356,7 @@ public:
 				//TODO
 
 				// Sem Busca Local
-				Solution<R, ADS>* filho_bl = filho;
+				S* filho_bl = filho;
 
 				//double tEval = tnowClone.now();
 				Evaluation e = eval.evaluateSolution(*filho_bl);
@@ -415,7 +416,7 @@ public:
 			delete pop[i].first.second;
 		}
 
-		Solution<R, ADS>& s = *sStar;
+		S& s = *sStar;
 		Evaluation& e = *eStar;
 
 		//cout<<s.getR();
@@ -423,7 +424,7 @@ public:
 		//delete eStar;
 		//delete sStar;
 
-		return new pair<Solution<R, ADS>, Evaluation>(s, e);
+		return new pair<S, Evaluation>(s, e);
 	}
 
 	static string idComponent()

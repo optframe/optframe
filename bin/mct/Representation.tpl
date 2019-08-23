@@ -6,12 +6,18 @@
 
 #include "../../OptFrame/Util/Matrix.hpp"
 
+#include "../../OptFrame/Solutions/CopySolution.hpp"
+
 $include
 
 using namespace std;
 
+using namespace optframe;
+
 // Solution Representation
 typedef $rep Rep$project;
+
+typedef CopySolution<Rep$project> Solution$project;
 
 // Remember that Rep$project must implement: (i) copy constructor and (ii) operator<<
 
