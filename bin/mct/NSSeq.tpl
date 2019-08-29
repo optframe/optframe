@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef $project_NSSEQ$neighborhood_H_
 #define $project_NSSEQ$neighborhood_H_
 

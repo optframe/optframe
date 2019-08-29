@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef $project_CONSTRUCTIVE_$constructive_H_
 #define $project_CONSTRUCTIVE_$constructive_H_
 
@@ -32,6 +34,11 @@ public:
 	Constructive$constructive(ProblemInstance& _p$project);
 	
 	virtual ~Constructive$constructive();
+	
+	string id() const
+    {
+        return Move<Rep$project >::idComponent().append(":Constructive$constructive");
+    }
 
 	Solution$project* generateSolution(double timelimit);
 };

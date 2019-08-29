@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef $project_EVALUATOR_H_
 #define $project_EVALUATOR_H_
 
