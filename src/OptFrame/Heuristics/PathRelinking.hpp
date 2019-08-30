@@ -22,7 +22,10 @@
 #define OPTFRAME_PATHRELINKING_HPP_
 
 #include "../Component.hpp"
+#include "../Evaluation.hpp"
+#include "../Evaluator.hpp"
 #include "../LocalSearch.hpp"
+#include "../Solution.hpp"
 
 namespace optframe
 {

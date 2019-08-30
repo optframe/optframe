@@ -22,6 +22,7 @@
 #define OPTFRAME_NSITERATOROROPTK_HPP_
 
 // Framework includes
+#include "../../../Move.hpp"
 #include "../../../NSIterator.hpp"
 
 using namespace std;

@@ -22,6 +22,7 @@
 #define SELECTION_HPP_
 
 #include <utility>
+#include <vector>
 
 #include "../../Evaluator.hpp"
 #include "../../MultiSolution.hpp"
@@ -50,10 +51,10 @@ public:
 	{
 	}
 
-	virtual pair<unsigned, unsigned> select(const MultiSolution<R, ADS>& population, const MultiEvaluation& mev, const vector<double>& fv) = 0;
+	virtual pair<unsigned, unsigned> select(const MultiSolution<R, ADS>& population, const MultiEvaluation& mev, const std::vector<double>& fv) = 0;
 
 
-	static double getMax(const vector<double>& fv)
+	static double getMax(const std::vector<double>& fv)
 	{
 		double lmax = -10000000;
 		for (int i = 0; i < fv.size(); i++)
@@ -62,7 +63,7 @@ public:
 		return lmax;
 	}
 
-	static double getSum(const vector<double>& fv)
+	static double getSum(const std::vector<double>& fv)
 	{
 		double s = 0;
 		for (int i = 0; i < fv.size(); i++)
@@ -70,7 +71,7 @@ public:
 		return s;
 	}
 
-	static void normalize(vector<double>& fv)
+	static void normalize(std::vector<double>& fv)
 	{
 		double sum = getSum(fv);
 		if(sum == 0)

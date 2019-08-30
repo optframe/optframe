@@ -21,10 +21,13 @@
 #ifndef OPTFRAME_NSSEQMULTIROUTEADAPTER_HPP_
 #define OPTFRAME_NSSEQMULTIROUTEADAPTER_HPP_
 
+#include <vector>
+
 // Framework includes
 
 #include "../Move.hpp"
 #include "../NSSeq.hpp"
+#include "../NSIterator.hpp"
 
 #include "Moves/MoveMultiRoute.hpp"
 #include "NSIterators/IteratorNSSeqMultiRoute.hpp"

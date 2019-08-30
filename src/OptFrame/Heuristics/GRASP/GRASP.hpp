@@ -25,6 +25,7 @@
 #include "../../LocalSearch.hpp"
 
 #include "GRASP.h"
+#include "GRConstructive.hpp"
 
 namespace optframe
 {

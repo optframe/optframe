@@ -22,6 +22,9 @@
 #define OPTFRAME_EXTENDED_MOS_SELECTION_HPP_
 
 #include "MOSIndividual.hpp"
+
+#include "MOSExtIndividual.hpp"
+
 #include "../../Component.hpp"
 
 namespace optframe

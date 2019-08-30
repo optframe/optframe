@@ -21,6 +21,8 @@
 #ifndef OPTFRAME_ITERATORNSSEQTSPOR1OPT_HPP_
 #define OPTFRAME_ITERATORNSSEQTSPOR1OPT_HPP_
 
+#include <vector>
+
 // Framework includes
 #include "../../NSIterator.hpp"
 

@@ -25,6 +25,8 @@
 
 #include "../../SingleObjSearch.hpp"
 #include "../../MultiSolution.hpp"
+#include "../../LocalSearch.hpp"
+#include "../../RandGen.hpp"
 
 #include "InitialMultiSolution.hpp"
 

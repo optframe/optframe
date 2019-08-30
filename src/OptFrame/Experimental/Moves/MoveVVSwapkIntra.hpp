@@ -21,6 +21,8 @@
 #ifndef OPTFRAME_MOVEVVSwapkIntra_HPP_
 #define OPTFRAME_MOVEVVSwapkIntra_HPP_
 
+#include <vector>
+
 // Framework includes
 #include "../../Move.hpp"
 

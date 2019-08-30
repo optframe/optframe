@@ -21,13 +21,15 @@
 #ifndef OPTFRAME_NSENUMVVSHIFTK_HPP_
 #define OPTFRAME_NSENUMVVSHIFTK_HPP_
 
-#include "algorithm"
+#include <algorithm>
+#include <vector>
 
 // Framework includes
+#include "Moves/MoveVVShiftk.hpp"
 #include "../NSEnum.hpp"
-
-#include "./Moves/MoveVVShiftk.hpp"
 #include "../NSEnumIterator.hpp"
+#include "../Move.hpp"
+#include "../NSIterator.hpp"
 
 using namespace std;
 
