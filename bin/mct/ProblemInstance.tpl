@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef $project_PROBLEMINSTANCE_H_
 #define $project_PROBLEMINSTANCE_H_
 
