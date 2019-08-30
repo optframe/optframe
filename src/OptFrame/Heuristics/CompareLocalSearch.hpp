@@ -23,6 +23,7 @@
 
 #include "../LocalSearch.hpp"
 #include "../NSSeq.hpp"
+#include "../Evaluation.hpp"
 #include "../Evaluator.hpp"
 
 namespace optframe

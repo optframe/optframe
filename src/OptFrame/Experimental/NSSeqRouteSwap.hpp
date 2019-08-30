@@ -21,6 +21,8 @@
 #ifndef OPTFRAME_NSSEQROUTESWAP_HPP_
 #define OPTFRAME_NSSEQROUTESWAP_HPP_
 
+#include <vector>
+
 // Framework includes
 #include "../Move.hpp"
 #include "../NSEnum.hpp"

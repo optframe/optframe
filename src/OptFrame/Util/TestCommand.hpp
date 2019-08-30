@@ -21,10 +21,14 @@
 #ifndef TESTMODULE_HPP_
 #define TESTMODULE_HPP_
 
-#include "../Timer.hpp"
-
 #include <math.h>
+
+#include "../Timer.hpp"
 #include "../Constructive.hpp"
+#include "../Evaluator.hpp"
+#include "../Evaluation.hpp"
+#include "../Component.hpp"
+#include "../SingleObjSearch.hpp"
 
 namespace optframe
 {

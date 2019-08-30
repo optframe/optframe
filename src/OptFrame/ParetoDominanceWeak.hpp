@@ -29,6 +29,7 @@
 #define OPTFRAME_PARETODOMINANCE_WEAK_HPP_
 
 #include "ParetoDominance.hpp"
+#include "MultiEvaluation.hpp"
 
 #include <iostream>
 #include <cmath>

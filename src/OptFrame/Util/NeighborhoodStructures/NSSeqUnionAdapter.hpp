@@ -22,8 +22,9 @@
 #define OPTFRAME_NSSEQUNIONADAPTER_HPP_
 
 // Framework includes
-//#include "../../../Move.hpp"
+#include "../../Move.hpp"
 #include "../../NSSeq.hpp"
+#include "../../NSIterator.hpp"
 
 #include "./Moves/MoveNSSeqUnion.hpp"
 #include "./NSIterators/IteratorNSSeqUnion.hpp"

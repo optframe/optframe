@@ -21,7 +21,8 @@
 #ifndef TRY_MODULE_HPP_
 #define TRY_MODULE_HPP_
 
-#include<string>
+#include <string>
+#include <vector>
 
 #include "../Command.hpp"
 

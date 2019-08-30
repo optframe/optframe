@@ -21,9 +21,14 @@
 #ifndef TESTMODULE_HPP_
 #define TESTMODULE_HPP_
 
-#include "../Command.hpp"
 #include <math.h>
+
+#include "Scanner++/Scanner.h"
+#include "Evaluation.hpp"
+#include "Command.hpp"
 #include "Constructive.hpp"
+#include "HeuristicFactory.hpp"
+#include "PreprocessFunction.hpp"
 
 namespace optframe
 {

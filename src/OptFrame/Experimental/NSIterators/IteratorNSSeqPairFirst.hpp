@@ -22,7 +22,7 @@
 #define OPTFRAME_ITERATORNSSEQPAIRFIRST_HPP_
 
 // Framework includes
-
+#include "../../Move.hpp"
 #include "../../NSIterator.hpp"
 #include "../Moves/MovePairFirst.hpp"
 

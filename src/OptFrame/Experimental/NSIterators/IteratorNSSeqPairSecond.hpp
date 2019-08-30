@@ -23,6 +23,7 @@
 
 // Framework includes
 #include "../../NSIterator.hpp"
+#include "../../Move.hpp"
 
 #include "../Moves/MovePairSecond.hpp"
 

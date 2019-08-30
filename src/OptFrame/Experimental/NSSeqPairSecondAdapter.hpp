@@ -21,9 +21,12 @@
 #ifndef OPTFRAME_NSSEQ_PAIRSECOND_ADAPTER_HPP_
 #define OPTFRAME_NSSEQ_PAIRSECOND_ADAPTER_HPP_
 
+#include <utility>
+
 // Framework includes
 #include "../Move.hpp"
 #include "../NSSeq.hpp"
+#include "../NSIterator.hpp"
 
 #include "Moves/MovePairSecond.hpp"
 #include "NSIterators/IteratorNSSeqPairSecond.hpp"

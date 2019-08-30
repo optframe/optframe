@@ -23,6 +23,7 @@
 
 // Framework includes
 
+#include "../../../Move.hpp"
 #include "../../../NSIterator.hpp"
 #include "../Moves/MoveNSSeqUnion.hpp"
 
