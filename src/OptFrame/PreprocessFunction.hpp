@@ -34,12 +34,14 @@
 #include <vector>
 #include <map>
 
+#include <algorithm>
+
 #include "Solution.hpp"
 #include "Evaluation.hpp"
+#include "HeuristicFactory.hpp"
 
 #include "Scanner++/Scanner.h"
 
-#include <algorithm>
 
 namespace optframe
 {

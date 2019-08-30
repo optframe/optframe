@@ -24,6 +24,7 @@
 // Framework includes
 #include "../Move.hpp"
 #include "../NSSeq.hpp"
+#include "../NSIterator.hpp"
 
 #include "Moves/MoveVVSwapIntra.hpp"
 #include "NSIterators/IteratorVVSwapIntra.hpp"

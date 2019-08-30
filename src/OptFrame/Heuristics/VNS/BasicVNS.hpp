@@ -24,6 +24,8 @@
 #include <math.h>
 #include <vector>
 
+#include "../LocalSearches/BestImprovement.hpp"
+#include "../../HeuristicFactory.hpp"
 #include "VariableNeighborhoodSearch.hpp"
 #include "VNS.h"
 

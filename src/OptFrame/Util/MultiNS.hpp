@@ -21,9 +21,12 @@
 #ifndef OPTFRAME_MULTI_NS_HPP_
 #define OPTFRAME_MULTI_NS_HPP_
 
+#include <vector>
+
 #include "../Move.hpp"
 #include "../NS.hpp"
 #include "../Solution.hpp"
+#include "../RandGen.hpp"
 
 namespace optframe
 {

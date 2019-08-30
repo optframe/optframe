@@ -21,7 +21,12 @@
 #ifndef BINARY_SELECTION_HPP_
 #define BINARY_SELECTION_HPP_
 
+#include <vector>
 #include <assert.h>
+
+#include "../../RandGen.hpp"
+#include "../../MultiSolution.hpp"
+#include "../../MultiEvaluation.hpp"
 
 #include "Selection.hpp"
 

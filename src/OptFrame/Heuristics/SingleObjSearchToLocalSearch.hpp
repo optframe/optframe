@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "../Constructive.hpp"
+#include "../Evaluation.hpp"
 #include "../Evaluator.hpp"
 #include "../LocalSearch.hpp"
 #include "../SingleObjSearch.hpp"

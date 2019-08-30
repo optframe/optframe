@@ -27,13 +27,14 @@
 #include <vector>
 #include <map>
 
+#include <algorithm>
+
 #include "../Scanner++/Scanner.h"
 
+#include "../HeuristicFactory.hpp"
 #include "../PreprocessFunction.hpp"
-
 #include "../OptFrameList.hpp"
 
-#include <algorithm>
 
 
 namespace optframe

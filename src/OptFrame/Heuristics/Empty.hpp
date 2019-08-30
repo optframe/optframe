@@ -21,6 +21,9 @@
 #ifndef OPTFRAME_EMPTY_HPP_
 #define OPTFRAME_EMPTY_HPP_
 
+#include <vector>
+
+#include "../Evaluation.hpp"
 #include "../LocalSearch.hpp"
 
 namespace optframe

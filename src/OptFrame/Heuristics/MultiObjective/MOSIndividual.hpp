@@ -30,6 +30,7 @@
 #include "../../Population.hpp"
 #include "../../NSSeq.hpp"
 #include "../../ParetoDominance.hpp"
+#include "../../MultiEvaluation.hpp"
 
 namespace optframe
 {

@@ -22,6 +22,7 @@
 #define OPTFRAME_ITERATORNSSEQTSP2OPT_HPP_
 
 // Framework includes
+#include "../../../Move.hpp"
 #include "../../../NSIterator.hpp"
 
 #include "../Moves/MoveTSP2Opt.hpp"

@@ -22,6 +22,7 @@
 #define OPTFRAME_ITERATORNSSEQKROUTE_HPP_
 
 // Framework includes
+#include "../../Move.hpp"
 #include "../../NSIterator.hpp"
 
 #include "../Moves/MovekRoute.hpp"

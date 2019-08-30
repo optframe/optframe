@@ -24,6 +24,8 @@
 
 #include "./Moves/MoveTSPOr1Opt.hpp"
 #include "./NSIterators/IteratorNSSeqTSPOr1Opt.hpp"
+#include "../Move.hpp"
+#include "../NSIterator.hpp"
 
 // Framework includes
 #include "../NSSeq.hpp"

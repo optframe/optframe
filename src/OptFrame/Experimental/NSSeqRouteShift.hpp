@@ -24,6 +24,7 @@
 // Framework includes
 #include "../Move.hpp"
 #include "../NSSeq.hpp"
+#include "../NSIterator.hpp"
 
 using namespace std;
 

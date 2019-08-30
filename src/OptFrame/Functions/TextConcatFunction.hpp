@@ -28,8 +28,8 @@
 #include <map>
 
 #include "../Scanner++/Scanner.h"
-
 #include "../PreprocessFunction.hpp"
+#include "../HeuristicFactory.hpp"
 
 
 namespace optframe

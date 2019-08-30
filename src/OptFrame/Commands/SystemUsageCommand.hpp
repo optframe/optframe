@@ -22,6 +22,8 @@
 #define USAGEMODULE_HPP_
 
 #include "../Command.hpp"
+#include "../PreprocessFunction.hpp"
+#include "../HeuristicFactory.hpp"
 
 namespace optframe
 {
