@@ -4,6 +4,9 @@
 #define $project_NSSEQ$neighborhood_H_
 
 // Framework includes
+#include "../../OptFrame/Move.hpp"
+#include "../../OptFrame/MoveCost.hpp"
+#include "../../OptFrame/NSIterator.hpp"
 #include "../../OptFrame/NSSeq.hpp"
 #include "../../OptFrame/RandGen.hpp"
 

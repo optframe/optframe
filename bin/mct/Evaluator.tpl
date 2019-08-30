@@ -39,4 +39,3 @@ public:
 }
 
 #endif /*$project_EVALUATOR_H_*/
-
