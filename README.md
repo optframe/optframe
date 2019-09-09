@@ -53,7 +53,8 @@ Cite this in your paper as:
     year = {2010},
     month = {08},
     pages = {1887-1898},
-    title = {OptFrame: a computational framework for combinatorial optimization problems}
+    title = {OptFrame: a computational framework for combinatorial optimization problems},
+    journal = "Simpósio Brasileiro de Pesquisa Operacional"
 }
 ```
 
