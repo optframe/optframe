@@ -43,6 +43,20 @@ the project is now moved to GitHub platform.
 
 Thanks a lot SourceForge/GitHub!
 
+## Citation
+
+Cite this in your paper as:
+
+```bibtex
+@inproceedings{optframe2010,
+    author = {Igor Coelho and Sabir Ribas and Mário Henrique de Paiva Perché and Pablo Munhoz and Marcone Souza and Luiz Ochi},
+    year = {2010},
+    month = {08},
+    pages = {1887-1898},
+    title = {OptFrame: a computational framework for combinatorial optimization problems}
+}
+```
+
 --
 
 [**LICENSE GNU Lesser General Public License v3**](https://github.com/optframe/optframe/blob/master/LICENSE)
