@@ -48,7 +48,7 @@ Thanks a lot SourceForge/GitHub!
 Cite this in your paper as:
 
 ```bibtex
-@inproceedings{optframe2010,
+@article{optframe2010,
     author = {Igor Coelho and Sabir Ribas and Mário Henrique de Paiva Perché and Pablo Munhoz and Marcone Souza and Luiz Ochi},
     year = {2010},
     month = {08},
