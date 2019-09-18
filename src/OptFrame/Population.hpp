@@ -39,7 +39,7 @@ class Population final : public Component
 protected:
    typedef S chromossome;
    typedef vector<chromossome*> population;
-   typedef vector<vector<Evaluation>> populationFitness;
+   typedef vector<vector<Evaluation> > populationFitness;
 
    population p;
    populationFitness pFitness;
@@ -124,7 +124,7 @@ public:
       return c;
    }
 
-   vector<double> getFitness(int pos) const
+   vector<Evaluation> getFitness(int pos) const
    {
       return pFitness[pos];
    }
