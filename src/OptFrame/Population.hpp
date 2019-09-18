@@ -28,7 +28,8 @@
 #include "Evaluator.hpp"
 #include "Solution.hpp"
 
-namespace optframe {
+namespace optframe 
+{
 
 // Population is 'final'
 

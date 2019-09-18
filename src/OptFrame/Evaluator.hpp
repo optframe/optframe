@@ -364,7 +364,7 @@ public:
 
    // ============ betterThan ===========
 
-   using Direction::betterThan;
+   
 
    //! abstract method betterThan: true when a < b for minimization problems; and true when a > b for maximization problems.
    /*!
@@ -379,8 +379,12 @@ public:
    {
       Evaluation e1 = evaluateSolution(s1);
       Evaluation e2 = evaluateSolution(s2);
-      bool r = betterThan(e1, e2);
+      bool r = Direction::betterThan(e1, e2);
       return r;
+   }
+
+   virtual bool betterThan(const Evaluation& e1, const Evaluation& e2){
+      return Direction::betterThan(e1, e2);
    }
 
    // ============= Component ===============
@@ -405,17 +409,19 @@ public:
 
 template<class R>
 class BasicEvaluator : public Evaluator<R>{
+public:
+   virtual Evaluation evaluate(const R&) = 0;
 
+private:
    /* Use this if don't need ADS */
    /* Use isto se você não precisa do ADS */
 
    using ADS = OPTFRAME_DEFAULT_ADS;
-private:
-   Evaluation evaluate(const R& r, const ADS* ads) override{
+
+   Evaluation evaluate(const R& r, const ADS* ads) override {
       return evaluate(r);
    } 
-public:
-   virtual Evaluation evaluate(const R&) = 0;
+   
 };
 
 }

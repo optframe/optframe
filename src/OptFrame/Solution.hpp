@@ -273,7 +273,7 @@ public:
 	// contract: assumes hasADS() with positive result
 	const ADS& getADS() const
 	{
-		assert(hasADS());
+		assert(hasADS()); 
 		return *ads;
 	}
 

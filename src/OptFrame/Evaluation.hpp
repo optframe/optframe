@@ -53,7 +53,7 @@ namespace optframe
 #define EVALUATION_TYPE double
 #endif
 
-typedef EVALUATION_TYPE evtype;
+typedef EVALUATION_TYPE evtype; //template?????????
 
 #ifndef EVALUATION_ZERO
 #define EVALUATION_ZERO 0.0001
@@ -67,6 +67,7 @@ typedef EVALUATION_TYPE evtype;
 // note: for multi-objective problems with distinct objective space types
 // such as (int, evtype, long long) you can use PackTypes in Utils or overload
 // manually each of the numeric operators +, -, *
+//why this isn't a template????????????????
 
 class Evaluation final: public Component
 {

@@ -1,6 +1,6 @@
 all: pmedcap examples kp tsp hfvrpmt 
 
-examples: kp tsp etii  pmedcap opths  gfp hfvrpmt hfm modm
+examples: kp kp2 tsp etii  pmedcap opths  gfp hfvrpmt hfm modm
 
 fix_examples: svrpdsp modm
 
@@ -9,6 +9,9 @@ tsp:
 
 kp:
 	make -f makeKP.mk
+
+kp2:
+	make -f makeKP2.mk
 
 hfm:
 	make -f makeHFM.mk

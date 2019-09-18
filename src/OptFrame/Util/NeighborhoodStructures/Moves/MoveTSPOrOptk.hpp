@@ -24,8 +24,8 @@
 // Framework includes
 #include "../../../Move.hpp"
 
-using namespace std;
-using namespace optframe;
+//using namespace std;
+//using namespace optframe; (?????????????????) Don't use namespace declarations in headers
 
 // Working structure: vector<vector<T> >
 

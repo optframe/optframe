@@ -21,13 +21,23 @@
 #ifndef SELECTION_HPP_
 #define SELECTION_HPP_
 
+#include <utility>
 #include <vector>
 
+#include "../../Evaluator.hpp"
 #include "../../MultiSolution.hpp"
 #include "../../MultiEvaluation.hpp"
 #include "EA.h"
 
 #include "../../Util/printable.h"
+
+#ifndef _OPTFRAME_DBG_SELECTION_
+#   ifdef OPTFRAME_DEBUG
+#       define _OPTFRAME_DBG_SELECTION_ 
+#   else
+#       define _OPTFRAME_DBG_SELECTION_ while(false)
+#   endif /* OPTFRAME_DEBUG */
+#endif /* _OPTFRAME_DBG_SELECTION_ */
 
 namespace optframe
 {
@@ -93,6 +103,74 @@ public:
 	virtual string id() const
 	{
 		return idComponent();
+	}
+};
+
+//temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class SimpleSelection {
+protected:
+	using Individual = Solution<R, ADS>;
+    using Chromossome = R;
+    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Population = vector< pair<Individual, Fitness> >;
+
+    Evaluator<R, ADS>& evaluator;
+
+public:
+
+	SimpleSelection(Evaluator<R, ADS>& _evaluator) : evaluator(_evaluator) { };
+	virtual ~SimpleSelection() = default;
+
+	virtual void select(Population& population) = 0;
+
+	//this is a support function to be used by programmers who need to rank the population before selection. See GA manual to check if the population is ranked when select is called.
+	virtual void sortPopulation(Population& population){
+		_OPTFRAME_DBG_SELECTION_ std::cerr << "-OptDebug- Selection operator is sorting the population" << std::endl;
+		auto compare = [&](const pair<Individual, Fitness>& a, const pair<Individual, Fitness>& b)->bool{
+			if(a.second && b.second)
+				return evaluator.betterThan(*a.second, *b.second);
+			else return a.second != nullptr;
+		};
+
+		std::sort(population.begin(), population.end(), compare);
+		_OPTFRAME_DBG_SELECTION_ std::cerr << "-OptDebug- Population ranked with selection operator" << std::endl;
+	}
+};
+
+/**********************/
+/* SELECTION EXAMPLES */
+/**********************/
+
+//Selects the 100alpha% most fit individuals 
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+class ElitismSelection final : public SimpleSelection<R, ADS> {
+protected:
+	using Individual = Solution<R, ADS>;
+    using Chromossome = R;
+    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Population = vector< pair<Individual, Fitness> >;
+
+private:
+	double alpha; //selectionRate
+
+public:
+	//optional parameter
+	bool sortPopulationBeforeSelect = false; //this selection need to operate over a ranked population. If the GA used doesn't rank them, then you should flip this to true 
+
+	ElitismSelection(Evaluator<R, ADS>& _evaluator, double selectionRate) : SimpleSelection<R, ADS>(_evaluator), alpha(selectionRate) { assert(selectionRate >= 0.0 && selectionRate <= 1.0); };
+	~ElitismSelection() = default;
+
+	void select(Population& population) override {
+		_OPTFRAME_DBG_SELECTION_ std::cerr << "-OptDebug- ElitismSelection is selecting the " << population.size() * alpha << " most fit individuals and killing the rest" << std::endl;
+		if(this->sortPopulationBeforeSelect) this->sortPopulation(population);
+		int oldSize = population.size();
+		int newSize = oldSize * alpha;
+		for(int i = oldSize-1; i >= newSize; --i)
+			if(population[i].second)
+				delete population[i].second;
+		population.erase(population.begin() + newSize, population.end()); 
+		_OPTFRAME_DBG_SELECTION_ std::cerr << "-OptDebug- ElitismSelection old size: " << oldSize << " new size: " << population.size() << std::endl;
 	}
 };
 
