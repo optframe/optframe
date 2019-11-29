@@ -28,6 +28,10 @@ Project is organized in three main folders: `src`, `tests` and `bin`.
 Tests are provided via `gtestlib` (on root folder), and you can also find `scannerpplib` (Scanner++ library) there.
 To build `gtestlib`, just `cd gtestlib/build && cmake .. && make`.
 
+## Submodules
+
+Getting submodules: `git submodule update --init --recursive` and `git pull --recurse-submodules`.
+
 ## Using MCT script - Make a Compilable Thing!
 
 Just type `./bin/mct.sh` (or `make mct`) and follow the instructions on screen.
