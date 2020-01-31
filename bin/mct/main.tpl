@@ -33,12 +33,12 @@ int main(int argc, char **argv)
    
    Constructive$constructive c1(p);
    
-   CheckCommand<Rep$project> check;
-   check.add(ev);
-   check.add(c1);
-   check.add(ns1);
-   
-   check.run(10,10);
+   //CheckCommand<Rep$project> check;
+   //check.add(ev);
+   //check.add(c1);
+   //check.add(ns1);
+
+   //check.run(10,10);
 
    cout << "Program ended successfully" << endl;
    

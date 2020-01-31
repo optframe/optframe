@@ -37,7 +37,7 @@ public:
 	
 	string id() const
     {
-        return Move<Rep$project >::idComponent().append(":Constructive$constructive");
+        return Constructive<Rep$project >::idComponent().append(":Constructive$constructive");
     }
 
 	Solution$project* generateSolution(double timelimit);

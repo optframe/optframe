@@ -34,7 +34,7 @@ Getting submodules: `git submodule update --init --recursive` and `git pull --re
 
 ## Using MCT script - Make a Compilable Thing!
 
-Just type `./bin/mct.sh` (or `make mct`) and follow the instructions on screen.
+Just type `cd ./bin && ./mct.sh` (or `make mct`) and follow the instructions on screen.
 You can find your new project on `src/MyProjects/` (and tests on `tests/MyProjects/`).
 
 ## Special thanks for SourceForge.net
@@ -61,7 +61,7 @@ Cite this in your paper as:
     journal = "Simpósio Brasileiro de Pesquisa Operacional"
 }
 ```
-
+  
 --
 
 [**LICENSE GNU Lesser General Public License v3**](https://github.com/optframe/optframe/blob/master/LICENSE)
