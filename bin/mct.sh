@@ -16,6 +16,13 @@ echo "             \"Make a Compilable Thing!\"           "
 echo "      http://sourceforge.net/projects/optframe/     " 
 echo "===================================================="
 echo
+# verify if mct directory content is available
+ls mct/RepTest.tpl > /dev/null 2>&1
+if [ $? -eq 2  ]; then
+   echo "This script should be run on ./bin folder"
+   exit 1
+fi
+# good to go
 echo "1. What's the name of your project? (Step 1 of 9)"
 read name
 project=$name
