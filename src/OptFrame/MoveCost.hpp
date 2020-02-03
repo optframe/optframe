@@ -112,7 +112,7 @@ public:
 	}
 
 	// update Evaluation with costs
-	virtual void update(Evaluation& e)
+	virtual void update(Evaluation<>& e) // TODO: put correct ObjType here
 	{
 		// update objective function value
 		e.setObjFunction(e.getObjFunction()+objFunction);

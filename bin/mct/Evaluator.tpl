@@ -31,7 +31,7 @@ public:
 	virtual ~MyEvaluator();
 
     // you can replace OptFrameADS with your prefered ADS
-	Evaluation evaluate(const Rep$project& rep, const OptFrameADS* ads);
+	Evaluation<> evaluate(const Rep$project& rep, const OptFrameADS* ads);
 	
 	virtual bool isMinimization() const;
 };

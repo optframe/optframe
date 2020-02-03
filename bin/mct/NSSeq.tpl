@@ -57,7 +57,7 @@ public:
 
     Move< Rep$project >* apply(Rep$project& rep, OptFrameADS* ads);
     
-    MoveCost* cost(const Evaluation&, const Rep$project& rep, const OptFrameADS* ads, bool allowEstimated);
+    MoveCost* cost(const Evaluation<>&, const Rep$project& rep, const OptFrameADS* ads, bool allowEstimated);
 };
 
 

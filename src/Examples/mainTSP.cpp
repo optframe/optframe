@@ -46,18 +46,11 @@ using namespace scannerpp;
 
 #include "../OptFrame/Util/PackTypes.hpp"
 
-template<BaseSolution<double> S>
-class TestSol
-{
-public:
-};
+
 
 int
 main(int argc, char** argv)
 {
-   TestSol<IsSolution<double>> t;
-   TestSol<Solution<double>> t1;
-
    Loader<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> optframe;
    TSPProblemCommand tsp;
 

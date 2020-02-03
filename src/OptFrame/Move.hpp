@@ -67,7 +67,7 @@ public:
 		return apply(s.getR(), s.getADSptr());
 	}
 
-	Move<R, ADS, S>* applyUpdateSolution(Evaluation& e, S& s)
+	Move<R, ADS, S>* applyUpdateSolution(Evaluation<>& e, S& s)
 	{
 		return applyUpdate(e, s.getR(), s.getADSptr());
 	}
@@ -79,7 +79,7 @@ public:
 
 	virtual Move<R, ADS, S>* apply(R& r, ADS* ads) = 0;
 
-	virtual Move<R, ADS, S>* applyUpdate(Evaluation& e, R& r, ADS* ads)
+	virtual Move<R, ADS, S>* applyUpdate(Evaluation<>& e, R& r, ADS* ads)
 	{
 		// boolean 'outdated' indicates that Evaluation needs update (after Solution change)
 		// note that even if the reverse move is applied, the Evaluation will continue with
@@ -111,11 +111,11 @@ public:
 	}
 
 	// TODO: coming in one of the next versions..
-	//virtual pair<Move<R, ADS, S>&, MoveCost*> apply(const Evaluation& e, R& r, ADS& ads) = 0;
+	//virtual pair<Move<R, ADS, S>&, MoveCost*> apply(const Evaluation<>& e, R& r, ADS& ads) = 0;
 
 	// ================== cost calculation
 
-	virtual MoveCost* cost(const Evaluation& e, const R& r, const ADS* ads, bool allowEstimated)
+	virtual MoveCost* cost(const Evaluation<>& e, const R& r, const ADS* ads, bool allowEstimated)
 	{
 		return nullptr;
 	}
@@ -144,7 +144,7 @@ public:
 	}
 
 	// TODO: force before apply(R,ADS) and after apply(S)?
-	virtual void updateLOS(R& r, ADS& ads, Evaluation& e)
+	virtual void updateLOS(R& r, ADS& ads, Evaluation<>& e)
 	{
 	}
 

@@ -92,7 +92,7 @@ public:
       weight = w;
    }
 
-   Evaluation evaluateSolution(const S& s)
+   Evaluation<> evaluateSolution(const S& s)
    {
       return evaluate(s.getR(), s.getADSptr());
    }
@@ -101,9 +101,9 @@ public:
    // because of MultiEvaluator... otherwise, make it 'friend'
 
    // TODO: make it obligatory to have two implementations? beautiful (only R should be used if it's correct), but not practical!
-   //virtual Evaluation evaluate(const R& r) = 0;
+   //virtual Evaluation<> evaluate(const R& r) = 0;
 
-   virtual Evaluation evaluate(const R& r, const ADS*) = 0;
+   virtual Evaluation<> evaluate(const R& r, const ADS*) = 0;
    /*
 	{
 		// ignoring ADS
@@ -112,7 +112,7 @@ public:
 	*/
 
 public:
-   void reevaluateSolution(Evaluation& e, const S& s)
+   void reevaluateSolution(Evaluation<>& e, const S& s)
    {
       reevaluate(e, s.getR(), s.getADSptr());
    }
@@ -120,33 +120,33 @@ public:
 public:
    // because of MultiEvaluator... otherwise, make it 'friend'
 
-   virtual void reevaluate(Evaluation& e, const R& r, const ADS* ads)
+   virtual void reevaluate(Evaluation<>& e, const R& r, const ADS* ads)
    {
       if (e.outdated) {
-         Evaluation e1 = evaluate(r, ads);
+         Evaluation<> e1 = evaluate(r, ads);
          e = std::move(e1);
       }
    }
 
 public:
-   // Apply movement considering a previous evaluation => Faster.
-   // Update evaluation 'e'
-   Move<R, ADS, S>* applyMoveReevaluate(Evaluation& e, Move<R, ADS, S>& m, S& s)
+   // Apply movement considering a previous Evaluation<> => Faster.
+   // Update Evaluation<> 'e'
+   Move<R, ADS, S>* applyMoveReevaluate(Evaluation<>& e, Move<R, ADS, S>& m, S& s)
    {
       // apply move and get reverse move
       Move<R, ADS, S>* rev = m.applyUpdateSolution(e, s);
       // for now, must be not nullptr
       assert(rev != nullptr);
-      // consolidate 'outdated' evaluation data on 'e'
+      // consolidate 'outdated' Evaluation<> data on 'e'
       reevaluateSolution(e, s);
 
       // create pair
       return rev;
    }
 
-   // Apply movement without considering a previous evaluation => Slower.
-   // Return new evaluation 'e'
-   pair<Move<R, ADS, S>*, Evaluation> applyMove(Move<R, ADS, S>& m, S& s)
+   // Apply movement without considering a previous Evaluation<> => Slower.
+   // Return new Evaluation<> 'e'
+   pair<Move<R, ADS, S>*, Evaluation<>> applyMove(Move<R, ADS, S>& m, S& s)
    {
       // apply move and get reverse move
       Move<R, ADS, S>* rev = m.applySolution(s);
@@ -155,11 +155,11 @@ public:
       // TODO: include management for 'false' hasReverse()
       assert(m.hasReverse() && rev);
       // create pair
-      return pair<Move<R, ADS, S>*, Evaluation>(rev, evaluateSolution(s));
+      return pair<Move<R, ADS, S>*, Evaluation<>>(rev, evaluateSolution(s));
    }
 
    // Movement cost based on reevaluation of 'e'
-   MoveCost* moveCost(Evaluation& e, Move<R, ADS, S>& m, S& s, bool allowEstimated = false)
+   MoveCost* moveCost(Evaluation<>& e, Move<R, ADS, S>& m, S& s, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
       // TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
@@ -178,10 +178,10 @@ public:
          // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
          assert(m.hasReverse());
 
-         Evaluation ev_begin = e; //TODO: VITOR removing last evaluation
+         Evaluation<> ev_begin = e; //TODO: VITOR removing last evaluation
          // saving 'outdated' status to avoid inefficient re-evaluations
          //			bool outdated = e.outdated;
-         // apply move to both Evaluation and Solution
+         // apply move to both Evaluation<> and Solution
          Move<R, ADS, S>* rev = applyMoveReevaluate(e, m, s);
          // get final values
          pair<evtype, evtype> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
@@ -197,7 +197,7 @@ public:
          //Even when reevaluate is implemented, It would be hard to design a strategy that is faster than copying previous evaluation//==================================================================
          //			Move<R, ADS, S>* ini = applyMoveReevaluate(e, *rev, s);
          //
-         //			// if Evaluation wasn't 'outdated' before, restore its previous status
+         //			// if Evaluation<> wasn't 'outdated' before, restore its previous status
          //			if (!outdated)
          //				e.outdated = outdated;
 
@@ -240,9 +240,9 @@ public:
       // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
       assert(m.hasReverse());
 
-      pair<Move<R, ADS, S>*, Evaluation> rev = applyMove(m, s);
+      pair<Move<R, ADS, S>*, Evaluation<>> rev = applyMove(m, s);
 
-      pair<Move<R, ADS, S>*, Evaluation> ini = applyMove(*rev.first, s);
+      pair<Move<R, ADS, S>*, Evaluation<>> ini = applyMove(*rev.first, s);
 
       // Difference: new - original
 
@@ -266,7 +266,7 @@ public:
    }
 
    // Accept and apply move if it improves parameter moveCost
-   bool acceptsImprove(Move<R, ADS, S>& m, S& s, Evaluation& e, MoveCost* mc = nullptr, bool allowEstimated = false)
+   bool acceptsImprove(Move<R, ADS, S>& m, S& s, Evaluation<>& e, MoveCost* mc = nullptr, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
 
@@ -285,7 +285,7 @@ public:
             Move<R, ADS, S>* rev = m.applySolution(s);
             if (rev)
                delete rev;
-            // update evaluation with MoveCost
+            // update Evaluation<> with MoveCost
             p->update(e);
             // destroy MoveCost
             delete p;
@@ -302,7 +302,7 @@ public:
          assert(m.hasReverse());
 
          // saving previous evaluation
-         Evaluation ev_begin = e;
+         Evaluation<> ev_begin = e;
          // saving 'outdated' status to avoid inefficient re-evaluations
          //			bool outdated = e.outdated;
          // get original obj function values
@@ -313,7 +313,7 @@ public:
             alt_begin[i].first = e.getAlternativeCosts()[i].first;
             alt_begin[i].second = e.getAlternativeCosts()[i].second;
          }
-         // apply move to both Evaluation and Solution
+         // apply move to both Evaluation<> and Solution
          Move<R, ADS, S>* rev = applyMoveReevaluate(e, m, s);
          // TODO: check outdated and estimated!
          MoveCost mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1, false, false);
@@ -337,9 +337,9 @@ public:
          //TODO - Vitor, Why apply Move with e is not used???
          //			Even when reevaluate is implemented, It would be hard to design a strategy that is faster than copying previous evaluation
          //==================================================================
-         //pair<Move<R, ADS, S>*, Evaluation> ini = applyMove(*rev, s);
+         //pair<Move<R, ADS, S>*, Evaluation<>> ini = applyMove(*rev, s);
 
-         // if Evaluation wasn't 'outdated' before, restore its previous status
+         // if Evaluation<> wasn't 'outdated' before, restore its previous status
          //			if (!outdated)
          //				e.outdated = outdated;
 
@@ -379,13 +379,13 @@ public:
    //virtual bool betterThan(evtype a, evtype b) = 0;
    virtual bool betterThan(const S& s1, const S& s2)
    {
-      Evaluation e1 = evaluateSolution(s1);
-      Evaluation e2 = evaluateSolution(s2);
+      Evaluation<> e1 = evaluateSolution(s1);
+      Evaluation<> e2 = evaluateSolution(s2);
       bool r = Direction::betterThan(e1, e2);
       return r;
    }
 
-   virtual bool betterThan(const Evaluation& e1, const Evaluation& e2){
+   virtual bool betterThan(const Evaluation<>& e1, const Evaluation<>& e2){
       return Direction::betterThan(e1, e2);
    }
 
@@ -412,7 +412,7 @@ public:
 template<class R>
 class BasicEvaluator : public Evaluator<R, OPTFRAME_DEFAULT_ADS, CopySolution<R,OPTFRAME_DEFAULT_ADS>>{
 public:
-   virtual Evaluation evaluate(const R&) = 0;
+   virtual Evaluation<> evaluate(const R&) = 0;
 
 private:
    /* Use this if don't need ADS */
@@ -420,7 +420,7 @@ private:
 
    using ADS = OPTFRAME_DEFAULT_ADS;
 
-   Evaluation evaluate(const R& r, const ADS* ads) override {
+   Evaluation<> evaluate(const R& r, const ADS* ads) override {
       return evaluate(r);
    } 
    

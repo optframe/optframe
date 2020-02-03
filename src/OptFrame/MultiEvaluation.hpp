@@ -28,10 +28,12 @@ using namespace std;
 namespace optframe
 {
 
+// TODO: pass ObjType here
+// TODO: convert MultiEvaluation to XEvaluation model too
 class MultiEvaluation: public Component
 {
 protected:
-	vector<Evaluation> vev;
+	vector<Evaluation<>> vev; // TODO: pass ObjType here
 
 public:
 
@@ -39,12 +41,12 @@ public:
 	{
 	}
 
-	MultiEvaluation(Evaluation ev)
+	MultiEvaluation(Evaluation<> ev)
 	{
 		vev.push_back(ev);
 	}
 
-//	MultiEvaluation(const Evaluation ev)
+//	MultiEvaluation(const Evaluation<> ev)
 //	{
 //		vev.push_back(&ev.clone());
 //	}
@@ -91,12 +93,12 @@ public:
 			vev[i].print();
 	}
 
-//	void addEvaluation(const Evaluation ev)
+//	void addEvaluation(const Evaluation<> ev)
 //	{
 //		vev.push_back(ev.clone());
 //	}
 
-	void addEvaluation(Evaluation ev)
+	void addEvaluation(Evaluation<> ev)
 	{
 		vev.push_back(ev);
 	}
@@ -111,22 +113,22 @@ public:
 		vev.erase(vev.begin() + index);
 	}
 
-	Evaluation at(unsigned index)
+	Evaluation<> at(unsigned index)
 	{
 		return vev[index];
 	}
 
-	const Evaluation at(unsigned index) const
+	const Evaluation<> at(unsigned index) const
 	{
 		return vev[index];
 	}
 
-	Evaluation operator[](unsigned index)
+	Evaluation<> operator[](unsigned index)
 	{
 		return vev[index];
 	}
 
-	const Evaluation operator[](unsigned index) const
+	const Evaluation<> operator[](unsigned index) const
 	{
 		return vev[index];
 	}
@@ -195,7 +197,7 @@ public:
 	virtual string toString() const
 	{
 		stringstream ss;
-		ss << "MultiEvaluation (" << vev.size() << "):";
+		ss << "MultiEvaluation<> (" << vev.size() << "):";
 		for (unsigned i = 0; i < vev.size(); i++)
 			ss << vev[i].toString() << endl;
 		return ss.str();

@@ -80,7 +80,7 @@ public:
 	}
 
 	// true if 'e1' is better than 'e2'
-	virtual inline bool betterThan(const Evaluation& e1, const Evaluation& e2)
+	virtual inline bool betterThan(const Evaluation<>& e1, const Evaluation<>& e2)
 	{
 		if(isMinimization())
 			return (e2.evaluation() - e1.evaluation()) >= EVALUATION_ZERO;
@@ -114,7 +114,7 @@ public:
 		return betterThan(mc1, mc2) || equals(mc1, mc2);
 	}
 
-	inline bool betterOrEquals(const Evaluation& e1, const Evaluation& e2)
+	inline bool betterOrEquals(const Evaluation<>& e1, const Evaluation<>& e2)
 	{
 		return betterThan(e1, e2) || equals(e1, e2);
 	}
@@ -152,7 +152,7 @@ public:
 		return equals(mc1.cost(), mc2.cost(), mc1.getAlternativeCosts(), mc2.getAlternativeCosts());
 	}
 
-	virtual inline bool equals(const Evaluation& e1, const Evaluation& e2)
+	virtual inline bool equals(const Evaluation<>& e1, const Evaluation<>& e2)
 	{
 		return equals(e1.evaluation(), e2.evaluation(), e1.getAlternativeCosts(), e2.getAlternativeCosts());
 	}
@@ -166,7 +166,7 @@ public:
 
 	// ============= improvement =============
 
-	virtual bool isImprovement(const MoveCost& mc, const Evaluation& e1, const Evaluation& e2)
+	virtual bool isImprovement(const MoveCost& mc, const Evaluation<>& e1, const Evaluation<>& e2)
 	{
 		evtype ec1 = mc.cost() + e1.evaluation();
 

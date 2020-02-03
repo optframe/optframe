@@ -32,6 +32,8 @@
 
 #include "BaseSolution.h" // concepts c++20
 
+// This is Default solution model.. not for all cases, but "good enough" for most applications
+
 namespace optframe
 {
 
@@ -316,6 +318,16 @@ public:
 	}
 
 };
+
+#ifndef NDEBUG
+
+struct optframe_test_debug_testsol_solution_disable_runtime
+{
+// Test solution concept against class Solution
+TestBaseSol<Solution<double>> test;
+};
+
+#endif 
 
 }
 

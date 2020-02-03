@@ -27,6 +27,8 @@
 
 #include "Component.hpp"
 
+#include "BaseSolution.h" // TODO: Rename to BaseConcepts.h
+
 using namespace std;
 
 namespace optframe
@@ -53,7 +55,8 @@ namespace optframe
 #define EVALUATION_TYPE double
 #endif
 
-typedef EVALUATION_TYPE evtype; //template?????????
+//typedef EVALUATION_TYPE evtype; //template?????????
+using evtype = EVALUATION_TYPE;
 
 #ifndef EVALUATION_ZERO
 #define EVALUATION_ZERO 0.0001
@@ -68,7 +71,10 @@ typedef EVALUATION_TYPE evtype; //template?????????
 // such as (int, evtype, long long) you can use PackTypes in Utils or overload
 // manually each of the numeric operators +, -, *
 //why this isn't a template????????????????
+// found a solution using C++20 concepts: now it's a template :)
 
+
+template<class ObjType = evtype>
 class Evaluation final: public Component
 {
 protected:
@@ -240,6 +246,7 @@ public:
 	}
 
 	// evaluation = objFunction + weight*infMeasure
+   // note that, if 'evtype' becomes complex, one must return a moveable copy, not reference of internal value
 	evtype evaluation() const
 	{
 		return objFunction + weight*infMeasure;
@@ -292,6 +299,16 @@ public:
 		return ss.str();
 	}
 };
+
+
+// testing default evaluation
+#ifndef NDEBUG
+struct optframe_test_debug_testev_evaluation_disable_runtime
+{
+// test if following structure is valid
+TestEv<double, Evaluation<double>> test;
+};
+#endif
 
 }
 
