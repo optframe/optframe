@@ -26,6 +26,8 @@
 
 using namespace std;
 
+#include "BaseSolution.h" // TODO: rename to BaseConcepts
+
 #include "Action.hpp"
 #include "Evaluation.hpp"
 #include "Solution.hpp"
@@ -80,11 +82,11 @@ public:
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 //concept SolEv;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class SingleObjSearch : public Component
 {
-   typedef vector<Evaluation*> FitnessValues;
-   typedef const vector<const Evaluation*> ConstFitnessValues;
+   typedef vector<XEv*> FitnessValues;
+   typedef const vector<const XEv*> ConstFitnessValues;
 
 public:
    SingleObjSearch()
@@ -96,7 +98,7 @@ public:
    }
 
    // search method try to find a feasible solution within timelimit, if there is no such solution it returns nullptr.
-   virtual pair<S, Evaluation>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation* _e = nullptr) = 0;
+   virtual pair<S, XEv>* search(SOSC& stopCriteria, const S* _s = nullptr, const XEv* _e = nullptr) = 0;
 
    virtual string log() const
    {
@@ -121,7 +123,7 @@ public:
    }
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>,  class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class SingleObjSearchBuilder : public ComponentBuilder<R, ADS, S>
 {
 public:
@@ -153,7 +155,7 @@ public:
    }
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>,  class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class SingleObjSearchAction : public Action<R, ADS,S>
 {
 public:
@@ -261,10 +263,10 @@ public:
          if (!scanner.hasNext())
             return false;
 
-         Evaluation* e;
+         XEv* e;
          hf.assign(e, scanner.nextInt(), scanner.next());
 
-         pair<S, Evaluation>* p = sios->search(SOSC(timelimit, target_f), s, e);
+         pair<S, XEv>* p = sios->search(SOSC(timelimit, target_f), s, e);
 
          if (!p)
             return true;

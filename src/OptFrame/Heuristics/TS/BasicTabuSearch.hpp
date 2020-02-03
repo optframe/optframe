@@ -30,7 +30,7 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class BasicTabuSearch: public SingleObjSearch<R, ADS, S>, public TS
 {
 private:
@@ -285,7 +285,7 @@ public:
 
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class BasicTabuSearchBuilder: public TS, public SingleObjSearchBuilder<R, ADS, S>
 {
 public:

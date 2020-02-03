@@ -32,7 +32,7 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class BasicVNS: public VariableNeighborhoodSearch<R, ADS, S>
 {
 public:
@@ -66,7 +66,7 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, S>
 {
 public:

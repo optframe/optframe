@@ -36,7 +36,7 @@ protected:
 
    typedef Solution<R, ADS> chromossome;
    //typedef vector<chromossome*> Population;
-   typedef vector<Evaluation*> FitnessValues;
+   typedef vector<Evaluation<>*> FitnessValues;
 
 public:
 

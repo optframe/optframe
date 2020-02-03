@@ -44,7 +44,7 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class Mutation: public Component, public EA
 {
 
@@ -54,7 +54,7 @@ public:
 	{
 	}
 
-	virtual void mutate(S& individual, Evaluation& e) = 0;
+	virtual void mutate(S& individual, XEv& e) = 0;
 
 	static string idComponent()
 	{
@@ -69,7 +69,7 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class BasicMutation: public Mutation<R, ADS, S>
 {
 protected:
@@ -88,7 +88,7 @@ public:
 	{
 	}
 
-	virtual void mutate(S& s, Evaluation& e)
+	virtual void mutate(S& s, XEv& e)
 	{
 		for (unsigned i = 0; i < n; i++)
 		{
@@ -117,7 +117,7 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class BasicMutationBuilder: public ComponentBuilder<R, ADS, S>
 {
 public:

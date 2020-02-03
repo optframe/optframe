@@ -38,7 +38,7 @@ public:
    {
    }
 
-   virtual pair<Evaluation, CopySolution<R>*> decode(const random_keys& rk) = 0;
+   virtual pair<Evaluation<>, CopySolution<R>*> decode(const random_keys& rk) = 0;
 
    virtual bool isMinimization() const = 0;
 };
@@ -65,9 +65,9 @@ public:
    {
    }
 
-   virtual pair<Evaluation, CopySolution<R>*> decode(const random_keys& rk) override
+   virtual pair<Evaluation<>, CopySolution<R>*> decode(const random_keys& rk) override
    {
-      return pair<Evaluation, CopySolution<R>*>(evaluator.evaluate(rk, nullptr), nullptr);
+      return pair<Evaluation<>, CopySolution<R>*>(evaluator.evaluate(rk, nullptr), nullptr);
    }
 
    virtual bool isMinimization() const
@@ -90,7 +90,7 @@ public:
       assert(a <= b);
    }
 
-   virtual pair<Evaluation, CopySolution<vector<int>>*> decode(const random_keys& rk) override
+   virtual pair<Evaluation<>, CopySolution<vector<int>>*> decode(const random_keys& rk) override
    {
       int sz = b - a + 1;
       vector<pair<double, int>> v(sz);
@@ -106,10 +106,10 @@ public:
       for (unsigned i = 0; i < v.size(); i++)
          p[i] = v[i].second;
 
-      Evaluation e = ev.evaluate(p, nullptr);
+      Evaluation<> e = ev.evaluate(p, nullptr);
 
       // you have the option to actually return a Solution<vector<int>> for post-decoding purposes
-      return pair<Evaluation, CopySolution<vector<int>>*>(e, new CopySolution<vector<int>>(p));
+      return pair<Evaluation<>, CopySolution<vector<int>>*>(e, new CopySolution<vector<int>>(p));
    }
 
    virtual bool isMinimization() const
@@ -134,7 +134,7 @@ public:
       assert(a <= b);
    }
 
-   virtual pair<Evaluation, CopySolution<vector<bool>>*> decode(const random_keys& rk) override
+   virtual pair<Evaluation<>, CopySolution<vector<bool>>*> decode(const random_keys& rk) override
    {
       vector<bool> v(b - a + 1);
       for (unsigned i = 0; i < v.size(); i++)
@@ -143,7 +143,7 @@ public:
       Evaluation e = ev.evaluate(v, nullptr);
 
       // you have the option to actually return a Solution<vector<bool>> for post-decoding purposes
-      return pair<Evaluation&, CopySolution<vector<bool>>*>(e, nullptr);
+      return pair<Evaluation<>&, CopySolution<vector<bool>>*>(e, nullptr);
    }
 
    virtual bool isMinimization() const

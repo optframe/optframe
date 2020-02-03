@@ -39,7 +39,7 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class Crossover: public Component, public EA
 {
 public:
@@ -48,7 +48,7 @@ public:
 	{
 	}
 
-	virtual pair<Solution<R, ADS>*, Solution<R, ADS>*> cross(const Solution<R, ADS>&, const Solution<R, ADS>&) = 0;
+	virtual pair<S*, S*> cross(const S&, const S&) = 0;
 
 	virtual bool compatible(string s)
 	{
@@ -70,12 +70,12 @@ public:
 };
 
 //temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class SimpleCrossover {
 protected:
-	using Individual = Solution<R, ADS>;
+	using Individual = S;
     using Chromossome = R;
-    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Fitness = XEv*; //nullptr means there's no evaluation
     using Population = std::vector< pair<Individual, Fitness> >;
 
 public:
@@ -91,12 +91,12 @@ public:
 /**********************/
 
 //receives two parents to return offspring with user programmed operator
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class TwoParentsCrossover : public SimpleCrossover<R, ADS> {
 protected:
-	using Individual = Solution<R, ADS>;
+	using Individual = S;
     using Chromossome = R;
-    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Fitness = XEv*; //nullptr means there's no evaluation
     using Population = std::vector< std::pair<Individual, Fitness> >;
 
 public:

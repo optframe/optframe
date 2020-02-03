@@ -33,13 +33,13 @@ namespace optframe
 
 // Population is 'final'
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>,  class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class Population final : public Component
 {
 protected:
    typedef S chromossome;
    typedef vector<chromossome*> population;
-   typedef vector<vector<Evaluation> > populationFitness;
+   typedef vector<vector<XEv> > populationFitness;
 
    population p;
    populationFitness pFitness;
@@ -56,7 +56,7 @@ public:
       for (unsigned i = 0; i < pop.size(); i++) {
          p.push_back(new S(pop.at(i))); // implicity copy constructor
          fitness.push_back(0); // TODO: fix
-         vector<Evaluation> a;
+         vector<XEv> a;
          pFitness.push_back(a);
       }
    }
@@ -85,7 +85,7 @@ public:
    {
       p.insert(p.begin() + pos, new chromossome(c));
       fitness.insert(fitness.begin() + pos, 0.0);
-      vector<Evaluation> a;
+      vector<XEv> a;
       pFitness.insert(pFitness.begin() + pos, a);
    }
 
@@ -95,7 +95,7 @@ public:
       {
          p.push_back(c);
          fitness.push_back(0);
-         vector<Evaluation> a;
+         vector<XEv> a;
          pFitness.push_back(a);
       }
    }
@@ -104,11 +104,11 @@ public:
    {
       p.push_back(&c.clone());
       fitness.push_back(0);
-      vector<Evaluation> a;
+      vector<XEv> a;
       pFitness.push_back(a);
    }
 
-   void push_back(const chromossome& c, vector<Evaluation> chromossomeFitness)
+   void push_back(const chromossome& c, vector<XEv> chromossomeFitness)
    {
       p.push_back(&c.clone());
       fitness.push_back(0);
@@ -124,7 +124,7 @@ public:
       return c;
    }
 
-   vector<Evaluation> getFitness(int pos) const
+   vector<XEv> getFitness(int pos) const
    {
       return pFitness[pos];
    }
@@ -254,12 +254,12 @@ public:
       }
    }
 
-   chromossome& cloneBestChromossome(Evaluator<R, ADS, S>& eval)
+   chromossome& cloneBestChromossome(Evaluator<R, ADS, S, ObjType, XEv>& eval)
    {
       vector<pair<S, double>> v;
 
       for (int i = 0; i < p.size(); i++) {
-         Evaluation& e = eval.evaluate(p[i]);
+         XEv& e = eval.evaluate(p[i]);
          v.push_back(make_pair(*p[i], e.evaluation()));
          delete &e;
       }

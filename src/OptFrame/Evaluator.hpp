@@ -53,16 +53,17 @@ namespace optframe {
  \endportuguese
  */
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, XSolution S = CopySolution<R,ADS>>
+// TODO: use XEv here
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, XSolution S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class Evaluator : public Direction
 {
 
 protected:
    bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
-   evtype weight;   // defaults to 1
+   ObjType weight;   // defaults to 1
 
 public:
-   Evaluator(bool _allowCosts = true, evtype w = 1)
+   Evaluator(bool _allowCosts = true, ObjType w = 1)
      : allowCosts(_allowCosts)
      , weight(w)
    {
@@ -82,12 +83,12 @@ public:
       allowCosts = _allowCosts;
    }
 
-   evtype getWeight() const
+   ObjType getWeight() const
    {
       return weight;
    }
 
-   void setWeight(const evtype& w)
+   void setWeight(const ObjType& w)
    {
       weight = w;
    }
@@ -184,9 +185,9 @@ public:
          // apply move to both Evaluation<> and Solution
          Move<R, ADS, S>* rev = applyMoveReevaluate(e, m, s);
          // get final values
-         pair<evtype, evtype> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
+         pair<ObjType, ObjType> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
          // get final values for lexicographic part
-         vector<pair<evtype, evtype>> alternatives(e.getAlternativeCosts().size());
+         vector<pair<ObjType, ObjType>> alternatives(e.getAlternativeCosts().size());
          for (unsigned i = 0; i < alternatives.size(); i++) {
             alternatives[i].first = e.getAlternativeCosts()[i].first;
             alternatives[i].second = e.getAlternativeCosts()[i].second;
@@ -211,7 +212,7 @@ public:
          //==================================================================
 
          // get original values (also could be calculated in the begin of function)
-         pair<evtype, evtype> e_ini = make_pair(e.getObjFunction(), e.getInfMeasure());
+         pair<ObjType, ObjType> e_ini = make_pair(e.getObjFunction(), e.getInfMeasure());
          // do the same for lexicographic part
          for (unsigned i = 0; i < alternatives.size(); i++) {
             alternatives[i].first -= e.getAlternativeCosts()[i].first;
@@ -246,10 +247,10 @@ public:
 
       // Difference: new - original
 
-      evtype obj = rev.second.getObjFunction() - ini.second.getObjFunction();
-      evtype inf = rev.second.getInfMeasure() - ini.second.getInfMeasure();
+      ObjType obj = rev.second.getObjFunction() - ini.second.getObjFunction();
+      ObjType inf = rev.second.getInfMeasure() - ini.second.getInfMeasure();
 
-      vector<pair<evtype, evtype>> alternatives(rev.second.getAlternativeCosts().size());
+      vector<pair<ObjType, ObjType>> alternatives(rev.second.getAlternativeCosts().size());
 
       for (unsigned i = 0; i < alternatives.size(); i++) {
          alternatives[i].first = rev.second.getAlternativeCosts()[i].first - ini.second.getAlternativeCosts()[i].first;
@@ -306,9 +307,9 @@ public:
          // saving 'outdated' status to avoid inefficient re-evaluations
          //			bool outdated = e.outdated;
          // get original obj function values
-         pair<evtype, evtype> e_begin = make_pair(e.getObjFunction(), e.getInfMeasure());
+         pair<ObjType, ObjType> e_begin = make_pair(e.getObjFunction(), e.getInfMeasure());
          // get original values for lexicographic part
-         vector<pair<evtype, evtype>> alt_begin(e.getAlternativeCosts().size());
+         vector<pair<ObjType, ObjType>> alt_begin(e.getAlternativeCosts().size());
          for (unsigned i = 0; i < alt_begin.size(); i++) {
             alt_begin[i].first = e.getAlternativeCosts()[i].first;
             alt_begin[i].second = e.getAlternativeCosts()[i].second;
@@ -376,7 +377,7 @@ public:
 	 - for minimization problems, returns a < b;
 	 - for maximization problems, returns a > b.
 	 */
-   //virtual bool betterThan(evtype a, evtype b) = 0;
+   //virtual bool betterThan(ObjType a, ObjType b) = 0;
    virtual bool betterThan(const S& s1, const S& s2)
    {
       Evaluation<> e1 = evaluateSolution(s1);

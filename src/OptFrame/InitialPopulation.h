@@ -46,7 +46,7 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class InitialPopulation: public Component
 {
 public:
@@ -70,7 +70,7 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class BasicInitialPopulation: public InitialPopulation<R, ADS, S>
 {
 public:
@@ -155,12 +155,12 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class SimpleInitialPopulation {
 protected:
-	using Individual = Solution<R, ADS>;
+	using Individual = S;
     using Chromossome = R;
-    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Fitness = XEv*; //nullptr means there's no evaluation
     using Population = vector< pair<Individual, Fitness> >;
 
 public:
@@ -177,12 +177,12 @@ public:
 /**********************/
 
 //generates random individuals based on user programmed method
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
 class RandomInitialPopulation : public SimpleInitialPopulation<R, ADS> {
 protected:
-	using Individual = Solution<R, ADS>;
+	using Individual = S;
     using Chromossome = R;
-    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Fitness = XEv*; //nullptr means there's no evaluation
     using Population = vector< pair<Individual, Fitness> >;
 
 public:
