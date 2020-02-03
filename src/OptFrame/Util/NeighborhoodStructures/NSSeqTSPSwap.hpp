@@ -25,6 +25,8 @@
 #include "../../NSSeq.hpp"
 #include "../../Solution.hpp"
 
+#include "BaseSolutionTSP.hpp"
+
 #include "Moves/MoveTSPSwap.hpp"
 #include "NSIterators/IteratorTSPSwap.hpp"
 
@@ -77,6 +79,9 @@ using namespace std;
  s': 1 2 6 4 5 3 7 8
  \endportuguese
  */
+
+namespace optframe
+{
 
 template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P> >
 class NSSeqTSPSwap: public NSSeq<vector<T>, ADS, S>
@@ -144,5 +149,7 @@ public:
 		return ss.str();
 	}
 };
+
+} // namespace optframe
 
 #endif /*OPTFRAME_NSSEQTSPSWAP_HPP_*/

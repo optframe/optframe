@@ -65,6 +65,11 @@ template <class S, Representation R, Structure ADS = _ADS>
 //concept bool BaseSolution = HasGetR<S, R> &&HasGetADS<S, ADS> && XSolution<S>;
 concept bool BaseSolution = HasGetR<S, R> &&HasGetADS<S, ADS> && XSolution<S>;
 
+
+template <class Self, Representation R>
+concept bool RSolution = HasGetR<Self, R> && XSolution<Self>;
+
+
 // Example of valid struct satisfying solution properties
 
 template <Representation R, Structure ADS = _ADS>

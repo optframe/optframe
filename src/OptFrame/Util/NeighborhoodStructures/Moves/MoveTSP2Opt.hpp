@@ -24,10 +24,16 @@
 // Framework includes
 #include "../../../Move.hpp"
 
+#include "../BaseSolutionTSP.hpp"
+
+
 //using namespace std;
 //using namespace optframe; (?????????????????) Don't use namespace declarations in headers
 
 // Working structure: vector<T>
+
+namespace optframe
+{
 
 template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
 class MoveTSP2Opt: public Move<vector<T>, ADS>
@@ -96,5 +102,7 @@ public:
 		cout << endl;
 	}
 };
+
+} // namespace optframe
 
 #endif /*OPTFRAME_MOVETSP2OPT_HPP_*/

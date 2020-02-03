@@ -29,6 +29,9 @@
 
 // Working structure: vector<vector<T> >
 
+namespace optframe
+{
+
 template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
 class MoveTSPOrOptk: public Move<vector<T>, ADS>
 {
@@ -105,5 +108,7 @@ public:
 		cout << "(" << i << ";" << j << ")" << endl;
 	}
 };
+
+} // namespace optframe
 
 #endif /*OPTFRAME_MOVE_TSP_OROPTK_HPP_*/

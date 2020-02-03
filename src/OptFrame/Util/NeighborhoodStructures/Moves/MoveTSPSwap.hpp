@@ -28,6 +28,9 @@ using namespace std;
 
 // Working structure: vector<T>
 
+namespace optframe
+{
+
 template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>>
 class MoveTSPSwap : public Move<vector<T>, ADS, S>
 {
@@ -87,5 +90,7 @@ public:
       cout << "MoveTSPSwap( " << p1 << " <=> " << p2 << " )" << endl;
    }
 };
+
+}
 
 #endif /*OPTFRAME_MOVETSPSWAP_HPP_*/

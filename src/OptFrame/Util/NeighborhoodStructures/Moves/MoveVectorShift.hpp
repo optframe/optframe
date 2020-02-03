@@ -27,6 +27,9 @@
 //using namespace std;
 //using namespace optframe; (?????????????????) Don't use namespace declarations in headers
 
+namespace optframe
+{
+
 //============================================================================
 //                           Shift Move
 //============================================================================
@@ -81,5 +84,7 @@ public:
 		cout << "Move Vector Shift("<< t1 << " -> " << t2 <<")"<<endl;
 	}
 };
+
+} // namespace optframe
 
 #endif /*OPTFRAME_MOVEVECTORSHIFT_HPP_*/

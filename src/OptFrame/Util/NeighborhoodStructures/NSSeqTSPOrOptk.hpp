@@ -25,12 +25,18 @@
 #include "../../Move.hpp"
 #include "../../NSSeq.hpp"
 
+#include "BaseSolutionTSP.hpp"
+
 #include "Moves/MoveTSPOrOptk.hpp"
 #include "NSIterators/IteratorTSPOrOptk.hpp"
 
 using namespace std;
 
 // Working structure: vector<vector<T> >
+
+
+namespace optframe
+{
 
 template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveTSPOrOptk<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPOrOptk<T, ADS, MOVE, P>>
 class NSSeqTSPOrOptk : public NSSeq<vector<T>, ADS>
@@ -118,5 +124,7 @@ public:
       return ss.str();
    }
 };
+
+}  // namespace optframe
 
 #endif /*OPTFRAME_NSSEQ_TSP_OROPTK_HPP_*/

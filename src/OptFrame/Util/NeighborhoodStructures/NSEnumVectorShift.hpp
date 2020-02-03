@@ -29,6 +29,9 @@
 
 using namespace std;
 
+namespace optframe
+{
+
 //============================================================================
 //                  Shift Neighborhood Structure
 //============================================================================
@@ -73,5 +76,7 @@ public:
 	}
 
 };
+
+} // namespace optframe
 
 #endif /*OPTFRAME_NSENUMVECTORSHIFT_HPP_*/

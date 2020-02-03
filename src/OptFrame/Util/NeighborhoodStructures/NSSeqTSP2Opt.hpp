@@ -24,10 +24,13 @@
 #include "../../Move.hpp"
 #include "../../NSSeq.hpp"
 
+#include "BaseSolutionTSP.hpp"
+
 #include "Moves/MoveTSP2Opt.hpp"
 #include "NSIterators/IteratorTSP2Opt.hpp"
 
 using namespace std;
+using namespace optframe;
 
 //! \english NSSeq class for the classic Traveling Salesman Problem (TSP) neighborhood of 2-Opt. \endenglish \portuguese Classe NSSeq para a estrutura de vizinhança clássica de 2-Opt do Problema do Caixeiro Viajante. \endportuguese
 
@@ -84,6 +87,8 @@ using namespace std;
  s": 1 2 5 8 7 6 3 4
  \endportuguese
  */
+
+
 
 template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveTSP2Opt<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSP2Opt<T, ADS, MOVE, P> >
 class NSSeqTSP2Opt: public NSSeq<vector<T>, ADS>

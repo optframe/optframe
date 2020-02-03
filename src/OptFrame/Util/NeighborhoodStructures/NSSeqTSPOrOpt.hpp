@@ -25,12 +25,17 @@
 #include "../../Move.hpp"
 #include "../../NSSeq.hpp"
 
+#include "BaseSolutionTSP.hpp"
+
 #include "NSSeqTSPOrOptk.hpp"
 #include "NSSeqUnionAdapter.hpp"
 
 using namespace std;
 
 // definition: OrOpt is OrOpt{1..3}
+
+namespace optframe
+{
 
 template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
 class NSSeqTSPOrOpt: public NSSeq<vector<T>, ADS>
@@ -110,5 +115,7 @@ public:
 		return ss.str();
 	}
 };
+
+} // namespace optframe
 
 #endif /*OPTFRAME_NSSEQVECTOROROPT_HPP_*/
