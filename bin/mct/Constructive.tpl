@@ -22,7 +22,7 @@ namespace $project
 {
 
 // If you need ADS, you can inherit Constructive<Rep$project, YourADS>
-class Constructive$constructive: public Constructive<Rep$project>
+class Constructive$constructive: public Constructive<Solution$project>
 {
 private:
    ProblemInstance& p$project;
