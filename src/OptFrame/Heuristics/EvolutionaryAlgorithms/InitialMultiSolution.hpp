@@ -66,9 +66,9 @@ class BasicInitialMultiSolution: public InitialMultiSolution<R, ADS>
 {
 public:
 
-	Constructive<R, ADS>& constructive;
+	Constructive<S>& constructive;
 
-	BasicInitialMultiSolution(Constructive<R, ADS>& _constructive) :
+	BasicInitialMultiSolution(Constructive<S>& _constructive) :
 			constructive(_constructive)
 	{
 	}
@@ -113,7 +113,7 @@ public:
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
-		Constructive<R, ADS>* c;
+		Constructive<S>* c;
 		hf.assign(c, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new BasicInitialMultiSolution<R, ADS>(*c);
@@ -122,7 +122,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Constructive<R, ADS>::idComponent(), "constructive heuristic"));
+		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
 		return params;
 	}
 

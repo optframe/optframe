@@ -27,8 +27,8 @@
 
 namespace optframe {
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
-class CloneConstructive : public Constructive<R, ADS, S>
+template<XSolution S>
+class CloneConstructive : public Constructive<S>
 {
    S& base;
 
@@ -53,13 +53,13 @@ public:
 
    virtual bool compatible(string s)
    {
-      return (s == idComponent()) || (Constructive<R, ADS, S>::compatible(s));
+      return (s == idComponent()) || (Constructive<S>::compatible(s));
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << Constructive<R, ADS, S>::idComponent() << ":CloneConstructive";
+      ss << Constructive<S>::idComponent() << ":CloneConstructive";
       return ss.str();
    }
 
@@ -69,7 +69,7 @@ public:
    }
 };
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<Representation R, Structure ADS, XSolution S>
 class CloneConstructiveBuilder : public ComponentBuilder<R, ADS, S>
 {
 public:
@@ -82,7 +82,7 @@ public:
       S* s;
       hf.assign(s, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      return new CloneConstructive<R, ADS, S>(*s);
+      return new CloneConstructive<S>(*s);
    }
 
    virtual vector<pair<string, string>> parameters()
@@ -95,7 +95,7 @@ public:
 
    virtual bool canBuild(string component)
    {
-      return component == CloneConstructive<R, ADS, S>::idComponent();
+      return component == CloneConstructive<S>::idComponent();
    }
 
    static string idComponent()

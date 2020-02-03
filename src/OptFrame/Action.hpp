@@ -29,6 +29,8 @@
 
 #include "Component.hpp"
 
+#include "BaseSolution.h"
+
 #include "Solution.hpp"
 #include "Solutions/CopySolution.hpp"
 #include "Evaluation.hpp"
@@ -38,10 +40,10 @@
 using namespace std;
 using namespace scannerpp;
 
-template<class R, class ADS, BaseSolution<R,ADS> S> class HeuristicFactory;
-
 namespace optframe
 {
+
+template<class R, class ADS, XSolution S> class HeuristicFactory;
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class Action

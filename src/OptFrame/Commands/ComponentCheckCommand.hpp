@@ -213,8 +213,8 @@ public:
 			return false;
 		}
 
-		Constructive<R, ADS>* exConstructive = nullptr;
-		vector<Constructive<R, ADS>*> lConstructiveComp = assignVector(lConstructive, exConstructive, factory);
+		Constructive<S>* exConstructive = nullptr;
+		vector<Constructive<S>*> lConstructiveComp = assignVector(lConstructive, exConstructive, factory);
 
 		// -------------------
 		//     Evaluator
@@ -431,7 +431,7 @@ public:
 		for (unsigned c = 0; c < lConstructive.size(); c++)
 		{
 			Scanner scan(lConstructive.at(c));
-			Constructive<R, ADS>* constructive;
+			Constructive<S>* constructive;
 			factory.assign(constructive, scan.nextInt(), scan.next()); // reversed!
 
 			if (!constructive)

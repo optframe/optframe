@@ -41,7 +41,7 @@ using namespace std;
 namespace TSP
 {
 
-class NearestNeighborConstructive: public Constructive<RepTSP>
+class NearestNeighborConstructive: public Constructive<SolutionTSP>
 {
 private:
 	ProblemInstance* pI;
@@ -64,7 +64,7 @@ public:
 	{
 	}
 
-	CopySolution<RepTSP>* generateSolution(double timelimit) override
+	SolutionTSP* generateSolution(double timelimit) override
 	{
         //cout << "Generating solution" << endl;
 		RepTSP newRep;
@@ -103,7 +103,8 @@ public:
                     break;
             }
 
-		return new CopySolution<RepTSP>(newRep);
+		//return new CopySolution<RepTSP>(newRep);
+      return new SolutionTSP(newRep);
 	}
 
 };

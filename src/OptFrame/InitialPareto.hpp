@@ -65,10 +65,10 @@ class BasicInitialPareto: public InitialPareto<R, ADS>
 {
 public:
 
-	Constructive<R, ADS>& constructive;
+	Constructive<S>& constructive;
 	paretoManager<R, ADS> pMan;
 
-	BasicInitialPareto(Constructive<R, ADS>& _constructive, MultiEvaluator<R, ADS>& _mev) :
+	BasicInitialPareto(Constructive<S>& _constructive, MultiEvaluator<R, ADS>& _mev) :
 			constructive(_constructive), pMan(paretoManager<R, ADS>(_mev))
 	{
 	}
@@ -103,12 +103,12 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class GRInitialPareto: public InitialPareto<R, ADS>
 {
 public:
-	GRConstructive<R, ADS>& constructive;
+	GRConstructive<S>& constructive;
 	RandGen& rg;
 	double maxAlpha; // limit the solution to be not so random
 	paretoManager<R, ADS> pMan;
 
-	GRInitialPareto(GRConstructive<R, ADS>& _constructive, RandGen& _rg, double _maxAlpha, MultiEvaluator<R, ADS>& _mev) :
+	GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg, double _maxAlpha, MultiEvaluator<R, ADS>& _mev) :
 			constructive(_constructive), rg(_rg), maxAlpha(_maxAlpha), pMan(paretoManager<R, ADS>(_mev))
 	{
 	}

@@ -53,7 +53,7 @@ namespace optframe {
  \endportuguese
  */
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, XSolution S = CopySolution<R,ADS>>
 class Evaluator : public Direction
 {
 
@@ -364,7 +364,9 @@ public:
 
    // ============ betterThan ===========
 
-   
+   // From Direction:
+   //virtual inline bool betterThan(const MoveCost& mc1, const MoveCost& mc2)
+   using Direction::betterThan;
 
    //! abstract method betterThan: true when a < b for minimization problems; and true when a > b for maximization problems.
    /*!
@@ -408,7 +410,7 @@ public:
 };
 
 template<class R>
-class BasicEvaluator : public Evaluator<R>{
+class BasicEvaluator : public Evaluator<R, OPTFRAME_DEFAULT_ADS, CopySolution<R,OPTFRAME_DEFAULT_ADS>>{
 public:
    virtual Evaluation evaluate(const R&) = 0;
 

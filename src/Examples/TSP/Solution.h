@@ -21,12 +21,15 @@
 #ifndef TSP_SOLUTION_H_
 #define TSP_SOLUTION_H_
 
+#include "../../OptFrame/BaseSolution.h"
+#include "../../OptFrame/Solutions/CopySolution.hpp"
 #include "../../OptFrame/Solution.hpp"
 #include "Representation.h"
 
 using namespace optframe;
 
-typedef Solution<RepTSP> SolutionTSP;
+//typedef Solution<RepTSP> SolutionTSP;
+typedef CopySolution<RepTSP> SolutionTSP;
 
 #endif /*TSP_SOLUTION_H_*/
 

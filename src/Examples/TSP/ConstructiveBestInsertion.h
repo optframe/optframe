@@ -41,7 +41,7 @@ using namespace std;
 namespace TSP
 {
 
-class ConstructiveBestInsertion: public Constructive<RepTSP>
+class ConstructiveBestInsertion: public Constructive<SolutionTSP>
 {
 private:
 	ProblemInstance* pI;
@@ -64,7 +64,7 @@ public:
 	{
 	}
 
-	CopySolution<RepTSP>* generateSolution(double timelimit) override
+	SolutionTSP* generateSolution(double timelimit) override
 	{
         //cout << "Generating solution" << endl;
 		RepTSP newRep;
@@ -153,7 +153,8 @@ public:
             //cout << "after sort: " << newRep << endl;
         }
 
-		return new CopySolution<RepTSP>(newRep);
+		//return new CopySolution<RepTSP>(newRep);
+      return new SolutionTSP(newRep);
 	}
 
 };

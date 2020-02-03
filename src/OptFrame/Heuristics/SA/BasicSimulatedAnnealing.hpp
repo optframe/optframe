@@ -34,7 +34,7 @@ class BasicSimulatedAnnealing: public SingleObjSearch<R, ADS, S>
 {
 private:
 	Evaluator<R, ADS, S>& evaluator;
-	Constructive<R, ADS, S>& constructive;
+	Constructive<S>& constructive;
 	vector<NS<R, ADS, S>*> neighbors;
 	RandGen& rg;
 	double alpha;
@@ -43,7 +43,7 @@ private:
 
 public:
 
-	BasicSimulatedAnnealing(Evaluator<R, ADS, S>& _evaluator, Constructive<R, ADS, S>& _constructive, vector<NS<R, ADS, S>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(Evaluator<R, ADS, S>& _evaluator, Constructive<S>& _constructive, vector<NS<R, ADS, S>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg)
 	{
 		alpha = (_alpha);
@@ -52,7 +52,7 @@ public:
 
 	}
 
-	BasicSimulatedAnnealing(Evaluator<R, ADS, S>& _evaluator, Constructive<R, ADS, S>& _constructive, NS<R, ADS, S>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(Evaluator<R, ADS, S>& _evaluator, Constructive<S>& _constructive, NS<R, ADS, S>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), rg(_rg)
 	{
 		neighbors.push_back(&_neighbors);
@@ -182,7 +182,7 @@ public:
 		Evaluator<R, ADS, S>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		Constructive<R, ADS, S>* constructive;
+		Constructive<S>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<NS<R, ADS, S>* > hlist;
@@ -199,7 +199,7 @@ public:
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(Constructive<R, ADS, S>::idComponent(), "constructive heuristic"));
+		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
 		stringstream ss;
 		ss << NS<R, ADS, S>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of NS"));

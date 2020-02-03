@@ -123,18 +123,19 @@
 #include "RandGen.hpp"
 #include "Util/RandGenMersenneTwister.hpp"
 
+#include "BaseSolution.h"
 
 using namespace std;
 
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class R, class ADS, XSolution S>
 class Loader
 {
 public:
 
-	HeuristicFactory<R, ADS> factory;
+	HeuristicFactory<R, ADS, S> factory;
 	map<string, string> dictionary;
 	map<string, vector<string> > ldictionary;
 
@@ -145,7 +146,7 @@ public:
 	}
 
 	Loader(RandGen _rg) :
-		factory(HeuristicFactory<R, ADS> (_rg))
+		factory(HeuristicFactory<R, ADS, S> (_rg))
 	{
 		loadComponentBuilders();
 	}
@@ -158,7 +159,7 @@ public:
 		factory.builders.push_back(new TimerBuilder<R, ADS> );
 
 		// Base
-		factory.builders.push_back(new CloneConstructiveBuilder<R, ADS> );
+		factory.builders.push_back(new CloneConstructiveBuilder<R, ADS, S> );
 
 		// LocalSearch
 		factory.builders.push_back(new EmptyLocalSearchBuilder<R, ADS> );

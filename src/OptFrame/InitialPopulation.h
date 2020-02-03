@@ -75,9 +75,9 @@ class BasicInitialPopulation: public InitialPopulation<R, ADS, S>
 {
 public:
 
-	Constructive<R, ADS, S>& constructive;
+	Constructive<S>& constructive;
 
-	BasicInitialPopulation(Constructive<R, ADS, S>& _constructive) :
+	BasicInitialPopulation(Constructive<S>& _constructive) :
 			constructive(_constructive)
 	{
 	}
@@ -111,11 +111,11 @@ template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySol
 class GRInitialPopulation: public InitialPopulation<R, ADS, S>
 {
 public:
-	GRConstructive<R, ADS, S>& constructive;
+	GRConstructive<S>& constructive;
 	RandGen& rg;
 	double maxAlpha; // limit the solution to be not so random
 
-	GRInitialPopulation(GRConstructive<R, ADS, S>& _constructive, RandGen& _rg, double _maxAlpha) :
+	GRInitialPopulation(GRConstructive<S>& _constructive, RandGen& _rg, double _maxAlpha) :
 			constructive(_constructive), rg(_rg), maxAlpha(_maxAlpha)
 	{
 	}

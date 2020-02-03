@@ -18,7 +18,7 @@ echo "===================================================="
 echo
 # verify if mct directory content is available
 ls mct/RepTest.tpl > /dev/null 2>&1
-if [ $? -eq 2  ]; then
+if [ $? -ne 0  ]; then
    echo "This script should be run on ./bin folder"
    exit 1
 fi

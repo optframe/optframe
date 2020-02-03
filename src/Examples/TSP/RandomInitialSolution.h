@@ -41,7 +41,7 @@ using namespace std;
 namespace TSP
 {
 
-class RandomInitialSolutionTSP: public Constructive<RepTSP>
+class RandomInitialSolutionTSP: public Constructive<SolutionTSP>
 {
 private:
 	ProblemInstance* pI;
@@ -61,7 +61,7 @@ public:
 	{
 	}
 
-	CopySolution<RepTSP>* generateSolution(double timelimit) override
+	SolutionTSP* generateSolution(double timelimit) override
 	{
 		RepTSP newRep(pI->n);
 
@@ -74,7 +74,8 @@ public:
 		for(unsigned int i=0;i<newRep.size();i++)
 			newRep[i] = r[i];
 
-		return new CopySolution<RepTSP>(newRep);
+		//return new CopySolution<RepTSP>(newRep);
+      return new SolutionTSP(newRep);
 	}
 
 };

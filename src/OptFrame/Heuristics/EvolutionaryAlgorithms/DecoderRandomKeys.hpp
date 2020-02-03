@@ -51,6 +51,9 @@ template<Representation R>
 class DecoderRandomKeysEvaluator : public DecoderRandomKeys<R>
 {
 public:
+
+   //using RKEvaluator = Evaluator<random_keys, OPTFRAME_DEFAULT_ADS, CopySolution<random_keys,OPTFRAME_DEFAULT_ADS>;
+
    Evaluator<random_keys>& evaluator;
 
    DecoderRandomKeysEvaluator(Evaluator<random_keys>& _evaluator)

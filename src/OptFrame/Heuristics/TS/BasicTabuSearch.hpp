@@ -35,14 +35,14 @@ class BasicTabuSearch: public SingleObjSearch<R, ADS, S>, public TS
 {
 private:
 	Evaluator<R, ADS, S>& evaluator;
-	Constructive<R, ADS, S>& constructive;
+	Constructive<S>& constructive;
 	NSSeq<R, ADS, S>& nsSeq;
 	int tlSize;
 	int tsMax;
 
 public:
 
-	BasicTabuSearch(Evaluator<R, ADS, S>& _ev, Constructive<R, ADS, S>& _constructive, NSSeq<R, ADS, S>& _nsSeq, int _tlSize, int _tsMax) :
+	BasicTabuSearch(Evaluator<R, ADS, S>& _ev, Constructive<S>& _constructive, NSSeq<R, ADS, S>& _nsSeq, int _tlSize, int _tsMax) :
 			evaluator(_ev), constructive(_constructive), nsSeq(_nsSeq), tlSize(_tlSize), tsMax(_tsMax)
 	{
 	}
@@ -298,7 +298,7 @@ public:
 		Evaluator<R, ADS, S>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		Constructive<R, ADS, S>* constructive;
+		Constructive<S>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		NSSeq<R, ADS, S>* nsseq;
@@ -321,7 +321,7 @@ public:
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(Constructive<R, ADS, S>::idComponent(), "constructive heuristic"));
+		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
 		params.push_back(make_pair(NSSeq<R, ADS, S>::idComponent(), "neighborhood structure"));
 		params.push_back(make_pair("OptFrame:int", "tabu list size"));
 		params.push_back(make_pair("OptFrame:int", "max number of iterations"));

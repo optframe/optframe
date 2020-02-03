@@ -42,7 +42,7 @@ using namespace optframe;
 
 namespace EtII {
 
-class EtIIInitialSolutionGreedy : public Constructive<RepEtII>
+class EtIIInitialSolutionGreedy : public Constructive<SolutionEtII>
 {
 private:
    ProblemInstance& pEtII;
@@ -56,7 +56,7 @@ public:
    {
    }
 
-   CopySolution<RepEtII>* generateSolution(double timelimit) override
+   SolutionEtII* generateSolution(double timelimit) override
    {
       RepEtII* tab = new RepEtII(pEtII.height, pEtII.width);
 

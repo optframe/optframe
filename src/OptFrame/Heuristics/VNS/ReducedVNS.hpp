@@ -30,14 +30,14 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class ReducedVNS: public VariableNeighborhoodSearch<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class ReducedVNS: public VariableNeighborhoodSearch<R, ADS, S>
 {
 public:
 
 	typedef VariableNeighborhoodSearch<R, ADS> super;
 
-	ReducedVNS(Evaluator<R, ADS>& evaluator, Constructive<R, ADS>& constructive, vector<NS<R, ADS>*> vshake, vector<NSSeq<R, ADS>*> vsearch) :
+	ReducedVNS(Evaluator<R, ADS>& evaluator, Constructive<S>& constructive, vector<NS<R, ADS>*> vshake, vector<NSSeq<R, ADS>*> vsearch) :
 		VariableNeighborhoodSearch<R, ADS> (evaluator, constructive, vshake, vsearch)
 	{
 	}
@@ -65,20 +65,20 @@ public:
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class ReducedVNSBuilder : public ILS, public SingleObjSearchBuilder<R, ADS>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+class ReducedVNSBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, S>
 {
 public:
 	virtual ~ReducedVNSBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual SingleObjSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
 		Evaluator<R, ADS>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		Constructive<R, ADS>* constructive;
+		Constructive<S>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<NS<R, ADS>*> shakelist;
@@ -95,7 +95,7 @@ public:
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(Constructive<R, ADS>::idComponent(), "constructive heuristic"));
+		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
 
 		stringstream ss;
 		ss << NS<R, ADS>::idComponent() << "[]";

@@ -44,7 +44,7 @@ protected:
 
 public:
 
-	IteratedLocalSearchLevels(Evaluator<R, ADS, S>& e, Constructive<R, ADS, S>& constructive, LocalSearch<R, ADS, S>& _ls, ILSLPerturbation<R, ADS, S>& _p, int _iterMax, int _levelMax) :
+	IteratedLocalSearchLevels(Evaluator<R, ADS, S>& e, Constructive<S>& constructive, LocalSearch<R, ADS, S>& _ls, ILSLPerturbation<R, ADS, S>& _p, int _iterMax, int _levelMax) :
 		IteratedLocalSearch<levelHistory, R, ADS > (e, constructive), ls(_ls), p(_p), iterMax(_iterMax), levelMax(_levelMax)
 	{
 	}
@@ -170,7 +170,7 @@ public:
 		if(!eval)
 			return nullptr;
 
-		Constructive<R, ADS, S>* constructive = nullptr;
+		Constructive<S>* constructive = nullptr;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!constructive)
 			return nullptr;
@@ -218,7 +218,7 @@ public:
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(Constructive<R, ADS, S>::idComponent(), "constructive heuristic"));
+		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
 		params.push_back(make_pair(LocalSearch<R, ADS, S>::idComponent(), "local search"));
 		params.push_back(make_pair(ILSLPerturbation<R, ADS, S>::idComponent(), "ilsL perturbation"));
 		params.push_back(make_pair("int", "max number of iterations without improvement"));

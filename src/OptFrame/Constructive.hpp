@@ -21,12 +21,15 @@
 #ifndef OPTFRAME_CONSTRUCTIVE_HPP_
 #define OPTFRAME_CONSTRUCTIVE_HPP_
 
-#include "Solution.hpp"
-#include "Solutions/CopySolution.hpp"
+#include "BaseSolution.h"
+#include "Component.hpp"
+//#include "Solution.hpp"
+//#include "Solutions/CopySolution.hpp"
 
 namespace optframe {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R, ADS> S = CopySolution<R, ADS>>
+//template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R, ADS> S = CopySolution<R, ADS>>
+template<XSolution S>
 class Constructive : public Component
 {
 public:
@@ -37,23 +40,23 @@ public:
    // timelimit in seconds, accepting fractions (millisecs, ...)
    virtual S* generateSolution(double timelimit) = 0;
 
-   virtual bool compatible(string s)
+   virtual bool compatible(std::string s)
    {
       return (s == idComponent()) || (Component::compatible(s));
    }
 
-   static string idComponent()
+   static std::string idComponent()
    {
-      stringstream ss;
+      std::stringstream ss;
       ss << Component::idComponent() << ":Constructive";
       return ss.str();
    }
 
-   virtual string id() const
+   virtual std::string id() const
    {
       return idComponent();
    }
 };
-}
+} // namespace optframe
 
 #endif /*OPTFRAME_CONSTRUCTIVE_HPP_*/

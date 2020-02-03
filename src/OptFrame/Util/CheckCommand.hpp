@@ -60,7 +60,7 @@ private:
 	bool checkIndependent;
 
 	vector<Evaluator<R, ADS>*> lEvaluator;
-	vector<Constructive<R, ADS>*> lConstructive;
+	vector<Constructive<S>*> lConstructive;
 	vector<CopySolution<R,ADS>*> lSolution;
 	vector<Move<R, ADS>*> lMove;
 	vector<NS<R, ADS, S>*> lNS;
@@ -85,7 +85,7 @@ public:
 	{
 	}
 
-	void add(Constructive<R, ADS, S>& c)
+	void add(Constructive<S>& c)
 	{
 		lConstructive.push_back(&c);
 		if (verbose)
@@ -577,7 +577,7 @@ public:
 			cout << "checkcommand  will test " << lConstructive.size() << " constructive components (iterMax=" << iterMax << ")" << endl;
 		for (unsigned c = 0; c < lConstructive.size(); c++)
 		{
-			Constructive<R, ADS>* constructive = lConstructive.at(c);
+			Constructive<S>* constructive = lConstructive.at(c);
 
 			cout << "checkcommand: testing Constructive " << c << " => " << constructive->toString();
 			cout << endl;

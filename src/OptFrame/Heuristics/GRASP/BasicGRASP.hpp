@@ -36,14 +36,14 @@ class BasicGRASP: public SingleObjSearch<R, ADS, S>, public GRASP
 {
 private:
 	Evaluator<R, ADS, S>& evaluator;
-	GRConstructive<R, ADS, S>& constructive;
+	GRConstructive<S>& constructive;
 	LocalSearch<R, ADS, S>& ls;
 	float alpha;
 	unsigned int iterMax;
 
 public:
 
-	BasicGRASP(Evaluator<R, ADS, S>& _eval, GRConstructive<R, ADS, S>& _constructive, LocalSearch<R, ADS, S>& _ls, float _alpha, int _iterMax) :
+	BasicGRASP(Evaluator<R, ADS, S>& _eval, GRConstructive<S>& _constructive, LocalSearch<R, ADS, S>& _ls, float _alpha, int _iterMax) :
 			evaluator(_eval), constructive(_constructive), ls(_ls)
 	{
 		if (_iterMax <= 0)
@@ -132,7 +132,7 @@ public:
 		Evaluator<R, ADS, S>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		GRConstructive<R, ADS, S>* constructive;
+		GRConstructive<S>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
@@ -161,7 +161,7 @@ public:
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(GRConstructive<R, ADS, S>::idComponent(), "greedy randomized constructive heuristic"));
+		params.push_back(make_pair(GRConstructive<S>::idComponent(), "greedy randomized constructive heuristic"));
 		params.push_back(make_pair(LocalSearch<R, ADS, S>::idComponent(), "local search"));
 		params.push_back(make_pair("OptFrame:float", "alpha parameter [0,1]"));
 		params.push_back(make_pair("OptFrame:int", "max number of iterations"));

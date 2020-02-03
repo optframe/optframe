@@ -39,11 +39,11 @@ class IteratedLocalSearch: public ILS, public SingleObjSearch<R, ADS, S>
 {
 protected:
 	Evaluator<R, ADS, S>& evaluator;
-	Constructive<R, ADS, S>& constructive;
+	Constructive<S>& constructive;
 
 public:
 
-	IteratedLocalSearch(Evaluator<R, ADS, S>& _evaluator, Constructive<R, ADS, S>& _constructive) :
+	IteratedLocalSearch(Evaluator<R, ADS, S>& _evaluator, Constructive<S>& _constructive) :
 			evaluator(_evaluator), constructive(_constructive)
 	{
 	}

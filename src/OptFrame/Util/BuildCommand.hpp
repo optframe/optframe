@@ -33,7 +33,7 @@ namespace optframe
   \sa run()
 */
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class R, class ADS, XSolution S>
 class BuildCommand
 {
 public:
@@ -90,7 +90,7 @@ public:
        \endportuguese
    */
 
-   string run(HeuristicFactory<R, ADS>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+   string run(HeuristicFactory<R, ADS, S>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
    {
       //cout << "build command: " << input << endl;
       Scanner scanner1(input);
@@ -185,7 +185,7 @@ public:
       return new_name + " " + s_new_id;
    }
 
-   string listBuilders(HeuristicFactory<R, ADS>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+   string listBuilders(HeuristicFactory<R, ADS, S>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
    	{
    		Scanner scanner(input);
 

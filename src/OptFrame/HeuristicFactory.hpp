@@ -71,14 +71,19 @@
 
 #include "ComponentBuilder.h"
 
+#include "Solutions/CopySolution.hpp"
+
 
 //using namespace std;
 //using namespace optframe; (?????????????????) Don't use namespace declarations in headers
 
 // design pattern: Factory
 
+namespace optframe
+{
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+//template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<class R, class ADS, XSolution S>
 class HeuristicFactory
 {
 private:
@@ -625,5 +630,6 @@ public:
 
 };
 
+} // namespace optframe
 
 #endif /* HEURISTICFACTORY_HPP_ */

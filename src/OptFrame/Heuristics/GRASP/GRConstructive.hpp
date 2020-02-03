@@ -21,89 +21,87 @@
 #ifndef OPTFRAME_GREEDY_RANDOMIZED_CONSTRUCTIVE_H_
 #define OPTFRAME_GREEDY_RANDOMIZED_CONSTRUCTIVE_H_
 
-#include "../../Solution.hpp"
 #include "../../Constructive.hpp"
+#include "../../Solution.hpp"
 
 #include "GRASPFamily.h"
 
-namespace optframe
-{
+namespace optframe {
 
 // Greedy Randomized Constructive
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R, ADS> S = CopySolution<R, ADS>>
-class GRConstructive: public Constructive<R,ADS, S>, public GRASP
+template<XSolution S>
+class GRConstructive : public Constructive<S>
+  , public GRASP
 {
 public:
-	virtual ~GRConstructive()
-	{
-	}
+   virtual ~GRConstructive()
+   {
+   }
 
-	virtual S* generateGRSolution(float alpha, double timelimit) = 0;
+   virtual S* generateGRSolution(float alpha, double timelimit) = 0;
 
-	virtual S* generateSolution(double timelimit) override
-	{
-		return generateGRSolution(1.0, timelimit);
-	}
+   virtual S* generateSolution(double timelimit) override
+   {
+      return generateGRSolution(1.0, timelimit);
+   }
 
-	virtual bool compatible(string s)
-	{
-		return (s == idComponent()) || (Component::compatible(s));
-	}
+   virtual bool compatible(string s)
+   {
+      return (s == idComponent()) || (Component::compatible(s));
+   }
 
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << Component::idComponent() << ":" << GRASP::family() << ":GRConstructive";
-		return ss.str();
-	}
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << Component::idComponent() << ":" << GRASP::family() << ":GRConstructive";
+      return ss.str();
+   }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
+   virtual string id() const
+   {
+      return idComponent();
+   }
 };
 
 // BasicGRConstructive can envelop a Constructive
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R, ADS> S = CopySolution<R, ADS>>
-class BasicGRConstructive: public GRConstructive<R, ADS, S>
+template<XSolution S>
+class BasicGRConstructive : public GRConstructive<S>
 {
 public:
-	Constructive<R, ADS, S>& c;
+   Constructive<S>& c;
 
-	BasicGRConstructive(Constructive<R, ADS, S>& _c) : c(_c)
-	{
-	}
+   BasicGRConstructive(Constructive<S>& _c)
+     : c(_c)
+   {
+   }
 
-	virtual ~BasicGRConstructive()
-	{
-	}
+   virtual ~BasicGRConstructive()
+   {
+   }
 
-	virtual S* generateGRSolution(float alpha, double timelimit)
-	{
-		// ignoring alpha
-		return c.generateSolution(timelimit);
-	}
+   virtual S* generateGRSolution(float alpha, double timelimit)
+   {
+      // ignoring alpha
+      return c.generateSolution(timelimit);
+   }
 
-	virtual bool compatible(string s)
-	{
-		return (s == idComponent()) || (Component::compatible(s));
-	}
+   virtual bool compatible(string s)
+   {
+      return (s == idComponent()) || (Component::compatible(s));
+   }
 
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << Component::idComponent() << ":" << GRASP::family() << ":GRConstructive";
-		return ss.str();
-	}
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << Component::idComponent() << ":" << GRASP::family() << ":GRConstructive";
+      return ss.str();
+   }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
+   virtual string id() const
+   {
+      return idComponent();
+   }
 };
-
-
-
 }
 
 #endif /*OPTFRAME_GREEDY_RANDOMIZED_CONSTRUCTIVE_H_*/

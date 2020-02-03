@@ -156,11 +156,11 @@ public:
 		int id = scanner.nextInt();
 
 		Solution<R, ADS>* s1 = nullptr;
-		Constructive<R, ADS>* constructive = nullptr;
+		Constructive<S>* constructive = nullptr;
 
 		if(sc == Solution<R, ADS>::idComponent())
 			factory.assign(s1, id, sc);
-		else if(sc == Constructive<R, ADS>::idComponent())
+		else if(sc == Constructive<S>::idComponent())
 			factory.assign(constructive, id, sc);
 		else
 		{

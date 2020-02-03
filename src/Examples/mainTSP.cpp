@@ -58,7 +58,7 @@ main(int argc, char** argv)
    TestSol<IsSolution<double>> t;
    TestSol<Solution<double>> t1;
 
-   Loader<RepTSP> optframe;
+   Loader<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> optframe;
    TSPProblemCommand tsp;
 
    File* file;
@@ -138,7 +138,7 @@ main(int argc, char** argv)
 
    cout << "end BRKGA tests" << endl;
 
-   BuildCommand<RepTSP> build;
+   BuildCommand<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> build;
    for (unsigned i = 0; i <= 7; i++) {
       stringstream ss;
       ss << "OptFrame:ComponentBuilder:LocalSearch:BI  OptFrame:Evaluator 0  OptFrame:NS:NSSeq " << i;

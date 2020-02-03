@@ -37,11 +37,11 @@ class SimpleLocalSearch : public SingleObjSearch<R, ADS, S>
 {
 protected:
    Evaluator<R, ADS, S>& evaluator;
-   Constructive<R, ADS, S>& constructive;
+   Constructive<S>& constructive;
    LocalSearch<R, ADS, S>& localSearch;
 
 public:
-   SimpleLocalSearch(Evaluator<R, ADS, S>& _evaluator, Constructive<R, ADS, S>& _constructive, LocalSearch<R, ADS, S>& _localSearch)
+   SimpleLocalSearch(Evaluator<R, ADS, S>& _evaluator, Constructive<S>& _constructive, LocalSearch<R, ADS, S>& _localSearch)
      : evaluator(_evaluator)
      , constructive(_constructive)
      , localSearch(_localSearch)
@@ -110,7 +110,7 @@ public:
       Evaluator<R, ADS, S>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      Constructive<R, ADS, S>* constructive;
+      Constructive<S>* constructive;
       hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
       string rest = scanner.rest();
@@ -129,7 +129,7 @@ public:
    {
       vector<pair<string, string>> params;
       params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
-      params.push_back(make_pair(Constructive<R, ADS, S>::idComponent(), "constructive heuristic"));
+      params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
       params.push_back(make_pair(LocalSearch<R, ADS, S>::idComponent(), "local search"));
 
       return params;
