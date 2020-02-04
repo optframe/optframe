@@ -98,30 +98,30 @@ public:
 		return sngEvaluators.size();
 	}
 
-	virtual bool betterThan(const Evaluation& ev1, const Evaluation& ev2, int index)
+	virtual bool betterThan(const Evaluation<>& ev1, const Evaluation<>& ev2, int index)
 	{
 		return sngEvaluators[index]->betterThan(ev1, ev2);
 	}
 
-	virtual bool equals(const Evaluation& ev1, const Evaluation& ev2, int index)
+	virtual bool equals(const Evaluation<>& ev1, const Evaluation<>& ev2, int index)
 	{
 		return sngEvaluators[index]->equals(ev1, ev2);
 	}
 
-	MultiEvaluation evaluateSolution(const S& s)
+	MultiEvaluation<> evaluateSolution(const S& s)
 	{
 		return evaluate(s.getR(), s.getADSptr());
 	}
 
     //changed to Meval without point TODO
-	virtual MultiEvaluation evaluate(const R& r, const ADS* ads)
+	virtual MultiEvaluation<> evaluate(const R& r, const ADS* ads)
 	{
 		cout << "inside mother class" << endl;
 		getchar();
-		MultiEvaluation nev;
+		MultiEvaluation<> nev;
 		for (unsigned i = 0; i < sngEvaluators.size(); i++)
 		{
-			Evaluation ev = sngEvaluators[i]->evaluate(r, ads);
+			Evaluation<> ev = sngEvaluators[i]->evaluate(r, ads);
 			nev.addEvaluation(ev);
 		}
 
@@ -135,16 +135,16 @@ public:
 			delete sngEvaluators[e];
 	}
 
-	void reevaluateSolutionMEV(MultiEvaluation& mev, const S& s)
+	void reevaluateSolutionMEV(MultiEvaluation<>& mev, const S& s)
 	{
 		reevaluateMEV(mev, s.getR(),s.getADSptr());
 	}
 
-	virtual void reevaluateMEV(MultiEvaluation& mev, const R& r, const ADS* ads)
+	virtual void reevaluateMEV(MultiEvaluation<>& mev, const R& r, const ADS* ads)
 	{
 		for (unsigned i = 0; i < sngEvaluators.size(); i++)
 		{
-			Evaluation e = std::move(mev[i]);
+			Evaluation<> e = std::move(mev[i]);
 			sngEvaluators[i]->reevaluate(e, r, ads);
 			mev[i] = std::move(e);
 		}
@@ -330,7 +330,7 @@ public:
 			if (!s)
 				return false;
 
-			Evaluation& e = ev->evaluate(*s);
+			Evaluation<>& e = ev->evaluate(*s);
 
 			return Action<R, ADS, S>::addAndRegister(scanner, e, hf, dictionary);
 		}

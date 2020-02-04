@@ -50,11 +50,11 @@ public:
 
 	virtual void exec(S& s, SOSC& stopCriteria)
 	{
-		Evaluation e = evaluator.evaluateSolution(s);
+		Evaluation<> e = evaluator.evaluateSolution(s);
 		exec(s, e, stopCriteria);
 	}
 
-	virtual void exec(S& s, Evaluation& e, SOSC& stopCriteria)
+	virtual void exec(S& s, Evaluation<>& e, SOSC& stopCriteria)
 	{
 		Timer tNow;
 

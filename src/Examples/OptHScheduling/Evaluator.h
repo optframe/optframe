@@ -55,7 +55,7 @@ public:
 	{
 	}
 
-	Evaluation evaluate(const RepOptHS& r, const OPTFRAME_DEFAULT_ADS*)
+	Evaluation<> evaluate(const RepOptHS& r, const OPTFRAME_DEFAULT_ADS*)
 	{
 		int fo_inv = 0; // Infeasible Value
 

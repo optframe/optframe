@@ -60,7 +60,7 @@ public:
 		return iter;
 	}
 
-	virtual void perturbation(S& s, MultiEvaluation& e, MOSC& stopCriteria, BasicHistory& history)
+	virtual void perturbation(S& s, MultiEvaluation<>& e, MOSC& stopCriteria, BasicHistory& history)
 	{
 		int iter = history;
 

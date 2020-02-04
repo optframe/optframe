@@ -91,13 +91,13 @@ public:
 		this->numGenerations = numGenerations;
 	}
 
-	void evaluate(const MultiSolution<R, ADS> &p, MultiEvaluation& mev)
+	void evaluate(const MultiSolution<R, ADS> &p, MultiEvaluation<>& mev)
 	{
 		for (unsigned i = 0; i < p.size(); i++)
 			mev.addEvaluation(&evaluator.evaluate(p.at(i)));
 	}
 
-	int getBest(const MultiEvaluation& mev)
+	int getBest(const MultiEvaluation<>& mev)
 	{
 		if (mev.size() == 0)
 			return -1;
@@ -113,7 +113,7 @@ public:
 	}
 
 	// basic implementation of low diversity scheme that prevents populations of clones (TODO: improve!)
-	bool lowDiversity(const MultiSolution<R, ADS> &p, const MultiEvaluation& mev)
+	bool lowDiversity(const MultiSolution<R, ADS> &p, const MultiEvaluation<>& mev)
 	{
 		for(unsigned i=1; i<mev.size(); i++)
 			if(mev.at(i-1).evaluation() != mev.at(i).evaluation())
@@ -127,7 +127,7 @@ public:
 	 *    f: is the average population evaluation.
 	 */
 
-	virtual void setFitness(const MultiSolution<R, ADS> &p, const MultiEvaluation& mev, vector<double>& fv)
+	virtual void setFitness(const MultiSolution<R, ADS> &p, const MultiEvaluation<>& mev, vector<double>& fv)
 	{
 		fv.resize(mev.size());
 		for (int i = 0; i < mev.size(); i++)
@@ -163,21 +163,21 @@ public:
 		Selection<R, ADS>::normalize(fv);
 	}
 
-	void mayMutate(Chromossome& c, Evaluation& e)
+	void mayMutate(Chromossome& c, Evaluation<>& e)
 	{
 		double xMut = rg.rand01();
 		if (xMut <= pMut) // mutate!
 			mut.mutate(c, e);
 	}
 
-	void mayLocalSearch(Chromossome& c, Evaluation& e, double timelimit, double target_f)
+	void mayLocalSearch(Chromossome& c, Evaluation<>& e, double timelimit, double target_f)
 	{
 		double xLS = rg.rand01();
 		if (xLS <= pLS) // local search!
 			ls.exec(c, e, timelimit, target_f);
 	}
 
-	pair<Solution<R, ADS>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = nullptr, const Evaluation* _e = nullptr)
+	pair<Solution<R, ADS>&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = nullptr, const Evaluation<>* _e = nullptr)
 	{
 		Timer t;
 		cout << id() << "(timelimit=" << timelimit << "; target_f=" << target_f << ")" << endl;
@@ -187,7 +187,7 @@ public:
 		cout << "Generating the Initial Population" << endl;
 
 		MultiSolution<R, ADS>* p = &initPop.generatePopulation(popSize);
-		MultiEvaluation* mev = new MultiEvaluation;
+		MultiEvaluation<>* mev = new MultiEvaluation;
 		evaluate(*p, *mev);
 		vector<double> fv;
 		setFitness(*p, *mev, fv);
@@ -196,7 +196,7 @@ public:
 		int best = getBest(*mev);
 
 		Chromossome* sStar = new Chromossome(p->at(best));
-		Evaluation* eStar = new Evaluation(mev->at(best));
+		Evaluation<>* eStar = new Evaluation(mev->at(best));
 		cout << "GA iter=0 ";
 		eStar->print();
 
@@ -212,7 +212,7 @@ public:
 			}
 
 			MultiSolution<R, ADS>* p2 = new MultiSolution<R, ADS>;
-			MultiEvaluation* mev2 = new MultiEvaluation;
+			MultiEvaluation<>* mev2 = new MultiEvaluation;
 
 			best = getBest(*mev);
 			p2->push_back(&p->at(best).clone());
@@ -255,8 +255,8 @@ public:
 					exit(1);
 				}
 
-				Evaluation* e1 = nullptr;
-				Evaluation* e2 = nullptr;
+				Evaluation<>* e1 = nullptr;
+				Evaluation<>* e2 = nullptr;
 
 				if (rCross.first)
 				{
@@ -298,7 +298,7 @@ public:
 		p->clear();
 		mev->clear();
 
-		return new pair<Solution<R, ADS>&, Evaluation&>(*sStar, *eStar);
+		return new pair<Solution<R, ADS>&, Evaluation<>&>(*sStar, *eStar);
 	}
 
 	static string idComponent()

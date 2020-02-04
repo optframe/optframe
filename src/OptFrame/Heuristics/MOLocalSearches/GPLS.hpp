@@ -66,12 +66,12 @@ public:
 	}
 
 	//Special addSolution used in the GPLS speedUp
-	virtual bool addSolutionWithMEV(Pareto<R, ADS>& p, const S& candidate, const MultiEvaluation& candidateMev)
+	virtual bool addSolutionWithMEV(Pareto<R, ADS>& p, const S& candidate, const MultiEvaluation<>& candidateMev)
 	{
 		bool added = true;
 		for (unsigned ind = 0; ind < p.size(); ind++)
 		{
-			const MultiEvaluation& popIndFitness = p.getIndMultiEvaluation(ind);
+			const MultiEvaluation<>& popIndFitness = p.getIndMultiEvaluation(ind);
 
 			if (paretoManager<R, ADS>::domWeak.dominates(popIndFitness, candidateMev))
 				return false;
@@ -138,7 +138,7 @@ public:
 		searchWithOptionalPareto(stopCriteria,&_pf);
 	}
 
-	virtual void exec(Pareto<R, ADS>& p, S& s, MultiEvaluation& sMev, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) override
+	virtual void exec(Pareto<R, ADS>& p, S& s, MultiEvaluation<>& sMev, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) override
 	{
 		Pareto<R, ADS> _pf;
 		pManager.addSolutionWithMEV(_pf,s,sMev);

@@ -81,7 +81,7 @@ public:
       return new MoveSwapCorner(x2, y2, x1, y1);
    }
 
-   Move<RepEtII>* applyUpdate(Evaluation& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS* ads) override
+   Move<RepEtII>* applyUpdate(Evaluation<>& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS* ads) override
    {
       int f = 0;
 

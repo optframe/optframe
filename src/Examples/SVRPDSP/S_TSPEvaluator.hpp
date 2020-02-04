@@ -33,7 +33,7 @@ public:
    {
    }
 
-   Evaluation evaluate(const RepSVRPDSP& rep)
+   Evaluation<> evaluate(const RepSVRPDSP& rep)
    {
       cout << "DEPRECATED:DO NOT USE THIS METHOD!" << endl;
       exit(1);
@@ -41,7 +41,7 @@ public:
       return evaluate(rep, &ads1);
    }
 
-   Evaluation evaluate(const RepSVRPDSP& rep2, const AdsSVRPDSP* _ads) override
+   Evaluation<> evaluate(const RepSVRPDSP& rep2, const AdsSVRPDSP* _ads) override
    {
       const AdsSVRPDSP& ads = *_ads;
 #ifdef ALL_INTEGER

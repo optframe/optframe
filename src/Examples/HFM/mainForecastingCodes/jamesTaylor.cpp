@@ -175,7 +175,7 @@ int jamesTaylorEuropeanDataset(int argc, char **argv)
 
 		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-		pair<SolutionHFM, Evaluation>* sol;
+		pair<SolutionHFM, Evaluation<>>* sol;
 
 //		cout<<"Teste Linear Regression"<<endl;
 //		sol = forecastObject.runOLR();

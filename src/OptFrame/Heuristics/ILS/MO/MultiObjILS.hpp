@@ -62,7 +62,7 @@ public:
 
    virtual H& initializeHistory() = 0;
 
-   virtual void perturbation(S& s, MultiEvaluation& e, MOSC& stopCriteria, H& history) = 0;
+   virtual void perturbation(S& s, MultiEvaluation<>& e, MOSC& stopCriteria, H& history) = 0;
 
    virtual void acceptanceCriterion(const Pareto<R, ADS>& pf, H& history) = 0;
 
@@ -107,7 +107,7 @@ public:
          //			visited[ind] = true;
 
          S rS = x_e.getNonDominatedSol(ind);
-         MultiEvaluation rMev = x_e.getIndMultiEvaluation(ind);
+         MultiEvaluation<> rMev = x_e.getIndMultiEvaluation(ind);
 
          MOSC stopCriteriaPert;
          stopCriteriaPert.timelimit = stopCriteria.timelimit;

@@ -52,7 +52,7 @@ int main(int argc, char **argv){
 
    DEBUG std::cerr << "Starting Optframe GA main execution" << std::endl;
 
-   std::pair<optframe::Solution<RepKP2>, optframe::Evaluation> best = ga.exec();
+   std::pair<optframe::Solution<RepKP2>, optframe::Evaluation<>> best = ga.exec();
 
    DEBUG{ 
       std::cerr << "Optframe GA has finished with the following population: " << std::endl;   

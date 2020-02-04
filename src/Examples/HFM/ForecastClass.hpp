@@ -69,7 +69,7 @@ private:
    IteratedLocalSearchLevels<RepHFM>* ils;
 
    vector<vector<double>> vBlindResults;
-   vector<pair<SolutionHFM, Evaluation>*> vFinalSol;
+   vector<pair<SolutionHFM, Evaluation<>>*> vFinalSol;
 
    ILSLPerturbationLPlus2<RepHFM>* ilsPert;
    MOILSLPerturbationLPlus2<RepHFM>* moILSPert;
@@ -252,7 +252,7 @@ public:
    }
 
    //add solution to pareto front evaluating with forecasting class evaluators
-   void addSolWithMevToParetoWithParetoManager(Pareto<RepHFM>& pf, const SolutionHFM& candidateS, const MultiEvaluation& candidateMev)
+   void addSolWithMevToParetoWithParetoManager(Pareto<RepHFM>& pf, const SolutionHFM& candidateS, const MultiEvaluation<>& candidateMev)
    {
       paretoManager<RepHFM> paretoMan(*mev);
       paretoMan.addSolutionWithMEV(pf, candidateS, candidateMev);
@@ -315,7 +315,7 @@ public:
          //			pf = moILSLevels.search(moStopCriteriaGPLS, _pf);
       }
 
-      //		vector<MultiEvaluation*> vEval = pf->getParetoFront();
+      //		vector<MultiEvaluation<>*> vEval = pf->getParetoFront();
       //		vector<Solution<RepEFP>*> vSolPf = pf->getParetoSet();
       //
       //		int nObtainedParetoSol = vEval.size();
@@ -332,10 +332,10 @@ public:
       return pf;
    }
 
-   pair<SolutionHFM, Evaluation>* runGRASP(int timeGRASP, int nSol)
+   pair<SolutionHFM, Evaluation<>>* runGRASP(int timeGRASP, int nSol)
    {
       SOSC* stopCriteria = new SOSC(timeGRASP);
-      pair<SolutionHFM, Evaluation>* finalSol = nullptr;
+      pair<SolutionHFM, Evaluation<>>* finalSol = nullptr;
       delete stopCriteria;
       //		BasicGRASP<RepEFP> g(*eval, *c, emptyLS, 0.1, nSol);
       //		g.setMessageLevel(3);
@@ -344,12 +344,12 @@ public:
       return finalSol;
    }
 
-   pair<SolutionHFM, Evaluation>* run(int timeES, int timeVND, int timeILS)
+   pair<SolutionHFM, Evaluation<>>* run(int timeES, int timeVND, int timeILS)
    {
       if (timeES == 0)
          timeES = 1;
 
-      pair<SolutionHFM, Evaluation>* finalSol;
+      pair<SolutionHFM, Evaluation<>>* finalSol;
 
       double targetValue = 3.879748973;
       targetValue = 0;
@@ -364,7 +364,7 @@ public:
       //			vnd->exec(finalSol->first, finalSol->second, timeVND, 0);
       //
       //		const Solution<RepEFP> solVND = finalSol->first;
-      //		const Evaluation evaluationVND = finalSol->second;
+      //		const Evaluation<> evaluationVND = finalSol->second;
       //		evaluationVND.print();
       //		if (timeILS > 0)
       //			finalSol = ils->search(timeILS, 0, &solVND, &evaluationVND);
@@ -372,17 +372,17 @@ public:
       return finalSol;
    }
 
-   pair<SolutionHFM, Evaluation>* runGILS(int timeGRASP, int timeILS)
+   pair<SolutionHFM, Evaluation<>>* runGILS(int timeGRASP, int timeILS)
    {
 
       //		BasicGRASP<RepEFP> g(*eval, *c, emptyLS, 0.1, 100000);
       //		g.setMessageLevel(3);
-      pair<SolutionHFM, Evaluation>* finalSol;
+      pair<SolutionHFM, Evaluation<>>* finalSol;
 
       //		stopCriteria.timelimit=timeGRASP;
       //		finalSol = g.search(stopCriteria);
       //		const Solution<RepEFP> solGRASP = finalSol.first;
-      //		const Evaluation evaluationGrasp = finalSol.second;
+      //		const Evaluation<> evaluationGrasp = finalSol.second;
 
       SOSC stopCriteria;
       stopCriteria.timelimit = timeILS;
@@ -396,10 +396,10 @@ public:
    }
 
    //Mathematical model for finding optimal weights between models, ensemble forecasting TODO
-   //	pair<Solution<RepEFP>&, Evaluation&>* runOLR()
+   //	pair<Solution<RepEFP>&, Evaluation<>&>* runOLR()
    //	{
    //
-   //		pair<Solution<RepEFP>&, Evaluation&>* finalSol = nullptr;
+   //		pair<Solution<RepEFP>&, Evaluation<>&>* finalSol = nullptr;
    //		//olr->exec(finalSol->first, 100, 100);
    //		return finalSol;
    //	}
@@ -441,7 +441,7 @@ public:
    //
 
    //Return forecasts with pre-defined sliding window strategy with FH
-   vector<double>* returnForecasts(pair<SolutionHFM, Evaluation>* sol, vector<vector<double>> vForecastingsValidation)
+   vector<double>* returnForecasts(pair<SolutionHFM, Evaluation<>>* sol, vector<vector<double>> vForecastingsValidation)
    {
       pair<vector<double>*, vector<double>*>* targetAndForecasts = eval->generateSWMultiRoundForecasts(sol->first.getR(), vForecastingsValidation, problemParam.getStepsAhead());
       return targetAndForecasts->second;

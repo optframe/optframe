@@ -217,7 +217,7 @@ int main(int argc, char **argv)
 	IteratedLocalSearchLevels<RepMODM, AdsMODM> ils(eval, grC, vnd, ilsl_pert, 50, 15);
 	ils.setMessageLevel(3);
 
-	pair<Solution<RepMODM, AdsMODM>&, Evaluation&>* finalSol;
+	pair<Solution<RepMODM, AdsMODM>&, Evaluation<>&>* finalSol;
 
 	EmptyLocalSearch<RepMODM, AdsMODM> emptyLS;
 	BasicGRASP<RepMODM, AdsMODM> g(eval, grC, emptyLS, alphaBuilder, 100000);
@@ -305,7 +305,7 @@ getchar();
 
 /*
 
-	vector<vector<Evaluation*> > vEval = pf->getParetoFront();
+	vector<vector<Evaluation<>*> > vEval = pf->getParetoFront();
 	vector<Solution<RepMODM, AdsMODM>*> vSolPf = pf->getParetoSet();
 
 	int nObtainedParetoSol = vEval.size();

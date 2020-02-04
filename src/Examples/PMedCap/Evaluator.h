@@ -54,11 +54,11 @@ public:
 		// Put the rest of your code here
 	}
 
-	Evaluation evaluate(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS*) override
+	Evaluation<> evaluate(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		// 'rep' is the representation of the solution
 
-		double fo = 0; // Evaluation Function Value
+		double fo = 0; // Evaluation<> Function Value
 		double fo_Inv = 0;
 
 		vector<int> utilizacao;

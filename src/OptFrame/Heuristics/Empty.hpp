@@ -43,7 +43,7 @@ public:
 	}
 
 	virtual void exec(S&, SOSC& stopCriteria){};
-	virtual void exec(S&, Evaluation&, SOSC& stopCriteria){};
+	virtual void exec(S&, Evaluation<>&, SOSC& stopCriteria){};
 
 	string log() const
 	{

@@ -162,7 +162,7 @@ int mokokoProbabilisticForecastWindPower(int argc, char **argv)
 
 		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-		pair<SolutionHFM, Evaluation>* sol;
+		pair<SolutionHFM, Evaluation<>>* sol;
 
 		sol = forecastObject.run(timeES, 0, 0);
 

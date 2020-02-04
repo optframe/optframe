@@ -102,7 +102,7 @@ public:
 	}
 
 
-   pair<double, double>* cost1(const Evaluation& e, const RepSVRPDSP& rep, const AdsSVRPDSP& ads)
+   pair<double, double>* cost1(const Evaluation<>& e, const RepSVRPDSP& rep, const AdsSVRPDSP& ads)
    {
 /*
       if((p1==5) && (p2==20))

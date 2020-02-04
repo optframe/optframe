@@ -51,12 +51,12 @@ public:
 
    virtual void exec(S& s, SOSC& sosc) override
    {
-      Evaluation e = ev.evaluateSolution(s);
+      Evaluation<> e = ev.evaluateSolution(s);
 
       exec(s, e, sosc);
    }
 
-   virtual void exec(S& s, Evaluation& e, SOSC& sosc) override
+   virtual void exec(S& s, Evaluation<>& e, SOSC& sosc) override
    {
       double timelimit = sosc.timelimit;
       double target_f = sosc.target_f;
@@ -69,7 +69,7 @@ public:
       long tnow = time(nullptr);
       while (ev.betterThan(target_f, e.evaluation()) && (k <= r) && ((tnow - tini) < timelimit)) {
          S* s0 = &s.clone();
-         Evaluation* e0 = &e.clone();
+         Evaluation<>* e0 = &e.clone();
 
          lsList[k - 1]->exec(*s0, *e0, sosc);
 

@@ -46,9 +46,9 @@ public:
 	}
 
 
-	MultiEvaluation evaluate(const RepHFM& r, const OPTFRAME_DEFAULT_ADS* ads)
+	MultiEvaluation<> evaluate(const RepHFM& r, const OPTFRAME_DEFAULT_ADS* ads)
 	{
-		MultiEvaluation nev;
+		MultiEvaluation<> nev;
 
 		vector<double>* foIndicator = evalEFP.evaluateAll(r, ALL_EVALUATIONS);
 
@@ -65,7 +65,7 @@ public:
 		return nev;
 	}
 
-	virtual void reevaluateMEV(MultiEvaluation& mev, const RepHFM& r, const OPTFRAME_DEFAULT_ADS* ads)
+	virtual void reevaluateMEV(MultiEvaluation<>& mev, const RepHFM& r, const OPTFRAME_DEFAULT_ADS* ads)
 	{
 		mev = evaluate(r,ads);
 	}
@@ -81,12 +81,12 @@ public:
 		return 5;
 	}
 
-	bool betterThan(const Evaluation& ev1, const Evaluation& ev2, int index)
+	bool betterThan(const Evaluation<>& ev1, const Evaluation<>& ev2, int index)
 	{
 		return evalEFP.betterThan(ev1, ev2);
 	}
 
-	bool equals(const Evaluation& ev1, const Evaluation& ev2, int index)
+	bool equals(const Evaluation<>& ev1, const Evaluation<>& ev2, int index)
 	{
 		return evalEFP.equals(ev1, ev2);
 	}

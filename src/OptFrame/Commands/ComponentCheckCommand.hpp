@@ -627,7 +627,7 @@ public:
 
 					double revCost = e_rev.evaluation() - e.evaluation();
 
-					MoveCost& mcSimpleCost = evaluators[ev]->moveCost(move, s);
+					MoveCost<>& mcSimpleCost = evaluators[ev]->moveCost(move, s);
 					double simpleCost = mcSimpleCost.cost();
 					delete &mcSimpleCost;
 
@@ -912,7 +912,7 @@ public:
 						message(lEvaluator.at(ev), iter, "revCost calculated!");
 
 						Timer tMoveCostApply;
-						MoveCost& mcSimpleCost = evaluators[ev]->moveCost(move, s);
+						MoveCost<>& mcSimpleCost = evaluators[ev]->moveCost(move, s);
 						double simpleCost = mcSimpleCost.cost();
 						delete &mcSimpleCost;
 						message(lEvaluator.at(ev), iter, "simpleCost calculated!");
@@ -1254,7 +1254,7 @@ public:
 						double revCost = e_rev.evaluation() - e.evaluation();
 
 						Timer tMoveCostApply;
-						MoveCost& mcSimpleCost = evaluators[ev]->moveCost(move, s);
+						MoveCost<>& mcSimpleCost = evaluators[ev]->moveCost(move, s);
 						double simpleCost = mcSimpleCost.cost();
 						delete &mcSimpleCost;
 						timeNSCostApply[id_nsseq].second += tMoveCostApply.inMilliSecs();

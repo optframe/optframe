@@ -110,12 +110,12 @@ public:
 
 	// ============= improvement =============
 
-	inline bool isImprovement(unsigned obj, const MoveCost& mc, const Evaluation& e1, const Evaluation& e2)
+	inline bool isImprovement(unsigned obj, const MoveCost<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
 	{
 		return vDir[obj]->isImprovement(mc, e1, e2);
 	}
 
-	inline bool isImprovement(unsigned obj, const MoveCost& mc)
+	inline bool isImprovement(unsigned obj, const MoveCost<>& mc)
 	{
 		return vDir[obj]->isImprovement(mc);
 	}

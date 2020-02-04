@@ -54,7 +54,7 @@ public:
 	{
 	}
 
-	virtual bool dominates(const MultiEvaluation& mev1, const MultiEvaluation& mev2)
+	virtual bool dominates(const MultiEvaluation<>& mev1, const MultiEvaluation<>& mev2)
 	{
 		pair<int,int> betterEquals = ParetoDominance<R, ADS, S>::checkDominates(mev1,mev2);
 		int better = betterEquals.first;

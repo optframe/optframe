@@ -48,18 +48,18 @@ public:
 
 	virtual void exec(S& s, SOSC& sosc) override
 	{
-		Evaluation e = evaluator.evaluateSolution(s);
+		Evaluation<> e = evaluator.evaluateSolution(s);
 
 		exec(s, e, sosc);
 	}
 
-	virtual void exec(S& s, Evaluation& e, SOSC& sosc) override
+	virtual void exec(S& s, Evaluation<>& e, SOSC& sosc) override
 	{
       double timelimit = sosc.timelimit;
 
 		long tini = time(nullptr);
 
-		Evaluation* e0 = &e.clone();
+		Evaluation<>* e0 = &e.clone();
 
 		ls.exec(s, e, sosc);
 

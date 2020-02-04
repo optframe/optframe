@@ -166,10 +166,10 @@ public:
 	}
 
 	// 2
-	void exec(Solution<RepHFM>& s, Evaluation& e, double timelimit, double target_f)
+	void exec(Solution<RepHFM>& s, Evaluation<>& e, double timelimit, double target_f)
 	{
 		exec(s, timelimit, target_f);
-		Evaluation& e2 = eval.evaluate(s.getR());
+		Evaluation<>& e2 = eval.evaluate(s.getR());
 		e = e2;
 		delete &e2;
 

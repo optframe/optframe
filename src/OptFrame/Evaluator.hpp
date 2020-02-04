@@ -366,7 +366,7 @@ public:
    // ============ betterThan ===========
 
    // From Direction:
-   //virtual inline bool betterThan(const MoveCost& mc1, const MoveCost& mc2)
+   //virtual inline bool betterThan(const MoveCost<>& mc1, const MoveCost<>& mc2)
    using Direction::betterThan;
 
    //! abstract method betterThan: true when a < b for minimization problems; and true when a > b for maximization problems.

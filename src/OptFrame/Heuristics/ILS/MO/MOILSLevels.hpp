@@ -63,7 +63,7 @@ public:
 		return *new levelHistory(vars, maxs);
 	}
 
-	virtual void perturbation(S& s, MultiEvaluation& mev, MOSC& stopCriteria, levelHistory& history)
+	virtual void perturbation(S& s, MultiEvaluation<>& mev, MOSC& stopCriteria, levelHistory& history)
 	{
 		//cout << "perturbation(.)" << endl;
 

@@ -50,11 +50,11 @@ public:
 
    virtual void exec(S& s, SOSC& sosc) override
    {
-      Evaluation e = eval.evaluateSolution(s);
+      Evaluation<> e = eval.evaluateSolution(s);
       exec(s, e, sosc);
    }
 
-   virtual void exec(S& s, Evaluation& e, SOSC& sosc) override
+   virtual void exec(S& s, Evaluation<>& e, SOSC& sosc) override
    {
       //double timelimit = sosc.timelimit;
       //double target_f = sosc.target_f;
@@ -67,7 +67,7 @@ public:
 
          if (m.canBeAppliedToSolution(s)) {
             bool mayEstimate = false;
-            MoveCost& cost = *eval.moveCost(e, m, s, mayEstimate);
+            MoveCost<>& cost = *eval.moveCost(e, m, s, mayEstimate);
 
             if (eval.isImprovement(cost)) {
                //double old_f = e.evaluation();

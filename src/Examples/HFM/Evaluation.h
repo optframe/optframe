@@ -10,7 +10,7 @@
 
 using namespace optframe;
 
-typedef Evaluation EvaluationEFP;
+typedef Evaluation<> EvaluationEFP;
 
 #endif /*HFM_EVALUATION_H_*/
 

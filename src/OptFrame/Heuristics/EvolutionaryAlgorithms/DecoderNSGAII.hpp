@@ -61,18 +61,18 @@ public:
 	vector<IndividualExtNSGAII<R, X, ADS>*> lx;
 
 	Solution<X, ADS>& x;
-	MultiEvaluation& mev;
+	MultiEvaluation<>& mev;
 
 	int rank;
 	double distance;
 
-	IndividualExtNSGAII(IndividualNSGAII<R>& _s, Solution<X, ADS>* _x, MultiEvaluation* _mev, int _rank = -1, double _distance = -1) :
+	IndividualExtNSGAII(IndividualNSGAII<R>& _s, Solution<X, ADS>* _x, MultiEvaluation<>* _mev, int _rank = -1, double _distance = -1) :
 			s(_s), x(*_x), mev(*_mev), rank(_rank), distance(_distance)
 	{
 		resetList();
 	}
 
-	IndividualExtNSGAII(IndividualNSGAII<R>& _s, vector<IndividualNSGAII<R>*>& _vs, vector<IndividualExtNSGAII<R, X, ADS>*>& _lx, Solution<X, ADS>* _x, MultiEvaluation* _mev, int _rank = -1, double _distance = -1) :
+	IndividualExtNSGAII(IndividualNSGAII<R>& _s, vector<IndividualNSGAII<R>*>& _vs, vector<IndividualExtNSGAII<R, X, ADS>*>& _lx, Solution<X, ADS>* _x, MultiEvaluation<>* _mev, int _rank = -1, double _distance = -1) :
 			s(_s), ls(_vs), lx(_lx), x(*_x), mev(*_mev), rank(_rank), distance(_distance)
 	{
 		// using pre-created 'ls' list!
@@ -181,7 +181,7 @@ public:
 	}
 
 
-	static bool compareMev(MultiEvaluation& mev1, MultiEvaluation& mev2)
+	static bool compareMev(MultiEvaluation<>& mev1, MultiEvaluation<>& mev2)
 	{
 		for(unsigned i = 0; i < mev1.size(); i++)
 			if(mev1.at(i).evaluation() != mev2.at(i).evaluation())
@@ -614,7 +614,7 @@ public:
 
 		for(unsigned i = 0; i < ps.size(); i++)
 		{
-			pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation*> > dx = decoder.decode(ps[i]->s);
+			pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation<>*> > dx = decoder.decode(ps[i]->s);
 			if(dx.first.size() != dx.second.size())
 			{
 				// TODO: change format?
@@ -952,13 +952,13 @@ public:
 
 			if(LOG_POPULATIONS)
 			{
-				vector<MultiEvaluation*> mev_px;
+				vector<MultiEvaluation<>*> mev_px;
 				for(unsigned i = 0; i < px->size(); i++)
 				{
 					IndividualExtNSGAII<R, X, ADS>& ind = *px->at(i);
 					mev_px.push_back(&ind.mev);
 				}
-				vector<MultiEvaluation*> nonDom = Pareto<R>::filterDominated(v_d, mev_px);
+				vector<MultiEvaluation<>*> nonDom = Pareto<R>::filterDominated(v_d, mev_px);
 				stringstream ss1;
 				ss1 << "generation_" << t << "_dist.log";
 				FILE* f1 = fopen(ss1.str().c_str(), "w");
@@ -1346,7 +1346,7 @@ public:
 
 			// CALL DECODER TO EVALUATE SOLUTIONS!
 
-			pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation*> > dec_vs = decoder.decode(*s);
+			pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation<>*> > dec_vs = decoder.decode(*s);
 
 			Population<X, ADS>* popx = new Population<X, ADS>;
 			if(dec_vs.first.size() > 0)

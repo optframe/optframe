@@ -31,9 +31,9 @@ public:
 	
 	virtual ~MyEvaluator();
 
-	Evaluation evaluate(const RepKP& rep, const OPTFRAME_DEFAULT_ADS*) override;
+	Evaluation<> evaluate(const RepKP& rep, const OPTFRAME_DEFAULT_ADS*) override;
 	
-	//Evaluation& evaluate(const RepKP& rep, const MY_ADS&);
+	//Evaluation<>& evaluate(const RepKP& rep, const MY_ADS&);
 	
 	virtual bool isMinimization() const override;
 };

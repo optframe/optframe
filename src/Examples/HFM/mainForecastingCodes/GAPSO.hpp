@@ -194,7 +194,7 @@ int GAPSO_SKU(int argc, char **argv)
 
 //		forecastObject.runMultiObjSearch();
 //		getchar();
-		pair<SolutionHFM, Evaluation>* sol;
+		pair<SolutionHFM, Evaluation<>>* sol;
 		sol = forecastObject.run(timeES, 0, 0);
 		cout << sol->first.getR() << endl;
 //		getchar();

@@ -87,11 +87,11 @@ template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,
 struct NGESInd
 {
    S sInd; // probability
-   Evaluation e;
+   Evaluation<> e;
    vector<NGESIndStructure<R, ADS>> vEsStructureInd; // number of applications
    vector<int> vNSInd;
 
-   NGESInd(S& _sInd, Evaluation& _e, vector<NGESIndStructure<R, ADS>>& _vEsStructureInd, int nNS)
+   NGESInd(S& _sInd, Evaluation<>& _e, vector<NGESIndStructure<R, ADS>>& _vEsStructureInd, int nNS)
      : sInd(std::move(_sInd))
      , e(std::move(_e))
      , vEsStructureInd(std::move(_vEsStructureInd))
@@ -103,7 +103,7 @@ struct NGESInd
       //change to rg shuffle, because seed may influence result
    }
 
-   NGESInd(S& _sInd, Evaluation& _e, vector<NGESIndStructure<R, ADS>>& _vEsStructureInd, vector<int>& _vNSInd)
+   NGESInd(S& _sInd, Evaluation<>& _e, vector<NGESIndStructure<R, ADS>>& _vEsStructureInd, vector<int>& _vNSInd)
      : sInd(std::move(_sInd))
      , e(std::move(_e))
      , vEsStructureInd(std::move(_vEsStructureInd))
@@ -253,7 +253,7 @@ public:
       }
    }
 
-   void competition(NGESPopulation& pop, NGESPopulation& offsprings, S& sStar, Evaluation& eStar, int& iterWithoutImprovement, const int& gCurrent, int selectionType)
+   void competition(NGESPopulation& pop, NGESPopulation& offsprings, S& sStar, Evaluation<>& eStar, int& iterWithoutImprovement, const int& gCurrent, int selectionType)
    {
 
       if (selectionType == 1) {
@@ -280,7 +280,7 @@ public:
       for (int i = 0; i < ngesParams.lambda; i++)
          delete offsprings[i + ngesParams.mi];
 
-      Evaluation evBest = pop[0]->e.evaluation();
+      Evaluation<> evBest = pop[0]->e.evaluation();
 
       if (eval.betterThan(evBest, eStar)) {
          //			delete &eStar;
@@ -328,13 +328,13 @@ public:
          iterWithoutImprovement++;
    }
 
-   //virtual pair<S, Evaluation>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation* _e = nullptr) = 0;
-   pair<S, Evaluation>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation* _e = nullptr) override
+   //virtual pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) = 0;
+   pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
    {
       Timer tnow;
       NGESPopulation pop;
       S* sStar = nullptr;
-      Evaluation* eStar = nullptr;
+      Evaluation<>* eStar = nullptr;
 
       int iterWithoutImprovement = 0, gCurrent = 0;
 
@@ -352,7 +352,7 @@ public:
          for (int aux = 0; aux < nNS; aux++)
             m.push_back(NGESIndStructure<R, ADS>(rg.rand01(), rg.randB(0.5, 10) + 1, rg.rand01(), rg.rand01()));
 
-         Evaluation e = eval.evaluateSolution(*s);
+         Evaluation<> e = eval.evaluateSolution(*s);
          NGESInd<R, ADS>* ind = new NGESInd<R, ADS>(*s, e, m, nNS); //TODO MAKE MOVE
 
          pop.push_back(ind);
@@ -406,7 +406,7 @@ public:
             //Do anything you want with filho and return filho_ls
             //S filho_ls = filho;
 
-            Evaluation e = eval.evaluateSolution(filho);
+            Evaluation<> e = eval.evaluateSolution(filho);
             fo_filhos += e.evaluation();
 
             NGESInd<R, ADS>* ind = new NGESInd<R, ADS>(filho, e, vt, vNSOffspring); //TODO MAKE MOVE
@@ -493,7 +493,7 @@ public:
       cout << "--------------------------------------------------------------------------" << endl;
       //getchar();
 
-      pair<S, Evaluation>* pairToReturn = new pair<S, Evaluation>(make_pair(*sStar, *eStar));
+      pair<S, Evaluation<>>* pairToReturn = new pair<S, Evaluation<>>(make_pair(*sStar, *eStar));
       delete sStar;
       delete eStar;
       return pairToReturn;

@@ -106,7 +106,7 @@ public:
 		return new MoveSwapSide(x2, y2, x1, y1);
 	}
 
-	Move<RepEtII>* applyUpdate(Evaluation& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS* ads) override
+	Move<RepEtII>* applyUpdate(Evaluation<>& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS* ads) override
 	{
 		int f = 0;
 		if (((y1 - 1) >= 0) && (rep(x1, y1).left == rep(x1, y1 - 1).right))

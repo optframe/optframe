@@ -7,7 +7,7 @@
 
 using namespace optframe;
 
-typedef Evaluation EvaluationPN;
+typedef Evaluation<> EvaluationPN;
 
 #endif /*PN_EVALUATION_H_*/
 

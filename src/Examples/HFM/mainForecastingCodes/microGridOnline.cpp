@@ -196,7 +196,7 @@ int microGridLiuAppliedEnergyOnline(int argc, char **argv)
 			trainningSet.push_back(rF.getPartsForecastsEndToBegin(0, beginTrainingSet, nTotalForecastingsTrainningSet));
 			ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-			pair<SolutionHFM, Evaluation>* sol;
+			pair<SolutionHFM, Evaluation<>>* sol;
 			sol = forecastObject.run(timeES, 0, 0);
 
 			vector<double> foIndicatorCalibration;

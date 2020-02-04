@@ -17,13 +17,13 @@ using namespace HFM;
 
 struct HFMModelAndParam
 {
-	pair<SolutionHFM, Evaluation>* HFMModel;
+	pair<SolutionHFM, Evaluation<>>* HFMModel;
 	vector<double> forecastingErrors;
 	int fH;
 	int v; //volunteer which was used to train the data
 	int channel; //volunteer channel which was used to train the data
 
-	HFMModelAndParam(pair<SolutionHFM, Evaluation>* _HFMModel, vector<double> _forecastingErrors, int _fH, int _v, int _channel) :
+	HFMModelAndParam(pair<SolutionHFM, Evaluation<>>* _HFMModel, vector<double> _forecastingErrors, int _fH, int _v, int _channel) :
 			HFMModel(_HFMModel), forecastingErrors(_forecastingErrors), fH(_fH), v(_v), channel(_channel)
 	{
 	}
@@ -290,7 +290,7 @@ vector<pair<double, int> > findBestPairsValuesByMetric(Matrix<double> results, b
 	return bestPairs;
 }
 
-pair<SolutionHFM, Evaluation>* learnModel(treatForecasts& tFTraining, int argvMaxLagRate, int argvTimeES, long seed, RandGen& rg, int evalFO, int fh)
+pair<SolutionHFM, Evaluation<>>* learnModel(treatForecasts& tFTraining, int argvMaxLagRate, int argvTimeES, long seed, RandGen& rg, int evalFO, int fh)
 {
 
 	int evalFOMinimizer = evalFO;
@@ -382,12 +382,12 @@ pair<SolutionHFM, Evaluation>* learnModel(treatForecasts& tFTraining, int argvMa
 
 	//		forecastObject.runMultiObjSearch();
 	//		getchar();
-	pair<SolutionHFM, Evaluation>* sol;
+	pair<SolutionHFM, Evaluation<>>* sol;
 	sol = forecastObject.run(timeES, 0, 0);
 	return sol;
 }
 
-vector<double> checkLearningAbility(treatForecasts& tFValidation, pair<SolutionHFM, Evaluation>* sol, RandGen& rg, int fh)
+vector<double> checkLearningAbility(treatForecasts& tFValidation, pair<SolutionHFM, Evaluation<>>* sol, RandGen& rg, int fh)
 {
 
 	int mu = 100;
@@ -617,7 +617,7 @@ int EEGBiometricSystem(int argc, char **argv)
 			treatForecasts tFTraining(explanatoryVariables);
 			tFTraining.setTSFile(tFTraining.getPercentageFromBeginToEnd(0, 0, trainingSetPercentage), 0);
 
-			pair<SolutionHFM, Evaluation>* HFMmodel = learnModel(tFTraining, argvMaxLagRate, trainingTime, seed, rg, evalFO, fH);
+			pair<SolutionHFM, Evaluation<>>* HFMmodel = learnModel(tFTraining, argvMaxLagRate, trainingTime, seed, rg, evalFO, fH);
 //			cout << "sol->first.getR().earliestInput: " << HFMmodel->first.getR().earliestInput << endl;
 //			cout<<HFMmodel->first.getR()<<endl;
 //			getchar();
@@ -667,7 +667,7 @@ int EEGBiometricSystem(int argc, char **argv)
 
 		for (int nM = 0; nM <  (int) setOfHFMLearningModels.size(); nM++)
 		{
-			pair<SolutionHFM, Evaluation>* HFMmodel = setOfHFMLearningModels[nM]->HFMModel;
+			pair<SolutionHFM, Evaluation<>>* HFMmodel = setOfHFMLearningModels[nM]->HFMModel;
 			vector<double> modelStandardErrors = setOfHFMLearningModels[nM]->forecastingErrors;
 			int modelFH = setOfHFMLearningModels[nM]->fH;
 			int variableChannelV = setOfHFMLearningModels[nM]->channel;

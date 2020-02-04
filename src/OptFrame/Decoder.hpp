@@ -39,12 +39,12 @@ public:
 	{
 	}
 
-	pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation*> > decode(const Solution<R>& solution)
+	pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation<>*> > decode(const Solution<R>& solution)
 	{
 		return decode(solution.getR());
 	}
 
-	virtual pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation*> > decode(const R& r) = 0;
+	virtual pair<vector<Solution<X, ADS>*>, vector<MultiEvaluation<>*> > decode(const R& r) = 0;
 };
 
 }

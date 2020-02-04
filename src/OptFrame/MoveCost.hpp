@@ -34,8 +34,8 @@ using namespace std;
 namespace optframe {
 
 // more than 'totally_ordered' we need to ensure arithmetics here... TODO: see that (same as Evaluation)
-//template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
-template<class ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
+template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
+//template<class ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
 class MoveCost : public Component
 {
 protected:

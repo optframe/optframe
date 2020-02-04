@@ -46,7 +46,7 @@ public:
 
 	void print() const
 	{
-		cout << "Evaluation function for the Partition for Numbers (PN)" << endl;
+		cout << "Evaluation<> function for the Partition for Numbers (PN)" << endl;
 	}
 };
 

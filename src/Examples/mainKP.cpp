@@ -33,7 +33,7 @@ main(int argc, char** argv)
    cout << "will generate solution" << endl;
    SolutionKP& s = *c1.generateSolution(10); // timelimit (10???)
    s.print();
-   Evaluation e = ev.evaluate(s.getR(), s.getADSptr());
+   Evaluation<> e = ev.evaluate(s.getR(), s.getADSptr());
    e.print();
    cout << "GUD" << endl;
 
@@ -48,7 +48,7 @@ main(int argc, char** argv)
 
    BasicSimulatedAnnealing<RepKP, MY_ADS> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
    SOSC sosc; // stop criteria
-   pair<SolutionKP, Evaluation>* r = sa.search(sosc);
+   pair<SolutionKP, Evaluation<>>* r = sa.search(sosc);
    r->first.print();
    r->second.print();
    delete r;
@@ -67,7 +67,7 @@ main(int argc, char** argv)
    EvaluatorSubsetRandomKeys eprk(ev1, 0, p.N - 1);
    BRKGA<RepKP> brkga(eprk, p.N, 1000, 30, 0.4, 0.3, 0.6);
 
-   pair<CopySolution<random_keys>, Evaluation>* r2 = brkga.search(sosc);
+   pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
    r2->first.print();
    r2->second.print();
    delete r2;

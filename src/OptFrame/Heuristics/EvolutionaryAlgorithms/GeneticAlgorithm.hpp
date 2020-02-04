@@ -51,7 +51,7 @@ class GeneticAlgorithm {
 protected:
     using Individual = Solution<R, ADS>;
     using Chromossome = R;
-    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Fitness = Evaluation<>*; //nullptr means there's no evaluation
     using Population = std::vector< pair<Individual, Fitness> >;
 
     Evaluator<R, ADS>& evaluator; //standard problem evaluator
@@ -76,7 +76,7 @@ protected:
                              //if this equals to zero, then the best solution will be the one found in the initial population
     double timelimit_ms; //parameter that dictates the standard stopping criteria for GA
                       //if this is too low, then the best solution will be the one found in the initial population
-    //Evaluation target; //parameter that dictates the standard stopping criteria for GA TODO
+    //Evaluation<> target; //parameter that dictates the standard stopping criteria for GA TODO
 
 public:
     //optional parameters
@@ -161,7 +161,7 @@ public:
         std::sort(population.begin(), population.end(), compare);
     }
 
-    virtual pair<Solution<R, ADS>, Evaluation> exec(){
+    virtual pair<Solution<R, ADS>, Evaluation<>> exec(){
         std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
 
@@ -191,7 +191,7 @@ public:
         }
 
         Individual best_individual(currentPopulation[best_individual_pos].first); //copy the best individual, as operators can lose it
-        Evaluation best_individual_eval(*currentPopulation[best_individual_pos].second); //copy the best eval, as operators can lose it
+        Evaluation<> best_individual_eval(*currentPopulation[best_individual_pos].second); //copy the best eval, as operators can lose it
 
         _OPTFRAME_DBG_GA_{
             std::cerr << "-OptDebug- Best Individual fitness: " << best_individual_eval.getObjFunction() << std::endl;

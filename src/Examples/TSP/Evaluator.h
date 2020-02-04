@@ -85,9 +85,9 @@ public:
     	return true;
     }
 
-    Evaluation evaluate(const RepTSP& r, const OPTFRAME_DEFAULT_ADS*) override
+    Evaluation<> evaluate(const RepTSP& r, const OPTFRAME_DEFAULT_ADS*) override
     {
-        double fo = 0; // Evaluation Function Value
+        double fo = 0; // Evaluation<> Function Value
 
         for (int i = 0; i < ((int) r.size()) - 1; i++)
         {
@@ -162,8 +162,8 @@ public:
             if (m.canBeApplied(r, nullptr))
             {
                 doStats = false;
-                Evaluation* e = nullptr; // dummy // TODO:
-                MoveCost& mc = *this->moveCost(*e, m, base);
+                Evaluation<>* e = nullptr; // dummy // TODO:
+                MoveCost<>& mc = *this->moveCost(*e, m, base);
                 doStats = true;
                 if (mc.getObjFunctionCost() < 0)
                     improvingSols++;

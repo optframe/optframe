@@ -3,7 +3,7 @@
 
 #include "../../OptFrame/Evaluation.hpp"
 
-typedef Evaluation EvaluationHFMVRP;
+typedef Evaluation<> EvaluationHFMVRP;
 
 #endif /*HFMVRP_EVALUATION_H_*/
 

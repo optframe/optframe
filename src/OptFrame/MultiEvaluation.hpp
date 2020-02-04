@@ -29,7 +29,8 @@ namespace optframe
 {
 
 // TODO: pass ObjType here
-// TODO: convert MultiEvaluation to XEvaluation model too
+// TODO: convert MultiEvaluation<> to XEvaluation model too
+template<optframe::totally_ordered ObjType = evtype>
 class MultiEvaluation: public Component
 {
 protected:
@@ -57,26 +58,26 @@ public:
 			vev.push_back(Evaluation(vd[i]));
 	}
 
-//	MultiEvaluation(const vector<Evaluation*>& _vev)
+//	MultiEvaluation(const vector<Evaluation<>*>& _vev)
 //	{
 //		for (unsigned i = 0; i < _vev.size(); i++)
 //			vev.push_back(&_vev[i]->clone());
 //	}
 
-//	MultiEvaluation(MultiEvaluation&& mev)
+//	MultiEvaluation(MultiEvaluation<>&& mev)
 //	{
 //		cout<<"finally here..."<<endl;
 //		for (unsigned i = 0; i < mev.vev.size(); i++)
 //			vev.push_back(std::move(mev.vev[i]));
 //	}
 
-	MultiEvaluation(const MultiEvaluation& mev)
+	MultiEvaluation(const MultiEvaluation<>& mev)
 	{
 		for (unsigned i = 0; i < mev.vev.size(); i++)
 			vev.push_back(mev.vev[i]);
 	}
 
-	MultiEvaluation(MultiEvaluation&& mev):
+	MultiEvaluation(MultiEvaluation<>&& mev):
 		vev(std::move(mev.vev))
 	{
 
@@ -138,20 +139,20 @@ public:
 		vev[index].outdated = status;
 	}
 
-//	const vector<Evaluation*>& getVector() const
+//	const vector<Evaluation<>*>& getVector() const
 //	{
 //		return vev;
 //	}
 
-//	vector<Evaluation*> getCloneVector() const
+//	vector<Evaluation<>*> getCloneVector() const
 //	{
-//		vector<Evaluation*> v_e;
+//		vector<Evaluation<>*> v_e;
 //		for (unsigned i = 0; i < vev.size(); i++)
 //			v_e.push_back(&vev[i]->clone());
 //		return v_e;
 //	}
 
-//	bool sameValues(const MultiEvaluation& mev)
+//	bool sameValues(const MultiEvaluation<>& mev)
 //	{
 //		if (vev.size() != mev.vev.size())
 //			return false;
@@ -162,7 +163,7 @@ public:
 //		return true;
 //	}
 
-	virtual MultiEvaluation& operator=(const MultiEvaluation& mev)
+	virtual MultiEvaluation<>& operator=(const MultiEvaluation<>& mev)
 	{
 		if (&mev == this) // auto ref check
 			return *this;
@@ -174,7 +175,7 @@ public:
 		return *this;
 	}
 
-	virtual MultiEvaluation& clone() const
+	virtual MultiEvaluation<>& clone() const
 	{
 		return *new MultiEvaluation(*this);
 	}
@@ -205,6 +206,14 @@ public:
 
 };
 
-}
+#ifndef NDEBUG
+struct optframe_debug_test_multievaluation
+{
+   MultiEvaluation<> testEvaluation;
+};
+#endif
+
+
+} // namespace optframe
 
 #endif /*OPTFRAME_MULTI_EVALUATION_HPP_*/

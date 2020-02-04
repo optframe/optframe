@@ -51,7 +51,7 @@ public:
 	{
 	}
 
-	virtual pair<unsigned, unsigned> select(const MultiSolution<R, ADS>& population, const MultiEvaluation& mev, const std::vector<double>& fv) = 0;
+	virtual pair<unsigned, unsigned> select(const MultiSolution<R, ADS>& population, const MultiEvaluation<>& mev, const std::vector<double>& fv) = 0;
 
 
 	static double getMax(const std::vector<double>& fv)
@@ -112,7 +112,7 @@ class SimpleSelection {
 protected:
 	using Individual = Solution<R, ADS>;
     using Chromossome = R;
-    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Fitness = Evaluation<>*; //nullptr means there's no evaluation
     using Population = vector< pair<Individual, Fitness> >;
 
     Evaluator<R, ADS>& evaluator;
@@ -148,7 +148,7 @@ class ElitismSelection final : public SimpleSelection<R, ADS> {
 protected:
 	using Individual = Solution<R, ADS>;
     using Chromossome = R;
-    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Fitness = Evaluation<>*; //nullptr means there's no evaluation
     using Population = vector< pair<Individual, Fitness> >;
 
 private:

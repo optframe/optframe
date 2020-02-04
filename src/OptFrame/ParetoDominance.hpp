@@ -86,8 +86,8 @@ public:
 			exit(1);
 		}
 
-		MultiEvaluation mev1(std::move(mev.evaluateSolution(s1)));
-		MultiEvaluation mev2(std::move(mev.evaluateSolution(s2)));
+		MultiEvaluation<> mev1(std::move(mev.evaluateSolution(s1)));
+		MultiEvaluation<> mev2(std::move(mev.evaluateSolution(s2)));
 
 
 		bool r = dominates(mev1, mev2);
@@ -100,13 +100,13 @@ public:
 	}
 
 	// true if 's1' dominates 's2'
-	virtual bool dominates(const MultiEvaluation* mev1, const MultiEvaluation* mev2)
+	virtual bool dominates(const MultiEvaluation<>* mev1, const MultiEvaluation<>* mev2)
 	{
 		return dominates(*mev1, *mev2);
 	}
 
 	// true if 's1' dominates 's2'
-	virtual bool dominates(const MultiEvaluation& mev1, const MultiEvaluation& mev2)
+	virtual bool dominates(const MultiEvaluation<>& mev1, const MultiEvaluation<>& mev2)
 	{
 		pair<int, int> betterEquals = checkDominates(mev1, mev2);
 		int better = betterEquals.first;
@@ -116,7 +116,7 @@ public:
 	}
 
 	//return a pair of better and equals
-	pair<int, int> checkDominates(const MultiEvaluation& mev1, const MultiEvaluation& mev2)
+	pair<int, int> checkDominates(const MultiEvaluation<>& mev1, const MultiEvaluation<>& mev2)
 	{
 		if ((mev1.size() != mev2.size()) || (mev1.size() == 0) || (mev2.size() == 0))
 		{
@@ -145,14 +145,14 @@ public:
 	}
 
 	// returns pair: (true, if 's1' dominates 's2'; true, if 's2' dominates 's1')
-	//virtual pair<bool, bool> birelation(const vector<Evaluation*>& v1, const vector<Evaluation*>& v2)
+	//virtual pair<bool, bool> birelation(const vector<Evaluation<>*>& v1, const vector<Evaluation<>*>& v2)
 	//{
 	//	bool b1 = dominates(v1, v2);
 	//	bool b2 = dominates(v2, v1);
 	//	return make_pair(b1, b2);
 	//}
 //
-//	virtual pair<bool, bool> birelation(const MultiEvaluation& mev1, const MultiEvaluation& mev2)
+//	virtual pair<bool, bool> birelation(const MultiEvaluation<>& mev1, const MultiEvaluation<>& mev2)
 //	{
 //		pair<int, int> betterEquals = checkDominates(mev1, mev2);
 //		int better = betterEquals.first;

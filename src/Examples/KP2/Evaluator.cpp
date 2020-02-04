@@ -18,7 +18,7 @@ using namespace KP2;
 MyEvaluator::MyEvaluator(ProblemInstance& _pKP2) : pKP2(_pKP2){
 }
 
-optframe::Evaluation MyEvaluator::evaluate(const RepKP2& rep){
+optframe::Evaluation<> MyEvaluator::evaluate(const RepKP2& rep){
     constexpr double penalty = 10000.0;
 
 	DEBUG{
@@ -28,7 +28,7 @@ optframe::Evaluation MyEvaluator::evaluate(const RepKP2& rep){
 		std::cerr << std::endl;
 	}
 
-    double fo = 0.0; // Evaluation Function Value
+    double fo = 0.0; // Evaluation<> Function Value
     double peso_total = 0;
 
     for(int i = 0; i < pKP2.n; ++i){ //para cada item na instancia 

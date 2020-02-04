@@ -52,21 +52,21 @@ public:
    {
    }
 
-   pair<S, Evaluation>* search(SOSC& sosc, const S* _s = nullptr, const Evaluation* _e = nullptr)
+   pair<S, Evaluation<>>* search(SOSC& sosc, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
    {
       //cout << "SimpleLocalSearch search(" << target_f << "," << timelimit << ")" << endl;
 
       Timer tnow;
 
       S& s = *constructive.generateSolution(sosc.timelimit);
-      Evaluation e = evaluator.evaluateSolution(s);
+      Evaluation<> e = evaluator.evaluateSolution(s);
 
-      //pair<S&, Evaluation&>& p = localSearch.search(s, e, sosc);
+      //pair<S&, Evaluation<>&>& p = localSearch.search(s, e, sosc);
 
       delete &s;
 
       // TODO: fix this.. not using 'p' anymore
-      pair<S, Evaluation>* p2 = nullptr;
+      pair<S, Evaluation<>>* p2 = nullptr;
       return p2;
    }
 

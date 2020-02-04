@@ -65,7 +65,7 @@ public:
 		return *new MoveNSSeqUnion<R, ADS>(id, m.apply(r, ads));
 	}
 
-	Move<R, ADS>& apply(Evaluation& e, R& rep)
+	Move<R, ADS>& apply(Evaluation<>& e, R& rep)
 	{
 		return *new MoveNSSeqUnion<R, ADS>(id, m.apply(e, rep));
 	}

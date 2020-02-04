@@ -60,7 +60,7 @@ public:
 		long tnow = time(nullptr);
 
 		Solution<R, ADS>& s = constructive.generateSolution();
-		Evaluation& e    = evaluator.evaluate(s);
+		Evaluation<>& e    = evaluator.evaluate(s);
 
 		while ((iter < iterMax) && ((tnow - tini) < timelimit) && (evaluator.betterThan(target_f, e.evaluation())))
 		{

@@ -142,7 +142,7 @@ main(int argc, char** argv)
    vNSeq.push_back(nsseq_deltaIterator_shift10);
 
    SOSC soscGR(10, 0);
-   pair<CopySolution<RepHFMVRP, AdsHFMVRP>, Evaluation>* initialPairGrasp = basicGrasp.search(soscGR);
+   pair<CopySolution<RepHFMVRP, AdsHFMVRP>, Evaluation<>>* initialPairGrasp = basicGrasp.search(soscGR);
 
    CloneConstructive<RepHFMVRP, AdsHFMVRP> cloneSolAsConstructive(initialPairGrasp->first);
 
@@ -159,7 +159,7 @@ main(int argc, char** argv)
    es.setMessageLevel(4);
 
    SOSC soscES(180, 0);
-   pair<Solution<RepHFMVRP, AdsHFMVRP>, Evaluation>* initialSol = es.search(soscES);
+   pair<Solution<RepHFMVRP, AdsHFMVRP>, Evaluation<>>* initialSol = es.search(soscES);
    double objFuncES = initialSol->second.getObjFunction();
    cout << "getObjFunction: " << objFuncES << endl;
    */
@@ -176,14 +176,14 @@ main(int argc, char** argv)
    }
 
    /*	// ==================== BEGIN ILS AND GRASP ===========================
-	 //pair<Solution<RepHFMVRP, AdsHFMVRP>&, Evaluation&>* initialPair = basicGrasp.search(30, 0);
+	 //pair<Solution<RepHFMVRP, AdsHFMVRP>&, Evaluation<>&>* initialPair = basicGrasp.search(30, 0);
 
 	 CloneConstructive<RepHFMVRP, AdsHFMVRP> cloneSolAsConstructive(initialSol->first);
 	 IteratedLocalSearchLevels<RepHFMVRP, AdsHFMVRP> ilsl(*eval, cloneSolAsConstructive, newVNDUpdateADS, *ilsl_pert, 130, 15);
 	 ilsl.setMessageLevel(4);
 
    SOSC soscILSL(60,0);
-	 pair<Solution<RepHFMVRP, AdsHFMVRP>, Evaluation>* pairILS = ilsl.search(soscILSL);
+	 pair<Solution<RepHFMVRP, AdsHFMVRP>, Evaluation<>>* pairILS = ilsl.search(soscILSL);
 	 Solution<RepHFMVRP, AdsHFMVRP> ilsSOL = pairILS->first;
 
 	 EvaluationHFMVRP value = eval->evaluate(ilsSOL.getR());

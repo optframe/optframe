@@ -64,13 +64,13 @@ public:
 		return *new levelHistory(vars, maxs);
 	}
 
-	virtual void localSearch(S& s, Evaluation& e, SOSC& stopCriteria)
+	virtual void localSearch(S& s, Evaluation<>& e, SOSC& stopCriteria)
 	{
 		//cout << "localSearch(.)" << endl;
 		ls.exec(s, e, stopCriteria);
 	}
 
-	virtual void perturbation(S& s, Evaluation& e, SOSC& stopCriteria, levelHistory& history)
+	virtual void perturbation(S& s, Evaluation<>& e, SOSC& stopCriteria, levelHistory& history)
 	{
 		//cout << "perturbation(.)" << endl;
 
@@ -103,7 +103,7 @@ public:
 		history.first.second = level;
 	}
 
-	virtual bool acceptanceCriterion(const Evaluation& e1, const Evaluation& e2, levelHistory& history)
+	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, levelHistory& history)
 	{
 		//cout << "acceptanceCriterion(.)" << endl;
 

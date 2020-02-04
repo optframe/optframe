@@ -65,7 +65,7 @@ public:
 	{
 	}
 
-	pair<S, Evaluation>* search(SOSC& stopCriteria, const S* _s = nullptr,  const Evaluation* _e = nullptr)
+	pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr,  const Evaluation<>* _e = nullptr)
 	{
 		double timelimit = stopCriteria.timelimit;
 		double target_f = stopCriteria.target_f;
@@ -77,12 +77,12 @@ public:
 		S* sP = constructive.generateSolution(timelimit);
 		S s(std::move(*sP)); // workaround
                 delete sP;                         // workaround
-		Evaluation e = evaluator.evaluateSolution(s);
+		Evaluation<> e = evaluator.evaluateSolution(s);
 
 		double T = Ti;
 		int iterT = 0;
 		S* sStar = &s.clone();
-		Evaluation* eStar = &e.clone();
+		Evaluation<>* eStar = &e.clone();
 
 		while ((T > 0.000001) && (tnow.now() < timelimit))
 		{
@@ -99,7 +99,7 @@ public:
 				}
 
 				S* sCurrent = &s.clone();
-				Evaluation* eCurrent = &e.clone();
+				Evaluation<>* eCurrent = &e.clone();
 				Component::safe_delete(move->applyUpdateSolution(*eCurrent, *sCurrent));
 				evaluator.reevaluateSolution(*eCurrent, *sCurrent);
 
@@ -153,7 +153,7 @@ public:
 		delete sStar;
 		delete eStar;
 
-		return new pair<S, Evaluation> (s, e);
+		return new pair<S, Evaluation<>> (s, e);
 	}
 
 	virtual string id() const

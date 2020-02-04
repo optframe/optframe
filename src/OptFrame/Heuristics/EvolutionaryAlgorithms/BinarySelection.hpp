@@ -50,7 +50,7 @@ public:
 	{
 	}
 
-	pair<unsigned, unsigned> select(const MultiSolution<R, ADS>& p, const MultiEvaluation& mev, const vector<double>& fv)
+	pair<unsigned, unsigned> select(const MultiSolution<R, ADS>& p, const MultiEvaluation<>& mev, const vector<double>& fv)
 	{
 		assert(p.size() > 1);
 		//cout << "SELECT: " << p.size() << endl;

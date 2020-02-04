@@ -67,7 +67,7 @@ public:
       return new MoveRotate(4 - nRot, x, y);
    }
 
-   Move<RepEtII>* applyUpdate(Evaluation& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS* ads) override
+   Move<RepEtII>* applyUpdate(Evaluation<>& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS* ads) override
    {
       int f = 0;
       if (rep(x, y).left == rep(x, y - 1).right)

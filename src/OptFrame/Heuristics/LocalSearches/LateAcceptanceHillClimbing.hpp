@@ -58,12 +58,12 @@ public:
 
 	virtual void exec(S& s, SOSC& sosc)
 	{
-		Evaluation e = ev.evaluateSolution(s);
+		Evaluation<> e = ev.evaluateSolution(s);
 
 		exec(s, e, sosc);
 	}
 
-	virtual void exec(S& sStar, Evaluation& eStar, SOSC& sosc) override
+	virtual void exec(S& sStar, Evaluation<>& eStar, SOSC& sosc) override
 	{
       double timelimit = sosc.timelimit;
       double target_f = sosc.target_f;
@@ -71,7 +71,7 @@ public:
 		long tini = time(nullptr);
 
 #ifdef BRAND_NEW
-		vector<Evaluation* > eList;
+		vector<Evaluation<>* > eList;
 		for(int i=0; i<L; i++)
 			eList.push_back(&eStar.clone());
 #else
@@ -82,7 +82,7 @@ public:
 		unsigned index = 0;
 
 		S& s = sStar.clone();
-		Evaluation& e = eStar.clone();
+		Evaluation<>& e = eStar.clone();
 
 		long tnow = time(nullptr);
 
@@ -102,7 +102,7 @@ public:
 			if (move && move->canBeAppliedToSolution(s))
 			{
             bool mayEstimate = false;
-				MoveCost& cost = *ev.moveCost(e, *move, s, mayEstimate);
+				MoveCost<>& cost = *ev.moveCost(e, *move, s, mayEstimate);
 
 				// test for current index
 #ifdef BRAND_NEW

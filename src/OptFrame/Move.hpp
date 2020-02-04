@@ -72,7 +72,7 @@ public:
 		return applyUpdate(e, s.getR(), s.getADSptr());
 	}
 
-	Move<R, ADS, S>* applyMEVUpdateSolution(MultiEvaluation& mev, S& s)
+	Move<R, ADS, S>* applyMEVUpdateSolution(MultiEvaluation<>& mev, S& s)
 	{
 		return applyMEV(mev, s.getR(), s.getADSptr());
 	}
@@ -94,7 +94,7 @@ public:
 		return rev;
 	}
 
-	virtual Move<R, ADS, S>* applyMEV(MultiEvaluation& mev, R& r, ADS* ads)
+	virtual Move<R, ADS, S>* applyMEV(MultiEvaluation<>& mev, R& r, ADS* ads)
 	{
 		// boolean 'outdated' indicates that Evaluation needs update (after Solution change)
 		// note that even if the reverse move is applied, the Evaluation will continue with
@@ -121,7 +121,7 @@ public:
 	}
 
 	// experiment for multi objective problems
-	virtual MultiMoveCost<>* costMEV(const MultiEvaluation& mev, const R& r, const ADS* ads, bool allowEstimated)
+	virtual MultiMoveCost<>* costMEV(const MultiEvaluation<>& mev, const R& r, const ADS* ads, bool allowEstimated)
 	{
 		return nullptr;
 	}

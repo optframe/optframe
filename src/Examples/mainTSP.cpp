@@ -117,10 +117,10 @@ main(int argc, char** argv)
    BRKGA<RepTSP> brkga(eprk, tsp.p->n, 10000, 10, 0.4, 0.3, 0.6);
 
    SOSC sosc;
-   pair<CopySolution<random_keys>, Evaluation>* r2 = brkga.search(sosc);
+   pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
    r2->first.print();
 
-   pair<Evaluation, CopySolution<vector<int>>*> pd = eprk.decode(r2->first.getR());
+   pair<Evaluation<>, CopySolution<vector<int>>*> pd = eprk.decode(r2->first.getR());
    pd.second->print();
    if (eval.verify(pd.second->getR()))
       cout << "CHECK: OK" << endl;
@@ -168,7 +168,7 @@ main(int argc, char** argv)
    SOSC soscILS;
    soscILS.timelimit = 1000;
    soscILS.target_f = 0;
-   pair<CopySolution<RepTSP>, Evaluation>& psol = *ils.search(soscILS, NULL, NULL);
+   pair<CopySolution<RepTSP>, Evaluation<>>& psol = *ils.search(soscILS, NULL, NULL);
    cout << tim.now() << " secs" << endl;
 
    psol.first.print();
@@ -194,7 +194,7 @@ main(int argc, char** argv)
    SOSC soscVNS;
    soscVNS.timelimit = 0;
    soscVNS.target_f = 8000;
-   pair<CopySolution<RepTSP>, Evaluation>& psol2 = *vns.search(sosc, NULL, NULL);
+   pair<CopySolution<RepTSP>, Evaluation<>>& psol2 = *vns.search(sosc, NULL, NULL);
    psol2.first.print();
    psol2.second.print();
 

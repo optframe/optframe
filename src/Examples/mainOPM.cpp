@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 	//mutationRate = 1;
 	ES<RepOPM> es(eval, greedy, vNSeq, vNSeqMaxApplication, emptyLS, selectionType, mutationRate, rg, 100, 600, 30000, outputFile, batch);
 
-	pair<Solution<RepOPM>&, Evaluation&>* finalSol;
+	pair<Solution<RepOPM>&, Evaluation<>&>* finalSol;
 	finalSol = es.search(tempo);
 
 	//ES es(opm, nome, eval, seed, 100, 600, 50000, outputFile, batch); // mi, lambda, geracoes

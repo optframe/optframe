@@ -39,7 +39,7 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 struct IndividualNSGAII
 {
 	Solution<R, ADS>& s;
-	MultiEvaluation* mev; // TODO: remove?
+	MultiEvaluation<>* mev; // TODO: remove?
 	int rank;
 	double distance;
 
@@ -139,7 +139,7 @@ struct IndividualNSGAII
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class NSGAII: public MultiObjSearch<R, ADS >
 {
-	typedef vector<Evaluation*> FitnessValues;
+	typedef vector<Evaluation<>*> FitnessValues;
 
 private:
 	vector<Evaluator<R, ADS>*> v_e;
@@ -179,7 +179,7 @@ public:
 	{
 		//ACHO Q FALTA APAGAR ALGUMA COISA NO FINAL
 
-		//vector<vector<Evaluation*> > e_pop;
+		//vector<vector<Evaluation<>*> > e_pop;
 		FitnessValues& e_pop = *new FitnessValues;
 
 		for (int i = 0; i < p.size(); i++)
@@ -280,12 +280,12 @@ public:
 		for(unsigned i=0; i<p.size(); i++)
 		{
 			Solution<R, ADS>* s = &p.at(i);
-			vector<Evaluation*> e;
+			vector<Evaluation<>*> e;
 			for(unsigned ev=0; ev<v_e.size(); ev++)
 			{
 				Evaluator<R, ADS>* evtr = v_e[ev];
 				//evtr->evaluate(s);
-				Evaluation& e1 = evtr->evaluate(*s);
+				Evaluation<>& e1 = evtr->evaluate(*s);
 				e.push_back(&e1);
 			}
 			pf->push_back(*s, e);
@@ -308,7 +308,7 @@ public:
 
 				for (int i = 0; i < N; i++)
 				{
-					Evaluation& e = v_e[m]->evaluate(Fj.at(i));
+					Evaluation<>& e = v_e[m]->evaluate(Fj.at(i));
 					fitness.push_back(make_pair(e.evaluation(), i));
 					delete &e;
 				}

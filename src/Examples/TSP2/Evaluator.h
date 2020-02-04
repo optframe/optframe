@@ -55,10 +55,10 @@ public:
 		evaluations = 0;
 	}
 
-	Evaluation evaluate(const RepTSP& r, const OPTFRAME_DEFAULT_ADS*) override
+	Evaluation<> evaluate(const RepTSP& r, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		evaluations++;
-		double fo = 0; // Evaluation Function Value
+		double fo = 0; // Evaluation<> Function Value
 
 		for (int i = 0; i < ((int) r.size()) - 1; i++)
 		{

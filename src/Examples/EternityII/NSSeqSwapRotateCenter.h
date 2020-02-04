@@ -157,7 +157,7 @@ public:
       return new MoveSwapRotateCenter(x1, y1, rot2, x2, y2, rot1);
    }
 
-   Move<RepEtII>* applyUpdate(Evaluation& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS* ads) override
+   Move<RepEtII>* applyUpdate(Evaluation<>& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS* ads) override
    {
       int f = 0;
       if (rep(x1, y1).left == rep(x1, y1 - 1).right)

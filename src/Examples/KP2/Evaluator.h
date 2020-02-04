@@ -20,7 +20,7 @@ public:
 	virtual ~MyEvaluator() = default;
 
     // you can replace OptFrameADS with your prefered ADS
-	optframe::Evaluation evaluate(const RepKP2& rep) override;
+	optframe::Evaluation<> evaluate(const RepKP2& rep) override;
 	
 	virtual bool isMinimization() const;
 };

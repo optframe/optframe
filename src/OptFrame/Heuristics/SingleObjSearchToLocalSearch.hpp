@@ -52,14 +52,14 @@ public:
 
    virtual void exec(S& s, SOSC& sosc) override
    {
-      Evaluation e = evaluator.evaluateSolution(s);
+      Evaluation<> e = evaluator.evaluateSolution(s);
 
       exec(s, e, sosc);
    }
 
-   virtual void exec(S& s, Evaluation& e, SOSC& sosc) override
+   virtual void exec(S& s, Evaluation<>& e, SOSC& sosc) override
    {
-      pair<S, Evaluation>* r = sios.search(sosc, &s, &e);
+      pair<S, Evaluation<>>* r = sios.search(sosc, &s, &e);
 
       if (r) {
          s = r->first;

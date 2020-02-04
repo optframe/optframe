@@ -58,7 +58,7 @@ public:
 	{
 	}
 
-	pair<S, Evaluation>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation* _e = nullptr) override
+	pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
 	{
 		double timelimit = stopCriteria.timelimit;
 		double target_f = stopCriteria.target_f;
@@ -68,7 +68,7 @@ public:
 		unsigned int iter = 0;
 
 		S* s = constructive.generateGRSolution(alpha, timelimit);
-		Evaluation e = evaluator.evaluateSolution(*s);
+		Evaluation<> e = evaluator.evaluateSolution(*s);
 
 		if (Component::information)
 			e.print();
@@ -80,7 +80,7 @@ public:
 
 			S* s1 = constructive.generateGRSolution(alpha,timelimit - tNow.now());
 
-			Evaluation e1 = evaluator.evaluateSolution(*s1);
+			Evaluation<> e1 = evaluator.evaluateSolution(*s1);
 
 			SOSC stopCriteriaLS = stopCriteria.newStopCriteriaWithTL(tNow.now());
 			ls.exec(*s1, e1, stopCriteriaLS);
@@ -102,7 +102,7 @@ public:
 		S sFinal = std::move(*s);
 		delete s;
 
-		return new pair<S, Evaluation>(sFinal, e);
+		return new pair<S, Evaluation<>>(sFinal, e);
 	}
 
 	virtual string id() const

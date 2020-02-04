@@ -54,22 +54,22 @@ public:
 
 	virtual H& initializeHistory() = 0;
 
-	virtual void localSearch(S& s, Evaluation& e, SOSC& stopCriteria) = 0;
+	virtual void localSearch(S& s, Evaluation<>& e, SOSC& stopCriteria) = 0;
 
-	virtual void perturbation(S& s, Evaluation& e, SOSC& stopCriteria, H& history) = 0;
+	virtual void perturbation(S& s, Evaluation<>& e, SOSC& stopCriteria, H& history) = 0;
 
-	virtual bool acceptanceCriterion(const Evaluation& e1, const Evaluation& e2, H& history) = 0;
+	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, H& history) = 0;
 
 	virtual bool terminationCondition(H& history) = 0;
 
-	pair<S, Evaluation>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation* _e = nullptr) override
+	pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
 	{
 		cout << "ILS opt search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
 		Timer tnow;
 
 		S* sStar = nullptr;
-		Evaluation* eStar = nullptr;
+		Evaluation<>* eStar = nullptr;
 
 		//If solution is given it should contain an evaluation: TODO - Implement search with Solution
 		if (_s != nullptr)
@@ -108,7 +108,7 @@ public:
 		do
 		{
 			S s1(*sStar);
-			Evaluation e1(*eStar);
+			Evaluation<> e1(*eStar);
 
 			SOSC stopCriteriaPert = stopCriteria;
 			stopCriteriaPert.updateTimeLimit(tnow.now());
@@ -132,7 +132,7 @@ public:
 		if (evaluator.betterThan(eStar->evaluation(), stopCriteria.target_f))
 			cout << "ILS exit by target_f: " << eStar->evaluation() << " better than " << stopCriteria.target_f << endl;
 
-		pair<S, Evaluation>* pairToReturn = new pair<S, Evaluation>(make_pair(std::move(*sStar), std::move(*eStar)));
+		pair<S, Evaluation<>>* pairToReturn = new pair<S, Evaluation<>>(make_pair(std::move(*sStar), std::move(*eStar)));
 
 		delete eStar;
 		delete sStar;

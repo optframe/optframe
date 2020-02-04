@@ -57,13 +57,13 @@ public:
       // Put the rest of your code here
    }
 
-   Evaluation evaluate(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
+   Evaluation<> evaluate(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
    {
       //counting evaluations.
       numEvs++;
       //cout<<"##### Number of evaluates: "<<numEvs<<endl;
 
-      int fo = 0; // Evaluation Function Value
+      int fo = 0; // Evaluation<> Function Value
 
       // horizontal
       for (unsigned int i = 0; i < rep.getNumRows(); i++)

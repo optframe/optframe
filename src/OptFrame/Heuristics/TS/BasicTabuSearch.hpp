@@ -51,17 +51,17 @@ public:
 	{
 	}
 
-	pair<S&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const S* _s = nullptr, const Evaluation* _e = nullptr)
+	pair<S&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
 	{
 		//cout << "BasicTabuSearch exec(" << target_f << "," << timelimit << ")" << endl;
 
 		long tini = time(nullptr);
 
 		S& s = constructive.generateSolution();
-		Evaluation& e = evaluator.evaluate(s);
+		Evaluation<>& e = evaluator.evaluate(s);
 
 		S* sStar = &s.clone();
-		Evaluation* evalSStar = &evaluator.evaluate(*sStar);
+		Evaluation<>* evalSStar = &evaluator.evaluate(*sStar);
 
 		//evalSStar->print();
 
@@ -94,7 +94,7 @@ public:
 			S* s1 = &s.clone();
 
 			Move<R, ADS, S>* newTabu = &bestMove->apply(*s1);
-			Evaluation* evalS1 = &evaluator.evaluate(*s1);
+			Evaluation<>* evalS1 = &evaluator.evaluate(*s1);
 
 			if (evaluator.betterThan(*evalS1, *evalSStar))
 			{
@@ -196,10 +196,10 @@ public:
 			fclose(ftabu);
 		}
 
-		return new pair<S&, Evaluation&>(s, e);
+		return new pair<S&, Evaluation<>&>(s, e);
 	}
 
-	Move<R, ADS, S>* tabuBestMove(S& s, Evaluation& e, const vector<Move<R, ADS, S>*>& tabuList)
+	Move<R, ADS, S>* tabuBestMove(S& s, Evaluation<>& e, const vector<Move<R, ADS, S>*>& tabuList)
 	{
 		NSIterator<R, ADS, S>& it = nsSeq.getIterator(s.getR(), s.getADS());
 

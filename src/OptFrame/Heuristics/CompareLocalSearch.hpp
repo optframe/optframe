@@ -50,14 +50,14 @@ public:
 
 	virtual void exec(S& s, SOSC& sosc)
 	{
-		Evaluation e = eval.evaluateSolution(s);
+		Evaluation<> e = eval.evaluateSolution(s);
 		exec(s, e, sosc);
 	}
 
-	virtual void exec(S& s, Evaluation& e, SOSC& sosc)
+	virtual void exec(S& s, Evaluation<>& e, SOSC& sosc)
 	{
 		S& s2 = s.clone();
-		Evaluation& e2   = e.clone();
+		Evaluation<>& e2   = e.clone();
 
 		ls1.exec(s, e, sosc);
 		ls2.exec(s2, e2, sosc);

@@ -156,7 +156,7 @@ int priceCompetitionBlind(int argc, char **argv)
 		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
 
-		pair<SolutionHFM, Evaluation>* sol;
+		pair<SolutionHFM, Evaluation<>>* sol;
 
 		int optMethod = rg.rand(2);
 		optMethod = 0;
@@ -416,7 +416,7 @@ int priceCompetitionCalibrationMode(int argc, char **argv)
 
 		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-		pair<SolutionHFM, Evaluation>* sol;
+		pair<SolutionHFM, Evaluation<>>* sol;
 
 		sol = forecastObject.run(timeES, timeVND, timeILS);
 

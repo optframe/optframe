@@ -57,7 +57,7 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, paretoManager<R, ADS>& pManager, double timelimit, double target_f)
 	{
-		MultiEvaluation& sMev = v_e.evaluate(s);
+		MultiEvaluation<>& sMev = v_e.evaluate(s);
 
 		exec(s, sMev, pManager, timelimit, target_f);
 
@@ -65,7 +65,7 @@ public:
 		delete &sMev;
 	}
 
-	virtual void exec(Solution<R, ADS>& s, MultiEvaluation& sMev, paretoManager<R, ADS>& pManager, double timelimit, double target_f)
+	virtual void exec(Solution<R, ADS>& s, MultiEvaluation<>& sMev, paretoManager<R, ADS>& pManager, double timelimit, double target_f)
 	{
 
 		num_calls++;

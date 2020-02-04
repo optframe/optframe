@@ -88,7 +88,7 @@ public:
       //Fo vector with different metrics calculations
       vector<double>* foIndicator = evaluateAll(rep, optMetric);
 
-      double fo = foIndicator->at(optMetric); // Evaluation Function Value
+      double fo = foIndicator->at(optMetric); // Evaluation<> Function Value
       delete foIndicator;
       return EvaluationEFP(fo);
    }

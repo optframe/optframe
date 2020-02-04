@@ -55,7 +55,7 @@ class ESContinous: public SingleObjSearch<R, ADS, S>
 private:
 
 	S* sStar;
-	Evaluation* eStar;
+	Evaluation<>* eStar;
 	Evaluator<R, ADS>& eval;
 	Constructive<S>& constructive;
 	vector<NSSeq<R, ADS>*> vNS;
@@ -112,7 +112,7 @@ public:
 
 		for (int i = 0; i < p.size(); i++)
 		{
-			Evaluation& e = eval.evaluate(*p[i].first);
+			Evaluation<>& e = eval.evaluate(*p[i].first);
 			v.push_back(make_pair(p[i], e.evaluation()));
 			delete &e;
 		}
@@ -258,12 +258,12 @@ public:
 		return pNova;
 	}
 
-	virtual void localSearch(S& s, Evaluation& e, SOSC& stopCriteria)
+	virtual void localSearch(S& s, Evaluation<>& e, SOSC& stopCriteria)
 	{
 		ls.exec(s, e, stopCriteria);
 	}
 
-	pair<S, Evaluation>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation* _e = nullptr) override
+	pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
 	{
 		cout << "ES search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
@@ -284,7 +284,7 @@ public:
 
 			ESContinuousStructure<ESStruct>* m = new ESContinuousStructure<ESStruct>(a);
 
-			Evaluation e = eval.evaluateSolution(*s);
+			Evaluation<> e = eval.evaluateSolution(*s);
 
 			pop[i] = make_pair(make_pair(s, m), e.evaluation());
 
@@ -359,7 +359,7 @@ public:
 				S* filho_bl = filho;
 
 				//double tEval = tnowClone.now();
-				Evaluation e = eval.evaluateSolution(*filho_bl);
+				Evaluation<> e = eval.evaluateSolution(*filho_bl);
 				//sumEval += tnowClone.now() - tEval;
 				//counter++;
 
@@ -417,14 +417,14 @@ public:
 		}
 
 		S& s = *sStar;
-		Evaluation& e = *eStar;
+		Evaluation<>& e = *eStar;
 
 		//cout<<s.getR();
 		//getchar();
 		//delete eStar;
 		//delete sStar;
 
-		return new pair<S, Evaluation>(s, e);
+		return new pair<S, Evaluation<>>(s, e);
 	}
 
 	static string idComponent()

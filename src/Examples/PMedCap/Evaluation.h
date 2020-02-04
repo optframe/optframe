@@ -24,7 +24,7 @@
 #include "../../OptFrame/Evaluation.hpp"
 //#include "../../OptFrame/Util/TestEvaluation.hpp"
 
-typedef Evaluation EvaluationPCAP;
+typedef Evaluation<> EvaluationPCAP;
 
 #endif /*PCAP_EVALUATION_H_*/
 

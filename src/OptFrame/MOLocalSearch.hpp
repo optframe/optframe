@@ -62,12 +62,12 @@ public:
 //	}
 //
 //	// optimizated version
-//	pair<S&, Evaluation&>& search(const S& s, const Evaluation& e, Pareto<R, ADS>& pf, double timelimit = 100000000, double target_f = 0)
+//	pair<S&, Evaluation<>&>& search(const S& s, const Evaluation<>& e, Pareto<R, ADS>& pf, double timelimit = 100000000, double target_f = 0)
 //	{
 //		S& s2 = s.clone();
-//		Evaluation& e2 = e.clone();
+//		Evaluation<>& e2 = e.clone();
 //		exec(s2, e2, pf, timelimit, target_f);
-//		return *new pair<S&, Evaluation&>(s2, e2);
+//		return *new pair<S&, Evaluation<>&>(s2, e2);
 //	}
 
 // core methods
@@ -76,7 +76,7 @@ public:
 	virtual void exec(Pareto<R, ADS>& p, S& s, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) = 0;
 
 	// 2
-	virtual void exec(Pareto<R, ADS>& p, S& s, MultiEvaluation& mev, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) =0;
+	virtual void exec(Pareto<R, ADS>& p, S& s, MultiEvaluation<>& mev, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) =0;
 
 	virtual bool compatible(string s)
 	{

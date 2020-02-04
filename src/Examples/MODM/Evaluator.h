@@ -58,7 +58,7 @@ public:
 	{
 	}
 
-	Evaluation evaluate(const RepMODM& rep)
+	Evaluation<> evaluate(const RepMODM& rep)
 	{
 		AdsMODM ads;
 		adsMan.initializeADS(rep, ads);
@@ -141,7 +141,7 @@ public:
 		}
 	}
 
-	Evaluation evaluate(const RepMODM& rep, const AdsMODM* _ads) override
+	Evaluation<> evaluate(const RepMODM& rep, const AdsMODM* _ads) override
 	{
       const AdsMODM& ads = *_ads;
 		Timer t;
@@ -149,7 +149,7 @@ public:
 		int maxC = pMODM.getNumberOfClients();
 		int n = pMODM.getNumberOfProducts();
 
-		double fo = 0; // Evaluation Function Value
+		double fo = 0; // Evaluation<> Function Value
 		double foRevenue = 0;
 		double foBudget = 0;
 		double foFixedCost = 0;
@@ -247,7 +247,7 @@ public:
 
 	void exportEvaluation(const RepMODM& rep, const AdsMODM& ads, string filename, string outFile)
 	{
-		Evaluation e = evaluate(rep, &ads);
+		Evaluation<> e = evaluate(rep, &ads);
 
 		double fo = e.evaluation();
 

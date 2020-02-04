@@ -53,12 +53,12 @@ public:
 
 	virtual void exec(S& s, SOSC& stopCriteria)
 	{
-		Evaluation e = std::move(ev.evaluateSolution(s));
+		Evaluation<> e = std::move(ev.evaluateSolution(s));
 
 		exec(s, e, stopCriteria);
 	}
 
-	virtual void exec(S& s, Evaluation& e, SOSC& stopCriteria)
+	virtual void exec(S& s, Evaluation<>& e, SOSC& stopCriteria)
 	{
 		if (Component::information)
 			cout << "VND::starts" << endl;
@@ -72,7 +72,7 @@ public:
 
 		int k = 1;
 
-		Evaluation eCurrent(e);
+		Evaluation<> eCurrent(e);
 		while (ev.betterThan(stopCriteria.target_f, e.evaluation()) && (k <= r) && (tNow.now() < stopCriteria.timelimit))
 		{
 			eCurrent = e;

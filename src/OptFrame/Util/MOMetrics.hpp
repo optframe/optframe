@@ -59,12 +59,12 @@ public:
 
 	}
 
-	Evaluation evaluate(const int&, const OPTFRAME_DEFAULT_ADS*)
+	Evaluation<> evaluate(const int&, const OPTFRAME_DEFAULT_ADS*) override
 	{
 		//SimbolicEvaluator
 		cout << "It should not have reached inside EmptyParetoEvaluatorMinimizer evaluate function " <<endl;
 		exit(1);
-		return Evaluation(-1);
+		return Evaluation<>(-1);
 	}
 
 	virtual bool isMinimization() const
@@ -214,7 +214,7 @@ public:
 
 	void addWithEmptySol(Pareto<int>& pAux, ParetoFitness ind)
 	{
-		MultiEvaluation mev(ind);
+		MultiEvaluation<> mev(ind);
 		int a = -1;
 		Solution<int>* emptySol = new Solution<int>(a);
 
@@ -253,7 +253,7 @@ public:
 
 	vector<ParetoFitness> getParetoEvaluations(Pareto<R, ADS>& pf, int nEv)
 	{
-		vector<MultiEvaluation*> vEval = pf.getParetoFront();
+		vector<MultiEvaluation<>*> vEval = pf.getParetoFront();
 		int nObtainedParetoSol = vEval.size();
 
 		vector<ParetoFitness > paretoDoubleEval;

@@ -5,7 +5,7 @@
 
 using namespace optframe;
 
-typedef Evaluation EvaluationOPM;
+typedef Evaluation<> EvaluationOPM;
 
 #endif /*OPM_EVALUATION_H_*/
 

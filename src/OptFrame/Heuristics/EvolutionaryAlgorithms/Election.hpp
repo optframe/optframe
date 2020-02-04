@@ -49,7 +49,7 @@ class SimpleElection {
 protected:
 	using Individual = Solution<R, ADS>;
     using Chromossome = R;
-    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Fitness = Evaluation<>*; //nullptr means there's no evaluation
     using Population = vector< pair<Individual, Fitness> >;
 
 public:
@@ -70,7 +70,7 @@ class RandomElection final : public SimpleElection<R, ADS>{
 protected:
 	using Individual = Solution<R, ADS>;
     using Chromossome = R;
-    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Fitness = Evaluation<>*; //nullptr means there's no evaluation
     using Population = vector< pair<Individual, Fitness> >;
 
 public:
@@ -103,7 +103,7 @@ class RouletteElection final : public SimpleElection<R, ADS>{
 protected:
 	using Individual = Solution<R, ADS>;
     using Chromossome = R;
-    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Fitness = Evaluation<>*; //nullptr means there's no evaluation
     using Population = vector< pair<Individual, Fitness> >;
 
 public:

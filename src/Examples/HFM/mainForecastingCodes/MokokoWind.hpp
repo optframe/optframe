@@ -166,7 +166,7 @@ int mokokoWindSotavento(int argc, char **argv)
 
 			ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-			pair<SolutionHFM, Evaluation>* sol;
+			pair<SolutionHFM, Evaluation<>>* sol;
 			int timeES = argvTimeES; // online training time
 			sol = forecastObject.run(timeES, 0, 0);
 
@@ -206,7 +206,7 @@ int mokokoWindSotavento(int argc, char **argv)
 //		cout << trainningSet << endl;
 //		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 //
-//		pair<Solution<RepEFP>&, Evaluation&>* sol;
+//		pair<Solution<RepEFP>&, Evaluation<>&>* sol;
 //		int timeES = argvTimeES; // online training time
 //		sol = forecastObject.run(timeES, 0, 0);
 ////		cout << sol->first.getR() << endl;

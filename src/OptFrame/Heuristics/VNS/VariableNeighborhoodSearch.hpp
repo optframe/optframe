@@ -57,9 +57,9 @@ public:
 	{
 	}
 
-	//virtual void improvement(S& s, Evaluation& e, double timelimit, double target_f) = 0;
+	//virtual void improvement(S& s, Evaluation<>& e, double timelimit, double target_f) = 0;
 
-	virtual void shake(S& s, Evaluation& e, unsigned int k_shake, double timelimit, double target_f)
+	virtual void shake(S& s, Evaluation<>& e, unsigned int k_shake, double timelimit, double target_f)
 	{
 		Move<R, ADS, S>* move = vshake.at(k_shake)->validRandomMoveSolution(s);
 		if(move)
@@ -71,26 +71,26 @@ public:
 		}
 	}
 
-	virtual pair<pair<S&, Evaluation&>, unsigned int> neighborhoodChange(const S& sStar, const Evaluation& eStar, const S& s2, const Evaluation& e2, unsigned int k)
+	virtual pair<pair<S&, Evaluation<>&>, unsigned int> neighborhoodChange(const S& sStar, const Evaluation<>& eStar, const S& s2, const Evaluation<>& e2, unsigned int k)
 	{
 		if (evaluator.betterThan(e2, eStar))
 		{
 			// IMPROVEMENT!
-			pair<S&, Evaluation&> p(s2.clone(), e2.clone());
+			pair<S&, Evaluation<>&> p(s2.clone(), e2.clone());
 			if(Component::information)
 				cout << "VNS: improvement at NS " << k << " => " << e2.evaluation() << endl;
 			return make_pair(p, 0); // k <- 0
 		}
 		else
 		{
-			pair<S&, Evaluation&> p(sStar.clone(), eStar.clone());
+			pair<S&, Evaluation<>&> p(sStar.clone(), eStar.clone());
 			return make_pair(p, k+1);
 		}
 	}
 
 	virtual LocalSearch<R, ADS, S>& buildSearch(unsigned k_search) = 0;
 
-	pair<S, Evaluation>* search(SOSC& sosc,  const S* _s = nullptr,  const Evaluation* _e = nullptr) override
+	pair<S, Evaluation<>>* search(SOSC& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
 	{
       double timelimit = sosc.timelimit;
       double target_f = sosc.target_f;
@@ -101,7 +101,7 @@ public:
 		Timer tnow;
 
 		S& sStar = *constructive.generateSolution(sosc.timelimit);
-		Evaluation   eStar = evaluator.evaluateSolution(sStar);
+		Evaluation<>   eStar = evaluator.evaluateSolution(sStar);
 
 		if(Component::information)
 			cout << "VNS starts: " << eStar.evaluation() << endl;
@@ -113,7 +113,7 @@ public:
 			while(k < vshake.size())
 			{
 				S& s = *new S(sStar); // implicit clone on copy constructor
-				Evaluation&   e = eStar.clone();
+				Evaluation<>&   e = eStar.clone();
 
 				shake(s, e, k, timelimit, target_f);
 
@@ -121,7 +121,7 @@ public:
 				improve.exec(s, e, sosc);
 				delete& improve; // save trajectory history?
 
-				pair<pair<S&, Evaluation&>, unsigned int> nc = neighborhoodChange(sStar, eStar, s, e, k);
+				pair<pair<S&, Evaluation<>&>, unsigned int> nc = neighborhoodChange(sStar, eStar, s, e, k);
 
 				sStar = nc.first.first;
 				eStar = nc.first.second;
@@ -136,7 +136,7 @@ public:
 			}
 		}
 
-		return new pair<S, Evaluation> (sStar, eStar);
+		return new pair<S, Evaluation<>> (sStar, eStar);
 	}
 
 	static string idComponent()

@@ -68,7 +68,7 @@ public:
 		return *new levelHistory(vars, maxs);
 	}
 
-	virtual void intensification(S& s, Evaluation& e, double timelimit, double target_f, levelHistory& history)
+	virtual void intensification(S& s, Evaluation<>& e, double timelimit, double target_f, levelHistory& history)
 	{
 		h2.addSolution(s);
 
@@ -77,7 +77,7 @@ public:
 			S& s1 = h2.search(s);
 
 			Evaluator<R, ADS, S> & ev = this->getEvaluator();
-			Evaluation& s1_e = ev.evaluate(s1);
+			Evaluation<>& s1_e = ev.evaluate(s1);
 
 			if (ev.betterThan(s1_e, e))
 			{
@@ -91,13 +91,13 @@ public:
 
 	}
 
-	virtual void localSearch(S& s, Evaluation& e, double timelimit, double target_f)
+	virtual void localSearch(S& s, Evaluation<>& e, double timelimit, double target_f)
 	{
 		//cout << "localSearch(.)" << endl;
 		ls.exec(s, e, timelimit, target_f);
 	}
 
-	virtual void perturbation(S& s, Evaluation& e, double timelimit, double target_f, levelHistory& history)
+	virtual void perturbation(S& s, Evaluation<>& e, double timelimit, double target_f, levelHistory& history)
 	{
 		//cout << "perturbation(.)" << endl;
 
@@ -126,7 +126,7 @@ public:
 		history.first.second = level;
 	}
 
-	virtual bool acceptanceCriterion(const Evaluation& e1, const Evaluation& e2, levelHistory& history)
+	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, levelHistory& history)
 	{
 		if (IntensifiedIteratedLocalSearch<levelHistory, R, ADS >::evaluator.betterThan(e1, e2))
 		{

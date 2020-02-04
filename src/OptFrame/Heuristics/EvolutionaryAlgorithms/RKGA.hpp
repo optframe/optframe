@@ -135,7 +135,7 @@ public:
       for (unsigned i = 0; i < p.size(); ++i) {
          //p.at(i).print();
          random_keys& rk = p.at(i).getR();
-         pair<Evaluation, CopySolution<R>*> pe = decoder.decode(rk);
+         pair<Evaluation<>, CopySolution<R>*> pe = decoder.decode(rk);
          p.setFitness(i, pe.first.evaluation());
          //delete &pe.first;
          if (pe.second)
@@ -159,8 +159,8 @@ public:
       return *new CopySolution<random_keys>(v);
    }
 
-   //pair<CopySolution<random_keys>&, Evaluation&>* search(double timelimit = 100000000, double target_f = 0, const CopySolution<random_keys>* _s = nullptr, const Evaluation* _e = nullptr)
-   virtual pair<CopySolution<random_keys>, Evaluation>* search(SOSC& stopCriteria, const CopySolution<random_keys>* _s = nullptr, const Evaluation* _e = nullptr) override
+   //pair<CopySolution<random_keys>&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const CopySolution<random_keys>* _s = nullptr, const Evaluation<>* _e = nullptr)
+   virtual pair<CopySolution<random_keys>, Evaluation<>>* search(SOSC& stopCriteria, const CopySolution<random_keys>* _s = nullptr, const Evaluation<>* _e = nullptr) override
    {
       // count generations
       int count_gen = 0;
@@ -224,8 +224,8 @@ public:
       p.sort(decoder.isMinimization());
 
       CopySolution<random_keys>& best = p.remove(0);
-      pair<Evaluation, CopySolution<R>*> pe = decoder.decode(best.getR());
-      Evaluation& e = pe.first;
+      pair<Evaluation<>, CopySolution<R>*> pe = decoder.decode(best.getR());
+      Evaluation<>& e = pe.first;
       // ignoring second value
       if (pe.second)
          delete pe.second;
@@ -233,7 +233,7 @@ public:
       //delete p;
       p.clear();
 
-      return new pair<CopySolution<random_keys>, Evaluation>(best, e);
+      return new pair<CopySolution<random_keys>, Evaluation<>>(best, e);
    }
 };
 }

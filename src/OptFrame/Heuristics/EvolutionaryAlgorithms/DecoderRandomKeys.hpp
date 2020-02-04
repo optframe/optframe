@@ -140,7 +140,7 @@ public:
       for (unsigned i = 0; i < v.size(); i++)
          v[i] = rk[i] >= limit;
 
-      Evaluation e = ev.evaluate(v, nullptr);
+      Evaluation<> e = ev.evaluate(v, nullptr);
 
       // you have the option to actually return a Solution<vector<bool>> for post-decoding purposes
       return pair<Evaluation<>&, CopySolution<vector<bool>>*>(e, nullptr);

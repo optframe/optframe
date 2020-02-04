@@ -75,7 +75,7 @@ public:
       return new MoveSwap(c2, c1, tsp);
    }
 
-   Move<RepTSP>* applyUpdate(Evaluation& e, RepTSP& rep, OPTFRAME_DEFAULT_ADS* ads) override
+   Move<RepTSP>* applyUpdate(Evaluation<>& e, RepTSP& rep, OPTFRAME_DEFAULT_ADS* ads) override
    {
       int k1, k2;
 

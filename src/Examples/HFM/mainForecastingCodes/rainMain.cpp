@@ -203,7 +203,7 @@ int rainMain(int argc, char **argv)
 
 		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-		pair<SolutionHFM, Evaluation>* sol;
+		pair<SolutionHFM, Evaluation<>>* sol;
 
 		int optMethod = rg.rand(2);
 		optMethod = 0;
