@@ -65,7 +65,7 @@ concept bool totally_ordered =
 // 'abs' concept is also important to perform safe comparisons (HasAbs)
 // basic arithmetic is currently just +, - and *.  (division was never required to this day)
 // will require totally_ordered concept because everything (we know) depends on it
-// 'basic_arithmetics_assign' includes assignment operators +=, -=, *=
+// 'basic_arithmetics_assign' includes assignment operators +=, -= (weight scalar *= was dropped for now, too hard)
 template <class T>
 concept bool basic_arithmetics_assign = 
   optframe::totally_ordered<T> &&
@@ -74,10 +74,7 @@ concept bool basic_arithmetics_assign =
            const std::remove_reference_t<T>& b) {
     { a += b } -> std::remove_reference_t<T>&;
     { a -= b } -> std::remove_reference_t<T>&;
-    { a *= b } -> std::remove_reference_t<T>&;
-    //{ a + b } -> std::remove_reference_t<T>&; // require const a
-    //{ a - b } -> std::remove_reference_t<T>&; // require const a
-    //{ a * b } -> std::remove_reference_t<T>&; // require const a
+    //{ a *= b } -> std::remove_reference_t<T>&; // useful, but too hard to do now
     ////{ a / b } -> std::remove_reference_t<T>&;  // NOT actually necessary (until today!)
   };
 
@@ -88,7 +85,7 @@ concept bool basic_arithmetics =
            const std::remove_reference_t<T>& b) {
     { a + b } -> std::remove_reference_t<T>; // requires const a
     { a - b } -> std::remove_reference_t<T>; // requires const a
-    { a * b } -> std::remove_reference_t<T>; // requires const a
+    //{ a * b } -> std::remove_reference_t<T>; // useful, but too hard now... must provide multiplication by scalar to do 'weights'
     //{ a / b } -> std::remove_reference_t<T>;  // NOT actually necessary (until today!)
   };  
 
@@ -171,10 +168,11 @@ public:
       return *this;
    }
 
-   ConceptsTestClassArithmetics& operator*=(const ConceptsTestClassArithmetics& c)
-   {
-      return *this;
-   }
+   // multiplication by scalar (int, double, etc) is not very easy now, so dropping for a while
+   //ConceptsTestClassArithmetics& operator*=(const ConceptsTestClassArithmetics& c)
+   //{
+   //   return *this;
+   //}
    // division is not required!
 
    ConceptsTestClassArithmetics operator+(const ConceptsTestClassArithmetics& c) const
@@ -187,10 +185,11 @@ public:
       return ConceptsTestClassArithmetics(*this) -= c;
    }
 
-   ConceptsTestClassArithmetics operator*(const ConceptsTestClassArithmetics& c) const
-   {
-      return ConceptsTestClassArithmetics(*this) *= c;
-   }
+   // multiplication by scalar (int, double, etc) is not very easy now, so dropping for a while
+   //ConceptsTestClassArithmetics operator*(const ConceptsTestClassArithmetics& c) const
+   //{
+   //   return ConceptsTestClassArithmetics(*this) *= c;
+   //}
 };
 
 // testing total order for some random classes

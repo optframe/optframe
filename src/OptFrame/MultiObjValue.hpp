@@ -8,8 +8,7 @@
 
 //#include "Util/printable.h"
 
-namespace optframe
-{
+namespace optframe {
 
 // Struct to handle comparison values for two MultiObjValue
 // It could be a triple of ints... but too many tuples already on code below!! (largely complex)
@@ -36,7 +35,7 @@ struct MOVCompare
 
 // typically, template parameter packs are: template<class... Params>
 // here, parameter pack requires 'totally_ordered' elements (by concepts)
-// IMPORTANT: it may be good to already require 'basic_arithmetics' on types (+,- and *) which are historically useful
+// IMPORTANT: it may be good to already require 'basic_arithmetics' on types (+,-) (and perhaps * in next phase...) which are historically useful
 // if this is a bad decision, we can revert it some day :)
 // basic arithmetics are useful to compute 'MoveCosts', infeasibility weights and many other things
 template<optframe::basic_arithmetics... AllObjTypes>
@@ -47,15 +46,15 @@ protected:
    std::tuple<AllObjTypes...> objValues;
 
 public:
-   MultiObjValue(std::tuple<AllObjTypes...> allObjValues)
+   explicit MultiObjValue(std::tuple<AllObjTypes...> allObjValues)
      : objValues(allObjValues)
    {
    }
 
    template<class... Args>
-   MultiObjValue(Args&&... allObjValues)
-     //: objValues(std::forward<Args>(allObjValues)...) // does it help?
-     : objValues(allObjValues...)
+   explicit MultiObjValue(Args&&... allObjValues)
+     : objValues(std::forward<Args>(allObjValues)...) // does it help?
+                                                      //: objValues(allObjValues...)
    {
    }
 
@@ -144,7 +143,7 @@ public:
       int comp = compare(c); // beware that comp may be -2
       return (comp == -1) || (comp == 0);
    }
-   
+
    // now, going to arithmetic operators
 
 protected:
@@ -152,7 +151,7 @@ protected:
    // to simplify, 'operate_t' will operate over myself with += , -= and *=
    template<char OP, std::size_t I = 0>
    inline typename std::enable_if<I == sizeof...(AllObjTypes), void>::type
-   operatet(const std::tuple<AllObjTypes...>& tOther) 
+   operatet(const std::tuple<AllObjTypes...>& tOther)
    {
       // nothing to do (no objetives to compute with I==sizeof out of boundaries)
    }
@@ -163,16 +162,16 @@ protected:
    {
       // TODO: use 'OP' as consexpr to directly evaluate desired operation (will perform on compile-time)
       // WARNING: doing this on runtime (compiler may be smart and help us!). It would very likely...
-      if(OP == '+')
+      if (OP == '+')
          std::get<I>(this->objValues) += std::get<I>(tOther);
-      if(OP == '-')
+      if (OP == '-')
          std::get<I>(this->objValues) -= std::get<I>(tOther);
-      if(OP == '*')
-         std::get<I>(this->objValues) *= std::get<I>(tOther);
+      // useful, but not supporting scalar multiplication yet!! by int, double.. on practice, we cannot do 'weights' yet, too hard..
+      //if(OP == '*')
+      //   std::get<I>(this->objValues) *= std::get<I>(tOther);
    }
 
 public:
-
    MultiObjValue& operator+=(const MultiObjValue& c)
    {
       operatet<'+'>(c.objValues);
@@ -185,11 +184,12 @@ public:
       return *this;
    }
 
-   MultiObjValue& operator*=(const MultiObjValue& c)
-   {
-      operatet<'*'>(c.objValues);
-      return *this;
-   }
+   // dropping now to avoid scalar mult support
+   //MultiObjValue& operator*=(const MultiObjValue& c)
+   //{
+   //   operatet<'*'>(c.objValues);
+   //   return *this;
+   //}
 
    // division is not required!
 
@@ -203,10 +203,10 @@ public:
       return MultiObjValue(*this) -= c;
    }
 
-   MultiObjValue operator*(const MultiObjValue& c) const
-   {
-      return MultiObjValue(*this) *= c;
-   }
+   //MultiObjValue operator*(const MultiObjValue& c) const
+   //{
+   //   return MultiObjValue(*this) *= c;
+   //}
 
    // finally, must ensure this class is printable
    std::string toString() const

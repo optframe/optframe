@@ -2,6 +2,8 @@
 #define OPTFRAME_SINGLE_OBJ_VALUE_HPP
 
 // no includes (amazing class!)
+// not anymore :(
+#include "myconcepts.h"
 
 #ifndef EVALUATION_TYPE
 #define EVALUATION_TYPE double
@@ -20,6 +22,19 @@ namespace optframe {
 using evtype = EVALUATION_TYPE;
 // Single Objective Value will use standard/default value
 using SingleObjValue = evtype;
+
+class ObjSpaceBasics
+{
+   public:
+   template<optframe::basic_arithmetics T>
+   friend T numeric_zero();
+
+   friend int numeric_zero()
+   {
+      return 0;
+   }
+};
+
 } // namespace optframe
 
 #endif // OPTFRAME_SINGLE_OBJ_VALUE_HPP

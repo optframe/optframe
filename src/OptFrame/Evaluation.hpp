@@ -24,6 +24,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
+#include<assert.h>
 
 #include "BaseSolution.h" // TODO: Rename to BaseConcepts.h
 #include "Component.hpp"
@@ -252,7 +253,11 @@ public:
    // note that, if 'evtype' becomes complex, one must return a moveable copy, not reference of internal value
    ObjType evaluation() const
    {
-      return objFunction + weight * infMeasure;
+      // SHOULD NOT require scalar weight for general usage... too hard for MultiObjValues in this moment (but doable!)
+      // ASSUMING weight = 1
+      assert(weight == 1);
+      return objFunction + infMeasure;
+      //return objFunction + weight * infMeasure;
    }
 
    // leave option to rewrite tolerance (or consider lexicographic values)
@@ -310,7 +315,8 @@ struct optframe_test_debug_testev_evaluation_disable_runtime
    TestEv<Evaluation<int>> test_int;
    TestEv<Evaluation<>> test_default;
    TestEv<Evaluation<SingleObjValue>> test_sov; // single obj value
-   TestEv<Evaluation<MultiObjValue<int, double>>> test_mov; // multi obj value
+   //TestEv<Evaluation<MultiObjValue<int, double>>> test_mov; // multi obj value
+   
 };
 #endif
 
