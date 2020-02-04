@@ -65,6 +65,12 @@ using evtype = EVALUATION_TYPE;
 #define EVALUATION_ABS ::fabs
 #endif
 
+// Single Objective Value will use standard/default value
+using SingleObjValue = evtype;
+
+// Multi Objective Value can be found in its own class
+#include "MultiObjValue.hpp"
+
 // note: for multi-objective problems with distinct objective space types
 // such as (int, evtype, long long) you can use PackTypes in Utils or overload
 // manually each of the numeric operators +, -, *
@@ -318,6 +324,8 @@ struct optframe_test_debug_testev_evaluation_disable_runtime
    TestEv<Evaluation<double>> test_double;
    TestEv<Evaluation<int>> test_int;
    TestEv<Evaluation<>> test_default;
+   TestEv<Evaluation<SingleObjValue>> test_sov; // single obj value
+   //TestEv<Evaluation<MultiObjValue<int, double>>> test_mov; // multi obj value
 };
 #endif
 
