@@ -30,6 +30,7 @@
 #include "Component.hpp"
 #include "MultiObjValue.hpp"
 #include "SingleObjValue.hpp" // basic value 'evtype' comes from here!
+#include "MultiObjValue.hpp" // inserting this beforehand.. who knows!!!
 
 using namespace std;
 
@@ -263,7 +264,10 @@ public:
    // leave option to rewrite tolerance (or consider lexicographic values)
    virtual bool isFeasible() const
    {
-      return (EVALUATION_ABS(infMeasure) <= EVALUATION_ZERO);
+      //return optframe::numeric_is_zero<ObjType>(infMeasure);
+      // IMPORTANT: numeric_is_zero can come from anywhere!
+      return optframe::numeric_is_zero<ObjType>(infMeasure);
+      //return (EVALUATION_ABS(infMeasure) <= optframe::numeric_zero<ObjType>()); // deprecated
    }
 
    // ======================

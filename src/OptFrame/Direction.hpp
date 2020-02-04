@@ -75,18 +75,18 @@ public:
 	virtual inline bool betterThan(const MoveCost<>& mc1, const MoveCost<>& mc2)
 	{
 		if(isMinimization())
-			return (mc2.cost() - mc1.cost()) >= EVALUATION_ZERO;
+			return (mc2.cost() - mc1.cost()) >= optframe::numeric_zero<evtype>();
 		else
-			return (mc1.cost() - mc2.cost()) >= EVALUATION_ZERO;
+			return (mc1.cost() - mc2.cost()) >= optframe::numeric_zero<evtype>();
 	}
 
 	// true if 'e1' is better than 'e2'
 	virtual inline bool betterThan(const Evaluation<>& e1, const Evaluation<>& e2)
 	{
 		if(isMinimization())
-			return (e2.evaluation() - e1.evaluation()) >= EVALUATION_ZERO;
+			return (e2.evaluation() - e1.evaluation()) >= optframe::numeric_zero<evtype>();
 		else
-			return (e1.evaluation() - e2.evaluation()) >= EVALUATION_ZERO;
+			return (e1.evaluation() - e2.evaluation()) >= optframe::numeric_zero<evtype>();
 	}
 
 	/*
@@ -132,7 +132,8 @@ public:
 protected:
 	virtual inline bool equals(const evtype& t1, const evtype& t2, const vector<pair<evtype, evtype> >& altCosts1, const vector<pair<evtype, evtype> >& altCosts2)
 	{
-		if(EVALUATION_ABS(t1 - t2) <= EVALUATION_ZERO)
+      if(optframe::numeric_is_zero<evtype>(t1 - t2))
+		//if(EVALUATION_ABS(t1 - t2) <= optframe::numeric_zero<evtype>()) // deprecated
 			return true;
 
 		if(t1 != t2)
@@ -171,10 +172,12 @@ public:
 	{
 		evtype ec1 = mc.cost() + e1.evaluation();
 
-		if(isMinimization()  && (e2.evaluation() - ec1) >= EVALUATION_ZERO)
+		//if(isMinimization()  && (e2.evaluation() - ec1) >= EVALUATION_ZERO) // deprecated
+      if(isMinimization()  && (e2.evaluation() - ec1) >= optframe::numeric_zero<evtype>())
 			return true;
 
-		if(!isMinimization() && (ec1 - e2.evaluation()) >= EVALUATION_ZERO)
+		//if(!isMinimization() && (ec1 - e2.evaluation()) >= EVALUATION_ZERO) // deprecated
+      if(!isMinimization() && (ec1 - e2.evaluation()) >= optframe::numeric_zero<evtype>())
 			return true;
 
 		return false;

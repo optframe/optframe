@@ -4,6 +4,7 @@
 #include <tuple>
 
 //#include "BaseSolution.h" // TODO: rename to BaseConcepts
+#include "SingleObjValue.hpp" // must re-use some structures
 #include "myconcepts.h"
 
 //#include "Util/printable.h"
@@ -42,7 +43,9 @@ template<optframe::basic_arithmetics... AllObjTypes>
 //template<optframe::totally_ordered... AllObjTypes>
 class MultiObjValue
 {
-protected:
+//protected:
+// should be public, to make it easier is_zero verifications
+public:
    std::tuple<AllObjTypes...> objValues;
 
 public:
@@ -224,7 +227,60 @@ public:
       os << me.toString();
       return os;
    }
+
+   // this has some scope issue, if we want it to be in optframe:: only... must let access protected free
+   /*
+   friend inline bool
+   numeric_is_zero(const MultiObjValue<AllObjTypes...>& tOther)
+   {
+      //return compare_zero<Args...>(tOther);
+      // c++17 fold apply
+      return std::apply([](auto... v) { return (optframe::numeric_is_zero(v) && ...); }, tOther.objValues);
+   }
+   */
 };
+
+/*
+// ==================================================
+// define when a MultiObjValue may be considered zero
+// base: I = 0
+template<class... AllObjTypes, std::size_t I = 0>
+inline typename std::enable_if<I == sizeof...(AllObjTypes), bool>::type
+compare_zero(const std::tuple<AllObjTypes...>& tOther)
+{
+   return true; // empty I out of bounds ust be true
+}
+// continues.. I > 0
+template<class... AllObjTypes, std::size_t I = 0>
+  inline typename std::enable_if < I<sizeof...(AllObjTypes), bool>::type
+                                   compare_zero(const std::tuple<AllObjTypes...>& tOther)
+{
+   // every element must be zero
+   if (!optframe::numeric_is_zero(std::get<I>(tOther)))
+      return false;
+   // get next recursive (TODO: may try to short-circuit with AND &&)
+   return compare_zero<AllObjTypes..., I + 1>(tOther);
+}
+
+
+//template<class T, class... Args>
+//inline typename std::enable_if<std::is_same<T, MultiObjValue<Args...>>::value, bool>::type
+//numeric_is_zero(const MultiObjValue<Args...>& tOther)
+//{
+ //  return compare_zero<Args...>(tOther);
+//}
+*/
+
+
+template<class... Args>
+inline bool
+numeric_is_zero(const MultiObjValue<Args...>& tOther)
+{
+   //return compare_zero<Args...>(tOther);
+   // c++17 fold apply
+   return std::apply([](auto... v) { return ( optframe::numeric_is_zero(v) && ...); }, tOther.objValues);
+   // only issue is PROTECTED info
+}
 
 // ---------------------------------
 // Compile-tests (validate concepts)
@@ -246,6 +302,10 @@ struct optframe_debug_example_test_mov
       std::tuple<int, char> foo(10, 'x');
       MultiObjValue<int, char> testMOV1(foo);
       MultiObjValue<int, char> testMOV2(20, 'y');
+
+      MultiObjValue<int, double> testMOV3(0, 0.000001);
+      assert(numeric_is_zero(testMOV3)); // should be zero!
+
       //MultiObjValue<s_empty, char> testMOV2(s_empty(), 'y'); // ERROR: breaks 'totally_ordered' requirement
    };
 };
