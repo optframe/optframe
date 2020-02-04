@@ -272,15 +272,27 @@ template<class... AllObjTypes, std::size_t I = 0>
 */
 
 
-template<class... Args>
+//template<optframe::basic_arithmetics... Args, class T = optframe::MultiObjValue<Args...>>
+template<optframe::basic_arithmetics... Args>
 inline bool
-numeric_is_zero(const MultiObjValue<Args...>& tOther)
+//inline typename std::enable_if<std::is_same<std::remove_reference_t<T>, optframe::MultiObjValue<Args...>>::value, bool>::type
+numeric_is_zero(const optframe::MultiObjValue<Args...>& tOther)
+//numeric_is_zero(const T& tOther)
 {
    //return compare_zero<Args...>(tOther);
    // c++17 fold apply
    return std::apply([](auto... v) { return ( optframe::numeric_is_zero(v) && ...); }, tOther.objValues);
    // only issue is PROTECTED info
 }
+
+/*
+template<class... Args>
+inline bool
+numeric_is_zero(const MultiObjValue<Args...> tOther)
+{
+   return numeric_is_zero(tOther);
+}
+*/
 
 // ---------------------------------
 // Compile-tests (validate concepts)
@@ -304,7 +316,7 @@ struct optframe_debug_example_test_mov
       MultiObjValue<int, char> testMOV2(20, 'y');
 
       MultiObjValue<int, double> testMOV3(0, 0.000001);
-      assert(numeric_is_zero(testMOV3)); // should be zero!
+      assert(optframe::numeric_is_zero(testMOV3)); // should be zero!
 
       //MultiObjValue<s_empty, char> testMOV2(s_empty(), 'y'); // ERROR: breaks 'totally_ordered' requirement
    };
