@@ -312,6 +312,33 @@ public:
 
 // testing default evaluation
 #ifndef NDEBUG
+
+template<optframe::basic_arithmetics T>
+class TestTArithMO_is_zero2
+{
+   public:
+   void f()
+   {
+      T x;
+      assert(optframe::numeric_is_zero(x));
+   }
+
+   string toString() const
+   {
+      return "";
+   }
+
+   TestTArithMO_is_zero2& clone()
+   {
+      return *this;
+   }
+
+   T evaluation() const
+   {
+   }
+
+};
+
 struct optframe_test_debug_testev_evaluation_disable_runtime
 {
    // test if following structure is valid
@@ -319,6 +346,8 @@ struct optframe_test_debug_testev_evaluation_disable_runtime
    TestEv<Evaluation<int>> test_int;
    TestEv<Evaluation<>> test_default;
    TestEv<Evaluation<SingleObjValue>> test_sov; // single obj value
+   TestEv<TestTArithMO_is_zero<MultiObjValue<int, double>>> Tmo;
+   TestEv<TestTArithMO_is_zero2<MultiObjValue<int, double>>> Tmo2;
    //TestEv<Evaluation<MultiObjValue<int, double>>> test_mov; // multi obj value
    
 };

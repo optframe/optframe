@@ -282,7 +282,7 @@ numeric_is_zero(const optframe::MultiObjValue<Args...>& tOther)
    //return compare_zero<Args...>(tOther);
    // c++17 fold apply
    return std::apply([](auto... v) { return ( optframe::numeric_is_zero(v) && ...); }, tOther.objValues);
-   // only issue is PROTECTED info
+   // only issue is PROTECTED info. let it PUBLIC for now
 }
 
 /*
@@ -304,6 +304,33 @@ numeric_is_zero(const MultiObjValue<Args...> tOther)
 // We still need to ensure proper unit testing on tests/ folder, for other reasons.
 
 #ifndef NDEBUG
+
+template<optframe::basic_arithmetics T>
+class TestTArithMO_is_zero
+{
+   public:
+   void f()
+   {
+      T x;
+      assert(optframe::numeric_is_zero(x));
+   }
+
+   string toString() const
+   {
+      return "";
+   }
+
+   TestTArithMO_is_zero& clone()
+   {
+      return *this;
+   }
+
+   T evaluation() const
+   {
+   }
+
+};
+
 struct optframe_debug_example_test_mov
 {
    struct s_empty
@@ -318,9 +345,13 @@ struct optframe_debug_example_test_mov
       MultiObjValue<int, double> testMOV3(0, 0.000001);
       assert(optframe::numeric_is_zero(testMOV3)); // should be zero!
 
+      TestTArithMO_is_zero<MultiObjValue<int, double>> Tmo;
+
       //MultiObjValue<s_empty, char> testMOV2(s_empty(), 'y'); // ERROR: breaks 'totally_ordered' requirement
    };
 };
+
+
 
 // TODO: create unit tests to validate simple comparisons between MultiObjValue objects
 
