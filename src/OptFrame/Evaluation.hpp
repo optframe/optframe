@@ -21,9 +21,9 @@
 #ifndef OPTFRAME_EVALUATION_HPP_
 #define OPTFRAME_EVALUATION_HPP_
 
+#include <cmath>
 #include <cstdlib>
 #include <iostream>
-#include <cmath>
 
 #include "Component.hpp"
 
@@ -31,8 +31,7 @@
 
 using namespace std;
 
-namespace optframe
-{
+namespace optframe {
 
 //! \english The Evaluation class is a container class for the objective function value and the Memory structure M. \endenglish \portuguese A classe Evaluation é uma classe contêiner para o valor da função objetivo e a estrutura de Memória M. \endportuguese
 
@@ -66,160 +65,173 @@ using evtype = EVALUATION_TYPE;
 #define EVALUATION_ABS ::fabs
 #endif
 
-
 // note: for multi-objective problems with distinct objective space types
 // such as (int, evtype, long long) you can use PackTypes in Utils or overload
 // manually each of the numeric operators +, -, *
 //why this isn't a template????????????????
-// found a solution using C++20 concepts: now it's a template :)
+// found a solution using C++20 concepts: now it's an optional template :)
 
+// TODO: this ObjType here can require more than 'totally_ordered',
+// as it will require arithmetics (+,-,*) to calculate MoveCosts and Infeasibility
+// Thus, we should use another concept here, composed (&&) with arithmetics.
+// Good thing is that Evaluation class is generic for most uses...
+// This is not the case for Pareto solutions, where composability may become more complex (MultiEvaluation)
+// TODO: must see next how to deal with that (on Pareto side), but at least we have a very elegant solution now
 
-template<class ObjType = evtype>
-class Evaluation final: public Component
+template<optframe::totally_ordered ObjType = evtype>
+class Evaluation final : public Component
 {
 protected:
-	// ==== Objective Space type: pair<evtype, evtype> ====
-	// objective function value (default = double)
-	evtype objFunction;
-	// infeasibility measure value (default = double)
-	evtype infMeasure;
-	// for lexicographic approaches, use these extra evaluation values
-	vector<pair<evtype, evtype> > alternatives;
+   // ==== Objective Space type: pair<evtype, evtype> ====
+   // objective function value (default = double)
+   ObjType objFunction;
+   // infeasibility measure value (default = double)
+   ObjType infMeasure;
+   // for lexicographic approaches, use these extra evaluation values
+   vector<pair<evtype, evtype>> alternatives;
 
-	// ==== Objective Space auxiliary information ====
-	// LocalOptimum Status: mapping 'move.id()' to 'NeighborhoodStatus'
-	// map<string, bool> localStatus; // TODO: REMOVE!
-	// GlobalOptimumStatus (for exact methods only)
-	enum GOS
-	{
-		gos_yes, gos_no, gos_unknown
-	} gos;
+   // ==== Objective Space auxiliary information ====
+   // LocalOptimum Status: mapping 'move.id()' to 'NeighborhoodStatus'
+   // map<string, bool> localStatus; // TODO: REMOVE!
+   // GlobalOptimumStatus (for exact methods only)
+   enum GOS
+   {
+      gos_yes,
+      gos_no,
+      gos_unknown
+   } gos;
 
-	// LocalOptimumStatus
-	enum LOS
-	{
-		los_yes, los_no, los_unknown
-	}; // do not declare here (keep in ADS or R)
+   // LocalOptimumStatus
+   enum LOS
+   {
+      los_yes,
+      los_no,
+      los_unknown
+   }; // do not declare here (keep in ADS or R)
 
 public:
-	// boolean field to indicate if Evaluation needs an update
-	bool outdated;
-	// boolean field to indicate if Evaluation value is an estimation (not exact)
-	bool estimated;
-	// constant to mutiply infeasibility weight
-	evtype weight;
+   // boolean field to indicate if Evaluation needs an update
+   bool outdated;
+   // boolean field to indicate if Evaluation value is an estimation (not exact)
+   bool estimated;
+   // constant to mutiply infeasibility weight
+   evtype weight;
 
-	// ======================================
-	// begin canonical part
+   // ======================================
+   // begin canonical part
 
-	Evaluation(const evtype& obj, const evtype& inf, const evtype& w = 1) :
-			objFunction(obj), infMeasure(inf), weight(w)
-	{
-		gos = gos_unknown;
-		outdated = false;
-		estimated = false;
-	}
+   Evaluation(const evtype& obj, const evtype& inf, const evtype& w = 1)
+     : objFunction(obj)
+     , infMeasure(inf)
+     , weight(w)
+   {
+      gos = gos_unknown;
+      outdated = false;
+      estimated = false;
+   }
 
-	Evaluation(const evtype& obj) :
-		objFunction(obj)
-	{
-		weight = 1;
-		infMeasure = 0;
+   Evaluation(const evtype& obj)
+     : objFunction(obj)
+   {
+      weight = 1;
+      infMeasure = 0;
 
-		gos = gos_unknown;
-		outdated = false;
-		estimated = false;
-	}
+      gos = gos_unknown;
+      outdated = false;
+      estimated = false;
+   }
 
+   Evaluation(const Evaluation& e)
+     : objFunction(e.objFunction)
+     , infMeasure(e.infMeasure)
+     , alternatives(e.alternatives)
+     , gos(e.gos)
+     , outdated(e.outdated)
+     , estimated(e.estimated)
+     , weight(e.weight)
+   {
+   }
 
-	Evaluation(const Evaluation& e) :
-			objFunction(e.objFunction), infMeasure(e.infMeasure), alternatives(e.alternatives),
-			gos(e.gos), outdated(e.outdated), estimated(e.estimated), weight(e.weight)
-	{
-	}
+   virtual ~Evaluation()
+   {
+   }
 
+   virtual Evaluation& operator=(const Evaluation& e)
+   {
+      if (&e == this) // auto ref check
+         return *this;
 
-	virtual ~Evaluation()
-	{
-	}
+      objFunction = e.objFunction;
+      infMeasure = e.infMeasure;
+      outdated = e.outdated;
+      estimated = e.estimated;
+      weight = e.weight;
+      alternatives = e.alternatives;
+      gos = e.gos;
 
+      return *this;
+   }
 
-	virtual Evaluation& operator=(const Evaluation& e)
-	{
-		if (&e == this) // auto ref check
-			return *this;
+   virtual Evaluation& clone() const
+   {
+      return *new Evaluation(*this);
+   }
 
-		objFunction  = e.objFunction;
-		infMeasure   = e.infMeasure;
-		outdated     = e.outdated;
-		estimated    = e.estimated;
-		weight       = e.weight;
-		alternatives = e.alternatives;
-		gos          = e.gos;
+   // end canonical part
+   // ======================================
+   // begin Evaluation methods
 
-		return *this;
-	}
+   ObjType getObjFunction() const
+   {
+      return objFunction;
+   }
 
-	virtual Evaluation& clone() const
-	{
-		return *new Evaluation(*this);
-	}
+   ObjType getInfMeasure() const
+   {
+      return infMeasure;
+   }
 
-	// end canonical part
-	// ======================================
-	// begin Evaluation methods
+   evtype getWeight() const
+   {
+      return weight;
+   }
 
-	evtype getObjFunction() const
-	{
-		return objFunction;
-	}
+   const vector<pair<evtype, evtype>>& getAlternativeCosts() const
+   {
+      return alternatives;
+   }
 
-	evtype getInfMeasure() const
-	{
-		return infMeasure;
-	}
-	
-	evtype getWeight() const
-	{
-		return weight;
-	}
+   void setObjFunction(ObjType obj)
+   {
+      objFunction = obj;
+   }
 
-	const vector<pair<evtype, evtype> >& getAlternativeCosts() const
-	{
-		return alternatives;
-	}
+   void setInfMeasure(ObjType inf)
+   {
+      infMeasure = inf;
+   }
 
-	void setObjFunction(evtype obj)
-	{
-		objFunction = obj;
-	}
+   void setWeight(const evtype& w)
+   {
+      weight = w;
+   }
 
-	void setInfMeasure(evtype inf)
-	{
-		infMeasure = inf;
-	}
-	
-	void setWeight(const evtype& w)
-	{
-		weight = w;
-	}
+   void addAlternativeCost(const pair<evtype, evtype>& alternativeCost)
+   {
+      alternatives.push_back(alternativeCost);
+   }
 
-	void addAlternativeCost(const pair<evtype, evtype>& alternativeCost)
-	{
-		alternatives.push_back(alternativeCost);
-	}
+   void setAlternativeCosts(const vector<pair<evtype, evtype>>& alternativeCosts)
+   {
+      alternatives = alternativeCosts;
+   }
 
-	void setAlternativeCosts(const vector<pair<evtype, evtype> >& alternativeCosts)
-	{
-		alternatives = alternativeCosts;
-	}
+   // -----------------
+   // for local optimum
+   // -----------------
 
-	// -----------------
-	// for local optimum
-	// -----------------
-
-	// TODO: remove! LOS management is now on NSSeq and NSSeqIterators
-	/*
+   // TODO: remove! LOS management is now on NSSeq and NSSeqIterators
+   /*
 	bool getLocalOptimumStatus(string moveId)
 	{
 		return localStatus[moveId];
@@ -231,85 +243,83 @@ public:
 	}
 	*/
 
-	// ------------------
-	// for global optimum
-	// ------------------
+   // ------------------
+   // for global optimum
+   // ------------------
 
-	GOS getGlobalOptimumStatus()
-	{
-		return gos;
-	}
+   GOS getGlobalOptimumStatus()
+   {
+      return gos;
+   }
 
-	void setGlobalOptimumStatus(GOS status)
-	{
-		gos = status;
-	}
+   void setGlobalOptimumStatus(GOS status)
+   {
+      gos = status;
+   }
 
-	// evaluation = objFunction + weight*infMeasure
+   // evaluation = objFunction + weight*infMeasure
    // note that, if 'evtype' becomes complex, one must return a moveable copy, not reference of internal value
-	evtype evaluation() const
-	{
-		return objFunction + weight*infMeasure;
-	}
+   ObjType evaluation() const
+   {
+      return objFunction + weight * infMeasure;
+   }
 
-	// leave option to rewrite tolerance (or consider lexicographic values)
-	virtual bool isFeasible() const
-	{
-		return (EVALUATION_ABS(infMeasure) <= EVALUATION_ZERO);
-	}
+   // leave option to rewrite tolerance (or consider lexicographic values)
+   virtual bool isFeasible() const
+   {
+      return (EVALUATION_ABS(infMeasure) <= EVALUATION_ZERO);
+   }
 
-	// ======================
-	// Object specific part
-	// ======================
+   // ======================
+   // Object specific part
+   // ======================
 
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << Component::idComponent() << ":Evaluation";
-		return ss.str();
-	}
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << Component::idComponent() << ":Evaluation";
+      return ss.str();
+   }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
+   virtual string id() const
+   {
+      return idComponent();
+   }
 
+   virtual void print() const
+   {
+      cout << toString() << endl;
+   }
 
-	virtual void print() const
-	{
-		cout << toString() << endl;
-	}
+   virtual string toString() const
+   {
+      stringstream ss;
+      ss << fixed; // disable scientific notation
+      ss << "Evaluation function value = " << evaluation();
+      ss << (isFeasible() ? " " : " (not feasible) ");
+      ss << (outdated ? " OUTDATED " : " ");
+      ss << (estimated ? " ESTIMATED " : " ");
+      if (alternatives.size() > 0) {
+         ss << " alternative costs: ";
+         for (unsigned i = 0; i < alternatives.size(); i++)
+            ss << "(" << alternatives[i].first << ";" << alternatives[i].second << ") ";
+      }
+      // ss << endl;
 
-	virtual string toString() const
-	{
-		stringstream ss;
-		ss << fixed; // disable scientific notation
-		ss << "Evaluation function value = " << evaluation();
-		ss << (isFeasible() ? " " : " (not feasible) ");
-		ss << (outdated ? " OUTDATED " : " ");
-		ss << (estimated ? " ESTIMATED " : " ");
-		if(alternatives.size() > 0)
-		{
-			ss << " alternative costs: ";
-			for(unsigned i = 0; i < alternatives.size(); i++)
-				ss << "(" << alternatives[i].first << ";" << alternatives[i].second << ") ";
-		}
-		// ss << endl;
-
-		return ss.str();
-	}
+      return ss.str();
+   }
 };
-
 
 // testing default evaluation
 #ifndef NDEBUG
 struct optframe_test_debug_testev_evaluation_disable_runtime
 {
-// test if following structure is valid
-TestEv<double, Evaluation<double>> test;
+   // test if following structure is valid
+   TestEv<Evaluation<double>> test_double;
+   TestEv<Evaluation<int>> test_int;
+   TestEv<Evaluation<>> test_default;
 };
 #endif
-
 }
 
 #endif /*OPTFRAME_EVALUATION_HPP_*/

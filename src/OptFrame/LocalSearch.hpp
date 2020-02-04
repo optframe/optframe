@@ -39,7 +39,7 @@ using namespace std;
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 class LocalSearch: public Component
 {
    typedef vector<Evaluation*> FitnessValues;
@@ -114,7 +114,7 @@ public:
 };
 
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 class LocalSearchBuilder : public ComponentBuilder<R, ADS, S>
 {
 public:

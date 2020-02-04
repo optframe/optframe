@@ -6,6 +6,9 @@
 #include<cstddef> // nullptr_t
 #include<string>
 
+// this is NOT official c++20 concepts... just some for OptFrame! (based on lite concepts g++ 7)
+#include "myconcepts.h"
+
 // the default ADS type is 'int'
 // adopting 'void' type would cause troubles in constructor/copy/move operations
 // if not used, it can be ignored with few impacts (hoping compiler will help us!)
@@ -73,7 +76,7 @@ concept bool RSolution = HasGetR<Self, R> && XSolution<Self>;
 
 // ============================
 
-template <class Self, class ObjType>
+template <class Self>
 concept bool HasGetObj = requires(Self a)
 {
    {
@@ -81,16 +84,18 @@ concept bool HasGetObj = requires(Self a)
       a.evaluation() // keeping standard name since OptFrame's early times
    }
    //->ObjType &;
-   ->ObjType; // note that, if 'ObjType' becomes complex, one must return a moveable copy, not reference of internal value
+   ->optframe::totally_ordered; // note that, if 'ObjType' becomes complex, one must return a moveable copy, not reference of internal value
+   // any totally ordered output is fine! (double, int, ParetoFront , etc...)
 };
 
 // Evaluation of any numeric/comparable type ObjType (can be int, double, or pareto-front-based set for objective space)
+// decided by using generic "total ordered" concept, to avoid extra template ObjType
 // this will finally solve dependency on different obj types (int, double, etc.) in same project
 // it will also allow unification of Evaluation and MultiEvaluation into single same "thing"
 // note that getObjValue and getInfeasibleValue are not necessary here, just getObj
 // one can implement this way if preferred, separating or not both "values"... not mandatory anymore
-template <class Self, class ObjType>
-concept bool XEvaluation = HasClone<Self> && HasToString<Self> && HasGetObj<Self, ObjType>;
+template <class Self>
+concept bool XEvaluation = HasClone<Self> && HasToString<Self> && HasGetObj<Self>;
 
 // XSolution and XEvaluation are container-inspired "conceptual objects", to carry Representation and Objective Value
 // One can even aggregate both in a single unified "thing", called XESolution
@@ -99,8 +104,8 @@ concept bool XEvaluation = HasClone<Self> && HasToString<Self> && HasGetObj<Self
 // funny thing, Solution doesn't carry specific representation (yet)
 // probably, because Representation itself is as abstract as a solution... 
 // in case of "ObjType" it's different, we may operate over it, perhaps: compare, perhaps "add", "subtract", ... to create costs
-template <class Self, class ObjType>
-concept bool XESolution = XSolution<Self> && XEvaluation<Self, ObjType>;
+template <class Self>
+concept bool XESolution = XSolution<Self> && XEvaluation<Self>;
 
 
 // ============================
@@ -140,7 +145,7 @@ TestBaseSol<IsSolution<double>> test;
 };
 
 // test evaluation concept
-template<class ObjVal, XEvaluation<ObjVal> XE>
+template<XEvaluation XE>
 class TestEv
 {
 public:

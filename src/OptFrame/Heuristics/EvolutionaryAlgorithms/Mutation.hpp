@@ -44,7 +44,7 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 class Mutation: public Component, public EA
 {
 
@@ -69,7 +69,7 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 class BasicMutation: public Mutation<R, ADS, S>
 {
 protected:
@@ -117,7 +117,7 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 class BasicMutationBuilder: public ComponentBuilder<R, ADS, S>
 {
 public:
@@ -165,12 +165,12 @@ public:
 };
 
 //temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 class SimpleMutation {
 protected:
-	using Individual = Solution<R, ADS>;
+	using Individual = S;
     using Chromossome = R;
-    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Fitness = XEv*; //nullptr means there's no evaluation
     using Population = std::vector< std::pair<Individual, Fitness> >;
 
 public:
@@ -186,12 +186,12 @@ public:
 
 //changes 100beta% individuals chosen randomly -- may choose the same individual more than once
 //user should program the function that changes the individual
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 class DefaultMutation : public SimpleMutation<R, ADS> {
 protected:
-	using Individual = Solution<R, ADS>;
+	using Individual = S;
     using Chromossome = R;
-    using Fitness = Evaluation*; //nullptr means there's no evaluation
+    using Fitness = XEv*; //nullptr means there's no evaluation
     using Population = std::vector< std::pair<Individual, Fitness> >;
 	double omega;
 

@@ -242,7 +242,7 @@ public:
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 class BestImprovementBuilder : public LocalSearchBuilder<R, ADS, S>
 {
 public:
