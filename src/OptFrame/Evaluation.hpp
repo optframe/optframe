@@ -69,8 +69,7 @@ namespace optframe {
 // so we will proceed with basic arithmetics, +, - and *.
 // this effectively discard 'string' and others (although comparable)
 
-//template<optframe::basic_arithmetics ObjType = evtype>
-template<optframe::totally_ordered ObjType = evtype>
+template<optframe::basic_arithmetics ObjType = evtype>
 class Evaluation final : public Component
 {
 protected:
@@ -311,7 +310,7 @@ struct optframe_test_debug_testev_evaluation_disable_runtime
    TestEv<Evaluation<int>> test_int;
    TestEv<Evaluation<>> test_default;
    TestEv<Evaluation<SingleObjValue>> test_sov; // single obj value
-   //TestEv<Evaluation<MultiObjValue<int, double>>> test_mov; // multi obj value
+   TestEv<Evaluation<MultiObjValue<int, double>>> test_mov; // multi obj value
 };
 #endif
 

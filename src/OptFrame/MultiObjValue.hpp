@@ -36,7 +36,11 @@ struct MOVCompare
 
 // typically, template parameter packs are: template<class... Params>
 // here, parameter pack requires 'totally_ordered' elements (by concepts)
-template<optframe::totally_ordered... AllObjTypes>
+// IMPORTANT: it may be good to already require 'basic_arithmetics' on types (+,- and *) which are historically useful
+// if this is a bad decision, we can revert it some day :)
+// basic arithmetics are useful to compute 'MoveCosts', infeasibility weights and many other things
+template<optframe::basic_arithmetics... AllObjTypes>
+//template<optframe::totally_ordered... AllObjTypes>
 class MultiObjValue
 {
 protected:
@@ -112,16 +116,6 @@ public:
       return comparet(c.objValues);
    }
 
-   std::string toString() const
-   {
-      std::stringstream ss;
-      // c++17 fold expression std::apply (helps a lot!). TODO: capture last value to avoid semi-colon
-      ss << "MultiObjValue:(";
-      std::apply([&](auto&&... args) { ((ss << args << ';'), ...); }, this->objValues);
-      ss << ")";
-      return ss.str();
-   }
-
    bool operator==(const MultiObjValue& c) const
    {
       return (compare(c) == 0);
@@ -150,10 +144,86 @@ public:
       int comp = compare(c); // beware that comp may be -2
       return (comp == -1) || (comp == 0);
    }
-   // todo: implement operators (really necessary? don't know yet.. maybe just on default Evaluation, but not all)
-   // ==
-   // +
-   // ...
+   
+   // now, going to arithmetic operators
+
+protected:
+   // using same technique as 'comparet'
+   // to simplify, 'operate_t' will operate over myself with += , -= and *=
+   template<char OP, std::size_t I = 0>
+   inline typename std::enable_if<I == sizeof...(AllObjTypes), void>::type
+   operatet(const std::tuple<AllObjTypes...>& tOther) 
+   {
+      // nothing to do (no objetives to compute with I==sizeof out of boundaries)
+   }
+   // continues.. I > 0
+   template<char OP, std::size_t I = 0>
+     inline typename std::enable_if < I<sizeof...(AllObjTypes), void>::type
+                                      operatet(const std::tuple<AllObjTypes...>& tOther)
+   {
+      // TODO: use 'OP' as consexpr to directly evaluate desired operation (will perform on compile-time)
+      // WARNING: doing this on runtime (compiler may be smart and help us!). It would very likely...
+      if(OP == '+')
+         std::get<I>(this->objValues) += std::get<I>(tOther);
+      if(OP == '-')
+         std::get<I>(this->objValues) -= std::get<I>(tOther);
+      if(OP == '*')
+         std::get<I>(this->objValues) *= std::get<I>(tOther);
+   }
+
+public:
+
+   MultiObjValue& operator+=(const MultiObjValue& c)
+   {
+      operatet<'+'>(c.objValues);
+      return *this;
+   }
+
+   MultiObjValue& operator-=(const MultiObjValue& c)
+   {
+      operatet<'-'>(c.objValues);
+      return *this;
+   }
+
+   MultiObjValue& operator*=(const MultiObjValue& c)
+   {
+      operatet<'*'>(c.objValues);
+      return *this;
+   }
+
+   // division is not required!
+
+   MultiObjValue operator+(const MultiObjValue& c) const
+   {
+      return MultiObjValue(*this) += c;
+   }
+
+   MultiObjValue operator-(const MultiObjValue& c) const
+   {
+      return MultiObjValue(*this) -= c;
+   }
+
+   MultiObjValue operator*(const MultiObjValue& c) const
+   {
+      return MultiObjValue(*this) *= c;
+   }
+
+   // finally, must ensure this class is printable
+   std::string toString() const
+   {
+      std::stringstream ss;
+      // c++17 fold expression std::apply (helps a lot!). TODO: capture last value to avoid semi-colon
+      ss << "MultiObjValue:(";
+      std::apply([&](auto&&... args) { ((ss << args << ';'), ...); }, this->objValues);
+      ss << ")";
+      return ss.str();
+   }
+
+   friend ostream& operator<<(ostream& os, const MultiObjValue& me)
+   {
+      os << me.toString();
+      return os;
+   }
 };
 
 // ---------------------------------
