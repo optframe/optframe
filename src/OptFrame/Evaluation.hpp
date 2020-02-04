@@ -313,14 +313,14 @@ public:
 // testing default evaluation
 #ifndef NDEBUG
 
-template<optframe::basic_arithmetics T>
+template<optframe::basic_arithmetics ObjType>
 class TestTArithMO_is_zero2
 {
    public:
-   void f()
+   ObjType infMeasureX;
+   bool f()
    {
-      T x;
-      assert(optframe::numeric_is_zero(x));
+      return optframe::numeric_is_zero<ObjType>(infMeasureX);
    }
 
    string toString() const
@@ -333,7 +333,7 @@ class TestTArithMO_is_zero2
       return *this;
    }
 
-   T evaluation() const
+   ObjType evaluation() const
    {
    }
 
@@ -348,7 +348,7 @@ struct optframe_test_debug_testev_evaluation_disable_runtime
    TestEv<Evaluation<SingleObjValue>> test_sov; // single obj value
    TestEv<TestTArithMO_is_zero<MultiObjValue<int, double>>> Tmo;
    TestEv<TestTArithMO_is_zero2<MultiObjValue<int, double>>> Tmo2;
-   //TestEv<Evaluation<MultiObjValue<int, double>>> test_mov; // multi obj value
+   TestEv<Evaluation<MultiObjValue<int, double>>> test_mov; // multi obj value
    
 };
 #endif

@@ -305,14 +305,14 @@ numeric_is_zero(const MultiObjValue<Args...> tOther)
 
 #ifndef NDEBUG
 
-template<optframe::basic_arithmetics T>
+template<optframe::basic_arithmetics ObjType>
 class TestTArithMO_is_zero
 {
    public:
+   ObjType infMeasureX;
    void f()
    {
-      T x;
-      assert(optframe::numeric_is_zero(x));
+      assert(optframe::numeric_is_zero(infMeasureX));
    }
 
    string toString() const
@@ -325,7 +325,7 @@ class TestTArithMO_is_zero
       return *this;
    }
 
-   T evaluation() const
+   ObjType evaluation() const
    {
    }
 
