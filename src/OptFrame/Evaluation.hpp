@@ -25,9 +25,10 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "Component.hpp"
-
 #include "BaseSolution.h" // TODO: Rename to BaseConcepts.h
+#include "Component.hpp"
+#include "MultiObjValue.hpp"
+#include "SingleObjValue.hpp" // basic value 'evtype' comes from here!
 
 using namespace std;
 
@@ -50,27 +51,6 @@ namespace optframe {
 //#include "Util/PackTypes.hpp"
 //#define EVALUATION_TYPE PackTypes
 
-#ifndef EVALUATION_TYPE
-#define EVALUATION_TYPE double
-#endif
-
-//typedef EVALUATION_TYPE evtype; //template?????????
-using evtype = EVALUATION_TYPE;
-
-#ifndef EVALUATION_ZERO
-#define EVALUATION_ZERO 0.0001
-#endif
-
-#ifndef EVALUATION_ABS
-#define EVALUATION_ABS ::fabs
-#endif
-
-// Single Objective Value will use standard/default value
-using SingleObjValue = evtype;
-
-// Multi Objective Value can be found in its own class
-#include "MultiObjValue.hpp"
-
 // note: for multi-objective problems with distinct objective space types
 // such as (int, evtype, long long) you can use PackTypes in Utils or overload
 // manually each of the numeric operators +, -, *
@@ -84,6 +64,12 @@ using SingleObjValue = evtype;
 // This is not the case for Pareto solutions, where composability may become more complex (MultiEvaluation)
 // TODO: must see next how to deal with that (on Pareto side), but at least we have a very elegant solution now
 
+// here comes the tricky part, 'totally_ordered' should be enough, but we endup needing arithmetics to compute costs
+//template<optframe::totally_ordered ObjType = evtype>
+// so we will proceed with basic arithmetics, +, - and *.
+// this effectively discard 'string' and others (although comparable)
+
+//template<optframe::basic_arithmetics ObjType = evtype>
 template<optframe::totally_ordered ObjType = evtype>
 class Evaluation final : public Component
 {

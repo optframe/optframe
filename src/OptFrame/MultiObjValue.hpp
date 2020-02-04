@@ -3,11 +3,13 @@
 
 #include <tuple>
 
-#include "BaseSolution.h" // TODO: rename to BaseConcepts
+//#include "BaseSolution.h" // TODO: rename to BaseConcepts
+#include "myconcepts.h"
 
 //#include "Util/printable.h"
 
-//namespace optframe{
+namespace optframe
+{
 
 // Struct to handle comparison values for two MultiObjValue
 // It could be a triple of ints... but too many tuples already on code below!! (largely complex)
@@ -169,7 +171,7 @@ struct optframe_debug_example_test_mov
    struct s_empty
    {};
 
-   int f()
+   void f()
    {
       std::tuple<int, char> foo(10, 'x');
       MultiObjValue<int, char> testMOV1(foo);
@@ -182,6 +184,6 @@ struct optframe_debug_example_test_mov
 
 #endif
 
-//} // namespace optframe
+} // namespace optframe
 
 #endif // OPTFRAME_MULTI_OBJ_VALUE_HPP

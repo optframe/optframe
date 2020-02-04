@@ -124,6 +124,8 @@ public:
       return (double)mt_rand() / UINT_MAX;
    }
 };
-}
+
+
+} // namespace optframe
 
 #endif /* RANDGENMersenneTwister_HPP_ */

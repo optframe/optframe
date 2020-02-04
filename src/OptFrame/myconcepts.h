@@ -61,8 +61,45 @@ concept bool totally_ordered =
   };
 
 
-#ifndef NDEBUG
+// TODO: insert some 'zero' concept here..  (HasZero)
+// 'abs' concept is also important to perform safe comparisons (HasAbs)
+// basic arithmetic is currently just +, - and *.  (division was never required to this day)
+// will require totally_ordered concept because everything (we know) depends on it
+// 'basic_arithmetics_assign' includes assignment operators +=, -=, *=
+template <class T>
+concept bool basic_arithmetics_assign = 
+  optframe::totally_ordered<T> &&
+//  requires(const std::remove_reference_t<T>& a,
+  requires(std::remove_reference_t<T>& a,
+           const std::remove_reference_t<T>& b) {
+    { a += b } -> std::remove_reference_t<T>&;
+    { a -= b } -> std::remove_reference_t<T>&;
+    { a *= b } -> std::remove_reference_t<T>&;
+    //{ a + b } -> std::remove_reference_t<T>&; // require const a
+    //{ a - b } -> std::remove_reference_t<T>&; // require const a
+    //{ a * b } -> std::remove_reference_t<T>&; // require const a
+    ////{ a / b } -> std::remove_reference_t<T>&;  // NOT actually necessary (until today!)
+  };
 
+template <class T>
+concept bool basic_arithmetics = 
+  optframe::basic_arithmetics_assign<T> &&
+  requires(const std::remove_reference_t<T>& a,
+           const std::remove_reference_t<T>& b) {
+    { a + b } -> std::remove_reference_t<T>; // requires const a
+    { a - b } -> std::remove_reference_t<T>; // requires const a
+    { a * b } -> std::remove_reference_t<T>; // requires const a
+    //{ a / b } -> std::remove_reference_t<T>;  // NOT actually necessary (until today!)
+  };  
+
+} // namespace optframe
+
+// ====================
+// BEGIN compile tests 
+// (disable with NDEBUG)
+// ====================
+
+#ifndef NDEBUG
 // class that passes total order
 class ConceptsTestClassTotalOrder
 {
@@ -117,8 +154,66 @@ struct MyConceptsLocalTestBed
    }
 };
 
-#endif
+// ========================================
+// test if arithmetics compile (at least!)
 
-} // namespace optframe
+class ConceptsTestClassArithmetics: public ConceptsTestClassTotalOrder
+{
+public:
+
+   ConceptsTestClassArithmetics& operator+=(const ConceptsTestClassArithmetics& c)
+   {
+      return *this;
+   }
+
+   ConceptsTestClassArithmetics& operator-=(const ConceptsTestClassArithmetics& c)
+   {
+      return *this;
+   }
+
+   ConceptsTestClassArithmetics& operator*=(const ConceptsTestClassArithmetics& c)
+   {
+      return *this;
+   }
+   // division is not required!
+
+   ConceptsTestClassArithmetics operator+(const ConceptsTestClassArithmetics& c) const
+   {
+      return ConceptsTestClassArithmetics(*this) += c;
+   }
+
+   ConceptsTestClassArithmetics operator-(const ConceptsTestClassArithmetics& c) const
+   {
+      return ConceptsTestClassArithmetics(*this) -= c;
+   }
+
+   ConceptsTestClassArithmetics operator*(const ConceptsTestClassArithmetics& c) const
+   {
+      return ConceptsTestClassArithmetics(*this) *= c;
+   }
+};
+
+// testing total order for some random classes
+template<optframe::basic_arithmetics T>
+struct MyConceptsTestArithmetics
+{
+};
+
+struct MyConceptsLocalTestBedArithmetics
+{
+   MyConceptsTestArithmetics<double> t_double;
+   MyConceptsTestArithmetics<int> t_int;
+   MyConceptsTestArithmetics<ConceptsTestClassArithmetics> t_class;
+   // practical test
+   ConceptsTestClassArithmetics test()
+   {
+      ConceptsTestClassArithmetics t_class1;
+      ConceptsTestClassArithmetics t_class2;
+      t_class1 += t_class2;       // one operation
+      return t_class1 + t_class2; // another operation
+   }
+};
+
+#endif // NDEBUG
 
 #endif // MYCONCEPTS
