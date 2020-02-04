@@ -191,7 +191,7 @@ public:
          f += (*tsp.dist)(rep[k1], rep[ak2]);
       }
 
-      return new MoveCost(f, 0);
+      return new MoveCost<>(f, 0);
    }
 
    void print() const

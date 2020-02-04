@@ -42,8 +42,8 @@ namespace optframe
 template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 class LocalSearch: public Component
 {
-   typedef vector<Evaluation<>*> FitnessValues;
-   typedef const vector<const Evaluation<>*> ConstFitnessValues;
+   typedef vector<XEv*> FitnessValues;
+   typedef const vector<const XEv*> ConstFitnessValues;
 
 public:
 
@@ -66,12 +66,12 @@ public:
    }
 
    // optimizated version
-   pair<S&, Evaluation<>&>& search(const S& s, const Evaluation<>& e, SOSC& stopCriteria) override
+   pair<S&, XEv&>& search(const S& s, const XEv& e, SOSC& stopCriteria)
    {
       S& s2 = s.clone();
-      Evaluation<>& e2 = e.clone();
+      XEv& e2 = e.clone();
       exec(s2, e2, stopCriteria);
-      return *new pair<S&, Evaluation<>&> (s2, e2);
+      return *new pair<S&, XEv&> (s2, e2);
    }
 
 
@@ -81,15 +81,15 @@ public:
    virtual void exec(S& s, SOSC& stopCriteria) = 0;
 
    // 2
-   virtual void exec(S& s, Evaluation<>& e, SOSC& stopCriteria) = 0;
+   virtual void exec(S& s, XEv& e, SOSC& stopCriteria) = 0;
 
    // optional: set local optimum status (LOS)
-   virtual void setLOS(LOS los, string nsid, S& s, Evaluation<>& e)
+   virtual void setLOS(LOS los, string nsid, S& s, XEv& e)
    {
    }
 
    // optional: get local optimum status (LOS)
-   virtual LOS getLOS(string nsid, S& s, Evaluation<>& e)
+   virtual LOS getLOS(string nsid, S& s, XEv& e)
    {
 	   return los_unknown;
    }

@@ -24,7 +24,7 @@ MoveCost<>* MoveShift::cost(const Evaluation<>&, const RepPN& rep, const MY_ADS&
    // Implement if a more efficient evaluation of the move is available
    //double move_cost = ...;
    //double move_cost_infeasible = ...;
-   //return new MoveCost(move_cost, move_cost_infeasible);
+   //return new MoveCost<>(move_cost, move_cost_infeasible);
 }
 
 

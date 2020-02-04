@@ -120,7 +120,7 @@ public:
 		}
 		//cout << endl;
 
-		return new MoveCost(f, 0);
+		return new MoveCost<>(f, 0);
 	}
 
 	static string idComponent()

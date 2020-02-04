@@ -104,7 +104,7 @@ public:
          }
       }
 
-      return new MoveCost(f, fInv + foInvBud * (-100000));
+      return new MoveCost<>(f, fInv + foInvBud * (-100000));
    }
 
    Move<RepMODM, AdsMODM>* apply(RepMODM& rep, AdsMODM* _ads) override

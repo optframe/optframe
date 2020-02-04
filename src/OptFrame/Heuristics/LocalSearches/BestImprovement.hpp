@@ -30,8 +30,8 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XSolution S = CopySolution<R,ADS>>
-class BestImprovement: public LocalSearch<R, ADS, S>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XSolution S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+class BestImprovement: public LocalSearch<R, ADS, S, XEv>
 {
 private:
 	Evaluator<R, ADS, S>& eval;
