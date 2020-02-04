@@ -28,6 +28,22 @@ Project is organized in three main folders: `src`, `tests` and `bin`.
 Tests are provided via `gtestlib` (on root folder), and you can also find `scannerpplib` (Scanner++ library) there.
 To build `gtestlib`, just `cd gtestlib/build && cmake .. && make`.
 
+## Concepts
+
+A major change happened from OptFrame v3 to v4, where C++ Concepts were finally adopted (before official release of C++20 we use `concepts lite` on `gcc 7`).
+This allowed a further simplification of project, by dividing most templates into two basic categories:
+- Solution Space: `XS` template concept
+- Objective Space: `XEv` template concept
+
+Note that this will be valid for both Single- and Multi-Objective problems, unifying even more all kinds of techniques, into basic containers.
+Basic containers are still default `Solution` and `Evaluation`. Note that both are now not mandatory (thanks to concepts). It's still a very good deal to use them, as they implement clone() pattern that allow primitive types like `int` and `double` to be directly used on `Evaluation`, also using basic std structures like `vector` directly on `Solution`.
+If you don't like them, feel free to just replace them (`XS` and `XEv` can become virtually anything you want).
+
+OptFrame 3 relied strongly on templates `R` and `ADS`, but now those only exist for basic Solution containers, and are not mandatory anymore (yet, it may still be good to follow this amazing optimization pattern).
+
+Things are still moving, more big changes are coming.
+
+
 ## Submodules
 
 Getting submodules: `git submodule update --init --recursive` and `git pull --recurse-submodules`.
