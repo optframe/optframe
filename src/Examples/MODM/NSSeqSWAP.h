@@ -66,7 +66,7 @@ public:
       return ((usedProduct > 0) && budget && differentOffers && !c1Saturado && !c2Saturado);
    }
 
-   MoveCost* cost(const Evaluation&, const RepMODM& rep, const AdsMODM* _ads, bool allowEstimate) override
+   MoveCost<>* cost(const Evaluation<>&, const RepMODM& rep, const AdsMODM* _ads, bool allowEstimate) override
    {
       const AdsMODM& ads = *_ads;
       double f = 0;

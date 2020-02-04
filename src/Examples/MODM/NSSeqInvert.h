@@ -39,7 +39,7 @@ public:
       return productOffers;
    }
 
-   MoveCost* cost(const Evaluation&, const RepMODM& rep, const AdsMODM* _ads, bool allowEstimate) override
+   MoveCost<>* cost(const Evaluation<>&, const RepMODM& rep, const AdsMODM* _ads, bool allowEstimate) override
    {
       const AdsMODM& ads = *_ads;
       double f = 0;

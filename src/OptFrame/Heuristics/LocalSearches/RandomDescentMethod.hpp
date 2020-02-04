@@ -65,7 +65,7 @@ public:
 			// TODO: verify if it's not null!
 			Move<R, ADS, S>& move = *ns.randomMoveSolution(s);
 
-			MoveCost* cost = nullptr;
+			MoveCost<>* cost = nullptr;
 
 			if (move.canBeAppliedToSolution(s))
 			{

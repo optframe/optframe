@@ -33,7 +33,7 @@ namespace optframe
 
 // Population is 'final'
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>,  class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
+template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 class Population final : public Component
 {
 protected:
@@ -254,7 +254,7 @@ public:
       }
    }
 
-   chromossome& cloneBestChromossome(Evaluator<R, ADS, S, ObjType, XEv>& eval)
+   chromossome& cloneBestChromossome(Evaluator<R, ADS, S, XEv>& eval)
    {
       vector<pair<S, double>> v;
 

@@ -344,7 +344,7 @@ public:
 			message(lEvaluator.at(ev), iter, "revCost calculated!");
 
 			Timer tMoveCostApply;
-			MoveCost* mcSimpleCost = lEvaluator[ev]->moveCostComplete(move, s);
+			MoveCost<>* mcSimpleCost = lEvaluator[ev]->moveCostComplete(move, s);
 			evtype simpleCost = mcSimpleCost->cost();
 			delete mcSimpleCost;
 			message(lEvaluator.at(ev), iter, "simpleCost calculated!");
@@ -398,7 +398,7 @@ public:
 			Timer tMoveCostApplyRealDelta;
 			bool oldAllowCostsStatus = lEvaluator[ev]->getAllowCosts();
 			lEvaluator[ev]->setAllowCosts(false);
-			MoveCost* mcRealFasterCost = lEvaluator[ev]->moveCost(e, move, s);
+			MoveCost<>* mcRealFasterCost = lEvaluator[ev]->moveCost(e, move, s);
 			lEvaluator[ev]->setAllowCosts(oldAllowCostsStatus);
 			evtype realFasterCost = mcRealFasterCost->cost();
 			delete mcRealFasterCost;
@@ -419,7 +419,7 @@ public:
 			// ==============
 
 			Timer tMoveCost;
-			MoveCost* cost = nullptr;
+			MoveCost<>* cost = nullptr;
 
 			if (lEvaluator[ev]->getAllowCosts())
 				cost = move.cost(e, s.getR(), s.getADSptr(), false);
@@ -484,7 +484,7 @@ public:
 					}
 					else
 					{
-						MoveCost* cost2 = nullptr;
+						MoveCost<>* cost2 = nullptr;
 						if (lEvaluator[ev]->getAllowCosts())
 						{
 							cost2 = move2.cost(e, s.getR(), s.getADSptr(), false);
@@ -961,13 +961,13 @@ public:
 								}
 
 								// calculate cost for move 2
-								MoveCost* cost_m2 = ev.moveCostComplete(move2, s);
+								MoveCost<>* cost_m2 = ev.moveCostComplete(move2, s);
 
 								// apply move 1 (consider reverse is not nullptr)
 								Move<R, ADS>& rev_m1 = *move1.applySolution(s);
 
 								// calculate new cost for move 2
-								MoveCost* cost2_m2 = ev.moveCostComplete(move2, s);
+								MoveCost<>* cost2_m2 = ev.moveCostComplete(move2, s);
 
 								// return solution to original value and free
 								delete rev_m1.applySolution(s);

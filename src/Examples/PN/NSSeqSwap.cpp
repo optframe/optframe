@@ -26,7 +26,7 @@ Move< RepPN , MY_ADS  >& MoveSwap::apply(RepPN& rep, MY_ADS&)
     return * new MoveSwap(j,i,pPN); 
 }
 
-MoveCost* MoveSwap::cost(const Evaluation<  >&, const RepPN& rep, const MY_ADS& ads)
+MoveCost<>* MoveSwap::cost(const Evaluation<>&, const RepPN& rep, const MY_ADS& ads)
 {
    return NULL;
    // Implement if a more efficient evaluation of the move is available

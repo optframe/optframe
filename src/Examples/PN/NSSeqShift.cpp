@@ -18,7 +18,7 @@ Move< RepPN , MY_ADS  >& MoveShift::apply(RepPN& rep, MY_ADS&)
     return * new MoveShift(i, pPN);
 }
 
-MoveCost* MoveShift::cost(const Evaluation<  >&, const RepPN& rep, const MY_ADS& ads)
+MoveCost<>* MoveShift::cost(const Evaluation<>&, const RepPN& rep, const MY_ADS& ads)
 {
    return NULL;
    // Implement if a more efficient evaluation of the move is available

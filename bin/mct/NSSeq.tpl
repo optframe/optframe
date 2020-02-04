@@ -34,12 +34,12 @@ public:
     {
     }
     
-    void print() const
+    void print() const override
     {
         cout << id() << " with params: '" << "ADD MY PARAMETERS" << "'" << endl;
     }
     
-    string id() const
+    string id() const override
     {
         return Move<Rep$project >::idComponent().append(":Move$neighborhood");
     }
@@ -53,11 +53,11 @@ public:
     
     // Implement these methods in the .cpp file
     
-    bool canBeApplied(const Rep$project& rep, const OptFrameADS* ads);
+    bool canBeApplied(const Rep$project& rep, const OptFrameADS* ads) override;
 
-    Move< Rep$project >* apply(Rep$project& rep, OptFrameADS* ads);
+    Move< Rep$project >* apply(Rep$project& rep, OptFrameADS* ads) override;
     
-    MoveCost* cost(const Evaluation<>&, const Rep$project& rep, const OptFrameADS* ads, bool allowEstimated);
+    MoveCost<>* cost(const Evaluation<>&, const Rep$project& rep, const OptFrameADS* ads, bool allowEstimated) override;
 };
 
 
@@ -78,10 +78,10 @@ public:
     
     // Implement these methods in the .cpp file
 
-    void first();
-    void next();
-    bool isDone();
-    Move< Rep$project >* current();
+    void first() override;
+    void next() override;
+    bool isDone() override;
+    Move< Rep$project >* current() override;
 };
 
 
@@ -105,17 +105,17 @@ public:
     {
     }
     
-    void print() const
+    void print() const override
     {
         cout << "NSSeq$neighborhood" << endl;
     }
     
-    string id() const
+    string id() const override
     {
         return NSSeq<Rep$project >::idComponent().append(":NSSeq$neighborhood");
     }
     
-    NSIterator<Rep$project >* getIterator(const Rep$project& rep, const OptFrameADS* ads)
+    NSIterator<Rep$project >* getIterator(const Rep$project& rep, const OptFrameADS* ads) override
     {
         // return an iterator to the neighbors of 'rep' 
         return new NSIterator$neighborhood;  // ADD POSSIBLE ITERATOR PARAMETERS
@@ -123,9 +123,9 @@ public:
         
     // Implement this method in the .cpp file
 
-    Move<Rep$project >* randomMove(const Rep$project& rep, const OptFrameADS* ads);
+    Move<Rep$project >* randomMove(const Rep$project& rep, const OptFrameADS* ads) override;
     
-    // Move<Rep$project >* validRandomMove(const Rep$project& rep, const OptFrameADS* ads);
+    // Move<Rep$project >* validRandomMove(const Rep$project& rep, const OptFrameADS* ads) override;
 };
 
 }

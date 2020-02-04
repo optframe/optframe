@@ -17,13 +17,13 @@ Move< Rep$project >* Move$neighborhood::apply(Rep$project& rep, OptFrameADS* ads
     return new Move$neighborhood; 
 }
 
-MoveCost* Move$neighborhood::cost(const Evaluation<>&, const Rep$project& rep, const OptFrameADS* ads, bool allowEstimated)
+MoveCost<>* Move$neighborhood::cost(const Evaluation<>&, const Rep$project& rep, const OptFrameADS* ads, bool allowEstimated)
 {
    return nullptr;
    // Implement if a more efficient evaluation of the move is available
    //double move_cost = ...;
    //double move_cost_infeasible = ...;
-   //return new MoveCost(move_cost, move_cost_infeasible);
+   //return new MoveCost<>(move_cost, move_cost_infeasible);
 }
 
 

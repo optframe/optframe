@@ -662,7 +662,7 @@ public:
 						return false;
 					}
 
-					MoveCost* cost = nullptr;
+					MoveCost<>* cost = nullptr;
 
 					if (evaluators[ev]->getAllowCosts())
 						cost = move.cost(e, s.getR(), s.getADS());
@@ -955,7 +955,7 @@ public:
 						}
 
 						Timer tMoveCost;
-						MoveCost* cost = nullptr;
+						MoveCost<>* cost = nullptr;
 
 						if (evaluators[ev]->getAllowCosts())
 							cost = move.cost(e, s.getR(), s.getADS());
@@ -1019,7 +1019,7 @@ public:
 							}
 							else
 							{
-								MoveCost* cost2 = nullptr;
+								MoveCost<>* cost2 = nullptr;
 								if (evaluators[ev]->getAllowCosts())
 								{
 									cost2 = move2.cost(e, s.getR(), s.getADS());
@@ -1295,7 +1295,7 @@ public:
 						}
 
 						Timer tMoveCost;
-						MoveCost* cost = nullptr;
+						MoveCost<>* cost = nullptr;
 
 						if (evaluators[ev]->getAllowCosts())
 							cost = move.cost(e, s.getR(), s.getADS());

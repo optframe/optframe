@@ -320,6 +320,14 @@ struct optframe_test_debug_testev_evaluation_disable_runtime
    TestEv<Evaluation<>> test_default;
 };
 #endif
-}
+
+#ifndef NDEBUG
+struct optframe_debug_test_evaluation
+{
+   Evaluation<> testEvaluation;
+};
+#endif
+
+} // namespace optframe
 
 #endif /*OPTFRAME_EVALUATION_HPP_*/

@@ -98,7 +98,7 @@ public:
 };
 
 // testing total order for some random classes
-template<totally_ordered T>
+template<optframe::totally_ordered T>
 struct MyConceptsTestTotalOrder
 {
 };

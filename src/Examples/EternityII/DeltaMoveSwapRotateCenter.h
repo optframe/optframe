@@ -45,7 +45,7 @@ public:
 	{
 	}
 
-	MoveCost* cost(const Evaluation&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost<>* cost(const Evaluation<>&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		double f = 0;
 

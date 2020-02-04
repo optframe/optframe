@@ -644,7 +644,7 @@ public:
 		return false;
 	}
 
-//	virtual bool checkDominance(Pareto<R, ADS, S>& p, MultiEvaluation* candidateMev, vector<MoveCost*>& candidateMovCost)
+//	virtual bool checkDominance(Pareto<R, ADS, S>& p, MultiEvaluation* candidateMev, vector<MoveCost<>*>& candidateMovCost)
 //	{
 //		MultiEvaluation* tempMev = new MultiEvaluation(*candidateMev);
 //

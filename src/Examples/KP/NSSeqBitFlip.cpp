@@ -16,7 +16,7 @@ Move< RepKP , MY_ADS  >* MoveBitFlip::apply(RepKP& rep, MY_ADS*)
     return new MoveBitFlip(item); 
 }
 
-MoveCost* MoveBitFlip::cost(const Evaluation&, const RepKP& rep, const MY_ADS* ads, bool mayEstimate)
+MoveCost<>* MoveBitFlip::cost(const Evaluation<>&, const RepKP& rep, const MY_ADS* ads, bool mayEstimate)
 {
    return NULL;
    // Implement if a more efficient evaluation of the move is available

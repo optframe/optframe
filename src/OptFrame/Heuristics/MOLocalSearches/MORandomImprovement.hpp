@@ -85,7 +85,7 @@ public:
 				delete mov_rev->applySolution(s);
 				delete mov_rev;
 
-				//			vector<MoveCost*> vMoveCost;
+				//			vector<MoveCost<>*> vMoveCost;
 //			for (int ev = 0; ev < v_e.size(); ev++)
 //			{
 //				vMoveCost.push_back(&v_e[ev].moveCost(sMev[ev], move, s));

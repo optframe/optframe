@@ -83,7 +83,7 @@ public:
 
 			if (move->canBeApplied(s))
 			{
-				MoveCost* eCost = &eval.moveCost(e, *move, s); // estimated cost
+				MoveCost<>* eCost = &eval.moveCost(e, *move, s); // estimated cost
 
 				if(eval.isImprovement(*eCost))
 				{

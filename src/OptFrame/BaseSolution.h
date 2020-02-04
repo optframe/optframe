@@ -83,7 +83,6 @@ concept bool HasGetObj = requires(Self a)
       //a.getObj()
       a.evaluation() // keeping standard name since OptFrame's early times
    }
-   //->ObjType &;
    ->optframe::totally_ordered; // note that, if 'ObjType' becomes complex, one must return a moveable copy, not reference of internal value
    // any totally ordered output is fine! (double, int, ParetoFront , etc...)
 };

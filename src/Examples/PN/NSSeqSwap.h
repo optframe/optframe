@@ -55,7 +55,7 @@ public:
 
    Move<RepPN, MY_ADS>* apply(RepPN& rep, MY_ADS*) override;
 
-   MoveCost* cost(const Evaluation&, const RepPN& rep, const MY_ADS* ads, bool allowEstimate) override;
+   MoveCost<>* cost(const Evaluation<>&, const RepPN& rep, const MY_ADS* ads, bool allowEstimate) override;
 };
 
 class NSIteratorSwap : public NSIterator<RepPN, MY_ADS>

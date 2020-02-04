@@ -136,7 +136,7 @@ public:
 		return new DeltaMoveVRPExchange(r, c1, c2, hfmvrp);
 	}
 
-	MoveCost* cost(const Evaluation&, const RepHFMVRP& rep, const AdsHFMVRP& ads, bool allowEstimated = false)
+	MoveCost<>* cost(const Evaluation<>&, const RepHFMVRP& rep, const AdsHFMVRP& ads, bool allowEstimated = false)
 	{
 		vector<int> route = rep[r];
 		int routeSize = route.size();

@@ -88,7 +88,7 @@ public:
 			return;
 		}*/
 
-		MoveCost* bestCost = nullptr;
+		MoveCost<>* bestCost = nullptr;
 
 		while (true)
 		{
@@ -133,7 +133,7 @@ public:
 		}
 
 
-		//MoveCost* bestCost = &eval.moveCost(e, *bestMove, s);
+		//MoveCost<>* bestCost = &eval.moveCost(e, *bestMove, s);
 		//it.next();
 		while (!it.isDone())
 		{
@@ -141,7 +141,7 @@ public:
 			if (move->canBeAppliedToSolution(s))
 			{
             bool mayEstimate = false;
-				MoveCost* cost = eval.moveCost(e, *move, s, mayEstimate);
+				MoveCost<>* cost = eval.moveCost(e, *move, s, mayEstimate);
 
 				if (eval.betterThan(*cost, *bestCost))
 				{

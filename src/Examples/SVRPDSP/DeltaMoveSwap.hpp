@@ -95,13 +95,13 @@ public:
    }
 
 
-	MoveCost* cost(const Evaluation& e, const RepSVRPDSP& rep, const AdsSVRPDSP* ads, bool mayEstimate) override
+	MoveCost<>* cost(const Evaluation<>& e, const RepSVRPDSP& rep, const AdsSVRPDSP* ads, bool mayEstimate) override
 	{
 		return NULL;
 	}
 
 
-   pair<double, double>* cost1(const Evaluation& e, const RepSVRPDSP& rep, const AdsSVRPDSP& ads)
+   pair<double, double>* cost1(const Evaluation<>& e, const RepSVRPDSP& rep, const AdsSVRPDSP& ads)
    {
       if(verbose)
          ads.print();

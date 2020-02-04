@@ -82,7 +82,7 @@ public:
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 //concept SolEv;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 class SingleObjSearch : public Component
 {
    typedef vector<XEv*> FitnessValues;
@@ -123,7 +123,7 @@ public:
    }
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>,  class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 class SingleObjSearchBuilder : public ComponentBuilder<R, ADS, S>
 {
 public:
@@ -155,7 +155,7 @@ public:
    }
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>,  class ObjType = evtype, XEvaluation<ObjType> XEv = Evaluation<ObjType>>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 class SingleObjSearchAction : public Action<R, ADS,S>
 {
 public:

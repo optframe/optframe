@@ -111,17 +111,17 @@ public:
 	}
 
 	// TODO: coming in one of the next versions..
-	//virtual pair<Move<R, ADS, S>&, MoveCost*> apply(const Evaluation<>& e, R& r, ADS& ads) = 0;
+	//virtual pair<Move<R, ADS, S>&, MoveCost<>*> apply(const Evaluation<>& e, R& r, ADS& ads) = 0;
 
 	// ================== cost calculation
 
-	virtual MoveCost* cost(const Evaluation<>& e, const R& r, const ADS* ads, bool allowEstimated)
+	virtual MoveCost<>* cost(const Evaluation<>& e, const R& r, const ADS* ads, bool allowEstimated)
 	{
 		return nullptr;
 	}
 
 	// experiment for multi objective problems
-	virtual MultiMoveCost* costMEV(const MultiEvaluation& mev, const R& r, const ADS* ads, bool allowEstimated)
+	virtual MultiMoveCost<>* costMEV(const MultiEvaluation& mev, const R& r, const ADS* ads, bool allowEstimated)
 	{
 		return nullptr;
 	}

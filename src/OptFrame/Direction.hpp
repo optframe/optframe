@@ -35,6 +35,7 @@
 
 #include "Component.hpp"
 #include "Action.hpp"
+#include "BaseSolution.h" // Base concepts
 
 using namespace std;
 using namespace scannerpp;
@@ -45,12 +46,12 @@ namespace optframe
 class Direction: public Component
 {
 protected:
-	MoveCost nullCost;
+	MoveCost<evtype, Evaluation<>> nullCost;
 
 public:
 
 	Direction() :
-			nullCost(MoveCost(0))
+			nullCost(MoveCost<>(0))
 	{
 	}
 
@@ -71,7 +72,7 @@ public:
 	//virtual bool betterThan(evtype a, evtype b) = 0;
 
 	// true if 'mc1' is better than 'mc2'
-	virtual inline bool betterThan(const MoveCost& mc1, const MoveCost& mc2)
+	virtual inline bool betterThan(const MoveCost<>& mc1, const MoveCost<>& mc2)
 	{
 		if(isMinimization())
 			return (mc2.cost() - mc1.cost()) >= EVALUATION_ZERO;
@@ -109,7 +110,7 @@ public:
 	}
 	*/
 
-	inline bool betterOrEquals(const MoveCost& mc1, const MoveCost& mc2)
+	inline bool betterOrEquals(const MoveCost<>& mc1, const MoveCost<>& mc2)
 	{
 		return betterThan(mc1, mc2) || equals(mc1, mc2);
 	}
@@ -147,7 +148,7 @@ protected:
 	}
 
 public:
-	virtual inline bool equals(const MoveCost& mc1, const MoveCost& mc2)
+	virtual inline bool equals(const MoveCost<>& mc1, const MoveCost<>& mc2)
 	{
 		return equals(mc1.cost(), mc2.cost(), mc1.getAlternativeCosts(), mc2.getAlternativeCosts());
 	}
@@ -166,7 +167,7 @@ public:
 
 	// ============= improvement =============
 
-	virtual bool isImprovement(const MoveCost& mc, const Evaluation<>& e1, const Evaluation<>& e2)
+	virtual bool isImprovement(const MoveCost<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
 	{
 		evtype ec1 = mc.cost() + e1.evaluation();
 
@@ -180,7 +181,7 @@ public:
 	}
 
 
-	virtual inline bool isImprovement(const MoveCost& mc)
+	virtual inline bool isImprovement(const MoveCost<>& mc)
 	{
 		return betterThan(mc, nullCost);
 	}
@@ -302,6 +303,6 @@ public:
 	}
 };
 
-}
+} // namespace optframe
 
 #endif /*OPTFRAME_OPTIMIZATION_DIRECTION_HPP_*/

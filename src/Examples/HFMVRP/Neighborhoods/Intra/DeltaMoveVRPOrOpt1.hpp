@@ -184,7 +184,7 @@ public:
 
 	}
 
-	MoveCost* cost(const Evaluation&, const RepHFMVRP& rep, const AdsHFMVRP& ads, bool allowEstimated = false)
+	MoveCost<>* cost(const Evaluation<>&, const RepHFMVRP& rep, const AdsHFMVRP& ads, bool allowEstimated = false)
 	{
 
 		vector<int> route = rep[r];

@@ -228,14 +228,14 @@ public:
 			}
 		}
 
-		MoveCost* bestCost = &evaluator.moveCost(e, *bestMove, s);
+		MoveCost<>* bestCost = &evaluator.moveCost(e, *bestMove, s);
 		it.next();
 		while (!it.isDone())
 		{
 			Move<R, ADS, S>* move = &it.current();
 			if (move->canBeApplied(s) && !inList(bestMove, tabuList))
 			{
-				MoveCost* cost = &evaluator.moveCost(e, *move, s);
+				MoveCost<>* cost = &evaluator.moveCost(e, *move, s);
 
 				if (evaluator.betterThan(*cost, *bestCost))
 				{

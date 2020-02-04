@@ -96,7 +96,7 @@ public:
       return myMove;
    }
 
-	MoveCost* cost(const Evaluation& e, const RepSVRPDSP& rep, const AdsSVRPDSP* ads, bool mayEstimate) override
+	MoveCost<>* cost(const Evaluation<>& e, const RepSVRPDSP& rep, const AdsSVRPDSP* ads, bool mayEstimate) override
 	{
 		return NULL;
 	}

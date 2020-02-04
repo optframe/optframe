@@ -160,12 +160,12 @@ public:
    }
 
    // Movement cost based on reevaluation of 'e'
-   MoveCost* moveCost(XEv& e, Move<R, ADS, S>& m, S& s, bool allowEstimated = false)
+   MoveCost<>* moveCost(XEv& e, Move<R, ADS, S>& m, S& s, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
       // TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
 
-      MoveCost* p = nullptr;
+      MoveCost<>* p = nullptr;
       if (allowCosts) {
          p = m.cost(e, s.getR(), s.getADSptr(), allowEstimated);
       }
@@ -223,7 +223,7 @@ public:
          // destroy initial move
          delete ini;
          // create a MoveCost object...
-         p = new MoveCost(e_end.first - e_ini.first, e_end.second - e_ini.second, e.weight);
+         p = new MoveCost<>(e_end.first - e_ini.first, e_end.second - e_ini.second, e.weight);
          // ... and set the lexicographic costs
          p->setAlternativeCosts(alternatives);
          // return a MoveCost object pointer
@@ -232,8 +232,8 @@ public:
    }
 
    // Movement cost based on complete evaluation
-   // USE ONLY FOR VALIDATION OF CODE! OTHERWISE, USE moveCost(e, m, s)
-   MoveCost* moveCostComplete(Move<R, ADS, S>& m, S& s, bool allowEstimated = false)
+   // USE ONLY FOR VALIDATION OF CODE! OTHERWISE, USE MoveCost<>(e, m, s)
+   MoveCost<>* moveCostComplete(Move<R, ADS, S>& m, S& s, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
       // TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
@@ -257,7 +257,7 @@ public:
          alternatives[i].second = rev.second.getAlternativeCosts()[i].second - ini.second.getAlternativeCosts()[i].second;
       }
 
-      MoveCost* p = new MoveCost(obj, inf);
+      MoveCost<>* p = new MoveCost<>(obj, inf);
       p->setAlternativeCosts(alternatives);
 
       delete rev.first;
@@ -267,12 +267,12 @@ public:
    }
 
    // Accept and apply move if it improves parameter moveCost
-   bool acceptsImprove(Move<R, ADS, S>& m, S& s, XEv& e, MoveCost* mc = nullptr, bool allowEstimated = false)
+   bool acceptsImprove(Move<R, ADS, S>& m, S& s, XEv& e, MoveCost<>* mc = nullptr, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
 
       // initialize MoveCost pointer
-      MoveCost* p = nullptr;
+      MoveCost<>* p = nullptr;
       // try to get a cost (should consider estimated moves in the future)
       if (allowCosts) {
          p = m.cost(e, s.getR(), s.getADSptr(), allowEstimated);

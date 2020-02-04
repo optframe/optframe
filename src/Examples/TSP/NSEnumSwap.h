@@ -133,7 +133,7 @@ public:
       return &rev;
    }
 
-   MoveCost* cost(const Evaluation& e, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS* ads, bool allowEstimated) override
+   MoveCost<>* cost(const Evaluation<>& e, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS* ads, bool allowEstimated) override
    {
       int k1, k2;
 

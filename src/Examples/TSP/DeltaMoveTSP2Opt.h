@@ -82,7 +82,7 @@ public:
 	*/
 
 
-	MoveCost* cost(const Evaluation&, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost<>* cost(const Evaluation<>&, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		if(p1 >= p2)
 		{

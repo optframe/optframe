@@ -26,7 +26,8 @@
 #include <cmath>
 
 #include "Component.hpp"
-
+#include "BaseSolution.h" // Base concepts
+#include "Evaluation.hpp"
 #include "MoveCost.hpp"
 
 using namespace std;
@@ -34,18 +35,21 @@ using namespace std;
 namespace optframe
 {
 
+//// more than 'totally_ordered' we need to ensure arithmetics here... TODO: see that (same as Evaluation)
+////template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
+template<class ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
 class MultiMoveCost: public Component
 {
 protected:
-	vector<MoveCost*> vmc;
+	vector<MoveCost<ObjType, XEv>*> vmc;
 
 public:
-	explicit MultiMoveCost(vector<MoveCost*> _vmc) :
+	explicit MultiMoveCost(vector<MoveCost<>*> _vmc) :
 			vmc(_vmc)
 	{
 	}
 
-	MultiMoveCost(const MultiMoveCost& mc) :
+	MultiMoveCost(const MultiMoveCost<>& mc) :
 			vmc(mc.vmc)
 	{
 	}
@@ -69,42 +73,42 @@ public:
 		return vmc[k]->estimated;
 	}
 
-	const vector<pair<evtype, evtype> >& getAlternativeCosts(int k) const
+	const vector<pair<ObjType, ObjType> >& getAlternativeCosts(int k) const
 	{
 		return vmc[k]->alternatives;
 	}
 
-	evtype getObjFunctionCost(int k) const
+	ObjType getObjFunctionCost(int k) const
 	{
 		return vmc[k]->objFunction;
 	}
 
-	evtype getInfMeasureCost(int k) const
+	ObjType getInfMeasureCost(int k) const
 	{
 		return vmc[k]->infMeasure;
 	}
 
-	void addAlternativeCost(const pair<evtype, evtype>& alternativeCost, int k)
+	void addAlternativeCost(const pair<ObjType, ObjType>& alternativeCost, int k)
 	{
 		vmc[k]->alternatives.push_back(alternativeCost);
 	}
 
-	void setAlternativeCosts(const vector<pair<evtype, evtype> >& alternativeCosts, int k)
+	void setAlternativeCosts(const vector<pair<ObjType, ObjType> >& alternativeCosts, int k)
 	{
 		vmc[k]->alternatives = alternativeCosts;
 	}
 
-	void setObjFunctionCost(evtype obj, int k)
+	void setObjFunctionCost(ObjType obj, int k)
 	{
 		vmc[k]->objFunction = obj;
 	}
 
-	void setInfMeasureCost(evtype inf, int k)
+	void setInfMeasureCost(ObjType inf, int k)
 	{
 		vmc[k]->infMeasure = inf;
 	}
 
-	evtype cost(int k) const
+	ObjType cost(int k) const
 	{
 		return vmc[k]->cost();
 	}
@@ -130,7 +134,7 @@ public:
 				cout << "NO COST" << endl;
 	}
 
-	virtual MultiMoveCost& operator=(const MultiMoveCost& mmc)
+	virtual MultiMoveCost<>& operator=(const MultiMoveCost<>& mmc)
 	{
 		if (&mmc == this) // auto ref check
 			return *this;
@@ -140,12 +144,19 @@ public:
 		return *this;
 	}
 
-	virtual MultiMoveCost& clone() const
+	virtual MultiMoveCost<>& clone() const
 	{
-		return *new MultiMoveCost(*this);
+		return *new MultiMoveCost<>(*this);
 	}
 };
 
-}
+#ifndef NDEBUG
+struct optframe_debug_test_multimove_cost
+{
+   MultiMoveCost<> testMoveCost;
+};
+#endif
+
+} // namespace optframe
 
 #endif /*OPTFRAME_MULTI_MOVE_COST_HPP_*/

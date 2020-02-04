@@ -21,157 +21,173 @@
 #ifndef OPTFRAME_MOVE_COST_HPP_
 #define OPTFRAME_MOVE_COST_HPP_
 
+#include <cmath>
 #include <cstdlib>
 #include <iostream>
-#include <cmath>
 
+#include "BaseSolution.h"
 #include "Component.hpp"
+#include "Evaluation.hpp"
 
 using namespace std;
 
-namespace optframe
-{
+namespace optframe {
 
-class MoveCost: public Component
+// more than 'totally_ordered' we need to ensure arithmetics here... TODO: see that (same as Evaluation)
+//template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
+template<class ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
+class MoveCost : public Component
 {
 protected:
-	// objective function value (cost difference)
-	evtype objFunction;
-	// infeasibility measure value (cost difference)
-	evtype infMeasure;
-	// constant to mutiply infeasibility weight
-	evtype weight;
-	// flag indicating if Evaluation was outdated
-	bool outdated;
-	// flag indicating if cost is estimated
-	bool estimated;
-	// storing costs for lexicographic approaches
-	vector<pair<evtype, evtype> > alternatives;
-
+   // objective function value (cost difference)
+   ObjType objFunction;
+   // infeasibility measure value (cost difference)
+   ObjType infMeasure;
+   // constant to mutiply infeasibility weight
+   evtype weight;
+   // flag indicating if Evaluation was outdated
+   bool outdated;
+   // flag indicating if cost is estimated
+   bool estimated;
+   // storing costs for lexicographic approaches
+   vector<pair<evtype, evtype>> alternatives;
 
 public:
-	explicit MoveCost(evtype obj, evtype inf = 0, evtype w = 1, bool _outdated = true, bool _estimated = false) :
-			objFunction(obj), infMeasure(inf), weight(w), outdated(_outdated), estimated(_estimated)
-	{
-	}
+   explicit MoveCost(ObjType obj, ObjType inf = 0, evtype w = 1, bool _outdated = true, bool _estimated = false)
+     : objFunction(obj)
+     , infMeasure(inf)
+     , weight(w)
+     , outdated(_outdated)
+     , estimated(_estimated)
+   {
+   }
 
-	MoveCost(const MoveCost& mc) :
-			objFunction(mc.objFunction), infMeasure(mc.infMeasure),
-			weight(mc.weight), outdated(mc.outdated), estimated(mc.estimated),
-			alternatives(mc.alternatives)
-	{
-	}
+   MoveCost(const MoveCost& mc)
+     : objFunction(mc.objFunction)
+     , infMeasure(mc.infMeasure)
+     , weight(mc.weight)
+     , outdated(mc.outdated)
+     , estimated(mc.estimated)
+     , alternatives(mc.alternatives)
+   {
+   }
 
-	virtual ~MoveCost()
-	{
-	}
+   virtual ~MoveCost()
+   {
+   }
 
-	bool isEstimated() const
-	{
-		return estimated;
-	}
+   bool isEstimated() const
+   {
+      return estimated;
+   }
 
-	const vector<pair<evtype, evtype> >& getAlternativeCosts() const
-	{
-		return alternatives;
-	}
+   const vector<pair<evtype, evtype>>& getAlternativeCosts() const
+   {
+      return alternatives;
+   }
 
-	evtype getObjFunctionCost() const
-	{
-		return objFunction;
-	}
+   ObjType getObjFunctionCost() const
+   {
+      return objFunction;
+   }
 
-	evtype getInfMeasureCost() const
-	{
-		return infMeasure;
-	}
+   ObjType getInfMeasureCost() const
+   {
+      return infMeasure;
+   }
 
-	void addAlternativeCost(const pair<evtype, evtype>& alternativeCost)
-	{
-		alternatives.push_back(alternativeCost);
-	}
+   void addAlternativeCost(const pair<evtype, evtype>& alternativeCost)
+   {
+      alternatives.push_back(alternativeCost);
+   }
 
-	void setAlternativeCosts(const vector<pair<evtype, evtype> >& alternativeCosts)
-	{
-		alternatives = alternativeCosts;
-	}
+   void setAlternativeCosts(const vector<pair<evtype, evtype>>& alternativeCosts)
+   {
+      alternatives = alternativeCosts;
+   }
 
-	void setObjFunctionCost(evtype obj)
-	{
-		objFunction = obj;
-	}
+   void setObjFunctionCost(ObjType obj)
+   {
+      objFunction = obj;
+   }
 
-	void setInfMeasureCost(evtype inf)
-	{
-		infMeasure = inf;
-	}
+   void setInfMeasureCost(ObjType inf)
+   {
+      infMeasure = inf;
+   }
 
-	evtype cost() const
-	{
-		return objFunction + weight * infMeasure;
-	}
+   ObjType cost() const
+   {
+      return objFunction + weight * infMeasure;
+   }
 
-	// update Evaluation with costs
-	virtual void update(Evaluation<>& e) // TODO: put correct ObjType here
-	{
-		// update objective function value
-		e.setObjFunction(e.getObjFunction()+objFunction);
-		// update infeasibility measure value
-		e.setInfMeasure(e.getInfMeasure()+infMeasure);
-		// restore previous 'outdated' status, if Evaluation wasn't outdated before
-		if(!outdated)
-			e.outdated = outdated;
+   // update Evaluation with costs
+   virtual void update(XEv& e) // TODO: put correct ObjType here
+   {
+      // update objective function value
+      e.setObjFunction(e.getObjFunction() + objFunction);
+      // update infeasibility measure value
+      e.setInfMeasure(e.getInfMeasure() + infMeasure);
+      // restore previous 'outdated' status, if Evaluation wasn't outdated before
+      if (!outdated)
+         e.outdated = outdated;
 
-		// may also update lexicographic costs...
-	}
+      // may also update lexicographic costs...
+   }
 
-	static string idComponent()
-	{
-		return "OptFrame:MoveCost";
-	}
+   static string idComponent()
+   {
+      return "OptFrame:MoveCost";
+   }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
+   virtual string id() const
+   {
+      return idComponent();
+   }
 
-	virtual void print() const
-	{
-		cout << fixed; // disable scientific notation
-		cout << "Move cost = " << cost() << endl;
-		if (alternatives.size() > 0)
-		{
-			cout << "Alternative Costs: ";
-			for (unsigned i = 0; i < alternatives.size(); i++)
-				cout << "(" << alternatives[i].first << ";" << alternatives[i].second << ") ";
-			cout << endl;
-		}
-	}
+   virtual void print() const
+   {
+      cout << fixed; // disable scientific notation
+      cout << "Move cost = " << cost() << endl;
+      if (alternatives.size() > 0) {
+         cout << "Alternative Costs: ";
+         for (unsigned i = 0; i < alternatives.size(); i++)
+            cout << "(" << alternatives[i].first << ";" << alternatives[i].second << ") ";
+         cout << endl;
+      }
+   }
 
-	virtual MoveCost& operator=(const MoveCost& mc)
-	{
-		if (&mc == this) // auto ref check
-			return *this;
+   virtual MoveCost& operator=(const MoveCost& mc)
+   {
+      if (&mc == this) // auto ref check
+         return *this;
 
-		objFunction  = mc.objFunction;
-		infMeasure   = mc.infMeasure;
-		outdated     = mc.outdated;
-		estimated    = mc.estimated;
-		alternatives = mc.alternatives;
-		weight       = mc.weight;
+      objFunction = mc.objFunction;
+      infMeasure = mc.infMeasure;
+      outdated = mc.outdated;
+      estimated = mc.estimated;
+      alternatives = mc.alternatives;
+      weight = mc.weight;
 
-		return *this;
-	}
+      return *this;
+   }
 
-	virtual MoveCost& clone() const
-	{
-		return *new MoveCost(*this);
-	}
+   virtual MoveCost& clone() const
+   {
+      return *new MoveCost(*this);
+   }
 
-	friend class MultiMoveCost; // TODO: remove! experiment for MO problems
+   // TODO: THIS FRIEND WAS DESTROYING EVERYTHING!!
+   //friend class MultiMoveCost; // TODO: remove! experiment for MO problems
 };
 
-}
+#ifndef NDEBUG
+struct optframe_debug_test_move_cost
+{
+   MoveCost<> testMoveCost;
+};
+#endif
+
+} // namespace optframe
 
 #endif /*OPTFRAME_MOVE_COST_HPP_*/
-

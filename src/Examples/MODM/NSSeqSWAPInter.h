@@ -101,7 +101,7 @@ public:
 		return restr && ((usedProduct1 > 0) && (usedProduct2 > 0) && differentProducts && differentOffers && !c1Saturado && !c2Saturado);
 	}
 
-	MoveCost* cost(const Evaluation&, const RepMODM& rep, const AdsMODM* _ads, bool mayEstimate)
+	MoveCost<>* cost(const Evaluation<>&, const RepMODM& rep, const AdsMODM* _ads, bool mayEstimate)
 	{
       const AdsMODM& ads = *_ads;
 		double f = 0;

@@ -51,7 +51,7 @@ public:
 
    Move<RepKP, MY_ADS>* apply(RepKP& rep, MY_ADS*) override;
 
-   MoveCost* cost(const Evaluation&, const RepKP& rep, const MY_ADS* ads, bool mayEstimate) override;
+   MoveCost<>* cost(const Evaluation<>&, const RepKP& rep, const MY_ADS* ads, bool mayEstimate) override;
 };
 
 class NSIteratorBitFlip : public NSIterator<RepKP, MY_ADS>
