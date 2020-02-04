@@ -81,7 +81,7 @@ protected:
    // infeasibility measure value (default = double)
    ObjType infMeasure;
    // for lexicographic approaches, use these extra evaluation values
-   vector<pair<evtype, evtype>> alternatives;
+   vector<pair<ObjType, ObjType>> alternatives;
 
    // ==== Objective Space auxiliary information ====
    // LocalOptimum Status: mapping 'move.id()' to 'NeighborhoodStatus'
@@ -113,7 +113,7 @@ public:
    // ======================================
    // begin canonical part
 
-   Evaluation(const evtype& obj, const evtype& inf, const evtype& w = 1)
+   Evaluation(const ObjType& obj, const ObjType& inf, const evtype& w = 1)
      : objFunction(obj)
      , infMeasure(inf)
      , weight(w)
@@ -123,7 +123,7 @@ public:
       estimated = false;
    }
 
-   Evaluation(const evtype& obj)
+   Evaluation(const ObjType& obj)
      : objFunction(obj)
    {
       weight = 1;
@@ -189,7 +189,7 @@ public:
       return weight;
    }
 
-   const vector<pair<evtype, evtype>>& getAlternativeCosts() const
+   const vector<pair<ObjType, ObjType>>& getAlternativeCosts() const
    {
       return alternatives;
    }
@@ -209,12 +209,12 @@ public:
       weight = w;
    }
 
-   void addAlternativeCost(const pair<evtype, evtype>& alternativeCost)
+   void addAlternativeCost(const pair<ObjType, ObjType>& alternativeCost)
    {
       alternatives.push_back(alternativeCost);
    }
 
-   void setAlternativeCosts(const vector<pair<evtype, evtype>>& alternativeCosts)
+   void setAlternativeCosts(const vector<pair<ObjType, ObjType>>& alternativeCosts)
    {
       alternatives = alternativeCosts;
    }
