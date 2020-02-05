@@ -336,6 +336,8 @@ class TestTArithMO_is_zero2
 
    ObjType evaluation() const
    {
+      ObjType o;
+      return o;
    }
 
 };

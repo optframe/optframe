@@ -184,7 +184,7 @@ public:
       return *this;
    }
 
-   MultiObjValue& operator-=(const MultiObjValue& c)
+   MultiObjValue& operator-=(const MultiObjValue& c) 
    {
       operatet<'-'>(c.objValues);
       return *this;
@@ -380,6 +380,8 @@ public:
 
    ObjType evaluation() const
    {
+      ObjType t;
+      return t;
    }
 };
 

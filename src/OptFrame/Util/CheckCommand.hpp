@@ -320,7 +320,8 @@ public:
 
 			message(lEvaluator.at(ev), iter, "testing reverse value.");
 
-			if (EVALUATION_ABS(e_ini.evaluation() - e.evaluation()) >= optframe::get_numeric_zero<evtype>())
+			//if (EVALUATION_ABS(e_ini.evaluation() - e.evaluation()) >= optframe::get_numeric_zero<evtype>())
+			if (!optframe::numeric_is_zero(e_ini.evaluation() - e.evaluation()))
 			{
 				errormsg(moveFrom, CMERR_MOVE_REVREV_VALUE, "CMERR_MOVE_REVREV_VALUE", iter, "reverse of reverse has a different evaluation value!");
 				move.print();
@@ -351,7 +352,8 @@ public:
 			timeSamples.timeNSCostApply[id_ns].push_back(tMoveCostApply.inMilliSecs());
 
          // TODO: fix ABS with is_zero pattern
-			if (EVALUATION_ABS(revCost - simpleCost) >= optframe::get_numeric_zero<evtype>())
+			//if (EVALUATION_ABS(revCost - simpleCost) >= optframe::get_numeric_zero<evtype>())
+			if (!optframe::numeric_is_zero(revCost - simpleCost))
 			{
 				errormsg(moveFrom, CMERR_MOVE_REVSIMPLE, "CMERR_MOVE_REVSIMPLE", iter, "difference between revCost and simpleCost");
 				cout << "move: ";
@@ -381,7 +383,8 @@ public:
 			evtype fasterCost = e_end1 - e_ini1;
 			message(lEvaluator.at(ev), iter, "fasterCost calculated!");
 
-			if (EVALUATION_ABS(revCost - fasterCost) >= optframe::get_numeric_zero<evtype>())
+			//if (EVALUATION_ABS(revCost - fasterCost) >= optframe::get_numeric_zero<evtype>())
+			if (!optframe::numeric_is_zero(revCost - fasterCost))
 			{
 				errormsg(moveFrom, CMERR_MOVE_REVFASTER, "CMERR_MOVE_REVFASTER", iter, "difference between revCost and fasterCost!");
 				cout << "move: ";
@@ -408,7 +411,8 @@ public:
 
 			message(lEvaluator.at(ev), iter, "realfasterCost calculated!");
 
-			if (EVALUATION_ABS(revCost - realFasterCost) >= optframe::get_numeric_zero<evtype>())
+			//if (EVALUATION_ABS(revCost - realFasterCost) >= optframe::get_numeric_zero<evtype>())
+			if (!optframe::numeric_is_zero(revCost - realFasterCost))
 			{
 				errormsg(moveFrom, CMERR_MOVE_REALREVFASTER, "CMERR_MOVE_REALREVFASTER", iter, "difference between revCost and realfasterCost!");
 				cout << "move: ";
@@ -442,7 +446,8 @@ public:
 			if (cost && !cost->isEstimated())
 			{
 				double cValue = cost->cost();
-				if (EVALUATION_ABS(revCost - cValue) >= optframe::get_numeric_zero<evtype>())
+				//if (EVALUATION_ABS(revCost - cValue) >= optframe::get_numeric_zero<evtype>())
+				if (!optframe::numeric_is_zero(revCost - cValue))
 				{
 					errormsg(moveFrom, CMERR_MOVE_COST, "CMERR_MOVE_COST", iter, "difference between expected cost and cost()");
 					cout << "move: ";
