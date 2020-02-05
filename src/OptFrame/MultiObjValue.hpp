@@ -1,6 +1,9 @@
 #ifndef OPTFRAME_MULTI_OBJ_VALUE_HPP
 #define OPTFRAME_MULTI_OBJ_VALUE_HPP
 
+#include <assert.h>
+#include <iostream>
+#include <sstream>
 #include <tuple>
 
 //#include "BaseSolution.h" // TODO: rename to BaseConcepts
@@ -27,7 +30,7 @@ struct MOVCompare
       gt += other.gt;
    }
 
-   friend ostream& operator<<(ostream& os, const MOVCompare& me)
+   friend std::ostream& operator<<(std::ostream& os, const MOVCompare& me)
    {
       os << "MOVCompare(lt=" << me.lt << ";eq=" << me.eq << ";gt=" << me.gt << ")";
       return os;
@@ -43,8 +46,8 @@ template<optframe::basic_arithmetics... AllObjTypes>
 //template<optframe::totally_ordered... AllObjTypes>
 class MultiObjValue
 {
-//protected:
-// should be public, to make it easier is_zero verifications
+   //protected:
+   // should be public, to make it easier is_zero verifications
 public:
    std::tuple<AllObjTypes...> objValues;
 
@@ -222,7 +225,7 @@ public:
       return ss.str();
    }
 
-   friend ostream& operator<<(ostream& os, const MultiObjValue& me)
+   friend std::ostream& operator<<(std::ostream& os, const MultiObjValue& me)
    {
       os << me.toString();
       return os;
@@ -271,7 +274,6 @@ template<class... AllObjTypes, std::size_t I = 0>
 //}
 */
 
-
 //template<optframe::basic_arithmetics... Args, class T = optframe::MultiObjValue<Args...>>
 template<optframe::basic_arithmetics... Args>
 inline bool
@@ -281,9 +283,60 @@ numeric_is_zero(const optframe::MultiObjValue<Args...>& tOther)
 {
    //return compare_zero<Args...>(tOther);
    // c++17 fold apply
-   return std::apply([](auto... v) { return ( optframe::numeric_is_zero(v) && ...); }, tOther.objValues);
+   return std::apply([](auto... v) { return (optframe::numeric_is_zero(v) && ...); }, tOther.objValues);
    // only issue is PROTECTED info. let it PUBLIC for now
 }
+
+// TODO: find a better way to capture like this!
+/*
+template<optframe::basic_arithmetics... Args, class T = MultiObjValue<Args...>>
+//inline const T
+inline typename std::enable_if<std::is_same<std::remove_reference_t<T>, optframe::MultiObjValue<Args...>>::value, T>::type
+numeric_zero()
+{
+   std::tuple<Args...> tdef; // default values (TODO: iterate to define zero)
+   return T(tdef);
+}
+// This conflicts with double definition and MultiObjValue<double> ... don't know how to solve it, without passing as parameter value (to avoid ambiguity!)
+*/
+
+/*
+template<optframe::basic_arithmetics... Args, class T = MultiObjValue<Args...>>
+//inline const T
+inline typename std::enable_if<std::is_same<std::remove_reference_t<T>, optframe::MultiObjValue<Args...>>::value, void>::type
+numeric_zero(MultiObjValue<Args...>& t)
+{
+   std::tuple<Args...> tdef; // default values (TODO: iterate to define zero)
+   t.objValues = tdef;
+}
+*/
+
+template<
+template<typename...> class T,
+typename... Args2
+>
+inline typename std::enable_if<
+                                       std::is_same<
+                                               T<Args2...>, MultiObjValue<Args2...>
+                                       >::value, void
+                              >::type
+numeric_zero(T<Args2...>& t)
+{
+   std::tuple<Args2...> tdef; // default values (TODO: iterate to define zero)
+   t.objValues = tdef;
+}
+
+// -----------------
+
+template<optframe::basic_arithmetics T>
+inline T
+get_numeric_zero()
+{
+   T t;
+   optframe::numeric_zero<T>(t);
+   return t;
+}
+
 
 /*
 template<class... Args>
@@ -308,14 +361,14 @@ numeric_is_zero(const MultiObjValue<Args...> tOther)
 template<optframe::basic_arithmetics ObjType>
 class TestTArithMO_is_zero
 {
-   public:
+public:
    ObjType infMeasureX;
    void f()
    {
       assert(optframe::numeric_is_zero(infMeasureX));
    }
 
-   string toString() const
+   std::string toString() const
    {
       return "";
    }
@@ -328,7 +381,6 @@ class TestTArithMO_is_zero
    ObjType evaluation() const
    {
    }
-
 };
 
 struct optframe_debug_example_test_mov
@@ -345,13 +397,16 @@ struct optframe_debug_example_test_mov
       MultiObjValue<int, double> testMOV3(0, 0.000001);
       assert(optframe::numeric_is_zero(testMOV3)); // should be zero!
 
+      MultiObjValue<int, double> num0;
+      //optframe::numeric_zero<int, double>(num0);
+      optframe::numeric_zero(num0);
+      assert(optframe::numeric_is_zero(num0)); // should be zero!
+
       TestTArithMO_is_zero<MultiObjValue<int, double>> Tmo;
 
       //MultiObjValue<s_empty, char> testMOV2(s_empty(), 'y'); // ERROR: breaks 'totally_ordered' requirement
    };
 };
-
-
 
 // TODO: create unit tests to validate simple comparisons between MultiObjValue objects
 

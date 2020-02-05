@@ -127,7 +127,8 @@ public:
      : objFunction(obj)
    {
       weight = 1;
-      infMeasure = 0;
+      //infMeasure = optframe::get_numeric_zero<ObjType>();
+      optframe::numeric_zero(infMeasure);
 
       gos = gos_unknown;
       outdated = false;
@@ -266,8 +267,8 @@ public:
    {
       //return optframe::numeric_is_zero<ObjType>(infMeasure);
       // IMPORTANT: numeric_is_zero can come from anywhere!
-      return optframe::numeric_is_zero<ObjType>(infMeasure);
-      //return (EVALUATION_ABS(infMeasure) <= optframe::numeric_zero<ObjType>()); // deprecated
+      return optframe::numeric_is_zero(infMeasure);
+      //return (EVALUATION_ABS(infMeasure) <= optframe::get_numeric_zero<ObjType>()); // deprecated
    }
 
    // ======================

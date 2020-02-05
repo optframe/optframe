@@ -43,18 +43,22 @@ public:
 // number zero for that arithmetic type
 
 template<optframe::basic_arithmetics T>
-inline typename std::enable_if<std::is_same<T, int>::value, T>::type
-numeric_zero()
+inline typename std::enable_if<std::is_same<T, int>::value, void>::type
+numeric_zero(T& t)
 {
-   return 0;
+   t = 0;
 }
 
 template<optframe::basic_arithmetics T>
-inline typename std::enable_if<std::is_same<T, double>::value, T>::type
-numeric_zero()
+inline typename std::enable_if<std::is_same<T, double>::value, void>::type
+numeric_zero(T& t)
 {
-   return 0.0;
+   t = 0.0;
 }
+
+// -------------------
+
+
 
 // ===============
 // is_zero section
@@ -74,6 +78,7 @@ numeric_is_zero(const T& t)
 {
    return ::fabs(t) <= 0.0001;
 }
+
 
 } // namespace optframe
 
