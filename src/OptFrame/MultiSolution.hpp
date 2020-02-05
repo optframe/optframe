@@ -29,11 +29,11 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S>
 class MultiSolution: public Component
 {
 protected:
-	vector<Solution<R, ADS>*> p;
+	vector<S*> p;
 
 public:
 
@@ -57,44 +57,44 @@ public:
 		return p.size();
 	}
 
-	Solution<R, ADS>& at(unsigned c)
+	S& at(unsigned c)
 	{
 		return (*p.at(c));
 	}
 
-	const Solution<R, ADS>& at(unsigned c) const
+	const S& at(unsigned c) const
 	{
 		return (*p.at(c));
 	}
 
-	void insert(unsigned pos, Solution<R, ADS>& c)
+	void insert(unsigned pos, S& c)
 	{
-		p.insert(p.begin() + pos, new Solution<R, ADS>(c));
+		p.insert(p.begin() + pos, new S(c));
 	}
 
-	void push_back(Solution<R, ADS>* c)
+	void push_back(S* c)
 	{
 		if (c) // not null
 			p.push_back(c);
 	}
 
-	void push_back(const Solution<R, ADS>& c)
+	void push_back(const S& c)
 	{
 		p.push_back(&c.clone());
 	}
 
-	Solution<R, ADS>& remove(unsigned pos)
+	S& remove(unsigned pos)
 	{
-		Solution<R, ADS>& c = *p.at(pos);
+		S& c = *p.at(pos);
 		p.erase(p.begin() + pos);
 		return c;
 	}
 
-	void add(const MultiSolution<R, ADS>& pop)
+	void add(const MultiSolution<S>& pop)
 	{
 		for (unsigned i = 0; i < pop.size(); i++)
 		{
-			const Solution<R, ADS>& s = pop.at(i);
+			const S& s = pop.at(i);
 			push_back(s);
 		}
 	}
@@ -118,7 +118,7 @@ public:
 		return p.empty();
 	}
 
-	virtual MultiSolution<R, ADS>& operator=(const MultiSolution<R, ADS>& p)
+	virtual MultiSolution<S>& operator=(const MultiSolution<S>& p)
 	{
 		if (&p == this) // auto ref check
 			return *this;
@@ -141,7 +141,7 @@ public:
 		{
 			if (&p.at(i)) // If no nullptr pointing.
 			{
-				this->p.push_back(new Solution<R, ADS>(p.at(i)));
+				this->p.push_back(new S(p.at(i)));
 			}
 			else
 			{
@@ -152,9 +152,9 @@ public:
 		return (*this);
 	}
 
-	virtual MultiSolution<R, ADS>& clone() const
+	virtual MultiSolution<S>& clone() const
 	{
-		return *new MultiSolution<R, ADS>(*this);
+		return *new MultiSolution<S>(*this);
 	}
 
 	static string idComponent()

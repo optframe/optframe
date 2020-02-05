@@ -32,7 +32,7 @@ using namespace std;
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class InitialMultiSolution: public Component, public EA
 {
 public:
@@ -41,7 +41,7 @@ public:
 	{
 	}
 
-	virtual MultiSolution<R, ADS>& generatePopulation(unsigned populationSize) = 0;
+	virtual MultiSolution<S>& generatePopulation(unsigned populationSize) = 0;
 
 	virtual bool compatible(string s)
 	{
@@ -61,8 +61,8 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BasicInitialMultiSolution: public InitialMultiSolution<R, ADS>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class BasicInitialMultiSolution: public InitialMultiSolution<S>
 {
 public:
 
@@ -77,9 +77,9 @@ public:
 	{
 	}
 
-	virtual MultiSolution<R, ADS>& generatePopulation(unsigned populationSize)
+	virtual MultiSolution<S>& generatePopulation(unsigned populationSize)
 	{
-		MultiSolution<R, ADS>* p = new MultiSolution<R, ADS>;
+		MultiSolution<S>* p = new MultiSolution<S>;
 		for (unsigned i = 0; i < populationSize; i++)
 			p->push_back(&constructive.generateSolution());
 		return *p;
@@ -87,13 +87,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (InitialMultiSolution<R, ADS>::compatible(s));
+		return (s == idComponent()) || (InitialMultiSolution<S>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << InitialMultiSolution<R, ADS>::idComponent() << ":BasicInitialPopulation";
+		ss << InitialMultiSolution<S>::idComponent() << ":BasicInitialPopulation";
 		return ss.str();
 	}
 
@@ -103,7 +103,7 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class BasicInitialPopulationBuilder: public ComponentBuilder<R, ADS>
 {
 public:
@@ -116,7 +116,7 @@ public:
 		Constructive<S>* c;
 		hf.assign(c, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BasicInitialMultiSolution<R, ADS>(*c);
+		return new BasicInitialMultiSolution<S>(*c);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -128,7 +128,7 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicInitialMultiSolution<R, ADS>::idComponent();
+		return component == BasicInitialMultiSolution<S>::idComponent();
 	}
 
 	static string idComponent()

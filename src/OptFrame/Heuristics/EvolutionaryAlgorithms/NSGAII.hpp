@@ -35,7 +35,7 @@ namespace optframe
 {
 #define INFINITO 1000000000
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 struct IndividualNSGAII
 {
 	Solution<R, ADS>& s;
@@ -136,7 +136,7 @@ struct IndividualNSGAII
 };
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class NSGAII: public MultiObjSearch<R, ADS >
 {
 	typedef vector<Evaluation<>*> FitnessValues;
@@ -144,7 +144,7 @@ class NSGAII: public MultiObjSearch<R, ADS >
 private:
 	vector<Evaluator<S>*> v_e;
 
-	InitialMultiSolution<R, ADS>& init_pop;
+	InitialMultiSolution<S>& init_pop;
 	int init_pop_size;
 
 	ParetoDominance<R, ADS> pDominance;
@@ -161,7 +161,7 @@ public:
 
 	//using Heuristic<R, ADS >::exec; // prevents name hiding
 
-	NSGAII(vector<Evaluator<S>*> _v_e, InitialMultiSolution<R, ADS>& _init_pop, int _init_pop_size, int _gMax, RandGen& _rg) :
+	NSGAII(vector<Evaluator<S>*> _v_e, InitialMultiSolution<S>& _init_pop, int _init_pop_size, int _gMax, RandGen& _rg) :
 		v_e(_v_e), init_pop(_init_pop), init_pop_size(_init_pop_size), pDominance(ParetoDominance<R, ADS>(_v_e)), rg(_rg)
 	{
 		pDominance.insertEvaluators(_v_e);
@@ -172,10 +172,10 @@ public:
 	{
 	}
 
-	virtual void basicGeneticOperators(Population<R, ADS>& p) = 0;
+	virtual void basicGeneticOperators(Population<S, XEv>& p) = 0;
 
 	/*
-	virtual void exec(Population<R, ADS>& p, double timelimit, double target_f)
+	virtual void exec(Population<S, XEv>& p, double timelimit, double target_f)
 	{
 		//ACHO Q FALTA APAGAR ALGUMA COISA NO FINAL
 
@@ -201,17 +201,17 @@ public:
 	}
 	*/
 
-	//virtual void exec(Population<R, ADS>& p, FitnessValues& e_pop, double timelimit, double target_f)
+	//virtual void exec(Population<S, XEv>& p, FitnessValues& e_pop, double timelimit, double target_f)
 	virtual Pareto<R, ADS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS>* _pf = nullptr)
 	{
 		Timer tnow;
 
 		cout << "exec: Non Sorting Genetic Algorithm Search " << endl;
 
-		Population<R, ADS> p = init_pop.generatePopulation(init_pop_size);
+		Population<S, XEv> p = init_pop.generatePopulation(init_pop_size);
 		int N = p.size();
 
-		Population<R, ADS> q = p;
+		Population<S, XEv> q = p;
 		basicGeneticOperators(q);
 
 		int g = 0;
@@ -219,16 +219,16 @@ public:
 		{
 			cout << "Generation = " << g << endl;
 
-			Population<R, ADS> r = p;
+			Population<S, XEv> r = p;
 
 			for (int i = 0; i < q.size(); i++)
 				r.push_back(q.at(i));
 
 			//Start NonDominance Order by sets
-			vector<Population<R, ADS>*> F;
+			vector<Population<S, XEv>*> F;
 			nonDominanceOrder(F, r);
 
-			Population<R, ADS> popTemp;
+			Population<S, XEv> popTemp;
 			int j = 0;
 
 			vector<double> cD; //Crowding Distance
@@ -293,7 +293,7 @@ public:
 		return pf;
 	}
 
-	void crowdingDistanceOrder(vector<double>& CD, const Population<R, ADS>& Fj)
+	void crowdingDistanceOrder(vector<double>& CD, const Population<S, XEv>& Fj)
 	{
 		int N = Fj.size();
 		if (N > 0)
@@ -332,11 +332,11 @@ public:
 	}
 
 
-	void nonDominanceOrder(vector<Population<R, ADS>*>& F, const Population<R, ADS>& p)
+	void nonDominanceOrder(vector<Population<S, XEv>*>& F, const Population<S, XEv>& p)
 	{
 
-		Population<R, ADS> pAtual = p;
-		Population<R, ADS>* F0 = new Population<R, ADS> ;
+		Population<S, XEv> pAtual = p;
+		Population<S, XEv>* F0 = new Population<S, XEv> ;
 		F.push_back(F0);
 
 		vector<int> nd;
@@ -374,7 +374,7 @@ public:
 		{
 			k++;
 
-			Population<R, ADS>* uTemp = new Population<R, ADS> ;
+			Population<S, XEv>* uTemp = new Population<S, XEv> ;
 			F.push_back(uTemp);
 
 			for (int i = 0; i < pAtual.size(); i++)
@@ -405,9 +405,9 @@ public:
 
 	}
 
-	virtual Population<R, ADS> basicSelection(const Population<R, ADS>& p, vector<double> cD)
+	virtual Population<S, XEv> basicSelection(const Population<S, XEv>& p, vector<double> cD)
 	{
-		Population<R, ADS> q;
+		Population<S, XEv> q;
 		for (int i = 0; i < p.size(); i++)
 		{
 			int j = rg.rand(p.size());

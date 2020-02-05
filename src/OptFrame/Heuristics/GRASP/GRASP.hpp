@@ -30,7 +30,7 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class GRASP: public SingleObjSearch<R, ADS>
 {
 private:

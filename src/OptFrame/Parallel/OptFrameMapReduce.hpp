@@ -139,10 +139,10 @@ public:
 
 			if (bs.second.size() == 0) return pair<int, R> (bs.first, R());
 
-			Population<R, ADS> pop;
+			Population<S, XEv> pop;
 			for (unsigned i = 0 ; i < bs.second.size() ; i++) pop.push_back( * new TestSolution<R, ADS>(bs.second[i].first) );
 
-			//Population<R, ADS> & popReduced =
+			//Population<S, XEv> & popReduced =
 			hreduce->exec(pop, 60, 0); // TODO considerar tempo
 
 			if (pop.size() == 0) return pair<int, R> (bs.first, R());

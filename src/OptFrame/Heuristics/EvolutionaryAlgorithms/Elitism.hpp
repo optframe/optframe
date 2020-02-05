@@ -29,18 +29,18 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class Elitism
 {
 protected:
 
-   typedef Solution<R, ADS> chromossome;
+   typedef S chromossome;
    //typedef vector<chromossome*> Population;
    typedef vector<Evaluation<>*> FitnessValues;
 
 public:
 
-   virtual Population<R, ADS> & doElitism(const Population<R, ADS> &p, const FitnessValues& fv_p, unsigned popElitistSize) const = 0;
+   virtual Population<S, XEv> & doElitism(const Population<S, XEv> &p, const FitnessValues& fv_p, unsigned popElitistSize) const = 0;
 
 };
 

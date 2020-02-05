@@ -150,11 +150,11 @@ public:
 
 	// rewritting search method for efficiency purposes!
 	// safe use of const_cast
-	Population<R, ADS>& search(const Population<R, ADS>& p, double timelimit = 100000000, double target_f = 0)
+	Population<S, XEv>& search(const Population<S, XEv>& p, double timelimit = 100000000, double target_f = 0)
 	{
 		int p_size = p.size();
 
-		Population<R, ADS>* v = new Population<R, ADS> ;
+		Population<S, XEv>* v = new Population<S, XEv> ;
 
 		for (unsigned i = 0; i < p.size(); i++)
 			v->push_back(const_cast<Solution<R, ADS>&> (p.at(i)));
@@ -167,7 +167,7 @@ public:
 		return *v;
 	}
 
-	void exec(Population<R, ADS>& p, double timelimit, double target_f)
+	void exec(Population<S, XEv>& p, double timelimit, double target_f)
 	{
 		vector<Evaluation<DS>*>& ev = *new vector<Evaluation<DS>*> ;
 		for (int i = 0; i < p.size(); i++)
@@ -182,9 +182,9 @@ public:
 
 	// rewritting search method for efficiency purposes!
 	// safe use of const_cast
-	pair<Population<R, ADS>&, FitnessValues&>& search(const Population<R, ADS>& p, ConstFitnessValues& ev, double timelimit = 100000000, double target_f = 0)
+	pair<Population<S, XEv>&, FitnessValues&>& search(const Population<S, XEv>& p, ConstFitnessValues& ev, double timelimit = 100000000, double target_f = 0)
 	{
-		Population<R, ADS>* p2 = new Population<R, ADS> ;
+		Population<S, XEv>* p2 = new Population<S, XEv> ;
 		for (unsigned i = 0; i < p.size(); i++)
 			p2->push_back(const_cast<Solution<R, ADS>&> (p.at(i)));
 
@@ -196,10 +196,10 @@ public:
 
 		// update and return correct values
 
-		return *new pair<Population<R, ADS>&, FitnessValues&> (*p2, *ev2);
+		return *new pair<Population<S, XEv>&, FitnessValues&> (*p2, *ev2);
 	}
 
-	void exec(Population<R, ADS>& p, vector<Evaluation<DS>*>& ev, double timelimit, double target_f)
+	void exec(Population<S, XEv>& p, vector<Evaluation<DS>*>& ev, double timelimit, double target_f)
 	{
 		if (p.size() <= 1)
 		{

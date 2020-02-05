@@ -79,7 +79,7 @@ public:
    }
 };
 
-//template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+//template<XSolution S, XEvaluation XEv = Evaluation<>>
 //concept SolEv;
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>

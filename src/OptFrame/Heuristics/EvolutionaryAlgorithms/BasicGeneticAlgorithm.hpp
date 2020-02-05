@@ -41,12 +41,12 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class BasicGeneticAlgorithm: public SingleObjSearch<R, ADS>, public EA
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class BasicGeneticAlgorithm: public SingleObjSearch<S, XEv>, public EA
 {
 protected:
-	typedef Solution<R, ADS> Chromossome;
-	typedef MultiSolution<R, ADS> Population;
+	typedef S Chromossome;
+	typedef MultiSolution<S> Population;
 
 	Evaluator<S>& evaluator;
 
@@ -59,7 +59,7 @@ private:
 
 	unsigned numGenerations;
 
-	InitialMultiSolution<R, ADS>& initPop;
+	InitialMultiSolution<S>& initPop;
 
 	Selection<R, ADS>& selection;
 	Crossover<R, ADS>& cross;
@@ -78,7 +78,7 @@ public:
 			return f;
 	}
 
-	BasicGeneticAlgorithm(Evaluator<S>& _evaluator, InitialMultiSolution<R, ADS>& _initPop, unsigned populationSize, float crossoverRate, float mutationRate, float _pLS, unsigned numGenerations, Selection<R, ADS>& _selection, Crossover<R, ADS>& _cross, Mutation<R>& _mut, LocalSearch<R, ADS>& _ls, RandGen& _rg) :
+	BasicGeneticAlgorithm(Evaluator<S>& _evaluator, InitialMultiSolution<S>& _initPop, unsigned populationSize, float crossoverRate, float mutationRate, float _pLS, unsigned numGenerations, Selection<R, ADS>& _selection, Crossover<R, ADS>& _cross, Mutation<R>& _mut, LocalSearch<R, ADS>& _ls, RandGen& _rg) :
 			evaluator(_evaluator), initPop(_initPop), selection(_selection), cross(_cross), mut(_mut), ls(_ls), rg(_rg)
 	{
 		maxim = !evaluator.isMinimization();
@@ -91,7 +91,7 @@ public:
 		this->numGenerations = numGenerations;
 	}
 
-	void evaluate(const MultiSolution<R, ADS> &p, MultiEvaluation<>& mev)
+	void evaluate(const MultiSolution<S> &p, MultiEvaluation<>& mev)
 	{
 		for (unsigned i = 0; i < p.size(); i++)
 			mev.addEvaluation(&evaluator.evaluate(p.at(i)));
@@ -113,7 +113,7 @@ public:
 	}
 
 	// basic implementation of low diversity scheme that prevents populations of clones (TODO: improve!)
-	bool lowDiversity(const MultiSolution<R, ADS> &p, const MultiEvaluation<>& mev)
+	bool lowDiversity(const MultiSolution<S> &p, const MultiEvaluation<>& mev)
 	{
 		for(unsigned i=1; i<mev.size(); i++)
 			if(mev.at(i-1).evaluation() != mev.at(i).evaluation())
@@ -127,7 +127,7 @@ public:
 	 *    f: is the average population evaluation.
 	 */
 
-	virtual void setFitness(const MultiSolution<R, ADS> &p, const MultiEvaluation<>& mev, vector<double>& fv)
+	virtual void setFitness(const MultiSolution<S> &p, const MultiEvaluation<>& mev, vector<double>& fv)
 	{
 		fv.resize(mev.size());
 		for (int i = 0; i < mev.size(); i++)
@@ -186,7 +186,7 @@ public:
 
 		cout << "Generating the Initial Population" << endl;
 
-		MultiSolution<R, ADS>* p = &initPop.generatePopulation(popSize);
+		MultiSolution<S>* p = &initPop.generatePopulation(popSize);
 		MultiEvaluation<>* mev = new MultiEvaluation;
 		evaluate(*p, *mev);
 		vector<double> fv;
@@ -211,7 +211,7 @@ public:
 				break;
 			}
 
-			MultiSolution<R, ADS>* p2 = new MultiSolution<R, ADS>;
+			MultiSolution<S>* p2 = new MultiSolution<S>;
 			MultiEvaluation<>* mev2 = new MultiEvaluation;
 
 			best = getBest(*mev);
@@ -316,7 +316,7 @@ public:
 }
 ;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S>
 class BasicGeneticAlgorithmBuilder: public EA, public SingleObjSearchBuilder<R, ADS>
 {
 public:
@@ -329,7 +329,7 @@ public:
 		Evaluator<S>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		InitialMultiSolution<R, ADS>* initPop;
+		InitialMultiSolution<S>* initPop;
 		hf.assign(initPop, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int popSize = scanner.nextInt();
@@ -360,7 +360,7 @@ public:
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<S>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(InitialMultiSolution<R, ADS>::idComponent(), "generator for initial population"));
+		params.push_back(make_pair(InitialMultiSolution<S>::idComponent(), "generator for initial population"));
 		params.push_back(make_pair("OptFrame:int", "population size"));
 		params.push_back(make_pair("OptFrame:float", "cross probability"));
 		params.push_back(make_pair("OptFrame:float", "mutation probability"));

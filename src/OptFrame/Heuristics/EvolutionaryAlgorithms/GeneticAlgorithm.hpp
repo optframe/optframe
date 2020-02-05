@@ -46,29 +46,29 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class GeneticAlgorithm {
 protected:
-    using Individual = Solution<R, ADS>;
-    using Chromossome = R;
+    using Individual = S;
+    //using Chromossome = R;
     using Fitness = Evaluation<>*; //nullptr means there's no evaluation
     using Population = std::vector< pair<Individual, Fitness> >;
 
     Evaluator<S>& evaluator; //standard problem evaluator
-    SimpleInitialPopulation<R, ADS>& initPop; //operator that generates the initial population
+    SimpleInitialPopulation<S, XEv>& initPop; //operator that generates the initial population
                                         //It is expected that the initial population will have at least 2 individuals.
                                         //It is expected that the initial population size wont surpass the population max size
-    SimpleSelection<R, ADS>& selection; //operator that selects a portion (or entirety) of the current population for the current generation
+    SimpleSelection<S, XEv>& selection; //operator that selects a portion (or entirety) of the current population for the current generation
                                             //It is expected that the size of the selected popluation will be at least 2.
                                             //It is expected that the selected population size wont surpass the population max size
                                             //It is expected that the size of the population will be equal or lower
                                             //Though most applications will have a mindset that the selected population will have 'selectionRate*populationMaxSize' individuals, this rule isn't enforced. 
-    SimpleElection<R, ADS>& election; //operator that will return a population to serve as parents for crossover
+    SimpleElection<S, XEv>& election; //operator that will return a population to serve as parents for crossover
                                     //It is expected at least 2 parents
-    SimpleCrossover<R, ADS>& cross; //operator that will use a population as parents for offspring generation
+    SimpleCrossover<S, XEv>& cross; //operator that will use a population as parents for offspring generation
                                   //It is expected that at least 1 offspring will be generated
                                   //if too many offspring is returned due to max population size, then extra ones will be discarded
-    SimpleMutation<R, ADS>* mut; //optional operator that acts over a population to change it unpredicatelly
+    SimpleMutation<S, XEv>* mut; //optional operator that acts over a population to change it unpredicatelly
 
     unsigned populationMaxSize; //parameter that needs to b calibrated, this is used a various asserts
                                 //It is expected to be at least 2
@@ -98,11 +98,11 @@ public:
 
 
     GeneticAlgorithm(Evaluator<S>& _evaluator,
-                     SimpleInitialPopulation<R, ADS>& _initPop,
-                     SimpleSelection<R, ADS>& _selection,
-                     SimpleElection<R, ADS>&  _election,
-                     SimpleCrossover<R, ADS>& _cross,
-                     SimpleMutation<R, ADS>* _mut = nullptr,
+                     SimpleInitialPopulation<S, XEv>& _initPop,
+                     SimpleSelection<S, XEv>& _selection,
+                     SimpleElection<S, XEv>&  _election,
+                     SimpleCrossover<S, XEv>& _cross,
+                     SimpleMutation<S, XEv>* _mut = nullptr,
                      unsigned populationMaxSize = 30, unsigned numGenerations = 10, double timelimit_ms = numeric_limits<double>::max()) //, Evaluation<DS> target)
     : evaluator(_evaluator), initPop(_initPop), selection(_selection), election(_election), cross(_cross) {
     
@@ -161,7 +161,7 @@ public:
         std::sort(population.begin(), population.end(), compare);
     }
 
-    virtual pair<Solution<R, ADS>, Evaluation<>> exec(){
+    virtual pair<Solution<S, XEv>, Evaluation<>> exec(){
         std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
 

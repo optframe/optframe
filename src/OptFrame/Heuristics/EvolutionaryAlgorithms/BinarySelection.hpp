@@ -33,7 +33,7 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S>
 class BinarySelection: public Selection<R, ADS>
 {
 private:
@@ -50,7 +50,7 @@ public:
 	{
 	}
 
-	pair<unsigned, unsigned> select(const MultiSolution<R, ADS>& p, const MultiEvaluation<>& mev, const vector<double>& fv)
+	pair<unsigned, unsigned> select(const MultiSolution<S>& p, const MultiEvaluation<>& mev, const vector<double>& fv)
 	{
 		assert(p.size() > 1);
 		//cout << "SELECT: " << p.size() << endl;

@@ -42,7 +42,7 @@
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S>
 class Selection : public Component, public EA
 {
 public:
@@ -51,7 +51,7 @@ public:
 	{
 	}
 
-	virtual pair<unsigned, unsigned> select(const MultiSolution<R, ADS>& population, const MultiEvaluation<>& mev, const std::vector<double>& fv) = 0;
+	virtual pair<unsigned, unsigned> select(const MultiSolution<S>& population, const MultiEvaluation<>& mev, const std::vector<double>& fv) = 0;
 
 
 	static double getMax(const std::vector<double>& fv)
@@ -107,11 +107,11 @@ public:
 };
 
 //temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S>
 class SimpleSelection {
 protected:
-	using Individual = Solution<R, ADS>;
-    using Chromossome = R;
+	using Individual = S;
+    //using Chromossome = R;
     using Fitness = Evaluation<>*; //nullptr means there's no evaluation
     using Population = vector< pair<Individual, Fitness> >;
 
@@ -143,11 +143,11 @@ public:
 /**********************/
 
 //Selects the 100alpha% most fit individuals 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class ElitismSelection final : public SimpleSelection<R, ADS> {
+template<XSolution S>
+class ElitismSelection final : public SimpleSelection<S> {
 protected:
-	using Individual = Solution<R, ADS>;
-    using Chromossome = R;
+	using Individual = S;
+    //using Chromossome = R;
     using Fitness = Evaluation<>*; //nullptr means there's no evaluation
     using Population = vector< pair<Individual, Fitness> >;
 
@@ -158,7 +158,7 @@ public:
 	//optional parameter
 	bool sortPopulationBeforeSelect = false; //this selection need to operate over a ranked population. If the GA used doesn't rank them, then you should flip this to true 
 
-	ElitismSelection(Evaluator<S>& _evaluator, double selectionRate) : SimpleSelection<R, ADS>(_evaluator), alpha(selectionRate) { assert(selectionRate >= 0.0 && selectionRate <= 1.0); };
+	ElitismSelection(Evaluator<S>& _evaluator, double selectionRate) : SimpleSelection<S, XEv>(_evaluator), alpha(selectionRate) { assert(selectionRate >= 0.0 && selectionRate <= 1.0); };
 	~ElitismSelection() = default;
 
 	void select(Population& population) override {

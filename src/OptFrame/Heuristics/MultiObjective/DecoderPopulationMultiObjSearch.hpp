@@ -290,7 +290,7 @@ public:
  class DecoderClassicNSGAII: public PopulationBasedMultiObjSearch<R, ADS, DS>
  {
  public:
- DecoderClassicNSGAII(vector<Direction<DS>*> vDir, MultiEvaluator<R, ADS, DS>& muev, InitialPopulation<R, ADS>& initPop, vector<NS<RepCARP>*> mutations, double mutationRate, vector<GeneralCrossover<RepCARP>*> crossovers, double renewRate, RandGen& rg, unsigned popSize, int maxIter, int maxGen = 100000000) :
+ DecoderClassicNSGAII(vector<Direction<DS>*> vDir, MultiEvaluator<R, ADS, DS>& muev, InitialPopulation<S, XEv>& initPop, vector<NS<RepCARP>*> mutations, double mutationRate, vector<GeneralCrossover<RepCARP>*> crossovers, double renewRate, RandGen& rg, unsigned popSize, int maxIter, int maxGen = 100000000) :
  DecoderPopulationBasedMultiObjSearch<R, ADS, DS>(vDir, (vDir.size() == 2 ? *new BiObjNonDominatedSort<R, ADS, DS>(vDir) : *new NonDominatedSort<R, ADS, DS>(vDir)), *new CrowdingDistance<R, ADS, DS>(vDir), *new NSGAIISelection<R, ADS, DS>, *new BasicPopulationManagement<R, ADS, DS>(muev, initPop, mutations, mutationRate, crossovers, renewRate, rg), popSize, maxIter, maxGen)
  {
  }

@@ -34,7 +34,7 @@
 #include "../../InitialPareto.hpp"
 
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 struct gplsStructure
 {
 	vector<vector<bool> > nsParetoOptimum;

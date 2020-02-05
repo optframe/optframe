@@ -30,7 +30,8 @@ namespace optframe {
 
 typedef vector<double> random_keys;
 
-template<Representation R>
+// Representation R is NOT random_keys... it's something else, related to original problem
+template<Representation R, XSolution S = RSolution<R>, XEvaluation XEv = Evaluation<>>
 class DecoderRandomKeys
 {
 public:
@@ -38,7 +39,7 @@ public:
    {
    }
 
-   virtual pair<Evaluation<>, CopySolution<R>*> decode(const random_keys& rk) = 0;
+   virtual pair<XEv, S*> decode(const random_keys& rk) = 0;
 
    virtual bool isMinimization() const = 0;
 };
@@ -47,16 +48,20 @@ public:
 // Basic implementation to use class Evaluator<random_keys>
 // ========================================================
 
-template<Representation R>
-class DecoderRandomKeysEvaluator : public DecoderRandomKeys<R>
+// what is this class??
+///template<Representation R, XSolution S = RSolution<R>, XEvaluation XEv = Evaluation<>>
+// probably, a decoder for a solution typed 'random_keys'... strange!
+// maybe its meant to be generic... and simply use a delegated 'Evaluator'....
+template<Representation R, XSolution S = RSolution<R>, XEvaluation XEv = Evaluation<>>
+class DecoderRandomKeysEvaluator : public DecoderRandomKeys<R, S, XEv>
 {
 public:
 
    //using RKEvaluator = Evaluator<random_keys, OPTFRAME_DEFAULT_ADS, CopySolution<random_keys,OPTFRAME_DEFAULT_ADS>;
 
-   Evaluator<random_keys>& evaluator;
+   Evaluator<R>& evaluator;
 
-   DecoderRandomKeysEvaluator(Evaluator<random_keys>& _evaluator)
+   DecoderRandomKeysEvaluator(Evaluator<R>& _evaluator)
      : evaluator(_evaluator)
    {
    }
@@ -65,9 +70,9 @@ public:
    {
    }
 
-   virtual pair<Evaluation<>, CopySolution<R>*> decode(const random_keys& rk) override
+   virtual pair<XEv, S*> decode(const R& rk) override
    {
-      return pair<Evaluation<>, CopySolution<R>*>(evaluator.evaluate(rk, nullptr), nullptr);
+      return pair<XEv, S*>(evaluator.evaluate(rk, nullptr), nullptr);
    }
 
    virtual bool isMinimization() const
@@ -76,13 +81,15 @@ public:
    }
 };
 
-class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<vector<int>>
+
+// application for R = permutation of int (vector<int>)
+class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<vector<int>, RSolution<vector<int>>>
 {
 public:
-   Evaluator<vector<int>>& ev; // evaluator for permutation
+   Evaluator<RSolution<vector<int>>>& ev; // evaluator for permutation
    int a, b;                   // decode in interval [a,b]
 
-   EvaluatorPermutationRandomKeys(Evaluator<vector<int>>& _ev, int _a, int _b)
+   EvaluatorPermutationRandomKeys(Evaluator<RSolution<vector<int>>>& _ev, int _a, int _b)
      : ev(_ev)
      , a(_a)
      , b(_b)
@@ -90,7 +97,7 @@ public:
       assert(a <= b);
    }
 
-   virtual pair<Evaluation<>, CopySolution<vector<int>>*> decode(const random_keys& rk) override
+   virtual pair<Evaluation<>, RSolution<vector<int>>*> decode(const random_keys& rk) override
    {
       int sz = b - a + 1;
       vector<pair<double, int>> v(sz);
@@ -106,10 +113,11 @@ public:
       for (unsigned i = 0; i < v.size(); i++)
          p[i] = v[i].second;
 
-      Evaluation<> e = ev.evaluate(p, nullptr);
+      RSolution<vector<int>> sevp(p);
+      Evaluation<> e = ev.evaluate(sevp);
 
       // you have the option to actually return a Solution<vector<int>> for post-decoding purposes
-      return pair<Evaluation<>, CopySolution<vector<int>>*>(e, new CopySolution<vector<int>>(p));
+      return pair<Evaluation<>, RSolution<vector<int>>*>(e, new RSolution<vector<int>>(p));
    }
 
    virtual bool isMinimization() const
@@ -118,14 +126,15 @@ public:
    }
 };
 
-class EvaluatorSubsetRandomKeys : public DecoderRandomKeys<vector<bool>>
+// implementation of decoder for subset function (vector<bool>)
+class EvaluatorSubsetRandomKeys : public DecoderRandomKeys<vector<bool>, RSolution<vector<bool>>>
 {
 public:
-   Evaluator<vector<bool>>& ev; // evaluator for permutation
+   Evaluator<RSolution<vector<bool>>>& ev; // evaluator for permutation
    int a, b;                    // decode in interval [a,b]
    double limit;                // limit to decide membership (default=0.5)
 
-   EvaluatorSubsetRandomKeys(Evaluator<vector<bool>>& _ev, int _a, int _b, double _limit = 0.5)
+   EvaluatorSubsetRandomKeys(Evaluator<RSolution<vector<bool>>>& _ev, int _a, int _b, double _limit = 0.5)
      : ev(_ev)
      , a(_a)
      , b(_b)
@@ -134,16 +143,17 @@ public:
       assert(a <= b);
    }
 
-   virtual pair<Evaluation<>, CopySolution<vector<bool>>*> decode(const random_keys& rk) override
+   virtual pair<Evaluation<>, RSolution<vector<bool>>*> decode(const random_keys& rk) override
    {
       vector<bool> v(b - a + 1);
       for (unsigned i = 0; i < v.size(); i++)
          v[i] = rk[i] >= limit;
 
-      Evaluation<> e = ev.evaluate(v, nullptr);
+      RSolution<vector<bool>> sev(v);
+      Evaluation<> e = ev.evaluate(sev);
 
       // you have the option to actually return a Solution<vector<bool>> for post-decoding purposes
-      return pair<Evaluation<>&, CopySolution<vector<bool>>*>(e, nullptr);
+      return pair<Evaluation<>&, RSolution<vector<bool>>*>(e, nullptr);
    }
 
    virtual bool isMinimization() const

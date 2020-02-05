@@ -35,7 +35,7 @@ using namespace std;
 namespace optframe
 {
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class InitialPareto: public Component
 {
 public:
@@ -60,7 +60,7 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class BasicInitialPareto: public InitialPareto<R, ADS>
 {
 public:
@@ -99,7 +99,7 @@ public:
 	}
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class GRInitialPareto: public InitialPareto<R, ADS>
 {
 public:

@@ -81,7 +81,7 @@ public:
 
 };
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class MOMETRICS
 {
 protected:

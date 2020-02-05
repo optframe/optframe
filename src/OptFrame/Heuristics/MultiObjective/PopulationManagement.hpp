@@ -57,14 +57,14 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_
 class BasicPopulationManagement: public PopulationManagement<R, ADS, DS>
 {
 public:
-	InitialMultiSolution<R, ADS>& initPop;
+	InitialMultiSolution<S>& initPop;
 	vector<NS<RepCARP>*> mutations;
 	double mutationRate; // probability of applying a mutation
 	vector<GeneralCrossover<R, ADS>*> crossovers;
 	double renewRate; // percentage of children population to be entirely reconstructed
 	RandGen& rg;
 
-	BasicPopulationManagement(InitialMultiSolution<R, ADS>& _initPop, vector<NS<RepCARP>*> _mutations, double _mutationRate, vector<GeneralCrossover<RepCARP>*> _crossovers, double _renewRate, RandGen& _rg) :
+	BasicPopulationManagement(InitialMultiSolution<S>& _initPop, vector<NS<RepCARP>*> _mutations, double _mutationRate, vector<GeneralCrossover<RepCARP>*> _crossovers, double _renewRate, RandGen& _rg) :
 			initPop(_initPop), mutations(_mutations), mutationRate(_mutationRate), crossovers(_crossovers), renewRate(_renewRate), rg(_rg)
 	{
 		if(renewRate > 1)
@@ -88,7 +88,7 @@ public:
 
 	virtual vector<MOSIndividual<R, ADS, DS>*>& initialize(unsigned pSize)
 	{
-		Population<R, ADS> *p = &initPop.generatePopulation(pSize);
+		Population<S, XEv> *p = &initPop.generatePopulation(pSize);
 
 		vector<MOSIndividual<R, ADS, DS>*> r;
 		for(unsigned i = 0; i < p->size(); i++)

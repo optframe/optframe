@@ -44,11 +44,11 @@ namespace optframe
 {
 
 //temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class SimpleElection {
 protected:
-	using Individual = Solution<R, ADS>;
-    using Chromossome = R;
+	using Individual = S;
+    //using Chromossome = R;
     using Fitness = Evaluation<>*; //nullptr means there's no evaluation
     using Population = vector< pair<Individual, Fitness> >;
 
@@ -65,11 +65,11 @@ public:
 /**********************/
 
 //Chooses two distinct parents randomly
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class RandomElection final : public SimpleElection<R, ADS>{
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class RandomElection final : public SimpleElection<S>{
 protected:
-	using Individual = Solution<R, ADS>;
-    using Chromossome = R;
+	using Individual = S;
+    //using Chromossome = R;
     using Fitness = Evaluation<>*; //nullptr means there's no evaluation
     using Population = vector< pair<Individual, Fitness> >;
 
@@ -98,11 +98,11 @@ public:
 //Chooses two distinct parents with the roullete operation:  the most fit has higher chances of being chosen
 //Assumes that the objective function is POSITIVE OR ZERO
 //Assumes that the entire population has been evaluated
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class RouletteElection final : public SimpleElection<R, ADS>{
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class RouletteElection final : public SimpleElection<S>{
 protected:
-	using Individual = Solution<R, ADS>;
-    using Chromossome = R;
+	using Individual = S;
+    //using Chromossome = R;
     using Fitness = Evaluation<>*; //nullptr means there's no evaluation
     using Population = vector< pair<Individual, Fitness> >;
 

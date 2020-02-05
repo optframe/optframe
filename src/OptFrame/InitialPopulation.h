@@ -46,7 +46,7 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class InitialPopulation: public Component
 {
 public:
@@ -55,7 +55,7 @@ public:
 	{
 	}
 
-	virtual Population<R, ADS, S> generatePopulation(unsigned populationSize, double timelimit) = 0;
+	virtual Population<S, XEv> generatePopulation(unsigned populationSize, double timelimit) = 0;
 
 	static string idComponent()
 	{
@@ -70,8 +70,8 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class BasicInitialPopulation: public InitialPopulation<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class BasicInitialPopulation: public InitialPopulation<S, XEv>
 {
 public:
 
@@ -86,9 +86,9 @@ public:
 	{
 	}
 
-	virtual Population<R, ADS, S> generatePopulation(unsigned populationSize, double timelimit)
+	virtual Population<S, XEv> generatePopulation(unsigned populationSize, double timelimit)
 	{
-		Population<R, ADS, S>* p = new Population<R, ADS, S>;
+		Population<S, XEv>* p = new Population<S, XEv>;
 		for (unsigned i = 0; i < populationSize; i++)
 			p->push_back(constructive.generateSolution(timelimit));
 		return *p;
@@ -97,7 +97,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Population<R, ADS, S>::idComponent() << ":BasicInitialPopulation";
+		ss << Population<S, XEv>::idComponent() << ":BasicInitialPopulation";
 		return ss.str();
 	}
 
@@ -107,8 +107,8 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
-class GRInitialPopulation: public InitialPopulation<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class GRInitialPopulation: public InitialPopulation<S, XEv>
 {
 public:
 	GRConstructive<S>& constructive;
@@ -124,9 +124,9 @@ public:
 	{
 	}
 
-	virtual Population<R, ADS, S> generatePopulation(unsigned populationSize, double timelimit)
+	virtual Population<S, XEv> generatePopulation(unsigned populationSize, double timelimit)
 	{
-		Population<R, ADS, S>* p = new Population<R, ADS, S>;
+		Population<S, XEv>* p = new Population<S, XEv>;
 		for (unsigned i = 0; i < populationSize; i++)
 		{
 			float alpha = rg.rand01();
@@ -145,7 +145,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Population<R, ADS, S>::idComponent() << ":GRInitialPopulation";
+		ss << Population<S, XEv>::idComponent() << ":GRInitialPopulation";
 		return ss.str();
 	}
 
@@ -178,7 +178,7 @@ public:
 
 //generates random individuals based on user programmed method
 template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class RandomInitialPopulation : public SimpleInitialPopulation<R, ADS> {
+class RandomInitialPopulation : public SimpleInitialPopulation<S, XEv> {
 protected:
 	using Individual = S;
     using Chromossome = R;
@@ -187,7 +187,7 @@ protected:
 
 public:
 	RandomInitialPopulation() = delete;
-	RandomInitialPopulation(unsigned int initialPopSize) : SimpleInitialPopulation<R, ADS>(initialPopSize) { };
+	RandomInitialPopulation(unsigned int initialPopSize) : SimpleInitialPopulation<S, XEv>(initialPopSize) { };
 	virtual ~RandomInitialPopulation() = default;
 
 	virtual Individual generateIndividual() = 0;

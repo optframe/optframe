@@ -33,7 +33,7 @@ namespace optframe
 
 // Population is 'final'
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class Population final : public Component
 {
 protected:
@@ -139,7 +139,7 @@ public:
       fitness[i] = v;
    }
 
-   void add(const Population<R, ADS, S>& pop)
+   void add(const Population<S, XEv>& pop)
    {
       for (unsigned i = 0; i < pop.size(); i++) {
          const chromossome& s = pop.at(i);
@@ -193,7 +193,7 @@ public:
       }
    }
 
-   virtual Population<R, ADS, S>& operator=(const Population<R, ADS, S>& p)
+   virtual Population<S, XEv>& operator=(const Population<S, XEv>& p)
    {
       if (&p == this) // auto ref check
          return *this;
@@ -227,9 +227,9 @@ public:
       return (*this);
    }
 
-   virtual Population<R, ADS, S>& clone() const
+   virtual Population<S, XEv>& clone() const
    {
-      return *new Population<R, ADS, S>(*this);
+      return *new Population<S, XEv>(*this);
    }
 
    static string idComponent()
@@ -254,7 +254,7 @@ public:
       }
    }
 
-   chromossome& cloneBestChromossome(Evaluator<R, ADS, S, XEv>& eval)
+   chromossome& cloneBestChromossome(Evaluator<S, XEv>& eval)
    {
       vector<pair<S, double>> v;
 
