@@ -124,7 +124,7 @@ public:
 //		paretoFront.push_back(new MultiEvaluation(v_e));
 //	}
 
-//	void add_ind(const S* s, const MultiEvaluator<R, ADS, S>& mEval)
+//	void add_ind(const S* s, const MultiEvaluator<S, XEv>& mEval)
 //	{
 //		MultiEvaluation<>* mev = mEval.evaluateSolution(s);
 //		add_ind(s, mev);
@@ -314,7 +314,7 @@ public:
 
 //	static bool addSolution(ParetoDominance<R, ADS, S>& dom, ParetoDominanceWeak<R, ADS, S>& domWeak, Pareto<R, ADS, S>& p, S* candidate)
 //	{
-//		MultiEvaluator<R, ADS, S>& mEval = dom.getMultiEvaluator();
+//		MultiEvaluator<S, XEv>& mEval = dom.getMultiEvaluator();
 //		MultiEvaluation<>& mevCandidate = mEval.evaluate(*candidate);
 //
 //		for (int eI = 0; eI < mevCandidate.size(); eI++)
@@ -357,7 +357,7 @@ public:
 //	static bool addSolution(ParetoDominance<R, ADS, S>& dom, ParetoDominanceWeak<R, ADS, S>& domWeak, pair<Pareto<R, ADS, S>, vector<vector<bool> > >& p, S* candidate, int neighboorsSize)
 //
 //	{
-//		vector<Evaluator<R, ADS, S>*> v_e = dom.getEvaluators();
+//		vector<Evaluator<S, XEv>*> v_e = dom.getEvaluators();
 //		vector<Evaluation<>*> fitnessNewInd;
 //
 //		for (int evalIndex = 0; evalIndex < v_e.size(); evalIndex++)
@@ -433,7 +433,7 @@ public:
 
 //	static bool addSolution(ParetoDominance<R, ADS, S>& dom, ParetoDominanceWeak<R, ADS, S>& domWeak, Population<R, ADS, S>& p, S& s)
 //	{
-//		vector<Evaluator<R, ADS, S>*> v_e = dom.getEvaluators();
+//		vector<Evaluator<S, XEv>*> v_e = dom.getEvaluators();
 //		vector<double> fitnessNewInd;
 //
 //		for (int evalIndex = 0; evalIndex < v_e.size(); evalIndex++)
@@ -474,7 +474,7 @@ public:
 	//Special addSolution used in the 2PPLS speedUp
 //	static bool addSolution(ParetoDominance<R, ADS, S>& dom, ParetoDominanceWeak<R, ADS, S>& domWeak, pair<Population<R, ADS, S>, vector<vector<bool> > >& p, S& s, int neighboorsSize)
 //	{
-//		vector<Evaluator<R, ADS, S>*> v_e = dom.getEvaluators();
+//		vector<Evaluator<S, XEv>*> v_e = dom.getEvaluators();
 //		vector<double> fitnessNewInd;
 //
 //		for (int evalIndex = 0; evalIndex < v_e.size(); evalIndex++)
@@ -546,14 +546,14 @@ template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySol
 class paretoManager
 {
 public:
-	MultiEvaluator<R, ADS, S>& multiEval;
+	MultiEvaluator<S, XEv>& multiEval;
 	ParetoDominance<R, ADS, S> dom;
 	ParetoDominanceWeak<R, ADS, S> domWeak;
 //	Pareto<R, ADS, S> x_e;
 
 public:
 
-	paretoManager(MultiEvaluator<R, ADS, S>& _multiEval) :
+	paretoManager(MultiEvaluator<S, XEv>& _multiEval) :
 			multiEval(_multiEval), dom(ParetoDominance<R, ADS, S>(_multiEval)), domWeak(ParetoDominanceWeak<R, ADS, S>(_multiEval))
 	{
 	}
@@ -568,7 +568,7 @@ public:
 //		return x_e;
 //	}
 
-//	MultiEvaluator<R, ADS, S>& getMultiEvaluator()
+//	MultiEvaluator<S, XEv>& getMultiEvaluator()
 //	{
 //		return multiEval;
 //	}

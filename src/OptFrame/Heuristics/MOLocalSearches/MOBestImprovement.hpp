@@ -35,8 +35,8 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class MOBestImprovement: public MOLocalSearch<R, ADS>
 {
 private:
-	MultiEvaluator<R, ADS>& v_e;
-	NSSeq<R, ADS>& nsSeq;
+	MultiEvaluator<S>& v_e;
+	NSSeq<S>& nsSeq;
 
 	// logs
 	double sum_time;
@@ -44,7 +44,7 @@ private:
 
 public:
 
-	MOBestImprovement(MultiEvaluator<R, ADS>& _v_e, NSSeq<R, ADS>& _nsSeq) :
+	MOBestImprovement(MultiEvaluator<S>& _v_e, NSSeq<S>& _nsSeq) :
 			v_e(_v_e), nsSeq(_nsSeq)
 	{
 		sum_time = 0.0;
@@ -71,7 +71,7 @@ public:
 		num_calls++;
 		Timer t;
 
-		NSIterator<R, ADS>& it = nsSeq.getIterator(s);
+		NSIterator<S, XEv>& it = nsSeq.getIterator(s);
 
 		it.first();
 

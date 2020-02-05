@@ -36,13 +36,13 @@ template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySol
 class VariableNeighborhoodDescent: public LocalSearch<R, ADS, S>
 {
 private:
-	Evaluator<R, ADS, S>& ev;
+	Evaluator<S, XEv>& ev;
 	vector<LocalSearch<R, ADS, S>*> lsList;
 	RandGen* rg;
 
 public:
 
-	VariableNeighborhoodDescent(Evaluator<R, ADS, S>& _ev, vector<LocalSearch<R, ADS, S>*> _lsList, RandGen* _rg = nullptr) :
+	VariableNeighborhoodDescent(Evaluator<S, XEv>& _ev, vector<LocalSearch<R, ADS, S>*> _lsList, RandGen* _rg = nullptr) :
 			ev(_ev), lsList(_lsList), rg(_rg)
 	{
 	}
@@ -140,7 +140,7 @@ public:
 
 	virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS, S>* eval;
+		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<LocalSearch<R, ADS, S>*> hlist;
@@ -152,7 +152,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
 		stringstream ss;
 		ss << LocalSearch<R, ADS, S>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of local searches"));

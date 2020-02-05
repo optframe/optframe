@@ -48,7 +48,7 @@ protected:
 	typedef Solution<R, ADS> Chromossome;
 	typedef MultiSolution<R, ADS> Population;
 
-	Evaluator<R, ADS>& evaluator;
+	Evaluator<S>& evaluator;
 
 private:
 
@@ -78,7 +78,7 @@ public:
 			return f;
 	}
 
-	BasicGeneticAlgorithm(Evaluator<R, ADS>& _evaluator, InitialMultiSolution<R, ADS>& _initPop, unsigned populationSize, float crossoverRate, float mutationRate, float _pLS, unsigned numGenerations, Selection<R, ADS>& _selection, Crossover<R, ADS>& _cross, Mutation<R>& _mut, LocalSearch<R, ADS>& _ls, RandGen& _rg) :
+	BasicGeneticAlgorithm(Evaluator<S>& _evaluator, InitialMultiSolution<R, ADS>& _initPop, unsigned populationSize, float crossoverRate, float mutationRate, float _pLS, unsigned numGenerations, Selection<R, ADS>& _selection, Crossover<R, ADS>& _cross, Mutation<R>& _mut, LocalSearch<R, ADS>& _ls, RandGen& _rg) :
 			evaluator(_evaluator), initPop(_initPop), selection(_selection), cross(_cross), mut(_mut), ls(_ls), rg(_rg)
 	{
 		maxim = !evaluator.isMinimization();
@@ -326,7 +326,7 @@ public:
 
 	virtual SingleObjSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
-		Evaluator<R, ADS>* eval;
+		Evaluator<S>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		InitialMultiSolution<R, ADS>* initPop;
@@ -359,7 +359,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<S>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(InitialMultiSolution<R, ADS>::idComponent(), "generator for initial population"));
 		params.push_back(make_pair("OptFrame:int", "population size"));
 		params.push_back(make_pair("OptFrame:float", "cross probability"));

@@ -32,20 +32,20 @@
 using namespace std;
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveNSSeqUnion<R, ADS> >
-class NSSeqUnionAdapter: public NSSeq<R, ADS>
+class NSSeqUnionAdapter: public NSSeq<S>
 {
 private:
-	vector<NSSeq<R, ADS>*> ns;
+	vector<NSSeq<S>*> ns;
 
 public:
 
-	NSSeqUnionAdapter(NSSeq<R, ADS>& _n1, NSSeq<R, ADS>& _n2)
+	NSSeqUnionAdapter(NSSeq<S>& _n1, NSSeq<S>& _n2)
 	{
 		ns.push_back(&_n1);
 		ns.push_back(&_n2);
 	}
 
-	void add_ns(NSSeq<R, ADS>& _ns)
+	void add_ns(NSSeq<S>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
@@ -73,9 +73,9 @@ public:
 		}
 	}
 
-	virtual NSIterator<R, ADS>& getIterator(const R& r, const ADS& ads)
+	virtual NSIterator<S, XEv>& getIterator(const R& r, const ADS& ads)
 	{
-		vector<NSIterator<R, ADS>*> it;
+		vector<NSIterator<S, XEv>*> it;
 		for(unsigned int i = 0; i < ns.size(); i++)
 			it.push_back(&ns[i]->getIterator(r, ads));
 

@@ -35,7 +35,7 @@ template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySol
 class BasicGRASP: public SingleObjSearch<R, ADS, S>, public GRASP
 {
 private:
-	Evaluator<R, ADS, S>& evaluator;
+	Evaluator<S, XEv>& evaluator;
 	GRConstructive<S>& constructive;
 	LocalSearch<R, ADS, S>& ls;
 	float alpha;
@@ -43,7 +43,7 @@ private:
 
 public:
 
-	BasicGRASP(Evaluator<R, ADS, S>& _eval, GRConstructive<S>& _constructive, LocalSearch<R, ADS, S>& _ls, float _alpha, int _iterMax) :
+	BasicGRASP(Evaluator<S, XEv>& _eval, GRConstructive<S>& _constructive, LocalSearch<R, ADS, S>& _ls, float _alpha, int _iterMax) :
 			evaluator(_eval), constructive(_constructive), ls(_ls)
 	{
 		if (_iterMax <= 0)
@@ -129,7 +129,7 @@ public:
 
 	virtual SingleObjSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS, S>* eval;
+		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		GRConstructive<S>* constructive;
@@ -160,7 +160,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(GRConstructive<S>::idComponent(), "greedy randomized constructive heuristic"));
 		params.push_back(make_pair(LocalSearch<R, ADS, S>::idComponent(), "local search"));
 		params.push_back(make_pair("OptFrame:float", "alpha parameter [0,1]"));

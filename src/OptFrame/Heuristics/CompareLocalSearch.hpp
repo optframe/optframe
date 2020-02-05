@@ -33,13 +33,13 @@ template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,
 class CompareLocalSearch: public LocalSearch<R, ADS, S>
 {
 private:
-	Evaluator<R, ADS, S>& eval;
+	Evaluator<S, XEv>& eval;
 	LocalSearch<R, ADS, S>& ls1;
 	LocalSearch<R, ADS, S>& ls2;
 
 public:
 
-	CompareLocalSearch(Evaluator<R, ADS, S>& _eval, LocalSearch<R, ADS, S>& _ls1,  LocalSearch<R, ADS, S>& _ls2) :
+	CompareLocalSearch(Evaluator<S, XEv>& _eval, LocalSearch<R, ADS, S>& _ls1,  LocalSearch<R, ADS, S>& _ls2) :
 		eval(_eval), ls1(_ls1), ls2(_ls2)
 	{
 	}
@@ -112,7 +112,7 @@ public:
 
 	virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS, S>* eval;
+		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
@@ -139,7 +139,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(LocalSearch<R, ADS, S>::idComponent(), "local search 1"));
 		params.push_back(make_pair(LocalSearch<R, ADS, S>::idComponent(), "local search 2"));
 

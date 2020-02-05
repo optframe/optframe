@@ -31,13 +31,13 @@ template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySol
 class CircularSearch : public LocalSearch<R, ADS, S>
 {
 private:
-   Evaluator<R, ADS, S>& eval;
-   NSEnum<R, ADS, S>& ns;
+   Evaluator<S, XEv>& eval;
+   NSEnum<S, XEv>& ns;
 
    int initial_w;
 
 public:
-   CircularSearch(Evaluator<R, ADS, S>& _eval, NSEnum<R, ADS, S>& _nsEnum)
+   CircularSearch(Evaluator<S, XEv>& _eval, NSEnum<S, XEv>& _nsEnum)
      : eval(_eval)
      , ns(_nsEnum)
    {
@@ -63,16 +63,16 @@ public:
       int w = initial_w % Wmax;
 
       do {
-         Move<R, ADS, S>& m = *ns.indexMove(w);
+         Move<S, XEv>& m = *ns.indexMove(w);
 
-         if (m.canBeAppliedToSolution(s)) {
+         if (m.canBeApplied(s)) {
             bool mayEstimate = false;
             MoveCost<>& cost = *eval.moveCost(e, m, s, mayEstimate);
 
             if (eval.isImprovement(cost)) {
                //double old_f = e.evaluation();
 
-               Component::safe_delete(m.applyUpdateSolution(e, s));
+               Component::safe_delete(m.applyUpdate(e, s));
                eval.reevaluateSolution(e, s); // updates 'e'
 
                //cout << "CS improvement! w:" << w << " fo=" << e.evaluation() << " (antiga fo="<< old_f << ")" << endl << endl;
@@ -121,10 +121,10 @@ public:
 
    virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
    {
-      Evaluator<R, ADS, S>* eval;
+      Evaluator<S, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      NSEnum<R, ADS, S>* nsenum;
+      NSEnum<S, XEv>* nsenum;
       hf.assign(nsenum, scanner.nextInt(), scanner.next()); // reads backwards!
 
       return new CircularSearch<R, ADS, S>(*eval, *nsenum);
@@ -133,8 +133,8 @@ public:
    virtual vector<pair<string, string>> parameters()
    {
       vector<pair<string, string>> params;
-      params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
-      params.push_back(make_pair(NSEnum<R, ADS, S>::idComponent(), "neighborhood structure"));
+      params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+      params.push_back(make_pair(NSEnum<S, XEv>::idComponent(), "neighborhood structure"));
 
       return params;
    }

@@ -32,12 +32,12 @@ template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySol
 class HillClimbing: public LocalSearch<R, ADS, S>
 {
 private:
-	Evaluator<R, ADS, S>& evaluator;
+	Evaluator<S, XEv>& evaluator;
 	LocalSearch<R, ADS, S>& ls;
 
 public:
 
-	HillClimbing(Evaluator<R, ADS, S>& _ev, LocalSearch<R, ADS, S>& _ls) :
+	HillClimbing(Evaluator<S, XEv>& _ev, LocalSearch<R, ADS, S>& _ls) :
 		evaluator(_ev), ls(_ls)
 	{
 	}
@@ -109,7 +109,7 @@ public:
 
 	virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS, S>* eval;
+		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
@@ -127,7 +127,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(LocalSearch<R, ADS, S>::idComponent(), "local search"));
 
 		return params;

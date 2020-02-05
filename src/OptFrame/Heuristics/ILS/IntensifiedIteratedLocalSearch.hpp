@@ -34,12 +34,12 @@ template<class H, class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class IntensifiedIteratedLocalSearch: public SingleObjSearch<R, ADS>
 {
 protected:
-	Evaluator<R, ADS>& evaluator;
+	Evaluator<S>& evaluator;
 	Constructive<S>& constructive;
 
 public:
 
-	IntensifiedIteratedLocalSearch(Evaluator<R, ADS>& _evaluator, Constructive<S>& _constructive) :
+	IntensifiedIteratedLocalSearch(Evaluator<S>& _evaluator, Constructive<S>& _constructive) :
 		evaluator(_evaluator), constructive(_constructive)
 	{
 	}
@@ -48,7 +48,7 @@ public:
 	{
 	}
 
-	Evaluator<R, ADS>& getEvaluator()
+	Evaluator<S>& getEvaluator()
 	{
 		return evaluator;
 	}

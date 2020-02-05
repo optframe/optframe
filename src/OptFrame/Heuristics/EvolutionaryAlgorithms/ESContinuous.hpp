@@ -56,9 +56,9 @@ private:
 
 	S* sStar;
 	Evaluation<>* eStar;
-	Evaluator<R, ADS>& eval;
+	Evaluator<S>& eval;
 	Constructive<S>& constructive;
-	vector<NSSeq<R, ADS>*> vNS;
+	vector<NSSeq<S>*> vNS;
 	LocalSearch<R, ADS>& ls;
 
 	const int mi;
@@ -86,7 +86,7 @@ private:
 
 public:
 
-	ESContinous(Evaluator<R, ADS>& _eval, Constructive<S>& _constructive, vector<NSSeq<R, ADS>*> _vNS, LocalSearch<R, ADS>& _ls, int _mi, int _lambda, int _gMax) :
+	ESContinous(Evaluator<S>& _eval, Constructive<S>& _constructive, vector<NSSeq<S>*> _vNS, LocalSearch<R, ADS>& _ls, int _mi, int _lambda, int _gMax) :
 			eval(_eval), constructive(_constructive), vNS(_vNS), ls(_ls), mi(_mi), lambda(_lambda), gMax(_gMax)
 	{
 		sStar = nullptr;

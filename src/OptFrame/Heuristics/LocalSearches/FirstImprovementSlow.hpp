@@ -32,12 +32,12 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class FirstImprovementSlow: public LocalSearch<R, ADS>
 {
 private:
-	Evaluator<R, ADS>& eval;
-	NSSeq<R, ADS>& nsSeq;
+	Evaluator<S>& eval;
+	NSSeq<S>& nsSeq;
 
 public:
 
-	FirstImprovementSlow(Evaluator<R, ADS>& _eval, NSSeq<R, ADS>& _nsSeq) :
+	FirstImprovementSlow(Evaluator<S>& _eval, NSSeq<S>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 	}
@@ -55,7 +55,7 @@ public:
 
 	virtual void exec(Solution<R, ADS>& s, Evaluation<>& e, double timelimit, double target_f)
 	{
-		NSIterator<R, ADS>& it = nsSeq.getIterator(s);
+		NSIterator<S, XEv>& it = nsSeq.getIterator(s);
 		string bestMoveId = "";
 		it.first();
 

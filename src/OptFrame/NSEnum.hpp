@@ -32,8 +32,8 @@ namespace optframe
 {
 
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
-class NSEnum: public NSSeq<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class NSEnum: public NSSeq<S, XEv>
 {
 
 protected:
@@ -48,25 +48,25 @@ public:
 	{
 	}
 
-	virtual Move<R, ADS, S>* randomMove(const R&, const ADS*)
+	virtual Move<S, XEv>* randomMove(const S&)
 	{
 		unsigned int x = rg.rand(size());
 		return indexMove(x);
 	}
 
-	virtual NSIterator<R, ADS, S>* getIterator(const R&, const ADS*)
+	virtual NSIterator<S, XEv>* getIterator(const S&)
 	{
-		return new NSEnumIterator<R, ADS, S> (*this);
+		return new NSEnumIterator<S, XEv> (*this);
 	}
 
-	virtual Move<R, ADS, S>* indexMove(unsigned int index) = 0;
+	virtual Move<S, XEv>* indexMove(unsigned int index) = 0;
 
 	virtual unsigned int size() const = 0;
 
    static string idComponent()
    {
 		stringstream ss;
-		ss << NSSeq<R, ADS, S>::idComponent() << ":NSEnum";
+		ss << NSSeq<S, XEv>::idComponent() << ":NSEnum";
 		return ss.str();
    }
 
@@ -77,7 +77,7 @@ public:
 
    virtual bool compatible(string s)
    {
-	   return ( s == idComponent() ) || ( NSSeq<R, ADS, S>::compatible(s) );
+	   return ( s == idComponent() ) || ( NSSeq<S, XEv>::compatible(s) );
    }
 };
 

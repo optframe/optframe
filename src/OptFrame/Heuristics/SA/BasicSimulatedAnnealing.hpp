@@ -33,9 +33,9 @@ template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,
 class BasicSimulatedAnnealing: public SingleObjSearch<R, ADS, S>
 {
 private:
-	Evaluator<R, ADS, S>& evaluator;
+	Evaluator<S, XEv>& evaluator;
 	Constructive<S>& constructive;
-	vector<NS<R, ADS, S>*> neighbors;
+	vector<NS<S, XEv>*> neighbors;
 	RandGen& rg;
 	double alpha;
 	int SAmax;
@@ -43,7 +43,7 @@ private:
 
 public:
 
-	BasicSimulatedAnnealing(Evaluator<R, ADS, S>& _evaluator, Constructive<S>& _constructive, vector<NS<R, ADS, S>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(Evaluator<S, XEv>& _evaluator, Constructive<S>& _constructive, vector<NS<S, XEv>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg)
 	{
 		alpha = (_alpha);
@@ -52,7 +52,7 @@ public:
 
 	}
 
-	BasicSimulatedAnnealing(Evaluator<R, ADS, S>& _evaluator, Constructive<S>& _constructive, NS<R, ADS, S>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(Evaluator<S, XEv>& _evaluator, Constructive<S>& _constructive, NS<S, XEv>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), rg(_rg)
 	{
 		neighbors.push_back(&_neighbors);
@@ -89,7 +89,7 @@ public:
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
 			{
 				int n = rg.rand(neighbors.size());
-				Move<R, ADS, S>* move = neighbors[n]->validRandomMoveSolution(s);
+				Move<S, XEv>* move = neighbors[n]->validrandomMove(s);
 
 				if(!move)
 				{
@@ -100,7 +100,7 @@ public:
 
 				S* sCurrent = &s.clone();
 				Evaluation<>* eCurrent = &e.clone();
-				Component::safe_delete(move->applyUpdateSolution(*eCurrent, *sCurrent));
+				Component::safe_delete(move->applyUpdate(*eCurrent, *sCurrent));
 				evaluator.reevaluateSolution(*eCurrent, *sCurrent);
 
 				if (evaluator.betterThan(*eCurrent, e))
@@ -179,13 +179,13 @@ public:
 
 	virtual SingleObjSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS, S>* eval;
+		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		Constructive<S>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<NS<R, ADS, S>* > hlist;
+		vector<NS<S, XEv>* > hlist;
 		hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		double alpha = scanner.nextDouble();
@@ -198,10 +198,10 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
 		stringstream ss;
-		ss << NS<R, ADS, S>::idComponent() << "[]";
+		ss << NS<S, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of NS"));
 		params.push_back(make_pair("OptFrame:double", "cooling factor"));
 		params.push_back(make_pair("OptFrame:int", "number of iterations for each temperature"));

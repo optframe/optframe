@@ -34,20 +34,20 @@ template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,
 class LateAcceptanceHillClimbing: public LocalSearch<R, ADS, S>
 {
 private:
-	Evaluator<R, ADS, S>& ev;
-	vector<NS<R, ADS, S>*> lns;
+	Evaluator<S, XEv>& ev;
+	vector<NS<S, XEv>*> lns;
 	int L;       // size of list
 	int iterMax; // max iterations without improvement
 
 public:
 
-	LateAcceptanceHillClimbing(Evaluator<R, ADS, S>& _ev, NS<R, ADS, S>& _ns, int _L, int _iterMax) :
+	LateAcceptanceHillClimbing(Evaluator<S, XEv>& _ev, NS<S, XEv>& _ns, int _L, int _iterMax) :
 			ev(_ev), L(_L), iterMax(_iterMax)
 	{
 		lns.push_back(&_ns);
 	}
 
-	LateAcceptanceHillClimbing(Evaluator<R, ADS, S>& _ev, vector<NS<R, ADS, S>*> _lns, int _L, int _iterMax) :
+	LateAcceptanceHillClimbing(Evaluator<S, XEv>& _ev, vector<NS<S, XEv>*> _lns, int _L, int _iterMax) :
 			ev(_ev), lns(_lns), L(_L), iterMax(_iterMax)
 	{
 	}
@@ -91,7 +91,7 @@ public:
 			// choose random neighborhood
 			int ns_k = rand() % lns.size();
 
-			Move<R, ADS, S>* move = lns[ns_k]->validRandomMoveSolution(s);
+			Move<S, XEv>* move = lns[ns_k]->validrandomMove(s);
 	
 			if (!move)
 			{
@@ -99,7 +99,7 @@ public:
 				lns[ns_k]->print();
 			}
 
-			if (move && move->canBeAppliedToSolution(s))
+			if (move && move->canBeApplied(s))
 			{
             bool mayEstimate = false;
 				MoveCost<>& cost = *ev.moveCost(e, *move, s, mayEstimate);
@@ -111,7 +111,7 @@ public:
 				if (ev.betterThan(cost.cost()+e.evaluation(), eList[index]))
 #endif
 				{
-					Component::safe_delete(move->applyUpdateSolution(e, s));
+					Component::safe_delete(move->applyUpdate(e, s));
 					ev.reevaluateSolution(e, s);
 
 #ifdef BRAND_NEW
@@ -204,10 +204,10 @@ public:
 
 	virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS, S>* eval;
+		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<NS<R, ADS, S>*> nslist;
+		vector<NS<S, XEv>*> nslist;
 		hf.assignList(nslist, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int L = scanner.nextInt();
@@ -220,9 +220,9 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
 		stringstream ss;
-		ss << NS<R, ADS, S>::idComponent() << "[]";
+		ss << NS<S, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of NS"));
 		params.push_back(make_pair("OptFrame:int", "list size L"));
 		params.push_back(make_pair("OptFrame:int", "iterMax iterations without improvement"));

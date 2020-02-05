@@ -319,12 +319,182 @@ public:
 
 };
 
+
+// ====================
+
+
+template <Representation R>
+class RSolution : public Component
+{
+protected:
+	R* r;     // representation
+
+public:
+
+	RSolution(R* _r) :
+			r(_r)
+	{
+		assert(r);
+	}
+
+	// copy constructor (implemented via copy constructor for R)
+	// TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
+	RSolution(const R& _r) :
+			r(new R(_r))
+	{
+	}
+
+	// move constructor (implemented via move constructor for R)
+	RSolution(R&& _r) :
+			r(new R(std::move(_r)))
+	{
+	}
+
+	//! copy constructor
+	/*!
+	 Solution copy constructor will use copy constructor for R and ADS
+	 TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
+	 */
+	RSolution(const RSolution<R>& s) :
+			r(new R(*s.r))
+	{
+	}
+
+	//! move constructor
+	/*!
+	 Solution move constructor will steal the pointers from the object to itself
+	 and set them to null in the object
+	 */
+	RSolution(RSolution<R> && s) :
+			r(s.r)
+	{
+		s.r = nullptr; // die quietly...
+	}
+
+	// assignment operator (implemented via copy constructors for R and ADS)
+	// TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
+	RSolution<R>& operator=(const RSolution<R>& s)
+	{
+		if (&s == this) // auto ref check
+			return *this;
+
+		delete r;
+		r = new R(*s.r);
+		//
+		return *this;
+	}
+
+	//! move operator
+	/*!
+	 Solution move operator will steal the pointers from the object to itself
+	 and set them to null in the object
+	 */
+	RSolution<R>& operator=(RSolution<R> && s) noexcept
+	{
+		// steal pointer from s
+		r = s.r;
+		// make sure s forgets about its r and ads (if it existed before)
+		s.r = nullptr;
+		return *this;
+	}
+
+	// destructor for Solution (must free R and ADS objects)
+	virtual ~RSolution()
+	{
+		// if r not null
+		if (r)
+			delete r;
+	}
+
+	// ==================
+	// end canonical part
+	// ==================
+
+	RSolution<R>& clone() const
+	{
+		return *new RSolution<R>(*r);
+	}
+
+	// =======
+	// setters
+	// =======
+
+	// setR with copy constructor
+	void setR(const R& _r)
+	{
+		// TODO: keep as a #DEFINE option? I don't see any advantage...
+		//(*r) = _r;
+		delete r;
+		r = new R(_r);
+	}
+
+	// setR with pointer copy
+	void setR(R* _r)
+	{
+		assert(_r);
+		delete r;
+		r = _r;
+	}
+
+	// setR with move semantics
+	void setR(R&& _r)
+	{
+		// move content from rhs param _r
+		(*r) = std::move(_r);
+	}
+
+	// =======
+	// getters
+	// =======
+
+	// get reference of r
+	R& getR()
+	{
+		return *r;
+	}
+
+	// get const reference of r
+	const R& getR() const
+	{
+		return *r;
+	}
+
+	// =================
+	// begin Object part
+	// =================
+
+	static string idComponent()
+	{
+		std::stringstream ss;
+		ss << Component::idComponent() << ":RSolution";
+		return ss.str();
+	}
+
+	virtual string id() const
+	{
+		return idComponent();
+	}
+
+	virtual string toString() const
+	{
+		std::stringstream ss;
+		ss << "RSolution: " << *r;
+		return ss.str();
+	}
+};
+
+
+
+// =====================
+
+
 #ifndef NDEBUG
 
 struct optframe_test_debug_testsol_solution_disable_runtime
 {
 // Test solution concept against class Solution
-TestBaseSol<Solution<double>> test;
+TestBaseSol<Solution<double>> testSol;
+TestXSol<RSolution<double>> testRsol;
 };
 
 #endif 

@@ -32,12 +32,12 @@ template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySol
 class FirstImprovement: public LocalSearch<R, ADS, S>
 {
 private:
-	Evaluator<R, ADS, S>& eval;
-	NSSeq<R, ADS, S>& nsSeq;
+	Evaluator<S, XEv>& eval;
+	NSSeq<S, XEv>& nsSeq;
 
 public:
 
-	FirstImprovement(Evaluator<R, ADS, S>& _eval, NSSeq<R, ADS, S>& _nsSeq) :
+	FirstImprovement(Evaluator<S, XEv>& _eval, NSSeq<S, XEv>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 	}
@@ -54,7 +54,7 @@ public:
 
 	virtual void exec(S& s, Evaluation<>& e, SOSC& stopCriteria)
 	{
-		NSIterator<R, ADS, S>& it = *nsSeq.getIteratorSolution(s);
+		NSIterator<S, XEv>& it = *nsSeq.getIterator(s);
 		string bestMoveId = "";
 		it.first();
 
@@ -66,7 +66,7 @@ public:
 
 		do
 		{
-			Move<R, ADS, S>* move = it.current();
+			Move<S, XEv>* move = it.current();
 
 			// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
 			/*
@@ -80,7 +80,7 @@ public:
 
 //			bestMoveId = move->id();
 
-			if (move->canBeAppliedToSolution(s))
+			if (move->canBeApplied(s))
 			{
 				if(eval.acceptsImprove(*move,s,e))
 				{
@@ -142,10 +142,10 @@ public:
 
 	virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS, S>* eval;
+		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NSSeq<R, ADS, S>* nsseq;
+		NSSeq<S, XEv>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new FirstImprovement<R, ADS, S>(*eval, *nsseq);
@@ -154,8 +154,8 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NSSeq<R, ADS, S>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NSSeq<S, XEv>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}

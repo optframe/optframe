@@ -40,14 +40,14 @@ template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,
 class BasicMOILSPerturbation: public MOILS, public Component
 {
 private:
-	MultiEvaluator<R, ADS>& mEval;
+	MultiEvaluator<S>& mEval;
 	int pMin;
 	int pMax;
 	vector<NS<R, ADS>*> ns;
 	RandGen& rg;
 
 public:
-	BasicMOILSPerturbation(MultiEvaluator<R, ADS>& _mEval, int _pMin, int _pMax, vector<NS<R, ADS>*>& _ns, RandGen& _rg) :
+	BasicMOILSPerturbation(MultiEvaluator<S>& _mEval, int _pMin, int _pMax, vector<NS<R, ADS>*>& _ns, RandGen& _rg) :
 		mEval(_mEval), pMin(_pMin), pMax(_pMax), ns(_ns), rg(_rg)
 	{
 		if(pMax < pMin)
@@ -62,7 +62,7 @@ public:
 			cout << "BasicMOILSPerturbation warning: empty neighborhood list." << endl;
 	}
 
-	BasicMOILSPerturbation(MultiEvaluator<R, ADS>& _mEval, int _pMin, int _pMax, NS<R, ADS>& _ns, RandGen& _rg) :
+	BasicMOILSPerturbation(MultiEvaluator<S>& _mEval, int _pMin, int _pMax, NS<R, ADS>& _ns, RandGen& _rg) :
 		mEval(_mEval), pMin(_pMin), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -94,7 +94,7 @@ public:
 		{
 			int nk = rand() % ns.size();
 
-			Move<R, ADS>* mp = ns[nk]->validRandomMoveSolution(s);
+			Move<R, ADS>* mp = ns[nk]->validrandomMove(s);
 
 			if (!mp)
 			{

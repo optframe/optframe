@@ -33,12 +33,12 @@ template<class R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class VariableNeighborhoodDescentUpdateADS : public LocalSearch<R, ADS, S>
 {
 private:
-   Evaluator<R, ADS, S>& ev;
+   Evaluator<S, XEv>& ev;
    ADSManager<R, ADS, S>& adsMan;
    vector<LocalSearch<R, ADS, S>*> lsList;
 
 public:
-   VariableNeighborhoodDescentUpdateADS(Evaluator<R, ADS, S>& _ev, ADSManager<R, ADS, S>& _adsMan, vector<LocalSearch<R, ADS, S>*> _lsList)
+   VariableNeighborhoodDescentUpdateADS(Evaluator<S, XEv>& _ev, ADSManager<R, ADS, S>& _adsMan, vector<LocalSearch<R, ADS, S>*> _lsList)
      : ev(_ev)
      , adsMan(_adsMan)
      , lsList(_lsList)
@@ -139,7 +139,7 @@ public:
 
    virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
    {
-      Evaluator<R, ADS, S>* eval;
+      Evaluator<S, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
       ADSManager<R, ADS, S>* adsMan;
@@ -154,7 +154,7 @@ public:
    virtual vector<pair<string, string>> parameters()
    {
       vector<pair<string, string>> params;
-      params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+      params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
 
       params.push_back(make_pair(ADSManager<R, ADS, S>::idComponent(), "ADSManager function"));
 

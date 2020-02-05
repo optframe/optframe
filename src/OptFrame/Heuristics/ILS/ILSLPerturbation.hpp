@@ -66,12 +66,12 @@ template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySol
 class ILSLPerturbationLPlus2: public ILSLPerturbation<R, ADS, S>
 {
 private:
-	vector<NS<R, ADS, S>*> ns;
-	Evaluator<R, ADS, S>& evaluator;
+	vector<NS<S, XEv>*> ns;
+	Evaluator<S, XEv>& evaluator;
 	RandGen& rg;
 
 public:
-	ILSLPerturbationLPlus2(Evaluator<R, ADS, S>& e, NS<R, ADS, S>& _ns, RandGen& _rg) :
+	ILSLPerturbationLPlus2(Evaluator<S, XEv>& e, NS<S, XEv>& _ns, RandGen& _rg) :
 			evaluator(e), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -81,7 +81,7 @@ public:
 	{
 	}
 
-	void add_ns(NS<R, ADS, S>& _ns)
+	void add_ns(NS<S, XEv>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
@@ -96,12 +96,12 @@ public:
 		{
 			int x = rg.rand(ns.size());
 
-			Move<R, ADS, S>* m = ns[x]->validRandomMoveSolution(s);
+			Move<S, XEv>* m = ns[x]->validrandomMove(s);
 
 			if (m)
 			{
 				a++;
-				Component::safe_delete(m->applyUpdateSolution(e, s));
+				Component::safe_delete(m->applyUpdate(e, s));
 			}
 			else
 				if(Component::warning)
@@ -135,13 +135,13 @@ template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySol
 class ILSLPerturbationLPlus2Prob: public ILSLPerturbation<R, ADS, S>
 {
 private:
-	vector<NS<R, ADS, S>*> ns;
+	vector<NS<S, XEv>*> ns;
 	vector<pair<int, double> > pNS;
-	Evaluator<R, ADS, S>& evaluator;
+	Evaluator<S, XEv>& evaluator;
 	RandGen& rg;
 
 public:
-	ILSLPerturbationLPlus2Prob(Evaluator<R, ADS, S>& e, NS<R, ADS, S>& _ns, RandGen& _rg) :
+	ILSLPerturbationLPlus2Prob(Evaluator<S, XEv>& e, NS<S, XEv>& _ns, RandGen& _rg) :
 			evaluator(e), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -152,7 +152,7 @@ public:
 	{
 	}
 
-	void add_ns(NS<R, ADS, S>& _ns)
+	void add_ns(NS<S, XEv>& _ns)
 	{
 		ns.push_back(&_ns);
 		pNS.push_back(make_pair(1, 1));
@@ -207,12 +207,12 @@ public:
 				sum += pNS[x].second;
 			}
 
-			Move<R, ADS, S>* m = ns[x]->validRandomMoveSolution(s);
+			Move<S, XEv>* m = ns[x]->validrandomMove(s);
 
 			if (m)
 			{
 				a++;
-				Component::safe_delete(m->applyUpdateSolution(e, s));
+				Component::safe_delete(m->applyUpdate(e, s));
 			}
 			else
 				if(Component::warning)
@@ -247,10 +247,10 @@ public:
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS, S>* eval;
+		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NS<R, ADS, S>* ns;
+		NS<S, XEv>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new ILSLPerturbationLPlus2<R, ADS, S>(*eval, *ns, hf.getRandGen());
@@ -259,8 +259,8 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NS<R, ADS, S>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NS<S, XEv>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}
@@ -293,10 +293,10 @@ public:
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS, S>* eval;
+		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NS<R, ADS, S>* ns;
+		NS<S, XEv>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new ILSLPerturbationLPlus2Prob<R, ADS, S>(*eval, *ns, hf.getRandGen());
@@ -305,8 +305,8 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NS<R, ADS, S>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NS<S, XEv>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}

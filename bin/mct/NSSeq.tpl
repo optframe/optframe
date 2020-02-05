@@ -19,7 +19,7 @@ using namespace std;
 namespace $project
 {
 
-class Move$neighborhood: public Move< Rep$project >
+class Move$neighborhood: public Move< Solution$project >
 {
 private:
     // MOVE PARAMETERS
@@ -41,10 +41,10 @@ public:
     
     string id() const override
     {
-        return Move<Rep$project >::idComponent().append(":Move$neighborhood");
+        return Move<Solution$project >::idComponent().append(":Move$neighborhood");
     }
     
-    bool operator==(const Move< Rep$project >& _m) const
+    bool operator==(const Move< Solution$project >& _m) const
     {
         const Move$neighborhood& m = (const Move$neighborhood&) _m;
         // COMPARE PARAMETERS AND RETURN TRUE IF EQUALS
@@ -53,16 +53,16 @@ public:
     
     // Implement these methods in the .cpp file
     
-    bool canBeApplied(const Rep$project& rep, const OptFrameADS* ads) override;
+    bool canBeApplied(const Solution$project& rep) override;
 
-    Move< Rep$project >* apply(Rep$project& rep, OptFrameADS* ads) override;
+    Move< Solution$project >* apply(Solution$project& rep) override;
     
-    MoveCost<>* cost(const Evaluation<>&, const Rep$project& rep, const OptFrameADS* ads, bool allowEstimated) override;
+    MoveCost<>* cost(const Evaluation<>&, const Solution$project& s, bool allowEstimated) override;
 };
 
 
 
-class NSIterator$neighborhood: public NSIterator< Rep$project >
+class NSIterator$neighborhood: public NSIterator< Solution$project >
 {
 private:
     // ITERATOR PARAMETERS
@@ -81,12 +81,12 @@ public:
     void first() override;
     void next() override;
     bool isDone() override;
-    Move< Rep$project >* current() override;
+    Move< Solution$project >* current() override;
 };
 
 
 
-class NSSeq$neighborhood: public NSSeq< Rep$project >
+class NSSeq$neighborhood: public NSSeq< Solution$project >
 {
 private:
     // YOU MAY REMOVE THESE PARAMETERS IF YOU DON'T NEED (BUT PROBABLY WILL...)
@@ -112,10 +112,10 @@ public:
     
     string id() const override
     {
-        return NSSeq<Rep$project >::idComponent().append(":NSSeq$neighborhood");
+        return NSSeq<Solution$project >::idComponent().append(":NSSeq$neighborhood");
     }
     
-    NSIterator<Rep$project >* getIterator(const Rep$project& rep, const OptFrameADS* ads) override
+    NSIterator<Solution$project >* getIterator(const Solution$project& rep) override
     {
         // return an iterator to the neighbors of 'rep' 
         return new NSIterator$neighborhood;  // ADD POSSIBLE ITERATOR PARAMETERS
@@ -123,9 +123,9 @@ public:
         
     // Implement this method in the .cpp file
 
-    Move<Rep$project >* randomMove(const Rep$project& rep, const OptFrameADS* ads) override;
+    Move<Solution$project >* randomMove(const Solution$project& rep) override;
     
-    // Move<Rep$project >* validRandomMove(const Rep$project& rep, const OptFrameADS* ads) override;
+    // Move<Solution$project >* validRandomMove(const Solution$project& rep) override;
 };
 
 }

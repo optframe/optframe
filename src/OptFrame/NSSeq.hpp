@@ -30,8 +30,8 @@ using namespace std;
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
-class NSSeq: public NS<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class NSSeq: public NS<S, XEv>
 {
 public:
 
@@ -39,22 +39,14 @@ public:
     {
     }
 
-////protected:
-    virtual Move<R, ADS, S>* randomMove(const R&, const ADS*) = 0;
+    virtual Move<S, XEv>* randomMove(const S&) = 0;
 
-public:
-    NSIterator<R, ADS, S>* getIteratorSolution(const S& s)
+    virtual NSIterator<S, XEv>* getIterator(const S&) = 0;
+
+    virtual NSBlockIterator<S, XEv>* getBlockIterator(const S& s)
     {
-        return this->getIterator(s.getR(), s.getADSptr());
-    }
-
-////protected:
-    virtual NSIterator<R, ADS, S>* getIterator(const R& r, const ADS* ads) = 0;
-
-    virtual NSBlockIterator<R, ADS, S>* getBlockIterator(const S& s)
-    {
-        NSIterator<R, ADS, S>* it = this->getIteratorSolution(s);
-        return new DefaultNSBlockIterator<R, ADS, S>(*it);
+        NSIterator<S, XEv>* it = this->getIterator(s);
+        return new DefaultNSBlockIterator<S, XEv>(*it);
     }
 
     // ============= For 'Local Optimum'-based methods =============
@@ -75,7 +67,7 @@ public:
     static string idComponent()
     {
         stringstream ss;
-        ss << NS<R, ADS, S>::idComponent() << ":NSSeq";
+        ss << NS<S, XEv>::idComponent() << ":NSSeq";
         return ss.str();
     }
 
@@ -86,7 +78,7 @@ public:
 
     virtual bool compatible(string s)
     {
-        return (s == idComponent()) || (NS<R, ADS, S>::compatible(s));
+        return (s == idComponent()) || (NS<S, XEv>::compatible(s));
     }
 };
 

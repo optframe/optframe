@@ -34,15 +34,15 @@ template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySol
 class BasicTabuSearch: public SingleObjSearch<R, ADS, S>, public TS
 {
 private:
-	Evaluator<R, ADS, S>& evaluator;
+	Evaluator<S, XEv>& evaluator;
 	Constructive<S>& constructive;
-	NSSeq<R, ADS, S>& nsSeq;
+	NSSeq<S, XEv>& nsSeq;
 	int tlSize;
 	int tsMax;
 
 public:
 
-	BasicTabuSearch(Evaluator<R, ADS, S>& _ev, Constructive<S>& _constructive, NSSeq<R, ADS, S>& _nsSeq, int _tlSize, int _tsMax) :
+	BasicTabuSearch(Evaluator<S, XEv>& _ev, Constructive<S>& _constructive, NSSeq<S, XEv>& _nsSeq, int _tlSize, int _tsMax) :
 			evaluator(_ev), constructive(_constructive), nsSeq(_nsSeq), tlSize(_tlSize), tsMax(_tsMax)
 	{
 	}
@@ -69,8 +69,8 @@ public:
 
 		int BestIter = 0;
 
-		const vector<Move<R, ADS, S>*> emptyList;
-		vector<Move<R, ADS, S>*> tabuList;
+		const vector<Move<S, XEv>*> emptyList;
+		vector<Move<S, XEv>*> tabuList;
 
 		long tnow = time(nullptr);
 
@@ -89,11 +89,11 @@ public:
 			// First: aspiration
 			// ==================
 
-			Move<R, ADS, S>* bestMove = tabuBestMove(s, e, emptyList);
+			Move<S, XEv>* bestMove = tabuBestMove(s, e, emptyList);
 
 			S* s1 = &s.clone();
 
-			Move<R, ADS, S>* newTabu = &bestMove->apply(*s1);
+			Move<S, XEv>* newTabu = &bestMove->apply(*s1);
 			Evaluation<>* evalS1 = &evaluator.evaluate(*s1);
 
 			if (evaluator.betterThan(*evalS1, *evalSStar))
@@ -199,9 +199,9 @@ public:
 		return new pair<S&, Evaluation<>&>(s, e);
 	}
 
-	Move<R, ADS, S>* tabuBestMove(S& s, Evaluation<>& e, const vector<Move<R, ADS, S>*>& tabuList)
+	Move<S, XEv>* tabuBestMove(S& s, Evaluation<>& e, const vector<Move<S, XEv>*>& tabuList)
 	{
-		NSIterator<R, ADS, S>& it = nsSeq.getIterator(s.getR(), s.getADS());
+		NSIterator<S, XEv>& it = nsSeq.getIterator(s.getR(), s.getADS());
 
 		it.first();
 
@@ -211,7 +211,7 @@ public:
 			return nullptr;
 		}
 
-		Move<R, ADS, S>* bestMove = &it.current();
+		Move<S, XEv>* bestMove = &it.current();
 
 		while (!bestMove->canBeApplied(s) || inList(bestMove, tabuList))
 		{
@@ -233,7 +233,7 @@ public:
 		it.next();
 		while (!it.isDone())
 		{
-			Move<R, ADS, S>* move = &it.current();
+			Move<S, XEv>* move = &it.current();
 			if (move->canBeApplied(s) && !inList(bestMove, tabuList))
 			{
 				MoveCost<>* cost = &evaluator.moveCost(e, *move, s);
@@ -263,7 +263,7 @@ public:
 		return bestMove;
 	}
 
-	bool inList(Move<R, ADS, S>* m, const vector<Move<R, ADS, S>*>& v)
+	bool inList(Move<S, XEv>* m, const vector<Move<S, XEv>*>& v)
 	{
 		for (unsigned int i = 0; i < v.size(); i++)
 			if ((*m) == (*v[i]))
@@ -295,13 +295,13 @@ public:
 
 	virtual SingleObjSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS, S>* eval;
+		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		Constructive<S>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NSSeq<R, ADS, S>* nsseq;
+		NSSeq<S, XEv>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		if (!scanner.hasNext())
@@ -320,9 +320,9 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-		params.push_back(make_pair(NSSeq<R, ADS, S>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(NSSeq<S, XEv>::idComponent(), "neighborhood structure"));
 		params.push_back(make_pair("OptFrame:int", "tabu list size"));
 		params.push_back(make_pair("OptFrame:int", "max number of iterations"));
 

@@ -49,11 +49,11 @@ class ParetoDominance
 public:
 	// TODO: make Evaluator inherit from Direction!
 	vector<Direction*> v_d;
-	MultiEvaluator<R, ADS, S>& mev;
+	MultiEvaluator<S, XEv>& mev;
 
 public:
 
-	ParetoDominance(MultiEvaluator<R, ADS, S>& _mev) :
+	ParetoDominance(MultiEvaluator<S, XEv>& _mev) :
 			mev(_mev)
 	{
 	}
@@ -62,17 +62,17 @@ public:
 	{
 	}
 
-//	void insertEvaluators(vector<Evaluator<R, ADS, S>*> _v_e)
+//	void insertEvaluators(vector<Evaluator<S, XEv>*> _v_e)
 //	{
 //		mev.addEvaluator(_v_e);
 //	}
 
-//	vector<Evaluator<R, ADS, S>*> getEvaluators()
+//	vector<Evaluator<S, XEv>*> getEvaluators()
 //	{
 //		return v_e;
 //	}
 
-	MultiEvaluator<R, ADS, S>& getMultiEvaluator()
+	MultiEvaluator<S, XEv>& getMultiEvaluator()
 	{
 		return mev;
 	}

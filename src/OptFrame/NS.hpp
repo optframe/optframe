@@ -30,7 +30,7 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class NS: public Component
 {
 public:
@@ -40,23 +40,14 @@ public:
 	}
 
 public:
-	Move<R, ADS, S>* randomMoveSolution(const S& s)
-	{
-		return randomMove(s.getR(), s.getADSptr());
-	}
 
-	Move<R, ADS, S>* validRandomMoveSolution(const S& s)
-	{
-		return validRandomMove(s.getR(), s.getADSptr());
-	}
 
-////protected:
-	virtual Move<R, ADS, S>* randomMove(const R&, const ADS*) = 0;
+	virtual Move<S, XEv>* randomMove(const S&) = 0;
 
-	virtual Move<R, ADS, S>* validRandomMove(const R& r, const ADS* ads)
+	virtual Move<S, XEv>* validRandomMove(const S& s)
 	{
-		Move<R, ADS, S>* moveValid = this->randomMove(r, ads);
-		if(moveValid->canBeApplied(r, ads))
+		Move<S, XEv>* moveValid = this->randomMove(s);
+		if(moveValid->canBeApplied(s))
 			return moveValid;
 		else
 		{

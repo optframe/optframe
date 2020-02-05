@@ -32,7 +32,7 @@ namespace optframe
 // NSBlockIterator: iterates from blocks (parts) of the neighborhood structure
 // these parts may share any characteristic that may help predicting the behavior of local optima
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class NSBlockIterator: public Component
 {
 public:
@@ -43,7 +43,7 @@ public:
     virtual void first() = 0;
     virtual void next() = 0;
     virtual bool isDone() = 0;
-    virtual NSIterator<R, ADS, S>& current() = 0;
+    virtual NSIterator<S, XEv>& current() = 0;
 
     static string idComponent()
     {
@@ -58,15 +58,15 @@ public:
     }
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class DefaultNSBlockIterator: public NSBlockIterator<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class DefaultNSBlockIterator: public NSBlockIterator<S, XEv>
 {
 protected:
-    NSIterator<R, ADS, S>* it;
+    NSIterator<S, XEv>* it;
 
 public:
 
-    DefaultNSBlockIterator(NSIterator<R, ADS, S>& _it) :
+    DefaultNSBlockIterator(NSIterator<S, XEv>& _it) :
             it(&_it)
     {
     }
@@ -89,7 +89,7 @@ public:
         return it == nullptr;
     }
 
-    virtual NSIterator<R, ADS, S>& current()
+    virtual NSIterator<S, XEv>& current()
     {
         return *it;
     }

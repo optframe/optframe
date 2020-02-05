@@ -54,7 +54,7 @@ namespace optframe {
  */
 
 // TODO: use XEv here
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, XSolution S = CopySolution<R, ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class Evaluator : public Direction
 {
 
@@ -83,48 +83,25 @@ public:
       allowCosts = _allowCosts;
    }
 
+   // TODO: remove weight
    evtype getWeight() const
    {
       return weight;
    }
 
+   // TODO: remove weight
    void setWeight(const evtype& w)
    {
       weight = w;
    }
 
-   XEv evaluateSolution(const S& s)
-   {
-      return evaluate(s.getR(), s.getADSptr());
-   }
-
 public:
-   // because of MultiEvaluator... otherwise, make it 'friend'
+   virtual XEv evaluate(const S&) = 0;
 
-   // TODO: make it obligatory to have two implementations? beautiful (only R should be used if it's correct), but not practical!
-   //virtual XEv evaluate(const R& r) = 0;
-
-   virtual XEv evaluate(const R& r, const ADS*) = 0;
-   /*
-	{
-		// ignoring ADS
-		return evaluate(r);
-	}
-	*/
-
-public:
-   void reevaluateSolution(XEv& e, const S& s)
-   {
-      reevaluate(e, s.getR(), s.getADSptr());
-   }
-
-public:
-   // because of MultiEvaluator... otherwise, make it 'friend'
-
-   virtual void reevaluate(XEv& e, const R& r, const ADS* ads)
+   virtual void reevaluate(XEv& e, const S& s)
    {
       if (e.outdated) {
-         XEv e1 = evaluate(r, ads);
+         XEv e1 = evaluate(s);
          e = std::move(e1);
       }
    }
@@ -132,14 +109,14 @@ public:
 public:
    // Apply movement considering a previous XEv => Faster.
    // Update XEv 'e'
-   Move<R, ADS, S>* applyMoveReevaluate(XEv& e, Move<R, ADS, S>& m, S& s)
+   Move<S, XEv>* applyMoveReevaluate(XEv& e, Move<S, XEv>& m, S& s)
    {
       // apply move and get reverse move
-      Move<R, ADS, S>* rev = m.applyUpdateSolution(e, s);
+      Move<S, XEv>* rev = m.applyUpdate(e, s);
       // for now, must be not nullptr
       assert(rev != nullptr);
       // consolidate 'outdated' XEv data on 'e'
-      reevaluateSolution(e, s);
+      reevaluate(e, s);
 
       // create pair
       return rev;
@@ -147,27 +124,27 @@ public:
 
    // Apply movement without considering a previous XEv => Slower.
    // Return new XEv 'e'
-   pair<Move<R, ADS, S>*, XEv> applyMove(Move<R, ADS, S>& m, S& s)
+   pair<Move<S, XEv>*, XEv> applyMove(Move<S, XEv>& m, S& s)
    {
       // apply move and get reverse move
-      Move<R, ADS, S>* rev = m.applySolution(s);
+      Move<S, XEv>* rev = m.apply(s);
       // for now, must be not nullptr
       assert(rev != nullptr);
       // TODO: include management for 'false' hasReverse()
       assert(m.hasReverse() && rev);
       // create pair
-      return pair<Move<R, ADS, S>*, XEv>(rev, evaluateSolution(s));
+      return pair<Move<S, XEv>*, XEv>(rev, evaluate(s));
    }
 
    // Movement cost based on reevaluation of 'e'
-   MoveCost<>* moveCost(XEv& e, Move<R, ADS, S>& m, S& s, bool allowEstimated = false)
+   MoveCost<>* moveCost(XEv& e, Move<S, XEv>& m, S& s, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
       // TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
 
       MoveCost<>* p = nullptr;
       if (allowCosts) {
-         p = m.cost(e, s.getR(), s.getADSptr(), allowEstimated);
+         p = m.cost(e, s, allowEstimated);
       }
 
       // if p not null, do not update 's' => much faster (using cost)
@@ -183,7 +160,7 @@ public:
          // saving 'outdated' status to avoid inefficient re-evaluations
          //			bool outdated = e.outdated;
          // apply move to both XEv and Solution
-         Move<R, ADS, S>* rev = applyMoveReevaluate(e, m, s);
+         Move<S, XEv>* rev = applyMoveReevaluate(e, m, s);
          // get final values
          pair<evtype, evtype> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
          // get final values for lexicographic part
@@ -196,13 +173,13 @@ public:
          // apply reverse move in order to get the original solution back
          //TODO - Why do not save ev at the begin? Extra evaluation
          //Even when reevaluate is implemented, It would be hard to design a strategy that is faster than copying previous evaluation//==================================================================
-         //			Move<R, ADS, S>* ini = applyMoveReevaluate(e, *rev, s);
+         //			Move<S, XEv>* ini = applyMoveReevaluate(e, *rev, s);
          //
          //			// if XEv wasn't 'outdated' before, restore its previous status
          //			if (!outdated)
          //				e.outdated = outdated;
 
-         Move<R, ADS, S>* ini = rev->applySolution(s);
+         Move<S, XEv>* ini = rev->apply(s);
          // for now, must be not nullptr
          assert(ini != nullptr);
          // TODO: include management for 'false' hasReverse()
@@ -233,7 +210,7 @@ public:
 
    // Movement cost based on complete evaluation
    // USE ONLY FOR VALIDATION OF CODE! OTHERWISE, USE MoveCost<>(e, m, s)
-   MoveCost<>* moveCostComplete(Move<R, ADS, S>& m, S& s, bool allowEstimated = false)
+   MoveCost<>* moveCostComplete(Move<S, XEv>& m, S& s, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
       // TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
@@ -241,9 +218,9 @@ public:
       // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
       assert(m.hasReverse());
 
-      pair<Move<R, ADS, S>*, XEv> rev = applyMove(m, s);
+      pair<Move<S, XEv>*, XEv> rev = applyMove(m, s);
 
-      pair<Move<R, ADS, S>*, XEv> ini = applyMove(*rev.first, s);
+      pair<Move<S, XEv>*, XEv> ini = applyMove(*rev.first, s);
 
       // Difference: new - original
 
@@ -267,7 +244,7 @@ public:
    }
 
    // Accept and apply move if it improves parameter moveCost
-   bool acceptsImprove(Move<R, ADS, S>& m, S& s, XEv& e, MoveCost<>* mc = nullptr, bool allowEstimated = false)
+   bool acceptsImprove(Move<S, XEv>& m, S& s, XEv& e, MoveCost<>* mc = nullptr, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
 
@@ -275,7 +252,7 @@ public:
       MoveCost<>* p = nullptr;
       // try to get a cost (should consider estimated moves in the future)
       if (allowCosts) {
-         p = m.cost(e, s.getR(), s.getADSptr(), allowEstimated);
+         p = m.cost(e, s, allowEstimated);
       }
 
       // if p not null => much faster (using cost)
@@ -283,7 +260,7 @@ public:
          // verify if m is an improving move
          if (isImprovement(*p)) {
             // apply move and get reverse
-            Move<R, ADS, S>* rev = m.applySolution(s);
+            Move<S, XEv>* rev = m.apply(s);
             if (rev)
                delete rev;
             // update XEv with MoveCost
@@ -315,7 +292,7 @@ public:
             alt_begin[i].second = e.getAlternativeCosts()[i].second;
          }
          // apply move to both XEv and Solution
-         Move<R, ADS, S>* rev = applyMoveReevaluate(e, m, s);
+         Move<S, XEv>* rev = applyMoveReevaluate(e, m, s);
          // TODO: check outdated and estimated!
          MoveCost mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1, false, false);
          // guarantee that alternative costs have same size
@@ -338,7 +315,7 @@ public:
          //TODO - Vitor, Why apply Move with e is not used???
          //			Even when reevaluate is implemented, It would be hard to design a strategy that is faster than copying previous evaluation
          //==================================================================
-         //pair<Move<R, ADS, S>*, XEv> ini = applyMove(*rev, s);
+         //pair<Move<S, XEv>*, XEv> ini = applyMove(*rev, s);
 
          // if XEv wasn't 'outdated' before, restore its previous status
          //			if (!outdated)
@@ -348,7 +325,7 @@ public:
          //			e = ini.second;
          //			delete ini.first;
 
-         Move<R, ADS, S>* ini = rev->applySolution(s);
+         Move<S, XEv>* ini = rev->apply(s);
          // for now, must be not nullptr
          assert(ini != nullptr);
          // TODO: include management for 'false' hasReverse()
@@ -380,8 +357,8 @@ public:
    //virtual bool betterThan(evtype a, evtype b) = 0;
    virtual bool betterThan(const S& s1, const S& s2)
    {
-      XEv e1 = evaluateSolution(s1);
-      XEv e2 = evaluateSolution(s2);
+      XEv e1 = evaluate(s1);
+      XEv e2 = evaluate(s2);
       bool r = Direction::betterThan(e1, e2);
       return r;
    }
@@ -412,9 +389,10 @@ public:
 };
 
 template<Representation R, XEvaluation XEv = Evaluation<>>
-class BasicEvaluator : public Evaluator<R, OPTFRAME_DEFAULT_ADS, CopySolution<R, OPTFRAME_DEFAULT_ADS>, XEv>
+class BasicEvaluator : public Evaluator<RSolution<R>, XEv>
 {
 public:
+   // only representation
    virtual XEv evaluate(const R&) = 0;
 
 private:
@@ -423,9 +401,9 @@ private:
 
    using ADS = OPTFRAME_DEFAULT_ADS;
 
-   XEv evaluate(const R& r, const ADS* ads) override
+   XEv evaluate(const RSolution<R>& s) override
    {
-      return evaluate(r);
+      return evaluate(s.getR());
    }
 };
 }

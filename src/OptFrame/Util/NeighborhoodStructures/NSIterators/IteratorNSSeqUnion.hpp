@@ -39,15 +39,15 @@ public:
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveNSSeqUnion<R, ADS> >
 class IteratorNSSeqUnion:
-		public NSIterator<R, ADS>
+		public NSIterator<S, XEv>
 {
 private:
-	vector<NSIterator<R, ADS>*> it;
+	vector<NSIterator<S, XEv>*> it;
 	int k;
 
 public:
 
-	IteratorNSSeqUnion(vector<NSIterator<R, ADS>*> _it) :
+	IteratorNSSeqUnion(vector<NSIterator<S, XEv>*> _it) :
 			it(_it)
 	{
 		k = 0;

@@ -74,12 +74,12 @@ class BasicMutation: public Mutation<R, ADS, S>
 {
 protected:
 	unsigned n;
-	vector<NS<R, ADS, S>*> vNS;
+	vector<NS<S, XEv>*> vNS;
 	RandGen& rg;
 
 public:
 
-	BasicMutation(unsigned _n, vector<NS<R, ADS, S>*> _vNS, RandGen& _rg) :
+	BasicMutation(unsigned _n, vector<NS<S, XEv>*> _vNS, RandGen& _rg) :
 			n(_n), vNS(_vNS), rg(_rg)
 	{
 	}
@@ -93,7 +93,7 @@ public:
 		for (unsigned i = 0; i < n; i++)
 		{
 			int x = rg.rand(vNS.size());
-			Move<R, ADS, S>* mp = vNS[x]->validMove(s);
+			Move<S, XEv>* mp = vNS[x]->validMove(s);
 			if (!mp)
 				cout << "Warning: no move in BasicMutation!" << endl;
 			else
@@ -129,7 +129,7 @@ public:
 	{
 		int n = scanner.nextInt();
 
-		vector<NS<R, ADS, S>*> ns_list;
+		vector<NS<S, XEv>*> ns_list;
 		hf.assignList(ns_list, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new BasicMutation<R, ADS, S>(n, ns_list, hf.getRandGen());
@@ -140,7 +140,7 @@ public:
 		vector<pair<string, string> > params;
 		params.push_back(make_pair("OptFrame:int", "number of moves"));
 		stringstream ss;
-		ss << NS<R, ADS, S>::idComponent() << "[]";
+		ss << NS<S, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of neighborhood structures"));
 
 		return params;

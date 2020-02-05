@@ -42,7 +42,7 @@ private:
 
 public:
 
-	MOILSLevels(MultiEvaluator<R, ADS>& _mev, InitialPareto<R, ADS>& _init_pareto, int _init_pop_size, MOLocalSearch<R, ADS>* _ls, RandGen& _rg, MOILSLPerturbation<R, ADS>& _p, int _iterMax, int _levelMax) :
+	MOILSLevels(MultiEvaluator<S>& _mev, InitialPareto<R, ADS>& _init_pareto, int _init_pop_size, MOLocalSearch<R, ADS>* _ls, RandGen& _rg, MOILSLPerturbation<R, ADS>& _p, int _iterMax, int _levelMax) :
 			MultiObjILS<levelHistory, R, ADS>(_mev, _init_pareto, _init_pop_size, _ls, _rg), p(_p), iterMax(_iterMax), levelMax(_levelMax)
 	{
 

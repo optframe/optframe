@@ -37,14 +37,14 @@ template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySol
 class BasicILSPerturbation: public ILS, public Component
 {
 private:
-	Evaluator<R, ADS, S>& evaluator;
+	Evaluator<S, XEv>& evaluator;
 	int pMin;
 	int pMax;
-	vector<NS<R, ADS, S>*> ns;
+	vector<NS<S, XEv>*> ns;
 	RandGen& rg;
 
 public:
-	BasicILSPerturbation(Evaluator<R, ADS, S>& e, int _pMin, int _pMax, vector<NS<R, ADS, S>*>& _ns, RandGen& _rg) :
+	BasicILSPerturbation(Evaluator<S, XEv>& e, int _pMin, int _pMax, vector<NS<S, XEv>*>& _ns, RandGen& _rg) :
 		evaluator(e), pMin(_pMin), pMax(_pMax), ns(_ns), rg(_rg)
 	{
 		if(pMax < pMin)
@@ -59,7 +59,7 @@ public:
 			cout << "BasicILSPerturbation warning: empty neighborhood list." << endl;
 	}
 
-	BasicILSPerturbation(Evaluator<R, ADS, S>& e, int _pMin, int _pMax, NS<R, ADS, S>& _ns, RandGen& _rg) :
+	BasicILSPerturbation(Evaluator<S, XEv>& e, int _pMin, int _pMax, NS<S, XEv>& _ns, RandGen& _rg) :
 		evaluator(e), pMin(_pMin), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -80,7 +80,7 @@ public:
 	{
 	}
 
-	void add_ns(NS<R, ADS, S>& _ns)
+	void add_ns(NS<S, XEv>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
@@ -91,7 +91,7 @@ public:
 		{
 			int nk = rand() % ns.size();
 
-			Move<R, ADS, S>* mp = ns[nk]->validRandomMoveSolution(s);
+			Move<S, XEv>* mp = ns[nk]->validrandomMove(s);
 
 			if (!mp)
 			{
@@ -100,8 +100,8 @@ public:
 			}
 			else
 			{
-				Move<R, ADS, S>& m = *mp;
-				Component::safe_delete(m.applyUpdateSolution(e, s));
+				Move<S, XEv>& m = *mp;
+				Component::safe_delete(m.applyUpdate(e, s));
 				delete &m;
 			}
 		}
@@ -132,13 +132,13 @@ public:
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS, S>* eval;
+		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int pMin = scanner.nextInt();
 		int pMax = scanner.nextInt();
 
-		vector<NS<R, ADS, S>*> ns_list;
+		vector<NS<S, XEv>*> ns_list;
 		hf.assignList(ns_list, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new BasicILSPerturbation<R, ADS, S>(*eval, pMin, pMax, ns_list, hf.getRandGen());
@@ -147,11 +147,11 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair("OptFrame:int", "pMin: min number of moves"));
 		params.push_back(make_pair("OptFrame:int", "pMax: max number of moves"));
 		stringstream ss;
-		ss << NS<R, ADS, S>::idComponent() << "[]";
+		ss << NS<S, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of neighborhood structures"));
 
 		return params;

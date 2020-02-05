@@ -17,8 +17,8 @@
 namespace $project
 {
 
-// If you need ADS, you can inherit Evaluator<Rep$project, YourADS>
-class MyEvaluator: public Evaluator<Rep$project>
+// If you need ADS, you can get it from Solution$project (if subsumed by BaseSolution<R, ADS>)
+class MyEvaluator: public Evaluator<Solution$project>
 {
 private:
 	ProblemInstance& p$project;
@@ -30,10 +30,10 @@ public:
 	
 	virtual ~MyEvaluator();
 
-    // you can replace OptFrameADS with your prefered ADS
-	Evaluation<> evaluate(const Rep$project& rep, const OptFrameADS* ads);
+    // you can replace OptFrameADS with your prefered ADS from inside S (if subsumed by BaseSolution<R, ADS>)
+	Evaluation<> evaluate(const Solution$project& s) override;
 	
-	virtual bool isMinimization() const;
+	virtual bool isMinimization() const override;
 };
 
 }

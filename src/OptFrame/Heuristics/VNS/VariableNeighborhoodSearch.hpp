@@ -41,14 +41,14 @@ template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,
 class VariableNeighborhoodSearch: public VNS, public SingleObjSearch<R, ADS, S>
 {
 protected:
-	Evaluator<R, ADS, S>& evaluator;
+	Evaluator<S, XEv>& evaluator;
 	Constructive<S>& constructive;
-	vector<NS<R, ADS, S>*> vshake;
-	vector<NSSeq<R, ADS, S>*> vsearch;
+	vector<NS<S, XEv>*> vshake;
+	vector<NSSeq<S, XEv>*> vsearch;
 
 public:
 
-	VariableNeighborhoodSearch(Evaluator<R, ADS, S>& _evaluator, Constructive<S>& _constructive, vector<NS<R, ADS, S>*> _vNS, vector<NSSeq<R, ADS, S>*> _vNSSeq) :
+	VariableNeighborhoodSearch(Evaluator<S, XEv>& _evaluator, Constructive<S>& _constructive, vector<NS<S, XEv>*> _vNS, vector<NSSeq<S, XEv>*> _vNSSeq) :
 		evaluator(_evaluator), constructive(_constructive), vshake(_vNS), vsearch(_vNSSeq)
 	{
 	}
@@ -61,10 +61,10 @@ public:
 
 	virtual void shake(S& s, Evaluation<>& e, unsigned int k_shake, double timelimit, double target_f)
 	{
-		Move<R, ADS, S>* move = vshake.at(k_shake)->validRandomMoveSolution(s);
+		Move<S, XEv>* move = vshake.at(k_shake)->validrandomMove(s);
 		if(move)
 		{
-         Move<R,ADS>* rev = move->applyUpdateSolution(e, s);
+         Move<R,ADS>* rev = move->applyUpdate(e, s);
 			Component::safe_delete(rev);
 			evaluator.reevaluateSolution(e, s); // refresh 'e'
 			delete move;

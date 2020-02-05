@@ -39,12 +39,12 @@ template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySol
 class MultiEvaluator: public MultiDirection
 {
 protected:
-	vector<Evaluator<R, ADS, S>*> sngEvaluators; // single evaluators
+	vector<Evaluator<S, XEv>*> sngEvaluators; // single evaluators
 	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
 
 public:
 
-	MultiEvaluator(vector<Evaluator<R, ADS, S>*> _veval) :
+	MultiEvaluator(vector<Evaluator<S, XEv>*> _veval) :
 			sngEvaluators(_veval), allowCosts(false)
 	{
 		for (unsigned i = 0; i < _veval.size(); i++)
@@ -58,7 +58,7 @@ public:
 	{
 	}
 
-	virtual void addEvaluator(Evaluator<R, ADS, S>& ev)
+	virtual void addEvaluator(Evaluator<S, XEv>& ev)
 	{
 		sngEvaluators.push_back(&ev);
 	}
@@ -73,7 +73,7 @@ public:
 //	{
 //	}
 
-//	MultiEvaluator(MultiEvaluator<R, ADS, S>& _mev) :
+//	MultiEvaluator(MultiEvaluator<S, XEv>& _mev) :
 //			sngEvaluators(*_mev.getEvaluators2()), allowCosts(false)
 //	{
 //		cout<<"sngEvaluators.size():"<<sngEvaluators.size()<<endl;
@@ -155,41 +155,41 @@ public:
 //		return allowCosts;
 //	}
 
-//	vector<Evaluator<R, ADS, S>*> getEvaluators2()
+//	vector<Evaluator<S, XEv>*> getEvaluators2()
 //	{
 //		return sngEvaluators;
 //	}
 
 	//	// TODO: check
-//	const vector<const Evaluator<R, ADS, S>*>* getEvaluatorsConstTest() const
+//	const vector<const Evaluator<S, XEv>*>* getEvaluatorsConstTest() const
 //	{
 //		if (sngEvaluators.size() > 0)
-//			return new vector<const Evaluator<R, ADS, S>*>(sngEvaluators);
+//			return new vector<const Evaluator<S, XEv>*>(sngEvaluators);
 //		else
 //			return nullptr;
 //	}
 
-//	Evaluator<R, ADS, S>& at(unsigned index)
+//	Evaluator<S, XEv>& at(unsigned index)
 //	{
 //		return *sngEvaluators.at(index);
 //	}
 //
-//	const Evaluator<R, ADS, S>& at(unsigned index) const
+//	const Evaluator<S, XEv>& at(unsigned index) const
 //	{
 //		return *sngEvaluators.at(index);
 //	}
 //
-//	Evaluator<R, ADS, S>& operator[](unsigned index)
+//	Evaluator<S, XEv>& operator[](unsigned index)
 //	{
 //		return *sngEvaluators[index];
 //	}
 //
-//	const Evaluator<R, ADS, S>& operator[](unsigned index) const
+//	const Evaluator<S, XEv>& operator[](unsigned index) const
 //	{
 //		return *sngEvaluators[index];
 //	}
 
-//	void addEvaluator(const Evaluator<R, ADS, S>& ev)
+//	void addEvaluator(const Evaluator<S, XEv>& ev)
 //	{
 //		sngEvaluators.push_back(&ev.clone());
 //	}
@@ -234,12 +234,12 @@ public:
 
 	virtual bool handleComponent(string type)
 	{
-		return Component::compareBase(MultiEvaluator<R, ADS, S>::idComponent(), type);
+		return Component::compareBase(MultiEvaluator<S, XEv>::idComponent(), type);
 	}
 
 	virtual bool handleComponent(Component& component)
 	{
-		return component.compatible(MultiEvaluator<R, ADS, S>::idComponent());
+		return component.compatible(MultiEvaluator<S, XEv>::idComponent());
 	}
 
 	virtual bool handleAction(string action)
@@ -278,9 +278,9 @@ public:
 		// cast object to lower type
 		Component* final = nullptr;
 
-		if (type == Evaluator<R, ADS, S>::idComponent())
+		if (type == Evaluator<S, XEv>::idComponent())
 		{
-			final = (Evaluator<R, ADS, S>*) comp;
+			final = (Evaluator<S, XEv>*) comp;
 		}
 		else
 		{
@@ -305,7 +305,7 @@ public:
 		if (!scanner.hasNext())
 			return false;
 
-		Evaluator<R, ADS, S>* ev;
+		Evaluator<S, XEv>* ev;
 		hf.assign(ev, scanner.nextInt(), scanner.next());
 
 		if (!ev)

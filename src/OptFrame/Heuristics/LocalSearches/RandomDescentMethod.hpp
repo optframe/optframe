@@ -33,13 +33,13 @@ template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySol
 class RandomDescentMethod: public LocalSearch<R, ADS, S>
 {
 private:
-	Evaluator<R, ADS, S>& evaluator;
-	NS<R, ADS, S>& ns;
+	Evaluator<S, XEv>& evaluator;
+	NS<S, XEv>& ns;
 	unsigned int iterMax;
 
 public:
 
-	RandomDescentMethod(Evaluator<R, ADS, S>& _eval, NS<R, ADS, S>& _ns, unsigned int _iterMax) :
+	RandomDescentMethod(Evaluator<S, XEv>& _eval, NS<S, XEv>& _ns, unsigned int _iterMax) :
 		evaluator(_eval), ns(_ns), iterMax(_iterMax)
 	{
 	}
@@ -63,11 +63,11 @@ public:
 		while ((iter < iterMax) && (tNow.now() < stopCriteria.timelimit) && (evaluator.betterThan(stopCriteria.target_f, e.evaluation())))
 		{
 			// TODO: verify if it's not null!
-			Move<R, ADS, S>& move = *ns.randomMoveSolution(s);
+			Move<S, XEv>& move = *ns.randomMove(s);
 
 			MoveCost<>* cost = nullptr;
 
-			if (move.canBeAppliedToSolution(s))
+			if (move.canBeApplied(s))
 			{
 				cost = evaluator.moveCost(e, move, s);
 			}
@@ -82,7 +82,7 @@ public:
 
 			if (cost && evaluator.isImprovement(*cost))
 			{
-				Component::safe_delete(move.applyUpdateSolution(e, s));
+				Component::safe_delete(move.applyUpdate(e, s));
 				evaluator.reevaluateSolution(e, s);
 				iter = 0;
 			}
@@ -118,10 +118,10 @@ public:
 
 	virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
 	{
-		Evaluator<R, ADS, S>* eval;
+		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NS<R, ADS, S>* ns;
+		NS<S, XEv>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int iterMax = scanner.nextInt();
@@ -132,8 +132,8 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NS<R, ADS, S>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NS<S, XEv>::idComponent(), "neighborhood structure"));
 		params.push_back(make_pair("OptFrame:int", "max number of iterations without improvement"));
 
 		return params;

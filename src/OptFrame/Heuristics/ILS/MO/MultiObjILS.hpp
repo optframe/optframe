@@ -47,7 +47,7 @@ private:
    RandGen& rg;
 
 public:
-   MultiObjILS(MultiEvaluator<R, ADS>& _mev, InitialPareto<R, ADS>& _init_pareto, int _init_pop_size, MOLocalSearch<R, ADS>* _ls, RandGen& _rg)
+   MultiObjILS(MultiEvaluator<S>& _mev, InitialPareto<R, ADS>& _init_pareto, int _init_pop_size, MOLocalSearch<R, ADS>* _ls, RandGen& _rg)
      : init_pareto(_init_pareto)
      , init_pop_size(_init_pop_size)
      , ls(_ls)

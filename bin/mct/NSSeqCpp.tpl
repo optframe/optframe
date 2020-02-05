@@ -4,12 +4,12 @@ using namespace $project;
 
 // ============ Move$neighborhood ==============
 
-bool Move$neighborhood::canBeApplied(const Rep$project& rep, const OptFrameADS* ads)
+bool Move$neighborhood::canBeApplied(const Solution$project& rep)
 {
     return true;
 }
 
-Move< Rep$project >* Move$neighborhood::apply(Rep$project& rep, OptFrameADS* ads)
+Move< Solution$project >* Move$neighborhood::apply(Solution$project& rep)
 {
     // apply this move to 'rep'
     // rep. (...) = (...)
@@ -17,7 +17,7 @@ Move< Rep$project >* Move$neighborhood::apply(Rep$project& rep, OptFrameADS* ads
     return new Move$neighborhood; 
 }
 
-MoveCost<>* Move$neighborhood::cost(const Evaluation<>&, const Rep$project& rep, const OptFrameADS* ads, bool allowEstimated)
+MoveCost<>* Move$neighborhood::cost(const Evaluation<>&, const Solution$project& s, bool allowEstimated)
 {
    return nullptr;
    // Implement if a more efficient evaluation of the move is available
@@ -36,7 +36,7 @@ void NSIterator$neighborhood::next(){};
 	
 bool NSIterator$neighborhood::isDone(){};
 	
-Move< Rep$project >* NSIterator$neighborhood::current(){};
+Move< Solution$project >* NSIterator$neighborhood::current(){};
 
 
 
@@ -44,7 +44,7 @@ Move< Rep$project >* NSIterator$neighborhood::current(){};
 // ============ NSSeq$neighborhood ==============
 
 
-Move<Rep$project >* NSSeq$neighborhood::randomMove(const Rep$project& rep, const OptFrameADS* ads)
+Move<Solution$project >* NSSeq$neighborhood::randomMove(const Solution$project& rep)
 {
    // you can ignore 'ads' if you want.
    // return a random move (that is, a move operator that generates a neighbor solution of 'rep')

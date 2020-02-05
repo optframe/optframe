@@ -38,12 +38,12 @@ template<class H, class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS>
 class IteratedLocalSearch: public ILS, public SingleObjSearch<R, ADS, S>
 {
 protected:
-	Evaluator<R, ADS, S>& evaluator;
+	Evaluator<S, XEv>& evaluator;
 	Constructive<S>& constructive;
 
 public:
 
-	IteratedLocalSearch(Evaluator<R, ADS, S>& _evaluator, Constructive<S>& _constructive) :
+	IteratedLocalSearch(Evaluator<S, XEv>& _evaluator, Constructive<S>& _constructive) :
 			evaluator(_evaluator), constructive(_constructive)
 	{
 	}

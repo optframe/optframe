@@ -36,11 +36,11 @@ template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,
 class SingleObjSearchToLocalSearch : public LocalSearch<R, ADS, S>
 {
 protected:
-   Evaluator<R, ADS, S>& evaluator;
+   Evaluator<S, XEv>& evaluator;
    SingleObjSearch<R, ADS, S>& sios;
 
 public:
-   SingleObjSearchToLocalSearch(Evaluator<R, ADS, S>& _evaluator, SingleObjSearch<R, ADS, S>& _sios)
+   SingleObjSearchToLocalSearch(Evaluator<S, XEv>& _evaluator, SingleObjSearch<R, ADS, S>& _sios)
      : evaluator(_evaluator)
      , sios(_sios)
    {
@@ -102,7 +102,7 @@ public:
 
    virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
    {
-      Evaluator<R, ADS, S>* eval;
+      Evaluator<S, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
       string rest = scanner.rest();
@@ -120,7 +120,7 @@ public:
    virtual vector<pair<string, string>> parameters()
    {
       vector<pair<string, string>> params;
-      params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
+      params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
       params.push_back(make_pair(SingleObjSearch<R, ADS, S>::idComponent(), "single obj search"));
 
       return params;

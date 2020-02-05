@@ -55,7 +55,7 @@ public:
 	gplsStructure<R, ADS> gplsData;
 //	Pareto<R, ADS> x_e; //TODO -- possibility of embedding Pareto here
 
-	paretoManagerGPLS(MultiEvaluator<R, ADS>& _mev, int _r) :
+	paretoManagerGPLS(MultiEvaluator<S>& _mev, int _r) :
 			paretoManager<R, ADS>(_mev), r(_r)
 	{
 
@@ -121,7 +121,7 @@ private:
 
 public:
 
-	GeneralParetoLocalSearch(MultiEvaluator<R, ADS>& _mev, InitialPareto<R, ADS>& _init_pareto, int _init_pop_size, vector<MOLocalSearch<R, ADS>*> _vLS) :
+	GeneralParetoLocalSearch(MultiEvaluator<S>& _mev, InitialPareto<R, ADS>& _init_pareto, int _init_pop_size, vector<MOLocalSearch<R, ADS>*> _vLS) :
 			init_pareto(_init_pareto), init_pop_size(_init_pop_size), vLS(_vLS), pMan2PPLS(paretoManagerGPLS<R, ADS>(_mev, _vLS.size()))
 	{
 

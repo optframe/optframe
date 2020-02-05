@@ -149,9 +149,9 @@ class NGES : public SingleObjSearch<R, ADS, S>
 private:
    typedef vector<NGESInd<R, ADS>*> NGESPopulation;
 
-   Evaluator<R, ADS>& eval;
+   Evaluator<S>& eval;
    Constructive<S>& constructive;
-   vector<NS<R, ADS>*> vNS;
+   vector<NS<R, ADS>*> vNS; 
    LocalSearch<R, ADS>& ls;
    RandGen& rg;
    NGESParams& ngesParams;
@@ -163,7 +163,7 @@ public:
    //Evaluator, constructive, vNS -- vector with neighboorhods strucutures able to move solution,
    // selectionMethod: 0-low selection pressure (mi,lambda);1 selection pressure (mi+lambda)
    //TODO - Check why vector<NSSeq*> can not be passed as parameter - Tried but failled
-   NGES(Evaluator<R, ADS>& _eval, Constructive<S>& _constructive, vector<NS<R, ADS>*> _vNS, LocalSearch<R, ADS>& _ls, RandGen& _rg, NGESParams& _ngesParams)
+   NGES(Evaluator<S>& _eval, Constructive<S>& _constructive, vector<NS<R, ADS>*> _vNS, LocalSearch<R, ADS>& _ls, RandGen& _rg, NGESParams& _ngesParams)
      : eval(_eval)
      , constructive(_constructive)
      , vNS(_vNS)
@@ -228,7 +228,7 @@ public:
          double rx = rg.rand01();
          if (rx < p[param].pr)
             for (int a = 0; a < p[param].nap; a++) {
-               Move<R, ADS>* mov_tmp = vNS[param]->randomMoveSolution(s);
+               Move<R, ADS>* mov_tmp = vNS[param]->randomMove(s);
                //					int tries = 0;
                //					int maxTries = 1;
                //
@@ -239,8 +239,8 @@ public:
                //						tries++;
                //					}
 
-               if (mov_tmp->canBeAppliedToSolution(s)) {
-                  Move<R, ADS>* mov_rev = mov_tmp->applySolution(s);
+               if (mov_tmp->canBeApplied(s)) {
+                  Move<R, ADS>* mov_rev = mov_tmp->apply(s);
                   delete mov_rev;
                } else {
                   //						cout << "cannot be applied NS:" << param;

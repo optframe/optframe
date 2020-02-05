@@ -109,6 +109,8 @@ concept bool XESolution = XSolution<Self> && XEvaluation<Self>;
 
 // ============================
 
+
+
 // only for <assert> like stuff
 #ifndef NDEBUG
 // Example of valid struct satisfying solution properties
@@ -133,6 +135,12 @@ struct IsSolution
 // test BaseSolution concept
 template<BaseSolution<double> S>
 class TestBaseSol
+{
+public:
+};
+
+template<XSolution XS>
+class TestXSol
 {
 public:
 };

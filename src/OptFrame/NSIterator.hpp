@@ -64,7 +64,7 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class NSIterator: public Component
 {
 public:
@@ -81,8 +81,8 @@ public:
 		while(!isDone())
 		{
 			// TODO: verify if it's not null!
-			Move<R, ADS, S>& m = *current();
-			if(m.canBeAppliedToSolution(s))
+			Move<S, XEv>& m = *current();
+			if(m.canBeApplied(s))
 			{
 				delete &m;
 				break;
@@ -102,8 +102,8 @@ public:
 		while(!isDone())
 		{
 			// TODO: verify if it's not null!
-			Move<R, ADS, S>& m = *current();
-			if(m.canBeAppliedToSolution(s))
+			Move<S, XEv>& m = *current();
+			if(m.canBeApplied(s))
 			{
 				delete &m;
 				break;
@@ -115,7 +115,7 @@ public:
 	}
 
 	virtual bool isDone() = 0;
-	virtual Move<R, ADS, S>* current() = 0;
+	virtual Move<S, XEv>* current() = 0;
 
     // INSERT LOCAL OPTIMUM INFORMATION IN SOLUTION (IN ADS? USER DECIDES.)
     virtual void setLOS(LOS status, S& s)

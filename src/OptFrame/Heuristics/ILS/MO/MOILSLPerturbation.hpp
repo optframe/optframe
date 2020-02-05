@@ -69,11 +69,11 @@ class MOILSLPerturbationLPlus2: public MOILSLPerturbation<R, ADS, S>
 {
 private:
 	vector<NS<R, ADS>*> ns;
-	MultiEvaluator<R, ADS>& evaluator;
+	MultiEvaluator<S>& evaluator;
 	RandGen& rg;
 
 public:
-	MOILSLPerturbationLPlus2(MultiEvaluator<R, ADS>& _e, NS<R, ADS>& _ns, RandGen& _rg) :
+	MOILSLPerturbationLPlus2(MultiEvaluator<S>& _e, NS<R, ADS>& _ns, RandGen& _rg) :
 			evaluator(_e), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -98,7 +98,7 @@ public:
 		{
 			int x = rg.rand(ns.size());
 
-			Move<R, ADS>* m = ns[x]->validRandomMoveSolution(s);
+			Move<R, ADS>* m = ns[x]->validrandomMove(s);
 
 			if (m)
 			{
@@ -139,11 +139,11 @@ class MOILSLPerturbationLPlus2Prob: public MOILSLPerturbation<R, ADS, S>
 private:
 	vector<NS<R, ADS>*> ns;
 	vector<pair<int, double> > pNS;
-	MultiEvaluator<R, ADS>& evaluator;
+	MultiEvaluator<S>& evaluator;
 	RandGen& rg;
 
 public:
-	MOILSLPerturbationLPlus2Prob(MultiEvaluator<R, ADS>& _e, NS<R, ADS>& _ns, RandGen& _rg) :
+	MOILSLPerturbationLPlus2Prob(MultiEvaluator<S>& _e, NS<R, ADS>& _ns, RandGen& _rg) :
 			evaluator(_e), rg(_rg)
 	{
 		ns.push_back(&_ns);

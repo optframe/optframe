@@ -142,7 +142,7 @@ class NSGAII: public MultiObjSearch<R, ADS >
 	typedef vector<Evaluation<>*> FitnessValues;
 
 private:
-	vector<Evaluator<R, ADS>*> v_e;
+	vector<Evaluator<S>*> v_e;
 
 	InitialMultiSolution<R, ADS>& init_pop;
 	int init_pop_size;
@@ -161,7 +161,7 @@ public:
 
 	//using Heuristic<R, ADS >::exec; // prevents name hiding
 
-	NSGAII(vector<Evaluator<R, ADS>*> _v_e, InitialMultiSolution<R, ADS>& _init_pop, int _init_pop_size, int _gMax, RandGen& _rg) :
+	NSGAII(vector<Evaluator<S>*> _v_e, InitialMultiSolution<R, ADS>& _init_pop, int _init_pop_size, int _gMax, RandGen& _rg) :
 		v_e(_v_e), init_pop(_init_pop), init_pop_size(_init_pop_size), pDominance(ParetoDominance<R, ADS>(_v_e)), rg(_rg)
 	{
 		pDominance.insertEvaluators(_v_e);
@@ -283,7 +283,7 @@ public:
 			vector<Evaluation<>*> e;
 			for(unsigned ev=0; ev<v_e.size(); ev++)
 			{
-				Evaluator<R, ADS>* evtr = v_e[ev];
+				Evaluator<S>* evtr = v_e[ev];
 				//evtr->evaluate(s);
 				Evaluation<>& e1 = evtr->evaluate(*s);
 				e.push_back(&e1);

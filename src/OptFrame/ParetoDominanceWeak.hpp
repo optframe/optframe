@@ -45,7 +45,7 @@ class ParetoDominanceWeak: public ParetoDominance<R, ADS, S>
 public:
 	using ParetoDominance<R, ADS, S>::dominates;
 
-	ParetoDominanceWeak(MultiEvaluator<R, ADS, S>& _mev) :
+	ParetoDominanceWeak(MultiEvaluator<S, XEv>& _mev) :
 			ParetoDominance<R, ADS, S>(_mev)
 	{
 	}

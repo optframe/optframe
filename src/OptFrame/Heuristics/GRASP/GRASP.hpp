@@ -34,7 +34,7 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 class GRASP: public SingleObjSearch<R, ADS>
 {
 private:
-	Evaluator<R, ADS>& evaluator;
+	Evaluator<S>& evaluator;
 	Constructive<S>& constructive;
 	LocalSearch<R, ADS>& ls;
 	unsigned int iterMax;

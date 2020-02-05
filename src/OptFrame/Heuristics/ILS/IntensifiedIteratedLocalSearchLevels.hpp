@@ -46,7 +46,7 @@ protected:
 
 public:
 
-	IntensifiedIteratedLocalSearchLevels(Evaluator<R, ADS, S>& e, Constructive<S>& constructive, LocalSearch<R, ADS, S>& _ls, Intensification<R, ADS, S>& _h2, ILSLPerturbation<R, ADS, S>& _p, int _iterMax, int _levelMax) :
+	IntensifiedIteratedLocalSearchLevels(Evaluator<S, XEv>& e, Constructive<S>& constructive, LocalSearch<R, ADS, S>& _ls, Intensification<R, ADS, S>& _h2, ILSLPerturbation<R, ADS, S>& _p, int _iterMax, int _levelMax) :
 		IntensifiedIteratedLocalSearch<levelHistory, R, ADS > (e, constructive), ls(_ls), h2(_h2), p(_p)
 	{
 		iterMax = _iterMax;
@@ -76,7 +76,7 @@ public:
 		{
 			S& s1 = h2.search(s);
 
-			Evaluator<R, ADS, S> & ev = this->getEvaluator();
+			Evaluator<S, XEv> & ev = this->getEvaluator();
 			Evaluation<>& s1_e = ev.evaluate(s1);
 
 			if (ev.betterThan(s1_e, e))

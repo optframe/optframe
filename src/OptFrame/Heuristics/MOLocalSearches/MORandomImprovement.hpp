@@ -36,7 +36,7 @@ template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,
 class MORandomImprovement: public MOLocalSearch<R, ADS, S>
 {
 private:
-	MultiEvaluator<R, ADS>& mev;
+	MultiEvaluator<S>& mev;
 	NS<R, ADS>& ns;
 
 	// logs
@@ -45,7 +45,7 @@ private:
 	int iterMax;
 public:
 
-	MORandomImprovement(MultiEvaluator<R, ADS>& _mev, NS<R, ADS>& _ns, unsigned int _iterMax) :
+	MORandomImprovement(MultiEvaluator<S>& _mev, NS<R, ADS>& _ns, unsigned int _iterMax) :
 			mev(_mev), ns(_ns), iterMax(_iterMax)
 	{
 		sum_time = 0.0;
@@ -72,17 +72,17 @@ public:
 
 		while ((iter < iterMax) && ((t.now() - stopCriteria.timelimit) < 0))
 		{
-			Move<R, ADS>* move = ns.randomMoveSolution(s);
-			if (move->canBeAppliedToSolution(s))
+			Move<R, ADS>* move = ns.randomMove(s);
+			if (move->canBeApplied(s))
 			{
 				//Move and mark sMev as outdated
-				Move<R, ADS>* mov_rev = move->applySolution(s);
+				Move<R, ADS>* mov_rev = move->apply(s);
 
 				//Call method to reevaluate sMev and try to include TODO
 //				pManager->addSolutionWithMEVReevaluation(p, *s,*sMev);
 
 				pManager.addSolution(p, s);
-				delete mov_rev->applySolution(s);
+				delete mov_rev->apply(s);
 				delete mov_rev;
 
 				//			vector<MoveCost<>*> vMoveCost;

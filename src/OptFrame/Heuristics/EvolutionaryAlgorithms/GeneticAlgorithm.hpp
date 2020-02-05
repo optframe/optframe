@@ -54,7 +54,7 @@ protected:
     using Fitness = Evaluation<>*; //nullptr means there's no evaluation
     using Population = std::vector< pair<Individual, Fitness> >;
 
-    Evaluator<R, ADS>& evaluator; //standard problem evaluator
+    Evaluator<S>& evaluator; //standard problem evaluator
     SimpleInitialPopulation<R, ADS>& initPop; //operator that generates the initial population
                                         //It is expected that the initial population will have at least 2 individuals.
                                         //It is expected that the initial population size wont surpass the population max size
@@ -97,7 +97,7 @@ protected:
 public:
 
 
-    GeneticAlgorithm(Evaluator<R, ADS>& _evaluator,
+    GeneticAlgorithm(Evaluator<S>& _evaluator,
                      SimpleInitialPopulation<R, ADS>& _initPop,
                      SimpleSelection<R, ADS>& _selection,
                      SimpleElection<R, ADS>&  _election,

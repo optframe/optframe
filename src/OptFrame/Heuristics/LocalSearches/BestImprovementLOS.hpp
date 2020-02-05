@@ -34,12 +34,12 @@ template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySol
 class BestImprovementLOS: public LocalSearch<R, ADS, S>
 {
 private:
-	Evaluator<R, ADS, S>& eval;
-	NSSeq<R, ADS, S>& nsSeq;
+	Evaluator<S, XEv>& eval;
+	NSSeq<S, XEv>& nsSeq;
 
 public:
 
-	BestImprovementLOS(Evaluator<R, ADS, S>& _eval, NSSeq<R, ADS, S>& _nsSeq) :
+	BestImprovementLOS(Evaluator<S, XEv>& _eval, NSSeq<S, XEv>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 	}
@@ -61,13 +61,13 @@ public:
 
 		//TODO: use block iterator and manage each partial local optima discovered
 
-		NSBlockIterator<R, ADS, S>& itb = *nsSeq.getBlockIterator(s);
+		NSBlockIterator<S, XEv>& itb = *nsSeq.getBlockIterator(s);
 
 		cout << "TODO: BestImprovementLOS UNIMPLEMENTED!" << endl;
 
 		return;
 
-		NSIterator<R, ADS, S>& it = *nsSeq.getIteratorSolution(s);
+		NSIterator<S, XEv>& it = *nsSeq.getIterator(s);
 
 		it.first();
 
@@ -77,7 +77,7 @@ public:
 			return;
 		}
 
-		Move<R, ADS, S>* bestMove = it.current();
+		Move<S, XEv>* bestMove = it.current();
 
 		/*if(e.getLocalOptimumStatus(bestMove->id()))
 		{
@@ -92,7 +92,7 @@ public:
 
 		while (true)
 		{
-			while (!bestMove->canBeAppliedToSolution(s))
+			while (!bestMove->canBeApplied(s))
 			{
 				delete bestMove;
 				it.next();
@@ -137,8 +137,8 @@ public:
 		//it.next();
 		while (!it.isDone())
 		{
-			Move<R, ADS, S>* move = it.current();
-			if (move->canBeAppliedToSolution(s))
+			Move<S, XEv>* move = it.current();
+			if (move->canBeApplied(s))
 			{
             bool mayEstimate = false;
 				MoveCost<>* cost = eval.moveCost(e, *move, s, mayEstimate);
@@ -172,7 +172,7 @@ public:
 				// TODO: have to test if bestMove is ACTUALLY an improvement move...
 			}
 
-			Component::safe_delete(bestMove->applyUpdateSolution(e, s));
+			Component::safe_delete(bestMove->applyUpdate(e, s));
 
 			eval.reevaluateSolution(e, s); // updates 'e'
 			//e.setLocalOptimumStatus(bestMove->id(), false); //set NS 'id' out of Local Optimum
@@ -239,12 +239,12 @@ public:
 	{
 		if(!scanner.hasNext())
 			return nullptr;
-		Evaluator<R, ADS, S>* eval;
+		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		if(!scanner.hasNext())
 			return nullptr;
-		NSSeq<R, ADS, S>* nsseq;
+		NSSeq<S, XEv>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new BestImprovementLOS<R, ADS, S>(*eval, *nsseq);
@@ -253,8 +253,8 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<R, ADS, S>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NSSeq<R, ADS, S>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NSSeq<S, XEv>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}

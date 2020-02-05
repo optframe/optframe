@@ -115,11 +115,11 @@ protected:
     using Fitness = Evaluation<>*; //nullptr means there's no evaluation
     using Population = vector< pair<Individual, Fitness> >;
 
-    Evaluator<R, ADS>& evaluator;
+    Evaluator<S>& evaluator;
 
 public:
 
-	SimpleSelection(Evaluator<R, ADS>& _evaluator) : evaluator(_evaluator) { };
+	SimpleSelection(Evaluator<S>& _evaluator) : evaluator(_evaluator) { };
 	virtual ~SimpleSelection() = default;
 
 	virtual void select(Population& population) = 0;
@@ -158,7 +158,7 @@ public:
 	//optional parameter
 	bool sortPopulationBeforeSelect = false; //this selection need to operate over a ranked population. If the GA used doesn't rank them, then you should flip this to true 
 
-	ElitismSelection(Evaluator<R, ADS>& _evaluator, double selectionRate) : SimpleSelection<R, ADS>(_evaluator), alpha(selectionRate) { assert(selectionRate >= 0.0 && selectionRate <= 1.0); };
+	ElitismSelection(Evaluator<S>& _evaluator, double selectionRate) : SimpleSelection<R, ADS>(_evaluator), alpha(selectionRate) { assert(selectionRate >= 0.0 && selectionRate <= 1.0); };
 	~ElitismSelection() = default;
 
 	void select(Population& population) override {
