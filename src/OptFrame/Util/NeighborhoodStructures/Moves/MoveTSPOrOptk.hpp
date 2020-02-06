@@ -32,8 +32,9 @@
 namespace optframe
 {
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
-class MoveTSPOrOptk: public Move<vector<T>, ADS>
+//template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, XEvaluation XEv = Evaluation<>>
+class MoveTSPOrOptk: public Move<S, XEv>
 {
 	typedef vector<T> Route;
 
@@ -46,8 +47,8 @@ protected:
 
 public:
 
-	using Move<vector<T>, ADS>::apply;
-	using Move<vector<T>, ADS>::canBeApplied;
+	using Move<S, XEv>::apply;
+	using Move<S, XEv>::canBeApplied;
 
 	MoveTSPOrOptk(int _i, int _j, int _k, OPTFRAME_DEFAULT_PROBLEM* _problem = nullptr) :
 			i(_i), j(_j), k(_k), problem(_problem)
@@ -73,14 +74,16 @@ public:
 		return k;
 	}
 
-	virtual bool canBeApplied(const Route& rep, const ADS*) override
+	virtual bool canBeApplied(const S& s) override
 	{
+      const Route& rep = s.getR();
 		//return (i != j) && (i + k <= rep.size());
 		return abs(i - j) >= k;
 	}
 
-	virtual Move<Route, ADS>* apply(Route& rep, ADS*) override
+	virtual Move<S, XEv>* apply(S& s) override
 	{
+      Route& rep = s.getR();
 		vector<T> v_aux;
 		v_aux.insert(v_aux.begin(), rep.begin() + i, rep.begin() + i + k);
 		rep.erase(rep.begin() + i, rep.begin() + i + k);
@@ -89,7 +92,7 @@ public:
 		return new MoveTSPOrOptk(j, i, k);
 	}
 
-	virtual bool operator==(const Move<Route, ADS>& _m) const
+	virtual bool operator==(const Move<S, XEv>& _m) const
 			{
 		const MoveTSPOrOptk& m1 = (const MoveTSPOrOptk&) _m;
 		return (m1.i == i) && (m1.j == j) && (m1.k == k);
@@ -97,7 +100,7 @@ public:
 
 	static string idComponent()
 	{
-		string idComp = Move<vector<T>, ADS>::idComponent();
+		string idComp = Move<S, XEv>::idComponent();
 		idComp.append("MoveTSPOrOptk");
 		return idComp;
 	}

@@ -130,7 +130,7 @@ public:
 		return idComp;
 	}
 
-	virtual bool operator==(const Move<RepTSP>& _m) const
+	virtual bool operator==(const Move<SolutionTSP>& _m) const
 	{
 		const DeltaMoveTSP2Opt& m1 = (const DeltaMoveTSP2Opt&) _m;
 		return ((m1.p1 == p1) && (m1.p2 == p2));

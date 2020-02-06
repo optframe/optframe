@@ -31,8 +31,8 @@ using namespace std;
 
 // Working structure: vector<T>
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM>
-class NSIteratorTSPSwap: public NSIterator<vector<T>, ADS, S>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
+class NSIteratorTSPSwap: public NSIterator<S, XEv>
 {
 	typedef vector<T> Route;
 
@@ -93,7 +93,7 @@ public:
 		return (m == nullptr);
 	}
 
-	virtual Move<Route, ADS, S>* current() override
+	virtual Move<S, XEv>* current() override
 	{
 		if (isDone())
 		{

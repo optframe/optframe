@@ -31,11 +31,11 @@ class MoveNSSeqUnion: public Move<S, XEv>
 {
 protected:
 	int id;
-	Move<R, ADS>& m;
+	Move<S, XEv>& m;
 
 public:
 
-	MoveNSSeqUnion(int _id, Move<R, ADS>& _m) :
+	MoveNSSeqUnion(int _id, Move<S, XEv>& _m) :
 			id(_id), m(_m)
 	{
 	}
@@ -45,7 +45,7 @@ public:
 		return id;
 	}
 
-	Move<R, ADS>& get_m()
+	Move<S, XEv>& get_m()
 	{
 		return m;
 	}
@@ -55,24 +55,24 @@ public:
 		delete &m;
 	}
 
-	bool canBeApplied(const R& r, const ADS& ads)
+	bool canBeApplied(const S& s) override
 	{
-		return m.canBeApplied(r, ads);
+		return m.canBeApplied(s);
 	}
 
-	Move<R, ADS>& apply(R& r, ADS& ads)
+	Move<S, XEv>& apply(S& s) override
 	{
-		return *new MoveNSSeqUnion<R, ADS>(id, m.apply(r, ads));
+		return *new MoveNSSeqUnion<S, XEv>(id, m.apply(s));
 	}
 
-	Move<R, ADS>& apply(Evaluation<>& e, R& rep)
+	Move<S, XEv>& apply(Evaluation<>& e, S& s)
 	{
-		return *new MoveNSSeqUnion<R, ADS>(id, m.apply(e, rep));
+		return *new MoveNSSeqUnion<S, XEv>(id, m.apply(e, s));
 	}
 
-	virtual bool operator==(const Move<R, ADS>& _m) const
+	virtual bool operator==(const Move<S, XEv>& _m) const
 			{
-		const MoveNSSeqUnion<R, ADS>& m1 = (const MoveNSSeqUnion<R, ADS>&) _m;
+		const MoveNSSeqUnion<S, XEv>& m1 = (const MoveNSSeqUnion<S, XEv>&) _m;
 		if (id == m1.id)
 			return m == m1.m;
 		else

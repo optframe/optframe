@@ -40,7 +40,7 @@ using namespace std;
 
 namespace TSP {
 
-class MoveSwap : public Move<RepTSP>
+class MoveSwap : public Move<SolutionTSP>
 {
 private:
    int c1, c2;
@@ -56,15 +56,16 @@ public:
       // Put the rest of your code here
    }
 
-   bool canBeApplied(const RepTSP& rep, const OPTFRAME_DEFAULT_ADS*) override
+   bool canBeApplied(const SolutionTSP& s) override
    {
       // If there are some move "MoveSwap" that can't be applied, implement this method
 
       return true;
    }
 
-   Move<RepTSP>* apply(RepTSP& rep, OPTFRAME_DEFAULT_ADS*) override
+   Move<SolutionTSP>* apply(SolutionTSP& s) override
    {
+      RepTSP& rep = s.getR();
       // Specify how the move "MoveSwap" will be applied
 
       int aux = rep.at(c1);
@@ -75,8 +76,9 @@ public:
       return new MoveSwap(c2, c1, tsp);
    }
 
-   Move<RepTSP>* applyUpdate(Evaluation<>& e, RepTSP& rep, OPTFRAME_DEFAULT_ADS* ads) override
+   Move<SolutionTSP>* applyUpdate(Evaluation<>& e, SolutionTSP& s) override
    {
+      RepTSP& rep = s.getR();
       int k1, k2;
 
       if (c1 < c2) {
@@ -113,7 +115,7 @@ public:
          f -= (*tsp.dist)(rep[k2], rep[ak2]);
       }
 
-      Move<RepTSP>& rev = *apply(rep, ads);
+      Move<SolutionTSP>& rev = *apply(s);
 
       if (k2 - k1 == 1) // special case, cities are near
       {
@@ -133,8 +135,9 @@ public:
       return &rev;
    }
 
-   MoveCost<>* cost(const Evaluation<>& e, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS* ads, bool allowEstimated) override
+   MoveCost<>* cost(const Evaluation<>& e, const SolutionTSP& s, bool allowEstimated) override
    {
+      const RepTSP& rep = s.getR();
       int k1, k2;
 
       if (c1 < c2) {
@@ -199,7 +202,7 @@ public:
       cout << "MoveSwap between " << c1 << " and " << c2 << endl;
    }
 
-   virtual bool operator==(const Move<RepTSP>& _m) const
+   virtual bool operator==(const Move<SolutionTSP>& _m) const
    {
       const MoveSwap& m = (const MoveSwap&)_m; // You can only compare if types are equal
 
@@ -214,7 +217,7 @@ public:
 //                  Swap Neighborhood Structure
 //============================================================================
 
-class NSEnumSwap : public NSEnum<RepTSP>
+class NSEnumSwap : public NSEnum<SolutionTSP>
 {
 private:
    ProblemInstance* pI;
@@ -225,14 +228,14 @@ private:
 public:
 
    NSEnumSwap(ProblemInstance* pI, RandGen& _rg)
-     : NSEnum<RepTSP>(_rg)
+     : NSEnum<SolutionTSP>(_rg)
    {
       this->pI = pI;
       this->n = pI->n;
    }
 
    // given index, returns (i,j), with 0 < i < j < n-1
-   virtual Move<RepTSP>* indexMove(unsigned int k) override
+   virtual Move<SolutionTSP>* indexMove(unsigned int k) override
    {
       int i = k / (n - 1);
       int j = k % (n - 1) + 1;
@@ -299,7 +302,7 @@ public:
       return comeca(d) + numElem(d) - 1;
    }
 
-   Move<RepTSP>& busca(int k, int a, int b)
+   Move<SolutionTSP>& busca(int k, int a, int b)
    {
       int d = (a + b) / 2;
 

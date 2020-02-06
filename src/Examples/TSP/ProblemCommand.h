@@ -35,7 +35,8 @@
 using namespace scannerpp;
 using namespace optframe;
 
-using HeuristicFactoryTSP = HeuristicFactory<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP>;
+//using HeuristicFactoryTSP = HeuristicFactory<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP>;
+using HeuristicFactoryTSP = HeuristicFactory<SolutionTSP>;
 
 namespace TSP
 {
@@ -83,18 +84,20 @@ public:
         hf.addComponent(* new ConstructiveBestInsertion(p, hf.getRandGen()));
 
         TSPEvaluator& eval = *new TSPEvaluator(p);
-        hf.addComponent(eval, Evaluator<RepTSP, OPTFRAME_DEFAULT_ADS>::idComponent());
+        hf.addComponent(eval, Evaluator<SolutionTSP>::idComponent());
 
         NSEnumSwap& ns = *new NSEnumSwap(p, hf.getRandGen());
         hf.addComponent(ns, "OptFrame:NS:NSSeq");
 
 
-        NSSeq<RepTSP, OPTFRAME_DEFAULT_ADS>* nsseq_delta_2opt = new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSP2Opt, ProblemInstance>(p);
+         //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
+        NSSeq<SolutionTSP>* nsseq_delta_2opt = new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSP2Opt, ProblemInstance>(p);
         hf.addComponent(*nsseq_delta_2opt, "OptFrame:NS:NSSeq");
 
         hf.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS>, "OptFrame:NS:NSSeq"); // no optimization
 
-        NSSeq<RepTSP, OPTFRAME_DEFAULT_ADS>* nsseq_delta_or1 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSPOrOptk, ProblemInstance>(1, p);
+        //NSSeq<SolutionTSP>* nsseq_delta_or1 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSPOrOptk, ProblemInstance>(1, p);
+        NSSeq<SolutionTSP>* nsseq_delta_or1 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSPOrOptk, ProblemInstance>(1, p);
         hf.addComponent(*nsseq_delta_or1, "OptFrame:NS:NSSeq");
         hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS>(1), "OptFrame:NS:NSSeq");
         hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS>(2), "OptFrame:NS:NSSeq");
@@ -103,8 +106,8 @@ public:
         hf.addComponent(*new NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS>, "OptFrame:NS:NSSeq");
 
 
-        ILSLPerturbationLPlus2<RepTSP, OPTFRAME_DEFAULT_ADS>* ilsl_pert;
-        ilsl_pert = new ILSLPerturbationLPlus2<RepTSP,  OPTFRAME_DEFAULT_ADS> (eval, *nsseq_delta_2opt, hf.getRandGen());
+        ILSLPerturbationLPlus2<SolutionTSP>* ilsl_pert;
+        ilsl_pert = new ILSLPerturbationLPlus2<SolutionTSP> (eval, *nsseq_delta_2opt, hf.getRandGen());
         ilsl_pert->add_ns(*nsseq_delta_or1);
 
         hf.addComponent(*ilsl_pert);

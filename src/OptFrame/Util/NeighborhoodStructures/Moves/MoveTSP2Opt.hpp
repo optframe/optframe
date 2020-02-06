@@ -35,8 +35,9 @@
 namespace optframe
 {
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
-class MoveTSP2Opt: public Move<vector<T>, ADS>
+//template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, XEvaluation XEv = Evaluation<>>
+class MoveTSP2Opt: public Move<S, XEv>
 {
 	typedef vector<T> Route;
 
@@ -66,23 +67,24 @@ public:
 		return p2;
 	}
 
-	virtual bool canBeApplied(const Route& rep, const ADS*) override
+	virtual bool canBeApplied(const S& s) override
 	{
+      const Route& rep = s.getR();
 		bool all_positive = (p1 >= 0) && (p2 >= 0);
 		bool less = (p1 < p2);
 		return all_positive && (rep.size() >= 2) && less;
 	}
 
-	virtual Move<Route, ADS>* apply(Route& rep, ADS*) override
+	virtual Move<S, XEv>* apply(S& s) override
 	{
-
+      Route& rep = s.getR();
 		reverse(rep.begin() + p1, rep.begin() + p2);
 
 		// r1->r1, r2->r2, e1->i1, e2->i2, n1->n2, n2->n1, i1->e1, i2->e2
 		return new MoveTSP2Opt(p1, p2);
 	}
 
-	virtual bool operator==(const Move<Route, ADS>& _m) const
+	virtual bool operator==(const Move<S, XEv>& _m) const
 			{
 		const MoveTSP2Opt& m1 = (const MoveTSP2Opt&) _m;
 		return ((m1.p1 == p1) && (m1.p2 == p2));
@@ -90,7 +92,7 @@ public:
 
 	static string idComponent()
 	{
-		string idComp = Move<vector<T>, ADS>::idComponent();
+		string idComp = Move<S, XEv>::idComponent();
 		idComp.append("MoveTSP2Opt");
 		return idComp;
 	}

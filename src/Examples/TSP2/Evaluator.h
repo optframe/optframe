@@ -38,7 +38,7 @@
 namespace TSP2
 {
 
-class MyEvaluator: public Evaluator<RepTSP>
+class MyEvaluator: public Evaluator<SolutionTSP>
 {
 private:
 	ProblemInstance& pTSP;
@@ -47,7 +47,7 @@ public:
 
 	long long evaluations;
 
-	using Evaluator<RepTSP>::evaluate; // prevents name hiding
+	using Evaluator<SolutionTSP>::evaluate; // prevents name hiding
 
 	MyEvaluator(ProblemInstance& _pTSP) :
 			pTSP(_pTSP)

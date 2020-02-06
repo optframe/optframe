@@ -90,8 +90,8 @@ using namespace optframe;
 
 
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveTSP2Opt<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSP2Opt<T, ADS, MOVE, P> >
-class NSSeqTSP2Opt: public NSSeq<vector<T>, ADS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
+class NSSeqTSP2Opt: public NSSeq<S, XEv>
 {
 	typedef vector<T> Route;
 
@@ -110,8 +110,9 @@ public:
 	{
 	}
 
-	Move<Route, ADS>* randomMove(const Route& rep, const ADS*) override
+	Move<S, XEv>* randomMove(const S& s) override
 	{
+      const Route& rep = s.getR();
 		if (rep.size() < 2)
 			return new MOVE(-1, -1, p);
 
@@ -129,15 +130,15 @@ public:
 		return new MOVE(p1, p2, p);
 	}
 
-	virtual NSIterator<Route, ADS>* getIterator(const Route& r, const ADS*) override
+	virtual NSIterator<S, XEv>* getIterator(const S& s) override
 	{
-		return new NSITERATOR(r, p);
+		return new NSITERATOR(s, p);
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << NSSeq<vector<T>, ADS>::idComponent() << ":NSSeqTSP2Opt";
+		ss << NSSeq<S, XEv>::idComponent() << ":NSSeqTSP2Opt";
 		return ss.str();
 	}
 
@@ -148,7 +149,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (NSSeq<vector<T>, ADS>::compatible(s));
+		return (s == idComponent()) || (NSSeq<S, XEv>::compatible(s));
 	}
 
 	virtual string toString() const

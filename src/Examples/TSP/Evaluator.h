@@ -41,7 +41,7 @@
 namespace TSP
 {
 
-class TSPEvaluator: public Evaluator<RepTSP>
+class TSPEvaluator: public Evaluator<SolutionTSP>
 {
 private:
     ProblemInstance* pI;
@@ -58,10 +58,10 @@ public:
 
     bool doStats;
 
-    using Evaluator<RepTSP>::evaluate; // prevents name hiding
+    //using Evaluator<SolutionTSP>::evaluate; // prevents name hiding
 
     TSPEvaluator(ProblemInstance* pI) :
-            Evaluator<RepTSP>(true) // ALLOW COSTS!
+            Evaluator<SolutionTSP>(true) // ALLOW COSTS!
     {
         Minimizing = true;
         this->pI = pI;
@@ -85,8 +85,9 @@ public:
     	return true;
     }
 
-    Evaluation<> evaluate(const RepTSP& r, const OPTFRAME_DEFAULT_ADS*) override
+    Evaluation<> evaluate(const SolutionTSP& s) override
     {
+       const RepTSP& r = s.getR();
         double fo = 0; // Evaluation<> Function Value
 
         for (int i = 0; i < ((int) r.size()) - 1; i++)
@@ -147,7 +148,8 @@ public:
         NSSeqTSPSwap<int> tspswap;
 
         //int ads;
-        NSIterator<RepTSP>& it = *tspswap.getIterator(r, nullptr);
+        SolutionTSP s(r); // TODO: think
+        NSIterator<SolutionTSP>& it = *tspswap.getIterator(s);
         it.first();
 
         //cout << "got iterator: " << it.toString() << endl;
@@ -157,9 +159,10 @@ public:
         {
             //cout << "will get move" << endl;
             totalNeigh++;
-            Move<RepTSP>& m = *it.current();
+            Move<SolutionTSP>& m = *it.current();
             //m.print();
-            if (m.canBeApplied(r, nullptr))
+            SolutionTSP s2(r); // TODO: think
+            if (m.canBeApplied(s2))
             {
                 doStats = false;
                 Evaluation<>* e = nullptr; // dummy // TODO:
@@ -191,7 +194,7 @@ public:
 
     virtual string id() const
     {
-        string pai = Evaluator<RepTSP>::idComponent();
+        string pai = Evaluator<SolutionTSP>::idComponent();
         pai.append(":TSPEvaluator");
         return pai;
     }

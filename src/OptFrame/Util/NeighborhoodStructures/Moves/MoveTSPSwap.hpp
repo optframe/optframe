@@ -31,8 +31,8 @@ using namespace std;
 namespace optframe
 {
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>>
-class MoveTSPSwap : public Move<vector<T>, ADS, S>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, XEvaluation XEv = Evaluation<>>
+class MoveTSPSwap : public Move<S, XEv>
 {
    typedef vector<T> Route;
 
@@ -63,15 +63,17 @@ public:
       return p2;
    }
 
-   bool canBeApplied(const Route& rep, const ADS*) override
+   bool canBeApplied(const S& s) override
    {
+      const Route& rep = s.getR();
       bool all_positive = (p1 >= 0) && (p2 >= 0);
       bool size_ok = (p1 < ((int)rep.size())) && (p2 < ((int)rep.size()));
       return all_positive && size_ok && (rep.size() >= 2);
    }
 
-   Move<Route, ADS, S>* apply(Route& rep, ADS*) override
+   Move<S, XEv>* apply(S& s) override
    {
+      Route& rep = s.getR();
       T t = rep[p1];
       rep[p1] = rep[p2];
       rep[p2] = t;
@@ -79,7 +81,7 @@ public:
       return new MoveTSPSwap(p1, p2);
    }
 
-   virtual bool operator==(const Move<Route, ADS, S>& _m) const
+   virtual bool operator==(const Move<S, XEv>& _m) const
    {
       const MoveTSPSwap& m1 = (const MoveTSPSwap&)_m;
       return ((m1.p1 == p1) && (m1.p2 == p2));

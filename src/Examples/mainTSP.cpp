@@ -51,7 +51,8 @@ using namespace scannerpp;
 int
 main(int argc, char** argv)
 {
-   Loader<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> optframe;
+   //Loader<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> optframe;
+   Loader<SolutionTSP> optframe;
    TSPProblemCommand tsp;
 
    File* file;
@@ -80,7 +81,7 @@ main(int argc, char** argv)
 	*/
 
    bool check_verbose = false;
-   CheckCommand<RepTSP> check(check_verbose);
+   CheckCommand<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> check(check_verbose);
 
    RandGenMersenneTwister rg(0);
    RandomInitialSolutionTSP random(tsp.p, rg);
@@ -89,9 +90,9 @@ main(int argc, char** argv)
    TSPEvaluator eval(tsp.p);
    NSEnumSwap enumswap(tsp.p, rg);
 
-   NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);
+   NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);
    NSSeqTSP2Opt<int> tsp2opt;
-   NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSPOrOptk, ProblemInstance> nsseq_delta_or1(1, tsp.p);
+   NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSPOrOptk, ProblemInstance> nsseq_delta_or1(1, tsp.p);
    NSSeqTSPOrOptk<int> tspor1(1);
    NSSeqTSPOrOptk<int> tspor2(2);
    NSSeqTSPOrOptk<int> tspor3(3);
