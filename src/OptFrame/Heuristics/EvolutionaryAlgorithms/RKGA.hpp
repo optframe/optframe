@@ -67,21 +67,21 @@ public:
    }
 };
 
-template<Representation R, XSolution S = RSolution<random_keys>, XEvaluation XEv = Evaluation<>> // one should pass a compatible one, regarding R
-class RKGA : public SingleObjSearch<S>
+template<Representation R, XRSolution<R> XRS = RSolution<random_keys>, XEvaluation XEv = Evaluation<>> // one should pass a compatible one, regarding R
+class RKGA : public SingleObjSearch<XRS, XEv>
 {
 protected:
    DecoderRandomKeys<R>& decoder;
-   Evaluator<S, XEv>* evaluator; // Check to avoid memory leaks
+   Evaluator<XRS, XEv>* evaluator; // Check to avoid memory leaks
 
-   InitialPopulation<S, XEv>& initPop;
+   InitialPopulation<XRS, XEv>& initPop;
    int sz; // Check to avoid memory leaks
 
    unsigned popSize, eliteSize, randomSize;
    unsigned numGenerations;
 
 public:
-   RKGA(DecoderRandomKeys<R>& _decoder, InitialPopulation<S, XEv>& _initPop, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
+   RKGA(DecoderRandomKeys<R>& _decoder, InitialPopulation<XRS, XEv>& _initPop, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
      : decoder(_decoder)
      , evaluator(nullptr)
      , initPop(_initPop)
@@ -109,7 +109,7 @@ public:
       assert(randomSize + eliteSize < popSize);
    }
 
-   RKGA(Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
+   RKGA(Evaluator<XRS, XEv>& _evaluator, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
      : decoder(*new DecoderRandomKeysEvaluator<random_keys>(_evaluator))
      , evaluator(&_evaluator)
      , initPop(*new RandomKeysInitPop(key_size))
@@ -131,12 +131,12 @@ public:
          delete &initPop;
    }
 
-   void decodePopulation(Population<S, XEv>& p)
+   void decodePopulation(Population<XRS, XEv>& p)
    {
       for (unsigned i = 0; i < p.size(); ++i) {
          //p.at(i).print();
          random_keys& rk = p.at(i).getR();
-         pair<Evaluation<>, CopySolution<R>*> pe = decoder.decode(rk);
+         pair<XEv, XRS*> pe = decoder.decode(rk);
          p.setFitness(i, pe.first.evaluation());
          //delete &pe.first;
          if (pe.second)
@@ -144,7 +144,7 @@ public:
       }
    }
 
-   virtual S& cross(const Population<S, XEv>& pop) const
+   virtual CopySolution<random_keys>& cross(const Population<XRS, XEv>& pop) const
    {
       assert(sz > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
 
@@ -161,7 +161,7 @@ public:
    }
 
    //pair<CopySolution<random_keys>&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const CopySolution<random_keys>* _s = nullptr, const Evaluation<>* _e = nullptr)
-   virtual pair<CopySolution<random_keys>, Evaluation<>>* search(SOSC& stopCriteria, const CopySolution<random_keys>* _s = nullptr, const Evaluation<>* _e = nullptr) override
+   virtual pair<CopySolution<random_keys>, XEv>* search(SOSC& stopCriteria, const CopySolution<random_keys>* _s = nullptr, const XEv* _e = nullptr) override
    {
       // count generations
       int count_gen = 0;
@@ -225,7 +225,7 @@ public:
       p.sort(decoder.isMinimization());
 
       CopySolution<random_keys>& best = p.remove(0);
-      pair<Evaluation<>, CopySolution<R>*> pe = decoder.decode(best.getR());
+      pair<XEv, XRS*> pe = decoder.decode(best.getR());
       Evaluation<>& e = pe.first;
       // ignoring second value
       if (pe.second)
@@ -234,7 +234,7 @@ public:
       //delete p;
       p.clear();
 
-      return new pair<CopySolution<random_keys>, Evaluation<>>(best, e);
+      return new pair<CopySolution<random_keys>, XEv>(best, e);
    }
 };
 }

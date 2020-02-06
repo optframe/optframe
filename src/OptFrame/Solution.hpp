@@ -495,6 +495,7 @@ struct optframe_test_debug_testsol_solution_disable_runtime
 // Test solution concept against class Solution
 TestBaseSol<Solution<double>> testSol;
 TestXSol<RSolution<double>> testRsol;
+TestXRSolution<double, RSolution<double>> testxrs;
 };
 
 #endif 

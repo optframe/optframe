@@ -87,7 +87,8 @@ main(int argc, char** argv)
    RandomInitialSolutionTSP random(tsp.p, rg);
    NearestNeighborConstructive cnn(tsp.p, rg);
    ConstructiveBestInsertion cbi(tsp.p, rg);
-   TSPEvaluator eval(tsp.p);
+   TSPEvaluator eval1(tsp.p); // Should not be Specific to TSP!! Won't work on Decoder..
+   Evaluator<SolutionTSP>& eval = eval1;
    NSEnumSwap enumswap(tsp.p, rg);
 
    NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);

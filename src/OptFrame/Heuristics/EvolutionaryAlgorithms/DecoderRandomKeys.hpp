@@ -83,13 +83,14 @@ public:
 
 
 // application for R = permutation of int (vector<int>)
-class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<vector<int>, RSolution<vector<int>>>
+template<XRSolution<vector<int>> XRS, XEvaluation XEv = Evaluation<>>
+class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<vector<int>, XRS>
 {
 public:
-   Evaluator<RSolution<vector<int>>>& ev; // evaluator for permutation
+   Evaluator<XRS>& ev; // evaluator for permutation
    int a, b;                   // decode in interval [a,b]
 
-   EvaluatorPermutationRandomKeys(Evaluator<RSolution<vector<int>>>& _ev, int _a, int _b)
+   EvaluatorPermutationRandomKeys(Evaluator<XRS>& _ev, int _a, int _b)
      : ev(_ev)
      , a(_a)
      , b(_b)
@@ -97,7 +98,7 @@ public:
       assert(a <= b);
    }
 
-   virtual pair<Evaluation<>, RSolution<vector<int>>*> decode(const random_keys& rk) override
+   virtual pair<XEv, XRS*> decode(const random_keys& rk) override
    {
       int sz = b - a + 1;
       vector<pair<double, int>> v(sz);
@@ -113,11 +114,11 @@ public:
       for (unsigned i = 0; i < v.size(); i++)
          p[i] = v[i].second;
 
-      RSolution<vector<int>> sevp(p);
-      Evaluation<> e = ev.evaluate(sevp);
+      XRS sevp(p);
+      XEv e = ev.evaluate(sevp);
 
       // you have the option to actually return a Solution<vector<int>> for post-decoding purposes
-      return pair<Evaluation<>, RSolution<vector<int>>*>(e, new RSolution<vector<int>>(p));
+      return pair<XEv, XRS*>(e, new XRS(p));
    }
 
    virtual bool isMinimization() const

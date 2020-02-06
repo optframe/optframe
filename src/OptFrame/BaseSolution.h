@@ -72,7 +72,7 @@ concept bool BaseSolution = HasGetR<S, R> &&HasGetADS<S, ADS> && XSolution<S>;
 
 
 template <class Self, Representation R>
-concept bool RSolution = HasGetR<Self, R> && XSolution<Self>;
+concept bool XRSolution = HasGetR<Self, R> && XSolution<Self>;
 
 // ============================
 
@@ -139,6 +139,12 @@ class TestBaseSol
 public:
 };
 
+template<Representation R, XRSolution<R> XRS>
+class TestXRSolution
+{
+public:
+};
+
 template<XSolution XS>
 class TestXSol
 {
@@ -149,6 +155,7 @@ struct optframe_test_debug_testsol_issolution_disable_runtime
 {
 // test if following structure is valid
 TestBaseSol<IsSolution<double>> test;
+TestXRSolution<double, IsSolution<double>> testxrs;
 };
 
 // test evaluation concept
