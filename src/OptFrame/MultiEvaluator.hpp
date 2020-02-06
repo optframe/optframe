@@ -35,7 +35,7 @@ using namespace scannerpp;
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class MultiEvaluator: public MultiDirection
 {
 protected:
@@ -114,14 +114,14 @@ public:
 	}
 
     //changed to Meval without point TODO
-	virtual MultiEvaluation<> evaluate(const R& r, const ADS* ads)
+	virtual MultiEvaluation<> evaluate(const S& s)
 	{
 		cout << "inside mother class" << endl;
 		getchar();
 		MultiEvaluation<> nev;
 		for (unsigned i = 0; i < sngEvaluators.size(); i++)
 		{
-			Evaluation<> ev = sngEvaluators[i]->evaluate(r, ads);
+			Evaluation<> ev = sngEvaluators[i]->evaluate(s);
 			nev.addEvaluation(ev);
 		}
 
@@ -140,12 +140,12 @@ public:
 		reevaluateMEV(mev, s.getR(),s.getADSptr());
 	}
 
-	virtual void reevaluateMEV(MultiEvaluation<>& mev, const R& r, const ADS* ads)
+	virtual void reevaluateMEV(MultiEvaluation<>& mev, const S& s)
 	{
 		for (unsigned i = 0; i < sngEvaluators.size(); i++)
 		{
 			Evaluation<> e = std::move(mev[i]);
-			sngEvaluators[i]->reevaluate(e, r, ads);
+			sngEvaluators[i]->reevaluate(e, s);
 			mev[i] = std::move(e);
 		}
 	}
@@ -218,8 +218,8 @@ protected:
 
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class MultiEvaluatorAction: public Action<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class MultiEvaluatorAction: public Action<S, XEv>
 {
 public:
 
@@ -247,7 +247,7 @@ public:
 		return (action == "evaluate"); //|| (action == "betterThan") || (action == "betterOrEquals");
 	}
 
-	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, S>& hf, map<string, string>& d)
+	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<S, XEv>& hf, map<string, string>& d)
 	{
 		cout << "MultiEvaluator::doCast: NOT IMPLEMENTED!" << endl;
 		return false;
@@ -290,10 +290,10 @@ public:
 
 		// add new component
 		Scanner scanner(variable);
-		return ComponentAction<R, ADS, S>::addAndRegister(scanner, *final, hf, d);
+		return ComponentAction<S, XEv>::addAndRegister(scanner, *final, hf, d);
 	}
 
-	virtual bool doAction(string content, HeuristicFactory<R, ADS, S>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	virtual bool doAction(string content, HeuristicFactory<S, XEv>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 		cout << "MultiEvaluator::doAction: NOT IMPLEMENTED!" << endl;
 		return false;
@@ -332,7 +332,7 @@ public:
 
 			Evaluation<>& e = ev->evaluate(*s);
 
-			return Action<R, ADS, S>::addAndRegister(scanner, e, hf, dictionary);
+			return Action<S, XEv>::addAndRegister(scanner, e, hf, dictionary);
 		}
 
 		// no action found!

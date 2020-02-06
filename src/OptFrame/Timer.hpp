@@ -125,15 +125,15 @@ public:
 };
 
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class TimerBuilder : public ComponentBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class TimerBuilder : public ComponentBuilder<S, XEv>
 {
 public:
 	virtual ~TimerBuilder()
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		return new Timer;
 	}
@@ -152,7 +152,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, S>::idComponent() << "Timer";
+		ss << ComponentBuilder<S, XEv>::idComponent() << "Timer";
 		return ss.str();
 	}
 

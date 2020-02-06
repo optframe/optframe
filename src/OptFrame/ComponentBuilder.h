@@ -32,9 +32,9 @@ using namespace scannerpp;
 namespace optframe
 {
 
-template<class R, class ADS, XSolution S> class HeuristicFactory;
+template<XSolution S, XEvaluation XEv> class HeuristicFactory;
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class ComponentBuilder : public Component
 {
 public:
@@ -42,7 +42,7 @@ public:
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "") = 0;
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "") = 0;
 
 	virtual vector<pair<string, string> > parameters() = 0;
 

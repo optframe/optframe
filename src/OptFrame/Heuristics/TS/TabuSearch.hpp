@@ -28,8 +28,8 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class TabuSearch: public SingleObjSearch<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class TabuSearch: public SingleObjSearch<S, XEv>
 {
 private:
 	Evaluator<S, XEv>& evaluator;
@@ -273,7 +273,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, S>::idComponent() << "TS:basic_ts";
+		ss << SingleObjSearch<S, XEv>::idComponent() << "TS:basic_ts";
 		return ss.str();
 	}
 

@@ -34,7 +34,7 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<XSolution S, XEvaluation XEv=Evaluation<>>
 class MOILSLPerturbation: public Component, public MOILS
 {
 public:
@@ -64,16 +64,16 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
-class MOILSLPerturbationLPlus2: public MOILSLPerturbation<R, ADS, S>
+template<XSolution S, XEvaluation XEv=Evaluation<>>
+class MOILSLPerturbationLPlus2: public MOILSLPerturbation<S, XEv>
 {
 private:
-	vector<NS<R, ADS>*> ns;
+	vector<NS<S, XEv>*> ns;
 	MultiEvaluator<S>& evaluator;
 	RandGen& rg;
 
 public:
-	MOILSLPerturbationLPlus2(MultiEvaluator<S>& _e, NS<R, ADS>& _ns, RandGen& _rg) :
+	MOILSLPerturbationLPlus2(MultiEvaluator<S>& _e, NS<S, XEv>& _ns, RandGen& _rg) :
 			evaluator(_e), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -83,7 +83,7 @@ public:
 	{
 	}
 
-	void add_ns(NS<R, ADS>& _ns)
+	void add_ns(NS<S, XEv>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
@@ -133,17 +133,17 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
-class MOILSLPerturbationLPlus2Prob: public MOILSLPerturbation<R, ADS, S>
+template<XSolution S, XEvaluation XEv=Evaluation<>>
+class MOILSLPerturbationLPlus2Prob: public MOILSLPerturbation<S, XEv>
 {
 private:
-	vector<NS<R, ADS>*> ns;
+	vector<NS<S, XEv>*> ns;
 	vector<pair<int, double> > pNS;
 	MultiEvaluator<S>& evaluator;
 	RandGen& rg;
 
 public:
-	MOILSLPerturbationLPlus2Prob(MultiEvaluator<S>& _e, NS<R, ADS>& _ns, RandGen& _rg) :
+	MOILSLPerturbationLPlus2Prob(MultiEvaluator<S>& _e, NS<S, XEv>& _ns, RandGen& _rg) :
 			evaluator(_e), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -154,7 +154,7 @@ public:
 	{
 	}
 
-	void add_ns(NS<R, ADS>& _ns)
+	void add_ns(NS<S, XEv>& _ns)
 	{
 		ns.push_back(&_ns);
 		pNS.push_back(make_pair(1, 1));

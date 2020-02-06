@@ -130,12 +130,12 @@ using namespace std;
 namespace optframe
 {
 
-template<class R, class ADS, XSolution S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class Loader
 {
 public:
 
-	HeuristicFactory<R, ADS, S> factory;
+	HeuristicFactory<S, XEv> factory;
 	map<string, string> dictionary;
 	map<string, vector<string> > ldictionary;
 
@@ -146,7 +146,7 @@ public:
 	}
 
 	Loader(RandGen _rg) :
-		factory(HeuristicFactory<R, ADS, S> (_rg))
+		factory(HeuristicFactory<S, XEv> (_rg))
 	{
 		loadComponentBuilders();
 	}
@@ -155,40 +155,40 @@ public:
 	void loadComponentBuilders()
 	{
 		// Independent components
-		factory.builders.push_back(new RandGenBuilder<R, ADS> );
-		factory.builders.push_back(new TimerBuilder<R, ADS> );
+		factory.builders.push_back(new RandGenBuilder<S, XEv> );
+		factory.builders.push_back(new TimerBuilder<S, XEv> );
 
 		// Base
-		factory.builders.push_back(new CloneConstructiveBuilder<R, ADS, S> );
+		factory.builders.push_back(new CloneConstructiveBuilder<S, XEv> );
 
 		// LocalSearch
-		factory.builders.push_back(new EmptyLocalSearchBuilder<R, ADS> );
-		factory.builders.push_back(new BestImprovementBuilder<R, ADS> );
-		factory.builders.push_back(new FirstImprovementBuilder<R, ADS> );
-		factory.builders.push_back(new RandomDescentMethodBuilder<R, ADS> );
-		factory.builders.push_back(new CircularSearchBuilder<R, ADS> );
-		factory.builders.push_back(new VariableNeighborhoodDescentBuilder<R, ADS> );
-		factory.builders.push_back(new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS> );
-		//factory.builders.push_back(new RVNDBuilder<R, ADS> );
-		factory.builders.push_back(new HillClimbingBuilder<R, ADS> );
-		factory.builders.push_back(new LateAcceptanceHillClimbingBuilder<R, ADS> );
-		factory.builders.push_back(new SingleObjSearchToLocalSearchBuilder<R, ADS> );
+		factory.builders.push_back(new EmptyLocalSearchBuilder<S, XEv> );
+		factory.builders.push_back(new BestImprovementBuilder<S, XEv> );
+		factory.builders.push_back(new FirstImprovementBuilder<S, XEv> );
+		factory.builders.push_back(new RandomDescentMethodBuilder<S, XEv> );
+		factory.builders.push_back(new CircularSearchBuilder<S, XEv> );
+		factory.builders.push_back(new VariableNeighborhoodDescentBuilder<S, XEv> );
+		factory.builders.push_back(new VariableNeighborhoodDescentUpdateADSBuilder<S, XEv> );
+		//factory.builders.push_back(new RVNDBuilder<S, XEv> );
+		factory.builders.push_back(new HillClimbingBuilder<S, XEv> );
+		factory.builders.push_back(new LateAcceptanceHillClimbingBuilder<S, XEv> );
+		factory.builders.push_back(new SingleObjSearchToLocalSearchBuilder<S, XEv> );
 
 		// SingleObjSearch + Parameters
-		factory.builders.push_back(new SimpleLocalSearchBuilder<R, ADS> );
-		factory.builders.push_back(new BasicSimulatedAnnealingBuilder<R, ADS> );
-		factory.builders.push_back(new BasicIteratedLocalSearchBuilder<R, ADS> );
-		factory.builders.push_back(new BasicILSPerturbationBuilder<R, ADS> );
-		factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<R, ADS> );
-		factory.builders.push_back(new ILSLPerturbationLPlus2Builder<R, ADS> );
-		factory.builders.push_back(new ILSLPerturbationLPlus2ProbBuilder<R, ADS> );
-		factory.builders.push_back(new BasicGRASPBuilder<R, ADS> );
-		factory.builders.push_back(new BasicVNSBuilder<R, ADS> );
-		factory.builders.push_back(new ReducedVNSBuilder<R, ADS> );
-		factory.builders.push_back(new GeneralVNSBuilder<R, ADS> );
+		factory.builders.push_back(new SimpleLocalSearchBuilder<S, XEv> );
+		factory.builders.push_back(new BasicSimulatedAnnealingBuilder<S, XEv> );
+		factory.builders.push_back(new BasicIteratedLocalSearchBuilder<S, XEv> );
+		factory.builders.push_back(new BasicILSPerturbationBuilder<S, XEv> );
+		factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<S, XEv> );
+		factory.builders.push_back(new ILSLPerturbationLPlus2Builder<S, XEv> );
+		factory.builders.push_back(new ILSLPerturbationLPlus2ProbBuilder<S, XEv> );
+		factory.builders.push_back(new BasicGRASPBuilder<S, XEv> );
+		factory.builders.push_back(new BasicVNSBuilder<S, XEv> );
+		factory.builders.push_back(new ReducedVNSBuilder<S, XEv> );
+		factory.builders.push_back(new GeneralVNSBuilder<S, XEv> );
 
 		// test local searches
-		factory.builders.push_back(new CompareLocalSearchBuilder<R, ADS> );
+		factory.builders.push_back(new CompareLocalSearchBuilder<S, XEv> );
 	}
 
 };

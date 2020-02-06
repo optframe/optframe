@@ -32,17 +32,17 @@ namespace optframe
 {
 
 //When RandGen is given as parameter it performs RVND
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class VariableNeighborhoodDescent: public LocalSearch<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class VariableNeighborhoodDescent: public LocalSearch<S, XEv>
 {
 private:
 	Evaluator<S, XEv>& ev;
-	vector<LocalSearch<R, ADS, S>*> lsList;
+	vector<LocalSearch<S, XEv>*> lsList;
 	RandGen* rg;
 
 public:
 
-	VariableNeighborhoodDescent(Evaluator<S, XEv>& _ev, vector<LocalSearch<R, ADS, S>*> _lsList, RandGen* _rg = nullptr) :
+	VariableNeighborhoodDescent(Evaluator<S, XEv>& _ev, vector<LocalSearch<S, XEv>*> _lsList, RandGen* _rg = nullptr) :
 			ev(_ev), lsList(_lsList), rg(_rg)
 	{
 	}
@@ -98,13 +98,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS, S>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, S>::idComponent() << ":VND";
+		ss << LocalSearch<S, XEv>::idComponent() << ":VND";
 		return ss.str();
 	}
 
@@ -130,23 +130,23 @@ public:
 
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class VariableNeighborhoodDescentBuilder: public LocalSearchBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class VariableNeighborhoodDescentBuilder: public LocalSearchBuilder<S, XEv>
 {
 public:
 	virtual ~VariableNeighborhoodDescentBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<LocalSearch<R, ADS, S>*> hlist;
+		vector<LocalSearch<S, XEv>*> hlist;
 		hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new VariableNeighborhoodDescent<R, ADS, S>(*eval, hlist);
+		return new VariableNeighborhoodDescent<S, XEv>(*eval, hlist);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -154,7 +154,7 @@ public:
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
 		stringstream ss;
-		ss << LocalSearch<R, ADS, S>::idComponent() << "[]";
+		ss << LocalSearch<S, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of local searches"));
 
 		return params;
@@ -162,13 +162,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == VariableNeighborhoodDescent<R, ADS, S>::idComponent();
+		return component == VariableNeighborhoodDescent<S, XEv>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, S>::idComponent() << ":VND";
+		ss << LocalSearchBuilder<S, XEv>::idComponent() << ":VND";
 		return ss.str();
 	}
 

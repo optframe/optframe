@@ -33,7 +33,7 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class BasicILSPerturbation: public ILS, public Component
 {
 private:
@@ -122,15 +122,15 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class BasicILSPerturbationBuilder : public ComponentBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class BasicILSPerturbationBuilder : public ComponentBuilder<S, XEv>
 {
 public:
 	virtual ~BasicILSPerturbationBuilder()
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -141,7 +141,7 @@ public:
 		vector<NS<S, XEv>*> ns_list;
 		hf.assignList(ns_list, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BasicILSPerturbation<R, ADS, S>(*eval, pMin, pMax, ns_list, hf.getRandGen());
+		return new BasicILSPerturbation<S, XEv>(*eval, pMin, pMax, ns_list, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -159,13 +159,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicILSPerturbation<R, ADS, S>::idComponent();
+		return component == BasicILSPerturbation<S, XEv>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, S>::idComponent() << ILS::family() << "basic_pert";
+		ss << ComponentBuilder<S, XEv>::idComponent() << ILS::family() << "basic_pert";
 		return ss.str();
 	}
 

@@ -220,8 +220,8 @@ public:
    }
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class RandGenBuilder : public ComponentBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class RandGenBuilder : public ComponentBuilder<S, XEv>
 {
 public:
    virtual ~RandGenBuilder()
@@ -229,7 +229,7 @@ public:
    }
 
    virtual Component*
-   buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+   buildComponent(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
    {
       if (!scanner.hasNext())
          return nullptr;
@@ -254,7 +254,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << ComponentBuilder<R, ADS, S>::idComponent() << "RandGen";
+      ss << ComponentBuilder<S, XEv>::idComponent() << "RandGen";
       return ss.str();
    }
 

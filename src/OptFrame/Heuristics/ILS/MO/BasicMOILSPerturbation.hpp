@@ -36,18 +36,18 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<XSolution S, XEvaluation XEv=Evaluation<>>
 class BasicMOILSPerturbation: public MOILS, public Component
 {
 private:
 	MultiEvaluator<S>& mEval;
 	int pMin;
 	int pMax;
-	vector<NS<R, ADS>*> ns;
+	vector<NS<S, XEv>*> ns;
 	RandGen& rg;
 
 public:
-	BasicMOILSPerturbation(MultiEvaluator<S>& _mEval, int _pMin, int _pMax, vector<NS<R, ADS>*>& _ns, RandGen& _rg) :
+	BasicMOILSPerturbation(MultiEvaluator<S>& _mEval, int _pMin, int _pMax, vector<NS<S, XEv>*>& _ns, RandGen& _rg) :
 		mEval(_mEval), pMin(_pMin), pMax(_pMax), ns(_ns), rg(_rg)
 	{
 		if(pMax < pMin)
@@ -62,7 +62,7 @@ public:
 			cout << "BasicMOILSPerturbation warning: empty neighborhood list." << endl;
 	}
 
-	BasicMOILSPerturbation(MultiEvaluator<S>& _mEval, int _pMin, int _pMax, NS<R, ADS>& _ns, RandGen& _rg) :
+	BasicMOILSPerturbation(MultiEvaluator<S>& _mEval, int _pMin, int _pMax, NS<S, XEv>& _ns, RandGen& _rg) :
 		mEval(_mEval), pMin(_pMin), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -83,7 +83,7 @@ public:
 	{
 	}
 
-	void add_ns(NS<R, ADS>& _ns)
+	void add_ns(NS<S, XEv>& _ns)
 	{
 		ns.push_back(&_ns);
 	}

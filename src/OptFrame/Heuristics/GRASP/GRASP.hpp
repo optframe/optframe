@@ -31,17 +31,17 @@ namespace optframe
 {
 
 template<XSolution S, XEvaluation XEv = Evaluation<>>
-class GRASP: public SingleObjSearch<R, ADS>
+class GRASP: public SingleObjSearch<S, XEv>
 {
 private:
 	Evaluator<S>& evaluator;
 	Constructive<S>& constructive;
-	LocalSearch<R, ADS>& ls;
+	LocalSearch<S, XEv>& ls;
 	unsigned int iterMax;
 
 public:
 
-	GRASP(Evaluator& _eval, Constructive<S>& _constructive, LocalSearch<R, ADS>& _ls, int _iterMax) :
+	GRASP(Evaluator& _eval, Constructive<S>& _constructive, LocalSearch<S, XEv>& _ls, int _iterMax) :
 		evaluator(_eval), constructive(_constructive), ls(_ls)
 	{
 	   iterMax = _iterMax;

@@ -35,18 +35,18 @@ namespace optframe
 
 typedef pair<pair<int, int> , pair<int, int> > levelHistory;
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class IntensifiedIteratedLocalSearchLevels: public IntensifiedIteratedLocalSearch<levelHistory, R, ADS, S>
 {
 protected:
-	LocalSearch<R, ADS, S>& ls;
-	Intensification<R, ADS, S>& h2;
-	ILSLPerturbation<R, ADS, S>& p;
+	LocalSearch<S, XEv>& ls;
+	Intensification<S, XEv>& h2;
+	ILSLPerturbation<S, XEv>& p;
 	int iterMax, levelMax;
 
 public:
 
-	IntensifiedIteratedLocalSearchLevels(Evaluator<S, XEv>& e, Constructive<S>& constructive, LocalSearch<R, ADS, S>& _ls, Intensification<R, ADS, S>& _h2, ILSLPerturbation<R, ADS, S>& _p, int _iterMax, int _levelMax) :
+	IntensifiedIteratedLocalSearchLevels(Evaluator<S, XEv>& e, Constructive<S>& constructive, LocalSearch<S, XEv>& _ls, Intensification<S, XEv>& _h2, ILSLPerturbation<S, XEv>& _p, int _iterMax, int _levelMax) :
 		IntensifiedIteratedLocalSearch<levelHistory, R, ADS > (e, constructive), ls(_ls), h2(_h2), p(_p)
 	{
 		iterMax = _iterMax;

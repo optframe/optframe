@@ -37,7 +37,7 @@ namespace optframe
 {
 
 //CheckCommand uses SRand seed TODO
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<Representation R, class ADS, XSolution S = CopySolution<R, ADS>, XEvaluation XEv = Evaluation<>>
 class CheckCommand
 {
 
@@ -1076,7 +1076,7 @@ public:
 	}
 
 	template<class T>
-	vector<T*> assignVector(const vector<string> lComponents, T* type, HeuristicFactory<R, ADS, S>& factory)
+	vector<T*> assignVector(const vector<string> lComponents, T* type, HeuristicFactory<S, XEv>& factory)
 	{
 		vector<T*> vComp;
 		for (unsigned i = 0; i < lComponents.size(); i++)

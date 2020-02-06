@@ -28,16 +28,16 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class HillClimbing: public LocalSearch<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class HillClimbing: public LocalSearch<S, XEv>
 {
 private:
 	Evaluator<S, XEv>& evaluator;
-	LocalSearch<R, ADS, S>& ls;
+	LocalSearch<S, XEv>& ls;
 
 public:
 
-	HillClimbing(Evaluator<S, XEv>& _ev, LocalSearch<R, ADS, S>& _ls) :
+	HillClimbing(Evaluator<S, XEv>& _ev, LocalSearch<S, XEv>& _ls) :
 		evaluator(_ev), ls(_ls)
 	{
 	}
@@ -81,7 +81,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS, S>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
 	}
 
 	virtual string id() const
@@ -92,56 +92,56 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, S>::idComponent() << ":HC";
+		ss << LocalSearch<S, XEv>::idComponent() << ":HC";
 		return ss.str();
 
 	}
 };
 
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class HillClimbingBuilder : public LocalSearchBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class HillClimbingBuilder : public LocalSearchBuilder<S, XEv>
 {
 public:
 	virtual ~HillClimbingBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
 
-		pair<LocalSearch<R, ADS, S>*, std::string> method;
+		pair<LocalSearch<S, XEv>*, std::string> method;
 		method = hf.createLocalSearch(rest);
 
-		LocalSearch<R, ADS, S>* h = method.first;
+		LocalSearch<S, XEv>* h = method.first;
 
 		scanner = Scanner(method.second);
 
-		return new HillClimbing<R, ADS, S>(*eval, *h);
+		return new HillClimbing<S, XEv>(*eval, *h);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(LocalSearch<R, ADS, S>::idComponent(), "local search"));
+		params.push_back(make_pair(LocalSearch<S, XEv>::idComponent(), "local search"));
 
 		return params;
 	}
 
 	virtual bool canBuild(string component)
 	{
-		return component == HillClimbing<R, ADS, S>::idComponent();
+		return component == HillClimbing<S, XEv>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, S>::idComponent() << ":HC";
+		ss << LocalSearchBuilder<S, XEv>::idComponent() << ":HC";
 		return ss.str();
 	}
 

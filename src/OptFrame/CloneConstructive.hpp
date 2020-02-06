@@ -69,15 +69,15 @@ public:
    }
 };
 
-template<Representation R, Structure ADS, XSolution S>
-class CloneConstructiveBuilder : public ComponentBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class CloneConstructiveBuilder : public ComponentBuilder<S, XEv>
 {
 public:
    virtual ~CloneConstructiveBuilder()
    {
    }
 
-   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
    {
       S* s;
       hf.assign(s, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -101,7 +101,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << ComponentBuilder<R, ADS, S>::idComponent() << "CloneConstructive";
+      ss << ComponentBuilder<S, XEv>::idComponent() << "CloneConstructive";
       return ss.str();
    }
 

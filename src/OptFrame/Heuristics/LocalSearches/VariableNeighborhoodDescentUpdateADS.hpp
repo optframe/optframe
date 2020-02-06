@@ -29,16 +29,16 @@
 
 namespace optframe {
 
-template<class R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
-class VariableNeighborhoodDescentUpdateADS : public LocalSearch<R, ADS, S>
+template<Representation R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+class VariableNeighborhoodDescentUpdateADS : public LocalSearch<S, XEv>
 {
 private:
    Evaluator<S, XEv>& ev;
-   ADSManager<R, ADS, S>& adsMan;
-   vector<LocalSearch<R, ADS, S>*> lsList;
+   ADSManager<S, XEv>& adsMan;
+   vector<LocalSearch<S, XEv>*> lsList;
 
 public:
-   VariableNeighborhoodDescentUpdateADS(Evaluator<S, XEv>& _ev, ADSManager<R, ADS, S>& _adsMan, vector<LocalSearch<R, ADS, S>*> _lsList)
+   VariableNeighborhoodDescentUpdateADS(Evaluator<S, XEv>& _ev, ADSManager<S, XEv>& _adsMan, vector<LocalSearch<S, XEv>*> _lsList)
      : ev(_ev)
      , adsMan(_adsMan)
      , lsList(_lsList)
@@ -99,13 +99,13 @@ public:
 
    virtual bool compatible(string s)
    {
-      return (s == idComponent()) || (LocalSearch<R, ADS, S>::compatible(s));
+      return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << LocalSearch<R, ADS, S>::idComponent() << ":VNDUpdateADS";
+      ss << LocalSearch<S, XEv>::idComponent() << ":VNDUpdateADS";
       return ss.str();
    }
 
@@ -129,26 +129,26 @@ public:
    }
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<S, XEv>
 {
 public:
    virtual ~VariableNeighborhoodDescentUpdateADSBuilder()
    {
    }
 
-   virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+   virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
    {
       Evaluator<S, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      ADSManager<R, ADS, S>* adsMan;
+      ADSManager<S, XEv>* adsMan;
       hf.assign(adsMan, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      vector<LocalSearch<R, ADS, S>*> hlist;
+      vector<LocalSearch<S, XEv>*> hlist;
       hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      return new VariableNeighborhoodDescentUpdateADS<R, ADS, S>(*eval, *adsMan, hlist);
+      return new VariableNeighborhoodDescentUpdateADS<S, XEv>(*eval, *adsMan, hlist);
    }
 
    virtual vector<pair<string, string>> parameters()
@@ -156,10 +156,10 @@ public:
       vector<pair<string, string>> params;
       params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
 
-      params.push_back(make_pair(ADSManager<R, ADS, S>::idComponent(), "ADSManager function"));
+      params.push_back(make_pair(ADSManager<S, XEv>::idComponent(), "ADSManager function"));
 
       stringstream ss;
-      ss << LocalSearch<R, ADS, S>::idComponent() << "[]";
+      ss << LocalSearch<S, XEv>::idComponent() << "[]";
       params.push_back(make_pair(ss.str(), "list of local searches"));
 
       return params;
@@ -167,13 +167,13 @@ public:
 
    virtual bool canBuild(string component)
    {
-      return component == VariableNeighborhoodDescentUpdateADS<R, ADS, S>::idComponent();
+      return component == VariableNeighborhoodDescentUpdateADS<S, XEv>::idComponent();
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << LocalSearchBuilder<R, ADS, S>::idComponent() << ":VNDUpdateADS";
+      ss << LocalSearchBuilder<S, XEv>::idComponent() << ":VNDUpdateADS";
       return ss.str();
    }
 

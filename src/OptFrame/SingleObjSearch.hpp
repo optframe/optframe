@@ -124,16 +124,16 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class SingleObjSearchBuilder : public ComponentBuilder<R, ADS, S>
+class SingleObjSearchBuilder : public ComponentBuilder<S, XEv>
 {
 public:
    virtual ~SingleObjSearchBuilder()
    {
    }
 
-   virtual SingleObjSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "") = 0;
+   virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "") = 0;
 
-   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
    {
       return build(scanner, hf, family);
    }
@@ -145,7 +145,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << ComponentBuilder<R, ADS, S>::idComponent() << "SingleObjSearch";
+      ss << ComponentBuilder<S, XEv>::idComponent() << "SingleObjSearch";
       return ss.str();
    }
 
@@ -156,7 +156,7 @@ public:
 };
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class SingleObjSearchAction : public Action<R, ADS,S>
+class SingleObjSearchAction : public Action<S, XEv>
 {
 public:
    virtual ~SingleObjSearchAction()
@@ -170,12 +170,12 @@ public:
 
    virtual bool handleComponent(string type)
    {
-      return Component::compareBase(SingleObjSearch<R, ADS, S>::idComponent(), type);
+      return Component::compareBase(SingleObjSearch<S, XEv>::idComponent(), type);
    }
 
    virtual bool handleComponent(Component& component)
    {
-      return component.compatible(SingleObjSearch<R, ADS, S>::idComponent());
+      return component.compatible(SingleObjSearch<S, XEv>::idComponent());
    }
 
    virtual bool handleAction(string action)
@@ -183,7 +183,7 @@ public:
       return (action == "search");
    }
 
-   virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, S>& hf, map<string, string>& d)
+   virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<S, XEv>& hf, map<string, string>& d)
    {
       if (!handleComponent(type)) {
          cout << "SingleObjSearchAction::doCast error: can't handle component type '" << type << " " << id << "'" << endl;
@@ -208,8 +208,8 @@ public:
       // cast object to lower type
       Component* final = nullptr;
 
-      if (type == SingleObjSearch<R, ADS, S>::idComponent()) {
-         final = (SingleObjSearch<R, ADS, S>*)comp;
+      if (type == SingleObjSearch<S, XEv>::idComponent()) {
+         final = (SingleObjSearch<S, XEv>*)comp;
       } else {
          cout << "SingleObjSearchAction::doCast error: no cast for type '" << type << "'" << endl;
          return false;
@@ -217,10 +217,10 @@ public:
 
       // add new component
       Scanner scanner(variable);
-      return ComponentAction<R, ADS, S>::addAndRegister(scanner, *final, hf, d);
+      return ComponentAction<S, XEv>::addAndRegister(scanner, *final, hf, d);
    }
 
-   virtual bool doAction(string content, HeuristicFactory<R, ADS, S>& hf, map<string, string>& dictionary, map<string, vector<string>>& ldictionary)
+   virtual bool doAction(string content, HeuristicFactory<S, XEv>& hf, map<string, string>& dictionary, map<string, vector<string>>& ldictionary)
    {
       //cout << "LocalSearch::doAction '" << content << "'" << endl;
 
@@ -229,7 +229,7 @@ public:
       if (!scanner.hasNext())
          return false;
 
-      SingleObjSearch<R, ADS, S>* sios;
+      SingleObjSearch<S, XEv>* sios;
       hf.assign(sios, scanner.nextInt(), scanner.next());
 
       if (!sios)
@@ -276,7 +276,7 @@ public:
 
          delete p;
 
-         return Action<R, ADS, S>::addAndRegister(scanner, *s2, hf, dictionary);
+         return Action<S, XEv>::addAndRegister(scanner, *s2, hf, dictionary);
       }
 
       // no action found!

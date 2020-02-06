@@ -30,8 +30,8 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class BasicTabuSearch: public SingleObjSearch<R, ADS, S>, public TS
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class BasicTabuSearch: public SingleObjSearch<S, XEv>, public TS
 {
 private:
 	Evaluator<S, XEv>& evaluator;
@@ -274,7 +274,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, S>::idComponent() << "TS:BasicTabuSearch";
+		ss << SingleObjSearch<S, XEv>::idComponent() << "TS:BasicTabuSearch";
 		return ss.str();
 	}
 
@@ -285,15 +285,15 @@ public:
 
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class BasicTabuSearchBuilder: public TS, public SingleObjSearchBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class BasicTabuSearchBuilder: public TS, public SingleObjSearchBuilder<S, XEv>
 {
 public:
 	virtual ~BasicTabuSearchBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -314,7 +314,7 @@ public:
 
 		int tsMax = scanner.nextInt();
 
-		return new BasicTabuSearch<R, ADS, S>(*eval, *constructive, *nsseq, tl, tsMax);
+		return new BasicTabuSearch<S, XEv>(*eval, *constructive, *nsseq, tl, tsMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -331,13 +331,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicTabuSearchBuilder<R, ADS, S>::idComponent();
+		return component == BasicTabuSearchBuilder<S, XEv>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS, S>::idComponent() << ":" << TS::family() << ":BasicTabuSearch";
+		ss << SingleObjSearchBuilder<S, XEv>::idComponent() << ":" << TS::family() << ":BasicTabuSearch";
 		return ss.str();
 	}
 

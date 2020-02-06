@@ -73,7 +73,7 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class MultiObjSearch: public Component
 {
 public:
@@ -86,7 +86,7 @@ public:
 	{
 	}
 
-	virtual Pareto<R, ADS, S>* search(MOSC& stopCriteria, Pareto<R, ADS, S>* _pf = nullptr) = 0;
+	virtual Pareto<S, XEv>* search(MOSC& stopCriteria, Pareto<S, XEv>* _pf = nullptr) = 0;
 
 	virtual string log() const
 	{
@@ -112,17 +112,17 @@ public:
 
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class MultiObjSearchBuilder: public ComponentBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class MultiObjSearchBuilder: public ComponentBuilder<S, XEv>
 {
 public:
 	virtual ~MultiObjSearchBuilder()
 	{
 	}
 
-	virtual MultiObjSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "") = 0;
+	virtual MultiObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "") = 0;
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		return build(scanner, hf, family);
 	}
@@ -134,7 +134,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, S>::idComponent() << "MultiObjSearch:";
+		ss << ComponentBuilder<S, XEv>::idComponent() << "MultiObjSearch:";
 		return ss.str();
 	}
 

@@ -36,18 +36,18 @@ namespace optframe {
 
 template<class H, Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class MultiObjILS : public MOILS
-  , public MultiObjSearch<R, ADS, S>
+  , public MultiObjSearch<S, XEv>
 {
 
 private:
    InitialPareto<R, ADS>& init_pareto;
    int init_pop_size;
-   MOLocalSearch<R, ADS>* ls;
+   MOLocalSearch<S, XEv>* ls;
    paretoManager<R, ADS> pMan;
    RandGen& rg;
 
 public:
-   MultiObjILS(MultiEvaluator<S>& _mev, InitialPareto<R, ADS>& _init_pareto, int _init_pop_size, MOLocalSearch<R, ADS>* _ls, RandGen& _rg)
+   MultiObjILS(MultiEvaluator<S>& _mev, InitialPareto<R, ADS>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg)
      : init_pareto(_init_pareto)
      , init_pop_size(_init_pop_size)
      , ls(_ls)

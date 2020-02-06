@@ -44,7 +44,7 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class Mutation: public Component, public EA
 {
 
@@ -69,8 +69,8 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class BasicMutation: public Mutation<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class BasicMutation: public Mutation<S, XEv>
 {
 protected:
 	unsigned n;
@@ -117,22 +117,22 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class BasicMutationBuilder: public ComponentBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class BasicMutationBuilder: public ComponentBuilder<S, XEv>
 {
 public:
 	virtual ~BasicMutationBuilder()
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		int n = scanner.nextInt();
 
 		vector<NS<S, XEv>*> ns_list;
 		hf.assignList(ns_list, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BasicMutation<R, ADS, S>(n, ns_list, hf.getRandGen());
+		return new BasicMutation<S, XEv>(n, ns_list, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -148,13 +148,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicMutation<R, ADS, S>::idComponent();
+		return component == BasicMutation<S, XEv>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, S>::idComponent() << "" << EA::family() << ":BasicMutation";
+		ss << ComponentBuilder<S, XEv>::idComponent() << "" << EA::family() << ":BasicMutation";
 		return ss.str();
 	}
 
@@ -165,11 +165,11 @@ public:
 };
 
 //temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class SimpleMutation {
 protected:
 	using Individual = S;
-    using Chromossome = R;
+    //using Chromossome = R;
     using Fitness = XEv*; //nullptr means there's no evaluation
     using Population = std::vector< std::pair<Individual, Fitness> >;
 
@@ -186,11 +186,11 @@ public:
 
 //changes 100beta% individuals chosen randomly -- may choose the same individual more than once
 //user should program the function that changes the individual
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class DefaultMutation : public SimpleMutation<R, ADS> {
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class DefaultMutation : public SimpleMutation<S, XEv> {
 protected:
 	using Individual = S;
-    using Chromossome = R;
+    //using Chromossome = R;
     using Fitness = XEv*; //nullptr means there's no evaluation
     using Population = std::vector< std::pair<Individual, Fitness> >;
 	double omega;
@@ -200,7 +200,7 @@ public:
 	DefaultMutation(double mutationRate) : omega(mutationRate) { assert(mutationRate >= 0.0 && mutationRate <= 1.0); };
 	virtual ~DefaultMutation() = default;
 
-	virtual void mutate(Chromossome&) = 0; //Should change the solution unpredicatelly
+	virtual void mutate(Individual&) = 0; //Should change the solution unpredicatelly
 										  //Individual is passed so the user may change ADS if he wants to
 
 	virtual void mutate(Population& population) override {

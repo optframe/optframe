@@ -107,7 +107,7 @@ public:
 };
 
 //temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
-template<XSolution S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class SimpleSelection {
 protected:
 	using Individual = S;
@@ -143,8 +143,8 @@ public:
 /**********************/
 
 //Selects the 100alpha% most fit individuals 
-template<XSolution S>
-class ElitismSelection final : public SimpleSelection<S> {
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class ElitismSelection final : public SimpleSelection<S, XEv> {
 protected:
 	using Individual = S;
     //using Chromossome = R;

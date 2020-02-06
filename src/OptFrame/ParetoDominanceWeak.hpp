@@ -39,14 +39,14 @@ using namespace std;
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class ParetoDominanceWeak: public ParetoDominance<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class ParetoDominanceWeak: public ParetoDominance<S, XEv>
 {
 public:
-	using ParetoDominance<R, ADS, S>::dominates;
+	using ParetoDominance<S, XEv>::dominates;
 
 	ParetoDominanceWeak(MultiEvaluator<S, XEv>& _mev) :
-			ParetoDominance<R, ADS, S>(_mev)
+			ParetoDominance<S, XEv>(_mev)
 	{
 	}
 
@@ -56,7 +56,7 @@ public:
 
 	virtual bool dominates(const MultiEvaluation<>& mev1, const MultiEvaluation<>& mev2)
 	{
-		pair<int,int> betterEquals = ParetoDominance<R, ADS, S>::checkDominates(mev1,mev2);
+		pair<int,int> betterEquals = ParetoDominance<S, XEv>::checkDominates(mev1,mev2);
 		int better = betterEquals.first;
 		int equals = betterEquals.second;
 

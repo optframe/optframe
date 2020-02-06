@@ -27,7 +27,7 @@ namespace optframe
 {
 
 template<XSolution S, XEvaluation XEv = Evaluation<>>
-class Intensification : public LocalSearch<R, ADS>
+class Intensification : public LocalSearch<S, XEv>
 {
 public:
 
@@ -35,9 +35,9 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>& _s, double timelimit, double target_f) = 0;
+	virtual void exec(S& _s, double timelimit, double target_f) = 0;
 
-	virtual void addSolution(const Solution<R, ADS>&) = 0;
+	virtual void addSolution(const S&) = 0;
 
 	virtual string id() const
 	{
@@ -47,7 +47,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS>::idComponent() << "INTENSIFICATION:";
+		ss << LocalSearch<S, XEv>::idComponent() << "INTENSIFICATION:";
 		return ss.str();
 
 	}

@@ -90,7 +90,7 @@ public:
        \endportuguese
    */
 
-   string run(HeuristicFactory<R, ADS, S>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+   string run(HeuristicFactory<S, XEv>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
    {
       //cout << "build command: " << input << endl;
       Scanner scanner1(input);
@@ -115,25 +115,25 @@ public:
 
       if(Component::compareBase(LocalSearchBuilder<R, ADS>::idComponent(), type))
       {
-          pair<LocalSearch<R, ADS>*, string> method;
+          pair<LocalSearch<S, XEv>*, string> method;
           method = factory.createLocalSearch(scanner.rest());
           scanner = Scanner(method.second);
 
           if(method.first!=nullptr)
           {
-        	  base   = LocalSearch<R, ADS>::idComponent();
+        	  base   = LocalSearch<S, XEv>::idComponent();
         	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
           }
       }
-      else if(Component::compareBase(SingleObjSearchBuilder<R, ADS>::idComponent(), type))
+      else if(Component::compareBase(SingleObjSearchBuilder<S, XEv>::idComponent(), type))
       {
-          pair<SingleObjSearch<R, ADS>*, string> method;
+          pair<SingleObjSearch<S, XEv>*, string> method;
           method = factory.createSingleObjSearch(scanner.rest());
           scanner = Scanner(method.second);
 
           if(method.first!=nullptr)
           {
-        	  base   = SingleObjSearch<R, ADS>::idComponent();
+        	  base   = SingleObjSearch<S, XEv>::idComponent();
         	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
           }
       }
@@ -185,7 +185,7 @@ public:
       return new_name + " " + s_new_id;
    }
 
-   string listBuilders(HeuristicFactory<R, ADS, S>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+   string listBuilders(HeuristicFactory<S, XEv>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
    	{
    		Scanner scanner(input);
 

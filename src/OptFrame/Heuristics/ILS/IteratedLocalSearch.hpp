@@ -34,8 +34,8 @@
 namespace optframe
 {
 
-template<class H, class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
-class IteratedLocalSearch: public ILS, public SingleObjSearch<R, ADS, S>
+template<class H, XSolution S, XEvaluation XEv = Evaluation<>>
+class IteratedLocalSearch: public ILS, public SingleObjSearch<S, XEv>
 {
 protected:
 	Evaluator<S, XEv>& evaluator;
@@ -145,8 +145,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, S>::idComponent() << ":" << ILS::family();
-		//ss << SingleObjSearch<R, ADS, S>::idComponent() << ILS::family << "IteratedLocalSearch:";
+		ss << SingleObjSearch<S, XEv>::idComponent() << ":" << ILS::family();
 		return ss.str();
 	}
 

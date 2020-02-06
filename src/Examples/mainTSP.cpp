@@ -37,7 +37,7 @@ using namespace std;
 
 #include "../OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp"
 #include "../OptFrame/Loader.hpp"
-#include "../OptFrame/Util/BuildCommand.hpp"
+////#include "../OptFrame/Util/BuildCommand.hpp"  // TODO: return after Concepts OptFrame v4
 #include "../OptFrame/Util/CheckCommand.hpp"
 #include "TSP.h"
 
@@ -131,6 +131,8 @@ main(int argc, char** argv)
 
    cout << "end BRKGA tests" << endl;
 
+   // TODO: return after refactor on Concepts and OptFrame v4
+   /*
    BuildCommand<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> build;
    for (unsigned i = 0; i <= 7; i++) {
       stringstream ss;
@@ -138,6 +140,7 @@ main(int argc, char** argv)
       string name = build.run(optframe.factory, optframe.dictionary, optframe.ldictionary, ss.str());
       cout << "BUILT: '" << name << "'" << endl;
    }
+   */
 
    vector<LocalSearch<RepTSP>*> ns_list;
    ns_list.push_back(new BestImprovement<RepTSP>(eval, tsp2opt));

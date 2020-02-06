@@ -32,15 +32,15 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class BasicVNS: public VariableNeighborhoodSearch<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class BasicVNS: public VariableNeighborhoodSearch<S, XEv>
 {
 public:
 
-	typedef VariableNeighborhoodSearch<R, ADS> super;
+	typedef VariableNeighborhoodSearch<S, XEv> super;
 
-	BasicVNS(Evaluator<S>& evaluator, Constructive<S>& constructive, vector<NS<R, ADS>*> vshake, vector<NSSeq<S>*> vsearch) :
-		VariableNeighborhoodSearch<R, ADS> (evaluator, constructive, vshake, vsearch)
+	BasicVNS(Evaluator<S>& evaluator, Constructive<S>& constructive, vector<NS<S, XEv>*> vshake, vector<NSSeq<S>*> vsearch) :
+		VariableNeighborhoodSearch<S, XEv> (evaluator, constructive, vshake, vsearch)
 	{
 	}
 
@@ -48,9 +48,9 @@ public:
 	{
 	}
 
-	virtual LocalSearch<R, ADS>& buildSearch(unsigned k_search)
+	virtual LocalSearch<S, XEv>& buildSearch(unsigned k_search)
 	{
-		return * new BestImprovement<R, ADS>(super::evaluator, *super::vsearch.at(k_search));
+		return * new BestImprovement<S, XEv>(super::evaluator, *super::vsearch.at(k_search));
 	}
 
 	virtual string id() const
@@ -61,20 +61,20 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << VariableNeighborhoodSearch<R, ADS >::idComponent() << "BVNS";
+		ss << VariableNeighborhoodSearch<S, XEv>::idComponent() << "BVNS";
 		return ss.str();
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv>
 {
 public:
 	virtual ~BasicVNSBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		Evaluator<S>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -82,14 +82,14 @@ public:
 		Constructive<S>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<NS<R, ADS>*> shakelist;
+		vector<NS<S, XEv>*> shakelist;
 		hf.assignList(shakelist, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<NSSeq<S>*> searchlist;
 		hf.assignList(searchlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
 
-		return new BasicVNS<R, ADS>(*eval, *constructive, shakelist, searchlist);
+		return new BasicVNS<S, XEv>(*eval, *constructive, shakelist, searchlist);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -99,7 +99,7 @@ public:
 		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
 
 		stringstream ss;
-		ss << NS<R, ADS>::idComponent() << "[]";
+		ss << NS<S, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of NS"));
 
 		stringstream ss2;
@@ -111,13 +111,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicVNS<R, ADS>::idComponent();
+		return component == BasicVNS<S, XEv>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS>::idComponent() << VNS::family() << "BasicVNS";
+		ss << SingleObjSearchBuilder<S, XEv>::idComponent() << VNS::family() << "BasicVNS";
 		return ss.str();
 	}
 

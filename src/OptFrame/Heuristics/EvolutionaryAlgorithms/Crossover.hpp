@@ -39,7 +39,7 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class Crossover: public Component, public EA
 {
 public:
@@ -70,11 +70,11 @@ public:
 };
 
 //temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class SimpleCrossover {
 protected:
 	using Individual = S;
-    using Chromossome = R;
+    //using Chromossome = R;
     using Fitness = XEv*; //nullptr means there's no evaluation
     using Population = std::vector< pair<Individual, Fitness> >;
 
@@ -91,11 +91,11 @@ public:
 /**********************/
 
 //receives two parents to return offspring with user programmed operator
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class TwoParentsCrossover : public SimpleCrossover<R, ADS> {
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class TwoParentsCrossover : public SimpleCrossover<S, XEv> {
 protected:
 	using Individual = S;
-    using Chromossome = R;
+    //using Chromossome = R;
     using Fitness = XEv*; //nullptr means there's no evaluation
     using Population = std::vector< std::pair<Individual, Fitness> >;
 

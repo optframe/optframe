@@ -31,19 +31,19 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class BasicGRASP: public SingleObjSearch<R, ADS, S>, public GRASP
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class BasicGRASP: public SingleObjSearch<S, XEv>, public GRASP
 {
 private:
 	Evaluator<S, XEv>& evaluator;
 	GRConstructive<S>& constructive;
-	LocalSearch<R, ADS, S>& ls;
+	LocalSearch<S, XEv>& ls;
 	float alpha;
 	unsigned int iterMax;
 
 public:
 
-	BasicGRASP(Evaluator<S, XEv>& _eval, GRConstructive<S>& _constructive, LocalSearch<R, ADS, S>& _ls, float _alpha, int _iterMax) :
+	BasicGRASP(Evaluator<S, XEv>& _eval, GRConstructive<S>& _constructive, LocalSearch<S, XEv>& _ls, float _alpha, int _iterMax) :
 			evaluator(_eval), constructive(_constructive), ls(_ls)
 	{
 		if (_iterMax <= 0)
@@ -113,21 +113,21 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, S>::idComponent() << ":" << GRASP::family() << ":BasicGRASP";
+		ss << SingleObjSearch<S, XEv>::idComponent() << ":" << GRASP::family() << ":BasicGRASP";
 		return ss.str();
 
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class BasicGRASPBuilder: public GRASP, public SingleObjSearchBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class BasicGRASPBuilder: public GRASP, public SingleObjSearchBuilder<S, XEv>
 {
 public:
 	virtual ~BasicGRASPBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -137,10 +137,10 @@ public:
 
 		string rest = scanner.rest();
 
-		pair<LocalSearch<R, ADS, S>*, std::string> method;
+		pair<LocalSearch<S, XEv>*, std::string> method;
 		method = hf.createLocalSearch(rest);
 
-		LocalSearch<R, ADS, S>* h = method.first;
+		LocalSearch<S, XEv>* h = method.first;
 
 		scanner = Scanner(method.second);
 
@@ -154,7 +154,7 @@ public:
 
 		int iterMax = scanner.nextInt();
 
-		return new BasicGRASP<R, ADS, S>(*eval, *constructive, *h, alpha, iterMax);
+		return new BasicGRASP<S, XEv>(*eval, *constructive, *h, alpha, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -162,7 +162,7 @@ public:
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(GRConstructive<S>::idComponent(), "greedy randomized constructive heuristic"));
-		params.push_back(make_pair(LocalSearch<R, ADS, S>::idComponent(), "local search"));
+		params.push_back(make_pair(LocalSearch<S, XEv>::idComponent(), "local search"));
 		params.push_back(make_pair("OptFrame:float", "alpha parameter [0,1]"));
 		params.push_back(make_pair("OptFrame:int", "max number of iterations"));
 
@@ -171,13 +171,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicGRASPBuilder<R, ADS, S>::idComponent();
+		return component == BasicGRASPBuilder<S, XEv>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS, S>::idComponent() << ":" << GRASP::family() << ":BasicGRASP";
+		ss << SingleObjSearchBuilder<S, XEv>::idComponent() << ":" << GRASP::family() << ":BasicGRASP";
 		return ss.str();
 	}
 

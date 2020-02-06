@@ -144,15 +144,15 @@ struct NGESInd
 
 //CADA INDIVIDUO EH UM PAR DE SOLUCAO E UMA TUPLE COM O PARAMETROS DA ESTRATEGIA
 template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R, ADS> S = CopySolution<R, ADS>>
-class NGES : public SingleObjSearch<R, ADS, S>
+class NGES : public SingleObjSearch<S, XEv>
 {
 private:
    typedef vector<NGESInd<R, ADS>*> NGESPopulation;
 
    Evaluator<S>& eval;
    Constructive<S>& constructive;
-   vector<NS<R, ADS>*> vNS; 
-   LocalSearch<R, ADS>& ls;
+   vector<NS<S, XEv>*> vNS; 
+   LocalSearch<S, XEv>& ls;
    RandGen& rg;
    NGESParams& ngesParams;
 
@@ -163,7 +163,7 @@ public:
    //Evaluator, constructive, vNS -- vector with neighboorhods strucutures able to move solution,
    // selectionMethod: 0-low selection pressure (mi,lambda);1 selection pressure (mi+lambda)
    //TODO - Check why vector<NSSeq*> can not be passed as parameter - Tried but failled
-   NGES(Evaluator<S>& _eval, Constructive<S>& _constructive, vector<NS<R, ADS>*> _vNS, LocalSearch<R, ADS>& _ls, RandGen& _rg, NGESParams& _ngesParams)
+   NGES(Evaluator<S>& _eval, Constructive<S>& _constructive, vector<NS<S, XEv>*> _vNS, LocalSearch<S, XEv>& _ls, RandGen& _rg, NGESParams& _ngesParams)
      : eval(_eval)
      , constructive(_constructive)
      , vNS(_vNS)
@@ -502,7 +502,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << SingleObjSearch<R, ADS>::idComponent() << "NGES";
+      ss << SingleObjSearch<S, XEv>::idComponent() << "NGES";
       return ss.str();
    }
 

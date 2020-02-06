@@ -34,7 +34,8 @@
 namespace optframe
 {
 
-template<Representation R>
+// It seems that R is connected to S here... S<R> is rule perhaps?
+template<Representation R, XSolution S = RSolution<R>, XEvaluation XEv = Evaluation<>>
 class BRKGA: public RKGA<R>
 {
 protected:
@@ -42,7 +43,7 @@ protected:
 
 public:
 
-	BRKGA(DecoderRandomKeys<R>& _decoder, InitialPopulation<R>& _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double probElielitismRate, double _probElitism) :
+	BRKGA(DecoderRandomKeys<R>& _decoder, InitialPopulation<S, XEv>& _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double probElielitismRate, double _probElitism) :
 		RKGA<R>(_decoder, _initPop, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
@@ -67,7 +68,7 @@ public:
 	{
 	}
 
-	virtual CopySolution<random_keys>& cross(const Population<random_keys>& pop) const
+	virtual CopySolution<random_keys>& cross(const Population<R, XEv>& pop) const
 	{
 		assert(this->sz > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
 

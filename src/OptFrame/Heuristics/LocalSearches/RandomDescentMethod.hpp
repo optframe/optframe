@@ -29,8 +29,8 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class RandomDescentMethod: public LocalSearch<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class RandomDescentMethod: public LocalSearch<S, XEv>
 {
 private:
 	Evaluator<S, XEv>& evaluator;
@@ -97,7 +97,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, S>::idComponent() << ":RDM";
+		ss << LocalSearch<S, XEv>::idComponent() << ":RDM";
 		return ss.str();
 	}
 
@@ -108,15 +108,15 @@ public:
 };
 
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class RandomDescentMethodBuilder : public LocalSearchBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class RandomDescentMethodBuilder : public LocalSearchBuilder<S, XEv>
 {
 public:
 	virtual ~RandomDescentMethodBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -126,7 +126,7 @@ public:
 
 		int iterMax = scanner.nextInt();
 
-		return new RandomDescentMethod<R, ADS, S>(*eval, *ns, iterMax);
+		return new RandomDescentMethod<S, XEv>(*eval, *ns, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -141,13 +141,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == RandomDescentMethod<R, ADS, S>::idComponent();
+		return component == RandomDescentMethod<S, XEv>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, S>::idComponent() << ":RDM";
+		ss << LocalSearchBuilder<S, XEv>::idComponent() << ":RDM";
 		return ss.str();
 	}
 

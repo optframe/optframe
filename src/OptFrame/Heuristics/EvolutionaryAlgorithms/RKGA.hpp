@@ -39,7 +39,8 @@
 // http://pubsonline.informs.org/doi/abs/10.1287/ijoc.6.2.154
 namespace optframe {
 
-class RandomKeysInitPop : public InitialPopulation<random_keys>
+template<XSolution S = RSolution<random_keys>, XEvaluation XEv = Evaluation<>>
+class RandomKeysInitPop : public InitialPopulation<S, XEv>
 {
 private:
    int sz;
@@ -50,15 +51,15 @@ public:
    {
    }
 
-   virtual Population<random_keys> generatePopulation(unsigned populationSize, double timelimit) override
+   virtual Population<S, XEv> generatePopulation(unsigned populationSize, double timelimit) override
    {
-      Population<random_keys> pop;
+      Population<S, XEv> pop;
 
       for (unsigned i = 0; i < populationSize; i++) {
-         vector<double>* d = new vector<double>(sz);
+         random_keys* d = new random_keys(sz);
          for (int j = 0; j < sz; j++)
             d->at(j) = (rand() % 100000) / 100000.0;
-         CopySolution<random_keys>* sol = new CopySolution<random_keys>(d);
+         S* sol = new S(d);
          pop.push_back(sol);
       }
 
@@ -66,21 +67,21 @@ public:
    }
 };
 
-template<Representation R>
-class RKGA : public SingleObjSearch<random_keys>
+template<Representation R, XSolution S = RSolution<random_keys>, XEvaluation XEv = Evaluation<>> // one should pass a compatible one, regarding R
+class RKGA : public SingleObjSearch<S>
 {
 protected:
    DecoderRandomKeys<R>& decoder;
-   Evaluator<random_keys>* evaluator; // Check to avoid memory leaks
+   Evaluator<S, XEv>* evaluator; // Check to avoid memory leaks
 
-   InitialPopulation<random_keys>& initPop;
+   InitialPopulation<S, XEv>& initPop;
    int sz; // Check to avoid memory leaks
 
    unsigned popSize, eliteSize, randomSize;
    unsigned numGenerations;
 
 public:
-   RKGA(DecoderRandomKeys<R>& _decoder, InitialPopulation<random_keys>& _initPop, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
+   RKGA(DecoderRandomKeys<R>& _decoder, InitialPopulation<S, XEv>& _initPop, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
      : decoder(_decoder)
      , evaluator(nullptr)
      , initPop(_initPop)
@@ -108,7 +109,7 @@ public:
       assert(randomSize + eliteSize < popSize);
    }
 
-   RKGA(Evaluator<random_keys>& _evaluator, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
+   RKGA(Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
      : decoder(*new DecoderRandomKeysEvaluator<random_keys>(_evaluator))
      , evaluator(&_evaluator)
      , initPop(*new RandomKeysInitPop(key_size))
@@ -130,7 +131,7 @@ public:
          delete &initPop;
    }
 
-   void decodePopulation(Population<random_keys>& p)
+   void decodePopulation(Population<S, XEv>& p)
    {
       for (unsigned i = 0; i < p.size(); ++i) {
          //p.at(i).print();
@@ -143,7 +144,7 @@ public:
       }
    }
 
-   virtual CopySolution<random_keys>& cross(const Population<random_keys>& pop) const
+   virtual S& cross(const Population<S, XEv>& pop) const
    {
       assert(sz > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
 
@@ -166,7 +167,7 @@ public:
       int count_gen = 0;
 
       // initialize population
-      Population<random_keys> p = initPop.generatePopulation(popSize, stopCriteria.timelimit);
+      Population<S, XEv> p = initPop.generatePopulation(popSize, stopCriteria.timelimit);
       // decode population
       decodePopulation(p);
 
@@ -181,7 +182,7 @@ public:
       // other stopping criteria? TIME, GAP, ...
       while (count_gen < int(numGenerations)) {
          // create mutants in new population
-         Population<random_keys> nextPop = initPop.generatePopulation(randomSize, stopCriteria.timelimit);
+         Population<S, XEv> nextPop = initPop.generatePopulation(randomSize, stopCriteria.timelimit);
 
          // move 'eliteSize' elements to new population
          for (unsigned i = 0; i < eliteSize; i++)

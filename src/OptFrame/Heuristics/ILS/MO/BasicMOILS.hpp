@@ -32,7 +32,7 @@ namespace optframe
 
 typedef int BasicHistory;
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<XSolution S, XEvaluation XEv=Evaluation<>>
 class BasicMOILS: public MultiObjILS<BasicHistory, R, ADS, S>
 {
 
@@ -42,7 +42,7 @@ private:
 
 public:
 
-	BasicMOILS(MultiEvaluator<S>& _mev, InitialPareto<R, ADS>& _init_pareto, int _init_pop_size, MOLocalSearch<R, ADS>* _ls, RandGen& _rg, BasicMOILSPerturbation<R, ADS>& _p, int _iterMax) :
+	BasicMOILS(MultiEvaluator<S>& _mev, InitialPareto<R, ADS>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg, BasicMOILSPerturbation<R, ADS>& _p, int _iterMax) :
 		MultiObjILS<BasicHistory, R, ADS >(_mev,_init_pareto,_init_pop_size,_ls,_rg), p(_p), iterMax(_iterMax)
 	{
 

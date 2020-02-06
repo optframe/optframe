@@ -32,16 +32,16 @@
 
 namespace optframe {
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
-class SimpleLocalSearch : public SingleObjSearch<R, ADS, S>
+template<XSolution S, XEvaluation XEv=Evaluation<>>
+class SimpleLocalSearch : public SingleObjSearch<S, XEv>
 {
 protected:
    Evaluator<S, XEv>& evaluator;
    Constructive<S>& constructive;
-   LocalSearch<R, ADS, S>& localSearch;
+   LocalSearch<S, XEv>& localSearch;
 
 public:
-   SimpleLocalSearch(Evaluator<S, XEv>& _evaluator, Constructive<S>& _constructive, LocalSearch<R, ADS, S>& _localSearch)
+   SimpleLocalSearch(Evaluator<S, XEv>& _evaluator, Constructive<S>& _constructive, LocalSearch<S, XEv>& _localSearch)
      : evaluator(_evaluator)
      , constructive(_constructive)
      , localSearch(_localSearch)
@@ -72,13 +72,13 @@ public:
 
    virtual bool compatible(string s)
    {
-      return (s == idComponent()) || (SingleObjSearch<R, ADS, S>::compatible(s));
+      return (s == idComponent()) || (SingleObjSearch<S, XEv>::compatible(s));
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << SingleObjSearch<R, ADS, S>::idComponent() << "SimpleLocalSearch";
+      ss << SingleObjSearch<S, XEv>::idComponent() << "SimpleLocalSearch";
       return ss.str();
    }
 
@@ -97,15 +97,15 @@ public:
    }
 };
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
-class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv=Evaluation<>>
+class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<S, XEv>
 {
 public:
    virtual ~SimpleLocalSearchBuilder()
    {
    }
 
-   virtual SingleObjSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+   virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
    {
       Evaluator<S, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -115,14 +115,14 @@ public:
 
       string rest = scanner.rest();
 
-      pair<LocalSearch<R, ADS, S>*, std::string> method;
+      pair<LocalSearch<S, XEv>*, std::string> method;
       method = hf.createLocalSearch(rest);
 
-      LocalSearch<R, ADS, S>* h = method.first;
+      LocalSearch<S, XEv>* h = method.first;
 
       scanner = Scanner(method.second);
 
-      return new SimpleLocalSearch<R, ADS, S>(*eval, *constructive, *h);
+      return new SimpleLocalSearch<S, XEv>(*eval, *constructive, *h);
    }
 
    virtual vector<pair<string, string>> parameters()
@@ -130,20 +130,20 @@ public:
       vector<pair<string, string>> params;
       params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
       params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-      params.push_back(make_pair(LocalSearch<R, ADS, S>::idComponent(), "local search"));
+      params.push_back(make_pair(LocalSearch<S, XEv>::idComponent(), "local search"));
 
       return params;
    }
 
    virtual bool canBuild(string component)
    {
-      return component == SimpleLocalSearch<R, ADS, S>::idComponent();
+      return component == SimpleLocalSearch<S, XEv>::idComponent();
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << SingleObjSearchBuilder<R, ADS, S>::idComponent() << "SimpleLocalSearch";
+      ss << SingleObjSearchBuilder<S, XEv>::idComponent() << "SimpleLocalSearch";
       return ss.str();
    }
 

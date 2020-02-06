@@ -43,9 +43,9 @@ using namespace scannerpp;
 namespace optframe
 {
 
-template<class R, class ADS, XSolution S> class HeuristicFactory;
+template<XSolution S, XEvaluation XEv> class HeuristicFactory;
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class Action
 {
 public:
@@ -63,11 +63,11 @@ public:
 
 	virtual bool handleAction(string action) = 0;
 
-	virtual bool doAction(string content, HeuristicFactory<R, ADS, S>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary) = 0;
+	virtual bool doAction(string content, HeuristicFactory<S, XEv>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary) = 0;
 
-	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, S>& hf, map<string, string>& d) = 0;
+	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<S, XEv>& hf, map<string, string>& d) = 0;
 
-	static bool addAndRegister(Scanner& scanner, Component& comp, HeuristicFactory<R, ADS, S>& hf, map<string, string>& d)
+	static bool addAndRegister(Scanner& scanner, Component& comp, HeuristicFactory<S, XEv>& hf, map<string, string>& d)
 	{
 		int index = hf.addComponent(comp);
 
@@ -84,7 +84,7 @@ public:
 			d[varName] = sscomp.str(); // TODO: fix!!
 
 			return true;
-			//return Command<R, ADS, S>::defineText(varName, sscomp.str(), d);
+			//return Command<S, XEv>::defineText(varName, sscomp.str(), d);
 		}
 
 		return true;
@@ -99,7 +99,7 @@ public:
 			d[varName] = value; // TODO: fix!!
 
 			return true;
-			//return Command<R, ADS, S>::defineText(varName, sscomp.str(), d);
+			//return Command<S, XEv>::defineText(varName, sscomp.str(), d);
 		}
 		else
 		{
@@ -134,8 +134,8 @@ public:
 
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class ComponentAction: public Action<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class ComponentAction: public Action<S, XEv>
 {
 public:
 
@@ -163,7 +163,7 @@ public:
 		return (action == "log") || (action == "print") || (action == "setVerboseLevel") || (action == "getVerboseLevel");
 	}
 
-	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<R, ADS, S>& hf, map<string, string>& d)
+	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<S, XEv>& hf, map<string, string>& d)
 	{
 		if(!handleComponent(type))
 		{
@@ -195,10 +195,10 @@ public:
 
 		// add new component
 		Scanner scanner(variable);
-		return ComponentAction<R, ADS, S>::addAndRegister(scanner, *final, hf, d);
+		return ComponentAction<S, XEv>::addAndRegister(scanner, *final, hf, d);
 	}
 
-	virtual bool doAction(string content, HeuristicFactory<R, ADS, S>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	virtual bool doAction(string content, HeuristicFactory<S, XEv>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 		//cout << "Evaluation::doAction '" << content << "'" << endl;
 

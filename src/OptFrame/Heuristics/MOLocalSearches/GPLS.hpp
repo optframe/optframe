@@ -45,7 +45,7 @@ struct gplsStructure
 	}
 };
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<XSolution S, XEvaluation XEv=Evaluation<>>
 class paretoManagerGPLS: public paretoManager<R, ADS>
 {
 private:
@@ -110,18 +110,18 @@ public:
 
 //GPLS is a kind of Multi-Objective version of the VND
 //However, it is designed in an efficient manner for iteratively exploring the obtained non-dominated solution
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
-class GeneralParetoLocalSearch: public MOLocalSearch<R, ADS, S>
+template<XSolution S, XEvaluation XEv=Evaluation<>>
+class GeneralParetoLocalSearch: public MOLocalSearch<S, XEv>
 {
 private:
 	InitialPareto<R, ADS>& init_pareto;
 	int init_pop_size;
-	vector<MOLocalSearch<R, ADS, S>*> vLS;
+	vector<MOLocalSearch<S, XEv>*> vLS;
 	paretoManagerGPLS<R, ADS> pMan2PPLS;
 
 public:
 
-	GeneralParetoLocalSearch(MultiEvaluator<S>& _mev, InitialPareto<R, ADS>& _init_pareto, int _init_pop_size, vector<MOLocalSearch<R, ADS>*> _vLS) :
+	GeneralParetoLocalSearch(MultiEvaluator<S>& _mev, InitialPareto<R, ADS>& _init_pareto, int _init_pop_size, vector<MOLocalSearch<S, XEv>*> _vLS) :
 			init_pareto(_init_pareto), init_pop_size(_init_pop_size), vLS(_vLS), pMan2PPLS(paretoManagerGPLS<R, ADS>(_mev, _vLS.size()))
 	{
 

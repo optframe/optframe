@@ -18,7 +18,7 @@ public:
 	MyMutation(double mutationRate, ProblemInstance& _pKP2);
 	~MyMutation() = default;
 
-	void mutate(Chromossome&) override;
+	void mutate(Individual&) override;
 };
 
 }

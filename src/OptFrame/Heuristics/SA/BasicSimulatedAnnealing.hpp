@@ -29,8 +29,8 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
-class BasicSimulatedAnnealing: public SingleObjSearch<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class BasicSimulatedAnnealing: public SingleObjSearch<S, XEv>
 {
 private:
 	Evaluator<S, XEv>& evaluator;
@@ -164,20 +164,20 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, S>::idComponent() << ":SA:BasicSA";
+		ss << SingleObjSearch<S, XEv>::idComponent() << ":SA:BasicSA";
 		return ss.str();
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class BasicSimulatedAnnealingBuilder: public SA, public SingleObjSearchBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class BasicSimulatedAnnealingBuilder: public SA, public SingleObjSearchBuilder<S, XEv>
 {
 public:
 	virtual ~BasicSimulatedAnnealingBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -192,7 +192,7 @@ public:
 		int SAmax = scanner.nextInt();
 		double Ti = scanner.nextDouble();
 
-		return new BasicSimulatedAnnealing<R, ADS, S> (*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
+		return new BasicSimulatedAnnealing<S, XEv> (*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -212,13 +212,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicSimulatedAnnealing<R, ADS, S>::idComponent();
+		return component == BasicSimulatedAnnealing<S, XEv>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS, S>::idComponent() << ":" << SA::family() << "BasicSA";
+		ss << SingleObjSearchBuilder<S, XEv>::idComponent() << ":" << SA::family() << "BasicSA";
 		return ss.str();
 	}
 

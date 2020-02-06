@@ -39,7 +39,7 @@ using namespace std;
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class LocalSearch: public Component
 {
    typedef vector<XEv*> FitnessValues;
@@ -114,17 +114,17 @@ public:
 };
 
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class LocalSearchBuilder : public ComponentBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class LocalSearchBuilder : public ComponentBuilder<S, XEv>
 {
 public:
 	virtual ~LocalSearchBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "") = 0;
+	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "") = 0;
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		return build(scanner, hf, family);
 	}
@@ -136,7 +136,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, S>::idComponent() << "LocalSearch";
+		ss << ComponentBuilder<S, XEv>::idComponent() << "LocalSearch";
 		return ss.str();
 	}
 

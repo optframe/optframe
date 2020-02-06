@@ -37,7 +37,7 @@ using namespace std;
 namespace optframe
 {
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<XSolution S, XEvaluation XEv=Evaluation<>>
 class MOLocalSearch: public Component
 {
 

@@ -64,7 +64,7 @@ private:
 	Selection<R, ADS>& selection;
 	Crossover<R, ADS>& cross;
 	Mutation<R, ADS>& mut;
-	LocalSearch<R, ADS>& ls;
+	LocalSearch<S, XEv>& ls;
 
 	RandGen& rg;
 
@@ -78,7 +78,7 @@ public:
 			return f;
 	}
 
-	BasicGeneticAlgorithm(Evaluator<S>& _evaluator, InitialMultiSolution<S>& _initPop, unsigned populationSize, float crossoverRate, float mutationRate, float _pLS, unsigned numGenerations, Selection<R, ADS>& _selection, Crossover<R, ADS>& _cross, Mutation<R>& _mut, LocalSearch<R, ADS>& _ls, RandGen& _rg) :
+	BasicGeneticAlgorithm(Evaluator<S>& _evaluator, InitialMultiSolution<S>& _initPop, unsigned populationSize, float crossoverRate, float mutationRate, float _pLS, unsigned numGenerations, Selection<R, ADS>& _selection, Crossover<R, ADS>& _cross, Mutation<R>& _mut, LocalSearch<S, XEv>& _ls, RandGen& _rg) :
 			evaluator(_evaluator), initPop(_initPop), selection(_selection), cross(_cross), mut(_mut), ls(_ls), rg(_rg)
 	{
 		maxim = !evaluator.isMinimization();
@@ -304,7 +304,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS>::idComponent() << ":" << EA::family() << ":BasicGeneticAlgorithm";
+		ss << SingleObjSearch<S, XEv>::idComponent() << ":" << EA::family() << ":BasicGeneticAlgorithm";
 		return ss.str();
 	}
 
@@ -317,14 +317,14 @@ public:
 ;
 
 template<XSolution S>
-class BasicGeneticAlgorithmBuilder: public EA, public SingleObjSearchBuilder<R, ADS>
+class BasicGeneticAlgorithmBuilder: public EA, public SingleObjSearchBuilder<S, XEv>
 {
 public:
 	virtual ~BasicGeneticAlgorithmBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<R, ADS>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
 		Evaluator<S>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -348,9 +348,9 @@ public:
 		hf.assign(mut, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
-		pair<LocalSearch<R, ADS>*, std::string> method;
+		pair<LocalSearch<S, XEv>*, std::string> method;
 		method = hf.createLocalSearch(rest);
-		LocalSearch<R, ADS>* h = method.first;
+		LocalSearch<S, XEv>* h = method.first;
 		scanner = Scanner(method.second);
 
 		return new BasicGeneticAlgorithm<R, ADS>(*eval, *initPop, popSize, pCross, pMut, pLS, nGen, *sel, *cross, *mut, *h, hf.getRandGen());
@@ -369,7 +369,7 @@ public:
 		params.push_back(make_pair(Selection<R, ADS>::idComponent(), "selection"));
 		params.push_back(make_pair(Crossover<R, ADS>::idComponent(), "crossover"));
 		params.push_back(make_pair(Mutation<R, ADS>::idComponent(), "mutation"));
-		params.push_back(make_pair(LocalSearch<R, ADS>::idComponent(), "local search"));
+		params.push_back(make_pair(LocalSearch<S, XEv>::idComponent(), "local search"));
 
 		return params;
 	}
@@ -382,7 +382,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS>::idComponent() << ":" << EA::family() << ":BasicGeneticAlgorithm";
+		ss << SingleObjSearchBuilder<S, XEv>::idComponent() << ":" << EA::family() << ":BasicGeneticAlgorithm";
 		return ss.str();
 	}
 

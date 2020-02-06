@@ -32,7 +32,7 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class ILSLPerturbation: public Component, public ILS
 {
 public:
@@ -62,8 +62,8 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class ILSLPerturbationLPlus2: public ILSLPerturbation<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class ILSLPerturbationLPlus2: public ILSLPerturbation<S, XEv>
 {
 private:
 	vector<NS<S, XEv>*> ns;
@@ -115,13 +115,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (ILSLPerturbation<R, ADS, S>::compatible(s));
+		return (s == idComponent()) || (ILSLPerturbation<S, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ILSLPerturbation<R, ADS, S>::idComponent() << ":LPlus2";
+		ss << ILSLPerturbation<S, XEv>::idComponent() << ":LPlus2";
 		return ss.str();
 	}
 
@@ -131,8 +131,8 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class ILSLPerturbationLPlus2Prob: public ILSLPerturbation<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class ILSLPerturbationLPlus2Prob: public ILSLPerturbation<S, XEv>
 {
 private:
 	vector<NS<S, XEv>*> ns;
@@ -227,7 +227,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ILSLPerturbation<R, ADS, S>::idComponent() << ":LPlus2Prob";
+		ss << ILSLPerturbation<S, XEv>::idComponent() << ":LPlus2Prob";
 		return ss.str();
 	}
 
@@ -237,15 +237,15 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class ILSLPerturbationLPlus2Builder: public ComponentBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class ILSLPerturbationLPlus2Builder: public ComponentBuilder<S, XEv>
 {
 public:
 	virtual ~ILSLPerturbationLPlus2Builder()
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -253,7 +253,7 @@ public:
 		NS<S, XEv>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new ILSLPerturbationLPlus2<R, ADS, S>(*eval, *ns, hf.getRandGen());
+		return new ILSLPerturbationLPlus2<S, XEv>(*eval, *ns, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -267,13 +267,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == ILSLPerturbationLPlus2<R, ADS, S>::idComponent();
+		return component == ILSLPerturbationLPlus2<S, XEv>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, S>::idComponent() << ILS::family() << "LevelPert:LPlus2";
+		ss << ComponentBuilder<S, XEv>::idComponent() << ILS::family() << "LevelPert:LPlus2";
 		return ss.str();
 	}
 
@@ -283,15 +283,15 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class ILSLPerturbationLPlus2ProbBuilder: public ComponentBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class ILSLPerturbationLPlus2ProbBuilder: public ComponentBuilder<S, XEv>
 {
 public:
 	virtual ~ILSLPerturbationLPlus2ProbBuilder()
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -299,7 +299,7 @@ public:
 		NS<S, XEv>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new ILSLPerturbationLPlus2Prob<R, ADS, S>(*eval, *ns, hf.getRandGen());
+		return new ILSLPerturbationLPlus2Prob<S, XEv>(*eval, *ns, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -313,13 +313,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == ILSLPerturbationLPlus2Prob<R, ADS, S>::idComponent();
+		return component == ILSLPerturbationLPlus2Prob<S, XEv>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<R, ADS, S>::idComponent() << ILS::family() << "LevelPert:LPlus2Prob";
+		ss << ComponentBuilder<S, XEv>::idComponent() << ILS::family() << "LevelPert:LPlus2Prob";
 		return ss.str();
 	}
 

@@ -32,12 +32,12 @@ namespace optframe
 {
 
 //Basic MORI does not considering valid move, parameter iterMax only.
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
-class MORandomImprovement: public MOLocalSearch<R, ADS, S>
+template<XSolution S, XEvaluation XEv=Evaluation<>>
+class MORandomImprovement: public MOLocalSearch<S, XEv>
 {
 private:
 	MultiEvaluator<S>& mev;
-	NS<R, ADS>& ns;
+	NS<S, XEv>& ns;
 
 	// logs
 	double sum_time;
@@ -45,7 +45,7 @@ private:
 	int iterMax;
 public:
 
-	MORandomImprovement(MultiEvaluator<S>& _mev, NS<R, ADS>& _ns, unsigned int _iterMax) :
+	MORandomImprovement(MultiEvaluator<S>& _mev, NS<S, XEv>& _ns, unsigned int _iterMax) :
 			mev(_mev), ns(_ns), iterMax(_iterMax)
 	{
 		sum_time = 0.0;
@@ -103,13 +103,13 @@ public:
 	}
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (MOLocalSearch<R, ADS>::compatible(s));
+		return (s == idComponent()) || (MOLocalSearch<S, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MOLocalSearch<R, ADS>::idComponent() << "MO-RI";
+		ss << MOLocalSearch<S, XEv>::idComponent() << "MO-RI";
 		return ss.str();
 	}
 

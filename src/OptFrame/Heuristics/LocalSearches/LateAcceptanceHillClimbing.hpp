@@ -30,8 +30,8 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
-class LateAcceptanceHillClimbing: public LocalSearch<R, ADS, S>
+template<XSolution S, XEvaluation XEv=Evaluation<>>
+class LateAcceptanceHillClimbing: public LocalSearch<S, XEv>
 {
 private:
 	Evaluator<S, XEv>& ev;
@@ -163,13 +163,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS, S>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, S>::idComponent() << ":LAHC";
+		ss << LocalSearch<S, XEv>::idComponent() << ":LAHC";
 		return ss.str();
 	}
 
@@ -194,15 +194,15 @@ public:
 	}
 };
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
-class LateAcceptanceHillClimbingBuilder: public LocalSearchBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv=Evaluation<>>
+class LateAcceptanceHillClimbingBuilder: public LocalSearchBuilder<S, XEv>
 {
 public:
 	virtual ~LateAcceptanceHillClimbingBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -214,7 +214,7 @@ public:
 
 		int iterMax = scanner.nextInt();
 
-		return new LateAcceptanceHillClimbing<R, ADS, S>(*eval, nslist, L, iterMax);
+		return new LateAcceptanceHillClimbing<S, XEv>(*eval, nslist, L, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -232,13 +232,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == LateAcceptanceHillClimbing<R, ADS, S>::idComponent();
+		return component == LateAcceptanceHillClimbing<S, XEv>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, S>::idComponent() << ":LAHC";
+		ss << LocalSearchBuilder<S, XEv>::idComponent() << ":LAHC";
 		return ss.str();
 	}
 

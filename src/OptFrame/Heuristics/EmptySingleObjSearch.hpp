@@ -29,8 +29,8 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class EmptySingleObjSearch: public SingleObjSearch<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class EmptySingleObjSearch: public SingleObjSearch<S, XEv>
 {
 public:
 
@@ -51,7 +51,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, S>::idComponent() << "empty";
+		ss << SingleObjSearch<S, XEv>::idComponent() << "empty";
 		return ss.str();
 	}
 

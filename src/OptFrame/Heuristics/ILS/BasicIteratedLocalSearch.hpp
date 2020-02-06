@@ -36,18 +36,18 @@ namespace optframe
 
 typedef int BasicHistory;
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class BasicIteratedLocalSearch: public IteratedLocalSearch<BasicHistory, R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class BasicIteratedLocalSearch: public IteratedLocalSearch<BasicHistory, S, XEv>
 {
 protected:
-	LocalSearch<R, ADS, S>& ls;
-	BasicILSPerturbation<R, ADS, S>& p;
+	LocalSearch<S, XEv>& ls;
+	BasicILSPerturbation<S, XEv>& p;
 	int iterMax;
 
 public:
 
-	BasicIteratedLocalSearch(Evaluator<S, XEv>& e, Constructive<S>& constructive, LocalSearch<R, ADS, S>& _ls, BasicILSPerturbation<R, ADS, S>& _p, int _iterMax) :
-		IteratedLocalSearch<BasicHistory, R, ADS, S> (e, constructive), ls(_ls), p(_p), iterMax(_iterMax)
+	BasicIteratedLocalSearch(Evaluator<S, XEv>& e, Constructive<S>& constructive, LocalSearch<S, XEv>& _ls, BasicILSPerturbation<S, XEv>& _p, int _iterMax) :
+		IteratedLocalSearch<BasicHistory, S, XEv> (e, constructive), ls(_ls), p(_p), iterMax(_iterMax)
 	{
 	}
 
@@ -83,7 +83,7 @@ public:
 
 	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, BasicHistory& history)
 	{
-		if (IteratedLocalSearch<BasicHistory, R, ADS, S>::evaluator.betterThan(e1, e2))
+		if (IteratedLocalSearch<BasicHistory, S, XEv>::evaluator.betterThan(e1, e2))
 		{
 			// =======================
 			//   Melhor solucao: 's2'
@@ -115,7 +115,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (SingleObjSearch<R, ADS, S>::compatible(s));
+		return (s == idComponent()) || (SingleObjSearch<S, XEv>::compatible(s));
 	}
 
 	virtual string id() const
@@ -126,20 +126,20 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << IteratedLocalSearch<BasicHistory, R, ADS, S>::idComponent() << "BasicILS";
+		ss << IteratedLocalSearch<BasicHistory, S, XEv>::idComponent() << "BasicILS";
 		return ss.str();
 	}
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class BasicIteratedLocalSearchBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class BasicIteratedLocalSearchBuilder : public ILS, public SingleObjSearchBuilder<S, XEv>
 {
 public:
 	virtual ~BasicIteratedLocalSearchBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -149,19 +149,19 @@ public:
 
 		string rest = scanner.rest();
 
-		pair<LocalSearch<R, ADS, S>*, std::string> method;
+		pair<LocalSearch<S, XEv>*, std::string> method;
 		method = hf.createLocalSearch(rest);
 
-		LocalSearch<R, ADS, S>* h = method.first;
+		LocalSearch<S, XEv>* h = method.first;
 
 		scanner = Scanner(method.second);
 
-		BasicILSPerturbation<R, ADS, S>* pert;
+		BasicILSPerturbation<S, XEv>* pert;
 		hf.assign(pert, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int iterMax = scanner.nextInt();
 
-		return new BasicIteratedLocalSearch<R, ADS, S>(*eval, *constructive, *h, *pert, iterMax);
+		return new BasicIteratedLocalSearch<S, XEv>(*eval, *constructive, *h, *pert, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -169,8 +169,8 @@ public:
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-		params.push_back(make_pair(LocalSearch<R, ADS, S>::idComponent(), "local search"));
-		params.push_back(make_pair(BasicILSPerturbation<R, ADS, S>::idComponent(), "ils perturbation"));
+		params.push_back(make_pair(LocalSearch<S, XEv>::idComponent(), "local search"));
+		params.push_back(make_pair(BasicILSPerturbation<S, XEv>::idComponent(), "ils perturbation"));
 		params.push_back(make_pair("OptFrame:int", "max number of iterations without improvement"));
 
 		return params;
@@ -178,13 +178,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicIteratedLocalSearch<R, ADS, S>::idComponent();
+		return component == BasicIteratedLocalSearch<S, XEv>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearchBuilder<R, ADS, S>::idComponent() << ":" << ILS::family() << "BasicILS";
+		ss << SingleObjSearchBuilder<S, XEv>::idComponent() << ":" << ILS::family() << "BasicILS";
 		return ss.str();
 	}
 

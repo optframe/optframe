@@ -37,8 +37,8 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
-class VariableNeighborhoodSearch: public VNS, public SingleObjSearch<R, ADS, S>
+template<XSolution S, XEvaluation XEv=Evaluation<>>
+class VariableNeighborhoodSearch: public VNS, public SingleObjSearch<S, XEv>
 {
 protected:
 	Evaluator<S, XEv>& evaluator;
@@ -64,7 +64,7 @@ public:
 		Move<S, XEv>* move = vshake.at(k_shake)->validrandomMove(s);
 		if(move)
 		{
-         Move<R,ADS>* rev = move->applyUpdate(e, s);
+         Move<S, XEv>* rev = move->applyUpdate(e, s);
 			Component::safe_delete(rev);
 			evaluator.reevaluateSolution(e, s); // refresh 'e'
 			delete move;
@@ -88,7 +88,7 @@ public:
 		}
 	}
 
-	virtual LocalSearch<R, ADS, S>& buildSearch(unsigned k_search) = 0;
+	virtual LocalSearch<S, XEv>& buildSearch(unsigned k_search) = 0;
 
 	pair<S, Evaluation<>>* search(SOSC& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
 	{
@@ -117,7 +117,7 @@ public:
 
 				shake(s, e, k, timelimit, target_f);
 
-				LocalSearch<R, ADS, S>& improve = buildSearch(k);
+				LocalSearch<S, XEv>& improve = buildSearch(k);
 				improve.exec(s, e, sosc);
 				delete& improve; // save trajectory history?
 
@@ -142,8 +142,8 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<R, ADS, S>::idComponent() << VNS::family();
-		//ss << SingleObjSearch<R, ADS, S>::idComponent() << VNS::family << "VariableNeighborhoodSearch:";
+		ss << SingleObjSearch<S, XEv>::idComponent() << VNS::family();
+		//ss << SingleObjSearch<S, XEv>::idComponent() << VNS::family << "VariableNeighborhoodSearch:";
 		return ss.str();
 	}
 

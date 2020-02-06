@@ -27,8 +27,8 @@
 
 namespace optframe {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class CircularSearch : public LocalSearch<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class CircularSearch : public LocalSearch<S, XEv>
 {
 private:
    Evaluator<S, XEv>& eval;
@@ -95,13 +95,13 @@ public:
 
    virtual bool compatible(string s)
    {
-      return (s == idComponent()) || (LocalSearch<R, ADS, S>::compatible(s));
+      return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << LocalSearch<R, ADS, S>::idComponent() << ":CS";
+      ss << LocalSearch<S, XEv>::idComponent() << ":CS";
       return ss.str();
    }
 
@@ -111,15 +111,15 @@ public:
    }
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class CircularSearchBuilder : public LocalSearchBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class CircularSearchBuilder : public LocalSearchBuilder<S, XEv>
 {
 public:
    virtual ~CircularSearchBuilder()
    {
    }
 
-   virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+   virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
    {
       Evaluator<S, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -127,7 +127,7 @@ public:
       NSEnum<S, XEv>* nsenum;
       hf.assign(nsenum, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      return new CircularSearch<R, ADS, S>(*eval, *nsenum);
+      return new CircularSearch<S, XEv>(*eval, *nsenum);
    }
 
    virtual vector<pair<string, string>> parameters()
@@ -141,13 +141,13 @@ public:
 
    virtual bool canBuild(string component)
    {
-      return component == CircularSearch<R, ADS, S>::idComponent();
+      return component == CircularSearch<S, XEv>::idComponent();
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << LocalSearchBuilder<R, ADS, S>::idComponent() << ":CS";
+      ss << LocalSearchBuilder<S, XEv>::idComponent() << ":CS";
       return ss.str();
    }
 

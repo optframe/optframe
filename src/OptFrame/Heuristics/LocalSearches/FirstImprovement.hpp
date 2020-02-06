@@ -28,8 +28,8 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class FirstImprovement: public LocalSearch<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class FirstImprovement: public LocalSearch<S, XEv>
 {
 private:
 	Evaluator<S, XEv>& eval;
@@ -108,13 +108,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<R, ADS, S>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<R, ADS, S>::idComponent() << ":FI";
+		ss << LocalSearch<S, XEv>::idComponent() << ":FI";
 		return ss.str();
 	}
 
@@ -132,15 +132,15 @@ public:
 };
 
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class FirstImprovementBuilder : public LocalSearchBuilder<R, ADS, S>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+class FirstImprovementBuilder : public LocalSearchBuilder<S, XEv>
 {
 public:
 	virtual ~FirstImprovementBuilder()
 	{
 	}
 
-	virtual LocalSearch<R, ADS, S>* build(Scanner& scanner, HeuristicFactory<R, ADS, S>& hf, string family = "")
+	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
 	{
 		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -148,7 +148,7 @@ public:
 		NSSeq<S, XEv>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new FirstImprovement<R, ADS, S>(*eval, *nsseq);
+		return new FirstImprovement<S, XEv>(*eval, *nsseq);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -162,13 +162,13 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == FirstImprovement<R, ADS, S>::idComponent();
+		return component == FirstImprovement<S, XEv>::idComponent();
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearchBuilder<R, ADS, S>::idComponent() << ":FI";
+		ss << LocalSearchBuilder<S, XEv>::idComponent() << ":FI";
 		return ss.str();
 	}
 
