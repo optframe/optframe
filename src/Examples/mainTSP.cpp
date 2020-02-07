@@ -92,12 +92,12 @@ main(int argc, char** argv)
    NSEnumSwap enumswap(tsp.p, rg);
 
    NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);
-   NSSeqTSP2Opt<int> tsp2opt;
+   NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tsp2opt;
    NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSPOrOptk, ProblemInstance> nsseq_delta_or1(1, tsp.p);
-   NSSeqTSPOrOptk<int> tspor1(1);
-   NSSeqTSPOrOptk<int> tspor2(2);
-   NSSeqTSPOrOptk<int> tspor3(3);
-   NSSeqTSPSwap<int> tspswap;
+   NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspor1(1);
+   NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspor2(2);
+   NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspor3(3);
+   NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspswap;
 
    check.add(random);
    check.add(cnn);

@@ -38,14 +38,15 @@ namespace optframe
 {
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
+//template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS, BaseSolution<vector<T>,ADS> S, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
 class NSSeqTSPOrOpt: public NSSeq<S, XEv>
 {
 	typedef vector<T> Route;
 
-	NSSeqTSPOrOptk<T, ADS>* OrOpt1;
-	NSSeqTSPOrOptk<T, ADS>* OrOpt2;
-	NSSeqTSPOrOptk<T, ADS>* OrOpt3;
+	NSSeqTSPOrOptk<T, ADS, S>* OrOpt1;
+	NSSeqTSPOrOptk<T, ADS, S>* OrOpt2;
+	NSSeqTSPOrOptk<T, ADS, S>* OrOpt3;
 
 	NSSeqUnionAdapter<vector<T>, ADS>* OrOpt1_2_3;
 
@@ -53,9 +54,9 @@ public:
 
 	NSSeqTSPOrOpt()
 	{
-		OrOpt1 = new NSSeqTSPOrOptk<T, ADS>(1);
-		OrOpt2 = new NSSeqTSPOrOptk<T, ADS>(2);
-		OrOpt3 = new NSSeqTSPOrOptk<T, ADS>(3);
+		OrOpt1 = new NSSeqTSPOrOptk<T, ADS, S>(1);
+		OrOpt2 = new NSSeqTSPOrOptk<T, ADS, S>(2);
+		OrOpt3 = new NSSeqTSPOrOptk<T, ADS, S>(3);
 
 		OrOpt1_2_3 = new NSSeqUnionAdapter<vector<T>, ADS>(*OrOpt1, *OrOpt2);
 		OrOpt1_2_3->add_ns(*OrOpt3);
