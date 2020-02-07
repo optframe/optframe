@@ -352,7 +352,7 @@ public:
          for (int aux = 0; aux < nNS; aux++)
             m.push_back(NGESIndStructure<R, ADS>(rg.rand01(), rg.randB(0.5, 10) + 1, rg.rand01(), rg.rand01()));
 
-         Evaluation<> e = eval.evaluateSolution(*s);
+         Evaluation<> e = eval.evaluate(*s);
          NGESInd<R, ADS>* ind = new NGESInd<R, ADS>(*s, e, m, nNS); //TODO MAKE MOVE
 
          pop.push_back(ind);
@@ -406,7 +406,7 @@ public:
             //Do anything you want with filho and return filho_ls
             //S filho_ls = filho;
 
-            Evaluation<> e = eval.evaluateSolution(filho);
+            Evaluation<> e = eval.evaluate(filho);
             fo_filhos += e.evaluation();
 
             NGESInd<R, ADS>* ind = new NGESInd<R, ADS>(filho, e, vt, vNSOffspring); //TODO MAKE MOVE

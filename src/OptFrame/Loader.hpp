@@ -130,7 +130,9 @@ using namespace std;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+//template<XSolution S, XEvaluation XEv = Evaluation<>>
+// template<Representation R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<Representation R, class ADS, BaseSolution<R,ADS> S, XEvaluation XEv = Evaluation<>>
 class Loader
 {
 public:
@@ -168,7 +170,7 @@ public:
 		factory.builders.push_back(new RandomDescentMethodBuilder<S, XEv> );
 		factory.builders.push_back(new CircularSearchBuilder<S, XEv> );
 		factory.builders.push_back(new VariableNeighborhoodDescentBuilder<S, XEv> );
-		factory.builders.push_back(new VariableNeighborhoodDescentUpdateADSBuilder<S, XEv> );
+		factory.builders.push_back(new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS, S, XEv> );
 		//factory.builders.push_back(new RVNDBuilder<S, XEv> );
 		factory.builders.push_back(new HillClimbingBuilder<S, XEv> );
 		factory.builders.push_back(new LateAcceptanceHillClimbingBuilder<S, XEv> );

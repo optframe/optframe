@@ -58,7 +58,7 @@ public:
 
 	virtual void exec(Pareto<R, ADS>& p, S& s, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) override
 	{
-		MultiEvaluation<> sMev(std::move(mev.evaluateSolution(s)));
+		MultiEvaluation<> sMev(std::move(mev.evaluate(s)));
 
 		exec(p, s, sMev, pManager, stopCriteria);
 	}

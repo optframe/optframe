@@ -50,7 +50,7 @@ public:
 
 	virtual void exec(S& s, SOSC& stopCriteria)
 	{
-		Evaluation<> e = evaluator.evaluateSolution(s);
+		Evaluation<> e = evaluator.evaluate(s);
 		exec(s, e, stopCriteria);
 	}
 
@@ -83,7 +83,7 @@ public:
 			if (cost && evaluator.isImprovement(*cost))
 			{
 				Component::safe_delete(move.applyUpdate(e, s));
-				evaluator.reevaluateSolution(e, s);
+				evaluator.reevaluate(e, s);
 				iter = 0;
 			}
 

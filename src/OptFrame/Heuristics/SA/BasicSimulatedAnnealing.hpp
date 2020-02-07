@@ -77,7 +77,7 @@ public:
 		S* sP = constructive.generateSolution(timelimit);
 		S s(std::move(*sP)); // workaround
                 delete sP;                         // workaround
-		Evaluation<> e = evaluator.evaluateSolution(s);
+		Evaluation<> e = evaluator.evaluate(s);
 
 		double T = Ti;
 		int iterT = 0;
@@ -89,7 +89,7 @@ public:
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
 			{
 				int n = rg.rand(neighbors.size());
-				Move<S, XEv>* move = neighbors[n]->validrandomMove(s);
+				Move<S, XEv>* move = neighbors[n]->validRandomMove(s);
 
 				if(!move)
 				{
@@ -101,7 +101,7 @@ public:
 				S* sCurrent = &s.clone();
 				Evaluation<>* eCurrent = &e.clone();
 				Component::safe_delete(move->applyUpdate(*eCurrent, *sCurrent));
-				evaluator.reevaluateSolution(*eCurrent, *sCurrent);
+				evaluator.reevaluate(*eCurrent, *sCurrent);
 
 				if (evaluator.betterThan(*eCurrent, e))
 				{

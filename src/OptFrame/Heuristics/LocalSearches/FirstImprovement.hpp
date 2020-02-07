@@ -48,7 +48,7 @@ public:
 
 	virtual void exec(S& s, SOSC& stopCriteria)
 	{
-		Evaluation<> e = eval.evaluateSolution(s);
+		Evaluation<> e = eval.evaluate(s);
 		exec(s, e, stopCriteria);
 	}
 

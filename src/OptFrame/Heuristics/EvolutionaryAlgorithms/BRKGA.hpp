@@ -38,6 +38,7 @@ namespace optframe
 template<Representation R, XRSolution<R> XRS = RSolution<R>, XEvaluation XEv = Evaluation<>>
 class BRKGA: public RKGA<R, XRS, XEv>
 {
+   using RSK = RSolution<random_keys>;
 protected:
 	double probElitism;
 
@@ -68,12 +69,12 @@ public:
 	{
 	}
 
-	virtual CopySolution<random_keys>& cross(const Population<XRS, XEv>& pop) const
+	virtual RSK& cross(const Population<RSK, XEv>& pop) const
 	{
 		assert(this->sz > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
 
-		const CopySolution<random_keys>& p1 = pop.at(rand() % this->eliteSize);
-		const CopySolution<random_keys>& p2 = pop.at(this->eliteSize + rand() % (pop.size()-this->eliteSize));
+		const RSK& p1 = pop.at(rand() % this->eliteSize);
+		const RSK& p2 = pop.at(this->eliteSize + rand() % (pop.size()-this->eliteSize));
 
 		random_keys* v = new random_keys(this->sz, 0.0);
 		for (int i = 0; i < this->sz; i++)
@@ -81,7 +82,7 @@ public:
 				v->at(i) = p1.getR()[i];
 			else
 				v->at(i) = p2.getR()[i];
-		return *new CopySolution<random_keys>(v);
+		return *new RSK(v);
 	}
 
 };

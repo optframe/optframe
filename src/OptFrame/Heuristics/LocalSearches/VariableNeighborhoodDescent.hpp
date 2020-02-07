@@ -53,7 +53,7 @@ public:
 
 	virtual void exec(S& s, SOSC& stopCriteria)
 	{
-		Evaluation<> e = std::move(ev.evaluateSolution(s));
+		Evaluation<> e = std::move(ev.evaluate(s));
 
 		exec(s, e, stopCriteria);
 	}

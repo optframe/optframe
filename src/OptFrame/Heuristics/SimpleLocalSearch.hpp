@@ -59,7 +59,7 @@ public:
       Timer tnow;
 
       S& s = *constructive.generateSolution(sosc.timelimit);
-      Evaluation<> e = evaluator.evaluateSolution(s);
+      Evaluation<> e = evaluator.evaluate(s);
 
       //pair<S&, Evaluation<>&>& p = localSearch.search(s, e, sosc);
 
@@ -97,7 +97,7 @@ public:
    }
 };
 
-template<XSolution S, XEvaluation XEv=Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<S, XEv>
 {
 public:
@@ -105,7 +105,7 @@ public:
    {
    }
 
-   virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
+   virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "") override
    {
       Evaluator<S, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!

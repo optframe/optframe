@@ -186,7 +186,7 @@ public:
 			delete sStar;
 
 			sStar = &v[0].first.first->clone();
-			(*eStar) = eval.evaluateSolution(*sStar);
+			(*eStar) = eval.evaluate(*sStar);
 
 			/*
 			 cout << "vRealClone = " << (&eval.evaluate(*v[0].first.first))->evaluation() << endl;
@@ -284,7 +284,7 @@ public:
 
 			ESContinuousStructure<ESStruct>* m = new ESContinuousStructure<ESStruct>(a);
 
-			Evaluation<> e = eval.evaluateSolution(*s);
+			Evaluation<> e = eval.evaluate(*s);
 
 			pop[i] = make_pair(make_pair(s, m), e.evaluation());
 
@@ -359,7 +359,7 @@ public:
 				S* filho_bl = filho;
 
 				//double tEval = tnowClone.now();
-				Evaluation<> e = eval.evaluateSolution(*filho_bl);
+				Evaluation<> e = eval.evaluate(*filho_bl);
 				//sumEval += tnowClone.now() - tEval;
 				//counter++;
 

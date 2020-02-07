@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 	cout << "Possible optimal solution" << endl;
 	//s_lb.print();
 	//s_lb.getADS().print();
-	Evaluation<> etmp = evlr->evaluateSolution(s_lb);
+	Evaluation<> etmp = evlr->evaluate(s_lb);
 	etmp.print();
 	
 	// ===================================================
@@ -116,9 +116,9 @@ int main(int argc, char **argv)
 
 	// Lower bound estimative
 
-	Evaluation<> etsp1 = evlr_tsp->evaluateSolution(s_lb);
+	Evaluation<> etsp1 = evlr_tsp->evaluate(s_lb);
 	double tsp_value = etsp1.evaluation();
-	Evaluation<> eknp1 = evlr_knp->evaluateSolution(s_lb);
+	Evaluation<> eknp1 = evlr_knp->evaluate(s_lb);
 	double knp_value = eknp1.evaluation();
 
 	double lower_bound = tsp_value - knp_value;
@@ -127,19 +127,19 @@ int main(int argc, char **argv)
 	fprintf(ftsp, "%.2f\n", tsp_value);
 	fclose(ftsp);
 	cout << "tsp: ";
-	Evaluation<> etsp = evlr_tsp->evaluateSolution(s_lb);
+	Evaluation<> etsp = evlr_tsp->evaluate(s_lb);
 	etsp.print();
 	
 	FILE* fknp = fopen("lower_knp.out", "a");
 	fprintf(fknp, "%.2f\n", knp_value);
 	fclose(fknp);
 	cout << "knapsack: ";
-	Evaluation<> eknp = evlr_knp->evaluateSolution(s_lb);
+	Evaluation<> eknp = evlr_knp->evaluate(s_lb);
 	eknp.print();
 	
 
 	//s_lb.print();
-	Evaluation<> e = evlr->evaluateSolution(s_lb);
+	Evaluation<> e = evlr->evaluate(s_lb);
 	e.print();
 	
 	cout << endl;

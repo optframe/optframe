@@ -50,7 +50,7 @@ public:
 
 	virtual void exec(S& s, SOSC& sosc)
 	{
-		Evaluation<> e = eval.evaluateSolution(s);
+		Evaluation<> e = eval.evaluate(s);
 		exec(s, e, sosc);
 	}
 

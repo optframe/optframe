@@ -126,7 +126,7 @@ public:
 
 //	void add_ind(const S* s, const MultiEvaluator<S, XEv>& mEval)
 //	{
-//		MultiEvaluation<>* mev = mEval.evaluateSolution(s);
+//		MultiEvaluation<>* mev = mEval.evaluate(s);
 //		add_ind(s, mev);
 //	}
 
@@ -592,7 +592,7 @@ public:
 
 	bool addSolution(Pareto<S, XEv>& p, const S& candidate)
 	{
-		MultiEvaluation<> mev(std::move(multiEval.evaluateSolution(candidate)));
+		MultiEvaluation<> mev(std::move(multiEval.evaluate(candidate)));
 		bool added = addSolutionWithMEV(p, candidate, mev);
 
 		return added;
@@ -623,7 +623,7 @@ public:
 
 	bool addSolutionWithMEVReevaluation(Pareto<S, XEv>& p, S& candidate, MultiEvaluation<>& candidateMev)
 	{
-		multiEval.reevaluateSolutionMEV(candidateMev, candidate);
+		multiEval.reevaluateMEV(candidateMev, candidate);
 		bool added = addSolutionWithMEV(p, candidate, candidateMev);
 
 		return added;

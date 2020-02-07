@@ -96,7 +96,7 @@ public:
 		{
 			int x = rg.rand(ns.size());
 
-			Move<S, XEv>* m = ns[x]->validrandomMove(s);
+			Move<S, XEv>* m = ns[x]->validRandomMove(s);
 
 			if (m)
 			{
@@ -110,7 +110,7 @@ public:
 			delete m;
 		}
 
-		evaluator.reevaluateSolution(e, s); // updates 'e'
+		evaluator.reevaluate(e, s); // updates 'e'
 	}
 
 	virtual bool compatible(string s)
@@ -207,7 +207,7 @@ public:
 				sum += pNS[x].second;
 			}
 
-			Move<S, XEv>* m = ns[x]->validrandomMove(s);
+			Move<S, XEv>* m = ns[x]->validRandomMove(s);
 
 			if (m)
 			{
@@ -221,7 +221,7 @@ public:
 			delete m;
 		}
 
-		evaluator.reevaluateSolution(e, s); // updates 'e'
+		evaluator.reevaluate(e, s); // updates 'e'
 	}
 
 	static string idComponent()

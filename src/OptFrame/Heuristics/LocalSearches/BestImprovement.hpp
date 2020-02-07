@@ -56,7 +56,7 @@ public:
 
 	virtual void exec(S& s, SOSC& sosc) override
 	{
-		Evaluation<> e = eval.evaluateSolution(s);
+		Evaluation<> e = eval.evaluate(s);
 
 		exec(s, e, sosc);
 	}
@@ -184,7 +184,7 @@ public:
 
 			Component::safe_delete(bestMove->applyUpdate(e, s));
 
-			eval.reevaluateSolution(e, s); // updates 'e'
+			eval.reevaluate(e, s); // updates 'e'
 			//e.setLocalOptimumStatus(bestMove->id(), false); //set NS 'id' out of Local Optimum
 		}
 		else{

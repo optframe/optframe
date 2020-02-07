@@ -51,8 +51,8 @@ using namespace scannerpp;
 int
 main(int argc, char** argv)
 {
-   //Loader<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> optframe;
-   Loader<SolutionTSP> optframe;
+   // ADS still exists, only because of ADSManager...
+   Loader<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> optframe;
    TSPProblemCommand tsp;
 
    File* file;

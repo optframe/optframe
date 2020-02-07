@@ -80,7 +80,7 @@ public:
 		else
 		{
 			sStar = new S(std::move(*constructive.generateSolution(stopCriteria.timelimit)));
-			eStar = new Evaluation(evaluator.evaluateSolution(*sStar));
+			eStar = new Evaluation(evaluator.evaluate(*sStar));
 		}
 
 		if (Component::information)
@@ -118,7 +118,7 @@ public:
 			stopCriteriaLS2.updateTimeLimit(tnow.now());
 			localSearch(s1, e1, stopCriteriaLS2);
 
-			(*eStar) = evaluator.evaluateSolution(*sStar);
+			(*eStar) = evaluator.evaluate(*sStar);
 			bool improvement = acceptanceCriterion(e1, *eStar, *history);
 
 			if (improvement)

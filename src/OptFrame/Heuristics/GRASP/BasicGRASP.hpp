@@ -68,7 +68,7 @@ public:
 		unsigned int iter = 0;
 
 		S* s = constructive.generateGRSolution(alpha, timelimit);
-		Evaluation<> e = evaluator.evaluateSolution(*s);
+		Evaluation<> e = evaluator.evaluate(*s);
 
 		if (Component::information)
 			e.print();
@@ -80,7 +80,7 @@ public:
 
 			S* s1 = constructive.generateGRSolution(alpha,timelimit - tNow.now());
 
-			Evaluation<> e1 = evaluator.evaluateSolution(*s1);
+			Evaluation<> e1 = evaluator.evaluate(*s1);
 
 			SOSC stopCriteriaLS = stopCriteria.newStopCriteriaWithTL(tNow.now());
 			ls.exec(*s1, e1, stopCriteriaLS);

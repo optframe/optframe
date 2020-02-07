@@ -51,7 +51,7 @@ public:
 
    virtual void exec(S& s, SOSC& sosc) override
    {
-      Evaluation<> e = ev.evaluateSolution(s);
+      Evaluation<> e = ev.evaluate(s);
 
       exec(s, e, sosc);
    }
@@ -91,7 +91,7 @@ public:
 
             k = k + 1;
          }
-         ev.reevaluateSolution(e, s);
+         ev.reevaluate(e, s);
 
          tnow = time(nullptr);
       }
@@ -129,7 +129,8 @@ public:
    }
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+///template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<Representation R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<S, XEv>
 {
 public:
@@ -148,7 +149,7 @@ public:
       vector<LocalSearch<S, XEv>*> hlist;
       hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      return new VariableNeighborhoodDescentUpdateADS<S, XEv>(*eval, *adsMan, hlist);
+      return new VariableNeighborhoodDescentUpdateADS<R, ADS, S, XEv>(*eval, *adsMan, hlist);
    }
 
    virtual vector<pair<string, string>> parameters()
@@ -167,7 +168,7 @@ public:
 
    virtual bool canBuild(string component)
    {
-      return component == VariableNeighborhoodDescentUpdateADS<S, XEv>::idComponent();
+      return component == VariableNeighborhoodDescentUpdateADS<R, ADS, S, XEv>::idComponent();
    }
 
    static string idComponent()

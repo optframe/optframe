@@ -48,7 +48,7 @@ public:
 
 	virtual void exec(S& s, SOSC& sosc) override
 	{
-		Evaluation<> e = evaluator.evaluateSolution(s);
+		Evaluation<> e = evaluator.evaluate(s);
 
 		exec(s, e, sosc);
 	}

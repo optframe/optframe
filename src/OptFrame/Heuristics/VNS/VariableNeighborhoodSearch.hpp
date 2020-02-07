@@ -61,12 +61,12 @@ public:
 
 	virtual void shake(S& s, Evaluation<>& e, unsigned int k_shake, double timelimit, double target_f)
 	{
-		Move<S, XEv>* move = vshake.at(k_shake)->validrandomMove(s);
+		Move<S, XEv>* move = vshake.at(k_shake)->validRandomMove(s);
 		if(move)
 		{
          Move<S, XEv>* rev = move->applyUpdate(e, s);
 			Component::safe_delete(rev);
-			evaluator.reevaluateSolution(e, s); // refresh 'e'
+			evaluator.reevaluate(e, s); // refresh 'e'
 			delete move;
 		}
 	}
@@ -101,7 +101,7 @@ public:
 		Timer tnow;
 
 		S& sStar = *constructive.generateSolution(sosc.timelimit);
-		Evaluation<>   eStar = evaluator.evaluateSolution(sStar);
+		Evaluation<>   eStar = evaluator.evaluate(sStar);
 
 		if(Component::information)
 			cout << "VNS starts: " << eStar.evaluation() << endl;

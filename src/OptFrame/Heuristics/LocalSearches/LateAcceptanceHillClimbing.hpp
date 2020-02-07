@@ -58,7 +58,7 @@ public:
 
 	virtual void exec(S& s, SOSC& sosc)
 	{
-		Evaluation<> e = ev.evaluateSolution(s);
+		Evaluation<> e = ev.evaluate(s);
 
 		exec(s, e, sosc);
 	}
@@ -91,7 +91,7 @@ public:
 			// choose random neighborhood
 			int ns_k = rand() % lns.size();
 
-			Move<S, XEv>* move = lns[ns_k]->validrandomMove(s);
+			Move<S, XEv>* move = lns[ns_k]->validRandomMove(s);
 	
 			if (!move)
 			{
@@ -112,7 +112,7 @@ public:
 #endif
 				{
 					Component::safe_delete(move->applyUpdate(e, s));
-					ev.reevaluateSolution(e, s);
+					ev.reevaluate(e, s);
 
 #ifdef BRAND_NEW
 					delete eList[index];

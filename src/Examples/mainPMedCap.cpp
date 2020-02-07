@@ -60,7 +60,7 @@ int main(int argc, char **argv)
 
 	s.print();
 
-	e.evaluateSolution(s).print();
+	e.evaluate(s).print();
 
 	PCAPSolCheck(p, s);
 

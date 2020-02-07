@@ -34,6 +34,8 @@ namespace optframe
 
 template<XSolution S, XEvaluation XEv> class HeuristicFactory;
 
+
+// TODO: maybe use CRTP pattern! (at least from LocalSearch and SingleObjSearch)
 template<XSolution S, XEvaluation XEv = Evaluation<>>
 class ComponentBuilder : public Component
 {

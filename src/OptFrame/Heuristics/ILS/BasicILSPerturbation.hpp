@@ -91,7 +91,7 @@ public:
 		{
 			int nk = rand() % ns.size();
 
-			Move<S, XEv>* mp = ns[nk]->validrandomMove(s);
+			Move<S, XEv>* mp = ns[nk]->validRandomMove(s);
 
 			if (!mp)
 			{
@@ -106,7 +106,7 @@ public:
 			}
 		}
 
-		evaluator.reevaluateSolution(e, s); // updates 'e'
+		evaluator.reevaluate(e, s); // updates 'e'
 	}
 
 	virtual string id() const

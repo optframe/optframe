@@ -101,7 +101,7 @@ public:
 
     	EtIIEvaluator& eval = * new EtIIEvaluator(*p);
     	
-    	Evaluation<> e = eval.evaluateSolution(s);
+    	Evaluation<> e = eval.evaluate(s);
 
     	e.print();
     	cout << endl;

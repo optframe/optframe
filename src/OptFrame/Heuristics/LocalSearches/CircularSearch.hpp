@@ -50,7 +50,7 @@ public:
 
    virtual void exec(S& s, SOSC& sosc) override
    {
-      Evaluation<> e = eval.evaluateSolution(s);
+      Evaluation<> e = eval.evaluate(s);
       exec(s, e, sosc);
    }
 
@@ -73,7 +73,7 @@ public:
                //double old_f = e.evaluation();
 
                Component::safe_delete(m.applyUpdate(e, s));
-               eval.reevaluateSolution(e, s); // updates 'e'
+               eval.reevaluate(e, s); // updates 'e'
 
                //cout << "CS improvement! w:" << w << " fo=" << e.evaluation() << " (antiga fo="<< old_f << ")" << endl << endl;
 

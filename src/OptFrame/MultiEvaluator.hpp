@@ -108,11 +108,6 @@ public:
 		return sngEvaluators[index]->equals(ev1, ev2);
 	}
 
-	MultiEvaluation<> evaluateSolution(const S& s)
-	{
-		return evaluate(s.getR(), s.getADSptr());
-	}
-
     //changed to Meval without point TODO
 	virtual MultiEvaluation<> evaluate(const S& s)
 	{
@@ -133,11 +128,6 @@ public:
 	{
 		for (int e = 0; e < int(sngEvaluators.size()); e++)
 			delete sngEvaluators[e];
-	}
-
-	void reevaluateSolutionMEV(MultiEvaluation<>& mev, const S& s)
-	{
-		reevaluateMEV(mev, s.getR(),s.getADSptr());
 	}
 
 	virtual void reevaluateMEV(MultiEvaluation<>& mev, const S& s)

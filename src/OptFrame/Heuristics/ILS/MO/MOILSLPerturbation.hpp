@@ -98,7 +98,7 @@ public:
 		{
 			int x = rg.rand(ns.size());
 
-			Move<R, ADS>* m = ns[x]->validrandomMove(s);
+			Move<R, ADS>* m = ns[x]->validRandomMove(s);
 
 			if (m)
 			{
@@ -112,7 +112,7 @@ public:
 			delete m;
 		}
 
-		evaluator.reevaluateSolutionMEV(mev, s); // updates 'e'
+		evaluator.reevaluateMEV(mev, s); // updates 'e'
 	}
 
 	virtual bool compatible(string s)
@@ -223,7 +223,7 @@ public:
 			delete m;
 		}
 
-		evaluator.reevaluateSolutionMEV(mev, s); // updates 'e'
+		evaluator.reevaluateMEV(mev, s); // updates 'e'
 	}
 
 	static string idComponent()
