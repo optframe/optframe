@@ -7,3 +7,4 @@ app_*
 .cproject
 .settings
 .idea
+*.err

@@ -82,7 +82,8 @@ public:
 //template<XSolution S, XEvaluation XEv = Evaluation<>>
 //concept SolEv;
 
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+//template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class SingleObjSearch : public Component
 {
    typedef vector<XEv*> FitnessValues;

@@ -35,30 +35,30 @@ namespace optframe
 {
 
 // It seems that R is connected to S here... S<R> is rule perhaps?
-template<Representation R, XSolution S = RSolution<R>, XEvaluation XEv = Evaluation<>>
-class BRKGA: public RKGA<R>
+template<Representation R, XRSolution<R> XRS = RSolution<R>, XEvaluation XEv = Evaluation<>>
+class BRKGA: public RKGA<R, XRS, XEv>
 {
 protected:
 	double probElitism;
 
 public:
 
-	BRKGA(DecoderRandomKeys<R>& _decoder, InitialPopulation<S, XEv>& _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double probElielitismRate, double _probElitism) :
-		RKGA<R>(_decoder, _initPop, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
+	BRKGA(DecoderRandomKeys<R, XRS, XEv>& _decoder, InitialPopulation<XRS, XEv>& _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double probElielitismRate, double _probElitism) :
+		RKGA<R, XRS, XEv>(_decoder, _initPop, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
 		assert(probElitism <= 1.0);
 	}
 
-	BRKGA(DecoderRandomKeys<R>& _decoder, int key_size, unsigned numGen, unsigned popSize, double fracTOP, double fracBOT, double _probElitism) :
-			RKGA<R>(_decoder, key_size, numGen, popSize, fracTOP, fracBOT), probElitism(_probElitism)
+	BRKGA(DecoderRandomKeys<R, XRS, XEv>& _decoder, int key_size, unsigned numGen, unsigned popSize, double fracTOP, double fracBOT, double _probElitism) :
+			RKGA<R, XRS, XEv>(_decoder, key_size, numGen, popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
 		assert(probElitism <= 1.0);
 	}
 
-	BRKGA(Evaluator<R>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
-			RKGA<R>(_evaluator, key_size, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
+	BRKGA(Evaluator<XRS>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
+			RKGA<R, XRS, XEv>(_evaluator, key_size, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
 		assert(probElitism <= 1.0);
@@ -68,7 +68,7 @@ public:
 	{
 	}
 
-	virtual CopySolution<random_keys>& cross(const Population<R, XEv>& pop) const
+	virtual CopySolution<random_keys>& cross(const Population<XRS, XEv>& pop) const
 	{
 		assert(this->sz > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
 

@@ -39,8 +39,9 @@
 // http://pubsonline.informs.org/doi/abs/10.1287/ijoc.6.2.154
 namespace optframe {
 
-template<XSolution S = RSolution<random_keys>, XEvaluation XEv = Evaluation<>>
-class RandomKeysInitPop : public InitialPopulation<S, XEv>
+// generates a random population of 'random_keys' (with size 'sz')
+template<XRSolution<random_keys> RSK = RSolution<random_keys>, XEvaluation XEv = Evaluation<>>
+class RandomKeysInitPop : public InitialPopulation<RSK, XEv>
 {
 private:
    int sz;
@@ -51,15 +52,15 @@ public:
    {
    }
 
-   virtual Population<S, XEv> generatePopulation(unsigned populationSize, double timelimit) override
+   virtual Population<RSK, XEv> generatePopulation(unsigned populationSize, double timelimit) override
    {
-      Population<S, XEv> pop;
+      Population<RSK, XEv> pop;
 
       for (unsigned i = 0; i < populationSize; i++) {
          random_keys* d = new random_keys(sz);
          for (int j = 0; j < sz; j++)
-            d->at(j) = (rand() % 100000) / 100000.0;
-         S* sol = new S(d);
+            d->at(j) = (rand() % 100000) / 100000.0; // TODO: take precision from Template or from good RNG
+         RSK* sol = new RSK(d);
          pop.push_back(sol);
       }
 
@@ -67,21 +68,24 @@ public:
    }
 };
 
-template<Representation R, XRSolution<R> XRS = RSolution<random_keys>, XEvaluation XEv = Evaluation<>> // one should pass a compatible one, regarding R
+// RKGA searches on XRS solution space, by means of a decoder (R -> random_keys). TODO: this may be XRS perhaps
+// XRS is not good to be default, as it must come from outside, and be compatible
+template<Representation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>> // one should pass a compatible one, regarding R
 class RKGA : public SingleObjSearch<XRS, XEv>
 {
+   using RSK = RSolution<random_keys>;
 protected:
-   DecoderRandomKeys<R>& decoder;
+   DecoderRandomKeys<R, XRS, XEv>& decoder;
    Evaluator<XRS, XEv>* evaluator; // Check to avoid memory leaks
 
-   InitialPopulation<XRS, XEv>& initPop;
+   InitialPopulation<RSK, XEv>& initPop;
    int sz; // Check to avoid memory leaks
 
    unsigned popSize, eliteSize, randomSize;
    unsigned numGenerations;
 
 public:
-   RKGA(DecoderRandomKeys<R>& _decoder, InitialPopulation<XRS, XEv>& _initPop, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
+   RKGA(DecoderRandomKeys<R, XRS, XEv>& _decoder, InitialPopulation<RSK, XEv>& _initPop, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
      : decoder(_decoder)
      , evaluator(nullptr)
      , initPop(_initPop)
@@ -95,7 +99,7 @@ public:
       assert(randomSize + eliteSize < popSize);
    }
 
-   RKGA(DecoderRandomKeys<R>& _decoder, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
+   RKGA(DecoderRandomKeys<R, XRS, XEv>& _decoder, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
      : decoder(_decoder)
      , evaluator(nullptr)
      , initPop(*new RandomKeysInitPop(key_size))
@@ -110,7 +114,7 @@ public:
    }
 
    RKGA(Evaluator<XRS, XEv>& _evaluator, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
-     : decoder(*new DecoderRandomKeysEvaluator<random_keys>(_evaluator))
+     : decoder(*new DecoderRandomKeysEvaluator<random_keys, XRS>(_evaluator))
      , evaluator(&_evaluator)
      , initPop(*new RandomKeysInitPop(key_size))
      , sz(key_size)
@@ -131,7 +135,7 @@ public:
          delete &initPop;
    }
 
-   void decodePopulation(Population<XRS, XEv>& p)
+   void decodePopulation(Population<RSK, XEv>& p)
    {
       for (unsigned i = 0; i < p.size(); ++i) {
          //p.at(i).print();
@@ -144,12 +148,12 @@ public:
       }
    }
 
-   virtual CopySolution<random_keys>& cross(const Population<XRS, XEv>& pop) const
+   virtual RSK& cross(const Population<RSK, XEv>& pop) const
    {
       assert(sz > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
 
-      const CopySolution<random_keys>& p1 = pop.at(rand() % pop.size());
-      const CopySolution<random_keys>& p2 = pop.at(rand() % pop.size());
+      const RSK& p1 = pop.at(rand() % pop.size());
+      const RSK& p2 = pop.at(rand() % pop.size());
 
       random_keys* v = new random_keys(sz, 0.0);
       for (int i = 0; i < sz; i++)
@@ -157,17 +161,18 @@ public:
             v->at(i) = p1.getR()[i];
          else
             v->at(i) = p2.getR()[i];
-      return *new CopySolution<random_keys>(v);
+      return *new RSK(v);
    }
 
    //pair<CopySolution<random_keys>&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const CopySolution<random_keys>* _s = nullptr, const Evaluation<>* _e = nullptr)
-   virtual pair<CopySolution<random_keys>, XEv>* search(SOSC& stopCriteria, const CopySolution<random_keys>* _s = nullptr, const XEv* _e = nullptr) override
+   ///virtual pair<CopySolution<random_keys>, XEv>* search(SOSC& stopCriteria, const CopySolution<random_keys>* _s = nullptr, const XEv* _e = nullptr) override
+   virtual pair<XRS, XEv>* search(SOSC& stopCriteria, const XRS* _s = nullptr, const XEv* _e = nullptr) override
    {
       // count generations
       int count_gen = 0;
 
-      // initialize population
-      Population<S, XEv> p = initPop.generatePopulation(popSize, stopCriteria.timelimit);
+      // initialize population (of random_keys)
+      Population<RSK, XEv> p = initPop.generatePopulation(popSize, stopCriteria.timelimit);
       // decode population
       decodePopulation(p);
 
@@ -182,7 +187,7 @@ public:
       // other stopping criteria? TIME, GAP, ...
       while (count_gen < int(numGenerations)) {
          // create mutants in new population
-         Population<S, XEv> nextPop = initPop.generatePopulation(randomSize, stopCriteria.timelimit);
+         Population<RSK, XEv> nextPop = initPop.generatePopulation(randomSize, stopCriteria.timelimit);
 
          // move 'eliteSize' elements to new population
          for (unsigned i = 0; i < eliteSize; i++)
@@ -191,7 +196,7 @@ public:
 
          // populate the rest
          while (nextPop.size() < popSize) {
-            CopySolution<random_keys>* s = &cross(p);
+            RSK* s = &cross(p);
             nextPop.push_back(s);
          }
 
@@ -224,17 +229,23 @@ public:
       // sort to get best (not necessary)
       p.sort(decoder.isMinimization());
 
-      CopySolution<random_keys>& best = p.remove(0);
+      RSK& best = p.remove(0);
       pair<XEv, XRS*> pe = decoder.decode(best.getR());
       Evaluation<>& e = pe.first;
+
+
+      // WARNING: something VERY strange here... why returning random_keys and not elements?
+      // TODO: I may be wrong, but next part seems to be very wrong... how does 'override' allowed this in the past??
+
+      /*
       // ignoring second value
       if (pe.second)
          delete pe.second;
-
       //delete p;
       p.clear();
-
-      return new pair<CopySolution<random_keys>, XEv>(best, e);
+      return new pair<RSK, XEv>(best, e);
+      */
+     return new pair<XRS, XEv>(*pe.second, e);
    }
 };
 }

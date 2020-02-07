@@ -115,19 +115,23 @@ main(int argc, char** argv)
    //check.run(100, 10);
 
    cout << "will test BRKGA (n=" << tsp.p->n << ")" << endl;
-   EvaluatorPermutationRandomKeys eprk(eval, 0, tsp.p->n - 1);
-   BRKGA<RepTSP> brkga(eprk, tsp.p->n, 10000, 10, 0.4, 0.3, 0.6);
+   Evaluator<SolutionTSP>& eval2 = eval;
+   EvaluatorPermutationRandomKeys<SolutionTSP> eprk(eval2, 0, tsp.p->n - 1);
+   BRKGA<RepTSP, SolutionTSP> brkga(eprk, tsp.p->n, 10000, 10, 0.4, 0.3, 0.6);
 
    SOSC sosc;
+   // strange that this worked.... it's against 'override' pattern. Very strange!!
+   /*
    pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
    r2->first.print();
-
    pair<Evaluation<>, CopySolution<vector<int>>*> pd = eprk.decode(r2->first.getR());
    pd.second->print();
    if (eval.verify(pd.second->getR()))
       cout << "CHECK: OK" << endl;
    pd.first.print();
-
+   */
+   pair<SolutionTSP, Evaluation<>>* r2 = brkga.search(sosc);
+   r2->first.print();
    r2->second.print();
    delete r2;
 
@@ -144,25 +148,25 @@ main(int argc, char** argv)
    }
    */
 
-   vector<LocalSearch<RepTSP>*> ns_list;
-   ns_list.push_back(new BestImprovement<RepTSP>(eval, tsp2opt));
-   ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor1));
-   ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor2));
-   ns_list.push_back(new BestImprovement<RepTSP>(eval, tspor3));
-   ns_list.push_back(new BestImprovement<RepTSP>(eval, tspswap));
+   vector<LocalSearch<SolutionTSP>*> ns_list;
+   ns_list.push_back(new BestImprovement<SolutionTSP>(eval, tsp2opt));
+   ns_list.push_back(new BestImprovement<SolutionTSP>(eval, tspor1));
+   ns_list.push_back(new BestImprovement<SolutionTSP>(eval, tspor2));
+   ns_list.push_back(new BestImprovement<SolutionTSP>(eval, tspor3));
+   ns_list.push_back(new BestImprovement<SolutionTSP>(eval, tspswap));
    for (unsigned i = 0; i < ns_list.size(); i++)
       ns_list[i]->setVerbose();
 
-   VariableNeighborhoodDescent<RepTSP> VND(eval, ns_list);
+   VariableNeighborhoodDescent<SolutionTSP> VND(eval, ns_list);
    VND.setVerbose();
 
-   ILSLPerturbationLPlus2<RepTSP> pert(eval, tsp2opt, rg);
+   ILSLPerturbationLPlus2<SolutionTSP> pert(eval, tsp2opt, rg);
    pert.add_ns(tspor1);
    pert.add_ns(tspor2);
    pert.add_ns(tspor3);
    pert.add_ns(tspswap);
 
-   IteratedLocalSearchLevels<RepTSP> ils(eval, random, VND, pert, 3, 2);
+   IteratedLocalSearchLevels<SolutionTSP> ils(eval, random, VND, pert, 3, 2);
    //ils.setMessageLevel(4);
    ils.setVerbose();
    if (ils.information)
@@ -184,8 +188,8 @@ main(int argc, char** argv)
    for (unsigned i = 0; i < ns_list.size(); i++)
       delete ns_list[i];
 
-   vector<NS<RepTSP>*> v_ns;
-   vector<NSSeq<RepTSP>*> v_nsseq;
+   vector<NS<SolutionTSP>*> v_ns;
+   vector<NSSeq<SolutionTSP>*> v_nsseq;
    v_nsseq.push_back(&tsp2opt);
    v_nsseq.push_back(&tspor1);
    v_nsseq.push_back(&tspor2);
@@ -194,7 +198,7 @@ main(int argc, char** argv)
    for (unsigned i = 0; i < v_nsseq.size(); i++)
       v_ns.push_back(v_nsseq[i]);
 
-   BasicVNS<RepTSP> vns(eval, random, v_ns, v_nsseq);
+   BasicVNS<SolutionTSP> vns(eval, random, v_ns, v_nsseq);
    vns.setMessageLevel(3); // INFORMATION
    SOSC soscVNS;
    soscVNS.timelimit = 0;

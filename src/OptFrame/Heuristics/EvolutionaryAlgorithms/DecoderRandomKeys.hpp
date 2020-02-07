@@ -31,7 +31,9 @@ namespace optframe {
 typedef vector<double> random_keys;
 
 // Representation R is NOT random_keys... it's something else, related to original problem
-template<Representation R, XSolution S = RSolution<R>, XEvaluation XEv = Evaluation<>>
+//template<Representation R, XRSolution<R> XRS = RSolution<R>, XEvaluation XEv = Evaluation<>>
+// XRS is not good to be default, as it must come from outside, and be compatible
+template<Representation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>>
 class DecoderRandomKeys
 {
 public:
@@ -39,7 +41,7 @@ public:
    {
    }
 
-   virtual pair<XEv, S*> decode(const random_keys& rk) = 0;
+   virtual pair<XEv, XRS*> decode(const random_keys& rk) = 0;
 
    virtual bool isMinimization() const = 0;
 };
@@ -48,20 +50,18 @@ public:
 // Basic implementation to use class Evaluator<random_keys>
 // ========================================================
 
-// what is this class??
-///template<Representation R, XSolution S = RSolution<R>, XEvaluation XEv = Evaluation<>>
-// probably, a decoder for a solution typed 'random_keys'... strange!
-// maybe its meant to be generic... and simply use a delegated 'Evaluator'....
-template<Representation R, XSolution S = RSolution<R>, XEvaluation XEv = Evaluation<>>
-class DecoderRandomKeysEvaluator : public DecoderRandomKeys<R, S, XEv>
+// transforms random_keys into R and use given evaluator<R> to generate output XEv
+// XRS is not good to be default, as it must come from outside, and be compatible
+template<Representation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>>
+class DecoderRandomKeysEvaluator : public DecoderRandomKeys<R, XRS, XEv>
 {
 public:
 
    //using RKEvaluator = Evaluator<random_keys, OPTFRAME_DEFAULT_ADS, CopySolution<random_keys,OPTFRAME_DEFAULT_ADS>;
 
-   Evaluator<R>& evaluator;
+   Evaluator<XRS>& evaluator;
 
-   DecoderRandomKeysEvaluator(Evaluator<R>& _evaluator)
+   DecoderRandomKeysEvaluator(Evaluator<XRS>& _evaluator)
      : evaluator(_evaluator)
    {
    }
@@ -70,9 +70,9 @@ public:
    {
    }
 
-   virtual pair<XEv, S*> decode(const R& rk) override
+   virtual pair<XEv, XRS*> decode(const R& rk) override
    {
-      return pair<XEv, S*>(evaluator.evaluate(rk, nullptr), nullptr);
+      return pair<XEv, XRS*>(evaluator.evaluate(rk, nullptr), nullptr);
    }
 
    virtual bool isMinimization() const
@@ -82,9 +82,9 @@ public:
 };
 
 
-// application for R = permutation of int (vector<int>)
+// transforms 'random_keys' into a XRS solution (with R=permutation), then use Evaluator<XRS> to generate output XEv
 template<XRSolution<vector<int>> XRS, XEvaluation XEv = Evaluation<>>
-class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<vector<int>, XRS>
+class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<vector<int>, XRS, XEv>
 {
 public:
    Evaluator<XRS>& ev; // evaluator for permutation
@@ -110,10 +110,12 @@ public:
          return i.first < j.first;
       });
 
+      // R = vector<int>
       vector<int> p(v.size());
       for (unsigned i = 0; i < v.size(); i++)
          p[i] = v[i].second;
 
+      // XRS is user solution, based on 'vector<int>'      
       XRS sevp(p);
       XEv e = ev.evaluate(sevp);
 
