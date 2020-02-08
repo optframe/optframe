@@ -29,16 +29,17 @@
 
 namespace optframe {
 
-template<Representation R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+//template<Representation R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<Representation R, class ADS, BaseSolution<R,ADS> S, XEvaluation XEv = Evaluation<>>
 class VariableNeighborhoodDescentUpdateADS : public LocalSearch<S, XEv>
 {
 private:
    Evaluator<S, XEv>& ev;
-   ADSManager<S, XEv>& adsMan;
+   ADSManager<R, ADS, S>& adsMan;
    vector<LocalSearch<S, XEv>*> lsList;
 
 public:
-   VariableNeighborhoodDescentUpdateADS(Evaluator<S, XEv>& _ev, ADSManager<S, XEv>& _adsMan, vector<LocalSearch<S, XEv>*> _lsList)
+   VariableNeighborhoodDescentUpdateADS(Evaluator<S, XEv>& _ev, ADSManager<R, ADS, S>& _adsMan, vector<LocalSearch<S, XEv>*> _lsList)
      : ev(_ev)
      , adsMan(_adsMan)
      , lsList(_lsList)
@@ -130,7 +131,9 @@ public:
 };
 
 ///template<XSolution S, XEvaluation XEv = Evaluation<>>
-template<Representation R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+//template<Representation R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+// passing 'S' manually, for safety
+template<Representation R, class ADS, BaseSolution<R,ADS> S, XEvaluation XEv = Evaluation<>>
 class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<S, XEv>
 {
 public:
@@ -143,7 +146,7 @@ public:
       Evaluator<S, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      ADSManager<S, XEv>* adsMan;
+      ADSManager<R, ADS, S>* adsMan;
       hf.assign(adsMan, scanner.nextInt(), scanner.next()); // reads backwards!
 
       vector<LocalSearch<S, XEv>*> hlist;
@@ -157,7 +160,7 @@ public:
       vector<pair<string, string>> params;
       params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
 
-      params.push_back(make_pair(ADSManager<S, XEv>::idComponent(), "ADSManager function"));
+      params.push_back(make_pair(ADSManager<R, ADS, S>::idComponent(), "ADSManager function"));
 
       stringstream ss;
       ss << LocalSearch<S, XEv>::idComponent() << "[]";

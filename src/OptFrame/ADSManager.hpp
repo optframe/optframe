@@ -33,7 +33,9 @@ using namespace std;
 namespace optframe
 {
 
-template<class R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+//template<class R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+// force manual passing (for safety)
+template<class R, class ADS, BaseSolution<R,ADS> S>
 class ADSManager: public Component
 {
 

@@ -37,7 +37,9 @@ namespace optframe
 {
 
 //CheckCommand uses SRand seed TODO
-template<Representation R, class ADS, XSolution S = CopySolution<R, ADS>, XEvaluation XEv = Evaluation<>>
+//template<Representation R, class ADS, XSolution S = CopySolution<R, ADS>, XEvaluation XEv = Evaluation<>>
+// manually passing 'S' (for safety)
+template<Representation R, class ADS, BaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>>
 class CheckCommand
 {
 
@@ -67,11 +69,11 @@ private:
 	vector<NSSeq<S>*> lNSSeq;
 	vector<NSEnum<S>*> lNSEnum;
 
-	ADSManager<R, ADS>* adsMan;
+	ADSManager<R, ADS, S>* adsMan;
 
 public:
 
-	vector<ADSManager<R, ADS>*> lADSManagerComp; // optional
+	vector<ADSManager<R, ADS, S>*> lADSManagerComp; // optional
 
 	CheckCommand(bool _verbose = false) :
 			verbose(_verbose)
@@ -92,7 +94,7 @@ public:
 			cout << "checkcommand: Constructive " << lConstructive.size() << " added!" << endl;
 	}
 
-	void add(ADSManager<R, ADS>& adsMan)
+	void add(ADSManager<R, ADS, S>& adsMan)
 	{
 		lADSManagerComp.push_back(&adsMan);
 		if (verbose)

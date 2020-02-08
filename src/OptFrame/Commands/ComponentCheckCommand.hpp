@@ -364,8 +364,8 @@ public:
 			return false;
 		}
 
-		ADSManager<R, ADS>* exADSManager = nullptr;
-		vector<ADSManager<R, ADS>*> lADSManagerComp = assignVector(lADSManager, exADSManager, factory);
+		ADSManager<R, ADS, S>* exADSManager = nullptr;
+		vector<ADSManager<R, ADS, S>*> lADSManagerComp = assignVector(lADSManager, exADSManager, factory);
 
 		// cleanup auxiliar list definitions
 		Command<R, ADS, DS>::undefine("_aux_check_lconstructive", dictionary, ldictionary);
@@ -383,7 +383,7 @@ public:
 		// time to clone a solution
 		pair<int, double> timeCloneSolution(0, 0.0);
 
-		ADSManager<R, ADS>* adsMan = nullptr;
+		ADSManager<R, ADS, S>* adsMan = nullptr;
 		if (lADSManager.size() > 0)
 		{
 			Scanner scan(lADSManager.at(0));

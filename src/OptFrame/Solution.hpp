@@ -317,6 +317,11 @@ public:
 		return ss.str();
 	}
 
+   friend std::ostream& operator<<(std::ostream& os, const Solution<R, ADS>& s)
+   {
+      os << s.toString();
+      return os;
+   }
 };
 
 
@@ -481,6 +486,12 @@ public:
 		ss << "RSolution: " << *r;
 		return ss.str();
 	}
+
+   friend std::ostream& operator<<(std::ostream& os, const RSolution<R>& s)
+   {
+      os << s.toString();
+      return os;
+   }
 };
 
 

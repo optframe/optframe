@@ -76,7 +76,7 @@ public:
 
 	virtual bool canBeApplied(const S& s) override
 	{
-      const Route& rep = s.getR();
+      //const Route& rep = s.getR();
 		//return (i != j) && (i + k <= rep.size());
 		return abs(i - j) >= k;
 	}

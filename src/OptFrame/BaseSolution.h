@@ -9,6 +9,9 @@
 // this is NOT official c++20 concepts... just some for OptFrame! (based on lite concepts g++ 7)
 #include "myconcepts.h"
 
+// may require some basic printing capabilities
+#include "Util/printable.h"
+
 // the default ADS type is 'int'
 // adopting 'void' type would cause troubles in constructor/copy/move operations
 // if not used, it can be ignored with few impacts (hoping compiler will help us!)
@@ -42,8 +45,11 @@ concept bool XSolution = HasClone<Self> &&HasToString<Self>;
 
 // ==========================
 
+// general concept, just requiring operator<< for basic printability
 template <class R>
-concept bool Representation = true;
+//concept bool Representation = true;
+concept bool Representation = optframe::ostreamable<R>;
+
 
 template <class ADS>
 concept bool Structure = true;

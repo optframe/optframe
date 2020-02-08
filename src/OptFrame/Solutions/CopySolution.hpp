@@ -31,6 +31,9 @@
 #include "../Component.hpp"
 
 #include "../BaseSolution.h"
+#include "../Util/printable.h"
+
+// will require 'R', thus should require basic printability here
 
 
 // copy-based solution
@@ -276,6 +279,11 @@ public:
 		return ss.str();
 	}
 
+   friend std::ostream& operator<<(std::ostream& os, const CopySolution<R, ADS>& s)
+   {
+      os << s.toString();
+      return os;
+   }
 };
 
 template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>

@@ -21,15 +21,15 @@
 #ifndef OPTFRAME_MOVE_HPP_
 #define OPTFRAME_MOVE_HPP_
 
-#include "Solution.hpp"
-#include "Solutions/CopySolution.hpp"
 #include "Evaluation.hpp"
 #include "MoveCost.hpp"
+#include "Solution.hpp"
+#include "Solutions/CopySolution.hpp"
 
 #include "Component.hpp"
 
-#include "MultiMoveCost.hpp"
 #include "MultiEvaluation.hpp"
+#include "MultiMoveCost.hpp"
 
 //#include "Action.hpp"
 
@@ -37,122 +37,131 @@ using namespace std;
 
 typedef void OPTFRAME_DEFAULT_PROBLEM;
 
-namespace optframe
-{
+namespace optframe {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+// it used to be a 'solution space' here:
+// not anymore: template<XSolution S, XEvaluation XEv = Evaluation<>>
+// Now, 'XR' is a representation space (free of constraints),
+// which can be considered equivalent to the "solution space" (in some cases).
+// This is useful to remove all possible overheads (including clone(), toString())
+// from a very basic structure 'XR' (if user wants to).
+// This is also useful when solution is composed by smaller "parts",
+// and each part operates with independent moves (thus a fraction of real "solution space").
+// Efficient components (like Move) should use 'XR' instead of 'XSolution' (and equivalents).
+template<Representation XR, XEvaluation XEv = Evaluation<>>
 class Move : public Component
 {
 public:
+   virtual ~Move()
+   {
+   }
 
-	virtual ~Move()
-	{
-	}
+   virtual bool canBeApplied(const XR&) = 0;
 
-	virtual bool canBeApplied(const S&) = 0;
+   // returns true if the apply returns a non-null pointer
+   virtual bool hasReverse()
+   {
+      return true; // TODO: make it pure virtual "= 0"
+   }
 
-	// returns true if the apply returns a non-null pointer
-	virtual bool hasReverse()
-	{
-		return true; // TODO: make it pure virtual "= 0"
-	}
+   virtual Move<XR, XEv>* apply(XR& s) = 0;
 
-	virtual Move<S, XEv>* apply(S& s) = 0;
+   virtual Move<XR, XEv>* applyUpdate(XEv& e, XR& s)
+   {
+      // boolean 'outdated' indicates that Evaluation needs update (after Solution change)
+      // note that even if the reverse move is applied, the Evaluation will continue with
+      // the outdated status set to true. So more efficient approaches may rewrite this
+      // method, or implement efficient re-evaluation by means of the 'cost' method.
+      e.outdated = true;
+      // apply the move to R and ADS, saving the reverse (or undo) move
+      Move<XR, XEv>* rev = apply(s);
+      // update neighborhood local optimum status TODO:deprecated
+      updateNeighStatus(s);
 
-	virtual Move<S, XEv>* applyUpdate(XEv& e, S& s)
-	{
-		// boolean 'outdated' indicates that Evaluation needs update (after Solution change)
-		// note that even if the reverse move is applied, the Evaluation will continue with
-		// the outdated status set to true. So more efficient approaches may rewrite this
-		// method, or implement efficient re-evaluation by means of the 'cost' method.
-		e.outdated = true;
-		// apply the move to R and ADS, saving the reverse (or undo) move
-		Move<S, XEv>* rev = apply(s);
-		// update neighborhood local optimum status TODO:deprecated
-		updateNeighStatus(s);
+      // return reverse move (or null)
+      return rev;
+   }
 
-		// return reverse move (or null)
-		return rev;
-	}
+   // TODO: remove and unify on a single method (just varying XEv)
+   virtual Move<XR, XEv>* applyMEV(MultiEvaluation<>& mev, XR& s)
+   {
+      // boolean 'outdated' indicates that Evaluation needs update (after Solution change)
+      // note that even if the reverse move is applied, the Evaluation will continue with
+      // the outdated status set to true. So more efficient approaches may rewrite this
+      // method, or implement efficient re-evaluation by means of the 'cost' method.
+      for (unsigned nE = 0; nE < mev.size(); nE++)
+         mev.setOutdated(nE, true);
+      // apply the move to R and ADS, saving the reverse (or undo) move
+      Move<XR, XEv>* rev = apply(s);
+      // update neighborhood local optimum status TODO:deprecated
+      updateNeighStatus(s);
+      // return reverse move (or null)
+      return rev;
+   }
 
-	virtual Move<S, XEv>* applyMEV(MultiEvaluation<>& mev, S& s)
-	{
-		// boolean 'outdated' indicates that Evaluation needs update (after Solution change)
-		// note that even if the reverse move is applied, the Evaluation will continue with
-		// the outdated status set to true. So more efficient approaches may rewrite this
-		// method, or implement efficient re-evaluation by means of the 'cost' method.
-		for (unsigned nE = 0; nE < mev.size(); nE++)
-			mev.setOutdated(nE,true);
-		// apply the move to R and ADS, saving the reverse (or undo) move
-		Move<S, XEv>* rev = apply(s);
-		// update neighborhood local optimum status TODO:deprecated
-		updateNeighStatus(s);
-		// return reverse move (or null)
-		return rev;
-	}
+   // TODO: coming in one of the next versions..
+   //virtual pair<Move<XR, XEv>&, MoveCost<>*> apply(const Evaluation<>& e, R& r, ADS& ads) = 0;
 
-	// TODO: coming in one of the next versions..
-	//virtual pair<Move<S, XEv>&, MoveCost<>*> apply(const Evaluation<>& e, R& r, ADS& ads) = 0;
+   // ================== cost calculation
 
-	// ================== cost calculation
+   virtual MoveCost<>* cost(const Evaluation<>& e, const XR& s, bool allowEstimated)
+   {
+      return nullptr;
+   }
 
-	virtual MoveCost<>* cost(const Evaluation<>& e, const S& s, bool allowEstimated)
-	{
-		return nullptr;
-	}
+   // experiment for multi objective problems
+   virtual MultiMoveCost<>* costMEV(const MultiEvaluation<>& mev, const XR& s, bool allowEstimated)
+   {
+      return nullptr;
+   }
 
-	// experiment for multi objective problems
-	virtual MultiMoveCost<>* costMEV(const MultiEvaluation<>& mev, const S& s, bool allowEstimated)
-	{
-		return nullptr;
-	}
+   // ================== move independence and local search marking
 
-	// ================== move independence and local search marking
+   virtual bool independentOf(const Move<XR, XEv>& m)
+   {
+      // example: in VRP, move1 changes one route and move2 changes another... they are independent.
+      // move1.isIndependent(move2) should return true.
+      // by default, it is false (no move is independent)
+      return false;
+   }
 
-	virtual bool independentOf(const Move<S, XEv>& m)
-	{
-	    // example: in VRP, move1 changes one route and move2 changes another... they are independent.
-	    // move1.isIndependent(move2) should return true.
-	    // by default, it is false (no move is independent)
-	    return false;
-	}
+   // ================== local search marking
 
-	// ================== local search marking
+   // TODO: deprecated. replaced by updateLOS?
+   //virtual void updateNeighStatus(ADS* ads)
+   virtual void updateNeighStatus(XR& s)
+   {
+   }
 
-	// TODO: deprecated. replaced by updateLOS?
-	//virtual void updateNeighStatus(ADS* ads)
-	virtual void updateNeighStatus(S& s)
-	{
-	}
+   // TODO: force before apply(R,ADS) and after apply(S)?
+   // TODO: think about how this fits a general 'XR' structure... maybe better on 'XEv' than 'XR' itself.
+   virtual void updateLOS(XR& s, XEv& e)
+   {
+   }
 
-	// TODO: force before apply(R,ADS) and after apply(S)?
-	virtual void updateLOS(S& s, XEv& e)
-	{
-	}
+   // TODO: rethink!
+   virtual bool isPartialLocalOptimum(const XR& s)
+   {
+      // the idea is to use this flag to ignore moves that are useless,
+      // given that the solution is already in a (full) local optimum (or partial).
 
-	// TODO: rethink!
-	virtual bool isPartialLocalOptimum(const S& s)
-	{
-	    // the idea is to use this flag to ignore moves that are useless,
-	    // given that the solution is already in a (full) local optimum (or partial).
+      return false;
+   }
 
-	    return false;
-	}
+   // ================== basic comparison
 
-	// ================== basic comparison
+   virtual bool operator==(const Move<XR, XEv>& m) const = 0;
 
-	virtual bool operator==(const Move<S, XEv>& m) const = 0;
-
-	bool operator!=(const Move<S, XEv>& m) const
-	{
-		return !(*this == m);
-	}
+   bool operator!=(const Move<XR, XEv>& m) const
+   {
+      return !(*this == m);
+   }
 
    static string idComponent()
    {
-		stringstream ss;
-		ss << Component::idComponent() << ":Move";
-		return ss.str();
+      stringstream ss;
+      ss << Component::idComponent() << ":Move";
+      return ss.str();
    }
 
    virtual string id() const
@@ -160,9 +169,9 @@ public:
       return idComponent();
    }
 
-	virtual void print() const = 0;
+   virtual void print() const = 0;
 };
 
-}
+} // namespace optframe
 
 #endif /*OPTFRAME_MOVE_HPP_*/

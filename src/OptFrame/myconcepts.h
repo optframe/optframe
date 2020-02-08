@@ -89,6 +89,17 @@ concept bool basic_arithmetics =
     //{ a / b } -> std::remove_reference_t<T>;  // NOT actually necessary (until today!)
   };  
 
+
+// capability to move to ostream&
+template <class T>
+concept bool ostreamable = 
+  requires(std::ostream& os, 
+           const std::remove_reference_t<T>& obj) {
+    { os << obj } -> std::ostream&;
+  };
+
+  
+
 } // namespace optframe
 
 // ====================

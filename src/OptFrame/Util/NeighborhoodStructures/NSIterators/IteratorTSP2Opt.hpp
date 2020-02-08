@@ -47,8 +47,8 @@ protected:
 
 public:
 
-	NSIteratorTSP2Opt(const Route& _r, P* _p = nullptr) :
-			r(_r), p(_p)
+	NSIteratorTSP2Opt(const S& _s, P* _p = nullptr) :
+			r(_s.getR()), p(_p)
 	{
 		p1 = 0; // avoid non-initialization warning
 		p2 = 2; // avoid non-initialization warning

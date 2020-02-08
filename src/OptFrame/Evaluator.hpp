@@ -98,6 +98,7 @@ public:
 public:
    virtual XEv evaluate(const S&) = 0;
 
+   // TODO: verify if 'e.outdated' must be required at all times, or just specific cases
    virtual void reevaluate(XEv& e, const S& s)
    {
       if (e.outdated) {
@@ -128,7 +129,7 @@ public:
    {
       // apply move and get reverse move
       Move<S, XEv>* rev = m.apply(s);
-      // for now, must be not nullptr
+      // for now, must be not nullptr 
       assert(rev != nullptr);
       // TODO: include management for 'false' hasReverse()
       assert(m.hasReverse() && rev);
