@@ -40,7 +40,7 @@
 using namespace std;
 using namespace optframe;
 
-class PCAPInitialSolutionGreedy : public Constructive<RepPCAP>
+class PCAPInitialSolutionGreedy : public Constructive<SolutionPCAP>
 {
 private:
    PCAPProblemInstance& pPCAP;

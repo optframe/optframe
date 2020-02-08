@@ -19,7 +19,7 @@
 // USA.
 
 
-void PCAPSolCheck(PCAPProblemInstance& pPCAP, Solution<RepPCAP>& s) {
+void PCAPSolCheck(PCAPProblemInstance& pPCAP, XRSolution<RepPCAP>& s) {
 	vector<int> utilizacao;
 	for (unsigned int i = 0; i < s.getR().first.size(); i++)
 		utilizacao.push_back(0);

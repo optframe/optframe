@@ -83,9 +83,11 @@ public:
 //concept SolEv;
 
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+// if replacing types directly (no templates), concept deduction cannot appear in virtual functions. So, we need templates.
 template<XSolution S, XEvaluation XEv = Evaluation<>>
 class SingleObjSearch : public Component
 {
+   // if passing types directly here, error 'typedef declared auto'
    typedef vector<XEv*> FitnessValues;
    typedef const vector<const XEv*> ConstFitnessValues;
 

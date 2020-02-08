@@ -40,7 +40,7 @@
 using namespace std;
 using namespace optframe;
 
-class PCAPInitialSolutionRandom : public Constructive<RepPCAP>
+class PCAPInitialSolutionRandom : public Constructive<SolutionPCAP>
 {
 private:
    PCAPProblemInstance& pPCAP;

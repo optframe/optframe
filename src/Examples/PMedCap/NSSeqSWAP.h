@@ -38,7 +38,7 @@ using namespace optframe;
 namespace pmedcap
 {
 
-class MoveSWAP : public Move<RepPCAP>
+class MoveSWAP : public Move<SolutionPCAP>
 {
 public:
    int x;
@@ -53,19 +53,20 @@ public:
    {
    }
 
-   bool canBeApplied(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS*) override
+   bool canBeApplied(const SolutionPCAP& s) override
    {
       return true;
    }
 
-   Move<RepPCAP>* apply(RepPCAP& rep, OPTFRAME_DEFAULT_ADS*) override
+   Move<SolutionPCAP>* apply(SolutionPCAP& s) override
    {
+      RepPCAP& rep = s.getR();
       int aux = rep.second[x];
       rep.second[x] = med;
       return new MoveSWAP(x, aux);
    }
 
-   virtual bool operator==(const Move<RepPCAP>& _m) const
+   virtual bool operator==(const Move<SolutionPCAP>& _m) const
    {
       const MoveSWAP& m = (const MoveSWAP&)_m;
       return x == m.x;
@@ -77,7 +78,7 @@ public:
    }
 };
 
-class NSIteratorSWAP : public NSIterator<RepPCAP>
+class NSIteratorSWAP : public NSIterator<SolutionPCAP>
 {
 public:
    PCAPProblemInstance& p;
@@ -112,13 +113,13 @@ public:
       return x == p.nCidades;
    }
 
-   virtual Move<RepPCAP>* current() override
+   virtual Move<SolutionPCAP>* current() override
    {
       return new MoveSWAP(x, mediana);
    }
 };
 
-class NSSeqSWAP : public NSSeq<RepPCAP>
+class NSSeqSWAP : public NSSeq<SolutionPCAP>
 {
 public:
    PCAPProblemInstance& p;
@@ -134,14 +135,15 @@ public:
    {
    }
 
-   virtual Move<RepPCAP>* randomMove(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS*) override
+   virtual Move<SolutionPCAP>* randomMove(const SolutionPCAP& s) override
    {
+      const RepPCAP& rep = s.getR();
       int cidade = rg.rand(rep.second.size());
       int mediana = rg.rand(rep.first.size());
       return new MoveSWAP(cidade, mediana); // return a random move
    }
 
-   virtual NSIterator<RepPCAP>* getIterator(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS*) override
+   virtual NSIterator<SolutionPCAP>* getIterator(const SolutionPCAP& s) override
    {
       return new NSIteratorSWAP(p); // return an iterator to the neighbors of 'rep'
    }

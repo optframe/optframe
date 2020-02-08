@@ -38,7 +38,7 @@ using namespace optframe;
 
 #define EPSILON_PCAP 0.0001
 
-class PCAPEvaluator: public Evaluator<RepPCAP>
+class PCAPEvaluator: public Evaluator<SolutionPCAP>
 {
 private:
 	PCAPProblemInstance& pPCAP;
@@ -46,7 +46,7 @@ private:
 	// Your private vars
 
 public:
-	using Evaluator<RepPCAP>::evaluate;
+	using Evaluator<SolutionPCAP>::evaluate;
 
 	PCAPEvaluator(PCAPProblemInstance& _pPCAP) : // If necessary, add more parameters
 		pPCAP(_pPCAP)
@@ -54,8 +54,9 @@ public:
 		// Put the rest of your code here
 	}
 
-	Evaluation<> evaluate(const RepPCAP& rep, const OPTFRAME_DEFAULT_ADS*) override
+	Evaluation<> evaluate(const SolutionPCAP& s) override
 	{
+      const RepPCAP& rep = s.getR();
 		// 'rep' is the representation of the solution
 
 		double fo = 0; // Evaluation<> Function Value
