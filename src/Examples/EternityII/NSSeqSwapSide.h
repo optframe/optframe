@@ -35,7 +35,7 @@ using namespace optframe;
 namespace EtII
 {
 
-class MoveSwapSide: public Move<RepEtII>
+class MoveSwapSide: public Move<SolutionEtII>
 {
 protected:
 	int x1, y1, x2, y2;
@@ -51,8 +51,9 @@ public:
 	{
 	}
 
-	bool canBeApplied(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
+	bool canBeApplied(const SolutionEtII& s) override
 	{
+      const RepEtII& rep = s.getR();
 		bool left_upper = ((x1 == 0) && (y1 == 0)) || ((x2 == 0) && (y2 == 0));
 		bool right_upper = ((x1 == 0) && (y1 == (int)rep.getNumCols() - 1)) || ((x2 == 0) && (y2 == (int)rep.getNumCols() - 1));
 		bool left_lower = ((x1 == (int)rep.getNumRows() - 1) && (y1 == 0)) || ((x2 == (int)rep.getNumRows() - 1) && (y2 == 0));
@@ -61,8 +62,9 @@ public:
 		return !left_upper && !right_upper && !left_lower && !right_lower;
 	}
 
-	Move<RepEtII>* apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS*) override
+	Move<SolutionEtII>* apply(SolutionEtII& s) override
 	{
+      RepEtII& rep = s.getR();
 		Piece p = rep(x1, y1);
 		rep(x1, y1) = rep(x2, y2);
 		rep(x2, y2) = p;
@@ -106,8 +108,9 @@ public:
 		return new MoveSwapSide(x2, y2, x1, y1);
 	}
 
-	Move<RepEtII>* applyUpdate(Evaluation<>& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS* ads) override
+	Move<SolutionEtII>* applyUpdate(Evaluation<>& e, SolutionEtII& s) override
 	{
+      RepEtII& rep = s.getR();
 		int f = 0;
 		if (((y1 - 1) >= 0) && (rep(x1, y1).left == rep(x1, y1 - 1).right))
 			f++;
@@ -128,7 +131,7 @@ public:
 		if (((x2 + 1) < (int)rep.getNumRows()) && (rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
 			g++;
 
-		Move<RepEtII>& rev = *apply(rep, ads);
+		 Move<SolutionEtII>& rev = *apply(s);
 
 		int f2 = 0;
 		if (((y1 - 1) >= 0) && (rep(x1, y1).left == rep(x1, y1 - 1).right))
@@ -156,7 +159,7 @@ public:
 		return &rev;
 	}
 
-	virtual bool operator==(const Move<RepEtII>& _m) const
+	virtual bool operator==(const Move<SolutionEtII>& _m) const
 	{
 		const MoveSwapSide& m = (const MoveSwapSide&) _m;
 		return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2);
@@ -173,7 +176,7 @@ public:
 	}
 };
 
-class NSIteratorSwapSide: public NSIterator<RepEtII>
+class NSIteratorSwapSide: public NSIterator<SolutionEtII>
 {
 private:
 	int x1, y1, x2, y2;
@@ -256,14 +259,14 @@ public:
 		return x2 >= nRows;
 	}
 
-	virtual Move<RepEtII>* current() override
+	virtual Move<SolutionEtII>* current() override
 	{
 		return new MoveSwapSide(x1, y1, x2, y2);
 	}
 };
 
 template<class MOVE = MoveSwapSide>
-class NSSeqSwapSide: public NSSeq<RepEtII>
+class NSSeqSwapSide: public NSSeq<SolutionEtII>
 {
 private:
 	RandGen& rg;
@@ -278,8 +281,9 @@ public:
 	{
 	}
 
-	virtual Move<RepEtII>* randomMove(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
+	virtual Move<SolutionEtII>* randomMove(const SolutionEtII& s) override
 	{
+      const RepEtII& rep = s.getR();
 		int x1, y1;
 
 		if ((rg.rand(2)) == 0) // vert
@@ -310,8 +314,9 @@ public:
 		return new MOVE(x1, y1, x2, y2);
 	}
 
-	virtual NSIterator<RepEtII>* getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
+	virtual NSIterator<SolutionEtII>* getIterator(const SolutionEtII& s) override
 	{
+      const RepEtII& rep = s.getR();
 		return new NSIteratorSwapSide(rep.getNumRows(), rep.getNumCols());
 	}
 

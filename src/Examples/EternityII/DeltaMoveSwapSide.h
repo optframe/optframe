@@ -46,7 +46,7 @@ public:
 	}
 
 	/*
-	MoveCost<>* estimatedCost(const Evaluation<MemEtII>&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost<>* estimatedCost(const Evaluation<MemEtII>&, const SolutionEtII& s)
 	{
 		double f = 0;
 

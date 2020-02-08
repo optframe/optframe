@@ -42,23 +42,24 @@ extern int numEvs;
 
 namespace EtII {
 
-class EtIIEvaluator : public Evaluator<RepEtII>
+class EtIIEvaluator : public Evaluator<SolutionEtII>
 {
 private:
    ProblemInstance& pEtII;
 
 public:
-   using Evaluator<RepEtII>::evaluate;
+   using Evaluator<SolutionEtII>::evaluate;
 
    EtIIEvaluator(ProblemInstance& _pEtII)
-     : Evaluator<RepEtII>(true)
+     : Evaluator<SolutionEtII>(true)
      , pEtII(_pEtII) // DISALLOW COSTS (DEFAULT)
    {
       // Put the rest of your code here
    }
 
-   Evaluation<> evaluate(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
+   Evaluation<> evaluate(const SolutionEtII& s) override
    {
+      const RepEtII& rep = s.getR();
       //counting evaluations.
       numEvs++;
       //cout<<"##### Number of evaluates: "<<numEvs<<endl;
@@ -77,7 +78,7 @@ public:
             if (rep(i, j).down == rep(i + 1, j).up)
                fo++;
 
-      return Evaluation(fo);
+      return Evaluation<>(fo);
    }
 
    virtual bool betterThan(double f1, double f2)

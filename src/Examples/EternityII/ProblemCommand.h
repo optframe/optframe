@@ -59,7 +59,7 @@ public:
     	return "problem.EtII";
     }
 
-    bool registerComponent(Component& component, string type, string name, HeuristicFactory<RepEtII>& hf, map<string, string>& dictionary)
+    bool registerComponent(Component& component, string type, string name, HeuristicFactory<SolutionEtII>& hf, map<string, string>& dictionary)
     {
        int idx = hf.addComponent(component, type);
        stringstream ss;
@@ -67,7 +67,7 @@ public:
        return true; //defineText(name, ss.str(), dictionary);
     }
 
-	bool load(string filename, HeuristicFactory<RepEtII>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	bool load(string filename, HeuristicFactory<SolutionEtII>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 	    File* file;
 
@@ -89,7 +89,7 @@ public:
 
     	EtIIInitialSolutionGreedy& is = * new EtIIInitialSolutionGreedy(*p, hf.getRandGen());
 
-    	CopySolution<RepEtII>& s = *is.generateSolution(10); // TODO: fix time
+    	SolutionEtII& s = *is.generateSolution(10); // TODO: fix time
 
     	NSSeqRotate<DeltaMoveRotate>& nsRotate = * new NSSeqRotate<DeltaMoveRotate>(hf.getRandGen());
     	NSSeqSwapCenter<DeltaMoveSwapCenter>& nsSwapCenter = * new NSSeqSwapCenter<DeltaMoveSwapCenter>(hf.getRandGen());
@@ -119,7 +119,7 @@ public:
         return true;
     }
     
-    bool unload(HeuristicFactory<RepEtII>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+    bool unload(HeuristicFactory<SolutionEtII>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
     {
        if(p)
           delete p;

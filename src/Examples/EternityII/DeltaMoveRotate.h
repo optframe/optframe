@@ -45,8 +45,9 @@ public:
 	{
 	}
 
-	MoveCost<>* cost(const Evaluation<>&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads) override
+	MoveCost<>* cost(const Evaluation<>&, const SolutionEtII& s, bool allowEstimated) override
 	{
+      const RepEtII& rep = s.getR();
 		double f = 0;
 
 		int f1 = 0;
@@ -98,7 +99,7 @@ public:
 
 		f += (f2 - f1);
 
-		return new MoveCost (f, 0);
+		return new MoveCost<> (f, 0);
 	}
 
 	static string idComponent()

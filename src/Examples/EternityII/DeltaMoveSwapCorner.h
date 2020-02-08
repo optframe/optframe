@@ -45,8 +45,9 @@ public:
 	{
 	}
 
-	MoveCost<>* cost(const Evaluation<>&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost<>* cost(const Evaluation<>&, const SolutionEtII& s, bool allowEstimated) override
 	{
+      const RepEtII& rep = s.getR();
 		//considering the puzzle huge than 2x2
 		// corner0 -------------------------------- corner1
 		// ------------------------------------------------
@@ -219,7 +220,7 @@ public:
 
 		f = (f2 - f1) + (g2 - g1);
 
-		return new MoveCost (f, 0);
+		return new MoveCost<> (f, 0);
 	}
 
 	static string idComponent()

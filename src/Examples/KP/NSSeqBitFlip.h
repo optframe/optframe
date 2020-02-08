@@ -13,7 +13,7 @@ using namespace std;
 
 namespace KP {
 
-class MoveBitFlip : public Move<RepKP, MY_ADS>
+class MoveBitFlip : public Move<SolutionKP>
 {
 private:
    int item;
@@ -36,10 +36,10 @@ public:
 
    string id() const
    {
-      return Move<RepKP, MY_ADS>::idComponent().append(":MoveBitFlip");
+      return Move<SolutionKP>::idComponent().append(":MoveBitFlip");
    }
 
-   bool operator==(const Move<RepKP, MY_ADS>& _m) const
+   bool operator==(const Move<SolutionKP>& _m) const
    {
       const MoveBitFlip& m = (const MoveBitFlip&)_m;
       return item == m.item;
@@ -47,14 +47,14 @@ public:
 
    // Implement these methods in the .cpp file
 
-   bool canBeApplied(const RepKP& rep, const MY_ADS*) override;
+   bool canBeApplied(const SolutionKP& s) override;
 
-   Move<RepKP, MY_ADS>* apply(RepKP& rep, MY_ADS*) override;
+   Move<SolutionKP>* apply(SolutionKP& s) override;
 
-   MoveCost<>* cost(const Evaluation<>&, const RepKP& rep, const MY_ADS* ads, bool mayEstimate) override;
+   MoveCost<>* cost(const Evaluation<>&, const SolutionKP& s, bool mayEstimate) override;
 };
 
-class NSIteratorBitFlip : public NSIterator<RepKP, MY_ADS>
+class NSIteratorBitFlip : public NSIterator<SolutionKP>
 {
 private:
    int N, item;
@@ -74,10 +74,10 @@ public:
    void first() override;
    void next() override;
    bool isDone() override;
-   Move<RepKP, MY_ADS>* current() override;
+   Move<SolutionKP>* current() override;
 };
 
-class NSSeqBitFlip : public NSSeq<RepKP, MY_ADS>
+class NSSeqBitFlip : public NSSeq<SolutionKP>
 {
 private:
    // YOU MAY REMOVE THESE PARAMETERS IF YOU DON'T NEED (BUT PROBABLY WILL...)
@@ -103,10 +103,10 @@ public:
 
    string id() const
    {
-      return NSSeq<RepKP, MY_ADS>::idComponent().append(":NSSeqBitFlip");
+      return NSSeq<SolutionKP>::idComponent().append(":NSSeqBitFlip");
    }
 
-   NSIterator<RepKP, MY_ADS>* getIterator(const RepKP& rep, const MY_ADS*) override
+   NSIterator<SolutionKP>* getIterator(const SolutionKP& s) override
    {
       // return an iterator to the neighbors of 'rep'
       return new NSIteratorBitFlip(pKP.N);
@@ -114,7 +114,7 @@ public:
 
    // Implement this method in the .cpp file
 
-   Move<RepKP, MY_ADS>* randomMove(const RepKP& rep, const MY_ADS*) override;
+   Move<SolutionKP>* randomMove(const SolutionKP& s) override;
 };
 }
 

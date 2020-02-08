@@ -39,7 +39,7 @@ using namespace EtII;
 
 int main(int argc, char **argv)
 {
-	Loader<RepEtII> optframe;
+	Loader<RepEtII, OPTFRAME_DEFAULT_ADS, SolutionEtII> optframe;
 	EtIIProblemCommand etii;
 	etii.load("./EternityII/pieces_set_2/pieces_10x10.txt", optframe.factory, optframe.dictionary, optframe.ldictionary);
 

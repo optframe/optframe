@@ -45,11 +45,11 @@ public:
 	{
 	}
 
-	MoveCost<>* cost(const Evaluation<>&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost<>* cost(const Evaluation<>&, const SolutionEtII& s, bool allowEstimated) override
 	{
 		double f = 0;
 
-		return new MoveCost (f, 0);
+		return new MoveCost<> (f, 0);
 	}
 
 	static string idComponent()

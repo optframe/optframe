@@ -288,7 +288,7 @@ public:
          cout << "Warning: construction problem!" << endl;
       }
 
-      return new CopySolution<RepEtII>(*tab);
+      return new SolutionEtII(*tab);
    }
 };
 }

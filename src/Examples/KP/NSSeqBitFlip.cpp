@@ -4,19 +4,20 @@ using namespace KP;
 
 // ============ MoveBitFlip ==============
 
-bool MoveBitFlip::canBeApplied(const RepKP& rep, const MY_ADS*)
+bool MoveBitFlip::canBeApplied(const SolutionKP& s)
 {
     return true;
 }
 
-Move< RepKP , MY_ADS  >* MoveBitFlip::apply(RepKP& rep, MY_ADS*)
+Move<SolutionKP>* MoveBitFlip::apply(SolutionKP& s)
 {
+   RepKP& rep = s.getR();
     rep[item] = 1-rep[item];
     
     return new MoveBitFlip(item); 
 }
 
-MoveCost<>* MoveBitFlip::cost(const Evaluation<>&, const RepKP& rep, const MY_ADS* ads, bool mayEstimate)
+MoveCost<>* MoveBitFlip::cost(const Evaluation<>&, const SolutionKP& s, bool mayEstimate)
 {
    return NULL;
    // Implement if a more efficient evaluation of the move is available
@@ -44,7 +45,7 @@ bool NSIteratorBitFlip::isDone()
 	return item == N;
 };
 	
-Move< RepKP , MY_ADS  >* NSIteratorBitFlip::current()
+Move<SolutionKP>* NSIteratorBitFlip::current()
 {
 	return new MoveBitFlip(item);
 };
@@ -55,7 +56,7 @@ Move< RepKP , MY_ADS  >* NSIteratorBitFlip::current()
 // ============ NSSeqBitFlip ==============
 
 
-Move<RepKP , MY_ADS >* NSSeqBitFlip::randomMove(const RepKP& rep, const MY_ADS*)
+Move<SolutionKP>* NSSeqBitFlip::randomMove(const SolutionKP& s)
 {
    int item = rand()%pKP.N;
    

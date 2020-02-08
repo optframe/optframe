@@ -23,7 +23,7 @@ using namespace optframe;
 namespace KP
 {
 
-class ConstructiveGreedy: public Constructive<RepKP>
+class ConstructiveGreedy: public Constructive<SolutionKP>
 {
 private:
    ProblemInstance& pKP;

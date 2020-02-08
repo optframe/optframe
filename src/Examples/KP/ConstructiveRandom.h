@@ -23,7 +23,7 @@ using namespace optframe;
 namespace KP
 {
 
-class ConstructiveRandom: public Constructive<RepKP>
+class ConstructiveRandom: public Constructive<SolutionKP>
 {
 private:
    ProblemInstance& pKP;

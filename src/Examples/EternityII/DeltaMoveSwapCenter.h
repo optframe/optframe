@@ -45,8 +45,9 @@ public:
 	{
 	}
 
-	MoveCost<>* cost(const Evaluation<>&, const RepEtII& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	MoveCost<>* cost(const Evaluation<>&, const SolutionEtII& s, bool allowEstimated) override
 	{
+      const RepEtII& rep = s.getR();
 		// Calculus for the slot (x1, y1)
 		double f1 = 0;
 		if (rep(x1, y1).left == rep(x1, y1 - 1).right)
@@ -108,7 +109,7 @@ public:
 
 		double f = (f2 - f1) + (g2 - g1);
 
-		return new MoveCost (f, 0);
+		return new MoveCost<> (f, 0);
 	}
 
 	static string idComponent()

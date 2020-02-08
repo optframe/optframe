@@ -130,14 +130,15 @@ public:
 };
 
 // implementation of decoder for subset function (vector<bool>)
-class EvaluatorSubsetRandomKeys : public DecoderRandomKeys<vector<bool>, RSolution<vector<bool>>>
+template<XRSolution<vector<bool>> XRS, XEvaluation XEv = Evaluation<>>
+class EvaluatorSubsetRandomKeys : public DecoderRandomKeys<vector<bool>, XRS, XEv>
 {
 public:
-   Evaluator<RSolution<vector<bool>>>& ev; // evaluator for permutation
+   Evaluator<XRS>& ev; // evaluator for permutation
    int a, b;                    // decode in interval [a,b]
    double limit;                // limit to decide membership (default=0.5)
 
-   EvaluatorSubsetRandomKeys(Evaluator<RSolution<vector<bool>>>& _ev, int _a, int _b, double _limit = 0.5)
+   EvaluatorSubsetRandomKeys(Evaluator<XRS>& _ev, int _a, int _b, double _limit = 0.5)
      : ev(_ev)
      , a(_a)
      , b(_b)
@@ -146,17 +147,17 @@ public:
       assert(a <= b);
    }
 
-   virtual pair<Evaluation<>, RSolution<vector<bool>>*> decode(const random_keys& rk) override
+   virtual pair<Evaluation<>, XRS*> decode(const random_keys& rk) override
    {
       vector<bool> v(b - a + 1);
       for (unsigned i = 0; i < v.size(); i++)
          v[i] = rk[i] >= limit;
 
-      RSolution<vector<bool>> sev(v);
+      XRS sev(v);
       Evaluation<> e = ev.evaluate(sev);
 
       // you have the option to actually return a Solution<vector<bool>> for post-decoding purposes
-      return pair<Evaluation<>&, RSolution<vector<bool>>*>(e, nullptr);
+      return pair<Evaluation<>&, XRS*>(e, nullptr);
    }
 
    virtual bool isMinimization() const

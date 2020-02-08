@@ -11,8 +11,9 @@ MyEvaluator::~MyEvaluator()
 {
 }
 
-Evaluation<> MyEvaluator::evaluate(const RepKP& rep, const OPTFRAME_DEFAULT_ADS*) 
+Evaluation<> MyEvaluator::evaluate(const SolutionKP& s) 
 {
+   const RepKP& rep = s.getR();
     double fo = 0; // parcela viável
     for(int i=0; i<pKP.N; i++)
         if(rep[i] == 1)
@@ -29,7 +30,7 @@ Evaluation<> MyEvaluator::evaluate(const RepKP& rep, const OPTFRAME_DEFAULT_ADS*
 // penalizamos excesso na mochila por um fator de -1000000, ou seja, permitimos que soluções inviáveis sejam representadas, mas terão uma avaliação desinteressante         
 
     // armazenamos a avaliação (viável e inviável) em um objeto Evaluation
-    return * new Evaluation(fo, fo_inv);
+    return * new Evaluation<>(fo, fo_inv);
 }
 
 

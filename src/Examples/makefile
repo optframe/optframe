@@ -1,6 +1,6 @@
 all: pmedcap examples kp tsp hfvrpmt 
 
-examples: kp kp2 tsp etii  pmedcap opths  gfp hfvrpmt hfm modm
+examples: kp tsp etii  pmedcap opths  gfp hfvrpmt hfm modm
 
 fix_examples: svrpdsp modm
 

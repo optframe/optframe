@@ -11,7 +11,7 @@ using namespace optframe;
 // int (?)
 typedef OPTFRAME_DEFAULT_ADS MY_ADS;
 
-typedef CopySolution<RepKP> SolutionKP;
+typedef CopySolution<RepKP, MY_ADS> SolutionKP;
 
 #endif /*KP_SOLUTION_H_*/
 

@@ -34,14 +34,14 @@ using namespace optframe;
 
 namespace EtII {
 
-class MoveSwapCorner : public Move<RepEtII>
+class MoveSwapCorner : public Move<SolutionEtII>
 {
 protected:
    int x1, y1, x2, y2;
 
 public:
-   using Move<RepEtII>::apply;        // prevents name hiding
-   using Move<RepEtII>::canBeApplied; // prevents name hiding
+   using Move<SolutionEtII>::apply;        // prevents name hiding
+   using Move<SolutionEtII>::canBeApplied; // prevents name hiding
 
    MoveSwapCorner(int _x1, int _y1, int _x2, int _y2)
      : x1(_x1)
@@ -55,13 +55,14 @@ public:
    {
    }
 
-   bool canBeApplied(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
+   bool canBeApplied(const SolutionEtII& s) override
    {
       return true;
    }
 
-   Move<RepEtII>* apply(RepEtII& rep, OPTFRAME_DEFAULT_ADS*) override
+   Move<SolutionEtII>* apply(SolutionEtII& s) override
    {
+      RepEtII& rep = s.getR();
       Piece p = rep(x1, y1);
       rep(x1, y1) = rep(x2, y2);
       rep(x2, y2) = p;
@@ -81,8 +82,9 @@ public:
       return new MoveSwapCorner(x2, y2, x1, y1);
    }
 
-   Move<RepEtII>* applyUpdate(Evaluation<>& e, RepEtII& rep, OPTFRAME_DEFAULT_ADS* ads) override
+   Move<SolutionEtII>* applyUpdate(Evaluation<>& e, SolutionEtII& s) override
    {
+      RepEtII& rep = s.getR();
       int f = 0;
 
       if (rep(0, 0).right == rep(0, 1).left)
@@ -105,7 +107,7 @@ public:
       if (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).up == rep(rep.getNumRows() - 2, rep.getNumCols() - 1).down)
          f++;
 
-      Move<RepEtII>& rev = *apply(rep, ads);
+       Move<SolutionEtII>& rev = *apply(s);
 
       int f2 = 0;
 
@@ -134,7 +136,7 @@ public:
       return &rev;
    }
 
-   virtual bool operator==(const Move<RepEtII>& _m) const
+   virtual bool operator==(const Move<SolutionEtII>& _m) const
    {
       const MoveSwapCorner& m = (const MoveSwapCorner&)_m;
       return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2);
@@ -151,7 +153,7 @@ public:
    }
 };
 
-class NSIteratorSwapCorner : public NSIterator<RepEtII>
+class NSIteratorSwapCorner : public NSIterator<SolutionEtII>
 {
 private:
    int x1, y1, x2, y2;
@@ -211,14 +213,14 @@ public:
       return x2 > 1;
    }
 
-   virtual Move<RepEtII>* current() override
+   virtual Move<SolutionEtII>* current() override
    {
       return new MoveSwapCorner(x1 * (nRows - 1), y1 * (nCols - 1), x2 * (nRows - 1), y2 * (nCols - 1));
    }
 };
 
 template<class MOVE = MoveSwapCorner>
-class NSSeqSwapCorner : public NSSeq<RepEtII>
+class NSSeqSwapCorner : public NSSeq<SolutionEtII>
 {
 private:
    RandGen& rg;
@@ -233,8 +235,9 @@ public:
    {
    }
 
-   virtual Move<RepEtII>* randomMove(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
+   virtual Move<SolutionEtII>* randomMove(const SolutionEtII& s) override
    {
+      const RepEtII& rep = s.getR();
       int x1 = (rg.rand(2)) * (rep.getNumRows() - 1);
       int y1 = (rg.rand(2)) * (rep.getNumCols() - 1);
 
@@ -249,8 +252,9 @@ public:
       return new MOVE(x1, y1, x2, y2);
    }
 
-   virtual NSIterator<RepEtII>* getIterator(const RepEtII& rep, const OPTFRAME_DEFAULT_ADS*) override
+   virtual NSIterator<SolutionEtII>* getIterator(const SolutionEtII& s) override
    {
+      const RepEtII& rep = s.getR();
       // return an iterator to the neighbors of 'rep'
       return new NSIteratorSwapCorner(rep.getNumRows(), rep.getNumCols());
    }

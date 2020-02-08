@@ -33,41 +33,42 @@ main(int argc, char** argv)
    cout << "will generate solution" << endl;
    SolutionKP& s = *c1.generateSolution(10); // timelimit (10???)
    s.print();
-   Evaluation<> e = ev.evaluate(s.getR(), s.getADSptr());
+   Evaluation<> e = ev.evaluate(s);
    e.print();
    cout << "GUD" << endl;
 
-   CheckCommand<RepKP> check; // cria o módulo de testes (opcional)
-   Evaluator<RepKP >& ev1 = ev;
+   CheckCommand<RepKP, MY_ADS, SolutionKP> check; // cria o módulo de testes (opcional)
+   Evaluator<SolutionKP>& ev1 = ev;
    check.add(ev1);             // carrega a avaliação para testes
    check.add(c1);             // carrega o construtivo para testes
    check.add(ns1);            // carrega a vizinhança para testes
    check.run(100, 10);        // executa testes com 10 iterações
 
-   NSSeq<RepKP>* nsseq_bit = &ns1;
+   NSSeq<SolutionKP>* nsseq_bit = &ns1;
 
-   BasicSimulatedAnnealing<RepKP, MY_ADS> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
+   BasicSimulatedAnnealing<SolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
    SOSC sosc; // stop criteria
    pair<SolutionKP, Evaluation<>>* r = sa.search(sosc);
    r->first.print();
    r->second.print();
    delete r;
 
-   BestImprovement<RepKP, MY_ADS> bi(ev, ns1);
-   FirstImprovement<RepKP, MY_ADS> fi(ev, ns1);
-   HillClimbing<RepKP, MY_ADS> sd(ev, bi);
-   HillClimbing<RepKP, MY_ADS> pm(ev, fi);
-   RandomDescentMethod<RepKP, MY_ADS> rdm(ev, ns1, 10);
+   BestImprovement<SolutionKP> bi(ev, ns1);
+   FirstImprovement<SolutionKP> fi(ev, ns1);
+   HillClimbing<SolutionKP> sd(ev, bi);
+   HillClimbing<SolutionKP> pm(ev, fi);
+   RandomDescentMethod<SolutionKP> rdm(ev, ns1, 10);
    sd.search(s, e, sosc).second.print();  // executa e imprime HC + BI
    pm.search(s, e, sosc).second.print();  // executa e imprime HC + FI
    rdm.search(s, e, sosc).second.print(); // executa e imprime RDM com 10 iterações
 
    delete &s;
 
-   EvaluatorSubsetRandomKeys eprk(ev1, 0, p.N - 1);
-   BRKGA<RepKP> brkga(eprk, p.N, 1000, 30, 0.4, 0.3, 0.6);
+   EvaluatorSubsetRandomKeys<SolutionKP> eprk(ev1, 0, p.N - 1);
+   BRKGA<RepKP, SolutionKP> brkga(eprk, p.N, 1000, 30, 0.4, 0.3, 0.6);
 
-   pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
+   //pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
+   pair<SolutionKP, Evaluation<>>* r2 = brkga.search(sosc);
    r2->first.print();
    r2->second.print();
    delete r2;
