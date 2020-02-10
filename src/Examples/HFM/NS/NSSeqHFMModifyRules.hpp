@@ -13,7 +13,7 @@ using namespace std;
 namespace HFM
 {
 
-class MoveHFMModifyRule: public Move<RepHFM, OPTFRAME_DEFAULT_ADS>
+class MoveHFMModifyRule: public Move<SolutionHFM>
 {
 private:
 	int r, o;
@@ -32,13 +32,14 @@ public:
 	{
 	}
 
-	bool canBeApplied(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*)
+	bool canBeApplied(const SolutionHFM& s) override
 	{
 		return true;
 	}
 
-	Move<RepHFM, OPTFRAME_DEFAULT_ADS>* apply(RepHFM& rep, OPTFRAME_DEFAULT_ADS*)
+	Move<SolutionHFM>* apply(SolutionHFM& s) override
 	{
+      RepHFM& rep = s.getR();
 		if (r == -1)
 			return new MoveHFMModifyRule(-1, -1, -1, -1, -1);
 
@@ -82,13 +83,13 @@ public:
 		return new MoveHFMModifyRule(r, o, applyValue, !sign, vectorType);
 	}
 
-	virtual bool operator==(const Move<RepHFM, OPTFRAME_DEFAULT_ADS>& _m) const
+	virtual bool operator==(const Move<SolutionHFM>& _m) const
 	{
 		const MoveHFMModifyRule& m = (const MoveHFMModifyRule&) _m;
 		return ((m.r == r) && (m.o == o) && (m.sign == sign));
 	}
 
-	void print() const
+	void print() const override
 	{
 		cout << "MoveNEIGHModifyRule( vector: " << r << " : ";
 		cout << " option " << o << " <=>  sign " << sign << "vectorType " << vectorType << " )";
@@ -97,7 +98,7 @@ public:
 }
 ;
 
-class NSIteratorHFMModifyRules: public NSIterator<RepHFM, OPTFRAME_DEFAULT_ADS>
+class NSIteratorHFMModifyRules: public NSIterator<SolutionHFM>
 {
 private:
 	MoveHFMModifyRule* m;
@@ -121,7 +122,7 @@ public:
 
 	}
 
-	virtual void first()
+	virtual void first() override
 	{
 		int nShakes = vUpdateValues.size();
 		int options = rep.singleFuzzyRS.size(); //rep.size() options
@@ -170,12 +171,12 @@ public:
 
 	}
 
-	virtual bool isDone()
+	virtual bool isDone() override
 	{
 		return m == nullptr;
 	}
 
-	virtual Move<RepHFM, OPTFRAME_DEFAULT_ADS>* current()
+	virtual Move<SolutionHFM>* current() override
 	{
 		if (isDone())
 		{
@@ -189,7 +190,7 @@ public:
 
 };
 
-class NSSeqHFMModifyRules: public NSSeq<RepHFM, OPTFRAME_DEFAULT_ADS>
+class NSSeqHFMModifyRules: public NSSeq<SolutionHFM>
 {
 private:
 	HFMProblemInstance& pEFP;
@@ -230,9 +231,9 @@ public:
 	{
 	}
 
-	virtual Move<RepHFM, OPTFRAME_DEFAULT_ADS>* randomMove(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*)
+	virtual Move<SolutionHFM>* randomMove(const SolutionHFM& s) override
 	{
-
+      const RepHFM& rep = s.getR();
 		int vectorType = rg.rand(N_Inputs_Types);
 		int o = -1;
 		int r = -1;
@@ -282,12 +283,12 @@ public:
 		return new MoveHFMModifyRule(r, o, applyValue, sign, vectorType); // return a random move
 	}
 
-	virtual NSIterator<RepHFM, OPTFRAME_DEFAULT_ADS>* getIterator(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*)
+	virtual NSIterator<SolutionHFM>* getIterator(const SolutionHFM& s) override
 	{
-		return new NSIteratorHFMModifyRules(rep, pEFP, vUpdateValues); // return an iterator to the neighbors of 'rep'
+		return new NSIteratorHFMModifyRules(s.getR(), pEFP, vUpdateValues); // return an iterator to the neighbors of 'rep'
 	}
 
-	virtual string toString() const
+	virtual string toString() const override
 	{
 		stringstream ss;
 		ss << "NSSeqHFMModifyRules with move: ";

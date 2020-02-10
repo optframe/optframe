@@ -24,7 +24,7 @@ using namespace optframe;
 namespace HFM
 {
 
-class ConstructiveRandom: public Constructive<RepHFM>
+class ConstructiveRandom: public Constructive<SolutionHFM>
 {
 private:
 	HFMProblemInstance& pEFP;

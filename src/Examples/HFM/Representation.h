@@ -200,5 +200,7 @@ ostream & operator<<(ostream & s, const RepHFM rep)
  }
  */
 
+typedef Solution<RepHFM> SolutionHFM;
+
 #endif /*HFM_REPRESENTATION_H_*/
 

@@ -13,7 +13,7 @@ using namespace std;
 namespace HFM
 {
 
-class MoveHFMChangeSingleInput: public Move<RepHFM, OPTFRAME_DEFAULT_ADS>
+class MoveHFMChangeSingleInput: public Move<SolutionHFM>
 {
 private:
 	int rule;
@@ -33,8 +33,9 @@ public:
 	{
 	}
 
-	bool canBeApplied(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*)
+	bool canBeApplied(const SolutionHFM& s) override
 	{
+      const RepHFM& rep = s.getR();
 		bool minimumLag = false;
 		bool maxLagCheck = false;
 		bool notNull1 = false;
@@ -57,9 +58,9 @@ public:
 		return minimumLag && maxLagCheck && notNull1 && notNull2;
 	}
 
-	Move<RepHFM, OPTFRAME_DEFAULT_ADS>* apply(RepHFM& rep, OPTFRAME_DEFAULT_ADS*)
+	Move<SolutionHFM>* apply(SolutionHFM& s) override
 	{
-
+      RepHFM& rep = s.getR();
 		if (!sign)
 			rep.singleIndex[rule].second += X;
 		else
@@ -71,13 +72,13 @@ public:
 		return new MoveHFMChangeSingleInput(rule, !sign, maxLag, maxUpperLag, X);
 	}
 
-	virtual bool operator==(const Move<RepHFM, OPTFRAME_DEFAULT_ADS>& _m) const
+	virtual bool operator==(const Move<SolutionHFM>& _m) const
 	{
 		const MoveHFMChangeSingleInput& m = (const MoveHFMChangeSingleInput&) _m;
 		return ((m.rule == rule) && (m.sign == sign) && (m.maxLag == maxLag) && (m.maxUpperLag == maxUpperLag) && (m.X == X));
 	}
 
-	void print() const
+	void print() const override
 	{
 		cout << "MoveNEIGHChangeSingleInput( vector:  rule " << rule << " <=>  sign " << sign << "\t X:" << X << "\t maxLag " << maxLag << "\t maxUpperLag " << maxUpperLag << " )";
 		cout << endl;
@@ -85,7 +86,7 @@ public:
 }
 ;
 
-class NSIteratorHFMChangeSingleInput: public NSIterator<RepHFM, OPTFRAME_DEFAULT_ADS>
+class NSIteratorHFMChangeSingleInput: public NSIterator<SolutionHFM>
 {
 private:
 	MoveHFMChangeSingleInput* m;
@@ -108,7 +109,7 @@ public:
 			delete moves[i];
 	}
 
-	virtual void first()
+	virtual void first() override
 	{
 		int X = 1;
 		for (int rule = 0; rule < (int) rep.singleIndex.size(); rule++)
@@ -127,7 +128,7 @@ public:
 			m = nullptr;
 	}
 
-	virtual void next()
+	virtual void next() override
 	{
 		index++;
 		if (index < (int) moves.size())
@@ -136,12 +137,12 @@ public:
 			m = nullptr;
 	}
 
-	virtual bool isDone()
+	virtual bool isDone() override
 	{
 		return m == nullptr;
 	}
 
-	virtual Move<RepHFM, OPTFRAME_DEFAULT_ADS>* current()
+	virtual Move<SolutionHFM>* current() override
 	{
 		if (isDone())
 		{
@@ -155,7 +156,7 @@ public:
 
 };
 
-class NSSeqHFMChangeSingleInput: public NSSeq<RepHFM>
+class NSSeqHFMChangeSingleInput: public NSSeq<SolutionHFM>
 {
 private:
 	HFMProblemInstance& pEFP;
@@ -173,8 +174,9 @@ public:
 	{
 	}
 
-	virtual Move<RepHFM, OPTFRAME_DEFAULT_ADS>* randomMove(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*)
+	virtual Move<SolutionHFM>* randomMove(const SolutionHFM& s) override
 	{
+      const RepHFM& rep = s.getR();
 		int MAXCHANGE = 5;
 		int X = rg.rand(MAXCHANGE) + 1;
 		int rule = -1;
@@ -192,12 +194,12 @@ public:
 		return new MoveHFMChangeSingleInput(rule, sign, maxLag, maxUpperLag, X); // return a random move
 	}
 
-	virtual NSIterator<RepHFM, OPTFRAME_DEFAULT_ADS>* getIterator(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*)
+	virtual NSIterator<SolutionHFM>* getIterator(const SolutionHFM& s) override
 	{
-		return new NSIteratorHFMChangeSingleInput(rep, vMaxLag, vMaxUpperLag); // return an iterator to the neighbors of 'rep'
+		return new NSIteratorHFMChangeSingleInput(s.getR(), vMaxLag, vMaxUpperLag); // return an iterator to the neighbors of 'rep'
 	}
 
-	virtual string toString() const
+	virtual string toString() const override
 	{
 		stringstream ss;
 		ss << "NSSeqHFMChangeSingleInput";

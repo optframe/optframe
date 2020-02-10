@@ -41,7 +41,7 @@ enum PerformanceIndicator
    ALL_EVALUATIONS
 };
 
-class HFMEvaluator : public Evaluator<RepHFM, OPTFRAME_DEFAULT_ADS>
+class HFMEvaluator : public Evaluator<SolutionHFM>
 {
 private:
    HFMProblemInstance& pEFP;
@@ -83,8 +83,9 @@ public:
    {
    }
 
-   EvaluationEFP evaluate(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*) override
+   EvaluationEFP evaluate(const SolutionHFM& s) override
    {
+      const RepHFM& rep = s.getR();
       //Fo vector with different metrics calculations
       vector<double>* foIndicator = evaluateAll(rep, optMetric);
 

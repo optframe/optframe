@@ -13,7 +13,7 @@ using namespace std;
 namespace HFM
 {
 
-class MoveNEIGHVAlpha: public Move<RepHFM, OPTFRAME_DEFAULT_ADS>
+class MoveNEIGHVAlpha: public Move<SolutionHFM>
 {
 private:
 	int index;
@@ -32,13 +32,14 @@ public:
 	{
 	}
 
-	bool canBeApplied(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*)
+	bool canBeApplied(const SolutionHFM& s) override
 	{
 		return true;
 	}
 
-	Move<RepHFM, OPTFRAME_DEFAULT_ADS>* apply(RepHFM& rep, OPTFRAME_DEFAULT_ADS*)
+	Move<SolutionHFM>* apply(SolutionHFM& s) override
 	{
+      RepHFM& rep = s.getR();
 		if (sign == 0)
 			rep.vAlpha[index] += applyValue;
 		else
@@ -47,13 +48,13 @@ public:
 		return new MoveNEIGHVAlpha(index, applyValue, !sign);
 	}
 
-	virtual bool operator==(const Move<RepHFM, OPTFRAME_DEFAULT_ADS>& _m) const
+	virtual bool operator==(const Move<SolutionHFM>& _m) const
 	{
 		const MoveNEIGHVAlpha& m = (const MoveNEIGHVAlpha&) _m;
 		return ((m.applyValue == applyValue) && (m.index == index) && (m.sign == sign));
 	}
 
-	void print() const
+	void print() const override
 	{
 		cout << "MoveNEIGHVAlpha( vector: " << applyValue << " : ";
 		cout << " index " << index << " <=>  sign " << sign << " )";
@@ -62,7 +63,7 @@ public:
 }
 ;
 
-class NSIteratorNEIGHVAlpha: public NSIterator<RepHFM, OPTFRAME_DEFAULT_ADS>
+class NSIteratorNEIGHVAlpha: public NSIterator<SolutionHFM>
 {
 private:
 	MoveNEIGHVAlpha* m;
@@ -85,7 +86,7 @@ public:
 
 	}
 
-	virtual void first()
+	virtual void first() override
 	{
 		vector<double> values;
 		double mean = pEFP.getMean(0); //mean from the targetfile
@@ -116,7 +117,7 @@ public:
 			m = nullptr;
 	}
 
-	virtual void next()
+	virtual void next() override
 	{
 		index++;
 		if (index < (int) moves.size())
@@ -127,12 +128,12 @@ public:
 			m = nullptr;
 	}
 
-	virtual bool isDone()
+	virtual bool isDone() override
 	{
 		return m == nullptr;
 	}
 
-	virtual Move<RepHFM, OPTFRAME_DEFAULT_ADS>* current()
+	virtual Move<SolutionHFM>* current() override
 	{
 		if (isDone())
 		{
@@ -147,7 +148,7 @@ public:
 };
 
 //This NS is used for adapting weights of an approximation of the estimations
-class NSSeqNEIGHVAlpha: public NSSeq<RepHFM>
+class NSSeqNEIGHVAlpha: public NSSeq<SolutionHFM>
 {
 private:
 	HFMProblemInstance& pEFP;
@@ -165,9 +166,9 @@ public:
 	{
 	}
 
-	virtual Move<RepHFM, OPTFRAME_DEFAULT_ADS>* randomMove(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*)
+	virtual Move<SolutionHFM>* randomMove(const SolutionHFM& s) override
 	{
-
+      const RepHFM& rep = s.getR();
 		int i = rg.rand(rep.vAlpha.size());
 
 		bool sign = rg.rand(2);
@@ -198,12 +199,12 @@ public:
 		return new MoveNEIGHVAlpha(i, applyValue, sign); // return a random move
 	}
 
-	virtual NSIterator<RepHFM, OPTFRAME_DEFAULT_ADS>& getIterator(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS&)
+	virtual NSIterator<SolutionHFM>* getIterator(const SolutionHFM& s) override
 	{
-		return *new NSIteratorNEIGHVAlpha(rep, pEFP); // return an iterator to the neighbors of 'rep'
+		return new NSIteratorNEIGHVAlpha(s.getR(), pEFP); // return an iterator to the neighbors of 'rep'
 	}
 
-	virtual string toString() const
+	virtual string toString() const override
 	{
 		stringstream ss;
 		ss << "NSSeqHFMChangeFuzzyAproxVAlpha with move: ";

@@ -13,7 +13,7 @@ using namespace std;
 namespace HFM
 {
 
-class MoveHFMRemoveSingleInput: public Move<RepHFM, OPTFRAME_DEFAULT_ADS>
+class MoveHFMRemoveSingleInput: public Move<SolutionHFM>
 {
 private:
 	int rule;
@@ -34,13 +34,15 @@ public:
 	{
 	}
 
-	bool canBeApplied(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*)
+	bool canBeApplied(const SolutionHFM& s) override
 	{
+      const RepHFM& rep = s.getR();
 		return ((rule >= 0) && (rule < (int) rep.singleIndex.size()) && ((int) rep.singleIndex.size() > 1));
 	}
 
-	Move<RepHFM, OPTFRAME_DEFAULT_ADS>* apply(RepHFM& rep, OPTFRAME_DEFAULT_ADS*)
+	Move<SolutionHFM>* apply(SolutionHFM& s) override
 	{
+      RepHFM& rep = s.getR();
 		pair<int, int> tempSingleIndexOld;
 		vector<double> tempSingleFuzzyRSOld;
 
@@ -67,13 +69,13 @@ public:
 
 	}
 
-	virtual bool operator==(const Move<RepHFM, OPTFRAME_DEFAULT_ADS>& _m) const
+	virtual bool operator==(const Move<SolutionHFM>& _m) const
 	{
 		const MoveHFMRemoveSingleInput& m = (const MoveHFMRemoveSingleInput&) _m;
 		return ((m.rule == rule) && (m.reverse == reverse));
 	}
 
-	void print() const
+	void print() const override
 	{
 		cout << "MoveNEIGHRemoveSingleInput( vector:  rule " << rule << " <=>  reverse " << reverse << " )";
 		cout << endl;
@@ -81,7 +83,7 @@ public:
 }
 ;
 
-class NSIteratorHFMRemoveSingleInput: public NSIterator<RepHFM, OPTFRAME_DEFAULT_ADS>
+class NSIteratorHFMRemoveSingleInput: public NSIterator<SolutionHFM>
 {
 private:
 	MoveHFMRemoveSingleInput* m;
@@ -103,7 +105,7 @@ public:
 			delete moves[i];
 	}
 
-	virtual void first()
+	virtual void first() override
 	{
 		pair<int, int> tempSingleIndexOld;
 		vector<double> tempSingleFuzzyRSOld;
@@ -132,12 +134,12 @@ public:
 			m = nullptr;
 	}
 
-	virtual bool isDone()
+	virtual bool isDone() override
 	{
 		return m == nullptr;
 	}
 
-	virtual Move<RepHFM, OPTFRAME_DEFAULT_ADS>* current()
+	virtual Move<SolutionHFM>* current() override
 	{
 		if (isDone())
 		{
@@ -151,7 +153,7 @@ public:
 
 };
 
-class NSSeqHFMRemoveSingleInput: public NSSeq<RepHFM>
+class NSSeqHFMRemoveSingleInput: public NSSeq<SolutionHFM>
 {
 private:
 	RandGen& rg;
@@ -168,9 +170,9 @@ public:
 	{
 	}
 
-	virtual Move<RepHFM, OPTFRAME_DEFAULT_ADS>* randomMove(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*)
+	virtual Move<SolutionHFM>* randomMove(const SolutionHFM& s)
 	{
-
+      const RepHFM& rep = s.getR();
 		int rule = -1;
 		if (rep.singleIndex.size() > 0)
 			rule = rg.rand(rep.singleIndex.size());
@@ -181,12 +183,13 @@ public:
 		return new MoveHFMRemoveSingleInput(rule, false, tempSingleIndexOld, tempSingleFuzzyRSOld); // return a random move
 	}
 
-	virtual NSIterator<RepHFM, OPTFRAME_DEFAULT_ADS>* getIterator(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*)
+	virtual NSIterator<SolutionHFM>* getIterator(const SolutionHFM& s) override
 	{
+      const RepHFM& rep = s.getR();
 		return new NSIteratorHFMRemoveSingleInput(rep); // return an iterator to the neighbors of 'rep'
 	}
 
-	virtual string toString() const
+	virtual string toString() const override
 	{
 		stringstream ss;
 		ss << "NSSeqNEIGHRemoveSingleInput";

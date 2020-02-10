@@ -12,7 +12,7 @@
 using namespace std;
 namespace HFM {
 
-class MoveNEIGHAddSingleInput : public Move<RepHFM, OPTFRAME_DEFAULT_ADS>
+class MoveNEIGHAddSingleInput : public Move<SolutionHFM>
 {
 private:
    int file, K;
@@ -32,14 +32,15 @@ public:
    {
    }
 
-   bool canBeApplied(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*) override
+   bool canBeApplied(const SolutionHFM& rep) override
    {
       bool currentSampleFromTarget = ((file == 0) && (K == 0));
       return !currentSampleFromTarget;
    }
 
-   Move<RepHFM, OPTFRAME_DEFAULT_ADS>* apply(RepHFM& rep, OPTFRAME_DEFAULT_ADS*) override
+   Move<SolutionHFM>* apply(SolutionHFM& s) override
    {
+      RepHFM& rep = s.getR();
       if (!reverse) {
          rep.singleIndex.push_back(make_pair(file, K));
          if (K > rep.earliestInput)
@@ -62,13 +63,13 @@ public:
       return new MoveNEIGHAddSingleInput(file, K, rulesAndWeights, !reverse);
    }
 
-   virtual bool operator==(const Move<RepHFM, OPTFRAME_DEFAULT_ADS>& _m) const
+   virtual bool operator==(const Move<SolutionHFM>& _m) const
    {
       const MoveNEIGHAddSingleInput& m = (const MoveNEIGHAddSingleInput&)_m;
       return ((m.file == file) && (m.K == K) && (m.rulesAndWeights == rulesAndWeights));
    }
 
-   void print() const
+   void print() const override
    {
       cout << "MoveNEIGHAddSingleInput( vector:  explatonary variable " << file << " <=>  k " << K;
       cout << "rules and weights " << rulesAndWeights << " )";
@@ -76,7 +77,7 @@ public:
    }
 };
 
-class NSIteratorNEIGHAddSingleInput : public NSIterator<RepHFM, OPTFRAME_DEFAULT_ADS>
+class NSIteratorNEIGHAddSingleInput : public NSIterator<SolutionHFM>
 {
 private:
    const RepHFM& rep;
@@ -152,7 +153,7 @@ public:
       return m == nullptr;
    }
 
-   virtual Move<RepHFM, OPTFRAME_DEFAULT_ADS>* current() override
+   virtual Move<SolutionHFM>* current() override
    {
       if (isDone()) {
          cout << "There isnt any current element!" << endl;
@@ -164,7 +165,7 @@ public:
    }
 };
 
-class NSSeqNEIGHAddSingleInput : public NSSeq<RepHFM>
+class NSSeqNEIGHAddSingleInput : public NSSeq<SolutionHFM>
 {
 private:
    HFMProblemInstance& pEFP;
@@ -185,8 +186,9 @@ public:
    {
    }
 
-   virtual Move<RepHFM, OPTFRAME_DEFAULT_ADS>* randomMove(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*) override
+   virtual Move<SolutionHFM>* randomMove(const SolutionHFM& s) override
    {
+      //const RepHFM& rep = s.getR();
       //TODO - Check the possibility of add negative K values
       int nEXV = rg.rand(pEFP.getNumberExplanatoryVariables());
       int maxLag = vMaxLag[nEXV];
@@ -197,7 +199,7 @@ public:
 
       int mean = pEFP.getMean(nEXV);
       int stdDesv = pEFP.getStdDesv(nEXV);
-      double meanWeight = pEFP.getMean(0); //File 0 is the target file
+      //double meanWeight = pEFP.getMean(0); //File 0 is the target file
       double stdDesvWeight = pEFP.getStdDesv(0);
 
       double greater = rg.randG(mean, stdDesv);
@@ -214,12 +216,12 @@ public:
       return new MoveNEIGHAddSingleInput(nEXV, K, rulesAndWeights, false); // return a random move
    }
 
-   virtual NSIterator<RepHFM, OPTFRAME_DEFAULT_ADS>* getIterator(const RepHFM& rep, const OPTFRAME_DEFAULT_ADS*) override
+   virtual NSIterator<SolutionHFM>* getIterator(const SolutionHFM& s) override
    {
-      return new NSIteratorNEIGHAddSingleInput(rep, vMaxLag, vMaxUpperLag, pEFP, rg); // return an iterator to the neighbors of 'rep'
+      return new NSIteratorNEIGHAddSingleInput(s.getR(), vMaxLag, vMaxUpperLag, pEFP, rg); // return an iterator to the neighbors of 'rep'
    }
 
-   virtual string toString() const
+   virtual string toString() const override
    {
       stringstream ss;
       ss << "NSSeqNEIGHAddSingleInput";

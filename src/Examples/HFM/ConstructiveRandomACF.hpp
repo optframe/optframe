@@ -21,7 +21,7 @@ using namespace std;
 
 namespace HFM {
 
-class ConstructiveACF : public Constructive<RepHFM>
+class ConstructiveACF : public Constructive<SolutionHFM>
 {
 private:
    HFMProblemInstance& pEFP;

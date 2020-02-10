@@ -30,7 +30,7 @@ using namespace scannerpp;
 namespace HFM
 {
 
-class HFMMultiEvaluator: public MultiEvaluator<RepHFM, OPTFRAME_DEFAULT_ADS>
+class HFMMultiEvaluator: public MultiEvaluator<SolutionHFM>
 {
 	HFMEvaluator& evalEFP;
 public:
@@ -46,8 +46,9 @@ public:
 	}
 
 
-	MultiEvaluation<> evaluate(const RepHFM& r, const OPTFRAME_DEFAULT_ADS* ads)
+	MultiEvaluation<> evaluate(const SolutionHFM& s) override
 	{
+      const RepHFM& r = s.getR();
 		MultiEvaluation<> nev;
 
 		vector<double>* foIndicator = evalEFP.evaluateAll(r, ALL_EVALUATIONS);
@@ -65,12 +66,12 @@ public:
 		return nev;
 	}
 
-	virtual void reevaluateMEV(MultiEvaluation<>& mev, const RepHFM& r, const OPTFRAME_DEFAULT_ADS* ads)
+	virtual void reevaluateMEV(MultiEvaluation<>& mev, const SolutionHFM& s) override
 	{
-		mev = evaluate(r,ads);
+		mev = evaluate(s);
 	}
 
-	void addEvaluator(Evaluator<RepHFM, OPTFRAME_DEFAULT_ADS>& ev)
+	void addEvaluator(Evaluator<SolutionHFM>& ev)
 	{
 		cout<<"I should not add anyone! HFM MEV"<<endl;
 		getchar();

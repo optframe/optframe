@@ -25,7 +25,7 @@ struct esParameters
 	vector<double> vIndexAlphasParams;
 };
 
-class EFPESContinous: public ESContinous<RepHFM, OPTFRAME_DEFAULT_ADS, esParameters>
+class EFPESContinous: public ESContinous<RepHFM, OPTFRAME_DEFAULT_ADS, esParameters, SolutionHFM>
 {
 private:
 	RandGen& rg;
@@ -35,10 +35,10 @@ private:
 
 public:
 
-	using ESContinous<RepHFM, OPTFRAME_DEFAULT_ADS,esParameters>::search; // prevents name hiding
+	using ESContinous<RepHFM, OPTFRAME_DEFAULT_ADS,esParameters, SolutionHFM>::search; // prevents name hiding
 
-	EFPESContinous(HFMEvaluator& _eval, Constructive<RepHFM>& _constructive, vector<NSSeq<RepHFM>*> _vNS, LocalSearch<RepHFM>& _ls, int _mi, int _lambda, int _gMax, RandGen& _rg, double _initialDesv, double _mutationDesv) :
-			ESContinous<RepHFM, OPTFRAME_DEFAULT_ADS, esParameters>(_eval, _constructive, _vNS, _ls, _mi, _lambda, _gMax), rg(_rg), initialDesv(_initialDesv), mutationDesv(_mutationDesv)
+	EFPESContinous(HFMEvaluator& _eval, Constructive<SolutionHFM>& _constructive, vector<NSSeq<SolutionHFM>*> _vNS, LocalSearch<SolutionHFM>& _ls, int _mi, int _lambda, int _gMax, RandGen& _rg, double _initialDesv, double _mutationDesv) :
+			ESContinous<RepHFM, OPTFRAME_DEFAULT_ADS, esParameters, SolutionHFM>(_eval, _constructive, _vNS, _ls, _mi, _lambda, _gMax), rg(_rg), initialDesv(_initialDesv), mutationDesv(_mutationDesv)
 	{
 
 	}
