@@ -19,7 +19,8 @@
 
 namespace HFMVRP {
 
-class HFMVRPEvaluator: public Evaluator<RepHFMVRP, AdsHFMVRP> {
+//class HFMVRPEvaluator: public Evaluator<RepHFMVRP, AdsHFMVRP> {
+   class HFMVRPEvaluator: public Evaluator<SolutionHFMVRP> {
 private:
 	ProblemInstance& pHFMVRP;
 
@@ -36,9 +37,11 @@ public:
 	virtual ~HFMVRPEvaluator() {
 	}
 
-	EvaluationHFMVRP evaluate(const RepHFMVRP& rep, const AdsHFMVRP*) override {
+	EvaluationHFMVRP evaluate(const SolutionHFMVRP& s) override
+   {
+      //const RepHFMVRP& rep, const AdsHFMVRP*) override {
 		// 'rep' is the representation of the solution
-
+      const RepHFMVRP& rep = s.getR();
 		double fo_q = 0;
 		double fo_inv = 0;
 

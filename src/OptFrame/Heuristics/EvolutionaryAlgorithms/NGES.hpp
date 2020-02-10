@@ -143,7 +143,7 @@ struct NGESInd
 };
 
 //CADA INDIVIDUO EH UM PAR DE SOLUCAO E UMA TUPLE COM O PARAMETROS DA ESTRATEGIA
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R, ADS> S = CopySolution<R, ADS>>
+template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R, ADS> S = CopySolution<R, ADS>, XEvaluation XEv = Evaluation<>>
 class NGES : public SingleObjSearch<S, XEv>
 {
 private:

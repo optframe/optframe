@@ -41,22 +41,23 @@ using namespace optframe;
 namespace OptHS
 {
 
-class OptHSEvaluator: public Evaluator<RepOptHS>
+class OptHSEvaluator: public Evaluator<SolutionOptHS>
 {
 private:
 	ProblemInstance& p;
 
 public:
 
-	using Evaluator<RepOptHS>::evaluate; // prevents name hiding
+	using Evaluator<SolutionOptHS>::evaluate; // prevents name hiding
 
 	OptHSEvaluator(ProblemInstance& _p) :
 			p(_p)
 	{
 	}
 
-	Evaluation<> evaluate(const RepOptHS& r, const OPTFRAME_DEFAULT_ADS*)
+	Evaluation<> evaluate(const SolutionOptHS& s)
 	{
+      const RepOptHS& r = s.getR();
 		int fo_inv = 0; // Infeasible Value
 
 		vector<int> lastClean(p.members.size(), -1);
@@ -98,7 +99,7 @@ public:
 			//cout << "ITER (FINISH)" << i << ": " << lastClean << endl;
 		}
 
-		return Evaluation(0, fo_inv);
+		return Evaluation<>(0, fo_inv);
 	}
 
 
@@ -116,7 +117,7 @@ public:
 
 	virtual string id() const
 	{
-		string pai = Evaluator<RepOptHS>::idComponent();
+		string pai = Evaluator<SolutionOptHS>::idComponent();
 		pai.append(":OptHSEvaluator");
 		return pai;
 	}

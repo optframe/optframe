@@ -23,7 +23,7 @@ using namespace std;
 namespace HFMVRP
 {
 
-class ConstructiveSavingsRandomized: public GRConstructive<RepHFMVRP, AdsHFMVRP>
+class ConstructiveSavingsRandomized: public GRConstructive<SolutionHFMVRP>
 {
 private:
 

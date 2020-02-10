@@ -30,9 +30,9 @@ using namespace std;
 namespace HFMVRP
 {
 
-class DeltaMoveVRPOrOpt2: public MoveVRPOrOpt2<int, AdsHFMVRP>
+class DeltaMoveVRPOrOpt2: public MoveVRPOrOpt2<int, AdsHFMVRP, SolutionHFMVRP>
 {
-	typedef MoveVRPOrOpt2<int, AdsHFMVRP> super;
+	typedef MoveVRPOrOpt2<int, AdsHFMVRP, SolutionHFMVRP> super;
 
 private:
 	ProblemInstance* hfmvrp;
@@ -61,8 +61,9 @@ public:
 		return std::abs(x);
 	}
 
-	virtual bool canBeApplied(const RepHFMVRP& rep, const AdsHFMVRP& ads)
+	virtual bool canBeApplied(const SolutionHFMVRP& s)
 	{
+      const RepHFMVRP& rep = s.getR();
 		if (r >= 0)
 		{
 			bool all_positive = (r >= 0) && (c >= 1) && (c < (((int) rep[r].size()) - 2)) && (pos >= 1) && (pos < (((int) rep[r].size()) - 2));
@@ -141,8 +142,11 @@ public:
 
 	}
 
-	Move<RepHFMVRP, AdsHFMVRP>* apply(RepHFMVRP& rep, AdsHFMVRP& ads)
+	Move<SolutionHFMVRP>* apply(SolutionHFMVRP& s) override
 	{
+      RepHFMVRP& rep = s.getR();
+      AdsHFMVRP& ads = s.getADS();
+
 		//Update NeighStatus
 		updateNeighStatus(ads);
 
@@ -195,8 +199,10 @@ public:
 
 	}
 
-	MoveCost<>* cost(const Evaluation<>&, const RepHFMVRP& rep, const AdsHFMVRP& ads, bool allowEstimated = false)
+	MoveCost<>* cost(const Evaluation<>&, const SolutionHFMVRP& s, bool allowEstimated) override
 	{
+      const RepHFMVRP& rep = s.getR();
+      const AdsHFMVRP& ads = s.getADS();
 		vector<int> route = rep[r];
 		int routeSize = route.size();
 		//cout << "routeSize = " << routeSize << endl;
@@ -292,7 +298,7 @@ public:
 			}
 		}
 
-		return new MoveCost (f, 0);
+		return new MoveCost<> (f, 0);
 	}
 
 	static string idComponent()
@@ -302,7 +308,7 @@ public:
 		return idComp;
 	}
 
-	virtual bool operator==(const Move<RepHFMVRP, AdsHFMVRP>& _m) const
+	virtual bool operator==(const Move<SolutionHFMVRP>& _m) const
 	{
 		const DeltaMoveVRPOrOpt2& m1 = (const DeltaMoveVRPOrOpt2&) _m;
 		return (m1.r == r) && (m1.c == c) && (m1.pos == pos);

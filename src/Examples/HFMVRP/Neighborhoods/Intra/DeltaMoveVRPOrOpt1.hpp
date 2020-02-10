@@ -30,9 +30,9 @@ using namespace std;
 namespace HFMVRP
 {
 
-class DeltaMoveVRPOrOpt1: public MoveVRPOrOpt1<int, AdsHFMVRP>
+class DeltaMoveVRPOrOpt1: public MoveVRPOrOpt1<int, AdsHFMVRP, SolutionHFMVRP>
 {
-	typedef MoveVRPOrOpt1<int, AdsHFMVRP> super;
+	typedef MoveVRPOrOpt1<int, AdsHFMVRP, SolutionHFMVRP> super;
 
 private:
 	ProblemInstance* hfmvrp;
@@ -61,8 +61,9 @@ public:
 		return std::abs(x);
 	}
 
-	bool canBeApplied(const RepHFMVRP& rep, const AdsHFMVRP& ads)
+	bool canBeApplied(const SolutionHFMVRP& s)
 	{
+      const RepHFMVRP& rep = s.getR();
 		if (r >= 0)
 		{
 			bool all_positive = (r >= 0) && (c >= 1) && (c < (((int) rep[r].size()) - 1)) && (pos >= 1) && (pos < (((int) rep[r].size()) - 1));
@@ -140,8 +141,10 @@ public:
 
 	}
 
-	Move<RepHFMVRP, AdsHFMVRP>* apply(RepHFMVRP& rep, AdsHFMVRP& ads)
+	Move<SolutionHFMVRP>* apply(SolutionHFMVRP& s) override
 	{
+      RepHFMVRP& rep = s.getR();
+      AdsHFMVRP& ads = s.getADS();
 		//Update NeightStatus
 //		print();
 		updateNeighStatus(ads);
@@ -184,9 +187,10 @@ public:
 
 	}
 
-	MoveCost<>* cost(const Evaluation<>&, const RepHFMVRP& rep, const AdsHFMVRP& ads, bool allowEstimated = false)
+	MoveCost<>* cost(const Evaluation<>&, const SolutionHFMVRP& s, bool allowEstimated) override
 	{
-
+      const RepHFMVRP& rep = s.getR();
+      const AdsHFMVRP& ads = s.getADS();
 		vector<int> route = rep[r];
 		int routeSize = route.size();
 		//cout << "routeSize = " << routeSize << endl;
@@ -282,7 +286,7 @@ public:
 			}
 		}
 
-		return new MoveCost (f, 0);
+		return new MoveCost<> (f, 0);
 	}
 
 	string id() const
@@ -299,13 +303,13 @@ public:
 		return idComp;
 	}
 
-	virtual bool operator==(const Move<RepHFMVRP, AdsHFMVRP>& _m) const
+	virtual bool operator==(const Move<SolutionHFMVRP>& _m) const
 	{
 		const DeltaMoveVRPOrOpt1& m1 = (const DeltaMoveVRPOrOpt1&) _m;
 		return (m1.r == r) && (m1.c == c) && (m1.pos == pos);
 	}
 
-	virtual void print() const
+	virtual void print() const override
 	{
 		cout << "DeltaMoveVRPOrOpt1( route: " << r << " , " << c << " , " << pos << " )" << endl;
 	}

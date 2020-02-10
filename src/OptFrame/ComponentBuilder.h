@@ -24,6 +24,7 @@
 #include "Component.hpp"
 #include "Solution.hpp"
 #include "Solutions/CopySolution.hpp"
+#include "Evaluation.hpp"
 
 #include "Scanner++/Scanner.h"
 

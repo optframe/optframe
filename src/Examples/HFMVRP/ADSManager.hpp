@@ -6,9 +6,9 @@ using namespace std;
 namespace HFMVRP
 {
 
-class HFMVRPADSManager: public ADSManager<RepHFMVRP, AdsHFMVRP>
+class HFMVRPADSManager: public ADSManager<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP>
 {
-	typedef ADSManager<RepHFMVRP, AdsHFMVRP> super;
+	typedef ADSManager<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP> super;
 	ProblemInstance& hfmvrp;
 public:
 	HFMVRPADSManager(ProblemInstance& _hfmvrp) :

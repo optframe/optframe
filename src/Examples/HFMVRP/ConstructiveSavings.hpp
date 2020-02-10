@@ -22,7 +22,7 @@ using namespace std;
 namespace HFMVRP
 {
 
-class ConstructiveSavings: public Constructive<RepHFMVRP, AdsHFMVRP>
+class ConstructiveSavings: public Constructive<SolutionHFMVRP>
 {
 private:
 	ProblemInstance& pHFMVRP;

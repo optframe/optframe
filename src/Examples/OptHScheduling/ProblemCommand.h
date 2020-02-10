@@ -66,7 +66,7 @@ public:
     	return "problem.OptHS";
     }
 
-    bool registerComponent(Component& component, string type, string name, HeuristicFactory<RepOptHS>& hf, map<string, string>& dictionary)
+    bool registerComponent(Component& component, string type, string name, HeuristicFactory<SolutionOptHS>& hf, map<string, string>& dictionary)
     {
        int idx = hf.addComponent(component, type);
        stringstream ss;
@@ -74,7 +74,7 @@ public:
        return true; //defineText(name, ss.str(), dictionary);
     }
 
-	bool load(string members, HeuristicFactory<RepOptHS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	bool load(string members, HeuristicFactory<SolutionOptHS>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 	    Scanner scanner(members);
 
@@ -86,7 +86,7 @@ public:
         hf.addComponent(is);
 
         OptHSEvaluator& eval = *new OptHSEvaluator(*p);
-        hf.addComponent(eval, Evaluator<RepOptHS>::idComponent());
+        hf.addComponent(eval, Evaluator<SolutionOptHS>::idComponent());
 		
         NSSwap* ns = new NSSwap(*p, hf.getRandGen());
         hf.addComponent(*ns);
@@ -96,7 +96,7 @@ public:
         return true;
     }
     
-    bool unload(HeuristicFactory<RepOptHS>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+    bool unload(HeuristicFactory<SolutionOptHS>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
     {
        if(p)
           delete p;

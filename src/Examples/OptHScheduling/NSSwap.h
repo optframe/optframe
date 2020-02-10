@@ -37,7 +37,7 @@ using namespace optframe;
 namespace OptHS
 {
 
-class MoveSwap: public Move<RepOptHS>
+class MoveSwap: public Move<SolutionOptHS>
 {
 public:
 
@@ -53,20 +53,21 @@ public:
 	{
 	}
 
-	bool canBeApplied(const RepOptHS& rep, const OPTFRAME_DEFAULT_ADS*) override
+	bool canBeApplied(const SolutionOptHS& s) override
 	{
 		return w1 != w2;
 	}
 
-	Move<RepOptHS>* apply(RepOptHS& rep, OPTFRAME_DEFAULT_ADS*) override
+	Move<SolutionOptHS>* apply(SolutionOptHS& s) override
 	{
+      RepOptHS& rep = s.getR();
 		pair<char, char> aux = rep[w1];
 		rep[w1] = rep[w2];
 		rep[w2] = aux;
 		return new MoveSwap(w2,  w1);
 	}
 
-	virtual bool operator==(const Move<RepOptHS>& _m) const
+	virtual bool operator==(const Move<SolutionOptHS>& _m) const
 	{
 		const MoveSwap& m = (const MoveSwap&) _m;
 		return (w1 == m.w1) && (w2 == m.w2);
@@ -78,7 +79,7 @@ public:
 	}
 };
 
-class NSSwap: public NS<RepOptHS>
+class NSSwap: public NS<SolutionOptHS>
 {
 public:
 
@@ -94,8 +95,9 @@ public:
 	{
 	}
 
-	virtual Move<RepOptHS>* randomMove(const RepOptHS& rep, const OPTFRAME_DEFAULT_ADS*) override
+	virtual Move<SolutionOptHS>* randomMove(const SolutionOptHS& s) override
 	{
+      const RepOptHS& rep = s.getR();
 		int w1 = rg.rand(rep.size());
 		int w2 = w1;
 		while(w2==w1)

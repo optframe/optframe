@@ -42,7 +42,7 @@ using namespace optframe;
 namespace OptHS
 {
 
-class ConstructiveRandom: public Constructive<RepOptHS>
+class ConstructiveRandom: public Constructive<SolutionOptHS>
 {
 private:
 	ProblemInstance& p;

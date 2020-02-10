@@ -29,9 +29,9 @@ namespace HFMVRP
 {
 
 template<class MOVE = DeltaMoveVRP2Opt>
-class DeltaNSIteratorVRP2Opt: public NSIteratorVRP2Opt<int, AdsHFMVRP, DeltaMoveVRP2Opt, ProblemInstance>
+class DeltaNSIteratorVRP2Opt: public NSIteratorVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRP2Opt, ProblemInstance>
 {
-	typedef NSIteratorVRP2Opt<int, AdsHFMVRP, DeltaMoveVRP2Opt, ProblemInstance> super;
+	typedef NSIteratorVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRP2Opt, ProblemInstance> super;
 
 private:
 	const AdsHFMVRP& ads; //TODO COULD BE A POINTER? WHAT IS THE BEST OPTION?
@@ -93,7 +93,7 @@ public:
 		return m == NULL;
 	}
 
-	Move<RepHFMVRP, AdsHFMVRP>* current() override
+	Move<SolutionHFMVRP>* current() override
 	{
 		if (isDone())
 		{

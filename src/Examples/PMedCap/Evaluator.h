@@ -99,7 +99,7 @@ public:
 
 		fo_Inv = fo_Inv * 10000 + fo_medAlocada;
 
-		return Evaluation(fo, fo_Inv);
+		return Evaluation<>(fo, fo_Inv);
 	}
 
 	virtual bool betterThan(double f1, double f2)

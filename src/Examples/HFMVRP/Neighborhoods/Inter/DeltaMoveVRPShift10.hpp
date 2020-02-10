@@ -30,9 +30,9 @@ using namespace std;
 namespace HFMVRP
 {
 
-class DeltaMoveVRPShift10: public MoveVRPShift10<int, AdsHFMVRP>
+class DeltaMoveVRPShift10: public MoveVRPShift10<int, AdsHFMVRP, SolutionHFMVRP>
 {
-	typedef MoveVRPShift10<int, AdsHFMVRP> super;
+	typedef MoveVRPShift10<int, AdsHFMVRP, SolutionHFMVRP> super;
 
 private:
 	ProblemInstance* hfmvrp;
@@ -71,9 +71,10 @@ public:
 	{
 		return std::abs(x);
 	}
-	virtual bool canBeApplied(const RepHFMVRP& rep, const AdsHFMVRP* _ads) override
+	virtual bool canBeApplied(const SolutionHFMVRP& s) override
 	{
-      const AdsHFMVRP& ads = *_ads;
+      const RepHFMVRP& rep = s.getR();
+      const AdsHFMVRP& ads = s.getADS();
 		if (r1 >= 0)
 		{
 			bool all_positive = (r1 >= 0) && (r2 >= 0) && (cli >= 1) && (cli < (rep[r1].size() - 1)) && (pos >= 1) && (pos < (rep[r2].size() - 1));
@@ -220,9 +221,10 @@ public:
 			}
 		}
 	}
-	Move<RepHFMVRP, AdsHFMVRP>* apply(RepHFMVRP& rep, AdsHFMVRP* _ads) override
+	Move<SolutionHFMVRP>* apply(SolutionHFMVRP& s) override
 	{
-      AdsHFMVRP& ads = *_ads;
+      RepHFMVRP& rep = s.getR();
+      AdsHFMVRP& ads = s.getADS();
 		//getting client
 		int c = rep.at(r1).at(cli);
 
@@ -251,8 +253,11 @@ public:
 		return new DeltaMoveVRPShift10(r2, r1, pos, cli, hfmvrp);
 	}
 
-	MoveCost<>* cost(const Evaluation<>&, const RepHFMVRP& rep, const AdsHFMVRP& ads, bool allowEstimated = false)
+	MoveCost<>* cost(const Evaluation<>&, const SolutionHFMVRP& s, bool allowEstimated = false) override
 	{
+      const RepHFMVRP& rep = s.getR();
+      const AdsHFMVRP& ads = s.getADS();
+
 		vector<int> route1 = rep[r1];
 		vector<int> route2 = rep[r2];
 
@@ -305,7 +310,7 @@ public:
 		if (routeSize2 <= 2)
 			f += hfmvrp->vehiclesTypeFixedCost[vType2];
 
-		return new MoveCost (f, 0);
+		return new MoveCost<> (f, 0);
 	}
 
 	static string idComponent()
@@ -315,13 +320,13 @@ public:
 		return idComp;
 	}
 
-	virtual bool operator==(const Move<RepHFMVRP, AdsHFMVRP>& _m) const
+	virtual bool operator==(const Move<SolutionHFMVRP>& _m) const
 	{
 		const DeltaMoveVRPShift10& m1 = (const DeltaMoveVRPShift10&) _m;
 		return ((r1 == m1.r1) && (r2 == m1.r2) && (cli == m1.cli) && (pos == m1.pos));
 	}
 
-	virtual void print() const
+	virtual void print() const override
 	{
 		cout << "DeltaMoveVRPShift10( ";
 		cout << r1 << " , ";

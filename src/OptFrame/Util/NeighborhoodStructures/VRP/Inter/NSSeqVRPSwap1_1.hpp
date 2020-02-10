@@ -32,8 +32,9 @@
 
 using namespace std;
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
-class MoveVRPSwap1_1: public Move<vector<vector<T> > , ADS>
+//template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<vector<T> >,ADS> S = CopySolution<vector<vector<T>>,ADS>, XEvaluation XEv = Evaluation<>>
+class MoveVRPSwap1_1: public Move<S, XEv>
 {
 	typedef vector<vector<T> > Routes;
 
@@ -73,8 +74,9 @@ public:
 		return c2;
 	}
 
-	virtual bool canBeApplied(const Routes& rep, const ADS*) override
+	virtual bool canBeApplied(const S& s) override
 	{
+      const Routes& rep = s.getR();
 		bool all_positive = (r1 >= 0) && (r2 >= 0) && (c1 >= 0) && (c2 >= 0);
 		return all_positive && (rep.size() >= 2);
 	}
@@ -84,8 +86,9 @@ public:
 
 	}
 
-	virtual Move<Routes, ADS>* apply(Routes& rep, ADS*) override
+	virtual Move<S>* apply(S& s) override
 	{
+      Routes& rep = s.getR();
 		T aux;
 		aux = rep.at(r1).at(c1);
 		rep.at(r1).at(c1) = rep.at(r2).at(c2);
@@ -94,7 +97,7 @@ public:
 		return new MoveVRPSwap1_1(r2, r1, c2, c1);
 	}
 
-	virtual bool operator==(const Move<Routes, ADS>& _m) const
+	virtual bool operator==(const Move<S>& _m) const
 	{
 		const MoveVRPSwap1_1& m1 = (const MoveVRPSwap1_1&) _m;
 		return ((m1.r1 == r1) && (m1.r2 == r2) && (m1.c1 == c1) && (m1.c2 == c2));
@@ -108,8 +111,9 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPSwap1_1<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM>
-class NSIteratorVRPSwap1_1: public NSIterator<vector<vector<T> > , ADS>
+//template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPSwap1_1<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM>
+template<class T, class ADS, BaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPSwap1_1<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
+class NSIteratorVRPSwap1_1: public NSIterator<S, XEv>
 {
 
 	typedef vector<vector<T> > Routes;
@@ -171,7 +175,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual Move<Routes, ADS>* current() override
+	virtual Move<S>* current() override
 	{
 		if (isDone())
 		{
@@ -184,8 +188,9 @@ public:
 	}
 };
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPSwap1_1<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPSwap1_1<T, ADS, MOVE, P> >
-class NSSeqVRPSwap1_1: public NSSeq<vector<vector<T> > , ADS>
+//template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPSwap1_1<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPSwap1_1<T, ADS, MOVE, P> >
+template<class T, class ADS, BaseSolution<vector<vector<T> >,ADS> S, class MOVE = MoveVRPSwap1_1<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPSwap1_1<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
+class NSSeqVRPSwap1_1: public NSSeq<S, XEv>
 {
 
 	typedef vector<vector<T> > Routes;
@@ -204,8 +209,9 @@ public:
 	{
 	}
 
-	Move<Routes, ADS>* randomMove(const Routes& rep, const ADS*) override
+	Move<S>* randomMove(const S& s) override
 	{
+      const Routes& rep = s.getR();
 		//getchar();
 		if (rep.size() < 2)
 			return new MOVE(-1, -1, -1, -1, p);
@@ -231,9 +237,9 @@ public:
 		return new MOVE(r1, r2, c1, c2, p);
 	}
 
-	virtual NSITERATOR* getIterator(const Routes& r, const ADS* ads) override
+	virtual NSITERATOR* getIterator(const S& s) override
 	{
-		return new NSITERATOR(r, *ads, p);
+		return new NSITERATOR(s.getR(), s.getADS(), p);
 	}
 
 	virtual string toString() const

@@ -74,19 +74,19 @@ main(int argc, char** argv)
    double alpha = 0;
    ConstructiveSavingsRandomized is(*p, rg, *adsMan);
 
-   NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_deltaIterator_delta_2opt = new NSSeqVRP2Opt<int, AdsHFMVRP, DeltaMoveVRP2Opt, ProblemInstance, DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(p);
-   NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_deltaIterator_delta_or1 = new NSSeqVRPOrOpt1<int, AdsHFMVRP, DeltaMoveVRPOrOpt1, ProblemInstance, DeltaNSIteratorVRPOrOpt1<DeltaMoveVRPOrOpt1>>(p);
-   NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_deltaIterator_delta_or2 = new NSSeqVRPOrOpt2<int, AdsHFMVRP, DeltaMoveVRPOrOpt2, ProblemInstance, DeltaNSIteratorVRPOrOpt2<DeltaMoveVRPOrOpt2>>(p);
-   NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_deltaIterator_delta_exchange = new NSSeqVRPExchange<int, AdsHFMVRP, DeltaMoveVRPExchange, ProblemInstance, DeltaNSIteratorVRPExchange<DeltaMoveVRPExchange>>(p);
-   NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_delta_shift10 = new NSSeqVRPShift10<int, AdsHFMVRP, DeltaMoveVRPShift10, ProblemInstance>(p);
-   NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_delta_swap11 = new NSSeqVRPSwap1_1<int, AdsHFMVRP, DeltaMoveVRPSwap1_1, ProblemInstance>(p);
-   NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_deltaIterator_swap11 = new NSSeqVRPSwap1_1<int, AdsHFMVRP, DeltaMoveVRPSwap1_1, ProblemInstance, DeltaNSIteratorVRPSwap1_1<DeltaMoveVRPSwap1_1>>(p);
-   NSSeq<RepHFMVRP, AdsHFMVRP>* nsseq_deltaIterator_shift10 = new NSSeqVRPShift10<int, AdsHFMVRP, DeltaMoveVRPShift10, ProblemInstance, DeltaNSIteratorVRPShift10<DeltaMoveVRPShift10>>(p);
+   NSSeq<SolutionHFMVRP>* nsseq_deltaIterator_delta_2opt = new NSSeqVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRP2Opt, ProblemInstance, DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(p);
+   NSSeq<SolutionHFMVRP>* nsseq_deltaIterator_delta_or1 = new NSSeqVRPOrOpt1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPOrOpt1, ProblemInstance, DeltaNSIteratorVRPOrOpt1<DeltaMoveVRPOrOpt1>>(p);
+   NSSeq<SolutionHFMVRP>* nsseq_deltaIterator_delta_or2 = new NSSeqVRPOrOpt2<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPOrOpt2, ProblemInstance, DeltaNSIteratorVRPOrOpt2<DeltaMoveVRPOrOpt2>>(p);
+   NSSeq<SolutionHFMVRP>* nsseq_deltaIterator_delta_exchange = new NSSeqVRPExchange<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPExchange, ProblemInstance, DeltaNSIteratorVRPExchange<DeltaMoveVRPExchange>>(p);
+   NSSeq<SolutionHFMVRP>* nsseq_delta_shift10 = new NSSeqVRPShift10<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPShift10, ProblemInstance>(p);
+   NSSeq<SolutionHFMVRP>* nsseq_delta_swap11 = new NSSeqVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPSwap1_1, ProblemInstance>(p);
+   NSSeq<SolutionHFMVRP>* nsseq_deltaIterator_swap11 = new NSSeqVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPSwap1_1, ProblemInstance, DeltaNSIteratorVRPSwap1_1<DeltaMoveVRPSwap1_1>>(p);
+   NSSeq<SolutionHFMVRP>* nsseq_deltaIterator_shift10 = new NSSeqVRPShift10<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPShift10, ProblemInstance, DeltaNSIteratorVRPShift10<DeltaMoveVRPShift10>>(p);
 
-   ILSLPerturbationLPlus2Prob<RepHFMVRP, AdsHFMVRP>* ilsl_pert;
+   ILSLPerturbationLPlus2Prob<SolutionHFMVRP>* ilsl_pert;
 
-   //ilsl_pert = new ILSLPerturbationLPlus2Prob<RepHFMVRP, AdsHFMVRP>(*eval, 100000, *nsseq_deltaIterator_shift10, rg);
-   ilsl_pert = new ILSLPerturbationLPlus2Prob<RepHFMVRP, AdsHFMVRP>(*eval, *nsseq_deltaIterator_shift10, rg);
+   //ilsl_pert = new ILSLPerturbationLPlus2Prob<SolutionHFMVRP>(*eval, 100000, *nsseq_deltaIterator_shift10, rg);
+   ilsl_pert = new ILSLPerturbationLPlus2Prob<SolutionHFMVRP>(*eval, *nsseq_deltaIterator_shift10, rg);
    ilsl_pert->add_ns(*nsseq_deltaIterator_swap11);
    ilsl_pert->add_ns(*nsseq_deltaIterator_delta_2opt);
    ilsl_pert->add_ns(*nsseq_deltaIterator_delta_or1);
@@ -97,13 +97,13 @@ main(int argc, char** argv)
    vector<int> priorites(myints, myints + sizeof(myints) / sizeof(int));
    ilsl_pert->changeProb(priorites);
 
-   vector<LocalSearch<RepHFMVRP, AdsHFMVRP>*> vLS;
-   BestImprovement<RepHFMVRP, AdsHFMVRP> fiI(*eval, *nsseq_deltaIterator_delta_2opt);
-   BestImprovement<RepHFMVRP, AdsHFMVRP> fiII(*eval, *nsseq_deltaIterator_delta_or1);
-   BestImprovement<RepHFMVRP, AdsHFMVRP> fiIII(*eval, *nsseq_deltaIterator_delta_or2);
-   BestImprovement<RepHFMVRP, AdsHFMVRP> fiIV(*eval, *nsseq_deltaIterator_delta_exchange);
-   BestImprovement<RepHFMVRP, AdsHFMVRP> fiV(*eval, *nsseq_deltaIterator_swap11);
-   BestImprovement<RepHFMVRP, AdsHFMVRP> fiVI(*eval, *nsseq_deltaIterator_shift10);
+   vector<LocalSearch<SolutionHFMVRP>*> vLS;
+   BestImprovement<SolutionHFMVRP> fiI(*eval, *nsseq_deltaIterator_delta_2opt);
+   BestImprovement<SolutionHFMVRP> fiII(*eval, *nsseq_deltaIterator_delta_or1);
+   BestImprovement<SolutionHFMVRP> fiIII(*eval, *nsseq_deltaIterator_delta_or2);
+   BestImprovement<SolutionHFMVRP> fiIV(*eval, *nsseq_deltaIterator_delta_exchange);
+   BestImprovement<SolutionHFMVRP> fiV(*eval, *nsseq_deltaIterator_swap11);
+   BestImprovement<SolutionHFMVRP> fiVI(*eval, *nsseq_deltaIterator_shift10);
    vLS.push_back(&fiI);
    vLS.push_back(&fiII);
    vLS.push_back(&fiIII);
@@ -111,7 +111,7 @@ main(int argc, char** argv)
    vLS.push_back(&fiV);
    vLS.push_back(&fiVI);
 
-   CheckCommand<RepHFMVRP, AdsHFMVRP> cc;
+   CheckCommand<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP> cc;
    cc.add(*eval);
    //	cc.add(p);
    cc.add(is);
@@ -128,12 +128,12 @@ main(int argc, char** argv)
    getchar();
 
    // if randgen is given, it is RVND
-   VariableNeighborhoodDescent<RepHFMVRP, AdsHFMVRP> newVND(*eval, vLS, &rg);
-   VariableNeighborhoodDescentUpdateADS<RepHFMVRP, AdsHFMVRP> newVNDUpdateADS(*eval, *adsMan, vLS);
-   BasicGRASP<RepHFMVRP, AdsHFMVRP> basicGrasp(*eval, is, newVNDUpdateADS, alpha, 1000);
+   VariableNeighborhoodDescent<SolutionHFMVRP> newVND(*eval, vLS, &rg);
+   VariableNeighborhoodDescentUpdateADS<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP> newVNDUpdateADS(*eval, *adsMan, vLS);
+   BasicGRASP<SolutionHFMVRP> basicGrasp(*eval, is, newVNDUpdateADS, alpha, 1000);
 
-   EmptyLocalSearch<RepHFMVRP, AdsHFMVRP> emptyLS;
-   vector<NSSeq<RepHFMVRP, AdsHFMVRP>*> vNSeq;
+   EmptyLocalSearch<SolutionHFMVRP> emptyLS;
+   vector<NSSeq<SolutionHFMVRP>*> vNSeq;
    vNSeq.push_back(nsseq_deltaIterator_delta_2opt);
    vNSeq.push_back(nsseq_deltaIterator_delta_or1);
    vNSeq.push_back(nsseq_deltaIterator_delta_or2);
@@ -142,9 +142,9 @@ main(int argc, char** argv)
    vNSeq.push_back(nsseq_deltaIterator_shift10);
 
    SOSC soscGR(10, 0);
-   pair<CopySolution<RepHFMVRP, AdsHFMVRP>, Evaluation<>>* initialPairGrasp = basicGrasp.search(soscGR);
+   pair<SolutionHFMVRP, Evaluation<>>* initialPairGrasp = basicGrasp.search(soscGR);
 
-   CloneConstructive<RepHFMVRP, AdsHFMVRP> cloneSolAsConstructive(initialPairGrasp->first);
+   CloneConstructive<SolutionHFMVRP> cloneSolAsConstructive(initialPairGrasp->first);
 
    vector<int> vNSeqMaxApplication(vNSeq.size(), 1000);
    int selectionType = 1;
@@ -155,11 +155,11 @@ main(int argc, char** argv)
    // which ES?
    /*
 
-   ES<RepHFMVRP, AdsHFMVRP> es(*eval, cloneSolAsConstructive, vNSeq, vNSeqMaxApplication, emptyLS, selectionType, mutationRate, rg, mi, 6 * mi, 50000, "./esOutput", batch);
+   ES<SolutionHFMVRP> es(*eval, cloneSolAsConstructive, vNSeq, vNSeqMaxApplication, emptyLS, selectionType, mutationRate, rg, mi, 6 * mi, 50000, "./esOutput", batch);
    es.setMessageLevel(4);
 
    SOSC soscES(180, 0);
-   pair<Solution<RepHFMVRP, AdsHFMVRP>, Evaluation<>>* initialSol = es.search(soscES);
+   pair<Solution<SolutionHFMVRP>, Evaluation<>>* initialSol = es.search(soscES);
    double objFuncES = initialSol->second.getObjFunction();
    cout << "getObjFunction: " << objFuncES << endl;
    */
@@ -176,15 +176,15 @@ main(int argc, char** argv)
    }
 
    /*	// ==================== BEGIN ILS AND GRASP ===========================
-	 //pair<Solution<RepHFMVRP, AdsHFMVRP>&, Evaluation<>&>* initialPair = basicGrasp.search(30, 0);
+	 //pair<Solution<SolutionHFMVRP>&, Evaluation<>&>* initialPair = basicGrasp.search(30, 0);
 
-	 CloneConstructive<RepHFMVRP, AdsHFMVRP> cloneSolAsConstructive(initialSol->first);
-	 IteratedLocalSearchLevels<RepHFMVRP, AdsHFMVRP> ilsl(*eval, cloneSolAsConstructive, newVNDUpdateADS, *ilsl_pert, 130, 15);
+	 CloneConstructive<SolutionHFMVRP> cloneSolAsConstructive(initialSol->first);
+	 IteratedLocalSearchLevels<SolutionHFMVRP> ilsl(*eval, cloneSolAsConstructive, newVNDUpdateADS, *ilsl_pert, 130, 15);
 	 ilsl.setMessageLevel(4);
 
    SOSC soscILSL(60,0);
-	 pair<Solution<RepHFMVRP, AdsHFMVRP>, Evaluation<>>* pairILS = ilsl.search(soscILSL);
-	 Solution<RepHFMVRP, AdsHFMVRP> ilsSOL = pairILS->first;
+	 pair<Solution<SolutionHFMVRP>, Evaluation<>>* pairILS = ilsl.search(soscILSL);
+	 Solution<SolutionHFMVRP> ilsSOL = pairILS->first;
 
 	 EvaluationHFMVRP value = eval->evaluate(ilsSOL.getR());
 	 cout << "getObjFunction: " << value.getObjFunction() << endl;
