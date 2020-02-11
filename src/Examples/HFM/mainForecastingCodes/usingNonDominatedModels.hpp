@@ -132,7 +132,7 @@ int usingNonDominatedHFMModels(int argc, char **argv)
 //		forecastObject.runMultiObjSearch();
 //		getchar();
 
-	Pareto<RepHFM>* pf = new Pareto<RepHFM>();
+	Pareto<SolutionHFM>* pf = new Pareto<SolutionHFM>();
 
 	ForecastClass* forecastObject;
 	int timeES = 10;
@@ -144,7 +144,7 @@ int usingNonDominatedHFMModels(int argc, char **argv)
 		forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
 		pair<SolutionHFM, Evaluation<>>* sol = forecastObject->run(timeES, 0, 0);
 		forecastObject->addSolToParetoWithParetoManager(*pf, sol->first);
-		Pareto<RepHFM>* pfNew = forecastObject->runMultiObjSearch(timeGPLS, pf);
+		Pareto<SolutionHFM>* pfNew = forecastObject->runMultiObjSearch(timeGPLS, pf);
 		delete pf;
 		pf = pfNew;
 		delete &sol->first;

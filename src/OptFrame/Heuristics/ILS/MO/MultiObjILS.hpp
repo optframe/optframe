@@ -34,24 +34,24 @@
 
 namespace optframe {
 
-template<class H, Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<class H, XSolution S, XEvaluation XEv = Evaluation<>>
 class MultiObjILS : public MOILS
   , public MultiObjSearch<S, XEv>
 {
 
 private:
-   InitialPareto<R, ADS>& init_pareto;
+   InitialPareto<S, XEv>& init_pareto;
    int init_pop_size;
    MOLocalSearch<S, XEv>* ls;
-   paretoManager<R, ADS> pMan;
+   paretoManager<S, XEv> pMan;
    RandGen& rg;
 
 public:
-   MultiObjILS(MultiEvaluator<S>& _mev, InitialPareto<R, ADS>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg)
+   MultiObjILS(MultiEvaluator<S>& _mev, InitialPareto<S, XEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg)
      : init_pareto(_init_pareto)
      , init_pop_size(_init_pop_size)
      , ls(_ls)
-     , pMan(paretoManager<R, ADS>(_mev))
+     , pMan(paretoManager<S, XEv>(_mev))
      , rg(_rg)
    {
    }
@@ -64,14 +64,14 @@ public:
 
    virtual void perturbation(S& s, MultiEvaluation<>& e, MOSC& stopCriteria, H& history) = 0;
 
-   virtual void acceptanceCriterion(const Pareto<R, ADS>& pf, H& history) = 0;
+   virtual void acceptanceCriterion(const Pareto<S, XEv>& pf, H& history) = 0;
 
    virtual bool terminationCondition(H& history) = 0;
 
-   virtual Pareto<R, ADS>* search(MOSC& stopCriteria, Pareto<R, ADS>* _pf = nullptr) override
+   virtual Pareto<S, XEv>* search(MOSC& stopCriteria, Pareto<S, XEv>* _pf = nullptr) override
    {
       Timer tnow;
-      Pareto<R, ADS> x_e;
+      Pareto<S, XEv> x_e;
       cout << "exec: MOILS (tL:" << stopCriteria.timelimit << ")" << endl;
 
       if (_pf == nullptr) {
@@ -140,7 +140,7 @@ public:
          //					visited[v] = false;
       }
 
-      Pareto<R, ADS>* pReturn = new Pareto<R, ADS>(std::move(x_e));
+      Pareto<S, XEv>* pReturn = new Pareto<S, XEv>(std::move(x_e));
 
       //checking possible dominance problems -- TODO - Remove for a faster code
       pMan.checkDominance(*pReturn);

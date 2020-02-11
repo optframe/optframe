@@ -98,12 +98,12 @@ public:
 		{
 			int x = rg.rand(ns.size());
 
-			Move<R, ADS>* m = ns[x]->validRandomMove(s);
+			Move<S, XEv>* m = ns[x]->validRandomMove(s);
 
 			if (m)
 			{
 				a++;
-				Component::safe_delete(m->applyMEVUpdateSolution(mev, s));
+				Component::safe_delete(m->applyMEVUpdate(mev, s));
 			}
 			else
 				if(Component::warning)
@@ -117,13 +117,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (MOILSLPerturbation<R, ADS>::compatible(s));
+		return (s == idComponent()) || (MOILSLPerturbation<S, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MOILSLPerturbation<R, ADS>::idComponent() << ":LPlus2";
+		ss << MOILSLPerturbation<S, XEv>::idComponent() << ":LPlus2";
 		return ss.str();
 	}
 
@@ -209,7 +209,7 @@ public:
 				sum += pNS[x].second;
 			}
 
-			Move<R, ADS>* m = ns[x]->validMove(s);
+			Move<S, XEv>* m = ns[x]->validMove(s);
 
 			if (m)
 			{
@@ -229,7 +229,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MOILSLPerturbation<R, ADS>::idComponent() << ":LPlus2Prob";
+		ss << MOILSLPerturbation<S, XEv>::idComponent() << ":LPlus2Prob";
 		return ss.str();
 	}
 

@@ -99,6 +99,20 @@ public:
       return rev;
    }
 
+   virtual Move<XR, XEv>* applyMEVUpdate(MultiEvaluation<>& mev, XR& s)
+   {
+      for (unsigned nE = 0; nE < mev.size(); nE++)
+         mev.at(nE).outdated = true;
+      // apply the move to R and ADS, saving the reverse (or undo) move
+      Move<XR, XEv>* rev = apply(s);
+      // update neighborhood local optimum status TODO:deprecated
+      updateNeighStatus(s);
+
+      // return reverse move (or null)
+      return rev;
+   }
+
+
    // TODO: coming in one of the next versions..
    //virtual pair<Move<XR, XEv>&, MoveCost<>*> apply(const Evaluation<>& e, R& r, ADS& ads) = 0;
 

@@ -56,14 +56,14 @@ public:
 	{
 	}
 
-	virtual void exec(Pareto<R, ADS>& p, S& s, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) override
+	virtual void exec(Pareto<S, XEv>& p, S& s, paretoManager<S, XEv>& pManager, MOSC& stopCriteria) override
 	{
 		MultiEvaluation<> sMev(std::move(mev.evaluate(s)));
 
 		exec(p, s, sMev, pManager, stopCriteria);
 	}
 
-	virtual void exec(Pareto<R, ADS>& p, S& s, MultiEvaluation<>& sMev, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) override
+	virtual void exec(Pareto<S, XEv>& p, S& s, MultiEvaluation<>& sMev, paretoManager<S, XEv>& pManager, MOSC& stopCriteria) override
 	{
 		num_calls++;
 		Timer t;
@@ -72,11 +72,11 @@ public:
 
 		while ((iter < iterMax) && ((t.now() - stopCriteria.timelimit) < 0))
 		{
-			Move<R, ADS>* move = ns.randomMove(s);
+			Move<S, XEv>* move = ns.randomMove(s);
 			if (move->canBeApplied(s))
 			{
 				//Move and mark sMev as outdated
-				Move<R, ADS>* mov_rev = move->apply(s);
+				Move<S, XEv>* mov_rev = move->apply(s);
 
 				//Call method to reevaluate sMev and try to include TODO
 //				pManager->addSolutionWithMEVReevaluation(p, *s,*sMev);

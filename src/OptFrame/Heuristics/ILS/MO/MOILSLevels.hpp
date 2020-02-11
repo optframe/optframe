@@ -33,17 +33,17 @@ namespace optframe
 typedef pair<pair<int, int>, pair<int, int> > levelHistory;
 
 template<XSolution S, XEvaluation XEv=Evaluation<>>
-class MOILSLevels: public MultiObjILS<levelHistory, R, ADS, S>
+class MOILSLevels: public MultiObjILS<levelHistory, S, XEv>
 {
 
 private:
-	MOILSLPerturbation<R, ADS>& p;
+	MOILSLPerturbation<S, XEv>& p;
 	int iterMax, levelMax;
 
 public:
 
-	MOILSLevels(MultiEvaluator<S>& _mev, InitialPareto<R, ADS>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg, MOILSLPerturbation<R, ADS>& _p, int _iterMax, int _levelMax) :
-			MultiObjILS<levelHistory, R, ADS>(_mev, _init_pareto, _init_pop_size, _ls, _rg), p(_p), iterMax(_iterMax), levelMax(_levelMax)
+	MOILSLevels(MultiEvaluator<S>& _mev, InitialPareto<S, XEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg, MOILSLPerturbation<S, XEv>& _p, int _iterMax, int _levelMax) :
+			MultiObjILS<levelHistory, S, XEv>(_mev, _init_pareto, _init_pop_size, _ls, _rg), p(_p), iterMax(_iterMax), levelMax(_levelMax)
 	{
 
 	}
@@ -96,7 +96,7 @@ public:
 		history.first.second = level;
 	}
 
-	virtual void acceptanceCriterion(const Pareto<R, ADS>& pf, levelHistory& history)
+	virtual void acceptanceCriterion(const Pareto<S, XEv>& pf, levelHistory& history)
 	{
 		if (pf.getNewNonDominatedSolutionsStatus())
 		{
@@ -122,7 +122,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (MultiObjSearch<R, ADS>::compatible(s));
+		return (s == idComponent()) || (MultiObjSearch<S, XEv>::compatible(s));
 	}
 
 	virtual string id() const
@@ -133,7 +133,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MultiObjILS<levelHistory, R, ADS>::idComponent() << "MOILSLevels";
+		ss << MultiObjILS<levelHistory, S, XEv>::idComponent() << "MOILSLevels";
 		return ss.str();
 	}
 

@@ -155,7 +155,7 @@ int stockMarketForecasting(int argc, char **argv)
 	for (int expVar = 0; expVar < (int) explanatoryVariables.size(); expVar++)
 		trainningSet.push_back(rF.getPartsForecastsEndToBegin(expVar, fh, nTotalForecastingsTrainningSet));
 
-	Pareto < RepHFM > *pf = new Pareto<RepHFM>();
+	Pareto <SolutionHFM> *pf = new Pareto<SolutionHFM>();
 
 	ForecastClass* forecastObject;
 	int timeES = 60;
@@ -172,7 +172,7 @@ int stockMarketForecasting(int argc, char **argv)
 //		exit(1);
 
 		forecastObject->addSolToParetoWithParetoManager(*pf, sol->first);
-		Pareto<RepHFM, OPTFRAME_DEFAULT_ADS>* pfNew = forecastObject->runMultiObjSearch(timeGPLS, pf);
+		Pareto<SolutionHFM>* pfNew = forecastObject->runMultiObjSearch(timeGPLS, pf);
 		delete pf;
 		pf = pfNew;
 		delete forecastObject;

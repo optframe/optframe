@@ -5,7 +5,7 @@ all: mctAppHFM
 CC=g++
 
 mctAppHFM:      mainHFM.o       HFMScanner.o  
-	g++ $(GCC_FLAGS) mainHFM.o    HFMScanner.o  -o app_HFM
+	g++ $(GCC_FLAGS) -fopenmp mainHFM.o    HFMScanner.o  -o app_HFM
 
 mainHFM.o: mainHFM.cpp  HFM/Representation.h  HFM/Solution.h 
 	g++ -c $(GCC_FLAGS) -fopenmp mainHFM.cpp -o mainHFM.o

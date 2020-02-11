@@ -44,7 +44,7 @@ public:
 	{
 	}
 
-	virtual Pareto<R, ADS> generatePareto(unsigned populationSize, double timeLimit = 10000000) = 0;
+	virtual Pareto<S, XEv> generatePareto(unsigned populationSize, double timeLimit = 10000000) = 0;
 
 
 	static string idComponent()
@@ -61,15 +61,15 @@ public:
 };
 
 template<XSolution S, XEvaluation XEv = Evaluation<>>
-class BasicInitialPareto: public InitialPareto<R, ADS>
+class BasicInitialPareto: public InitialPareto<S, XEv>
 {
 public:
 
 	Constructive<S>& constructive;
-	paretoManager<R, ADS> pMan;
+	paretoManager<S, XEv> pMan;
 
 	BasicInitialPareto(Constructive<S>& _constructive, MultiEvaluator<S>& _mev) :
-			constructive(_constructive), pMan(paretoManager<R, ADS>(_mev))
+			constructive(_constructive), pMan(paretoManager<S, XEv>(_mev))
 	{
 	}
 
@@ -77,9 +77,9 @@ public:
 	{
 	}
 
-	virtual Pareto<R, ADS> generatePareto(unsigned populationSize, double timelimit = 100000000)
+	virtual Pareto<S, XEv> generatePareto(unsigned populationSize, double timelimit = 100000000)
 	{
-		Pareto<R, ADS> p;
+		Pareto<S, XEv> p;
 		for (unsigned i = 0; i < populationSize; i++)
 			pMan.addSolution(p, *constructive.generateSolution(timelimit));
 
@@ -89,7 +89,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << InitialPareto<R, ADS>::idComponent() << ":BasicInitialPareto";
+		ss << InitialPareto<S, XEv>::idComponent() << ":BasicInitialPareto";
 		return ss.str();
 	}
 
@@ -100,16 +100,16 @@ public:
 };
 
 template<XSolution S, XEvaluation XEv = Evaluation<>>
-class GRInitialPareto: public InitialPareto<R, ADS>
+class GRInitialPareto: public InitialPareto<S, XEv>
 {
 public:
 	GRConstructive<S>& constructive;
 	RandGen& rg;
 	double maxAlpha; // limit the solution to be not so random
-	paretoManager<R, ADS> pMan;
+	paretoManager<S, XEv> pMan;
 
 	GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg, double _maxAlpha, MultiEvaluator<S>& _mev) :
-			constructive(_constructive), rg(_rg), maxAlpha(_maxAlpha), pMan(paretoManager<R, ADS>(_mev))
+			constructive(_constructive), rg(_rg), maxAlpha(_maxAlpha), pMan(paretoManager<S, XEv>(_mev))
 	{
 	}
 
@@ -118,11 +118,11 @@ public:
 	}
 
 
-	virtual Pareto<R, ADS>& generatePareto(unsigned populationSize, double timelimit = 100000000)
+	virtual Pareto<S, XEv>& generatePareto(unsigned populationSize, double timelimit = 100000000)
 	{
 		Timer tnow;
 
-		Pareto<R, ADS>* p = new Pareto<R, ADS>;
+		Pareto<S, XEv>* p = new Pareto<S, XEv>;
 		unsigned i = 0;
 		while ((i < populationSize) && (tnow.now() < timelimit))
 		{
@@ -144,7 +144,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << InitialPareto<R, ADS>::idComponent() << ":GRInitialPareto";
+		ss << InitialPareto<S, XEv>::idComponent() << ":GRInitialPareto";
 		return ss.str();
 	}
 

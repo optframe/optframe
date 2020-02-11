@@ -83,15 +83,15 @@ struct NGESParams
    }
 };
 
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R, ADS> S = CopySolution<R, ADS>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 struct NGESInd
 {
    S sInd; // probability
    Evaluation<> e;
-   vector<NGESIndStructure<R, ADS>> vEsStructureInd; // number of applications
+   vector<NGESIndStructure<S, XEv>> vEsStructureInd; // number of applications
    vector<int> vNSInd;
 
-   NGESInd(S& _sInd, Evaluation<>& _e, vector<NGESIndStructure<R, ADS>>& _vEsStructureInd, int nNS)
+   NGESInd(S& _sInd, Evaluation<>& _e, vector<NGESIndStructure<S, XEv>>& _vEsStructureInd, int nNS)
      : sInd(std::move(_sInd))
      , e(std::move(_e))
      , vEsStructureInd(std::move(_vEsStructureInd))
@@ -103,7 +103,7 @@ struct NGESInd
       //change to rg shuffle, because seed may influence result
    }
 
-   NGESInd(S& _sInd, Evaluation<>& _e, vector<NGESIndStructure<R, ADS>>& _vEsStructureInd, vector<int>& _vNSInd)
+   NGESInd(S& _sInd, Evaluation<>& _e, vector<NGESIndStructure<S, XEv>>& _vEsStructureInd, vector<int>& _vNSInd)
      : sInd(std::move(_sInd))
      , e(std::move(_e))
      , vEsStructureInd(std::move(_vEsStructureInd))
@@ -111,7 +111,7 @@ struct NGESInd
    {
    }
 
-   NGESInd(NGESInd<R, ADS>&& nges)
+   NGESInd(NGESInd<S, XEv>&& nges)
      : sInd(std::move(nges.sInd))
      , e(std::move(nges.e))
      , vEsStructureInd(std::move(nges.vEsStructureInd))
@@ -120,14 +120,14 @@ struct NGESInd
    {
    }
 
-   //	NGESInd(const NGESInd<R, ADS>& nges) :
+   //	NGESInd(const NGESInd<S, XEv>& nges) :
    //			sInd(nges.sInd), e(nges.e), vEsStructureInd(nges.vEsStructureInd), vNSInd(nges.vNSInd)
    //
    //	{
    //
    //	}
    //
-   //	NGESInd& operator=(const NGESInd<R, ADS>& nges)
+   //	NGESInd& operator=(const NGESInd<S, XEv>& nges)
    //	{
    //		sInd = nges.sInd;
    //		e = nges.e;
@@ -143,11 +143,11 @@ struct NGESInd
 };
 
 //CADA INDIVIDUO EH UM PAR DE SOLUCAO E UMA TUPLE COM O PARAMETROS DA ESTRATEGIA
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R, ADS> S = CopySolution<R, ADS>, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class NGES : public SingleObjSearch<S, XEv>
 {
 private:
-   typedef vector<NGESInd<R, ADS>*> NGESPopulation;
+   typedef vector<NGESInd<S, XEv>*> NGESPopulation;
 
    Evaluator<S>& eval;
    Constructive<S>& constructive;
@@ -178,7 +178,7 @@ public:
    {
    }
 
-   void mutateESParams(vector<NGESIndStructure<R, ADS>>& p, vector<int>& vNSInd, const int nNS)
+   void mutateESParams(vector<NGESIndStructure<S, XEv>>& p, vector<int>& vNSInd, const int nNS)
    {
       double z = rg.rand01();
       if (z <= ngesParams.mutationRate) {
@@ -221,14 +221,14 @@ public:
       }
    }
 
-   void applyMutationOperators(S& s, const vector<NGESIndStructure<R, ADS>>& p, const vector<int> vNSInd, const int nNS)
+   void applyMutationOperators(S& s, const vector<NGESIndStructure<S, XEv>>& p, const vector<int> vNSInd, const int nNS)
    {
       for (int i = 0; i < nNS; i++) {
          int param = vNSInd[i]; //Extract index
          double rx = rg.rand01();
          if (rx < p[param].pr)
             for (int a = 0; a < p[param].nap; a++) {
-               Move<R, ADS>* mov_tmp = vNS[param]->randomMove(s);
+               Move<S, XEv>* mov_tmp = vNS[param]->randomMove(s);
                //					int tries = 0;
                //					int maxTries = 1;
                //
@@ -240,7 +240,7 @@ public:
                //					}
 
                if (mov_tmp->canBeApplied(s)) {
-                  Move<R, ADS>* mov_rev = mov_tmp->apply(s);
+                  Move<S, XEv>* mov_rev = mov_tmp->apply(s);
                   delete mov_rev;
                } else {
                   //						cout << "cannot be applied NS:" << param;
@@ -262,7 +262,7 @@ public:
             offsprings.push_back(pop[i]);
       }
 
-      auto compInd = [&](NGESInd<R, ADS>* indA, NGESInd<R, ADS>* indB) -> bool {
+      auto compInd = [&](NGESInd<S, XEv>* indA, NGESInd<S, XEv>* indB) -> bool {
          return eval.betterThan(indA->e, indB->e);
       };
 
@@ -346,14 +346,14 @@ public:
       for (int i = 0; i < ngesParams.mi; i++) {
          //PartialGreedyInitialSolutionOPM is(opm, 0.4, 0.4, 0.4); // waste, ore, shovel
          S* s = constructive.generateSolution(stopCriteria.timelimit); //MAKE MOVE TODO
-         vector<NGESIndStructure<R, ADS>> m;
+         vector<NGESIndStructure<S, XEv>> m;
 
          //probability, application, sigmaNomal, sigmaBinomial
          for (int aux = 0; aux < nNS; aux++)
-            m.push_back(NGESIndStructure<R, ADS>(rg.rand01(), rg.randB(0.5, 10) + 1, rg.rand01(), rg.rand01()));
+            m.push_back(NGESIndStructure<S, XEv>(rg.rand01(), rg.randB(0.5, 10) + 1, rg.rand01(), rg.rand01()));
 
          Evaluation<> e = eval.evaluate(*s);
-         NGESInd<R, ADS>* ind = new NGESInd<R, ADS>(*s, e, m, nNS); //TODO MAKE MOVE
+         NGESInd<S, XEv>* ind = new NGESInd<S, XEv>(*s, e, m, nNS); //TODO MAKE MOVE
 
          pop.push_back(ind);
 
@@ -393,7 +393,7 @@ public:
             // Cria Filho e Tuple de Parametros (pi,nap,vizinhança)
             S filho = pop[x]->sInd;
 
-            vector<NGESIndStructure<R, ADS>> vt = pop[x]->vEsStructureInd;
+            vector<NGESIndStructure<S, XEv>> vt = pop[x]->vEsStructureInd;
             vector<int> vNSOffspring = pop[x]->vNSInd;
 
             // Mutacao dos parametros l
@@ -409,7 +409,7 @@ public:
             Evaluation<> e = eval.evaluate(filho);
             fo_filhos += e.evaluation();
 
-            NGESInd<R, ADS>* ind = new NGESInd<R, ADS>(filho, e, vt, vNSOffspring); //TODO MAKE MOVE
+            NGESInd<S, XEv>* ind = new NGESInd<S, XEv>(filho, e, vt, vNSOffspring); //TODO MAKE MOVE
 
             popOffsprings[l] = ind;
          }

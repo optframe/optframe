@@ -55,7 +55,7 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<R, ADS>& s, paretoManager<R, ADS>& pManager, double timelimit, double target_f)
+	virtual void exec(Solution<S, XEv>& s, paretoManager<S, XEv>& pManager, double timelimit, double target_f)
 	{
 		MultiEvaluation<>& sMev = v_e.evaluate(s);
 
@@ -65,7 +65,7 @@ public:
 		delete &sMev;
 	}
 
-	virtual void exec(Solution<R, ADS>& s, MultiEvaluation<>& sMev, paretoManager<R, ADS>& pManager, double timelimit, double target_f)
+	virtual void exec(Solution<S, XEv>& s, MultiEvaluation<>& sMev, paretoManager<S, XEv>& pManager, double timelimit, double target_f)
 	{
 
 		num_calls++;
@@ -84,12 +84,12 @@ public:
 
 		while (!it.isDone())
 		{
-			Move<R, ADS>* move = &it.current();
+			Move<S, XEv>* move = &it.current();
 			if (move->canBeApplied(s))
 			{
 //				cout << "before anything" << endl;
 //				sMev.print();
-				Move<R, ADS>* mov_rev = move->apply(sMev, s);
+				Move<S, XEv>* mov_rev = move->apply(sMev, s);
 				v_e.evaluate(sMev, s);
 
 //				cout << "after move" << endl;

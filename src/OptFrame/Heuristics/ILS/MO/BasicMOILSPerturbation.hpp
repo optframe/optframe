@@ -94,7 +94,7 @@ public:
 		{
 			int nk = rand() % ns.size();
 
-			Move<R, ADS>* mp = ns[nk]->validRandomMove(s);
+			Move<S, XEv>* mp = ns[nk]->validRandomMove(s);
 
 			if (!mp)
 			{
@@ -103,8 +103,8 @@ public:
 			}
 			else
 			{
-				Move<R, ADS>& m = *mp;
-				Component::safe_delete(m.applyMEVUpdateSolution(mev, s));
+				Move<S, XEv>& m = *mp;
+				Component::safe_delete(m.applyMEVUpdate(mev, s));
 				delete &m;
 			}
 		}

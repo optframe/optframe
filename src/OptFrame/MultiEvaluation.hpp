@@ -114,12 +114,12 @@ public:
 		vev.erase(vev.begin() + index);
 	}
 
-	Evaluation<> at(unsigned index)
+	Evaluation<>& at(unsigned index)
 	{
 		return vev[index];
 	}
 
-	const Evaluation<> at(unsigned index) const
+	const Evaluation<>& at(unsigned index) const
 	{
 		return vev[index];
 	}

@@ -54,7 +54,7 @@ public:
 	// core methods
 
 	// no-optimization
-//	S& search(const S& s, Pareto<R, ADS>& pf, double timelimit = 100000000, double target_f = 0)
+//	S& search(const S& s, Pareto<S, XEv>& pf, double timelimit = 100000000, double target_f = 0)
 //	{
 //		S& s2 = s.clone();
 //		exec(s2, pf, timelimit, target_f);
@@ -62,7 +62,7 @@ public:
 //	}
 //
 //	// optimizated version
-//	pair<S&, Evaluation<>&>& search(const S& s, const Evaluation<>& e, Pareto<R, ADS>& pf, double timelimit = 100000000, double target_f = 0)
+//	pair<S&, Evaluation<>&>& search(const S& s, const Evaluation<>& e, Pareto<S, XEv>& pf, double timelimit = 100000000, double target_f = 0)
 //	{
 //		S& s2 = s.clone();
 //		Evaluation<>& e2 = e.clone();
@@ -73,10 +73,10 @@ public:
 // core methods
 
     // 1
-	virtual void exec(Pareto<R, ADS>& p, S& s, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) = 0;
+	virtual void exec(Pareto<S, XEv>& p, S& s, paretoManager<S, XEv>& pManager, MOSC& stopCriteria) = 0;
 
 	// 2
-	virtual void exec(Pareto<R, ADS>& p, S& s, MultiEvaluation<>& mev, paretoManager<R, ADS>& pManager, MOSC& stopCriteria) =0;
+	virtual void exec(Pareto<S, XEv>& p, S& s, MultiEvaluation<>& mev, paretoManager<S, XEv>& pManager, MOSC& stopCriteria) =0;
 
 	virtual bool compatible(string s)
 	{
