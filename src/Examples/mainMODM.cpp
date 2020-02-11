@@ -168,7 +168,7 @@ int main(int argc, char **argv)
 
 	// ================ BEGIN OF CHECK MODULE ================
 
-	/*	CheckCommand<RepMODM, AdsMODM> check(false);
+	/*	CheckCommand<SolutionMODM> check(false);
 	 check.add(grC);
 	 check.add(eval);
 	 //check.add(nsseq_swap);
@@ -180,18 +180,18 @@ int main(int argc, char **argv)
 	 getchar();*/
 
 	// ================ END OF CHECK MODULE ================
-	FirstImprovement<RepMODM, AdsMODM> fiSwap(eval, nsseq_swap);
-	FirstImprovement<RepMODM, AdsMODM> fiSwapInter(eval, nsseq_swapInter);
-	FirstImprovement<RepMODM, AdsMODM> fiInvert(eval, nsseq_invert);
+	FirstImprovement<SolutionMODM> fiSwap(eval, nsseq_swap);
+	FirstImprovement<SolutionMODM> fiSwapInter(eval, nsseq_swapInter);
+	FirstImprovement<SolutionMODM> fiInvert(eval, nsseq_invert);
 
 	int nMovesRDM = 500000;
-	RandomDescentMethod<RepMODM, AdsMODM> rdmSwap(eval, nsseq_swap, nMovesRDM);
-	RandomDescentMethod<RepMODM, AdsMODM> rdmSwapInter(eval, nsseq_swapInter, nMovesRDM);
-	RandomDescentMethod<RepMODM, AdsMODM> rdmInvert(eval, nsseq_invert, nMovesRDM);
-	RandomDescentMethod<RepMODM, AdsMODM> rdmARProduct(eval, nsseq_arProduct, nMovesRDM);
-	RandomDescentMethod<RepMODM, AdsMODM> rdmADD(eval, nsseq_add, 1);
+	RandomDescentMethod<SolutionMODM> rdmSwap(eval, nsseq_swap, nMovesRDM);
+	RandomDescentMethod<SolutionMODM> rdmSwapInter(eval, nsseq_swapInter, nMovesRDM);
+	RandomDescentMethod<SolutionMODM> rdmInvert(eval, nsseq_invert, nMovesRDM);
+	RandomDescentMethod<SolutionMODM> rdmARProduct(eval, nsseq_arProduct, nMovesRDM);
+	RandomDescentMethod<SolutionMODM> rdmADD(eval, nsseq_add, 1);
 
-	vector<LocalSearch<RepMODM, AdsMODM>*> vLS;
+	vector<LocalSearch<SolutionMODM>*> vLS;
 	//vLS.push_back(&fiSwap);
 	// vLS.push_back(&fiSwapInter);
 	//vLS.push_back(&fiInvert);
@@ -203,24 +203,24 @@ int main(int argc, char **argv)
 
 	//vLS.push_back(&rdmARProduct);
 
-	VariableNeighborhoodDescent<RepMODM, AdsMODM> vnd(eval, vLS);
+	VariableNeighborhoodDescent<SolutionMODM> vnd(eval, vLS);
 
-	//ILSLPerturbationLPlus2<RepMODM, AdsMODM> ilsl_pert(eval, 100000, nsseq_invert, rg);
-   Evaluator<RepMODM, AdsMODM>& eval2 = eval;
-	ILSLPerturbationLPlus2<RepMODM, AdsMODM> ilsl_pert(eval2, nsseq_arProduct, rg);
-	//ILSLPerturbationLPlus2<RepMODM, AdsMODM> ilsl_pert(eval, 100000, nsseq_add, rg);
+	//ILSLPerturbationLPlus2<SolutionMODM> ilsl_pert(eval, 100000, nsseq_invert, rg);
+   Evaluator<SolutionMODM>& eval2 = eval;
+	ILSLPerturbationLPlus2<SolutionMODM> ilsl_pert(eval2, nsseq_arProduct, rg);
+	//ILSLPerturbationLPlus2<SolutionMODM> ilsl_pert(eval, 100000, nsseq_add, rg);
 	ilsl_pert.add_ns(nsseq_add);
 	ilsl_pert.add_ns(nsseq_swapInter);
 	ilsl_pert.add_ns(nsseq_swap);
 	ilsl_pert.add_ns(nsseq_invert);
 
-	IteratedLocalSearchLevels<RepMODM, AdsMODM> ils(eval, grC, vnd, ilsl_pert, 50, 15);
+	IteratedLocalSearchLevels<SolutionMODM> ils(eval, grC, vnd, ilsl_pert, 50, 15);
 	ils.setMessageLevel(3);
 
-	pair<Solution<RepMODM, AdsMODM>&, Evaluation<>&>* finalSol;
+	pair<Solution<SolutionMODM>&, Evaluation<>&>* finalSol;
 
-	EmptyLocalSearch<RepMODM, AdsMODM> emptyLS;
-	BasicGRASP<RepMODM, AdsMODM> g(eval, grC, emptyLS, alphaBuilder, 100000);
+	EmptyLocalSearch<SolutionMODM> emptyLS;
+	BasicGRASP<SolutionMODM> g(eval, grC, emptyLS, alphaBuilder, 100000);
 
 	g.setMessageLevel(3);
 	int timeGRASP = 100;
@@ -230,7 +230,7 @@ int main(int argc, char **argv)
 
 	//===========================================
 	//MO
-	vector<Evaluator<RepMODM, AdsMODM>*> v_e;
+	vector<Evaluator<SolutionMODM>*> v_e;
 	v_e.push_back(&eval);
 	v_e.push_back(&evalRobustness);
 
@@ -240,7 +240,7 @@ int main(int argc, char **argv)
 //	NSSeqARProduct nsseq_arProduct(rg, &p, alphaNeighARProduct);
 //	NSSeqADD nsseq_add(rg, &p);
 //
-	vector<NSSeq<RepMODM, AdsMODM>*> neighboors;
+	vector<NSSeq<SolutionMODM>*> neighboors;
 	neighboors.push_back(&nsseq_arProduct);
 	neighboors.push_back(&nsseq_add);
 	//neighboors.push_back(&nsseq_swapInter);
@@ -248,18 +248,18 @@ int main(int argc, char **argv)
 
 	//alphaBuilder as the limit
 
-	GRInitialPopulation<RepMODM, AdsMODM> bip(grC, rg, 0.2);
+	GRInitialPopulation<SolutionMODM> bip(grC, rg, 0.2);
 	int initial_population_size = pop;
 	initial_population_size = 10;
-	MultiEvaluator<RepMODM, AdsMODM> mev(v_e);
+	MultiEvaluator<SolutionMODM> mev(v_e);
 
    // MOVNSLevels (??)
    /*
-	MOVNSLevels<RepMODM, AdsMODM> multiobjectvns(v_e, bip, initial_population_size, neighboors, rg, 10, 10);
-	TwoPhaseParetoLocalSearch<RepMODM, AdsMODM> paretoSearch(mev, bip, initial_population_size, neighboors);
+	MOVNSLevels<SolutionMODM> multiobjectvns(v_e, bip, initial_population_size, neighboors, rg, 10, 10);
+	TwoPhaseParetoLocalSearch<SolutionMODM> paretoSearch(mev, bip, initial_population_size, neighboors);
 
    */
-	Pareto<RepMODM, AdsMODM>* pf;
+	Pareto<SolutionMODM>* pf;
    /*
 	int time2PPLS = 120;
 	for (int exec = 0; exec < 1; exec++)
@@ -277,7 +277,7 @@ int main(int argc, char **argv)
 
 cout<<"Oi"<<endl;
 getchar();
-	UnionNDSets<RepMODM, AdsMODM> US(v_e);
+	UnionNDSets<SolutionMODM> US(v_e);
 	vector<vector<double> > PF1 = US.unionSets("./paretoCorsTesteS3-1", 291);
 
 	vector<vector<double> > PF2 = US.unionSets("./paretoCorsTesteS3-2", 262);
@@ -306,7 +306,7 @@ getchar();
 /*
 
 	vector<vector<Evaluation<>*> > vEval = pf->getParetoFront();
-	vector<Solution<RepMODM, AdsMODM>*> vSolPf = pf->getParetoSet();
+	vector<Solution<SolutionMODM>*> vSolPf = pf->getParetoSet();
 
 	int nObtainedParetoSol = vEval.size();
 	vector<vector<double> > paretoDoubleEval;
@@ -316,7 +316,7 @@ getchar();
 	for (int i = 0; i < nObtainedParetoSol; i++)
 	{
 
-		Solution<RepMODM, AdsMODM>* sol = vSolPf[i];
+		Solution<SolutionMODM>* sol = vSolPf[i];
 
 		const RepMODM& rep = sol->getR();
 		const AdsMODM& ads = sol->getADS();

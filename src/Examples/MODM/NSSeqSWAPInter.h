@@ -15,7 +15,7 @@ using namespace std;
 namespace MODM
 {
 
-class MoveSWAPInter: public Move<RepMODM, AdsMODM>
+class MoveSWAPInter: public Move<SolutionMODM>
 {
 private:
 
@@ -35,9 +35,10 @@ public:
 	{
 	}
 
-	bool canBeApplied(const RepMODM& rep, const AdsMODM* _ads) override
+	bool canBeApplied(const SolutionMODM& s) override
 	{
-      const AdsMODM& ads = *_ads;
+      const RepMODM& rep = s.getR();
+      const AdsMODM& ads = s.getADS();
 		//cout<<"canBeApplied!"<<endl;
 		//cout<<"y1 = "<<y1<<endl;
 		//cout<<"y2 = "<<y2<<endl;
@@ -161,9 +162,10 @@ public:
 		return new MoveCost<>(f, fInv + foInvBud * (-100000));
 	}
 
-	Move<RepMODM, AdsMODM>* apply(RepMODM& rep, AdsMODM* _ads) override
+	Move<SolutionMODM>* apply(SolutionMODM& s) override
 	{
-      AdsMODM& ads = *_ads;
+      RepMODM& rep = s.getR();
+      AdsMODM& ads = s.getADS();
 		//cout<<rep<<endl;
 		//cout<<ads.clientOffers<<endl;
 		//cout<<ads.productOffers<<endl;
@@ -190,7 +192,7 @@ public:
 		return new MoveSWAPInter(y1, y2, c1, c2, dmproblem);
 	}
 
-	virtual bool operator==(const Move<RepMODM, AdsMODM>& _m) const
+	virtual bool operator==(const Move<SolutionMODM>& _m) const
 	{
 		const MoveSWAPInter& m = (const MoveSWAPInter&) _m;
 		return (m.y1 == y1) && (m.y2 == y2) && (m.c1 == c1) && (m.c2 == c2);
@@ -204,7 +206,7 @@ public:
 	}
 };
 
-class NSIteratorSWAPInter: public NSIterator<RepMODM, AdsMODM>
+class NSIteratorSWAPInter: public NSIterator<SolutionMODM>
 {
 private:
 	ProblemInstance* dmproblem;
@@ -263,7 +265,7 @@ public:
 		return (y1 == nProducts - 1);
 	}
 
-	Move<RepMODM, AdsMODM>* current() override
+	Move<SolutionMODM>* current() override
 	{
 		if (isDone())
 		{
@@ -277,7 +279,7 @@ public:
 
 };
 
-class NSSeqSWAPInter: public NSSeq<RepMODM, AdsMODM>
+class NSSeqSWAPInter: public NSSeq<SolutionMODM>
 {
 private:
 	ProblemInstance* dmproblem;
@@ -293,9 +295,11 @@ public:
 	{
 	}
 
-	virtual Move<RepMODM, AdsMODM>* randomMove(const RepMODM& rep, const AdsMODM* _ads) override
+	virtual Move<SolutionMODM>* randomMove(const SolutionMODM& s) override
 	{
-      const AdsMODM& ads = *_ads;
+      const RepMODM& rep = s.getR();
+      const AdsMODM& ads = s.getADS();
+      //
 		int nProduts = dmproblem->getNumberOfProducts();
 
 		int y1 = rg.rand(nProduts);
@@ -318,7 +322,7 @@ public:
 		return new MoveSWAPInter(y1, y2, c1, c2, dmproblem); // return a random move
 	}
 
-	virtual NSIterator<RepMODM, AdsMODM>* getIterator(const RepMODM& rep, const AdsMODM* ads)
+	virtual NSIterator<SolutionMODM>* getIterator(const SolutionMODM& s) override
 	{
 		return new NSIteratorSWAPInter(dmproblem); // return an iterator to the neighbors of 'rep'
 	}
@@ -326,7 +330,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << NS<RepMODM, AdsMODM>::idComponent() << ":NSSeqSWAPInter";
+		ss << NS<SolutionMODM>::idComponent() << ":NSSeqSWAPInter";
 		return ss.str();
 	}
 

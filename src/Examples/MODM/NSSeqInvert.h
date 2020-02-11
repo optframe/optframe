@@ -14,7 +14,7 @@ using namespace std;
 
 namespace MODM {
 
-class MoveInvert : public Move<RepMODM, AdsMODM>
+class MoveInvert : public Move<SolutionMODM>
 {
 private:
    ProblemInstance* dmproblem;
@@ -33,15 +33,17 @@ public:
    {
    }
 
-   bool canBeApplied(const RepMODM& rep, const AdsMODM* ads) override
+   bool canBeApplied(const SolutionMODM& s) override
    {
-      bool productOffers = (ads->productOffers[y] > 0);
+      const AdsMODM& ads = s.getADS();
+      bool productOffers = (ads.productOffers[y] > 0);
       return productOffers;
    }
 
-   MoveCost<>* cost(const Evaluation<>&, const RepMODM& rep, const AdsMODM* _ads, bool allowEstimate) override
+   MoveCost<>* cost(const Evaluation<>&, const SolutionMODM& s, bool allowEstimate) override
    {
-      const AdsMODM& ads = *_ads;
+      const RepMODM& rep = s.getR();
+      const AdsMODM& ads = s.getADS();
       double f = 0;
 
       int newValue;
@@ -80,9 +82,10 @@ public:
       return new MoveCost<>(f, fInv + foInvBud * (-1000));
    }
 
-   Move<RepMODM, AdsMODM>* apply(RepMODM& rep, AdsMODM* _ads) override
+   Move<SolutionMODM>* apply(SolutionMODM& s) override
    {
-      AdsMODM& ads = *_ads;
+      RepMODM& rep = s.getR();
+      AdsMODM& ads = s.getADS();
       int oldC = rep[c][y];
       if (oldC == 1)
          rep[c][y] = 0;
@@ -100,7 +103,7 @@ public:
       return new MoveInvert(y, c, dmproblem);
    }
 
-   virtual bool operator==(const Move<RepMODM, AdsMODM>& _m) const
+   virtual bool operator==(const Move<SolutionMODM>& _m) const
    {
       const MoveInvert& m = (const MoveInvert&)_m;
       return (m.y == y) && (m.c == c);
@@ -114,7 +117,7 @@ public:
    }
 };
 
-class NSIteratorInvert : public NSIterator<RepMODM, AdsMODM>
+class NSIteratorInvert : public NSIterator<SolutionMODM>
 {
 private:
    ProblemInstance* dmproblem;
@@ -157,7 +160,7 @@ public:
       return (y >= nProducts);
    }
 
-   Move<RepMODM, AdsMODM>* current() override
+   Move<SolutionMODM>* current() override
    {
       if (isDone()) {
          cout << "There isnt any current element!" << endl;
@@ -169,7 +172,7 @@ public:
    }
 };
 
-class NSSeqInvert : public NSSeq<RepMODM, AdsMODM>
+class NSSeqInvert : public NSSeq<SolutionMODM>
 {
 private:
    ProblemInstance* dmproblem;
@@ -186,13 +189,15 @@ public:
    {
    }
 
-   virtual Move<RepMODM, AdsMODM>* randomMove(const RepMODM& rep, const AdsMODM* ads) override
+   virtual Move<SolutionMODM>* randomMove(const SolutionMODM& s) override
    {
+      const RepMODM& rep = s.getR();
+      const AdsMODM& ads = s.getADS();
       int nProduts = dmproblem->getNumberOfProducts();
 
       int y = rg.rand(nProduts);
 
-      while (ads->productOffers[y] == 0) {
+      while (ads.productOffers[y] == 0) {
          y = rg.rand(nProduts);
       }
 
@@ -202,15 +207,16 @@ public:
       return new MoveInvert(y, c, dmproblem); // return a random move
    }
 
-   virtual NSIterator<RepMODM, AdsMODM>* getIterator(const RepMODM& rep, const AdsMODM* ads)
+   virtual NSIterator<SolutionMODM>* getIterator(const SolutionMODM& s) override
    {
+      const AdsMODM* ads = &s.getADS();
       return new NSIteratorInvert(*ads, dmproblem); // return an iterator to the neighbors of 'rep'
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << NS<RepMODM, AdsMODM>::idComponent() << ":NSSeqInvert";
+      ss << NS<SolutionMODM>::idComponent() << ":NSSeqInvert";
       return ss.str();
    }
 

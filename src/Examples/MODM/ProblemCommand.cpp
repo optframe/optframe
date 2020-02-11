@@ -26,7 +26,7 @@ bool MODMProblemCommand::load(string filename)
    /*
 
 	// OPTIONAL: FOR TESTING
-	check = new CheckCommand<RepMODM, AdsMODM>;
+	check = new CheckCommand<SolutionMODM>;
 
 	// STEP 2: IMPLEMENT Evaluator.h/.cpp (THIS IS YOUR EVALUATION FUNCTION)
 	registerComponent(new MODMEvaluator(*p, adsMan), "myEvaluator");

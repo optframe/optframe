@@ -15,7 +15,7 @@ using namespace std;
 
 namespace MODM {
 
-class MoveADD : public Move<RepMODM, AdsMODM>
+class MoveADD : public Move<SolutionMODM>
 {
 private:
    ProblemInstance* dmproblem;
@@ -38,14 +38,15 @@ public:
    {
    }
 
-   bool canBeApplied(const RepMODM& rep, const AdsMODM* ads) override
+   bool canBeApplied(const SolutionMODM& s) override 
    {
       return true;
    }
 
-   Move<RepMODM, AdsMODM>* apply(RepMODM& rep, AdsMODM* _ads) override
+   Move<SolutionMODM>* apply(SolutionMODM& s) override
    {
-      AdsMODM& ads = *_ads;
+      RepMODM& rep = s.getR();
+      AdsMODM& ads = s.getADS();
       //cout<<"aplying..."<<endl;
       //cout<<reverse<<endl;
       vector<int> revProducts;
@@ -109,7 +110,7 @@ public:
       return new MoveADD(revReverse, revProducts, revClients, dmproblem, rg);
    }
 
-   virtual bool operator==(const Move<RepMODM, AdsMODM>& _m) const
+   virtual bool operator==(const Move<SolutionMODM>& _m) const
    {
       const MoveADD& m = (const MoveADD&)_m;
       return (m.reverse == reverse);
@@ -128,7 +129,7 @@ public:
    }
 };
 
-class NSIteratorADD : public NSIterator<RepMODM, AdsMODM>
+class NSIteratorADD : public NSIterator<SolutionMODM>
 {
 private:
    ProblemInstance* dmproblem;
@@ -162,7 +163,7 @@ public:
       return (i == 2);
    }
 
-   Move<RepMODM, AdsMODM>* current() override
+   Move<SolutionMODM>* current() override
    {
       if (isDone()) {
          cout << "There isnt any current element!" << endl;
@@ -176,7 +177,7 @@ public:
    }
 };
 
-class NSSeqADD : public NSSeq<RepMODM, AdsMODM>
+class NSSeqADD : public NSSeq<SolutionMODM>
 {
 private:
    ProblemInstance* dmproblem;
@@ -193,13 +194,16 @@ public:
    {
    }
 
-   virtual NSIterator<RepMODM, AdsMODM>* getIterator(const RepMODM& rep, const AdsMODM* ads) override
+   virtual NSIterator<SolutionMODM>* getIterator(const SolutionMODM& s) override
    {
       return new NSIteratorADD(dmproblem, rg); // return an iterator to the neighbors of 'rep'
    }
 
-   virtual Move<RepMODM, AdsMODM>* randomMove(const RepMODM& rep, const AdsMODM* ads) override
+   virtual Move<SolutionMODM>* randomMove(const SolutionMODM& s) override
    {
+      const RepMODM& rep = s.getR();
+      const AdsMODM* ads = &s.getADS();
+      //
       vector<int> vazioP;
       vector<int> vazioC;
       /*cout<<"oi ADD NS"<<endl;
@@ -210,7 +214,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << NS<RepMODM, AdsMODM>::idComponent() << ":NSSeqADD";
+      ss << NS<SolutionMODM>::idComponent() << ":NSSeqADD";
       return ss.str();
    }
 

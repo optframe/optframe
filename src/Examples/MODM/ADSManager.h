@@ -4,6 +4,7 @@
 #include "../../OptFrame/ADSManager.hpp"
 
 #include "Representation.h"
+#include "Solution.h"
 #include "ADS.h"
 #include "ProblemInstance.h"
 
@@ -13,10 +14,10 @@ using namespace optframe;
 namespace MODM
 {
 
-class MODMADSManager: public ADSManager<RepMODM, AdsMODM>
+class MODMADSManager: public ADSManager<RepMODM, AdsMODM, SolutionMODM>
 {
 private:
-	typedef ADSManager<RepMODM, AdsMODM> super;
+	typedef ADSManager<RepMODM, AdsMODM, SolutionMODM> super;
 	ProblemInstance& pMODM;
 	int c, n;
 

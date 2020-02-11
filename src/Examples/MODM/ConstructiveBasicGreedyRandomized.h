@@ -36,7 +36,7 @@ comparacaoClients(int a, int b)
    return (a > b);
 }
 
-class ConstructiveBasicGreedyRandomized : public GRConstructive<RepMODM, AdsMODM>
+class ConstructiveBasicGreedyRandomized : public GRConstructive<SolutionMODM>
 {
 private:
    ProblemInstance& pMODM;

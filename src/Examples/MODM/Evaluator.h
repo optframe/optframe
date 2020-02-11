@@ -24,7 +24,7 @@
 namespace MODM
 {
 
-class MODMEvaluator: public Evaluator<RepMODM, AdsMODM>
+class MODMEvaluator: public Evaluator<SolutionMODM>
 {
 private:
 	ProblemInstance& pMODM;
@@ -58,11 +58,14 @@ public:
 	{
 	}
 
-	Evaluation<> evaluate(const RepMODM& rep)
+	Evaluation<> evaluate(const SolutionMODM& s) override
 	{
-		AdsMODM ads;
-		adsMan.initializeADS(rep, ads);
-		return evaluate(rep, &ads);
+      const RepMODM& rep = s.getR();
+      const AdsMODM& ads = s.getADS();
+
+		//AdsMODM ads;
+		//adsMan.initializeADS(rep, ads);
+		return evaluateRADS(rep, &ads);
 	}
 
 	void evaluatorCheck(const RepMODM& rep, const AdsMODM& ads, double fo, double foInv)
@@ -141,7 +144,7 @@ public:
 		}
 	}
 
-	Evaluation<> evaluate(const RepMODM& rep, const AdsMODM* _ads) override
+	Evaluation<> evaluateRADS(const RepMODM& rep, const AdsMODM* _ads)
 	{
       const AdsMODM& ads = *_ads;
 		Timer t;
@@ -247,7 +250,7 @@ public:
 
 	void exportEvaluation(const RepMODM& rep, const AdsMODM& ads, string filename, string outFile)
 	{
-		Evaluation<> e = evaluate(rep, &ads);
+		Evaluation<> e = evaluateRADS(rep, &ads);
 
 		double fo = e.evaluation();
 
