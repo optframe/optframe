@@ -54,13 +54,12 @@ int stockMarketForecasting(int argc, char **argv)
 
 	vector<string> explanatoryVariables;
 
-//	explanatoryVariables.push_back("./HFM/Instance/dadosBovespa/bovespa");
-//	explanatoryVariables.push_back("./HFM/Instance/dadosBovespa/test");
-	explanatoryVariables.push_back("./HFM/Instance/dadosBovespa/emprestimoAigor");
+	explanatoryVariables.push_back("./HFM/Instance/stockData/stockData");
+/*	explanatoryVariables.push_back("./HFM/Instance/dadosBovespa/emprestimoAigor");
 	explanatoryVariables.push_back("./HFM/Instance/dadosBovespa/emprestimoAigorExp1");
 	explanatoryVariables.push_back("./HFM/Instance/dadosBovespa/emprestimoAigorExp2");
 	explanatoryVariables.push_back("./HFM/Instance/dadosBovespa/emprestimoAigorExp3");
-	explanatoryVariables.push_back("./HFM/Instance/dadosBovespa/emprestimoAigorExp4");
+	explanatoryVariables.push_back("./HFM/Instance/dadosBovespa/emprestimoAigorExp4");*/
 
 	cout << "Variables and explanation:" << explanatoryVariables << endl;
 
