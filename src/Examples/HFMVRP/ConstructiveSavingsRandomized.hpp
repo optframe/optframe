@@ -372,13 +372,13 @@ public:
 	{
 	}
 
-	SolutionHFMVRP* generateSolution(double timelimit) override
+	std::optional<SolutionHFMVRP> generateSolution(double timelimit) override
 	{
 		return generateGRSolution(0, timelimit);
 	}
 
    // GRConstructive
-	SolutionHFMVRP* generateGRSolution(float alpha, double timelimit) override
+	std::optional<SolutionHFMVRP> generateGRSolution(float alpha, double timelimit) override
 	{
 		if (alpha == 0)
 			alpha = 0.00001;
@@ -523,7 +523,7 @@ public:
 		 cout << "newAds.minPairDemand" << newAds.minPairDemand << endl;
 		 cout << "newAds.sumDemand" << newAds.sumDemand << endl;
 		 */
-		return new SolutionHFMVRP(newRep, newAds);
+		return make_optional(SolutionHFMVRP(newRep, newAds));
 	}
 
 };

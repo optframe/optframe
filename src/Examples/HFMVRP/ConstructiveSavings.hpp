@@ -361,7 +361,7 @@ public:
 	{
 	}
 
-	SolutionHFMVRP* generateSolution(double timelimit) override
+	std::optional<SolutionHFMVRP> generateSolution(double timelimit) override
 	{
 		vector<vector<int> > newRep;
 		bool feasibleSol = false;
@@ -450,7 +450,7 @@ public:
 		}
 		cout << "teste" << endl;
 		getchar();
-		return new SolutionHFMVRP(newRep);
+		return make_optional(SolutionHFMVRP(newRep));
 	}
 
 };

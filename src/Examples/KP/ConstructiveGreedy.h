@@ -36,7 +36,7 @@ public:
 	
 	virtual ~ConstructiveGreedy();
 
-	SolutionKP* generateSolution(double timelimit) override;
+	std::optional<SolutionKP> generateSolution(double timelimit) override;
 };
 
 }

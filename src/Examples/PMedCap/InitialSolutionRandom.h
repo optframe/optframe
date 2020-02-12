@@ -55,7 +55,7 @@ public:
    {
    }
 
-   SolutionPCAP* generateSolution(double timelimit) override
+   std::optional<SolutionPCAP> generateSolution(double timelimit) override
    {
       RepPCAP newRep;
       bool med[pPCAP.nCidades];
@@ -84,7 +84,7 @@ public:
             newRep.second[i] = rg.rand(pPCAP.nMedianas);
       }
 
-      return new SolutionPCAP(newRep);
+      return make_optional(SolutionPCAP(newRep));
    }
 };
 

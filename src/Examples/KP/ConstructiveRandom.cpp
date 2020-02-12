@@ -11,7 +11,7 @@ ConstructiveRandom::~ConstructiveRandom()
 {
 }
 
-SolutionKP*
+std::optional<SolutionKP>
 ConstructiveRandom::generateSolution(double timelimit)
 {
    srand(5);
@@ -20,5 +20,5 @@ ConstructiveRandom::generateSolution(double timelimit)
    for (int i = 0; i < pKP.N; i++)
       newRep[i] = rand() % 2;
 
-   return new SolutionKP(newRep);
+   return make_optional(SolutionKP(newRep));
 }

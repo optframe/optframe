@@ -142,9 +142,9 @@ main(int argc, char** argv)
    vNSeq.push_back(nsseq_deltaIterator_shift10);
 
    SOSC soscGR(10, 0);
-   pair<SolutionHFMVRP, Evaluation<>>* initialPairGrasp = basicGrasp.search(soscGR);
+   pair<SolutionHFMVRP, Evaluation<>> initialPairGrasp = *basicGrasp.search(soscGR);
 
-   CloneConstructive<SolutionHFMVRP> cloneSolAsConstructive(initialPairGrasp->first);
+   CloneConstructive<SolutionHFMVRP> cloneSolAsConstructive(initialPairGrasp.first);
 
    vector<int> vNSeqMaxApplication(vNSeq.size(), 1000);
    int selectionType = 1;

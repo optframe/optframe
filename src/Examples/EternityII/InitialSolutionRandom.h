@@ -58,7 +58,7 @@ public:
    {
    }
 
-   SolutionEtII* generateSolution(double timelimit) override
+   std::optional<SolutionEtII> generateSolution(double timelimit) override
    {
       RepEtII* tab = new RepEtII(pEtII.height, pEtII.width);
 
@@ -190,7 +190,7 @@ public:
 
    
 
-      return new SolutionEtII(*tab);
+      return make_optional(SolutionEtII(*tab));
    }
 };
 }

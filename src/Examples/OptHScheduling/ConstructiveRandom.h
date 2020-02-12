@@ -59,7 +59,7 @@ public:
 	{
 	}
 
-	SolutionOptHS* generateSolution(double timelimit) override
+	std::optional<SolutionOptHS> generateSolution(double timelimit) override
 	{
 		RepOptHS newRep;
 
@@ -69,7 +69,7 @@ public:
 
 		rg.shuffle(newRep); // shuffle elements of newRep
 
-		return new SolutionOptHS(newRep);
+		return make_optional(SolutionOptHS(newRep));
 	}
 
 };

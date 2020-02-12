@@ -31,7 +31,7 @@ main(int argc, char** argv)
    ConstructiveRandom c1(p);
    NSSeqBitFlip ns1(p, rg);
    cout << "will generate solution" << endl;
-   SolutionKP& s = *c1.generateSolution(10); // timelimit (10???)
+   SolutionKP s = *c1.generateSolution(10); // timelimit (10???)
    s.print();
    Evaluation<> e = ev.evaluate(s);
    e.print();
@@ -48,30 +48,28 @@ main(int argc, char** argv)
 
    BasicSimulatedAnnealing<SolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
    SOSC sosc; // stop criteria
-   pair<SolutionKP, Evaluation<>>* r = sa.search(sosc);
-   r->first.print();
-   r->second.print();
-   delete r;
+   pair<SolutionKP, Evaluation<>> r = *sa.search(sosc);
+   r.first.print();
+   r.second.print();
 
    BestImprovement<SolutionKP> bi(ev, ns1);
    FirstImprovement<SolutionKP> fi(ev, ns1);
    HillClimbing<SolutionKP> sd(ev, bi);
    HillClimbing<SolutionKP> pm(ev, fi);
    RandomDescentMethod<SolutionKP> rdm(ev, ns1, 10);
-   sd.search(s, e, sosc).second.print();  // executa e imprime HC + BI
-   pm.search(s, e, sosc).second.print();  // executa e imprime HC + FI
-   rdm.search(s, e, sosc).second.print(); // executa e imprime RDM com 10 iterações
-
-   delete &s;
+   //
+   pair<SolutionKP, Evaluation<>> se(s, e);
+   sd.lsearch(se, sosc).second.print();  // executa e imprime HC + BI
+   pm.lsearch(se, sosc).second.print();  // executa e imprime HC + FI
+   rdm.lsearch(se, sosc).second.print(); // executa e imprime RDM com 10 iterações
 
    EvaluatorSubsetRandomKeys<SolutionKP> eprk(ev1, 0, p.N - 1);
    BRKGA<RepKP, SolutionKP> brkga(eprk, p.N, 1000, 30, 0.4, 0.3, 0.6);
 
    //pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
-   pair<SolutionKP, Evaluation<>>* r2 = brkga.search(sosc);
-   r2->first.print();
-   r2->second.print();
-   delete r2;
+   pair<SolutionKP, Evaluation<>> r2 = *brkga.search(sosc);
+   r2.first.print();
+   r2.second.print();
 
    cout << "Program ended successfully" << endl;
    return 0;

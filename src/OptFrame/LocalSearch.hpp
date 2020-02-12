@@ -66,16 +66,19 @@ public:
       exec(s2, stopCriteria);
       return s2;
    }
+   */
 
    // optimizated version
-   pair<S&, XEv&>& search(const S& s, const XEv& e, SOSC& stopCriteria)
+   pair<S, XEv> lsearch(const pair<S, XEv> se, SOSC& stopCriteria)
    {
-      S& s2 = s.clone();
-      XEv& e2 = e.clone();
-      exec(s2, e2, stopCriteria);
-      return *new pair<S&, XEv&> (s2, e2);
+      //S& s2 = s.clone();
+      //XEv& e2 = e.clone();
+      pair<S, XEv> p2 = se; // implicit 'clone' here ??
+      exec(p2, stopCriteria);
+      //return *new pair<S&, XEv&> (s2, e2);
+      return p2;
    }
-   */
+   
 
    // core methods
 

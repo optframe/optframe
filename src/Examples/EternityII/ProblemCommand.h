@@ -89,7 +89,7 @@ public:
 
     	EtIIInitialSolutionGreedy& is = * new EtIIInitialSolutionGreedy(*p, hf.getRandGen());
 
-    	SolutionEtII& s = *is.generateSolution(10); // TODO: fix time
+    	SolutionEtII s = *is.generateSolution(10); // TODO: fix time
 
     	NSSeqRotate<DeltaMoveRotate>& nsRotate = * new NSSeqRotate<DeltaMoveRotate>(hf.getRandGen());
     	NSSeqSwapCenter<DeltaMoveSwapCenter>& nsSwapCenter = * new NSSeqSwapCenter<DeltaMoveSwapCenter>(hf.getRandGen());

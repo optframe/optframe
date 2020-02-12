@@ -55,7 +55,7 @@ public:
    {
    }
 
-   SolutionPCAP* generateSolution(double timelimit) override
+   std::optional<SolutionPCAP> generateSolution(double timelimit) override
    {
       RepPCAP newRep;
       bool med[pPCAP.nCidades];
@@ -97,7 +97,7 @@ public:
          }
       }
 
-      return new SolutionPCAP(newRep);
+      return make_optional(SolutionPCAP(newRep));
    }
 };
 

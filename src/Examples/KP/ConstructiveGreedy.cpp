@@ -11,10 +11,10 @@ ConstructiveGreedy::~ConstructiveGreedy()
 {
 }
 
-SolutionKP*
+std::optional<SolutionKP>
 ConstructiveGreedy::generateSolution(double timelimit)
 {
    RepKP newRep;
 
-   return new SolutionKP(newRep);
+   return make_optional(SolutionKP(newRep));
 }
