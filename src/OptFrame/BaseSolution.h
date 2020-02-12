@@ -19,6 +19,15 @@ typedef std::nullptr_t OPTFRAME_DEFAULT_ADS;
 typedef OPTFRAME_DEFAULT_ADS OptFrameADS; // more beautiful :)
 typedef OPTFRAME_DEFAULT_ADS _ADS;        // more beautiful :)
 
+
+// general concept, just requiring operator<< for basic printability
+template <class R>
+//concept bool Representation = true;
+concept bool Representation = optframe::ostreamable<R>;
+
+
+// ========================
+
 // requires Self& clone() method
 // there may be some "Cloneable" in std future...
 // TODO: change return to unique_ptr instead of reference
@@ -41,14 +50,9 @@ concept bool HasToString = requires(Self self)
 };
 
 template <class Self>
-concept bool XSolution = HasClone<Self> &&HasToString<Self>;
+concept bool XSolution = HasClone<Self> && HasToString<Self> && Representation<Self>;
 
 // ==========================
-
-// general concept, just requiring operator<< for basic printability
-template <class R>
-//concept bool Representation = true;
-concept bool Representation = optframe::ostreamable<R>;
 
 
 template <class ADS>
@@ -132,9 +136,15 @@ struct IsSolution
       return *this; // TODO:
    }
 
-   std::string toString()
+   std::string toString() const
    {
       return "";
+   }
+
+   friend std::ostream& operator<<(std::ostream& os, const IsSolution<R,ADS>& me)
+   {
+      os << me.toString();
+      return os;
    }
 };
 

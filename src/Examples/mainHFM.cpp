@@ -44,7 +44,7 @@ enum SwitchOptions
 
 int main(int argc, char **argv)
 {
-	bool r;
+   bool r;
 	SwitchOptions optionSwitch = GENERATE_NONDOMINATED_HFM_MODELS; //Important paper on the way
 
 	optionSwitch = STOCKMARKET;

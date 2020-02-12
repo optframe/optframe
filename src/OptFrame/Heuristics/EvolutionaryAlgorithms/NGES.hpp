@@ -21,6 +21,8 @@
 #ifndef OPTFRAME_NGES_HPP_
 #define OPTFRAME_NGES_HPP_
 
+// filename: NGES.hpp
+
 #include <math.h>
 #include <vector>
 
@@ -140,6 +142,13 @@ struct NGESInd
    ~NGESInd()
    {
    }
+
+   void print() const
+   {
+      cout << "NGESInd:";
+      sInd.print();
+      e.print();
+   }
 };
 
 //CADA INDIVIDUO EH UM PAR DE SOLUCAO E UMA TUPLE COM O PARAMETROS DA ESTRATEGIA
@@ -253,8 +262,21 @@ public:
       }
    }
 
+   void printPop(NGESPopulation& pop)
+   {
+      cout << "PRINT!" << endl;
+      for(unsigned i=0; i<pop.size(); i++)
+      {
+         cout << "i=" << i << ": ";
+         pop[i]->print();
+      }
+   }
+
    void competition(NGESPopulation& pop, NGESPopulation& offsprings, S& sStar, Evaluation<>& eStar, int& iterWithoutImprovement, const int& gCurrent, int selectionType)
    {
+      cout << "competition!" << endl;
+      cout << "OFFSPRINGS:" << endl;
+      printPop(offsprings);
 
       if (selectionType == 1) {
          offsprings.reserve(offsprings.size() + ngesParams.mi);

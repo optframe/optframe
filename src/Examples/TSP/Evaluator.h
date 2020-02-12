@@ -140,7 +140,7 @@ public:
         }
         */
 
-        return *new Evaluation(fo);
+        return Evaluation<>(fo);
     }
 
     void exploreNeighborhood(RepTSP r, int& totalNeigh, int& improvingSols)
