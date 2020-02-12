@@ -166,7 +166,8 @@ public:
 
    //pair<CopySolution<random_keys>&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const CopySolution<random_keys>* _s = nullptr, const Evaluation<>* _e = nullptr)
    ///virtual pair<CopySolution<random_keys>, XEv>* search(SOSC& stopCriteria, const CopySolution<random_keys>* _s = nullptr, const XEv* _e = nullptr) override
-   virtual pair<XRS, XEv>* search(SOSC& stopCriteria, const XRS* _s = nullptr, const XEv* _e = nullptr) override
+   //virtual pair<XRS, XEv>* search(SOSC& stopCriteria, const XRS* _s = nullptr, const XEv* _e = nullptr) override
+   virtual std::optional<pair<XRS, XEv>> search(SOSC& stopCriteria, const std::optional<pair<XRS, XEv>> input = std::nullopt) override
    {
       // count generations
       int count_gen = 0;
@@ -245,7 +246,8 @@ public:
       p.clear();
       return new pair<RSK, XEv>(best, e);
       */
-     return new pair<XRS, XEv>(*pe.second, e);
+     XRS finalSol(*pe.second); // TODO: avoid loss
+     return std::optional<pair<XRS, XEv>>(make_pair(finalSol, e)); 
    }
 };
 }

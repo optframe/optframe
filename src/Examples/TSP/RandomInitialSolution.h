@@ -61,7 +61,7 @@ public:
 	{
 	}
 
-	SolutionTSP* generateSolution(double timelimit) override
+	std::optional<SolutionTSP> generateSolution(double timelimit) override
 	{
 		RepTSP newRep(pI->n);
 
@@ -75,7 +75,7 @@ public:
 			newRep[i] = r[i];
 
 		//return new CopySolution<RepTSP>(newRep);
-      return new SolutionTSP(newRep);
+      return make_optional(SolutionTSP(newRep));
 	}
 
 };

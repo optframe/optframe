@@ -52,22 +52,23 @@ public:
    {
    }
 
-   pair<S, Evaluation<>>* search(SOSC& sosc, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+   //pair<S, Evaluation<>>* search(SOSC& sosc, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+   virtual std::optional<pair<S, XEv>> search(SOSC& sosc, const std::optional<pair<S, XEv>> input = std::nullopt) override
    {
       //cout << "SimpleLocalSearch search(" << target_f << "," << timelimit << ")" << endl;
 
       Timer tnow;
 
-      S& s = *constructive.generateSolution(sosc.timelimit);
-      Evaluation<> e = evaluator.evaluate(s);
+      std::optional<S> s = constructive.generateSolution(sosc.timelimit);
+      if(!s)
+         return std::nullopt; // nothing to return
+      Evaluation<> e = evaluator.evaluate(*s);
 
-      //pair<S&, Evaluation<>&>& p = localSearch.search(s, e, sosc);
+      ////pair<S&, Evaluation<>&>& p = localSearch.search(s, e, sosc);
 
-      delete &s;
+      //delete &s;
 
-      // TODO: fix this.. not using 'p' anymore
-      pair<S, Evaluation<>>* p2 = nullptr;
-      return p2;
+      return make_optional(make_pair(*s, e));
    }
 
    virtual bool compatible(string s)

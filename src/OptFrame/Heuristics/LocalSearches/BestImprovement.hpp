@@ -54,15 +54,18 @@ public:
 	{
 	}
 
-	virtual void exec(S& s, SOSC& sosc) override
-	{
-		Evaluation<> e = eval.evaluate(s);
+   // DEPRECATED
+	//virtual void exec(S& s, SOSC& sosc) override
+	//{
+	//	Evaluation<> e = eval.evaluate(s);
+	//	exec(s, e, sosc);
+	//}
 
-		exec(s, e, sosc);
-	}
-
-	virtual void exec(S& s, Evaluation<>& e, SOSC& sosc) override
+	virtual void exec(pair<S, XEv>& se, SOSC& sosc) override
 	{
+      S& s = se.first;
+      XEv& e = se.second;
+
       //double timelimit = sosc.timelimit;
       //double target_f = sosc.target_f;
 

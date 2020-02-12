@@ -56,15 +56,17 @@ public:
 	{
 	}
 
-	virtual void exec(S& s, SOSC& sosc)
-	{
-		Evaluation<> e = ev.evaluate(s);
+	// DEPRECATED
+	//virtual void exec(S& s, SOSC& stopCriteria)
+	//{
+	//	Evaluation<> e = std::move(ev.evaluate(s));
+	//	exec(s, e, stopCriteria);
+	//}
 
-		exec(s, e, sosc);
-	}
-
-	virtual void exec(S& sStar, Evaluation<>& eStar, SOSC& sosc) override
+	virtual void exec(pair<S, XEv>& se, SOSC& sosc) override
 	{
+      S& sStar = se.first;
+      XEv& eStar = se.second;
       double timelimit = sosc.timelimit;
       double target_f = sosc.target_f;
 

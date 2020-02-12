@@ -58,7 +58,17 @@ public:
 	{
 	}
 
-	pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+   // TODO: consider input and optional output
+   pair<S, XEv> genGRPair(double timelimit)
+   {
+      std::optional<S> sStar = constructive.generateGRSolution(alpha, timelimit);
+		XEv eStar = evaluator.evaluate(*sStar);
+      return make_pair(*sStar, eStar); 
+   }
+
+
+	//pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+   virtual std::optional<pair<S, XEv>> search(SOSC& stopCriteria, const std::optional<pair<S, XEv>> input = std::nullopt) override
 	{
 		double timelimit = stopCriteria.timelimit;
 		double target_f = stopCriteria.target_f;
@@ -67,8 +77,11 @@ public:
 
 		unsigned int iter = 0;
 
-		S* s = constructive.generateGRSolution(alpha, timelimit);
-		Evaluation<> e = evaluator.evaluate(*s);
+      ////S* s = constructive.generateGRSolution(alpha, timelimit);
+		pair<S,XEv> se = genGRPair(timelimit);
+      ////Evaluation<> e = evaluator.evaluate(*s);
+      //S& s = se.first;
+      XEv& e = se.second;
 
 		if (Component::information)
 			e.print();
@@ -78,18 +91,22 @@ public:
 			if (Component::verbose)
 				cout << "GRASP::iter=" << iter << endl;
 
-			S* s1 = constructive.generateGRSolution(alpha,timelimit - tNow.now());
-
-			Evaluation<> e1 = evaluator.evaluate(*s1);
+         pair<S, XEv> p1 = genGRPair(timelimit - tNow.now());
+			////S* s1 = constructive.generateGRSolution(alpha,timelimit - tNow.now());
+			////Evaluation<> e1 = evaluator.evaluate(*s1);
+         //S& s1 = p1.first;
+         XEv& e1 = p1.second;
 
 			SOSC stopCriteriaLS = stopCriteria.newStopCriteriaWithTL(tNow.now());
-			ls.exec(*s1, e1, stopCriteriaLS);
+			ls.exec(p1, stopCriteriaLS);
 
 			if (evaluator.betterThan(e1, e))
 			{
-				(*s) = std::move(*s1);
-				delete s1;
-				e = std::move(e1);
+				//(*s) = std::move(*s1);
+				//delete s1;
+				//e = std::move(e1);
+            se = p1; // TODO: better move perhaps??
+
 				if (Component::information)
 				{
 					cout << "GRASP iter " << iter << ": ";
@@ -99,10 +116,11 @@ public:
 
 			iter++;
 		}
-		S sFinal = std::move(*s);
-		delete s;
+		//S sFinal = std::move(*s);
+		//delete s;
 
-		return new pair<S, Evaluation<>>(sFinal, e);
+		//return new pair<S, Evaluation<>>(sFinal, e);
+      return make_optional(se);
 	}
 
 	virtual string id() const

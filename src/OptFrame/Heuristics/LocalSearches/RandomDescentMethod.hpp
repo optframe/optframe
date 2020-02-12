@@ -48,14 +48,17 @@ public:
 	{
 	}
 
-	virtual void exec(S& s, SOSC& stopCriteria)
-	{
-		Evaluation<> e = evaluator.evaluate(s);
-		exec(s, e, stopCriteria);
-	}
+	// DEPRECATED
+	//virtual void exec(S& s, SOSC& stopCriteria)
+	//{
+	//	Evaluation<> e = std::move(ev.evaluate(s));
+	//	exec(s, e, stopCriteria);
+	//}
 
-	virtual void exec(S& s, Evaluation<>& e, SOSC& stopCriteria)
+	virtual void exec(pair<S, XEv>& se, SOSC& stopCriteria) override
 	{
+      S& s = se.first;
+      XEv& e = se.second;
 		Timer tNow;
 
 		unsigned int iter = 0;

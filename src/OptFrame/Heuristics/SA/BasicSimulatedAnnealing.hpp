@@ -65,7 +65,16 @@ public:
 	{
 	}
 
-	pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr,  const Evaluation<>* _e = nullptr)
+   // TODO: make optional and consider input too (SingleObjSearch helper class)
+   pair<S, XEv> genPair(double timelimit)
+   {
+      std::optional<S> sStar = constructive.generateSolution(timelimit);
+		XEv eStar = evaluator.evaluate(*sStar);
+      return make_pair(*sStar, eStar); 
+   }
+
+	//pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr,  const Evaluation<>* _e = nullptr)
+   virtual std::optional<pair<S, XEv>> search(SOSC& stopCriteria, const std::optional<pair<S, XEv>> input = std::nullopt) override
 	{
 		double timelimit = stopCriteria.timelimit;
 		double target_f = stopCriteria.target_f;
@@ -73,17 +82,24 @@ public:
 
 		Timer tnow;
 
-                // store initial value in s (TODO: remove workaround to deal with pointer directly)
-		S* sP = constructive.generateSolution(timelimit);
-		S s(std::move(*sP)); // workaround
-                delete sP;                         // workaround
-		Evaluation<> e = evaluator.evaluate(s);
-
+		// TODO: verify 's' and 'input'
+		pair<S, XEv> se = genPair(timelimit);
+      
+      S& s = se.first;
+      XEv& e = se.second;
+      //
+      
 		double T = Ti;
 		int iterT = 0;
-		S* sStar = &s.clone();
-		Evaluation<>* eStar = &e.clone();
 
+      pair<S, XEv> star = se; // copy (implicit cloning guaranteed??)
+      //
+		////S* sStar = &s.clone();
+      //S& sStar = star.first;
+		////Evaluation<>* eStar = &e.clone();
+      XEv& eStar = star.second;
+
+      // TODO: freezing parameter should be passed somewhere
 		while ((T > 0.000001) && (tnow.now() < timelimit))
 		{
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
@@ -98,24 +114,33 @@ public:
 					continue;
 				}
 
-				S* sCurrent = &s.clone();
-				Evaluation<>* eCurrent = &e.clone();
-				Component::safe_delete(move->applyUpdate(*eCurrent, *sCurrent));
-				evaluator.reevaluate(*eCurrent, *sCurrent);
+				//S* sCurrent = &s.clone();
+				//Evaluation<>* eCurrent = &e.clone();
+            pair<S, XEv> current(se); // implicit clone??
+            S& sCurrent = current.first;
+            XEv& eCurrent = current.second;
 
-				if (evaluator.betterThan(*eCurrent, e))
+            // // TODO: fix this with unique_ptr
+				Component::safe_delete(move->applyUpdate(eCurrent, sCurrent));
+				evaluator.reevaluate(eCurrent, sCurrent);
+
+				if (evaluator.betterThan(eCurrent, e))
 				{
-					e = *eCurrent;
-					s = *sCurrent;
-					delete sCurrent;
-					delete eCurrent;
+               // if improved, accept it
+					//e = *eCurrent;
+					//s = *sCurrent;
+					//delete sCurrent;
+					//delete eCurrent;
+               se = current;
 
-					if (evaluator.betterThan(e, *eStar))
+
+					if (evaluator.betterThan(e, eStar))
 					{
-						delete sStar;
-						sStar = &s.clone();
-						delete eStar;
-						eStar = &e.clone();
+						//delete sStar;
+						//sStar = &s.clone();
+						//delete eStar;
+						//eStar = &e.clone();
+                  star = se;
 
 						cout << "Best fo: " << e.evaluation() << " Found on Iter = " << iterT << " and T = " << T;
 						cout << endl;
@@ -123,37 +148,40 @@ public:
 				}
 				else
 				{
+               // 'current' didn't improve, but may accept it anyway
 					double x = rg.rand01();
-					double delta = ::fabs(eCurrent->evaluation() - e.evaluation());
+					double delta = ::fabs(eCurrent.evaluation() - e.evaluation());
 
 					if (x < exp(-delta / T))
 					{
-						s = *sCurrent;
-						e = *eCurrent;
-						delete sCurrent;
-						delete eCurrent;
+						//s = *sCurrent;
+						//e = *eCurrent;
+						//delete sCurrent;
+						//delete eCurrent;
+                  se = current;
 					}
 					else
 					{
-						delete sCurrent;
-						delete eCurrent;
+						//delete sCurrent;
+						//delete eCurrent;
 					}
 				}
 
 				iterT++;
-				delete move;
+				delete move; // TODO: fix with unique_ptr
 			}
 			T = alpha * T;
 			iterT = 0;
 		}
-                cout << "T=" << T << endl;
+      cout << "T=" << T << endl;
 
-		s = *sStar;
-		e = *eStar;
-		delete sStar;
-		delete eStar;
+		//s = *sStar;
+		//e = *eStar;
+		//delete sStar;
+		//delete eStar;
 
-		return new pair<S, Evaluation<>> (s, e);
+		//return new pair<S, Evaluation<>> (s, e);
+      return make_optional(star);
 	}
 
 	virtual string id() const

@@ -85,8 +85,11 @@ public:
 		ns.push_back(&_ns);
 	}
 
-	void perturb(S& s, Evaluation<>& e, SOSC& stopCriteria)
+	void perturb(pair<S, XEv>& se, SOSC& stopCriteria) // TODO: override?? what?
 	{
+      S& s = se.first;
+      XEv& e = se.second;
+      //
 		for (int i = pMin; i < pMax; i++)
 		{
 			int nk = rand() % ns.size();
@@ -101,6 +104,7 @@ public:
 			else
 			{
 				Move<S, XEv>& m = *mp;
+            // TODO: fix with unique_ptr
 				Component::safe_delete(m.applyUpdate(e, s));
 				delete &m;
 			}

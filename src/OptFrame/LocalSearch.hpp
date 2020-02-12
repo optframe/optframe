@@ -55,8 +55,10 @@ public:
    {
    }
 
-   // core methods
-
+   // core methods 
+   
+   //(search: DEPRECATED)
+   /*
    // no-optimization
    S& search(const S& s, SOSC& stopCriteria)
    {
@@ -73,15 +75,17 @@ public:
       exec(s2, e2, stopCriteria);
       return *new pair<S&, XEv&> (s2, e2);
    }
-
+   */
 
    // core methods
 
    // 1
-   virtual void exec(S& s, SOSC& stopCriteria) = 0;
+   //virtual void exec(S& s, SOSC& stopCriteria) = 0;
 
+   // keeping only this method, for simplification
    // 2
-   virtual void exec(S& s, XEv& e, SOSC& stopCriteria) = 0;
+   virtual void exec(pair<S, XEv>& se, SOSC& stopCriteria) = 0;
+   // TODO: perhaps return 'bool' or FLAG indicating possible changes on solution (UNKNOWN, CHANGED, NOCHANGE, IMPROVED, ...)
 
    // optional: set local optimum status (LOS)
    virtual void setLOS(LOS los, string nsid, S& s, XEv& e)

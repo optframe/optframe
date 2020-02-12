@@ -24,6 +24,7 @@
 #include "../../OptFrame/Solution.hpp"
 #include "../../OptFrame/Solutions/CopySolution.hpp"
 #include "Representation.h"
+#include "Evaluation.h"
 
 using namespace optframe;
 

@@ -38,7 +38,8 @@ public:
    }
 
    // timelimit in seconds, accepting fractions (millisecs, ...)
-   virtual S* generateSolution(double timelimit) = 0;
+   // may or may not generate valid solution in time
+   virtual std::optional<S> generateSolution(double timelimit) = 0;
 
    virtual bool compatible(std::string s)
    {

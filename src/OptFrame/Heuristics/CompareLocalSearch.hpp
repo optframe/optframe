@@ -48,19 +48,25 @@ public:
 	{
 	}
 
-	virtual void exec(S& s, SOSC& sosc)
-	{
-		Evaluation<> e = eval.evaluate(s);
-		exec(s, e, sosc);
-	}
+	// DEPRECATED
+	//virtual void exec(S& s, SOSC& stopCriteria)
+	//{
+	//	Evaluation<> e = std::move(ev.evaluate(s));
+	//	exec(s, e, stopCriteria);
+	//}
 
-	virtual void exec(S& s, Evaluation<>& e, SOSC& sosc)
+	virtual void exec(pair<S, XEv>& se, SOSC& sosc) override
 	{
-		S& s2 = s.clone();
-		Evaluation<>& e2   = e.clone();
+      //S& s = se.first;
+      XEv& e = se.second;
+		
+      //S& s2 = s.clone();
+		//Evaluation<>& e2   = e.clone();
+      pair<S, XEv> p2 = se; // clone!
+      XEv& e2 = p2.second;
 
-		ls1.exec(s, e, sosc);
-		ls2.exec(s2, e2, sosc);
+		ls1.exec(se, sosc);
+		ls2.exec(p2, sosc);
 
 		if(!eval.equals(e, e2))
 		{
@@ -72,8 +78,8 @@ public:
 			exit(1);
 		}
 
-		delete &s2;
-		delete &e2;
+		//delete &s2;
+		//delete &e2;
 	}
 
 	virtual bool compatible(string s)

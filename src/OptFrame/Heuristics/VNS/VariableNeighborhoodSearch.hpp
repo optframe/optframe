@@ -59,8 +59,10 @@ public:
 
 	//virtual void improvement(S& s, Evaluation<>& e, double timelimit, double target_f) = 0;
 
-	virtual void shake(S& s, Evaluation<>& e, unsigned int k_shake, double timelimit, double target_f)
+	virtual void shake(pair<S, XEv>& p, unsigned int k_shake, double timelimit, double target_f)
 	{
+      S& s = p.first;
+      Evaluation<>& e = p.second;
 		Move<S, XEv>* move = vshake.at(k_shake)->validRandomMove(s);
 		if(move)
 		{
@@ -71,12 +73,17 @@ public:
 		}
 	}
 
-	virtual pair<pair<S&, Evaluation<>&>, unsigned int> neighborhoodChange(const S& sStar, const Evaluation<>& eStar, const S& s2, const Evaluation<>& e2, unsigned int k)
+	virtual pair<pair<S, Evaluation<>>, unsigned int> neighborhoodChange(const pair<S, XEv>& star, const pair<S, XEv>& p2, unsigned int k)
 	{
+      const S& s2 = p2.first;
+      const XEv& e2 = p2.second;
+      const S& sStar = star.first;
+      const XEv& eStar = star.second;
+      //
 		if (evaluator.betterThan(e2, eStar))
 		{
 			// IMPROVEMENT!
-			pair<S&, Evaluation<>&> p(s2.clone(), e2.clone());
+			pair<S, Evaluation<>> p(s2.clone(), e2.clone());
 			if(Component::information)
 				cout << "VNS: improvement at NS " << k << " => " << e2.evaluation() << endl;
 			return make_pair(p, 0); // k <- 0
@@ -90,7 +97,15 @@ public:
 
 	virtual LocalSearch<S, XEv>& buildSearch(unsigned k_search) = 0;
 
-	pair<S, Evaluation<>>* search(SOSC& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
+   pair<S, XEv> genPair(double timelimit)
+   {
+      std::optional<S> sStar = constructive.generateSolution(timelimit);
+		XEv eStar = evaluator.evaluate(*sStar);
+      return make_pair(*sStar, eStar); 
+   }
+
+	//pair<S, Evaluation<>>* search(SOSC& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
+   virtual std::optional<pair<S, XEv>> search(SOSC& sosc, const std::optional<pair<S, XEv>> input = std::nullopt) override
 	{
       double timelimit = sosc.timelimit;
       double target_f = sosc.target_f;
@@ -100,8 +115,11 @@ public:
 
 		Timer tnow;
 
-		S& sStar = *constructive.generateSolution(sosc.timelimit);
-		Evaluation<>   eStar = evaluator.evaluate(sStar);
+		//S& sStar = *constructive.generateSolution(sosc.timelimit);
+		//Evaluation<>   eStar = evaluator.evaluate(sStar);
+      pair<S, XEv> star = input?*input:genPair(sosc.timelimit);
+      S& sStar = star.first;
+		Evaluation<>& eStar = star.second;
 
 		if(Component::information)
 			cout << "VNS starts: " << eStar.evaluation() << endl;
@@ -112,31 +130,34 @@ public:
 
 			while(k < vshake.size())
 			{
-				S& s = *new S(sStar); // implicit clone on copy constructor
-				Evaluation<>&   e = eStar.clone();
+            pair<S, XEv> p1 = star; // copy (how to automatically invoke clone?)
+				////S& s = *new S(sStar); // implicit clone on copy constructor
+				////Evaluation<>&   e = eStar.clone();
 
-				shake(s, e, k, timelimit, target_f);
+				shake(p1, k, timelimit, target_f);
 
 				LocalSearch<S, XEv>& improve = buildSearch(k);
-				improve.exec(s, e, sosc);
+
+				improve.exec(p1, sosc);
+   
 				delete& improve; // save trajectory history?
 
-				pair<pair<S&, Evaluation<>&>, unsigned int> nc = neighborhoodChange(sStar, eStar, s, e, k);
+				pair<pair<S, XEv>, unsigned int> nc = neighborhoodChange(star, p1, k);
 
-				sStar = nc.first.first;
-				eStar = nc.first.second;
+				sStar = nc.first.first;  // TODO: move?
+				eStar = nc.first.second; // TODO: move?
 
-				delete& nc.first.first;
-				delete& nc.first.second;
+				//delete& nc.first.first; // drop automatically?
+				//delete& nc.first.second; // drop automatically?
 
-				delete& s;
-				delete& e;
+				//delete& s; // drop automatically?
+				//delete& e; // drop automatically?
 
 				k = nc.second;
 			}
 		}
 
-		return new pair<S, Evaluation<>> (sStar, eStar);
+		return std::optional<pair<S, XEv>> (star);
 	}
 
 	static string idComponent()

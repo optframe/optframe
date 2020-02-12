@@ -64,13 +64,13 @@ public:
 		return *new levelHistory(vars, maxs);
 	}
 
-	virtual void localSearch(S& s, Evaluation<>& e, SOSC& stopCriteria)
+	virtual void localSearch(pair<S, XEv>& se, SOSC& stopCriteria) override
 	{
 		//cout << "localSearch(.)" << endl;
-		ls.exec(s, e, stopCriteria);
+		ls.exec(se, stopCriteria);
 	}
 
-	virtual void perturbation(S& s, Evaluation<>& e, SOSC& stopCriteria, levelHistory& history)
+	virtual void perturbation(pair<S, XEv>& se, SOSC& stopCriteria, levelHistory& history) override
 	{
 		//cout << "perturbation(.)" << endl;
 
@@ -82,7 +82,7 @@ public:
 		//cout << "level = " << level << " e iter = " << iter << endl;
 
 		// nivel atual: 'level'
-		p.perturb(s, e, stopCriteria, level);
+		p.perturb(se, stopCriteria, level);
 
 		// Incrementa a iteracao
 		iter++;

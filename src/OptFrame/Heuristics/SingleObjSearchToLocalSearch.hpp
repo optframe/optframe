@@ -50,21 +50,24 @@ public:
    {
    }
 
-   virtual void exec(S& s, SOSC& sosc) override
-   {
-      Evaluation<> e = evaluator.evaluate(s);
+   // DEPRECATED
+	//virtual void exec(S& s, SOSC& stopCriteria)
+	//{
+	//	Evaluation<> e = std::move(ev.evaluate(s));
+	//	exec(s, e, stopCriteria);
+	//}
 
-      exec(s, e, sosc);
-   }
+	virtual void exec(pair<S, XEv>& se, SOSC& sosc) override
+	{
+      S& s = se.first;
+      XEv& e = se.second;
 
-   virtual void exec(S& s, Evaluation<>& e, SOSC& sosc) override
-   {
-      pair<S, Evaluation<>>* r = sios.search(sosc, &s, &e);
+      std::optional<pair<S, XEv>> r = sios.search(sosc, se);
 
       if (r) {
          s = r->first;
          e = r->second;
-         delete r;
+         //delete r;  // no need
       }
    }
 

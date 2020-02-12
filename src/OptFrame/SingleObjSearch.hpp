@@ -31,6 +31,8 @@ using namespace std;
 #include "Action.hpp"
 #include "Evaluation.hpp"
 #include "Solution.hpp"
+#include "Constructive.hpp" // for helper only  (TODO: make special class)
+#include "Evaluator.hpp" // for helper only (TODO: make special class)
 
 #include "Component.hpp"
 #include "ComponentBuilder.h"
@@ -100,8 +102,22 @@ public:
    {
    }
 
+   // helper: constructive method or using 'input'
+   static std::optional<pair<S, XEv>> genPair(Constructive<S>& constructive, Evaluator<S, XEv>& evaluator, double timelimit, const std::optional<pair<S, XEv>> input = std::nullopt)
+   {
+      if(input)
+         return input;
+      std::optional<S> sStar = constructive.generateSolution(timelimit);
+      if(!sStar)
+         return std::nullopt;
+		XEv eStar = evaluator.evaluate(*sStar);
+      return make_pair(*sStar, eStar);
+   }
+
+
    // search method try to find a feasible solution within timelimit, if there is no such solution it returns nullptr.
-   virtual pair<S, XEv>* search(SOSC& stopCriteria, const S* _s = nullptr, const XEv* _e = nullptr) = 0;
+   //virtual pair<S, XEv>* search(SOSC& stopCriteria, const S* _s = nullptr, const XEv* _e = nullptr) = 0;
+   virtual std::optional<pair<S, XEv>> search(SOSC& stopCriteria, const std::optional<pair<S, XEv>> input = std::nullopt) = 0;
 
    virtual string log() const
    {

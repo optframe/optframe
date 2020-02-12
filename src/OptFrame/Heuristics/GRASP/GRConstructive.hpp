@@ -38,9 +38,9 @@ public:
    {
    }
 
-   virtual S* generateGRSolution(float alpha, double timelimit) = 0;
+   virtual std::optional<S> generateGRSolution(float alpha, double timelimit) = 0;
 
-   virtual S* generateSolution(double timelimit) override
+   virtual std::optional<S> generateSolution(double timelimit) override
    {
       return generateGRSolution(1.0, timelimit);
    }

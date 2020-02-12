@@ -46,14 +46,17 @@ public:
 	{
 	}
 
-	virtual void exec(S& s, SOSC& stopCriteria)
-	{
-		Evaluation<> e = eval.evaluate(s);
-		exec(s, e, stopCriteria);
-	}
+	// DEPRECATED
+	//virtual void exec(S& s, SOSC& stopCriteria)
+	//{
+	//	Evaluation<> e = std::move(ev.evaluate(s));
+	//	exec(s, e, stopCriteria);
+	//}
 
-	virtual void exec(S& s, Evaluation<>& e, SOSC& stopCriteria)
+	virtual void exec(pair<S, XEv>& se, SOSC& stopCriteria) override
 	{
+      S& s = se.first;
+      XEv& e = se.second;
 		NSIterator<S, XEv>& it = *nsSeq.getIterator(s);
 		string bestMoveId = "";
 		it.first();

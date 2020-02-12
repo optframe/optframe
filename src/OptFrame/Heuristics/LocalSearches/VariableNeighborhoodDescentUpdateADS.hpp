@@ -50,15 +50,18 @@ public:
    {
    }
 
-   virtual void exec(S& s, SOSC& sosc) override
-   {
-      Evaluation<> e = ev.evaluate(s);
+   // DEPRECATED
+	//virtual void exec(S& s, SOSC& stopCriteria)
+	//{
+	//	Evaluation<> e = std::move(ev.evaluate(s));
+	//	exec(s, e, stopCriteria);
+	//}
 
-      exec(s, e, sosc);
-   }
-
-   virtual void exec(S& s, Evaluation<>& e, SOSC& sosc) override
-   {
+	virtual void exec(pair<S, XEv>& se, SOSC& sosc) override
+	{
+      S& s = se.first;
+      XEv& e = se.second;
+      //
       double timelimit = sosc.timelimit;
       double target_f = sosc.target_f;
       long tini = time(nullptr);
@@ -69,16 +72,20 @@ public:
 
       long tnow = time(nullptr);
       while (ev.betterThan(target_f, e.evaluation()) && (k <= r) && ((tnow - tini) < timelimit)) {
-         S* s0 = &s.clone();
-         Evaluation<>* e0 = &e.clone();
+         
+         // avoiding heap
+         //S* s0 = &s.clone();
+         //Evaluation<>* e0 = &e.clone();
+         //S s0(s); // enough to clone?
+         //XEv e0(e);
+         pair<S, XEv> p0 = se; // enough to clone?
 
-         lsList[k - 1]->exec(*s0, *e0, sosc);
+         lsList[k - 1]->exec(p0, sosc);
 
-         if (ev.betterThan(*s0, s)) {
-            s = *s0;
-            e = *e0;
-            delete s0;
-            delete e0;
+         if (ev.betterThan(p0, se)) {
+            se = p0;
+            //delete s0; // no need
+            //delete e0; // no need
             k = 1;
          } else {
             //Find move ID
@@ -87,8 +94,8 @@ public:
             string moveID = localSearchID.substr(found);
             adsMan.setNeighLocalOptimum(s, moveID);
 
-            delete s0;
-            delete e0;
+            //delete s0; // no need
+            //delete e0; // no need
 
             k = k + 1;
          }

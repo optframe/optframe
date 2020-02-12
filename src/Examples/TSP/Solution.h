@@ -25,11 +25,13 @@
 #include "../../OptFrame/Solutions/CopySolution.hpp"
 #include "../../OptFrame/Solution.hpp"
 #include "Representation.h"
+#include "Evaluation.h"
 
 using namespace optframe;
 
 //typedef Solution<RepTSP> SolutionTSP;
 typedef CopySolution<RepTSP> SolutionTSP;
+typedef pair<SolutionTSP, Evaluation<>> ESolutionTSP;
 
 #endif /*TSP_SOLUTION_H_*/
 

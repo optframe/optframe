@@ -64,7 +64,7 @@ public:
 	{
 	}
 
-	SolutionTSP* generateSolution(double timelimit) override
+	std::optional<SolutionTSP> generateSolution(double timelimit) override
 	{
         //cout << "Generating solution" << endl;
 		RepTSP newRep;
@@ -104,7 +104,7 @@ public:
             }
 
 		//return new CopySolution<RepTSP>(newRep);
-      return new SolutionTSP(newRep);
+      return make_optional(SolutionTSP(newRep));
 	}
 
 };

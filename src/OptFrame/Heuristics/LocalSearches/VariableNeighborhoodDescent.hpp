@@ -51,15 +51,18 @@ public:
 	{
 	}
 
-	virtual void exec(S& s, SOSC& stopCriteria)
-	{
-		Evaluation<> e = std::move(ev.evaluate(s));
+   // DEPRECATED
+	//virtual void exec(S& s, SOSC& stopCriteria)
+	//{
+	//	Evaluation<> e = std::move(ev.evaluate(s));
+	//	exec(s, e, stopCriteria);
+	//}
 
-		exec(s, e, stopCriteria);
-	}
-
-	virtual void exec(S& s, Evaluation<>& e, SOSC& stopCriteria)
+	virtual void exec(pair<S, XEv>& se, SOSC& stopCriteria) override
 	{
+      //S& s = se.first;
+      XEv& e = se.second;
+
 		if (Component::information)
 			cout << "VND::starts" << endl;
 
@@ -75,13 +78,14 @@ public:
 		Evaluation<> eCurrent(e);
 		while (ev.betterThan(stopCriteria.target_f, e.evaluation()) && (k <= r) && (tNow.now() < stopCriteria.timelimit))
 		{
-			eCurrent = e;
+			eCurrent = e; // backup
 			SOSC stopCriteriaNextLS = stopCriteria;
 			stopCriteriaNextLS.updateTimeLimit(tNow.now());
-			lsList[k - 1]->exec(s, e, stopCriteriaNextLS);
+			lsList[k - 1]->exec(se, stopCriteriaNextLS);
 
 			if (ev.betterThan(e, eCurrent))
 			{
+            // improvement
 				k = 1;
 				if (Component::information)
 					e.print();

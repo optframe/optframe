@@ -130,10 +130,13 @@ main(int argc, char** argv)
       cout << "CHECK: OK" << endl;
    pd.first.print();
    */
-   pair<SolutionTSP, Evaluation<>>* r2 = brkga.search(sosc);
+
+   //pair<SolutionTSP, Evaluation<>>* r2 = brkga.search(sosc);
+   
+   std::optional<ESolutionTSP> r2 = brkga.search(sosc);
+   //virtual std::optional<pair<XRS, XEv>> search(SOSC& stopCriteria, const std::optional<pair<XRS, XEv>> input)
    r2->first.print();
    r2->second.print();
-   delete r2;
 
    cout << "end BRKGA tests" << endl;
 
@@ -179,11 +182,12 @@ main(int argc, char** argv)
    SOSC soscILS;
    soscILS.timelimit = 3; // 1000
    soscILS.target_f = 0;
-   pair<CopySolution<RepTSP>, Evaluation<>>& psol = *ils.search(soscILS, NULL, NULL);
+   //pair<CopySolution<RepTSP>, Evaluation<>>& psol = *ils.search(soscILS, NULL, NULL);
+   std::optional<ESolutionTSP> psol = ils.search(soscILS);
    cout << tim.now() << " secs" << endl;
 
-   psol.first.print();
-   psol.second.print();
+   psol->first.print();
+   psol->second.print();
 
    // ===========
 
@@ -205,9 +209,10 @@ main(int argc, char** argv)
    SOSC soscVNS;
    soscVNS.timelimit = 0;
    soscVNS.target_f = 8000;
-   pair<CopySolution<RepTSP>, Evaluation<>>& psol2 = *vns.search(sosc, NULL, NULL);
-   psol2.first.print();
-   psol2.second.print();
+   //pair<CopySolution<RepTSP>, Evaluation<>>& psol2 = *vns.search(sosc, NULL, NULL);
+   std::optional<ESolutionTSP> psol2 = vns.search(sosc);
+   psol2->first.print();
+   psol2->second.print();
 
    // Remember the old times...
    /*

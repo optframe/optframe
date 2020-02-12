@@ -43,12 +43,14 @@ public:
       delete &base;
    }
 
-   virtual S* generateSolution(double timelimit) override
+   virtual std::optional<S> generateSolution(double timelimit) override
    {
       S& s = base.clone();
+      std::optional<S> retS(s); // TODO: what happens here? can we move at least??
       S sc = s;
       delete &s;
-      return new S(sc);
+      //return new S(sc);
+      return retS;
    }
 
    virtual bool compatible(string s)

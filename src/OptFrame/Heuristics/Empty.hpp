@@ -42,8 +42,10 @@ public:
 	{
 	}
 
-	virtual void exec(S&, SOSC& stopCriteria){};
-	virtual void exec(S&, Evaluation<>&, SOSC& stopCriteria){};
+	virtual void exec(pair<S, XEv>&, SOSC& stopCriteria) override
+   {
+      // placeholder for empty local search
+   };
 
 	string log() const
 	{

@@ -41,7 +41,7 @@ public:
 	{
 	}
 
-	virtual void perturb(S& s, Evaluation<>& e, SOSC& stopCriteria, int level) = 0;
+	virtual void perturb(pair<S, XEv>& se, SOSC& stopCriteria, int level) = 0;
 
 	virtual bool compatible(string s)
 	{
@@ -86,11 +86,15 @@ public:
 		ns.push_back(&_ns);
 	}
 
-	void perturb(S& s, Evaluation<>& e, SOSC& stopCriteria, int level)
+	void perturb(pair<S,XEv>& se, SOSC& stopCriteria, int level) override
 	{
 		int a = 0; // number of appliable moves
 
 		level += 2; // level 0 applies 2 moves
+
+      // local bind
+      S& s = se.first;
+      XEv& e = se.second;
 
 		while (a < level)
 		{
@@ -189,8 +193,11 @@ public:
 		cout<<endl;
 	}
 
-	void perturb(S& s, Evaluation<>& e, SOSC& stopCriteria, int level)
+	void perturb(pair<S, XEv>& se, SOSC& stopCriteria, int level) override
 	{
+      S& s = se.first;
+      XEv& e = se.second;
+      //
 		int a = 0; // number of appliable moves
 
 		level += 2; // level 0 applies 2 moves

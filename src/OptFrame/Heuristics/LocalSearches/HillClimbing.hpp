@@ -46,37 +46,44 @@ public:
 	{
 	}
 
-	virtual void exec(S& s, SOSC& sosc) override
-	{
-		Evaluation<> e = evaluator.evaluate(s);
+	// DEPRECATED
+	//virtual void exec(S& s, SOSC& stopCriteria)
+	//{
+	//	Evaluation<> e = std::move(ev.evaluate(s));
+	//	exec(s, e, stopCriteria);
+	//}
 
-		exec(s, e, sosc);
-	}
-
-	virtual void exec(S& s, Evaluation<>& e, SOSC& sosc) override
+	virtual void exec(pair<S, XEv>& se, SOSC& sosc) override
 	{
+      //S& s = se.first;
+      XEv& e = se.second;
+      //
       double timelimit = sosc.timelimit;
 
 		long tini = time(nullptr);
 
-		Evaluation<>* e0 = &e.clone();
+		//Evaluation<>* e0 = &e.clone();
+      XEv e0(e); // avoid that using return status on 'exec'
 
-		ls.exec(s, e, sosc);
+		ls.exec(se, sosc);
 
 		long tnow = time(nullptr);
 
-		while ((evaluator.betterThan(e, *e0)) && ((tnow - tini) < timelimit))
+      // while improvement is found
+		while ((evaluator.betterThan(e, e0)) && ((tnow - tini) < timelimit))
 		{
 			//delete e0;
 			//e0 = &e.clone();
-            (*e0) = e;
 
-			ls.exec(s, e, sosc);
+         //   (*e0) = e;
+         e0 = e;
+
+			ls.exec(se, sosc);
 
 			tnow = time(nullptr);
 		}	
 
-		delete e0;
+		//delete e0;
 	}
 
 	virtual bool compatible(string s)

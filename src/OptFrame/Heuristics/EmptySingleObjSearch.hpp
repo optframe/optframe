@@ -42,10 +42,11 @@ public:
 	{
 	}
 
-	pair<S, Evaluation<>>* search(SOSC& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
+	//pair<S, Evaluation<>>* search(SOSC& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
+   virtual std::optional<pair<S, XEv>> search(SOSC& stopCriteria, const std::optional<pair<S, XEv>> input = std::nullopt) override
 	{
 		cout << "WARNING: RETURNING A EmptySingleObjSearch!" << endl;
-		return nullptr;
+		return std::nullopt; // nothing to return
 	}
 
 	static string idComponent()

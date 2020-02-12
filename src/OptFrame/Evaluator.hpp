@@ -369,6 +369,12 @@ public:
       return Direction::betterThan(e1, e2);
    }
 
+   virtual bool betterThan(const pair<S,XEv>& p1, const pair<S,XEv>& p2)
+   {
+      return betterThan(p1.first, p2.first); // TODO: avoid re-evaluations
+   }
+
+
    // ============= Component ===============
 
    virtual bool compatible(string s)

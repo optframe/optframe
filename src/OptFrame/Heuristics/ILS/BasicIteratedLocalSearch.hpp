@@ -63,16 +63,16 @@ public:
 		return iter;
 	}
 
-	virtual void localSearch(S& s, Evaluation<>& e, SOSC& sosc) override
+	virtual void localSearch(pair<S, XEv>& se, SOSC& sosc) override
 	{
-		ls.exec(s, e, sosc);
+		ls.exec(se, sosc);
 	}
 
-	virtual void perturbation(S& s, Evaluation<>& e, SOSC& sosc, BasicHistory& history) override
+	virtual void perturbation(pair<S, XEv>& se, SOSC& sosc, BasicHistory& history) override
 	{
 		int iter = history;
 
-		p.perturb(s, e, sosc);
+		p.perturb(se, sosc);
 
 		// Incrementa a iteracao
 		iter++;
@@ -81,7 +81,7 @@ public:
 		history = iter;
 	}
 
-	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, BasicHistory& history)
+	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, BasicHistory& history) override
 	{
 		if (IteratedLocalSearch<BasicHistory, S, XEv>::evaluator.betterThan(e1, e2))
 		{

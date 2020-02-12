@@ -54,39 +54,52 @@ public:
 
 	virtual H& initializeHistory() = 0;
 
-	virtual void localSearch(S& s, Evaluation<>& e, SOSC& stopCriteria) = 0;
+	virtual void localSearch(pair<S, XEv>& se, SOSC& stopCriteria) = 0;
 
-	virtual void perturbation(S& s, Evaluation<>& e, SOSC& stopCriteria, H& history) = 0;
+	virtual void perturbation(pair<S, XEv>& se, SOSC& stopCriteria, H& history) = 0;
 
 	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, H& history) = 0;
 
 	virtual bool terminationCondition(H& history) = 0;
 
-	pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+   pair<S, XEv> genPair(double timelimit)
+   {
+      std::optional<S> sStar = constructive.generateSolution(timelimit);
+		XEv eStar = evaluator.evaluate(*sStar);
+      return make_pair(*sStar, eStar); 
+   }
+
+	//pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+   virtual std::optional<pair<S, XEv>> search(SOSC& stopCriteria, const std::optional<pair<S, XEv>> input = std::nullopt) override
 	{
 		cout << "ILS opt search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
 		Timer tnow;
 
-		S* sStar = nullptr;
-		Evaluation<>* eStar = nullptr;
+      pair<S, XEv> star = input?*input:genPair(stopCriteria.timelimit);
+		//S& sStar = star.first;
+		Evaluation<>& eStar = star.second;
 
+      /*
 		//If solution is given it should contain an evaluation: TODO - Implement search with Solution
-		if (_s != nullptr)
+		if (input)
 		{
-			(*sStar) = (*_s);
-			(*eStar) = (*_e);
+			//(*sStar) = (*_s); // shouldn't this break memory?
+			//(*eStar) = (*_e); // shouldn't this break memory?
+         sStar = new S(input->first);
+         eStar = new XEv(input->second);
 		}
 		else
 		{
 			sStar = new S(std::move(*constructive.generateSolution(stopCriteria.timelimit)));
 			eStar = new Evaluation(evaluator.evaluate(*sStar));
 		}
+      */
 
 		if (Component::information)
 		{
 			cout << "ILS::starting with FO:" << endl;
-			eStar->print();
+			eStar.print();
 		}
 
 		H* history = &initializeHistory();
@@ -98,48 +111,55 @@ public:
 			cout << "ILS::performing first local search" << endl;
 		SOSC stopCriteriaLS = stopCriteria;
 		stopCriteriaLS.updateTimeLimit(tnow.now());
-		localSearch(*sStar, *eStar, stopCriteriaLS);
+		localSearch(star, stopCriteriaLS);
 		if (Component::information)
 			cout << "ILS::finished first local search" << endl;
 
 		cout << "ILS optimized starts: ";
-		eStar->print();
+		eStar.print();
 
 		do
 		{
-			S s1(*sStar);
-			Evaluation<> e1(*eStar);
-
+         pair<S, XEv> p1 = star; // copy (how to automatically invoke clone?)
+			//S s1(sStar); // copy (should clone?)
+			//Evaluation<> e1(eStar); // copy (should clone?)
+         
 			SOSC stopCriteriaPert = stopCriteria;
 			stopCriteriaPert.updateTimeLimit(tnow.now());
-			perturbation(s1, e1, stopCriteriaPert, *history);
+			perturbation(p1, stopCriteriaPert, *history);
 
 			SOSC stopCriteriaLS2 = stopCriteria;
 			stopCriteriaLS2.updateTimeLimit(tnow.now());
-			localSearch(s1, e1, stopCriteriaLS2);
+			localSearch(p1, stopCriteriaLS2);
 
-			(*eStar) = evaluator.evaluate(*sStar);
-			bool improvement = acceptanceCriterion(e1, *eStar, *history);
+         // Should update evaluation eStar? Why?
+			//(*eStar) = evaluator.evaluate(*sStar);
+
+			//bool improvement = acceptanceCriterion(e1, *eStar, *history);
+         bool improvement = acceptanceCriterion(p1.second, star.second, *history);
 
 			if (improvement)
 			{
-				(*eStar) = e1;
-				(*sStar) = s1;
+				//(*eStar) = e1;
+				//(*sStar) = s1;
+            star = p1; // copy, or should somehow use clone?
+            // TODO: should probably move here to enhance performance (try to benchmark before!!)
 			}
 
-		} while (evaluator.betterThan(stopCriteria.target_f, eStar->evaluation()) && !terminationCondition(*history) && ((tnow.now()) < stopCriteria.timelimit));
+		} while (evaluator.betterThan(stopCriteria.target_f, eStar.evaluation()) && !terminationCondition(*history) && ((tnow.now()) < stopCriteria.timelimit));
 
-		if (evaluator.betterThan(eStar->evaluation(), stopCriteria.target_f))
-			cout << "ILS exit by target_f: " << eStar->evaluation() << " better than " << stopCriteria.target_f << endl;
+		if (evaluator.betterThan(eStar.evaluation(), stopCriteria.target_f))
+			cout << "ILS exit by target_f: " << eStar.evaluation() << " better than " << stopCriteria.target_f << endl;
 
-		pair<S, Evaluation<>>* pairToReturn = new pair<S, Evaluation<>>(make_pair(std::move(*sStar), std::move(*eStar)));
+		//pair<S, Evaluation<>>* pairToReturn = new pair<S, Evaluation<>>(make_pair(std::move(*sStar), std::move(*eStar)));
+      
+		//delete eStar;
+		//delete sStar;
 
-		delete eStar;
-		delete sStar;
+		delete history; // why do we need this?
 
-		delete history;
-
-		return pairToReturn;
+		//return std::optional<pair<S,XEv>>(*pairToReturn); // TODO: prevent loss
+      return std::optional<pair<S,XEv>>(star);
 	}
 
 	static string idComponent()
