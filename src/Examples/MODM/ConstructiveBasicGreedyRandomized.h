@@ -60,7 +60,7 @@ public:
    {
    }
 
-   SolutionMODM* generateSolution(double timelimit) override
+   std::optional<SolutionMODM> generateSolution(double timelimit) override
    {
       float alpha = 0.1;
 
@@ -68,7 +68,7 @@ public:
    }
 
    //virtual S* generateGRSolution(float alpha, double timelimit) = 0;
-   SolutionMODM* generateGRSolution(float alpha, double timelimit) override
+   std::optional<SolutionMODM> generateGRSolution(float alpha, double timelimit) override
    {
       if (alpha == 0)
          alpha = 0.00001;
@@ -348,7 +348,7 @@ public:
 
       //cout << "Tempo Atual: " << t.now() << endl;
       //getchar();
-      return new SolutionMODM(newRep, newAds);
+      return make_optional(SolutionMODM(newRep, newAds));
    }
 
    static string idComponent()

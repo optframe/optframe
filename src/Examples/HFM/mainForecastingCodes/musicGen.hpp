@@ -141,7 +141,7 @@ int musicGen(int argc, char **argv)
 	ForecastClass* forecastObject;
 
 	forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
-	pair<SolutionHFM, Evaluation<>>* sol = forecastObject->run(timeES, 0, 0);
+	std::optional<pair<SolutionHFM, Evaluation<>>> sol = forecastObject->run(timeES, 0, 0);
 
 	pair<vector<double>*, vector<double>* >* forecastsAndTargets = nullptr;
 	for (int m = 0; m < (int) timeSeriesToBeForecasted.size(); m++)
@@ -287,7 +287,7 @@ int musicGenMidiCSV(int argc, char **argv)
 	ForecastClass* forecastObject;
 
 	forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
-	pair<SolutionHFM, Evaluation<>>* sol = forecastObject->run(timeES, 0, 0);
+	std::optional<pair<SolutionHFM, Evaluation<>>> sol = forecastObject->run(timeES, 0, 0);
 
 	pair<vector<double>*, vector<double>* >* forecastsAndTargets = nullptr;
 	for (int m = 0; m < (int) timeSeriesToBeForecasted.size(); m++)

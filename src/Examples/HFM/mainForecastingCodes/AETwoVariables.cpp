@@ -151,7 +151,7 @@ int AETwoVariables(int argc, char **argv)
 
 		ForecastClass pFC(trainningSet, problemParam, rg, methodParam);
 
-		pair<SolutionHFM, Evaluation<>>* sol;
+		std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 		sol = pFC.run(timeES, timeVND, timeILS);
 
 		vector<double> foIndicatorCalibration;

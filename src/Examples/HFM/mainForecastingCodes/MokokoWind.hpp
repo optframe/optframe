@@ -166,7 +166,7 @@ int mokokoWindSotavento(int argc, char **argv)
 
 			ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-			pair<SolutionHFM, Evaluation<>>* sol;
+			std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 			int timeES = argvTimeES; // online training time
 			sol = forecastObject.run(timeES, 0, 0);
 
@@ -174,7 +174,7 @@ int mokokoWindSotavento(int argc, char **argv)
 			for (int nEXP = 0; nEXP < argvNEXP; nEXP++)
 				validationSet.push_back(rFComplete.getPartsForecastsBeginToEnd(nEXP, begin - maxLag, nSA + maxLag));
 
-			vector<double> obtainedForecasts = *forecastObject.returnForecasts(sol, validationSet);
+			vector<double> obtainedForecasts = *forecastObject.returnForecasts(*sol, validationSet);
 			for (int fh = 0; fh < nSA; fh++)
 				predictedValues.push_back(obtainedForecasts[fh]);
 			cout << predictedValues << endl;

@@ -332,10 +332,10 @@ public:
       return pf;
    }
 
-   pair<SolutionHFM, Evaluation<>>* runGRASP(int timeGRASP, int nSol)
+   std::optional<pair<SolutionHFM, Evaluation<>>> runGRASP(int timeGRASP, int nSol)
    {
       SOSC* stopCriteria = new SOSC(timeGRASP);
-      pair<SolutionHFM, Evaluation<>>* finalSol = nullptr;
+      std::optional<pair<SolutionHFM, Evaluation<>>> finalSol = std::nullopt;
       delete stopCriteria;
       //		BasicGRASP<RepEFP> g(*eval, *c, emptyLS, 0.1, nSol);
       //		g.setMessageLevel(3);
@@ -344,18 +344,16 @@ public:
       return finalSol;
    }
 
-   pair<SolutionHFM, Evaluation<>>* run(int timeES, int timeVND, int timeILS)
+   std::optional<pair<SolutionHFM, Evaluation<>>> run(int timeES, int timeVND, int timeILS)
    {
       if (timeES == 0)
          timeES = 1;
-
-      pair<SolutionHFM, Evaluation<>>* finalSol;
 
       double targetValue = 3.879748973;
       targetValue = 0;
 
       SOSC* stopCriteria = new SOSC(timeES, targetValue);
-      finalSol = es->search(*stopCriteria);
+      pair<SolutionHFM, Evaluation<>> finalSol = *es->search(*stopCriteria);
       delete stopCriteria;
       //finalSol = EsCOpt->search(timeES); //Continous ES -- Deprecated
 
@@ -369,21 +367,22 @@ public:
       //		if (timeILS > 0)
       //			finalSol = ils->search(timeILS, 0, &solVND, &evaluationVND);
 
-      return finalSol;
+      return make_optional(finalSol);
    }
 
-   pair<SolutionHFM, Evaluation<>>* runGILS(int timeGRASP, int timeILS)
+   std::optional<pair<SolutionHFM, Evaluation<>>> runGILS(int timeGRASP, int timeILS)
    {
 
       //		BasicGRASP<RepEFP> g(*eval, *c, emptyLS, 0.1, 100000);
       //		g.setMessageLevel(3);
-      pair<SolutionHFM, Evaluation<>>* finalSol;
+      ////pair<SolutionHFM, Evaluation<>>* finalSol;
 
       //		stopCriteria.timelimit=timeGRASP;
       //		finalSol = g.search(stopCriteria);
       //		const Solution<RepEFP> solGRASP = finalSol.first;
       //		const Evaluation<> evaluationGrasp = finalSol.second;
 
+      std::optional<pair<SolutionHFM, Evaluation<>>> finalSol = std::nullopt;
       SOSC stopCriteria;
       stopCriteria.timelimit = timeILS;
       stopCriteria.target_f = 0;
@@ -441,9 +440,9 @@ public:
    //
 
    //Return forecasts with pre-defined sliding window strategy with FH
-   vector<double>* returnForecasts(pair<SolutionHFM, Evaluation<>>* sol, vector<vector<double>> vForecastingsValidation)
+   vector<double>* returnForecasts(pair<SolutionHFM, Evaluation<>>& sol, vector<vector<double>> vForecastingsValidation)
    {
-      pair<vector<double>*, vector<double>*>* targetAndForecasts = eval->generateSWMultiRoundForecasts(sol->first.getR(), vForecastingsValidation, problemParam.getStepsAhead());
+      pair<vector<double>*, vector<double>*>* targetAndForecasts = eval->generateSWMultiRoundForecasts(sol.first.getR(), vForecastingsValidation, problemParam.getStepsAhead());
       return targetAndForecasts->second;
    }
 

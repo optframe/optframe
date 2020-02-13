@@ -351,7 +351,8 @@ public:
    }
 
    //virtual pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) = 0;
-   pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+   //pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+   std::optional<pair<S, Evaluation<>>> search(SOSC& stopCriteria, const std::optional<pair<S, Evaluation<>>> se = nullopt) override
    {
       Timer tnow;
       NGESPopulation pop;
@@ -367,7 +368,7 @@ public:
       pop.reserve(ngesParams.mi);
       for (int i = 0; i < ngesParams.mi; i++) {
          //PartialGreedyInitialSolutionOPM is(opm, 0.4, 0.4, 0.4); // waste, ore, shovel
-         S* s = constructive.generateSolution(stopCriteria.timelimit); //MAKE MOVE TODO
+         std::optional<S> s = constructive.generateSolution(stopCriteria.timelimit); //MAKE MOVE TODO
          vector<NGESIndStructure<S, XEv>> m;
 
          //probability, application, sigmaNomal, sigmaBinomial
@@ -391,7 +392,7 @@ public:
 
          inititPopFitness += pop[i]->e.evaluation();
 
-         delete s;
+         ////delete s;
       }
 
       if (Component::information) {
@@ -515,10 +516,11 @@ public:
       cout << "--------------------------------------------------------------------------" << endl;
       //getchar();
 
-      pair<S, Evaluation<>>* pairToReturn = new pair<S, Evaluation<>>(make_pair(*sStar, *eStar));
-      delete sStar;
-      delete eStar;
-      return pairToReturn;
+      //pair<S, Evaluation<>>* pairToReturn = new pair<S, Evaluation<>>(make_pair(*sStar, *eStar));
+      //delete sStar;
+      //delete eStar;
+      //return pairToReturn;
+      return make_optional(make_pair(*sStar, *eStar)); // TODO: fix leak
    }
 
    static string idComponent()

@@ -108,6 +108,16 @@ public:
       pFitness.push_back(a);
    }
 
+   // chromossome is near dying... take everything and drop the corpse!!
+   void push_back(const chromossome&& c)
+   {
+      //p.push_back(&c.clone());
+      p.push_back(new chromossome(std::move(c)));
+      fitness.push_back(0);
+      vector<XEv> a;
+      pFitness.push_back(a);
+   }
+
    void push_back(const chromossome& c, vector<XEv> chromossomeFitness)
    {
       p.push_back(&c.clone());

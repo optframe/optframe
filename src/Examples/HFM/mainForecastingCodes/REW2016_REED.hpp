@@ -173,7 +173,7 @@ int APEN_SI_DemandForecasting(int argc, char **argv)
 
 			ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-			pair<SolutionHFM, Evaluation<>>* sol;
+			std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 			sol = forecastObject.run(timeES, 0, 0);
 
 			vector<vector<double> > validationSet; //validation set for calibration
@@ -185,7 +185,7 @@ int APEN_SI_DemandForecasting(int argc, char **argv)
 			foIndicatorCalibration.push_back(foIndicatorsWeeks[MAPE_INDEX]);
 			averageError += foIndicatorsWeeks[MAPE_INDEX];
 
-			vector<double> currentForecasts = *forecastObject.returnForecasts(sol, validationSet);
+			vector<double> currentForecasts = *forecastObject.returnForecasts(*sol, validationSet);
 			for (int cF = 0; cF < (int) currentForecasts.size(); cF++)
 				vectorOfForecasts.push_back(currentForecasts[cF]);
 
@@ -381,7 +381,7 @@ int APEN_SI_SpeedUp_DemandForecasting(int argc, char **argv)
 
 			ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-			pair<SolutionHFM, Evaluation<>>* sol;
+			std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 			sol = forecastObject.run(timeES, 0, 0);
 
 			vector<vector<double> > validationSet; //validation set for calibration
@@ -393,7 +393,7 @@ int APEN_SI_SpeedUp_DemandForecasting(int argc, char **argv)
 			foIndicatorCalibration.push_back(foIndicatorsWeeks[MAPE_INDEX]);
 			averageError += foIndicatorsWeeks[MAPE_INDEX];
 
-			vector<double> currentForecasts = *forecastObject.returnForecasts(sol, validationSet);
+			vector<double> currentForecasts = *forecastObject.returnForecasts(*sol, validationSet);
 			for (int cF = 0; cF < (int) currentForecasts.size(); cF++)
 				vectorOfForecasts.push_back(currentForecasts[cF]);
 

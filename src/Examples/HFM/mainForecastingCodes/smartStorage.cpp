@@ -179,7 +179,7 @@ int smartStorage(int argc, char **argv)
 
 		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-		pair<SolutionHFM, Evaluation<>>* sol;
+		std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 
 		int optMethod = rg.rand(2);
 		optMethod = 0;
@@ -194,7 +194,7 @@ int smartStorage(int argc, char **argv)
 		validationSet.clear();
 		validationSet.push_back(rF.getPartsForecastsEndToBegin(0, beginTrainingSet-stepsAhead, needInputs));
 		//validationSet.push_back(validationSetPure);
-		batchOfResults.push_back(*forecastObject.returnForecasts(sol, validationSet));
+		batchOfResults.push_back(*forecastObject.returnForecasts(*sol, validationSet));
 
 	}
 

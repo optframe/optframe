@@ -209,7 +209,7 @@ int microGridLiuAppliedEnergy(int argc, char **argv)
 
 		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-		pair<SolutionHFM, Evaluation<>>* sol;
+		std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 
 		int timeES = argvTimeES;
 		int timeVND = 0;

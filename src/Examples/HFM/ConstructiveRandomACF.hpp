@@ -142,7 +142,7 @@ public:
       return meanSTD;
    }
 
-   SolutionHFM* generateSolution(double timelimit) override
+   std::optional<SolutionHFM> generateSolution(double timelimit) override
    {
       return generateSolutionACF(0.0, timelimit);
    }
@@ -217,7 +217,7 @@ public:
       return trivialLagsRLC;
    }
 
-   SolutionHFM* generateSolutionACF(float notUsed, double timelimit)
+   std::optional<SolutionHFM> generateSolutionACF(float notUsed, double timelimit)
    {
 
       //cout << "ACF generating solution.." << endl;
@@ -414,7 +414,7 @@ public:
 		 */
       //cout << "End of ACF sol generation!" << endl;
       //getchar();
-      return new SolutionHFM(newRep);
+      return make_optional(SolutionHFM(newRep));
    }
 };
 }

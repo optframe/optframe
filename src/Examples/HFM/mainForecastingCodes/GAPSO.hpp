@@ -194,7 +194,7 @@ int GAPSO_SKU(int argc, char **argv)
 
 //		forecastObject.runMultiObjSearch();
 //		getchar();
-		pair<SolutionHFM, Evaluation<>>* sol;
+		std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 		sol = forecastObject.run(timeES, 0, 0);
 		cout << sol->first.getR() << endl;
 //		getchar();
@@ -207,7 +207,7 @@ int GAPSO_SKU(int argc, char **argv)
 //		getchar();
 
 		vector<double> errors = *forecastObject.returnErrors(sol->first.getR(), validationSet);
-		vForecasts = *forecastObject.returnForecasts(sol, validationSet);
+		vForecasts = *forecastObject.returnForecasts(*sol, validationSet);
 		cout << "Vector of forecasts: \n " << vForecasts << endl;
 		vector<vector<double> > blind = validationSet;
 		blind[0].erase(blind[0].end() - stepsAhead, blind[0].end());

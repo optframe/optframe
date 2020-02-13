@@ -126,7 +126,7 @@ public:
 
 	virtual Population<S, XEv> generatePopulation(unsigned populationSize, double timelimit)
 	{
-		Population<S, XEv>* p = new Population<S, XEv>;
+		Population<S, XEv> pop;
 		for (unsigned i = 0; i < populationSize; i++)
 		{
 			float alpha = rg.rand01();
@@ -137,9 +137,11 @@ public:
 
 			if (alpha == 0)
 				alpha = 0.00001;
-			p->push_back(constructive.generateGRSolution(alpha, timelimit));
+
+         std::optional<S> s = constructive.generateGRSolution(alpha, timelimit);
+			pop.push_back(std::move(*s)); // the end of solution
 		}
-		return *p;
+		return pop;
 	}
 
 	static string idComponent()

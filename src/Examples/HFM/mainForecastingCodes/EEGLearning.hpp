@@ -290,7 +290,7 @@ vector<pair<double, int> > findBestPairsValuesByMetric(Matrix<double> results, b
 	return bestPairs;
 }
 
-pair<SolutionHFM, Evaluation<>>* learnModel(treatForecasts& tFTraining, int argvMaxLagRate, int argvTimeES, long seed, RandGen& rg, int evalFO, int fh)
+pair<SolutionHFM, Evaluation<>> learnModel(treatForecasts& tFTraining, int argvMaxLagRate, int argvTimeES, long seed, RandGen& rg, int evalFO, int fh)
 {
 
 	int evalFOMinimizer = evalFO;
@@ -382,9 +382,9 @@ pair<SolutionHFM, Evaluation<>>* learnModel(treatForecasts& tFTraining, int argv
 
 	//		forecastObject.runMultiObjSearch();
 	//		getchar();
-	pair<SolutionHFM, Evaluation<>>* sol;
+	std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 	sol = forecastObject.run(timeES, 0, 0);
-	return sol;
+	return *sol;
 }
 
 vector<double> checkLearningAbility(treatForecasts& tFValidation, pair<SolutionHFM, Evaluation<>>* sol, RandGen& rg, int fh)
@@ -617,12 +617,12 @@ int EEGBiometricSystem(int argc, char **argv)
 			treatForecasts tFTraining(explanatoryVariables);
 			tFTraining.setTSFile(tFTraining.getPercentageFromBeginToEnd(0, 0, trainingSetPercentage), 0);
 
-			pair<SolutionHFM, Evaluation<>>* HFMmodel = learnModel(tFTraining, argvMaxLagRate, trainingTime, seed, rg, evalFO, fH);
+			pair<SolutionHFM, Evaluation<>> HFMmodel = learnModel(tFTraining, argvMaxLagRate, trainingTime, seed, rg, evalFO, fH);
 //			cout << "sol->first.getR().earliestInput: " << HFMmodel->first.getR().earliestInput << endl;
 //			cout<<HFMmodel->first.getR()<<endl;
 //			getchar();
 
-			vector<double> allErrors = checkLearningAbility(tFTraining, HFMmodel, rg, fH);
+			vector<double> allErrors = checkLearningAbility(tFTraining, &HFMmodel, rg, fH);
 			vector<double> biometricSystemMeasures;
 			for (int iq = 0; iq <  (int) listOfIndicatorOfQuality.size(); iq++)
 				biometricSystemMeasures.push_back(allErrors[listOfIndicatorOfQuality[iq]]);
@@ -630,7 +630,7 @@ int EEGBiometricSystem(int argc, char **argv)
 //			cout << biometricSystemMeasures << endl;
 //			getchar();
 
-			HFMModelAndParam* HFMCurrentModelAndParams = new HFMModelAndParam(HFMmodel, biometricSystemMeasures, fH, v, variableChannelT);
+			HFMModelAndParam* HFMCurrentModelAndParams = new HFMModelAndParam(&HFMmodel, biometricSystemMeasures, fH, v, variableChannelT);
 			setOfHFMLearningModels.push_back(HFMCurrentModelAndParams);
 		}
 	}

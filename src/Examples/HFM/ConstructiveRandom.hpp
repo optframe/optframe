@@ -60,12 +60,12 @@ public:
 	{
 	}
 
-	SolutionHFM* generateSolution(double timelimit) override
+	std::optional<SolutionHFM> generateSolution(double timelimit) override
 	{
 		return generateSolutionAlpha(0.0, timelimit);
 	}
 
-	SolutionHFM* generateSolutionAlpha(float notUsed, double timelimit)
+	std::optional<SolutionHFM> generateSolutionAlpha(float notUsed, double timelimit)
 	{
 
 		//cout << "ACF generating solution.." << endl;
@@ -270,7 +270,7 @@ public:
 
 //		cout << "End of Random Hybrid Fuzzy Model Sol generation!" << endl;
 //		getchar();
-		return new SolutionHFM(newRep);
+		return make_optional(SolutionHFM(newRep));
 	}
 
 };

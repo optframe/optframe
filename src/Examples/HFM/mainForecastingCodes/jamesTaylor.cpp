@@ -175,7 +175,7 @@ int jamesTaylorEuropeanDataset(int argc, char **argv)
 
 		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-		pair<SolutionHFM, Evaluation<>>* sol;
+		std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 
 //		cout<<"Teste Linear Regression"<<endl;
 //		sol = forecastObject.runOLR();
@@ -201,7 +201,7 @@ int jamesTaylorEuropeanDataset(int argc, char **argv)
 
 		double intervalOfBeginTrainningSet = double(beginTrainingSet) / double(rF.getForecastsDataSize());
 
-		vector<double>* vForecasts = forecastObject.returnForecasts(sol, validationSet);
+		vector<double>* vForecasts = forecastObject.returnForecasts(*sol, validationSet);
 		cout<<*vForecasts<<endl;
 		cout<<vForecasts->size()<<endl;
 

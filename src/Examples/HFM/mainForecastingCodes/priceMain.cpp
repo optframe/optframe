@@ -156,7 +156,7 @@ int priceCompetitionBlind(int argc, char **argv)
 		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
 
-		pair<SolutionHFM, Evaluation<>>* sol;
+		std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 
 		int optMethod = rg.rand(2);
 		optMethod = 0;
@@ -416,7 +416,7 @@ int priceCompetitionCalibrationMode(int argc, char **argv)
 
 		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-		pair<SolutionHFM, Evaluation<>>* sol;
+		std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 
 		sol = forecastObject.run(timeES, timeVND, timeILS);
 
@@ -461,9 +461,9 @@ int priceCompetitionCalibrationMode(int argc, char **argv)
 		//cout << foIndicatorCalibration << endl;
 		vfoIndicatorCalibration.push_back(foIndicatorCalibration);
 		//vSolutionsBatches.push_back(&(sol->first.clone()));
-		delete &sol->first;
-		delete &sol->second;
-		delete sol;
+		////delete &sol->first;
+		////delete &sol->second;
+		////delete sol;
 	}
 
 	cout << vfoIndicatorCalibration << endl;

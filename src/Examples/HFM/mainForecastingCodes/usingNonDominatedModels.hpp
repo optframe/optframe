@@ -142,14 +142,14 @@ int usingNonDominatedHFMModels(int argc, char **argv)
 		if (b == 1)
 			methodParam.setEvalFOMinimizer(MAPE_INV_INDEX);
 		forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
-		pair<SolutionHFM, Evaluation<>>* sol = forecastObject->run(timeES, 0, 0);
+		std::optional<pair<SolutionHFM, Evaluation<>>> sol = forecastObject->run(timeES, 0, 0);
 		forecastObject->addSolToParetoWithParetoManager(*pf, sol->first);
 		Pareto<SolutionHFM>* pfNew = forecastObject->runMultiObjSearch(timeGPLS, pf);
 		delete pf;
 		pf = pfNew;
-		delete &sol->first;
-		delete &sol->second;
-		delete sol;
+		////delete &sol->first;
+		////delete &sol->second;
+		////delete sol;
 		delete forecastObject;
 	}
 	forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);

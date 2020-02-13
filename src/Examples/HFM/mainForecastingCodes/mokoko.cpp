@@ -162,7 +162,7 @@ int mokokoProbabilisticForecastWindPower(int argc, char **argv)
 
 		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-		pair<SolutionHFM, Evaluation<>>* sol;
+		std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 
 		sol = forecastObject.run(timeES, 0, 0);
 
@@ -170,7 +170,7 @@ int mokokoProbabilisticForecastWindPower(int argc, char **argv)
 		//validation set for calibration
 		vector<vector<double> > validationSet;
 		validationSet.push_back(rF.getLastForecasts(0, maxLag + stepsAhead));
-		batchOfResults.push_back(*forecastObject.returnForecasts(sol, validationSet));
+		batchOfResults.push_back(*forecastObject.returnForecasts(*sol, validationSet));
 
 
 		vector<double> foIndicatorCalibration;

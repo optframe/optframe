@@ -203,7 +203,7 @@ int rainMain(int argc, char **argv)
 
 		ForecastClass forecastObject(trainningSet, problemParam, rg, methodParam);
 
-		pair<SolutionHFM, Evaluation<>>* sol;
+		std::optional<pair<SolutionHFM, Evaluation<>>> sol = std::nullopt;
 
 		int optMethod = rg.rand(2);
 		optMethod = 0;
@@ -221,7 +221,7 @@ int rainMain(int argc, char **argv)
 
 		double intervalOfBeginTrainningSet = double(beginTrainingSet) / double(rF.getForecastsDataSize());
 
-		batchOfResults.push_back(*forecastObject.returnForecasts(sol, validationSet));
+		batchOfResults.push_back(*forecastObject.returnForecasts(*sol, validationSet));
 
 		vector<double> foIndicatorCalibration;
 		foIndicatorCalibration = *forecastObject.returnErrors(sol->first.getR(), validationSet);

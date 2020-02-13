@@ -258,12 +258,12 @@ public:
 		return pNova;
 	}
 
-	virtual void localSearch(S& s, Evaluation<>& e, SOSC& stopCriteria)
+	virtual void localSearch(pair<S, Evaluation<>>& se, SOSC& stopCriteria)
 	{
-		ls.exec(s, e, stopCriteria);
+		ls.exec(se, stopCriteria);
 	}
 
-	pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+	std::optional<pair<S, Evaluation<>>> search(SOSC& stopCriteria, const std::optional<pair<S, Evaluation<>>> se = nullopt) override
 	{
 		cout << "ES search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
@@ -276,9 +276,9 @@ public:
 		//GERANDO VETOR DE POPULACAO INICIAL
 		for (int i = 0; i < mi; i++)
 		{
-			S* s = constructive.generateSolution(stopCriteria.timelimit);
+			std::optional<S> s = constructive.generateSolution(stopCriteria.timelimit);
 
-			ESStruct a = generateInitialESStructure(s);
+			ESStruct a = generateInitialESStructure(&(*s)); // TODO: fix original function
 			//cout << a;
 			//getchar();
 
@@ -286,7 +286,7 @@ public:
 
 			Evaluation<> e = eval.evaluate(*s);
 
-			pop[i] = make_pair(make_pair(s, m), e.evaluation());
+			pop[i] = make_pair(make_pair(&(*s), m), e.evaluation()); // TODO: fix original function (or Population)
 
 			fo_Constructive += e.evaluation();
 
@@ -416,15 +416,16 @@ public:
 			delete pop[i].first.second;
 		}
 
-		S& s = *sStar;
-		Evaluation<>& e = *eStar;
+		//S& s = *sStar;
+		//Evaluation<>& e = *eStar;
 
 		//cout<<s.getR();
 		//getchar();
 		//delete eStar;
 		//delete sStar;
 
-		return new pair<S, Evaluation<>>(s, e);
+		//return new pair<S, Evaluation<>>(s, e);
+      return make_optional(make_pair(*sStar, *eStar)); // fix: leak
 	}
 
 	static string idComponent()
