@@ -11,10 +11,10 @@ Constructive$constructive::~Constructive$constructive()
 {
 }
 
-Solution$project* Constructive$constructive::generateSolution(double timelimit)
+std::optional< Solution$project > Constructive$constructive::generateSolution(double timelimit)
 {
     Rep$project newRep;
 
     // if no Solution can be built in timelimit, return nullptr.
-    return new Solution$project(newRep);			
+    return make_optional(Solution$project(newRep));			
 }

@@ -40,7 +40,7 @@ public:
         return Constructive<Solution$project >::idComponent().append(":Constructive$constructive");
     }
 
-	Solution$project* generateSolution(double timelimit);
+	std::optional< Solution$project > generateSolution(double timelimit);
 };
 
 }
