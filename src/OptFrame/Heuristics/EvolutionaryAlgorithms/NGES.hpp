@@ -88,11 +88,25 @@ struct NGESParams
 template<XSolution S, XEvaluation XEv = Evaluation<>>
 struct NGESInd
 {
-   S sInd; // probability
-   Evaluation<> e;
+   //S sInd; // probability
+   //Evaluation<> e;
+   pair<S, XEv> ind;
+
+   S& getS()
+   {
+      return ind.first;
+   }
+
+   XEv& getEv()
+   {
+      return ind.second;
+   }
+
    vector<NGESIndStructure<S, XEv>> vEsStructureInd; // number of applications
    vector<int> vNSInd;
 
+// CANNOT MOVE EXTERNAL NON-TEMPORARY REFERENCES (???)
+/*
    NGESInd(S& _sInd, Evaluation<>& _e, vector<NGESIndStructure<S, XEv>>& _vEsStructureInd, int nNS)
      : sInd(std::move(_sInd))
      , e(std::move(_e))
@@ -112,10 +126,59 @@ struct NGESInd
      , vNSInd(std::move(_vNSInd))
    {
    }
+*/
+
+   // -----------------------
+   // copy-based constructors
+
+   NGESInd(const pair<S, Evaluation<>>& _ind, const vector<NGESIndStructure<S, XEv>>& _vEsStructureInd, int nNS)
+     : ind(_ind)
+     , vEsStructureInd(_vEsStructureInd)
+   {
+      for (int i = 0; i < nNS; i++)
+         vNSInd.push_back(i);
+
+      random_shuffle(vNSInd.begin(), vNSInd.end());
+      //change to rg shuffle, because seed may influence result
+   }
+
+   NGESInd(const pair<S, Evaluation<>>& _ind, const vector<NGESIndStructure<S, XEv>>& _vEsStructureInd, const vector<int>& _vNSInd)
+     : ind(_ind)
+     , vEsStructureInd(_vEsStructureInd)
+     , vNSInd(_vNSInd)
+   {
+   }
+
+/*
+   // -----------------------
+   // move-based constructors
+
+   NGESInd(const S&& _sInd, const Evaluation<>&& _e, const vector<NGESIndStructure<S, XEv>>&& _vEsStructureInd, int nNS)
+     : sInd(_sInd)
+     , e(_e)
+     , vEsStructureInd(_vEsStructureInd)
+   {
+      for (int i = 0; i < nNS; i++)
+         vNSInd.push_back(i);
+
+      random_shuffle(vNSInd.begin(), vNSInd.end());
+      //change to rg shuffle, because seed may influence result
+   }
+
+   NGESInd(const S&& _sInd, const Evaluation<>&& _e, const vector<NGESIndStructure<S, XEv>>&& _vEsStructureInd, const vector<int>&& _vNSInd)
+     : sInd(_sInd)
+     , e(_e)
+     , vEsStructureInd(_vEsStructureInd)
+     , vNSInd(_vNSInd)
+   {
+   }
+*/
+
+   // ----------------
+   // move constructor
 
    NGESInd(NGESInd<S, XEv>&& nges)
-     : sInd(std::move(nges.sInd))
-     , e(std::move(nges.e))
+     : ind(std::move(nges.ind))
      , vEsStructureInd(std::move(nges.vEsStructureInd))
      , vNSInd(std::move(nges.vNSInd))
 
@@ -145,9 +208,10 @@ struct NGESInd
 
    void print() const
    {
-      cout << "NGESInd:";
-      sInd.print();
-      e.print();
+      cout << "NGESInd: {";
+      ind.first.print();
+      ind.second.print();
+      cout << "}" << endl;
    }
 };
 
@@ -272,7 +336,9 @@ public:
       }
    }
 
-   void competition(NGESPopulation& pop, NGESPopulation& offsprings, S& sStar, Evaluation<>& eStar, int& iterWithoutImprovement, const int& gCurrent, int selectionType)
+
+   //void competition(NGESPopulation& pop, NGESPopulation& offsprings, S& sStar, Evaluation<>& eStar, int& iterWithoutImprovement, const int& gCurrent, int selectionType)
+   void competition(NGESPopulation& pop, NGESPopulation& offsprings, pair<S, XEv>& star, int& iterWithoutImprovement, const int& gCurrent, int selectionType)
    {
       cout << "competition!" << endl;
       cout << "OFFSPRINGS:" << endl;
@@ -285,9 +351,11 @@ public:
       }
 
       auto compInd = [&](NGESInd<S, XEv>* indA, NGESInd<S, XEv>* indB) -> bool {
-         return eval.betterThan(indA->e, indB->e);
+         return eval.betterThan(indA->getEv(), indB->getEv()); 
+         // TODO: fix bug here
       };
 
+      // TODO: fix bug here
       sort(offsprings.begin(), offsprings.end(), compInd); // ordena com QuickSort
 
       pop.clear();
@@ -296,23 +364,26 @@ public:
 
       for (int i = 0; i < ngesParams.mi; i++) {
          pop[i] = offsprings[i];
-         fo_pop += pop[i]->e.evaluation();
+         fo_pop += pop[i]->getEv().evaluation();
       }
 
       for (int i = 0; i < ngesParams.lambda; i++)
          delete offsprings[i + ngesParams.mi];
 
-      Evaluation<> evBest = pop[0]->e.evaluation();
+      Evaluation<> evBest = pop[0]->getEv().evaluation();
 
-      if (eval.betterThan(evBest, eStar)) {
-         //			delete &eStar;
-         //			delete &sStar;
-         eStar = pop[0]->e;
-         sStar = pop[0]->sInd;
-         //			cout << "inside comp:" << &eStar << "/" << eStar.evaluation() << endl;
+      //if (eval.betterThan(evBest, eStar)) {
+      if (eval.betterThan(evBest, star.second)) {
+         ////			delete &eStar;
+         ////			delete &sStar;
+         //eStar = pop[0]->getEv();
+         //sStar = pop[0]->getS();
+         star = make_pair(pop[0]->getS(), pop[0]->getEv());
+         ////			cout << "inside comp:" << &eStar << "/" << eStar.evaluation() << endl;
          if (Component::information) {
             cout << "Gen:" << gCurrent << " | noImp: " << iterWithoutImprovement;
-            cout << " | Best: " << eStar.evaluation() << "\t [";
+            //cout << " | Best: " << eStar.evaluation() << "\t [";
+            cout << " | Best: " << star.second.evaluation() << "\t [";
             for (int param = 0; param < nNS; param++) {
                cout << "(" << pop[0]->vEsStructureInd[param].pr;
                cout << ",";
@@ -352,51 +423,62 @@ public:
 
    //virtual pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) = 0;
    //pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-   std::optional<pair<S, Evaluation<>>> search(SOSC& stopCriteria, const std::optional<pair<S, Evaluation<>>> se = nullopt) override
+   std::optional<pair<S, XEv>> search(SOSC& stopCriteria, const std::optional<pair<S, XEv>> se = nullopt) override
    {
       Timer tnow;
       NGESPopulation pop;
-      S* sStar = nullptr;
-      Evaluation<>* eStar = nullptr;
+      //S* sStar = nullptr;
+      //Evaluation<>* eStar = nullptr;
+      std::optional<pair<S, XEv>> star = std::nullopt;
 
       int iterWithoutImprovement = 0, gCurrent = 0;
 
       cout << "NGES search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
       double inititPopFitness = 0;
-      //Generating initial population
+      // =============================
+      // Generating initial population
+      // =============================
       pop.reserve(ngesParams.mi);
       for (int i = 0; i < ngesParams.mi; i++) {
          //PartialGreedyInitialSolutionOPM is(opm, 0.4, 0.4, 0.4); // waste, ore, shovel
-         std::optional<S> s = constructive.generateSolution(stopCriteria.timelimit); //MAKE MOVE TODO
+         
+         //std::optional<S> s = constructive.generateSolution(stopCriteria.timelimit); //MAKE MOVE TODO
+         //Evaluation<> e = eval.evaluate(*s);
+         pair<S, XEv> se = *SingleObjSearch<S, XEv>::genPair(constructive, eval, stopCriteria.timelimit);
+
          vector<NGESIndStructure<S, XEv>> m;
 
          //probability, application, sigmaNomal, sigmaBinomial
          for (int aux = 0; aux < nNS; aux++)
             m.push_back(NGESIndStructure<S, XEv>(rg.rand01(), rg.randB(0.5, 10) + 1, rg.rand01(), rg.rand01()));
-
-         Evaluation<> e = eval.evaluate(*s);
-         NGESInd<S, XEv>* ind = new NGESInd<S, XEv>(*s, e, m, nNS); //TODO MAKE MOVE
+         
+         // pass 'se' by copy (TODO: think if std::move is enough)
+         NGESInd<S, XEv>* ind = new NGESInd<S, XEv>(se, m, nNS); //TODO MAKE MOVE
 
          pop.push_back(ind);
 
          if (i == 0) {
-            eStar = new Evaluation(pop[i]->e);
-            sStar = new S(pop[i]->sInd);
+            //eStar = new Evaluation(pop[i]->getEv());
+            //sStar = new S(pop[i]->getS());
+            star = make_pair(pop[i]->getS(), pop[i]->getEv());
          } else {
-            if (eval.betterThan(pop[i]->e, *eStar)) {
-               (*eStar) = pop[i]->e;
-               (*sStar) = pop[i]->sInd;
+            //if (eval.betterThan(pop[i]->getEv(), *eStar)) {
+            if (eval.betterThan(pop[i]->getEv(), star->second)) {
+               //(*eStar) = pop[i]->getEv();
+               //(*sStar) = pop[i]->getS();
+               star = make_pair(pop[i]->getS(), pop[i]->getEv());
             }
          }
 
-         inititPopFitness += pop[i]->e.evaluation();
+         inititPopFitness += pop[i]->getEv().evaluation();
 
          ////delete s;
       }
 
       if (Component::information) {
-         cout << "InitialPop avg: " << inititPopFitness / ngesParams.mi << "\t eStar:" << (double)eStar->evaluation() << endl;
+         //cout << "InitialPop avg: " << inititPopFitness / ngesParams.mi << "\t eStar:" << (double)eStar->evaluation() << endl;
+         cout << "InitialPop avg: " << inititPopFitness / ngesParams.mi << "\t eStar:" << (double)star->second.evaluation() << endl;
       }
       // ===============================
       //
@@ -405,7 +487,8 @@ public:
       vector<vector<pair<double, double>>> meanParamsGenerations;
 
       iterWithoutImprovement = 0;
-      while ((iterWithoutImprovement < ngesParams.gMaxWithoutImprovement) && ((tnow.now()) < stopCriteria.timelimit) && eval.betterThan(stopCriteria.target_f, (double)eStar->evaluation())) {
+      //while ((iterWithoutImprovement < ngesParams.gMaxWithoutImprovement) && ((tnow.now()) < stopCriteria.timelimit) && eval.betterThan(stopCriteria.target_f, (double)eStar->evaluation())) {
+      while ((iterWithoutImprovement < ngesParams.gMaxWithoutImprovement) && ((tnow.now()) < stopCriteria.timelimit) && eval.betterThan(stopCriteria.target_f, (double)star->second.evaluation())) {
          NGESPopulation popOffsprings(ngesParams.lambda, nullptr);
          double fo_filhos = 0;
 
@@ -414,7 +497,7 @@ public:
             int x = rg.rand(ngesParams.mi);
 
             // Cria Filho e Tuple de Parametros (pi,nap,vizinhança)
-            S filho = pop[x]->sInd;
+            S filho = pop[x]->getS();
 
             vector<NGESIndStructure<S, XEv>> vt = pop[x]->vEsStructureInd;
             vector<int> vNSOffspring = pop[x]->vNSInd;
@@ -429,10 +512,10 @@ public:
             //Do anything you want with filho and return filho_ls
             //S filho_ls = filho;
 
-            Evaluation<> e = eval.evaluate(filho);
-            fo_filhos += e.evaluation();
+            pair<S, XEv> se = make_pair(filho, eval.evaluate(filho));
+            fo_filhos += se.second.evaluation();
 
-            NGESInd<S, XEv>* ind = new NGESInd<S, XEv>(filho, e, vt, vNSOffspring); //TODO MAKE MOVE
+            NGESInd<S, XEv>* ind = new NGESInd<S, XEv>(se, vt, vNSOffspring); //TODO MAKE MOVE
 
             popOffsprings[l] = ind;
          }
@@ -447,10 +530,12 @@ public:
          // MI,LAMBDA or MI + LAMBDA
          switch (ngesParams.selectionMethod) {
             case 0:
-               competition(pop, popOffsprings, *sStar, *eStar, iterWithoutImprovement, gCurrent, 0);
+               //competition(pop, popOffsprings, *sStar, *eStar, iterWithoutImprovement, gCurrent, 0);
+               competition(pop, popOffsprings, *star, iterWithoutImprovement, gCurrent, 0);
                break;
             case 1:
-               competition(pop, popOffsprings, *sStar, *eStar, iterWithoutImprovement, gCurrent, 1);
+               //competition(pop, popOffsprings, *sStar, *eStar, iterWithoutImprovement, gCurrent, 1);
+               competition(pop, popOffsprings, *star, iterWithoutImprovement, gCurrent, 1);
                break;
                //TODO create other selection strategies
 
@@ -509,18 +594,20 @@ public:
          delete pop[i];
 
       cout << "Fishing NGES search:\nIterWithoutImp: " << iterWithoutImprovement << "/" << ngesParams.gMaxWithoutImprovement << endl;
-      cout << "BestSol::" << eStar->evaluation() << "/" << stopCriteria.target_f << endl;
+      //cout << "BestSol::" << eStar->evaluation() << "/" << stopCriteria.target_f << endl;
+      cout << "BestSol::" << star->second.evaluation() << "/" << stopCriteria.target_f << endl;
       cout << "tnow.now():" << tnow.now() << "/" << stopCriteria.timelimit << endl;
       cout << "g:" << gCurrent << endl;
       cout << "NGES Finished" << endl;
       cout << "--------------------------------------------------------------------------" << endl;
       //getchar();
 
-      //pair<S, Evaluation<>>* pairToReturn = new pair<S, Evaluation<>>(make_pair(*sStar, *eStar));
-      //delete sStar;
-      //delete eStar;
-      //return pairToReturn;
-      return make_optional(make_pair(*sStar, *eStar)); // TODO: fix leak
+      ////pair<S, Evaluation<>>* pairToReturn = new pair<S, Evaluation<>>(make_pair(*sStar, *eStar));
+      ////delete sStar;
+      ////delete eStar;
+      ////return pairToReturn;
+      //return make_optional(make_pair(*sStar, *eStar)); // TODO: fix leak
+      return star;
    }
 
    static string idComponent()

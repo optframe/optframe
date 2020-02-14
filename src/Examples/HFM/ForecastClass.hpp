@@ -352,7 +352,7 @@ public:
       double targetValue = 3.879748973;
       targetValue = 0;
 
-      SOSC* stopCriteria = new SOSC(timeES, targetValue);
+      SOSC* stopCriteria = new SOSC(timeES, targetValue);   
       pair<SolutionHFM, Evaluation<>> finalSol = *es->search(*stopCriteria);
       delete stopCriteria;
       //finalSol = EsCOpt->search(timeES); //Continous ES -- Deprecated

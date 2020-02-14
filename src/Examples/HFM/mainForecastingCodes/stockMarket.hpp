@@ -66,8 +66,8 @@ int stockMarketForecasting(int argc, char **argv)
 	treatForecasts rF(explanatoryVariables);
 
 	//Parametros do metodo
-	//int mu = 100;
-   int mu = 1000;
+	int mu = 100;
+   /////int mu = 1000;
 	int lambda = mu * 6;
 	int evalFOMinimizer = MAPE_INDEX;
 	int contructiveNumberOfColumns = 100;
