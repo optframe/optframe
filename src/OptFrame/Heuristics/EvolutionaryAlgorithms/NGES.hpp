@@ -25,6 +25,7 @@
 
 #include <math.h>
 #include <vector>
+#include <memory> // shared_ptr
 
 #include "../../Constructive.hpp"
 #include "../../Evaluation.hpp"
@@ -220,7 +221,8 @@ template<XSolution S, XEvaluation XEv = Evaluation<>>
 class NGES : public SingleObjSearch<S, XEv>
 {
 private:
-   typedef vector<NGESInd<S, XEv>*> NGESPopulation;
+   //typedef vector<NGESInd<S, XEv>*> NGESPopulation;
+   using NGESPopulation = vector<std::shared_ptr<NGESInd<S, XEv>>>;
 
    Evaluator<S>& eval;
    Constructive<S>& constructive;
@@ -350,7 +352,19 @@ public:
             offsprings.push_back(pop[i]);
       }
 
-      auto compInd = [&](NGESInd<S, XEv>* indA, NGESInd<S, XEv>* indB) -> bool {
+      //auto compInd = [&](NGESInd<S, XEv>* indA, NGESInd<S, XEv>* indB) -> bool {
+      auto compInd = [&](const shared_ptr<NGESInd<S, XEv>>& indA, const shared_ptr<NGESInd<S, XEv>>& indB) -> bool {
+         cout << "PRINT!!" << endl;
+         cout << "getting elements:" << endl;
+         assert(indA);
+         cout << "A exists" << endl;
+         indA->getEv().print();
+         assert(indB);
+         cout << "B exists" << endl;
+         NGESInd<S, XEv>& eb = *indB;
+         cout << "got B" << endl;
+         //indB->getEv().print();
+         eb.getEv().print();
          return eval.betterThan(indA->getEv(), indB->getEv()); 
          // TODO: fix bug here
       };
@@ -367,8 +381,11 @@ public:
          fo_pop += pop[i]->getEv().evaluation();
       }
 
+      // all shared_ptr now
+      ////for (int i = 0; i < ngesParams.lambda; i++)
+      ////   delete offsprings[i + ngesParams.mi];
       for (int i = 0; i < ngesParams.lambda; i++)
-         delete offsprings[i + ngesParams.mi];
+         offsprings[i + ngesParams.mi] = nullptr;
 
       Evaluation<> evBest = pop[0]->getEv().evaluation();
 
@@ -427,6 +444,8 @@ public:
    {
       Timer tnow;
       NGESPopulation pop;
+      //////NGESPopulation pop(ngesParams.mi, nullptr);
+
       //S* sStar = nullptr;
       //Evaluation<>* eStar = nullptr;
       std::optional<pair<S, XEv>> star = std::nullopt;
@@ -440,6 +459,7 @@ public:
       // Generating initial population
       // =============================
       pop.reserve(ngesParams.mi);
+
       for (int i = 0; i < ngesParams.mi; i++) {
          //PartialGreedyInitialSolutionOPM is(opm, 0.4, 0.4, 0.4); // waste, ore, shovel
          
@@ -454,8 +474,8 @@ public:
             m.push_back(NGESIndStructure<S, XEv>(rg.rand01(), rg.randB(0.5, 10) + 1, rg.rand01(), rg.rand01()));
          
          // pass 'se' by copy (TODO: think if std::move is enough)
-         NGESInd<S, XEv>* ind = new NGESInd<S, XEv>(se, m, nNS); //TODO MAKE MOVE
-
+         //NGESInd<S, XEv>* ind = new NGESInd<S, XEv>(se, m, nNS); //TODO MAKE MOVE
+         std::shared_ptr<NGESInd<S, XEv>> ind(new NGESInd<S, XEv>(se, m, nNS)); //TODO MAKE MOVE
          pop.push_back(ind);
 
          if (i == 0) {
@@ -515,7 +535,8 @@ public:
             pair<S, XEv> se = make_pair(filho, eval.evaluate(filho));
             fo_filhos += se.second.evaluation();
 
-            NGESInd<S, XEv>* ind = new NGESInd<S, XEv>(se, vt, vNSOffspring); //TODO MAKE MOVE
+            //NGESInd<S, XEv>* ind = new NGESInd<S, XEv>(se, vt, vNSOffspring); //TODO MAKE MOVE
+            std::shared_ptr<NGESInd<S, XEv>> ind(new NGESInd<S, XEv>(se, vt, vNSOffspring)); //TODO MAKE MOVE
 
             popOffsprings[l] = ind;
          }
@@ -590,8 +611,11 @@ public:
          gCurrent++;
       }
 
+      // all are shared_ptr now!
+      ////for (int i = 0; i < ngesParams.mi; i++)
+      ////   delete pop[i];
       for (int i = 0; i < ngesParams.mi; i++)
-         delete pop[i];
+         pop[i] = nullptr;
 
       cout << "Fishing NGES search:\nIterWithoutImp: " << iterWithoutImprovement << "/" << ngesParams.gMaxWithoutImprovement << endl;
       //cout << "BestSol::" << eStar->evaluation() << "/" << stopCriteria.target_f << endl;

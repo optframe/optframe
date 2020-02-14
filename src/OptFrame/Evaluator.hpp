@@ -201,7 +201,13 @@ public:
          // destroy initial move
          delete ini;
          // create a MoveCost object...
-         p = new MoveCost<>(e_end.first - e_ini.first, e_end.second - e_ini.second, e.weight);
+
+         // TODO: try to move this MoveCost generation somewhere else.... 
+         // perhaps, in Evaluation class, so that users can easily personalize it.
+         // don't know for sure. (TODO)
+         //p = new MoveCost<>(e_end.first - e_ini.first, e_end.second - e_ini.second, e.weight);
+         p = new MoveCost<>(e_end.first - e_ini.first, e_end.second - e_ini.second);
+
          // ... and set the lexicographic costs
          p->setAlternativeCosts(alternatives);
          // return a MoveCost object pointer

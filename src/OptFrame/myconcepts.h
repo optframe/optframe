@@ -89,6 +89,15 @@ concept bool basic_arithmetics =
     //{ a / b } -> std::remove_reference_t<T>;  // NOT actually necessary (until today!)
   };  
 
+template <class T>
+concept bool extended_arithmetics = 
+  optframe::basic_arithmetics<T> &&
+  requires(const std::remove_reference_t<T>& a,
+           const std::remove_reference_t<T>& b) {
+    { a * b } -> std::remove_reference_t<T>; // useful for weighted computation
+    //{ a / b } -> std::remove_reference_t<T>;  // NOT actually necessary (until today!)
+  };  
+
 
 // capability to move to ostream&
 template <class T>
