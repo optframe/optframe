@@ -62,11 +62,13 @@ public:
 
 	virtual bool terminationCondition(H& history) = 0;
 
-   pair<S, XEv> genPair(double timelimit)
+   std::optional<pair<S, XEv>> genOPair(double timelimit)
    {
       std::optional<S> sStar = constructive.generateSolution(timelimit);
+      if(!sStar)
+         return std::nullopt;
 		XEv eStar = evaluator.evaluate(*sStar);
-      return make_pair(*sStar, eStar); 
+      return make_optional(make_pair(*sStar, eStar)); 
    }
 
 	//pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
@@ -76,7 +78,8 @@ public:
 
 		Timer tnow;
 
-      pair<S, XEv> star = input?*input:genPair(stopCriteria.timelimit);
+      //pair<S, XEv> star = input?*input:genPair(stopCriteria.timelimit);
+      pair<S, XEv> star = *( input ?: genOPair(stopCriteria.timelimit) );
 		//S& sStar = star.first;
 		Evaluation<>& eStar = star.second;
 
