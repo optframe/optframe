@@ -105,7 +105,7 @@ public:
    }
 
 	//pair<S, Evaluation<>>* search(SOSC& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
-   virtual std::optional<pair<S, XEv>> search(SOSC& sosc, const std::optional<pair<S, XEv>> input = std::nullopt) override
+   virtual std::optional<pair<S, XEv>> search(SOSC& sosc) override
 	{
       double timelimit = sosc.timelimit;
       double target_f = sosc.target_f;
@@ -117,7 +117,8 @@ public:
 
 		//S& sStar = *constructive.generateSolution(sosc.timelimit);
 		//Evaluation<>   eStar = evaluator.evaluate(sStar);
-      pair<S, XEv> star = input?*input:genPair(sosc.timelimit);
+      //pair<S, XEv> star = input?*input:genPair(sosc.timelimit); // elvis
+      pair<S, XEv> star = genPair(sosc.timelimit);
       S& sStar = star.first;
 		Evaluation<>& eStar = star.second;
 
@@ -138,7 +139,7 @@ public:
 
 				LocalSearch<S, XEv>& improve = buildSearch(k);
 
-				improve.exec(p1, sosc);
+				improve.searchFrom(p1, sosc);
    
 				delete& improve; // save trajectory history?
 

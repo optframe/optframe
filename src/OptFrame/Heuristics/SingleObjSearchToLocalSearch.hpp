@@ -57,12 +57,16 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void exec(pair<S, XEv>& se, SOSC& sosc) override
+	virtual void searchFrom(pair<S, XEv>& se, SOSC& sosc) override
 	{
       S& s = se.first;
       XEv& e = se.second;
 
-      std::optional<pair<S, XEv>> r = sios.search(sosc, se);
+      // will ignore 'se'
+      // maybe ALL SingleObjSearch should inherit from LocalSearch!
+      // maybe 'LocalSearch' should become 'Search', and 'SingleObjSearch' -> 'GlobalSearch'... must think!
+
+      std::optional<pair<S, XEv>> r = sios.search(sosc);
 
       if (r) {
          s = r->first;

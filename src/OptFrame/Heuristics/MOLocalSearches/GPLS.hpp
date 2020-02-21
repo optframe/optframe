@@ -131,14 +131,14 @@ public:
 	{
 	}
 
-	virtual void exec(Pareto<S, XEv>& p, S& s, paretoManager<S, XEv>& pManager, MOSC& stopCriteria) override
+	virtual void moSearchFrom(Pareto<S, XEv>& p, S& s, paretoManager<S, XEv>& pManager, MOSC& stopCriteria) override
 	{
 		Pareto<S, XEv> _pf;
 		pManager.addSolution(_pf,s);
 		searchWithOptionalPareto(stopCriteria,&_pf);
 	}
 
-	virtual void exec(Pareto<S, XEv>& p, S& s, MultiEvaluation<>& sMev, paretoManager<S, XEv>& pManager, MOSC& stopCriteria) override
+	virtual void moSearchFrom(Pareto<S, XEv>& p, S& s, MultiEvaluation<>& sMev, paretoManager<S, XEv>& pManager, MOSC& stopCriteria) override
 	{
 		Pareto<S, XEv> _pf;
 		pManager.addSolutionWithMEV(_pf,s,sMev);
@@ -212,7 +212,7 @@ public:
 			stopCriteriaLS.timelimit = stopCriteria.timelimit;
 
 			for (int ind = 0; ind < (int) p.size(); ind++)
-				vLS[k]->exec(x_e, p.getNonDominatedSol(ind), p.getIndMultiEvaluation(ind), pMan2PPLS, stopCriteriaLS);
+				vLS[k]->moSearchFrom(x_e, p.getNonDominatedSol(ind), p.getIndMultiEvaluation(ind), pMan2PPLS, stopCriteriaLS);
 
 
 //			for(int e=0;e<x_e.size();e++)

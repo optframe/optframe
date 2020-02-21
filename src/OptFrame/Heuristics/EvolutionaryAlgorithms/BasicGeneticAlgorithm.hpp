@@ -174,7 +174,7 @@ public:
 	{
 		double xLS = rg.rand01();
 		if (xLS <= pLS) // local search!
-			ls.exec(c, e, timelimit, target_f);
+			ls.searchFrom(c, e, timelimit, target_f);
 	}
 
 	pair<Solution<R, ADS>&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = nullptr, const Evaluation<>* _e = nullptr)

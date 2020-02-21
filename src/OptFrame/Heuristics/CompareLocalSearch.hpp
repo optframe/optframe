@@ -55,7 +55,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void exec(pair<S, XEv>& se, SOSC& sosc) override
+	virtual void searchFrom(pair<S, XEv>& se, SOSC& sosc) override
 	{
       //S& s = se.first;
       XEv& e = se.second;
@@ -65,8 +65,8 @@ public:
       pair<S, XEv> p2 = se; // clone!
       XEv& e2 = p2.second;
 
-		ls1.exec(se, sosc);
-		ls2.exec(p2, sosc);
+		ls1.searchFrom(se, sosc);
+		ls2.searchFrom(p2, sosc);
 
 		if(!eval.equals(e, e2))
 		{

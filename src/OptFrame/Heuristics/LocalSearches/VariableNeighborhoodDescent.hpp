@@ -58,7 +58,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void exec(pair<S, XEv>& se, SOSC& stopCriteria) override
+	virtual void searchFrom(pair<S, XEv>& se, SOSC& stopCriteria) override
 	{
       //S& s = se.first;
       XEv& e = se.second;
@@ -81,7 +81,7 @@ public:
 			eCurrent = e; // backup
 			SOSC stopCriteriaNextLS = stopCriteria;
 			stopCriteriaNextLS.updateTimeLimit(tNow.now());
-			lsList[k - 1]->exec(se, stopCriteriaNextLS);
+			lsList[k - 1]->searchFrom(se, stopCriteriaNextLS);
 
 			if (ev.betterThan(e, eCurrent))
 			{

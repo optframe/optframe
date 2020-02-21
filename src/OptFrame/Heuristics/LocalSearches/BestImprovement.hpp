@@ -61,7 +61,7 @@ public:
 	//	exec(s, e, sosc);
 	//}
 
-	virtual void exec(pair<S, XEv>& se, SOSC& sosc) override
+	virtual void searchFrom(pair<S, XEv>& se, SOSC& sosc) override
 	{
       S& s = se.first;
       XEv& e = se.second;

@@ -68,7 +68,7 @@ public:
 
 
 	//pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-   virtual std::optional<pair<S, XEv>> search(SOSC& stopCriteria, const std::optional<pair<S, XEv>> input = std::nullopt) override
+   virtual std::optional<pair<S, XEv>> search(SOSC& stopCriteria) override
 	{
 		double timelimit = stopCriteria.timelimit;
 		double target_f = stopCriteria.target_f;
@@ -98,7 +98,7 @@ public:
          XEv& e1 = p1.second;
 
 			SOSC stopCriteriaLS = stopCriteria.newStopCriteriaWithTL(tNow.now());
-			ls.exec(p1, stopCriteriaLS);
+			ls.searchFrom(p1, stopCriteriaLS);
 
 			if (evaluator.betterThan(e1, e))
 			{

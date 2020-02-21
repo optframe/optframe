@@ -57,7 +57,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void exec(pair<S, XEv>& se, SOSC& sosc) override
+	virtual void searchFrom(pair<S, XEv>& se, SOSC& sosc) override
 	{
       S& s = se.first;
       XEv& e = se.second;
@@ -80,7 +80,7 @@ public:
          //XEv e0(e);
          pair<S, XEv> p0 = se; // enough to clone?
 
-         lsList[k - 1]->exec(p0, sosc);
+         lsList[k - 1]->searchFrom(p0, sosc);
 
          if (ev.betterThan(p0, se)) {
             se = p0;

@@ -68,13 +68,13 @@ public:
    }
    */
 
-   // optimizated version
+   // copy-based version (TODO: deprecate this?)
    pair<S, XEv> lsearch(const pair<S, XEv> se, SOSC& stopCriteria)
    {
       //S& s2 = s.clone();
       //XEv& e2 = e.clone();
       pair<S, XEv> p2 = se; // implicit 'clone' here ??
-      exec(p2, stopCriteria);
+      searchFrom(p2, stopCriteria);
       //return *new pair<S&, XEv&> (s2, e2);
       return p2;
    }
@@ -87,7 +87,8 @@ public:
 
    // keeping only this method, for simplification
    // 2
-   virtual void exec(pair<S, XEv>& se, SOSC& stopCriteria) = 0;
+   //virtual void exec(pair<S, XEv>& se, SOSC& stopCriteria) = 0;
+   virtual void searchFrom(pair<S, XEv>& se, SOSC& stopCriteria) = 0;
    // TODO: perhaps return 'bool' or FLAG indicating possible changes on solution (UNKNOWN, CHANGED, NOCHANGE, IMPROVED, ...)
 
    // optional: set local optimum status (LOS)

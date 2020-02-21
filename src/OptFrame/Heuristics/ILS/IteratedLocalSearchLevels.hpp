@@ -67,7 +67,7 @@ public:
 	virtual void localSearch(pair<S, XEv>& se, SOSC& stopCriteria) override
 	{
 		//cout << "localSearch(.)" << endl;
-		ls.exec(se, stopCriteria);
+		ls.searchFrom(se, stopCriteria);
 	}
 
 	virtual void perturbation(pair<S, XEv>& se, SOSC& stopCriteria, levelHistory& history) override

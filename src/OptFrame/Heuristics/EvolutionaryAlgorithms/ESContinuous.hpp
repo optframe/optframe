@@ -260,10 +260,10 @@ public:
 
 	virtual void localSearch(pair<S, Evaluation<>>& se, SOSC& stopCriteria)
 	{
-		ls.exec(se, stopCriteria);
+		ls.searchFrom(se, stopCriteria);
 	}
 
-	std::optional<pair<S, Evaluation<>>> search(SOSC& stopCriteria, const std::optional<pair<S, Evaluation<>>> se = nullopt) override
+	std::optional<pair<S, Evaluation<>>> search(SOSC& stopCriteria) override
 	{
 		cout << "ES search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 

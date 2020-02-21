@@ -118,7 +118,7 @@ public:
 			m_star->apply(e_x, x);
 			//m_star->print();
 			//cout << "FO ATUAL ANTES BUSCA= " << evaluator.evaluate(x).evaluation() << endl;
-			localSearch.exec(x, e_x, timelimit, target_f);
+			localSearch.searchFrom(x, e_x, timelimit, target_f);
 			//cout << "FO ATUAL= " << evaluator.evaluate(x).evaluation() << endl;
 
 			evaluator.evaluate(e_x, x);

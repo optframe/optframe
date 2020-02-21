@@ -359,7 +359,7 @@ public:
 
       //		vnd->setMessageLevel(3);
       //		if (timeVND > 0)
-      //			vnd->exec(finalSol->first, finalSol->second, timeVND, 0);
+      //			vnd->searchFrom(finalSol->first, finalSol->second, timeVND, 0);
       //
       //		const Solution<RepEFP> solVND = finalSol->first;
       //		const Evaluation<> evaluationVND = finalSol->second;
@@ -399,7 +399,7 @@ public:
    //	{
    //
    //		pair<Solution<RepEFP>&, Evaluation<>&>* finalSol = nullptr;
-   //		//olr->exec(finalSol->first, 100, 100);
+   //		//olr->searchFrom(finalSol->first, 100, 100);
    //		return finalSol;
    //	}
 

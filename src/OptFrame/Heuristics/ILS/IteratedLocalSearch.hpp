@@ -72,14 +72,15 @@ public:
    }
 
 	//pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-   virtual std::optional<pair<S, XEv>> search(SOSC& stopCriteria, const std::optional<pair<S, XEv>> input = std::nullopt) override
+   virtual std::optional<pair<S, XEv>> search(SOSC& stopCriteria) override
 	{
 		cout << "ILS opt search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
 		Timer tnow;
 
       //pair<S, XEv> star = input?*input:genPair(stopCriteria.timelimit);
-      pair<S, XEv> star = *( input ?: genOPair(stopCriteria.timelimit) );
+      //pair<S, XEv> star = *( input ?: genOPair(stopCriteria.timelimit) );
+      pair<S, XEv> star = *genOPair(stopCriteria.timelimit);
 		//S& sStar = star.first;
 		Evaluation<>& eStar = star.second;
 

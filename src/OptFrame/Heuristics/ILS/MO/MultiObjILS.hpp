@@ -118,7 +118,7 @@ public:
 
          MOSC stopCriteriaLS;
          stopCriteriaLS.timelimit = stopCriteria.timelimit;
-         ls->exec(x_e, rS, rMev, pMan, stopCriteriaLS);
+         ls->moSearchFrom(x_e, rS, rMev, pMan, stopCriteriaLS);
 
          acceptanceCriterion(x_e, *history);
          x_e.setNewNonDominatedSolutionsStatus(false);

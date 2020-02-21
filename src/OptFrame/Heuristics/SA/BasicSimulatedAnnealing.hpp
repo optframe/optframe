@@ -74,7 +74,7 @@ public:
    }
 
 	//pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr,  const Evaluation<>* _e = nullptr)
-   virtual std::optional<pair<S, XEv>> search(SOSC& stopCriteria, const std::optional<pair<S, XEv>> input = std::nullopt) override
+   virtual std::optional<pair<S, XEv>> search(SOSC& stopCriteria) override
 	{
 		double timelimit = stopCriteria.timelimit;
 		double target_f = stopCriteria.target_f;

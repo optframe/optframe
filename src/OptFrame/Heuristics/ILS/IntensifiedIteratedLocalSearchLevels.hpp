@@ -94,7 +94,7 @@ public:
 	virtual void localSearch(S& s, Evaluation<>& e, double timelimit, double target_f)
 	{
 		//cout << "localSearch(.)" << endl;
-		ls.exec(s, e, timelimit, target_f);
+		ls.searchFrom(s, e, timelimit, target_f);
 	}
 
 	virtual void perturbation(S& s, Evaluation<>& e, double timelimit, double target_f, levelHistory& history)

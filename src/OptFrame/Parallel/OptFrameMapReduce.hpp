@@ -82,7 +82,7 @@ public:
 
 		Solution<R, ADS> s(a.first);
 
-		hmap->exec(s,a.second.second.first,a.second.second.second);
+		hmap->searchFrom(s,a.second.second.first,a.second.second.second);
 
 		Evaluation<DS> e = eval.evaluate(s);
 
@@ -143,7 +143,7 @@ public:
 			for (unsigned i = 0 ; i < bs.second.size() ; i++) pop.push_back( * new TestSolution<R, ADS>(bs.second[i].first) );
 
 			//Population<S, XEv> & popReduced =
-			hreduce->exec(pop, 60, 0); // TODO considerar tempo
+			hreduce->searchFrom(pop, 60, 0); // TODO considerar tempo
 
 			if (pop.size() == 0) return pair<int, R> (bs.first, R());
 			if (pop.size() == 1) return pair<int, R> (bs.first, pop.at(0).getR());

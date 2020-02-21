@@ -70,7 +70,7 @@ public:
 			Solution<R, ADS>& s1 = constructive.generateSolution();
 			Evaluation<DS>& e1 = evaluator.evaluate(s1);
 
-			ls.exec(s1,e1,timelimit, target_f);
+			ls.searchFrom(s1,e1,timelimit, target_f);
 
 			if(evaluator.betterThan(e1,e))
 			{

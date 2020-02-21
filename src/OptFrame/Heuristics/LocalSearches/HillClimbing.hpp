@@ -53,7 +53,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void exec(pair<S, XEv>& se, SOSC& sosc) override
+	virtual void searchFrom(pair<S, XEv>& se, SOSC& sosc) override
 	{
       //S& s = se.first;
       XEv& e = se.second;
@@ -65,7 +65,7 @@ public:
 		//Evaluation<>* e0 = &e.clone();
       XEv e0(e); // avoid that using return status on 'exec'
 
-		ls.exec(se, sosc);
+		ls.searchFrom(se, sosc);
 
 		long tnow = time(nullptr);
 
@@ -78,7 +78,7 @@ public:
          //   (*e0) = e;
          e0 = e;
 
-			ls.exec(se, sosc);
+			ls.searchFrom(se, sosc);
 
 			tnow = time(nullptr);
 		}	

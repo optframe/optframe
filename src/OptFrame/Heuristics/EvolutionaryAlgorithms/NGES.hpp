@@ -440,7 +440,7 @@ public:
 
    //virtual pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) = 0;
    //pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-   std::optional<pair<S, XEv>> search(SOSC& stopCriteria, const std::optional<pair<S, XEv>> se = nullopt) override
+   std::optional<pair<S, XEv>> search(SOSC& stopCriteria) override
    {
       Timer tnow;
       NGESPopulation pop;

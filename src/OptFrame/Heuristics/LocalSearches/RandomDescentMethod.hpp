@@ -55,7 +55,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void exec(pair<S, XEv>& se, SOSC& stopCriteria) override
+	virtual void searchFrom(pair<S, XEv>& se, SOSC& stopCriteria) override
 	{
       S& s = se.first;
       XEv& e = se.second;
