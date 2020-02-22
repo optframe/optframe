@@ -45,17 +45,34 @@ namespace optframe {
 
 // should someone inherit from this? if not, should become array instead of class
 
+// SOSC: Single Objective Stop Criteria (target evaluation and time)
+
+template<XEvaluation XEv = Evaluation<>>
 class SOSC final : public Component
 {
 public:
    // maximum timelimit (seconds)
    double timelimit;
-   // target objective function
-   double target_f;
 
-   SOSC(double _timelimit = 100000000.0, double _target_f = 0.0)
+   // target objective function
+   //double target_f;
+   XEv target_f; // TODO: pass parameter on SOSC
+
+   //SOSC(double _timelimit = 100000000.0, double _target_f = 0.0)
+   SOSC(double _timelimit = 100000000.0)
      : timelimit(_timelimit)
-     , target_f(_target_f)
+   {
+   }
+
+   SOSC(double _timelimit, const XEv& _target_f)
+     : timelimit(_timelimit),
+     target_f(_target_f)
+   {
+   }
+
+   SOSC(double _timelimit, XEv&& _target_f)
+     : timelimit(_timelimit),
+     target_f(std::move(_target_f))
    {
    }
 
@@ -116,9 +133,9 @@ public:
 
 
    // search method try to find a feasible solution within timelimit, if there is no such solution it returns nullptr.
-   //virtual pair<S, XEv>* search(SOSC& stopCriteria, const S* _s = nullptr, const XEv* _e = nullptr) = 0;
-   //virtual std::optional<pair<S, XEv>> search(SOSC& stopCriteria, const std::optional<pair<S, XEv>> input = std::nullopt) = 0;
-   virtual std::optional<pair<S, XEv>> search(SOSC& stopCriteria) = 0;
+   //virtual pair<S, XEv>* search(SOSC<XEv>& stopCriteria, const S* _s = nullptr, const XEv* _e = nullptr) = 0;
+   //virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria, const std::optional<pair<S, XEv>> input = std::nullopt) = 0;
+   virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) = 0;
 
    virtual string log() const
    {

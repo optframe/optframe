@@ -52,13 +52,13 @@ public:
 	}
 
    // DEPRECATED
-	//virtual void exec(S& s, SOSC& stopCriteria)
+	//virtual void exec(S& s, SOSC<XEv>& stopCriteria)
 	//{
 	//	Evaluation<> e = std::move(ev.evaluate(s));
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(pair<S, XEv>& se, SOSC& stopCriteria) override
+	virtual void searchFrom(pair<S, XEv>& se, SOSC<XEv>& stopCriteria) override
 	{
       //S& s = se.first;
       XEv& e = se.second;
@@ -76,7 +76,7 @@ public:
 		int k = 1;
 
 		Evaluation<> eCurrent(e);
-		while (ev.betterThan(stopCriteria.target_f, e.evaluation()) && (k <= r) && (tNow.now() < stopCriteria.timelimit))
+		while (ev.betterThan(stopCriteria.target_f, e) && (k <= r) && (tNow.now() < stopCriteria.timelimit))
 		{
 			eCurrent = e; // backup
 			SOSC stopCriteriaNextLS = stopCriteria;

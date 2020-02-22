@@ -67,11 +67,11 @@ public:
    }
 
 
-	//pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-   virtual std::optional<pair<S, XEv>> search(SOSC& stopCriteria) override
+	//pair<S, Evaluation<>>* search(SOSC<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+   virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) override
 	{
 		double timelimit = stopCriteria.timelimit;
-		double target_f = stopCriteria.target_f;
+		XEv target_f(stopCriteria.target_f);
 
 		Timer tNow;
 
@@ -86,7 +86,7 @@ public:
 		if (Component::information)
 			e.print();
 
-		while ((iter < iterMax) && (tNow.now() < timelimit) && (evaluator.betterThan(target_f, e.evaluation())))
+		while ((iter < iterMax) && (tNow.now() < timelimit) && (evaluator.betterThan(target_f, e)))
 		{
 			if (Component::verbose)
 				cout << "GRASP::iter=" << iter << endl;

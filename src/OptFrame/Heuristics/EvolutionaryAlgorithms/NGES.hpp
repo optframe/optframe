@@ -438,9 +438,9 @@ public:
          iterWithoutImprovement++;
    }
 
-   //virtual pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) = 0;
-   //pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-   std::optional<pair<S, XEv>> search(SOSC& stopCriteria) override
+   //virtual pair<S, Evaluation<>>* search(SOSC<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) = 0;
+   //pair<S, Evaluation<>>* search(SOSC<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+   std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) override
    {
       Timer tnow;
       NGESPopulation pop;

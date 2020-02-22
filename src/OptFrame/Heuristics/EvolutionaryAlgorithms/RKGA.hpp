@@ -165,9 +165,9 @@ public:
    }
 
    //pair<CopySolution<random_keys>&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const CopySolution<random_keys>* _s = nullptr, const Evaluation<>* _e = nullptr)
-   ///virtual pair<CopySolution<random_keys>, XEv>* search(SOSC& stopCriteria, const CopySolution<random_keys>* _s = nullptr, const XEv* _e = nullptr) override
-   //virtual pair<XRS, XEv>* search(SOSC& stopCriteria, const XRS* _s = nullptr, const XEv* _e = nullptr) override
-   virtual std::optional<pair<XRS, XEv>> search(SOSC& stopCriteria) override
+   ///virtual pair<CopySolution<random_keys>, XEv>* search(SOSC<XEv>& stopCriteria, const CopySolution<random_keys>* _s = nullptr, const XEv* _e = nullptr) override
+   //virtual pair<XRS, XEv>* search(SOSC<XEv>& stopCriteria, const XRS* _s = nullptr, const XEv* _e = nullptr) override
+   virtual std::optional<pair<XRS, XEv>> search(SOSC<XEv>& stopCriteria) override
    {
       // count generations
       int count_gen = 0;

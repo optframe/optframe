@@ -55,6 +55,7 @@ namespace optframe {
 
 // TODO: use XEv here
 template<XSolution S, XEvaluation XEv = Evaluation<>>
+//template<XSolution S, XEvaluation XEv> // require explicitly XEv here...
 //class Evaluator : public Direction<XEv>
 class Evaluator : public Direction
 {
@@ -158,7 +159,8 @@ public:
          // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
          assert(m.hasReverse());
 
-         XEv ev_begin = e; //TODO: VITOR removing last evaluation
+         XEv ev_begin(e); // copy
+         //XEv ev_begin = e; //TODO: VITOR removing last evaluation
          // saving 'outdated' status to avoid inefficient re-evaluations
          //			bool outdated = e.outdated;
          // apply move to both XEv and Solution
@@ -288,7 +290,7 @@ public:
          assert(m.hasReverse());
 
          // saving previous evaluation
-         XEv ev_begin = e;
+         XEv ev_begin(e);
          // saving 'outdated' status to avoid inefficient re-evaluations
          //			bool outdated = e.outdated;
          // get original obj function values

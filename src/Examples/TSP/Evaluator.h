@@ -22,15 +22,15 @@
 #define TSP_EVALUATOR_HPP_
 
 //#include <cmath>
-#include <stdlib.h>
 #include <math.h>
+#include <stdlib.h>
 
 #include "../../OptFrame/Evaluation.hpp"
 #include "../../OptFrame/Evaluator.hpp"
 
+#include "Evaluation.h"
 #include "Representation.h"
 #include "Solution.h"
-#include "Evaluation.h"
 
 #include "ProblemInstance.h"
 
@@ -38,75 +38,72 @@
 
 #define TSP_EPSILON 0.0001
 
-namespace TSP
-{
+namespace TSP {
 
-class TSPEvaluator: public Evaluator<SolutionTSP>
+class TSPEvaluator : public Evaluator<SolutionTSP>
 {
 private:
-    ProblemInstance* pI;
+   ProblemInstance* pI;
 
 public:
+   bool Minimizing;
 
-    bool Minimizing;
+   vector<int> solutions;
+   vector<long long> solNSTotal;
+   vector<long long> solNSImp;
+   int solMin;
+   int solMax;
 
-    vector<int> solutions;
-    vector<long long> solNSTotal;
-    vector<long long> solNSImp;
-    int solMin;
-    int solMax;
+   bool doStats;
 
-    bool doStats;
+   //using Evaluator<SolutionTSP>::evaluate; // prevents name hiding
 
-    //using Evaluator<SolutionTSP>::evaluate; // prevents name hiding
+   TSPEvaluator(ProblemInstance* pI)
+     : Evaluator<SolutionTSP>(true) // ALLOW COSTS!
+   {
+      Minimizing = true;
+      this->pI = pI;
+      solutions = vector<int>(50000, 0);
+      solMax = 0;
+      solMin = 2000000000;
+      solNSTotal = vector<long long>(50000, 0);
+      solNSImp = solNSTotal;
 
-    TSPEvaluator(ProblemInstance* pI) :
-            Evaluator<SolutionTSP>(true) // ALLOW COSTS!
-    {
-        Minimizing = true;
-        this->pI = pI;
-        solutions = vector<int>(50000, 0);
-        solMax = 0;
-        solMin = 2000000000;
-        solNSTotal = vector<long long>(50000, 0);
-        solNSImp = solNSTotal;
+      doStats = true;
+   }
 
-        doStats = true;
-    }
+   bool verify(const RepTSP& r)
+   {
+      assert(int(r.size()) == pI->n);
+      vector<bool> count(pI->n, false);
+      for (int i = 0; i < pI->n; i++)
+         count[r[i]] = true;
+      for (int i = 0; i < pI->n; i++)
+         assert(count[i]);
+      return true;
+   }
 
-    bool verify(const RepTSP& r)
-    {
-    	assert(int(r.size()) == pI->n);
-    	vector<bool> count(pI->n, false);
-    	for(int i=0; i<pI->n; i++)
-    		count[r[i]] = true;
-    	for(int i=0; i<pI->n; i++)
-    		assert(count[i]);
-    	return true;
-    }
+   Evaluation<> evaluate(const SolutionTSP& s) override
+   {
+      const RepTSP& r = s.getR();
+      double fo = 0; // Evaluation<> Function Value
 
-    Evaluation<> evaluate(const SolutionTSP& s) override
-    {
-       const RepTSP& r = s.getR();
-        double fo = 0; // Evaluation<> Function Value
+      for (int i = 0; i < ((int)r.size()) - 1; i++) {
+         int j = r.at(i);
+         int z = r.at(i + 1);
 
-        for (int i = 0; i < ((int) r.size()) - 1; i++)
-        {
-            int j = r.at(i);
-            int z = r.at(i + 1);
+         double val = (*pI->dist)(j, z);
+         fo += val;
+      }
 
-            double val = (*pI->dist)(j, z);
-            fo += val;
-        }
+      int k = r.at(((int)r.size()) - 1);
+      int l = r.at(0);
 
-        int k = r.at(((int) r.size()) - 1);
-        int l = r.at(0);
+      double val = (*pI->dist)(k, l);
+      fo += val;
 
-        double val = (*pI->dist)(k, l);
-        fo += val;
-
-        //fo = int(fo); // cast to int
-        /*
+      //fo = int(fo); // cast to int
+      /*
         if (doStats)
         {
             int ifo = int(fo);
@@ -140,45 +137,43 @@ public:
         }
         */
 
-        return Evaluation<>(fo);
-    }
+      return Evaluation<>(fo);
+   }
 
-    void exploreNeighborhood(RepTSP r, int& totalNeigh, int& improvingSols)
-    {
-        NSSeqTSPSwap<int> tspswap;
+   void exploreNeighborhood(RepTSP r, int& totalNeigh, int& improvingSols)
+   {
+      NSSeqTSPSwap<int> tspswap;
 
-        //int ads;
-        SolutionTSP s(r); // TODO: think
-        NSIterator<SolutionTSP>& it = *tspswap.getIterator(s);
-        it.first();
+      //int ads;
+      SolutionTSP s(r); // TODO: think
+      NSIterator<SolutionTSP>& it = *tspswap.getIterator(s);
+      it.first();
 
-        //cout << "got iterator: " << it.toString() << endl;
+      //cout << "got iterator: " << it.toString() << endl;
 
-        CopySolution<RepTSP> base(r, nullptr);
-        while (!it.isDone())
-        {
-            //cout << "will get move" << endl;
-            totalNeigh++;
-            Move<SolutionTSP>& m = *it.current();
-            //m.print();
-            SolutionTSP s2(r); // TODO: think
-            if (m.canBeApplied(s2))
-            {
-                doStats = false;
-                Evaluation<>* e = nullptr; // dummy // TODO:
-                MoveCost<>& mc = *this->moveCost(*e, m, base);
-                doStats = true;
-                if (mc.getObjFunctionCost() < 0)
-                    improvingSols++;
-                delete &mc;
-            }
-            delete &m;
-            it.next();
-        }
-        //cout << "finished explore" << endl;
+      CopySolution<RepTSP> base(r, nullptr);
+      while (!it.isDone()) {
+         //cout << "will get move" << endl;
+         totalNeigh++;
+         Move<SolutionTSP>& m = *it.current();
+         //m.print();
+         SolutionTSP s2(r); // TODO: think
+         if (m.canBeApplied(s2)) {
+            doStats = false;
+            Evaluation<>* e = nullptr; // dummy // TODO:
+            MoveCost<>& mc = *this->moveCost(*e, m, base);
+            doStats = true;
+            if (mc.getObjFunctionCost() < 0)
+               improvingSols++;
+            delete &mc;
+         }
+         delete &m;
+         it.next();
+      }
+      //cout << "finished explore" << endl;
+   }
 
-    }
-
+   /*
       // TODO: remove this? // maybe only operate on XEv space?
     virtual bool betterThan(evtype f1, evtype f2)
     {
@@ -187,21 +182,30 @@ public:
         else
             return (f1 > (f2 + TSP_EPSILON));
     }
+*/
 
-    virtual bool isMinimization() const override
-    {
-        return Minimizing;
-    }
+   // override from Direction
+   virtual inline bool betterThan(const Evaluation<double>& e1, const Evaluation<double>& e2) override
+   {
+      if (isMinimization())
+         return ::fabs(e2.evaluation() - e1.evaluation()) >= 0.00001;
+      else
+         return ::fabs(e1.evaluation() - e2.evaluation()) >= 0.00001;
+   }
 
-    virtual string id() const
-    {
-        string pai = Evaluator<SolutionTSP>::idComponent();
-        pai.append(":TSPEvaluator");
-        return pai;
-    }
+   // override from Direction
+   virtual bool isMinimization() const override
+   {
+      return Minimizing;
+   }
 
+   virtual string id() const
+   {
+      string pai = Evaluator<SolutionTSP>::idComponent();
+      pai.append(":TSPEvaluator");
+      return pai;
+   }
 };
-
 }
 
 #endif /*TSP_EVALUATOR_HPP_*/

@@ -103,7 +103,7 @@ concept bool HasGetObj = requires(Self a)
 // note that getObjValue and getInfeasibleValue are not necessary here, just getObj
 // one can implement this way if preferred, separating or not both "values"... not mandatory anymore
 template <class Self>
-concept bool XEvaluation = HasClone<Self> && HasToString<Self> && HasGetObj<Self>;
+concept bool XEvaluation = HasClone<Self> && HasToString<Self> && HasGetObj<Self> && optframe::ostreamable<Self>;
 
 // XSolution and XEvaluation are container-inspired "conceptual objects", to carry Representation and Objective Value
 // One can even aggregate both in a single unified "thing", called XESolution

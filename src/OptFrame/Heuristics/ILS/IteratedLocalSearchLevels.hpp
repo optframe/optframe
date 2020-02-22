@@ -64,13 +64,13 @@ public:
 		return *new levelHistory(vars, maxs);
 	}
 
-	virtual void localSearch(pair<S, XEv>& se, SOSC& stopCriteria) override
+	virtual void localSearch(pair<S, XEv>& se, SOSC<XEv>& stopCriteria) override
 	{
 		//cout << "localSearch(.)" << endl;
 		ls.searchFrom(se, stopCriteria);
 	}
 
-	virtual void perturbation(pair<S, XEv>& se, SOSC& stopCriteria, levelHistory& history) override
+	virtual void perturbation(pair<S, XEv>& se, SOSC<XEv>& stopCriteria, levelHistory& history) override
 	{
 		//cout << "perturbation(.)" << endl;
 

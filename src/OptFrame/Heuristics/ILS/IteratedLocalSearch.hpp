@@ -54,9 +54,9 @@ public:
 
 	virtual H& initializeHistory() = 0;
 
-	virtual void localSearch(pair<S, XEv>& se, SOSC& stopCriteria) = 0;
+	virtual void localSearch(pair<S, XEv>& se, SOSC<XEv>& stopCriteria) = 0;
 
-	virtual void perturbation(pair<S, XEv>& se, SOSC& stopCriteria, H& history) = 0;
+	virtual void perturbation(pair<S, XEv>& se, SOSC<XEv>& stopCriteria, H& history) = 0;
 
 	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, H& history) = 0;
 
@@ -71,8 +71,8 @@ public:
       return make_optional(make_pair(*sStar, eStar)); 
    }
 
-	//pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-   virtual std::optional<pair<S, XEv>> search(SOSC& stopCriteria) override
+	//pair<S, Evaluation<>>* search(SOSC<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+   virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) override
 	{
 		cout << "ILS opt search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
@@ -150,9 +150,9 @@ public:
             // TODO: should probably move here to enhance performance (try to benchmark before!!)
 			}
 
-		} while (evaluator.betterThan(stopCriteria.target_f, eStar.evaluation()) && !terminationCondition(*history) && ((tnow.now()) < stopCriteria.timelimit));
+		} while (evaluator.betterThan(stopCriteria.target_f, eStar) && !terminationCondition(*history) && ((tnow.now()) < stopCriteria.timelimit));
 
-		if (evaluator.betterThan(eStar.evaluation(), stopCriteria.target_f))
+		if (evaluator.betterThan(eStar, stopCriteria.target_f))
 			cout << "ILS exit by target_f: " << eStar.evaluation() << " better than " << stopCriteria.target_f << endl;
 
 		//pair<S, Evaluation<>>* pairToReturn = new pair<S, Evaluation<>>(make_pair(std::move(*sStar), std::move(*eStar)));

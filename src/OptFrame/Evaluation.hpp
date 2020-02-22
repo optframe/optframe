@@ -110,7 +110,9 @@ public:
    // ======================================
    // begin canonical part
 
-   Evaluation(const ObjType& obj, const ObjType& inf, const evtype& w = 1)
+   // TODO (IGOR): maybe create empty Evaluation with numeric_zero on 'obj'
+
+   explicit Evaluation(const ObjType& obj, const ObjType& inf, const evtype& w = 1)
      : objFunction(obj)
      , infMeasure(inf)
    {
@@ -119,7 +121,7 @@ public:
       estimated = false;
    }
 
-   Evaluation(const ObjType& obj)
+   explicit Evaluation(const ObjType& obj)
      : objFunction(obj)
    {
       //infMeasure = optframe::get_numeric_zero<ObjType>();
@@ -130,7 +132,17 @@ public:
       estimated = false;
    }
 
-   Evaluation(const Evaluation& e)
+   explicit Evaluation()
+   {
+      optframe::numeric_zero(objFunction);
+      optframe::numeric_zero(infMeasure);
+
+      gos = gos_unknown;
+      outdated = false;
+      estimated = false;
+   }   
+
+   explicit Evaluation(const Evaluation<ObjType>& e)
      : objFunction(e.objFunction)
      , infMeasure(e.infMeasure)
      , alternatives(e.alternatives)
@@ -144,7 +156,7 @@ public:
    {
    }
 
-   virtual Evaluation& operator=(const Evaluation& e)
+   virtual Evaluation<ObjType>& operator=(const Evaluation<ObjType>& e)
    {
       if (&e == this) // auto ref check
          return *this;
@@ -159,7 +171,7 @@ public:
       return *this;
    }
 
-   virtual Evaluation& clone() const
+   virtual Evaluation<ObjType>& clone() const
    {
       return *new Evaluation(*this);
    }
@@ -285,6 +297,12 @@ public:
       // ss << endl;
 
       return ss.str();
+   }
+
+   friend std::ostream& operator<<(std::ostream& os, const Evaluation& me)
+   {
+      os << me.toString();
+      return os;
    }
 };
 
@@ -525,6 +543,13 @@ public:
 
       return ss.str();
    }
+
+   friend std::ostream& operator<<(std::ostream& os, const WLxEvaluation& me)
+   {
+      os << me.toString();
+      return os;
+   }
+
 };
 
 } // namespace optframe

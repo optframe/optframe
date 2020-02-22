@@ -52,8 +52,8 @@ public:
    {
    }
 
-   //pair<S, Evaluation<>>* search(SOSC& sosc, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-   virtual std::optional<pair<S, XEv>> search(SOSC& sosc) override
+   //pair<S, Evaluation<>>* search(SOSC<XEv>& sosc, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+   virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& sosc) override
    {
       //cout << "SimpleLocalSearch search(" << target_f << "," << timelimit << ")" << endl;
 

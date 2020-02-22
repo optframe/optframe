@@ -73,11 +73,11 @@ public:
       return make_pair(*sStar, eStar); 
    }
 
-	//pair<S, Evaluation<>>* search(SOSC& stopCriteria, const S* _s = nullptr,  const Evaluation<>* _e = nullptr)
-   virtual std::optional<pair<S, XEv>> search(SOSC& stopCriteria) override
+	//pair<S, Evaluation<>>* search(SOSC<XEv>& stopCriteria, const S* _s = nullptr,  const Evaluation<>* _e = nullptr)
+   virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) override
 	{
 		double timelimit = stopCriteria.timelimit;
-		double target_f = stopCriteria.target_f;
+		XEv target_f(stopCriteria.target_f);
 		cout << "SA search(" << target_f << "," << timelimit << ")" << endl;
 
 		Timer tnow;

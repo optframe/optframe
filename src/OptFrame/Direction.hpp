@@ -85,10 +85,28 @@ public:
 	// true if 'e1' is better than 'e2'
 	virtual inline bool betterThan(const Evaluation<>& e1, const Evaluation<>& e2)
 	{
+      //cout << "BETTER THAN! (isMin=" << isMinimization() << ")" << endl;
+      //e1.print();
+      //e2.print();
+
+      //bool r = true;
+
+      evtype diff;
 		if(isMinimization())
-			return (e2.evaluation() - e1.evaluation()) >= optframe::get_numeric_zero<evtype>();
+      {
+         diff = e2.evaluation() - e1.evaluation();
+			//r = (e2.evaluation() - e1.evaluation()) >= optframe::get_numeric_zero<evtype>();
+      }
 		else
-			return (e1.evaluation() - e2.evaluation()) >= optframe::get_numeric_zero<evtype>();
+      {
+         diff = e1.evaluation() - e2.evaluation();
+			//r = (e1.evaluation() - e2.evaluation()) >= optframe::get_numeric_zero<evtype>();
+      }
+      bool r = !(optframe::numeric_is_zero<evtype>(diff)) && (diff > optframe::get_numeric_zero<evtype>());
+
+      //printf("r=%d e1=%.7f e2=%.7f zero=%.7f nzero=%.7f\n",r,e1.evaluation(), e2.evaluation(), optframe::get_numeric_zero<evtype>(), t);
+      
+      return r;
 	}
 
 	/*

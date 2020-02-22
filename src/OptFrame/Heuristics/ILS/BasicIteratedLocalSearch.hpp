@@ -63,12 +63,12 @@ public:
 		return iter;
 	}
 
-	virtual void localSearch(pair<S, XEv>& se, SOSC& sosc) override
+	virtual void localSearch(pair<S, XEv>& se, SOSC<XEv>& sosc) override
 	{
 		ls.searchFrom(se, sosc);
 	}
 
-	virtual void perturbation(pair<S, XEv>& se, SOSC& sosc, BasicHistory& history) override
+	virtual void perturbation(pair<S, XEv>& se, SOSC<XEv>& sosc, BasicHistory& history) override
 	{
 		int iter = history;
 

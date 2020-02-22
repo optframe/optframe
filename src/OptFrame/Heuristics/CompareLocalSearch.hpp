@@ -49,13 +49,13 @@ public:
 	}
 
 	// DEPRECATED
-	//virtual void exec(S& s, SOSC& stopCriteria)
+	//virtual void exec(S& s, SOSC<XEv>& stopCriteria)
 	//{
 	//	Evaluation<> e = std::move(ev.evaluate(s));
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(pair<S, XEv>& se, SOSC& sosc) override
+	virtual void searchFrom(pair<S, XEv>& se, SOSC<XEv>& sosc) override
 	{
       //S& s = se.first;
       XEv& e = se.second;

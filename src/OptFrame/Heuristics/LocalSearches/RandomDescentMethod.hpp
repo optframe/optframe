@@ -49,13 +49,13 @@ public:
 	}
 
 	// DEPRECATED
-	//virtual void exec(S& s, SOSC& stopCriteria)
+	//virtual void exec(S& s, SOSC<XEv>& stopCriteria)
 	//{
 	//	Evaluation<> e = std::move(ev.evaluate(s));
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(pair<S, XEv>& se, SOSC& stopCriteria) override
+	virtual void searchFrom(pair<S, XEv>& se, SOSC<XEv>& stopCriteria) override
 	{
       S& s = se.first;
       XEv& e = se.second;
@@ -63,7 +63,7 @@ public:
 
 		unsigned int iter = 0;
 
-		while ((iter < iterMax) && (tNow.now() < stopCriteria.timelimit) && (evaluator.betterThan(stopCriteria.target_f, e.evaluation())))
+		while ((iter < iterMax) && (tNow.now() < stopCriteria.timelimit) && (evaluator.betterThan(stopCriteria.target_f, e)))
 		{
 			// TODO: verify if it's not null!
 			Move<S, XEv>& move = *ns.randomMove(s);

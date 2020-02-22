@@ -23,6 +23,8 @@
 // Project Traveling Salesman Problem
 // ===================================
 
+// mainTSP.cpp
+
 #include <math.h>
 #include <stdlib.h>
 
@@ -134,7 +136,7 @@ main(int argc, char** argv)
    //pair<SolutionTSP, Evaluation<>>* r2 = brkga.search(sosc);
    
    std::optional<ESolutionTSP> r2 = brkga.search(sosc);
-   //virtual std::optional<pair<XRS, XEv>> search(SOSC& stopCriteria, const std::optional<pair<XRS, XEv>> input)
+   //virtual std::optional<pair<XRS, XEv>> search(SOSC<XEv>& stopCriteria, const std::optional<pair<XRS, XEv>> input)
    r2->first.print();
    r2->second.print();
 
@@ -180,7 +182,7 @@ main(int argc, char** argv)
    Timer tim;
    SOSC soscILS;
    soscILS.timelimit = 3; // 1000
-   soscILS.target_f = 0;
+   soscILS.target_f = EvaluationTSP(0.0);
    //pair<CopySolution<RepTSP>, Evaluation<>>& psol = *ils.search(soscILS, NULL, NULL);
    std::optional<ESolutionTSP> psol = ils.search(soscILS);
    cout << tim.now() << " secs" << endl;
@@ -194,12 +196,12 @@ main(int argc, char** argv)
       delete ns_list[i];
 
    vector<NS<SolutionTSP>*> v_ns;
-   vector<NSSeq<SolutionTSP>*> v_nsseq;
-   v_nsseq.push_back(&tsp2opt);
-   v_nsseq.push_back(&tspor1);
-   v_nsseq.push_back(&tspor2);
-   v_nsseq.push_back(&tspor3);
-   v_nsseq.push_back(&tspswap);
+   vector<NSSeq<SolutionTSP>*> v_nsseq = {&tsp2opt, &tspor1, &tspor2, &tspor3, &tspswap};
+   //v_nsseq.push_back(&tsp2opt);
+   //v_nsseq.push_back(&tspor1);
+   //v_nsseq.push_back(&tspor2);
+   //v_nsseq.push_back(&tspor3);
+   //v_nsseq.push_back(&tspswap);
    for (unsigned i = 0; i < v_nsseq.size(); i++)
       v_ns.push_back(v_nsseq[i]);
 
@@ -207,9 +209,9 @@ main(int argc, char** argv)
    vns.setMessageLevel(3); // INFORMATION
    SOSC soscVNS;
    soscVNS.timelimit = 0;
-   soscVNS.target_f = 8000;
+   soscVNS.target_f = EvaluationTSP(7550.0);
    //pair<CopySolution<RepTSP>, Evaluation<>>& psol2 = *vns.search(sosc, NULL, NULL);
-   std::optional<ESolutionTSP> psol2 = vns.search(sosc);
+   std::optional<ESolutionTSP> psol2 = vns.search(soscVNS);
    psol2->first.print();
    psol2->second.print();
 

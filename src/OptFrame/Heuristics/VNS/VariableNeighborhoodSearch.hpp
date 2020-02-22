@@ -59,8 +59,11 @@ public:
 
 	//virtual void improvement(S& s, Evaluation<>& e, double timelimit, double target_f) = 0;
 
-	virtual void shake(pair<S, XEv>& p, unsigned int k_shake, double timelimit, double target_f)
+	virtual void shake(pair<S, XEv>& p, unsigned int k_shake, SOSC<XEv>& sosc)
 	{
+      //double timelimit = sosc.timelimit;
+      XEv target_f(sosc.target_f);
+      //
       S& s = p.first;
       Evaluation<>& e = p.second;
 		Move<S, XEv>* move = vshake.at(k_shake)->validRandomMove(s);
@@ -83,7 +86,7 @@ public:
 		if (evaluator.betterThan(e2, eStar))
 		{
 			// IMPROVEMENT!
-			pair<S, Evaluation<>> p(s2.clone(), e2.clone());
+			pair<S, Evaluation<>> p(s2.clone(), e2.clone()); // TODO: avoid leak!!
 			if(Component::information)
          {
 				cout << "VNS: improvement at NS " << k << " => " << e2.evaluation() << endl;
@@ -94,7 +97,7 @@ public:
 		}
 		else
 		{
-			pair<S&, Evaluation<>&> p(sStar.clone(), eStar.clone());
+			pair<S, Evaluation<>> p(sStar.clone(), eStar.clone()); // TODO: avoid leak!
 			return make_pair(p, k+1);
 		}
 	}
@@ -108,13 +111,11 @@ public:
       return make_pair(*sStar, eStar); 
    }
 
-	//pair<S, Evaluation<>>* search(SOSC& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
-   virtual std::optional<pair<S, XEv>> search(SOSC& sosc) override
+	//pair<S, Evaluation<>>* search(SOSC<XEv>& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
+   virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& sosc) override
 	{
       double timelimit = sosc.timelimit;
-      double target_f = sosc.target_f;
-		if(timelimit == 0)
-			timelimit = 36000; // 10 hours
+      XEv target_f(sosc.target_f);
 		cout << id() << " search(target=" << target_f << ", timelimit=" << timelimit << ")" << endl;
 
 		Timer tnow;
@@ -129,9 +130,13 @@ public:
 		if(Component::information)
 			cout << "VNS starts: " << eStar.evaluation() << endl;
 
-		while(evaluator.betterThan(target_f, eStar.evaluation()) && ((tnow.now()) < timelimit))
+		while(evaluator.betterThan(target_f, eStar) && ((tnow.now()) < timelimit))
 		{
 			unsigned k = 0;
+         cout << "VNS k=0 initial target = " << target_f << " timelimit = " << timelimit << endl;
+         cout << eStar.evaluation() << endl;
+         cout << evaluator.betterThan(target_f, eStar) << endl;
+         //cout << evaluator.betterThan(8000, 7962.15) << endl;
 
 			while(k < vshake.size())
 			{
@@ -139,7 +144,7 @@ public:
 				////S& s = *new S(sStar); // implicit clone on copy constructor
 				////Evaluation<>&   e = eStar.clone();
 
-				shake(p1, k, timelimit, target_f);
+				shake(p1, k, sosc);
 
 				LocalSearch<S, XEv>& improve = buildSearch(k);
 
@@ -158,6 +163,10 @@ public:
 				//delete& s; // drop automatically?
 				//delete& e; // drop automatically?
 
+            if(k != nc.second)
+            {
+               //cout << "VNS k change from " << k << " to " << nc.second << endl;
+            }
 				k = nc.second;
 			}
 		}

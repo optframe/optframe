@@ -42,6 +42,7 @@ public:
 // numeric_zero
 // number zero for that arithmetic type
 
+// stores numeric_zero value on 't'
 template<optframe::basic_arithmetics T>
 inline typename std::enable_if<std::is_same<T, int>::value, void>::type
 numeric_zero(T& t)
@@ -49,6 +50,7 @@ numeric_zero(T& t)
    t = 0;
 }
 
+// stores numeric_zero value on 't'
 template<optframe::basic_arithmetics T>
 inline typename std::enable_if<std::is_same<T, double>::value, void>::type
 numeric_zero(T& t)

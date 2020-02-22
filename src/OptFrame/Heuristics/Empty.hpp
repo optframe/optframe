@@ -42,7 +42,7 @@ public:
 	{
 	}
 
-	virtual void searchFrom(pair<S, XEv>&, SOSC& stopCriteria) override
+	virtual void searchFrom(pair<S, XEv>&, SOSC<XEv>& stopCriteria) override
    {
       // placeholder for empty local search
    };

@@ -57,18 +57,18 @@ public:
 	}
 
 	// DEPRECATED
-	//virtual void exec(S& s, SOSC& stopCriteria)
+	//virtual void exec(S& s, SOSC<XEv>& stopCriteria)
 	//{
 	//	Evaluation<> e = std::move(ev.evaluate(s));
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(pair<S, XEv>& se, SOSC& sosc) override
+	virtual void searchFrom(pair<S, XEv>& se, SOSC<XEv>& sosc) override
 	{
       S& sStar = se.first;
       XEv& eStar = se.second;
       double timelimit = sosc.timelimit;
-      double target_f = sosc.target_f;
+      XEv target_f(sosc.target_f);
 
 		long tini = time(nullptr);
 
@@ -88,7 +88,7 @@ public:
 
 		long tnow = time(nullptr);
 
-		while (ev.betterThan(target_f, eStar.evaluation()) && (iter <= iterMax) && ((tnow - tini) < timelimit))
+		while (ev.betterThan(target_f, eStar) && (iter <= iterMax) && ((tnow - tini) < timelimit))
 		{
 			// choose random neighborhood
 			int ns_k = rand() % lns.size();

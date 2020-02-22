@@ -383,6 +383,12 @@ public:
       ObjType t;
       return t;
    }
+
+   friend ostream& operator<<(ostream& os, const TestTArithMO_is_zero& me)
+   {
+      os << me.toString();
+      return os;
+   }
 };
 
 struct optframe_debug_example_test_mov
