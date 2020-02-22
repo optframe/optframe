@@ -187,10 +187,16 @@ public:
    // override from Direction
    virtual inline bool betterThan(const Evaluation<double>& e1, const Evaluation<double>& e2) override
    {
+      //cout << "betterThan!" << endl;
+      //e1.print();
+      //e2.print();
+      //
       if (isMinimization())
-         return ::fabs(e2.evaluation() - e1.evaluation()) >= 0.00001;
+         //return ::fabs(e2.evaluation() - e1.evaluation()) >= 0.00001;
+         return (e2.evaluation() - e1.evaluation()) > 0.00001;
       else
-         return ::fabs(e1.evaluation() - e2.evaluation()) >= 0.00001;
+         //return ::fabs(e1.evaluation() - e2.evaluation()) >= 0.00001;
+         return (e1.evaluation() - e2.evaluation()) > 0.00001;
    }
 
    // override from Direction

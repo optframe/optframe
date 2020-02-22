@@ -90,8 +90,8 @@ public:
 			if(Component::information)
          {
 				cout << "VNS: improvement at NS " << k << " => " << e2.evaluation() << endl;
-            e2.print();
-            eStar.print();
+            //e2.print();
+            //eStar.print();
          }
 			return make_pair(p, 0); // k <- 0
 		}
@@ -133,9 +133,9 @@ public:
 		while(evaluator.betterThan(target_f, eStar) && ((tnow.now()) < timelimit))
 		{
 			unsigned k = 0;
-         cout << "VNS k=0 initial target = " << target_f << " timelimit = " << timelimit << endl;
-         cout << eStar.evaluation() << endl;
-         cout << evaluator.betterThan(target_f, eStar) << endl;
+         //cout << "VNS k=0 initial target = " << target_f << " timelimit = " << timelimit << endl;
+         //cout << eStar.evaluation() << endl;
+         //cout << evaluator.betterThan(target_f, eStar) << endl;
          //cout << evaluator.betterThan(8000, 7962.15) << endl;
 
 			while(k < vshake.size())
@@ -170,6 +170,19 @@ public:
 				k = nc.second;
 			}
 		}
+
+      if (evaluator.betterThan(star.second, sosc.target_f))
+      {
+			cout << "VNS exit by target_f: " << star.second.evaluation() << " better than " << sosc.target_f.evaluation() << endl;
+         cout << "isMin: " << evaluator.isMinimization() << endl;
+      }
+
+      if (((tnow.now()) >= timelimit))
+      {
+			cout << "VNS exit by timelimit: " << timelimit << endl;
+      }
+      
+
 
 		return std::optional<pair<S, XEv>> (star);
 	}

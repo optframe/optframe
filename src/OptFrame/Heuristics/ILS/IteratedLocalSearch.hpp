@@ -153,7 +153,10 @@ public:
 		} while (evaluator.betterThan(stopCriteria.target_f, eStar) && !terminationCondition(*history) && ((tnow.now()) < stopCriteria.timelimit));
 
 		if (evaluator.betterThan(eStar, stopCriteria.target_f))
-			cout << "ILS exit by target_f: " << eStar.evaluation() << " better than " << stopCriteria.target_f << endl;
+      {
+			cout << "ILS exit by target_f: " << eStar.evaluation() << " better than " << stopCriteria.target_f.evaluation() << endl;
+         cout << "isMin: " << evaluator.isMinimization() << endl;
+      }
 
 		//pair<S, Evaluation<>>* pairToReturn = new pair<S, Evaluation<>>(make_pair(std::move(*sStar), std::move(*eStar)));
       

@@ -185,10 +185,12 @@ main(int argc, char** argv)
    soscILS.target_f = EvaluationTSP(0.0);
    //pair<CopySolution<RepTSP>, Evaluation<>>& psol = *ils.search(soscILS, NULL, NULL);
    std::optional<ESolutionTSP> psol = ils.search(soscILS);
+   cout << "finished ILS!" << endl;
    cout << tim.now() << " secs" << endl;
 
    psol->first.print();
    psol->second.print();
+   cout << endl << endl;
 
    // ===========
 
@@ -208,8 +210,12 @@ main(int argc, char** argv)
    BasicVNS<SolutionTSP> vns(eval, random, v_ns, v_nsseq);
    vns.setMessageLevel(3); // INFORMATION
    SOSC soscVNS;
-   soscVNS.timelimit = 0;
+   soscVNS.timelimit = 2; // 2 seconds
    soscVNS.target_f = EvaluationTSP(7550.0);
+
+   // zero is better than any positive value
+   assert(eval.betterThan(EvaluationTSP(0), soscVNS.target_f));
+
    //pair<CopySolution<RepTSP>, Evaluation<>>& psol2 = *vns.search(sosc, NULL, NULL);
    std::optional<ESolutionTSP> psol2 = vns.search(soscVNS);
    psol2->first.print();
