@@ -85,7 +85,11 @@ public:
 			// IMPROVEMENT!
 			pair<S, Evaluation<>> p(s2.clone(), e2.clone());
 			if(Component::information)
+         {
 				cout << "VNS: improvement at NS " << k << " => " << e2.evaluation() << endl;
+            e2.print();
+            eStar.print();
+         }
 			return make_pair(p, 0); // k <- 0
 		}
 		else

@@ -29,7 +29,7 @@ using namespace std;
 
 // Working structure: vector<T>
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
-template<class T, class ADS, BaseSolution<vector<vector<T> >,ADS> S, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS, XBaseSolution<vector<vector<T> >,ADS> S, XEvaluation XEv = Evaluation<>>
 class MoveVRP2Opt: public Move<S, XEv>
 {
 	typedef vector<vector<T> > Routes;
@@ -113,7 +113,7 @@ public:
 };
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRP2Opt<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM>
-template<class T, class ADS, BaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
 class NSIteratorVRP2Opt: public NSIterator<S, XEv>
 {
 	typedef vector<vector<T> > Routes;
@@ -191,7 +191,7 @@ public:
 };
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRP2Opt<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRP2Opt<T, ADS, MOVE, P> >
-template<class T, class ADS, BaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRP2Opt<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRP2Opt<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
 class NSSeqVRP2Opt: public NSSeq<S, XEv>
 {
 	typedef vector<vector<T> > Routes;

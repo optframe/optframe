@@ -17,7 +17,7 @@
 namespace $project
 {
 
-// If you need ADS, you can get it from Solution$project (if subsumed by BaseSolution<R, ADS>)
+// If you need ADS, you can get it from Solution$project (if subsumed by XBaseSolution<R, ADS>)
 class MyEvaluator: public Evaluator<Solution$project>
 {
 private:
@@ -30,7 +30,7 @@ public:
 	
 	virtual ~MyEvaluator();
 
-    // you can replace OptFrameADS with your prefered ADS from inside S (if subsumed by BaseSolution<R, ADS>)
+    // you can replace OptFrameADS with your prefered ADS from inside S (if subsumed by XBaseSolution<R, ADS>)
 	Evaluation<> evaluate(const Solution$project& s) override;
 	
 	virtual bool isMinimization() const override;

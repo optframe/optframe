@@ -286,7 +286,7 @@ public:
    }
 };
 
-template<Representation R, Structure ADS = _ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<Representation R, Structure ADS = _ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>>
 struct _Testing
 {
    S s;

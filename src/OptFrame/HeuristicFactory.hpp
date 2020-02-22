@@ -82,7 +82,7 @@
 namespace optframe
 {
 
-//template<Representation R, Structure ADS = _ADS, BaseSolution<S, XEv> S = CopySolution<S, XEv>, XEvaluation XEv = Evaluation<>>
+//template<Representation R, Structure ADS = _ADS, XBaseSolution<S, XEv> S = CopySolution<S, XEv>, XEvaluation XEv = Evaluation<>>
 //template<class R, class ADS, XSolution S>
 template<XSolution S, XEvaluation XEv = Evaluation<>>
 class HeuristicFactory

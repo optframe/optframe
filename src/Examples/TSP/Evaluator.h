@@ -179,6 +179,7 @@ public:
 
     }
 
+      // TODO: remove this? // maybe only operate on XEv space?
     virtual bool betterThan(evtype f1, evtype f2)
     {
         if (Minimizing)
@@ -187,7 +188,7 @@ public:
             return (f1 > (f2 + TSP_EPSILON));
     }
 
-    virtual bool isMinimization() const
+    virtual bool isMinimization() const override
     {
         return Minimizing;
     }

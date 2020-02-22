@@ -21,16 +21,15 @@
 #ifndef OPTFRAME_EVALUATION_HPP_
 #define OPTFRAME_EVALUATION_HPP_
 
+#include <assert.h>
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
-#include<assert.h>
 
 #include "BaseSolution.h" // TODO: Rename to BaseConcepts.h
 #include "Component.hpp"
-#include "MultiObjValue.hpp"
+#include "MultiObjValue.hpp"  // inserting this beforehand.. who knows!!!
 #include "SingleObjValue.hpp" // basic value 'evtype' comes from here!
-#include "MultiObjValue.hpp" // inserting this beforehand.. who knows!!!
 
 using namespace std;
 
@@ -289,7 +288,6 @@ public:
    }
 };
 
-
 // Weighted and support to lexicographic computation
 // WLxEvaluation: depend on extended_arithmetics (+, - and *)
 template<optframe::extended_arithmetics ObjType = evtype>
@@ -529,61 +527,10 @@ public:
    }
 };
 
-
-
-
-// testing default evaluation
-#ifndef NDEBUG
-
-template<optframe::basic_arithmetics ObjType>
-class TestTArithMO_is_zero2
-{
-   public:
-   ObjType infMeasureX;
-   bool f()
-   {
-      return optframe::numeric_is_zero<ObjType>(infMeasureX);
-   }
-
-   string toString() const
-   {
-      return "";
-   }
-
-   TestTArithMO_is_zero2& clone()
-   {
-      return *this;
-   }
-
-   ObjType evaluation() const
-   {
-      ObjType o;
-      return o;
-   }
-
-};
-
-struct optframe_test_debug_testev_evaluation_disable_runtime
-{
-   // test if following structure is valid
-   TestEv<Evaluation<double>> test_double;
-   TestEv<Evaluation<int>> test_int;
-   TestEv<Evaluation<>> test_default;
-   TestEv<Evaluation<SingleObjValue>> test_sov; // single obj value
-   TestEv<TestTArithMO_is_zero<MultiObjValue<int, double>>> Tmo;
-   TestEv<TestTArithMO_is_zero2<MultiObjValue<int, double>>> Tmo2;
-   TestEv<Evaluation<MultiObjValue<int, double>>> test_mov; // multi obj value
-   
-};
-#endif
-
-#ifndef NDEBUG
-struct optframe_debug_test_evaluation
-{
-   Evaluation<> testEvaluation;
-};
-#endif
-
 } // namespace optframe
+
+// Compilation tests for XEvaluation concepts
+// These are NOT unit tests... Unit Tests are on tests/ folder
+#include "Evaluation.test.hpp"
 
 #endif /*OPTFRAME_EVALUATION_HPP_*/

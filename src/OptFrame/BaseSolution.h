@@ -77,8 +77,7 @@ concept bool HasGetADS = requires(S a)
 };
 
 template <class S, Representation R, Structure ADS = _ADS>
-//concept bool BaseSolution = HasGetR<S, R> &&HasGetADS<S, ADS> && XSolution<S>;
-concept bool BaseSolution = HasGetR<S, R> &&HasGetADS<S, ADS> && XSolution<S>;
+concept bool XBaseSolution = HasGetR<S, R> &&HasGetADS<S, ADS> && XSolution<S>;
 
 
 template <class Self, Representation R>
@@ -149,7 +148,7 @@ struct IsSolution
 };
 
 // test BaseSolution concept
-template<BaseSolution<double> S>
+template<XBaseSolution<double> S>
 class TestBaseSol
 {
 public:

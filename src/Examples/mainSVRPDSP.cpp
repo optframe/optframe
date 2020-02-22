@@ -23,7 +23,7 @@ using namespace std;
 using namespace optframe;
 using namespace SVRPDSP;
 
-template<class R = int, class ADS = nullptr_t, BaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<class R = int, class ADS = nullptr_t, XBaseSolution<R,ADS> S = CopySolution<R,ADS>>
 class Teste
 {
    public: 

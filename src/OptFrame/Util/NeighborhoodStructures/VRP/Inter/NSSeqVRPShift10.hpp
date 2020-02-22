@@ -29,8 +29,8 @@
 using namespace std;
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
-//class ADS, BaseSolution<vector<vector<T> >,ADS> S, class MOVE = MoveTSP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSP2Opt<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<vector<T> >,ADS> S = CopySolution<vector<vector<T>>,ADS>, XEvaluation XEv = Evaluation<>>
+//class ADS, XBaseSolution<vector<vector<T> >,ADS> S, class MOVE = MoveTSP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSP2Opt<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<vector<T> >,ADS> S = CopySolution<vector<vector<T>>,ADS>, XEvaluation XEv = Evaluation<>>
 class MoveVRPShift10: public Move<S, XEv>//Move<vector<vector<T> > , ADS>
 {
 	using Routes = vector<vector<T> >;
@@ -117,7 +117,7 @@ public:
 };
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPShift10<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM>
-template<class T, class ADS, BaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPShift10<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPShift10<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
 class NSIteratorVRPShift10: public NSIterator<S, XEv>//NSIterator<vector<vector<T> > , ADS>
 {
 
@@ -208,7 +208,7 @@ public:
 };
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPShift10<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPShift10<T, ADS, MOVE, P> >
-template<class T, class ADS, BaseSolution<vector<vector<T> >,ADS> S, class MOVE = MoveVRPShift10<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPShift10<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS, XBaseSolution<vector<vector<T> >,ADS> S, class MOVE = MoveVRPShift10<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPShift10<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
 class NSSeqVRPShift10: public NSSeq<S, XEv>
 {
 

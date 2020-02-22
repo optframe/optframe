@@ -33,7 +33,7 @@
 using namespace std;
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<vector<T> >,ADS> S = CopySolution<vector<vector<T>>,ADS>, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<vector<T> >,ADS> S = CopySolution<vector<vector<T>>,ADS>, XEvaluation XEv = Evaluation<>>
 class MoveVRPSwap1_1: public Move<S, XEv>
 {
 	typedef vector<vector<T> > Routes;
@@ -112,7 +112,7 @@ public:
 };
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPSwap1_1<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM>
-template<class T, class ADS, BaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPSwap1_1<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPSwap1_1<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
 class NSIteratorVRPSwap1_1: public NSIterator<S, XEv>
 {
 
@@ -189,7 +189,7 @@ public:
 };
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPSwap1_1<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPSwap1_1<T, ADS, MOVE, P> >
-template<class T, class ADS, BaseSolution<vector<vector<T> >,ADS> S, class MOVE = MoveVRPSwap1_1<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPSwap1_1<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS, XBaseSolution<vector<vector<T> >,ADS> S, class MOVE = MoveVRPSwap1_1<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPSwap1_1<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
 class NSSeqVRPSwap1_1: public NSSeq<S, XEv>
 {
 

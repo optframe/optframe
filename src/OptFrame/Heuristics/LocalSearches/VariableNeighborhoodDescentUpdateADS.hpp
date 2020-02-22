@@ -29,8 +29,8 @@
 
 namespace optframe {
 
-//template<Representation R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-template<Representation R, class ADS, BaseSolution<R,ADS> S, XEvaluation XEv = Evaluation<>>
+//template<Representation R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<Representation R, class ADS, XBaseSolution<R,ADS> S, XEvaluation XEv = Evaluation<>>
 class VariableNeighborhoodDescentUpdateADS : public LocalSearch<S, XEv>
 {
 private:
@@ -138,9 +138,9 @@ public:
 };
 
 ///template<XSolution S, XEvaluation XEv = Evaluation<>>
-//template<Representation R, class ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+//template<Representation R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 // passing 'S' manually, for safety
-template<Representation R, class ADS, BaseSolution<R,ADS> S, XEvaluation XEv = Evaluation<>>
+template<Representation R, class ADS, XBaseSolution<R,ADS> S, XEvaluation XEv = Evaluation<>>
 class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<S, XEv>
 {
 public:

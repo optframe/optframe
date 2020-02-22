@@ -140,7 +140,6 @@ main(int argc, char** argv)
 
    cout << "end BRKGA tests" << endl;
 
-   return 0;
 
    // TODO: return after refactor on Concepts and OptFrame v4
    /*

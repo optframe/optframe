@@ -84,7 +84,7 @@ public:
 //template<XSolution S, XEvaluation XEv = Evaluation<>>
 //concept SolEv;
 
-//template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+//template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 // if replacing types directly (no templates), concept deduction cannot appear in virtual functions. So, we need templates.
 template<XSolution S, XEvaluation XEv = Evaluation<>>
 class SingleObjSearch : public Component
@@ -143,7 +143,7 @@ public:
    }
 };
 
-//template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+//template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 template<XSolution S, XEvaluation XEv = Evaluation<>>
 class SingleObjSearchBuilder : public ComponentBuilder<S, XEv>
 {
@@ -176,7 +176,7 @@ public:
    }
 };
 
-//template<class R, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+//template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 template<XSolution S, XEvaluation XEv = Evaluation<>>
 class SingleObjSearchAction : public Action<S, XEv>
 {

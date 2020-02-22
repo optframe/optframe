@@ -43,6 +43,8 @@ using namespace scannerpp;
 namespace optframe
 {
 
+// Direction 'betterThan' depends on a 'totally_ordered' type
+////template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
 class Direction: public Component
 {
 protected:
@@ -264,6 +266,8 @@ public:
 
 };
 
+//template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
+//class Minimization: public Direction<ObjType, XEv>
 class Minimization: public Direction
 {
 public:
@@ -285,6 +289,8 @@ public:
 	}
 };
 
+//template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
+//class Maximization: public Direction<ObjType, XEv>
 class Maximization: public Direction
 {
 public:

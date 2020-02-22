@@ -55,6 +55,7 @@ namespace optframe {
 
 // TODO: use XEv here
 template<XSolution S, XEvaluation XEv = Evaluation<>>
+//class Evaluator : public Direction<XEv>
 class Evaluator : public Direction
 {
 

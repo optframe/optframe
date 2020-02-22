@@ -31,7 +31,7 @@ using namespace std;
 namespace optframe
 {
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, BaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, XEvaluation XEv = Evaluation<>>
 class MoveTSPSwap : public Move<S, XEv>
 {
    typedef vector<T> Route;
