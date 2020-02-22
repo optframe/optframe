@@ -99,9 +99,14 @@ public:
 //		vev.push_back(ev.clone());
 //	}
 
-	void addEvaluation(Evaluation<> ev)
+	void addEvaluation(Evaluation<>& ev)
 	{
 		vev.push_back(ev);
+	}
+
+	void addEvaluation(Evaluation<>&& ev)
+	{
+		vev.push_back(std::move(ev));
 	}
 
 	unsigned size() const
@@ -124,12 +129,12 @@ public:
 		return vev[index];
 	}
 
-	Evaluation<> operator[](unsigned index)
+	Evaluation<>& operator[](unsigned index)
 	{
 		return vev[index];
 	}
 
-	const Evaluation<> operator[](unsigned index) const
+	const Evaluation<>& operator[](unsigned index) const
 	{
 		return vev[index];
 	}

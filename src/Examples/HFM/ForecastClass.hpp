@@ -334,7 +334,7 @@ public:
 
    std::optional<pair<SolutionHFM, Evaluation<>>> runGRASP(int timeGRASP, int nSol)
    {
-      SOSC* stopCriteria = new SOSC(timeGRASP);
+      SOSC<>* stopCriteria = new SOSC<>(timeGRASP);
       std::optional<pair<SolutionHFM, Evaluation<>>> finalSol = std::nullopt;
       delete stopCriteria;
       //		BasicGRASP<RepEFP> g(*eval, *c, emptyLS, 0.1, nSol);
@@ -352,7 +352,7 @@ public:
       double targetValue = 3.879748973;
       targetValue = 0;
 
-      SOSC* stopCriteria = new SOSC(timeES, targetValue);   
+      SOSC<>* stopCriteria = new SOSC<>(timeES, Evaluation<>(targetValue));   
       pair<SolutionHFM, Evaluation<>> finalSol = *es->search(*stopCriteria);
       delete stopCriteria;
       //finalSol = EsCOpt->search(timeES); //Continous ES -- Deprecated
@@ -385,7 +385,7 @@ public:
       std::optional<pair<SolutionHFM, Evaluation<>>> finalSol = std::nullopt;
       SOSC stopCriteria;
       stopCriteria.timelimit = timeILS;
-      stopCriteria.target_f = 0;
+      //stopCriteria.target_f(Evaluation<>(0));
       ils->setMessageLevel(3);
       if (timeILS > 0)
          finalSol = ils->search(stopCriteria);

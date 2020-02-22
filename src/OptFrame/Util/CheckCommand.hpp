@@ -368,7 +368,7 @@ public:
 			// ==============
 			// fasterCost
 			Timer tMoveCostApplyDelta;
-			Evaluation<> evBeginFasterCost = e;
+			Evaluation<> evBeginFasterCost(e);
 			Move<S>& rev1 = *lEvaluator[ev]->applyMoveReevaluate(e, move, s);
 			evtype e_end1 = e.evaluation();
 			// TODO: check outdated status

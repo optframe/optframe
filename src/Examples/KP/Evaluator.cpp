@@ -30,7 +30,7 @@ Evaluation<> MyEvaluator::evaluate(const SolutionKP& s)
 // penalizamos excesso na mochila por um fator de -1000000, ou seja, permitimos que soluções inviáveis sejam representadas, mas terão uma avaliação desinteressante         
 
     // armazenamos a avaliação (viável e inviável) em um objeto Evaluation
-    return * new Evaluation<>(fo, fo_inv);
+    return Evaluation<>(fo, fo_inv);
 }
 
 

@@ -342,9 +342,9 @@ public:
    //void competition(NGESPopulation& pop, NGESPopulation& offsprings, S& sStar, Evaluation<>& eStar, int& iterWithoutImprovement, const int& gCurrent, int selectionType)
    void competition(NGESPopulation& pop, NGESPopulation& offsprings, pair<S, XEv>& star, int& iterWithoutImprovement, const int& gCurrent, int selectionType)
    {
-      cout << "competition!" << endl;
-      cout << "OFFSPRINGS:" << endl;
-      printPop(offsprings);
+      //cout << "competition!" << endl;
+      //cout << "OFFSPRINGS:" << endl;
+      //printPop(offsprings);
 
       if (selectionType == 1) {
          offsprings.reserve(offsprings.size() + ngesParams.mi);
@@ -354,6 +354,7 @@ public:
 
       //auto compInd = [&](NGESInd<S, XEv>* indA, NGESInd<S, XEv>* indB) -> bool {
       auto compInd = [&](const shared_ptr<NGESInd<S, XEv>>& indA, const shared_ptr<NGESInd<S, XEv>>& indB) -> bool {
+         /*
          cout << "PRINT!!" << endl;
          cout << "getting elements:" << endl;
          assert(indA);
@@ -365,6 +366,7 @@ public:
          cout << "got B" << endl;
          //indB->getEv().print();
          eb.getEv().print();
+         */
          return eval.betterThan(indA->getEv(), indB->getEv()); 
          // TODO: fix bug here
       };
@@ -387,7 +389,7 @@ public:
       for (int i = 0; i < ngesParams.lambda; i++)
          offsprings[i + ngesParams.mi] = nullptr;
 
-      Evaluation<> evBest = pop[0]->getEv().evaluation();
+      Evaluation<> evBest { pop[0]->getEv() };
 
       //if (eval.betterThan(evBest, eStar)) {
       if (eval.betterThan(evBest, star.second)) {
@@ -508,7 +510,7 @@ public:
 
       iterWithoutImprovement = 0;
       //while ((iterWithoutImprovement < ngesParams.gMaxWithoutImprovement) && ((tnow.now()) < stopCriteria.timelimit) && eval.betterThan(stopCriteria.target_f, (double)eStar->evaluation())) {
-      while ((iterWithoutImprovement < ngesParams.gMaxWithoutImprovement) && ((tnow.now()) < stopCriteria.timelimit) && eval.betterThan(stopCriteria.target_f, (double)star->second.evaluation())) {
+      while ((iterWithoutImprovement < ngesParams.gMaxWithoutImprovement) && ((tnow.now()) < stopCriteria.timelimit) && eval.betterThan(stopCriteria.target_f, star->second)) {
          NGESPopulation popOffsprings(ngesParams.lambda, nullptr);
          double fo_filhos = 0;
 

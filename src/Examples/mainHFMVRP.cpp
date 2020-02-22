@@ -141,7 +141,7 @@ main(int argc, char** argv)
    vNSeq.push_back(nsseq_deltaIterator_swap11);
    vNSeq.push_back(nsseq_deltaIterator_shift10);
 
-   SOSC soscGR(10, 0);
+   SOSC<> soscGR(10, Evaluation<>(0)); // target zero and 10 seconds
    pair<SolutionHFMVRP, Evaluation<>> initialPairGrasp = *basicGrasp.search(soscGR);
 
    CloneConstructive<SolutionHFMVRP> cloneSolAsConstructive(initialPairGrasp.first);

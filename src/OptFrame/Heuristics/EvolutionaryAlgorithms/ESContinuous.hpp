@@ -180,7 +180,9 @@ public:
 		//	cout<<v[i].second<<endl;
 		//getchar();
 
-		if (eval.betterThan(fo, eStar->evaluation()))
+      Evaluation<> efo(fo);
+
+		if (eval.betterThan(efo, *eStar))
 		{
 			delete eStar;
 			delete sStar;
@@ -302,7 +304,7 @@ public:
 			}
 			else
 			{
-				if (eval.betterThan(e.evaluation(), eStar->evaluation()))
+				if (eval.betterThan(e, *eStar))
 				{
 					delete eStar;
 					delete sStar;
@@ -326,7 +328,7 @@ public:
 		//double sumEval = 0;
 		//int counter = 1;
 
-		while ((iterSemMelhora < gMax) && ((tnow.now()) < stopCriteria.timelimit) && eval.betterThan(stopCriteria.target_f, eStar->evaluation()))
+		while ((iterSemMelhora < gMax) && ((tnow.now()) < stopCriteria.timelimit) && eval.betterThan(stopCriteria.target_f, *eStar))
 		{
 			//cout << "gAtual = " << gAtual << endl;
 			//getchar();

@@ -116,7 +116,7 @@ public:
 		MultiEvaluation<> nev;
 		for (unsigned i = 0; i < sngEvaluators.size(); i++)
 		{
-			Evaluation<> ev = sngEvaluators[i]->evaluate(s);
+			Evaluation<> ev {sngEvaluators[i]->evaluate(s)};
 			nev.addEvaluation(ev);
 		}
 
@@ -134,9 +134,13 @@ public:
 	{
 		for (unsigned i = 0; i < sngEvaluators.size(); i++)
 		{
-			Evaluation<> e = std::move(mev[i]);
+			//Evaluation<> e { std::move(mev[i]) }; // TODO (IGOR): why move????
+			//sngEvaluators[i]->reevaluate(e, s);
+			//mev[i] = std::move(e);
+         //
+         Evaluation<>& e = mev[i]; 
 			sngEvaluators[i]->reevaluate(e, s);
-			mev[i] = std::move(e);
+			//mev[i] = std::move(e);
 		}
 	}
 

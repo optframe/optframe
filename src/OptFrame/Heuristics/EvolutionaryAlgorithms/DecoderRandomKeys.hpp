@@ -157,7 +157,7 @@ public:
       Evaluation<> e = ev.evaluate(sev);
 
       // you have the option to actually return a Solution<vector<bool>> for post-decoding purposes
-      return pair<Evaluation<>&, XRS*>(e, nullptr);
+      return pair<Evaluation<>, XRS*>(e, nullptr);
    }
 
    virtual bool isMinimization() const
