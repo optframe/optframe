@@ -252,7 +252,7 @@ public:
      
      //return std::optional<pair<XRS, XEv>>(make_pair(finalSol, e)); 
      star = make_optional(make_pair(finalSol, e));
-     return SearchStatus::UNKNOWN;
+     return SearchStatus::VALID_SOL;
    }
 };
 }

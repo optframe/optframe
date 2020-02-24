@@ -71,7 +71,7 @@ public:
 
       //return make_optional(make_pair(*s, e));
       star = make_optional(make_pair(*s, e));
-      return SearchStatus::UNKNOWN;
+      return SearchStatus::VALID_SOL;
    }
 
    virtual bool compatible(string s)

@@ -54,7 +54,7 @@ enum class SearchStatus : int
    //NO_CHANGE = 0x00, 
    NO_NEWSOL = 0x00, // no (new) solution found on search
    // general flag
-   UNKNOWN  = 0x01,  // VALID_SOLUTION (?) nothing interesting to say...
+   VALID_SOL  = 0x01,  // VALID_SOLUTION (?) nothing interesting to say...
    // improvement flag
    IMPROVEMENT = 0x02,
    // stop criteria (general)

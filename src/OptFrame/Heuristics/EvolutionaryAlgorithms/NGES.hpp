@@ -635,7 +635,7 @@ public:
       ////return pairToReturn;
       //return make_optional(make_pair(*sStar, *eStar)); // TODO: fix leak
       ///return star;
-      return SearchStatus::UNKNOWN;
+      return SearchStatus::VALID_SOL;
    }
 
    static string idComponent()

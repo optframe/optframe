@@ -185,7 +185,7 @@ public:
       }
 
 		//return std::optional<pair<S, XEv>> (star);
-      return SearchStatus::UNKNOWN;
+      return SearchStatus::VALID_SOL;
 	}
 
 	static string idComponent()

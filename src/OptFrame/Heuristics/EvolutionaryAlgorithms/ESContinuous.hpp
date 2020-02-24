@@ -430,7 +430,7 @@ public:
 		//return new pair<S, Evaluation<>>(s, e);
       //return make_optional(make_pair(*sStar, *eStar)); // fix: leak
       star = make_optional(make_pair(*sStar, *eStar)); // fix: leak
-      return SearchStatus::UNKNOWN;
+      return SearchStatus::VALID_SOL;
 	}
 
 	static string idComponent()
