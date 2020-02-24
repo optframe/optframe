@@ -442,7 +442,8 @@ public:
 
    //virtual pair<S, Evaluation<>>* search(SOSC<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) = 0;
    //pair<S, Evaluation<>>* search(SOSC<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-   std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) override
+   //std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) override
+   SearchStatus search(std::optional<pair<S, XEv>>& star, SOSC<XEv>& stopCriteria) override
    {
       Timer tnow;
       NGESPopulation pop;
@@ -450,7 +451,7 @@ public:
 
       //S* sStar = nullptr;
       //Evaluation<>* eStar = nullptr;
-      std::optional<pair<S, XEv>> star = std::nullopt;
+      ////std::optional<pair<S, XEv>> star = std::nullopt;
 
       int iterWithoutImprovement = 0, gCurrent = 0;
 
@@ -633,7 +634,8 @@ public:
       ////delete eStar;
       ////return pairToReturn;
       //return make_optional(make_pair(*sStar, *eStar)); // TODO: fix leak
-      return star;
+      ///return star;
+      return SearchStatus::UNKNOWN;
    }
 
    static string idComponent()

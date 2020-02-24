@@ -112,7 +112,8 @@ public:
    }
 
 	//pair<S, Evaluation<>>* search(SOSC<XEv>& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
-   virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& sosc) override
+   //virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& sosc) override
+   SearchStatus search(std::optional<pair<S, XEv>>& star, SOSC<XEv>& sosc) override
 	{
       double timelimit = sosc.timelimit;
       XEv target_f(sosc.target_f);
@@ -123,9 +124,10 @@ public:
 		//S& sStar = *constructive.generateSolution(sosc.timelimit);
 		//Evaluation<>   eStar = evaluator.evaluate(sStar);
       //pair<S, XEv> star = input?*input:genPair(sosc.timelimit); // elvis
-      pair<S, XEv> star = genPair(sosc.timelimit);
-      S& sStar = star.first;
-		Evaluation<>& eStar = star.second;
+      star = star?:genPair(sosc.timelimit);
+      //
+      S& sStar = star->first;
+		Evaluation<>& eStar = star->second;
 
 		if(Component::information)
 			cout << "VNS starts: " << eStar.evaluation() << endl;
@@ -140,7 +142,7 @@ public:
 
 			while(k < vshake.size())
 			{
-            pair<S, XEv> p1 = star; // copy (how to automatically invoke clone?)
+            pair<S, XEv> p1 = *star; // copy (how to automatically invoke clone?)
 				////S& s = *new S(sStar); // implicit clone on copy constructor
 				////Evaluation<>&   e = eStar.clone();
 
@@ -152,7 +154,7 @@ public:
    
 				delete& improve; // save trajectory history?
 
-				pair<pair<S, XEv>, unsigned int> nc = neighborhoodChange(star, p1, k);
+				pair<pair<S, XEv>, unsigned int> nc = neighborhoodChange(*star, p1, k);
 
 				sStar = nc.first.first;  // TODO: move?
 				eStar = nc.first.second; // TODO: move?
@@ -171,9 +173,9 @@ public:
 			}
 		}
 
-      if (evaluator.betterThan(star.second, sosc.target_f))
+      if (evaluator.betterThan(star->second, sosc.target_f))
       {
-			cout << "VNS exit by target_f: " << star.second.evaluation() << " better than " << sosc.target_f.evaluation() << endl;
+			cout << "VNS exit by target_f: " << star->second.evaluation() << " better than " << sosc.target_f.evaluation() << endl;
          cout << "isMin: " << evaluator.isMinimization() << endl;
       }
 
@@ -181,10 +183,9 @@ public:
       {
 			cout << "VNS exit by timelimit: " << timelimit << endl;
       }
-      
 
-
-		return std::optional<pair<S, XEv>> (star);
+		//return std::optional<pair<S, XEv>> (star);
+      return SearchStatus::UNKNOWN;
 	}
 
 	static string idComponent()

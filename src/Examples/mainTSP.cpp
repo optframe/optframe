@@ -135,7 +135,8 @@ main(int argc, char** argv)
 
    //pair<SolutionTSP, Evaluation<>>* r2 = brkga.search(sosc);
    
-   std::optional<ESolutionTSP> r2 = brkga.search(sosc);
+   std::optional<ESolutionTSP> r2 = std::nullopt;
+   auto sflag = brkga.search(r2, sosc);
    //virtual std::optional<pair<XRS, XEv>> search(SOSC<XEv>& stopCriteria, const std::optional<pair<XRS, XEv>> input)
    r2->first.print();
    r2->second.print();
@@ -184,7 +185,8 @@ main(int argc, char** argv)
    soscILS.timelimit = 3; // 1000
    soscILS.target_f = EvaluationTSP(0.0);
    //pair<CopySolution<RepTSP>, Evaluation<>>& psol = *ils.search(soscILS, NULL, NULL);
-   std::optional<ESolutionTSP> psol = ils.search(soscILS);
+   std::optional<ESolutionTSP> psol = std::nullopt;
+   auto sflag2 = ils.search(psol, soscILS);
    cout << "finished ILS!" << endl;
    cout << tim.now() << " secs" << endl;
 
@@ -217,7 +219,8 @@ main(int argc, char** argv)
    assert(eval.betterThan(EvaluationTSP(0), soscVNS.target_f));
 
    //pair<CopySolution<RepTSP>, Evaluation<>>& psol2 = *vns.search(sosc, NULL, NULL);
-   std::optional<ESolutionTSP> psol2 = vns.search(soscVNS);
+   std::optional<ESolutionTSP> psol2 = std::nullopt;
+   auto sflag3 = vns.search(psol2, soscVNS);
    psol2->first.print();
    psol2->second.print();
 

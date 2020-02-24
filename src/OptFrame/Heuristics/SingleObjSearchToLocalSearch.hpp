@@ -66,7 +66,9 @@ public:
       // maybe ALL SingleObjSearch should inherit from LocalSearch!
       // maybe 'LocalSearch' should become 'Search', and 'SingleObjSearch' -> 'GlobalSearch'... must think!
 
-      std::optional<pair<S, XEv>> r = sios.search(sosc);
+      std::optional<pair<S, XEv>> r = make_optional(se);
+      //auto sflag = sios.search(r, sosc);
+      sios.search(r, sosc); // TODO: store flag and return
 
       if (r) {
          s = r->first;

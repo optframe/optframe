@@ -265,7 +265,8 @@ public:
 		ls.searchFrom(se, stopCriteria);
 	}
 
-	std::optional<pair<S, Evaluation<>>> search(SOSC<XEv>& stopCriteria) override
+	//std::optional<pair<S, Evaluation<>>> search(SOSC<XEv>& stopCriteria) override
+   SearchStatus search(std::optional<pair<S, XEv>>& star, SOSC<XEv>& stopCriteria) override
 	{
 		cout << "ES search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
@@ -427,7 +428,9 @@ public:
 		//delete sStar;
 
 		//return new pair<S, Evaluation<>>(s, e);
-      return make_optional(make_pair(*sStar, *eStar)); // fix: leak
+      //return make_optional(make_pair(*sStar, *eStar)); // fix: leak
+      star = make_optional(make_pair(*sStar, *eStar)); // fix: leak
+      return SearchStatus::UNKNOWN;
 	}
 
 	static string idComponent()

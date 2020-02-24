@@ -88,6 +88,7 @@ public:
    // keeping only this method, for simplification
    // 2
    //virtual void exec(pair<S, XEv>& se, SOSC<XEv>& stopCriteria) = 0;
+   // TODO: return SearchStatus
    virtual void searchFrom(pair<S, XEv>& se, SOSC<XEv>& stopCriteria) = 0;
    // TODO: perhaps return 'bool' or FLAG indicating possible changes on solution (UNKNOWN, CHANGED, NOCHANGE, IMPROVED, ...)
 

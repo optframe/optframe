@@ -72,7 +72,8 @@ public:
    }
 
 	//pair<S, Evaluation<>>* search(SOSC<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-   virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) override
+   //virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) override
+   SearchStatus search(std::optional<pair<S, XEv>>& star, SOSC<XEv>& stopCriteria) override
 	{
 		cout << "ILS opt search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
@@ -80,9 +81,11 @@ public:
 
       //pair<S, XEv> star = input?*input:genPair(stopCriteria.timelimit);
       //pair<S, XEv> star = *( input ?: genOPair(stopCriteria.timelimit) );
-      pair<S, XEv> star = *genOPair(stopCriteria.timelimit);
+      star = star?:genOPair(stopCriteria.timelimit);
+      if(!star)
+         return SearchStatus::NO_NEWSOL;
 		//S& sStar = star.first;
-		Evaluation<>& eStar = star.second;
+		Evaluation<>& eStar = star->second;
 
       /*
 		//If solution is given it should contain an evaluation: TODO - Implement search with Solution
@@ -115,7 +118,7 @@ public:
 			cout << "ILS::performing first local search" << endl;
 		SOSC stopCriteriaLS = stopCriteria;
 		stopCriteriaLS.updateTimeLimit(tnow.now());
-		localSearch(star, stopCriteriaLS);
+		localSearch(*star, stopCriteriaLS);
 		if (Component::information)
 			cout << "ILS::finished first local search" << endl;
 
@@ -124,7 +127,7 @@ public:
 
 		do
 		{
-         pair<S, XEv> p1 = star; // copy (how to automatically invoke clone?)
+         pair<S, XEv> p1 = *star; // copy (how to automatically invoke clone?)
 			//S s1(sStar); // copy (should clone?)
 			//Evaluation<> e1(eStar); // copy (should clone?)
          
@@ -140,7 +143,7 @@ public:
 			//(*eStar) = evaluator.evaluate(*sStar);
 
 			//bool improvement = acceptanceCriterion(e1, *eStar, *history);
-         bool improvement = acceptanceCriterion(p1.second, star.second, *history);
+         bool improvement = acceptanceCriterion(p1.second, star->second, *history);
 
 			if (improvement)
 			{
@@ -166,7 +169,8 @@ public:
 		delete history; // why do we need this?
 
 		//return std::optional<pair<S,XEv>>(*pairToReturn); // TODO: prevent loss
-      return std::optional<pair<S,XEv>>(star);
+      //return std::optional<pair<S,XEv>>(star);
+      return SearchStatus::UNKNOWN;
 	}
 
 	static string idComponent()

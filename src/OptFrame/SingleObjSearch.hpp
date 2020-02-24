@@ -47,6 +47,32 @@ namespace optframe {
 
 // SOSC: Single Objective Stop Criteria (target evaluation and time)
 
+enum class SearchStatus : int 
+{
+   // better to keep a single flag '0x00' that indicates nothing good happened (no evolution)
+   // it means: no improvement on current solution or no valid/feasible solution found
+   //NO_CHANGE = 0x00, 
+   NO_NEWSOL = 0x00, // no (new) solution found on search
+   // general flag
+   UNKNOWN  = 0x01,  // VALID_SOLUTION (?) nothing interesting to say...
+   // improvement flag
+   IMPROVEMENT = 0x02,
+   // stop criteria (general)
+   STOP_BY_TIME = 0x04,  // stop by timelimit
+   STOP_BY_TARGET = 0x08, // stop by target value
+   STOP_BY_PARAM = 0x10, // stop by specific method parameter
+   //STOP_BY_MEMORY = 0x20, // stop by memory (useful for branch&bound and other enumeration techniques)
+
+   // other flags (OPTIMALITY CONDITIONS)
+   // local optima
+   // global optima
+   // ... LOWER_BOUND / UPPER_BOUND ? How to allow represent only evaluation and not include solution? TODO (IGOR): think... maybe some specific BoundSearch or RelaxationSearch ??.. 
+   // ... sometimes, good also to result solution, and approximation value provided (ApproxSearch) approximative search (route + value + ~1.5 bound)
+   // ... finally, maybe good to add Bound to input/output search format... return bound value or approximation in other param (with empty solution)
+   LOCAL_OPT = 0x40, // local optimum
+   GLOBAL_OPT = 0x80 // global optimum
+};
+
 template<XEvaluation XEv = Evaluation<>>
 class SOSC final : public Component
 {
@@ -135,7 +161,8 @@ public:
    // search method try to find a feasible solution within timelimit, if there is no such solution it returns nullptr.
    //virtual pair<S, XEv>* search(SOSC<XEv>& stopCriteria, const S* _s = nullptr, const XEv* _e = nullptr) = 0;
    //virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria, const std::optional<pair<S, XEv>> input = std::nullopt) = 0;
-   virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) = 0;
+   //virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) = 0;
+   virtual SearchStatus search(std::optional<pair<S, XEv>>& inputOutput, SOSC<XEv>& stopCriteria) = 0;
 
    virtual string log() const
    {

@@ -66,15 +66,18 @@ public:
 	}
 
    // TODO: make optional and consider input too (SingleObjSearch helper class)
+   /*
    pair<S, XEv> genPair(double timelimit)
    {
       std::optional<S> sStar = constructive.generateSolution(timelimit);
 		XEv eStar = evaluator.evaluate(*sStar);
       return make_pair(*sStar, eStar); 
    }
+   */
 
 	//pair<S, Evaluation<>>* search(SOSC<XEv>& stopCriteria, const S* _s = nullptr,  const Evaluation<>* _e = nullptr)
-   virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) override
+   //virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) override
+   SearchStatus search(std::optional<pair<S, XEv>>& star, SOSC<XEv>& stopCriteria) override
 	{
 		double timelimit = stopCriteria.timelimit;
 		XEv target_f(stopCriteria.target_f);
@@ -83,8 +86,14 @@ public:
 		Timer tnow;
 
 		// TODO: verify 's' and 'input'
-		pair<S, XEv> se = genPair(timelimit);
+		//pair<S, XEv> se = genPair(timelimit);
+      if(!star)
+         star = SingleObjSearch<S, XEv>::genPair(constructive, evaluator, timelimit);
+      if(!star)
+         return SearchStatus::NO_NEWSOL; // no possibility to continue.
       
+      pair<S, XEv> se = *star; // copy (implicit cloning guaranteed??)
+      //
       S& s = se.first;
       XEv& e = se.second;
       //
@@ -92,12 +101,12 @@ public:
 		double T = Ti;
 		int iterT = 0;
 
-      pair<S, XEv> star = se; // copy (implicit cloning guaranteed??)
+      //pair<S, XEv> star = se; // copy (implicit cloning guaranteed??)
       //
 		////S* sStar = &s.clone();
       //S& sStar = star.first;
 		////Evaluation<>* eStar = &e.clone();
-      XEv& eStar = star.second;
+      XEv& eStar = star->second;
 
       // TODO: freezing parameter should be passed somewhere
 		while ((T > 0.000001) && (tnow.now() < timelimit))
@@ -140,7 +149,7 @@ public:
 						//sStar = &s.clone();
 						//delete eStar;
 						//eStar = &e.clone();
-                  star = se;
+                  star = make_optional(se);
 
 						cout << "Best fo: " << e.evaluation() << " Found on Iter = " << iterT << " and T = " << T;
 						cout << endl;
@@ -181,7 +190,9 @@ public:
 		//delete eStar;
 
 		//return new pair<S, Evaluation<>> (s, e);
-      return make_optional(star);
+      //
+      //return make_optional(star);
+      return SearchStatus::UNKNOWN;
 	}
 
 	virtual string id() const

@@ -53,7 +53,8 @@ public:
    }
 
    //pair<S, Evaluation<>>* search(SOSC<XEv>& sosc, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-   virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& sosc) override
+   //virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& sosc) override
+   SearchStatus search(std::optional<pair<S, XEv>>& star, SOSC<XEv>& sosc) override
    {
       //cout << "SimpleLocalSearch search(" << target_f << "," << timelimit << ")" << endl;
 
@@ -61,14 +62,16 @@ public:
 
       std::optional<S> s = constructive.generateSolution(sosc.timelimit);
       if(!s)
-         return std::nullopt; // nothing to return
+         return SearchStatus::NO_NEWSOL; // nothing to return
       Evaluation<> e = evaluator.evaluate(*s);
 
       ////pair<S&, Evaluation<>&>& p = localSearch.search(s, e, sosc);
 
       //delete &s;
 
-      return make_optional(make_pair(*s, e));
+      //return make_optional(make_pair(*s, e));
+      star = make_optional(make_pair(*s, e));
+      return SearchStatus::UNKNOWN;
    }
 
    virtual bool compatible(string s)

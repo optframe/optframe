@@ -352,9 +352,11 @@ public:
       double targetValue = 3.879748973;
       targetValue = 0;
 
-      SOSC<>* stopCriteria = new SOSC<>(timeES, Evaluation<>(targetValue));   
-      pair<SolutionHFM, Evaluation<>> finalSol = *es->search(*stopCriteria);
-      delete stopCriteria;
+      SOSC<> stopCriteria(timeES, Evaluation<>(targetValue));   
+      std::optional<pair<SolutionHFM, Evaluation<>>> finalSol;
+      //auto sflag = es->search(finalSol, stopCriteria);
+      es->search(finalSol, stopCriteria);
+      
       //finalSol = EsCOpt->search(timeES); //Continous ES -- Deprecated
 
       //		vnd->setMessageLevel(3);
@@ -367,7 +369,7 @@ public:
       //		if (timeILS > 0)
       //			finalSol = ils->search(timeILS, 0, &solVND, &evaluationVND);
 
-      return make_optional(finalSol);
+      return finalSol;
    }
 
    std::optional<pair<SolutionHFM, Evaluation<>>> runGILS(int timeGRASP, int timeILS)
@@ -388,7 +390,7 @@ public:
       //stopCriteria.target_f(Evaluation<>(0));
       ils->setMessageLevel(3);
       if (timeILS > 0)
-         finalSol = ils->search(stopCriteria);
+         ils->search(finalSol, stopCriteria);
       //		finalSol = ils->search(stopCriteria, &solGRASP, &evaluationGrasp);
 
       return finalSol;

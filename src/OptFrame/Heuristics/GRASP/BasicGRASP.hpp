@@ -68,7 +68,8 @@ public:
 
 
 	//pair<S, Evaluation<>>* search(SOSC<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-   virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) override
+   //virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) override
+   SearchStatus search(std::optional<pair<S, XEv>>& star, SOSC<XEv>& stopCriteria) override
 	{
 		double timelimit = stopCriteria.timelimit;
 		XEv target_f(stopCriteria.target_f);
@@ -120,7 +121,9 @@ public:
 		//delete s;
 
 		//return new pair<S, Evaluation<>>(sFinal, e);
-      return make_optional(se);
+      //return make_optional(se);
+      star = make_optional(se);
+      return SearchStatus::UNKNOWN;
 	}
 
 	virtual string id() const
