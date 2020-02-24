@@ -31,8 +31,7 @@ using namespace std;
 #include "MultiObjSearch.hpp"
 #include "Solution.hpp"
 #include "Evaluation.hpp"
-
-#include "Component.hpp"
+#include "ParetoManager.hpp"
 
 namespace optframe
 {

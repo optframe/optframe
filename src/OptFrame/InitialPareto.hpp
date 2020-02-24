@@ -29,6 +29,7 @@
 #include "MultiEvaluator.hpp"
 //#include "MultiEvaluation.hpp"
 //#include "Timer.hpp"
+#include "ParetoManager.hpp"
 
 using namespace std;
 
