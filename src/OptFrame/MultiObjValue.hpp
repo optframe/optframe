@@ -6,7 +6,6 @@
 #include <sstream>
 #include <tuple>
 
-//#include "BaseSolution.h" // TODO: rename to BaseConcepts
 #include "SingleObjValue.hpp" // must re-use some structures
 #include "myconcepts.h"
 

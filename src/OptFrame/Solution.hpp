@@ -30,7 +30,7 @@
 // basic elements of an OptFrame Component
 #include "Component.hpp"
 
-#include "BaseSolution.h" // concepts c++20
+#include "BaseConcepts.hpp" // concepts c++20
 
 // This is Default solution model.. not for all cases, but "good enough" for most applications
 

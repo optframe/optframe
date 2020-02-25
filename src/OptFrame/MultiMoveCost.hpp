@@ -26,7 +26,7 @@
 #include <cmath>
 
 #include "Component.hpp"
-#include "BaseSolution.h" // Base concepts
+#include "BaseConcepts.hpp" 
 #include "Evaluation.hpp"
 #include "MoveCost.hpp"
 

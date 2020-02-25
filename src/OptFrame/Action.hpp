@@ -29,7 +29,7 @@
 
 #include "Component.hpp"
 
-#include "BaseSolution.h"
+#include "BaseConcepts.hpp"
 
 #include "Solution.hpp"
 #include "Solutions/CopySolution.hpp"

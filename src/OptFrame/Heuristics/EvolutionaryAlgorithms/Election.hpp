@@ -26,7 +26,7 @@
 #include <limits>
 
 #include "../../Evaluation.hpp"
-#include "../../BaseSolution.h"
+#include "../../BaseConcepts.hpp"
 #include "../../Util/printable.h"
 #include "../../MultiSolution.hpp"
 #include "../../MultiEvaluation.hpp"

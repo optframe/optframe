@@ -26,7 +26,7 @@
 
 using namespace std;
 
-#include "BaseSolution.h" // TODO: rename to BaseConcepts
+#include "BaseConcepts.hpp"
 
 #include "Action.hpp"
 #include "Evaluation.hpp"

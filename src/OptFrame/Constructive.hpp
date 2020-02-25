@@ -21,7 +21,7 @@
 #ifndef OPTFRAME_CONSTRUCTIVE_HPP_
 #define OPTFRAME_CONSTRUCTIVE_HPP_
 
-#include "BaseSolution.h"
+#include "BaseConcepts.hpp"
 #include "Component.hpp"
 //#include "Solution.hpp"
 //#include "Solutions/CopySolution.hpp"

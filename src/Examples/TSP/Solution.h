@@ -21,7 +21,7 @@
 #ifndef TSP_SOLUTION_H_
 #define TSP_SOLUTION_H_
 
-#include "../../OptFrame/BaseSolution.h"
+#include "../../OptFrame/BaseConcepts.hpp"
 #include "../../OptFrame/Solutions/CopySolution.hpp"
 #include "../../OptFrame/Solution.hpp"
 #include "Representation.h"

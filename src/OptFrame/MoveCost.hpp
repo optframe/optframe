@@ -25,7 +25,7 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "BaseSolution.h"
+#include "BaseConcepts.hpp"
 #include "Component.hpp"
 #include "Evaluation.hpp"
 

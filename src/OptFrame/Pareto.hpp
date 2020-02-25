@@ -228,7 +228,7 @@ public:
 	{
 		cout << "Printing Pareto!" << endl;
 		cout << "paretoSet.size():" << paretoSet.size() << endl;
-		cout << "paretoSet.size():" << paretoFront.size() << endl;
+		cout << "paretoFront.size():" << paretoFront.size() << endl;
 		for (unsigned i = 0; i < paretoSet.size(); i++)
 		{
 			cout << paretoSet[i]->getR() << endl;

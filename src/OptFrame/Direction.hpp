@@ -35,7 +35,7 @@
 
 #include "Component.hpp"
 #include "Action.hpp"
-#include "BaseSolution.h" // Base concepts
+#include "BaseConcepts.hpp" // Base concepts
 
 using namespace std;
 using namespace scannerpp;

@@ -123,7 +123,7 @@
 #include "RandGen.hpp"
 #include "Util/RandGenMersenneTwister.hpp"
 
-#include "BaseSolution.h"
+#include "BaseConcepts.hpp"
 
 using namespace std;
 

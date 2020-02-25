@@ -1,7 +1,11 @@
-#ifndef OPTFRAME_SOLUTION_CONCEPTS_H_
-#define OPTFRAME_SOLUTION_CONCEPTS_H_
+#ifndef OPTFRAME_BASE_CONCEPTS_HPP_
+#define OPTFRAME_BASE_CONCEPTS_HPP_
 
-// this should be renamed to BaseConcepts instead of BaseSolution... TODO:
+// Basic concepts for OptFrame
+// XSolution
+// XEvaluation
+// XESolution
+// XBaseSolution
 
 #include<cstddef> // nullptr_t
 #include<string>
@@ -115,71 +119,7 @@ concept bool XEvaluation = HasClone<Self> && HasToString<Self> && HasGetObj<Self
 template <class Self>
 concept bool XESolution = XSolution<Self> && XEvaluation<Self>;
 
+// compilation tests for concepts (these are NOT unit tests)
+#include "BaseConcepts.test.hpp"
 
-// ============================
-
-
-
-// only for <assert> like stuff
-#ifndef NDEBUG
-// Example of valid struct satisfying solution properties
-
-template <Representation R, Structure ADS = _ADS>
-struct IsSolution
-{
-   R &getR();
-   ADS *getADSptr();
-
-   IsSolution<R, ADS>& clone()
-   {
-      return *this; // TODO:
-   }
-
-   std::string toString() const
-   {
-      return "";
-   }
-
-   friend std::ostream& operator<<(std::ostream& os, const IsSolution<R,ADS>& me)
-   {
-      os << me.toString();
-      return os;
-   }
-};
-
-// test BaseSolution concept
-template<XBaseSolution<double> S>
-class TestBaseSol
-{
-public:
-};
-
-template<Representation R, XRSolution<R> XRS>
-class TestXRSolution
-{
-public:
-};
-
-template<XSolution XS>
-class TestXSol
-{
-public:
-};
-
-struct optframe_test_debug_testsol_issolution_disable_runtime
-{
-// test if following structure is valid
-TestBaseSol<IsSolution<double>> test;
-TestXRSolution<double, IsSolution<double>> testxrs;
-};
-
-// test evaluation concept
-template<XEvaluation XE>
-class TestEv
-{
-public:
-};
-
-#endif // NDEBUG clause
-
-#endif // OPTFRAME_SOLUTION_CONCEPTS_H_
+#endif // OPTFRAME_SOLUTION_CONCEPTS_HPP_
