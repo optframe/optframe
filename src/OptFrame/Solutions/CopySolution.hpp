@@ -41,7 +41,7 @@
 namespace optframe
 {
 
-template<Representation R, Structure ADS = _ADS>
+template<XRepresentation R, class ADS = _ADS>
 class CopySolution : public Component
 {
 protected:
@@ -286,7 +286,7 @@ public:
    }
 };
 
-template<Representation R, Structure ADS = _ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<XRepresentation R, class ADS = _ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>>
 struct _Testing
 {
    S s;

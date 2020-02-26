@@ -48,7 +48,7 @@ namespace optframe {
 // This is also useful when solution is composed by smaller "parts",
 // and each part operates with independent moves (thus a fraction of real "solution space").
 // Efficient components (like Move) should use 'XR' instead of 'XSolution' (and equivalents).
-template<Representation XR, XEvaluation XEv = Evaluation<>>
+template<XRepresentation XR, XEvaluation XEv = Evaluation<>>
 class Move : public Component
 {
 public:

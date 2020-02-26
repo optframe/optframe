@@ -404,7 +404,7 @@ public:
    }
 };
 
-template<Representation R, XEvaluation XEv = Evaluation<>>
+template<XRepresentation R, XEvaluation XEv = Evaluation<>>
 class BasicEvaluator : public Evaluator<RSolution<R>, XEv>
 {
 public:

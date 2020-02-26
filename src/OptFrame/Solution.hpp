@@ -328,7 +328,7 @@ public:
 // ====================
 
 
-template <Representation R>
+template <XRepresentation R>
 class RSolution : public Component
 {
 protected:

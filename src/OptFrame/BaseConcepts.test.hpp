@@ -13,7 +13,7 @@
 #ifndef NDEBUG
 // Example of valid struct satisfying solution properties
 
-template <Representation R, Structure ADS = _ADS>
+template <XRepresentation R, class ADS = _ADS>
 struct IsSolution
 {
    R &getR();
@@ -43,7 +43,7 @@ class TestBaseSol
 public:
 };
 
-template<Representation R, XRSolution<R> XRS>
+template<XRepresentation R, XRSolution<R> XRS>
 class TestXRSolution
 {
 public:

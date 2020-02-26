@@ -30,10 +30,10 @@ namespace optframe {
 
 typedef vector<double> random_keys;
 
-// Representation R is NOT random_keys... it's something else, related to original problem
-//template<Representation R, XRSolution<R> XRS = RSolution<R>, XEvaluation XEv = Evaluation<>>
+// XRepresentation R is NOT random_keys... it's something else, related to original problem
+//template<XRepresentation R, XRSolution<R> XRS = RSolution<R>, XEvaluation XEv = Evaluation<>>
 // XRS is not good to be default, as it must come from outside, and be compatible
-template<Representation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>>
+template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>>
 class DecoderRandomKeys
 {
 public:
@@ -52,7 +52,7 @@ public:
 
 // transforms random_keys into R and use given evaluator<R> to generate output XEv
 // XRS is not good to be default, as it must come from outside, and be compatible
-template<Representation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>>
+template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>>
 class DecoderRandomKeysEvaluator : public DecoderRandomKeys<R, XRS, XEv>
 {
 public:

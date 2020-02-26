@@ -1,11 +1,14 @@
 #ifndef OPTFRAME_BASE_CONCEPTS_HPP_
 #define OPTFRAME_BASE_CONCEPTS_HPP_
 
+// =============================
 // Basic concepts for OptFrame
+// =============================
 // XSolution
 // XEvaluation
 // XESolution
 // XBaseSolution
+// =============================
 
 #include<cstddef> // nullptr_t
 #include<string>
@@ -27,7 +30,7 @@ typedef OPTFRAME_DEFAULT_ADS _ADS;        // more beautiful :)
 // general concept, just requiring operator<< for basic printability
 template <class R>
 //concept bool Representation = true;
-concept bool Representation = optframe::ostreamable<R>;
+concept bool XRepresentation = optframe::ostreamable<R>;
 
 
 // ========================
@@ -54,15 +57,16 @@ concept bool HasToString = requires(Self self)
 };
 
 template <class Self>
-concept bool XSolution = HasClone<Self> && HasToString<Self> && Representation<Self>;
+concept bool XSolution = HasClone<Self> && HasToString<Self> && XRepresentation<Self>;
 
 // ==========================
 
 
-template <class ADS>
-concept bool Structure = true;
+// useless concept for 'Structure', there's no such Space... just a regular 'class'.
+//template <class ADS>
+//concept bool Structure = true;
 
-template <class S, Representation R>
+template <class S, XRepresentation R>
 concept bool HasGetR = requires(S a)
 {
    {
@@ -71,7 +75,7 @@ concept bool HasGetR = requires(S a)
    ->R &;
 };
 
-template <class S, Structure ADS = _ADS>
+template <class S, class ADS = _ADS>
 concept bool HasGetADS = requires(S a)
 {
    {
@@ -80,11 +84,11 @@ concept bool HasGetADS = requires(S a)
    ->ADS *;
 };
 
-template <class S, Representation R, Structure ADS = _ADS>
+template <class S, XRepresentation R, class ADS = _ADS>
 concept bool XBaseSolution = HasGetR<S, R> &&HasGetADS<S, ADS> && XSolution<S>;
 
 
-template <class Self, Representation R>
+template <class Self, XRepresentation R>
 concept bool XRSolution = HasGetR<Self, R> && XSolution<Self>;
 
 // ============================

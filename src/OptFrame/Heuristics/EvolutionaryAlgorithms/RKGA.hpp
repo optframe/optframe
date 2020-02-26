@@ -70,7 +70,7 @@ public:
 
 // RKGA searches on XRS solution space, by means of a decoder (R -> random_keys). TODO: this may be XRS perhaps
 // XRS is not good to be default, as it must come from outside, and be compatible
-template<Representation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>> // one should pass a compatible one, regarding R
+template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>> // one should pass a compatible one, regarding R
 class RKGA : public SingleObjSearch<XRS, XEv>
 {
    using RSK = RSolution<random_keys>;

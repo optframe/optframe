@@ -131,8 +131,8 @@ namespace optframe
 {
 
 //template<XSolution S, XEvaluation XEv = Evaluation<>>
-// template<Representation R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-template<Representation R, class ADS, XBaseSolution<R,ADS> S, XEvaluation XEv = Evaluation<>>
+// template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S, XEvaluation XEv = Evaluation<>>
 class Loader
 {
 public:

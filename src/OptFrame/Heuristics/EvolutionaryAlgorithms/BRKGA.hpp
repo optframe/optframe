@@ -36,7 +36,7 @@ namespace optframe
 
 // It seems that R is connected to S here... S<R> is rule perhaps?
 // maybe better to not provide XRS directly here (used to be = = RSolution<R>)
-template<Representation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>>
+template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>>
 class BRKGA: public RKGA<R, XRS, XEv>
 {
    using RSK = RSolution<random_keys>;

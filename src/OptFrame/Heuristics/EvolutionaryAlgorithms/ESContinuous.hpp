@@ -49,7 +49,7 @@ struct ESContinuousStructure
 
 //CADA INDIVIDUO EH UM PAR DE SOLUCAO E UMA TUPLE COM O PARAMETROS DA ESTRATEGIA
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class ESStruct = double>
-template<Representation R, Structure ADS = OPTFRAME_DEFAULT_ADS, class ESStruct = double, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XRepresentation R, class ADS = OPTFRAME_DEFAULT_ADS, class ESStruct = double, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 class ESContinous: public SingleObjSearch<S, XEv>
 {
 private:
