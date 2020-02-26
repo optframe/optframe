@@ -150,10 +150,14 @@ concept bool X2ESPareto = X2ESolution<Self, S, XEv>; // TODO: require 'dominates
 //... optimization directions and 'ideal'/'nadir' points may also come here...
 
 template <class Self, XSolution S, XEvaluation XEv>
-concept bool X2ESPopulation = X2ESolution<Self, S, XEv> // TODO: require 'fitness' here, or some sort of evolutionary concepts...
+concept bool X2ESPopulation = X2ESolution<Self, S, XEv>; // TODO: require 'fitness' here, or some sort of evolutionary concepts...
 // .... in the end, this may be a search in the 'population space'. One may adapt a SingleObjSearch to embed a PopulationalSearch
 
 // other idea, one may adapt a MultiObjSearch to embed a ParetoSearch method.
+
+
+template <class Self>
+concept bool X01N = true; // TODO: space for [0,1]^N random keys... N could be constexpr template, but better not.
 
 // compilation tests for concepts (these are NOT unit tests)
 #include "BaseConcepts.test.hpp"
