@@ -211,7 +211,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << ComponentBuilder<S, XEv>::idComponent() << "SingleObjSearch";
+      ss << ComponentBuilder<S, XEv, X2ES>::idComponent() << "SingleObjSearch";
       return ss.str();
    }
 
@@ -344,7 +344,7 @@ public:
 
          delete p;
 
-         return Action<S, XEv>::addAndRegister(scanner, *s2, hf, dictionary);
+         return Action<S, XEv, X2ES>::addAndRegister(scanner, *s2, hf, dictionary);
       }
 
       // no action found!

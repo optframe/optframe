@@ -66,8 +66,8 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, X2ES>
 {
 public:
 	virtual ~BasicVNSBuilder()

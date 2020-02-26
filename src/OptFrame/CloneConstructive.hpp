@@ -71,8 +71,8 @@ public:
    }
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class CloneConstructiveBuilder : public ComponentBuilder<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+class CloneConstructiveBuilder : public ComponentBuilder<S, XEv, X2ES>
 {
 public:
    virtual ~CloneConstructiveBuilder()
@@ -103,7 +103,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << ComponentBuilder<S, XEv>::idComponent() << "CloneConstructive";
+      ss << ComponentBuilder<S, XEv, X2ES>::idComponent() << "CloneConstructive";
       return ss.str();
    }
 

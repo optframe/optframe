@@ -160,6 +160,6 @@ template <class Self>
 concept bool X01N = true; // TODO: space for [0,1]^N random keys... N could be constexpr template, but better not.
 
 // compilation tests for concepts (these are NOT unit tests)
-#include "BaseConcepts.test.hpp"
+#include "BaseConcepts.ctest.hpp"
 
 #endif // OPTFRAME_SOLUTION_CONCEPTS_HPP_

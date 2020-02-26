@@ -545,6 +545,6 @@ public:
 } // namespace optframe
 
 // compilation tests for concepts (these are NOT unit tests)
-#include "PopPareto.test.hpp"
+#include "Pareto.ctest.hpp"
 
 #endif /* OPTFRAME_PARETO_HPP_ */

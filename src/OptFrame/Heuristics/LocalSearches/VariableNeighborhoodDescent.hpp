@@ -134,8 +134,8 @@ public:
 
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class VariableNeighborhoodDescentBuilder: public LocalSearchBuilder<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+class VariableNeighborhoodDescentBuilder: public LocalSearchBuilder<S, XEv, X2ES>
 {
 public:
 	virtual ~VariableNeighborhoodDescentBuilder()

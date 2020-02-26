@@ -125,8 +125,8 @@ public:
 };
 
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class TimerBuilder : public ComponentBuilder<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+class TimerBuilder : public ComponentBuilder<S, XEv, X2ES>
 {
 public:
 	virtual ~TimerBuilder()
@@ -152,7 +152,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<S, XEv>::idComponent() << "Timer";
+		ss << ComponentBuilder<S, XEv, X2ES>::idComponent() << "Timer";
 		return ss.str();
 	}
 

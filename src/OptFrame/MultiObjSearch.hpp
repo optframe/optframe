@@ -73,8 +73,8 @@ public:
 	}
 };
 
-//template<XSolution S, XEvaluation XEv = Evaluation<>>
-template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
+//template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
 class MultiObjSearch: public Component
 {
 public:
@@ -114,8 +114,8 @@ public:
 
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class MultiObjSearchBuilder: public ComponentBuilder<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+class MultiObjSearchBuilder: public ComponentBuilder<S, XEv, X2ES>
 {
 public:
 	virtual ~MultiObjSearchBuilder()
@@ -136,7 +136,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<S, XEv>::idComponent() << "MultiObjSearch:";
+		ss << ComponentBuilder<S, XEv, X2ES>::idComponent() << "MultiObjSearch:";
 		return ss.str();
 	}
 

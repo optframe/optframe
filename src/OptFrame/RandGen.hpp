@@ -220,8 +220,8 @@ public:
    }
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class RandGenBuilder : public ComponentBuilder<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+class RandGenBuilder : public ComponentBuilder<S, XEv, X2ES>
 {
 public:
    virtual ~RandGenBuilder()
@@ -254,7 +254,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << ComponentBuilder<S, XEv>::idComponent() << "RandGen";
+      ss << ComponentBuilder<S, XEv, X2ES>::idComponent() << "RandGen";
       return ss.str();
    }
 

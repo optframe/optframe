@@ -95,5 +95,11 @@ TestXRSolution<double, IsSolution<double>> testxrs;
 TestEv<IsEvaluation<short>> testev;
 };
 
+template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
+class TestPopOrPareto
+{
+public:
+};
+
 
 #endif // NDEBUG clause

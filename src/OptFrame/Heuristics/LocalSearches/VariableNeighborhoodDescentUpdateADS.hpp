@@ -140,8 +140,8 @@ public:
 ///template<XSolution S, XEvaluation XEv = Evaluation<>>
 //template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 // passing 'S' manually, for safety
-template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S, XEvaluation XEv = Evaluation<>>
-class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<S, XEv>
+template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<S, XEv, X2ES>
 {
 public:
    virtual ~VariableNeighborhoodDescentUpdateADSBuilder()

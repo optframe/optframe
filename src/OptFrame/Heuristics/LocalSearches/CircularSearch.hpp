@@ -114,8 +114,8 @@ public:
    }
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class CircularSearchBuilder : public LocalSearchBuilder<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+class CircularSearchBuilder : public LocalSearchBuilder<S, XEv, X2ES>
 {
 public:
    virtual ~CircularSearchBuilder()

@@ -140,8 +140,8 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class BasicGRASPBuilder: public GRASP, public SingleObjSearchBuilder<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+class BasicGRASPBuilder: public GRASP, public SingleObjSearchBuilder<S, XEv, X2ES>
 {
 public:
 	virtual ~BasicGRASPBuilder()

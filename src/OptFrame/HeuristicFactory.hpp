@@ -97,11 +97,11 @@ private:
 public:
 
 	map<string, vector<Component*> > components;
-	vector<ComponentBuilder<S, XEv>* > builders;
-	vector<Action<S, XEv>* > actions;
+	vector<ComponentBuilder<S, XEv, X2ES>* > builders;
+	vector<Action<S, XEv, X2ES>* > actions;
 	map<string, vector<vector<Component*> > > componentLists;
 
-	ComponentBuilder<S, XEv>* getBuilder(string id)
+	ComponentBuilder<S, XEv, X2ES>* getBuilder(string id)
 	{
 		for(unsigned i=0; i<builders.size(); i++)
 			if(builders[i]->id() == id)

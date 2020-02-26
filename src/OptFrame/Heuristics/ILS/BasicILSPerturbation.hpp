@@ -126,8 +126,8 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class BasicILSPerturbationBuilder : public ComponentBuilder<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+class BasicILSPerturbationBuilder : public ComponentBuilder<S, XEv, X2ES>
 {
 public:
 	virtual ~BasicILSPerturbationBuilder()
@@ -169,7 +169,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<S, XEv>::idComponent() << ILS::family() << "basic_pert";
+		ss << ComponentBuilder<S, XEv, X2ES>::idComponent() << ILS::family() << "basic_pert";
 		return ss.str();
 	}
 

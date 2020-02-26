@@ -212,8 +212,8 @@ protected:
 
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class MultiEvaluatorAction: public Action<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+class MultiEvaluatorAction: public Action<S, XEv, X2ES>
 {
 public:
 
@@ -326,7 +326,7 @@ public:
 
 			Evaluation<>& e = ev->evaluate(*s);
 
-			return Action<S, XEv>::addAndRegister(scanner, e, hf, dictionary);
+			return Action<S, XEv, X2ES>::addAndRegister(scanner, e, hf, dictionary);
 		}
 
 		// no action found!

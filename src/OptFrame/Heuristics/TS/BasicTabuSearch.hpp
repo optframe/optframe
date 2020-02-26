@@ -285,8 +285,8 @@ public:
 
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class BasicTabuSearchBuilder: public TS, public SingleObjSearchBuilder<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+class BasicTabuSearchBuilder: public TS, public SingleObjSearchBuilder<S, XEv, X2ES>
 {
 public:
 	virtual ~BasicTabuSearchBuilder()
