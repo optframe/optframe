@@ -284,4 +284,7 @@ public:
 };
 }
 
+// population compilation tests (these are NOT unit tests)
+#include "PopPareto.test.hpp"
+
 #endif /* OPTFRAME_POPULATION_HPP_ */

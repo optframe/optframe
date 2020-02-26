@@ -36,6 +36,30 @@ struct IsSolution
    }
 };
 
+template <class T>
+struct IsEvaluation
+{ 
+   T &evaluation(); // this is required!
+
+   IsEvaluation<T>& clone()
+   {
+      return *this; // TODO:
+   }
+
+   std::string toString() const
+   {
+      return "";
+   }
+
+   friend std::ostream& operator<<(std::ostream& os, const IsEvaluation<T>& me)
+   {
+      os << me.toString();
+      return os;
+   }
+};
+
+
+
 // test BaseSolution concept
 template<XBaseSolution<double> S>
 class TestBaseSol
@@ -55,18 +79,23 @@ class TestXSol
 public:
 };
 
-struct optframe_test_debug_testsol_issolution_disable_runtime
-{
-// test if following structure is valid
-TestBaseSol<IsSolution<double>> test;
-TestXRSolution<double, IsSolution<double>> testxrs;
-};
-
 // test evaluation concept
 template<XEvaluation XE>
 class TestEv
 {
 public:
 };
+
+
+struct optframe_test_debug_testsol_issolution_disable_runtime
+{
+// test if following structure is valid
+TestBaseSol<IsSolution<double>> test;
+TestXRSolution<double, IsSolution<double>> testxrs;
+TestEv<IsEvaluation<short>> testev;
+};
+
+
+
 
 #endif // NDEBUG clause

@@ -48,6 +48,11 @@ concept bool equality_comparable = __WeaklyEqualityComparableWith<T, T>;
 //
 //
 
+// Total Order: a Partial Order which is valid for all possible objects (not verified here)
+// Partial Order (requires being transitive, antisymmetric) may be two kinds: weak or strong.
+// a Weak Partial Order is ALWAYS valid to itself (reflexive), and a Strong is NEVER (irreflexive).
+
+
 // reference: https://en.cppreference.com/w/cpp/concepts/totally_ordered
 template <class T>
 concept bool totally_ordered =

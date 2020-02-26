@@ -123,6 +123,27 @@ concept bool XEvaluation = HasClone<Self> && HasToString<Self> && HasGetObj<Self
 template <class Self>
 concept bool XESolution = XSolution<Self> && XEvaluation<Self>;
 
+// =====================
+// X2Solution Space: 2^S
+// ---------------------
+// This concept comprises Population-based or Pareto-based spaces
+// One difference is that, even when Population is used, typically a single 'best' is returned, and
+//  for Pareto-based space, solutions are not "totally-orderable", thus only partially comparable, so multiple "choices" are desired.
+// In other words, MO is usually not homeotelic (all tend to same direction), but heterotelic.
+//   "homeo-" (sameness, identity,..), "telic" (goal or direction)
+// Note that Dominance is a concept from Game Theory that implies "better than the alternative"; 
+//  and more specifically that "it improves at least one, and it's not worse on any".
+// ---------------------
+template <class Self, XSolution S>
+concept bool X2Solution = true; // nothing actually required (for now...). Maybe 'at' and 'size' are good candidates
+// ---
+// We will usually assume a X2ESolution type, since it carries solution sample and evaluation space together
+// It is in fact: s \subseteq 2^S  plus its own evaluation (for each solution)... 
+template <class Self, XSolution S, XEvaluation XEv>
+concept bool X2ESolution = X2Solution<Self, S>; // nothing extra required by now
+
+
+
 // compilation tests for concepts (these are NOT unit tests)
 #include "BaseConcepts.test.hpp"
 
