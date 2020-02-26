@@ -137,7 +137,7 @@ class Loader
 {
 public:
 
-	HeuristicFactory<S, XEv> factory;
+	HeuristicFactory<S, XEv, X2ES> factory;
 	map<string, string> dictionary;
 	map<string, vector<string> > ldictionary;
 
@@ -148,7 +148,7 @@ public:
 	}
 
 	Loader(RandGen _rg) :
-		factory(HeuristicFactory<S, XEv> (_rg))
+		factory(HeuristicFactory<S, XEv, X2ES> (_rg))
 	{
 		loadComponentBuilders();
 	}

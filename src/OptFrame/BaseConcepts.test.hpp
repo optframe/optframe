@@ -96,6 +96,4 @@ TestEv<IsEvaluation<short>> testev;
 };
 
 
-
-
 #endif // NDEBUG clause

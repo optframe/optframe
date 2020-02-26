@@ -188,17 +188,18 @@ public:
 };
 
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class SingleObjSearchBuilder : public ComponentBuilder<S, XEv>
+//template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+class SingleObjSearchBuilder : public ComponentBuilder<S, XEv, X2ES>
 {
 public:
    virtual ~SingleObjSearchBuilder()
    {
    }
 
-   virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "") = 0;
+   virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, X2ES>& hf, string family = "") = 0;
 
-   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
+   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, X2ES>& hf, string family = "")
    {
       return build(scanner, hf, family);
    }
@@ -221,8 +222,9 @@ public:
 };
 
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class SingleObjSearchAction : public Action<S, XEv>
+//template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+class SingleObjSearchAction : public Action<S, XEv, X2ES>
 {
 public:
    virtual ~SingleObjSearchAction()
@@ -249,7 +251,7 @@ public:
       return (action == "search");
    }
 
-   virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<S, XEv>& hf, map<string, string>& d)
+   virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<S, XEv, X2ES>& hf, map<string, string>& d)
    {
       if (!handleComponent(type)) {
          cout << "SingleObjSearchAction::doCast error: can't handle component type '" << type << " " << id << "'" << endl;
@@ -286,7 +288,7 @@ public:
       return ComponentAction<S, XEv>::addAndRegister(scanner, *final, hf, d);
    }
 
-   virtual bool doAction(string content, HeuristicFactory<S, XEv>& hf, map<string, string>& dictionary, map<string, vector<string>>& ldictionary)
+   virtual bool doAction(string content, HeuristicFactory<S, XEv, X2ES>& hf, map<string, string>& dictionary, map<string, vector<string>>& ldictionary)
    {
       //cout << "LocalSearch::doAction '" << content << "'" << endl;
 

@@ -142,7 +142,8 @@ concept bool X2Solution = true; // nothing actually required (for now...). Maybe
 template <class Self, XSolution S, XEvaluation XEv>
 concept bool X2ESolution = X2Solution<Self, S>; // nothing extra required by now
 
-
+// TODO: create 'ideal' and 'nadir' point requirements for every MO type
+// best would be to re-create int or double with these extra "properties"
 
 // compilation tests for concepts (these are NOT unit tests)
 #include "BaseConcepts.test.hpp"

@@ -241,7 +241,7 @@ public:
 		return (action == "evaluate"); //|| (action == "betterThan") || (action == "betterOrEquals");
 	}
 
-	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<S, XEv>& hf, map<string, string>& d)
+	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<S, XEv, X2ES>& hf, map<string, string>& d)
 	{
 		cout << "MultiEvaluator::doCast: NOT IMPLEMENTED!" << endl;
 		return false;
@@ -287,7 +287,7 @@ public:
 		return ComponentAction<S, XEv>::addAndRegister(scanner, *final, hf, d);
 	}
 
-	virtual bool doAction(string content, HeuristicFactory<S, XEv>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	virtual bool doAction(string content, HeuristicFactory<S, XEv, X2ES>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 		cout << "MultiEvaluator::doAction: NOT IMPLEMENTED!" << endl;
 		return false;

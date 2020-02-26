@@ -18,14 +18,15 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_MULTI_OBJ_SEARCH_HPP_
-#define OPTFRAME_MULTI_OBJ_SEARCH_HPP_
+#ifndef OPTFRAME_MULTI_SOLUTION_SEARCH_HPP_
+#define OPTFRAME_MULTI_SOLUTION_SEARCH_HPP_
+
+// Search that happens using MultiSolution space (2^S)
+// It could be MO Pareto Search, or populational search...
 
 #include <iostream>
 #include <vector>
 #include <cstring>
-
-using namespace std;
 
 #include "Solution.hpp"
 #include "Population.hpp"
@@ -42,53 +43,27 @@ using namespace std;
 #include "ParetoDominance.hpp"
 #include "ParetoDominanceWeak.hpp"
 
+using namespace std;
+
 namespace optframe
 {
 
-// Multi Objective Stopping Criteria
-// Must include GENERAL stopping criteria
-// specific stopping criteria for metaheuristics can be included in their constructors
-class MOSC: public Component
-{
-public:
-	// maximum timelimit (seconds)
-	double timelimit;
-	//Hypervolume indicator
-	//	double hv;
-	//Pareto cardinality
-	//	double cardinality;
-
-	MOSC(double _timelimit = 100000000.0) :
-			timelimit(_timelimit)
-	{
-	}
-
-	virtual ~MOSC()
-	{
-	}
-
-	virtual string id() const
-	{
-		return "MOSC";
-	}
-};
-
 //template<XSolution S, XEvaluation XEv = Evaluation<>>
 template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
-class MultiObjSearch: public Component
+class MultiSolutionSearch: public Component
 {
 public:
 
-	MultiObjSearch()
+	MultiSolutionSearch()
 	{
 	}
 
-	virtual ~MultiObjSearch()
+	virtual ~MultiSolutionSearch()
 	{
 	}
 
-	virtual Pareto<S, XEv>* search(MOSC& stopCriteria, Pareto<S, XEv>* _pf = nullptr) = 0;
-   //virtual SearchStatus search(std::optional<X2ES>& p, MOSC& stopCriteria) = 0;
+	//virtual Pareto<S, XEv>* search(MOSC& stopCriteria, Pareto<S, XEv>* _pf = nullptr) = 0;
+   virtual SearchStatus search(std::optional<X2ES>& p, SOSC& stopCriteria) = 0;
 
 	virtual string log() const
 	{
@@ -103,7 +78,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Component::idComponent() << "MultiObjSearch:";
+		ss << Component::idComponent() << "MultiSolutionSearch:";
 		return ss.str();
 	}
 
@@ -114,8 +89,8 @@ public:
 
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class MultiObjSearchBuilder: public ComponentBuilder<S, XEv>
+template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
+class MultiSolutionSearchBuilder: public ComponentBuilder<S, XEv, X2ES>
 {
 public:
 	virtual ~MultiObjSearchBuilder()
@@ -136,7 +111,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<S, XEv>::idComponent() << "MultiObjSearch:";
+		ss << ComponentBuilder<S, XEv, X2ES>::idComponent() << "MultiObjSearch:";
 		return ss.str();
 	}
 
@@ -148,4 +123,4 @@ public:
 
 }
 
-#endif /* OPTFRAME_MULTI_OBJ_SEARCH_HPP_ */
+#endif /* OPTFRAME_MULTI_SOLUTION_SEARCH_HPP_ */

@@ -125,7 +125,7 @@ public:
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, X2ES>& hf, string family = "")
 	{
 		int n = scanner.nextInt();
 

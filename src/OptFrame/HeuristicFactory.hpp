@@ -24,6 +24,9 @@
 #include <iostream>
 #include <string>
 
+#include "Solution.hpp"
+#include "MultiSolution.hpp"
+#include "MultiESolution.hpp"
 
 #include "./Scanner++/Scanner.h"
 
@@ -84,7 +87,8 @@ namespace optframe
 
 //template<XRepresentation R, class ADS = _ADS, XBaseSolution<S, XEv> S = CopySolution<S, XEv>, XEvaluation XEv = Evaluation<>>
 //template<class R, class ADS, XSolution S>
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+//template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
 class HeuristicFactory
 {
 private:

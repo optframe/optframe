@@ -229,7 +229,7 @@ public:
    }
 
    virtual Component*
-   buildComponent(Scanner& scanner, HeuristicFactory<S, XEv>& hf, string family = "")
+   buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, X2ES>& hf, string family = "")
    {
       if (!scanner.hasNext())
          return nullptr;
