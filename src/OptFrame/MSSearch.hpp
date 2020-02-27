@@ -50,19 +50,19 @@ namespace optframe
 
 //template<XSolution S, XEvaluation XEv = Evaluation<>>
 template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
-class MultiSolutionSearch: public Component
+class MSSearch: public Component
 {
 public:
 
-	MultiSolutionSearch()
+	MSSearch()
 	{
 	}
 
-	virtual ~MultiSolutionSearch()
+	virtual ~MSSearch()
 	{
 	}
 
-	//virtual Pareto<S, XEv>* search(MOSC& stopCriteria, Pareto<S, XEv>* _pf = nullptr) = 0;
+   // this should be pure virtual. useful for populational searches (single or multiobj) and general multiobj searches (by pareto sets)
    virtual SearchStatus search(std::optional<X2ES>& p, const StopCriteria<>& stopCriteria) = 0;
 
 	virtual string log() const
@@ -78,7 +78,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Component::idComponent() << "MultiSolutionSearch:";
+		ss << Component::idComponent() << "MSSearch:";
 		return ss.str();
 	}
 
@@ -90,14 +90,14 @@ public:
 };
 
 template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
-class MultiSolutionSearchBuilder: public ComponentBuilder<S, XEv, X2ES>
+class MSSearchBuilder: public ComponentBuilder<S, XEv, X2ES>
 {
 public:
-	virtual ~MultiObjSearchBuilder()
+	virtual ~MSSearchBuilder()
 	{
 	}
 
-	virtual MultiObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, X2ES>& hf, string family = "") = 0;
+	virtual MSSearch<S, XEv, X2ES>* build(Scanner& scanner, HeuristicFactory<S, XEv, X2ES>& hf, string family = "") = 0;
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, X2ES>& hf, string family = "")
 	{
@@ -111,7 +111,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<S, XEv, X2ES>::idComponent() << "MultiObjSearch:";
+		ss << ComponentBuilder<S, XEv, X2ES>::idComponent() << "MSSearch:";
 		return ss.str();
 	}
 

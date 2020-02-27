@@ -42,7 +42,9 @@ using namespace std;
 #include "ParetoDominance.hpp"
 #include "ParetoDominanceWeak.hpp"
 
-#include "SingleObjSearch.hpp"
+#include "SingleObjSearch.hpp" // TODO: remove
+
+#include "MSSearch.hpp" // Base class
 
 namespace optframe
 {
@@ -77,9 +79,13 @@ public:
 };
 */
 
+
+// This MultiObjSearch perspective inherits from Multi Solution Search, 
+// considering a X2ES space with Pareto structure
+
 template<XSolution S, XEvaluation XEv = Evaluation<>>
 //template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
-class MultiObjSearch: public Component
+class MultiObjSearch: public MSSearch<S, XEv, Pareto<S, XEv>> // public Component
 {
 public:
 
