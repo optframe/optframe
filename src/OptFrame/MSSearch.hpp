@@ -21,8 +21,14 @@
 #ifndef OPTFRAME_MULTI_SOLUTION_SEARCH_HPP_
 #define OPTFRAME_MULTI_SOLUTION_SEARCH_HPP_
 
+// ===================================================
 // Search that happens using MultiSolution space (2^S)
-// It could be MO Pareto Search, or populational search...
+// ===================================================
+// It could be MO Pareto Search, or any populational search, being it single or multi objective.
+// The idea is that MS management (Population or Pareto) is held by X2ES class itself, thus
+//   reducing the burden of Evaluation objects to keep track of it.
+// This finally allows to remove ParetoManager class.
+// ===================================================
 
 #include <iostream>
 #include <vector>
@@ -121,6 +127,6 @@ public:
 	}
 };
 
-}
+} // namespace optframe
 
 #endif /* OPTFRAME_MULTI_SOLUTION_SEARCH_HPP_ */
