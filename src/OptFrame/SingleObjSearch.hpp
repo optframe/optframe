@@ -143,17 +143,40 @@ class StopCriteria final : public Component
 {
 public:
    // maximum timelimit (seconds)
-   double timelimit;
-
-private:
-   Timer localTimer;
-
-public:   
+   double timelimit = {0}; // disabled -> 0.0
+   // maximum number of evaluations
+   unsigned long long maxEvCount = {0}; // disabled -> 0
 
    // target objective function
    //double target_f;
    XEv target_f; // TODO (IGOR): pass parameter on SOSC. // TODO: Why?... forgot reason!
    // for MultiObj, 'target_f' can pass ideal values for each objective, and use strict/strong pareto dominance for verification.
+
+private:
+   //
+   // automatic verification of timelimit condition
+   Timer localTimer;
+   //
+   // evaluation counting can be used this way (to not need inherit this class...):
+   //   just pass this object to your Evaluator, and make it 'incEvaluationCount' every evaluation
+   unsigned long long evCount = {0};
+
+public:
+
+   // increment evCount
+   void incEvaluationCount(long long v = 1) 
+   {
+      evCount += v;
+   }
+
+   // note 'virtual' ... (only if 'final' is not needed. TODO: check performance)
+   // general stop conditions checked here (does not include best value checking)
+   virtual bool shouldStop() const 
+   {
+      // note that this method does not check best value...
+      // 'target_f' strategy must be handled directly by specific Evaluator classes on search methods
+      return timerExpired() || evCountExpired();
+   }
 
    //SOSC(double _timelimit = 100000000.0, double _target_f = 0.0)
    StopCriteria(double _timelimit = 100000000.0)
@@ -184,9 +207,16 @@ public:
       return *this;
    }
 
-   bool checkTimelimit() const
+   // helper method: returns true if timer expired
+   bool timerExpired() const
    {
-      return localTimer.now() >= timelimit;
+      return timelimit==0.0 ? false : localTimer.now() >= timelimit;
+   }
+
+   // helper method: returns true if evaluation count expired (TODO: maybe move this to inheritance...)
+   bool evCountExpired() const
+   {
+      return evCount==0 ? false : evCount >= maxEvCount;
    }
 
    void updateTimeLimit(double subtrTL)
