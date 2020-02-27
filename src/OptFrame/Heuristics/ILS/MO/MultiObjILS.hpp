@@ -68,13 +68,15 @@ public:
 
    virtual bool terminationCondition(H& history) = 0;
 
-   virtual Pareto<S, XEv>* search(MOSC& stopCriteria, Pareto<S, XEv>* _pf = nullptr) override
+   //virtual Pareto<S, XEv>* search(MOSC& stopCriteria, Pareto<S, XEv>* _pf = nullptr) override
+   virtual SearchStatus search(std::optional<Pareto<S, XEv>>& p, MOSC& stopCriteria) override
    {
       Timer tnow;
       Pareto<S, XEv> x_e;
       cout << "exec: MOILS (tL:" << stopCriteria.timelimit << ")" << endl;
 
-      if (_pf == nullptr) {
+      //if (_pf == nullptr) {
+      if(p == nullopt) {
          if (Component::information)
             cout << "Creating initial population using a initial pareto method:" << init_pop_size << endl;
 
@@ -84,11 +86,13 @@ public:
          if (Component::information)
             cout << "Population generated with " << x_e.size() << " individuals!" << endl;
       } else {
-         assert(_pf->size() > 0);
+         assert(p->size() > 0);
          if (Component::information)
             cout << "Extracting Pareto Front given as parameter..." << endl;
 
-         x_e = std::move(*_pf); //check this move with AIIIGOR todo
+         //x_e = std::move(*_pf); //check this move with AIIIGOR todo
+         x_e = std::move(*p); //Igor: VITORRRRR this is even worse now! hahaha need to check!!
+         p = nullopt; // disengage!
 
          if (Component::information)
             cout << "Extracting PF contains " << x_e.size() << " individuals." << endl;
@@ -140,15 +144,19 @@ public:
          //					visited[v] = false;
       }
 
-      Pareto<S, XEv>* pReturn = new Pareto<S, XEv>(std::move(x_e));
+      ////Pareto<S, XEv>* pReturn = new Pareto<S, XEv>(std::move(x_e));
+      p = make_optional(std::move(x_e)); // TODO: check if this 'move assign' is O(1) for Pareto, as expected
 
       //checking possible dominance problems -- TODO - Remove for a faster code
-      pMan.checkDominance(*pReturn);
+      //pMan.checkDominance(*pReturn);
+      pMan.checkDominance(*p);
 
-      cout << "MOILS finished with " << pReturn->size() << " non-dominated solutions." << endl;
+      //cout << "MOILS finished with " << pReturn->size() << " non-dominated solutions." << endl;
+      cout << "MOILS finished with " << p->size() << " non-dominated solutions." << endl;
 
       delete history;
-      return pReturn;
+      //return pReturn;
+      return SearchStatus::VALID_SOL; // nothing to say
    }
 };
 }

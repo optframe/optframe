@@ -97,10 +97,12 @@ TestEv<IsEvaluation<short>> testev;
 
 // =========================================================
 
+// test class for X2ES (MultiESolution Space 2^S)
 template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
 class TestPopOrPareto
 {
 public:
+   // nothing required here
 };
 
 // ----------------
@@ -109,14 +111,17 @@ public:
 template <XSolution S, XEvaluation XEv>
 struct IsPopulation
 {
+   // nothing required here
 };
 
 // example of a Pareto element
 template <XSolution S, XEvaluation XEv>
 struct IsPareto
 {
+   // nothing required here
 };
 
+// perform instantiation tests
 struct optframe_test_debug_testpareto_ispop_ispareto_disable_runtime
 {
 TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
