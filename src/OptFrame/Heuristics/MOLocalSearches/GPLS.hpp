@@ -131,21 +131,21 @@ public:
 	{
 	}
 
-	virtual void moSearchFrom(Pareto<S, XEv>& p, S& s, paretoManager<S, XEv>& pManager, MOSC& stopCriteria) override
+	virtual void moSearchFrom(Pareto<S, XEv>& p, S& s, paretoManager<S, XEv>& pManager, SOSC<>& stopCriteria) override
 	{
 		Pareto<S, XEv> _pf;
 		pManager.addSolution(_pf,s);
 		searchWithOptionalPareto(stopCriteria,&_pf);
 	}
 
-	virtual void moSearchFrom(Pareto<S, XEv>& p, S& s, MultiEvaluation<>& sMev, paretoManager<S, XEv>& pManager, MOSC& stopCriteria) override
+	virtual void moSearchFrom(Pareto<S, XEv>& p, S& s, MultiEvaluation<>& sMev, paretoManager<S, XEv>& pManager, SOSC<>& stopCriteria) override
 	{
 		Pareto<S, XEv> _pf;
 		pManager.addSolutionWithMEV(_pf,s,sMev);
 		searchWithOptionalPareto(stopCriteria,&_pf);
 	}
 
-	virtual Pareto<S, XEv>* searchWithOptionalPareto(MOSC& stopCriteria, Pareto<S, XEv>* _pf = nullptr)
+	virtual Pareto<S, XEv>* searchWithOptionalPareto(SOSC<>& stopCriteria, Pareto<S, XEv>* _pf = nullptr)
 	{
 		Timer tnow;
 
@@ -208,7 +208,7 @@ public:
 			}
 
 			//Run local search for each individual of the population - Pareto Manager, pMan2PPLS, updates population
-			MOSC stopCriteriaLS;
+			SOSC<> stopCriteriaLS;
 			stopCriteriaLS.timelimit = stopCriteria.timelimit;
 
 			for (int ind = 0; ind < (int) p.size(); ind++)

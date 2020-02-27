@@ -42,9 +42,12 @@ using namespace std;
 #include "ParetoDominance.hpp"
 #include "ParetoDominanceWeak.hpp"
 
+#include "SingleObjSearch.hpp"
+
 namespace optframe
 {
 
+/*
 // Multi Objective Stopping Criteria
 // Must include GENERAL stopping criteria
 // specific stopping criteria for metaheuristics can be included in their constructors
@@ -72,6 +75,7 @@ public:
 		return "MOSC";
 	}
 };
+*/
 
 template<XSolution S, XEvaluation XEv = Evaluation<>>
 //template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
@@ -88,7 +92,7 @@ public:
 	}
 
 	//virtual Pareto<S, XEv>* search(MOSC& stopCriteria, Pareto<S, XEv>* _pf = nullptr) = 0;
-   virtual SearchStatus search(std::optional<Pareto<S, XEv>>& p, MOSC& stopCriteria) = 0;
+   virtual SearchStatus search(std::optional<Pareto<S, XEv>>& p, SOSC<>& stopCriteria) = 0;
 
 	virtual string log() const
 	{

@@ -42,10 +42,12 @@ public:
 	{
 	}
 
-	Pareto<S, XEv>* search(MOSC& mosc, Pareto<S, XEv>* _pf = nullptr) override
+	//Pareto<S, XEv>* search(SOSC<>& mosc, Pareto<S, XEv>* _pf = nullptr) override
+   SearchStatus search(std::optional<Pareto<S, XEv>>& p, SOSC<>& stopCriteria) override
 	{
 		cout << "WARNING: RETURNING A EmptyMultiObjSearch!" << endl;
-		return nullptr;
+		//return nullptr;
+      return SearchStatus::NO_NEWSOL;
 	}
 
 	static string idComponent()

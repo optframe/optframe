@@ -63,7 +63,7 @@ public:
 	}
 
 	//virtual Pareto<S, XEv>* search(MOSC& stopCriteria, Pareto<S, XEv>* _pf = nullptr) = 0;
-   virtual SearchStatus search(std::optional<X2ES>& p, SOSC& stopCriteria) = 0;
+   virtual SearchStatus search(std::optional<X2ES>& p, SOSC<>& stopCriteria) = 0;
 
 	virtual string log() const
 	{

@@ -303,7 +303,7 @@ public:
       MOILSLevels<SolutionHFM> moILSLevels(*mev, grIP, initial_population_size, &moriASI, rg, *moILSPert, moIlsIterMax, moIlslevelMax);
       //		moILSLevels.setMessageLevel(3);
 
-      MOSC moStopCriteriaGPLS;
+      SOSC<> moStopCriteriaGPLS;
       moStopCriteriaGPLS.timelimit = timeGPLS;
       if (_pf == nullptr) {
          delete pf;
