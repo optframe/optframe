@@ -136,7 +136,7 @@ main(int argc, char** argv)
    //pair<SolutionTSP, Evaluation<>>* r2 = brkga.search(sosc);
    
    std::optional<ESolutionTSP> r2 = std::nullopt;
-   auto sflag = brkga.search(r2, sosc);
+   auto sflag = brkga.search(r2, sosc.start());
    //virtual std::optional<pair<XRS, XEv>> search(StopCriteria<XEv>& stopCriteria, const std::optional<pair<XRS, XEv>> input)
    r2->first.print();
    r2->second.print();
@@ -220,7 +220,7 @@ main(int argc, char** argv)
 
    //pair<CopySolution<RepTSP>, Evaluation<>>& psol2 = *vns.search(sosc, NULL, NULL);
    std::optional<ESolutionTSP> psol2 = std::nullopt;
-   auto sflag3 = vns.search(psol2, soscVNS);
+   auto sflag3 = vns.search(psol2, soscVNS.start());
    psol2->first.print();
    psol2->second.print();
 

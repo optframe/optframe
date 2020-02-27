@@ -303,7 +303,7 @@ public:
       MOILSLevels<SolutionHFM> moILSLevels(*mev, grIP, initial_population_size, &moriASI, rg, *moILSPert, moIlsIterMax, moIlslevelMax);
       //		moILSLevels.setMessageLevel(3);
 
-      SOSC<> moStopCriteriaGPLS;
+      StopCriteria<> moStopCriteriaGPLS;
       moStopCriteriaGPLS.timelimit = timeGPLS;
       if (_pf == nullptr) {
          delete pf;
@@ -334,7 +334,7 @@ public:
 
    std::optional<pair<SolutionHFM, Evaluation<>>> runGRASP(int timeGRASP, int nSol)
    {
-      SOSC<>* stopCriteria = new SOSC<>(timeGRASP);
+      StopCriteria<>* stopCriteria = new StopCriteria<>(timeGRASP);
       std::optional<pair<SolutionHFM, Evaluation<>>> finalSol = std::nullopt;
       delete stopCriteria;
       //		BasicGRASP<RepEFP> g(*eval, *c, emptyLS, 0.1, nSol);
@@ -352,7 +352,7 @@ public:
       double targetValue = 3.879748973;
       targetValue = 0;
 
-      SOSC<> stopCriteria(timeES, Evaluation<>(targetValue));   
+      StopCriteria<> stopCriteria(timeES, Evaluation<>(targetValue));   
       std::optional<pair<SolutionHFM, Evaluation<>>> finalSol;
       //auto sflag = es->search(finalSol, stopCriteria);
       es->search(finalSol, stopCriteria);

@@ -37,6 +37,8 @@ using namespace std;
 #include "Component.hpp"
 #include "ComponentBuilder.h"
 
+#include "Timer.hpp" // TODO: move together with StopCriteria to other file!!
+
 namespace optframe {
 
 // Single Objective Stopping Criteria
@@ -46,7 +48,7 @@ namespace optframe {
 // should someone inherit from this? if not, should become array instead of class
 
 // SOSC: Single Objective Stop Criteria (target evaluation and time)
-
+// TODO: move to self file
 enum class SearchStatus : int 
 {
    // better to keep a single flag '0x00' that indicates nothing good happened (no evolution)
@@ -127,12 +129,18 @@ public:
 */
 
 
+// TODO: move to self file
 template<XEvaluation XEv = Evaluation<>>
 class StopCriteria final : public Component
 {
 public:
    // maximum timelimit (seconds)
    double timelimit;
+
+private:
+   Timer localTimer;
+
+public:   
 
    // target objective function
    //double target_f;
@@ -159,6 +167,18 @@ public:
 
    virtual ~StopCriteria()
    {
+   }
+
+   // resets timer and returns self-reference
+   StopCriteria<XEv>& start()
+   {
+      localTimer = Timer(); // reset timer
+      return *this;
+   }
+
+   bool checkTimelimit() const
+   {
+      return localTimer.now() >= timelimit;
    }
 
    void updateTimeLimit(double subtrTL)

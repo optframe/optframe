@@ -145,7 +145,7 @@ public:
 		searchWithOptionalPareto(stopCriteria,&_pf);
 	}
 
-	virtual Pareto<S, XEv>* searchWithOptionalPareto(StopCriteria<>& stopCriteria, Pareto<S, XEv>* _pf = nullptr)
+	virtual Pareto<S, XEv>* searchWithOptionalPareto(const StopCriteria<>& stopCriteria, Pareto<S, XEv>* _pf = nullptr)
 	{
 		Timer tnow;
 
@@ -208,7 +208,7 @@ public:
 			}
 
 			//Run local search for each individual of the population - Pareto Manager, pMan2PPLS, updates population
-			SOSC<> stopCriteriaLS;
+			StopCriteria<> stopCriteriaLS;
 			stopCriteriaLS.timelimit = stopCriteria.timelimit;
 
 			for (int ind = 0; ind < (int) p.size(); ind++)

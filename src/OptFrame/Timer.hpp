@@ -68,22 +68,22 @@ public:
          printf("Spent time: %f secs\n", now());
    }
 
-   double now()
+   double now() const
    {
       return inSecs();
    }
 
-   double inSecs()
+   double inSecs() const
    {
       return inMicroSecs() * 0.000001;
    }
 
-   double inMilliSecs()
+   double inMilliSecs() const
    {
       return inMicroSecs() * 0.001;
    }
 
-   double inMicroSecs()
+   double inMicroSecs() const
    {
       double start;
       double end;
