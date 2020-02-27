@@ -58,7 +58,7 @@ struct IsEvaluation
    }
 };
 
-
+// =======================================
 
 // test BaseSolution concept
 template<XBaseSolution<double> S>
@@ -95,10 +95,32 @@ TestXRSolution<double, IsSolution<double>> testxrs;
 TestEv<IsEvaluation<short>> testev;
 };
 
+// =========================================================
+
 template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
 class TestPopOrPareto
 {
 public:
+};
+
+// ----------------
+
+// example of a Population element
+template <XSolution S, XEvaluation XEv>
+struct IsPopulation
+{
+};
+
+// example of a Pareto element
+template <XSolution S, XEvaluation XEv>
+struct IsPareto
+{
+};
+
+struct optframe_test_debug_testpareto_ispop_ispareto_disable_runtime
+{
+TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
+TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPareto<IsSolution<double>,IsEvaluation<int>> > testLocal2;
 };
 
 
