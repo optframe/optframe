@@ -85,7 +85,7 @@ public:
 		ns.push_back(&_ns);
 	}
 
-	void perturb(pair<S, XEv>& se, SOSC<XEv>& stopCriteria) // TODO: override?? what?
+	void perturb(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) // TODO: override?? what?
 	{
       S& s = se.first;
       XEv& e = se.second;

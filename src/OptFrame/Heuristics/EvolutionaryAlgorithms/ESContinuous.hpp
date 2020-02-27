@@ -260,13 +260,13 @@ public:
 		return pNova;
 	}
 
-	virtual void localSearch(pair<S, Evaluation<>>& se, SOSC<XEv>& stopCriteria)
+	virtual void localSearch(pair<S, Evaluation<>>& se, const StopCriteria<XEv>& stopCriteria)
 	{
 		ls.searchFrom(se, stopCriteria);
 	}
 
-	//std::optional<pair<S, Evaluation<>>> search(SOSC<XEv>& stopCriteria) override
-   SearchStatus search(std::optional<pair<S, XEv>>& star, SOSC<XEv>& stopCriteria) override
+	//std::optional<pair<S, Evaluation<>>> search(StopCriteria<XEv>& stopCriteria) override
+   SearchStatus search(std::optional<pair<S, XEv>>& star, const StopCriteria<XEv>& stopCriteria) override
 	{
 		cout << "ES search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 

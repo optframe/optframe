@@ -47,7 +47,7 @@ main(int argc, char** argv)
    NSSeq<SolutionKP>* nsseq_bit = &ns1;
 
    BasicSimulatedAnnealing<SolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
-   SOSC sosc; // stop criteria
+   StopCriteria<> sosc; // stop criteria
    std::optional<pair<SolutionKP, Evaluation<>>> r = std::nullopt;
    auto sflag = sa.search(r, sosc);
    r->first.print();

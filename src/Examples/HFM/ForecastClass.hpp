@@ -385,7 +385,7 @@ public:
       //		const Evaluation<> evaluationGrasp = finalSol.second;
 
       std::optional<pair<SolutionHFM, Evaluation<>>> finalSol = std::nullopt;
-      SOSC stopCriteria;
+      StopCriteria<> stopCriteria;
       stopCriteria.timelimit = timeILS;
       //stopCriteria.target_f(Evaluation<>(0));
       ils->setMessageLevel(3);

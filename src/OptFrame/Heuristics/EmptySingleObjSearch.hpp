@@ -42,9 +42,9 @@ public:
 	{
 	}
 
-	//pair<S, Evaluation<>>* search(SOSC<XEv>& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
-   //virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) override
-   SearchStatus search(std::optional<pair<S, XEv>>& star, SOSC<XEv>& stopCriteria) override
+	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
+   //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
+   SearchStatus search(std::optional<pair<S, XEv>>& star, const StopCriteria<XEv>& stopCriteria) override
 	{
 		cout << "WARNING: RETURNING A EmptySingleObjSearch!" << endl;
 		//return std::nullopt; // nothing to return

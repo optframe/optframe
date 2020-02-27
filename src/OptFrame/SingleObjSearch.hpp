@@ -73,8 +73,9 @@ enum class SearchStatus : int
    GLOBAL_OPT = 0x80 // global optimum
 };
 
+/*
 template<XEvaluation XEv = Evaluation<>>
-class SOSC final : public Component
+class StopCriteria<> final : public Component
 {
 public:
    // maximum timelimit (seconds)
@@ -111,9 +112,9 @@ public:
       timelimit -= subtrTL;
    }
 
-   SOSC newStopCriteriaWithTL(double subtrTL)
+   StopCriteria<> newStopCriteriaWithTL(double subtrTL)
    {
-      SOSC newStopCriteria = (*this);
+      StopCriteria<> newStopCriteria = (*this);
       newStopCriteria.timelimit -= subtrTL;
       return newStopCriteria;
    }
@@ -121,6 +122,60 @@ public:
    virtual string id() const
    {
       return "SOSC";
+   }
+};
+*/
+
+
+template<XEvaluation XEv = Evaluation<>>
+class StopCriteria final : public Component
+{
+public:
+   // maximum timelimit (seconds)
+   double timelimit;
+
+   // target objective function
+   //double target_f;
+   XEv target_f; // TODO (IGOR): pass parameter on SOSC. // TODO: Why?... forgot reason!
+   // for MultiObj, 'target_f' can pass ideal values for each objective, and use strict/strong pareto dominance for verification.
+
+   //SOSC(double _timelimit = 100000000.0, double _target_f = 0.0)
+   StopCriteria(double _timelimit = 100000000.0)
+     : timelimit(_timelimit)
+   {
+   }
+
+   StopCriteria(double _timelimit, const XEv& _target_f)
+     : timelimit(_timelimit),
+     target_f(_target_f)
+   {
+   }
+
+   StopCriteria(double _timelimit, XEv&& _target_f)
+     : timelimit(_timelimit),
+     target_f(std::move(_target_f))
+   {
+   }
+
+   virtual ~StopCriteria()
+   {
+   }
+
+   void updateTimeLimit(double subtrTL)
+   {
+      timelimit -= subtrTL;
+   }
+
+   StopCriteria<XEv> newStopCriteriaWithTL(double subtrTL) const
+   {
+      StopCriteria newStopCriteria = (*this);
+      newStopCriteria.timelimit -= subtrTL;
+      return newStopCriteria;
+   }
+
+   virtual string id() const
+   {
+      return "StopCriteria";
    }
 };
 
@@ -159,10 +214,10 @@ public:
 
 
    // search method try to find a feasible solution within timelimit, if there is no such solution it returns nullptr.
-   //virtual pair<S, XEv>* search(SOSC<XEv>& stopCriteria, const S* _s = nullptr, const XEv* _e = nullptr) = 0;
-   //virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria, const std::optional<pair<S, XEv>> input = std::nullopt) = 0;
-   //virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) = 0;
-   virtual SearchStatus search(std::optional<pair<S, XEv>>& inputOutput, SOSC<XEv>& stopCriteria) = 0;
+   //virtual pair<S, XEv>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const XEv* _e = nullptr) = 0;
+   //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria, const std::optional<pair<S, XEv>> input = std::nullopt) = 0;
+   //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) = 0;
+   virtual SearchStatus search(std::optional<pair<S, XEv>>& inputOutput, const StopCriteria<XEv>& stopCriteria) = 0;
 
    virtual string log() const
    {
@@ -334,7 +389,7 @@ public:
          XEv* e;
          hf.assign(e, scanner.nextInt(), scanner.next());
 
-         pair<S, XEv>* p = sios->search(SOSC(timelimit, target_f), s, e);
+         pair<S, XEv>* p = sios->search(StopCriteria(timelimit, target_f), s, e);
 
          if (!p)
             return true;

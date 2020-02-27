@@ -48,14 +48,14 @@ public:
 	{
 	}
 
-	virtual void exec(S& s, SOSC<XEv>& sosc) override
+	virtual void exec(S& s, const StopCriteria<XEv>& sosc) override
 	{
 		Evaluation<> e = eval.evaluate(s);
 
 		exec(s, e, sosc);
 	}
 
-	virtual void exec(S& s, Evaluation<>& e, SOSC<XEv>& sosc) override
+	virtual void exec(S& s, Evaluation<>& e, const StopCriteria<XEv>& sosc) override
 	{
 		Timer t;
 

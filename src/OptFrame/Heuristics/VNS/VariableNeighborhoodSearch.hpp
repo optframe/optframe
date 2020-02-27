@@ -59,7 +59,7 @@ public:
 
 	//virtual void improvement(S& s, Evaluation<>& e, double timelimit, double target_f) = 0;
 
-	virtual void shake(pair<S, XEv>& p, unsigned int k_shake, SOSC<XEv>& sosc)
+	virtual void shake(pair<S, XEv>& p, unsigned int k_shake, const StopCriteria<XEv>& sosc)
 	{
       //double timelimit = sosc.timelimit;
       XEv target_f(sosc.target_f);
@@ -111,9 +111,9 @@ public:
       return make_pair(*sStar, eStar); 
    }
 
-	//pair<S, Evaluation<>>* search(SOSC<XEv>& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
-   //virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& sosc) override
-   SearchStatus search(std::optional<pair<S, XEv>>& star, SOSC<XEv>& sosc) override
+	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
+   //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& sosc) override
+   SearchStatus search(std::optional<pair<S, XEv>>& star, const StopCriteria<XEv>& sosc) override
 	{
       double timelimit = sosc.timelimit;
       XEv target_f(sosc.target_f);

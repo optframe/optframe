@@ -54,9 +54,9 @@ public:
 
 	virtual H& initializeHistory() = 0;
 
-	virtual void localSearch(pair<S, XEv>& se, SOSC<XEv>& stopCriteria) = 0;
+	virtual void localSearch(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) = 0;
 
-	virtual void perturbation(pair<S, XEv>& se, SOSC<XEv>& stopCriteria, H& history) = 0;
+	virtual void perturbation(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria, H& history) = 0;
 
 	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, H& history) = 0;
 
@@ -71,9 +71,9 @@ public:
       return make_optional(make_pair(*sStar, eStar)); 
    }
 
-	//pair<S, Evaluation<>>* search(SOSC<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-   //virtual std::optional<pair<S, XEv>> search(SOSC<XEv>& stopCriteria) override
-   SearchStatus search(std::optional<pair<S, XEv>>& star, SOSC<XEv>& stopCriteria) override
+	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+   //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
+   SearchStatus search(std::optional<pair<S, XEv>>& star, const StopCriteria<XEv>& stopCriteria) override
 	{
 		cout << "ILS opt search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
@@ -116,7 +116,7 @@ public:
 
 		if (Component::information)
 			cout << "ILS::performing first local search" << endl;
-		SOSC stopCriteriaLS = stopCriteria;
+		StopCriteria<> stopCriteriaLS = stopCriteria;
 		stopCriteriaLS.updateTimeLimit(tnow.now());
 		localSearch(*star, stopCriteriaLS);
 		if (Component::information)
@@ -131,11 +131,11 @@ public:
 			//S s1(sStar); // copy (should clone?)
 			//Evaluation<> e1(eStar); // copy (should clone?)
          
-			SOSC stopCriteriaPert = stopCriteria;
+			StopCriteria<> stopCriteriaPert = stopCriteria;
 			stopCriteriaPert.updateTimeLimit(tnow.now());
 			perturbation(p1, stopCriteriaPert, *history);
 
-			SOSC stopCriteriaLS2 = stopCriteria;
+			StopCriteria<> stopCriteriaLS2 = stopCriteria;
 			stopCriteriaLS2.updateTimeLimit(tnow.now());
 			localSearch(p1, stopCriteriaLS2);
 

@@ -159,7 +159,7 @@ main(int argc, char** argv)
    ES<SolutionHFMVRP> es(*eval, cloneSolAsConstructive, vNSeq, vNSeqMaxApplication, emptyLS, selectionType, mutationRate, rg, mi, 6 * mi, 50000, "./esOutput", batch);
    es.setMessageLevel(4);
 
-   SOSC soscES(180, 0);
+   StopCriteria<> soscES(180, 0);
    pair<Solution<SolutionHFMVRP>, Evaluation<>>* initialSol = es.search(soscES);
    double objFuncES = initialSol->second.getObjFunction();
    cout << "getObjFunction: " << objFuncES << endl;
@@ -183,7 +183,7 @@ main(int argc, char** argv)
 	 IteratedLocalSearchLevels<SolutionHFMVRP> ilsl(*eval, cloneSolAsConstructive, newVNDUpdateADS, *ilsl_pert, 130, 15);
 	 ilsl.setMessageLevel(4);
 
-   SOSC soscILSL(60,0);
+   StopCriteria<> soscILSL(60,0);
 	 pair<Solution<SolutionHFMVRP>, Evaluation<>>* pairILS = ilsl.search(soscILSL);
 	 Solution<SolutionHFMVRP> ilsSOL = pairILS->first;
 

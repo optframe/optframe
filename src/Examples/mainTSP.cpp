@@ -121,7 +121,7 @@ main(int argc, char** argv)
    EvaluatorPermutationRandomKeys<SolutionTSP> eprk(eval, 0, tsp.p->n - 1);
    BRKGA<RepTSP, SolutionTSP> brkga(eprk, tsp.p->n, 10000, 10, 0.4, 0.3, 0.6);
 
-   SOSC sosc;
+   StopCriteria<> sosc;
    // strange that this worked.... it's against 'override' pattern. Very strange!!
    /*
    pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
@@ -137,7 +137,7 @@ main(int argc, char** argv)
    
    std::optional<ESolutionTSP> r2 = std::nullopt;
    auto sflag = brkga.search(r2, sosc);
-   //virtual std::optional<pair<XRS, XEv>> search(SOSC<XEv>& stopCriteria, const std::optional<pair<XRS, XEv>> input)
+   //virtual std::optional<pair<XRS, XEv>> search(StopCriteria<XEv>& stopCriteria, const std::optional<pair<XRS, XEv>> input)
    r2->first.print();
    r2->second.print();
 
@@ -181,7 +181,7 @@ main(int argc, char** argv)
 
    cout << "will run ils" << endl;
    Timer tim;
-   SOSC soscILS;
+   StopCriteria<> soscILS;
    soscILS.timelimit = 3; // 1000
    soscILS.target_f = EvaluationTSP(0.0);
    //pair<CopySolution<RepTSP>, Evaluation<>>& psol = *ils.search(soscILS, NULL, NULL);
@@ -211,7 +211,7 @@ main(int argc, char** argv)
 
    BasicVNS<SolutionTSP> vns(eval, random, v_ns, v_nsseq);
    vns.setMessageLevel(3); // INFORMATION
-   SOSC soscVNS;
+   StopCriteria<> soscVNS;
    soscVNS.timelimit = 2; // 2 seconds
    soscVNS.target_f = EvaluationTSP(7550.0);
 
