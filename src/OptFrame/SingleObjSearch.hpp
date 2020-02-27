@@ -139,7 +139,8 @@ public:
 
 // TODO: move to self file
 template<XEvaluation XEv = Evaluation<>>
-class StopCriteria final : public Component
+//class StopCriteria final : public Component
+class StopCriteria : public Component // TODO: non-final unless proven necessary by performance
 {
 public:
    // maximum timelimit (seconds)
