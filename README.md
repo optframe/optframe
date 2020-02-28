@@ -43,6 +43,17 @@ OptFrame 3 relied strongly on templates `R` and `ADS`, but now those only exist 
 
 Things are still moving, more big changes are coming.
 
+### Search Space
+
+Search Space is officially defined as the pair of Solution Space and Evaluation/Objective Space.
+It also accepts a powerset of Solution Space together with powerset of Objective Space (for population/multiobjective search).
+
+### InitialSearch
+
+InitialSearch corresponds to Constructive, in the same way, Solution Space corresponds to Search Space.
+Thus it can be used to generate initial valid "solution" that also comprises an objective value.
+
+
 
 ## Submodules
 

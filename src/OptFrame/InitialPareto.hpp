@@ -31,13 +31,15 @@
 //#include "Timer.hpp"
 #include "ParetoManager.hpp"
 
+#include "InitialSearch.hpp"
+
 using namespace std;
 
 namespace optframe
 {
 
 template<XSolution S, XEvaluation XEv = Evaluation<>>
-class InitialPareto: public Component
+class InitialPareto : public InitialSearch<S, XEv, Pareto<S, XEv>> //public Component
 {
 public:
 
@@ -45,7 +47,13 @@ public:
 	{
 	}
 
+   // TODO: deprecate this in favor of 'initialSearch' (how to pass population?)
 	virtual Pareto<S, XEv> generatePareto(unsigned populationSize, double timeLimit = 10000000) = 0;
+
+	std::optional<Pareto<S, XEv>> initialSearch(const StopCriteria<XEv>& stop) override
+   {
+      return make_optional(generatePareto(stop.xshCount, stop.timelimit));
+   }
 
 
 	static string idComponent()

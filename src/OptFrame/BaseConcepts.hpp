@@ -191,7 +191,7 @@ concept bool X2ESPopulation = X2ESolution<Self, S, XEv>; // TODO: require 'fitne
 
 //template <class Self>
 template <class Self, XSolution S, XEvaluation XEv> // TODO: should remove S and XEv, by changing X2ESolution concept...
-concept bool XSearchSpace = XESolution<Self> || X2ESolution<Self, S, XEv>; 
+concept bool XSearch = XESolution<Self> || X2ESolution<Self, S, XEv>; 
 
 // -------------
 // Maybe make evaluation values total_ordered...

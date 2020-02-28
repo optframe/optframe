@@ -71,7 +71,7 @@ public:
       // boolean 'outdated' indicates that Evaluation needs update (after Solution change)
       // note that even if the reverse move is applied, the Evaluation will continue with
       // the outdated status set to true. So more efficient approaches may rewrite this
-      // method, or implement efficient re-evaluation by means of the 'cost' method.
+      // method, or use  efficient re-evaluation by means of the 'cost' method.
       e.outdated = true;
       // apply the move to R and ADS, saving the reverse (or undo) move
       Move<XR, XEv>* rev = apply(s);
@@ -82,6 +82,7 @@ public:
       return rev;
    }
 
+/*
    // TODO: remove and unify on a single method (just varying XEv)
    virtual Move<XR, XEv>* applyMEV(MultiEvaluation<>& mev, XR& s)
    {
@@ -98,7 +99,9 @@ public:
       // return reverse move (or null)
       return rev;
    }
+*/
 
+   // TODO: remove and unify on a single method (just varying XEv)
    virtual Move<XR, XEv>* applyMEVUpdate(MultiEvaluation<>& mev, XR& s)
    {
       for (unsigned nE = 0; nE < mev.size(); nE++)

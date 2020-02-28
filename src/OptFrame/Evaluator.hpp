@@ -58,7 +58,6 @@ namespace optframe {
 // TODO: use XEv here
 template<XSolution S, XEvaluation XEv = Evaluation<>>
 //template<XSolution S, XEvaluation XEv> // require explicitly XEv here...
-//class Evaluator : public Direction<XEv>
 class Evaluator : public Direction
 {
 
@@ -112,7 +111,7 @@ public:
    }
 
 public:
-   // Apply movement considering a previous XEv => Faster.
+   // Apply movement considering a previous XEv => Faster (used on CheckCommand and locally)
    // Update XEv 'e'
    Move<S, XEv>* applyMoveReevaluate(XEv& e, Move<S, XEv>& m, S& s)
    {
@@ -220,7 +219,7 @@ public:
       }
    }
 
-   // Movement cost based on complete evaluation
+   // Movement cost based on complete evaluation (only on CheckCommand)
    // USE ONLY FOR VALIDATION OF CODE! OTHERWISE, USE MoveCost<>(e, m, s)
    MoveCost<>* moveCostComplete(Move<S, XEv>& m, S& s, bool allowEstimated = false)
    {
@@ -255,6 +254,7 @@ public:
       return p;
    }
 
+   // used on FirstImprovement
    // Accept and apply move if it improves parameter moveCost
    bool acceptsImprove(Move<S, XEv>& m, S& s, XEv& e, MoveCost<>* mc = nullptr, bool allowEstimated = false)
    {

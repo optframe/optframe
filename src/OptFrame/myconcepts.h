@@ -48,22 +48,36 @@ concept bool equality_comparable = __WeaklyEqualityComparableWith<T, T>;
 //
 //
 
-// Total Order: a Partial Order which is valid for all possible objects (not verified here)
-// Partial Order (requires being transitive, antisymmetric) may be two kinds: weak or strong.
-// a Weak Partial Order is ALWAYS valid to itself (reflexive), and a Strong is NEVER (irreflexive).
 
-
-// reference: https://en.cppreference.com/w/cpp/concepts/totally_ordered
+// partial order only requires basic comparison >= and <=, but it's not
+// guaranteed that it's a total order... cannot guarantee it here just on operators
 template <class T>
-concept bool totally_ordered =
+concept bool partially_ordered =
   optframe::equality_comparable<T> &&
   requires(const std::remove_reference_t<T>& a,
            const std::remove_reference_t<T>& b) {
     { a <  b } -> bool;
     { a >  b } -> bool;
     { a <= b } -> bool;
-    { a >= b } -> bool; //std::boolean;
+    { a >= b } -> bool;
   };
+
+// Total Order: a Partial Order which is valid for all possible objects (not verified here)
+// Partial Order (requires being transitive, antisymmetric) may be two kinds: weak or strong.
+// a Weak Partial Order is ALWAYS valid to itself (reflexive), and a Strong is NEVER (irreflexive).
+
+// reference: https://en.cppreference.com/w/cpp/concepts/totally_ordered
+template <class T>
+concept bool totally_ordered = partially_ordered<T>; // just to emphasize
+//concept bool totally_ordered =
+//  optframe::equality_comparable<T> &&
+//  requires(const std::remove_reference_t<T>& a,
+//           const std::remove_reference_t<T>& b) {
+//    { a <  b } -> bool;
+//    { a >  b } -> bool;
+//    { a <= b } -> bool;
+//    { a >= b } -> bool; //std::boolean;
+//  };
 
 
 // TODO: insert some 'zero' concept here..  (HasZero)

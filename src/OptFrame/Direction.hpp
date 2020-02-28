@@ -54,8 +54,9 @@ public:
 
 	Direction() :
 			nullCost(MoveCost<>(0))
-	{
+   {
 	}
+   
 
 	virtual ~Direction()
 	{
