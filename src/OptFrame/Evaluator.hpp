@@ -32,6 +32,8 @@
 #include "Action.hpp"
 #include "Direction.hpp"
 
+#include "Solutions/ESolution.hpp" // TODO: remove.. just to enforce compilation errors.
+
 //#define OPTFRAME_EPSILON 0.0001
 
 using namespace std;

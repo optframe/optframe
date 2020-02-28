@@ -39,6 +39,7 @@ using namespace std;
 namespace optframe
 {
 
+// TODO: may pass just XESolution and XEvaluation here (for StopCriteria)... no XSolution explicitly required.
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSE = pair<S, XEv>>
 class LocalSearch: public Component
 {

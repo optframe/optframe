@@ -18,8 +18,14 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_SOLUTION_HPP_
-#define OPTFRAME_SOLUTION_HPP_
+#ifndef OPTFRAME_ESOLUTION_HPP_
+#define OPTFRAME_ESOLUTION_HPP_
+
+// -----------------------------------------------------
+// ESolution: an implementation of concept XESolution
+// -----------------------------------------------------
+// It basically groups XSolution with XEvaluation, but
+// also provides access as pair<S, XEv> for compatibility
 
 #include <cstdlib>
 #include <iostream>
@@ -28,78 +34,46 @@
 #include <assert.h>
 
 // basic elements of an OptFrame Component
-#include "Component.hpp"
+#include "../Component.hpp"
+
+#include "../BaseConcepts.hpp"
 
 namespace optframe
 {
 
-// the default ADS type is 'int'
-// adopting 'void' type would cause troubles in constructor/copy/move operations
-// if not used, it can be ignored with few impacts (hoping compiler will help us!)
-typedef int OPTFRAME_DEFAULT_ADS;
-typedef OPTFRAME_DEFAULT_ADS OptFrameADS; // more beautiful :)
-
-//! \english The Solution class is a container class for the Representation structure (R) and Advanced Data Structure (ADS). \endenglish \portuguese A classe Solution é uma classe contêiner para a Representação (R) e Estrutura de Dados Avançada (ADS). \endportuguese
-
-/*!
- \english
- In the constructor, a copy of R (and ADS, optionally) is stored inside the Solution class.
- The getR() method returns a reference to the stored Representation (R).
- The getADS() method returns a reference to the stored Advanced Data Structure (ADS).
- Solution container expects that R and ADS: (i) implement copy constructor; (ii) implement operator<<; (iii) implement move constructor; (iv) implement move assignment.
- Perhaps (iii) and (iv) can be relaxed with #DEFINE options.
- \endenglish
-
- \portuguese
- No construtor, uma cópia de R (e ADS, opcionalmente) é armazenada dentro da classe Solution.
- O método getR() retorna uma referência à Representação (R) armazenada.
- O método getADS() retorna uma referência à Estrutura de Dados Avançada (ADS) armazenada.
- O contâiner Solution espera que R e ADS: (i) implementem o construtor de cópia; (ii) implementem o operator<<; (iii) implementem o move constructor; (iv) implementem o move assignment.
- Talvez (iii) e (iv) sejam relaxadas no futuro através de opções de #DEFINE.
- \endportuguese
- */
-
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
-//class Solution final : public Component
-// TODO: replace final by concept
-//class Solution final : public Component
-class Solution : public Component
+// this is 'final', because I don't see any reason for someone to inherit here...
+// someone could just create a better class, and pass when XESolution is needed.
+// anyway, if necessary, feel free to remove this 'final', I'd love to see an use case.
+template<XRepresentation R, class ADS = OPTFRAME_DEFAULT_ADS, XEvaluation XEv = Evaluation<>>
+class ESolution final : public Component
 {
-protected:
-	R* r;     // representation
-	ADS* ads; // auxiliary data structure
+//protected:
+//	R* r {nullptr};     // representation
+//	ADS* ads {nullptr}; // auxiliary data structure
+//   XEv e;
+
+public:
+   // desired compatibility with pair<S, XEv>
+   Solution<R, ADS> first;
+   XEv second;
 
 public:
 
-	Solution(R* _r, ADS* _ads = nullptr) :
-			r(_r), ads(_ads)
+	ESolution(R* _r, ADS* _ads = nullptr, XEv _e = XEv()) :
+			first(_r, _ads), second(_e)
 	{
-		assert(r);
 	}
 
 	// copy constructor (implemented via copy constructor for R)
 	// TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
-	Solution(const R& _r) :
-			r(new R(_r)), ads(nullptr)
-	{
-	}
-
-	// copy constructor (implemented via copy constructor for R and ADS)
-	// TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
-	Solution(const R& _r, const ADS& _ads) :
-			r(new R(_r)), ads(new ADS(_ads))
+	ESolution(const R& _r, ADS* _ads = nullptr, XEv _e = XEv()) :
+			first(_r, _ads), second(_e)
 	{
 	}
 
 	// move constructor (implemented via move constructor for R)
-	Solution(R&& _r) :
-			r(new R(std::move(_r))), ads(nullptr)
-	{
-	}
-
-	// move constructor (implemented via move constructor for R and ADS)
-	Solution(R&& _r, ADS&& _ads) :
-			r(new R(std::move(_r))), ads(new ADS(std::move(_ads)))
+	ESolution(R&& _r) :
+			first(_r) // TODO: avoid so many constructors....
 	{
 	}
 
@@ -108,8 +82,8 @@ public:
 	 Solution copy constructor will use copy constructor for R and ADS
 	 TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
 	 */
-	Solution(const Solution<R, ADS>& s) :
-			r(new R(*s.r)), ads(s.ads ? new ADS(*s.ads) : nullptr)
+	ESolution(const ESolution<R, ADS, XEv>& s) :
+			first(s.first), second(s.second)
 	{
 	}
 
@@ -118,33 +92,20 @@ public:
 	 Solution move constructor will steal the pointers from the object to itself
 	 and set them to null in the object
 	 */
-	Solution(Solution<R, ADS> && s) :
-			r(s.r), ads(s.ads)
+	ESolution(ESolution<R, ADS, XEv> && s) :
+			first(s.first), second(s.second)
 	{
-		s.r = nullptr;
-		s.ads = nullptr;
 	}
 
 	// assignment operator (implemented via copy constructors for R and ADS)
 	// TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
-	Solution<R, ADS>& operator=(const Solution<R, ADS>& s)
+	ESolution<R, ADS, XEv>& operator=(const ESolution<R, ADS, XEv>& s)
 	{
 		if (&s == this) // auto ref check
 			return *this;
 
-		// TODO: keep as a #DEFINE option? I don't see any advantage...
-		//(*r) = (*s.r);
-		delete r;
-		r = new R(*s.r);
-		if (ads)
-		{
-			// TODO: keep as a #DEFINE option? I don't see any advantage...
-			//(*ads) = (*s.ads);
-			delete ads;
-			ads = new ADS(*s.ads);
-		}
-		else
-			ads = nullptr;
+		first = s.first;
+      second = s.second;
 
 		return *this;
 	}
@@ -154,47 +115,38 @@ public:
 	 Solution move operator will steal the pointers from the object to itself
 	 and set them to null in the object
 	 */
-	Solution<R, ADS>& operator=(Solution<R, ADS> && s) noexcept
+	ESolution<R, ADS, XEv>& operator=(ESolution<R, ADS, XEv> && s) noexcept
 	{
-		// steal pointer from s
-		r = s.r;
-		// steal pointer from s
-		ads = s.ads;
-		// make sure s forgets about its r and ads (if it existed before)
-		s.r = nullptr;
-		s.ads = nullptr;
+		first = s.first;
+      second = s.second;
 
 		return *this;
 	}
 
 	// destructor for Solution (must free R and ADS objects)
-	virtual ~Solution()
+	virtual ~ESolution()
 	{
-		// if r not null
-		if (r)
-			delete r;
-		// if ads not null
-		if (ads)
-			delete ads;
+      // nothing to destroy
 	}
+
+   optframe::totally_ordered evaluation()
+   {
+      return second.evaluation();
+   }
 
 	// ==================
 	// end canonical part
 	// ==================
 
-	Solution<R, ADS>& clone() const
+	ESolution<R, ADS, XEv>& clone() const
 	{
-		// if ads not null
-		if (ads)
-			return *new Solution<R, ADS>(*r, *ads);
-		else
-			return *new Solution<R, ADS>(*r);
+      return * new ESolution<R, ADS, XEv>(*this);
 	}
 
 	// returns true if ads is not null
 	bool hasADS() const
 	{
-		return ads;
+		return first.hasADS();
 	}
 
 	// =======
@@ -204,51 +156,27 @@ public:
 	// setR with copy constructor
 	void setR(const R& _r)
 	{
-		// TODO: keep as a #DEFINE option? I don't see any advantage...
-		//(*r) = _r;
-		delete r;
-		r = new R(_r);
+		first.setR(_r);
 	}
 
 	// setR with pointer copy
 	void setR(R* _r)
 	{
-		assert(_r);
-		delete r;
-		r = _r;
+		first.setR(_r);
 	}
 
 	// setR with move semantics
 	void setR(R&& _r)
 	{
-		// move content from rhs param _r
-		(*r) = std::move(_r);
-	}
-
-	// setADS with copy constructor
-	void setADS(const ADS& _ads)
-	{
-		// TODO: keep as a #DEFINE option? I don't see any advantage...
-		//(*ads) = _ads;
-		if (ads)
-			delete ads;
-		ads = new ADS(_ads);
+		first.setR(_r);
 	}
 
 	// setADS with pointer copy
 	void setADS(ADS* _ads)
 	{
-		if (ads)
-			delete ads;
-		ads = _ads;
+		first.setADS(_ads);
 	}
 
-	// setADS with move semantics
-	void setADS(ADS&& _ads)
-	{
-		// move content from rhs param _ads
-		(*ads) = std::move(_ads);
-	}
 
 	// =======
 	// getters
@@ -257,15 +185,16 @@ public:
 	// get reference of r
 	R& getR()
 	{
-		return *r;
+		first.getR();
 	}
 
 	// get const reference of r
 	const R& getR() const
 	{
-		return *r;
+		first.getR();
 	}
 
+   /*
 	// contract: assumes hasADS() with positive result
 	ADS& getADS()
 	{
@@ -279,17 +208,18 @@ public:
 		assert(hasADS());
 		return *ads;
 	}
+   */
 
 	// get ADS pointer
 	ADS* getADSptr()
 	{
-		return ads;
+		first.getADSptr();
 	}
 
 	// get ADS pointer (const)
 	const ADS* getADSptr() const
 	{
-		return ads;
+		first.getADSptr();
 	}
 
 
@@ -300,7 +230,7 @@ public:
 	static string idComponent()
 	{
 		std::stringstream ss;
-		ss << Component::idComponent() << ":Solution";
+		ss << Component::idComponent() << ":ESolution";
 		return ss.str();
 	}
 
@@ -312,14 +242,23 @@ public:
 	virtual string toString() const
 	{
 		std::stringstream ss;
-		ss << "Solution: " << *r;
-		if (ads)
-			ss << "ADS: " << ads;
+		ss << "ESolution: " << first.getR();
+		if (first.hasADS())
+			ss << "ADS: " << first.getADSptr();
 		return ss.str();
 	}
 
+   friend ostream& operator<<(ostream& os, const ESolution<R, ADS, XEv>& se)
+   {
+      os << se.toString();
+      return os;
+   }
+
 };
 
-}
+} // namespace optframe
 
-#endif /* OPTFRAME_SOLUTION_HPP_ */
+// compilation tests for concepts
+#include "ESolution.ctest.hpp"
+
+#endif /* OPTFRAME_ESOLUTION_HPP_ */
