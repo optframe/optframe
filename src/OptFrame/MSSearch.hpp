@@ -30,6 +30,8 @@
 // This finally allows to remove ParetoManager class.
 // ===================================================
 
+// THIS CLASS COULD PERHAPS BE DEPRECATED IN FAVOR OF GlobalSearch... NOT MUCH USE HERE, DOES IT?
+
 #include <iostream>
 #include <vector>
 #include <cstring>

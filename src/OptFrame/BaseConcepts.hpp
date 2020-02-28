@@ -150,13 +150,22 @@ concept bool XESolution = (XSolution<Self> && XEvaluation<Self>) ||
 // Note that Dominance is a concept from Game Theory that implies "better than the alternative"; 
 //  and more specifically that "it improves at least one, and it's not worse on any".
 // ---------------------
-template <class Self, XSolution S>
-concept bool X2Solution = true; // nothing actually required (for now...). Maybe 'at' and 'size' are good candidates
+// not used for now...
+//template <class Self, XSolution S>
+//concept bool X2Solution = true; // nothing actually required (for now...). Maybe 'at' and 'size' are good candidates
+// ---
+// general one:
+template <class Self, class P>
+concept bool XPowerSet = true; 
+// TODO: powerset should return a 'size'(or 'count'), and perhaps a vector (or iterator) of objects for type P
+
 // ---
 // We will usually assume a X2ESolution type, since it carries solution sample and evaluation space together
 // It is in fact: s \subseteq 2^S  plus its own evaluation (for each solution)... 
-template <class Self, XSolution S, XEvaluation XEv>
-concept bool X2ESolution = X2Solution<Self, S>; // nothing extra required by now
+template <class Self, XSolution S, XEvaluation XEv> // unused S and XEv! (could be replaced directly by XSolution and XEvaluation down here...)
+// concept bool X2ESolution = X2Solution<Self, S>; 
+//concept bool X2ESolution = XPowerSet<Self, XSolution> && XPowerSet<Self, XEvaluation>; // TODO: may also include pair here, instead of 'merge'...
+concept bool X2ESolution = XPowerSet<Self, S> && XPowerSet<Self, XEv>; // TODO: may also include pair here, instead of 'merge'...
 
 // TODO: create 'ideal' and 'nadir' point requirements for every MO type
 // best would be to re-create int or double with these extra "properties"
@@ -167,10 +176,20 @@ concept bool X2ESPareto = X2ESolution<Self, S, XEv>; // TODO: require 'dominates
 
 template <class Self, XSolution S, XEvaluation XEv>
 concept bool X2ESPopulation = X2ESolution<Self, S, XEv>; // TODO: require 'fitness' here, or some sort of evolutionary concepts...
-// .... in the end, this may be a search in the 'population space'. One may adapt a SingleObjSearch to embed a PopulationalSearch
+// .... in the end, this may be a search in the 'population space'. One may adapt a SingleObjSearch to embed a PopulationalSearch (TODO: create PopulationalSearch)
 
-// other idea, one may adapt a MultiObjSearch to embed a ParetoSearch method.
+// ====================
 
+// Search Space for Optimization (definition) or, perhaps, Optimization Space
+// A composition of searchable structures (XSolution) and
+//   evaluation criteria to guide search on these structures,
+//   being them single or multi objective.
+
+//template <class Self>
+template <class Self, XSolution S, XEvaluation XEv> // TODO: can remove S and XEv, by changing X2ESolution concept...
+concept bool XSearchSpace = XESolution<Self> || X2ESolution<Self, S, XEv>; 
+
+// ====================
 
 template <class Self>
 concept bool X01N = true; // TODO: space for [0,1]^N random keys... N could be constexpr template, but better not.

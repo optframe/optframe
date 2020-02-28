@@ -44,7 +44,7 @@ using namespace std;
 
 #include "SingleObjSearch.hpp" // TODO: remove
 
-#include "MSSearch.hpp" // Base class
+#include "GlobalSearch.hpp" // Base class
 
 namespace optframe
 {
@@ -85,7 +85,7 @@ public:
 
 template<XSolution S, XEvaluation XEv = Evaluation<>>
 //template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
-class MultiObjSearch: public MSSearch<S, XEv, Pareto<S, XEv>> // public Component
+class MultiObjSearch: public GlobalSearch<S, XEv, Pareto<S, XEv>> // public Component
 {
 public:
 
