@@ -127,7 +127,7 @@ template <class Self>
 concept bool XESolution = (XSolution<Self> && XEvaluation<Self>) || 
                requires(Self a)
                {
-                  // describing as pair<S,XEv>
+                  // also allowing as pair<S, XEv>
                   {
                      a.first
                   }
@@ -157,7 +157,11 @@ concept bool XESolution = (XSolution<Self> && XEvaluation<Self>) ||
 // general one:
 template <class Self, class P>
 concept bool XPowerSet = true; 
-// TODO: powerset should return a 'size'(or 'count'), and perhaps a vector (or iterator) of objects for type P
+// TODO: powerset could return a 'size'(or 'count'), and perhaps a vector (or iterator) of objects for type P
+
+// now redefining X2Solution more beautifully...
+template <class Self, XSolution S>
+concept bool X2Solution = XPowerSet<Self, S>; // Too bad, this is unused on OptFrame... :'(
 
 // ---
 // We will usually assume a X2ESolution type, since it carries solution sample and evaluation space together
@@ -186,13 +190,19 @@ concept bool X2ESPopulation = X2ESolution<Self, S, XEv>; // TODO: require 'fitne
 //   being them single or multi objective.
 
 //template <class Self>
-template <class Self, XSolution S, XEvaluation XEv> // TODO: can remove S and XEv, by changing X2ESolution concept...
+template <class Self, XSolution S, XEvaluation XEv> // TODO: should remove S and XEv, by changing X2ESolution concept...
 concept bool XSearchSpace = XESolution<Self> || X2ESolution<Self, S, XEv>; 
 
-// ====================
+// -------------
+// Maybe make evaluation values total_ordered...
+//   so that we can have MinEvaluation and MaxEvaluation (also LexiMinEvaluation and LexiMaxEvaluation)
+
+// ===================
 
 template <class Self>
 concept bool X01N = true; // TODO: space for [0,1]^N random keys... N could be constexpr template, but better not.
+
+// ===================
 
 // compilation tests for concepts (these are NOT unit tests)
 #include "BaseConcepts.ctest.hpp"
