@@ -58,6 +58,28 @@ struct IsEvaluation
    }
 };
 
+template <class T>
+struct IsESolution
+{
+   T& evaluation();
+
+   IsESolution<T>& clone()
+   {
+      return *this; // TODO:
+   }
+
+   std::string toString() const
+   {
+      return "";
+   }
+
+   friend std::ostream& operator<<(std::ostream& os, const IsESolution<T>& me)
+   {
+      os << me.toString();
+      return os;
+   }
+};
+
 // =======================================
 
 // test BaseSolution concept
@@ -86,13 +108,23 @@ class TestEv
 public:
 };
 
+template<XESolution XES>
+class TestXESol
+{
+public:
+};
+
 
 struct optframe_test_debug_testsol_issolution_disable_runtime
 {
 // test if following structure is valid
 TestBaseSol<IsSolution<double>> test;
+TestXSol<IsSolution<double>> testXsol;
 TestXRSolution<double, IsSolution<double>> testxrs;
 TestEv<IsEvaluation<short>> testev;
+// XESolution tests
+TestXESol<IsESolution<double>> testXesol;
+TestXESol<pair<IsSolution<double>,IsEvaluation<double>>> testXesol_pair;
 };
 
 // =========================================================

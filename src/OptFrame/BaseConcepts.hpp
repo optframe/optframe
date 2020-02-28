@@ -120,8 +120,24 @@ concept bool XEvaluation = HasClone<Self> && HasToString<Self> && HasGetObj<Self
 // funny thing, Solution doesn't carry specific representation (yet)
 // probably, because Representation itself is as abstract as a solution... 
 // in case of "ObjType" it's different, we may operate over it, perhaps: compare, perhaps "add", "subtract", ... to create costs
+//template <class Self>
+//concept bool XESolution = XSolution<Self> && XEvaluation<Self>;
+// -----> now concept also allows pair<S, XEv> to represent composed space <-----
 template <class Self>
-concept bool XESolution = XSolution<Self> && XEvaluation<Self>;
+concept bool XESolution = (XSolution<Self> && XEvaluation<Self>) || 
+               requires(Self a)
+               {
+                  // describing as pair<S,XEv>
+                  {
+                     a.first
+                  }
+                  -> XSolution&; 
+                  {
+                     a.second
+                  }
+                  -> XEvaluation&; 
+               };
+
 
 // =====================
 // X2Solution Space: 2^S
