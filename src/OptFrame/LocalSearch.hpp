@@ -39,7 +39,7 @@ using namespace std;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSE = pair<S, XEv>>
 class LocalSearch: public Component
 {
    typedef vector<XEv*> FitnessValues;
@@ -69,11 +69,11 @@ public:
    */
 
    // copy-based version (TODO: deprecate this?)
-   pair<S, XEv> lsearch(const pair<S, XEv> se, const StopCriteria<XEv>& stopCriteria)
+   XSE lsearch(const XSE& se, const StopCriteria<XEv>& stopCriteria)
    {
       //S& s2 = s.clone();
       //XEv& e2 = e.clone();
-      pair<S, XEv> p2 = se; // implicit 'clone' here ??
+      XSE p2 = se; // implicit 'clone' here ??
       searchFrom(p2, stopCriteria);
       //return *new pair<S&, XEv&> (s2, e2);
       return p2;
@@ -89,7 +89,7 @@ public:
    // 2
    //virtual void exec(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) = 0;
    // TODO: return SearchStatus
-   virtual void searchFrom(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) = 0;
+   virtual void searchFrom(XSE& se, const StopCriteria<XEv>& stopCriteria) = 0;
    // TODO: perhaps return 'bool' or FLAG indicating possible changes on solution (UNKNOWN, CHANGED, NOCHANGE, IMPROVED, ...)
 
    // optional: set local optimum status (LOS)
