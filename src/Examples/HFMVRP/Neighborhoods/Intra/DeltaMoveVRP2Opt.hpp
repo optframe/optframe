@@ -187,8 +187,9 @@ public:
 		return new DeltaMoveVRP2Opt(r, p1, p2, hfmvrp);
 	}
 
-	MoveCost<>* cost(const Evaluation<>&, const SolutionHFMVRP& s, bool allowEstimated) override
+	MoveCost<>* cost(const pair<SolutionHFMVRP, Evaluation<>>& se, bool allowEstimated) override
 	{
+      const SolutionHFMVRP& s = se.first;
       const RepHFMVRP& rep = s.getR();
 		vector<int> route = rep[r];
 		int vType = -1;

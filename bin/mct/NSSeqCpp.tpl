@@ -17,7 +17,7 @@ Move< Solution$project >* Move$neighborhood::apply(Solution$project& rep)
     return new Move$neighborhood; 
 }
 
-MoveCost<>* Move$neighborhood::cost(const Evaluation<>&, const Solution$project& s, bool allowEstimated)
+MoveCost<>* Move$neighborhood::cost(const pair< Solution$project , Evaluation<>>& se, bool allowEstimated)
 {
    return nullptr;
    // Implement if a more efficient evaluation of the move is available

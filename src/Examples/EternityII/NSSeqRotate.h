@@ -68,8 +68,10 @@ public:
       return new MoveRotate(4 - nRot, x, y);
    }
 
-   Move<SolutionEtII>* applyUpdate(Evaluation<>& e, SolutionEtII& s) override
+   Move<SolutionEtII>* applyUpdate(pair<SolutionEtII, Evaluation<>>& se) override
    {
+      SolutionEtII& s = se.first;
+      Evaluation<>& e = se.second;
       RepEtII& rep = s.getR();
       int f = 0;
       if (rep(x, y).left == rep(x, y - 1).right)

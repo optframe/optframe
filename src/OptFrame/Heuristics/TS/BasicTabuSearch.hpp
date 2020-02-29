@@ -199,8 +199,11 @@ public:
 		return new pair<S&, Evaluation<>&>(s, e);
 	}
 
-	Move<S, XEv>* tabuBestMove(S& s, Evaluation<>& e, const vector<Move<S, XEv>*>& tabuList)
+	Move<S, XEv>* tabuBestMove(pair<S, Evaluation<>>& se, const vector<Move<S, XEv>*>& tabuList)
 	{
+      S& s = se.first;
+      Evaluation<>& e = se.second;
+      
 		NSIterator<S, XEv>& it = nsSeq.getIterator(s.getR(), s.getADS());
 
 		it.first();
@@ -229,14 +232,14 @@ public:
 			}
 		}
 
-		MoveCost<>* bestCost = &evaluator.moveCost(e, *bestMove, s);
+		MoveCost<>* bestCost = &evaluator.moveCost(*bestMove, se);
 		it.next();
 		while (!it.isDone())
 		{
 			Move<S, XEv>* move = &it.current();
 			if (move->canBeApplied(s) && !inList(bestMove, tabuList))
 			{
-				MoveCost<>* cost = &evaluator.moveCost(e, *move, s);
+				MoveCost<>* cost = &evaluator.moveCost(*move, se);
 
 				if (evaluator.betterThan(*cost, *bestCost))
 				{

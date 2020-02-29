@@ -99,7 +99,7 @@ public:
 
             k = k + 1;
          }
-         ev.reevaluate(e, s);
+         ev.reevaluate(se);
 
          tnow = time(nullptr);
       }

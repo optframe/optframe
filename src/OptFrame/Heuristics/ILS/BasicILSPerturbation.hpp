@@ -88,7 +88,7 @@ public:
 	void perturb(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) // TODO: override?? what?
 	{
       S& s = se.first;
-      XEv& e = se.second;
+      //XEv& e = se.second;
       //
 		for (int i = pMin; i < pMax; i++)
 		{
@@ -105,12 +105,12 @@ public:
 			{
 				Move<S, XEv>& m = *mp;
             // TODO: fix with unique_ptr
-				Component::safe_delete(m.applyUpdate(e, s));
+				Component::safe_delete(m.applyUpdate(se));
 				delete &m;
 			}
 		}
 
-		evaluator.reevaluate(e, s); // updates 'e'
+		evaluator.reevaluate(se); // updates 'e'
 	}
 
 	virtual string id() const

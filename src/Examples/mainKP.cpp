@@ -49,7 +49,7 @@ main(int argc, char** argv)
    BasicSimulatedAnnealing<SolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
    StopCriteria<> sosc; // stop criteria
    std::optional<pair<SolutionKP, Evaluation<>>> r = std::nullopt;
-   auto sflag = sa.search(r, sosc);
+   sa.search(r, sosc);
    r->first.print();
    r->second.print();
 
@@ -69,7 +69,7 @@ main(int argc, char** argv)
 
    //pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
    std::optional<pair<SolutionKP, Evaluation<>>> r2 = std::nullopt;
-   auto sflag2 = brkga.search(r2, sosc);
+   brkga.search(r2, sosc);
    r2->first.print();
    r2->second.print();
 

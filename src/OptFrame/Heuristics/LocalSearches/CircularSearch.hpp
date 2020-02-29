@@ -58,7 +58,8 @@ public:
 	virtual void searchFrom(pair<S, XEv>& se, const StopCriteria<XEv>& sosc) override
 	{
       S& s = se.first;
-      XEv& e = se.second;
+      //XEv& e = se.second;
+      
       //double timelimit = sosc.timelimit;
       //double target_f = sosc.target_f;
       int Wmax = ns.size();
@@ -70,13 +71,13 @@ public:
 
          if (m.canBeApplied(s)) {
             bool mayEstimate = false;
-            MoveCost<>& cost = *eval.moveCost(e, m, s, mayEstimate);
+            MoveCost<>& cost = *eval.moveCost(m, se, mayEstimate);
 
             if (eval.isImprovement(cost)) {
                //double old_f = e.evaluation();
 
-               Component::safe_delete(m.applyUpdate(e, s));
-               eval.reevaluate(e, s); // updates 'e'
+               Component::safe_delete(m.applyUpdate(se));
+               eval.reevaluate(se); // updates 'e'
 
                //cout << "CS improvement! w:" << w << " fo=" << e.evaluation() << " (antiga fo="<< old_f << ")" << endl << endl;
 

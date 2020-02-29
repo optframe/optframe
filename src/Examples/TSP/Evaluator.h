@@ -160,8 +160,10 @@ public:
          SolutionTSP s2(r); // TODO: think
          if (m.canBeApplied(s2)) {
             doStats = false;
-            Evaluation<>* e = nullptr; // dummy // TODO:
-            MoveCost<>& mc = *this->moveCost(*e, m, base);
+            //Evaluation<>* e = nullptr; // dummy // TODO:
+            Evaluation<> e; // dummy // TODO:
+            pair<SolutionTSP, Evaluation<>> pse(base, e);
+            MoveCost<>& mc = *this->moveCost(m, pse);
             doStats = true;
             if (mc.getObjFunctionCost() < 0)
                improvingSols++;

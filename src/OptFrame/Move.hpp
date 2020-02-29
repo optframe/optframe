@@ -66,8 +66,10 @@ public:
 
    virtual Move<XR, XEv>* apply(XR& s) = 0;
 
-   virtual Move<XR, XEv>* applyUpdate(XEv& e, XR& s)
+   virtual Move<XR, XEv>* applyUpdate(pair<XR, XEv>& se)
    {
+      XR& s = se.first;
+      XEv& e = se.second;
       // boolean 'outdated' indicates that Evaluation needs update (after Solution change)
       // note that even if the reverse move is applied, the Evaluation will continue with
       // the outdated status set to true. So more efficient approaches may rewrite this
@@ -121,7 +123,7 @@ public:
 
    // ================== cost calculation
 
-   virtual MoveCost<>* cost(const Evaluation<>& e, const XR& s, bool allowEstimated)
+   virtual MoveCost<>* cost(const pair<XR, Evaluation<>>& se, bool allowEstimated)
    {
       return nullptr;
    }

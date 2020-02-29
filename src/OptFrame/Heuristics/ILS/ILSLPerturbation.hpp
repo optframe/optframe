@@ -94,7 +94,7 @@ public:
 
       // local bind
       S& s = se.first;
-      XEv& e = se.second;
+      //XEv& e = se.second;
 
 		while (a < level)
 		{
@@ -105,7 +105,7 @@ public:
 			if (m)
 			{
 				a++;
-				Component::safe_delete(m->applyUpdate(e, s));
+				Component::safe_delete(m->applyUpdate(se));
 			}
 			else
 				if(Component::warning)
@@ -114,7 +114,7 @@ public:
 			delete m;
 		}
 
-		evaluator.reevaluate(e, s); // updates 'e'
+		evaluator.reevaluate(se); // updates 'e'
 	}
 
 	virtual bool compatible(string s)
@@ -196,7 +196,7 @@ public:
 	void perturb(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria, int level) override
 	{
       S& s = se.first;
-      XEv& e = se.second;
+      //XEv& e = se.second;
       //
 		int a = 0; // number of appliable moves
 
@@ -219,7 +219,7 @@ public:
 			if (m)
 			{
 				a++;
-				Component::safe_delete(m->applyUpdate(e, s));
+				Component::safe_delete(m->applyUpdate(se));
 			}
 			else
 				if(Component::warning)
@@ -228,7 +228,7 @@ public:
 			delete m;
 		}
 
-		evaluator.reevaluate(e, s); // updates 'e'
+		evaluator.reevaluate(se); // updates 'e'
 	}
 
 	static string idComponent()

@@ -358,7 +358,6 @@ public:
 
       StopCriteria<> stopCriteria(timeES, Evaluation<>(targetValue));   
       std::optional<pair<SolutionHFM, Evaluation<>>> finalSol;
-      //auto sflag = es->search(finalSol, stopCriteria);
       es->search(finalSol, stopCriteria);
       
       //finalSol = EsCOpt->search(timeES); //Continous ES -- Deprecated

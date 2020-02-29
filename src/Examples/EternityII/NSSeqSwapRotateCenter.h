@@ -158,8 +158,11 @@ public:
       return new MoveSwapRotateCenter(x1, y1, rot2, x2, y2, rot1);
    }
 
-   Move<SolutionEtII>* applyUpdate(Evaluation<>& e, SolutionEtII& s) override
+   Move<SolutionEtII>* applyUpdate(pair<SolutionEtII, Evaluation<>>& se) override
    {
+      SolutionEtII& s = se.first;
+      Evaluation<>& e = se.second;
+
       RepEtII& rep = s.getR();
       int f = 0;
       if (rep(x1, y1).left == rep(x1, y1 - 1).right)

@@ -126,12 +126,12 @@ public:
 				//S* sCurrent = &s.clone();
 				//Evaluation<>* eCurrent = &e.clone();
             pair<S, XEv> current(se); // implicit clone??
-            S& sCurrent = current.first;
+            //S& sCurrent = current.first;
             XEv& eCurrent = current.second;
 
             // // TODO: fix this with unique_ptr
-				Component::safe_delete(move->applyUpdate(eCurrent, sCurrent));
-				evaluator.reevaluate(eCurrent, sCurrent);
+				Component::safe_delete(move->applyUpdate(current));
+				evaluator.reevaluate(current);
 
 				if (evaluator.betterThan(eCurrent, e))
 				{

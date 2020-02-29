@@ -17,7 +17,7 @@ Move<SolutionKP>* MoveBitFlip::apply(SolutionKP& s)
     return new MoveBitFlip(item); 
 }
 
-MoveCost<>* MoveBitFlip::cost(const Evaluation<>&, const SolutionKP& s, bool mayEstimate)
+MoveCost<>* MoveBitFlip::cost(const pair<SolutionKP, Evaluation<>>& se, bool mayEstimate)
 {
    return NULL;
    // Implement if a more efficient evaluation of the move is available

@@ -104,7 +104,7 @@ public:
 			if (move && move->canBeApplied(s))
 			{
             bool mayEstimate = false;
-				MoveCost<>& cost = *ev.moveCost(e, *move, s, mayEstimate);
+				MoveCost<>& cost = *ev.moveCost(*move, se, mayEstimate);
 
 				// test for current index
 #ifdef BRAND_NEW
@@ -113,8 +113,8 @@ public:
 				if (ev.betterThan(cost.cost()+e.evaluation(), eList[index]))
 #endif
 				{
-					Component::safe_delete(move->applyUpdate(e, s));
-					ev.reevaluate(e, s);
+					Component::safe_delete(move->applyUpdate(se));
+					ev.reevaluate(se);
 
 #ifdef BRAND_NEW
 					delete eList[index];

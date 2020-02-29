@@ -45,7 +45,7 @@ public:
 	{
 	}
 
-	MoveCost<>* cost(const Evaluation<>&, const SolutionEtII& s, bool allowEstimated) override
+	MoveCost<>* cost(const pair<SolutionEtII, Evaluation<>>& se, bool allowEstimated) override
 	{
 		double f = 0;
 

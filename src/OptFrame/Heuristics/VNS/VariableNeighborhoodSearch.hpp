@@ -59,19 +59,19 @@ public:
 
 	//virtual void improvement(S& s, Evaluation<>& e, double timelimit, double target_f) = 0;
 
-	virtual void shake(pair<S, XEv>& p, unsigned int k_shake, const StopCriteria<XEv>& sosc)
+	virtual void shake(pair<S, XEv>& se, unsigned int k_shake, const StopCriteria<XEv>& sosc)
 	{
       //double timelimit = sosc.timelimit;
       XEv target_f(sosc.target_f);
       //
-      S& s = p.first;
-      Evaluation<>& e = p.second;
+      S& s = se.first;
+      //Evaluation<>& e = se.second;
 		Move<S, XEv>* move = vshake.at(k_shake)->validRandomMove(s);
 		if(move)
 		{
-         Move<S, XEv>* rev = move->applyUpdate(e, s);
+         Move<S, XEv>* rev = move->applyUpdate(se);
 			Component::safe_delete(rev);
-			evaluator.reevaluate(e, s); // refresh 'e'
+			evaluator.reevaluate(se); // refresh 'e'
 			delete move;
 		}
 	}

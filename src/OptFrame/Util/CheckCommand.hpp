@@ -365,11 +365,13 @@ public:
 				return false;
 			}
 
+         pair<S, XEv> se(s, e); // TODO: check if copy is really good here.
+
 			// ==============
 			// fasterCost
 			Timer tMoveCostApplyDelta;
 			Evaluation<> evBeginFasterCost(e);
-			Move<S>& rev1 = *lEvaluator[ev]->applyMoveReevaluate(e, move, s);
+			Move<S>& rev1 = *lEvaluator[ev]->applyMoveReevaluate(move, se);
 			evtype e_end1 = e.evaluation();
 			// TODO: check outdated status
 			// TODO: if(e.outdated), it means that user did not implement Move::applyMoveReevaluate(e,R,ADS)!
@@ -404,7 +406,8 @@ public:
 			Timer tMoveCostApplyRealDelta;
 			bool oldAllowCostsStatus = lEvaluator[ev]->getAllowCosts();
 			lEvaluator[ev]->setAllowCosts(false);
-			MoveCost<>* mcRealFasterCost = lEvaluator[ev]->moveCost(e, move, s);
+         
+			MoveCost<>* mcRealFasterCost = lEvaluator[ev]->moveCost(move, se);
 			lEvaluator[ev]->setAllowCosts(oldAllowCostsStatus);
 			evtype realFasterCost = mcRealFasterCost->cost();
 			delete mcRealFasterCost;
@@ -429,7 +432,7 @@ public:
 			MoveCost<>* cost = nullptr;
 
 			if (lEvaluator[ev]->getAllowCosts())
-				cost = move.cost(e, s, false);
+				cost = move.cost(se, false);
 
 			message(lEvaluator.at(ev), iter, "cost() calculated!");
 
@@ -495,7 +498,7 @@ public:
 						MoveCost<>* cost2 = nullptr;
 						if (lEvaluator[ev]->getAllowCosts())
 						{
-							cost2 = move2.cost(e, s, false);
+							cost2 = move2.cost(se, false);
 							if (cost2)
 							{
 								lEvaluator[ev]->betterThan(*cost, *cost2);

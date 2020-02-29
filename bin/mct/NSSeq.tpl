@@ -57,7 +57,7 @@ public:
 
     Move< Solution$project >* apply(Solution$project& rep) override;
     
-    MoveCost<>* cost(const Evaluation<>&, const Solution$project& s, bool allowEstimated) override;
+    MoveCost<>* cost(const pair< Solution$project , Evaluation<>>& se, bool allowEstimated) override;
 };
 
 

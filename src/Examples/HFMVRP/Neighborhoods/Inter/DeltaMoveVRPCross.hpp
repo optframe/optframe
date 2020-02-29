@@ -80,7 +80,7 @@ public:
 	 }
 	 */
 
-	pair<double, double>* cost(const Evaluation<>&, const RepHFMVRP& rep, const AdsHFMVRP& ads)
+	pair<double, double>* cost(const pair<SolutionHFMVRP, Evaluation<>>& se, const AdsHFMVRP& ads)
 	{
 		double f = 0;
 

@@ -35,11 +35,13 @@ using namespace scannerpp;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class MultiEvaluator: public MultiDirection
+// MultiEvaluator is not a REAL evaluator... a bunch/pack of evaluators... TODO: unify
+
+template<XSolution S, XEvaluation XEv = Evaluation<> > //, XSearch<S, XEv> XSH = pair<S, XEv>> // cannot do, because MultiEvaluation is not a valid evaluation
+class MultiEvaluator: public MultiDirection  //, public GeneralEvaluator<S, XEv, XSH> 
 {
 protected:
-	vector<Evaluator<S, XEv>*> sngEvaluators; // single evaluators
+	vector<Evaluator<S, XEv, pair<S, XEv>>*> sngEvaluators; // single evaluators
 	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
 
 public:
@@ -139,7 +141,11 @@ public:
 			//mev[i] = std::move(e);
          //
          Evaluation<>& e = mev[i]; 
-			sngEvaluators[i]->reevaluate(e, s);
+
+         pair<S, XEv> pse(s, e); // TODO: we should AVOID this 's' and 'e' copy... by keeping s,e together.
+			sngEvaluators[i]->reevaluate(pse);
+         e = std::move(pse.second); // TODO: verify if this works
+
 			//mev[i] = std::move(e);
 		}
 	}

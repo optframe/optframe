@@ -56,7 +56,7 @@ public:
 	virtual void searchFrom(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) override
 	{
       S& s = se.first;
-      XEv& e = se.second;
+      //XEv& e = se.second;
 		NSIterator<S, XEv>& it = *nsSeq.getIterator(s);
 		string bestMoveId = "";
 		it.first();
@@ -85,7 +85,7 @@ public:
 
 			if (move->canBeApplied(s))
 			{
-				if(eval.acceptsImprove(*move,s,e))
+				if(eval.acceptsImprove(*move,se))
 				{
 					delete move;
 					delete &it;

@@ -51,7 +51,7 @@ public:
 
    Move<SolutionKP>* apply(SolutionKP& s) override;
 
-   MoveCost<>* cost(const Evaluation<>&, const SolutionKP& s, bool mayEstimate) override;
+   MoveCost<>* cost(const pair<SolutionKP, Evaluation<>>& se, bool mayEstimate) override;
 };
 
 class NSIteratorBitFlip : public NSIterator<SolutionKP>

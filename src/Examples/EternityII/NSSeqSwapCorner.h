@@ -82,8 +82,11 @@ public:
       return new MoveSwapCorner(x2, y2, x1, y1);
    }
 
-   Move<SolutionEtII>* applyUpdate(Evaluation<>& e, SolutionEtII& s) override
+   Move<SolutionEtII>* applyUpdate(pair<SolutionEtII, Evaluation<>>& se) override
    {
+      SolutionEtII& s = se.first;
+      Evaluation<>& e = se.second;
+
       RepEtII& rep = s.getR();
       int f = 0;
 

@@ -64,7 +64,7 @@ public:
 	virtual void searchFrom(pair<S, XEv>& se, const StopCriteria<XEv>& sosc) override
 	{
       S& s = se.first;
-      XEv& e = se.second;
+      //XEv& e = se.second;
 
       //double timelimit = sosc.timelimit;
       //double target_f = sosc.target_f;
@@ -119,7 +119,7 @@ public:
 				}
 			}
 
-			bestCost = eval.moveCost(e, *bestMove, s);
+			bestCost = eval.moveCost(*bestMove, se);
 			if (eval.isImprovement(*bestCost))
 			{
 				it.next();
@@ -147,14 +147,13 @@ public:
 		}
 
 
-		//MoveCost<>* bestCost = &eval.moveCost(e, *bestMove, s);
 		//it.next();
 		while (!it.isDone())
 		{
 			Move<S, XEv>* move = it.current();
 			if (move->canBeApplied(s))
 			{
-				MoveCost<>* cost = eval.moveCost(e, *move, s);
+				MoveCost<>* cost = eval.moveCost(*move, se);
 
 				if (eval.betterThan(*cost, *bestCost))
 				{
@@ -185,9 +184,9 @@ public:
 				// TODO: have to test if bestMove is ACTUALLY an improvement move...
 			}
 
-			Component::safe_delete(bestMove->applyUpdate(e, s));
+			Component::safe_delete(bestMove->applyUpdate(se));
 
-			eval.reevaluate(e, s); // updates 'e'
+			eval.reevaluate(se); // updates 'e'
 			//e.setLocalOptimumStatus(bestMove->id(), false); //set NS 'id' out of Local Optimum
 		}
 		else{

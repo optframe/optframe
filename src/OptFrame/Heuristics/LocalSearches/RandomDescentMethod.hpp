@@ -72,7 +72,7 @@ public:
 
 			if (move.canBeApplied(s))
 			{
-				cost = evaluator.moveCost(e, move, s);
+				cost = evaluator.moveCost(move, se);
 			}
 			else
 			{
@@ -85,8 +85,8 @@ public:
 
 			if (cost && evaluator.isImprovement(*cost))
 			{
-				Component::safe_delete(move.applyUpdate(e, s));
-				evaluator.reevaluate(e, s);
+				Component::safe_delete(move.applyUpdate(se));
+				evaluator.reevaluate(se);
 				iter = 0;
 			}
 

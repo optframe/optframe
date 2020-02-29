@@ -45,8 +45,11 @@ public:
 	{
 	}
 
-	MoveCost<>* cost(const Evaluation<>&, const SolutionEtII& s, bool allowEstimated) override
+	MoveCost<>* cost(const pair<SolutionEtII, Evaluation<>>& se, bool allowEstimated) override
 	{
+      const SolutionEtII& s = se.first;
+      //const Evaluation<>& e = se.second;
+
       const RepEtII& rep = s.getR();
 		//considering the puzzle huge than 2x2
 		// corner0 -------------------------------- corner1

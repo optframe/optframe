@@ -76,8 +76,10 @@ public:
       return new MoveSwap(c2, c1, tsp);
    }
 
-   Move<SolutionTSP>* applyUpdate(Evaluation<>& e, SolutionTSP& s) override
+   Move<SolutionTSP>* applyUpdate(pair<SolutionTSP, Evaluation<>>& se) override
    {
+      SolutionTSP& s = se.first;
+      Evaluation<>& e = se.second;
       RepTSP& rep = s.getR();
       int k1, k2;
 
@@ -135,8 +137,9 @@ public:
       return &rev;
    }
 
-   MoveCost<>* cost(const Evaluation<>& e, const SolutionTSP& s, bool allowEstimated) override
+   MoveCost<>* cost(const pair<SolutionTSP, Evaluation<>>& se, bool allowEstimated) override
    {
+      const SolutionTSP& s = se.first;
       const RepTSP& rep = s.getR();
       int k1, k2;
 

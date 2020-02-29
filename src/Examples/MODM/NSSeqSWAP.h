@@ -68,8 +68,10 @@ public:
       return ((usedProduct > 0) && budget && differentOffers && !c1Saturado && !c2Saturado);
    }
 
-   MoveCost<>* cost(const Evaluation<>&, const SolutionMODM& s, bool allowEstimate) override
+   MoveCost<>* cost(const pair<SolutionMODM, Evaluation<>>& se, bool allowEstimate) override
    {
+      const SolutionMODM& s = se.first;
+      
       const RepMODM& rep = s.getR();
       const AdsMODM& ads = s.getADS();
       //

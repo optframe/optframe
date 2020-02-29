@@ -34,6 +34,8 @@
 
 #include "Solutions/ESolution.hpp" // TODO: remove.. just to enforce compilation errors.
 
+#include "GeneralEvaluator.hpp"
+
 //#define OPTFRAME_EPSILON 0.0001
 
 using namespace std;
@@ -56,9 +58,9 @@ namespace optframe {
  */
 
 // TODO: use XEv here
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = pair<S, XEv>>
 //template<XSolution S, XEvaluation XEv> // require explicitly XEv here...
-class Evaluator : public Direction
+class Evaluator : public Direction, public GeneralEvaluator<S, XEv, XSH>
 {
 
 protected:
@@ -102,8 +104,11 @@ public:
    virtual XEv evaluate(const S&) = 0;
 
    // TODO: verify if 'e.outdated' must be required at all times, or just specific cases
-   virtual void reevaluate(XEv& e, const S& s)
+   //virtual void reevaluate(XEv& e, const S& s) override
+   virtual void reevaluate(XSH& se) override
    {
+      S& s = se.first;
+      XEv& e = se.second;
       if (e.outdated) {
          XEv e1 = evaluate(s);
          e = std::move(e1);
@@ -113,14 +118,15 @@ public:
 public:
    // Apply movement considering a previous XEv => Faster (used on CheckCommand and locally)
    // Update XEv 'e'
-   Move<S, XEv>* applyMoveReevaluate(XEv& e, Move<S, XEv>& m, S& s)
+   //Move<S, XEv>* applyMoveReevaluate(XEv& e, Move<S, XEv>& m, S& s)
+   Move<S, XEv>* applyMoveReevaluate(Move<S, XEv>& m, pair<S, XEv>& se)
    {
       // apply move and get reverse move
-      Move<S, XEv>* rev = m.applyUpdate(e, s);
+      Move<S, XEv>* rev = m.applyUpdate(se);
       // for now, must be not nullptr
       assert(rev != nullptr);
       // consolidate 'outdated' XEv data on 'e'
-      reevaluate(e, s);
+      reevaluate(se);
 
       // create pair
       return rev;
@@ -141,14 +147,15 @@ public:
    }
 
    // Movement cost based on reevaluation of 'e'
-   MoveCost<>* moveCost(XEv& e, Move<S, XEv>& m, S& s, bool allowEstimated = false)
+   //MoveCost<>* moveCost(XEv& e, Move<S, XEv>& m, S& s, bool allowEstimated = false)
+   MoveCost<>* moveCost(Move<S, XEv>& m, XSH& se, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
       // TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
 
       MoveCost<>* p = nullptr;
       if (allowCosts) {
-         p = m.cost(e, s, allowEstimated);
+         p = m.cost(se, allowEstimated);
       }
 
       // if p not null, do not update 's' => much faster (using cost)
@@ -160,12 +167,14 @@ public:
          // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
          assert(m.hasReverse());
 
+         XEv& e = se.second;
+
          XEv ev_begin(e); // copy
          //XEv ev_begin = e; //TODO: VITOR removing last evaluation
          // saving 'outdated' status to avoid inefficient re-evaluations
          //			bool outdated = e.outdated;
          // apply move to both XEv and Solution
-         Move<S, XEv>* rev = applyMoveReevaluate(e, m, s);
+         Move<S, XEv>* rev = applyMoveReevaluate(m, se);
          // get final values
          pair<evtype, evtype> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
          // get final values for lexicographic part
@@ -183,6 +192,8 @@ public:
          //			// if XEv wasn't 'outdated' before, restore its previous status
          //			if (!outdated)
          //				e.outdated = outdated;
+
+         S& s = se.first;
 
          Move<S, XEv>* ini = rev->apply(s);
          // for now, must be not nullptr
@@ -256,15 +267,18 @@ public:
 
    // used on FirstImprovement
    // Accept and apply move if it improves parameter moveCost
-   bool acceptsImprove(Move<S, XEv>& m, S& s, XEv& e, MoveCost<>* mc = nullptr, bool allowEstimated = false)
+   bool acceptsImprove(Move<S, XEv>& m, pair<S, XEv>& se, MoveCost<>* mc = nullptr, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
+
+      S& s = se.first;
+      XEv& e = se.second;
 
       // initialize MoveCost pointer
       MoveCost<>* p = nullptr;
       // try to get a cost (should consider estimated moves in the future)
       if (allowCosts) {
-         p = m.cost(e, s, allowEstimated);
+         p = m.cost(se, allowEstimated);
       }
 
       // if p not null => much faster (using cost)
@@ -304,7 +318,7 @@ public:
             alt_begin[i].second = e.getAlternativeCosts()[i].second;
          }
          // apply move to both XEv and Solution
-         Move<S, XEv>* rev = applyMoveReevaluate(e, m, s);
+         Move<S, XEv>* rev = applyMoveReevaluate(m, se);
          // TODO: check outdated and estimated!
          MoveCost mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1, false, false);
          // guarantee that alternative costs have same size

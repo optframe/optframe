@@ -83,13 +83,12 @@ public:
 
 			if (move->canBeApplied(s))
 			{
-				MoveCost<>* eCost = &eval.moveCost(e, *move, s); // estimated cost
+				MoveCost<>* eCost = &eval.moveCost(*move, se); // estimated cost
 
 				if(eval.isImprovement(*eCost))
 				{
 					if(eCost->isEstimated())
 					{
-						//double cost = eval.moveCost(e, *move, s); // real cost
 						// TODO: find a real cost value...
 					}
 
