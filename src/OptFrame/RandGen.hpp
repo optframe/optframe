@@ -82,10 +82,12 @@ public:
    }
 
    // sets the random generator seed (uint32)
-   void setSeed(unsigned _seed)
+   RandGen& setSeed(unsigned _seed)
    {
       seed = _seed;
       initialize();
+      // returning self-reference
+      return *this;
    }
 
 public:

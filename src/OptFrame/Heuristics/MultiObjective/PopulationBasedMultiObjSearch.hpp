@@ -53,7 +53,7 @@ public:
 	{
 		vector<double> best(mDir.nObjectives);
 		for(unsigned i = 0; i < mDir.nObjectives; i++)
-			best[i] = mDir.worst(i);
+			best[i] = mDir.nadir(i);
 		return best;
 	}
 
@@ -136,7 +136,7 @@ public:
 
 		vector<double> bestObj(mDir.nObjectives);
 		for(unsigned i = 0; i < bestObj.size(); i++)
-			bestObj[i] = mDir.worst(i);
+			bestObj[i] = mDir.nadir(i);
 
 		while((timer.now() < timelimit) && (t <= maxGen) && (tImp <= maxIter))
 		{
@@ -233,7 +233,7 @@ public:
 	{
 		vector<double> best(mevr.nObjectives);
 		for(unsigned i = 0; i < best.size(); i++)
-			best[i] = mevr.worst(i);
+			best[i] = mevr.nadir(i);
 
 		for(unsigned s = 0; s < P.size(); s++)
 			if(!P[s]->mev) // not evaluated (nullptr)

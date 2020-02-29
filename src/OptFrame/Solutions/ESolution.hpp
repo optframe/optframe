@@ -129,7 +129,7 @@ public:
       // nothing to destroy
 	}
 
-   optframe::totally_ordered evaluation()
+   optframe::objval evaluation()
    {
       return second.evaluation();
    }

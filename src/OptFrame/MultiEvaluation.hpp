@@ -30,7 +30,7 @@ namespace optframe
 
 // TODO: pass ObjType here
 // TODO: convert MultiEvaluation<> to XEvaluation model too
-template<optframe::totally_ordered ObjType = evtype>
+template<optframe::objval ObjType = evtype>
 class MultiEvaluation: public Component
 {
 protected:

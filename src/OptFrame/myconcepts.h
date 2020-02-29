@@ -49,10 +49,32 @@ concept bool equality_comparable = __WeaklyEqualityComparableWith<T, T>;
 //
 
 
-// partial order only requires basic comparison >= and <=, but it's not
-// guaranteed that it's a total order... cannot guarantee it here just on operators
+// partial order only requires basic comparison >= and <=, but it's 
+// not guaranteed that it's a total order... cannot guarantee it here just on operators
+// One should guarantee that all elements are comparable... can we guarantee that?
+//
+// Total Order (for binary relation <=): antisymmetric, transitive, and connex relation
+// antisymmetry: if a<=b and b<=a, then a=b
+// transitive: if a<=b and b <= c, then a <= b
+// connexity: a <= b or b <= a 
+
+// weak dominance is anti-symmetric
+// weak dominance is transitive
+// weak dominance DOESN'T have connexity, e.g., see (min,min): (1,5) and (2,4)
+
+// Partial Order (for binary relation <=>): antisymmetric, transitive, PLUS (reflexive or irreflexive)
+// if 'reflexive', a <=> a is always valid
+// if 'irreflexive', a <=> a is always false
+// for 'reflexive' cases, we have '<=' syntax.
+// for 'irreflexive' cases, we have '<' syntax.
+
+// weak dominance is always 'reflexive'.
+
+
 template <class T>
-concept bool partially_ordered =
+//concept bool totally_ordered =
+//concept bool partially_ordered =
+concept bool comparable =
   optframe::equality_comparable<T> &&
   requires(const std::remove_reference_t<T>& a,
            const std::remove_reference_t<T>& b) {
@@ -62,13 +84,21 @@ concept bool partially_ordered =
     { a >= b } -> bool;
   };
 
+// the 'comparable' naming used to be 'totally_ordered' (as C++ proposal), but it's neither partial or total...
+//
+// for partial order, only 'weak partial' (<=) and 'strong partial' (<) would be necessary
+// the rest can be defined in terms of < and <=.
+// a < b
+// a <= b
+// a > b  === !(a <= b)
+// a >= b === !(a < b)
+
+
 // Total Order: a Partial Order which is valid for all possible objects (not verified here)
 // Partial Order (requires being transitive, antisymmetric) may be two kinds: weak or strong.
-// a Weak Partial Order is ALWAYS valid to itself (reflexive), and a Strong is NEVER (irreflexive).
+// a Weak/Non-Strict Partial Order is ALWAYS valid to itself (reflexive), and a Strong/Strict Partial is NEVER (irreflexive).
 
 // reference: https://en.cppreference.com/w/cpp/concepts/totally_ordered
-template <class T>
-concept bool totally_ordered = partially_ordered<T>; // just to emphasize
 //concept bool totally_ordered =
 //  optframe::equality_comparable<T> &&
 //  requires(const std::remove_reference_t<T>& a,
@@ -83,11 +113,12 @@ concept bool totally_ordered = partially_ordered<T>; // just to emphasize
 // TODO: insert some 'zero' concept here..  (HasZero)
 // 'abs' concept is also important to perform safe comparisons (HasAbs)
 // basic arithmetic is currently just +, - and *.  (division was never required to this day)
-// will require totally_ordered concept because everything (we know) depends on it
 // 'basic_arithmetics_assign' includes assignment operators +=, -= (weight scalar *= was dropped for now, too hard)
 template <class T>
 concept bool basic_arithmetics_assign = 
-  optframe::totally_ordered<T> &&
+// optframe::totally_ordered<T> &&
+//  optframe::comparable<T> &&
+  //
 //  requires(const std::remove_reference_t<T>& a,
   requires(std::remove_reference_t<T>& a,
            const std::remove_reference_t<T>& b) {
@@ -171,7 +202,7 @@ public:
 };
 
 // testing total order for some random classes
-template<optframe::totally_ordered T>
+template<optframe::comparable T>
 struct MyConceptsTestTotalOrder
 {
 };

@@ -45,8 +45,10 @@ Things are still moving, more big changes are coming.
 
 ### Search Space
 
-Search Space is officially defined as the pair of Solution Space and Evaluation/Objective Space.
+Search Space is defined on OptFrame as the pair of Solution* Space and Objective Space.
 It also accepts a powerset of Solution Space together with powerset of Objective Space (for population/multiobjective search).
+
+(*) Solution Space is also called Decision Space by some authors: _(Lust, T., & Teghem, J. (2009). Two-phase Pareto local search for the biobjective traveling salesman problem. Journal of Heuristics, 16(3), 475–510. doi:10.1007/s10732-009-9103-9)_.
 
 ### InitialSearch
 

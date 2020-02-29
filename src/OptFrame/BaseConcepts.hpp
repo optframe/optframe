@@ -93,6 +93,26 @@ concept bool XRSolution = HasGetR<Self, R> && XSolution<Self>;
 
 // ============================
 
+namespace optframe
+{
+// defining 'objval' concept: objective value must have +/- (for costs) and comparisons
+template <class T>
+concept bool objval = 
+  optframe::basic_arithmetics<T> && optframe::comparable<T>;
+} // namespace optframe
+
+// defining 'evaluation' concept: something that has +/- and some directed strong/weak comparison (betterThan/betterOrEquals)
+template <class Self>
+concept bool evaluation = 
+  optframe::basic_arithmetics<Self> && 
+      requires(Self e) 
+      {
+         { e.betterThan() } -> bool;
+         { e.betterOrEquals() } -> bool;
+      };
+
+//------
+
 template <class Self>
 concept bool HasGetObj = requires(Self a)
 {
@@ -100,7 +120,7 @@ concept bool HasGetObj = requires(Self a)
       //a.getObj()
       a.evaluation() // keeping standard name since OptFrame's early times
    }
-   ->optframe::totally_ordered; // note that, if 'ObjType' becomes complex, one must return a moveable copy, not reference of internal value
+   ->optframe::objval; // note that, if 'ObjType' becomes complex, one must return a moveable copy, not reference of internal value
    // any totally ordered output is fine! (double, int, ParetoFront , etc...)
 };
 

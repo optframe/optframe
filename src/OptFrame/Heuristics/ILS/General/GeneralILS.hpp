@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_MULTIOBJECTIVEILS_HPP_
-#define OPTFRAME_MULTIOBJECTIVEILS_HPP_
+#ifndef OPTFRAME_GENERAL_ILS_HPP_
+#define OPTFRAME_GENERAL_ILS_HPP_
 
 #include <algorithm>
 
@@ -30,12 +30,14 @@
 #include "../../../NSSeq.hpp"
 #include "../../../Pareto.hpp"
 
-#include "MOILS.h"
+#include "../ILS.h"
 
 namespace optframe {
 
-template<class H, XSolution S, XEvaluation XEv = Evaluation<>>
-class MultiObjILS : public MOILS, public MultiObjSearch<S, XEv>
+// General ILS intends to work as both SingleObj ILS and MultiObj ILS
+
+template<class H, XSolution S, XEvaluation XEv, XSearch XSH>
+class GeneralILS : public ILS, public GeneralSearch<S, XEv, XSH>
 {
 
 private:
@@ -161,4 +163,4 @@ public:
 };
 }
 
-#endif /*OPTFRAME_MULTIOBJECTIVEILS_HPP_*/
+#endif /*OPTFRAME_GENERAL_ILS_HPP_*/

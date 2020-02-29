@@ -134,9 +134,15 @@ public:
 
 	// ============ estimation =============
 
-	inline double worst(unsigned obj)
+   inline double ideal(unsigned obj)
 	{
-		return vDir[obj]->worst();
+		return vDir[obj]->ideal();
+	}
+
+	//inline double worst(unsigned obj)
+   inline double nadir(unsigned obj)
+	{
+		return vDir[obj]->nadir();
 	}
 
 	inline double min(unsigned obj)

@@ -221,13 +221,24 @@ public:
 
 	// ============ estimation =============
 
-	inline evtype worst()
+   inline evtype ideal()
+	{
+		if(isMinimization())
+			return min();
+		else
+			return max();
+	}
+
+	//inline evtype worst()
+   inline evtype nadir()
 	{
 		if(isMinimization())
 			return max();
 		else
 			return min();
 	}
+
+
 
 	// bad approximation!
 	virtual inline evtype min()
