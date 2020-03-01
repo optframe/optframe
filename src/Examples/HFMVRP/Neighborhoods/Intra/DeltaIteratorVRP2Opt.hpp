@@ -64,13 +64,15 @@ public:
 				{
 					for (int p2 = p1 + 2; p2 < rep.at(r).size(); p2++)
 					{
-						moves.push_back(new MOVE(r, p1, p2, p));
+                  uptr<Move<SolutionHFMVRP>> m1(new MOVE(r, p1, p2, p));
+						moves.push_back(std::move(m1));
 					}
 				}
 			}
+
 		if (moves.size() > 0)
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector! If not right, TODO implement clone() on Move class
 		}
 		else
 			m = NULL;
@@ -81,7 +83,7 @@ public:
 		index++;
 		if (index < moves.size())
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector! If not right, TODO implement clone() on Move class
 		}
 		else
 			m = NULL;
@@ -93,7 +95,7 @@ public:
 		return m == NULL;
 	}
 
-	Move<SolutionHFMVRP>* current() override
+	uptr<Move<SolutionHFMVRP>> current() override
 	{
 		if (isDone())
 		{
@@ -102,7 +104,9 @@ public:
 			exit(1);
 		}
 
-		return m;
+      uptr<Move<SolutionHFMVRP>> m2(std::move(m));
+      m = nullptr;
+		return m2;
 	}
 };
 

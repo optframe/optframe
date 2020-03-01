@@ -170,7 +170,7 @@ class NSIteratorRoutesShift: public NSIterator<vector<vector<T> > , DS >
 
 private:
 	int n1, n2; // number of elements shifted between routes
-	vector<MOVE*> moves;
+	vector<uptr<Move<S>>> moves;
 
 	MOVE* m;
 
@@ -208,13 +208,13 @@ public:
 						for (int e2 = 0; e2 <= (int) routes[r2].size() - n2; e2++)
 							for (int i1 = 0; i1 <= (int) routes[r1].size() - n1; i1++)
 								for (int i2 = 0; i2 <= (int) routes[r2].size() - n2; i2++)
-									moves.push_back(new MOVE(r1, r2, e1, e2, n1, n2, i1, i2));
+									moves.push_back(uptr<Move<SolutionHFMVRP>>(new MOVE(r1, r2, e1, e2, n1, n2, i1, i2)));
 		else
 			for (int r1 = 0; r1 < routes.size(); r1++)
 				for (int r2 = (r1 == 0) ? 1 : 0; r2 < routes.size(); r2 = (r2 + 1 == r1) ? r2 += 2 : r2 += 1)
 					for (int e1 = 0; e1 <= (int) routes[r1].size() - n1; e1++)
 						for (int i2 = 0; i2 <= (int) routes[r2].size(); i2++)
-							moves.push_back(new MOVE(r1, r2, e1, 0, n1, n2, 0, i2));
+							moves.push_back(uptr<Move<SolutionHFMVRP>>(new MOVE(r1, r2, e1, 0, n1, n2, 0, i2)));
 
 		if (moves.size() > 0)
 		{

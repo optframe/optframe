@@ -38,7 +38,7 @@ class NSIteratorTSPSwap: public NSIterator<S, XEv>
 
 protected:
 	//MOVE* m;
-   uptr<MOVE> m;
+   uptr<Move<S>> m;
 	int p1, p2; // position 1 and position 2, respectively
 	int n;
 

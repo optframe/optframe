@@ -127,7 +127,7 @@ class NSIteratorVRPSwap2_1: public NSIterator<vector<vector<T> > >
 
 private:
 	MOVE* m;
-	vector<MOVE*> moves;
+	vector<uptr<Move<S>>> moves;
 	int index; //index of moves
 	const Routes& r;
 
@@ -162,8 +162,8 @@ public:
 						{
 							for (int c2 = 0; c2 < r.at(r2).size(); c2++)
 							{
-								moves.push_back(new MOVE(r1, r2, c1, c2, false,p));//normal
-								moves.push_back(new MOVE(r1, r2, c1, c2, true,p));//reverse
+								moves.push_back(uptr<Move<SolutionHFMVRP>>(new MOVE(r1, r2, c1, c2, false,p)));//normal
+								moves.push_back(uptr<Move<SolutionHFMVRP>>(new MOVE(r1, r2, c1, c2, true,p)));//reverse
 							}
 						}
 					}
@@ -172,7 +172,7 @@ public:
 		}
 		if (moves.size() > 0)
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
@@ -183,7 +183,7 @@ public:
 		index++;
 		if (index < moves.size())
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;

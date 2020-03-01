@@ -38,8 +38,11 @@ private:
 
 	typedef vector<T> Route;
 
-	MoveTSPOr1Opt<T, DS >* m;
-	vector<MoveTSPOr1Opt<T,DS >*> moves;
+	//MoveTSPOr1Opt<T, DS >* m;
+	//vector<uptr<MoveTSPOr1Opt<T,DS >>> moves;
+   uptr<Move<SolutionHFM>> m; // general move
+   vector<uptr<Move<SolutionHFM>>> moves; // general moves
+
 	int index; //index of moves
 	const Route& rep;
 
@@ -65,14 +68,14 @@ public:
 			{
 				if ((c != pos) && (c + 1 != pos))
 				{
-					moves.push_back(new MoveTSPOr1Opt<T, DS >(c, pos));
+					moves.push_back(uptr<Move<SolutionHFM>>(new MoveTSPOr1Opt<T, DS >(c, pos)));
 				}
 			}
 		}
 
 		if (moves.size() > 0)
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
@@ -83,7 +86,7 @@ public:
 		index++;
 		if (index < moves.size())
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;

@@ -72,18 +72,19 @@ public:
 
 		while ((iter < iterMax) && ((t.now() - stopCriteria.timelimit) < 0))
 		{
-			Move<S, XEv>* move = ns.randomMove(s);
+			uptr<Move<S, XEv>> move = ns.randomMove(s);
 			if (move->canBeApplied(s))
 			{
 				//Move and mark sMev as outdated
-				Move<S, XEv>* mov_rev = move->apply(s);
+				uptr<Move<S, XEv>> mov_rev = move->apply(s);
 
 				//Call method to reevaluate sMev and try to include TODO
 //				pManager->addSolutionWithMEVReevaluation(p, *s,*sMev);
 
 				pManager.addSolution(p, s);
-				delete mov_rev->apply(s);
-				delete mov_rev;
+				//delete mov_rev->apply(s);
+            mov_rev->apply(s);
+				//delete mov_rev;
 
 				//			vector<MoveCost<>*> vMoveCost;
 //			for (int ev = 0; ev < v_e.size(); ev++)
@@ -94,7 +95,7 @@ public:
 //			if (itsWorthAdding)
 
 			}
-			delete move;
+			//delete move;
 
 			iter++;
 		}

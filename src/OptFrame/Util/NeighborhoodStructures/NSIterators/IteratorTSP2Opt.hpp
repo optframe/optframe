@@ -38,7 +38,7 @@ class NSIteratorTSP2Opt: public NSIterator<S, XEv>
 	typedef vector<T> Route;
 
 protected:
-	uptr<MOVE> m;
+	uptr<Move<S>> m;
 
 	int p1, p2; // position 1 and position 2, respectively
 	const Route& r;

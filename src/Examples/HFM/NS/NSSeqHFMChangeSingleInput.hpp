@@ -58,7 +58,7 @@ public:
 		return minimumLag && maxLagCheck && notNull1 && notNull2;
 	}
 
-	Move<SolutionHFM>* apply(SolutionHFM& s) override
+	uptr<Move<SolutionHFM>> apply(SolutionHFM& s) override
 	{
       RepHFM& rep = s.getR();
 		if (!sign)
@@ -69,7 +69,7 @@ public:
 //		if (rep.singleIndex[rule].second > rep.earliestInput)
 //			rep.earliestInput = rep.singleIndex[rule].second;
 
-		return new MoveHFMChangeSingleInput(rule, !sign, maxLag, maxUpperLag, X);
+		return uptr<Move<SolutionHFM>>(new MoveHFMChangeSingleInput(rule, !sign, maxLag, maxUpperLag, X));
 	}
 
 	virtual bool operator==(const Move<SolutionHFM>& _m) const
@@ -89,8 +89,10 @@ public:
 class NSIteratorHFMChangeSingleInput: public NSIterator<SolutionHFM>
 {
 private:
-	MoveHFMChangeSingleInput* m;
-	vector<MoveHFMChangeSingleInput*> moves;
+	//MoveHFMChangeSingleInput* m;
+   uptr<Move<SolutionHFM>> m;
+	//vector<uptr<MoveHFMChangeSingleInput>> moves;
+   vector<uptr<Move<SolutionHFM>>> moves; // general naming
 	int index;
 	const RepHFM& rep;
 	vector<int> vMaxLag, vMaxUpperLag;
@@ -105,8 +107,8 @@ public:
 
 	virtual ~NSIteratorHFMChangeSingleInput()
 	{
-		for (int i = index + 1; i < (int) moves.size(); i++)
-			delete moves[i];
+		//for (int i = index + 1; i < (int) moves.size(); i++)
+		//	delete moves[i];
 	}
 
 	virtual void first() override
@@ -118,12 +120,12 @@ public:
 			int expVariable = rep.singleIndex[rule].first;
 			int maxLag = vMaxLag[expVariable];
 			int maxUpperLag = vMaxUpperLag[expVariable];
-			moves.push_back(new MoveHFMChangeSingleInput(rule, sign, maxLag, maxUpperLag, X));
-			moves.push_back(new MoveHFMChangeSingleInput(rule, !sign, maxLag, maxUpperLag, X));
+			moves.push_back(uptr<Move<SolutionHFM>>(new MoveHFMChangeSingleInput(rule, sign, maxLag, maxUpperLag, X)));
+			moves.push_back(uptr<Move<SolutionHFM>>(new MoveHFMChangeSingleInput(rule, !sign, maxLag, maxUpperLag, X)));
 		}
 
 		if (moves.size() > 0)
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		else
 			m = nullptr;
 	}
@@ -132,7 +134,7 @@ public:
 	{
 		index++;
 		if (index < (int) moves.size())
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		else
 			m = nullptr;
 	}
@@ -142,7 +144,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual Move<SolutionHFM>* current() override
+	virtual uptr<Move<SolutionHFM>> current() override
 	{
 		if (isDone())
 		{
@@ -151,7 +153,10 @@ public:
 			exit(1);
 		}
 
-		return m;
+      uptr<Move<SolutionHFM>> m2 = std::move(m);
+      m = nullptr;
+
+		return m2;
 	}
 
 };
@@ -174,7 +179,7 @@ public:
 	{
 	}
 
-	virtual Move<SolutionHFM>* randomMove(const SolutionHFM& s) override
+	virtual uptr<Move<SolutionHFM>> randomMove(const SolutionHFM& s) override
 	{
       const RepHFM& rep = s.getR();
 		int MAXCHANGE = 5;
@@ -183,7 +188,7 @@ public:
 		if (rep.singleIndex.size() > 0)
 			rule = rg.rand(rep.singleIndex.size());
 		else
-			return new MoveHFMChangeSingleInput(-1, -1, -1, -1, -1);
+			return uptr<Move<SolutionHFM>>(new MoveHFMChangeSingleInput(-1, -1, -1, -1, -1));
 
 		int sign = rg.rand(2);
 
@@ -191,12 +196,12 @@ public:
 		int maxLag = vMaxLag[expVariable];
 		int maxUpperLag = vMaxUpperLag[expVariable];
 
-		return new MoveHFMChangeSingleInput(rule, sign, maxLag, maxUpperLag, X); // return a random move
+		return uptr<Move<SolutionHFM>>(new MoveHFMChangeSingleInput(rule, sign, maxLag, maxUpperLag, X)); // return a random move
 	}
 
-	virtual NSIterator<SolutionHFM>* getIterator(const SolutionHFM& s) override
+	virtual uptr<NSIterator<SolutionHFM>> getIterator(const SolutionHFM& s) override
 	{
-		return new NSIteratorHFMChangeSingleInput(s.getR(), vMaxLag, vMaxUpperLag); // return an iterator to the neighbors of 'rep'
+		return uptr<NSIterator<SolutionHFM>>(new NSIteratorHFMChangeSingleInput(s.getR(), vMaxLag, vMaxUpperLag)); // return an iterator to the neighbors of 'rep'
 	}
 
 	virtual string toString() const override

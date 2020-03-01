@@ -65,7 +65,7 @@ public:
 					{
 						if ((c != pos) && (c + 1 != pos))
 						{
-							moves.push_back(new MOVE(r, c, pos, p));
+							moves.push_back(uptr<Move<SolutionHFMVRP>>(new MOVE(r, c, pos, p)));
 						}
 					}
 				}
@@ -73,7 +73,7 @@ public:
 
 		if (moves.size() > 0)
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector..
 		}
 		else
 			m = NULL;
@@ -85,7 +85,7 @@ public:
 		index++;
 		if (index < moves.size())
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector...
 		}
 		else
 			m = NULL;
@@ -97,7 +97,7 @@ public:
 		return m == NULL;
 	}
 
-	Move<SolutionHFMVRP>* current() override
+	uptr<Move<SolutionHFMVRP>> current() override
 	{
 		if (isDone())
 		{
@@ -106,7 +106,10 @@ public:
 			exit(1);
 		}
 
-		return m;
+      uptr<Move<SolutionHFMVRP>> m2 = std::move(m);
+      m = nullptr;
+
+		return m2;
 	}
 };
 

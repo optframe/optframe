@@ -116,7 +116,7 @@ public:
 
 		}
 
-		return new MoveVRPOrOpt2<T, ADS, S> (-1, -1, -1);
+		return uptr<Move<S>>(new MoveVRPOrOpt2<T, ADS, S> (-1, -1, -1));
 	}
 
 	bool operator==(const Move<S>& _m) const
@@ -140,8 +140,8 @@ class NSIteratorVRPOrOpt2: public NSIterator<S, XEv>
 
 protected:
 
-	uptr<MOVE> m;
-	vector<MOVE*> moves;
+	uptr<Move<S>> m;
+	vector<uptr<Move<S>>> moves;
 	int index; //index of moves
 	const Routes& rep;
 
@@ -171,7 +171,7 @@ public:
 					{
 						if ((c != pos) && (c + 1 != pos) && (c + 2 != pos))
 						{
-							moves.push_back(new MOVE(r, c, pos, p));
+							moves.push_back(uptr<Move<S>>(new MOVE(r, c, pos, p)));
 						}
 					}
 				}
@@ -179,7 +179,7 @@ public:
 
 		if (moves.size() > 0)
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
@@ -190,7 +190,7 @@ public:
 		index++;
 		if (index < moves.size())
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
@@ -254,9 +254,9 @@ public:
 		return uptr<Move<S>>(new MOVE(r, c, pos, p));
 	}
 
-	virtual uptr<NSITERATOR> getIterator(const S& s) override
+	virtual uptr<NSIterator<S>> getIterator(const S& s) override
 	{
-		return uptr<NSITERATOR>(new NSITERATOR(s.getR(), s.getADS(), p));
+		return uptr<NSIterator<S>>(new NSITERATOR(s.getR(), s.getADS(), p));
 	}
 
 	virtual string toString() const

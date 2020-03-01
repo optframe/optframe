@@ -37,7 +37,7 @@ public:
 		return true;
 	}
 
-	Move<SolutionHFM>* apply(SolutionHFM& s) override
+	uptr<Move<SolutionHFM>> apply(SolutionHFM& s) override
 	{
       RepHFM& rep = s.getR();
 		if (sign == 0)
@@ -45,7 +45,7 @@ public:
 		else
 			rep.vAlpha[index] -= applyValue;
 		// return reverse move
-		return new MoveNEIGHVAlpha(index, applyValue, !sign);
+		return uptr<Move<SolutionHFM>>(new MoveNEIGHVAlpha(index, applyValue, !sign));
 	}
 
 	virtual bool operator==(const Move<SolutionHFM>& _m) const
@@ -66,8 +66,11 @@ public:
 class NSIteratorNEIGHVAlpha: public NSIterator<SolutionHFM>
 {
 private:
-	MoveNEIGHVAlpha* m;
-	vector<MoveNEIGHVAlpha*> moves;
+	//MoveNEIGHVAlpha* m;
+	//vector<uptr<MoveNEIGHVAlpha>> moves;
+   uptr<Move<SolutionHFM>> m; // general move
+   vector<uptr<Move<SolutionHFM>>> moves; // general moves
+
 	int index;
 	const RepHFM& rep;
 	HFMProblemInstance& pEFP;
@@ -81,9 +84,8 @@ public:
 
 	virtual ~NSIteratorNEIGHVAlpha()
 	{
-		for (int i = index + 1; i < (int) moves.size(); i++)
-			delete moves[i];
-
+		//for (int i = index + 1; i < (int) moves.size(); i++)
+		//	delete moves[i];
 	}
 
 	virtual void first() override
@@ -106,12 +108,12 @@ public:
 			for (int i = 0; i < nIndex; i++)
 				for (int v = 0; v < (int) values.size(); v++)
 				{
-					moves.push_back(new MoveNEIGHVAlpha(i, values[v], sign));
+					moves.push_back(uptr<Move<SolutionHFM>>(new MoveNEIGHVAlpha(i, values[v], sign)));
 				}
 
 		if (moves.size() > 0)
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
@@ -122,7 +124,7 @@ public:
 		index++;
 		if (index < (int) moves.size())
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
@@ -133,7 +135,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual Move<SolutionHFM>* current() override
+	virtual uptr<Move<SolutionHFM>> current() override
 	{
 		if (isDone())
 		{
@@ -142,7 +144,9 @@ public:
 			exit(1);
 		}
 
-		return m;
+		uptr<Move<SolutionHFM>> m2 = std::move(m);
+      m = nullptr;
+      return m2;
 	}
 
 };
@@ -166,7 +170,7 @@ public:
 	{
 	}
 
-	virtual Move<SolutionHFM>* randomMove(const SolutionHFM& s) override
+	virtual uptr<Move<SolutionHFM>> randomMove(const SolutionHFM& s) override
 	{
       const RepHFM& rep = s.getR();
 		int i = rg.rand(rep.vAlpha.size());
@@ -196,12 +200,12 @@ public:
 		if (applyRand == 7)
 			applyValue = mean * 2;
 
-		return new MoveNEIGHVAlpha(i, applyValue, sign); // return a random move
+		return uptr<Move<SolutionHFM>>(new MoveNEIGHVAlpha(i, applyValue, sign)); // return a random move
 	}
 
-	virtual NSIterator<SolutionHFM>* getIterator(const SolutionHFM& s) override
+	virtual uptr<NSIterator<SolutionHFM>> getIterator(const SolutionHFM& s) override
 	{
-		return new NSIteratorNEIGHVAlpha(s.getR(), pEFP); // return an iterator to the neighbors of 'rep'
+		return uptr<NSIterator<SolutionHFM>>(new NSIteratorNEIGHVAlpha(s.getR(), pEFP)); // return an iterator to the neighbors of 'rep'
 	}
 
 	virtual string toString() const override

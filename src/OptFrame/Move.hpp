@@ -171,6 +171,9 @@ public:
       return false;
    }
 
+   // TODO: do we need clone() here?
+   // It may be useful (and necessary!) to handle multiple applications of same Move... let's see!
+
    // ================== basic comparison
 
    virtual bool operator==(const Move<S, XEv, XSH>& m) const = 0;

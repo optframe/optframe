@@ -120,9 +120,11 @@ class NSIteratorVRP2Opt: public NSIterator<S, XEv>
 
 protected:
 
-	uptr<MOVE> m;
+	//uptr<MOVE> m;
+   uptr<Move<S>> m; // storing general move (do we need specific here?)
 	int index;
-	vector<MOVE*> moves;
+	//vector<uptr<MOVE>> moves;
+   vector<uptr<Move<S>>> moves; // storing general moves (do we need specific here?)
 	const Routes& rep;
 
 	P* p; // has to be the last
@@ -149,13 +151,13 @@ public:
 			{
 				for (int p2 = p1 + 2; p2 < rep.at(r).size(); p2++)
 				{
-					moves.push_back(new MOVE(r, p1, p2, p));
+					moves.push_back(uptr<Move<S>>(new MOVE(r, p1, p2, p)));
 				}
 			}
 		}
 		if (moves.size() > 0)
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
@@ -166,7 +168,7 @@ public:
 		index++;
 		if (index < moves.size())
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
@@ -233,9 +235,10 @@ public:
 		return uptr<Move<S>>(new MOVE(r, p1, p2, p));
 	}
 
-	virtual uptr<NSITERATOR> getIterator(const S& s) override
+	//virtual uptr<NSITERATOR> getIterator(const S& s) override
+   virtual uptr<NSIterator<S>> getIterator(const S& s) override
 	{
-		return uptr<NSITERATOR>(new NSITERATOR(s.getR(), s.getADS(), p));
+		return uptr<NSIterator<S>>(new NSITERATOR(s.getR(), s.getADS(), p));
 	}
 
 	virtual string toString() const

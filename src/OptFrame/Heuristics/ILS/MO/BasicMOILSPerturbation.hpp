@@ -94,7 +94,7 @@ public:
 		{
 			int nk = rand() % ns.size();
 
-			Move<S, XEv>* mp = ns[nk]->validRandomMove(s);
+			uptr<Move<S, XEv>> mp = ns[nk]->validRandomMove(s);
 
 			if (!mp)
 			{
@@ -103,9 +103,10 @@ public:
 			}
 			else
 			{
-				Move<S, XEv>& m = *mp;
-				Component::safe_delete(m.applyMEVUpdate(mev, s));
-				delete &m;
+            //Move<S, XEv>& m = *mp;
+				//Component::safe_delete(m.applyMEVUpdate(mev, s));
+				//delete &m;
+            mp->applyMEVUpdate(mev, s);
 			}
 		}
 

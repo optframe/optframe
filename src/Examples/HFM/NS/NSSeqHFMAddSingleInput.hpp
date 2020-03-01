@@ -38,7 +38,7 @@ public:
       return !currentSampleFromTarget;
    }
 
-   Move<SolutionHFM>* apply(SolutionHFM& s) override
+   uptr<Move<SolutionHFM>> apply(SolutionHFM& s) override
    {
       RepHFM& rep = s.getR();
       if (!reverse) {
@@ -60,7 +60,7 @@ public:
          rep.singleIndex.pop_back();
          rep.singleFuzzyRS.pop_back();
       }
-      return new MoveNEIGHAddSingleInput(file, K, rulesAndWeights, !reverse);
+      return uptr<Move<SolutionHFM>>(new MoveNEIGHAddSingleInput(file, K, rulesAndWeights, !reverse));
    }
 
    virtual bool operator==(const Move<SolutionHFM>& _m) const
@@ -85,8 +85,11 @@ private:
    HFMProblemInstance& pEFP;
    RandGen& rg;
 
-   MoveNEIGHAddSingleInput* m;
-   vector<MoveNEIGHAddSingleInput*> moves;
+   //MoveNEIGHAddSingleInput* m;
+   uptr<Move<SolutionHFM>> m; // general naming
+
+   //vector<uptr<MoveNEIGHAddSingleInput>> moves;
+   vector<uptr<Move<SolutionHFM>>> moves; // keep general naming here
    int index;
 
 public:
@@ -103,8 +106,8 @@ public:
 
    virtual ~NSIteratorNEIGHAddSingleInput()
    {
-      for (int i = index + 1; i < (int)moves.size(); i++)
-         delete moves[i];
+      //for (int i = index + 1; i < (int)moves.size(); i++)
+      //   delete moves[i];
    }
 
    virtual void first() override
@@ -130,11 +133,11 @@ public:
          vector<double> rulesAndWeights =
            { greater, greaterWeight, lower, lowerWeight, epsilon, fuzzyFunction };
 
-         moves.push_back(new MoveNEIGHAddSingleInput(0, lag, rulesAndWeights, false));
+         moves.push_back(uptr<Move<SolutionHFM>>(new MoveNEIGHAddSingleInput(0, lag, rulesAndWeights, false)));
       }
 
       if (moves.size() > 0) {
-         m = moves[index];
+         m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
       } else
          m = nullptr;
    }
@@ -143,7 +146,7 @@ public:
    {
       index++;
       if (index < (int)moves.size()) {
-         m = moves[index];
+         m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
       } else
          m = nullptr;
    }
@@ -153,7 +156,7 @@ public:
       return m == nullptr;
    }
 
-   virtual Move<SolutionHFM>* current() override
+   virtual uptr<Move<SolutionHFM>> current() override
    {
       if (isDone()) {
          cout << "There isnt any current element!" << endl;
@@ -161,7 +164,10 @@ public:
          exit(1);
       }
 
-      return m;
+      uptr<Move<SolutionHFM>> m2 = std::move(m);
+      m = nullptr;
+
+      return m2;
    }
 };
 
@@ -186,7 +192,7 @@ public:
    {
    }
 
-   virtual Move<SolutionHFM>* randomMove(const SolutionHFM& s) override
+   virtual uptr<Move<SolutionHFM>> randomMove(const SolutionHFM& s) override
    {
       //const RepHFM& rep = s.getR();
       //TODO - Check the possibility of add negative K values
@@ -213,12 +219,12 @@ public:
 
       vector<double> rulesAndWeights =
         { greater, greaterWeight, lower, lowerWeight, epsilon, fuzzyFunction };
-      return new MoveNEIGHAddSingleInput(nEXV, K, rulesAndWeights, false); // return a random move
+      return uptr<Move<SolutionHFM>>(new MoveNEIGHAddSingleInput(nEXV, K, rulesAndWeights, false)); // return a random move
    }
 
-   virtual NSIterator<SolutionHFM>* getIterator(const SolutionHFM& s) override
+   virtual uptr<NSIterator<SolutionHFM>> getIterator(const SolutionHFM& s) override
    {
-      return new NSIteratorNEIGHAddSingleInput(s.getR(), vMaxLag, vMaxUpperLag, pEFP, rg); // return an iterator to the neighbors of 'rep'
+      return uptr<NSIterator<SolutionHFM>> (new NSIteratorNEIGHAddSingleInput(s.getR(), vMaxLag, vMaxUpperLag, pEFP, rg)); // return an iterator to the neighbors of 'rep'
    }
 
    virtual string toString() const override

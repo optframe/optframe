@@ -303,7 +303,7 @@ public:
          double rx = rg.rand01();
          if (rx < p[param].pr)
             for (int a = 0; a < p[param].nap; a++) {
-               Move<S, XEv>* mov_tmp = vNS[param]->randomMove(s);
+               uptr<Move<S, XEv>> mov_tmp = vNS[param]->randomMove(s);
                //					int tries = 0;
                //					int maxTries = 1;
                //
@@ -315,15 +315,16 @@ public:
                //					}
 
                if (mov_tmp->canBeApplied(s)) {
-                  Move<S, XEv>* mov_rev = mov_tmp->apply(s);
-                  delete mov_rev;
+                  //Move<S, XEv>* mov_rev = mov_tmp->apply(s);
+                  mov_tmp->apply(s);
+                  //delete mov_rev;
                } else {
                   //						cout << "cannot be applied NS:" << param;
                   //						cout << "\tnumber of tries:" << tries << endl;
                   //						getchar();
                }
 
-               delete mov_tmp;
+               //delete mov_tmp;
             }
       }
    }

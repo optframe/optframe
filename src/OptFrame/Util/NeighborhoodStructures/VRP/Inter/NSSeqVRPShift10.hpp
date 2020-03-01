@@ -125,8 +125,8 @@ class NSIteratorVRPShift10: public NSIterator<S, XEv>//NSIterator<vector<vector<
 
 protected:
 
-	uptr<MOVE> m;
-	vector<MOVE*> moves;
+	uptr<Move<S>> m;
+	vector<uptr<Move<S>>> moves;
 	int index; //index of moves
 	const Routes& r;
 
@@ -163,7 +163,7 @@ public:
 					{
 						for (int pos = 0; pos <= r.at(r2).size(); pos++)
 						{
-							moves.push_back(new MOVE(r1, r2, cli, pos, p));
+							moves.push_back(uptr<Move<S>>(new MOVE(r1, r2, cli, pos, p)));
 						}
 					}
 				}
@@ -172,7 +172,7 @@ public:
 
 		if (moves.size() > 0)
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
@@ -183,7 +183,7 @@ public:
 		index++;
 		if (index < moves.size())
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
@@ -259,19 +259,19 @@ public:
 		int maxValidMove = 50;
 		for (int iter = 0; iter < maxValidMove; iter++)
 		{
-			Move<S>* moveValid = this->randomMove(s);
+			uptr<Move<S>> moveValid = this->randomMove(s);
 			if (moveValid->canBeApplied(s))
 				return moveValid;
-			else
-				delete moveValid;
+			//else
+			//	delete moveValid;
 		}
 
 		return nullptr;
 	}
 
-	virtual NSITERATOR* getIterator(const S& s) override
+	virtual uptr<NSIterator<S>> getIterator(const S& s) override
 	{
-		return new NSITERATOR(s.getR(), s.getADS(), p);
+		return uptr<NSIterator<S>>(new NSITERATOR(s.getR(), s.getADS(), p));
 	}
 
 	virtual string toString() const

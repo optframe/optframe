@@ -98,18 +98,19 @@ public:
 		{
 			int x = rg.rand(ns.size());
 
-			Move<S, XEv>* m = ns[x]->validRandomMove(s);
+			uptr<Move<S, XEv>> m = ns[x]->validRandomMove(s);
 
 			if (m)
 			{
 				a++;
-				Component::safe_delete(m->applyMEVUpdate(mev, s));
+				//Component::safe_delete(m->applyMEVUpdate(mev, s));
+            m->applyMEVUpdate(mev, s);
 			}
 			else
 				if(Component::warning)
 					cout << "ILS Warning: perturbation had no effect in level " << a << "!" << endl;
 
-			delete m;
+			//delete m;
 		}
 
 		evaluator.reevaluateMEV(mev, s); // updates 'e'

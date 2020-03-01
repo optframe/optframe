@@ -120,7 +120,7 @@ class NSIteratorVRPSwap1_1: public NSIterator<S, XEv>
 
 protected:
 	uptr<Move<S>> m;
-	vector<MOVE*> moves;
+	vector<uptr<Move<S>>> moves;
 	int index; //index of moves
 	const Routes& r;
 
@@ -147,11 +147,11 @@ public:
 			for (int c1 = 0; c1 < r.at(r1).size(); c1++)
 				for (int r2 = r1 + 1; r2 < r.size() - 1; r2++)
 					for (int c2 = 0; c2 < r.at(r2).size(); c2++)
-						moves.push_back(new MOVE(r1, r2, c1, c2, p));
+						moves.push_back(uptr<Move<S>>(new MOVE(r1, r2, c1, c2, p)));
 
 		if (moves.size() > 0)
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
@@ -163,7 +163,7 @@ public:
 		index++;
 		if (index < moves.size())
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
@@ -239,9 +239,9 @@ public:
 		return uptr<Move<S>>(new MOVE(r1, r2, c1, c2, p));
 	}
 
-	virtual uptr<NSITERATOR> getIterator(const S& s) override
+	virtual uptr<NSIterator<S>> getIterator(const S& s) override
 	{
-		return uptr<NSITERATOR>(new NSITERATOR(s.getR(), s.getADS(), p));
+		return uptr<NSIterator<S>>(new NSITERATOR(s.getR(), s.getADS(), p));
 	}
 
 	virtual string toString() const

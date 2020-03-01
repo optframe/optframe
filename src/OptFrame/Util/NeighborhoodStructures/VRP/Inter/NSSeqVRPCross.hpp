@@ -123,8 +123,11 @@ class NSIteratorVRPCross: public NSIterator<vector<vector<T> > >
 
 private:
 
-	MoveVRPCross<T, ADS, DS >* m;
-	vector<MoveVRPCross<T, ADS, DS >*> moves;
+	//MoveVRPCross<T, ADS, DS >* m;
+	//vector<uptr<MoveVRPCross<T, ADS, DS >>> moves;
+   uptr<Move<SolutionHFM>> m; // general move
+   vector<uptr<Move<SolutionHFM>>> moves; // general moves
+
 	int index; //index of moves
 	const Routes& r;
 
@@ -156,7 +159,7 @@ public:
 				{
 					for (int p2 = 0; p2 <= r.at(r2).size(); p2++)
 					{
-						moves.push_back(new MOVE(r1, r2, p1, p2, p));
+						moves.push_back(uptr<Move<SolutionHFMVRP>>(new MOVE(r1, r2, p1, p2, p)));
 					}
 				}
 
@@ -165,7 +168,7 @@ public:
 
 		if (moves.size() > 0)
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
@@ -176,7 +179,7 @@ public:
 		index++;
 		if (index < moves.size())
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;

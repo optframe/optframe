@@ -93,7 +93,7 @@ public:
 							if (p->demands[r.at(r1).at(c1)] - ads.maxDemand[r2] + ads.sumDemand[r2] <= p->vehiclesCap[r2])
 							{
 								for (int c2 = 1; c2 < (r.at(r2).size() - 1); c2++)
-									moves.push_back(new DeltaMoveVRPSwap1_1(r1, r2, c1, c2, p));
+									moves.push_back(uptr<Move<SolutionHFMVRP>>(new DeltaMoveVRPSwap1_1(r1, r2, c1, c2, p)));
 							}
 
 					}
@@ -101,7 +101,7 @@ public:
 
 		if (moves.size() > 0)
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = NULL;
@@ -113,7 +113,7 @@ public:
 		index++;
 		if (index < moves.size())
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = NULL;
@@ -125,7 +125,7 @@ public:
 		return m == NULL;
 	}
 
-	Move<SolutionHFMVRP>* current() override
+	uptr<Move<SolutionHFMVRP>> current() override
 	{
 		if (isDone())
 		{
@@ -134,7 +134,10 @@ public:
 			exit(1);
 		}
 
-		return m;
+      uptr<Move<SolutionHFMVRP>> m2 = std::move(m);
+      m = nullptr;
+
+		return m2;
 	}
 };
 

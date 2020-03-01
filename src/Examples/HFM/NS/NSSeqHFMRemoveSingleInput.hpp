@@ -40,7 +40,7 @@ public:
 		return ((rule >= 0) && (rule < (int) rep.singleIndex.size()) && ((int) rep.singleIndex.size() > 1));
 	}
 
-	Move<SolutionHFM>* apply(SolutionHFM& s) override
+	uptr<Move<SolutionHFM>> apply(SolutionHFM& s) override
 	{
       RepHFM& rep = s.getR();
 		pair<int, int> tempSingleIndexOld;
@@ -55,7 +55,7 @@ public:
 
 				rep.singleIndex.erase(rep.singleIndex.begin() + rule);
 				rep.singleFuzzyRS.erase(rep.singleFuzzyRS.begin() + rule);
-				return new MoveHFMRemoveSingleInput(rule, !reverse, tempSingleIndexOld, tempSingleFuzzyRSOld);
+				return uptr<Move<SolutionHFM>>(new MoveHFMRemoveSingleInput(rule, !reverse, tempSingleIndexOld, tempSingleFuzzyRSOld));
 			}
 
 		}
@@ -65,7 +65,7 @@ public:
 			rep.singleFuzzyRS.insert(rep.singleFuzzyRS.begin() + rule, singleFuzzyRSOld);
 		}
 
-		return new MoveHFMRemoveSingleInput(rule, !reverse, tempSingleIndexOld, tempSingleFuzzyRSOld);
+		return uptr<Move<SolutionHFM>>(new MoveHFMRemoveSingleInput(rule, !reverse, tempSingleIndexOld, tempSingleFuzzyRSOld));
 
 	}
 
@@ -86,8 +86,11 @@ public:
 class NSIteratorHFMRemoveSingleInput: public NSIterator<SolutionHFM>
 {
 private:
-	MoveHFMRemoveSingleInput* m;
-	vector<MoveHFMRemoveSingleInput*> moves;
+	//MoveHFMRemoveSingleInput* m;
+	//vector<uptr<MoveHFMRemoveSingleInput>> moves;
+   uptr<Move<SolutionHFM>> m; // general move
+   vector<uptr<Move<SolutionHFM>>> moves; // general moves
+
 	int index;
 	const RepHFM& rep;
 
@@ -101,8 +104,8 @@ public:
 
 	virtual ~NSIteratorHFMRemoveSingleInput()
 	{
-		for (int i = index + 1; i < (int) moves.size(); i++)
-			delete moves[i];
+		//for (int i = index + 1; i < (int) moves.size(); i++)
+		//	delete moves[i];
 	}
 
 	virtual void first() override
@@ -112,12 +115,12 @@ public:
 
 		for (int rule = 0; rule < (int) rep.singleIndex.size(); rule++)
 		{
-			moves.push_back(new MoveHFMRemoveSingleInput(rule, false, tempSingleIndexOld, tempSingleFuzzyRSOld));
+			moves.push_back(uptr<Move<SolutionHFM>>(new MoveHFMRemoveSingleInput(rule, false, tempSingleIndexOld, tempSingleFuzzyRSOld)));
 		}
 
 		if (moves.size() > 0)
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
@@ -128,7 +131,7 @@ public:
 		index++;
 		if (index < (int) moves.size())
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
@@ -139,7 +142,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual Move<SolutionHFM>* current() override
+	virtual uptr<Move<SolutionHFM>> current() override
 	{
 		if (isDone())
 		{
@@ -148,7 +151,9 @@ public:
 			exit(1);
 		}
 
-		return m;
+		uptr<Move<SolutionHFM>> m2 = std::move(m);
+      m = nullptr;
+      return m2;
 	}
 
 };
@@ -170,7 +175,7 @@ public:
 	{
 	}
 
-	virtual Move<SolutionHFM>* randomMove(const SolutionHFM& s)
+	virtual uptr<Move<SolutionHFM>> randomMove(const SolutionHFM& s)
 	{
       const RepHFM& rep = s.getR();
 		int rule = -1;
@@ -180,13 +185,13 @@ public:
 		pair<int, int> tempSingleIndexOld;
 		vector<double> tempSingleFuzzyRSOld;
 
-		return new MoveHFMRemoveSingleInput(rule, false, tempSingleIndexOld, tempSingleFuzzyRSOld); // return a random move
+		return uptr<Move<SolutionHFM>>(new MoveHFMRemoveSingleInput(rule, false, tempSingleIndexOld, tempSingleFuzzyRSOld)); // return a random move
 	}
 
-	virtual NSIterator<SolutionHFM>* getIterator(const SolutionHFM& s) override
+	virtual uptr<NSIterator<SolutionHFM>> getIterator(const SolutionHFM& s) override
 	{
       const RepHFM& rep = s.getR();
-		return new NSIteratorHFMRemoveSingleInput(rep); // return an iterator to the neighbors of 'rep'
+		return uptr<NSIterator<SolutionHFM>>(new NSIteratorHFMRemoveSingleInput(rep)); // return an iterator to the neighbors of 'rep'
 	}
 
 	virtual string toString() const override

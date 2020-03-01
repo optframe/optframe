@@ -121,7 +121,7 @@ class NSIteratorVRPShift20: public NSIterator<vector<vector<T> > , ADS, DS>
 private:
 
 	MoveVRPShift20<T, ADS, DS>* m;
-	vector<MoveVRPShift20<T, ADS, DS>*> moves;
+	vector<uptr<MoveVRPShift20<T, ADS, DS>>> moves;
 	int index; //index of moves
 	const Routes& r;
 
@@ -157,7 +157,7 @@ public:
 					{
 						for (int pos = 0; pos <= r.at(r2).size(); pos++)
 						{
-							moves.push_back(new MOVE(r1, r2, cli, pos, p));
+							moves.push_back(uptr<Move<SolutionHFMVRP>>(new MOVE(r1, r2, cli, pos, p)));
 						}
 					}
 				}
@@ -165,7 +165,7 @@ public:
 		}
 		if (moves.size() > 0)
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
@@ -176,7 +176,7 @@ public:
 		index++;
 		if (index < moves.size())
 		{
-			m = moves[index];
+			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
 		else
 			m = nullptr;
