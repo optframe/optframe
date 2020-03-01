@@ -51,13 +51,9 @@ template<XRepresentation R, class ADS, XEvaluation XEv>
 ostream& operator<<(ostream& os, const ESolution<R, ADS, XEv>& se);
 
 // this is 'final', because I don't see any reason for someone to inherit here...
-// someone could just create a better class, and pass when XESolution is needed.
-// anyway, if necessary, feel free to remove this 'final', I'd love to see an use case.
 template<XRepresentation R, class ADS = OPTFRAME_DEFAULT_ADS, XEvaluation XEv = Evaluation<>>
-//class ESolution final : public Component, public IESolution<Solution<R, ADS>, XEv>
 class ESolution final : public Component, public IESolution<ESolution<R, ADS, XEv>, XEv> // CRTP!!!
 {
-   //using super = IESolution<Solution<R, ADS>, XEv>;
    using super = IESolution<ESolution<R, ADS, XEv>, XEv>;
 protected:
 	R* r {nullptr};     // representation
@@ -66,20 +62,21 @@ protected:
 
 public:
 
+   // pointer-based initialization (I will keep memory for me!!)
 	ESolution(R* _r, ADS* _ads = nullptr, XEv _e = XEv()) :
-			r(_r), ads(_ads), e(_e), super(*this, e)
+			super(*this, e), r(_r), ads(_ads), e(_e)
 	{
 	}
 
 	// copy constructor (implemented via copy constructor for R and ADS)
 	ESolution(const R& _r, const ADS& _ads = nullptr, XEv _e = XEv()) :
-			r(new R(_r)), ads(new ADS(_ads)), e(_e), super(*this, e)
+			super(*this, e), r(new R(_r)), ads(new ADS(_ads)), e(_e)
 	{
 	}
 
 	// move constructor (implemented via move constructor for R)
 	ESolution(R&& _r) :
-			r(_r), super(*this, e) // TODO: avoid so many constructors....
+			super(*this, e), r(_r)  // TODO: avoid so many constructors....
 	{
 	}
 
@@ -130,7 +127,7 @@ public:
 	 Solution move operator will steal the pointers from the object to itself
 	 and set them to null in the object
 	 */
-	Solution<R, ADS>& operator=(Solution<R, ADS> && s) noexcept
+	ESolution<R, ADS>& operator=(ESolution<R, ADS> && s) noexcept
 	{
 		// steal pointer from s
 		r = s.r;
