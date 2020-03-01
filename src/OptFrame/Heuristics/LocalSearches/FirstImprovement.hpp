@@ -28,16 +28,16 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
 class FirstImprovement: public LocalSearch<S, XEv>
 {
 private:
 	Evaluator<S, XEv>& eval;
-	NSSeq<S, XEv>& nsSeq;
+	NSSeq<S, XEv, XSH>& nsSeq;
 
 public:
 
-	FirstImprovement(Evaluator<S, XEv>& _eval, NSSeq<S, XEv>& _nsSeq) :
+	FirstImprovement(Evaluator<S, XEv>& _eval, NSSeq<S, XEv, XSH>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 	}
@@ -135,7 +135,7 @@ public:
 };
 
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
 class FirstImprovementBuilder : public LocalSearchBuilder<S, XEv, X2ES>
 {
 public:
@@ -148,17 +148,17 @@ public:
 		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NSSeq<S, XEv>* nsseq;
+		NSSeq<S, XEv, XSH>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new FirstImprovement<S, XEv>(*eval, *nsseq);
+		return new FirstImprovement<S, XEv, XSH>(*eval, *nsseq);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NSSeq<S, XEv>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(NSSeq<S, XEv, XSH>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}

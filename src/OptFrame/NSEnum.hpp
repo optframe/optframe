@@ -32,8 +32,8 @@ namespace optframe
 {
 
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class NSEnum: public NSSeq<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
+class NSEnum: public NSSeq<S, XEv, XSH>
 {
 
 protected:
@@ -66,7 +66,7 @@ public:
    static string idComponent()
    {
 		stringstream ss;
-		ss << NSSeq<S, XEv>::idComponent() << ":NSEnum";
+		ss << NSSeq<S, XEv, XSH>::idComponent() << ":NSEnum";
 		return ss.str();
    }
 
@@ -77,7 +77,7 @@ public:
 
    virtual bool compatible(string s)
    {
-	   return ( s == idComponent() ) || ( NSSeq<S, XEv>::compatible(s) );
+	   return ( s == idComponent() ) || ( NSSeq<S, XEv, XSH>::compatible(s) );
    }
 };
 

@@ -30,16 +30,16 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class BestImprovementLOS: public LocalSearch<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
+class BestImprovementLOS: public LocalSearch<S, XEv, XSH>
 {
 private:
 	Evaluator<S, XEv>& eval;
-	NSSeq<S, XEv>& nsSeq;
+	NSSeq<S, XEv, XSH>& nsSeq;
 
 public:
 
-	BestImprovementLOS(Evaluator<S, XEv>& _eval, NSSeq<S, XEv>& _nsSeq) :
+	BestImprovementLOS(Evaluator<S, XEv>& _eval, NSSeq<S, XEv, XSH>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 	}
@@ -243,7 +243,7 @@ public:
 
 		if(!scanner.hasNext())
 			return nullptr;
-		NSSeq<S, XEv>* nsseq;
+		NSSeq<S, XEv, XSH>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new BestImprovementLOS<S, XEv>(*eval, *nsseq);
@@ -253,7 +253,7 @@ public:
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NSSeq<S, XEv>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(NSSeq<S, XEv, XSH>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}

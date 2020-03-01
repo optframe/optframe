@@ -30,12 +30,12 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
 class BestImprovement: public LocalSearch<S, XEv>
 {
 private:
-	Evaluator<S, XEv>& eval;
-	NSSeq<S, XEv>& nsSeq;
+	Evaluator<S, XEv, XSH>& eval;
+	NSSeq<S, XEv, XSH>& nsSeq;
 
 	// logs
 	double sum_time;
@@ -43,7 +43,7 @@ private:
 
 public:
 
-	BestImprovement(Evaluator<S, XEv>& _eval, NSSeq<S, XEv>& _nsSeq) :
+	BestImprovement(Evaluator<S, XEv, XSH>& _eval, NSSeq<S, XEv, XSH>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 		sum_time = 0.0;
@@ -61,7 +61,7 @@ public:
 	//	exec(s, e, sosc);
 	//}
 
-	virtual void searchFrom(pair<S, XEv>& se, const StopCriteria<XEv>& sosc) override
+	virtual void searchFrom(XSH& se, const StopCriteria<XEv>& sosc) override
 	{
       S& s = se.first;
       //XEv& e = se.second;
@@ -244,7 +244,7 @@ public:
 };
 
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
 class BestImprovementBuilder : public LocalSearchBuilder<S, XEv, X2ES>
 {
 public:
@@ -261,17 +261,17 @@ public:
 
 		if(!scanner.hasNext())
 			return nullptr;
-		NSSeq<S, XEv>* nsseq;
+		NSSeq<S, XEv, XSH>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BestImprovement<S, XEv>(*eval, *nsseq);
+		return new BestImprovement<S, XEv, XSH>(*eval, *nsseq);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NSSeq<S, XEv>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(NSSeq<S, XEv, XSH>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}

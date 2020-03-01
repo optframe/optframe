@@ -30,19 +30,19 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class BasicTabuSearch: public SingleObjSearch<S, XEv>, public TS
+template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
+class BasicTabuSearch: public SingleObjSearch<S, XEv, XSH>, public TS
 {
 private:
 	Evaluator<S, XEv>& evaluator;
 	Constructive<S>& constructive;
-	NSSeq<S, XEv>& nsSeq;
+	NSSeq<S, XEv, XSH>& nsSeq;
 	int tlSize;
 	int tsMax;
 
 public:
 
-	BasicTabuSearch(Evaluator<S, XEv>& _ev, Constructive<S>& _constructive, NSSeq<S, XEv>& _nsSeq, int _tlSize, int _tsMax) :
+	BasicTabuSearch(Evaluator<S, XEv>& _ev, Constructive<S>& _constructive, NSSeq<S, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax) :
 			evaluator(_ev), constructive(_constructive), nsSeq(_nsSeq), tlSize(_tlSize), tsMax(_tsMax)
 	{
 	}
@@ -203,7 +203,7 @@ public:
 	{
       S& s = se.first;
       Evaluation<>& e = se.second;
-      
+
 		NSIterator<S, XEv>& it = nsSeq.getIterator(s.getR(), s.getADS());
 
 		it.first();
@@ -288,7 +288,7 @@ public:
 
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
 class BasicTabuSearchBuilder: public TS, public SingleObjSearchBuilder<S, XEv, X2ES>
 {
 public:
@@ -304,7 +304,7 @@ public:
 		Constructive<S>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NSSeq<S, XEv>* nsseq;
+		NSSeq<S, XEv, XSH>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		if (!scanner.hasNext())
@@ -317,7 +317,7 @@ public:
 
 		int tsMax = scanner.nextInt();
 
-		return new BasicTabuSearch<S, XEv>(*eval, *constructive, *nsseq, tl, tsMax);
+		return new BasicTabuSearch<S, XEv, XSH>(*eval, *constructive, *nsseq, tl, tsMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -325,7 +325,7 @@ public:
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-		params.push_back(make_pair(NSSeq<S, XEv>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(NSSeq<S, XEv, XSH>::idComponent(), "neighborhood structure"));
 		params.push_back(make_pair("OptFrame:int", "tabu list size"));
 		params.push_back(make_pair("OptFrame:int", "max number of iterations"));
 

@@ -48,8 +48,8 @@ namespace optframe {
 
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 // if replacing types directly (no templates), concept deduction cannot appear in virtual functions. So, we need templates.
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class SingleObjSearch: public GlobalSearch<S, XEv, pair<S, XEv>> // public Component
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
+class SingleObjSearch: public GlobalSearch<S, XEv, XSH> // public Component
 {
    // if passing types directly here, error 'typedef declared auto'
    typedef vector<XEv*> FitnessValues;

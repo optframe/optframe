@@ -37,18 +37,18 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv=Evaluation<>>
-class VariableNeighborhoodSearch: public VNS, public SingleObjSearch<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
+class VariableNeighborhoodSearch: public VNS, public SingleObjSearch<S, XEv, XSH>
 {
 protected:
 	Evaluator<S, XEv>& evaluator;
 	Constructive<S>& constructive;
 	vector<NS<S, XEv>*> vshake;
-	vector<NSSeq<S, XEv>*> vsearch;
+	vector<NSSeq<S, XEv, XSH>*> vsearch;
 
 public:
 
-	VariableNeighborhoodSearch(Evaluator<S, XEv>& _evaluator, Constructive<S>& _constructive, vector<NS<S, XEv>*> _vNS, vector<NSSeq<S, XEv>*> _vNSSeq) :
+	VariableNeighborhoodSearch(Evaluator<S, XEv>& _evaluator, Constructive<S>& _constructive, vector<NS<S, XEv>*> _vNS, vector<NSSeq<S, XEv, XSH>*> _vNSSeq) :
 		evaluator(_evaluator), constructive(_constructive), vshake(_vNS), vsearch(_vNSSeq)
 	{
 	}

@@ -191,8 +191,8 @@ public:
 };
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRP2Opt<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRP2Opt<T, ADS, MOVE, P> >
-template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRP2Opt<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
-class NSSeqVRP2Opt: public NSSeq<S, XEv>
+template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRP2Opt<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
+class NSSeqVRP2Opt: public NSSeq<S, XEv, XSH>
 {
 	typedef vector<vector<T> > Routes;
 

@@ -39,8 +39,8 @@ namespace optframe
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
-template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
-class NSSeqTSPOrOpt: public NSSeq<S, XEv>
+template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
+class NSSeqTSPOrOpt: public NSSeq<S, XEv, XSH>
 {
 	typedef vector<T> Route;
 
@@ -98,7 +98,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << NSSeq<S, XEv>::idComponent() << ":NSSeqTSPOrOpt";
+		ss << NSSeq<S, XEv, XSH>::idComponent() << ":NSSeqTSPOrOpt";
 		return ss.str();
 	}
 
@@ -109,7 +109,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (NSSeq<S, XEv>::compatible(s));
+		return (s == idComponent()) || (NSSeq<S, XEv, XSH>::compatible(s));
 	}
 
 	virtual string toString() const
