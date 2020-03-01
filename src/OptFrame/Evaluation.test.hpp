@@ -13,11 +13,16 @@
 
 namespace optframe {
 
+// TestTArithMO_is_zero2 is a XEvaluation class
+
 template<optframe::basic_arithmetics ObjType>
 class TestTArithMO_is_zero2
 {
 public:
    ObjType infMeasureX;
+
+   bool outdated; // this is required by XEvaluation
+
    bool f()
    {
       return optframe::numeric_is_zero<ObjType>(infMeasureX);

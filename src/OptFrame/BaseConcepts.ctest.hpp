@@ -47,6 +47,8 @@ struct IsEvaluation
 { 
    T &evaluation(); // this is required!
 
+   bool outdated; // this is required!
+
    IsEvaluation<T>& clone()
    {
       return *this; // TODO:

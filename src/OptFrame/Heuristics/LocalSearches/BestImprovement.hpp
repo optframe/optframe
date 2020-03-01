@@ -76,7 +76,7 @@ public:
 		Timer t;
 
 		// TODO: verify if it's not null
-		NSIterator<S, XEv>& it = *nsSeq.getIterator(s);
+		NSIterator<S, XEv, XSH>& it = *nsSeq.getIterator(s);
 
 		it.first();
 

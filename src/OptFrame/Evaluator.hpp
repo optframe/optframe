@@ -109,17 +109,15 @@ public:
    {
       S& s = se.first;
       XEv& e = se.second;
-      if (e.outdated) {
-         XEv e1 = evaluate(s);
-         e = std::move(e1);
-      }
+      if (e.outdated)
+         e = evaluate(s);
    }
 
 public:
    // Apply movement considering a previous XEv => Faster (used on CheckCommand and locally)
    // Update XEv 'e'
    //Move<S, XEv>* applyMoveReevaluate(XEv& e, Move<S, XEv>& m, S& s)
-   Move<S, XEv>* applyMoveReevaluate(Move<S, XEv>& m, pair<S, XEv>& se)
+   Move<S, XEv>* applyMoveReevaluate(Move<S, XEv>& m, XSH& se)
    {
       // apply move and get reverse move
       Move<S, XEv>* rev = m.applyUpdate(se);
@@ -267,7 +265,7 @@ public:
 
    // used on FirstImprovement
    // Accept and apply move if it improves parameter moveCost
-   bool acceptsImprove(Move<S, XEv>& m, pair<S, XEv>& se, MoveCost<>* mc = nullptr, bool allowEstimated = false)
+   bool acceptsImprove(Move<S, XEv>& m, XSH& se, MoveCost<>* mc = nullptr, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
 
@@ -372,6 +370,26 @@ public:
    //virtual inline bool betterThan(const MoveCost<>& mc1, const MoveCost<>& mc2)
    using Direction::betterThan;
 
+
+   // not good option! CONST and possible re-evaluations (on 's')
+   virtual bool betterThan(const XSH& p1, const XSH& p2)
+   {
+      return betterThan(p1.first, p2.first);
+   }
+
+   // Note that these parameters are NON-CONST... so, they can be updated if necessary!
+   virtual bool betterThan(XSH& se1, XSH& se2)
+   {
+      XEv& e1 = se1.second;
+      XEv& e2 = se2.second;
+      if(e1.outdated)
+         e1 = evaluate(se1.first);
+      if(e2.outdated)
+         e2 = evaluate(se2.first);
+      bool r = Direction::betterThan(e1, e2);
+      return r;
+   }
+
    //! abstract method betterThan: true when a < b for minimization problems; and true when a > b for maximization problems.
    /*!
 	 betterThan is the method in OptFrame used to guide the search methods into the solution space.
@@ -392,11 +410,6 @@ public:
    virtual bool betterThan(const XEv& e1, const XEv& e2)
    {
       return Direction::betterThan(e1, e2);
-   }
-
-   virtual bool betterThan(const pair<S,XEv>& p1, const pair<S,XEv>& p2)
-   {
-      return betterThan(p1.first, p2.first); // TODO: avoid re-evaluations
    }
 
 

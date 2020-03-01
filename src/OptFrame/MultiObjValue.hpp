@@ -357,11 +357,16 @@ numeric_is_zero(const MultiObjValue<Args...> tOther)
 
 #ifndef NDEBUG
 
+// TestTArithMO_is_zero should be an XEvaluation type
+
 template<optframe::basic_arithmetics ObjType>
 class TestTArithMO_is_zero
 {
 public:
    ObjType infMeasureX;
+
+   bool outdated; // required for XEvaluation
+
    void f()
    {
       assert(optframe::numeric_is_zero(infMeasureX));
