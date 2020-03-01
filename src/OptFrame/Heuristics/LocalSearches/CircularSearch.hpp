@@ -67,31 +67,26 @@ public:
       int w = initial_w % Wmax;
 
       do {
-         Move<S, XEv>& m = *ns.indexMove(w);
+         uptr<Move<S, XEv>> m = ns.indexMove(w);
 
-         if (m.canBeApplied(s)) {
+         if (m->canBeApplied(s)) {
             bool mayEstimate = false;
-            MoveCost<>& cost = *eval.moveCost(m, se, mayEstimate);
+            ///MoveCost<>& cost = *eval.moveCost(m, se, mayEstimate);
+            op<XEv> cost = eval.moveCost(*m, se, mayEstimate);
 
-            if (eval.isImprovement(cost)) {
+            if (eval.isImprovement(*cost)) {
                //double old_f = e.evaluation();
 
-               Component::safe_delete(m.applyUpdate(se));
+               m->applyUpdate(se);
                eval.reevaluate(se); // updates 'e'
 
                //cout << "CS improvement! w:" << w << " fo=" << e.evaluation() << " (antiga fo="<< old_f << ")" << endl << endl;
 
                initial_w = w + 1;
 
-               delete &cost;
-               delete &m;
                return;
             }
-
-            delete &cost;
          }
-
-         delete &m;
 
          w = (w + 1) % Wmax;
       } while (w != initial_w);

@@ -65,19 +65,17 @@ public:
 
 		while ((iter < iterMax) && (tNow.now() < stopCriteria.timelimit) && (evaluator.betterThan(stopCriteria.target_f, e)))
 		{
-			// TODO: verify if it's not null!
-			Move<S, XEv>& move = *ns.randomMove(s);
+			uptr<Move<S, XEv>> move = ns.randomMove(s);
 
-			MoveCost<>* cost = nullptr;
+			op<Evaluation<>> cost = nullopt;
 
-			if (move.canBeApplied(s))
+			if (move && move->canBeApplied(s))
 			{
-				cost = evaluator.moveCost(move, se);
+				cost = evaluator.moveCost(*move, se);
 			}
 			else
 			{
 				iter++;
-				delete &move;
 				continue;
 			}
 
@@ -85,15 +83,10 @@ public:
 
 			if (cost && evaluator.isImprovement(*cost))
 			{
-				Component::safe_delete(move.applyUpdate(se));
+				move->applyUpdate(se);
 				evaluator.reevaluate(se);
 				iter = 0;
 			}
-
-			if(cost)
-				delete cost;
-
-			delete &move;
 		}
 	}
 

@@ -58,12 +58,12 @@ public:
       return true;
    }
 
-   Move<SolutionPCAP>* apply(SolutionPCAP& s) override
+   uptr<Move<SolutionPCAP>> apply(SolutionPCAP& s) override
    {
       RepPCAP& rep = s.getR();
       int aux = rep.second[x];
       rep.second[x] = med;
-      return new MoveSWAP(x, aux);
+      return uptr<Move<SolutionPCAP>>(new MoveSWAP(x, aux));
    }
 
    virtual bool operator==(const Move<SolutionPCAP>& _m) const
@@ -113,9 +113,9 @@ public:
       return x == p.nCidades;
    }
 
-   virtual Move<SolutionPCAP>* current() override
+   virtual uptr<Move<SolutionPCAP>> current() override
    {
-      return new MoveSWAP(x, mediana);
+      return uptr<Move<SolutionPCAP>>(new MoveSWAP(x, mediana));
    }
 };
 
@@ -135,17 +135,17 @@ public:
    {
    }
 
-   virtual Move<SolutionPCAP>* randomMove(const SolutionPCAP& s) override
+   virtual uptr<Move<SolutionPCAP>> randomMove(const SolutionPCAP& s) override
    {
       const RepPCAP& rep = s.getR();
       int cidade = rg.rand(rep.second.size());
       int mediana = rg.rand(rep.first.size());
-      return new MoveSWAP(cidade, mediana); // return a random move
+      return uptr<Move<SolutionPCAP>>(new MoveSWAP(cidade, mediana)); // return a random move
    }
 
-   virtual NSIterator<SolutionPCAP>* getIterator(const SolutionPCAP& s) override
+   virtual uptr<NSIterator<SolutionPCAP>> getIterator(const SolutionPCAP& s) override
    {
-      return new NSIteratorSWAP(p); // return an iterator to the neighbors of 'rep'
+      return uptr<NSIterator<SolutionPCAP>>(new NSIteratorSWAP(p)); // return an iterator to the neighbors of 'rep'
    }
 
    virtual void print() const

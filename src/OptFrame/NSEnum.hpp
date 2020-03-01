@@ -48,18 +48,18 @@ public:
 	{
 	}
 
-	virtual Move<S, XEv>* randomMove(const S&)
+	virtual uptr<Move<S, XEv>> randomMove(const S&)
 	{
 		unsigned int x = rg.rand(size());
 		return indexMove(x);
 	}
 
-	virtual NSIterator<S, XEv>* getIterator(const S&)
+	virtual uptr<NSIterator<S, XEv>> getIterator(const S&)
 	{
-		return new NSEnumIterator<S, XEv> (*this);
+		return uptr<NSIterator<S, XEv>>(new NSEnumIterator<S, XEv> (*this));
 	}
 
-	virtual Move<S, XEv>* indexMove(unsigned int index) = 0;
+	virtual uptr<Move<S, XEv>> indexMove(unsigned int index) = 0;
 
 	virtual unsigned int size() const = 0;
 

@@ -3,8 +3,19 @@
 
 // general concepts expected to exist on c++20
 
+#include <memory>   // unique_ptr
+#include <optional> // optional
+
 namespace optframe
 {
+   
+// default renaming of std::unique_ptr (too long!!)
+template<class T>
+using uptr = std::unique_ptr<T>;
+
+// default renaming of std::optional (too long!!)
+template<class T>
+using op = std::optional<T>;
 
 //https://en.cppreference.com/w/cpp/concepts/boolean
 /*
@@ -156,8 +167,6 @@ concept bool ostreamable =
            const std::remove_reference_t<Self>& obj) {
     { os << obj } -> std::ostream&;
   };
-
-  
 
 } // namespace optframe
 

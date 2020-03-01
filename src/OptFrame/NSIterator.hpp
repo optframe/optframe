@@ -80,15 +80,11 @@ public:
 
 		while(!isDone())
 		{
-			// TODO: verify if it's not null!
-			Move<S, XEv>& m = *current();
-			if(m.canBeApplied(s))
-			{
-				delete &m;
-				break;
-			}
+			uptr<Move<S, XEv>> m = current();
 
-			delete &m;
+			if(m && m->canBeApplied(s))
+				break;
+
 			next();
 		}
 	}
@@ -101,21 +97,17 @@ public:
 
 		while(!isDone())
 		{
-			// TODO: verify if it's not null!
-			Move<S, XEv>& m = *current();
-			if(m.canBeApplied(s))
-			{
-				delete &m;
-				break;
-			}
+			uptr<Move<S, XEv>> m = current();
 
-			delete &m;
+			if(m && m->canBeApplied(s))
+				break;
+
 			next();
 		}
 	}
 
 	virtual bool isDone() = 0;
-	virtual Move<S, XEv>* current() = 0;
+	virtual uptr<Move<S, XEv>> current() = 0;
 
     // INSERT LOCAL OPTIMUM INFORMATION IN SOLUTION (IN ADS? USER DECIDES.)
     virtual void setLOS(LOS status, S& s)

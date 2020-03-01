@@ -82,7 +82,7 @@ public:
 	*/
 
 
-	MoveCost<>* cost(const Evaluation<>&, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
+	op<EvaluationTSP> cost(const Evaluation<>&, const RepTSP& rep, const OPTFRAME_DEFAULT_ADS& ads)
 	{
 		if(p1 >= p2)
 		{
@@ -120,7 +120,8 @@ public:
 		}
 		//cout << endl;
 
-		return new MoveCost<>(f, 0);
+		//return new MoveCost<>(f, 0);
+      return make_optional(Evaluation<>(f,0));
 	}
 
 	static string idComponent()

@@ -63,7 +63,7 @@ public:
       return true;
    }
 
-   Move<SolutionTSP>* apply(SolutionTSP& s) override
+   uptr<Move<SolutionTSP>> apply(SolutionTSP& s) override
    {
       RepTSP& rep = s.getR();
       // Specify how the move "MoveSwap" will be applied
@@ -73,10 +73,10 @@ public:
       rep[c2] = aux;
 
       // return the reverse move
-      return new MoveSwap(c2, c1, tsp);
+      return uptr<Move<SolutionTSP>>(new MoveSwap(c2, c1, tsp));
    }
 
-   Move<SolutionTSP>* applyUpdate(pair<SolutionTSP, Evaluation<>>& se) override
+   uptr<Move<SolutionTSP>> applyUpdate(pair<SolutionTSP, Evaluation<>>& se) override
    {
       SolutionTSP& s = se.first;
       Evaluation<>& e = se.second;
@@ -117,7 +117,7 @@ public:
          f -= (*tsp.dist)(rep[k2], rep[ak2]);
       }
 
-      Move<SolutionTSP>& rev = *apply(s);
+      uptr<Move<SolutionTSP>> rev = apply(s);
 
       if (k2 - k1 == 1) // special case, cities are near
       {
@@ -134,10 +134,10 @@ public:
       e.setObjFunction(e.getObjFunction() + f);
       e.outdated = false;
 
-      return &rev;
+      return rev;
    }
 
-   MoveCost<>* cost(const pair<SolutionTSP, Evaluation<>>& se, bool allowEstimated) override
+   op<EvaluationTSP> cost(const pair<SolutionTSP, Evaluation<>>& se, bool allowEstimated) override
    {
       const SolutionTSP& s = se.first;
       const RepTSP& rep = s.getR();
@@ -197,7 +197,8 @@ public:
          f += (*tsp.dist)(rep[k1], rep[ak2]);
       }
 
-      return new MoveCost<>(f, 0);
+      //return new MoveCost<>(f, 0);
+      return make_optional(Evaluation<>(f,0));
    }
 
    void print() const
@@ -238,7 +239,7 @@ public:
    }
 
    // given index, returns (i,j), with 0 < i < j < n-1
-   virtual Move<SolutionTSP>* indexMove(unsigned int k) override
+   virtual uptr<Move<SolutionTSP>> indexMove(unsigned int k) override
    {
       int i = k / (n - 1);
       int j = k % (n - 1) + 1;
@@ -249,7 +250,7 @@ public:
          j = (n - 1) - j + 1;
       }
 
-      return new MoveSwap(i, j, *pI);
+      return uptr<Move<SolutionTSP>>(new MoveSwap(i, j, *pI));
 
       // Please, keep 'busca' for historical (and emotional) purposes :)
       // This was created in the night before the TCC presentation of OptFrame (in 2009)

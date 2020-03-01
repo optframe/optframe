@@ -209,17 +209,17 @@ public:
 	{
 	}
 
-	Move<S>* randomMove(const S& s) override
+	uptr<Move<S>> randomMove(const S& s) override
 	{
       const Routes& rep = s.getR();
 		//getchar();
 		if (rep.size() < 2)
-			return new MOVE(-1, -1, -1, -1, p);
+			return uptr<Move<S>>(MOVE(-1, -1, -1, -1, p));
 
 		int r1 = rand() % rep.size();
 
 		if (rep.at(r1).size() == 0)
-			return new MOVE(-1, -1, -1, -1, p);
+			return uptr<Move<S>>(MOVE(-1, -1, -1, -1, p));
 
 		int r2;
 
@@ -229,17 +229,17 @@ public:
 		} while (r1 == r2);
 
 		if (rep.at(r2).size() == 0)
-			return new MOVE(-1, -1, -1, -1, p);
+			return uptr<Move<S>>(MOVE(-1, -1, -1, -1, p));
 
 		int c1 = rand() % rep.at(r1).size();
 		int c2 = rand() % rep.at(r2).size();
 
-		return new MOVE(r1, r2, c1, c2, p);
+		return uptr<Move<S>>(MOVE(r1, r2, c1, c2, p));
 	}
 
-	virtual NSITERATOR* getIterator(const S& s) override
+	virtual uptr<NSITERATOR> getIterator(const S& s) override
 	{
-		return new NSITERATOR(s.getR(), s.getADS(), p);
+		return uptr<NSITERATOR>(NSITERATOR(s.getR(), s.getADS(), p));
 	}
 
 	virtual string toString() const

@@ -366,6 +366,7 @@ public:
    ObjType infMeasureX;
 
    bool outdated; // required for XEvaluation
+   bool estimated; // required for XEvaluation
 
    void f()
    {

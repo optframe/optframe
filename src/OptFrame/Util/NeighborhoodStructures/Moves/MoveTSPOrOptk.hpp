@@ -81,7 +81,7 @@ public:
 		return abs(i - j) >= k;
 	}
 
-	virtual Move<S, XEv>* apply(S& s) override
+	virtual uptr<Move<S, XEv>> apply(S& s) override
 	{
       Route& rep = s.getR();
 		vector<T> v_aux;
@@ -89,7 +89,7 @@ public:
 		rep.erase(rep.begin() + i, rep.begin() + i + k);
 		rep.insert(rep.begin() + j, v_aux.begin(), v_aux.end());
 
-		return new MoveTSPOrOptk(j, i, k);
+		return uptr<Move<S, XEv>>(new MoveTSPOrOptk(j, i, k));
 	}
 
 	virtual bool operator==(const Move<S, XEv>& _m) const

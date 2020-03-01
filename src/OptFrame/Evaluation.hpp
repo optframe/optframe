@@ -251,6 +251,25 @@ public:
       return objFunction + infMeasure;
    }
 
+   // ========= TAKEN FROM MoveCost =======
+
+   // update Evaluation with costs
+   virtual void update(Evaluation<ObjType>& evCost)
+   {
+      // this task was performed before by MoveCost... now unifying in Evaluation
+      // how to do this?
+      assert(false);
+   }
+
+   virtual bool isEstimated()
+   {
+      return false; // TODO: created good flag here??
+   }
+
+   // =========
+   // finish MoveCost
+   // =========
+
    // leave option to rewrite tolerance (or consider lexicographic values)
    virtual bool isFeasible() const
    {
@@ -305,6 +324,24 @@ public:
       return os;
    }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Weighted and support to lexicographic computation
 // WLxEvaluation: depend on extended_arithmetics (+, - and *)
@@ -494,6 +531,26 @@ public:
    {
       return objFunction + weight * infMeasure;
    }
+
+   // ========= TAKEN FROM MoveCost =======
+
+   // update Evaluation with costs
+   virtual void update(Evaluation<ObjType>& evCost)
+   {
+      // this task was performed before by MoveCost... now unifying in Evaluation
+      // how to do this?
+      assert(false);
+   }
+
+   virtual bool isEstimated()
+   {
+      return false; // TODO: created good flag here??
+   }
+
+   // =========
+   // finish MoveCost
+   // =========
+
 
    // leave option to rewrite tolerance (or consider lexicographic values)
    virtual bool isFeasible() const

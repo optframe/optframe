@@ -138,7 +138,7 @@ public:
 		return new DeltaMoveVRPExchange(r, c1, c2, hfmvrp);
 	}
 
-	MoveCost<>* cost(const pair<SolutionHFMVRP, Evaluation<>>& se, bool allowEstimated) override
+	op<EvaluationHFMVRP> cost(const pair<SolutionHFMVRP, Evaluation<>>& se, bool allowEstimated) override
 	{
       const SolutionHFMVRP& s = se.first;
       const RepHFMVRP& rep = s.getR();

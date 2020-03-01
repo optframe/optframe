@@ -48,12 +48,14 @@ namespace optframe
 class Direction: public Component
 {
 protected:
-	MoveCost<evtype, Evaluation<>> nullCost;
+	///MoveCost<evtype, Evaluation<>> nullCost;
+   Evaluation<evtype> nullCost;
 
 public:
 
 	Direction() :
-			nullCost(MoveCost<>(0))
+			///nullCost(MoveCost<>(0))
+         nullCost(Evaluation<>(0))
    {
 	}
    
@@ -189,9 +191,11 @@ public:
 
 	// ============= improvement =============
 
-	virtual bool isImprovement(const MoveCost<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
+	///virtual bool isImprovement(const MoveCost<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
+   virtual bool isImprovement(const Evaluation<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
 	{
-		evtype ec1 = mc.cost() + e1.evaluation();
+		//evtype ec1 = mc.cost() + e1.evaluation();
+      evtype ec1 = mc.evaluation() + e1.evaluation();
 
 		//if(isMinimization()  && (e2.evaluation() - ec1) >= EVALUATION_ZERO) // deprecated
       if(isMinimization()  && (e2.evaluation() - ec1) >= optframe::get_numeric_zero<evtype>())
@@ -205,7 +209,8 @@ public:
 	}
 
 
-	virtual inline bool isImprovement(const MoveCost<>& mc)
+	///virtual inline bool isImprovement(const MoveCost<>& mc)
+   virtual inline bool isImprovement(const Evaluation<>& mc)
 	{
 		return betterThan(mc, nullCost);
 	}

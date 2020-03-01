@@ -55,9 +55,9 @@ public:
     
     bool canBeApplied(const Solution$project& rep) override;
 
-    Move< Solution$project >* apply(Solution$project& rep) override;
+    uptr<Move< Solution$project >> apply(Solution$project& rep) override;
     
-    MoveCost<>* cost(const pair< Solution$project , Evaluation<>>& se, bool allowEstimated) override;
+    op< Evaluation$project > cost(const pair< Solution$project , Evaluation$project >& se, bool allowEstimated) override;
 };
 
 

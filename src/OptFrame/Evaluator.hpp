@@ -117,10 +117,10 @@ public:
    // Apply movement considering a previous XEv => Faster (used on CheckCommand and locally)
    // Update XEv 'e'
    //Move<S, XEv>* applyMoveReevaluate(XEv& e, Move<S, XEv>& m, S& s)
-   Move<S, XEv>* applyMoveReevaluate(Move<S, XEv>& m, XSH& se)
+   uptr<Move<S, XEv>> applyMoveReevaluate(Move<S, XEv>& m, XSH& se)
    {
       // apply move and get reverse move
-      Move<S, XEv>* rev = m.applyUpdate(se);
+      uptr<Move<S, XEv>> rev = m.applyUpdate(se);
       // for now, must be not nullptr
       assert(rev != nullptr);
       // consolidate 'outdated' XEv data on 'e'
@@ -132,26 +132,32 @@ public:
 
    // Apply movement without considering a previous XEv => Slower.
    // Return new XEv 'e'
-   pair<Move<S, XEv>*, XEv> applyMove(Move<S, XEv>& m, S& s)
+   pair<uptr<Move<S, XEv>>, XEv> applyMove(Move<S, XEv>& m, S& s)
    {
       // apply move and get reverse move
-      Move<S, XEv>* rev = m.apply(s);
+      uptr<Move<S, XEv>> rev = m.apply(s);
       // for now, must be not nullptr 
       assert(rev != nullptr);
       // TODO: include management for 'false' hasReverse()
       assert(m.hasReverse() && rev);
+      XEv e = evaluate(s);
       // create pair
-      return pair<Move<S, XEv>*, XEv>(rev, evaluate(s));
+      return pair<uptr<Move<S, XEv>>, XEv>(rev, e);
+      //return make_pair(rev, evaluate(s));
    }
 
    // Movement cost based on reevaluation of 'e'
    //MoveCost<>* moveCost(XEv& e, Move<S, XEv>& m, S& s, bool allowEstimated = false)
-   MoveCost<>* moveCost(Move<S, XEv>& m, XSH& se, bool allowEstimated = false)
+   
+   //
+   //MoveCost<>* moveCost(Move<S, XEv>& m, XSH& se, bool allowEstimated = false)
+   op<XEv> moveCost(Move<S, XEv>& m, XSH& se, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
       // TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
 
-      MoveCost<>* p = nullptr;
+      //MoveCost<>* p = nullptr;
+      op<XEv> p = nullopt;
       if (allowCosts) {
          p = m.cost(se, allowEstimated);
       }
@@ -172,7 +178,7 @@ public:
          // saving 'outdated' status to avoid inefficient re-evaluations
          //			bool outdated = e.outdated;
          // apply move to both XEv and Solution
-         Move<S, XEv>* rev = applyMoveReevaluate(m, se);
+         uptr<Move<S, XEv>> rev = applyMoveReevaluate(m, se);
          // get final values
          pair<evtype, evtype> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
          // get final values for lexicographic part
@@ -193,7 +199,7 @@ public:
 
          S& s = se.first;
 
-         Move<S, XEv>* ini = rev->apply(s);
+         uptr<Move<S, XEv>> ini = rev->apply(s);
          // for now, must be not nullptr
          assert(ini != nullptr);
          // TODO: include management for 'false' hasReverse()
@@ -210,19 +216,22 @@ public:
             alternatives[i].second -= e.getAlternativeCosts()[i].second;
          }
          // destroy reverse move
-         delete rev;
+         /////delete rev;
          // destroy initial move
-         delete ini;
+         /////delete ini;
          // create a MoveCost object...
 
          // TODO: try to move this MoveCost generation somewhere else.... 
          // perhaps, in Evaluation class, so that users can easily personalize it.
          // don't know for sure. (TODO)
          //p = new MoveCost<>(e_end.first - e_ini.first, e_end.second - e_ini.second, e.weight);
-         p = new MoveCost<>(e_end.first - e_ini.first, e_end.second - e_ini.second);
+         
+         //
+         //p = new MoveCost<>(e_end.first - e_ini.first, e_end.second - e_ini.second);
+         p = make_optional(Evaluation<>(e_end.first - e_ini.first, e_end.second - e_ini.second));
 
          // ... and set the lexicographic costs
-         p->setAlternativeCosts(alternatives);
+         ////p->setAlternativeCosts(alternatives);
          // return a MoveCost object pointer
          return p;
       }
@@ -238,9 +247,9 @@ public:
       // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
       assert(m.hasReverse());
 
-      pair<Move<S, XEv>*, XEv> rev = applyMove(m, s);
+      pair<uptr<Move<S, XEv>>, XEv> rev = applyMove(m, s);
 
-      pair<Move<S, XEv>*, XEv> ini = applyMove(*rev.first, s);
+      pair<uptr<Move<S, XEv>>, XEv> ini = applyMove(*rev.first, s);
 
       // Difference: new - original
 
@@ -257,15 +266,16 @@ public:
       MoveCost<>* p = new MoveCost<>(obj, inf);
       p->setAlternativeCosts(alternatives);
 
-      delete rev.first;
-      delete ini.first;
+      //delete rev.first;
+      //delete ini.first;
 
       return p;
    }
 
    // used on FirstImprovement
    // Accept and apply move if it improves parameter moveCost
-   bool acceptsImprove(Move<S, XEv>& m, XSH& se, MoveCost<>* mc = nullptr, bool allowEstimated = false)
+   ///bool acceptsImprove(Move<S, XEv>& m, XSH& se, MoveCost<>* mc = nullptr, bool allowEstimated = false)
+   bool acceptsImprove(Move<S, XEv>& m, XSH& se, XEv* mc = nullptr, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
 
@@ -273,7 +283,8 @@ public:
       XEv& e = se.second;
 
       // initialize MoveCost pointer
-      MoveCost<>* p = nullptr;
+      //MoveCost<>* p = nullptr;
+      op<XEv> p = nullopt;
       // try to get a cost (should consider estimated moves in the future)
       if (allowCosts) {
          p = m.cost(se, allowEstimated);
@@ -284,17 +295,13 @@ public:
          // verify if m is an improving move
          if (isImprovement(*p)) {
             // apply move and get reverse
-            Move<S, XEv>* rev = m.apply(s);
-            if (rev)
-               delete rev;
-            // update XEv with MoveCost
-            p->update(e);
-            // destroy MoveCost
-            delete p;
+            uptr<Move<S, XEv>> rev = m.apply(s);
+            XEv& eOpt = *p;
+            // update XEv with "MoveCost" (now Evaluation represents 'costs')
+            //p->update(e);           
+            eOpt.update(e);
             return true;
          } else {
-            // destroy MoveCost
-            delete p;
             return false;
          }
       } else {
@@ -316,9 +323,13 @@ public:
             alt_begin[i].second = e.getAlternativeCosts()[i].second;
          }
          // apply move to both XEv and Solution
-         Move<S, XEv>* rev = applyMoveReevaluate(m, se);
+         uptr<Move<S, XEv>> rev = applyMoveReevaluate(m, se);
+
          // TODO: check outdated and estimated!
-         MoveCost mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1, false, false);
+         //MoveCost mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1, false, false);
+         //Evaluation<> mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1, false, false);
+         Evaluation<> mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1); // no outdated or estimated
+
          // guarantee that alternative costs have same size
          assert(alt_begin.size() == e.getAlternativeCosts().size());
          // compute alternative costs
@@ -327,9 +338,6 @@ public:
 
          // check if it is improvement
          if (isImprovement(mcost)) {
-            // delete reverse move
-            if (rev)
-               delete rev;
             return true;
          }
 
@@ -349,16 +357,13 @@ public:
          //			e = ini.second;
          //			delete ini.first;
 
-         Move<S, XEv>* ini = rev->apply(s);
+         uptr<Move<S, XEv>> ini = rev->apply(s);
          // for now, must be not nullptr
          assert(ini != nullptr);
          // TODO: include management for 'false' hasReverse()
          assert(rev->hasReverse() && ini);
          e = std::move(ev_begin);
-         delete ini;
          //==================================================================
-
-         delete rev;
 
          return false;
       }

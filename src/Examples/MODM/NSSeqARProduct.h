@@ -69,7 +69,7 @@ public:
       return differentProducts && yRemoveIsActive && yNewIsNotActive;
    }
 
-   Move<SolutionMODM>* apply(SolutionMODM& s) override
+   uptr<Move<SolutionMODM>> apply(SolutionMODM& s) override
    {
       RepMODM& rep = s.getR();
       AdsMODM& ads = s.getADS();
@@ -190,7 +190,7 @@ public:
          revReverse = false;
       }
 
-      return new MoveARProduct(yRemove, yNew, revOldC, revTCost, revTRevenue, revProductOffers, revReverse, dmproblem, rg, alpha);
+      return uptr<Move<SolutionMODM>>(new MoveARProduct(yRemove, yNew, revOldC, revTCost, revTRevenue, revProductOffers, revReverse, dmproblem, rg, alpha));
    }
 
    virtual bool operator==(const Move<SolutionMODM>& _m) const
@@ -257,7 +257,7 @@ public:
       return (yRemove == nProducts);
    }
 
-   Move<SolutionMODM>* current() override
+   uptr<Move<SolutionMODM>> current() override
    {
       if (isDone()) {
          cout << "There isnt any current element!" << endl;
@@ -265,7 +265,7 @@ public:
          exit(1);
       }
       vector<int> vazio;
-      return new MoveARProduct(yRemove, yNew, vazio, 0, 0, 0, 0, dmproblem, rg, alpha);
+      return uptr<Move<SolutionMODM>>(new MoveARProduct(yRemove, yNew, vazio, 0, 0, 0, 0, dmproblem, rg, alpha));
    }
 };
 
@@ -290,7 +290,7 @@ public:
    {
    }
 
-   virtual Move<SolutionMODM>* randomMove(const SolutionMODM& s) override
+   virtual uptr<Move<SolutionMODM>> randomMove(const SolutionMODM& s) override
    {
       const RepMODM& rep = s.getR();
       const AdsMODM* ads = &s.getADS();
@@ -304,13 +304,13 @@ public:
          yNew = rg.rand(nProduts);
 
       vector<int> vazio;
-      return new MoveARProduct(yRemove, yNew, vazio, 0, 0, 0, 0, dmproblem, rg, alpha); // return a random move
+      return uptr<Move<SolutionMODM>>(new MoveARProduct(yRemove, yNew, vazio, 0, 0, 0, 0, dmproblem, rg, alpha)); // return a random move
    }
 
-   virtual NSIterator<SolutionMODM>* getIterator(const SolutionMODM& s) override
+   virtual uptr<NSIterator<SolutionMODM>> getIterator(const SolutionMODM& s) override
    {
       const AdsMODM* ads = &s.getADS();
-      return new NSIteratorARProduct(*ads, dmproblem, rg, alpha); // return an iterator to the neighbors of 'rep'
+      return uptr<NSIterator<SolutionMODM>>(new NSIteratorARProduct(*ads, dmproblem, rg, alpha)); // return an iterator to the neighbors of 'rep'
    }
 
    static string idComponent()

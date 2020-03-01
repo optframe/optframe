@@ -29,13 +29,13 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class BasicSimulatedAnnealing: public SingleObjSearch<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
+class BasicSimulatedAnnealing: public SingleObjSearch<S, XEv, XSH>
 {
 private:
-	Evaluator<S, XEv>& evaluator;
+	Evaluator<S, XEv, XSH>& evaluator;
 	Constructive<S>& constructive;
-	vector<NS<S, XEv>*> neighbors;
+	vector<NS<S, XEv, XSH>*> neighbors;
 	RandGen& rg;
 	double alpha;
 	int SAmax;
@@ -43,7 +43,7 @@ private:
 
 public:
 
-	BasicSimulatedAnnealing(Evaluator<S, XEv>& _evaluator, Constructive<S>& _constructive, vector<NS<S, XEv>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(Evaluator<S, XEv, XSH>& _evaluator, Constructive<S>& _constructive, vector<NS<S, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg)
 	{
 		alpha = (_alpha);
@@ -52,7 +52,7 @@ public:
 
 	}
 
-	BasicSimulatedAnnealing(Evaluator<S, XEv>& _evaluator, Constructive<S>& _constructive, NS<S, XEv>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(Evaluator<S, XEv, XSH>& _evaluator, Constructive<S>& _constructive, NS<S, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), rg(_rg)
 	{
 		neighbors.push_back(&_neighbors);
@@ -114,12 +114,13 @@ public:
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
 			{
 				int n = rg.rand(neighbors.size());
-				Move<S, XEv>* move = neighbors[n]->validRandomMove(s);
+				uptr<Move<S, XEv, XSH>> move = neighbors[n]->validRandomMove(s);
 
 				if(!move)
 				{
 					if(Component::warning)
 						cout << "SA warning: no move in iter=" << iterT << " T=" << T << "! continue..." << endl;
+               // TODO: return FAIL?
 					continue;
 				}
 
@@ -129,8 +130,7 @@ public:
             //S& sCurrent = current.first;
             XEv& eCurrent = current.second;
 
-            // // TODO: fix this with unique_ptr
-				Component::safe_delete(move->applyUpdate(current));
+				move->applyUpdate(current);
 				evaluator.reevaluate(current);
 
 				if (evaluator.betterThan(eCurrent, e))
@@ -177,7 +177,6 @@ public:
 				}
 
 				iterT++;
-				delete move; // TODO: fix with unique_ptr
 			}
 			T = alpha * T;
 			iterT = 0;

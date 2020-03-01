@@ -111,7 +111,7 @@ public:
    }
 
 
-	MoveCost<>* cost(const Evaluation<>& e, const RepSVRPDSP& rep, const AdsSVRPDSP* ads, bool mayEstimate) override
+	op<Evaluation<>> cost(const Evaluation<>& e, const RepSVRPDSP& rep, const AdsSVRPDSP* ads, bool mayEstimate) override
 	{
 		return NULL;
 	}

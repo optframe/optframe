@@ -220,7 +220,7 @@ public:
 	{
 	}
 
-	virtual Move<Routes, ADS, DS>* randomMove(const Routes& rep, const ADS*) override
+	virtual uptr<Move<Routes, ADS, DS>> randomMove(const Routes& rep, const ADS*) override
 	{
 		if (rep.size() < 2)
 			return *new MOVE(-1, -1, -1, -1, p);
@@ -228,7 +228,7 @@ public:
 		int r1 = rand() % rep.size();
 		if (rep.at(r1).size() < 2)
 		{
-			return new MOVE(-1, -1, -1, -1, p);
+			return uptr<Move<Routes, ADS, DS>>(MOVE(-1, -1, -1, -1, p));
 		}
 
 		int r2;
@@ -240,10 +240,10 @@ public:
 		int cli = rand() % (rep.at(r1).size() - 1);
 
 		int pos = rand() % (rep.at(r2).size() + 1);
-		return new MOVE(r1, r2, cli, pos, p); // return a random move
+		return uptr<Move<Routes, ADS, DS>>(MOVE(r1, r2, cli, pos, p)); // return a random move
 	}
 
-	virtual NSIteratorVRPShift20<T, ADS, DS, MOVE, P>* getIterator(const Routes& r, const ADS*) override
+	virtual uptr<NSIteratorVRPShift20<T, ADS, DS, MOVE, P>> getIterator(const Routes& r, const ADS*) override
 	{
 		return new NSITERATOR (r, p);
 	}

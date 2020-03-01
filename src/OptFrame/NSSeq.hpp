@@ -39,13 +39,13 @@ public:
     {
     }
 
-    virtual Move<S, XEv>* randomMove(const S&) = 0;
+    virtual uptr<Move<S, XEv, XSH>> randomMove(const S&) = 0;
 
-    virtual NSIterator<S, XEv>* getIterator(const S&) = 0;
+    virtual uptr<NSIterator<S, XEv, XSH>> getIterator(const S&) = 0;
 
     virtual NSBlockIterator<S, XEv>* getBlockIterator(const S& s)
     {
-        NSIterator<S, XEv>* it = this->getIterator(s);
+        uptr<NSIterator<S, XEv>> it = this->getIterator(s);
         return new DefaultNSBlockIterator<S, XEv>(*it);
     }
 

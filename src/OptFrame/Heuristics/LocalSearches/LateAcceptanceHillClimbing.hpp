@@ -93,27 +93,29 @@ public:
 			// choose random neighborhood
 			int ns_k = rand() % lns.size();
 
-			Move<S, XEv>* move = lns[ns_k]->validRandomMove(s);
+			uptr<Move<S, XEv>> move = lns[ns_k]->validRandomMove(s);
 	
 			if (!move)
 			{
 				cout << "Warning in LAHC: cannot find an appliable move for neighborhood ";
 				lns[ns_k]->print();
+            // TODO: return FAIL here
 			}
 
 			if (move && move->canBeApplied(s))
 			{
             bool mayEstimate = false;
-				MoveCost<>& cost = *ev.moveCost(*move, se, mayEstimate);
+				///MoveCost<>& cost = *ev.moveCost(*move, se, mayEstimate);
+            op<XEv> cost = ev.moveCost(*move, se, mayEstimate);
 
 				// test for current index
 #ifdef BRAND_NEW
-				if (ev.isImprovement(cost, e, *eList[index]))
+				if (ev.isImprovement(*cost, e, *eList[index]))
 #else
 				if (ev.betterThan(cost.cost()+e.evaluation(), eList[index]))
 #endif
 				{
-					Component::safe_delete(move->applyUpdate(se));
+					move->applyUpdate(se);
 					ev.reevaluate(se);
 
 #ifdef BRAND_NEW
@@ -134,12 +136,7 @@ public:
 						iter = 0;
 					}
 				}
-
-				delete& cost;
 			}
-
-	    		if(move)
-	            		delete move;
 
 			iter++;
 

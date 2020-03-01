@@ -9,17 +9,17 @@ bool MoveBitFlip::canBeApplied(const SolutionKP& s)
     return true;
 }
 
-Move<SolutionKP>* MoveBitFlip::apply(SolutionKP& s)
+uptr<Move<SolutionKP>> MoveBitFlip::apply(SolutionKP& s)
 {
    RepKP& rep = s.getR();
     rep[item] = 1-rep[item];
     
-    return new MoveBitFlip(item); 
+    return uptr<Move<SolutionKP>>(new MoveBitFlip(item)); 
 }
 
-MoveCost<>* MoveBitFlip::cost(const pair<SolutionKP, Evaluation<>>& se, bool mayEstimate)
+op<Evaluation<>> MoveBitFlip::cost(const pair<SolutionKP, Evaluation<>>& se, bool mayEstimate)
 {
-   return NULL;
+   return std::nullopt;
    // Implement if a more efficient evaluation of the move is available
    //double move_cost = ...;
    //double move_cost_infeasible = ...;
@@ -45,9 +45,9 @@ bool NSIteratorBitFlip::isDone()
 	return item == N;
 };
 	
-Move<SolutionKP>* NSIteratorBitFlip::current()
+uptr<Move<SolutionKP>> NSIteratorBitFlip::current()
 {
-	return new MoveBitFlip(item);
+	return uptr<Move<SolutionKP>>(new MoveBitFlip(item));
 };
 
 
@@ -56,9 +56,9 @@ Move<SolutionKP>* NSIteratorBitFlip::current()
 // ============ NSSeqBitFlip ==============
 
 
-Move<SolutionKP>* NSSeqBitFlip::randomMove(const SolutionKP& s)
+uptr<Move<SolutionKP>> NSSeqBitFlip::randomMove(const SolutionKP& s)
 {
    int item = rand()%pKP.N;
    
-   return new MoveBitFlip(item); 
+   return uptr<Move<SolutionKP>>(new MoveBitFlip(item)); 
 }

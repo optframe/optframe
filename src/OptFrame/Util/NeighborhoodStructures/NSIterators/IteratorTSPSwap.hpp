@@ -37,7 +37,8 @@ class NSIteratorTSPSwap: public NSIterator<S, XEv>
 	typedef vector<T> Route;
 
 protected:
-	MOVE* m;
+	//MOVE* m;
+   uptr<MOVE> m;
 	int p1, p2; // position 1 and position 2, respectively
 	int n;
 
@@ -63,7 +64,7 @@ public:
 		{
 			p1 = 0;
 			p2 = 1;
-			m = new MOVE(p1, p2, p);
+			m = uptr<MOVE>(new MOVE(p1, p2, p));
 		}
 		else
 			m = nullptr;
@@ -82,7 +83,7 @@ public:
 				p2 = p1 + 1;
 			}
 
-			m = new MOVE(p1, p2, p);
+			m = uptr<MOVE>(new MOVE(p1, p2, p));
 		}
 		else
 			m = nullptr;
@@ -93,7 +94,7 @@ public:
 		return (m == nullptr);
 	}
 
-	virtual Move<S, XEv>* current() override
+	virtual uptr<Move<S, XEv>> current() override
 	{
 		if (isDone())
 		{
@@ -102,7 +103,11 @@ public:
 			exit(1);
 		}
 
-		return m;
+      // steal from 'm'
+      uptr<Move<S, XEv>> m2 = std::move(m);
+      m = nullptr;
+
+		return m2;
 	}
 };
 

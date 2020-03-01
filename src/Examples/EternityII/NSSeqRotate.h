@@ -59,16 +59,16 @@ public:
       return true;
    }
 
-   Move<SolutionEtII>* apply(SolutionEtII& s) override
+   uptr<Move<SolutionEtII>> apply(SolutionEtII& s) override
    {
       RepEtII& rep = s.getR();
       for (int i = 0; i < nRot; i++)
          rep(x, y).rotate();
 
-      return new MoveRotate(4 - nRot, x, y);
+      return uptr<Move<SolutionEtII>>(new MoveRotate(4 - nRot, x, y));
    }
 
-   Move<SolutionEtII>* applyUpdate(pair<SolutionEtII, Evaluation<>>& se) override
+   uptr<Move<SolutionEtII>> applyUpdate(pair<SolutionEtII, Evaluation<>>& se) override
    {
       SolutionEtII& s = se.first;
       Evaluation<>& e = se.second;
@@ -83,7 +83,7 @@ public:
       if (rep(x, y).down == rep(x + 1, y).up)
          f++;
 
-      Move<SolutionEtII>& rev = *apply(s);
+      uptr<Move<SolutionEtII>> rev = apply(s);
 
       int f2 = 0;
       if (rep(x, y).left == rep(x, y - 1).right)
@@ -97,7 +97,7 @@ public:
 
       e.setObjFunction(e.getObjFunction() + (f2 - f));
 
-      return &rev;
+      return rev;
    }
 
    virtual bool operator==(const Move<SolutionEtII>& _m) const
@@ -162,9 +162,9 @@ public:
       return x >= nIntraRows;
    }
 
-   virtual Move<SolutionEtII>* current() override
+   virtual uptr<Move<SolutionEtII>> current() override
    {
-      return new MoveRotate(nRot, x + 1, y + 1);
+      return uptr<Move<SolutionEtII>>(new MoveRotate(nRot, x + 1, y + 1));
    }
 };
 
@@ -184,7 +184,7 @@ public:
    {
    }
 
-   virtual Move<SolutionEtII>* randomMove(const SolutionEtII& s) override
+   virtual uptr<Move<SolutionEtII>> randomMove(const SolutionEtII& s) override
    {
       const RepEtII& rep = s.getR();
       // line 'x' and col 'y'
@@ -192,14 +192,14 @@ public:
       int y = rg.rand((rep.getNumCols() - 2)) + 1;
       int nRot = rg.rand(3) + 1;
 
-      return new MOVE(nRot, x, y); // return a random move
+      return uptr<Move<SolutionEtII>>(MOVE(nRot, x, y)); // return a random move
    }
 
-   virtual NSIterator<SolutionEtII>* getIterator(const SolutionEtII& s) override
+   virtual uptr<NSIterator<SolutionEtII>> getIterator(const SolutionEtII& s) override
    {
       const RepEtII& rep = s.getR();
       // return an iterator to the neighbors of 'rep'
-      return new NSIteratorRotate(rep.getNumRows() - 2, rep.getNumCols() - 2);
+      return uptr<NSIterator<SolutionEtII>>(new NSIteratorRotate(rep.getNumRows() - 2, rep.getNumCols() - 2));
    }
 
    virtual void print() const

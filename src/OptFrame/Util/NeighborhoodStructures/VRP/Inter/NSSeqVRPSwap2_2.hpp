@@ -245,15 +245,15 @@ public:
 	{
 	}
 
-	Move<Routes, ADS, DS>* randomMove(const Routes& rep, const ADS*) override
+	uptr<Move<Routes, ADS, DS>> randomMove(const Routes& rep, const ADS*) override
 	{
 		if (rep.size() < 2)
-			return new MOVE(-1, -1, -1, -1, false, false, p);
+			return uptr<Move<Routes, ADS, DS>>(MOVE(-1, -1, -1, -1, false, false, p));
 
 		int r1 = rand() % rep.size();
 
 		if (rep.at(r1).size() < 2)
-			return new MOVE(-1, -1, -1, -1, false, false, p);
+			return uptr<Move<Routes, ADS, DS>>(MOVE(-1, -1, -1, -1, false, false, p));
 
 		int r2;
 
@@ -263,7 +263,7 @@ public:
 		} while (r1 == r2);
 
 		if (rep.at(r2).size() < 2)
-			return new MOVE(-1, -1, -1, -1, false, false, p);
+			return uptr<Move<Routes, ADS, DS>>(MOVE(-1, -1, -1, -1, false, false, p));
 
 		int c1 = rand() % (rep.at(r1).size() - 1);
 		int c2 = rand() % (rep.at(r2).size() - 1);
@@ -271,7 +271,7 @@ public:
 		bool reverseR1 = rand() % 2;
 		bool reverseR2 = rand() % 2;
 
-		return *new MOVE(r1, r2, c1, c2, reverseR1, reverseR2, p);
+		return uptr<Move<Routes, ADS, DS>>(MOVE(r1, r2, c1, c2, reverseR1, reverseR2, p));
 	}
 
 	virtual NSIteratorVRPSwap2_2<T, ADS, DS, MOVE, P >* getIterator(const Routes& r, const ADS*) override

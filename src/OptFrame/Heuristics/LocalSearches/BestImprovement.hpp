@@ -76,18 +76,19 @@ public:
 		Timer t;
 
 		// TODO: verify if it's not null
-		NSIterator<S, XEv, XSH>& it = *nsSeq.getIterator(s);
+		uptr<NSIterator<S, XEv, XSH>> it = nsSeq.getIterator(s);
 
-		it.first();
+      assert(it); // or return FAILED
 
-		if (it.isDone())
+		it->first();
+
+		if (it->isDone())
 		{
-			delete &it;
 			sum_time += t.inMilliSecs();
-			return;
+			return; // OK
 		}
 
-		Move<S, XEv>* bestMove = it.current();
+		uptr<Move<S, XEv, XSH>> bestMove = it->current();
 
 		/*if(e.getLocalOptimumStatus(bestMove->id()))
 		{
@@ -98,47 +99,41 @@ public:
 			return;
 		}*/
 
-		MoveCost<>* bestCost = nullptr;
+		//MoveCost<>* bestCost = nullptr;
+      op<XEv> bestCost = nullopt;
 
 		while (true)
 		{
 			while (!bestMove->canBeApplied(s))
 			{
-				delete bestMove;
-				it.next();
-				if (!it.isDone())
+				it->next();
+				if (!it->isDone())
 				{
-					bestMove = it.current();
+					bestMove = it->current();
 				}
 				else
 				{
-					delete &it;
-
 					sum_time += t.inMilliSecs();
-					return;
+					return; // OK
 				}
 			}
 
 			bestCost = eval.moveCost(*bestMove, se);
 			if (eval.isImprovement(*bestCost))
 			{
-				it.next();
+				it->next();
 				break;
 			}
 			else
 			{
-				delete bestCost;
-				delete bestMove;
-				it.next();
+				it->next();
 
-				if (!it.isDone())
+				if (!it->isDone())
 				{
-					bestMove = it.current();
+					bestMove = it->current();
 				}
 				else
 				{
-					delete &it;
-
 					sum_time += t.inMilliSecs();
 					return;
 				}
@@ -148,30 +143,37 @@ public:
 
 
 		//it.next();
-		while (!it.isDone())
+		while (!it->isDone())
 		{
-			Move<S, XEv>* move = it.current();
+			uptr<Move<S, XEv>> move = it->current();
 			if (move->canBeApplied(s))
 			{
-				MoveCost<>* cost = eval.moveCost(*move, se);
+				///MoveCost<>* cost = eval.moveCost(*move, se);
+            op<XEv> cost = eval.moveCost(*move, se);
 
 				if (eval.betterThan(*cost, *bestCost))
 				{
-					delete bestMove;
-					delete bestCost;
-					bestMove = move;
-					bestCost = cost;
+					/////delete bestMove;
+					/////delete bestCost;
+               //
+					//bestMove = move;
+					//bestCost = cost;
+               bestMove = std::move(move);
+               move = nullptr;
+					bestCost = cost; // TODO: std::move?
 				}
 				else
 				{
-					delete move;
-					delete cost;
+					//delete move;
+					//delete cost;
 				}
 			}
 			else
-				delete move;
+         {
+				//delete move;
+         }
 
-			it.next();
+			it->next();
 		}
 
 		if (eval.isImprovement(*bestCost))
@@ -184,7 +186,7 @@ public:
 				// TODO: have to test if bestMove is ACTUALLY an improvement move...
 			}
 
-			Component::safe_delete(bestMove->applyUpdate(se));
+			bestMove->applyUpdate(se);
 
 			eval.reevaluate(se); // updates 'e'
 			//e.setLocalOptimumStatus(bestMove->id(), false); //set NS 'id' out of Local Optimum
@@ -198,11 +200,7 @@ public:
 	    //nsSeq.print();
 		//e.print();
 
-		delete bestCost;
-		delete bestMove;
-		delete &it;
 		sum_time += t.inMilliSecs();
-
 	}
 
 	virtual bool compatible(string s)

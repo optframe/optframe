@@ -45,7 +45,7 @@ public:
 	{
 	}
 
-	MoveCost<>* cost(const pair<SolutionEtII, Evaluation<>>& se, bool allowEstimated) override
+	op<Evaluation<>> cost(const pair<SolutionEtII, Evaluation<>>& se, bool allowEstimated) override
 	{
       const SolutionEtII& s = se.first;
       //const Evaluation<>& e = se.second;
@@ -102,7 +102,8 @@ public:
 
 		f += (f2 - f1);
 
-		return new MoveCost<> (f, 0);
+		//return new MoveCost<> (f, 0);
+      return make_optional(Evaluation<>(f,0));
 	}
 
 	static string idComponent()

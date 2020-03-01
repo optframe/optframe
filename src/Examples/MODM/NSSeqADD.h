@@ -43,7 +43,7 @@ public:
       return true;
    }
 
-   Move<SolutionMODM>* apply(SolutionMODM& s) override
+   uptr<Move<SolutionMODM>> apply(SolutionMODM& s) override
    {
       RepMODM& rep = s.getR();
       AdsMODM& ads = s.getADS();
@@ -107,7 +107,7 @@ public:
 
       //cout<<"applied..."<<endl;
       //getchar();
-      return new MoveADD(revReverse, revProducts, revClients, dmproblem, rg);
+      return uptr<Move<SolutionMODM>>(new MoveADD(revReverse, revProducts, revClients, dmproblem, rg));
    }
 
    virtual bool operator==(const Move<SolutionMODM>& _m) const
@@ -163,7 +163,7 @@ public:
       return (i == 2);
    }
 
-   Move<SolutionMODM>* current() override
+   uptr<Move<SolutionMODM>> current() override
    {
       if (isDone()) {
          cout << "There isnt any current element!" << endl;
@@ -173,7 +173,7 @@ public:
       vector<int> vazioP;
       vector<int> vazioC;
 
-      return new MoveADD(false, vazioP, vazioC, dmproblem, rg); // return a random move
+      return uptr<Move<SolutionMODM>>(new MoveADD(false, vazioP, vazioC, dmproblem, rg)); // return a random move
    }
 };
 
@@ -194,12 +194,12 @@ public:
    {
    }
 
-   virtual NSIterator<SolutionMODM>* getIterator(const SolutionMODM& s) override
+   virtual uptr<NSIterator<SolutionMODM>> getIterator(const SolutionMODM& s) override
    {
-      return new NSIteratorADD(dmproblem, rg); // return an iterator to the neighbors of 'rep'
+      return uptr<NSIterator<SolutionMODM>>(new NSIteratorADD(dmproblem, rg)); // return an iterator to the neighbors of 'rep'
    }
 
-   virtual Move<SolutionMODM>* randomMove(const SolutionMODM& s) override
+   virtual uptr<Move<SolutionMODM>> randomMove(const SolutionMODM& s) override
    {
       const RepMODM& rep = s.getR();
       const AdsMODM* ads = &s.getADS();
@@ -208,7 +208,7 @@ public:
       vector<int> vazioC;
       /*cout<<"oi ADD NS"<<endl;
 		 getchar();*/
-      return new MoveADD(false, vazioP, vazioC, dmproblem, rg); // return a random move
+      return uptr<Move<SolutionMODM>>(new MoveADD(false, vazioP, vazioC, dmproblem, rg)); // return a random move
    }
 
    static string idComponent()

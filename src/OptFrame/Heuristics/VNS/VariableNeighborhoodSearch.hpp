@@ -41,9 +41,9 @@ template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std:
 class VariableNeighborhoodSearch: public VNS, public SingleObjSearch<S, XEv, XSH>
 {
 protected:
-	Evaluator<S, XEv>& evaluator;
+	Evaluator<S, XEv, XSH>& evaluator;
 	Constructive<S>& constructive;
-	vector<NS<S, XEv>*> vshake;
+	vector<NS<S, XEv, XSH>*> vshake;
 	vector<NSSeq<S, XEv, XSH>*> vsearch;
 
 public:
@@ -66,13 +66,11 @@ public:
       //
       S& s = se.first;
       //Evaluation<>& e = se.second;
-		Move<S, XEv>* move = vshake.at(k_shake)->validRandomMove(s);
+		uptr<Move<S, XEv>> move = vshake.at(k_shake)->validRandomMove(s);
 		if(move)
 		{
-         Move<S, XEv>* rev = move->applyUpdate(se);
-			Component::safe_delete(rev);
+         move->applyUpdate(se);
 			evaluator.reevaluate(se); // refresh 'e'
-			delete move;
 		}
 	}
 

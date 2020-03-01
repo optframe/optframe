@@ -9,17 +9,17 @@ bool Move$neighborhood::canBeApplied(const Solution$project& rep)
     return true;
 }
 
-Move< Solution$project >* Move$neighborhood::apply(Solution$project& rep)
+uptr<Move< Solution$project >> Move$neighborhood::apply(Solution$project& rep)
 {
     // apply this move to 'rep'
     // rep. (...) = (...)
     // return reverse move
-    return new Move$neighborhood; 
+    return uptr<Move< Solution$project >>(newMove$neighborhood ); 
 }
 
-MoveCost<>* Move$neighborhood::cost(const pair< Solution$project , Evaluation<>>& se, bool allowEstimated)
+op<Evaluation<>> Move$neighborhood::cost(const pair< Solution$project , Evaluation<>>& se, bool allowEstimated)
 {
-   return nullptr;
+   return std::nullopt;
    // Implement if a more efficient evaluation of the move is available
    //double move_cost = ...;
    //double move_cost_infeasible = ...;
@@ -44,11 +44,11 @@ Move< Solution$project >* NSIterator$neighborhood::current(){};
 // ============ NSSeq$neighborhood ==============
 
 
-Move<Solution$project >* NSSeq$neighborhood::randomMove(const Solution$project& rep)
+uptr<Move<Solution$project >> NSSeq$neighborhood::randomMove(const Solution$project& rep)
 {
    // you can ignore 'ads' if you want.
    // return a random move (that is, a move operator that generates a neighbor solution of 'rep')
    // you may need to use the random number generator 'rg'
    
-   return new Move$neighborhood; 
+   return uptr<Move<Solution$project >>(newMove$neighborhood ); 
 }

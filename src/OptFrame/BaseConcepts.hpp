@@ -139,6 +139,11 @@ concept bool XEvaluation = HasClone<Self> && HasToString<Self> && HasGetObj<Self
                      e.outdated
                   }
                   -> bool; 
+                  {
+                     //e.update(XEvaluation<Self>) // TODO
+                     e.estimated
+                  } 
+                  -> bool;
                };
 
 // XSolution and XEvaluation are container-inspired "conceptual objects", to carry Representation and Objective Value

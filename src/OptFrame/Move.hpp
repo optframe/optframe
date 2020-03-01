@@ -48,7 +48,7 @@ namespace optframe {
 // This is also useful when solution is composed by smaller "parts",
 // and each part operates with independent moves (thus a fraction of real "solution space").
 // Efficient components (like Move) should use 'XR' instead of 'XSolution' (and equivalents).
-template<XSolution XR, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
 // template<XRepresentation XR, XEvaluation XEv = Evaluation<>>
 class Move : public Component
 {
@@ -57,7 +57,7 @@ public:
    {
    }
 
-   virtual bool canBeApplied(const XR&) = 0;
+   virtual bool canBeApplied(const S&) = 0;
 
    // returns true if the apply returns a non-null pointer
    virtual bool hasReverse()
@@ -65,11 +65,13 @@ public:
       return true; // TODO: make it pure virtual "= 0"
    }
 
-   virtual Move<XR, XEv>* apply(XR& s) = 0;
+   // apply move directly to solution structure (only XSolution required)
+   virtual uptr<Move<S, XEv, XSH>> apply(S& s) = 0;
 
-   virtual Move<XR, XEv>* applyUpdate(pair<XR, XEv>& se)
+   // apply move to solution structure and updated objective space component (XSolution and XEvaluation)
+   virtual uptr<Move<S, XEv, XSH>> applyUpdate(XSH& se)
    {
-      XR& s = se.first;
+      S& s = se.first;
       XEv& e = se.second;
       // boolean 'outdated' indicates that Evaluation needs update (after Solution change)
       // note that even if the reverse move is applied, the Evaluation will continue with
@@ -77,7 +79,7 @@ public:
       // method, or use  efficient re-evaluation by means of the 'cost' method.
       e.outdated = true;
       // apply the move to R and ADS, saving the reverse (or undo) move
-      Move<XR, XEv>* rev = apply(s);
+      uptr<Move<S, XEv, XSH>> rev = apply(s);
       // update neighborhood local optimum status TODO:deprecated
       updateNeighStatus(s);
 
@@ -87,7 +89,7 @@ public:
 
 /*
    // TODO: remove and unify on a single method (just varying XEv)
-   virtual Move<XR, XEv>* applyMEV(MultiEvaluation<>& mev, XR& s)
+   virtual Move<S, XEv, XSH>* applyMEV(MultiEvaluation<>& mev, S& s)
    {
       // boolean 'outdated' indicates that Evaluation needs update (after Solution change)
       // note that even if the reverse move is applied, the Evaluation will continue with
@@ -96,7 +98,7 @@ public:
       for (unsigned nE = 0; nE < mev.size(); nE++)
          mev.setOutdated(nE, true);
       // apply the move to R and ADS, saving the reverse (or undo) move
-      Move<XR, XEv>* rev = apply(s);
+      Move<S, XEv, XSH>* rev = apply(s);
       // update neighborhood local optimum status TODO:deprecated
       updateNeighStatus(s);
       // return reverse move (or null)
@@ -105,12 +107,12 @@ public:
 */
 
    // TODO: remove and unify on a single method (just varying XEv)
-   virtual Move<XR, XEv>* applyMEVUpdate(MultiEvaluation<>& mev, XR& s)
+   virtual uptr<Move<S, XEv, XSH>> applyMEVUpdate(MultiEvaluation<>& mev, S& s)
    {
       for (unsigned nE = 0; nE < mev.size(); nE++)
          mev.at(nE).outdated = true;
       // apply the move to R and ADS, saving the reverse (or undo) move
-      Move<XR, XEv>* rev = apply(s);
+      uptr<Move<S, XEv, XSH>> rev = apply(s);
       // update neighborhood local optimum status TODO:deprecated
       updateNeighStatus(s);
 
@@ -120,24 +122,25 @@ public:
 
 
    // TODO: coming in one of the next versions..
-   //virtual pair<Move<XR, XEv>&, MoveCost<>*> apply(const Evaluation<>& e, R& r, ADS& ads) = 0;
+   //virtual pair<Move<S, XEv, XSH>&, MoveCost<>*> apply(const Evaluation<>& e, R& r, ADS& ads) = 0;
 
    // ================== cost calculation
 
-   virtual MoveCost<>* cost(const pair<XR, Evaluation<>>& se, bool allowEstimated)
+   // Returns a XEvaluation object containing the difference
+   virtual op<XEv> cost(const XSH& se, bool allowEstimated)
    {
-      return nullptr;
+      return std::nullopt;
    }
 
    // experiment for multi objective problems
-   virtual MultiMoveCost<>* costMEV(const MultiEvaluation<>& mev, const XR& s, bool allowEstimated)
+   virtual MultiMoveCost<>* costMEV(const MultiEvaluation<>& mev, const S& s, bool allowEstimated)
    {
       return nullptr;
    }
 
    // ================== move independence and local search marking
 
-   virtual bool independentOf(const Move<XR, XEv>& m)
+   virtual bool independentOf(const Move<S, XEv, XSH>& m)
    {
       // example: in VRP, move1 changes one route and move2 changes another... they are independent.
       // move1.isIndependent(move2) should return true.
@@ -149,18 +152,18 @@ public:
 
    // TODO: deprecated. replaced by updateLOS?
    //virtual void updateNeighStatus(ADS* ads)
-   virtual void updateNeighStatus(XR& s)
+   virtual void updateNeighStatus(S& s)
    {
    }
 
    // TODO: force before apply(R,ADS) and after apply(S)?
    // TODO: think about how this fits a general 'XR' structure... maybe better on 'XEv' than 'XR' itself.
-   virtual void updateLOS(XR& s, XEv& e)
+   virtual void updateLOS(S& s, XEv& e)
    {
    }
 
    // TODO: rethink!
-   virtual bool isPartialLocalOptimum(const XR& s)
+   virtual bool isPartialLocalOptimum(const S& s)
    {
       // the idea is to use this flag to ignore moves that are useless,
       // given that the solution is already in a (full) local optimum (or partial).
@@ -170,9 +173,9 @@ public:
 
    // ================== basic comparison
 
-   virtual bool operator==(const Move<XR, XEv>& m) const = 0;
+   virtual bool operator==(const Move<S, XEv, XSH>& m) const = 0;
 
-   bool operator!=(const Move<XR, XEv>& m) const
+   bool operator!=(const Move<S, XEv, XSH>& m) const
    {
       return !(*this == m);
    }

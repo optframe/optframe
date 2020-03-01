@@ -100,18 +100,16 @@ public:
 		{
 			int x = rg.rand(ns.size());
 
-			Move<S, XEv>* m = ns[x]->validRandomMove(s);
+			uptr<Move<S, XEv>> m = ns[x]->validRandomMove(s);
 
 			if (m)
 			{
 				a++;
-				Component::safe_delete(m->applyUpdate(se));
+				m->applyUpdate(se);
 			}
 			else
 				if(Component::warning)
 					cout << "ILS Warning: perturbation had no effect in level " << a << "!" << endl;
-
-			delete m;
 		}
 
 		evaluator.reevaluate(se); // updates 'e'
@@ -214,18 +212,16 @@ public:
 				sum += pNS[x].second;
 			}
 
-			Move<S, XEv>* m = ns[x]->validRandomMove(s);
+			uptr<Move<S, XEv>> m = ns[x]->validRandomMove(s);
 
 			if (m)
 			{
 				a++;
-				Component::safe_delete(m->applyUpdate(se));
+				m->applyUpdate(se);
 			}
 			else
 				if(Component::warning)
 					cout << "ILS Warning: perturbation had no effect in level " << a << "!" << endl;
-
-			delete m;
 		}
 
 		evaluator.reevaluate(se); // updates 'e'

@@ -222,7 +222,7 @@ public:
 			timeSamples.timeCloneSolution.push_back(t_clone.inMilliSecs());
 
 			Timer tMovApply;
-			Move<S>* rev = move.apply(s);
+			uptr<Move<S>> rev = move.apply(s);
 			if ((!move.hasReverse() && rev) || (move.hasReverse() && !rev))
 			{
 				errormsg(moveFrom, CMERR_MOVE_HASREVERSE, "CMERR_MOVE_HASREVERSE", iter, " conflict between apply result and hasReverse()");
@@ -267,7 +267,7 @@ public:
 			timeSamples.fullTimeEval[ev].push_back(te.inMilliSecs());
 
 			Timer tMovRevApply;
-			Move<S>* ini = nullptr;
+			uptr<Move<S>> ini = nullptr;
 			if (rev)
 				ini = rev->apply(s);
 			timeSamples.timeNSApply[id_ns].push_back(tMovRevApply.inMilliSecs());
@@ -286,7 +286,7 @@ public:
 				if (!adsMan->compareADS(ads, s.getADS()))
 				{
 					cout << "checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
-					Component::safe_print(rev);
+					Component::safe_print(rev.get());
 					cout << "S (sOriginal.getADS()): " << endl;
 					adsMan->printADS(sOriginal.getADS());
 					cout << "WRONG (s.getADS()): " << endl;
@@ -315,9 +315,9 @@ public:
 				cout << "move: ";
 				move.print();
 				cout << "rev: ";
-				Component::safe_print(rev);
+				Component::safe_print(rev.get());
 				cout << "ini (reverse of rev): ";
-				Component::safe_print(ini);
+				Component::safe_print(ini.get());
 
 				return false;
 			}
@@ -409,10 +409,13 @@ public:
 			bool oldAllowCostsStatus = lEvaluator[ev]->getAllowCosts();
 			lEvaluator[ev]->setAllowCosts(false);
          
-			MoveCost<>* mcRealFasterCost = lEvaluator[ev]->moveCost(move, se);
+			//MoveCost<>* mcRealFasterCost = lEvaluator[ev]->moveCost(move, se);
+         op<Evaluation<>> mcRealFasterCost = lEvaluator[ev]->moveCost(move, se);
+
 			lEvaluator[ev]->setAllowCosts(oldAllowCostsStatus);
-			evtype realFasterCost = mcRealFasterCost->cost();
-			delete mcRealFasterCost;
+			//evtype realFasterCost = mcRealFasterCost->cost();
+         evtype realFasterCost = mcRealFasterCost->evaluation();
+			//delete mcRealFasterCost;
 			message(lEvaluator.at(ev), iter, "realFasterCost calculated!");
 			timeSamples.timeNSCostApplyRealDelta[id_ns].push_back(tMoveCostApplyRealDelta.inMilliSecs());
 
@@ -431,7 +434,8 @@ public:
 			// ==============
 
 			Timer tMoveCost;
-			MoveCost<>* cost = nullptr;
+			///MoveCost<>* cost = nullptr;
+         op<Evaluation<>> cost = nullopt;
 
 			if (lEvaluator[ev]->getAllowCosts())
 				cost = move.cost(se, false);
@@ -444,15 +448,18 @@ public:
 			if (cost && cost->isEstimated())
 			{
 				timeSamples.timeNSEstimatedCost[id_ns].push_back(tMoveCost.inMilliSecs());
-				if (cost->cost() > revCost)
+				//if (cost->cost() > revCost)
+            if (cost->evaluation() > revCost)
 					timeSamples.overestimate = true;
-				if (cost->cost() < revCost)
+				//if (cost->cost() < revCost)
+            if (cost->evaluation() < revCost)
 					timeSamples.underestimate = true;
 			}
 
 			if (cost && !cost->isEstimated())
 			{
-				double cValue = cost->cost();
+				//double cValue = cost->cost();
+            double cValue = cost->evaluation();
 				//if (EVALUATION_ABS(revCost - cValue) >= optframe::get_numeric_zero<evtype>())
 				if (!optframe::numeric_is_zero(revCost - cValue))
 				{
@@ -463,7 +470,8 @@ public:
 					cout << "cost() =\t" << cValue << endl;
 					cout << "e: \t obj:" << e.getObjFunction() << "\t inf: " << e.getInfMeasure() << " \t total:" << e.evaluation() << endl;
 					cout << "e':\t obj:" << e_rev.getObjFunction() << "\t inf:" << e_rev.getInfMeasure() << " \t total:" << e_rev.evaluation() << endl;
-					cout << "e+cost():\t obj:" << e.getObjFunction() + cost->getObjFunctionCost() << "\t inf:" << e.getInfMeasure() + cost->getInfMeasureCost() << "\t total:" << e.evaluation() + cost->cost() << endl;
+					//cout << "e+cost():\t obj:" << e.getObjFunction() + cost->getObjFunctionCost() << "\t inf:" << e.getInfMeasure() + cost->getInfMeasureCost() << "\t total:" << e.evaluation() + cost->cost() << endl;
+               cout << "e+cost():\t obj:" << e.getObjFunction() + cost->getObjFunction() << "\t inf:" << e.getInfMeasure() + cost->getInfMeasure() << "\t total:" << e.evaluation() + cost->evaluation() << endl;
 					cout << "s: ";
 					s.print();
 					cout << "s': ";
@@ -497,14 +505,15 @@ public:
 					}
 					else
 					{
-						MoveCost<>* cost2 = nullptr;
+						//MoveCost<>* cost2 = nullptr;
+                  op<Evaluation<>> cost2 = nullopt;
 						if (lEvaluator[ev]->getAllowCosts())
 						{
 							cost2 = move2.cost(se, false);
 							if (cost2)
 							{
 								lEvaluator[ev]->betterThan(*cost, *cost2);
-								delete cost2;
+								//delete cost2;
 							}
 						}
 					}
@@ -513,16 +522,16 @@ public:
 				}
 				// finish double cost test
 
-				delete cost;
+				//delete cost;
 			}
 
 			message(lEvaluator.at(ev), iter, "all move costs okay!");
 
-			if (rev)
-				delete rev;
+			//if (rev)
+			//	delete rev;
 			delete &sNeighbor;
-			if (ini)
-				delete ini;
+			//if (ini)
+			//	delete ini;
 		}
 
 		//delete &move;  // ONLY IF NECESSARY! DO IT OUTSIDE...
@@ -983,7 +992,7 @@ public:
 								MoveCost<>* cost2_m2 = ev.moveCostComplete(move2, s);
 
 								// return solution to original value and free
-								delete rev_m1.apply(s);
+								rev_m1.apply(s);
 								delete &rev_m1;
 								delete &move1;
 								delete &move2;

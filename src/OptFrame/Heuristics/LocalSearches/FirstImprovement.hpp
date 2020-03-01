@@ -57,19 +57,20 @@ public:
 	{
       S& s = se.first;
       //XEv& e = se.second;
-		NSIterator<S, XEv>& it = *nsSeq.getIterator(s);
+		uptr<NSIterator<S, XEv>> it = nsSeq.getIterator(s);
+      // TODO: return FAILED result...
+      assert(it);
 		string bestMoveId = "";
-		it.first();
+		it->first();
 
-		if (it.isDone())
+		if (it->isDone())
 		{
-			delete &it;
-			return;
+			return; // return OK!
 		}
 
 		do
 		{
-			Move<S, XEv>* move = it.current();
+			uptr<Move<S, XEv, XSH>> move = it->current();
 
 			// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
 			/*
@@ -85,10 +86,8 @@ public:
 
 			if (move->canBeApplied(s))
 			{
-				if(eval.acceptsImprove(*move,se))
+				if(eval.acceptsImprove(*move, se))
 				{
-					delete move;
-					delete &it;
 					// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
 					//e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
 
@@ -96,17 +95,13 @@ public:
 				}
 			}
 
-			delete move;
-
-			it.next();
+			it->next();
 		}
-		while (!it.isDone());
+		while (!it->isDone());
 
 		// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
 		//if(bestMoveId != "")
 		//	e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local Optimum
-
-		delete &it;
 	}
 
 	virtual bool compatible(string s)

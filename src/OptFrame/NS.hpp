@@ -42,18 +42,15 @@ public:
 public:
 
 
-	virtual Move<S, XEv>* randomMove(const S&) = 0;
+	virtual uptr<Move<S, XEv, XSH>> randomMove(const S&) = 0;
 
-	virtual Move<S, XEv>* validRandomMove(const S& s)
+	virtual uptr<Move<S, XEv, XSH>> validRandomMove(const S& s)
 	{
-		Move<S, XEv>* moveValid = this->randomMove(s);
-		if(moveValid->canBeApplied(s))
+		uptr<Move<S, XEv, XSH>> moveValid = this->randomMove(s);
+		if(moveValid && moveValid->canBeApplied(s))
 			return moveValid;
 		else
-		{
-			delete moveValid;
 			return nullptr;
-		}
 	}
 
 public:

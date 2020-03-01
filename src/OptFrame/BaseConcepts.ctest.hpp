@@ -48,6 +48,9 @@ struct IsEvaluation
    T &evaluation(); // this is required!
 
    bool outdated; // this is required!
+   bool estimated; // this is required!
+
+   void update(IsEvaluation<T>& e); // required ('cost' operation)
 
    IsEvaluation<T>& clone()
    {

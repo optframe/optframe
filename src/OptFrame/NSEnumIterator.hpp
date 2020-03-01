@@ -67,14 +67,14 @@ public:
       return move >= nsSize;
    }
 
-   Move<S, XEv>* current() override
+   uptr<Move<S, XEv>> current() override
    {
       if (isDone())
          throw IteratorOutOfBound(move);
       return ns.indexMove(move);
    }
 
-   Move<S, XEv>& at(unsigned int m)
+   uptr<Move<S, XEv>> at(unsigned int m)
    {
       // TODO: throw exception if m >= size
       return ns.move(m);

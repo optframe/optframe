@@ -71,14 +71,14 @@ public:
       return all_positive && size_ok && (rep.size() >= 2);
    }
 
-   Move<S, XEv>* apply(S& s) override
+   uptr<Move<S, XEv>> apply(S& s) override
    {
       Route& rep = s.getR();
       T t = rep[p1];
       rep[p1] = rep[p2];
       rep[p2] = t;
 
-      return new MoveTSPSwap(p1, p2);
+      return uptr<Move<S, XEv>>(new MoveTSPSwap(p1, p2));
    }
 
    virtual bool operator==(const Move<S, XEv>& _m) const

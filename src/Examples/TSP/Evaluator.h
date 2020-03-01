@@ -163,11 +163,14 @@ public:
             //Evaluation<>* e = nullptr; // dummy // TODO:
             Evaluation<> e; // dummy // TODO:
             pair<SolutionTSP, Evaluation<>> pse(base, e);
-            MoveCost<>& mc = *this->moveCost(m, pse);
+            
+            //MoveCost<>& mc = *this->moveCost(m, pse);
+            op<Evaluation<>> mc = this->moveCost(m, pse);
             doStats = true;
-            if (mc.getObjFunctionCost() < 0)
+            //if (mc.getObjFunctionCost() < 0)
+            if (mc->evaluation() < 0)
                improvingSols++;
-            delete &mc;
+            //delete &mc;
          }
          delete &m;
          it.next();

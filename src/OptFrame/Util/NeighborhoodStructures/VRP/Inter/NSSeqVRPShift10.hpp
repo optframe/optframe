@@ -228,16 +228,16 @@ public:
 	{
 	}
 
-	virtual Move<S>* randomMove(const S& s) override
+	virtual uptr<Move<S>> randomMove(const S& s) override
 	{
       const Routes& rep = s.getR();
 		if (rep.size() < 2)
-			return new MOVE(-1, -1, -1, -1, p);
+			return uptr<Move<S>>(MOVE(-1, -1, -1, -1, p));
 
 		int r1 = rand() % rep.size();
 		if (rep.at(r1).size() == 0)
 		{
-			return new MOVE(-1, -1, -1, -1, p);
+			return uptr<Move<S>>(MOVE(-1, -1, -1, -1, p));
 		}
 
 		int r2;
@@ -249,10 +249,10 @@ public:
 		int cli = rand() % rep.at(r1).size();
 
 		int pos = rand() % (rep.at(r2).size() + 1);
-		return new MOVE(r1, r2, cli, pos, p); // return a random move
+		return uptr<Move<S>>(MOVE(r1, r2, cli, pos, p)); // return a random move
 	}
 
-	virtual Move<S>* validRandomMove(const S& s) override
+	virtual uptr<Move<S>> validRandomMove(const S& s) override
 	{
       const Routes& rep = s.getR();
 		int maxValidMove = 50;

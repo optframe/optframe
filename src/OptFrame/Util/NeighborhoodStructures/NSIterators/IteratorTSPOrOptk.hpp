@@ -77,7 +77,7 @@ public:
 		return i > n - k;
 	}
 
-	virtual Move<S, XEv>* current() override
+	virtual uptr<Move<S, XEv>> current() override
 	{
 		if (isDone())
 		{
@@ -86,7 +86,7 @@ public:
 			exit(1);
 		}
 
-		return new MOVE(i, j, k, p);
+		return uptr<Move<S, XEv>>(MOVE(i, j, k, p));
 	}
 };
 

@@ -22,6 +22,7 @@ public:
    ObjType infMeasureX;
 
    bool outdated; // this is required by XEvaluation
+   bool estimated; // this is required by XEvaluation
 
    bool f()
    {

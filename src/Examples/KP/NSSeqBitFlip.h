@@ -49,9 +49,9 @@ public:
 
    bool canBeApplied(const SolutionKP& s) override;
 
-   Move<SolutionKP>* apply(SolutionKP& s) override;
+   uptr<Move<SolutionKP>> apply(SolutionKP& s) override;
 
-   MoveCost<>* cost(const pair<SolutionKP, Evaluation<>>& se, bool mayEstimate) override;
+   op<Evaluation<>> cost(const pair<SolutionKP, Evaluation<>>& se, bool mayEstimate) override;
 };
 
 class NSIteratorBitFlip : public NSIterator<SolutionKP>
@@ -74,7 +74,7 @@ public:
    void first() override;
    void next() override;
    bool isDone() override;
-   Move<SolutionKP>* current() override;
+   uptr<Move<SolutionKP>> current() override;
 };
 
 class NSSeqBitFlip : public NSSeq<SolutionKP>
@@ -106,15 +106,15 @@ public:
       return NSSeq<SolutionKP>::idComponent().append(":NSSeqBitFlip");
    }
 
-   NSIterator<SolutionKP>* getIterator(const SolutionKP& s) override
+   uptr<NSIterator<SolutionKP>> getIterator(const SolutionKP& s) override
    {
       // return an iterator to the neighbors of 'rep'
-      return new NSIteratorBitFlip(pKP.N);
+      return uptr<NSIterator<SolutionKP>>(new NSIteratorBitFlip(pKP.N));
    }
 
    // Implement this method in the .cpp file
 
-   Move<SolutionKP>* randomMove(const SolutionKP& s) override;
+   uptr<Move<SolutionKP>> randomMove(const SolutionKP& s) override;
 };
 }
 

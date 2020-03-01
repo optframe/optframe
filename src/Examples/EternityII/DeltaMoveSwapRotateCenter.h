@@ -45,11 +45,12 @@ public:
 	{
 	}
 
-	MoveCost<>* cost(const pair<SolutionEtII, Evaluation<>>& se, bool allowEstimated) override
+	op<Evaluation<>> cost(const pair<SolutionEtII, Evaluation<>>& se, bool allowEstimated) override
 	{
 		double f = 0;
 
-		return new MoveCost<> (f, 0);
+		//return new MoveCost<> (f, 0);
+      return make_optional(Evaluation<>(f, 0));
 	}
 
 	static string idComponent()

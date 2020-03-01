@@ -40,7 +40,7 @@ public:
       return productOffers;
    }
 
-   MoveCost<>* cost(const pair<SolutionMODM, Evaluation<>>& se, bool allowEstimate) override
+   op<Evaluation<>> cost(const pair<SolutionMODM, Evaluation<>>& se, bool allowEstimate) override
    {
       const SolutionMODM& s = se.first;
       
@@ -81,10 +81,11 @@ public:
          }
       }
 
-      return new MoveCost<>(f, fInv + foInvBud * (-1000));
+      //return new MoveCost<>(f, fInv + foInvBud * (-1000));
+      return make_optional(Evaluation<>(f, fInv + foInvBud * (-1000)));
    }
 
-   Move<SolutionMODM>* apply(SolutionMODM& s) override
+   uptr<Move<SolutionMODM>> apply(SolutionMODM& s) override
    {
       RepMODM& rep = s.getR();
       AdsMODM& ads = s.getADS();
@@ -102,7 +103,7 @@ public:
       ads.clientOffers[c] += rep[c][y] - oldC;
       ads.productOffers[y] += rep[c][y] - oldC;
 
-      return new MoveInvert(y, c, dmproblem);
+      return uptr<Move<SolutionMODM>>(new MoveInvert(y, c, dmproblem));
    }
 
    virtual bool operator==(const Move<SolutionMODM>& _m) const
@@ -162,7 +163,7 @@ public:
       return (y >= nProducts);
    }
 
-   Move<SolutionMODM>* current() override
+   uptr<Move<SolutionMODM>> current() override
    {
       if (isDone()) {
          cout << "There isnt any current element!" << endl;
@@ -170,7 +171,7 @@ public:
          exit(1);
       }
 
-      return new MoveInvert(y, c, dmproblem);
+      return uptr<Move<SolutionMODM>>(new MoveInvert(y, c, dmproblem));
    }
 };
 
@@ -191,7 +192,7 @@ public:
    {
    }
 
-   virtual Move<SolutionMODM>* randomMove(const SolutionMODM& s) override
+   virtual uptr<Move<SolutionMODM>> randomMove(const SolutionMODM& s) override
    {
       const RepMODM& rep = s.getR();
       const AdsMODM& ads = s.getADS();
@@ -206,13 +207,13 @@ public:
       int nClients = dmproblem->getNumberOfClients();
       int c = rg.rand(nClients);
 
-      return new MoveInvert(y, c, dmproblem); // return a random move
+      return uptr<Move<SolutionMODM>>(new MoveInvert(y, c, dmproblem)); // return a random move
    }
 
-   virtual NSIterator<SolutionMODM>* getIterator(const SolutionMODM& s) override
+   virtual uptr<NSIterator<SolutionMODM>> getIterator(const SolutionMODM& s) override
    {
       const AdsMODM* ads = &s.getADS();
-      return new NSIteratorInvert(*ads, dmproblem); // return an iterator to the neighbors of 'rep'
+      return uptr<NSIterator<SolutionMODM>>(new NSIteratorInvert(*ads, dmproblem)); // return an iterator to the neighbors of 'rep'
    }
 
    static string idComponent()

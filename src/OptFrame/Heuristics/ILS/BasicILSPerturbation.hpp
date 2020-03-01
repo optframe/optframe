@@ -94,7 +94,7 @@ public:
 		{
 			int nk = rand() % ns.size();
 
-			Move<S, XEv>* mp = ns[nk]->validRandomMove(s);
+			uptr<Move<S, XEv>> mp = ns[nk]->validRandomMove(s);
 
 			if (!mp)
 			{
@@ -103,10 +103,7 @@ public:
 			}
 			else
 			{
-				Move<S, XEv>& m = *mp;
-            // TODO: fix with unique_ptr
-				Component::safe_delete(m.applyUpdate(se));
-				delete &m;
+				mp->applyUpdate(se);
 			}
 		}
 

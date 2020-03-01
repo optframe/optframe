@@ -111,11 +111,11 @@ public:
 	{
 	}
 
-	Move<S, XEv>* randomMove(const S& s) override
+	uptr<Move<S, XEv>> randomMove(const S& s) override
 	{
       const Route& rep = s.getR();
 		if (rep.size() < 2)
-			return new MOVE(-1, -1, p);
+			return uptr<Move<S, XEv>>(MOVE(-1, -1, p));
 
 		int p1 = rand() % (rep.size() + 1);
 		int p2 = rand() % (rep.size() + 1);
@@ -128,7 +128,7 @@ public:
 		while ((abs(p1 - p2) < 2) || (p1 > p2));
 
 		// create 2-opt(p1,p2) move
-		return new MOVE(p1, p2, p);
+		return uptr<Move<S, XEv>>(MOVE(p1, p2, p));
 	}
 
 	virtual NSIterator<S, XEv>* getIterator(const S& s) override

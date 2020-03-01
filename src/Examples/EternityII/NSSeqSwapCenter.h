@@ -58,17 +58,17 @@ protected:
 		return true;
 	}
 
-	Move<SolutionEtII>* apply(SolutionEtII& s)
+	uptr<Move<SolutionEtII>> apply(SolutionEtII& s)
 	{
       RepEtII& rep = s.getR();
 		Piece p = rep(x1, y1);
 		rep(x1, y1) = rep(x2, y2);
 		rep(x2, y2) = p;
 
-		return new MoveSwapCenter(x2, y2, x1, y1);
+		return uptr<Move<SolutionEtII>>(new MoveSwapCenter(x2, y2, x1, y1));
 	}
 
-	Move<SolutionEtII>* applyUpdate(pair<SolutionEtII, Evaluation<>>& se) override
+	uptr<Move<SolutionEtII>> applyUpdate(pair<SolutionEtII, Evaluation<>>& se) override
 	{
       SolutionEtII& s = se.first;
       Evaluation<>& e = se.second;
@@ -94,7 +94,7 @@ protected:
 		if ((rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
 			g++;
 
-		 Move<SolutionEtII>& rev = *apply(s);
+		uptr<Move<SolutionEtII>> rev = apply(s);
 
 		int f2 = 0;
 		if (rep(x1, y1).left == rep(x1, y1 - 1).right)
@@ -119,7 +119,7 @@ protected:
 		e.setObjFunction(e.getObjFunction() + (f2 - f));
 		e.setObjFunction(e.getObjFunction() + (g2 - g));
 
-		return &rev;
+		return rev;
 	}
 
 	virtual bool operator==(const Move<SolutionEtII>& _m) const
@@ -207,9 +207,9 @@ public:
 		return (x1 >= nIntraRows) || (y1 >= nIntraCols) || (x2 >= nIntraRows) || (y2 >= nIntraCols);
 	}
 
-	virtual Move<SolutionEtII>* current() override
+	virtual uptr<Move<SolutionEtII>> current() override
 	{
-		return new MoveSwapCenter(x1 + 1, y1 + 1, x2 + 1, y2 + 1);
+		return uptr<Move<SolutionEtII>>(new MoveSwapCenter(x1 + 1, y1 + 1, x2 + 1, y2 + 1));
 	}
 };
 
@@ -230,11 +230,11 @@ private:
 	{
 	}
 
-	virtual Move<SolutionEtII>* randomMove(const SolutionEtII& s) override
+	virtual uptr<Move<SolutionEtII>> randomMove(const SolutionEtII& s) override
 	{
       const RepEtII& rep = s.getR();
 		if ((rep.getNumRows() == 3) && (rep.getNumCols() == 3))
-			return new MoveSwapCenter(1, 1, 1, 1);
+			return uptr<Move<SolutionEtII>>(new MoveSwapCenter(1, 1, 1, 1));
 
 		// line 'x' and col 'y'
 		int x1 = rg.rand((rep.getNumRows() - 2)) + 1;
@@ -248,7 +248,7 @@ private:
 			y2 = rg.rand((rep.getNumCols() - 2)) + 1;
 		}
 
-		return new MOVE(x1, y1, x2, y2);
+		return uptr<Move<SolutionEtII>>(MOVE(x1, y1, x2, y2));
 	}
 
 	virtual NSIterator<SolutionEtII>* getIterator(const SolutionEtII& s) override
