@@ -34,6 +34,9 @@ using namespace std;
 
 #include <set>
 
+#include "../OptFrame/Util/printable.h"
+#include "../OptFrame/BaseConcepts.ctest.hpp" // tsting concepts
+
 #include "../OptFrame/Solution.hpp"
 //#include "../OptFrame/Util/TestSolution.hpp"
 

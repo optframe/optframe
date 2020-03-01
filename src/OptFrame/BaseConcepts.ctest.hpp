@@ -1,6 +1,12 @@
 #pragma once
 
 #include "BaseConcepts.hpp"
+
+// basic printabilty for std::pair<,>
+#include "Util/printable.h"
+
+using namespace optframe; // importing optframe::operator<< stuff
+
 // testing BaseConcepts: compilation tests (these are NOT unit tests!)
 // unit tests can be found on tests/ folder
 //
@@ -61,7 +67,9 @@ struct IsEvaluation
 template <class T>
 struct IsESolution
 {
-   T& evaluation();
+   //T& evaluation();
+   IsESolution<T>& first {*this};
+   IsEvaluation<T> second;
 
    IsESolution<T>& clone()
    {
@@ -124,7 +132,19 @@ TestXRSolution<double, IsSolution<double>> testxrs;
 TestEv<IsEvaluation<short>> testev;
 // XESolution tests
 TestXESol<IsESolution<double>> testXesol;
-TestXESol<pair<IsSolution<double>,IsEvaluation<double>>> testXesol_pair;
+void fprint()
+{
+   // testing pair printability
+   std::pair<int,int> pp1;
+   std::cout << pp1 << std::endl;
+   IsSolution<double> issol;
+   std::cout << issol << std::endl;
+   IsEvaluation<double> isev;
+   std::cout << isev << std::endl;
+   std::pair<IsSolution<double>,IsEvaluation<double>> pp;
+   std::cout << pp << std::endl;
+}
+//TestXESol<std::pair<IsSolution<double>,IsEvaluation<double>>> testXesol_pair;
 };
 
 // =========================================================

@@ -26,6 +26,8 @@ typedef std::nullptr_t OPTFRAME_DEFAULT_ADS;
 typedef OPTFRAME_DEFAULT_ADS OptFrameADS; // more beautiful :)
 typedef OPTFRAME_DEFAULT_ADS _ADS;        // more beautiful :)
 
+namespace optframe
+{
 
 // general concept, just requiring operator<< for basic printability
 template <class R>
@@ -57,7 +59,8 @@ concept bool HasToString = requires(Self self)
 };
 
 template <class Self>
-concept bool XSolution = HasClone<Self> && HasToString<Self> && XRepresentation<Self>;
+concept bool XSolution = XRepresentation<Self>;//HasClone<Self> && HasToString<Self> && XRepresentation<Self>;
+// No more cloning!! finally! thanks concepts :)
 
 // ==========================
 
@@ -93,13 +96,10 @@ concept bool XRSolution = HasGetR<Self, R> && XSolution<Self>;
 
 // ============================
 
-namespace optframe
-{
 // defining 'objval' concept: objective value must have +/- (for costs) and comparisons
 template <class T>
 concept bool objval = 
   optframe::basic_arithmetics<T> && optframe::comparable<T>;
-} // namespace optframe
 
 // defining 'evaluation' concept: something that has +/- and some directed strong/weak comparison (betterThan/betterOrEquals)
 template <class Self>
@@ -144,7 +144,7 @@ concept bool XEvaluation = HasClone<Self> && HasToString<Self> && HasGetObj<Self
 //concept bool XESolution = XSolution<Self> && XEvaluation<Self>;
 // -----> now concept also allows pair<S, XEv> to represent composed space <-----
 template <class Self>
-concept bool XESolution = (XSolution<Self> && XEvaluation<Self>) || 
+concept bool XESolution = XSolution<Self> && //(XSolution<Self> && XEvaluation<Self>)  || 
                requires(Self a)
                {
                   // also allowing as pair<S, XEv>
@@ -223,6 +223,8 @@ template <class Self>
 concept bool X01N = true; // TODO: space for [0,1]^N random keys... N could be constexpr template, but better not.
 
 // ===================
+
+} // namespace optframe
 
 // compilation tests for concepts (these are NOT unit tests)
 #include "BaseConcepts.ctest.hpp"

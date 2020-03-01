@@ -37,65 +37,68 @@
 #include "../Component.hpp"
 
 #include "../BaseConcepts.hpp"
+#include "../Solution.hpp"
 
 namespace optframe
 {
+
+// forward declaration for ESolution class
+template<XRepresentation R, class ADS, XEvaluation XEv>
+class ESolution; 
+
+// ostream operator<< forward declaration for ESolution
+template<XRepresentation R, class ADS, XEvaluation XEv>
+ostream& operator<<(ostream& os, const ESolution<R, ADS, XEv>& se);
 
 // this is 'final', because I don't see any reason for someone to inherit here...
 // someone could just create a better class, and pass when XESolution is needed.
 // anyway, if necessary, feel free to remove this 'final', I'd love to see an use case.
 template<XRepresentation R, class ADS = OPTFRAME_DEFAULT_ADS, XEvaluation XEv = Evaluation<>>
-class ESolution final : public Component
+//class ESolution final : public Component, public IESolution<Solution<R, ADS>, XEv>
+class ESolution final : public Component, public IESolution<ESolution<R, ADS, XEv>, XEv> // CRTP!!!
 {
-//protected:
-//	R* r {nullptr};     // representation
-//	ADS* ads {nullptr}; // auxiliary data structure
-//   XEv e;
-
-public:
-   // desired compatibility with pair<S, XEv>
-   Solution<R, ADS> first;
-   XEv second;
+   //using super = IESolution<Solution<R, ADS>, XEv>;
+   using super = IESolution<ESolution<R, ADS, XEv>, XEv>;
+protected:
+	R* r {nullptr};     // representation
+	ADS* ads {nullptr}; // auxiliary data structure
+   XEv e;
 
 public:
 
 	ESolution(R* _r, ADS* _ads = nullptr, XEv _e = XEv()) :
-			first(_r, _ads), second(_e)
+			r(_r), ads(_ads), e(_e), super(*this, e)
 	{
 	}
 
-	// copy constructor (implemented via copy constructor for R)
-	// TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
-	ESolution(const R& _r, ADS* _ads = nullptr, XEv _e = XEv()) :
-			first(_r, _ads), second(_e)
+	// copy constructor (implemented via copy constructor for R and ADS)
+	ESolution(const R& _r, const ADS& _ads = nullptr, XEv _e = XEv()) :
+			r(new R(_r)), ads(new ADS(_ads)), e(_e), super(*this, e)
 	{
 	}
 
 	// move constructor (implemented via move constructor for R)
 	ESolution(R&& _r) :
-			first(_r) // TODO: avoid so many constructors....
+			r(_r), super(*this, e) // TODO: avoid so many constructors....
 	{
 	}
 
 	//! copy constructor
-	/*!
-	 Solution copy constructor will use copy constructor for R and ADS
-	 TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
-	 */
 	ESolution(const ESolution<R, ADS, XEv>& s) :
-			first(s.first), second(s.second)
+			//super(s.first, s.second)
+         ESolution(s.r, s.ads, s.e)
 	{
 	}
 
 	//! move constructor
-	/*!
-	 Solution move constructor will steal the pointers from the object to itself
-	 and set them to null in the object
-	 */
 	ESolution(ESolution<R, ADS, XEv> && s) :
-			first(s.first), second(s.second)
+			//super::first(s.first), super::second(s.second)
+         ESolution(s.r, s.ads, s.e)
 	{
+      s.r = nullptr; // stolen
+      s.ads = nullptr; // stolen
 	}
+
 
 	// assignment operator (implemented via copy constructors for R and ADS)
 	// TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
@@ -104,8 +107,20 @@ public:
 		if (&s == this) // auto ref check
 			return *this;
 
-		first = s.first;
-      second = s.second;
+		// TODO: keep as a #DEFINE option? I don't see any advantage...
+		//(*r) = (*s.r);
+		delete r;
+		r = new R(*s.r);
+		if (ads)
+		{
+			// TODO: keep as a #DEFINE option? I don't see any advantage...
+			//(*ads) = (*s.ads);
+			delete ads;
+			ads = new ADS(*s.ads);
+		}
+		else
+			ads = nullptr;
+      this->e = s.e; // copy
 
 		return *this;
 	}
@@ -115,24 +130,41 @@ public:
 	 Solution move operator will steal the pointers from the object to itself
 	 and set them to null in the object
 	 */
-	ESolution<R, ADS, XEv>& operator=(ESolution<R, ADS, XEv> && s) noexcept
+	Solution<R, ADS>& operator=(Solution<R, ADS> && s) noexcept
 	{
-		first = s.first;
-      second = s.second;
+		// steal pointer from s
+		r = s.r;
+		// steal pointer from s
+		ads = s.ads;
+      // steal evaluation
+      this->e = s.e;
+		// make sure s forgets about its r and ads (if it existed before)
+		s.r = nullptr; // stolen
+		s.ads = nullptr; // stolen
 
 		return *this;
 	}
 
-	// destructor for Solution (must free R and ADS objects)
-	virtual ~ESolution()
-	{
-      // nothing to destroy
-	}
-
+   // not fully needed....
    optframe::objval evaluation()
    {
-      return second.evaluation();
+      return this->second.evaluation();
    }
+
+	// ==================
+	// end canonical part
+	// ==================
+
+	// destructor for ESolution (must free R and ADS objects)
+	virtual ~ESolution()
+	{
+		// if r not null
+		if (r)
+			delete r;
+		// if ads not null
+		if (ads)
+			delete ads;
+	}
 
 	// ==================
 	// end canonical part
@@ -140,13 +172,17 @@ public:
 
 	ESolution<R, ADS, XEv>& clone() const
 	{
-      return * new ESolution<R, ADS, XEv>(*this);
+		// if ads not null
+		if (ads)
+			return *new ESolution<R, ADS, XEv>(*r, *ads);
+		else
+			return *new ESolution<R, ADS, XEv>(*r);
 	}
 
 	// returns true if ads is not null
 	bool hasADS() const
 	{
-		return first.hasADS();
+		return ads;
 	}
 
 	// =======
@@ -156,27 +192,51 @@ public:
 	// setR with copy constructor
 	void setR(const R& _r)
 	{
-		first.setR(_r);
+		// TODO: keep as a #DEFINE option? I don't see any advantage...
+		//(*r) = _r;
+		delete r;
+		r = new R(_r);
 	}
 
 	// setR with pointer copy
 	void setR(R* _r)
 	{
-		first.setR(_r);
+		assert(_r);
+		delete r;
+		r = _r;
 	}
 
 	// setR with move semantics
 	void setR(R&& _r)
 	{
-		first.setR(_r);
+		// move content from rhs param _r
+		(*r) = std::move(_r);
+	}
+
+	// setADS with copy constructor
+	void setADS(const ADS& _ads)
+	{
+		// TODO: keep as a #DEFINE option? I don't see any advantage...
+		//(*ads) = _ads;
+		if (ads)
+			delete ads;
+		ads = new ADS(_ads);
 	}
 
 	// setADS with pointer copy
 	void setADS(ADS* _ads)
 	{
-		first.setADS(_ads);
+		if (ads)
+			delete ads;
+		ads = _ads;
 	}
 
+	// setADS with move semantics
+	void setADS(ADS&& _ads)
+	{
+		// move content from rhs param _ads
+		(*ads) = std::move(_ads);
+	}
 
 	// =======
 	// getters
@@ -185,16 +245,15 @@ public:
 	// get reference of r
 	R& getR()
 	{
-		first.getR();
+		return *r;
 	}
 
 	// get const reference of r
 	const R& getR() const
 	{
-		first.getR();
+		return *r;
 	}
 
-   /*
 	// contract: assumes hasADS() with positive result
 	ADS& getADS()
 	{
@@ -205,23 +264,21 @@ public:
 	// contract: assumes hasADS() with positive result
 	const ADS& getADS() const
 	{
-		assert(hasADS());
+		assert(hasADS()); 
 		return *ads;
 	}
-   */
 
 	// get ADS pointer
 	ADS* getADSptr()
 	{
-		first.getADSptr();
+		return ads;
 	}
 
 	// get ADS pointer (const)
 	const ADS* getADSptr() const
 	{
-		first.getADSptr();
+		return ads;
 	}
-
 
 	// =================
 	// begin Object part
@@ -242,9 +299,10 @@ public:
 	virtual string toString() const
 	{
 		std::stringstream ss;
-		ss << "ESolution: " << first.getR();
-		if (first.hasADS())
-			ss << "ADS: " << first.getADSptr();
+		ss << "ESolution: " << this->first.getR();
+		if (this->first.hasADS())
+			ss << "ADS: " << this->first.getADSptr();
+      ss << "evaluation(ESolution)=" << this->second;   
 		return ss.str();
 	}
 

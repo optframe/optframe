@@ -27,6 +27,8 @@
 #include <sstream> // stringstream
 #include <vector>
 
+#include "../myconcepts.h" // ostreamable concept!
+
 using namespace std;
 
 namespace optframe {
@@ -266,6 +268,39 @@ toString(const std::vector<T>& v)
    return ss.str();
 }
 
-} // namespace
+
+// COMPILATION TESTS FOR PRINTABLE
+#ifndef NDEBUG
+
+// TODO: use ostreamable<T> here to test structures, instead of printing to cout
+
+class test_runtime_can_print
+{
+public:
+
+   friend std::ostream& operator<<(std::ostream& myos, const test_runtime_can_print& me)
+   {
+      return myos;
+   }
+};
+
+struct test_printability_disable_runtime
+{
+   void ftest()
+   {
+      std::pair<int,int> ppi;
+      std::cout << ppi << std::endl;
+      test_runtime_can_print t1;
+      std::cout << t1 << std::endl;
+      std::pair<test_runtime_can_print,test_runtime_can_print> tpp;
+      std::cout << tpp << std::endl;
+   }
+
+};
+
+#endif
+
+
+} // namespace optframe
 
 #endif /*OPTFRAME_PRINTABLE_H_*/

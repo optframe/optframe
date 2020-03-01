@@ -150,10 +150,10 @@ concept bool extended_arithmetics =
 
 
 // capability to move to ostream&
-template <class T>
+template <class Self>
 concept bool ostreamable = 
   requires(std::ostream& os, 
-           const std::remove_reference_t<T>& obj) {
+           const std::remove_reference_t<Self>& obj) {
     { os << obj } -> std::ostream&;
   };
 

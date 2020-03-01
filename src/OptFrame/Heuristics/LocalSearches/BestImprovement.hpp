@@ -67,7 +67,7 @@ public:
       //XEv& e = se.second;
 
       //double timelimit = sosc.timelimit;
-      //double target_f = sosc.target_f;
+      //double target_f = sosc.target_f; 
 
 		if(Component::information)
 			cout << "BI::starts for " << nsSeq.toString() << endl;

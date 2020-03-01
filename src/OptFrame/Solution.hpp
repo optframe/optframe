@@ -32,6 +32,8 @@
 
 #include "BaseConcepts.hpp" // concepts c++20
 
+#include "ISolution.h" // interface
+
 // This is Default solution model.. not for all cases, but "good enough" for most applications
 
 namespace optframe
@@ -62,7 +64,7 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS>
 //class Solution final : public Component
 // TODO: replace final by concept
 //class Solution final : public Component
-class Solution final: public Component
+class Solution final: public Component, public ISolution
 {
 protected:
 	R* r;     // representation
