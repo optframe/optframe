@@ -86,7 +86,7 @@ public:
 			exit(1);
 		}
 
-		return uptr<Move<S, XEv>>(MOVE(i, j, k, p));
+		return uptr<Move<S, XEv>>(new MOVE(i, j, k, p));
 	}
 };
 

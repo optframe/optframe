@@ -142,7 +142,7 @@ public:
 
 	}
 
-	Move<SolutionHFMVRP>* apply(SolutionHFMVRP& s) override
+	uptr<Move<SolutionHFMVRP>> apply(SolutionHFMVRP& s) override
 	{
       RepHFMVRP& rep = s.getR();
       AdsHFMVRP& ads = s.getADS();
@@ -170,7 +170,7 @@ public:
 			//Update minDemand,maxDemand, minPairDemand, maxPairDemand, cumulative and sum
 			updateModifiedRoutes(rep, ads);
 
-			return new DeltaMoveVRPOrOpt2(r, pos - 2, c, hfmvrp);
+			return uptr<Move<SolutionHFMVRP>>(new DeltaMoveVRPOrOpt2(r, pos - 2, c, hfmvrp));
 		}
 		else
 		{
@@ -191,11 +191,11 @@ public:
 			//Update minDemand,maxDemand, minPairDemand, maxPairDemand, cumulative and sum
 			updateModifiedRoutes(rep, ads);
 
-			return new DeltaMoveVRPOrOpt2(r, pos, c + 2, hfmvrp);
+			return uptr<Move<SolutionHFMVRP>>(new DeltaMoveVRPOrOpt2(r, pos, c + 2, hfmvrp));
 
 		}
 
-		return new DeltaMoveVRPOrOpt2(-1, -1, -1, hfmvrp);
+		return uptr<Move<SolutionHFMVRP>>(new DeltaMoveVRPOrOpt2(-1, -1, -1, hfmvrp));
 
 	}
 
@@ -299,7 +299,8 @@ public:
 			}
 		}
 
-		return new MoveCost<> (f, 0);
+		///return new MoveCost<> (f, 0);
+      return make_optional(Evaluation<> (f, 0));
 	}
 
 	static string idComponent()

@@ -314,7 +314,7 @@ public:
 				y2 = rg.rand((rep.getNumCols() - 2)) + 1;
 			}
 
-		return uptr<Move<SolutionEtII>>(MOVE(x1, y1, x2, y2));
+		return uptr<Move<SolutionEtII>>(new MOVE(x1, y1, x2, y2));
 	}
 
 	virtual uptr<NSIterator<SolutionEtII>> getIterator(const SolutionEtII& s) override

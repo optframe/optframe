@@ -38,7 +38,7 @@ class NSIteratorTSP2Opt: public NSIterator<S, XEv>
 	typedef vector<T> Route;
 
 protected:
-	MOVE* m;
+	uptr<MOVE> m;
 
 	int p1, p2; // position 1 and position 2, respectively
 	const Route& r;
@@ -66,7 +66,7 @@ public:
 		{
 			p1 = 0;
 			p2 = 2;
-			m = new MOVE(p1, p2, p);
+			m = uptr<MOVE>(new MOVE(p1, p2, p));
 		}
 		else
 			m = nullptr;
@@ -86,7 +86,7 @@ public:
 				p2 = p1 + 2;
 			}
 
-			m = new MOVE(p1, p2, p);
+			m = uptr<MOVE>(new MOVE(p1, p2, p));
 		}
 		else
 			m = nullptr;
@@ -97,7 +97,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual Move<S, XEv>* current() override
+	virtual uptr<Move<S, XEv>> current() override
 	{
 		if (isDone())
 		{
@@ -106,7 +106,10 @@ public:
 			exit(1);
 		}
 
-		return m;
+      uptr<MOVE> m2 = std::move(m);
+      m = nullptr;
+
+		return m2;
 	}
 };
 

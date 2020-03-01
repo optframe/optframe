@@ -318,7 +318,7 @@ public:
    {
       const RepEtII& rep = s.getR();
       if ((rep.getNumRows() == 3) && (rep.getNumCols() == 3))
-         return new MoveSwapRotateCenter(1, 1, 1, 1);
+         return uptr<Move<SolutionEtII>>(new MoveSwapRotateCenter(1, 1, 1, 1));
 
       // line 'x' and col 'y'
       int x1 = rg.rand((rep.getNumRows() - 2)) + 1;
@@ -331,7 +331,7 @@ public:
          y2 = rg.rand((rep.getNumCols() - 2)) + 1;
       }
 
-      return uptr<Move<SolutionEtII>>(MOVE(x1, y1, x2, y2));
+      return uptr<Move<SolutionEtII>>(new MOVE(x1, y1, x2, y2));
    }
 
    virtual uptr<NSIterator<SolutionEtII>> getIterator(const SolutionEtII& s) override

@@ -59,7 +59,7 @@ public:
    {
    }
 
-   Move<S, XEv>* randomMove(const S& s) override
+   uptr<Move<S, XEv>> randomMove(const S& s) override
    {
       const Route& rep = s.getR();
       int n = rep.size();
@@ -77,7 +77,7 @@ public:
       while (abs(i - j) < k)
          j = rand() % (n - k + 1);
 
-      Move<S, XEv>* m = new MOVE(i, j, k, p);
+      uptr<Move<S, XEv>> m(new MOVE(i, j, k, p));
       S sol(rep); // TODO: think
       if (!m->canBeApplied(sol)) {
          cout << "ERROR IN GENERATION!" << endl;
@@ -87,22 +87,22 @@ public:
       return m;
    }
 
-   Move<S, XEv>* validRandomMove(const S& s) override
+   uptr<Move<S, XEv>> validRandomMove(const S& s) override
    {
       //const Route& r = s.getR();
-      Move<S, XEv>* m = randomMove(s);
+      uptr<Move<S, XEv>> m = randomMove(s);
       if (m->canBeApplied(s))
          return m;
       else {
-         delete m;
+         ///delete m;
          return nullptr;
       }
    }
 
-   virtual NSIterator<S, XEv>* getIterator(const S& s) override
+   virtual uptr<NSIterator<S, XEv>> getIterator(const S& s) override
    {
       const Route& r = s.getR();
-      return new NSITERATOR(r.size(), k, p);
+      return uptr<NSIterator<S, XEv>>(new NSITERATOR(r.size(), k, p));
    }
 
    static string idComponent()

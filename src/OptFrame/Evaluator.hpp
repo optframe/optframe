@@ -142,7 +142,7 @@ public:
       assert(m.hasReverse() && rev);
       XEv e = evaluate(s);
       // create pair
-      return pair<uptr<Move<S, XEv>>, XEv>(rev, e);
+      return pair<uptr<Move<S, XEv>>, XEv>(std::move(rev), std::move(e)); // TODO: verify if 'e' is copied, but probably requires std::move
       //return make_pair(rev, evaluate(s));
    }
 
@@ -239,7 +239,8 @@ public:
 
    // Movement cost based on complete evaluation (only on CheckCommand)
    // USE ONLY FOR VALIDATION OF CODE! OTHERWISE, USE MoveCost<>(e, m, s)
-   MoveCost<>* moveCostComplete(Move<S, XEv>& m, S& s, bool allowEstimated = false)
+   ///MoveCost<>* moveCostComplete(Move<S, XEv>& m, S& s, bool allowEstimated = false)
+   op<Evaluation<>> moveCostComplete(Move<S, XEv>& m, S& s, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
       // TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
@@ -263,7 +264,8 @@ public:
          alternatives[i].second = rev.second.getAlternativeCosts()[i].second - ini.second.getAlternativeCosts()[i].second;
       }
 
-      MoveCost<>* p = new MoveCost<>(obj, inf);
+      ///MoveCost<>* p = new MoveCost<>(obj, inf);
+      op<Evaluation<>> p = make_optional(Evaluation<>(obj, inf));
       p->setAlternativeCosts(alternatives);
 
       //delete rev.first;

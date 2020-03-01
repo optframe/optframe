@@ -248,14 +248,14 @@ private:
 			y2 = rg.rand((rep.getNumCols() - 2)) + 1;
 		}
 
-		return uptr<Move<SolutionEtII>>(MOVE(x1, y1, x2, y2));
+		return uptr<Move<SolutionEtII>>(new MOVE(x1, y1, x2, y2));
 	}
 
-	virtual NSIterator<SolutionEtII>* getIterator(const SolutionEtII& s) override
+	virtual uptr<NSIterator<SolutionEtII>> getIterator(const SolutionEtII& s) override
 	{
       const RepEtII& rep = s.getR();
 		// return an iterator to the neighbors of 'rep'
-		return new NSIteratorSwapCenter(rep.getNumRows() - 2, rep.getNumCols() - 2);
+		return uptr<NSIterator<SolutionEtII>>(new NSIteratorSwapCenter(rep.getNumRows() - 2, rep.getNumCols() - 2));
 	}
 
 	virtual void print() const

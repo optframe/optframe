@@ -81,7 +81,7 @@ public:
 
 	}
 
-	virtual Move<S>* apply(S& s) override
+	virtual uptr<Move<S>> apply(S& s) override
 	{
       Routes& rep = s.getR();
 		int aux;
@@ -96,7 +96,7 @@ public:
 				//rep.at(r).at(i + 1) = aux;
 			}
 			rep.at(r).at(i) = aux;
-			return new MoveVRPOrOpt1<T, ADS, S> (r, pos - 1, c);
+			return uptr<Move<S>>(new MoveVRPOrOpt1<T, ADS, S> (r, pos - 1, c));
 		}
 		else
 		{
@@ -106,11 +106,11 @@ public:
 				rep.at(r).at(i) = rep.at(r).at(i - 1);
 			}
 			rep.at(r).at(i) = aux;
-			return new MoveVRPOrOpt1<T, ADS, S> (r, pos, c + 1);
+			return uptr<Move<S>>(new MoveVRPOrOpt1<T, ADS, S> (r, pos, c + 1));
 
 		}
 
-		return new MoveVRPOrOpt1<T, ADS, S> (-1, -1, -1);
+		return uptr<Move<S>>(new MoveVRPOrOpt1<T, ADS, S> (-1, -1, -1));
 		///exit(1);
 	}
 
@@ -135,7 +135,7 @@ class NSIteratorVRPOrOpt1: public NSIterator<S, XEv>
 
 protected:
 
-	MOVE* m;
+	uptr<MOVE> m;
 	vector<MOVE*> moves;
 	int index; //index of moves
 	const Routes& rep;
@@ -195,7 +195,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual Move<S>* current() override
+	virtual uptr<Move<S>> current() override
 	{
 		if (isDone())
 		{
@@ -204,7 +204,10 @@ public:
 			exit(1);
 		}
 
-		return m;
+      uptr<Move<S>> m2 = std::move(m);
+      m = nullptr;
+
+		return m2;
 	}
 };
 

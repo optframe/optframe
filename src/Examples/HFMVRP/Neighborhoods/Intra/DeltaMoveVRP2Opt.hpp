@@ -159,7 +159,7 @@ public:
 
 	}
 
-	Move<SolutionHFMVRP>* apply(SolutionHFMVRP& s) override
+	uptr<Move<SolutionHFMVRP>> apply(SolutionHFMVRP& s) override
 	{
       RepHFMVRP& rep = s.getR();
       AdsHFMVRP& ads = s.getADS();
@@ -184,7 +184,7 @@ public:
 		//Update minDemand,maxDemand, minPairDemand, maxPairDemand, cumulative and sum
 		updateModifiedRoutes(rep, ads);
 
-		return new DeltaMoveVRP2Opt(r, p1, p2, hfmvrp);
+		return uptr<Move<SolutionHFMVRP>>(new DeltaMoveVRP2Opt(r, p1, p2, hfmvrp));
 	}
 
 	op<EvaluationHFMVRP> cost(const pair<SolutionHFMVRP, Evaluation<>>& se, bool allowEstimated) override
@@ -228,7 +228,8 @@ public:
 		}
 		//cout << endl;
 
-		return new MoveCost<> (f, 0);
+		///return new MoveCost<> (f, 0);
+      return make_optional(Evaluation<> (f, 0));
 	}
 
 	static string idComponent()

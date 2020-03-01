@@ -58,13 +58,13 @@ public:
 		return w1 != w2;
 	}
 
-	Move<SolutionOptHS>* apply(SolutionOptHS& s) override
+	uptr<Move<SolutionOptHS>> apply(SolutionOptHS& s) override
 	{
       RepOptHS& rep = s.getR();
 		pair<char, char> aux = rep[w1];
 		rep[w1] = rep[w2];
 		rep[w2] = aux;
-		return new MoveSwap(w2,  w1);
+		return uptr<Move<SolutionOptHS>>(new MoveSwap(w2,  w1));
 	}
 
 	virtual bool operator==(const Move<SolutionOptHS>& _m) const
@@ -95,7 +95,7 @@ public:
 	{
 	}
 
-	virtual Move<SolutionOptHS>* randomMove(const SolutionOptHS& s) override
+	virtual uptr<Move<SolutionOptHS>> randomMove(const SolutionOptHS& s) override
 	{
       const RepOptHS& rep = s.getR();
 		int w1 = rg.rand(rep.size());
@@ -103,7 +103,7 @@ public:
 		while(w2==w1)
 			w2 = rg.rand(rep.size());
 
-		return new MoveSwap(w1, w2);
+		return uptr<Move<SolutionOptHS>>(new MoveSwap(w1, w2));
 	}
 
 	virtual void print() const

@@ -86,7 +86,7 @@ public:
 
 	}
 
-	virtual Move<S>* apply(S& s) override
+	virtual uptr<Move<S>> apply(S& s) override
 	{
       Routes& rep = s.getR();
 		T aux;
@@ -94,7 +94,7 @@ public:
 		rep.at(r1).at(c1) = rep.at(r2).at(c2);
 		rep.at(r2).at(c2) = aux;
 
-		return new MoveVRPSwap1_1(r2, r1, c2, c1);
+		return uptr<Move<S>>(new MoveVRPSwap1_1(r2, r1, c2, c1));
 	}
 
 	virtual bool operator==(const Move<S>& _m) const
@@ -119,7 +119,7 @@ class NSIteratorVRPSwap1_1: public NSIterator<S, XEv>
 	typedef vector<vector<T> > Routes;
 
 protected:
-	MOVE* m;
+	uptr<Move<S>> m;
 	vector<MOVE*> moves;
 	int index; //index of moves
 	const Routes& r;
@@ -175,7 +175,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual Move<S>* current() override
+	virtual uptr<Move<S>> current() override
 	{
 		if (isDone())
 		{
@@ -184,7 +184,9 @@ public:
 			exit(1);
 		}
 
-		return m;
+      uptr<Move<S>> m2 = std::move(m);
+
+		return m2;
 	}
 };
 
@@ -214,12 +216,12 @@ public:
       const Routes& rep = s.getR();
 		//getchar();
 		if (rep.size() < 2)
-			return uptr<Move<S>>(MOVE(-1, -1, -1, -1, p));
+			return uptr<Move<S>>(new MOVE(-1, -1, -1, -1, p));
 
 		int r1 = rand() % rep.size();
 
 		if (rep.at(r1).size() == 0)
-			return uptr<Move<S>>(MOVE(-1, -1, -1, -1, p));
+			return uptr<Move<S>>(new MOVE(-1, -1, -1, -1, p));
 
 		int r2;
 
@@ -229,17 +231,17 @@ public:
 		} while (r1 == r2);
 
 		if (rep.at(r2).size() == 0)
-			return uptr<Move<S>>(MOVE(-1, -1, -1, -1, p));
+			return uptr<Move<S>>(new MOVE(-1, -1, -1, -1, p));
 
 		int c1 = rand() % rep.at(r1).size();
 		int c2 = rand() % rep.at(r2).size();
 
-		return uptr<Move<S>>(MOVE(r1, r2, c1, c2, p));
+		return uptr<Move<S>>(new MOVE(r1, r2, c1, c2, p));
 	}
 
 	virtual uptr<NSITERATOR> getIterator(const S& s) override
 	{
-		return uptr<NSITERATOR>(NSITERATOR(s.getR(), s.getADS(), p));
+		return uptr<NSITERATOR>(new NSITERATOR(s.getR(), s.getADS(), p));
 	}
 
 	virtual string toString() const

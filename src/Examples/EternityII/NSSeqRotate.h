@@ -192,7 +192,7 @@ public:
       int y = rg.rand((rep.getNumCols() - 2)) + 1;
       int nRot = rg.rand(3) + 1;
 
-      return uptr<Move<SolutionEtII>>(MOVE(nRot, x, y)); // return a random move
+      return uptr<Move<SolutionEtII>>(new MOVE(nRot, x, y)); // return a random move
    }
 
    virtual uptr<NSIterator<SolutionEtII>> getIterator(const SolutionEtII& s) override

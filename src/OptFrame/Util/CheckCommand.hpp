@@ -349,9 +349,11 @@ public:
 			message(lEvaluator.at(ev), iter, "revCost calculated!");
 
 			Timer tMoveCostApply;
-			MoveCost<>* mcSimpleCost = lEvaluator[ev]->moveCostComplete(move, s);
-			evtype simpleCost = mcSimpleCost->cost();
-			delete mcSimpleCost;
+			///MoveCost<>* mcSimpleCost = lEvaluator[ev]->moveCostComplete(move, s);
+         op<Evaluation<>> mcSimpleCost = lEvaluator[ev]->moveCostComplete(move, s);
+			//evtype simpleCost = mcSimpleCost->cost();
+         evtype simpleCost = mcSimpleCost->evaluation();
+			//delete mcSimpleCost;
 			message(lEvaluator.at(ev), iter, "simpleCost calculated!");
 			timeSamples.timeNSCostApply[id_ns].push_back(tMoveCostApply.inMilliSecs());
 
@@ -970,44 +972,46 @@ public:
 							{
 								CopySolution<R,ADS>& s = *solutions.at(sol);
 								// TODO: verify if return is return is not null!
-								Move<S>& move1 = *nsenum->indexMove(m1);
-								Move<S>& move2 = *nsenum->indexMove(m2);
+								uptr<Move<S>> move1 = nsenum->indexMove(m1);
+								uptr<Move<S>> move2 = nsenum->indexMove(m2);
 								// moves must be valid
-								if (!(move1.canBeApplied(s) && move2.canBeApplied(s)))
+								if (!(move1->canBeApplied(s) && move2->canBeApplied(s)))
 									break;
 								// move 1 must have reverse
-								if (!move1.hasReverse())
+								if (!move1->hasReverse())
 								{
 									cout << "checkcommand: NSEnum independent check expected reverse move... (deactivate with 'checkIndependent=false')" << endl;
 									break;
 								}
 
 								// calculate cost for move 2
-								MoveCost<>* cost_m2 = ev.moveCostComplete(move2, s);
+								///MoveCost<>* cost_m2 = ev.moveCostComplete(move2, s);
+                        op<XEv> cost_m2 = ev.moveCostComplete(*move2, s);
 
 								// apply move 1 (consider reverse is not nullptr)
-								Move<S>& rev_m1 = *move1.apply(s);
+								uptr<Move<S>> rev_m1 = move1->apply(s);
 
 								// calculate new cost for move 2
-								MoveCost<>* cost2_m2 = ev.moveCostComplete(move2, s);
+								///MoveCost<>* cost2_m2 = ev.moveCostComplete(move2, s);
+                        op<XEv> cost2_m2 = ev.moveCostComplete(*move2, s);
 
 								// return solution to original value and free
-								rev_m1.apply(s);
-								delete &rev_m1;
-								delete &move1;
-								delete &move2;
+								rev_m1->apply(s);
+								//delete &rev_m1;
+								//delete &move1;
+								//delete &move2;
 
 								// if costs differ, moves are not independent
 								if (!ev.equals(*cost2_m2, *cost_m2))
 								{
 									// mark conflict between m1 and m2
 									conflict = true;
-									delete cost2_m2;
-									delete cost_m2;
+									//delete cost2_m2;
+									//delete cost_m2;
 									break;
 								}
-								delete cost2_m2;
-								delete cost_m2;
+								//delete cost2_m2;
+								//delete cost_m2;
 							}
 
 							if (!conflict)

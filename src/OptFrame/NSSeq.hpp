@@ -43,10 +43,11 @@ public:
 
     virtual uptr<NSIterator<S, XEv, XSH>> getIterator(const S&) = 0;
 
-    virtual NSBlockIterator<S, XEv>* getBlockIterator(const S& s)
+    // experimental! Should create novel NSSeqBlock perhaps
+    virtual uptr<NSBlockIterator<S, XEv>> getBlockIterator(const S& s)
     {
         uptr<NSIterator<S, XEv>> it = this->getIterator(s);
-        return new DefaultNSBlockIterator<S, XEv>(*it);
+        return uptr<NSBlockIterator<S, XEv>>(new DefaultNSBlockIterator<S, XEv>(*it));
     }
 
     // ============= For 'Local Optimum'-based methods =============
