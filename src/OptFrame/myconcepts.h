@@ -53,7 +53,7 @@ template<class T, class U>
     };
 //
 
-   template < class T >
+template < class T >
 concept bool equality_comparable = __WeaklyEqualityComparableWith<T, T>;
 
 //
@@ -69,15 +69,20 @@ concept bool equality_comparable = __WeaklyEqualityComparableWith<T, T>;
 // transitive: if a<=b and b <= c, then a <= b
 // connexity: a <= b or b <= a 
 
+// IF WE REPLACE 'antisymmetry' with 'reflexity', we have a 'Total Preorder' (symbol below):
+//  <
+//  ~
+
+// 'Total Preorder' is the complement of 'Strict Weak Order' (not used here: 'irreflexive', 'asymmetric' and 'transitive')
+// Below we describe general 'Partial Orders'
+
 // weak dominance is anti-symmetric
 // weak dominance is transitive
 // weak dominance DOESN'T have connexity, e.g., see (min,min): (1,5) and (2,4)
 
 // Partial Order (for binary relation <=>): antisymmetric, transitive, PLUS (reflexive or irreflexive)
-// if 'reflexive', a <=> a is always valid
-// if 'irreflexive', a <=> a is always false
-// for 'reflexive' cases, we have '<=' syntax.
-// for 'irreflexive' cases, we have '<' syntax.
+// if 'reflexive', a <=> a is always valid    (the typical '<=' syntax)
+// if 'irreflexive', a <=> a is always false  (the typical '<' syntax)
 
 // weak dominance is always 'reflexive'.
 
@@ -85,7 +90,7 @@ concept bool equality_comparable = __WeaklyEqualityComparableWith<T, T>;
 template <class T>
 //concept bool totally_ordered =
 //concept bool partially_ordered =
-concept bool comparable =
+concept bool comparability =
   optframe::equality_comparable<T> &&
   requires(const std::remove_reference_t<T>& a,
            const std::remove_reference_t<T>& b) {
@@ -95,7 +100,9 @@ concept bool comparable =
     { a >= b } -> bool;
   };
 
-// the 'comparable' naming used to be 'totally_ordered' (as C++ proposal), but it's neither partial or total...
+// The 'comparability' name was 'totally_ordered' (as C++ proposal), but it's neither partial or total...
+// one can easily return 'false' to all operators, meaning that these are incomparable. 
+// Thus 'comparability' allows for both 'comparable' and 'incomparable' situations.
 //
 // for partial order, only 'weak partial' (<=) and 'strong partial' (<) would be necessary
 // the rest can be defined in terms of < and <=.
@@ -211,7 +218,7 @@ public:
 };
 
 // testing total order for some random classes
-template<optframe::comparable T>
+template<optframe::comparability T>
 struct MyConceptsTestTotalOrder
 {
 };

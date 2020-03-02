@@ -24,6 +24,11 @@ public:
    bool outdated; // this is required by XEvaluation
    bool estimated; // this is required by XEvaluation
 
+   bool betterStrict(const TestTArithMO_is_zero2<ObjType>& e); // required
+   bool betterOrEquals(const TestTArithMO_is_zero2<ObjType>& e); // required
+   void update(const TestTArithMO_is_zero2<ObjType>& e); // required
+
+
    bool f()
    {
       return optframe::numeric_is_zero<ObjType>(infMeasureX);

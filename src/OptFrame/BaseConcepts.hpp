@@ -99,16 +99,24 @@ concept bool XRSolution = HasGetR<Self, R> && XSolution<Self>;
 // defining 'objval' concept: objective value must have +/- (for costs) and comparisons
 template <class T>
 concept bool objval = 
-  optframe::basic_arithmetics<T> && optframe::comparable<T>;
+  optframe::basic_arithmetics<T> && optframe::comparability<T>;
 
-// defining 'evaluation' concept: something that has +/- and some directed strong/weak comparison (betterThan/betterOrEquals)
+// defining 'evgoal' concept: something that has +/- and some directed strong/weak comparison (betterThan/betterOrEquals)
 template <class Self>
-concept bool evaluation = 
-  optframe::basic_arithmetics<Self> && 
-      requires(Self e) 
+concept bool evgoal = 
+  (optframe::basic_arithmetics<Self>  ||
+  requires(Self e, 
+           std::remove_reference_t<Self>& e2)
       {
-         { e.betterThan() } -> bool;
-         { e.betterOrEquals() } -> bool;
+         { e.update(e2) } -> void; // TODO: rename to 'add'
+      }
+  ) && 
+//      requires(Self e) 
+        requires(Self e, 
+           const std::remove_reference_t<Self>& e2)
+      {
+         { e.betterStrict(e2) } -> bool;    // strict compare towards goal, e.g., '<'
+         { e.betterOrEquals(e2) } -> bool;  // non-strict compare towards goal, e.g., '<='
       };
 
 //------
@@ -131,7 +139,7 @@ concept bool HasGetObj = requires(Self a)
 // note that getObjValue and getInfeasibleValue are not necessary here, just getObj
 // one can implement this way if preferred, separating or not both "values"... not mandatory anymore
 template <class Self>
-concept bool XEvaluation = HasClone<Self> && HasToString<Self> && HasGetObj<Self> && optframe::ostreamable<Self> &&
+concept bool XEvaluation = optframe::evgoal<Self> && HasClone<Self> && HasToString<Self> && HasGetObj<Self> && optframe::ostreamable<Self> &&
     requires(Self e)
                {
                   // variable 'outdated' is still useful for optimizations

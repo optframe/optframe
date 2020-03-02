@@ -50,6 +50,9 @@ struct IsEvaluation
    bool outdated; // this is required!
    bool estimated; // this is required!
 
+   bool betterStrict(const IsEvaluation<T>& e);
+   bool betterOrEquals(const IsEvaluation<T>& e);
+
    void update(IsEvaluation<T>& e); // required ('cost' operation)
 
    IsEvaluation<T>& clone()

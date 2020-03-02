@@ -70,6 +70,7 @@ namespace optframe {
 // so we will proceed with basic arithmetics, +, - and *.
 // this effectively discard 'string' and others (although comparable)
 
+// THIS IS FOCUSED SINGLE DIRECTION PERSPECTIVE (TOTAL ORDER). SEE PARAM 'isMini'
 template<optframe::basic_arithmetics ObjType = evtype>
 class Evaluation final : public Component
 {
@@ -107,14 +108,18 @@ public:
    // boolean field to indicate if Evaluation value is an estimation (not exact)
    bool estimated;
 
+   // is minimization
+   bool isMini {true}; 
+
    // ======================================
    // begin canonical part
 
    // TODO (IGOR): maybe create empty Evaluation with numeric_zero on 'obj'
 
-   explicit Evaluation(const ObjType& obj, const ObjType& inf, const evtype& w = 1)
+   explicit Evaluation(const ObjType& obj, const ObjType& inf, const evtype& w = 1, bool _isMini = true)
      : objFunction(obj)
      , infMeasure(inf)
+     , isMini(_isMini)
    {
       gos = gos_unknown;
       outdated = false;
@@ -149,6 +154,7 @@ public:
      , gos(e.gos)
      , outdated(e.outdated)
      , estimated(e.estimated)
+     , isMini(e.isMini)
    {
    }
 
@@ -260,6 +266,19 @@ public:
       // how to do this?
       assert(false);
    }
+
+   // this strictly better than parameter 'e' (for mini, 'this' < 'e')
+   virtual bool betterStrict(const Evaluation<ObjType>& e)
+   {
+      return isMini? evaluation() < e.evaluation() : evaluation() > e.evaluation();
+   }
+
+   // this non-strictly better than parameter 'e' (for mini, 'this' <= 'e')
+   virtual bool betterOrEquals(const Evaluation<ObjType>& e)
+   {
+      return isMini? evaluation() <= e.evaluation() : evaluation() >= e.evaluation();
+   }
+
 
    virtual bool isEstimated()
    {
