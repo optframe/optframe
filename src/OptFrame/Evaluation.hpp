@@ -288,6 +288,18 @@ public:
       return isMini? evaluation() <= e.evaluation() : evaluation() >= e.evaluation();
    }
 
+   // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
+   virtual bool isStrictImprovement()
+   {
+      return betterStrict(Evaluation<ObjType>()); // strictly better than ObjType 'zero'
+   }
+
+   // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
+   virtual bool isNonStrictImprovement()
+   {
+      return betterNonStrict(Evaluation<ObjType>()); // strictly better than ObjType 'zero'
+   }
+
    virtual bool equals(const Evaluation<ObjType>& e)
    {
       return evaluation() == e.evaluation();

@@ -126,6 +126,8 @@ concept bool evgoal =
          { e.betterStrict(e2) }    -> bool; // strict compare towards goal, e.g., '<'
          { e.betterNonStrict(e2) } -> bool; // non-strict compare towards goal, e.g., '<='
          { e.equals(e2) }          -> bool; // compare towards goal, e.g., '=='
+         { e.isStrictImprovement()} -> bool;
+         { e.isNonStrictImprovement()} -> bool;
       };
 
 //------

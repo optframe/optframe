@@ -67,6 +67,22 @@ public:
    // note that intention is to only change evaluation, but now it's up to user.
    virtual void reevaluate(XSH&) = 0;  // TODO: rename to something more general, 'xevaluate' ?
 
+   // Apply movement considering a previous XEv => Faster (used on CheckCommand and locally)
+   // Update XEv 'e'
+   //Move<S, XEv>* applyMoveReevaluate(XEv& e, Move<S, XEv>& m, S& s)
+   uptr<Move<S, XEv>> applyMoveReevaluate(Move<S, XEv>& m, XSH& se)
+   {
+      // apply move and get reverse move
+      uptr<Move<S, XEv>> rev = m.applyUpdate(se);
+      // for now, must be not nullptr
+      assert(rev != nullptr);
+      // consolidate 'outdated' XEv data on 'e'
+      reevaluate(se);
+
+      // create pair
+      return rev;
+   }
+
    // TODO: decide which methods stay here, and which go to Evaluator.hpp
 
 };

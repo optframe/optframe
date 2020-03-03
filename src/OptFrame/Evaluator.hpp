@@ -114,21 +114,6 @@ public:
    }
 
 public:
-   // Apply movement considering a previous XEv => Faster (used on CheckCommand and locally)
-   // Update XEv 'e'
-   //Move<S, XEv>* applyMoveReevaluate(XEv& e, Move<S, XEv>& m, S& s)
-   uptr<Move<S, XEv>> applyMoveReevaluate(Move<S, XEv>& m, XSH& se)
-   {
-      // apply move and get reverse move
-      uptr<Move<S, XEv>> rev = m.applyUpdate(se);
-      // for now, must be not nullptr
-      assert(rev != nullptr);
-      // consolidate 'outdated' XEv data on 'e'
-      reevaluate(se);
-
-      // create pair
-      return rev;
-   }
 
    // Apply movement without considering a previous XEv => Slower.
    // Return new XEv 'e'
@@ -178,7 +163,7 @@ public:
          // saving 'outdated' status to avoid inefficient re-evaluations
          //			bool outdated = e.outdated;
          // apply move to both XEv and Solution
-         uptr<Move<S, XEv>> rev = applyMoveReevaluate(m, se);
+         uptr<Move<S, XEv>> rev = this->applyMoveReevaluate(m, se);
          // get final values
          pair<evtype, evtype> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
          // get final values for lexicographic part
@@ -272,103 +257,6 @@ public:
       //delete ini.first;
 
       return p;
-   }
-
-   // used on FirstImprovement
-   // Accept and apply move if it improves parameter moveCost
-   ///bool acceptsImprove(Move<S, XEv>& m, XSH& se, MoveCost<>* mc = nullptr, bool allowEstimated = false)
-   bool acceptsImprove(Move<S, XEv>& m, XSH& se, XEv* mc = nullptr, bool allowEstimated = false)
-   {
-      // TODO: in the future, consider 'allowEstimated' parameter
-
-      S& s = se.first;
-      XEv& e = se.second;
-
-      // initialize MoveCost pointer
-      //MoveCost<>* p = nullptr;
-      op<XEv> p = nullopt;
-      // try to get a cost (should consider estimated moves in the future)
-      if (allowCosts) {
-         p = m.cost(se, allowEstimated);
-      }
-
-      // if p not null => much faster (using cost)
-      if (p) {
-         // verify if m is an improving move
-         if (isImprovement(*p)) {
-            // apply move and get reverse
-            uptr<Move<S, XEv>> rev = m.apply(s);
-            XEv& eOpt = *p;
-            // update XEv with "MoveCost" (now Evaluation represents 'costs')
-            //p->update(e);           
-            eOpt.update(e);
-            return true;
-         } else {
-            return false;
-         }
-      } else {
-         // need to update 's' together with reevaluation of 'e' => slower (may perform reevaluation)
-
-         // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
-         assert(m.hasReverse());
-
-         // saving previous evaluation
-         XEv ev_begin(e);
-         // saving 'outdated' status to avoid inefficient re-evaluations
-         //			bool outdated = e.outdated;
-         // get original obj function values
-         pair<evtype, evtype> e_begin = make_pair(e.getObjFunction(), e.getInfMeasure());
-         // get original values for lexicographic part
-         vector<pair<evtype, evtype>> alt_begin(e.getAlternativeCosts().size());
-         for (unsigned i = 0; i < alt_begin.size(); i++) {
-            alt_begin[i].first = e.getAlternativeCosts()[i].first;
-            alt_begin[i].second = e.getAlternativeCosts()[i].second;
-         }
-         // apply move to both XEv and Solution
-         uptr<Move<S, XEv>> rev = applyMoveReevaluate(m, se);
-
-         // TODO: check outdated and estimated!
-         //MoveCost mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1, false, false);
-         //Evaluation<> mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1, false, false);
-         Evaluation<> mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1); // no outdated or estimated
-
-         // guarantee that alternative costs have same size
-         assert(alt_begin.size() == e.getAlternativeCosts().size());
-         // compute alternative costs
-         for (unsigned i = 0; i < alt_begin.size(); i++)
-            mcost.addAlternativeCost(make_pair(e.getAlternativeCosts()[i].first - alt_begin[i].first, e.getAlternativeCosts()[i].second - alt_begin[i].second));
-
-         // check if it is improvement
-         if (isImprovement(mcost)) {
-            return true;
-         }
-
-         // must return to original situation
-
-         // apply reverse move in order to get the original solution back
-         //TODO - Vitor, Why apply Move with e is not used???
-         //			Even when reevaluate is implemented, It would be hard to design a strategy that is faster than copying previous evaluation
-         //==================================================================
-         //pair<Move<S, XEv>*, XEv> ini = applyMove(*rev, s);
-
-         // if XEv wasn't 'outdated' before, restore its previous status
-         //			if (!outdated)
-         //				e.outdated = outdated;
-
-         // go back to original evaluation
-         //			e = ini.second;
-         //			delete ini.first;
-
-         uptr<Move<S, XEv>> ini = rev->apply(s);
-         // for now, must be not nullptr
-         assert(ini != nullptr);
-         // TODO: include management for 'false' hasReverse()
-         assert(rev->hasReverse() && ini);
-         e = std::move(ev_begin);
-         //==================================================================
-
-         return false;
-      }
    }
 
    // ============ betterThan ===========

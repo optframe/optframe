@@ -53,6 +53,8 @@ struct IsEvaluation
    bool betterStrict(const IsEvaluation<T>& e);
    bool betterNonStrict(const IsEvaluation<T>& e);
    bool equals(const IsEvaluation<T>& e);
+   bool isStrictImprovement();
+   bool isNonStrictImprovement();
 
    void update(IsEvaluation<T>& e); // required ('cost' operation)
    IsEvaluation<T> diff(const IsEvaluation<T>& e); // required ('cost' operation)

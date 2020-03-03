@@ -27,6 +27,9 @@ public:
    bool betterStrict(const TestTArithMO_is_zero2<ObjType>& e); // required
    bool betterNonStrict(const TestTArithMO_is_zero2<ObjType>& e); // required
    bool equals(const TestTArithMO_is_zero2<ObjType>& e); // required
+   bool isStrictImprovement();
+   bool isNonStrictImprovement();
+
 
    void update(const TestTArithMO_is_zero2<ObjType>& e); // required
    TestTArithMO_is_zero2<ObjType> diff(const TestTArithMO_is_zero2<ObjType>& e); // required
