@@ -14,7 +14,7 @@ uptr<Move< Solution$project >> Move$neighborhood::apply(Solution$project& rep)
     // apply this move to 'rep'
     // rep. (...) = (...)
     // return reverse move
-    return uptr<Move< Solution$project >>(newMove$neighborhood ); 
+    return uptr<Move< Solution$project >>(new Move$neighborhood ); 
 }
 
 op<Evaluation<>> Move$neighborhood::cost(const pair< Solution$project , Evaluation<>>& se, bool allowEstimated)
@@ -36,7 +36,7 @@ void NSIterator$neighborhood::next(){};
 	
 bool NSIterator$neighborhood::isDone(){};
 	
-Move< Solution$project >* NSIterator$neighborhood::current(){};
+uptr<Move< Solution$project >> NSIterator$neighborhood::current(){};
 
 
 
@@ -50,5 +50,5 @@ uptr<Move<Solution$project >> NSSeq$neighborhood::randomMove(const Solution$proj
    // return a random move (that is, a move operator that generates a neighbor solution of 'rep')
    // you may need to use the random number generator 'rg'
    
-   return uptr<Move<Solution$project >>(newMove$neighborhood ); 
+   return uptr<Move<Solution$project >>(new Move$neighborhood ); 
 }

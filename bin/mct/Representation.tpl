@@ -10,6 +10,8 @@
 
 #include "../../OptFrame/Solutions/CopySolution.hpp"
 
+#include "../../OptFrame/Evaluation.hpp"
+
 $include
 
 using namespace std;
@@ -20,6 +22,8 @@ using namespace optframe;
 using Rep$project = $rep;
 
 using Solution$project = CopySolution<Rep$project>;
+
+using Evaluation$project = Evaluation<double>;
 
 // Remember that Rep$project must implement: (i) copy constructor and (ii) operator<<
 

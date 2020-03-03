@@ -81,7 +81,7 @@ public:
     void first() override;
     void next() override;
     bool isDone() override;
-    Move< Solution$project >* current() override;
+    uptr<Move< Solution$project >> current() override;
 };
 
 
@@ -115,15 +115,15 @@ public:
         return NSSeq<Solution$project >::idComponent().append(":NSSeq$neighborhood");
     }
     
-    NSIterator<Solution$project >* getIterator(const Solution$project& rep) override
+    uptr<NSIterator<Solution$project >> getIterator(const Solution$project& rep) override
     {
         // return an iterator to the neighbors of 'rep' 
-        return new NSIterator$neighborhood;  // ADD POSSIBLE ITERATOR PARAMETERS
+        return uptr<NSIterator<Solution$project >>(new NSIterator$neighborhood );  // ADD POSSIBLE ITERATOR PARAMETERS
     }
         
     // Implement this method in the .cpp file
 
-    Move<Solution$project >* randomMove(const Solution$project& rep) override;
+    uptr<Move<Solution$project >> randomMove(const Solution$project& rep) override;
     
     // Move<Solution$project >* validRandomMove(const Solution$project& rep) override;
 };
