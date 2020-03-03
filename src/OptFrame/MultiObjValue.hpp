@@ -367,9 +367,13 @@ public:
 
    bool outdated; // required for XEvaluation
    bool estimated; // required for XEvaluation
+
    bool betterStrict(const TestTArithMO_is_zero<ObjType>& e); // required
-   bool betterOrEquals(const TestTArithMO_is_zero<ObjType>& e); // required
-   void update(const TestTArithMO_is_zero<ObjType>& e); // required
+   bool betterNonStrict(const TestTArithMO_is_zero<ObjType>& e); // required
+   bool equals(const TestTArithMO_is_zero<ObjType>& e); // required
+
+   void update(TestTArithMO_is_zero<ObjType>& e); // required
+   TestTArithMO_is_zero<ObjType> diff(const TestTArithMO_is_zero<ObjType>& e); // required
 
 
    void f()

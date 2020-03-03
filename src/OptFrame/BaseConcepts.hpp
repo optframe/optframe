@@ -105,18 +105,27 @@ concept bool objval =
 template <class Self>
 concept bool evgoal = 
   (optframe::basic_arithmetics<Self>  ||
-  requires(Self e, 
-           std::remove_reference_t<Self>& e2)
-      {
-         { e.update(e2) } -> void; // TODO: rename to 'add'
-      }
-  ) && 
+      (
+         requires(Self e, 
+               std::remove_reference_t<Self>& e2)
+            {
+               { e.update(e2) } -> void; // TODO: rename to 'add'
+            }
+      && 
+         requires(Self e, 
+               const std::remove_reference_t<Self>& e2)
+            {
+               { e.diff(e2) } -> Self; // TODO: rename to 'sub'
+            }
+      )
+   ) && 
 //      requires(Self e) 
         requires(Self e, 
            const std::remove_reference_t<Self>& e2)
       {
-         { e.betterStrict(e2) } -> bool;    // strict compare towards goal, e.g., '<'
-         { e.betterOrEquals(e2) } -> bool;  // non-strict compare towards goal, e.g., '<='
+         { e.betterStrict(e2) }    -> bool; // strict compare towards goal, e.g., '<'
+         { e.betterNonStrict(e2) } -> bool; // non-strict compare towards goal, e.g., '<='
+         { e.equals(e2) }          -> bool; // compare towards goal, e.g., '=='
       };
 
 //------

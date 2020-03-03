@@ -51,9 +51,11 @@ struct IsEvaluation
    bool estimated; // this is required!
 
    bool betterStrict(const IsEvaluation<T>& e);
-   bool betterOrEquals(const IsEvaluation<T>& e);
+   bool betterNonStrict(const IsEvaluation<T>& e);
+   bool equals(const IsEvaluation<T>& e);
 
    void update(IsEvaluation<T>& e); // required ('cost' operation)
+   IsEvaluation<T> diff(const IsEvaluation<T>& e); // required ('cost' operation)
 
    IsEvaluation<T>& clone()
    {

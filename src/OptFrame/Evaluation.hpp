@@ -267,6 +267,15 @@ public:
       assert(false);
    }
 
+   virtual Evaluation<ObjType> diff(const Evaluation<ObjType>& evCost)
+   {
+      // this task was performed before by MoveCost... now unifying in Evaluation
+      // how to do this?
+      assert(false);
+      return Evaluation<ObjType>(evCost);
+   }
+
+
    // this strictly better than parameter 'e' (for mini, 'this' < 'e')
    virtual bool betterStrict(const Evaluation<ObjType>& e)
    {
@@ -274,11 +283,15 @@ public:
    }
 
    // this non-strictly better than parameter 'e' (for mini, 'this' <= 'e')
-   virtual bool betterOrEquals(const Evaluation<ObjType>& e)
+   virtual bool betterNonStrict(const Evaluation<ObjType>& e)
    {
       return isMini? evaluation() <= e.evaluation() : evaluation() >= e.evaluation();
    }
 
+   virtual bool equals(const Evaluation<ObjType>& e)
+   {
+      return evaluation() == e.evaluation();
+   }
 
    virtual bool isEstimated()
    {

@@ -25,8 +25,11 @@ public:
    bool estimated; // this is required by XEvaluation
 
    bool betterStrict(const TestTArithMO_is_zero2<ObjType>& e); // required
-   bool betterOrEquals(const TestTArithMO_is_zero2<ObjType>& e); // required
+   bool betterNonStrict(const TestTArithMO_is_zero2<ObjType>& e); // required
+   bool equals(const TestTArithMO_is_zero2<ObjType>& e); // required
+
    void update(const TestTArithMO_is_zero2<ObjType>& e); // required
+   TestTArithMO_is_zero2<ObjType> diff(const TestTArithMO_is_zero2<ObjType>& e); // required
 
 
    bool f()

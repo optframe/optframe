@@ -86,7 +86,7 @@ public:
 				p2 = p1 + 2;
 			}
 
-			m = uptr<MOVE>(new MOVE(p1, p2, p));
+			m = uptr<Move<S>>(new MOVE(p1, p2, p));
 		}
 		else
 			m = nullptr;
@@ -106,7 +106,7 @@ public:
 			exit(1);
 		}
 
-      uptr<MOVE> m2 = std::move(m);
+      uptr<Move<S>> m2 = std::move(m);
       m = nullptr;
 
 		return m2;
