@@ -29,8 +29,11 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = Component, XStopCriteria<XEv, XM> XStop = DefaultStop >
-class BasicSimulatedAnnealing: public SingleObjSearch<S, XEv, XSH>
+//template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = Component, XStopCriteria<XEv, XM> XStop = DefaultStop >
+//template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
+//class BasicSimulatedAnnealing: public SingleObjSearch<S, XEv, XSH, XM, XStop>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = Component>
+class BasicSimulatedAnnealing: public SingleObjSearch<S, XEv, XSH, XM>
 {
 private:
 	Evaluator<S, XEv, XSH>& evaluator;
@@ -40,6 +43,9 @@ private:
 	double alpha;
 	int SAmax;
 	double Ti;
+
+   // local variables
+   double T;
 
 public:
 
@@ -77,10 +83,13 @@ public:
 
 	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr,  const Evaluation<>* _e = nullptr)
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(std::optional<pair<S, XEv>>& star, const StopCriteria<XEv>& stopCriteria) override
+
+   //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = Component, XStopCriteria<XEv, XM> XStop = DefaultStop >
+   SearchStatus search(std::optional<pair<S, XEv>>& star, const StopCriteria<XEv, XM>& stop) override
+   //SearchStatus search(std::optional<pair<S, XEv>>& star, const StopCriteria<XEv>& stopCriteria) override
 	{
-		double timelimit = stopCriteria.timelimit;
-		XEv target_f(stopCriteria.target_f);
+		double timelimit = stop.timelimit;
+		XEv target_f(stop.target_f);
 		cout << "SA search(" << target_f << "," << timelimit << ")" << endl;
 
 		Timer tnow;
@@ -98,7 +107,8 @@ public:
       XEv& e = se.second;
       //
       
-		double T = Ti;
+      // local variables
+		T = Ti;
 		int iterT = 0;
 
       //pair<S, XEv> star = se; // copy (implicit cloning guaranteed??)
@@ -109,7 +119,10 @@ public:
       XEv& eStar = star->second;
 
       // TODO: freezing parameter should be passed somewhere
-		while ((T > 0.000001) && (tnow.now() < timelimit))
+		//while ((T > 0.000001) && (tnow.now() < timelimit))
+
+      bool bstop = stop.shouldStop(eStar, reinterpret_cast<XM&>(*this));
+      while (stop.specificStopBy ? bstop : ((T > 0.000001) && (tnow.now() < timelimit)))
 		{
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
 			{

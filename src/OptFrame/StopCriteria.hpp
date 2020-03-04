@@ -125,7 +125,7 @@ public:
 
    // note 'virtual' ... (only if 'final' is not needed. TODO: check performance)
    // general stop conditions checked here (does not include best value checking)
-   virtual bool shouldStop(const XEv& bestF, XM& selfMethod) const 
+   virtual bool shouldStop(const XEv& bestF, XM& selfMethod) const
    {
       // note that this method does not check best value...
       // 'target_f' strategy must be handled directly by specific Evaluator classes on search methods

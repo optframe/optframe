@@ -38,7 +38,7 @@ using namespace std;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv, XSearch<S, XEv> XSH>
+template<XSolution S, XEvaluation XEv, XSearch<S, XEv> XSH, XSearchMethod XM = Component>
 class GlobalSearch: public Component
 {
 public:
@@ -51,7 +51,7 @@ public:
 	{
 	}
 
-   virtual SearchStatus search(std::optional<XSH>& p, const StopCriteria<>& stopCriteria) = 0;
+   virtual SearchStatus search(std::optional<XSH>& p, const StopCriteria<XEv, XM>& stopCriteria) = 0;
 
 	virtual string log() const
 	{

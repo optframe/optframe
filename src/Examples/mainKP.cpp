@@ -46,12 +46,15 @@ main(int argc, char** argv)
 
    NSSeq<SolutionKP>* nsseq_bit = &ns1;
 
-   BasicSimulatedAnnealing<SolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
-   StopCriteria<> sosc; // stop criteria
-   std::optional<pair<SolutionKP, Evaluation<>>> r = std::nullopt;
-   sa.search(r, sosc);
+   BasicSimulatedAnnealing<SolutionKP, EvaluationKP, ESolutionKP, BasicSimulatedAnnealing<SolutionKP>> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
+   
+   StopCriteria<EvaluationKP, BasicSimulatedAnnealing<SolutionKP, EvaluationKP, ESolutionKP>> soscSA; // stop criteria
+   op<ESolutionKP> r = std::nullopt;
+   sa.search(r, soscSA);
    r->first.print();
    r->second.print();
+
+   StopCriteria<> sosc; // stop criteria
 
    BestImprovement<SolutionKP> bi(ev, ns1);
    FirstImprovement<SolutionKP> fi(ev, ns1);

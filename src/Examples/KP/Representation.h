@@ -14,6 +14,9 @@ using namespace std;
 // Solution Representation
 typedef vector < bool >  RepKP;
 
+typedef Evaluation<> EvaluationKP;
+
+
 
 #endif /*KP_REPRESENTATION_H_*/
 

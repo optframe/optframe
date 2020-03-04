@@ -13,5 +13,7 @@ typedef OPTFRAME_DEFAULT_ADS MY_ADS;
 
 typedef CopySolution<RepKP, MY_ADS> SolutionKP;
 
+using ESolutionKP = pair<SolutionKP, EvaluationKP>;
+
 #endif /*KP_SOLUTION_H_*/
 

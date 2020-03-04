@@ -48,8 +48,10 @@ namespace optframe {
 
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 // if replacing types directly (no templates), concept deduction cannot appear in virtual functions. So, we need templates.
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
-class SingleObjSearch: public GlobalSearch<S, XEv, XSH> // public Component
+//template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>, XSearchMethod XM = Component, XStopCriteria<XEv, XM> XStop = DefaultStop>
+//template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>, XSearchMethod XM = Component>
+class SingleObjSearch: public GlobalSearch<S, XEv, XSH, XM> // public Component
 {
    // if passing types directly here, error 'typedef declared auto'
    typedef vector<XEv*> FitnessValues;
@@ -80,8 +82,12 @@ public:
    // search method try to find a feasible solution within timelimit, if there is no such solution it returns nullptr.
    //virtual pair<S, XEv>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const XEv* _e = nullptr) = 0;
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria, const std::optional<pair<S, XEv>> input = std::nullopt) = 0;
+   
+   
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) = 0;
-   virtual SearchStatus search(std::optional<pair<S, XEv>>& inputOutput, const StopCriteria<XEv>& stopCriteria) = 0;
+   //virtual SearchStatus search(op<XSH>& inputOutput, const XStop& stopCriteria) = 0;
+   virtual SearchStatus search(op<XSH>& inputOutput, const StopCriteria<XEv, XM>& stopCriteria) = 0;
+   //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv, XM>& stopCriteria) = 0;
 
    virtual string log() const
    {
