@@ -72,10 +72,10 @@ enum class SearchStatus : int
 
 
 
-// TODO: move to self file
-template<XEvaluation XEv = Evaluation<>, XSearchMethod XM = optframe::Component> //XSearchMethod XM = optframe::Component>
-//class StopCriteria final : public Component
-class StopCriteria : public Component // TODO: non-final unless proven necessary by performance
+// StopCriteria is currently 'final', as lambdas can be passed to specific configurations. 
+// If something else is required (via inheritance), this 'final' will need to be changed.
+template<XEvaluation XEv = Evaluation<>, XSearchMethod XM = optframe::Component> 
+class StopCriteria final : public Component
 {
 public:
    //XM* method { nullptr };
@@ -99,6 +99,7 @@ public:
    // very useful for unified constructive methods, being it single or multiobjective
    // for single objective trajectory search, it is usually ignored, as working number tends to be always one.
 
+/*
    // general stopping criteria
    std::function<bool(const XEv&)> generalStopBy = 
    {   
@@ -106,9 +107,18 @@ public:
          return this->timerExpired() || this->evCountExpired();
       }
    };
+*/
 
-   // method-specific stopping criteria
-   std::function<bool(const XEv&, XM*)> specificStopBy { nullptr };
+   // method-specific stopping criteria (default is a generic one)
+   std::function<bool(const XEv&, XM*)> stopBy 
+   { 
+      [&](const XEv& bestF, XM*) -> bool {
+         return this->timerExpired() || this->evCountExpired();
+      }   
+   };
+
+   // indicates if stop function is standard/general or specific (including method params)
+   bool specific = { false };
 
 private:
    //
@@ -127,28 +137,24 @@ public:
       evCount += v;
    }
 
-   // note 'virtual' ... (only if 'final' is not needed. TODO: check performance)
    // general stop conditions checked here (does not include best value checking)
    virtual bool shouldStop(const XEv& bestF, XM* selfMethod) const
    {
-      // note that this method does not check best value...
-      // 'target_f' strategy must be handled directly by specific Evaluator classes on search methods
-      //return timerExpired() || evCountExpired();
-      return specificStopBy ? specificStopBy(bestF, selfMethod) : generalStopBy(bestF);
+      return stopBy(bestF, selfMethod);
    }
 
-   // pass general stopping criteria
-   StopCriteria(std::function<bool(const XEv&)> _stopBy) :
-      generalStopBy(_stopBy)
-   {
-   }
+   // ----------------------------------------------
+   // method-specific stop criteria (passed by user)
+   // ----------------------------------------------
 
-   //StopCriteria(XM* _method, std::function<bool(XM*)> _stopBy) :
-   //   method(_method), specificStopBy(_stopBy)
    StopCriteria(std::function<bool(const XEv&, XM*)> _stopBy) :
-      generalStopBy{ nullptr }, specificStopBy(_stopBy)
+      stopBy(_stopBy), specific(true)
    {
    }
+
+   // ---------------------------------
+   // general stop criteria (see below)
+   // ---------------------------------
 
    //SOSC(double _timelimit = 100000000.0, double _target_f = 0.0)
    StopCriteria(double _timelimit = 100000000.0)
@@ -162,14 +168,6 @@ public:
      target_f(_target_f)
    {
    }
-
-/*
-   StopCriteria(double _timelimit, XEv&& _target_f)
-     : timelimit(_timelimit),
-     target_f(std::move(_target_f))
-   {
-   }
-*/
 
    virtual ~StopCriteria()
    {

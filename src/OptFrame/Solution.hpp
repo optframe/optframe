@@ -76,6 +76,7 @@ public:
 			r(_r), ads(_ads)
 	{
 		assert(r);
+      static_assert(XSolution<Solution<R, ADS>>);
 	}
 
 	// copy constructor (implemented via copy constructor for R)

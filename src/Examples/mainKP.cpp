@@ -50,7 +50,7 @@ main(int argc, char** argv)
 
    BasicSimulatedAnnealing<SolutionKP, EvaluationKP, ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
 
-   std::function<bool(const EvaluationKP&, BasicSimulatedAnnealing<SolutionKP, EvaluationKP, ESolutionKP, Component>*)> specificStopBy =       
+   std::function<bool(const EvaluationKP&, BasicSimulatedAnnealing<SolutionKP, EvaluationKP, ESolutionKP, Component>*)> specificStopBy = 
       [](const EvaluationKP& e, BasicSimulatedAnnealing<SolutionKP, EvaluationKP, ESolutionKP, Component>* m) -> bool {
          return ((m->getT() > 0.001) && (m->getTimer().now() < 120)); // 120 seconds and freezing 0.001
       };

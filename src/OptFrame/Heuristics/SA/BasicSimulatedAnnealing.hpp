@@ -140,11 +140,8 @@ public:
 		////Evaluation<>* eStar = &e.clone();
       XEv& eStar = star->second;
 
-      // TODO: freezing parameter should be passed somewhere
-		//while ((T > 0.000001) && (tnow.now() < timelimit))
-
-      bool bstop = stop.shouldStop(eStar, reinterpret_cast<XM*>(this));
-      while (stop.specificStopBy ? bstop : ((T > 0.000001) && (tnow.now() < timelimit)))
+      // try specific stop criteria, otherwise just use standard one
+      while (stop.specific ? stop.shouldStop(eStar, reinterpret_cast<XM*>(this)) : ((T > 0.000001) && (tnow.now() < timelimit)))
 		{
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
 			{

@@ -66,7 +66,7 @@ private:
 	vector<Evaluator<S>*> lEvaluator;
 	vector<Constructive<S>*> lConstructive;
 	vector<CopySolution<R,ADS>*> lSolution;
-	vector<Move<S>*> lMove;
+	vector<shared_ptr<Move<S>>> lMove;
 	vector<NS<S, XEv>*> lNS;
 	vector<NSSeq<S>*> lNSSeq;
 	vector<NSEnum<S>*> lNSEnum;
@@ -375,18 +375,18 @@ public:
 			// fasterCost
 			Timer tMoveCostApplyDelta;
 			Evaluation<> evBeginFasterCost(e);
-			Move<S>& rev1 = *lEvaluator[ev]->applyMoveReevaluate(move, se);
+			uptr<Move<S>> rev1 = lEvaluator[ev]->applyMoveReevaluate(move, se);
 			evtype e_end1 = e.evaluation();
 			// TODO: check outdated status
 			// TODO: if(e.outdated), it means that user did not implement Move::applyMoveReevaluate(e,R,ADS)!
 //			Move<S>& ini1 = *lEvaluator[ev]->applyMoveReevaluate(e, rev1, s);
-			Move<S>& ini1 = *rev1.apply(s);
+			uptr<Move<S>> ini1 = rev1->apply(s);
 			e = std::move(evBeginFasterCost);
 			evtype e_ini1 = e.evaluation();
 			timeSamples.timeNSCostApplyDelta[id_ns].push_back(tMoveCostApplyDelta.inMilliSecs());
 
-			delete &rev1;
-			delete &ini1;
+			//delete &rev1;
+			//delete &ini1;
 
 			evtype fasterCost = e_end1 - e_ini1;
 			message(lEvaluator.at(ev), iter, "fasterCost calculated!");
@@ -490,19 +490,19 @@ public:
 				if (ns) // not testing for single Move
 				{
 					// TODO: consider that randomMove can be null
-					Move<S>& move2 = *ns->randomMove(s);
+					uptr<Move<S>> move2 = ns->randomMove(s);
 					if (verbose)
 					{
 						cout << "testing double move!" << endl;
-						move2.print();
+						move2->print();
 					}
 
-					if (!move2.canBeApplied(s))
+					if (!move2->canBeApplied(s))
 					{
 						if (verbose)
 						{
 							cout << "double move cannot be applied: ";
-							move2.print();
+							move2->print();
 						}
 					}
 					else
@@ -511,7 +511,7 @@ public:
                   op<Evaluation<>> cost2 = nullopt;
 						if (lEvaluator[ev]->getAllowCosts())
 						{
-							cost2 = move2.cost(se, false);
+							cost2 = move2->cost(se, false);
 							if (cost2)
 							{
 								lEvaluator[ev]->betterThan(*cost, *cost2);
@@ -520,7 +520,6 @@ public:
 						}
 					}
 
-					delete &move2;
 				}
 				// finish double cost test
 
@@ -678,7 +677,7 @@ public:
 
 		for (unsigned id_move = 0; id_move < lMove.size(); id_move++)
 		{
-			Move<S>* pmove = lMove.at(id_move);
+			shared_ptr<Move<S>> pmove = lMove.at(id_move);
 
 			cout << "checkcommand: testing Move " << id_move << " => " << pmove->toString() << endl;
 
@@ -686,7 +685,7 @@ public:
 			{
 				if (verbose)
 					cout << endl;
-				message(lMove.at(id_move), -1, "working on move.");
+				message(lMove.at(id_move).get(), -1, "working on move.");
 
 				CopySolution<R,ADS>& s = *solutions.at(id_s);
 
@@ -745,19 +744,18 @@ public:
 					CopySolution<R,ADS>& s = *solutions.at(id_s);
 
 					// TODO: consider that randomMove can be null
-					Move<S>& move = *ns->randomMove(s);
+					uptr<Move<S>> move = ns->randomMove(s);
 					if (verbose)
-						move.print();
+						move->print();
 
-					if (!move.canBeApplied(s))
+					if (!move->canBeApplied(s))
 					{
 						if (verbose)
 						{
 							cout << "move cannot be applied: ";
-							move.print();
+							move->print();
 						}
 
-						delete &move;
 						continue;
 					}
 
@@ -766,13 +764,10 @@ public:
 					// bool testMoveNS(int iter, NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<S>& move, vector<vector<Evaluation<>*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
 					// bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<S>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
 
-					if (!testMoveGeneral(iter, ns, id_ns, s, id_s, move, evaluations, timeSamples))
+					if (!testMoveGeneral(iter, ns, id_ns, s, id_s, *move, evaluations, timeSamples))
 					{
-						delete &move;
 						return false;
 					}
-
-					delete &move;
 				}
 			}
 
@@ -823,17 +818,16 @@ public:
 					message(lNSSeq.at(id_nsseq), nqs, "getting current move (NSSeq tests).");
 
 					// TODO: verify if it's not null!
-					Move<S>& move = *it.current();
+					uptr<Move<S>> move = it.current();
 					countMovesNSSeq++;
 
-					if (!move.canBeApplied(s))
+					if (!move->canBeApplied(s))
 					{
 						if (verbose)
 						{
 							cout << "move cannot be applied (NSSeq tests): ";
-							move.print();
+							move->print();
 						}
-						delete &move;
 						continue;
 					}
 
@@ -844,13 +838,10 @@ public:
 					//	bool testMoveNSSeq(int iter, NSSeq<R,ADS>* nsseq, int nqs, int id_nsseq, CopySolution<R,ADS>& s, int id_s, Move<S>& move, vector<vector<Evaluation<>*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
 					// 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<S>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
 
-					if (!testMoveGeneral(nqs, nsseq, id_nsseq, s, id_s, move, evaluations, timeSamples))
+					if (!testMoveGeneral(nqs, nsseq, id_nsseq, s, id_s, *move, evaluations, timeSamples))
 					{
-						delete &move;
 						return false;
 					}
-
-					delete &move;
 				}
 
 				vCountMovesSamples[id_nsseq].push_back(countMovesNSSeq);

@@ -125,6 +125,9 @@ public:
      , infMeasure(inf)
      , isMini(_isMini)
    {
+      // verify that this is valid XEvaluation
+      static_assert(XEvaluation<Evaluation<ObjType>>);
+
       gos = gos_unknown;
       outdated = false;
       estimated = false;
@@ -133,6 +136,9 @@ public:
    explicit Evaluation(const ObjType& obj)
      : objFunction(obj)
    {
+      // verify that this is valid XEvaluation
+      static_assert(XEvaluation<Evaluation<ObjType>>);
+
       //infMeasure = optframe::get_numeric_zero<ObjType>();
       optframe::numeric_zero(infMeasure);
 
@@ -145,6 +151,7 @@ public:
    {
       // verify that this is valid XEvaluation
       //static_assert(XEvaluation<decltype(*this)>);  // TODO: this SHOULD work... don't know why it's not!
+      static_assert(XEvaluation<Evaluation<ObjType>>);
 
       optframe::numeric_zero(objFunction);
       optframe::numeric_zero(infMeasure);
@@ -163,6 +170,8 @@ public:
      , estimated(e.estimated)
      , isMini(e.isMini)
    {
+      // verify that this is valid XEvaluation
+      static_assert(XEvaluation<Evaluation<ObjType>>);
    }
 
    virtual ~Evaluation()
@@ -379,6 +388,11 @@ public:
       return os;
    }
 };
+
+// compilation test (for concepts)
+static_assert(XEvaluation<Evaluation<>>); // check default
+
+
 
 // ==================== end Evaluation ===========
 

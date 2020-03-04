@@ -161,8 +161,8 @@ public:
          if (m.canBeApplied(s2)) {
             doStats = false;
             //Evaluation<>* e = nullptr; // dummy // TODO:
-            Evaluation<> e; // dummy // TODO:
-            pair<SolutionTSP, Evaluation<>> pse(base, e);
+            EvaluationTSP e; // dummy // TODO:
+            pair<SolutionTSP, EvaluationTSP> pse(base, e);
             
             //MoveCost<>& mc = *this->moveCost(m, pse);
             op<Evaluation<>> mc = this->moveCost(m, pse);

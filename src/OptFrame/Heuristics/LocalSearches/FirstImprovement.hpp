@@ -166,6 +166,7 @@ public:
 
          // guarantee that alternative costs have same size
          assert(alt_begin.size() == e.getAlternativeCosts().size());
+         
          // compute alternative costs
          for (unsigned i = 0; i < alt_begin.size(); i++)
             mcost.addAlternativeCost(make_pair(e.getAlternativeCosts()[i].first - alt_begin[i].first, e.getAlternativeCosts()[i].second - alt_begin[i].second));

@@ -36,8 +36,8 @@ using namespace std;
 
 #include "../OptFrame/Util/printable.h"
 #include "../OptFrame/BaseConcepts.ctest.hpp" // tsting concepts
-
 #include "../OptFrame/Solution.hpp"
+#include "../OptFrame/Evaluation.hpp"
 //#include "../OptFrame/Util/TestSolution.hpp"
 
 #include "../OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp"

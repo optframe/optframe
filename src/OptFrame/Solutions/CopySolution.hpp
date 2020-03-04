@@ -36,7 +36,9 @@
 // will require 'R', thus should require basic printability here
 
 
-// copy-based solution
+// copy-based solution (NO POINTER IS USED HERE)
+// requires copy-constructor and move-constructor (for R and ADS)
+// ADS requires empty constructor (but not R)
 
 namespace optframe
 {
@@ -44,214 +46,116 @@ namespace optframe
 template<XRepresentation R, class ADS = _ADS>
 class CopySolution : public Component
 {
-protected:
-	R* r;     // representation
-	ADS* ads; // auxiliary data structure
-
 public:
+   // allow direct access to internals (no issue)
+	R r;     // representation
+	ADS ads; // auxiliary data structure
 
-	CopySolution(R* _r, ADS* _ads = nullptr) :
+   // copy constructor for R (ADS requires empty constructor)
+	CopySolution(const R& _r) :
+			r(_r)
+	{
+	}
+
+   // copy constructor for R and ADS
+	CopySolution(const R& _r, const ADS& _ads) :
 			r(_r), ads(_ads)
 	{
-		assert(r);
 	}
 
-	CopySolution(const R& _r) :
-			r(new R(_r)), ads(nullptr)
-	{
-	}
-
-	CopySolution(const R& _r, const ADS& _ads) :
-			r(new R(_r)), ads(new ADS(_ads))
-	{
-	}
-
-	// move constructor (implemented via move constructor for R)
-	CopySolution(R&& _r) :
-			r(new R(std::move(_r))), ads(nullptr)
-	{
-	}
-
-	// move constructor (implemented via move constructor for R and ADS)
+	// move constructor for R and ADS
 	CopySolution(R&& _r, ADS&& _ads) :
-			r(new R(std::move(_r))), ads(new ADS(std::move(_ads)))
+			r(_r), ads(_ads)
 	{
 	}
 
+   // copy constructor
 	CopySolution(const CopySolution<R, ADS>& s) :
-			r(new R(*s.r)), ads(s.ads ? new ADS(*s.ads) : nullptr)
+			CopySolution(s.r, s.ads)
 	{
 	}
 
+   // move constructor
 	CopySolution(CopySolution<R, ADS> && s) :
-			r(s.r), ads(s.ads)
+			CopySolution(s.r, s.ads)
 	{
-		s.r = nullptr;
-		s.ads = nullptr;
 	}
+
 
 	CopySolution<R, ADS>& operator=(const CopySolution<R, ADS>& s)
 	{
 		if (&s == this) // auto ref check
 			return *this;
 
-		// TODO: keep as a #DEFINE option? I don't see any advantage...
-		//(*r) = (*s.r);
-		delete r;
-		r = new R(*s.r);
-		if (ads)
-		{
-			// TODO: keep as a #DEFINE option? I don't see any advantage...
-			//(*ads) = (*s.ads);
-			delete ads;
-			ads = new ADS(*s.ads);
-		}
-		else
-			ads = nullptr;
+		r = s.r;
+      ads = s.ads;
 
 		return *this;
 	}
 
 	CopySolution<R, ADS>& operator=(CopySolution<R, ADS> && s) noexcept
 	{
-		// steal pointer from s
-		r = s.r;
-		// steal pointer from s
-		ads = s.ads;
-		// make sure s forgets about its r and ads (if it existed before)
-		s.r = nullptr;
-		s.ads = nullptr;
+		r = std::move(s.r);
+      ads = std::move(s.ads);
 
 		return *this;
 	}
 
+   // -----------------------------------
+   // getters and setters for R and ADS 
+   // according to XBaseSolution concept
+   // -----------------------------------
+
+   R& getR()
+   {
+      return r;   
+   }
+
+   const R& getR() const
+   {
+      return r;   
+   }
+
+   ADS& getADS()
+   {
+      return ads;   
+   }
+
+   const ADS& getADS() const
+   {
+      return ads;   
+   }
+
+   ADS* getADSptr()
+   {
+      return &ads;   
+   }
+
+   const ADS* getADSptr() const
+   {
+      return &ads;   
+   }
+
+   // ==================================================
+
 	// destructor for Solution (must free R and ADS objects)
 	virtual ~CopySolution()
 	{
-		// if r not null
-		if (r)
-			delete r;
-		// if ads not null
-		if (ads)
-			delete ads;
 	}
 
 	// ==================
 	// end canonical part
 	// ==================
 
+
    // shouldn't clone here!
 
    // TODO: remove!!!
 	CopySolution<R, ADS>& clone() const
 	{
-		// if ads not null
-		if (ads)
-			return *new CopySolution<R, ADS>(*r, *ads);
-		else
-			return *new CopySolution<R, ADS>(*r);
+   	return *new CopySolution<R, ADS>(*this);
 	}
 
-	// returns true if ads is not null
-	bool hasADS() const
-	{
-		return ads;
-	}
-
-	// =======
-	// setters
-	// =======
-
-	// setR with copy constructor
-	void setR(const R& _r)
-	{
-		// TODO: keep as a #DEFINE option? I don't see any advantage...
-		//(*r) = _r;
-		delete r;
-		r = new R(_r);
-	}
-
-	// setR with pointer copy
-	void setR(R* _r)
-	{
-		assert(_r);
-		delete r;
-		r = _r;
-	}
-
-	// setR with move semantics
-	void setR(R&& _r)
-	{
-		// move content from rhs param _r
-		(*r) = std::move(_r);
-	}
-
-	// setADS with copy constructor
-	void setADS(const ADS& _ads)
-	{
-		// TODO: keep as a #DEFINE option? I don't see any advantage...
-		//(*ads) = _ads;
-		if (ads)
-			delete ads;
-		ads = new ADS(_ads);
-	}
-
-	// setADS with pointer copy
-	void setADS(ADS* _ads)
-	{
-		if (ads)
-			delete ads;
-		ads = _ads;
-	}
-
-	// setADS with move semantics
-	void setADS(ADS&& _ads)
-	{
-		// move content from rhs param _ads
-		(*ads) = std::move(_ads);
-	}
-
-	// =======
-	// getters
-	// =======
-
-	// get reference of r
-	R& getR()
-	{
-		return *r;
-	}
-
-	// get const reference of r
-	const R& getR() const
-	{
-		return *r;
-	}
-
-	// contract: assumes hasADS() with positive result
-	ADS& getADS()
-	{
-		assert(hasADS());
-		return *ads;
-	}
-
-	// contract: assumes hasADS() with positive result
-	const ADS& getADS() const
-	{
-		assert(hasADS());
-		return *ads;
-	}
-
-	// get ADS pointer
-	ADS* getADSptr()
-	{
-		return ads;
-	}
-
-	// get ADS pointer (const)
-	const ADS* getADSptr() const
-	{
-		return ads;
-	}
 
 
 	// =================
@@ -273,9 +177,8 @@ public:
 	virtual string toString() const
 	{
 		std::stringstream ss;
-		ss << "CopySolution: " << *r;
-		if (ads)
-			ss << "ADS: " << ads;
+		ss << "CopySolution: " << r;
+		//ss << "ADS: " << ads;DecoderRandomKeys
 		return ss.str();
 	}
 

@@ -27,6 +27,10 @@ using namespace optframe;
 
 typedef Evaluation<> EvaluationTSP;
 
+// compilation tests
+static_assert(XEvaluation<EvaluationTSP>);
+
+
 #endif /*TSP_EVALUATION_H_*/
 
 
