@@ -26,6 +26,8 @@
 #include <vector>
 #include <cstring>
 
+#include<functional> // std::function
+
 #include "Component.hpp"
 #include "ComponentBuilder.h"
 
@@ -71,7 +73,7 @@ enum class SearchStatus : int
 
 
 // TODO: move to self file
-template<XEvaluation XEv = Evaluation<>>
+template<XEvaluation XEv = Evaluation<>, XSearchMethod XM = optframe::Component>
 //class StopCriteria final : public Component
 class StopCriteria : public Component // TODO: non-final unless proven necessary by performance
 {
@@ -93,6 +95,17 @@ public:
    // very useful for unified constructive methods, being it single or multiobjective
    // for single objective trajectory search, it is usually ignored, as working number tends to be always one.
 
+   // general stopping criteria
+   std::function<bool(const XEv&)> generalStopBy = 
+   {   
+      [&](const XEv& bestF) -> bool {
+         return this->timerExpired() || this->evCountExpired();
+      }
+   };
+
+   // method-specific stopping criteria
+   std::function<bool(XM&)> specificStopBy { nullptr };
+
 private:
    //
    // automatic verification of timelimit condition
@@ -112,11 +125,18 @@ public:
 
    // note 'virtual' ... (only if 'final' is not needed. TODO: check performance)
    // general stop conditions checked here (does not include best value checking)
-   virtual bool shouldStop() const 
+   virtual bool shouldStop(const XEv& bestF, XM& selfMethod) const 
    {
       // note that this method does not check best value...
       // 'target_f' strategy must be handled directly by specific Evaluator classes on search methods
-      return timerExpired() || evCountExpired();
+      //return timerExpired() || evCountExpired();
+      return specificStopBy ? specificStopBy(selfMethod) : generalStopBy(bestF);
+   }
+
+   // pass general stopping criteria
+   StopCriteria(std::function<bool(XEv&)> _stopBy) :
+      generalStopBy(_stopBy)
+   {
    }
 
    //SOSC(double _timelimit = 100000000.0, double _target_f = 0.0)
@@ -177,6 +197,9 @@ public:
       return "StopCriteria";
    }
 };
+
+// Default Stop criteria
+using DefaultStop = StopCriteria<Evaluation<>, optframe::Component>;
 
 } // namespace optframe
 

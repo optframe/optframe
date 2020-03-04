@@ -251,6 +251,47 @@ concept bool XSearch = XESolution<Self> || X2ESolution<Self, S, XEv>;
 
 // ===================
 
+//template <class Self, class XSearch> // TODO: make this, if StopCriteria has XESolution
+template <class Self>
+concept bool XSearchMethod = true; 
+
+template <class Self, XEvaluation XEv, XSearchMethod XM>
+concept bool XStopCriteria = 
+               requires(Self a, std::remove_reference_t<XEv>& e, std::remove_reference_t<XM>& m)
+               {
+                  { a.shouldStop(e, m) } -> bool; 
+               };
+
+// bugged code (too bad!!) - TODO: fix gcc to have this simplified version (only Self on XStopCriteria)
+/*
+template <class Self>
+concept bool XStopCriteria =  requires(Self a, const XEvaluation& e, XSearchMethod& m)
+                              {
+                                 { a.shouldStop(e, m) } -> bool; 
+                              };
+*/
+// gcc-7 bug
+/*
+BaseConcepts.hpp:260:39: internal compiler error: in synthesize_implicit_template_parm, at cp/parser.c:38874
+                requires(Self a, const XEvaluation& e, XSearchMethod& m)
+                                       ^~~~~
+Please submit a full bug report,
+with preprocessed source if appropriate.
+See <file:///usr/share/doc/gcc-7/README.Bugs> for instructions.
+*/
+
+// gcc-8 bug
+/*
+BaseConcepts.hpp:266:55: internal compiler error: in synthesize_implicit_template_parm, at cp/parser.c:39141
+ concept bool XStopCriteria2 =  requires(Self a, const XEvaluation& e, XSearchMethod& m)
+                                                       ^~~~~~~~~~~
+Please submit a full bug report,
+with preprocessed source if appropriate.
+See <file:///usr/share/doc/gcc-8/README.Bugs> for instructions.
+*/
+
+// ===================
+
 template <class Self>
 concept bool X01N = true; // TODO: space for [0,1]^N random keys... N could be constexpr template, but better not.
 
