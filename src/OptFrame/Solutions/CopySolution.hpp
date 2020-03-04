@@ -44,7 +44,7 @@ namespace optframe
 {
 
 //template<XRepresentation R, class ADS = nullptr_t>
-template<XRepresentation R, class ADS = int> // TODO: default 'nullptr_t' and use 'enable_if'
+template<XRepresentation R, class ADS = _ADS>
 class CopySolution : public Component
 {
 public:
@@ -59,10 +59,6 @@ public:
 	}
 
    // copy constructor for R and ADS
-   //template< typename T,
-   //   typename std::enable_if<!std::is_same<nullptr_t, ADS>::value>::type* = nullptr
-   //>
-	// TODO: disable ADS if it's default (nullptr_t)... right now, just putting int.
    CopySolution(const R& _r, const ADS& _ads) :
 			r(_r), ads(_ads)
 	{
