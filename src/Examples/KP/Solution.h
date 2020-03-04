@@ -15,5 +15,25 @@ typedef CopySolution<RepKP, MY_ADS> SolutionKP;
 
 using ESolutionKP = pair<SolutionKP, EvaluationKP>;
 
+
+
+
+
+struct test_kp_solution_copy_solution
+{
+
+   void f()
+   {
+      RepKP rep;
+      CopySolution<RepKP> sol(rep);
+
+      // TODO: only if default ADS is nullptr_t on CopySolution
+      //nullptr_t defads;
+      //CopySolution<RepKP> sol2(rep, defads);
+   }
+
+
+};
+
 #endif /*KP_SOLUTION_H_*/
 

@@ -7,6 +7,11 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include "../OptFrame/Util/printable.h"
+#include "../OptFrame/Evaluation.hpp"
+#include "../OptFrame/Solution.hpp"
+#include "../OptFrame/MultiObjValue.hpp" // just for testing
+
 #include "../OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp"
 #include "../OptFrame/Heuristics/LocalSearches/BestImprovement.hpp"
 #include "../OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp"
@@ -15,7 +20,7 @@
 #include "../OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp"
 #include "../OptFrame/Util/CheckCommand.hpp"
 #include "../OptFrame/Util/RandGenMersenneTwister.hpp"
-#include "../OptFrame/Util/printable.h"
+
 #include "KP.h"
 using namespace std;
 using namespace optframe;

@@ -248,6 +248,8 @@ public:
       p.clear();
       return new pair<RSK, XEv>(best, e);
       */
+     cout << "RKGA print sol: " << (pe.second)<< " -> ";
+     pe.second->print();
      XRS finalSol(*pe.second); // TODO: avoid loss
      
      //return std::optional<pair<XRS, XEv>>(make_pair(finalSol, e)); 

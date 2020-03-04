@@ -54,6 +54,7 @@ public:
    explicit MultiObjValue(std::tuple<AllObjTypes...> allObjValues)
      : objValues(allObjValues)
    {
+      static_assert(optframe::basic_arithmetics<MultiObjValue<AllObjTypes...>>);
    }
 
    template<class... Args>
@@ -327,6 +328,7 @@ numeric_zero(T<Args2...>& t)
 
 // -----------------
 
+
 template<optframe::basic_arithmetics T>
 inline T
 get_numeric_zero()
@@ -336,15 +338,6 @@ get_numeric_zero()
    return t;
 }
 
-
-/*
-template<class... Args>
-inline bool
-numeric_is_zero(const MultiObjValue<Args...> tOther)
-{
-   return numeric_is_zero(tOther);
-}
-*/
 
 // ---------------------------------
 // Compile-tests (validate concepts)

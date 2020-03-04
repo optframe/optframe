@@ -146,6 +146,7 @@ concept bool basic_arithmetics_assign =
     ////{ a / b } -> std::remove_reference_t<T>&;  // NOT actually necessary (until today!)
   };
 
+
 template <class T>
 concept bool basic_arithmetics = 
   optframe::basic_arithmetics_assign<T> &&
@@ -155,7 +156,13 @@ concept bool basic_arithmetics =
     { a - b } -> std::remove_reference_t<T>; // requires const a
     //{ a * b } -> std::remove_reference_t<T>; // useful, but too hard now... must provide multiplication by scalar to do 'weights'
     //{ a / b } -> std::remove_reference_t<T>;  // NOT actually necessary (until today!)
-  };  
+  };
+  /*
+  && 
+  requires(std::remove_reference_t<T>& a) {
+    { optframe::get_numeric_zero<T>() } -> std::remove_reference_t<T>&;
+  };
+  */
 
 template <class T>
 concept bool extended_arithmetics = 

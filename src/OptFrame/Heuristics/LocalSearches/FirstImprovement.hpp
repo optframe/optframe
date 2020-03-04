@@ -109,20 +109,13 @@ public:
    // used on FirstImprovement
    // Accept and apply move if it improves parameter moveCost
    ///bool acceptsImprove(Move<S, XEv>& m, XSH& se, MoveCost<>* mc = nullptr, bool allowEstimated = false)
-   bool acceptsImprove(Move<S, XEv>& m, XSH& se, XEv* mc = nullptr, bool allowEstimated = false)
+   bool acceptsImprove(Move<S, XEv>& m, XSH& se, bool allowEstimated = false)
    {
-      // TODO: in the future, consider 'allowEstimated' parameter
-
       S& s = se.first;
       XEv& e = se.second;
 
-      // initialize MoveCost pointer
-      //MoveCost<>* p = nullptr;
-      op<XEv> p = nullopt;
-      // try to get a cost (should consider estimated moves in the future)
-      
-      p = m.cost(se, allowEstimated);
-      
+      // try to get a cost
+      op<XEv> p = m.cost(se, allowEstimated);
 
       // if p not null => much faster (using cost)
       if (p) {
@@ -130,12 +123,11 @@ public:
          if (p->isStrictImprovement()) {
             // apply move and get reverse
             uptr<Move<S, XEv>> rev = m.apply(s);
-            XEv& eOpt = *p;
-            // update XEv with "MoveCost" (now Evaluation represents 'costs')
-            //p->update(e);           
-            eOpt.update(e);
+            // update value using calculated cost
+            p->update(e);
             return true;
-         } else {
+         }
+         else {
             return false;
          }
       } else {
@@ -144,32 +136,16 @@ public:
          // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
          assert(m.hasReverse());
 
+
+
          // saving previous evaluation
          XEv ev_begin(e);
-         // saving 'outdated' status to avoid inefficient re-evaluations
-         //			bool outdated = e.outdated;
-         // get original obj function values
-         pair<evtype, evtype> e_begin = make_pair(e.getObjFunction(), e.getInfMeasure());
-         // get original values for lexicographic part
-         vector<pair<evtype, evtype>> alt_begin(e.getAlternativeCosts().size());
-         for (unsigned i = 0; i < alt_begin.size(); i++) {
-            alt_begin[i].first = e.getAlternativeCosts()[i].first;
-            alt_begin[i].second = e.getAlternativeCosts()[i].second;
-         }
+ 
          // apply move to both XEv and Solution
          uptr<Move<S, XEv>> rev = eval.applyMoveReevaluate(m, se);
 
-         // TODO: check outdated and estimated!
-         //MoveCost mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1, false, false);
-         //Evaluation<> mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1, false, false);
-         Evaluation<> mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1); // no outdated or estimated
-
-         // guarantee that alternative costs have same size
-         assert(alt_begin.size() == e.getAlternativeCosts().size());
-         
-         // compute alternative costs
-         for (unsigned i = 0; i < alt_begin.size(); i++)
-            mcost.addAlternativeCost(make_pair(e.getAlternativeCosts()[i].first - alt_begin[i].first, e.getAlternativeCosts()[i].second - alt_begin[i].second));
+         // compute cost directly on Evaluation
+         XEv mcost = ev_begin.diff(se.second);
 
          // check if it is improvement
          if (mcost.isStrictImprovement()) {

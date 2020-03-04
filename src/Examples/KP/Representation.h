@@ -21,6 +21,5 @@ typedef Evaluation<> EvaluationKP;
 static_assert(XEvaluation<EvaluationKP>);
 
 
-
 #endif /*KP_REPRESENTATION_H_*/
 

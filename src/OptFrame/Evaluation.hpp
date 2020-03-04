@@ -77,7 +77,7 @@ class Evaluation final : public Component
 protected:
 
    //static Evaluation<ObjType> costZero { Evaluation<ObjType>() };
-   ObjType objValZero;
+   ObjType objValZero; //{ optframe::get_numeric_zero<ObjType>() };
 
    // ==== Objective Space type: pair<evtype, evtype> ====
    // objective function value (default = double)
@@ -128,6 +128,8 @@ public:
       // verify that this is valid XEvaluation
       static_assert(XEvaluation<Evaluation<ObjType>>);
 
+      optframe::numeric_zero(objValZero);
+
       gos = gos_unknown;
       outdated = false;
       estimated = false;
@@ -138,6 +140,8 @@ public:
    {
       // verify that this is valid XEvaluation
       static_assert(XEvaluation<Evaluation<ObjType>>);
+
+      optframe::numeric_zero(objValZero);
 
       //infMeasure = optframe::get_numeric_zero<ObjType>();
       optframe::numeric_zero(infMeasure);
@@ -153,6 +157,7 @@ public:
       //static_assert(XEvaluation<decltype(*this)>);  // TODO: this SHOULD work... don't know why it's not!
       static_assert(XEvaluation<Evaluation<ObjType>>);
 
+      optframe::numeric_zero(objValZero);
       optframe::numeric_zero(objFunction);
       optframe::numeric_zero(infMeasure);
 
@@ -172,6 +177,8 @@ public:
    {
       // verify that this is valid XEvaluation
       static_assert(XEvaluation<Evaluation<ObjType>>);
+
+      optframe::numeric_zero(objValZero);
    }
 
    virtual ~Evaluation()
@@ -189,6 +196,7 @@ public:
       estimated = e.estimated;
       alternatives = e.alternatives;
       gos = e.gos;
+      isMini = e.isMini;
 
       return *this;
    }
@@ -278,17 +286,31 @@ public:
    // update Evaluation with costs
    virtual void update(Evaluation<ObjType>& evCost)
    {
+
       // this task was performed before by MoveCost... now unifying in Evaluation
       // how to do this?
       assert(false);
    }
 
-   virtual Evaluation<ObjType> diff(const Evaluation<ObjType>& evCost)
+   // returns the difference/cost between evFinal - evThis
+   virtual Evaluation<ObjType> diff(const Evaluation<ObjType>& evFinal) const
    {
-      // this task was performed before by MoveCost... now unifying in Evaluation
-      // how to do this?
-      assert(false);
-      return Evaluation<ObjType>(evCost);
+      const Evaluation<ObjType>& e = evFinal; // pointing to legacy code
+
+      // take my own information
+      // -----------------------
+
+      pair<ObjType, ObjType> e_begin = make_pair(this->getObjFunction(), this->getInfMeasure());
+
+      // compute cost difference
+      // -----------------------
+      Evaluation<ObjType> mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1); // no outdated or estimated
+
+      // ======================================================
+      // For alternative/lexicographic costs, see WLxEvaluation
+      // ======================================================
+
+      return Evaluation<ObjType>(mcost);
    }
 
 
@@ -609,6 +631,35 @@ public:
       // this task was performed before by MoveCost... now unifying in Evaluation
       // how to do this?
       assert(false);
+   }
+
+   virtual WLxEvaluation<ObjType> diff(const WLxEvaluation<ObjType>& evFinal)
+   {
+      const WLxEvaluation<ObjType>& e = evFinal; // pointing to legacy code
+
+      // take my own information
+      // -----------------------
+
+      pair<ObjType, ObjType> e_begin = make_pair(this->getObjFunction(), this->getInfMeasure());
+      // get original values for lexicographic part
+      vector<pair<evtype, evtype>> alt_begin(this->getAlternativeCosts().size());
+      for (unsigned i = 0; i < alt_begin.size(); i++) {
+         alt_begin[i].first = this->getAlternativeCosts()[i].first;
+         alt_begin[i].second = this->getAlternativeCosts()[i].second;
+      }
+
+      // compute cost difference
+      // -----------------------
+      WLxEvaluation<ObjType> mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1); // no outdated or estimated
+
+      // guarantee that alternative costs have same size
+      assert(alt_begin.size() == e.getAlternativeCosts().size());
+
+      // compute alternative costs
+      for (unsigned i = 0; i < alt_begin.size(); i++)
+         mcost.addAlternativeCost(make_pair(e.getAlternativeCosts()[i].first - alt_begin[i].first, e.getAlternativeCosts()[i].second - alt_begin[i].second));
+
+      return WLxEvaluation<ObjType>(mcost);
    }
 
    virtual bool isEstimated()
