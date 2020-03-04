@@ -21,9 +21,20 @@ using namespace optframe;
 // Solution Representation
 using Rep$project = $rep;
 
+// Using Copy-based solution (requires copy constructor on R and empty constructor for optional ADS)
+// If you prefer a Pointer-based solution, you can use class Solution<Rep$project>
 using Solution$project = CopySolution<Rep$project>;
 
+// Default objective value type is 'double'
 using Evaluation$project = Evaluation<double>;
+
+typedef pair< Solution$project , Evaluation$project > ESolution$project ;
+
+// compilation tests
+static_assert(XSolution< Solution$project >); // verify that this is correctly a XSolution
+static_assert(XESolution< ESolution$project >); // verify that this is correctly a XESolution
+static_assert(XSearch< ESolution$project , Solution$project , Evaluation$project >); // verify that this is correctly a XSearch
+
 
 // Remember that Rep$project must implement: (i) copy constructor and (ii) operator<<
 
