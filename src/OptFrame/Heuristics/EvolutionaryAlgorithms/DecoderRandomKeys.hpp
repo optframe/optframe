@@ -41,7 +41,9 @@ public:
    {
    }
 
-   virtual pair<XEv, XRS*> decode(const random_keys& rk) = 0;
+   // returns evaluation and, optionally the constructed solution.
+   // Flag 'needsSolution' indicates that solution is ABSOLUTELY necessary...
+   virtual pair<XEv, op<XRS>> decode(const random_keys& rk, bool needsSolution) = 0;
 
    virtual bool isMinimization() const = 0;
 };
@@ -70,9 +72,9 @@ public:
    {
    }
 
-   virtual pair<XEv, XRS*> decode(const R& rk) override
+   virtual pair<XEv, op<XRS>> decode(const R& rk, bool needsSolution) override
    {
-      return pair<XEv, XRS*>(evaluator.evaluate(rk, nullptr), nullptr);
+      return pair<XEv, op<XRS>>(evaluator.evaluate(rk, nullptr), nullptr);
    }
 
    virtual bool isMinimization() const
@@ -98,7 +100,7 @@ public:
       assert(a <= b);
    }
 
-   virtual pair<XEv, XRS*> decode(const random_keys& rk) override
+   virtual pair<XEv, op<XRS>> decode(const random_keys& rk, bool needsSolution) override
    {
       int sz = b - a + 1;
       vector<pair<double, int>> v(sz);
@@ -120,7 +122,7 @@ public:
       XEv e = ev.evaluate(sevp);
 
       // you have the option to actually return a Solution<vector<int>> for post-decoding purposes
-      return pair<XEv, XRS*>(e, new XRS(p));
+      return pair<XEv, op<XRS>>(e, make_optional(XRS(p)));
    }
 
    virtual bool isMinimization() const
@@ -147,7 +149,7 @@ public:
       assert(a <= b);
    }
 
-   virtual pair<Evaluation<>, XRS*> decode(const random_keys& rk) override
+   virtual pair<Evaluation<>, op<XRS>> decode(const random_keys& rk, bool needsSolution) override
    {
       vector<bool> v(b - a + 1);
       for (unsigned i = 0; i < v.size(); i++)
@@ -157,7 +159,7 @@ public:
       Evaluation<> e = ev.evaluate(sev);
 
       // you have the option to actually return a Solution<vector<bool>> for post-decoding purposes
-      return pair<Evaluation<>, XRS*>(e, nullptr);
+      return pair<Evaluation<>, op<XRS>>(e, make_optional(XRS(sev)));
    }
 
    virtual bool isMinimization() const

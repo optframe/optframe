@@ -140,11 +140,11 @@ public:
       for (unsigned i = 0; i < p.size(); ++i) {
          //p.at(i).print();
          random_keys& rk = p.at(i).getR();
-         pair<XEv, XRS*> pe = decoder.decode(rk);
+         pair<XEv, op<XRS>> pe = decoder.decode(rk, false);
          p.setFitness(i, pe.first.evaluation());
          //delete &pe.first;
-         if (pe.second)
-            delete pe.second;
+         //if (pe.second)
+         //   delete pe.second;
       }
    }
 
@@ -233,7 +233,9 @@ public:
       p.sort(decoder.isMinimization());
 
       RSK& best = p.remove(0);
-      pair<XEv, XRS*> pe = decoder.decode(best.getR());
+
+      // TODO: we should enfoce a boolean here (NEEDS SOLUTION = TRUE!!)
+      pair<XEv, op<XRS>> pe = decoder.decode(best.getR(), true);
       Evaluation<>& e = pe.first;
 
 
@@ -248,8 +250,14 @@ public:
       p.clear();
       return new pair<RSK, XEv>(best, e);
       */
-     cout << "RKGA print sol: " << (pe.second)<< " -> ";
-     pe.second->print();
+     cout << "RKGA print sol: optional(" << ((bool)pe.second)<< ") -> ";
+     if(!pe.second)
+     {
+        cout << "RKGA ERROR!! DOESNT HAVE A SOLUTION!! VALUE IS: " << pe.first.evaluation() << endl;
+        cout << "SHOULD WE RETURN EMPTY PAIR<S, XEv> OR FORCE SOME DECODER TO AT LEAST PROVIDE A SOLUTION?" << endl;
+        assert(false);
+     }
+     
      XRS finalSol(*pe.second); // TODO: avoid loss
      
      //return std::optional<pair<XRS, XEv>>(make_pair(finalSol, e)); 
