@@ -132,7 +132,7 @@ namespace optframe
 
 //template<XSolution S, XEvaluation XEv = Evaluation<>>
 // template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-template<XRepresentation R, class ADS, XBaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+template<XRepresentation R, class ADS, XBaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
 class Loader
 {
 public:
@@ -178,7 +178,7 @@ public:
 
 		// SingleObjSearch + Parameters
 		factory.builders.push_back(new SimpleLocalSearchBuilder<S, XEv> );
-		factory.builders.push_back(new BasicSimulatedAnnealingBuilder<S, XEv> );
+		factory.builders.push_back(new BasicSimulatedAnnealingBuilder<S, XEv, XES> );
 		factory.builders.push_back(new BasicIteratedLocalSearchBuilder<S, XEv> );
 		factory.builders.push_back(new BasicILSPerturbationBuilder<S, XEv> );
 		factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<S, XEv> );

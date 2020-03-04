@@ -29,10 +29,16 @@
 namespace optframe
 {
 
+// forward declaration
+template<XSolution S, XEvaluation XEv, XSearch<S, XEv> XSH, XSearchMethod XM>
+class BasicSimulatedAnnealing;
+
+
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = Component, XStopCriteria<XEv, XM> XStop = DefaultStop >
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
 //class BasicSimulatedAnnealing: public SingleObjSearch<S, XEv, XSH, XM, XStop>
-template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = Component>
+//template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = Component>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = BasicSimulatedAnnealing<S, XEv, XSH, Component>>
 class BasicSimulatedAnnealing: public SingleObjSearch<S, XEv, XSH, XM>
 {
 private:
@@ -44,10 +50,26 @@ private:
 	int SAmax;
 	double Ti;
 
-   // local variables
+   // --------------
+   // local variables (beware that this is NOT thread-safe!)
+   // --------------
+   // if you need multiple threads of this method, you should instantiate multiple methods!!
+   // this allows monitoring on progress and many other nice things, such as StopCriteria personalization ;)
    double T;
+   Timer tnow;
 
 public:
+
+   // get current temperature
+   double getT()
+   {
+      return T;
+   };
+
+   Timer& getTimer()
+   {
+      return tnow;
+   }
 
 	BasicSimulatedAnnealing(Evaluator<S, XEv, XSH>& _evaluator, Constructive<S>& _constructive, vector<NS<S, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg)
@@ -92,7 +114,7 @@ public:
 		XEv target_f(stop.target_f);
 		cout << "SA search(" << target_f << "," << timelimit << ")" << endl;
 
-		Timer tnow;
+		tnow = Timer();
 
 		// TODO: verify 's' and 'input'
 		//pair<S, XEv> se = genPair(timelimit);
@@ -121,7 +143,7 @@ public:
       // TODO: freezing parameter should be passed somewhere
 		//while ((T > 0.000001) && (tnow.now() < timelimit))
 
-      bool bstop = stop.shouldStop(eStar, reinterpret_cast<XM&>(*this));
+      bool bstop = stop.shouldStop(eStar, reinterpret_cast<XM*>(this));
       while (stop.specificStopBy ? bstop : ((T > 0.000001) && (tnow.now() < timelimit)))
 		{
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
@@ -220,15 +242,17 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
 class BasicSimulatedAnnealingBuilder: public SA, public SingleObjSearchBuilder<S, XEv, X2ES>
 {
+   //using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
+   using XM = Component; // only general builds here
 public:
 	virtual ~BasicSimulatedAnnealingBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, X2ES>& hf, string family = "")
+	virtual SingleObjSearch<S, XEv, pair<S, XEv>, XM>* build(Scanner& scanner, HeuristicFactory<S, XEv, X2ES>& hf, string family = "")
 	{
 		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -243,7 +267,7 @@ public:
 		int SAmax = scanner.nextInt();
 		double Ti = scanner.nextDouble();
 
-		return new BasicSimulatedAnnealing<S, XEv> (*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
+		return new BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, XM> (*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()

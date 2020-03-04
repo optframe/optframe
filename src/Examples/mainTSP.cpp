@@ -57,7 +57,7 @@ int
 main(int argc, char** argv)
 {
    // ADS still exists, only because of ADSManager...
-   Loader<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> optframe;
+   Loader<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP, EvaluationTSP, ESolutionTSP> optframe;
    TSPProblemCommand tsp;
 
    File* file;

@@ -6,6 +6,8 @@
 
 #include "../../OptFrame/Util/Matrix.hpp"
 
+#include "../../OptFrame/Evaluation.hpp"
+
 
 #include <vector>
 

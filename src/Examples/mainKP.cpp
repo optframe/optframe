@@ -46,11 +46,19 @@ main(int argc, char** argv)
 
    NSSeq<SolutionKP>* nsseq_bit = &ns1;
 
-   BasicSimulatedAnnealing<SolutionKP, EvaluationKP, ESolutionKP, BasicSimulatedAnnealing<SolutionKP>> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
-   
-   StopCriteria<EvaluationKP, BasicSimulatedAnnealing<SolutionKP, EvaluationKP, ESolutionKP>> soscSA; // stop criteria
+
+
+   BasicSimulatedAnnealing<SolutionKP, EvaluationKP, ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
+
+   std::function<bool(BasicSimulatedAnnealing<SolutionKP, EvaluationKP, ESolutionKP, Component>*)> specificStopBy =       
+      [](BasicSimulatedAnnealing<SolutionKP, EvaluationKP, ESolutionKP, Component>* m) -> bool {
+         return ((m->getT() > 0.001) && (m->getTimer().now() < 120)); // 120 seconds and freezing 0.001
+      };
+   auto soscSA { StopCriteria(specificStopBy) };
+
    op<ESolutionKP> r = std::nullopt;
    sa.search(r, soscSA);
+
    r->first.print();
    r->second.print();
 
