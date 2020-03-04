@@ -75,6 +75,10 @@ template<optframe::basic_arithmetics ObjType = evtype>
 class Evaluation final : public Component
 {
 protected:
+
+   //static Evaluation<ObjType> costZero { Evaluation<ObjType>() };
+   ObjType objValZero;
+
    // ==== Objective Space type: pair<evtype, evtype> ====
    // objective function value (default = double)
    ObjType objFunction;
@@ -139,6 +143,9 @@ public:
 
    explicit Evaluation()
    {
+      // verify that this is valid XEvaluation
+      //static_assert(XEvaluation<decltype(*this)>);  // TODO: this SHOULD work... don't know why it's not!
+
       optframe::numeric_zero(objFunction);
       optframe::numeric_zero(infMeasure);
 
@@ -291,13 +298,17 @@ public:
    // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
    virtual bool isStrictImprovement()
    {
-      return betterStrict(Evaluation<ObjType>()); // strictly better than ObjType 'zero'
+      //return betterStrict(Evaluation<ObjType>()); // strictly better than ObjType 'zero'
+      //return betterStrict(costZero); // strictly better than ObjType 'zero'
+      return isMini? evaluation() < objValZero : evaluation() > objValZero;
    }
 
    // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
    virtual bool isNonStrictImprovement()
    {
-      return betterNonStrict(Evaluation<ObjType>()); // strictly better than ObjType 'zero'
+      //return betterNonStrict(Evaluation<ObjType>()); // strictly better than ObjType 'zero'
+      //return betterNonStrict(costZero); // strictly better than ObjType 'zero'
+      return isMini? evaluation() <= objValZero : evaluation() >= objValZero;
    }
 
    virtual bool equals(const Evaluation<ObjType>& e)
@@ -369,7 +380,7 @@ public:
    }
 };
 
-
+// ==================== end Evaluation ===========
 
 
 

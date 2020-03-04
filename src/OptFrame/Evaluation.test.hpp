@@ -63,6 +63,16 @@ public:
    }
 };
 
+
+static_assert(XEvaluation<Evaluation<double>>);
+static_assert(XEvaluation<Evaluation<int>>);
+static_assert(XEvaluation<Evaluation<>>);
+static_assert(XEvaluation<Evaluation<SingleObjValue>>); // single obj value
+static_assert(XEvaluation<TestTArithMO_is_zero<MultiObjValue<int, double>>>);
+static_assert(XEvaluation<TestTArithMO_is_zero2<MultiObjValue<int, double>>>);
+static_assert(XEvaluation<Evaluation<MultiObjValue<int, double>>>); // multi obj value
+
+/*
 struct optframe_test_debug_testev_evaluation_disable_runtime
 {
    // test if following structure is valid
@@ -74,6 +84,7 @@ struct optframe_test_debug_testev_evaluation_disable_runtime
    TestEv<TestTArithMO_is_zero2<MultiObjValue<int, double>>> Tmo2;
    TestEv<Evaluation<MultiObjValue<int, double>>> test_mov; // multi obj value
 };
+*/
 
 struct optframe_debug_test_evaluation
 {

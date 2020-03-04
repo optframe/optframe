@@ -108,7 +108,7 @@ public:
    };
 
    // method-specific stopping criteria
-   std::function<bool(XM*)> specificStopBy { nullptr };
+   std::function<bool(const XEv&, XM*)> specificStopBy { nullptr };
 
 private:
    //
@@ -134,18 +134,18 @@ public:
       // note that this method does not check best value...
       // 'target_f' strategy must be handled directly by specific Evaluator classes on search methods
       //return timerExpired() || evCountExpired();
-      return specificStopBy ? specificStopBy(selfMethod) : generalStopBy(bestF);
+      return specificStopBy ? specificStopBy(bestF, selfMethod) : generalStopBy(bestF);
    }
 
    // pass general stopping criteria
-   StopCriteria(std::function<bool(XEv&)> _stopBy) :
+   StopCriteria(std::function<bool(const XEv&)> _stopBy) :
       generalStopBy(_stopBy)
    {
    }
 
    //StopCriteria(XM* _method, std::function<bool(XM*)> _stopBy) :
    //   method(_method), specificStopBy(_stopBy)
-   StopCriteria(std::function<bool(XM*)> _stopBy) :
+   StopCriteria(std::function<bool(const XEv&, XM*)> _stopBy) :
       generalStopBy{ nullptr }, specificStopBy(_stopBy)
    {
    }
