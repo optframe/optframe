@@ -236,7 +236,7 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == FirstImprovement<S, XEv>::idComponent();
+		return component == FirstImprovement<XES, XEv>::idComponent();
 	}
 
 	static string idComponent()

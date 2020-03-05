@@ -40,7 +40,8 @@
 using namespace std;
 using namespace optframe;
 
-class PCAPInitialSolutionGreedy : public Constructive<SolutionPCAP>
+//class PCAPInitialSolutionGreedy : public Constructive<SolutionPCAP>
+class PCAPInitialSolutionGreedy : public InitialSearch<ESolutionPCAP>
 {
 private:
    PCAPProblemInstance& pPCAP;
@@ -60,8 +61,9 @@ public:
    {
    }
 
-   std::optional<SolutionPCAP> generateSolution(double timelimit) override
+   std::optional<ESolutionPCAP> initialSearch(const StopCriteria<ESolutionPCAP>& stop) override
    {
+      //double timelimit = stop.timelimit;
       RepPCAP newRep;
 
       //cout << "pPCAP.nCidades = " << pPCAP.nCidades << endl;
@@ -136,7 +138,10 @@ public:
          }
       }
 
-      return make_optional(SolutionPCAP(newRep));
+      SolutionPCAP s1(newRep);
+      pair<SolutionPCAP, EvaluationPCAP> es(s1, EvaluationPCAP());
+      //ESolutionPCAP es = make_pair(s1, EvaluationPCAP);
+      return make_optional(es);
    }
 };
 

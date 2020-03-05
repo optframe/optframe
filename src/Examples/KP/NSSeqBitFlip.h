@@ -13,7 +13,7 @@ using namespace std;
 
 namespace KP {
 
-class MoveBitFlip : public Move<SolutionKP>
+class MoveBitFlip : public Move<ESolutionKP>
 {
 private:
    int item;

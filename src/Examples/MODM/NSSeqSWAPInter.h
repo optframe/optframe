@@ -15,7 +15,7 @@ using namespace std;
 namespace MODM
 {
 
-class MoveSWAPInter: public Move<SolutionMODM>
+class MoveSWAPInter: public Move<ESolutionMODM>
 {
 private:
 

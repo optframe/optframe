@@ -115,10 +115,10 @@ public:
 
       string rest = scanner.rest();
 
-      pair<SingleObjSearch<S, XEv>*, std::string> method;
+      pair<SingleObjSearch<XES>*, std::string> method;
       method = hf.createSingleObjSearch(rest);
 
-      SingleObjSearch<S, XEv>* h = method.first;
+      SingleObjSearch<XES>* h = method.first;
 
       scanner = Scanner(method.second);
 

@@ -189,7 +189,7 @@ public:
       Component* final = nullptr;
 
       if (type == SingleObjSearch<XES>::idComponent()) {
-         final = (SingleObjSearch<S, XEv>*)comp;
+         final = (SingleObjSearch<XES>*)comp;
       } else {
          cout << "SingleObjSearchAction::doCast error: no cast for type '" << type << "'" << endl;
          return false;
@@ -209,7 +209,7 @@ public:
       if (!scanner.hasNext())
          return false;
 
-      SingleObjSearch<S, XEv>* sios;
+      SingleObjSearch<XES>* sios;
       hf.assign(sios, scanner.nextInt(), scanner.next());
 
       if (!sios)

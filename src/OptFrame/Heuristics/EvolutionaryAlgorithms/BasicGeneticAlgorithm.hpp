@@ -324,7 +324,7 @@ public:
 	{
 	}
 
-	virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
+	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
 		Evaluator<S>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!

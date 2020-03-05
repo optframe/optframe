@@ -37,7 +37,7 @@ using namespace optframe;
 namespace OptHS
 {
 
-class MoveSwap: public Move<SolutionOptHS>
+class MoveSwap: public Move<ESolutionOptHS>
 {
 public:
 

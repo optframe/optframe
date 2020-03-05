@@ -551,13 +551,13 @@ public:
 	}
 
 
-	pair<SingleObjSearch<S, XEv>*, std::string> createSingleObjSearch(std::string str)
+	pair<SingleObjSearch<XES>*, std::string> createSingleObjSearch(std::string str)
 	{
 		Scanner scanner(str);
 
 		// No heuristic!
 		if (!scanner.hasNext())
-			return pair<SingleObjSearch<S, XEv>*, std::string>(nullptr, "");
+			return pair<SingleObjSearch<XES>*, std::string>(nullptr, "");
 
 		string h = scanner.next();
 
@@ -565,7 +565,7 @@ public:
 		{
 			unsigned int id = scanner.nextInt();
 
-			SingleObjSearch<S, XEv>* mtd = nullptr;
+			SingleObjSearch<XES>* mtd = nullptr;
 
 			assign(mtd, id, SingleObjSearch<XES, XEv>::idComponent());
 
@@ -583,14 +583,14 @@ public:
 			// build local search directly by builder name
 			if(builders[i]->id()==h)
 			{
-				SingleObjSearch<S, XEv>* sios = ((SingleObjSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
+				SingleObjSearch<XES>* sios = ((SingleObjSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
 				return make_pair(sios, scanner.rest());
 			}
 
 			// locate builder by local search name
 			if(builders[i]->canBuild(h))
 			{
-				SingleObjSearch<S, XEv>* sios = ((SingleObjSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
+				SingleObjSearch<XES>* sios = ((SingleObjSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
 				return make_pair(sios, scanner.rest());
 			}
 		}
@@ -598,7 +598,7 @@ public:
 
 		cout << "HeuristicFactory::createSingleObjSearch warning: no SingleObjSearch '" << h << "' found! ignoring..." << endl;
 
-		return pair<SingleObjSearch<S, XEv>*, std::string>(nullptr, scanner.rest());
+		return pair<SingleObjSearch<XES>*, std::string>(nullptr, scanner.rest());
 	}
 
 	pair<MultiObjSearch<S, XEv>*, std::string> createMultiObjSearch(std::string str)

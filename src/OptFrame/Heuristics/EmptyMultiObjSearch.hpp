@@ -29,9 +29,10 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class EmptyMultiObjSearch: public MultiObjSearch<S, XEv>
 {
+   using XSH = Pareto<S, XEv, XES>;
 public:
 
 	EmptyMultiObjSearch()
@@ -43,7 +44,7 @@ public:
 	}
 
 	//Pareto<S, XEv>* search(MOSC& mosc, Pareto<S, XEv>* _pf = nullptr) override
-   SearchStatus search(std::optional<Pareto<S, XEv>>& p, const StopCriteria<>& stopCriteria) override
+   SearchStatus search(std::optional<Pareto<S, XEv>>& p, const StopCriteria<XSH>& stopCriteria) override
 	{
 		cout << "WARNING: RETURNING A EmptyMultiObjSearch!" << endl;
 		//return nullptr;

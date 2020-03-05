@@ -13,7 +13,7 @@ using namespace std;
 namespace HFM
 {
 
-class MoveNEIGHVAlpha: public Move<SolutionHFM>
+class MoveNEIGHVAlpha: public Move<ESolutionHFM>
 {
 private:
 	int index;

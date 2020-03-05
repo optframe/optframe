@@ -13,7 +13,7 @@ using namespace std;
 namespace HFM
 {
 
-class MoveHFMModifyRule: public Move<SolutionHFM>
+class MoveHFMModifyRule: public Move<ESolutionHFM>
 {
 private:
 	int r, o;

@@ -40,7 +40,7 @@ using namespace std;
 
 namespace TSP {
 
-class MoveSwap : public Move<SolutionTSP>
+class MoveSwap : public Move<ESolutionTSP>
 {
 private:
    int c1, c2;

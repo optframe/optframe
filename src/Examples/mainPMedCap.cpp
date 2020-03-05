@@ -52,15 +52,18 @@ int main(int argc, char **argv)
 	PCAPProblemInstance p(scanner);
 	PCAPEvaluator e(p);
 	PCAPInitialSolutionGreedy is_greedy(p, rg);
-	SolutionPCAP s = *is_greedy.generateSolution(100); // timelimit 100
+	//SolutionPCAP s = *is_greedy.generateSolution(100); // timelimit 100
+   ESolutionPCAP se = *is_greedy.initialSearch(StopCriteria<ESolutionPCAP>(100)); // timelimit 100
 
+   XSolution& s = se.first;
+   ////XEvaluation& e = se.second;
 
 	NSSeqSWAP nsSwap(p, rg);
 
 
 	s.print();
 
-	e.evaluate(s).print();
+	e.evaluate(se).print();
 
 	PCAPSolCheck(p, s);
 

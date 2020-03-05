@@ -57,7 +57,7 @@ public:
 // core methods
 
     // 1
-	virtual void msSearchFrom(X2ES& p, pair<S, XEv>& se, const StopCriteria<>& stopCriteria) = 0;
+	virtual void msSearchFrom(X2ES& p, pair<S, XEv>& se, const StopCriteria<XSH>& stopCriteria) = 0;
 
 	virtual bool compatible(string s)
 	{

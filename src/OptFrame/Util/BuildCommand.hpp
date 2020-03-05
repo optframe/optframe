@@ -127,7 +127,7 @@ public:
       }
       else if(Component::compareBase(SingleObjSearchBuilder<S, XEv>::idComponent(), type))
       {
-          pair<SingleObjSearch<S, XEv>*, string> method;
+          pair<SingleObjSearch<XES>*, string> method;
           method = factory.createSingleObjSearch(scanner.rest());
           scanner = Scanner(method.second);
 

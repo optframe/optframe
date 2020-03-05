@@ -469,7 +469,7 @@ public:
          
          //std::optional<S> s = constructive.generateSolution(stopCriteria.timelimit); //MAKE MOVE TODO
          //Evaluation<> e = eval.evaluate(*s);
-         pair<S, XEv> se = *SingleObjSearch<S, XEv>::genPair(constructive, eval, stopCriteria.timelimit);
+         pair<S, XEv> se = *SingleObjSearch<XES>::genPair(constructive, eval, stopCriteria.timelimit);
 
          vector<NGESIndStructure<S, XEv>> m;
 

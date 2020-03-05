@@ -32,6 +32,7 @@
 #include "ComponentBuilder.h"
 
 #include "BaseConcepts.hpp"
+#include "Timer.hpp"
 
 using namespace std;
 
@@ -74,7 +75,7 @@ enum class SearchStatus : int
 
 // StopCriteria is currently 'final', as lambdas can be passed to specific configurations. 
 // If something else is required (via inheritance), this 'final' will need to be changed.
-template<XEvaluation XEv = Evaluation<>, XSearchMethod XM = optframe::Component> 
+template<XESolution XES, XSearchMethod XM = optframe::Component> 
 class StopCriteria final : public Component
 {
 public:
@@ -90,7 +91,7 @@ public:
 
    // target objective function
    //double target_f;
-   XEv target_f; // TODO (IGOR): pass parameter on SOSC. // TODO: Why?... forgot reason!
+   op<XES> target_f; // TODO (IGOR): pass parameter on SOSC. // TODO: Why?... forgot reason!
    // for MultiObj, 'target_f' can pass ideal values for each objective, and use strict/strong pareto dominance for verification.
 
    // expected number of Search Space elements
@@ -101,18 +102,18 @@ public:
 
 /*
    // general stopping criteria
-   std::function<bool(const XEv&)> generalStopBy = 
+   std::function<bool(const XES&)> generalStopBy = 
    {   
-      [&](const XEv& bestF) -> bool {
+      [&](const XES& bestF) -> bool {
          return this->timerExpired() || this->evCountExpired();
       }
    };
 */
 
    // method-specific stopping criteria (default is a generic one)
-   std::function<bool(const XEv&, XM*)> stopBy 
+   std::function<bool(const op<XES>&, XM*)> stopBy 
    { 
-      [&](const XEv& bestF, XM*) -> bool {
+      [&](const op<XES>& bestF, XM*) -> bool {
          return this->timerExpired() || this->evCountExpired();
       }   
    };
@@ -138,16 +139,16 @@ public:
    }
 
    // general stop conditions checked here (does not include best value checking)
-   virtual bool shouldStop(const XEv& bestF, XM* selfMethod) const
+   virtual bool shouldStop(const op<XES>& best, XM* selfMethod) const
    {
-      return stopBy(bestF, selfMethod);
+      return stopBy(best, selfMethod);
    }
 
    // ----------------------------------------------
    // method-specific stop criteria (passed by user)
    // ----------------------------------------------
 
-   StopCriteria(std::function<bool(const XEv&, XM*)> _stopBy) :
+   StopCriteria(std::function<bool(const op<XES>&, XM*)> _stopBy) :
       stopBy(_stopBy), specific(true)
    {
    }
@@ -163,7 +164,7 @@ public:
    {
    }
 
-   StopCriteria(double _timelimit, const XEv& _target_f)
+   StopCriteria(double _timelimit, const op<XES>& _target_f)
      : timelimit(_timelimit),
      target_f(_target_f)
    {
@@ -174,7 +175,7 @@ public:
    }
 
    // resets timer and returns self-reference
-   StopCriteria<XEv>& start()
+   StopCriteria<XES>& start()
    {
       localTimer = Timer(); // reset timer
       return *this;
@@ -197,7 +198,7 @@ public:
       timelimit -= subtrTL;
    }
 
-   StopCriteria<XEv> newStopCriteriaWithTL(double subtrTL) const
+   StopCriteria<XES> newStopCriteriaWithTL(double subtrTL) const
    {
       StopCriteria newStopCriteria = (*this);
       newStopCriteria.timelimit -= subtrTL;
@@ -211,7 +212,7 @@ public:
 };
 
 // Default Stop criteria
-using DefaultStop = StopCriteria<Evaluation<>, optframe::Component>;
+///using DefaultStop = StopCriteria<Evaluation<>, optframe::Component>;
 
 } // namespace optframe
 

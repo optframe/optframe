@@ -87,6 +87,7 @@ template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, X
 //template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
 class MultiObjSearch: public GlobalSearch<XES, Pareto<S, XEv, XES>> // public Component
 {
+   using XSH = Pareto<S, XEv, XES>; // search space
 public:
 
 	MultiObjSearch()
@@ -98,7 +99,7 @@ public:
 	}
 
 	//virtual Pareto<S, XEv>* search(MOSC& stopCriteria, Pareto<S, XEv>* _pf = nullptr) = 0;
-   virtual SearchStatus search(std::optional<Pareto<S, XEv>>& p, const StopCriteria<>& stopCriteria) = 0;
+   virtual SearchStatus search(std::optional<Pareto<S, XEv>>& p, const StopCriteria<XSH>& stopCriteria) = 0;
 
 	virtual string log() const
 	{

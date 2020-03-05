@@ -141,7 +141,7 @@ main(int argc, char** argv)
    vNSeq.push_back(nsseq_deltaIterator_swap11);
    vNSeq.push_back(nsseq_deltaIterator_shift10);
 
-   StopCriteria<> soscGR(10, Evaluation<>(0)); // target zero and 10 seconds
+   StopCriteria<ESolutionHFMVRP> soscGR(10, Evaluation<>(0)); // target zero and 10 seconds
    std::optional<pair<SolutionHFMVRP, Evaluation<>>> initialPairGrasp;
    basicGrasp.search(initialPairGrasp, soscGR);
 
@@ -159,7 +159,7 @@ main(int argc, char** argv)
    ES<SolutionHFMVRP> es(*eval, cloneSolAsConstructive, vNSeq, vNSeqMaxApplication, emptyLS, selectionType, mutationRate, rg, mi, 6 * mi, 50000, "./esOutput", batch);
    es.setMessageLevel(4);
 
-   StopCriteria<> soscES(180, 0);
+   StopCriteria<ESolutionHFMVRP> soscES(180, 0);
    pair<Solution<SolutionHFMVRP>, Evaluation<>>* initialSol = es.search(soscES);
    double objFuncES = initialSol->second.getObjFunction();
    cout << "getObjFunction: " << objFuncES << endl;
@@ -183,7 +183,7 @@ main(int argc, char** argv)
 	 IteratedLocalSearchLevels<SolutionHFMVRP> ilsl(*eval, cloneSolAsConstructive, newVNDUpdateADS, *ilsl_pert, 130, 15);
 	 ilsl.setMessageLevel(4);
 
-   StopCriteria<> soscILSL(60,0);
+   StopCriteria<ESolutionHFMVRP> soscILSL(60,0);
 	 pair<Solution<SolutionHFMVRP>, Evaluation<>>* pairILS = ilsl.search(soscILSL);
 	 Solution<SolutionHFMVRP> ilsSOL = pairILS->first;
 

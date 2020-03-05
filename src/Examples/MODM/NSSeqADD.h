@@ -15,7 +15,7 @@ using namespace std;
 
 namespace MODM {
 
-class MoveADD : public Move<SolutionMODM>
+class MoveADD : public Move<ESolutionMODM>
 {
 private:
    ProblemInstance* dmproblem;

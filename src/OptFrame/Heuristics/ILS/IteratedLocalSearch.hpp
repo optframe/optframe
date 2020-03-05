@@ -120,7 +120,7 @@ public:
 
 		if (Component::information)
 			cout << "ILS::performing first local search" << endl;
-		StopCriteria<> stopCriteriaLS = stopCriteria;
+		StopCriteria<XES> stopCriteriaLS = stopCriteria;
 		stopCriteriaLS.updateTimeLimit(tnow.now());
 		localSearch(*star, stopCriteriaLS);
 		if (Component::information)
@@ -135,11 +135,11 @@ public:
 			//S s1(sStar); // copy (should clone?)
 			//Evaluation<> e1(eStar); // copy (should clone?)
          
-			StopCriteria<> stopCriteriaPert = stopCriteria;
+			StopCriteria<XES> stopCriteriaPert = stopCriteria;
 			stopCriteriaPert.updateTimeLimit(tnow.now());
 			perturbation(p1, stopCriteriaPert, *history);
 
-			StopCriteria<> stopCriteriaLS2 = stopCriteria;
+			StopCriteria<XES> stopCriteriaLS2 = stopCriteria;
 			stopCriteriaLS2.updateTimeLimit(tnow.now());
 			localSearch(p1, stopCriteriaLS2);
 

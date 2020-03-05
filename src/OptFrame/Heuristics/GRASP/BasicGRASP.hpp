@@ -99,7 +99,7 @@ public:
          //S& s1 = p1.first;
          XEv& e1 = p1.second;
 
-			StopCriteria<> stopCriteriaLS = stopCriteria.newStopCriteriaWithTL(tNow.now());
+			StopCriteria<XES> stopCriteriaLS = stopCriteria.newStopCriteriaWithTL(tNow.now());
 			ls.searchFrom(p1, stopCriteriaLS);
 
 			if (evaluator.betterThan(e1, e))
@@ -149,7 +149,7 @@ public:
 	{
 	}
 
-	virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
+	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!

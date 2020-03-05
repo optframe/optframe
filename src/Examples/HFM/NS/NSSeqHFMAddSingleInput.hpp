@@ -12,7 +12,7 @@
 using namespace std;
 namespace HFM {
 
-class MoveNEIGHAddSingleInput : public Move<SolutionHFM>
+class MoveNEIGHAddSingleInput : public Move<ESolutionHFM>
 {
 private:
    int file, K;

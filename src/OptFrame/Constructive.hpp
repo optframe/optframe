@@ -25,6 +25,7 @@
 #include "Component.hpp"
 //#include "Solution.hpp"
 //#include "Solutions/CopySolution.hpp"
+#include "InitialSearch.hpp" // TODO: remove
 
 namespace optframe {
 

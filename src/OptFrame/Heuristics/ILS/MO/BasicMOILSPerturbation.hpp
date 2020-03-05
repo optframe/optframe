@@ -88,7 +88,7 @@ public:
 		ns.push_back(&_ns);
 	}
 
-	void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<>& stopCriteria)
+	void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XSH>& stopCriteria)
 	{
 		for (int i = pMin; i < pMax; i++)
 		{

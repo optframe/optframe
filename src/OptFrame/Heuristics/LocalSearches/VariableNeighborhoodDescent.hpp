@@ -79,7 +79,7 @@ public:
 		while (ev.betterThan(stopCriteria.target_f, e) && (k <= r) && (tNow.now() < stopCriteria.timelimit))
 		{
 			eCurrent = e; // backup
-			StopCriteria<> stopCriteriaNextLS = stopCriteria;
+			StopCriteria<XES> stopCriteriaNextLS = stopCriteria;
 			stopCriteriaNextLS.updateTimeLimit(tNow.now());
 			lsList[k - 1]->searchFrom(se, stopCriteriaNextLS);
 

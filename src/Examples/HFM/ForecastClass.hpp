@@ -307,7 +307,7 @@ public:
       MOILSLevels<SolutionHFM> moILSLevels(*mev, grIP, initial_population_size, &moriASI, rg, *moILSPert, moIlsIterMax, moIlslevelMax);
       //		moILSLevels.setMessageLevel(3);
 
-      StopCriteria<> moStopCriteriaGPLS;
+      StopCriteria<ESolutionHFM> moStopCriteriaGPLS;
       moStopCriteriaGPLS.timelimit = timeGPLS;
       if (_pf == nullptr) {
          delete pf;
@@ -338,7 +338,7 @@ public:
 
    std::optional<pair<SolutionHFM, Evaluation<>>> runGRASP(int timeGRASP, int nSol)
    {
-      StopCriteria<>* stopCriteria = new StopCriteria<>(timeGRASP);
+      StopCriteria<ESolutionHFM>* stopCriteria = new StopCriteria<ESolutionHFM>(timeGRASP);
       std::optional<pair<SolutionHFM, Evaluation<>>> finalSol = std::nullopt;
       delete stopCriteria;
       //		BasicGRASP<RepEFP> g(*eval, *c, emptyLS, 0.1, nSol);
@@ -356,7 +356,7 @@ public:
       double targetValue = 3.879748973;
       targetValue = 0;
 
-      StopCriteria<> stopCriteria(timeES, Evaluation<>(targetValue));   
+      StopCriteria<ESolutionHFM> stopCriteria(timeES, Evaluation<>(targetValue));   
       std::optional<pair<SolutionHFM, Evaluation<>>> finalSol;
       es->search(finalSol, stopCriteria);
       
@@ -388,7 +388,7 @@ public:
       //		const Evaluation<> evaluationGrasp = finalSol.second;
 
       std::optional<pair<SolutionHFM, Evaluation<>>> finalSol = std::nullopt;
-      StopCriteria<> stopCriteria;
+      StopCriteria<ESolutionHFM> stopCriteria;
       stopCriteria.timelimit = timeILS;
       //stopCriteria.target_f(Evaluation<>(0));
       ils->setMessageLevel(3);

@@ -34,7 +34,6 @@ template<XESolution XES, XEvaluation XEv, XSearchMethod XM>
 class BasicSimulatedAnnealing;
 
 
-//template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = Component, XStopCriteria<XEv, XM> XStop = DefaultStop >
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
 //class BasicSimulatedAnnealing: public SingleObjSearch<S, XEv, XSH, XM, XStop>
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = Component>
@@ -109,7 +108,6 @@ public:
 	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr,  const Evaluation<>* _e = nullptr)
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
 
-   //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = Component, XStopCriteria<XEv, XM> XStop = DefaultStop >
    SearchStatus search(op<XES>& star, const StopCriteria<XES, XM>& stop) override
 	{
 		double timelimit = stop.timelimit;
@@ -121,7 +119,7 @@ public:
 		// TODO: verify 's' and 'input'
 		//pair<S, XEv> se = genPair(timelimit);
       if(!star)
-         //star = SingleObjSearch<S, XEv>::genPair(constructive, evaluator, timelimit);
+         //star = SingleObjSearch<XES>::genPair(constructive, evaluator, timelimit);
          star = constructive.initialSearch(stop);
       if(!star)
          return SearchStatus::NO_NEWSOL; // no possibility to continue.

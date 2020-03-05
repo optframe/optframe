@@ -34,7 +34,7 @@ using namespace optframe;
 
 namespace EtII {
 
-class MoveSwapRotateCenter : public Move<SolutionEtII>
+class MoveSwapRotateCenter : public Move<ESolutionEtII>
 {
 protected:
    int x1, y1, x2, y2;
