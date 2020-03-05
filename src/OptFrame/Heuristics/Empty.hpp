@@ -79,9 +79,9 @@ public:
 	{
 	}
 
-	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
+	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		return new EmptyLocalSearch<S, XEv>;
+		return new EmptyLocalSearch<XES, XEv>;
 	}
 
 	virtual vector<pair<string, string> > parameters()

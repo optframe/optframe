@@ -29,7 +29,7 @@
 namespace optframe
 {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>>
 class EmptyMultiObjSearch: public MultiObjSearch<S, XEv>
 {
 public:

@@ -348,9 +348,9 @@ public:
 		hf.assign(mut, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
-		pair<LocalSearch<S, XEv>*, std::string> method;
+		pair<LocalSearch<XES, XEv>*, std::string> method;
 		method = hf.createLocalSearch(rest);
-		LocalSearch<S, XEv>* h = method.first;
+		LocalSearch<XES, XEv>* h = method.first;
 		scanner = Scanner(method.second);
 
 		return new BasicGeneticAlgorithm<R, ADS>(*eval, *initPop, popSize, pCross, pMut, pLS, nGen, *sel, *cross, *mut, *h, hf.getRandGen());

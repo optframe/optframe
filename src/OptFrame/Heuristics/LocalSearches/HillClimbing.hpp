@@ -114,17 +114,17 @@ public:
 	{
 	}
 
-	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
+	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
 
-		pair<LocalSearch<S, XEv>*, std::string> method;
+		pair<LocalSearch<XES, XEv>*, std::string> method;
 		method = hf.createLocalSearch(rest);
 
-		LocalSearch<S, XEv>* h = method.first;
+		LocalSearch<XES, XEv>* h = method.first;
 
 		scanner = Scanner(method.second);
 

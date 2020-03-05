@@ -150,10 +150,10 @@ public:
 
 		string rest = scanner.rest();
 
-		pair<LocalSearch<S, XEv>*, std::string> method;
+		pair<LocalSearch<XES, XEv>*, std::string> method;
 		method = hf.createLocalSearch(rest);
 
-		LocalSearch<S, XEv>* h = method.first;
+		LocalSearch<XES, XEv>* h = method.first;
 
 		scanner = Scanner(method.second);
 
@@ -162,7 +162,7 @@ public:
 
 		int iterMax = scanner.nextInt();
 
-		return new BasicIteratedLocalSearch<S, XEv>(*eval, *constructive, *h, *pert, iterMax);
+		return new BasicIteratedLocalSearch<XES, XEv>(*eval, *constructive, *h, *pert, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()

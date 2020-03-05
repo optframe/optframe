@@ -142,7 +142,7 @@ public:
 	{
 	}
 
-	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
+	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -150,7 +150,7 @@ public:
 		vector<LocalSearch<XES, XEv>*> hlist;
 		hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new VariableNeighborhoodDescent<S, XEv>(*eval, hlist);
+		return new VariableNeighborhoodDescent<XES, XEv>(*eval, hlist);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -166,7 +166,7 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == VariableNeighborhoodDescent<S, XEv>::idComponent();
+		return component == VariableNeighborhoodDescent<XES, XEv>::idComponent();
 	}
 
 	static string idComponent()

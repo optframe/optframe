@@ -29,13 +29,13 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv=Evaluation<>>
+template<XESolution XES, XEvaluation XEv=Evaluation<>>
 class CompareLocalSearch: public LocalSearch<XES, XEv>
 {
 private:
 	Evaluator<XES, XEv>& eval;
-	LocalSearch<S, XEv>& ls1;
-	LocalSearch<S, XEv>& ls2;
+	LocalSearch<XES, XEv>& ls1;
+	LocalSearch<XES, XEv>& ls2;
 
 public:
 
@@ -62,7 +62,7 @@ public:
 		
       //S& s2 = s.clone();
 		//Evaluation<>& e2   = e.clone();
-      pair<S, XEv> p2 = se; // clone!
+      XES p2 = se; // clone!
       XEv& e2 = p2.second;
 
 		ls1.searchFrom(se, sosc);
@@ -116,30 +116,30 @@ public:
 	{
 	}
 
-	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
+	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
 
-		pair<LocalSearch<S, XEv>*, std::string> method;
+		pair<LocalSearch<XES, XEv>*, std::string> method;
 		method = hf.createLocalSearch(rest);
 
-		LocalSearch<S, XEv>* h = method.first;
+		LocalSearch<XES, XEv>* h = method.first;
 
 		scanner = Scanner(method.second);
 
 		string rest2 = scanner.rest();
 
-		pair<LocalSearch<S, XEv>*, std::string> method2;
+		pair<LocalSearch<XES, XEv>*, std::string> method2;
 		method2 = hf.createLocalSearch(rest2);
 
-		LocalSearch<S, XEv>* h2 = method2.first;
+		LocalSearch<XES, XEv>* h2 = method2.first;
 
 		scanner = Scanner(method2.second);
 
-		return new CompareLocalSearch<S, XEv>(*eval, *h, *h2);
+		return new CompareLocalSearch<XES, XEv>(*eval, *h, *h2);
 	}
 
 	virtual vector<pair<string, string> > parameters()

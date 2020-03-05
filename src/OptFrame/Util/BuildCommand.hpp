@@ -115,7 +115,7 @@ public:
 
       if(Component::compareBase(LocalSearchBuilder<R, ADS>::idComponent(), type))
       {
-          pair<LocalSearch<S, XEv>*, string> method;
+          pair<LocalSearch<XES, XEv>*, string> method;
           method = factory.createLocalSearch(scanner.rest());
           scanner = Scanner(method.second);
 

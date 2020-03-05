@@ -32,16 +32,16 @@
 
 namespace optframe {
 
-template<XSolution S, XEvaluation XEv=Evaluation<>>
+template<XESolution XES, XEvaluation XEv=Evaluation<>>
 class SimpleLocalSearch : public SingleObjSearch<XES>
 {
 protected:
    Evaluator<XES, XEv>& evaluator;
    InitialSearch<XES>& constructive;
-   LocalSearch<S, XEv>& localSearch;
+   LocalSearch<XES, XEv>& localSearch;
 
 public:
-   SimpleLocalSearch(Evaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, LocalSearch<S, XEv>& _localSearch)
+   SimpleLocalSearch(Evaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, LocalSearch<XES, XEv>& _localSearch)
      : evaluator(_evaluator)
      , constructive(_constructive)
      , localSearch(_localSearch)
@@ -54,23 +54,25 @@ public:
 
    //pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& sosc) override
-   SearchStatus search(std::optional<pair<S, XEv>>& star, const StopCriteria<XEv>& sosc) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XES>& sosc) override
    {
       //cout << "SimpleLocalSearch search(" << target_f << "," << timelimit << ")" << endl;
 
       Timer tnow;
 
-      std::optional<S> s = constructive.generateSolution(sosc.timelimit);
-      if(!s)
+      //std::optional<S> s = constructive.generateSolution(sosc.timelimit);
+      std::optional<XES> pse = constructive.initialSearch(sosc);
+      if(!pse)
          return SearchStatus::NO_NEWSOL; // nothing to return
-      Evaluation<> e = evaluator.evaluate(*s);
+      //Evaluation<> e = evaluator.evaluate(*s);
 
       ////pair<S&, Evaluation<>&>& p = localSearch.search(s, e, sosc);
 
       //delete &s;
 
       //return make_optional(make_pair(*s, e));
-      star = make_optional(make_pair(*s, e));
+      //star = make_optional(make_pair(*s, e));
+      star = make_optional(*pse);
       return SearchStatus::VALID_SOL;
    }
 
@@ -109,7 +111,7 @@ public:
    {
    }
 
-   virtual SingleObjSearch<S, XEv, XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") override
+   virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") override
    {
       Evaluator<XES, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -119,14 +121,14 @@ public:
 
       string rest = scanner.rest();
 
-      pair<LocalSearch<S, XEv>*, std::string> method;
+      pair<LocalSearch<XES, XEv>*, std::string> method;
       method = hf.createLocalSearch(rest);
 
-      LocalSearch<S, XEv>* h = method.first;
+      LocalSearch<XES, XEv>* h = method.first;
 
       scanner = Scanner(method.second);
 
-      return new SimpleLocalSearch<S, XEv>(*eval, *constructive, *h);
+      return new SimpleLocalSearch<XES, XEv>(*eval, *constructive, *h);
    }
 
    virtual vector<pair<string, string>> parameters()

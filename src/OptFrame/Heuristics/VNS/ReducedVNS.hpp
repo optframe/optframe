@@ -31,14 +31,15 @@ namespace optframe
 {
 
 template<XESolution XES, XEvaluation XEv = Evaluation<>>
-class ReducedVNS: public VariableNeighborhoodSearch<S, XEv>
+class ReducedVNS: public VariableNeighborhoodSearch<XES, XEv>
 {
 public:
 
-	typedef VariableNeighborhoodSearch<S, XEv> super;
+	typedef VariableNeighborhoodSearch<XES, XEv> super;
 
-	ReducedVNS(Evaluator<S>& evaluator, Constructive<S>& constructive, vector<NS<XES, XEv>*> vshake, vector<NSSeq<S>*> vsearch) :
-		VariableNeighborhoodSearch<S, XEv> (evaluator, constructive, vshake, vsearch)
+	//ReducedVNS(Evaluator<S>& evaluator, Constructive<S>& constructive, vector<NS<XES, XEv>*> vshake, vector<NSSeq<S>*> vsearch) :
+   ReducedVNS(Evaluator<XES>& evaluator, InitialSearch<XES>& constructive, vector<NS<XES, XEv>*> vshake, vector<NSSeq<XES, XEv>*> vsearch) :
+		VariableNeighborhoodSearch<XES, XEv> (evaluator, constructive, vshake, vsearch)
 	{
 	}
 
@@ -46,9 +47,9 @@ public:
 	{
 	}
 
-	virtual LocalSearch<S, XEv>& buildSearch(unsigned k_search)
+	virtual LocalSearch<XES, XEv>& buildSearch(unsigned k_search)
 	{
-		return * new EmptyLocalSearch<S, XEv>();
+		return * new EmptyLocalSearch<XES, XEv>();
 	}
 
 	virtual string id() const
@@ -59,7 +60,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << VariableNeighborhoodSearch<S, XEv>::idComponent() << "RVNS";
+		ss << VariableNeighborhoodSearch<XES, XEv>::idComponent() << "RVNS";
 		return ss.str();
 	}
 };

@@ -214,12 +214,12 @@ public:
 	{
 	}
 
-	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
+	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NSSeq<S, XEv, XSH>* nsseq;
+		NSSeq<XES, XEv, XSH>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new FirstImprovement<S, XEv, XSH>(*eval, *nsseq);
@@ -229,7 +229,7 @@ public:
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NSSeq<S, XEv, XSH>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}

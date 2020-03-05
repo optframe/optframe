@@ -30,7 +30,7 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv=Evaluation<>>
+template<XESolution XES, XEvaluation XEv=Evaluation<>>
 class LateAcceptanceHillClimbing: public LocalSearch<XES, XEv>
 {
 private:
@@ -65,7 +65,7 @@ public:
 
 	virtual void searchFrom(XES& se, const StopCriteria<XES>& sosc) override
 	{
-      S& sStar = se.first;
+      XSolution& sStar = se.first;
       XEv& eStar = se.second;
       double timelimit = sosc.timelimit;
       XEv target_f(sosc.target_f);
@@ -83,7 +83,7 @@ public:
 		int iter = 1;
 		unsigned index = 0;
 
-		S& s = sStar.clone();
+		XSolution& s = sStar.clone();
 		Evaluation<>& e = eStar.clone();
 
 		long tnow = time(nullptr);
@@ -201,7 +201,7 @@ public:
 	{
 	}
 
-	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
+	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!

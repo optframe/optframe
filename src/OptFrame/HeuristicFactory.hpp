@@ -501,13 +501,13 @@ public:
 	}
 
 
-	pair<LocalSearch<S, XEv>*, std::string> createLocalSearch(std::string str)
+	pair<LocalSearch<XES, XEv>*, std::string> createLocalSearch(std::string str)
 	{
 		Scanner scanner(str);
 
 		// No heuristic!
 		if (!scanner.hasNext())
-			return pair<LocalSearch<S, XEv>*, std::string>(nullptr, "");
+			return pair<LocalSearch<XES, XEv>*, std::string>(nullptr, "");
 
 		string h = scanner.next();
 
@@ -515,39 +515,39 @@ public:
 		{
 			unsigned int id = scanner.nextInt();
 
-			LocalSearch<S, XEv>* mtd = nullptr;
+			LocalSearch<XES, XEv>* mtd = nullptr;
 
 			assign(mtd, id, LocalSearch<XES, XEv>::idComponent());
 
 			if(!mtd)
-				return make_pair(new EmptyLocalSearch<S, XEv> , scanner.rest());
+				return make_pair(new EmptyLocalSearch<XES, XEv> , scanner.rest());
 
 			return make_pair(mtd, scanner.rest());
 		}
 
 		if (h == EmptyLocalSearch<XES, XEv>::idComponent())
-			return make_pair(new EmptyLocalSearch<S, XEv> , scanner.rest());
+			return make_pair(new EmptyLocalSearch<XES, XEv> , scanner.rest());
 
 		for(unsigned i=0; i<builders.size(); i++)
 		{
 			// build local search directly by builder name
 			if(builders[i]->id()==h)
 			{
-				LocalSearch<S, XEv>* ls = ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
+				LocalSearch<XES, XEv>* ls = ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
 				return make_pair(ls, scanner.rest());
 			}
 
 			// locate builder by local search name
 			if(builders[i]->canBuild(h))
 			{
-				LocalSearch<S, XEv>* ls = ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
+				LocalSearch<XES, XEv>* ls = ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
 				return make_pair(ls, scanner.rest());
 			}
 		}
 
 		cout << "HeuristicFactory::createLocalSearch warning: no LocalSearch '" << h << "' found! ignoring..." << endl;
 
-		return pair<LocalSearch<S, XEv>*, std::string>(nullptr, scanner.rest());
+		return pair<LocalSearch<XES, XEv>*, std::string>(nullptr, scanner.rest());
 	}
 
 

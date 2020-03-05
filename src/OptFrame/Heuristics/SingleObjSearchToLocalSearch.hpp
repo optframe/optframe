@@ -32,15 +32,15 @@
 
 namespace optframe {
 
-template<XSolution S, XEvaluation XEv=Evaluation<>>
+template<XESolution XES, XEvaluation XEv=Evaluation<>>
 class SingleObjSearchToLocalSearch : public LocalSearch<XES, XEv>
 {
 protected:
    Evaluator<XES, XEv>& evaluator;
-   SingleObjSearch<S, XEv>& sios;
+   SingleObjSearch<XES>& sios;
 
 public:
-   SingleObjSearchToLocalSearch(Evaluator<XES, XEv>& _evaluator, SingleObjSearch<S, XEv>& _sios)
+   SingleObjSearchToLocalSearch(Evaluator<XES, XEv>& _evaluator, SingleObjSearch<XES>& _sios)
      : evaluator(_evaluator)
      , sios(_sios)
    {
@@ -59,14 +59,14 @@ public:
 
 	virtual void searchFrom(XES& se, const StopCriteria<XES>& sosc) override
 	{
-      S& s = se.first;
+      XSolution& s = se.first;
       XEv& e = se.second;
 
       // will ignore 'se'
       // maybe ALL SingleObjSearch should inherit from LocalSearch!
       // maybe 'LocalSearch' should become 'Search', and 'SingleObjSearch' -> 'GlobalSearch'... must think!
 
-      std::optional<pair<S, XEv>> r = make_optional(se);
+      std::optional<XES> r = make_optional(se);
       sios.search(r, sosc); // TODO: store flag and return
 
       if (r) {
@@ -108,7 +108,7 @@ public:
    {
    }
 
-   virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
+   virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
       Evaluator<XES, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -122,7 +122,7 @@ public:
 
       scanner = Scanner(method.second);
 
-      return new SingleObjSearchToLocalSearch<S, XEv>(*eval, *h);
+      return new SingleObjSearchToLocalSearch<XES, XEv>(*eval, *h);
    }
 
    virtual vector<pair<string, string>> parameters()

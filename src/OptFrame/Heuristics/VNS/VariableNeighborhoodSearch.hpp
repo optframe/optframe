@@ -38,17 +38,17 @@ namespace optframe
 {
 
 template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
-class VariableNeighborhoodSearch: public VNS, public SingleObjSearch<S, XEv, XSH>
+class VariableNeighborhoodSearch: public VNS, public SingleObjSearch<XES>
 {
 protected:
 	Evaluator<XES, XEv>& evaluator;
 	InitialSearch<XES>& constructive;
-	vector<NS<S, XEv, XSH>*> vshake;
-	vector<NSSeq<S, XEv, XSH>*> vsearch;
+	vector<NS<XES, XEv, XSH>*> vshake;
+	vector<NSSeq<XES, XEv, XSH>*> vsearch;
 
 public:
 
-	VariableNeighborhoodSearch(Evaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, vector<NS<XES, XEv>*> _vNS, vector<NSSeq<S, XEv, XSH>*> _vNSSeq) :
+	VariableNeighborhoodSearch(Evaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, vector<NS<XES, XEv>*> _vNS, vector<NSSeq<XES, XEv, XSH>*> _vNSSeq) :
 		evaluator(_evaluator), constructive(_constructive), vshake(_vNS), vsearch(_vNSSeq)
 	{
 	}
@@ -57,14 +57,14 @@ public:
 	{
 	}
 
-	//virtual void improvement(S& s, Evaluation<>& e, double timelimit, double target_f) = 0;
+	//virtual void improvement(XSolution& s, Evaluation<>& e, double timelimit, double target_f) = 0;
 
-	virtual void shake(pair<S, XEv>& se, unsigned int k_shake, const StopCriteria<XEv>& sosc)
+	virtual void shake(XES& se, unsigned int k_shake, const StopCriteria<XES>& sosc)
 	{
       //double timelimit = sosc.timelimit;
       XEv target_f(sosc.target_f);
       //
-      S& s = se.first;
+      XSolution& s = se.first;
       //Evaluation<>& e = se.second;
 		uptr<Move<XES, XEv>> move = vshake.at(k_shake)->validRandomMove(s);
 		if(move)
@@ -74,17 +74,17 @@ public:
 		}
 	}
 
-	virtual pair<pair<S, Evaluation<>>, unsigned int> neighborhoodChange(const pair<S, XEv>& star, const pair<S, XEv>& p2, unsigned int k)
+	virtual pair<XES, unsigned int> neighborhoodChange(const XES& star, const XES& p2, unsigned int k)
 	{
-      const S& s2 = p2.first;
+      const XSolution& s2 = p2.first;
       const XEv& e2 = p2.second;
-      const S& sStar = star.first;
+      const XSolution& sStar = star.first;
       const XEv& eStar = star.second;
       //
 		if (evaluator.betterThan(e2, eStar))
 		{
 			// IMPROVEMENT!
-			pair<S, Evaluation<>> p(s2.clone(), e2.clone()); // TODO: avoid leak!!
+			XES p(s2.clone(), e2.clone()); // TODO: avoid leak!!
 			if(Component::information)
          {
 				cout << "VNS: improvement at NS " << k << " => " << e2.evaluation() << endl;
@@ -95,23 +95,25 @@ public:
 		}
 		else
 		{
-			pair<S, Evaluation<>> p(sStar.clone(), eStar.clone()); // TODO: avoid leak!
+			XES p(sStar.clone(), eStar.clone()); // TODO: avoid leak!
 			return make_pair(p, k+1);
 		}
 	}
 
-	virtual LocalSearch<S, XEv>& buildSearch(unsigned k_search) = 0;
+	virtual LocalSearch<XES, XEv>& buildSearch(unsigned k_search) = 0;
 
-   pair<S, XEv> genPair(double timelimit)
+/*
+   XES genPair(double timelimit)
    {
       std::optional<S> sStar = constructive.generateSolution(timelimit);
 		XEv eStar = evaluator.evaluate(*sStar);
       return make_pair(*sStar, eStar); 
    }
+*/   
 
 	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
-   //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& sosc) override
-   SearchStatus search(std::optional<pair<S, XEv>>& star, const StopCriteria<XEv>& sosc) override
+   //virtual std::optional<XES> search(StopCriteria<XEv>& sosc) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XES>& sosc) override
 	{
       double timelimit = sosc.timelimit;
       XEv target_f(sosc.target_f);
@@ -119,12 +121,13 @@ public:
 
 		Timer tnow;
 
-		//S& sStar = *constructive.generateSolution(sosc.timelimit);
+		//XSolution& sStar = *constructive.generateSolution(sosc.timelimit);
 		//Evaluation<>   eStar = evaluator.evaluate(sStar);
-      //pair<S, XEv> star = input?*input:genPair(sosc.timelimit); // elvis
-      star = star?:genPair(sosc.timelimit);
+      //XES star = input?*input:genPair(sosc.timelimit); // elvis
+      //star = star?:genPair(sosc.timelimit);
+      star = star?:constructive.initialSearch(sosc);
       //
-      S& sStar = star->first;
+      XSolution& sStar = star->first;
 		Evaluation<>& eStar = star->second;
 
 		if(Component::information)
@@ -140,19 +143,19 @@ public:
 
 			while(k < vshake.size())
 			{
-            pair<S, XEv> p1 = *star; // copy (how to automatically invoke clone?)
-				////S& s = *new S(sStar); // implicit clone on copy constructor
+            XES p1 = *star; // copy (how to automatically invoke clone?)
+				////XSolution& s = *new S(sStar); // implicit clone on copy constructor
 				////Evaluation<>&   e = eStar.clone();
 
 				shake(p1, k, sosc);
 
-				LocalSearch<S, XEv>& improve = buildSearch(k);
+				LocalSearch<XES, XEv>& improve = buildSearch(k);
 
 				improve.searchFrom(p1, sosc);
    
 				delete& improve; // save trajectory history?
 
-				pair<pair<S, XEv>, unsigned int> nc = neighborhoodChange(*star, p1, k);
+				pair<XES, unsigned int> nc = neighborhoodChange(*star, p1, k);
 
 				sStar = nc.first.first;  // TODO: move?
 				eStar = nc.first.second; // TODO: move?
@@ -182,7 +185,7 @@ public:
 			cout << "VNS exit by timelimit: " << timelimit << endl;
       }
 
-		//return std::optional<pair<S, XEv>> (star);
+		//return std::optional<XES> (star);
       return SearchStatus::VALID_SOL;
 	}
 

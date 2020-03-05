@@ -31,14 +31,15 @@ namespace optframe
 {
 
 template<XESolution XES, XEvaluation XEv = Evaluation<>>
-class GeneralVNS: public VariableNeighborhoodSearch<S, XEv>
+class GeneralVNS: public VariableNeighborhoodSearch<XES, XEv>
 {
 public:
 
-	typedef VariableNeighborhoodSearch<S, XEv> super;
+	typedef VariableNeighborhoodSearch<XES, XEv> super;
 
-	GeneralVNS(Evaluator<S>& evaluator, Constructive<S>& constructive, vector<NS<XES, XEv>*> vshake, vector<NSSeq<S>*> vsearch) :
-		VariableNeighborhoodSearch<S, XEv> (evaluator, constructive, vshake, vsearch)
+	//GeneralVNS(Evaluator<S>& evaluator, Constructive<S>& constructive, vector<NS<XES, XEv>*> vshake, vector<NSSeq<S>*> vsearch) :
+   GeneralVNS(Evaluator<XES>& evaluator, InitialSearch<XES>& constructive, vector<NS<XES, XEv>*> vshake, vector<NSSeq<XES, XEv>*> vsearch) :
+		VariableNeighborhoodSearch<XES, XEv> (evaluator, constructive, vshake, vsearch)
 	{
 	}
 
@@ -46,13 +47,13 @@ public:
 	{
 	}
 
-	virtual LocalSearch<S, XEv>& buildSearch(unsigned k_search)
+	virtual LocalSearch<XES, XEv>& buildSearch(unsigned k_search)
 	{
-		vector<LocalSearch<S, XEv>* > vls;
+		vector<LocalSearch<XES, XEv>* > vls;
 		for(unsigned i=0; i<super::vsearch.size(); i++)
-			vls.push_back(new BestImprovement<S, XEv>(super::evaluator, *super::vsearch.at(i)));
+			vls.push_back(new BestImprovement<XES, XEv>(super::evaluator, *super::vsearch.at(i)));
 
-		return * new VariableNeighborhoodDescent<S, XEv>(super::evaluator, vls);
+		return * new VariableNeighborhoodDescent<XES, XEv>(super::evaluator, vls);
 	}
 
 	virtual string id() const
@@ -63,7 +64,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << VariableNeighborhoodSearch<S, XEv>::idComponent() << "GVNS";
+		ss << VariableNeighborhoodSearch<XES, XEv>::idComponent() << "GVNS";
 		return ss.str();
 	}
 };
