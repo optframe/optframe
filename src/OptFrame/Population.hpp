@@ -33,7 +33,7 @@ namespace optframe
 
 // Population is 'final'
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class Population final : public Component
 {
 protected:
@@ -81,9 +81,9 @@ public:
       return (*p.at(c));
    }
 
-	pair<uptr<S>, uptr<XEv>> getP(unsigned index)
+	XES& getP(unsigned index)
 	{
-		return make_pair(uptr<S>(), uptr<XEv>());
+		//return make_pair(uptr<S>(), uptr<XEv>());
 	}
 
 
@@ -288,7 +288,11 @@ public:
       return v[bestC].first;
    }
 };
-}
+
+} // namespace optframe
+
+// compilation tests
+static_assert(X2ESolution<Population<Solution<double>,Evaluation<double>,ESolution<double>>, ESolution<double>>);
 
 // population compilation tests (these are NOT unit tests)
 #include "Population.ctest.hpp"

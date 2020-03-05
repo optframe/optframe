@@ -90,7 +90,7 @@ public:
        \endportuguese
    */
 
-   string run(HeuristicFactory<S, XEv, X2ES>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
+   string run(HeuristicFactory<S, XEv, XES, X2ES>& factory, map<string, string>& dictionary, map< string,vector<string> >& ldictionary, string input)
    {
       //cout << "build command: " << input << endl;
       Scanner scanner1(input);
@@ -185,7 +185,7 @@ public:
       return new_name + " " + s_new_id;
    }
 
-   string listBuilders(HeuristicFactory<S, XEv, X2ES>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
+   string listBuilders(HeuristicFactory<S, XEv, XES, X2ES>& factory, map<string, string>& dictionary,  map< string,vector<string> >& ldictionary, string input)
    	{
    		Scanner scanner(input);
 

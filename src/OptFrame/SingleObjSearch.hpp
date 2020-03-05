@@ -51,7 +51,7 @@ namespace optframe {
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>, XSearchMethod XM = Component, XStopCriteria<XEv, XM> XStop = DefaultStop>
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>, XSearchMethod XM = Component>
-class SingleObjSearch: public GlobalSearch<S, XEv, XSH, XM> // public Component
+class SingleObjSearch: public GlobalSearch<S, XEv, XSH, XSH, XM> // public Component
 {
    // if passing types directly here, error 'typedef declared auto'
    typedef vector<XEv*> FitnessValues;
@@ -114,7 +114,7 @@ public:
 
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 //template<XSolution S, XEvaluation XEv = Evaluation<>>
-template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
 class SingleObjSearchBuilder : public ComponentBuilder<S, XEv, X2ES>
 {
 public:
@@ -122,9 +122,9 @@ public:
    {
    }
 
-   virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, X2ES>& hf, string family = "") = 0;
+   virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
 
-   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, X2ES>& hf, string family = "")
+   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
       return build(scanner, hf, family);
    }
@@ -148,7 +148,7 @@ public:
 
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 //template<XSolution S, XEvaluation XEv = Evaluation<>>
-template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
 class SingleObjSearchAction : public Action<S, XEv, X2ES>
 {
 public:
@@ -176,7 +176,7 @@ public:
       return (action == "search");
    }
 
-   virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<S, XEv, X2ES>& hf, map<string, string>& d)
+   virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<S, XEv, XES, X2ES>& hf, map<string, string>& d)
    {
       if (!handleComponent(type)) {
          cout << "SingleObjSearchAction::doCast error: can't handle component type '" << type << " " << id << "'" << endl;
@@ -213,7 +213,7 @@ public:
       return ComponentAction<S, XEv>::addAndRegister(scanner, *final, hf, d);
    }
 
-   virtual bool doAction(string content, HeuristicFactory<S, XEv, X2ES>& hf, map<string, string>& dictionary, map<string, vector<string>>& ldictionary)
+   virtual bool doAction(string content, HeuristicFactory<S, XEv, XES, X2ES>& hf, map<string, string>& dictionary, map<string, vector<string>>& ldictionary)
    {
       //cout << "LocalSearch::doAction '" << content << "'" << endl;
 

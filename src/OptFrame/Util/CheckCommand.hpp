@@ -1087,7 +1087,7 @@ public:
 	}
 
 	template<class T>
-	vector<T*> assignVector(const vector<string> lComponents, T* type, HeuristicFactory<S, XEv, X2ES>& factory)
+	vector<T*> assignVector(const vector<string> lComponents, T* type, HeuristicFactory<S, XEv, XES, X2ES>& factory)
 	{
 		vector<T*> vComp;
 		for (unsigned i = 0; i < lComponents.size(); i++)

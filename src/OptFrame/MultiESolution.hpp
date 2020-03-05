@@ -31,7 +31,7 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class MultiESolution: public Component
 {
 protected:
@@ -61,9 +61,9 @@ public:
 	}
 
    // todo: implement
-   pair<uptr<S>,uptr<XEv>> getP(size_t i)
+   XES& getP(size_t i)
    {
-      return make_pair(uptr<S>(),uptr<XEv>());
+      //return make_pair(uptr<S>(),uptr<XEv>());
    }
 
 	S& at(unsigned c)
@@ -192,7 +192,8 @@ public:
 };
 
 // basic compilation test (TODO: improve)
-static_assert(X2ESolution<MultiESolution<IsSolution<double>,IsEvaluation<int>>, IsSolution<double>, IsEvaluation<int>>); 
+//static_assert(X2ESolution<MultiESolution<IsESolution<double>>, IsSolution<double>, IsEvaluation<int>, IsESolution<double>>); 
+static_assert(X2ESolution<MultiESolution<IsSolution<double>, IsEvaluation<int>, IsESolution<double>>, IsESolution<double>>); 
 
 } // namespace optframe
 

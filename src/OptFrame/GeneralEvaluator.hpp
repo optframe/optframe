@@ -44,7 +44,8 @@ namespace optframe {
 // This will have no 'weights', as it doesn't make sense for most cases...
 // A special WeightedEvaluator is more welcome than putting it on a General one
 
-template<XSolution S, XEvaluation XEv, XSearch<S, XEv> XSH>
+//template<XSolution S, XEvaluation XEv, XSearch<S, XEv> XSH>
+template<XSolution S, XEvaluation XEv, XESolution XES, XSearch<XES> XSH = XES> // defaults to single obj.
 class GeneralEvaluator
 {
 // could contain Direction here, or MultiDirection... but both should be abolished I guess.

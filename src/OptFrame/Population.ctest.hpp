@@ -11,7 +11,7 @@ namespace optframe
 
 struct optframe_test_debug_testpareto_ispopulation_disable_runtime
 {
-TestPopOrPareto<Solution<double>, Evaluation<int>, Population<Solution<double>,Evaluation<int>> > testPop;
+TestPopOrPareto<ESolution<double>, Population<Solution<double>,Evaluation<int>, ESolution<double>> > testPop;
 };
 
 

@@ -316,7 +316,7 @@ public:
 }
 ;
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
 class BasicGeneticAlgorithmBuilder: public EA, public SingleObjSearchBuilder<S, XEv, X2ES>
 {
 public:

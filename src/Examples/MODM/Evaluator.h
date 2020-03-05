@@ -24,7 +24,7 @@
 namespace MODM
 {
 
-class MODMEvaluator: public Evaluator<SolutionMODM>
+class MODMEvaluator: public Evaluator<SolutionMODM, EvaluationMODM, ESolutionMODM>
 {
 private:
 	ProblemInstance& pMODM;

@@ -132,12 +132,12 @@ namespace optframe
 
 //template<XSolution S, XEvaluation XEv = Evaluation<>>
 // template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-template<XRepresentation R, class ADS, XBaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+template<XRepresentation R, class ADS, XBaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
 class Loader
 {
 public:
 
-	HeuristicFactory<S, XEv, X2ES> factory;
+	HeuristicFactory<S, XEv, XES, X2ES> factory;
 	map<string, string> dictionary;
 	map<string, vector<string> > ldictionary;
 
@@ -148,7 +148,7 @@ public:
 	}
 
 	Loader(RandGen _rg) :
-		factory(HeuristicFactory<S, XEv, X2ES> (_rg))
+		factory(HeuristicFactory<S, XEv, XES, X2ES> (_rg))
 	{
 		loadComponentBuilders();
 	}

@@ -218,7 +218,7 @@ protected:
 
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
 class MultiEvaluatorAction: public Action<S, XEv, X2ES>
 {
 public:
@@ -247,7 +247,7 @@ public:
 		return (action == "evaluate"); //|| (action == "betterThan") || (action == "betterOrEquals");
 	}
 
-	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<S, XEv, X2ES>& hf, map<string, string>& d)
+	virtual bool doCast(string component, int id, string type, string variable, HeuristicFactory<S, XEv, XES, X2ES>& hf, map<string, string>& d)
 	{
 		cout << "MultiEvaluator::doCast: NOT IMPLEMENTED!" << endl;
 		return false;
@@ -293,7 +293,7 @@ public:
 		return ComponentAction<S, XEv>::addAndRegister(scanner, *final, hf, d);
 	}
 
-	virtual bool doAction(string content, HeuristicFactory<S, XEv, X2ES>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
+	virtual bool doAction(string content, HeuristicFactory<S, XEv, XES, X2ES>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
 		cout << "MultiEvaluator::doAction: NOT IMPLEMENTED!" << endl;
 		return false;

@@ -30,7 +30,7 @@ using namespace std;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
 class NSSeq: public NS<S, XEv, XSH>
 {
 public:

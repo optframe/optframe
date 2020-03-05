@@ -64,7 +64,7 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
 class NSIterator: public Component
 {
 public:

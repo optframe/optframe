@@ -48,7 +48,8 @@ namespace optframe {
 // This is also useful when solution is composed by smaller "parts",
 // and each part operates with independent moves (thus a fraction of real "solution space").
 // Efficient components (like Move) should use 'XR' instead of 'XSolution' (and equivalents).
-template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
+//template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv> >
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
 // template<XRepresentation XR, XEvaluation XEv = Evaluation<>>
 class Move : public Component
 {

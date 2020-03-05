@@ -183,7 +183,7 @@ void fprint()
 // =========================================================
 
 // test class for X2ES (MultiESolution Space 2^S)
-template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
+template<XESolution XES, X2ESolution<XES> X2ES>
 class TestPopOrPareto
 {
 public:
@@ -193,34 +193,34 @@ public:
 // ----------------
 
 // example of a Population element
-template <XSolution S, XEvaluation XEv>
+template <XESolution XES>
 struct IsPopulation
 {
    size_t size(); // required
-   pair<uptr<S>,uptr<XEv>> getP(size_t i); // required
+   XES& getP(size_t i); // required
 };
 
 // compilation test
-static_assert(X2ESolution<IsPopulation<IsSolution<double>,IsEvaluation<int>>, IsSolution<double>, IsEvaluation<int>>);  //TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
+static_assert(X2ESolution<IsPopulation<IsESolution<double>>, IsESolution<double>>);  //TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
 
 // ---------
 
 // example of a Pareto element
-template <XSolution S, XEvaluation XEv>
+template <XESolution XES>
 struct IsPareto
 {
-    size_t size(); // required
-   pair<uptr<S>,uptr<XEv>> getP(size_t i);
+   size_t size(); // required
+   XES& getP(size_t i); // required
 };
 
 // compilation test
-static_assert(X2ESolution<IsPareto<IsSolution<double>,IsEvaluation<int>>, IsSolution<double>, IsEvaluation<int>>);  //TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
+static_assert(X2ESolution<IsPareto<IsESolution<double>>, IsESolution<double>>);  //TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
 
 // perform instantiation tests
 struct optframe_test_debug_testpareto_ispop_ispareto_disable_runtime
 {
-TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
-TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPareto<IsSolution<double>,IsEvaluation<int>> > testLocal2;
+TestPopOrPareto<IsESolution<double>, IsPopulation<IsESolution<double>> > testLocal1;
+TestPopOrPareto<IsESolution<double>, IsPareto<IsESolution<double>> > testLocal2;
 };
 
 

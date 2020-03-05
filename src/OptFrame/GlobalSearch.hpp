@@ -38,7 +38,7 @@ using namespace std;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv, XSearch<S, XEv> XSH, XSearchMethod XM = Component>
+template<XSolution S, XEvaluation XEv, XESolution XES, XSearch<XES> XSH, XSearchMethod XM = Component>
 class GlobalSearch: public Component
 {
 public:
@@ -77,7 +77,7 @@ public:
 
 };
 
-template<XSolution S, XEvaluation XEv, XSearch<S, XEv> XSH>
+template<XSolution S, XEvaluation XEv, XESolution XES, XSearch<XES> XSH>
 class GlobalSearchBuilder: public ComponentBuilder<S, XEv, XSH>
 {
 public:
@@ -85,9 +85,9 @@ public:
 	{
 	}
 
-	virtual GlobalSearch<S, XEv, XSH>* build(Scanner& scanner, HeuristicFactory<S, XEv, XSH>& hf, string family = "") = 0;
+	virtual GlobalSearch<S, XEv, XES, XSH>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, XSH>& hf, string family = "") = 0;
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XSH>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, XSH>& hf, string family = "")
 	{
 		return build(scanner, hf, family);
 	}

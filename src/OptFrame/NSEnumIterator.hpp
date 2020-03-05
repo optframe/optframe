@@ -29,9 +29,9 @@ namespace optframe
 {
 
 
-template<XSolution S, XEvaluation XEv, XSearch<S, XEv> XSH> class NSEnum;
+template<XSolution S, XEvaluation XEv, XESolution XSH> class NSEnum;
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
 class NSEnumIterator: public NSIterator<S, XEv, XSH>
 {
 private:

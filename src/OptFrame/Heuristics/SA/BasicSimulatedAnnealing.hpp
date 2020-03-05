@@ -30,7 +30,7 @@ namespace optframe
 {
 
 // forward declaration
-template<XSolution S, XEvaluation XEv, XSearch<S, XEv> XSH, XSearchMethod XM>
+template<XSolution S, XEvaluation XEv, XESolution XES, XSearchMethod XM>
 class BasicSimulatedAnnealing;
 
 
@@ -38,7 +38,7 @@ class BasicSimulatedAnnealing;
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
 //class BasicSimulatedAnnealing: public SingleObjSearch<S, XEv, XSH, XM, XStop>
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = Component>
-template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = BasicSimulatedAnnealing<S, XEv, XSH, Component>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>, XSearchMethod XM = BasicSimulatedAnnealing<S, XEv, XSH, Component>>
 class BasicSimulatedAnnealing: public SingleObjSearch<S, XEv, XSH, XM>
 {
 private:
@@ -239,7 +239,7 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
 class BasicSimulatedAnnealingBuilder: public SA, public SingleObjSearchBuilder<S, XEv, X2ES>
 {
    //using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
@@ -249,7 +249,7 @@ public:
 	{
 	}
 
-	virtual SingleObjSearch<S, XEv, pair<S, XEv>, XM>* build(Scanner& scanner, HeuristicFactory<S, XEv, X2ES>& hf, string family = "")
+	virtual SingleObjSearch<S, XEv, pair<S, XEv>, XM>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		Evaluator<S, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!

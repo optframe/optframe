@@ -83,9 +83,9 @@ public:
 // This MultiObjSearch perspective inherits from Multi Solution Search, 
 // considering a X2ES space with Pareto structure
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 //template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
-class MultiObjSearch: public GlobalSearch<S, XEv, Pareto<S, XEv>> // public Component
+class MultiObjSearch: public GlobalSearch<S, XEv, XES, Pareto<S, XEv, XES>> // public Component
 {
 public:
 
@@ -124,7 +124,7 @@ public:
 
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
 class MultiObjSearchBuilder: public ComponentBuilder<S, XEv, X2ES>
 {
 public:
@@ -132,9 +132,9 @@ public:
 	{
 	}
 
-	virtual MultiObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, X2ES>& hf, string family = "") = 0;
+	virtual MultiObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, X2ES>& hf, string family = "")
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		return build(scanner, hf, family);
 	}

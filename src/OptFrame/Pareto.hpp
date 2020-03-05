@@ -44,7 +44,7 @@ using namespace std;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class Pareto
 {
 private:
@@ -148,9 +148,9 @@ public:
 		return make_pair(*paretoSet.at(index), paretoFront.at(index));
 	}
 
-	pair<uptr<S>, uptr<XEv>> getP(unsigned index)
+	XES& getP(unsigned index)
 	{
-		return make_pair(uptr<S>(), uptr<XEv>());
+		//return make_pair(uptr<S>(), uptr<XEv>());
 	}
 
 
@@ -549,6 +549,9 @@ public:
 };
 
 } // namespace optframe
+
+// compilation tests
+static_assert(X2ESolution<Pareto<Solution<double>,Evaluation<int>,ESolution<double>>, ESolution<double>>);
 
 // compilation tests for concepts (these are NOT unit tests)
 #include "Pareto.ctest.hpp"

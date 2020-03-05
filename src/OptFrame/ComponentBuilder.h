@@ -34,11 +34,11 @@ using namespace scannerpp;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES> class HeuristicFactory;
+template<XSolution S, XEvaluation XEv, XESolution XES, X2ESolution<XES> X2ES> class HeuristicFactory;
 
 
 // TODO: maybe use CRTP pattern! (at least from LocalSearch and SingleObjSearch)
-template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
 class ComponentBuilder : public Component
 {
 public:
@@ -46,7 +46,7 @@ public:
 	{
 	}
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, X2ES>& hf, string family = "") = 0;
+	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
 
 	virtual vector<pair<string, string> > parameters() = 0;
 

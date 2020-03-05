@@ -155,7 +155,7 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, X2ESolution<S, XEv> X2ES = MultiESolution<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
 class IteratedLocalSearchLevelsBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, X2ES>
 {
 public:
@@ -163,7 +163,7 @@ public:
 	{
 	}
 
-	virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, X2ES>& hf, string family = "")
+	virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		Evaluator<S, XEv>* eval = nullptr;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!

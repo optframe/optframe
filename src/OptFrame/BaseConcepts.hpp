@@ -226,11 +226,14 @@ concept bool X2Solution = XPowerSet<Self, S>; // Too bad, this is unused on OptF
 // ---
 // We will usually assume a X2ESolution type, since it carries solution sample and evaluation space together
 // It is in fact: s \subseteq 2^S  plus its own evaluation (for each solution)... 
-template <class Self, XSolution S, XEvaluation XEv> // unused S and XEv! (could be replaced directly by XSolution and XEvaluation down here...)
+//template <class Self, XSolution S, XEvaluation XEv> // unused S and XEv! (could be replaced directly by XSolution and XEvaluation down here...)
+template <class Self, XESolution XES> // unused S and XEv! (could be replaced directly by XSolution and XEvaluation down here...)
  //concept bool X2ESolution = X2Solution<Self, S>; 
 //concept bool X2ESolution = XPowerSet<Self, S> && XPowerSet<Self, XEv>;
-concept bool X2ESolution = XPowerSet<Self, pair<uptr<S>, uptr<XEv>>>;
-// TODO: require any container with operator*, instead of hardcoded 'uptr'.... let's move on!
+concept bool X2ESolution = XPowerSet<Self, XES>;
+
+// TODO1: should make exponential over a XESolution... not separated sets!!
+// TODO2: require any container with operator*, instead of hardcoded 'uptr'.... let's move on!
 
 //concept bool X2ESolution = XPowerSet<Self, XSolution> && XPowerSet<Self, XEvaluation>; // TODO: may also include pair here, instead of 'merge'...
 //concept bool X2ESolution = XPowerSet<Self, XSolution<Self>> && XPowerSet<Self, XEv>; // TODO: may also include pair here, instead of 'merge'...
@@ -253,9 +256,11 @@ concept bool X2ESPopulation = X2ESolution<Self, S, XEv>; // TODO: require 'fitne
 //   evaluation criteria to guide search on these structures,
 //   being them single or multi objective.
 
-//template <class Self>
-template <class Self, XSolution S, XEvaluation XEv> // TODO: should remove S and XEv, by changing X2ESolution concept...
-concept bool XSearch = XESolution<Self> || X2ESolution<Self, S, XEv>; 
+
+//template <class Self, XSolution S, XEvaluation XEv> // TODO: should remove S and XEv, by changing X2ESolution concept...
+//concept bool XSearch = XESolution<Self> || X2ESolution<Self, S, XEv>; 
+template <class Self, XESolution XES> // TODO: should remove S and XEv, by changing X2ESolution concept...
+concept bool XSearch = XESolution<Self> || X2ESolution<Self, XES>; 
 
 // -------------
 // Maybe make evaluation values total_ordered...

@@ -58,11 +58,11 @@ namespace optframe {
  */
 
 // TODO: use XEv here
-template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = pair<S, XEv>>
+//template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = pair<S, XEv>>
 //template<XSolution S, XEvaluation XEv> // require explicitly XEv here...
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = pair<S, XEv>>
 class Evaluator : public Direction, public GeneralEvaluator<S, XEv, XSH>
 {
-
 protected:
    bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
    evtype weight;   // defaults to 1
