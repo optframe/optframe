@@ -115,7 +115,7 @@ public:
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 //template<XSolution S, XEvaluation XEv = Evaluation<>>
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
-class SingleObjSearchBuilder : public ComponentBuilder<S, XEv, X2ES>
+class SingleObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
 {
 public:
    virtual ~SingleObjSearchBuilder()
@@ -136,7 +136,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << ComponentBuilder<S, XEv, X2ES>::idComponent() << "SingleObjSearch";
+      ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "SingleObjSearch";
       return ss.str();
    }
 

@@ -151,6 +151,8 @@ public:
 	XES& getP(unsigned index)
 	{
 		//return make_pair(uptr<S>(), uptr<XEv>());
+      XES* p;
+      return *p;
 	}
 
 

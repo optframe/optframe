@@ -289,7 +289,7 @@ public:
 };
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>, XSearch<XES> XSH = std::pair<S, XEv>>
-class BasicTabuSearchBuilder: public TS, public SingleObjSearchBuilder<S, XEv, X2ES>
+class BasicTabuSearchBuilder: public TS, public SingleObjSearchBuilder<S, XEv, XES>
 {
 public:
 	virtual ~BasicTabuSearchBuilder()

@@ -98,7 +98,7 @@ public:
 };
 
 template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
-class MSSearchBuilder: public ComponentBuilder<S, XEv, X2ES>
+class MSSearchBuilder: public ComponentBuilder<S, XEv, XES, X2ES>
 {
 public:
 	virtual ~MSSearchBuilder()
@@ -119,7 +119,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<S, XEv, X2ES>::idComponent() << "MSSearch:";
+		ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "MSSearch:";
 		return ss.str();
 	}
 

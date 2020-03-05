@@ -64,6 +64,8 @@ public:
    XES& getP(size_t i)
    {
       //return make_pair(uptr<S>(),uptr<XEv>());
+      XES* p;
+      return *p;
    }
 
 	S& at(unsigned c)

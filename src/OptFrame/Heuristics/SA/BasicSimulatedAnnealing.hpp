@@ -240,7 +240,7 @@ public:
 };
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
-class BasicSimulatedAnnealingBuilder: public SA, public SingleObjSearchBuilder<S, XEv, X2ES>
+class BasicSimulatedAnnealingBuilder: public SA, public SingleObjSearchBuilder<S, XEv, XES>
 {
    //using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
    using XM = Component; // only general builds here

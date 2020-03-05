@@ -125,7 +125,7 @@ public:
 
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
-class LocalSearchBuilder : public ComponentBuilder<S, XEv, X2ES>
+class LocalSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
 {
 public:
 	virtual ~LocalSearchBuilder()
@@ -146,7 +146,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<S, XEv, X2ES>::idComponent() << "LocalSearch";
+		ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "LocalSearch";
 		return ss.str();
 	}
 

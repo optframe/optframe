@@ -102,14 +102,14 @@ public:
 };
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
-class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<S, XEv, X2ES>
+class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<S, XEv, XES>
 {
 public:
    virtual ~SimpleLocalSearchBuilder()
    {
    }
 
-   virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") override
+   virtual SingleObjSearch<S, XEv, XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") override
    {
       Evaluator<S, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!

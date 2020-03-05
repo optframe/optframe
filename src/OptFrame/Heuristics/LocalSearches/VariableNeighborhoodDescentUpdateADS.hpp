@@ -141,7 +141,7 @@ public:
 //template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 // passing 'S' manually, for safety
 template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
-class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<S, XEv, X2ES>
+class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES>
 {
 public:
    virtual ~VariableNeighborhoodDescentUpdateADSBuilder()

@@ -84,6 +84,8 @@ public:
 	XES& getP(unsigned index)
 	{
 		//return make_pair(uptr<S>(), uptr<XEv>());
+      XES* p;
+      return *p;
 	}
 
 
@@ -292,7 +294,7 @@ public:
 } // namespace optframe
 
 // compilation tests
-static_assert(X2ESolution<Population<Solution<double>,Evaluation<double>,ESolution<double>>, ESolution<double>>);
+static_assert(X2ESolution<Population<Solution<double>,Evaluation<double>>, pair<Solution<double>, Evaluation<double>>>);
 
 // population compilation tests (these are NOT unit tests)
 #include "Population.ctest.hpp"

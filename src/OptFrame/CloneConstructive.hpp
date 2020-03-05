@@ -72,7 +72,7 @@ public:
 };
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
-class CloneConstructiveBuilder : public ComponentBuilder<S, XEv, X2ES>
+class CloneConstructiveBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
 {
 public:
    virtual ~CloneConstructiveBuilder()
@@ -103,7 +103,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << ComponentBuilder<S, XEv, X2ES>::idComponent() << "CloneConstructive";
+      ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "CloneConstructive";
       return ss.str();
    }
 

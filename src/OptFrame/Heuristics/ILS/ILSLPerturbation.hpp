@@ -241,7 +241,7 @@ public:
 };
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
-class ILSLPerturbationLPlus2Builder: public ComponentBuilder<S, XEv, X2ES>
+class ILSLPerturbationLPlus2Builder: public ComponentBuilder<S, XEv, XES, X2ES>
 {
 public:
 	virtual ~ILSLPerturbationLPlus2Builder()
@@ -276,7 +276,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<S, XEv, X2ES>::idComponent() << ILS::family() << "LevelPert:LPlus2";
+		ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << ILS::family() << "LevelPert:LPlus2";
 		return ss.str();
 	}
 
@@ -287,7 +287,7 @@ public:
 };
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
-class ILSLPerturbationLPlus2ProbBuilder: public ComponentBuilder<S, XEv, X2ES>
+class ILSLPerturbationLPlus2ProbBuilder: public ComponentBuilder<S, XEv, XES, X2ES>
 {
 public:
 	virtual ~ILSLPerturbationLPlus2ProbBuilder()
@@ -322,7 +322,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<S, XEv, X2ES>::idComponent() << ILS::family() << "LevelPert:LPlus2Prob";
+		ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << ILS::family() << "LevelPert:LPlus2Prob";
 		return ss.str();
 	}
 

@@ -147,7 +147,8 @@ public:
       estimated = false;
    }   
 
-   explicit Evaluation(const Evaluation<ObjType>& e)
+   // never put 'explicit' here!!
+   Evaluation(const Evaluation<ObjType>& e)
      : objFunction(e.objFunction)
      , infMeasure(e.infMeasure)
      //, alternatives(e.alternatives)
@@ -170,6 +171,24 @@ public:
    {
       if (&e == this) // auto ref check
          return *this;
+
+      objFunction = e.objFunction;
+      infMeasure = e.infMeasure;
+      outdated = e.outdated;
+      estimated = e.estimated;
+      //alternatives = e.alternatives;
+      //gos = e.gos;
+      isMini = e.isMini;
+
+      return *this;
+   }
+
+   virtual Evaluation<ObjType>& operator=(const Evaluation<ObjType>&& e)
+   {
+      if (&e == this) // auto ref check
+         return *this;
+
+      // TODO: steal from 'e'
 
       objFunction = e.objFunction;
       infMeasure = e.infMeasure;
@@ -715,6 +734,16 @@ public:
 };
 
 } // namespace optframe
+
+
+struct basic_ev_test_copy
+{
+   void f()
+   {
+      Evaluation<> e1;
+      Evaluation<> e2 = e1; // test 'explicit'
+   }
+};
 
 // Compilation tests for XEvaluation concepts
 // These are NOT unit tests... Unit Tests are on tests/ folder

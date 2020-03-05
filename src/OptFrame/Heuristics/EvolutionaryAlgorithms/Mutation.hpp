@@ -118,7 +118,7 @@ public:
 };
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
-class BasicMutationBuilder: public ComponentBuilder<S, XEv, X2ES>
+class BasicMutationBuilder: public ComponentBuilder<S, XEv, XES, X2ES>
 {
 public:
 	virtual ~BasicMutationBuilder()
@@ -154,7 +154,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<S, XEv, X2ES>::idComponent() << "" << EA::family() << ":BasicMutation";
+		ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "" << EA::family() << ":BasicMutation";
 		return ss.str();
 	}
 

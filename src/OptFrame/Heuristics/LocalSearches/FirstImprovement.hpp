@@ -207,7 +207,7 @@ public:
 
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>, XSearch<XES> XSH = std::pair<S, XEv>>
-class FirstImprovementBuilder : public LocalSearchBuilder<S, XEv, X2ES>
+class FirstImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES>
 {
 public:
 	virtual ~FirstImprovementBuilder()

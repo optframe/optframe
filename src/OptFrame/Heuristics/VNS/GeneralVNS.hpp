@@ -70,7 +70,7 @@ public:
 
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
-class GeneralVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, X2ES>
+class GeneralVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, XES>
 {
 public:
 	virtual ~GeneralVNSBuilder()

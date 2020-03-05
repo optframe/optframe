@@ -194,7 +194,7 @@ public:
 };
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
-class LateAcceptanceHillClimbingBuilder: public LocalSearchBuilder<S, XEv, X2ES>
+class LateAcceptanceHillClimbingBuilder: public LocalSearchBuilder<S, XEv, XES, X2ES>
 {
 public:
 	virtual ~LateAcceptanceHillClimbingBuilder()

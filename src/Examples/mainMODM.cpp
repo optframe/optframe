@@ -7,6 +7,8 @@
 #include <math.h>
 #include <iostream>
 
+#include "../OptFrame/Solutions/ESolution.hpp" // TODO: remove.. just to enforce compilation errors.
+#include "../OptFrame/Evaluator.hpp"
 #include "../OptFrame/Loader.hpp"
 #include "MODM/Evaluator.cpp"
 //#include "../OptFrame/Heuristics/VNS/MOVNSLevels.hpp"
