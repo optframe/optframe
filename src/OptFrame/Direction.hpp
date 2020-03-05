@@ -133,10 +133,14 @@ public:
 	}
 	*/
 
+
+// abolishing MoveCost
+/*
 	inline bool betterOrEquals(const MoveCost<>& mc1, const MoveCost<>& mc2)
 	{
 		return betterThan(mc1, mc2) || equals(mc1, mc2);
 	}
+*/
 
 	inline bool betterOrEquals(const Evaluation<>& e1, const Evaluation<>& e2)
 	{
@@ -153,6 +157,7 @@ public:
 	// ============ equals ============
 
 protected:
+/*
 	virtual inline bool equals(const evtype& t1, const evtype& t2, const vector<pair<evtype, evtype> >& altCosts1, const vector<pair<evtype, evtype> >& altCosts2)
 	{
       if(optframe::numeric_is_zero<evtype>(t1 - t2))
@@ -170,17 +175,43 @@ protected:
 
 		return true;
 	}
+*/   
+
+virtual inline bool equals(const evtype& t1, const evtype& t2)
+	{
+      if(optframe::numeric_is_zero<evtype>(t1 - t2))
+		//if(EVALUATION_ABS(t1 - t2) <= optframe::get_numeric_zero<evtype>()) // deprecated
+			return true;
+
+		if(t1 != t2)
+			return false;
+
+		//assert(altCosts1.size() == altCosts2.size());
+
+		//for(unsigned i = 0; i < altCosts1.size(); i++)
+		//	if((altCosts1[i].first + altCosts1[i].second) != (altCosts2[i].first + altCosts2[i].second))
+		//		return false;
+
+		return true;
+	}
 
 public:
+
+// Abolishing MoveCost
+/*
 	virtual inline bool equals(const MoveCost<>& mc1, const MoveCost<>& mc2)
 	{
 		return equals(mc1.cost(), mc2.cost(), mc1.getAlternativeCosts(), mc2.getAlternativeCosts());
 	}
-
+*/
 	virtual inline bool equals(const Evaluation<>& e1, const Evaluation<>& e2)
 	{
-		return equals(e1.evaluation(), e2.evaluation(), e1.getAlternativeCosts(), e2.getAlternativeCosts());
+		//return equals(e1.evaluation(), e2.evaluation(), e1.getAlternativeCosts(), e2.getAlternativeCosts());
+      return equals(e1.evaluation(), e2.evaluation());
 	}
+
+
+
 
 	/*
 	virtual inline bool equals(evtype a, evtype b)

@@ -42,6 +42,9 @@ struct IsSolution
    }
 };
 
+// basic test
+static_assert(XSolution<IsSolution<int, nullptr_t>>);
+
 template <class T>
 struct IsEvaluation
 { 
@@ -76,6 +79,10 @@ struct IsEvaluation
    }
 };
 
+// basic test
+static_assert(XSolution<IsEvaluation<int>>);
+
+
 template <class T>
 struct IsESolution
 {
@@ -99,6 +106,10 @@ struct IsESolution
       return os;
    }
 };
+
+// basic test
+static_assert(XESolution<IsESolution<int>>);
+
 
 // =======================================
 
@@ -134,9 +145,18 @@ class TestXESol
 public:
 };
 
+// compile tests 
+static_assert(XBaseSolution<IsSolution<double>, double>); //TestBaseSol<IsSolution<double>> test;
+static_assert(XSolution<IsSolution<double>>); // TestXSol<IsSolution<double>> testXsol;
+static_assert(XRSolution<IsSolution<double>, double>);  //TestXRSolution<double, IsSolution<double>> testxrs;
+static_assert(XEvaluation<IsEvaluation<short>>); // TestEv<IsEvaluation<short>> testev;
+// XESolution tests
+static_assert(XESolution<IsESolution<double>>); // TestXESol<IsESolution<double>> testXesol;
+
 
 struct optframe_test_debug_testsol_issolution_disable_runtime
 {
+   /*
 // test if following structure is valid
 TestBaseSol<IsSolution<double>> test;
 TestXSol<IsSolution<double>> testXsol;
@@ -144,6 +164,7 @@ TestXRSolution<double, IsSolution<double>> testxrs;
 TestEv<IsEvaluation<short>> testev;
 // XESolution tests
 TestXESol<IsESolution<double>> testXesol;
+*/
 void fprint()
 {
    // testing pair printability
@@ -184,6 +205,9 @@ struct IsPareto
 {
    // nothing required here
 };
+
+// compile tests
+//static_assert(X2ESolution<IsPopulation<IsSolution<double>,IsEvaluation<int>>, IsSolution<double>, IsEvaluation<int>>);  //TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
 
 // perform instantiation tests
 struct optframe_test_debug_testpareto_ispop_ispareto_disable_runtime

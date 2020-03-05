@@ -85,26 +85,7 @@ protected:
    // infeasibility measure value (default = double)
    ObjType infMeasure;
    // for lexicographic approaches, use these extra evaluation values
-   vector<pair<ObjType, ObjType>> alternatives;
-
-   // ==== Objective Space auxiliary information ====
-   // LocalOptimum Status: mapping 'move.id()' to 'NeighborhoodStatus'
-   // map<string, bool> localStatus; // TODO: REMOVE!
-   // GlobalOptimumStatus (for exact methods only)
-   enum GOS
-   {
-      gos_yes,
-      gos_no,
-      gos_unknown
-   } gos;
-
-   // LocalOptimumStatus
-   enum LOS
-   {
-      los_yes,
-      los_no,
-      los_unknown
-   }; // do not declare here (keep in ADS or R)
+   //vector<pair<ObjType, ObjType>> alternatives;
 
 public:
    // boolean field to indicate if Evaluation needs an update
@@ -130,7 +111,7 @@ public:
 
       optframe::numeric_zero(objValZero);
 
-      gos = gos_unknown;
+      //gos = gos_unknown;
       outdated = false;
       estimated = false;
    }
@@ -146,7 +127,7 @@ public:
       //infMeasure = optframe::get_numeric_zero<ObjType>();
       optframe::numeric_zero(infMeasure);
 
-      gos = gos_unknown;
+      //gos = gos_unknown;
       outdated = false;
       estimated = false;
    }
@@ -161,7 +142,7 @@ public:
       optframe::numeric_zero(objFunction);
       optframe::numeric_zero(infMeasure);
 
-      gos = gos_unknown;
+      //gos = gos_unknown;
       outdated = false;
       estimated = false;
    }   
@@ -169,8 +150,8 @@ public:
    explicit Evaluation(const Evaluation<ObjType>& e)
      : objFunction(e.objFunction)
      , infMeasure(e.infMeasure)
-     , alternatives(e.alternatives)
-     , gos(e.gos)
+     //, alternatives(e.alternatives)
+     //, gos(e.gos)
      , outdated(e.outdated)
      , estimated(e.estimated)
      , isMini(e.isMini)
@@ -194,8 +175,8 @@ public:
       infMeasure = e.infMeasure;
       outdated = e.outdated;
       estimated = e.estimated;
-      alternatives = e.alternatives;
-      gos = e.gos;
+      //alternatives = e.alternatives;
+      //gos = e.gos;
       isMini = e.isMini;
 
       return *this;
@@ -219,12 +200,12 @@ public:
    {
       return infMeasure;
    }
-
+/*
    const vector<pair<ObjType, ObjType>>& getAlternativeCosts() const
    {
       return alternatives;
    }
-
+*/
    void setObjFunction(ObjType obj)
    {
       objFunction = obj;
@@ -234,7 +215,7 @@ public:
    {
       infMeasure = inf;
    }
-
+/*
    void addAlternativeCost(const pair<ObjType, ObjType>& alternativeCost)
    {
       alternatives.push_back(alternativeCost);
@@ -244,6 +225,7 @@ public:
    {
       alternatives = alternativeCosts;
    }
+*/
 
    // -----------------
    // for local optimum
@@ -265,7 +247,7 @@ public:
    // ------------------
    // for global optimum
    // ------------------
-
+/*
    GOS getGlobalOptimumStatus()
    {
       return gos;
@@ -275,6 +257,7 @@ public:
    {
       gos = status;
    }
+*/
 
    ObjType evaluation() const
    {
@@ -394,11 +377,13 @@ public:
       ss << (isFeasible() ? " " : " (not feasible) ");
       ss << (outdated ? " OUTDATED " : " ");
       ss << (estimated ? " ESTIMATED " : " ");
+      /*
       if (alternatives.size() > 0) {
          ss << " alternative costs: ";
          for (unsigned i = 0; i < alternatives.size(); i++)
             ss << "(" << alternatives[i].first << ";" << alternatives[i].second << ") ";
       }
+      */
       // ss << endl;
 
       return ss.str();

@@ -156,6 +156,7 @@ public:
          // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
          assert(m.hasReverse());
 
+         S& s = se.first;
          XEv& e = se.second;
 
          XEv ev_begin(e); // copy
@@ -164,6 +165,10 @@ public:
          //			bool outdated = e.outdated;
          // apply move to both XEv and Solution
          uptr<Move<S, XEv>> rev = this->applyMoveReevaluate(m, se);
+
+         XEv e_end(se.second);
+
+/*
          // get final values
          pair<evtype, evtype> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
          // get final values for lexicographic part
@@ -172,7 +177,7 @@ public:
             alternatives[i].first = e.getAlternativeCosts()[i].first;
             alternatives[i].second = e.getAlternativeCosts()[i].second;
          }
-
+*/
          // apply reverse move in order to get the original solution back
          //TODO - Why do not save ev at the begin? Extra evaluation
          //Even when reevaluate is implemented, It would be hard to design a strategy that is faster than copying previous evaluation//==================================================================
@@ -182,17 +187,23 @@ public:
          //			if (!outdated)
          //				e.outdated = outdated;
 
-         S& s = se.first;
+         
 
          uptr<Move<S, XEv>> ini = rev->apply(s);
+
+
+         XEv mcost = ev_begin.diff(e_end);
+
+         // TODO: why?
          // for now, must be not nullptr
          assert(ini != nullptr);
          // TODO: include management for 'false' hasReverse()
          assert(rev->hasReverse() && ini);
 
+         // recover original evaluation
          e = std::move(ev_begin);
          //==================================================================
-
+/*
          // get original values (also could be calculated in the begin of function)
          pair<evtype, evtype> e_ini = make_pair(e.getObjFunction(), e.getInfMeasure());
          // do the same for lexicographic part
@@ -200,6 +211,7 @@ public:
             alternatives[i].first -= e.getAlternativeCosts()[i].first;
             alternatives[i].second -= e.getAlternativeCosts()[i].second;
          }
+*/
          // destroy reverse move
          /////delete rev;
          // destroy initial move
@@ -213,12 +225,14 @@ public:
          
          //
          //p = new MoveCost<>(e_end.first - e_ini.first, e_end.second - e_ini.second);
-         p = make_optional(Evaluation<>(e_end.first - e_ini.first, e_end.second - e_ini.second));
-
+         
          // ... and set the lexicographic costs
          ////p->setAlternativeCosts(alternatives);
+
          // return a MoveCost object pointer
-         return p;
+         //p = make_optional(Evaluation<>(e_end.first - e_ini.first, e_end.second - e_ini.second));
+         //return p;
+         return make_optional(mcost);
       }
    }
 
@@ -242,16 +256,21 @@ public:
       evtype obj = rev.second.getObjFunction() - ini.second.getObjFunction();
       evtype inf = rev.second.getInfMeasure() - ini.second.getInfMeasure();
 
+      /*
       vector<pair<evtype, evtype>> alternatives(rev.second.getAlternativeCosts().size());
-
       for (unsigned i = 0; i < alternatives.size(); i++) {
          alternatives[i].first = rev.second.getAlternativeCosts()[i].first - ini.second.getAlternativeCosts()[i].first;
          alternatives[i].second = rev.second.getAlternativeCosts()[i].second - ini.second.getAlternativeCosts()[i].second;
       }
+      */
 
       ///MoveCost<>* p = new MoveCost<>(obj, inf);
       op<Evaluation<>> p = make_optional(Evaluation<>(obj, inf));
-      p->setAlternativeCosts(alternatives);
+
+      
+      //p->setAlternativeCosts(alternatives);
+
+
 
       //delete rev.first;
       //delete ini.first;
