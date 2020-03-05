@@ -30,12 +30,12 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
-class BestImprovement: public LocalSearch<S, XEv>
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
+class BestImprovement: public LocalSearch<XES, XEv>
 {
 private:
-	Evaluator<S, XEv, XSH>& eval;
-	NSSeq<S, XEv, XSH>& nsSeq;
+	Evaluator<XES, XEv>& eval;
+	NSSeq<XES, XEv, XSH>& nsSeq;
 
 	// logs
 	double sum_time;
@@ -43,7 +43,7 @@ private:
 
 public:
 
-	BestImprovement(Evaluator<S, XEv, XSH>& _eval, NSSeq<S, XEv, XSH>& _nsSeq) :
+	BestImprovement(Evaluator<XES, XEv>& _eval, NSSeq<XES, XEv, XSH>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 		sum_time = 0.0;
@@ -63,7 +63,7 @@ public:
 
 	virtual void searchFrom(XSH& se, const StopCriteria<XEv>& sosc) override
 	{
-      S& s = se.first;
+      XSolution& s = se.first;
       //XEv& e = se.second;
 
       //double timelimit = sosc.timelimit;
@@ -76,7 +76,7 @@ public:
 		Timer t;
 
 		// TODO: verify if it's not null
-		uptr<NSIterator<S, XEv, XSH>> it = nsSeq.getIterator(s);
+		uptr<NSIterator<XES, XEv, XSH>> it = nsSeq.getIterator(s);
 
       assert(it); // or return FAILED
 
@@ -88,7 +88,7 @@ public:
 			return; // OK
 		}
 
-		uptr<Move<S, XEv, XSH>> bestMove = it->current();
+		uptr<Move<XES, XEv, XSH>> bestMove = it->current();
 
 		/*if(e.getLocalOptimumStatus(bestMove->id()))
 		{
@@ -145,7 +145,7 @@ public:
 		//it.next();
 		while (!it->isDone())
 		{
-			uptr<Move<S, XEv>> move = it->current();
+			uptr<Move<XES, XEv>> move = it->current();
 			if (move->canBeApplied(s))
 			{
 				///MoveCost<>* cost = eval.moveCost(*move, se);
@@ -205,13 +205,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<S, XEv>::idComponent() << "BI";
+		ss << LocalSearch<XES, XEv>::idComponent() << "BI";
 		return ss.str();
 	}
 
@@ -254,7 +254,7 @@ public:
 	{
 		if(!scanner.hasNext())
 			return nullptr;
-		Evaluator<S, XEv>* eval;
+		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		if(!scanner.hasNext())
@@ -268,7 +268,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(NSSeq<S, XEv, XSH>::idComponent(), "neighborhood structure"));
 
 		return params;

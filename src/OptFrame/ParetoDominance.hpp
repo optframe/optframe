@@ -62,12 +62,12 @@ public:
 	{
 	}
 
-//	void insertEvaluators(vector<Evaluator<S, XEv>*> _v_e)
+//	void insertEvaluators(vector<Evaluator<XES, XEv>*> _v_e)
 //	{
 //		mev.addEvaluator(_v_e);
 //	}
 
-//	vector<Evaluator<S, XEv>*> getEvaluators()
+//	vector<Evaluator<XES, XEv>*> getEvaluators()
 //	{
 //		return v_e;
 //	}

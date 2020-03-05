@@ -64,7 +64,7 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
 class NSIterator: public Component
 {
 public:
@@ -74,13 +74,13 @@ public:
 
 	virtual void first() = 0;
 
-	virtual void firstValid(const S& s)
+	virtual void firstValid(const XES& s)
 	{
 		first();
 
 		while(!isDone())
 		{
-			uptr<Move<S, XEv>> m = current();
+			uptr<Move<XES, XEv>> m = current();
 
 			if(m && m->canBeApplied(s))
 				break;
@@ -91,13 +91,13 @@ public:
 
 	virtual void next() = 0;
 
-	virtual void nextValid(const S& s)
+	virtual void nextValid(const XES& s)
 	{
 		next();
 
 		while(!isDone())
 		{
-			uptr<Move<S, XEv>> m = current();
+			uptr<Move<XES, XEv>> m = current();
 
 			if(m && m->canBeApplied(s))
 				break;
@@ -107,10 +107,10 @@ public:
 	}
 
 	virtual bool isDone() = 0;
-	virtual uptr<Move<S, XEv>> current() = 0;
+	virtual uptr<Move<XES, XEv>> current() = 0;
 
     // INSERT LOCAL OPTIMUM INFORMATION IN SOLUTION (IN ADS? USER DECIDES.)
-    virtual void setLOS(LOS status, S& s)
+    virtual void setLOS(LOS status, XES& s)
     {
     }
 

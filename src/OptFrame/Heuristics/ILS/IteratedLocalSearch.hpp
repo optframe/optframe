@@ -34,16 +34,17 @@
 namespace optframe
 {
 
-template<class H, XSolution S, XEvaluation XEv = Evaluation<>>
-class IteratedLocalSearch: public ILS, public SingleObjSearch<S, XEv>
+template<class H, XESolution XES, XEvaluation XEv = Evaluation<>>
+class IteratedLocalSearch: public ILS, public SingleObjSearch<XES>
 {
 protected:
-	Evaluator<S, XEv>& evaluator;
-	Constructive<S>& constructive;
+	Evaluator<XES, XEv>& evaluator;
+	//Constructive<S>& constructive;
+   InitialSearch<XES>& constructive;
 
 public:
 
-	IteratedLocalSearch(Evaluator<S, XEv>& _evaluator, Constructive<S>& _constructive) :
+	IteratedLocalSearch(Evaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive) :
 			evaluator(_evaluator), constructive(_constructive)
 	{
 	}
@@ -54,14 +55,15 @@ public:
 
 	virtual H& initializeHistory() = 0;
 
-	virtual void localSearch(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) = 0;
+	virtual void localSearch(XES& se, const StopCriteria<XES>& stopCriteria) = 0;
 
-	virtual void perturbation(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria, H& history) = 0;
+	virtual void perturbation(XES& se, const StopCriteria<XES>& stopCriteria, H& history) = 0;
 
 	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, H& history) = 0;
 
 	virtual bool terminationCondition(H& history) = 0;
 
+   /*
    std::optional<pair<S, XEv>> genOPair(double timelimit)
    {
       std::optional<S> sStar = constructive.generateSolution(timelimit);
@@ -70,10 +72,11 @@ public:
 		XEv eStar = evaluator.evaluate(*sStar);
       return make_optional(make_pair(*sStar, eStar)); 
    }
+   */
 
 	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(std::optional<pair<S, XEv>>& star, const StopCriteria<XEv>& stopCriteria) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XES>& stopCriteria) override
 	{
 		cout << "ILS opt search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
@@ -81,7 +84,8 @@ public:
 
       //pair<S, XEv> star = input?*input:genPair(stopCriteria.timelimit);
       //pair<S, XEv> star = *( input ?: genOPair(stopCriteria.timelimit) );
-      star = star?:genOPair(stopCriteria.timelimit);
+      //star = star?:genOPair(stopCriteria.timelimit);
+      star = star?:constructive.initialSearch(stopCriteria);
       if(!star)
          return SearchStatus::NO_NEWSOL;
 		//S& sStar = star.first;
@@ -127,7 +131,7 @@ public:
 
 		do
 		{
-         pair<S, XEv> p1 = *star; // copy (how to automatically invoke clone?)
+         XES p1 = *star; // copy (how to automatically invoke clone?)
 			//S s1(sStar); // copy (should clone?)
 			//Evaluation<> e1(eStar); // copy (should clone?)
          
@@ -176,7 +180,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<S, XEv>::idComponent() << ":" << ILS::family();
+		ss << SingleObjSearch<XES>::idComponent() << ":" << ILS::family();
 		return ss.str();
 	}
 

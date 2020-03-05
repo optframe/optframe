@@ -43,11 +43,11 @@ private:
 	MultiEvaluator<S>& mEval;
 	int pMin;
 	int pMax;
-	vector<NS<S, XEv>*> ns;
+	vector<NS<XES, XEv>*> ns;
 	RandGen& rg;
 
 public:
-	BasicMOILSPerturbation(MultiEvaluator<S>& _mEval, int _pMin, int _pMax, vector<NS<S, XEv>*>& _ns, RandGen& _rg) :
+	BasicMOILSPerturbation(MultiEvaluator<S>& _mEval, int _pMin, int _pMax, vector<NS<XES, XEv>*>& _ns, RandGen& _rg) :
 		mEval(_mEval), pMin(_pMin), pMax(_pMax), ns(_ns), rg(_rg)
 	{
 		if(pMax < pMin)
@@ -62,7 +62,7 @@ public:
 			cout << "BasicMOILSPerturbation warning: empty neighborhood list." << endl;
 	}
 
-	BasicMOILSPerturbation(MultiEvaluator<S>& _mEval, int _pMin, int _pMax, NS<S, XEv>& _ns, RandGen& _rg) :
+	BasicMOILSPerturbation(MultiEvaluator<S>& _mEval, int _pMin, int _pMax, NS<XES, XEv>& _ns, RandGen& _rg) :
 		mEval(_mEval), pMin(_pMin), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -83,7 +83,7 @@ public:
 	{
 	}
 
-	void add_ns(NS<S, XEv>& _ns)
+	void add_ns(NS<XES, XEv>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
@@ -103,7 +103,7 @@ public:
 			}
 			else
 			{
-				Move<S, XEv>& m = *mp;
+				Move<XES, XEv>& m = *mp;
 				Component::safe_delete(m.applyMEVUpdate(mev, s));
 				delete &m;
 			}

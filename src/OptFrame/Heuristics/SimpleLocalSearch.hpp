@@ -33,15 +33,15 @@
 namespace optframe {
 
 template<XSolution S, XEvaluation XEv=Evaluation<>>
-class SimpleLocalSearch : public SingleObjSearch<S, XEv>
+class SimpleLocalSearch : public SingleObjSearch<XES>
 {
 protected:
-   Evaluator<S, XEv>& evaluator;
-   Constructive<S>& constructive;
+   Evaluator<XES, XEv>& evaluator;
+   InitialSearch<XES>& constructive;
    LocalSearch<S, XEv>& localSearch;
 
 public:
-   SimpleLocalSearch(Evaluator<S, XEv>& _evaluator, Constructive<S>& _constructive, LocalSearch<S, XEv>& _localSearch)
+   SimpleLocalSearch(Evaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, LocalSearch<S, XEv>& _localSearch)
      : evaluator(_evaluator)
      , constructive(_constructive)
      , localSearch(_localSearch)
@@ -76,13 +76,13 @@ public:
 
    virtual bool compatible(string s)
    {
-      return (s == idComponent()) || (SingleObjSearch<S, XEv>::compatible(s));
+      return (s == idComponent()) || (SingleObjSearch<XES>::compatible(s));
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << SingleObjSearch<S, XEv>::idComponent() << "SimpleLocalSearch";
+      ss << SingleObjSearch<XES>::idComponent() << "SimpleLocalSearch";
       return ss.str();
    }
 
@@ -111,7 +111,7 @@ public:
 
    virtual SingleObjSearch<S, XEv, XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") override
    {
-      Evaluator<S, XEv>* eval;
+      Evaluator<XES, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
       Constructive<S>* constructive;
@@ -132,16 +132,16 @@ public:
    virtual vector<pair<string, string>> parameters()
    {
       vector<pair<string, string>> params;
-      params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+      params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
       params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-      params.push_back(make_pair(LocalSearch<S, XEv>::idComponent(), "local search"));
+      params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
 
       return params;
    }
 
    virtual bool canBuild(string component)
    {
-      return component == SimpleLocalSearch<S, XEv>::idComponent();
+      return component == SimpleLocalSearch<XES, XEv>::idComponent();
    }
 
    static string idComponent()

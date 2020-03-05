@@ -365,7 +365,7 @@ public:
 //	static bool addSolution(ParetoDominance<S, XEv>& dom, ParetoDominanceWeak<S, XEv>& domWeak, pair<Pareto<S, XEv>, vector<vector<bool> > >& p, S* candidate, int neighboorsSize)
 //
 //	{
-//		vector<Evaluator<S, XEv>*> v_e = dom.getEvaluators();
+//		vector<Evaluator<XES, XEv>*> v_e = dom.getEvaluators();
 //		vector<Evaluation<>*> fitnessNewInd;
 //
 //		for (int evalIndex = 0; evalIndex < v_e.size(); evalIndex++)
@@ -441,7 +441,7 @@ public:
 
 //	static bool addSolution(ParetoDominance<S, XEv>& dom, ParetoDominanceWeak<S, XEv>& domWeak, Population<S, XEv>& p, S& s)
 //	{
-//		vector<Evaluator<S, XEv>*> v_e = dom.getEvaluators();
+//		vector<Evaluator<XES, XEv>*> v_e = dom.getEvaluators();
 //		vector<double> fitnessNewInd;
 //
 //		for (int evalIndex = 0; evalIndex < v_e.size(); evalIndex++)
@@ -482,7 +482,7 @@ public:
 	//Special addSolution used in the 2PPLS speedUp
 //	static bool addSolution(ParetoDominance<S, XEv>& dom, ParetoDominanceWeak<S, XEv>& domWeak, pair<Population<S, XEv>, vector<vector<bool> > >& p, S& s, int neighboorsSize)
 //	{
-//		vector<Evaluator<S, XEv>*> v_e = dom.getEvaluators();
+//		vector<Evaluator<XES, XEv>*> v_e = dom.getEvaluators();
 //		vector<double> fitnessNewInd;
 //
 //		for (int evalIndex = 0; evalIndex < v_e.size(); evalIndex++)

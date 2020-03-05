@@ -45,9 +45,13 @@ namespace optframe {
 // A special WeightedEvaluator is more welcome than putting it on a General one
 
 //template<XSolution S, XEvaluation XEv, XSearch<S, XEv> XSH>
-template<XSolution S, XEvaluation XEv, XESolution XES, XSearch<XES> XSH = XES> // defaults to single obj.
+//template<XSolution S, XEvaluation XEv, XESolution XES, XSearch<XES> XSH = XES> // defaults to single obj.
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES> // defaults to single obj.
+// BREAK TIME!! Only 'XES' shall pass!!
 class GeneralEvaluator
 {
+   //using S = decltype(declval<XES>.first); // error: insufficient contextual information to determine type
+   //
 // could contain Direction here, or MultiDirection... but both should be abolished I guess.
 // Where should betterThan decision take place? On Evaluator or on each Evaluation? 
 // Before, it was hard/impossible to do on Evaluation, due to overhead... but now, it may be the case.
@@ -70,11 +74,11 @@ public:
 
    // Apply movement considering a previous XEv => Faster (used on CheckCommand and locally)
    // Update XEv 'e'
-   //Move<S, XEv>* applyMoveReevaluate(XEv& e, Move<S, XEv>& m, S& s)
-   uptr<Move<S, XEv>> applyMoveReevaluate(Move<S, XEv>& m, XSH& se)
+   //Move<XES, XEv, XSH>* applyMoveReevaluate(XEv& e, Move<XES, XEv, XSH>& m, S& s)
+   uptr<Move<XES, XEv, XSH>> applyMoveReevaluate(Move<XES, XEv, XSH>& m, XSH& se)
    {
       // apply move and get reverse move
-      uptr<Move<S, XEv>> rev = m.applyUpdate(se);
+      uptr<Move<XES, XEv, XSH>> rev = m.applyUpdate(se);
       // for now, must be not nullptr
       assert(rev != nullptr);
       // consolidate 'outdated' XEv data on 'e'

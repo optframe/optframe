@@ -31,15 +31,15 @@ namespace optframe
 {
 
 template<class H, class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class IntensifiedIteratedLocalSearch: public SingleObjSearch<S, XEv>
+class IntensifiedIteratedLocalSearch: public SingleObjSearch<XES>
 {
 protected:
 	Evaluator<S>& evaluator;
-	Constructive<S>& constructive;
+	InitialSearch<XES>& constructive;
 
 public:
 
-	IntensifiedIteratedLocalSearch(Evaluator<S>& _evaluator, Constructive<S>& _constructive) :
+	IntensifiedIteratedLocalSearch(Evaluator<S>& _evaluator, InitialSearch<XES>& _constructive) :
 		evaluator(_evaluator), constructive(_constructive)
 	{
 	}
@@ -133,7 +133,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<S, XEv>::idComponent() << "IILS:";
+		ss << SingleObjSearch<XES>::idComponent() << "IILS:";
 		return ss.str();
 
 	}

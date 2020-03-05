@@ -43,7 +43,7 @@
 
 namespace optframe {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 struct NGESIndStructure
 {
    double pr; // probability
@@ -86,7 +86,7 @@ struct NGESParams
    }
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 struct NGESInd
 {
    //S sInd; // probability
@@ -217,8 +217,8 @@ struct NGESInd
 };
 
 //CADA INDIVIDUO EH UM PAR DE SOLUCAO E UMA TUPLE COM O PARAMETROS DA ESTRATEGIA
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class NGES : public SingleObjSearch<S, XEv>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class NGES : public SingleObjSearch<XES>
 {
 private:
    //typedef vector<NGESInd<S, XEv>*> NGESPopulation;
@@ -226,8 +226,8 @@ private:
 
    Evaluator<S>& eval;
    Constructive<S>& constructive;
-   vector<NS<S, XEv>*> vNS; 
-   LocalSearch<S, XEv>& ls;
+   vector<NS<XES, XEv>*> vNS; 
+   LocalSearch<XES, XEv>& ls;
    RandGen& rg;
    NGESParams& ngesParams;
 
@@ -238,7 +238,7 @@ public:
    //Evaluator, constructive, vNS -- vector with neighboorhods strucutures able to move solution,
    // selectionMethod: 0-low selection pressure (mi,lambda);1 selection pressure (mi+lambda)
    //TODO - Check why vector<NSSeq*> can not be passed as parameter - Tried but failled
-   NGES(Evaluator<S>& _eval, Constructive<S>& _constructive, vector<NS<S, XEv>*> _vNS, LocalSearch<S, XEv>& _ls, RandGen& _rg, NGESParams& _ngesParams)
+   NGES(Evaluator<S>& _eval, Constructive<S>& _constructive, vector<NS<XES, XEv>*> _vNS, LocalSearch<XES, XEv>& _ls, RandGen& _rg, NGESParams& _ngesParams)
      : eval(_eval)
      , constructive(_constructive)
      , vNS(_vNS)
@@ -303,7 +303,7 @@ public:
          double rx = rg.rand01();
          if (rx < p[param].pr)
             for (int a = 0; a < p[param].nap; a++) {
-               uptr<Move<S, XEv>> mov_tmp = vNS[param]->randomMove(s);
+               uptr<Move<XES, XEv>> mov_tmp = vNS[param]->randomMove(s);
                //					int tries = 0;
                //					int maxTries = 1;
                //
@@ -444,7 +444,7 @@ public:
    //virtual pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) = 0;
    //pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
    //std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(std::optional<pair<S, XEv>>& star, const StopCriteria<XEv>& stopCriteria) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XES>& stopCriteria) override
    {
       Timer tnow;
       NGESPopulation pop;
@@ -642,7 +642,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << SingleObjSearch<S, XEv>::idComponent() << "NGES";
+      ss << SingleObjSearch<XES>::idComponent() << "NGES";
       return ss.str();
    }
 

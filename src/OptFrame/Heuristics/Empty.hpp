@@ -29,8 +29,8 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class EmptyLocalSearch : public LocalSearch<S, XEv>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class EmptyLocalSearch : public LocalSearch<XES, XEv>
 {
 public:
 
@@ -42,7 +42,7 @@ public:
 	{
 	}
 
-	virtual void searchFrom(pair<S, XEv>&, const StopCriteria<XEv>& stopCriteria) override
+	virtual void searchFrom(XES&, const StopCriteria<XES>& stopCriteria) override
    {
       // placeholder for empty local search
    };
@@ -54,13 +54,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<S, XEv>::idComponent() << ":Empty";
+		ss << LocalSearch<XES, XEv>::idComponent() << ":Empty";
 		return ss.str();
 	}
 
@@ -93,7 +93,7 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == EmptyLocalSearch<S, XEv>::idComponent();
+		return component == EmptyLocalSearch<XES, XEv>::idComponent();
 	}
 
 	static string idComponent()

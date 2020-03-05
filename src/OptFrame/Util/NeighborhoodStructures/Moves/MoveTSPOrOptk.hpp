@@ -92,7 +92,7 @@ public:
 		return uptr<Move<S, XEv>>(new MoveTSPOrOptk(j, i, k));
 	}
 
-	virtual bool operator==(const Move<S, XEv>& _m) const
+	virtual bool operator==(const Move<XES, XEv>& _m) const
 			{
 		const MoveTSPOrOptk& m1 = (const MoveTSPOrOptk&) _m;
 		return (m1.i == i) && (m1.j == j) && (m1.k == k);

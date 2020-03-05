@@ -272,7 +272,7 @@ public:
       }
    }
 
-   chromossome& cloneBestChromossome(Evaluator<S, XEv>& eval)
+   chromossome& cloneBestChromossome(Evaluator<XES, XEv>& eval)
    {
       vector<pair<S, double>> v;
 

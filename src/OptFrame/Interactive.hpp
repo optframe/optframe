@@ -269,7 +269,7 @@ using namespace std;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class Interactive
 {
 private:

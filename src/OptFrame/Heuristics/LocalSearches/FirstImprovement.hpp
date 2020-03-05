@@ -28,16 +28,16 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
-class FirstImprovement: public LocalSearch<S, XEv>
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
+class FirstImprovement: public LocalSearch<XES, XEv>
 {
 private:
-	GeneralEvaluator<S, XEv, XSH>& eval;
-	NSSeq<S, XEv, XSH>& nsSeq;
+	GeneralEvaluator<XES, XEv, XSH>& eval;
+	NSSeq<XES, XEv, XSH>& nsSeq;
 
 public:
 
-	FirstImprovement(Evaluator<S, XEv>& _eval, NSSeq<S, XEv, XSH>& _nsSeq) :
+	FirstImprovement(Evaluator<XES, XEv>& _eval, NSSeq<XES, XEv, XSH>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 	}
@@ -53,11 +53,11 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) override
+	virtual void searchFrom(XES& se, const StopCriteria<XES>& stopCriteria) override
 	{
-      S& s = se.first;
+      XSolution& s = se.first;
       //XEv& e = se.second;
-		uptr<NSIterator<S, XEv>> it = nsSeq.getIterator(s);
+		uptr<NSIterator<XES, XEv>> it = nsSeq.getIterator(s);
       // TODO: return FAILED result...
       assert(it);
 		string bestMoveId = "";
@@ -70,7 +70,7 @@ public:
 
 		do
 		{
-			uptr<Move<S, XEv, XSH>> move = it->current();
+			uptr<Move<XES, XEv, XSH>> move = it->current();
 
 			// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
 			/*
@@ -108,10 +108,10 @@ public:
 
    // used on FirstImprovement
    // Accept and apply move if it improves parameter moveCost
-   ///bool acceptsImprove(Move<S, XEv>& m, XSH& se, MoveCost<>* mc = nullptr, bool allowEstimated = false)
-   bool acceptsImprove(Move<S, XEv>& m, XSH& se, bool allowEstimated = false)
+   ///bool acceptsImprove(Move<XES, XEv>& m, XSH& se, MoveCost<>* mc = nullptr, bool allowEstimated = false)
+   bool acceptsImprove(Move<XES, XEv>& m, XSH& se, bool allowEstimated = false)
    {
-      S& s = se.first;
+      XSolution& s = se.first;
       XEv& e = se.second;
 
       // try to get a cost
@@ -122,7 +122,7 @@ public:
          // verify if m is an improving move
          if (p->isStrictImprovement()) {
             // apply move and get reverse
-            uptr<Move<S, XEv>> rev = m.apply(s);
+            uptr<Move<XES, XEv>> rev = m.apply(s);
             // update value using calculated cost
             p->update(e);
             return true;
@@ -142,7 +142,7 @@ public:
          XEv ev_begin(e);
  
          // apply move to both XEv and Solution
-         uptr<Move<S, XEv>> rev = eval.applyMoveReevaluate(m, se);
+         uptr<Move<XES, XEv>> rev = eval.applyMoveReevaluate(m, se);
 
          // compute cost directly on Evaluation
          XEv mcost = ev_begin.diff(se.second);
@@ -168,7 +168,7 @@ public:
          //			e = ini.second;
          //			delete ini.first;
 
-         uptr<Move<S, XEv>> ini = rev->apply(s);
+         uptr<Move<XES, XEv>> ini = rev->apply(s);
          // for now, must be not nullptr
          assert(ini != nullptr);
          // TODO: include management for 'false' hasReverse()
@@ -182,13 +182,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<S, XEv>::idComponent() << ":FI";
+		ss << LocalSearch<XES, XEv>::idComponent() << ":FI";
 		return ss.str();
 	}
 
@@ -216,7 +216,7 @@ public:
 
 	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<S, XEv>* eval;
+		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		NSSeq<S, XEv, XSH>* nsseq;
@@ -228,7 +228,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(NSSeq<S, XEv, XSH>::idComponent(), "neighborhood structure"));
 
 		return params;

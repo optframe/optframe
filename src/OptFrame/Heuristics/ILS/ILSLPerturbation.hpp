@@ -32,7 +32,7 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class ILSLPerturbation: public Component, public ILS
 {
 public:
@@ -41,7 +41,7 @@ public:
 	{
 	}
 
-	virtual void perturb(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria, int level) = 0;
+	virtual void perturb(XES& se, const StopCriteria<XES>& stopCriteria, int level) = 0;
 
 	virtual bool compatible(string s)
 	{
@@ -62,16 +62,16 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class ILSLPerturbationLPlus2: public ILSLPerturbation<S, XEv>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class ILSLPerturbationLPlus2: public ILSLPerturbation<XES, XEv>
 {
 private:
-	vector<NS<S, XEv>*> ns;
-	Evaluator<S, XEv>& evaluator;
+	vector<NS<XES, XEv>*> ns;
+	Evaluator<XES, XEv>& evaluator;
 	RandGen& rg;
 
 public:
-	ILSLPerturbationLPlus2(Evaluator<S, XEv>& e, NS<S, XEv>& _ns, RandGen& _rg) :
+	ILSLPerturbationLPlus2(Evaluator<XES, XEv>& e, NS<XES, XEv>& _ns, RandGen& _rg) :
 			evaluator(e), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -81,26 +81,26 @@ public:
 	{
 	}
 
-	void add_ns(NS<S, XEv>& _ns)
+	void add_ns(NS<XES, XEv>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
 
-	void perturb(pair<S,XEv>& se, const StopCriteria<XEv>& stopCriteria, int level) override
+	void perturb(XES& se, const StopCriteria<XES>& stopCriteria, int level) override
 	{
 		int a = 0; // number of appliable moves
 
 		level += 2; // level 0 applies 2 moves
 
       // local bind
-      S& s = se.first;
+      XSolution& s = se.first;
       //XEv& e = se.second;
 
 		while (a < level)
 		{
 			int x = rg.rand(ns.size());
 
-			uptr<Move<S, XEv>> m = ns[x]->validRandomMove(s);
+			uptr<Move<XES, XEv>> m = ns[x]->validRandomMove(s);
 
 			if (m)
 			{
@@ -117,13 +117,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (ILSLPerturbation<S, XEv>::compatible(s));
+		return (s == idComponent()) || (ILSLPerturbation<XES, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ILSLPerturbation<S, XEv>::idComponent() << ":LPlus2";
+		ss << ILSLPerturbation<XES, XEv>::idComponent() << ":LPlus2";
 		return ss.str();
 	}
 
@@ -133,17 +133,17 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class ILSLPerturbationLPlus2Prob: public ILSLPerturbation<S, XEv>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class ILSLPerturbationLPlus2Prob: public ILSLPerturbation<XES, XEv>
 {
 private:
-	vector<NS<S, XEv>*> ns;
+	vector<NS<XES, XEv>*> ns;
 	vector<pair<int, double> > pNS;
-	Evaluator<S, XEv>& evaluator;
+	Evaluator<XES, XEv>& evaluator;
 	RandGen& rg;
 
 public:
-	ILSLPerturbationLPlus2Prob(Evaluator<S, XEv>& e, NS<S, XEv>& _ns, RandGen& _rg) :
+	ILSLPerturbationLPlus2Prob(Evaluator<XES, XEv>& e, NS<XES, XEv>& _ns, RandGen& _rg) :
 			evaluator(e), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -154,7 +154,7 @@ public:
 	{
 	}
 
-	void add_ns(NS<S, XEv>& _ns)
+	void add_ns(NS<XES, XEv>& _ns)
 	{
 		ns.push_back(&_ns);
 		pNS.push_back(make_pair(1, 1));
@@ -191,9 +191,9 @@ public:
 		cout<<endl;
 	}
 
-	void perturb(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria, int level) override
+	void perturb(XES& se, const StopCriteria<XES>& stopCriteria, int level) override
 	{
-      S& s = se.first;
+      XSolution& s = se.first;
       //XEv& e = se.second;
       //
 		int a = 0; // number of appliable moves
@@ -212,7 +212,7 @@ public:
 				sum += pNS[x].second;
 			}
 
-			uptr<Move<S, XEv>> m = ns[x]->validRandomMove(s);
+			uptr<Move<XES, XEv>> m = ns[x]->validRandomMove(s);
 
 			if (m)
 			{
@@ -230,7 +230,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ILSLPerturbation<S, XEv>::idComponent() << ":LPlus2Prob";
+		ss << ILSLPerturbation<XES, XEv>::idComponent() << ":LPlus2Prob";
 		return ss.str();
 	}
 
@@ -250,10 +250,10 @@ public:
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<S, XEv>* eval;
+		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NS<S, XEv>* ns;
+		NS<XES, XEv>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new ILSLPerturbationLPlus2<S, XEv>(*eval, *ns, hf.getRandGen());
@@ -262,8 +262,8 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NS<S, XEv>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NS<XES, XEv>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}
@@ -296,10 +296,10 @@ public:
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<S, XEv>* eval;
+		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NS<S, XEv>* ns;
+		NS<XES, XEv>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new ILSLPerturbationLPlus2Prob<S, XEv>(*eval, *ns, hf.getRandGen());
@@ -308,8 +308,8 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NS<S, XEv>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NS<XES, XEv>::idComponent(), "neighborhood structure"));
 
 		return params;
 	}

@@ -81,7 +81,7 @@ public:
 
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class MOMETRICS
 {
 protected:

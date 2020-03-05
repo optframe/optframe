@@ -31,11 +31,11 @@ class MoveNSSeqUnion: public Move<S, XEv>
 {
 protected:
 	int id;
-	Move<S, XEv>& m;
+	Move<XES, XEv>& m;
 
 public:
 
-	MoveNSSeqUnion(int _id, Move<S, XEv>& _m) :
+	MoveNSSeqUnion(int _id, Move<XES, XEv>& _m) :
 			id(_id), m(_m)
 	{
 	}
@@ -45,7 +45,7 @@ public:
 		return id;
 	}
 
-	Move<S, XEv>& get_m()
+	Move<XES, XEv>& get_m()
 	{
 		return m;
 	}
@@ -60,17 +60,17 @@ public:
 		return m.canBeApplied(s);
 	}
 
-	Move<S, XEv>& apply(S& s) override
+	Move<XES, XEv>& apply(S& s) override
 	{
 		return *new MoveNSSeqUnion<S, XEv>(id, m.apply(s));
 	}
 
-	Move<S, XEv>& apply(Evaluation<>& e, S& s)
+	Move<XES, XEv>& apply(Evaluation<>& e, S& s)
 	{
 		return *new MoveNSSeqUnion<S, XEv>(id, m.apply(e, s));
 	}
 
-	virtual bool operator==(const Move<S, XEv>& _m) const
+	virtual bool operator==(const Move<XES, XEv>& _m) const
 			{
 		const MoveNSSeqUnion<S, XEv>& m1 = (const MoveNSSeqUnion<S, XEv>&) _m;
 		if (id == m1.id)

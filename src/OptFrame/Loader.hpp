@@ -130,7 +130,7 @@ using namespace std;
 namespace optframe
 {
 
-//template<XSolution S, XEvaluation XEv = Evaluation<>>
+//template<XESolution XES, XEvaluation XEv = Evaluation<>>
 // template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 template<XRepresentation R, class ADS, XBaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
 class Loader

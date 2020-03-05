@@ -44,7 +44,7 @@ namespace optframe
 {
 
 //temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class SimpleElection {
 protected:
 	using Individual = S;
@@ -65,7 +65,7 @@ public:
 /**********************/
 
 //Chooses two distinct parents randomly
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class RandomElection final : public SimpleElection<S>{
 protected:
 	using Individual = S;
@@ -98,7 +98,7 @@ public:
 //Chooses two distinct parents with the roullete operation:  the most fit has higher chances of being chosen
 //Assumes that the objective function is POSITIVE OR ZERO
 //Assumes that the entire population has been evaluated
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class RouletteElection final : public SimpleElection<S>{
 protected:
 	using Individual = S;

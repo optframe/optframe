@@ -33,18 +33,18 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class BasicILSPerturbation: public ILS, public Component
 {
 private:
-	Evaluator<S, XEv>& evaluator;
+	Evaluator<XES, XEv>& evaluator;
 	int pMin;
 	int pMax;
-	vector<NS<S, XEv>*> ns;
+	vector<NS<XES, XEv>*> ns;
 	RandGen& rg;
 
 public:
-	BasicILSPerturbation(Evaluator<S, XEv>& e, int _pMin, int _pMax, vector<NS<S, XEv>*>& _ns, RandGen& _rg) :
+	BasicILSPerturbation(Evaluator<XES, XEv>& e, int _pMin, int _pMax, vector<NS<XES, XEv>*>& _ns, RandGen& _rg) :
 		evaluator(e), pMin(_pMin), pMax(_pMax), ns(_ns), rg(_rg)
 	{
 		if(pMax < pMin)
@@ -59,7 +59,7 @@ public:
 			cout << "BasicILSPerturbation warning: empty neighborhood list." << endl;
 	}
 
-	BasicILSPerturbation(Evaluator<S, XEv>& e, int _pMin, int _pMax, NS<S, XEv>& _ns, RandGen& _rg) :
+	BasicILSPerturbation(Evaluator<XES, XEv>& e, int _pMin, int _pMax, NS<XES, XEv>& _ns, RandGen& _rg) :
 		evaluator(e), pMin(_pMin), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -80,21 +80,21 @@ public:
 	{
 	}
 
-	void add_ns(NS<S, XEv>& _ns)
+	void add_ns(NS<XES, XEv>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
 
-	void perturb(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) // TODO: override?? what?
+	void perturb(XES& se, const StopCriteria<XES>& stopCriteria) // TODO: override?? what?
 	{
-      S& s = se.first;
+      XSolution& s = se.first;
       //XEv& e = se.second;
       //
 		for (int i = pMin; i < pMax; i++)
 		{
 			int nk = rand() % ns.size();
 
-			uptr<Move<S, XEv>> mp = ns[nk]->validRandomMove(s);
+			uptr<Move<XES, XEv>> mp = ns[nk]->validRandomMove(s);
 
 			if (!mp)
 			{
@@ -133,13 +133,13 @@ public:
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<S, XEv>* eval;
+		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int pMin = scanner.nextInt();
 		int pMax = scanner.nextInt();
 
-		vector<NS<S, XEv>*> ns_list;
+		vector<NS<XES, XEv>*> ns_list;
 		hf.assignList(ns_list, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new BasicILSPerturbation<S, XEv>(*eval, pMin, pMax, ns_list, hf.getRandGen());
@@ -148,11 +148,11 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair("OptFrame:int", "pMin: min number of moves"));
 		params.push_back(make_pair("OptFrame:int", "pMax: max number of moves"));
 		stringstream ss;
-		ss << NS<S, XEv>::idComponent() << "[]";
+		ss << NS<XES, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of neighborhood structures"));
 
 		return params;

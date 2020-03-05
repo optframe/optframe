@@ -50,7 +50,7 @@ struct ESContinuousStructure
 //CADA INDIVIDUO EH UM PAR DE SOLUCAO E UMA TUPLE COM O PARAMETROS DA ESTRATEGIA
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class ESStruct = double>
 template<XRepresentation R, class ADS = OPTFRAME_DEFAULT_ADS, class ESStruct = double, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-class ESContinous: public SingleObjSearch<S, XEv>
+class ESContinous: public SingleObjSearch<XES>
 {
 private:
 
@@ -59,7 +59,7 @@ private:
 	Evaluator<S>& eval;
 	Constructive<S>& constructive;
 	vector<NSSeq<S>*> vNS;
-	LocalSearch<S, XEv>& ls;
+	LocalSearch<XES, XEv>& ls;
 
 	const int mi;
 	const int lambda;
@@ -86,7 +86,7 @@ private:
 
 public:
 
-	ESContinous(Evaluator<S>& _eval, Constructive<S>& _constructive, vector<NSSeq<S>*> _vNS, LocalSearch<S, XEv>& _ls, int _mi, int _lambda, int _gMax) :
+	ESContinous(Evaluator<S>& _eval, InitialSearch<XES>& _constructive, vector<NSSeq<S>*> _vNS, LocalSearch<XES, XEv>& _ls, int _mi, int _lambda, int _gMax) :
 			eval(_eval), constructive(_constructive), vNS(_vNS), ls(_ls), mi(_mi), lambda(_lambda), gMax(_gMax)
 	{
 		sStar = nullptr;
@@ -266,7 +266,7 @@ public:
 	}
 
 	//std::optional<pair<S, Evaluation<>>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(std::optional<pair<S, XEv>>& star, const StopCriteria<XEv>& stopCriteria) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XES>& stopCriteria) override
 	{
 		cout << "ES search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
@@ -436,7 +436,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<S, XEv>::idComponent() << "ESContinous";
+		ss << SingleObjSearch<XES>::idComponent() << "ESContinous";
 		return ss.str();
 	}
 

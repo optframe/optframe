@@ -32,17 +32,17 @@ namespace optframe
 {
 
 //When RandGen is given as parameter it performs RVND
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class VariableNeighborhoodDescent: public LocalSearch<S, XEv>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class VariableNeighborhoodDescent: public LocalSearch<XES, XEv>
 {
 private:
-	Evaluator<S, XEv>& ev;
-	vector<LocalSearch<S, XEv>*> lsList;
+	Evaluator<XES, XEv>& ev;
+	vector<LocalSearch<XES, XEv>*> lsList;
 	RandGen* rg;
 
 public:
 
-	VariableNeighborhoodDescent(Evaluator<S, XEv>& _ev, vector<LocalSearch<S, XEv>*> _lsList, RandGen* _rg = nullptr) :
+	VariableNeighborhoodDescent(Evaluator<XES, XEv>& _ev, vector<LocalSearch<XES, XEv>*> _lsList, RandGen* _rg = nullptr) :
 			ev(_ev), lsList(_lsList), rg(_rg)
 	{
 	}
@@ -58,7 +58,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) override
+	virtual void searchFrom(XES& se, const StopCriteria<XES>& stopCriteria) override
 	{
       //S& s = se.first;
       XEv& e = se.second;
@@ -102,13 +102,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<S, XEv>::idComponent() << ":VND";
+		ss << LocalSearch<XES, XEv>::idComponent() << ":VND";
 		return ss.str();
 	}
 
@@ -144,10 +144,10 @@ public:
 
 	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<S, XEv>* eval;
+		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<LocalSearch<S, XEv>*> hlist;
+		vector<LocalSearch<XES, XEv>*> hlist;
 		hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new VariableNeighborhoodDescent<S, XEv>(*eval, hlist);
@@ -156,9 +156,9 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
 		stringstream ss;
-		ss << LocalSearch<S, XEv>::idComponent() << "[]";
+		ss << LocalSearch<XES, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of local searches"));
 
 		return params;

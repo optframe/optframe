@@ -30,8 +30,8 @@ using namespace std;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
-class NSSeq: public NS<S, XEv, XSH>
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
+class NSSeq: public NS<XES, XEv, XSH>
 {
 public:
 
@@ -39,21 +39,21 @@ public:
     {
     }
 
-    virtual uptr<Move<S, XEv, XSH>> randomMove(const S&) = 0;
+    virtual uptr<Move<XES, XEv, XSH>> randomMove(const XES&) = 0;
 
-    virtual uptr<NSIterator<S, XEv, XSH>> getIterator(const S&) = 0;
+    virtual uptr<NSIterator<XES, XEv, XSH>> getIterator(const XES&) = 0;
 
     // experimental! Should create novel NSSeqBlock perhaps
-    virtual uptr<NSBlockIterator<S, XEv>> getBlockIterator(const S& s)
+    virtual uptr<NSBlockIterator<XES, XEv>> getBlockIterator(const XES& s)
     {
-        uptr<NSIterator<S, XEv>> it = this->getIterator(s);
-        return uptr<NSBlockIterator<S, XEv>>(new DefaultNSBlockIterator<S, XEv>(*it));
+        uptr<NSIterator<XES, XEv>> it = this->getIterator(s);
+        return uptr<NSBlockIterator<XES, XEv>>(new DefaultNSBlockIterator<XES, XEv>(*it));
     }
 
     // ============= For 'Local Optimum'-based methods =============
 
     // GET LOCAL OPTIMUM INFORMATION FROM SOLUTION (ADS PREFERED?)
-    virtual LOS getLOS(const S& s)
+    virtual LOS getLOS(const XES& s)
     {
         return los_unknown;
     }
@@ -68,7 +68,7 @@ public:
     static string idComponent()
     {
         stringstream ss;
-        ss << NS<S, XEv>::idComponent() << ":NSSeq";
+        ss << NS<XES, XEv>::idComponent() << ":NSSeq";
         return ss.str();
     }
 
@@ -79,7 +79,7 @@ public:
 
     virtual bool compatible(string s)
     {
-        return (s == idComponent()) || (NS<S, XEv>::compatible(s));
+        return (s == idComponent()) || (NS<XES, XEv>::compatible(s));
     }
 };
 

@@ -35,7 +35,7 @@ namespace optframe
 {
 #define INFINITO 1000000000
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 struct IndividualNSGAII
 {
 	Solution<R, ADS>& s;
@@ -136,7 +136,7 @@ struct IndividualNSGAII
 };
 
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class NSGAII: public MultiObjSearch<R, ADS >
 {
 	typedef vector<Evaluation<>*> FitnessValues;

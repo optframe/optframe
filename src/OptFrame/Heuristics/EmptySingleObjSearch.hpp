@@ -29,8 +29,8 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class EmptySingleObjSearch: public SingleObjSearch<S, XEv>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class EmptySingleObjSearch: public SingleObjSearch<XES>
 {
 public:
 
@@ -44,7 +44,7 @@ public:
 
 	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(std::optional<pair<S, XEv>>& star, const StopCriteria<XEv>& stopCriteria) override
+   SearchStatus search(std::optional<XES>& star, const StopCriteria<XES>& stopCriteria) override
 	{
 		cout << "WARNING: RETURNING A EmptySingleObjSearch!" << endl;
 		//return std::nullopt; // nothing to return
@@ -54,7 +54,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<S, XEv>::idComponent() << "empty";
+		ss << SingleObjSearch<XES>::idComponent() << "empty";
 		return ss.str();
 	}
 

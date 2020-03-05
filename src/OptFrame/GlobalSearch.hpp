@@ -38,7 +38,8 @@ using namespace std;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv, XESolution XES, XSearch<XES> XSH, XSearchMethod XM = Component>
+// Defaulting SearchSpace to XES, it means, <S,XEv> space (typically, single obj search)
+template<XESolution XES, XSearch<XES> XSH = XES, XSearchMethod XM = Component>
 class GlobalSearch: public Component
 {
 public:
@@ -51,7 +52,7 @@ public:
 	{
 	}
 
-   virtual SearchStatus search(std::optional<XSH>& p, const StopCriteria<XEv, XM>& stopCriteria) = 0;
+   virtual SearchStatus search(std::optional<XSH>& p, const StopCriteria<XSH, XM>& stopCriteria) = 0;
 
 	virtual string log() const
 	{
@@ -85,7 +86,7 @@ public:
 	{
 	}
 
-	virtual GlobalSearch<S, XEv, XES, XSH>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, XSH>& hf, string family = "") = 0;
+	virtual GlobalSearch<XES, XSH>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, XSH>& hf, string family = "") = 0;
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, XSH>& hf, string family = "")
 	{

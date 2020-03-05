@@ -44,7 +44,7 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class Mutation: public Component, public EA
 {
 
@@ -69,17 +69,17 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class BasicMutation: public Mutation<S, XEv>
 {
 protected:
 	unsigned n;
-	vector<NS<S, XEv>*> vNS;
+	vector<NS<XES, XEv>*> vNS;
 	RandGen& rg;
 
 public:
 
-	BasicMutation(unsigned _n, vector<NS<S, XEv>*> _vNS, RandGen& _rg) :
+	BasicMutation(unsigned _n, vector<NS<XES, XEv>*> _vNS, RandGen& _rg) :
 			n(_n), vNS(_vNS), rg(_rg)
 	{
 	}
@@ -129,7 +129,7 @@ public:
 	{
 		int n = scanner.nextInt();
 
-		vector<NS<S, XEv>*> ns_list;
+		vector<NS<XES, XEv>*> ns_list;
 		hf.assignList(ns_list, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new BasicMutation<S, XEv>(n, ns_list, hf.getRandGen());
@@ -140,7 +140,7 @@ public:
 		vector<pair<string, string> > params;
 		params.push_back(make_pair("OptFrame:int", "number of moves"));
 		stringstream ss;
-		ss << NS<S, XEv>::idComponent() << "[]";
+		ss << NS<XES, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of neighborhood structures"));
 
 		return params;
@@ -165,7 +165,7 @@ public:
 };
 
 //temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class SimpleMutation {
 protected:
 	using Individual = S;
@@ -186,7 +186,7 @@ public:
 
 //changes 100beta% individuals chosen randomly -- may choose the same individual more than once
 //user should program the function that changes the individual
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class DefaultMutation : public SimpleMutation<S, XEv> {
 protected:
 	using Individual = S;

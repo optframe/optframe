@@ -34,18 +34,19 @@ namespace optframe
 
 typedef pair<pair<int, int> , pair<int, int> > levelHistory;
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class IteratedLocalSearchLevels: public IteratedLocalSearch<levelHistory, S, XEv>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class IteratedLocalSearchLevels: public IteratedLocalSearch<levelHistory, XES, XEv>
 {
 protected:
-	LocalSearch<S, XEv>& ls;
-	ILSLPerturbation<S, XEv>& p;
+	LocalSearch<XES, XEv>& ls;
+	ILSLPerturbation<XES, XEv>& p;
 	int iterMax, levelMax;
 
 public:
 
-	IteratedLocalSearchLevels(Evaluator<S, XEv>& e, Constructive<S>& constructive, LocalSearch<S, XEv>& _ls, ILSLPerturbation<S, XEv>& _p, int _iterMax, int _levelMax) :
-		IteratedLocalSearch<levelHistory, S, XEv> (e, constructive), ls(_ls), p(_p), iterMax(_iterMax), levelMax(_levelMax)
+	//IteratedLocalSearchLevels(Evaluator<XES, XEv>& e, Constructive<S>& constructive, LocalSearch<XES, XEv>& _ls, ILSLPerturbation<S, XEv>& _p, int _iterMax, int _levelMax) :
+   IteratedLocalSearchLevels(Evaluator<XES, XEv>& e, InitialSearch<XES>& constructive, LocalSearch<XES, XEv>& _ls, ILSLPerturbation<XES, XEv>& _p, int _iterMax, int _levelMax) :
+		IteratedLocalSearch<levelHistory, XES, XEv> (e, constructive), ls(_ls), p(_p), iterMax(_iterMax), levelMax(_levelMax)
 	{
 	}
 
@@ -64,13 +65,13 @@ public:
 		return *new levelHistory(vars, maxs);
 	}
 
-	virtual void localSearch(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) override
+	virtual void localSearch(XES& se, const StopCriteria<XES>& stopCriteria) override
 	{
 		//cout << "localSearch(.)" << endl;
 		ls.searchFrom(se, stopCriteria);
 	}
 
-	virtual void perturbation(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria, levelHistory& history) override
+	virtual void perturbation(XES& se, const StopCriteria<XES>& stopCriteria, levelHistory& history) override
 	{
 		//cout << "perturbation(.)" << endl;
 
@@ -107,7 +108,7 @@ public:
 	{
 		//cout << "acceptanceCriterion(.)" << endl;
 
-		if (IteratedLocalSearch<levelHistory, S, XEv>::evaluator.betterThan(e1, e2))
+		if (IteratedLocalSearch<levelHistory, XES, XEv>::evaluator.betterThan(e1, e2))
 		{
 			if(Component::information)
 			{
@@ -149,7 +150,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << IteratedLocalSearch<levelHistory, S, XEv>::idComponent() << "ilsl";
+		ss << IteratedLocalSearch<levelHistory, XES, XEv>::idComponent() << "ilsl";
 		return ss.str();
 
 	}
@@ -165,7 +166,7 @@ public:
 
 	virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<S, XEv>* eval = nullptr;
+		Evaluator<XES, XEv>* eval = nullptr;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!eval)
 			return nullptr;
@@ -217,10 +218,10 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-		params.push_back(make_pair(LocalSearch<S, XEv>::idComponent(), "local search"));
-		params.push_back(make_pair(ILSLPerturbation<S, XEv>::idComponent(), "ilsL perturbation"));
+		params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
+		params.push_back(make_pair(ILSLPerturbation<XES, XEv>::idComponent(), "ilsL perturbation"));
 		params.push_back(make_pair("int", "max number of iterations without improvement"));
 		params.push_back(make_pair("int", "levelMax of perturbation"));
 

@@ -34,7 +34,7 @@
 #include "../../InitialPareto.hpp"
 
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 struct gplsStructure
 {
 	vector<vector<bool> > nsParetoOptimum;

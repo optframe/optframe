@@ -30,7 +30,7 @@ namespace optframe
 {
 
 // forward declaration
-template<XSolution S, XEvaluation XEv, XESolution XES, XSearchMethod XM>
+template<XESolution XES, XEvaluation XEv, XSearchMethod XM>
 class BasicSimulatedAnnealing;
 
 
@@ -38,13 +38,16 @@ class BasicSimulatedAnnealing;
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
 //class BasicSimulatedAnnealing: public SingleObjSearch<S, XEv, XSH, XM, XStop>
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = Component>
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>, XSearchMethod XM = BasicSimulatedAnnealing<S, XEv, XSH, Component>>
-class BasicSimulatedAnnealing: public SingleObjSearch<S, XEv, XSH, XM>
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearchMethod XM = BasicSimulatedAnnealing<XES, XEv, Component>>
+class BasicSimulatedAnnealing: public SingleObjSearch<XES, XM>
 {
+   using XSH = XES; // XSearch
 private:
-	Evaluator<S, XEv, XSH>& evaluator;
-	Constructive<S>& constructive;
-	vector<NS<S, XEv, XSH>*> neighbors;
+	Evaluator<XES, XEv>& evaluator;
+	//Constructive<S>& constructive; // TODO: this must become InitialSearch, already starting from "optional" XES element.
+   InitialSearch<XES>& constructive;
+
+	vector<NS<XES, XEv, XSH>*> neighbors;
 	RandGen& rg;
 	double alpha;
 	int SAmax;
@@ -71,7 +74,7 @@ public:
       return tnow;
    }
 
-	BasicSimulatedAnnealing(Evaluator<S, XEv, XSH>& _evaluator, Constructive<S>& _constructive, vector<NS<S, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(Evaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, vector<NS<XES, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg)
 	{
 		alpha = (_alpha);
@@ -80,7 +83,7 @@ public:
 
 	}
 
-	BasicSimulatedAnnealing(Evaluator<S, XEv, XSH>& _evaluator, Constructive<S>& _constructive, NS<S, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(Evaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, NS<XES, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), rg(_rg)
 	{
 		neighbors.push_back(&_neighbors);
@@ -107,8 +110,7 @@ public:
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
 
    //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = Component, XStopCriteria<XEv, XM> XStop = DefaultStop >
-   SearchStatus search(std::optional<pair<S, XEv>>& star, const StopCriteria<XEv, XM>& stop) override
-   //SearchStatus search(std::optional<pair<S, XEv>>& star, const StopCriteria<XEv>& stopCriteria) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XES, XM>& stop) override
 	{
 		double timelimit = stop.timelimit;
 		XEv target_f(stop.target_f);
@@ -119,13 +121,14 @@ public:
 		// TODO: verify 's' and 'input'
 		//pair<S, XEv> se = genPair(timelimit);
       if(!star)
-         star = SingleObjSearch<S, XEv>::genPair(constructive, evaluator, timelimit);
+         //star = SingleObjSearch<S, XEv>::genPair(constructive, evaluator, timelimit);
+         star = constructive.initialSearch(stop);
       if(!star)
          return SearchStatus::NO_NEWSOL; // no possibility to continue.
       
-      pair<S, XEv> se = *star; // copy (implicit cloning guaranteed??)
+      XES se = *star; // copy (implicit cloning guaranteed??)
       //
-      S& s = se.first;
+      XSolution& s = se.first;
       XEv& e = se.second;
       //
       
@@ -146,7 +149,7 @@ public:
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
 			{
 				int n = rg.rand(neighbors.size());
-				uptr<Move<S, XEv, XSH>> move = neighbors[n]->validRandomMove(s);
+				uptr<Move<XES, XEv, XSH>> move = neighbors[n]->validRandomMove(s); // TODO: pass 'se.first' here (even 'se' should also work...)
 
 				if(!move)
 				{
@@ -158,14 +161,14 @@ public:
 
 				//S* sCurrent = &s.clone();
 				//Evaluation<>* eCurrent = &e.clone();
-            pair<S, XEv> current(se); // implicit clone??
+            XES current(se); // implicit clone??
             //S& sCurrent = current.first;
             XEv& eCurrent = current.second;
 
 				move->applyUpdate(current);
 				evaluator.reevaluate(current);
 
-				if (evaluator.betterThan(eCurrent, e))
+				if (evaluator.betterThan(eCurrent, e)) // TODO: replace by 'se' here, and use 'se.second' to compare directly
 				{
                // if improved, accept it
 					//e = *eCurrent;
@@ -234,7 +237,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<S, XEv>::idComponent() << ":SA:BasicSA";
+		ss << SingleObjSearch<XES>::idComponent() << ":SA:BasicSA";
 		return ss.str();
 	}
 };
@@ -249,31 +252,31 @@ public:
 	{
 	}
 
-	virtual SingleObjSearch<S, XEv, pair<S, XEv>, XM>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
+	virtual SingleObjSearch<XES, XM>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<S, XEv>* eval;
+		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		Constructive<S>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<NS<S, XEv>* > hlist;
+		vector<NS<XES, XEv>* > hlist;
 		hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		double alpha = scanner.nextDouble();
 		int SAmax = scanner.nextInt();
 		double Ti = scanner.nextDouble();
 
-		return new BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, XM> (*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
+		return new BasicSimulatedAnnealing<XES, XEv, XM> (*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
 		stringstream ss;
-		ss << NS<S, XEv>::idComponent() << "[]";
+		ss << NS<XES, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of NS"));
 		params.push_back(make_pair("OptFrame:double", "cooling factor"));
 		params.push_back(make_pair("OptFrame:int", "number of iterations for each temperature"));

@@ -28,16 +28,16 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class HillClimbing: public LocalSearch<S, XEv>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class HillClimbing: public LocalSearch<XES, XEv>
 {
 private:
-	Evaluator<S, XEv>& evaluator;
-	LocalSearch<S, XEv>& ls;
+	Evaluator<XES, XEv>& evaluator;
+	LocalSearch<XES, XEv>& ls;
 
 public:
 
-	HillClimbing(Evaluator<S, XEv>& _ev, LocalSearch<S, XEv>& _ls) :
+	HillClimbing(Evaluator<XES, XEv>& _ev, LocalSearch<XES, XEv>& _ls) :
 		evaluator(_ev), ls(_ls)
 	{
 	}
@@ -53,7 +53,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(pair<S, XEv>& se, const StopCriteria<XEv>& sosc) override
+	virtual void searchFrom(XES& se, const StopCriteria<XES>& sosc) override
 	{
       //S& s = se.first;
       XEv& e = se.second;
@@ -88,7 +88,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
 	}
 
 	virtual string id() const
@@ -99,7 +99,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<S, XEv>::idComponent() << ":HC";
+		ss << LocalSearch<XES, XEv>::idComponent() << ":HC";
 		return ss.str();
 
 	}
@@ -116,7 +116,7 @@ public:
 
 	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<S, XEv>* eval;
+		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
@@ -134,8 +134,8 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(LocalSearch<S, XEv>::idComponent(), "local search"));
+		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
 
 		return params;
 	}

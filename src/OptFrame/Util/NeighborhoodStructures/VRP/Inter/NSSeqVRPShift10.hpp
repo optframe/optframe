@@ -210,7 +210,7 @@ public:
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPShift10<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPShift10<T, ADS, MOVE, P> >
 template<class T, class ADS, XBaseSolution<vector<vector<T> >,ADS> S, class MOVE = MoveVRPShift10<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPShift10<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = std::pair<S, XEv>>
-class NSSeqVRPShift10: public NSSeq<S, XEv, XSH>
+class NSSeqVRPShift10: public NSSeq<XES, XEv, XSH>
 {
 
 	typedef vector<vector<T> > Routes;
@@ -253,7 +253,7 @@ public:
 		return uptr<Move<S>>(new MOVE(r1, r2, cli, pos, p)); // return a random move
 	}
 
-	virtual uptr<Move<S>> validRandomMove(const S& s) override
+	virtual uptr<Move<S>> validRandomMove(const XES& s) override
 	{
       const Routes& rep = s.getR();
 		int maxValidMove = 50;

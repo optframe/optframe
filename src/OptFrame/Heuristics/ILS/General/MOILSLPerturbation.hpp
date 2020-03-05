@@ -68,12 +68,12 @@ template<XSolution S, XEvaluation XEv=Evaluation<>>
 class MOILSLPerturbationLPlus2: public MOILSLPerturbation<S, XEv>
 {
 private:
-	vector<NS<S, XEv>*> ns;
+	vector<NS<XES, XEv>*> ns;
 	MultiEvaluator<S>& evaluator;
 	RandGen& rg;
 
 public:
-	MOILSLPerturbationLPlus2(MultiEvaluator<S>& _e, NS<S, XEv>& _ns, RandGen& _rg) :
+	MOILSLPerturbationLPlus2(MultiEvaluator<S>& _e, NS<XES, XEv>& _ns, RandGen& _rg) :
 			evaluator(_e), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -83,7 +83,7 @@ public:
 	{
 	}
 
-	void add_ns(NS<S, XEv>& _ns)
+	void add_ns(NS<XES, XEv>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
@@ -117,13 +117,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (MOILSLPerturbation<S, XEv>::compatible(s));
+		return (s == idComponent()) || (MOILSLPerturbation<XES, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MOILSLPerturbation<S, XEv>::idComponent() << ":LPlus2";
+		ss << MOILSLPerturbation<XES, XEv>::idComponent() << ":LPlus2";
 		return ss.str();
 	}
 
@@ -137,13 +137,13 @@ template<XSolution S, XEvaluation XEv=Evaluation<>>
 class MOILSLPerturbationLPlus2Prob: public MOILSLPerturbation<S, XEv>
 {
 private:
-	vector<NS<S, XEv>*> ns;
+	vector<NS<XES, XEv>*> ns;
 	vector<pair<int, double> > pNS;
 	MultiEvaluator<S>& evaluator;
 	RandGen& rg;
 
 public:
-	MOILSLPerturbationLPlus2Prob(MultiEvaluator<S>& _e, NS<S, XEv>& _ns, RandGen& _rg) :
+	MOILSLPerturbationLPlus2Prob(MultiEvaluator<S>& _e, NS<XES, XEv>& _ns, RandGen& _rg) :
 			evaluator(_e), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -154,7 +154,7 @@ public:
 	{
 	}
 
-	void add_ns(NS<S, XEv>& _ns)
+	void add_ns(NS<XES, XEv>& _ns)
 	{
 		ns.push_back(&_ns);
 		pNS.push_back(make_pair(1, 1));
@@ -229,7 +229,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MOILSLPerturbation<S, XEv>::idComponent() << ":LPlus2Prob";
+		ss << MOILSLPerturbation<XES, XEv>::idComponent() << ":LPlus2Prob";
 		return ss.str();
 	}
 

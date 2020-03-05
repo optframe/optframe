@@ -30,14 +30,14 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class ReducedVNS: public VariableNeighborhoodSearch<S, XEv>
 {
 public:
 
 	typedef VariableNeighborhoodSearch<S, XEv> super;
 
-	ReducedVNS(Evaluator<S>& evaluator, Constructive<S>& constructive, vector<NS<S, XEv>*> vshake, vector<NSSeq<S>*> vsearch) :
+	ReducedVNS(Evaluator<S>& evaluator, Constructive<S>& constructive, vector<NS<XES, XEv>*> vshake, vector<NSSeq<S>*> vsearch) :
 		VariableNeighborhoodSearch<S, XEv> (evaluator, constructive, vshake, vsearch)
 	{
 	}
@@ -81,14 +81,14 @@ public:
 		Constructive<S>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<NS<S, XEv>*> shakelist;
+		vector<NS<XES, XEv>*> shakelist;
 		hf.assignList(shakelist, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<NSSeq<S>*> searchlist;
 		hf.assignList(searchlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
 
-		return new BasicVNS<S, XEv>(*eval, *constructive, shakelist, searchlist);
+		return new BasicVNS<XES, XEv>(*eval, *constructive, shakelist, searchlist);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -98,7 +98,7 @@ public:
 		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
 
 		stringstream ss;
-		ss << NS<S, XEv>::idComponent() << "[]";
+		ss << NS<XES, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of NS"));
 
 		stringstream ss2;
@@ -110,7 +110,7 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicVNS<S, XEv>::idComponent();
+		return component == BasicVNS<XES, XEv>::idComponent();
 	}
 
 	static string idComponent()

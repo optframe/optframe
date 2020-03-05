@@ -30,19 +30,19 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
-class BasicTabuSearch: public SingleObjSearch<S, XEv, XSH>, public TS
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
+class BasicTabuSearch: public SingleObjSearch<XES>, public TS
 {
 private:
-	Evaluator<S, XEv>& evaluator;
-	Constructive<S>& constructive;
-	NSSeq<S, XEv, XSH>& nsSeq;
+	Evaluator<XES, XEv>& evaluator;
+	InitialSearch<XES>& constructive;
+	NSSeq<XES, XEv, XSH>& nsSeq;
 	int tlSize;
 	int tsMax;
 
 public:
 
-	BasicTabuSearch(Evaluator<S, XEv>& _ev, Constructive<S>& _constructive, NSSeq<S, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax) :
+	BasicTabuSearch(Evaluator<XES, XEv>& _ev, InitialSearch<XES>& _constructive, NSSeq<XES, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax) :
 			evaluator(_ev), constructive(_constructive), nsSeq(_nsSeq), tlSize(_tlSize), tsMax(_tsMax)
 	{
 	}
@@ -51,16 +51,18 @@ public:
 	{
 	}
 
-	pair<S&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+	//pair<S&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XES>& stop) override
 	{
 		//cout << "BasicTabuSearch exec(" << target_f << "," << timelimit << ")" << endl;
 
 		long tini = time(nullptr);
+      long timelimit = stop.timelimit;
 
-		S& s = constructive.generateSolution();
+		XSolution& s = constructive.generateSolution();
 		Evaluation<>& e = evaluator.evaluate(s);
 
-		S* sStar = &s.clone();
+		XSolution* sStar = &s.clone();
 		Evaluation<>* evalSStar = &evaluator.evaluate(*sStar);
 
 		//evalSStar->print();
@@ -69,8 +71,8 @@ public:
 
 		int BestIter = 0;
 
-		const vector<Move<S, XEv>*> emptyList;
-		vector<Move<S, XEv>*> tabuList;
+		const vector<Move<XES, XEv>*> emptyList;
+		vector<Move<XES, XEv>*> tabuList;
 
 		long tnow = time(nullptr);
 
@@ -89,11 +91,11 @@ public:
 			// First: aspiration
 			// ==================
 
-			Move<S, XEv>* bestMove = tabuBestMove(s, e, emptyList);
+			Move<XES, XEv>* bestMove = tabuBestMove(s, e, emptyList);
 
-			S* s1 = &s.clone();
+			XSolution* s1 = &s.clone();
 
-			Move<S, XEv>* newTabu = &bestMove->apply(*s1);
+			Move<XES, XEv>* newTabu = &bestMove->apply(*s1);
 			Evaluation<>* evalS1 = &evaluator.evaluate(*s1);
 
 			if (evaluator.betterThan(*evalS1, *evalSStar))
@@ -196,15 +198,16 @@ public:
 			fclose(ftabu);
 		}
 
-		return new pair<S&, Evaluation<>&>(s, e);
+		//return new pair<S&, Evaluation<>&>(s, e);
+      //return STATUS
 	}
 
-	Move<S, XEv>* tabuBestMove(pair<S, Evaluation<>>& se, const vector<Move<S, XEv>*>& tabuList)
+	Move<XES, XEv>* tabuBestMove(XES& se, const vector<Move<XES, XEv>*>& tabuList)
 	{
-      S& s = se.first;
+      XSolution& s = se.first;
       Evaluation<>& e = se.second;
 
-		NSIterator<S, XEv>& it = nsSeq.getIterator(s.getR(), s.getADS());
+		NSIterator<XES, XEv>& it = nsSeq.getIterator(s.getR(), s.getADS());
 
 		it.first();
 
@@ -214,7 +217,7 @@ public:
 			return nullptr;
 		}
 
-		Move<S, XEv>* bestMove = &it.current();
+		Move<XES, XEv>* bestMove = &it.current();
 
 		while (!bestMove->canBeApplied(s) || inList(bestMove, tabuList))
 		{
@@ -236,7 +239,7 @@ public:
 		it.next();
 		while (!it.isDone())
 		{
-			Move<S, XEv>* move = &it.current();
+			Move<XES, XEv>* move = &it.current();
 			if (move->canBeApplied(s) && !inList(bestMove, tabuList))
 			{
 				MoveCost<>* cost = &evaluator.moveCost(*move, se);
@@ -266,7 +269,7 @@ public:
 		return bestMove;
 	}
 
-	bool inList(Move<S, XEv>* m, const vector<Move<S, XEv>*>& v)
+	bool inList(Move<XES, XEv>* m, const vector<Move<XES, XEv>*>& v)
 	{
 		for (unsigned int i = 0; i < v.size(); i++)
 			if ((*m) == (*v[i]))
@@ -277,7 +280,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<S, XEv>::idComponent() << "TS:BasicTabuSearch";
+		ss << SingleObjSearch<XES>::idComponent() << "TS:BasicTabuSearch";
 		return ss.str();
 	}
 
@@ -298,7 +301,7 @@ public:
 
 	virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<S, XEv>* eval;
+		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		Constructive<S>* constructive;
@@ -323,7 +326,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
 		params.push_back(make_pair(NSSeq<S, XEv, XSH>::idComponent(), "neighborhood structure"));
 		params.push_back(make_pair("OptFrame:int", "tabu list size"));

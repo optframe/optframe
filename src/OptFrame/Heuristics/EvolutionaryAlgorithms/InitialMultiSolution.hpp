@@ -32,7 +32,7 @@ using namespace std;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class InitialMultiSolution: public Component, public EA
 {
 public:
@@ -61,7 +61,7 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class BasicInitialMultiSolution: public InitialMultiSolution<S>
 {
 public:
@@ -103,7 +103,7 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class BasicInitialPopulationBuilder: public ComponentBuilder<R, ADS>
 {
 public:

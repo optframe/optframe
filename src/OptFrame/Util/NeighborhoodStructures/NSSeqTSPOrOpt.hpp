@@ -40,7 +40,7 @@ namespace optframe
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
 template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = std::pair<S, XEv>>
-class NSSeqTSPOrOpt: public NSSeq<S, XEv, XSH>
+class NSSeqTSPOrOpt: public NSSeq<XES, XEv, XSH>
 {
 	typedef vector<T> Route;
 
@@ -71,6 +71,8 @@ public:
 		delete OrOpt1_2_3;
 	}
 
+   // Maybe S& should be the Representation itself.... no getR() here.
+   // It makes more sense to pass RepTSP + ESolutionTSP... than SolutionTSP + ESolutionTSP
 	Move<S, XEv>* randomMove(const S& s) override
 	{
       const Route& rep = s.getR();
@@ -98,7 +100,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << NSSeq<S, XEv, XSH>::idComponent() << ":NSSeqTSPOrOpt";
+		ss << NSSeq<XES, XEv, XSH>::idComponent() << ":NSSeqTSPOrOpt";
 		return ss.str();
 	}
 
@@ -109,7 +111,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (NSSeq<S, XEv, XSH>::compatible(s));
+		return (s == idComponent()) || (NSSeq<XES, XEv, XSH>::compatible(s));
 	}
 
 	virtual string toString() const

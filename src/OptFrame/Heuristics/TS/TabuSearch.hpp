@@ -28,19 +28,19 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class TabuSearch: public SingleObjSearch<S, XEv>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class TabuSearch: public SingleObjSearch<XES>
 {
 private:
-	Evaluator<S, XEv>& evaluator;
-	Constructive<S>& constructive;
-	NSSeq<S, XEv, XSH>& nsSeq;
+	Evaluator<XES, XEv>& evaluator;
+	InitialSearch<XES>& constructive;
+	NSSeq<XES, XEv, XSH>& nsSeq;
 	int tlSize;
 	int tsMax;
 
 public:
 
-	TabuSearch(Evaluator<S, XEv>& _ev, Constructive<S>& _constructive, NSSeq<S, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax) :
+	TabuSearch(Evaluator<XES, XEv>& _ev, InitialSearch<XES>& _constructive, NSSeq<XES, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax) :
 		evaluator(_ev), constructive(_constructive), nsSeq(_nsSeq), tlSize(_tlSize), tsMax(_tsMax)
 	{
 	}
@@ -273,7 +273,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<S, XEv>::idComponent() << "TS:basic_ts";
+		ss << SingleObjSearch<XES>::idComponent() << "TS:basic_ts";
 		return ss.str();
 	}
 

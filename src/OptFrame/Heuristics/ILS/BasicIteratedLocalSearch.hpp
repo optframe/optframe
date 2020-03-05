@@ -36,18 +36,19 @@ namespace optframe
 
 typedef int BasicHistory;
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class BasicIteratedLocalSearch: public IteratedLocalSearch<BasicHistory, S, XEv>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class BasicIteratedLocalSearch: public IteratedLocalSearch<BasicHistory, XES, XEv>
 {
 protected:
-	LocalSearch<S, XEv>& ls;
-	BasicILSPerturbation<S, XEv>& p;
+	LocalSearch<XES, XEv>& ls;
+	BasicILSPerturbation<XES, XEv>& p;
 	int iterMax;
 
 public:
 
-	BasicIteratedLocalSearch(Evaluator<S, XEv>& e, Constructive<S>& constructive, LocalSearch<S, XEv>& _ls, BasicILSPerturbation<S, XEv>& _p, int _iterMax) :
-		IteratedLocalSearch<BasicHistory, S, XEv> (e, constructive), ls(_ls), p(_p), iterMax(_iterMax)
+	//BasicIteratedLocalSearch(Evaluator<XES, XEv>& e, Constructive<S>& constructive, LocalSearch<XES, XEv>& _ls, BasicILSPerturbation<S, XEv>& _p, int _iterMax) :
+   BasicIteratedLocalSearch(Evaluator<XES, XEv>& e, InitialSearch<XES>& constructive, LocalSearch<XES, XEv>& _ls, BasicILSPerturbation<XES, XEv>& _p, int _iterMax) :
+		IteratedLocalSearch<BasicHistory, XES, XEv> (e, constructive), ls(_ls), p(_p), iterMax(_iterMax)
 	{
 	}
 
@@ -63,12 +64,12 @@ public:
 		return iter;
 	}
 
-	virtual void localSearch(pair<S, XEv>& se, const StopCriteria<XEv>& sosc) override
+	virtual void localSearch(XES& se, const StopCriteria<XES>& sosc) override
 	{
 		ls.searchFrom(se, sosc);
 	}
 
-	virtual void perturbation(pair<S, XEv>& se, const StopCriteria<XEv>& sosc, BasicHistory& history) override
+	virtual void perturbation(XES& se, const StopCriteria<XES>& sosc, BasicHistory& history) override
 	{
 		int iter = history;
 
@@ -83,7 +84,7 @@ public:
 
 	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, BasicHistory& history) override
 	{
-		if (IteratedLocalSearch<BasicHistory, S, XEv>::evaluator.betterThan(e1, e2))
+		if (IteratedLocalSearch<BasicHistory, XES, XEv>::evaluator.betterThan(e1, e2))
 		{
 			// =======================
 			//   Melhor solucao: 's2'
@@ -115,7 +116,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (SingleObjSearch<S, XEv>::compatible(s));
+		return (s == idComponent()) || (SingleObjSearch<XES>::compatible(s));
 	}
 
 	virtual string id() const
@@ -126,13 +127,13 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << IteratedLocalSearch<BasicHistory, S, XEv>::idComponent() << "BasicILS";
+		ss << IteratedLocalSearch<BasicHistory, XES, XEv>::idComponent() << "BasicILS";
 		return ss.str();
 	}
 };
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
-class BasicIteratedLocalSearchBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, XES>
+class BasicIteratedLocalSearchBuilder : public ILS, public SingleObjSearchBuilder<XES, XEv, XES>
 {
 public:
 	virtual ~BasicIteratedLocalSearchBuilder()
@@ -141,7 +142,7 @@ public:
 
 	virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<S, XEv>* eval;
+		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		Constructive<S>* constructive;
@@ -167,9 +168,9 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-		params.push_back(make_pair(LocalSearch<S, XEv>::idComponent(), "local search"));
+		params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
 		params.push_back(make_pair(BasicILSPerturbation<S, XEv>::idComponent(), "ils perturbation"));
 		params.push_back(make_pair("OptFrame:int", "max number of iterations without improvement"));
 
@@ -178,7 +179,7 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicIteratedLocalSearch<S, XEv>::idComponent();
+		return component == BasicIteratedLocalSearch<XES, XEv>::idComponent();
 	}
 
 	static string idComponent()

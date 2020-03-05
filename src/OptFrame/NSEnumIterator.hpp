@@ -29,19 +29,19 @@ namespace optframe
 {
 
 
-template<XSolution S, XEvaluation XEv, XESolution XSH> class NSEnum;
+template<XESolution XES, XEvaluation XEv, XESolution XSH> class NSEnum;
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
-class NSEnumIterator: public NSIterator<S, XEv, XSH>
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
+class NSEnumIterator: public NSIterator<XES, XEv, XSH>
 {
 private:
-   NSEnum<S, XEv, XSH>& ns;
+   NSEnum<XES, XEv, XSH>& ns;
    unsigned int move;
    unsigned int nsSize;
 
 public:
 
-   NSEnumIterator(NSEnum<S, XEv, XSH>& _ns) :
+   NSEnumIterator(NSEnum<XES, XEv, XSH>& _ns) :
       ns(_ns)
    {
       move = 0;
@@ -67,14 +67,14 @@ public:
       return move >= nsSize;
    }
 
-   uptr<Move<S, XEv>> current() override
+   uptr<Move<XES, XEv>> current() override
    {
       if (isDone())
          throw IteratorOutOfBound(move);
       return ns.indexMove(move);
    }
 
-   uptr<Move<S, XEv>> at(unsigned int m)
+   uptr<Move<XES, XEv>> at(unsigned int m)
    {
       // TODO: throw exception if m >= size
       return ns.move(m);

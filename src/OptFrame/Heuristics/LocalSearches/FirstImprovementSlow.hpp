@@ -28,8 +28,8 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class FirstImprovementSlow: public LocalSearch<S, XEv>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class FirstImprovementSlow: public LocalSearch<XES, XEv>
 {
 private:
 	Evaluator<S>& eval;
@@ -129,13 +129,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<S, XEv>::idComponent() << ":FISlow";
+		ss << LocalSearch<XES, XEv>::idComponent() << ":FISlow";
 		return ss.str();
 	}
 

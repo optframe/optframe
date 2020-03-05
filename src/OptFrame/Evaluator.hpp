@@ -60,8 +60,8 @@ namespace optframe {
 // TODO: use XEv here
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = pair<S, XEv>>
 //template<XSolution S, XEvaluation XEv> // require explicitly XEv here...
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = pair<S, XEv>>
-class Evaluator : public Direction, public GeneralEvaluator<S, XEv, XSH>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class Evaluator : public Direction, public GeneralEvaluator<XES, XEv, XES>
 {
 protected:
    bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
@@ -101,13 +101,13 @@ public:
    }
 
 public:
-   virtual XEv evaluate(const S&) = 0;
+   virtual XEv evaluate(const XES&) = 0;
 
    // TODO: verify if 'e.outdated' must be required at all times, or just specific cases
-   //virtual void reevaluate(XEv& e, const S& s) override
-   virtual void reevaluate(XSH& se) override
+   //virtual void reevaluate(XEv& e, const XES& s) override
+   virtual void reevaluate(XES& se) override
    {
-      S& s = se.first;
+      XES& s = se.first;
       XEv& e = se.second;
       if (e.outdated)
          e = evaluate(s);
@@ -117,26 +117,26 @@ public:
 
    // Apply movement without considering a previous XEv => Slower.
    // Return new XEv 'e'
-   pair<uptr<Move<S, XEv>>, XEv> applyMove(Move<S, XEv>& m, S& s)
+   pair<uptr<Move<XES, XEv>>, XEv> applyMove(Move<XES, XEv>& m, XES& s)
    {
       // apply move and get reverse move
-      uptr<Move<S, XEv>> rev = m.apply(s);
+      uptr<Move<XES, XEv>> rev = m.apply(s);
       // for now, must be not nullptr 
       assert(rev != nullptr);
       // TODO: include management for 'false' hasReverse()
       assert(m.hasReverse() && rev);
       XEv e = evaluate(s);
       // create pair
-      return pair<uptr<Move<S, XEv>>, XEv>(std::move(rev), std::move(e)); // TODO: verify if 'e' is copied, but probably requires std::move
+      return pair<uptr<Move<XES, XEv>>, XEv>(std::move(rev), std::move(e)); // TODO: verify if 'e' is copied, but probably requires std::move
       //return make_pair(rev, evaluate(s));
    }
 
    // Movement cost based on reevaluation of 'e'
-   //MoveCost<>* moveCost(XEv& e, Move<S, XEv>& m, S& s, bool allowEstimated = false)
+   //MoveCost<>* moveCost(XEv& e, Move<XES, XEv>& m, XES& s, bool allowEstimated = false)
    
    //
-   //MoveCost<>* moveCost(Move<S, XEv>& m, XSH& se, bool allowEstimated = false)
-   op<XEv> moveCost(Move<S, XEv>& m, XSH& se, bool allowEstimated = false)
+   //MoveCost<>* moveCost(Move<XES, XEv>& m, XES& se, bool allowEstimated = false)
+   op<XEv> moveCost(Move<XES, XEv>& m, XES& se, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
       // TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
@@ -156,7 +156,7 @@ public:
          // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
          assert(m.hasReverse());
 
-         S& s = se.first;
+         XES& s = se.first;
          XEv& e = se.second;
 
          XEv ev_begin(e); // copy
@@ -164,7 +164,7 @@ public:
          // saving 'outdated' status to avoid inefficient re-evaluations
          //			bool outdated = e.outdated;
          // apply move to both XEv and Solution
-         uptr<Move<S, XEv>> rev = this->applyMoveReevaluate(m, se);
+         uptr<Move<XES, XEv>> rev = this->applyMoveReevaluate(m, se);
 
          XEv e_end(se.second);
 
@@ -181,7 +181,7 @@ public:
          // apply reverse move in order to get the original solution back
          //TODO - Why do not save ev at the begin? Extra evaluation
          //Even when reevaluate is implemented, It would be hard to design a strategy that is faster than copying previous evaluation//==================================================================
-         //			Move<S, XEv>* ini = applyMoveReevaluate(e, *rev, s);
+         //			Move<XES, XEv>* ini = applyMoveReevaluate(e, *rev, s);
          //
          //			// if XEv wasn't 'outdated' before, restore its previous status
          //			if (!outdated)
@@ -189,7 +189,7 @@ public:
 
          
 
-         uptr<Move<S, XEv>> ini = rev->apply(s);
+         uptr<Move<XES, XEv>> ini = rev->apply(s);
 
 
          XEv mcost = ev_begin.diff(e_end);
@@ -238,8 +238,8 @@ public:
 
    // Movement cost based on complete evaluation (only on CheckCommand)
    // USE ONLY FOR VALIDATION OF CODE! OTHERWISE, USE MoveCost<>(e, m, s)
-   ///MoveCost<>* moveCostComplete(Move<S, XEv>& m, S& s, bool allowEstimated = false)
-   op<Evaluation<>> moveCostComplete(Move<S, XEv>& m, S& s, bool allowEstimated = false)
+   ///MoveCost<>* moveCostComplete(Move<XES, XEv>& m, XES& s, bool allowEstimated = false)
+   op<Evaluation<>> moveCostComplete(Move<XES, XEv>& m, XES& s, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
       // TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
@@ -247,9 +247,9 @@ public:
       // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
       assert(m.hasReverse());
 
-      pair<uptr<Move<S, XEv>>, XEv> rev = applyMove(m, s);
+      pair<uptr<Move<XES, XEv>>, XEv> rev = applyMove(m, s);
 
-      pair<uptr<Move<S, XEv>>, XEv> ini = applyMove(*rev.first, s);
+      pair<uptr<Move<XES, XEv>>, XEv> ini = applyMove(*rev.first, s);
 
       // Difference: new - original
 
@@ -284,15 +284,8 @@ public:
    //virtual inline bool betterThan(const MoveCost<>& mc1, const MoveCost<>& mc2)
    using Direction::betterThan;
 
-
-   // not good option! CONST and possible re-evaluations (on 's')
-   virtual bool betterThan(const XSH& p1, const XSH& p2)
-   {
-      return betterThan(p1.first, p2.first);
-   }
-
    // Note that these parameters are NON-CONST... so, they can be updated if necessary!
-   virtual bool betterThan(XSH& se1, XSH& se2)
+   virtual bool betterThan(XES& se1, XES& se2)
    {
       XEv& e1 = se1.second;
       XEv& e2 = se2.second;
@@ -313,7 +306,7 @@ public:
 	 - for maximization problems, returns a > b.
 	 */
    //virtual bool betterThan(evtype a, evtype b) = 0;
-   virtual bool betterThan(const S& s1, const S& s2)
+   virtual bool betterThan(const XES& s1, const XES& s2)
    {
       XEv e1 = evaluate(s1);
       XEv e2 = evaluate(s2);

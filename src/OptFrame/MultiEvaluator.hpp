@@ -37,16 +37,16 @@ namespace optframe
 
 // MultiEvaluator is not a REAL evaluator... a bunch/pack of evaluators... TODO: unify
 
-template<XSolution S, XEvaluation XEv = Evaluation<> > //, XSearch<S, XEv> XSH = pair<S, XEv>> // cannot do, because MultiEvaluation is not a valid evaluation
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = MultiESolution<XES> > //, XSearch<S, XEv> XSH = pair<S, XEv>> // cannot do, because MultiEvaluation is not a valid evaluation
 class MultiEvaluator: public MultiDirection  //, public GeneralEvaluator<S, XEv, XSH> 
 {
 protected:
-	vector<Evaluator<S, XEv, pair<S, XEv>>*> sngEvaluators; // single evaluators
+	vector<Evaluator<XES, XEv>*> sngEvaluators; // single evaluators
 	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
 
 public:
 
-	MultiEvaluator(vector<Evaluator<S, XEv>*> _veval) :
+	MultiEvaluator(vector<Evaluator<XES, XEv>*> _veval) :
 			sngEvaluators(_veval), allowCosts(false)
 	{
 		for (unsigned i = 0; i < _veval.size(); i++)
@@ -60,7 +60,7 @@ public:
 	{
 	}
 
-	virtual void addEvaluator(Evaluator<S, XEv>& ev)
+	virtual void addEvaluator(Evaluator<XES, XEv>& ev)
 	{
 		sngEvaluators.push_back(&ev);
 	}
@@ -111,7 +111,7 @@ public:
 	}
 
     //changed to Meval without point TODO
-	virtual MultiEvaluation<> evaluate(const S& s)
+	virtual MultiEvaluation<> evaluate(const XES& s)
 	{
 		cout << "inside mother class" << endl;
 		getchar();
@@ -132,7 +132,7 @@ public:
 			delete sngEvaluators[e];
 	}
 
-	virtual void reevaluateMEV(MultiEvaluation<>& mev, const S& s)
+	virtual void reevaluateMEV(MultiEvaluation<>& mev, const XES& se)
 	{
 		for (unsigned i = 0; i < sngEvaluators.size(); i++)
 		{
@@ -140,9 +140,9 @@ public:
 			//sngEvaluators[i]->reevaluate(e, s);
 			//mev[i] = std::move(e);
          //
-         Evaluation<>& e = mev[i]; 
+         Evaluation<>& e = mev[i]; // TODO: embed MEV in 'se'
 
-         pair<S, XEv> pse(s, e); // TODO: we should AVOID this 's' and 'e' copy... by keeping s,e together.
+         pair<decltype(se.first), XEv> pse(se.first, e); // TODO: we should AVOID this 's' and 'e' copy... by keeping s,e together.
 			sngEvaluators[i]->reevaluate(pse);
          e = std::move(pse.second); // TODO: verify if this works
 
@@ -155,41 +155,41 @@ public:
 //		return allowCosts;
 //	}
 
-//	vector<Evaluator<S, XEv>*> getEvaluators2()
+//	vector<Evaluator<XES, XEv>*> getEvaluators2()
 //	{
 //		return sngEvaluators;
 //	}
 
 	//	// TODO: check
-//	const vector<const Evaluator<S, XEv>*>* getEvaluatorsConstTest() const
+//	const vector<const Evaluator<XES, XEv>*>* getEvaluatorsConstTest() const
 //	{
 //		if (sngEvaluators.size() > 0)
-//			return new vector<const Evaluator<S, XEv>*>(sngEvaluators);
+//			return new vector<const Evaluator<XES, XEv>*>(sngEvaluators);
 //		else
 //			return nullptr;
 //	}
 
-//	Evaluator<S, XEv>& at(unsigned index)
+//	Evaluator<XES, XEv>& at(unsigned index)
 //	{
 //		return *sngEvaluators.at(index);
 //	}
 //
-//	const Evaluator<S, XEv>& at(unsigned index) const
+//	const Evaluator<XES, XEv>& at(unsigned index) const
 //	{
 //		return *sngEvaluators.at(index);
 //	}
 //
-//	Evaluator<S, XEv>& operator[](unsigned index)
+//	Evaluator<XES, XEv>& operator[](unsigned index)
 //	{
 //		return *sngEvaluators[index];
 //	}
 //
-//	const Evaluator<S, XEv>& operator[](unsigned index) const
+//	const Evaluator<XES, XEv>& operator[](unsigned index) const
 //	{
 //		return *sngEvaluators[index];
 //	}
 
-//	void addEvaluator(const Evaluator<S, XEv>& ev)
+//	void addEvaluator(const Evaluator<XES, XEv>& ev)
 //	{
 //		sngEvaluators.push_back(&ev.clone());
 //	}
@@ -278,9 +278,9 @@ public:
 		// cast object to lower type
 		Component* final = nullptr;
 
-		if (type == Evaluator<S, XEv>::idComponent())
+		if (type == Evaluator<XES, XEv>::idComponent())
 		{
-			final = (Evaluator<S, XEv>*) comp;
+			final = (Evaluator<XES, XEv>*) comp;
 		}
 		else
 		{
@@ -305,7 +305,7 @@ public:
 		if (!scanner.hasNext())
 			return false;
 
-		Evaluator<S, XEv>* ev;
+		Evaluator<XES, XEv>* ev;
 		hf.assign(ev, scanner.nextInt(), scanner.next());
 
 		if (!ev)

@@ -30,16 +30,16 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
 class BestImprovementLOS: public LocalSearch<S, XEv, XSH>
 {
 private:
-	Evaluator<S, XEv>& eval;
-	NSSeq<S, XEv, XSH>& nsSeq;
+	Evaluator<XES, XEv>& eval;
+	NSSeq<XES, XEv, XSH>& nsSeq;
 
 public:
 
-	BestImprovementLOS(Evaluator<S, XEv>& _eval, NSSeq<S, XEv, XSH>& _nsSeq) :
+	BestImprovementLOS(Evaluator<XES, XEv>& _eval, NSSeq<XES, XEv, XSH>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 	}
@@ -196,13 +196,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<S, XEv>::idComponent() << "BI_LOS";
+		ss << LocalSearch<XES, XEv>::idComponent() << "BI_LOS";
 		return ss.str();
 	}
 
@@ -238,7 +238,7 @@ public:
 	{
 		if(!scanner.hasNext())
 			return nullptr;
-		Evaluator<S, XEv>* eval;
+		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		if(!scanner.hasNext())
@@ -252,7 +252,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(NSSeq<S, XEv, XSH>::idComponent(), "neighborhood structure"));
 
 		return params;

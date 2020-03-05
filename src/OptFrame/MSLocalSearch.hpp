@@ -54,23 +54,6 @@ public:
 
 	// core methods
 
-	// no-optimization
-//	S& search(const S& s, Pareto<S, XEv>& pf, double timelimit = 100000000, double target_f = 0)
-//	{
-//		S& s2 = s.clone();
-//		exec(s2, pf, timelimit, target_f);
-//		return s2;
-//	}
-//
-//	// optimizated version
-//	pair<S&, Evaluation<>&>& search(const S& s, const Evaluation<>& e, Pareto<S, XEv>& pf, double timelimit = 100000000, double target_f = 0)
-//	{
-//		S& s2 = s.clone();
-//		Evaluation<>& e2 = e.clone();
-//		exec(s2, e2, pf, timelimit, target_f);
-//		return *new pair<S&, Evaluation<>&>(s2, e2);
-//	}
-
 // core methods
 
     // 1

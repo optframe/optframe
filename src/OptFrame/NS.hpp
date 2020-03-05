@@ -30,7 +30,7 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
 class NS: public Component
 {
 public:
@@ -42,11 +42,11 @@ public:
 public:
 
 
-	virtual uptr<Move<S, XEv, XSH>> randomMove(const S&) = 0;
+	virtual uptr<Move<XES, XEv, XSH>> randomMove(const XES&) = 0;
 
-	virtual uptr<Move<S, XEv, XSH>> validRandomMove(const S& s)
+	virtual uptr<Move<XES, XEv, XSH>> validRandomMove(const XES& s)
 	{
-		uptr<Move<S, XEv, XSH>> moveValid = this->randomMove(s);
+		uptr<Move<XES, XEv, XSH>> moveValid = this->randomMove(s);
 		if(moveValid && moveValid->canBeApplied(s))
 			return moveValid;
 		else

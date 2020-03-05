@@ -27,7 +27,7 @@
 
 namespace optframe {
 
-template<XSolution S, XEvaluation XEv, XESolution XES, XSearch<XES> XSH = XES> // defaults to single obj.
+template<XESolution XES, XSearch<XES> XSH = XES, XSearchMethod XM = Component> // defaults to single obj.
 class InitialSearch : public Component
 {
 public:
@@ -37,7 +37,7 @@ public:
 
    // timelimit in seconds, accepting fractions (millisecs, ...)
    // may or may not generate valid solution in time
-   virtual std::optional<XSH> initialSearch(const StopCriteria<XEv>& stop) = 0;
+   virtual std::optional<XSH> initialSearch(const StopCriteria<XSH>& stop) = 0;
 
    virtual bool compatible(std::string s)
    {

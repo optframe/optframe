@@ -32,8 +32,8 @@ namespace optframe
 {
 
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
-class NSEnum: public NSSeq<S, XEv, XSH>
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
+class NSEnum: public NSSeq<XES, XEv, XSH>
 {
 
 protected:
@@ -48,25 +48,25 @@ public:
 	{
 	}
 
-	virtual uptr<Move<S, XEv>> randomMove(const S&)
+	virtual uptr<Move<XES, XEv>> randomMove(const XES&)
 	{
 		unsigned int x = rg.rand(size());
 		return indexMove(x);
 	}
 
-	virtual uptr<NSIterator<S, XEv>> getIterator(const S&)
+	virtual uptr<NSIterator<XES, XEv>> getIterator(const XES&)
 	{
-		return uptr<NSIterator<S, XEv>>(new NSEnumIterator<S, XEv> (*this));
+		return uptr<NSIterator<XES, XEv>>(new NSEnumIterator<XES, XEv> (*this));
 	}
 
-	virtual uptr<Move<S, XEv>> indexMove(unsigned int index) = 0;
+	virtual uptr<Move<XES, XEv>> indexMove(unsigned int index) = 0;
 
 	virtual unsigned int size() const = 0;
 
    static string idComponent()
    {
 		stringstream ss;
-		ss << NSSeq<S, XEv, XSH>::idComponent() << ":NSEnum";
+		ss << NSSeq<XES, XEv, XSH>::idComponent() << ":NSEnum";
 		return ss.str();
    }
 
@@ -77,7 +77,7 @@ public:
 
    virtual bool compatible(string s)
    {
-	   return ( s == idComponent() ) || ( NSSeq<S, XEv, XSH>::compatible(s) );
+	   return ( s == idComponent() ) || ( NSSeq<XES, XEv, XSH>::compatible(s) );
    }
 };
 

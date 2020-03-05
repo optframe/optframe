@@ -67,7 +67,7 @@ private:
 	vector<Constructive<S>*> lConstructive;
 	vector<CopySolution<R,ADS>*> lSolution;
 	vector<shared_ptr<Move<S>>> lMove;
-	vector<NS<S, XEv>*> lNS;
+	vector<NS<XES, XEv>*> lNS;
 	vector<NSSeq<S>*> lNSSeq;
 	vector<NSEnum<S>*> lNSEnum;
 
@@ -103,7 +103,7 @@ public:
 			cout << "checkcommand: AdsMan " << lADSManagerComp.size() << " added!" << endl;
 	}
 
-	void add(Evaluator<S, XEv>& c)
+	void add(Evaluator<XES, XEv>& c)
 	{
 		lEvaluator.push_back(&c);
 		if (verbose)
@@ -117,30 +117,30 @@ public:
 			cout << "checkcommand: Solution " << lSolution.size() << " added!" << endl;
 	}
 
-	void add(Move<S, XEv>& c)
+	void add(Move<XES, XEv>& c)
 	{
 		lMove.push_back(&c);
 		if (verbose)
 			cout << "checkcommand: Move " << lMove.size() << " added!" << endl;
 	}
 
-	void add(NS<S, XEv>& c)
+	void add(NS<XES, XEv>& c)
 	{
 		lNS.push_back(&c);
 		if (verbose)
 			cout << "checkcommand: NS " << lNS.size() << " added!" << endl;
 	}
 
-	void add(NSSeq<S, XEv, XSH>& c)
+	void add(NSSeq<XES, XEv, XSH>& c)
 	{
 		lNSSeq.push_back(&c);
 		if (verbose)
 			cout << "checkcommand: NSSeq " << lNSSeq.size() << " added!" << endl;
 		if (convertNS)
-			add((NS<S, XEv>&) c);
+			add((NS<XES, XEv>&) c);
 	}
 
-	void add(NSEnum<S, XEv>& c)
+	void add(NSEnum<XES, XEv>& c)
 	{
 		lNSEnum.push_back(&c);
 		if (verbose)
@@ -193,7 +193,7 @@ public:
 		bool overestimate, underestimate;
 	};
 
-	bool testMoveGeneral(int iter, NS<S, XEv>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<S>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckWithSamples& timeSamples)
+	bool testMoveGeneral(int iter, NS<XES, XEv>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<S>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckWithSamples& timeSamples)
 	{
 		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
 		{
@@ -723,7 +723,7 @@ public:
 
 		for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++)
 		{
-			NS<S, XEv>* ns = lNS.at(id_ns);
+			NS<XES, XEv>* ns = lNS.at(id_ns);
 
 			cout << "checkcommand: testing NS " << id_ns << " => " << ns->toString();
 			cout << endl;

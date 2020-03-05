@@ -56,7 +56,7 @@ using namespace std;
 namespace optframe
 {
 
-//template<XSolution S, XEvaluation XEv = Evaluation<>>
+
 template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
 class MSSearch: public Component
 {

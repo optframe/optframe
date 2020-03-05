@@ -40,7 +40,7 @@ namespace optframe
 {
 
 // TODO: may pass just XESolution and XEvaluation here (for StopCriteria)... no XSolution explicitly required.
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSE = pair<S, XEv>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES, XSearchMethod XM = Component> // defaults to XSH = XES
 class LocalSearch: public Component
 {
    typedef vector<XEv*> FitnessValues;
@@ -57,24 +57,13 @@ public:
    }
 
    // core methods 
-   
-   //(search: DEPRECATED)
-   /*
-   // no-optimization
-   S& search(const S& s, const StopCriteria<XEv>& stopCriteria)
-   {
-      S& s2 = s.clone();
-      exec(s2, stopCriteria);
-      return s2;
-   }
-   */
 
    // copy-based version (TODO: deprecate this?)
-   XSE lsearch(const XSE& se, const StopCriteria<XEv>& stopCriteria)
+   XES lsearch(const XES& se, const StopCriteria<XES, XM>& stopCriteria)
    {
       //S& s2 = s.clone();
       //XEv& e2 = e.clone();
-      XSE p2 = se; // implicit 'clone' here ??
+      XES p2 = se; // implicit 'clone' here ??
       searchFrom(p2, stopCriteria);
       //return *new pair<S&, XEv&> (s2, e2);
       return p2;
@@ -90,16 +79,16 @@ public:
    // 2
    //virtual void exec(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) = 0;
    // TODO: return SearchStatus
-   virtual void searchFrom(XSE& se, const StopCriteria<XEv>& stopCriteria) = 0;
+   virtual void searchFrom(XES& se, const StopCriteria<XES, XSH>& stopCriteria) = 0;
    // TODO: perhaps return 'bool' or FLAG indicating possible changes on solution (UNKNOWN, CHANGED, NOCHANGE, IMPROVED, ...)
 
    // optional: set local optimum status (LOS)
-   virtual void setLOS(LOS los, string nsid, S& s, XEv& e)
+   virtual void setLOS(LOS los, string nsid, XES& se)
    {
    }
 
    // optional: get local optimum status (LOS)
-   virtual LOS getLOS(string nsid, S& s, XEv& e)
+   virtual LOS getLOS(string nsid, XES& se)
    {
 	   return los_unknown;
    }
@@ -124,7 +113,7 @@ public:
 };
 
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>, XSearch<XES> XSH = XES>
 class LocalSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
 {
 public:
@@ -132,7 +121,7 @@ public:
 	{
 	}
 
-	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
+	virtual LocalSearch<XES, XEv, XSH>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{

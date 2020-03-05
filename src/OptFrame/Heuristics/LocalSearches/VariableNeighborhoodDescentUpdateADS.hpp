@@ -30,16 +30,16 @@
 namespace optframe {
 
 //template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S, XEvaluation XEv = Evaluation<>>
-class VariableNeighborhoodDescentUpdateADS : public LocalSearch<S, XEv>
+template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES, XEv>
 {
 private:
-   Evaluator<S, XEv>& ev;
+   Evaluator<XES, XEv>& ev;
    ADSManager<R, ADS, S>& adsMan;
-   vector<LocalSearch<S, XEv>*> lsList;
+   vector<LocalSearch<XES, XEv>*> lsList;
 
 public:
-   VariableNeighborhoodDescentUpdateADS(Evaluator<S, XEv>& _ev, ADSManager<R, ADS, S>& _adsMan, vector<LocalSearch<S, XEv>*> _lsList)
+   VariableNeighborhoodDescentUpdateADS(Evaluator<XES, XEv>& _ev, ADSManager<R, ADS, S>& _adsMan, vector<LocalSearch<XES, XEv>*> _lsList)
      : ev(_ev)
      , adsMan(_adsMan)
      , lsList(_lsList)
@@ -57,7 +57,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(pair<S, XEv>& se, const StopCriteria<XEv>& sosc) override
+	virtual void searchFrom(XES& se, const StopCriteria<XES>& sosc) override
 	{
       S& s = se.first;
       XEv& e = se.second;
@@ -107,13 +107,13 @@ public:
 
    virtual bool compatible(string s)
    {
-      return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
+      return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << LocalSearch<S, XEv>::idComponent() << ":VNDUpdateADS";
+      ss << LocalSearch<XES, XEv>::idComponent() << ":VNDUpdateADS";
       return ss.str();
    }
 
@@ -137,7 +137,7 @@ public:
    }
 };
 
-///template<XSolution S, XEvaluation XEv = Evaluation<>>
+///template<XESolution XES, XEvaluation XEv = Evaluation<>>
 //template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 // passing 'S' manually, for safety
 template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
@@ -150,13 +150,13 @@ public:
 
    virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
-      Evaluator<S, XEv>* eval;
+      Evaluator<XES, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
       ADSManager<R, ADS, S>* adsMan;
       hf.assign(adsMan, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      vector<LocalSearch<S, XEv>*> hlist;
+      vector<LocalSearch<XES, XEv>*> hlist;
       hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
       return new VariableNeighborhoodDescentUpdateADS<R, ADS, S, XEv>(*eval, *adsMan, hlist);
@@ -165,12 +165,12 @@ public:
    virtual vector<pair<string, string>> parameters()
    {
       vector<pair<string, string>> params;
-      params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+      params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
 
       params.push_back(make_pair(ADSManager<R, ADS, S>::idComponent(), "ADSManager function"));
 
       stringstream ss;
-      ss << LocalSearch<S, XEv>::idComponent() << "[]";
+      ss << LocalSearch<XES, XEv>::idComponent() << "[]";
       params.push_back(make_pair(ss.str(), "list of local searches"));
 
       return params;

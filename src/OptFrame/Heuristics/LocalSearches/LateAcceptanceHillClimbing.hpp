@@ -31,23 +31,23 @@ namespace optframe
 {
 
 template<XSolution S, XEvaluation XEv=Evaluation<>>
-class LateAcceptanceHillClimbing: public LocalSearch<S, XEv>
+class LateAcceptanceHillClimbing: public LocalSearch<XES, XEv>
 {
 private:
-	Evaluator<S, XEv>& ev;
-	vector<NS<S, XEv>*> lns;
+	Evaluator<XES, XEv>& ev;
+	vector<NS<XES, XEv>*> lns;
 	int L;       // size of list
 	int iterMax; // max iterations without improvement
 
 public:
 
-	LateAcceptanceHillClimbing(Evaluator<S, XEv>& _ev, NS<S, XEv>& _ns, int _L, int _iterMax) :
+	LateAcceptanceHillClimbing(Evaluator<XES, XEv>& _ev, NS<XES, XEv>& _ns, int _L, int _iterMax) :
 			ev(_ev), L(_L), iterMax(_iterMax)
 	{
 		lns.push_back(&_ns);
 	}
 
-	LateAcceptanceHillClimbing(Evaluator<S, XEv>& _ev, vector<NS<S, XEv>*> _lns, int _L, int _iterMax) :
+	LateAcceptanceHillClimbing(Evaluator<XES, XEv>& _ev, vector<NS<XES, XEv>*> _lns, int _L, int _iterMax) :
 			ev(_ev), lns(_lns), L(_L), iterMax(_iterMax)
 	{
 	}
@@ -63,7 +63,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(pair<S, XEv>& se, const StopCriteria<XEv>& sosc) override
+	virtual void searchFrom(XES& se, const StopCriteria<XES>& sosc) override
 	{
       S& sStar = se.first;
       XEv& eStar = se.second;
@@ -93,7 +93,7 @@ public:
 			// choose random neighborhood
 			int ns_k = rand() % lns.size();
 
-			uptr<Move<S, XEv>> move = lns[ns_k]->validRandomMove(s);
+			uptr<Move<XES, XEv>> move = lns[ns_k]->validRandomMove(s);
 	
 			if (!move)
 			{
@@ -162,13 +162,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<S, XEv>::idComponent() << ":LAHC";
+		ss << LocalSearch<XES, XEv>::idComponent() << ":LAHC";
 		return ss.str();
 	}
 
@@ -203,10 +203,10 @@ public:
 
 	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<S, XEv>* eval;
+		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<NS<S, XEv>*> nslist;
+		vector<NS<XES, XEv>*> nslist;
 		hf.assignList(nslist, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int L = scanner.nextInt();
@@ -219,9 +219,9 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
 		stringstream ss;
-		ss << NS<S, XEv>::idComponent() << "[]";
+		ss << NS<XES, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of NS"));
 		params.push_back(make_pair("OptFrame:int", "list size L"));
 		params.push_back(make_pair("OptFrame:int", "iterMax iterations without improvement"));

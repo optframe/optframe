@@ -43,19 +43,19 @@ using namespace std;
 
 namespace optframe {
 
-//template<XSolution S, XEvaluation XEv = Evaluation<>>
+//template<XESolution XES, XEvaluation XEv = Evaluation<>>
 //concept SolEv;
 
-//template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-// if replacing types directly (no templates), concept deduction cannot appear in virtual functions. So, we need templates.
-//template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>, XSearchMethod XM = Component, XStopCriteria<XEv, XM> XStop = DefaultStop>
-//template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>, XSearchMethod XM = Component>
-class SingleObjSearch: public GlobalSearch<S, XEv, XSH, XSH, XM> // public Component
+
+// This is a XES, XES global search... using space XES = <S, XEv>
+template<XESolution XES, XSearchMethod XM = Component>
+class SingleObjSearch: public GlobalSearch<XES, XES, XM> // public Component
 {
    // if passing types directly here, error 'typedef declared auto'
-   typedef vector<XEv*> FitnessValues;
-   typedef const vector<const XEv*> ConstFitnessValues;
+   //typedef vector<XEv*> FitnessValues;
+   //typedef const vector<const XEv*> ConstFitnessValues;
+
+   using XSH = XES; // XSearch<XES> = XES
 
 public:
    SingleObjSearch()
@@ -66,19 +66,6 @@ public:
    {
    }
 
-   // helper: constructive method or using 'input'
-   static std::optional<pair<S, XEv>> genPair(Constructive<S>& constructive, Evaluator<S, XEv>& evaluator, double timelimit, const std::optional<pair<S, XEv>> input = std::nullopt)
-   {
-      if(input)
-         return input;
-      std::optional<S> sStar = constructive.generateSolution(timelimit);
-      if(!sStar)
-         return std::nullopt;
-		XEv eStar = evaluator.evaluate(*sStar);
-      return make_pair(*sStar, eStar);
-   }
-
-
    // search method try to find a feasible solution within timelimit, if there is no such solution it returns nullptr.
    //virtual pair<S, XEv>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const XEv* _e = nullptr) = 0;
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria, const std::optional<pair<S, XEv>> input = std::nullopt) = 0;
@@ -86,7 +73,7 @@ public:
    
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) = 0;
    //virtual SearchStatus search(op<XSH>& inputOutput, const XStop& stopCriteria) = 0;
-   virtual SearchStatus search(op<XSH>& inputOutput, const StopCriteria<XEv, XM>& stopCriteria) = 0;
+   virtual SearchStatus search(op<XSH>& inputOutput, const StopCriteria<XSH, XM>& stopCriteria) = 0;
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv, XM>& stopCriteria) = 0;
 
    virtual string log() const
@@ -113,7 +100,7 @@ public:
 };
 
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-//template<XSolution S, XEvaluation XEv = Evaluation<>>
+//template<XESolution XES, XEvaluation XEv = Evaluation<>>
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
 class SingleObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
 {
@@ -122,7 +109,7 @@ public:
    {
    }
 
-   virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
+   virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
 
    virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
@@ -147,7 +134,7 @@ public:
 };
 
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-//template<XSolution S, XEvaluation XEv = Evaluation<>>
+//template<XESolution XES, XEvaluation XEv = Evaluation<>>
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
 class SingleObjSearchAction : public Action<S, XEv, X2ES>
 {
@@ -163,12 +150,12 @@ public:
 
    virtual bool handleComponent(string type)
    {
-      return Component::compareBase(SingleObjSearch<S, XEv>::idComponent(), type);
+      return Component::compareBase(SingleObjSearch<XES>::idComponent(), type);
    }
 
    virtual bool handleComponent(Component& component)
    {
-      return component.compatible(SingleObjSearch<S, XEv>::idComponent());
+      return component.compatible(SingleObjSearch<XES>::idComponent());
    }
 
    virtual bool handleAction(string action)
@@ -201,7 +188,7 @@ public:
       // cast object to lower type
       Component* final = nullptr;
 
-      if (type == SingleObjSearch<S, XEv>::idComponent()) {
+      if (type == SingleObjSearch<XES>::idComponent()) {
          final = (SingleObjSearch<S, XEv>*)comp;
       } else {
          cout << "SingleObjSearchAction::doCast error: no cast for type '" << type << "'" << endl;

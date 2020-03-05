@@ -37,7 +37,7 @@ class MORandomImprovement: public MOLocalSearch<S, XEv>
 {
 private:
 	MultiEvaluator<S>& mev;
-	NS<S, XEv>& ns;
+	NS<XES, XEv>& ns;
 
 	// logs
 	double sum_time;
@@ -45,7 +45,7 @@ private:
 	int iterMax;
 public:
 
-	MORandomImprovement(MultiEvaluator<S>& _mev, NS<S, XEv>& _ns, unsigned int _iterMax) :
+	MORandomImprovement(MultiEvaluator<S>& _mev, NS<XES, XEv>& _ns, unsigned int _iterMax) :
 			mev(_mev), ns(_ns), iterMax(_iterMax)
 	{
 		sum_time = 0.0;
@@ -72,11 +72,11 @@ public:
 
 		while ((iter < iterMax) && ((t.now() - stopCriteria.timelimit) < 0))
 		{
-			uptr<Move<S, XEv>> move = ns.randomMove(s);
+			uptr<Move<XES, XEv>> move = ns.randomMove(s);
 			if (move->canBeApplied(s))
 			{
 				//Move and mark sMev as outdated
-				uptr<Move<S, XEv>> mov_rev = move->apply(s);
+				uptr<Move<XES, XEv>> mov_rev = move->apply(s);
 
 				//Call method to reevaluate sMev and try to include TODO
 //				pManager->addSolutionWithMEVReevaluation(p, *s,*sMev);
@@ -104,13 +104,13 @@ public:
 	}
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (MOLocalSearch<S, XEv>::compatible(s));
+		return (s == idComponent()) || (MOLocalSearch<XES, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MOLocalSearch<S, XEv>::idComponent() << "MO-RI";
+		ss << MOLocalSearch<XES, XEv>::idComponent() << "MO-RI";
 		return ss.str();
 	}
 

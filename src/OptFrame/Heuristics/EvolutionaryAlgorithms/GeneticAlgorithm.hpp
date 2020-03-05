@@ -46,7 +46,7 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class GeneticAlgorithm {
 protected:
     using Individual = S;

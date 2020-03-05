@@ -29,17 +29,17 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class RandomDescentMethod: public LocalSearch<S, XEv>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class RandomDescentMethod: public LocalSearch<XES, XEv, XES>
 {
 private:
-	Evaluator<S, XEv>& evaluator;
-	NS<S, XEv>& ns;
+	Evaluator<XES, XEv>& evaluator;
+	NS<XES, XEv>& ns;
 	unsigned int iterMax;
 
 public:
 
-	RandomDescentMethod(Evaluator<S, XEv>& _eval, NS<S, XEv>& _ns, unsigned int _iterMax) :
+	RandomDescentMethod(Evaluator<XES, XEv>& _eval, NS<XES, XEv>& _ns, unsigned int _iterMax) :
 		evaluator(_eval), ns(_ns), iterMax(_iterMax)
 	{
 	}
@@ -55,9 +55,9 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) override
+	virtual void searchFrom(XES& se, const StopCriteria<XES>& stopCriteria) override
 	{
-      S& s = se.first;
+      XSolution& s = se.first;
       XEv& e = se.second;
 		Timer tNow;
 
@@ -65,7 +65,7 @@ public:
 
 		while ((iter < iterMax) && (tNow.now() < stopCriteria.timelimit) && (evaluator.betterThan(stopCriteria.target_f, e)))
 		{
-			uptr<Move<S, XEv>> move = ns.randomMove(s);
+			uptr<Move<XES, XEv>> move = ns.randomMove(s);
 
 			op<Evaluation<>> cost = nullopt;
 
@@ -93,7 +93,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<S, XEv>::idComponent() << ":RDM";
+		ss << LocalSearch<XES, XEv>::idComponent() << ":RDM";
 		return ss.str();
 	}
 
@@ -114,10 +114,10 @@ public:
 
 	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<S, XEv>* eval;
+		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NS<S, XEv>* ns;
+		NS<XES, XEv>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int iterMax = scanner.nextInt();
@@ -128,8 +128,8 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(NS<S, XEv>::idComponent(), "neighborhood structure"));
+		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(NS<XES, XEv>::idComponent(), "neighborhood structure"));
 		params.push_back(make_pair("OptFrame:int", "max number of iterations without improvement"));
 
 		return params;

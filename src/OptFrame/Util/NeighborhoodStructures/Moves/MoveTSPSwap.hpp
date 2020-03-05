@@ -81,7 +81,7 @@ public:
       return uptr<Move<S, XEv>>(new MoveTSPSwap(p1, p2));
    }
 
-   virtual bool operator==(const Move<S, XEv>& _m) const
+   virtual bool operator==(const Move<XES, XEv>& _m) const
    {
       const MoveTSPSwap& m1 = (const MoveTSPSwap&)_m;
       return ((m1.p1 == p1) && (m1.p2 == p2));

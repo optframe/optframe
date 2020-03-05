@@ -27,17 +27,17 @@
 
 namespace optframe {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class CircularSearch : public LocalSearch<S, XEv>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class CircularSearch : public LocalSearch<XES, XEv>
 {
 private:
-   Evaluator<S, XEv>& eval;
-   NSEnum<S, XEv>& ns;
+   Evaluator<XES, XEv>& eval;
+   NSEnum<XES, XEv>& ns;
 
    int initial_w;
 
 public:
-   CircularSearch(Evaluator<S, XEv>& _eval, NSEnum<S, XEv>& _nsEnum)
+   CircularSearch(Evaluator<XES, XEv>& _eval, NSEnum<XES, XEv>& _nsEnum)
      : eval(_eval)
      , ns(_nsEnum)
    {
@@ -55,9 +55,9 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(pair<S, XEv>& se, const StopCriteria<XEv>& sosc) override
+	virtual void searchFrom(XES& se, const StopCriteria<XES>& sosc) override
 	{
-      S& s = se.first;
+      XSolution& s = se.first;
       //XEv& e = se.second;
       
       //double timelimit = sosc.timelimit;
@@ -67,7 +67,7 @@ public:
       int w = initial_w % Wmax;
 
       do {
-         uptr<Move<S, XEv>> m = ns.indexMove(w);
+         uptr<Move<XES, XEv>> m = ns.indexMove(w);
 
          if (m->canBeApplied(s)) {
             bool mayEstimate = false;
@@ -94,13 +94,13 @@ public:
 
    virtual bool compatible(string s)
    {
-      return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
+      return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << LocalSearch<S, XEv>::idComponent() << ":CS";
+      ss << LocalSearch<XES, XEv>::idComponent() << ":CS";
       return ss.str();
    }
 
@@ -120,7 +120,7 @@ public:
 
    virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
-      Evaluator<S, XEv>* eval;
+      Evaluator<XES, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
       NSEnum<S, XEv>* nsenum;
@@ -132,7 +132,7 @@ public:
    virtual vector<pair<string, string>> parameters()
    {
       vector<pair<string, string>> params;
-      params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+      params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
       params.push_back(make_pair(NSEnum<S, XEv>::idComponent(), "neighborhood structure"));
 
       return params;

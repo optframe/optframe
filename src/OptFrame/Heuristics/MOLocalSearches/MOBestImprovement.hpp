@@ -31,7 +31,7 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class MOBestImprovement: public MOLocalSearch<S, XEv>
 {
 private:
@@ -121,13 +121,13 @@ public:
 	}
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (MOLocalSearch<S, XEv>::compatible(s));
+		return (s == idComponent()) || (MOLocalSearch<XES, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MOLocalSearch<S, XEv>::idComponent() << ":MO-BI";
+		ss << MOLocalSearch<XES, XEv>::idComponent() << ":MO-BI";
 		return ss.str();
 	}
 

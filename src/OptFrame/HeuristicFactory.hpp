@@ -511,13 +511,13 @@ public:
 
 		string h = scanner.next();
 
-		if ((h == LocalSearch<S, XEv>::idComponent()) || (h == "LocalSearch"))
+		if ((h == LocalSearch<XES, XEv>::idComponent()) || (h == "LocalSearch"))
 		{
 			unsigned int id = scanner.nextInt();
 
 			LocalSearch<S, XEv>* mtd = nullptr;
 
-			assign(mtd, id, LocalSearch<S, XEv>::idComponent());
+			assign(mtd, id, LocalSearch<XES, XEv>::idComponent());
 
 			if(!mtd)
 				return make_pair(new EmptyLocalSearch<S, XEv> , scanner.rest());
@@ -525,7 +525,7 @@ public:
 			return make_pair(mtd, scanner.rest());
 		}
 
-		if (h == EmptyLocalSearch<S, XEv>::idComponent())
+		if (h == EmptyLocalSearch<XES, XEv>::idComponent())
 			return make_pair(new EmptyLocalSearch<S, XEv> , scanner.rest());
 
 		for(unsigned i=0; i<builders.size(); i++)
@@ -561,13 +561,13 @@ public:
 
 		string h = scanner.next();
 
-		if (h == SingleObjSearch<S, XEv>::idComponent())
+		if (h == SingleObjSearch<XES, XEv>::idComponent())
 		{
 			unsigned int id = scanner.nextInt();
 
 			SingleObjSearch<S, XEv>* mtd = nullptr;
 
-			assign(mtd, id, SingleObjSearch<S, XEv>::idComponent());
+			assign(mtd, id, SingleObjSearch<XES, XEv>::idComponent());
 
 			if(!mtd)
 				return make_pair(new EmptySingleObjSearch<S, XEv> , scanner.rest());
@@ -575,7 +575,7 @@ public:
 			return make_pair(mtd, scanner.rest());
 		}
 
-		if (h == EmptySingleObjSearch<S, XEv>::idComponent())
+		if (h == EmptySingleObjSearch<XES, XEv>::idComponent())
 			return make_pair(new EmptySingleObjSearch<S, XEv> , scanner.rest());
 
 		for(unsigned i=0; i<builders.size(); i++)

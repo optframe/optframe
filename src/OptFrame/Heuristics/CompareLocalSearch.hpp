@@ -30,16 +30,16 @@ namespace optframe
 {
 
 template<XSolution S, XEvaluation XEv=Evaluation<>>
-class CompareLocalSearch: public LocalSearch<S, XEv>
+class CompareLocalSearch: public LocalSearch<XES, XEv>
 {
 private:
-	Evaluator<S, XEv>& eval;
+	Evaluator<XES, XEv>& eval;
 	LocalSearch<S, XEv>& ls1;
 	LocalSearch<S, XEv>& ls2;
 
 public:
 
-	CompareLocalSearch(Evaluator<S, XEv>& _eval, LocalSearch<S, XEv>& _ls1,  LocalSearch<S, XEv>& _ls2) :
+	CompareLocalSearch(Evaluator<XES, XEv>& _eval, LocalSearch<XES, XEv>& _ls1,  LocalSearch<XES, XEv>& _ls2) :
 		eval(_eval), ls1(_ls1), ls2(_ls2)
 	{
 	}
@@ -55,7 +55,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(pair<S, XEv>& se, const StopCriteria<XEv>& sosc) override
+	virtual void searchFrom(XES& se, const StopCriteria<XES>& sosc) override
 	{
       //S& s = se.first;
       XEv& e = se.second;
@@ -84,13 +84,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (LocalSearch<S, XEv>::compatible(s));
+		return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << LocalSearch<S, XEv>::idComponent() << "CompareLocalSearch";
+		ss << LocalSearch<XES, XEv>::idComponent() << "CompareLocalSearch";
 		return ss.str();
 	}
 
@@ -118,7 +118,7 @@ public:
 
 	virtual LocalSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<S, XEv>* eval;
+		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
@@ -145,9 +145,9 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(LocalSearch<S, XEv>::idComponent(), "local search 1"));
-		params.push_back(make_pair(LocalSearch<S, XEv>::idComponent(), "local search 2"));
+		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search 1"));
+		params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search 2"));
 
 		return params;
 	}

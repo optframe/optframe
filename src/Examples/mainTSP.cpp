@@ -102,6 +102,15 @@ main(int argc, char** argv)
    NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspor1(1);
    NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspor2(2);
    NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspor3(3);
+
+   // TODO: we need to try NSSeqTSPOrOpt , because it requires adapters...
+   NSSeqTSPOrOpt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspor_adapt;
+   // Maybe S& should be the Representation itself over there.... no getR() inside there.
+   // It makes more sense to pass RepTSP + ESolutionTSP... than SolutionTSP + ESolutionTSP
+   // Then, should adapters just work for R,ADS pair on XBaseSolution concept?? TODO: think... 
+
+
+
    NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspswap;
 
    check.add(random);

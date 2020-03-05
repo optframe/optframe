@@ -39,7 +39,7 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class Crossover: public Component, public EA
 {
 public:
@@ -70,7 +70,7 @@ public:
 };
 
 //temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class SimpleCrossover {
 protected:
 	using Individual = S;
@@ -91,7 +91,7 @@ public:
 /**********************/
 
 //receives two parents to return offspring with user programmed operator
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class TwoParentsCrossover : public SimpleCrossover<S, XEv> {
 protected:
 	using Individual = S;

@@ -85,7 +85,7 @@ public:
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 //template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
-class MultiObjSearch: public GlobalSearch<S, XEv, XES, Pareto<S, XEv, XES>> // public Component
+class MultiObjSearch: public GlobalSearch<XES, Pareto<S, XEv, XES>> // public Component
 {
 public:
 

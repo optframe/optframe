@@ -31,7 +31,7 @@ namespace optframe
 {
 
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class paretoManager
 {
 public:

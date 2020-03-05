@@ -37,18 +37,18 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
 class VariableNeighborhoodSearch: public VNS, public SingleObjSearch<S, XEv, XSH>
 {
 protected:
-	Evaluator<S, XEv, XSH>& evaluator;
-	Constructive<S>& constructive;
+	Evaluator<XES, XEv>& evaluator;
+	InitialSearch<XES>& constructive;
 	vector<NS<S, XEv, XSH>*> vshake;
 	vector<NSSeq<S, XEv, XSH>*> vsearch;
 
 public:
 
-	VariableNeighborhoodSearch(Evaluator<S, XEv>& _evaluator, Constructive<S>& _constructive, vector<NS<S, XEv>*> _vNS, vector<NSSeq<S, XEv, XSH>*> _vNSSeq) :
+	VariableNeighborhoodSearch(Evaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, vector<NS<XES, XEv>*> _vNS, vector<NSSeq<S, XEv, XSH>*> _vNSSeq) :
 		evaluator(_evaluator), constructive(_constructive), vshake(_vNS), vsearch(_vNSSeq)
 	{
 	}
@@ -66,7 +66,7 @@ public:
       //
       S& s = se.first;
       //Evaluation<>& e = se.second;
-		uptr<Move<S, XEv>> move = vshake.at(k_shake)->validRandomMove(s);
+		uptr<Move<XES, XEv>> move = vshake.at(k_shake)->validRandomMove(s);
 		if(move)
 		{
          move->applyUpdate(se);
@@ -189,8 +189,8 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<S, XEv>::idComponent() << VNS::family();
-		//ss << SingleObjSearch<S, XEv>::idComponent() << VNS::family << "VariableNeighborhoodSearch:";
+		ss << SingleObjSearch<XES>::idComponent() << VNS::family();
+		//ss << SingleObjSearch<XES>::idComponent() << VNS::family << "VariableNeighborhoodSearch:";
 		return ss.str();
 	}
 

@@ -41,8 +41,8 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class BasicGeneticAlgorithm: public SingleObjSearch<S, XEv>, public EA
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class BasicGeneticAlgorithm: public SingleObjSearch<XES>, public EA
 {
 protected:
 	typedef S Chromossome;
@@ -64,7 +64,7 @@ private:
 	Selection<R, ADS>& selection;
 	Crossover<R, ADS>& cross;
 	Mutation<R, ADS>& mut;
-	LocalSearch<S, XEv>& ls;
+	LocalSearch<XES, XEv>& ls;
 
 	RandGen& rg;
 
@@ -78,7 +78,7 @@ public:
 			return f;
 	}
 
-	BasicGeneticAlgorithm(Evaluator<S>& _evaluator, InitialMultiSolution<S>& _initPop, unsigned populationSize, float crossoverRate, float mutationRate, float _pLS, unsigned numGenerations, Selection<R, ADS>& _selection, Crossover<R, ADS>& _cross, Mutation<R>& _mut, LocalSearch<S, XEv>& _ls, RandGen& _rg) :
+	BasicGeneticAlgorithm(Evaluator<S>& _evaluator, InitialMultiSolution<S>& _initPop, unsigned populationSize, float crossoverRate, float mutationRate, float _pLS, unsigned numGenerations, Selection<R, ADS>& _selection, Crossover<R, ADS>& _cross, Mutation<R>& _mut, LocalSearch<XES, XEv>& _ls, RandGen& _rg) :
 			evaluator(_evaluator), initPop(_initPop), selection(_selection), cross(_cross), mut(_mut), ls(_ls), rg(_rg)
 	{
 		maxim = !evaluator.isMinimization();
@@ -304,7 +304,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<S, XEv>::idComponent() << ":" << EA::family() << ":BasicGeneticAlgorithm";
+		ss << SingleObjSearch<XES>::idComponent() << ":" << EA::family() << ":BasicGeneticAlgorithm";
 		return ss.str();
 	}
 
@@ -369,7 +369,7 @@ public:
 		params.push_back(make_pair(Selection<R, ADS>::idComponent(), "selection"));
 		params.push_back(make_pair(Crossover<R, ADS>::idComponent(), "crossover"));
 		params.push_back(make_pair(Mutation<R, ADS>::idComponent(), "mutation"));
-		params.push_back(make_pair(LocalSearch<S, XEv>::idComponent(), "local search"));
+		params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
 
 		return params;
 	}

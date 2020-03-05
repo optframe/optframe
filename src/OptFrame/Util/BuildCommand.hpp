@@ -121,7 +121,7 @@ public:
 
           if(method.first!=nullptr)
           {
-        	  base   = LocalSearch<S, XEv>::idComponent();
+        	  base   = LocalSearch<XES, XEv>::idComponent();
         	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
           }
       }
@@ -133,7 +133,7 @@ public:
 
           if(method.first!=nullptr)
           {
-        	  base   = SingleObjSearch<S, XEv>::idComponent();
+        	  base   = SingleObjSearch<XES>::idComponent();
         	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
           }
       }

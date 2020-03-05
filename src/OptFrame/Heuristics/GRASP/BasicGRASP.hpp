@@ -31,19 +31,20 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class BasicGRASP: public SingleObjSearch<S, XEv>, public GRASP
+// GRASP requires S space interaction
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+class BasicGRASP: public SingleObjSearch<XES>, public GRASP
 {
 private:
-	Evaluator<S, XEv>& evaluator;
+	Evaluator<XES, XEv>& evaluator;
 	GRConstructive<S>& constructive;
-	LocalSearch<S, XEv>& ls;
+	LocalSearch<XES, XEv>& ls;
 	float alpha;
 	unsigned int iterMax;
 
 public:
 
-	BasicGRASP(Evaluator<S, XEv>& _eval, GRConstructive<S>& _constructive, LocalSearch<S, XEv>& _ls, float _alpha, int _iterMax) :
+	BasicGRASP(Evaluator<XES, XEv>& _eval, GRConstructive<S>& _constructive, LocalSearch<XES, XEv>& _ls, float _alpha, int _iterMax) :
 			evaluator(_eval), constructive(_constructive), ls(_ls)
 	{
 		if (_iterMax <= 0)
@@ -69,7 +70,7 @@ public:
 
 	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(std::optional<pair<S, XEv>>& star, const StopCriteria<XEv>& stopCriteria) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XES>& stopCriteria) override
 	{
 		double timelimit = stopCriteria.timelimit;
 		XEv target_f(stopCriteria.target_f);
@@ -134,7 +135,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << SingleObjSearch<S, XEv>::idComponent() << ":" << GRASP::family() << ":BasicGRASP";
+		ss << SingleObjSearch<XES>::idComponent() << ":" << GRASP::family() << ":BasicGRASP";
 		return ss.str();
 
 	}
@@ -150,7 +151,7 @@ public:
 
 	virtual SingleObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<S, XEv>* eval;
+		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		GRConstructive<S>* constructive;
@@ -181,9 +182,9 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(GRConstructive<S>::idComponent(), "greedy randomized constructive heuristic"));
-		params.push_back(make_pair(LocalSearch<S, XEv>::idComponent(), "local search"));
+		params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
 		params.push_back(make_pair("OptFrame:float", "alpha parameter [0,1]"));
 		params.push_back(make_pair("OptFrame:int", "max number of iterations"));
 
