@@ -148,6 +148,12 @@ public:
 		return make_pair(*paretoSet.at(index), paretoFront.at(index));
 	}
 
+	pair<uptr<S>, uptr<XEv>> getP(unsigned index)
+	{
+		return make_pair(uptr<S>(), uptr<XEv>());
+	}
+
+
 	vector<S*> getParetoSet()
 	{
 		return paretoSet;

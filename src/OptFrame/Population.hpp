@@ -81,6 +81,12 @@ public:
       return (*p.at(c));
    }
 
+	pair<uptr<S>, uptr<XEv>> getP(unsigned index)
+	{
+		return make_pair(uptr<S>(), uptr<XEv>());
+	}
+
+
    void insert(unsigned pos, chromossome& c)
    {
       p.insert(p.begin() + pos, new chromossome(c));

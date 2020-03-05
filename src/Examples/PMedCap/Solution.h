@@ -30,5 +30,7 @@ using namespace optframe;
 
 typedef CopySolution<RepPCAP> SolutionPCAP;
 
+typedef pair<SolutionPCAP, EvaluationPCAP> ESolutionPCAP;
+
 #endif /*PCAP_SOLUTION_H_*/
 

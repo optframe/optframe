@@ -196,18 +196,25 @@ public:
 template <XSolution S, XEvaluation XEv>
 struct IsPopulation
 {
-   int size(); // required
+   size_t size(); // required
+   pair<uptr<S>,uptr<XEv>> getP(size_t i); // required
 };
+
+// compilation test
+static_assert(X2ESolution<IsPopulation<IsSolution<double>,IsEvaluation<int>>, IsSolution<double>, IsEvaluation<int>>);  //TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
+
+// ---------
 
 // example of a Pareto element
 template <XSolution S, XEvaluation XEv>
 struct IsPareto
 {
-   int size(); // required
+    size_t size(); // required
+   pair<uptr<S>,uptr<XEv>> getP(size_t i);
 };
 
-// compile tests
-//static_assert(X2ESolution<IsPopulation<IsSolution<double>,IsEvaluation<int>>, IsSolution<double>, IsEvaluation<int>>);  //TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
+// compilation test
+static_assert(X2ESolution<IsPareto<IsSolution<double>,IsEvaluation<int>>, IsSolution<double>, IsEvaluation<int>>);  //TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
 
 // perform instantiation tests
 struct optframe_test_debug_testpareto_ispop_ispareto_disable_runtime

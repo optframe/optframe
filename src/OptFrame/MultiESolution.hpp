@@ -60,6 +60,12 @@ public:
 		return p.size();
 	}
 
+   // todo: implement
+   pair<uptr<S>,uptr<XEv>> getP(size_t i)
+   {
+      return make_pair(uptr<S>(),uptr<XEv>());
+   }
+
 	S& at(unsigned c)
 	{
 		return (*p.at(c));
@@ -185,6 +191,9 @@ public:
 
 };
 
-}
+// basic compilation test (TODO: improve)
+static_assert(X2ESolution<MultiESolution<IsSolution<double>,IsEvaluation<int>>, IsSolution<double>, IsEvaluation<int>>); 
+
+} // namespace optframe
 
 #endif /* OPTFRAME_MULTISOLUTION_HPP_ */

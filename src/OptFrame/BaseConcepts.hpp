@@ -212,12 +212,10 @@ concept bool XESolution = XSolution<Self> && //(XSolution<Self> && XEvaluation<S
 // general one:
 template <class Self, class P>
 //concept bool XPowerSet = true; 
-concept bool XPowerSet = requires(Self a)
+concept bool XPowerSet = requires(Self a, size_t idx)
    {
-      {
-         a.size()
-      }
-      ->optframe::basic_arithmetics;
+      { a.size() } -> size_t;
+      { a.getP(idx) } -> P; // TODO: rename to 'at' (compatible with 'vector'), and return reference
    };
 // TODO: powerset could return a 'size'(or 'count'), and perhaps a vector (or iterator) of objects for type P
 
@@ -230,7 +228,10 @@ concept bool X2Solution = XPowerSet<Self, S>; // Too bad, this is unused on OptF
 // It is in fact: s \subseteq 2^S  plus its own evaluation (for each solution)... 
 template <class Self, XSolution S, XEvaluation XEv> // unused S and XEv! (could be replaced directly by XSolution and XEvaluation down here...)
  //concept bool X2ESolution = X2Solution<Self, S>; 
-concept bool X2ESolution = XPowerSet<Self, S> && XPowerSet<Self, XEv>;
+//concept bool X2ESolution = XPowerSet<Self, S> && XPowerSet<Self, XEv>;
+concept bool X2ESolution = XPowerSet<Self, pair<uptr<S>, uptr<XEv>>>;
+// TODO: require any container with operator*, instead of hardcoded 'uptr'.... let's move on!
+
 //concept bool X2ESolution = XPowerSet<Self, XSolution> && XPowerSet<Self, XEvaluation>; // TODO: may also include pair here, instead of 'merge'...
 //concept bool X2ESolution = XPowerSet<Self, XSolution<Self>> && XPowerSet<Self, XEv>; // TODO: may also include pair here, instead of 'merge'...
 

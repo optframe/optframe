@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 
 	PCAPSolCheck(p, s);
 
-	Loader<RepPCAP, OPTFRAME_DEFAULT_ADS, SolutionPCAP> optframe(rg);
+	Loader<RepPCAP, OPTFRAME_DEFAULT_ADS, SolutionPCAP, EvaluationPCAP, ESolutionPCAP> optframe(rg);
 	optframe.factory.addComponent(is_greedy);
 	optframe.factory.addComponent(e);
 	optframe.factory.addComponent(nsSwap);
