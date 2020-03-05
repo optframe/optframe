@@ -196,14 +196,14 @@ public:
 template <XSolution S, XEvaluation XEv>
 struct IsPopulation
 {
-   // nothing required here
+   int size(); // required
 };
 
 // example of a Pareto element
 template <XSolution S, XEvaluation XEv>
 struct IsPareto
 {
-   // nothing required here
+   int size(); // required
 };
 
 // compile tests

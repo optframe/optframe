@@ -211,7 +211,14 @@ concept bool XESolution = XSolution<Self> && //(XSolution<Self> && XEvaluation<S
 // ---
 // general one:
 template <class Self, class P>
-concept bool XPowerSet = true; 
+//concept bool XPowerSet = true; 
+concept bool XPowerSet = requires(Self a)
+   {
+      {
+         a.size()
+      }
+      ->optframe::basic_arithmetics;
+   };
 // TODO: powerset could return a 'size'(or 'count'), and perhaps a vector (or iterator) of objects for type P
 
 // now redefining X2Solution more beautifully...
