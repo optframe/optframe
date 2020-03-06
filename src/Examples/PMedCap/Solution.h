@@ -32,5 +32,7 @@ typedef CopySolution<RepPCAP> SolutionPCAP;
 
 typedef pair<SolutionPCAP, EvaluationPCAP> ESolutionPCAP;
 
+static_assert(XESolution<ESolutionPCAP>);
+
 #endif /*PCAP_SOLUTION_H_*/
 

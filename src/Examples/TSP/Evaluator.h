@@ -146,7 +146,11 @@ public:
 
       //int ads;
       SolutionTSP s(r); // TODO: think
-      NSIterator<SolutionTSP>& it = *tspswap.getIterator(s);
+      EvaluationTSP e; // TODO: think
+      ESolutionTSP se = make_pair(s, e);
+
+
+      NSIterator<ESolutionTSP>& it = *tspswap.getIterator(se);
       it.first();
 
       //cout << "got iterator: " << it.toString() << endl;
@@ -155,10 +159,13 @@ public:
       while (!it.isDone()) {
          //cout << "will get move" << endl;
          totalNeigh++;
-         Move<SolutionTSP>& m = *it.current();
+         Move<ESolutionTSP>& m = *it.current();
          //m.print();
          SolutionTSP s2(r); // TODO: think
-         if (m.canBeApplied(s2)) {
+         EvaluationTSP e2; // TODO: think
+         ESolutionTSP se2 = make_pair(s2, e2);
+
+         if (m.canBeApplied(se2)) {
             doStats = false;
             //Evaluation<>* e = nullptr; // dummy // TODO:
             EvaluationTSP e; // dummy // TODO:

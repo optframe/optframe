@@ -31,13 +31,13 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class CircularSearch : public LocalSearch<XES, XEv>
 {
 private:
-   Evaluator<XES, XEv>& eval;
+   GeneralEvaluator<XES, XEv>& eval;
    NSEnum<XES, XEv>& ns;
 
    int initial_w;
 
 public:
-   CircularSearch(Evaluator<XES, XEv>& _eval, NSEnum<XES, XEv>& _nsEnum)
+   CircularSearch(GeneralEvaluator<XES, XEv>& _eval, NSEnum<XES, XEv>& _nsEnum)
      : eval(_eval)
      , ns(_nsEnum)
    {
@@ -121,7 +121,7 @@ public:
 
    virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
-      Evaluator<XES, XEv>* eval;
+      GeneralEvaluator<XES, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
       NSEnum<XES, XEv>* nsenum;
@@ -133,7 +133,7 @@ public:
    virtual vector<pair<string, string>> parameters()
    {
       vector<pair<string, string>> params;
-      params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+      params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
       params.push_back(make_pair(NSEnum<XES, XEv>::idComponent(), "neighborhood structure"));
 
       return params;

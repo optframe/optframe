@@ -96,6 +96,7 @@ public:
 		Ti = (_Ti);
 	}
 
+/*
    BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, vector<NS<XES, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg, SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> _spec) :
 		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg), specificStopBy(_spec)
 	{
@@ -103,7 +104,7 @@ public:
 		SAmax = (_SAmax);
 		Ti = (_Ti);
 	}
-
+*/
 
 	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, NS<XES, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), rg(_rg), specificStopBy(defaultStopBy)
@@ -114,6 +115,7 @@ public:
 		Ti = (_Ti);
 	}
 
+/*
 	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, NS<XES, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg, SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> _spec) :
 		evaluator(_evaluator), constructive(_constructive), rg(_rg), specificStopBy(_spec)
 	{
@@ -122,6 +124,7 @@ public:
 		SAmax = (_SAmax);
 		Ti = (_Ti);
 	}
+*/
 
 	virtual ~BasicSimulatedAnnealing()
 	{
@@ -297,7 +300,7 @@ public:
 
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<XES, XEv>* eval;
+		GeneralEvaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		//Constructive<S>* constructive;
@@ -317,7 +320,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
 		//params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
       params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 		stringstream ss;

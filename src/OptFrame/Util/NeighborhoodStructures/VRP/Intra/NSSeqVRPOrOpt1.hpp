@@ -29,7 +29,7 @@ using namespace std;
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
 template<class T, class ADS, XBaseSolution<vector<vector<T> >,ADS> S, XEvaluation XEv = Evaluation<>>
-class MoveVRPOrOpt1: public Move<S, XEv>
+class MoveVRPOrOpt1: public Move<XES, XEv>
 {
 
 	typedef vector<vector<T> > Routes;
@@ -129,7 +129,7 @@ public:
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPOrOpt1<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM>
 template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPOrOpt1<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
-class NSIteratorVRPOrOpt1: public NSIterator<S, XEv>
+class NSIteratorVRPOrOpt1: public NSIterator<XES, XEv>
 {
 	typedef vector<vector<T> > Routes;
 

@@ -26,8 +26,8 @@
 
 using namespace std;
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class MoveNSSeqUnion: public Move<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+class MoveNSSeqUnion: public Move<XES, XEv>
 {
 protected:
 	int id;
@@ -60,19 +60,19 @@ public:
 		return m.canBeApplied(s);
 	}
 
-	Move<XES, XEv>& apply(S& s) override
+	Move<XES, XEv>& apply(XES& se) override
 	{
-		return *new MoveNSSeqUnion<S, XEv>(id, m.apply(s));
+		return *new MoveNSSeqUnion<XES, XEv>(id, m.apply(se));
 	}
 
 	Move<XES, XEv>& apply(Evaluation<>& e, S& s)
 	{
-		return *new MoveNSSeqUnion<S, XEv>(id, m.apply(e, s));
+		return *new MoveNSSeqUnion<XES, XEv>(id, m.apply(e, s));
 	}
 
 	virtual bool operator==(const Move<XES, XEv>& _m) const
 			{
-		const MoveNSSeqUnion<S, XEv>& m1 = (const MoveNSSeqUnion<S, XEv>&) _m;
+		const MoveNSSeqUnion<XES, XEv>& m1 = (const MoveNSSeqUnion<XES, XEv>&) _m;
 		if (id == m1.id)
 			return m == m1.m;
 		else

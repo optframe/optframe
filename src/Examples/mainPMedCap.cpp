@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 	PCAPEvaluator e(p);
 	PCAPInitialSolutionGreedy is_greedy(p, rg);
 	//SolutionPCAP s = *is_greedy.generateSolution(100); // timelimit 100
-   ESolutionPCAP se = *is_greedy.initialSearch(StopCriteria<ESolutionPCAP>(100)); // timelimit 100
+   ESolutionPCAP se = *is_greedy.initialSearch(StopCriteria<EvaluationPCAP>(100)); // timelimit 100
 
    XSolution& s = se.first;
    ////XEvaluation& e = se.second;

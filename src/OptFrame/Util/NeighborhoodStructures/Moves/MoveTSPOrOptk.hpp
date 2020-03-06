@@ -33,8 +33,8 @@ namespace optframe
 {
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, XEvaluation XEv = Evaluation<>>
-class MoveTSPOrOptk: public Move<S, XEv>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+class MoveTSPOrOptk: public Move<XES, XEv>
 {
 	typedef vector<T> Route;
 
@@ -47,8 +47,8 @@ protected:
 
 public:
 
-	using Move<S, XEv>::apply;
-	using Move<S, XEv>::canBeApplied;
+	using Move<XES, XEv>::apply;
+	using Move<XES, XEv>::canBeApplied;
 
 	MoveTSPOrOptk(int _i, int _j, int _k, OPTFRAME_DEFAULT_PROBLEM* _problem = nullptr) :
 			i(_i), j(_j), k(_k), problem(_problem)
@@ -74,22 +74,22 @@ public:
 		return k;
 	}
 
-	virtual bool canBeApplied(const S& s) override
+	virtual bool canBeApplied(const XES& se) override
 	{
       //const Route& rep = s.getR();
 		//return (i != j) && (i + k <= rep.size());
 		return abs(i - j) >= k;
 	}
 
-	virtual uptr<Move<S, XEv>> apply(S& s) override
+	virtual uptr<Move<XES, XEv>> apply(XES& se) override
 	{
-      Route& rep = s.getR();
+      Route& rep = se.first.getR();
 		vector<T> v_aux;
 		v_aux.insert(v_aux.begin(), rep.begin() + i, rep.begin() + i + k);
 		rep.erase(rep.begin() + i, rep.begin() + i + k);
 		rep.insert(rep.begin() + j, v_aux.begin(), v_aux.end());
 
-		return uptr<Move<S, XEv>>(new MoveTSPOrOptk(j, i, k));
+		return uptr<Move<XES, XEv>>(new MoveTSPOrOptk(j, i, k));
 	}
 
 	virtual bool operator==(const Move<XES, XEv>& _m) const
@@ -100,7 +100,7 @@ public:
 
 	static string idComponent()
 	{
-		string idComp = Move<S, XEv>::idComponent();
+		string idComp = Move<XES, XEv>::idComponent();
 		idComp.append("MoveTSPOrOptk");
 		return idComp;
 	}

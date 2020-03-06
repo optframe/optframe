@@ -31,14 +31,14 @@ using namespace std;
 
 // Working structure: vector<T>
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
-class NSIteratorTSPSwap: public NSIterator<S, XEv>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+class NSIteratorTSPSwap: public NSIterator<XES, XEv>
 {
 	typedef vector<T> Route;
 
 protected:
 	//MOVE* m;
-   uptr<Move<S>> m;
+   uptr<Move<XES, XEv>> m;
 	int p1, p2; // position 1 and position 2, respectively
 	int n;
 
@@ -94,7 +94,7 @@ public:
 		return (m == nullptr);
 	}
 
-	virtual uptr<Move<S, XEv>> current() override
+	virtual uptr<Move<XES, XEv>> current() override
 	{
 		if (isDone())
 		{
@@ -104,7 +104,7 @@ public:
 		}
 
       // steal from 'm'
-      uptr<Move<S, XEv>> m2 = std::move(m);
+      uptr<Move<XES, XEv>> m2 = std::move(m);
       m = nullptr;
 
 		return m2;

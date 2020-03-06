@@ -38,7 +38,7 @@ using namespace std;
 namespace optframe
 {
 
-template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, class MOVE = MoveTSPOrOptk<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPOrOptk<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = std::pair<S, XEv>>
+template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, class MOVE = MoveTSPOrOptk<T, ADS, S, XEv, XES>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPOrOptk<T, ADS, S, XEv, XES, MOVE, P>, XSearch<XES> XSH = std::pair<S, XEv>>
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
 class NSSeqTSPOrOptk : public NSSeq<XES, XEv, XSH>
 {
@@ -59,9 +59,9 @@ public:
    {
    }
 
-   uptr<Move<S, XEv>> randomMove(const S& s) override
+   uptr<Move<XES, XEv>> randomMove(const XES& se) override
    {
-      const Route& rep = s.getR();
+      const Route& rep = se.first.getR();
       int n = rep.size();
 
       if (n - k <= 0) {
@@ -77,7 +77,7 @@ public:
       while (abs(i - j) < k)
          j = rand() % (n - k + 1);
 
-      uptr<Move<S, XEv>> m(new MOVE(i, j, k, p));
+      uptr<Move<XES, XEv>> m(new MOVE(i, j, k, p));
       S sol(rep); // TODO: think
       if (!m->canBeApplied(sol)) {
          cout << "ERROR IN GENERATION!" << endl;
@@ -87,11 +87,11 @@ public:
       return m;
    }
 
-   uptr<Move<S, XEv>> validRandomMove(const XE& s) override
+   uptr<Move<XES, XEv>> validRandomMove(const XES& se) override
    {
       //const Route& r = s.getR();
-      uptr<Move<S, XEv>> m = randomMove(s);
-      if (m->canBeApplied(s))
+      uptr<Move<XES, XEv>> m = randomMove(se);
+      if (m->canBeApplied(se))
          return m;
       else {
          ///delete m;
@@ -99,10 +99,10 @@ public:
       }
    }
 
-   virtual uptr<NSIterator<S, XEv>> getIterator(const S& s) override
+   virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& se) override
    {
-      const Route& r = s.getR();
-      return uptr<NSIterator<S, XEv>>(new NSITERATOR(r.size(), k, p));
+      const Route& r = se.first.getR();
+      return uptr<NSIterator<XES, XEv>>(new NSITERATOR(r.size(), k, p));
    }
 
    static string idComponent()

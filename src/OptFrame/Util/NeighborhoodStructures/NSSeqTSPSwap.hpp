@@ -105,11 +105,11 @@ public:
 	//using NSSeq<S, XEv, XSH>::move;
 	//using NSSeq<S, XEv, XSH>::getIterator;
 
-	uptr<Move<S, XEv>> randomMove(const S& s) override
+	uptr<Move<XES, XEv>> randomMove(const XES& s) override
 	{
-      const Route& rep = s.getR();
+      const Route& rep = s.first.getR();
 		if (rep.size() < 2)
-			return uptr<Move<S, XEv>>(new MOVE(-1, -1, p));
+			return uptr<Move<XES, XEv>>(new MOVE(-1, -1, p));
 
 		int p1 = rand() % rep.size();
 
@@ -118,13 +118,13 @@ public:
 		while (p2 == p1)
 			p2 = rand() % rep.size();
 
-		return uptr<Move<S, XEv>>(new MOVE(p1, p2, p));
+		return uptr<Move<XES, XEv>>(new MOVE(p1, p2, p));
 	}
 
-	virtual uptr<NSIterator<S, XEv>> getIterator(const S& s) override
+	virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& s) override
 	{
       const Route& r = s.getR();
-		return uptr<NSIterator<S, XEv>>(new NSITERATOR(r.size(), p));
+		return uptr<NSIterator<XES, XEv>>(new NSITERATOR(r.size(), p));
 	}
 
 	static string idComponent()

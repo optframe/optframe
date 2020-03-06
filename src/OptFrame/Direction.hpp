@@ -239,13 +239,13 @@ public:
 		return false;
 	}
 
-/*
+
 	///virtual inline bool isImprovement(const MoveCost<>& mc)
    virtual inline bool isImprovement(const Evaluation<>& mc)
 	{
 		return betterThan(mc, nullCost);
 	}
-*/
+
 
 	// ============= direction ==============
 

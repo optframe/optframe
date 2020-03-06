@@ -30,7 +30,7 @@ using namespace std;
 // Working structure: vector<T>
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
 template<class T, class ADS, XBaseSolution<vector<vector<T> >,ADS> S, XEvaluation XEv = Evaluation<>>
-class MoveVRP2Opt: public Move<S, XEv>
+class MoveVRP2Opt: public Move<XES, XEv>
 {
 	typedef vector<vector<T> > Routes;
 
@@ -114,7 +114,7 @@ public:
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRP2Opt<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM>
 template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
-class NSIteratorVRP2Opt: public NSIterator<S, XEv>
+class NSIteratorVRP2Opt: public NSIterator<XES, XEv>
 {
 	typedef vector<vector<T> > Routes;
 

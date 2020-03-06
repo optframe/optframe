@@ -193,6 +193,14 @@ public:
 
    // TODO: decide which methods stay here, and which go to Evaluator.hpp
 
+
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << Component::idComponent() << ":GeneralEvaluator";
+      return ss.str();
+   }
+
 };
 
 } // namespace optframe

@@ -32,8 +32,8 @@
 using namespace std;
 
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveNSSeqUnion<R, ADS> >
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>, class MOVE = MoveNSSeqUnion<S, XEv>>
-class NSSeqUnionAdapter: public NSSeq<S>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, class MOVE = MoveNSSeqUnion<XES, XEv>>
+class NSSeqUnionAdapter: public NSSeq<XES, XEv>
 {
 private:
 	vector<NSSeq<S>*> ns;

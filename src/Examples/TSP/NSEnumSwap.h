@@ -56,16 +56,16 @@ public:
       // Put the rest of your code here
    }
 
-   bool canBeApplied(const SolutionTSP& s) override
+   bool canBeApplied(const ESolutionTSP& s) override
    {
       // If there are some move "MoveSwap" that can't be applied, implement this method
 
       return true;
    }
 
-   uptr<Move<SolutionTSP>> apply(SolutionTSP& s) override
+   uptr<Move<ESolutionTSP>> apply(ESolutionTSP& s) override
    {
-      RepTSP& rep = s.getR();
+      RepTSP& rep = s.first.getR();
       // Specify how the move "MoveSwap" will be applied
 
       int aux = rep.at(c1);
@@ -73,10 +73,10 @@ public:
       rep[c2] = aux;
 
       // return the reverse move
-      return uptr<Move<SolutionTSP>>(new MoveSwap(c2, c1, tsp));
+      return uptr<Move<ESolutionTSP>>(new MoveSwap(c2, c1, tsp));
    }
 
-   uptr<Move<SolutionTSP>> applyUpdate(pair<SolutionTSP, Evaluation<>>& se) override
+   uptr<Move<ESolutionTSP>> applyUpdate(ESolutionTSP& se) override
    {
       SolutionTSP& s = se.first;
       Evaluation<>& e = se.second;
@@ -117,7 +117,7 @@ public:
          f -= (*tsp.dist)(rep[k2], rep[ak2]);
       }
 
-      uptr<Move<SolutionTSP>> rev = apply(s);
+      uptr<Move<ESolutionTSP>> rev = apply(se);
 
       if (k2 - k1 == 1) // special case, cities are near
       {
@@ -206,7 +206,7 @@ public:
       cout << "MoveSwap between " << c1 << " and " << c2 << endl;
    }
 
-   virtual bool operator==(const Move<SolutionTSP>& _m) const
+   virtual bool operator==(const Move<ESolutionTSP>& _m) const
    {
       const MoveSwap& m = (const MoveSwap&)_m; // You can only compare if types are equal
 
@@ -221,7 +221,7 @@ public:
 //                  Swap Neighborhood Structure
 //============================================================================
 
-class NSEnumSwap : public NSEnum<SolutionTSP>
+class NSEnumSwap : public NSEnum<ESolutionTSP>
 {
 private:
    ProblemInstance* pI;
@@ -232,14 +232,14 @@ private:
 public:
 
    NSEnumSwap(ProblemInstance* pI, RandGen& _rg)
-     : NSEnum<SolutionTSP>(_rg)
+     : NSEnum<ESolutionTSP>(_rg)
    {
       this->pI = pI;
       this->n = pI->n;
    }
 
    // given index, returns (i,j), with 0 < i < j < n-1
-   virtual uptr<Move<SolutionTSP>> indexMove(unsigned int k) override
+   virtual uptr<Move<ESolutionTSP>> indexMove(unsigned int k) override
    {
       int i = k / (n - 1);
       int j = k % (n - 1) + 1;
@@ -250,7 +250,7 @@ public:
          j = (n - 1) - j + 1;
       }
 
-      return uptr<Move<SolutionTSP>>(new MoveSwap(i, j, *pI));
+      return uptr<Move<ESolutionTSP>>(new MoveSwap(i, j, *pI));
 
       // Please, keep 'busca' for historical (and emotional) purposes :)
       // This was created in the night before the TCC presentation of OptFrame (in 2009)
@@ -306,7 +306,7 @@ public:
       return comeca(d) + numElem(d) - 1;
    }
 
-   Move<SolutionTSP>& busca(int k, int a, int b)
+   Move<ESolutionTSP>& busca(int k, int a, int b)
    {
       int d = (a + b) / 2;
 

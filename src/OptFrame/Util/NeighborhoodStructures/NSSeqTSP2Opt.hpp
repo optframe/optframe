@@ -91,7 +91,7 @@ using namespace optframe;
 
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
-template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, class MOVE = MoveTSP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSP2Opt<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = std::pair<S, XEv>>
+template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, class MOVE = MoveTSP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSP2Opt<T, ADS, S, MOVE, P>, XSearch<XES> XSH = std::pair<S, XEv>>
 class NSSeqTSP2Opt: public NSSeq<XES, XEv, XSH>
 {
 	typedef vector<T> Route;
@@ -111,11 +111,11 @@ public:
 	{
 	}
 
-	uptr<Move<S, XEv>> randomMove(const XES& s) override
+	uptr<Move<XES, XEv>> randomMove(const XES& s) override
 	{
       const Route& rep = s.getR();
 		if (rep.size() < 2)
-			return uptr<Move<S, XEv>>(new MOVE(-1, -1, p));
+			return uptr<Move<XES, XEv>>(new MOVE(-1, -1, p));
 
 		int p1 = rand() % (rep.size() + 1);
 		int p2 = rand() % (rep.size() + 1);
@@ -128,12 +128,12 @@ public:
 		while ((abs(p1 - p2) < 2) || (p1 > p2));
 
 		// create 2-opt(p1,p2) move
-		return uptr<Move<S, XEv>>(new MOVE(p1, p2, p));
+		return uptr<Move<XES, XEv>>(new MOVE(p1, p2, p));
 	}
 
-	virtual uptr<NSIterator<S, XEv>> getIterator(const XES& s) override
+	virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& s) override
 	{
-		return uptr<NSIterator<S, XEv>>(new NSITERATOR(s, p));
+		return uptr<NSIterator<XES, XEv>>(new NSITERATOR(s, p));
 	}
 
 	static string idComponent()

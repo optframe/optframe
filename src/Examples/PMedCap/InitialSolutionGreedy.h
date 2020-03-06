@@ -61,7 +61,7 @@ public:
    {
    }
 
-   std::optional<ESolutionPCAP> initialSearch(const StopCriteria<ESolutionPCAP>& stop) override
+   std::optional<ESolutionPCAP> initialSearch(const StopCriteria<EvaluationPCAP>& stop) override
    {
       //double timelimit = stop.timelimit;
       RepPCAP newRep;
