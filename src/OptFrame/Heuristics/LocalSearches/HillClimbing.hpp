@@ -32,12 +32,12 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class HillClimbing: public LocalSearch<XES, XEv>
 {
 private:
-	Evaluator<XES, XEv>& evaluator;
+	GeneralEvaluator<XES, XEv>& evaluator;
 	LocalSearch<XES, XEv>& ls;
 
 public:
 
-	HillClimbing(Evaluator<XES, XEv>& _ev, LocalSearch<XES, XEv>& _ls) :
+	HillClimbing(GeneralEvaluator<XES, XEv>& _ev, LocalSearch<XES, XEv>& _ls) :
 		evaluator(_ev), ls(_ls)
 	{
 	}

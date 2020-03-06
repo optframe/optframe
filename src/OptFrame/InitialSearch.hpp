@@ -37,7 +37,7 @@ public:
 
    // timelimit in seconds, accepting fractions (millisecs, ...)
    // may or may not generate valid solution in time
-   virtual std::optional<XSH> initialSearch(const StopCriteria<XSH>& stop) = 0;
+   virtual std::optional<XSH> initialSearch(const StopCriteria<XSH, XM>& stop) = 0;
 
    virtual bool compatible(std::string s)
    {

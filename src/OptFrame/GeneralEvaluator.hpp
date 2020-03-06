@@ -48,7 +48,7 @@ namespace optframe {
 //template<XSolution S, XEvaluation XEv, XESolution XES, XSearch<XES> XSH = XES> // defaults to single obj.
 template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES> // defaults to single obj.
 // BREAK TIME!! Only 'XES' shall pass!!
-class GeneralEvaluator
+class GeneralEvaluator //: public Component // SHOULD BE PURE HERE, OTHERWISE BREAKS DIAMOND PROBLEMS!
 {
    //using S = decltype(declval<XES>.first); // error: insufficient contextual information to determine type
    //

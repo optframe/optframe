@@ -34,7 +34,7 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
 class BestImprovement: public LocalSearch<XES, XEv>
 {
 private:
-	Evaluator<XES, XEv>& eval;
+	GeneralEvaluator<XES, XEv>& eval;
 	NSSeq<XES, XEv, XSH>& nsSeq;
 
 	// logs
@@ -43,7 +43,7 @@ private:
 
 public:
 
-	BestImprovement(Evaluator<XES, XEv>& _eval, NSSeq<XES, XEv, XSH>& _nsSeq) :
+	BestImprovement(GeneralEvaluator<XES, XEv>& _eval, NSSeq<XES, XEv, XSH>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 		sum_time = 0.0;

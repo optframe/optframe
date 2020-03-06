@@ -40,14 +40,15 @@ main(int argc, char** argv)
    op<ESolutionKP> opse = c1.initialSearch(StopCriteria<ESolutionKP>(10)); // timelimit (10???)
    ESolutionKP& se = *opse;
    XSolution& s = opse->first;
-   //XEvaluation& e = se.second;
+   XEvaluation& e = se.second;
    s.print();
-   Evaluation<> e = ev.evaluate(se);
+   //Evaluation<> e = ev.evaluate(se.first);
+   ev.reevaluate(se);
    e.print();
    cout << "GUD" << endl;
 
    CheckCommand<RepKP, MY_ADS, SolutionKP> check; // cria o módulo de testes (opcional)
-   Evaluator<ESolutionKP>& ev1 = ev;
+   Evaluator<SolutionKP, EvaluationKP>& ev1 = ev;
    check.add(ev1);             // carrega a avaliação para testes
    check.add(c1);             // carrega o construtivo para testes
    check.add(ns1);            // carrega a vizinhança para testes

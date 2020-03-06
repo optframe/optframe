@@ -89,9 +89,9 @@ protected:
 
 public:
    // boolean field to indicate if Evaluation needs an update
-   bool outdated;
+   bool outdated {true};
    // boolean field to indicate if Evaluation value is an estimation (not exact)
-   bool estimated;
+   bool estimated {false};
 
    // is minimization
    bool isMini {true}; 

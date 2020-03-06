@@ -42,9 +42,9 @@ class BasicSimulatedAnnealing: public SingleObjSearch<XES, XM>
 {
    using XSH = XES; // XSearch
 private:
-	Evaluator<XES, XEv>& evaluator;
+	GeneralEvaluator<XES, XEv>& evaluator;
 	//Constructive<S>& constructive; // TODO: this must become InitialSearch, already starting from "optional" XES element.
-   InitialSearch<XES>& constructive;
+   InitialSearch<XES, XM>& constructive;
 
 	vector<NS<XES, XEv, XSH>*> neighbors;
 	RandGen& rg;
@@ -73,7 +73,7 @@ public:
       return tnow;
    }
 
-	BasicSimulatedAnnealing(Evaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, vector<NS<XES, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, vector<NS<XES, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg)
 	{
 		alpha = (_alpha);
@@ -82,7 +82,7 @@ public:
 
 	}
 
-	BasicSimulatedAnnealing(Evaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, NS<XES, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, NS<XES, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), rg(_rg)
 	{
 		neighbors.push_back(&_neighbors);
@@ -108,9 +108,9 @@ public:
 	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr,  const Evaluation<>* _e = nullptr)
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
 
-   SearchStatus search(op<XES>& star, const StopCriteria<XES, XM>& stop) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XES, XM>& sosc) override
 	{
-		double timelimit = stop.timelimit;
+		double timelimit = sosc.timelimit;
 
 		//XEv target_f(stop.target_f); // 'target_f' will break... removing
 
@@ -123,7 +123,7 @@ public:
 		//pair<S, XEv> se = genPair(timelimit);
       if(!star)
          //star = SingleObjSearch<XES>::genPair(constructive, evaluator, timelimit);
-         star = constructive.initialSearch(stop);
+         star = constructive.initialSearch(sosc);
       if(!star)
          return SearchStatus::NO_NEWSOL; // no possibility to continue.
       
@@ -146,7 +146,7 @@ public:
 
       // try specific stop criteria, otherwise just use standard one
       //while (stop.specific ? stop.shouldStop(eStar, reinterpret_cast<XM*>(this)) : ((T > 0.000001) && (tnow.now() < timelimit)))
-      while (stop.specific ? stop.shouldStop(star, reinterpret_cast<XM*>(this)) : ((T > 0.000001) && (tnow.now() < timelimit)))
+      while (sosc.specific ? sosc.shouldStop(star, reinterpret_cast<XM*>(this)) : ((T > 0.000001) && (tnow.now() < timelimit)))
 		{
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
 			{

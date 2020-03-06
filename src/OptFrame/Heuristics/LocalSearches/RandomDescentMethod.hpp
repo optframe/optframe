@@ -33,13 +33,13 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class RandomDescentMethod: public LocalSearch<XES, XEv, XES>
 {
 private:
-	Evaluator<XES, XEv>& evaluator;
+	GeneralEvaluator<XES, XEv>& evaluator;
 	NS<XES, XEv>& ns;
 	unsigned int iterMax;
 
 public:
 
-	RandomDescentMethod(Evaluator<XES, XEv>& _eval, NS<XES, XEv>& _ns, unsigned int _iterMax) :
+	RandomDescentMethod(GeneralEvaluator<XES, XEv>& _eval, NS<XES, XEv>& _ns, unsigned int _iterMax) :
 		evaluator(_eval), ns(_ns), iterMax(_iterMax)
 	{
 	}

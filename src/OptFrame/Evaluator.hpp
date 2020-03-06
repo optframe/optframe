@@ -60,7 +60,10 @@ namespace optframe {
 // TODO: use XEv here
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = pair<S, XEv>>
 //template<XSolution S, XEvaluation XEv> // require explicitly XEv here...
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+//template<XESolution XES, XEvaluation XEv = Evaluation<>>
+
+// Evaluation may need to be S dependent, while GeneralEvaluator is not.
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class Evaluator : public Direction, public GeneralEvaluator<XES, XEv, XES>
 {
 protected:
@@ -102,32 +105,34 @@ public:
 
 public:
    // too bad: we cannot ask for 'XSolution S&' here... maybe on c++20 "full concepts".
-   virtual XEv evaluate(const XES&) = 0;
+   // solution: forcing 'S' template passing here
+   virtual XEv evaluate(const S&) = 0;
 
    // TODO: verify if 'e.outdated' must be required at all times, or just specific cases
    //virtual void reevaluate(XEv& e, const XES& s) override
    virtual void reevaluate(XES& se) override
    {
-      //XES& s = se.first;
+      S& s = se.first;
       XEv& e = se.second;
       if (e.outdated)
-         //e = evaluate(s);
-         e = evaluate(se);
+         e = evaluate(s);
+         //e = evaluate(se);
    }
 
 public:
 
    // Apply movement without considering a previous XEv => Slower.
    // Return new XEv 'e'
-   pair<uptr<Move<XES, XEv>>, XEv> applyMove(Move<XES, XEv>& m, XES& s)
+   pair<uptr<Move<XES, XEv>>, XEv> applyMove(Move<XES, XEv>& m, XES& se)
    {
       // apply move and get reverse move
-      uptr<Move<XES, XEv>> rev = m.apply(s);
+      uptr<Move<XES, XEv>> rev = m.apply(se);
       // for now, must be not nullptr 
       assert(rev != nullptr);
       // TODO: include management for 'false' hasReverse()
       assert(m.hasReverse() && rev);
-      XEv e = evaluate(s);
+      XEv e = evaluate(se.first);
+      //this->reevaluate(se);
       // create pair
       return pair<uptr<Move<XES, XEv>>, XEv>(std::move(rev), std::move(e)); // TODO: verify if 'e' is copied, but probably requires std::move
       //return make_pair(rev, evaluate(s));
@@ -241,7 +246,7 @@ public:
    // Movement cost based on complete evaluation (only on CheckCommand)
    // USE ONLY FOR VALIDATION OF CODE! OTHERWISE, USE MoveCost<>(e, m, s)
    ///MoveCost<>* moveCostComplete(Move<XES, XEv>& m, XES& s, bool allowEstimated = false)
-   op<Evaluation<>> moveCostComplete(Move<XES, XEv>& m, XES& s, bool allowEstimated = false)
+   op<Evaluation<>> moveCostComplete(Move<XES, XEv>& m, XES& se, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
       // TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
@@ -249,9 +254,9 @@ public:
       // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
       assert(m.hasReverse());
 
-      pair<uptr<Move<XES, XEv>>, XEv> rev = applyMove(m, s);
+      pair<uptr<Move<XES, XEv>>, XEv> rev = applyMove(m, se);
 
-      pair<uptr<Move<XES, XEv>>, XEv> ini = applyMove(*rev.first, s);
+      pair<uptr<Move<XES, XEv>>, XEv> ini = applyMove(*rev.first, se);
 
       // Difference: new - original
 

@@ -63,7 +63,9 @@ private:
 	// independent moves
 	bool checkIndependent;
 
-	vector<Evaluator<XES>*> lEvaluator;
+   //vector<GeneralEvaluator<XES>*> lEvaluator;
+	vector<Evaluator<S, XEv, XES>*> lEvaluator;
+   //vector<GeneralEvaluator<XES>*> lGenEvaluator;
 	//vector<Constructive<S>*> lConstructive;
    vector<InitialSearch<XES>*> lConstructive;
 	vector<CopySolution<R,ADS>*> lSolution;
@@ -105,13 +107,21 @@ public:
 			cout << "checkcommand: AdsMan " << lADSManagerComp.size() << " added!" << endl;
 	}
 
-	void add(Evaluator<XES, XEv>& c)
+	void add(Evaluator<S, XEv, XES>& c)
 	{
 		lEvaluator.push_back(&c);
 		if (verbose)
 			cout << "checkcommand: Evaluator " << lEvaluator.size() << " added!" << endl;
 	}
 
+/*
+   void add(GeneralEvaluator<XES>& c)
+	{
+		lEvaluator.push_back(&c);
+		if (verbose)
+			cout << "checkcommand: General Evaluator " << lEvaluator.size() << " added!" << endl;
+	}
+*/
 	void add(CopySolution<R,ADS>& c)
 	{
 		lSolution.push_back(&c);
@@ -148,7 +158,7 @@ public:
 		if (verbose)
 			cout << "checkcommand: NSEnum " << lNSEnum.size() << " added!" << endl;
 		if (convertNS)
-			add((NSSeq<S>&) c);
+			add((NSSeq<XES, XEv>&) c);
 	}
 
 	void message(Component* c, int iter, string text)
@@ -224,7 +234,7 @@ public:
 			timeSamples.timeCloneSolution.push_back(t_clone.inMilliSecs());
 
 			Timer tMovApply;
-			uptr<Move<S>> rev = move.apply(s);
+			uptr<Move<XES, XEv, XES>> rev = move.apply(s);
 			if ((!move.hasReverse() && rev) || (move.hasReverse() && !rev))
 			{
 				errormsg(moveFrom, CMERR_MOVE_HASREVERSE, "CMERR_MOVE_HASREVERSE", iter, " conflict between apply result and hasReverse()");
@@ -269,7 +279,7 @@ public:
 			timeSamples.fullTimeEval[ev].push_back(te.inMilliSecs());
 
 			Timer tMovRevApply;
-			uptr<Move<S>> ini = nullptr;
+			uptr<Move<XES, XEv, XES>> ini = nullptr;
 			if (rev)
 				ini = rev->apply(s);
 			timeSamples.timeNSApply[id_ns].push_back(tMovRevApply.inMilliSecs());
@@ -377,12 +387,12 @@ public:
 			// fasterCost
 			Timer tMoveCostApplyDelta;
 			Evaluation<> evBeginFasterCost(e);
-			uptr<Move<S>> rev1 = lEvaluator[ev]->applyMoveReevaluate(move, se);
+			uptr<Move<XES, XEv, XES>> rev1 = lEvaluator[ev]->applyMoveReevaluate(move, se);
 			evtype e_end1 = e.evaluation();
 			// TODO: check outdated status
 			// TODO: if(e.outdated), it means that user did not implement Move::applyMoveReevaluate(e,R,ADS)!
-//			Move<S>& ini1 = *lEvaluator[ev]->applyMoveReevaluate(e, rev1, s);
-			uptr<Move<S>> ini1 = rev1->apply(s);
+//			Move<XES, XEv, XES>& ini1 = *lEvaluator[ev]->applyMoveReevaluate(e, rev1, s);
+			uptr<Move<XES, XEv, XES>> ini1 = rev1->apply(s);
 			e = std::move(evBeginFasterCost);
 			evtype e_ini1 = e.evaluation();
 			timeSamples.timeNSCostApplyDelta[id_ns].push_back(tMoveCostApplyDelta.inMilliSecs());
@@ -492,7 +502,7 @@ public:
 				if (ns) // not testing for single Move
 				{
 					// TODO: consider that randomMove can be null
-					uptr<Move<S>> move2 = ns->randomMove(s);
+					uptr<Move<XES, XEv, XES>> move2 = ns->randomMove(s);
 					if (verbose)
 					{
 						cout << "testing double move!" << endl;
@@ -565,7 +575,7 @@ public:
 		// read evaluators
 		// ----------------
 
-		vector<Evaluator<S>*> evaluators;
+		vector<Evaluator<S, XEv, XES>*> evaluators;
 		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
 			evaluators.push_back(lEvaluator[ev]);
 
@@ -602,7 +612,8 @@ public:
 			cout << "checkcommand  will test " << lConstructive.size() << " constructive components (iterMax=" << iterMax << ")" << endl;
 		for (unsigned c = 0; c < lConstructive.size(); c++)
 		{
-			Constructive<S>* constructive = lConstructive.at(c);
+			//Constructive<S>* constructive = lConstructive.at(c);
+         InitialSearch<XES>* constructive = lConstructive.at(c);
 
 			cout << "checkcommand: testing Constructive " << c << " => " << constructive->toString();
 			cout << endl;
@@ -612,7 +623,10 @@ public:
 				message(lConstructive.at(c), iter, "generating solution.");
 
 				Timer ts;
-				CopySolution<R,ADS> s = *constructive->generateSolution(10000000);
+				//CopySolution<R,ADS> s = *constructive->generateSolution(10000000);
+            op<XES> ps = constructive->initialSearch(StopCriteria<XES>(10000000));
+            //CopySolution<R,ADS> s = *constructive->initialSolution(10000000);
+            CopySolution<R,ADS> s = ps->first;
 				timeSamples.timeConstructive[c].push_back(ts.inMilliSecs());
 
 				if (adsMan)
@@ -679,7 +693,7 @@ public:
 
 		for (unsigned id_move = 0; id_move < lMove.size(); id_move++)
 		{
-			shared_ptr<Move<S>> pmove = lMove.at(id_move);
+			shared_ptr<Move<XES, XEv, XES>> pmove = lMove.at(id_move);
 
 			cout << "checkcommand: testing Move " << id_move << " => " << pmove->toString() << endl;
 
@@ -691,9 +705,11 @@ public:
 
 				CopySolution<R,ADS>& s = *solutions.at(id_s);
 
-				Move<S>& move = *pmove;
+				Move<XES, XEv, XES>& move = *pmove;
 
-				if (!move.canBeApplied(s))
+            XES se = make_pair(s, XEv());
+
+				if (!move.canBeApplied(se))
 				{
 					if (verbose)
 					{
@@ -703,7 +719,7 @@ public:
 					continue;
 				}
 
-				// 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<S>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
+				// 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<XES, XEv, XES>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
 
 				if (!testMoveGeneral(-1, nullptr, -1, s, id_s, move, evaluations, timeSamples))
 					return false;
@@ -745,12 +761,14 @@ public:
 
 					CopySolution<R,ADS>& s = *solutions.at(id_s);
 
+               XES se = make_pair(s, XEv());
+
 					// TODO: consider that randomMove can be null
-					uptr<Move<S>> move = ns->randomMove(s);
+					uptr<Move<XES, XEv, XES>> move = ns->randomMove(se);
 					if (verbose)
 						move->print();
 
-					if (!move->canBeApplied(s))
+					if (!move->canBeApplied(se))
 					{
 						if (verbose)
 						{
@@ -763,8 +781,8 @@ public:
 
 					// EXEC TESTS HERE
 
-					// bool testMoveNS(int iter, NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<S>& move, vector<vector<Evaluation<>*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
-					// bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<S>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
+					// bool testMoveNS(int iter, NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<XES, XEv, XES>& move, vector<vector<Evaluation<>*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
+					// bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<XES, XEv, XES>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
 
 					if (!testMoveGeneral(iter, ns, id_ns, s, id_s, *move, evaluations, timeSamples))
 					{
@@ -790,7 +808,7 @@ public:
 
 		for (unsigned id_nsseq = 0; id_nsseq < lNSSeq.size(); id_nsseq++)
 		{
-			NSSeq<S>* nsseq = lNSSeq.at(id_nsseq);
+			NSSeq<XES, XEv, XES>* nsseq = lNSSeq.at(id_nsseq);
 
 			cout << "checkcommand: testing NSSeq " << id_nsseq << " => " << nsseq->toString();
 			cout << endl;
@@ -803,12 +821,14 @@ public:
 				CopySolution<R,ADS>& s = *solutions.at(randomIndex);
 				int id_s = randomIndex;
 
+            XES se = make_pair(s, XEv());
+
 				// ===================
 				// apply a single move
 				// ===================
 
 				// TODO: consider that iterator can be null!
-				NSIterator<S, XEv>& it = *nsseq->getIterator(s);
+				NSIterator<XES, XEv>& it = *nsseq->getIterator(se);
 
 				int countMovesNSSeq = 0;
 				int countValidMovesNSSeq = 0;
@@ -820,10 +840,10 @@ public:
 					message(lNSSeq.at(id_nsseq), nqs, "getting current move (NSSeq tests).");
 
 					// TODO: verify if it's not null!
-					uptr<Move<S>> move = it.current();
+					uptr<Move<XES, XEv, XES>> move = it.current();
 					countMovesNSSeq++;
 
-					if (!move->canBeApplied(s))
+					if (!move->canBeApplied(se))
 					{
 						if (verbose)
 						{
@@ -837,8 +857,8 @@ public:
 
 					// EXEC MOVES HERE
 
-					//	bool testMoveNSSeq(int iter, NSSeq<R,ADS>* nsseq, int nqs, int id_nsseq, CopySolution<R,ADS>& s, int id_s, Move<S>& move, vector<vector<Evaluation<>*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
-					// 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<S>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
+					//	bool testMoveNSSeq(int iter, NSSeq<R,ADS>* nsseq, int nqs, int id_nsseq, CopySolution<R,ADS>& s, int id_s, Move<XES, XEv, XES>& move, vector<vector<Evaluation<>*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
+					// 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<XES, XEv, XES>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
 
 					if (!testMoveGeneral(nqs, nsseq, id_nsseq, s, id_s, *move, evaluations, timeSamples))
 					{
@@ -871,7 +891,7 @@ public:
 
 		for (unsigned id_nsenum = 0; id_nsenum < lNSEnum.size(); id_nsenum++)
 		{
-			NSEnum<S>* nsenum = lNSEnum.at(id_nsenum);
+			NSEnum<XES, XEv>* nsenum = lNSEnum.at(id_nsenum);
 
 			cout << "checkcommand: testing NSEnum " << id_nsenum << " => " << nsenum->toString();
 			cout << endl;
@@ -884,12 +904,14 @@ public:
 				CopySolution<R,ADS>& s = *solutions.at(randomIndex);
 				int id_s = randomIndex;
 
+            XES se = make_pair(s, XEv());
+
 				// ===================
 				// apply a single move
 				// ===================
 
 				// TODO: consider that iterator can be null!
-				NSIterator<S, XEv>& it = *nsenum->getIterator(s);
+				NSIterator<XES, XEv>& it = *nsenum->getIterator(se);
 				int countMovesNSEnum = 0;
 				int countValidMovesNSEnum = 0;
 
@@ -900,10 +922,10 @@ public:
 					message(lNSEnum.at(id_nsenum), nqs, "getting current move (NSEnum tests).");
 
 					// TODO: verify if it's not null!
-					Move<S>& move = *it.current();
+					Move<XES, XEv, XES>& move = *it.current();
 					countMovesNSEnum++;
 
-					if (!move.canBeApplied(s))
+					if (!move.canBeApplied(se))
 					{
 						if (verbose)
 						{
@@ -917,8 +939,8 @@ public:
 					countValidMovesNSEnum++;
 					// EXEC MOVES HERE
 
-					//	bool testMoveNSSeq(int iter, NSSeq<R,ADS>* nsseq, int nqs, int id_nsseq, CopySolution<R,ADS>& s, int id_s, Move<S>& move, vector<vector<Evaluation<>*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
-					// 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<S>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
+					//	bool testMoveNSSeq(int iter, NSSeq<R,ADS>* nsseq, int nqs, int id_nsseq, CopySolution<R,ADS>& s, int id_s, Move<XES, XEv, XES>& move, vector<vector<Evaluation<>*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
+					// 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<XES, XEv, XES>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
 
 					if (!testMoveGeneral(nqs, nsenum, id_nsenum, s, id_s, move, evaluations, timeSamples))
 					{
@@ -964,11 +986,13 @@ public:
 							for (unsigned sol = 0; sol < solutions.size(); sol++)
 							{
 								CopySolution<R,ADS>& s = *solutions.at(sol);
+                        XES se = make_pair(s, XEv());
+
 								// TODO: verify if return is return is not null!
-								uptr<Move<S>> move1 = nsenum->indexMove(m1);
-								uptr<Move<S>> move2 = nsenum->indexMove(m2);
+								uptr<Move<XES, XEv, XES>> move1 = nsenum->indexMove(m1);
+								uptr<Move<XES, XEv, XES>> move2 = nsenum->indexMove(m2);
 								// moves must be valid
-								if (!(move1->canBeApplied(s) && move2->canBeApplied(s)))
+								if (!(move1->canBeApplied(se) && move2->canBeApplied(se)))
 									break;
 								// move 1 must have reverse
 								if (!move1->hasReverse())
@@ -979,17 +1003,17 @@ public:
 
 								// calculate cost for move 2
 								///MoveCost<>* cost_m2 = ev.moveCostComplete(move2, s);
-                        op<XEv> cost_m2 = ev.moveCostComplete(*move2, s);
+                        op<XEv> cost_m2 = ev.moveCostComplete(*move2, se);
 
 								// apply move 1 (consider reverse is not nullptr)
-								uptr<Move<S>> rev_m1 = move1->apply(s);
+								uptr<Move<XES, XEv, XES>> rev_m1 = move1->apply(se);
 
 								// calculate new cost for move 2
 								///MoveCost<>* cost2_m2 = ev.moveCostComplete(move2, s);
-                        op<XEv> cost2_m2 = ev.moveCostComplete(*move2, s);
+                        op<XEv> cost2_m2 = ev.moveCostComplete(*move2, se);
 
 								// return solution to original value and free
-								rev_m1->apply(s);
+								rev_m1->apply(se);
 								//delete &rev_m1;
 								//delete &move1;
 								//delete &move2;

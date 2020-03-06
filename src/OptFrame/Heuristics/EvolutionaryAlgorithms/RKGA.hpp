@@ -70,8 +70,8 @@ public:
 
 // RKGA searches on XRS solution space, by means of a decoder (R -> random_keys). TODO: this may be XRS perhaps
 // XRS is not good to be default, as it must come from outside, and be compatible
-template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>> // one should pass a compatible one, regarding R
-class RKGA : public SingleObjSearch<XRS, XEv>
+template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>, XESolution XES = pair<XRS, XEv>> // one should pass a compatible one, regarding R
+class RKGA : public SingleObjSearch<XES>
 {
    using RSK = RSolution<random_keys>;
 protected:
@@ -169,7 +169,7 @@ public:
    //virtual pair<XRS, XEv>* search(StopCriteria<XEv>& stopCriteria, const XRS* _s = nullptr, const XEv* _e = nullptr) override
    //
    //virtual std::optional<pair<XRS, XEv>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(std::optional<pair<XRS, XEv>>& star, const StopCriteria<XEv>& stopCriteria) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XES>& stopCriteria) override
    {
       // count generations
       int count_gen = 0;

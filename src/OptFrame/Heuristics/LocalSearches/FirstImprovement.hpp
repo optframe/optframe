@@ -37,7 +37,7 @@ private:
 
 public:
 
-	FirstImprovement(Evaluator<XES, XEv>& _eval, NSSeq<XES, XEv, XSH>& _nsSeq) :
+	FirstImprovement(GeneralEvaluator<XES, XEv>& _eval, NSSeq<XES, XEv, XSH>& _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 	}
@@ -121,7 +121,7 @@ public:
       if (p) {
          // verify if m is an improving move
          if (p->isStrictImprovement()) {
-            
+
             // apply move and get reverse
             uptr<Move<XES, XEv>> rev = m.apply(se);
             // update value using calculated cost
