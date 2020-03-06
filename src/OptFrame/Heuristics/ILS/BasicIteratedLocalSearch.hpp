@@ -64,12 +64,12 @@ public:
 		return iter;
 	}
 
-	virtual void localSearch(XES& se, const StopCriteria<XES>& sosc) override
+	virtual void localSearch(XES& se, const StopCriteria<XEv>& sosc) override
 	{
 		ls.searchFrom(se, sosc);
 	}
 
-	virtual void perturbation(XES& se, const StopCriteria<XES>& sosc, BasicHistory& history) override
+	virtual void perturbation(XES& se, const StopCriteria<XEv>& sosc, BasicHistory& history) override
 	{
 		int iter = history;
 

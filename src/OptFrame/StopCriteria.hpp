@@ -72,10 +72,11 @@ enum class SearchStatus : int
 };
 
 
-
 // StopCriteria is currently 'final', as lambdas can be passed to specific configurations. 
 // If something else is required (via inheritance), this 'final' will need to be changed.
-template<XESolution XES, XSearchMethod XM = optframe::Component> 
+//template<XESolution XES, XSearchMethod XM = optframe::Component> 
+//template<XESolution XES> 
+template<XEvaluation XEv = Evaluation<>> 
 class StopCriteria final : public Component
 {
 public:
@@ -91,7 +92,7 @@ public:
 
    // target objective function
    //double target_f;
-   op<XES> target; // TODO (IGOR): pass parameter on SOSC. // TODO: Why?... forgot reason!
+   XEv target_f; // TODO (IGOR): pass parameter on SOSC. // TODO: Why?... forgot reason!
    // for MultiObj, 'target_f' can pass ideal values for each objective, and use strict/strong pareto dominance for verification.
 
    // expected number of Search Space elements
@@ -111,15 +112,21 @@ public:
 */
 
    // method-specific stopping criteria (default is a generic one)
+   /*
    std::function<bool(const op<XES>&, XM*)> stopBy 
    { 
       [&](const op<XES>& bestF, XM*) -> bool {
          return this->timerExpired() || this->evCountExpired();
       }   
    };
-
-   // indicates if stop function is standard/general or specific (including method params)
-   bool specific = { false };
+   */
+   // general stopping criteria (method independent)
+   std::function<bool(const op<XEv>&)> stopBy 
+   { 
+      [&](const op<XEv>& bestF) -> bool {
+         return this->timerExpired() || this->evCountExpired();
+      }   
+   };
 
 private:
    //
@@ -139,23 +146,28 @@ public:
    }
 
    // general stop conditions checked here (does not include best value checking)
-   virtual bool shouldStop(const op<XES>& best, XM* selfMethod) const
+   //virtual bool shouldStop(const op<XES>& best, XM* selfMethod) const
+   virtual bool shouldStop(const op<XEv>& best) const
    {
-      return stopBy(best, selfMethod);
+      //return stopBy(best, selfMethod);
+      return stopBy(best); // now only general stopping criteria supported here
    }
 
    // ----------------------------------------------
    // method-specific stop criteria (passed by user)
    // ----------------------------------------------
-
-   StopCriteria(std::function<bool(const op<XES>&, XM*)> _stopBy) :
-      stopBy(_stopBy), specific(true)
-   {
-   }
+   //StopCriteria(std::function<bool(const op<XES>&, XM*)> _stopBy) :
+   //   stopBy(_stopBy), specific(true)
+   //{
+   //}
 
    // ---------------------------------
    // general stop criteria (see below)
    // ---------------------------------
+   StopCriteria(std::function<bool(const op<XEv>&)> _stopBy) :
+      stopBy(_stopBy)
+   {
+   }
 
    //SOSC(double _timelimit = 100000000.0, double _target_f = 0.0)
    StopCriteria(double _timelimit = 100000000.0)
@@ -164,9 +176,9 @@ public:
    {
    }
 
-   StopCriteria(double _timelimit, const op<XES>& _target)
+   StopCriteria(double _timelimit, const op<XEv>& _target_f)
      : timelimit(_timelimit),
-     target(_target)
+     target_f(_target_f)
    {
    }
 
@@ -175,7 +187,7 @@ public:
    }
 
    // resets timer and returns self-reference
-   StopCriteria<XES>& start()
+   StopCriteria<XEv>& start()
    {
       localTimer = Timer(); // reset timer
       return *this;
@@ -198,7 +210,7 @@ public:
       timelimit -= subtrTL;
    }
 
-   StopCriteria<XES> newStopCriteriaWithTL(double subtrTL) const
+   StopCriteria<XEv> newStopCriteriaWithTL(double subtrTL) const
    {
       StopCriteria newStopCriteria = (*this);
       newStopCriteria.timelimit -= subtrTL;
@@ -210,6 +222,12 @@ public:
       return "StopCriteria";
    }
 };
+
+template<XESolution XES, XEvaluation XEv, XSearchMethod XM>
+//template<XEvaluation XEv, XSearchMethod XM>
+//using SpecificMethodStop = std::function<bool(const op<XEv>&, XM*)>;
+using SpecificMethodStop = std::function<bool(const XES&, const StopCriteria<XEv>&, XM*)>; // we guess that method always has a solution to work with
+
 
 // Default Stop criteria
 ///using DefaultStop = StopCriteria<Evaluation<>, optframe::Component>;

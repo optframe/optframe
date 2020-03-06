@@ -55,9 +55,9 @@ public:
 
 	virtual H& initializeHistory() = 0;
 
-	virtual void localSearch(XES& se, const StopCriteria<XES>& stopCriteria) = 0;
+	virtual void localSearch(XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
 
-	virtual void perturbation(XES& se, const StopCriteria<XES>& stopCriteria, H& history) = 0;
+	virtual void perturbation(XES& se, const StopCriteria<XEv>& stopCriteria, H& history) = 0;
 
 	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, H& history) = 0;
 
@@ -76,7 +76,7 @@ public:
 
 	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(op<XES>& star, const StopCriteria<XES>& stopCriteria) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XEv>& stopCriteria) override
 	{
 		//cout << "ILS opt search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
       cout << "ILS opt search(" << stopCriteria.timelimit << ")" << endl;

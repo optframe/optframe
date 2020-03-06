@@ -42,7 +42,7 @@ public:
 	{
 	}
 
-	virtual void searchFrom(XES&, const StopCriteria<XES>& stopCriteria) override
+	virtual void searchFrom(XES&, const StopCriteria<XEv>& stopCriteria) override
    {
       // placeholder for empty local search
    };

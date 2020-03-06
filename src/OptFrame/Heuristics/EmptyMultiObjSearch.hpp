@@ -44,7 +44,7 @@ public:
 	}
 
 	//Pareto<S, XEv>* search(MOSC& mosc, Pareto<S, XEv>* _pf = nullptr) override
-   SearchStatus search(std::optional<Pareto<S, XEv>>& p, const StopCriteria<XSH>& stopCriteria) override
+   SearchStatus search(std::optional<Pareto<S, XEv>>& p, const StopCriteria<XEv>& stopCriteria) override
 	{
 		cout << "WARNING: RETURNING A EmptyMultiObjSearch!" << endl;
 		//return nullptr;

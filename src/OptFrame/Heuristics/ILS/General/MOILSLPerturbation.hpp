@@ -43,7 +43,7 @@ public:
 	{
 	}
 
-	virtual void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XSH>& stopCriteria, int level) = 0;
+	virtual void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XEv>& stopCriteria, int level) = 0;
 
 	virtual bool compatible(string s)
 	{
@@ -88,7 +88,7 @@ public:
 		ns.push_back(&_ns);
 	}
 
-	void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XSH>& stopCriteria, int level)
+	void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XEv>& stopCriteria, int level)
 	{
 		int a = 0; // number of appliable moves
 
@@ -191,7 +191,7 @@ public:
 		cout<<endl;
 	}
 
-	void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XSH>& stopCriteria, int level)
+	void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XEv>& stopCriteria, int level)
 	{
 		int a = 0; // number of appliable moves
 

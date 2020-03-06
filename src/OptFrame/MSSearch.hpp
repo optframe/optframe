@@ -71,7 +71,7 @@ public:
 	}
 
    // this should be pure virtual. useful for populational searches (single or multiobj) and general multiobj searches (by pareto sets)
-   virtual SearchStatus search(std::optional<X2ES>& p, const StopCriteria<XSH>& stopCriteria) = 0;
+   virtual SearchStatus search(std::optional<X2ES>& p, const StopCriteria<XEv>& stopCriteria) = 0;
 
 	virtual string log() const
 	{

@@ -85,7 +85,7 @@ public:
 		ns.push_back(&_ns);
 	}
 
-	void perturb(XES& se, const StopCriteria<XES>& stopCriteria) // TODO: override?? what?
+	void perturb(XES& se, const StopCriteria<XEv>& stopCriteria) // TODO: override?? what?
 	{
       //XSolution& s = se.first;
       //XEv& e = se.second;

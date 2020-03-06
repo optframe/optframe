@@ -54,7 +54,7 @@ public:
 
    //pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& sosc) override
-   SearchStatus search(op<XES>& star, const StopCriteria<XES>& sosc) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XEv>& sosc) override
    {
       //cout << "SimpleLocalSearch search(" << target_f << "," << timelimit << ")" << endl;
 

@@ -62,14 +62,14 @@ public:
 
    virtual H& initializeHistory() = 0;
 
-   virtual void perturbation(S& s, MultiEvaluation<>& e, const StopCriteria<XSH>& stopCriteria, H& history) = 0;
+   virtual void perturbation(S& s, MultiEvaluation<>& e, const StopCriteria<XEv>& stopCriteria, H& history) = 0;
 
    virtual void acceptanceCriterion(const Pareto<S, XEv>& pf, H& history) = 0;
 
    virtual bool terminationCondition(H& history) = 0;
 
-   //virtual Pareto<S, XEv>* search(StopCriteria<XSH>& stopCriteria, Pareto<S, XEv>* _pf = nullptr) override
-   virtual SearchStatus search(std::optional<Pareto<S, XEv>>& p, const StopCriteria<XSH>& stopCriteria) override
+   //virtual Pareto<S, XEv>* search(StopCriteria<XEv>& stopCriteria, Pareto<S, XEv>* _pf = nullptr) override
+   virtual SearchStatus search(std::optional<Pareto<S, XEv>>& p, const StopCriteria<XEv>& stopCriteria) override
    {
       Timer tnow;
       Pareto<S, XEv> x_e;

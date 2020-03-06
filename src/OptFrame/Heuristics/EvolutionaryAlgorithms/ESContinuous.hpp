@@ -266,7 +266,7 @@ public:
 	}
 
 	//std::optional<pair<S, Evaluation<>>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(op<XES>& star, const StopCriteria<XES>& stopCriteria) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XEv>& stopCriteria) override
 	{
 		cout << "ES search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 

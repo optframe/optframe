@@ -30,21 +30,22 @@ namespace optframe
 {
 
 // forward declaration
-template<XESolution XES, XEvaluation XEv, XSearchMethod XM>
-class BasicSimulatedAnnealing;
+//template<XESolution XES, XEvaluation XEv, XSearchMethod XM>
+//class BasicSimulatedAnnealing;
 
 
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>>
 //class BasicSimulatedAnnealing: public SingleObjSearch<S, XEv, XSH, XM, XStop>
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = Component>
-template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearchMethod XM = BasicSimulatedAnnealing<XES, XEv, Component>>
-class BasicSimulatedAnnealing: public SingleObjSearch<XES, XM>
+//template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearchMethod XM = BasicSimulatedAnnealing<XES, XEv, Component>>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class BasicSimulatedAnnealing: public SingleObjSearch<XES, XEv>
 {
    using XSH = XES; // XSearch
 private:
 	GeneralEvaluator<XES, XEv>& evaluator;
 	//Constructive<S>& constructive; // TODO: this must become InitialSearch, already starting from "optional" XES element.
-   InitialSearch<XES, XM>& constructive;
+   InitialSearch<XES>& constructive;
 
 	vector<NS<XES, XEv, XSH>*> neighbors;
 	RandGen& rg;
@@ -57,6 +58,20 @@ private:
    // --------------
    // if you need multiple threads of this method, you should instantiate multiple methods!!
    // this allows monitoring on progress and many other nice things, such as StopCriteria personalization ;)
+   //SpecificMethodStop<XES, decltype(*this)> specificStop;
+public:
+   SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> specificStopBy {nullptr};
+
+private:
+   SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> defaultStopBy
+    {
+      [&](const XES& best, const StopCriteria<XEv>& sosc, BasicSimulatedAnnealing<XES, XEv>* me) -> bool {
+         return (me->T <= 0.000001) || (me->tnow.now() >= sosc.timelimit);
+      }   
+   };
+   
+private:
+   //
    double T;
    Timer tnow;
 
@@ -74,16 +89,33 @@ public:
    }
 
 	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, vector<NS<XES, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
-		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg)
+		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg), specificStopBy(defaultStopBy)
 	{
 		alpha = (_alpha);
 		SAmax = (_SAmax);
 		Ti = (_Ti);
-
 	}
 
+   BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, vector<NS<XES, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg, SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> _spec) :
+		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg), specificStopBy(_spec)
+	{
+		alpha = (_alpha);
+		SAmax = (_SAmax);
+		Ti = (_Ti);
+	}
+
+
 	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, NS<XES, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
-		evaluator(_evaluator), constructive(_constructive), rg(_rg)
+		evaluator(_evaluator), constructive(_constructive), rg(_rg), specificStopBy(defaultStopBy)
+	{
+		neighbors.push_back(&_neighbors);
+		alpha = (_alpha);
+		SAmax = (_SAmax);
+		Ti = (_Ti);
+	}
+
+	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, NS<XES, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg, SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> _spec) :
+		evaluator(_evaluator), constructive(_constructive), rg(_rg), specificStopBy(_spec)
 	{
 		neighbors.push_back(&_neighbors);
 		alpha = (_alpha);
@@ -108,7 +140,7 @@ public:
 	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr,  const Evaluation<>* _e = nullptr)
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
 
-   SearchStatus search(op<XES>& star, const StopCriteria<XES, XM>& sosc) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XEv>& sosc) override
 	{
 		double timelimit = sosc.timelimit;
 
@@ -146,7 +178,14 @@ public:
 
       // try specific stop criteria, otherwise just use standard one
       //while (stop.specific ? stop.shouldStop(eStar, reinterpret_cast<XM*>(this)) : ((T > 0.000001) && (tnow.now() < timelimit)))
-      while (sosc.specific ? sosc.shouldStop(star, reinterpret_cast<XM*>(this)) : ((T > 0.000001) && (tnow.now() < timelimit)))
+      //while (sosc.specific ? sosc.shouldStop(star, reinterpret_cast<XM*>(this)) : ((T > 0.000001) && (tnow.now() < timelimit)))
+      op<XEv> opEvStar = make_optional(eStar);
+      while ( 
+         !(
+            specificStopBy(*star, sosc, this) || 
+            sosc.shouldStop(opEvStar) 
+          )
+      )
 		{
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
 			{
@@ -170,7 +209,8 @@ public:
 				move->applyUpdate(current);
 				evaluator.reevaluate(current);
 
-				if (evaluator.betterThan(eCurrent, e)) // TODO: replace by 'se' here, and use 'se.second' to compare directly
+				//if (evaluator.betterThan(eCurrent, e)) // TODO: replace by 'se' here, and use 'se.second' to compare directly
+            if(eCurrent.betterStrict(e))
 				{
                // if improved, accept it
 					//e = *eCurrent;
@@ -180,7 +220,8 @@ public:
                se = current;
 
 
-					if (evaluator.betterThan(e, eStar))
+					//if (evaluator.betterThan(e, eStar))
+               if(e.betterStrict(eStar))
 					{
 						//delete sStar;
 						//sStar = &s.clone();
@@ -248,13 +289,13 @@ template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, X
 class BasicSimulatedAnnealingBuilder: public SA, public SingleObjSearchBuilder<S, XEv, XES>
 {
    //using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
-   using XM = Component; // only general builds here
+   //using XM = Component; // only general builds here
 public:
 	virtual ~BasicSimulatedAnnealingBuilder()
 	{
 	}
 
-	virtual SingleObjSearch<XES, XM>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
+	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -270,7 +311,7 @@ public:
 		int SAmax = scanner.nextInt();
 		double Ti = scanner.nextDouble();
 
-		return new BasicSimulatedAnnealing<XES, XEv, XM> (*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
+		return new BasicSimulatedAnnealing<XES, XEv> (*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()

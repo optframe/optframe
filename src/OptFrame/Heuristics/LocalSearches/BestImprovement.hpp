@@ -61,7 +61,7 @@ public:
 	//	exec(s, e, sosc);
 	//}
 
-	virtual void searchFrom(XSH& se, const StopCriteria<XSH>& sosc) override
+	virtual void searchFrom(XSH& se, const StopCriteria<XEv>& sosc) override
 	{
       //XSolution& s = se.first;
       //XEv& e = se.second;
@@ -121,7 +121,8 @@ public:
 			}
 
 			bestCost = eval.moveCost(*bestMove, se);
-			if (eval.isImprovement(*bestCost))
+			//if (eval.isImprovement(*bestCost))
+         if (bestCost->isImprovingStrict())
 			{
 				it->next();
 				break;
@@ -154,7 +155,8 @@ public:
 				///MoveCost<>* cost = eval.moveCost(*move, se);
             op<XEv> cost = eval.moveCost(*move, se);
 
-				if (eval.betterThan(*cost, *bestCost))
+				//if (eval.betterThan(*cost, *bestCost))
+            if (cost->betterStrict(*bestCost))
 				{
 					/////delete bestMove;
 					/////delete bestCost;
@@ -179,7 +181,8 @@ public:
 			it->next();
 		}
 
-		if (eval.isImprovement(*bestCost))
+		//if (eval.isImprovement(*bestCost))
+      if (bestCost->isImprovingStrict())
 		{
 			//cout << "MOVE IS IMPROVEMENT! cost=";
 			//bestCost->print();

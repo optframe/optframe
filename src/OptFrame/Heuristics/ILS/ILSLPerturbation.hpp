@@ -41,7 +41,7 @@ public:
 	{
 	}
 
-	virtual void perturb(XES& se, const StopCriteria<XES>& stopCriteria, int level) = 0;
+	virtual void perturb(XES& se, const StopCriteria<XEv>& stopCriteria, int level) = 0;
 
 	virtual bool compatible(string s)
 	{
@@ -86,7 +86,7 @@ public:
 		ns.push_back(&_ns);
 	}
 
-	void perturb(XES& se, const StopCriteria<XES>& stopCriteria, int level) override
+	void perturb(XES& se, const StopCriteria<XEv>& stopCriteria, int level) override
 	{
 		int a = 0; // number of appliable moves
 
@@ -191,7 +191,7 @@ public:
 		cout<<endl;
 	}
 
-	void perturb(XES& se, const StopCriteria<XES>& stopCriteria, int level) override
+	void perturb(XES& se, const StopCriteria<XEv>& stopCriteria, int level) override
 	{
       //XSolution& s = se.first;
       //XEv& e = se.second;

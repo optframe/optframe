@@ -53,7 +53,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(XES& se, const StopCriteria<XES>& sosc) override
+	virtual void searchFrom(XES& se, const StopCriteria<XEv>& sosc) override
 	{
       //S& s = se.first;
       XEv& e = se.second;
@@ -70,7 +70,8 @@ public:
 		long tnow = time(nullptr);
 
       // while improvement is found
-		while ((evaluator.betterThan(e, e0)) && ((tnow - tini) < timelimit))
+		//while ((evaluator.betterThan(e, e0)) && ((tnow - tini) < timelimit))
+      while ((e.betterStrict(e0)) && ((tnow - tini) < timelimit))
 		{
 			//delete e0;
 			//e0 = &e.clone();

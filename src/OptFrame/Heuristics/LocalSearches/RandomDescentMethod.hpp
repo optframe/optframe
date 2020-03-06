@@ -55,7 +55,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(XES& se, const StopCriteria<XES>& stopCriteria) override
+	virtual void searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) override
 	{
       //XSolution& s = se.first;
       //XEv& e = se.second;
@@ -84,7 +84,8 @@ public:
 
 			iter++;
 
-			if (cost && evaluator.isImprovement(*cost))
+			//if (cost && evaluator.isImprovement(*cost))
+         if (cost && cost->isImprovingStrict())
 			{
 				move->applyUpdate(se);
 				evaluator.reevaluate(se);

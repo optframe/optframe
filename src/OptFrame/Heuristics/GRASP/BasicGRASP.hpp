@@ -75,7 +75,7 @@ public:
 
 	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(op<XES>& star, const StopCriteria<XES>& stopCriteria) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XEv>& stopCriteria) override
 	{
 		double timelimit = stopCriteria.timelimit;
 

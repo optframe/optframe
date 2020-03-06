@@ -55,7 +55,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(XES& se, const StopCriteria<XES>& sosc) override
+	virtual void searchFrom(XES& se, const StopCriteria<XEv>& sosc) override
 	{
       //S& s = se.first;
       XEv& e = se.second;

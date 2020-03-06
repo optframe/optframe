@@ -59,7 +59,7 @@ public:
 		return iter;
 	}
 
-	virtual void perturbation(S& s, MultiEvaluation<>& e, const StopCriteria<XES>& stopCriteria, BasicHistory& history)
+	virtual void perturbation(S& s, MultiEvaluation<>& e, const StopCriteria<XEv>& stopCriteria, BasicHistory& history)
 	{
 		int iter = history;
 

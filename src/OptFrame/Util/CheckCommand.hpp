@@ -213,6 +213,8 @@ public:
 
 			Evaluation<> e = lEvaluator[ev]->evaluate(s);
 
+         XES se = make_pair(s, e);
+
 			string moveFrom = "Move ";
 			moveFrom.append(move.id());
 			// not printing NS for single Move test
@@ -234,7 +236,7 @@ public:
 			timeSamples.timeCloneSolution.push_back(t_clone.inMilliSecs());
 
 			Timer tMovApply;
-			uptr<Move<XES, XEv, XES>> rev = move.apply(s);
+			uptr<Move<XES, XEv, XES>> rev = move.apply(se);
 			if ((!move.hasReverse() && rev) || (move.hasReverse() && !rev))
 			{
 				errormsg(moveFrom, CMERR_MOVE_HASREVERSE, "CMERR_MOVE_HASREVERSE", iter, " conflict between apply result and hasReverse()");
@@ -281,7 +283,7 @@ public:
 			Timer tMovRevApply;
 			uptr<Move<XES, XEv, XES>> ini = nullptr;
 			if (rev)
-				ini = rev->apply(s);
+				ini = rev->apply(se);
 			timeSamples.timeNSApply[id_ns].push_back(tMovRevApply.inMilliSecs());
 			// ===================== tests with ADSManager ======================
 
@@ -362,7 +364,7 @@ public:
 
 			Timer tMoveCostApply;
 			///MoveCost<>* mcSimpleCost = lEvaluator[ev]->moveCostComplete(move, s);
-         op<Evaluation<>> mcSimpleCost = lEvaluator[ev]->moveCostComplete(move, s);
+         op<Evaluation<>> mcSimpleCost = lEvaluator[ev]->moveCostComplete(move, se);
 			//evtype simpleCost = mcSimpleCost->cost();
          evtype simpleCost = mcSimpleCost->evaluation();
 			//delete mcSimpleCost;
@@ -381,7 +383,7 @@ public:
 				return false;
 			}
 
-         pair<S, XEv> se(s, e); // TODO: check if copy is really good here.
+         //pair<S, XEv> se(s, e); // TODO: check if copy is really good here.
 
 			// ==============
 			// fasterCost
@@ -392,7 +394,7 @@ public:
 			// TODO: check outdated status
 			// TODO: if(e.outdated), it means that user did not implement Move::applyMoveReevaluate(e,R,ADS)!
 //			Move<XES, XEv, XES>& ini1 = *lEvaluator[ev]->applyMoveReevaluate(e, rev1, s);
-			uptr<Move<XES, XEv, XES>> ini1 = rev1->apply(s);
+			uptr<Move<XES, XEv, XES>> ini1 = rev1->apply(se);
 			e = std::move(evBeginFasterCost);
 			evtype e_ini1 = e.evaluation();
 			timeSamples.timeNSCostApplyDelta[id_ns].push_back(tMoveCostApplyDelta.inMilliSecs());
@@ -502,14 +504,14 @@ public:
 				if (ns) // not testing for single Move
 				{
 					// TODO: consider that randomMove can be null
-					uptr<Move<XES, XEv, XES>> move2 = ns->randomMove(s);
+					uptr<Move<XES, XEv, XES>> move2 = ns->randomMove(se);
 					if (verbose)
 					{
 						cout << "testing double move!" << endl;
 						move2->print();
 					}
 
-					if (!move2->canBeApplied(s))
+					if (!move2->canBeApplied(se))
 					{
 						if (verbose)
 						{
@@ -624,7 +626,7 @@ public:
 
 				Timer ts;
 				//CopySolution<R,ADS> s = *constructive->generateSolution(10000000);
-            op<XES> ps = constructive->initialSearch(StopCriteria<XES>(10000000));
+            op<XES> ps = constructive->initialSearch(StopCriteria<XEv>(10000000));
             //CopySolution<R,ADS> s = *constructive->initialSolution(10000000);
             CopySolution<R,ADS> s = ps->first;
 				timeSamples.timeConstructive[c].push_back(ts.inMilliSecs());

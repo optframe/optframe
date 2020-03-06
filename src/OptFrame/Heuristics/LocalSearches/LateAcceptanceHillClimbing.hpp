@@ -63,7 +63,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(XES& se, const StopCriteria<XES>& sosc) override
+	virtual void searchFrom(XES& se, const StopCriteria<XEv>& sosc) override
 	{
       XSolution& sStar = se.first;
       XEv& eStar = se.second;

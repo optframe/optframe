@@ -37,7 +37,7 @@ main(int argc, char** argv)
    NSSeqBitFlip ns1(p, rg);
    cout << "will generate solution" << endl;
    //SolutionKP s = *c1.generateSolution(10); // timelimit (10???)
-   op<ESolutionKP> opse = c1.initialSearch(StopCriteria<ESolutionKP>(10)); // timelimit (10???)
+   op<ESolutionKP> opse = c1.initialSearch(StopCriteria<EvaluationKP>(10)); // timelimit (10???)
    ESolutionKP& se = *opse;
    XSolution& s = opse->first;
    XEvaluation& e = se.second;
@@ -58,13 +58,35 @@ main(int argc, char** argv)
 
 
 
-   BasicSimulatedAnnealing<ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
-
+   //BasicSimulatedAnnealing<ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
+/*
    std::function<bool(const op<ESolutionKP>&, BasicSimulatedAnnealing<ESolutionKP, EvaluationKP, Component>*)> specificStopBy = 
       [](const op<ESolutionKP>& se, BasicSimulatedAnnealing<ESolutionKP, EvaluationKP, Component>* m) -> bool {
          return ((m->getT() > 0.001) && (m->getTimer().now() < 120)); // 120 seconds and freezing 0.001
       };
+
    auto soscSA { StopCriteria(specificStopBy) };
+*/
+
+   SpecificMethodStop<ESolutionKP, EvaluationKP, BasicSimulatedAnnealing<ESolutionKP>> spc {
+      [&](const ESolutionKP& best, const StopCriteria<EvaluationKP>& sosc, BasicSimulatedAnnealing<ESolutionKP>* me) -> bool {
+         return ((me->getT() > 0.001) && (me->getTimer().now() < 120)); // 120 seconds and freezing 0.001
+      }
+   };
+   
+   BasicSimulatedAnnealing<ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg, spc);
+   
+   
+   sa.specificStopBy = 
+     SpecificMethodStop<ESolutionKP, EvaluationKP, BasicSimulatedAnnealing<ESolutionKP>>(
+      [&](const ESolutionKP& best, const StopCriteria<EvaluationKP>& sosc, BasicSimulatedAnnealing<ESolutionKP>* me) -> bool {
+         return ((me->getT() > 0.001) && (me->getTimer().now() < 120)); // 120 seconds and freezing 0.001
+      }
+     );
+   
+
+   //auto soscSA { StopCriteria(specificStopBy) };
+   StopCriteria<EvaluationKP> soscSA;
 
    op<ESolutionKP> r = std::nullopt;
    sa.search(r, soscSA);
@@ -72,7 +94,7 @@ main(int argc, char** argv)
    r->first.print();
    r->second.print();
 
-   StopCriteria<ESolutionKP> sosc; // stop criteria
+   StopCriteria<EvaluationKP> sosc; // stop criteria
 
    BestImprovement<ESolutionKP> bi(ev, ns1);
    FirstImprovement<ESolutionKP> fi(ev, ns1);

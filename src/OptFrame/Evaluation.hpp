@@ -322,6 +322,13 @@ public:
       return isMini? evaluation() < e.evaluation() : evaluation() > e.evaluation();
    }
 
+   // this strictly better than parameter 'e' (for mini, 'this' < 'e')
+   virtual bool betterStrictObj(const ObjType& obj)
+   {
+      return isMini? evaluation() < obj : evaluation() > obj;
+   }
+
+
    // this non-strictly better than parameter 'e' (for mini, 'this' <= 'e')
    virtual bool betterNonStrict(const Evaluation<ObjType>& e)
    {
@@ -343,6 +350,13 @@ public:
       //return betterNonStrict(costZero); // strictly better than ObjType 'zero'
       return isMini? evaluation() <= objValZero : evaluation() >= objValZero;
    }
+
+   virtual inline bool isImprovingStrict()
+	{
+		//return betterStrict(mc, nullCost);
+      return this->betterStrictObj(objValZero);
+	}
+
 
    virtual bool equals(const Evaluation<ObjType>& e)
    {

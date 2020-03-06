@@ -59,7 +59,7 @@ public:
    // core methods 
 
    // copy-based version (TODO: deprecate this?)
-   XES lsearch(const XES& se, const StopCriteria<XES>& stopCriteria)
+   XES lsearch(const XES& se, const StopCriteria<XEv>& stopCriteria)
    {
       //S& s2 = s.clone();
       //XEv& e2 = e.clone();
@@ -79,7 +79,7 @@ public:
    // 2
    //virtual void exec(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) = 0;
    // TODO: return SearchStatus
-   virtual void searchFrom(XES& se, const StopCriteria<XES>& stopCriteria) = 0;
+   virtual void searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
    // TODO: perhaps return 'bool' or FLAG indicating possible changes on solution (UNKNOWN, CHANGED, NOCHANGE, IMPROVED, ...)
 
    // optional: set local optimum status (LOS)

@@ -38,7 +38,7 @@ public:
 	virtual ~ConstructiveRandom();
 
 	//std::optional<SolutionKP> generateSolution(double timelimit) override;
-   std::optional<ESolutionKP> initialSearch(const StopCriteria<ESolutionKP>& stop) override;
+   std::optional<ESolutionKP> initialSearch(const StopCriteria<EvaluationKP>& stop) override;
 };
 
 }

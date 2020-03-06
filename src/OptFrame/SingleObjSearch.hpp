@@ -48,8 +48,9 @@ namespace optframe {
 
 
 // This is a XES, XES global search... using space XES = <S, XEv>
-template<XESolution XES, XSearchMethod XM = Component>
-class SingleObjSearch: public GlobalSearch<XES, XES, XM> // public Component
+//template<XESolution XES, XSearchMethod XM = Component>
+template<XESolution XES, XEvaluation XEv = Evaluation<>>
+class SingleObjSearch: public GlobalSearch<XES, XEv, XES> // public Component
 {
    // if passing types directly here, error 'typedef declared auto'
    //typedef vector<XEv*> FitnessValues;
@@ -73,7 +74,7 @@ public:
    
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) = 0;
    //virtual SearchStatus search(op<XSH>& inputOutput, const XStop& stopCriteria) = 0;
-   virtual SearchStatus search(op<XSH>& inputOutput, const StopCriteria<XSH, XM>& stopCriteria) = 0;
+   virtual SearchStatus search(op<XSH>& inputOutput, const StopCriteria<XEv>& stopCriteria) = 0;
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv, XM>& stopCriteria) = 0;
 
    virtual string log() const

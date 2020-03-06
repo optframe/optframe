@@ -59,7 +59,7 @@ public:
 
 	//virtual void improvement(XSolution& s, Evaluation<>& e, double timelimit, double target_f) = 0;
 
-	virtual void shake(XES& se, unsigned int k_shake, const StopCriteria<XES>& sosc)
+	virtual void shake(XES& se, unsigned int k_shake, const StopCriteria<XEv>& sosc)
 	{
       //double timelimit = sosc.timelimit;
       //XEv target_f(sosc.target_f); // BROKEN
@@ -117,7 +117,7 @@ public:
 
 	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
    //virtual std::optional<XES> search(StopCriteria<XEv>& sosc) override
-   SearchStatus search(op<XES>& star, const StopCriteria<XES>& sosc) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XEv>& sosc) override
 	{
       double timelimit = sosc.timelimit;
       //XEv target_f(sosc.target_f); // BROKEN

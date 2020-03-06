@@ -141,107 +141,7 @@ public:
    // Movement cost based on reevaluation of 'e'
    //MoveCost<>* moveCost(XEv& e, Move<XES, XEv>& m, XES& s, bool allowEstimated = false)
    
-   //
-   //MoveCost<>* moveCost(Move<XES, XEv>& m, XES& se, bool allowEstimated = false)
-   op<XEv> moveCost(Move<XES, XEv>& m, XES& se, bool allowEstimated = false)
-   {
-      // TODO: in the future, consider 'allowEstimated' parameter
-      // TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
 
-      //MoveCost<>* p = nullptr;
-      op<XEv> p = nullopt;
-      if (allowCosts) {
-         p = m.cost(se, allowEstimated);
-      }
-
-      // if p not null, do not update 's' => much faster (using cost)
-      if (p) {
-         return p;
-      } else {
-         // need to update 's' together with reevaluation of 'e' => slower (may perform reevaluation)
-
-         // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
-         assert(m.hasReverse());
-
-         //XSolution& s = se.first;
-         XEv& e = se.second;
-
-         XEv ev_begin(e); // copy
-         //XEv ev_begin = e; //TODO: VITOR removing last evaluation
-         // saving 'outdated' status to avoid inefficient re-evaluations
-         //			bool outdated = e.outdated;
-         // apply move to both XEv and Solution
-         uptr<Move<XES, XEv>> rev = this->applyMoveReevaluate(m, se);
-
-         XEv e_end(se.second);
-
-/*
-         // get final values
-         pair<evtype, evtype> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
-         // get final values for lexicographic part
-         vector<pair<evtype, evtype>> alternatives(e.getAlternativeCosts().size());
-         for (unsigned i = 0; i < alternatives.size(); i++) {
-            alternatives[i].first = e.getAlternativeCosts()[i].first;
-            alternatives[i].second = e.getAlternativeCosts()[i].second;
-         }
-*/
-         // apply reverse move in order to get the original solution back
-         //TODO - Why do not save ev at the begin? Extra evaluation
-         //Even when reevaluate is implemented, It would be hard to design a strategy that is faster than copying previous evaluation//==================================================================
-         //			Move<XES, XEv>* ini = applyMoveReevaluate(e, *rev, s);
-         //
-         //			// if XEv wasn't 'outdated' before, restore its previous status
-         //			if (!outdated)
-         //				e.outdated = outdated;
-
-         
-
-         uptr<Move<XES, XEv>> ini = rev->apply(se);
-
-
-         XEv mcost = ev_begin.diff(e_end);
-
-         // TODO: why?
-         // for now, must be not nullptr
-         assert(ini != nullptr);
-         // TODO: include management for 'false' hasReverse()
-         assert(rev->hasReverse() && ini);
-
-         // recover original evaluation
-         e = std::move(ev_begin);
-         //==================================================================
-/*
-         // get original values (also could be calculated in the begin of function)
-         pair<evtype, evtype> e_ini = make_pair(e.getObjFunction(), e.getInfMeasure());
-         // do the same for lexicographic part
-         for (unsigned i = 0; i < alternatives.size(); i++) {
-            alternatives[i].first -= e.getAlternativeCosts()[i].first;
-            alternatives[i].second -= e.getAlternativeCosts()[i].second;
-         }
-*/
-         // destroy reverse move
-         /////delete rev;
-         // destroy initial move
-         /////delete ini;
-         // create a MoveCost object...
-
-         // TODO: try to move this MoveCost generation somewhere else.... 
-         // perhaps, in Evaluation class, so that users can easily personalize it.
-         // don't know for sure. (TODO)
-         //p = new MoveCost<>(e_end.first - e_ini.first, e_end.second - e_ini.second, e.weight);
-         
-         //
-         //p = new MoveCost<>(e_end.first - e_ini.first, e_end.second - e_ini.second);
-         
-         // ... and set the lexicographic costs
-         ////p->setAlternativeCosts(alternatives);
-
-         // return a MoveCost object pointer
-         //p = make_optional(Evaluation<>(e_end.first - e_ini.first, e_end.second - e_ini.second));
-         //return p;
-         return make_optional(mcost);
-      }
-   }
 
    // Movement cost based on complete evaluation (only on CheckCommand)
    // USE ONLY FOR VALIDATION OF CODE! OTHERWISE, USE MoveCost<>(e, m, s)
@@ -297,11 +197,11 @@ public:
       XEv& e1 = se1.second;
       XEv& e2 = se2.second;
       if(e1.outdated)
-         //e1 = evaluate(se1.first);
-         e1 = evaluate(se1);
+         e1 = evaluate(se1.first);
+         //e1 = evaluate(se1);
       if(e2.outdated)
-         //e2 = evaluate(se2.first);
-         e2 = evaluate(se2);
+         e2 = evaluate(se2.first);
+         //e2 = evaluate(se2);
       bool r = Direction::betterThan(e1, e2);
       return r;
    }
@@ -317,8 +217,11 @@ public:
    //virtual bool betterThan(evtype a, evtype b) = 0;
    virtual bool betterThan(const XES& s1, const XES& s2)
    {
-      XEv e1 = evaluate(s1);
-      XEv e2 = evaluate(s2);
+      //XEv e1 = evaluate(s1);
+      //XEv e2 = evaluate(s2);
+      // TODO: verify if outdated is not set!!
+      XEv e1 = evaluate(s1.first);
+      XEv e2 = evaluate(s2.first);
       bool r = Direction::betterThan(e1, e2);
       return r;
    }

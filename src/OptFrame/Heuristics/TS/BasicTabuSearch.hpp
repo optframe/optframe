@@ -52,7 +52,7 @@ public:
 	}
 
 	//pair<S&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-   SearchStatus search(op<XES>& star, const StopCriteria<XES>& stop) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XEv>& stop) override
 	{
 		//cout << "BasicTabuSearch exec(" << target_f << "," << timelimit << ")" << endl;
 

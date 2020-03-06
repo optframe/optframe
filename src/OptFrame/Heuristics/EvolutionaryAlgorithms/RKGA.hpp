@@ -169,7 +169,7 @@ public:
    //virtual pair<XRS, XEv>* search(StopCriteria<XEv>& stopCriteria, const XRS* _s = nullptr, const XEv* _e = nullptr) override
    //
    //virtual std::optional<pair<XRS, XEv>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(op<XES>& star, const StopCriteria<XES>& stopCriteria) override
+   SearchStatus search(op<XES>& star, const StopCriteria<XEv>& stopCriteria) override
    {
       // count generations
       int count_gen = 0;
