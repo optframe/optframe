@@ -11,7 +11,7 @@ MyEvaluator::~MyEvaluator()
 {
 }
 
-Evaluation<> MyEvaluator::evaluate(const SolutionKP& s) 
+Evaluation<> MyEvaluator::evaluate(const ESolutionKP& s) 
 {
    const RepKP& rep = s.getR();
     double fo = 0; // parcela viável

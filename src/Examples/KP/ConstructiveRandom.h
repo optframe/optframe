@@ -23,7 +23,8 @@ using namespace optframe;
 namespace KP
 {
 
-class ConstructiveRandom: public Constructive<SolutionKP>
+//class ConstructiveRandom: public Constructive<SolutionKP>
+class ConstructiveRandom: public InitialSearch<ESolutionKP>
 {
 private:
    ProblemInstance& pKP;
@@ -36,7 +37,8 @@ public:
 	
 	virtual ~ConstructiveRandom();
 
-	std::optional<SolutionKP> generateSolution(double timelimit) override;
+	//std::optional<SolutionKP> generateSolution(double timelimit) override;
+   std::optional<ESolutionKP> initialSearch(const StopCriteria<ESolutionKP>& stop) override;
 };
 
 }

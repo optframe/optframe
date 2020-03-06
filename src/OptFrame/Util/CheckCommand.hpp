@@ -63,13 +63,14 @@ private:
 	// independent moves
 	bool checkIndependent;
 
-	vector<Evaluator<S>*> lEvaluator;
-	vector<Constructive<S>*> lConstructive;
+	vector<Evaluator<XES>*> lEvaluator;
+	//vector<Constructive<S>*> lConstructive;
+   vector<InitialSearch<XES>*> lConstructive;
 	vector<CopySolution<R,ADS>*> lSolution;
-	vector<shared_ptr<Move<S>>> lMove;
+	vector<shared_ptr<Move<XES>>> lMove;
 	vector<NS<XES, XEv>*> lNS;
-	vector<NSSeq<S>*> lNSSeq;
-	vector<NSEnum<S>*> lNSEnum;
+	vector<NSSeq<XES>*> lNSSeq;
+	vector<NSEnum<XES>*> lNSEnum;
 
 	ADSManager<R, ADS, S>* adsMan;
 
@@ -89,7 +90,8 @@ public:
 	{
 	}
 
-	void add(Constructive<S>& c)
+	//void add(Constructive<S>& c)
+   void add(InitialSearch<XES>& c)
 	{
 		lConstructive.push_back(&c);
 		if (verbose)
@@ -193,7 +195,7 @@ public:
 		bool overestimate, underestimate;
 	};
 
-	bool testMoveGeneral(int iter, NS<XES, XEv>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<S>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckWithSamples& timeSamples)
+	bool testMoveGeneral(int iter, NS<XES, XEv>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<XES>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckWithSamples& timeSamples)
 	{
 		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
 		{

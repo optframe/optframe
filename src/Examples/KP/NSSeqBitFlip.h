@@ -36,10 +36,10 @@ public:
 
    string id() const
    {
-      return Move<SolutionKP>::idComponent().append(":MoveBitFlip");
+      return Move<ESolutionKP>::idComponent().append(":MoveBitFlip");
    }
 
-   bool operator==(const Move<SolutionKP>& _m) const
+   bool operator==(const Move<ESolutionKP>& _m) const
    {
       const MoveBitFlip& m = (const MoveBitFlip&)_m;
       return item == m.item;
@@ -47,14 +47,14 @@ public:
 
    // Implement these methods in the .cpp file
 
-   bool canBeApplied(const SolutionKP& s) override;
+   bool canBeApplied(const ESolutionKP& s) override;
 
-   uptr<Move<SolutionKP>> apply(SolutionKP& s) override;
+   uptr<Move<ESolutionKP>> apply(ESolutionKP& s) override;
 
    op<Evaluation<>> cost(const pair<SolutionKP, Evaluation<>>& se, bool mayEstimate) override;
 };
 
-class NSIteratorBitFlip : public NSIterator<SolutionKP>
+class NSIteratorBitFlip : public NSIterator<ESolutionKP>
 {
 private:
    int N, item;
@@ -74,10 +74,10 @@ public:
    void first() override;
    void next() override;
    bool isDone() override;
-   uptr<Move<SolutionKP>> current() override;
+   uptr<Move<ESolutionKP>> current() override;
 };
 
-class NSSeqBitFlip : public NSSeq<SolutionKP>
+class NSSeqBitFlip : public NSSeq<ESolutionKP>
 {
 private:
    // YOU MAY REMOVE THESE PARAMETERS IF YOU DON'T NEED (BUT PROBABLY WILL...)
@@ -103,18 +103,18 @@ public:
 
    string id() const
    {
-      return NSSeq<SolutionKP>::idComponent().append(":NSSeqBitFlip");
+      return NSSeq<ESolutionKP>::idComponent().append(":NSSeqBitFlip");
    }
 
-   uptr<NSIterator<SolutionKP>> getIterator(const SolutionKP& s) override
+   uptr<NSIterator<ESolutionKP>> getIterator(const ESolutionKP& s) override
    {
       // return an iterator to the neighbors of 'rep'
-      return uptr<NSIterator<SolutionKP>>(new NSIteratorBitFlip(pKP.N));
+      return uptr<NSIterator<ESolutionKP>>(new NSIteratorBitFlip(pKP.N));
    }
 
    // Implement this method in the .cpp file
 
-   uptr<Move<SolutionKP>> randomMove(const SolutionKP& s) override;
+   uptr<Move<ESolutionKP>> randomMove(const ESolutionKP& s) override;
 };
 }
 

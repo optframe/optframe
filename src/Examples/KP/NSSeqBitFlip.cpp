@@ -4,17 +4,17 @@ using namespace KP;
 
 // ============ MoveBitFlip ==============
 
-bool MoveBitFlip::canBeApplied(const SolutionKP& s)
+bool MoveBitFlip::canBeApplied(const ESolutionKP& s)
 {
     return true;
 }
 
-uptr<Move<SolutionKP>> MoveBitFlip::apply(SolutionKP& s)
+uptr<Move<ESolutionKP>> MoveBitFlip::apply(ESolutionKP& s)
 {
    RepKP& rep = s.getR();
     rep[item] = 1-rep[item];
     
-    return uptr<Move<SolutionKP>>(new MoveBitFlip(item)); 
+    return uptr<Move<ESolutionKP>>(new MoveBitFlip(item)); 
 }
 
 op<Evaluation<>> MoveBitFlip::cost(const pair<SolutionKP, Evaluation<>>& se, bool mayEstimate)
@@ -45,9 +45,9 @@ bool NSIteratorBitFlip::isDone()
 	return item == N;
 };
 	
-uptr<Move<SolutionKP>> NSIteratorBitFlip::current()
+uptr<Move<ESolutionKP>> NSIteratorBitFlip::current()
 {
-	return uptr<Move<SolutionKP>>(new MoveBitFlip(item));
+	return uptr<Move<ESolutionKP>>(new MoveBitFlip(item));
 };
 
 
@@ -56,9 +56,9 @@ uptr<Move<SolutionKP>> NSIteratorBitFlip::current()
 // ============ NSSeqBitFlip ==============
 
 
-uptr<Move<SolutionKP>> NSSeqBitFlip::randomMove(const SolutionKP& s)
+uptr<Move<ESolutionKP>> NSSeqBitFlip::randomMove(const ESolutionKP& s)
 {
    int item = rand()%pKP.N;
    
-   return uptr<Move<SolutionKP>>(new MoveBitFlip(item)); 
+   return uptr<Move<ESolutionKP>>(new MoveBitFlip(item)); 
 }

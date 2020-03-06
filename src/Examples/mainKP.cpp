@@ -36,27 +36,31 @@ main(int argc, char** argv)
    ConstructiveRandom c1(p);
    NSSeqBitFlip ns1(p, rg);
    cout << "will generate solution" << endl;
-   SolutionKP s = *c1.generateSolution(10); // timelimit (10???)
+   //SolutionKP s = *c1.generateSolution(10); // timelimit (10???)
+   op<ESolutionKP> opse = c1.initialSearch(StopCriteria<ESolutionKP>(10)); // timelimit (10???)
+   ESolutionKP& se = *opse;
+   XSolution& s = opse->first;
+   //XEvaluation& e = se.second;
    s.print();
-   Evaluation<> e = ev.evaluate(s);
+   Evaluation<> e = ev.evaluate(se);
    e.print();
    cout << "GUD" << endl;
 
    CheckCommand<RepKP, MY_ADS, SolutionKP> check; // cria o módulo de testes (opcional)
-   Evaluator<SolutionKP>& ev1 = ev;
+   Evaluator<ESolutionKP>& ev1 = ev;
    check.add(ev1);             // carrega a avaliação para testes
    check.add(c1);             // carrega o construtivo para testes
    check.add(ns1);            // carrega a vizinhança para testes
    check.run(100, 10);        // executa testes com 10 iterações
 
-   NSSeq<SolutionKP>* nsseq_bit = &ns1;
+   NSSeq<ESolutionKP>* nsseq_bit = &ns1;
 
 
 
-   BasicSimulatedAnnealing<SolutionKP, EvaluationKP, ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
+   BasicSimulatedAnnealing<ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
 
-   std::function<bool(const EvaluationKP&, BasicSimulatedAnnealing<SolutionKP, EvaluationKP, ESolutionKP, Component>*)> specificStopBy = 
-      [](const EvaluationKP& e, BasicSimulatedAnnealing<SolutionKP, EvaluationKP, ESolutionKP, Component>* m) -> bool {
+   std::function<bool(const op<ESolutionKP>&, BasicSimulatedAnnealing<ESolutionKP, EvaluationKP, Component>*)> specificStopBy = 
+      [](const op<ESolutionKP>& se, BasicSimulatedAnnealing<ESolutionKP, EvaluationKP, Component>* m) -> bool {
          return ((m->getT() > 0.001) && (m->getTimer().now() < 120)); // 120 seconds and freezing 0.001
       };
    auto soscSA { StopCriteria(specificStopBy) };
@@ -67,15 +71,15 @@ main(int argc, char** argv)
    r->first.print();
    r->second.print();
 
-   StopCriteria<> sosc; // stop criteria
+   StopCriteria<ESolutionKP> sosc; // stop criteria
 
-   BestImprovement<SolutionKP> bi(ev, ns1);
-   FirstImprovement<SolutionKP> fi(ev, ns1);
-   HillClimbing<SolutionKP> sd(ev, bi);
-   HillClimbing<SolutionKP> pm(ev, fi);
-   RandomDescentMethod<SolutionKP> rdm(ev, ns1, 10);
+   BestImprovement<ESolutionKP> bi(ev, ns1);
+   FirstImprovement<ESolutionKP> fi(ev, ns1);
+   HillClimbing<ESolutionKP> sd(ev, bi);
+   HillClimbing<ESolutionKP> pm(ev, fi);
+   RandomDescentMethod<ESolutionKP> rdm(ev, ns1, 10);
    //
-   pair<SolutionKP, Evaluation<>> se(s, e);
+   //pair<SolutionKP, Evaluation<>> se(s, e);
    sd.lsearch(se, sosc).second.print();  // executa e imprime HC + BI
    pm.lsearch(se, sosc).second.print();  // executa e imprime HC + FI
    rdm.lsearch(se, sosc).second.print(); // executa e imprime RDM com 10 iterações

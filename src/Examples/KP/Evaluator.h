@@ -19,7 +19,7 @@
 namespace KP
 {
 
-class MyEvaluator: public Evaluator<SolutionKP>
+class MyEvaluator: public Evaluator<ESolutionKP>
 {
 private:
 	ProblemInstance& pKP;
@@ -31,7 +31,7 @@ public:
 	
 	virtual ~MyEvaluator();
 
-	Evaluation<> evaluate(const SolutionKP& s) override;
+	Evaluation<> evaluate(const ESolutionKP& s) override;
 	
 	//Evaluation<>& evaluate(const RepKP& rep, const MY_ADS&);
 	

@@ -121,6 +121,7 @@ public:
       if (p) {
          // verify if m is an improving move
          if (p->isStrictImprovement()) {
+            
             // apply move and get reverse
             uptr<Move<XES, XEv>> rev = m.apply(se);
             // update value using calculated cost

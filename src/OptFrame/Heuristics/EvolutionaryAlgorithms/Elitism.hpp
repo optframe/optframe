@@ -29,7 +29,7 @@
 namespace optframe
 {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class Elitism
 {
 protected:

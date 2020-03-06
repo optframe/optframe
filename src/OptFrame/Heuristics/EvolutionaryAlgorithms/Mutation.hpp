@@ -44,7 +44,7 @@
 namespace optframe
 {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class Mutation: public Component, public EA
 {
 
@@ -69,7 +69,7 @@ public:
 	}
 };
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class BasicMutation: public Mutation<S, XEv>
 {
 protected:
@@ -165,7 +165,7 @@ public:
 };
 
 //temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class SimpleMutation {
 protected:
 	using Individual = S;
@@ -186,7 +186,7 @@ public:
 
 //changes 100beta% individuals chosen randomly -- may choose the same individual more than once
 //user should program the function that changes the individual
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class DefaultMutation : public SimpleMutation<S, XEv> {
 protected:
 	using Individual = S;
