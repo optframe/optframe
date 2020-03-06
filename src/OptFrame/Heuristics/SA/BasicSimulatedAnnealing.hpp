@@ -111,8 +111,11 @@ public:
    SearchStatus search(op<XES>& star, const StopCriteria<XES, XM>& stop) override
 	{
 		double timelimit = stop.timelimit;
-		XEv target_f(stop.target_f);
-		cout << "SA search(" << target_f << "," << timelimit << ")" << endl;
+
+		//XEv target_f(stop.target_f); // 'target_f' will break... removing
+
+		//cout << "SA search(" << target_f << "," << timelimit << ")" << endl;
+      cout << "SA search(" << timelimit << ")" << endl; // TODO: require 'stop'.toString()
 
 		tnow = Timer();
 
@@ -126,7 +129,7 @@ public:
       
       XES se = *star; // copy (implicit cloning guaranteed??)
       //
-      XSolution& s = se.first;
+      //XSolution& s = se.first;
       XEv& e = se.second;
       //
       
@@ -142,12 +145,13 @@ public:
       XEv& eStar = star->second;
 
       // try specific stop criteria, otherwise just use standard one
-      while (stop.specific ? stop.shouldStop(eStar, reinterpret_cast<XM*>(this)) : ((T > 0.000001) && (tnow.now() < timelimit)))
+      //while (stop.specific ? stop.shouldStop(eStar, reinterpret_cast<XM*>(this)) : ((T > 0.000001) && (tnow.now() < timelimit)))
+      while (stop.specific ? stop.shouldStop(star, reinterpret_cast<XM*>(this)) : ((T > 0.000001) && (tnow.now() < timelimit)))
 		{
 			while ((iterT < SAmax) && (tnow.now() < timelimit))
 			{
 				int n = rg.rand(neighbors.size());
-				uptr<Move<XES, XEv, XSH>> move = neighbors[n]->validRandomMove(s); // TODO: pass 'se.first' here (even 'se' should also work...)
+				uptr<Move<XES, XEv, XSH>> move = neighbors[n]->validRandomMove(se); // TODO: pass 'se.first' here (even 'se' should also work...)
 
 				if(!move)
 				{
@@ -255,7 +259,8 @@ public:
 		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		Constructive<S>* constructive;
+		//Constructive<S>* constructive;
+      InitialSearch<XES>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<NS<XES, XEv>* > hlist;
@@ -272,7 +277,8 @@ public:
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
+		//params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
+      params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 		stringstream ss;
 		ss << NS<XES, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of NS"));
@@ -285,7 +291,7 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicSimulatedAnnealing<S, XEv>::idComponent();
+		return component == BasicSimulatedAnnealing<XES, XEv>::idComponent();
 	}
 
 	static string idComponent()

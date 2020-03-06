@@ -57,7 +57,7 @@ public:
 
 	virtual void searchFrom(XES& se, const StopCriteria<XES>& sosc) override
 	{
-      XSolution& s = se.first;
+      //XSolution& s = se.first;
       //XEv& e = se.second;
       
       //double timelimit = sosc.timelimit;
@@ -69,7 +69,8 @@ public:
       do {
          uptr<Move<XES, XEv>> m = ns.indexMove(w);
 
-         if (m->canBeApplied(s)) {
+         //if (m->canBeApplied(s)) {
+         if (m->canBeApplied(se)) {
             bool mayEstimate = false;
             ///MoveCost<>& cost = *eval.moveCost(m, se, mayEstimate);
             op<XEv> cost = eval.moveCost(*m, se, mayEstimate);
@@ -123,24 +124,24 @@ public:
       Evaluator<XES, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      NSEnum<S, XEv>* nsenum;
+      NSEnum<XES, XEv>* nsenum;
       hf.assign(nsenum, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      return new CircularSearch<S, XEv>(*eval, *nsenum);
+      return new CircularSearch<XES, XEv>(*eval, *nsenum);
    }
 
    virtual vector<pair<string, string>> parameters()
    {
       vector<pair<string, string>> params;
       params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
-      params.push_back(make_pair(NSEnum<S, XEv>::idComponent(), "neighborhood structure"));
+      params.push_back(make_pair(NSEnum<XES, XEv>::idComponent(), "neighborhood structure"));
 
       return params;
    }
 
    virtual bool canBuild(string component)
    {
-      return component == CircularSearch<S, XEv>::idComponent();
+      return component == CircularSearch<XES, XEv>::idComponent();
    }
 
    static string idComponent()

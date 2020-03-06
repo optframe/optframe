@@ -91,7 +91,7 @@ public:
 
    // target objective function
    //double target_f;
-   op<XES> target_f; // TODO (IGOR): pass parameter on SOSC. // TODO: Why?... forgot reason!
+   op<XES> target; // TODO (IGOR): pass parameter on SOSC. // TODO: Why?... forgot reason!
    // for MultiObj, 'target_f' can pass ideal values for each objective, and use strict/strong pareto dominance for verification.
 
    // expected number of Search Space elements
@@ -164,9 +164,9 @@ public:
    {
    }
 
-   StopCriteria(double _timelimit, const op<XES>& _target_f)
+   StopCriteria(double _timelimit, const op<XES>& _target)
      : timelimit(_timelimit),
-     target_f(_target_f)
+     target(_target)
    {
    }
 

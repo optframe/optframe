@@ -122,7 +122,8 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
+		//params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
+params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 		return params;
 	}
 

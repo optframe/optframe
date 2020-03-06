@@ -55,9 +55,9 @@ public:
 
 	virtual void searchFrom(XES& se, const StopCriteria<XES>& stopCriteria) override
 	{
-      XSolution& s = se.first;
+      //XSolution& s = se.first;
       //XEv& e = se.second;
-		uptr<NSIterator<XES, XEv>> it = nsSeq.getIterator(s);
+		uptr<NSIterator<XES, XEv>> it = nsSeq.getIterator(se);
       // TODO: return FAILED result...
       assert(it);
 		string bestMoveId = "";
@@ -84,7 +84,7 @@ public:
 
 //			bestMoveId = move->id();
 
-			if (move->canBeApplied(s))
+			if (move->canBeApplied(se))
 			{
 				if(this->acceptsImprove(*move, se))
 				{
@@ -111,7 +111,7 @@ public:
    ///bool acceptsImprove(Move<XES, XEv>& m, XSH& se, MoveCost<>* mc = nullptr, bool allowEstimated = false)
    bool acceptsImprove(Move<XES, XEv>& m, XSH& se, bool allowEstimated = false)
    {
-      XSolution& s = se.first;
+      //XSolution& s = se.first;
       XEv& e = se.second;
 
       // try to get a cost
@@ -122,7 +122,7 @@ public:
          // verify if m is an improving move
          if (p->isStrictImprovement()) {
             // apply move and get reverse
-            uptr<Move<XES, XEv>> rev = m.apply(s);
+            uptr<Move<XES, XEv>> rev = m.apply(se);
             // update value using calculated cost
             p->update(e);
             return true;
@@ -168,7 +168,7 @@ public:
          //			e = ini.second;
          //			delete ini.first;
 
-         uptr<Move<XES, XEv>> ini = rev->apply(s);
+         uptr<Move<XES, XEv>> ini = rev->apply(se);
          // for now, must be not nullptr
          assert(ini != nullptr);
          // TODO: include management for 'false' hasReverse()
@@ -222,7 +222,7 @@ public:
 		NSSeq<XES, XEv, XSH>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new FirstImprovement<S, XEv, XSH>(*eval, *nsseq);
+		return new FirstImprovement<XES, XEv, XSH>(*eval, *nsseq);
 	}
 
 	virtual vector<pair<string, string> > parameters()

@@ -44,10 +44,10 @@ public:
 
 	virtual uptr<Move<XES, XEv, XSH>> randomMove(const XES&) = 0;
 
-	virtual uptr<Move<XES, XEv, XSH>> validRandomMove(const XES& s)
+	virtual uptr<Move<XES, XEv, XSH>> validRandomMove(const XES& se)
 	{
-		uptr<Move<XES, XEv, XSH>> moveValid = this->randomMove(s);
-		if(moveValid && moveValid->canBeApplied(s))
+		uptr<Move<XES, XEv, XSH>> moveValid = this->randomMove(se);
+		if(moveValid && moveValid->canBeApplied(se))
 			return moveValid;
 		else
 			return nullptr;

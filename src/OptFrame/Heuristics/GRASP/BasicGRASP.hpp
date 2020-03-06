@@ -60,11 +60,16 @@ public:
 	}
 
    // TODO: consider input and optional output
-   pair<S, XEv> genGRPair(double timelimit)
+   XES genGRPair(double timelimit)
    {
       std::optional<S> sStar = constructive.generateGRSolution(alpha, timelimit);
-		XEv eStar = evaluator.evaluate(*sStar);
-      return make_pair(*sStar, eStar); 
+		//XEv eStar = evaluator.evaluate(*sStar); // TODO: evaluate should receive S... and reevaluate 'both'
+      XEv eStar;
+      XES p = make_pair(*sStar, eStar);
+      evaluator.reevaluate(p);
+
+      return p;
+      //return make_pair(*sStar, eStar); // TODO: generalize this
    }
 
 
@@ -73,14 +78,15 @@ public:
    SearchStatus search(op<XES>& star, const StopCriteria<XES>& stopCriteria) override
 	{
 		double timelimit = stopCriteria.timelimit;
-		XEv target_f(stopCriteria.target_f);
+
+		//XEv target_f(stopCriteria.target_f); // BROKEN!
 
 		Timer tNow;
 
 		unsigned int iter = 0;
 
       ////S* s = constructive.generateGRSolution(alpha, timelimit);
-		pair<S,XEv> se = genGRPair(timelimit);
+		XES se = genGRPair(timelimit);
       ////Evaluation<> e = evaluator.evaluate(*s);
       //S& s = se.first;
       XEv& e = se.second;
@@ -88,12 +94,13 @@ public:
 		if (Component::information)
 			e.print();
 
-		while ((iter < iterMax) && (tNow.now() < timelimit) && (evaluator.betterThan(target_f, e)))
+      // TODO: use 'stop'
+		while ((iter < iterMax) && (tNow.now() < timelimit)) //&& (evaluator.betterThan(target_f, e)))
 		{
 			if (Component::verbose)
 				cout << "GRASP::iter=" << iter << endl;
 
-         pair<S, XEv> p1 = genGRPair(timelimit - tNow.now());
+         XES p1 = genGRPair(timelimit - tNow.now());
 			////S* s1 = constructive.generateGRSolution(alpha,timelimit - tNow.now());
 			////Evaluation<> e1 = evaluator.evaluate(*s1);
          //S& s1 = p1.first;

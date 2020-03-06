@@ -57,19 +57,22 @@ public:
 
 	virtual void searchFrom(XES& se, const StopCriteria<XES>& stopCriteria) override
 	{
-      XSolution& s = se.first;
-      XEv& e = se.second;
+      //XSolution& s = se.first;
+      //XEv& e = se.second;
 		Timer tNow;
 
 		unsigned int iter = 0;
 
-		while ((iter < iterMax) && (tNow.now() < stopCriteria.timelimit) && (evaluator.betterThan(stopCriteria.target_f, e)))
+      // TODO: de-referentiation of 'target_f' WILL crash, if not provided!! removing 'target_f'
+		while ((iter < iterMax) && (tNow.now() < stopCriteria.timelimit)) //&& (evaluator.betterThan(*stopCriteria.target_f, se)))
 		{
-			uptr<Move<XES, XEv>> move = ns.randomMove(s);
+			//uptr<Move<XES, XEv>> move = ns.randomMove(s);
+         uptr<Move<XES, XEv>> move = ns.randomMove(se);
 
 			op<Evaluation<>> cost = nullopt;
 
-			if (move && move->canBeApplied(s))
+			//if (move && move->canBeApplied(s))
+         if (move && move->canBeApplied(se))
 			{
 				cost = evaluator.moveCost(*move, se);
 			}
@@ -122,7 +125,7 @@ public:
 
 		int iterMax = scanner.nextInt();
 
-		return new RandomDescentMethod<S, XEv>(*eval, *ns, iterMax);
+		return new RandomDescentMethod<XES, XEv>(*eval, *ns, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -137,7 +140,7 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == RandomDescentMethod<S, XEv>::idComponent();
+		return component == RandomDescentMethod<XES, XEv>::idComponent();
 	}
 
 	static string idComponent()

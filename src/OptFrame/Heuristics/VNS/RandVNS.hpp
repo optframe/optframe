@@ -102,7 +102,8 @@ public:
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
+		//params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
+params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 
 		stringstream ss;
 		ss << NS<R, ADS, DS>::idComponent() << "[]";

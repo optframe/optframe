@@ -61,7 +61,7 @@ public:
 	virtual void searchFrom(XES& se, const StopCriteria<XES>& stopCriteria) override
 	{
       //S& s = se.first;
-      XEv& e = se.second;
+      //XEv& e = se.second;
 
 		if (Component::information)
 			cout << "VND::starts" << endl;
@@ -75,20 +75,26 @@ public:
 
 		int k = 1;
 
-		Evaluation<> eCurrent(e);
-		while (ev.betterThan(stopCriteria.target_f, e) && (k <= r) && (tNow.now() < stopCriteria.timelimit))
+      XES current(se); // full backup! TODO: remove this copy
+		//Evaluation<> eCurrent(e);
+      //'target_f' will crash if not provided... removing
+		while ((k <= r) && (tNow.now() < stopCriteria.timelimit))// && (ev.betterThan(stopCriteria.target_f, e))
 		{
-			eCurrent = e; // backup
+			//eCurrent = e; // backup
+         current = se; // TODO: remove this copy
+
 			StopCriteria<XES> stopCriteriaNextLS = stopCriteria;
 			stopCriteriaNextLS.updateTimeLimit(tNow.now());
 			lsList[k - 1]->searchFrom(se, stopCriteriaNextLS);
 
-			if (ev.betterThan(e, eCurrent))
+			//if (ev.betterThan(e, eCurrent))
+         if (ev.betterThan(se, current))
 			{
             // improvement
 				k = 1;
 				if (Component::information)
-					e.print();
+					//e.print();
+               se.second.print();
 			}
 			else
 			{

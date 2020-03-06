@@ -40,7 +40,7 @@ namespace optframe
 {
 
 // TODO: may pass just XESolution and XEvaluation here (for StopCriteria)... no XSolution explicitly required.
-template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES, XSearchMethod XM = Component> // defaults to XSH = XES
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES> // defaults to XSH = XES
 class LocalSearch: public Component
 {
    typedef vector<XEv*> FitnessValues;
@@ -59,7 +59,7 @@ public:
    // core methods 
 
    // copy-based version (TODO: deprecate this?)
-   XES lsearch(const XES& se, const StopCriteria<XES, XM>& stopCriteria)
+   XES lsearch(const XES& se, const StopCriteria<XES>& stopCriteria)
    {
       //S& s2 = s.clone();
       //XEv& e2 = e.clone();
@@ -79,7 +79,7 @@ public:
    // 2
    //virtual void exec(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) = 0;
    // TODO: return SearchStatus
-   virtual void searchFrom(XES& se, const StopCriteria<XES, XSH>& stopCriteria) = 0;
+   virtual void searchFrom(XES& se, const StopCriteria<XES>& stopCriteria) = 0;
    // TODO: perhaps return 'bool' or FLAG indicating possible changes on solution (UNKNOWN, CHANGED, NOCHANGE, IMPROVED, ...)
 
    // optional: set local optimum status (LOS)

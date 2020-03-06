@@ -59,11 +59,13 @@ public:
 
 	virtual void searchFrom(XES& se, const StopCriteria<XES>& sosc) override
 	{
-      S& s = se.first;
-      XEv& e = se.second;
+      //S& s = se.first;
+      //XEv& e = se.second;
       //
       double timelimit = sosc.timelimit;
-      XEv target_f(sosc.target_f);
+      
+      //XEv target_f(sosc.target_f); // 'target_f' will break... removing
+
       long tini = time(nullptr);
 
       int r = lsList.size();
@@ -71,7 +73,8 @@ public:
       int k = 1;
 
       long tnow = time(nullptr);
-      while (ev.betterThan(target_f, e) && (k <= r) && ((tnow - tini) < timelimit)) {
+      while ((k <= r) && ((tnow - tini) < timelimit)) //&& ev.betterThan(target_f, e))
+      {
          
          // avoiding heap
          //S* s0 = &s.clone();
@@ -92,7 +95,7 @@ public:
             string localSearchID = lsList[k - 1]->toString();
             unsigned found = localSearchID.find("OptFrame");
             string moveID = localSearchID.substr(found);
-            adsMan.setNeighLocalOptimum(s, moveID);
+            adsMan.setNeighLocalOptimum(se.first, moveID);
 
             //delete s0; // no need
             //delete e0; // no need

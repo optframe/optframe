@@ -561,22 +561,22 @@ public:
 
 		string h = scanner.next();
 
-		if (h == SingleObjSearch<XES, XEv>::idComponent())
+		if (h == SingleObjSearch<XES>::idComponent())
 		{
 			unsigned int id = scanner.nextInt();
 
 			SingleObjSearch<XES>* mtd = nullptr;
 
-			assign(mtd, id, SingleObjSearch<XES, XEv>::idComponent());
+			assign(mtd, id, SingleObjSearch<XES>::idComponent());
 
 			if(!mtd)
-				return make_pair(new EmptySingleObjSearch<S, XEv> , scanner.rest());
+				return make_pair(new EmptySingleObjSearch<XES, XEv> , scanner.rest());
 
 			return make_pair(mtd, scanner.rest());
 		}
 
 		if (h == EmptySingleObjSearch<XES, XEv>::idComponent())
-			return make_pair(new EmptySingleObjSearch<S, XEv> , scanner.rest());
+			return make_pair(new EmptySingleObjSearch<XES, XEv> , scanner.rest());
 
 		for(unsigned i=0; i<builders.size(); i++)
 		{

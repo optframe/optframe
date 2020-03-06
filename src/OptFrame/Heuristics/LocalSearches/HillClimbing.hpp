@@ -128,7 +128,7 @@ public:
 
 		scanner = Scanner(method.second);
 
-		return new HillClimbing<S, XEv>(*eval, *h);
+		return new HillClimbing<XES, XEv>(*eval, *h);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -142,7 +142,7 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == HillClimbing<S, XEv>::idComponent();
+		return component == HillClimbing<XES, XEv>::idComponent();
 	}
 
 	static string idComponent()

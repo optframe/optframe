@@ -87,14 +87,14 @@ public:
 
 	void perturb(XES& se, const StopCriteria<XES>& stopCriteria) // TODO: override?? what?
 	{
-      XSolution& s = se.first;
+      //XSolution& s = se.first;
       //XEv& e = se.second;
       //
 		for (int i = pMin; i < pMax; i++)
 		{
 			int nk = rand() % ns.size();
 
-			uptr<Move<XES, XEv>> mp = ns[nk]->validRandomMove(s);
+			uptr<Move<XES, XEv>> mp = ns[nk]->validRandomMove(se);
 
 			if (!mp)
 			{
@@ -142,7 +142,7 @@ public:
 		vector<NS<XES, XEv>*> ns_list;
 		hf.assignList(ns_list, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BasicILSPerturbation<S, XEv>(*eval, pMin, pMax, ns_list, hf.getRandGen());
+		return new BasicILSPerturbation<XES, XEv>(*eval, pMin, pMax, ns_list, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -160,7 +160,7 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicILSPerturbation<S, XEv>::idComponent();
+		return component == BasicILSPerturbation<XES, XEv>::idComponent();
 	}
 
 	static string idComponent()

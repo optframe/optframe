@@ -116,7 +116,8 @@ public:
       Evaluator<XES, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-      Constructive<S>* constructive;
+      //Constructive<S>* constructive;
+      InitialSearch<XES>* constructive;
       hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
       string rest = scanner.rest();
@@ -135,7 +136,8 @@ public:
    {
       vector<pair<string, string>> params;
       params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
-      params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
+      //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
+      params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
       params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
 
       return params;

@@ -78,7 +78,8 @@ public:
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
    SearchStatus search(op<XES>& star, const StopCriteria<XES>& stopCriteria) override
 	{
-		cout << "ILS opt search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
+		//cout << "ILS opt search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
+      cout << "ILS opt search(" << stopCriteria.timelimit << ")" << endl;
 
 		Timer tnow;
 
@@ -157,13 +158,17 @@ public:
             // TODO: should probably move here to enhance performance (try to benchmark before!!)
 			}
 
-		} while (evaluator.betterThan(stopCriteria.target_f, eStar) && !terminationCondition(*history) && ((tnow.now()) < stopCriteria.timelimit));
+		} while (!terminationCondition(*history) && ((tnow.now()) < stopCriteria.timelimit)); //&& evaluator.betterThan(stopCriteria.target_f, eStar));
+      // TODO: use stop.shouldStop, to consider 'target_f'
 
-		if (evaluator.betterThan(eStar, stopCriteria.target_f))
+		//if (evaluator.betterThan(eStar, stopCriteria.target_f)) // BROKEN for now!
+      
+      if (stopCriteria.target && evaluator.betterThan(eStar, stopCriteria.target->second))
       {
-			cout << "ILS exit by target_f: " << eStar.evaluation() << " better than " << stopCriteria.target_f.evaluation() << endl;
+			cout << "ILS exit by target_f: " << eStar.evaluation() << " better than " << stopCriteria.target->second.evaluation() << endl;
          cout << "isMin: " << evaluator.isMinimization() << endl;
       }
+      
 
 		//pair<S, Evaluation<>>* pairToReturn = new pair<S, Evaluation<>>(make_pair(std::move(*sStar), std::move(*eStar)));
       

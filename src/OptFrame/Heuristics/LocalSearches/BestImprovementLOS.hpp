@@ -61,13 +61,15 @@ public:
 
 		//TODO: use block iterator and manage each partial local optima discovered
 
-		NSBlockIterator<S, XEv>& itb = *nsSeq.getBlockIterator(s);
+		//NSBlockIterator<S, XEv>& itb = *nsSeq.getBlockIterator(s);
+      NSBlockIterator<S, XEv>& itb = *nsSeq.getBlockIterator(se);
 
 		cout << "TODO: BestImprovementLOS UNIMPLEMENTED!" << endl;
 
 		return;
 
-		NSIterator<S, XEv>& it = *nsSeq.getIterator(s);
+		//NSIterator<S, XEv>& it = *nsSeq.getIterator(s);
+      NSIterator<S, XEv>& it = *nsSeq.getIterator(se);
 
 		it.first();
 
@@ -92,7 +94,8 @@ public:
 
 		while (true)
 		{
-			while (!bestMove->canBeApplied(s))
+			//while (!bestMove->canBeApplied(s))
+         while (!bestMove->canBeApplied(se))
 			{
 				delete bestMove;
 				it.next();

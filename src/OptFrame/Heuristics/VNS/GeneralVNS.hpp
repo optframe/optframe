@@ -80,16 +80,17 @@ public:
 
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<S>* eval;
+		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		Constructive<S>* constructive;
+		//Constructive<S>* constructive;
+      InitialSearch<XES>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<NS<XES, XEv>*> shakelist;
 		hf.assignList(shakelist, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<NSSeq<S>*> searchlist;
+		vector<NSSeq<XES, XEv>*> searchlist;
 		hf.assignList(searchlist, scanner.nextInt(), scanner.next()); // reads backwards!
 
 
@@ -99,15 +100,16 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<S>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
+		params.push_back(make_pair(Evaluator<XES>::idComponent(), "evaluation function"));
+		//params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
+params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 
 		stringstream ss;
 		ss << NS<XES, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of NS"));
 
 		stringstream ss2;
-		ss2 << NSSeq<S>::idComponent() << "[]";
+		ss2 << NSSeq<XES, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss2.str(), "list of NSSeq"));
 
 		return params;

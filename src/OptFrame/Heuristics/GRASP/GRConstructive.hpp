@@ -79,7 +79,7 @@ public:
    {
    }
 
-   virtual S* generateGRSolution(float alpha, double timelimit)
+   virtual op<S> generateGRSolution(float alpha, double timelimit) override
    {
       // ignoring alpha
       return c.generateSolution(timelimit);

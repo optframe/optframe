@@ -101,16 +101,18 @@ public:
    }
 
 public:
+   // too bad: we cannot ask for 'XSolution S&' here... maybe on c++20 "full concepts".
    virtual XEv evaluate(const XES&) = 0;
 
    // TODO: verify if 'e.outdated' must be required at all times, or just specific cases
    //virtual void reevaluate(XEv& e, const XES& s) override
    virtual void reevaluate(XES& se) override
    {
-      XES& s = se.first;
+      //XES& s = se.first;
       XEv& e = se.second;
       if (e.outdated)
-         e = evaluate(s);
+         //e = evaluate(s);
+         e = evaluate(se);
    }
 
 public:
@@ -156,7 +158,7 @@ public:
          // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
          assert(m.hasReverse());
 
-         XES& s = se.first;
+         //XSolution& s = se.first;
          XEv& e = se.second;
 
          XEv ev_begin(e); // copy
@@ -189,7 +191,7 @@ public:
 
          
 
-         uptr<Move<XES, XEv>> ini = rev->apply(s);
+         uptr<Move<XES, XEv>> ini = rev->apply(se);
 
 
          XEv mcost = ev_begin.diff(e_end);
@@ -290,9 +292,11 @@ public:
       XEv& e1 = se1.second;
       XEv& e2 = se2.second;
       if(e1.outdated)
-         e1 = evaluate(se1.first);
+         //e1 = evaluate(se1.first);
+         e1 = evaluate(se1);
       if(e2.outdated)
-         e2 = evaluate(se2.first);
+         //e2 = evaluate(se2.first);
+         e2 = evaluate(se2);
       bool r = Direction::betterThan(e1, e2);
       return r;
    }

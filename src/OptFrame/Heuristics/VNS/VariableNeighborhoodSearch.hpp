@@ -62,11 +62,11 @@ public:
 	virtual void shake(XES& se, unsigned int k_shake, const StopCriteria<XES>& sosc)
 	{
       //double timelimit = sosc.timelimit;
-      XEv target_f(sosc.target_f);
+      //XEv target_f(sosc.target_f); // BROKEN
       //
-      XSolution& s = se.first;
+      //XSolution& s = se.first;
       //Evaluation<>& e = se.second;
-		uptr<Move<XES, XEv>> move = vshake.at(k_shake)->validRandomMove(s);
+		uptr<Move<XES, XEv>> move = vshake.at(k_shake)->validRandomMove(se);
 		if(move)
 		{
          move->applyUpdate(se);
@@ -76,15 +76,18 @@ public:
 
 	virtual pair<XES, unsigned int> neighborhoodChange(const XES& star, const XES& p2, unsigned int k)
 	{
-      const XSolution& s2 = p2.first;
+      //const XSolution& s2 = p2.first;
       const XEv& e2 = p2.second;
-      const XSolution& sStar = star.first;
+      //const XSolution& sStar = star.first;
       const XEv& eStar = star.second;
       //
 		if (evaluator.betterThan(e2, eStar))
 		{
 			// IMPROVEMENT!
-			XES p(s2.clone(), e2.clone()); // TODO: avoid leak!!
+			//XES p(s2.clone(), e2.clone()); // TODO: avoid leak!!
+         XES p = p2; // copy! AVOID
+
+
 			if(Component::information)
          {
 				cout << "VNS: improvement at NS " << k << " => " << e2.evaluation() << endl;
@@ -95,7 +98,8 @@ public:
 		}
 		else
 		{
-			XES p(sStar.clone(), eStar.clone()); // TODO: avoid leak!
+			//XES p(sStar.clone(), eStar.clone()); // TODO: avoid leak!
+         XES p = star; // COPY: AVOID!
 			return make_pair(p, k+1);
 		}
 	}
@@ -116,8 +120,9 @@ public:
    SearchStatus search(op<XES>& star, const StopCriteria<XES>& sosc) override
 	{
       double timelimit = sosc.timelimit;
-      XEv target_f(sosc.target_f);
-		cout << id() << " search(target=" << target_f << ", timelimit=" << timelimit << ")" << endl;
+      //XEv target_f(sosc.target_f); // BROKEN
+		//cout << id() << " search(target=" << target_f << ", timelimit=" << timelimit << ")" << endl;
+      cout << id() << " search(" << "timelimit=" << timelimit << ")" << endl; // TODO: 'stop'.toString()
 
 		Timer tnow;
 
@@ -133,7 +138,7 @@ public:
 		if(Component::information)
 			cout << "VNS starts: " << eStar.evaluation() << endl;
 
-		while(evaluator.betterThan(target_f, eStar) && ((tnow.now()) < timelimit))
+		while((tnow.now() < timelimit))//  && evaluator.betterThan(target_f, eStar))
 		{
 			unsigned k = 0;
          //cout << "VNS k=0 initial target = " << target_f << " timelimit = " << timelimit << endl;
@@ -174,9 +179,9 @@ public:
 			}
 		}
 
-      if (evaluator.betterThan(star->second, sosc.target_f))
+      if (sosc.target && evaluator.betterThan(star->second, sosc.target->second))
       {
-			cout << "VNS exit by target_f: " << star->second.evaluation() << " better than " << sosc.target_f.evaluation() << endl;
+			cout << "VNS exit by target_f: " << star->second.evaluation() << " better than " << sosc.target->second.evaluation() << endl;
          cout << "isMin: " << evaluator.isMinimization() << endl;
       }
 

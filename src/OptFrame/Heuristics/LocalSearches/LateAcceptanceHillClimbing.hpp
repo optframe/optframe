@@ -67,8 +67,10 @@ public:
 	{
       XSolution& sStar = se.first;
       XEv& eStar = se.second;
+
       double timelimit = sosc.timelimit;
-      XEv target_f(sosc.target_f);
+
+      //XEv target_f(sosc.target_f); // 'target_f' will break... removing
 
 		long tini = time(nullptr);
 
@@ -88,12 +90,12 @@ public:
 
 		long tnow = time(nullptr);
 
-		while (ev.betterThan(target_f, eStar) && (iter <= iterMax) && ((tnow - tini) < timelimit))
+		while ((iter <= iterMax) && ((tnow - tini) < timelimit)) //&& ev.betterThan(target_f, eStar))
 		{
 			// choose random neighborhood
 			int ns_k = rand() % lns.size();
 
-			uptr<Move<XES, XEv>> move = lns[ns_k]->validRandomMove(s);
+			uptr<Move<XES, XEv>> move = lns[ns_k]->validRandomMove(se);
 	
 			if (!move)
 			{
@@ -102,7 +104,7 @@ public:
             // TODO: return FAIL here
 			}
 
-			if (move && move->canBeApplied(s))
+			if (move && move->canBeApplied(se))
 			{
             bool mayEstimate = false;
 				///MoveCost<>& cost = *ev.moveCost(*move, se, mayEstimate);
@@ -213,7 +215,7 @@ public:
 
 		int iterMax = scanner.nextInt();
 
-		return new LateAcceptanceHillClimbing<S, XEv>(*eval, nslist, L, iterMax);
+		return new LateAcceptanceHillClimbing<XES, XEv>(*eval, nslist, L, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -231,7 +233,7 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == LateAcceptanceHillClimbing<S, XEv>::idComponent();
+		return component == LateAcceptanceHillClimbing<XES, XEv>::idComponent();
 	}
 
 	static string idComponent()

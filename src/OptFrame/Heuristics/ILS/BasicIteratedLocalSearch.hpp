@@ -145,7 +145,8 @@ public:
 		Evaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		Constructive<S>* constructive;
+		//Constructive<S>* constructive;
+      InitialSearch<XES>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
@@ -157,7 +158,7 @@ public:
 
 		scanner = Scanner(method.second);
 
-		BasicILSPerturbation<S, XEv>* pert;
+		BasicILSPerturbation<XES, XEv>* pert;
 		hf.assign(pert, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int iterMax = scanner.nextInt();
@@ -169,9 +170,10 @@ public:
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
+     //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
+      params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 		params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
-		params.push_back(make_pair(BasicILSPerturbation<S, XEv>::idComponent(), "ils perturbation"));
+		params.push_back(make_pair(BasicILSPerturbation<XES, XEv>::idComponent(), "ils perturbation"));
 		params.push_back(make_pair("OptFrame:int", "max number of iterations without improvement"));
 
 		return params;

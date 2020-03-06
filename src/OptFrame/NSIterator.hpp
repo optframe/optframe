@@ -74,7 +74,7 @@ public:
 
 	virtual void first() = 0;
 
-	virtual void firstValid(const XES& s)
+	virtual void firstValid(const XES& se)
 	{
 		first();
 
@@ -82,7 +82,7 @@ public:
 		{
 			uptr<Move<XES, XEv>> m = current();
 
-			if(m && m->canBeApplied(s))
+			if(m && m->canBeApplied(se))
 				break;
 
 			next();
@@ -91,7 +91,7 @@ public:
 
 	virtual void next() = 0;
 
-	virtual void nextValid(const XES& s)
+	virtual void nextValid(const XES& se)
 	{
 		next();
 
@@ -99,7 +99,7 @@ public:
 		{
 			uptr<Move<XES, XEv>> m = current();
 
-			if(m && m->canBeApplied(s))
+			if(m && m->canBeApplied(se))
 				break;
 
 			next();

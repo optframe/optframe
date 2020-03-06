@@ -171,7 +171,8 @@ public:
 		if(!eval)
 			return nullptr;
 
-		Constructive<S>* constructive = nullptr;
+		//Constructive<S>* constructive = nullptr;
+      InitialSearch<XES>* constructive = nullptr;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!constructive)
 			return nullptr;
@@ -187,7 +188,7 @@ public:
 		if(!h)
 			return nullptr;
 
-		ILSLPerturbation<S, XEv>* pert;
+		ILSLPerturbation<XES, XEv>* pert;
 		hf.assign(pert, scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!pert)
 			return nullptr;
@@ -212,14 +213,15 @@ public:
 			return nullptr;
 		}
 
-		return new IteratedLocalSearchLevels<S, XEv>(*eval, *constructive, *h, *pert, iterMax,levelMax);
+		return new IteratedLocalSearchLevels<XES, XEv>(*eval, *constructive, *h, *pert, iterMax,levelMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
-		params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
+		//params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
+      params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 		params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
 		params.push_back(make_pair(ILSLPerturbation<XES, XEv>::idComponent(), "ilsL perturbation"));
 		params.push_back(make_pair("int", "max number of iterations without improvement"));
@@ -230,7 +232,7 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == IteratedLocalSearchLevels<S, XEv>::idComponent();
+		return component == IteratedLocalSearchLevels<XES, XEv>::idComponent();
 	}
 
 	static string idComponent()

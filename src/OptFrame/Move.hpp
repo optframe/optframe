@@ -61,7 +61,7 @@ public:
    {
    }
 
-   virtual bool canBeApplied(const XES&) = 0;
+   virtual bool canBeApplied(const XES& se) = 0;
 
    // returns true if the apply returns a non-null pointer
    virtual bool hasReverse()
@@ -70,12 +70,12 @@ public:
    }
 
    // apply move directly to solution structure (only XSolution required)
-   virtual uptr<Move<XES, XEv, XSH>> apply(XSH& s) = 0;
+   virtual uptr<Move<XES, XEv, XSH>> apply(XSH& se) = 0;
 
    // apply move to solution structure and updated objective space component (XSolution and XEvaluation)
    virtual uptr<Move<XES, XEv, XSH>> applyUpdate(XSH& se)
    {
-      XSolution& s = se.first;
+      //XSolution& s = se.first;
       XEvaluation& e = se.second;
       // boolean 'outdated' indicates that Evaluation needs update (after Solution change)
       // note that even if the reverse move is applied, the Evaluation will continue with
@@ -83,9 +83,9 @@ public:
       // method, or use  efficient re-evaluation by means of the 'cost' method.
       e.outdated = true;
       // apply the move to R and ADS, saving the reverse (or undo) move
-      uptr<Move<XES, XEv, XSH>> rev = apply(s);
+      uptr<Move<XES, XEv, XSH>> rev = apply(se);
       // update neighborhood local optimum status TODO:deprecated
-      updateNeighStatus(s);
+      updateNeighStatus(se);
 
       // return reverse move (or null)
       return rev;
@@ -111,14 +111,14 @@ public:
 */
 
    // TODO: remove and unify on a single method (just varying XEv)
-   virtual uptr<Move<XES, XEv, XSH>> applyMEVUpdate(MultiEvaluation<>& mev, XES& s)
+   virtual uptr<Move<XES, XEv, XSH>> applyMEVUpdate(MultiEvaluation<>& mev, XES& se)
    {
       for (unsigned nE = 0; nE < mev.size(); nE++)
          mev.at(nE).outdated = true;
       // apply the move to R and ADS, saving the reverse (or undo) move
-      uptr<Move<XES, XEv, XSH>> rev = apply(s);
+      uptr<Move<XES, XEv, XSH>> rev = apply(se);
       // update neighborhood local optimum status TODO:deprecated
-      updateNeighStatus(s);
+      updateNeighStatus(se);
 
       // return reverse move (or null)
       return rev;
@@ -137,7 +137,7 @@ public:
    }
 
    // experiment for multi objective problems
-   virtual MultiMoveCost<>* costMEV(const MultiEvaluation<>& mev, const XES& s, bool allowEstimated)
+   virtual MultiMoveCost<>* costMEV(const MultiEvaluation<>& mev, const XES& se, bool allowEstimated)
    {
       return nullptr;
    }
@@ -156,7 +156,7 @@ public:
 
    // TODO: deprecated. replaced by updateLOS?
    //virtual void updateNeighStatus(ADS* ads)
-   virtual void updateNeighStatus(XSH& s)
+   virtual void updateNeighStatus(XSH& se)
    {
    }
 
@@ -167,7 +167,7 @@ public:
    }
 
    // TODO: rethink!
-   virtual bool isPartialLocalOptimum(const XES& s)
+   virtual bool isPartialLocalOptimum(const XES& se)
    {
       // the idea is to use this flag to ignore moves that are useless,
       // given that the solution is already in a (full) local optimum (or partial).

@@ -61,9 +61,9 @@ public:
 	//	exec(s, e, sosc);
 	//}
 
-	virtual void searchFrom(XSH& se, const StopCriteria<XEv>& sosc) override
+	virtual void searchFrom(XSH& se, const StopCriteria<XSH>& sosc) override
 	{
-      XSolution& s = se.first;
+      //XSolution& s = se.first;
       //XEv& e = se.second;
 
       //double timelimit = sosc.timelimit;
@@ -76,7 +76,8 @@ public:
 		Timer t;
 
 		// TODO: verify if it's not null
-		uptr<NSIterator<XES, XEv, XSH>> it = nsSeq.getIterator(s);
+		//uptr<NSIterator<XES, XEv, XSH>> it = nsSeq.getIterator(s);
+      uptr<NSIterator<XES, XEv, XSH>> it = nsSeq.getIterator(se);
 
       assert(it); // or return FAILED
 
@@ -104,7 +105,8 @@ public:
 
 		while (true)
 		{
-			while (!bestMove->canBeApplied(s))
+			//while (!bestMove->canBeApplied(s))
+         while (!bestMove->canBeApplied(se))
 			{
 				it->next();
 				if (!it->isDone())
@@ -146,7 +148,8 @@ public:
 		while (!it->isDone())
 		{
 			uptr<Move<XES, XEv>> move = it->current();
-			if (move->canBeApplied(s))
+			//if (move->canBeApplied(s))
+         if (move->canBeApplied(se))
 			{
 				///MoveCost<>* cost = eval.moveCost(*move, se);
             op<XEv> cost = eval.moveCost(*move, se);
@@ -262,7 +265,7 @@ public:
 		NSSeq<XES, XEv, XSH>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BestImprovement<S, XEv, XSH>(*eval, *nsseq);
+		return new BestImprovement<XES, XEv, XSH>(*eval, *nsseq);
 	}
 
 	virtual vector<pair<string, string> > parameters()

@@ -93,14 +93,14 @@ public:
 		level += 2; // level 0 applies 2 moves
 
       // local bind
-      XSolution& s = se.first;
+      //XSolution& s = se.first;
       //XEv& e = se.second;
 
 		while (a < level)
 		{
 			int x = rg.rand(ns.size());
 
-			uptr<Move<XES, XEv>> m = ns[x]->validRandomMove(s);
+			uptr<Move<XES, XEv>> m = ns[x]->validRandomMove(se);
 
 			if (m)
 			{
@@ -193,7 +193,7 @@ public:
 
 	void perturb(XES& se, const StopCriteria<XES>& stopCriteria, int level) override
 	{
-      XSolution& s = se.first;
+      //XSolution& s = se.first;
       //XEv& e = se.second;
       //
 		int a = 0; // number of appliable moves
@@ -212,7 +212,7 @@ public:
 				sum += pNS[x].second;
 			}
 
-			uptr<Move<XES, XEv>> m = ns[x]->validRandomMove(s);
+			uptr<Move<XES, XEv>> m = ns[x]->validRandomMove(se);
 
 			if (m)
 			{
@@ -256,7 +256,7 @@ public:
 		NS<XES, XEv>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new ILSLPerturbationLPlus2<S, XEv>(*eval, *ns, hf.getRandGen());
+		return new ILSLPerturbationLPlus2<XES, XEv>(*eval, *ns, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -270,7 +270,7 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == ILSLPerturbationLPlus2<S, XEv>::idComponent();
+		return component == ILSLPerturbationLPlus2<XES, XEv>::idComponent();
 	}
 
 	static string idComponent()
@@ -302,7 +302,7 @@ public:
 		NS<XES, XEv>* ns;
 		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new ILSLPerturbationLPlus2Prob<S, XEv>(*eval, *ns, hf.getRandGen());
+		return new ILSLPerturbationLPlus2Prob<XES, XEv>(*eval, *ns, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -316,7 +316,7 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == ILSLPerturbationLPlus2Prob<S, XEv>::idComponent();
+		return component == ILSLPerturbationLPlus2Prob<XES, XEv>::idComponent();
 	}
 
 	static string idComponent()
