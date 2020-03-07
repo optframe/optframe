@@ -41,14 +41,14 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
 class VariableNeighborhoodSearch: public VNS, public SingleObjSearch<XES>
 {
 protected:
-	Evaluator<XES, XEv>& evaluator;
+	GeneralEvaluator<XES, XEv>& evaluator;
 	InitialSearch<XES>& constructive;
 	vector<NS<XES, XEv, XSH>*> vshake;
 	vector<NSSeq<XES, XEv, XSH>*> vsearch;
 
 public:
 
-	VariableNeighborhoodSearch(Evaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, vector<NS<XES, XEv>*> _vNS, vector<NSSeq<XES, XEv, XSH>*> _vNSSeq) :
+	VariableNeighborhoodSearch(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, vector<NS<XES, XEv>*> _vNS, vector<NSSeq<XES, XEv, XSH>*> _vNSSeq) :
 		evaluator(_evaluator), constructive(_constructive), vshake(_vNS), vsearch(_vNSSeq)
 	{
 	}
@@ -81,7 +81,8 @@ public:
       //const XSolution& sStar = star.first;
       const XEv& eStar = star.second;
       //
-		if (evaluator.betterThan(e2, eStar))
+		//if (evaluator.betterThan(e2, eStar))
+      if (e2.betterStrict(eStar))
 		{
 			// IMPROVEMENT!
 			//XES p(s2.clone(), e2.clone()); // TODO: avoid leak!!
@@ -179,10 +180,12 @@ public:
 			}
 		}
 
-      if (sosc.target && evaluator.betterThan(star->second, sosc.target->second))
+      //if (sosc.target && evaluator.betterThan(star->second, sosc.target->second))
+      if (star->second.betterStrict(sosc.target_f))
       {
-			cout << "VNS exit by target_f: " << star->second.evaluation() << " better than " << sosc.target->second.evaluation() << endl;
-         cout << "isMin: " << evaluator.isMinimization() << endl;
+			cout << "VNS exit by target_f: " << star->second.evaluation() << " better than " << sosc.target_f.evaluation() << endl;
+         //cout << "isMin: " << evaluator.isMinimization() << endl;
+         cout << "isMin: " << star->second.isMini << endl;
       }
 
       if (((tnow.now()) >= timelimit))

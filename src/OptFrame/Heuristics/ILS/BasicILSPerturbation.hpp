@@ -37,14 +37,14 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class BasicILSPerturbation: public ILS, public Component
 {
 private:
-	Evaluator<XES, XEv>& evaluator;
+	GeneralEvaluator<XES, XEv>& evaluator;
 	int pMin;
 	int pMax;
 	vector<NS<XES, XEv>*> ns;
 	RandGen& rg;
 
 public:
-	BasicILSPerturbation(Evaluator<XES, XEv>& e, int _pMin, int _pMax, vector<NS<XES, XEv>*>& _ns, RandGen& _rg) :
+	BasicILSPerturbation(GeneralEvaluator<XES, XEv>& e, int _pMin, int _pMax, vector<NS<XES, XEv>*>& _ns, RandGen& _rg) :
 		evaluator(e), pMin(_pMin), pMax(_pMax), ns(_ns), rg(_rg)
 	{
 		if(pMax < pMin)
@@ -59,7 +59,7 @@ public:
 			cout << "BasicILSPerturbation warning: empty neighborhood list." << endl;
 	}
 
-	BasicILSPerturbation(Evaluator<XES, XEv>& e, int _pMin, int _pMax, NS<XES, XEv>& _ns, RandGen& _rg) :
+	BasicILSPerturbation(GeneralEvaluator<XES, XEv>& e, int _pMin, int _pMax, NS<XES, XEv>& _ns, RandGen& _rg) :
 		evaluator(e), pMin(_pMin), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -133,7 +133,7 @@ public:
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<XES, XEv>* eval;
+		GeneralEvaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int pMin = scanner.nextInt();
@@ -148,7 +148,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair("OptFrame:int", "pMin: min number of moves"));
 		params.push_back(make_pair("OptFrame:int", "pMax: max number of moves"));
 		stringstream ss;

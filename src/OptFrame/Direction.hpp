@@ -223,6 +223,7 @@ public:
 	// ============= improvement =============
 
 	///virtual bool isImprovement(const MoveCost<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
+   // Analyse if '(mc + e1)' is an improvement over 'e2'
    virtual bool isImprovement(const Evaluation<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
 	{
 		//evtype ec1 = mc.cost() + e1.evaluation();

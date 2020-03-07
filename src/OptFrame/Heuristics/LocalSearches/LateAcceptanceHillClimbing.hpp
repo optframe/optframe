@@ -34,20 +34,20 @@ template<XESolution XES, XEvaluation XEv=Evaluation<>>
 class LateAcceptanceHillClimbing: public LocalSearch<XES, XEv>
 {
 private:
-	Evaluator<XES, XEv>& ev;
+	GeneralEvaluator<XES, XEv>& ev;
 	vector<NS<XES, XEv>*> lns;
 	int L;       // size of list
 	int iterMax; // max iterations without improvement
 
 public:
 
-	LateAcceptanceHillClimbing(Evaluator<XES, XEv>& _ev, NS<XES, XEv>& _ns, int _L, int _iterMax) :
+	LateAcceptanceHillClimbing(GeneralEvaluator<XES, XEv>& _ev, NS<XES, XEv>& _ns, int _L, int _iterMax) :
 			ev(_ev), L(_L), iterMax(_iterMax)
 	{
 		lns.push_back(&_ns);
 	}
 
-	LateAcceptanceHillClimbing(Evaluator<XES, XEv>& _ev, vector<NS<XES, XEv>*> _lns, int _L, int _iterMax) :
+	LateAcceptanceHillClimbing(GeneralEvaluator<XES, XEv>& _ev, vector<NS<XES, XEv>*> _lns, int _L, int _iterMax) :
 			ev(_ev), lns(_lns), L(_L), iterMax(_iterMax)
 	{
 	}
@@ -112,7 +112,8 @@ public:
 
 				// test for current index
 #ifdef BRAND_NEW
-				if (ev.isImprovement(*cost, e, *eList[index]))
+				//if (ev.isImprovement(*cost, e, *eList[index]))
+            if (cost->isImprovingStrict( e, *eList[index]))
 #else
 				if (ev.betterThan(cost.cost()+e.evaluation(), eList[index]))
 #endif
@@ -127,7 +128,8 @@ public:
 					eList[index] = e.evaluation();
 #endif
 
-					if (ev.betterThan(e, eStar))
+					//if (ev.betterThan(e, eStar))
+               if (e.betterStrict(eStar))
 					{
 						sStar = s;
 						eStar = e;
@@ -205,7 +207,7 @@ public:
 
 	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<XES, XEv>* eval;
+		GeneralEvaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<NS<XES, XEv>*> nslist;

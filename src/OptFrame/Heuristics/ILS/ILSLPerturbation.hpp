@@ -67,11 +67,11 @@ class ILSLPerturbationLPlus2: public ILSLPerturbation<XES, XEv>
 {
 private:
 	vector<NS<XES, XEv>*> ns;
-	Evaluator<XES, XEv>& evaluator;
+	GeneralEvaluator<XES, XEv>& evaluator;
 	RandGen& rg;
 
 public:
-	ILSLPerturbationLPlus2(Evaluator<XES, XEv>& e, NS<XES, XEv>& _ns, RandGen& _rg) :
+	ILSLPerturbationLPlus2(GeneralEvaluator<XES, XEv>& e, NS<XES, XEv>& _ns, RandGen& _rg) :
 			evaluator(e), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -139,11 +139,11 @@ class ILSLPerturbationLPlus2Prob: public ILSLPerturbation<XES, XEv>
 private:
 	vector<NS<XES, XEv>*> ns;
 	vector<pair<int, double> > pNS;
-	Evaluator<XES, XEv>& evaluator;
+	GeneralEvaluator<XES, XEv>& evaluator;
 	RandGen& rg;
 
 public:
-	ILSLPerturbationLPlus2Prob(Evaluator<XES, XEv>& e, NS<XES, XEv>& _ns, RandGen& _rg) :
+	ILSLPerturbationLPlus2Prob(GeneralEvaluator<XES, XEv>& e, NS<XES, XEv>& _ns, RandGen& _rg) :
 			evaluator(e), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -250,7 +250,7 @@ public:
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<XES, XEv>* eval;
+		GeneralEvaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		NS<XES, XEv>* ns;
@@ -296,7 +296,7 @@ public:
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<XES, XEv>* eval;
+		GeneralEvaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		NS<XES, XEv>* ns;
@@ -308,7 +308,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(NS<XES, XEv>::idComponent(), "neighborhood structure"));
 
 		return params;

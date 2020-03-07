@@ -75,7 +75,8 @@ public:
             ///MoveCost<>& cost = *eval.moveCost(m, se, mayEstimate);
             op<XEv> cost = eval.moveCost(*m, se, mayEstimate);
 
-            if (eval.isImprovement(*cost)) {
+            //if (eval.isImprovement(*cost)) {
+            if (cost->isImprovingStrict()) {
                //double old_f = e.evaluation();
 
                m->applyUpdate(se);

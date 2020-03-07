@@ -83,12 +83,13 @@ public:
 			//eCurrent = e; // backup
          current = se; // TODO: remove this copy
 
-			StopCriteria<XES> stopCriteriaNextLS = stopCriteria;
+			StopCriteria<XEv> stopCriteriaNextLS = stopCriteria;
 			stopCriteriaNextLS.updateTimeLimit(tNow.now());
 			lsList[k - 1]->searchFrom(se, stopCriteriaNextLS);
 
 			//if (ev.betterThan(e, eCurrent))
-         if (ev.betterThan(se, current))
+         //if (ev.betterThan(se, current))
+         if (se.second.betterStrict(current.second))
 			{
             // improvement
 				k = 1;

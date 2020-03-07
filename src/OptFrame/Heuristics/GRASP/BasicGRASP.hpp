@@ -36,7 +36,7 @@ template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, X
 class BasicGRASP: public SingleObjSearch<XES>, public GRASP
 {
 private:
-	Evaluator<XES, XEv>& evaluator;
+	GeneralEvaluator<XES, XEv>& evaluator;
 	GRConstructive<S>& constructive;
 	LocalSearch<XES, XEv>& ls;
 	float alpha;
@@ -44,7 +44,7 @@ private:
 
 public:
 
-	BasicGRASP(Evaluator<XES, XEv>& _eval, GRConstructive<S>& _constructive, LocalSearch<XES, XEv>& _ls, float _alpha, int _iterMax) :
+	BasicGRASP(GeneralEvaluator<XES, XEv>& _eval, GRConstructive<S>& _constructive, LocalSearch<XES, XEv>& _ls, float _alpha, int _iterMax) :
 			evaluator(_eval), constructive(_constructive), ls(_ls)
 	{
 		if (_iterMax <= 0)
@@ -106,10 +106,11 @@ public:
          //S& s1 = p1.first;
          XEv& e1 = p1.second;
 
-			StopCriteria<XES> stopCriteriaLS = stopCriteria.newStopCriteriaWithTL(tNow.now());
+			StopCriteria<XEv> stopCriteriaLS = stopCriteria.newStopCriteriaWithTL(tNow.now());
 			ls.searchFrom(p1, stopCriteriaLS);
 
-			if (evaluator.betterThan(e1, e))
+			//if (evaluator.betterThan(e1, e))
+         if (e1.betterStrict(e))
 			{
 				//(*s) = std::move(*s1);
 				//delete s1;
@@ -158,7 +159,7 @@ public:
 
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<XES, XEv>* eval;
+		GeneralEvaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		GRConstructive<S>* constructive;
@@ -189,7 +190,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
 		params.push_back(make_pair(GRConstructive<S>::idComponent(), "greedy randomized constructive heuristic"));
 		params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
 		params.push_back(make_pair("OptFrame:float", "alpha parameter [0,1]"));

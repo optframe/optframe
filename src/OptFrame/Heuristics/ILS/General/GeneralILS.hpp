@@ -115,14 +115,14 @@ public:
          S rS = x_e.getNonDominatedSol(ind);
          MultiEvaluation<> rMev = x_e.getIndMultiEvaluation(ind);
 
-         StopCriteria<XES> stopCriteriaPert;
+         StopCriteria<XEv> stopCriteriaPert;
          stopCriteriaPert.timelimit = stopCriteria.timelimit;
          perturbation(rS, rMev, stopCriteriaPert, *history);
 
          //Try to add the neighbor solution that was obtained from the perturbation
          pMan.addSolutionWithMEV(x_e, rS, rMev);
 
-         StopCriteria<XES> stopCriteriaLS;
+         StopCriteria<XEv> stopCriteriaLS;
          stopCriteriaLS.timelimit = stopCriteria.timelimit;
          ls->moSearchFrom(x_e, rS, rMev, pMan, stopCriteriaLS);
 

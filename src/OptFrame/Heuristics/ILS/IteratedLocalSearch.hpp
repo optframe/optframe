@@ -121,7 +121,7 @@ public:
 
 		if (Component::information)
 			cout << "ILS::performing first local search" << endl;
-		StopCriteria<XES> stopCriteriaLS = stopCriteria;
+		StopCriteria<XEv> stopCriteriaLS = stopCriteria;
 		stopCriteriaLS.updateTimeLimit(tnow.now());
 		localSearch(*star, stopCriteriaLS);
 		if (Component::information)
@@ -136,11 +136,11 @@ public:
 			//S s1(sStar); // copy (should clone?)
 			//Evaluation<> e1(eStar); // copy (should clone?)
          
-			StopCriteria<XES> stopCriteriaPert = stopCriteria;
+			StopCriteria<XEv> stopCriteriaPert = stopCriteria;
 			stopCriteriaPert.updateTimeLimit(tnow.now());
 			perturbation(p1, stopCriteriaPert, *history);
 
-			StopCriteria<XES> stopCriteriaLS2 = stopCriteria;
+			StopCriteria<XEv> stopCriteriaLS2 = stopCriteria;
 			stopCriteriaLS2.updateTimeLimit(tnow.now());
 			localSearch(p1, stopCriteriaLS2);
 
@@ -163,9 +163,10 @@ public:
 
 		//if (evaluator.betterThan(eStar, stopCriteria.target_f)) // BROKEN for now!
       
-      if (stopCriteria.target && evaluator.betterThan(eStar, stopCriteria.target->second))
+      //if (stopCriteria.target_f && evaluator.betterThan(eStar, *stopCriteria.target_f))
+      if (eStar.betterStrict(stopCriteria.target_f))
       {
-			cout << "ILS exit by target_f: " << eStar.evaluation() << " better than " << stopCriteria.target->second.evaluation() << endl;
+			cout << "ILS exit by target_f: " << eStar.evaluation() << " better than " << stopCriteria.target_f.evaluation() << endl;
          cout << "isMin: " << evaluator.isMinimization() << endl;
       }
       

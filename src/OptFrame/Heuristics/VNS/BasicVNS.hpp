@@ -40,7 +40,7 @@ public:
 	typedef VariableNeighborhoodSearch<XES, XEv> super;
 
 	//BasicVNS(Evaluator<XES>& evaluator, Constructive<S>& constructive, vector<NS<XES, XEv>*> vshake, vector<NSSeq<S>*> vsearch) :
-   BasicVNS(Evaluator<XES>& evaluator, InitialSearch<XES>& constructive, vector<NS<XES, XEv>*> vshake, vector<NSSeq<XES>*> vsearch) :
+   BasicVNS(GeneralEvaluator<XES>& evaluator, InitialSearch<XES>& constructive, vector<NS<XES, XEv>*> vshake, vector<NSSeq<XES>*> vsearch) :
 		VariableNeighborhoodSearch<XES, XEv> (evaluator, constructive, vshake, vsearch)
 	{
 	}
@@ -77,7 +77,7 @@ public:
 
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<XES>* eval;
+		GeneralEvaluator<XES>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		//Constructive<S>* constructive;
@@ -97,7 +97,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<XES>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
 		//params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
       params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 

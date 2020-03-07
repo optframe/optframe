@@ -34,12 +34,12 @@ template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S, XEvaluation XEv =
 class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES, XEv>
 {
 private:
-   Evaluator<XES, XEv>& ev;
+   GeneralEvaluator<XES, XEv>& ev;
    ADSManager<R, ADS, S>& adsMan;
    vector<LocalSearch<XES, XEv>*> lsList;
 
 public:
-   VariableNeighborhoodDescentUpdateADS(Evaluator<XES, XEv>& _ev, ADSManager<R, ADS, S>& _adsMan, vector<LocalSearch<XES, XEv>*> _lsList)
+   VariableNeighborhoodDescentUpdateADS(GeneralEvaluator<XES, XEv>& _ev, ADSManager<R, ADS, S>& _adsMan, vector<LocalSearch<XES, XEv>*> _lsList)
      : ev(_ev)
      , adsMan(_adsMan)
      , lsList(_lsList)
@@ -85,7 +85,8 @@ public:
 
          lsList[k - 1]->searchFrom(p0, sosc);
 
-         if (ev.betterThan(p0, se)) {
+         //if (ev.betterThan(p0, se)) {
+         if (p0.second.betterStrict(se.second)) {
             se = p0;
             //delete s0; // no need
             //delete e0; // no need
@@ -102,6 +103,7 @@ public:
 
             k = k + 1;
          }
+         //
          ev.reevaluate(se);
 
          tnow = time(nullptr);
@@ -153,7 +155,7 @@ public:
 
    virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
-      Evaluator<XES, XEv>* eval;
+      GeneralEvaluator<XES, XEv>* eval;
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
       ADSManager<R, ADS, S>* adsMan;
