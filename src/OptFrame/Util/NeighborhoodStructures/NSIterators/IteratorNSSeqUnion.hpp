@@ -40,16 +40,15 @@ public:
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveNSSeqUnion<R, ADS>,  >
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, class MOVE = MoveNSSeqUnion<XES, XEv>>
-class IteratorNSSeqUnion:
-		public NSIterator<XES, XEv>
+class IteratorNSSeqUnion : public NSIterator<XES, XEv>
 {
 private:
-	vector<NSIterator<S, XEv>*> it;
+	vector<NSIterator<XES>*> it;
 	int k;
 
 public:
 
-	IteratorNSSeqUnion(vector<NSIterator<S, XEv>*> _it) :
+	IteratorNSSeqUnion(vector<NSIterator<XES>*> _it) :
 			it(_it)
 	{
 		k = 0;
@@ -61,14 +60,14 @@ public:
 			delete it[i];
 	}
 
-	void first()
+	void first() override
 	{
 		for (unsigned int i = 0; i < it.size(); i++)
 			it[i]->first();
 		k = 0;
 	}
 
-	void next()
+	void next() override
 	{
 		if (!it[k]->isDone())
 			it[k]->next();
@@ -79,7 +78,7 @@ public:
 		}
 	}
 
-	bool isDone()
+	bool isDone() override
 	{
 		for (unsigned int i = 0; i < it.size(); i++)
 			if (!it[i]->isDone())
@@ -88,7 +87,7 @@ public:
 		return true;
 	}
 
-	Move<R, ADS>& current()
+	Move<R, ADS>& current() override
 	{
 		if (!it[k]->isDone())
 			return *new MOVE(k, it[k]->current());

@@ -123,7 +123,7 @@ public:
 
 	virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& s) override
 	{
-      const Route& r = s.getR();
+      const Route& r = s.first.getR();
 		return uptr<NSIterator<XES, XEv>>(new NSITERATOR(r.size(), p));
 	}
 

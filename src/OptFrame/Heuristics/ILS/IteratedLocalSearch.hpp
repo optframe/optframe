@@ -38,13 +38,13 @@ template<class H, XESolution XES, XEvaluation XEv = Evaluation<>>
 class IteratedLocalSearch: public ILS, public SingleObjSearch<XES>
 {
 protected:
-	Evaluator<XES, XEv>& evaluator;
+	GeneralEvaluator<XES, XEv>& evaluator;
 	//Constructive<S>& constructive;
    InitialSearch<XES>& constructive;
 
 public:
 
-	IteratedLocalSearch(Evaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive) :
+	IteratedLocalSearch(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive) :
 			evaluator(_evaluator), constructive(_constructive)
 	{
 	}
@@ -167,7 +167,8 @@ public:
       if (eStar.betterStrict(stopCriteria.target_f))
       {
 			cout << "ILS exit by target_f: " << eStar.evaluation() << " better than " << stopCriteria.target_f.evaluation() << endl;
-         cout << "isMin: " << evaluator.isMinimization() << endl;
+         //cout << "isMin: " << evaluator.isMinimization() << endl;
+         cout << "isMin: " << eStar.isMini << endl;
       }
       
 

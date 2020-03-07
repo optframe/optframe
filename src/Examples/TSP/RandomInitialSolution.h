@@ -41,7 +41,8 @@ using namespace std;
 namespace TSP
 {
 
-class RandomInitialSolutionTSP: public Constructive<SolutionTSP>
+//class RandomInitialSolutionTSP: public Constructive<SolutionTSP>
+class RandomInitialSolutionTSP: public InitialSearch<ESolutionTSP>
 {
 private:
 	ProblemInstance* pI;
@@ -61,7 +62,8 @@ public:
 	{
 	}
 
-	std::optional<SolutionTSP> generateSolution(double timelimit) override
+	//std::optional<SolutionTSP> generateSolution(double timelimit) override
+   std::optional<ESolutionTSP> initialSearch(const StopCriteria<>& sosc) override
 	{
 		RepTSP newRep(pI->n);
 
@@ -75,7 +77,9 @@ public:
 			newRep[i] = r[i];
 
 		//return new CopySolution<RepTSP>(newRep);
-      return make_optional(SolutionTSP(newRep));
+      //return make_optional(SolutionTSP(newRep));
+      ESolutionTSP se(newRep, EvaluationTSP());
+      return make_optional(se);
 	}
 
 };

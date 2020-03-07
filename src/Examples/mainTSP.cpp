@@ -133,7 +133,7 @@ main(int argc, char** argv)
    EvaluatorPermutationRandomKeys<SolutionTSP> eprk(eval, 0, tsp.p->n - 1);
    BRKGA<RepTSP, SolutionTSP> brkga(eprk, tsp.p->n, 10000, 10, 0.4, 0.3, 0.6);
 
-   StopCriteria<ESolutionTSP> sosc;
+   StopCriteria<EvaluationTSP> sosc;
    // strange that this worked.... it's against 'override' pattern. Very strange!!
    /*
    pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
@@ -167,25 +167,25 @@ main(int argc, char** argv)
    }
    */
 
-   vector<LocalSearch<SolutionTSP>*> ns_list;
-   ns_list.push_back(new BestImprovement<SolutionTSP>(eval, tsp2opt));
-   ns_list.push_back(new BestImprovement<SolutionTSP>(eval, tspor1));
-   ns_list.push_back(new BestImprovement<SolutionTSP>(eval, tspor2));
-   ns_list.push_back(new BestImprovement<SolutionTSP>(eval, tspor3));
-   ns_list.push_back(new BestImprovement<SolutionTSP>(eval, tspswap));
+   vector<LocalSearch<ESolutionTSP>*> ns_list;
+   ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tsp2opt));
+   ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor1));
+   ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor2));
+   ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor3));
+   ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspswap));
    for (unsigned i = 0; i < ns_list.size(); i++)
       ns_list[i]->setVerbose();
 
-   VariableNeighborhoodDescent<SolutionTSP> VND(eval, ns_list);
+   VariableNeighborhoodDescent<ESolutionTSP> VND(eval, ns_list);
    VND.setVerbose();
 
-   ILSLPerturbationLPlus2<SolutionTSP> pert(eval, tsp2opt, rg);
+   ILSLPerturbationLPlus2<ESolutionTSP> pert(eval, tsp2opt, rg);
    pert.add_ns(tspor1);
    pert.add_ns(tspor2);
    pert.add_ns(tspor3);
    pert.add_ns(tspswap);
 
-   IteratedLocalSearchLevels<SolutionTSP> ils(eval, random, VND, pert, 3, 2);
+   IteratedLocalSearchLevels<ESolutionTSP> ils(eval, random, VND, pert, 3, 2);
    //ils.setMessageLevel(4);
    ils.setVerbose();
    if (ils.information)
@@ -193,7 +193,7 @@ main(int argc, char** argv)
 
    cout << "will run ils" << endl;
    Timer tim;
-   StopCriteria<ESolutionTSP> soscILS;
+   StopCriteria<EvaluationTSP> soscILS;
    soscILS.timelimit = 3; // 1000
    soscILS.target_f = EvaluationTSP(0.0);
    //pair<CopySolution<RepTSP>, Evaluation<>>& psol = *ils.search(soscILS, NULL, NULL);
@@ -211,8 +211,8 @@ main(int argc, char** argv)
    for (unsigned i = 0; i < ns_list.size(); i++)
       delete ns_list[i];
 
-   vector<NS<SolutionTSP>*> v_ns;
-   vector<NSSeq<SolutionTSP>*> v_nsseq = {&tsp2opt, &tspor1, &tspor2, &tspor3, &tspswap};
+   vector<NS<ESolutionTSP>*> v_ns;
+   vector<NSSeq<ESolutionTSP>*> v_nsseq = {&tsp2opt, &tspor1, &tspor2, &tspor3, &tspswap};
    //v_nsseq.push_back(&tsp2opt);
    //v_nsseq.push_back(&tspor1);
    //v_nsseq.push_back(&tspor2);
@@ -221,9 +221,9 @@ main(int argc, char** argv)
    for (unsigned i = 0; i < v_nsseq.size(); i++)
       v_ns.push_back(v_nsseq[i]);
 
-   BasicVNS<SolutionTSP> vns(eval, random, v_ns, v_nsseq);
+   BasicVNS<ESolutionTSP> vns(eval, random, v_ns, v_nsseq);
    vns.setMessageLevel(3); // INFORMATION
-   StopCriteria<ESolutionTSP> soscVNS;
+   StopCriteria<EvaluationTSP> soscVNS;
    soscVNS.timelimit = 2; // 2 seconds
    soscVNS.target_f = EvaluationTSP(7550.0);
 

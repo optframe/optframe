@@ -41,7 +41,8 @@ using namespace std;
 namespace TSP
 {
 
-class NearestNeighborConstructive: public Constructive<SolutionTSP>
+//class NearestNeighborConstructive: public Constructive<SolutionTSP>
+class NearestNeighborConstructive: public InitialSearch<ESolutionTSP>
 {
 private:
 	ProblemInstance* pI;
@@ -64,7 +65,8 @@ public:
 	{
 	}
 
-	std::optional<SolutionTSP> generateSolution(double timelimit) override
+	//std::optional<SolutionTSP> generateSolution(double timelimit) override
+   std::optional<ESolutionTSP> initialSearch(const StopCriteria<>& sosc) override
 	{
         //cout << "Generating solution" << endl;
 		RepTSP newRep;
@@ -104,7 +106,10 @@ public:
             }
 
 		//return new CopySolution<RepTSP>(newRep);
-      return make_optional(SolutionTSP(newRep));
+      //return make_optional(SolutionTSP(newRep));
+      EvaluationTSP etsp;
+      ESolutionTSP se(SolutionTSP(newRep), etsp);
+      return make_optional(se);
 	}
 
 };

@@ -45,7 +45,7 @@ protected:
 public:
 
 	//IteratedLocalSearchLevels(Evaluator<XES, XEv>& e, Constructive<S>& constructive, LocalSearch<XES, XEv>& _ls, ILSLPerturbation<S, XEv>& _p, int _iterMax, int _levelMax) :
-   IteratedLocalSearchLevels(Evaluator<XES, XEv>& e, InitialSearch<XES>& constructive, LocalSearch<XES, XEv>& _ls, ILSLPerturbation<XES, XEv>& _p, int _iterMax, int _levelMax) :
+   IteratedLocalSearchLevels(GeneralEvaluator<XES, XEv>& e, InitialSearch<XES>& constructive, LocalSearch<XES, XEv>& _ls, ILSLPerturbation<XES, XEv>& _p, int _iterMax, int _levelMax) :
 		IteratedLocalSearch<levelHistory, XES, XEv> (e, constructive), ls(_ls), p(_p), iterMax(_iterMax), levelMax(_levelMax)
 	{
 	}
@@ -166,7 +166,7 @@ public:
 
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<XES, XEv>* eval = nullptr;
+		GeneralEvaluator<XES, XEv>* eval = nullptr;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!eval)
 			return nullptr;
@@ -219,7 +219,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
 		//params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
       params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 		params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));

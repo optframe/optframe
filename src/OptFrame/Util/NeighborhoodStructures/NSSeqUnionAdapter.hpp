@@ -36,17 +36,17 @@ template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = Cop
 class NSSeqUnionAdapter: public NSSeq<XES, XEv>
 {
 private:
-	vector<NSSeq<S>*> ns;
+	vector<NSSeq<XES>*> ns;
 
 public:
 
-	NSSeqUnionAdapter(NSSeq<S>& _n1, NSSeq<S>& _n2)
+	NSSeqUnionAdapter(NSSeq<XES>& _n1, NSSeq<XES>& _n2)
 	{
 		ns.push_back(&_n1);
 		ns.push_back(&_n2);
 	}
 
-	void add_ns(NSSeq<S>& _ns)
+	void add_ns(NSSeq<XES>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
@@ -55,14 +55,21 @@ public:
 	{
 	}
 
-	Move<R, ADS>& move(const R& r, const ADS& ads)
+	//Move<R, ADS>& move(const R& r, const ADS& ads)
+   uptr<Move<XES>> randomMove(const XES& se) override
 	{
+      //const R& r = s.first.getR();
 		int x = rand() % ns.size();
 
-		return *new MOVE(x, ns[x]->move(r, ads));
+      uptr<Move<XES>> mvv = ns[x]->randomMove(se);
+      MOVE* pm = new MOVE(x, mvv );
+		//return uptr<Move<XES>>( new MOVE(x, mvv ) );
+      return uptr<Move<XES>>( pm );
 	}
 
-	Move<R, ADS>* validMove(const R& r, const ADS& ads)
+   /*
+	//Move<R, ADS>* validMove(const R& r, const ADS& ads) override
+   uptr<Move<XES>> validRandomMove(const R& r, const ADS& ads) override
 	{
 		Move<R, ADS>* m = &move(r, ads);
 		if(m->canBeApplied(r, ads))
@@ -73,17 +80,18 @@ public:
 			return nullptr;
 		}
 	}
+   */
 
-	virtual NSIterator<S, XEv>& getIterator(const R& r, const ADS& ads)
+	virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
 	{
-		vector<NSIterator<S, XEv>*> it;
+		vector<uptr<NSIterator<XES>>> it;
 		for(unsigned int i = 0; i < ns.size(); i++)
-			it.push_back(&ns[i]->getIterator(r, ads));
+			it.push_back(ns[i]->getIterator(se));
 
-		return *new IteratorNSSeqUnion<R, ADS, MOVE>(it);
+		return uptr<NSIterator<XES>>(new IteratorNSSeqUnion<R, ADS, S, XEv, XES, MOVE>(it));
 	}
 
-	virtual string toString() const
+	virtual string toString() const override
 	{
 		stringstream ss;
 		ss << "NSSeqUnionAdapter: [";

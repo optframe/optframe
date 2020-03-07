@@ -36,13 +36,13 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class VariableNeighborhoodDescent: public LocalSearch<XES, XEv>
 {
 private:
-	Evaluator<XES, XEv>& ev;
+	GeneralEvaluator<XES, XEv>& ev;
 	vector<LocalSearch<XES, XEv>*> lsList;
 	RandGen* rg;
 
 public:
 
-	VariableNeighborhoodDescent(Evaluator<XES, XEv>& _ev, vector<LocalSearch<XES, XEv>*> _lsList, RandGen* _rg = nullptr) :
+	VariableNeighborhoodDescent(GeneralEvaluator<XES, XEv>& _ev, vector<LocalSearch<XES, XEv>*> _lsList, RandGen* _rg = nullptr) :
 			ev(_ev), lsList(_lsList), rg(_rg)
 	{
 	}
@@ -151,7 +151,7 @@ public:
 
 	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<XES, XEv>* eval;
+		GeneralEvaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<LocalSearch<XES, XEv>*> hlist;
@@ -163,7 +163,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
 		stringstream ss;
 		ss << LocalSearch<XES, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of local searches"));
