@@ -31,7 +31,7 @@ using namespace optframe;
 
 //typedef Solution<RepTSP> SolutionTSP;
 typedef CopySolution<RepTSP> SolutionTSP;
-typedef pair<SolutionTSP, Evaluation<>> ESolutionTSP;
+typedef pair<SolutionTSP, EvaluationTSP> ESolutionTSP;
 
 // compilation tests
 static_assert(XSolution<SolutionTSP>); // verify that this is correctly a XSolution

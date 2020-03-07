@@ -25,6 +25,8 @@
 #include "NSIterator.hpp"
 #include "NSBlockIterator.hpp"
 
+#include <type_traits> // static assert is_same
+
 using namespace std;
 
 namespace optframe
@@ -34,7 +36,12 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
 class NSSeq: public NS<XES, XEv, XSH>
 {
 public:
-
+/*
+   NSSeq()
+   {
+      static_assert(std::is_same<XEv, decltype(declval<XES>.second)>, "XEv type test over XES");
+   }
+*/
     virtual ~NSSeq()
     {
     }
@@ -83,6 +90,11 @@ public:
     }
 };
 
-}
+// General test for NSSeq
+//using nsseq_test_base = NSSeq<pair<IsSolution<vector<int>, short>, IsEvaluation<double>>, IsEvaluation<double>>;
+using nsseq_test_base = NSSeq<pair<IsSolution<vector<int>, short> , Evaluation<> >>;
+
+
+} // using namespace optframe
 
 #endif /*OPTFRAME_NSSEQ_HPP_*/

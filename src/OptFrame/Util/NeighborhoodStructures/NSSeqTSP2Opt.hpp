@@ -29,6 +29,10 @@
 #include "Moves/MoveTSP2Opt.hpp"
 #include "NSIterators/IteratorTSP2Opt.hpp"
 
+#include "../../BaseConcepts.hpp"
+
+#include <type_traits> // static assert is_same
+
 using namespace std;
 using namespace optframe;
 
@@ -91,8 +95,8 @@ using namespace optframe;
 
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
-template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, class MOVE = MoveTSP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSP2Opt<T, ADS, S, MOVE, P>, XSearch<XES> XSH = std::pair<S, XEv>>
-class NSSeqTSP2Opt: public NSSeq<XES, XEv, XSH>
+template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, class MOVE = MoveTSP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSP2Opt<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+class NSSeqTSP2Opt: public NSSeq<XES, XEv>
 {
 	typedef vector<T> Route;
 
@@ -139,7 +143,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << NSSeq<XES, XEv, XSH>::idComponent() << ":NSSeqTSP2Opt";
+		ss << NSSeq<XES, XEv>::idComponent() << ":NSSeqTSP2Opt";
 		return ss.str();
 	}
 
@@ -148,9 +152,9 @@ public:
 		return idComponent();
 	}
 
-	virtual bool compatible(string s)
+	virtual bool compatible(string s) 
 	{
-		return (s == idComponent()) || (NSSeq<XES, XEv, XSH>::compatible(s));
+		return (s == idComponent()) || (NSSeq<XES, XEv>::compatible(s));
 	}
 
 	virtual string toString() const
@@ -161,5 +165,11 @@ public:
 		return ss.str();
 	}
 };
+
+// compile tests
+//using mynsseq_nsseq_tsp_2opt_test = NSSeqTSP2Opt<int, short, IsSolution<vector<int>, short>, IsEvaluation<double>, pair<IsSolution<vector<int>, short>, IsEvaluation<double>> >;
+using mynsseq_nsseq_tsp_2opt_test = NSSeqTSP2Opt<int, short, IsSolution<vector<int>, short> >;
+//
+static_assert(std::is_base_of<nsseq_test_base, mynsseq_nsseq_tsp_2opt_test>::value,  "not inherited from NSSeq");
 
 #endif /*OPTFRAME_NSSEQTSP2OPT_HPP_*/

@@ -91,13 +91,16 @@ public:
 
 
          //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
-        NSSeq<ESolutionTSP>* nsseq_delta_2opt = new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, EvaluationTSP, ESolutionTSP, DeltaMoveTSP2Opt, ProblemInstance>(p);
+        NSSeq<ESolutionTSP>* nsseq_delta_2opt = new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSP2Opt, ProblemInstance>(p);
         hf.addComponent(*nsseq_delta_2opt, "OptFrame:NS:NSSeq");
 
         hf.addComponent(*new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>, "OptFrame:NS:NSSeq"); // no optimization
 
         //NSSeq<ESolutionTSP>* nsseq_delta_or1 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, DeltaMoveTSPOrOptk, ProblemInstance>(1, p);
-        NSSeq<ESolutionTSP>* nsseq_delta_or1 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, EvaluationTSP, ESolutionTSP, DeltaMoveTSPOrOptk, ProblemInstance>(1, p);
+        ////MoveTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, EvaluationTSP, ESolutionTSP>* pmove = new DeltaMoveTSPOrOptk(0,0,0,nullptr);
+        //NSSeq<ESolutionTSP>* nsseq_delta_or1;
+        // template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, class MOVE = MoveTSPOrOptk<T, ADS, S, XEv, XES>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPOrOptk<T, ADS, S, XEv, XES, MOVE, P>, XSearch<XES> XSH = std::pair<S, XEv>>
+        NSSeq<ESolutionTSP>* nsseq_delta_or1 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSPOrOptk, ProblemInstance>(1, p);
         hf.addComponent(*nsseq_delta_or1, "OptFrame:NS:NSSeq");
         hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(1), "OptFrame:NS:NSSeq");
         hf.addComponent(*new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(2), "OptFrame:NS:NSSeq");

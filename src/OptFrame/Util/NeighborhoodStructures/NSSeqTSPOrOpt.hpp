@@ -73,34 +73,34 @@ public:
 
    // Maybe S& should be the Representation itself.... no getR() here.
    // It makes more sense to pass RepTSP + ESolutionTSP... than SolutionTSP + ESolutionTSP
-	Move<S, XEv>* randomMove(const S& s) override
+	uptr<Move<XES, XEv>> randomMove(const XES& se) override
 	{
-      const Route& rep = s.getR();
-		return OrOpt1_2_3->move(s);
+      const Route& rep = se.first.getR();
+		return OrOpt1_2_3->move(se);
 	}
 
-	virtual Move<S, XEv>* validMove(const S& s) override
+	virtual uptr<Move<XES, XEv>> validRandomMove(const XES& se) override
 	{
-      const Route& r = s.getR();
-		Move<S, XEv>* m = &move(s);
-		if (m->canBeApplied(s))
+      const Route& r = se.first.getR();
+		uptr<Move<XES, XEv>> m = move(se);
+		if (m->canBeApplied(se))
 			return m;
 		else
 		{
-			delete m;
+			//delete m;
 			return nullptr;
 		}
 	}
 
-	virtual NSIterator<S, XEv>* getIterator(const S& s) override
+	virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& se) override
 	{
-		return OrOpt1_2_3->getIterator(s);
+		return OrOpt1_2_3->getIterator(se);
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << NSSeq<XES, XEv, XSH>::idComponent() << ":NSSeqTSPOrOpt";
+		ss << NSSeq<XES, XEv>::idComponent() << ":NSSeqTSPOrOpt";
 		return ss.str();
 	}
 
@@ -111,7 +111,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (NSSeq<XES, XEv, XSH>::compatible(s));
+		return (s == idComponent()) || (NSSeq<XES, XEv>::compatible(s));
 	}
 
 	virtual string toString() const
@@ -121,6 +121,13 @@ public:
 		return ss.str();
 	}
 };
+
+// compile tests
+//using mynsseq_nsseq_tsp_2opt_test = NSSeqTSP2Opt<int, short, IsSolution<vector<int>, short>, IsEvaluation<double>, pair<IsSolution<vector<int>, short>, IsEvaluation<double>> >;
+using mynsseq_nsseq_tsp_oropt_test = NSSeqTSPOrOpt<int, short, IsSolution<vector<int>, short> >;
+//
+static_assert(std::is_base_of<nsseq_test_base, mynsseq_nsseq_tsp_oropt_test>::value,  "not inherited from NSSeq");
+
 
 } // namespace optframe
 
