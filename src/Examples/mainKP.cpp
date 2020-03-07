@@ -68,13 +68,16 @@ main(int argc, char** argv)
    auto soscSA { StopCriteria(specificStopBy) };
 */
 
+/*
    SpecificMethodStop<ESolutionKP, EvaluationKP, BasicSimulatedAnnealing<ESolutionKP>> spc {
       [&](const ESolutionKP& best, const StopCriteria<EvaluationKP>& sosc, BasicSimulatedAnnealing<ESolutionKP>* me) -> bool {
          return ((me->getT() > 0.001) && (me->getTimer().now() < 120)); // 120 seconds and freezing 0.001
       }
    };
+*/
    
-   BasicSimulatedAnnealing<ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg, spc);
+   //BasicSimulatedAnnealing<ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg, spc);
+   BasicSimulatedAnnealing<ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
    
    
    sa.specificStopBy = 
