@@ -80,8 +80,9 @@ public:
          j = rand() % (n - k + 1);
 
       uptr<Move<XES, XEv>> m(new MOVE(i, j, k, p));
-      S sol(rep); // TODO: think
-      if (!m->canBeApplied(sol)) {
+      //S sol(rep); // TODO: think
+      //if (!m->canBeApplied(sol)) {
+      if (!m->canBeApplied(se)) {
          cout << "ERROR IN GENERATION!" << endl;
          m->print();
          exit(1);

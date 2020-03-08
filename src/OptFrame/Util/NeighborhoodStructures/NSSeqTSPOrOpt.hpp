@@ -48,7 +48,7 @@ class NSSeqTSPOrOpt: public NSSeq<XES, XEv, XSH>
 	NSSeqTSPOrOptk<T, ADS, S>* OrOpt2;
 	NSSeqTSPOrOptk<T, ADS, S>* OrOpt3;
 
-	NSSeqUnionAdapter<vector<T>, ADS>* OrOpt1_2_3;
+	NSSeqUnionAdapter<vector<T>, ADS, S, XEv, XES>* OrOpt1_2_3;
 
 public:
 
@@ -75,10 +75,11 @@ public:
    // It makes more sense to pass RepTSP + ESolutionTSP... than SolutionTSP + ESolutionTSP
 	uptr<Move<XES, XEv>> randomMove(const XES& se) override
 	{
-      const Route& rep = se.first.getR();
-		return OrOpt1_2_3->move(se);
+      //const Route& rep = se.first.getR();
+		return OrOpt1_2_3->randomMove(se);
 	}
 
+/*
 	virtual uptr<Move<XES, XEv>> validRandomMove(const XES& se) override
 	{
       const Route& r = se.first.getR();
@@ -91,6 +92,7 @@ public:
 			return nullptr;
 		}
 	}
+*/
 
 	virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& se) override
 	{

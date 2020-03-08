@@ -32,7 +32,7 @@
 using namespace std;
 
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveNSSeqUnion<R, ADS> >
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, class MOVE = MoveNSSeqUnion<XES, XEv>>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, class MOVE = MoveNSSeqUnion<S, XEv, XES>>
 class NSSeqUnionAdapter: public NSSeq<XES, XEv>
 {
 private:
@@ -56,15 +56,19 @@ public:
 	}
 
 	//Move<R, ADS>& move(const R& r, const ADS& ads)
-   uptr<Move<XES>> randomMove(const XES& se) override
+   uptr<Move<XES, XEv>> randomMove(const XES& se) override
 	{
       //const R& r = s.first.getR();
 		int x = rand() % ns.size();
 
-      uptr<Move<XES>> mvv = ns[x]->randomMove(se);
-      MOVE* pm = new MOVE(x, mvv );
-		//return uptr<Move<XES>>( new MOVE(x, mvv ) );
-      return uptr<Move<XES>>( pm );
+      uptr<Move<XES, XEv>> mvv = ns[x]->randomMove(se);
+      uptr<Move<XES, XEv>> mvv2 = std::move(mvv);
+
+      //MOVE* pm = new MOVE(x, mvv );
+      MoveNSSeqUnion<S, XEv, XES> *pm = new MoveNSSeqUnion<S, XEv, XES>(x, std::move(mvv2));
+      Move<XES, XEv>* pm2 = pm;
+		uptr<Move<XES, XEv>> mv2( pm2 );
+      return mv2;
 	}
 
    /*

@@ -31,14 +31,24 @@ class MoveNSSeqUnion: public Move<XES, XEv>
 {
 protected:
 	int id;
-	uptr<Move<XES, XEv>> m;
+	uptr<Move<XES, XEv>> m {nullptr};
 
 public:
 
+/*
 	MoveNSSeqUnion(int _id, uptr<Move<XES, XEv>>&& _m) :
-			id(_id), m(_m)
+			id(_id), m{std::move(_m)}
 	{
 	}
+*/
+
+
+	MoveNSSeqUnion(int _id, uptr<Move<XES, XEv>> _m) :
+			//id(_id), m(std::move(_m))
+         id(_id), m(_m)
+	{
+	}
+
 
 	int get_id()
 	{
@@ -52,29 +62,29 @@ public:
 
 	virtual ~MoveNSSeqUnion()
 	{
-		delete &m;
+		//delete &m;
 	}
 
 	bool canBeApplied(const XES& s) override
 	{
-		return m.canBeApplied(s);
+		return m->canBeApplied(s);
 	}
 
 	uptr<Move<XES, XEv>> apply(XES& se) override
 	{
-		return uptr<Move<XES, XEv>>( new MoveNSSeqUnion<XES, XEv>(id, m.apply(se)) );
+		return uptr<Move<XES, XEv>>( new MoveNSSeqUnion<S, XEv, XES>(id, m->apply(se)) );
 	}
 
 	uptr<Move<XES, XEv>> applyUpdate(Evaluation<>& e, S& s)
 	{
-		return uptr<Move<XES, XEv>>( new MoveNSSeqUnion<XES, XEv>(id, m.apply(e, s)) );
+		return uptr<Move<XES, XEv>>( new MoveNSSeqUnion<S, XEv, XES>(id, m->apply(e, s)) );
 	}
 
 	virtual bool operator==(const Move<XES, XEv>& _m) const
 	{
-		const MoveNSSeqUnion<XES, XEv>& m1 = (const MoveNSSeqUnion<XES, XEv>&) _m;
+		const MoveNSSeqUnion<S, XEv, XES>& m1 = (const MoveNSSeqUnion<S, XEv, XES>&) _m;
 		if (id == m1.id)
-			return m == m1.m;
+			return *m == *(m1.m);
 		else
 			return false;
 	}
@@ -82,7 +92,7 @@ public:
 	void print() const override
 	{
 		cout << "MoveNSSeqUnion: id=" << id << "; move = ";
-		m.print();
+		m->print();
 	}
 };
 

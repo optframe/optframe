@@ -117,7 +117,7 @@ public:
 
 	uptr<Move<XES, XEv>> randomMove(const XES& s) override
 	{
-      const Route& rep = s.getR();
+      const Route& rep = s.first.getR();
 		if (rep.size() < 2)
 			return uptr<Move<XES, XEv>>(new MOVE(-1, -1, p));
 
@@ -135,9 +135,9 @@ public:
 		return uptr<Move<XES, XEv>>(new MOVE(p1, p2, p));
 	}
 
-	virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& s) override
+	virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& se) override
 	{
-		return uptr<NSIterator<XES, XEv>>(new NSITERATOR(s, p));
+		return uptr<NSIterator<XES, XEv>>(new NSITERATOR(se.first, p));
 	}
 
 	static string idComponent()

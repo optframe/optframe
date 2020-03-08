@@ -47,7 +47,7 @@ protected:
 public:
 
 	//BasicIteratedLocalSearch(Evaluator<XES, XEv>& e, Constructive<S>& constructive, LocalSearch<XES, XEv>& _ls, BasicILSPerturbation<S, XEv>& _p, int _iterMax) :
-   BasicIteratedLocalSearch(Evaluator<XES, XEv>& e, InitialSearch<XES>& constructive, LocalSearch<XES, XEv>& _ls, BasicILSPerturbation<XES, XEv>& _p, int _iterMax) :
+   BasicIteratedLocalSearch(GeneralEvaluator<XES, XEv>& e, InitialSearch<XES>& constructive, LocalSearch<XES, XEv>& _ls, BasicILSPerturbation<XES, XEv>& _p, int _iterMax) :
 		IteratedLocalSearch<BasicHistory, XES, XEv> (e, constructive), ls(_ls), p(_p), iterMax(_iterMax)
 	{
 	}
@@ -84,7 +84,8 @@ public:
 
 	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, BasicHistory& history) override
 	{
-		if (IteratedLocalSearch<BasicHistory, XES, XEv>::evaluator.betterThan(e1, e2))
+		//if (IteratedLocalSearch<BasicHistory, XES, XEv>::evaluator.betterThan(e1, e2))
+      if (e1.betterStrict(e2))
 		{
 			// =======================
 			//   Melhor solucao: 's2'
@@ -142,7 +143,7 @@ public:
 
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") override
 	{
-		Evaluator<XES, XEv>* eval;
+		GeneralEvaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		//Constructive<S>* constructive;
@@ -169,7 +170,7 @@ public:
 	virtual vector<pair<string, string> > parameters()
 	{
 		vector<pair<string, string> > params;
-		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+		params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
      //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
       params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 		params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));

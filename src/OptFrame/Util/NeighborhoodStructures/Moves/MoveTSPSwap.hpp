@@ -63,17 +63,17 @@ public:
       return p2;
    }
 
-   bool canBeApplied(const XES& s) override
+   bool canBeApplied(const XES& se) override
    {
-      const Route& rep = s.getR();
+      const Route& rep = se.first.getR();
       bool all_positive = (p1 >= 0) && (p2 >= 0);
       bool size_ok = (p1 < ((int)rep.size())) && (p2 < ((int)rep.size()));
       return all_positive && size_ok && (rep.size() >= 2);
    }
 
-   uptr<Move<XES, XEv>> apply(XES& s) override
+   uptr<Move<XES, XEv>> apply(XES& se) override
    {
-      Route& rep = s.getR();
+      Route& rep = se.first.getR();
       T t = rep[p1];
       rep[p1] = rep[p2];
       rep[p2] = t;

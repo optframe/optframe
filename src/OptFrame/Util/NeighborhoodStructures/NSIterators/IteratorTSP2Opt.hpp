@@ -32,7 +32,7 @@ using namespace std;
 // Working structure: vector<T>
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
-template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, class MOVE = MoveTSP2Opt<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, class MOVE = MoveTSP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class NSIteratorTSP2Opt: public NSIterator<XES, XEv>
 {
 	typedef vector<T> Route;
@@ -86,7 +86,10 @@ public:
 				p2 = p1 + 2;
 			}
 
-			m = uptr<Move<S>>(new MOVE(p1, p2, p));
+         
+			//m = uptr<Move<S>>(new MOVE(p1, p2, p));
+         MOVE* pm = new MOVE(p1, p2, p);
+         m = uptr<Move<XES>>(pm);
 		}
 		else
 			m = nullptr;
@@ -106,7 +109,7 @@ public:
 			exit(1);
 		}
 
-      uptr<Move<S>> m2 = std::move(m);
+      uptr<Move<XES>> m2 = std::move(m);
       m = nullptr;
 
 		return m2;

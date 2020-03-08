@@ -39,16 +39,16 @@ public:
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveNSSeqUnion<R, ADS>,  >
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, class MOVE = MoveNSSeqUnion<XES, XEv>>
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, class MOVE = MoveNSSeqUnion<S, XEv, XES>>
 class IteratorNSSeqUnion : public NSIterator<XES, XEv>
 {
 private:
-	vector<NSIterator<XES>*> it;
+	vector<uptr<NSIterator<XES>>> it;
 	int k;
 
 public:
 
-	IteratorNSSeqUnion(vector<NSIterator<XES>*> _it) :
+	IteratorNSSeqUnion(vector<uptr<NSIterator<XES>>> _it) :
 			it(_it)
 	{
 		k = 0;
@@ -56,8 +56,8 @@ public:
 
 	virtual ~IteratorNSSeqUnion()
 	{
-		for (unsigned int i = 0; i < it.size(); i++)
-			delete it[i];
+		//for (unsigned int i = 0; i < it.size(); i++)
+		//	delete it[i];
 	}
 
 	void first() override
@@ -87,10 +87,11 @@ public:
 		return true;
 	}
 
-	Move<R, ADS>& current() override
+	//Move<R, ADS>& current() override
+   uptr<Move<XES>> current() override
 	{
 		if (!it[k]->isDone())
-			return *new MOVE(k, it[k]->current());
+			return uptr<Move<XES>>( new MOVE(k, it[k]->current()) );
 		else
 			throw NSSeqUnionAdapterOutOfBound();
 	}
