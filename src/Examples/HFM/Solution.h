@@ -4,6 +4,7 @@
 #include "../../OptFrame/Solution.hpp"
 #include "../../OptFrame/Solutions/CopySolution.hpp"
 #include "Representation.h"
+#include "Evaluation.h"
 
 using namespace optframe;
 
@@ -11,7 +12,12 @@ namespace HFM
 {
 typedef Solution<RepHFM,OPTFRAME_DEFAULT_ADS> SolutionEFP;
 
-typedef CopySolution<RepHFM> SolutionHFM;
+typedef SolutionEFP SolutionHFM;
+
+typedef pair<SolutionEFP, EvaluationEFP> ESolutionEFP;
+
+typedef ESolutionEFP ESolutionHFM; // TODO: same naming
+
 }
 
 #endif /*EFP_SOLUTION_H_*/

@@ -30,7 +30,7 @@ using namespace std;
 // Working structure: vector<T>
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
-template<class T, class ADS, XBaseSolution<vector<vector<T> >,ADS> S, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS, XBaseSolution<vector<vector<T> >,ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class MoveVRPExchange: public Move<XES, XEv>
 {
 
@@ -69,9 +69,9 @@ public:
 		return r;
 	}
 
-	virtual bool canBeApplied(const S& s) override
+	virtual bool canBeApplied(const XES& se) override
 	{
-      const Routes& rep = s.getR();
+      const Routes& rep = se.first.getR();
 		bool all_positive = (c1 >= 0) && (c2 >= 0) && (r >= 0);
 		return all_positive && (rep.at(r).size() >= 2);
 	}
@@ -81,17 +81,17 @@ public:
 
 	}
 
-	virtual uptr<Move<S>> apply(S& s) override
+	virtual uptr<Move<XES>> apply(XES& se) override
 	{
-      Routes& rep = s.getR();
+      Routes& rep = se.first.getR();
 		T aux = rep.at(r).at(c1);
 		rep.at(r).at(c1) = rep.at(r).at(c2);
 		rep.at(r).at(c2) = aux;
 
-		return uptr<Move<S>>(new MoveVRPExchange(r, c1, c2));
+		return uptr<Move<XES>>(new MoveVRPExchange(r, c1, c2));
 	}
 
-	virtual bool operator==(const Move<S>& _m) const
+	virtual bool operator==(const Move<XES>& _m) const
 	{
 		const MoveVRPExchange& m1 = (const MoveVRPExchange&) _m;
 		return ((m1.c1 == c1) && (m1.c2 == c2) && (m1.r == r));
@@ -106,16 +106,16 @@ public:
 };
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPExchange<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM>
-template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPExchange<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPExchange<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class NSIteratorVRPExchange: public NSIterator<XES, XEv>
 {
 	typedef vector<vector<T> > Routes;
 
 protected:
 
-	uptr<Move<S>> m;
+	uptr<Move<XES>> m;
 	int index;
-	vector<uptr<Move<S>>> moves;
+	vector<uptr<Move<XES>>> moves;
 	const Routes& rep;
 
 	P* p; // has to be the last
@@ -141,7 +141,7 @@ public:
 				for (int c2 = 0; c2 < rep.at(r).size(); c2++)
 				{
 					if (c1 != c2)
-						moves.push_back(uptr<Move<S>>(new MOVE(r, c1, c2, p)));
+						moves.push_back(uptr<Move<XES>>(new MOVE(r, c1, c2, p)));
 				}
 			}
 		}
@@ -169,7 +169,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual uptr<Move<S>> current() override
+	virtual uptr<Move<XES>> current() override
 	{
 		if (isDone())
 		{
@@ -178,7 +178,7 @@ public:
 			exit(1);
 		}
 
-      uptr<Move<S>> m2 = std::move(m);
+      uptr<Move<XES>> m2 = std::move(m);
       m = nullptr;
 
 		return m2;
@@ -205,12 +205,12 @@ public:
 	{
 	}
 
-	uptr<Move<S>> randomMove(const S& s) override
+	uptr<Move<XES>> randomMove(const XES& se) override
 	{
-      const Routes& rep = s.getR();
+      const Routes& rep = se.first.getR();
 		int r = rand() % rep.size();
 		if (rep.at(r).size() < 2)
-			return uptr<Move<S>>(new MOVE(-1, -1, -1, p));
+			return uptr<Move<XES>>(new MOVE(-1, -1, -1, p));
 
 		int c1 = rand() % rep.at(r).size();
 
@@ -222,12 +222,13 @@ public:
 		} while (c1 == c2);
 
 		// create exchange(p1,p2) move
-		return uptr<Move<S>>(new MOVE(r, c1, c2, p));
+		return uptr<Move<XES>>(new MOVE(r, c1, c2, p));
 	}
 
-	virtual uptr<NSIterator<S>> getIterator(const S& s) override
+	virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
 	{
-		return uptr<NSIterator<S>>(new NSITERATOR(s.getR(), s.getADS(), p));
+      XSolution& s = se.first;
+		return uptr<NSIterator<XES>>(new NSITERATOR(s.getR(), s.getADS(), p));
 	}
 
 	virtual string toString() const

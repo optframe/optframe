@@ -92,12 +92,20 @@ public:
 	{
 	}
 
-	//void add(Constructive<S>& c)
+	void add(Constructive<S>& c)
+	{
+		//lConstructive.push_back(&c);
+		//if (verbose)
+		//	cout << "checkcommand: Constructive " << lConstructive.size() << " added!" << endl;
+      cout << "checkcommand: Constructive not registered!" << endl;
+	}
+
+
    void add(InitialSearch<XES>& c)
 	{
 		lConstructive.push_back(&c);
 		if (verbose)
-			cout << "checkcommand: Constructive " << lConstructive.size() << " added!" << endl;
+			cout << "checkcommand: InitialSearch " << lConstructive.size() << " added!" << endl;
 	}
 
 	void add(ADSManager<R, ADS, S>& adsMan)

@@ -37,16 +37,16 @@ namespace optframe
 
 // MultiEvaluator is not a REAL evaluator... a bunch/pack of evaluators... TODO: unify
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = MultiESolution<XES> > //, XSearch<S, XEv> XSH = pair<S, XEv>> // cannot do, because MultiEvaluation is not a valid evaluation
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = MultiESolution<XES> > //, XSearch<S, XEv> XSH = pair<S, XEv>> // cannot do, because MultiEvaluation is not a valid evaluation
 class MultiEvaluator: public MultiDirection  //, public GeneralEvaluator<S, XEv, XSH> 
 {
 protected:
-	vector<Evaluator<XES, XEv>*> sngEvaluators; // single evaluators
+	vector<Evaluator<S, XEv>*> sngEvaluators; // single evaluators
 	bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
 
 public:
 
-	MultiEvaluator(vector<Evaluator<XES, XEv>*> _veval) :
+	MultiEvaluator(vector<Evaluator<S, XEv>*> _veval) :
 			sngEvaluators(_veval), allowCosts(false)
 	{
 		for (unsigned i = 0; i < _veval.size(); i++)
@@ -60,7 +60,7 @@ public:
 	{
 	}
 
-	virtual void addEvaluator(Evaluator<XES, XEv>& ev)
+	virtual void addEvaluator(Evaluator<S, XEv>& ev)
 	{
 		sngEvaluators.push_back(&ev);
 	}

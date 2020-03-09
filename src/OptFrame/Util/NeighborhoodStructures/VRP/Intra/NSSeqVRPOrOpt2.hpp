@@ -27,7 +27,7 @@
 
 using namespace std;
 
-template<class T, class ADS, XBaseSolution<vector<vector<T> >,ADS> S, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS, XBaseSolution<vector<vector<T> >,ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class MoveVRPOrOpt2: public Move<XES, XEv>
 {
 
@@ -66,9 +66,9 @@ public:
 		return pos;
 	}
 
-	virtual bool canBeApplied(const S& s) override
+	virtual bool canBeApplied(const XES& se) override
 	{
-      const Routes& rep = s.getR();
+      const Routes& rep = se.first.getR();
 		bool all_positive = (r >= 0) && (c >= 0) && (pos >= 0);
 		return all_positive && (c != pos) && (c + 1 != pos) && (c + 2 != pos);
 	}
@@ -78,9 +78,9 @@ public:
 
 	}
 
-	virtual uptr<Move<S>> apply(S& s) override
+	virtual uptr<Move<XES>> apply(XES& se) override
 	{
-      Routes& rep = s.getR();
+      Routes& rep = se.first.getR();
 		T aux;
 		if (c < pos)
 		{
@@ -96,7 +96,7 @@ public:
 				rep.at(r).at(i) = rep.at(r).at(i + 1);
 				rep.at(r).at(i + 1) = aux;
 			}
-			return uptr<Move<S>>(new MoveVRPOrOpt2<T, ADS, S> (r, pos - 2, c));
+			return uptr<Move<XES>>(new MoveVRPOrOpt2<T, ADS, S> (r, pos - 2, c));
 		}
 		else
 		{
@@ -112,14 +112,14 @@ public:
 				rep.at(r).at(i) = rep.at(r).at(i - 1);
 				rep.at(r).at(i - 1) = aux;
 			}
-			return uptr<Move<S>>(new MoveVRPOrOpt2<T, ADS, S> (r, pos, c + 2));
+			return uptr<Move<XES>>(new MoveVRPOrOpt2<T, ADS, S> (r, pos, c + 2));
 
 		}
 
-		return uptr<Move<S>>(new MoveVRPOrOpt2<T, ADS, S> (-1, -1, -1));
+		return uptr<Move<XES>>(new MoveVRPOrOpt2<T, ADS, S> (-1, -1, -1));
 	}
 
-	bool operator==(const Move<S>& _m) const
+	bool operator==(const Move<XES>& _m) const
 	{
 		const MoveVRPOrOpt2<T, ADS, S>& m1 = (const MoveVRPOrOpt2<T, ADS, S>&) _m;
 		return (m1.r == r) && (m1.c == c) && (m1.pos == pos);
@@ -132,7 +132,7 @@ public:
 	}
 };
 
-template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPOrOpt2<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPOrOpt2<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class NSIteratorVRPOrOpt2: public NSIterator<XES, XEv>
 {
 
@@ -140,8 +140,8 @@ class NSIteratorVRPOrOpt2: public NSIterator<XES, XEv>
 
 protected:
 
-	uptr<Move<S>> m;
-	vector<uptr<Move<S>>> moves;
+	uptr<Move<XES>> m;
+	vector<uptr<Move<XES>>> moves;
 	int index; //index of moves
 	const Routes& rep;
 
@@ -171,7 +171,7 @@ public:
 					{
 						if ((c != pos) && (c + 1 != pos) && (c + 2 != pos))
 						{
-							moves.push_back(uptr<Move<S>>(new MOVE(r, c, pos, p)));
+							moves.push_back(uptr<Move<XES>>(new MOVE(r, c, pos, p)));
 						}
 					}
 				}
@@ -201,7 +201,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual uptr<Move<S>> current() override
+	virtual uptr<Move<XES>> current() override
 	{
 		if (isDone())
 		{
@@ -210,7 +210,7 @@ public:
 			exit(1);
 		}
 
-      uptr<Move<S>> m2 = std::move(m);
+      uptr<Move<XES>> m2 = std::move(m);
 
 		return m2;
 	}
@@ -235,13 +235,13 @@ public:
 	{
 	}
 
-	uptr<Move<S>> randomMove(const S& s) override
+	uptr<Move<XES>> randomMove(const XES& se) override
 	{
-      const Routes& rep = s.getR();
+      const Routes& rep = se.first.getR();
 		int r = rand() % rep.size();
 
 		if (rep.at(r).size() < 3)
-			return uptr<Move<S>>(new MOVE(-1, -1, -1, p));
+			return uptr<Move<XES>>(new MOVE(-1, -1, -1, p));
 
 		int c = rand() % (rep.at(r).size() - 1);
 
@@ -251,12 +251,13 @@ public:
 			pos = rand() % (rep.at(r).size() + 1);
 		} while ((c == pos) || (c + 1 == pos) || (c + 2 == pos));
 
-		return uptr<Move<S>>(new MOVE(r, c, pos, p));
+		return uptr<Move<XES>>(new MOVE(r, c, pos, p));
 	}
 
-	virtual uptr<NSIterator<S>> getIterator(const S& s) override
+	virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
 	{
-		return uptr<NSIterator<S>>(new NSITERATOR(s.getR(), s.getADS(), p));
+      XSolution& s = se.first;
+		return uptr<NSIterator<XES>>(new NSITERATOR(s.getR(), s.getADS(), p));
 	}
 
 	virtual string toString() const

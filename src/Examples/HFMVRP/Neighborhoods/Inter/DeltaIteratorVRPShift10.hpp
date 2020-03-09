@@ -66,7 +66,7 @@ public:
 							if (p->demands[r.at(r1).at(cli)] + ads.sumDemand[r2] <= p->vehiclesCap[r2])
 							{
 								for (int pos = 1; pos < (r.at(r2).size() - 1); pos++)
-									moves.push_back(uptr<Move<SolutionHFMVRP>>(new DeltaMoveVRPShift10(r1, r2, cli, pos, p)));
+									moves.push_back(uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRPShift10(r1, r2, cli, pos, p)));
 							}
 
 					}
@@ -97,7 +97,7 @@ public:
 		return m == NULL;
 	}
 
-	uptr<Move<SolutionHFMVRP>> current() override
+	uptr<Move<ESolutionHFMVRP>> current() override
 	{
 		if (isDone())
 		{
@@ -106,7 +106,7 @@ public:
 			exit(1);
 		}
 
-      uptr<Move<SolutionHFMVRP>> m2(std::move(m));
+      uptr<Move<ESolutionHFMVRP>> m2(std::move(m));
       m = nullptr;
 
 		return m2;

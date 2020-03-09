@@ -71,8 +71,9 @@ public:
 	{
 		return std::abs(x);
 	}
-	virtual bool canBeApplied(const SolutionHFMVRP& s) override
+	virtual bool canBeApplied(const ESolutionHFMVRP& se) override
 	{
+      const SolutionHFMVRP& s = se.first;
       const RepHFMVRP& rep = s.getR();
       const AdsHFMVRP& ads = s.getADS();
 		if (r1 >= 0)
@@ -221,8 +222,9 @@ public:
 			}
 		}
 	}
-	uptr<Move<SolutionHFMVRP>> apply(SolutionHFMVRP& s) override
+	uptr<Move<ESolutionHFMVRP>> apply(ESolutionHFMVRP& se) override
 	{
+      SolutionHFMVRP& s = se.first;
       RepHFMVRP& rep = s.getR();
       AdsHFMVRP& ads = s.getADS();
 		//getting client
@@ -250,7 +252,7 @@ public:
 		//Update minDemand,maxDemand, minPairDemand, maxPairDemand, cumulative and sum
 		updateModifiedRoutes(rep, ads);
 
-		return uptr<Move<SolutionHFMVRP>>(new DeltaMoveVRPShift10(r2, r1, pos, cli, hfmvrp));
+		return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRPShift10(r2, r1, pos, cli, hfmvrp));
 	}
 
 	op<EvaluationHFMVRP> cost(const pair<SolutionHFMVRP, Evaluation<>>& se, bool allowEstimated = false) override
@@ -322,7 +324,7 @@ public:
 		return idComp;
 	}
 
-	virtual bool operator==(const Move<SolutionHFMVRP>& _m) const
+	virtual bool operator==(const Move<ESolutionHFMVRP>& _m) const
 	{
 		const DeltaMoveVRPShift10& m1 = (const DeltaMoveVRPShift10&) _m;
 		return ((r1 == m1.r1) && (r2 == m1.r2) && (cli == m1.cli) && (pos == m1.pos));

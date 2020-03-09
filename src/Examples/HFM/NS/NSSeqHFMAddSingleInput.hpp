@@ -32,15 +32,15 @@ public:
    {
    }
 
-   bool canBeApplied(const SolutionHFM& rep) override
+   bool canBeApplied(const ESolutionHFM& se) override
    {
       bool currentSampleFromTarget = ((file == 0) && (K == 0));
       return !currentSampleFromTarget;
    }
 
-   uptr<Move<SolutionHFM>> apply(SolutionHFM& s) override
+   uptr<Move<ESolutionHFM>> apply(ESolutionHFM& se) override
    {
-      RepHFM& rep = s.getR();
+      RepHFM& rep = se.first.getR();
       if (!reverse) {
          rep.singleIndex.push_back(make_pair(file, K));
          if (K > rep.earliestInput)
@@ -60,10 +60,10 @@ public:
          rep.singleIndex.pop_back();
          rep.singleFuzzyRS.pop_back();
       }
-      return uptr<Move<SolutionHFM>>(new MoveNEIGHAddSingleInput(file, K, rulesAndWeights, !reverse));
+      return uptr<Move<ESolutionHFM>>(new MoveNEIGHAddSingleInput(file, K, rulesAndWeights, !reverse));
    }
 
-   virtual bool operator==(const Move<SolutionHFM>& _m) const
+   virtual bool operator==(const Move<ESolutionHFM>& _m) const
    {
       const MoveNEIGHAddSingleInput& m = (const MoveNEIGHAddSingleInput&)_m;
       return ((m.file == file) && (m.K == K) && (m.rulesAndWeights == rulesAndWeights));
@@ -77,7 +77,7 @@ public:
    }
 };
 
-class NSIteratorNEIGHAddSingleInput : public NSIterator<SolutionHFM>
+class NSIteratorNEIGHAddSingleInput : public NSIterator<ESolutionHFM>
 {
 private:
    const RepHFM& rep;
@@ -86,10 +86,10 @@ private:
    RandGen& rg;
 
    //MoveNEIGHAddSingleInput* m;
-   uptr<Move<SolutionHFM>> m; // general naming
+   uptr<Move<ESolutionHFM>> m; // general naming
 
    //vector<uptr<MoveNEIGHAddSingleInput>> moves;
-   vector<uptr<Move<SolutionHFM>>> moves; // keep general naming here
+   vector<uptr<Move<ESolutionHFM>>> moves; // keep general naming here
    int index;
 
 public:
@@ -133,7 +133,7 @@ public:
          vector<double> rulesAndWeights =
            { greater, greaterWeight, lower, lowerWeight, epsilon, fuzzyFunction };
 
-         moves.push_back(uptr<Move<SolutionHFM>>(new MoveNEIGHAddSingleInput(0, lag, rulesAndWeights, false)));
+         moves.push_back(uptr<Move<ESolutionHFM>>(new MoveNEIGHAddSingleInput(0, lag, rulesAndWeights, false)));
       }
 
       if (moves.size() > 0) {
@@ -156,7 +156,7 @@ public:
       return m == nullptr;
    }
 
-   virtual uptr<Move<SolutionHFM>> current() override
+   virtual uptr<Move<ESolutionHFM>> current() override
    {
       if (isDone()) {
          cout << "There isnt any current element!" << endl;
@@ -164,14 +164,14 @@ public:
          exit(1);
       }
 
-      uptr<Move<SolutionHFM>> m2 = std::move(m);
+      uptr<Move<ESolutionHFM>> m2 = std::move(m);
       m = nullptr;
 
       return m2;
    }
 };
 
-class NSSeqNEIGHAddSingleInput : public NSSeq<SolutionHFM>
+class NSSeqNEIGHAddSingleInput : public NSSeq<ESolutionHFM>
 {
 private:
    HFMProblemInstance& pEFP;
@@ -192,7 +192,7 @@ public:
    {
    }
 
-   virtual uptr<Move<SolutionHFM>> randomMove(const SolutionHFM& s) override
+   virtual uptr<Move<ESolutionHFM>> randomMove(const ESolutionHFM& se) override
    {
       //const RepHFM& rep = s.getR();
       //TODO - Check the possibility of add negative K values
@@ -219,12 +219,12 @@ public:
 
       vector<double> rulesAndWeights =
         { greater, greaterWeight, lower, lowerWeight, epsilon, fuzzyFunction };
-      return uptr<Move<SolutionHFM>>(new MoveNEIGHAddSingleInput(nEXV, K, rulesAndWeights, false)); // return a random move
+      return uptr<Move<ESolutionHFM>>(new MoveNEIGHAddSingleInput(nEXV, K, rulesAndWeights, false)); // return a random move
    }
 
-   virtual uptr<NSIterator<SolutionHFM>> getIterator(const SolutionHFM& s) override
+   virtual uptr<NSIterator<ESolutionHFM>> getIterator(const ESolutionHFM& se) override
    {
-      return uptr<NSIterator<SolutionHFM>> (new NSIteratorNEIGHAddSingleInput(s.getR(), vMaxLag, vMaxUpperLag, pEFP, rg)); // return an iterator to the neighbors of 'rep'
+      return uptr<NSIterator<ESolutionHFM>> (new NSIteratorNEIGHAddSingleInput(se.first.getR(), vMaxLag, vMaxUpperLag, pEFP, rg)); // return an iterator to the neighbors of 'rep'
    }
 
    virtual string toString() const override

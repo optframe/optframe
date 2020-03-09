@@ -33,9 +33,9 @@ public:
 	{
 	}
 
-	bool canBeApplied(const SolutionHFM& s) override
+	bool canBeApplied(const ESolutionHFM& se) override
 	{
-      const RepHFM& rep = s.getR();
+      const RepHFM& rep = se.first.getR();
 		bool minimumLag = false;
 		bool maxLagCheck = false;
 		bool notNull1 = false;
@@ -58,9 +58,9 @@ public:
 		return minimumLag && maxLagCheck && notNull1 && notNull2;
 	}
 
-	uptr<Move<SolutionHFM>> apply(SolutionHFM& s) override
+	uptr<Move<ESolutionHFM>> apply(ESolutionHFM& se) override
 	{
-      RepHFM& rep = s.getR();
+      RepHFM& rep = se.first.getR();
 		if (!sign)
 			rep.singleIndex[rule].second += X;
 		else
@@ -69,10 +69,10 @@ public:
 //		if (rep.singleIndex[rule].second > rep.earliestInput)
 //			rep.earliestInput = rep.singleIndex[rule].second;
 
-		return uptr<Move<SolutionHFM>>(new MoveHFMChangeSingleInput(rule, !sign, maxLag, maxUpperLag, X));
+		return uptr<Move<ESolutionHFM>>(new MoveHFMChangeSingleInput(rule, !sign, maxLag, maxUpperLag, X));
 	}
 
-	virtual bool operator==(const Move<SolutionHFM>& _m) const
+	virtual bool operator==(const Move<ESolutionHFM>& _m) const
 	{
 		const MoveHFMChangeSingleInput& m = (const MoveHFMChangeSingleInput&) _m;
 		return ((m.rule == rule) && (m.sign == sign) && (m.maxLag == maxLag) && (m.maxUpperLag == maxUpperLag) && (m.X == X));
@@ -86,13 +86,13 @@ public:
 }
 ;
 
-class NSIteratorHFMChangeSingleInput: public NSIterator<SolutionHFM>
+class NSIteratorHFMChangeSingleInput: public NSIterator<ESolutionHFM>
 {
 private:
 	//MoveHFMChangeSingleInput* m;
-   uptr<Move<SolutionHFM>> m;
+   uptr<Move<ESolutionHFM>> m;
 	//vector<uptr<MoveHFMChangeSingleInput>> moves;
-   vector<uptr<Move<SolutionHFM>>> moves; // general naming
+   vector<uptr<Move<ESolutionHFM>>> moves; // general naming
 	int index;
 	const RepHFM& rep;
 	vector<int> vMaxLag, vMaxUpperLag;
@@ -120,8 +120,8 @@ public:
 			int expVariable = rep.singleIndex[rule].first;
 			int maxLag = vMaxLag[expVariable];
 			int maxUpperLag = vMaxUpperLag[expVariable];
-			moves.push_back(uptr<Move<SolutionHFM>>(new MoveHFMChangeSingleInput(rule, sign, maxLag, maxUpperLag, X)));
-			moves.push_back(uptr<Move<SolutionHFM>>(new MoveHFMChangeSingleInput(rule, !sign, maxLag, maxUpperLag, X)));
+			moves.push_back(uptr<Move<ESolutionHFM>>(new MoveHFMChangeSingleInput(rule, sign, maxLag, maxUpperLag, X)));
+			moves.push_back(uptr<Move<ESolutionHFM>>(new MoveHFMChangeSingleInput(rule, !sign, maxLag, maxUpperLag, X)));
 		}
 
 		if (moves.size() > 0)
@@ -144,7 +144,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual uptr<Move<SolutionHFM>> current() override
+	virtual uptr<Move<ESolutionHFM>> current() override
 	{
 		if (isDone())
 		{
@@ -153,7 +153,7 @@ public:
 			exit(1);
 		}
 
-      uptr<Move<SolutionHFM>> m2 = std::move(m);
+      uptr<Move<ESolutionHFM>> m2 = std::move(m);
       m = nullptr;
 
 		return m2;
@@ -161,7 +161,7 @@ public:
 
 };
 
-class NSSeqHFMChangeSingleInput: public NSSeq<SolutionHFM>
+class NSSeqHFMChangeSingleInput: public NSSeq<ESolutionHFM>
 {
 private:
 	HFMProblemInstance& pEFP;
@@ -179,16 +179,16 @@ public:
 	{
 	}
 
-	virtual uptr<Move<SolutionHFM>> randomMove(const SolutionHFM& s) override
+	virtual uptr<Move<ESolutionHFM>> randomMove(const ESolutionHFM& se) override
 	{
-      const RepHFM& rep = s.getR();
+      const RepHFM& rep = se.first.getR();
 		int MAXCHANGE = 5;
 		int X = rg.rand(MAXCHANGE) + 1;
 		int rule = -1;
 		if (rep.singleIndex.size() > 0)
 			rule = rg.rand(rep.singleIndex.size());
 		else
-			return uptr<Move<SolutionHFM>>(new MoveHFMChangeSingleInput(-1, -1, -1, -1, -1));
+			return uptr<Move<ESolutionHFM>>(new MoveHFMChangeSingleInput(-1, -1, -1, -1, -1));
 
 		int sign = rg.rand(2);
 
@@ -196,12 +196,12 @@ public:
 		int maxLag = vMaxLag[expVariable];
 		int maxUpperLag = vMaxUpperLag[expVariable];
 
-		return uptr<Move<SolutionHFM>>(new MoveHFMChangeSingleInput(rule, sign, maxLag, maxUpperLag, X)); // return a random move
+		return uptr<Move<ESolutionHFM>>(new MoveHFMChangeSingleInput(rule, sign, maxLag, maxUpperLag, X)); // return a random move
 	}
 
-	virtual uptr<NSIterator<SolutionHFM>> getIterator(const SolutionHFM& s) override
+	virtual uptr<NSIterator<ESolutionHFM>> getIterator(const ESolutionHFM& se) override
 	{
-		return uptr<NSIterator<SolutionHFM>>(new NSIteratorHFMChangeSingleInput(s.getR(), vMaxLag, vMaxUpperLag)); // return an iterator to the neighbors of 'rep'
+		return uptr<NSIterator<ESolutionHFM>>(new NSIteratorHFMChangeSingleInput(se.first.getR(), vMaxLag, vMaxUpperLag)); // return an iterator to the neighbors of 'rep'
 	}
 
 	virtual string toString() const override

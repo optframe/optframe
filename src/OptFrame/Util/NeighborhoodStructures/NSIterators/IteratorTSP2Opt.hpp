@@ -86,8 +86,7 @@ public:
 				p2 = p1 + 2;
 			}
 
-         
-			//m = uptr<Move<S>>(new MOVE(p1, p2, p));
+      
          MOVE* pm = new MOVE(p1, p2, p);
          m = uptr<Move<XES>>(pm);
 		}

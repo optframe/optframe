@@ -157,7 +157,7 @@ public:
 					{
 						for (int pos = 0; pos <= r.at(r2).size(); pos++)
 						{
-							moves.push_back(uptr<Move<SolutionHFMVRP>>(new MOVE(r1, r2, cli, pos, p)));
+							moves.push_back(uptr<Move<ESolutionHFMVRP>>(new MOVE(r1, r2, cli, pos, p)));
 						}
 					}
 				}

@@ -61,8 +61,9 @@ public:
 		return std::abs(x);
 	}
 
-	bool canBeApplied(const SolutionHFMVRP& s)
+	bool canBeApplied(const ESolutionHFMVRP& se)
 	{
+      const SolutionHFMVRP& s = se.first;
       const RepHFMVRP& rep = s.getR();
 		if (r >= 0)
 		{
@@ -141,8 +142,9 @@ public:
 
 	}
 
-	uptr<Move<SolutionHFMVRP>> apply(SolutionHFMVRP& s) override
+	uptr<Move<ESolutionHFMVRP>> apply(ESolutionHFMVRP& se) override
 	{
+      SolutionHFMVRP& s = se.first;
       RepHFMVRP& rep = s.getR();
       AdsHFMVRP& ads = s.getADS();
 		//Update NeightStatus
@@ -166,7 +168,7 @@ public:
 			//Update minDemand,maxDemand, minPairDemand, maxPairDemand, cumulative and sum
 			updateModifiedRoutes(rep, ads);
 
-			return uptr<Move<SolutionHFMVRP>>(new DeltaMoveVRPOrOpt1(r, pos - 1, c, hfmvrp));
+			return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRPOrOpt1(r, pos - 1, c, hfmvrp));
 		}
 		else
 		{
@@ -181,7 +183,7 @@ public:
 			//Update minDemand,maxDemand, minPairDemand, maxPairDemand, cumulative and sum
 			updateModifiedRoutes(rep, ads);
 
-			return uptr<Move<SolutionHFMVRP>>(new DeltaMoveVRPOrOpt1(r, pos, c+1, hfmvrp));
+			return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRPOrOpt1(r, pos, c+1, hfmvrp));
 
 		}
 
@@ -305,7 +307,7 @@ public:
 		return idComp;
 	}
 
-	virtual bool operator==(const Move<SolutionHFMVRP>& _m) const
+	virtual bool operator==(const Move<ESolutionHFMVRP>& _m) const
 	{
 		const DeltaMoveVRPOrOpt1& m1 = (const DeltaMoveVRPOrOpt1&) _m;
 		return (m1.r == r) && (m1.c == c) && (m1.pos == pos);

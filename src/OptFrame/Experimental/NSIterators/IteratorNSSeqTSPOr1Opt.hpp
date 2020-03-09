@@ -40,8 +40,8 @@ private:
 
 	//MoveTSPOr1Opt<T, DS >* m;
 	//vector<uptr<MoveTSPOr1Opt<T,DS >>> moves;
-   uptr<Move<SolutionHFM>> m; // general move
-   vector<uptr<Move<SolutionHFM>>> moves; // general moves
+   uptr<Move<ESolutionHFM>> m; // general move
+   vector<uptr<Move<ESolutionHFM>>> moves; // general moves
 
 	int index; //index of moves
 	const Route& rep;
@@ -68,7 +68,7 @@ public:
 			{
 				if ((c != pos) && (c + 1 != pos))
 				{
-					moves.push_back(uptr<Move<SolutionHFM>>(new MoveTSPOr1Opt<T, DS >(c, pos)));
+					moves.push_back(uptr<Move<ESolutionHFM>>(new MoveTSPOr1Opt<T, DS >(c, pos)));
 				}
 			}
 		}

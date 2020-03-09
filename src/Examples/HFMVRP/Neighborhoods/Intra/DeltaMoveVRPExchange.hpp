@@ -59,8 +59,9 @@ public:
 		return std::abs(x);
 	}
 
-	virtual bool canBeApplied(const SolutionHFMVRP& s)
+	virtual bool canBeApplied(const ESolutionHFMVRP& se)
 	{
+      const SolutionHFMVRP& s = se.first;
       const RepHFMVRP& rep = s.getR();
 		if (r >= 0)
 		{
@@ -83,8 +84,9 @@ public:
 
 	}
 
-	uptr<Move<SolutionHFMVRP>> apply(SolutionHFMVRP& s) override
+	uptr<Move<ESolutionHFMVRP>> apply(ESolutionHFMVRP& se) override
 	{
+      SolutionHFMVRP& s = se.first;
       RepHFMVRP& rep = s.getR();
       AdsHFMVRP& ads = s.getADS();
 		int small, bigger;
@@ -135,7 +137,7 @@ public:
 		ads.maxPairDemand[r] = maxPairDemand;
 		ads.minPairDemand[r] = minPairDemand;
 
-		return uptr<Move<SolutionHFMVRP>>(new DeltaMoveVRPExchange(r, c1, c2, hfmvrp));
+		return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRPExchange(r, c1, c2, hfmvrp));
 	}
 
 	op<EvaluationHFMVRP> cost(const pair<SolutionHFMVRP, Evaluation<>>& se, bool allowEstimated) override
@@ -240,7 +242,7 @@ public:
 		return idComp;
 	}
 
-	virtual bool operator==(const Move<SolutionHFMVRP>& _m) const
+	virtual bool operator==(const Move<ESolutionHFMVRP>& _m) const
 	{
 		const DeltaMoveVRPExchange& m1 = (const DeltaMoveVRPExchange&) _m;
 		return ((m1.c1 == c1) && (m1.c2 == c2) && (m1.r == r));

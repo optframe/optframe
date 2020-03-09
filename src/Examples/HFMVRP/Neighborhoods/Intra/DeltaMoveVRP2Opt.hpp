@@ -59,8 +59,9 @@ public:
 		return std::abs(x);
 	}
 
-	virtual bool canBeApplied(const SolutionHFMVRP& s) //TODO voltar ADS para const
+	virtual bool canBeApplied(const ESolutionHFMVRP& se) //TODO voltar ADS para const
 	{
+      const SolutionHFMVRP& s = se.first;
       const RepHFMVRP& rep = s.getR();
       const AdsHFMVRP& ads = s.getADS();
 
@@ -159,8 +160,9 @@ public:
 
 	}
 
-	uptr<Move<SolutionHFMVRP>> apply(SolutionHFMVRP& s) override
+	uptr<Move<ESolutionHFMVRP>> apply(ESolutionHFMVRP& se) override
 	{
+      SolutionHFMVRP& s = se.first;
       RepHFMVRP& rep = s.getR();
       AdsHFMVRP& ads = s.getADS();
       
@@ -184,7 +186,7 @@ public:
 		//Update minDemand,maxDemand, minPairDemand, maxPairDemand, cumulative and sum
 		updateModifiedRoutes(rep, ads);
 
-		return uptr<Move<SolutionHFMVRP>>(new DeltaMoveVRP2Opt(r, p1, p2, hfmvrp));
+		return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRP2Opt(r, p1, p2, hfmvrp));
 	}
 
 	op<EvaluationHFMVRP> cost(const pair<SolutionHFMVRP, Evaluation<>>& se, bool allowEstimated) override
@@ -239,7 +241,7 @@ public:
 		return idComp;
 	}
 
-	virtual bool operator==(const Move<SolutionHFMVRP>& _m) const
+	virtual bool operator==(const Move<ESolutionHFMVRP>& _m) const
 	{
 		const DeltaMoveVRP2Opt& m1 = (const DeltaMoveVRP2Opt&) _m;
 		return ((m1.p1 == p1) && (m1.p2 == p2));

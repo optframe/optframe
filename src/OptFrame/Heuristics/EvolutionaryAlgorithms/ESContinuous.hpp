@@ -49,7 +49,7 @@ struct ESContinuousStructure
 
 //CADA INDIVIDUO EH UM PAR DE SOLUCAO E UMA TUPLE COM O PARAMETROS DA ESTRATEGIA
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class ESStruct = double>
-template<XRepresentation R, class ADS = OPTFRAME_DEFAULT_ADS, class ESStruct = double, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template<XRepresentation R, class ADS = OPTFRAME_DEFAULT_ADS, class ESStruct = double, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class ESContinous: public SingleObjSearch<XES>
 {
 private:
@@ -58,7 +58,7 @@ private:
 	Evaluation<>* eStar;
 	Evaluator<S>& eval;
 	Constructive<S>& constructive;
-	vector<NSSeq<S>*> vNS;
+	vector<NSSeq<XES>*> vNS;
 	LocalSearch<XES, XEv>& ls;
 
 	const int mi;
@@ -86,7 +86,7 @@ private:
 
 public:
 
-	ESContinous(Evaluator<S>& _eval, InitialSearch<XES>& _constructive, vector<NSSeq<S>*> _vNS, LocalSearch<XES, XEv>& _ls, int _mi, int _lambda, int _gMax) :
+	ESContinous(Evaluator<S>& _eval, InitialSearch<XES>& _constructive, vector<NSSeq<XES>*> _vNS, LocalSearch<XES, XEv>& _ls, int _mi, int _lambda, int _gMax) :
 			eval(_eval), constructive(_constructive), vNS(_vNS), ls(_ls), mi(_mi), lambda(_lambda), gMax(_gMax)
 	{
 		sStar = nullptr;

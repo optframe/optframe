@@ -6,11 +6,17 @@
 
 #include "Representation.h"
 #include "ADS.h"
+#include "Evaluation.h"
 
 using namespace optframe;
 
-namespace HFMVRP{
+namespace HFMVRP
+{
+
 typedef CopySolution<RepHFMVRP, AdsHFMVRP> SolutionHFMVRP;
+
+typedef pair<SolutionHFMVRP, EvaluationHFMVRP> ESolutionHFMVRP;
+
 }
 #endif /*HFMVRP_SOLUTION_H_*/
 

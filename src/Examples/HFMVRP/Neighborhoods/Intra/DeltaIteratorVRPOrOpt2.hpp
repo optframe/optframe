@@ -66,7 +66,7 @@ public:
 						{
 							if ((c != pos) && (c + 1 != pos) && (c + 2 != pos))
 							{
-								moves.push_back(uptr<Move<SolutionHFMVRP>>(new MOVE(r, c, pos, p)));
+								moves.push_back(uptr<Move<ESolutionHFMVRP>>(new MOVE(r, c, pos, p)));
 							}
 						}
 					}
@@ -98,7 +98,7 @@ public:
 		return m == NULL;
 	}
 
-	uptr<Move<SolutionHFMVRP>> current() override
+	uptr<Move<ESolutionHFMVRP>> current() override
 	{
 		if (isDone())
 		{
@@ -107,7 +107,7 @@ public:
 			exit(1);
 		}
 
-      uptr<Move<SolutionHFMVRP>> m2 = std::move(m);
+      uptr<Move<ESolutionHFMVRP>> m2 = std::move(m);
       m = nullptr;
 
 		return m2;

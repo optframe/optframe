@@ -37,7 +37,7 @@ public:
 
 	using ESContinous<RepHFM, OPTFRAME_DEFAULT_ADS,esParameters, SolutionHFM>::search; // prevents name hiding
 
-	EFPESContinous(HFMEvaluator& _eval, Constructive<SolutionHFM>& _constructive, vector<NSSeq<SolutionHFM>*> _vNS, LocalSearch<SolutionHFM>& _ls, int _mi, int _lambda, int _gMax, RandGen& _rg, double _initialDesv, double _mutationDesv) :
+	EFPESContinous(HFMEvaluator& _eval, Constructive<SolutionHFM>& _constructive, vector<NSSeq<ESolutionHFM>*> _vNS, LocalSearch<ESolutionHFM>& _ls, int _mi, int _lambda, int _gMax, RandGen& _rg, double _initialDesv, double _mutationDesv) :
 			ESContinous<RepHFM, OPTFRAME_DEFAULT_ADS, esParameters, SolutionHFM>(_eval, _constructive, _vNS, _ls, _mi, _lambda, _gMax), rg(_rg), initialDesv(_initialDesv), mutationDesv(_mutationDesv)
 	{
 

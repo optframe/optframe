@@ -32,16 +32,16 @@ public:
 	{
 	}
 
-	bool canBeApplied(const SolutionHFM& s) override
+	bool canBeApplied(const ESolutionHFM& se) override
 	{
 		return true;
 	}
 
-	uptr<Move<SolutionHFM>> apply(SolutionHFM& s) override
+	uptr<Move<ESolutionHFM>> apply(ESolutionHFM& se) override
 	{
-      RepHFM& rep = s.getR();
+      RepHFM& rep = se.first.getR();
 		if (r == -1)
-			return uptr<Move<SolutionHFM>>(new MoveHFMModifyRule(-1, -1, -1, -1, -1));
+			return uptr<Move<ESolutionHFM>>(new MoveHFMModifyRule(-1, -1, -1, -1, -1));
 
 		if (r == PERTINENCEFUNC)
 		{
@@ -52,7 +52,7 @@ public:
 			if (vectorType == Derivative_Inputs)
 				rep.derivativeFuzzyRS[o][r] = !rep.derivativeFuzzyRS[o][r];
 
-			return uptr<Move<SolutionHFM>>(new MoveHFMModifyRule(r, o, applyValue, !sign, vectorType));
+			return uptr<Move<ESolutionHFM>>(new MoveHFMModifyRule(r, o, applyValue, !sign, vectorType));
 		}
 
 		if (vectorType == Single_Input)
@@ -80,10 +80,10 @@ public:
 				rep.derivativeFuzzyRS[o][r] -= applyValue;
 		}
 		// return reverse move
-		return uptr<Move<SolutionHFM>>(new MoveHFMModifyRule(r, o, applyValue, !sign, vectorType));
+		return uptr<Move<ESolutionHFM>>(new MoveHFMModifyRule(r, o, applyValue, !sign, vectorType));
 	}
 
-	virtual bool operator==(const Move<SolutionHFM>& _m) const
+	virtual bool operator==(const Move<ESolutionHFM>& _m) const
 	{
 		const MoveHFMModifyRule& m = (const MoveHFMModifyRule&) _m;
 		return ((m.r == r) && (m.o == o) && (m.sign == sign));
@@ -98,13 +98,13 @@ public:
 }
 ;
 
-class NSIteratorHFMModifyRules: public NSIterator<SolutionHFM>
+class NSIteratorHFMModifyRules: public NSIterator<ESolutionHFM>
 {
 private:
 	//MoveHFMModifyRule* m;
 	//vector<uptr<MoveHFMModifyRule>> moves;
-   uptr<Move<SolutionHFM>> m; // general move
-   vector<uptr<Move<SolutionHFM>>> moves; // general moves
+   uptr<Move<ESolutionHFM>> m; // general move
+   vector<uptr<Move<ESolutionHFM>>> moves; // general moves
 	int index;
 	const RepHFM& rep;
 	HFMProblemInstance& pEFP;
@@ -133,7 +133,7 @@ public:
 				for (int o = 0; o < options; o++)
 					for (int v = 0; v < nShakes; v++)
 					{
-						moves.push_back(uptr<Move<SolutionHFM>>(new MoveHFMModifyRule(r, o, vUpdateValues[v], sign, 0)));
+						moves.push_back(uptr<Move<ESolutionHFM>>(new MoveHFMModifyRule(r, o, vUpdateValues[v], sign, 0)));
 					}
 
 		options = rep.averageFuzzyRS.size(); //rep.size() options
@@ -143,7 +143,7 @@ public:
 				for (int o = 0; o < options; o++)
 					for (int v = 0; v < nShakes; v++)
 					{
-						moves.push_back(uptr<Move<SolutionHFM>>(new MoveHFMModifyRule(r, o, vUpdateValues[v], sign, 1)));
+						moves.push_back(uptr<Move<ESolutionHFM>>(new MoveHFMModifyRule(r, o, vUpdateValues[v], sign, 1)));
 					}
 
 		options = rep.derivativeFuzzyRS.size(); //rep.size() options
@@ -153,7 +153,7 @@ public:
 				for (int o = 0; o < options; o++)
 					for (int v = 0; v < (int) nShakes; v++)
 					{
-						moves.push_back(uptr<Move<SolutionHFM>>(new MoveHFMModifyRule(r, o, vUpdateValues[v], sign, 2)));
+						moves.push_back(uptr<Move<ESolutionHFM>>(new MoveHFMModifyRule(r, o, vUpdateValues[v], sign, 2)));
 					}
 
 		if (moves.size() > 0)
@@ -177,7 +177,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual uptr<Move<SolutionHFM>> current() override
+	virtual uptr<Move<ESolutionHFM>> current() override
 	{
 		if (isDone())
 		{
@@ -186,7 +186,7 @@ public:
 			exit(1);
 		}
 
-      uptr<Move<SolutionHFM>> m2 = std::move(m);
+      uptr<Move<ESolutionHFM>> m2 = std::move(m);
       m = nullptr;
 
 		return m2;
@@ -194,7 +194,7 @@ public:
 
 };
 
-class NSSeqHFMModifyRules: public NSSeq<SolutionHFM>
+class NSSeqHFMModifyRules: public NSSeq<ESolutionHFM>
 {
 private:
 	HFMProblemInstance& pEFP;
@@ -235,9 +235,9 @@ public:
 	{
 	}
 
-	virtual uptr<Move<SolutionHFM>> randomMove(const SolutionHFM& s) override
+	virtual uptr<Move<ESolutionHFM>> randomMove(const ESolutionHFM& se) override
 	{
-      const RepHFM& rep = s.getR();
+      const RepHFM& rep = se.first.getR();
 		int vectorType = rg.rand(N_Inputs_Types);
 		int o = -1;
 		int r = -1;
@@ -278,18 +278,18 @@ public:
 		}
 
 		if (tries == maxTries)
-			return uptr<Move<SolutionHFM>>(new MoveHFMModifyRule(-1, -1, -1, -1, -1)); // return a random move
+			return uptr<Move<ESolutionHFM>>(new MoveHFMModifyRule(-1, -1, -1, -1, -1)); // return a random move
 
 		int applyRand = rg.rand(vUpdateValues.size());
 		double applyValue = vUpdateValues.at(applyRand);
 		bool sign = rg.rand(2);
 
-		return uptr<Move<SolutionHFM>>(new MoveHFMModifyRule(r, o, applyValue, sign, vectorType)); // return a random move
+		return uptr<Move<ESolutionHFM>>(new MoveHFMModifyRule(r, o, applyValue, sign, vectorType)); // return a random move
 	}
 
-	virtual uptr<NSIterator<SolutionHFM>> getIterator(const SolutionHFM& s) override
+	virtual uptr<NSIterator<ESolutionHFM>> getIterator(const ESolutionHFM& se) override
 	{
-		return uptr<NSIterator<SolutionHFM>>(new NSIteratorHFMModifyRules(s.getR(), pEFP, vUpdateValues)); // return an iterator to the neighbors of 'rep'
+		return uptr<NSIterator<ESolutionHFM>>(new NSIteratorHFMModifyRules(se.first.getR(), pEFP, vUpdateValues)); // return an iterator to the neighbors of 'rep'
 	}
 
 	virtual string toString() const override

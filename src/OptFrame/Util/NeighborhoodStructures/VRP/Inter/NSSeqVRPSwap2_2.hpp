@@ -142,7 +142,7 @@ class NSIteratorVRPSwap2_2: public NSIterator<vector<vector<T> > >
 private:
 
 	MOVE* m;
-	vector<uptr<Move<S>>> moves;
+	vector<uptr<Move<XES>>> moves;
 	int index; //index of moves
 	const Routes& r;
 
@@ -177,10 +177,10 @@ public:
 						{
 							for (int c2 = 0; c2 < r.at(r2).size() - 1; c2++)
 							{
-								moves.push_back(uptr<Move<SolutionHFMVRP>>(new MOVE(r1, r2, c1, c2, false, false)));//normal
-								moves.push_back(uptr<Move<SolutionHFMVRP>>(new MOVE(r1, r2, c1, c2, true, false)));//reverse route 1
-								moves.push_back(uptr<Move<SolutionHFMVRP>>(new MOVE(r1, r2, c1, c2, false, true)));//reverse route 2
-								moves.push_back(uptr<Move<SolutionHFMVRP>>(new MOVE(r1, r2, c1, c2, true, true)));//reverse booth
+								moves.push_back(uptr<Move<ESolutionHFMVRP>>(new MOVE(r1, r2, c1, c2, false, false)));//normal
+								moves.push_back(uptr<Move<ESolutionHFMVRP>>(new MOVE(r1, r2, c1, c2, true, false)));//reverse route 1
+								moves.push_back(uptr<Move<ESolutionHFMVRP>>(new MOVE(r1, r2, c1, c2, false, true)));//reverse route 2
+								moves.push_back(uptr<Move<ESolutionHFMVRP>>(new MOVE(r1, r2, c1, c2, true, true)));//reverse booth
 							}
 						}
 					}

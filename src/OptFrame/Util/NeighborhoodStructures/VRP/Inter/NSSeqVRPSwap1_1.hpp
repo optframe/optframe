@@ -33,7 +33,7 @@
 using namespace std;
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<vector<T> >,ADS> S = CopySolution<vector<vector<T>>,ADS>, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<vector<T> >,ADS> S = CopySolution<vector<vector<T>>,ADS>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class MoveVRPSwap1_1: public Move<XES, XEv>
 {
 	typedef vector<vector<T> > Routes;
@@ -74,9 +74,9 @@ public:
 		return c2;
 	}
 
-	virtual bool canBeApplied(const S& s) override
+	virtual bool canBeApplied(const XES& se) override
 	{
-      const Routes& rep = s.getR();
+      const Routes& rep = se.first.getR();
 		bool all_positive = (r1 >= 0) && (r2 >= 0) && (c1 >= 0) && (c2 >= 0);
 		return all_positive && (rep.size() >= 2);
 	}
@@ -86,18 +86,18 @@ public:
 
 	}
 
-	virtual uptr<Move<S>> apply(S& s) override
+	virtual uptr<Move<XES>> apply(XES& se) override
 	{
-      Routes& rep = s.getR();
+      Routes& rep = se.first.getR();
 		T aux;
 		aux = rep.at(r1).at(c1);
 		rep.at(r1).at(c1) = rep.at(r2).at(c2);
 		rep.at(r2).at(c2) = aux;
 
-		return uptr<Move<S>>(new MoveVRPSwap1_1(r2, r1, c2, c1));
+		return uptr<Move<XES>>(new MoveVRPSwap1_1(r2, r1, c2, c1));
 	}
 
-	virtual bool operator==(const Move<S>& _m) const
+	virtual bool operator==(const Move<XES>& _m) const
 	{
 		const MoveVRPSwap1_1& m1 = (const MoveVRPSwap1_1&) _m;
 		return ((m1.r1 == r1) && (m1.r2 == r2) && (m1.c1 == c1) && (m1.c2 == c2));
@@ -112,15 +112,15 @@ public:
 };
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPSwap1_1<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM>
-template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPSwap1_1<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPSwap1_1<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class NSIteratorVRPSwap1_1: public NSIterator<XES, XEv>
 {
 
 	typedef vector<vector<T> > Routes;
 
 protected:
-	uptr<Move<S>> m;
-	vector<uptr<Move<S>>> moves;
+	uptr<Move<XES>> m;
+	vector<uptr<Move<XES>>> moves;
 	int index; //index of moves
 	const Routes& r;
 
@@ -147,7 +147,7 @@ public:
 			for (int c1 = 0; c1 < r.at(r1).size(); c1++)
 				for (int r2 = r1 + 1; r2 < r.size() - 1; r2++)
 					for (int c2 = 0; c2 < r.at(r2).size(); c2++)
-						moves.push_back(uptr<Move<S>>(new MOVE(r1, r2, c1, c2, p)));
+						moves.push_back(uptr<Move<XES>>(new MOVE(r1, r2, c1, c2, p)));
 
 		if (moves.size() > 0)
 		{
@@ -175,7 +175,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual uptr<Move<S>> current() override
+	virtual uptr<Move<XES>> current() override
 	{
 		if (isDone())
 		{
@@ -184,7 +184,7 @@ public:
 			exit(1);
 		}
 
-      uptr<Move<S>> m2 = std::move(m);
+      uptr<Move<XES>> m2 = std::move(m);
 
 		return m2;
 	}
@@ -211,17 +211,17 @@ public:
 	{
 	}
 
-	uptr<Move<S>> randomMove(const S& s) override
+	uptr<Move<XES>> randomMove(const XES& se) override
 	{
-      const Routes& rep = s.getR();
+      const Routes& rep = se.first.getR();
 		//getchar();
 		if (rep.size() < 2)
-			return uptr<Move<S>>(new MOVE(-1, -1, -1, -1, p));
+			return uptr<Move<XES>>(new MOVE(-1, -1, -1, -1, p));
 
 		int r1 = rand() % rep.size();
 
 		if (rep.at(r1).size() == 0)
-			return uptr<Move<S>>(new MOVE(-1, -1, -1, -1, p));
+			return uptr<Move<XES>>(new MOVE(-1, -1, -1, -1, p));
 
 		int r2;
 
@@ -231,17 +231,18 @@ public:
 		} while (r1 == r2);
 
 		if (rep.at(r2).size() == 0)
-			return uptr<Move<S>>(new MOVE(-1, -1, -1, -1, p));
+			return uptr<Move<XES>>(new MOVE(-1, -1, -1, -1, p));
 
 		int c1 = rand() % rep.at(r1).size();
 		int c2 = rand() % rep.at(r2).size();
 
-		return uptr<Move<S>>(new MOVE(r1, r2, c1, c2, p));
+		return uptr<Move<XES>>(new MOVE(r1, r2, c1, c2, p));
 	}
 
-	virtual uptr<NSIterator<S>> getIterator(const S& s) override
+	virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
 	{
-		return uptr<NSIterator<S>>(new NSITERATOR(s.getR(), s.getADS(), p));
+      XSolution& s = se.first;
+		return uptr<NSIterator<XES>>(new NSITERATOR(s.getR(), s.getADS(), p));
 	}
 
 	virtual string toString() const

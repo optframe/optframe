@@ -30,7 +30,7 @@ using namespace std;
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
 //class ADS, XBaseSolution<vector<vector<T> >,ADS> S, class MOVE = MoveTSP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSP2Opt<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<vector<T> >,ADS> S = CopySolution<vector<vector<T>>,ADS>, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<vector<T> >,ADS> S = CopySolution<vector<vector<T>>,ADS>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class MoveVRPShift10: public Move<XES, XEv>//Move<vector<vector<T> > , ADS>
 {
 	using Routes = vector<vector<T> >;
@@ -74,9 +74,9 @@ public:
 		return pos;
 	}
 
-	virtual bool canBeApplied(const S& s) override
+	virtual bool canBeApplied(const XES& se) override
 	{
-      const Routes& rep = s.getR();
+      const Routes& rep = se.first.getR();
 		bool numRoutes = rep.size() >= 2;
 		return ((r1 >= 0) && (r2 >= 0) && (cli >= 0) && (pos >= 0) && numRoutes);
 	}
@@ -86,9 +86,9 @@ public:
 
 	}
 
-	virtual uptr<Move<S>> apply(S& s) override
+	virtual uptr<Move<XES>> apply(XES& se) override
 	{
-      Routes& rep = s.getR();
+      Routes& rep = se.first.getR();
 		//pegando o cliente
 		int c = rep.at(r1).at(cli);
 
@@ -97,10 +97,10 @@ public:
 
 		//fazendo a inserção
 		rep.at(r2).insert(rep.at(r2).begin() + pos, c);
-		return uptr<Move<S>>(new MoveVRPShift10(r2, r1, pos, cli));
+		return uptr<Move<XES>>(new MoveVRPShift10(r2, r1, pos, cli));
 	}
 
-	virtual bool operator==(const Move<S>& _m) const
+	virtual bool operator==(const Move<XES>& _m) const
 	{
 		const MoveVRPShift10& m = (const MoveVRPShift10&) _m;
 		return ((r1 == m.r1) && (r2 == m.r2) && (cli == m.cli) && (pos == m.pos));
@@ -117,7 +117,7 @@ public:
 };
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPShift10<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM>
-template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPShift10<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>>
+template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPShift10<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class NSIteratorVRPShift10: public NSIterator<XES, XEv>//NSIterator<vector<vector<T> > , ADS>
 {
 
@@ -125,8 +125,8 @@ class NSIteratorVRPShift10: public NSIterator<XES, XEv>//NSIterator<vector<vecto
 
 protected:
 
-	uptr<Move<S>> m;
-	vector<uptr<Move<S>>> moves;
+	uptr<Move<XES>> m;
+	vector<uptr<Move<XES>>> moves;
 	int index; //index of moves
 	const Routes& r;
 
@@ -163,7 +163,7 @@ public:
 					{
 						for (int pos = 0; pos <= r.at(r2).size(); pos++)
 						{
-							moves.push_back(uptr<Move<S>>(new MOVE(r1, r2, cli, pos, p)));
+							moves.push_back(uptr<Move<XES>>(new MOVE(r1, r2, cli, pos, p)));
 						}
 					}
 				}
@@ -194,7 +194,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual uptr<Move<S>> current() override
+	virtual uptr<Move<XES>> current() override
 	{
 		if (isDone())
 		{
@@ -203,7 +203,7 @@ public:
 			exit(1);
 		}
 
-      uptr<Move<S>> m2 = std::move(m);
+      uptr<Move<XES>> m2 = std::move(m);
 		return m2;
 	}
 };
@@ -229,16 +229,16 @@ public:
 	{
 	}
 
-	virtual uptr<Move<S>> randomMove(const S& s) override
+	virtual uptr<Move<XES>> randomMove(const XES& se) override
 	{
-      const Routes& rep = s.getR();
+      const Routes& rep = se.first.getR();
 		if (rep.size() < 2)
-			return uptr<Move<S>>(new MOVE(-1, -1, -1, -1, p));
+			return uptr<Move<XES>>(new MOVE(-1, -1, -1, -1, p));
 
 		int r1 = rand() % rep.size();
 		if (rep.at(r1).size() == 0)
 		{
-			return uptr<Move<S>>(new MOVE(-1, -1, -1, -1, p));
+			return uptr<Move<XES>>(new MOVE(-1, -1, -1, -1, p));
 		}
 
 		int r2;
@@ -250,16 +250,17 @@ public:
 		int cli = rand() % rep.at(r1).size();
 
 		int pos = rand() % (rep.at(r2).size() + 1);
-		return uptr<Move<S>>(new MOVE(r1, r2, cli, pos, p)); // return a random move
+		return uptr<Move<XES>>(new MOVE(r1, r2, cli, pos, p)); // return a random move
 	}
 
-	virtual uptr<Move<S>> validRandomMove(const XES& s) override
+/*
+	virtual uptr<Move<XES>> validRandomMove(const XES& s) override
 	{
       const Routes& rep = s.getR();
 		int maxValidMove = 50;
 		for (int iter = 0; iter < maxValidMove; iter++)
 		{
-			uptr<Move<S>> moveValid = this->randomMove(s);
+			uptr<Move<XES>> moveValid = this->randomMove(s);
 			if (moveValid->canBeApplied(s))
 				return moveValid;
 			//else
@@ -268,10 +269,12 @@ public:
 
 		return nullptr;
 	}
+*/
 
-	virtual uptr<NSIterator<S>> getIterator(const S& s) override
+	virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
 	{
-		return uptr<NSIterator<S>>(new NSITERATOR(s.getR(), s.getADS(), p));
+      XSolution& s = se.first;
+		return uptr<NSIterator<XES>>(new NSITERATOR(s.getR(), s.getADS(), p));
 	}
 
 	virtual string toString() const

@@ -34,15 +34,15 @@ public:
 	{
 	}
 
-	bool canBeApplied(const SolutionHFM& s) override
+	bool canBeApplied(const ESolutionHFM& se) override
 	{
-      const RepHFM& rep = s.getR();
+      const RepHFM& rep = se.first.getR();
 		return ((rule >= 0) && (rule < (int) rep.singleIndex.size()) && ((int) rep.singleIndex.size() > 1));
 	}
 
-	uptr<Move<SolutionHFM>> apply(SolutionHFM& s) override
+	uptr<Move<ESolutionHFM>> apply(ESolutionHFM& se) override
 	{
-      RepHFM& rep = s.getR();
+      RepHFM& rep = se.first.getR();
 		pair<int, int> tempSingleIndexOld;
 		vector<double> tempSingleFuzzyRSOld;
 
@@ -55,7 +55,7 @@ public:
 
 				rep.singleIndex.erase(rep.singleIndex.begin() + rule);
 				rep.singleFuzzyRS.erase(rep.singleFuzzyRS.begin() + rule);
-				return uptr<Move<SolutionHFM>>(new MoveHFMRemoveSingleInput(rule, !reverse, tempSingleIndexOld, tempSingleFuzzyRSOld));
+				return uptr<Move<ESolutionHFM>>(new MoveHFMRemoveSingleInput(rule, !reverse, tempSingleIndexOld, tempSingleFuzzyRSOld));
 			}
 
 		}
@@ -65,11 +65,11 @@ public:
 			rep.singleFuzzyRS.insert(rep.singleFuzzyRS.begin() + rule, singleFuzzyRSOld);
 		}
 
-		return uptr<Move<SolutionHFM>>(new MoveHFMRemoveSingleInput(rule, !reverse, tempSingleIndexOld, tempSingleFuzzyRSOld));
+		return uptr<Move<ESolutionHFM>>(new MoveHFMRemoveSingleInput(rule, !reverse, tempSingleIndexOld, tempSingleFuzzyRSOld));
 
 	}
 
-	virtual bool operator==(const Move<SolutionHFM>& _m) const
+	virtual bool operator==(const Move<ESolutionHFM>& _m) const
 	{
 		const MoveHFMRemoveSingleInput& m = (const MoveHFMRemoveSingleInput&) _m;
 		return ((m.rule == rule) && (m.reverse == reverse));
@@ -83,13 +83,13 @@ public:
 }
 ;
 
-class NSIteratorHFMRemoveSingleInput: public NSIterator<SolutionHFM>
+class NSIteratorHFMRemoveSingleInput: public NSIterator<ESolutionHFM>
 {
 private:
 	//MoveHFMRemoveSingleInput* m;
 	//vector<uptr<MoveHFMRemoveSingleInput>> moves;
-   uptr<Move<SolutionHFM>> m; // general move
-   vector<uptr<Move<SolutionHFM>>> moves; // general moves
+   uptr<Move<ESolutionHFM>> m; // general move
+   vector<uptr<Move<ESolutionHFM>>> moves; // general moves
 
 	int index;
 	const RepHFM& rep;
@@ -115,7 +115,7 @@ public:
 
 		for (int rule = 0; rule < (int) rep.singleIndex.size(); rule++)
 		{
-			moves.push_back(uptr<Move<SolutionHFM>>(new MoveHFMRemoveSingleInput(rule, false, tempSingleIndexOld, tempSingleFuzzyRSOld)));
+			moves.push_back(uptr<Move<ESolutionHFM>>(new MoveHFMRemoveSingleInput(rule, false, tempSingleIndexOld, tempSingleFuzzyRSOld)));
 		}
 
 		if (moves.size() > 0)
@@ -142,7 +142,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual uptr<Move<SolutionHFM>> current() override
+	virtual uptr<Move<ESolutionHFM>> current() override
 	{
 		if (isDone())
 		{
@@ -151,14 +151,14 @@ public:
 			exit(1);
 		}
 
-		uptr<Move<SolutionHFM>> m2 = std::move(m);
+		uptr<Move<ESolutionHFM>> m2 = std::move(m);
       m = nullptr;
       return m2;
 	}
 
 };
 
-class NSSeqHFMRemoveSingleInput: public NSSeq<SolutionHFM>
+class NSSeqHFMRemoveSingleInput: public NSSeq<ESolutionHFM>
 {
 private:
 	RandGen& rg;
@@ -175,9 +175,9 @@ public:
 	{
 	}
 
-	virtual uptr<Move<SolutionHFM>> randomMove(const SolutionHFM& s)
+	virtual uptr<Move<ESolutionHFM>> randomMove(const ESolutionHFM& se)
 	{
-      const RepHFM& rep = s.getR();
+      const RepHFM& rep = se.first.getR();
 		int rule = -1;
 		if (rep.singleIndex.size() > 0)
 			rule = rg.rand(rep.singleIndex.size());
@@ -185,13 +185,13 @@ public:
 		pair<int, int> tempSingleIndexOld;
 		vector<double> tempSingleFuzzyRSOld;
 
-		return uptr<Move<SolutionHFM>>(new MoveHFMRemoveSingleInput(rule, false, tempSingleIndexOld, tempSingleFuzzyRSOld)); // return a random move
+		return uptr<Move<ESolutionHFM>>(new MoveHFMRemoveSingleInput(rule, false, tempSingleIndexOld, tempSingleFuzzyRSOld)); // return a random move
 	}
 
-	virtual uptr<NSIterator<SolutionHFM>> getIterator(const SolutionHFM& s) override
+	virtual uptr<NSIterator<ESolutionHFM>> getIterator(const ESolutionHFM& se) override
 	{
-      const RepHFM& rep = s.getR();
-		return uptr<NSIterator<SolutionHFM>>(new NSIteratorHFMRemoveSingleInput(rep)); // return an iterator to the neighbors of 'rep'
+      const RepHFM& rep = se.first.getR();
+		return uptr<NSIterator<ESolutionHFM>>(new NSIteratorHFMRemoveSingleInput(rep)); // return an iterator to the neighbors of 'rep'
 	}
 
 	virtual string toString() const override

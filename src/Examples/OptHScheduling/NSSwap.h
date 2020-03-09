@@ -53,21 +53,21 @@ public:
 	{
 	}
 
-	bool canBeApplied(const SolutionOptHS& s) override
+	bool canBeApplied(const ESolutionOptHS& s) override
 	{
 		return w1 != w2;
 	}
 
-	uptr<Move<SolutionOptHS>> apply(SolutionOptHS& s) override
+	uptr<Move<ESolutionOptHS>> apply(ESolutionOptHS& se) override
 	{
-      RepOptHS& rep = s.getR();
+      RepOptHS& rep = se.first.getR();
 		pair<char, char> aux = rep[w1];
 		rep[w1] = rep[w2];
 		rep[w2] = aux;
-		return uptr<Move<SolutionOptHS>>(new MoveSwap(w2,  w1));
+		return uptr<Move<ESolutionOptHS>>(new MoveSwap(w2,  w1));
 	}
 
-	virtual bool operator==(const Move<SolutionOptHS>& _m) const
+	virtual bool operator==(const Move<ESolutionOptHS>& _m) const
 	{
 		const MoveSwap& m = (const MoveSwap&) _m;
 		return (w1 == m.w1) && (w2 == m.w2);
@@ -79,7 +79,7 @@ public:
 	}
 };
 
-class NSSwap: public NS<SolutionOptHS>
+class NSSwap: public NS<ESolutionOptHS>
 {
 public:
 
@@ -95,15 +95,15 @@ public:
 	{
 	}
 
-	virtual uptr<Move<SolutionOptHS>> randomMove(const SolutionOptHS& s) override
+	virtual uptr<Move<ESolutionOptHS>> randomMove(const ESolutionOptHS& se) override
 	{
-      const RepOptHS& rep = s.getR();
+      const RepOptHS& rep = se.first.getR();
 		int w1 = rg.rand(rep.size());
 		int w2 = w1;
 		while(w2==w1)
 			w2 = rg.rand(rep.size());
 
-		return uptr<Move<SolutionOptHS>>(new MoveSwap(w1, w2));
+		return uptr<Move<ESolutionOptHS>>(new MoveSwap(w1, w2));
 	}
 
 	virtual void print() const

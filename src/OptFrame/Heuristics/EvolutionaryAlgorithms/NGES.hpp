@@ -86,7 +86,7 @@ struct NGESParams
    }
 };
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 struct NGESInd
 {
    //S sInd; // probability
@@ -217,7 +217,7 @@ struct NGESInd
 };
 
 //CADA INDIVIDUO EH UM PAR DE SOLUCAO E UMA TUPLE COM O PARAMETROS DA ESTRATEGIA
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+template<XSolution S,  XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class NGES : public SingleObjSearch<XES>
 {
 private:

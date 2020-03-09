@@ -64,7 +64,7 @@ public:
 					for (int c2 = 0; c2 < rep.at(r).size(); c2++)
 					{
 						if (c1 != c2)
-							moves.push_back(uptr<Move<SolutionHFMVRP>>(new MOVE(r, c1, c2, p)));
+							moves.push_back(uptr<Move<ESolutionHFMVRP>>(new MOVE(r, c1, c2, p)));
 					}
 				}
 			}
@@ -94,7 +94,7 @@ public:
 		return m == NULL;
 	}
 
-	uptr<Move<SolutionHFMVRP>> current() override
+	uptr<Move<ESolutionHFMVRP>> current() override
 	{
 		if (isDone())
 		{
@@ -103,7 +103,7 @@ public:
 			exit(1);
 		}
 
-      uptr<Move<SolutionHFMVRP>> m2 = std::move(m);
+      uptr<Move<ESolutionHFMVRP>> m2 = std::move(m);
       m = nullptr;
 
 		return m2;

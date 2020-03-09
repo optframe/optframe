@@ -127,7 +127,7 @@ class NSIteratorVRPSwap2_1: public NSIterator<vector<vector<T> > >
 
 private:
 	MOVE* m;
-	vector<uptr<Move<S>>> moves;
+	vector<uptr<Move<XES>>> moves;
 	int index; //index of moves
 	const Routes& r;
 
@@ -162,8 +162,8 @@ public:
 						{
 							for (int c2 = 0; c2 < r.at(r2).size(); c2++)
 							{
-								moves.push_back(uptr<Move<SolutionHFMVRP>>(new MOVE(r1, r2, c1, c2, false,p)));//normal
-								moves.push_back(uptr<Move<SolutionHFMVRP>>(new MOVE(r1, r2, c1, c2, true,p)));//reverse
+								moves.push_back(uptr<Move<ESolutionHFMVRP>>(new MOVE(r1, r2, c1, c2, false,p)));//normal
+								moves.push_back(uptr<Move<ESolutionHFMVRP>>(new MOVE(r1, r2, c1, c2, true,p)));//reverse
 							}
 						}
 					}

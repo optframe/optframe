@@ -32,23 +32,23 @@ public:
 	{
 	}
 
-	bool canBeApplied(const SolutionHFM& s) override
+	bool canBeApplied(const ESolutionHFM& se) override
 	{
 		return true;
 	}
 
-	uptr<Move<SolutionHFM>> apply(SolutionHFM& s) override
+	uptr<Move<ESolutionHFM>> apply(ESolutionHFM& se) override
 	{
-      RepHFM& rep = s.getR();
+      RepHFM& rep = se.first.getR();
 		if (sign == 0)
 			rep.vAlpha[index] += applyValue;
 		else
 			rep.vAlpha[index] -= applyValue;
 		// return reverse move
-		return uptr<Move<SolutionHFM>>(new MoveNEIGHVAlpha(index, applyValue, !sign));
+		return uptr<Move<ESolutionHFM>>(new MoveNEIGHVAlpha(index, applyValue, !sign));
 	}
 
-	virtual bool operator==(const Move<SolutionHFM>& _m) const
+	virtual bool operator==(const Move<ESolutionHFM>& _m) const
 	{
 		const MoveNEIGHVAlpha& m = (const MoveNEIGHVAlpha&) _m;
 		return ((m.applyValue == applyValue) && (m.index == index) && (m.sign == sign));
@@ -63,13 +63,13 @@ public:
 }
 ;
 
-class NSIteratorNEIGHVAlpha: public NSIterator<SolutionHFM>
+class NSIteratorNEIGHVAlpha: public NSIterator<ESolutionHFM>
 {
 private:
 	//MoveNEIGHVAlpha* m;
 	//vector<uptr<MoveNEIGHVAlpha>> moves;
-   uptr<Move<SolutionHFM>> m; // general move
-   vector<uptr<Move<SolutionHFM>>> moves; // general moves
+   uptr<Move<ESolutionHFM>> m; // general move
+   vector<uptr<Move<ESolutionHFM>>> moves; // general moves
 
 	int index;
 	const RepHFM& rep;
@@ -108,7 +108,7 @@ public:
 			for (int i = 0; i < nIndex; i++)
 				for (int v = 0; v < (int) values.size(); v++)
 				{
-					moves.push_back(uptr<Move<SolutionHFM>>(new MoveNEIGHVAlpha(i, values[v], sign)));
+					moves.push_back(uptr<Move<ESolutionHFM>>(new MoveNEIGHVAlpha(i, values[v], sign)));
 				}
 
 		if (moves.size() > 0)
@@ -135,7 +135,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual uptr<Move<SolutionHFM>> current() override
+	virtual uptr<Move<ESolutionHFM>> current() override
 	{
 		if (isDone())
 		{
@@ -144,7 +144,7 @@ public:
 			exit(1);
 		}
 
-		uptr<Move<SolutionHFM>> m2 = std::move(m);
+		uptr<Move<ESolutionHFM>> m2 = std::move(m);
       m = nullptr;
       return m2;
 	}
@@ -152,7 +152,7 @@ public:
 };
 
 //This NS is used for adapting weights of an approximation of the estimations
-class NSSeqNEIGHVAlpha: public NSSeq<SolutionHFM>
+class NSSeqNEIGHVAlpha: public NSSeq<ESolutionHFM>
 {
 private:
 	HFMProblemInstance& pEFP;
@@ -170,9 +170,9 @@ public:
 	{
 	}
 
-	virtual uptr<Move<SolutionHFM>> randomMove(const SolutionHFM& s) override
+	virtual uptr<Move<ESolutionHFM>> randomMove(const ESolutionHFM& se) override
 	{
-      const RepHFM& rep = s.getR();
+      const RepHFM& rep = se.first.getR();
 		int i = rg.rand(rep.vAlpha.size());
 
 		bool sign = rg.rand(2);
@@ -200,12 +200,12 @@ public:
 		if (applyRand == 7)
 			applyValue = mean * 2;
 
-		return uptr<Move<SolutionHFM>>(new MoveNEIGHVAlpha(i, applyValue, sign)); // return a random move
+		return uptr<Move<ESolutionHFM>>(new MoveNEIGHVAlpha(i, applyValue, sign)); // return a random move
 	}
 
-	virtual uptr<NSIterator<SolutionHFM>> getIterator(const SolutionHFM& s) override
+	virtual uptr<NSIterator<ESolutionHFM>> getIterator(const ESolutionHFM& se) override
 	{
-		return uptr<NSIterator<SolutionHFM>>(new NSIteratorNEIGHVAlpha(s.getR(), pEFP)); // return an iterator to the neighbors of 'rep'
+		return uptr<NSIterator<ESolutionHFM>>(new NSIteratorNEIGHVAlpha(se.first.getR(), pEFP)); // return an iterator to the neighbors of 'rep'
 	}
 
 	virtual string toString() const override

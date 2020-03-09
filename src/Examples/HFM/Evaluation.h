@@ -12,6 +12,8 @@ using namespace optframe;
 
 typedef Evaluation<> EvaluationEFP;
 
+typedef EvaluationEFP EvaluationHFM;
+
 #endif /*HFM_EVALUATION_H_*/
 
 

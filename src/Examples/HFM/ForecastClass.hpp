@@ -54,16 +54,16 @@ private:
    HFMProblemInstance* p;
    HFMEvaluator* eval;
    Constructive<SolutionHFM>* c;
-   vector<NSSeq<SolutionHFM>*> vNS;
+   vector<NSSeq<ESolutionHFM>*> vNS;
 
    EmptyLocalSearch<SolutionHFM> emptyLS;
-   vector<NSSeq<SolutionHFM>*>* vNSeq;
+   vector<NSSeq<ESolutionHFM>*>* vNSeq;
 
    //	EFPESContinous* EsCOpt;
    NGES<SolutionHFM>* es;
    NGESParams* ngesParams;
 
-   vector<LocalSearch<SolutionHFM>*> vLS;
+   vector<LocalSearch<ESolutionHFM>*> vLS;
 
    VariableNeighborhoodDescent<SolutionHFM>* vnd;
    IteratedLocalSearchLevels<SolutionHFM>* ils;
@@ -148,7 +148,7 @@ public:
       //		EsCOpt = new EFPESContinous(*eval, *c, vNSeq, emptyLS, mu, lambda, esMaxG, rg, initialDesv, mutationDesv);
 
       //olr = new OptimalLinearRegression(*eval, *p);
-      vNSeq = new vector<NSSeq<SolutionHFM>*>;
+      vNSeq = new vector<NSSeq<ESolutionHFM>*>;
       vNSeq->push_back(nsModifyFuzzyRules);
       vNSeq->push_back(nsChangeSingleInput);
       vNSeq->push_back(nsRemoveSingleInput);

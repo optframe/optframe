@@ -41,7 +41,7 @@ using namespace optframe;
 namespace OptHS
 {
 
-class OptHSEvaluator: public Evaluator<SolutionOptHS>
+class OptHSEvaluator: public Evaluator<SolutionOptHS, EvaluationOptHS, ESolutionOptHS>
 {
 private:
 	ProblemInstance& p;
@@ -55,7 +55,7 @@ public:
 	{
 	}
 
-	Evaluation<> evaluate(const SolutionOptHS& s)
+	Evaluation<> evaluate(const SolutionOptHS& s) override
 	{
       const RepOptHS& r = s.getR();
 		int fo_inv = 0; // Infeasible Value
