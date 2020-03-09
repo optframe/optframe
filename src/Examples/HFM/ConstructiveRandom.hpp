@@ -24,7 +24,8 @@ using namespace optframe;
 namespace HFM
 {
 
-class ConstructiveRandom: public Constructive<SolutionHFM>
+//class ConstructiveRandom: public Constructive<SolutionHFM>
+class ConstructiveRandom: public InitialSearch<ESolutionHFM>
 {
 private:
 	HFMProblemInstance& pEFP;
@@ -60,9 +61,11 @@ public:
 	{
 	}
 
-	std::optional<SolutionHFM> generateSolution(double timelimit) override
+	//std::optional<SolutionHFM> generateSolution(double timelimit) override
+   std::optional<ESolutionHFM> initialSearch(const StopCriteria<EvaluationHFM>& sosc) override
 	{
-		return generateSolutionAlpha(0.0, timelimit);
+      std::optional<SolutionHFM> s = generateSolutionAlpha(0.0, sosc.timelimit);
+		return make_pair(*s, EvaluationHFM(0)); // TODO: fix
 	}
 
 	std::optional<SolutionHFM> generateSolutionAlpha(float notUsed, double timelimit)

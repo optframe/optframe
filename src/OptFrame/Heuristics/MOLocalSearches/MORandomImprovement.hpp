@@ -32,11 +32,11 @@ namespace optframe
 {
 
 //Basic MORI does not considering valid move, parameter iterMax only.
-template<XSolution S, XEvaluation XEv=Evaluation<>>
+template<XSolution S, XEvaluation XEv=Evaluation<>, XESolution XES = pair<S, XEv>>
 class MORandomImprovement: public MOLocalSearch<S, XEv>
 {
 private:
-	MultiEvaluator<S>& mev;
+	MultiEvaluator<S, XEv>& mev;
 	NS<XES, XEv>& ns;
 
 	// logs
@@ -45,7 +45,7 @@ private:
 	int iterMax;
 public:
 
-	MORandomImprovement(MultiEvaluator<S>& _mev, NS<XES, XEv>& _ns, unsigned int _iterMax) :
+	MORandomImprovement(MultiEvaluator<S, XEv>& _mev, NS<XES, XEv>& _ns, unsigned int _iterMax) :
 			mev(_mev), ns(_ns), iterMax(_iterMax)
 	{
 		sum_time = 0.0;

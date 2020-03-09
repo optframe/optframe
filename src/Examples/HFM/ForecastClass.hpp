@@ -53,10 +53,11 @@ private:
 
    HFMProblemInstance* p;
    HFMEvaluator* eval;
-   Constructive<SolutionHFM>* c;
+   //Constructive<SolutionHFM>* c;
+   InitialSearch<ESolutionHFM>* c;
    vector<NSSeq<ESolutionHFM>*> vNS;
 
-   EmptyLocalSearch<SolutionHFM> emptyLS;
+   EmptyLocalSearch<ESolutionHFM> emptyLS;
    vector<NSSeq<ESolutionHFM>*>* vNSeq;
 
    //	EFPESContinous* EsCOpt;
@@ -65,13 +66,13 @@ private:
 
    vector<LocalSearch<ESolutionHFM>*> vLS;
 
-   VariableNeighborhoodDescent<SolutionHFM>* vnd;
-   IteratedLocalSearchLevels<SolutionHFM>* ils;
+   VariableNeighborhoodDescent<ESolutionHFM>* vnd;
+   IteratedLocalSearchLevels<ESolutionHFM>* ils;
 
    vector<vector<double>> vBlindResults;
    vector<pair<SolutionHFM, Evaluation<>>*> vFinalSol;
 
-   ILSLPerturbationLPlus2<SolutionHFM>* ilsPert;
+   ILSLPerturbationLPlus2<ESolutionHFM>* ilsPert;
    MOILSLPerturbationLPlus2<SolutionHFM>* moILSPert;
    BasicMOILSPerturbation<SolutionHFM>* basicMOILSPert;
    //OptimalLinearRegression* olr;
@@ -116,8 +117,8 @@ public:
 
       //FirstImprovement<SolutionHFM>* fiModifyFuzzyRules = new FirstImprovement<SolutionHFM>(*eval, *nsModifyFuzzyRules);
       //FirstImprovement<SolutionHFM>* fiChangeSingleInput = new FirstImprovement<SolutionHFM>(*eval, *nsChangeSingleInput);
-      RandomDescentMethod<SolutionHFM>* rdmRemove = new RandomDescentMethod<SolutionHFM>(*eval, *nsRemoveSingleInput, 500); //		FirstImprovement<RepEFP>* fiVAlpha = new FirstImprovement<RepEFP>(*eval, *nsVAlpha);
-      RandomDescentMethod<SolutionHFM>* rdmAdd = new RandomDescentMethod<SolutionHFM>(*eval, *nsAddSingleInput, 500);       //		FirstImprovement<RepEFP>* fiVAlpha = new FirstImprovement<RepEFP>(*eval, *nsVAlpha);
+      RandomDescentMethod<ESolutionHFM>* rdmRemove = new RandomDescentMethod<ESolutionHFM>(*eval, *nsRemoveSingleInput, 500); //		FirstImprovement<RepEFP>* fiVAlpha = new FirstImprovement<RepEFP>(*eval, *nsVAlpha);
+      RandomDescentMethod<ESolutionHFM>* rdmAdd = new RandomDescentMethod<ESolutionHFM>(*eval, *nsAddSingleInput, 500);       //		FirstImprovement<RepEFP>* fiVAlpha = new FirstImprovement<RepEFP>(*eval, *nsVAlpha);
                                                                                                                   //		int maxRDM = 100;
                                                                                                                   //
                                                                                                                   //		//rdm->setMessageLevel(3);
@@ -126,14 +127,19 @@ public:
       vLS.push_back(rdmAdd);
       //		vLS.push_back(fiModifyFuzzyRules);
       //		vLS.push_back(fiChangeSingleInput);
-      vnd = new VariableNeighborhoodDescent<SolutionHFM>(*eval, vLS);
+      vnd = new VariableNeighborhoodDescent<ESolutionHFM>(*eval, vLS);
       //		vnd->setVerbose();
 
       //		ilsPert = new ILSLPerturbationLPlus2<RepEFP,OPTFRAME_DEFAULT_ADS>(*eval, 50, *nsModifyFuzzyRules, rg); //TODO check why 50 was removed
-      ilsPert = new ILSLPerturbationLPlus2<SolutionHFM>(*eval, *nsModifyFuzzyRules, rg);
+      ilsPert = new ILSLPerturbationLPlus2<ESolutionHFM>(*eval, *nsModifyFuzzyRules, rg);
       //		ilsPert->add_ns(*nsChangeSingleInput);
       //		nsVAlpha
-      ils = new IteratedLocalSearchLevels<SolutionHFM>(*eval, *c, *vnd, *ilsPert, 100, 10);
+
+      GeneralEvaluator<ESolutionHFM>& geval = *eval;
+      //InitialSearch<XES>& constructive
+
+
+      ils = new IteratedLocalSearchLevels<ESolutionHFM>(geval, *c, *vnd, *ilsPert, 100, 10);
 
       int mu = methodParam.getESMU();
       int lambda = methodParam.getESLambda();
@@ -169,7 +175,7 @@ public:
       vector<int> vNSeqMax(vNSeq->size(), 1000);
       double mutationRate = 0.1;
       int selectionType = 1;
-      vector<NS<SolutionHFM>*> vNSSeqForNGES;
+      vector<NS<ESolutionHFM>*> vNSSeqForNGES;
       vNSSeqForNGES.push_back(nsModifyFuzzyRules);
       vNSSeqForNGES.push_back(nsChangeSingleInput);
       vNSSeqForNGES.push_back(nsRemoveSingleInput);

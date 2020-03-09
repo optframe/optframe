@@ -55,7 +55,7 @@ public:
 	gplsStructure<S, XEv> gplsData;
 //	Pareto<S, XEv> x_e; //TODO -- possibility of embedding Pareto here
 
-	paretoManagerGPLS(MultiEvaluator<S>& _mev, int _r) :
+	paretoManagerGPLS(MultiEvaluator<S, XEv>& _mev, int _r) :
 			paretoManager<S, XEv>(_mev), r(_r)
 	{
 
@@ -121,7 +121,7 @@ private:
 
 public:
 
-	GeneralParetoLocalSearch(MultiEvaluator<S>& _mev, InitialPareto<S, XEv>& _init_pareto, int _init_pop_size, vector<MOLocalSearch<S, XEv>*> _vLS) :
+	GeneralParetoLocalSearch(MultiEvaluator<S, XEv>& _mev, InitialPareto<S, XEv>& _init_pareto, int _init_pop_size, vector<MOLocalSearch<S, XEv>*> _vLS) :
 			init_pareto(_init_pareto), init_pop_size(_init_pop_size), vLS(_vLS), pMan2PPLS(paretoManagerGPLS<S, XEv>(_mev, _vLS.size()))
 	{
 
@@ -208,7 +208,7 @@ public:
 			}
 
 			//Run local search for each individual of the population - Pareto Manager, pMan2PPLS, updates population
-			StopCriteria<XSH> stopCriteriaLS;
+			StopCriteria<XEv> stopCriteriaLS;
 			stopCriteriaLS.timelimit = stopCriteria.timelimit;
 
 			for (int ind = 0; ind < (int) p.size(); ind++)

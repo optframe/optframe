@@ -42,7 +42,7 @@ private:
 
 public:
 
-	BasicMOILS(MultiEvaluator<S>& _mev, InitialPareto<S, XEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg, BasicMOILSPerturbation<S, XEv>& _p, int _iterMax) :
+	BasicMOILS(MultiEvaluator<S, XEv>& _mev, InitialPareto<S, XEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg, BasicMOILSPerturbation<S, XEv>& _p, int _iterMax) :
 		MultiObjILS<BasicHistory, S, XEv>(_mev,_init_pareto,_init_pop_size,_ls,_rg), p(_p), iterMax(_iterMax)
 	{
 	}

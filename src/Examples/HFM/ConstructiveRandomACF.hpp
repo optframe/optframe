@@ -21,7 +21,8 @@ using namespace std;
 
 namespace HFM {
 
-class ConstructiveACF : public Constructive<SolutionHFM>
+//class ConstructiveACF : public Constructive<SolutionHFM>
+class ConstructiveACF : public InitialSearch<ESolutionHFM>
 {
 private:
    HFMProblemInstance& pEFP;
@@ -142,10 +143,16 @@ public:
       return meanSTD;
    }
 
-   std::optional<SolutionHFM> generateSolution(double timelimit) override
-   {
-      return generateSolutionACF(0.0, timelimit);
-   }
+   //std::optional<SolutionHFM> generateSolution(double timelimit) override
+   //{
+   //   return generateSolutionACF(0.0, timelimit);
+   //}
+
+   std::optional<ESolutionHFM> initialSearch(const StopCriteria<EvaluationHFM>& sosc) override
+	{
+      std::optional<SolutionHFM> s = generateSolutionACF(0.0, sosc.timelimit);
+		return make_pair(*s, EvaluationHFM(0)); // TODO: fix
+	}
 
    vector<vector<pair<double, int>>> returnRLCUsingACF()
    {

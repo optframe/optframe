@@ -34,7 +34,7 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv=Evaluation<>>
+template<XSolution S, XEvaluation XEv=Evaluation<>, XESolution XES = pair<S, XEv>>
 class MOILSLPerturbation: public Component, public MOILS
 {
 public:
@@ -64,16 +64,16 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv=Evaluation<>>
+template<XSolution S, XEvaluation XEv=Evaluation<>, XESolution XES = pair<S, XEv>>
 class MOILSLPerturbationLPlus2: public MOILSLPerturbation<S, XEv>
 {
 private:
 	vector<NS<XES, XEv>*> ns;
-	MultiEvaluator<S>& evaluator;
+	MultiEvaluator<S, XEv>& evaluator;
 	RandGen& rg;
 
 public:
-	MOILSLPerturbationLPlus2(MultiEvaluator<S>& _e, NS<XES, XEv>& _ns, RandGen& _rg) :
+	MOILSLPerturbationLPlus2(MultiEvaluator<S, XEv>& _e, NS<XES, XEv>& _ns, RandGen& _rg) :
 			evaluator(_e), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -139,11 +139,11 @@ class MOILSLPerturbationLPlus2Prob: public MOILSLPerturbation<S, XEv>
 private:
 	vector<NS<XES, XEv>*> ns;
 	vector<pair<int, double> > pNS;
-	MultiEvaluator<S>& evaluator;
+	MultiEvaluator<S, XEv>& evaluator;
 	RandGen& rg;
 
 public:
-	MOILSLPerturbationLPlus2Prob(MultiEvaluator<S>& _e, NS<XES, XEv>& _ns, RandGen& _rg) :
+	MOILSLPerturbationLPlus2Prob(MultiEvaluator<S, XEv>& _e, NS<XES, XEv>& _ns, RandGen& _rg) :
 			evaluator(_e), rg(_rg)
 	{
 		ns.push_back(&_ns);

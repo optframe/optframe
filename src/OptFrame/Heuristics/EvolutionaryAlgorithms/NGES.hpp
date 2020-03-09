@@ -43,7 +43,8 @@
 
 namespace optframe {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+//template<XESolution XES, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 struct NGESIndStructure
 {
    double pr; // probability
@@ -225,7 +226,8 @@ private:
    using NGESPopulation = vector<std::shared_ptr<NGESInd<S, XEv>>>;
 
    Evaluator<S>& eval;
-   Constructive<S>& constructive;
+   //Constructive<S>& constructive;
+   InitialSearch<XES>& constructive;
    vector<NS<XES, XEv>*> vNS; 
    LocalSearch<XES, XEv>& ls;
    RandGen& rg;
@@ -238,7 +240,7 @@ public:
    //Evaluator, constructive, vNS -- vector with neighboorhods strucutures able to move solution,
    // selectionMethod: 0-low selection pressure (mi,lambda);1 selection pressure (mi+lambda)
    //TODO - Check why vector<NSSeq*> can not be passed as parameter - Tried but failled
-   NGES(Evaluator<S>& _eval, Constructive<S>& _constructive, vector<NS<XES, XEv>*> _vNS, LocalSearch<XES, XEv>& _ls, RandGen& _rg, NGESParams& _ngesParams)
+   NGES(Evaluator<S>& _eval, InitialSearch<XES>& _constructive, vector<NS<XES, XEv>*> _vNS, LocalSearch<XES, XEv>& _ls, RandGen& _rg, NGESParams& _ngesParams)
      : eval(_eval)
      , constructive(_constructive)
      , vNS(_vNS)
@@ -469,7 +471,9 @@ public:
          
          //std::optional<S> s = constructive.generateSolution(stopCriteria.timelimit); //MAKE MOVE TODO
          //Evaluation<> e = eval.evaluate(*s);
-         pair<S, XEv> se = *SingleObjSearch<XES>::genPair(constructive, eval, stopCriteria.timelimit);
+         //pair<S, XEv> se = *SingleObjSearch<XES>::genPair(constructive, eval, stopCriteria.timelimit);
+         pair<S, XEv> se = *constructive.initialSearch(stopCriteria);
+         eval.reevaluate(se);
 
          vector<NGESIndStructure<S, XEv>> m;
 

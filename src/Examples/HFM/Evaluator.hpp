@@ -41,7 +41,7 @@ enum PerformanceIndicator
    ALL_EVALUATIONS
 };
 
-class HFMEvaluator : public Evaluator<SolutionHFM>
+class HFMEvaluator : public Evaluator<SolutionHFM, EvaluationHFM, ESolutionHFM>
 {
 private:
    HFMProblemInstance& pEFP;

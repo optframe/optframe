@@ -34,7 +34,7 @@
 
 namespace optframe {
 
-template<class H, XSolution S, XEvaluation XEv = Evaluation<>>
+template<class H, XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = Pareto<S, XEv, XES>>
 class MultiObjILS : public MOILS, public MultiObjSearch<S, XEv>
 {
 
@@ -46,7 +46,7 @@ private:
    RandGen& rg;
 
 public:
-   MultiObjILS(MultiEvaluator<S>& _mev, InitialPareto<S, XEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg)
+   MultiObjILS(MultiEvaluator<S, XEv>& _mev, InitialPareto<S, XEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg)
    //MultiObjILS(Evaluator<S>& _mev, InitialPareto<S, XEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg)
      : init_pareto(_init_pareto)
      , init_pop_size(_init_pop_size)
@@ -113,14 +113,14 @@ public:
          S rS = x_e.getNonDominatedSol(ind);
          MultiEvaluation<> rMev = x_e.getIndMultiEvaluation(ind);
 
-         StopCriteria<XSH> stopCriteriaPert;
+         StopCriteria<XEv> stopCriteriaPert;
          stopCriteriaPert.timelimit = stopCriteria.timelimit;
          perturbation(rS, rMev, stopCriteriaPert, *history);
 
          //Try to add the neighbor solution that was obtained from the perturbation
          pMan.addSolutionWithMEV(x_e, rS, rMev);
 
-         StopCriteria<XSH> stopCriteriaLS;
+         StopCriteria<XEv> stopCriteriaLS;
          stopCriteriaLS.timelimit = stopCriteria.timelimit;
          ls->moSearchFrom(x_e, rS, rMev, pMan, stopCriteriaLS);
 

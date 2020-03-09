@@ -77,7 +77,7 @@ public:
 	Constructive<S>& constructive;
 	paretoManager<S, XEv> pMan;
 
-	BasicInitialPareto(Constructive<S>& _constructive, MultiEvaluator<S>& _mev) :
+	BasicInitialPareto(Constructive<S>& _constructive, MultiEvaluator<S, XEv>& _mev) :
 			constructive(_constructive), pMan(paretoManager<S, XEv>(_mev))
 	{
 	}
@@ -117,7 +117,7 @@ public:
 	double maxAlpha; // limit the solution to be not so random
 	paretoManager<S, XEv> pMan;
 
-	GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg, double _maxAlpha, MultiEvaluator<S>& _mev) :
+	GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg, double _maxAlpha, MultiEvaluator<S, XEv>& _mev) :
 			constructive(_constructive), rg(_rg), maxAlpha(_maxAlpha), pMan(paretoManager<S, XEv>(_mev))
 	{
 	}

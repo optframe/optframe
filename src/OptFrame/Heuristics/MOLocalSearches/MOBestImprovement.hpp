@@ -31,11 +31,11 @@
 namespace optframe
 {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class MOBestImprovement: public MOLocalSearch<S, XEv>
 {
 private:
-	MultiEvaluator<S>& v_e;
+	MultiEvaluator<S, XEv>& v_e;
 	NSSeq<S>& nsSeq;
 
 	// logs
@@ -44,7 +44,7 @@ private:
 
 public:
 
-	MOBestImprovement(MultiEvaluator<S>& _v_e, NSSeq<S>& _nsSeq) :
+	MOBestImprovement(MultiEvaluator<S, XEv>& _v_e, NSSeq<S>& _nsSeq) :
 			v_e(_v_e), nsSeq(_nsSeq)
 	{
 		sum_time = 0.0;
