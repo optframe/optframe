@@ -168,7 +168,7 @@ concept bool XEvaluation = // sing obj. evaluation part (standard multi obj)
                   } 
                   -> bool;
                }
-   ) || // classic multiobj (MultiEvaluation)
+   ) || // classic multiobj (MultiEvaluation) - TODO: remove this option
    (
       requires(Self e, size_t idx)
                {

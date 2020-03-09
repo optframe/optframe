@@ -60,15 +60,23 @@ private:
    // this allows monitoring on progress and many other nice things, such as StopCriteria personalization ;)
    //SpecificMethodStop<XES, decltype(*this)> specificStop;
 public:
-   SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> specificStopBy {nullptr};
+   //SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> specificStopBy {nullptr};
+   SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> specificStopBy 
+   {
+      [&](const XES& best, const StopCriteria<XEv>& sosc, BasicSimulatedAnnealing<XES, XEv>* me) -> bool {
+         return (me->T <= 0.000001) || (me->tnow.now() >= sosc.timelimit);
+      }
+   };
 
 private:
+/*
    SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> defaultStopBy
     {
       [&](const XES& best, const StopCriteria<XEv>& sosc, BasicSimulatedAnnealing<XES, XEv>* me) -> bool {
          return (me->T <= 0.000001) || (me->tnow.now() >= sosc.timelimit);
       }   
    };
+*/
    
 private:
    //
@@ -89,7 +97,7 @@ public:
    }
 
 	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, vector<NS<XES, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
-		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg), specificStopBy(defaultStopBy)
+		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg) //, specificStopBy(defaultStopBy)
 	{
 		alpha = (_alpha);
 		SAmax = (_SAmax);
@@ -107,7 +115,7 @@ public:
 */
 
 	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, NS<XES, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
-		evaluator(_evaluator), constructive(_constructive), rg(_rg), specificStopBy(defaultStopBy)
+		evaluator(_evaluator), constructive(_constructive), rg(_rg) //, specificStopBy(defaultStopBy)
 	{
 		neighbors.push_back(&_neighbors);
 		alpha = (_alpha);
@@ -287,6 +295,7 @@ public:
 		return ss.str();
 	}
 };
+
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
 class BasicSimulatedAnnealingBuilder: public SA, public SingleObjSearchBuilder<S, XEv, XES>
