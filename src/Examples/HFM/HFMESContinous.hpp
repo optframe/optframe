@@ -25,7 +25,7 @@ struct esParameters
 	vector<double> vIndexAlphasParams;
 };
 
-class EFPESContinous: public ESContinous<RepHFM, OPTFRAME_DEFAULT_ADS, esParameters, SolutionHFM>
+class EFPESContinous: public ESContinous<RepHFM, OPTFRAME_DEFAULT_ADS, esParameters, SolutionHFM, EvaluationHFM, ESolutionHFM>
 {
 private:
 	RandGen& rg;

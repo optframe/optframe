@@ -18,6 +18,9 @@ typedef pair<SolutionEFP, EvaluationEFP> ESolutionEFP;
 
 typedef ESolutionEFP ESolutionHFM; // TODO: same naming
 
+static_assert(XSolution<SolutionHFM>);
+static_assert(XEvaluation<EvaluationHFM>);
+static_assert(XESolution<ESolutionHFM>);
 }
 
 #endif /*EFP_SOLUTION_H_*/

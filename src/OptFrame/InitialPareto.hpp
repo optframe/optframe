@@ -38,8 +38,8 @@ using namespace std;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class InitialPareto : public InitialSearch<S, XEv, XES, Pareto<S, XEv, XES>> //public Component
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = Pareto<S, XEv, XES>>
+class InitialPareto : public InitialSearch<Pareto<S, XEv, XES>> //public Component
 {
 public:
 

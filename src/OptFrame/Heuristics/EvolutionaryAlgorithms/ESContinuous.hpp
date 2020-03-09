@@ -86,7 +86,7 @@ private:
 
 public:
 
-	ESContinous(Evaluator<S>& _eval, InitialSearch<XES>& _constructive, vector<NSSeq<XES>*> _vNS, LocalSearch<XES, XEv>& _ls, int _mi, int _lambda, int _gMax) :
+	ESContinous(Evaluator<S>& _eval, Constructive<S>& _constructive, vector<NSSeq<XES>*> _vNS, LocalSearch<XES, XEv>& _ls, int _mi, int _lambda, int _gMax) :
 			eval(_eval), constructive(_constructive), vNS(_vNS), ls(_ls), mi(_mi), lambda(_lambda), gMax(_gMax)
 	{
 		sStar = nullptr;

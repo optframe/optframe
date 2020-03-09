@@ -37,7 +37,7 @@ namespace optframe
 
 // MultiEvaluator is not a REAL evaluator... a bunch/pack of evaluators... TODO: unify
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = MultiESolution<XES> > //, XSearch<S, XEv> XSH = pair<S, XEv>> // cannot do, because MultiEvaluation is not a valid evaluation
+template<XSolution S, XEvaluation XEv, XESolution XES = pair<S, XEv>> //, XSearch<XES> XSH = MultiESolution<XES> > //, XSearch<S, XEv> XSH = pair<S, XEv>> // cannot do, because MultiEvaluation is not a valid evaluation
 class MultiEvaluator: public MultiDirection  //, public GeneralEvaluator<S, XEv, XSH> 
 {
 protected:
@@ -111,7 +111,7 @@ public:
 	}
 
     //changed to Meval without point TODO
-	virtual MultiEvaluation<> evaluate(const XES& s)
+	virtual MultiEvaluation<> evaluate(const S& s)
 	{
 		cout << "inside mother class" << endl;
 		getchar();
@@ -132,7 +132,7 @@ public:
 			delete sngEvaluators[e];
 	}
 
-	virtual void reevaluateMEV(MultiEvaluation<>& mev, const XES& se)
+   virtual void reevaluateMEV(MultiEvaluation<>& mev, const XES& se)
 	{
 		for (unsigned i = 0; i < sngEvaluators.size(); i++)
 		{
