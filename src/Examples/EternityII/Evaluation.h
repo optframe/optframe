@@ -23,7 +23,7 @@
 
 #include "../../OptFrame/Evaluation.hpp"
 
-//typedef Evaluation<> EvaluationEtII;
+typedef Evaluation<> EvaluationEtII;
 
 #endif /*EtII_EVALUATION_H_*/
 

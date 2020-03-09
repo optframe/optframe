@@ -41,8 +41,8 @@ protected:
    int r1, r2;
 
 public:
-   using Move<SolutionEtII>::apply;        // prevents name hiding
-   using Move<SolutionEtII>::canBeApplied; // prevents name hiding
+   using Move<ESolutionEtII>::apply;        // prevents name hiding
+   using Move<ESolutionEtII>::canBeApplied; // prevents name hiding
 
    MoveSwapRotateCenter(int _x1, int _y1, int _x2, int _y2)
      : x1(_x1)
@@ -70,14 +70,14 @@ public:
    {
    }
 
-   bool canBeApplied(const SolutionEtII& s) override
+   bool canBeApplied(const ESolutionEtII& s) override
    {
       return !((x1 == x2) && (y1 == y2));
    }
 
-   uptr<Move<SolutionEtII>> apply(SolutionEtII& s) override
+   uptr<Move<ESolutionEtII>> apply(ESolutionEtII& se) override
    {
-      RepEtII& rep = s.getR();
+      RepEtII& rep = se.first.getR();
       Piece p = rep(x1, y1);
       rep(x1, y1) = rep(x2, y2);
       rep(x2, y2) = p;
@@ -155,10 +155,10 @@ public:
          rot2 = -1;
       }
 
-      return uptr<Move<SolutionEtII>>(new MoveSwapRotateCenter(x1, y1, rot2, x2, y2, rot1));
+      return uptr<Move<ESolutionEtII>>(new MoveSwapRotateCenter(x1, y1, rot2, x2, y2, rot1));
    }
 
-   uptr<Move<SolutionEtII>> applyUpdate(pair<SolutionEtII, Evaluation<>>& se) override
+   uptr<Move<ESolutionEtII>> applyUpdate(pair<SolutionEtII, Evaluation<>>& se) override
    {
       SolutionEtII& s = se.first;
       Evaluation<>& e = se.second;
@@ -184,7 +184,7 @@ public:
       if ((rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
          g++;
 
-      uptr<Move<SolutionEtII>> rev = apply(s);
+      uptr<Move<ESolutionEtII>> rev = apply(se);
 
       int f2 = 0;
       if (rep(x1, y1).left == rep(x1, y1 - 1).right)
@@ -214,7 +214,7 @@ public:
       return rev;
    }
 
-   virtual bool operator==(const Move<SolutionEtII>& _m) const
+   virtual bool operator==(const Move<ESolutionEtII>& _m) const
    {
       const MoveSwapRotateCenter& m = (const MoveSwapRotateCenter&)_m;
       return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2) && (m.r1 == r1) && (m.r2 == r2);
@@ -231,7 +231,7 @@ public:
    }
 };
 
-class NSIteratorSwapRotateCenter : public NSIterator<SolutionEtII>
+class NSIteratorSwapRotateCenter : public NSIterator<ESolutionEtII>
 {
 private:
    int nIntraRows, nIntraCols;
@@ -292,14 +292,14 @@ public:
       return (x1 >= nIntraRows) || (y1 >= nIntraCols) || (x2 >= nIntraRows) || (y2 >= nIntraCols);
    }
 
-   virtual uptr<Move<SolutionEtII>> current() override
+   virtual uptr<Move<ESolutionEtII>> current() override
    {
-      return uptr<Move<SolutionEtII>>(new MoveSwapRotateCenter(x1 + 1, y1 + 1, x2 + 1, y2 + 1));
+      return uptr<Move<ESolutionEtII>>(new MoveSwapRotateCenter(x1 + 1, y1 + 1, x2 + 1, y2 + 1));
    }
 };
 
 template<class MOVE = MoveSwapRotateCenter>
-class NSSeqSwapRotateCenter : public NSSeq<SolutionEtII>
+class NSSeqSwapRotateCenter : public NSSeq<ESolutionEtII>
 {
 private:
    RandGen& rg;
@@ -314,11 +314,11 @@ public:
    {
    }
 
-   virtual uptr<Move<SolutionEtII>> randomMove(const SolutionEtII& s) override
+   virtual uptr<Move<ESolutionEtII>> randomMove(const ESolutionEtII& se) override
    {
-      const RepEtII& rep = s.getR();
+      const RepEtII& rep = se.first.getR();
       if ((rep.getNumRows() == 3) && (rep.getNumCols() == 3))
-         return uptr<Move<SolutionEtII>>(new MoveSwapRotateCenter(1, 1, 1, 1));
+         return uptr<Move<ESolutionEtII>>(new MoveSwapRotateCenter(1, 1, 1, 1));
 
       // line 'x' and col 'y'
       int x1 = rg.rand((rep.getNumRows() - 2)) + 1;
@@ -331,14 +331,14 @@ public:
          y2 = rg.rand((rep.getNumCols() - 2)) + 1;
       }
 
-      return uptr<Move<SolutionEtII>>(new MOVE(x1, y1, x2, y2));
+      return uptr<Move<ESolutionEtII>>(new MOVE(x1, y1, x2, y2));
    }
 
-   virtual uptr<NSIterator<SolutionEtII>> getIterator(const SolutionEtII& s) override
+   virtual uptr<NSIterator<ESolutionEtII>> getIterator(const ESolutionEtII& se) override
    {
-      const RepEtII& rep = s.getR();
+      const RepEtII& rep = se.first.getR();
       // return an iterator to the neighbors of 'rep'
-      return uptr<NSIterator<SolutionEtII>>(new NSIteratorSwapRotateCenter(rep.getNumRows() - 2, rep.getNumCols() - 2));
+      return uptr<NSIterator<ESolutionEtII>>(new NSIteratorSwapRotateCenter(rep.getNumRows() - 2, rep.getNumCols() - 2));
    }
 
    virtual void print() const

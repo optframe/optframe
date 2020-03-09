@@ -41,8 +41,8 @@ protected:
 	int x1, y1, x2, y2;
 	public:
 
-	using Move<SolutionEtII>::apply; // prevents name hiding
-	using Move<SolutionEtII>::canBeApplied; // prevents name hiding
+	using Move<ESolutionEtII>::apply; // prevents name hiding
+	using Move<ESolutionEtII>::canBeApplied; // prevents name hiding
 
 	MoveSwapCenter(int _x1, int _y1, int _x2, int _y2) :
 			x1(_x1), y1(_y1), x2(_x2), y2(_y2)
@@ -53,22 +53,22 @@ protected:
 	{
 	}
 
-	bool canBeApplied(const SolutionEtII& s) override
+	bool canBeApplied(const ESolutionEtII& s) override
 	{
 		return true;
 	}
 
-	uptr<Move<SolutionEtII>> apply(SolutionEtII& s)
+	uptr<Move<ESolutionEtII>> apply(ESolutionEtII& se)
 	{
-      RepEtII& rep = s.getR();
+      RepEtII& rep = se.first.getR();
 		Piece p = rep(x1, y1);
 		rep(x1, y1) = rep(x2, y2);
 		rep(x2, y2) = p;
 
-		return uptr<Move<SolutionEtII>>(new MoveSwapCenter(x2, y2, x1, y1));
+		return uptr<Move<ESolutionEtII>>(new MoveSwapCenter(x2, y2, x1, y1));
 	}
 
-	uptr<Move<SolutionEtII>> applyUpdate(pair<SolutionEtII, Evaluation<>>& se) override
+	uptr<Move<ESolutionEtII>> applyUpdate(ESolutionEtII& se) override
 	{
       SolutionEtII& s = se.first;
       Evaluation<>& e = se.second;
@@ -94,7 +94,7 @@ protected:
 		if ((rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
 			g++;
 
-		uptr<Move<SolutionEtII>> rev = apply(s);
+		uptr<Move<ESolutionEtII>> rev = apply(se);
 
 		int f2 = 0;
 		if (rep(x1, y1).left == rep(x1, y1 - 1).right)
@@ -122,7 +122,7 @@ protected:
 		return rev;
 	}
 
-	virtual bool operator==(const Move<SolutionEtII>& _m) const
+	virtual bool operator==(const Move<ESolutionEtII>& _m) const
 			{
 		const MoveSwapCenter& m = (const MoveSwapCenter&) _m;
 		return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2);
@@ -139,7 +139,7 @@ protected:
 	}
 };
 
-class NSIteratorSwapCenter: public NSIterator<SolutionEtII>
+class NSIteratorSwapCenter: public NSIterator<ESolutionEtII>
 {
 private:
 	int nIntraRows, nIntraCols;
@@ -207,14 +207,14 @@ public:
 		return (x1 >= nIntraRows) || (y1 >= nIntraCols) || (x2 >= nIntraRows) || (y2 >= nIntraCols);
 	}
 
-	virtual uptr<Move<SolutionEtII>> current() override
+	virtual uptr<Move<ESolutionEtII>> current() override
 	{
-		return uptr<Move<SolutionEtII>>(new MoveSwapCenter(x1 + 1, y1 + 1, x2 + 1, y2 + 1));
+		return uptr<Move<ESolutionEtII>>(new MoveSwapCenter(x1 + 1, y1 + 1, x2 + 1, y2 + 1));
 	}
 };
 
 template<class MOVE = MoveSwapCenter>
-class NSSeqSwapCenter: public NSSeq<SolutionEtII>
+class NSSeqSwapCenter: public NSSeq<ESolutionEtII>
 {
 private:
 	RandGen& rg;
@@ -230,11 +230,11 @@ private:
 	{
 	}
 
-	virtual uptr<Move<SolutionEtII>> randomMove(const SolutionEtII& s) override
+	virtual uptr<Move<ESolutionEtII>> randomMove(const ESolutionEtII& se) override
 	{
-      const RepEtII& rep = s.getR();
+      const RepEtII& rep = se.first.getR();
 		if ((rep.getNumRows() == 3) && (rep.getNumCols() == 3))
-			return uptr<Move<SolutionEtII>>(new MoveSwapCenter(1, 1, 1, 1));
+			return uptr<Move<ESolutionEtII>>(new MoveSwapCenter(1, 1, 1, 1));
 
 		// line 'x' and col 'y'
 		int x1 = rg.rand((rep.getNumRows() - 2)) + 1;
@@ -248,14 +248,14 @@ private:
 			y2 = rg.rand((rep.getNumCols() - 2)) + 1;
 		}
 
-		return uptr<Move<SolutionEtII>>(new MOVE(x1, y1, x2, y2));
+		return uptr<Move<ESolutionEtII>>(new MOVE(x1, y1, x2, y2));
 	}
 
-	virtual uptr<NSIterator<SolutionEtII>> getIterator(const SolutionEtII& s) override
+	virtual uptr<NSIterator<ESolutionEtII>> getIterator(const ESolutionEtII& se) override
 	{
-      const RepEtII& rep = s.getR();
+      const RepEtII& rep = se.first.getR();
 		// return an iterator to the neighbors of 'rep'
-		return uptr<NSIterator<SolutionEtII>>(new NSIteratorSwapCenter(rep.getNumRows() - 2, rep.getNumCols() - 2));
+		return uptr<NSIterator<ESolutionEtII>>(new NSIteratorSwapCenter(rep.getNumRows() - 2, rep.getNumCols() - 2));
 	}
 
 	virtual void print() const

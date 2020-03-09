@@ -40,8 +40,8 @@ protected:
    int x1, y1, x2, y2;
 
 public:
-   using Move<SolutionEtII>::apply;        // prevents name hiding
-   using Move<SolutionEtII>::canBeApplied; // prevents name hiding
+   using Move<ESolutionEtII>::apply;        // prevents name hiding
+   using Move<ESolutionEtII>::canBeApplied; // prevents name hiding
 
    MoveSwapCorner(int _x1, int _y1, int _x2, int _y2)
      : x1(_x1)
@@ -55,14 +55,14 @@ public:
    {
    }
 
-   bool canBeApplied(const SolutionEtII& s) override
+   bool canBeApplied(const ESolutionEtII& s) override
    {
       return true;
    }
 
-   uptr<Move<SolutionEtII>> apply(SolutionEtII& s) override
+   uptr<Move<ESolutionEtII>> apply(ESolutionEtII& se) override
    {
-      RepEtII& rep = s.getR();
+      RepEtII& rep = se.first.getR();
       Piece p = rep(x1, y1);
       rep(x1, y1) = rep(x2, y2);
       rep(x2, y2) = p;
@@ -79,10 +79,10 @@ public:
       while ((rep(rep.getNumRows() - 1, rep.getNumCols() - 1).right != 0) || (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).down != 0))
          rep(rep.getNumRows() - 1, rep.getNumCols() - 1).rotate();
 
-      return uptr<Move<SolutionEtII>>(new MoveSwapCorner(x2, y2, x1, y1));
+      return uptr<Move<ESolutionEtII>>(new MoveSwapCorner(x2, y2, x1, y1));
    }
 
-   uptr<Move<SolutionEtII>> applyUpdate(pair<SolutionEtII, Evaluation<>>& se) override
+   uptr<Move<ESolutionEtII>> applyUpdate(pair<SolutionEtII, Evaluation<>>& se) override
    {
       SolutionEtII& s = se.first;
       Evaluation<>& e = se.second;
@@ -110,7 +110,7 @@ public:
       if (rep(rep.getNumRows() - 1, rep.getNumCols() - 1).up == rep(rep.getNumRows() - 2, rep.getNumCols() - 1).down)
          f++;
 
-      uptr<Move<SolutionEtII>> rev = apply(s);
+      uptr<Move<ESolutionEtII>> rev = apply(se);
 
       int f2 = 0;
 
@@ -139,7 +139,7 @@ public:
       return rev;
    }
 
-   virtual bool operator==(const Move<SolutionEtII>& _m) const
+   virtual bool operator==(const Move<ESolutionEtII>& _m) const
    {
       const MoveSwapCorner& m = (const MoveSwapCorner&)_m;
       return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2);
@@ -156,7 +156,7 @@ public:
    }
 };
 
-class NSIteratorSwapCorner : public NSIterator<SolutionEtII>
+class NSIteratorSwapCorner : public NSIterator<ESolutionEtII>
 {
 private:
    int x1, y1, x2, y2;
@@ -216,14 +216,14 @@ public:
       return x2 > 1;
    }
 
-   virtual uptr<Move<SolutionEtII>> current() override
+   virtual uptr<Move<ESolutionEtII>> current() override
    {
-      return uptr<Move<SolutionEtII>>(new MoveSwapCorner(x1 * (nRows - 1), y1 * (nCols - 1), x2 * (nRows - 1), y2 * (nCols - 1)));
+      return uptr<Move<ESolutionEtII>>(new MoveSwapCorner(x1 * (nRows - 1), y1 * (nCols - 1), x2 * (nRows - 1), y2 * (nCols - 1)));
    }
 };
 
 template<class MOVE = MoveSwapCorner>
-class NSSeqSwapCorner : public NSSeq<SolutionEtII>
+class NSSeqSwapCorner : public NSSeq<ESolutionEtII>
 {
 private:
    RandGen& rg;
@@ -238,9 +238,9 @@ public:
    {
    }
 
-   virtual uptr<Move<SolutionEtII>> randomMove(const SolutionEtII& s) override
+   virtual uptr<Move<ESolutionEtII>> randomMove(const ESolutionEtII& se) override
    {
-      const RepEtII& rep = s.getR();
+      const RepEtII& rep = se.first.getR();
       int x1 = (rg.rand(2)) * (rep.getNumRows() - 1);
       int y1 = (rg.rand(2)) * (rep.getNumCols() - 1);
 
@@ -252,14 +252,14 @@ public:
          y2 = (rg.rand(2)) * (rep.getNumCols() - 1);
       }
 
-      return uptr<Move<SolutionEtII>>(new MOVE(x1, y1, x2, y2));
+      return uptr<Move<ESolutionEtII>>(new MOVE(x1, y1, x2, y2));
    }
 
-   virtual uptr<NSIterator<SolutionEtII>> getIterator(const SolutionEtII& s) override
+   virtual uptr<NSIterator<ESolutionEtII>> getIterator(const ESolutionEtII& se) override
    {
-      const RepEtII& rep = s.getR();
+      const RepEtII& rep = se.first.getR();
       // return an iterator to the neighbors of 'rep'
-      return uptr<NSIterator<SolutionEtII>>(new NSIteratorSwapCorner(rep.getNumRows(), rep.getNumCols()));
+      return uptr<NSIterator<ESolutionEtII>>(new NSIteratorSwapCorner(rep.getNumRows(), rep.getNumCols()));
    }
 
    virtual void print() const

@@ -24,10 +24,13 @@
 #include "../../OptFrame/Solution.hpp"
 #include "../../OptFrame/Solutions/CopySolution.hpp"
 #include "Representation.h"
+#include "Evaluation.h"
 
 using namespace optframe;
 
 typedef CopySolution<RepEtII> SolutionEtII;
+
+typedef pair<SolutionEtII, EvaluationEtII> ESolutionEtII;
 
 #endif /*EtII_SOLUTION_H_*/
 

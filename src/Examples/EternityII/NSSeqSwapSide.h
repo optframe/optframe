@@ -51,9 +51,9 @@ public:
 	{
 	}
 
-	bool canBeApplied(const SolutionEtII& s) override
+	bool canBeApplied(const ESolutionEtII& se) override
 	{
-      const RepEtII& rep = s.getR();
+      const RepEtII& rep = se.first.getR();
 		bool left_upper = ((x1 == 0) && (y1 == 0)) || ((x2 == 0) && (y2 == 0));
 		bool right_upper = ((x1 == 0) && (y1 == (int)rep.getNumCols() - 1)) || ((x2 == 0) && (y2 == (int)rep.getNumCols() - 1));
 		bool left_lower = ((x1 == (int)rep.getNumRows() - 1) && (y1 == 0)) || ((x2 == (int)rep.getNumRows() - 1) && (y2 == 0));
@@ -62,9 +62,9 @@ public:
 		return !left_upper && !right_upper && !left_lower && !right_lower;
 	}
 
-	uptr<Move<SolutionEtII>> apply(SolutionEtII& s) override
+	uptr<Move<ESolutionEtII>> apply(ESolutionEtII& se) override
 	{
-      RepEtII& rep = s.getR();
+      RepEtII& rep = se.first.getR();
 		Piece p = rep(x1, y1);
 		rep(x1, y1) = rep(x2, y2);
 		rep(x2, y2) = p;
@@ -105,10 +105,10 @@ public:
 
 		// ==========
 
-		return uptr<Move<SolutionEtII>>(new MoveSwapSide(x2, y2, x1, y1));
+		return uptr<Move<ESolutionEtII>>(new MoveSwapSide(x2, y2, x1, y1));
 	}
 
-	uptr<Move<SolutionEtII>> applyUpdate(pair<SolutionEtII, Evaluation<>>& se) override
+	uptr<Move<ESolutionEtII>> applyUpdate(pair<SolutionEtII, Evaluation<>>& se) override
 	{
       SolutionEtII& s = se.first;
       Evaluation<>& e = se.second;
@@ -134,7 +134,7 @@ public:
 		if (((x2 + 1) < (int)rep.getNumRows()) && (rep(x2, y2).down == rep(x2 + 1, y2).up) && !(((x2 + 1) == x1) && (y2 == y1)))
 			g++;
 
-		uptr<Move<SolutionEtII>> rev = apply(s);
+		uptr<Move<ESolutionEtII>> rev = apply(se);
 
 		int f2 = 0;
 		if (((y1 - 1) >= 0) && (rep(x1, y1).left == rep(x1, y1 - 1).right))
@@ -162,7 +162,7 @@ public:
 		return rev;
 	}
 
-	virtual bool operator==(const Move<SolutionEtII>& _m) const
+	virtual bool operator==(const Move<ESolutionEtII>& _m) const
 	{
 		const MoveSwapSide& m = (const MoveSwapSide&) _m;
 		return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2);
@@ -179,7 +179,7 @@ public:
 	}
 };
 
-class NSIteratorSwapSide: public NSIterator<SolutionEtII>
+class NSIteratorSwapSide: public NSIterator<ESolutionEtII>
 {
 private:
 	int x1, y1, x2, y2;
@@ -262,14 +262,14 @@ public:
 		return x2 >= nRows;
 	}
 
-	virtual uptr<Move<SolutionEtII>> current() override
+	virtual uptr<Move<ESolutionEtII>> current() override
 	{
-		return uptr<Move<SolutionEtII>>(new MoveSwapSide(x1, y1, x2, y2));
+		return uptr<Move<ESolutionEtII>>(new MoveSwapSide(x1, y1, x2, y2));
 	}
 };
 
 template<class MOVE = MoveSwapSide>
-class NSSeqSwapSide: public NSSeq<SolutionEtII>
+class NSSeqSwapSide: public NSSeq<ESolutionEtII>
 {
 private:
 	RandGen& rg;
@@ -284,9 +284,9 @@ public:
 	{
 	}
 
-	virtual uptr<Move<SolutionEtII>> randomMove(const SolutionEtII& s) override
+	virtual uptr<Move<ESolutionEtII>> randomMove(const ESolutionEtII& se) override
 	{
-      const RepEtII& rep = s.getR();
+      const RepEtII& rep = se.first.getR();
 		int x1, y1;
 
 		if ((rg.rand(2)) == 0) // vert
@@ -314,13 +314,13 @@ public:
 				y2 = rg.rand((rep.getNumCols() - 2)) + 1;
 			}
 
-		return uptr<Move<SolutionEtII>>(new MOVE(x1, y1, x2, y2));
+		return uptr<Move<ESolutionEtII>>(new MOVE(x1, y1, x2, y2));
 	}
 
-	virtual uptr<NSIterator<SolutionEtII>> getIterator(const SolutionEtII& s) override
+	virtual uptr<NSIterator<ESolutionEtII>> getIterator(const ESolutionEtII& se) override
 	{
-      const RepEtII& rep = s.getR();
-		return uptr<NSIterator<SolutionEtII>>(new NSIteratorSwapSide(rep.getNumRows(), rep.getNumCols()));
+      const RepEtII& rep = se.first.getR();
+		return uptr<NSIterator<ESolutionEtII>>(new NSIteratorSwapSide(rep.getNumRows(), rep.getNumCols()));
 	}
 
 	virtual void print() const
