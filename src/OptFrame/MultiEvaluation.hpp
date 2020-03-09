@@ -129,6 +129,11 @@ public:
 		return vev[index];
 	}
 
+   evtype atObjVal(unsigned index)
+	{
+		return vev[index].evaluation();
+	}
+
 	Evaluation<>& operator[](unsigned index)
 	{
 		return vev[index];
@@ -210,6 +215,11 @@ public:
 	}
 
 };
+
+// Compilation test for concepts
+// MultiEvaluation is considered an XEvaluation type (compatible with past implementations)
+// TODO: remove this
+static_assert(XEvaluation<MultiEvaluation<>>);
 
 #ifndef NDEBUG
 struct optframe_debug_test_multievaluation

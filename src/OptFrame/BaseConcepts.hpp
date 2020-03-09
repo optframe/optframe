@@ -153,8 +153,9 @@ concept bool HasGetObj = requires(Self a)
 // note that getObjValue and getInfeasibleValue are not necessary here, just getObj
 // one can implement this way if preferred, separating or not both "values"... not mandatory anymore
 template <class Self>
-concept bool XEvaluation = optframe::evgoal<Self> && HasClone<Self> && HasToString<Self> && HasGetObj<Self> && optframe::ostreamable<Self> &&
-    requires(Self e)
+concept bool XEvaluation = // sing obj. evaluation part (standard multi obj)
+   (optframe::evgoal<Self> && HasClone<Self> && HasToString<Self> && HasGetObj<Self> && optframe::ostreamable<Self> &&
+      requires(Self e)
                {
                   // variable 'outdated' is still useful for optimizations
                   {
@@ -166,7 +167,18 @@ concept bool XEvaluation = optframe::evgoal<Self> && HasClone<Self> && HasToStri
                      e.estimated
                   } 
                   -> bool;
-               };
+               }
+   ) || // classic multiobj (MultiEvaluation)
+   (
+      requires(Self e, size_t idx)
+               {
+                  // variable 'outdated' is still useful for optimizations
+                  {
+                     e.atObjVal(idx)
+                  }
+                  -> optframe::objval; 
+               }
+   );
 
 // XSolution and XEvaluation are container-inspired "conceptual objects", to carry Representation and Objective Value
 // One can even aggregate both in a single unified "thing", called XESolution
