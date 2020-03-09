@@ -117,13 +117,13 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (MOILSLPerturbation<XES, XEv>::compatible(s));
+		return (s == idComponent()) || (MOILSLPerturbation<S, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MOILSLPerturbation<XES, XEv>::idComponent() << ":LPlus2";
+		ss << MOILSLPerturbation<S, XEv>::idComponent() << ":LPlus2";
 		return ss.str();
 	}
 

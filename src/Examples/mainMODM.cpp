@@ -17,6 +17,8 @@
 #include "../OptFrame/MultiObjSearch.hpp"
 //#include "../OptFrame/Util/UnionNDSets.hpp"
 
+#include "../OptFrame/ConstructiveToInitialSearch.hpp"
+
 #include <string>
 #include "MODM.h"
 
@@ -162,6 +164,8 @@ int main(int argc, char **argv)
 
 	ConstructiveBasicGreedyRandomized grC(p, rg, adsMan);
 
+   ConstructiveToInitialSearch<SolutionMODM, EvaluationMODM> is_grC(grC, eval);
+
 	NSSeqSWAP nsseq_swap(rg, &p);
 	NSSeqSWAPInter nsseq_swapInter(rg, &p);
 	NSSeqInvert nsseq_invert(rg, &p);
@@ -182,18 +186,18 @@ int main(int argc, char **argv)
 	 getchar();*/
 
 	// ================ END OF CHECK MODULE ================
-	FirstImprovement<SolutionMODM> fiSwap(eval, nsseq_swap);
-	FirstImprovement<SolutionMODM> fiSwapInter(eval, nsseq_swapInter);
-	FirstImprovement<SolutionMODM> fiInvert(eval, nsseq_invert);
+	FirstImprovement<ESolutionMODM> fiSwap(eval, nsseq_swap);
+	FirstImprovement<ESolutionMODM> fiSwapInter(eval, nsseq_swapInter);
+	FirstImprovement<ESolutionMODM> fiInvert(eval, nsseq_invert);
 
 	int nMovesRDM = 500000;
-	RandomDescentMethod<SolutionMODM> rdmSwap(eval, nsseq_swap, nMovesRDM);
-	RandomDescentMethod<SolutionMODM> rdmSwapInter(eval, nsseq_swapInter, nMovesRDM);
-	RandomDescentMethod<SolutionMODM> rdmInvert(eval, nsseq_invert, nMovesRDM);
-	RandomDescentMethod<SolutionMODM> rdmARProduct(eval, nsseq_arProduct, nMovesRDM);
-	RandomDescentMethod<SolutionMODM> rdmADD(eval, nsseq_add, 1);
+	RandomDescentMethod<ESolutionMODM> rdmSwap(eval, nsseq_swap, nMovesRDM);
+	RandomDescentMethod<ESolutionMODM> rdmSwapInter(eval, nsseq_swapInter, nMovesRDM);
+	RandomDescentMethod<ESolutionMODM> rdmInvert(eval, nsseq_invert, nMovesRDM);
+	RandomDescentMethod<ESolutionMODM> rdmARProduct(eval, nsseq_arProduct, nMovesRDM);
+	RandomDescentMethod<ESolutionMODM> rdmADD(eval, nsseq_add, 1);
 
-	vector<LocalSearch<SolutionMODM>*> vLS;
+	vector<LocalSearch<ESolutionMODM>*> vLS;
 	//vLS.push_back(&fiSwap);
 	// vLS.push_back(&fiSwapInter);
 	//vLS.push_back(&fiInvert);
@@ -205,23 +209,23 @@ int main(int argc, char **argv)
 
 	//vLS.push_back(&rdmARProduct);
 
-	VariableNeighborhoodDescent<SolutionMODM> vnd(eval, vLS);
+	VariableNeighborhoodDescent<ESolutionMODM> vnd(eval, vLS);
 
 	//ILSLPerturbationLPlus2<SolutionMODM> ilsl_pert(eval, 100000, nsseq_invert, rg);
    Evaluator<SolutionMODM>& eval2 = eval;
-	ILSLPerturbationLPlus2<SolutionMODM> ilsl_pert(eval2, nsseq_arProduct, rg);
+	ILSLPerturbationLPlus2<ESolutionMODM> ilsl_pert(eval2, nsseq_arProduct, rg);
 	//ILSLPerturbationLPlus2<SolutionMODM> ilsl_pert(eval, 100000, nsseq_add, rg);
 	ilsl_pert.add_ns(nsseq_add);
 	ilsl_pert.add_ns(nsseq_swapInter);
 	ilsl_pert.add_ns(nsseq_swap);
 	ilsl_pert.add_ns(nsseq_invert);
 
-	IteratedLocalSearchLevels<SolutionMODM> ils(eval, grC, vnd, ilsl_pert, 50, 15);
+	IteratedLocalSearchLevels<ESolutionMODM> ils(eval, is_grC, vnd, ilsl_pert, 50, 15);
 	ils.setMessageLevel(3);
 
 	pair<Solution<SolutionMODM>&, Evaluation<>&>* finalSol;
 
-	EmptyLocalSearch<SolutionMODM> emptyLS;
+	EmptyLocalSearch<ESolutionMODM> emptyLS;
 	BasicGRASP<SolutionMODM> g(eval, grC, emptyLS, alphaBuilder, 100000);
 
 	g.setMessageLevel(3);
@@ -242,7 +246,7 @@ int main(int argc, char **argv)
 //	NSSeqARProduct nsseq_arProduct(rg, &p, alphaNeighARProduct);
 //	NSSeqADD nsseq_add(rg, &p);
 //
-	vector<NSSeq<SolutionMODM>*> neighboors;
+	vector<NSSeq<ESolutionMODM>*> neighboors;
 	neighboors.push_back(&nsseq_arProduct);
 	neighboors.push_back(&nsseq_add);
 	//neighboors.push_back(&nsseq_swapInter);
@@ -253,7 +257,7 @@ int main(int argc, char **argv)
 	GRInitialPopulation<SolutionMODM> bip(grC, rg, 0.2);
 	int initial_population_size = pop;
 	initial_population_size = 10;
-	MultiEvaluator<SolutionMODM> mev(v_e);
+	MultiEvaluator<SolutionMODM, EvaluationMODM> mev(v_e);
 
    // MOVNSLevels (??)
    /*

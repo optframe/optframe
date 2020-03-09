@@ -33,8 +33,9 @@ public:
    {
    }
 
-   bool canBeApplied(const SolutionMODM& s) override
+   bool canBeApplied(const ESolutionMODM& se) override
    {
+      const SolutionMODM& s = se.first;
       const AdsMODM& ads = s.getADS();
       bool productOffers = (ads.productOffers[y] > 0);
       return productOffers;
@@ -85,8 +86,9 @@ public:
       return make_optional(Evaluation<>(f, fInv + foInvBud * (-1000)));
    }
 
-   uptr<Move<SolutionMODM>> apply(SolutionMODM& s) override
+   uptr<Move<ESolutionMODM>> apply(ESolutionMODM& se) override
    {
+      SolutionMODM& s = se.first;
       RepMODM& rep = s.getR();
       AdsMODM& ads = s.getADS();
       int oldC = rep[c][y];
@@ -103,10 +105,10 @@ public:
       ads.clientOffers[c] += rep[c][y] - oldC;
       ads.productOffers[y] += rep[c][y] - oldC;
 
-      return uptr<Move<SolutionMODM>>(new MoveInvert(y, c, dmproblem));
+      return uptr<Move<ESolutionMODM>>(new MoveInvert(y, c, dmproblem));
    }
 
-   virtual bool operator==(const Move<SolutionMODM>& _m) const
+   virtual bool operator==(const Move<ESolutionMODM>& _m) const
    {
       const MoveInvert& m = (const MoveInvert&)_m;
       return (m.y == y) && (m.c == c);
@@ -120,7 +122,7 @@ public:
    }
 };
 
-class NSIteratorInvert : public NSIterator<SolutionMODM>
+class NSIteratorInvert : public NSIterator<ESolutionMODM>
 {
 private:
    ProblemInstance* dmproblem;
@@ -163,7 +165,7 @@ public:
       return (y >= nProducts);
    }
 
-   uptr<Move<SolutionMODM>> current() override
+   uptr<Move<ESolutionMODM>> current() override
    {
       if (isDone()) {
          cout << "There isnt any current element!" << endl;
@@ -171,11 +173,11 @@ public:
          exit(1);
       }
 
-      return uptr<Move<SolutionMODM>>(new MoveInvert(y, c, dmproblem));
+      return uptr<Move<ESolutionMODM>>(new MoveInvert(y, c, dmproblem));
    }
 };
 
-class NSSeqInvert : public NSSeq<SolutionMODM>
+class NSSeqInvert : public NSSeq<ESolutionMODM>
 {
 private:
    ProblemInstance* dmproblem;
@@ -192,8 +194,9 @@ public:
    {
    }
 
-   virtual uptr<Move<SolutionMODM>> randomMove(const SolutionMODM& s) override
+   virtual uptr<Move<ESolutionMODM>> randomMove(const ESolutionMODM& se) override
    {
+      const SolutionMODM& s = se.first;
       const RepMODM& rep = s.getR();
       const AdsMODM& ads = s.getADS();
       int nProduts = dmproblem->getNumberOfProducts();
@@ -207,19 +210,19 @@ public:
       int nClients = dmproblem->getNumberOfClients();
       int c = rg.rand(nClients);
 
-      return uptr<Move<SolutionMODM>>(new MoveInvert(y, c, dmproblem)); // return a random move
+      return uptr<Move<ESolutionMODM>>(new MoveInvert(y, c, dmproblem)); // return a random move
    }
 
-   virtual uptr<NSIterator<SolutionMODM>> getIterator(const SolutionMODM& s) override
+   virtual uptr<NSIterator<ESolutionMODM>> getIterator(const ESolutionMODM& se) override
    {
-      const AdsMODM* ads = &s.getADS();
-      return uptr<NSIterator<SolutionMODM>>(new NSIteratorInvert(*ads, dmproblem)); // return an iterator to the neighbors of 'rep'
+      const AdsMODM* ads = &se.first.getADS();
+      return uptr<NSIterator<ESolutionMODM>>(new NSIteratorInvert(*ads, dmproblem)); // return an iterator to the neighbors of 'rep'
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << NS<SolutionMODM>::idComponent() << ":NSSeqInvert";
+      ss << NS<ESolutionMODM>::idComponent() << ":NSSeqInvert";
       return ss.str();
    }
 

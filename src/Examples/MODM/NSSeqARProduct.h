@@ -46,8 +46,9 @@ public:
    {
    }
 
-   bool canBeApplied(const SolutionMODM& s) override
+   bool canBeApplied(const ESolutionMODM& se) override
    {
+      const SolutionMODM& s = se.first;
       const RepMODM& rep = s.getR();
       const AdsMODM& ads = s.getADS();
       //
@@ -69,8 +70,9 @@ public:
       return differentProducts && yRemoveIsActive && yNewIsNotActive;
    }
 
-   uptr<Move<SolutionMODM>> apply(SolutionMODM& s) override
+   uptr<Move<ESolutionMODM>> apply(ESolutionMODM& se) override
    {
+      SolutionMODM& s = se.first;
       RepMODM& rep = s.getR();
       AdsMODM& ads = s.getADS();
       int nClients = dmproblem->getNumberOfClients();
@@ -190,10 +192,10 @@ public:
          revReverse = false;
       }
 
-      return uptr<Move<SolutionMODM>>(new MoveARProduct(yRemove, yNew, revOldC, revTCost, revTRevenue, revProductOffers, revReverse, dmproblem, rg, alpha));
+      return uptr<Move<ESolutionMODM>>(new MoveARProduct(yRemove, yNew, revOldC, revTCost, revTRevenue, revProductOffers, revReverse, dmproblem, rg, alpha));
    }
 
-   virtual bool operator==(const Move<SolutionMODM>& _m) const
+   virtual bool operator==(const Move<ESolutionMODM>& _m) const
    {
       const MoveARProduct& m = (const MoveARProduct&)_m;
       return (m.yRemove == yRemove) && (m.yNew == yNew) && (m.productOffers == productOffers) && (m.oldC == oldC) && (m.tCost == tCost) && (m.tRevenue == tRevenue) && (m.reverse == reverse);
@@ -212,7 +214,7 @@ public:
    }
 };
 
-class NSIteratorARProduct : public NSIterator<SolutionMODM>
+class NSIteratorARProduct : public NSIterator<ESolutionMODM>
 {
 private:
    ProblemInstance* dmproblem;
@@ -257,7 +259,7 @@ public:
       return (yRemove == nProducts);
    }
 
-   uptr<Move<SolutionMODM>> current() override
+   uptr<Move<ESolutionMODM>> current() override
    {
       if (isDone()) {
          cout << "There isnt any current element!" << endl;
@@ -265,11 +267,11 @@ public:
          exit(1);
       }
       vector<int> vazio;
-      return uptr<Move<SolutionMODM>>(new MoveARProduct(yRemove, yNew, vazio, 0, 0, 0, 0, dmproblem, rg, alpha));
+      return uptr<Move<ESolutionMODM>>(new MoveARProduct(yRemove, yNew, vazio, 0, 0, 0, 0, dmproblem, rg, alpha));
    }
 };
 
-class NSSeqARProduct : public NSSeq<SolutionMODM>
+class NSSeqARProduct : public NSSeq<ESolutionMODM>
 {
 private:
    ProblemInstance* dmproblem;
@@ -290,8 +292,9 @@ public:
    {
    }
 
-   virtual uptr<Move<SolutionMODM>> randomMove(const SolutionMODM& s) override
+   virtual uptr<Move<ESolutionMODM>> randomMove(const ESolutionMODM& se) override
    {
+      const SolutionMODM& s = se.first;
       const RepMODM& rep = s.getR();
       const AdsMODM* ads = &s.getADS();
       int nProduts = dmproblem->getNumberOfProducts();
@@ -304,19 +307,19 @@ public:
          yNew = rg.rand(nProduts);
 
       vector<int> vazio;
-      return uptr<Move<SolutionMODM>>(new MoveARProduct(yRemove, yNew, vazio, 0, 0, 0, 0, dmproblem, rg, alpha)); // return a random move
+      return uptr<Move<ESolutionMODM>>(new MoveARProduct(yRemove, yNew, vazio, 0, 0, 0, 0, dmproblem, rg, alpha)); // return a random move
    }
 
-   virtual uptr<NSIterator<SolutionMODM>> getIterator(const SolutionMODM& s) override
+   virtual uptr<NSIterator<ESolutionMODM>> getIterator(const ESolutionMODM& se) override
    {
-      const AdsMODM* ads = &s.getADS();
-      return uptr<NSIterator<SolutionMODM>>(new NSIteratorARProduct(*ads, dmproblem, rg, alpha)); // return an iterator to the neighbors of 'rep'
+      const AdsMODM* ads = &se.first.getADS();
+      return uptr<NSIterator<ESolutionMODM>>(new NSIteratorARProduct(*ads, dmproblem, rg, alpha)); // return an iterator to the neighbors of 'rep'
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << NS<SolutionMODM>::idComponent() << ":NSSeqARProduct";
+      ss << NS<ESolutionMODM>::idComponent() << ":NSSeqARProduct";
       return ss.str();
    }
 

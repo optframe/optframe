@@ -300,12 +300,14 @@ public:
 
    void applyMutationOperators(S& s, const vector<NGESIndStructure<S, XEv>>& p, const vector<int> vNSInd, const int nNS)
    {
+      XES se = make_pair(s, Evaluation<>());
       for (int i = 0; i < nNS; i++) {
          int param = vNSInd[i]; //Extract index
          double rx = rg.rand01();
          if (rx < p[param].pr)
             for (int a = 0; a < p[param].nap; a++) {
-               uptr<Move<XES, XEv>> mov_tmp = vNS[param]->randomMove(s);
+
+               uptr<Move<XES, XEv>> mov_tmp = vNS[param]->randomMove(se);
                //					int tries = 0;
                //					int maxTries = 1;
                //
@@ -316,9 +318,9 @@ public:
                //						tries++;
                //					}
 
-               if (mov_tmp->canBeApplied(s)) {
+               if (mov_tmp->canBeApplied(se)) {
                   //Move<S, XEv>* mov_rev = mov_tmp->apply(s);
-                  mov_tmp->apply(s);
+                  mov_tmp->apply(se);
                   //delete mov_rev;
                } else {
                   //						cout << "cannot be applied NS:" << param;
@@ -328,7 +330,10 @@ public:
 
                //delete mov_tmp;
             }
+         
       }
+      //
+      s = se.first;
    }
 
    void printPop(NGESPopulation& pop)

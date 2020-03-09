@@ -90,6 +90,9 @@ public:
 
 	void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XEv>& stopCriteria, int level)
 	{
+
+      XES se = make_pair(s, Evaluation<>()); // TODO: multiev
+
 		int a = 0; // number of appliable moves
 
 		level += 2; // level 0 applies 2 moves
@@ -98,13 +101,13 @@ public:
 		{
 			int x = rg.rand(ns.size());
 
-			uptr<Move<XES, XEv>> m = ns[x]->validRandomMove(s);
+			uptr<Move<XES, XEv>> m = ns[x]->validRandomMove(se);
 
 			if (m)
 			{
 				a++;
 				//Component::safe_delete(m->applyMEVUpdate(mev, s));
-            m->applyMEVUpdate(mev, s);
+            m->applyMEVUpdate(mev, se);
 			}
 			else
 				if(Component::warning)
@@ -113,18 +116,18 @@ public:
 			//delete m;
 		}
 
-		evaluator.reevaluateMEV(mev, s); // updates 'e'
+		evaluator.reevaluateMEV(mev, se); // updates 'e'
 	}
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (MOILSLPerturbation<XES, XEv>::compatible(s));
+		return (s == idComponent()) || (MOILSLPerturbation<S, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MOILSLPerturbation<XES, XEv>::idComponent() << ":LPlus2";
+		ss << MOILSLPerturbation<S, XEv>::idComponent() << ":LPlus2";
 		return ss.str();
 	}
 

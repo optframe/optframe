@@ -90,11 +90,13 @@ public:
 
 	void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XEv>& stopCriteria)
 	{
+      XES se = make_pair(s, Evaluation<>());
+      //
 		for (int i = pMin; i < pMax; i++)
 		{
 			int nk = rand() % ns.size();
 
-			uptr<Move<XES, XEv>> mp = ns[nk]->validRandomMove(s);
+			uptr<Move<XES, XEv>> mp = ns[nk]->validRandomMove(se);
 
 			if (!mp)
 			{
@@ -106,11 +108,11 @@ public:
             //Move<XES, XEv>& m = *mp;
 				//Component::safe_delete(m.applyMEVUpdate(mev, s));
 				//delete &m;
-            mp->applyMEVUpdate(mev, s);
+            mp->applyMEVUpdate(mev, se);
 			}
 		}
 
-		mEval.reevaluateMEV(mev, s); // updates 'e'
+		mEval.reevaluateMEV(mev, se); // updates 'e'
 	}
 
 	virtual string id() const

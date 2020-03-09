@@ -121,7 +121,7 @@ public:
 	}
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (MOLocalSearch<XES, XEv>::compatible(s));
+		return (s == idComponent()) || (MOLocalSearch<S, XEv>::compatible(s));
 	}
 
 	static string idComponent()

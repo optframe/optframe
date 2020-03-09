@@ -38,13 +38,14 @@ public:
    {
    }
 
-   bool canBeApplied(const SolutionMODM& s) override 
+   bool canBeApplied(const ESolutionMODM& se) override 
    {
       return true;
    }
 
-   uptr<Move<SolutionMODM>> apply(SolutionMODM& s) override
+   uptr<Move<ESolutionMODM>> apply(ESolutionMODM& se) override
    {
+      SolutionMODM& s = se.first;
       RepMODM& rep = s.getR();
       AdsMODM& ads = s.getADS();
       //cout<<"aplying..."<<endl;
@@ -107,10 +108,10 @@ public:
 
       //cout<<"applied..."<<endl;
       //getchar();
-      return uptr<Move<SolutionMODM>>(new MoveADD(revReverse, revProducts, revClients, dmproblem, rg));
+      return uptr<Move<ESolutionMODM>>(new MoveADD(revReverse, revProducts, revClients, dmproblem, rg));
    }
 
-   virtual bool operator==(const Move<SolutionMODM>& _m) const
+   virtual bool operator==(const Move<ESolutionMODM>& _m) const
    {
       const MoveADD& m = (const MoveADD&)_m;
       return (m.reverse == reverse);
@@ -129,7 +130,7 @@ public:
    }
 };
 
-class NSIteratorADD : public NSIterator<SolutionMODM>
+class NSIteratorADD : public NSIterator<ESolutionMODM>
 {
 private:
    ProblemInstance* dmproblem;
@@ -163,7 +164,7 @@ public:
       return (i == 2);
    }
 
-   uptr<Move<SolutionMODM>> current() override
+   uptr<Move<ESolutionMODM>> current() override
    {
       if (isDone()) {
          cout << "There isnt any current element!" << endl;
@@ -173,11 +174,11 @@ public:
       vector<int> vazioP;
       vector<int> vazioC;
 
-      return uptr<Move<SolutionMODM>>(new MoveADD(false, vazioP, vazioC, dmproblem, rg)); // return a random move
+      return uptr<Move<ESolutionMODM>>(new MoveADD(false, vazioP, vazioC, dmproblem, rg)); // return a random move
    }
 };
 
-class NSSeqADD : public NSSeq<SolutionMODM>
+class NSSeqADD : public NSSeq<ESolutionMODM>
 {
 private:
    ProblemInstance* dmproblem;
@@ -194,13 +195,14 @@ public:
    {
    }
 
-   virtual uptr<NSIterator<SolutionMODM>> getIterator(const SolutionMODM& s) override
+   virtual uptr<NSIterator<ESolutionMODM>> getIterator(const ESolutionMODM& se) override
    {
-      return uptr<NSIterator<SolutionMODM>>(new NSIteratorADD(dmproblem, rg)); // return an iterator to the neighbors of 'rep'
+      return uptr<NSIterator<ESolutionMODM>>(new NSIteratorADD(dmproblem, rg)); // return an iterator to the neighbors of 'rep'
    }
 
-   virtual uptr<Move<SolutionMODM>> randomMove(const SolutionMODM& s) override
+   virtual uptr<Move<ESolutionMODM>> randomMove(const ESolutionMODM& se) override
    {
+      const SolutionMODM& s = se.first;
       const RepMODM& rep = s.getR();
       const AdsMODM* ads = &s.getADS();
       //
@@ -208,13 +210,13 @@ public:
       vector<int> vazioC;
       /*cout<<"oi ADD NS"<<endl;
 		 getchar();*/
-      return uptr<Move<SolutionMODM>>(new MoveADD(false, vazioP, vazioC, dmproblem, rg)); // return a random move
+      return uptr<Move<ESolutionMODM>>(new MoveADD(false, vazioP, vazioC, dmproblem, rg)); // return a random move
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << NS<SolutionMODM>::idComponent() << ":NSSeqADD";
+      ss << NS<ESolutionMODM>::idComponent() << ":NSSeqADD";
       return ss.str();
    }
 

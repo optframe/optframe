@@ -68,22 +68,24 @@ public:
 		num_calls++;
 		Timer t;
 
+      XES se = make_pair(s, Evaluation<>());
+
 		int iter = 0;
 
 		while ((iter < iterMax) && ((t.now() - stopCriteria.timelimit) < 0))
 		{
-			uptr<Move<XES, XEv>> move = ns.randomMove(s);
-			if (move->canBeApplied(s))
+			uptr<Move<XES, XEv>> move = ns.randomMove(se);
+			if (move->canBeApplied(se))
 			{
 				//Move and mark sMev as outdated
-				uptr<Move<XES, XEv>> mov_rev = move->apply(s);
+				uptr<Move<XES, XEv>> mov_rev = move->apply(se);
 
 				//Call method to reevaluate sMev and try to include TODO
 //				pManager->addSolutionWithMEVReevaluation(p, *s,*sMev);
 
-				pManager.addSolution(p, s);
+				pManager.addSolution(p, se.first);
 				//delete mov_rev->apply(s);
-            mov_rev->apply(s);
+            mov_rev->apply(se);
 				//delete mov_rev;
 
 				//			vector<MoveCost<>*> vMoveCost;
@@ -104,7 +106,7 @@ public:
 	}
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (MOLocalSearch<XES, XEv>::compatible(s));
+		return (s == idComponent()) || (MOLocalSearch<S, XEv>::compatible(s));
 	}
 
 	static string idComponent()

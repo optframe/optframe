@@ -39,7 +39,7 @@ namespace optframe
 {
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = Pareto<S, XEv, XES>>
-class InitialPareto : public InitialSearch<Pareto<S, XEv, XES>> //public Component
+class InitialPareto : public InitialSearch<XES, XEv, Pareto<S, XEv, XES>> //public Component
 {
 public:
 
@@ -69,15 +69,17 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class BasicInitialPareto: public InitialPareto<S, XEv>
 {
 public:
 
-	Constructive<S>& constructive;
+	//Constructive<S>& constructive;
+   InitialSearch<XES>& constructive;
 	paretoManager<S, XEv> pMan;
 
-	BasicInitialPareto(Constructive<S>& _constructive, MultiEvaluator<S, XEv>& _mev) :
+	//BasicInitialPareto(Constructive<S>& _constructive, MultiEvaluator<S, XEv>& _mev) :
+   BasicInitialPareto(InitialSearch<XES>& _constructive, MultiEvaluator<S, XEv>& _mev) :
 			constructive(_constructive), pMan(paretoManager<S, XEv>(_mev))
 	{
 	}
@@ -89,8 +91,10 @@ public:
 	virtual Pareto<S, XEv> generatePareto(unsigned populationSize, double timelimit = 100000000)
 	{
 		Pareto<S, XEv> p;
+      StopCriteria<XEv> sosc(timelimit);
 		for (unsigned i = 0; i < populationSize; i++)
-			pMan.addSolution(p, *constructive.generateSolution(timelimit));
+			//pMan.addSolution(p, *constructive.generateSolution(timelimit));
+         pMan.addSolution(p, constructive.initialSearch(sosc)->first);
 
 		return p;
 	}
