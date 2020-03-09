@@ -43,12 +43,21 @@ public:
 */
 
 
+/*
+   // STRANGE ERROR!! CANNOT RECEIVE uptr...
 	MoveNSSeqUnion(int _id, uptr<Move<XES, XEv>> _m) :
 			//id(_id), m(std::move(_m))
          id(_id), m(_m)
 	{
 	}
+*/
 
+   // this pointer will be owned by ME... never delete it!
+	MoveNSSeqUnion(int _id, Move<XES, XEv>* _m) :
+			//id(_id), m(std::move(_m))
+         id(_id), m(_m)
+	{
+	}
 
 	int get_id()
 	{
@@ -72,12 +81,13 @@ public:
 
 	uptr<Move<XES, XEv>> apply(XES& se) override
 	{
-		return uptr<Move<XES, XEv>>( new MoveNSSeqUnion<S, XEv, XES>(id, m->apply(se)) );
+		return uptr<Move<XES, XEv>>( new MoveNSSeqUnion<S, XEv, XES>(id, m->apply(se).release()) );
 	}
 
 	uptr<Move<XES, XEv>> applyUpdate(Evaluation<>& e, S& s)
 	{
-		return uptr<Move<XES, XEv>>( new MoveNSSeqUnion<S, XEv, XES>(id, m->apply(e, s)) );
+      XES se(s,e);
+		return uptr<Move<XES, XEv>>( new MoveNSSeqUnion<S, XEv, XES>(id, m->apply(se).release()) );
 	}
 
 	virtual bool operator==(const Move<XES, XEv>& _m) const

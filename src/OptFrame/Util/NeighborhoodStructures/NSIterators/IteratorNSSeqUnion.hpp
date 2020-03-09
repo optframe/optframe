@@ -48,10 +48,20 @@ private:
 
 public:
 
-	IteratorNSSeqUnion(vector<uptr<NSIterator<XES>>> _it) :
+/*
+   // ERROR! CANNOT PASS uptr CORRECTLY!
+	IteratorNSSeqUnion(vector<uptr<NSIterator<XES>>>&& _it) :
 			it(_it)
 	{
 		k = 0;
+	}
+*/
+   // these pointers are passed together with ownership!! never delete them!
+	IteratorNSSeqUnion(vector<NSIterator<XES>*> _it)
+	{
+		k = 0;
+      for(unsigned i=0; i<_it.size(); i++)
+         it.push_back(uptr<NSIterator<XES>>(_it[i]));
 	}
 
 	virtual ~IteratorNSSeqUnion()
@@ -91,7 +101,7 @@ public:
    uptr<Move<XES>> current() override
 	{
 		if (!it[k]->isDone())
-			return uptr<Move<XES>>( new MOVE(k, it[k]->current()) );
+			return uptr<Move<XES>>( new MOVE(k, it[k]->current().release()) );
 		else
 			throw NSSeqUnionAdapterOutOfBound();
 	}

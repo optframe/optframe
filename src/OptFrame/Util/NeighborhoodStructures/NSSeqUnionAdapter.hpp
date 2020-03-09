@@ -62,10 +62,10 @@ public:
 		int x = rand() % ns.size();
 
       uptr<Move<XES, XEv>> mvv = ns[x]->randomMove(se);
-      uptr<Move<XES, XEv>> mvv2 = std::move(mvv);
+      MoveNSSeqUnion<S, XEv, XES> *pm = new MoveNSSeqUnion<S, XEv, XES>(x, mvv.release());
 
-      //MOVE* pm = new MOVE(x, mvv );
-      MoveNSSeqUnion<S, XEv, XES> *pm = new MoveNSSeqUnion<S, XEv, XES>(x, std::move(mvv2));
+      //uptr<Move<XES, XEv>> mvv2 = std::move(mvv);
+      //MoveNSSeqUnion<S, XEv, XES> *pm = new MoveNSSeqUnion<S, XEv, XES>(x, std::move(mvv2));
       Move<XES, XEv>* pm2 = pm;
 		uptr<Move<XES, XEv>> mv2( pm2 );
       return mv2;
@@ -88,9 +88,10 @@ public:
 
 	virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
 	{
-		vector<uptr<NSIterator<XES>>> it;
+		//vector<uptr<NSIterator<XES>>> it;
+      vector<NSIterator<XES>*> it;
 		for(unsigned int i = 0; i < ns.size(); i++)
-			it.push_back(ns[i]->getIterator(se));
+			it.push_back(ns[i]->getIterator(se).release());
 
 		return uptr<NSIterator<XES>>(new IteratorNSSeqUnion<R, ADS, S, XEv, XES, MOVE>(it));
 	}
