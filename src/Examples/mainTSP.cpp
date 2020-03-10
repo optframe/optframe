@@ -89,11 +89,12 @@ main(int argc, char** argv)
    CheckCommand<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> check(check_verbose);
 
    RandGenMersenneTwister rg(0);
-   RandomInitialSolutionTSP random(tsp.p, rg);
-   NearestNeighborConstructive cnn(tsp.p, rg);
-   ConstructiveBestInsertion cbi(tsp.p, rg);
    TSPEvaluator eval1(tsp.p); // Should not be Specific to TSP!! Won't work on Decoder..
    Evaluator<SolutionTSP>& eval = eval1;
+
+   RandomInitialSolutionTSP randomTSP(tsp.p, eval, rg);
+   NearestNeighborConstructive cnn(tsp.p, eval, rg);
+   ConstructiveBestInsertion cbi(tsp.p, eval, rg);
    NSEnumSwap enumswap(tsp.p, rg);
 
    NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);
@@ -113,7 +114,7 @@ main(int argc, char** argv)
 
    NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspswap;
 
-   check.add(random);
+   check.add(randomTSP);
    check.add(cnn);
    check.add(cbi);
    check.add(eval);
@@ -185,7 +186,7 @@ main(int argc, char** argv)
    pert.add_ns(tspor3);
    pert.add_ns(tspswap);
 
-   IteratedLocalSearchLevels<ESolutionTSP> ils(eval, random, VND, pert, 3, 2);
+   IteratedLocalSearchLevels<ESolutionTSP> ils(eval, randomTSP, VND, pert, 3, 2);
    //ils.setMessageLevel(4);
    ils.setVerbose();
    if (ils.information)
@@ -221,7 +222,7 @@ main(int argc, char** argv)
    for (unsigned i = 0; i < v_nsseq.size(); i++)
       v_ns.push_back(v_nsseq[i]);
 
-   BasicVNS<ESolutionTSP> vns(eval, random, v_ns, v_nsseq);
+   BasicVNS<ESolutionTSP> vns(eval, randomTSP, v_ns, v_nsseq);
    vns.setMessageLevel(3); // INFORMATION
    StopCriteria<EvaluationTSP> soscVNS;
    soscVNS.timelimit = 2; // 2 seconds

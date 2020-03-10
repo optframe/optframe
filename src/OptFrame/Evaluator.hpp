@@ -238,6 +238,8 @@ public:
    // this strictly better than parameter 'e' (for mini, 'this' < 'e')
    virtual bool betterStrict(const XEv& e1, const XEv& e2)
    {
+      assert(!e1.outdated);
+      assert(!e2.outdated);
       return Direction::betterThan(e1, e2);
    }
 

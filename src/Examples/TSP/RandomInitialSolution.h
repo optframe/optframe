@@ -46,13 +46,15 @@ class RandomInitialSolutionTSP: public InitialSearch<ESolutionTSP>
 {
 private:
 	ProblemInstance* pI;
+   GeneralEvaluator<ESolutionTSP>& eval;
 	RandGen& rg;
 
 	// Your private vars
 
 public:
 
-	RandomInitialSolutionTSP(ProblemInstance* pI, RandGen& _rg): rg(_rg) // If necessary, add more parameters
+	RandomInitialSolutionTSP(ProblemInstance* pI, GeneralEvaluator<ESolutionTSP>& _eval, RandGen& _rg) :
+      eval(_eval), rg(_rg) // If necessary, add more parameters
 	{
 		this->pI = pI;
 		// Put the rest of your code here
@@ -79,6 +81,7 @@ public:
 		//return new CopySolution<RepTSP>(newRep);
       //return make_optional(SolutionTSP(newRep));
       ESolutionTSP se(newRep, EvaluationTSP());
+      eval.reevaluate(se);
       return make_optional(se);
 	}
 

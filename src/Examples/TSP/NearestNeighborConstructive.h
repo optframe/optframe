@@ -46,6 +46,7 @@ class NearestNeighborConstructive: public InitialSearch<ESolutionTSP>
 {
 private:
 	ProblemInstance* pI;
+   GeneralEvaluator<ESolutionTSP>& eval;
 	RandGen& rg;
 
     static bool compare(const pair<double, int>& p1, const pair<double, int>& p2)
@@ -55,7 +56,8 @@ private:
 
 public:
 
-	NearestNeighborConstructive(ProblemInstance* pI, RandGen& _rg): rg(_rg) // If necessary, add more parameters
+	NearestNeighborConstructive(ProblemInstance* pI, GeneralEvaluator<ESolutionTSP>& _eval, RandGen& _rg) :
+      eval(_eval), rg(_rg) // If necessary, add more parameters
 	{
 		this->pI = pI;
 		// Put the rest of your code here
@@ -109,6 +111,7 @@ public:
       //return make_optional(SolutionTSP(newRep));
       EvaluationTSP etsp;
       ESolutionTSP se(SolutionTSP(newRep), etsp);
+      eval.reevaluate(se);
       return make_optional(se);
 	}
 

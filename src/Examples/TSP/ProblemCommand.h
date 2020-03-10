@@ -79,14 +79,15 @@ public:
 
         // add everything to the HeuristicFactory 'hf'
 
-        RandomInitialSolutionTSP& is = * new RandomInitialSolutionTSP(p, hf.getRandGen());
-        hf.addComponent(is);
-
-        hf.addComponent(* new NearestNeighborConstructive(p, hf.getRandGen()));
-        hf.addComponent(* new ConstructiveBestInsertion(p, hf.getRandGen()));
-
         TSPEvaluator& eval = *new TSPEvaluator(p);
         hf.addComponent(eval, Evaluator<ESolutionTSP>::idComponent());
+
+        RandomInitialSolutionTSP& is = * new RandomInitialSolutionTSP(p, eval, hf.getRandGen());
+        hf.addComponent(is);
+
+        hf.addComponent(* new NearestNeighborConstructive(p, eval, hf.getRandGen()));
+        hf.addComponent(* new ConstructiveBestInsertion(p, eval, hf.getRandGen()));
+
 
         NSEnumSwap& ns = *new NSEnumSwap(p, hf.getRandGen());
         hf.addComponent(ns, "OptFrame:NS:NSSeq");
