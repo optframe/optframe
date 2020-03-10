@@ -257,7 +257,7 @@ int main(int argc, char **argv)
 	GRInitialPopulation<SolutionMODM> bip(grC, rg, 0.2);
 	int initial_population_size = pop;
 	initial_population_size = 10;
-	MultiEvaluator<SolutionMODM, EvaluationMODM> mev(v_e);
+	MultiEvaluator<SolutionMODM, EvaluationMODM, MultiEvaluationMODM> mev(v_e);
 
    // MOVNSLevels (??)
    /*
