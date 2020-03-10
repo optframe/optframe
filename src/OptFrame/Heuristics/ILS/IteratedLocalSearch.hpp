@@ -164,7 +164,8 @@ public:
 		//if (evaluator.betterThan(eStar, stopCriteria.target_f)) // BROKEN for now!
       
       //if (stopCriteria.target_f && evaluator.betterThan(eStar, *stopCriteria.target_f))
-      if (eStar.betterStrict(stopCriteria.target_f))
+      //if (eStar.betterStrict(stopCriteria.target_f))
+      if (evaluator.betterStrict(eStar, stopCriteria.target_f))
       {
 			cout << "ILS exit by target_f: " << eStar.evaluation() << " better than " << stopCriteria.target_f.evaluation() << endl;
          //cout << "isMin: " << evaluator.isMinimization() << endl;

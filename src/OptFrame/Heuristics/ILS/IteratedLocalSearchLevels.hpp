@@ -109,7 +109,8 @@ public:
 		//cout << "acceptanceCriterion(.)" << endl;
 
 		//if (IteratedLocalSearch<levelHistory, XES, XEv>::evaluator.betterThan(e1, e2))
-      if (e1.betterStrict(e2))
+      //if (e1.betterStrict(e2))
+      if (IteratedLocalSearch<levelHistory, XES, XEv>::evaluator.betterStrict(e1, e2))
 		{
 			if(Component::information)
 			{

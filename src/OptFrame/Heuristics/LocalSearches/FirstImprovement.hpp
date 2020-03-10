@@ -120,7 +120,8 @@ public:
       // if p not null => much faster (using cost)
       if (p) {
          // verify if m is an improving move
-         if (p->isStrictImprovement()) {
+         //if (p->isStrictImprovement()) {
+         if (eval.isStrictImprovement(*p)) {
 
             // apply move and get reverse
             uptr<Move<XES, XEv>> rev = m.apply(se);
@@ -149,7 +150,7 @@ public:
          XEv mcost = ev_begin.diff(se.second);
 
          // check if it is improvement
-         if (mcost.isStrictImprovement()) {
+         if (eval.isStrictImprovement(mcost)) {
             return true;
          }
 

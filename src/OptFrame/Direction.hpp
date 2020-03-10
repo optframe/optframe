@@ -64,6 +64,7 @@ public:
 	{
 	}
 
+
 	// ============ betterThan ===========
 
 	//! abstract method betterThan: true when a < b for minimization problems; and true when a > b for maximization problems.
@@ -156,7 +157,6 @@ public:
 
 	// ============ equals ============
 
-protected:
 /*
 	virtual inline bool equals(const evtype& t1, const evtype& t2, const vector<pair<evtype, evtype> >& altCosts1, const vector<pair<evtype, evtype> >& altCosts2)
 	{
@@ -194,8 +194,6 @@ virtual inline bool equals(const evtype& t1, const evtype& t2)
 
 		return true;
 	}
-
-public:
 
 // Abolishing MoveCost
 /*
@@ -247,6 +245,7 @@ public:
 		return betterThan(mc, nullCost);
 	}
 
+public:
 
 	// ============= direction ==============
 

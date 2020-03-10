@@ -110,7 +110,8 @@ public:
 			ls.searchFrom(p1, stopCriteriaLS);
 
 			//if (evaluator.betterThan(e1, e))
-         if (e1.betterStrict(e))
+         //if (e1.betterStrict(e))
+         if (evaluator.betterStrict(e1, e))
 			{
 				//(*s) = std::move(*s1);
 				//delete s1;

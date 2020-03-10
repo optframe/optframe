@@ -85,7 +85,8 @@ public:
 			iter++;
 
 			//if (cost && evaluator.isImprovement(*cost))
-         if (cost && cost->isImprovingStrict())
+         //if (cost && cost->isImprovingStrict())
+         if (cost && evaluator.isStrictImprovement(*cost))
 			{
 				move->applyUpdate(se);
 				evaluator.reevaluate(se);

@@ -118,7 +118,9 @@ concept bool evgoal =
                { e.diff(e2) } -> Self; // TODO: rename to 'sub'
             }
       )
-   ) && 
+   );
+/*
+    && 
 //      requires(Self e) 
         requires(Self e, 
            const std::remove_reference_t<Self>& e2)
@@ -133,6 +135,7 @@ concept bool evgoal =
          { e.isStrictImprovement()} -> bool;
          { e.isNonStrictImprovement()} -> bool;
       };
+*/      
 //------
 
 template <class Self>

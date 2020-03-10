@@ -82,7 +82,8 @@ public:
       const XEv& eStar = star.second;
       //
 		//if (evaluator.betterThan(e2, eStar))
-      if (e2.betterStrict(eStar))
+      //if (e2.betterStrict(eStar))
+      if (evaluator.betterStrict(e2, eStar))
 		{
 			// IMPROVEMENT!
 			//XES p(s2.clone(), e2.clone()); // TODO: avoid leak!!
@@ -181,7 +182,8 @@ public:
 		}
 
       //if (sosc.target && evaluator.betterThan(star->second, sosc.target->second))
-      if (star->second.betterStrict(sosc.target_f))
+      //if (star->second.betterStrict(sosc.target_f))
+      if (evaluator.betterStrict(star->second, sosc.target_f))
       {
 			cout << "VNS exit by target_f: " << star->second.evaluation() << " better than " << sosc.target_f.evaluation() << endl;
          //cout << "isMin: " << evaluator.isMinimization() << endl;

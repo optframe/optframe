@@ -85,7 +85,8 @@ public:
 	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, BasicHistory& history) override
 	{
 		//if (IteratedLocalSearch<BasicHistory, XES, XEv>::evaluator.betterThan(e1, e2))
-      if (e1.betterStrict(e2))
+      //if (e1.betterStrict(e2))
+      if (IteratedLocalSearch<BasicHistory, XES, XEv>::evaluator.betterStrict(e1, e2))
 		{
 			// =======================
 			//   Melhor solucao: 's2'

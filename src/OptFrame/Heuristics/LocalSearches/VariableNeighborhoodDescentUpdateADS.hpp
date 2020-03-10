@@ -86,7 +86,8 @@ public:
          lsList[k - 1]->searchFrom(p0, sosc);
 
          //if (ev.betterThan(p0, se)) {
-         if (p0.second.betterStrict(se.second)) {
+         //if (p0.second.betterStrict(se.second)) {
+         if (ev.betterStrict(p0.second, se.second)) {
             se = p0;
             //delete s0; // no need
             //delete e0; // no need

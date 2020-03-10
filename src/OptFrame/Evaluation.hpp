@@ -143,7 +143,8 @@ public:
       optframe::numeric_zero(infMeasure);
 
       //gos = gos_unknown;
-      outdated = false;
+      //outdated = false;
+      outdated = true;
       estimated = false;
    }   
 
@@ -166,6 +167,7 @@ public:
    virtual ~Evaluation()
    {
    }
+
 
    virtual Evaluation<ObjType>& operator=(const Evaluation<ObjType>& e)
    {
@@ -209,6 +211,13 @@ public:
    // end canonical part
    // ======================================
    // begin Evaluation methods
+
+   static constexpr ObjType getZero()
+   {
+      ObjType objValZero;
+      optframe::numeric_zero(objValZero);
+      return objValZero;
+   }
 
    ObjType getObjFunction() const
    {
@@ -285,8 +294,8 @@ public:
 
    // ========= TAKEN FROM MoveCost =======
 
-   // update Evaluation with costs
-   virtual void update(Evaluation<ObjType>& evCost)
+   // update target Evaluation with *this cost
+   virtual void update(Evaluation<ObjType>& evTarget) const
    {
 
       // this task was performed before by MoveCost... now unifying in Evaluation
@@ -316,15 +325,18 @@ public:
    }
 
 
+/*
    // this strictly better than parameter 'e' (for mini, 'this' < 'e')
    virtual bool betterStrict(const Evaluation<ObjType>& e) const
    {
+      assert(!outdated);
       return isMini? evaluation() < e.evaluation() : evaluation() > e.evaluation();
    }
 
    // this strictly better than parameter 'e' (for mini, 'this' < 'e')
    virtual bool betterStrictObj(const ObjType& obj)
    {
+      assert(!outdated);
       return isMini? evaluation() < obj : evaluation() > obj;
    }
 
@@ -332,12 +344,14 @@ public:
    // this non-strictly better than parameter 'e' (for mini, 'this' <= 'e')
    virtual bool betterNonStrict(const Evaluation<ObjType>& e)
    {
+      assert(!outdated);
       return isMini? evaluation() <= e.evaluation() : evaluation() >= e.evaluation();
    }
 
    // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
    virtual bool isStrictImprovement()
    {
+      assert(!outdated);
       //return betterStrict(Evaluation<ObjType>()); // strictly better than ObjType 'zero'
       //return betterStrict(costZero); // strictly better than ObjType 'zero'
       return isMini? evaluation() < objValZero : evaluation() > objValZero;
@@ -346,6 +360,7 @@ public:
    // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
    virtual bool isNonStrictImprovement()
    {
+      assert(!outdated);
       //return betterNonStrict(Evaluation<ObjType>()); // strictly better than ObjType 'zero'
       //return betterNonStrict(costZero); // strictly better than ObjType 'zero'
       return isMini? evaluation() <= objValZero : evaluation() >= objValZero;
@@ -365,7 +380,7 @@ public:
 		
       return isMini ? thisPlusE1 < e2Obj : thisPlusE1 > e2Obj;
 	}
-
+*/ 
 
    virtual bool equals(const Evaluation<ObjType>& e)
    {
@@ -647,6 +662,7 @@ public:
    // note that, if 'evtype' becomes complex, one must return a moveable copy, not reference of internal value
    ObjType evaluation() const
    {
+      assert(!outdated);
       return objFunction + weight * infMeasure;
    }
 

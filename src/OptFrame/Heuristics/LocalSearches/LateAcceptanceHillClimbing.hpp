@@ -113,7 +113,8 @@ public:
 				// test for current index
 #ifdef BRAND_NEW
 				//if (ev.isImprovement(*cost, e, *eList[index]))
-            if (cost->isImprovingStrict( e, *eList[index]))
+            //if (cost->isImprovingStrict( e, *eList[index]))
+            if (ev.isImprovingStrictly(*cost, e, *eList[index]))
 #else
 				if (ev.betterThan(cost.cost()+e.evaluation(), eList[index]))
 #endif
@@ -129,7 +130,8 @@ public:
 #endif
 
 					//if (ev.betterThan(e, eStar))
-               if (e.betterStrict(eStar))
+               //if (e.betterStrict(eStar))
+               if (ev.betterStrict(e, eStar))
 					{
 						sStar = s;
 						eStar = e;

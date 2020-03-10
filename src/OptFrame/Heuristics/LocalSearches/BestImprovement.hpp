@@ -122,7 +122,8 @@ public:
 
 			bestCost = eval.moveCost(*bestMove, se);
 			//if (eval.isImprovement(*bestCost))
-         if (bestCost->isImprovingStrict())
+         //if (bestCost->isImprovingStrict())
+         if (eval.isStrictImprovement(*bestCost))
 			{
 				it->next();
 				break;
@@ -156,7 +157,8 @@ public:
             op<XEv> cost = eval.moveCost(*move, se);
 
 				//if (eval.betterThan(*cost, *bestCost))
-            if (cost->betterStrict(*bestCost))
+            //if (cost->betterStrict(*bestCost))
+            if (eval.betterStrict(*cost, *bestCost))
 				{
 					/////delete bestMove;
 					/////delete bestCost;
@@ -182,7 +184,8 @@ public:
 		}
 
 		//if (eval.isImprovement(*bestCost))
-      if (bestCost->isImprovingStrict())
+      //if (bestCost->isImprovingStrict())
+      if (eval.isStrictImprovement(*bestCost))
 		{
 			//cout << "MOVE IS IMPROVEMENT! cost=";
 			//bestCost->print();

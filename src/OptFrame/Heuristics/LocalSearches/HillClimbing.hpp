@@ -71,7 +71,8 @@ public:
 
       // while improvement is found
 		//while ((evaluator.betterThan(e, e0)) && ((tnow - tini) < timelimit))
-      while ((e.betterStrict(e0)) && ((tnow - tini) < timelimit))
+      //while ((e.betterStrict(e0)) && ((tnow - tini) < timelimit))
+      while ((evaluator.betterStrict(e, e0)) && ((tnow - tini) < timelimit))
 		{
 			//delete e0;
 			//e0 = &e.clone();

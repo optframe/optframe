@@ -63,6 +63,7 @@ namespace optframe {
 //template<XESolution XES, XEvaluation XEv = Evaluation<>>
 
 // Evaluation may need to be S dependent, while GeneralEvaluator is not.
+//template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class Evaluator : public Direction, public GeneralEvaluator<XES, XEv, XES>
 {
@@ -231,6 +232,33 @@ public:
       return Direction::betterThan(e1, e2);
    }
 
+   // =======================================
+
+
+   // this strictly better than parameter 'e' (for mini, 'this' < 'e')
+   virtual bool betterStrict(const XEv& e1, const XEv& e2)
+   {
+      return Direction::betterThan(e1, e2);
+   }
+
+   // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
+   virtual bool isStrictImprovement(const XEv& e)
+   {
+      return Direction::isImprovement(e);
+   }
+
+   // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
+   virtual bool isNonStrictImprovement(const XEv& e)
+   {
+      return isStrictImprovement(e) || Direction::equals(e, this->nullCost);
+   }
+
+   virtual bool equals(const XEv& e1, const XEv& e2)
+   {
+      return Direction::equals(e1, e2);
+   }
+
+   // ---------------------------------------
 
    // ============= Component ===============
 

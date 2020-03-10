@@ -77,7 +77,7 @@ private:
       }   
    };
 */
-   
+
 private:
    //
    double T;
@@ -221,7 +221,8 @@ public:
 				evaluator.reevaluate(current);
 
 				//if (evaluator.betterThan(eCurrent, e)) // TODO: replace by 'se' here, and use 'se.second' to compare directly
-            if(eCurrent.betterStrict(e))
+            //if(eCurrent.betterStrict(e))
+            if(evaluator.betterStrict(eCurrent, e))
 				{
                // if improved, accept it
 					//e = *eCurrent;
@@ -232,7 +233,8 @@ public:
 
 
 					//if (evaluator.betterThan(e, eStar))
-               if(e.betterStrict(eStar))
+               //if(e.betterStrict(eStar))
+               if(evaluator.betterStrict(e, eStar))
 					{
 						//delete sStar;
 						//sStar = &s.clone();

@@ -72,6 +72,38 @@ public:
    // note that intention is to only change evaluation, but now it's up to user.
    virtual void reevaluate(XSH&) = 0;  // TODO: rename to something more general, 'xevaluate' ?
 
+
+   // ====================
+   // direction primitives
+   // ====================
+
+   // this strictly better than parameter 'e' (for mini, 'this' < 'e')
+   virtual bool betterStrict(const XEv& e1, const XEv& e2) = 0;
+
+
+   // this non-strictly better than parameter 'e' (for mini, 'this' <= 'e')
+   virtual bool betterNonStrict(const XEv& e1, const XEv& e2)
+   {
+      return betterStrict(e1, e2) || equals(e1, e2);
+   }
+
+   // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
+   virtual bool isStrictImprovement(const XEv& e) = 0;
+
+   virtual bool isImprovingStrictly(const XEv& cost, const XEv& e1, const XEv& e2)
+   {
+      XEv _e1(e1);
+      cost.update(_e1); // _e1 := e1 + cost
+      return betterStrict(_e1, e2);
+   }
+
+   // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
+   virtual bool isNonStrictImprovement(const XEv& e) = 0;
+
+   virtual bool equals(const XEv& e1, const XEv& e2) = 0;
+
+   // ==========================
+
    // Apply movement considering a previous XEv => Faster (used on CheckCommand and locally)
    // Update XEv 'e'
    //Move<XES, XEv, XSH>* applyMoveReevaluate(XEv& e, Move<XES, XEv, XSH>& m, S& s)

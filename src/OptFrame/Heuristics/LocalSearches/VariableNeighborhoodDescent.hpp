@@ -89,7 +89,8 @@ public:
 
 			//if (ev.betterThan(e, eCurrent))
          //if (ev.betterThan(se, current))
-         if (se.second.betterStrict(current.second))
+         //if (se.second.betterStrict(current.second))
+         if (ev.betterStrict(se.second, current.second))
 			{
             // improvement
 				k = 1;
