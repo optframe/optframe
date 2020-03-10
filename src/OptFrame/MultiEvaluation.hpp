@@ -40,11 +40,13 @@ public:
 
 	MultiEvaluation()
 	{
+      static_assert(XEvaluation<MultiEvaluation<ObjType>>);
 	}
 
 	MultiEvaluation(Evaluation<> ev)
 	{
 		vev.push_back(ev);
+      static_assert(XEvaluation<MultiEvaluation<ObjType>>);
 	}
 
 //	MultiEvaluation(const Evaluation<> ev)
@@ -200,6 +202,15 @@ public:
 		this->vev.clear();
 	}
 
+   // update Evaluation with costs
+   virtual void update(MultiEvaluation<ObjType>& mevTarget) const
+   {
+      // this task was performed before by MoveCost... now unifying in Evaluation
+      // how to do this?
+      assert(false);
+   }
+
+
 	virtual void print() const
 	{
 		cout << toString() << endl;
@@ -214,6 +225,11 @@ public:
 		return ss.str();
 	}
 
+   friend std::ostream& operator<<(std::ostream& os, const MultiEvaluation& me)
+   {
+      os << me.toString();
+      return os;
+   }
 };
 
 // Compilation test for concepts

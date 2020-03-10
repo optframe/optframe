@@ -205,6 +205,41 @@ public:
 
 
 
+
+// =======================
+
+
+
+   // this strictly better than parameter 'e' (for mini, 'this' < 'e')
+   virtual bool betterStrict(const XMEv& e1, const XMEv& e2)
+   {
+      assert(false);
+      return false;
+   }
+
+   // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
+   virtual bool isStrictImprovement(const XMEv& e)
+   {
+      assert(false);
+      return false;
+   }
+
+   // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
+   virtual bool isNonStrictImprovement(const XMEv& e)
+   {
+      assert(false);
+      return false;
+   }
+
+   virtual bool equals(const XMEv& e1, const XMEv& e2)
+   {
+      assert(false);
+      return false;
+   }
+
+// ================================================
+
+
 protected:
 
 	// ============= Component ===============
