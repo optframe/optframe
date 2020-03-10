@@ -38,7 +38,7 @@ using namespace optframe;
 
 #define EPSILON_PCAP 0.0001
 
-class PCAPEvaluator: public Evaluator<ESolutionPCAP>
+class PCAPEvaluator: public Evaluator<SolutionPCAP>
 {
 private:
 	PCAPProblemInstance& pPCAP;
@@ -54,9 +54,9 @@ public:
 		// Put the rest of your code here
 	}
 
-	Evaluation<> evaluate(const ESolutionPCAP& s) override
+	Evaluation<> evaluate(const SolutionPCAP& s) override
 	{
-      const RepPCAP& rep = s.first.getR();
+      const RepPCAP& rep = s.getR();
 		// 'rep' is the representation of the solution
 
 		double fo = 0; // Evaluation<> Function Value
@@ -113,6 +113,9 @@ public:
 		return true;
 	}
 };
+
+static_assert(std::is_base_of<Evaluator<SolutionPCAP>, PCAPEvaluator>::value,  "not inherited from Evaluator");
+static_assert(std::is_base_of<GeneralEvaluator<ESolutionPCAP>, PCAPEvaluator>::value,  "not inherited from GeneralEvaluator");
 
 #endif /*PCAP_EVALUATOR_HPP_*/
 

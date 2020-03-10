@@ -7,12 +7,15 @@
 //#define EVALUATION_ZERO 0.001
 
 #include "../../OptFrame/Evaluation.hpp"
+#include "../../OptFrame/MultiEvaluation.hpp"
 
 using namespace optframe;
 
 typedef Evaluation<> EvaluationEFP;
 
 typedef EvaluationEFP EvaluationHFM;
+
+typedef MultiEvaluation<> MultiEvaluationHFM;
 
 #endif /*HFM_EVALUATION_H_*/
 

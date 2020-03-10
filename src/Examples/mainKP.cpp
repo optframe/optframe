@@ -33,7 +33,7 @@ main(int argc, char** argv)
    Scanner scanner(new File("instance-4.txt")); // carrega arquivo no disco
    ProblemInstance p(scanner);                  // cria um problema-teste usando o arquivo carregado
    MyEvaluator ev(p);
-   ConstructiveRandom c1(p);
+   ConstructiveRandom c1(p, ev);
    NSSeqBitFlip ns1(p, rg);
    cout << "will generate solution" << endl;
    //SolutionKP s = *c1.generateSolution(10); // timelimit (10???)

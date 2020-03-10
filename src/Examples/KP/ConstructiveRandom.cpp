@@ -2,8 +2,8 @@
 
 using namespace KP;
 
-ConstructiveRandom::ConstructiveRandom(ProblemInstance& _pKP)
-  : pKP(_pKP)
+ConstructiveRandom::ConstructiveRandom(ProblemInstance& _pKP, GeneralEvaluator<ESolutionKP>& _eval)
+  : pKP(_pKP), eval(_eval)
 {
 }
 
@@ -23,5 +23,7 @@ ConstructiveRandom::initialSearch(const StopCriteria<EvaluationKP>& sosc)
    for (int i = 0; i < pKP.N; i++)
       newRep[i] = rand() % 2;
 
-   return make_optional(ESolutionKP(newRep, EvaluationKP()));
+   ESolutionKP se = ESolutionKP(newRep, EvaluationKP());
+   eval.reevaluate(se);
+   return make_optional(se);
 }

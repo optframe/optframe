@@ -428,6 +428,7 @@ public:
 
    virtual string toString() const
    {
+      assert(!outdated);
       stringstream ss;
       ss << fixed; // disable scientific notation
       ss << "Evaluation function value = " << evaluation();

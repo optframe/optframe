@@ -30,7 +30,7 @@ using namespace scannerpp;
 namespace HFM
 {
 
-class HFMMultiEvaluator: public MultiEvaluator<SolutionHFM, EvaluationHFM, ESolutionHFM>
+class HFMMultiEvaluator: public MultiEvaluator<SolutionHFM, EvaluationHFM, MultiEvaluationHFM>
 {
 	HFMEvaluator& evalEFP;
 public:
@@ -66,9 +66,9 @@ public:
 		return nev;
 	}
 
-	virtual void reevaluateMEV(MultiEvaluation<>& mev, const ESolutionHFM& se) override
+	virtual void reevaluate(pair<SolutionHFM, MultiEvaluation<>>& smev) override
 	{
-      mev = evaluate(se.first);
+      smev.second = evaluate(smev.first);
 	}
 
 	void addEvaluator(Evaluator<SolutionHFM>& ev)
@@ -107,6 +107,9 @@ protected:
 	}
 
 };
+
+static_assert(std::is_base_of<MultiEvaluator< SolutionHFM, EvaluationHFM, MultiEvaluationHFM >, HFMMultiEvaluator >::value,  "not inherited from MultiEvaluator");
+static_assert(std::is_base_of<GeneralEvaluator< pair<SolutionHFM,MultiEvaluationHFM>  >, HFMMultiEvaluator >::value,  "not inherited from GeneralEvaluator");
 
 } // namespace hfm
 

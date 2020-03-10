@@ -45,8 +45,8 @@ class PCAPInitialSolutionGreedy : public InitialSearch<ESolutionPCAP>
 {
 private:
    PCAPProblemInstance& pPCAP;
+   GeneralEvaluator<ESolutionPCAP>& eval;
    RandGen& rg;
-   // Your private vars
 
 public:
    static bool compara(pair<int, double> p1, pair<int, double> p2)
@@ -54,10 +54,8 @@ public:
       return p1.second < p2.second;
    }
 
-   PCAPInitialSolutionGreedy(PCAPProblemInstance& _pPCAP, RandGen& _rg)
-     : // If necessary, add more parameters
-     pPCAP(_pPCAP)
-     , rg(_rg)
+   PCAPInitialSolutionGreedy(PCAPProblemInstance& _pPCAP, GeneralEvaluator<ESolutionPCAP>& _eval, RandGen& _rg) : 
+      pPCAP(_pPCAP), eval(_eval), rg(_rg)
    {
    }
 
@@ -140,6 +138,7 @@ public:
 
       SolutionPCAP s1(newRep);
       pair<SolutionPCAP, EvaluationPCAP> es(s1, EvaluationPCAP());
+      eval.reevaluate(es);
       //ESolutionPCAP es = make_pair(s1, EvaluationPCAP);
       return make_optional(es);
    }

@@ -52,7 +52,8 @@ int main(int argc, char **argv)
 
 	PCAPProblemInstance p(scanner);
 	PCAPEvaluator e(p);
-	PCAPInitialSolutionGreedy is_greedy(p, rg);
+   GeneralEvaluator<ESolutionPCAP>& e2 = e;
+	PCAPInitialSolutionGreedy is_greedy(p, e2, rg);
 	//SolutionPCAP s = *is_greedy.generateSolution(100); // timelimit 100
    ESolutionPCAP se = *is_greedy.initialSearch(StopCriteria<EvaluationPCAP>(100)); // timelimit 100
 
@@ -64,7 +65,7 @@ int main(int argc, char **argv)
 
 	s.print();
 
-	e.evaluate(se).print();
+	e.evaluate(s).print();
 
 	PCAPSolCheck(p, s);
 

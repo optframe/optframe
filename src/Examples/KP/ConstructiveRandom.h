@@ -28,12 +28,11 @@ class ConstructiveRandom: public InitialSearch<ESolutionKP>
 {
 private:
    ProblemInstance& pKP;
-
-   // Your private vars
+   GeneralEvaluator<ESolutionKP>& eval;
 
 public:
 	
-	ConstructiveRandom(ProblemInstance& _pKP);
+	ConstructiveRandom(ProblemInstance& _pKP, GeneralEvaluator<ESolutionKP>& _eval);
 	
 	virtual ~ConstructiveRandom();
 

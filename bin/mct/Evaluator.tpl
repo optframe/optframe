@@ -36,6 +36,10 @@ public:
 	virtual bool isMinimization() const override;
 };
 
-}
+
+static_assert(std::is_base_of<Evaluator< Solution$project >, MyEvaluator >::value,  "not inherited from Evaluator");
+static_assert(std::is_base_of<GeneralEvaluator< ESolution$project >, MyEvaluator >::value,  "not inherited from GeneralEvaluator");
+
+} // namespace $project 
 
 #endif /*$project_EVALUATOR_H_*/
