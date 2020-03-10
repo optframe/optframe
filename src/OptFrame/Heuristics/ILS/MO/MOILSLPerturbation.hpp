@@ -34,7 +34,8 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv=Evaluation<>>
+//template<XSolution S, XEvaluation XEv=Evaluation<>>
+template<XESolution XMES, XEvaluation XMEv=MultiEvaluation<>>
 class MOILSLPerturbation: public Component, public MOILS
 {
 public:
@@ -43,7 +44,7 @@ public:
 	{
 	}
 
-	virtual void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XEv>& stopCriteria, int level) = 0;
+	virtual void perturb(XMES& smev, const StopCriteria<XMEv>& stopCriteria, int level) = 0;
 
 	virtual bool compatible(string s)
 	{
@@ -64,16 +65,19 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv=Evaluation<>, XESolution XES = pair<S, XEv>>
-class MOILSLPerturbationLPlus2: public MOILSLPerturbation<S, XEv>
+//template<XSolution S, XEvaluation XEv=Evaluation<>, XEvaluation XMEv=MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+template<XESolution XMES, XEvaluation XMEv=MultiEvaluation<>>
+class MOILSLPerturbationLPlus2: public MOILSLPerturbation<XMES, XMEv>
 {
 private:
-	vector<NS<XES, XEv>*> ns;
-	MultiEvaluator<S, XEv>& evaluator;
+	vector<NS<XMES, XMEv>*> ns;
+	//MultiEvaluator<S, XEv, XMEv, XMES>& evaluator;
+   GeneralEvaluator<XMES, XMEv>& evaluator;
 	RandGen& rg;
 
 public:
-	MOILSLPerturbationLPlus2(MultiEvaluator<S, XEv>& _e, NS<XES, XEv>& _ns, RandGen& _rg) :
+	//MOILSLPerturbationLPlus2(MultiEvaluator<S, XEv, XMEv, XMES>& _e, NS<XMES, XMEv>& _ns, RandGen& _rg) :
+   MOILSLPerturbationLPlus2(GeneralEvaluator<XMES, XMEv>& _e, NS<XMES, XMEv>& _ns, RandGen& _rg) :
 			evaluator(_e), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -83,15 +87,15 @@ public:
 	{
 	}
 
-	void add_ns(NS<XES, XEv>& _ns)
+	void add_ns(NS<XMES, XMEv>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
 
-	void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XEv>& stopCriteria, int level)
+	//void perturb(S& s, XMEv& mev, const StopCriteria<XEv>& stopCriteria, int level)
+   void perturb(XMES& smev, const StopCriteria<XMEv>& stopCriteria, int level) override
 	{
-
-      XES se = make_pair(s, Evaluation<>()); // TODO: multiev
+      //XES se = make_pair(s, Evaluation<>()); // TODO: multiev
 
 		int a = 0; // number of appliable moves
 
@@ -101,13 +105,14 @@ public:
 		{
 			int x = rg.rand(ns.size());
 
-			uptr<Move<XES, XEv>> m = ns[x]->validRandomMove(se);
+			uptr<Move<XMES, XMEv>> m = ns[x]->validRandomMove(smev);
 
 			if (m)
 			{
 				a++;
 				//Component::safe_delete(m->applyMEVUpdate(mev, s));
-            m->applyMEVUpdate(mev, se);
+            //m->applyMEVUpdate(mev, se);
+            m->applyUpdate(smev);
 			}
 			else
 				if(Component::warning)
@@ -116,18 +121,18 @@ public:
 			//delete m;
 		}
 
-		evaluator.reevaluateMEV(mev, se); // updates 'e'
+		evaluator.reevaluate(smev); // updates 'mev'
 	}
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (MOILSLPerturbation<S, XEv>::compatible(s));
+		return (s == idComponent()) || (MOILSLPerturbation<XMES, XMEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MOILSLPerturbation<S, XEv>::idComponent() << ":LPlus2";
+		ss << MOILSLPerturbation<XMES, XMEv>::idComponent() << ":LPlus2";
 		return ss.str();
 	}
 
@@ -137,17 +142,20 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv=Evaluation<>, XESolution XES = pair<S, XEv>>
-class MOILSLPerturbationLPlus2Prob: public MOILSLPerturbation<S, XEv>
+
+
+//template<XSolution S, XEvaluation XEv=Evaluation<>, XESolution XES = pair<S, XEv>>
+template<XSolution S, XEvaluation XEv=Evaluation<>, XEvaluation XMEv=MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+class MOILSLPerturbationLPlus2Prob: public MOILSLPerturbation<XMES, XMEv>
 {
 private:
-	vector<NS<XES, XEv>*> ns;
+	vector<NS<XMES, XMEv>*> ns;
 	vector<pair<int, double> > pNS;
-	MultiEvaluator<S, XEv>& evaluator;
+	MultiEvaluator<S, XEv, XMEv, XMES>& evaluator;
 	RandGen& rg;
 
 public:
-	MOILSLPerturbationLPlus2Prob(MultiEvaluator<S, XEv>& _e, NS<XES, XEv>& _ns, RandGen& _rg) :
+	MOILSLPerturbationLPlus2Prob(MultiEvaluator<S, XEv, XMEv, XMES>& _e, NS<XMES, XMEv>& _ns, RandGen& _rg) :
 			evaluator(_e), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -158,7 +166,7 @@ public:
 	{
 	}
 
-	void add_ns(NS<XES, XEv>& _ns)
+	void add_ns(NS<XMES, XMEv>& _ns)
 	{
 		ns.push_back(&_ns);
 		pNS.push_back(make_pair(1, 1));
@@ -195,7 +203,8 @@ public:
 		cout<<endl;
 	}
 
-	void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XEv>& stopCriteria, int level)
+	//void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XEv>& stopCriteria, int level) override
+   void perturb(XMES& smev, const StopCriteria<XMEv>& stopCriteria, int level) override
 	{
 		int a = 0; // number of appliable moves
 
@@ -213,12 +222,13 @@ public:
 				sum += pNS[x].second;
 			}
 
-			Move<S, XEv>* m = ns[x]->validMove(s);
+			Move<S, XEv>* m = ns[x]->validMove(smev);
 
 			if (m)
 			{
 				a++;
-				Component::safe_delete(m->applyMEVUpdateSolution(mev, s));
+				//Component::safe_delete(m->applyMEVUpdateSolution(mev, s));
+            m->applyUpdate(smev);
 			}
 			else
 				if(Component::warning)
@@ -227,13 +237,14 @@ public:
 			delete m;
 		}
 
-		evaluator.reevaluateMEV(mev, s); // updates 'e'
+		//evaluator.reevaluateMEV(mev, s); // updates 'e'
+      evaluator.reevaluate(smev); // updates 'mev'
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MOILSLPerturbation<XES, XEv>::idComponent() << ":LPlus2Prob";
+		ss << MOILSLPerturbation<XMES, XMEv>::idComponent() << ":LPlus2Prob";
 		return ss.str();
 	}
 
@@ -243,6 +254,6 @@ public:
 	}
 };
 
-}
+} // namespace optframe
 
 #endif /*OPTFRAME_MOILSLPerturbation_HPP_*/

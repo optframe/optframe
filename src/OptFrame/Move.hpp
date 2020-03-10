@@ -110,6 +110,8 @@ public:
    }
 */
 
+
+/*
    // TODO: remove and unify on a single method (just varying XEv)
    virtual uptr<Move<XES, XEv, XSH>> applyMEVUpdate(MultiEvaluation<>& mev, XES& se)
    {
@@ -123,6 +125,7 @@ public:
       // return reverse move (or null)
       return rev;
    }
+*/
 
 
    // TODO: coming in one of the next versions..

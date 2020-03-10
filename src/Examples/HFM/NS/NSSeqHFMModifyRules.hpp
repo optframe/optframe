@@ -95,8 +95,7 @@ public:
 		cout << " option " << o << " <=>  sign " << sign << "vectorType " << vectorType << " )";
 		cout << endl;
 	}
-}
-;
+};
 
 class NSIteratorHFMModifyRules: public NSIterator<ESolutionHFM>
 {
@@ -194,7 +193,10 @@ public:
 
 };
 
-class NSSeqHFMModifyRules: public NSSeq<ESolutionHFM>
+// This NSSeq can work for both Single or MultiObjective... should define space here.
+// Defaults to SingleObj
+template<XESolution hfmXES = ESolutionHFM, XEvaluation hfmXEv = EvaluationHFM>
+class NSSeqHFMModifyRules: public NSSeq<hfmXES, hfmXEv>
 {
 private:
 	HFMProblemInstance& pEFP;
@@ -235,7 +237,8 @@ public:
 	{
 	}
 
-	virtual uptr<Move<ESolutionHFM>> randomMove(const ESolutionHFM& se) override
+	//virtual uptr<Move<ESolutionHFM>> randomMove(const ESolutionHFM& se) override
+   virtual uptr<Move<hfmXES, hfmXEv>> randomMove(const hfmXES& se) override
 	{
       const RepHFM& rep = se.first.getR();
 		int vectorType = rg.rand(N_Inputs_Types);
@@ -278,18 +281,18 @@ public:
 		}
 
 		if (tries == maxTries)
-			return uptr<Move<ESolutionHFM>>(new MoveHFMModifyRule(-1, -1, -1, -1, -1)); // return a random move
+			return uptr<Move<hfmXES, hfmXEv>>(new MoveHFMModifyRule(-1, -1, -1, -1, -1)); // return a random move
 
 		int applyRand = rg.rand(vUpdateValues.size());
 		double applyValue = vUpdateValues.at(applyRand);
 		bool sign = rg.rand(2);
 
-		return uptr<Move<ESolutionHFM>>(new MoveHFMModifyRule(r, o, applyValue, sign, vectorType)); // return a random move
+		return uptr<Move<hfmXES, hfmXEv>>(new MoveHFMModifyRule(r, o, applyValue, sign, vectorType)); // return a random move
 	}
 
-	virtual uptr<NSIterator<ESolutionHFM>> getIterator(const ESolutionHFM& se) override
+	virtual uptr<NSIterator<hfmXES, hfmXEv>> getIterator(const hfmXES& se) override
 	{
-		return uptr<NSIterator<ESolutionHFM>>(new NSIteratorHFMModifyRules(se.first.getR(), pEFP, vUpdateValues)); // return an iterator to the neighbors of 'rep'
+		return uptr<NSIterator<hfmXES, hfmXEv>>(new NSIteratorHFMModifyRules(se.first.getR(), pEFP, vUpdateValues)); // return an iterator to the neighbors of 'rep'
 	}
 
 	virtual string toString() const override

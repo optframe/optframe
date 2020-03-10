@@ -37,7 +37,7 @@ namespace optframe
 
 // MultiEvaluator is not a REAL evaluator... a bunch/pack of evaluators... TODO: unify
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>, XSearch<XMES> XSH = XMES> //, XSearch<XES> XSH = MultiESolution<XES> > 
+template<XSolution S, XEvaluation XEv, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>, XSearch<XMES> XSH = XMES> //, XSearch<XES> XSH = MultiESolution<XES> > 
 class MultiEvaluator: public MultiDirection, public GeneralEvaluator<XMES, XMEv, XSH> 
 {
    //XESolution XES = pair<S, XMEv>,
@@ -385,6 +385,6 @@ public:
 
 };
 
-}
+} // namespace optframe
 
 #endif /*OPTFRAME_MULTI_EVALUATOR_HPP_*/

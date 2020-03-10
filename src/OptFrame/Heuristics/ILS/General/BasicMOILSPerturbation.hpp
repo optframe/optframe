@@ -36,18 +36,21 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv=Evaluation<>, XESolution XES = pair<S, XEv>>
+//template<XSolution S, XEvaluation XEv=Evaluation<>, XESolution XES = pair<S, XEv>>
+template<XESolution XMES, XEvaluation XMEv=MultiEvaluation<>>
 class BasicMOILSPerturbation: public MOILS, public Component
 {
 private:
-	MultiEvaluator<S, XEv>& mEval;
+	//MultiEvaluator<S, XEv>& mEval;
+   GeneralEvaluator<XMES, XMEv>& mEval;
 	int pMin;
 	int pMax;
-	vector<NS<XES, XEv>*> ns;
+	vector<NS<XMES, XMEv>*> ns;
 	RandGen& rg;
 
 public:
-	BasicMOILSPerturbation(MultiEvaluator<S, XEv>& _mEval, int _pMin, int _pMax, vector<NS<XES, XEv>*>& _ns, RandGen& _rg) :
+	//BasicMOILSPerturbation(MultiEvaluator<S, XEv>& _mEval, int _pMin, int _pMax, vector<NS<XES, XEv>*>& _ns, RandGen& _rg) :
+   BasicMOILSPerturbation(GeneralEvaluator<XMES, XMEv>& _mEval, int _pMin, int _pMax, vector<NS<XMES, XMEv>*>& _ns, RandGen& _rg) :
 		mEval(_mEval), pMin(_pMin), pMax(_pMax), ns(_ns), rg(_rg)
 	{
 		if(pMax < pMin)
@@ -62,7 +65,8 @@ public:
 			cout << "BasicMOILSPerturbation warning: empty neighborhood list." << endl;
 	}
 
-	BasicMOILSPerturbation(MultiEvaluator<S, XEv>& _mEval, int _pMin, int _pMax, NS<XES, XEv>& _ns, RandGen& _rg) :
+	//BasicMOILSPerturbation(MultiEvaluator<S, XEv>& _mEval, int _pMin, int _pMax, NS<XES, XEv>& _ns, RandGen& _rg) :
+   BasicMOILSPerturbation(GeneralEvaluator<XMES, XMEv>& _mEval, int _pMin, int _pMax, NS<XMES, XMEv>& _ns, RandGen& _rg) :
 		mEval(_mEval), pMin(_pMin), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -83,20 +87,22 @@ public:
 	{
 	}
 
-	void add_ns(NS<XES, XEv>& _ns)
+	void add_ns(NS<XMES, XMEv>& _ns)
 	{
 		ns.push_back(&_ns);
 	}
 
-	void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XEv>& stopCriteria)
+	//void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XEv>& stopCriteria)
+   void perturb(XMES& smev, const StopCriteria<XMEv>& stopCriteria) override
 	{
-      XES se = make_pair(s, Evaluation<>());
+      //XES se = make_pair(s, Evaluation<>());
       //
 		for (int i = pMin; i < pMax; i++)
 		{
 			int nk = rand() % ns.size();
 
-			Move<S, XEv>* mp = ns[nk]->validRandomMove(se);
+			//Move<S, XEv>* mp = ns[nk]->validRandomMove(se);
+         Move<XMES, XMEv>* mp = ns[nk]->validRandomMove(smev);
 
 			if (!mp)
 			{
@@ -105,13 +111,15 @@ public:
 			}
 			else
 			{
-				Move<XES, XEv>& m = *mp;
-				Component::safe_delete(m.applyMEVUpdate(mev, se));
+				Move<XMES, XMEv>& m = *mp;
+				//Component::safe_delete(m.applyMEVUpdate(mev, se));
+            m.applyUpdate(smev));
 				delete &m;
 			}
 		}
 
-		mEval.reevaluateMEV(mev, se); // updates 'e'
+		//mEval.reevaluateMEV(mev, se); // updates 'e'
+      mEval.reevaluate(smev); // updates 'e'
 	}
 
 	virtual string id() const

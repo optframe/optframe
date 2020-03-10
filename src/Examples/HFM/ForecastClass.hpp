@@ -72,9 +72,14 @@ private:
    vector<vector<double>> vBlindResults;
    vector<pair<SolutionHFM, Evaluation<>>*> vFinalSol;
 
-   ILSLPerturbationLPlus2<ESolutionHFM>* ilsPert;
-   MOILSLPerturbationLPlus2<SolutionHFM>* moILSPert;
-   BasicMOILSPerturbation<SolutionHFM>* basicMOILSPert;
+   ILSLPerturbationLPlus2<ESolutionHFM, EvaluationHFM>* ilsPert;
+   //
+   // MO versions
+   //MOILSLPerturbationLPlus2<SolutionHFM>* moILSPert;
+   MOILSLPerturbationLPlus2<EMSolutionHFM, MultiEvaluationHFM>* moILSPert;
+   //BasicMOILSPerturbation<SolutionHFM>* basicMOILSPert;
+   BasicMOILSPerturbation<EMSolutionHFM, MultiEvaluationHFM>* basicMOILSPert;
+
    //OptimalLinearRegression* olr;
    //	MultiEvaluator<RepEFP>* mev;
    HFMMultiEvaluator* mev;
@@ -91,7 +96,10 @@ public:
       p = new HFMProblemInstance(tForecastings);
       eval = new HFMEvaluator(*p, problemParam, methodParam.getEvalFOMinimizer(), methodParam.getEvalAprox());
 
-      NSSeqHFMModifyRules* nsModifyFuzzyRules = new NSSeqHFMModifyRules(*p, rg);
+      //NSSeqHFMModifyRules* nsModifyFuzzyRules = new NSSeqHFMModifyRules(*p, rg);
+      NSSeqHFMModifyRules<>* nsModifyFuzzyRulesSO = new NSSeqHFMModifyRules<>(*p, rg);
+      NSSeqHFMModifyRules<EMSolutionHFM, MultiEvaluationHFM>* nsModifyFuzzyRulesMO = new NSSeqHFMModifyRules<EMSolutionHFM, MultiEvaluationHFM>(*p, rg);
+
       NSSeqHFMChangeSingleInput* nsChangeSingleInput = new NSSeqHFMChangeSingleInput(*p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
       NSSeqHFMRemoveSingleInput* nsRemoveSingleInput = new NSSeqHFMRemoveSingleInput(rg);
       NSSeqNEIGHAddSingleInput* nsAddSingleInput = new NSSeqNEIGHAddSingleInput(*p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
@@ -131,7 +139,10 @@ public:
       //		vnd->setVerbose();
 
       //		ilsPert = new ILSLPerturbationLPlus2<RepEFP,OPTFRAME_DEFAULT_ADS>(*eval, 50, *nsModifyFuzzyRules, rg); //TODO check why 50 was removed
-      ilsPert = new ILSLPerturbationLPlus2<ESolutionHFM>(*eval, *nsModifyFuzzyRules, rg);
+      
+      
+      //ilsPert = new ILSLPerturbationLPlus2<ESolutionHFM>(*eval, *nsModifyFuzzyRules, rg);
+      ilsPert = new ILSLPerturbationLPlus2<ESolutionHFM>(*eval, *nsModifyFuzzyRulesSO, rg);
       //		ilsPert->add_ns(*nsChangeSingleInput);
       //		nsVAlpha
 
@@ -155,7 +166,7 @@ public:
 
       //olr = new OptimalLinearRegression(*eval, *p);
       vNSeq = new vector<NSSeq<ESolutionHFM>*>;
-      vNSeq->push_back(nsModifyFuzzyRules);
+      vNSeq->push_back(nsModifyFuzzyRulesSO);
       vNSeq->push_back(nsChangeSingleInput);
       vNSeq->push_back(nsRemoveSingleInput);
       vNSeq->push_back(nsAddSingleInput);
@@ -176,7 +187,7 @@ public:
       double mutationRate = 0.1;
       int selectionType = 1;
       vector<NS<ESolutionHFM>*> vNSSeqForNGES;
-      vNSSeqForNGES.push_back(nsModifyFuzzyRules);
+      vNSSeqForNGES.push_back(nsModifyFuzzyRulesSO);
       vNSSeqForNGES.push_back(nsChangeSingleInput);
       vNSSeqForNGES.push_back(nsRemoveSingleInput);
       vNSSeqForNGES.push_back(nsAddSingleInput);
@@ -196,17 +207,18 @@ public:
       ////		v_e.push_back(new EFPEvaluator(*p, problemParam, MMAPE_INDEX, 0));
       //		mev = new MultiEvaluator<RepEFP>(v_e);
       mev = new HFMMultiEvaluator(*eval);
-      moILSPert = new MOILSLPerturbationLPlus2<SolutionHFM>(*mev, *nsModifyFuzzyRules, rg);
+      GeneralEvaluator<EMSolutionHFM, MultiEvaluationHFM>* gmev = mev;
+      moILSPert = new MOILSLPerturbationLPlus2<EMSolutionHFM, MultiEvaluationHFM>(*gmev, *nsModifyFuzzyRulesMO, rg);
       //		moILSPert->add_ns(*nsChangeSingleInput);
 
-      basicMOILSPert = new BasicMOILSPerturbation<SolutionHFM>(*mev, 2, 10, *nsModifyFuzzyRules, rg);
+      basicMOILSPert = new BasicMOILSPerturbation<EMSolutionHFM, MultiEvaluationHFM>(*gmev, 2, 10, *nsModifyFuzzyRulesMO, rg);
       //		basicMOILSPert->add_ns(*nsChangeSingleInput);
 
       //Trying to checkmodule
       checkModule.add(*c);
       checkModule.add(*eval);
 
-      checkModule.add(*nsModifyFuzzyRules);
+      checkModule.add(*nsModifyFuzzyRulesSO);
       checkModule.add(*nsRemoveSingleInput);
       checkModule.add(*nsChangeSingleInput);
       checkModule.add(*nsAddSingleInput); //This move has dynamic components - Thus SimpleCost does not work properly

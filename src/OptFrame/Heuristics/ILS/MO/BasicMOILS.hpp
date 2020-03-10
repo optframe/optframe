@@ -33,7 +33,8 @@ namespace optframe
 typedef int BasicHistory;
 
 template<XSolution S, XEvaluation XEv=Evaluation<>>
-class BasicMOILS: public MultiObjILS<BasicHistory, S, XEv>
+//template<XESolution XMES, XEvaluation XMEv=MultiEvaluation<>>
+class BasicMOILS: public MultiObjILS<BasicHistory, XMES, XMEv>
 {
 
 private:

@@ -25,6 +25,7 @@ struct esParameters
 	vector<double> vIndexAlphasParams;
 };
 
+// Single Objective Search
 class EFPESContinous: public ESContinous<RepHFM, OPTFRAME_DEFAULT_ADS, esParameters, SolutionHFM, EvaluationHFM, ESolutionHFM>
 {
 private:
