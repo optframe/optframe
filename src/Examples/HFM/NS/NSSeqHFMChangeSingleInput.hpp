@@ -161,7 +161,9 @@ public:
 
 };
 
-class NSSeqHFMChangeSingleInput: public NSSeq<ESolutionHFM>
+template<XESolution hfmXES = ESolutionHFM, XEvaluation hfmXEv = EvaluationHFM>
+//class NSSeqHFMChangeSingleInput: public NSSeq<ESolutionHFM>
+class NSSeqHFMChangeSingleInput: public NSSeq<hfmXES, hfmXEv>
 {
 private:
 	HFMProblemInstance& pEFP;
@@ -179,7 +181,7 @@ public:
 	{
 	}
 
-	virtual uptr<Move<ESolutionHFM>> randomMove(const ESolutionHFM& se) override
+	virtual uptr<Move<hfmXES, hfmXEv>> randomMove(const hfmXES& se) override
 	{
       const RepHFM& rep = se.first.getR();
 		int MAXCHANGE = 5;
@@ -188,7 +190,7 @@ public:
 		if (rep.singleIndex.size() > 0)
 			rule = rg.rand(rep.singleIndex.size());
 		else
-			return uptr<Move<ESolutionHFM>>(new MoveHFMChangeSingleInput(-1, -1, -1, -1, -1));
+			return uptr<Move<hfmXES, hfmXEv>>(new MoveHFMChangeSingleInput(-1, -1, -1, -1, -1));
 
 		int sign = rg.rand(2);
 
@@ -196,12 +198,12 @@ public:
 		int maxLag = vMaxLag[expVariable];
 		int maxUpperLag = vMaxUpperLag[expVariable];
 
-		return uptr<Move<ESolutionHFM>>(new MoveHFMChangeSingleInput(rule, sign, maxLag, maxUpperLag, X)); // return a random move
+		return uptr<Move<hfmXES, hfmXEv>>(new MoveHFMChangeSingleInput(rule, sign, maxLag, maxUpperLag, X)); // return a random move
 	}
 
-	virtual uptr<NSIterator<ESolutionHFM>> getIterator(const ESolutionHFM& se) override
+	virtual uptr<NSIterator<hfmXES, hfmXEv>> getIterator(const hfmXES& se) override
 	{
-		return uptr<NSIterator<ESolutionHFM>>(new NSIteratorHFMChangeSingleInput(se.first.getR(), vMaxLag, vMaxUpperLag)); // return an iterator to the neighbors of 'rep'
+		return uptr<NSIterator<hfmXES, hfmXEv>>(new NSIteratorHFMChangeSingleInput(se.first.getR(), vMaxLag, vMaxUpperLag)); // return an iterator to the neighbors of 'rep'
 	}
 
 	virtual string toString() const override

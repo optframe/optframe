@@ -140,8 +140,10 @@ public:
 		searchWithOptionalPareto(stopCriteria,&_pf);
 	}
 
-	virtual void moSearchFrom(Pareto<S, XMEv>& p, S& s, XMEv& sMev, paretoManager<S, XMEv>& pManager, const StopCriteria<XMEv>& stopCriteria) override
+	virtual void moSearchFrom(Pareto<S, XMEv>& p, XMES& se, paretoManager<S, XMEv>& pManager, const StopCriteria<XMEv>& stopCriteria) override
 	{
+      S& s = se.first;
+      XMEv& sMev = se.second;
 		Pareto<S, XMEv> _pf;
 		pManager.addSolutionWithMEV(_pf,s,sMev);
 		searchWithOptionalPareto(stopCriteria,&_pf);

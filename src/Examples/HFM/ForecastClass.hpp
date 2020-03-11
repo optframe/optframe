@@ -62,6 +62,7 @@ private:
 
    EmptyLocalSearch<ESolutionHFM> emptyLS;
    vector<NSSeq<ESolutionHFM>*>* vNSeq;
+   vector<NSSeq<EMSolutionHFM, MultiEvaluationHFM>*>* vNSeqMO;
 
    //	EFPESContinous* EsCOpt;
    NGES<SolutionHFM>* es;
@@ -100,12 +101,18 @@ public:
       eval = new HFMEvaluator(*p, problemParam, methodParam.getEvalFOMinimizer(), methodParam.getEvalAprox());
 
       //NSSeqHFMModifyRules* nsModifyFuzzyRules = new NSSeqHFMModifyRules(*p, rg);
-      NSSeqHFMModifyRules<>* nsModifyFuzzyRulesSO = new NSSeqHFMModifyRules<>(*p, rg);
-      NSSeqHFMModifyRules<EMSolutionHFM, MultiEvaluationHFM>* nsModifyFuzzyRulesMO = new NSSeqHFMModifyRules<EMSolutionHFM, MultiEvaluationHFM>(*p, rg);
+      auto nsModifyFuzzyRulesSO = new NSSeqHFMModifyRules<>(*p, rg);
+      auto nsModifyFuzzyRulesMO = new NSSeqHFMModifyRules<EMSolutionHFM, MultiEvaluationHFM>(*p, rg);
 
-      NSSeqHFMChangeSingleInput* nsChangeSingleInput = new NSSeqHFMChangeSingleInput(*p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
-      NSSeqHFMRemoveSingleInput* nsRemoveSingleInput = new NSSeqHFMRemoveSingleInput(rg);
-      NSSeqNEIGHAddSingleInput* nsAddSingleInput = new NSSeqNEIGHAddSingleInput(*p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
+      auto nsChangeSingleInput = new NSSeqHFMChangeSingleInput<>(*p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
+      auto nsChangeSingleInputMO = new NSSeqHFMChangeSingleInput<EMSolutionHFM, MultiEvaluationHFM>(*p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
+      
+      auto nsRemoveSingleInput = new NSSeqHFMRemoveSingleInput<>(rg);
+      auto nsRemoveSingleInputMO = new NSSeqHFMRemoveSingleInput<EMSolutionHFM, MultiEvaluationHFM>(rg);
+      
+      auto nsAddSingleInput = new NSSeqNEIGHAddSingleInput<>(*p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
+      auto nsAddSingleInputMO = new NSSeqNEIGHAddSingleInput<EMSolutionHFM, MultiEvaluationHFM>(*p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
+      //
       //		NSSeqNEIGHVAlpha* nsVAlpha = new NSSeqNEIGHVAlpha(*p, rg, 5);
 
       //		NSSeqNEIGHAddX* nsAddMean01 = new NSSeqNEIGHAddX(*p, rg, 0.1);
@@ -179,6 +186,14 @@ public:
       vNSeq->push_back(nsChangeSingleInput);
       vNSeq->push_back(nsRemoveSingleInput);
       vNSeq->push_back(nsAddSingleInput);
+      //
+      vNSeqMO = new vector<NSSeq<EMSolutionHFM, MultiEvaluationHFM>*>;
+      vNSeqMO->push_back(nsModifyFuzzyRulesMO);
+      vNSeqMO->push_back(nsChangeSingleInputMO);
+      vNSeqMO->push_back(nsRemoveSingleInputMO);
+      vNSeqMO->push_back(nsAddSingleInputMO);
+
+
       //		vNSeq.push_back(nsVAlpha);
       //		vNSeq.push_back(nsAddMean01);
       //		vNSeq.push_back(nsAddMean1);
@@ -314,10 +329,10 @@ public:
       GeneralEvaluator<EMSolutionHFM, MultiEvaluationHFM>* gmev = mev;
       BasicInitialPareto<SolutionHFM, MultiEvaluationHFM> grIP(*cm, *gmev);
       int maxTriesRI = 100;
-      MORandomImprovement<SolutionHFM> moriMFR(*mev, *vNSeq->at(0), maxTriesRI);
-      MORandomImprovement<SolutionHFM> moriCSI(*mev, *vNSeq->at(1), maxTriesRI);
-      MORandomImprovement<SolutionHFM> moriRSI(*mev, *vNSeq->at(2), maxTriesRI);
-      MORandomImprovement<SolutionHFM> moriASI(*mev, *vNSeq->at(3), maxTriesRI);
+      MORandomImprovement<SolutionHFM> moriMFR(*gmev, *vNSeqMO->at(0), maxTriesRI);
+      MORandomImprovement<SolutionHFM> moriCSI(*gmev, *vNSeqMO->at(1), maxTriesRI);
+      MORandomImprovement<SolutionHFM> moriRSI(*gmev, *vNSeqMO->at(2), maxTriesRI);
+      MORandomImprovement<SolutionHFM> moriASI(*gmev, *vNSeqMO->at(3), maxTriesRI);
 
       vector<MOLocalSearch<SolutionHFM>*> vMOLS;
       vMOLS.push_back(&moriMFR);
@@ -327,7 +342,7 @@ public:
 
       GeneralParetoLocalSearch<SolutionHFM> generalPLS(*mev, grIP, initial_population_size, vMOLS);
 
-      BasicMOILS<SolutionHFM> basicMOILS(*mev, grIP, initial_population_size, &moriASI, rg, *basicMOILSPert, 100);
+      BasicMOILS<SolutionHFM> basicMOILS(*gmev, grIP, initial_population_size, &moriASI, rg, *basicMOILSPert, 100);
       
       // for testing OptFrame v4
       //BasicGeneralILS<SolutionHFM> basicGeneralILS(*mev, grIP, initial_population_size, &moriASI, rg, *basicMOILSPert, 100);
@@ -337,7 +352,7 @@ public:
       MOILSLevels<SolutionHFM> moILSLevels(*mev, grIP, initial_population_size, &moriASI, rg, *moILSPert, moIlsIterMax, moIlslevelMax);
       //		moILSLevels.setMessageLevel(3);
 
-      StopCriteria<EvaluationHFM> moStopCriteriaGPLS;
+      StopCriteria<MultiEvaluationHFM> moStopCriteriaGPLS;
       moStopCriteriaGPLS.timelimit = timeGPLS;
       if (_pf == nullptr) {
          delete pf;

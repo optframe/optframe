@@ -56,7 +56,7 @@ public:
 	virtual void moSearchFrom(Pareto<S, XMEv>& p, S& s, paretoManager<S, XMEv>& pManager, const StopCriteria<XMEv>& stopCriteria) = 0;
 
 	// 2
-	virtual void moSearchFrom(Pareto<S, XMEv>& p, S& s, XMEv& mev, paretoManager<S, XMEv>& pManager, const StopCriteria<XMEv>& stopCriteria) =0;
+	virtual void moSearchFrom(Pareto<S, XMEv>& p, XMES& smev, paretoManager<S, XMEv>& pManager, const StopCriteria<XMEv>& stopCriteria) =0;
 
 	virtual bool compatible(string s)
 	{

@@ -171,7 +171,9 @@ public:
    }
 };
 
-class NSSeqNEIGHAddSingleInput : public NSSeq<ESolutionHFM>
+template<XESolution hfmXES = ESolutionHFM, XEvaluation hfmXEv = EvaluationHFM>
+//class NSSeqNEIGHAddSingleInput : public NSSeq<ESolutionHFM>
+class NSSeqNEIGHAddSingleInput : public NSSeq<hfmXES, hfmXEv>
 {
 private:
    HFMProblemInstance& pEFP;
@@ -192,7 +194,7 @@ public:
    {
    }
 
-   virtual uptr<Move<ESolutionHFM>> randomMove(const ESolutionHFM& se) override
+   virtual uptr<Move<hfmXES, hfmXEv>> randomMove(const hfmXES& se) override
    {
       //const RepHFM& rep = s.getR();
       //TODO - Check the possibility of add negative K values
@@ -219,12 +221,12 @@ public:
 
       vector<double> rulesAndWeights =
         { greater, greaterWeight, lower, lowerWeight, epsilon, fuzzyFunction };
-      return uptr<Move<ESolutionHFM>>(new MoveNEIGHAddSingleInput(nEXV, K, rulesAndWeights, false)); // return a random move
+      return uptr<Move<hfmXES, hfmXEv>>(new MoveNEIGHAddSingleInput(nEXV, K, rulesAndWeights, false)); // return a random move
    }
 
-   virtual uptr<NSIterator<ESolutionHFM>> getIterator(const ESolutionHFM& se) override
+   virtual uptr<NSIterator<hfmXES, hfmXEv>> getIterator(const hfmXES& se) override
    {
-      return uptr<NSIterator<ESolutionHFM>> (new NSIteratorNEIGHAddSingleInput(se.first.getR(), vMaxLag, vMaxUpperLag, pEFP, rg)); // return an iterator to the neighbors of 'rep'
+      return uptr<NSIterator<hfmXES, hfmXEv>> (new NSIteratorNEIGHAddSingleInput(se.first.getR(), vMaxLag, vMaxUpperLag, pEFP, rg)); // return an iterator to the neighbors of 'rep'
    }
 
    virtual string toString() const override

@@ -158,7 +158,9 @@ public:
 
 };
 
-class NSSeqHFMRemoveSingleInput: public NSSeq<ESolutionHFM>
+template<XESolution hfmXES = ESolutionHFM, XEvaluation hfmXEv = EvaluationHFM>
+//class NSSeqHFMRemoveSingleInput: public NSSeq<ESolutionHFM>
+class NSSeqHFMRemoveSingleInput: public NSSeq<hfmXES, hfmXEv>
 {
 private:
 	RandGen& rg;
@@ -175,7 +177,7 @@ public:
 	{
 	}
 
-	virtual uptr<Move<ESolutionHFM>> randomMove(const ESolutionHFM& se)
+	virtual uptr<Move<hfmXES, hfmXEv>> randomMove(const hfmXES& se)
 	{
       const RepHFM& rep = se.first.getR();
 		int rule = -1;
@@ -185,13 +187,13 @@ public:
 		pair<int, int> tempSingleIndexOld;
 		vector<double> tempSingleFuzzyRSOld;
 
-		return uptr<Move<ESolutionHFM>>(new MoveHFMRemoveSingleInput(rule, false, tempSingleIndexOld, tempSingleFuzzyRSOld)); // return a random move
+		return uptr<Move<hfmXES, hfmXEv>>(new MoveHFMRemoveSingleInput(rule, false, tempSingleIndexOld, tempSingleFuzzyRSOld)); // return a random move
 	}
 
-	virtual uptr<NSIterator<ESolutionHFM>> getIterator(const ESolutionHFM& se) override
+	virtual uptr<NSIterator<hfmXES, hfmXEv>> getIterator(const hfmXES& se) override
 	{
       const RepHFM& rep = se.first.getR();
-		return uptr<NSIterator<ESolutionHFM>>(new NSIteratorHFMRemoveSingleInput(rep)); // return an iterator to the neighbors of 'rep'
+		return uptr<NSIterator<hfmXES, hfmXEv>>(new NSIteratorHFMRemoveSingleInput(rep)); // return an iterator to the neighbors of 'rep'
 	}
 
 	virtual string toString() const override
