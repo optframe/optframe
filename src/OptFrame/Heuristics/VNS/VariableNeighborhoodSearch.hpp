@@ -42,13 +42,13 @@ class VariableNeighborhoodSearch: public VNS, public SingleObjSearch<XES>
 {
 protected:
 	GeneralEvaluator<XES, XEv>& evaluator;
-	InitialSearch<XES>& constructive;
+	InitialSearch<XES, XEv>& constructive;
 	vector<NS<XES, XEv, XSH>*> vshake;
 	vector<NSSeq<XES, XEv, XSH>*> vsearch;
 
 public:
 
-	VariableNeighborhoodSearch(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, vector<NS<XES, XEv>*> _vNS, vector<NSSeq<XES, XEv, XSH>*> _vNSSeq) :
+	VariableNeighborhoodSearch(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive, vector<NS<XES, XEv>*> _vNS, vector<NSSeq<XES, XEv, XSH>*> _vNSSeq) :
 		evaluator(_evaluator), constructive(_constructive), vshake(_vNS), vsearch(_vNSSeq)
 	{
 	}

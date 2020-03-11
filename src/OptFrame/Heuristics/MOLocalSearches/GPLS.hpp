@@ -34,7 +34,7 @@
 #include "../../InitialPareto.hpp"
 
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+template<XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
 struct gplsStructure
 {
 	vector<vector<bool> > nsParetoOptimum;
@@ -45,18 +45,19 @@ struct gplsStructure
 	}
 };
 
-template<XSolution S, XEvaluation XEv=Evaluation<>>
-class paretoManagerGPLS: public paretoManager<S, XEv>
+template<XSolution S, XEvaluation XMEv=MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+class paretoManagerGPLS: public paretoManager<S, XMEv>
 {
 private:
 	int r;
 
 public:
-	gplsStructure<S, XEv> gplsData;
-//	Pareto<S, XEv> x_e; //TODO -- possibility of embedding Pareto here
+	gplsStructure<S, XMEv> gplsData;
+//	Pareto<S, XMEv> x_e; //TODO -- possibility of embedding Pareto here
 
-	paretoManagerGPLS(MultiEvaluator<S, XEv>& _mev, int _r) :
-			paretoManager<S, XEv>(_mev), r(_r)
+	//paretoManagerGPLS(MultiEvaluator<S, XEv>& _mev, int _r) :
+   paretoManagerGPLS(GeneralEvaluator<XMES, XMEv>& _mev, int _r) :
+			paretoManager<S, XMEv>(_mev), r(_r)
 	{
 
 	}
@@ -66,17 +67,17 @@ public:
 	}
 
 	//Special addSolution used in the GPLS speedUp
-	virtual bool addSolutionWithMEV(Pareto<S, XEv>& p, const S& candidate, const MultiEvaluation<>& candidateMev)
+	virtual bool addSolutionWithMEV(Pareto<S, XMEv>& p, const S& candidate, const MultiEvaluation<>& candidateMev)
 	{
 		bool added = true;
 		for (unsigned ind = 0; ind < p.size(); ind++)
 		{
 			const MultiEvaluation<>& popIndFitness = p.getIndMultiEvaluation(ind);
 
-			if (paretoManager<S, XEv>::domWeak.dominates(popIndFitness, candidateMev))
+			if (paretoManager<S, XMEv>::domWeak.dominates(popIndFitness, candidateMev))
 				return false;
 
-			if (paretoManager<S, XEv>::dom.dominates(candidateMev, popIndFitness))
+			if (paretoManager<S, XMEv>::dom.dominates(candidateMev, popIndFitness))
 			{
 				p.erase(ind);
 				gplsData.nsParetoOptimum.erase(gplsData.nsParetoOptimum.begin() + ind);
@@ -110,19 +111,20 @@ public:
 
 //GPLS is a kind of Multi-Objective version of the VND
 //However, it is designed in an efficient manner for iteratively exploring the obtained non-dominated solution
-template<XSolution S, XEvaluation XEv=Evaluation<>>
-class GeneralParetoLocalSearch: public MOLocalSearch<S, XEv>
+template<XSolution S, XEvaluation XMEv=MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+class GeneralParetoLocalSearch: public MOLocalSearch<S, XMEv>
 {
 private:
-	InitialPareto<S, XEv>& init_pareto;
+	InitialPareto<S, XMEv>& init_pareto;
 	int init_pop_size;
-	vector<MOLocalSearch<S, XEv>*> vLS;
-	paretoManagerGPLS<S, XEv> pMan2PPLS;
+	vector<MOLocalSearch<S, XMEv>*> vLS;
+	paretoManagerGPLS<S, XMEv> pMan2PPLS;
 
 public:
 
-	GeneralParetoLocalSearch(MultiEvaluator<S, XEv>& _mev, InitialPareto<S, XEv>& _init_pareto, int _init_pop_size, vector<MOLocalSearch<S, XEv>*> _vLS) :
-			init_pareto(_init_pareto), init_pop_size(_init_pop_size), vLS(_vLS), pMan2PPLS(paretoManagerGPLS<S, XEv>(_mev, _vLS.size()))
+	//GeneralParetoLocalSearch(MultiEvaluator<S, XEv>& _mev, InitialPareto<S, XMEv>& _init_pareto, int _init_pop_size, vector<MOLocalSearch<S, XEv>*> _vLS) :
+   GeneralParetoLocalSearch(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<S, XMEv>& _init_pareto, int _init_pop_size, vector<MOLocalSearch<S, XMEv>*> _vLS) :
+			init_pareto(_init_pareto), init_pop_size(_init_pop_size), vLS(_vLS), pMan2PPLS(paretoManagerGPLS<S, XMEv>(_mev, _vLS.size()))
 	{
 
 	}
@@ -131,29 +133,29 @@ public:
 	{
 	}
 
-	virtual void moSearchFrom(Pareto<S, XEv>& p, S& s, paretoManager<S, XEv>& pManager, const StopCriteria<XEv>& stopCriteria) override
+	virtual void moSearchFrom(Pareto<S, XMEv>& p, S& s, paretoManager<S, XMEv>& pManager, const StopCriteria<XMEv>& stopCriteria) override
 	{
-		Pareto<S, XEv> _pf;
+		Pareto<S, XMEv> _pf;
 		pManager.addSolution(_pf,s);
 		searchWithOptionalPareto(stopCriteria,&_pf);
 	}
 
-	virtual void moSearchFrom(Pareto<S, XEv>& p, S& s, MultiEvaluation<>& sMev, paretoManager<S, XEv>& pManager, const StopCriteria<XEv>& stopCriteria) override
+	virtual void moSearchFrom(Pareto<S, XMEv>& p, S& s, XMEv& sMev, paretoManager<S, XMEv>& pManager, const StopCriteria<XMEv>& stopCriteria) override
 	{
-		Pareto<S, XEv> _pf;
+		Pareto<S, XMEv> _pf;
 		pManager.addSolutionWithMEV(_pf,s,sMev);
 		searchWithOptionalPareto(stopCriteria,&_pf);
 	}
 
-	virtual Pareto<S, XEv>* searchWithOptionalPareto(const StopCriteria<XEv>& stopCriteria, Pareto<S, XEv>* _pf = nullptr)
+	virtual Pareto<S, XMEv>* searchWithOptionalPareto(const StopCriteria<XMEv>& stopCriteria, Pareto<S, XMEv>* _pf = nullptr)
 	{
 		Timer tnow;
 
 		cout << "exec: General 2PPLS (tL:" << stopCriteria.timelimit << ")" << endl;
 		int r = vLS.size();
 
-		gplsStructure<S, XEv> gPLSData;
-		Pareto<S, XEv> x_e;
+		gplsStructure<S, XMEv> gPLSData;
+		Pareto<S, XMEv> x_e;
 
 		if (_pf == nullptr)
 		{
@@ -177,7 +179,7 @@ public:
 		//TODO - create a new method that does not copy
 		//instead, it updated p during loop and do not perform neighborhood search in individuals that were dominated
 		//copy x_e to p
-		Pareto<S, XEv> p = x_e;
+		Pareto<S, XMEv> p = x_e;
 
 		//Initializing data structures -- Pareto Optimum and NewSol (guides aux population p_a)
 		for (int i = 0; i < (int) x_e.size(); i++)
@@ -208,7 +210,7 @@ public:
 			}
 
 			//Run local search for each individual of the population - Pareto Manager, pMan2PPLS, updates population
-			StopCriteria<XEv> stopCriteriaLS;
+			StopCriteria<XMEv> stopCriteriaLS;
 			stopCriteriaLS.timelimit = stopCriteria.timelimit;
 
 			for (int ind = 0; ind < (int) p.size(); ind++)
@@ -270,7 +272,7 @@ public:
 			cout << "\t k = " << k << endl;
 		}
 
-		Pareto<S, XEv>* pReturn = new Pareto<S, XEv>(std::move(x_e));
+		Pareto<S, XMEv>* pReturn = new Pareto<S, XMEv>(std::move(x_e));
 		p.clear();
 
 		//checking possible dominance problems -- TODO - Remove for a faster code

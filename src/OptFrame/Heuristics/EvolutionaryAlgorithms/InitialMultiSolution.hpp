@@ -123,7 +123,7 @@ public:
 	{
 		vector<pair<string, string> > params;
 		//params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
+      params.push_back(make_pair(InitialSearch<XES, XEv>::idComponent(), "constructive heuristic"));
 		return params;
 	}
 

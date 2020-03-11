@@ -37,11 +37,11 @@ class SimpleLocalSearch : public SingleObjSearch<XES>
 {
 protected:
    Evaluator<XES, XEv>& evaluator;
-   InitialSearch<XES>& constructive;
+   InitialSearch<XES, XEv>& constructive;
    LocalSearch<XES, XEv>& localSearch;
 
 public:
-   SimpleLocalSearch(Evaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, LocalSearch<XES, XEv>& _localSearch)
+   SimpleLocalSearch(Evaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive, LocalSearch<XES, XEv>& _localSearch)
      : evaluator(_evaluator)
      , constructive(_constructive)
      , localSearch(_localSearch)
@@ -117,7 +117,7 @@ public:
       hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
       //Constructive<S>* constructive;
-      InitialSearch<XES>* constructive;
+      InitialSearch<XES, XEv>* constructive;
       hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
       string rest = scanner.rest();
@@ -137,7 +137,7 @@ public:
       vector<pair<string, string>> params;
       params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
       //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-      params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
+      params.push_back(make_pair(InitialSearch<XES, XEv>::idComponent(), "constructive heuristic"));
       params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
 
       return params;

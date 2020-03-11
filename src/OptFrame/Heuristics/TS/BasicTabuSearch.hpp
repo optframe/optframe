@@ -35,14 +35,14 @@ class BasicTabuSearch: public SingleObjSearch<XES>, public TS
 {
 private:
 	Evaluator<XES, XEv>& evaluator;
-	InitialSearch<XES>& constructive;
+	InitialSearch<XES, XEv>& constructive;
 	NSSeq<XES, XEv, XSH>& nsSeq;
 	int tlSize;
 	int tsMax;
 
 public:
 
-	BasicTabuSearch(Evaluator<XES, XEv>& _ev, InitialSearch<XES>& _constructive, NSSeq<XES, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax) :
+	BasicTabuSearch(Evaluator<XES, XEv>& _ev, InitialSearch<XES, XEv>& _constructive, NSSeq<XES, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax) :
 			evaluator(_ev), constructive(_constructive), nsSeq(_nsSeq), tlSize(_tlSize), tsMax(_tsMax)
 	{
 	}
@@ -328,7 +328,7 @@ public:
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
 		//params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
+params.push_back(make_pair(InitialSearch<XES, XEv>::idComponent(), "constructive heuristic"));
 		params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(), "neighborhood structure"));
 		params.push_back(make_pair("OptFrame:int", "tabu list size"));
 		params.push_back(make_pair("OptFrame:int", "max number of iterations"));

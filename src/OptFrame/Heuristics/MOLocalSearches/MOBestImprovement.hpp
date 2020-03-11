@@ -31,11 +31,12 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class MOBestImprovement: public MOLocalSearch<S, XEv>
+template<XSolution S, XEvaluation XMEv = Evaluation<>, XESolution XMES = pair<S, XMEv>>
+class MOBestImprovement: public MOLocalSearch<S, XMEv>
 {
 private:
-	MultiEvaluator<S, XEv>& v_e;
+	//MultiEvaluator<S, XEv>& v_e;
+   GeneralEvaluator<XMES, XMEv>& v_e;
 	NSSeq<S>& nsSeq;
 
 	// logs
@@ -44,7 +45,8 @@ private:
 
 public:
 
-	MOBestImprovement(MultiEvaluator<S, XEv>& _v_e, NSSeq<S>& _nsSeq) :
+	//MOBestImprovement(MultiEvaluator<S, XEv>& _v_e, NSSeq<S>& _nsSeq) :
+   MOBestImprovement(GeneralEvaluator<XMES, XMEv>& _v_e, NSSeq<S>& _nsSeq) :
 			v_e(_v_e), nsSeq(_nsSeq)
 	{
 		sum_time = 0.0;
@@ -55,7 +57,7 @@ public:
 	{
 	}
 
-	virtual void exec(Solution<S, XEv>& s, paretoManager<S, XEv>& pManager, double timelimit, double target_f)
+	virtual void exec(IESolution<S, XMEv>& s, paretoManager<S, XMEv>& pManager, double timelimit, double target_f)
 	{
 		MultiEvaluation<>& sMev = v_e.evaluate(s);
 
@@ -65,13 +67,13 @@ public:
 		delete &sMev;
 	}
 
-	virtual void exec(Solution<S, XEv>& s, MultiEvaluation<>& sMev, paretoManager<S, XEv>& pManager, double timelimit, double target_f)
+	virtual void exec(IESolution<S, XMEv>& s, XMEv& sMev, paretoManager<S, XMEv>& pManager, double timelimit, double target_f)
 	{
 
 		num_calls++;
 		Timer t;
 
-		NSIterator<S, XEv>& it = nsSeq.getIterator(s);
+		NSIterator<XMES, XMEv>& it = nsSeq.getIterator(s);
 
 		it.first();
 
@@ -84,12 +86,12 @@ public:
 
 		while (!it.isDone())
 		{
-			Move<S, XEv>* move = &it.current();
+			Move<XMES, XMEv>* move = &it.current();
 			if (move->canBeApplied(s))
 			{
 //				cout << "before anything" << endl;
 //				sMev.print();
-				Move<S, XEv>* mov_rev = move->apply(sMev, s);
+				Move<XMES, XMEv>* mov_rev = move->apply(sMev, s);
 				v_e.evaluate(sMev, s);
 
 //				cout << "after move" << endl;
@@ -121,13 +123,13 @@ public:
 	}
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (MOLocalSearch<S, XEv>::compatible(s));
+		return (s == idComponent()) || (MOLocalSearch<S, XMEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MOLocalSearch<XES, XEv>::idComponent() << ":MO-BI";
+		ss << MOLocalSearch<XMES, XMEv>::idComponent() << ":MO-BI";
 		return ss.str();
 	}
 

@@ -61,7 +61,7 @@ public:
       return make_pair(*sStar, eStar);
    }
 
-   static std::optional<XES> genInitial(InitialSearch<XES>& constructive, Evaluator<XES, XEv>& evaluator, double timelimit, const std::optional<XES> input = std::nullopt)
+   static std::optional<XES> genInitial(InitialSearch<XES, XEv>& constructive, Evaluator<XES, XEv>& evaluator, double timelimit, const std::optional<XES> input = std::nullopt)
    {
       // TODO: we must start from InitialSearch generating 'XES'.. thus starting evaluating already, and fully abstracting S.
       // TODO: Evaluator should be GeneralEvaluator... and GeneralEvaluator should only receive XES.. maybe impossible.

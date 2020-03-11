@@ -34,24 +34,24 @@
 
 namespace optframe {
 
-template<class H, XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = Pareto<S, XEv, XES>>
-class MultiObjILS : public MOILS, public MultiObjSearch<S, XEv>
+template<class H, XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>, XSearch<XMES> XSH = Pareto<S, XMEv, XMES>>
+class MultiObjILS : public MOILS, public MultiObjSearch<S, XMEv, XMES>
 {
 
 private:
-   InitialPareto<S, XEv>& init_pareto;
+   InitialPareto<S, XMEv>& init_pareto;
    int init_pop_size;
-   MOLocalSearch<S, XEv>* ls;
-   paretoManager<S, XEv> pMan;
+   MOLocalSearch<S, XMEv, XMES>* ls;
+   paretoManager<S, XMEv, XMES> pMan;
    RandGen& rg;
 
 public:
-   MultiObjILS(MultiEvaluator<S, XEv>& _mev, InitialPareto<S, XEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg)
-   //MultiObjILS(Evaluator<S>& _mev, InitialPareto<S, XEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg)
+   MultiObjILS(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<S, XMEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg)
+   //MultiObjILS(Evaluator<S>& _mev, InitialPareto<S, XMEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg)
      : init_pareto(_init_pareto)
      , init_pop_size(_init_pop_size)
      , ls(_ls)
-     , pMan(paretoManager<S, XEv>(_mev))
+     , pMan(paretoManager<S, XMEv>(_mev))
      , rg(_rg)
    {
    }
@@ -62,17 +62,17 @@ public:
 
    virtual H& initializeHistory() = 0;
 
-   virtual void perturbation(S& s, MultiEvaluation<>& e, const StopCriteria<XEv>& stopCriteria, H& history) = 0;
+   virtual void perturbation(S& s, XMEv& e, const StopCriteria<XMEv>& stopCriteria, H& history) = 0;
 
-   virtual void acceptanceCriterion(const Pareto<S, XEv>& pf, H& history) = 0;
+   virtual void acceptanceCriterion(const Pareto<S, XMEv>& pf, H& history) = 0;
 
    virtual bool terminationCondition(H& history) = 0;
 
-   //virtual Pareto<S, XEv>* search(StopCriteria<XEv>& stopCriteria, Pareto<S, XEv>* _pf = nullptr) override
-   virtual SearchStatus search(std::optional<Pareto<S, XEv>>& p, const StopCriteria<XEv>& stopCriteria) override
+   //virtual Pareto<S, XMEv>* search(StopCriteria<XEv>& stopCriteria, Pareto<S, XMEv>* _pf = nullptr) override
+   virtual SearchStatus search(std::optional<Pareto<S, XMEv>>& p, const StopCriteria<XMEv>& stopCriteria) override
    {
       Timer tnow;
-      Pareto<S, XEv> x_e;
+      Pareto<S, XMEv> x_e;
       cout << "exec: MOILS (tL:" << stopCriteria.timelimit << ")" << endl;
 
       //if (_pf == nullptr) {
@@ -113,14 +113,14 @@ public:
          S rS = x_e.getNonDominatedSol(ind);
          MultiEvaluation<> rMev = x_e.getIndMultiEvaluation(ind);
 
-         StopCriteria<XEv> stopCriteriaPert;
+         StopCriteria<XMEv> stopCriteriaPert;
          stopCriteriaPert.timelimit = stopCriteria.timelimit;
          perturbation(rS, rMev, stopCriteriaPert, *history);
 
          //Try to add the neighbor solution that was obtained from the perturbation
          pMan.addSolutionWithMEV(x_e, rS, rMev);
 
-         StopCriteria<XEv> stopCriteriaLS;
+         StopCriteria<XMEv> stopCriteriaLS;
          stopCriteriaLS.timelimit = stopCriteria.timelimit;
          ls->moSearchFrom(x_e, rS, rMev, pMan, stopCriteriaLS);
 
@@ -144,7 +144,7 @@ public:
          //					visited[v] = false;
       }
 
-      ////Pareto<S, XEv>* pReturn = new Pareto<S, XEv>(std::move(x_e));
+      ////Pareto<S, XMEv>* pReturn = new Pareto<S, XMEv>(std::move(x_e));
       p = make_optional(std::move(x_e)); // TODO: check if this 'move assign' is O(1) for Pareto, as expected
 
       //checking possible dominance problems -- TODO - Remove for a faster code

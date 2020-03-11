@@ -53,8 +53,11 @@ private:
 
    HFMProblemInstance* p;
    HFMEvaluator* eval;
+
    //Constructive<SolutionHFM>* c;
-   InitialSearch<ESolutionHFM>* c;
+   InitialSearch<ESolutionHFM, EvaluationHFM>* c; // for single obj
+   InitialSearch<EMSolutionHFM, MultiEvaluationHFM>* cm;  // for multi obj
+   //
    vector<NSSeq<ESolutionHFM>*> vNS;
 
    EmptyLocalSearch<ESolutionHFM> emptyLS;
@@ -119,9 +122,15 @@ public:
       int cPre = methodParam.getConstrutivePrecision();
 
       if (cMethod == 0)
-         c = new ConstructiveRandom(*p, problemParam, rg, cPre);
+      {
+         c  = new ConstructiveRandom<ESolutionHFM, EvaluationHFM>(*p, problemParam, rg, cPre);
+         cm = new ConstructiveRandom<EMSolutionHFM, MultiEvaluationHFM>(*p, problemParam, rg, cPre);
+      }
       if (cMethod == 2)
-         c = new ConstructiveACF(*p, problemParam, rg, cPre, methodParam.getConstrutiveLimitAlphaACF());
+      {
+         c  = new ConstructiveACF<ESolutionHFM, EvaluationHFM>(*p, problemParam, rg, cPre, methodParam.getConstrutiveLimitAlphaACF());
+         cm = new ConstructiveACF<EMSolutionHFM, MultiEvaluationHFM>(*p, problemParam, rg, cPre, methodParam.getConstrutiveLimitAlphaACF());
+      }
 
       //FirstImprovement<SolutionHFM>* fiModifyFuzzyRules = new FirstImprovement<SolutionHFM>(*eval, *nsModifyFuzzyRules);
       //FirstImprovement<SolutionHFM>* fiChangeSingleInput = new FirstImprovement<SolutionHFM>(*eval, *nsChangeSingleInput);
@@ -147,7 +156,7 @@ public:
       //		nsVAlpha
 
       GeneralEvaluator<ESolutionHFM>& geval = *eval;
-      //InitialSearch<XES>& constructive
+      //InitialSearch<XES, XEv>& constructive
 
 
       ils = new IteratedLocalSearchLevels<ESolutionHFM>(geval, *c, *vnd, *ilsPert, 100, 10);
@@ -300,7 +309,10 @@ public:
       //		GRInitialPopulation<RepEFP,OPTFRAME_DEFAULT_ADS> bip(*c, rg, 1);
       //		MOVNSLevels<RepEFP> multiobjectvns(v_e, bip, initial_population_size, vNSeq, rg, 10, 10);
       //		GRInitialPareto<RepEFP,OPTFRAME_DEFAULT_ADS> grIP(*c, rg, 1, *mev);
-      BasicInitialPareto<SolutionHFM> grIP(*c, *mev);
+
+      //BasicInitialPareto(InitialSearch<XMES, XMEv>& _constructive, GeneralEvaluator<XMES, XMEv>& _mev) :
+      GeneralEvaluator<EMSolutionHFM, MultiEvaluationHFM>* gmev = mev;
+      BasicInitialPareto<SolutionHFM, MultiEvaluationHFM> grIP(*cm, *gmev);
       int maxTriesRI = 100;
       MORandomImprovement<SolutionHFM> moriMFR(*mev, *vNSeq->at(0), maxTriesRI);
       MORandomImprovement<SolutionHFM> moriCSI(*mev, *vNSeq->at(1), maxTriesRI);

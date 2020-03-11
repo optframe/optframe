@@ -227,7 +227,7 @@ private:
 
    Evaluator<S>& eval;
    //Constructive<S>& constructive;
-   InitialSearch<XES>& constructive;
+   InitialSearch<XES, XEv>& constructive;
    vector<NS<XES, XEv>*> vNS; 
    LocalSearch<XES, XEv>& ls;
    RandGen& rg;
@@ -240,7 +240,7 @@ public:
    //Evaluator, constructive, vNS -- vector with neighboorhods strucutures able to move solution,
    // selectionMethod: 0-low selection pressure (mi,lambda);1 selection pressure (mi+lambda)
    //TODO - Check why vector<NSSeq*> can not be passed as parameter - Tried but failled
-   NGES(Evaluator<S>& _eval, InitialSearch<XES>& _constructive, vector<NS<XES, XEv>*> _vNS, LocalSearch<XES, XEv>& _ls, RandGen& _rg, NGESParams& _ngesParams)
+   NGES(Evaluator<S>& _eval, InitialSearch<XES, XEv>& _constructive, vector<NS<XES, XEv>*> _vNS, LocalSearch<XES, XEv>& _ls, RandGen& _rg, NGESParams& _ngesParams)
      : eval(_eval)
      , constructive(_constructive)
      , vNS(_vNS)

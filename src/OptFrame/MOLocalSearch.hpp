@@ -36,7 +36,7 @@ using namespace std;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv=Evaluation<>>
+template<XSolution S, XEvaluation XMEv=MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
 class MOLocalSearch: public Component
 {
 
@@ -53,10 +53,10 @@ public:
 // core methods
 
     // 1
-	virtual void moSearchFrom(Pareto<S, XEv>& p, S& s, paretoManager<S, XEv>& pManager, const StopCriteria<XEv>& stopCriteria) = 0;
+	virtual void moSearchFrom(Pareto<S, XMEv>& p, S& s, paretoManager<S, XMEv>& pManager, const StopCriteria<XMEv>& stopCriteria) = 0;
 
 	// 2
-	virtual void moSearchFrom(Pareto<S, XEv>& p, S& s, MultiEvaluation<>& mev, paretoManager<S, XEv>& pManager, const StopCriteria<XEv>& stopCriteria) =0;
+	virtual void moSearchFrom(Pareto<S, XMEv>& p, S& s, XMEv& mev, paretoManager<S, XMEv>& pManager, const StopCriteria<XMEv>& stopCriteria) =0;
 
 	virtual bool compatible(string s)
 	{

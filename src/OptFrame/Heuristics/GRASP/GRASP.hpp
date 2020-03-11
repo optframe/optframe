@@ -35,13 +35,13 @@ class GRASP: public SingleObjSearch<XES>
 {
 private:
 	Evaluator<S>& evaluator;
-	InitialSearch<XES>& constructive;
+	InitialSearch<XES, XEv>& constructive;
 	LocalSearch<XES, XEv>& ls;
 	unsigned int iterMax;
 
 public:
 
-	GRASP(Evaluator& _eval, InitialSearch<XES>& _constructive, LocalSearch<XES, XEv>& _ls, int _iterMax) :
+	GRASP(Evaluator& _eval, InitialSearch<XES, XEv>& _constructive, LocalSearch<XES, XEv>& _ls, int _iterMax) :
 		evaluator(_eval), constructive(_constructive), ls(_ls)
 	{
 	   iterMax = _iterMax;
@@ -144,7 +144,7 @@ public:
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
 		//params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
+params.push_back(make_pair(InitialSearch<XES, XEv>::idComponent(), "constructive heuristic"));
 		params.push_back(make_pair(LocalSearch<R, ADS, DS>::idComponent(), "local search"));
 		params.push_back(make_pair("int", "max number of iterations"));
 

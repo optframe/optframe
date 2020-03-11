@@ -31,7 +31,7 @@ namespace optframe {
 
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R, ADS> S = CopySolution<R, ADS>>
 template<XSolution S, XEvaluation XEv, XESolution XES = pair<S, XEv>>
-class ConstructiveToInitialSearch : public InitialSearch<XES>
+class ConstructiveToInitialSearch : public InitialSearch<XES, XEv>
 {
 public:
 

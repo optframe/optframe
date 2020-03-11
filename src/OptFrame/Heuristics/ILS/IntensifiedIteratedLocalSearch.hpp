@@ -35,11 +35,11 @@ class IntensifiedIteratedLocalSearch: public SingleObjSearch<XES>
 {
 protected:
 	Evaluator<S>& evaluator;
-	InitialSearch<XES>& constructive;
+	InitialSearch<XES, XEv>& constructive;
 
 public:
 
-	IntensifiedIteratedLocalSearch(Evaluator<S>& _evaluator, InitialSearch<XES>& _constructive) :
+	IntensifiedIteratedLocalSearch(Evaluator<S>& _evaluator, InitialSearch<XES, XEv>& _constructive) :
 		evaluator(_evaluator), constructive(_constructive)
 	{
 	}

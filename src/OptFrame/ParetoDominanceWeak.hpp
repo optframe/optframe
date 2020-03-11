@@ -39,14 +39,14 @@ using namespace std;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class ParetoDominanceWeak: public ParetoDominance<S, XEv>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XEvaluation XMEv = MultiEvaluation<>>
+class ParetoDominanceWeak: public ParetoDominance<S, XMEv>
 {
 public:
-	using ParetoDominance<S, XEv>::dominates;
+	using ParetoDominance<S, XMEv>::dominates;
 
-	ParetoDominanceWeak(MultiEvaluator<S, XEv>& _mev) :
-			ParetoDominance<S, XEv>(_mev)
+	ParetoDominanceWeak(MultiEvaluator<S, XEv, XMEv>& _mev) :
+			ParetoDominance<S, XMEv>(_mev)
 	{
 	}
 
@@ -56,7 +56,7 @@ public:
 
 	virtual bool dominates(const MultiEvaluation<>& mev1, const MultiEvaluation<>& mev2)
 	{
-		pair<int,int> betterEquals = ParetoDominance<S, XEv>::checkDominates(mev1,mev2);
+		pair<int,int> betterEquals = ParetoDominance<S, XMEv>::checkDominates(mev1,mev2);
 		int better = betterEquals.first;
 		int equals = betterEquals.second;
 

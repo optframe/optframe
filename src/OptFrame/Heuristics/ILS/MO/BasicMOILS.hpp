@@ -32,19 +32,19 @@ namespace optframe
 
 typedef int BasicHistory;
 
-template<XSolution S, XEvaluation XEv=Evaluation<>>
+template<XSolution S, XEvaluation XEv=Evaluation<>, XEvaluation XMEv=MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
 //template<XESolution XMES, XEvaluation XMEv=MultiEvaluation<>>
 class BasicMOILS: public MultiObjILS<BasicHistory, XMES, XMEv>
 {
 
 private:
-	BasicMOILSPerturbation<S, XEv>& p;
+	BasicMOILSPerturbation<XMES, XMEv>& p;
 	int iterMax;
 
 public:
 
-	BasicMOILS(MultiEvaluator<S, XEv>& _mev, InitialPareto<S, XEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg, BasicMOILSPerturbation<S, XEv>& _p, int _iterMax) :
-		MultiObjILS<BasicHistory, S, XEv>(_mev,_init_pareto,_init_pop_size,_ls,_rg), p(_p), iterMax(_iterMax)
+	BasicMOILS(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<S, XMEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg, BasicMOILSPerturbation<XMES, XMEv>& _p, int _iterMax) :
+		MultiObjILS<BasicHistory, XMES, XMEv>(_mev,_init_pareto,_init_pop_size,_ls,_rg), p(_p), iterMax(_iterMax)
 	{
 	}
 
@@ -73,7 +73,7 @@ public:
 		history = iter;
 	}
 
-	virtual void acceptanceCriterion(const Pareto<S, XEv>& pf, BasicHistory& history)
+	virtual void acceptanceCriterion(const Pareto<S, XMEv>& pf, BasicHistory& history)
 	{
 
 		if (pf.getNewNonDominatedSolutionsStatus())
@@ -97,7 +97,7 @@ public:
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (MultiObjSearch<S, XEv>::compatible(s));
+		return (s == idComponent()) || (MultiObjSearch<S, XMEv>::compatible(s));
 	}
 
 	virtual string id() const

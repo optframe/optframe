@@ -47,7 +47,7 @@ protected:
 public:
 
 	//BasicIteratedLocalSearch(Evaluator<XES, XEv>& e, Constructive<S>& constructive, LocalSearch<XES, XEv>& _ls, BasicILSPerturbation<S, XEv>& _p, int _iterMax) :
-   BasicIteratedLocalSearch(GeneralEvaluator<XES, XEv>& e, InitialSearch<XES>& constructive, LocalSearch<XES, XEv>& _ls, BasicILSPerturbation<XES, XEv>& _p, int _iterMax) :
+   BasicIteratedLocalSearch(GeneralEvaluator<XES, XEv>& e, InitialSearch<XES, XEv>& constructive, LocalSearch<XES, XEv>& _ls, BasicILSPerturbation<XES, XEv>& _p, int _iterMax) :
 		IteratedLocalSearch<BasicHistory, XES, XEv> (e, constructive), ls(_ls), p(_p), iterMax(_iterMax)
 	{
 	}
@@ -148,7 +148,7 @@ public:
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		//Constructive<S>* constructive;
-      InitialSearch<XES>* constructive;
+      InitialSearch<XES, XEv>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
@@ -173,7 +173,7 @@ public:
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
      //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-      params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
+      params.push_back(make_pair(InitialSearch<XES, XEv>::idComponent(), "constructive heuristic"));
 		params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
 		params.push_back(make_pair(BasicILSPerturbation<XES, XEv>::idComponent(), "ils perturbation"));
 		params.push_back(make_pair("OptFrame:int", "max number of iterations without improvement"));

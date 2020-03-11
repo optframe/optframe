@@ -38,8 +38,8 @@ using namespace std;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = Pareto<S, XEv, XES>>
-class InitialPareto : public InitialSearch<XES, XEv, Pareto<S, XEv, XES>> //public Component
+template<XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>, XSearch<XMES> XSH = Pareto<S, XMEv, XMES>>
+class InitialPareto : public InitialSearch<XMES, XMEv, Pareto<S, XMEv, XMES>> //public Component
 {
 public:
 
@@ -48,9 +48,9 @@ public:
 	}
 
    // TODO: deprecate this in favor of 'initialSearch' (how to pass population?)
-	virtual Pareto<S, XEv> generatePareto(unsigned populationSize, double timeLimit = 10000000) = 0;
+	virtual Pareto<S, XMEv> generatePareto(unsigned populationSize, double timeLimit = 10000000) = 0;
 
-	std::optional<Pareto<S, XEv>> initialSearch(const StopCriteria<XEv>& stop) override
+	std::optional<Pareto<S, XMEv>> initialSearch(const StopCriteria<XMEv>& stop) override
    {
       return make_optional(generatePareto(stop.xshCount, stop.timelimit));
    }
@@ -69,18 +69,19 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class BasicInitialPareto: public InitialPareto<S, XEv>
+template<XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+class BasicInitialPareto: public InitialPareto<S, XMEv>
 {
 public:
 
 	//Constructive<S>& constructive;
-   InitialSearch<XES>& constructive;
-	paretoManager<S, XEv> pMan;
+   InitialSearch<XMES, XMEv>& constructive;
+	paretoManager<S, XMEv> pMan;
 
 	//BasicInitialPareto(Constructive<S>& _constructive, MultiEvaluator<S, XEv>& _mev) :
-   BasicInitialPareto(InitialSearch<XES>& _constructive, MultiEvaluator<S, XEv>& _mev) :
-			constructive(_constructive), pMan(paretoManager<S, XEv>(_mev))
+   //BasicInitialPareto(InitialSearch<XMES, XMEv>& _constructive, MultiEvaluator<S, XEv>& _mev) :
+   BasicInitialPareto(InitialSearch<XMES, XMEv>& _constructive, GeneralEvaluator<XMES, XMEv>& _mev) :
+			constructive(_constructive), pMan(paretoManager<S, XMEv>(_mev))
 	{
 	}
 
@@ -88,10 +89,10 @@ public:
 	{
 	}
 
-	virtual Pareto<S, XEv> generatePareto(unsigned populationSize, double timelimit = 100000000)
+	virtual Pareto<S, XMEv> generatePareto(unsigned populationSize, double timelimit = 100000000)
 	{
-		Pareto<S, XEv> p;
-      StopCriteria<XEv> sosc(timelimit);
+		Pareto<S, XMEv> p;
+      StopCriteria<XMEv> sosc(timelimit);
 		for (unsigned i = 0; i < populationSize; i++)
 			//pMan.addSolution(p, *constructive.generateSolution(timelimit));
          pMan.addSolution(p, constructive.initialSearch(sosc)->first);
@@ -102,7 +103,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << InitialPareto<S, XEv>::idComponent() << ":BasicInitialPareto";
+		ss << InitialPareto<S, XMEv>::idComponent() << ":BasicInitialPareto";
 		return ss.str();
 	}
 
@@ -112,17 +113,18 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class GRInitialPareto: public InitialPareto<S, XEv>
+template<XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+class GRInitialPareto: public InitialPareto<S, XMEv>
 {
 public:
 	GRConstructive<S>& constructive;
 	RandGen& rg;
 	double maxAlpha; // limit the solution to be not so random
-	paretoManager<S, XEv> pMan;
+	paretoManager<S, XMEv> pMan;
 
-	GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg, double _maxAlpha, MultiEvaluator<S, XEv>& _mev) :
-			constructive(_constructive), rg(_rg), maxAlpha(_maxAlpha), pMan(paretoManager<S, XEv>(_mev))
+	//GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg, double _maxAlpha, MultiEvaluator<S, XEv>& _mev) :
+   GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg, double _maxAlpha, GeneralEvaluator<XMES, XMEv>& _mev) :
+			constructive(_constructive), rg(_rg), maxAlpha(_maxAlpha), pMan(paretoManager<S, XMEv>(_mev))
 	{
 	}
 
@@ -131,11 +133,11 @@ public:
 	}
 
 
-	virtual Pareto<S, XEv>& generatePareto(unsigned populationSize, double timelimit = 100000000)
+	virtual Pareto<S, XMEv>& generatePareto(unsigned populationSize, double timelimit = 100000000) override
 	{
 		Timer tnow;
 
-		Pareto<S, XEv>* p = new Pareto<S, XEv>;
+		Pareto<S, XMEv>* p = new Pareto<S, XMEv>;
 		unsigned i = 0;
 		while ((i < populationSize) && (tnow.now() < timelimit))
 		{
@@ -157,7 +159,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << InitialPareto<S, XEv>::idComponent() << ":GRInitialPareto";
+		ss << InitialPareto<S, XMEv>::idComponent() << ":GRInitialPareto";
 		return ss.str();
 	}
 
@@ -167,6 +169,6 @@ public:
 	}
 };
 
-}
+} // namespace optframe
 
 #endif /*OPTFRAME_INITIALPARETO_H_*/

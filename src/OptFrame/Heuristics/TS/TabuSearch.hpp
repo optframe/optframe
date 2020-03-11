@@ -33,14 +33,14 @@ class TabuSearch: public SingleObjSearch<XES>
 {
 private:
 	Evaluator<XES, XEv>& evaluator;
-	InitialSearch<XES>& constructive;
+	InitialSearch<XES, XEv>& constructive;
 	NSSeq<XES, XEv, XSH>& nsSeq;
 	int tlSize;
 	int tsMax;
 
 public:
 
-	TabuSearch(Evaluator<XES, XEv>& _ev, InitialSearch<XES>& _constructive, NSSeq<XES, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax) :
+	TabuSearch(Evaluator<XES, XEv>& _ev, InitialSearch<XES, XEv>& _constructive, NSSeq<XES, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax) :
 		evaluator(_ev), constructive(_constructive), nsSeq(_nsSeq), tlSize(_tlSize), tsMax(_tsMax)
 	{
 	}

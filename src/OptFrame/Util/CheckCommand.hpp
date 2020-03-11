@@ -67,7 +67,7 @@ private:
 	vector<Evaluator<S, XEv, XES>*> lEvaluator;
    //vector<GeneralEvaluator<XES>*> lGenEvaluator;
 	//vector<Constructive<S>*> lConstructive;
-   vector<InitialSearch<XES>*> lConstructive;
+   vector<InitialSearch<XES, XEv>*> lConstructive;
 	vector<CopySolution<R,ADS>*> lSolution;
 	vector<shared_ptr<Move<XES>>> lMove;
 	vector<NS<XES, XEv>*> lNS;
@@ -101,7 +101,7 @@ public:
 	}
 
 
-   void add(InitialSearch<XES>& c)
+   void add(InitialSearch<XES, XEv>& c)
 	{
 		lConstructive.push_back(&c);
 		if (verbose)
@@ -623,7 +623,7 @@ public:
 		for (unsigned c = 0; c < lConstructive.size(); c++)
 		{
 			//Constructive<S>* constructive = lConstructive.at(c);
-         InitialSearch<XES>* constructive = lConstructive.at(c);
+         InitialSearch<XES, XEv>* constructive = lConstructive.at(c);
 
 			cout << "checkcommand: testing Constructive " << c << " => " << constructive->toString();
 			cout << endl;

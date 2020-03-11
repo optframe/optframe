@@ -45,7 +45,7 @@ class BasicSimulatedAnnealing: public SingleObjSearch<XES, XEv>
 private:
 	GeneralEvaluator<XES, XEv>& evaluator;
 	//Constructive<S>& constructive; // TODO: this must become InitialSearch, already starting from "optional" XES element.
-   InitialSearch<XES>& constructive;
+   InitialSearch<XES, XEv>& constructive;
 
 	vector<NS<XES, XEv, XSH>*> neighbors;
 	RandGen& rg;
@@ -96,7 +96,7 @@ public:
       return tnow;
    }
 
-	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, vector<NS<XES, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive, vector<NS<XES, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg) //, specificStopBy(defaultStopBy)
 	{
 		alpha = (_alpha);
@@ -105,7 +105,7 @@ public:
 	}
 
 /*
-   BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, vector<NS<XES, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg, SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> _spec) :
+   BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive, vector<NS<XES, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg, SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> _spec) :
 		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg), specificStopBy(_spec)
 	{
 		alpha = (_alpha);
@@ -114,7 +114,7 @@ public:
 	}
 */
 
-	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, NS<XES, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
+	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive, NS<XES, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg) :
 		evaluator(_evaluator), constructive(_constructive), rg(_rg) //, specificStopBy(defaultStopBy)
 	{
 		neighbors.push_back(&_neighbors);
@@ -124,7 +124,7 @@ public:
 	}
 
 /*
-	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES>& _constructive, NS<XES, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg, SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> _spec) :
+	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive, NS<XES, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg, SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> _spec) :
 		evaluator(_evaluator), constructive(_constructive), rg(_rg), specificStopBy(_spec)
 	{
 		neighbors.push_back(&_neighbors);
@@ -315,7 +315,7 @@ public:
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		//Constructive<S>* constructive;
-      InitialSearch<XES>* constructive;
+      InitialSearch<XES, XEv>* constructive;
 		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<NS<XES, XEv>* > hlist;
@@ -333,7 +333,7 @@ public:
 		vector<pair<string, string> > params;
 		params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
 		//params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-      params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
+      params.push_back(make_pair(InitialSearch<XES, XEv>::idComponent(), "constructive heuristic"));
 		stringstream ss;
 		ss << NS<XES, XEv>::idComponent() << "[]";
 		params.push_back(make_pair(ss.str(), "list of NS"));

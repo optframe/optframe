@@ -44,21 +44,21 @@
 using namespace std;
 
 template<XESolution XES, XEvaluation XEv = Evaluation<>>
-class ParetoDominanceStrict: public ParetoDominance<S, XEv>
+class ParetoDominanceStrict: public ParetoDominance<S, XMEv>
 {
 public:
 
-        using ParetoDominance<S, XEv>::dominates;
-        using ParetoDominance<S, XEv>::birelation;
+        using ParetoDominance<S, XMEv>::dominates;
+        using ParetoDominance<S, XMEv>::birelation;
 
 	ParetoDominanceStrict(vector<Evaluator<XES, XEv>*> _v_e) :
-		ParetoDominance<S, XEv> (_v_e)
+		ParetoDominance<S, XMEv> (_v_e)
 	{
 
 	}
 
 	ParetoDominanceStrict(vector<Direction*> _v_d) :
-		ParetoDominance<S, XEv> (_v_d)
+		ParetoDominance<S, XMEv> (_v_d)
 	{
 
 	}
@@ -74,13 +74,13 @@ public:
 
 	void insertEvaluators(vector<Evaluator<XES, XEv>*> _v_e)
 	{
-		ParetoDominance<S, XEv>::v_e = _v_e;
+		ParetoDominance<S, XMEv>::v_e = _v_e;
 	}
 
 	// true if 's1' weakly dominates 's2'
 	virtual bool dominates(const vector<double>& v1, const vector<double>& v2)
 	{
-		vector<Evaluator<XES, XEv>*>& v_e = ParetoDominance<S, XEv>::v_e;
+		vector<Evaluator<XES, XEv>*>& v_e = ParetoDominance<S, XMEv>::v_e;
 
 		if (!((v_e.size() == v1.size()) && (v1.size() == v2.size())))
 		{

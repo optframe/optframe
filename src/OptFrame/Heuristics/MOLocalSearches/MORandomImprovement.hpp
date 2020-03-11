@@ -32,12 +32,13 @@ namespace optframe
 {
 
 //Basic MORI does not considering valid move, parameter iterMax only.
-template<XSolution S, XEvaluation XEv=Evaluation<>, XESolution XES = pair<S, XEv>>
-class MORandomImprovement: public MOLocalSearch<S, XEv>
+template<XSolution S, XEvaluation XMEv=Evaluation<>, XESolution XMES = pair<S, XMEv>>
+class MORandomImprovement: public MOLocalSearch<S, XMEv>
 {
 private:
-	MultiEvaluator<S, XEv>& mev;
-	NS<XES, XEv>& ns;
+	//MultiEvaluator<S, XEv>& mev;
+   GeneralEvaluator<XMES, XMEv>& mev;
+	NS<XMES, XMEv>& ns;
 
 	// logs
 	double sum_time;
@@ -45,7 +46,8 @@ private:
 	int iterMax;
 public:
 
-	MORandomImprovement(MultiEvaluator<S, XEv>& _mev, NS<XES, XEv>& _ns, unsigned int _iterMax) :
+	//MORandomImprovement(MultiEvaluator<S, XEv>& _mev, NS<XES, XEv>& _ns, unsigned int _iterMax) :
+   MORandomImprovement(GeneralEvaluator<XMES, XMEv>& _mev, NS<XMES, XMEv>& _ns, unsigned int _iterMax) :
 			mev(_mev), ns(_ns), iterMax(_iterMax)
 	{
 		sum_time = 0.0;
@@ -56,29 +58,29 @@ public:
 	{
 	}
 
-	virtual void moSearchFrom(Pareto<S, XEv>& p, S& s, paretoManager<S, XEv>& pManager, const StopCriteria<XEv>& stopCriteria) override
+	virtual void moSearchFrom(Pareto<S, XMEv>& p, S& s, paretoManager<S, XMEv>& pManager, const StopCriteria<XMEv>& stopCriteria) override
 	{
 		MultiEvaluation<> sMev(std::move(mev.evaluate(s)));
 
 		moSearchFrom(p, s, sMev, pManager, stopCriteria);
 	}
 
-	virtual void moSearchFrom(Pareto<S, XEv>& p, S& s, MultiEvaluation<>& sMev, paretoManager<S, XEv>& pManager, const StopCriteria<XEv>& stopCriteria) override
+	virtual void moSearchFrom(Pareto<S, XMEv>& p, XMES& se, paretoManager<S, XMEv>& pManager, const StopCriteria<XMEv>& stopCriteria) override
 	{
 		num_calls++;
 		Timer t;
 
-      XES se = make_pair(s, Evaluation<>());
+     // XES se = make_pair(s, Evaluation<>());
 
 		int iter = 0;
 
 		while ((iter < iterMax) && ((t.now() - stopCriteria.timelimit) < 0))
 		{
-			uptr<Move<XES, XEv>> move = ns.randomMove(se);
+			uptr<Move<XMES, XMEv>> move = ns.randomMove(se);
 			if (move->canBeApplied(se))
 			{
 				//Move and mark sMev as outdated
-				uptr<Move<XES, XEv>> mov_rev = move->apply(se);
+				uptr<Move<XMES, XMEv>> mov_rev = move->apply(se);
 
 				//Call method to reevaluate sMev and try to include TODO
 //				pManager->addSolutionWithMEVReevaluation(p, *s,*sMev);
@@ -106,13 +108,13 @@ public:
 	}
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (MOLocalSearch<S, XEv>::compatible(s));
+		return (s == idComponent()) || (MOLocalSearch<S, XMEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MOLocalSearch<XES, XEv>::idComponent() << "MO-RI";
+		ss << MOLocalSearch<S, XMEv>::idComponent() << "MO-RI";
 		return ss.str();
 	}
 

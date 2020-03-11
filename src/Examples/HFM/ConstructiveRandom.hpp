@@ -25,7 +25,10 @@ namespace HFM
 {
 
 //class ConstructiveRandom: public Constructive<SolutionHFM>
-class ConstructiveRandom: public InitialSearch<ESolutionHFM>
+// should decide if single or multi obj
+template<XESolution XXES, XEvaluation XXEv>
+//class ConstructiveRandom: public InitialSearch<ESolutionHFM>
+class ConstructiveRandom: public InitialSearch<XXES, XXEv>
 {
 private:
 	HFMProblemInstance& pEFP;
@@ -62,10 +65,12 @@ public:
 	}
 
 	//std::optional<SolutionHFM> generateSolution(double timelimit) override
-   std::optional<ESolutionHFM> initialSearch(const StopCriteria<EvaluationHFM>& sosc) override
+   //std::optional<ESolutionHFM> initialSearch(const StopCriteria<EvaluationHFM>& sosc) override
+   std::optional<XXES> initialSearch(const StopCriteria<XXEv>& sosc) override
 	{
       std::optional<SolutionHFM> s = generateSolutionAlpha(0.0, sosc.timelimit);
-		return make_pair(*s, EvaluationHFM(0)); // TODO: fix
+		//return make_pair(*s, EvaluationHFM(0)); // TODO: fix
+      return make_pair(*s, XXEv()); // TODO: fix
 	}
 
 	std::optional<SolutionHFM> generateSolutionAlpha(float notUsed, double timelimit)
