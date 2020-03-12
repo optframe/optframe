@@ -302,9 +302,10 @@ public:
       paretoMan.addSolutionWithMEV(pf, cand_smev);
    }
 
-   Pareto<SolutionHFM>* runMultiObjSearch(double timeGPLS, Pareto<SolutionHFM>* _pf = nullptr)
+   //Pareto<SolutionHFM> runMultiObjSearch(double timeGPLS, Pareto<SolutionHFM>* _pf = nullptr)
+   void runMultiObjSearch(double timeGPLS, op< Pareto<SolutionHFM> > ioPF)
    {
-      Pareto<SolutionHFM>* pf = new Pareto<SolutionHFM>();
+      //Pareto<SolutionHFM>* pf = new Pareto<SolutionHFM>();
 
       //		if (vS != nullptr)
       //		{
@@ -362,15 +363,20 @@ public:
 
       StopCriteria<MultiEvaluationHFM> moStopCriteriaGPLS;
       moStopCriteriaGPLS.timelimit = timeGPLS;
+
+/*
+      Pareto<SolutionHFM> pfs;
       if (_pf == nullptr) {
-         delete pf;
-         pf = generalPLS.searchWithOptionalPareto(moStopCriteriaGPLS);
+         //delete pf;
+         pfs = generalPLS.searchWithOptionalPareto(moStopCriteriaGPLS);
          //			pf = moILSLevels.search(moStopCriteriaGPLS);
       } else {
-         delete pf;
-         pf = generalPLS.searchWithOptionalPareto(moStopCriteriaGPLS, _pf);
+         //delete pf;
+         pfs = generalPLS.searchWithOptionalPareto(moStopCriteriaGPLS, _pf);
          //			pf = moILSLevels.search(moStopCriteriaGPLS, _pf);
       }
+*/
+         generalPLS.searchWithOptionalPareto(moStopCriteriaGPLS, ioPF);
 
       //		vector<MultiEvaluation<>*> vEval = pf->getParetoFront();
       //		vector<Solution<RepEFP>*> vSolPf = pf->getParetoSet();
@@ -386,7 +392,7 @@ public:
       //		}
 
       //		mev->clear();
-      return pf;
+      //return pfs;
    }
 
    std::optional<pair<SolutionHFM, Evaluation<>>> runGRASP(int timeGRASP, int nSol)

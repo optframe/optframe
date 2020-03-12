@@ -180,6 +180,11 @@ public:
       return *paretoSetFront.at(index);
 	}
 
+	XMES& getP(unsigned index)
+	{
+      return *paretoSetFront.at(index);
+	}
+
    // return "observer pointers" mirroring internal pareto set / front
 	vector<XMES*> getParetoSetFrontPtr()
 	{

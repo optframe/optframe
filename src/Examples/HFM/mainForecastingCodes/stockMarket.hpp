@@ -155,9 +155,11 @@ int stockMarketForecasting(int argc, char **argv)
 	for (int expVar = 0; expVar < (int) explanatoryVariables.size(); expVar++)
 		trainningSet.push_back(rF.getPartsForecastsEndToBegin(expVar, fh, nTotalForecastingsTrainningSet));
 
-	Pareto <SolutionHFM> *pf = new Pareto<SolutionHFM>();
+	//Pareto <SolutionHFM> *pf = new Pareto<SolutionHFM>();
 
-	ForecastClass* forecastObject;
+   op< Pareto<SolutionHFM> > opf = std::nullopt;
+
+	//ForecastClass* forecastObject;
 	int timeES = 60;
 	int timeGPLS = 60;
 	int nBatches = 2;
@@ -165,26 +167,30 @@ int stockMarketForecasting(int argc, char **argv)
 	{
 		if (b == 1)
 			methodParam.setEvalFOMinimizer(MAPE_INV_INDEX);
-		forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
-		std::optional<pair<SolutionHFM, Evaluation<>>> sol = forecastObject->run(timeES, 0, 0);
+		//forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
+      ForecastClass forecastObj(trainningSet, problemParam, rg, methodParam);
+		op< ESolutionHFM > sol = forecastObj.run(timeES, 0, 0);
 //		pair<Solution<RepEFP, OPTFRAME_DEFAULT_ADS>, Evaluation<>>* sol = forecastObject->runGILS(0, timeES);
 //		cout << "Bye bye..see u soon." << endl;
 //		exit(1);
 
-		forecastObject->addSolToParetoWithParetoManager(*pf, sol->first);
-		Pareto<SolutionHFM>* pfNew = forecastObject->runMultiObjSearch(timeGPLS, pf);
-		delete pf;
-		pf = pfNew;
-		delete forecastObject;
+		forecastObj.addSolToParetoWithParetoManager(*opf, sol->first);
+		//Pareto<SolutionHFM> pfNew = forecastObj.runMultiObjSearch(timeGPLS, pf);
+		//delete pf;
+		//pf = pfNew;
+      forecastObj.runMultiObjSearch(timeGPLS, opf);
+		//delete forecastObject;
 		////delete sol;
 
 //		getchar();
 	}
-	forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
 
-	vector<MultiEvaluation<>*> vEvalPF = pf->getParetoFrontPtr();
+	//forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
+   ForecastClass forecastObj(trainningSet, problemParam, rg, methodParam);
+
+	vector<MultiEvaluation<>*> vEvalPF = opf->getParetoFrontPtr();
 	//vector<SolutionHFM*> vSolPF = pf->getParetoSet();
-   vector<EMSolutionHFM*> vESolPF = pf->getParetoSetFrontPtr();
+   vector<EMSolutionHFM*> vESolPF = opf->getParetoSetFrontPtr();
 	int nObtainedParetoSol = vEvalPF.size();
 
 	vector<vector<double> > dataForFeedingValidationTest;
@@ -205,7 +211,7 @@ int stockMarketForecasting(int argc, char **argv)
 	for (int i = 0; i < nObtainedParetoSol; i++)
 	{
 		cout << setprecision(2);
-		vector<double>* blindForecasts = forecastObject->returnBlind(vESolPF[i]->first.getR(), dataForFeedingValidationTest);
+		vector<double>* blindForecasts = forecastObj.returnBlind(vESolPF[i]->first.getR(), dataForFeedingValidationTest);
 		for (int f = 0; f < (int) blindForecasts->size(); f++)
 			cout << blindForecasts->at(f) << "/" << targetValidationSet.at(f) << "/" << (targetValidationSet.at(f) - blindForecasts->at(f)) << "\t";
 
@@ -226,10 +232,10 @@ int stockMarketForecasting(int argc, char **argv)
 		cout << endl;
 	}
 
-	pf->exportParetoFront("./Outputs/paretoFrontGPLS.txt", "w");
+	opf->exportParetoFront("./Outputs/paretoFrontGPLS.txt", "w");
 
-	delete pf;
-	delete forecastObject;
+	//delete pf;
+	//delete forecastObject;
 
 	for (int i = 0; i < nObtainedParetoSol; i++)
 		delete ensembleBlindForecasts[i];

@@ -152,15 +152,20 @@ public:
 	{
       //S& s = se.first;
       //XMEv& sMev = se.second;
-		Pareto<S, XMEv> _pf;
+		//Pareto<S, XMEv> _pf;
+      op< Pareto<S, XMEv> > opf = make_optional(p);
 		//pManager.addSolutionWithMEV(_pf,s,sMev);
-      pManager.addSolutionWithMEV(_pf, se);
-		Pareto<S, XMEv>* pr = searchWithOptionalPareto(stopCriteria,&_pf);
-      p = std::move(*pr);
-      delete pr;
+      pManager.addSolutionWithMEV(*opf, se);
+		//Pareto<S, XMEv>* pr = searchWithOptionalPareto(stopCriteria,&_pf);
+      //p = std::move(*pr);
+      //delete pr;
+      //p = searchWithOptionalPareto(stopCriteria,&_pf);
+      searchWithOptionalPareto(stopCriteria, opf);
+      p = *opf;
 	}
 
-	virtual Pareto<S, XMEv>* searchWithOptionalPareto(const StopCriteria<XMEv>& stopCriteria, Pareto<S, XMEv>* _pf = nullptr)
+	//virtual Pareto<S, XMEv> searchWithOptionalPareto(const StopCriteria<XMEv>& stopCriteria, Pareto<S, XMEv>* _pf = nullptr)
+   virtual void searchWithOptionalPareto(const StopCriteria<XMEv>& stopCriteria, op< Pareto<S, XMEv> > ioPF)
 	{
 		Timer tnow;
 
@@ -168,22 +173,25 @@ public:
 		int r = vLS.size();
 
 		gplsStructure<S, XMEv> gPLSData;
-		Pareto<S, XMEv> x_e;
+		Pareto<S, XMEv> x_e; 
 
-		if (_pf == nullptr)
+		//if (_pf == nullptr)
+      if (ioPF == std::nullopt)
 		{
 			cout << "Creating initial population using a initial pareto method:" << init_pop_size << endl;
 			if (tnow.now() < stopCriteria.timelimit)
-				x_e = std::move(init_pareto.generatePareto(init_pop_size, stopCriteria.timelimit - tnow.now()));
+				x_e = init_pareto.generatePareto(init_pop_size, stopCriteria.timelimit - tnow.now());
 
 			cout << "Population generated with " << x_e.size() << " individuals!" << endl;
 		}
 		else
 		{
-			assert(_pf->size() > 0);
+			//assert(_pf->size() > 0);
+         assert(ioPF->size() > 0);
 
 			cout << "Extracting Pareto Front given as parameter..." << endl;
-			x_e = std::move(*_pf); //check this move with AIIIGOR todo
+			//x_e = std::move(*_pf); //check this move with AIIIGOR todo
+         x_e = std::move(*ioPF); //check this move with AIIIGOR todo
 
 			cout << "Extracting PF contains " << x_e.size() << " individuals." << endl;
 
@@ -228,10 +236,11 @@ public:
 
 			for (int ind = 0; ind < (int) p.size(); ind++)
          {
-            XMES smev = make_pair(p.getNonDominatedSol(ind), p.getIndMultiEvaluation(ind));
+            //XMES smev = make_pair(p.getNonDominatedSol(ind), p.getIndMultiEvaluation(ind));
+            XMES& smev = p.getP(ind);
 				vLS[k]->moSearchFrom(x_e, smev, pMan2PPLS, stopCriteriaLS);
-            p.getNonDominatedSol(ind) = smev.first;
-            p.getIndMultiEvaluation(ind) = smev.second;
+            //p.getNonDominatedSol(ind) = smev.first;
+            //p.getIndMultiEvaluation(ind) = smev.second;
          }
 
 
@@ -291,16 +300,17 @@ public:
 			cout << "\t k = " << k << endl;
 		}
 
-		Pareto<S, XMEv>* pReturn = new Pareto<S, XMEv>(std::move(x_e));
+		//Pareto<S, XMEv>* pReturn = new Pareto<S, XMEv>(std::move(x_e));
+      Pareto<S, XMEv> pReturn = std::move(x_e);
 		p.clear();
 
 		//checking possible dominance problems -- TODO - Remove for a faster code
-		pMan2PPLS.checkDominance(*pReturn);
+		pMan2PPLS.checkDominance(pReturn);
 
-		cout << "General Two-Phase Pareto Local Search finished with " << pReturn->size() << " non-dominated solutions." << endl;
+		cout << "General Two-Phase Pareto Local Search finished with " << pReturn.size() << " non-dominated solutions." << endl;
 
-
-		return pReturn;
+		//return pReturn;
+      ioPF = make_optional(pReturn);
 	}
 
 };

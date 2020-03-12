@@ -132,31 +132,35 @@ int usingNonDominatedHFMModels(int argc, char **argv)
 //		forecastObject.runMultiObjSearch();
 //		getchar();
 
-	Pareto<SolutionHFM>* pf = new Pareto<SolutionHFM>();
+	//Pareto<SolutionHFM>* pf = new Pareto<SolutionHFM>();
+   op< Pareto<SolutionHFM> > opf;
 
-	ForecastClass* forecastObject;
+	//ForecastClass* forecastObject;
 	int timeES = 10;
 	int timeGPLS = 20;
 	for (int b = 0; b < 2; b++)
 	{
 		if (b == 1)
 			methodParam.setEvalFOMinimizer(MAPE_INV_INDEX);
-		forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
-		std::optional<pair<SolutionHFM, Evaluation<>>> sol = forecastObject->run(timeES, 0, 0);
-		forecastObject->addSolToParetoWithParetoManager(*pf, sol->first);
-		Pareto<SolutionHFM>* pfNew = forecastObject->runMultiObjSearch(timeGPLS, pf);
-		delete pf;
-		pf = pfNew;
+		//forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
+      ForecastClass forecastObj(trainningSet, problemParam, rg, methodParam);
+		op< ESolutionHFM > sol = forecastObj.run(timeES, 0, 0);
+		forecastObj.addSolToParetoWithParetoManager(*opf, sol->first);
+		//Pareto<SolutionHFM> pfNew = forecastObj.runMultiObjSearch(timeGPLS, pf);
+		//delete pf;
+		//pf = pfNew;
+      forecastObj.runMultiObjSearch(timeGPLS, opf);
 		////delete &sol->first;
 		////delete &sol->second;
 		////delete sol;
-		delete forecastObject;
+		//delete forecastObject;
 	}
-	forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
+	//forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
+   ForecastClass forecastObj(trainningSet, problemParam, rg, methodParam);
 
-	vector<MultiEvaluation<>*> vEvalPF = pf->getParetoFrontPtr();
+	vector<MultiEvaluation<>*> vEvalPF = opf->getParetoFrontPtr();
 	//vector<SolutionHFM*> vSolPF = pf->getParetoSet();
-   vector<EMSolutionHFM*> vESolPF = pf->getParetoSetFrontPtr();
+   vector<EMSolutionHFM*> vESolPF = opf->getParetoSetFrontPtr();
 	int nObtainedParetoSol = vEvalPF.size();
 
 	int targetFile = problemParam.getTargetFile();
@@ -173,7 +177,7 @@ int usingNonDominatedHFMModels(int argc, char **argv)
 	for (int i = 0; i < nObtainedParetoSol; i++)
 	{
 		cout << setprecision(2);
-		vector<double> blindForecasts = *forecastObject->returnBlind(vESolPF[i]->first.getR(), dataForFeedingValidationTest);
+		vector<double> blindForecasts = *forecastObj.returnBlind(vESolPF[i]->first.getR(), dataForFeedingValidationTest);
 		for (int f = 0; f < (int) blindForecasts.size(); f++)
 			cout << blindForecasts[f] << "/" << targetValidationSet[targetFile][f] << "/" << (targetValidationSet[targetFile][f] - blindForecasts[f]) << "\t";
 
@@ -194,10 +198,10 @@ int usingNonDominatedHFMModels(int argc, char **argv)
 		cout << endl;
 	}
 
-	pf->exportParetoFront("../Outputs/paretoFrontGPLS.txt", "w");
+	opf->exportParetoFront("../Outputs/paretoFrontGPLS.txt", "w");
 
-	delete pf;
-	delete forecastObject;
+	//delete pf;
+	//delete forecastObject;
 
 	cout << "MO Stock Market forecasting finished!" << endl;
 
