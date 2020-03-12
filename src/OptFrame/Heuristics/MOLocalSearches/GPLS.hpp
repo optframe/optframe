@@ -156,6 +156,8 @@ public:
 		//pManager.addSolutionWithMEV(_pf,s,sMev);
       pManager.addSolutionWithMEV(_pf, se);
 		Pareto<S, XMEv>* pr = searchWithOptionalPareto(stopCriteria,&_pf);
+      p = std::move(*pr);
+      delete pr;
 	}
 
 	virtual Pareto<S, XMEv>* searchWithOptionalPareto(const StopCriteria<XMEv>& stopCriteria, Pareto<S, XMEv>* _pf = nullptr)
