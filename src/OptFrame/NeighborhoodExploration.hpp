@@ -59,7 +59,7 @@ public:
    }
 
    // Output move may be nullptr. Otherwise it's a pair of Move and its Cost.
-   virtual op< MoveWithCost > searchMove(const XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
+   virtual op< MoveWithCost<XES, XEv> > searchMove(const XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
 
    virtual bool compatible(string s)
    {

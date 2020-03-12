@@ -1,6 +1,9 @@
 all: pmedcap examples kp tsp hfvrpmt 
 
-examples: kp tsp etii  pmedcap opths  gfp hfvrpmt hfm modm
+examples: mitsp kp tsp etii  pmedcap opths  gfp hfvrpmt hfm modm
+
+mitsp:
+	g++ --std=c++17 -fconcepts MImpTSP-janio.cpp -o appMiTSP 2> error-gcc.err 
 
 fix_examples: svrpdsp modm
 
