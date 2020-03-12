@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_NEIGHBORHOOD_SEARCH_HPP_
-#define OPTFRAME_NEIGHBORHOOD_SEARCH_HPP_
+#ifndef OPTFRAME_NEIGHBORHOOD_EXPLORATION_HPP_
+#define OPTFRAME_NEIGHBORHOOD_EXPLORATION_HPP_
 
 #include <iostream>
 #include <vector>
@@ -39,23 +39,27 @@ using namespace std;
 namespace optframe
 {
 
-// TODO: may pass just XESolution and XEvaluation here (for StopCriteria)... no XSolution explicitly required.
+// This is  NEx: Neighborhood Exploration
+
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES>
+using MoveWithCost = pair< uptr< Move<XES, XEv> >, XEv >;
+
 template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES> // defaults to XSH = XES
-class NeighborhoodSearch: public Component
+class NeighborhoodExploration: public Component
 {
    
 public:
 
-   NeighborhoodSearch()
+   NeighborhoodExploration()
    {
    }
 
-   virtual ~NeighborhoodSearch()
+   virtual ~NeighborhoodExploration()
    {
    }
 
-   // output move may be nullptr
-   virtual uptr< Move<XES, XEv> > searchMove(const XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
+   // Output move may be nullptr. Otherwise it's a pair of Move and its Cost.
+   virtual op< MoveWithCost > searchMove(const XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
 
    virtual bool compatible(string s)
    {
@@ -65,7 +69,7 @@ public:
    static string idComponent()
    {
 	   stringstream ss;
-	   ss << Component::idComponent() << ":NeighborhoodSearch";
+	   ss << Component::idComponent() << ":NEx";
 	   return ss.str();
    }
 
@@ -78,14 +82,14 @@ public:
 
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>, XSearch<XES> XSH = XES>
-class NeighborhoodSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
+class NeighborhoodExplorationBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
 {
 public:
-	virtual ~NeighborhoodSearchBuilder()
+	virtual ~NeighborhoodExplorationBuilder()
 	{
 	}
 
-	virtual NeighborhoodSearch<XES, XEv, XSH>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
+	virtual NeighborhoodExploration<XES, XEv, XSH>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
@@ -99,7 +103,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "NeighborhoodSearch";
+		ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "NEx";
 		return ss.str();
 	}
 
@@ -112,4 +116,4 @@ public:
 }
 
 
-#endif /* OPTFRAME_NEIGHBORHOOD_SEARCH_HPP_ */
+#endif /* OPTFRAME_NEIGHBORHOOD_EXPLORATION_HPP_ */

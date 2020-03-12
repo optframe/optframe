@@ -1,6 +1,7 @@
 all: app_TSP
 
-CC=g++-8
+#CC=g++-8
+CC=g++
 CFLAGS= -g -Wall -O3 --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
 
 app_TSP:  TSPmain.o  TSPScanner.o  TSPConstructiveBestInsertion.o  TSPDeltaMoveTSP2Opt.o  TSPDeltaMoveTSPOrOptk.o  TSPEvaluator.o  TSPNearestNeighborConstructive.o  TSPNSEnumShift.o  TSPNSEnumSwap.o  TSPProblemCommand.o  TSPProblemInstance.o  TSPRandomInitialSolution.o  

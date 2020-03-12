@@ -1,0 +1,7 @@
+{
+    "[cpp]": {
+        "editor.tabSize": 3,
+        "editor.detectIndentation": false
+    },
+    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle : Mozilla , ColumnLimit : 0, IndentWidth: 3, AccessModifierOffset: -3}"
+}
