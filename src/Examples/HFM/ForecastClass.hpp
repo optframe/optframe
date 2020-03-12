@@ -407,7 +407,7 @@ public:
       return finalSol;
    }
 
-   std::optional<pair<SolutionHFM, Evaluation<>>> run(int timeES, int timeVND, int timeILS)
+   std::optional< ESolutionHFM > run(int timeES, int timeVND, int timeILS)
    {
       if (timeES == 0)
          timeES = 1;
@@ -418,7 +418,8 @@ public:
       //StopCriteria<EvaluationHFM> stopCriteria(timeES, Evaluation<>(targetValue));   
       StopCriteria<EvaluationHFM> stopCriteria(timeES);
       stopCriteria.target_f = Evaluation<>(targetValue);
-      std::optional<pair<SolutionHFM, Evaluation<>>> finalSol;
+      //
+      std::optional< ESolutionHFM > finalSol;
       es->search(finalSol, stopCriteria);
       
       //finalSol = EsCOpt->search(timeES); //Continous ES -- Deprecated
@@ -436,7 +437,7 @@ public:
       return finalSol;
    }
 
-   std::optional<pair<SolutionHFM, Evaluation<>>> runGILS(int timeGRASP, int timeILS)
+   std::optional< ESolutionHFM > runGILS(int timeGRASP, int timeILS)
    {
 
       //		BasicGRASP<RepEFP> g(*eval, *c, emptyLS, 0.1, 100000);
@@ -448,10 +449,11 @@ public:
       //		const Solution<RepEFP> solGRASP = finalSol.first;
       //		const Evaluation<> evaluationGrasp = finalSol.second;
 
-      std::optional<pair<SolutionHFM, Evaluation<>>> finalSol = std::nullopt;
+      std::optional< ESolutionHFM > finalSol = std::nullopt;
       StopCriteria<EvaluationHFM> stopCriteria;
       stopCriteria.timelimit = timeILS;
       //stopCriteria.target_f(Evaluation<>(0));
+      //
       ils->setMessageLevel(3);
       if (timeILS > 0)
          ils->search(finalSol, stopCriteria);

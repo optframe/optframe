@@ -82,7 +82,7 @@ public:
             cout << "Creating initial population using a initial pareto method:" << init_pop_size << endl;
 
          if (tnow.now() < stopCriteria.timelimit)
-            x_e = std::move(init_pareto.generatePareto(init_pop_size, stopCriteria.timelimit - tnow.now()));
+            x_e = init_pareto.generatePareto(init_pop_size, stopCriteria.timelimit - tnow.now());
 
          if (Component::information)
             cout << "Population generated with " << x_e.size() << " individuals!" << endl;

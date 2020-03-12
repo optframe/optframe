@@ -165,7 +165,7 @@ public:
 	}
 
 	//virtual Pareto<S, XMEv> searchWithOptionalPareto(const StopCriteria<XMEv>& stopCriteria, Pareto<S, XMEv>* _pf = nullptr)
-   virtual void searchWithOptionalPareto(const StopCriteria<XMEv>& stopCriteria, op< Pareto<S, XMEv> > ioPF)
+   virtual void searchWithOptionalPareto(const StopCriteria<XMEv>& stopCriteria, op< Pareto<S, XMEv> >& ioPF)
 	{
 		Timer tnow;
 

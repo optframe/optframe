@@ -53,6 +53,13 @@ public:
 			return nullptr;
 	}
 
+   // neighborhood id
+   id_type nid()
+   {
+      return 0;
+   }
+
+
 public:
 	static string idComponent()
 	{

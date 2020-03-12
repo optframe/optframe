@@ -21,6 +21,9 @@ using uptr = std::unique_ptr<T>;
 template<class T>
 using op = std::optional<T>;
 
+// id type for move id, neighborhood id, etc.
+using id_type = std::size_t;
+
 //https://en.cppreference.com/w/cpp/concepts/boolean
 /*
 template<class B>
