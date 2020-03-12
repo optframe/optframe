@@ -32,19 +32,20 @@ namespace optframe
 
 typedef int BasicHistory;
 
-template<XSolution S, XEvaluation XEv=Evaluation<>, XEvaluation XMEv=MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+template<XSolution S, XEvaluation XMEv=MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
 //template<XESolution XMES, XEvaluation XMEv=MultiEvaluation<>>
-class BasicMOILS: public MultiObjILS<BasicHistory, XMES, XMEv>
+class BasicMOILS: public MultiObjILS<BasicHistory, S, XMEv, XMES>
 {
-
+   using XEv = Evaluation<>; // hardcoded.. TODO: fix
 private:
 	BasicMOILSPerturbation<XMES, XMEv>& p;
 	int iterMax;
 
 public:
 
-	BasicMOILS(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<S, XMEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg, BasicMOILSPerturbation<XMES, XMEv>& _p, int _iterMax) :
-		MultiObjILS<BasicHistory, XMES, XMEv>(_mev,_init_pareto,_init_pop_size,_ls,_rg), p(_p), iterMax(_iterMax)
+   BasicMOILS(MultiEvaluator<S, XEv, XMEv, XMES>& _mev, InitialPareto<S, XMEv, XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, BasicMOILSPerturbation<XMES, XMEv>& _p, int _iterMax) :
+	//BasicMOILS(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<S, XMEv, XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, BasicMOILSPerturbation<XMES, XMEv>& _p, int _iterMax) :
+		MultiObjILS<BasicHistory, S, XMEv, XMES>(_mev,_init_pareto,_init_pop_size,_ls,_rg), p(_p), iterMax(_iterMax)
 	{
 	}
 
@@ -52,7 +53,7 @@ public:
 	{
 	}
 
-	virtual BasicHistory& initializeHistory()
+	virtual BasicHistory& initializeHistory() override
 	{
 		int& iter = *new int;
 		iter = 0;
@@ -60,11 +61,11 @@ public:
 		return iter;
 	}
 
-	virtual void perturbation(S& s, MultiEvaluation<>& e, const StopCriteria<XEv>& stopCriteria, BasicHistory& history)
+	virtual void perturbation(XMES& smev, const StopCriteria<XMEv>& stopCriteria, BasicHistory& history) override
 	{
 		int iter = history;
 
-		p.perturb(s, e, stopCriteria);
+		p.perturb(smev, stopCriteria);
 
 		// Incrementa a iteracao
 		iter++;
@@ -73,7 +74,7 @@ public:
 		history = iter;
 	}
 
-	virtual void acceptanceCriterion(const Pareto<S, XMEv>& pf, BasicHistory& history)
+	virtual void acceptanceCriterion(const Pareto<S, XMEv>& pf, BasicHistory& history) override
 	{
 
 		if (pf.getNewNonDominatedSolutionsStatus())
@@ -88,7 +89,7 @@ public:
 		}
 	}
 
-	virtual bool terminationCondition(BasicHistory& history)
+	virtual bool terminationCondition(BasicHistory& history) override
 	{
 		int iter = history;
 
@@ -108,7 +109,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MultiObjILS<BasicHistory, S, XEv>::idComponent() << "BasicMOILS";
+		ss << MultiObjILS<BasicHistory, S, XMEv>::idComponent() << "BasicMOILS";
 		return ss.str();
 	}
 

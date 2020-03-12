@@ -326,13 +326,19 @@ public:
       //		GRInitialPareto<RepEFP,OPTFRAME_DEFAULT_ADS> grIP(*c, rg, 1, *mev);
 
       //BasicInitialPareto(InitialSearch<XMES, XMEv>& _constructive, GeneralEvaluator<XMES, XMEv>& _mev) :
+
+      paretoManager<SolutionHFM>* paretoMan = new paretoManager<SolutionHFM>(*mev);
+      //BasicInitialPareto<SolutionHFM, EvaluationHFM, MultiEvaluationHFM, EMSolutionHFM> grIP(*cm, *mev);
+      BasicInitialPareto<SolutionHFM, MultiEvaluationHFM> grIP(*cm, *paretoMan);
+
       GeneralEvaluator<EMSolutionHFM, MultiEvaluationHFM>* gmev = mev;
-      BasicInitialPareto<SolutionHFM, MultiEvaluationHFM> grIP(*cm, *gmev);
+
       int maxTriesRI = 100;
       MORandomImprovement<SolutionHFM> moriMFR(*gmev, *vNSeqMO->at(0), maxTriesRI);
       MORandomImprovement<SolutionHFM> moriCSI(*gmev, *vNSeqMO->at(1), maxTriesRI);
       MORandomImprovement<SolutionHFM> moriRSI(*gmev, *vNSeqMO->at(2), maxTriesRI);
       MORandomImprovement<SolutionHFM> moriASI(*gmev, *vNSeqMO->at(3), maxTriesRI);
+
 
       vector<MOLocalSearch<SolutionHFM>*> vMOLS;
       vMOLS.push_back(&moriMFR);
@@ -342,7 +348,7 @@ public:
 
       GeneralParetoLocalSearch<SolutionHFM> generalPLS(*mev, grIP, initial_population_size, vMOLS);
 
-      BasicMOILS<SolutionHFM> basicMOILS(*gmev, grIP, initial_population_size, &moriASI, rg, *basicMOILSPert, 100);
+      BasicMOILS<SolutionHFM, MultiEvaluationHFM> basicMOILS(*mev, grIP, initial_population_size, &moriASI, rg, *basicMOILSPert, 100);
       
       // for testing OptFrame v4
       //BasicGeneralILS<SolutionHFM> basicGeneralILS(*mev, grIP, initial_population_size, &moriASI, rg, *basicMOILSPert, 100);

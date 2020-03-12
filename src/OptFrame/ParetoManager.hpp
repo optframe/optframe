@@ -34,18 +34,20 @@ namespace optframe
 template<XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
 class paretoManager
 {
+   using XEv = Evaluation<>; // hardcoding this... TODO: solve by having a GeneralEvaluator down here!
 public:
-	//MultiEvaluator<S, XEv, XMEv, XMES>& multiEval;
-   GeneralEvaluator<XMES, XMEv>& multiEval;
-	ParetoDominance<S, XMEv> dom;
-	ParetoDominanceWeak<S, XMEv> domWeak;
+	MultiEvaluator<S, XEv, XMEv, XMES>& multiEval;
+   //GeneralEvaluator<XMES, XMEv>& multiEval;
+   //MultiEvaluator<S, XEv>& mev; // cannot be this, for now!
+	ParetoDominance<S, XEv, XMEv> dom;
+	ParetoDominanceWeak<S, XEv, XMEv> domWeak;
 //	Pareto<S, XMEv> x_e;
 
 public:
 
-	//paretoManager(MultiEvaluator<S, XEv, XMEv, XMES>& _multiEval) :
-   paretoManager(GeneralEvaluator<XMES, XMEv>& _multiEval) :
-			multiEval(_multiEval), dom(ParetoDominance<S, XMEv>(_multiEval)), domWeak(ParetoDominanceWeak<S, XMEv>(_multiEval))
+	paretoManager(MultiEvaluator<S, XEv, XMEv, XMES>& _multiEval) :
+   //paretoManager(GeneralEvaluator<XMES, XMEv>& _multiEval) : // cannot be this, for now!
+			multiEval(_multiEval), dom(ParetoDominance<S, XEv, XMEv>(_multiEval)), domWeak(ParetoDominanceWeak<S, XEv, XMEv>(_multiEval))
 	{
 	}
 

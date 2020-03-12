@@ -12,7 +12,9 @@
 using namespace std;
 namespace HFM {
 
-class MoveNEIGHAddSingleInput : public Move<ESolutionHFM>
+template<XESolution hfmXES = ESolutionHFM, XEvaluation hfmXEv = EvaluationHFM>
+//class MoveNEIGHAddSingleInput : public Move<hfmXES, hfmXEv>
+class MoveNEIGHAddSingleInput : public Move<hfmXES, hfmXEv>
 {
 private:
    int file, K;
@@ -32,13 +34,13 @@ public:
    {
    }
 
-   bool canBeApplied(const ESolutionHFM& se) override
+   bool canBeApplied(const hfmXES& se) override
    {
       bool currentSampleFromTarget = ((file == 0) && (K == 0));
       return !currentSampleFromTarget;
    }
 
-   uptr<Move<ESolutionHFM>> apply(ESolutionHFM& se) override
+   uptr<Move<hfmXES, hfmXEv>> apply(hfmXES& se) override
    {
       RepHFM& rep = se.first.getR();
       if (!reverse) {
@@ -60,10 +62,10 @@ public:
          rep.singleIndex.pop_back();
          rep.singleFuzzyRS.pop_back();
       }
-      return uptr<Move<ESolutionHFM>>(new MoveNEIGHAddSingleInput(file, K, rulesAndWeights, !reverse));
+      return uptr<Move<hfmXES, hfmXEv>>(new MoveNEIGHAddSingleInput(file, K, rulesAndWeights, !reverse));
    }
 
-   virtual bool operator==(const Move<ESolutionHFM>& _m) const
+   virtual bool operator==(const Move<hfmXES, hfmXEv>& _m) const
    {
       const MoveNEIGHAddSingleInput& m = (const MoveNEIGHAddSingleInput&)_m;
       return ((m.file == file) && (m.K == K) && (m.rulesAndWeights == rulesAndWeights));
@@ -77,7 +79,9 @@ public:
    }
 };
 
-class NSIteratorNEIGHAddSingleInput : public NSIterator<ESolutionHFM>
+template<XESolution hfmXES = ESolutionHFM, XEvaluation hfmXEv = EvaluationHFM>
+//class NSIteratorNEIGHAddSingleInput : public NSIterator<ESolutionHFM>
+class NSIteratorNEIGHAddSingleInput : public NSIterator<hfmXES, hfmXEv>
 {
 private:
    const RepHFM& rep;
@@ -86,10 +90,10 @@ private:
    RandGen& rg;
 
    //MoveNEIGHAddSingleInput* m;
-   uptr<Move<ESolutionHFM>> m; // general naming
+   uptr<Move<hfmXES, hfmXEv>> m; // general naming
 
    //vector<uptr<MoveNEIGHAddSingleInput>> moves;
-   vector<uptr<Move<ESolutionHFM>>> moves; // keep general naming here
+   vector<uptr<Move<hfmXES, hfmXEv>>> moves; // keep general naming here
    int index;
 
 public:
@@ -112,7 +116,7 @@ public:
 
    virtual void first() override
    {
-      cout << toString() << " iterator is not working properly. Iterator should be improved" << endl;
+      cout << this->toString() << " iterator is not working properly. Iterator should be improved" << endl;
       exit(1);
       int nEXV = 0; //TODO
       int maxLag = vMaxLag[nEXV];
@@ -133,7 +137,7 @@ public:
          vector<double> rulesAndWeights =
            { greater, greaterWeight, lower, lowerWeight, epsilon, fuzzyFunction };
 
-         moves.push_back(uptr<Move<ESolutionHFM>>(new MoveNEIGHAddSingleInput(0, lag, rulesAndWeights, false)));
+         moves.push_back(uptr<Move<hfmXES, hfmXEv>>(new MoveNEIGHAddSingleInput<hfmXES, hfmXEv>(0, lag, rulesAndWeights, false)));
       }
 
       if (moves.size() > 0) {
@@ -156,7 +160,7 @@ public:
       return m == nullptr;
    }
 
-   virtual uptr<Move<ESolutionHFM>> current() override
+   virtual uptr<Move<hfmXES, hfmXEv>> current() override
    {
       if (isDone()) {
          cout << "There isnt any current element!" << endl;
@@ -164,7 +168,7 @@ public:
          exit(1);
       }
 
-      uptr<Move<ESolutionHFM>> m2 = std::move(m);
+      uptr<Move<hfmXES, hfmXEv>> m2 = std::move(m);
       m = nullptr;
 
       return m2;
@@ -221,12 +225,13 @@ public:
 
       vector<double> rulesAndWeights =
         { greater, greaterWeight, lower, lowerWeight, epsilon, fuzzyFunction };
-      return uptr<Move<hfmXES, hfmXEv>>(new MoveNEIGHAddSingleInput(nEXV, K, rulesAndWeights, false)); // return a random move
+        return uptr<Move<hfmXES, hfmXEv>>(new MoveNEIGHAddSingleInput<hfmXES, hfmXEv>(nEXV, K, rulesAndWeights, false));
+      //return uptr<Move<hfmXES, hfmXEv>>(new MoveNEIGHAddSingleInput(nEXV, K, rulesAndWeights, false)); // return a random move
    }
 
    virtual uptr<NSIterator<hfmXES, hfmXEv>> getIterator(const hfmXES& se) override
    {
-      return uptr<NSIterator<hfmXES, hfmXEv>> (new NSIteratorNEIGHAddSingleInput(se.first.getR(), vMaxLag, vMaxUpperLag, pEFP, rg)); // return an iterator to the neighbors of 'rep'
+      return uptr<NSIterator<hfmXES, hfmXEv>> (new NSIteratorNEIGHAddSingleInput<hfmXES, hfmXEv>(se.first.getR(), vMaxLag, vMaxUpperLag, pEFP, rg)); // return an iterator to the neighbors of 'rep'
    }
 
    virtual string toString() const override

@@ -37,7 +37,7 @@ namespace optframe {
 template<class H, XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>, XSearch<XMES> XSH = Pareto<S, XMEv, XMES>>
 class MultiObjILS : public MOILS, public MultiObjSearch<S, XMEv, XMES>
 {
-
+   using XEv = Evaluation<>; // hardcoded... TODO: fix
 private:
    InitialPareto<S, XMEv>& init_pareto;
    int init_pop_size;
@@ -46,12 +46,13 @@ private:
    RandGen& rg;
 
 public:
-   MultiObjILS(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<S, XMEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg)
+   //MultiObjILS(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<S, XMEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg)
+   MultiObjILS(MultiEvaluator<S, XEv, XMEv, XMES>& _mev, InitialPareto<S, XMEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg)
    //MultiObjILS(Evaluator<S>& _mev, InitialPareto<S, XMEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg)
      : init_pareto(_init_pareto)
      , init_pop_size(_init_pop_size)
      , ls(_ls)
-     , pMan(paretoManager<S, XMEv>(_mev))
+     , pMan(paretoManager<S, XMEv, XMES>(_mev))
      , rg(_rg)
    {
    }
@@ -62,7 +63,7 @@ public:
 
    virtual H& initializeHistory() = 0;
 
-   virtual void perturbation(S& s, XMEv& e, const StopCriteria<XMEv>& stopCriteria, H& history) = 0;
+   virtual void perturbation(XMES& smev, const StopCriteria<XMEv>& stopCriteria, H& history) = 0;
 
    virtual void acceptanceCriterion(const Pareto<S, XMEv>& pf, H& history) = 0;
 
@@ -115,14 +116,23 @@ public:
 
          StopCriteria<XMEv> stopCriteriaPert;
          stopCriteriaPert.timelimit = stopCriteria.timelimit;
-         perturbation(rS, rMev, stopCriteriaPert, *history);
+         //
+         XMES smes = make_pair(rS, rMev);
+         perturbation(smes, stopCriteriaPert, *history);
+         rS = smes.first;
+         rMev = smes.second;
 
          //Try to add the neighbor solution that was obtained from the perturbation
          pMan.addSolutionWithMEV(x_e, rS, rMev);
 
          StopCriteria<XMEv> stopCriteriaLS;
          stopCriteriaLS.timelimit = stopCriteria.timelimit;
-         ls->moSearchFrom(x_e, rS, rMev, pMan, stopCriteriaLS);
+         //
+         smes = make_pair(rS, rMev);
+         ls->moSearchFrom(x_e, smes, pMan, stopCriteriaLS);
+         rS = smes.first;
+         rMev = smes.second;
+
 
          acceptanceCriterion(x_e, *history);
          x_e.setNewNonDominatedSolutionsStatus(false);

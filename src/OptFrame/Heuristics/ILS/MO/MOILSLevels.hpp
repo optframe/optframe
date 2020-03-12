@@ -35,15 +35,15 @@ typedef pair<pair<int, int>, pair<int, int> > levelHistory;
 template<XSolution S, XEvaluation XMEv=MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
 class MOILSLevels: public MultiObjILS<levelHistory, S, XMEv>
 {
-
+   using XEv = Evaluation<>; // hardcoded... TODO: fix
 private:
-	MOILSLPerturbation<S, XMEv>& p;
+	MOILSLPerturbation<XMES, XMEv>& p;
 	int iterMax, levelMax;
 
 public:
 
-	//MOILSLevels(MultiEvaluator<S, XEv>& _mev, InitialPareto<S, XMEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg, MOILSLPerturbation<S, XEv>& _p, int _iterMax, int _levelMax) :
-   MOILSLevels(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<S, XMEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, MOILSLPerturbation<S, XMEv>& _p, int _iterMax, int _levelMax) :
+	MOILSLevels(MultiEvaluator<S, XEv, XMEv>& _mev, InitialPareto<S, XMEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, MOILSLPerturbation<XMES, XMEv>& _p, int _iterMax, int _levelMax) :
+   //MOILSLevels(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<S, XMEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, MOILSLPerturbation<XMES, XMEv>& _p, int _iterMax, int _levelMax) :
 			MultiObjILS<levelHistory, S, XMEv>(_mev, _init_pareto, _init_pop_size, _ls, _rg), p(_p), iterMax(_iterMax), levelMax(_levelMax)
 	{
 
@@ -64,7 +64,7 @@ public:
 		return *new levelHistory(vars, maxs);
 	}
 
-	virtual void perturbation(S& s, XMEv& mev, const StopCriteria<XMEv>& stopCriteria, levelHistory& history) override
+	virtual void perturbation(XMES& smev, const StopCriteria<XMEv>& stopCriteria, levelHistory& history) override
 	{
 		//cout << "perturbation(.)" << endl;
 
@@ -76,7 +76,7 @@ public:
 		//cout << "level = " << level << " e iter = " << iter << endl;
 
 		// nivel atual: 'level'
-		p.perturb(s, mev, stopCriteria, level);
+		p.perturb(smev, stopCriteria, level);
 
 		// Incrementa a iteracao
 		iter++;

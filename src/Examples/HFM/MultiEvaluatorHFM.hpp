@@ -109,7 +109,7 @@ protected:
 };
 
 static_assert(std::is_base_of<MultiEvaluator< SolutionHFM, EvaluationHFM, MultiEvaluationHFM >, HFMMultiEvaluator >::value,  "not inherited from MultiEvaluator");
-static_assert(std::is_base_of<GeneralEvaluator< pair<SolutionHFM,MultiEvaluationHFM>  >, HFMMultiEvaluator >::value,  "not inherited from GeneralEvaluator");
+//static_assert(std::is_base_of<GeneralEvaluator< EMSolutionHFM  >, HFMMultiEvaluator >::value,  "not inherited from GeneralEvaluator");
 
 } // namespace hfm
 

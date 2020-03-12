@@ -37,6 +37,9 @@ protected:
 	vector<Evaluation<>> vev; // TODO: pass ObjType here
 
 public:
+   bool outdated {true};
+
+public:
 
 	MultiEvaluation()
 	{

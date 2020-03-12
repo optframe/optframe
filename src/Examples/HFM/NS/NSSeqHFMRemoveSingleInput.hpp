@@ -13,7 +13,9 @@ using namespace std;
 namespace HFM
 {
 
-class MoveHFMRemoveSingleInput: public Move<ESolutionHFM>
+template<XESolution hfmXES = ESolutionHFM, XEvaluation hfmXEv = EvaluationHFM>
+//class MoveHFMRemoveSingleInput: public Move<hfmXES, hfmXEv>
+class MoveHFMRemoveSingleInput: public Move<hfmXES, hfmXEv>
 {
 private:
 	int rule;
@@ -34,13 +36,13 @@ public:
 	{
 	}
 
-	bool canBeApplied(const ESolutionHFM& se) override
+	bool canBeApplied(const hfmXES& se) override
 	{
       const RepHFM& rep = se.first.getR();
 		return ((rule >= 0) && (rule < (int) rep.singleIndex.size()) && ((int) rep.singleIndex.size() > 1));
 	}
 
-	uptr<Move<ESolutionHFM>> apply(ESolutionHFM& se) override
+	uptr<Move<hfmXES, hfmXEv>> apply(hfmXES& se) override
 	{
       RepHFM& rep = se.first.getR();
 		pair<int, int> tempSingleIndexOld;
@@ -55,7 +57,7 @@ public:
 
 				rep.singleIndex.erase(rep.singleIndex.begin() + rule);
 				rep.singleFuzzyRS.erase(rep.singleFuzzyRS.begin() + rule);
-				return uptr<Move<ESolutionHFM>>(new MoveHFMRemoveSingleInput(rule, !reverse, tempSingleIndexOld, tempSingleFuzzyRSOld));
+				return uptr<Move<hfmXES, hfmXEv>>(new MoveHFMRemoveSingleInput<hfmXES, hfmXEv>(rule, !reverse, tempSingleIndexOld, tempSingleFuzzyRSOld));
 			}
 
 		}
@@ -65,11 +67,11 @@ public:
 			rep.singleFuzzyRS.insert(rep.singleFuzzyRS.begin() + rule, singleFuzzyRSOld);
 		}
 
-		return uptr<Move<ESolutionHFM>>(new MoveHFMRemoveSingleInput(rule, !reverse, tempSingleIndexOld, tempSingleFuzzyRSOld));
+		return uptr<Move<hfmXES, hfmXEv>>(new MoveHFMRemoveSingleInput<hfmXES, hfmXEv>(rule, !reverse, tempSingleIndexOld, tempSingleFuzzyRSOld));
 
 	}
 
-	virtual bool operator==(const Move<ESolutionHFM>& _m) const
+	virtual bool operator==(const Move<hfmXES, hfmXEv>& _m) const
 	{
 		const MoveHFMRemoveSingleInput& m = (const MoveHFMRemoveSingleInput&) _m;
 		return ((m.rule == rule) && (m.reverse == reverse));
@@ -80,16 +82,17 @@ public:
 		cout << "MoveNEIGHRemoveSingleInput( vector:  rule " << rule << " <=>  reverse " << reverse << " )";
 		cout << endl;
 	}
-}
-;
+};
 
-class NSIteratorHFMRemoveSingleInput: public NSIterator<ESolutionHFM>
+template<XESolution hfmXES = ESolutionHFM, XEvaluation hfmXEv = EvaluationHFM>
+//class NSIteratorHFMRemoveSingleInput: public NSIterator<ESolutionHFM>
+class NSIteratorHFMRemoveSingleInput: public NSIterator<hfmXES, hfmXEv>
 {
 private:
 	//MoveHFMRemoveSingleInput* m;
 	//vector<uptr<MoveHFMRemoveSingleInput>> moves;
-   uptr<Move<ESolutionHFM>> m; // general move
-   vector<uptr<Move<ESolutionHFM>>> moves; // general moves
+   uptr<Move<hfmXES, hfmXEv>> m; // general move
+   vector<uptr<Move<hfmXES, hfmXEv>>> moves; // general moves
 
 	int index;
 	const RepHFM& rep;
@@ -115,7 +118,7 @@ public:
 
 		for (int rule = 0; rule < (int) rep.singleIndex.size(); rule++)
 		{
-			moves.push_back(uptr<Move<ESolutionHFM>>(new MoveHFMRemoveSingleInput(rule, false, tempSingleIndexOld, tempSingleFuzzyRSOld)));
+			moves.push_back(uptr<Move<hfmXES, hfmXEv>>(new MoveHFMRemoveSingleInput<hfmXES, hfmXEv>(rule, false, tempSingleIndexOld, tempSingleFuzzyRSOld)));
 		}
 
 		if (moves.size() > 0)
@@ -142,7 +145,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual uptr<Move<ESolutionHFM>> current() override
+	virtual uptr<Move<hfmXES, hfmXEv>> current() override
 	{
 		if (isDone())
 		{
@@ -151,7 +154,7 @@ public:
 			exit(1);
 		}
 
-		uptr<Move<ESolutionHFM>> m2 = std::move(m);
+		uptr<Move<hfmXES, hfmXEv>> m2 = std::move(m);
       m = nullptr;
       return m2;
 	}
@@ -187,13 +190,13 @@ public:
 		pair<int, int> tempSingleIndexOld;
 		vector<double> tempSingleFuzzyRSOld;
 
-		return uptr<Move<hfmXES, hfmXEv>>(new MoveHFMRemoveSingleInput(rule, false, tempSingleIndexOld, tempSingleFuzzyRSOld)); // return a random move
+		return uptr<Move<hfmXES, hfmXEv>>(new MoveHFMRemoveSingleInput<hfmXES, hfmXEv>(rule, false, tempSingleIndexOld, tempSingleFuzzyRSOld)); // return a random move
 	}
 
 	virtual uptr<NSIterator<hfmXES, hfmXEv>> getIterator(const hfmXES& se) override
 	{
       const RepHFM& rep = se.first.getR();
-		return uptr<NSIterator<hfmXES, hfmXEv>>(new NSIteratorHFMRemoveSingleInput(rep)); // return an iterator to the neighbors of 'rep'
+		return uptr<NSIterator<hfmXES, hfmXEv>>(new NSIteratorHFMRemoveSingleInput<hfmXES, hfmXEv>(rep)); // return an iterator to the neighbors of 'rep'
 	}
 
 	virtual string toString() const override

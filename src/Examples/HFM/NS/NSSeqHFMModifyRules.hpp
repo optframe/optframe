@@ -13,7 +13,9 @@ using namespace std;
 namespace HFM
 {
 
-class MoveHFMModifyRule: public Move<ESolutionHFM>
+
+template<XESolution hfmXES = ESolutionHFM, XEvaluation hfmXEv = EvaluationHFM>
+class MoveHFMModifyRule: public Move<hfmXES, hfmXEv>
 {
 private:
 	int r, o;
@@ -32,16 +34,16 @@ public:
 	{
 	}
 
-	bool canBeApplied(const ESolutionHFM& se) override
+	bool canBeApplied(const hfmXES& se) override
 	{
 		return true;
 	}
 
-	uptr<Move<ESolutionHFM>> apply(ESolutionHFM& se) override
+	uptr<Move<hfmXES, hfmXEv>> apply(hfmXES& se) override
 	{
       RepHFM& rep = se.first.getR();
 		if (r == -1)
-			return uptr<Move<ESolutionHFM>>(new MoveHFMModifyRule(-1, -1, -1, -1, -1));
+			return uptr<Move<hfmXES, hfmXEv>>(new MoveHFMModifyRule<hfmXES, hfmXEv>(-1, -1, -1, -1, -1));
 
 		if (r == PERTINENCEFUNC)
 		{
@@ -52,7 +54,7 @@ public:
 			if (vectorType == Derivative_Inputs)
 				rep.derivativeFuzzyRS[o][r] = !rep.derivativeFuzzyRS[o][r];
 
-			return uptr<Move<ESolutionHFM>>(new MoveHFMModifyRule(r, o, applyValue, !sign, vectorType));
+			return uptr<Move<hfmXES, hfmXEv>>(new MoveHFMModifyRule<hfmXES, hfmXEv>(r, o, applyValue, !sign, vectorType));
 		}
 
 		if (vectorType == Single_Input)
@@ -80,10 +82,10 @@ public:
 				rep.derivativeFuzzyRS[o][r] -= applyValue;
 		}
 		// return reverse move
-		return uptr<Move<ESolutionHFM>>(new MoveHFMModifyRule(r, o, applyValue, !sign, vectorType));
+		return uptr<Move<hfmXES, hfmXEv>>(new MoveHFMModifyRule<hfmXES, hfmXEv>(r, o, applyValue, !sign, vectorType));
 	}
 
-	virtual bool operator==(const Move<ESolutionHFM>& _m) const
+	virtual bool operator==(const Move<hfmXES, hfmXEv>& _m) const
 	{
 		const MoveHFMModifyRule& m = (const MoveHFMModifyRule&) _m;
 		return ((m.r == r) && (m.o == o) && (m.sign == sign));
@@ -97,13 +99,15 @@ public:
 	}
 };
 
-class NSIteratorHFMModifyRules: public NSIterator<ESolutionHFM>
+
+template<XESolution hfmXES = ESolutionHFM, XEvaluation hfmXEv = EvaluationHFM>
+class NSIteratorHFMModifyRules: public NSIterator<hfmXES, hfmXEv>
 {
 private:
 	//MoveHFMModifyRule* m;
 	//vector<uptr<MoveHFMModifyRule>> moves;
-   uptr<Move<ESolutionHFM>> m; // general move
-   vector<uptr<Move<ESolutionHFM>>> moves; // general moves
+   uptr<Move<hfmXES, hfmXEv>> m; // general move
+   vector<uptr<Move<hfmXES, hfmXEv>>> moves; // general moves
 	int index;
 	const RepHFM& rep;
 	HFMProblemInstance& pEFP;
@@ -132,7 +136,7 @@ public:
 				for (int o = 0; o < options; o++)
 					for (int v = 0; v < nShakes; v++)
 					{
-						moves.push_back(uptr<Move<ESolutionHFM>>(new MoveHFMModifyRule(r, o, vUpdateValues[v], sign, 0)));
+						moves.push_back(uptr<Move<hfmXES, hfmXEv>>(new MoveHFMModifyRule<hfmXES, hfmXEv>(r, o, vUpdateValues[v], sign, 0)));
 					}
 
 		options = rep.averageFuzzyRS.size(); //rep.size() options
@@ -142,7 +146,7 @@ public:
 				for (int o = 0; o < options; o++)
 					for (int v = 0; v < nShakes; v++)
 					{
-						moves.push_back(uptr<Move<ESolutionHFM>>(new MoveHFMModifyRule(r, o, vUpdateValues[v], sign, 1)));
+						moves.push_back(uptr<Move<hfmXES, hfmXEv>>(new MoveHFMModifyRule<hfmXES, hfmXEv>(r, o, vUpdateValues[v], sign, 1)));
 					}
 
 		options = rep.derivativeFuzzyRS.size(); //rep.size() options
@@ -152,7 +156,7 @@ public:
 				for (int o = 0; o < options; o++)
 					for (int v = 0; v < (int) nShakes; v++)
 					{
-						moves.push_back(uptr<Move<ESolutionHFM>>(new MoveHFMModifyRule(r, o, vUpdateValues[v], sign, 2)));
+						moves.push_back(uptr<Move<hfmXES, hfmXEv>>(new MoveHFMModifyRule<hfmXES, hfmXEv>(r, o, vUpdateValues[v], sign, 2)));
 					}
 
 		if (moves.size() > 0)
@@ -176,7 +180,7 @@ public:
 		return m == nullptr;
 	}
 
-	virtual uptr<Move<ESolutionHFM>> current() override
+	virtual uptr<Move<hfmXES, hfmXEv>> current() override
 	{
 		if (isDone())
 		{
@@ -185,7 +189,7 @@ public:
 			exit(1);
 		}
 
-      uptr<Move<ESolutionHFM>> m2 = std::move(m);
+      uptr<Move<hfmXES, hfmXEv>> m2 = std::move(m);
       m = nullptr;
 
 		return m2;
@@ -237,7 +241,7 @@ public:
 	{
 	}
 
-	//virtual uptr<Move<ESolutionHFM>> randomMove(const ESolutionHFM& se) override
+	//virtual uptr<Move<hfmXES, hfmXEv>> randomMove(const ESolutionHFM& se) override
    virtual uptr<Move<hfmXES, hfmXEv>> randomMove(const hfmXES& se) override
 	{
       const RepHFM& rep = se.first.getR();
@@ -281,18 +285,18 @@ public:
 		}
 
 		if (tries == maxTries)
-			return uptr<Move<hfmXES, hfmXEv>>(new MoveHFMModifyRule(-1, -1, -1, -1, -1)); // return a random move
+			return uptr<Move<hfmXES, hfmXEv>>(new MoveHFMModifyRule<hfmXES, hfmXEv>(-1, -1, -1, -1, -1)); // return a random move
 
 		int applyRand = rg.rand(vUpdateValues.size());
 		double applyValue = vUpdateValues.at(applyRand);
 		bool sign = rg.rand(2);
 
-		return uptr<Move<hfmXES, hfmXEv>>(new MoveHFMModifyRule(r, o, applyValue, sign, vectorType)); // return a random move
+		return uptr<Move<hfmXES, hfmXEv>>(new MoveHFMModifyRule<hfmXES, hfmXEv>(r, o, applyValue, sign, vectorType)); // return a random move
 	}
 
 	virtual uptr<NSIterator<hfmXES, hfmXEv>> getIterator(const hfmXES& se) override
 	{
-		return uptr<NSIterator<hfmXES, hfmXEv>>(new NSIteratorHFMModifyRules(se.first.getR(), pEFP, vUpdateValues)); // return an iterator to the neighbors of 'rep'
+		return uptr<NSIterator<hfmXES, hfmXEv>>(new NSIteratorHFMModifyRules<hfmXES, hfmXEv>(se.first.getR(), pEFP, vUpdateValues)); // return an iterator to the neighbors of 'rep'
 	}
 
 	virtual string toString() const override

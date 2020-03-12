@@ -43,17 +43,17 @@ using namespace std;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
 class ParetoDominance
 {
 public:
 	// TODO: make Evaluator inherit from Direction!
 	vector<Direction*> v_d;
-	MultiEvaluator<S, XEv>& mev;
+   MultiEvaluator<S, XEv, XMEv, XMES>& mev;
 
 public:
 
-	ParetoDominance(MultiEvaluator<S, XEv>& _mev) :
+	ParetoDominance(MultiEvaluator<S, XEv, XMEv, XMES>& _mev) :
 			mev(_mev)
 	{
 	}

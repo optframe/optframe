@@ -53,10 +53,11 @@ public:
 // core methods
 
     // 1
-	virtual void moSearchFrom(Pareto<S, XMEv>& p, S& s, paretoManager<S, XMEv>& pManager, const StopCriteria<XMEv>& stopCriteria) = 0;
+	//virtual void moSearchFrom(Pareto<S, XMEv>& p, S& s, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) = 0;
+   // removed this method.. now only pair XMES!
 
 	// 2
-	virtual void moSearchFrom(Pareto<S, XMEv>& p, XMES& smev, paretoManager<S, XMEv>& pManager, const StopCriteria<XMEv>& stopCriteria) =0;
+	virtual void moSearchFrom(Pareto<S, XMEv>& p, XMES& smev, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) =0;
 
 	virtual bool compatible(string s)
 	{

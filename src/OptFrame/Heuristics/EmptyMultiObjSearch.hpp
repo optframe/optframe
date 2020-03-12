@@ -29,10 +29,10 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class EmptyMultiObjSearch: public MultiObjSearch<S, XEv>
+template<XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+class EmptyMultiObjSearch: public MultiObjSearch<S, XMEv, XMES>
 {
-   using XSH = Pareto<S, XEv, XES>;
+   using XSH = Pareto<S, XMEv, XMES>;
 public:
 
 	EmptyMultiObjSearch()
@@ -44,7 +44,7 @@ public:
 	}
 
 	//Pareto<S, XMEv>* search(MOSC& mosc, Pareto<S, XMEv>* _pf = nullptr) override
-   SearchStatus search(std::optional<Pareto<S, XMEv>>& p, const StopCriteria<XEv>& stopCriteria) override
+   SearchStatus search(std::optional<Pareto<S, XMEv>>& p, const StopCriteria<XMEv>& stopCriteria) override
 	{
 		cout << "WARNING: RETURNING A EmptyMultiObjSearch!" << endl;
 		//return nullptr;
@@ -54,7 +54,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << MultiObjSearch<S, XEv>::idComponent() << "empty";
+		ss << MultiObjSearch<S, XMEv>::idComponent() << "empty";
 		return ss.str();
 	}
 
@@ -64,6 +64,6 @@ public:
 	}
 };
 
-}
+} // namespace optframe
 
 #endif /*OPTFRAME_EMPTY_MULTI_OBJ_SEARCH_HPP_*/

@@ -76,12 +76,14 @@ public:
 
 	//Constructive<S>& constructive;
    InitialSearch<XMES, XMEv>& constructive;
-	paretoManager<S, XMEv> pMan;
+	paretoManager<S, XMEv, XMES> pMan;
 
 	//BasicInitialPareto(Constructive<S>& _constructive, MultiEvaluator<S, XEv>& _mev) :
-   //BasicInitialPareto(InitialSearch<XMES, XMEv>& _constructive, MultiEvaluator<S, XEv>& _mev) :
-   BasicInitialPareto(InitialSearch<XMES, XMEv>& _constructive, GeneralEvaluator<XMES, XMEv>& _mev) :
-			constructive(_constructive), pMan(paretoManager<S, XMEv>(_mev))
+   //BasicInitialPareto(InitialSearch<XMES, XMEv>& _constructive, MultiEvaluator<S, XEv, XMEv, XMES>& _mev) :
+   //BasicInitialPareto(InitialSearch<XMES, XMEv>& _constructive, GeneralEvaluator<XMES, XMEv>& _mev) :
+	//		constructive(_constructive), pMan(paretoManager<S, XMEv, XMES>(_mev))
+   BasicInitialPareto(InitialSearch<XMES, XMEv>& _constructive, paretoManager<S, XMEv, XMES>& _pman) :
+      constructive(_constructive), pMan(_pman)
 	{
 	}
 
@@ -120,11 +122,11 @@ public:
 	GRConstructive<S>& constructive;
 	RandGen& rg;
 	double maxAlpha; // limit the solution to be not so random
-	paretoManager<S, XMEv> pMan;
+	paretoManager<S, XMEv, XMES> pMan;
 
 	//GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg, double _maxAlpha, MultiEvaluator<S, XEv>& _mev) :
    GRInitialPareto(GRConstructive<S>& _constructive, RandGen& _rg, double _maxAlpha, GeneralEvaluator<XMES, XMEv>& _mev) :
-			constructive(_constructive), rg(_rg), maxAlpha(_maxAlpha), pMan(paretoManager<S, XMEv>(_mev))
+			constructive(_constructive), rg(_rg), maxAlpha(_maxAlpha), pMan(paretoManager<S, XMEv, XMES>(_mev))
 	{
 	}
 

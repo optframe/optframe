@@ -57,7 +57,7 @@ public:
 	{
 	}
 
-	virtual void exec(IESolution<S, XMEv>& s, paretoManager<S, XMEv>& pManager, double timelimit, double target_f)
+	virtual void exec(IESolution<S, XMEv>& s, paretoManager<S, XMEv, XMES>& pManager, double timelimit, double target_f)
 	{
 		MultiEvaluation<>& sMev = v_e.evaluate(s);
 
@@ -67,7 +67,7 @@ public:
 		delete &sMev;
 	}
 
-	virtual void exec(IESolution<S, XMEv>& s, XMEv& sMev, paretoManager<S, XMEv>& pManager, double timelimit, double target_f)
+	virtual void exec(IESolution<S, XMEv>& s, XMEv& sMev, paretoManager<S, XMEv, XMES>& pManager, double timelimit, double target_f)
 	{
 
 		num_calls++;
