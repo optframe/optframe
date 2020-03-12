@@ -28,7 +28,7 @@
 namespace optframe {
 
 //template<XESolution XES, XSearch<XES> XSH = XES, XSearchMethod XM = Component> // defaults to single obj.
-template<XESolution XES, XEvaluation XEv, XSearch<XES> XSH = XES> // defaults to single obj
+template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES> // defaults to single obj
 class InitialSearch : public Component
 {
 public:

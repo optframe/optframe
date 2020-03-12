@@ -68,17 +68,20 @@ public:
 	}
 
 	//Special addSolution used in the GPLS speedUp
-	virtual bool addSolutionWithMEV(Pareto<S, XMEv>& p, const S& candidate, const MultiEvaluation<>& candidateMev)
+	//virtual bool addSolutionWithMEV(Pareto<S, XMEv>& p, const S& candidate, const MultiEvaluation<>& candidateMev)
+   virtual bool addSolutionWithMEV(Pareto<S, XMEv>& p, const XMES& cand_smev)
 	{
 		bool added = true;
 		for (unsigned ind = 0; ind < p.size(); ind++)
 		{
-			const MultiEvaluation<>& popIndFitness = p.getIndMultiEvaluation(ind);
+			const XMEv& popIndFitness = p.getIndMultiEvaluation(ind);
 
-			if (paretoManager<S, XMEv, XMES>::domWeak.dominates(popIndFitness, candidateMev))
+			//if (paretoManager<S, XMEv, XMES>::domWeak.dominates(popIndFitness, candidateMev))
+         if (paretoManager<S, XMEv, XMES>::domWeak.dominates(popIndFitness, cand_smev.second))
 				return false;
 
-			if (paretoManager<S, XMEv, XMES>::dom.dominates(candidateMev, popIndFitness))
+			//if (paretoManager<S, XMEv, XMES>::dom.dominates(candidateMev, popIndFitness))
+         if (paretoManager<S, XMEv, XMES>::dom.dominates(cand_smev.second, popIndFitness))
 			{
 				p.erase(ind);
 				gplsData.nsParetoOptimum.erase(gplsData.nsParetoOptimum.begin() + ind);
@@ -91,7 +94,8 @@ public:
 
 		if (added)
 		{
-			p.add_indWithMev(candidate, candidateMev);
+			//p.add_indWithMev(candidate, candidateMev);
+         p.add_indWithMev(cand_smev);
 			vector<bool> neigh;
 			for (int n = 0; n < r; n++)
 				neigh.push_back(false);
@@ -143,14 +147,15 @@ public:
 		searchWithOptionalPareto(stopCriteria,&_pf);
 	}
 */
-
+ 
 	virtual void moSearchFrom(Pareto<S, XMEv>& p, XMES& se, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) override
 	{
-      S& s = se.first;
-      XMEv& sMev = se.second;
+      //S& s = se.first;
+      //XMEv& sMev = se.second;
 		Pareto<S, XMEv> _pf;
-		pManager.addSolutionWithMEV(_pf,s,sMev);
-		searchWithOptionalPareto(stopCriteria,&_pf);
+		//pManager.addSolutionWithMEV(_pf,s,sMev);
+      pManager.addSolutionWithMEV(_pf, se);
+		Pareto<S, XMEv>* pr = searchWithOptionalPareto(stopCriteria,&_pf);
 	}
 
 	virtual Pareto<S, XMEv>* searchWithOptionalPareto(const StopCriteria<XMEv>& stopCriteria, Pareto<S, XMEv>* _pf = nullptr)
@@ -240,7 +245,8 @@ public:
 			//Updated current Pareto p with the individuals added in this current iteration
 			for (int ind = 0; ind < (int) x_e.size(); ind++)
 				if (pMan2PPLS.gplsData.newSol[ind])
-					p.add_indWithMev(x_e.getNonDominatedSol(ind), x_e.getIndMultiEvaluation(ind));
+					//p.add_indWithMev(x_e.getNonDominatedSol(ind), x_e.getIndMultiEvaluation(ind));
+               p.add_indWithMev(x_e.getP(ind));
 
 
 			if (p.size() != 0)

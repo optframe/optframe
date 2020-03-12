@@ -123,7 +123,8 @@ public:
          rMev = smes.second;
 
          //Try to add the neighbor solution that was obtained from the perturbation
-         pMan.addSolutionWithMEV(x_e, rS, rMev);
+         //pMan.addSolutionWithMEV(x_e, rS, rMev);
+         pMan.addSolutionWithMEV(x_e, smes);
 
          StopCriteria<XMEv> stopCriteriaLS;
          stopCriteriaLS.timelimit = stopCriteria.timelimit;

@@ -24,7 +24,7 @@ namespace KP
 {
 
 //class ConstructiveRandom: public Constructive<SolutionKP>
-class ConstructiveRandom: public InitialSearch<ESolutionKP>
+class ConstructiveRandom: public InitialSearch<ESolutionKP, EvaluationKP>
 {
 private:
    ProblemInstance& pKP;

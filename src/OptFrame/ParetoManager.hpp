@@ -85,23 +85,26 @@ public:
 
 	bool addSolution(Pareto<S, XMEv>& p, const S& candidate)
 	{
-		MultiEvaluation<> mev(std::move(multiEval.evaluate(candidate)));
-		bool added = addSolutionWithMEV(p, candidate, mev);
+		MultiEvaluation<> mev = multiEval.evaluate(candidate);
+      XMES cand_smev = make_pair(candidate, mev);
+		//bool added = addSolutionWithMEV(p, candidate, mev);
+      bool added = addSolutionWithMEV(p, cand_smev);
 
 		return added;
 	}
 
-	virtual bool addSolutionWithMEV(Pareto<S, XMEv>& p, const S& candidate, const MultiEvaluation<>& candidateMev)
+	//virtual bool addSolutionWithMEV(Pareto<S, XMEv>& p, const S& candidate, const MultiEvaluation<>& candidateMev)
+   virtual bool addSolutionWithMEV(Pareto<S, XMEv>& p, const XMES& cand_smev)
 	{
 		bool added = true;
 		for (int ind = 0; ind < (int) p.size(); ind++)
 		{
 			const MultiEvaluation<>& popIndFitness = p.getIndMultiEvaluation(ind);
 
-			if (domWeak.dominates(popIndFitness, candidateMev))
+			if (domWeak.dominates(popIndFitness, cand_smev.second))
 				return false;
 
-			if (dom.dominates(candidateMev, popIndFitness))
+			if (dom.dominates(cand_smev.second, popIndFitness))
 			{
 				p.erase(ind);
 				ind--;
@@ -109,7 +112,8 @@ public:
 
 		}
 		if (added)
-			p.add_indWithMev(candidate, candidateMev);
+			//p.add_indWithMev(candidate, candidateMev);
+         p.add_indWithMev(cand_smev);
 
 		return added;
 	}
@@ -127,7 +131,8 @@ public:
 		Pareto<S, XMEv> pFiltered;
 		int nInd = p.size();
 		for (int ind = 0; ind < nInd; ind++)
-			addSolutionWithMEV(pFiltered, p.getNonDominatedSol(ind), p.getIndMultiEvaluation(ind));
+			//addSolutionWithMEV(pFiltered, p.getNonDominatedSol(ind), p.getIndMultiEvaluation(ind));
+         addSolutionWithMEV(pFiltered, p.getP(ind));
 
 		if ((int) pFiltered.size() == nInd)
 			return true;

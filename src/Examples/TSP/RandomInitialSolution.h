@@ -42,7 +42,7 @@ namespace TSP
 {
 
 //class RandomInitialSolutionTSP: public Constructive<SolutionTSP>
-class RandomInitialSolutionTSP: public InitialSearch<ESolutionTSP>
+class RandomInitialSolutionTSP: public InitialSearch<ESolutionTSP, EvaluationTSP>
 {
 private:
 	ProblemInstance* pI;

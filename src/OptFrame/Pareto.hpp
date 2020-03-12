@@ -53,10 +53,15 @@ class Pareto
    // to solve this, individuals should always be treated in pairs XMES=<S, XMEv>, so evaluate() becomes unnecessary, and GeneralEvaluator is enough. (TODO:)
 
 private:
+   // all individuals are safely stored here
+   vector<uptr<XMES>> paretoSetFront;
+   // these are just mirrors of stored set above
 	vector<S*> paretoSet;
 	vector<XMEv*> paretoFront;
-	bool added; //mark if solution was added
-
+   //
+   //mark if solution was added
+	bool added; 
+   
 public:
 
 	Pareto()
@@ -71,7 +76,10 @@ public:
 
 		for (unsigned i = 0; i < sizeNewPop; i++)
 		{
-			this->add_indWithMev(_pf.getNonDominatedSol(i), _pf.getIndMultiEvaluation(i));
+			//this->add_indWithMev(_pf.getNonDominatedSol(i), _pf.getIndMultiEvaluation(i));
+         //
+         this->add_indWithMev(_pf.getP(i));
+         //
 //			S* sNew = new S(_pf.getNonDominatedSol(i));
 //			MultiEvaluation<>* mevNew = new MultiEvaluation(_pf.getIndMultiEvaluation(i));
 //			this->add_indWithMev(sNew, mevNew);
@@ -79,12 +87,13 @@ public:
 		added = true;
 	}
 
-	Pareto(Pareto<S, XMEv> && _pf) :
-			paretoSet(std::move(_pf.paretoSet)), paretoFront(std::move(_pf.paretoFront))
+	Pareto(Pareto<S, XMEv>&& _pf) :
+			//paretoSet(std::move(_pf.paretoSet)), paretoFront(std::move(_pf.paretoFront))
+         paretoSetFront(std::move(_pf.paretoSetFront))
 	{
 		added = false;
 
-		if (paretoSet.size() > 0)
+		if (paretoSetFront.size() > 0)
 			added = true;
 
 	}
@@ -98,7 +107,8 @@ public:
 		unsigned sizeNewPop = _pf.paretoSet.size();
 
 		for (unsigned i = 0; i < sizeNewPop; i++)
-			this->add_indWithMev(_pf.getNonDominatedSol(i), _pf.getIndMultiEvaluation(i));
+			//this->add_indWithMev(_pf.getNonDominatedSol(i), _pf.getIndMultiEvaluation(i));
+         this->add_indWithMev(_pf.getP(i));
 
 		if (sizeNewPop > 0)
 			added = true;
@@ -135,6 +145,7 @@ public:
 //		add_ind(s, mev);
 //	}
 
+/*
 	void add_indWithMev(const S& s, const XMEv& mev)
 	{
 		paretoSet.push_back(new S(s));
@@ -142,31 +153,64 @@ public:
 
 		added = true;
 	}
+*/
+
+	void add_indWithMev(const XMES& smev)
+	{
+      paretoSetFront.push_back(uptr<XMES>(new XMES(smev)));
+		added = true;
+	}
+
 
 	unsigned size() const
 	{
-		return paretoSet.size();
+		//return paretoSet.size();
+      return paretoSetFront.size();
 	}
 
+/*
 	pair<S&, XMEv*> at(unsigned index)
 	{
 		return make_pair(*paretoSet.at(index), paretoFront.at(index));
 	}
+*/
 
-	XMES& getP(unsigned index)
+	const XMES& getP(unsigned index) const
 	{
-		//return make_pair(uptr<S>(), uptr<XEv>());
-      XMES* p;
-      return *p;
+      return *paretoSetFront.at(index);
 	}
 
+   // return "observer pointers" mirroring internal pareto set / front
+	vector<XMES*> getParetoSetFrontPtr()
+	{
+      // mirror raw pointers (observers)
+      // not using observer_ptr now, or optr, just to keep it more 'friendly' :)
+      vector<XMES*> paretoSetFrontPtr(paretoSetFront.size(), nullptr);
+      for(unsigned i=0; i < paretoSetFront.size(); i++)
+         paretoSetFrontPtr[i] = paretoSetFront[i].get();
+      //
+		return paretoSetFrontPtr;
+	}
 
+   // return "observer pointers" mirroring internal pareto front
+   vector<XMEv*> getParetoFrontPtr()
+	{
+      // mirror raw pointers (observers)
+      // not using observer_ptr now, or optr, just to keep it more 'friendly' :)
+      vector<XMEv*> paretoFrontPtr(paretoSetFront.size(), nullptr);
+      for(unsigned i=0; i<paretoSetFront.size(); i++)
+         paretoFrontPtr[i] = &paretoSetFront[i]->second;
+      //
+		return paretoFrontPtr;
+	}
+
+/*
 	vector<S*> getParetoSet()
 	{
 		return paretoSet;
 	}
 
-	vector<XMEv*> getParetoFront()
+   vector<XMEv*> getParetoFront()
 	{
 		return paretoFront;
 	}
@@ -181,12 +225,14 @@ public:
 		paretoFront = std::move(pFNew);
 
 	}
+*/
 
 	S& getNonDominatedSol(int ind)
 	{
-		return *paretoSet[ind];
+		return paretoSetFront[ind]->first;
 	}
 
+/*
 	S& getNonDominatedSol(int ind) const
 	{
 		return *paretoSet[ind];
@@ -196,28 +242,34 @@ public:
 	{
 		return paretoSet[ind]->clone();
 	}
+*/
+
 
 //	MultiEvaluation<>& getIndMultiEvaluation(int ind)
 //	{
 //		return *paretoFront[ind];
 //	}
 
+
 	XMEv& getIndMultiEvaluation(int ind) const
 	{
-		return *paretoFront.at(ind);
+		return paretoSetFront.at(ind)->second;
 	}
 
+/*
 	XMEv& getCloneIndMultiEvaluation(int ind) const
 	{
 		return paretoFront.at(ind)->clone();
 	}
+*/
 
 	void erase(unsigned pos)
 	{
-		delete paretoSet[pos];
-		delete paretoFront[pos];
-		paretoSet.erase(paretoSet.begin() + pos);
-		paretoFront.erase(paretoFront.begin() + pos);
+//		delete paretoSet[pos];
+//		delete paretoFront[pos];
+//		paretoSet.erase(paretoSet.begin() + pos);
+//		paretoFront.erase(paretoFront.begin() + pos);
+      paretoSetFront.erase(paretoSetFront.begin() + pos);
 	}
 
 	virtual Pareto<S, XMEv>& clone() const
@@ -227,25 +279,29 @@ public:
 
 	void clear()
 	{
-		for (unsigned i = 0; i < paretoSet.size(); i++)
+		for (unsigned i = 0; i < paretoSetFront.size(); i++)
 		{
-			delete paretoSet[i];
-			delete paretoFront[i];
+			//delete paretoSet[i];
+			//delete paretoFront[i];
 		}
 
-		paretoSet.clear();
-		paretoFront.clear();
+		//paretoSet.clear();
+		//paretoFront.clear();
+      paretoSetFront.clear();
 	}
 
 	void print()
 	{
 		cout << "Printing Pareto!" << endl;
-		cout << "paretoSet.size():" << paretoSet.size() << endl;
-		cout << "paretoFront.size():" << paretoFront.size() << endl;
-		for (unsigned i = 0; i < paretoSet.size(); i++)
+		//cout << "paretoSet.size():" << paretoSet.size() << endl;
+		//cout << "paretoFront.size():" << paretoFront.size() << endl;
+      cout << "paretoSetFront.size():" << paretoSetFront.size() << endl;
+		for (unsigned i = 0; i < paretoSetFront.size(); i++)
 		{
-			cout << paretoSet[i]->getR() << endl;
-			paretoFront[i]->print();
+			//cout << paretoSet[i]->getR() << endl;
+         cout << paretoSetFront[i]->first.getR() << endl;
+			//paretoFront[i]->print();
+         paretoSetFront[i]->second.print();
 		}
 
 	}
@@ -255,10 +311,11 @@ public:
 	{
 		FILE* fPF = fopen(output.c_str(), exportType);
 		assert(fPF);
-		for (int i = 0; i < (int) paretoFront.size(); i++)
+		for (int i = 0; i < (int) paretoSetFront.size(); i++)
 		{
 			for (int e = 0; e < (int) paretoFront[i]->size(); e++)
-				fprintf(fPF, "%.7f\t", double(paretoFront.at(i)->at(e).evaluation()));
+				//fprintf(fPF, "%.7f\t", double(paretoFront.at(i)->at(e).evaluation()));
+            fprintf(fPF, "%.7f\t", double(paretoSetFront.at(i)->second.at(e).evaluation()));
 
 			fprintf(fPF, "\n");
 		}

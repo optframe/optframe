@@ -72,12 +72,13 @@ public:
 //		return v_e;
 //	}
 
-	MultiEvaluator<S, XEv>& getMultiEvaluator()
+	MultiEvaluator<S, XEv, XMEv, XMES>& getMultiEvaluator()
 	{
 		return mev;
 	}
 
-// true if 's1' dominates 's2'
+/*
+   // true if 's1' dominates 's2'
 	virtual bool dominates(const S& s1, const S& s2)
 	{
 		if (mev.size() == 0)
@@ -98,6 +99,7 @@ public:
 
 		return r;
 	}
+*/   
 
 	// true if 's1' dominates 's2'
 	virtual bool dominates(const MultiEvaluation<>* mev1, const MultiEvaluation<>* mev2)

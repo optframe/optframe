@@ -154,8 +154,9 @@ int usingNonDominatedHFMModels(int argc, char **argv)
 	}
 	forecastObject = new ForecastClass(trainningSet, problemParam, rg, methodParam);
 
-	vector<MultiEvaluation<>*> vEvalPF = pf->getParetoFront();
-	vector<SolutionHFM*> vSolPF = pf->getParetoSet();
+	vector<MultiEvaluation<>*> vEvalPF = pf->getParetoFrontPtr();
+	//vector<SolutionHFM*> vSolPF = pf->getParetoSet();
+   vector<EMSolutionHFM*> vESolPF = pf->getParetoSetFrontPtr();
 	int nObtainedParetoSol = vEvalPF.size();
 
 	int targetFile = problemParam.getTargetFile();
@@ -172,7 +173,7 @@ int usingNonDominatedHFMModels(int argc, char **argv)
 	for (int i = 0; i < nObtainedParetoSol; i++)
 	{
 		cout << setprecision(2);
-		vector<double> blindForecasts = *forecastObject->returnBlind(vSolPF[i]->getR(), dataForFeedingValidationTest);
+		vector<double> blindForecasts = *forecastObject->returnBlind(vESolPF[i]->first.getR(), dataForFeedingValidationTest);
 		for (int f = 0; f < (int) blindForecasts.size(); f++)
 			cout << blindForecasts[f] << "/" << targetValidationSet[targetFile][f] << "/" << (targetValidationSet[targetFile][f] - blindForecasts[f]) << "\t";
 

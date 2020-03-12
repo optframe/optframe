@@ -13,6 +13,10 @@ namespace optframe
 template<class T>
 using uptr = std::unique_ptr<T>;
 
+// default renaming of std::observer_ptr (too long!!)
+//template<class T>
+//using optr = std::observer_ptr<T>;
+
 // default renaming of std::optional (too long!!)
 template<class T>
 using op = std::optional<T>;

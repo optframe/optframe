@@ -42,7 +42,7 @@ namespace TSP
 {
 
 //class ConstructiveBestInsertion: public Constructive<SolutionTSP>
-class ConstructiveBestInsertion: public InitialSearch<ESolutionTSP>
+class ConstructiveBestInsertion: public InitialSearch<ESolutionTSP, EvaluationTSP>
 {
 private:
 	ProblemInstance* pI;

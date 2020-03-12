@@ -41,7 +41,7 @@ using namespace std;
 using namespace optframe;
 
 //class PCAPInitialSolutionGreedy : public Constructive<SolutionPCAP>
-class PCAPInitialSolutionGreedy : public InitialSearch<ESolutionPCAP>
+class PCAPInitialSolutionGreedy : public InitialSearch<ESolutionPCAP, EvaluationPCAP>
 {
 private:
    PCAPProblemInstance& pPCAP;

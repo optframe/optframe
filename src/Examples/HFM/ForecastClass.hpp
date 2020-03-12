@@ -294,10 +294,12 @@ public:
    }
 
    //add solution to pareto front evaluating with forecasting class evaluators
-   void addSolWithMevToParetoWithParetoManager(Pareto<SolutionHFM>& pf, const SolutionHFM& candidateS, const MultiEvaluation<>& candidateMev)
+   //void addSolWithMevToParetoWithParetoManager(Pareto<SolutionHFM>& pf, const SolutionHFM& candidateS, const MultiEvaluation<>& candidateMev)
+   void addSolWithMevToParetoWithParetoManager(Pareto<SolutionHFM>& pf, const EMSolutionHFM& cand_smev)
    {
       paretoManager<SolutionHFM> paretoMan(*mev);
-      paretoMan.addSolutionWithMEV(pf, candidateS, candidateMev);
+      //paretoMan.addSolutionWithMEV(pf, candidateS, candidateMev);
+      paretoMan.addSolutionWithMEV(pf, cand_smev);
    }
 
    Pareto<SolutionHFM>* runMultiObjSearch(double timeGPLS, Pareto<SolutionHFM>* _pf = nullptr)

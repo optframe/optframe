@@ -42,7 +42,7 @@ namespace TSP
 {
 
 //class NearestNeighborConstructive: public Constructive<SolutionTSP>
-class NearestNeighborConstructive: public InitialSearch<ESolutionTSP>
+class NearestNeighborConstructive: public InitialSearch<ESolutionTSP, EvaluationTSP>
 {
 private:
 	ProblemInstance* pI;
