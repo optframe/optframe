@@ -67,19 +67,24 @@ public:
    // implementation of a "default" local search for this NEx
    virtual void searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria)
    {
+      // searching new move
       op<RichMove<XES, XEv>> movec = searchMove(se, stopCriteria);
-      //
+      // check if move exists
       if (!movec)
          return;
       //
-      // accept if it's improving
-      while (movec->status & SearchStatus::IMPROVEMENT) {
+      // accept if it's improving by flag (avoid double verification and extra Evaluator class here)
+      // using !!e idiom, to check against value 0
+      while ( !!(movec->status & SearchStatus::IMPROVEMENT) ) {
          // apply move to solution
-         movec->first->apply(se);
+         movec->move->apply(se);
          // update cost
-         movec->second.update(se.second);
+         movec->cost.update(se.second);
          // searching new move
          movec = searchMove(se, stopCriteria);
+         // check if move exists
+         if(!movec)
+            return;
       }
       // finished search
    }
@@ -106,7 +111,7 @@ public:
 
 };
 
-/*
+
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>, XSearch<XES> XSH = XES>
 class NeighborhoodExplorationBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
 {
@@ -138,7 +143,7 @@ public:
 		return idComponent();
 	}
 };
-*/
+
 
 } // namespace optframe
 

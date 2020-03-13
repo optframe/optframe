@@ -40,6 +40,8 @@ using namespace std;
 #include "../OptFrame/Evaluation.hpp"
 //#include "../OptFrame/Util/TestSolution.hpp"
 
+#include "../OptFrame/Heuristics/NSearch/FirstImprovingNeighbor.hpp"
+
 #include "../OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp"
 #include "../OptFrame/Loader.hpp"
 ////#include "../OptFrame/Util/BuildCommand.hpp"  // TODO: return after Concepts OptFrame v4
@@ -49,7 +51,7 @@ using namespace std;
 using namespace TSP;
 using namespace scannerpp;
 
-#include "../OptFrame/Util/PackTypes.hpp"
+//#include "../OptFrame/Util/PackTypes.hpp" // deprecated!!
 
 
 
@@ -96,6 +98,11 @@ main(int argc, char** argv)
    NearestNeighborConstructive cnn(tsp.p, eval, rg);
    ConstructiveBestInsertion cbi(tsp.p, eval, rg);
    NSEnumSwap enumswap(tsp.p, rg);
+
+
+   // Basic test for Neighborhood Exploration
+   FirstImprovingNeighbor<ESolutionTSP> fin(eval, enumswap);
+   // =======================================
 
    NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);
    NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tsp2opt;

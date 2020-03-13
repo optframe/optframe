@@ -21,7 +21,7 @@
 #ifndef OPTFRAME_FIRST_IMPROVING_NEIGHBOR_HPP_
 #define OPTFRAME_FIRST_IMPROVING_NEIGHBOR_HPP_
 
-#include "../../LocalSearch.hpp"
+#include "../../NeighborhoodExploration.hpp"
 #include "../../NSSeq.hpp"
 #include "../../Evaluator.hpp"
 
@@ -29,7 +29,7 @@ namespace optframe
 {
 
 template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
-class FirstImprovingNeighbor: public NeighborhoodSearch<XES, XEv>
+class FirstImprovingNeighbor: public NeighborhoodExploration<XES, XEv>
 {
 private:
 	GeneralEvaluator<XES, XEv, XSH>& eval;
@@ -46,41 +46,44 @@ public:
 	{
 	}
 
-	virtual uptr<Move<XES, XEv>> searchMove(const XES& se, const StopCriteria<XEv>& stopCriteria) override
+	virtual op< RichMove<XES, XEv> > searchMove(const XES& se, const StopCriteria<XEv>& stopCriteria) override
 	{
-      // get valid iterator
+      // gets valid iterator
 		uptr<NSIterator<XES, XEv>> it = nsSeq.getIterator(se);
-      //
+      // TODO: may throw? just break now...
       assert(it);
-      //
+      // first possible move
 		it->first();
-      //
+      // check if any move exists
 		if (it->isDone())		
-			return nullptr; // no neighbor
+			return nullopt; // no neighbor
       //
 		do
 		{
-         // get move
+         // gets possible move
 			uptr<Move<XES, XEv, XSH>> move = it->current();
-         //
+         // check if move is valid
 			if (move->canBeApplied(se))
 			{
-				if(this->acceptsImprove(*move, se))
+            // get cost only if it's improving... otherwise, just nullopt
+            op<XEv> mcost = this->isImprovingCost(*move, se);
+				if(mcost)
 				{
-					// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-					//e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
-
-					return;
+               // should not apply to solution directly! must return...
+               RichMove<XES, XEv> rmove;
+               rmove.move = std::move(move);
+               rmove.cost = std::move(*mcost);
+               rmove.status = SearchStatus::IMPROVEMENT;
+					//return make_optional(rmove);
+               return std::optional< RichMove<XES, XEv> >(rmove);
 				}
 			}
-
+         // get next possible move
 			it->next();
 		}
 		while (!it->isDone());
-
-		// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-		//if(bestMoveId != "")
-		//	e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local Optimum
+      //
+      // finished search
 	}
 
    // returns 'cost' if it's improving, otherwise std::nullopt
@@ -115,50 +118,30 @@ public:
          // compute cost directly on Evaluation
          XEv mcost = ev_begin.diff(se.second);
 
+         // return to original solution
+         rev->apply(se);
+         e = std::move(ev_begin);
+
          // check if it is improvement
          if (eval.isStrictImprovement(mcost)) {
-            return true;
+            return make_optional(mcost);
          }
 
-         // must return to original situation
-
-         // apply reverse move in order to get the original solution back
-         //TODO - Vitor, Why apply Move with e is not used???
-         //			Even when reevaluate is implemented, It would be hard to design a strategy that is faster than copying previous evaluation
-         //==================================================================
-         //pair<Move<S, XEv>*, XEv> ini = applyMove(*rev, s);
-
-         // if XEv wasn't 'outdated' before, restore its previous status
-         //			if (!outdated)
-         //				e.outdated = outdated;
-
-         // go back to original evaluation
-         //			e = ini.second;
-         //			delete ini.first;
-
-         uptr<Move<XES, XEv>> ini = rev->apply(se);
-         // for now, must be not nullptr
-         assert(ini != nullptr);
-         // TODO: include management for 'false' hasReverse()
-         assert(rev->hasReverse() && ini);
-         e = std::move(ev_begin);
-         //==================================================================
-
-         return false;
+         return nullopt;
       }
-
+      return nullopt;
    }
 
 
 	virtual bool compatible(string s)
 	{
-		return (s == idComponent()) || (NeighborhoodSearch<XES, XEv>::compatible(s));
+		return (s == idComponent()) || (NeighborhoodExploration<XES, XEv>::compatible(s));
 	}
 
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << NeighborhoodSearch<XES, XEv>::idComponent() << ":FirstImprovingNeighbor";
+		ss << NeighborhoodExploration<XES, XEv>::idComponent() << ":FirstImprovingNeighbor";
 		return ss.str();
 	}
 
@@ -177,14 +160,14 @@ public:
 
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>, XSearch<XES> XSH = std::pair<S, XEv>>
-class FirstImprovingNeighborBuilder : public NeighborhoodSearchBuilder<S, XEv, XES, X2ES>
+class FirstImprovingNeighborBuilder : public NeighborhoodExplorationBuilder<S, XEv, XES, X2ES>
 {
 public:
-	virtual ~FirstImprovementBuilder()
+	virtual ~FirstImprovingNeighborBuilder()
 	{
 	}
 
-	virtual NeighborhoodSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
+	virtual NeighborhoodExploration<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		GeneralEvaluator<XES, XEv>* eval;
 		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
@@ -192,7 +175,7 @@ public:
 		NSSeq<XES, XEv, XSH>* nsseq;
 		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new FirstImprovement<XES, XEv, XSH>(*eval, *nsseq);
+		return new FirstImprovingNeighbor<XES, XEv, XSH>(*eval, *nsseq);
 	}
 
 	virtual vector<pair<string, string> > parameters()

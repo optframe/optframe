@@ -33,44 +33,12 @@
 
 #include "BaseConcepts.hpp"
 #include "Timer.hpp"
+#include "SearchStatus.hpp"
 
 using namespace std;
 
 namespace optframe
 {
-
-enum class SearchStatus : int 
-{
-   // better to keep a single flag '0x00' that indicates nothing good happened (no evolution)
-   // it means: no improvement on current solution or no valid/feasible solution found
-   //NO_CHANGE = 0x00, 
-   NO_NEWSOL = 0x00, // no (new) solution found on search
-   // TODO: rename to UNCHANGED (?). 'NO_CHANGE' was already bad... 'NO_PROGRESS' (?) maybe.
-
-   // general flag
-   VALID_SOL  = 0x01,  // VALID_SOLUTION (?) nothing interesting to say...
-   // TODO: rename 'VALID_SOL' to 'HEURISTIC' (general return, since all working solutions are valid).
-   //          Better than 'APPROXIMATED' naming, which conflicts to 'APPROXIMATIVE'.
-   // improvement flag
-   IMPROVEMENT = 0x02,
-   // stop criteria (general)
-   STOP_BY_TIME = 0x04,  // stop by timelimit
-   STOP_BY_OTHER = 0x08, // stop by specific method parameter (target, evaluation count, population count, ..., view logs)
-   //STOP_BY_TARGET = 0x10, // stop by target value
-   //STOP_BY_MEMORY = 0x10, // stop by memory (useful for branch&bound and other enumeration techniques)
-
-   // other flags (SEARCH TERMINATION CONDITIONS)
-   // problem is infeasible (or unbounded)
-   IMPOSSIBLE = 0x20, // TODO: rename to 'INFEASIBLE' (?)
-   // local optima
-   // global optima
-   // ... LOWER_BOUND / UPPER_BOUND ? How to allow represent only evaluation and not include solution? TODO (IGOR): think... maybe some specific BoundSearch or RelaxationSearch ??.. 
-   // ... sometimes, good also to result solution, and approximation value provided (ApproxSearch) approximative search (route + value + ~1.5 bound)
-   // ... finally, maybe good to add Bound to input/output search format... return bound value or approximation in other param (with empty solution)
-   LOCAL_OPT = 0x40, // local optimum
-   GLOBAL_OPT = 0x80 // global optimum
-};
-
 
 // StopCriteria is currently 'final', as lambdas can be passed to specific configurations. 
 // If something else is required (via inheritance), this 'final' will need to be changed.
