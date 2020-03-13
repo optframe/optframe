@@ -414,6 +414,16 @@ public:
    } // end Dynamic Programming
 };
 
+// defining (after declaring)
+mt19937 TSPProblemData::seed = (mt19937)0;
+array<int, TSPProblemData::N> TSPProblemData::Solution;
+float TSPProblemData::xInstance[TSPProblemData::N];
+float TSPProblemData::yInstance[TSPProblemData::N];
+
+pair<int, int> MiTSP2OptDynProg::Optimal2OptMoves[MiTSP2OptDynProg::N][MiTSP2OptDynProg::N];  
+list<pair<int, int>> MiTSP2OptDynProg::Selected2OptMoves; 
+
+
 // ======================
 
 int

@@ -1,9 +1,9 @@
-all: pmedcap examples kp tsp hfvrpmt 
+all: pmedcap examples kp tsp hfvrpmt
 
 examples: mitsp kp tsp etii  pmedcap opths  gfp hfvrpmt hfm modm
 
 mitsp:
-	g++ --std=c++17 -fconcepts MImpTSP-janio.cpp -o appMiTSP 2> error-gcc.err 
+	g++ --std=c++17 -fconcepts MImpTSP-janio.cpp -o app_MiTSP 2> error-gcc.err 
 
 fix_examples: svrpdsp modm
 
@@ -24,28 +24,28 @@ hfm:
 
 opths:
 	make -f makeOptHS.mk
-	
+
 etii:
 	make -f makeEtII.mk
-	
+
 pmedcap:
 	make -f makePMedCap.mk
-	
+
 svrpdsp:
 	make -f makeSVRPDSP.mk
-	
+
 opmop:
 	make -f makeOPMOP.mk
-	
+
 gfp:
 	make -f makeGFP.mk
-	
+
 hfvrpmt:
 	make -f makeHFVRPMT.mk
-	
+
 modm:
 	make -f makeMODM.mk
-		
+
 clean:
 	rm -f app_*
 	rm -f *.o
