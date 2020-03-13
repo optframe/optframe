@@ -32,8 +32,7 @@ using namespace std;
 #include "Solution.hpp"
 #include "Evaluation.hpp"
 
-#include "Component.hpp"
-#include "NSIterator.hpp"
+#include "LocalSearch.hpp"
 #include "SingleObjSearch.hpp"
 
 namespace optframe
@@ -42,10 +41,17 @@ namespace optframe
 // This is  NEx: Neighborhood Exploration
 
 template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES>
-using MoveWithCost = pair< uptr< Move<XES, XEv> >, XEv >;
+//using MoveWithCost = pair< uptr< Move<XES, XEv> >, XEv >;
+struct RichMove
+{
+   uptr<Move<XES, XEv, XSH>> move;
+   XEv cost;
+   SearchStatus status;
+};
+
 
 template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES> // defaults to XSH = XES
-class NeighborhoodExploration: public Component
+class NeighborhoodExploration : public LocalSearch<XES, XEv, XSH>  //: public Component
 {
    
 public:
@@ -58,8 +64,28 @@ public:
    {
    }
 
+   // implementation of a "default" local search for this NEx
+   virtual void searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria)
+   {
+      op<RichMove<XES, XEv>> movec = searchMove(se, stopCriteria);
+      //
+      if (!movec)
+         return;
+      //
+      // accept if it's improving
+      while (movec->status & SearchStatus::IMPROVEMENT) {
+         // apply move to solution
+         movec->first->apply(se);
+         // update cost
+         movec->second.update(se.second);
+         // searching new move
+         movec = searchMove(se, stopCriteria);
+      }
+      // finished search
+   }
+
    // Output move may be nullptr. Otherwise it's a pair of Move and its Cost.
-   virtual op< MoveWithCost<XES, XEv> > searchMove(const XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
+   virtual op< RichMove<XES, XEv> > searchMove(const XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
 
    virtual bool compatible(string s)
    {
@@ -80,7 +106,7 @@ public:
 
 };
 
-
+/*
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>, XSearch<XES> XSH = XES>
 class NeighborhoodExplorationBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
 {
@@ -112,8 +138,9 @@ public:
 		return idComponent();
 	}
 };
+*/
 
-}
+} // namespace optframe
 
 
 #endif /* OPTFRAME_NEIGHBORHOOD_EXPLORATION_HPP_ */

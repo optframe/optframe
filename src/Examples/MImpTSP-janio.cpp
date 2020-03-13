@@ -146,7 +146,7 @@ public:
    constexpr static int N = TSPProblemData::N;
 
    //
-   op<MoveWithCost<ESolutionMiTSP>> searchMove(const ESolutionMiTSP& se, const StopCriteria<EvaluationMiTSP>& stopCriteria)
+   op<RichMove<ESolutionMiTSP>> searchMove(const ESolutionMiTSP& se, const StopCriteria<EvaluationMiTSP>& stopCriteria)
    {
    }
 
@@ -415,7 +415,7 @@ public:
 };
 
 // defining (after declaring)
-mt19937 TSPProblemData::seed = (mt19937)0;
+mt19937 TSPProblemData::seed; // = (mt19937)0;
 array<int, TSPProblemData::N> TSPProblemData::Solution;
 float TSPProblemData::xInstance[TSPProblemData::N];
 float TSPProblemData::yInstance[TSPProblemData::N];
@@ -429,6 +429,7 @@ list<pair<int, int>> MiTSP2OptDynProg::Selected2OptMoves;
 int
 main()
 {
+   cout << "Begin MI experiments (N = " << MiTSP2OptDynProg::N << ")" << endl;
    TSPProblemData::seed = (mt19937)time(0);
 
    clock_t ini_t_global, end_t_global;
