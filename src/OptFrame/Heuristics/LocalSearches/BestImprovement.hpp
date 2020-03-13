@@ -61,7 +61,7 @@ public:
 	//	exec(s, e, sosc);
 	//}
 
-	virtual void searchFrom(XSH& se, const StopCriteria<XEv>& sosc) override
+	virtual SearchStatus searchFrom(XSH& se, const StopCriteria<XEv>& sosc) override
 	{
       //XSolution& s = se.first;
       //XEv& e = se.second;
@@ -78,15 +78,16 @@ public:
 		// TODO: verify if it's not null
 		//uptr<NSIterator<XES, XEv, XSH>> it = nsSeq.getIterator(s);
       uptr<NSIterator<XES, XEv, XSH>> it = nsSeq.getIterator(se);
-
-      assert(it); // or return FAILED
-
+      //
+      if(!it)
+         return SearchStatus::FAILED;
+      //
 		it->first();
 
 		if (it->isDone())
 		{
 			sum_time += t.inMilliSecs();
-			return; // OK
+			return SearchStatus::NO_REPORT;
 		}
 
 		uptr<Move<XES, XEv, XSH>> bestMove = it->current();
@@ -116,7 +117,7 @@ public:
 				else
 				{
 					sum_time += t.inMilliSecs();
-					return; // OK
+					return SearchStatus::NO_REPORT;
 				}
 			}
 
@@ -139,7 +140,7 @@ public:
 				else
 				{
 					sum_time += t.inMilliSecs();
-					return;
+					return SearchStatus::NO_REPORT;
 				}
 			}
 
@@ -210,6 +211,7 @@ public:
 		//e.print();
 
 		sum_time += t.inMilliSecs();
+      return SearchStatus::NO_REPORT;
 	}
 
 	virtual bool compatible(string s)

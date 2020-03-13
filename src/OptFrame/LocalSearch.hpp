@@ -78,10 +78,8 @@ public:
    // keeping only this method, for simplification
    // 2
    //virtual void exec(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) = 0;
-   // TODO: return SearchStatus
-   virtual void searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
-   // TODO: perhaps return 'bool' or FLAG indicating possible changes on solution (UNKNOWN, CHANGED, NOCHANGE, IMPROVED, ...)
-
+   virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
+   
    // optional: set local optimum status (LOS)
    virtual void setLOS(LOS los, string nsid, XES& se)
    {

@@ -48,7 +48,7 @@ public:
 	{
 		cout << "WARNING: RETURNING A EmptySingleObjSearch!" << endl;
 		//return std::nullopt; // nothing to return
-      return SearchStatus::NO_NEWSOL;
+      return SearchStatus::NO_REPORT;
 	}
 
 	static string idComponent()

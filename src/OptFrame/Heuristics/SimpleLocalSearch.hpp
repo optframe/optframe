@@ -63,7 +63,7 @@ public:
       //std::optional<S> s = constructive.generateSolution(sosc.timelimit);
       std::optional<XES> pse = constructive.initialSearch(sosc);
       if(!pse)
-         return SearchStatus::NO_NEWSOL; // nothing to return
+         return SearchStatus::NO_SOLUTION; // nothing to return
       //Evaluation<> e = evaluator.evaluate(*s);
 
       ////pair<S&, Evaluation<>&>& p = localSearch.search(s, e, sosc);
@@ -73,7 +73,7 @@ public:
       //return make_optional(make_pair(*s, e));
       //star = make_optional(make_pair(*s, e));
       star = make_optional(*pse);
-      return SearchStatus::VALID_SOL;
+      return SearchStatus::NO_REPORT;
    }
 
    virtual bool compatible(string s)

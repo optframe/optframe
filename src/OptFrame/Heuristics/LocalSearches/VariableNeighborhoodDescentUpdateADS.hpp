@@ -57,7 +57,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(XES& se, const StopCriteria<XEv>& sosc) override
+	virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& sosc) override
 	{
       //S& s = se.first;
       //XEv& e = se.second;
@@ -109,6 +109,7 @@ public:
 
          tnow = time(nullptr);
       }
+      return SearchStatus::NO_REPORT;
    }
 
    virtual bool compatible(string s)

@@ -42,9 +42,10 @@ public:
 	{
 	}
 
-	virtual void searchFrom(XES&, const StopCriteria<XEv>& stopCriteria) override
+	virtual SearchStatus searchFrom(XES&, const StopCriteria<XEv>& stopCriteria) override
    {
       // placeholder for empty local search
+      return SearchStatus::NO_REPORT;
    };
 
 	string log() const

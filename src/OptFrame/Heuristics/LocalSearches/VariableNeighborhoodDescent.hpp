@@ -58,7 +58,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) override
+	virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) override
 	{
       //S& s = se.first;
       //XEv& e = se.second;
@@ -106,6 +106,7 @@ public:
 					cout << "VND::k=" << k << endl;
 			}
 		}
+      return SearchStatus::NO_REPORT;
 	}
 
 	virtual bool compatible(string s)

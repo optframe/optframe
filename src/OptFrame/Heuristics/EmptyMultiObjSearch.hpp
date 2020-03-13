@@ -48,7 +48,7 @@ public:
 	{
 		cout << "WARNING: RETURNING A EmptyMultiObjSearch!" << endl;
 		//return nullptr;
-      return SearchStatus::NO_NEWSOL;
+      return SearchStatus::NO_REPORT;
 	}
 
 	static string idComponent()

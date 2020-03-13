@@ -133,7 +133,7 @@ public:
 		//return new pair<S, Evaluation<>>(sFinal, e);
       //return make_optional(se);
       star = make_optional(se);
-      return SearchStatus::VALID_SOL;
+      return SearchStatus::NO_REPORT;
 	}
 
 	virtual string id() const

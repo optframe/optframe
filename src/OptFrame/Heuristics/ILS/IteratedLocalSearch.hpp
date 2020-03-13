@@ -88,7 +88,7 @@ public:
       //star = star?:genOPair(stopCriteria.timelimit);
       star = star?:constructive.initialSearch(stopCriteria);
       if(!star)
-         return SearchStatus::NO_NEWSOL;
+         return SearchStatus::NO_SOLUTION;
 		//S& sStar = star.first;
 		Evaluation<>& eStar = star->second;
 
@@ -182,7 +182,7 @@ public:
 
 		//return std::optional<pair<S,XEv>>(*pairToReturn); // TODO: prevent loss
       //return std::optional<pair<S,XEv>>(star);
-      return SearchStatus::VALID_SOL;
+      return SearchStatus::NO_REPORT;
 	}
 
 	static string idComponent()

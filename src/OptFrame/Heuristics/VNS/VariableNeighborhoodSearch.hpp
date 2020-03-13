@@ -196,7 +196,7 @@ public:
       }
 
 		//return std::optional<XES> (star);
-      return SearchStatus::VALID_SOL;
+      return SearchStatus::NO_REPORT;
 	}
 
 	static string idComponent()

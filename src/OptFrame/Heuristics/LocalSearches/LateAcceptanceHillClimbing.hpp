@@ -63,7 +63,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(XES& se, const StopCriteria<XEv>& sosc) override
+	virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& sosc) override
 	{
       XSolution& sStar = se.first;
       XEv& eStar = se.second;
@@ -164,6 +164,7 @@ public:
 #endif
 
         eList.clear();
+        return SearchStatus::NO_REPORT;
 	}
 
 	virtual bool compatible(string s)

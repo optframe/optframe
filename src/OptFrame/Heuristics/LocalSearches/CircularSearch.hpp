@@ -55,7 +55,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(XES& se, const StopCriteria<XEv>& sosc) override
+	virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& sosc) override
 	{
       //XSolution& s = se.first;
       //XEv& e = se.second;
@@ -87,12 +87,13 @@ public:
 
                initial_w = w + 1;
 
-               return;
+               return SearchStatus::IMPROVEMENT;
             }
          }
 
          w = (w + 1) % Wmax;
       } while (w != initial_w);
+      return SearchStatus::NO_REPORT;
    }
 
    virtual bool compatible(string s)

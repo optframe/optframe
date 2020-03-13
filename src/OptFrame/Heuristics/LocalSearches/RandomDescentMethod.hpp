@@ -55,7 +55,7 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) override
+	virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) override
 	{
       //XSolution& s = se.first;
       //XEv& e = se.second;
@@ -93,6 +93,7 @@ public:
 				iter = 0;
 			}
 		}
+      return SearchStatus::NO_REPORT;
 	}
 
 	static string idComponent()

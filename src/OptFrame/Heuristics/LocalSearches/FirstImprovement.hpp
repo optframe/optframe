@@ -53,19 +53,21 @@ public:
 	//	exec(s, e, stopCriteria);
 	//}
 
-	virtual void searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) override
+	virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) override
 	{
       //XSolution& s = se.first;
       //XEv& e = se.second;
 		uptr<NSIterator<XES, XEv>> it = nsSeq.getIterator(se);
-      // TODO: return FAILED result...
-      assert(it);
+      //
+      if(!it)
+         return SearchStatus::FAILED;
+      //
 		string bestMoveId = "";
 		it->first();
 
 		if (it->isDone())
 		{
-			return; // return OK!
+			return SearchStatus::NO_REPORT;
 		}
 
 		do
@@ -91,7 +93,7 @@ public:
 					// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
 					//e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
 
-					return;
+					return SearchStatus::IMPROVEMENT;
 				}
 			}
 
@@ -102,6 +104,7 @@ public:
 		// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
 		//if(bestMoveId != "")
 		//	e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local Optimum
+      return SearchStatus::NO_REPORT;
 	}
 
 

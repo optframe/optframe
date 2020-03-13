@@ -168,7 +168,7 @@ public:
          //star = SingleObjSearch<XES>::genPair(constructive, evaluator, timelimit);
          star = constructive.initialSearch(sosc);
       if(!star)
-         return SearchStatus::NO_NEWSOL; // no possibility to continue.
+         return SearchStatus::NO_SOLUTION; // no possibility to continue.
       
       XES se = *star; // copy (implicit cloning guaranteed??)
       //
@@ -282,7 +282,7 @@ public:
 		//return new pair<S, Evaluation<>> (s, e);
       //
       //return make_optional(star);
-      return SearchStatus::VALID_SOL;
+      return SearchStatus::NO_REPORT;
 	}
 
 	virtual string id() const

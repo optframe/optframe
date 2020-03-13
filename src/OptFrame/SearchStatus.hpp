@@ -8,34 +8,56 @@ namespace optframe {
 //enum class SearchStatus : int
 enum class SearchStatus : uint8_t
 {
-   // better to keep a single flag '0x00' that indicates nothing good happened (no evolution)
-   // it means: no improvement on current solution or no valid/feasible solution found
-   //NO_CHANGE = 0x00,
-   NO_NEWSOL = 0x00, // no (new) solution found on search.. rename to NOTHING, or NONE... for no information.
-   // TODO: rename to UNCHANGED (?). 'NO_CHANGE' was already bad... 'NO_PROGRESS' (?) maybe.
-
-   // general flag
-   VALID_SOL = 0x01, // VALID_SOLUTION (?) nothing interesting to say...
-   // TODO: rename 'VALID_SOL' to 'HEURISTIC' (general return, since all working solutions are valid).
-   //          Better than 'APPROXIMATED' naming, which conflicts to 'APPROXIMATIVE'.
-   // improvement flag
-   IMPROVEMENT = 0x02,
-   // stop criteria (general)
-   STOP_BY_TIME = 0x04,  // stop by timelimit
-   STOP_BY_OTHER = 0x08, // stop by specific method parameter (target, evaluation count, population count, ..., view logs)
-   //STOP_BY_TARGET = 0x10, // stop by target value
-   //STOP_BY_MEMORY = 0x10, // stop by memory (useful for branch&bound and other enumeration techniques)
-
-   // other flags (SEARCH TERMINATION CONDITIONS)
+   // ----------------------
+   // General Method Reports
+   // ----------------------
+   //
+   NO_REPORT = 0x00, // no information to give (no good or bad news)
+   // this flag should only be used when no other situation applies.
+   //
+   FAILED = 0x01, // fail flag: this is meant only for non-intended stops, i.e., crashes
+   // if this flag IS NOT set, it means everything was fine.
+   // if this flag IS set, no other flag should be used.
+   //
+   // -------------
+   // Stop Criteria
+   // -------------
+   STOP_BY_TIME = 0x02,  // stop by timelimit
+   //
+   STOP_BY_MEMORY = 0x04,  // stop by memory limit: intended stops only! out-of-memory errors should use FAILED flag only.
+   // if stop by time/memory is not set, it means method stopped by any 
+   // other parameter: target, evaluation count, population count, ...
+   // user must verify information logs in this case
+   //
+   // ---------------
+   // Problem Status
+   // ---------------
    // problem is infeasible (or unbounded)
-   IMPOSSIBLE = 0x20, // TODO: rename to 'INFEASIBLE' (?)
-   // local optima
-   // global optima
+   IMPOSSIBLE = 0x08, // or INFEASIBLE
+   // if this flag is not set, it means problem is FEASIBLE / POSSIBLE, or unknown to solver.
+   //
+   // ----------------
+   // Solution Status
+   // ----------------
+   //
+   NO_SOLUTION = 0x10, // informs that no solution has been found (problem may or may not be impossible)
+   // if this flag is not set, some solution is expected as return
+   //
+   IMPROVEMENT = 0x20, // strict improvement flag
+   // this denotes ANY STRICT evolution towards the objective direction, or multi-direction ("side moves" should not trigger this).
+   // this should also be set when you had no solution, and now you have! (it's an improvement, right?)
+   // if this flag is NOT set, it means no improvement has been found (no evolution).
+   // this flag SHOULD still be used when necessary, sometimes with or without LOCAL_OPT / GLOBAL_OPT flags.
+   //
+   LOCAL_OPT = 0x40, // local optimum (if not set, no information is given). 
+   // this flag is NOT required when it's GLOBAL_OPT (but method designer may also provide this information, if useful)
+   //
+   GLOBAL_OPT = 0x80 // global optimum (if not set, it may be LOCAL_OPT)
+   //
+   // TODO: do we need more? which? 
    // ... LOWER_BOUND / UPPER_BOUND ? How to allow represent only evaluation and not include solution? TODO (IGOR): think... maybe some specific BoundSearch or RelaxationSearch ??..
    // ... sometimes, good also to result solution, and approximation value provided (ApproxSearch) approximative search (route + value + ~1.5 bound)
    // ... finally, maybe good to add Bound to input/output search format... return bound value or approximation in other param (with empty solution)
-   LOCAL_OPT = 0x40, // local optimum
-   GLOBAL_OPT = 0x80 // global optimum
 };
 
 // advice from: https://stackoverflow.com/questions/1448396/how-to-use-enums-as-flags-in-c

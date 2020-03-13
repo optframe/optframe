@@ -65,17 +65,19 @@ public:
    }
 
    // implementation of a "default" local search for this NEx
-   virtual void searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria)
+   virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria)
    {
+      bool improved = false;
       // searching new move
       op<RichMove<XES, XEv>> movec = searchMove(se, stopCriteria);
       // check if move exists
       if (!movec)
-         return;
+         return SearchStatus::NO_REPORT;
       //
       // accept if it's improving by flag (avoid double verification and extra Evaluator class here)
       // using !!e idiom, to check against value 0
       while ( !!(movec->status & SearchStatus::IMPROVEMENT) ) {
+         improved = true;
          // apply move to solution
          movec->move->apply(se);
          // update cost
@@ -84,9 +86,10 @@ public:
          movec = searchMove(se, stopCriteria);
          // check if move exists
          if(!movec)
-            return;
+            return SearchStatus::IMPROVEMENT;
       }
       // finished search
+      return improved ? SearchStatus::IMPROVEMENT : SearchStatus::NO_REPORT;
    }
 
    // Output move may be nullptr. Otherwise it's a pair of Move and its Cost.

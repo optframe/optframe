@@ -167,7 +167,7 @@ public:
 
       delete history;
       //return pReturn;
-      return SearchStatus::VALID_SOL; // nothing to say
+      return SearchStatus::NO_REPORT; // nothing to say
    }
 };
 }
