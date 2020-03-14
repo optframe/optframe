@@ -80,6 +80,7 @@ public:
 
 		//delete &s2;
 		//delete &e2;
+      return SearchStatus::NO_REPORT;
 	}
 
 	virtual bool compatible(string s)
