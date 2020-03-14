@@ -47,8 +47,72 @@ struct RichMove
    uptr<Move<XES, XEv, XSH>> move;
    XEv cost;
    SearchStatus status;
+
+   RichMove()
+   {
+   }
+
+   RichMove(RichMove&& rmove) :
+      move(std::move(rmove.move))
+   {
+   }
+
+   RichMove& operator=(RichMove&& rmove)
+   {
+      // self-reference
+      if(&rmove == this)
+         return *this;
+      move = std::move(rmove.move);
+      cost = std::move(rmove.cost);
+      status = rmove.status;
+      return *this;
+   }
 };
 
+struct TestSimpleRich
+{
+   uptr<int> ptr;
+
+   TestSimpleRich()
+   {
+   }
+
+   TestSimpleRich(TestSimpleRich&& tsr) :
+      ptr(std::move(tsr.ptr))
+   {
+   }
+};
+
+using TestRichMove = RichMove<IsESolution<int>, IsEvaluation<int>>;
+
+//static_assert(std::is_destructible<TestRichMove>);
+
+struct TestCompilationRichMove
+{
+   /*
+   op<RichMove<IsESolution<int>, IsEvaluation<int>>> getRichOptional()
+   {
+      op<RichMove<IsESolution<int>, IsEvaluation<int>>> empty;
+      //
+      RichMove<IsESolution<int>, IsEvaluation<int>> rmove;
+      //return make_optional(rmove);
+      return op<RichMove<IsESolution<int>, IsEvaluation<int>>>(std::move(rmove));
+   }
+   */
+
+   op<TestSimpleRich> getRichOptional()
+   {
+      op<TestSimpleRich> empty;
+      //
+      TestSimpleRich simple;
+      return op<TestSimpleRich>(std::move(simple));
+   }
+
+   void test()
+   {
+      auto rmv = getRichOptional();
+   }
+};
 
 template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES> // defaults to XSH = XES
 class NeighborhoodExploration : public LocalSearch<XES, XEv, XSH>  //: public Component

@@ -451,8 +451,9 @@ public:
    //virtual pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) = 0;
    //pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
    //std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(op<XES>& star, const StopCriteria<XEv>& stopCriteria) override
+   SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
    {
+      op<XES>& star = this->best;
       Timer tnow;
       NGESPopulation pop;
       //////NGESPopulation pop(ngesParams.mi, nullptr);
@@ -645,6 +646,7 @@ public:
       ////return pairToReturn;
       //return make_optional(make_pair(*sStar, *eStar)); // TODO: fix leak
       ///return star;
+      this->best = star;
       return SearchStatus::NO_REPORT;
    }
 

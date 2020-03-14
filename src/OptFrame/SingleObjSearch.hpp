@@ -74,8 +74,11 @@ public:
    
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) = 0;
    //virtual SearchStatus search(op<XSH>& inputOutput, const XStop& stopCriteria) = 0;
-   virtual SearchStatus search(op<XSH>& inputOutput, const StopCriteria<XEv>& stopCriteria) = 0;
-   //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv, XM>& stopCriteria) = 0;
+   //virtual SearchStatus search(op<XSH>& inputOutput, const StopCriteria<XEv>& stopCriteria) = 0;
+   //
+   // inputOutput now passed directly on local variable 'this->best'
+   virtual SearchStatus search(const StopCriteria<XEv>& stopCriteria) = 0;
+   
 
    virtual string log() const
    {

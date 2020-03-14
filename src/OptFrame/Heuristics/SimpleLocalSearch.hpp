@@ -54,8 +54,9 @@ public:
 
    //pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& sosc) override
-   SearchStatus search(op<XES>& star, const StopCriteria<XEv>& sosc) override
+   SearchStatus search(const StopCriteria<XEv>& sosc) override
    {
+      op<XES>& star = this->best;
       //cout << "SimpleLocalSearch search(" << target_f << "," << timelimit << ")" << endl;
 
       Timer tnow;
@@ -73,6 +74,7 @@ public:
       //return make_optional(make_pair(*s, e));
       //star = make_optional(make_pair(*s, e));
       star = make_optional(*pse);
+      this->best = star;
       return SearchStatus::NO_REPORT;
    }
 

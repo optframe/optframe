@@ -19,12 +19,16 @@ enum class SearchStatus : uint8_t
    // if this flag IS NOT set, it means everything was fine.
    // if this flag IS set, no other flag should be used.
    //
-   // -------------
-   // Stop Criteria
-   // -------------
-   STOP_BY_TIME = 0x02,  // stop by timelimit
+   RUNNING = 0x02, // informs that method is running
+   // if flag is NOT set, we assume method is stopped
    //
-   STOP_BY_MEMORY = 0x04,  // stop by memory limit: intended stops only! out-of-memory errors should use FAILED flag only.
+   // RESERVED = 0x04, // flag 0x04 is RESERVED
+   //
+   // stops can be checked directly by the logs
+   //
+   // flag GENERAL_STOP = timelimit OR memory
+   // GENERAL_STOP = 0x04, // removed!
+   // stop by memory limit: intended stops only! out-of-memory errors should use FAILED flag only.
    // if stop by time/memory is not set, it means method stopped by any 
    // other parameter: target, evaluation count, population count, ...
    // user must verify information logs in this case

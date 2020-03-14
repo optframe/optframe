@@ -169,8 +169,9 @@ public:
    //virtual pair<XRS, XEv>* search(StopCriteria<XEv>& stopCriteria, const XRS* _s = nullptr, const XEv* _e = nullptr) override
    //
    //virtual std::optional<pair<XRS, XEv>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(op<XES>& star, const StopCriteria<XEv>& stopCriteria) override
+   SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
    {
+      op<XES>& star = this->best;
       // count generations
       int count_gen = 0;
 
@@ -262,9 +263,11 @@ public:
      
      //return std::optional<pair<XRS, XEv>>(make_pair(finalSol, e)); 
      star = make_optional(make_pair(finalSol, e));
+     this->best = star;
      return SearchStatus::NO_REPORT;
    }
 };
-}
+
+} // namespace optframe
 
 #endif /*OPTFRAME_RKGA_HPP_*/

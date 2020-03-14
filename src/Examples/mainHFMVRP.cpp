@@ -143,8 +143,8 @@ main(int argc, char** argv)
 
    StopCriteria<EvaluationHFMVRP> soscGR(10); // target zero and 10 seconds
    soscGR.target_f = Evaluation<>(0);
-   std::optional<pair<SolutionHFMVRP, Evaluation<>>> initialPairGrasp;
-   basicGrasp.search(initialPairGrasp, soscGR);
+   basicGrasp.search(soscGR);
+   std::optional<pair<SolutionHFMVRP, Evaluation<>>> initialPairGrasp = basicGrasp.best;
 
    CloneConstructive<SolutionHFMVRP> cloneSolAsConstructive(initialPairGrasp->first);
 

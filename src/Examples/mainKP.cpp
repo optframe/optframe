@@ -91,8 +91,8 @@ main(int argc, char** argv)
    //auto soscSA { StopCriteria(specificStopBy) };
    StopCriteria<EvaluationKP> soscSA;
 
-   op<ESolutionKP> r = std::nullopt;
-   sa.search(r, soscSA);
+   sa.search(soscSA);
+   op<ESolutionKP> r = sa.best;
 
    r->first.print();
    r->second.print();
@@ -114,8 +114,8 @@ main(int argc, char** argv)
    BRKGA<RepKP, SolutionKP> brkga(eprk, p.N, 1000, 30, 0.4, 0.3, 0.6);
 
    //pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
-   std::optional<pair<SolutionKP, Evaluation<>>> r2 = std::nullopt;
-   brkga.search(r2, sosc);
+   brkga.search(sosc);
+   std::optional<pair<SolutionKP, Evaluation<>>> r2 = brkga.best;
    r2->first.print();
    r2->second.print();
 

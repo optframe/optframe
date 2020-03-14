@@ -75,7 +75,7 @@ public:
                rmove.cost = std::move(*mcost);
                rmove.status = SearchStatus::IMPROVEMENT;
 					//return make_optional(rmove);
-               return std::optional< RichMove<XES, XEv> >(rmove);
+               return std::optional< RichMove<XES, XEv> >( std::move(rmove) );
 				}
 			}
          // get next possible move
@@ -84,6 +84,7 @@ public:
 		while (!it->isDone());
       //
       // finished search
+      return std::nullopt;
 	}
 
    // returns 'cost' if it's improving, otherwise std::nullopt

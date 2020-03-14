@@ -44,6 +44,10 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES>
 class GlobalSearch: public Component
 {
 public:
+   // best known solution
+   std::optional<XSH> best;
+   // strict or non-strict search
+   bool strict { true };
 
 	GlobalSearch()
 	{
@@ -53,7 +57,14 @@ public:
 	{
 	}
 
-   virtual SearchStatus search(std::optional<XSH>& p, const StopCriteria<XEv>& stopCriteria) = 0;
+   // Assuming method is not thread-safe. Now, we can easily use flag SearchStatus::RUNNING.
+   virtual SearchStatus search(const StopCriteria<XEv>& stopCriteria) = 0;
+
+   virtual SearchStatus searchBy(std::optional<XSH>& p, const StopCriteria<XEv>& stopCriteria)
+   {
+      best = p;
+      return search(stopCriteria);
+   }
 
 	virtual string log() const
 	{

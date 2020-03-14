@@ -67,7 +67,10 @@ public:
       // maybe 'LocalSearch' should become 'Search', and 'SingleObjSearch' -> 'GlobalSearch'... must think!
 
       std::optional<XES> r = make_optional(se);
-      sios.search(r, sosc); // TODO: store flag and return
+      
+      sios.best = r;
+      sios.search(sosc);
+      r = sios.best;
 
       if (r) {
          s = r->first;

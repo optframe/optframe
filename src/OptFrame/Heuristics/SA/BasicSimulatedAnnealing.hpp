@@ -151,8 +151,9 @@ public:
 	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr,  const Evaluation<>* _e = nullptr)
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
 
-   SearchStatus search(op<XES>& star, const StopCriteria<XEv>& sosc) override
+   SearchStatus search(const StopCriteria<XEv>& sosc) override
 	{
+      op<XES>& star = this->best;
 		double timelimit = sosc.timelimit;
 
 		//XEv target_f(stop.target_f); // 'target_f' will break... removing
@@ -282,6 +283,7 @@ public:
 		//return new pair<S, Evaluation<>> (s, e);
       //
       //return make_optional(star);
+      this->best = star;
       return SearchStatus::NO_REPORT;
 	}
 

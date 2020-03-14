@@ -119,8 +119,11 @@ public:
 
 	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
    //virtual std::optional<XES> search(StopCriteria<XEv>& sosc) override
-   SearchStatus search(op<XES>& star, const StopCriteria<XEv>& sosc) override
+   SearchStatus search(const StopCriteria<XEv>& sosc) override
 	{
+      // gets incoming solution
+      op<XES>& star = this->best;
+      //
       double timelimit = sosc.timelimit;
       //XEv target_f(sosc.target_f); // BROKEN
 		//cout << id() << " search(target=" << target_f << ", timelimit=" << timelimit << ")" << endl;
@@ -195,6 +198,8 @@ public:
 			cout << "VNS exit by timelimit: " << timelimit << endl;
       }
 
+      // updates method solution
+      this->best = star;
 		//return std::optional<XES> (star);
       return SearchStatus::NO_REPORT;
 	}

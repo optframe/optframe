@@ -266,8 +266,9 @@ public:
 	}
 
 	//std::optional<pair<S, Evaluation<>>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(op<XES>& star, const StopCriteria<XEv>& stopCriteria) override
+   SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
 	{
+      op<XES>& star = this->best;
 		cout << "ES search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
 		Timer tnow;
@@ -430,6 +431,7 @@ public:
 		//return new pair<S, Evaluation<>>(s, e);
       //return make_optional(make_pair(*sStar, *eStar)); // fix: leak
       star = make_optional(make_pair(*sStar, *eStar)); // fix: leak
+      this->best = star;
       return SearchStatus::NO_REPORT;
 	}
 

@@ -53,8 +53,6 @@ using namespace scannerpp;
 
 //#include "../OptFrame/Util/PackTypes.hpp" // deprecated!!
 
-
-
 int
 main(int argc, char** argv)
 {
@@ -155,8 +153,8 @@ main(int argc, char** argv)
 
    //pair<SolutionTSP, Evaluation<>>* r2 = brkga.search(sosc);
    
-   std::optional<ESolutionTSP> r2 = std::nullopt;
-   brkga.search(r2, sosc.start());
+   brkga.search(sosc.start());
+   std::optional<ESolutionTSP> r2 = brkga.best;
    //virtual std::optional<pair<XRS, XEv>> search(StopCriteria<XEv>& stopCriteria, const std::optional<pair<XRS, XEv>> input)
    r2->first.print();
    r2->second.print();
@@ -205,8 +203,8 @@ main(int argc, char** argv)
    soscILS.timelimit = 3; // 1000
    soscILS.target_f = EvaluationTSP(0.0);
    //pair<CopySolution<RepTSP>, Evaluation<>>& psol = *ils.search(soscILS, NULL, NULL);
-   std::optional<ESolutionTSP> psol = std::nullopt;
-   ils.search(psol, soscILS);
+   ils.search(soscILS);
+   std::optional<ESolutionTSP> psol = ils.best;
    cout << "finished ILS!" << endl;
    cout << tim.now() << " secs" << endl;
 
@@ -239,8 +237,8 @@ main(int argc, char** argv)
    assert(eval.betterThan(EvaluationTSP(0), soscVNS.target_f));
 
    //pair<CopySolution<RepTSP>, Evaluation<>>& psol2 = *vns.search(sosc, NULL, NULL);
-   std::optional<ESolutionTSP> psol2 = std::nullopt;
-   vns.search(psol2, soscVNS.start());
+   vns.search(soscVNS.start());
+   std::optional<ESolutionTSP> psol2 = vns.best;
    psol2->first.print();
    psol2->second.print();
 
