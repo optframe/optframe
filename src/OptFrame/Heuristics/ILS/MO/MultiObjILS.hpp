@@ -70,8 +70,10 @@ public:
    virtual bool terminationCondition(H& history) = 0;
 
    //virtual Pareto<S, XMEv>* search(StopCriteria<XEv>& stopCriteria, Pareto<S, XMEv>* _pf = nullptr) override
-   virtual SearchStatus search(std::optional<Pareto<S, XMEv>>& p, const StopCriteria<XMEv>& stopCriteria) override
+   virtual SearchStatus search(const StopCriteria<XMEv>& stopCriteria) override
    {
+      std::optional<Pareto<S, XMEv>>& p = this->best;
+      //
       Timer tnow;
       Pareto<S, XMEv> x_e;
       cout << "exec: MOILS (tL:" << stopCriteria.timelimit << ")" << endl;
@@ -167,6 +169,7 @@ public:
 
       delete history;
       //return pReturn;
+      this->best = p;
       return SearchStatus::NO_REPORT; // nothing to say
    }
 };

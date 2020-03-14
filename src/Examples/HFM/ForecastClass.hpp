@@ -419,8 +419,8 @@ public:
       StopCriteria<EvaluationHFM> stopCriteria(timeES);
       stopCriteria.target_f = Evaluation<>(targetValue);
       //
-      std::optional< ESolutionHFM > finalSol;
-      es->search(finalSol, stopCriteria);
+      es->search(stopCriteria);
+      std::optional< ESolutionHFM > finalSol = es->getBestSolution();
       
       //finalSol = EsCOpt->search(timeES); //Continous ES -- Deprecated
 
@@ -456,7 +456,11 @@ public:
       //
       ils->setMessageLevel(3);
       if (timeILS > 0)
-         ils->search(finalSol, stopCriteria);
+      {
+         ils->best = finalSol;
+         ils->search(stopCriteria);
+         finalSol = ils->getBestSolution();
+      }
       //		finalSol = ils->search(stopCriteria, &solGRASP, &evaluationGrasp);
 
       return finalSol;

@@ -67,6 +67,11 @@ public:
    {
    }
 
+   op<XES>& getBestSolution()
+   {
+      return this->best;
+   }
+
    // search method try to find a feasible solution within timelimit, if there is no such solution it returns nullptr.
    //virtual pair<S, XEv>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const XEv* _e = nullptr) = 0;
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria, const std::optional<pair<S, XEv>> input = std::nullopt) = 0;

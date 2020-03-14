@@ -98,6 +98,11 @@ public:
 	{
 	}
 
+   op<XSH>& getBestPareto()
+   {
+      return this->best;
+   }
+
 	//virtual Pareto<S, XMEv>* search(MOSC& stopCriteria, Pareto<S, XMEv>* _pf = nullptr) = 0;
    //
    //virtual SearchStatus search(std::optional<Pareto<S, XMEv>>& p, const StopCriteria<XMEv>& stopCriteria) = 0;
