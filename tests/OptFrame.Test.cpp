@@ -1,7 +1,7 @@
 
 // collection of 'OptFrame' core tests
 
-#include "./OptFrame-tests/Matrix.Test.cpp"
-#include "./OptFrame-tests/RandGen.Test.cpp"
+#include "./OptFrame/Matrix.Test.cpp"
+#include "./OptFrame/RandGen.Test.cpp"
 
 // good
