@@ -125,6 +125,11 @@ Thanks a lot SourceForge/GitHub!
 
 Cite this in your paper as:
 
+Coelho, I.M., Ribas, S., Perché, M.H.P., Munhoz, P., Souza, M.J.F., Ochi, L.S. (2010). 
+OptFrame: a computational framework for combinatorial optimization problems. 
+In Anais do XLII Simpósio Brasileiro de Pesquisa Operacional (SBPO). 
+Bento Gonçalves-RS, pp 1887-1898.
+
 ```bibtex
 @article{optframe2010,
     author = {Igor Coelho and Sabir Ribas and Mário Henrique de Paiva Perché and Pablo Munhoz and Marcone Souza and Luiz Ochi},
@@ -135,7 +140,8 @@ Cite this in your paper as:
     journal = "Simpósio Brasileiro de Pesquisa Operacional"
 }
 ```
-  
+
+ 
 --
 
 [**LICENSE GNU Lesser General Public License v3**](https://github.com/optframe/optframe/blob/master/LICENSE)
