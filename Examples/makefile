@@ -29,7 +29,7 @@ etii:
 	make -f makeEtII.mk
 
 pmedcap:
-	make -f makePMedCap.mk
+	cd PMedCap && make -f makePMedCap.mk
 
 svrpdsp:
 	make -f makeSVRPDSP.mk
