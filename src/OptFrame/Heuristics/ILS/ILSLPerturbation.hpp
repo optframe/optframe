@@ -251,10 +251,10 @@ public:
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		GeneralEvaluator<XES, XEv>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		NS<XES, XEv>* ns;
-		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(ns, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new ILSLPerturbationLPlus2<XES, XEv>(*eval, *ns, hf.getRandGen());
 	}
@@ -297,10 +297,10 @@ public:
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		GeneralEvaluator<XES, XEv>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		NS<XES, XEv>* ns;
-		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(ns, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new ILSLPerturbationLPlus2Prob<XES, XEv>(*eval, *ns, hf.getRandGen());
 	}

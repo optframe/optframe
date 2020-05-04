@@ -121,12 +121,12 @@ public:
 	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		GeneralEvaluator<XES, XEv>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		NS<XES, XEv>* ns;
-		hf.assign(ns, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(ns, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		int iterMax = scanner.nextInt();
+		int iterMax = *scanner.nextInt();
 
 		return new RandomDescentMethod<XES, XEv>(*eval, *ns, iterMax);
 	}

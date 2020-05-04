@@ -21,9 +21,9 @@
 #ifndef PCAP_INITIALSOLUTION_RandomInitalSolutionGreedy_HPP_
 #define PCAP_INITIALSOLUTION_RandomInitalSolutionGreedy_HPP_
 
-#include "../../OptFrame/Constructive.hpp"
+#include <OptFrame/Constructive.hpp>
 //#include "../../OptFrame/Util/TestSolution.hpp"
-#include "../../OptFrame/RandGen.hpp"
+#include <OptFrame/RandGen.hpp>
 
 #include "ProblemInstance.h"
 

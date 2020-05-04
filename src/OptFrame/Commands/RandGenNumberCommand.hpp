@@ -66,7 +66,7 @@ public:
 			return false;
 		}
 
-		int max = scanner.nextInt();
+		int max = *scanner.nextInt();
 
 		RandGen& rg = factory.getRandGen();
 		int value = rg.rand(max);

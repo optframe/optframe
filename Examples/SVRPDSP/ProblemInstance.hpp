@@ -49,7 +49,7 @@ public:
 public:
    ProblemInstance(Scanner& scanner)
    {
-      n = scanner.nextInt();
+      n = *scanner.nextInt();
       N = n + 1;
       dN = 2 * n + 1;
       dn = 2 * n;
@@ -69,7 +69,7 @@ public:
       for (int i = 0; i < N; i++)
       {
          // drop number
-         scanner.nextInt();
+         *scanner.nextInt();
 
 #ifdef  ALL_INTEGER
          d.push_back(scanner.nextDouble()*100); // integer
@@ -126,13 +126,13 @@ public:
 		c = Matrix<int> (N, N);                             // integer
 		for (int i = 0; i < N; i++)                         // integer
 			for (int j = 0; j < N; j++)                 // integer
-				c(i, j) = scanner.nextDouble()*100; // integer
+				c(i, j) = *scanner.nextDouble()*100; // integer
 #endif
 #ifndef ALL_INTEGER
 		c = Matrix<double> (N, N);
 		for (int i = 0; i < N; i++)
 			for (int j = 0; j < N; j++)
-				c(i, j) = scanner.nextDouble();
+				c(i, j) = *scanner.nextDouble();
 #endif
 
         // CHECK SIMMETRY

@@ -28,7 +28,7 @@
 #include "MultiSolution.hpp"
 #include "MultiESolution.hpp"
 
-#include "./Scanner++/Scanner.h"
+#include "./Scanner++/Scanner.hpp"
 
 #include "OptFrameList.hpp"
 
@@ -135,7 +135,7 @@ public:
 		if(!scanner.hasNextInt())
 			return nullptr;
 
-		int inumber = scanner.nextInt();
+		int inumber = *scanner.nextInt();
 
 		if(inumber < 0)
 			return nullptr;
@@ -291,7 +291,7 @@ public:
 			return;
 		}
 
-		unsigned int number = scanner.nextInt();
+		unsigned int number = *scanner.nextInt();
 
 		component = nullptr;
 
@@ -513,7 +513,7 @@ public:
 
 		if ((h == LocalSearch<XES, XEv>::idComponent()) || (h == "LocalSearch"))
 		{
-			unsigned int id = scanner.nextInt();
+			unsigned int id = *scanner.nextInt();
 
 			LocalSearch<XES, XEv>* mtd = nullptr;
 
@@ -563,7 +563,7 @@ public:
 
 		if (h == SingleObjSearch<XES>::idComponent())
 		{
-			unsigned int id = scanner.nextInt();
+			unsigned int id = *scanner.nextInt();
 
 			SingleObjSearch<XES>* mtd = nullptr;
 
@@ -613,7 +613,7 @@ public:
 
 		if (h == MultiObjSearch<S, XEv>::idComponent())
 		{
-			unsigned int id = scanner.nextInt();
+			unsigned int id = *scanner.nextInt();
 
 			MultiObjSearch<S, XEv>* mtd = nullptr;
 

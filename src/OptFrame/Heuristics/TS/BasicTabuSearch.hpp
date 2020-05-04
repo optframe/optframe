@@ -302,23 +302,23 @@ public:
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		Evaluator<XES, XEv>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		Constructive<S>* constructive;
-		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		NSSeq<XES, XEv, XSH>* nsseq;
-		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(nsseq, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		if (!scanner.hasNext())
 			return nullptr;
 
-		int tl = scanner.nextInt();
+		int tl = *scanner.nextInt();
 
 		if (!scanner.hasNext())
 			return nullptr;
 
-		int tsMax = scanner.nextInt();
+		int tsMax = *scanner.nextInt();
 
 		return new BasicTabuSearch<S, XEv, XSH>(*eval, *constructive, *nsseq, tl, tsMax);
 	}

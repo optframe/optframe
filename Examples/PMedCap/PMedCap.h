@@ -21,14 +21,14 @@
 #ifndef PCAP_H_
 #define PCAP_H_
 
-#include "./PMedCap/Representation.h"
-#include "./PMedCap/Solution.h"
-#include "./PMedCap/Evaluation.h"
-#include "./PMedCap/ProblemInstance.h"
-#include "./PMedCap/Evaluator.h"
-#include "./PMedCap/NSSeqSWAP.h"
-#include "./PMedCap/InitialSolutionRandom.h"
-#include "./PMedCap/InitialSolutionRandomGreedy.h"
-#include "./PMedCap/InitialSolutionGreedy.h"
-#include "./PMedCap/PPCAPCheckSolution.h"
+#include "./src/Representation.h"
+#include "./src/Solution.h"
+#include "./src/Evaluation.h"
+#include "./src/ProblemInstance.h"
+#include "./src/Evaluator.h"
+#include "./src/NSSeqSWAP.h"
+#include "./src/InitialSolutionRandom.h"
+#include "./src/InitialSolutionRandomGreedy.h"
+#include "./src/InitialSolutionGreedy.h"
+#include "./src/PPCAPCheckSolution.h"
 #endif /*PCAP_H_*/

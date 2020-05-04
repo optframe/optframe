@@ -138,7 +138,7 @@ public:
 			return false;
 		}
 		Evaluator<R, ADS, DS>* eval;
-		factory.assign(eval, scanner.nextInt(), scanner.next());
+		factory.assign(eval, *scanner.nextInt(), scanner.next());
 
 
 		if (!scanner.hasNext())
@@ -153,7 +153,7 @@ public:
 			cout << "Usage: " << usage() << endl;
 			return false;
 		}
-		int id = scanner.nextInt();
+		int id = *scanner.nextInt();
 
 		Solution<R, ADS>* s1 = nullptr;
 		Constructive<S>* constructive = nullptr;

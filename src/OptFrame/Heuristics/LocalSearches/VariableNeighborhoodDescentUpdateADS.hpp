@@ -158,13 +158,13 @@ public:
    virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
       GeneralEvaluator<XES, XEv>* eval;
-      hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+      hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
       ADSManager<R, ADS, S>* adsMan;
-      hf.assign(adsMan, scanner.nextInt(), scanner.next()); // reads backwards!
+      hf.assign(adsMan, *scanner.nextInt(), scanner.next()); // reads backwards!
 
       vector<LocalSearch<XES, XEv>*> hlist;
-      hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
+      hf.assignList(hlist, *scanner.nextInt(), scanner.next()); // reads backwards!
 
       return new VariableNeighborhoodDescentUpdateADS<R, ADS, S, XEv>(*eval, *adsMan, hlist);
    }

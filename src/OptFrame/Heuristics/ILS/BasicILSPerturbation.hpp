@@ -134,13 +134,13 @@ public:
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		GeneralEvaluator<XES, XEv>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		int pMin = scanner.nextInt();
-		int pMax = scanner.nextInt();
+		int pMin = *scanner.nextInt();
+		int pMax = *scanner.nextInt();
 
 		vector<NS<XES, XEv>*> ns_list;
-		hf.assignList(ns_list, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assignList(ns_list, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new BasicILSPerturbation<XES, XEv>(*eval, pMin, pMax, ns_list, hf.getRandGen());
 	}

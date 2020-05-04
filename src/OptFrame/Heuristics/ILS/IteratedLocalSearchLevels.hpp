@@ -169,13 +169,13 @@ public:
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		GeneralEvaluator<XES, XEv>* eval = nullptr;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!eval)
 			return nullptr;
 
 		//Constructive<S>* constructive = nullptr;
       InitialSearch<XES, XEv>* constructive = nullptr;
-		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!constructive)
 			return nullptr;
 
@@ -191,29 +191,31 @@ public:
 			return nullptr;
 
 		ILSLPerturbation<XES, XEv>* pert;
-		hf.assign(pert, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(pert, *scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!pert)
 			return nullptr;
 
 		int iterMax = -1;
-		try
-		{
-			iterMax = scanner.nextInt();
-		}
-		catch (ConversionError& e)
+
+      auto oiterMax = scanner.nextInt();
+		
+		if(!oiterMax)
 		{
 			return nullptr;
 		}
 
+      iterMax = *oiterMax;
+
 		int levelMax = -1;
-		try
-		{
-			levelMax = scanner.nextInt();
-		}
-		catch (ConversionError& e)
+
+		auto olevelMax = scanner.nextInt();
+		
+		if(!olevelMax)
 		{
 			return nullptr;
 		}
+
+      levelMax = *olevelMax;
 
 		return new IteratedLocalSearchLevels<XES, XEv>(*eval, *constructive, *h, *pert, iterMax,levelMax);
 	}

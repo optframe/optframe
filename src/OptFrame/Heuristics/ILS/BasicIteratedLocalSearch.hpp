@@ -145,11 +145,11 @@ public:
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") override
 	{
 		GeneralEvaluator<XES, XEv>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		//Constructive<S>* constructive;
       InitialSearch<XES, XEv>* constructive;
-		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
 
@@ -161,9 +161,9 @@ public:
 		scanner = Scanner(method.second);
 
 		BasicILSPerturbation<XES, XEv>* pert;
-		hf.assign(pert, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(pert, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		int iterMax = scanner.nextInt();
+		int iterMax = *scanner.nextInt();
 
 		return new BasicIteratedLocalSearch<XES, XEv>(*eval, *constructive, *h, *pert, iterMax);
 	}

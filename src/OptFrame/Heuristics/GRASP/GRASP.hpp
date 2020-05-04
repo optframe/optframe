@@ -117,10 +117,10 @@ public:
 	virtual SingleObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
 		Evaluator<R, ADS, DS>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		Constructive<S>* constructive;
-		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
 
@@ -134,7 +134,7 @@ public:
 		if(!scanner.hasNext())
 			return nullptr;
 
-		int iterMax = scanner.nextInt();
+		int iterMax = *scanner.nextInt();
 
 		return new GRASP<R, ADS, DS>(*eval, *constructive, *h, iterMax);
 	}

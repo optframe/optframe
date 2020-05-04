@@ -177,8 +177,8 @@ public:
 //		while (scanner.hasNext())
 //		{
 //
-//			times = scanner.nextDouble();
-//			watts = scanner.nextDouble();
+//			times = *scanner.nextDouble();
+//			watts = *scanner.nextDouble();
 
 		while (!input.eof())
 		{

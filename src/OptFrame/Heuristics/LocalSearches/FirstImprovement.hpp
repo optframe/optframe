@@ -222,10 +222,10 @@ public:
 	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		GeneralEvaluator<XES, XEv>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		NSSeq<XES, XEv, XSH>* nsseq;
-		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(nsseq, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new FirstImprovement<XES, XEv, XSH>(*eval, *nsseq);
 	}

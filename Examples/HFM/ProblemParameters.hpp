@@ -263,28 +263,28 @@ public:
 //
 //		cout << scanner.nextLine() << endl;
 //		cout << scanner.nextLine() << endl;
-//		precision = scanner.nextInt();
+//		precision = *scanner.nextInt();
 //		cout << "precision = " << precision << endl;
 //		cout << scanner.nextLine() << endl;
-//		stepsAhead = scanner.nextInt();
+//		stepsAhead = *scanner.nextInt();
 //		cout << "stepsAhead = " << stepsAhead << endl;
 //		cout << scanner.nextLine() << endl;
-//		function = scanner.nextInt();
+//		function = *scanner.nextInt();
 //		cout << "function = " << function << endl;
 //
 //		cout << scanner.nextLine() << endl;
 //		cout << scanner.nextLine() << endl;
 //		cout << scanner.nextLine() << endl;
 //
-//		int nSP = scanner.nextInt();
+//		int nSP = *scanner.nextInt();
 //		cout << "nSP = " << nSP << endl;
 //
 //		cout << scanner.nextLine() << endl;
 //
 //		for (int i = 0; i < nSP; i++)
 //		{
-//			int file = scanner.nextInt();
-//			int K = scanner.nextInt();
+//			int file = *scanner.nextInt();
+//			int K = *scanner.nextInt();
 //			oForesSP.push_back(make_pair(file, K));
 //		}
 //
@@ -293,20 +293,20 @@ public:
 //		cout << scanner.nextLine() << endl;
 //		cout << scanner.nextLine() << endl;
 //
-//		int nMP = scanner.nextInt();
+//		int nMP = *scanner.nextInt();
 //		cout << "nMP = " << nMP << endl;
 //
 //		cout << scanner.nextLine() << endl;
 //
 //		for (int i = 0; i < nMP; i++)
 //		{
-//			int file = scanner.nextInt();
-//			int nAverageP = scanner.nextInt();
+//			int file = *scanner.nextInt();
+//			int nAverageP = *scanner.nextInt();
 //
 //			vector<int> meansP;
 //			for (int n = 0; n < nAverageP; n++)
 //			{
-//				int K = scanner.nextInt();
+//				int K = *scanner.nextInt();
 //				meansP.push_back(K);
 //			}
 //			oForesMP.push_back(make_pair(file, meansP));
@@ -317,16 +317,16 @@ public:
 //		cout << scanner.nextLine() << endl;
 //		cout << scanner.nextLine() << endl;
 //
-//		int nDP = scanner.nextInt();
+//		int nDP = *scanner.nextInt();
 //		cout << "nDP = " << nDP << endl;
 //
 //		cout << scanner.nextLine() << endl;
 //
 //		for (int i = 0; i < nDP; i++)
 //		{
-//			int file = scanner.nextInt();
-//			int K1 = scanner.nextInt();
-//			int K2 = scanner.nextInt();
+//			int file = *scanner.nextInt();
+//			int K1 = *scanner.nextInt();
+//			int K2 = *scanner.nextInt();
 //
 //			vector<int> derivativeP;
 //			derivativeP.push_back(K1);

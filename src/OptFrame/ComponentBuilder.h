@@ -27,7 +27,7 @@
 #include "MultiESolution.hpp"
 #include "Evaluation.hpp"
 
-#include "Scanner++/Scanner.h"
+#include "Scanner++/Scanner.hpp"
 
 using namespace scannerpp;
 

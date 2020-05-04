@@ -211,14 +211,14 @@ public:
 	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		GeneralEvaluator<XES, XEv>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<NS<XES, XEv>*> nslist;
-		hf.assignList(nslist, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assignList(nslist, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		int L = scanner.nextInt();
+		int L = *scanner.nextInt();
 
-		int iterMax = scanner.nextInt();
+		int iterMax = *scanner.nextInt();
 
 		return new LateAcceptanceHillClimbing<XES, XEv>(*eval, nslist, L, iterMax);
 	}

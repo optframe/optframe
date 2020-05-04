@@ -77,17 +77,17 @@ public:
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		GeneralEvaluator<XES>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		//Constructive<S>* constructive;
       InitialSearch<XES, XEv>* constructive;
-		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<NS<XES, XEv>*> shakelist;
-		hf.assignList(shakelist, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assignList(shakelist, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<NSSeq<XES, XEv>*> searchlist;
-		hf.assignList(searchlist, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assignList(searchlist, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 
 		return new BasicVNS<XES, XEv>(*eval, *constructive, shakelist, searchlist);

@@ -25,7 +25,7 @@
 #include <iostream>
 #include <string>
 
-#include "./Scanner++/Scanner.h"
+#include "./Scanner++/Scanner.hpp"
 
 using namespace std;
 using namespace scannerpp;
@@ -54,7 +54,7 @@ public:
 		if (!scanner.hasNextChar())
 			return nullptr;
 
-		char character = scanner.nextChar();
+		char character = *scanner.nextChar();
 		int numberOfBrackets;
 
 		if (character != '[') // read from dictionary
@@ -65,23 +65,22 @@ public:
 				ssword << character;
 				if (!scanner.hasNextChar())
 					break;
-				character = scanner.nextChar();
+				character = *scanner.nextChar();
 			}
 
 			string word = ssword.str();
 
 			if (ldictionary.count(word) == 0) // will try numeric list
 			{
-				int begin;
-				try
-				{
-					begin = Scanner::parseInt(word);
-				}
-				catch (ConversionError& e)
+				auto obegin = Scanner::parseInt(word);
+
+            if(!obegin)
 				{
 					cout << "OptFrameList error: variable '" << word << "' not found in list dictionary!" << endl;
 					return nullptr;
 				}
+
+            int begin = *obegin;
 
 				if (!scanner.hasNext())
 					return nullptr;
@@ -96,15 +95,13 @@ public:
 
 				string send = scanner.next();
 
-				int end;
-				try
-				{
-					end = Scanner::parseInt(send);
-				}
-				catch (ConversionError& e)
-				{
+				auto oend = Scanner::parseInt(send);
+				if(!oend)
+            {
 					return nullptr;
 				}
+
+            int end = *oend;
 
 				vector<string>* numeric_list = new vector<string>();
 
@@ -132,7 +129,7 @@ public:
 		if (!scanner.hasNextChar())
 			return nullptr;
 
-		character = scanner.nextChar();
+		character = *scanner.nextChar();
 
 		word = "";
 		while ((character != ']') || ((character == ']') && numberOfBrackets > 0))
@@ -155,7 +152,7 @@ public:
 			if (!scanner.hasNextChar())
 				return nullptr;
 
-			character = scanner.nextChar();
+			character = *scanner.nextChar();
 		}
 		list->push_back(word);
 
@@ -176,7 +173,7 @@ public:
 		if (!scanner.hasNextChar())
 			return nullptr;
 
-		char character = scanner.nextChar();
+		char character = *scanner.nextChar();
 		int numberOfBrackets;
 
 		// trim input
@@ -185,7 +182,7 @@ public:
 			if (!scanner.hasNextChar())
 				return nullptr;
 
-			character = scanner.nextChar();
+			character = *scanner.nextChar();
 		}
 
 		if (character != '{') // can't read block from dictionary
@@ -203,7 +200,7 @@ public:
 		if (!scanner.hasNextChar())
 			return nullptr;
 
-		character = scanner.nextChar();
+		character = *scanner.nextChar();
 
 		word = "";
 		while ((character != '}') || ((character == '}') && numberOfBrackets > 0))
@@ -226,7 +223,7 @@ public:
 			if (!scanner.hasNextChar())
 				return nullptr;
 
-			character = scanner.nextChar();
+			character = *scanner.nextChar();
 		}
 
 		block->push_back(word);

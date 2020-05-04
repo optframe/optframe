@@ -106,7 +106,7 @@ public:
 		{
 			try
 			{
-				index = scanner.nextInt();
+				index = *scanner.nextInt();
 			}
 			catch(ConversionError& e)
 			{

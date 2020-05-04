@@ -25,7 +25,7 @@
 #include <iostream>
 #include <vector>
 
-#include "Scanner++/Scanner.h"
+#include "Scanner++/Scanner.hpp"
 
 #include "Component.hpp"
 
@@ -211,7 +211,7 @@ public:
 			return false;
 
 		Component* c;
-		hf.assign(c, scanner.nextInt(), scanner.next());
+		hf.assign(c, *scanner.nextInt(), scanner.next());
 
 		if (!c)
 			return false;
@@ -251,7 +251,7 @@ public:
 			if (!scanner.hasNext())
 				return false;
 
-			int verboseLevel = scanner.nextInt();
+			int verboseLevel = *scanner.nextInt();
 
 			c->setMessageLevel(verboseLevel);
 

@@ -58,7 +58,7 @@ public:
 			return false;
 		}
 
-		unsigned long seed = scanner.nextInt();
+		unsigned long seed = *scanner.nextInt();
 
 		cout << "randgen.set_seed command: setting system random number generator seed to: " << seed << endl;
 

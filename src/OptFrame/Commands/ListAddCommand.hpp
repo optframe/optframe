@@ -77,7 +77,7 @@ public:
 			return false;
 		}
 
-		int index = scanner.nextInt();
+		int index = *scanner.nextInt();
 		index--; // index is [1..size()], but in c++ is [0..size()-1]
 
 		if (!scanner.hasNext())

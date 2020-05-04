@@ -107,7 +107,7 @@ public:
 			return false;
 		}
 
-		int value1 = scanner.nextInt();
+		int value1 = *scanner.nextInt();
 
 		if (!scanner.hasNext())
 		{
@@ -129,7 +129,7 @@ public:
 			return false;
 		}
 
-		int value2 = scanner.nextInt();
+		int value2 = *scanner.nextInt();
 
 		vector<string>* pcommands = OptFrameList::readBlock(scanner);
 		vector<string>  commands;

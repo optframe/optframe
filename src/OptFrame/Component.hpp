@@ -25,7 +25,7 @@
 #include <iostream>
 #include <vector>
 
-#include "Scanner++/Scanner.h"
+#include "Scanner++/Scanner.hpp"
 using namespace scannerpp;
 
 using namespace std;

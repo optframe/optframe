@@ -80,7 +80,7 @@ public:
          return false;
       }
 
-      int id = scanner.nextInt();
+      int id = *scanner.nextInt();
 
       if (!scanner.hasNext())
       {

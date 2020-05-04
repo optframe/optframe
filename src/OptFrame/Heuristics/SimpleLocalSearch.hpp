@@ -116,11 +116,11 @@ public:
    virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") override
    {
       Evaluator<XES, XEv>* eval;
-      hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+      hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
       //Constructive<S>* constructive;
       InitialSearch<XES, XEv>* constructive;
-      hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
+      hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 
       string rest = scanner.rest();
 

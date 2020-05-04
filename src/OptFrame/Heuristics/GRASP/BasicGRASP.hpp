@@ -164,10 +164,10 @@ public:
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		GeneralEvaluator<XES, XEv>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		GRConstructive<S>* constructive;
-		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
 
@@ -181,12 +181,12 @@ public:
 		if (!scanner.hasNext())
 			return nullptr;
 
-		float alpha = scanner.nextFloat();
+		float alpha = *scanner.nextFloat();
 
 		if (!scanner.hasNext())
 			return nullptr;
 
-		int iterMax = scanner.nextInt();
+		int iterMax = *scanner.nextInt();
 
 		return new BasicGRASP<S, XEv>(*eval, *constructive, *h, alpha, iterMax);
 	}

@@ -83,16 +83,16 @@ public:
 	virtual SingleObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "")
 	{
 		Evaluator<R, ADS, DS>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		Constructive<S>* constructive;
-		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<NS<R, ADS, DS>*> shakelist;
-		hf.assignList(shakelist, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assignList(shakelist, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<NSSeq<R, ADS, DS>*> searchlist;
-		hf.assignList(searchlist, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assignList(searchlist, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 
 		return new RandVNS<R, ADS, DS>(*eval, *constructive, shakelist, searchlist, hf.getRandGen());

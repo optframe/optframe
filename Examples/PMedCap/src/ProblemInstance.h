@@ -23,7 +23,7 @@
 
 #include <iostream>
 
-#include "../../OptFrame/Scanner++/Scanner.h"
+#include <OptFrame/Scanner++/Scanner.hpp>
 #include "./cidade.h"
 
 using namespace scannerpp;
@@ -42,15 +42,15 @@ public:
 	vector<Cidade> vecCidades;
 	PCAPProblemInstance(Scanner& scanner)
 	{
-		nCidades = scanner.nextInt();
-		nMedianas = scanner.nextInt();
+		nCidades = *scanner.nextInt();
+		nMedianas = *scanner.nextInt();
 
 		while(scanner.hasNext())
 		{
-			double x = scanner.nextDouble();
-			double y = scanner.nextDouble();
-			int cap = scanner.nextInt();
-			int d = scanner.nextInt();
+			double x = *scanner.nextDouble();
+			double y = *scanner.nextDouble();
+			int cap = *scanner.nextInt();
+			int d = *scanner.nextInt();
 			Cidade c(x,y,cap,d);
 			vecCidades.push_back(c);
 		}

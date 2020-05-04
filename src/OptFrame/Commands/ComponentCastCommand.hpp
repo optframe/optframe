@@ -68,7 +68,7 @@ public:
 			return false;
 		}
 
-		int number = scanner.nextInt();
+		int number = *scanner.nextInt();
 
 		if (!scanner.hasNext())
 		{

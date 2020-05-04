@@ -82,7 +82,7 @@ public:
    virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
       S* s;
-      hf.assign(s, scanner.nextInt(), scanner.next()); // reads backwards!
+      hf.assign(s, *scanner.nextInt(), scanner.next()); // reads backwards!
 
       return new CloneConstructive<S>(*s);
    }

@@ -68,10 +68,10 @@ public:
 			return false;
 		}
 
-		int n = scanner.nextInt();
-		int t = scanner.nextDouble();
-		double tf = scanner.nextDouble();
-		double bf = scanner.nextDouble();
+		int n = *scanner.nextInt();
+		int t = *scanner.nextDouble();
+		double tf = *scanner.nextDouble();
+		double bf = *scanner.nextDouble();
 
 		// Read evaluator
 		Component* comp = factory.getNextComponent(scanner);

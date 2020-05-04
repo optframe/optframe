@@ -219,7 +219,7 @@ public:
          return false;
 
       SingleObjSearch<XES>* sios;
-      hf.assign(sios, scanner.nextInt(), scanner.next());
+      hf.assign(sios, *scanner.nextInt(), scanner.next());
 
       if (!sios)
          return false;
@@ -236,24 +236,24 @@ public:
          if (!scanner.hasNext())
             return false;
 
-         double timelimit = scanner.nextDouble();
+         double timelimit = *scanner.nextDouble();
 
          if (!scanner.hasNext())
             return false;
 
-         double target_f = scanner.nextDouble();
+         double target_f = *scanner.nextDouble();
 
          if (!scanner.hasNext())
             return false;
 
          S* s;
-         hf.assign(s, scanner.nextInt(), scanner.next());
+         hf.assign(s, *scanner.nextInt(), scanner.next());
 
          if (!scanner.hasNext())
             return false;
 
          XEv* e;
-         hf.assign(e, scanner.nextInt(), scanner.next());
+         hf.assign(e, *scanner.nextInt(), scanner.next());
 
          pair<S, XEv>* p = sios->search(StopCriteria(timelimit, target_f), s, e);
 

@@ -63,13 +63,13 @@ public:
 		{
 			Scanner scanner = *scannerFiles[exVar];
 
-			nForecastings[exVar] = scanner.nextInt();
+			nForecastings[exVar] = *scanner.nextInt();
 //			cout << "nForecastings[" << exVar << "]: " << nForecastings[exVar] << endl;
 
 			for (int i = 0; i < nForecastings[exVar]; i++)
 			{
 				double input;
-				input = scanner.nextDouble();
+				input = *scanner.nextDouble();
 				//cout << input << endl;
 
 				forecastings[exVar].push_back(input);

@@ -36,7 +36,7 @@
 
 #include "Util/printable.h"
 #include "Util/Matrix.hpp"
-#include "Scanner++/Scanner.h"
+#include "Scanner++/Scanner.hpp"
 
 
 #include "Solution.hpp"

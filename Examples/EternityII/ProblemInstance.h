@@ -42,8 +42,8 @@ public:
 	ProblemInstance(Scanner& scanner)
 	{
 		cout << "Reading problem instance" << endl;
-		width = scanner.nextInt();
-		height = scanner.nextInt();
+		width = *scanner.nextInt();
+		height = *scanner.nextInt();
 
 		cout << "width = " << width << "; height = " << height << ";" << endl;
 		cout << "pieces" << endl;
@@ -55,10 +55,10 @@ public:
 		{
 			cout << i << ": ";
 
-			int down = scanner.nextInt();
-			int left = scanner.nextInt();
-			int up = scanner.nextInt();
-			int right = scanner.nextInt();
+			int down = *scanner.nextInt();
+			int left = *scanner.nextInt();
+			int up = *scanner.nextInt();
+			int right = *scanner.nextInt();
 
 			Piece& p = *new Piece(down, left, up, right, i, 0);
 

@@ -28,9 +28,9 @@
 #include <iostream>
 
 
-#include "../OptFrame/Move.hpp" // for testing
-#include "../OptFrame/Loader.hpp"
-#include "../OptFrame/Timer.hpp"
+#include <OptFrame/Move.hpp> // for testing
+#include <OptFrame/Loader.hpp>
+#include <OptFrame/Timer.hpp>
 #include "PMedCap.h"
 
 
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 	RandGen rg(time(NULL));
 
 
-	Scanner scanner(new File("./Examples/PMedCap/InstancesLorena/SJC1"));
+	Scanner scanner(File("./Examples/PMedCap/InstancesLorena/SJC1"));
 
 	//double tempo = 120;
 

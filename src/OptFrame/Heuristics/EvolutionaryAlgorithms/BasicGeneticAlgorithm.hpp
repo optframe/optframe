@@ -327,25 +327,25 @@ public:
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
 		Evaluator<S>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		InitialMultiSolution<S>* initPop;
-		hf.assign(initPop, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(initPop, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		int popSize = scanner.nextInt();
-		float pCross = scanner.nextFloat();
-		float pMut = scanner.nextFloat();
-		float pLS = scanner.nextFloat();
-		int nGen = scanner.nextInt();
+		int popSize = *scanner.nextInt();
+		float pCross = *scanner.nextFloat();
+		float pMut = *scanner.nextFloat();
+		float pLS = *scanner.nextFloat();
+		int nGen = *scanner.nextInt();
 
 		Selection<R, ADS>* sel;
-		hf.assign(sel, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(sel, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		Crossover<R, ADS>* cross;
-		hf.assign(cross, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(cross, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		Mutation<R, ADS>* mut;
-		hf.assign(mut, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(mut, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
 		pair<LocalSearch<XES, XEv>*, std::string> method;

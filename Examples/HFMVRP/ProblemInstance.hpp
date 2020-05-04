@@ -28,15 +28,15 @@ public:
 			cout << scanner.nextLine() << endl;
 		//Problem data
 		cout << scanner.next() << " ";
-		nodes = scanner.nextDouble();
+		nodes = *scanner.nextDouble();
 		cout << nodes << endl;
 
 		cout << scanner.next() << " ";
-		nVehicles = scanner.nextDouble();
+		nVehicles = *scanner.nextDouble();
 		cout << nVehicles << endl;
 
 		cout << scanner.next() << " ";
-		typesVehicles = scanner.nextDouble();
+		typesVehicles = *scanner.nextDouble();
 		cout << typesVehicles << endl;
 
 		//Veihicles types
@@ -64,7 +64,7 @@ public:
 
 		for (int i = 0; i < nodes; i++)
 		{
-			int storeID = scanner.nextDouble();
+			int storeID = *scanner.nextDouble();
 			storeIDS.push_back(storeID);
 		}
 
@@ -80,7 +80,7 @@ public:
 			for (int j = 0; j < nodes; j++)
 			{
 				//cout<<"i= "<<i<<"j= "<<j<<endl;
-				double nodeDist = scanner.nextDouble();
+				double nodeDist = *scanner.nextDouble();
 				//cout<<"nodeDist = "<<nodeDist<<endl;
 				//getchar();
 				if (nodeDist == 999)
@@ -105,7 +105,7 @@ public:
 		int nullDemands = 0;
 		for (int c = 0; c < nodes; c++)
 		{
-			double demand = scanner.nextDouble();
+			double demand = *scanner.nextDouble();
 			demands.push_back(demand);
 			if (demands[c] == 0)
 				nullDemands++;
@@ -127,7 +127,7 @@ public:
 			for (int t = 0; t < typesVehicles; t++)
 			{
 				//cout<<"i= "<<i<<"j= "<<j<<endl;
-				double compTruck = scanner.nextDouble();
+				double compTruck = *scanner.nextDouble();
 				//cout<<"nodeDist = "<<nodeDist<<endl;
 				//getchar();
 				(*comp)(t, c) = compTruck;

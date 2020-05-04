@@ -67,7 +67,7 @@ public:
 			return false;
 		}
 
-		int begin = scanner.nextInt();
+		int begin = *scanner.nextInt();
 
 		if (!scanner.hasNext())
 		{
@@ -76,7 +76,7 @@ public:
 			return false;
 		}
 
-		int end = scanner.nextInt();
+		int end = *scanner.nextInt();
 
 		RandGen& rg = factory.getRandGen();
 		int value = rg.rand(end-begin+1) + begin;

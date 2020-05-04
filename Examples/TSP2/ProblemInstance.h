@@ -57,7 +57,7 @@ public:
 		scanner.nextLine();
 		scanner.nextLine();
 		scanner.next();
-		n = scanner.nextInt();
+		n = *scanner.nextInt();
 		scanner.nextLine();
 		scanner.nextLine();
 
@@ -75,9 +75,9 @@ public:
 		{
 			//cout << scanner.next(); << "\t"; // id
 			scanner.next();
-			xvalues[i] = scanner.nextDouble(); // x
+			xvalues[i] = *scanner.nextDouble(); // x
 			//cout << (*xvalues)[i] << "\t";
-			yvalues[i] = scanner.nextDouble(); // y
+			yvalues[i] = *scanner.nextDouble(); // y
 			//cout << (*yvalues)[i] << endl;
 		}
 

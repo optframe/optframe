@@ -114,7 +114,7 @@ public:
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "")
 	{
 		Constructive<S>* c;
-		hf.assign(c, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(c, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new BasicInitialMultiSolution<S>(*c);
 	}

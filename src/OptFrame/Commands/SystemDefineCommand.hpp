@@ -82,7 +82,7 @@ public:
 
 		while(scanner.hasNextChar())
 		{
-			char c = scanner.nextChar();
+			char c = *scanner.nextChar();
 			if(c != '%')
 				input2 += c;
 			else

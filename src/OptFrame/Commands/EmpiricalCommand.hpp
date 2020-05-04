@@ -62,10 +62,10 @@ public:
 			return true;
 		}
 
-		int n = scanner.nextInt();
-		int t = scanner.nextDouble();
-		double tf = scanner.nextDouble();
-		double bf = scanner.nextDouble();
+		int n = *scanner.nextInt();
+		int t = *scanner.nextDouble();
+		double tf = *scanner.nextDouble();
+		double bf = *scanner.nextDouble();
 
 		pair<SingleObjSearch<R, ADS, DS>*, string> method = factory.createSingleObjSearch(scanner.rest());
 

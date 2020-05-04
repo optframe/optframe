@@ -1,4 +1,4 @@
-// OptFrame - Optimization Framework
+   // OptFrame - Optimization Framework
 
 // Copyright (C) 2009-2015
 // http://optframe.sourceforge.net/
@@ -236,7 +236,7 @@ public:
       if (!scanner.hasNext())
          return nullptr;
 
-      long seed = scanner.nextLong();
+      long seed = *scanner.nextLong();
 
       return new RandGen(seed);
    }

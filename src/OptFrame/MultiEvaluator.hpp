@@ -350,7 +350,7 @@ public:
 			return false;
 
 		Evaluator<XES, XEv>* ev;
-		hf.assign(ev, scanner.nextInt(), scanner.next());
+		hf.assign(ev, *scanner.nextInt(), scanner.next());
 
 		if (!ev)
 			return false;
@@ -369,7 +369,7 @@ public:
 				return false;
 
 			S* s;
-			hf.assign(s, scanner.nextInt(), scanner.next());
+			hf.assign(s, *scanner.nextInt(), scanner.next());
 
 			if (!s)
 				return false;

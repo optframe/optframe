@@ -266,12 +266,12 @@ public:
 		if(!scanner.hasNext())
 			return nullptr;
 		GeneralEvaluator<XES, XEv>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		if(!scanner.hasNext())
 			return nullptr;
 		NSSeq<XES, XEv, XSH>* nsseq;
-		hf.assign(nsseq, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(nsseq, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new BestImprovement<XES, XEv, XSH>(*eval, *nsseq);
 	}

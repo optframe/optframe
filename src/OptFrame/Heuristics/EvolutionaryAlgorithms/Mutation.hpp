@@ -127,10 +127,10 @@ public:
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		int n = scanner.nextInt();
+		int n = *scanner.nextInt();
 
 		vector<NS<XES, XEv>*> ns_list;
-		hf.assignList(ns_list, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assignList(ns_list, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		return new BasicMutation<S, XEv>(n, ns_list, hf.getRandGen());
 	}

@@ -48,8 +48,8 @@ public:
 	{
 		Scanner scanner(input);
 
-		int begin    = scanner.nextInt();
-		int end      = scanner.nextInt();
+		int begin    = *scanner.nextInt();
+		int end      = *scanner.nextInt();
 		string lname = scanner.next();
 
 		stringstream ss;

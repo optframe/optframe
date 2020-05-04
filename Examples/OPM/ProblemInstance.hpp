@@ -23,15 +23,15 @@ public:
 			cout << scanner.nextLine() << endl;
 
 		cout << scanner.next() << " ";
-		pl_est = scanner.nextDouble();
-		pr_est = scanner.nextDouble();
-		pu_est = scanner.nextDouble();
+		pl_est = *scanner.nextDouble();
+		pr_est = *scanner.nextDouble();
+		pu_est = *scanner.nextDouble();
 		cout << pl_est << " " << pr_est << " " << pu_est << endl;
 
 		cout << scanner.next() << " ";
-		pl_min = scanner.nextDouble();
-		pr_min = scanner.nextDouble();
-		pu_min = scanner.nextDouble();
+		pl_min = *scanner.nextDouble();
+		pr_min = *scanner.nextDouble();
+		pu_min = *scanner.nextDouble();
 		cout << pl_min << " " << pr_min << " " << pu_min << endl;
 
 		for (int i = 0; i < 8; i++)
@@ -42,11 +42,11 @@ public:
 		cout << scanner.next() << " "; // :=
 		cout << scanner.next() << " "; // esteril
 
-		wnp_est = scanner.nextDouble();
+		wnp_est = *scanner.nextDouble();
 		cout << wnp_est << endl;
 
 		cout << scanner.next() << " "; // minerio
-		wnp_min = scanner.nextDouble();
+		wnp_min = *scanner.nextDouble();
 		cout << wnp_min << endl;
 
 		cout << scanner.nextLine() << endl;
@@ -56,11 +56,11 @@ public:
 		cout << scanner.next() << " "; // :=
 		cout << scanner.next() << " "; // esteril
 
-		wpp_est = scanner.nextDouble();
+		wpp_est = *scanner.nextDouble();
 		cout << wpp_est << endl;
 
 		cout << scanner.next() << " "; // minerio
-		wpp_min = scanner.nextDouble();
+		wpp_min = *scanner.nextDouble();
 		cout << wpp_min << endl;
 
 		for (int i = 0; i < 4; i++)
@@ -85,9 +85,9 @@ public:
 		for (int p = 0; p < numParams; p++)
 		{
 			cout << scanner.next() << " ";
-			double _tu = scanner.nextDouble();
-			double _tr = scanner.nextDouble();
-			double _tl = scanner.nextDouble();
+			double _tu = *scanner.nextDouble();
+			double _tr = *scanner.nextDouble();
+			double _tl = *scanner.nextDouble();
 
 			tu.push_back(_tu);
 			tr.push_back(_tr);
@@ -105,8 +105,8 @@ public:
 		for (int p = 0; p < numParams; p++)
 		{
 			cout << scanner.next() << " ";
-			double _wnm = scanner.nextDouble();
-			double _wpm = scanner.nextDouble();
+			double _wnm = *scanner.nextDouble();
+			double _wpm = *scanner.nextDouble();
 
 			wnm.push_back(_wnm);
 			wpm.push_back(_wpm);
@@ -135,8 +135,8 @@ public:
 		for (int p = 0; p < numFrentes; p++)
 		{
 			cout << scanner.next() << " ";
-			double _qu = scanner.nextDouble();
-			bool _isMin = scanner.nextInt();
+			double _qu = *scanner.nextDouble();
+			bool _isMin = *scanner.nextInt();
 
 			qu.push_back(_qu);
 			isMin.push_back(_isMin);
@@ -171,8 +171,8 @@ public:
 		for (int g = 0; g < numCarregs; g++)
 		{
 			cout << scanner.next() << " ";
-			double _cMin = scanner.nextDouble();
-			double _cMax = scanner.nextDouble();
+			double _cMin = *scanner.nextDouble();
+			double _cMax = *scanner.nextDouble();
 
 			cMin.push_back(_cMin);
 			cMax.push_back(_cMax);
@@ -204,7 +204,7 @@ public:
 		cout << scanner.next() << " "; // param
 		cout << scanner.next() << " "; // txUtilCam
 		cout << scanner.next() << " "; // :=
-		txUtilCam = scanner.nextDouble();
+		txUtilCam = *scanner.nextDouble();
 		cout << txUtilCam << endl;
 
 		cout << scanner.nextLine() << endl;
@@ -213,7 +213,7 @@ public:
 		for (int c = 0; c < numCaminhoes; c++)
 		{
 			cout << scanner.next() << " ";
-			double _l = scanner.nextDouble();
+			double _l = *scanner.nextDouble();
 
 			l.push_back(_l);
 
@@ -237,7 +237,7 @@ public:
 
 			for (int p = 0; p < numParams; p++)
 			{
-				double _teor = scanner.nextDouble();
+				double _teor = *scanner.nextDouble();
 				cout << _teor << " ";
 
 				(*teor)(f, p) = _teor;
@@ -259,7 +259,7 @@ public:
 
 			for (int g = 0; g < numCarregs; g++)
 			{
-				bool _comp = scanner.nextInt();
+				bool _comp = *scanner.nextInt();
 				cout << _comp << " ";
 
 				(*comp)(c, g) = _comp;
@@ -276,7 +276,7 @@ public:
 		for (int f = 0; f < numFrentes; f++)
 		{
 			cout << scanner.next() << " ";
-			double _tempo = scanner.nextDouble();
+			double _tempo = *scanner.nextDouble();
 
 			tempo.push_back(_tempo);
 

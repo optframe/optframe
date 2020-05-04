@@ -66,7 +66,7 @@ public:
          return false;
       }
 
-      int id = scanner.nextInt();
+      int id = *scanner.nextInt();
 
       return factory.drop(type, id);
    }

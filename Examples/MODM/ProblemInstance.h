@@ -31,18 +31,18 @@ public:
 		//Problem data
 		cout << "========= THAYS Start Reading Problem Instance =========" << endl;
 		//number of clients
-		c = scanner.nextInt();
+		c = *scanner.nextInt();
 		cout << "number of clients: ";
 		cout << c << endl;
 
 		//number of products
-		n = scanner.nextInt();
+		n = *scanner.nextInt();
 		cout << "number of products: ";
 		cout << n << endl;
 
 		//Hurdle rate
 		cout << "hurdle rate: ";
-		R = scanner.nextDouble();
+		R = *scanner.nextDouble();
 		cout << R << endl;
 
 		cost = new Matrix<int> (c, n);
@@ -55,7 +55,7 @@ public:
 			//cost
 			for (int product = 0; product < n; product++)
 			{
-				int costProduct = scanner.nextInt();
+				int costProduct = *scanner.nextInt();
 				cout << costProduct << ",";
 				(*cost)(client, product) = costProduct;
 			}
@@ -63,12 +63,12 @@ public:
 			//cost
 			for (int product = 0; product < n; product++)
 			{
-				int revenueProduct = scanner.nextInt();
+				int revenueProduct = *scanner.nextInt();
 				cout << revenueProduct << ",";
 				(*revenue)(client, product) = revenueProduct;
 			}
 
-			int maxOffer = scanner.nextInt();
+			int maxOffer = *scanner.nextInt();
 			cout << maxOffer << "]" << endl;
 			maxOffers.push_back(maxOffer);
 		}
@@ -77,7 +77,7 @@ public:
 		cout << "minClients of clients to offer each product during the campain" << endl;
 		for (int products = 0; products < n; products++)
 		{
-			int nMinClients = scanner.nextInt();
+			int nMinClients = *scanner.nextInt();
 			cout << nMinClients << ",";
 			minClients.push_back(nMinClients);
 
@@ -88,7 +88,7 @@ public:
 		cout << "avaiable budge for each product" << endl;
 		for (int products = 0; products < n; products++)
 		{
-			int vBudget = scanner.nextInt();
+			int vBudget = *scanner.nextInt();
 			cout << vBudget << ",";
 			budget.push_back(vBudget);
 		}
@@ -98,7 +98,7 @@ public:
 		cout << "fixedCost of each product" << endl;
 		for (int products = 0; products < n; products++)
 		{
-			int vFixedCost = scanner.nextInt();
+			int vFixedCost = *scanner.nextInt();
 			cout << vFixedCost << ",";
 			fixedCost.push_back(vFixedCost);
 

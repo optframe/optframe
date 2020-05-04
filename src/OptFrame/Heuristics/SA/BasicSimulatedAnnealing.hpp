@@ -314,18 +314,18 @@ public:
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
 		GeneralEvaluator<XES, XEv>* eval;
-		hf.assign(eval, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		//Constructive<S>* constructive;
       InitialSearch<XES, XEv>* constructive;
-		hf.assign(constructive, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		vector<NS<XES, XEv>* > hlist;
-		hf.assignList(hlist, scanner.nextInt(), scanner.next()); // reads backwards!
+		hf.assignList(hlist, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		double alpha = scanner.nextDouble();
-		int SAmax = scanner.nextInt();
-		double Ti = scanner.nextDouble();
+		double alpha = *scanner.nextDouble();
+		int SAmax = *scanner.nextInt();
+		double Ti = *scanner.nextDouble();
 
 		return new BasicSimulatedAnnealing<XES, XEv> (*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
 	}
