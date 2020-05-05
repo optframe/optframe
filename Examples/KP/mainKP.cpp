@@ -7,19 +7,19 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "../OptFrame/Util/printable.h"
-#include "../OptFrame/Evaluation.hpp"
-#include "../OptFrame/Solution.hpp"
-#include "../OptFrame/MultiObjValue.hpp" // just for testing
+#include <OptFrame/Util/printable.h>
+#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Solution.hpp>
+#include <OptFrame/MultiObjValue.hpp> // just for testing
 
-#include "../OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp"
-#include "../OptFrame/Heuristics/LocalSearches/BestImprovement.hpp"
-#include "../OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp"
-#include "../OptFrame/Heuristics/LocalSearches/HillClimbing.hpp"
-#include "../OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp"
-#include "../OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp"
-#include "../OptFrame/Util/CheckCommand.hpp"
-#include "../OptFrame/Util/RandGenMersenneTwister.hpp"
+#include <OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp>
+#include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
+#include <OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp>
+#include <OptFrame/Heuristics/LocalSearches/HillClimbing.hpp>
+#include <OptFrame/Heuristics/LocalSearches/RandomDescentMethod.hpp>
+#include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
+#include <OptFrame/Util/CheckCommand.hpp>
+#include <OptFrame/Util/RandGenMersenneTwister.hpp>
 
 #include "KP.h"
 using namespace std;
@@ -30,7 +30,7 @@ int
 main(int argc, char** argv)
 {
    RandGenMersenneTwister rg;                   // declara um bom gerador de números aleatórios
-   Scanner scanner(new File("instance-4.txt")); // carrega arquivo no disco
+   Scanner scanner(File("instance-4.txt")); // carrega arquivo no disco
    ProblemInstance p(scanner);                  // cria um problema-teste usando o arquivo carregado
    MyEvaluator ev(p);
    ConstructiveRandom c1(p, ev);

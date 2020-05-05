@@ -9,7 +9,7 @@
 #include <tuple>
 #include <vector>
 
-#include "../OptFrame/NeighborhoodExploration.hpp"
+#include <OptFrame/NeighborhoodExploration.hpp>
 
 using namespace std;
 using namespace optframe;

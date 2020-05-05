@@ -1,7 +1,7 @@
 #ifndef KP_CONSTRUCTIVE_Greedy_H_
 #define KP_CONSTRUCTIVE_Greedy_H_
 
-#include "../../OptFrame/Constructive.hpp"
+#include <OptFrame/Constructive.hpp>
 //#include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.h"

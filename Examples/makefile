@@ -3,7 +3,8 @@ all: pmedcap examples kp tsp hfvrpmt
 examples: mitsp kp tsp etii  pmedcap opths  gfp hfvrpmt hfm modm
 
 mitsp:
-	g++ --std=c++17 -fconcepts mainMImpTSP.cpp -o app_MiTSP 2> error-gcc.err 
+	#g++ --std=c++17 -fconcepts mainMImpTSP.cpp -o app_MiTSP 2> error-gcc.err 
+	cd MITSP && make
 
 fix_examples: svrpdsp modm
 
@@ -11,7 +12,7 @@ tsp:
 	make -f makeTSP.mk
 
 kp:
-	make -f makeKP.mk
+	cd KP && make
 
 kp2:
 	make -f makeKP2.mk
@@ -29,7 +30,7 @@ etii:
 	make -f makeEtII.mk
 
 pmedcap:
-	cd PMedCap && make -f makePMedCap.mk
+	cd PMedCap && make
 
 svrpdsp:
 	make -f makeSVRPDSP.mk

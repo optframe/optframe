@@ -4,8 +4,8 @@
 #include <vector>
 #include <iostream>
 
-#include "../../OptFrame/Scanner++/Scanner.h"
-#include "../../OptFrame/Util/printable.h"
+#include <OptFrame/Scanner++/Scanner.hpp>
+#include <OptFrame/Util/printable.h>
 
 using namespace std;
 using namespace scannerpp;
