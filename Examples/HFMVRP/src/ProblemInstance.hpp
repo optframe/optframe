@@ -22,7 +22,7 @@ private:
 	// Your private vars
 
 public:
-	ProblemInstance(Scanner& scanner)
+	ProblemInstance(scannerpp::Scanner& scanner)
 	{
 		for (int i = 0; i < 4; i++)
 			cout << scanner.nextLine() << endl;
@@ -46,11 +46,11 @@ public:
 		for (int i = 0; i < typesVehicles; i++)
 		{
 			cout << scanner.next() << " "; //id
-			vehiclesTypeNumber.push_back(scanner.nextDouble());
-			vehiclesTypeCap.push_back(scanner.nextDouble());
-			vehiclesTypeDistCost.push_back(scanner.nextDouble());
-			vehiclesTypeFixedCost1.push_back(scanner.nextDouble());
-			vehiclesTypeFixedBoxCost2.push_back(scanner.nextDouble());
+			vehiclesTypeNumber.push_back(*scanner.nextDouble());
+			vehiclesTypeCap.push_back(*scanner.nextDouble());
+			vehiclesTypeDistCost.push_back(*scanner.nextDouble());
+			vehiclesTypeFixedCost1.push_back(*scanner.nextDouble());
+			vehiclesTypeFixedBoxCost2.push_back(*scanner.nextDouble());
 			theoricalCap = 22;
 			vehiclesTypeFixedCost.push_back(vehiclesTypeFixedCost1[i] + (vehiclesTypeCap[i] - theoricalCap) * vehiclesTypeFixedBoxCost2[i]);
 			cout << vehiclesTypeNumber[i] << " " << vehiclesTypeCap[i] << " " << vehiclesTypeFixedCost[i] << " " << vehiclesTypeDistCost[i] << endl;

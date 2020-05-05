@@ -135,7 +135,7 @@ public:
 		if(option=="word")
 			next = scanner.next();
 		else if(option=="number")// number
-			next = formatNumber(scanner.nextDouble());
+			next = formatNumber(*scanner.nextDouble());
 		else
 		{
 			cout << "next function: no such option '" << option << "'" << endl;

@@ -42,7 +42,7 @@ gfp:
 	make -f makeGFP.mk
 
 hfvrpmt:
-	make -f makeHFVRPMT.mk
+	cd HFMVRP && make
 
 modm:
 	make -f makeMODM.mk

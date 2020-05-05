@@ -21,7 +21,7 @@
 #ifndef DELTA_MOVEVRP2OPT_HPP_
 #define DELTA_MOVEVRP2OPT_HPP_
 
-#include "../../../../OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRP2Opt.hpp"
+#include <OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRP2Opt.hpp>
 
 #include <cmath>
 

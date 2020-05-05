@@ -3,9 +3,9 @@
 
 //#include <ostream>
 #include <vector>
-#include "../../OptFrame/Util/printable.h"
+#include <OptFrame/Util/printable.h>
 
-#include "../../OptFrame/Util/Matrix.hpp"
+#include <OptFrame/Util/Matrix.hpp>
 
 #include "cgtype.h"
 

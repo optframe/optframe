@@ -2,8 +2,8 @@
 #ifndef HFMVRP_CONSTRUCTIVE_SavingsRandomized__HPP_
 #define HFMVRP_CONSTRUCTIVE_SavingsRandomized_HPP_
 
-#include "../../OptFrame/Constructive.hpp"
-#include "../../OptFrame/Heuristics/GRASP/GRConstructive.hpp"
+#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Heuristics/GRASP/GRConstructive.hpp>
 //#include "../../OptFrame/Util/TestSolution.hpp"
 #include <OptFrame/RandGen.hpp>
 #include "ProblemInstance.hpp"

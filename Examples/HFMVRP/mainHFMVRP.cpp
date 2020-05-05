@@ -7,26 +7,28 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "../OptFrame/CloneConstructive.hpp"
-#include "../OptFrame/Heuristics/Empty.hpp"
-#include "../OptFrame/Heuristics/EvolutionaryAlgorithms/ESContinuous.hpp"
-#include "../OptFrame/Heuristics/EvolutionaryAlgorithms/NGES.hpp"
-#include "../OptFrame/Heuristics/GRASP/BasicGRASP.hpp"
-#include "../OptFrame/Heuristics/ILS/ILSLPerturbation.hpp"
-#include "../OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp"
-#include "../OptFrame/Heuristics/LocalSearches/BestImprovement.hpp"
-#include "../OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp"
-#include "../OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp"
-#include "../OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp"
-#include "../OptFrame/NSSeq.hpp"
-#include "../OptFrame/Timer.hpp"
-#include "../OptFrame/Util/CheckCommand.hpp"
-#include "../OptFrame/Util/RandGenMersenneTwister.hpp"
 #include "HFMVRP.h"
+#include <OptFrame/CloneConstructive.hpp>
+#include <OptFrame/Heuristics/Empty.hpp>
+#include <OptFrame/Heuristics/EvolutionaryAlgorithms/ESContinuous.hpp>
+#include <OptFrame/Heuristics/EvolutionaryAlgorithms/NGES.hpp>
+#include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>
+#include <OptFrame/Heuristics/ILS/ILSLPerturbation.hpp>
+#include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
+#include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
+#include <OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp>
+#include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
+#include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp>
+#include <OptFrame/NSSeq.hpp>
+#include <OptFrame/Timer.hpp>
+#include <OptFrame/Util/CheckCommand.hpp>
+#include <OptFrame/Util/RandGenMersenneTwister.hpp>
 
 using namespace std;
 
 using namespace HFMVRP;
+
+using namespace scannerpp;
 
 int
 main(int argc, char** argv)
@@ -66,13 +68,13 @@ main(int argc, char** argv)
    cout << "mi=" << mi << endl;
    cout << "batch=" << batch << endl;
 
-   Scanner scanner(new File(nome));
+   Scanner scanner{ File(nome) };
+   ProblemInstance* p = new ProblemInstance{ scanner };
 
-   ProblemInstance* p = new ProblemInstance(scanner);
-   HFMVRPEvaluator* eval = new HFMVRPEvaluator(*p);
-   HFMVRPADSManager* adsMan = new HFMVRPADSManager(*p);
+   HFMVRPEvaluator* eval = new HFMVRPEvaluator{ *p };
+   HFMVRPADSManager* adsMan = new HFMVRPADSManager{ *p };
    double alpha = 0;
-   ConstructiveSavingsRandomized is(*p, rg, *adsMan);
+   ConstructiveSavingsRandomized is{ *p, rg, *adsMan };
 
    NSSeq<ESolutionHFMVRP>* nsseq_deltaIterator_delta_2opt = new NSSeqVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRP2Opt, ProblemInstance, DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(p);
    NSSeq<ESolutionHFMVRP>* nsseq_deltaIterator_delta_or1 = new NSSeqVRPOrOpt1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPOrOpt1, ProblemInstance, DeltaNSIteratorVRPOrOpt1<DeltaMoveVRPOrOpt1>>(p);
@@ -92,8 +94,7 @@ main(int argc, char** argv)
    ilsl_pert->add_ns(*nsseq_deltaIterator_delta_or1);
    ilsl_pert->add_ns(*nsseq_deltaIterator_delta_or2);
    ilsl_pert->add_ns(*nsseq_deltaIterator_delta_exchange);
-   int myints[] =
-     { 3, 3, 1, 1, 1, 1 };
+   int myints[] = { 3, 3, 1, 1, 1, 1 };
    vector<int> priorites(myints, myints + sizeof(myints) / sizeof(int));
    ilsl_pert->changeProb(priorites);
 

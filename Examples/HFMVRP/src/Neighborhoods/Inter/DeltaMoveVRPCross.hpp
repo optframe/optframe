@@ -21,7 +21,7 @@
 #ifndef DELTA_MOVEVRPCROSS_HPP_
 #define DELTA_MOVEVRPCROSS_HPP_
 
-#include "../../../../OptFrame/Util/NeighborhoodStructures/VRP/Inter/NSSeqVRPCross.hpp"
+#include <OptFrame/Util/NeighborhoodStructures/VRP/Inter/NSSeqVRPCross.hpp>
 
 #include <cmath>
 

@@ -203,7 +203,7 @@ public:
 			{
 				ParetoFitness ind;
 				for (int o = 0; o < nOF; o++)
-					ind.push_back(scanner.nextDouble());
+					ind.push_back(*scanner.nextDouble());
 				addWithEmptySol(pAux,ind);
 			}
 

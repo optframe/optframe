@@ -21,7 +21,7 @@
 #ifndef DELTA_MOVEVRPSHIFT1_0_HPP_
 #define DELTA_MOVEVRPSHIFT1_0_HPP_
 
-#include "../../../../OptFrame/Util/NeighborhoodStructures/VRP/Inter/NSSeqVRPShift10.hpp"
+#include <OptFrame/Util/NeighborhoodStructures/VRP/Inter/NSSeqVRPShift10.hpp>
 
 #include <cmath>
 

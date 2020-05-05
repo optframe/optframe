@@ -72,13 +72,13 @@ public:
          *scanner.nextInt();
 
 #ifdef  ALL_INTEGER
-         d.push_back(scanner.nextDouble()*100); // integer
-         p.push_back(scanner.nextDouble()*100); // integer
-         r.push_back(scanner.nextDouble()*100); // integer
+         d.push_back(*scanner.nextDouble()*100); // integer
+         p.push_back(*scanner.nextDouble()*100); // integer
+         r.push_back(*scanner.nextDouble()*100); // integer
 #else
-         d.push_back(scanner.nextDouble());
-         p.push_back(scanner.nextDouble());
-         r.push_back(scanner.nextDouble());
+         d.push_back(*scanner.nextDouble());
+         p.push_back(*scanner.nextDouble());
+         r.push_back(*scanner.nextDouble());
 #endif
 
          // update capacity
