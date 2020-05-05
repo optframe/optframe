@@ -18,7 +18,7 @@ kp2:
 	make -f makeKP2.mk
 
 hfm:
-	make -f makeHFM.mk
+	cd HFM && make
 
 #pn:
 #	make -f makePN.mk

@@ -16,6 +16,8 @@
         "string_view": "cpp",
         "initializer_list": "cpp",
         "optional": "cpp",
-        "functional": "cpp"
+        "functional": "cpp",
+        "iosfwd": "cpp",
+        "iterator": "cpp"
     }
 }

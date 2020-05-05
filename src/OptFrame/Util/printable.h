@@ -37,6 +37,18 @@ template<class T1, class T2>
 ostream&
 operator<<(ostream& os, const pair<T1, T2>& obj);
 
+template<class T>
+ostream&
+operator<<(ostream& os, const std::optional<T>& obj)
+{
+   if(!obj)
+      os << "nullopt";
+   else
+      os << obj;
+   return os;
+}
+
+
 // ===================================================
 //     Impressao de vectors
 // ===================================================
