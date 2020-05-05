@@ -122,9 +122,17 @@ Thanks a lot SourceForge/GitHub!
 * Maximum personalization by the user
 
 
+## Installation
+
+OptFrame is organized in several C++ headers.
+To install it system-wide (in linux), just type `make install` (`sudo` will be necessary here):
+
+- headers will be put on `/usr/local/include`
+- examples, src and tests will be put on `/usr/local/optframe`
+
 ## Examples
 
-Interesting examples are available:
+Interesting examples are available (see `Examples` folder):
 
 - [EternityII](./Examples/EternityII/README.md): Eternity II Puzzle  
 - [HFM](./Examples/HFM/README.md): HFM forecast framework by @vncoelho
@@ -141,6 +149,27 @@ Interesting examples are available:
 - [SVRPDSP](./Examples/SVRPDSP/README.md): Single Vehicle Routing Problem with Deliveries and Selective Pickups
 - [TSP](./Examples/TSP/README.md): Traveling Salesman Problem (v1)  
 - [TSP2](./Examples/TSP2/README.md): Traveling Salesman Problem (v2)  
+
+### Building Examples
+
+To build examples, just type `make` on `Examples` folder.
+
+The following examples are currently prioritary, due to heavy burden for maintaining all of them:
+
+- pmedcap 
+- kp 
+- tsp 
+- hfvrpmt
+- mitsp
+- etii
+- opths 
+- gfp (?)
+- hfm 
+- modm
+
+For more information on the others, please file an Issue.
+
+### Metaheuristic Implementations on Examples
 
 These examples explore several (meta)-heuristic implementations, such as:
 
