@@ -45,6 +45,7 @@
 
 using namespace std;
 
+/*
 class MatrixBadIndex
 {
 private:
@@ -78,45 +79,50 @@ public:
 	   return col;
    }
 };
+*/
 
 template<class T>
 class Matrix
 {
 public:
 
-   Matrix(unsigned _quadratic = 1)
+   Matrix(unsigned _quadratic = 1) noexcept
    {
-      rows = cols = _quadratic;
+      rows = cols = (_quadratic?:1);
 
-      if (rows == 0 || cols == 0)
-         throw MatrixBadIndex("Matrix constructor has 0 size", 0, 0, 0, 0);
+      //if (rows == 0 || cols == 0)
+      //   throw MatrixBadIndex("Matrix constructor has 0 size", 0, 0, 0, 0);
 
       data = new T[rows * cols];
    }
 
-   Matrix(unsigned _rows, unsigned _cols)
+   Matrix(unsigned _rows, unsigned _cols) noexcept
    {
-      rows = _rows;
-      cols = _cols;
+      rows = _rows?:1;
+      cols = _cols?:1;
 
-      if (rows == 0 || cols == 0)
-         throw MatrixBadIndex("Matrix constructor has 0 size", 0, 0, 0, 0);
+      //if (rows == 0 || cols == 0)
+      //   throw MatrixBadIndex("Matrix constructor has 0 size", 0, 0, 0, 0);
 
       data = new T[rows * cols];
    }
 
-   T& operator()(unsigned row, unsigned col)
+   T& operator()(unsigned row, unsigned col) noexcept
    {
-      if (row >= rows || col >= cols)
-         throw MatrixBadIndex("Matrix Out of Bounds Exception", row, col, rows, cols);
+      row = row >= rows?0:row;
+      col = col >= cols?0:col;
+      //if (row >= rows || col >= cols)
+      //   throw MatrixBadIndex("Matrix Out of Bounds Exception", row, col, rows, cols);
 
       return data[cols * row + col];
    }
 
-   T operator()(unsigned row, unsigned col) const
+   T operator()(unsigned row, unsigned col) const noexcept
    {
-      if (row >= rows || col >= cols)
-         throw MatrixBadIndex("Matrix Out of Bounds Exception", row, col, rows, cols);
+      row = row >= rows?0:row;
+      col = col >= cols?0:col;
+      //if (row >= rows || col >= cols)
+      //   throw MatrixBadIndex("Matrix Out of Bounds Exception", row, col, rows, cols);
 
       return data[cols * row + col];
    }

@@ -22,11 +22,11 @@
 #define TSP_NSENUMSwap_HPP_
 
 // Framework includes
-#include "../../OptFrame/Move.hpp"
-#include "../../OptFrame/NSEnum.hpp"
+#include <OptFrame/Move.hpp>
+#include <OptFrame/NSEnum.hpp>
 
 // Own includes
-#include "../../OptFrame/RandGen.hpp"
+#include <OptFrame/RandGen.hpp>
 #include "ProblemInstance.h"
 #include "Solution.h"
 

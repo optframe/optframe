@@ -34,18 +34,18 @@ using namespace std;
 
 #include <set>
 
-#include "../OptFrame/Util/printable.h"
-#include "../OptFrame/BaseConcepts.ctest.hpp" // tsting concepts
-#include "../OptFrame/Solution.hpp"
-#include "../OptFrame/Evaluation.hpp"
+#include <OptFrame/Util/printable.h>
+#include <OptFrame/BaseConcepts.ctest.hpp> // tsting concepts
+#include <OptFrame/Solution.hpp>
+#include <OptFrame/Evaluation.hpp>
 //#include "../OptFrame/Util/TestSolution.hpp"
 
-#include "../OptFrame/Heuristics/NSearch/FirstImprovingNeighbor.hpp"
+#include <OptFrame/Heuristics/NSearch/FirstImprovingNeighbor.hpp>
 
-#include "../OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp"
-#include "../OptFrame/Loader.hpp"
+#include <OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp>
+#include <OptFrame/Loader.hpp>
 ////#include "../OptFrame/Util/BuildCommand.hpp"  // TODO: return after Concepts OptFrame v4
-#include "../OptFrame/Util/CheckCommand.hpp"
+#include <OptFrame/Util/CheckCommand.hpp>
 #include "TSP.h"
 
 using namespace TSP;
@@ -60,16 +60,16 @@ main(int argc, char** argv)
    Loader<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP, EvaluationTSP, ESolutionTSP> optframe;
    TSPProblemCommand tsp;
 
-   File* file;
+   File file("./tsplib/berlin52.txt");
 
-   try {
-      file = new File("./TSP/tsplib/berlin52.txt");
-   } catch (FileNotFound& f) {
+   
+   if(!file.isOpen())
+   {
       cout << "File not found" << endl;
       return 1;
    }
 
-   Scanner scanner(file);
+   Scanner scanner(std::move(file));
    tsp.load(scanner, optframe.factory, optframe.dictionary, optframe.ldictionary);
 
    /*

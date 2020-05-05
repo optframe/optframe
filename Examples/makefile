@@ -9,7 +9,7 @@ mitsp:
 fix_examples: svrpdsp modm
 
 tsp:
-	make -f makeTSP.mk
+	cd TSP && make
 
 kp:
 	cd KP && make

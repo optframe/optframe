@@ -24,8 +24,8 @@
 #include <iostream>
 #include <cmath>
 
-#include "../../OptFrame/Scanner++/Scanner.h"
-#include "../../OptFrame/Util/Matrix.hpp"
+#include <OptFrame/Scanner++/Scanner.hpp>
+#include <OptFrame/Util/Matrix.hpp>
 
 using namespace std;
 using namespace scannerpp;

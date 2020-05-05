@@ -21,7 +21,7 @@
 #ifndef TSP_INITIALSOLUTION_Random_HPP_
 #define TSP_INITIALSOLUTION_Random_HPP_
 
-#include "../../OptFrame/Constructive.hpp"
+#include <OptFrame/Constructive.hpp>
 //#include "../../OptFrame/Util/TestSolution.hpp" // DEPRECATED
 
 #include "ProblemInstance.h"
@@ -30,7 +30,7 @@
 #include "Solution.h"
 
 #include "Evaluator.h"
-#include "../../OptFrame/RandGen.hpp"
+#include <OptFrame/RandGen.hpp>
 #include <list>
 
 #include <algorithm>

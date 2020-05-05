@@ -25,8 +25,8 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "../../OptFrame/Evaluation.hpp"
-#include "../../OptFrame/Evaluator.hpp"
+#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Evaluator.hpp>
 
 #include "Evaluation.h"
 #include "Representation.h"
@@ -34,7 +34,7 @@
 
 #include "ProblemInstance.h"
 
-#include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSPSwap.hpp"
+#include <OptFrame/Util/NeighborhoodStructures/NSSeqTSPSwap.hpp>
 
 #define TSP_EPSILON 0.0001
 

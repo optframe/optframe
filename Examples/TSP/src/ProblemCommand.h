@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "../../OptFrame/Scanner++/Scanner.h"
+#include <OptFrame/Scanner++/Scanner.hpp>
 
 #include "Representation.h"
 #include "Solution.h"
@@ -17,20 +17,20 @@
 #include "NearestNeighborConstructive.h"
 #include "ConstructiveBestInsertion.h"
 
-#include "../../OptFrame/HeuristicFactory.hpp"
-#include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSP2Opt.hpp"
+#include <OptFrame/HeuristicFactory.hpp>
+#include <OptFrame/Util/NeighborhoodStructures/NSSeqTSP2Opt.hpp>
 #include "DeltaMoveTSP2Opt.h"
 
-#include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSPOrOpt.hpp"
-#include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSPOrOptk.hpp"
+#include <OptFrame/Util/NeighborhoodStructures/NSSeqTSPOrOpt.hpp>
+#include <OptFrame/Util/NeighborhoodStructures/NSSeqTSPOrOptk.hpp>
 #include "DeltaMoveTSPOrOptk.h"
 
-#include "../../OptFrame/Util/NeighborhoodStructures/NSSeqTSPSwap.hpp"
+#include <OptFrame/Util/NeighborhoodStructures/NSSeqTSPSwap.hpp>
 
 #include "NSEnumSwap.h"
 #include "NSEnumShift.h"
 
-#include "../../OptFrame/HeuristicFactory.hpp"
+#include <OptFrame/HeuristicFactory.hpp>
 
 using namespace scannerpp;
 using namespace optframe;

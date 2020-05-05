@@ -18,25 +18,20 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef TSP_SOLUTION_H_
-#define TSP_SOLUTION_H_
+#ifndef TSP_EVALUATION_H_
+#define TSP_EVALUATION_H_
 
-#include "../../OptFrame/BaseConcepts.hpp"
-#include "../../OptFrame/Solutions/CopySolution.hpp"
-#include "../../OptFrame/Solution.hpp"
-#include "Representation.h"
-#include "Evaluation.h"
+#include <OptFrame/Evaluation.hpp>
 
 using namespace optframe;
 
-//typedef Solution<RepTSP> SolutionTSP;
-typedef CopySolution<RepTSP> SolutionTSP;
-typedef pair<SolutionTSP, EvaluationTSP> ESolutionTSP;
+typedef Evaluation<> EvaluationTSP;
 
 // compilation tests
-static_assert(XSolution<SolutionTSP>); // verify that this is correctly a XSolution
-static_assert(XESolution<ESolutionTSP>); // verify that this is correctly a XESolution
-static_assert(XSearch<ESolutionTSP, ESolutionTSP>); // verify that this is correctly a XSearch
+static_assert(XEvaluation<EvaluationTSP>);
 
-#endif /*TSP_SOLUTION_H_*/
+
+#endif /*TSP_EVALUATION_H_*/
+
+
 

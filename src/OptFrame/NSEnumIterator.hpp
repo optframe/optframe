@@ -70,7 +70,8 @@ public:
    uptr<Move<XES, XEv>> current() override
    {
       if (isDone())
-         throw IteratorOutOfBound(move);
+         //throw IteratorOutOfBound(move);
+         return nullptr;
       return ns.indexMove(move);
    }
 

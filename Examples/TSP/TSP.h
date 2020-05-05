@@ -21,17 +21,17 @@
 #ifndef TSP_H_
 #define TSP_H_
 
-#include "./TSP/Representation.h"
-#include "./TSP/Solution.h"
-#include "./TSP/Evaluation.h"
-#include "./TSP/ProblemInstance.h"
-#include "./TSP/Evaluator.h"
-#include "./TSP/NSEnumSwap.h"
-#include "./TSP/NSEnumShift.h"
-#include "./TSP/DeltaMoveTSP2Opt.h"
-#include "./TSP/RandomInitialSolution.h"
-#include "./TSP/PerturbationTSP.h"
-#include "./TSP/ProblemCommand.h"
+#include "./src/Representation.h"
+#include "./src/Solution.h"
+#include "./src/Evaluation.h"
+#include "./src/ProblemInstance.h"
+#include "./src/Evaluator.h"
+#include "./src/NSEnumSwap.h"
+#include "./src/NSEnumShift.h"
+#include "./src/DeltaMoveTSP2Opt.h"
+#include "./src/RandomInitialSolution.h"
+#include "./src/PerturbationTSP.h"
+#include "./src/ProblemCommand.h"
 
 
 #endif /*TSP_H_*/

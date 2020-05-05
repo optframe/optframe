@@ -18,21 +18,25 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef TSP_NSENUMShift_HPP_
-#define TSP_NSENUMShift_HPP_
+#ifndef TSP_SOLUTION_H_
+#define TSP_SOLUTION_H_
 
-// Framework includes
-#include "../../OptFrame/Move.hpp"
-#include "../../OptFrame/NSEnum.hpp"
-#include "../../OptFrame/Util/NeighborhoodStructures/NSEnumVectorShift.hpp"
+#include <OptFrame/BaseConcepts.hpp>
+#include <OptFrame/Solutions/CopySolution.hpp>
+#include <OptFrame/Solution.hpp>
+#include "Representation.h"
+#include "Evaluation.h"
 
-// Own includes
-#include "ProblemInstance.h"
-#include "Solution.h"
+using namespace optframe;
 
-using namespace std;
+//typedef Solution<RepTSP> SolutionTSP;
+typedef CopySolution<RepTSP> SolutionTSP;
+typedef pair<SolutionTSP, EvaluationTSP> ESolutionTSP;
 
-typedef MoveVectorShift<int> MoveShiftTSP;
-typedef NSEnumVectorShift<int> NSEnumShiftTSP;
+// compilation tests
+static_assert(XSolution<SolutionTSP>); // verify that this is correctly a XSolution
+static_assert(XESolution<ESolutionTSP>); // verify that this is correctly a XESolution
+static_assert(XSearch<ESolutionTSP, ESolutionTSP>); // verify that this is correctly a XSearch
 
-#endif /*TSP_NSENUMShift_HPP_*/
+#endif /*TSP_SOLUTION_H_*/
+

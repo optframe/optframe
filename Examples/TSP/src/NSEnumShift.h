@@ -18,20 +18,21 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef TSP_EVALUATION_H_
-#define TSP_EVALUATION_H_
+#ifndef TSP_NSENUMShift_HPP_
+#define TSP_NSENUMShift_HPP_
 
-#include "../../OptFrame/Evaluation.hpp"
+// Framework includes
+#include <OptFrame/Move.hpp>
+#include <OptFrame/NSEnum.hpp>
+#include <OptFrame/Util/NeighborhoodStructures/NSEnumVectorShift.hpp>
 
-using namespace optframe;
+// Own includes
+#include "ProblemInstance.h"
+#include "Solution.h"
 
-typedef Evaluation<> EvaluationTSP;
+using namespace std;
 
-// compilation tests
-static_assert(XEvaluation<EvaluationTSP>);
+typedef MoveVectorShift<int> MoveShiftTSP;
+typedef NSEnumVectorShift<int> NSEnumShiftTSP;
 
-
-#endif /*TSP_EVALUATION_H_*/
-
-
-
+#endif /*TSP_NSENUMShift_HPP_*/

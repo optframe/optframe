@@ -103,7 +103,8 @@ public:
 		if (!it[k]->isDone())
 			return uptr<Move<XES>>( new MOVE(k, it[k]->current().release()) );
 		else
-			throw NSSeqUnionAdapterOutOfBound();
+			//throw NSSeqUnionAdapterOutOfBound();
+         return nullptr;
 	}
 };
 
