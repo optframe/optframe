@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "../../OptFrame/Evaluation.hpp"
-#include "../../OptFrame/Evaluator.hpp"
-#include "../../OptFrame/Timer.hpp"
+#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Timer.hpp>
 #include "Representation.h"
 #include "ADS.h"
 

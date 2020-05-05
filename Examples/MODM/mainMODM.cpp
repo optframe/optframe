@@ -7,17 +7,17 @@
 #include <math.h>
 #include <iostream>
 
-#include "../OptFrame/Solutions/ESolution.hpp" // TODO: remove.. just to enforce compilation errors.
-#include "../OptFrame/Evaluator.hpp"
-#include "../OptFrame/Loader.hpp"
-#include "MODM/Evaluator.cpp"
+#include <OptFrame/Solutions/ESolution.hpp> // TODO: remove.. just to enforce compilation errors.
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Loader.hpp>
+#include "src/Evaluator.cpp" // TODO: very strange!!
 //#include "../OptFrame/Heuristics/VNS/MOVNSLevels.hpp"
 //#include "../OptFrame/Heuristics/2PPLS.hpp"
-#include "../OptFrame/MultiEvaluator.hpp"
-#include "../OptFrame/MultiObjSearch.hpp"
+#include <OptFrame/MultiEvaluator.hpp>
+#include <OptFrame/MultiObjSearch.hpp>
 //#include "../OptFrame/Util/UnionNDSets.hpp"
 
-#include "../OptFrame/ConstructiveToInitialSearch.hpp"
+#include <OptFrame/ConstructiveToInitialSearch.hpp>
 
 #include <string>
 #include "MODM.h"
@@ -141,20 +141,17 @@ int main(int argc, char **argv)
 
 	//string filename = "./MyProjects/MODM/Instances/L-5/L-15-5-2-s.txt";
 
-	File* file;
+	File file { filename };
 
-	try
-	{
-		file = new File(filename);
-	} catch (FileNotFound& f)
+   if(!file.isOpen())
 	{
 		cout << "File '" << filename << "' not found" << endl;
 		return false;
 	}
 
-	Scanner scanner(file);
+	Scanner scanner{ std::move(file) };
 
-	ProblemInstance p(scanner);
+	ProblemInstance p { scanner };
 
 	// add everything to the HeuristicFactory 'hf'
 

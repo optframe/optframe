@@ -17,7 +17,7 @@
 
 #include "ProblemInstance.h"
 
-#include "../../OptFrame/RandGen.hpp"
+#include <OptFrame/RandGen.hpp>
 //#include "../../OptFrame/Util/CheckCommand.hpp"
 
 // Problem adding KahanSummation twice on binary...

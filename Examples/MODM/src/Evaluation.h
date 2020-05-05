@@ -1,8 +1,8 @@
 #ifndef MODM_EVALUATION_H_
 #define MODM_EVALUATION_H_
 
-#include "../../OptFrame/Evaluation.hpp"
-#include "../../OptFrame/MultiEvaluation.hpp"
+#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/MultiEvaluation.hpp>
 
 using namespace optframe;
 

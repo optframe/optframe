@@ -1,7 +1,7 @@
 #ifndef MODM_ADSMANAGER_H_
 #define MODM_ADSMANAGER_H_
 
-#include "../../OptFrame/ADSManager.hpp"
+#include <OptFrame/ADSManager.hpp>
 
 #include "Representation.h"
 #include "Solution.h"

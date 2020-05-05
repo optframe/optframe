@@ -1,8 +1,8 @@
 #ifndef MODM_CONSTRUCTIVE_BasicGreedyRandomized_H_
 #define MODM_CONSTRUCTIVE_BasicGreedyRandomized_H_
 
-#include "../../OptFrame/Constructive.hpp"
-#include "../../OptFrame/Heuristics/GRASP/GRConstructive.hpp"
+#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Heuristics/GRASP/GRConstructive.hpp>
 //#include "../../OptFrame/Util/TestSolution.hpp"
 #include <OptFrame/RandGen.hpp>
 

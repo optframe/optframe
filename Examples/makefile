@@ -45,7 +45,7 @@ hfvrpmt:
 	cd HFMVRP && make
 
 modm:
-	make -f makeMODM.mk
+	cd MODM && make
 
 clean:
 	rm -f app_*
