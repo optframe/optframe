@@ -24,7 +24,7 @@ hfm:
 #	make -f makePN.mk
 
 opths:
-	cd OptHScheduling && make
+	cd OptHS && make
 
 etii:
 	cd EternityII && make

@@ -121,6 +121,45 @@ Thanks a lot SourceForge/GitHub!
 * Focusing on achieving maximum C++ performance, solving too many memory management complex strategies (fully using self managed memory by smart pointers and move semantics)
 * Maximum personalization by the user
 
+
+## Examples
+
+Interesting examples are available:
+
+- [EternityII](./Examples/EternityII/README.md): Eternity II Puzzle  
+- [HFM](./Examples/HFM/README.md): HFM forecast framework by @vncoelho
+- [HFMVRP](./Examples/HFMVRP/README.md): Heterogeneous Fleet Vehicle Routing Problem
+- [KP](./Examples/KP/README.md): Knapsack Problem (v1)
+- [KP2](./Examples/KP2/README.md): Knapsack Problem (v2)  
+- [MITSP](./Examples/MITSP/README.md): Multi Improvement Dynamic Programming for Traveling Salesman Problem
+- [MODM](./Examples/MODM/README.md): Multi Objective Direct Marketing Problem
+- [OPM](./Examples/OPM/README.md): Open Pit Mining Operational Planning Problem
+- [OptHS](./Examples/OptHS/README.md): OptHouse Cleaning Scheduling
+- [ParallelTSP](./Examples/ParallelTSP/README.md): Parallel TSP Prototype
+- [PMedCap](./Examples/PMedCap/README.md): Capacitated P-Median Problem
+- [PN](./Examples/PN/README.md): Number Partition Problem
+- [SVRPDSP](./Examples/SVRPDSP/README.md): Single Vehicle Routing Problem with Deliveries and Selective Pickups
+- [TSP](./Examples/TSP/README.md): Traveling Salesman Problem (v1)  
+- [TSP2](./Examples/TSP2/README.md): Traveling Salesman Problem (v2)  
+
+These examples explore several (meta)-heuristic implementations, such as:
+
+- Simulated Annealing
+- Genetic Algorithm
+- Memetic Algorithm
+- Variable Neighborhood Search
+- Iterated Local Search
+- Tabu Search
+- ...
+
+Multi-Objective metaheuristics:
+
+- NSGA-II
+- MOVNS
+- 2PPLS
+- ...
+
+
 ## Citation
 
 Cite this in your paper as:
