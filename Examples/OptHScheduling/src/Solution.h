@@ -18,15 +18,19 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTHSCHEDULING_H_
-#define OPTHSCHEDULING_H_
+#ifndef OptHS_SOLUTION_H_
+#define OptHS_SOLUTION_H_
 
-#include "./OptHScheduling/Representation.h"
-#include "./OptHScheduling/Solution.h"
-#include "./OptHScheduling/Evaluation.h"
-#include "./OptHScheduling/ProblemInstance.h"
-#include "./OptHScheduling/Evaluator.h"
-#include "./OptHScheduling/ConstructiveRandom.h"
-#include "./OptHScheduling/ProblemCommand.h"
+#include <OptFrame/Solution.hpp>
+#include <OptFrame/Solutions/CopySolution.hpp>
+#include "Representation.h"
+#include "Evaluation.h"
 
-#endif /*OPTHSCHEDULING_H_*/
+using namespace optframe;
+
+typedef CopySolution<RepOptHS> SolutionOptHS;
+
+typedef pair<SolutionOptHS, EvaluationOptHS> ESolutionOptHS;
+
+#endif /*OptHS_SOLUTION_H_*/
+

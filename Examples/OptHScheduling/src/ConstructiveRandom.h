@@ -30,7 +30,7 @@
 #include "Solution.h"
 
 #include "Evaluator.h"
-#include "../../OptFrame/RandGen.hpp"
+#include <OptFrame/RandGen.hpp>
 #include <list>
 
 #include <algorithm>

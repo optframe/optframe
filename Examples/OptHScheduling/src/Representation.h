@@ -22,8 +22,8 @@
 #define OptHS_REPRESENTATION_H_
 
 #include <vector>
-#include "../../OptFrame/Util/printable.h"
-#include "../../OptFrame/Util/Matrix.hpp"
+#include <OptFrame/Util/printable.h>
+#include <OptFrame/Util/Matrix.hpp>
 
 #include <vector>
 
