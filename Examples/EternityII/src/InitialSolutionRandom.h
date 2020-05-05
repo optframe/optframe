@@ -21,10 +21,9 @@
 #ifndef EtII_INITIALSOLUTION_Random_HPP_
 #define EtII_INITIALSOLUTION_Random_HPP_
 
-#include "../../OptFrame/Constructive.hpp"
+#include <OptFrame/Constructive.hpp>
 //#include "../../OptFrame/Util/TestSolution.hpp"
-
-#include "../../OptFrame/RandGen.hpp"
+#include <OptFrame/RandGen.hpp>
 
 #include "ProblemInstance.h"
 

@@ -27,7 +27,7 @@ opths:
 	make -f makeOptHS.mk
 
 etii:
-	make -f makeEtII.mk
+	cd EternityII && make
 
 pmedcap:
 	cd PMedCap && make

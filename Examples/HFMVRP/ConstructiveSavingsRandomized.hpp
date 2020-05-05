@@ -5,7 +5,7 @@
 #include "../../OptFrame/Constructive.hpp"
 #include "../../OptFrame/Heuristics/GRASP/GRConstructive.hpp"
 //#include "../../OptFrame/Util/TestSolution.hpp"
-#include "../../OptFrame/RandGen.hpp"
+#include <OptFrame/RandGen.hpp>
 #include "ProblemInstance.hpp"
 #include "Representation.h"
 #include "Solution.h"

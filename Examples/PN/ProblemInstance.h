@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "../../OptFrame/Scanner++/Scanner.h"
+#include <OptFrame/Scanner++/Scanner.hpp>
 #include "../../OptFrame/Component.hpp"
 
 using namespace std;

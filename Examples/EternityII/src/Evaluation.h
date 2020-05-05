@@ -18,20 +18,12 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef EtII_REPRESENTATION_H_
-#define EtII_REPRESENTATION_H_
+#ifndef EtII_EVALUATION_H_
+#define EtII_EVALUATION_H_
 
-#include <vector>
-#include "../../OptFrame/Util/printable.h"
+#include <OptFrame/Evaluation.hpp>
 
-#include "../../OptFrame/Util/Matrix.hpp"
+typedef Evaluation<> EvaluationEtII;
 
-#include "Piece.h"
-
-using namespace std;
-
-// Solution Representation
-typedef Matrix<Piece> RepEtII;
-
-#endif /*EtII_REPRESENTATION_H_*/
+#endif /*EtII_EVALUATION_H_*/
 

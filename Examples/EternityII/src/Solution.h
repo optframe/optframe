@@ -18,20 +18,19 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef EternityII_H_
-#define EternityII_H_
+#ifndef EtII_SOLUTION_H_
+#define EtII_SOLUTION_H_
 
-#include "./EternityII/Representation.h"
-#include "./EternityII/Solution.h"
-#include "./EternityII/Evaluation.h"
-#include "./EternityII/ProblemInstance.h"
-#include "./EternityII/Evaluator.h"
-#include "./EternityII/NSSeqRotate.h"
-#include "./EternityII/NSSeqSwapCenter.h"
-#include "./EternityII/NSSeqSwapSide.h"
-#include "./EternityII/NSSeqSwapCorner.h"
-#include "./EternityII/NSSeqSwapRotateCenter.h"
-#include "./EternityII/InitialSolutionRandom.h"
-#include "./EternityII/InitialSolutionGreedy.h"
-#include "./EternityII/ProblemCommand.h"
-#endif /*EternityII_H_*/
+#include <OptFrame/Solution.hpp>
+#include <OptFrame/Solutions/CopySolution.hpp>
+#include "Representation.h"
+#include "Evaluation.h"
+
+using namespace optframe;
+
+typedef CopySolution<RepEtII> SolutionEtII;
+
+typedef pair<SolutionEtII, EvaluationEtII> ESolutionEtII;
+
+#endif /*EtII_SOLUTION_H_*/
+

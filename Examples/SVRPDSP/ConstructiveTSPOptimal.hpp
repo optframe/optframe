@@ -1,7 +1,7 @@
 #ifndef SVRPDSP_CONSTRUCTIVE_TSPOptimal_HPP_
 #define SVRPDSP_CONSTRUCTIVE_TSPOptimal_HPP_
 
-#include "../../OptFrame/Constructive.hpp"
+#include <OptFrame/Constructive.hpp>
 //#include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.hpp"

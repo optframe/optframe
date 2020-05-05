@@ -21,9 +21,9 @@
 #ifndef EtII_INITIALSOLUTION_Greedy_HPP_
 #define EtII_INITIALSOLUTION_Greedy_HPP_
 
-#include "../../OptFrame/Constructive.hpp"
+#include <OptFrame/Constructive.hpp>
 //#include "../../OptFrame/Util/TestSolution.hpp"
-#include "../../OptFrame/RandGen.hpp"
+#include <OptFrame/RandGen.hpp>
 
 #include "ProblemInstance.h"
 

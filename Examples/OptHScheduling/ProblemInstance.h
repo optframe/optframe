@@ -23,7 +23,7 @@
 
 #include <iostream>
 
-#include "../../OptFrame/Scanner++/Scanner.h"
+#include <OptFrame/Scanner++/Scanner.hpp>
 
 using namespace std;
 using namespace scannerpp;

@@ -22,8 +22,8 @@
 #define EtII_NSSEQRotate_HPP_
 
 // Framework includes
-#include "../../OptFrame/NSSeq.hpp"
-#include "../../OptFrame/RandGen.hpp"
+#include <OptFrame/NSSeq.hpp>
+#include <OptFrame/RandGen.hpp>
 
 // Own includes
 #include "ProblemInstance.h"

@@ -23,7 +23,7 @@
 
 #include <iostream>
 
-#include "../../OptFrame/Scanner++/Scanner.h"
+#include <OptFrame/Scanner++/Scanner.hpp>
 
 #include "Representation.h"
 #include "Solution.h"
@@ -36,7 +36,7 @@
 #include "ConstructiveRandom.h"
 #include "NSSwap.h"
 
-#include "../../OptFrame/HeuristicFactory.hpp"
+#include <OptFrame/HeuristicFactory.hpp>
 
 using namespace scannerpp;
 using namespace optframe;

@@ -5,8 +5,8 @@
 
 #include <iostream>
 
-#include "../../OptFrame/Scanner++/Scanner.h"
-#include "../../OptFrame/Component.hpp"
+#include <OptFrame/Scanner++/Scanner.hpp>
+#include <OptFrame/Component.hpp>
 
 using namespace std;
 using namespace scannerpp;

@@ -1,7 +1,7 @@
 #ifndef PN_CONSTRUCTIVE_Random_H_
 #define PN_CONSTRUCTIVE_Random_H_
 
-#include "../../OptFrame/Constructive.hpp"
+#include <OptFrame/Constructive.hpp>
 //#include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.h"

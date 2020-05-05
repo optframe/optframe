@@ -18,12 +18,20 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef EtII_EVALUATION_H_
-#define EtII_EVALUATION_H_
+#ifndef EternityII_H_
+#define EternityII_H_
 
-#include "../../OptFrame/Evaluation.hpp"
-
-typedef Evaluation<> EvaluationEtII;
-
-#endif /*EtII_EVALUATION_H_*/
-
+#include "./src/Representation.h"
+#include "./src/Solution.h"
+#include "./src/Evaluation.h"
+#include "./src/ProblemInstance.h"
+#include "./src/Evaluator.h"
+#include "./src/NSSeqRotate.h"
+#include "./src/NSSeqSwapCenter.h"
+#include "./src/NSSeqSwapSide.h"
+#include "./src/NSSeqSwapCorner.h"
+#include "./src/NSSeqSwapRotateCenter.h"
+#include "./src/InitialSolutionRandom.h"
+#include "./src/InitialSolutionGreedy.h"
+#include "./src/ProblemCommand.h"
+#endif /*EternityII_H_*/

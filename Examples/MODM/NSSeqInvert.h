@@ -2,8 +2,8 @@
 #define MODM_NSSEQInvert_H_
 
 // Framework includes
-#include "../../OptFrame/NSSeq.hpp"
-#include "../../OptFrame/RandGen.hpp"
+#include <OptFrame/NSSeq.hpp>
+#include <OptFrame/RandGen.hpp>
 
 // Own includes
 #include "DeltaStructure.h"

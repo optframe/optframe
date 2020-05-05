@@ -21,7 +21,7 @@
 #ifndef OptHS_INITIALSOLUTION_Random_HPP_
 #define OptHS_INITIALSOLUTION_Random_HPP_
 
-#include "../../OptFrame/Constructive.hpp"
+#include <OptFrame/Constructive.hpp>
 //#include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.h"

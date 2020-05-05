@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "../../OptFrame/Scanner++/Scanner.h"
+#include <OptFrame/Scanner++/Scanner.hpp>
 
 #include "Representation.h"
 #include "Solution.h"
@@ -29,7 +29,7 @@
 
 #include "InitialSolutionGreedy.h"
 
-#include "../../OptFrame/HeuristicFactory.hpp"
+#include <OptFrame/HeuristicFactory.hpp>
 
 using namespace scannerpp;
 using namespace optframe;
@@ -69,19 +69,15 @@ public:
 
 	bool load(string filename, HeuristicFactory<SolutionEtII>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
 	{
-	    File* file;
+	    File file(filename);
 
-        try
-        {
-           file = new File(filename);
-        }
-        catch (FileNotFound& f)
+        if(!file.isOpen())
         {
            cout << "File '" << filename <<"' not found" << endl;
            return false;
         }
 
-        Scanner scanner(file);
+        Scanner scanner(std::move(file));
 
         p = new ProblemInstance(scanner);
 

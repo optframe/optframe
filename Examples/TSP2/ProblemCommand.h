@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "../../OptFrame/Scanner++/Scanner.h"
+#include <OptFrame/Scanner++/Scanner.hpp>
 
 #include "Representation.h"
 //#include "Memory.h"
