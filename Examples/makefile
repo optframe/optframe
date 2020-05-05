@@ -39,7 +39,7 @@ opmop:
 	make -f makeOPMOP.mk
 
 gfp:
-	make -f makeGFP.mk
+	cd HFM && make -f makeGFP.mk
 
 hfvrpmt:
 	cd HFMVRP && make
