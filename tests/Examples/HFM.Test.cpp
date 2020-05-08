@@ -1,19 +1,22 @@
-#include <gtest/gtest.h>
+#include <catch2/catch.hpp>
+// Some instructions for Catch2
+// https://github.com/catchorg/Catch2/blob/master/docs/test-cases-and-sections.md
 
 // system
 #include <limits>
 
 // core includes
-#include <HFM/ConstructiveRandom.hpp>
-#include <HFM/Evaluator.hpp>
-#include <HFM/MultiEvaluatorHFM.hpp>
-#include <HFM/ProblemInstance.hpp>
-#include <HFM/Solution.h>
-#include <HFM/TreatForecasts.hpp>
+#include <HFM/src/ConstructiveRandom.hpp>
+#include <HFM/src/Evaluator.hpp>
+#include <HFM/src/MultiEvaluatorHFM.hpp>
+#include <HFM/src/ProblemInstance.hpp>
+#include <HFM/src/Solution.h>
+#include <HFM/src/TreatForecasts.hpp>
 //#include <HFM.h> // where?
 
-using namespace std;
-//using namespace optframe;
+#include <OptFrame/Util/Matrix.hpp>
+
+using namespace optframe;
 
 // basics
 
@@ -21,10 +24,10 @@ using namespace std;
 // memory management tests
 // =======================
 
-TEST(ExamplesHFMTests, Matrix_Is_Zero)
+TEST_CASE("ExamplesHFMTests : Matrix_Is_Zero")
 {
    //BigInteger big;
    //EXPECT_EQ(big.Length(), 1);
    Matrix<int> m(1);
-   EXPECT_EQ(m.getNumRows(), 1);
+   REQUIRE(m.getNumRows() == 1);
 }

@@ -1,11 +1,13 @@
-#include <gtest/gtest.h>
+#include <catch2/catch.hpp>
+// Some instructions for Catch2
+// https://github.com/catchorg/Catch2/blob/master/docs/test-cases-and-sections.md
 
 // system
 #include <limits>
 
 // core includes
-#include <SVRPDSP/ConstructiveRandom.hpp>
-#include <SVRPDSP.h>
+#include <SVRPDSP/src/ConstructiveRandom.hpp>
+#include <SVRPDSP/SVRPDSP.h>
 
 using namespace std;
 //using namespace optframe;
@@ -16,10 +18,10 @@ using namespace std;
 // memory management tests
 // =======================
 
-TEST(ExamplesSVRPDSPTests, Matrix_Is_Zero)
+TEST_CASE("ExamplesSVRPDSPTests : Matrix_Is_Zero")
 {
    //BigInteger big;
    //EXPECT_EQ(big.Length(), 1);
    Matrix<int> m(1);
-   EXPECT_EQ(m.getNumRows(), 1);
+   REQUIRE(m.getNumRows() == 1);
 }

@@ -1,11 +1,13 @@
-#include <gtest/gtest.h>
+#include <catch2/catch.hpp>
+// Some instructions for Catch2
+// https://github.com/catchorg/Catch2/blob/master/docs/test-cases-and-sections.md
 
 // system
 #include <limits>
 
 // core includes
-#include <OPM/InitialSolutionGreedyRandomized.hpp>
-#include <OPM.h>
+#include <OPM/src/InitialSolutionGreedyRandomized.hpp>
+#include <OPM/OPM.h>
 
 using namespace std;
 //using namespace optframe;
@@ -16,10 +18,10 @@ using namespace std;
 // memory management tests
 // =======================
 
-TEST(ExamplesOPMTests, Matrix_Is_Zero)
+TEST_CASE("ExamplesOPMTests : Matrix_Is_Zero")
 {
    //BigInteger big;
    //EXPECT_EQ(big.Length(), 1);
    Matrix<int> m(1);
-   EXPECT_EQ(m.getNumRows(), 1);
+   REQUIRE(m.getNumRows() == 1);
 }

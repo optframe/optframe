@@ -1,13 +1,13 @@
 
 // examples
 
-#include "./Examples/EternityII.Test.cpp"
+#include "./Examples/EternityII.Test.hpp"
 #include "./Examples/HFM.Test.cpp"
 #include "./Examples/HFMVRP.Test.cpp"
 #include "./Examples/KP.Test.cpp"
 #include "./Examples/MODM.Test.cpp"
 //#include "./Examples/OPM.Test.cpp"
-#include "./Examples/OptHScheduling.Test.cpp"
+#include "./Examples/OptHS.Test.cpp"
 #include "./Examples/PMedCap.Test.cpp"
 //#include "./Examples/PN.Test.cpp"
 //#include "./Examples/SVRPDSP.Test.cpp"

@@ -1,10 +1,12 @@
-#include <gtest/gtest.h>
+#include <catch2/catch.hpp>
+// Some instructions for Catch2
+// https://github.com/catchorg/Catch2/blob/master/docs/test-cases-and-sections.md
 
 // system
 #include <limits>
 
 // core includes
-#include <Util/Matrix.hpp>
+#include <OptFrame/Util/Matrix.hpp>
 
 using namespace std;
 //using namespace optframe;
@@ -15,10 +17,10 @@ using namespace std;
 // memory management tests
 // =======================
 
-TEST(OptFrameUtilsTests, Matrix_Is_Zero)
+TEST_CASE("OptFrameUtilsTests: Matrix_Is_Zero")
 {
    //BigInteger big;
    //EXPECT_EQ(big.Length(), 1);
    Matrix<int> m(1);
-   EXPECT_EQ(m.getNumRows(), 1);
+   REQUIRE(m.getNumRows() == 1);
 }

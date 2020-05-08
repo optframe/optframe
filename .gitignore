@@ -8,3 +8,4 @@ app_*
 .settings
 .idea
 *.err
+*.code-workspace

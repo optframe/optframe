@@ -1,4 +1,6 @@
-#include <gtest/gtest.h>
+#include <catch2/catch.hpp>
+// Some instructions for Catch2
+// https://github.com/catchorg/Catch2/blob/master/docs/test-cases-and-sections.md
 
 // system
 #include <limits>
@@ -10,8 +12,8 @@
 #include <OptFrame/Heuristics/NSearch/FirstImprovingNeighbor.hpp>
 
 // example includes
-#include <TSP/NearestNeighborConstructive.h>
-#include <TSP.h>
+#include <TSP/src/NearestNeighborConstructive.h>
+#include <TSP/TSP.h>
 
 
 
@@ -43,7 +45,7 @@ uptr<Scanner> getTSPProblemInstance(int n, int seed = 0)
    return scanner;
 }
 
-TEST(ExamplesTSPTest, CheckCommand_Is_True)
+TEST_CASE("ExamplesTSPTest: CheckCommand_Is_True")
 {
    using ProblemInstance = TSP::ProblemInstance;
    Loader<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP, EvaluationTSP, ESolutionTSP> optframe;
@@ -101,5 +103,5 @@ TEST(ExamplesTSPTest, CheckCommand_Is_True)
    check.add(tspor3);
    check.add(tspswap);
 
-   EXPECT_EQ(check.run(100, 10), true);
+   REQUIRE(check.run(100, 10));
 }

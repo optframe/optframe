@@ -6,8 +6,8 @@
 #include <limits>
 
 // core includes
-#include <TSP2/src/ConstructiveNearestNeighbor.h>
-#include <TSP2/TSP2.h>
+#include <OptHS/src/ConstructiveRandom.h>
+#include <OptHS/OptHScheduling.h>
 
 using namespace std;
 //using namespace optframe;
@@ -18,7 +18,7 @@ using namespace std;
 // memory management tests
 // =======================
 
-TEST_CASE("ExamplesTSP2Tests : Matrix_Is_Zero")
+TEST_CASE("ExamplesOptHSTests : Matrix_Is_Zero")
 {
    //BigInteger big;
    //EXPECT_EQ(big.Length(), 1);

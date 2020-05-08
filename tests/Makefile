@@ -1,26 +1,21 @@
 
 SRC_PATH=../src
 LIBS_PATH=../libs
-# gtest
-GTEST_PATH=$(LIBS_PATH)/gtestlib/build/googletest
-GMOCK_PATH=$(LIBS_PATH)/gtestlib/build/googlemock
-GTEST_INCLUDE=$(LIBS_PATH)/gtestlib/googletest/include
-GMOCK_INCLUDE=$(LIBS_PATH)/gtestlib/googlemock/include
+TP_PATH=./thirdparty
 
-all:
-	@echo "please type 'make test'"
-
-test: clean OptFrame.test Examples.test
+all: test
 	@echo "Executing tests"
-	./OptFrame.test
-	./Examples.test
+	./build/OptFrame_test
+	./build/Examples_test
 
+test: clean OptFrame_test Examples_test
+	
 
-OptFrame.test : OptFrame.Test.cpp
-	g++ --coverage -g -O0 -fconcepts -std=c++17 -I$(SRC_PATH) -I$(SRC_PATH)/OptFrame -I$(LIBS_PATH) -I$(GTEST_INCLUDE) -I$(GMOCK_INCLUDE) $< -o $@ $(GMOCK_PATH)/gtest/libgtest_main.a $(GMOCK_PATH)/gtest/libgtest.a $(GMOCK_PATH)/libgmock.a $(LIBS_PATH)/scannerpplib/Scanner.cpp -lpthread -ldl
+OptFrame_test : OptFrame.Test.cpp
+	g++ --coverage -g -O0 -fconcepts -std=c++17 -I$(SRC_PATH) -I$(LIBS_PATH) -I$(TP_PATH) -DCATCH_CONFIG_MAIN $< -o ./build/$@   
 
-Examples.test : Examples.Test.cpp
-	g++ --coverage -g -O0 -fconcepts -std=c++17 -I$(SRC_PATH) -I$(SRC_PATH)/Examples -I$(LIBS_PATH) -I$(GTEST_INCLUDE) -I$(GMOCK_INCLUDE) $< -o $@ $(GMOCK_PATH)/gtest/libgtest_main.a $(GMOCK_PATH)/gtest/libgtest.a $(GMOCK_PATH)/libgmock.a $(LIBS_PATH)/scannerpplib/Scanner.cpp -lpthread -ldl
+Examples_test : Examples.Test.cpp
+	g++ --coverage -g -O0 -fconcepts -std=c++17 -I$(SRC_PATH) -I$(SRC_PATH)/../Examples -I$(LIBS_PATH) -I$(TP_PATH) -DCATCH_CONFIG_MAIN  $< -o ./build/$@
 
 
 test-coverage:
@@ -31,6 +26,7 @@ test-coverage:
 # cleaning tests
 clean:
 	rm -f *.test
+	rm -f *_test
 	rm -f *.gcda
 	rm -f *.gcno
 	rm -f *.info

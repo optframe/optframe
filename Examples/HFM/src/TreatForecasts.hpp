@@ -545,8 +545,8 @@ public:
 	{
 
 	}
-}
-;
+};
 
 } /* namespace HFM */
+
 #endif /* HFM_TREATFORECASTS_H_ */

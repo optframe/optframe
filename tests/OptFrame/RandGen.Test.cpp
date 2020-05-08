@@ -1,11 +1,13 @@
-#include <gtest/gtest.h>
+#include <catch2/catch.hpp>
+// Some instructions for Catch2
+// https://github.com/catchorg/Catch2/blob/master/docs/test-cases-and-sections.md
 
 // system
 #include <limits>
 
 // core includes
-#include <RandGen.hpp>
-#include <Util/RandGenMersenneTwister.hpp>
+#include <OptFrame/RandGen.hpp>
+#include <OptFrame/Util/RandGenMersenneTwister.hpp>
 
 using namespace std;
 using namespace optframe;
@@ -16,7 +18,7 @@ using namespace optframe;
 // memory management tests
 // =======================
 
-TEST(OptFrameUtilsTests, RandGen_20000_0_9_Is_Balanced_1_percent)
+TEST_CASE("OptFrameUtilsTests: RandGen_20000_0_9_Is_Balanced_1_percent")
 {
    std::map<int, int> hist;
    RandGen rg;
@@ -39,10 +41,10 @@ TEST(OptFrameUtilsTests, RandGen_20000_0_9_Is_Balanced_1_percent)
 
    //cout << "diff=" << (max-min)/20000.0 << endl;
    // MUST HAVE LESS THAN 1 PERCENT DEVIATION
-   EXPECT_LE(max - min, 0.01 * 20000);
+   REQUIRE(max - min <= 0.01 * 20000);
 }
 
-TEST(OptFrameUtilsTests, RandGen_20000_10_Is_Balanced_1_percent)
+TEST_CASE("OptFrameUtilsTests: RandGen_20000_10_Is_Balanced_1_percent")
 {
    std::map<int, int> hist;
    RandGen rg;
@@ -65,11 +67,11 @@ TEST(OptFrameUtilsTests, RandGen_20000_10_Is_Balanced_1_percent)
 
    //cout << "diff=" << (max-min)/20000.0 << endl;
    // MUST HAVE LESS THAN 1 PERCENT DEVIATION
-   EXPECT_LE(max - min, 0.01 * 20000);
+   REQUIRE(max - min <= 0.01 * 20000);
 }
 
 
-TEST(OptFrameUtilsTests, RandGenMT_20000_10_Is_Balanced_1_percent)
+TEST_CASE("OptFrameUtilsTests: RandGenMT_20000_10_Is_Balanced_1_percent")
 {
    std::map<int, int> hist;
    RandGenMersenneTwister rg1;
@@ -93,5 +95,5 @@ TEST(OptFrameUtilsTests, RandGenMT_20000_10_Is_Balanced_1_percent)
 
    //cout << "diff=" << (max-min)/20000.0 << endl;
    // MUST HAVE LESS THAN 1 PERCENT DEVIATION
-   EXPECT_LE(max - min, 0.01 * 20000);
+   REQUIRE(max - min <= 0.01 * 20000);
 }
