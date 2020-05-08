@@ -188,6 +188,22 @@ Multi-Objective metaheuristics:
 - 2PPLS
 - ...
 
+## VSCode Settings
+
+We recommend the following settings for vscode (`.vscode/settings.json`):
+```json
+{
+    "[cpp]": {
+        "editor.tabSize": 3,
+        "editor.detectIndentation": false
+    },
+    "C_Cpp.intelliSenseEngine": "Tag Parser",
+    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle : Mozilla , ColumnLimit : 0, IndentWidth: 3, AccessModifierOffset: -3}",
+    "testMate.cpp.test.executables": "{tests,build,Build,BUILD,out,Out,OUT}/**/*{test,Test,TEST}*"
+}
+```
+
+We recommend Microsoft `C/C++` and `C++ TestMate` extensions.
 
 ## Citation
 
