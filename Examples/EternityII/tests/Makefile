@@ -1,5 +1,5 @@
 
-MY_PATH=..                # My project folder
+MY_PATH=../src                # My project folder
 SRC_PATH=../../../src     # OptFrame Source
 LIBS_PATH=../../../libs   # OptFrame/Examples Libs
 
