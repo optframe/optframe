@@ -9,7 +9,7 @@
                 "${workspaceFolder}/tests/**",
                 "${workspaceFolder}/tests/thirdparty**"
             ],
-            "defines": ["DCATCH_CONFIG_MAIN"],
+            "defines": [],
             "compilerPath": "/usr/bin/g++",
             "cStandard": "c11",
             "cppStandard": "c++17",
