@@ -6,8 +6,8 @@
 //#include <limits>
 
 // core includes
-#include <EternityII/src/InitialSolutionRandom.h>
-#include <EternityII/EternityII.h>
+#include <src/InitialSolutionRandom.h>
+#include <EternityII.h>
 
 //using namespace std;
 //using namespace optframe;
