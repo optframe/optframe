@@ -3,7 +3,7 @@
 #ifndef $project_CONSTRUCTIVE_$constructive_H_
 #define $project_CONSTRUCTIVE_$constructive_H_
 
-#include "../../OptFrame/Constructive.hpp"
+#include <OptFrame/Constructive.hpp>
 
 #include "ProblemInstance.h"
 

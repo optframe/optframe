@@ -7,9 +7,9 @@
 #include <math.h>
 #include <iostream>
 
-#include "../OptFrame/Util/RandGenMersenneTwister.hpp"
+#include <OptFrame/Util/RandGenMersenneTwister.hpp>
 
-#include "../OptFrame/Util/CheckCommand.hpp"
+#include <OptFrame/Util/CheckCommand.hpp>
 
 #include "$project.h"
 

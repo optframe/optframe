@@ -4,20 +4,20 @@ using namespace $project;
 
 // ============ Move$neighborhood ==============
 
-bool Move$neighborhood::canBeApplied(const Solution$project& rep)
+bool Move$neighborhood::canBeApplied(const ESolution$project& rep)
 {
     return true;
 }
 
-uptr<Move< Solution$project >> Move$neighborhood::apply(Solution$project& rep)
+uptr<Move< ESolution$project >> Move$neighborhood::apply(ESolution$project& rep)
 {
     // apply this move to 'rep'
     // rep. (...) = (...)
     // return reverse move
-    return uptr<Move< Solution$project >>(new Move$neighborhood ); 
+    return uptr<Move< ESolution$project >>(new Move$neighborhood ); 
 }
 
-op<Evaluation<>> Move$neighborhood::cost(const pair< Solution$project , Evaluation<>>& se, bool allowEstimated)
+op<Evaluation<>> Move$neighborhood::cost(const ESolution$project & se, bool allowEstimated)
 {
    return std::nullopt;
    // Implement if a more efficient evaluation of the move is available
@@ -36,7 +36,7 @@ void NSIterator$neighborhood::next(){};
 	
 bool NSIterator$neighborhood::isDone(){};
 	
-uptr<Move< Solution$project >> NSIterator$neighborhood::current(){};
+uptr<Move< ESolution$project >> NSIterator$neighborhood::current(){};
 
 
 
@@ -44,11 +44,10 @@ uptr<Move< Solution$project >> NSIterator$neighborhood::current(){};
 // ============ NSSeq$neighborhood ==============
 
 
-uptr<Move<Solution$project >> NSSeq$neighborhood::randomMove(const Solution$project& rep)
+uptr<Move<ESolution$project >> NSSeq$neighborhood::randomMove(const ESolution$project& se)
 {
-   // you can ignore 'ads' if you want.
-   // return a random move (that is, a move operator that generates a neighbor solution of 'rep')
+   // return a random move (that is, a move operator that generates a neighbor solution of 'se')
    // you may need to use the random number generator 'rg'
    
-   return uptr<Move<Solution$project >>(new Move$neighborhood ); 
+   return uptr<Move<ESolution$project >>(new Move$neighborhood ); 
 }

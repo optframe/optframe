@@ -7,7 +7,7 @@
 #include <math.h>
 #include <iostream>
 #include <vector>
-#include "../OptFrame/Util/Matrix.hpp"
+#include "../src/OptFrame/Util/Matrix.hpp"
 
 /* User defined includes */
 $include
