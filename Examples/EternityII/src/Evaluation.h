@@ -26,4 +26,3 @@
 typedef Evaluation<> EvaluationEtII;
 
 #endif /*EtII_EVALUATION_H_*/
-

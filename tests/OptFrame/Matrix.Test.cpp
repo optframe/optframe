@@ -21,6 +21,6 @@ TEST_CASE("OptFrameUtilsTests: Matrix_Is_Zero")
 {
    //BigInteger big;
    //EXPECT_EQ(big.Length(), 1);
-   Matrix<int> m(1);
-   REQUIRE(m.getNumRows() == 1);
+   Matrix<int> m(2);
+   REQUIRE(m.getNumRows() == 2);
 }

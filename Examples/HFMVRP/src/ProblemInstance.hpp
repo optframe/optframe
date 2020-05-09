@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include <OptFrame/Scanner++/Scanner.hpp>
+#include <OptFrame/Util/Matrix.hpp>
 
 using namespace std;
 using namespace scannerpp;
