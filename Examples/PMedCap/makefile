@@ -1,36 +1,30 @@
-all: app_PMedCap
+all: build/app_Example
 
 CC=g++
-CFLAGS=-O3 -I../../src -Wall --std=c++17 -fconcepts -fno-exceptions -fno-rtti #TODO: disable exceptions
+CXXFLAGS= -I../../src  -fno-exceptions -O3 -Wall --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
+LDFLAGS := $(CXXFLAGS)
 
-app_PMedCap:  PMedCapmain.o PMedCapInitialSolutionGreedy.o PMedCapInitialSolutionRandom.o  PMedCapInitialSolutionRandomGreedy.o  PMedCapNSSeqSwap.o  PMedCapEvaluator.o  PMedCapNSSeqSwap.o   PMedCapProblemInstance.o   
-	$(CC) $(CFLAGS) PMedCap*.o -o $@
+SRC_DIR := ./src
+OBJ_DIR := ./build
+SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp)   # list source files
+OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))  # replace src/ by build/ on objs
 
-PMedCapmain.o: mainPMedCap.cpp
-	$(CC) -c $(CFLAGS) mainPMedCap.cpp -o $@
-	
-PMedCapInitialSolutionGreedy.o: src/InitialSolutionGreedy.cpp src/InitialSolutionGreedy.h
-	$(CC) -c $(CFLAGS) src/InitialSolutionGreedy.cpp -o $@
+# pack all objs ($^) into a single APPNAME
+build/app_Example: $(OBJ_FILES)
+	$(CC) $(LDFLAGS) -o $@ $^
 
-PMedCapInitialSolutionRandom.o: src/InitialSolutionRandom.cpp src/InitialSolutionRandom.h
-	$(CC) -c $(CFLAGS) src/InitialSolutionRandom.cpp -o $@
+# compile each .cpp individually ($<)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CC) $(CXXFLAGS) -c -o $@ $<
 
-PMedCapInitialSolutionRandomGreedy.o: src/InitialSolutionRandomGreedy.cpp src/InitialSolutionRandomGreedy.h
-	$(CC) -c $(CFLAGS) src/InitialSolutionRandomGreedy.cpp -o $@
-
-PMedCapNSSeqSwap.o: src/NSSeqSWAP.cpp src/NSSeqSWAP.h
-	$(CC) -c $(CFLAGS) src/NSSeqSWAP.cpp -o $@
-
-PMedCapEvaluator.o: src/Evaluator.cpp src/Evaluator.h
-	$(CC) -c $(CFLAGS) src/Evaluator.cpp -o $@
-
-PMedCapProblemInstance.o: src/ProblemInstance.cpp src/ProblemInstance.h
-	$(CC) -c $(CFLAGS) src/ProblemInstance.cpp -o $@
-
-	
 .PHONY: all clean
 
 clean: 
-	rm -f app_PMedCap
-	rm -f PMedCap*.o
+	rm -f build/app_*
+	rm -f build/*.o
 	
+test:
+	cd tests && make
+
+test-coverage:
+	cd tests && make test-coverage

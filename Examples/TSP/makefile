@@ -1,49 +1,30 @@
-all: app_TSP
+all: build/app_Example
 
-#CC=g++-8
 CC=g++
-CFLAGS=  -I../../src  -fno-exceptions -g -Wall -O3 --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
+CXXFLAGS= -I../../src  -fno-exceptions -O3 -Wall --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
+LDFLAGS := $(CXXFLAGS)
 
-app_TSP:  TSPmain.o  TSPConstructiveBestInsertion.o  TSPDeltaMoveTSP2Opt.o  TSPDeltaMoveTSPOrOptk.o  TSPEvaluator.o  TSPNearestNeighborConstructive.o  TSPNSEnumShift.o  TSPNSEnumSwap.o  TSPProblemCommand.o  TSPProblemInstance.o  TSPRandomInitialSolution.o  
-	$(CC) $(CFLAGS) TSP*.o -o $@
+SRC_DIR := ./src
+OBJ_DIR := ./build
+SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp)   # list source files
+OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))  # replace src/ by build/ on objs
 
-TSPmain.o: mainTSP.cpp
-	$(CC) -c $(CFLAGS) mainTSP.cpp -o $@
-	
-TSPConstructiveBestInsertion.o: src/ConstructiveBestInsertion.cpp src/ConstructiveBestInsertion.h
-	$(CC) -c $(CFLAGS) src/ConstructiveBestInsertion.cpp -o $@
+# pack all objs ($^) into a single APPNAME
+build/app_Example: $(OBJ_FILES)
+	$(CC) $(LDFLAGS) -o $@ $^
 
-TSPDeltaMoveTSP2Opt.o: src/DeltaMoveTSP2Opt.cpp src/DeltaMoveTSP2Opt.h
-	$(CC) -c $(CFLAGS) src/DeltaMoveTSP2Opt.cpp -o $@
+# compile each .cpp individually ($<)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CC) $(CXXFLAGS) -c -o $@ $<
 
-TSPDeltaMoveTSPOrOptk.o: src/DeltaMoveTSPOrOptk.cpp src/DeltaMoveTSPOrOptk.h
-	$(CC) -c $(CFLAGS) src/DeltaMoveTSPOrOptk.cpp -o $@
-
-TSPEvaluator.o: src/Evaluator.cpp src/Evaluator.h
-	$(CC) -c $(CFLAGS) src/Evaluator.cpp -o $@
-
-TSPNearestNeighborConstructive.o: src/NearestNeighborConstructive.cpp src/NearestNeighborConstructive.h
-	$(CC) -c $(CFLAGS) src/NearestNeighborConstructive.cpp -o $@
-	
-TSPNSEnumShift.o: src/NSEnumShift.cpp src/NSEnumShift.h
-	$(CC) -c $(CFLAGS) src/NSEnumShift.cpp -o $@
-	
-TSPNSEnumSwap.o: src/NSEnumSwap.cpp src/NSEnumSwap.h
-	$(CC) -c $(CFLAGS) src/NSEnumSwap.cpp -o $@
-
-TSPProblemCommand.o: src/ProblemCommand.cpp src/ProblemCommand.h
-	$(CC) -c $(CFLAGS) src/ProblemCommand.cpp -o $@
-
-TSPProblemInstance.o: src/ProblemInstance.cpp src/ProblemInstance.h
-	$(CC) -c $(CFLAGS) src/ProblemInstance.cpp -o $@
-
-TSPRandomInitialSolution.o: src/RandomInitialSolution.cpp src/RandomInitialSolution.h
-	$(CC) -c $(CFLAGS) src/RandomInitialSolution.cpp -o $@
-	
-	
 .PHONY: all clean
 
 clean: 
-	rm -f app_TSP
-	rm -f TSP*.o
+	rm -f build/app_*
+	rm -f build/*.o
 	
+test:
+	cd tests && make
+
+test-coverage:
+	cd tests && make test-coverage

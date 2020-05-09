@@ -1,21 +1,30 @@
-#CXX = g++-8
-CXX = g++-7
-CPPFLAGS = -I../../src  -fno-exceptions -O3
-CPPFLAGS += -MD -MP --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
+all: build/app_Example
 
+CC=g++
+CXXFLAGS= -I../../src  -fno-exceptions -O3 -Wall --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
+LDFLAGS := $(CXXFLAGS)
 
-all: app_MODM
+SRC_DIR := ./src
+OBJ_DIR := ./build
+SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp)   # list source files
+OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))  # replace src/ by build/ on objs
 
-SRC_MODM = $(wildcard MODM/*.cpp) mainMODM.cpp
+# pack all objs ($^) into a single APPNAME
+build/app_Example: $(OBJ_FILES)
+	$(CC) $(LDFLAGS) -o $@ $^
 
-app_MODM: $(SRC_MODM:%.cpp=%.o)
-	$(CXX) -o $@ $^
+# compile each .cpp individually ($<)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CC) $(CXXFLAGS) -c -o $@ $<
 
--include $(SRC_MODM:%.cpp=%.d)
-
+.PHONY: all clean
 
 clean: 
-	rm -f app_*
-	rm -f *.o *.d
-	rm -f MODM/*.o MODM/*.d
-	rm -f src/*.o src/*.d
+	rm -f build/app_*
+	rm -f build/*.o
+	
+test:
+	cd tests && make
+
+test-coverage:
+	cd tests && make test-coverage

@@ -4,18 +4,15 @@ using namespace MODM;
 
 bool MODMProblemCommand::load(string filename)
 {
-	File* file;
+	File file(filename);
 
-	try
-	{
-		file = new File(filename);
-	} catch (FileNotFound& f)
+   if(!file.isOpen())
 	{
 		cout << "File '" << filename << "' not found" << endl;
 		return false;
 	}
 
-	Scanner scanner(file);
+	Scanner scanner(std::move(file));
 
 	// STEP 1: IMPLEMENT ProblemInstance.h/.cpp (YOU MUST READ THE PROBLEM DATA AND STORE INSIDE)
 	p = new ProblemInstance(scanner);

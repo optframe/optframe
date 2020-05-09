@@ -1,0 +1,19 @@
+#ifndef MODM_H_
+#define MODM_H_
+
+#include "Representation.h"
+#include "Solution.h"
+#include "DeltaStructure.h"
+#include "Evaluation.h"
+#include "ProblemInstance.h"
+#include "ADSManager.h"
+#include "Evaluator.h"
+#include "EvaluatorRobustness.h"
+#include "NSSeqSWAP.h"
+#include "NSSeqSWAPInter.h"
+#include "NSSeqInvert.h"
+#include "NSSeqADD.h"
+#include "NSSeqARProduct.h"
+#include "ConstructiveBasicGreedyRandomized.h"
+#include "ProblemCommand.h"
+#endif /*MODM_H_*/
