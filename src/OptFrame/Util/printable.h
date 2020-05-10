@@ -33,6 +33,15 @@ using namespace std;
 
 namespace optframe {
 
+/*
+ostream&
+operator<<(ostream& os, const nullptr_t& nptr)
+{
+   os << "nullptr_t";
+   return os;
+}
+*/
+
 template<class T1, class T2>
 ostream&
 operator<<(ostream& os, const pair<T1, T2>& obj);

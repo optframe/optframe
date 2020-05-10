@@ -48,15 +48,21 @@ template<class B>
     };
    */
 
+// on C++17 this is a "workaround"
+// on C++20, best solution would be to have 'my_same_as = std::same_as'
+// This should work for both standards
+template<class Me, class Other>
+  concept bool my_same_as = std::is_same_v<Me, Other> && std::is_same_v<Other, Me>;
+
 // https://en.cppreference.com/w/cpp/concepts/equality_comparable
 template<class T, class U>
   concept bool __WeaklyEqualityComparableWith = // exposition only
     requires(const std::remove_reference_t<T>& t,
              const std::remove_reference_t<U>& u) {
-      { t == u } -> bool; //std::boolean;
-      { t != u } -> bool; //std::boolean;
-      { u == t } -> bool; //std::boolean;
-      { u != t } -> bool; //std::boolean;
+      { t == u } -> my_same_as<bool>; //std::boolean;
+      { t != u } -> my_same_as<bool>; //std::boolean;
+      { u == t } -> my_same_as<bool>; //std::boolean;
+      { u != t } -> my_same_as<bool>; //std::boolean;
     };
 //
 
@@ -101,10 +107,10 @@ concept bool comparability =
   optframe::equality_comparable<T> &&
   requires(const std::remove_reference_t<T>& a,
            const std::remove_reference_t<T>& b) {
-    { a <  b } -> bool;
-    { a >  b } -> bool;
-    { a <= b } -> bool;
-    { a >= b } -> bool;
+    { a <  b } -> my_same_as<bool>;
+    { a >  b } -> my_same_as<bool>;
+    { a <= b } -> my_same_as<bool>;
+    { a >= b } -> my_same_as<bool>;
   };
 
 // The 'comparability' name was 'totally_ordered' (as C++ proposal), but it's neither partial or total...
@@ -147,11 +153,19 @@ concept bool basic_arithmetics_assign =
 //  requires(const std::remove_reference_t<T>& a,
   requires(std::remove_reference_t<T>& a,
            const std::remove_reference_t<T>& b) {
-    { a += b } -> std::remove_reference_t<T>&;
-    { a -= b } -> std::remove_reference_t<T>&;
+    { a += b } -> my_same_as<T>;  // std::remove_reference_t<T>&; // cannot do on C+20
+    { a -= b } -> my_same_as<T>;
+    //{ a *= b } -> std::remove_reference_t<T>&; // useful, but too hard to do now
+    ////{ a / b } -> std::remove_reference_t<T>&;  // NOT actually necessary (until today!)
+  } ||
+  requires(std::remove_reference_t<T>& a,
+           const std::remove_reference_t<T>& b) {
+    { a += b } -> my_same_as<T&>;
+    { a -= b } -> my_same_as<T&>;
     //{ a *= b } -> std::remove_reference_t<T>&; // useful, but too hard to do now
     ////{ a / b } -> std::remove_reference_t<T>&;  // NOT actually necessary (until today!)
   };
+
 
 
 template <class T>
@@ -159,11 +173,21 @@ concept bool basic_arithmetics =
   optframe::basic_arithmetics_assign<T> &&
   requires(const std::remove_reference_t<T>& a,
            const std::remove_reference_t<T>& b) {
-    { a + b } -> std::remove_reference_t<T>; // requires const a
-    { a - b } -> std::remove_reference_t<T>; // requires const a
+    { a + b } -> my_same_as<T>; // std::remove_reference_t<T>; // won't work on C++20
+    { a - b } -> my_same_as<T>; 
     //{ a * b } -> std::remove_reference_t<T>; // useful, but too hard now... must provide multiplication by scalar to do 'weights'
     //{ a / b } -> std::remove_reference_t<T>;  // NOT actually necessary (until today!)
   };
+  /* ||
+  requires(const std::remove_reference_t<T>& a,
+           const std::remove_reference_t<T>& b) {
+    { a + b } -> my_same_as<T&>; // std::remove_reference_t<T>; // won't work on C++20
+    { a - b } -> my_same_as<T&>; 
+    //{ a * b } -> std::remove_reference_t<T>; // useful, but too hard now... must provide multiplication by scalar to do 'weights'
+    //{ a / b } -> std::remove_reference_t<T>;  // NOT actually necessary (until today!)
+  };
+  */
+
   /*
   && 
   requires(std::remove_reference_t<T>& a) {
@@ -176,7 +200,7 @@ concept bool extended_arithmetics =
   optframe::basic_arithmetics<T> &&
   requires(const std::remove_reference_t<T>& a,
            const std::remove_reference_t<T>& b) {
-    { a * b } -> std::remove_reference_t<T>; // useful for weighted computation
+    { a * b } ->  my_same_as<T>;// std::remove_reference_t<T>; // useful for weighted computation
     //{ a / b } -> std::remove_reference_t<T>;  // NOT actually necessary (until today!)
   };  
 
@@ -187,7 +211,7 @@ concept bool ostreamable =
   requires(std::ostream& os, 
            //const std::remove_reference_t<Self>& obj) {
             const Self& obj) {
-    { os << obj } -> std::ostream&;
+    { os << obj }; //-> my_same_as<std::ostream&>;
   };
 
 } // namespace optframe

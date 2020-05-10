@@ -62,7 +62,7 @@ public:
    }
 
    // move id
-   id_type mid()
+   virtual id_type mid()
    {
       return 0;
    }

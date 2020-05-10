@@ -406,9 +406,9 @@ struct optframe_debug_example_test_mov
 
    void f()
    {
-      std::tuple<int, char> foo(10, 'x');
-      MultiObjValue<int, char> testMOV1(foo);
-      MultiObjValue<int, char> testMOV2(20, 'y');
+      //std::tuple<int, char> foo(10, 'x');         // C++20 'char' may not allow this...
+      //MultiObjValue<int, char> testMOV1(foo);     // C++20 'char' may not allow this...
+      //MultiObjValue<int, char> testMOV2(20, 'y'); // C++20 'char' may not allow this...
 
       MultiObjValue<int, double> testMOV3(0, 0.000001);
       assert(optframe::numeric_is_zero(testMOV3)); // should be zero!

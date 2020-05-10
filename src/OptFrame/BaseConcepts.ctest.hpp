@@ -149,7 +149,8 @@ public:
 static_assert(XBaseSolution<IsSolution<double>, double>); //TestBaseSol<IsSolution<double>> test;
 static_assert(XSolution<IsSolution<double>>); // TestXSol<IsSolution<double>> testXsol;
 static_assert(XRSolution<IsSolution<double>, double>);  //TestXRSolution<double, IsSolution<double>> testxrs;
-static_assert(XEvaluation<IsEvaluation<short>>); // TestEv<IsEvaluation<short>> testev;
+static_assert(XEvaluation<IsEvaluation<int>>); // TestEv<IsEvaluation<short>> testev;
+//static_assert(XEvaluation<IsEvaluation<short>>); // TestEv<IsEvaluation<short>> testev; // won't work wth 'short' on C++20
 // XESolution tests
 static_assert(XESolution<IsESolution<double>>); // TestXESol<IsESolution<double>> testXesol;
 

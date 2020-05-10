@@ -9,7 +9,7 @@
 
 ## OptFrame 4.0.1 (bugfix)
 
-- Fixing remote reference to a stable [Scanner](github.com/optframe/scannerpp) version.
+- Fixing remote reference to a stable [Scanner](https://github.com/optframe/scannerpp) version.
 - Fixing remote reference to deprecated [gtestlib](https://github.com/google/googletest).
 
 ## OptFrame 4.0-alpha
