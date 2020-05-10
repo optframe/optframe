@@ -1,6 +1,11 @@
 
 # OptFrame Changelog
 
+## OptFrame 4.0.3 - development (bugfix)
+
+- explored gcc bug "a variable concept cannot be constrained", meaning that during concepts 
+definition we cannot replace auto rules (class R) by constrained ones (XRepresentation R)
+
 ## OptFrame 4.0.2 (bugfix)
 
 - Adjusted tests from deprecated [gtestlib](https://github.com/google/googletest) to [catch2](https://github.com/catchorg/Catch2)

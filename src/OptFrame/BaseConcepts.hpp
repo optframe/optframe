@@ -41,13 +41,16 @@ concept bool XRepresentation = optframe::ostreamable<R>;
 // there may be some "Cloneable" in std future...
 // TODO: change return to unique_ptr instead of reference
 template <class Self>
-concept bool HasClone = requires(Self self)
+concept bool HasClone = true;/*  = requires(Self self)
 {
+   
    {
       self.clone()
    }
-   ->Self &;
-};
+   -> Self &;
+   
+  // not working on c++20 (return 'Self&' is not fine...)
+}; */
 
 template <class Self>
 concept bool HasToString = requires(Self self)
@@ -55,7 +58,7 @@ concept bool HasToString = requires(Self self)
    {
       self.toString()
    }
-   ->std::string;
+   -> my_same_as<std::string>;
 };
 
 template <class Self>
@@ -69,8 +72,10 @@ concept bool XSolution = XRepresentation<Self>;//HasClone<Self> && HasToString<S
 //template <class ADS>
 //concept bool Structure = true;
 
-template <class S, XRepresentation R>
-concept bool HasGetR = requires(S a)
+//template <class S, XRepresentation R> // explored old gcc bug... "constrained concepts not allowed"
+// note that "auto" is an "unconstrained concept", while "XRepresentation" forced a filter that cannot be done during concept definition.
+template <class S, class R>
+concept bool HasGetR = XRepresentation<R> && requires(S a)
 {
    {
       a.getR()

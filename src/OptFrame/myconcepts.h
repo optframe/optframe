@@ -54,6 +54,10 @@ template<class B>
 template<class Me, class Other>
   concept bool my_same_as = std::is_same_v<Me, Other> && std::is_same_v<Other, Me>;
 
+template<class Me, class Other>
+  concept bool my_convertible_to = std::is_convertible_v<Me, Other> && std::is_convertible_v<Other, Me>;
+
+
 // https://en.cppreference.com/w/cpp/concepts/equality_comparable
 template<class T, class U>
   concept bool __WeaklyEqualityComparableWith = // exposition only
@@ -211,7 +215,7 @@ concept bool ostreamable =
   requires(std::ostream& os, 
            //const std::remove_reference_t<Self>& obj) {
             const Self& obj) {
-    { os << obj }; //-> my_same_as<std::ostream&>;
+    { os << obj }; //-> my_same_as<std::ostream&>; // or 'my_convertible_to'
   };
 
 } // namespace optframe
