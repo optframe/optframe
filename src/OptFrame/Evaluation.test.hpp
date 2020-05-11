@@ -19,6 +19,9 @@ template<optframe::basic_arithmetics ObjType>
 class TestTArithMO_is_zero2
 {
 public:
+   using objType = ObjType; // exporting 'objType' type, based on 'ObjType'
+   //
+   
    ObjType infMeasureX;
 
    bool outdated; // this is required by XEvaluation

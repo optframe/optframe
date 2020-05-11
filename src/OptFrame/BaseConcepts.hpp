@@ -156,11 +156,19 @@ concept bool evgoal =
 template<class Self>
 concept bool HasGetObj = requires(Self a)
 {
+   typename Self::objType; // requires 'objType' on XEvaluation...
+   //
+   // filtering 'objType' properties...
+   optframe::objval<typename Self::objType>;
+   //
    {
       //a.getObj()
       a.evaluation() // keeping standard name since OptFrame's early times
    }
-   ->optframe::objval; // note that, if 'ObjType' becomes complex, one must return a moveable copy, not reference of internal value
+   // c++20 does not allow concept requirements here on output "->"... must filter before! using type 'objType'
+   -> my_convertible_to<typename Self::objType>;
+   //
+   //-> optframe::objval; // note that, if 'ObjType' becomes complex, one must return a moveable copy, not reference of internal value
    // any totally ordered output is fine! (double, int, ParetoFront , etc...)
 };
 
@@ -172,17 +180,23 @@ concept bool HasGetObj = requires(Self a)
 // one can implement this way if preferred, separating or not both "values"... not mandatory anymore
 template<class Self>
 concept bool XEvaluation = // sing obj. evaluation part (standard multi obj)
-  (optframe::evgoal<Self>&& HasClone<Self>&& HasToString<Self>&& HasGetObj<Self>&& optframe::ostreamable<Self>&& requires(Self e) {
+  (
+     optframe::evgoal<Self> && 
+     HasClone<Self> &&
+     HasToString<Self> &&
+     HasGetObj<Self> &&
+     optframe::ostreamable<Self> &&
+     requires(Self e) {
      // variable 'outdated' is still useful for optimizations
      {
         e.outdated
      }
-     -> my_same_as<bool>;
+     -> my_convertible_to<bool>; // my_same_as
      {
         //e.update(XEvaluation<Self>) // TODO
         e.estimated
      }
-     -> my_same_as<bool>;
+     -> my_convertible_to<bool>;
   }) || // classic multiobj (MultiEvaluation) - TODO: remove this option
   (
     requires(Self e, size_t idx) {

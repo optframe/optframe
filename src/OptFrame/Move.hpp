@@ -50,11 +50,13 @@ namespace optframe {
 // Efficient components (like Move) should use 'XR' instead of 'XSolution' (and equivalents).
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv> >
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
-template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES>
+template<XESolution XES, XEvaluation XEv2 = Evaluation<>, XSearch<XES> XSH = XES>
 // BREAK TIME!! ONLY 'XES' shall pass... can we finish 'S' here?
+// Finally, now it's possible to abolish XEv (XEv2) passing here, and deduce from 'XES::second_type'.
 class Move : public Component
 {
    // using XEv = decltype(declval<XSH>.second); // error: insufficient contextual information to determine type
+   using XEv = XES::second_type; // This works!!!
    // TOO BAD: we really need to pass XEv here
 public:
    virtual ~Move()
@@ -82,7 +84,7 @@ public:
    virtual uptr<Move<XES, XEv, XSH>> applyUpdate(XSH& se)
    {
       //XSolution& s = se.first;
-      XEvaluation& e = se.second;
+      XEv& e = se.second;
       // boolean 'outdated' indicates that Evaluation needs update (after Solution change)
       // note that even if the reverse move is applied, the Evaluation will continue with
       // the outdated status set to true. So more efficient approaches may rewrite this

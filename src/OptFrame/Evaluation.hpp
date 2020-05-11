@@ -74,6 +74,9 @@ namespace optframe {
 template<optframe::basic_arithmetics ObjType = evtype>
 class Evaluation final : public Component
 {
+public:
+   using objType = ObjType; // exporting 'objType' type, based on template 'ObjType'
+   //
 protected:
 
    //static Evaluation<ObjType> costZero { Evaluation<ObjType>() };
@@ -455,6 +458,13 @@ public:
 };
 
 // compilation test (for concepts)
+// debugging error on XEvaluation for IsEvaluation<int>
+static_assert(optframe::evgoal<Evaluation<>>);
+static_assert(HasClone<Evaluation<>>);
+static_assert(HasToString<Evaluation<>>);
+static_assert(HasGetObj<Evaluation<>>);
+static_assert(optframe::ostreamable<Evaluation<>>);
+//
 static_assert(XEvaluation<Evaluation<>>); // check default
 
 

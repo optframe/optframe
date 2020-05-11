@@ -48,6 +48,8 @@ static_assert(XSolution<IsSolution<int, nullptr_t>>);
 template <class T>
 struct IsEvaluation
 { 
+   using objType = T;
+   //
    T &evaluation(); // this is required!
 
    bool outdated; // this is required!
@@ -113,7 +115,13 @@ struct IsESolution
 
 // basic test
 static_assert(XSolution<IsESolution<int>::first_type>);
-static_assert(XEvaluation<IsESolution<int>::second_type>);
+// debugging error on XEvaluation for IsEvaluation<int>
+static_assert(optframe::evgoal<IsEvaluation<int>>);
+static_assert(HasClone<IsEvaluation<int>>);
+static_assert(HasToString<IsEvaluation<int>>);
+static_assert(HasGetObj<IsEvaluation<int>>);
+static_assert(optframe::ostreamable<IsEvaluation<int>>);
+static_assert(XEvaluation<IsESolution<int>::second_type>); // IsEvaluation<T>
 static_assert(XESolution<IsESolution<int>>);
 
 
