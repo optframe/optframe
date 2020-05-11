@@ -32,19 +32,31 @@ namespace optframe {
 //      bool (*fCanBeApplied)(const XES&) = [](const XES&) -> bool { return false; } // fCanBeApplied
 //  So, looks like we need to have function in global scope, for it to have linkage.
 //
-template<XESolution XES>
-auto fDefaultCanBeApplied = [](const XES&) -> bool { return false; }; // fCanBeApplied
+template<class M, XESolution XES>
+auto fDefaultCanBeApplied =
+  [](const M&, const XES&) -> bool {
+   return true;
+};
+//
+template<class M, XESolution XES>
+auto fDefaultCompareEq =
+  [](const M& me, const Move<XES>& other) -> bool {
+   return false;
+};
 //
 template<
-  class M,                                                      // Move structure
-  XESolution XES,                                               // ESolution structure
-  op<M> (*fApply)(const M&, XES&),                              // fApply
-  bool (*fCanBeApplied)(const XES&) = fDefaultCanBeApplied<XES> // fCanBeApplied
+  class M,                                                                    // Move structure
+  XESolution XES,                                                             // ESolution structure
+  op<M> (*fApply)(const M&, XES&),                                            // fApply
+  bool (*fCanBeApplied)(const M&, const XES&) = fDefaultCanBeApplied<M, XES>, // fCanBeApplied
+  bool (*fCompareEq)(const M&, const Move<XES>&) = fDefaultCompareEq<M, XES>  // fCompareEq
   >
 class FMove final : public Move<XES, typename XES::second_type>
 {
    using XEv = typename XES::second_type;
    using XSH = XES; // only single objective
+   using Self = FMove<M, XES, fApply, fCanBeApplied, fCompareEq>;
+
 public:
    M m; // internal structure for move
 
@@ -55,17 +67,22 @@ public:
 
    virtual bool canBeApplied(const XES& se)
    {
-      return false;
+      return fCanBeApplied(m, se);
    }
 
    virtual uptr<Move<XES, XEv, XSH>> apply(XSH& se)
    {
-      return nullptr;
+      op<M> r = fApply(m, se);
+      if (r)
+         return uptr<Move<XES, XEv, XSH>>(new Self(*r));
+      else
+         return nullptr;
    }
 
-   virtual bool operator==(const Move<XES, XEv, XSH>& m) const
+   virtual bool operator==(const Move<XES, XEv, XSH>& move) const
    {
-      return false;
+      const Move<XES>& move2 = (Move<XES>&)move;
+      return fCompareEq(this->m, move2);
    }
 
    bool operator!=(const Move<XES, XEv, XSH>& m) const

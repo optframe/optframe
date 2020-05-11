@@ -50,7 +50,7 @@ using MyXEvaluation = Evaluation<int>;
 using MyXESolution = std::pair<MyXSolution, MyXEvaluation>;
 
 // this needs to be in global scope... too bad!
-auto fCanBeApplied = [](const MyXESolution&) -> bool {
+auto fCanBeApplied = [](const myDS&, const MyXESolution&) -> bool {
    return false;
 };
 
