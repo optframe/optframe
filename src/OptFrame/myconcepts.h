@@ -8,6 +8,14 @@
 
 namespace optframe
 {
+
+   // notes: on c++17, we have 'bool' on concept definition, but not on c++20
+   // warning: the ‘bool’ keyword is not allowed in a C++20 concept definition
+   // use macro __cplusplus == 201703L to verify that
+
+//#define BOOL_OR_EMPTY(b) (__cplusplus <= 201703L ? bool :  std::cout << "C++17\n";
+//    else if (__cplusplus == 201402L) std::cout << "C++14\n";) 
+
    
 // default renaming of std::unique_ptr (too long!!)
 template<class T>
@@ -52,7 +60,11 @@ template<class B>
 // on C++20, best solution would be to have 'my_same_as = std::same_as'
 // This should work for both standards
 template<class Me, class Other>
-  concept bool my_same_as = std::is_same_v<Me, Other> && std::is_same_v<Other, Me>;
+  concept
+#if __cplusplus <= 201703L // after c++20, not required 'bool'
+  bool 
+#endif
+  my_same_as = std::is_same_v<Me, Other> && std::is_same_v<Other, Me>;
 
 // https://en.cppreference.com/w/cpp/concepts/convertible_to
 /*
@@ -64,7 +76,11 @@ concept convertible_to =
   };
   */
 template<class From, class To>
-concept bool my_convertible_to =
+concept 
+#if __cplusplus <= 201703L // after c++20, not required 'bool'
+  bool 
+#endif
+ my_convertible_to =
   std::is_convertible_v<From, To>&& requires(std::add_rvalue_reference_t<From> (&f)())
 {
    static_cast<To>(f());
@@ -74,7 +90,11 @@ concept bool my_convertible_to =
 
 // https://en.cppreference.com/w/cpp/concepts/equality_comparable
 template<class T, class U>
-  concept bool __WeaklyEqualityComparableWith = // exposition only
+  concept 
+  #if __cplusplus <= 201703L // after c++20, not required 'bool'
+  bool 
+#endif
+   __WeaklyEqualityComparableWith = // exposition only
     requires(const std::remove_reference_t<T>& t,
              const std::remove_reference_t<U>& u) {
       { t == u } -> my_same_as<bool>; //std::boolean;
@@ -85,7 +105,11 @@ template<class T, class U>
 //
 
 template < class T >
-concept bool equality_comparable = __WeaklyEqualityComparableWith<T, T>;
+concept 
+#if __cplusplus <= 201703L // after c++20, not required 'bool'
+  bool 
+#endif
+ equality_comparable = __WeaklyEqualityComparableWith<T, T>;
 
 //
 //
@@ -121,7 +145,11 @@ concept bool equality_comparable = __WeaklyEqualityComparableWith<T, T>;
 template <class T>
 //concept bool totally_ordered =
 //concept bool partially_ordered =
-concept bool comparability =
+concept 
+#if __cplusplus <= 201703L // after c++20, not required 'bool'
+  bool 
+#endif
+ comparability =
   optframe::equality_comparable<T> &&
   requires(const std::remove_reference_t<T>& a,
            const std::remove_reference_t<T>& b) {
@@ -164,7 +192,11 @@ concept bool comparability =
 // basic arithmetic is currently just +, - and *.  (division was never required to this day)
 // 'basic_arithmetics_assign' includes assignment operators +=, -= (weight scalar *= was dropped for now, too hard)
 template <class T>
-concept bool basic_arithmetics_assign = 
+concept 
+#if __cplusplus <= 201703L // after c++20, not required 'bool'
+  bool 
+#endif
+ basic_arithmetics_assign = 
 // optframe::totally_ordered<T> &&
 //  optframe::comparable<T> &&
   //
@@ -187,7 +219,11 @@ concept bool basic_arithmetics_assign =
 
 
 template <class T>
-concept bool basic_arithmetics = 
+concept 
+#if __cplusplus <= 201703L // after c++20, not required 'bool'
+  bool 
+#endif
+ basic_arithmetics = 
   optframe::basic_arithmetics_assign<T> &&
   requires(const std::remove_reference_t<T>& a,
            const std::remove_reference_t<T>& b) {
@@ -214,7 +250,11 @@ concept bool basic_arithmetics =
   */
 
 template <class T>
-concept bool extended_arithmetics = 
+concept 
+#if __cplusplus <= 201703L // after c++20, not required 'bool'
+  bool 
+#endif
+ extended_arithmetics = 
   optframe::basic_arithmetics<T> &&
   requires(const std::remove_reference_t<T>& a,
            const std::remove_reference_t<T>& b) {
@@ -225,7 +265,11 @@ concept bool extended_arithmetics =
 
 // capability to move to ostream&
 template <class Self>
-concept bool ostreamable = 
+concept 
+#if __cplusplus <= 201703L // after c++20, not required 'bool'
+  bool 
+#endif
+ ostreamable = 
   requires(std::ostream& os, 
            //const std::remove_reference_t<Self>& obj) {
             const Self& obj) {

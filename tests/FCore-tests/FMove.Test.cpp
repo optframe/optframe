@@ -50,6 +50,14 @@ using MyXSolution = Solution<std::vector<int>>;
 using MyXESolution = std::pair<MyXSolution, Evaluation<int>>;
 //
 
+// this works when defining in global scope (same as 'class')
+using MyMoveSwap = FMove<
+  std::pair<int, int>,
+  MyXESolution,
+  [](const std::pair<int, int>& myData, MyXESolution& xes) -> op<std::pair<int, int>> {
+     return make_optional(std::pair<int, int>(myData.second, myData.first));
+  }>;
+
 using myDS = std::pair<int, int>;
 // this needs to be in global scope... too bad!
 auto fCanBeApplied = [](const myDS&, const MyXESolution&) -> bool {
@@ -63,13 +71,6 @@ auto fApply =
 };
 
 // function requires "linkage", thus we define on global scope
-
-using MyMoveSwap = FMove<
-  std::pair<int, int>,
-  MyXESolution,
-  [](const myDS& myData, MyXESolution& xes) -> op<myDS> {
-     return op<std::pair<int, int>>{ make_pair(myData.second, myData.first) };
-  }>;
 
 TEST_CASE("OptFrame FCore FMove: Create FMove")
 {

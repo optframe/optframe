@@ -147,7 +147,8 @@ public:
 	}
 
    // not fully needed....
-   optframe::objval evaluation()
+   //optframe::objval evaluation()
+   XEv::objType evaluation()
    {
       return this->second.evaluation();
    }

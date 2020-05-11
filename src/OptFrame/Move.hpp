@@ -50,13 +50,13 @@ namespace optframe {
 // Efficient components (like Move) should use 'XR' instead of 'XSolution' (and equivalents).
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv> >
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
-template<XESolution XES, XEvaluation XEv2 = Evaluation<>, XSearch<XES> XSH = XES>
+template<XESolution XES, XEvaluation XEv = typename XES::second_type, XSearch<XES> XSH = XES>
 // BREAK TIME!! ONLY 'XES' shall pass... can we finish 'S' here?
 // Finally, now it's possible to abolish XEv (XEv2) passing here, and deduce from 'XES::second_type'.
 class Move : public Component
 {
    // using XEv = decltype(declval<XSH>.second); // error: insufficient contextual information to determine type
-   using XEv = XES::second_type; // This works!!!
+   // using XEv = typename XES::second_type; // This works!!! But better done directly on template header
    // TOO BAD: we really need to pass XEv here
 public:
    virtual ~Move()
