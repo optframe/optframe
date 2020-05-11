@@ -5,6 +5,8 @@
 
 - explored gcc bug "a variable concept cannot be constrained", meaning that during concepts 
 definition we cannot replace auto rules (class R) by constrained ones (XRepresentation R)
+   * Same as: "https://github.com/boostorg/asio/issues/312" => "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=67658"
+- Fixing other bug "error: result type is not a plain type-constraint" (when variable concepts are put on return types, e.g., "-> XSolution&")
 
 ## OptFrame 4.0.2 (bugfix)
 

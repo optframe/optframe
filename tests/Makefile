@@ -16,6 +16,15 @@ OptFrame_test : OptFrame.Test.cpp
 FCore_test : FCore.Test.cpp
 	g++-10.1 --coverage -g -O0 -fmax-errors=5 -std=c++20 -I$(SRC_PATH) -I$(LIBS_PATH) -DCATCH_CONFIG_MAIN $< -o ./build/$@   
 
+pair: pair17 pair20
+
+pair17 : concept-test/Pair.cpp
+	g++-8      -fconcepts -std=c++17 $< -o pair17   
+pair20 : concept-test/Pair.cpp
+	g++-10.1            -std=c++20 $< -o pair20  -fconcepts-diagnostics-depth=2
+
+.PHONY: pair17 pair20 clean
+
 test-examples:
 	./test-examples.sh
 
