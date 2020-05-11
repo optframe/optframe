@@ -67,6 +67,9 @@ public:
    //S first;    // non-static declared with placeholder XSolution (requires template here!)
    //XEv second; // non-static declared with placeholder XEvaluation (requires template here!)
 
+   using first_type = S;
+   using second_type = XEv;
+
    S& first;    // non-static declared with placeholder XSolution (requires template here!)
    XEv& second; // non-static declared with placeholder XEvaluation (requires template here!)
 

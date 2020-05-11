@@ -39,16 +39,17 @@ concept bool XRepresentation = optframe::ostreamable<R>;
 // there may be some "Cloneable" in std future...
 // TODO: change return to unique_ptr instead of reference
 template<class Self>
-concept bool HasClone = true; /*  = requires(Self self)
+concept bool HasClone = true; /*requires(Self self)
 {
    
    {
       self.clone()
    }
-   -> Self &;
+   -> my_convertible_to<Self>;
    
   // not working on c++20 (return 'Self&' is not fine...)
-}; */
+};
+*/
 
 template<class Self>
 concept bool HasToString = requires(Self self)
@@ -195,6 +196,41 @@ concept bool XEvaluation = // sing obj. evaluation part (standard multi obj)
 // XSolution and XEvaluation are container-inspired "conceptual objects", to carry Representation and Objective Value
 // One can even aggregate both in a single unified "thing", called XESolution
 
+// =================== Notes on Pair ==================
+// One Pair could be implemented in two ways:
+/*
+template<typename P>
+concept bool Pair5 = requires(P p)
+{
+   typename P::first_type;
+   typename P::second_type;
+   p.first;
+   p.second;
+   requires my_same_as<decltype(p.first), typename P::first_type>;
+   requires my_same_as<decltype(p.second), typename P::second_type>;
+};
+*/
+// The next way uses "return ->" on "local variables", but seem to require my_convertible_to, instead of my_same_as
+/*
+template<typename P>
+concept bool Pair7 = requires(P p)
+{
+   typename P::first_type;
+   typename P::second_type;
+   {
+      p.first
+   }
+   ->my_convertible_to<typename P::first_type>;
+   {
+      p.second
+   }
+   ->my_convertible_to<typename P::second_type>;
+};
+*/
+// It LOOKS LIKE... 'my_convertible_to' is more flexible than 'my_same_as'.
+// Tried and found some issues with 'my_same_as', maybe 'convertible' is the ONLY way...
+// ===================== END PAIR SPEC ====================================
+
 // funny thing, Solution doesn't carry specific representation (yet)
 // probably, because Representation itself is as abstract as a solution...
 // in case of "ObjType" it's different, we may operate over it, perhaps: compare, perhaps "add", "subtract", ... to create costs
@@ -203,8 +239,29 @@ concept bool XEvaluation = // sing obj. evaluation part (standard multi obj)
 // -----> now concept also allows pair<S, XEv> to represent composed space <-----
 template<class Self>
 concept bool XESolution = XSolution<Self>&& //(XSolution<Self> && XEvaluation<Self>)  ||
-  requires(Self a)
+  requires(Self p)
 {
+   typename Self::first_type;  // requires a "first_type" with some "XSolution properties"
+   typename Self::second_type; // requires a "second_type" with some "XEvaluation properties"
+   //p.first;  // requires a XSolution variable named 'first'
+   {
+      p.first
+   }
+   ->my_convertible_to<typename Self::first_type>;
+   //p.second; // requires a XEvaluation variable named 'second'
+   {
+      p.second
+   }
+   ->my_convertible_to<typename Self::second_type>;
+   //
+   //requires my_same_as<decltype(p.first), typename Self::first_type>;    // not enough for reference and non-reference cases
+   //requires my_same_as<decltype(p.second), typename Self::second_type>;
+   // details on types
+   XSolution<typename Self::first_type>;
+   XEvaluation<typename Self::second_type>;
+
+   // old impl. base (deprecated)
+   /*
    // also allowing as pair<S, XEv>
    {
       XSolution<decltype(a.first)>
@@ -216,6 +273,7 @@ concept bool XESolution = XSolution<Self>&& //(XSolution<Self> && XEvaluation<Se
       a.second
    }
    ->XEvaluation&;
+   */
 };
 
 // =====================

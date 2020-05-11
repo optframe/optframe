@@ -86,6 +86,10 @@ static_assert(XSolution<IsEvaluation<int>>);
 template <class T>
 struct IsESolution
 {
+   // declaring types
+   using first_type = IsESolution<T>;
+   using second_type = IsEvaluation<T>;
+
    //T& evaluation();
    IsESolution<T>& first {*this};
    IsEvaluation<T> second;
@@ -108,6 +112,8 @@ struct IsESolution
 };
 
 // basic test
+static_assert(XSolution<IsESolution<int>::first_type>);
+static_assert(XEvaluation<IsESolution<int>::second_type>);
 static_assert(XESolution<IsESolution<int>>);
 
 

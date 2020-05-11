@@ -54,8 +54,22 @@ template<class B>
 template<class Me, class Other>
   concept bool my_same_as = std::is_same_v<Me, Other> && std::is_same_v<Other, Me>;
 
-template<class Me, class Other>
-  concept bool my_convertible_to = std::is_convertible_v<Me, Other> && std::is_convertible_v<Other, Me>;
+// https://en.cppreference.com/w/cpp/concepts/convertible_to
+/*
+  template <class From, class To>
+concept convertible_to =
+  std::is_convertible_v<From, To> &&
+  requires(std::add_rvalue_reference_t<From> (&f)()) {
+    static_cast<To>(f());
+  };
+  */
+template<class From, class To>
+concept bool my_convertible_to =
+  std::is_convertible_v<From, To>&& requires(std::add_rvalue_reference_t<From> (&f)())
+{
+   static_cast<To>(f());
+};
+
 
 
 // https://en.cppreference.com/w/cpp/concepts/equality_comparable

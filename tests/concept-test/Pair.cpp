@@ -262,7 +262,8 @@ main()
 {
    // Pair1 is commented, as it explores GCC Bug!
    // Pair6 works only on c++20, not on c++17
-   // Pair7 looks like a portable solution
+   // Pair7 looks like a portable solution (with returns)
+   // Pair5 looks to work fine and looks "simpler"... (no "returns ->" on "local variables")
 
    return 0;
 }

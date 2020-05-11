@@ -64,6 +64,8 @@ protected:
 
 public:
 
+   
+
    // pointer-based initialization (I will keep memory for me!!)
 	ESolution(R* _r, ADS* _ads = nullptr, XEv _e = XEv()) :
 			super(*this, e), r(_r), ads(_ads), e(_e)
