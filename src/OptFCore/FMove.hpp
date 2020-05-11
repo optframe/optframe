@@ -27,10 +27,13 @@
 
 
 namespace optframe {
-
-template<class M, XESolution XES, class fApply = nullptr_t, class fCanBeApplied = nullptr_t, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES>
-class FMove final : public Move<XES, XEv, XSH>
+// , bool (*fCanBeApplied)(const XES&)
+// uptr<Move<XES>> (*fApply)(XES&)>
+template<class M, XESolution XES, uptr<Move<XES>> (*fApply)(XES&), bool (*fCanBeApplied)(const XES&)>
+class FMove final : public Move<XES, typename XES::second_type>
 {
+   using XEv = typename XES::second_type;
+   using XSH = XES; // only single objective
 public:
    M m; // internal structure for move
 

@@ -50,7 +50,7 @@ namespace optframe {
 // Efficient components (like Move) should use 'XR' instead of 'XSolution' (and equivalents).
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv> >
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
-template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES>
+template<XESolution XES, XEvaluation XEv = typename XES::second_type, XSearch<XES> XSH = XES>
 // BREAK TIME!! ONLY 'XES' shall pass... can we finish 'S' here?
 class Move : public Component
 {

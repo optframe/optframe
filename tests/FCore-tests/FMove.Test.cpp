@@ -34,32 +34,54 @@ fooFunc(int n)
 }
 
 auto barFunc = [] ( int n ) -> bool { return true; };
+//
 template<class X>
 class S
 {
-   
 };
 
-using Y = S<[](int x) -> void { std::cout << x << " hello\n"; }>;
+// TODO: funciona o Y?
+//using Y = S< [](int x) -> void { std::cout << x << " hello\n"; } >;
+//using Y = S<+[](int x) -> void { std::cout << x << " hello\n"; }>;
+
+   using MyXSolution = std::vector<int>;
+   using MyXEvaluation = Evaluation<int>;
+   using MyXESolution = std::pair<MyXSolution, MyXEvaluation>;
+
+// this needs to be in global scope... too bad!
+auto fCanBeApplied = [](const MyXESolution&) -> bool {
+      return false;
+   };
+
+
+extern uptr<Move<MyXESolution>> (*fApply)(MyXESolution&);
+
+/*
+fApply  = 
+   [](MyXESolution& xes) -> uptr<Move<MyXESolution>> {
+      return make_unique(
+         new FMove<std::pair<int, int>, MyXESolution, fApply, fCanBeApplied>(
+               make_pair(xes.second,xes.first)
+             )
+         );
+   };
+*/
 
 TEST_CASE("OptFrame FCore FMove: Create FMove")
 {
    auto a1 = Foo<fooFunc>();
    //auto a2 = Foo< std::add_pointer<decltype(barFunc)>::type(0) >();
-   auto a2 = Foo< decltype(barFunc) >();
+   auto a2 = Foo< barFunc >();
    //
    //
-   using MyXSolution = std::vector<int>;
-   using MyXEvaluation = Evaluation<int>;
-   using MyXESolution = std::pair<MyXSolution, MyXEvaluation>;
+
 
    std::pair<int, int> p(2, 3);
    //std::function<bool (const MyXESolution&)> fApply;
-   auto fApply = [](const MyXESolution&) -> bool {
-      return false;
-   };
+   
 
-   FMove<std::pair<int, int>, MyXESolution, fApply>
+
+   FMove<std::pair<int, int>, MyXESolution, fApply, fCanBeApplied>   //, fCanBeApplied>
      fmove(p);
 
    //Matrix<int> m(2);
