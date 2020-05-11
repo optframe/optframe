@@ -44,6 +44,7 @@ class S
 //using Y = S< [](int x) -> void { std::cout << x << " hello\n"; } >;
 //using Y = S<+[](int x) -> void { std::cout << x << " hello\n"; }>;
 
+   using myDS = std::pair<int,int>;
    using MyXSolution = std::vector<int>;
    using MyXEvaluation = Evaluation<int>;
    using MyXESolution = std::pair<MyXSolution, MyXEvaluation>;
@@ -54,18 +55,13 @@ auto fCanBeApplied = [](const MyXESolution&) -> bool {
    };
 
 
-extern uptr<Move<MyXESolution>> (*fApply)(MyXESolution&);
+//op<myDS> (*fApply)(MyXESolution&)
 
-/*
-fApply  = 
-   [](MyXESolution& xes) -> uptr<Move<MyXESolution>> {
-      return make_unique(
-         new FMove<std::pair<int, int>, MyXESolution, fApply, fCanBeApplied>(
-               make_pair(xes.second,xes.first)
-             )
-         );
+auto fApply  = 
+   [](const myDS& myData, MyXESolution& xes) -> op<myDS> {
+      myDS p(myData.second, myData.first);
+      return make_optional(p);
    };
-*/
 
 TEST_CASE("OptFrame FCore FMove: Create FMove")
 {
@@ -76,12 +72,12 @@ TEST_CASE("OptFrame FCore FMove: Create FMove")
    //
 
 
-   std::pair<int, int> p(2, 3);
+   myDS p(2, 3);
    //std::function<bool (const MyXESolution&)> fApply;
    
 
 
-   FMove<std::pair<int, int>, MyXESolution, fApply, fCanBeApplied>   //, fCanBeApplied>
+   FMove<myDS, MyXESolution, fApply, fCanBeApplied>   //, fCanBeApplied>
      fmove(p);
 
    //Matrix<int> m(2);

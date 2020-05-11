@@ -29,7 +29,7 @@
 namespace optframe {
 // , bool (*fCanBeApplied)(const XES&)
 // uptr<Move<XES>> (*fApply)(XES&)>
-template<class M, XESolution XES, uptr<Move<XES>> (*fApply)(XES&), bool (*fCanBeApplied)(const XES&)>
+template<class M, XESolution XES, op<M> (*fApply)(const M&, XES&), bool (*fCanBeApplied)(const XES&)>
 class FMove final : public Move<XES, typename XES::second_type>
 {
    using XEv = typename XES::second_type;
