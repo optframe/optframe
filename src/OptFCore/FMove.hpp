@@ -25,11 +25,22 @@
 
 #include "../OptFrame/Move.hpp"
 
-
 namespace optframe {
-// , bool (*fCanBeApplied)(const XES&)
-// uptr<Move<XES>> (*fApply)(XES&)>
-template<class M, XESolution XES, op<M> (*fApply)(const M&, XES&), bool (*fCanBeApplied)(const XES&)>
+
+// Remember: on g++-10.1, if passing default function directly on template, it will complain!
+// "function ... has no linkage"
+//      bool (*fCanBeApplied)(const XES&) = [](const XES&) -> bool { return false; } // fCanBeApplied
+//  So, looks like we need to have function in global scope, for it to have linkage.
+//
+template<XESolution XES>
+auto fDefaultCanBeApplied = [](const XES&) -> bool { return false; }; // fCanBeApplied
+//
+template<
+  class M,                                                      // Move structure
+  XESolution XES,                                               // ESolution structure
+  op<M> (*fApply)(const M&, XES&),                              // fApply
+  bool (*fCanBeApplied)(const XES&) = fDefaultCanBeApplied<XES> // fCanBeApplied
+  >
 class FMove final : public Move<XES, typename XES::second_type>
 {
    using XEv = typename XES::second_type;
@@ -37,8 +48,8 @@ class FMove final : public Move<XES, typename XES::second_type>
 public:
    M m; // internal structure for move
 
-   FMove(const M& _m) :
-      m(_m)
+   FMove(const M& _m)
+     : m(_m)
    {
    }
 
