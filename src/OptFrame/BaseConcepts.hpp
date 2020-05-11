@@ -299,26 +299,34 @@ concept bool XPowerSet = requires(Self a, size_t idx)
    {
       a.size()
    }
-   ->size_t;
+   -> my_convertible_to<size_t>; // could this be 'int' as well? TODO: test
    {
       a.getP(idx)
    }
-   ->P; // TODO: rename to 'at' (compatible with 'vector'), and return reference
+   -> my_convertible_to<P>; // TODO: rename to 'at' (compatible with 'vector'), and return reference
 };
 // TODO: powerset could return a 'size'(or 'count'), and perhaps a vector (or iterator) of objects for type P
 
 // now redefining X2Solution more beautifully...
-template<class Self, XSolution S>
-concept bool X2Solution = XPowerSet<Self, S>; // Too bad, this is unused on OptFrame... :'(
+// too bad (x2), this explores a gcc bug!! "error: a variable concept cannot be constrained"
+//template<class Self, XSolution S> // needs to fix this 'XSolution S'
+template<class Self, class S> // fixed "constrained variable concept" on line below... "XSolution<S>&&..."
+concept bool X2Solution = XSolution<S> && XPowerSet<Self, S>; // Too bad, this is unused on OptFrame... :'(
+
+
+
 
 // ---
 // We will usually assume a X2ESolution type, since it carries solution sample and evaluation space together
 // It is in fact: s \subseteq 2^S  plus its own evaluation (for each solution)...
 //template <class Self, XSolution S, XEvaluation XEv> // unused S and XEv! (could be replaced directly by XSolution and XEvaluation down here...)
-template<class Self, XESolution XES> // unused S and XEv! (could be replaced directly by XSolution and XEvaluation down here...)
+//
+// The line below explores a gcc bug!! Needs to fix "XESolution XES"... cannot appear on definition!
+//template<class Self, XESolution XES> // unused S and XEv! (could be replaced directly by XSolution and XEvaluation down here...)
                                      //concept bool X2ESolution = X2Solution<Self, S>;
 //concept bool X2ESolution = XPowerSet<Self, S> && XPowerSet<Self, XEv>;
-concept bool X2ESolution = XPowerSet<Self, XES>;
+template<class Self, class XES> // fixes gcc bug! "XESolution<XES>&&..." is good!
+concept bool X2ESolution = XESolution<XES> && XPowerSet<Self, XES>;
 
 // TODO1: should make exponential over a XESolution... not separated sets!!
 // TODO2: require any container with operator*, instead of hardcoded 'uptr'.... let's move on!
@@ -329,12 +337,20 @@ concept bool X2ESolution = XPowerSet<Self, XES>;
 // TODO: create 'ideal' and 'nadir' point requirements for every MO type
 // best would be to re-create int or double with these extra "properties"
 
-template<class Self, XSolution S, XEvaluation XEv>
-concept bool X2ESPareto = X2ESolution<Self, S, XEv>; // TODO: require 'dominates' and 'weakDominates' here
+// this has gcc bug... needs fixing! "error: a variable concept cannot be constrained"
+//template<class Self, XSolution S, XEvaluation XEv>
+//
+// looks unused!!
+//template<class Self, class S, class XEv> // fixes gcc bug (on line below)
+//concept bool X2ESPareto = XSolution<S> && XEvaluation<XEv> && X2ESolution<Self, S, XEv>; // TODO: require 'dominates' and 'weakDominates' here
 //... optimization directions and 'ideal'/'nadir' points may also come here...
 
-template<class Self, XSolution S, XEvaluation XEv>
-concept bool X2ESPopulation = X2ESolution<Self, S, XEv>; // TODO: require 'fitness' here, or some sort of evolutionary concepts...
+// this has gcc bug... needs fixing! "error: a variable concept cannot be constrained"
+//template<class Self, XSolution S, XEvaluation XEv>
+//
+// looks unused!!
+//template<class Self, class S, class XEv> // fixes gcc bug (on line below)
+//concept bool X2ESPopulation = XSolution<S> && XEvaluation<XEv> && X2ESolution<Self, S, XEv>; // TODO: require 'fitness' here, or some sort of evolutionary concepts...
 // .... in the end, this may be a search in the 'population space'. One may adapt a SingleObjSearch to embed a PopulationalSearch (TODO: create PopulationalSearch)
 
 // ====================
@@ -346,8 +362,11 @@ concept bool X2ESPopulation = X2ESolution<Self, S, XEv>; // TODO: require 'fitne
 
 //template <class Self, XSolution S, XEvaluation XEv> // TODO: should remove S and XEv, by changing X2ESolution concept...
 //concept bool XSearch = XESolution<Self> || X2ESolution<Self, S, XEv>;
-template<class Self, XESolution XES> // TODO: should remove S and XEv, by changing X2ESolution concept...
-concept bool XSearch = XESolution<Self> || X2ESolution<Self, XES>;
+//
+// same bug as before... cannot have "XESolution XES" during concept definition!
+//template<class Self, XESolution XES> // TODO: should remove S and XEv, by changing X2ESolution concept...
+template<class Self, class XES> // TODO: should remove S and XEv, by changing X2ESolution concept...
+concept bool XSearch = XESolution<XES> && (XESolution<Self> || X2ESolution<Self, XES>);
 
 // -------------
 // Maybe make evaluation values total_ordered...
@@ -359,6 +378,8 @@ concept bool XSearch = XESolution<Self> || X2ESolution<Self, XES>;
 template<class Self>
 concept bool XSearchMethod = true;
 
+// UNUSED CODE BELOW!! REMOVED IT (It also contains gcc bug on "XEvaluation XEv"...)
+/*
 template<class Self, XEvaluation XEv, XSearchMethod XM>
 concept bool XStopCriteria =
   requires(Self a, std::remove_reference_t<XEv>& e, std::remove_reference_t<XM>& m)
@@ -368,6 +389,7 @@ concept bool XStopCriteria =
    }
    ->bool;
 };
+*/
 
 // bugged code (too bad!!) - TODO: fix gcc to have this simplified version (only Self on XStopCriteria)
 /*
