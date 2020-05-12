@@ -6,8 +6,7 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/Examples/**",
                 "${workspaceFolder}/src/**",
-                "${workspaceFolder}/tests/**",
-                "${workspaceFolder}/tests/thirdparty**"
+                "${workspaceFolder}/tests/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",

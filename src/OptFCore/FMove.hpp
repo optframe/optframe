@@ -46,7 +46,7 @@ auto fDefaultCompareEq =
 //
 template<
   class M,                                                                    // Move structure
-  XESolution XES,                                                             // ESolution structure
+  XESolution XES,                                                             // ESolution Type
   op<M> (*fApply)(const M&, XES&),                                            // fApply
   bool (*fCanBeApplied)(const M&, const XES&) = fDefaultCanBeApplied<M, XES>, // fCanBeApplied
   bool (*fCompareEq)(const M&, const Move<XES>&) = fDefaultCompareEq<M, XES>  // fCompareEq
