@@ -6,6 +6,7 @@
 #include <OptFrame/Core.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/Util/Matrix.hpp>
+#include <OptFrame/Util/printable.h>
 
 using namespace std;
 using namespace optframe;
@@ -16,9 +17,8 @@ using namespace scannerpp;
 namespace TSP_fcore {
 
 // define TSP solution type as 'vector<int>', using 'double' as evaluation type
-using SolTSP = Solution<std::vector<int>>;
 using ESolutionTSP = std::pair<
-  SolTSP,            // first part of search space element: solution (representation)
+  std::vector<int>,  // first part of search space element: solution (representation)
   Evaluation<double> // second part of search space element: evaluation (objective value)
   >;
 
@@ -64,22 +64,22 @@ using TSPEval = FEvaluator <
 {
    double f = 0;
    for (int i = 0; i < int(pTSP.n) - 1; i++)
-      f += pTSP.dist(s.getR()[i], s.getR()[i + 1]);
-   f += pTSP.dist(s.getR()[int(pTSP.n) - 1], s.getR()[0]);
+      f += pTSP.dist(s[i], s[i + 1]);
+   f += pTSP.dist(s[int(pTSP.n) - 1], s[0]);
    return Evaluation<double>{ f };
 }
 > ;
 
 // Evaluate
 using TSPRandom = FConstructive <
-                  SolTSP,
+                  std::vector<int>,
       [](double timelimit) -> auto
 {
    vector<int> v(pTSP.n, -1); // get information from context
    for (unsigned i = 0; i < v.size(); i++)
       v[i] = i;
    std::random_shuffle(v.begin(), v.end());
-   return make_optional(SolTSP{ v });
+   return make_optional(v);
 }
 > ;
 
@@ -112,8 +112,8 @@ main()
 
    // create simple solution
    TSPRandom crand;
-   SolTSP sol = *crand.generateSolution(0);
-   sol.print();
+   std::vector<int> sol = *crand.generateSolution(0);
+   std::cout << sol << std::endl;
 
    // evaluation value
    ev.evaluate(sol).print();
