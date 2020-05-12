@@ -47,7 +47,7 @@ auto fDefaultCompareEq =
 template<
   class M,                                                                    // Move structure
   XESolution XES,                                                             // ESolution Type
-  op<M> (*fApply)(const M&, XES&),                                            // fApply
+  M (*fApply)(const M&, XES&),                                                // fApply
   bool (*fCanBeApplied)(const M&, const XES&) = fDefaultCanBeApplied<M, XES>, // fCanBeApplied
   bool (*fCompareEq)(const M&, const Move<XES>&) = fDefaultCompareEq<M, XES>  // fCompareEq
   >
@@ -60,26 +60,24 @@ class FMove final : public Move<XES, typename XES::second_type>
 public:
    M m; // internal structure for move
 
-   FMove(const M& _m)
+   FMove(const M& _m) noexcept
      : m(_m)
    {
    }
 
-   virtual bool canBeApplied(const XES& se)
+   virtual bool canBeApplied(const XES& se) override
    {
       return fCanBeApplied(m, se);
    }
 
-   virtual uptr<Move<XES, XEv, XSH>> apply(XSH& se)
+   virtual uptr<Move<XES, XEv, XSH>> apply(XSH& se) override
    {
-      op<M> r = fApply(m, se);
-      if (r)
-         return uptr<Move<XES, XEv, XSH>>(new Self(*r));
-      else
-         return nullptr;
+      // fApply will require a reverse move to ALWAYS exist.
+      // FCore must be simple! Otherwise, just use fallback class-based mode
+      return uptr<Move<XES, XEv, XSH>>{ new Self{ fApply(m, se) } };
    }
 
-   virtual bool operator==(const Move<XES, XEv, XSH>& move) const
+   virtual bool operator==(const Move<XES, XEv, XSH>& move) const override
    {
       const Move<XES>& move2 = (Move<XES>&)move;
       return fCompareEq(this->m, move2);
@@ -97,13 +95,13 @@ public:
       return ss.str();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
 
    // use 'operator<<' for M
-   virtual void print() const
+   virtual void print() const override
    {
       std::cout << m << std::endl;
    }

@@ -70,7 +70,7 @@ using TSPEval = FEvaluator <
 }
 > ;
 
-// Evaluate
+// Generate random solution
 using TSPRandom = FConstructive <
                   std::vector<int>,
       [](double timelimit) -> auto
@@ -87,8 +87,8 @@ using TSPRandom = FConstructive <
 using MoveSwap = FMove<
   std::pair<int, int>,
   ESolutionTSP,
-  [](const std::pair<int, int>& myData, ESolutionTSP& xes) -> op<std::pair<int, int>> {
-     return make_optional(std::pair<int, int>(myData.second, myData.first));
+  [](const std::pair<int, int>& myData, ESolutionTSP& xes) -> std::pair<int, int> {
+     return std::pair<int, int>(myData.second, myData.first);
   }>;
 
 } // TSP_fcore

@@ -54,8 +54,8 @@ using MyXESolution = std::pair<MyXSolution, Evaluation<int>>;
 using MyMoveSwap = FMove<
   std::pair<int, int>,
   MyXESolution,
-  [](const std::pair<int, int>& myData, MyXESolution& xes) -> op<std::pair<int, int>> {
-     return make_optional(std::pair<int, int>(myData.second, myData.first));
+  [](const std::pair<int, int>& myData, MyXESolution& xes) -> std::pair<int, int> {
+     return std::pair<int, int>(myData.second, myData.first);
   }>;
 
 using myDS = std::pair<int, int>;
@@ -65,9 +65,8 @@ auto fCanBeApplied = [](const myDS&, const MyXESolution&) -> bool {
 };
 
 auto fApply =
-  [](const myDS& myData, MyXESolution& xes) -> op<myDS> {
-   myDS p(myData.second, myData.first);
-   return make_optional(p);
+  [](const myDS& myData, MyXESolution& xes) -> myDS {
+   return myDS(myData.second, myData.first);
 };
 
 // function requires "linkage", thus we define on global scope
