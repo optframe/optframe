@@ -68,6 +68,19 @@ using TSPEval = FEvaluator <
 }
 > ;
 
+// Evaluate
+using TSPRandom = FConstructive <
+                  SolTSP,
+      [](double timelimit) -> auto
+{
+   vector<int> v(pTSP.n, -1);
+   for (unsigned i = 0; i < v.size(); i++)
+      v[i] = i;
+   std::random_shuffle(v.begin(), v.end());
+   return make_optional(SolTSP{ v });
+}
+> ;
+
 // Swap move
 using MoveSwap = FMove<
   std::pair<int, int>,
@@ -97,8 +110,8 @@ main()
    TSPEval ev;
 
    // create simple solution
-   std::vector<int> v = { 0, 1, 2 };
-   SolTSP sol(v);
+   TSPRandom crand;
+   SolTSP sol = *crand.generateSolution(0);
    sol.print();
 
    // evaluation value

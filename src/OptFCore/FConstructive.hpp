@@ -28,31 +28,21 @@
 namespace optframe {
 
 template<
-  XESolution XES,                                                         // ESolution Type
-  bool Minimizing,                                                        // is minimization
-  typename XES::second_type (*fEvaluate)(const typename XES::first_type&) // evaluation function
+  XSolution S,                          // Solution Type
+  std::optional<S> (*fGenerate)(double) // constructive
   >
-class FConstructive final : public Constructive<XES>
+class FConstructive final : public Constructive<S>
 {
-   using S = typename XES::first_type;
-   using XEv = typename XES::second_type;
-   using XSH = XES; // only single objective
-
 public:
-   virtual XEv evaluate(const S& s)
+   virtual std::optional<S> generateSolution(double timelimit)
    {
-      return fEvaluate(s);
-   }
-
-   virtual constexpr bool isMinimization() const
-   {
-      return Minimizing;
+      return fGenerate(timelimit);
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ":FEvaluator";
+      ss << Component::idComponent() << ":FConstructive";
       return ss.str();
    }
 
