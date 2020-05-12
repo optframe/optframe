@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for example in `ls ../Examples/ -I makefile`; do
+for example in `ls -I makefile | grep -v "sh$"`; do
    echo ""
    echo "Example $example"
    echo "cd ../Examples/${example}/tests && make"

@@ -146,9 +146,11 @@ public:
 		return *this;
 	}
 
+   using objType = typename XEv::objType;
+
    // not fully needed....
    //optframe::objval evaluation()
-   XEv::objType evaluation()
+   objType evaluation()
    {
       return this->second.evaluation();
    }
