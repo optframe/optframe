@@ -32,7 +32,7 @@ using namespace std;
 namespace optframe
 {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
+template<XESolution XES, XEvaluation XEv = typename XES::second_type, XESolution XSH = XES>
 class NSSeq: public NS<XES, XEv, XSH>
 {
 public:

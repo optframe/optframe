@@ -7,5 +7,6 @@
 #include "FEvaluator.hpp"
 #include "FMove.hpp"
 #include "FNS.hpp"
+#include "FNSSeq.hpp"
 
 #endif // OPTFRAME_FCORE_HPP

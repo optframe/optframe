@@ -64,7 +64,7 @@ public:
 	}
 };
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
+template<XESolution XES, XEvaluation XEv = typename XES::second_type, XESolution XSH = XES>
 class NSIterator: public Component
 {
 public:

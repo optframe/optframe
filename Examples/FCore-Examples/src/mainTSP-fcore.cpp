@@ -93,7 +93,7 @@ using MoveSwap = FMove<
      return std::pair<int, int>(myData.second, myData.first);
   }>;
 
-// Swap move
+// Swap move (NS)
 using NSSwap = FNS<
   ESolutionTSP,
   [](const ESolutionTSP& se) -> uptr<Move<ESolutionTSP>> {
@@ -104,6 +104,37 @@ using NSSwap = FNS<
         j = rand() % pTSP.n;
      }
      return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j) });
+  }>;
+
+// Swap move (NSSeq) - with "Boring" iterator
+using NSSeqSwapBoring = FNSSeqBoring<
+  std::pair<int, int>, // IMS (iterator memory)
+  ESolutionTSP,
+  [](const ESolutionTSP& se) -> uptr<Move<ESolutionTSP>> {
+     int i = rand() % pTSP.n;
+     int j = i;
+     while (j <= i) {
+        i = rand() % pTSP.n;
+        j = rand() % pTSP.n;
+     }
+     return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j) });
+  },
+  [](const ESolutionTSP& se) -> std::pair<int, int> {
+     return make_pair(-1, -1);
+  },
+  //void (*fFirst)(IMS&),                   // iterator.first()
+  //void (*fNext)(IMS&),                    // iterator.next()
+  //bool (*fIsDone)(IMS&),                  // iterator.isDone()
+  //uptr<Move<XES>> (*fCurrent)(IMS&)       // iterator.current()
+  [](std::pair<int, int>& p) -> void {
+  },
+  [](std::pair<int, int>& p) -> void {
+  },
+  [](std::pair<int, int>& p) -> bool {
+     return true;
+  },
+  [](std::pair<int, int>& p) -> uptr<Move<ESolutionTSP>> {
+     return nullptr;
   }>;
 
 } // TSP_fcore
@@ -141,8 +172,6 @@ main()
    // move for solution 'esol'
    auto m1 = nsswap.randomMove(esol);
    m1->print();
-
-   
 
    std::cout << "FINISHED" << std::endl;
    return 0;
