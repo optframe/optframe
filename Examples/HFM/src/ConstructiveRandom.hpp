@@ -66,11 +66,11 @@ public:
 
 	//std::optional<SolutionHFM> generateSolution(double timelimit) override
    //std::optional<ESolutionHFM> initialSearch(const StopCriteria<EvaluationHFM>& sosc) override
-   std::optional<XXES> initialSearch(const StopCriteria<XXEv>& sosc) override
+   std::pair<std::optional<XXES>, SearchStatus> initialSearch(const StopCriteria<XXEv>& sosc) override
 	{
       std::optional<SolutionHFM> s = generateSolutionAlpha(0.0, sosc.timelimit);
 		//return make_pair(*s, EvaluationHFM(0)); // TODO: fix
-      return make_pair(*s, XXEv()); // TODO: fix
+      return make_pair(make_pair(*s, XXEv()), SearchStatus::NO_REPORT);
 	}
 
 	std::optional<SolutionHFM> generateSolutionAlpha(float notUsed, double timelimit)

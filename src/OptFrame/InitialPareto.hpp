@@ -50,9 +50,9 @@ public:
    // TODO: deprecate this in favor of 'initialSearch' (how to pass population?)
 	virtual Pareto<S, XMEv> generatePareto(unsigned populationSize, double timeLimit = 10000000) = 0;
 
-	std::optional<Pareto<S, XMEv>> initialSearch(const StopCriteria<XMEv>& stop) override
+	std::pair<std::optional<Pareto<S, XMEv>>, SearchStatus> initialSearch(const StopCriteria<XMEv>& stop) override
    {
-      return make_optional(generatePareto(stop.xshCount, stop.timelimit));
+      return make_pair(make_optional(generatePareto(stop.xshCount, stop.timelimit)), SearchStatus::NO_REPORT);
    }
 
 
@@ -97,7 +97,7 @@ public:
       StopCriteria<XMEv> sosc(timelimit);
 		for (unsigned i = 0; i < populationSize; i++)
 			//pMan.addSolution(p, *constructive.generateSolution(timelimit));
-         pMan.addSolution(p, constructive.initialSearch(sosc)->first);
+         pMan.addSolution(p, constructive.initialSearch(sosc).first->first);
 
 		return p;
 	}

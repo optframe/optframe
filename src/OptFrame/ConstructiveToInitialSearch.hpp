@@ -49,13 +49,13 @@ public:
 
    // timelimit in seconds, accepting fractions (millisecs, ...)
    // may or may not generate valid solution in time
-   std::optional<XES> initialSearch(const StopCriteria<XEv>& sosc)
+   std::pair<std::optional<XES>, SearchStatus> initialSearch(const StopCriteria<XEv>& sosc) override
    {
       std::optional<S> s = c.generateSolution(sosc.timelimit);
       if(!s)
-         return nullopt;
+         return make_pair(nullopt, SearchStatus::NO_REPORT);
       XES se = make_pair(*s, eval.evaluate(*s));
-      return make_optional(se);
+      return make_pair(make_optional(se), SearchStatus::NO_REPORT);
    }
 
    virtual bool compatible(std::string s)

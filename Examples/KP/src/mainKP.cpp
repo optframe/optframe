@@ -37,7 +37,7 @@ main(int argc, char** argv)
    NSSeqBitFlip ns1(p, rg);
    cout << "will generate solution" << endl;
    //SolutionKP s = *c1.generateSolution(10); // timelimit (10???)
-   op<ESolutionKP> opse = c1.initialSearch(StopCriteria<EvaluationKP>(10)); // timelimit (10???)
+   op<ESolutionKP> opse = c1.initialSearch(StopCriteria<EvaluationKP>(10)).first; // timelimit (10???)
    ESolutionKP& se = *opse;
    XSolution& s = opse->first;
    XEvaluation& e = se.second;

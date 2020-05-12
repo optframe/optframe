@@ -135,7 +135,7 @@ public:
 		//Evaluation<>   eStar = evaluator.evaluate(sStar);
       //XES star = input?*input:genPair(sosc.timelimit); // elvis
       //star = star?:genPair(sosc.timelimit);
-      star = star?:constructive.initialSearch(sosc);
+      star = star?:constructive.initialSearch(sosc).first;
       //
       XSolution& sStar = star->first;
 		Evaluation<>& eStar = star->second;

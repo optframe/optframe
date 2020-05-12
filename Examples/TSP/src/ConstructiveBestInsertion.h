@@ -68,7 +68,7 @@ public:
 	}
 
 	//std::optional<SolutionTSP> generateSolution(double timelimit) override
-   std::optional<ESolutionTSP> initialSearch(const StopCriteria<>& sosc) override
+   std::pair<std::optional<ESolutionTSP>, SearchStatus> initialSearch(const StopCriteria<>& sosc) override
 	{
         //cout << "Generating solution" << endl;
 		RepTSP newRep;
@@ -162,7 +162,7 @@ public:
       EvaluationTSP etsp;
       ESolutionTSP se(SolutionTSP(newRep), etsp);
       eval.reevaluate(se);
-      return make_optional(se);
+      return make_pair(make_optional(se), SearchStatus::NO_REPORT);
 	}
 
 };

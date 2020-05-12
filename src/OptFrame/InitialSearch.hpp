@@ -24,6 +24,7 @@
 #include "BaseConcepts.hpp"
 #include "Component.hpp"
 #include "StopCriteria.hpp"
+#include "SearchStatus.hpp"
 
 namespace optframe {
 
@@ -38,7 +39,7 @@ public:
 
    // timelimit in seconds, accepting fractions (millisecs, ...)
    // may or may not generate valid solution in time
-   virtual std::optional<XSH> initialSearch(const StopCriteria<XEv>& stop) = 0;
+   virtual std::pair<std::optional<XSH>, SearchStatus> initialSearch(const StopCriteria<XEv>& stop) = 0;
 
    virtual bool compatible(std::string s)
    {

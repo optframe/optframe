@@ -133,7 +133,7 @@ public:
 		//delete s;
 
 		//return new pair<S, Evaluation<>>(sFinal, e);
-      //return make_optional(se);
+      //return make_pair(make_optional(se), SearchStatus::NO_REPORT);
       star = make_optional(se);
       this->best = star;
       return SearchStatus::NO_REPORT;

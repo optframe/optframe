@@ -62,7 +62,7 @@ public:
       Timer tnow;
 
       //std::optional<S> s = constructive.generateSolution(sosc.timelimit);
-      std::optional<XES> pse = constructive.initialSearch(sosc);
+      std::optional<XES> pse = constructive.initialSearch(sosc).first;
       if(!pse)
          return SearchStatus::NO_SOLUTION; // nothing to return
       //Evaluation<> e = evaluator.evaluate(*s);

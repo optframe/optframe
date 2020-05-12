@@ -167,7 +167,7 @@ public:
 		//pair<S, XEv> se = genPair(timelimit);
       if(!star)
          //star = SingleObjSearch<XES>::genPair(constructive, evaluator, timelimit);
-         star = constructive.initialSearch(sosc);
+         star = constructive.initialSearch(sosc).first;
       if(!star)
          return SearchStatus::NO_SOLUTION; // no possibility to continue.
       

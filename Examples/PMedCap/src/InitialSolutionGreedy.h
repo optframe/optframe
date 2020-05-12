@@ -59,7 +59,7 @@ public:
    {
    }
 
-   std::optional<ESolutionPCAP> initialSearch(const StopCriteria<EvaluationPCAP>& stop) override
+   std::pair<std::optional<ESolutionPCAP>, SearchStatus> initialSearch(const StopCriteria<EvaluationPCAP>& stop) override
    {
       //double timelimit = stop.timelimit;
       RepPCAP newRep;
@@ -140,7 +140,7 @@ public:
       pair<SolutionPCAP, EvaluationPCAP> es(s1, EvaluationPCAP());
       eval.reevaluate(es);
       //ESolutionPCAP es = make_pair(s1, EvaluationPCAP);
-      return make_optional(es);
+      return make_pair(make_optional(es), SearchStatus::NO_REPORT);
    }
 };
 

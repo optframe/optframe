@@ -634,7 +634,7 @@ public:
 
 				Timer ts;
 				//CopySolution<R,ADS> s = *constructive->generateSolution(10000000);
-            op<XES> ps = constructive->initialSearch(StopCriteria<XEv>(10000000));
+            op<XES> ps = constructive->initialSearch(StopCriteria<XEv>(10000000)).first;
             //CopySolution<R,ADS> s = *constructive->initialSolution(10000000);
             CopySolution<R,ADS> s = ps->first;
 				timeSamples.timeConstructive[c].push_back(ts.inMilliSecs());

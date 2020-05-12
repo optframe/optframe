@@ -87,7 +87,7 @@ public:
       //pair<S, XEv> star = input?*input:genPair(stopCriteria.timelimit);
       //pair<S, XEv> star = *( input ?: genOPair(stopCriteria.timelimit) );
       //star = star?:genOPair(stopCriteria.timelimit);
-      star = star?:constructive.initialSearch(stopCriteria);
+      star = star?:constructive.initialSearch(stopCriteria).first;
       if(!star)
          return SearchStatus::NO_SOLUTION;
 		//S& sStar = star.first;
