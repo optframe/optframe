@@ -16,9 +16,10 @@ using namespace scannerpp;
 namespace TSP_fcore {
 
 // define TSP solution type as 'vector<int>', using 'double' as evaluation type
+using SolTSP = Solution<std::vector<int>>;
 using ESolutionTSP = std::pair<
-  Solution<std::vector<int>>, // first part of search space element: solution (representation)
-  Evaluation<double>          // second part of search space element: evaluation (objective value)
+  SolTSP,            // first part of search space element: solution (representation)
+  Evaluation<double> // second part of search space element: evaluation (objective value)
   >;
 
 // TSP problem context and data reads
@@ -55,6 +56,18 @@ public:
 // Create TSP Problem Context
 ProblemContext pTSP;
 
+// Evaluate
+using TSPEval = FEvaluator <
+                ESolutionTSP,
+      true, // minimization: true
+  [](auto& s) -> auto
+{
+   int x = pTSP.dist(0, 0); // get information from context
+   Evaluation<double> e{ 10 };
+   return e;
+}
+> ;
+
 // Swap move
 using MoveSwap = FMove<
   std::pair<int, int>,
@@ -79,6 +92,17 @@ main()
 
    // swap 0 with 1
    MoveSwap move{ make_pair(0, 1) };
+
+   // evaluator
+   TSPEval ev;
+
+   // create simple solution
+   std::vector<int> v = { 0, 1, 2 };
+   SolTSP sol(v);
+   sol.print();
+
+   // evaluation value
+   ev.evaluate(sol).print();
 
    std::cout << "FINISHED" << std::endl;
    return 0;
