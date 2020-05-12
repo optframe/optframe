@@ -70,6 +70,8 @@ using TSPEval = FEvaluator <
 }
 > ;
 
+// ===========================
+
 // Generate random solution
 using TSPRandom = FConstructive <
                   std::vector<int>,
@@ -91,6 +93,19 @@ using MoveSwap = FMove<
      return std::pair<int, int>(myData.second, myData.first);
   }>;
 
+// Swap move
+using NSSwap = FNS<
+  ESolutionTSP,
+  [](const ESolutionTSP& se) -> uptr<Move<ESolutionTSP>> {
+     int i = rand() % pTSP.n;
+     int j = i;
+     while (j <= i) {
+        i = rand() % pTSP.n;
+        j = rand() % pTSP.n;
+     }
+     return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j) });
+  }>;
+
 } // TSP_fcore
 
 // import everything on main()
@@ -99,13 +114,12 @@ using namespace TSP_fcore;
 int
 main()
 {
+   srand(0); // using system random (weak... just an example!)
+
    // load data into problem context 'pTSP'
    Scanner scanner{ "3\n1 10 10\n2 20 20\n3 30 30\n" };
    pTSP.load(scanner);
    std::cout << pTSP.dist << std::endl;
-
-   // swap 0 with 1
-   MoveSwap move{ make_pair(0, 1) };
 
    // evaluator
    TSPEval ev;
@@ -115,8 +129,20 @@ main()
    std::vector<int> sol = *crand.generateSolution(0);
    std::cout << sol << std::endl;
 
-   // evaluation value
-   ev.evaluate(sol).print();
+   // evaluation value and store on ESolution pair
+   ESolutionTSP esol(sol, ev.evaluate(sol));
+   esol.second.print(); // print evaluation
+
+   // swap 0 with 1
+   MoveSwap move{ make_pair(0, 1) };
+   move.print();
+
+   NSSwap nsswap;
+   // move for solution 'esol'
+   auto m1 = nsswap.randomMove(esol);
+   m1->print();
+
+   
 
    std::cout << "FINISHED" << std::endl;
    return 0;
