@@ -62,9 +62,11 @@ using TSPEval = FEvaluator <
       true, // minimization: true
   [](auto& s) -> auto
 {
-   int x = pTSP.dist(0, 0); // get information from context
-   Evaluation<double> e{ 10 };
-   return e;
+   double f = 0;
+   for (int i = 0; i < int(pTSP.n) - 1; i++)
+      f += pTSP.dist(s.getR()[i], s.getR()[i + 1]);
+   f += pTSP.dist(s.getR()[int(pTSP.n) - 1], s.getR()[0]);
+   return Evaluation<double>{ f };
 }
 > ;
 
@@ -73,7 +75,7 @@ using TSPRandom = FConstructive <
                   SolTSP,
       [](double timelimit) -> auto
 {
-   vector<int> v(pTSP.n, -1);
+   vector<int> v(pTSP.n, -1); // get information from context
    for (unsigned i = 0; i < v.size(); i++)
       v[i] = i;
    std::random_shuffle(v.begin(), v.end());
@@ -86,7 +88,6 @@ using MoveSwap = FMove<
   std::pair<int, int>,
   ESolutionTSP,
   [](const std::pair<int, int>& myData, ESolutionTSP& xes) -> op<std::pair<int, int>> {
-     int x = pTSP.dist(0, 0); // get information from context
      return make_optional(std::pair<int, int>(myData.second, myData.first));
   }>;
 
