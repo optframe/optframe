@@ -14,7 +14,7 @@ OptFrame_test : OptFrame.Test.cpp
 	g++ --coverage -g -O0 -fconcepts -fmax-errors=5 -std=c++17 -I$(SRC_PATH) -I$(LIBS_PATH) -DCATCH_CONFIG_MAIN $< -o ./build/$@   
 
 FCore_test : FCore.Test.cpp
-	g++-10.1 --coverage -g -O0 -fmax-errors=5 -std=c++20 -I$(SRC_PATH) -I$(LIBS_PATH) -DCATCH_CONFIG_MAIN $< -o ./build/$@   
+	g++-10.1 --coverage -g -O0 -fmax-errors=5 -std=c++20 -fcoroutines -I$(SRC_PATH) -I$(LIBS_PATH) -DCATCH_CONFIG_MAIN $< -o ./build/$@   
 
 pair: pair17 pair20
 

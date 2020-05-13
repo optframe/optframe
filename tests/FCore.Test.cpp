@@ -1,6 +1,7 @@
 
 // collection of 'OptFrame' core tests
 
-#include "./FCore-tests/FMove.Test.cpp"
+#include "./OptFCore/FMove.Test.cpp"
+#include "./OptFCore/Generator.Test.cpp"
 
 // good

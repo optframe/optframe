@@ -24,13 +24,16 @@
 #include <functional>
 
 #include "../OptFrame/NSSeq.hpp"
+#include "coro/Generator.hpp" // this is a very special class!! coroutines support \o/
 
 namespace optframe {
 
 //virtual uptr<Move<XES, XEv, XSH>> randomMove(const XES&) = 0;
 //virtual uptr<NSIterator<XES, XEv, XSH>> getIterator(const XES&) = 0;
 
+// =============================================================
 // this NSSeq uses "Boring" iterator... first, next, bla, bla...
+// -------------------------------------------------------------
 
 template<
   class IMS,                              // Iterator Memory State structure
@@ -92,7 +95,88 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ":FNSSeq";
+      ss << Component::idComponent() << ":FNSSeqBoring";
+      return ss.str();
+   }
+
+   virtual string id() const override
+   {
+      return idComponent();
+   }
+};
+
+// =============================================================
+// this NSSeq uses "fancy" iterator... Generators and coroutines
+// -------------------------------------------------------------
+
+template<
+  XESolution XES,                                 // ESolution Type
+  uptr<Move<XES>> (*fRandom)(const XES&),         // fRandom
+  Generator<Move<XES>*> (*fGenerator)(const XES&) // fGenerator: IMPORTANT! must respect 'unique' semantics! never repeat pointer.
+  >
+class FNSSeqFancy final : public NSSeq<XES>
+{
+   using XEv = typename XES::second_type;
+   using XSH = XES; // only single objective
+
+   // internal class for iterator
+   class FNSIterator final : public NSIterator<XES>
+   {
+   public:
+      bool done = { true };             // flag to inform that iterator is 'done'
+      bool consumedCurrent = { false }; // flag that indicates that current was already given (unique_ptr semantics)
+      //
+      Generator<Move<XES>*> gen; // must initialize via move semantics
+
+      FNSIterator(Generator<Move<XES>*>&& _gen)
+        : gen(std::move(_gen))
+      {
+      }
+
+      virtual void first()
+      {
+         done = !gen.next();      // advance and update bool
+         consumedCurrent = false; // can allow consuming again
+      }
+
+      virtual void next()
+      {
+         done = !gen.next();      // advance and update bool
+         consumedCurrent = false; // can allow consuming again
+      }
+
+      virtual bool isDone()
+      {
+         return done; // verify bool
+      }
+
+      virtual uptr<Move<XES>> current()
+      {
+         // should never repeat pointer (enforce 'unique' semantics!)
+         if (consumedCurrent) {
+            //std::cerr << "ALREADY CONSUMED!!" << std::endl;
+            return nullptr;
+         }
+         consumedCurrent = true;
+         return uptr<Move<XES>>(gen.getValue());
+      }
+   };
+
+public:
+   virtual uptr<Move<XES>> randomMove(const XES& se) override
+   {
+      return fRandom(se);
+   }
+
+   virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
+   {
+      return uptr<NSIterator<XES>>{ new FNSIterator{ std::move(fGenerator(se)) } };
+   }
+
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << Component::idComponent() << ":FNSSeqFancy";
       return ss.str();
    }
 

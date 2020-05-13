@@ -63,6 +63,7 @@ public:
    FMove(const M& _m) noexcept
      : m(_m)
    {
+      //std::cout << "FMove() => " << m << " address=" << this << std::endl;
    }
 
    virtual bool canBeApplied(const XES& se) override

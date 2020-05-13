@@ -122,19 +122,37 @@ using NSSeqSwapBoring = FNSSeqBoring<
   [](const ESolutionTSP& se) -> std::pair<int, int> {
      return make_pair(-1, -1);
   },
-  //void (*fFirst)(IMS&),                   // iterator.first()
-  //void (*fNext)(IMS&),                    // iterator.next()
-  //bool (*fIsDone)(IMS&),                  // iterator.isDone()
-  //uptr<Move<XES>> (*fCurrent)(IMS&)       // iterator.current()
   [](std::pair<int, int>& p) -> void {
+     //void (*fFirst)(IMS&),                   // iterator.first()
   },
   [](std::pair<int, int>& p) -> void {
+     //void (*fNext)(IMS&),                    // iterator.next()
   },
   [](std::pair<int, int>& p) -> bool {
+     //bool (*fIsDone)(IMS&),                  // iterator.isDone()
      return true;
   },
   [](std::pair<int, int>& p) -> uptr<Move<ESolutionTSP>> {
+     //uptr<Move<XES>> (*fCurrent)(IMS&)       // iterator.current()
      return nullptr;
+  }>;
+
+// Swap move (NSSeq) - with "Fancy" iterator (coroutines)
+using NSSeqSwapFancy = FNSSeqFancy<
+  ESolutionTSP,
+  [](const ESolutionTSP& se) -> uptr<Move<ESolutionTSP>> {
+     int i = rand() % pTSP.n;
+     int j = i;
+     while (j <= i) {
+        i = rand() % pTSP.n;
+        j = rand() % pTSP.n;
+     }
+     return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j) });
+  },
+  [](const ESolutionTSP& se) -> Generator<Move<ESolutionTSP>*> {
+     for (int i = 0; i < int(pTSP.n) - 1; i++)
+        for (int j = i + 1; j < pTSP.n; j++)
+           co_yield new MoveSwap{ make_pair(i, j) }; // ensure unique_ptr semantics
   }>;
 
 } // TSP_fcore
@@ -172,6 +190,14 @@ main()
    // move for solution 'esol'
    auto m1 = nsswap.randomMove(esol);
    m1->print();
+
+   std::cout << std::endl;
+   std::cout << "begin listing NSSeqSwapFancy" << std::endl;
+   NSSeqSwapFancy swapFancy;
+   auto it1 = swapFancy.getIterator(esol);
+   for (it1->first(); !it1->isDone(); it1->next())
+      it1->current()->print();
+   std::cout << "end listing NSSeqSwapFancy" << std::endl;
 
    std::cout << "FINISHED" << std::endl;
    return 0;
