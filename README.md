@@ -25,12 +25,25 @@ Check [https://optframe.github.io/docs/quick-start-guide/](https://optframe.gith
 
 Project is organized in three main folders: `src`, `libs`, `tests` and `bin`.
 * On `src/OptFrame` and `tests/OptFrame` are code and testing for OptFrame framework itself.
-* On `src/Examples` and `tests/Examples` you can find code and tests for the provided Examples.
-* On `src/MyProjects` and `tests/MyProjects` you can find code and tests for your own codes.
-* On `bin`, you can find classic `mct.sh` script, that will generate a new project `X` on `src/MyProjects/X` folder (and tests on `tests/MyProjects/X`).
+* On `Examples` you can find code and tests for the provided Examples.
+* On `MyProjects` you can find code and tests for your own codes.
+* On `bin`, you can find classic `optframe-mct.sh` script, that will generate a new project `X` on `MyProjects/X/src` folder (and tests on `MyProjects/X/tests`).
 * On `libs` you can find third-party libraries.
-Tests are provided via `gtestlib` (on root folder), and you can also find `scannerpplib` (Scanner++ library) there.
-To build `gtestlib`, just `cd libs/gtestlib/build && cmake .. && make`.
+Tests are provided via `catch2`, and you can also find `scannerpplib` (Scanner++ library) there.
+
+OptFrame Functional Core (FCore) is also provided (strict `c++20`):
+
+* On `src/OptFCore` and `Examples/FCore-Examples` are code and testing for `FCore` framework itself.
+
+
+## C++ Requirements
+
+The following requirements apply for projects (and subprojects):
+
+* OptFrame - `c++17` - tested on `gcc-7` with flags `-fconcepts`
+* FCore - `c++20` - tested on `gcc-10.1` with flags `-fcoroutines`
+* Scanner++ - `c++11` - tested on `gcc-7`
+
 
 ## Concepts (Lite)
 
