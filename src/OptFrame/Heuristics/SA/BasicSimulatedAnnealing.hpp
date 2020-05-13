@@ -38,7 +38,7 @@ namespace optframe
 //class BasicSimulatedAnnealing: public SingleObjSearch<S, XEv, XSH, XM, XStop>
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = Component>
 //template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearchMethod XM = BasicSimulatedAnnealing<XES, XEv, Component>>
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = typename XES::second_type>
 class BasicSimulatedAnnealing: public SingleObjSearch<XES, XEv>
 {
    using XSH = XES; // XSearch

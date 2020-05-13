@@ -164,6 +164,8 @@ using NSSeqSwapFancy = FNSSeqFancy<
   }>;
 ```
 
+Note that `coroutines` provide the `FNSSeqFancy` implementation, but we still have the `FNSSeqBoring` with fallback OptFrame NSIterator strategy. The `FNSSeqBoring` takes dozens of lines more, thus only kept here for benchmarks while `coroutine` support is being improved in time.
+
 ## Test it
 
 With this simple setup, you can already use any available (neighborhood-based) heuristic/metaheuristic:
@@ -175,6 +177,34 @@ With this simple setup, you can already use any available (neighborhood-based) h
 - Late Acceptance Hill Climbing
 - Tabu Search
 - ...
+
+### Example with Simulated Annealing
+
+```cpp
+// load data into 'pTSP'.. only 3 cities (x,y): (10,10) (20,20) (30,30)
+Scanner scanner{ "3\n1 10 10\n2 20 20\n3 30 30\n" };
+pTSP.load(scanner);
+// finished load TSP data (it could be from File too...)
+TSPEval ev;               // evaluator
+TSPRandom crand;          // random constructive
+NSSeqSwapFancy swapFancy; // swap neighborhood
+//
+// testing simulated annealing (also requires a InitialSearch strategy)
+BasicInitialSearch<ESolutionTSP> initRand(crand, ev);
+RandGen rg;               // Random number generator
+// we build a simulated annealing with alpha=0.98, iterMax=100 and temperature=99999
+BasicSimulatedAnnealing<ESolutionTSP> sa{
+   ev, initRand, swapFancy, 0.98, 100, 99999, rg
+};
+// will run simulated annealing for 10 seconds
+SearchStatus status = sa.search(StopCriteria<ESolutionTSP::second_type>{ 10.0 });
+ESolutionTSP best = *sa.getBestSolution();
+// best solution value
+best.second.print();
+```
+
+
+### Learn More
 
 This can be done in the same way as OptFrame v4 heuristic components, see examples for more ;)
 

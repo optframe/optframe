@@ -23,13 +23,15 @@
 
 #include "BaseConcepts.hpp"
 #include "Component.hpp"
-#include "StopCriteria.hpp"
+#include "Constructive.hpp"
+#include "Evaluator.hpp"
 #include "SearchStatus.hpp"
+#include "StopCriteria.hpp"
 
 namespace optframe {
 
 //template<XESolution XES, XSearch<XES> XSH = XES, XSearchMethod XM = Component> // defaults to single obj.
-template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES> // defaults to single obj
+template<XESolution XES, XEvaluation XEv = typename XES::second_type, XSearch<XES> XSH = XES> // defaults to single obj
 class InitialSearch : public Component
 {
 public:
@@ -58,6 +60,33 @@ public:
       return idComponent();
    }
 };
+
+template<XESolution XES, XEvaluation XEv = typename XES::second_type, XSearch<XES> XSH = XES>
+class BasicInitialSearch : public InitialSearch<XES, XEv, XSH>
+{
+public:
+   using S = typename XES::first_type;
+
+   Constructive<S>& constructive;
+   Evaluator<S, XEv, XES>& evaluator;
+
+   BasicInitialSearch(Constructive<S>& _constructive, Evaluator<S, XEv, XES>& _evaluator)
+     : constructive(_constructive)
+     , evaluator(_evaluator)
+   {
+   }
+
+   virtual std::pair<std::optional<XSH>, SearchStatus> initialSearch(const StopCriteria<XEv>& stop) override
+   {
+      std::optional<S> sol = constructive.generateSolution(stop.timelimit);
+      if (!sol)
+         return make_pair(nullopt, SearchStatus::NO_REPORT);
+      XEv e = evaluator.evaluate(*sol);
+      XES se(*sol, e);
+      return make_pair(se, SearchStatus::NO_REPORT);
+   }
+};
+
 } // namespace optframe
 
 #endif /*OPTFRAME_INITIAL_SEARCH_HPP_*/
