@@ -143,6 +143,8 @@ To install it system-wide (in linux), just type `make install` (`sudo` will be n
 - headers will be put on `/usr/local/include`
 - examples, src and tests will be put on `/usr/local/optframe`
 
+We recommend to run `make test-install` after that, to ensure everything is fine!
+
 ## Examples
 
 Interesting examples are available (see `Examples` folder):
