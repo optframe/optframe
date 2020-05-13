@@ -123,8 +123,8 @@ class FNSSeqFancy final : public NSSeq<XES>
    class FNSIterator final : public NSIterator<XES>
    {
    public:
-      bool done = { true };             // flag to inform that iterator is 'done'
-      bool consumedCurrent = { false }; // flag that indicates that current was already given (unique_ptr semantics)
+      bool done = { true };            // flag to inform that iterator is 'done'
+      bool consumedCurrent = { true }; // flag that indicates that current was already given (unique_ptr semantics)
       //
       Generator<Move<XES>*> gen; // must initialize via move semantics
 

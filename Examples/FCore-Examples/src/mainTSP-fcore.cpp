@@ -89,8 +89,14 @@ using TSPRandom = FConstructive <
 using MoveSwap = FMove<
   std::pair<int, int>,
   ESolutionTSP,
-  [](const std::pair<int, int>& myData, ESolutionTSP& xes) -> std::pair<int, int> {
-     return std::pair<int, int>(myData.second, myData.first);
+  [](const std::pair<int, int>& moveData, ESolutionTSP& se) -> std::pair<int, int> {
+     int i = moveData.first;
+     int j = moveData.second;
+     // perform swap of clients i and j
+     int aux = se.first[j];
+     se.first[j] = se.first[i];
+     se.first[i] = aux;
+     return std::pair<int, int>(j, i); // return a reverse move ('undo' move)
   }>;
 
 // Swap move (NS)
@@ -152,7 +158,7 @@ using NSSeqSwapFancy = FNSSeqFancy<
   [](const ESolutionTSP& se) -> Generator<Move<ESolutionTSP>*> {
      for (int i = 0; i < int(pTSP.n) - 1; i++)
         for (int j = i + 1; j < pTSP.n; j++)
-           co_yield new MoveSwap{ make_pair(i, j) }; // ensure unique_ptr semantics
+           co_yield new MoveSwap{ make_pair(i, j) }; // implicit unique_ptr requirements
   }>;
 
 } // TSP_fcore
