@@ -44,6 +44,7 @@ The following requirements apply for projects (and subprojects):
 * FCore - `c++20` - tested on `gcc-10.1` with flags `-fcoroutines`
 * Scanner++ - `c++11` - tested on `gcc-7`
 
+To install gcc-10.1, see these [Instructions](libs/gcc-10-install/INSTRUCTIONS.md).
 
 ## Concepts (Lite)
 
