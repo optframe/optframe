@@ -16,6 +16,13 @@ OptFrame_test : OptFrame.Test.cpp
 FCore_test : FCore.Test.cpp
 	g++-10.1 --coverage -g -O0 -fmax-errors=5 -std=c++20 -fcoroutines -I$(SRC_PATH) -I$(LIBS_PATH) -DCATCH_CONFIG_MAIN $< -o ./build/$@   
 
+test-install:
+	g++ -g --std=c++17 -fconcepts test-install-OptFrame.cpp -o ./build/optframe_test_install
+	./build/optframe_test_install
+	g++-10.1 -g --std=c++20 -fcoroutines test-install-OptFCore.cpp -o ./build/fcore_test_install
+	./build/fcore_test_install
+
+
 pair: pair17 pair20
 
 pair17 : concept-test/Pair.cpp
