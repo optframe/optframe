@@ -76,7 +76,7 @@ using TSPEval = FEvaluator <
 // Generate random solution
 using TSPRandom = FConstructive <
                   std::vector<int>,
-      [](double timelimit) -> auto
+      [](double timelimit) -> std::optional<std::vector<int>>
 {
    vector<int> v(pTSP.n, -1); // get information from context
    for (unsigned i = 0; i < v.size(); i++)
@@ -113,6 +113,7 @@ using NSSwap = FNS<
      return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j) });
   }>;
 
+
 // Swap move (NSSeq) - with "Boring" iterator
 using NSSeqSwapBoring = FNSSeqBoring<
   std::pair<int, int>, // IMS (iterator memory)
@@ -131,6 +132,16 @@ using NSSeqSwapBoring = FNSSeqBoring<
   },
   [](std::pair<int, int>& p) -> void {
      //void (*fFirst)(IMS&),                   // iterator.first()
+     /*
+     if (n >= 2)
+		{
+			p1 = 0;
+			p2 = 1;
+			m = uptr<MOVE>(new MOVE(p1, p2, p));
+		}
+		else
+			m = nullptr;
+         */
   },
   [](std::pair<int, int>& p) -> void {
      //void (*fNext)(IMS&),                    // iterator.next()
@@ -156,7 +167,7 @@ using NSSeqSwapFancy = FNSSeqFancy<
      }
      return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j) });
   },
-  [](const ESolutionTSP& se) -> Generator<Move<ESolutionTSP>*> {
+  [](const ESolutionTSP& se) -> Generator< Move<ESolutionTSP>* > {
      for (int i = 0; i < int(pTSP.n) - 1; i++)
         for (int j = i + 1; j < pTSP.n; j++)
            co_yield new MoveSwap{ make_pair(i, j) }; // implicit unique_ptr requirements

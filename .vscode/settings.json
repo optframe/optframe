@@ -71,6 +71,7 @@
         "coroutine": "cpp",
         "shared_mutex": "cpp",
         "compare": "cpp",
-        "concepts": "cpp"
+        "concepts": "cpp",
+        "ranges": "cpp"
     }
 }

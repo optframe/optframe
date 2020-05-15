@@ -8,29 +8,31 @@ To install it on your system (if it's not present already) follow these steps (f
 
 Install dependencies:
 
-- sudo apt install build-essential wget m4 flex bison
+- `sudo apt install build-essential wget m4 flex bison`
 
 Download and configure gcc-10 from mirror (http://gcc.gnu.org/mirrors.html):
 
-- cd /tmp
-- wget https://ftpmirror.gnu.org/gcc/gcc-10.1.0/gcc-10.1.0.tar.xz
-- tar xf gcc-10.1.0.tar.xz
-- cd gcc-10.1.0
-- contrib/download_prerequisites
+- `cd /tmp`
+- `wget https://ftpmirror.gnu.org/gcc/gcc-10.1.0/gcc-10.1.0.tar.xz`
+- `tar xf gcc-10.1.0.tar.xz`
+- `cd gcc-10.1.0`
+- `contrib/download_prerequisites`
 
 
-Install gcc on /usr/local/gcc-10:
+Install gcc on `/usr/local/gcc-10`:
 
-- cd /tmp
-- mkdir build && cd build
-- ../gcc-10.1.0/configure -v --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --prefix=/usr/local/gcc-10.1.0 --enable-checking=release --enable-languages=c,c++,fortran --disable-multilib --program-suffix=-10.1
-- make -j 8
-- sudo make install-strip
+- `cd /tmp`
+- `mkdir build && cd build`
+- `../gcc-10.1.0/configure -v --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --prefix=/usr/local/gcc-10.1.0 --enable-checking=release --enable-languages=c,c++,fortran --disable-multilib --program-suffix=-10.1`
+- `make -j 8`
+- `sudo make install-strip`
 
-Add these two lines on user `~/.bashrc` (then `source ~/.bashrc`):
+Add these two lines on user `~/.bashrc`:
 
-- export export PATH=/usr/local/gcc-10.1.0/bin:$PATH
-- export LD_LIBRARY_PATH=/usr/local/gcc-10.1.0/lib64:$LD_LIBRARY_PATH
+- `export export PATH=/usr/local/gcc-10.1.0/bin:$PATH`
+- `export LD_LIBRARY_PATH=/usr/local/gcc-10.1.0/lib64:$LD_LIBRARY_PATH`
+
+Then, load user exports: `source ~/.bashrc`
 
 ## More Information
 
