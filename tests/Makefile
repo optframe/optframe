@@ -22,12 +22,12 @@ test-install:
 	g++-10.1 -g --std=c++20 -fcoroutines test-install-OptFCore.cpp -o ./build/fcore_test_install
 	./build/fcore_test_install
 
-CXXFLAGS_BCH=-std=c++20 -O3 -Wall -fno-exceptions -fno-rtti -pedantic -Werror -fno-omit-frame-pointer
+CXXFLAGS_BCH=-std=c++20 -O3 -Wall -fcoroutines -fno-exceptions -fno-rtti -fno-omit-frame-pointer #  -pedantic -Werror
 GBENCH_DIRS=-isystem ../libs/gbenchmark/include -L../libs/gbenchmark/build/src
 GBENCH_LIBS=-lbenchmark 
 
 bench: FCore.bench.cpp
-	g++-10.1 $< $(CXXFLAGS_BCH) -I../src $(GBENCH_DIRS) -o build/FCore_bench $(GBENCH_LIBS) -lpthread
+	g++-10.1 $< $(CXXFLAGS_BCH) -I../src -I../Examples $(GBENCH_DIRS) -o build/FCore_bench $(GBENCH_LIBS) -lpthread
 
 #PERF=./perf-4.19.0/tools/perf/perf
 PERF=linux-4.16.12/tools/perf/perf

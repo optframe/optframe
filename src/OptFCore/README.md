@@ -203,6 +203,31 @@ ESolutionTSP best = *sa.getBestSolution();
 best.second.print();
 ```
 
+## Benchmarking
+
+Current benchmarking is available on `FCore` (just type `make bench`).
+C++ simple implementation is still many times faster:
+
+```
+2020-05-17 17:47:09
+Running ./build/FCore_bench
+Run on (4 X 3100 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x2)
+  L1 Instruction 32 KiB (x2)
+  L2 Unified 256 KiB (x2)
+  L3 Unified 3072 KiB (x1)
+Load Average: 1.38, 1.36, 1.35
+-----------------------------------------------------------------------------
+Benchmark                                   Time             CPU   Iterations
+-----------------------------------------------------------------------------
+TSP_CPP_Swap_iteration/10/0               573 ns          571 ns      1216062
+TSP_CPP_Swap_iteration/20/0              1021 ns         1018 ns       692353
+TSP_CPP_Swap_iteration/30/0              1606 ns         1603 ns       437768
+TSP_NSSeqFancy_Swap_iteration/10/0       2990 ns         2992 ns       230343
+TSP_NSSeqFancy_Swap_iteration/20/0      10697 ns        10704 ns        61473
+TSP_NSSeqFancy_Swap_iteration/30/0      23533 ns        23545 ns        29709
+```
 
 ### Learn More
 
