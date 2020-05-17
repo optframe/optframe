@@ -49,7 +49,43 @@ class FNSSeqBoring final : public NSSeq<XES>
 {
    using XEv = typename XES::second_type;
    using XSH = XES; // only single objective
+public:
+   //
+   // function templates (exported)
+   //
+   using ims_type = IMS;
+   static auto ft_iterator = fIterator;
+   static auto ft_first = fFirst;
+   static auto ft_next = fNext;
+   static auto ft_isdone = fIsDone;
+   static auto ft_current = fCurrent;
 
+   // iterator initialization (fGenerator)
+   static IMS sf_iterator(const XES& se)
+   {
+      return fIterator(se);
+   }
+
+   static void sf_first(std::pair<int, int>& p)
+   {
+      return fFirst(p);
+   }
+
+   static void sf_next(std::pair<int, int>& p)
+   {
+      return fNext(p);
+   }
+
+   static bool sf_isdone(std::pair<int, int>& p)
+   {
+      return fIsDone(p);
+   }
+
+   static uptr<Move<XES>> sf_current(std::pair<int, int>& p)
+   {
+      return fCurrent(p);
+   }
+private:
    // internal class for iterator
    class FNSIteratorBoring final : public NSIterator<XES>
    {

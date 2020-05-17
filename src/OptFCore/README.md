@@ -234,6 +234,22 @@ TSP_TestNSSeq_Swap_iteration<NSSeqSwapBoring>/30/0      22440 ns        22452 ns
 
 Bad news that it seems some OptFrame internals are very costly. Good news is that coroutines doesn't seem to increase this overhead by much (some `5-10%`), and are so much easier to write.
 
+Interesting is that `uptr` Move apply and undo seems to be responsible for almost all overhead.
+This time, `IMS` version uses the complete class, except `current()` move generation,
+while the next one uses it.
+
+```
+---------------------------------------------------------------------------------------------
+Benchmark                                                   Time             CPU   Iterations
+---------------------------------------------------------------------------------------------
+TSP_IMS_NSSeqBoring_Swap_iteration/10/0                   570 ns          569 ns      1231731
+TSP_IMS_NSSeqBoring_Swap_iteration/20/0                   966 ns          964 ns       727061
+TSP_IMS_NSSeqBoring_Swap_iteration/30/0                  1670 ns         1669 ns       419778
+TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration/10/0       2609 ns         2611 ns       264125
+TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration/20/0       9409 ns         9415 ns        71025
+TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration/30/0      20707 ns        20717 ns        33813
+```
+
 
 ### Learn More
 

@@ -72,6 +72,7 @@
         "shared_mutex": "cpp",
         "compare": "cpp",
         "concepts": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "bit": "cpp"
     }
 }
