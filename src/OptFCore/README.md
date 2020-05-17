@@ -256,6 +256,20 @@ TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration/20/0         9330 ns         9336 
 TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration/30/0        20946 ns        20962 ns        34408
 ```
 
+Using `stack` allocation of move (without undo):
+```
+TSP_CPP_apply_stack_Swap_iteration/10/0                    1917 ns         1918 ns       362146
+TSP_CPP_apply_stack_Swap_iteration/20/0                    6386 ns         6386 ns       107966
+TSP_CPP_apply_stack_Swap_iteration/30/0                   13873 ns        13880 ns        50195
+```
+
+Issue is not on function move apply either... when avoiding heap, price is short:
+```
+TSP_CPP_fapply_nostack_Swap_iteration/10/0                  548 ns          548 ns      1269137
+TSP_CPP_fapply_nostack_Swap_iteration/20/0                  865 ns          862 ns       814942
+TSP_CPP_fapply_nostack_Swap_iteration/30/0                 1479 ns         1475 ns       482831
+```
+
 
 ### Learn More
 

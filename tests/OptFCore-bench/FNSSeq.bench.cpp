@@ -154,7 +154,7 @@ TSP_IMS_NSSeqBoring_Swap_iteration(benchmark::State& state)
       //using IMS = NSSeqSwapBoring::ims_type;
       //using IMS = myNSSwap.ims_type;
       //IMS ims = NSSeqSwapBoring::ft_iterator(esol); // TODO: use auto
-      auto ims = myNSSwap.sf_iterator(esol); 
+      auto ims = myNSSwap.sf_iterator(esol);
       for (myNSSwap.sf_first(ims); !myNSSwap.sf_isdone(ims); myNSSwap.sf_next(ims)) {
          //  static auto ft_current = fCurrent;
          // avoiding to get pointer.. just "ims" with plain C++!
@@ -190,7 +190,6 @@ BENCHMARK(TSP_IMS_NSSeqBoring_Swap_iteration)
   ->Args({ 30, 0 }) // N = 10 - seed 0
   ;
 
-
 // using functions directly with IMS (bench uptr and apply)
 static void
 TSP_IMS_uptr_noapply_NSSeqBoring_Swap_iteration(benchmark::State& state)
@@ -215,11 +214,10 @@ TSP_IMS_uptr_noapply_NSSeqBoring_Swap_iteration(benchmark::State& state)
       auto ims = myNSSwap.sf_iterator(esol); // TODO: use auto
       for (myNSSwap.sf_first(ims); !myNSSwap.sf_isdone(ims); myNSSwap.sf_next(ims)) {
          // now we get uptr!
-         uptr<Move<ESolutionTSP>> mv = myNSSwap.sf_current(ims);
-         MoveSwap& mswap = (MoveSwap&)*mv;
+         MoveSwap& mswap = (MoveSwap&)*myNSSwap.sf_current(ims);
          int i = mswap.m.first;
          int j = mswap.m.second;
-         
+
          // swap
          int aux = esol.first[i];
          esol.first[i] = esol.first[j];
@@ -297,6 +295,91 @@ TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration(benchmark::State& state)
 }
 //
 BENCHMARK(TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ;
+
+static void
+TSP_CPP_apply_stack_Swap_iteration(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      // compute swap loop
+      for (int i = 0; i < pTSP.n - 1; ++i)
+         for (int j = i + 1; j < pTSP.n; ++j) {
+            // stack alloc moves
+            MoveSwap mswap(make_pair(i, j));
+            // apply
+            mswap.apply(esol);
+            //
+            // compute cost
+            double fcost;
+            benchmark::DoNotOptimize(fcost = esol.first[i] + esol.first[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo
+            mswap.apply(esol);
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+   }
+}
+BENCHMARK(TSP_CPP_apply_stack_Swap_iteration)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ;
+
+// will apply move function directly (no need for move stack)
+static void
+TSP_CPP_fapply_nostack_Swap_iteration(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      // compute swap loop
+      for (int i = 0; i < pTSP.n - 1; ++i)
+         for (int j = i + 1; j < pTSP.n; ++j) {
+            // no stack alloc move, just pair
+            std::pair<int, int> m(i, j);
+            // apply
+            MoveSwap::fs_apply(m, esol);
+            //
+            // compute cost
+            double fcost;
+            benchmark::DoNotOptimize(fcost = esol.first[i] + esol.first[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo
+            MoveSwap::fs_apply(m, esol);
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+   }
+}
+BENCHMARK(TSP_CPP_fapply_nostack_Swap_iteration)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0

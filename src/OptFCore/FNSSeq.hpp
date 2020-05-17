@@ -83,7 +83,7 @@ public:
 
    static uptr<Move<XES>> sf_current(std::pair<int, int>& p)
    {
-      return fCurrent(p);
+      return std::move(fCurrent(p));
    }
 private:
    // internal class for iterator

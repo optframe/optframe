@@ -60,6 +60,18 @@ class FMove final : public Move<XES, typename XES::second_type>
 public:
    M m; // internal structure for move
 
+   // template static functions
+   static M fs_apply(const M& m, XES& xes)
+   {
+      return fApply(m, xes);
+   } 
+
+   FMove(M&& _m) noexcept
+     : m(std::move(_m))
+   {
+      //std::cout << "FMove() => " << m << " address=" << this << std::endl;
+   }
+
    FMove(const M& _m) noexcept
      : m(_m)
    {
