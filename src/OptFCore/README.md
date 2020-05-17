@@ -242,12 +242,18 @@ while the next one uses it.
 ---------------------------------------------------------------------------------------------
 Benchmark                                                   Time             CPU   Iterations
 ---------------------------------------------------------------------------------------------
+TSP_CPP_Swap_iteration/10/0                               560 ns          560 ns      1249883
+TSP_CPP_Swap_iteration/20/0                              1000 ns          998 ns       704922
+TSP_CPP_Swap_iteration/30/0                              1603 ns         1602 ns       435393
 TSP_IMS_NSSeqBoring_Swap_iteration/10/0                   570 ns          569 ns      1231731
 TSP_IMS_NSSeqBoring_Swap_iteration/20/0                   966 ns          964 ns       727061
 TSP_IMS_NSSeqBoring_Swap_iteration/30/0                  1670 ns         1669 ns       419778
-TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration/10/0       2609 ns         2611 ns       264125
-TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration/20/0       9409 ns         9415 ns        71025
-TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration/30/0      20707 ns        20717 ns        33813
+TSP_IMS_uptr_noapply_NSSeqBoring_Swap_iteration/10/0       1276 ns         1276 ns       548748
+TSP_IMS_uptr_noapply_NSSeqBoring_Swap_iteration/20/0       3722 ns         3722 ns       187490
+TSP_IMS_uptr_noapply_NSSeqBoring_Swap_iteration/30/0       7857 ns         7865 ns        88596
+TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration/10/0         2587 ns         2588 ns       270772
+TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration/20/0         9330 ns         9336 ns        73853
+TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration/30/0        20946 ns        20962 ns        34408
 ```
 
 
