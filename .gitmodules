@@ -1,3 +1,6 @@
 [submodule "libs/scannerpplib"]
 	path = libs/scannerpplib
 	url = https://github.com/optframe/scannerpp.git
+[submodule "libs/gbenchmark"]
+	path = libs/gbenchmark
+	url = https://github.com/google/benchmark.git

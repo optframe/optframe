@@ -28,8 +28,8 @@ Project is organized in three main folders: `src`, `libs`, `tests` and `bin`.
 * On `Examples` you can find code and tests for the provided Examples.
 * On `MyProjects` you can find code and tests for your own codes.
 * On `bin`, you can find classic `optframe-mct.sh` script, that will generate a new project `X` on `MyProjects/X/src` folder (and tests on `MyProjects/X/tests`).
-* On `libs` you can find third-party libraries.
-Tests are provided via `catch2`, and you can also find `scannerpplib` (Scanner++ library) there.
+* On `libs` you can find third-party libraries (including testing and benchmarking, as they are used widely on examples and subprojects)
+Tests are provided via `catch2`, benchmaking via [benchmark](https://github.com/google/benchmark) library, and also `scannerpplib` (Scanner++ library) for stream/file processing.
 
 OptFrame Functional Core (FCore) is also provided (strict `c++20`):
 
