@@ -78,8 +78,9 @@ BENCHMARK(TSP_CPP_Swap_iteration)
   ->Args({ 30, 0 }) // N = 10 - seed 0
   ;
 
+template<class TestNSSeq>
 static void
-TSP_NSSeqFancy_Swap_iteration(benchmark::State& state)
+TSP_TestNSSeq_Swap_iteration(benchmark::State& state)
 {
    unsigned N = state.range(0); // get N from benchmark suite
    pTSP.n = N;
@@ -93,7 +94,7 @@ TSP_NSSeqFancy_Swap_iteration(benchmark::State& state)
       double best = 99999999;
       std::pair<int, int> mij(-1, -1);
       // compute swap loop
-      NSSeqSwapFancy swapFancy;
+      TestNSSeq swapFancy;
       auto it1 = swapFancy.getIterator(esol);
       for (it1->first(); !it1->isDone(); it1->next()) {
          //it1->current()->print();
@@ -120,7 +121,13 @@ TSP_NSSeqFancy_Swap_iteration(benchmark::State& state)
       benchmark::ClobberMemory();
    }
 }
-BENCHMARK(TSP_NSSeqFancy_Swap_iteration)
+//
+BENCHMARK_TEMPLATE(TSP_TestNSSeq_Swap_iteration, NSSeqSwapFancy)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ;
+BENCHMARK_TEMPLATE(TSP_TestNSSeq_Swap_iteration, NSSeqSwapBoring)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0

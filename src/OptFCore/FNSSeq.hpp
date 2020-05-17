@@ -51,11 +51,11 @@ class FNSSeqBoring final : public NSSeq<XES>
    using XSH = XES; // only single objective
 
    // internal class for iterator
-   class FNSIterator final : public NSIterator<XES>
+   class FNSIteratorBoring final : public NSIterator<XES>
    {
    public:
       IMS ims;
-      FNSIterator(IMS& _ims) noexcept
+      FNSIteratorBoring(const IMS& _ims) noexcept
         : ims(_ims)
       {
       }
@@ -89,7 +89,7 @@ public:
 
    virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
    {
-      return uptr<NSIterator<XES>>{ new FNSIterator{ fIterator(se) } };
+      return uptr<NSIterator<XES>>{ new FNSIteratorBoring{ fIterator(se) } };
    }
 
    static string idComponent()
