@@ -482,9 +482,9 @@ public:
 static MoveXF<std::vector<int>>
 stackCurrent(std::pair<int, int>& ims)
 {
-   return 
-     MoveXF<std::vector<int>>{
-       MyMoveX::super(ims.first, ims.second) };
+   return MoveXF<std::vector<int>>{
+      MyMoveX::super(ims.first, ims.second)
+   };
 }
 
 // stack-based 'current()' iterator (with IMS structure) - prototype!
@@ -540,7 +540,6 @@ BENCHMARK(TSP_CPP_stackOpCurrent_Swap_iteration)
   ->Args({ 30, 0 }) // N = 10 - seed 0
   ;
 
-
 // will apply move function directly (no need for move stack)
 static void
 TSP_CPP_stackCurrent_Swap_iteration(benchmark::State& state)
@@ -580,6 +579,120 @@ TSP_CPP_stackCurrent_Swap_iteration(benchmark::State& state)
    }
 }
 BENCHMARK(TSP_CPP_stackCurrent_Swap_iteration)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ;
+
+// Sol = vector<int>
+template<
+  class XES,
+  class MStruct, // pair?
+  void (*fPrint)(const MStruct&),
+  op<MoveXF<XES>> (*fApply)(const MStruct&, XES&)>
+class StackMoveX final : public MoveXF<XES>
+{
+   //using XES = std::vector<int>;
+
+public:
+   StackMoveX(const MStruct& m)
+     : MoveXF<XES>{ super(m) }
+   {
+   }
+
+   static MoveXF<XES> super(const MStruct& m)
+   {
+      return MoveXF<XES>{
+         [m]() { fPrint(m); },
+         [m](XES& vec) -> op<MoveXF<XES>> {
+            return fApply(m, vec);
+         }     // end apply
+      };       // end 'super' constructor
+   }           // end 'super' method
+};
+
+// implementation using templated lambdas
+using MoveSwapStackX = StackMoveX<
+  std::vector<int>,
+  std::pair<int, int>,
+  // fPrint
+  [](const std::pair<int, int>& m) {
+     int x = m.first;
+     int y = m.second;
+     std::cout << "x=" << x << ",y=" << y << std::endl;
+  },
+  // fApply
+  [](const std::pair<int, int>& m, std::vector<int>& v) -> op<MoveXF<std::vector<int>>> {
+     int x = m.first;
+     int y = m.second;
+     // swap
+     int aux = v[x];
+     v[x] = v[y];
+     v[y] = aux;
+     return op<MoveXF<std::vector<int>>>{
+        MoveXF<std::vector<int>>{
+          [x, y]() { /*stPrint(y, x);*/ }, // print y, x
+          [x, y](std::vector<int>& v) -> op<MoveXF<std::vector<int>>> {
+             // swap
+             int aux = v[y];
+             v[y] = v[x];
+             v[x] = aux;
+             return nullopt; // no return
+          } }
+     }; // end return
+  }     // end apply
+  >;
+
+
+
+// stack-based 'current()' iterator (with IMS structure) - prototype!
+static MoveXF<std::vector<int>>
+stackXCurrent(std::pair<int, int>& ims)
+{
+   return MoveXF<std::vector<int>>{
+      MoveSwapStackX::super(ims)
+   };
+}
+
+
+static void
+TSP_CPP_stackXCurrent_Swap_iteration(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      // compute swap loop
+      for (int i = 0; i < pTSP.n - 1; ++i)
+         for (int j = i + 1; j < pTSP.n; ++j) {
+            // no stack alloc move, just pair
+            std::pair<int, int> ims(i, j);
+            auto move = stackXCurrent(ims);
+            // apply
+            auto opMoveRev = move.apply(esol.first);
+            //
+            // compute cost
+            double fcost;
+            benchmark::DoNotOptimize(fcost = esol.first[i] + esol.first[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo
+            opMoveRev->apply(esol.first);
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+   }
+}
+BENCHMARK(TSP_CPP_stackXCurrent_Swap_iteration)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
