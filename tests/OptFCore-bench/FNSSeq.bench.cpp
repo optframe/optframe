@@ -723,6 +723,9 @@ TSP_SimpleMove_CPP(benchmark::State& state)
 }
 BENCHMARK(TSP_SimpleMove_CPP)
   ->Args({ 10, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ->Args({ 20, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ->Args({ 30, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+
   ;
 
 static void
@@ -749,6 +752,9 @@ TSP_SimpleMove_CPP_std_swap(benchmark::State& state)
 }
 BENCHMARK(TSP_SimpleMove_CPP_std_swap)
   ->Args({ 10, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ->Args({ 20, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ->Args({ 30, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+
   ;
 
 static void
@@ -774,6 +780,8 @@ TSP_SimpleMove_MoveXF(benchmark::State& state)
 }
 BENCHMARK(TSP_SimpleMove_MoveXF)
   ->Args({ 10, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ->Args({ 20, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ->Args({ 30, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
   ;
 
 static void
@@ -802,4 +810,6 @@ TSP_SimpleMove_new_uptr(benchmark::State& state)
 }
 BENCHMARK(TSP_SimpleMove_new_uptr)
   ->Args({ 10, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ->Args({ 20, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ->Args({ 30, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
   ;

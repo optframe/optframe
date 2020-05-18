@@ -270,6 +270,25 @@ TSP_CPP_fapply_nostack_Swap_iteration/20/0                  865 ns          862 
 TSP_CPP_fapply_nostack_Swap_iteration/30/0                 1479 ns         1475 ns       482831
 ```
 
+Move apply (and undo) itself seems to be a problem (`./build/FCore_bench --benchmark_filter=SimpleMove`):
+```
+-------------------------------------------------------------------------------
+Benchmark                                     Time             CPU   Iterations
+-------------------------------------------------------------------------------
+TSP_SimpleMove_CPP/10/0/2/5                 437 ns          439 ns      1569705
+TSP_SimpleMove_CPP/20/0/2/5                 451 ns          453 ns      1562250
+TSP_SimpleMove_CPP/30/0/2/5                 453 ns          455 ns      1442971
+TSP_SimpleMove_CPP_std_swap/10/0/2/5        468 ns          471 ns      1515963
+TSP_SimpleMove_CPP_std_swap/20/0/2/5        432 ns          435 ns      1502256
+TSP_SimpleMove_CPP_std_swap/30/0/2/5        442 ns          444 ns      1603412
+TSP_SimpleMove_MoveXF/10/0/2/5              534 ns          538 ns      1278361
+TSP_SimpleMove_MoveXF/20/0/2/5              536 ns          540 ns      1303314
+TSP_SimpleMove_MoveXF/30/0/2/5              538 ns          542 ns      1284274
+TSP_SimpleMove_new_uptr/10/0/2/5            486 ns          489 ns      1455610
+TSP_SimpleMove_new_uptr/20/0/2/5            486 ns          489 ns      1421294
+TSP_SimpleMove_new_uptr/30/0/2/5            496 ns          499 ns      1444948
+```
+
 
 ### Learn More
 
