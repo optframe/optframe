@@ -342,6 +342,27 @@ TSP_SimpleMove_new_uptr/20/0/2/5                                      487 ns    
 TSP_SimpleMove_new_uptr/30/0/2/5                                      478 ns          481 ns      1450440
 ```
 
+Got some amazing results with moves purely as functions (pure-C++ fast):
+```
+---------------------------------------------------------------------------------------------
+Benchmark                                                   Time             CPU   Iterations
+---------------------------------------------------------------------------------------------
+TSP_SimpleMove_NoUndo_CPP_std_swap/10/0/2/5               439 ns          442 ns      1595984
+TSP_SimpleMove_NoUndo_CPP_std_swap/20/0/2/5               442 ns          445 ns      1594212
+TSP_SimpleMove_NoUndo_CPP_std_swap/30/0/2/5               439 ns          442 ns      1565460
+TSP_SimpleMove_NoUndo_new_uptr/10/0/2/5                   481 ns          485 ns      1450483
+TSP_SimpleMove_NoUndo_new_uptr/20/0/2/5                   480 ns          483 ns      1435259
+TSP_SimpleMove_NoUndo_new_uptr/30/0/2/5                   477 ns          481 ns      1449503
+TSP_SimpleMove_NoUndo_MyMoveX_nocopy/10/0/2/5             476 ns          480 ns      1360861
+TSP_SimpleMove_NoUndo_MyMoveX_nocopy/20/0/2/5             476 ns          479 ns      1273014
+TSP_SimpleMove_NoUndo_MyMoveX_nocopy/30/0/2/5             480 ns          483 ns      1393144
+TSP_SimpleMove_NoUndo_MyMoveX_func/10/0/2/5               471 ns          475 ns      1462063
+TSP_SimpleMove_NoUndo_MyMoveX_func/20/0/2/5               473 ns          477 ns      1397714
+TSP_SimpleMove_NoUndo_MyMoveX_func/30/0/2/5               473 ns          477 ns      1465777
+TSP_SimpleMove_NoUndo_MyMoveX_func_noundo/10/0/2/5        444 ns          447 ns      1598340
+TSP_SimpleMove_NoUndo_MyMoveX_func_noundo/20/0/2/5        441 ns          445 ns      1579256
+TSP_SimpleMove_NoUndo_MyMoveX_func_noundo/30/0/2/5        441 ns          445 ns      1574482
+```
 
 ### Learn More
 

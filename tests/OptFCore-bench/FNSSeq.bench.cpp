@@ -599,7 +599,7 @@ class StackMoveX final : public MoveXF<XES>
    //using XES = std::vector<int>;
 
 public:
-   StackMoveX(const MStruct& m)
+   constexpr StackMoveX(const MStruct& m)
      : MoveXF<XES>{ super(m) }
    {
    }
@@ -898,7 +898,6 @@ BENCHMARK(TSP_SimpleMove_NoUndo_CPP_std_swap)
   ->Args({ 30, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
   ;
 
-
 static void
 TSP_SimpleMove_NoUndo_new_uptr(benchmark::State& state)
 {
@@ -952,9 +951,35 @@ BENCHMARK(TSP_SimpleMove_NoUndo_MyMoveX_nocopy)
   ->Args({ 30, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
   ;
 
+template<class XES>
+MoveXF<XES>
+func_MyMoveX_super(int x, int y)
+{
+   return MoveXF<XES>{
+      //[x, y]() { std::cout << "x=" << x << ",y=" << y << std::endl; },
+      [x, y]() {}, // print x, y
+      [x, y](XES& v) -> op<MoveXF<XES>> {
+         // swap
+         int aux = v[x];
+         v[x] = v[y];
+         v[y] = aux;
+         return op<MoveXF<XES>>{
+            MoveXF<XES>{
+              [x, y]() {}, // print y, x
+              [x, y](XES& v) -> op<MoveXF<XES>> {
+                 // swap
+                 int aux = v[y];
+                 v[y] = v[x];
+                 v[x] = aux;
+                 return nullopt; // no return
+              } }
+         }; // end return
+      }     // end apply
+   };       // end 'super' constructor
+} // end 'super' method
 
 static void
-TSP_SimpleMove_NoUndo_MyMoveX_func_only_nocopy(benchmark::State& state)
+TSP_SimpleMove_NoUndo_MyMoveX_func(benchmark::State& state)
 {
    unsigned N = state.range(0); // get N from benchmark suite
    //unsigned seed = state.range(1); // get seed from benchmark suite
@@ -966,14 +991,51 @@ TSP_SimpleMove_NoUndo_MyMoveX_func_only_nocopy(benchmark::State& state)
       state.ResumeTiming();
       //std::pair<int, int> ims(i, j);
       MoveXF<std::vector<int>> move{
-         std::move(MyMoveX::super(i, j))
+         std::move(func_MyMoveX_super<std::vector<int>>(i, j))
       };
       move.apply(esol.first);
       double fcost; // fake
       benchmark::DoNotOptimize(fcost = esol.first[i] + esol.first[j]);
    }
 }
-BENCHMARK(TSP_SimpleMove_NoUndo_MyMoveX_func_only_nocopy)
+BENCHMARK(TSP_SimpleMove_NoUndo_MyMoveX_func)
+  ->Args({ 10, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ->Args({ 20, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ->Args({ 30, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ;
+
+template<class XES>
+std::function<void(XES&)>
+getfunc_MyMoveX_apply_noundo(int x, int y)
+{
+   return
+     [x, y](XES& v) -> void {
+        // swap
+        int aux = v[x];
+        v[x] = v[y];
+        v[y] = aux;
+     };
+}
+
+static void
+TSP_SimpleMove_NoUndo_MyMoveX_func_noundo(benchmark::State& state)
+{
+   unsigned N = state.range(0); // get N from benchmark suite
+   //unsigned seed = state.range(1); // get seed from benchmark suite
+   unsigned i = state.range(2);
+   unsigned j = state.range(3);
+   for (auto _ : state) {
+      state.PauseTiming();
+      ESolutionTSP esol{ std::vector<int>(N, 0), Evaluation<double>{} }; // empty solution
+      state.ResumeTiming();
+      //std::pair<int, int> ims(i, j);
+      auto fApply = getfunc_MyMoveX_apply_noundo<std::vector<int>>(i, j);
+      fApply(esol.first);
+      double fcost; // fake
+      benchmark::DoNotOptimize(fcost = esol.first[i] + esol.first[j]);
+   }
+}
+BENCHMARK(TSP_SimpleMove_NoUndo_MyMoveX_func_noundo)
   ->Args({ 10, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
   ->Args({ 20, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
   ->Args({ 30, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
