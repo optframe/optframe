@@ -289,6 +289,59 @@ TSP_SimpleMove_new_uptr/20/0/2/5            486 ns          489 ns      1421294
 TSP_SimpleMove_new_uptr/30/0/2/5            496 ns          499 ns      1444948
 ```
 
+### Complete Summary (hardcoded vs generic)
+
+```
+---------------------------------------------------------------------------------------------------------
+Benchmark                                                               Time             CPU   Iterations
+---------------------------------------------------------------------------------------------------------
+TSP_hardcoded_CPP_Swap_iteration/10/0                                 559 ns          560 ns      1248880
+TSP_hardcoded_CPP_Swap_iteration/20/0                                 936 ns          935 ns       746098
+TSP_hardcoded_CPP_Swap_iteration/30/0                                1584 ns         1579 ns       440731
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapFancy>/10/0            3004 ns         3005 ns       233375
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapFancy>/20/0           10925 ns        10935 ns        63965
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapFancy>/30/0           24056 ns        24076 ns        29498
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapBoring>/10/0           2833 ns         2835 ns       247837
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapBoring>/20/0          10230 ns        10236 ns        67430
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapBoring>/30/0          22655 ns        22667 ns        31010
+TSP_hardcoded_IMS_NSSeqBoring_Swap_iteration/10/0                     572 ns          572 ns      1227251
+TSP_hardcoded_IMS_NSSeqBoring_Swap_iteration/20/0                     967 ns          966 ns       728538
+TSP_hardcoded_IMS_NSSeqBoring_Swap_iteration/30/0                    1675 ns         1670 ns       420721
+TSP_hardcoded_IMS_uptr_noapply_NSSeqBoring_Swap_iteration/10/0       1302 ns         1303 ns       535281
+TSP_hardcoded_IMS_uptr_noapply_NSSeqBoring_Swap_iteration/20/0       3773 ns         3773 ns       183462
+TSP_hardcoded_IMS_uptr_noapply_NSSeqBoring_Swap_iteration/30/0       7953 ns         7951 ns        86843
+TSP_generic_IMS_uptr_apply_NSSeqBoring_Swap_iteration/10/0           2610 ns         2610 ns       270011
+TSP_generic_IMS_uptr_apply_NSSeqBoring_Swap_iteration/20/0           9264 ns         9267 ns        74508
+TSP_generic_IMS_uptr_apply_NSSeqBoring_Swap_iteration/30/0          20427 ns        20433 ns        34179
+TSP_hardcoded_CPP_apply_stack_Swap_iteration/10/0                    1893 ns         1894 ns       370908
+TSP_hardcoded_CPP_apply_stack_Swap_iteration/20/0                    6320 ns         6322 ns       106113
+TSP_hardcoded_CPP_apply_stack_Swap_iteration/30/0                   13764 ns        13769 ns        50473
+TSP_hardcoded_CPP_fapply_nostack_Swap_iteration/10/0                  551 ns          550 ns      1278376
+TSP_hardcoded_CPP_fapply_nostack_Swap_iteration/20/0                  866 ns          863 ns       811936
+TSP_hardcoded_CPP_fapply_nostack_Swap_iteration/30/0                 1445 ns         1439 ns       486877
+TSP_generic_CPP_stackOpCurrent_Swap_iteration/10/0                   2133 ns         2134 ns       327260
+TSP_generic_CPP_stackOpCurrent_Swap_iteration/20/0                   7535 ns         7538 ns        91813
+TSP_generic_CPP_stackOpCurrent_Swap_iteration/30/0                  16654 ns        16661 ns        41642
+TSP_generic_CPP_stackCurrent_Swap_iteration/10/0                     1907 ns         1908 ns       366618
+TSP_generic_CPP_stackCurrent_Swap_iteration/20/0                     6380 ns         6384 ns       108804
+TSP_generic_CPP_stackCurrent_Swap_iteration/30/0                    13887 ns        13891 ns        50185
+TSP_generic_CPP_stackXCurrent_Swap_iteration/10/0                    4391 ns         4395 ns       159725
+TSP_generic_CPP_stackXCurrent_Swap_iteration/20/0                   16642 ns        16650 ns        41470
+TSP_generic_CPP_stackXCurrent_Swap_iteration/30/0                   37394 ns        37406 ns        18673
+TSP_SimpleMove_CPP/10/0/2/5                                           433 ns          436 ns      1625536
+TSP_SimpleMove_CPP/20/0/2/5                                           434 ns          436 ns      1565609
+TSP_SimpleMove_CPP/30/0/2/5                                           433 ns          435 ns      1607609
+TSP_SimpleMove_CPP_std_swap/10/0/2/5                                  435 ns          437 ns      1602435
+TSP_SimpleMove_CPP_std_swap/20/0/2/5                                  450 ns          452 ns      1565579
+TSP_SimpleMove_CPP_std_swap/30/0/2/5                                  438 ns          441 ns      1596346
+TSP_SimpleMove_MoveXF/10/0/2/5                                        532 ns          536 ns      1268565
+TSP_SimpleMove_MoveXF/20/0/2/5                                        535 ns          538 ns      1249484
+TSP_SimpleMove_MoveXF/30/0/2/5                                        531 ns          535 ns      1254509
+TSP_SimpleMove_new_uptr/10/0/2/5                                      476 ns          478 ns      1458763
+TSP_SimpleMove_new_uptr/20/0/2/5                                      487 ns          490 ns      1455322
+TSP_SimpleMove_new_uptr/30/0/2/5                                      478 ns          481 ns      1450440
+```
+
 
 ### Learn More
 
