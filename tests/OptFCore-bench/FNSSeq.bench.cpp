@@ -33,7 +33,7 @@ setTSP(unsigned N, long seed)
 }
 
 static void
-TSP_CPP_Swap_iteration(benchmark::State& state)
+TSP_hardcoded_CPP_Swap_iteration(benchmark::State& state)
 {
    unsigned N = state.range(0);    // get N from benchmark suite
    unsigned seed = state.range(1); // get seed from benchmark suite
@@ -72,7 +72,7 @@ TSP_CPP_Swap_iteration(benchmark::State& state)
       benchmark::ClobberMemory();
    }
 }
-BENCHMARK(TSP_CPP_Swap_iteration)
+BENCHMARK(TSP_hardcoded_CPP_Swap_iteration)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
@@ -80,7 +80,7 @@ BENCHMARK(TSP_CPP_Swap_iteration)
 
 template<class TestNSSeq>
 static void
-TSP_TestNSSeq_Swap_iteration(benchmark::State& state)
+TSP_generic_TestNSSeq_Swap_iteration(benchmark::State& state)
 {
    unsigned N = state.range(0); // get N from benchmark suite
    pTSP.n = N;
@@ -122,12 +122,12 @@ TSP_TestNSSeq_Swap_iteration(benchmark::State& state)
    }
 }
 //
-BENCHMARK_TEMPLATE(TSP_TestNSSeq_Swap_iteration, NSSeqSwapFancy)
+BENCHMARK_TEMPLATE(TSP_generic_TestNSSeq_Swap_iteration, NSSeqSwapFancy)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
   ;
-BENCHMARK_TEMPLATE(TSP_TestNSSeq_Swap_iteration, NSSeqSwapBoring)
+BENCHMARK_TEMPLATE(TSP_generic_TestNSSeq_Swap_iteration, NSSeqSwapBoring)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
@@ -135,7 +135,7 @@ BENCHMARK_TEMPLATE(TSP_TestNSSeq_Swap_iteration, NSSeqSwapBoring)
 
 // using functions directly with IMS
 static void
-TSP_IMS_NSSeqBoring_Swap_iteration(benchmark::State& state)
+TSP_hardcoded_IMS_NSSeqBoring_Swap_iteration(benchmark::State& state)
 {
    unsigned N = state.range(0); // get N from benchmark suite
    pTSP.n = N;
@@ -184,7 +184,7 @@ TSP_IMS_NSSeqBoring_Swap_iteration(benchmark::State& state)
    }
 }
 //
-BENCHMARK(TSP_IMS_NSSeqBoring_Swap_iteration)
+BENCHMARK(TSP_hardcoded_IMS_NSSeqBoring_Swap_iteration)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
@@ -192,7 +192,7 @@ BENCHMARK(TSP_IMS_NSSeqBoring_Swap_iteration)
 
 // using functions directly with IMS (bench uptr and apply)
 static void
-TSP_IMS_uptr_noapply_NSSeqBoring_Swap_iteration(benchmark::State& state)
+TSP_hardcoded_IMS_uptr_noapply_NSSeqBoring_Swap_iteration(benchmark::State& state)
 {
    unsigned N = state.range(0); // get N from benchmark suite
    pTSP.n = N;
@@ -241,7 +241,7 @@ TSP_IMS_uptr_noapply_NSSeqBoring_Swap_iteration(benchmark::State& state)
    }
 }
 //
-BENCHMARK(TSP_IMS_uptr_noapply_NSSeqBoring_Swap_iteration)
+BENCHMARK(TSP_hardcoded_IMS_uptr_noapply_NSSeqBoring_Swap_iteration)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
@@ -249,7 +249,7 @@ BENCHMARK(TSP_IMS_uptr_noapply_NSSeqBoring_Swap_iteration)
 
 // using functions directly with IMS (bench uptr and apply)
 static void
-TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration(benchmark::State& state)
+TSP_generic_IMS_uptr_apply_NSSeqBoring_Swap_iteration(benchmark::State& state)
 {
    unsigned N = state.range(0); // get N from benchmark suite
    pTSP.n = N;
@@ -294,14 +294,14 @@ TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration(benchmark::State& state)
    }
 }
 //
-BENCHMARK(TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration)
+BENCHMARK(TSP_generic_IMS_uptr_apply_NSSeqBoring_Swap_iteration)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
   ;
 
 static void
-TSP_CPP_apply_stack_Swap_iteration(benchmark::State& state)
+TSP_hardcoded_CPP_apply_stack_Swap_iteration(benchmark::State& state)
 {
    unsigned N = state.range(0);    // get N from benchmark suite
    unsigned seed = state.range(1); // get seed from benchmark suite
@@ -336,7 +336,7 @@ TSP_CPP_apply_stack_Swap_iteration(benchmark::State& state)
       benchmark::ClobberMemory();
    }
 }
-BENCHMARK(TSP_CPP_apply_stack_Swap_iteration)
+BENCHMARK(TSP_hardcoded_CPP_apply_stack_Swap_iteration)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
@@ -344,7 +344,7 @@ BENCHMARK(TSP_CPP_apply_stack_Swap_iteration)
 
 // will apply move function directly (no need for move stack)
 static void
-TSP_CPP_fapply_nostack_Swap_iteration(benchmark::State& state)
+TSP_hardcoded_CPP_fapply_nostack_Swap_iteration(benchmark::State& state)
 {
    unsigned N = state.range(0);    // get N from benchmark suite
    unsigned seed = state.range(1); // get seed from benchmark suite
@@ -379,7 +379,7 @@ TSP_CPP_fapply_nostack_Swap_iteration(benchmark::State& state)
       benchmark::ClobberMemory();
    }
 }
-BENCHMARK(TSP_CPP_fapply_nostack_Swap_iteration)
+BENCHMARK(TSP_hardcoded_CPP_fapply_nostack_Swap_iteration)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
@@ -410,7 +410,7 @@ public:
    }
 
    // "empty" constructor
-   MoveXF(std::function<void()> _fPrint, std::function<op<Self>(XES&)> _fApply) noexcept
+   constexpr MoveXF(std::function<void()> _fPrint, std::function<op<Self>(XES&)> _fApply) noexcept
      : fPrint(_fPrint)
      , fApply(_fApply)
    {
@@ -498,7 +498,7 @@ stackOpCurrent(std::pair<int, int>& ims)
 
 // will apply move function directly (no need for move stack)
 static void
-TSP_CPP_stackOpCurrent_Swap_iteration(benchmark::State& state)
+TSP_generic_CPP_stackOpCurrent_Swap_iteration(benchmark::State& state)
 {
    unsigned N = state.range(0);    // get N from benchmark suite
    unsigned seed = state.range(1); // get seed from benchmark suite
@@ -534,7 +534,7 @@ TSP_CPP_stackOpCurrent_Swap_iteration(benchmark::State& state)
       benchmark::ClobberMemory();
    }
 }
-BENCHMARK(TSP_CPP_stackOpCurrent_Swap_iteration)
+BENCHMARK(TSP_generic_CPP_stackOpCurrent_Swap_iteration)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
@@ -542,7 +542,7 @@ BENCHMARK(TSP_CPP_stackOpCurrent_Swap_iteration)
 
 // will apply move function directly (no need for move stack)
 static void
-TSP_CPP_stackCurrent_Swap_iteration(benchmark::State& state)
+TSP_generic_CPP_stackCurrent_Swap_iteration(benchmark::State& state)
 {
    unsigned N = state.range(0);    // get N from benchmark suite
    unsigned seed = state.range(1); // get seed from benchmark suite
@@ -578,7 +578,7 @@ TSP_CPP_stackCurrent_Swap_iteration(benchmark::State& state)
       benchmark::ClobberMemory();
    }
 }
-BENCHMARK(TSP_CPP_stackCurrent_Swap_iteration)
+BENCHMARK(TSP_generic_CPP_stackCurrent_Swap_iteration)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
@@ -653,7 +653,7 @@ stackXCurrent(std::pair<int, int>& ims)
 }
 
 static void
-TSP_CPP_stackXCurrent_Swap_iteration(benchmark::State& state)
+TSP_generic_CPP_stackXCurrent_Swap_iteration(benchmark::State& state)
 {
    unsigned N = state.range(0);    // get N from benchmark suite
    unsigned seed = state.range(1); // get seed from benchmark suite
@@ -689,7 +689,7 @@ TSP_CPP_stackXCurrent_Swap_iteration(benchmark::State& state)
       benchmark::ClobberMemory();
    }
 }
-BENCHMARK(TSP_CPP_stackXCurrent_Swap_iteration)
+BENCHMARK(TSP_generic_CPP_stackXCurrent_Swap_iteration)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
