@@ -256,7 +256,7 @@ TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration/20/0         9330 ns         9336 
 TSP_IMS_uptr_apply_NSSeqBoring_Swap_iteration/30/0        20946 ns        20962 ns        34408
 ```
 
-Using `stack` allocation of move (without undo):
+Using `stack` allocation of move (it still allocates heap on "move undo" return, if not optimized out...):
 ```
 TSP_CPP_apply_stack_Swap_iteration/10/0                    1917 ns         1918 ns       362146
 TSP_CPP_apply_stack_Swap_iteration/20/0                    6386 ns         6386 ns       107966
