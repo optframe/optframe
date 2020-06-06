@@ -1267,13 +1267,61 @@ BENCHMARK(TSP_SimpleMove_MoveUndoFuncList)
 
   ;
 
-// ---------------
-
+// ---------------------------------
 // trying to perform full loop again
+//          FINAL tests
+// ---------------------------------
+
+static void
+TSP_final_baseline_CPP(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      // compute swap loop
+      for (int i = 0; i < pTSP.n - 1; ++i)
+         for (int j = i + 1; j < pTSP.n; ++j) {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            int aux = esol.first[i];
+            esol.first[i] = esol.first[j];
+            esol.first[j] = aux;
+            //
+            // compute cost
+            double fcost;
+            benchmark::DoNotOptimize(fcost = esol.first[i] + esol.first[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            int aux2 = esol.first[i];
+            esol.first[i] = esol.first[j];
+            esol.first[j] = aux2;
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+   }
+}
+BENCHMARK(TSP_final_baseline_CPP)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ;
+
 
 
 static void
-TSP_hardcoded_CPP_MoveUndoFuncList(benchmark::State& state)
+TSP_final_MoveUndoFuncList(benchmark::State& state)
 {
    unsigned N = state.range(0);    // get N from benchmark suite
    unsigned seed = state.range(1); // get seed from benchmark suite
@@ -1312,9 +1360,11 @@ TSP_hardcoded_CPP_MoveUndoFuncList(benchmark::State& state)
       benchmark::ClobberMemory();
    }
 }
-BENCHMARK(TSP_hardcoded_CPP_MoveUndoFuncList)
+BENCHMARK(TSP_final_MoveUndoFuncList)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
   ;
+
+// =====================
 
