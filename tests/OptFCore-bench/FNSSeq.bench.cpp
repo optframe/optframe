@@ -873,6 +873,11 @@ BENCHMARK(TSP_SimpleMove_MoveXF_nocopy)
   ->Args({ 30, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
   ;
 
+// ===================================== NoUndo tests =====================================
+// ===================================== NoUndo tests =====================================
+// ===================================== NoUndo tests =====================================
+// ===================================== NoUndo tests =====================================
+
 static void
 TSP_SimpleMove_NoUndo_CPP_std_swap(benchmark::State& state)
 {
@@ -1004,6 +1009,8 @@ BENCHMARK(TSP_SimpleMove_NoUndo_MyMoveX_func)
   ->Args({ 30, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
   ;
 
+// --------------------------------------
+
 template<class XES>
 std::function<void(XES&)>
 getfunc_MyMoveX_apply_noundo(int x, int y)
@@ -1017,6 +1024,9 @@ getfunc_MyMoveX_apply_noundo(int x, int y)
      };
 }
 
+// ==================================
+// THIS IS VERY FAST!! C++ level fast
+// ==================================
 static void
 TSP_SimpleMove_NoUndo_MyMoveX_func_noundo(benchmark::State& state)
 {
@@ -1040,3 +1050,271 @@ BENCHMARK(TSP_SimpleMove_NoUndo_MyMoveX_func_noundo)
   ->Args({ 20, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
   ->Args({ 30, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
   ;
+
+// -----------------------------------
+
+template<class XES>
+class MoveFuncList final
+{
+public:
+   std::function<void(XES&)> fApply;
+
+   MoveFuncList(std::function<void(XES&)> _fApply)
+     : fApply(_fApply)
+   {
+   }
+};
+
+
+class NSSeqFuncList
+{
+public:
+   MoveFuncList<std::vector<int>> getApplyTSPSwapNoUndo(int x, int y)
+   {
+      return MoveFuncList<std::vector<int>>{
+         [x, y](std::vector<int>& v) -> void {
+            // swap
+            int aux = v[x];
+            v[x] = v[y];
+            v[y] = aux;
+         }
+      };
+   }
+
+};
+
+static void
+TSP_SimpleMove_NoUndo_MoveFuncList_apply(benchmark::State& state)
+{
+   unsigned N = state.range(0); // get N from benchmark suite
+   //unsigned seed = state.range(1); // get seed from benchmark suite
+   unsigned i = state.range(2);
+   unsigned j = state.range(3);
+   for (auto _ : state) {
+      state.PauseTiming();
+      ESolutionTSP esol{ std::vector<int>(N, 0), Evaluation<double>{} }; // empty solution
+      state.ResumeTiming();
+      //std::pair<int, int> ims(i, j);
+      NSSeqFuncList nsswap;
+      MoveFuncList<std::vector<int>> moveflist = nsswap.getApplyTSPSwapNoUndo(i, j);
+      auto fApply = moveflist.fApply;
+      fApply(esol.first);
+      double fcost; // fake
+      benchmark::DoNotOptimize(fcost = esol.first[i] + esol.first[j]);
+   }
+}
+BENCHMARK(TSP_SimpleMove_NoUndo_MoveFuncList_apply)
+  ->Args({ 10, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ->Args({ 20, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ->Args({ 30, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ;
+
+
+// --------------------------
+
+template<class XES>
+class MoveFuncListConstexpr final
+{
+public:
+   std::function<void(XES&)> fApply;
+
+   constexpr MoveFuncListConstexpr(const std::function<void(XES&)>& _fApply)
+     : fApply{_fApply}
+   {
+   }
+};
+
+class NSSeqFuncListConstexpr
+{
+public:
+   MoveFuncListConstexpr<std::vector<int>> getApplyTSPSwapNoUndo(int x, int y)
+   {
+      return MoveFuncListConstexpr<std::vector<int>>{
+         [x, y](std::vector<int>& v) -> void {
+            // swap
+            int aux = v[x];
+            v[x] = v[y];
+            v[y] = aux;
+         }
+      };
+   }
+};
+
+static void
+TSP_SimpleMove_NoUndo_MoveFuncListConstexpr_apply(benchmark::State& state)
+{
+   unsigned N = state.range(0); // get N from benchmark suite
+   //unsigned seed = state.range(1); // get seed from benchmark suite
+   unsigned i = state.range(2);
+   unsigned j = state.range(3);
+   for (auto _ : state) {
+      state.PauseTiming();
+      ESolutionTSP esol{ std::vector<int>(N, 0), Evaluation<double>{} }; // empty solution
+      state.ResumeTiming();
+      //std::pair<int, int> ims(i, j);
+      NSSeqFuncList nsswap;
+      MoveFuncList<std::vector<int>> moveflist = nsswap.getApplyTSPSwapNoUndo(i, j);
+      auto fApply = moveflist.fApply;
+      fApply(esol.first);
+      double fcost; // fake
+      benchmark::DoNotOptimize(fcost = esol.first[i] + esol.first[j]);
+   }
+}
+BENCHMARK(TSP_SimpleMove_NoUndo_MoveFuncListConstexpr_apply)
+  ->Args({ 10, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ->Args({ 20, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ->Args({ 30, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ;
+
+// ---------------------------
+// back to Undo situation
+
+
+template<class XES>
+class MoveUndoFuncList final
+{
+public:
+   //using undo_func = std::optional<std::function<void(XES&)>; // no 'undo' of 'undo'
+   //using complete_func = std::function<undo_func(XES&)>;
+   //complete_func fApplyUndo;
+
+   std::function<void(XES&)> fApplyDo;
+   std::function<void(XES&)> fApplyUndo;
+
+   MoveUndoFuncList(std::function<void(XES&)> _fApplyDoUndo)
+     : fApplyDo{_fApplyDoUndo}, fApplyUndo{_fApplyDoUndo}
+   {
+   }
+
+   MoveUndoFuncList(std::function<void(XES&)> _fApplyDo, std::function<void(XES&)> _fApplyUndo)
+     : fApplyDo{_fApplyDo}, fApplyUndo{_fApplyUndo}
+   {
+   }
+};
+
+template<class X>
+class NSSeqFuncListVirtual
+{
+public:
+   virtual MoveUndoFuncList<X> getMove() = 0;
+
+};
+
+class NSSeqFuncListUndo : public NSSeqFuncListVirtual<std::vector<int>>
+{
+public:
+
+   int x{0};
+   int y{0};
+
+   NSSeqFuncListUndo(int _x, int _y) :
+      x{_x}, y{_y}
+   {
+   }
+   
+   virtual MoveUndoFuncList<std::vector<int>> getMove() override
+   {
+      return getApplyTSPSwap(2, 5); 
+   }
+
+private:
+   // This allows Do and Undo
+   MoveUndoFuncList<std::vector<int>> getApplyTSPSwap(int x, int y)
+   {
+      return MoveUndoFuncList<std::vector<int>>{
+         [x, y](std::vector<int>& v) -> void {
+            // swap
+            int aux = v[x];
+            v[x] = v[y];
+            v[y] = aux;
+         }
+      };
+   }
+};
+
+
+static void
+TSP_SimpleMove_MoveUndoFuncList(benchmark::State& state)
+{
+   unsigned N = state.range(0); // get N from benchmark suite
+   //unsigned seed = state.range(1); // get seed from benchmark suite
+   unsigned i = state.range(2);
+   unsigned j = state.range(3);
+   //
+   NSSeqFuncListUndo ns{(int)i,(int)j};
+   for (auto _ : state) {
+      state.PauseTiming();
+      ESolutionTSP esol{ std::vector<int>(N, 0), Evaluation<double>{} }; // empty solution
+      state.ResumeTiming();
+      std::vector<int>& v = esol.first;
+      //
+      auto mv = ns.getMove();
+      mv.fApplyDo(v);
+      //
+      double fcost; // fake
+      benchmark::DoNotOptimize(fcost = esol.first[i] + esol.first[j]);
+      // undo
+      mv.fApplyUndo(v);
+      //
+      benchmark::DoNotOptimize(fcost += esol.first[i] + esol.first[j]);
+      benchmark::ClobberMemory();
+   }
+}
+BENCHMARK(TSP_SimpleMove_MoveUndoFuncList)
+  ->Args({ 10, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ->Args({ 20, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+  ->Args({ 30, 0, 2, 5 }) // N = 10, seed=0, i=2, j=5 (swap)
+
+  ;
+
+// ---------------
+
+// trying to perform full loop again
+
+
+static void
+TSP_hardcoded_CPP_MoveUndoFuncList(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      // compute swap loop
+      for (int i = 0; i < pTSP.n - 1; ++i)
+         for (int j = i + 1; j < pTSP.n; ++j) {
+            NSSeqFuncListUndo ns{(int)i,(int)j};
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            std::vector<int>& v = esol.first;
+            //
+            auto mv = ns.getMove();
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            benchmark::DoNotOptimize(fcost = v[i] + v[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.fApplyUndo(v);
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+   }
+}
+BENCHMARK(TSP_hardcoded_CPP_MoveUndoFuncList)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ;
+

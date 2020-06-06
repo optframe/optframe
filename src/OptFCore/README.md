@@ -364,6 +364,51 @@ TSP_SimpleMove_NoUndo_MyMoveX_func_noundo/20/0/2/5        441 ns          445 ns
 TSP_SimpleMove_NoUndo_MyMoveX_func_noundo/30/0/2/5        441 ns          445 ns      1574482
 ```
 
+Approach `TSP_SimpleMove_NoUndo_MoveFuncList_apply` seems to be the way to go.. spends few `ns` (`2-8ns`) more than others (such as `TSP_SimpleMove_NoUndo_MyMoveX_func_noundo`).
+
+-------
+
+In terms of `constexpr`, it doesn't seem to change anything:
+
+```
+TSP_SimpleMove_NoUndo_MoveFuncList_apply/10/0/2/5                 433 ns          436 ns      1606857
+TSP_SimpleMove_NoUndo_MoveFuncList_apply/20/0/2/5                 443 ns          446 ns      1571392
+TSP_SimpleMove_NoUndo_MoveFuncList_apply/30/0/2/5                 432 ns          435 ns      1607031
+TSP_SimpleMove_NoUndo_MoveFuncListConstexpr_apply/10/0/2/5        437 ns          440 ns      1606998
+TSP_SimpleMove_NoUndo_MoveFuncListConstexpr_apply/20/0/2/5        434 ns          437 ns      1557600
+TSP_SimpleMove_NoUndo_MoveFuncListConstexpr_apply/30/0/2/5        437 ns          440 ns      1592026
+```
+
+We can try to generalize `MoveFuncList` approach.
+
+-------
+
+Back to complete tests... still struggling to match CPP baseline. Version `TSP_hardcoded_CPP_MoveUndoFuncList` was supposed to be competitive, but it's not:
+
+```
+---------------------------------------------------------------------------------------------------------
+Benchmark                                                               Time             CPU   Iterations
+---------------------------------------------------------------------------------------------------------
+TSP_hardcoded_CPP_Swap_iteration/10/0                                 571 ns          567 ns      1250708
+TSP_hardcoded_CPP_Swap_iteration/20/0                                 953 ns          950 ns       750413
+TSP_hardcoded_CPP_Swap_iteration/30/0                                1630 ns         1626 ns       437512
+TSP_hardcoded_IMS_NSSeqBoring_Swap_iteration/10/0                     579 ns          575 ns      1233907
+TSP_hardcoded_IMS_NSSeqBoring_Swap_iteration/20/0                     981 ns          979 ns       719683
+TSP_hardcoded_IMS_NSSeqBoring_Swap_iteration/30/0                    1695 ns         1692 ns       396484
+TSP_hardcoded_IMS_uptr_noapply_NSSeqBoring_Swap_iteration/10/0       1315 ns         1312 ns       546820
+TSP_hardcoded_IMS_uptr_noapply_NSSeqBoring_Swap_iteration/20/0       3891 ns         3890 ns       179632
+TSP_hardcoded_IMS_uptr_noapply_NSSeqBoring_Swap_iteration/30/0       8052 ns         8052 ns        87070
+TSP_hardcoded_CPP_apply_stack_Swap_iteration/10/0                    1941 ns         1941 ns       372093
+TSP_hardcoded_CPP_apply_stack_Swap_iteration/20/0                    6311 ns         6314 ns        99704
+TSP_hardcoded_CPP_apply_stack_Swap_iteration/30/0                   13792 ns        13803 ns        50451
+TSP_hardcoded_CPP_fapply_nostack_Swap_iteration/10/0                  553 ns          552 ns      1282281
+TSP_hardcoded_CPP_fapply_nostack_Swap_iteration/20/0                  881 ns          878 ns       811419
+TSP_hardcoded_CPP_fapply_nostack_Swap_iteration/30/0                 1466 ns         1461 ns       485023
+TSP_hardcoded_CPP_MoveUndoFuncList/10/0                              1085 ns         1085 ns       645058
+TSP_hardcoded_CPP_MoveUndoFuncList/20/0                              3081 ns         3079 ns       220987
+TSP_hardcoded_CPP_MoveUndoFuncList/30/0                              6207 ns         6205 ns       112269
+```
+
 ### Learn More
 
 This can be done in the same way as OptFrame v4 heuristic components, see examples for more ;)
