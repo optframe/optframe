@@ -1207,7 +1207,7 @@ public:
    int x{0};
    int y{0};
 
-   NSSeqFuncListUndo(int _x, int _y) :
+   constexpr NSSeqFuncListUndo(int _x, int _y) :
       x{_x}, y{_y}
    {
    }
@@ -1366,5 +1366,189 @@ BENCHMARK(TSP_final_MoveUndoFuncList)
   ->Args({ 30, 0 }) // N = 10 - seed 0
   ;
 
-// =====================
+/*
+--------------------------------------------------------------------------
+Benchmark                                Time             CPU   Iterations
+--------------------------------------------------------------------------
+TSP_final_baseline_CPP/10/0            566 ns          564 ns      1256353
+TSP_final_baseline_CPP/20/0            940 ns          938 ns       755174
+TSP_final_baseline_CPP/30/0           1596 ns         1594 ns       432643
+TSP_final_MoveUndoFuncList/10/0       1111 ns         1108 ns       646330
+TSP_final_MoveUndoFuncList/20/0       2922 ns         2920 ns       239729
+TSP_final_MoveUndoFuncList/30/0       6164 ns         6163 ns       117237
+*/
 
+// the baseline CPP is still much better than 'MoveUndoFuncList'
+
+// =======================================================================
+//
+
+static void
+TSP_final_MoveUndoFuncList_Raw(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      // compute swap loop
+      for (int i = 0; i < pTSP.n - 1; ++i)
+         for (int j = i + 1; j < pTSP.n; ++j) {
+            NSSeqFuncListUndo ns{(int)i,(int)j};
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            auto mv = [i, j](std::vector<int>& v) -> void {
+               int aux = v[i];
+               v[i] = v[j];
+               v[j] = aux;
+            };
+            mv(v);
+            //
+            // compute cost
+            double fcost;
+            benchmark::DoNotOptimize(fcost = v[i] + v[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv(v);
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+   }
+}
+BENCHMARK(TSP_final_MoveUndoFuncList_Raw)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ;
+
+  /*
+  ------------------------------------------------------------------------------
+Benchmark                                    Time             CPU   Iterations
+------------------------------------------------------------------------------
+TSP_final_baseline_CPP/10/0                561 ns          560 ns      1260464
+TSP_final_baseline_CPP/20/0                945 ns          941 ns       747021
+TSP_final_baseline_CPP/30/0               1604 ns         1599 ns       435569
+TSP_final_MoveUndoFuncList/10/0           1088 ns         1088 ns       619682
+TSP_final_MoveUndoFuncList/20/0           3009 ns         3007 ns       227840
+TSP_final_MoveUndoFuncList/30/0           6325 ns         6319 ns       104074
+TSP_final_MoveUndoFuncList_Raw/10/0        561 ns          560 ns      1260307
+TSP_final_MoveUndoFuncList_Raw/20/0        935 ns          932 ns       752726
+TSP_final_MoveUndoFuncList_Raw/30/0       1602 ns         1597 ns       418978
+*/
+
+template<class X>
+class NSSeqFuncListUndoNoInherit final
+{
+public:
+   std::function<MoveUndoFuncList<X>()> getMove;
+
+   NSSeqFuncListUndoNoInherit(std::function<MoveUndoFuncList<X>()> _getMove) :
+      getMove{_getMove}
+   {
+   }
+};
+
+/*
+using NSSeqSwapTE = < 
+   MoveUndoFuncList<std::vector<int>> getApplyTSPSwap(int x, int y)
+   {
+      return MoveUndoFuncList<std::vector<int>>{
+         [x, y](std::vector<int>& v) -> void {
+            // swap
+            int aux = v[x];
+            v[x] = v[y];
+            v[y] = aux;
+         }
+      };
+   }
+*/
+
+static void
+TSP_final_MoveUndoFuncList_Raw2(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      // compute swap loop
+      for (int i = 0; i < pTSP.n - 1; ++i)
+         for (int j = i + 1; j < pTSP.n; ++j) {
+            //
+            std::function<MoveUndoFuncList<std::vector<int>>()> myfunc = 
+               [i,j] () -> MoveUndoFuncList<std::vector<int>>
+               {
+                  return MoveUndoFuncList<std::vector<int>>(
+                     [i, j](std::vector<int>& v) -> void {
+                        // swap
+                        int aux = v[i];
+                        v[i] = v[j];
+                        v[j] = aux;
+                     }
+                  );
+               };
+            //
+            NSSeqFuncListUndoNoInherit<std::vector<int>> nsseq (
+               //
+               myfunc
+            );
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            auto mv = nsseq.getMove(); // apply function and get move
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            benchmark::DoNotOptimize(fcost = v[i] + v[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.fApplyUndo(v);
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+   }
+}
+BENCHMARK(TSP_final_MoveUndoFuncList_Raw2)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ;
+
+// every generalization makes things worse...
+
+  /*
+TSP_final_MoveUndoFuncList_Raw/10/0         559 ns          558 ns      1264497
+TSP_final_MoveUndoFuncList_Raw/20/0         939 ns          935 ns       756946
+TSP_final_MoveUndoFuncList_Raw/30/0        1615 ns         1610 ns       441730
+TSP_final_MoveUndoFuncList_Raw2/10/0       1580 ns         1579 ns       442634
+TSP_final_MoveUndoFuncList_Raw2/20/0       5077 ns         5077 ns       137195
+TSP_final_MoveUndoFuncList_Raw2/30/0      11342 ns        11340 ns        64033
+*/
+
+// ========================================

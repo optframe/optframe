@@ -433,6 +433,18 @@ TSP_final_MoveUndoFuncList/30/0       6164 ns         6163 ns       117237
 
 The `MoveUndoFuncList` is still the best approach so far... not good enough.
 
+Inheritance seems to be the issue again... just taking function locally seems good!
+
+```
+TSP_final_MoveUndoFuncList_Raw/10/0        561 ns          560 ns      1260307
+TSP_final_MoveUndoFuncList_Raw/20/0        935 ns          932 ns       752726
+TSP_final_MoveUndoFuncList_Raw/30/0       1602 ns         1597 ns       418978
+```
+
+---------
+
+
+
 ### Learn More
 
 This can be done in the same way as OptFrame v4 heuristic components, see examples for more ;)
