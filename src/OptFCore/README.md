@@ -379,7 +379,13 @@ TSP_SimpleMove_NoUndo_MoveFuncListConstexpr_apply/20/0/2/5        434 ns        
 TSP_SimpleMove_NoUndo_MoveFuncListConstexpr_apply/30/0/2/5        437 ns          440 ns      1592026
 ```
 
-We can try to generalize `MoveFuncList` approach.
+We can try to generalize `MoveFuncList` approach. But it's still losing precious nanosecs on every move:
+
+```
+TSP_SimpleMove_MoveUndoFuncList/10/0/2/5                          447 ns          450 ns      1566394
+TSP_SimpleMove_MoveUndoFuncList/20/0/2/5                          441 ns          443 ns      1578800
+TSP_SimpleMove_MoveUndoFuncList/30/0/2/5                          448 ns          451 ns      1577068
+```
 
 -------
 
