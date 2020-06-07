@@ -3306,6 +3306,21 @@ TSP_reveng_MoveStruct(benchmark::State& state)
       std::pair<int, int> mij(-1, -1);
       //
       std::pair<int,int> mpair; 
+
+      auto myfunc = [&mpair](std::pair<int,int>& st)->MoveUndoFuncList<std::vector<int>>
+      {
+         return MoveUndoFuncList<std::vector<int>>(
+                     // no capture!
+                     [&mpair](std::vector<int>& v) -> void {
+                        int& i = mpair.first;
+                        int& j = mpair.second;
+                        // swap
+                        int aux = v[i];
+                        v[i] = v[j];
+                        v[j] = aux;
+                     }
+                  );
+      };
       // compute swap loop
       for (int i = 0; i < pTSP.n - 1; ++i)
          for (int j = i + 1; j < pTSP.n; ++j) {
@@ -3316,26 +3331,6 @@ TSP_reveng_MoveStruct(benchmark::State& state)
             mpair.first = i;
             mpair.second = j;
             
-            auto myfunc = [](std::pair<int,int>& st)->MoveUndoFuncList<std::vector<int>>
-            {
-               return MoveUndoFuncList<std::vector<int>>(
-                           // no capture!
-                           [](std::vector<int>& v) -> void {
-                              int& i = NSSeqSingleMove3<
-                                 std::vector<int>, 
-                                 std::pair<int,int>
-                              >::commonState.first;
-                              int& j = NSSeqSingleMove3<
-                                 std::vector<int>, 
-                                 std::pair<int,int>
-                              >::commonState.second;
-                              // swap
-                              int aux = v[i];
-                              v[i] = v[j];
-                              v[j] = aux;
-                           }
-                        );
-            };
             auto mv = myfunc(mpair); // apply function and get move
             mv.fApplyDo(v);
             //
