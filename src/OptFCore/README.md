@@ -443,7 +443,59 @@ TSP_final_MoveUndoFuncList_Raw/30/0       1602 ns         1597 ns       418978
 
 ---------
 
+On a "final" round, we managed 6x slower (better than original 20x):
 
+```
+--------------------------------------------------------------------------------------------
+Benchmark                                                  Time             CPU   Iterations
+--------------------------------------------------------------------------------------------
+TSP_final_baseline_CPP/10/0                              559 ns          558 ns      1253847
+TSP_final_baseline_CPP/20/0                              938 ns          938 ns       751297
+TSP_final_baseline_CPP/30/0                             1607 ns         1605 ns       440305
+TSP_final_baseline_CPP/100/0                           14080 ns        14045 ns        50109
+TSP_final_baseline_CPP/200/0                           54372 ns        54278 ns        12885
+TSP_final_MoveUndoFuncList/10/0                         1079 ns         1080 ns       655845
+TSP_final_MoveUndoFuncList/20/0                         2869 ns         2871 ns       243682
+TSP_final_MoveUndoFuncList/30/0                         5868 ns         5865 ns       119486
+TSP_final_MoveUndoFuncList_Raw/10/0                      557 ns          558 ns      1222038
+TSP_final_MoveUndoFuncList_Raw/20/0                      940 ns          940 ns       751457
+TSP_final_MoveUndoFuncList_Raw/30/0                     1611 ns         1609 ns       438005
+TSP_final_MoveUndoFuncList_Raw2/10/0                    1573 ns         1575 ns       443074
+TSP_final_MoveUndoFuncList_Raw2/20/0                    5191 ns         5191 ns       136567
+TSP_final_MoveUndoFuncList_Raw2/30/0                   10987 ns        10986 ns        63737
+TSP_final_MoveUndoFuncList_Raw_State/10/0               1398 ns         1398 ns       500634
+TSP_final_MoveUndoFuncList_Raw_State/20/0               4224 ns         4228 ns       163717
+TSP_final_MoveUndoFuncList_Raw_State/30/0               9091 ns         9096 ns        76735
+TSP_final_MoveUndoFuncList_Raw_State_Global/10/0        1103 ns         1103 ns       637909
+TSP_final_MoveUndoFuncList_Raw_State_Global/20/0        3071 ns         3071 ns       228378
+TSP_final_MoveUndoFuncList_Raw_State_Global/30/0        6356 ns         6353 ns       109548
+TSP_final_MoveUndoFuncList_Raw_State_Global2/10/0       1155 ns         1153 ns       616336
+TSP_final_MoveUndoFuncList_Raw_State_Global2/20/0       3231 ns         3231 ns       216530
+TSP_final_MoveUndoFuncList_Raw_State_Global2/30/0       6812 ns         6809 ns       104159
+TSP_final_MoveUndoFuncList_Raw_State2/10/0              1111 ns         1111 ns       627183
+TSP_final_MoveUndoFuncList_Raw_State2/20/0              3116 ns         3116 ns       227528
+TSP_final_MoveUndoFuncList_Raw_State2/30/0              6342 ns         6341 ns       109643
+TSP_final_MoveUndoFuncList_Raw_State3/10/0              1105 ns         1104 ns       638049
+TSP_final_MoveUndoFuncList_Raw_State3/20/0              3033 ns         3031 ns       223794
+TSP_final_MoveUndoFuncList_Raw_State3/30/0              6236 ns         6235 ns       112250
+TSP_final_MoveUndoFuncList_Raw_State3/100/0            64095 ns        64054 ns        10863
+TSP_final_MoveUndoFuncList_Raw_State3/200/0           254608 ns       254496 ns         2665
+TSP_final_MoveUndoFuncList_Raw_State4/10/0              1540 ns         1541 ns       455152
+TSP_final_MoveUndoFuncList_Raw_State4/20/0              4978 ns         4978 ns       141730
+TSP_final_MoveUndoFuncList_Raw_State4/30/0             10469 ns        10469 ns        66573
+TSP_final_MoveUndoFuncList_Raw_State4/100/0           111959 ns       111933 ns         6237
+TSP_final_MoveUndoFuncList_Raw_State4/200/0           446572 ns       446487 ns         1569
+TSP_final_MoveUndoFuncList_Raw_State5/10/0              1335 ns         1335 ns       506139
+TSP_final_MoveUndoFuncList_Raw_State5/20/0              3939 ns         3944 ns       176875
+TSP_final_MoveUndoFuncList_Raw_State5/30/0              8374 ns         8378 ns        78105
+TSP_final_MoveUndoFuncList_Raw_State5/100/0            86866 ns        86834 ns         8022
+TSP_final_MoveUndoFuncList_Raw_State5/200/0           347432 ns       347334 ns         2015
+TSP_final_MoveUndoFuncList_Raw_State6/10/0              1385 ns         1386 ns       515712
+TSP_final_MoveUndoFuncList_Raw_State6/20/0              3954 ns         3952 ns       177364
+TSP_final_MoveUndoFuncList_Raw_State6/30/0              8230 ns         8231 ns        83586
+TSP_final_MoveUndoFuncList_Raw_State6/100/0            86476 ns        86429 ns         8133
+TSP_final_MoveUndoFuncList_Raw_State6/200/0           339906 ns       339812 ns         2065
+```
 
 ### Learn More
 
