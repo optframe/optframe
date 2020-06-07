@@ -573,10 +573,10 @@ TSP_reveng_DoUndo_manually/30/0           1610 ns         1609 ns       433090
 TSP_reveng_Middle_ptr_lambda/10/0          579 ns          578 ns      1213665
 TSP_reveng_Middle_ptr_lambda/20/0         1027 ns         1025 ns       689663
 TSP_reveng_Middle_ptr_lambda/30/0         1675 ns         1673 ns       420796
-    ----------> FIND MIDDLE TERM HERE!  560 vs 723 vs 1100
-TSP_reveng_Middle_Ref/10/0                 717 ns          717 ns       971690
-TSP_reveng_Middle_Ref/20/0                1674 ns         1673 ns       422233
-TSP_reveng_Middle_Ref/30/0                3150 ns         3147 ns       223012
+    ----------> FIND MIDDLE TERM HERE!  560 vs 610 vs 720 vs 1100
+TSP_reveng_Middle_Ref/10/0                 610 ns          608 ns      1158715
+TSP_reveng_Middle_Ref/20/0                1100 ns         1096 ns       640063
+TSP_reveng_Middle_Ref/30/0                1917 ns         1912 ns       359909
 TSP_reveng_Middle_fX/10/0                  723 ns          723 ns       977332
 TSP_reveng_Middle_fX/20/0                 1704 ns         1702 ns       413311
 TSP_reveng_Middle_fX/30/0                 3161 ns         3157 ns       221579
@@ -587,6 +587,8 @@ TSP_reveng_MoveStruct/10/0                1115 ns         1116 ns       626288
 TSP_reveng_MoveStruct/20/0                3111 ns         3114 ns       222556
 TSP_reveng_MoveStruct/30/0                6361 ns         6361 ns       109002
 ```
+
+Mission is to improve `./build/FCore_bench --benchmark_filter=TSP_reveng_Middle_Ref`.
 
 ### Learn More
 

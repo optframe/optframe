@@ -3510,7 +3510,7 @@ public:
 
    // must find solution to this!
    virtual MoveByContextRef<X> getStateMove () {
-      return MoveByContextRef<X>{fApplyDo};  // automatic implementation
+      return MoveByContextRef<X>{this->fApplyDo};  // automatic implementation
    }
    virtual void getNextState () {}
    virtual bool getDone () {return false;} // TODO:
@@ -3545,6 +3545,8 @@ TSP_reveng_Middle_Ref(benchmark::State& state)
          }
       };
 
+      // NOTE THAT 'nsseq' IS UNUSED HERE!!! JUST CONSIDERING IT'S "EXISTENCE" OVERHEAD!
+
       std::pair<int,int>& mpair = nsseq.commonState; 
 
       auto myfuncDo = [&mpair](std::vector<int>& v) mutable -> void {
@@ -3571,12 +3573,9 @@ TSP_reveng_Middle_Ref(benchmark::State& state)
             nsseq.commonState.first = i;
             nsseq.commonState.second = j;
             
-            //auto mv = myfunc(mpair); // apply function and get move
-            MoveByContextRef<std::vector<int>> mv = nsseq.getStateMove();
+            //MoveByContextRef<std::vector<int>> mv = nsseq.getStateMove();
+            myfuncDo(v);
             //mv.fApplyDo(v);
-            //myfuncDo(v);
-            //fX(v);
-            mv.fApplyDo(v);
             //
             // compute cost
             double fcost;
@@ -3587,10 +3586,9 @@ TSP_reveng_Middle_Ref(benchmark::State& state)
             }
             //
             // undo swap
+            myfuncDo(v);
+            
             //mv.fApplyUndo(v);
-            //myfuncUndo(v);
-            //fX(v);
-            mv.fApplyUndo(v);
          }
       benchmark::DoNotOptimize(ff = best);
       benchmark::ClobberMemory();
