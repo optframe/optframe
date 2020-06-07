@@ -574,6 +574,9 @@ TSP_reveng_Middle_ptr_lambda/10/0          579 ns          578 ns      1213665
 TSP_reveng_Middle_ptr_lambda/20/0         1027 ns         1025 ns       689663
 TSP_reveng_Middle_ptr_lambda/30/0         1675 ns         1673 ns       420796
     ----------> FIND MIDDLE TERM HERE!  560 vs 723 vs 1100
+TSP_reveng_Middle_Ref/10/0                 717 ns          717 ns       971690
+TSP_reveng_Middle_Ref/20/0                1674 ns         1673 ns       422233
+TSP_reveng_Middle_Ref/30/0                3150 ns         3147 ns       223012
 TSP_reveng_Middle_fX/10/0                  723 ns          723 ns       977332
 TSP_reveng_Middle_fX/20/0                 1704 ns         1702 ns       413311
 TSP_reveng_Middle_fX/30/0                 3161 ns         3157 ns       221579

@@ -3458,10 +3458,156 @@ BENCHMARK(TSP_reveng_Middle_ptr_lambda)
 // try some functor strategy
 // --------
 
-// HOW?
-
 // -------
+// ===========================
+// ===========================
 
+// this is the way to go ... 560 vs 760
+// we need to avoid context type erasure.. by taking context from NSSeq (by reference!!)
+
+
+template<class XES>
+class MoveByContextRef final
+{
+public:
+   std::function<void(XES&)>& fApplyDo;   // REFERENCE
+   std::function<void(XES&)>& fApplyUndo; // REFERENCE
+
+   MoveByContextRef(std::function<void(XES&)>& _fApplyDoUndo)
+     : fApplyDo{_fApplyDoUndo}, fApplyUndo{_fApplyDoUndo}
+   {
+   }
+
+   MoveByContextRef(std::function<void(XES&)>& _fApplyDo, std::function<void(XES&)>& _fApplyUndo)
+     : fApplyDo{_fApplyDo}, fApplyUndo{_fApplyUndo}
+   {
+   }
+};
+
+template<
+   class X, 
+   class State 
+   >
+class NSSeqContextByRef : public NSSeqFuncListStateAbstract<X, MoveByContextRef<X>>
+{
+public:
+
+   // store move methods on NSSeq
+   std::function<void(X&)> fApplyDo;
+   std::function<void(X&)> fApplyUndo; // TODO: receive this correctly.. now only copy for 'undo'
+   //
+   //std::function<MoveByContextRef<X>(State&)> fGenMoves;
+   //
+   State commonState;
+
+   NSSeqContextByRef(
+      std::function<void(X&)> _fApplyDoUndo  //, 
+      //std::function<MoveByContextRef<X>(State&)> _fGenMoves
+      )
+     : fApplyDo{_fApplyDoUndo}, fApplyUndo{_fApplyDoUndo} //, fGenMoves{_fGenMoves}
+   {
+   }
+
+   // must find solution to this!
+   virtual MoveByContextRef<X> getStateMove () {
+      return MoveByContextRef<X>{fApplyDo};  // automatic implementation
+   }
+   virtual void getNextState () {}
+   virtual bool getDone () {return false;} // TODO:
+};
+
+
+static void
+TSP_reveng_Middle_Ref(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      //
+      
+
+      NSSeqContextByRef<std::vector<int>, std::pair<int,int>> nsseq
+      {
+         [&nsseq](std::vector<int>& v) mutable -> void {
+            int& i = nsseq.commonState.first;
+            int& j = nsseq.commonState.second;
+            // swap
+            int aux = v[i];
+            v[i] = v[j];
+            v[j] = aux;
+         }
+      };
+
+      std::pair<int,int>& mpair = nsseq.commonState; 
+
+      auto myfuncDo = [&mpair](std::vector<int>& v) mutable -> void {
+                        int& i = mpair.first;
+                        int& j = mpair.second;
+                        // swap
+                        int aux = v[i];
+                        v[i] = v[j];
+                        v[j] = aux;
+                     };
+      //auto myfuncUndo = myfuncDo;
+
+      //void(*fX)(std::vector<int>&) { myfuncDo };
+      std::function<void(std::vector<int>&)> fX { myfuncDo };
+
+      //MoveMiddle<std::vector<int>> middle( fX );
+      // compute swap loop
+      for (int i = 0; i < pTSP.n - 1; ++i)
+         for (int j = i + 1; j < pTSP.n; ++j) {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            nsseq.commonState.first = i;
+            nsseq.commonState.second = j;
+            
+            //auto mv = myfunc(mpair); // apply function and get move
+            MoveByContextRef<std::vector<int>> mv = nsseq.getStateMove();
+            //mv.fApplyDo(v);
+            //myfuncDo(v);
+            //fX(v);
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            benchmark::DoNotOptimize(fcost = esol.first[i] + esol.first[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            //mv.fApplyUndo(v);
+            //myfuncUndo(v);
+            //fX(v);
+            mv.fApplyUndo(v);
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_reveng_Middle_Ref)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  //->Args({ 100, 0 }) // N = 10 - seed 0
+  //->Args({ 200, 0 }) // N = 10 - seed 0
+  ;
+
+// ===========================
+// ===========================
+// -------
 static void
 TSP_reveng_Middle_fX(benchmark::State& state)
 {
@@ -3533,7 +3679,6 @@ BENCHMARK(TSP_reveng_Middle_fX)
   //->Args({ 200, 0 }) // N = 10 - seed 0
   ;
 
-// -------
 
 
 template<class X>
