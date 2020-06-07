@@ -1461,20 +1461,6 @@ public:
    }
 };
 
-/*
-using NSSeqSwapTE = < 
-   MoveUndoFuncList<std::vector<int>> getApplyTSPSwap(int x, int y)
-   {
-      return MoveUndoFuncList<std::vector<int>>{
-         [x, y](std::vector<int>& v) -> void {
-            // swap
-            int aux = v[x];
-            v[x] = v[y];
-            v[y] = aux;
-         }
-      };
-   }
-*/
 
 static void
 TSP_final_MoveUndoFuncList_Raw2(benchmark::State& state)
@@ -1552,3 +1538,599 @@ TSP_final_MoveUndoFuncList_Raw2/30/0      11342 ns        11340 ns        64033
 */
 
 // ========================================
+
+
+template<class X, class State>
+class NSSeqFuncListState final
+{
+public:
+
+   std::function<MoveUndoFuncList<X>(State& state)> getStateMove;
+
+   std::function<void(State& state)> getNextState;
+
+   std::function<bool(State& state)> getDone;
+
+   NSSeqFuncListState(
+      std::function<MoveUndoFuncList<X>(State&)> _getStateMove,
+      std::function<void(State&)> _getNextState,
+      std::function<bool(State&)> _getDone
+   ) :
+      getStateMove{_getStateMove}, getNextState{_getNextState}, getDone{_getDone}
+   {
+   }
+};
+
+
+static void
+TSP_final_MoveUndoFuncList_Raw_State(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1); // best value
+      //
+      // state
+      std::pair<int, int> st(0, 1);
+      //
+      NSSeqFuncListState<std::vector<int>, std::pair<int, int>> nsseq(
+         [] (std::pair<int, int>& st) -> MoveUndoFuncList<std::vector<int>>
+               {
+                  int i = st.first;
+                  int j = st.second;
+                  return MoveUndoFuncList<std::vector<int>>(
+                     [i, j](std::vector<int>& v) -> void {
+                        // swap
+                        int aux = v[i];
+                        v[i] = v[j];
+                        v[j] = aux;
+                     }
+                  );
+               },
+               [] (std::pair<int, int>& st) -> void
+               {
+                  st.second++;
+                  if(st.second >= pTSP.n)
+                  {
+                     st.first++;
+                     st.second = st.first+1;
+                  }
+               },
+               [] (std::pair<int, int>& st) -> bool
+               {
+                  int i = st.first;
+                  return i >= (pTSP.n - 1);
+               }
+      );
+      // compute swap loop
+      while(!nsseq.getDone(st))
+      {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            auto mv = nsseq.getStateMove(st); // apply function and get move
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            int i = st.first;
+            int j = st.second;
+            benchmark::DoNotOptimize(fcost = v[i] + v[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.fApplyUndo(v);
+            //
+            nsseq.getNextState(st);
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+   }
+}
+BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ;
+
+// everything makes it slower...
+
+/*
+------------------------------------------------------------------------------------
+Benchmark                                          Time             CPU   Iterations
+------------------------------------------------------------------------------------
+TSP_final_baseline_CPP/10/0                      563 ns          562 ns      1254824
+TSP_final_baseline_CPP/20/0                      937 ns          937 ns       733637
+TSP_final_baseline_CPP/30/0                     1609 ns         1606 ns       435310
+TSP_final_MoveUndoFuncList/10/0                 1071 ns         1072 ns       652614
+TSP_final_MoveUndoFuncList/20/0                 2974 ns         2973 ns       236855
+TSP_final_MoveUndoFuncList/30/0                 6052 ns         6053 ns       115802
+TSP_final_MoveUndoFuncList_Raw/10/0              560 ns          560 ns      1252980
+TSP_final_MoveUndoFuncList_Raw/20/0              938 ns          938 ns       746896
+TSP_final_MoveUndoFuncList_Raw/30/0             1613 ns         1609 ns       436915
+TSP_final_MoveUndoFuncList_Raw2/10/0            1582 ns         1582 ns       428814
+TSP_final_MoveUndoFuncList_Raw2/20/0            5047 ns         5049 ns       138408
+TSP_final_MoveUndoFuncList_Raw2/30/0           10877 ns        10884 ns        64090
+TSP_final_MoveUndoFuncList_Raw_State/10/0       1477 ns         1484 ns       475452
+TSP_final_MoveUndoFuncList_Raw_State/20/0       4295 ns         4309 ns       162140
+TSP_final_MoveUndoFuncList_Raw_State/30/0       9107 ns         9118 ns        77857
+*/
+
+auto myGetMoveGlobal = [] (std::pair<int, int>& st) -> MoveUndoFuncList<std::vector<int>>
+               {
+                  int i = st.first;
+                  int j = st.second;
+                  return MoveUndoFuncList<std::vector<int>>(
+                     [i, j](std::vector<int>& v) -> void {
+                        // swap
+                        int aux = v[i];
+                        v[i] = v[j];
+                        v[j] = aux;
+                     }
+                  );
+               };
+
+auto myNextStateGlobal = [] (std::pair<int, int>& st) -> void
+               {
+                  st.second++;
+                  if(st.second >= pTSP.n)
+                  {
+                     st.first++;
+                     st.second = st.first+1;
+                  }
+               };
+
+auto myIsDoneGlobal = [] (std::pair<int, int>& st) -> bool
+               {
+                  int i = st.first;
+                  return i >= (pTSP.n - 1);
+               };
+
+static void
+TSP_final_MoveUndoFuncList_Raw_State_Global(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1); // best value
+      //
+      // state
+      std::pair<int, int> st(0, 1);
+      //
+      /*
+      NSSeqFuncListState<std::vector<int>, std::pair<int, int>> nsseq(
+               myGetMoveGlobal,
+               myNextStateGlobal,
+               myIsDoneGlobal
+      );
+      */
+      // compute swap loop
+      //while(!nsseq.getDone(st))
+      while(!myIsDoneGlobal(st))
+      {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            //auto mv = nsseq.getStateMove(st); // apply function and get move
+            auto mv = myGetMoveGlobal(st);
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            int i = st.first;
+            int j = st.second;
+            benchmark::DoNotOptimize(fcost = v[i] + v[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.fApplyUndo(v);
+            //
+            //nsseq.getNextState(st);
+            myNextStateGlobal(st);
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+   }
+}
+BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State_Global)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ;
+
+  /*
+TSP_final_MoveUndoFuncList_Raw_State/10/0              1416 ns         1418 ns       493873
+TSP_final_MoveUndoFuncList_Raw_State/20/0              4225 ns         4228 ns       164005
+TSP_final_MoveUndoFuncList_Raw_State/30/0              9038 ns         9040 ns        78103
+TSP_final_MoveUndoFuncList_Raw_State_Global/10/0       1135 ns         1137 ns       616657
+TSP_final_MoveUndoFuncList_Raw_State_Global/20/0       3150 ns         3152 ns       224886
+TSP_final_MoveUndoFuncList_Raw_State_Global/30/0       6384 ns         6386 ns       109318
+*/
+
+
+MoveUndoFuncList<std::vector<int>> myGetMoveGlobal2 (std::pair<int, int>& st)
+               {
+                  int i = st.first;
+                  int j = st.second;
+                  return MoveUndoFuncList<std::vector<int>>(
+                     [i, j](std::vector<int>& v) -> void {
+                        // swap
+                        int aux = v[i];
+                        v[i] = v[j];
+                        v[j] = aux;
+                     }
+                  );
+               };
+
+void myNextStateGlobal2(std::pair<int, int>& st)
+               {
+                  st.second++;
+                  if(st.second >= pTSP.n)
+                  {
+                     st.first++;
+                     st.second = st.first+1;
+                  }
+               };
+
+bool myIsDoneGlobal2 (std::pair<int, int>& st)
+               {
+                  int i = st.first;
+                  return i >= (pTSP.n - 1);
+               };
+
+static void
+TSP_final_MoveUndoFuncList_Raw_State_Global2(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1); // best value
+      //
+      // state
+      std::pair<int, int> st(0, 1);
+      //
+      /*
+      NSSeqFuncListState<std::vector<int>, std::pair<int, int>> nsseq(
+               myGetMoveGlobal,
+               myNextStateGlobal,
+               myIsDoneGlobal
+      );
+      */
+      // compute swap loop
+      //while(!nsseq.getDone(st))
+      while(!myIsDoneGlobal2(st))
+      {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            //auto mv = nsseq.getStateMove(st); // apply function and get move
+            auto mv = myGetMoveGlobal2(st);
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            int i = st.first;
+            int j = st.second;
+            benchmark::DoNotOptimize(fcost = v[i] + v[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.fApplyUndo(v);
+            //
+            //nsseq.getNextState(st);
+            myNextStateGlobal2(st);
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+   }
+}
+BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State_Global2)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ;
+
+// --------------
+
+template<
+class X, 
+class State, 
+MoveUndoFuncList<X> (*XgetStateMove) (State& state),
+void (*XgetNextState) (State& state),
+bool (*XgetDone) (State& state)
+>
+class NSSeqFuncListState2 final
+{
+public:
+   MoveUndoFuncList<X> (*getStateMove) (State& state) { XgetStateMove };
+   void (*getNextState) (State& state) { XgetNextState };
+   bool (*getDone) (State& state) { XgetDone };
+};
+
+
+static void
+TSP_final_MoveUndoFuncList_Raw_State2(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1); // best value
+      //
+      // state
+      std::pair<int, int> st(0, 1);
+      //
+      NSSeqFuncListState2<
+         std::vector<int>, 
+         std::pair<int, int>,
+         myGetMoveGlobal2,
+         myNextStateGlobal2,
+         myIsDoneGlobal2
+      > nsseq;
+      // compute swap loop
+      while(!nsseq.getDone(st))
+      {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            auto mv = nsseq.getStateMove(st); // apply function and get move
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            int i = st.first;
+            int j = st.second;
+            benchmark::DoNotOptimize(fcost = v[i] + v[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.fApplyUndo(v);
+            //
+            nsseq.getNextState(st);
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+   }
+}
+BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State2)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ;
+
+// -----------
+
+// embedding functions by template
+using NSSeqFuncListState3 = NSSeqFuncListState2<
+         std::vector<int>, 
+         std::pair<int, int>,
+         myGetMoveGlobal,
+         myNextStateGlobal,
+         myIsDoneGlobal
+      >;
+
+static void
+TSP_final_MoveUndoFuncList_Raw_State3(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1); // best value
+      //
+      // state
+      std::pair<int, int> st(0, 1);
+      // embed functions
+      NSSeqFuncListState3 nsseq;
+      // compute swap loop
+      while(!nsseq.getDone(st))
+      {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            auto mv = nsseq.getStateMove(st); // apply function and get move
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            int i = st.first;
+            int j = st.second;
+            benchmark::DoNotOptimize(fcost = v[i] + v[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.fApplyUndo(v);
+            //
+            nsseq.getNextState(st);
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+   }
+}
+BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State3)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ;
+
+// ------------
+
+
+// embedding functions by template
+using NSSeqFuncListState3 = NSSeqFuncListState2<
+         std::vector<int>, 
+         std::pair<int, int>,
+         myGetMoveGlobal,
+         myNextStateGlobal,
+         myIsDoneGlobal
+      >;
+
+template< class X >
+class NSSeqFuncListState4 final
+{
+public:
+   std::function<MoveUndoFuncList<X>()> getStateMove;
+   std::function<void()> getNextState;
+   std::function<bool()> getDone;
+   //State state;
+
+   template<
+      class State
+      //,
+      //MoveUndoFuncList<X> (*XgetStateMove) (State& state),
+      //void (*XgetNextState) (State& state),
+      //bool (*XgetDone) (State& state)
+   >
+   NSSeqFuncListState4(
+      State& _state, 
+      //std::function<MoveUndoFuncList<X>(State&)> funcGetStateMove,
+      //std::function<void(State&)> funcGetNextState,
+      //std::function<bool(State&)> funcGetDone
+      MoveUndoFuncList<X>(*funcGetStateMove)(State&),
+      void(*funcGetNextState)(State&),
+      bool(*funcGetDone)(State&)      
+      //auto funcGetStateMove,
+      //auto funcGetNextState,
+      //auto funcGetDone
+   )
+   : 
+   //state{_state},
+   getStateMove{ [&_state, funcGetStateMove]()->MoveUndoFuncList<X>{return funcGetStateMove(_state);} },
+   getNextState{ [&_state, funcGetNextState]()->void{return funcGetNextState(_state);} },
+   getDone{ [&_state, funcGetDone]()->bool{return funcGetDone(_state);} }
+   {
+   }
+
+   //MoveUndoFuncList<X> (*getStateMove) (State& state) { funcGetStateMove };
+   //void (*getNextState) (State& state) { funcGetNextState };
+   //bool (*getDone) (State& state) { funcGetDone };
+
+};
+
+static void
+TSP_final_MoveUndoFuncList_Raw_State4(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1); // best value
+      //
+      // state
+      std::pair<int, int> st(0, 1);
+      // embed functions
+      NSSeqFuncListState4 nsseq(
+         st,          
+         myGetMoveGlobal2,
+         myNextStateGlobal2,
+         myIsDoneGlobal2
+      );
+      // compute swap loop
+      while(!nsseq.getDone())
+      {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            auto mv = nsseq.getStateMove(); // apply function and get move
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            int i = st.first;
+            int j = st.second;
+            benchmark::DoNotOptimize(fcost = v[i] + v[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.fApplyUndo(v);
+            //
+            nsseq.getNextState();
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+   }
+}
+BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State4)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ;
+
+// more generalism harms performance...
+  /*
+TSP_final_MoveUndoFuncList_Raw_State3/10/0              1109 ns         1107 ns       634319
+TSP_final_MoveUndoFuncList_Raw_State3/20/0              3085 ns         3081 ns       226391
+TSP_final_MoveUndoFuncList_Raw_State3/30/0              6561 ns         6557 ns       107399
+TSP_final_MoveUndoFuncList_Raw_State4/10/0              1540 ns         1540 ns       442200
+TSP_final_MoveUndoFuncList_Raw_State4/20/0              4881 ns         4882 ns       143472
+TSP_final_MoveUndoFuncList_Raw_State4/30/0             10627 ns        10624 ns        63506
+*/
