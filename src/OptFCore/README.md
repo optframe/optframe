@@ -519,6 +519,22 @@ Final Tests (goal is to beat baseline):
 - `./build/FCore_bench --benchmark_filter=TSP_final`  (baseline is here)
 - `./build/FCore_bench --benchmark_filter=TSP_final_MoveUndoFuncList_Raw_State_Unique`
 
+-----------
+
+Interesting result from `3_6` to `3_7`... local variable is much faster than global.
+
+```
+TSP_final_MoveUndoFuncList_Raw_State_Unique3_6/10/0        1190 ns         1191 ns       553157
+TSP_final_MoveUndoFuncList_Raw_State_Unique3_6/20/0        3483 ns         3483 ns       201129
+TSP_final_MoveUndoFuncList_Raw_State_Unique3_6/30/0        7483 ns         7480 ns        94871
+TSP_final_MoveUndoFuncList_Raw_State_Unique3_6/100/0      76453 ns        76411 ns         9142
+TSP_final_MoveUndoFuncList_Raw_State_Unique3_6/200/0     303804 ns       303685 ns         2308
+TSP_final_MoveUndoFuncList_Raw_State_Unique3_7/10/0        1379 ns         1379 ns       510888
+TSP_final_MoveUndoFuncList_Raw_State_Unique3_7/20/0        4191 ns         4191 ns       166418
+TSP_final_MoveUndoFuncList_Raw_State_Unique3_7/30/0        8924 ns         8922 ns        78357
+TSP_final_MoveUndoFuncList_Raw_State_Unique3_7/100/0      94517 ns        94482 ns         7489
+TSP_final_MoveUndoFuncList_Raw_State_Unique3_7/200/0     371031 ns       370913 ns         1891
+```
 
 ### Learn More
 

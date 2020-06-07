@@ -2826,3 +2826,402 @@ BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State_Unique3)
   ->Args({ 100, 0 }) // N = 10 - seed 0
   ->Args({ 200, 0 }) // N = 10 - seed 0
   ;
+
+// ================
+//
+// try to reduce on the Move side now
+//
+//
+// considering singleton NSSeq solution
+//
+
+NSSeqSingleMove3<
+   std::vector<int>, 
+   std::pair<int,int>
+> nsseqGlobal
+// cannot initialize here... method for Move depends on it (circular!)
+{
+   [](std::pair<int,int>& st)
+   {
+      return MoveUndoFuncList<std::vector<int>>(
+                     // no capture!
+                     [](std::vector<int>& v) -> void {
+                        int& i = nsseqGlobal.commonState.first;
+                        int& j = nsseqGlobal.commonState.second;
+                        // swap
+                        int aux = v[i];
+                        v[i] = v[j];
+                        v[j] = aux;
+                     }
+                  );
+   },
+   myNextStateGlobal2,
+   myIsDoneGlobal2
+};
+
+// MAYBE... it could work with Closure! But test this later.. avoid all possible perf loss!!
+/*
+MoveUndoFuncList<std::vector<int>> myGetMoveGlobalRefUnique (std::pair<int, int>& st)
+               {
+                  return MoveUndoFuncList<std::vector<int>>(
+                     // no capture!
+                     [](std::vector<int>& v) -> void {
+                        int& i = nsseqGlobal->commonState.first;
+                        int& j = nsseqGlobal->commonState.second;
+                        // swap
+                        int aux = v[i];
+                        v[i] = v[j];
+                        v[j] = aux;
+                     }
+                  );
+               };
+*/
+
+static void
+TSP_final_MoveUndoFuncList_Raw_State_Unique4(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1); // best value
+      //
+      nsseqGlobal.commonState = make_pair(0,1);
+      // state is unique, and inside NSSeq structure
+      NSSeqFuncListStateAbstract<std::vector<int>>& nsseq = nsseqGlobal;
+      // compute swap loop
+      while(!nsseq.getDone())
+      {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            auto mv = nsseq.getStateMove(); // apply function and get move
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            int i = nsseqGlobal.commonState.first;
+            int j = nsseqGlobal.commonState.second;
+            benchmark::DoNotOptimize(fcost = v[i] + v[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.fApplyUndo(v);
+            //
+            nsseq.getNextState();
+         }
+         
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State_Unique4)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ;
+
+  // v4 worsened v3... why?
+
+/*
+TSP_final_MoveUndoFuncList_Raw_State_Unique3/10/0        1151 ns         1148 ns       610467
+TSP_final_MoveUndoFuncList_Raw_State_Unique3/20/0        3335 ns         3327 ns       214484
+TSP_final_MoveUndoFuncList_Raw_State_Unique3/30/0        6832 ns         6820 ns       104922
+TSP_final_MoveUndoFuncList_Raw_State_Unique3/100/0      68604 ns        68575 ns        10167
+TSP_final_MoveUndoFuncList_Raw_State_Unique3/200/0     292624 ns       292247 ns         2561
+TSP_final_MoveUndoFuncList_Raw_State_Unique4/10/0        1363 ns         1363 ns       513365
+TSP_final_MoveUndoFuncList_Raw_State_Unique4/20/0        4198 ns         4196 ns       167869
+TSP_final_MoveUndoFuncList_Raw_State_Unique4/30/0        8997 ns         8994 ns        70367
+TSP_final_MoveUndoFuncList_Raw_State_Unique4/100/0      94311 ns        94281 ns         7387
+TSP_final_MoveUndoFuncList_Raw_State_Unique4/200/0     376160 ns       376085 ns         1862
+*/
+
+
+NSSeqSingleMove3<
+   std::vector<int>, 
+   std::pair<int,int>
+>* nsseqGlobal5 {nullptr};
+// cannot initialize here... method for Move depends on it (circular!)
+MoveUndoFuncList<std::vector<int>> myGetMoveGlobalRefUnique5 (std::pair<int, int>& st)
+               {
+                  return MoveUndoFuncList<std::vector<int>>(
+                     // no capture!
+                     [](std::vector<int>& v) -> void {
+                        int& i = nsseqGlobal5->commonState.first;
+                        int& j = nsseqGlobal5->commonState.second;
+                        // swap
+                        int aux = v[i];
+                        v[i] = v[j];
+                        v[j] = aux;
+                     }
+                  );
+               };
+
+
+static void
+TSP_final_MoveUndoFuncList_Raw_State_Unique5(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1); // best value
+      //
+      if(!nsseqGlobal5)
+         nsseqGlobal5 = new NSSeqSingleMove3<
+   std::vector<int>, 
+   std::pair<int,int>
+>{
+   myGetMoveGlobalRefUnique5,
+   myNextStateGlobal2,
+   myIsDoneGlobal2
+};
+      nsseqGlobal5->commonState = make_pair(0,1);
+      // state is unique, and inside NSSeq structure
+      NSSeqFuncListStateAbstract<std::vector<int>>& nsseq = *nsseqGlobal5;
+      // compute swap loop
+      while(!nsseq.getDone())
+      {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            auto mv = nsseq.getStateMove(); // apply function and get move
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            int i = nsseqGlobal.commonState.first;
+            int j = nsseqGlobal.commonState.second;
+            benchmark::DoNotOptimize(fcost = v[i] + v[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.fApplyUndo(v);
+            //
+            nsseq.getNextState();
+         }
+         
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State_Unique5)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ;
+
+// v3 is still better.. why?
+
+
+static void
+TSP_final_MoveUndoFuncList_Raw_State_Unique3_6(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1); // best value
+      //
+      NSSeqSingleMove3<
+         std::vector<int>, 
+         std::pair<int,int>
+      > nsseq
+      {
+         [](std::pair<int,int>& st)->MoveUndoFuncList<std::vector<int>>
+         {
+            return MoveUndoFuncList<std::vector<int>>(
+                           // no capture!
+                           [](std::vector<int>& v) -> void {
+                              int& i = NSSeqSingleMove3<
+                                 std::vector<int>, 
+                                 std::pair<int,int>
+                              >::commonState.first;
+                              int& j = NSSeqSingleMove3<
+                                 std::vector<int>, 
+                                 std::pair<int,int>
+                              >::commonState.second;
+                              // swap
+                              int aux = v[i];
+                              v[i] = v[j];
+                              v[j] = aux;
+                           }
+                        );
+         },
+         myNextStateGlobal2,
+         myIsDoneGlobal2
+      };
+      nsseq.commonState = make_pair(0,1);
+      // state is unique, and inside NSSeq structure
+
+      // compute swap loop
+      while(!nsseq.getDone())
+      {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            auto mv = nsseq.getStateMove(); // apply function and get move
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            int i = nsseq.commonState.first;
+            int j = nsseq.commonState.second;
+            benchmark::DoNotOptimize(fcost = v[i] + v[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.fApplyUndo(v);
+            //
+            nsseq.getNextState();
+         }
+         
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State_Unique3_6)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ;
+
+// very strange... difference from 3 to 3_6 is none, just capture.
+// will try to "globalize" to see if it's worse
+// ===========================================================
+//
+
+NSSeqSingleMove3<
+         std::vector<int>, 
+         std::pair<int,int>
+      > nsseqGlobal7
+      {
+         [](std::pair<int,int>& st)->MoveUndoFuncList<std::vector<int>>
+         {
+            return MoveUndoFuncList<std::vector<int>>(
+                           // no capture!
+                           [](std::vector<int>& v) -> void {
+                              int& i = NSSeqSingleMove3<
+                                 std::vector<int>, 
+                                 std::pair<int,int>
+                              >::commonState.first;
+                              int& j = NSSeqSingleMove3<
+                                 std::vector<int>, 
+                                 std::pair<int,int>
+                              >::commonState.second;
+                              // swap
+                              int aux = v[i];
+                              v[i] = v[j];
+                              v[j] = aux;
+                           }
+                        );
+         },
+         myNextStateGlobal2,
+         myIsDoneGlobal2
+      };
+
+static void
+TSP_final_MoveUndoFuncList_Raw_State_Unique3_7(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1); // best value
+      //
+      NSSeqFuncListStateAbstract<std::vector<int>>& nsseq = nsseqGlobal7;
+      nsseqGlobal7.commonState = make_pair(0,1);
+      // state is unique, and inside NSSeq structure
+
+      // compute swap loop
+      while(!nsseq.getDone())
+      {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            auto mv = nsseq.getStateMove(); // apply function and get move
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            int i = nsseqGlobal7.commonState.first;
+            int j = nsseqGlobal7.commonState.second;
+            benchmark::DoNotOptimize(fcost = v[i] + v[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.fApplyUndo(v);
+            //
+            nsseq.getNextState();
+         }
+         
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State_Unique3_7)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ;
+
+// ========================================
+// VERY interesting result from 3_6 to 3_7... global is not better than local
+// ========================================
+
