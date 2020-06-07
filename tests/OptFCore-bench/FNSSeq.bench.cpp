@@ -2621,7 +2621,7 @@ MoveUndoFuncList<std::vector<int>> myGetMoveGlobalUnique ()
                   );
                };
 
-
+/*
 static void
 TSP_final_MoveUndoFuncList_Raw_State_Unique2(benchmark::State& state)
 {
@@ -2637,6 +2637,7 @@ TSP_final_MoveUndoFuncList_Raw_State_Unique2(benchmark::State& state)
       std::pair<int, int> mij(-1, -1); // best value
       //
       // needs to heapify it, because Method is injected here on constructor (type erasure!)
+      // TODO: this spends lots of memory... should perform just once!
       nsseqGlobalSwap = new MyNSSeqUniqueSwap
       {
          make_pair(0,1),
@@ -2688,4 +2689,140 @@ BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State_Unique2)
   ->Args({ 100, 0 }) // N = 10 - seed 0
   ->Args({ 200, 0 }) // N = 10 - seed 0
   ;
+*/
 
+// Time worsened... we need to find a way to keep it down, while encapsulating.
+
+/*
+---------------------------------------------------------------------------------------------
+Benchmark                                                   Time             CPU   Iterations
+---------------------------------------------------------------------------------------------
+TSP_final_MoveUndoFuncList_Raw_State_Unique/10/0         1184 ns         1184 ns       618683
+TSP_final_MoveUndoFuncList_Raw_State_Unique/20/0         3326 ns         3322 ns       199598
+TSP_final_MoveUndoFuncList_Raw_State_Unique/30/0         6822 ns         6805 ns       104496
+TSP_final_MoveUndoFuncList_Raw_State_Unique/100/0       69906 ns        69744 ns         8170
+TSP_final_MoveUndoFuncList_Raw_State_Unique/200/0      285022 ns       283748 ns         2361
+TSP_final_MoveUndoFuncList_Raw_State_Unique2/10/0        1413 ns         1407 ns       484384
+TSP_final_MoveUndoFuncList_Raw_State_Unique2/20/0        4140 ns         4141 ns       125731
+TSP_final_MoveUndoFuncList_Raw_State_Unique2/30/0        8706 ns         8707 ns        79920
+TSP_final_MoveUndoFuncList_Raw_State_Unique2/100/0      95609 ns        95582 ns         7435
+TSP_final_MoveUndoFuncList_Raw_State_Unique2/200/0     379161 ns       378775 ns         1904
+*/
+
+// ----------------
+
+// trying to discover if static (singleton) is necessary
+
+// we must provide efficient encapsulations for two components:
+// - Move
+// - NSSeq
+
+// TODO: restart from 1100 approach!
+// but without passing functions on template.... some 'type erasure' is needed!! 
+// reason is Move functions, that require NSSeq... that require Move... circular.
+
+
+template< 
+   class X , 
+   class State
+>
+class NSSeqSingleMove3 final : public NSSeqFuncListStateAbstract<X, MoveUndoFuncList<X>>
+{
+public:
+
+   // this is a Single common state for ALL moves
+   // only one move can exist in memory
+   static State commonState;
+
+   MoveUndoFuncList<X>(*XfuncGetStateMove)(State&);
+   void(*XfuncGetNextState)(State&);
+   bool(*XfuncGetDone)(State&);
+
+   NSSeqSingleMove3(
+      MoveUndoFuncList<X>(*_XfuncGetStateMove)(State&),
+      void(*_XfuncGetNextState)(State&),
+      bool(*_XfuncGetDone)(State&)
+   ) :
+      XfuncGetStateMove{_XfuncGetStateMove},
+      XfuncGetNextState{_XfuncGetNextState},
+      XfuncGetDone{_XfuncGetDone}
+   {
+   }
+
+   MoveUndoFuncList<X> getStateMove () { return XfuncGetStateMove(commonState); };
+   void getNextState () { XfuncGetNextState(commonState); };
+   bool getDone () { return XfuncGetDone(commonState); };
+};
+
+template<
+   class X , 
+   class State
+>
+State NSSeqSingleMove3<X, State>::commonState = State{};
+
+
+static void
+TSP_final_MoveUndoFuncList_Raw_State_Unique3(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1); // best value
+      //
+      NSSeqSingleMove3<
+         std::vector<int>, 
+         std::pair<int,int>
+      > nsseq{
+         myGetMoveGlobalRef,
+         myNextStateGlobal2,
+         myIsDoneGlobal2
+      };
+      nsseq.commonState = make_pair(0,1);
+      // state is unique, and inside NSSeq structure
+
+      // compute swap loop
+      while(!nsseq.getDone())
+      {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            auto mv = nsseq.getStateMove(); // apply function and get move
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            int i = nsseq.commonState.first;
+            int j = nsseq.commonState.second;
+            benchmark::DoNotOptimize(fcost = v[i] + v[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.fApplyUndo(v);
+            //
+            nsseq.getNextState();
+         }
+         
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State_Unique3)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ;
