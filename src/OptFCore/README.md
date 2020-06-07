@@ -536,6 +536,26 @@ TSP_final_MoveUndoFuncList_Raw_State_Unique3_7/100/0      94517 ns        94482 
 TSP_final_MoveUndoFuncList_Raw_State_Unique3_7/200/0     371031 ns       370913 ns         1891
 ```
 
+---------
+
+Time to reverse engineer and generalize, step by step.
+
+```
+------------------------------------------------------------------------
+Benchmark                              Time             CPU   Iterations
+------------------------------------------------------------------------
+TSP_reveng_baseline_CPP/10/0         568 ns          565 ns      1248024
+TSP_reveng_baseline_CPP/20/0         976 ns          977 ns       718477
+TSP_reveng_baseline_CPP/30/0        1596 ns         1595 ns       437799
+TSP_reveng_baseline_CPP/100/0      14027 ns        13998 ns        49781
+TSP_reveng_baseline_CPP/200/0      55058 ns        54975 ns        12769
+TSP_reveng_MoveStruct/10/0          1133 ns         1133 ns       617200
+TSP_reveng_MoveStruct/20/0          3251 ns         3251 ns       216945
+TSP_reveng_MoveStruct/30/0          6544 ns         6546 ns       106829
+TSP_reveng_MoveStruct/100/0        69445 ns        69426 ns        10054
+TSP_reveng_MoveStruct/200/0       281571 ns       281458 ns         2537
+```
+
 ### Learn More
 
 This can be done in the same way as OptFrame v4 heuristic components, see examples for more ;)

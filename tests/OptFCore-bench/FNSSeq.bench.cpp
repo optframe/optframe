@@ -3225,3 +3225,140 @@ BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State_Unique3_7)
 // VERY interesting result from 3_6 to 3_7... global is not better than local
 // ========================================
 
+// ------------------
+// ------------------
+// ------------------
+// ------------------
+//
+// Reverse Engineering baseline
+//
+// ./build/FCore_bench --benchmark_filter=TSP_reveng
+//
+// ------------------
+// ------------------
+// ------------------
+// ------------------
+// ------------------
+
+static void
+TSP_reveng_baseline_CPP(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      // compute swap loop
+      for (int i = 0; i < pTSP.n - 1; ++i)
+         for (int j = i + 1; j < pTSP.n; ++j) {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            int aux = esol.first[i];
+            esol.first[i] = esol.first[j];
+            esol.first[j] = aux;
+            //
+            // compute cost
+            double fcost;
+            benchmark::DoNotOptimize(fcost = esol.first[i] + esol.first[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            int aux2 = esol.first[i];
+            esol.first[i] = esol.first[j];
+            esol.first[j] = aux2;
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_reveng_baseline_CPP)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ;
+
+
+
+static void
+TSP_reveng_MoveStruct(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      //
+      std::pair<int,int> mpair; 
+      // compute swap loop
+      for (int i = 0; i < pTSP.n - 1; ++i)
+         for (int j = i + 1; j < pTSP.n; ++j) {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            mpair.first = i;
+            mpair.second = j;
+            
+            auto myfunc = [](std::pair<int,int>& st)->MoveUndoFuncList<std::vector<int>>
+            {
+               return MoveUndoFuncList<std::vector<int>>(
+                           // no capture!
+                           [](std::vector<int>& v) -> void {
+                              int& i = NSSeqSingleMove3<
+                                 std::vector<int>, 
+                                 std::pair<int,int>
+                              >::commonState.first;
+                              int& j = NSSeqSingleMove3<
+                                 std::vector<int>, 
+                                 std::pair<int,int>
+                              >::commonState.second;
+                              // swap
+                              int aux = v[i];
+                              v[i] = v[j];
+                              v[j] = aux;
+                           }
+                        );
+            };
+            auto mv = myfunc(mpair); // apply function and get move
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            benchmark::DoNotOptimize(fcost = esol.first[i] + esol.first[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.fApplyUndo(v);
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_reveng_MoveStruct)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ;
