@@ -558,6 +558,8 @@ TSP_reveng_MoveStruct/200/0       281571 ns       281458 ns         2537
 
 The issue is being narrowed:
 
+`./build/FCore_bench --benchmark_filter=TSP_reveng`
+
 ```
 ------------------------------------------------------------------------------
 Benchmark                                    Time             CPU   Iterations
@@ -568,6 +570,9 @@ TSP_reveng_baseline_CPP/30/0              1609 ns         1607 ns       439407
 TSP_reveng_DoUndo_manually/10/0            558 ns          560 ns      1256176
 TSP_reveng_DoUndo_manually/20/0            948 ns          949 ns       743123
 TSP_reveng_DoUndo_manually/30/0           1610 ns         1609 ns       433090
+TSP_reveng_Middle_ptr_lambda/10/0          579 ns          578 ns      1213665
+TSP_reveng_Middle_ptr_lambda/20/0         1027 ns         1025 ns       689663
+TSP_reveng_Middle_ptr_lambda/30/0         1675 ns         1673 ns       420796
     ----------> FIND MIDDLE TERM HERE!  560 vs 723 vs 1100
 TSP_reveng_Middle_fX/10/0                  723 ns          723 ns       977332
 TSP_reveng_Middle_fX/20/0                 1704 ns         1702 ns       413311
