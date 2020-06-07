@@ -514,6 +514,12 @@ TSP_final_MoveUndoFuncList_Raw_State_Unique2/100/0      89886 ns        89857 ns
 TSP_final_MoveUndoFuncList_Raw_State_Unique2/200/0     374217 ns       374145 ns         1956
 ```
 
+Final Tests (goal is to beat baseline): 
+
+- `./build/FCore_bench --benchmark_filter=TSP_final`  (baseline is here)
+- `./build/FCore_bench --benchmark_filter=TSP_final_MoveUndoFuncList_Raw_State_Unique`
+
+
 ### Learn More
 
 This can be done in the same way as OptFrame v4 heuristic components, see examples for more ;)
