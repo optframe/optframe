@@ -3379,24 +3379,6 @@ public:
 
 // unused
 
-//
-//
-//
-/*
-template<class X>
-class MoveFunctor final
-{
-public:
-   void(*fApplyDo)(X&);
-   void(*fApplyUndo)(X&);
-
-   //template<void(*XfApplyDoUndo)(X&)>
-   MoveMiddle(auto XfApplyDoUndo)
-     : fApplyDo(XfApplyDoUndo), fApplyUndo(XfApplyDoUndo)
-   {
-   }
-};
-*/
 
 static void
 TSP_reveng_Middle_ptr_lambda(benchmark::State& state)
@@ -3472,6 +3454,13 @@ BENCHMARK(TSP_reveng_Middle_ptr_lambda)
   //->Args({ 200, 0 }) // N = 10 - seed 0
   ;
 
+// --------
+// try some functor strategy
+// --------
+
+// HOW?
+
+// -------
 
 static void
 TSP_reveng_Middle_fX(benchmark::State& state)
@@ -3537,6 +3526,98 @@ TSP_reveng_Middle_fX(benchmark::State& state)
    }
 }
 BENCHMARK(TSP_reveng_Middle_fX)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  //->Args({ 100, 0 }) // N = 10 - seed 0
+  //->Args({ 200, 0 }) // N = 10 - seed 0
+  ;
+
+// -------
+
+
+template<class X>
+class MoveUndoImproved final
+{
+public:
+   // store reference of function, not copy of it (UNIQUE strategy..  just a "redirector")
+   std::function<void(X&)>& fApplyDoUndo;
+
+   MoveUndoImproved(std::function<void(X&)>& _fApplyDoUndo) noexcept
+     : fApplyDoUndo{_fApplyDoUndo}
+   {
+   }
+};
+
+// better_fX should have same performance as fX
+
+static void
+TSP_reveng_Middle_better_fX(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      //
+      std::pair<int,int> mpair; 
+
+      auto myfuncDo = [&mpair](std::vector<int>& v) mutable -> void {
+                        int& i = mpair.first;
+                        int& j = mpair.second;
+                        // swap
+                        int aux = v[i];
+                        v[i] = v[j];
+                        v[j] = aux;
+                     };
+      //auto myfuncUndo = myfuncDo;
+
+      //void(*fX)(std::vector<int>&) { myfuncDo };
+      std::function<void(std::vector<int>&)> fX { myfuncDo };
+
+      //MoveUndoImproved<std::vector<int>> mv { fX };
+
+      //MoveMiddle<std::vector<int>> middle( fX );
+      // compute swap loop
+      for (int i = 0; i < pTSP.n - 1; ++i)
+         for (int j = i + 1; j < pTSP.n; ++j) {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            mpair.first = i;
+            mpair.second = j;
+            
+            //auto mv = myfunc(mpair); // apply function and get move
+            //mv.fApplyDo(v);
+            //myfuncDo(v);
+            MoveUndoImproved<std::vector<int>> mv { fX };
+            mv.fApplyDoUndo(v);
+            //
+            // compute cost
+            double fcost;
+            benchmark::DoNotOptimize(fcost = esol.first[i] + esol.first[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            //mv.fApplyUndo(v);
+            //myfuncUndo(v);
+            mv.fApplyDoUndo(v);
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_reveng_Middle_better_fX)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
