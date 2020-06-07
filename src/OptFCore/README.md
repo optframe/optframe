@@ -556,6 +556,27 @@ TSP_reveng_MoveStruct/100/0        69445 ns        69426 ns        10054
 TSP_reveng_MoveStruct/200/0       281571 ns       281458 ns         2537
 ```
 
+The issue is being narrowed:
+
+```
+------------------------------------------------------------------------------
+Benchmark                                    Time             CPU   Iterations
+------------------------------------------------------------------------------
+TSP_reveng_baseline_CPP/10/0               558 ns          559 ns      1248809
+TSP_reveng_baseline_CPP/20/0               931 ns          933 ns       720393
+TSP_reveng_baseline_CPP/30/0              1609 ns         1607 ns       439407
+TSP_reveng_DoUndo_manually/10/0            558 ns          560 ns      1256176
+TSP_reveng_DoUndo_manually/20/0            948 ns          949 ns       743123
+TSP_reveng_DoUndo_manually/30/0           1610 ns         1609 ns       433090
+    ----------> FIND MIDDLE TERM HERE!  560 vs 1100
+TSP_reveng_MoveStruct_manually/10/0       1093 ns         1094 ns       616896
+TSP_reveng_MoveStruct_manually/20/0       3042 ns         3042 ns       229592
+TSP_reveng_MoveStruct_manually/30/0       6413 ns         6412 ns       110729
+TSP_reveng_MoveStruct/10/0                1115 ns         1116 ns       626288
+TSP_reveng_MoveStruct/20/0                3111 ns         3114 ns       222556
+TSP_reveng_MoveStruct/30/0                6361 ns         6361 ns       109002
+```
+
 ### Learn More
 
 This can be done in the same way as OptFrame v4 heuristic components, see examples for more ;)
