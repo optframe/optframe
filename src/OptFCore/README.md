@@ -497,6 +497,23 @@ TSP_final_MoveUndoFuncList_Raw_State6/100/0            86476 ns        86429 ns 
 TSP_final_MoveUndoFuncList_Raw_State6/200/0           339906 ns       339812 ns         2065
 ```
 
+----------
+
+Focusing on "Unique Move" strategies... results look promising, but final solution not ready yet:
+
+```
+TSP_final_MoveUndoFuncList_Raw_State_Unique/10/0         1153 ns         1148 ns       621881
+TSP_final_MoveUndoFuncList_Raw_State_Unique/20/0         3301 ns         3303 ns       211369
+TSP_final_MoveUndoFuncList_Raw_State_Unique/30/0         6537 ns         6539 ns       106502
+TSP_final_MoveUndoFuncList_Raw_State_Unique/100/0       70357 ns        70334 ns        10241
+TSP_final_MoveUndoFuncList_Raw_State_Unique/200/0      269778 ns       269699 ns         2590
+TSP_final_MoveUndoFuncList_Raw_State_Unique2/10/0        1343 ns         1343 ns       520641
+TSP_final_MoveUndoFuncList_Raw_State_Unique2/20/0        4151 ns         4152 ns       163927
+TSP_final_MoveUndoFuncList_Raw_State_Unique2/30/0        8550 ns         8555 ns        81458
+TSP_final_MoveUndoFuncList_Raw_State_Unique2/100/0      89886 ns        89857 ns         7757
+TSP_final_MoveUndoFuncList_Raw_State_Unique2/200/0     374217 ns       374145 ns         1956
+```
+
 ### Learn More
 
 This can be done in the same way as OptFrame v4 heuristic components, see examples for more ;)

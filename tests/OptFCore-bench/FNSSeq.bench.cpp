@@ -2545,3 +2545,147 @@ TSP_final_MoveUndoFuncList_Raw_State_Unique/100/0      68481 ns        68440 ns 
 TSP_final_MoveUndoFuncList_Raw_State_Unique/200/0     271814 ns       271715 ns         2570
 */
 
+// =======================================================================
+// capture-less lambda... but moving directly to static! No time to waste!
+//
+// looks like we will require type erasure here!
+//
+// if we pass type on NSSeq, we cannot use it on Move.. because Move is inside NSSeq and NSSeq needs Move operation!
+//
+
+// This next class is NOT singleton... this is better! One single Move per NSSeq... a little improvement.
+template< 
+   class X , 
+   class State
+>
+class NSSeqSingleMoveTE final : public NSSeqFuncListStateAbstract<X, MoveUndoFuncList<X>>
+{
+public:
+
+   // this is a Single common state for ALL moves
+   // only one move can exist in memory
+   State commonState;
+
+   MoveUndoFuncList<X>(*XfuncGetStateMove)(); // TODO: pass state here
+   void(*XfuncGetNextState)(State&);
+   bool(*XfuncGetDone)(State&);
+
+   // Similar to type erasure... passing methods directly here (could be template parameter if necessary)
+   // not really type erasure, because we don't need templates (but idea is same, we removed it from template list)
+   NSSeqSingleMoveTE(
+         const State& _commonState,
+         MoveUndoFuncList<X>(*_XfuncGetStateMove)(),  // TODO: pass state here
+         void(*_XfuncGetNextState)(State&),
+         bool(*_XfuncGetDone)(State&)
+      ) :
+      commonState{_commonState},
+      XfuncGetStateMove{_XfuncGetStateMove},
+      XfuncGetNextState{_XfuncGetNextState},
+      XfuncGetDone{_XfuncGetDone}
+   {
+   }
+
+   MoveUndoFuncList<X> getStateMove () { return XfuncGetStateMove(); }; // TODO: pass state 'XfuncGetStateMove(state)'
+   void getNextState () { XfuncGetNextState(commonState); };
+   bool getDone () { return XfuncGetDone(commonState); };
+};
+
+
+using MyNSSeqUniqueSwap = NSSeqSingleMoveTE<
+         std::vector<int>, 
+         std::pair<int,int>
+      >;
+
+// Now a VERY appelative mode!! Put in Global scope to avoid Capture lambdas!
+MyNSSeqUniqueSwap* nsseqGlobalSwap {nullptr};
+// cannot instatiate here! because internal method is not ready yet!! must Heapify it!
+
+
+static void uniqueGlobalApply(std::vector<int>& v)
+{
+   int& i = nsseqGlobalSwap->commonState.first;
+   int& j = nsseqGlobalSwap->commonState.second;
+   // swap
+   int aux = v[i];
+   v[i] = v[j];
+   v[j] = aux;
+}
+
+MoveUndoFuncList<std::vector<int>> myGetMoveGlobalUnique ()
+               {
+                  return MoveUndoFuncList<std::vector<int>>(
+                     //uniqueGlobalApply // TODO: try some better (more beautiful) lambda here!
+                     [](std::vector<int>& v) -> void {
+                        uniqueGlobalApply(v); // TODO: why we need this captureless layer?
+                     }
+                  );
+               };
+
+
+static void
+TSP_final_MoveUndoFuncList_Raw_State_Unique2(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1); // best value
+      //
+      // needs to heapify it, because Method is injected here on constructor (type erasure!)
+      nsseqGlobalSwap = new MyNSSeqUniqueSwap
+      {
+         make_pair(0,1),
+         myGetMoveGlobalUnique,
+         myNextStateGlobal2,
+         myIsDoneGlobal2
+      };
+      NSSeqFuncListStateAbstract<std::vector<int>>& nsseq = *nsseqGlobalSwap;
+      //nsseq.commonState = make_pair(0,1);
+      // state is unique, and inside NSSeq structure
+
+      // compute swap loop
+      while(!nsseq.getDone())
+      {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            auto mv = nsseq.getStateMove(); // apply function and get move
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            int i = nsseqGlobalSwap->commonState.first;
+            int j = nsseqGlobalSwap->commonState.second;
+            benchmark::DoNotOptimize(fcost = v[i] + v[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.fApplyUndo(v);
+            //
+            nsseq.getNextState();
+         }
+         
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State_Unique2)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ;
+
