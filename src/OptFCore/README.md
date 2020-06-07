@@ -568,7 +568,10 @@ TSP_reveng_baseline_CPP/30/0              1609 ns         1607 ns       439407
 TSP_reveng_DoUndo_manually/10/0            558 ns          560 ns      1256176
 TSP_reveng_DoUndo_manually/20/0            948 ns          949 ns       743123
 TSP_reveng_DoUndo_manually/30/0           1610 ns         1609 ns       433090
-    ----------> FIND MIDDLE TERM HERE!  560 vs 1100
+    ----------> FIND MIDDLE TERM HERE!  560 vs 723 vs 1100
+TSP_reveng_Middle_fX/10/0                  723 ns          723 ns       977332
+TSP_reveng_Middle_fX/20/0                 1704 ns         1702 ns       413311
+TSP_reveng_Middle_fX/30/0                 3161 ns         3157 ns       221579
 TSP_reveng_MoveStruct_manually/10/0       1093 ns         1094 ns       616896
 TSP_reveng_MoveStruct_manually/20/0       3042 ns         3042 ns       229592
 TSP_reveng_MoveStruct_manually/30/0       6413 ns         6412 ns       110729
