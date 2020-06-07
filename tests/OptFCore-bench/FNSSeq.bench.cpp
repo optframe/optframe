@@ -1310,6 +1310,7 @@ TSP_final_baseline_CPP(benchmark::State& state)
          }
       benchmark::DoNotOptimize(ff = best);
       benchmark::ClobberMemory();
+      assert(ff == 1);
    }
 }
 BENCHMARK(TSP_final_baseline_CPP)
@@ -2111,6 +2112,7 @@ TSP_final_MoveUndoFuncList_Raw_State4(benchmark::State& state)
          }
       benchmark::DoNotOptimize(ff = best);
       benchmark::ClobberMemory();
+      assert(ff == 1);
    }
 }
 BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State4)
@@ -2429,3 +2431,117 @@ BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State7)
   ->Args({ 100, 0 }) // N = 10 - seed 0
   ->Args({ 200, 0 }) // N = 10 - seed 0
   ;
+
+//
+// ======================
+//
+
+template< 
+   class X , 
+   class State,
+   MoveUndoFuncList<X>(*XfuncGetStateMove)(State&),
+   void(*XfuncGetNextState)(State&),
+   bool(*XfuncGetDone)(State&)
+>
+class NSSeqSingleMove final : public NSSeqFuncListStateAbstract<X, MoveUndoFuncList<X>>
+{
+public:
+
+   // this is a Single common state for ALL moves
+   // only one move can exist in memory
+   static State commonState;
+
+   MoveUndoFuncList<X> getStateMove () { return XfuncGetStateMove(commonState); };
+   void getNextState () { XfuncGetNextState(commonState); };
+   bool getDone () { return XfuncGetDone(commonState); };
+};
+
+template<
+   class X , 
+   class State,
+   MoveUndoFuncList<X>(*XfuncGetStateMove)(State&),
+   void(*XfuncGetNextState)(State&),
+   bool(*XfuncGetDone)(State&)
+>
+State NSSeqSingleMove<X, State, XfuncGetStateMove, XfuncGetNextState, XfuncGetDone>::commonState = State{};
+
+
+static void
+TSP_final_MoveUndoFuncList_Raw_State_Unique(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1); // best value
+      //
+      NSSeqSingleMove<
+         std::vector<int>, 
+         std::pair<int,int>,
+         myGetMoveGlobalRef,
+         myNextStateGlobal2,
+         myIsDoneGlobal2
+      > nsseq;
+      nsseq.commonState = make_pair(0,1);
+      // state is unique, and inside NSSeq structure
+
+      // compute swap loop
+      while(!nsseq.getDone())
+      {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            //
+            // swap
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            auto mv = nsseq.getStateMove(); // apply function and get move
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            int i = nsseq.commonState.first;
+            int j = nsseq.commonState.second;
+            benchmark::DoNotOptimize(fcost = v[i] + v[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.fApplyUndo(v);
+            //
+            nsseq.getNextState();
+         }
+         
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_final_MoveUndoFuncList_Raw_State_Unique)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ;
+
+// Solution is on memory uniqueness and copyless design (zero heap and zero stack)
+/*
+TSP_final_MoveUndoFuncList_Raw_State7/10/0              1412 ns         1414 ns       498042
+TSP_final_MoveUndoFuncList_Raw_State7/20/0              4124 ns         4125 ns       175334
+TSP_final_MoveUndoFuncList_Raw_State7/30/0              8297 ns         8301 ns        84457
+TSP_final_MoveUndoFuncList_Raw_State7/100/0            85748 ns        85708 ns         8142
+TSP_final_MoveUndoFuncList_Raw_State7/200/0           355623 ns       354146 ns         2060
+TSP_final_MoveUndoFuncList_Raw_State_Unique/10/0        1131 ns         1133 ns       617464
+TSP_final_MoveUndoFuncList_Raw_State_Unique/20/0        3274 ns         3273 ns       220017
+TSP_final_MoveUndoFuncList_Raw_State_Unique/30/0        6527 ns         6523 ns       107037
+TSP_final_MoveUndoFuncList_Raw_State_Unique/100/0      68481 ns        68440 ns        10343
+TSP_final_MoveUndoFuncList_Raw_State_Unique/200/0     271814 ns       271715 ns         2570
+*/
+
