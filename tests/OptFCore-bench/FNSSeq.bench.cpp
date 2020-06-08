@@ -3516,6 +3516,169 @@ public:
    virtual bool getDone () {return false;} // TODO:
 };
 
+// STATIC DIDN'T IMPROVE THIS CLASS... SAME PERFORMANCE! (BETTER KEEP LOCAL THEN!)
+//template<class X, class State>
+//State NSSeqContextByRef<X, State>::commonState = State{};
+
+// =============== THIS WON'T CONSIDER INITIALIZATION OF NSSEQ
+
+// Now we make a SPECIFIC INITIALIZER
+
+
+
+
+template<class X>
+class MoveSpecificByContextRef final
+{
+public:
+   void(*fApplyDo)(X&); 
+
+   MoveSpecificByContextRef(void(*_fApplyDo)(X&))
+     : fApplyDo{_fApplyDo}
+   {
+   }
+};
+
+class NSSeqContextSpecificByRef : public NSSeqFuncListStateAbstract<std::vector<int>, MoveSpecificByContextRef<std::vector<int>>>
+{
+public:
+
+   // store move methods on NSSeq
+   
+   /*
+   std::function<void(std::vector<int>&)> fApplyDo
+   {
+      [](std::vector<int>& v) -> void {
+            int& i = commonState.first;
+            int& j = commonState.second;
+            // swap
+            int aux = v[i];
+            v[i] = v[j];
+            v[j] = aux;
+         }
+   };
+   */
+   
+
+  
+  static void fApplyDo(std::vector<int>& v) 
+   {
+      // non-capture!
+      //[](std::vector<int>& v) -> void {
+            int& i = commonState.first;
+            int& j = commonState.second;
+            // swap
+            int aux = v[i];
+            v[i] = v[j];
+            v[j] = aux;
+      //   }
+   };
+   
+
+   //std::function<void(X&)> fApplyUndo; // TODO: receive this correctly.. now only copy for 'undo'
+   //
+   //std::function<MoveByContextRef<X>(State&)> fGenMoves;
+   //
+   static std::pair<int,int> commonState;
+
+   // must find solution to this!
+   virtual MoveSpecificByContextRef<std::vector<int>> getStateMove () {
+      void(*ptr)(std::vector<int>&) = this->fApplyDo;
+      return MoveSpecificByContextRef<std::vector<int>> (
+         ptr
+      );  // automatic implementation
+   }
+   virtual void getNextState () {}
+   virtual bool getDone () {return false;} // TODO:
+};
+
+std::pair<int,int> NSSeqContextSpecificByRef::commonState = std::pair<int,int>{};
+
+static void
+TSP_reveng_Middle_Ref_NoInit_Specific(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      //
+      // The mere existence of this class causes overhead!!!
+      // How is this possible?
+      //
+      NSSeqContextSpecificByRef nsseq;
+
+      std::pair<int,int>& mpair = nsseq.commonState; 
+      //
+      //
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+
+      // NOTE THAT 'nsseq' IS UNUSED HERE!!! JUST CONSIDERING IT'S "EXISTENCE" OVERHEAD!
+
+      //std::pair<int,int> mpair;
+      /*
+      auto myfuncDo = [&mpair](std::vector<int>& v) mutable -> void {
+                        int& i = mpair.first;
+                        int& j = mpair.second;
+                        // swap
+                        int aux = v[i];
+                        v[i] = v[j];
+                        v[j] = aux;
+                     };
+      */
+      //auto myfuncUndo = myfuncDo;
+
+      //void(*fX)(std::vector<int>&) { myfuncDo };
+      //std::function<void(std::vector<int>&)> fX { myfuncDo };
+
+      //MoveMiddle<std::vector<int>> middle( fX );
+      // compute swap loop
+      for (int i = 0; i < pTSP.n - 1; ++i)
+         for (int j = i + 1; j < pTSP.n; ++j) {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            mpair.first = i;
+            mpair.second = j;
+            
+            MoveSpecificByContextRef<std::vector<int>> mv = nsseq.getStateMove();
+            //myfuncDo(v);
+            mv.fApplyDo(v);
+            //
+            // compute cost
+            double fcost;
+            benchmark::DoNotOptimize(fcost = esol.first[i] + esol.first[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            //myfuncDo(v);
+            mv.fApplyDo(v);
+            //mv.fApplyUndo(v);
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_reveng_Middle_Ref_NoInit_Specific)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  //->Args({ 100, 0 }) // N = 10 - seed 0
+  //->Args({ 200, 0 }) // N = 10 - seed 0
+  ;
+
+
+// ======================
+
 
 static void
 TSP_reveng_Middle_Ref(benchmark::State& state)
@@ -3531,11 +3694,12 @@ TSP_reveng_Middle_Ref(benchmark::State& state)
       double best = 99999999;
       std::pair<int, int> mij(-1, -1);
       //
-      
-
+      // The mere existence of this class causes overhead!!!
+      // How is this possible?
+      //
       NSSeqContextByRef<std::vector<int>, std::pair<int,int>> nsseq
       {
-         [&nsseq](std::vector<int>& v) mutable -> void {
+         [&nsseq](std::vector<int>& v) -> void {
             int& i = nsseq.commonState.first;
             int& j = nsseq.commonState.second;
             // swap
@@ -3544,12 +3708,14 @@ TSP_reveng_Middle_Ref(benchmark::State& state)
             v[j] = aux;
          }
       };
+      std::pair<int,int>& mpair = nsseq.commonState; 
+      
 
       // NOTE THAT 'nsseq' IS UNUSED HERE!!! JUST CONSIDERING IT'S "EXISTENCE" OVERHEAD!
 
-      std::pair<int,int>& mpair = nsseq.commonState; 
+      //std::pair<int,int> mpair;
 
-      auto myfuncDo = [&mpair](std::vector<int>& v) mutable -> void {
+      auto myfuncDo = [&mpair](std::vector<int>& v) -> void {
                         int& i = mpair.first;
                         int& j = mpair.second;
                         // swap
@@ -3560,7 +3726,7 @@ TSP_reveng_Middle_Ref(benchmark::State& state)
       //auto myfuncUndo = myfuncDo;
 
       //void(*fX)(std::vector<int>&) { myfuncDo };
-      std::function<void(std::vector<int>&)> fX { myfuncDo };
+      //std::function<void(std::vector<int>&)> fX { myfuncDo };
 
       //MoveMiddle<std::vector<int>> middle( fX );
       // compute swap loop
@@ -3570,8 +3736,8 @@ TSP_reveng_Middle_Ref(benchmark::State& state)
             std::vector<int>& v = esol.first;
             //
             // HARDCODING FUNCTION HERE
-            nsseq.commonState.first = i;
-            nsseq.commonState.second = j;
+            mpair.first = i;
+            mpair.second = j;
             
             //MoveByContextRef<std::vector<int>> mv = nsseq.getStateMove();
             myfuncDo(v);
@@ -3599,8 +3765,8 @@ BENCHMARK(TSP_reveng_Middle_Ref)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
-  //->Args({ 100, 0 }) // N = 10 - seed 0
-  //->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
   ;
 
 // ===========================
