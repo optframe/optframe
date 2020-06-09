@@ -4019,8 +4019,8 @@ BENCHMARK(TSP_reveng_Middle_better_fX)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
-  //->Args({ 100, 0 }) // N = 10 - seed 0
-  //->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
   ;
 
 
@@ -4155,6 +4155,6 @@ BENCHMARK(TSP_reveng_MoveStruct)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
-  //->Args({ 100, 0 }) // N = 10 - seed 0
-  //->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
   ;
