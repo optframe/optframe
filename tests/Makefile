@@ -29,6 +29,10 @@ GBENCH_LIBS=-lbenchmark
 bench: FCore.bench.cpp
 	g++-10.1 $< $(CXXFLAGS_BCH) -I../src -I../Examples $(GBENCH_DIRS) -o build/FCore_bench $(GBENCH_LIBS) -lpthread
 
+bench_alt: AltFrame.bench.cpp
+	g++-10.1 $< $(CXXFLAGS_BCH) -I../src  $(GBENCH_DIRS) -o build/AltFrame_bench $(GBENCH_LIBS) -lpthread
+
+
 #PERF=./perf-4.19.0/tools/perf/perf
 PERF=linux-4.16.12/tools/perf/perf
 

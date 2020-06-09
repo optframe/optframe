@@ -43,7 +43,10 @@
 #include <stdlib.h>
 #include <vector>
 
-using namespace std;
+using namespace std; // TODO: remove!
+
+namespace optframe
+{
 
 /*
 class MatrixBadIndex
@@ -285,5 +288,7 @@ ostream& operator<<(ostream &os, const Matrix<string> &obj)
    return os;
 }
 */
+
+} // namespace optframe
 
 #endif /*MATRIX_H_*/
