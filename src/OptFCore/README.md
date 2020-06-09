@@ -574,8 +574,8 @@ TSP_reveng_Middle_ptr_lambda/10/0          579 ns          578 ns      1213665
 TSP_reveng_Middle_ptr_lambda/20/0         1027 ns         1025 ns       689663
 TSP_reveng_Middle_ptr_lambda/30/0         1675 ns         1673 ns       420796
 TSP_reveng_Middle_ptr_lambda/100/0       14906 ns        14875 ns        48233
- -----> THIS WAS THE LIMIT FOR ANY "MINIMAL" GENERALIZATION DEVISED BY US... (2%-18% overhead)
-TSP_reveng_Middle_ptr_static/10/0                 593 ns          595 ns      1108391
+ -----> THIS WAS THE LIMIT FOR ANY "MINIMAL" GENERALIZATION DEVISED BY US... (4%-18% overhead)
+TSP_reveng_Middle_ptr_static/10/0                 606 ns          606 ns      1172508
 TSP_reveng_Middle_ptr_static/20/0                1115 ns         1114 ns       575359
 TSP_reveng_Middle_ptr_static/30/0                1923 ns         1921 ns       375088
 TSP_reveng_Middle_ptr_static/100/0              17627 ns        17605 ns        39801
