@@ -587,9 +587,12 @@ TSP_reveng_Middle_Ref_NoInit_Specific/30/0       1985 ns         1983 ns       3
 TSP_reveng_Middle_Ref/10/0                 610 ns          608 ns      1158715
 TSP_reveng_Middle_Ref/20/0                1100 ns         1096 ns       640063
 TSP_reveng_Middle_Ref/30/0                1917 ns         1912 ns       359909
+  --------> NOW WE JUMP TO 25%-100% OVERHEAD... TYPE ERASURE COSTS
 TSP_reveng_Middle_fX/10/0                  723 ns          723 ns       977332
 TSP_reveng_Middle_fX/20/0                 1704 ns         1702 ns       413311
 TSP_reveng_Middle_fX/30/0                 3161 ns         3157 ns       221579
+TSP_reveng_Middle_fX/100/0               31978 ns        31905 ns        22627
+TSP_reveng_Middle_fX/200/0              119703 ns       119623 ns         5885
 TSP_reveng_MoveStruct_manually/10/0       1093 ns         1094 ns       616896
 TSP_reveng_MoveStruct_manually/20/0       3042 ns         3042 ns       229592
 TSP_reveng_MoveStruct_manually/30/0       6413 ns         6412 ns       110729
