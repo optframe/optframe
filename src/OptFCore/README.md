@@ -573,7 +573,12 @@ TSP_reveng_DoUndo_manually/30/0           1610 ns         1609 ns       433090
 TSP_reveng_Middle_ptr_lambda/10/0          579 ns          578 ns      1213665
 TSP_reveng_Middle_ptr_lambda/20/0         1027 ns         1025 ns       689663
 TSP_reveng_Middle_ptr_lambda/30/0         1675 ns         1673 ns       420796
-    ----------> FIND MIDDLE TERM HERE!  560 vs 610 vs 720 vs 1100
+TSP_reveng_Middle_ptr_lambda/100/0       14906 ns        14875 ns        48233
+ -----> THIS WAS THE LIMIT FOR ANY "MINIMAL" GENERALIZATION DEVISED BY US... (2%-18% overhead)
+TSP_reveng_Middle_ptr_static/10/0                 593 ns          595 ns      1108391
+TSP_reveng_Middle_ptr_static/20/0                1115 ns         1114 ns       575359
+TSP_reveng_Middle_ptr_static/30/0                1923 ns         1921 ns       375088
+TSP_reveng_Middle_ptr_static/100/0              17627 ns        17605 ns        39801
 TSP_reveng_Middle_Ref_NoInit_Specific/10/0        618 ns          619 ns      1106128
 TSP_reveng_Middle_Ref_NoInit_Specific/20/0       1083 ns         1080 ns       667035
 TSP_reveng_Middle_Ref_NoInit_Specific/30/0       1985 ns         1983 ns       363488
@@ -591,7 +596,7 @@ TSP_reveng_MoveStruct/20/0                3111 ns         3114 ns       222556
 TSP_reveng_MoveStruct/30/0                6361 ns         6361 ns       109002
 ```
 
-Mission is to improve `./build/FCore_bench --benchmark_filter=TSP_reveng_Middle_Ref`.
+Completed "middle term" tests: `./build/FCore_bench --benchmark_filter=TSP_reveng_Middle`.
 
 ### Learn More
 

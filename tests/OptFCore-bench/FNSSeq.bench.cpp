@@ -3450,17 +3450,103 @@ BENCHMARK(TSP_reveng_Middle_ptr_lambda)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
-  //->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
   //->Args({ 200, 0 }) // N = 10 - seed 0
   ;
 
-// --------
-// try some functor strategy
-// --------
+// ===================
+// ===================
+// ------
+
+// CANNOT DEVISE ANYTHING IN BETWEEN HERE
+// STATIC VARIABLE COSTS MORE, BUT WE CANNOT PUT ALL LOCAL IN A GENERAL 
+//    MANNER WITHOUT SOME SORT OF TYPE ERASURE...
+// 600 ns seems to be the limit for anything "minimally" portable
 
 // -------
 // ===========================
 // ===========================
+
+// trying to WORSEN this strategy... maybe STATIC is bad?
+
+std::pair<int,int> mpair_static; 
+
+static void
+TSP_reveng_Middle_ptr_static(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      //
+      
+
+      auto myfuncDo = [](std::vector<int>& v) -> void {
+                        int& i = mpair_static.first;
+                        int& j = mpair_static.second;
+                        // swap
+                        int aux = v[i];
+                        v[i] = v[j];
+                        v[j] = aux;
+                     };
+      //auto myfuncUndo = myfuncDo;
+
+      void(decltype(myfuncDo)::*ptr)(std::vector<int>&)const = &decltype(myfuncDo)::operator();
+      //std::cout << "test = " << (lambda.*ptr)(2, 3) << std::endl;
+
+      //void(*fX)(std::vector<int>&) { myfuncDo };
+      //std::function<void(std::vector<int>&)> fX { myfuncDo };
+
+      //MoveMiddle<std::vector<int>> middle( fX );
+      // compute swap loop
+      for (int i = 0; i < pTSP.n - 1; ++i)
+         for (int j = i + 1; j < pTSP.n; ++j) {
+            //ff += v; // benchmark::DoNotOptimize(...)
+            std::vector<int>& v = esol.first;
+            //
+            // HARDCODING FUNCTION HERE
+            mpair_static.first = i;
+            mpair_static.second = j;
+            
+            //auto mv = myfunc(mpair); // apply function and get move
+            //mv.fApplyDo(v);
+            //myfuncDo(v);
+            (myfuncDo.*ptr)(v);
+            //
+            // compute cost
+            double fcost;
+            benchmark::DoNotOptimize(fcost = esol.first[i] + esol.first[j]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            //mv.fApplyUndo(v);
+            //myfuncUndo(v);
+            (myfuncDo.*ptr)(v);
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_reveng_Middle_ptr_static)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  //->Args({ 200, 0 }) // N = 10 - seed 0
+  ;
+
+
+
 
 // this is the way to go ... 560 vs 760
 // we need to avoid context type erasure.. by taking context from NSSeq (by reference!!)
@@ -3593,6 +3679,9 @@ public:
 };
 
 std::pair<int,int> NSSeqContextSpecificByRef::commonState = std::pair<int,int>{};
+
+
+
 
 static void
 TSP_reveng_Middle_Ref_NoInit_Specific(benchmark::State& state)
