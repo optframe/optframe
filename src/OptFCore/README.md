@@ -606,6 +606,10 @@ TSP_reveng_MoveStruct/200/0                    266345 ns       266250 ns        
 
 Completed "middle term" tests: `./build/FCore_bench --benchmark_filter=TSP_reveng_Middle`.
 
+--------
+
+Best candidate for "Singleton Moves" seems to currently be `TSP_reveng_Middle_Ref_abstract` (only 4%-20% overhead). Should devise a "complete" prototype based on that.
+
 ### Learn More
 
 This can be done in the same way as OptFrame v4 heuristic components, see examples for more ;)
