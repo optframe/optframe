@@ -1,5 +1,7 @@
 #pragma once
 
+#include<iostream>
+
 #include "NSSeq.hpp"
 
 
@@ -12,6 +14,11 @@ public:
    MoveFuncPtrCopy(void(*_fApplyDo)(XES&))
      : fApplyDo{_fApplyDo}
    {
+   }
+
+   void print()
+   {
+      std::cout << "MOVE!" << std::endl;
    }
 };
 
