@@ -8,7 +8,7 @@ int main()
 {
 
    int nTSP = 6;
-   NSSeqTest nsseq{nTSP};
+   NSSeqTestPtr nsseq{nTSP};
    std::vector<int> v{nTSP, 0};
    for(nsseq.first(v); nsseq.next();)
    {

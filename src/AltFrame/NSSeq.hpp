@@ -3,7 +3,7 @@
 #include "NSFind.hpp"
 #include "NSIterator.hpp"
 
-template<class XES, class MoveModel = uptr<Move<XES>> >
+template<class XES, class MoveModel = uptr<Move<XES>>, class IterModel = uptr<NSIterator<XES, MoveModel>> >
 class NSSeq : public NSFind<XES, MoveModel>
 {
 public:
@@ -17,6 +17,9 @@ public:
    //svirtual op<MoveModel> findImproving(const XES&) = 0;
 
    virtual uptr<NSIterator<XES, MoveModel>> getIterator(const XES&) { /* whatever */ }  //= 0;
+
+   virtual IterModel getIteratorCopy(const XES&) { /* whatever */ }  //= 0;
+
 
    // =================
    // embedded iterator
