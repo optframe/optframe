@@ -20,6 +20,8 @@ Benchmark                                         Time             CPU   Iterati
 TSP_AltFrame_1_CPP_baseline/10/0                575 ns          576 ns      1216629
 TSP_AltFrame_1_CPP_baseline/20/0                947 ns          947 ns       743656
 TSP_AltFrame_1_CPP_baseline/30/0               1594 ns         1595 ns       440222
+TSP_AltFrame_1_CPP_baseline/100/0             13966 ns        13922 ns        50580
+TSP_AltFrame_1_CPP_baseline/200/0             54301 ns        54221 ns        13116
 TSP_AltFrame_NSSeqTestPtr_raw/10/0              598 ns          597 ns      1177473
 TSP_AltFrame_NSSeqTestPtr_raw/20/0             1074 ns         1073 ns       654463
 TSP_AltFrame_NSSeqTestPtr_raw/30/0             1925 ns         1924 ns       357477

@@ -137,8 +137,9 @@ BENCHMARK(TSP_AltFrame_1_CPP_baseline)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
-  //->Args({ 100, 0 }) // N = 10 - seed 0
-  //->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 1000, 0 }) // N = 10 - seed 0
   ;
 
 //
@@ -163,8 +164,9 @@ TSP_AltFrame_NSSeqTestPtr_raw(benchmark::State& state)
          for(nsseq.first(v); !nsseq.isDone(); nsseq.next())
          {
             //auto mv = *nsseq.current();
-            SMoveFuncPtrCopy mv = *nsseq.current();
-            mv.fApplyDo(v);
+            MovePtr mv { nsseq.current().value() };
+            //mv.fApplyDo(v);
+            mv.apply(v);
             // compute cost
             int& i = nsseq.commonState.first;
             int& j = nsseq.commonState.second;
@@ -176,7 +178,7 @@ TSP_AltFrame_NSSeqTestPtr_raw(benchmark::State& state)
             }
             //
             // undo swap
-            mv.fApplyUndo(v); // TODO: apply undo
+            mv.undo(v); // TODO: apply undo
          }
       benchmark::DoNotOptimize(ff = best);
       benchmark::ClobberMemory();
@@ -217,8 +219,8 @@ TSP_AltFrame_NSSeqTestPtr_raw_iter(benchmark::State& state)
          for(iter->first(v); !iter->isDone(); iter->next())
          {
             //auto mv = *nsseq.current();
-            SMoveFuncPtrCopy mv = *iter->current();
-            mv.fApplyDo(v);
+            MovePtr mv = *iter->current();
+            mv.apply(v);
             // compute cost
             int& i = nsseq.commonState.first;
             int& j = nsseq.commonState.second;
@@ -230,7 +232,7 @@ TSP_AltFrame_NSSeqTestPtr_raw_iter(benchmark::State& state)
             }
             //
             // undo swap
-            mv.fApplyUndo(v); // TODO: apply undo
+            mv.undo(v); // TODO: apply undo
          }
       benchmark::DoNotOptimize(ff = best);
       benchmark::ClobberMemory();
@@ -272,8 +274,8 @@ TSP_AltFrame_NSSeqTestPtr_iter_ptr(benchmark::State& state)
          for(iter.fFirst(v); !iter.fIsDone(); iter.fNext())
          {
             //auto mv = *nsseq.current();
-            SMoveFuncPtrCopy mv = *iter.fCurrent();
-            mv.fApplyDo(v);
+            MovePtr mv { iter.fCurrent().value() };
+            mv.apply(v);
             // compute cost
             int& i = nsseq.commonState.first;
             int& j = nsseq.commonState.second;
@@ -285,7 +287,7 @@ TSP_AltFrame_NSSeqTestPtr_iter_ptr(benchmark::State& state)
             }
             //
             // undo swap
-            mv.fApplyUndo(v); // TODO: apply undo
+            mv.undo(v); // TODO: apply undo
          }
       benchmark::DoNotOptimize(ff = best);
       benchmark::ClobberMemory();
@@ -321,9 +323,11 @@ TSP_AltFrame_NSSeqTestPtr_raw_coro(benchmark::State& state)
          for(nsseq.coroFirst(v); !nsseq.coroIsDone(); nsseq.coroNext())
          {
             //auto mv = *nsseq.current();
-            SMoveFuncPtrCopy mv = *nsseq.coroCurrent();
-            mv.fApplyDo(v);
+            MovePtr mv { nsseq.coroCurrent().value() };
+            mv.apply(v);
             // compute cost
+            // THIS IS ONLY POSSIBLE HERE DURING SPECIFIC TESTS...
+            // ON PRACTICE, NSFind should handle state copies, not possible on MoveRef type.
             int& i = nsseq.commonState.first;
             int& j = nsseq.commonState.second;
             double fcost;
@@ -334,7 +338,7 @@ TSP_AltFrame_NSSeqTestPtr_raw_coro(benchmark::State& state)
             }
             //
             // undo swap
-            mv.fApplyUndo(v); // TODO: apply undo
+            mv.undo(v); // TODO: apply undo
          }
       benchmark::DoNotOptimize(ff = best);
       benchmark::ClobberMemory();
@@ -347,4 +351,5 @@ BENCHMARK(TSP_AltFrame_NSSeqTestPtr_raw_coro)
   ->Args({ 30, 0 }) // N = 10 - seed 0
   ->Args({ 100, 0 }) // N = 10 - seed 0
   ->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 1000, 0 }) // N = 10 - seed 0
   ;

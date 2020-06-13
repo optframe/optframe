@@ -31,4 +31,47 @@ using uptr = std::unique_ptr<X>;
 template<class X>
 using op = std::optional<X>;
 
+template <class Self, class XES>
+//concept bool totally_ordered =
+//concept bool partially_ordered =
+concept 
+#if __cplusplus <= 201703L // after c++20, not required 'bool'
+  bool 
+#endif
+ IsMove =
+  requires(Self m, XES& se) {
+     //typename Self::xes_type; // not asking this, because of unique_ptr
+    { m->apply(se) };
+  };
+
+/*
+       {
+          e.atObjVal(idx)
+       }
+       ->optframe::objval;
+
+template<class Self>
+concept 
+#if __cplusplus <= 201703L // after c++20, not required 'bool'
+  bool 
+#endif
+ XESolution = XSolution<Self>&& //(XSolution<Self> && XEvaluation<Self>)  ||
+  requires(Self p)
+{
+   typename Self::first_type;  // requires a "first_type" with some "XSolution properties"
+   typename Self::second_type; // requires a "second_type" with some "XEvaluation properties"
+   {
+      p.first
+   }
+   ->my_convertible_to<typename Self::first_type>;
+   {
+      p.second
+   }
+   ->my_convertible_to<typename Self::second_type>;
+   //
+   XSolution<typename Self::first_type>;
+   XEvaluation<typename Self::second_type>;
+};
+*/
+
 //

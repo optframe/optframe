@@ -10,21 +10,33 @@
 // ======================
 
 template<class XES>
-class SMoveFuncPtrCopy final
+class MovePtr final
 {
 public:
-   void (*fApplyDo)(XES&);
-   void (*fApplyUndo)(XES&);
+   // no need for a method:  void apply(XES& se)
+   void (*apply)(XES&);
+   void (*undo)(XES&);
 
-   SMoveFuncPtrCopy()
+/*
+   MovePtr() = delete;
+   MovePtr(const MovePtr&) = delete;
+   // Move semantics is allowed
+   MovePtr(MovePtr&& m) noexcept :
+      apply{m.apply},
+      undo{m.undo}
    {
-      // TODO: remove! USED FOR coroutines... try to avoid this!
+   }
+*/
+
+   MovePtr(void (*_apply)(XES&))
+     : apply{ _apply }
+     , undo{ _apply }
+   {
    }
 
-   SMoveFuncPtrCopy(void (*_fApplyDo)(XES&))
-     : fApplyDo{ _fApplyDo }
-     , fApplyUndo{ _fApplyDo }
+   MovePtr<XES>* operator->()
    {
+      return this;
    }
 
    void print()
@@ -32,6 +44,9 @@ public:
       std::cout << "MOVE!" << std::endl;
    }
 };
+
+// std::vector<int>
+static_assert(IsMove<MovePtr<std::vector<int>>, std::vector<int>>);
 
 // ---------
 

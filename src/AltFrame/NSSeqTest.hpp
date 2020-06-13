@@ -9,10 +9,10 @@
 // swap idea
 // =================
 
-class NSSeqTestStateless : public NSSeq<std::vector<int>, SMoveFuncPtrCopy<std::vector<int>>, SNSIteratorFuncPtrCopy<std::vector<int>, SMoveFuncPtrCopy<std::vector<int>>>>
+class NSSeqTestStateless : public NSSeq<std::vector<int>, MovePtr<std::vector<int>>, SNSIteratorFuncPtrCopy<std::vector<int>, MovePtr<std::vector<int>>>>
 {
 public:
-   using MyMove = SMoveFuncPtrCopy<std::vector<int>>;
+   using MyMove = MovePtr<std::vector<int>>;
 
 public:
    int nTSP{ -1 };
@@ -101,7 +101,7 @@ public:
       //
       for (int i = 0; i < nTSP - 1; i++)
          for (int j = i + 1; j < nTSP; j++)
-            //co_yield SMoveFuncPtrCopy<std::vector<int>>{ ptr };
+            //co_yield MovePtr<std::vector<int>>{ ptr };
             co_yield std::make_pair(i,j);
    }
 
@@ -127,9 +127,9 @@ public:
    op<MyMove> coroCurrent()
    {
       void (*ptr)(std::vector<int>&) = fApplyDo;
-      SMoveFuncPtrCopy<std::vector<int>> mv{ ptr };
+      MovePtr<std::vector<int>> mv{ ptr };
       commonState = gen.getValue();
-      return op<MyMove>{mv};
+      return op<MyMove>{ std::move(mv) };
       //return op<MyMove>(
       //  op_gen->getValue()); // automatic implementation
    }
@@ -163,7 +163,7 @@ public:
       void (*ptr)(std::vector<int>&) = fApplyDo;
       //
       return op<MyMove>(
-        SMoveFuncPtrCopy<std::vector<int>>(
+        MovePtr<std::vector<int>>(
           ptr)); // automatic implementation
    }
 
@@ -198,12 +198,12 @@ public:
 
    // returns current move, or nothing (if doesn't exist)
    //virtual op< MoveFuncPtrCopy<std::vector<int>> > current(){ /* whatever */ } // = 0;
-   virtual op<SMoveFuncPtrCopy<std::vector<int>>> current()
+   virtual op<MovePtr<std::vector<int>>> current()
    {
       void (*ptr)(std::vector<int>&) = this->fApplyDo;
       //
-      return op<SMoveFuncPtrCopy<std::vector<int>>>(
-        SMoveFuncPtrCopy<std::vector<int>>(
+      return op<MovePtr<std::vector<int>>>(
+        MovePtr<std::vector<int>>(
           ptr)); // automatic implementation
    }
 };
@@ -251,12 +251,12 @@ public:
 
    // returns current move, or nothing (if doesn't exist)
    //virtual op< MoveFuncPtrCopy<std::vector<int>> > current(){ /* whatever */ } // = 0;
-   virtual op<SMoveFuncPtrCopy<std::vector<int>>> current()
+   virtual op<MovePtr<std::vector<int>>> current()
    {
       void (*ptr)(std::vector<int>&) = NSSeqTestStateless::fApplyDo;
       //
-      return op<SMoveFuncPtrCopy<std::vector<int>>>(
-        SMoveFuncPtrCopy<std::vector<int>>(
+      return op<MovePtr<std::vector<int>>>(
+        MovePtr<std::vector<int>>(
           ptr)); // automatic implementation
    }
 };
