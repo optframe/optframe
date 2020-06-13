@@ -143,7 +143,8 @@ public:
 
    // ==================== REF STATIC ITER ================
 
-   std::function<void(std::vector<int>&)> funcApply [](std::vector<int>& v) -> void {
+   // missing '=' here breaks gcc...
+   std::function<void(std::vector<int>&)> funcApply = [](std::vector<int>& v) -> void {
                         int& i = commonState.first;
                         int& j = commonState.second;
                         // swap
