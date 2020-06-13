@@ -31,8 +31,9 @@ bench: FCore.bench.cpp
 
 bench_alt: AltFrame.bench.cpp
 	#sudo cpupower frequency-set --governor performance
-	g++-10.1 $< $(CXXFLAGS_BCH) -I../src  $(GBENCH_DIRS) -o build/AltFrame_bench $(GBENCH_LIBS) -lpthread
-	./build/AltFrame_bench --benchmark_filter=TSP_AltFrame
+	g++-10.1 -g $< $(CXXFLAGS_BCH) -I../src  $(GBENCH_DIRS) -o build/AltFrame_bench $(GBENCH_LIBS) -lpthread
+	#./build/AltFrame_bench --benchmark_filter=TSP_AltFrame
+	valgrind ./build/AltFrame_bench --benchmark_filter=TSP_AltFrame_NSSeqTestPtr_raw_coro
 	#sudo cpupower frequency-set --governor powersave
 
 bench_perf:

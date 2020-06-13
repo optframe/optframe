@@ -164,7 +164,7 @@ TSP_AltFrame_NSSeqTestPtr_raw(benchmark::State& state)
          for(nsseq.first(v); !nsseq.isDone(); nsseq.next())
          {
             //auto mv = *nsseq.current();
-            MovePtr mv { nsseq.current().value() };
+            MoveFPtr mv { nsseq.current().value() };
             //mv.fApplyDo(v);
             mv.apply(v);
             // compute cost
@@ -219,7 +219,7 @@ TSP_AltFrame_NSSeqTestPtr_raw_iter(benchmark::State& state)
          for(iter->first(v); !iter->isDone(); iter->next())
          {
             //auto mv = *nsseq.current();
-            MovePtr mv = *iter->current();
+            MoveFPtr mv = *iter->current();
             mv.apply(v);
             // compute cost
             int& i = nsseq.commonState.first;
@@ -274,7 +274,7 @@ TSP_AltFrame_NSSeqTestPtr_iter_ptr(benchmark::State& state)
          for(iter.fFirst(v); !iter.fIsDone(); iter.fNext())
          {
             //auto mv = *nsseq.current();
-            MovePtr mv { iter.fCurrent().value() };
+            MoveFPtr mv { iter.fCurrent().value() };
             mv.apply(v);
             // compute cost
             int& i = nsseq.commonState.first;
@@ -322,9 +322,9 @@ TSP_AltFrame_NSSeqTestPtr_raw_coro(benchmark::State& state)
       // SHORT ITERATOR...
          for(nsseq.coroFirst(v); !nsseq.coroIsDone(); nsseq.coroNext())
          {
-            //auto mv = *nsseq.current();
-            MovePtr mv { nsseq.coroCurrent().value() };
+            MoveFPtr mv { nsseq.coroCurrent().value() };
             mv.apply(v);
+            //
             // compute cost
             // THIS IS ONLY POSSIBLE HERE DURING SPECIFIC TESTS...
             // ON PRACTICE, NSFind should handle state copies, not possible on MoveRef type.

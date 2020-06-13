@@ -9,10 +9,10 @@
 // swap idea
 // =================
 
-class NSSeqTestStateless : public NSSeq<std::vector<int>, MovePtr<std::vector<int>>, SNSIteratorFuncPtrCopy<std::vector<int>, MovePtr<std::vector<int>>>>
+class NSSeqTestStateless : public NSSeq<std::vector<int>, MoveFPtr<std::vector<int>>, SNSIteratorFuncPtrCopy<std::vector<int>, MoveFPtr<std::vector<int>>>>
 {
 public:
-   using MyMove = MovePtr<std::vector<int>>;
+   using MyMove = MoveFPtr<std::vector<int>>;
 
 public:
    int nTSP{ -1 };
@@ -24,6 +24,7 @@ public:
    {
       // keep static problem data
       st_nTSP = nTSP;
+      commonState = std::make_pair(0,1);
    }
 
    // store move methods on NSSeq
@@ -101,7 +102,7 @@ public:
       //
       for (int i = 0; i < nTSP - 1; i++)
          for (int j = i + 1; j < nTSP; j++)
-            //co_yield MovePtr<std::vector<int>>{ ptr };
+            //co_yield MoveFPtr<std::vector<int>>{ ptr };
             co_yield std::make_pair(i,j);
    }
 
@@ -124,12 +125,18 @@ public:
       return done;
    }
 
+   ///static constexpr MoveFPtr<std::vector<int>> mv_coro{ fApplyDo };
+      
+
    op<MyMove> coroCurrent()
    {
-      void (*ptr)(std::vector<int>&) = fApplyDo;
-      MovePtr<std::vector<int>> mv{ ptr };
+      //void (*ptr)(std::vector<int>&) = fApplyDo;
+      //MoveFPtr<std::vector<int>> mv{ ptr };
+      MoveFPtr<std::vector<int>> mv{ fApplyDo };
       commonState = gen.getValue();
-      return op<MyMove>{ std::move(mv) };
+      //return op<MyMove>{ std::move(mv) };
+      return op<MyMove>{ mv };
+
       //return op<MyMove>(
       //  op_gen->getValue()); // automatic implementation
    }
@@ -160,11 +167,13 @@ public:
 
    static op<MyMove> fCurrent()
    {
-      void (*ptr)(std::vector<int>&) = fApplyDo;
+      //void (*ptr)(std::vector<int>&) = fApplyDo;
       //
       return op<MyMove>(
-        MovePtr<std::vector<int>>(
-          ptr)); // automatic implementation
+        //MoveFPtr<std::vector<int>>(ptr)
+        MoveFPtr<std::vector<int>>(fApplyDo)
+        // automatic implementation
+        ); 
    }
 
    // ==================== EMBEDDED ITERATOR
@@ -198,19 +207,21 @@ public:
 
    // returns current move, or nothing (if doesn't exist)
    //virtual op< MoveFuncPtrCopy<std::vector<int>> > current(){ /* whatever */ } // = 0;
-   virtual op<MovePtr<std::vector<int>>> current()
+   virtual op<MoveFPtr<std::vector<int>>> current()
    {
-      void (*ptr)(std::vector<int>&) = this->fApplyDo;
+      //void (*ptr)(std::vector<int>&) = this->fApplyDo;
       //
-      return op<MovePtr<std::vector<int>>>(
-        MovePtr<std::vector<int>>(
-          ptr)); // automatic implementation
+      return op<MoveFPtr<std::vector<int>>>(
+        //MoveFPtr<std::vector<int>>(ptr)
+        MoveFPtr<std::vector<int>>(fApplyDo)
+          // automatic implementation
+          ); 
    }
 };
 
 int NSSeqTestStateless::st_nTSP = 0;
 
-std::pair<int, int> NSSeqTestStateless::commonState = std::pair<int, int>{};
+std::pair<int, int> NSSeqTestStateless::commonState = std::pair<int, int>{0,1};
 
 class MyIter : public NSIterator<std::vector<int>, NSSeqTestStateless::MyMove>
 {
@@ -251,13 +262,15 @@ public:
 
    // returns current move, or nothing (if doesn't exist)
    //virtual op< MoveFuncPtrCopy<std::vector<int>> > current(){ /* whatever */ } // = 0;
-   virtual op<MovePtr<std::vector<int>>> current()
+   virtual op<MoveFPtr<std::vector<int>>> current()
    {
-      void (*ptr)(std::vector<int>&) = NSSeqTestStateless::fApplyDo;
+      //void (*ptr)(std::vector<int>&) = NSSeqTestStateless::fApplyDo;
       //
-      return op<MovePtr<std::vector<int>>>(
-        MovePtr<std::vector<int>>(
-          ptr)); // automatic implementation
+      return op<MoveFPtr<std::vector<int>>>(
+         //MoveFPtr<std::vector<int>>(ptr)
+         MoveFPtr<std::vector<int>>(NSSeqTestStateless::fApplyDo)
+         // automatic implementation
+          ); 
    }
 };
 

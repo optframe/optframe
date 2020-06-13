@@ -10,7 +10,7 @@
 // ======================
 
 template<class XES>
-class MovePtr final
+class MoveFPtr final
 {
 public:
    // no need for a method:  void apply(XES& se)
@@ -18,23 +18,40 @@ public:
    void (*undo)(XES&);
 
 /*
-   MovePtr() = delete;
-   MovePtr(const MovePtr&) = delete;
+   MoveFPtr() = delete;
+   MoveFPtr(const MoveFPtr&) = delete;
    // Move semantics is allowed
-   MovePtr(MovePtr&& m) noexcept :
+   MoveFPtr(MoveFPtr&& m) noexcept :
       apply{m.apply},
       undo{m.undo}
    {
    }
 */
 
-   MovePtr(void (*_apply)(XES&))
+   // 'consteval' may cause some strange error with 'fcoroutines'
+   //consteval 
+   //
+   MoveFPtr(void (*_apply)(XES&)) noexcept
      : apply{ _apply }
      , undo{ _apply }
    {
    }
 
-   MovePtr<XES>* operator->()
+/*
+   consteval MoveFPtr(const MoveFPtr& mv) noexcept
+     : apply{ mv.apply }
+     , undo{ mv.apply }
+   {
+   }
+
+   MoveFPtr(MoveFPtr&& mv) noexcept
+     : apply{ mv.apply }
+     , undo{ mv.apply }
+   {
+   }
+*/
+
+   MoveFPtr<XES>* operator->()
    {
       return this;
    }
@@ -46,7 +63,7 @@ public:
 };
 
 // std::vector<int>
-static_assert(IsMove<MovePtr<std::vector<int>>, std::vector<int>>);
+static_assert(IsMove<MoveFPtr<std::vector<int>>, std::vector<int>>);
 
 // ---------
 
