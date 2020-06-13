@@ -144,6 +144,58 @@ BENCHMARK(TSP_AltFrame_1_CPP_baseline)
 
 //
 static void
+TSP_AltFrame_NSSeqTestPtr_MoveFPtr(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      //   
+      NSSeqTestStateless nsseq{pTSP.n};
+      //
+      std::vector<int>& v = esol.first;
+      // SHORT ITERATOR...
+         for(nsseq.first(v); !nsseq.isDone(); nsseq.next())
+         {
+            //auto mv = *nsseq.current();
+            MoveFPtr mv { nsseq.current().value() };
+            //mv.fApplyDo(v);
+            mv.apply(v);
+            // compute cost
+            int& i = nsseq.commonState.first;
+            int& j = nsseq.commonState.second;
+            double fcost;
+            benchmark::DoNotOptimize(fcost = esol.first[0] + esol.first[3]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.undo(v); // TODO: apply undo
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_AltFrame_NSSeqTestPtr_MoveFPtr)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 1000, 0 }) // N = 10 - seed 0
+  ;
+
+//
+static void
 TSP_AltFrame_NSSeqTestPtr_raw(benchmark::State& state)
 {
    unsigned N = state.range(0);    // get N from benchmark suite
@@ -191,11 +243,13 @@ BENCHMARK(TSP_AltFrame_NSSeqTestPtr_raw)
   ->Args({ 30, 0 }) // N = 10 - seed 0
   ->Args({ 100, 0 }) // N = 10 - seed 0
   ->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 1000, 0 }) // N = 10 - seed 0
   ;
 
 //
+// heap allocation
 static void
-TSP_AltFrame_NSSeqTestPtr_raw_iter(benchmark::State& state)
+TSP_AltFrame_NSSeqTestPtr_iter_heap(benchmark::State& state)
 {
    unsigned N = state.range(0);    // get N from benchmark suite
    unsigned seed = state.range(1); // get seed from benchmark suite
@@ -213,6 +267,7 @@ TSP_AltFrame_NSSeqTestPtr_raw_iter(benchmark::State& state)
       //
       std::vector<int>& v = esol.first;
       //
+      // uptr<NSIterator<std::vector<int>, MyMove>>
       auto iter = nsseq.getIterator(v);
       //     
       // SHORT ITERATOR...
@@ -239,18 +294,19 @@ TSP_AltFrame_NSSeqTestPtr_raw_iter(benchmark::State& state)
       assert(ff == 1);
    }
 }
-BENCHMARK(TSP_AltFrame_NSSeqTestPtr_raw_iter)
+BENCHMARK(TSP_AltFrame_NSSeqTestPtr_iter_heap)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
   ->Args({ 100, 0 }) // N = 10 - seed 0
   ->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 1000, 0 }) // N = 10 - seed 0
   ;
 
 
-
+// get Iterator class on stack
 static void
-TSP_AltFrame_NSSeqTestPtr_iter_ptr(benchmark::State& state)
+TSP_AltFrame_NSSeqTestPtr_iter_stack(benchmark::State& state)
 {
    unsigned N = state.range(0);    // get N from benchmark suite
    unsigned seed = state.range(1); // get seed from benchmark suite
@@ -294,12 +350,13 @@ TSP_AltFrame_NSSeqTestPtr_iter_ptr(benchmark::State& state)
       assert(ff == 1);
    }
 }
-BENCHMARK(TSP_AltFrame_NSSeqTestPtr_iter_ptr)
+BENCHMARK(TSP_AltFrame_NSSeqTestPtr_iter_stack)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
   ->Args({ 100, 0 }) // N = 10 - seed 0
   ->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 1000, 0 }) // N = 10 - seed 0
   ;
 
 static void

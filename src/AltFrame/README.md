@@ -17,26 +17,30 @@ make bench_alt
 -----------------------------------------------------------------------------------
 Benchmark                                         Time             CPU   Iterations
 -----------------------------------------------------------------------------------
-TSP_AltFrame_1_CPP_baseline/10/0                575 ns          576 ns      1216629
-TSP_AltFrame_1_CPP_baseline/20/0                947 ns          947 ns       743656
-TSP_AltFrame_1_CPP_baseline/30/0               1594 ns         1595 ns       440222
-TSP_AltFrame_1_CPP_baseline/100/0             13966 ns        13922 ns        50580
-TSP_AltFrame_1_CPP_baseline/200/0             54301 ns        54221 ns        13116
-TSP_AltFrame_NSSeqTestPtr_raw/10/0              598 ns          597 ns      1177473
-TSP_AltFrame_NSSeqTestPtr_raw/20/0             1074 ns         1073 ns       654463
-TSP_AltFrame_NSSeqTestPtr_raw/30/0             1925 ns         1924 ns       357477
-TSP_AltFrame_NSSeqTestPtr_raw/100/0           17391 ns        17352 ns        40802
-TSP_AltFrame_NSSeqTestPtr_raw/200/0           67605 ns        67505 ns        10392
-TSP_AltFrame_NSSeqTestPtr_raw_iter/10/0         691 ns          691 ns      1022702
-TSP_AltFrame_NSSeqTestPtr_raw_iter/20/0        1508 ns         1508 ns       463666
-TSP_AltFrame_NSSeqTestPtr_raw_iter/30/0        2788 ns         2789 ns       251790
-TSP_AltFrame_NSSeqTestPtr_raw_iter/100/0      26206 ns        26176 ns        26927
-TSP_AltFrame_NSSeqTestPtr_raw_iter/200/0     102944 ns       102853 ns         6832
-TSP_AltFrame_NSSeqTestPtr_iter_ptr/10/0         640 ns          640 ns      1099738
-TSP_AltFrame_NSSeqTestPtr_iter_ptr/20/0        1332 ns         1331 ns       528893
-TSP_AltFrame_NSSeqTestPtr_iter_ptr/30/0        2461 ns         2462 ns       273667
-TSP_AltFrame_NSSeqTestPtr_iter_ptr/100/0      22772 ns        22736 ns        31241
-TSP_AltFrame_NSSeqTestPtr_iter_ptr/200/0      88800 ns        88702 ns         7964
+TSP_AltFrame_1_CPP_baseline/10/0                   576 ns          576 ns      1216521
+TSP_AltFrame_1_CPP_baseline/20/0                   943 ns          941 ns       690559
+TSP_AltFrame_1_CPP_baseline/30/0                  1564 ns         1560 ns       449415
+TSP_AltFrame_1_CPP_baseline/100/0                13544 ns        13501 ns        52043
+TSP_AltFrame_1_CPP_baseline/200/0                52716 ns        52614 ns        13343
+TSP_AltFrame_1_CPP_baseline/1000/0             1312776 ns      1312235 ns          537
+TSP_AltFrame_NSSeqTestPtr_raw/10/0                 615 ns          615 ns      1141161
+TSP_AltFrame_NSSeqTestPtr_raw/20/0                1093 ns         1093 ns       639985
+TSP_AltFrame_NSSeqTestPtr_raw/30/0                1996 ns         1994 ns       350343
+TSP_AltFrame_NSSeqTestPtr_raw/100/0              17455 ns        17424 ns        40270
+TSP_AltFrame_NSSeqTestPtr_raw/200/0              66751 ns        66664 ns        10465
+TSP_AltFrame_NSSeqTestPtr_raw/1000/0           1658502 ns      1657931 ns          422
+TSP_AltFrame_NSSeqTestPtr_iter_heap/10/0           724 ns          723 ns       974151
+TSP_AltFrame_NSSeqTestPtr_iter_heap/20/0          1610 ns         1611 ns       435869
+TSP_AltFrame_NSSeqTestPtr_iter_heap/30/0          3019 ns         3014 ns       232509
+TSP_AltFrame_NSSeqTestPtr_iter_heap/100/0        28334 ns        28304 ns        24673
+TSP_AltFrame_NSSeqTestPtr_iter_heap/200/0       115232 ns       115124 ns         6316
+TSP_AltFrame_NSSeqTestPtr_iter_heap/1000/0     2762291 ns      2761694 ns          254
+TSP_AltFrame_NSSeqTestPtr_iter_stack/10/0          643 ns          642 ns      1092748
+TSP_AltFrame_NSSeqTestPtr_iter_stack/20/0         1349 ns         1349 ns       518284
+TSP_AltFrame_NSSeqTestPtr_iter_stack/30/0         2511 ns         2508 ns       279936
+TSP_AltFrame_NSSeqTestPtr_iter_stack/100/0       22819 ns        22792 ns        29715
+TSP_AltFrame_NSSeqTestPtr_iter_stack/200/0       88579 ns        88487 ns         7947
+TSP_AltFrame_NSSeqTestPtr_iter_stack/1000/0    2208612 ns      2208068 ns          319
 ```
 
 AltFrame demonstrated that it's not feasible to have a 1-to-1 NSSeq-to-NSIterator structure.
@@ -45,9 +49,10 @@ NSSeq should be the iterator class itself.
 Coroutine overhead seems high (compared to raw baseline):
 
 ```
-TSP_AltFrame_NSSeqTestPtr_raw_coro/10/0         831 ns          830 ns       847887
-TSP_AltFrame_NSSeqTestPtr_raw_coro/20/0        1945 ns         1945 ns       362478
-TSP_AltFrame_NSSeqTestPtr_raw_coro/30/0        4787 ns         4786 ns       145642
-TSP_AltFrame_NSSeqTestPtr_raw_coro/100/0      34998 ns        34959 ns        19591
-TSP_AltFrame_NSSeqTestPtr_raw_coro/200/0     138003 ns       137894 ns         5080
+TSP_AltFrame_NSSeqTestPtr_raw_coro/10/0            823 ns          823 ns       854627
+TSP_AltFrame_NSSeqTestPtr_raw_coro/20/0           1954 ns         1955 ns       357716
+TSP_AltFrame_NSSeqTestPtr_raw_coro/30/0           3749 ns         3744 ns       188380
+TSP_AltFrame_NSSeqTestPtr_raw_coro/100/0         35055 ns        35023 ns        19985
+TSP_AltFrame_NSSeqTestPtr_raw_coro/200/0        137095 ns       136996 ns         5100
+TSP_AltFrame_NSSeqTestPtr_raw_coro/1000/0      3390131 ns      3389511 ns          205
 ```

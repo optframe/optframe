@@ -141,6 +141,50 @@ public:
       //  op_gen->getValue()); // automatic implementation
    }
 
+   // ==================== REF STATIC ITER ================
+
+   std::function<void(std::vector<int>&)> funcApply [](std::vector<int>& v) -> void {
+                        int& i = commonState.first;
+                        int& j = commonState.second;
+                        // swap
+                        int aux = v[i];
+                        v[i] = v[j];
+                        v[j] = aux;
+                     };
+
+   /*
+   g++-10.1 -g AltFrame.bench.cpp -std=c++20 -O3 -Wall -fcoroutines -fno-exceptions -fno-rtti -fno-omit-frame-pointer  -I../src  -isystem ../libs/gbenchmark/include -L../libs/gbenchmark/build/src -o build/AltFrame_bench -lbenchmark  -lpthread
+]In file included from ./AltFrame-bench/NSTest.bench.cpp:7,
+                 from AltFrame.bench.cpp:4:
+../src/AltFrame/NSSeqTest.hpp:153:22: internal compiler error: in splice_late_return_type, at cp/pt.c:29095
+  153 |                      };
+      |                      ^
+0x7facbb6f5a86 __libc_start_main
+	../csu/libc-start.c:310
+Please submit a full bug report,
+with preprocessed source if appropriate.
+Please include the complete backtrace with any bug report.
+See <https://gcc.gnu.org/bugs/> for instructions.
+*/
+
+   static op<MoveFRef<std::vector<int>>> fCurrentRef()
+   {
+      auto myfuncDo = [](std::vector<int>& v) -> void {
+                        int& i = commonState.first;
+                        int& j = commonState.second;
+                        // swap
+                        int aux = v[i];
+                        v[i] = v[j];
+                        v[j] = aux;
+                     };
+      //std::function<void(std::vector<int>&)> fX { myfuncDo };
+      return op<MoveFRef<std::vector<int>>>(
+         //
+        MoveFRef<std::vector<int>>(funcApply)
+        // 
+        ); 
+   }
+
    // ==================== STATIC ITERATOR ====================
 
    static bool fFirst(const std::vector<int>&)

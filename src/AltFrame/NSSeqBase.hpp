@@ -67,6 +67,52 @@ static_assert(IsMove<MoveFPtr<std::vector<int>>, std::vector<int>>);
 
 // ---------
 
+
+template<class XES>
+class MoveFRef final
+{
+public:
+   std::function<void(XES&)>& apply;
+   std::function<void(XES&)>& undo;
+
+/*
+   MoveFPtr() = delete;
+   MoveFPtr(const MoveFPtr&) = delete;
+   // Move semantics is allowed
+   MoveFPtr(MoveFPtr&& m) noexcept :
+      apply{m.apply},
+      undo{m.undo}
+   {
+   }
+*/
+
+   // 'consteval' may cause some strange error with 'fcoroutines'
+   //consteval 
+   //
+   MoveFRef(std::function<void(XES&)>& _apply) noexcept
+     : apply{ _apply }
+     , undo{ _apply }
+   {
+   }
+
+
+   MoveFPtr<XES>* operator->()
+   {
+      return this;
+   }
+
+   void print()
+   {
+      std::cout << "MOVE!" << std::endl;
+   }
+};
+
+// std::vector<int>
+static_assert(IsMove<MoveFRef<std::vector<int>>, std::vector<int>>);
+
+
+// ---------
+
 template<class XES, class MoveModel>
 class SNSIteratorFuncPtrCopy final //: public NSIterator<XES, MoveModel>
 {
