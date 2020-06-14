@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <functional>
 
 #include "NSSeq.hpp"
 
@@ -131,6 +132,39 @@ public:
 // std::vector<int>
 static_assert(IsMove<MoveFCopy<std::vector<int>>, std::vector<int>>);
 
+// ===========
+
+#include "tl/function_ref.hpp"
+
+template<class XES>
+class MoveFTL final
+{
+public:
+   tl::function_ref<void(XES&)> apply;
+   tl::function_ref<void(XES&)> undo;
+
+   //consteval 
+   //
+   MoveFTL(const tl::function_ref<void(XES&)> _apply) noexcept
+     : apply{ _apply }
+     , undo{ _apply }
+   {
+   }
+
+
+   MoveFTL<XES>* operator->()
+   {
+      return this;
+   }
+
+   void print()
+   {
+      std::cout << "MOVE!" << std::endl;
+   }
+};
+
+// std::vector<int>
+static_assert(IsMove<MoveFTL<std::vector<int>>, std::vector<int>>);
 
 // ---------
 

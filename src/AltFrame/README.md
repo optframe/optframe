@@ -70,7 +70,65 @@ TSP_AltFrame_NSSeqTestPtr_iter_stack/1000/0        2205448 ns      2204876 ns   
 AltFrame demonstrated that it's not feasible to have a 1-to-1 NSSeq-to-NSIterator structure.
 NSSeq should be the iterator class itself.
 
-Coroutine overhead seems high (compared to raw baseline):
+Same experiments on Clang-11:
+```
+TSP_AltFrame_1_CPP_baseline/10/0                       542 ns          543 ns      1303859
+TSP_AltFrame_1_CPP_baseline/20/0                       913 ns          912 ns       769006
+TSP_AltFrame_1_CPP_baseline/30/0                      1576 ns         1570 ns       454071
+TSP_AltFrame_1_CPP_baseline/100/0                    14090 ns        14047 ns        49808
+TSP_AltFrame_1_CPP_baseline/200/0                    55962 ns        55858 ns        11966
+TSP_AltFrame_1_CPP_baseline/1000/0                 1414863 ns      1414377 ns          495
+TSP_AltFrame_NSSeqTestPtr_MoveFPtr/10/0                606 ns          609 ns      1147467
+TSP_AltFrame_NSSeqTestPtr_MoveFPtr/20/0               1113 ns         1114 ns       629348
+TSP_AltFrame_NSSeqTestPtr_MoveFPtr/30/0               2063 ns         2064 ns       337485
+TSP_AltFrame_NSSeqTestPtr_MoveFPtr/100/0             18014 ns        17976 ns        38619
+TSP_AltFrame_NSSeqTestPtr_MoveFPtr/200/0             70248 ns        70170 ns         9937
+TSP_AltFrame_NSSeqTestPtr_MoveFPtr/1000/0          1813828 ns      1813287 ns          386
+TSP_AltFrame_NSSeqTestPtr_MoveFPtr_byref/10/0          670 ns          672 ns      1042686
+TSP_AltFrame_NSSeqTestPtr_MoveFPtr_byref/20/0         1650 ns         1650 ns       425863
+TSP_AltFrame_NSSeqTestPtr_MoveFPtr_byref/30/0         3317 ns         3317 ns       226517
+TSP_AltFrame_NSSeqTestPtr_MoveFPtr_byref/100/0       30044 ns        30011 ns        23273
+TSP_AltFrame_NSSeqTestPtr_MoveFPtr_byref/200/0      121893 ns       121792 ns         5755
+TSP_AltFrame_NSSeqTestPtr_MoveFPtr_byref/1000/0    3028912 ns      3028368 ns          231
+TSP_AltFrame_NSSeqTestPtr_MoveFRef/10/0                658 ns          659 ns      1062284
+TSP_AltFrame_NSSeqTestPtr_MoveFRef/20/0               1649 ns         1650 ns       422120
+TSP_AltFrame_NSSeqTestPtr_MoveFRef/30/0               3100 ns         3102 ns       225764
+TSP_AltFrame_NSSeqTestPtr_MoveFRef/100/0             30446 ns        30427 ns        23009
+TSP_AltFrame_NSSeqTestPtr_MoveFRef/200/0            129101 ns       128995 ns         5671
+TSP_AltFrame_NSSeqTestPtr_MoveFRef/1000/0          3065785 ns      3065284 ns          228
+TSP_AltFrame_NSSeqTestPtr_MoveFRefTL/10/0              680 ns          681 ns      1061372
+TSP_AltFrame_NSSeqTestPtr_MoveFRefTL/20/0             2344 ns         2326 ns       325487
+TSP_AltFrame_NSSeqTestPtr_MoveFRefTL/30/0             3540 ns         3533 ns       172674
+TSP_AltFrame_NSSeqTestPtr_MoveFRefTL/100/0           30611 ns        30587 ns        21067
+TSP_AltFrame_NSSeqTestPtr_MoveFRefTL/200/0          124351 ns       124265 ns         5644
+TSP_AltFrame_NSSeqTestPtr_MoveFRefTL/1000/0        3060304 ns      3059805 ns          229
+TSP_AltFrame_NSSeqTestPtr_MoveFCopy/10/0              1048 ns         1050 ns       673239
+TSP_AltFrame_NSSeqTestPtr_MoveFCopy/20/0              3142 ns         3144 ns       223563
+TSP_AltFrame_NSSeqTestPtr_MoveFCopy/30/0              6579 ns         6579 ns       105684
+TSP_AltFrame_NSSeqTestPtr_MoveFCopy/100/0            71286 ns        71260 ns         9718
+TSP_AltFrame_NSSeqTestPtr_MoveFCopy/200/0           287172 ns       287077 ns         2447
+TSP_AltFrame_NSSeqTestPtr_MoveFCopy/1000/0         7309379 ns      7308921 ns           96
+TSP_AltFrame_NSSeqTestPtr_MoveInternal/10/0            595 ns          597 ns      1178682
+TSP_AltFrame_NSSeqTestPtr_MoveInternal/20/0           1082 ns         1082 ns       647147
+TSP_AltFrame_NSSeqTestPtr_MoveInternal/30/0           1970 ns         1970 ns       355290
+TSP_AltFrame_NSSeqTestPtr_MoveInternal/100/0         17990 ns        17956 ns        38293
+TSP_AltFrame_NSSeqTestPtr_MoveInternal/200/0         70082 ns        69991 ns         9977
+TSP_AltFrame_NSSeqTestPtr_MoveInternal/1000/0      1824885 ns      1823352 ns          371
+TSP_AltFrame_NSSeqTestPtr_iter_heap/10/0               872 ns          873 ns       798838
+TSP_AltFrame_NSSeqTestPtr_iter_heap/20/0              2621 ns         2621 ns       267472
+TSP_AltFrame_NSSeqTestPtr_iter_heap/30/0              4882 ns         4884 ns       144182
+TSP_AltFrame_NSSeqTestPtr_iter_heap/100/0            51143 ns        51119 ns        13677
+TSP_AltFrame_NSSeqTestPtr_iter_heap/200/0           203978 ns       203895 ns         3446
+TSP_AltFrame_NSSeqTestPtr_iter_heap/1000/0         5160635 ns      5160187 ns          136
+TSP_AltFrame_NSSeqTestPtr_iter_stack/10/0              595 ns          596 ns      1172976
+TSP_AltFrame_NSSeqTestPtr_iter_stack/20/0             1109 ns         1110 ns       632403
+TSP_AltFrame_NSSeqTestPtr_iter_stack/30/0             2080 ns         2079 ns       339635
+TSP_AltFrame_NSSeqTestPtr_iter_stack/100/0           18657 ns        18622 ns        37471
+TSP_AltFrame_NSSeqTestPtr_iter_stack/200/0           73515 ns        73424 ns         9506
+TSP_AltFrame_NSSeqTestPtr_iter_stack/1000/0        1890243 ns      1889501 ns          373
+```
+
+Coroutine (GCC) overhead seems high (compared to raw baseline):
 
 ```
 TSP_AltFrame_NSSeqTestPtr_raw_coro/10/0            823 ns          823 ns       854627

@@ -298,6 +298,59 @@ BENCHMARK(TSP_AltFrame_NSSeqTestPtr_MoveFRef)
   ->Args({ 1000, 0 }) // N = 10 - seed 0
   ;
 
+//
+static void
+TSP_AltFrame_NSSeqTestPtr_MoveFRefTL(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      //   
+      NSSeqTestStateless nsseq{pTSP.n};
+      //
+      std::vector<int>& v = esol.first;
+      // SHORT ITERATOR...
+         for(nsseq.first(v); !nsseq.isDone(); nsseq.next())
+         {
+            //auto mv = *nsseq.current();
+            MoveFTL mv { nsseq.fCurrentRefTL().value() };
+            //mv.fApplyDo(v);
+            mv.apply(v);
+            // compute cost
+            int& i = nsseq.commonState.first;
+            int& j = nsseq.commonState.second;
+            double fcost;
+            benchmark::DoNotOptimize(fcost = esol.first[0] + esol.first[3]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.undo(v); // TODO: apply undo
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_AltFrame_NSSeqTestPtr_MoveFRefTL)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 1000, 0 }) // N = 10 - seed 0
+  ;
+
+
 
 //
 static void
@@ -518,6 +571,7 @@ BENCHMARK(TSP_AltFrame_NSSeqTestPtr_iter_stack)
   ->Args({ 1000, 0 }) // N = 10 - seed 0
   ;
 
+#ifdef CORO // enable coroutines
 static void
 TSP_AltFrame_NSSeqTestPtr_raw_coro(benchmark::State& state)
 {
@@ -569,3 +623,4 @@ BENCHMARK(TSP_AltFrame_NSSeqTestPtr_raw_coro)
   ->Args({ 200, 0 }) // N = 10 - seed 0
   ->Args({ 1000, 0 }) // N = 10 - seed 0
   ;
+#endif

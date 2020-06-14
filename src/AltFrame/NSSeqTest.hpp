@@ -2,7 +2,13 @@
 
 #include "NSSeqBase.hpp"
 
+#ifdef CORO // enable coroutines
 #include <OptFCore/coro/Generator.hpp>
+#endif
+
+#ifdef USECPPCORO
+#include <AltFrame/cppcoro/generator.hpp>
+#endif
 
 // my test
 // vector<int>
@@ -20,7 +26,10 @@ public:
    static int st_nTSP;
 
    NSSeqTestStateless(int nTSP)
-     : nTSP{ nTSP }, gen{make_gen()}
+     : nTSP{ nTSP }
+#ifdef CORO // enable coroutines
+     , gen{make_gen()}
+#endif
    {
       // keep static problem data
       st_nTSP = nTSP;
@@ -84,6 +93,7 @@ public:
       };
    }
 
+#ifdef CORO // enable coroutines
    // ============ COROUTINE APPROACH ============
 
    // for coroutines
@@ -140,6 +150,7 @@ public:
       //return op<MyMove>(
       //  op_gen->getValue()); // automatic implementation
    }
+#endif
 
    // ==================== REF STATIC ITER ================
 
@@ -150,6 +161,16 @@ public:
       return op<MoveFRef<std::vector<int>>>(
          //
         MoveFRef<std::vector<int>>(funcApply)
+        // 
+        ); 
+   }
+
+   // tl reference
+   static op<MoveFTL<std::vector<int>>> fCurrentRefTL()
+   {
+      return op<MoveFTL<std::vector<int>>>(
+         //
+        MoveFTL<std::vector<int>>(funcApply)
         // 
         ); 
    }
@@ -196,6 +217,7 @@ public:
 
    static op<MoveInternal> fCurrentMoveInternal()
    {
+      //int x = 100'000'000;
       return op<MoveInternal>(
          //
         MoveInternal{}

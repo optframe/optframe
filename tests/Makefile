@@ -22,7 +22,9 @@ test-install:
 	g++-10.1 -g --std=c++20 -fcoroutines test-install-OptFCore.cpp -o ./build/fcore_test_install
 	./build/fcore_test_install
 
-CXXFLAGS_BCH=-std=c++20 -O3 -Wall -fcoroutines -fno-exceptions -fno-rtti -fno-omit-frame-pointer #  -pedantic -Werror
+# -stdlib=libc++ on clang would require rebuilding google-benchmark
+CXXFLAGS_BCH=-std=c++20   -O3 -Wall -DCORO  -fcoroutines     -fno-exceptions -fno-rtti -fno-omit-frame-pointer #  -pedantic -Werror
+CLANGFLAGS_BCH=-std=c++20 -O3 -Wall         -fcoroutines-ts  -fno-exceptions -fno-rtti -fno-omit-frame-pointer #  -pedantic -Werror
 GBENCH_DIRS=-isystem ../libs/gbenchmark/include -L../libs/gbenchmark/build/src
 GBENCH_LIBS=-lbenchmark 
 
@@ -32,6 +34,7 @@ bench: FCore.bench.cpp
 bench_alt: AltFrame.bench.cpp
 	#sudo cpupower frequency-set --governor performance
 	g++-10.1 -g $< $(CXXFLAGS_BCH) -I../src  $(GBENCH_DIRS) -o build/AltFrame_bench $(GBENCH_LIBS) -lpthread
+	#clang++-11  -g $< $(CLANGFLAGS_BCH) -I../src  $(GBENCH_DIRS) -o build/AltFrame_bench $(GBENCH_LIBS) -lpthread
 	./build/AltFrame_bench --benchmark_filter=TSP_AltFrame
 	#valgrind ./build/AltFrame_bench --benchmark_filter=TSP_AltFrame_NSSeqTestPtr_raw_coro
 	#sudo cpupower frequency-set --governor powersave
