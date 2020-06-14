@@ -196,7 +196,7 @@ BENCHMARK(TSP_AltFrame_NSSeqTestPtr_MoveFPtr)
 
 //
 static void
-TSP_AltFrame_NSSeqTestPtr_raw(benchmark::State& state)
+TSP_AltFrame_NSSeqTestPtr_MoveFPtr_byref(benchmark::State& state)
 {
    unsigned N = state.range(0);    // get N from benchmark suite
    unsigned seed = state.range(1); // get seed from benchmark suite
@@ -216,7 +216,7 @@ TSP_AltFrame_NSSeqTestPtr_raw(benchmark::State& state)
          for(nsseq.first(v); !nsseq.isDone(); nsseq.next())
          {
             //auto mv = *nsseq.current();
-            MoveFPtr mv { nsseq.current().value() };
+            const MoveFPtr<std::vector<int>>& mv { nsseq.staticMoveFPtr.value() }; //{ nsseq.ref_fCurrent().value() };
             //mv.fApplyDo(v);
             mv.apply(v);
             // compute cost
@@ -237,7 +237,7 @@ TSP_AltFrame_NSSeqTestPtr_raw(benchmark::State& state)
       assert(ff == 1);
    }
 }
-BENCHMARK(TSP_AltFrame_NSSeqTestPtr_raw)
+BENCHMARK(TSP_AltFrame_NSSeqTestPtr_MoveFPtr_byref)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
@@ -245,6 +245,165 @@ BENCHMARK(TSP_AltFrame_NSSeqTestPtr_raw)
   ->Args({ 200, 0 }) // N = 10 - seed 0
   ->Args({ 1000, 0 }) // N = 10 - seed 0
   ;
+
+//
+static void
+TSP_AltFrame_NSSeqTestPtr_MoveFRef(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      //   
+      NSSeqTestStateless nsseq{pTSP.n};
+      //
+      std::vector<int>& v = esol.first;
+      // SHORT ITERATOR...
+         for(nsseq.first(v); !nsseq.isDone(); nsseq.next())
+         {
+            //auto mv = *nsseq.current();
+            MoveFRef mv { nsseq.fCurrentRef().value() };
+            //mv.fApplyDo(v);
+            mv.apply(v);
+            // compute cost
+            int& i = nsseq.commonState.first;
+            int& j = nsseq.commonState.second;
+            double fcost;
+            benchmark::DoNotOptimize(fcost = esol.first[0] + esol.first[3]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.undo(v); // TODO: apply undo
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_AltFrame_NSSeqTestPtr_MoveFRef)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 1000, 0 }) // N = 10 - seed 0
+  ;
+
+
+//
+static void
+TSP_AltFrame_NSSeqTestPtr_MoveFCopy(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      //   
+      NSSeqTestStateless nsseq{pTSP.n};
+      //
+      std::vector<int>& v = esol.first;
+      // SHORT ITERATOR...
+         for(nsseq.first(v); !nsseq.isDone(); nsseq.next())
+         {
+            //auto mv = *nsseq.current();
+            MoveFCopy mv { nsseq.fCurrentMoveFCopy().value() };
+            //mv.fApplyDo(v);
+            mv.apply(v);
+            // compute cost
+            int& i = nsseq.commonState.first;
+            int& j = nsseq.commonState.second;
+            double fcost;
+            benchmark::DoNotOptimize(fcost = esol.first[0] + esol.first[3]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.undo(v); // TODO: apply undo
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_AltFrame_NSSeqTestPtr_MoveFCopy)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 1000, 0 }) // N = 10 - seed 0
+  ;
+
+
+//
+static void
+TSP_AltFrame_NSSeqTestPtr_MoveInternal(benchmark::State& state)
+{
+   unsigned N = state.range(0);    // get N from benchmark suite
+   unsigned seed = state.range(1); // get seed from benchmark suite
+   double ff = 0;
+   for (auto _ : state) {
+      state.PauseTiming();
+      auto esol = setTSP(N, seed); // TODO: fixtures
+      state.ResumeTiming();
+      //
+      double best = 99999999;
+      std::pair<int, int> mij(-1, -1);
+      //   
+      NSSeqTestStateless nsseq{pTSP.n};
+      //
+      std::vector<int>& v = esol.first;
+      // SHORT ITERATOR...
+         for(nsseq.first(v); !nsseq.isDone(); nsseq.next())
+         {
+            //auto mv = *nsseq.current();
+            NSSeqTestStateless::MoveInternal mv { nsseq.fCurrentMoveInternal().value() };
+            //mv.fApplyDo(v);
+            mv.apply(v);
+            // compute cost
+            int& i = nsseq.commonState.first;
+            int& j = nsseq.commonState.second;
+            double fcost;
+            benchmark::DoNotOptimize(fcost = esol.first[0] + esol.first[3]); // fake
+            if (fcost < best) {
+               best = fcost;
+               mij = make_pair(i, j);
+            }
+            //
+            // undo swap
+            mv.undo(v); // TODO: apply undo
+         }
+      benchmark::DoNotOptimize(ff = best);
+      benchmark::ClobberMemory();
+      assert(ff == 1);
+   }
+}
+BENCHMARK(TSP_AltFrame_NSSeqTestPtr_MoveInternal)
+  ->Args({ 10, 0 }) // N = 10 - seed 0
+  ->Args({ 20, 0 }) // N = 10 - seed 0
+  ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 1000, 0 }) // N = 10 - seed 0
+  ;
+
 
 //
 // heap allocation

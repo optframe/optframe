@@ -143,45 +143,62 @@ public:
 
    // ==================== REF STATIC ITER ================
 
-   // missing '=' here breaks gcc...
-   std::function<void(std::vector<int>&)> funcApply = [](std::vector<int>& v) -> void {
-                        int& i = commonState.first;
-                        int& j = commonState.second;
-                        // swap
-                        int aux = v[i];
-                        v[i] = v[j];
-                        v[j] = aux;
-                     };
-
-   /*
-   g++-10.1 -g AltFrame.bench.cpp -std=c++20 -O3 -Wall -fcoroutines -fno-exceptions -fno-rtti -fno-omit-frame-pointer  -I../src  -isystem ../libs/gbenchmark/include -L../libs/gbenchmark/build/src -o build/AltFrame_bench -lbenchmark  -lpthread
-]In file included from ./AltFrame-bench/NSTest.bench.cpp:7,
-                 from AltFrame.bench.cpp:4:
-../src/AltFrame/NSSeqTest.hpp:153:22: internal compiler error: in splice_late_return_type, at cp/pt.c:29095
-  153 |                      };
-      |                      ^
-0x7facbb6f5a86 __libc_start_main
-	../csu/libc-start.c:310
-Please submit a full bug report,
-with preprocessed source if appropriate.
-Please include the complete backtrace with any bug report.
-See <https://gcc.gnu.org/bugs/> for instructions.
-*/
-
+   static std::function<void(std::vector<int>&)> funcApply;
+   
    static op<MoveFRef<std::vector<int>>> fCurrentRef()
    {
-      auto myfuncDo = [](std::vector<int>& v) -> void {
-                        int& i = commonState.first;
-                        int& j = commonState.second;
-                        // swap
-                        int aux = v[i];
-                        v[i] = v[j];
-                        v[j] = aux;
-                     };
-      //std::function<void(std::vector<int>&)> fX { myfuncDo };
       return op<MoveFRef<std::vector<int>>>(
          //
         MoveFRef<std::vector<int>>(funcApply)
+        // 
+        ); 
+   }
+
+   static op<MoveFCopy<std::vector<int>>> fCurrentMoveFCopy()
+   {
+      return op<MoveFCopy<std::vector<int>>>(
+         //
+        MoveFCopy<std::vector<int>>(funcApply)
+        // 
+        ); 
+   }
+
+
+class MoveInternal final
+{
+public:
+  
+  void apply(std::vector<int>& v)
+  {
+      int& i = commonState.first;
+      int& j = commonState.second;
+      // swap
+      int aux = v[i];
+      v[i] = v[j];
+      v[j] = aux;
+  }
+
+  void undo(std::vector<int>& v)
+  {
+     return apply(v);
+  }
+
+   MoveInternal* operator->()
+   {
+      return this;
+   }
+
+   void print()
+   {
+      std::cout << "MOVE!" << std::endl;
+   }
+};
+
+   static op<MoveInternal> fCurrentMoveInternal()
+   {
+      return op<MoveInternal>(
+         //
+        MoveInternal{}
         // 
         ); 
    }
@@ -219,6 +236,13 @@ See <https://gcc.gnu.org/bugs/> for instructions.
         MoveFPtr<std::vector<int>>(fApplyDo)
         // automatic implementation
         ); 
+   }
+
+   static op<MoveFPtr<std::vector<int>>> staticMoveFPtr;
+
+   static const op<MoveFPtr<std::vector<int>>>& ref_fCurrent()
+   {
+      return staticMoveFPtr;
    }
 
    // ==================== EMBEDDED ITERATOR
@@ -267,6 +291,20 @@ See <https://gcc.gnu.org/bugs/> for instructions.
 int NSSeqTestStateless::st_nTSP = 0;
 
 std::pair<int, int> NSSeqTestStateless::commonState = std::pair<int, int>{0,1};
+
+std::function<void(std::vector<int>&)> NSSeqTestStateless::funcApply = 
+               [](std::vector<int>& v) -> void {
+                        int& i = commonState.first;
+                        int& j = commonState.second;
+                        // swap
+                        int aux = v[i];
+                        v[i] = v[j];
+                        v[j] = aux;
+                     };
+
+op<MoveFPtr<std::vector<int>>> NSSeqTestStateless::staticMoveFPtr = 
+      MoveFPtr<std::vector<int>>(NSSeqTestStateless::fApplyDo);
+          
 
 class MyIter : public NSIterator<std::vector<int>, NSSeqTestStateless::MyMove>
 {
