@@ -218,18 +218,27 @@ CPU Caches:
   L2 Unified 256 KiB (x2)
   L3 Unified 3072 KiB (x1)
 Load Average: 0.94, 0.87, 0.89
----------------------------------------------------------------------------------------------
-Benchmark                                                   Time             CPU   Iterations
----------------------------------------------------------------------------------------------
-TSP_CPP_Swap_iteration/10/0                               560 ns          560 ns      1249883
-TSP_CPP_Swap_iteration/20/0                              1000 ns          998 ns       704922
-TSP_CPP_Swap_iteration/30/0                              1603 ns         1602 ns       435393
-TSP_TestNSSeq_Swap_iteration<NSSeqSwapFancy>/10/0        3069 ns         3041 ns       233415
-TSP_TestNSSeq_Swap_iteration<NSSeqSwapFancy>/20/0       10712 ns        10722 ns        64316
-TSP_TestNSSeq_Swap_iteration<NSSeqSwapFancy>/30/0       23716 ns        23730 ns        29637
-TSP_TestNSSeq_Swap_iteration<NSSeqSwapBoring>/10/0       2833 ns         2831 ns       248409
-TSP_TestNSSeq_Swap_iteration<NSSeqSwapBoring>/20/0      10251 ns        10258 ns        67587
-TSP_TestNSSeq_Swap_iteration<NSSeqSwapBoring>/30/0      22440 ns        22452 ns        31030
+---------------------------------------------------------------------------------------------------------
+Benchmark                                                               Time             CPU   Iterations
+---------------------------------------------------------------------------------------------------------
+TSP_hardcoded_CPP_Swap_iteration/10/0                                 559 ns          559 ns      1251606
+TSP_hardcoded_CPP_Swap_iteration/20/0                                 940 ns          940 ns       737024
+TSP_hardcoded_CPP_Swap_iteration/30/0                                1606 ns         1606 ns       436090
+TSP_hardcoded_CPP_Swap_iteration/100/0                              14353 ns        14312 ns        48886
+TSP_hardcoded_CPP_Swap_iteration/200/0                              55187 ns        55093 ns        12661
+TSP_hardcoded_CPP_Swap_iteration/1000/0                           1348109 ns      1347573 ns          519
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapFancy>/10/0            3026 ns         3030 ns       234550
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapFancy>/20/0           10786 ns        10791 ns        65235
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapFancy>/30/0           23695 ns        23703 ns        29328
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapFancy>/100/0         259298 ns       259272 ns         2699
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapFancy>/200/0        1035705 ns      1035632 ns          673
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapFancy>/1000/0      26011623 ns     26008272 ns           27
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapBoring>/10/0           2825 ns         2828 ns       245213
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapBoring>/20/0          10262 ns        10268 ns        68490
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapBoring>/30/0          22527 ns        22531 ns        31071
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapBoring>/100/0        250624 ns       250569 ns         2801
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapBoring>/200/0       1001241 ns      1001031 ns          694
+TSP_generic_TestNSSeq_Swap_iteration<NSSeqSwapBoring>/1000/0     25171791 ns     25170355 ns           28
 ```
 
 Bad news that it seems some OptFrame internals are very costly. Good news is that coroutines doesn't seem to increase this overhead by much (some `5-10%`), and are so much easier to write.

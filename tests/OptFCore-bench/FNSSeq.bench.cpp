@@ -76,6 +76,9 @@ BENCHMARK(TSP_hardcoded_CPP_Swap_iteration)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 1000, 0 }) // N = 10 - seed 0
   ;
 
 template<class TestNSSeq>
@@ -126,11 +129,17 @@ BENCHMARK_TEMPLATE(TSP_generic_TestNSSeq_Swap_iteration, NSSeqSwapFancy)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 1000, 0 }) // N = 10 - seed 0
   ;
 BENCHMARK_TEMPLATE(TSP_generic_TestNSSeq_Swap_iteration, NSSeqSwapBoring)
   ->Args({ 10, 0 }) // N = 10 - seed 0
   ->Args({ 20, 0 }) // N = 10 - seed 0
   ->Args({ 30, 0 }) // N = 10 - seed 0
+  ->Args({ 100, 0 }) // N = 10 - seed 0
+  ->Args({ 200, 0 }) // N = 10 - seed 0
+  ->Args({ 1000, 0 }) // N = 10 - seed 0
   ;
 
 // using functions directly with IMS
