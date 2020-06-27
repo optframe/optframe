@@ -27,13 +27,20 @@
 
 namespace optframe {
 
-template<
-  XSolution S,                          // Solution Type
-  std::optional<S> (*fGenerate)(double) // constructive
-  >
+template< XSolution S >
 class FConstructive final : public Constructive<S>
 {
 public:
+
+   std::optional<S> (*fGenerate)(double); // constructive
+
+   FConstructive(
+      std::optional<S> (*_fGenerate)(double)
+   ):
+   fGenerate { _fGenerate }
+   {
+   }
+
    virtual std::optional<S> generateSolution(double timelimit)
    {
       return fGenerate(timelimit);

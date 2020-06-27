@@ -27,24 +27,16 @@
 
 namespace optframe {
 
-template< XESolution XES>
+template<
+  XESolution XES,                        // ESolution Type
+  uptr<Move<XES>> (*fRandom)(const XES&) // fApply
+  >
 class FNS final : public NS<XES, typename XES::second_type>
 {
    using XEv = typename XES::second_type;
    using XSH = XES; // only single objective
 
 public:
-
-   uptr<Move<XES>> (*fRandom)(const XES&);
-
-   FNS(
-      uptr<Move<XES>> (*_fRandom)(const XES&)
-   )
-   :
-   fRandom{ _fRandom }
-   {
-   }
-
    virtual uptr<Move<XES, XEv, XSH>> randomMove(const XES& se) override
    {
       return fRandom(se);

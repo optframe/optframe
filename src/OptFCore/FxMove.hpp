@@ -44,49 +44,39 @@ auto fDefaultCompareEq =
    return false;
 };
 //
-template< class M, XESolution XES >
+template<
+  class M,                                                                    // Move structure
+  XESolution XES,                                                             // ESolution Type
+  M (*fApply)(const M&, XES&),                                                // fApply
+  bool (*fCanBeApplied)(const M&, const XES&) = fDefaultCanBeApplied<M, XES>, // fCanBeApplied
+  bool (*fCompareEq)(const M&, const Move<XES>&) = fDefaultCompareEq<M, XES>  // fCompareEq
+  >
 class FMove final : public Move<XES, typename XES::second_type>
 {
    using XEv = typename XES::second_type;
    using XSH = XES; // only single objective
-   using Self = FMove<M, XES>;
+   using Self = FMove<M, XES, fApply, fCanBeApplied, fCompareEq>;
 
 public:
    M m; // internal structure for move
 
-   M (*fApply)(const M&, XES&);                                                // fApply
-   bool (*fCanBeApplied)(const M&, const XES&) = fDefaultCanBeApplied<M, XES>; // fCanBeApplied
-   bool (*fCompareEq)(const M&, const Move<XES>&) = fDefaultCompareEq<M, XES>;  // fCompareEq
-
-   FMove(
-      const M& _m,
-      M (*_fApply)(const M&, XES&),                                                // fApply
-      bool (*_fCanBeApplied)(const M&, const XES&) = fDefaultCanBeApplied<M, XES>, // fCanBeApplied
-      bool (*_fCompareEq)(const M&, const Move<XES>&) = fDefaultCompareEq<M, XES>  // fCompareEq
-   )
-   :
-      m{ _m },
-      fApply{ _fApply},
-      fCanBeApplied{ _fCanBeApplied},
-      fCompareEq{ _fCompareEq }
+   // template static functions
+   static M fs_apply(const M& m, XES& xes)
    {
-   }
+      return fApply(m, xes);
+   } 
 
-   /*
    FMove(M&& _m) noexcept
      : m(std::move(_m))
    {
       //std::cout << "FMove() => " << m << " address=" << this << std::endl;
    }
-   */
 
-   /*
    FMove(const M& _m) noexcept
      : m(_m)
    {
       //std::cout << "FMove() => " << m << " address=" << this << std::endl;
    }
-   */
 
    virtual bool canBeApplied(const XES& se) override
    {
@@ -97,7 +87,7 @@ public:
    {
       // fApply will require a reverse move to ALWAYS exist.
       // FCore must be simple! Otherwise, just use fallback class-based mode
-      return uptr<Move<XES, XEv, XSH>>{ new Self{ fApply(m, se), fApply, fCanBeApplied, fCompareEq } };
+      return uptr<Move<XES, XEv, XSH>>{ new Self{ fApply(m, se) } };
    }
 
    virtual bool operator==(const Move<XES, XEv, XSH>& move) const override

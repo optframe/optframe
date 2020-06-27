@@ -29,6 +29,7 @@
 #include "Piece.h"
 
 using namespace std;
+using namespace optframe;
 
 // Solution Representation
 typedef Matrix<Piece> RepEtII;

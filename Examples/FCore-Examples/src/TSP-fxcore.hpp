@@ -4,7 +4,7 @@
 #include <functional>
 #include <iostream>
 
-#include <OptFCore/FCore.hpp>
+#include <OptFCore/FxCore.hpp>
 #include <OptFrame/Core.hpp>
 #include <OptFrame/Heuristics/Heuristics.hpp> // many metaheuristics here...
 #include <OptFrame/Scanner++/Scanner.hpp>
@@ -17,7 +17,7 @@ using namespace scannerpp;
 
 // next definitions come here within namespace
 // this also works when defining in global scope (same as 'class')
-namespace TSP_fcore {
+namespace TSP_fxcore {
 
 // define TSP solution type as 'vector<int>', using 'double' as evaluation type
 using ESolutionTSP = std::pair<
@@ -59,7 +59,11 @@ public:
 // Create TSP Problem Context
 ProblemContext pTSP;
 
-Evaluation<double> fevaluate(const std::vector<int>& s)
+// Evaluate
+using TSPEval = FEvaluator <
+                ESolutionTSP,
+      true, // minimization: true
+  [](auto& s) -> auto
 {
    double f = 0;
    for (int i = 0; i < int(pTSP.n) - 1; i++)
@@ -67,64 +71,38 @@ Evaluation<double> fevaluate(const std::vector<int>& s)
    f += pTSP.dist(s[int(pTSP.n) - 1], s[0]);
    return Evaluation<double>{ f };
 }
-
-// Evaluate
-FEvaluator < ESolutionTSP, true > // true -> minimization
-ev
-{
-   fevaluate
-};
+> ;
 
 // ===========================
 
-std::optional<std::vector<int>> frandom(double timelimit){
+// Generate random solution
+using TSPRandom = FConstructive<
+  std::vector<int>,
+  [](double timelimit) -> std::optional<std::vector<int>> {
      vector<int> v(pTSP.n, -1); // get information from context
      for (unsigned i = 0; i < v.size(); i++)
         v[i] = i;
      std::random_shuffle(v.begin(), v.end());
      return make_optional(v);
-  }
+  }>;
 
-// Generate random solution
-FConstructive<std::vector<int>> crand
-{
-  frandom
-};
-
-std::pair<int, int> fApplySwap(const std::pair<int, int>& moveData, ESolutionTSP& se)
-{
+// Swap move
+using MoveSwap = FMove<
+  std::pair<int, int>,
+  ESolutionTSP,
+  [](const std::pair<int, int>& moveData, ESolutionTSP& se) -> std::pair<int, int> {
      int i = moveData.first;
      int j = moveData.second;
      // perform swap of clients i and j
      int aux = se.first[j];
      se.first[j] = se.first[i];
      se.first[i] = aux;
-     return std::pair<int, int>(j, i); // return a reverse move ('undo' move)s
-}
-
-// Swap move
-using MoveSwap = FMove<std::pair<int, int>,  ESolutionTSP>;
-
-uptr<Move<ESolutionTSP>> fRandomSwap(const ESolutionTSP& se)
-{
-      int i = rand() % pTSP.n;
-     int j = i;
-     while (j <= i) {
-        i = rand() % pTSP.n;
-        j = rand() % pTSP.n;
-     }
-     return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j), fApplySwap });
-}
+     return std::pair<int, int>(j, i); // return a reverse move ('undo' move)
+  }>;
 
 // Swap move (NS)
-FNS< ESolutionTSP > nsswap
-{
-  fRandomSwap
-};
-
-// Swap move (NSSeq) - with "Boring" iterator
-FNSSeq< std::pair<int, int>, ESolutionTSP> nsseq
-{
+using NSSwap = FNS<
+  ESolutionTSP,
   [](const ESolutionTSP& se) -> uptr<Move<ESolutionTSP>> {
      int i = rand() % pTSP.n;
      int j = i;
@@ -132,7 +110,21 @@ FNSSeq< std::pair<int, int>, ESolutionTSP> nsseq
         i = rand() % pTSP.n;
         j = rand() % pTSP.n;
      }
-     return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j) , fApplySwap});
+     return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j) });
+  }>;
+
+// Swap move (NSSeq) - with "Boring" iterator
+using NSSeqSwapBoring = FNSSeqBoring<
+  std::pair<int, int>, // IMS (iterator memory)
+  ESolutionTSP,
+  [](const ESolutionTSP& se) -> uptr<Move<ESolutionTSP>> {
+     int i = rand() % pTSP.n;
+     int j = i;
+     while (j <= i) {
+        i = rand() % pTSP.n;
+        j = rand() % pTSP.n;
+     }
+     return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j) });
   },
   // iterator initialization (fGenerator)
   [](const ESolutionTSP& se) -> std::pair<int, int> {
@@ -158,8 +150,25 @@ FNSSeq< std::pair<int, int>, ESolutionTSP> nsseq
   },
   [](std::pair<int, int>& p) -> uptr<Move<ESolutionTSP>> {
      //uptr<Move<XES>> (*fCurrent)(IMS&)       // iterator.current()
-     return uptr<Move<ESolutionTSP>>(new MoveSwap{ p , fApplySwap });
-  }
-};
-//
-} // TSP_fcore
+     return uptr<Move<ESolutionTSP>>(new MoveSwap{ p });
+  }>;
+
+// Swap move (NSSeq) - with "Fancy" iterator (coroutines)
+using NSSeqSwapFancy = FNSSeqFancy<
+  ESolutionTSP,
+  [](const ESolutionTSP& se) -> uptr<Move<ESolutionTSP>> {
+     int i = rand() % pTSP.n;
+     int j = i;
+     while (j <= i) {
+        i = rand() % pTSP.n;
+        j = rand() % pTSP.n;
+     }
+     return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j) });
+  },
+  [](const ESolutionTSP& se) -> Generator<Move<ESolutionTSP>*> {
+     for (int i = 0; i < int(pTSP.n) - 1; i++)
+        for (int j = i + 1; j < pTSP.n; j++)
+           co_yield new MoveSwap{ make_pair(i, j) }; // implicit unique_ptr requirements
+  }>;
+
+} // TSP_fxcore

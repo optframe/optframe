@@ -1,12 +1,12 @@
 
 #include<iostream>
-#include "TSP-fcore.hpp" // implementation of TSP
+#include "TSP-fxcore.hpp" // implementation of TSP
 
 // import everything on main()
 using namespace std;
 using namespace optframe;
 using namespace scannerpp;
-using namespace TSP_fcore; 
+using namespace TSP_fxcore; 
 
 int
 main()
@@ -19,11 +19,10 @@ main()
    std::cout << pTSP.dist << std::endl;
 
    // evaluator
-   //TSPEval ev;
-   //
+   TSPEval ev;
+
    // create simple solution
-   //TSPRandom crand;
-   //
+   TSPRandom crand;
    std::vector<int> sol = *crand.generateSolution(0);
    std::cout << sol << std::endl;
 
@@ -32,18 +31,18 @@ main()
    esol.second.print(); // print evaluation
 
    // swap 0 with 1
-   MoveSwap move{ make_pair(0, 1), fApplySwap };
+   MoveSwap move{ make_pair(0, 1) };
    move.print();
 
-   //NSSwap nsswap;
+   NSSwap nsswap;
    // move for solution 'esol'
    auto m1 = nsswap.randomMove(esol);
    m1->print();
 
    std::cout << std::endl;
    std::cout << "begin listing NSSeqSwapFancy" << std::endl;
-   //
-   auto it1 = nsseq.getIterator(esol);
+   NSSeqSwapFancy swapFancy;
+   auto it1 = swapFancy.getIterator(esol);
    for (it1->first(); !it1->isDone(); it1->next())
       it1->current()->print();
    std::cout << "end listing NSSeqSwapFancy" << std::endl;
@@ -53,7 +52,7 @@ main()
    // testing simulated annealing
    BasicInitialSearch<ESolutionTSP> initRand(crand, ev);
    BasicSimulatedAnnealing<ESolutionTSP> sa{
-      ev, initRand, nsseq, 0.98, 100, 99999, rg
+      ev, initRand, swapFancy, 0.98, 100, 99999, rg
    };
    SearchStatus status = sa.search(StopCriteria<ESolutionTSP::second_type>{ 10.0 }); // 10.0 seconds max
    ESolutionTSP best = *sa.getBestSolution();

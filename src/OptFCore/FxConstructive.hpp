@@ -18,46 +18,35 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_FCORE_FNS_HPP_
-#define OPTFRAME_FCORE_FNS_HPP_
+#ifndef OPTFRAME_FCORE_FCONSTRUCTIVE_HPP_
+#define OPTFRAME_FCORE_FCONSTRUCTIVE_HPP_
 
 #include <functional>
 
-#include "../OptFrame/NS.hpp"
+#include "../OptFrame/Constructive.hpp"
 
 namespace optframe {
 
-template< XESolution XES>
-class FNS final : public NS<XES, typename XES::second_type>
+template<
+  XSolution S,                          // Solution Type
+  std::optional<S> (*fGenerate)(double) // constructive
+  >
+class FConstructive final : public Constructive<S>
 {
-   using XEv = typename XES::second_type;
-   using XSH = XES; // only single objective
-
 public:
-
-   uptr<Move<XES>> (*fRandom)(const XES&);
-
-   FNS(
-      uptr<Move<XES>> (*_fRandom)(const XES&)
-   )
-   :
-   fRandom{ _fRandom }
+   virtual std::optional<S> generateSolution(double timelimit)
    {
-   }
-
-   virtual uptr<Move<XES, XEv, XSH>> randomMove(const XES& se) override
-   {
-      return fRandom(se);
+      return fGenerate(timelimit);
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ":FNS";
+      ss << Component::idComponent() << ":FConstructive";
       return ss.str();
    }
 
-   virtual string id() const override
+   virtual string id() const
    {
       return idComponent();
    }
@@ -65,4 +54,4 @@ public:
 
 } // namespace optframe
 
-#endif /*OPTFRAME_FCORE_FNS_HPP_*/
+#endif /*OPTFRAME_FCORE_FCONSTRUCTIVE_HPP_*/

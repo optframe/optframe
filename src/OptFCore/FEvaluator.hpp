@@ -29,8 +29,7 @@ namespace optframe {
 
 template<
   XESolution XES,                                                         // ESolution Type
-  bool Minimizing,                                                        // is minimization
-  typename XES::second_type (*fEvaluate)(const typename XES::first_type&) // evaluation function
+  bool Minimizing                                                        // is minimization
   >
 class FEvaluator final : public Evaluator<typename XES::first_type, typename XES::second_type, XES>
 {
@@ -39,6 +38,17 @@ class FEvaluator final : public Evaluator<typename XES::first_type, typename XES
    using XSH = XES; // only single objective
 
 public:
+
+   XEv (*fEvaluate)(const S&); // evaluation function
+
+   FEvaluator(
+      XEv (*_fEvaluate)(const S&)
+   )
+   :
+   fEvaluate{ _fEvaluate }
+   {
+   }
+
    virtual XEv evaluate(const S& s)
    {
       return fEvaluate(s);

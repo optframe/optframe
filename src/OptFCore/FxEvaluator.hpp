@@ -18,46 +18,45 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_FCORE_FNS_HPP_
-#define OPTFRAME_FCORE_FNS_HPP_
+#ifndef OPTFRAME_FCORE_FEVALUATOR_HPP_
+#define OPTFRAME_FCORE_FEVALUATOR_HPP_
 
 #include <functional>
 
-#include "../OptFrame/NS.hpp"
+#include "../OptFrame/Evaluator.hpp"
 
 namespace optframe {
 
-template< XESolution XES>
-class FNS final : public NS<XES, typename XES::second_type>
+template<
+  XESolution XES,                                                         // ESolution Type
+  bool Minimizing,                                                        // is minimization
+  typename XES::second_type (*fEvaluate)(const typename XES::first_type&) // evaluation function
+  >
+class FEvaluator final : public Evaluator<typename XES::first_type, typename XES::second_type, XES>
 {
+   using S = typename XES::first_type;
    using XEv = typename XES::second_type;
    using XSH = XES; // only single objective
 
 public:
-
-   uptr<Move<XES>> (*fRandom)(const XES&);
-
-   FNS(
-      uptr<Move<XES>> (*_fRandom)(const XES&)
-   )
-   :
-   fRandom{ _fRandom }
+   virtual XEv evaluate(const S& s)
    {
+      return fEvaluate(s);
    }
 
-   virtual uptr<Move<XES, XEv, XSH>> randomMove(const XES& se) override
+   virtual constexpr bool isMinimization() const
    {
-      return fRandom(se);
+      return Minimizing;
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ":FNS";
+      ss << Component::idComponent() << ":FEvaluator";
       return ss.str();
    }
 
-   virtual string id() const override
+   virtual string id() const
    {
       return idComponent();
    }
@@ -65,4 +64,4 @@ public:
 
 } // namespace optframe
 
-#endif /*OPTFRAME_FCORE_FNS_HPP_*/
+#endif /*OPTFRAME_FCORE_FEVALUATOR_HPP_*/
