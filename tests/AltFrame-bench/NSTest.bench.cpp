@@ -4,7 +4,7 @@
 #include <random>
 #include <vector>
 
-#include <AltFrame/NSSeqTest.hpp>
+#include "../AltFrame/NSSeqTest.hpp"
 #include <OptFrame/Util/Matrix.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
 
