@@ -21,6 +21,17 @@ Major changes happened from v3 to v4, so we will need to update our tutorials...
 
 Check [https://optframe.github.io/docs/quick-start-guide/](https://optframe.github.io/docs/quick-start-guide/)
 
+### Docs Requirements
+
+`python3 -m pip install -r requirements.txt`
+
+TODO: use [exhale](https://exhale.readthedocs.io/en/latest/usage.html#usage-quickstart-guide)
+
+Just type: `make docs`
+
+Output is on: `xdg-open $(pwd)/docs/build/html/index.html`
+
+
 ## Project Structure
 
 Project is organized in three main folders: `src`, `libs`, `tests` and `bin`.

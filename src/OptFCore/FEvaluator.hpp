@@ -54,7 +54,9 @@ public:
       return fEvaluate(s);
    }
 
-   virtual constexpr bool isMinimization() const
+   //virtual constexpr bool isMinimization() const
+   // note that c++-10.1 accepts this on --std=c++17, which is a mistake (should only exist on c++20)
+   virtual bool isMinimization() const
    {
       return Minimizing;
    }
