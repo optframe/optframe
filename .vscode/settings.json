@@ -74,5 +74,6 @@
         "concepts": "cpp",
         "ranges": "cpp",
         "bit": "cpp"
-    }
+    },
+    "restructuredtext.confPath": "${workspaceFolder}/docs/source"
 }

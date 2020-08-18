@@ -14,4 +14,4 @@ install:
 .PHONY: docs
 
 docs:
-	cd docs && make html
+	cd docs && make clean && make html
