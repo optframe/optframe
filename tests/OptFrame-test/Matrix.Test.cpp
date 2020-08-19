@@ -9,7 +9,7 @@
 #include <OptFrame/Util/Matrix.hpp>
 
 using namespace std;
-//using namespace optframe;
+using namespace optframe;
 
 // basics
 

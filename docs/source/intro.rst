@@ -17,11 +17,11 @@ OptFrame supports several state-of-the-art `metaheuristics
 <https://en.wikipedia.org/wiki/Metaheuristic>`_, such as:
 
 - `Genetic Algorithm <https://en.wikipedia.org/wiki/Genetic_algorithm>`_ and Evolution Strategies
-- `Simulated Annealing <https://en.wikipedia.org/wiki/Simulated_annealing>`_
-- `Variable Neighborhood Search <https://en.wikipedia.org/wiki/Variable_neighborhood_search>`_ (VNS)
-- `Iterated Local Search <https://en.wikipedia.org/wiki/Iterated_local_search>`_ (ILS)
-- `Tabu Search <https://en.wikipedia.org/wiki/Tabu_search>`_
 - `Greedy Randomized Adaptive Search Procedures <https://en.wikipedia.org/wiki/Greedy_randomized_adaptive_search_procedure>`_ (GRASP)
+- `Iterated Local Search <https://en.wikipedia.org/wiki/Iterated_local_search>`_ (ILS)
+- `Simulated Annealing <https://en.wikipedia.org/wiki/Simulated_annealing>`_
+- `Tabu Search <https://en.wikipedia.org/wiki/Tabu_search>`_
+- `Variable Neighborhood Search <https://en.wikipedia.org/wiki/Variable_neighborhood_search>`_ (VNS)
 
 And also `multi-objective optimization <https://en.wikipedia.org/wiki/Multi-objective_optimization>`_ 
 metaheuristics, such as NSGA-II.
