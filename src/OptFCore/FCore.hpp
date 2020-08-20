@@ -9,4 +9,23 @@
 #include "FNS.hpp"
 #include "FNSSeq.hpp"
 
+namespace optframe {
+
+// OptFrame Functional Core (FCore)
+class FCore
+{
+public:
+   static std::string version()
+   {
+      return "4.1-dev";
+   }
+
+   static std::string welcome()
+   {
+      return "Welcome to OptFrame Functional Core (FCore) - version " + version();
+   }
+};
+
+} // optframe
+
 #endif // OPTFRAME_FCORE_HPP
