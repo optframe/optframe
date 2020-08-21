@@ -1,10 +1,14 @@
 Advanced
 ========
 
-Some advanced tricks.
+Some advanced tricks and optimization techniques.
 
-Explicit XESolution pair declaration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. danger::
+    This section is incomplete!
+
+
+Explicit XESolution 
+^^^^^^^^^^^^^^^^^^^
 
 Instead of using standard :code:`std::pair` to glue solution and evaluation types,
 one can explictly declare a class. This is useful to embed user methods and other
@@ -28,3 +32,26 @@ problem-specific operations.
     {
         // other specific methods
     }
+
+
+Local Search
+^^^^^^^^^^^^
+
+OptFrame has three main types of neighborhoods: :code:`NS`, :code:`NSSeq` and :code:`NSEnum`.
+
+Advanced local search, ...
+
+
+Move Cost
+^^^^^^^^^
+
+.. hint::
+    On OptFrame Classic (not FCore) it's possible to avoid the creation of an undo move. Currently, all 
+    existing examples on OptFrame Classic use the undo feature anyway, since move undo is typically much faster than a complete copy of
+    the solution structure.
+
+
+Multi-Objective
+^^^^^^^^^^^^^^^
+
+For multiple objectives, ...

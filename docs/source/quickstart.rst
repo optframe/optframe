@@ -110,8 +110,8 @@ We declare a `XESolution <./concepts.html>`_ pair that aggregates both spaces as
 .. https://thomas-cokelaer.info/tutorials/sphinx/rest_syntax.html#restructured-text-rest-and-sphinx-cheatsheet
 
 .. hint::
-    As long as fields :code:`first` and :code:`second` are provided, any class can
-    be used as a :code:`std::pair` XESolution concept, as demonstrated on `Advanced <./advanced.html>`_
+    As long as fields :code:`first` and :code:`second` are provided on XESolution concept, any class can
+    be used instead of :code:`std::pair`, as demonstrated on `Explicit XESolution <./advanced.html#explicit-xesolution>`_
     section.
 
 
@@ -145,10 +145,211 @@ to process problem data (some details of 'load' function will only be discussed 
     // global instance for problem data
     ProblemContext pKP;
 
+.. hint::
+    ProblemContext is a user-defined class that can have any desired format. A 'load' function
+    is just a suggestion, but not at all necessary. The object :code:`pKP` is declared in global scope
+    just to simplify the example, but it could be embedded in any other component if user desires.
 
 Random Constructive
 ^^^^^^^^^^^^^^^^^^^
 
 We need to have some initial solution for the search process, so we just proceed in a random manner.
+To simplify things, we assume a relaxation of the Knapsack Problem, where items are allowed to exceed
+knapsack capacity by means of a penalization strategy.
 
-. . . 
+FCore function receives a timelimit and requires an :code:`std::optional` as return, as in some 
+situations, it could be infeasible to generate an initial solution within the given timelimit:
+
+.. code-block:: c++
+
+    // declaring a 'frandom' function that gets timelimit and returns optional solution
+    std::optional<std::vector<bool>>
+    frandom(double timelimit)
+    {
+        std::vector<bool> v(pKP.n, false); // no item is chosen at first
+        for (unsigned i = 0; i < v.size(); ++i)
+            v[i] = rand() % 2; // 50% chance to select an item (or not)
+        // returns solution as 'optional' (C++17)
+        return std::make_optional(v);
+    }
+
+    // Instantiates a FConstructive object for method 'frandom'
+    FConstructive<std::vector<bool>> randomConstructive{ frandom };
+
+.. hint::
+    User can also define many advanced constructive techniques in a similar manner, such as greedy 
+    and greedy randomized approaches.
+
+
+Evaluator
+^^^^^^^^^
+
+Now it's time to define an evaluation (or objective) function. According to the goal of 
+maximizing the profits, we iterate over selected items to accumulate profit and weights.
+As discussed in constructive section, we allow accumulated weight to surpass knapsack capacity
+by introducing a penalization with an "undesired value", which is -1000000 in our example:
+
+.. code-block:: c++
+
+    // function 'fevaluate' receives a const solution and returns an evaluation
+    Evaluation<double>
+    fevaluate(const std::vector<bool>& s)
+    {
+        int sum_p = 0; // sum profits    
+        int sum_w = 0; // sum weights
+        for (int i = 0; i < pKP.n; ++i)
+            if (s[i]) // if element is selected in knapsack
+            {
+                sum_p += pKP.p[i]; // adds profit of selected item
+                sum_w += pKP.w[i]; // adds weight of selected item
+            }
+        // check if knapsack capacity is exceeded (penalization strategy)
+        if (sum_w >= pKP.Q)
+            sum_p -= 1000000 * (sum_w - pKP.Q); // penalization proportional to exceeded weight
+        
+        return Evaluation<double>{ sum_p }; // returns Evaluation object
+    }
+
+We now use the defined :code:`fevaluate` function to create an :code:`Evaluator` object named :code:`evalKP`,
+in a :code:`MAXIMIZE` direction:
+
+.. code-block:: c++
+
+    FEvaluator<ESolutionKP, MAXIMIZE> evalKP{ fevaluate };
+
+.. hint::
+    User can choose :code:`MINIMIZE` if dealing with a minimization problem. For multi-objective
+    problems and Pareto optimization, user should visit `Multi-Objective <./advanced.html#multi-objective>`_ section.
+
+
+Neighborhood Structure
+^^^^^^^^^^^^^^^^^^^^^^
+
+In order to improve a given solution, several metaheuristics employ `Local Search Optimization <https://en.wikipedia.org/wiki/Local_search_(optimization)>`_
+techniques based on the concept of Neighborhood Structure. 
+Every neighborhood is related to a move operator, which is required (on FCore) to have an undo operation (capable of reverting the effects of the move).
+
+
+We create a :code:`BitFlip` move, that changes the :code:`true/false` selection of a given item :math:`k`.
+In this case, the `move structure` (representation of the move) is just an :code:`int`, that represents the flipped item.
+
+.. code-block:: c++
+
+    // MoveBitFlip (move structure is an 'int')
+    using MoveBitFlip = FMove<int, ESolutionKP>;
+
+    // function 'fApplyFlip' takes a move structure 'k' and flips the item 'k' of solution pair 'se'
+    // example: if item k has value 'true' (selected) it becomes 'false' (not selected), otherwise it becomes 'true' (selected)
+    int
+    fApplyFlip(const int& k, ESolutionKP& se)
+    {
+        se.first[k] = !se.first[k]; // reverts the selection of item k in solution (se.first)
+        return k;                   // returns the "undo move", which is in this case the same move 'k' (symmetric move)
+    }
+
+Now, it's time to define a neighborhood generator for the move.
+OptFrame has three main types of neighborhoods: :code:`NS`, :code:`NSSeq` and :code:`NSEnum`.
+
+In this example, we will use :code:`NS`, since it only requires the generation of random moves:
+
+.. code-block:: c++
+
+    // random generator for BitFlip moves (returned as C++11 unique pointers)
+    std::unique_ptr<Move<ESolutionKP>>
+    fRandomFlip(const ESolutionKP& se)
+    {
+        int k = rand() % pKP.n; // selects a random item in [0..n-1]
+        // generates a MoveBitFlip object with function 'fApplyFlip' and move structure 'k'
+        return std::unique_ptr<Move<ESolutionKP>>(new MoveBitFlip{ k, fApplyFlip });
+    }
+
+    // Defines a NS object for BitFlip with function 'fRandomFlip'
+    FNS<ESolutionKP> nsFlip{ fRandomFlip };
+
+
+.. hint::
+    It is usually a good idea to start developing over the simplest neighborhood, which is :code:`NS`.
+    Most (non-deterministic) metaheuristics only requires a :code:`NS`, as it only requires the generation of random moves.
+    More advanced neighborhoods based on iterators, such as :code:`NSSeq` and :code:`NSEnum` are only required for advanced `Local Search <./advanced.html#local-search>`_ methods.
+
+
+Time to Test!
+^^^^^^^^^^^^^
+
+At this point, you can already test many nice metaheuristics and solve your knapsack problem!
+We use the following code to load a problem instance (see `Complete Example`_ after):
+
+.. code-block:: c++ 
+
+    // loading data into problem context 'pTSP'
+    Scanner scanner{ File{ "knapsack-example.txt" } };
+    pKP.load(scanner);
+    std::cout << "number of items in problem:" << pKP.n << std::endl;
+
+.. hint::
+    It is useful to test every FCore structure independently, so as to develop unit testing for them.
+
+To test the constructive and evaluator:
+
+.. code-block:: c++ 
+
+    // invokes method 'generateSolution' from 'FConstructive' to get random solution (no timelimit is passed)
+    std::vector<bool> sol = *randomConstructive.generateSolution(0.0);
+    // prints solution using OptFrame default operator<<
+    std::cout << sol << std::endl;
+    
+    // evaluates the initial solution with 'evalKP' and generates XESolution pair
+    ESolutionKP esol(sol, evalKP.evaluate(sol));
+    // prints initial evaluation value (corresponding to random solution in pair)
+    esol.second.print();
+
+
+Now we give an example with of the most well-known metaheuristics: the `Simulated Annealing <https://en.wikipedia.org/wiki/Simulated_annealing>`_.
+It has few parameters, including: initial temperature :code:`T0`, cooling factor :code:`alpha`, and iterations per temperature :code:`iterT`.
+
+.. code-block:: c++
+
+    // Good quality number generator for Simulated Annealing (by default Mersenne Twister)
+    RandGen rg;
+    
+    // Creates 'InitialSearch' object called 'initRand' (similar to 'FConstructive' object 'randomConstructive')
+    BasicInitialSearch<ESolutionKP> initRand(randomConstructive, evalKP);
+
+    // Simulated Annealing with: alpha=98%, iterT=100, initial temperature T0 = 99999
+    BasicSimulatedAnnealing<ESolutionKP> sa{
+        evalKP, initRand, nsFlip, 0.98, 100, 99999, rg
+    };
+
+    // Simulated Annealing with stop criteria by time (= 10 seconds)
+    SearchStatus status = sa.search(StopCriteria<ESolutionKP::second_type>{ 10.0 });
+    
+    // Extracts best solution so far and prints its evaluation value
+    ESolutionKP bestSolution = *sa.getBestSolution();
+
+    std::cout << bestSolution.first << std::endl;   // prints solution
+    bestSolution.second.print();                    // prints evaluation
+    
+
+
+Complete Example
+^^^^^^^^^^^^^^^^
+
+.. warning::
+    We present a complete example below. Note that some small differences may exist due to updates in tutorial, including language details.
+    Feel free to check folder :code:`OptFrame/Examples` for other examples on FCore and OptFrame Classic.
+
+Example is divided in two files: :code:`KP-fcore-ex.hpp` and :code:`mainKP-fcore-ex.cpp`.
+
+.. literalinclude:: ./_example/KP-fcore-ex.hpp
+    :linenos:
+    :language: c++
+
+.. literalinclude:: ./_example/mainKP-fcore-ex.cpp
+    :linenos:
+    :language: c++
+
+To compile it (generates binary `app_KP`)::
+
+    g++ -g -O3 --std=c++17 -fconcepts  mainKP-fcore-ex.cpp -o app_KP
+
+

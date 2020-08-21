@@ -27,9 +27,15 @@
 
 namespace optframe {
 
+enum MinOrMax
+{
+   MINIMIZE,
+   MAXIMIZE
+};
+
 template<
   XESolution XES,                                                         // ESolution Type
-  bool Minimizing                                                        // is minimization
+  MinOrMax Minimizing                                                        // is minimization
   >
 class FEvaluator final : public Evaluator<typename XES::first_type, typename XES::second_type, XES>
 {
@@ -58,7 +64,7 @@ public:
    // note that c++-10.1 accepts this on --std=c++17, which is a mistake (should only exist on c++20)
    virtual bool isMinimization() const
    {
-      return Minimizing;
+      return Minimizing == MinOrMax::MINIMIZE;
    }
 
    static string idComponent()
