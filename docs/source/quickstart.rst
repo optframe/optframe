@@ -10,16 +10,13 @@ After `installing <../install>`_ OptFrame (or just cloning it), user can start b
 a solution to the problem at hand.
 
 
-OptFrame Functional Core
-------------------------
+Welcome Message
+---------------
 
 A useful abstraction was introduced since OptFrame 4.1, called OptFrame Functional Core (FCore).
 The idea of FCore is to provide a simplified access to OptFrame programming classes, by means
 of closures and lambdas. This way, a project that typically had 8 to 10 files is reduced to a single
 file (all included in headers!).
-
-Welcome Message
-^^^^^^^^^^^^^^^
 
 The first test on FCore is to see if it's correctly compiling. So let's just include its main header,
 and print its `welcome()` message:
@@ -83,8 +80,7 @@ Solution and Evaluation Types
 Users must first define a *Representation*, which is a data structure that represents
 an element in the *Solution Space* for the KP. A natural candidate here is an *array of booleans*, 
 since we need to decide if we are going to carry each item or not. In C++, an interesting
-approach is to use stl containers, such as a :cppcode:`std::vector<int>` 
-:cppcode:`#include<iostream>` :pyth:`print("Hello World!")`.
+approach is to use stl containers, such as a :cppcode:`std::vector<int>`.
 User also needs to specify the data type for the *Objective Space*, in general a numeric type.
 In this case, we will simply choose 
 an :cppcode:`Evaluation<double>` (just ignore the *Evaluation* container for now...).
