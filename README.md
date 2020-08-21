@@ -19,7 +19,12 @@ Remember to clone this repo using `--recursive` option, so you don't miss anythi
 
 Major changes happened from v3 to v4, so we will need to update our tutorials...
 
-Official Documentation on [ReadTheDocs](https://optframe.readthedocs.io).
+-----
+
+**Official Documentation on [ReadTheDocs](https://optframe.readthedocs.io)**
+
+[![Documentation Status](https://readthedocs.org/projects/optframe/badge/?version=latest)](https://optframe.readthedocs.io/en/latest/?badge=latest)
+
 
 Note that OptFrame website may have obsolete documentation and examples:
 
