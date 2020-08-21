@@ -19,7 +19,11 @@ Remember to clone this repo using `--recursive` option, so you don't miss anythi
 
 Major changes happened from v3 to v4, so we will need to update our tutorials...
 
-Check [https://optframe.github.io/docs/quick-start-guide/](https://optframe.github.io/docs/quick-start-guide/)
+Official Documentation on [ReadTheDocs](https://optframe.readthedocs.io).
+
+Note that OptFrame website may have obsolete documentation and examples:
+
+~Check [https://optframe.github.io/docs/quick-start-guide/](https://optframe.github.io/docs/quick-start-guide/)~
 
 ### Docs Requirements
 
