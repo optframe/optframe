@@ -74,13 +74,20 @@ $$S \\subseteq I$$
 Solution and Evaluation Types
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. role:: cppcode(code)
+  :language: cpp
+
+.. role:: pyth(code)
+  :language: python
+
 Users must first define a *Representation*, which is a data structure that represents
 an element in the *Solution Space* for the KP. A natural candidate here is an *array of booleans*, 
 since we need to decide if we are going to carry each item or not. In C++, an interesting
-approach is to use stl containers, such as a :code:`std::vector<int>`.
+approach is to use stl containers, such as a :cppcode:`std::vector<int>` 
+:cppcode:`#include<iostream>` :pyth:`print("Hello World!")`.
 User also needs to specify the data type for the *Objective Space*, in general a numeric type.
 In this case, we will simply choose 
-an :code:`Evaluation<double>` (just ignore the *Evaluation* container for now...).
+an :cppcode:`Evaluation<double>` (just ignore the *Evaluation* container for now...).
 
 We declare a `XESolution <./concepts.html>`_ pair that aggregates both spaces as a type :code:`ESolutionKP`:
 
@@ -97,6 +104,16 @@ We declare a `XESolution <./concepts.html>`_ pair that aggregates both spaces as
         std::vector<bool>, // (representation)
         Evaluation<double> // (objective value)
     >;
+
+.. this is called an 'admonition'
+.. https://docutils.sourceforge.io/docs/ref/rst/directives.html#code
+.. https://thomas-cokelaer.info/tutorials/sphinx/rest_syntax.html#restructured-text-rest-and-sphinx-cheatsheet
+
+.. hint::
+    As long as fields :code:`first` and :code:`second` are provided, any class can
+    be used as a :code:`std::pair` XESolution concept, as demonstrated on `Advanced <./advanced.html>`_
+    section.
+
 
 Problem Context
 ^^^^^^^^^^^^^^^

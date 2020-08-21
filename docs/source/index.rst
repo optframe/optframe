@@ -16,6 +16,7 @@ Welcome to OptFrame Documentation, please select the desired content section.
    install
    quickstart
    concepts
+   advanced
    fcore
    license
 
