@@ -111,6 +111,11 @@ type :code:`ESolutionKP` (meaning an *evaluated solution for the knapsack proble
     be used instead of :code:`std::pair`, as demonstrated on `Explicit XESolution <./advanced.html#explicit-xesolution>`_
     section.
 
+.. warning::
+    Since OptFrame v4, any data structure can be used as a *solution representation*, as long as it implements :code:`operator<<`.
+    OptFrame Classic (<= v3) required a templated class named :code:`Solution<R,ADS>`, passing both
+    a *representation* type :code:`R` and *auxiliary data structure* type :code:`ADS`. This is no longer mandatory, but still widely
+    used on the available examples.
 
 Problem Context
 ^^^^^^^^^^^^^^^
