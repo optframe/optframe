@@ -20,7 +20,6 @@ To clone OptFrame repository from GitHub:
 Then you can run basic tests::
 
    make test
-   ./tests/build/OptFrame_test
 
 Output should be: `All tests passed`.
 

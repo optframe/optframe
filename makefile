@@ -2,7 +2,7 @@ all: test
 
 
 test:
-	cd tests && make test
+	cd tests && make test && ./build/OptFrame_test
 
 test-install:
 	cd tests && make test-install
