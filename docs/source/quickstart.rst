@@ -342,11 +342,26 @@ Complete Example
 
 Example is divided in two files: :code:`KP-fcore-ex.hpp` and :code:`mainKP-fcore-ex.cpp`.
 
+.. hint::
+    This example could be made in a single file, to be even simpler. However, we recommend users to have  
+    a clear separation for the header declaration of *FCore components* (on :code:`KP-fcore-ex.hpp`) 
+    from the :code:`main()` entrypoint (on :code:`mainKP-fcore-ex.cpp`), since unit testing is much simpler when these are decoupled.
+
+*KP-fcore-ex.hpp*
+
 .. literalinclude:: ./_example/KP-fcore-ex.hpp
     :linenos:
     :language: c++
 
+*mainKP-fcore-ex.cpp*
+
 .. literalinclude:: ./_example/mainKP-fcore-ex.cpp
+    :linenos:
+    :language: c++
+
+*knapsack-example.txt*
+
+.. literalinclude:: ./_example/knapsack-example.txt
     :linenos:
     :language: c++
 
