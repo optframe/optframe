@@ -328,7 +328,7 @@ It has few parameters, including: initial temperature :code:`T0`, cooling factor
 
 
 Complete Example
-^^^^^^^^^^^^^^^^
+----------------
 
 .. warning::
     We present a complete example below. Note that some small differences may exist due to updates in tutorial, including language details.
