@@ -85,7 +85,8 @@ User also needs to specify the data type for the *Objective Space*, in general a
 In this case, we will simply choose 
 an :cppcode:`Evaluation<double>` (just ignore the *Evaluation* container for now...).
 
-We declare a `XESolution <./concepts.html>`_ pair that aggregates both spaces as a type :code:`ESolutionKP`:
+We declare a `XESolution <./concepts.html>`_ pair that aggregates both spaces as a single 
+type :code:`ESolutionKP` (meaning an *evaluated solution for the knapsack problem*):
 
 .. code-block:: c++
 
