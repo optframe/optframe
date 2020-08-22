@@ -20,17 +20,18 @@ problem-specific operations.
     // explicit declaration of class to represent XESolution pair
     class MyESolution1
     {
+    public:
         using first_type = std::vector<bool>;
         using second_type = Evaluation<double>;
         first_type first;   // some XSolution type
         second_type second; // some XEvaluation type
-        // other specific methods
+        // other specific methods ...
     }
 
     // declaration of XESolution pair via inheritance over IESolution
     class MyESolution2 : public IESolution<std::vector<bool>, Evaluation<double>>
     {
-        // other specific methods
+        // other specific methods ...
     }
 
 

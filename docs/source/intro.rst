@@ -52,7 +52,8 @@ OptFrame, specially:
 - Marcone Jamilson Freitas Souza *(for metaheuristic teaching and support)*
 - Nenad Mladenovic *(for great works on neighborhood exploration)*
 - Luiz Satoru Ochi *(for metaheuristic teaching and support)*
-- El-Ghazali Talbi *(for great books on metaheuristics)*
+- Thibaut Lust *(for great ideas on multi-objective optimization)*
+- El-Ghazali Talbi *(for great books on metaheuristics and optimization)*
 
 Contributors
 ------------
