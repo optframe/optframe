@@ -52,13 +52,34 @@ If you want system wide installation, we assume you already have MinGW installed
 If not, this is covered in the `MinGW Getting Started Wiki <http://www.mingw.org/wiki/Getting_Started>`_.
 You'll need both C and C++ compilers (latest MinGW already supports C++17).
 
+
+Alternative One
+^^^^^^^^^^^^^^^
+
 Once you have downloaded the OptFrame package (or cloned repository),
 create a folder on your PC which is readable by all users,
 for example "C:\Program Files\Common Files\MinGW\OptFrame\". 
-Copy the "libs\" and "src\" folders from the zip archive to that location.
+Copy the directories "libs/" and "src/" from the zip archive to that location.
 
 When compiling with MinGW, remember to add *-I* option, passing include directories::
 
    g++ -o myExample example.c -I"C:\Program Files\Common Files\MinGW\OptFrame\src" -I"C:\Program Files\Common Files\MinGW\OptFrame\libs" 
 
-Remember that *src* contains all OptFrame files, and *libs* contains all dependencies.
+.. hint::
+   Remember that *src* contains all OptFrame files, and *libs* contains all its dependencies.
+
+Alternative Two
+^^^^^^^^^^^^^^^
+
+A somewhat easier approach is to simply copy content from *libs/* and *src/* to MinGW
+default include folder. *Note that this may vary on user installation*, but let's assume *C:\mingw\include* to exist.
+
+Files could be placed as:
+- C:\mingw\include\OptFrame
+- C:\mingw\include\OptFCore
+- C:\mingw\include\catch2
+- C:\mingw\include\scannerpplib
+
+If everything works fine, user would be able to use OptFrame without explicit *-I* option::
+
+   g++ -o myExample example.cpp 
