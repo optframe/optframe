@@ -23,7 +23,7 @@
 
 #include <functional>
 
-#include "../OptFrame/Constructive.hpp"
+#include <OptFrame/Constructive.hpp>
 
 namespace optframe {
 

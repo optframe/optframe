@@ -40,6 +40,16 @@ Just type: `make docs`
 
 Output is on: `xdg-open $(pwd)/docs/build/html/index.html`
 
+## Build with Bazel
+
+To build (currently a small test on `demo_opt`):
+`bazel build ...`
+
+Resulting binaries will be located at folder `./bazel-bin/demo_opt/`
+
+To clean:
+`bazel clean` or `bazel clean --expunge`
+
 
 ## Project Structure
 

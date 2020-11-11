@@ -9,3 +9,4 @@ app_*
 .idea
 *.err
 *.code-workspace
+bazel-*

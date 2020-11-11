@@ -23,7 +23,7 @@
 
 #include <functional>
 
-#include "../OptFrame/Evaluator.hpp"
+#include <OptFrame/Evaluator.hpp>
 
 namespace optframe {
 

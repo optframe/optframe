@@ -23,7 +23,7 @@
 
 #include <functional>
 
-#include "../OptFrame/Move.hpp"
+#include <OptFrame/Move.hpp>
 
 namespace optframe {
 

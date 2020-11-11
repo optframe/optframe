@@ -1,0 +1,8 @@
+#include <OptFCore/FCore.hpp> // included src
+
+// simple test for package loading (on bazel)
+
+int main()
+{
+   return 0;
+}

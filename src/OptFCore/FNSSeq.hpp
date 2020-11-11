@@ -23,7 +23,7 @@
 
 #include <functional>
 
-#include "../OptFrame/NSSeq.hpp"
+#include <OptFrame/NSSeq.hpp>
 //#include "coro/Generator.hpp" // this is a very special class!! coroutines support \o/
 
 namespace optframe {

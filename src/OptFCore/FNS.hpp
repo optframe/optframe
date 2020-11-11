@@ -23,7 +23,7 @@
 
 #include <functional>
 
-#include "../OptFrame/NS.hpp"
+#include <OptFrame/NS.hpp>
 
 namespace optframe {
 
