@@ -22,6 +22,7 @@
 #define TSP_NN_CONSTRUCTIVE_HPP_
 
 #include <OptFrame/Constructive.hpp>
+#include <OptFrame/InitialSearch.hpp>
 //#include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.h"
