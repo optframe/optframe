@@ -118,6 +118,34 @@ Please take a deep look at `Examples` folder, and build them by simply typing `m
 Each example is connected to some previous literature work, and can demonstrate how each metaheuristic work on practice.
 We know some detailed tutorial is still missing, but we hope to provide more info as soon as possible. Feel free to open issues and new discussions on GitHub ;)
 
+#### Using Bazel
+
+Each example is itself an independent workspace.
+For this reason, each example has a reference to `@OptFrame` (as `local_repository`), 
+while optframe root itself has a self reference for `@OptFrame` (as `local_repository`).
+
+This allows building all examples from root, with `bazel build ...` or `bazel build //Examples/...`
+One can also jump into each independent example and build it locally.
+
+See available examples on bazel: `bazel query //Examples/...`
+
+*Here are some examples and build advices for bazel.*
+
+#### FCore-Examples
+
+From root:
+- `bazel build @FCore-Examples//...`
+- `bazel run @FCore-Examples//src:app_TSPfcore`
+
+Binary will be located at `./bazel-bin/external/FCore-Examples/src/app_TSPfcore`
+
+From example (`cd Examples/FCore-Examples/`):
+- `bazel clean`
+- `bazel build ...`
+- `bazel run //src:app_TSPfcore`
+
+Binary will be located at `./Examples/FCore-Examples/bazel-bin/src/app_TSPfcore`
+
 ## Submodules
 
 Getting submodules: `git submodule update --init --recursive` and `git pull --recurse-submodules`.
