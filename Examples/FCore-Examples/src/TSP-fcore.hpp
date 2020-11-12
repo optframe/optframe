@@ -69,7 +69,7 @@ Evaluation<double> fevaluate(const std::vector<int>& s)
 }
 
 // Evaluate
-FEvaluator < ESolutionTSP, true > // true -> minimization
+FEvaluator < ESolutionTSP, MinOrMax::MINIMIZE >
 ev
 {
    fevaluate
