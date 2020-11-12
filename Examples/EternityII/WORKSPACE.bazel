@@ -1,23 +1,13 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+local_repository(
+    name = "OptFrame",
+    path = "../../"
+)
+
 #http_archive(
 #    name = "gtest",
 #    url = "https://github.com/google/benchmark/archive/v1.5.2.zip",
 #    #sha256 = "b58cb7547a28b2c718d1e38aee18a3659c9e3ff52440297e965f5edffe34b6d0",
 #    build_file = "@//:gbench.BUILD",
 #)
-
-local_repository(
-    name = "OptFrame",
-    path = ".",
-)
-
-local_repository(
-    name = "FCore-Examples",
-    path = "Examples/FCore-Examples",
-)
-
-local_repository(
-    name = "EternityII",
-    path = "Examples/EternityII",
-)

@@ -146,6 +146,22 @@ From example (`cd Examples/FCore-Examples/`):
 
 Binary will be located at `./Examples/FCore-Examples/bazel-bin/src/app_TSPfcore`
 
+#### EternityII Example
+
+From root:
+- `bazel build @EternityII//...`
+- `cd ./bazel-bin/external/EternityII/app_Example.runfiles/EternityII/`
+- `./app_Example`
+
+Binary and data will be located at `./bazel-bin/external/EternityII/app_Example.runfiles/EternityII/`
+
+From example (`cd Examples/EternityII/`):
+- `bazel clean`
+- `bazel build ...`
+- `bazel run //:app_Example`
+
+Binary and data will be located at `./Examples/EternityII/bazel-bin/app_Example.runfiles/__main__/`
+
 ## Submodules
 
 Getting submodules: `git submodule update --init --recursive` and `git pull --recurse-submodules`.

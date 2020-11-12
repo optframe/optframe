@@ -35,10 +35,14 @@ using namespace std;
 #include <OptFrame/Loader.hpp>
 #include "EternityII.h"
 
+#include<filesystem> // c++17 std::filesystem::current_path
+
 using namespace EtII;
 
 int main(int argc, char **argv)
 {
+   std::cout << "0: " << argv[0] << std::endl;
+   std::cout << "dir: " << std::filesystem::current_path() << std::endl;
 	Loader<RepEtII, OPTFRAME_DEFAULT_ADS, SolutionEtII> optframe;
 	EtIIProblemCommand etii;
 	etii.load("./pieces_set_2/pieces_10x10.txt", optframe.factory, optframe.dictionary, optframe.ldictionary);

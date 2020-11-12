@@ -1,0 +1,19 @@
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_binary")
+
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+
+cc_binary(
+    name = "app_TSPfcore",
+    srcs = ["src/mainTSP-fcore.cpp"],
+    #deps = ["//src/kahan-float:kahan"],
+    deps = [":TSPfcore"],
+)
+
+cc_library(
+    name = "TSPfcore",
+    hdrs = ["src/TSP-fcore.hpp"],
+    deps = ["@OptFrame//src:OptFCore"]
+)

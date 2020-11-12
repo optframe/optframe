@@ -1,0 +1,17 @@
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_binary")
+
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+cc_binary(
+    name = "app_Example",
+    srcs = glob([
+        "src/**/*.h", 
+        "src/**/*.cpp"
+    ]),
+    data = glob([
+        "pieces_set_2/*.txt",
+    ]),
+    deps = ["@OptFrame//src:OptFrame"]
+)
