@@ -23,6 +23,11 @@ local_repository(
 )
 
 local_repository(
+    name = "KP",
+    path = "Examples/KP",
+)
+
+local_repository(
     name = "TSP",
     path = "Examples/TSP",
 )

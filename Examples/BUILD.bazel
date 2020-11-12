@@ -6,6 +6,21 @@ package(
 
 cc_library(
     name = "FCore-Examples",
-    deps = ["@FCore-Examples//src:TSPfcore"],
+    deps = ["@FCore-Examples//:app_TSPfcore"],
 )
 
+cc_library(
+    name = "EternityII",
+    deps = ["@EternityII//:app_Example"],
+)
+
+
+cc_library(
+    name = "KP",
+    deps = ["@KP//:app_Example"],
+)
+
+cc_library(
+    name = "TSP",
+    deps = ["@TSP//:app_Example"],
+)

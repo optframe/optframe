@@ -2,6 +2,7 @@
 #define KP_CONSTRUCTIVE_Random_H_
 
 #include <OptFrame/Constructive.hpp>
+#include <OptFrame/InitialSearch.hpp>
 //#include "../../OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.h"
