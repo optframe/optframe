@@ -14,8 +14,8 @@
 #include "Solution.h"
 
 //Tools for ACF
-#include "./Util/autocorr.cpp"
-#include "./Util/lregress.cpp"
+#include "Util/autocorr.hpp"
+#include "Util/lregress.hpp"
 
 using namespace std;
 

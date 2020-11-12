@@ -9,8 +9,8 @@
 
 
 using namespace std;
-using namespace optframe;
-using namespace HFM;
+//using namespace optframe;
+//using namespace HFM;
 
 void selfUseMode()
 {

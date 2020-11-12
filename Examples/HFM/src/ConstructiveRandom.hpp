@@ -2,6 +2,7 @@
 #define EFP_CONTRUCTIVE_RANDOM_HPP_
 
 #include <OptFrame/Constructive.hpp>
+#include <OptFrame/InitialSearch.hpp>
 #include <OptFrame/Heuristics/GRASP/GRConstructive.hpp>
 #include <OptFrame/RandGen.hpp>
 

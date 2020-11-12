@@ -12,7 +12,7 @@
 
 using namespace std;
 using namespace optframe;
-using namespace HFM;
+//using namespace HFM;
 
 int microGridLiuAppliedEnergyOnline(int argc, char **argv)
 {
