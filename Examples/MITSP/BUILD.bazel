@@ -1,0 +1,17 @@
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_binary")
+
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+cc_binary(
+    name = "app_MiTSP",
+    srcs = glob([
+        "src/**/*.h", 
+        "src/**/*.cpp"
+    ]),
+    data = glob([
+        "instances/*.tsp",
+    ]),
+    deps = ["@OptFrame//src:OptFrame"]
+)

@@ -109,7 +109,7 @@ public:
       //input = fopen("ts225.tsp", "r");
       //input = fopen("gil262.tsp", "r");
       //input = fopen("a280.tsp", "r");
-      input = fopen("lin318.tsp", "r");
+      input = fopen("instances/lin318.tsp", "r");
       fscanf(input, "%d", &n);
       //printf("Lendo %d coordenadas\n", n);
 
