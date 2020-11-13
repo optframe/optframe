@@ -28,16 +28,17 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include <filesystem>
 #include <iostream>
 
 using namespace std;
 
 #include <set>
 
-#include <OptFrame/Util/printable.h>
 #include <OptFrame/BaseConcepts.ctest.hpp> // tsting concepts
-#include <OptFrame/Solution.hpp>
 #include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Solution.hpp>
+#include <OptFrame/Util/printable.h>
 //#include "../OptFrame/Util/TestSolution.hpp"
 
 #include <OptFrame/Heuristics/NSearch/FirstImprovingNeighbor.hpp>
@@ -45,8 +46,8 @@ using namespace std;
 #include <OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp>
 #include <OptFrame/Loader.hpp>
 ////#include "../OptFrame/Util/BuildCommand.hpp"  // TODO: return after Concepts OptFrame v4
-#include <OptFrame/Util/CheckCommand.hpp>
 #include "TSP.h"
+#include <OptFrame/Util/CheckCommand.hpp>
 
 using namespace TSP;
 using namespace scannerpp;
@@ -56,15 +57,38 @@ using namespace scannerpp;
 int
 main(int argc, char** argv)
 {
+
    // ADS still exists, only because of ADSManager...
    Loader<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP, EvaluationTSP, ESolutionTSP> optframe;
    TSPProblemCommand tsp;
 
-   File file("./tsplib/berlin52.txt");
+   // instance relative path to executable directory
+   std::string sinstance = "/tsplib/berlin52.txt";
+   // TODO: also try relative path...
 
-   
-   if(!file.isOpen())
-   {
+   // load file from absolute directory that contains executable
+   std::filesystem::path exec = argv[0];
+   std::string full_instance = exec.parent_path().string() + sinstance;
+   std::cout << "loading instance at '" << full_instance << "'" << std::endl;
+   if (!std::filesystem::exists(full_instance)) {
+      // try .runfiles directory extension (bazel build for __main__ package)
+      full_instance = exec.string() + std::string(".runfiles/__main__/") + sinstance;
+      std::cout << "loading instance at '" << full_instance << "'" << std::endl;
+      if (!std::filesystem::exists(full_instance)) {
+         // try .runfiles directory extension (bazel build for external TSP package)
+         full_instance = exec.string() + std::string(".runfiles/TSP/") + sinstance;
+
+         if (!std::filesystem::exists(full_instance)) {
+            std::cerr << "Instances not found in executable directory. Aborting." << std::endl;
+            return 1; // cannot open file
+         }
+      }
+   }
+
+   File file(full_instance);
+   //File file("./tsplib/berlin52.txt");
+
+   if (!file.isOpen()) {
       cout << "File not found" << endl;
       return 1;
    }
@@ -97,7 +121,6 @@ main(int argc, char** argv)
    ConstructiveBestInsertion cbi(tsp.p, eval, rg);
    NSEnumSwap enumswap(tsp.p, rg);
 
-
    // Basic test for Neighborhood Exploration
    FirstImprovingNeighbor<ESolutionTSP> fin(eval, enumswap);
    // =======================================
@@ -113,9 +136,7 @@ main(int argc, char** argv)
    NSSeqTSPOrOpt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspor_adapt;
    // Maybe S& should be the Representation itself over there.... no getR() inside there.
    // It makes more sense to pass RepTSP + ESolutionTSP... than SolutionTSP + ESolutionTSP
-   // Then, should adapters just work for R,ADS pair on XBaseSolution concept?? TODO: think... 
-
-
+   // Then, should adapters just work for R,ADS pair on XBaseSolution concept?? TODO: think...
 
    NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspswap;
 
@@ -152,7 +173,7 @@ main(int argc, char** argv)
    */
 
    //pair<SolutionTSP, Evaluation<>>* r2 = brkga.search(sosc);
-   
+
    brkga.search(sosc.start());
    std::optional<ESolutionTSP> r2 = brkga.best;
    //virtual std::optional<pair<XRS, XEv>> search(StopCriteria<XEv>& stopCriteria, const std::optional<pair<XRS, XEv>> input)
@@ -160,7 +181,6 @@ main(int argc, char** argv)
    r2->second.print();
 
    cout << "end BRKGA tests" << endl;
-
 
    // TODO: return after refactor on Concepts and OptFrame v4
    /*
@@ -210,7 +230,8 @@ main(int argc, char** argv)
 
    psol->first.print();
    psol->second.print();
-   cout << endl << endl;
+   cout << endl
+        << endl;
 
    // ===========
 
@@ -218,7 +239,7 @@ main(int argc, char** argv)
       delete ns_list[i];
 
    vector<NS<ESolutionTSP>*> v_ns;
-   vector<NSSeq<ESolutionTSP>*> v_nsseq = {&tsp2opt, &tspor1, &tspor2, &tspor3, &tspswap};
+   vector<NSSeq<ESolutionTSP>*> v_nsseq = { &tsp2opt, &tspor1, &tspor2, &tspor3, &tspswap };
    //v_nsseq.push_back(&tsp2opt);
    //v_nsseq.push_back(&tspor1);
    //v_nsseq.push_back(&tspor2);
