@@ -31,6 +31,9 @@ and print its `welcome()` message:
         return 0;
     }
 
+Build with make
+^^^^^^^^^^^^^^^
+
 To compile it and see the results (using GCC C++ compiler)::
 
     g++ --std=c++17 -fconcepts mytest.cpp -o fcore_mytest
@@ -43,6 +46,37 @@ to the compiler (*considering relative location of ./optframe/src/*)::
     g++ --std=c++17 -fconcepts -I./optframe/src mytest.cpp -o fcore_localtest
     ./fcore_localtest
     # Welcome to OptFrame Functional Core (FCore) - version 4.1-dev
+
+
+Build with bazel
+^^^^^^^^^^^^^^^^
+
+If one wants to build in Windows or any other system, easiest manner is to use Bazel.
+Just create a *WORKSPACE.bazel* file that points to remote OptFrame git repository::
+
+   load('@bazel_tools//tools/build_defs/repo:git.bzl', 'git_repository')
+   git_repository(
+       name='OptFrame', 
+       remote='https://github.com/optframe/optframe.git',
+       branch='master'
+   )
+
+And use the following *BUILD.bazel* file (with dependency to @OptFrame)::
+    
+    load("@rules_cc//cc:defs.bzl", "cc_library", "cc_binary")
+    cc_binary(
+        name = "fcore_localtest",
+        srcs = ["mytest.cpp"],
+        deps=["@OptFrame//src:OptFCore"],
+        copts = ['--std=c++17', '-fconcepts']
+    )
+
+Just invoke bazel build system (assuming MinGW C/C++ toolchain on Windows or just remove option for Linux)::
+
+    bazel build --compiler=mingw-gcc ...  
+    bazel run :fcore_localtest
+    # Welcome to OptFrame Functional Core (FCore) - version 4.1-dev
+
 
 A deeper explanation of OptFrame theoretical foundations can be found on `Concepts <./concepts.html>`_
 section, so we will move fast here!
