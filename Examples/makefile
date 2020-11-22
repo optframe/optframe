@@ -50,3 +50,4 @@ modm:
 clean:
 	rm -f app_*
 	rm -f *.o
+	./clean_all.sh

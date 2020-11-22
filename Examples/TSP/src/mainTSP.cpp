@@ -54,38 +54,48 @@ using namespace scannerpp;
 
 //#include "../OptFrame/Util/PackTypes.hpp" // deprecated!!
 
+// gets real file path, if file exists, or empty string, if not
+std::string
+resolvePath(std::string sinstance, std::string appPath, std::string bazelPackage = "")
+{
+   // try relative path
+   if (std::filesystem::exists(sinstance))
+      return sinstance;
+
+   // load file from absolute directory that contains executable
+   std::filesystem::path exec = appPath;
+   std::string full_instance = exec.parent_path().string() + std::string("/") + sinstance;
+   //std::cout << "loading instance at '" << full_instance << "'" << std::endl;
+   if (std::filesystem::exists(full_instance))
+      return full_instance;
+
+   // try .runfiles directory extension (bazel build for external bazel package)
+   full_instance = exec.string() + std::string(".runfiles/") + std::string(bazelPackage) + std::string("/") + sinstance;
+   if (std::filesystem::exists(full_instance))
+      return full_instance;
+
+   // instance not found
+   return "";
+}
+
 int
 main(int argc, char** argv)
 {
-
    // ADS still exists, only because of ADSManager...
    Loader<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP, EvaluationTSP, ESolutionTSP> optframe;
    TSPProblemCommand tsp;
 
    // instance relative path to executable directory
-   std::string sinstance = "/tsplib/berlin52.txt";
-   // TODO: also try relative path...
+   std::string sinstance = "tsplib/berlin52.txt";
 
-   // load file from absolute directory that contains executable
-   std::filesystem::path exec = argv[0];
-   std::string full_instance = exec.parent_path().string() + sinstance;
-   std::cout << "loading instance at '" << full_instance << "'" << std::endl;
-   if (!std::filesystem::exists(full_instance)) {
-      // try .runfiles directory extension (bazel build for __main__ package)
-      full_instance = exec.string() + std::string(".runfiles/__main__/") + sinstance;
-      std::cout << "loading instance at '" << full_instance << "'" << std::endl;
-      if (!std::filesystem::exists(full_instance)) {
-         // try .runfiles directory extension (bazel build for external TSP package)
-         full_instance = exec.string() + std::string(".runfiles/TSP/") + sinstance;
+   std::string good_path = resolvePath(sinstance, argv[0], "TSP");
 
-         if (!std::filesystem::exists(full_instance)) {
-            std::cerr << "Instances not found in executable directory. Aborting." << std::endl;
-            return 1; // cannot open file
-         }
-      }
+   if (good_path == "") {
+      std::cerr << "Instances not found in executable directory. Aborting." << std::endl;
+      return 1; // cannot open file
    }
 
-   File file(full_instance);
+   File file(good_path);
    //File file("./tsplib/berlin52.txt");
 
    if (!file.isOpen()) {
