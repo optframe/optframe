@@ -4,9 +4,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "debug",
+            "label": "make",
             "type": "shell",
-            "command": "(cd tests && make test)",
+            "command": "make",
             "group": {
                 "kind": "build",
                 "isDefault": true

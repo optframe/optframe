@@ -15,3 +15,6 @@ install:
 
 docs:
 	cd docs && make clean && make html
+
+clean:
+	cd Examples && make clean
