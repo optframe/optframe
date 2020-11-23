@@ -4,14 +4,6 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-#package_group(
-#    name = "group-kahan-float",
-#    packages = [
-#        "//src/kahan-float",
-#    ],
-#)
-
-#cc_import(
 cc_library(
     name = "all_hpp",
     ##srcs = ["TSP-fcore.hpp"],

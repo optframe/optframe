@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_NS_HPP_
-#define OPTFRAME_NS_HPP_
+#ifndef OPTFRAME_NSFIND_HPP_
+#define OPTFRAME_NSFIND_HPP_
 
 #include "Move.hpp"
 #include "Solution.hpp"
@@ -29,68 +29,36 @@
 
 #include "GeneralEvaluator.hpp" // included for Neighborhood Exploration
 
+#include "NS.hpp"
+
 namespace optframe
 {
 
 template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
-class NS: public Component
+class NSFind: public NS<XES, XEv, XSH>
 {
 public:
 
-	virtual ~NS()
+	virtual ~NSFind()
 	{
 	}
-
-public:
-
-	virtual uptr<Move<XES, XEv, XSH>> randomMove(const XES&) = 0;
-
-	virtual uptr<Move<XES, XEv, XSH>> validRandomMove(const XES& se)
-	{
-		uptr<Move<XES, XEv, XSH>> moveValid = this->randomMove(se);
-		if(moveValid && moveValid->canBeApplied(se))
-			return moveValid;
-		else
-			return nullptr;
-	}
-
-   // neighborhood id
-   id_type nid()
-   {
-      return 0;
-   }
 
 public:
 
    // =======================================
    // find section (neighborhood exploration)
    // =======================================
-   // findAny: returns any move that strictly improves current solution 'se', according 'gev'
+   // findBest: returns move that greatly improves current solution 'se', according 'gev'
    // RETURNS: pair< uptr<Move<XES, XEv, XSH>>, op<XEv> >
-   // default implementation tries method 'validRandomMove' for a *single time* (not iterative)
-   // note that 'se' is not const, since moves may need to change it (and revert)
-   //   we could have "const_cast" here, or inside "moveCost", but at the moment let's fully respect "const"
-   virtual pair< Move<XES, XEv, XSH>*, op<XEv> > findAny(GeneralEvaluator<XES>& gev, XES& se)
-   {
-      uptr<Move<XES, XEv, XSH>> pm = validRandomMove(se);
-      if(!pm)
-         return std::make_pair(nullptr, std::nullopt);
-      Move<XES, XEv, XSH>& m = *pm;
-      op<XEv> mvcost = gev.moveCost(m, se);
-      // TODO: will we need 'non-strict' checks here
-      if(!mvcost)
-         return std::make_pair(nullptr, std::nullopt);
-      if(gev.isStrictImprovement(*mvcost))
-         return std::make_pair(pm.release(), mvcost);
-      return std::make_pair(nullptr, std::nullopt);
-   }
+   // NSFind is useful for exponential-sized neighborhoods, without requiring any iterator structure
+   virtual pair< Move<XES, XEv, XSH>*, op<XEv> > findBest(GeneralEvaluator<XES>& gev, XES& se) = 0;
 
 
 public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Component::idComponent() << ":NS";
+      ss << NS<XES, XEv>::idComponent() << ":NSFind";
 		return ss.str();
 	}
 
@@ -107,4 +75,4 @@ public:
 
 }
 
-#endif /*OPTFRAME_NS_HPP_*/
+#endif /*OPTFRAME_NSFIND_HPP_*/

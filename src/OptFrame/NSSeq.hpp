@@ -21,7 +21,7 @@
 #ifndef OPTFRAME_NSSEQ_HPP_
 #define OPTFRAME_NSSEQ_HPP_
 
-#include "NS.hpp"
+#include "NSFind.hpp"
 #include "NSIterator.hpp"
 #include "NSBlockIterator.hpp"
 
@@ -33,7 +33,7 @@ namespace optframe
 {
 
 template<XESolution XES, XEvaluation XEv = typename XES::second_type, XESolution XSH = XES>
-class NSSeq: public NS<XES, XEv, XSH>
+class NSSeq: public NSFind<XES, XEv, XSH>
 {
 public:
 /*
@@ -72,10 +72,126 @@ public:
     //}
 
 public:
+
+   // =======================================
+   // find section (neighborhood exploration)
+   // =======================================
+
+private:
+   // stateful iterator local variable
+   uptr<NSIterator<XES, XEv, XSH>> it;
+   
+public:
+
+   // findFirst: returns the *first* move that strictly improves current solution 'se', according 'gev'
+   // RETURNS: pair< uptr<Move<XES, XEv, XSH>>, op<XEv> >
+   // note that this method is *not stateless* regarding NSSeq class, as a *stateful* iterator variable is locally stored
+   virtual pair< Move<XES, XEv, XSH>*, op<XEv> > findFirst(GeneralEvaluator<XES>& gev, XES& se)
+   {
+      // initializes iterator
+      it = this->getIterator(se);
+      // finds first valid move
+      it->firstValid(se);
+      // gets current move (shall we test for isDone()?)
+      uptr<Move<XES, XEv, XSH>> pm = it->current();
+      // stores temporary raw pointer
+      Move<XES, XEv, XSH>* m = pm.get(); 
+      // gets cost for current move
+      op<XEv> mvcost = gev.moveCost(*m, se);
+      // if no cost, finishes
+      if(!mvcost)
+         return std::make_pair(nullptr, std::nullopt);
+      // loops until finds improving move
+      while(!gev.isStrictImprovement(*mvcost))
+      {
+         // if done, finishes
+         if(it->isDone())
+            return std::make_pair(nullptr, std::nullopt);
+         it->nextValid(se);
+         // gets current move (shall we test for isDone()?)
+         pm = it->current();
+         // stores temporary raw pointer
+         m = pm.get(); 
+         // gets cost for current move
+         mvcost = gev.moveCost(*m, se);
+         // if no cost, finishes
+         if(!mvcost)
+            return std::make_pair(nullptr, std::nullopt);
+      }
+      // current move should be improving
+      return std::make_pair(pm.release(), mvcost);
+   }
+
+   // findNext: returns the *next* move that strictly improves current solution 'se', according 'gev'
+   // RETURNS: pair< uptr<Move<XES, XEv, XSH>>, op<XEv> >
+   // note that this method is *not stateless* regarding NSSeq class, as a *stateful* iterator variable is locally stored
+   virtual pair< Move<XES, XEv, XSH>*, op<XEv> > findNext(GeneralEvaluator<XES>& gev, XES& se)
+   {
+      // checks if iterator is initialized or finished
+      if(!it || it->isDone())
+         return std::make_pair(nullptr, std::nullopt);
+      // finds next valid move
+      it->nextValid(se);
+      // gets current move (shall we test for isDone()?)
+      uptr<Move<XES, XEv, XSH>> pm = it->current();
+      // stores temporary raw pointer
+      Move<XES, XEv, XSH>* m = pm.get(); 
+      // gets cost for current move
+      op<XEv> mvcost = gev.moveCost(*m, se);
+      // if no cost, finishes
+      if(!mvcost)
+         return std::make_pair(nullptr, std::nullopt);
+      // loops until finds improving move
+      while(!gev.isStrictImprovement(*mvcost))
+      {
+         // if done, finishes
+         if(it->isDone())
+            return std::make_pair(nullptr, std::nullopt);
+         it->nextValid(se);
+         // gets current move (shall we test for isDone()?)
+         pm = it->current();
+         // stores temporary raw pointer
+         m = pm.get(); 
+         // gets cost for current move
+         mvcost = gev.moveCost(*m, se);
+         // if no cost, finishes
+         if(!mvcost)
+            return std::make_pair(nullptr, std::nullopt);
+      }
+      // current move should be improving
+      return std::make_pair(pm.release(), mvcost);
+   }
+
+   // findBest: returns move that greatly improves current solution 'se', according 'gev'
+   // NSFind is useful for exponential-sized neighborhoods, without requiring any iterator structure
+   virtual pair< Move<XES, XEv, XSH>*, op<XEv> > findBest(GeneralEvaluator<XES>& gev, XES& se)
+   {
+      // finds first improving move
+      pair< Move<XES, XEv, XSH>*, op<XEv> > mve = this->findFirst(gev, se);
+      if(!mve.second)
+         return std::make_pair(nullptr, std::nullopt);
+      op<XEv> bestCost = std::move(mve.second);
+      Move<XES, XEv, XSH>* bestMove = mve.first;
+      // iterates while iterator is valid
+      while(!it->isDone())
+      {
+         // gets next improving move
+         pair< Move<XES, XEv, XSH>*, op<XEv> > mveNext = this->findNext(gev, se);
+         // checks if it surpasses existing best move 
+         if(mve.second && gev.betterStrict(*mve.second, *bestCost))
+         {
+            bestCost = std::move(mve.second);
+            bestMove = mve.first;
+         }
+      }
+      return std::make_pair(bestMove, bestCost);
+   }
+
+public:
     static string idComponent()
     {
         stringstream ss;
-        ss << NS<XES, XEv>::idComponent() << ":NSSeq";
+        ss << NSFind<XES, XEv>::idComponent() << ":NSSeq";
         return ss.str();
     }
 
@@ -86,7 +202,7 @@ public:
 
     virtual bool compatible(string s)
     {
-        return (s == idComponent()) || (NS<XES, XEv>::compatible(s));
+        return (s == idComponent()) || (NSFind<XES, XEv>::compatible(s));
     }
 };
 

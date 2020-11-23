@@ -129,7 +129,7 @@ public:
       // TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
 
       //MoveCost<>* p = nullptr;
-      op<XEv> p = nullopt;
+      op<XEv> p = std::nullopt;
       //if (allowCosts) {
          p = m.cost(se, allowEstimated);
       //}
