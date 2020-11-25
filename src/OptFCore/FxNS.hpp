@@ -18,12 +18,12 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_FCORE_FNS_HPP_
-#define OPTFRAME_FCORE_FNS_HPP_
+#ifndef OPTFRAME_FXCORE_FXNS_HPP_
+#define OPTFRAME_FXCORE_FXNS_HPP_
 
 #include <functional>
 
-#include "../OptFrame/NS.hpp"
+#include <OptFrame/NS.hpp>
 
 namespace optframe {
 
@@ -31,7 +31,7 @@ template<
   XESolution XES,                        // ESolution Type
   uptr<Move<XES>> (*fRandom)(const XES&) // fApply
   >
-class FNS final : public NS<XES, typename XES::second_type>
+class FxNS final : public NS<XES, typename XES::second_type>
 {
    using XEv = typename XES::second_type;
    using XSH = XES; // only single objective
@@ -45,7 +45,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ":FNS";
+      ss << Component::idComponent() << ":FxNS";
       return ss.str();
    }
 
@@ -57,4 +57,4 @@ public:
 
 } // namespace optframe
 
-#endif /*OPTFRAME_FCORE_FNS_HPP_*/
+#endif /*OPTFRAME_FXCORE_FXNS_HPP_*/

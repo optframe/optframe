@@ -60,7 +60,7 @@ public:
 ProblemContext pTSP;
 
 // Evaluate
-using TSPEval = FEvaluator <
+using TSPEval = FxEvaluator <
                 ESolutionTSP,
       true, // minimization: true
   [](auto& s) -> auto
@@ -76,7 +76,7 @@ using TSPEval = FEvaluator <
 // ===========================
 
 // Generate random solution
-using TSPRandom = FConstructive<
+using TSPRandom = FxConstructive<
   std::vector<int>,
   [](double timelimit) -> std::optional<std::vector<int>> {
      vector<int> v(pTSP.n, -1); // get information from context
@@ -87,7 +87,7 @@ using TSPRandom = FConstructive<
   }>;
 
 // Swap move
-using MoveSwap = FMove<
+using MoveSwap = FxMove<
   std::pair<int, int>,
   ESolutionTSP,
   [](const std::pair<int, int>& moveData, ESolutionTSP& se) -> std::pair<int, int> {
@@ -101,7 +101,7 @@ using MoveSwap = FMove<
   }>;
 
 // Swap move (NS)
-using NSSwap = FNS<
+using NSSwap = FxNS<
   ESolutionTSP,
   [](const ESolutionTSP& se) -> uptr<Move<ESolutionTSP>> {
      int i = rand() % pTSP.n;
@@ -114,7 +114,7 @@ using NSSwap = FNS<
   }>;
 
 // Swap move (NSSeq) - with "Boring" iterator
-using NSSeqSwapBoring = FNSSeqBoring<
+using NSSeqSwapBoring = FxNSSeqBoring<
   std::pair<int, int>, // IMS (iterator memory)
   ESolutionTSP,
   [](const ESolutionTSP& se) -> uptr<Move<ESolutionTSP>> {
@@ -154,7 +154,7 @@ using NSSeqSwapBoring = FNSSeqBoring<
   }>;
 
 // Swap move (NSSeq) - with "Fancy" iterator (coroutines)
-using NSSeqSwapFancy = FNSSeqFancy<
+using NSSeqSwapFancy = FxNSSeqFancy<
   ESolutionTSP,
   [](const ESolutionTSP& se) -> uptr<Move<ESolutionTSP>> {
      int i = rand() % pTSP.n;

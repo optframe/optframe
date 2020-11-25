@@ -18,12 +18,12 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_FCORE_FCONSTRUCTIVE_HPP_
-#define OPTFRAME_FCORE_FCONSTRUCTIVE_HPP_
+#ifndef OPTFRAME_FXCORE_FXCONSTRUCTIVE_HPP_
+#define OPTFRAME_FXCORE_FXCONSTRUCTIVE_HPP_
 
 #include <functional>
 
-#include "../OptFrame/Constructive.hpp"
+#include <OptFrame/Constructive.hpp>
 
 namespace optframe {
 
@@ -31,7 +31,7 @@ template<
   XSolution S,                          // Solution Type
   std::optional<S> (*fGenerate)(double) // constructive
   >
-class FConstructive final : public Constructive<S>
+class FxConstructive final : public Constructive<S>
 {
 public:
    virtual std::optional<S> generateSolution(double timelimit)
@@ -42,7 +42,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ":FConstructive";
+      ss << Component::idComponent() << ":FxConstructive";
       return ss.str();
    }
 
@@ -54,4 +54,4 @@ public:
 
 } // namespace optframe
 
-#endif /*OPTFRAME_FCORE_FCONSTRUCTIVE_HPP_*/
+#endif /*OPTFRAME_FXCORE_FXCONSTRUCTIVE_HPP_*/

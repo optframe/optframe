@@ -18,12 +18,12 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_FCORE_FNSSEQ_HPP_
-#define OPTFRAME_FCORE_FNSSEQ_HPP_
+#ifndef OPTFRAME_FXCORE_FXNSSEQ_HPP_
+#define OPTFRAME_FXCORE_FXNSSEQ_HPP_
 
 #include <functional>
 
-#include "../OptFrame/NSSeq.hpp"
+#include <OptFrame/NSSeq.hpp>
 #include "coro/Generator.hpp" // this is a very special class!! coroutines support \o/
 
 namespace optframe {
@@ -45,7 +45,7 @@ template<
   bool (*fIsDone)(IMS&),                  // iterator.isDone()
   uptr<Move<XES>> (*fCurrent)(IMS&)       // iterator.current()
   >
-class FNSSeqBoring final : public NSSeq<XES>
+class FxNSSeqBoring final : public NSSeq<XES>
 {
    using XEv = typename XES::second_type;
    using XSH = XES; // only single objective
@@ -87,11 +87,11 @@ public:
    }
 private:
    // internal class for iterator
-   class FNSIteratorBoring final : public NSIterator<XES>
+   class FxNSIteratorBoring final : public NSIterator<XES>
    {
    public:
       IMS ims;
-      FNSIteratorBoring(const IMS& _ims) noexcept
+      FxNSIteratorBoring(const IMS& _ims) noexcept
         : ims(_ims)
       {
       }
@@ -125,13 +125,13 @@ public:
 
    virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
    {
-      return uptr<NSIterator<XES>>{ new FNSIteratorBoring{ fIterator(se) } };
+      return uptr<NSIterator<XES>>{ new FxNSIteratorBoring{ fIterator(se) } };
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ":FNSSeqBoring";
+      ss << Component::idComponent() << ":FxNSSeqBoring";
       return ss.str();
    }
 
@@ -150,13 +150,13 @@ template<
   uptr<Move<XES>> (*fRandom)(const XES&),         // fRandom
   Generator<Move<XES>*> (*fGenerator)(const XES&) // fGenerator: IMPORTANT! must respect 'unique' semantics! never repeat pointer.
   >
-class FNSSeqFancy final : public NSSeq<XES>
+class FxNSSeqFancy final : public NSSeq<XES>
 {
    using XEv = typename XES::second_type;
    using XSH = XES; // only single objective
 
    // internal class for iterator
-   class FNSIterator final : public NSIterator<XES>
+   class FxNSIterator final : public NSIterator<XES>
    {
    public:
       bool done = { true };            // flag to inform that iterator is 'done'
@@ -164,7 +164,7 @@ class FNSSeqFancy final : public NSSeq<XES>
       //
       Generator<Move<XES>*> gen; // must initialize via move semantics
 
-      FNSIterator(Generator<Move<XES>*>&& _gen)
+      FxNSIterator(Generator<Move<XES>*>&& _gen)
         : gen(std::move(_gen))
       {
       }
@@ -206,13 +206,13 @@ public:
 
    virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
    {
-      return uptr<NSIterator<XES>>{ new FNSIterator{ std::move(fGenerator(se)) } };
+      return uptr<NSIterator<XES>>{ new FxNSIterator{ std::move(fGenerator(se)) } };
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ":FNSSeqFancy";
+      ss << Component::idComponent() << ":FxNSSeqFancy";
       return ss.str();
    }
 
@@ -224,4 +224,4 @@ public:
 
 } // namespace optframe
 
-#endif /*OPTFRAME_FCORE_FNSSEQ_HPP_*/
+#endif /*OPTFRAME_FXCORE_FXNSSEQ_HPP_*/

@@ -18,12 +18,12 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_FCORE_FEVALUATOR_HPP_
-#define OPTFRAME_FCORE_FEVALUATOR_HPP_
+#ifndef OPTFRAME_FXCORE_FXEVALUATOR_HPP_
+#define OPTFRAME_FXCORE_FXEVALUATOR_HPP_
 
 #include <functional>
 
-#include "../OptFrame/Evaluator.hpp"
+#include <OptFrame/Evaluator.hpp>
 
 namespace optframe {
 
@@ -32,7 +32,7 @@ template<
   bool Minimizing,                                                        // is minimization
   typename XES::second_type (*fEvaluate)(const typename XES::first_type&) // evaluation function
   >
-class FEvaluator final : public Evaluator<typename XES::first_type, typename XES::second_type, XES>
+class FxEvaluator final : public Evaluator<typename XES::first_type, typename XES::second_type, XES>
 {
    using S = typename XES::first_type;
    using XEv = typename XES::second_type;
@@ -52,7 +52,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ":FEvaluator";
+      ss << Component::idComponent() << ":FxEvaluator";
       return ss.str();
    }
 
@@ -64,4 +64,4 @@ public:
 
 } // namespace optframe
 
-#endif /*OPTFRAME_FCORE_FEVALUATOR_HPP_*/
+#endif /*OPTFRAME_FXCORE_FXEVALUATOR_HPP_*/

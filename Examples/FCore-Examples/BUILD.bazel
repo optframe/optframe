@@ -8,12 +8,19 @@ package(
 cc_binary(
     name = "app_TSPfcore",
     srcs = ["src/mainTSP-fcore.cpp"],
-    #deps = ["//src/kahan-float:kahan"],
+    copts = ['-std=c++17', '-fconcepts'],
     deps = [":TSPfcore"],
 )
 
 cc_library(
     name = "TSPfcore",
     hdrs = ["src/TSP-fcore.hpp"],
+    deps = ["@OptFrame//src:OptFCore"]
+)
+
+cc_binary(
+    name = "app_TSPfxcore",
+    srcs = ["src/mainTSP-fxcore.cpp", "src/TSP-fxcore.hpp"],
+    copts = ['-std=c++20', '-fcoroutines'],
     deps = ["@OptFrame//src:OptFCore"]
 )

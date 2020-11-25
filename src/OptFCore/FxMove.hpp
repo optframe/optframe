@@ -18,12 +18,12 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_FCORE_FMOVE_HPP_
-#define OPTFRAME_FCORE_FMOVE_HPP_
+#ifndef OPTFRAME_FXCORE_FXMOVE_HPP_
+#define OPTFRAME_FXCORE_FXMOVE_HPP_
 
 #include <functional>
 
-#include "../OptFrame/Move.hpp"
+#include <OptFrame/Move.hpp>
 
 namespace optframe {
 
@@ -51,11 +51,11 @@ template<
   bool (*fCanBeApplied)(const M&, const XES&) = fDefaultCanBeApplied<M, XES>, // fCanBeApplied
   bool (*fCompareEq)(const M&, const Move<XES>&) = fDefaultCompareEq<M, XES>  // fCompareEq
   >
-class FMove final : public Move<XES, typename XES::second_type>
+class FxMove final : public Move<XES, typename XES::second_type>
 {
    using XEv = typename XES::second_type;
    using XSH = XES; // only single objective
-   using Self = FMove<M, XES, fApply, fCanBeApplied, fCompareEq>;
+   using Self = FxMove<M, XES, fApply, fCanBeApplied, fCompareEq>;
 
 public:
    M m; // internal structure for move
@@ -66,13 +66,13 @@ public:
       return fApply(m, xes);
    } 
 
-   FMove(M&& _m) noexcept
+   FxMove(M&& _m) noexcept
      : m(std::move(_m))
    {
       //std::cout << "FMove() => " << m << " address=" << this << std::endl;
    }
 
-   FMove(const M& _m) noexcept
+   FxMove(const M& _m) noexcept
      : m(_m)
    {
       //std::cout << "FMove() => " << m << " address=" << this << std::endl;
@@ -104,7 +104,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ":FMove";
+      ss << Component::idComponent() << ":FxMove";
       return ss.str();
    }
 
@@ -122,4 +122,4 @@ public:
 
 } // namespace optframe
 
-#endif /*OPTFRAME_FCORE_FMOVE_HPP_*/
+#endif /*OPTFRAME_FXCORE_FXMOVE_HPP_*/
