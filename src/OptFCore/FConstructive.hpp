@@ -32,18 +32,18 @@ class FConstructive final : public Constructive<S>
 {
 public:
 
-   std::optional<S> (*fGenerate)(double); // constructive
+   S(*fGenerate)(); // constructive
 
    FConstructive(
-      std::optional<S> (*_fGenerate)(double)
+      S(*_fGenerate)()
    ):
    fGenerate { _fGenerate }
    {
    }
 
-   virtual std::optional<S> generateSolution(double timelimit)
+   std::optional<S> generateSolution(double timelimit) override
    {
-      return fGenerate(timelimit);
+      return std::make_optional(fGenerate());
    }
 
    static string idComponent()

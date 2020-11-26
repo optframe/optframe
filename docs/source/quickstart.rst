@@ -193,20 +193,17 @@ We need to have some initial solution for the search process, so we just proceed
 To simplify things, we assume a relaxation of the Knapsack Problem, where items are allowed to exceed
 knapsack capacity by means of a penalization strategy.
 
-FCore function receives a timelimit and requires an :code:`std::optional` as return, as in some 
-situations, it could be infeasible to generate an initial solution within the given timelimit:
-
 .. code-block:: c++
 
-    // declaring a 'frandom' function that gets timelimit and returns optional solution
-    std::optional<std::vector<bool>>
-    frandom(double timelimit)
+    // declaring a 'frandom' function that generates initial solution
+    std::vector<bool>
+    frandom()
     {
         std::vector<bool> v(pKP.n, false); // no item is chosen at first
         for (unsigned i = 0; i < v.size(); ++i)
             v[i] = rand() % 2; // 50% chance to select an item (or not)
-        // returns solution as 'optional' (C++17)
-        return std::make_optional(v);
+        // returns solution
+        return v;
     }
 
     // Instantiates a FConstructive object for method 'frandom'
