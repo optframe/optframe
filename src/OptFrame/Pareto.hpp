@@ -328,7 +328,7 @@ public:
 		fclose(fPF);
 	}
 
-	static vector<MultiEvaluation<>*> filterDominated(vector<Direction*>& vdir, const vector<MultiEvaluation<>*>& candidates)
+	static vector<MultiEvaluation<>*> filterDominated(vector<Direction<>*>& vdir, const vector<MultiEvaluation<>*>& candidates)
 	{
 		vector<MultiEvaluation<>*> nonDom;
 
@@ -341,7 +341,7 @@ public:
 		return nonDom;
 	}
 
-	static vector<pair<S*, XMEv*> > filterDominated(vector<Direction*>& vdir, const vector<pair<S*, XMEv*> >& candidates)
+	static vector<pair<S*, XMEv*> > filterDominated(vector<Direction<>*>& vdir, const vector<pair<S*, XMEv*> >& candidates)
 	{
 		vector<pair<S*, XMEv*> > nonDom;
 

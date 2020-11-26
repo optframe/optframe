@@ -31,9 +31,14 @@
 namespace optframe 
 {
 
-// Population is 'final'
-
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+//
+// Population class is 'final'
+//
+// NOTE that this Population is legacy, before concepts, so it won't support XES (only separated S and XEv)
+// For supporting XES, it's required to rebuild this class, in newer standard (supporting 'getP' method from X2ESolution powerset)
+// XES is only present for Evaluation purposes!
+//
+template<XSolution S, XEvaluation XEv, XESolution XES = pair<S, XEv>> // XES only for evaluation purposes!
 class Population final : public Component
 {
 protected:
@@ -81,12 +86,16 @@ public:
       return (*p.at(c));
    }
 
+   // IMPORTANT: 'getP' is not supported here
+   // This is Legacy Population... we will need "newer" versions to support this.
+   /*
 	XES& getP(unsigned index)
 	{
 		//return make_pair(uptr<S>(), uptr<XEv>());
-      XES* p;
+      XES* p = nullptr;
       return *p;
 	}
+   */
 
 
    void insert(unsigned pos, chromossome& c)
@@ -110,7 +119,8 @@ public:
 
    void push_back(const chromossome& c)
    {
-      p.push_back(&c.clone());
+      //p.push_back(&c.clone());
+      p.push_back(new chromossome(c)); // copy constructor is required
       fitness.push_back(0);
       vector<XEv> a;
       pFitness.push_back(a);
@@ -268,10 +278,13 @@ public:
       cout << endl;
 
       for (unsigned i = 0; i < p.size(); i++) {
-         p.at(i)->print();
+         //p.at(i)->print();
+         std::cout << *p.at(i) << std::endl;
       }
    }
 
+   // XES is only used here! this is Legacy Population...
+   // on newer population, should abolish this method
    chromossome& cloneBestChromossome(Evaluator<XES, XEv>& eval)
    {
       vector<pair<S, double>> v;
@@ -293,8 +306,15 @@ public:
 
 } // namespace optframe
 
+
+// ==================== 
+// IMPORTANT: this 'Population' class is legacy! (before adoption of -fconcepts)
+// So, it's not supposed to support 'getP' or XES structure...
+// it only holds separated Solution and Evaluation containers
+// Next static compilation should fail!
+
 // compilation tests
-static_assert(X2ESolution<Population<Solution<double>,Evaluation<double>>, pair<Solution<double>, Evaluation<double>>>);
+static_assert(!X2ESolution<Population<Solution<double>,Evaluation<double>>, pair<Solution<double>, Evaluation<double>>>);
 
 // population compilation tests (these are NOT unit tests)
 #include "Population.ctest.hpp"

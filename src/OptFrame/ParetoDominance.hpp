@@ -48,7 +48,7 @@ class ParetoDominance
 {
 public:
 	// TODO: make Evaluator inherit from Direction!
-	vector<Direction*> v_d;
+	vector<Direction<>*> v_d;
    MultiEvaluator<S, XEv, XMEv, XMES>& mev;
 
 public:

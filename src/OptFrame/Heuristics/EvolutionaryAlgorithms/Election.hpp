@@ -49,14 +49,14 @@ class SimpleElection {
 protected:
 	using Individual = S;
     //using Chromossome = R;
-    using Fitness = Evaluation<>*; //nullptr means there's no evaluation
-    using Population = vector< pair<Individual, Fitness> >;
+    using Fitness = XEv*; //nullptr means there's no evaluation
+    using VPopulation = vector< pair<Individual, Fitness> >;
 
 public:
 	SimpleElection() = default;
 	virtual ~SimpleElection() = default;
 
-	virtual vector<Individual*> elect(Population& population) = 0;
+	virtual vector<Individual*> elect(VPopulation& population) = 0;
 
 };
 
@@ -70,14 +70,14 @@ class RandomElection final : public SimpleElection<S>{
 protected:
 	using Individual = S;
     //using Chromossome = R;
-    using Fitness = Evaluation<>*; //nullptr means there's no evaluation
-    using Population = vector< pair<Individual, Fitness> >;
+    using Fitness = XEv*; //nullptr means there's no evaluation
+    using VPopulation = vector< pair<Individual, Fitness> >;
 
 public:
 	RandomElection() = default;
 	~RandomElection() = default;
 
-	virtual vector<Individual*> elect(Population& population){
+	virtual vector<Individual*> elect(VPopulation& population){
 		_OPTFRAME_DBG_ELECTION_ std::cerr << "-OptDEbug- RadomElection will elect two random parents" << std::endl;
 		
 		vector<Individual*> chosen(2, nullptr);
@@ -103,14 +103,14 @@ class RouletteElection final : public SimpleElection<S>{
 protected:
 	using Individual = S;
     //using Chromossome = R;
-    using Fitness = Evaluation<>*; //nullptr means there's no evaluation
-    using Population = vector< pair<Individual, Fitness> >;
+    using Fitness = XEv*; //nullptr means there's no evaluation
+    using VPopulation = vector< pair<Individual, Fitness> >;
 
 public:
 	RouletteElection() = default;
 	~RouletteElection() = default;
 
-	vector<Individual*> elect(Population& population){
+	vector<Individual*> elect(VPopulation& population){
 		_OPTFRAME_DBG_ELECTION_ std::cerr << "-OptDEbug- RouletteElection will elect two random parents with the roulette operation" << std::endl;
 
 		std::vector<Individual*> chosen(2, nullptr);

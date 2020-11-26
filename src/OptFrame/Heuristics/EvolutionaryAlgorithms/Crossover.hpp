@@ -76,13 +76,13 @@ protected:
 	using Individual = S;
     //using Chromossome = R;
     using Fitness = XEv*; //nullptr means there's no evaluation
-    using Population = std::vector< pair<Individual, Fitness> >;
+    using VPopulation = std::vector< pair<Individual, Fitness> >;
 
 public:
 	SimpleCrossover() = default;
 	virtual ~SimpleCrossover() = default;
 
-	virtual Population cross(const std::vector<Individual*>& parents) = 0;
+	virtual VPopulation cross(const std::vector<Individual*>& parents) = 0;
 };
 
 
@@ -97,15 +97,15 @@ protected:
 	using Individual = S;
     //using Chromossome = R;
     using Fitness = XEv*; //nullptr means there's no evaluation
-    using Population = std::vector< std::pair<Individual, Fitness> >;
+    using VPopulation = std::vector< std::pair<Individual, Fitness> >;
 
 public:
 	TwoParentsCrossover() = default;
 	virtual ~TwoParentsCrossover() = default;
 
-	virtual Population cross(const Individual& parent1, const Individual& parent2) = 0;
+	virtual VPopulation cross(const Individual& parent1, const Individual& parent2) = 0;
 
-	virtual Population cross(const std::vector<Individual*>& parents){
+	virtual VPopulation cross(const std::vector<Individual*>& parents){
 		assert(parents.size() == 2);
 		assert(parents[0] != nullptr);
 		assert(parents[1] != nullptr);

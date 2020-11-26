@@ -57,7 +57,7 @@ public:
 
 	}
 
-	ParetoDominanceStrict(vector<Direction*> _v_d) :
+	ParetoDominanceStrict(vector<Direction<>*> _v_d) :
 		ParetoDominance<S, XEv, XMEv> (_v_d)
 	{
 

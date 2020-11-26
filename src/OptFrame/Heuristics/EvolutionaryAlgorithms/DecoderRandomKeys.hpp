@@ -11,7 +11,7 @@
 // This framework is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
+// GNU Lesser General Public License v3 for more details.DecoderRandomKeys.hpp
 
 // You should have received a copy of the GNU Lesser General Public License v3
 // along with this library; see the file COPYING.  If not, write to the Free
@@ -30,12 +30,19 @@ namespace optframe {
 
 typedef vector<double> random_keys;
 
+////using RSK = std::vector<KeyType>;
+
 // XRepresentation R is NOT random_keys... it's something else, related to original problem
 //template<XRepresentation R, XRSolution<R> XRS = RSolution<R>, XEvaluation XEv = Evaluation<>>
 // XRS is not good to be default, as it must come from outside, and be compatible
-template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>>
+//
+//
+//template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv, XRepresentation RKeys = optframe::random_keys>
+//
+template<XSolution S, XEvaluation XEv, optframe::comparability KeyType>
 class DecoderRandomKeys
 {
+   using RSK = std::vector<KeyType>;
 public:
    virtual ~DecoderRandomKeys()
    {
@@ -43,7 +50,7 @@ public:
 
    // returns evaluation and, optionally the constructed solution.
    // Flag 'needsSolution' indicates that solution is ABSOLUTELY necessary...
-   virtual pair<XEv, op<XRS>> decode(const random_keys& rk, bool needsSolution) = 0;
+   virtual pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) = 0;
 
    virtual bool isMinimization() const = 0;
 };
@@ -54,16 +61,23 @@ public:
 
 // transforms random_keys into R and use given evaluator<R> to generate output XEv
 // XRS is not good to be default, as it must come from outside, and be compatible
-template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>>
-class DecoderRandomKeysEvaluator : public DecoderRandomKeys<R, XRS, XEv>
+//
+//
+//template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv, XRepresentation RKeys = optframe::random_keys>
+//
+//template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv, XRepresentation RKeys = optframe::random_keys>
+//
+template<XSolution S, XEvaluation XEv, optframe::comparability KeyType, XESolution XES = pair<S, XEv>>
+class DecoderRandomKeysEvaluator : public DecoderRandomKeys<S, XEv, KeyType>
 {
+   using RSK = std::vector<KeyType>;
 public:
 
    //using RKEvaluator = Evaluator<random_keys, OPTFRAME_DEFAULT_ADS, CopySolution<random_keys,OPTFRAME_DEFAULT_ADS>;
 
-   Evaluator<XRS>& evaluator;
+   Evaluator<RSK, XEv, XES>& evaluator;
 
-   DecoderRandomKeysEvaluator(Evaluator<XRS>& _evaluator)
+   DecoderRandomKeysEvaluator(Evaluator<RSK, XEv, XES>& _evaluator)
      : evaluator(_evaluator)
    {
    }
@@ -72,9 +86,9 @@ public:
    {
    }
 
-   virtual pair<XEv, op<XRS>> decode(const R& rk, bool needsSolution) override
+   virtual pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) override
    {
-      return pair<XEv, op<XRS>>(evaluator.evaluate(rk, nullptr), nullptr);
+      return pair<XEv, op<S>>(evaluator.evaluate(rk, nullptr), nullptr);
    }
 
    virtual bool isMinimization() const
@@ -84,15 +98,18 @@ public:
 };
 
 
-// transforms 'random_keys' into a XRS solution (with R=permutation), then use Evaluator<XRS> to generate output XEv
-template<XRSolution<vector<int>> XRS, XEvaluation XEv = Evaluation<>>
-class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<vector<int>, XRS, XEv>
+// transforms 'random_keys' into a XRS solution (with R=permutation), then use Evaluator<XRS, XEv> to generate output XEv
+//template<XRSolution<vector<int>> XRS, XEvaluation XEv>
+//
+template<XEvaluation XEv, optframe::comparability KeyType = double, XESolution XES = pair<std::vector<int>, XEv>>
+class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<vector<int>, XEv, KeyType>
 {
+   using RSK = std::vector<KeyType>;
 public:
-   Evaluator<XRS>& ev; // evaluator for permutation
+   Evaluator<std::vector<int>, XEv, XES>& ev; // evaluator for permutation
    int a, b;                   // decode in interval [a,b]
 
-   EvaluatorPermutationRandomKeys(Evaluator<XRS>& _ev, int _a, int _b)
+   EvaluatorPermutationRandomKeys(Evaluator<std::vector<int>, XEv, XES>& _ev, int _a, int _b)
      : ev(_ev)
      , a(_a)
      , b(_b)
@@ -100,7 +117,7 @@ public:
       assert(a <= b);
    }
 
-   virtual pair<XEv, op<XRS>> decode(const random_keys& rk, bool needsSolution) override
+   virtual pair<XEv, op<std::vector<int>>> decode(const RSK& rk, bool needsSolution) override
    {
       int sz = b - a + 1;
       vector<pair<double, int>> v(sz);
@@ -118,11 +135,14 @@ public:
          p[i] = v[i].second;
 
       // XRS is user solution, based on 'vector<int>'      
-      XRS sevp(p);
-      XEv e = ev.evaluate(sevp);
+      //XRS sevp(p);
+      //XEv e = ev.evaluate(sevp);
+      //
+      XEv e = ev.evaluate(p);
 
       // you have the option to actually return a Solution<vector<int>> for post-decoding purposes
-      return pair<XEv, op<XRS>>(e, make_optional(XRS(p)));
+      //return pair<XEv, op<S>>(e, make_optional(XRS(p)));
+      return pair<XEv, op<std::vector<int>>>(e, make_optional(p));
    }
 
    virtual bool isMinimization() const
@@ -132,15 +152,18 @@ public:
 };
 
 // implementation of decoder for subset function (vector<bool>)
-template<XRSolution<vector<bool>> XRS, XEvaluation XEv = Evaluation<>>
-class EvaluatorSubsetRandomKeys : public DecoderRandomKeys<vector<bool>, XRS, XEv>
+//template<XRSolution<vector<bool>> XRS, XEvaluation XEv = Evaluation<>>
+//
+template<XEvaluation XEv, optframe::comparability KeyType, XESolution XES = pair<std::vector<bool>, XEv>>
+class EvaluatorSubsetRandomKeys : public DecoderRandomKeys<vector<bool>, XEv, KeyType>
 {
+   using RSK = std::vector<KeyType>;
 public:
-   Evaluator<XRS>& ev; // evaluator for permutation
+   Evaluator<std::vector<bool>, XEv, XES>& ev; // evaluator for permutation
    int a, b;                    // decode in interval [a,b]
    double limit;                // limit to decide membership (default=0.5)
 
-   EvaluatorSubsetRandomKeys(Evaluator<XRS>& _ev, int _a, int _b, double _limit = 0.5)
+   EvaluatorSubsetRandomKeys(Evaluator<std::vector<bool>, XEv, XES>& _ev, int _a, int _b, double _limit = 0.5)
      : ev(_ev)
      , a(_a)
      , b(_b)
@@ -149,17 +172,20 @@ public:
       assert(a <= b);
    }
 
-   virtual pair<Evaluation<>, op<XRS>> decode(const random_keys& rk, bool needsSolution) override
+   virtual pair<XEv, op<std::vector<bool>>> decode(const RSK& rk, bool needsSolution) override
    {
       vector<bool> v(b - a + 1);
       for (unsigned i = 0; i < v.size(); i++)
          v[i] = rk[i] >= limit;
 
-      XRS sev(v);
-      Evaluation<> e = ev.evaluate(sev);
+      // ----
+      //XRS sev(v);
+      //Evaluation<> e = ev.evaluate(sev);
+      //
+      XEv e = ev.evaluate(v);
 
       // you have the option to actually return a Solution<vector<bool>> for post-decoding purposes
-      return pair<Evaluation<>, op<XRS>>(e, make_optional(XRS(sev)));
+      return pair<XEv, op<std::vector<bool>>>(e, make_optional(v));
    }
 
    virtual bool isMinimization() const

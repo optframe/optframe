@@ -72,6 +72,9 @@ concept
    ->my_same_as<std::string>;
 };
 
+
+// TODO: should we require 'copy constructive' for 'XSolution'? or for 'XRepresentation'?
+
 template<class Self>
 concept 
 #if __cplusplus <= 201703L // after c++20, not required 'bool'

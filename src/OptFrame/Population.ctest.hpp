@@ -11,7 +11,8 @@ namespace optframe
 
 struct optframe_test_debug_testpareto_ispopulation_disable_runtime
 {
-TestPopOrPareto<pair<Solution<int>,Evaluation<>>, Population<Solution<int>,Evaluation<>> > testPop;
+   // This is Legacy Population, so should FAIL the next X2ESolution test
+   // TestPopOrPareto<pair<Solution<int>,Evaluation<>>, Population<Solution<int>,Evaluation<>> > testPop;
 };
 
 

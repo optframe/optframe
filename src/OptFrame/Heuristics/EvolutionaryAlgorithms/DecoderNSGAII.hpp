@@ -487,7 +487,7 @@ class DecoderNSGAII: public ExtendedMultiObjSearch<R, X, ADS>
 {
 protected:
 	Decoder<R, X, ADS>& decoder;
-	vector<Direction*>& v_d;
+	vector<Direction<>*>& v_d;
 	unsigned nObjectives;
 
 	InitialMultiSolution<R>& init_pop;
@@ -539,7 +539,7 @@ protected:
 public:
 
 	// constructor of class 'DecoderNSGAII'
-	DecoderNSGAII(Decoder<R, X, ADS>& _decoder, vector<Direction*>& _v_d, InitialMultiSolution<R>& _init_pop, int _pMin, int _pMax, int _xTarget, int _gMax, RandGen& _rg, NSGAIICrowdingComparison<R>* uec = nullptr) :
+	DecoderNSGAII(Decoder<R, X, ADS>& _decoder, vector<Direction<>*>& _v_d, InitialMultiSolution<R>& _init_pop, int _pMin, int _pMax, int _xTarget, int _gMax, RandGen& _rg, NSGAIICrowdingComparison<R>* uec = nullptr) :
 			decoder(_decoder), v_d(_v_d), nObjectives(_v_d.size()), init_pop(_init_pop), pMin(_pMin), pMax(_pMax), xTarget(_xTarget), gMax(_gMax), pDominance(* new ParetoDominance<R, ADS>(_v_d)), rg(_rg), userSpecificComparison(uec)
 	{
 		N = -1;
@@ -548,7 +548,7 @@ public:
                 lastMin0 = 0;
 	}
 
-	DecoderNSGAII(Decoder<R, X, ADS>& _decoder, vector<Direction*>& _v_d, InitialMultiSolution<R>& _init_pop, int _N, int _gMax, RandGen& _rg, NSGAIICrowdingComparison<R>* uec) :
+	DecoderNSGAII(Decoder<R, X, ADS>& _decoder, vector<Direction<>*>& _v_d, InitialMultiSolution<R>& _init_pop, int _N, int _gMax, RandGen& _rg, NSGAIICrowdingComparison<R>* uec) :
 			decoder(_decoder), v_d(_v_d), nObjectives(_v_d.size()), init_pop(_init_pop), N(_N), gMax(_gMax), pDominance(* new ParetoDominance<R, ADS>(_v_d)), rg(_rg), userSpecificComparison(uec)
 	{
 		pMin = pMax = N;

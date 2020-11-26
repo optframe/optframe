@@ -51,8 +51,8 @@ class GeneticAlgorithm {
 protected:
     using Individual = S;
     //using Chromossome = R;
-    using Fitness = Evaluation<>*; //nullptr means there's no evaluation
-    using Population = std::vector< pair<Individual, Fitness> >;
+    using Fitness = XEv*; //nullptr means there's no evaluation
+    using VPopulation = std::vector< pair<Individual, Fitness> >;
 
     Evaluator<S>& evaluator; //standard problem evaluator
     SimpleInitialPopulation<S, XEv>& initPop; //operator that generates the initial population

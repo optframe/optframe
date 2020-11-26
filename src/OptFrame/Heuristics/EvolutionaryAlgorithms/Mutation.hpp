@@ -171,13 +171,13 @@ protected:
 	using Individual = S;
     //using Chromossome = R;
     using Fitness = XEv*; //nullptr means there's no evaluation
-    using Population = std::vector< std::pair<Individual, Fitness> >;
+    using VPopulation = std::vector< std::pair<Individual, Fitness> >;
 
 public:
 	SimpleMutation() = default;
 	virtual ~SimpleMutation() = default;
 
-	virtual void mutate(Population& population) = 0;
+	virtual void mutate(VPopulation& population) = 0;
 };
 
 /**********************/
@@ -192,7 +192,7 @@ protected:
 	using Individual = S;
     //using Chromossome = R;
     using Fitness = XEv*; //nullptr means there's no evaluation
-    using Population = std::vector< std::pair<Individual, Fitness> >;
+    using VPopulation = std::vector< std::pair<Individual, Fitness> >;
 	double omega;
 
 public:
@@ -203,7 +203,7 @@ public:
 	virtual void mutate(Individual&) = 0; //Should change the solution unpredicatelly
 										  //Individual is passed so the user may change ADS if he wants to
 
-	virtual void mutate(Population& population) override {
+	virtual void mutate(VPopulation& population) override {
 		_OPTFRAME_DBG_MUTATION_  std::cerr << "-OptDebug- Starting mutation operator. Will insert " << static_cast<int>(population.size() * omega) << " mutants into the population." << std::endl;
 
 		//todo: use randgen

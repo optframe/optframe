@@ -1,0 +1,8 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+cc_binary(
+    name = "app_TSPbrkga",
+    srcs = ["src/mainTSP-brkga.cpp", "src/TSP-brkga.hpp"],
+    copts = ['-std=c++17', '-fconcepts', '-Wfatal-errors'],
+    deps = ["@OptFrame//src:OptFCore"]
+)

@@ -46,7 +46,7 @@ class BasicGeneticAlgorithm: public SingleObjSearch<XES>, public EA
 {
 protected:
 	typedef S Chromossome;
-	typedef MultiSolution<S> Population;
+	typedef MultiSolution<S> MSPopulation;
 
 	Evaluator<S>& evaluator;
 

@@ -107,25 +107,25 @@ public:
 };
 
 //temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+template<XSolution S, XEvaluation XEv, XESolution XES = pair<S, XEv>>
 class SimpleSelection {
 protected:
 	using Individual = S;
     //using Chromossome = R;
-    using Fitness = Evaluation<>*; //nullptr means there's no evaluation
-    using Population = vector< pair<Individual, Fitness> >;
+    using Fitness = XEv*; //nullptr means there's no evaluation
+    using VPopulation = vector< pair<Individual, Fitness> >;
 
-    Evaluator<S>& evaluator;
+    Evaluator<S, XEv, XES>& evaluator;
 
 public:
 
-	SimpleSelection(Evaluator<S>& _evaluator) : evaluator(_evaluator) { };
+	SimpleSelection(Evaluator<S, XEv, XES>& _evaluator) : evaluator(_evaluator) { };
 	virtual ~SimpleSelection() = default;
 
-	virtual void select(Population& population) = 0;
+	virtual void select(VPopulation& population) = 0;
 
 	//this is a support function to be used by programmers who need to rank the population before selection. See GA manual to check if the population is ranked when select is called.
-	virtual void sortPopulation(Population& population){
+	virtual void sortPopulation(VPopulation& population){
 		_OPTFRAME_DBG_SELECTION_ std::cerr << "-OptDebug- Selection operator is sorting the population" << std::endl;
 		auto compare = [&](const pair<Individual, Fitness>& a, const pair<Individual, Fitness>& b)->bool{
 			if(a.second && b.second)
@@ -143,13 +143,13 @@ public:
 /**********************/
 
 //Selects the 100alpha% most fit individuals 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class ElitismSelection final : public SimpleSelection<S, XEv> {
+template<XSolution S, XEvaluation XEv, XESolution XES = pair<S, XEv>>
+class ElitismSelection final : public SimpleSelection<S, XEv, XES> {
 protected:
 	using Individual = S;
     //using Chromossome = R;
-    using Fitness = Evaluation<>*; //nullptr means there's no evaluation
-    using Population = vector< pair<Individual, Fitness> >;
+    using Fitness = XEv*; //nullptr means there's no evaluation
+    using VPopulation = vector< pair<Individual, Fitness> >;
 
 private:
 	double alpha; //selectionRate
@@ -158,10 +158,10 @@ public:
 	//optional parameter
 	bool sortPopulationBeforeSelect = false; //this selection need to operate over a ranked population. If the GA used doesn't rank them, then you should flip this to true 
 
-	ElitismSelection(Evaluator<S>& _evaluator, double selectionRate) : SimpleSelection<S, XEv>(_evaluator), alpha(selectionRate) { assert(selectionRate >= 0.0 && selectionRate <= 1.0); };
+	ElitismSelection(Evaluator<S, XEv, XES>& _evaluator, double selectionRate) : SimpleSelection<S, XEv, XES>(_evaluator), alpha(selectionRate) { assert(selectionRate >= 0.0 && selectionRate <= 1.0); };
 	~ElitismSelection() = default;
 
-	void select(Population& population) override {
+	void select(VPopulation& population) override {
 		_OPTFRAME_DBG_SELECTION_ std::cerr << "-OptDebug- ElitismSelection is selecting the " << population.size() * alpha << " most fit individuals and killing the rest" << std::endl;
 		if(this->sortPopulationBeforeSelect) this->sortPopulation(population);
 		int oldSize = population.size();

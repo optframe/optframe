@@ -40,9 +40,12 @@
 namespace optframe {
 
 // generates a random population of 'random_keys' (with size 'sz')
-template<XRSolution<random_keys> RSK = RSolution<random_keys>, XEvaluation XEv = Evaluation<>>
-class RandomKeysInitPop : public InitialPopulation<RSK, XEv>
+//template<XRSolution<random_keys> RSK = RSolution<random_keys>, XEvaluation XEv = Evaluation<>>
+//
+template<XEvaluation XEv = Evaluation<>, optframe::comparability KeyType = double>
+class RandomKeysInitPop : public InitialPopulation<std::vector<KeyType>, XEv>
 {
+   using RSK = std::vector<KeyType>;
 private:
    int sz;
 
@@ -60,8 +63,9 @@ public:
          random_keys* d = new random_keys(sz);
          for (int j = 0; j < sz; j++)
             d->at(j) = (rand() % 100000) / 100000.0; // TODO: take precision from Template or from good RNG
-         RSK* sol = new RSK(d);
-         pop.push_back(sol);
+         //RSK* sol = new RSK(d);
+         //pop.push_back(sol);
+         pop.push_back(d); // TODO: pass by std::move() or unique_ptr
       }
 
       return pop;
@@ -70,13 +74,17 @@ public:
 
 // RKGA searches on XRS solution space, by means of a decoder (R -> random_keys). TODO: this may be XRS perhaps
 // XRS is not good to be default, as it must come from outside, and be compatible
-template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>, XESolution XES = pair<XRS, XEv>> // one should pass a compatible one, regarding R
-class RKGA : public SingleObjSearch<XES>
+//
+//template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv, XESolution XES = pair<XRS, XEv>, XRepresentation RKeys = optframe::random_keys> // one should pass a compatible one, regarding R
+//
+template<XSolution S, XEvaluation XEv, optframe::comparability KeyType = double, XESolution XES = pair<S, XEv>>
+class RKGA : public SingleObjSearch<XES, XEv>
 {
-   using RSK = RSolution<random_keys>;
+   //using RSK = RSolution<RKeys>;
+   using RSK = std::vector<KeyType>;
 protected:
-   DecoderRandomKeys<R, XRS, XEv>& decoder;
-   Evaluator<XRS, XEv>* evaluator; // Check to avoid memory leaks
+   DecoderRandomKeys<S, XEv, KeyType>& decoder;
+   Evaluator<S, XEv>* evaluator; // Check to avoid memory leaks
 
    InitialPopulation<RSK, XEv>& initPop;
    int sz; // Check to avoid memory leaks
@@ -85,7 +93,7 @@ protected:
    unsigned numGenerations;
 
 public:
-   RKGA(DecoderRandomKeys<R, XRS, XEv>& _decoder, InitialPopulation<RSK, XEv>& _initPop, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
+   RKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, InitialPopulation<RSK, XEv>& _initPop, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
      : decoder(_decoder)
      , evaluator(nullptr)
      , initPop(_initPop)
@@ -99,7 +107,7 @@ public:
       assert(randomSize + eliteSize < popSize);
    }
 
-   RKGA(DecoderRandomKeys<R, XRS, XEv>& _decoder, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
+   RKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
      : decoder(_decoder)
      , evaluator(nullptr)
      , initPop(*new RandomKeysInitPop(key_size))
@@ -113,8 +121,8 @@ public:
       assert(randomSize + eliteSize < popSize);
    }
 
-   RKGA(Evaluator<XRS, XEv>& _evaluator, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
-     : decoder(*new DecoderRandomKeysEvaluator<random_keys, XRS>(_evaluator))
+   RKGA(Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
+     : decoder(*new DecoderRandomKeysEvaluator<S, XEv, KeyType, XES>(_evaluator))  
      , evaluator(&_evaluator)
      , initPop(*new RandomKeysInitPop(key_size))
      , sz(key_size)
@@ -138,13 +146,10 @@ public:
    void decodePopulation(Population<RSK, XEv>& p)
    {
       for (unsigned i = 0; i < p.size(); ++i) {
-         //p.at(i).print();
-         random_keys& rk = p.at(i).getR();
-         pair<XEv, op<XRS>> pe = decoder.decode(rk, false);
+         //random_keys& rk = p.at(i).getR();
+         random_keys& rk = p.at(i);
+         pair<XEv, op<S>> pe = decoder.decode(rk, false);
          p.setFitness(i, pe.first.evaluation());
-         //delete &pe.first;
-         //if (pe.second)
-         //   delete pe.second;
       }
    }
 
@@ -158,10 +163,13 @@ public:
       random_keys* v = new random_keys(sz, 0.0);
       for (int i = 0; i < sz; i++)
          if (rand() % 2 == 0)
-            v->at(i) = p1.getR()[i];
+            //v->at(i) = p1.getR()[i];
+            v->at(i) = p1[i];
          else
-            v->at(i) = p2.getR()[i];
-      return *new RSK(v);
+            //v->at(i) = p2.getR()[i];
+            v->at(i) = p2[i];
+      //return *new RSK(v);
+      return *v; // TODO: return by std::move() or unique_ptr
    }
 
    //pair<CopySolution<random_keys>&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const CopySolution<random_keys>* _s = nullptr, const Evaluation<>* _e = nullptr)
@@ -236,7 +244,8 @@ public:
       RSK& best = p.remove(0);
 
       // TODO: we should enfoce a boolean here (NEEDS SOLUTION = TRUE!!)
-      pair<XEv, op<XRS>> pe = decoder.decode(best.getR(), true);
+      //pair<XEv, op<S>> pe = decoder.decode(best.getR(), true);
+      pair<XEv, op<S>> pe = decoder.decode(best, true);
       Evaluation<>& e = pe.first;
 
 
@@ -259,7 +268,7 @@ public:
         assert(false);
      }
      
-     XRS finalSol(*pe.second); // TODO: avoid loss
+     S finalSol(*pe.second); // TODO: avoid loss
      
      //return std::optional<pair<XRS, XEv>>(make_pair(finalSol, e)); 
      star = make_optional(make_pair(finalSol, e));

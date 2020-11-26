@@ -43,12 +43,12 @@ namespace optframe
 class MultiDirection: public Component
 {
 protected:
-	vector<Direction*> vDir;
+	vector<Direction<>*> vDir;
 
 public:
 	unsigned nObjectives;
 
-	MultiDirection(vector<Direction*>& _vDir)
+	MultiDirection(vector<Direction<>*>& _vDir)
 	{
 		for(unsigned i = 0; i < _vDir.size(); i++)
 			if(_vDir[i])
@@ -70,7 +70,7 @@ public:
 	{
 	}
 
-	virtual MultiDirection& addObjective(Direction* ds)
+	virtual MultiDirection& addObjective(Direction<>* ds)
 	{
 		if(ds)
 			vDir.push_back(ds);
@@ -79,7 +79,7 @@ public:
 		return *this;
 	}
 
-	vector<Direction*>& getDirections()
+	vector<Direction<>*>& getDirections()
 	{
 		return vDir;
 	}

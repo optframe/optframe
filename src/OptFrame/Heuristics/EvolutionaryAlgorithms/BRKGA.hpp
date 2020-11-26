@@ -36,31 +36,40 @@ namespace optframe
 
 // It seems that R is connected to S here... S<R> is rule perhaps?
 // maybe better to not provide XRS directly here (used to be = = RSolution<R>)
-template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv = Evaluation<>>
-class BRKGA: public RKGA<R, XRS, XEv>
+// RKeys is the representation of random keys
+//
+//template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv, XRepresentation RKeys = optframe::random_keys>
+//
+// Assuming XSolution allows "raw representation" such as vector<int>...
+// Will require XSolution instead of XRepresentation, since legacy Evaluation already deals with that
+// User may also want to "decode" the ADS from keys, if necessary...
+//
+template<XSolution S, XEvaluation XEv, optframe::comparability KeyType = double, XESolution XES = pair<S, XEv>>
+class BRKGA: public RKGA<S, XEv, KeyType, XES>
 {
-   using RSK = RSolution<random_keys>;
+   //using RSK = RSolution<RKeys>;
+   using RSK = std::vector<KeyType>;
 protected:
 	double probElitism;
 
 public:
 
-	BRKGA(DecoderRandomKeys<R, XRS, XEv>& _decoder, InitialPopulation<XRS, XEv>& _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double probElielitismRate, double _probElitism) :
-		RKGA<R, XRS, XEv>(_decoder, _initPop, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
+	BRKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, InitialPopulation<S, XEv>& _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double probElielitismRate, double _probElitism) :
+		RKGA<S, XEv, KeyType, XES>(_decoder, _initPop, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
 		assert(probElitism <= 1.0);
 	}
 
-	BRKGA(DecoderRandomKeys<R, XRS, XEv>& _decoder, int key_size, unsigned numGen, unsigned popSize, double fracTOP, double fracBOT, double _probElitism) :
-			RKGA<R, XRS, XEv>(_decoder, key_size, numGen, popSize, fracTOP, fracBOT), probElitism(_probElitism)
+	BRKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, int key_size, unsigned numGen, unsigned popSize, double fracTOP, double fracBOT, double _probElitism) :
+			RKGA<S, XEv, KeyType, XES>(_decoder, key_size, numGen, popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
 		assert(probElitism <= 1.0);
 	}
 
-	BRKGA(Evaluator<XRS>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
-			RKGA<R, XRS, XEv>(_evaluator, key_size, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
+	BRKGA(Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
+			RKGA<S, XEv, KeyType, XES>(_evaluator, key_size, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
 		assert(probElitism <= 1.0);
@@ -80,14 +89,17 @@ public:
 		random_keys* v = new random_keys(this->sz, 0.0);
 		for (int i = 0; i < this->sz; i++)
 			if ((rand() % 1000000)/1000000.0 < probElitism)
-				v->at(i) = p1.getR()[i];
+				//v->at(i) = p1.getR()[i];
+            v->at(i) = p1[i];
 			else
-				v->at(i) = p2.getR()[i];
-		return *new RSK(v);
+				//v->at(i) = p2.getR()[i];
+            v->at(i) = p2[i];
+		//return *new RSK(v);
+      return *v; // TODO: pass by std::move() or unique_ptr
 	}
 
 };
 
-}
+} // namespace optframe
 
 #endif /*OPTFRAME_BRKGA_HPP_*/
