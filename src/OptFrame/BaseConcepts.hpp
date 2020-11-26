@@ -235,6 +235,10 @@ concept
      HasGetObj<Self> &&
      optframe::ostreamable<Self> &&
      requires(Self e) {
+        typename Self::objType;
+     } 
+     &&
+     requires(Self e) {
      // variable 'outdated' is still useful for optimizations
      {
         e.outdated

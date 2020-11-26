@@ -64,8 +64,8 @@ namespace optframe {
 
 // Evaluation may need to be S dependent, while GeneralEvaluator is not.
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class Evaluator : public Direction, public GeneralEvaluator<XES, XEv, XES>
+template<XSolution S, XEvaluation XEv, XESolution XES = pair<S, XEv>>
+class Evaluator : public Direction<XEv>, public GeneralEvaluator<XES, XEv, XES>
 {
 protected:
    bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
@@ -190,7 +190,7 @@ public:
 
    // From Direction:
    //virtual inline bool betterThan(const MoveCost<>& mc1, const MoveCost<>& mc2)
-   using Direction::betterThan;
+   using Direction<XEv>::betterThan;
 
    // Note that these parameters are NON-CONST... so, they can be updated if necessary!
    virtual bool betterThan(XES& se1, XES& se2)
@@ -203,7 +203,7 @@ public:
       if(e2.outdated)
          e2 = evaluate(se2.first);
          //e2 = evaluate(se2);
-      bool r = Direction::betterThan(e1, e2);
+      bool r = Direction<XEv>::betterThan(e1, e2);
       return r;
    }
 
@@ -223,13 +223,13 @@ public:
       // TODO: verify if outdated is not set!!
       XEv e1 = evaluate(s1.first);
       XEv e2 = evaluate(s2.first);
-      bool r = Direction::betterThan(e1, e2);
+      bool r = Direction<XEv>::betterThan(e1, e2);
       return r;
    }
 
    virtual bool betterThan(const XEv& e1, const XEv& e2)
    {
-      return Direction::betterThan(e1, e2);
+      return Direction<XEv>::betterThan(e1, e2);
    }
 
    // =======================================
@@ -240,24 +240,24 @@ public:
    {
       assert(!e1.outdated);
       assert(!e2.outdated);
-      return Direction::betterThan(e1, e2);
+      return Direction<XEv>::betterThan(e1, e2);
    }
 
    // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
    virtual bool isStrictImprovement(const XEv& e)
    {
-      return Direction::isImprovement(e);
+      return Direction<XEv>::isImprovement(e);
    }
 
    // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
    virtual bool isNonStrictImprovement(const XEv& e)
    {
-      return isStrictImprovement(e) || Direction::equals(e, this->nullCost);
+      return isStrictImprovement(e) || Direction<XEv>::equals(e, this->nullCost);
    }
 
    virtual bool equals(const XEv& e1, const XEv& e2)
    {
-      return Direction::equals(e1, e2);
+      return Direction<XEv>::equals(e1, e2);
    }
 
    // ---------------------------------------
@@ -266,7 +266,7 @@ public:
 
    virtual bool compatible(string s)
    {
-      return (s == idComponent()) || (Direction::compatible(s));
+      return (s == idComponent()) || (Direction<XEv>::compatible(s));
    }
 
    static string idComponent()

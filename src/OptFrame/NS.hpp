@@ -32,7 +32,7 @@
 namespace optframe
 {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
+template<XESolution XES, XEvaluation XEv = typename XES::second_type, XESolution XSH = XES>
 class NS: public Component
 {
 public:
@@ -70,7 +70,7 @@ public:
    // default implementation tries method 'validRandomMove' for a *single time* (not iterative)
    // note that 'se' is not const, since moves may need to change it (and revert)
    //   we could have "const_cast" here, or inside "moveCost", but at the moment let's fully respect "const"
-   virtual pair< Move<XES, XEv, XSH>*, op<XEv> > findAny(GeneralEvaluator<XES>& gev, XES& se)
+   virtual pair< Move<XES, XEv, XSH>*, op<XEv> > findAny(GeneralEvaluator<XES, XEv, XSH>& gev, XES& se)
    {
       uptr<Move<XES, XEv, XSH>> pm = validRandomMove(se);
       if(!pm)

@@ -75,6 +75,9 @@
         "ranges": "cpp",
         "bit": "cpp"
     },
+    "files.exclude": {
+        "bazel-out/**": true
+    },
     "restructuredtext.confPath": "${workspaceFolder}/docs/source",
     "editor.tokenColorCustomizations": {
         "textMateRules": [

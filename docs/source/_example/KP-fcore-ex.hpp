@@ -28,7 +28,7 @@ namespace KP_fcore {
 
 using ESolutionKP = std::pair<
   std::vector<bool>, // (representation)
-  Evaluation<double> // (objective value)
+  Evaluation<int> // (objective value)
   >;
 
 // ==============================
@@ -76,7 +76,7 @@ ProblemContext pKP;
 // ===========================
 
 // função de avaliação da mochila
-Evaluation<double>
+Evaluation<int>
 fevaluate(const std::vector<bool>& s)
 {
    int f = 0;
@@ -91,7 +91,7 @@ fevaluate(const std::vector<bool>& s)
    if (somaPeso >= pKP.Q)
       f -= 1000000 * (somaPeso - pKP.Q); // punição proporcional ao excesso de peso
    //
-   return Evaluation<double>{ f };
+   return Evaluation<int>{ f };
 }
 
 // Evaluate (false -> maximização)
@@ -101,14 +101,14 @@ FEvaluator<ESolutionKP, MAXIMIZE> avaliador{ fevaluate };
 //   Método construtivo
 // ===========================
 
-std::optional<std::vector<bool>>
-frandom(double timelimit)
+std::vector<bool>
+frandom()
 {
    vector<bool> v(pKP.n, false); // começa sem nenhum item escolhido
    for (unsigned i = 0; i < v.size(); i++)
       v[i] = rand() % 2; // sorteia se leva item ou não (resultado 0 ou 1)
-   // retorna solução como 'optional' (C++17)
-   return make_optional(v);
+   // retorna solução
+   return v;
 }
 
 // Gerador de solução inicial (método construtivo)

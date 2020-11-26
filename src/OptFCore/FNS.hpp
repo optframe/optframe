@@ -28,7 +28,7 @@
 namespace optframe {
 
 template< XESolution XES>
-class FNS final : public NS<XES, typename XES::second_type>
+class FNS final : public NS<XES> // typename XES::second_type
 {
    using XEv = typename XES::second_type;
    using XSH = XES; // only single objective

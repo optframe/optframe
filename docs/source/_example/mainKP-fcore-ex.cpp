@@ -1,7 +1,7 @@
 // mainKP-fcore-ex.cpp
 #include <iostream>
 
-#include "KP-fcore.hpp" // implementação da mochila
+#include "KP-fcore-ex.hpp" // implementação da mochila
 
 // import everything on main()
 using namespace std;
@@ -10,14 +10,23 @@ using namespace scannerpp;
 using namespace KP_fcore;
 
 int
-main()
+main(int argc, char** argv)
 {
    std::cout << "======== Carregando Problema ========" << std::endl;
    // semente pseudo-aleatória fixa em zero
    srand(time(NULL));
 
-   // load data into problem context 'pTSP'
-   Scanner scanner{ File{ "knapsack-example.txt" } };
+   std::string sinstance = "knapsack-example.txt";
+   File f{ sinstance };
+
+   if(!f.isOpen())
+   {
+      std::cerr << "Problema '" << sinstance << "' não encontrado no diretório!" << std::endl;
+      return 1;
+   }
+   
+   Scanner scanner{ std::move(f) };
+
    pKP.load(scanner);
    std::cout << "número de elementos na mochila:" << pKP.n << std::endl;
 

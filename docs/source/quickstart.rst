@@ -115,9 +115,10 @@ Users must first define a *Representation*, which is a data structure that repre
 an element in the *Solution Space* for the KP. A natural candidate here is an *array of booleans*, 
 since we need to decide if we are going to carry each item or not. In C++, an interesting
 approach is to use stl containers, such as a :cppcode:`std::vector<int>`.
+
 User also needs to specify the data type for the *Objective Space*, in general a numeric type.
 In this case, we will simply choose 
-an :cppcode:`Evaluation<double>` (just ignore the *Evaluation* container for now...).
+an :cppcode:`Evaluation<int>` (just ignore the *Evaluation* container for now...).
 
 We declare a `XESolution <./concepts.html>`_ pair that aggregates both spaces as a single 
 type :code:`ESolutionKP` (meaning an *evaluated solution for the knapsack problem*):
@@ -133,7 +134,7 @@ type :code:`ESolutionKP` (meaning an *evaluated solution for the knapsack proble
     
     using ESolutionKP = std::pair<
         std::vector<bool>, // (representation)
-        Evaluation<double> // (objective value)
+        Evaluation<int> // (objective value)
     >;
 
 .. this is called an 'admonition'
@@ -190,8 +191,7 @@ Random Constructive
 ^^^^^^^^^^^^^^^^^^^
 
 We need to have some initial solution for the search process, so we just proceed in a random manner.
-To simplify things, we assume a relaxation of the Knapsack Problem, where items are allowed to exceed
-knapsack capacity by means of a penalization strategy.
+For simplicity, we allow infeasible solutions to be generated (as if capacity was infinite).
 
 .. code-block:: c++
 
@@ -202,7 +202,7 @@ knapsack capacity by means of a penalization strategy.
         std::vector<bool> v(pKP.n, false); // no item is chosen at first
         for (unsigned i = 0; i < v.size(); ++i)
             v[i] = rand() % 2; // 50% chance to select an item (or not)
-        // returns solution
+        // returns generated solution (feasible or infeasible)
         return v;
     }
 
@@ -219,13 +219,14 @@ Evaluator
 
 Now it's time to define an evaluation (or objective) function. According to the goal of 
 maximizing the profits, we iterate over selected items to accumulate profit and weights.
-As discussed in constructive section, we allow accumulated weight to surpass knapsack capacity
-by introducing a penalization with an "undesired value", which is -1000000 in our example:
+As discussed in constructive section, we allow accumulated weight to surpass knapsack capacity,
+for infeasible configurations. 
+To discourage that, we introduce negative penalization whenever capacity is exceeded (assuming weight -1000000):
 
 .. code-block:: c++
 
     // function 'fevaluate' receives a const solution and returns an evaluation
-    Evaluation<double>
+    Evaluation<int>
     fevaluate(const std::vector<bool>& s)
     {
         int sum_p = 0; // sum profits    
@@ -240,7 +241,7 @@ by introducing a penalization with an "undesired value", which is -1000000 in ou
         if (sum_w >= pKP.Q)
             sum_p -= 1000000 * (sum_w - pKP.Q); // penalization proportional to exceeded weight
         
-        return Evaluation<double>{ sum_p }; // returns Evaluation object
+        return Evaluation<int>{ sum_p }; // returns Evaluation object
     }
 
 We now use the defined :code:`fevaluate` function to create an :code:`Evaluator` object named :code:`evalKP`,

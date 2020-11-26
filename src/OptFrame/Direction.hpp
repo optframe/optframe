@@ -45,17 +45,18 @@ namespace optframe
 
 // Direction 'betterThan' depends on a 'totally_ordered' type
 ////template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
+template<XEvaluation XEv = Evaluation<evtype>> // default is 'evtype'
 class Direction: public Component
 {
 protected:
 	///MoveCost<evtype, Evaluation<>> nullCost;
-   Evaluation<evtype> nullCost;
+   XEv nullCost;
 
 public:
 
 	Direction() :
 			///nullCost(MoveCost<>(0))
-         nullCost(Evaluation<>(0))
+         nullCost(XEv(0)) // requires cast from value zero, at least
    {
 	}
    
@@ -78,16 +79,16 @@ public:
 	//virtual bool betterThan(evtype a, evtype b) = 0;
 
 	// true if 'mc1' is better than 'mc2'
-	virtual inline bool betterThan(const MoveCost<>& mc1, const MoveCost<>& mc2)
+	virtual inline bool betterThan(const MoveCost<typename XEv::objType, XEv>& mc1, const MoveCost<typename XEv::objType, XEv>& mc2)
 	{
 		if(isMinimization())
-			return (mc2.cost() - mc1.cost()) >= optframe::get_numeric_zero<evtype>();
+			return (mc2.cost() - mc1.cost()) >= optframe::get_numeric_zero<typename XEv::objType>();
 		else
-			return (mc1.cost() - mc2.cost()) >= optframe::get_numeric_zero<evtype>();
+			return (mc1.cost() - mc2.cost()) >= optframe::get_numeric_zero<typename XEv::objType>();
 	}
 
 	// true if 'e1' is better than 'e2'
-	virtual inline bool betterThan(const Evaluation<>& e1, const Evaluation<>& e2)
+	virtual inline bool betterThan(const XEv& e1, const XEv& e2)
 	{
       //cout << "BETTER THAN! (isMin=" << isMinimization() << ")" << endl;
       //e1.print();
@@ -106,7 +107,7 @@ public:
          diff = e1.evaluation() - e2.evaluation();
 			//r = (e1.evaluation() - e2.evaluation()) >= optframe::get_numeric_zero<evtype>();
       }
-      bool r = !(optframe::numeric_is_zero<evtype>(diff)) && (diff > optframe::get_numeric_zero<evtype>());
+      bool r = !(optframe::numeric_is_zero<typename XEv::objType>(diff)) && (diff > optframe::get_numeric_zero<typename XEv::objType>());
 
       //printf("r=%d e1=%.7f e2=%.7f zero=%.7f nzero=%.7f\n",r,e1.evaluation(), e2.evaluation(), optframe::get_numeric_zero<evtype>(), t);
       
@@ -143,7 +144,7 @@ public:
 	}
 */
 
-	inline bool betterOrEquals(const Evaluation<>& e1, const Evaluation<>& e2)
+	inline bool betterOrEquals(const XEv& e1, const XEv& e2)
 	{
 		return betterThan(e1, e2) || equals(e1, e2);
 	}
@@ -177,9 +178,9 @@ public:
 	}
 */   
 
-virtual inline bool equals(const evtype& t1, const evtype& t2)
+virtual inline bool equals(const typename XEv::objType& t1, const typename XEv::objType& t2)
 	{
-      if(optframe::numeric_is_zero<evtype>(t1 - t2))
+      if(optframe::numeric_is_zero<typename XEv::objType>(t1 - t2))
 		//if(EVALUATION_ABS(t1 - t2) <= optframe::get_numeric_zero<evtype>()) // deprecated
 			return true;
 
@@ -202,7 +203,7 @@ virtual inline bool equals(const evtype& t1, const evtype& t2)
 		return equals(mc1.cost(), mc2.cost(), mc1.getAlternativeCosts(), mc2.getAlternativeCosts());
 	}
 */
-	virtual inline bool equals(const Evaluation<>& e1, const Evaluation<>& e2)
+	virtual inline bool equals(const XEv& e1, const XEv& e2)
 	{
 		//return equals(e1.evaluation(), e2.evaluation(), e1.getAlternativeCosts(), e2.getAlternativeCosts());
       return equals(e1.evaluation(), e2.evaluation());
@@ -222,17 +223,17 @@ virtual inline bool equals(const evtype& t1, const evtype& t2)
 
 	///virtual bool isImprovement(const MoveCost<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
    // Analyse if '(mc + e1)' is an improvement over 'e2'
-   virtual bool isImprovement(const Evaluation<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
+   virtual bool isImprovement(const XEv& mc, const XEv& e1, const XEv& e2)
 	{
 		//evtype ec1 = mc.cost() + e1.evaluation();
       evtype ec1 = mc.evaluation() + e1.evaluation();
 
 		//if(isMinimization()  && (e2.evaluation() - ec1) >= EVALUATION_ZERO) // deprecated
-      if(isMinimization()  && (e2.evaluation() - ec1) >= optframe::get_numeric_zero<evtype>())
+      if(isMinimization()  && (e2.evaluation() - ec1) >= optframe::get_numeric_zero<typename XEv::objType>())
 			return true;
 
 		//if(!isMinimization() && (ec1 - e2.evaluation()) >= EVALUATION_ZERO) // deprecated
-      if(!isMinimization() && (ec1 - e2.evaluation()) >= optframe::get_numeric_zero<evtype>())
+      if(!isMinimization() && (ec1 - e2.evaluation()) >= optframe::get_numeric_zero<typename XEv::objType>())
 			return true;
 
 		return false;
@@ -240,7 +241,7 @@ virtual inline bool equals(const evtype& t1, const evtype& t2)
 
 
 	///virtual inline bool isImprovement(const MoveCost<>& mc)
-   virtual inline bool isImprovement(const Evaluation<>& mc)
+   virtual inline bool isImprovement(const XEv& mc)
 	{
 		return betterThan(mc, nullCost);
 	}
@@ -278,25 +279,25 @@ public:
 
 
 	// bad approximation!
-	virtual inline evtype min()
+	virtual inline typename XEv::objType min()
 	{
 		////return -DBL_MAX;
 
 		if(numeric_limits<evtype>::has_infinity)
-			return -numeric_limits<evtype>::infinity();
+			return -numeric_limits<typename XEv::objType>::infinity();
 		else
-			return -numeric_limits<evtype>::max();
+			return -numeric_limits<typename XEv::objType>::max();
 	}
 
 	// bad approximation!
-	virtual inline evtype max()
+	virtual inline typename XEv::objType max()
 	{
 		////return DBL_MAX;
 
-		if(numeric_limits<evtype>::has_infinity)
-			return numeric_limits<evtype>::infinity();
+		if(numeric_limits<typename XEv::objType>::has_infinity)
+			return numeric_limits<typename XEv::objType>::infinity();
 		else
-			return numeric_limits<evtype>::max();
+			return numeric_limits<typename XEv::objType>::max();
 	}
 
 	// ============= Component ===============
@@ -335,7 +336,8 @@ public:
 
 //template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
 //class Minimization: public Direction<ObjType, XEv>
-class Minimization: public Direction
+template<XEvaluation XEv = Evaluation<evtype>> // default is 'evtype'
+class Minimization: public Direction<XEv>
 {
 public:
 
@@ -358,7 +360,8 @@ public:
 
 //template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
 //class Maximization: public Direction<ObjType, XEv>
-class Maximization: public Direction
+template<XEvaluation XEv = Evaluation<evtype>> // default is 'evtype'
+class Maximization: public Direction<XEv>
 {
 public:
 
