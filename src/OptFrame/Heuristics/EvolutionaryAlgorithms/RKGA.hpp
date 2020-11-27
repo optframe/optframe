@@ -121,6 +121,20 @@ public:
       assert(randomSize + eliteSize < popSize);
    }
 
+   RKGA(Evaluator<S, XEv>& _evaluator, InitialPopulation<RSK, XEv>& _initPop, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
+     : decoder(*new DecoderRandomKeysEvaluator<S, XEv, KeyType, XES>(_evaluator))  
+     , evaluator(&_evaluator)
+     , initPop(_initPop)
+     , sz(-1)
+     , popSize(_popSize)
+     , eliteSize(fracTOP * _popSize)
+     , randomSize(fracBOT * _popSize)
+   {
+      this->numGenerations = numGenerations;
+      assert(eliteSize < popSize);
+      assert(randomSize + eliteSize < popSize);
+   }
+
    RKGA(Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
      : decoder(*new DecoderRandomKeysEvaluator<S, XEv, KeyType, XES>(_evaluator))  
      , evaluator(&_evaluator)

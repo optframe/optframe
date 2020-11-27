@@ -54,7 +54,7 @@ protected:
 
 public:
 
-	BRKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, InitialPopulation<S, XEv>& _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double probElielitismRate, double _probElitism) :
+	BRKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, InitialPopulation<RSK, XEv>& _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
 		RKGA<S, XEv, KeyType, XES>(_decoder, _initPop, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
@@ -63,6 +63,13 @@ public:
 
 	BRKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, int key_size, unsigned numGen, unsigned popSize, double fracTOP, double fracBOT, double _probElitism) :
 			RKGA<S, XEv, KeyType, XES>(_decoder, key_size, numGen, popSize, fracTOP, fracBOT), probElitism(_probElitism)
+	{
+		assert(probElitism > 0.5);
+		assert(probElitism <= 1.0);
+	}
+
+	BRKGA(Evaluator<S, XEv>& _evaluator, InitialPopulation<RSK, XEv>& _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
+			RKGA<S, XEv, KeyType, XES>(_evaluator, _initPop, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
 		assert(probElitism <= 1.0);

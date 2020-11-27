@@ -61,7 +61,8 @@ public:
 // Create TSP Problem Context
 ProblemContext pTSP;
 
-Evaluation<double> fevaluate(const std::vector<int>& s)
+Evaluation<double>
+fevaluate(const std::vector<int>& s)
 {
    double f = 0;
    for (int i = 0; i < int(pTSP.n) - 1; i++)
@@ -71,50 +72,76 @@ Evaluation<double> fevaluate(const std::vector<int>& s)
 }
 
 // Evaluate
-FEvaluator < ESolutionTSP, MinOrMax::MINIMIZE >
-ev
-{
-   fevaluate
-};
+FEvaluator<ESolutionTSP, MinOrMax::MINIMIZE>
+  ev{
+     fevaluate
+  };
 
 // ===========================
 // decoder function for BRKGA (and alike)
 
-pair<Evaluation<double>, vector<int>> fDecode(const vector<double>& rk)
+pair<Evaluation<double>, vector<int>>
+fDecode(const vector<double>& rk)
 {
    vector<pair<double, int>> v(rk.size());
-      int k = 0;
-      for (unsigned i = 0; i < v.size(); i++)
-         v[k] = pair<double, int>(rk[i], i);
+   int k = 0;
+   for (unsigned i = 0; i < v.size(); i++)
+      v[k] = pair<double, int>(rk[i], i);
 
-      sort(v.begin(), v.end(), [](const pair<double, int>& i, const pair<double, int>& j) -> bool {
-         return i.first < j.first;
-      });
+   sort(v.begin(), v.end(), [](const pair<double, int>& i, const pair<double, int>& j) -> bool {
+      return i.first < j.first;
+   });
 
-      // R = vector<int>
-      vector<int> p(v.size());
-      for (unsigned i = 0; i < v.size(); i++)
-         p[i] = v[i].second;
+   // R = vector<int>
+   vector<int> p(v.size());
+   for (unsigned i = 0; i < v.size(); i++)
+      p[i] = v[i].second;
 
-      Evaluation<double> e = ev.evaluate(p);
-      return make_pair(e, p);
+   Evaluation<double> e = ev.evaluate(p);
+   return make_pair(e, p);
 }
 
 // evaluator random keys (for TSP)
-FDecoderRK<std::vector<int>, Evaluation<>, double, MinOrMax::MINIMIZE> eprk
-{
+FDecoderRK<std::vector<int>, Evaluation<>, double, MinOrMax::MINIMIZE> decoder{
    fDecode
 };
 
 //
 } // TSP_brkga
 
-
 // import everything on main()
 using namespace std;
 using namespace optframe;
 using namespace scannerpp;
 using namespace TSP_brkga;
+
+class MyRandomKeysInitPop : public InitialPopulation<std::vector<double>, Evaluation<double>>
+{
+   using RSK = std::vector<double>;
+
+private:
+   int sz;
+
+public:
+   MyRandomKeysInitPop(int size)
+     : sz{ size }
+   {
+   }
+
+   Population<RSK, Evaluation<double>> generatePopulation(unsigned populationSize, double timelimit) override
+   {
+      Population<RSK, Evaluation<double>> pop;
+
+      for (unsigned i = 0; i < populationSize; i++) {
+         vector<double>* d = new vector<double>(sz);
+         for (int j = 0; j < sz; j++)
+            d->at(j) = (rand() % 100000) / 100000.0;
+         pop.push_back(d);
+      }
+
+      return pop;
+   }
+};
 
 int
 main()
@@ -126,8 +153,21 @@ main()
    pTSP.load(scanner);
    std::cout << pTSP.dist << std::endl;
 
+   InitialPopulation<vector<double>, ESolutionTSP::second_type>* initPop =
+     new MyRandomKeysInitPop(pTSP.n); // passing key_size
+
+   // Parameters BRKGA
+   // (C1): Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
+
+   //eprk, pTSP.n, 1000, 30, 0.4, 0.3, 0.6
    BRKGA<ESolutionTSP::first_type, ESolutionTSP::second_type, double, ESolutionTSP> brkga(
-     eprk, pTSP.n, 1000, 30, 0.4, 0.3, 0.6);
+     decoder,
+     *initPop,
+     1000,
+     30,
+     0.4,
+     0.3,
+     0.6);
 
    std::cout << "FINISHED" << std::endl;
    return 0;
