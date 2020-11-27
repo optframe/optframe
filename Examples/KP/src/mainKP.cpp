@@ -41,18 +41,25 @@ main(int argc, char** argv)
    ESolutionKP& se = *opse;
    XSolution& s = opse->first;
    XEvaluation& e = se.second;
-   s.print();
+   
+   //s.print();
+   std::cout << s << std::endl;
+
    //Evaluation<> e = ev.evaluate(se.first);
    ev.reevaluate(se);
    e.print();
    cout << "GUD" << endl;
 
-   CheckCommand<RepKP, MY_ADS, SolutionKP> check; // cria o módulo de testes (opcional)
+   // CheckCommand not working anymore... must CLEAN it!! not accepting R, ADS, ... simplify it, please!
+
    Evaluator<SolutionKP, EvaluationKP>& ev1 = ev;
+   /*
+   CheckCommand<RepKP, MY_ADS, SolutionKP> check; // cria o módulo de testes (opcional)
    check.add(ev1);             // carrega a avaliação para testes
    check.add(c1);             // carrega o construtivo para testes
    check.add(ns1);            // carrega a vizinhança para testes
    check.run(100, 10);        // executa testes com 10 iterações
+   */
 
    NSSeq<ESolutionKP>* nsseq_bit = &ns1;
 
@@ -94,7 +101,8 @@ main(int argc, char** argv)
    sa.search(soscSA);
    op<ESolutionKP> r = sa.best;
 
-   r->first.print();
+   //r->first.print();
+   std::cout << r->first << std::endl;
    r->second.print();
 
    StopCriteria<EvaluationKP> sosc; // stop criteria
@@ -110,13 +118,16 @@ main(int argc, char** argv)
    pm.lsearch(se, sosc).second.print();  // executa e imprime HC + FI
    rdm.lsearch(se, sosc).second.print(); // executa e imprime RDM com 10 iterações
 
-   EvaluatorSubsetRandomKeys<SolutionKP> eprk(ev1, 0, p.N - 1);
-   BRKGA<RepKP, SolutionKP> brkga(eprk, p.N, 1000, 30, 0.4, 0.3, 0.6);
+   //EvaluatorSubsetRandomKeys<SolutionKP> eprk(ev1, 0, p.N - 1);
+   EvaluatorSubsetRandomKeys<EvaluationKP, double, ESolutionKP> eprk(ev1, 0, p.N - 1);
+   BRKGA<SolutionKP, EvaluationKP, double, ESolutionKP> brkga(eprk, p.N, 1000, 30, 0.4, 0.3, 0.6);
 
    //pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
    brkga.search(sosc);
    std::optional<pair<SolutionKP, Evaluation<>>> r2 = brkga.best;
-   r2->first.print();
+   
+   std::cout << r2->first << std::endl;
+
    r2->second.print();
 
    cout << "Program ended successfully" << endl;

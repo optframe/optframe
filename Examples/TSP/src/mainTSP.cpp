@@ -49,6 +49,8 @@ using namespace std;
 #include "TSP.h"
 #include <OptFrame/Util/CheckCommand.hpp>
 
+////#include <OptFrame/EvaluatorAdapter.hpp>
+
 using namespace TSP;
 using namespace scannerpp;
 
@@ -166,9 +168,14 @@ main(int argc, char** argv)
    //check.run(100, 10);
 
    cout << "will test BRKGA (n=" << tsp.p->n << ")" << endl;
+
+   TSPRepEvaluator eval_rep(tsp.p);
+
    //Evaluator<SolutionTSP>& eval2 = eval;
-   EvaluatorPermutationRandomKeys<SolutionTSP> eprk(eval, 0, tsp.p->n - 1);
-   BRKGA<RepTSP, SolutionTSP> brkga(eprk, tsp.p->n, 10000, 10, 0.4, 0.3, 0.6);
+   EvaluatorPermutationRandomKeys<EvaluationTSP, double> eprk(eval_rep, 0, tsp.p->n - 1);
+
+   // BRKGA is using Representation instead of Solution... beware!
+   BRKGA<RepTSP, EvaluationTSP, double> brkga(eprk, tsp.p->n, 10000, 10, 0.4, 0.3, 0.6);
 
    StopCriteria<EvaluationTSP> sosc;
    // strange that this worked.... it's against 'override' pattern. Very strange!!
@@ -185,9 +192,13 @@ main(int argc, char** argv)
    //pair<SolutionTSP, Evaluation<>>* r2 = brkga.search(sosc);
 
    brkga.search(sosc.start());
-   std::optional<ESolutionTSP> r2 = brkga.best;
+   //std::optional<ESolutionTSP> r2 = brkga.best;
+   auto r2 = brkga.best;
    //virtual std::optional<pair<XRS, XEv>> search(StopCriteria<XEv>& stopCriteria, const std::optional<pair<XRS, XEv>> input)
-   r2->first.print();
+   
+   //r2->first.print();
+   std::cout << r2->first << std::endl;
+
    r2->second.print();
 
    cout << "end BRKGA tests" << endl;

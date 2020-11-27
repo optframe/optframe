@@ -11,7 +11,8 @@ bool MoveBitFlip::canBeApplied(const ESolutionKP& s)
 
 uptr<Move<ESolutionKP>> MoveBitFlip::apply(ESolutionKP& s)
 {
-   RepKP& rep = s.first.getR();
+   //RepKP& rep = s.first.getR();
+   RepKP& rep = s.first;
     rep[item] = 1-rep[item];
     
     return uptr<Move<ESolutionKP>>(new MoveBitFlip(item)); 

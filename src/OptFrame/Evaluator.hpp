@@ -64,7 +64,7 @@ namespace optframe {
 
 // Evaluation may need to be S dependent, while GeneralEvaluator is not.
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-template<XSolution S, XEvaluation XEv, XESolution XES = pair<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class Evaluator : public Direction<XEv>, public GeneralEvaluator<XES, XEv, XES>
 {
 protected:

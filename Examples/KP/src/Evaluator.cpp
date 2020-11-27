@@ -13,7 +13,8 @@ MyEvaluator::~MyEvaluator()
 
 Evaluation<> MyEvaluator::evaluate(const SolutionKP& s) 
 {
-   const RepKP& rep = s.getR();
+   //const RepKP& rep = s.getR();
+   const RepKP& rep = s;
     double fo = 0; // parcela viável
     for(int i=0; i<pKP.N; i++)
         if(rep[i] == 1)

@@ -11,5 +11,6 @@ cc_binary(
         "src/**/*.cpp"
     ]),
     data = [ "instance-4.txt" ],
+    copts = ['-Wfatal-errors'],
     deps = ["@OptFrame//src:OptFrame"]
 )

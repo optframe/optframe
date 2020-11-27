@@ -11,7 +11,9 @@ using namespace optframe;
 // int (?)
 typedef OPTFRAME_DEFAULT_ADS MY_ADS;
 
-typedef CopySolution<RepKP, MY_ADS> SolutionKP;
+//typedef CopySolution<RepKP, MY_ADS> SolutionKP;
+
+typedef RepKP SolutionKP; // using representation as solution
 
 using ESolutionKP = pair<SolutionKP, EvaluationKP>;
 

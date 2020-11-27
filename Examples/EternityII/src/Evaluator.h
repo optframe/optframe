@@ -42,16 +42,16 @@ extern int numEvs;
 
 namespace EtII {
 
-class EtIIEvaluator : public Evaluator<SolutionEtII>
+class EtIIEvaluator : public Evaluator<SolutionEtII, EvaluationEtII>
 {
 private:
    ProblemInstance& pEtII;
 
 public:
-   using Evaluator<SolutionEtII>::evaluate;
+   using Evaluator<SolutionEtII, EvaluationEtII>::evaluate;
 
    EtIIEvaluator(ProblemInstance& _pEtII)
-     : Evaluator<SolutionEtII>(true)
+     : Evaluator<SolutionEtII, EvaluationEtII>(true)
      , pEtII(_pEtII) // DISALLOW COSTS (DEFAULT)
    {
       // Put the rest of your code here

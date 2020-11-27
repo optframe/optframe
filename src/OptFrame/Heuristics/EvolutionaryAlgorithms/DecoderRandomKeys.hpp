@@ -110,7 +110,7 @@ public:
    int a, b;                   // decode in interval [a,b]
 
    EvaluatorPermutationRandomKeys(Evaluator<std::vector<int>, XEv, XES>& _ev, int _a, int _b)
-     : ev(_ev)
+     : ev{_ev}
      , a(_a)
      , b(_b)
    {

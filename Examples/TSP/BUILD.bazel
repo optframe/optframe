@@ -13,5 +13,6 @@ cc_binary(
     data = glob([
         "tsplib/*",
     ]),
+    copts = ['-Wfatal-errors'],
     deps = ["@OptFrame//src:OptFrame"]
 )

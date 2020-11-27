@@ -31,6 +31,7 @@ using namespace optframe;
 
 //typedef Solution<RepTSP> SolutionTSP;
 typedef CopySolution<RepTSP> SolutionTSP;
+
 typedef pair<SolutionTSP, EvaluationTSP> ESolutionTSP;
 
 // compilation tests

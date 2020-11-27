@@ -224,6 +224,90 @@ public:
       return pai;
    }
 };
-}
+
+// only evaluates by representation
+class TSPRepEvaluator : public Evaluator<RepTSP>
+{
+private:
+   ProblemInstance* pI;
+
+public:
+   bool Minimizing;
+
+   vector<int> solutions;
+   vector<long long> solNSTotal;
+   vector<long long> solNSImp;
+   int solMin;
+   int solMax;
+
+   bool doStats;
+
+   //using Evaluator<SolutionTSP>::evaluate; // prevents name hiding
+
+   TSPRepEvaluator(ProblemInstance* pI)
+     : Evaluator<RepTSP>(true) // ALLOW COSTS!
+   {
+      Minimizing = true;
+      this->pI = pI;
+      solutions = vector<int>(50000, 0);
+      solMax = 0;
+      solMin = 2000000000;
+      solNSTotal = vector<long long>(50000, 0);
+      solNSImp = solNSTotal;
+
+      doStats = true;
+   }
+
+   Evaluation<> evaluate(const RepTSP& r) override
+   {
+      double fo = 0; // Evaluation<> Function Value
+
+      for (int i = 0; i < ((int)r.size()) - 1; i++) {
+         int j = r.at(i);
+         int z = r.at(i + 1);
+
+         double val = (*pI->dist)(j, z);
+         fo += val;
+      }
+
+      int k = r.at(((int)r.size()) - 1);
+      int l = r.at(0);
+
+      double val = (*pI->dist)(k, l);
+      fo += val;
+
+      return Evaluation<>(fo);
+   }
+
+   // override from Direction
+   virtual inline bool betterThan(const Evaluation<double>& e1, const Evaluation<double>& e2) override
+   {
+      //cout << "betterThan!" << endl;
+      //e1.print();
+      //e2.print();
+      //
+      if (isMinimization())
+         //return ::fabs(e2.evaluation() - e1.evaluation()) >= 0.00001;
+         return (e2.evaluation() - e1.evaluation()) > 0.00001;
+      else
+         //return ::fabs(e1.evaluation() - e2.evaluation()) >= 0.00001;
+         return (e1.evaluation() - e2.evaluation()) > 0.00001;
+   }
+
+   // override from Direction
+   virtual bool isMinimization() const override
+   {
+      return Minimizing;
+   }
+
+   virtual string id() const
+   {
+      string pai = Evaluator<RepTSP>::idComponent();
+      pai.append(":TSPRepEvaluator");
+      return pai;
+   }
+};
+
+} // namespace tsp
 
 #endif /*TSP_EVALUATOR_HPP_*/
