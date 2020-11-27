@@ -8,6 +8,8 @@
 #include "FMove.hpp"
 #include "FNS.hpp"
 #include "FNSSeq.hpp"
+//
+#include "FDecoderRK.hpp" // Extra
 
 namespace optframe {
 
