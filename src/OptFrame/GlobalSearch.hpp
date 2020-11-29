@@ -40,9 +40,13 @@ namespace optframe
 
 // Defaulting SearchSpace to XES, it means, <S,XEv> space (typically, single obj search)
 //template<XESolution XES, XSearch<XES> XSH = XES, XSearchMethod XM = Component>
-template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES>
+//
+//template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES>
+//
+template<XESolution XES, XSearch<XES> XSH = XES>
 class GlobalSearch: public Component
 {
+   using XEv = typename XES::second_type;
 public:
    // best known solution
    std::optional<XSH> best;

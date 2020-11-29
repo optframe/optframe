@@ -79,7 +79,7 @@ public:
 
 		if (r1 >= 0)
 		{
-			bool all_positive = (r1 >= 0) && (r2 >= 0) && (c1 >= 1) && (c1 < (rep[r1].size() - 1)) && (c2 >= 1) && (c2 < (rep[r2].size() - 1));
+			bool all_positive = (r1 >= 0) && (r2 >= 0) && (c1 >= 1) && (c1 < ( ((int)rep[r1].size()) - 1)) && (c2 >= 1) && (c2 < ( ((int)rep[r2].size()) - 1));
 
 			//Compatibility
 			bool is_Comp = hfmvrp->getComp(vType2, rep[r1][c1]) && hfmvrp->getComp(vType1, rep[r2][c2]);
@@ -264,8 +264,8 @@ public:
 		vector<int> route1 = rep[r1];
 		vector<int> route2 = rep[r2];
 
-		int routeSize1 = route1.size();
-		int routeSize2 = route2.size();
+		//int routeSize1 = route1.size();
+		//int routeSize2 = route2.size();
 
 		double vTDC1 = hfmvrp->getVehicleTypeDistCost(vType1);
 		double vTDC2 = hfmvrp->getVehicleTypeDistCost(vType2);

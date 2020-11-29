@@ -78,7 +78,7 @@ public:
       const AdsHFMVRP& ads = s.getADS();
 		if (r1 >= 0)
 		{
-			bool all_positive = (r1 >= 0) && (r2 >= 0) && (cli >= 1) && (cli < (rep[r1].size() - 1)) && (pos >= 1) && (pos < (rep[r2].size() - 1));
+			bool all_positive = (r1 >= 0) && (r2 >= 0) && (cli >= 1) && (cli < (((int)rep[r1].size()) - 1)) && (pos >= 1) && (pos < ( ((int)rep[r2].size()) - 1));
 
 			//Compatibility
 			bool notEmpty = (rep[r1].size() >= 3); //The minimum is two depots more one client
@@ -138,7 +138,7 @@ public:
 		ads.sumDemand[r1] -= demandV;
 		ads.sumDemand[r2] += demandV;
 
-		for (int iter = 0; iter < modRoutes.size(); iter++)
+		for (int iter = 0; iter < ((int)modRoutes.size()); iter++)
 		{
 			int r = modRoutes[iter];
 			vector<int> route = rep[r];
@@ -259,7 +259,7 @@ public:
 	{
       const SolutionHFMVRP& s = se.first;
       const RepHFMVRP& rep = s.getR();
-      const AdsHFMVRP& ads = s.getADS();
+      //const AdsHFMVRP& ads = s.getADS();
 
 		vector<int> route1 = rep[r1];
 		vector<int> route2 = rep[r2];
@@ -279,7 +279,7 @@ public:
 
 		// after k1 and k2
 		unsigned ak1 = k1 + 1;
-		unsigned ak2 = k2 + 1;
+		//unsigned ak2 = k2 + 1;
 
 		double f = 0;
 		/*

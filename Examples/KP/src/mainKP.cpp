@@ -120,7 +120,7 @@ main(int argc, char** argv)
 
    //EvaluatorSubsetRandomKeys<SolutionKP> eprk(ev1, 0, p.N - 1);
    EvaluatorSubsetRandomKeys<EvaluationKP, double, ESolutionKP> eprk(ev1, 0, p.N - 1);
-   BRKGA<SolutionKP, EvaluationKP, double, ESolutionKP> brkga(eprk, p.N, 1000, 30, 0.4, 0.3, 0.6);
+   BRKGA<ESolutionKP, double> brkga(eprk, p.N, 1000, 30, 0.4, 0.3, 0.6);
 
    //pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
    brkga.search(sosc);

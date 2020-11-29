@@ -11,7 +11,7 @@ namespace optframe
 
 struct optframe_test_debug_testpareto_ispareto_disable_runtime
 {
-TestPopOrPareto<ESolution<double>, Pareto<Solution<double>,Evaluation<int>, ESolution<double>> > testPareto;
+   TestPopOrPareto<ESolution<double>, Pareto<ESolution<double>> > testPareto;
 };
 
 

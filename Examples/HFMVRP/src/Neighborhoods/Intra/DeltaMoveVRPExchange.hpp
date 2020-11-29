@@ -65,7 +65,7 @@ public:
       const RepHFMVRP& rep = s.getR();
 		if (r >= 0)
 		{
-			bool all_positive = (c1 >= 1) && (c1 < (rep[r].size() - 1)) && (c2 >= 1) && (c2 < (rep[r].size() - 1)) && (r >= 0);
+			bool all_positive = (c1 >= 1) && (c1 < ( ((int)rep[r].size()) - 1)) && (c2 >= 1) && (c2 < ( ((int)rep[r].size()) - 1)) && (r >= 0);
 
 			return all_positive && (rep.at(r).size() >= 5) ; //asymmetric or symmetric todo If asymmetric =>rep.at(r).size() >=4
 		}
@@ -144,9 +144,9 @@ public:
 	{
       const SolutionHFMVRP& s = se.first;
       const RepHFMVRP& rep = s.getR();
-      const AdsHFMVRP& ads = s.getADS();
+      //const AdsHFMVRP& ads = s.getADS();
 		vector<int> route = rep[r];
-		int routeSize = route.size();
+		//int routeSize = route.size();
 		//cout << "routeSize = " << routeSize << endl;
 		//cout << route << endl;
 		//getchar();

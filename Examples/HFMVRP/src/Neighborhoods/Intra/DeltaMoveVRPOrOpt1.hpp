@@ -92,7 +92,7 @@ public:
 		vector<int> modRoutes; //modified routes
 		modRoutes.push_back(r);
 
-		for (int iter = 0; iter < modRoutes.size(); iter++)
+		for (int iter = 0; iter < ((int)modRoutes.size()); iter++)
 		{
 			int r = modRoutes[iter];
 			vector<int> route = rep[r];
@@ -193,7 +193,7 @@ public:
 	{
       const SolutionHFMVRP& s = se.first;
       const RepHFMVRP& rep = s.getR();
-      const AdsHFMVRP& ads = s.getADS();
+      //const AdsHFMVRP& ads = s.getADS();
 		vector<int> route = rep[r];
 		int routeSize = route.size();
 		//cout << "routeSize = " << routeSize << endl;
@@ -227,7 +227,7 @@ public:
 		// after j
 		unsigned aj = pos + 1;
 
-		if (aj == routeSize)//depot at the for each route
+		if (aj == (unsigned)routeSize)//depot at the for each route
 		{
 			aj = 1;
 			cout << "BUGGGGGG====================" << endl;
@@ -240,7 +240,7 @@ public:
 		// after i+k
 		unsigned aik = c + k;
 
-		if (aik == routeSize)
+		if (aik == (unsigned)routeSize)
 		{
 			aik = 1;
 			cout << "BUGGGGGG====================" << endl;

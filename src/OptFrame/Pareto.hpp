@@ -44,9 +44,14 @@ using namespace std;
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+//template<XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+//
+template<XESolution XMES>
 class Pareto
 {
+   using S = typename XMES::first_type;
+   using XMEv = typename XMES::second_type;
+
    //using XEv = decltype(declval<XMEv>.at(0)); // not enough contextual information...
    using XEv = Evaluation<>; // hardcoding this, for now...
    // its bad to have XEv here, as its just a requirement of MultiEvaluator, insider ParetoDominance managers!!
@@ -69,7 +74,7 @@ public:
 		added = false;
 	}
 
-	Pareto(const Pareto<S, XMEv>& _pf)
+	Pareto(const Pareto<XMES>& _pf)
 	{
 		this->clear();
 		unsigned sizeNewPop = _pf.paretoSet.size();
@@ -87,7 +92,7 @@ public:
 		added = true;
 	}
 
-	Pareto(Pareto<S, XMEv>&& _pf) :
+	Pareto(Pareto<XMES>&& _pf) :
 			//paretoSet(std::move(_pf.paretoSet)), paretoFront(std::move(_pf.paretoFront))
          paretoSetFront(std::move(_pf.paretoSetFront))
 	{
@@ -98,7 +103,7 @@ public:
 
 	}
 
-	virtual Pareto<S, XMEv>& operator=(const Pareto<S, XMEv>& _pf)
+	virtual Pareto<XMES>& operator=(const Pareto<XMES>& _pf)
 	{
 		if (&_pf == this) // auto ref check
 			return *this;
@@ -277,9 +282,9 @@ public:
       paretoSetFront.erase(paretoSetFront.begin() + pos);
 	}
 
-	virtual Pareto<S, XMEv>& clone() const
+	virtual Pareto<XMES>& clone() const
 	{
-		return *new Pareto<S, XMEv>(*this);
+		return *new Pareto<XMES>(*this);
 	}
 
 	void clear()
@@ -387,7 +392,7 @@ public:
 //		return true;
 //	}
 
-//	static bool addSolution(ParetoDominance<S, XEv, XMEv>& dom, ParetoDominanceWeak<S, XEv, XMEv>& domWeak, Pareto<S, XMEv>& p, S* candidate)
+//	static bool addSolution(ParetoDominance<S, XEv, XMEv>& dom, ParetoDominanceWeak<S, XEv, XMEv>& domWeak, Pareto<XMES>& p, S* candidate)
 //	{
 //		MultiEvaluator<S, XEv>& mEval = dom.getMultiEvaluator();
 //		MultiEvaluation<>& mevCandidate = mEval.evaluate(*candidate);
@@ -429,7 +434,7 @@ public:
 //		return added;
 //	}
 
-//	static bool addSolution(ParetoDominance<S, XEv, XMEv>& dom, ParetoDominanceWeak<S, XEv, XMEv>& domWeak, pair<Pareto<S, XMEv>, vector<vector<bool> > >& p, S* candidate, int neighboorsSize)
+//	static bool addSolution(ParetoDominance<S, XEv, XMEv>& dom, ParetoDominanceWeak<S, XEv, XMEv>& domWeak, pair<Pareto<XMES>, vector<vector<bool> > >& p, S* candidate, int neighboorsSize)
 //
 //	{
 //		vector<Evaluator<XES, XEv>*> v_e = dom.getEvaluators();
@@ -620,7 +625,7 @@ public:
 } // namespace optframe
 
 // compilation tests
-static_assert(X2ESolution<Pareto<Solution<double>,Evaluation<int>,ESolution<double>>, ESolution<double>>);
+static_assert(X2ESolution<Pareto<ESolution<double>>, ESolution<double>>);
 
 // compilation tests for concepts (these are NOT unit tests)
 #include "Pareto.ctest.hpp"

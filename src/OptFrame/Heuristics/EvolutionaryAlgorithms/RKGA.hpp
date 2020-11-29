@@ -77,9 +77,13 @@ public:
 //
 //template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv, XESolution XES = pair<XRS, XEv>, XRepresentation RKeys = optframe::random_keys> // one should pass a compatible one, regarding R
 //
-template<XSolution S, XEvaluation XEv, optframe::comparability KeyType = double, XESolution XES = pair<S, XEv>>
-class RKGA : public SingleObjSearch<XES, XEv>
+//template<XSolution S, XEvaluation XEv, optframe::comparability KeyType = double, XESolution XES = pair<S, XEv>>
+//
+template<XESolution XES, optframe::comparability KeyType = double>
+class RKGA : public SingleObjSearch<XES>
 {
+   using S   = typename XES::first_type;
+   using XEv = typename XES::second_type;
    //using RSK = RSolution<RKeys>;
    using RSK = std::vector<KeyType>;
 protected:

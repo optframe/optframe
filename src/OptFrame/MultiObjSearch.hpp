@@ -83,11 +83,16 @@ public:
 // This MultiObjSearch perspective inherits from Multi Solution Search, 
 // considering a X2ES space with Pareto structure
 
-template<XSolution S, XEvaluation XMEv = Evaluation<>, XESolution XMES = pair<S, XMEv>>
 //template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
-class MultiObjSearch: public GlobalSearch<XMES, XMEv, Pareto<S, XMEv, XMES>> // public Component
+//
+//template<XSolution S, XEvaluation XMEv = Evaluation<>, XESolution XMES = pair<S, XMEv>>
+//
+template<XESolution XMES>
+class MultiObjSearch: public GlobalSearch<XMES, Pareto<XMES>> // public Component
 {
-   using XSH = Pareto<S, XMEv, XMES>; // search space
+   using S = typename XMES::first_type;
+   using XMEv = typename XMES::second_type;
+   using XSH = Pareto<XMES>; // search space
 public:
 
 	MultiObjSearch()
@@ -103,9 +108,9 @@ public:
       return this->best;
    }
 
-	//virtual Pareto<S, XMEv>* search(MOSC& stopCriteria, Pareto<S, XMEv>* _pf = nullptr) = 0;
+	//virtual Pareto<XMES>* search(MOSC& stopCriteria, Pareto<XMES>* _pf = nullptr) = 0;
    //
-   //virtual SearchStatus search(std::optional<Pareto<S, XMEv>>& p, const StopCriteria<XMEv>& stopCriteria) = 0;
+   //virtual SearchStatus search(std::optional<Pareto<XMES>>& p, const StopCriteria<XMEv>& stopCriteria) = 0;
    virtual SearchStatus search(const StopCriteria<XMEv>& stopCriteria) = 0;
 
 	virtual string log() const
@@ -140,7 +145,7 @@ public:
 	{
 	}
 
-	virtual MultiObjSearch<S, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
+	virtual MultiObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{

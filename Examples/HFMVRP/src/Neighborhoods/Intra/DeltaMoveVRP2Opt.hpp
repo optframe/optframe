@@ -63,7 +63,7 @@ public:
 	{
       const SolutionHFMVRP& s = se.first;
       const RepHFMVRP& rep = s.getR();
-      const AdsHFMVRP& ads = s.getADS();
+      //const AdsHFMVRP& ads = s.getADS();
 
       int& r = this->r;
       int& p1 = this->p1;
@@ -71,7 +71,7 @@ public:
 
 		if (r >= 0)
 		{
-			bool all_positive = (p1 >= 1) && p1 < (rep[r].size() - 1) && (p2 >= 1) && p2 < (rep[r].size() - 1);
+			bool all_positive = (p1 >= 1) && p1 < ( ((int)rep[r].size()) - 1) && (p2 >= 1) && p2 < ( ((int)rep[r].size()) - 1);
 			bool minSize = (rep[r].size() >= 3);
 
 			//cout << "VRP 2 OPT canBeApplied 1 " << endl;
@@ -109,7 +109,7 @@ public:
 		vector<int> modRoutes; //modified routes
 		modRoutes.push_back(r);
 
-		for (int iter = 0; iter < modRoutes.size(); iter++)
+		for (int iter = 0; iter < ((int)modRoutes.size()); iter++)
 		{
 			int r = modRoutes[iter];
 			vector<int> route = rep[r];

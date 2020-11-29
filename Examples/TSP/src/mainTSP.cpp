@@ -175,7 +175,7 @@ main(int argc, char** argv)
    EvaluatorPermutationRandomKeys<EvaluationTSP, double> eprk(eval_rep, 0, tsp.p->n - 1);
 
    // BRKGA is using Representation instead of Solution... beware!
-   BRKGA<RepTSP, EvaluationTSP, double> brkga(eprk, tsp.p->n, 10000, 10, 0.4, 0.3, 0.6);
+   BRKGA< pair<RepTSP, EvaluationTSP>, double> brkga(eprk, tsp.p->n, 10000, 10, 0.4, 0.3, 0.6);
 
    StopCriteria<EvaluationTSP> sosc;
    // strange that this worked.... it's against 'override' pattern. Very strange!!

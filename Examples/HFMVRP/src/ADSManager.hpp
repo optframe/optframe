@@ -36,7 +36,7 @@ public:
 		 getchar();
 		 */
 
-		for (int r = 0; r < rep.size(); r++)
+		for (int r = 0; r < (int)rep.size(); r++)
 		{
 			(ads.neighborhoodStatus[DeltaMoveVRP2Opt::idComponent()]).push_back(false);
 			(ads.neighborhoodStatus[DeltaMoveVRPOrOpt1::idComponent()]).push_back(false);
@@ -63,7 +63,7 @@ public:
 	{
 		//cout << "moveID= " << moveID << endl;
 		//getchar();
-		for (int r = 0; r < rep.size(); r++)
+		for (int r = 0; r < (int)rep.size(); r++)
 			ads.neighborhoodStatus[moveID][r] = true;
 	}
 
@@ -169,7 +169,7 @@ public:
 			cout << "Error on maxDemand vector!" << endl;
 			cout << _ads1.maxDemand << endl;
 			cout << _ads2.maxDemand << endl;
-			for (int r = 0; r < _ads1.maxDemand.size(); r++)
+			for (int r = 0; r < (int)_ads1.maxDemand.size(); r++)
 			{
 				if (_ads1.maxDemand[r] != _ads2.maxDemand[r])
 				{
@@ -187,7 +187,7 @@ public:
 			cout << "Error on minDemand vector!" << endl;
 			cout << _ads1.minDemand << endl;
 			cout << _ads2.minDemand << endl;
-			for (int r = 0; r < _ads1.minDemand.size(); r++)
+			for (int r = 0; r < (int)_ads1.minDemand.size(); r++)
 			{
 				if (_ads1.minDemand[r] != _ads2.minDemand[r])
 				{

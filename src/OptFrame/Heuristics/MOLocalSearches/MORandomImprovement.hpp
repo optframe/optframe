@@ -59,7 +59,7 @@ public:
 	}
 
 /*
-	virtual void moSearchFrom(Pareto<S, XMEv>& p, S& s, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) override
+	virtual void moSearchFrom(Pareto<XMES>& p, S& s, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) override
 	{
 		MultiEvaluation<> sMev(std::move(mev.evaluate(s)));
 
@@ -67,7 +67,7 @@ public:
 	}
 */
 
-	virtual void moSearchFrom(Pareto<S, XMEv>& p, XMES& se, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) override
+	virtual void moSearchFrom(Pareto<XMES>& p, XMES& se, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) override
 	{
 		num_calls++;
 		Timer t;

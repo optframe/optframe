@@ -38,9 +38,12 @@ namespace optframe
 //class BasicSimulatedAnnealing: public SingleObjSearch<S, XEv, XSH, XM, XStop>
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv>, XSearchMethod XM = Component>
 //template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearchMethod XM = BasicSimulatedAnnealing<XES, XEv, Component>>
-template<XESolution XES, XEvaluation XEv = typename XES::second_type>
-class BasicSimulatedAnnealing: public SingleObjSearch<XES, XEv>
+//
+template<XESolution XES>
+//
+class BasicSimulatedAnnealing: public SingleObjSearch<XES>
 {
+   using XEv = typename XES::second_type;
    using XSH = XES; // XSearch
 private:
 	GeneralEvaluator<XES, XEv>& evaluator;
@@ -60,19 +63,19 @@ private:
    // this allows monitoring on progress and many other nice things, such as StopCriteria personalization ;)
    //SpecificMethodStop<XES, decltype(*this)> specificStop;
 public:
-   //SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> specificStopBy {nullptr};
-   SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> specificStopBy 
+   //SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES>> specificStopBy {nullptr};
+   SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES>> specificStopBy 
    {
-      [&](const XES& best, const StopCriteria<XEv>& sosc, BasicSimulatedAnnealing<XES, XEv>* me) -> bool {
+      [&](const XES& best, const StopCriteria<XEv>& sosc, BasicSimulatedAnnealing<XES>* me) -> bool {
          return (me->T <= 0.000001) || (me->tnow.now() >= sosc.timelimit);
       }
    };
 
 private:
 /*
-   SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> defaultStopBy
+   SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES>> defaultStopBy
     {
-      [&](const XES& best, const StopCriteria<XEv>& sosc, BasicSimulatedAnnealing<XES, XEv>* me) -> bool {
+      [&](const XES& best, const StopCriteria<XEv>& sosc, BasicSimulatedAnnealing<XES>* me) -> bool {
          return (me->T <= 0.000001) || (me->tnow.now() >= sosc.timelimit);
       }   
    };
@@ -105,7 +108,7 @@ public:
 	}
 
 /*
-   BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive, vector<NS<XES, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg, SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> _spec) :
+   BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive, vector<NS<XES, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg, SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES>> _spec) :
 		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg), specificStopBy(_spec)
 	{
 		alpha = (_alpha);
@@ -124,7 +127,7 @@ public:
 	}
 
 /*
-	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive, NS<XES, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg, SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES, XEv>> _spec) :
+	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive, NS<XES, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg, SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES>> _spec) :
 		evaluator(_evaluator), constructive(_constructive), rg(_rg), specificStopBy(_spec)
 	{
 		neighbors.push_back(&_neighbors);
@@ -327,7 +330,7 @@ public:
 		int SAmax = *scanner.nextInt();
 		double Ti = *scanner.nextDouble();
 
-		return new BasicSimulatedAnnealing<XES, XEv> (*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
+		return new BasicSimulatedAnnealing<XES> (*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -348,7 +351,7 @@ public:
 
 	virtual bool canBuild(string component)
 	{
-		return component == BasicSimulatedAnnealing<XES, XEv>::idComponent();
+		return component == BasicSimulatedAnnealing<XES>::idComponent();
 	}
 
 	static string idComponent()

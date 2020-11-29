@@ -601,36 +601,36 @@ public:
 		return pair<SingleObjSearch<XES>*, std::string>(nullptr, scanner.rest());
 	}
 
-	pair<MultiObjSearch<S, XEv>*, std::string> createMultiObjSearch(std::string str)
+	pair<MultiObjSearch<XES>*, std::string> createMultiObjSearch(std::string str)
 	{
 		Scanner scanner(str);
 
 		// No heuristic!
 		if (!scanner.hasNext())
-			return pair<MultiObjSearch<S, XEv>*, std::string>(nullptr, "");
+			return pair<MultiObjSearch<XES>*, std::string>(nullptr, "");
 
 		string h = scanner.next();
 
-		if (h == MultiObjSearch<S, XEv>::idComponent())
+		if (h == MultiObjSearch<XES>::idComponent())
 		{
 			unsigned int id = *scanner.nextInt();
 
-			MultiObjSearch<S, XEv>* mtd = nullptr;
+			MultiObjSearch<XES>* mtd = nullptr;
 
-			assign(mtd, id, MultiObjSearch<S, XEv>::idComponent());
+			assign(mtd, id, MultiObjSearch<XES>::idComponent());
 
 			if (!mtd)
-				return make_pair(new EmptyMultiObjSearch<S, XEv>, scanner.rest());
+				return make_pair(new EmptyMultiObjSearch<XES>, scanner.rest());
 
 			return make_pair(mtd, scanner.rest());
 		}
 
-		if (h == EmptyMultiObjSearch<S, XEv>::idComponent())
-			return make_pair(new EmptyMultiObjSearch<S, XEv>, scanner.rest());
+		if (h == EmptyMultiObjSearch<XES>::idComponent())
+			return make_pair(new EmptyMultiObjSearch<XES>, scanner.rest());
 
 		cout << "HeuristicFactory::createMultiObjSearch warning: no MultiObjSearch '" << h << "' found! ignoring..." << endl;
 
-		return pair<MultiObjSearch<S, XEv>*, std::string>(nullptr, scanner.rest());
+		return pair<MultiObjSearch<XES>*, std::string>(nullptr, scanner.rest());
 	}
 
 };

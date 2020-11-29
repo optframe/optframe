@@ -44,9 +44,11 @@ namespace optframe
 // Will require XSolution instead of XRepresentation, since legacy Evaluation already deals with that
 // User may also want to "decode" the ADS from keys, if necessary...
 //
-template<XSolution S, XEvaluation XEv, optframe::comparability KeyType = double, XESolution XES = pair<S, XEv>>
-class BRKGA: public RKGA<S, XEv, KeyType, XES>
+template<XESolution XES, optframe::comparability KeyType = double>
+class BRKGA: public RKGA<XES, KeyType>
 {
+   using S   = typename XES::first_type;
+   using XEv = typename XES::second_type;
    //using RSK = RSolution<RKeys>;
    using RSK = std::vector<KeyType>;
 protected:
@@ -55,28 +57,28 @@ protected:
 public:
 
 	BRKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, InitialPopulation<RSK, XEv>& _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
-		RKGA<S, XEv, KeyType, XES>(_decoder, _initPop, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
+		RKGA<XES, KeyType>(_decoder, _initPop, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
 		assert(probElitism <= 1.0);
 	}
 
 	BRKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, int key_size, unsigned numGen, unsigned popSize, double fracTOP, double fracBOT, double _probElitism) :
-			RKGA<S, XEv, KeyType, XES>(_decoder, key_size, numGen, popSize, fracTOP, fracBOT), probElitism(_probElitism)
+			RKGA<XES, KeyType>(_decoder, key_size, numGen, popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
 		assert(probElitism <= 1.0);
 	}
 
 	BRKGA(Evaluator<S, XEv>& _evaluator, InitialPopulation<RSK, XEv>& _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
-			RKGA<S, XEv, KeyType, XES>(_evaluator, _initPop, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
+			RKGA<XES, KeyType>(_evaluator, _initPop, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
 		assert(probElitism <= 1.0);
 	}
 
 	BRKGA(Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
-			RKGA<S, XEv, KeyType, XES>(_evaluator, key_size, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
+			RKGA<XES, KeyType>(_evaluator, key_size, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
 		assert(probElitism <= 1.0);

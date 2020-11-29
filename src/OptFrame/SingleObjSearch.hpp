@@ -49,9 +49,13 @@ namespace optframe {
 
 // This is a XES, XES global search... using space XES = <S, XEv>
 //template<XESolution XES, XSearchMethod XM = Component>
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
-class SingleObjSearch: public GlobalSearch<XES, XEv, XES> // public Component
+//
+//template<XESolution XES, XEvaluation XEv = Evaluation<>>
+//
+template<XESolution XES>
+class SingleObjSearch: public GlobalSearch<XES, XES> // public Component
 {
+   using XEv = typename XES::second_type;
    // if passing types directly here, error 'typedef declared auto'
    //typedef vector<XEv*> FitnessValues;
    //typedef const vector<const XEv*> ConstFitnessValues;

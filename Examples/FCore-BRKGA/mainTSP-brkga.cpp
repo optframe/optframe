@@ -160,7 +160,7 @@ main()
    // (C1): Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
 
    //eprk, pTSP.n, 1000, 30, 0.4, 0.3, 0.6
-   BRKGA<ESolutionTSP::first_type, ESolutionTSP::second_type, double, ESolutionTSP> brkga(
+   BRKGA<ESolutionTSP, double> brkga(
      decoder,
      *initPop,
      1000,

@@ -41,7 +41,7 @@ public:
    //MultiEvaluator<S, XEv>& mev; // cannot be this, for now!
 	ParetoDominance<S, XEv, XMEv> dom;
 	ParetoDominanceWeak<S, XEv, XMEv> domWeak;
-//	Pareto<S, XMEv> x_e;
+//	Pareto<XMES> x_e;
 
 public:
 
@@ -56,7 +56,7 @@ public:
 
 	}
 
-//	virtual Pareto<S, XMEv>& getParetoInsideManager()
+//	virtual Pareto<XMES>& getParetoInsideManager()
 //	{
 //		return x_e;
 //	}
@@ -83,7 +83,7 @@ public:
 ////		return false;
 //	}
 
-	bool addSolution(Pareto<S, XMEv>& p, const S& candidate)
+	bool addSolution(Pareto<XMES>& p, const S& candidate)
 	{
 		MultiEvaluation<> mev = multiEval.evaluate(candidate);
       XMES cand_smev = make_pair(candidate, mev);
@@ -93,8 +93,8 @@ public:
 		return added;
 	}
 
-	//virtual bool addSolutionWithMEV(Pareto<S, XMEv>& p, const S& candidate, const MultiEvaluation<>& candidateMev)
-   virtual bool addSolutionWithMEV(Pareto<S, XMEv>& p, const XMES& cand_smev)
+	//virtual bool addSolutionWithMEV(Pareto<XMES>& p, const S& candidate, const MultiEvaluation<>& candidateMev)
+   virtual bool addSolutionWithMEV(Pareto<XMES>& p, const XMES& cand_smev)
 	{
 		bool added = true;
 		for (int ind = 0; ind < (int) p.size(); ind++)
@@ -118,7 +118,7 @@ public:
 		return added;
 	}
 
-	bool addSolutionWithMEVReevaluation(Pareto<S, XMEv>& p, S& candidate, MultiEvaluation<>& candidateMev)
+	bool addSolutionWithMEVReevaluation(Pareto<XMES>& p, S& candidate, MultiEvaluation<>& candidateMev)
 	{
 		multiEval.reevaluateMEV(candidateMev, candidate);
 		bool added = addSolutionWithMEV(p, candidate, candidateMev);
@@ -126,9 +126,9 @@ public:
 		return added;
 	}
 
-	bool checkDominance(const Pareto<S, XMEv>& p)
+	bool checkDominance(const Pareto<XMES>& p)
 	{
-		Pareto<S, XMEv> pFiltered;
+		Pareto<XMES> pFiltered;
 		int nInd = p.size();
 		for (int ind = 0; ind < nInd; ind++)
 			//addSolutionWithMEV(pFiltered, p.getNonDominatedSol(ind), p.getIndMultiEvaluation(ind));
@@ -142,7 +142,7 @@ public:
 		return false;
 	}
 
-//	virtual bool checkDominance(Pareto<S, XMEv>& p, MultiEvaluation<>* candidateMev, vector<MoveCost<>*>& candidateMovCost)
+//	virtual bool checkDominance(Pareto<XMES>& p, MultiEvaluation<>* candidateMev, vector<MoveCost<>*>& candidateMovCost)
 //	{
 //		MultiEvaluation<>* tempMev = new MultiEvaluation(*candidateMev);
 //
@@ -151,7 +151,7 @@ public:
 //		return checkedValue;
 //	}
 //
-//	virtual bool checkDominance(Pareto<S, XMEv>& p, MultiEvaluation<>* candidateMev)
+//	virtual bool checkDominance(Pareto<XMES>& p, MultiEvaluation<>* candidateMev)
 //	{
 //		for (int ind = 0; ind < x_e.size(); ind++)
 //		{

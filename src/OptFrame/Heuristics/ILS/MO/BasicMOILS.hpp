@@ -43,8 +43,8 @@ private:
 
 public:
 
-   BasicMOILS(MultiEvaluator<S, XEv, XMEv, XMES>& _mev, InitialPareto<S, XMEv, XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, BasicMOILSPerturbation<XMES, XMEv>& _p, int _iterMax) :
-	//BasicMOILS(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<S, XMEv, XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, BasicMOILSPerturbation<XMES, XMEv>& _p, int _iterMax) :
+   BasicMOILS(MultiEvaluator<S, XEv, XMEv, XMES>& _mev, InitialPareto<XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, BasicMOILSPerturbation<XMES, XMEv>& _p, int _iterMax) :
+	//BasicMOILS(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, BasicMOILSPerturbation<XMES, XMEv>& _p, int _iterMax) :
 		MultiObjILS<BasicHistory, S, XMEv, XMES>(_mev,_init_pareto,_init_pop_size,_ls,_rg), p(_p), iterMax(_iterMax)
 	{
 	}
@@ -74,7 +74,7 @@ public:
 		history = iter;
 	}
 
-	virtual void acceptanceCriterion(const Pareto<S, XMEv>& pf, BasicHistory& history) override
+	virtual void acceptanceCriterion(const Pareto<XMES>& pf, BasicHistory& history) override
 	{
 
 		if (pf.getNewNonDominatedSolutionsStatus())

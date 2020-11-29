@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/Examples/**",
+                "${workspaceFolder}/src/**",
+                "${workspaceFolder}/tests/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/local/gcc-10.1.0/bin/g++-10.1",
+            "cStandard": "c11",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "gcc-x64",
+            "compilerArgs": [
+                "-fconcepts",
+                "-fcoroutines"
+            ]
+        }
+    ],
+    "version": 4
+}

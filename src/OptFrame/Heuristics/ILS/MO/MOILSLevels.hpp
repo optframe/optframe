@@ -42,8 +42,8 @@ private:
 
 public:
 
-	MOILSLevels(MultiEvaluator<S, XEv, XMEv>& _mev, InitialPareto<S, XMEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, MOILSLPerturbation<XMES, XMEv>& _p, int _iterMax, int _levelMax) :
-   //MOILSLevels(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<S, XMEv>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, MOILSLPerturbation<XMES, XMEv>& _p, int _iterMax, int _levelMax) :
+	MOILSLevels(MultiEvaluator<S, XEv, XMEv>& _mev, InitialPareto<XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, MOILSLPerturbation<XMES, XMEv>& _p, int _iterMax, int _levelMax) :
+   //MOILSLevels(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, MOILSLPerturbation<XMES, XMEv>& _p, int _iterMax, int _levelMax) :
 			MultiObjILS<levelHistory, S, XMEv>(_mev, _init_pareto, _init_pop_size, _ls, _rg), p(_p), iterMax(_iterMax), levelMax(_levelMax)
 	{
 
@@ -97,7 +97,7 @@ public:
 		history.first.second = level;
 	}
 
-	virtual void acceptanceCriterion(const Pareto<S, XMEv>& pf, levelHistory& history)
+	virtual void acceptanceCriterion(const Pareto<XMES>& pf, levelHistory& history)
 	{
 		if (pf.getNewNonDominatedSolutionsStatus())
 		{

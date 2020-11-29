@@ -55,7 +55,7 @@ public:
 		double fo_cap_inv = 0;
 		double fo_comp_inv = 0;
 
-		for (int v = 0; v < rep.size(); v++) {
+		for (int v = 0; v < ((int)rep.size()); v++) {
 			vector<int> route = rep.at(v); // copia a rota
 			routeDist.push_back(0);
 			routeCap.push_back(0);
@@ -147,7 +147,7 @@ public:
 		double fo_cap_inv = 0;
 		double fo_comp_inv = 0;
 
-		for (int v = 0; v < rep.size(); v++) {
+		for (int v = 0; v < ((int)rep.size()); v++) {
 			vector<int> route = rep.at(v); // copia a rota
 			routeDist.push_back(0);
 			routeCap.push_back(0);
@@ -234,7 +234,7 @@ public:
 	void exportEXCEL(const RepHFMVRP& rep, string outFile) {
 		int nDrives = 0;
 		int nStores = 0;
-		for (int v = 0; v < rep.size(); v++) {
+		for (int v = 0; v < ((int)rep.size()); v++) {
 			vector<int> route = rep.at(v); // copia a rota
 			if (route.size() >= 3) {
 				nDrives++;
@@ -245,7 +245,7 @@ public:
 						<< "\t" << pHFMVRP.demands[route[1]] << endl;
 				sumDemands += pHFMVRP.demands[route[1]];
 				nStores++;
-				for (int i = 2; i < (route.size() - 1); i++) {
+				for (int i = 2; i < (((int)route.size()) - 1); i++) {
 					nStores++;
 					cout << "\t\t" << pHFMVRP.getStoreID(route[i]) << "\t"
 							<< pHFMVRP.demands[route[i]] << endl;
@@ -258,7 +258,7 @@ public:
 		cout << "nDrives = " << nDrives << "nStores = " << nStores << endl;
 
 		FILE* f = fopen(outFile.c_str(), "w");
-		for (int v = 0; v < rep.size(); v++) {
+		for (int v = 0; v < ((int)rep.size()); v++) {
 			vector<int> route = rep.at(v); // copia a rota
 			if (route.size() >= 3) {
 				//nStores++;
@@ -267,7 +267,7 @@ public:
 						pHFMVRP.getStoreID(route[1]),
 						pHFMVRP.demands[route[1]]);
 				sumDemands += pHFMVRP.demands[route[1]];
-				for (int i = 2; i < (route.size() - 1); i++) {
+				for (int i = 2; i < ( ((int)route.size()) - 1); i++) {
 					fprintf(f, "\t\t%d\t%f\n", pHFMVRP.getStoreID(route[i]),
 							pHFMVRP.demands[route[i]]);
 
