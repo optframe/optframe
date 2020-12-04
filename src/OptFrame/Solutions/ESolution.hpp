@@ -320,10 +320,14 @@ public:
 
 } // namespace optframe
 
+#ifndef NDEBUG
+
 // basic compilation test
 static_assert(XESolution<ESolution<IsSolution<int>, Evaluation<double>>>);
 
 // compilation tests for concepts
 #include "ESolution.ctest.hpp"
+
+#endif
 
 #endif /* OPTFRAME_ESOLUTION_HPP_ */
