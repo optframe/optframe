@@ -163,6 +163,7 @@ main()
    BRKGA<ESolutionTSP, double> brkga(
      decoder,
      *initPop,
+     pTSP.n,
      1000,
      30,
      0.4,
