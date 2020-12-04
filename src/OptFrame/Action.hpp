@@ -28,6 +28,7 @@
 #include "Scanner++/Scanner.hpp"
 
 #include "Component.hpp"
+#include "ComponentHelper.hpp"
 
 #include "BaseConcepts.hpp"
 
@@ -153,7 +154,7 @@ public:
 
 	virtual bool handleComponent(string type)
 	{
-		return Component::compareBase(Component::idComponent(), type);
+		return ComponentHelper::compareBase(Component::idComponent(), type);
 	}
 
 	virtual bool handleComponent(Component& component)
@@ -184,7 +185,7 @@ public:
 
 		// cast object to upper base
 
-		if(!Component::compareBase(comp->id(), type))
+		if(!ComponentHelper::compareBase(comp->id(), type))
 		{
 			cout << "ComponentAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
 			return false;

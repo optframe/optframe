@@ -23,12 +23,10 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <vector>
-
-#include "Scanner++/Scanner.hpp"
-using namespace scannerpp;
 
 namespace optframe {
+
+using string = std::string;
 
 // OPTFRAME ALGORITHM COMPREHENSION FLAG
 #ifndef OPTFRAME_FAST
@@ -93,7 +91,7 @@ class Component
 {
 public:
    //Log* logdata;
-   ostream* logdata{ &std::cout }; // single log stream
+   std::ostream* logdata{ &std::cout }; // single log stream
 
    static bool safe_delete(Component* c)
    {
@@ -106,10 +104,11 @@ public:
 
    static void safe_print(Component* c)
    {
+      //assert(c);
       if (c)
          c->print();
       else
-         cout << "nullptr Component" << endl;
+         std::cout << "nullptr Component" << std::endl;
    }
 
 public:
@@ -145,7 +144,11 @@ public:
    bool warning;
    bool information;
    // debug and verbose should be "almost the same"
-   bool debug;   // perform dead code elimination, having always debug{true} as constexpr, when NDEBUG is ON
+#ifdef NDEBUG
+   constexpr static bool debug{ false };
+#else
+   bool debug; // perform dead code elimination, having always debug{true} as constexpr, when NDEBUG is ON
+#endif
    bool verbose; // no dead code elimination, even when NDEBUG is ON
 
    // Mode: SILENT  = 0
@@ -206,7 +209,7 @@ public:
 
    virtual void print() const
    {
-      cout << toString() << endl;
+      std::cout << this->toString() << std::endl;
    }
 
    /*
@@ -239,7 +242,10 @@ public:
 
    void setMessageLevel(LogLevel vl)
    {
-      error = warning = information = verbose = debug = false;
+      error = warning = information = verbose = false;
+#ifndef NDEBUG
+      debug = false;
+#endif
 
       verboseLevel = vl;
       switch (verboseLevel) {
@@ -252,13 +258,17 @@ public:
             information = true;
             break;
          case LogLevel::Debug: // VERBOSE 4
-            debug = verbose = true;
+#ifdef NDEBUG
+            std::cerr << "WARNING: LogLevel::Debug is disabled due to NDEBUG flag!" << std::endl;
+#else
+            debug = true;
+#endif
             break;
          default: // 2: WARNING (default)
             warning = true;
       }
 
-      debug = verbose;
+      verbose = debug; // always the same
       error = error || warning || information || debug;
       warning = warning || information || debug;
       information = information || debug;
@@ -268,77 +278,8 @@ public:
    {
       return verboseLevel;
    }
-
-   // taken from HeuristicFactory
-
-   //! \english compareBase is an auxiliar method to compare a pattern to a component id. Check if 'component' inherits from 'base'. \endenglish \portuguese compareBase eh um metodo auxiliar para comparar um padrao a um id de componente. Testa se 'component' herda de 'base'. \endportuguese
-   /*!
-	 \sa compareBase(string, string)
-	 */
-
-   // Check if 'base' is inherited by 'component'
-   // EXAMPLE: compareBase("OptFrame:", "OptFrame:Evaluator") returns TRUE!
-   static bool compareBase(string _base, string _component)
-   {
-      if ((_base.length() < 3) || (_component.length() < 3)) {
-         cout << "Component::compareBase warning: comparing less than 3 characters! with base='" << _base << "' component='" << _component << "'" << endl;
-         return false;
-      }
-
-      bool baseIsList = (_base.at(_base.length() - 2) == '[') && (_base.at(_base.length() - 1) == ']');
-      bool componentIsList = (_component.at(_component.length() - 2) == '[') && (_component.at(_component.length() - 1) == ']');
-
-      if (baseIsList != componentIsList)
-         return false;
-
-      // remove list (if exists)
-      string base = typeOfList(_base);
-      string component = typeOfList(_component);
-
-      bool sameBase = true;
-
-      if (base.length() <= component.length()) {
-         for (unsigned i = 0; i < base.length(); i++)
-            if (base.at(i) != component.at(i))
-               sameBase = false;
-      } else
-         sameBase = false;
-
-      if (sameBase)
-         return true;
-
-      // ------------------
-      // check last family
-      // ------------------
-
-      Scanner scanner(base);
-      scanner.useSeparators(":");
-
-      string family = scanner.next();
-      while (scanner.hasNext())
-         family = scanner.next();
-
-      Scanner scanComponent(component);
-      scanComponent.useSeparators(":");
-      string part;
-      while (scanComponent.hasNext()) {
-         part = scanComponent.next();
-         if (part == family)
-            sameBase = true;
-      }
-
-      return sameBase;
-   }
-
-   static string typeOfList(string listId)
-   {
-      Scanner scanner(listId);
-      scanner.useSeparators(" \t\n[]");
-
-      return scanner.next();
-   }
 };
 
-}
+} // namespace optframe
 
 #endif /* OPTFRAME_COMPONENT_HPP_ */

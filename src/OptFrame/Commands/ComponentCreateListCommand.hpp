@@ -85,9 +85,9 @@ public:
 				cout << "create_list_of_components: error, component #" << i << " is nullptr! " << endl;
 				return false;
 			}
-			else if(!comp->compatible(Component::typeOfList(type)))
+			else if(!comp->compatible(ComponentHelper::typeOfList(type)))
 			{
-				cout << "create_list_of_components: error, component #" << i << " ('" << comp->id() <<"') in list incompatible with type '" << Component::typeOfList(type) << "'" << endl;
+				cout << "create_list_of_components: error, component #" << i << " ('" << comp->id() <<"') in list incompatible with type '" << ComponentHelper::typeOfList(type) << "'" << endl;
 				return false;
 			}
 			else
@@ -98,9 +98,9 @@ public:
 
 		stringstream ss;
 
-		ss << name << " " << Component::typeOfList(type) << "[] " << idx;
+		ss << name << " " << ComponentHelper::typeOfList(type) << "[] " << idx;
 
-		cout << "'" << Component::typeOfList(type) << "[] " << idx << "' added." << endl;
+		cout << "'" << ComponentHelper::typeOfList(type) << "[] " << idx << "' added." << endl;
 
 		return Command<R, ADS, DS>::run_module("system.silent_define", all_modules, allFunctions, factory, dictionary, ldictionary, ss.str());
 	}

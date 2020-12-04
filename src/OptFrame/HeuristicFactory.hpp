@@ -36,6 +36,7 @@
 #include "RandGen.hpp"
 
 #include "Component.hpp"
+#include "ComponentHelper.hpp"
 
 #include "Action.hpp"
 
@@ -197,7 +198,7 @@ public:
 			id.append(id2);
 		}
 
-		if(!Component::compareBase(T::idComponent(), id))
+		if(!ComponentHelper::compareBase(T::idComponent(), id))
 		{
 			cout << "HeuristicFactory: incompatible assign '" << T::idComponent() << "' <- '" << id << "'";
 			cout << endl;
@@ -224,11 +225,11 @@ public:
 	template< class T > void assignList(vector<T*>& cList, unsigned number, string _listId)
 	{
 		// type checking for safety!
-		string noList = Component::typeOfList(_listId);
+		string noList = ComponentHelper::typeOfList(_listId);
 		string listId = noList;
 		listId += "[]";
 
-		if(!Component::compareBase(T::idComponent(), noList))
+		if(!ComponentHelper::compareBase(T::idComponent(), noList))
 		{
 			cout << "HeuristicFactory: incompatible list assign '[" << T::idComponent() << "]' <- '[" << noList << "]'";
 			cout << endl;
@@ -301,7 +302,7 @@ public:
 	int addComponentList(vector<Component*>& cList, string _listId)
 	{
 		// type checking for safety!
-		string noList = Component::typeOfList(_listId);
+		string noList = ComponentHelper::typeOfList(_listId);
 		string listId = noList;
 		listId += "[]";
 
@@ -309,7 +310,7 @@ public:
 			if((cList[i]==nullptr) || (!cList[i]->compatible(noList)))
 			{
 				cout << "Warning: incompatible components '";
-				cout << cList[i]->id() << "' and '" << Component::typeOfList(listId) << "'!" << endl;
+				cout << cList[i]->id() << "' and '" << ComponentHelper::typeOfList(listId) << "'!" << endl;
 
 				return -1;
 			}
@@ -353,7 +354,7 @@ public:
 			vector<Component*> v = iter->second;
 
 			for (unsigned int i = 0; i < v.size(); i++)
-				if (Component::compareBase(pattern, v[i]->id()))
+				if (ComponentHelper::compareBase(pattern, v[i]->id()))
 				{
 					stringstream ss;
 					ss << iter->first << " " << i;
@@ -391,7 +392,7 @@ public:
 			vector<vector<Component*> > vl = iter->second;
 
 			for (unsigned int i = 0; i < vl.size(); i++)
-				if (Component::compareBase(pattern, iter->first))
+				if (ComponentHelper::compareBase(pattern, iter->first))
 				{
 					stringstream ss;
 					ss << iter->first << " " << i;
@@ -412,7 +413,7 @@ public:
 		vector<pair<string, vector<pair<string,string> > > > list;
 
 		for(unsigned i=0; i<builders.size(); i++)
-			if (Component::compareBase(pattern, builders[i]->id()))
+			if (ComponentHelper::compareBase(pattern, builders[i]->id()))
 				list.push_back(make_pair(builders[i]->id(), builders[i]->parameters()));
 
 		return list;

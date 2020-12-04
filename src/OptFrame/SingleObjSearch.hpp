@@ -163,7 +163,7 @@ public:
 
    virtual bool handleComponent(string type)
    {
-      return Component::compareBase(SingleObjSearch<XES>::idComponent(), type);
+      return ComponentHelper::compareBase(SingleObjSearch<XES>::idComponent(), type);
    }
 
    virtual bool handleComponent(Component& component)
@@ -190,7 +190,7 @@ public:
          return false;
       }
 
-      if (!Component::compareBase(comp->id(), type)) {
+      if (!ComponentHelper::compareBase(comp->id(), type)) {
          cout << "SingleObjSearchAction::doCast error: component '" << comp->id() << " is not base of " << type << "'" << endl;
          return false;
       }

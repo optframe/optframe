@@ -113,7 +113,7 @@ public:
       int new_id = -1;
       string base = "";
 
-      if(Component::compareBase(LocalSearchBuilder<R, ADS>::idComponent(), type))
+      if(ComponentHelper::compareBase(LocalSearchBuilder<R, ADS>::idComponent(), type))
       {
           pair<LocalSearch<XES, XEv>*, string> method;
           method = factory.createLocalSearch(scanner.rest());
@@ -125,7 +125,7 @@ public:
         	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
           }
       }
-      else if(Component::compareBase(SingleObjSearchBuilder<S, XEv>::idComponent(), type))
+      else if(ComponentHelper::compareBase(SingleObjSearchBuilder<S, XEv>::idComponent(), type))
       {
           pair<SingleObjSearch<XES>*, string> method;
           method = factory.createSingleObjSearch(scanner.rest());
@@ -137,7 +137,7 @@ public:
         	  new_id = factory.addComponent(*method.first, base); // Adicionando como 'base', poderia adicionar como o proprio... o que eh melhor?
           }
       }
-      else if(Component::compareBase(MultiObjSearchBuilder<R, ADS>::idComponent(), type))
+      else if(ComponentHelper::compareBase(MultiObjSearchBuilder<R, ADS>::idComponent(), type))
       {
           pair<MultiObjSearch<R, ADS>*, string> method;
           method = factory.createMultiObjSearch(scanner.rest());

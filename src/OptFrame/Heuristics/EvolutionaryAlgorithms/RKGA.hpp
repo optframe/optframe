@@ -102,10 +102,9 @@ protected:
    Evaluator<S, XEv>* evaluator; // Check to avoid memory leaks
 
    InitialPopulation<RSK, XEv>& initPop;
-   int key_size;
+   bool del_initPop{ false }; // Check to avoid memory leaks
 
-   // Check to avoid memory leaks
-   bool del_initPop{ false };
+   int key_size;
 
    // population size
    unsigned popSize;
@@ -193,7 +192,7 @@ public:
 
          if (Component::debug) {
             (*Component::logdata) << "RKGA: decodePopulation p.setFitness(" << i << ") = " << pe.first.evaluation() << std::endl;
-            if(pe.second)
+            if (pe.second)
                (*Component::logdata) << "RKGA: decodePopulation has solution (" << i << ") = " << *pe.second << std::endl;
          }
       }
