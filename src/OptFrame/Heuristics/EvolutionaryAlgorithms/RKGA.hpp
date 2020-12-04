@@ -230,6 +230,10 @@ public:
                                << std::endl;
 
       op<XES>& star = this->best;
+      // check if time/target conditions are met
+      if (stopCriteria.shouldStop(std::nullopt))
+         return SearchStatus::NO_REPORT;
+
       // count generations
       int count_gen = 0;
 
@@ -264,6 +268,10 @@ public:
       // stop by number of generations.
       // other stopping criteria? TIME, GAP, ...
       while (count_gen < int(numGenerations)) {
+         // check if time/target conditions are met
+         if (stopCriteria.shouldStop(std::nullopt))
+            return SearchStatus::NO_REPORT;
+
          if (Component::debug)
             (*Component::logdata) << "RKGA: count_gen=" << count_gen << " < " << numGenerations << "=numGenerations" << std::endl;
 
@@ -323,19 +331,20 @@ public:
 
          evtype pop_best = p.getSingleFitness(0);
 
-         if (decoder.isMinimization() && pop_best < best_f) {
+         if ((decoder.isMinimization() && pop_best < best_f) || (!decoder.isMinimization() && pop_best > best_f)) {
             best_f = pop_best;
             cout << "RKGA: best fitness " << best_f << " at generation " << count_gen << endl;
-         }
 
-         if (!decoder.isMinimization() && pop_best > best_f) {
-            best_f = pop_best;
-            if (Component::information)
-               cout << "RKGA: best fitness " << best_f << " at generation " << count_gen << endl;
-         }
+            // TODO: do we need to decode this all the time, or only when exiting?
+            RSK& best_rkeys = p.at(0);
+            pair<XEv, op<S>> pe = decoder.decode(best_rkeys, true);
+            if (pe.second) {
+               star = op<XES>(XES{ *pe.second, pe.first });
+            }
+         } // end if
 
          count_gen++;
-      }
+      } // end while
 
       if (Component::debug)
          (*Component::logdata) << "RKGA: will p.sort(isMin=" << decoder.isMinimization() << ")" << std::endl;
@@ -376,7 +385,8 @@ public:
       return SearchStatus::NO_REPORT;
    }
 
-   virtual bool setVerboseR() override
+   virtual bool
+   setVerboseR() override
    {
       this->setVerbose();
       // force execution over all components
