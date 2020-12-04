@@ -46,6 +46,7 @@ template<XEvaluation XEv = Evaluation<>, optframe::comparability KeyType = doubl
 class RandomKeysInitPop : public InitialPopulation<std::vector<KeyType>, XEv>
 {
    using RSK = std::vector<KeyType>;
+
 private:
    int sz;
 
@@ -82,10 +83,11 @@ public:
 template<XESolution XES, optframe::comparability KeyType = double>
 class RKGA : public SingleObjSearch<XES>
 {
-   using S   = typename XES::first_type;
+   using S = typename XES::first_type;
    using XEv = typename XES::second_type;
    //using RSK = RSolution<RKeys>;
    using RSK = std::vector<KeyType>;
+
 protected:
    DecoderRandomKeys<S, XEv, KeyType>& decoder;
    Evaluator<S, XEv>* evaluator; // Check to avoid memory leaks
@@ -126,7 +128,7 @@ public:
    }
 
    RKGA(Evaluator<S, XEv>& _evaluator, InitialPopulation<RSK, XEv>& _initPop, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
-     : decoder(*new DecoderRandomKeysEvaluator<S, XEv, KeyType, XES>(_evaluator))  
+     : decoder(*new DecoderRandomKeysEvaluator<S, XEv, KeyType, XES>(_evaluator))
      , evaluator(&_evaluator)
      , initPop(_initPop)
      , sz(-1)
@@ -140,7 +142,7 @@ public:
    }
 
    RKGA(Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
-     : decoder(*new DecoderRandomKeysEvaluator<S, XEv, KeyType, XES>(_evaluator))  
+     : decoder(*new DecoderRandomKeysEvaluator<S, XEv, KeyType, XES>(_evaluator))
      , evaluator(&_evaluator)
      , initPop(*new RandomKeysInitPop(key_size))
      , sz(key_size)
@@ -231,7 +233,7 @@ public:
          }
 
          //delete p; // KILL ALL INDIVIDUALS
-         p.clear();// KILL ALL INDIVIDUALS
+         p.clear(); // KILL ALL INDIVIDUALS
          p = nextPop;
 
          // decode solutions
@@ -266,7 +268,6 @@ public:
       pair<XEv, op<S>> pe = decoder.decode(best, true);
       Evaluation<>& e = pe.first;
 
-
       // WARNING: something VERY strange here... why returning random_keys and not elements?
       // TODO: I may be wrong, but next part seems to be very wrong... how does 'override' allowed this in the past??
 
@@ -278,20 +279,27 @@ public:
       p.clear();
       return new pair<RSK, XEv>(best, e);
       */
-     cout << "RKGA print sol: optional(" << ((bool)pe.second)<< ") -> ";
-     if(!pe.second)
-     {
-        cout << "RKGA ERROR!! DOESNT HAVE A SOLUTION!! VALUE IS: " << pe.first.evaluation() << endl;
-        cout << "SHOULD WE RETURN EMPTY PAIR<S, XEv> OR FORCE SOME DECODER TO AT LEAST PROVIDE A SOLUTION?" << endl;
-        assert(false);
-     }
-     
-     S finalSol(*pe.second); // TODO: avoid loss
-     
-     //return std::optional<pair<XRS, XEv>>(make_pair(finalSol, e)); 
-     star = make_optional(make_pair(finalSol, e));
-     this->best = star;
-     return SearchStatus::NO_REPORT;
+      cout << "RKGA print sol: optional(" << ((bool)pe.second) << ") -> ";
+      if (!pe.second) {
+         cout << "RKGA ERROR!! DOESNT HAVE A SOLUTION!! VALUE IS: " << pe.first.evaluation() << endl;
+         cout << "SHOULD WE RETURN EMPTY PAIR<S, XEv> OR FORCE SOME DECODER TO AT LEAST PROVIDE A SOLUTION?" << endl;
+         assert(false);
+      }
+
+      S finalSol(*pe.second); // TODO: avoid loss
+
+      //return std::optional<pair<XRS, XEv>>(make_pair(finalSol, e));
+      star = make_optional(make_pair(finalSol, e));
+      this->best = star;
+      return SearchStatus::NO_REPORT;
+   }
+
+   virtual bool setVerboseR() override
+   {
+      // force execution over all components
+      return decoder.setVerboseR() &
+             (evaluator ? evaluator->setVerboseR() : true) &
+             initPop.setVerboseR();
    }
 };
 

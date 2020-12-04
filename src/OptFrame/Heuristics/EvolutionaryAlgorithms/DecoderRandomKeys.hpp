@@ -40,7 +40,7 @@ typedef vector<double> random_keys;
 //template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv, XRepresentation RKeys = optframe::random_keys>
 //
 template<XSolution S, XEvaluation XEv, optframe::comparability KeyType>
-class DecoderRandomKeys
+class DecoderRandomKeys : public Component
 {
    using RSK = std::vector<KeyType>;
 public:

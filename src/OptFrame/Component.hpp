@@ -28,33 +28,33 @@
 #include "Scanner++/Scanner.hpp"
 using namespace scannerpp;
 
-using namespace std;
-
-namespace optframe
-{
+namespace optframe {
 
 // OPTFRAME ALGORITHM COMPREHENSION FLAG
 #ifndef OPTFRAME_FAST
 #define OPTFRAME_AC
 #endif
 
+/*
 struct Log
 {
 	stringstream data;
+   //ostream* data{&std::cout};
+   //bool must_free {false};
 
 	void clear()
 	{
-		data.clear();
+		data->clear();
 	}
 
 	void append(string s)
 	{
-		data << s;
+		(*data) << s;
 	}
 
 	string log()
 	{
-		return data.str();
+		return data->str();
 	}
 
 	bool toFile(string file, bool append = true)
@@ -75,32 +75,56 @@ struct Log
 		return true;
 	}
 };
+*/
+
+// |      1      |      2      |      3      |      4      |
+// |    error    |   warning   | information | debug/verb. |
+
+enum LogLevel
+{
+   Silent = 0,
+   Error = 1,
+   Warning = 2,
+   Info = 3,
+   Debug = 4
+};
 
 class Component
 {
 public:
+   //Log* logdata;
+   ostream* logdata{ &std::cout }; // single log stream
 
-	Log* logdata;
+   static bool safe_delete(Component* c)
+   {
+      if (c) {
+         delete c;
+         return true;
+      } else
+         return false;
+   }
 
-	static bool safe_delete(Component* c)
-	{
-		if (c)
-		{
-			delete c;
-			return true;
-		}
-		else
-			return false;
-	}
+   static void safe_print(Component* c)
+   {
+      if (c)
+         c->print();
+      else
+         cout << "nullptr Component" << endl;
+   }
 
-	static void safe_print(Component* c)
-	{
-		if(c)
-			c->print();
-		else
-			cout << "nullptr Component" << endl;
-	}
+public:
+   void setLog(std::ostream* _logdata)
+   {
+      logdata = _logdata;
+   }
 
+   // Set log stream recursive: must be implemented on each component. Returns 'false' is not implemented.
+   virtual bool setLogR(std::ostream* _logdata)
+   {
+      return false;
+   }
+
+   /*
 	void initializeLog()
 	{
 		logdata = new Log;
@@ -114,74 +138,76 @@ public:
 			logdata = nullptr;
 		}
 	}
+*/
+   int verboseLevel;
 
-	int verboseLevel;
+   bool error;
+   bool warning;
+   bool information;
+   bool debug, verbose; // same thing for 'debug' or 'verbose'
 
-	bool error;
-	bool warning;
-	bool information;
-	bool debug, verbose; // same thing for 'debug' or 'verbose'
+   // Mode: SILENT  = 0
+   // |      1      |      2      |      3      |      4      |
+   // |    error    |   warning   | information | debug/verb. |
+   // |      -      |      -      |      -      |      -      |
 
-	// Mode: SILENT  = 0
-	// |      0      |      1      |      2      |      3      |
-	// |    error    |   warning   | information | debug/verb. |
-	// |      -      |      -      |      -      |      -      |
+   // Mode: ERROR = 1
+   // |      1      |      2      |      3      |      4      |
+   // |    error    |   warning   | information | debug/verb. |
+   // |      x      |      -      |      -      |      -      |
 
-	// Mode: ERROR = 1
-	// |      0      |      1      |      2      |      3      |
-	// |    error    |   warning   | information | debug/verb. |
-	// |      x      |      -      |      -      |      -      |
+   // Mode: WARNING = 2 (DEFAULT)
+   // |      1      |      2      |      3      |      4      |
+   // |    error    |   warning   | information | debug/verb. |
+   // |      x      |      x      |      -      |      -      |
 
-	// Mode: WARNING = 2 (DEFAULT)
-	// |      0      |      1      |      2      |      3      |
-	// |    error    |   warning   | information | debug/verb. |
-	// |      x      |      x      |      -      |      -      |
+   // Mode: INFORMATION = 3
+   // |      1      |      2      |      3      |      4      |
+   // |    error    |   warning   | information | debug/verb. |
+   // |      x      |      x      |      x      |      -      |
 
-	// Mode: INFORMATION = 3
-	// |      0      |      1      |      2      |      3      |
-	// |    error    |   warning   | information | debug/verb. |
-	// |      x      |      x      |      x      |      -      |
+   // Mode: VERBOSE/DEBUG = 4
+   // |      1      |      2      |      3      |      4      |
+   // |    error    |   warning   | information | debug/verb. |
+   // |      x      |      x      |      x      |      x      |
 
-	// Mode: VERBOSE/DEBUG = 4
-	// |      0      |      1      |      2      |      3      |
-	// |    error    |   warning   | information | debug/verb. |
-	// |      x      |      x      |      x      |      x      |
+   Component()
+   {
+      // TODO: create 'logless' implementation on OptFrame (is it faster?)
+      setMessageLevel(LogLevel::Warning);
+      //logdata = nullptr;
+   }
 
-	Component()
-	{
-		setMessageLevel(2);
-		//logdata = nullptr;
-	}
+   virtual ~Component()
+   {
+   }
 
-	virtual ~Component()
-	{
-	}
+   static string idComponent()
+   {
+      return "OptFrame";
+   }
 
-	static string idComponent()
-	{
-		return "OptFrame";
-	}
+   virtual string id() const
+   {
+      return idComponent();
+   }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
+   virtual bool compatible(string s)
+   {
+      return (s == id()) || (s == idComponent()); // equal to this component or "OptFrame:" base
+   }
 
-	virtual bool compatible(string s)
-	{
-		return (s == id()) || (s == idComponent()); // equal to this component or "OptFrame:" base
-	}
+   virtual string toString() const
+   {
+      return id();
+   }
 
-	virtual string toString() const
-	{
-		return id();
-	}
+   virtual void print() const
+   {
+      cout << toString() << endl;
+   }
 
-	virtual void print() const
-	{
-		cout << toString() << endl;
-	}
-
+   /*
 	virtual Log* getLog()
 	{
 		return logdata;
@@ -196,123 +222,119 @@ public:
 	{
 		return id();
 	}
+   */
 
-	void setSilent()
-	{
-		setMessageLevel(0);
-	}
+   void setVerbose()
+   {
+      setMessageLevel(LogLevel::Debug);
+   }
 
-	void setVerbose()
-	{
-		setMessageLevel(4);
-	}
+   // set verbose level recursive: returns 'false' if not supported.
+   virtual bool setVerboseR()
+   {
+      return false;
+   }
 
-	void setMessageLevel(int vl)
-	{
-		error = warning = information = verbose = debug = false;
+   void setMessageLevel(LogLevel vl)
+   {
+      error = warning = information = verbose = debug = false;
 
-		verboseLevel = vl;
-		switch (verboseLevel)
-		{
-		case 0: // SILENT
-			break;
-		case 1: // ERROR
-			error = true;
-			break;
-		case 3: // INFORMATION
-			information = true;
-			break;
-		case 4: // VERBOSE
-			debug = verbose = true;
-			break;
-		default: // 2: WARNING (default)
-			warning = true;
-		}
+      verboseLevel = vl;
+      switch (verboseLevel) {
+         case LogLevel::Silent: // SILENT 0
+            break;
+         case LogLevel::Error: // ERROR 1
+            error = true;
+            break;
+         case LogLevel::Info: // INFORMATION 3
+            information = true;
+            break;
+         case LogLevel::Debug: // VERBOSE 4
+            debug = verbose = true;
+            break;
+         default: // 2: WARNING (default)
+            warning = true;
+      }
 
-		debug = verbose;
-		error = error || warning || information || debug;
-		warning =  warning || information || debug;
-		information =  information || debug;
-	}
+      debug = verbose;
+      error = error || warning || information || debug;
+      warning = warning || information || debug;
+      information = information || debug;
+   }
 
-	bool getVerboseLevel()
-	{
-		return verboseLevel;
-	}
+   bool getVerboseLevel()
+   {
+      return verboseLevel;
+   }
 
-	// taken from HeuristicFactory
+   // taken from HeuristicFactory
 
-	//! \english compareBase is an auxiliar method to compare a pattern to a component id. Check if 'component' inherits from 'base'. \endenglish \portuguese compareBase eh um metodo auxiliar para comparar um padrao a um id de componente. Testa se 'component' herda de 'base'. \endportuguese
-	/*!
+   //! \english compareBase is an auxiliar method to compare a pattern to a component id. Check if 'component' inherits from 'base'. \endenglish \portuguese compareBase eh um metodo auxiliar para comparar um padrao a um id de componente. Testa se 'component' herda de 'base'. \endportuguese
+   /*!
 	 \sa compareBase(string, string)
 	 */
 
-	// Check if 'base' is inherited by 'component'
-	// EXAMPLE: compareBase("OptFrame:", "OptFrame:Evaluator") returns TRUE!
-	static bool compareBase(string _base, string _component)
-	{
-		if ((_base.length() < 3) || (_component.length() < 3))
-		{
-			cout << "Component::compareBase warning: comparing less than 3 characters! with base='" << _base << "' component='" << _component << "'" << endl;
-			return false;
-		}
+   // Check if 'base' is inherited by 'component'
+   // EXAMPLE: compareBase("OptFrame:", "OptFrame:Evaluator") returns TRUE!
+   static bool compareBase(string _base, string _component)
+   {
+      if ((_base.length() < 3) || (_component.length() < 3)) {
+         cout << "Component::compareBase warning: comparing less than 3 characters! with base='" << _base << "' component='" << _component << "'" << endl;
+         return false;
+      }
 
-		bool baseIsList = (_base.at(_base.length() - 2) == '[') && (_base.at(_base.length() - 1) == ']');
-		bool componentIsList = (_component.at(_component.length() - 2) == '[') && (_component.at(_component.length() - 1) == ']');
+      bool baseIsList = (_base.at(_base.length() - 2) == '[') && (_base.at(_base.length() - 1) == ']');
+      bool componentIsList = (_component.at(_component.length() - 2) == '[') && (_component.at(_component.length() - 1) == ']');
 
-		if (baseIsList != componentIsList)
-			return false;
+      if (baseIsList != componentIsList)
+         return false;
 
-		// remove list (if exists)
-		string base = typeOfList(_base);
-		string component = typeOfList(_component);
+      // remove list (if exists)
+      string base = typeOfList(_base);
+      string component = typeOfList(_component);
 
-		bool sameBase = true;
+      bool sameBase = true;
 
-		if (base.length() <= component.length())
-		{
-			for (unsigned i = 0; i < base.length(); i++)
-				if (base.at(i) != component.at(i))
-					sameBase = false;
-		}
-		else
-			sameBase = false;
+      if (base.length() <= component.length()) {
+         for (unsigned i = 0; i < base.length(); i++)
+            if (base.at(i) != component.at(i))
+               sameBase = false;
+      } else
+         sameBase = false;
 
-		if (sameBase)
-			return true;
+      if (sameBase)
+         return true;
 
-		// ------------------
-		// check last family
-		// ------------------
+      // ------------------
+      // check last family
+      // ------------------
 
-		Scanner scanner(base);
-		scanner.useSeparators(":");
+      Scanner scanner(base);
+      scanner.useSeparators(":");
 
-		string family = scanner.next();
-		while (scanner.hasNext())
-			family = scanner.next();
+      string family = scanner.next();
+      while (scanner.hasNext())
+         family = scanner.next();
 
-		Scanner scanComponent(component);
-		scanComponent.useSeparators(":");
-		string part;
-		while (scanComponent.hasNext())
-		{
-			part = scanComponent.next();
-			if (part == family)
-				sameBase = true;
-		}
+      Scanner scanComponent(component);
+      scanComponent.useSeparators(":");
+      string part;
+      while (scanComponent.hasNext()) {
+         part = scanComponent.next();
+         if (part == family)
+            sameBase = true;
+      }
 
-		return sameBase;
-	}
+      return sameBase;
+   }
 
-	static string typeOfList(string listId)
-	{
-		Scanner scanner(listId);
-		scanner.useSeparators(" \t\n[]");
+   static string typeOfList(string listId)
+   {
+      Scanner scanner(listId);
+      scanner.useSeparators(" \t\n[]");
 
-		return scanner.next();
-	}
-
+      return scanner.next();
+   }
 };
 
 }

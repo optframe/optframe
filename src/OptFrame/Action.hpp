@@ -224,6 +224,9 @@ public:
 		if (!handleAction(action))
 			return false;
 
+      // TODO: log must be implemented in other manner... maybe store as string somewhere else..
+      // maybe, just support this in specific scenarios
+      /*
 		if (action == "log")
 		{
 			if (!scanner.hasNext())
@@ -238,6 +241,7 @@ public:
 
 			return true;
 		}
+      */
 
 		if (action == "print")
 		{
@@ -251,7 +255,7 @@ public:
 			if (!scanner.hasNext())
 				return false;
 
-			int verboseLevel = *scanner.nextInt();
+			LogLevel verboseLevel = *scanner.nextInt();
 
 			c->setMessageLevel(verboseLevel);
 
