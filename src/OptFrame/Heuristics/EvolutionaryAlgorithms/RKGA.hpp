@@ -67,9 +67,18 @@ public:
          //RSK* sol = new RSK(d);
          //pop.push_back(sol);
          pop.push_back(d); // TODO: pass by std::move() or unique_ptr
+
+         if (Component::debug)
+            (*Component::logdata) << "generatePopulation new: " << *d << std::endl;
       }
 
       return pop;
+   }
+
+   virtual bool setVerboseR() override
+   {
+      this->setVerbose();
+      return InitialPopulation<std::vector<KeyType>, XEv>::setVerboseR();
    }
 };
 
@@ -181,6 +190,12 @@ public:
          random_keys& rk = p.at(i);
          pair<XEv, op<S>> pe = decoder.decode(rk, false);
          p.setFitness(i, pe.first.evaluation());
+
+         if (Component::debug) {
+            (*Component::logdata) << "RKGA: decodePopulation p.setFitness(" << i << ") = " << pe.first.evaluation() << std::endl;
+            if(pe.second)
+               (*Component::logdata) << "RKGA: decodePopulation has solution (" << i << ") = " << *pe.second << std::endl;
+         }
       }
    }
 
@@ -285,12 +300,24 @@ public:
             nextPop.push_back(s);
          }
 
+         if (Component::debug)
+            (*Component::logdata) << "RKGA: will p.clear() and p = nextPop " << std::endl;
+
          //delete p; // KILL ALL INDIVIDUALS
          p.clear(); // KILL ALL INDIVIDUALS
          p = nextPop;
 
+         if (Component::debug)
+            (*Component::logdata) << "RKGA: p.size() = " << p.size() << std::endl;
+
+         if (Component::debug)
+            (*Component::logdata) << "RKGA: will decodePopulation(p)" << std::endl;
+
          // decode solutions
          decodePopulation(p);
+
+         if (Component::debug)
+            (*Component::logdata) << "RKGA: will p.sort(isMin=" << decoder.isMinimization() << ")" << std::endl;
 
          // sort population
          p.sort(decoder.isMinimization());
@@ -310,6 +337,9 @@ public:
 
          count_gen++;
       }
+
+      if (Component::debug)
+         (*Component::logdata) << "RKGA: will p.sort(isMin=" << decoder.isMinimization() << ")" << std::endl;
 
       // sort to get best (not necessary)
       p.sort(decoder.isMinimization());
