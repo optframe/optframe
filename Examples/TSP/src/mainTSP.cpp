@@ -270,7 +270,7 @@ main(int argc, char** argv)
       v_ns.push_back(v_nsseq[i]);
 
    BasicVNS<ESolutionTSP> vns(eval, randomTSP, v_ns, v_nsseq);
-   vns.setMessageLevel(3); // INFORMATION
+   vns.setMessageLevel(LogLevel::Info); // INFORMATION
    StopCriteria<EvaluationTSP> soscVNS;
    soscVNS.timelimit = 2; // 2 seconds
    soscVNS.target_f = EvaluationTSP(7550.0);

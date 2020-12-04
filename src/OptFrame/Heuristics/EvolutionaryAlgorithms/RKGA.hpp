@@ -39,7 +39,7 @@
 // http://pubsonline.informs.org/doi/abs/10.1287/ijoc.6.2.154
 namespace optframe {
 
-// generates a random population of 'random_keys' (with size 'sz')
+// generates a random population of 'random_keys' (with size 'key_size')
 //template<XRSolution<random_keys> RSK = RSolution<random_keys>, XEvaluation XEv = Evaluation<>>
 //
 template<XEvaluation XEv = Evaluation<>, optframe::comparability KeyType = double>
@@ -48,11 +48,11 @@ class RandomKeysInitPop : public InitialPopulation<std::vector<KeyType>, XEv>
    using RSK = std::vector<KeyType>;
 
 private:
-   int sz;
+   int rksz;
 
 public:
    RandomKeysInitPop(int size)
-     : sz(size)
+     : rksz(size)
    {
    }
 
@@ -61,8 +61,8 @@ public:
       Population<RSK, XEv> pop;
 
       for (unsigned i = 0; i < populationSize; i++) {
-         random_keys* d = new random_keys(sz);
-         for (int j = 0; j < sz; j++)
+         random_keys* d = new random_keys(rksz);
+         for (int j = 0; j < rksz; j++)
             d->at(j) = (rand() % 100000) / 100000.0; // TODO: take precision from Template or from good RNG
          //RSK* sol = new RSK(d);
          //pop.push_back(sol);
@@ -93,17 +93,26 @@ protected:
    Evaluator<S, XEv>* evaluator; // Check to avoid memory leaks
 
    InitialPopulation<RSK, XEv>& initPop;
-   int sz; // Check to avoid memory leaks
+   int key_size;
 
-   unsigned popSize, eliteSize, randomSize;
+   // Check to avoid memory leaks
+   bool del_initPop{ false };
+
+   // population size
+   unsigned popSize;
+   // number of elite individuals
+   unsigned eliteSize;
+   // number of mutants
+   unsigned randomSize;
+   // number of generations (stop criteria)
    unsigned numGenerations;
 
 public:
-   RKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, InitialPopulation<RSK, XEv>& _initPop, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
+   RKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, InitialPopulation<RSK, XEv>& _initPop, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
      : decoder(_decoder)
      , evaluator(nullptr)
      , initPop(_initPop)
-     , sz(-1)
+     , key_size(key_size)
      , popSize(_popSize)
      , eliteSize(fracTOP * _popSize)
      , randomSize(fracBOT * _popSize)
@@ -117,7 +126,8 @@ public:
      : decoder(_decoder)
      , evaluator(nullptr)
      , initPop(*new RandomKeysInitPop(key_size))
-     , sz(key_size)
+     , del_initPop(true)
+     , key_size(key_size)
      , popSize(_popSize)
      , eliteSize(fracTOP * _popSize)
      , randomSize(fracBOT * _popSize)
@@ -127,11 +137,11 @@ public:
       assert(randomSize + eliteSize < popSize);
    }
 
-   RKGA(Evaluator<S, XEv>& _evaluator, InitialPopulation<RSK, XEv>& _initPop, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
+   RKGA(Evaluator<S, XEv>& _evaluator, InitialPopulation<RSK, XEv>& _initPop, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
      : decoder(*new DecoderRandomKeysEvaluator<S, XEv, KeyType, XES>(_evaluator))
      , evaluator(&_evaluator)
      , initPop(_initPop)
-     , sz(-1)
+     , key_size(key_size)
      , popSize(_popSize)
      , eliteSize(fracTOP * _popSize)
      , randomSize(fracBOT * _popSize)
@@ -145,7 +155,8 @@ public:
      : decoder(*new DecoderRandomKeysEvaluator<S, XEv, KeyType, XES>(_evaluator))
      , evaluator(&_evaluator)
      , initPop(*new RandomKeysInitPop(key_size))
-     , sz(key_size)
+     , del_initPop(true)
+     , key_size(key_size)
      , popSize(_popSize)
      , eliteSize(fracTOP * _popSize)
      , randomSize(fracBOT * _popSize)
@@ -159,7 +170,7 @@ public:
    {
       if (evaluator)
          delete &decoder;
-      if (sz != -1)
+      if (del_initPop)
          delete &initPop;
    }
 
@@ -175,13 +186,13 @@ public:
 
    virtual RSK& cross(const Population<RSK, XEv>& pop) const
    {
-      assert(sz > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
+      assert(key_size > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
 
       const RSK& p1 = pop.at(rand() % pop.size());
       const RSK& p2 = pop.at(rand() % pop.size());
 
-      random_keys* v = new random_keys(sz, 0.0);
-      for (int i = 0; i < sz; i++)
+      random_keys* v = new random_keys(key_size, 0.0);
+      for (int i = 0; i < key_size; i++)
          if (rand() % 2 == 0)
             //v->at(i) = p1.getR()[i];
             v->at(i) = p1[i];
@@ -199,35 +210,77 @@ public:
    //virtual std::optional<pair<XRS, XEv>> search(StopCriteria<XEv>& stopCriteria) override
    SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
    {
+      if (Component::debug)
+         (*Component::logdata) << "RKGA search():"
+                               << " key_size=" << key_size << " popSize=" << popSize << " eliteSize=" << eliteSize << " randomSize=" << randomSize << " numGenerations=" << numGenerations
+                               << std::endl;
+
       op<XES>& star = this->best;
       // count generations
       int count_gen = 0;
 
+      if (Component::debug)
+         (*Component::logdata) << "RKGA: will initPop.generatePopulation(popSize=" << popSize << ")" << std::endl;
+
       // initialize population (of random_keys)
       Population<RSK, XEv> p = initPop.generatePopulation(popSize, stopCriteria.timelimit);
+
+      if (Component::debug)
+         (*Component::logdata) << "RKGA: p.size() = " << p.size() << std::endl;
+
+      if (Component::debug)
+         (*Component::logdata) << "RKGA: will decodePopulation(p)" << std::endl;
+
       // decode population
       decodePopulation(p);
+
+      if (Component::debug)
+         (*Component::logdata) << "RKGA: will p.sort(isMin=" << decoder.isMinimization() << ")" << std::endl;
 
       // sort population
       p.sort(decoder.isMinimization());
 
+      if (Component::debug)
+         (*Component::logdata) << "RKGA: will p.getSingleFitness(0)" << std::endl;
+
       evtype best_f = p.getSingleFitness(0);
       if (Component::information)
-         cout << "RKGA: best fitness at initial population: " << best_f << endl;
+         (*Component::logdata) << "RKGA: best fitness at initial population: " << best_f << endl;
 
       // stop by number of generations.
       // other stopping criteria? TIME, GAP, ...
       while (count_gen < int(numGenerations)) {
+         if (Component::debug)
+            (*Component::logdata) << "RKGA: count_gen=" << count_gen << " < " << numGenerations << "=numGenerations" << std::endl;
+
+         if (Component::debug)
+            (*Component::logdata) << "RKGA: will initPop.generatePopulation(randomSize=" << randomSize << ")" << std::endl;
+
          // create mutants in new population
          Population<RSK, XEv> nextPop = initPop.generatePopulation(randomSize, stopCriteria.timelimit);
+
+         if (Component::debug)
+            (*Component::logdata) << "RKGA: nextPop.size() = " << nextPop.size() << std::endl;
+
+         if (Component::debug)
+            (*Component::logdata) << "RKGA: will push eliteSize=" << eliteSize << " top elements" << std::endl;
 
          // move 'eliteSize' elements to new population
          for (unsigned i = 0; i < eliteSize; i++)
             nextPop.push_back(p.at(i));
          // TODO: we could get the current evaluations and avoid new decodifications
 
+         if (Component::debug)
+            (*Component::logdata) << "RKGA: nextPop.size() = " << nextPop.size() << std::endl;
+
          // populate the rest
          while (nextPop.size() < popSize) {
+            if (Component::debug)
+               (*Component::logdata) << "RKGA: nextPop.size()=" << nextPop.size() << " < " << popSize << "=popSize" << std::endl;
+
+            if (Component::debug)
+               (*Component::logdata) << "RKGA: will cross(p)" << std::endl;
+
             RSK* s = &cross(p);
             nextPop.push_back(s);
          }
@@ -296,6 +349,7 @@ public:
 
    virtual bool setVerboseR() override
    {
+      this->setVerbose();
       // force execution over all components
       return decoder.setVerboseR() &
              (evaluator ? evaluator->setVerboseR() : true) &

@@ -56,8 +56,8 @@ protected:
 
 public:
 
-	BRKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, InitialPopulation<RSK, XEv>& _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
-		RKGA<XES, KeyType>(_decoder, _initPop, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
+	BRKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, InitialPopulation<RSK, XEv>& _initPop, int _key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
+		RKGA<XES, KeyType>(_decoder, _initPop, _key_size, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
 		assert(probElitism <= 1.0);
@@ -70,8 +70,8 @@ public:
 		assert(probElitism <= 1.0);
 	}
 
-	BRKGA(Evaluator<S, XEv>& _evaluator, InitialPopulation<RSK, XEv>& _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
-			RKGA<XES, KeyType>(_evaluator, _initPop, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
+	BRKGA(Evaluator<S, XEv>& _evaluator, InitialPopulation<RSK, XEv>& _initPop, int _key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
+			RKGA<XES, KeyType>(_evaluator, _initPop, _key_size, numGen, _popSize, fracTOP, fracBOT), probElitism(_probElitism)
 	{
 		assert(probElitism > 0.5);
 		assert(probElitism <= 1.0);
@@ -90,13 +90,15 @@ public:
 
 	virtual RSK& cross(const Population<RSK, XEv>& pop) const
 	{
-		assert(this->sz > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
+      if(Component::debug)
+         (*Component::logdata) << "BRKGA cross(|pop|=" << pop.size() << ")" << std::endl;
+		assert(this->key_size > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
 
 		const RSK& p1 = pop.at(rand() % this->eliteSize);
 		const RSK& p2 = pop.at(this->eliteSize + rand() % (pop.size()-this->eliteSize));
 
-		random_keys* v = new random_keys(this->sz, 0.0);
-		for (int i = 0; i < this->sz; i++)
+		random_keys* v = new random_keys(this->key_size, 0.0);
+		for (int i = 0; i < this->key_size; i++)
 			if ((rand() % 1000000)/1000000.0 < probElitism)
 				//v->at(i) = p1.getR()[i];
             v->at(i) = p1[i];
@@ -106,6 +108,12 @@ public:
 		//return *new RSK(v);
       return *v; // TODO: pass by std::move() or unique_ptr
 	}
+
+   virtual bool setVerboseR() override
+   {
+      this->setVerbose();
+      return RKGA<XES, KeyType>::setVerboseR();
+   }
 
 };
 

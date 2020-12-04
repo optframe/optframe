@@ -27,5 +27,54 @@
                 "$gcc"
             ]
         }
+        ,
+        {
+            "label": "bazel build ...",
+            "type": "shell",
+            "command": "bazel build ...",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "bazel build: FCore-BRKGA",
+            "type": "shell",
+            "command": "(cd Examples/FCore-BRKGA/ && bazel build ...)",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "bazel build: FCore-Examples",
+            "type": "shell",
+            "command": "(cd Examples/FCore-Examples/ && ./build.sh)",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "bazel build: FCore-Examples FxCore",
+            "type": "shell",
+            "command": "(cd Examples/FCore-Examples/ && bazel build --action_env=CC=g++-10 //:app_TSPfxcore)",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        }
     ]
 }

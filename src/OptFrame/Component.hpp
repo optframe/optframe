@@ -144,7 +144,9 @@ public:
    bool error;
    bool warning;
    bool information;
-   bool debug, verbose; // same thing for 'debug' or 'verbose'
+   // debug and verbose should be "almost the same"
+   bool debug;   // perform dead code elimination, having always debug{true} as constexpr, when NDEBUG is ON
+   bool verbose; // no dead code elimination, even when NDEBUG is ON
 
    // Mode: SILENT  = 0
    // |      1      |      2      |      3      |      4      |
