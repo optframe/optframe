@@ -119,7 +119,8 @@ public:
       estimated = false;
    }
 
-   explicit Evaluation(const ObjType& obj)
+   // TODO (IGOR): I am removing 'explicit' to allow StopCriteria "seamless" passing of Evaluation object.
+   Evaluation(const ObjType& obj)
      : objFunction(obj)
    {
       // verify that this is valid XEvaluation
