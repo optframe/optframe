@@ -50,6 +50,21 @@ numeric_zero(T& t)
    t = 0;
 }
 
+template<optframe::basic_arithmetics T>
+constexpr inline typename std::enable_if<std::is_same<T, int>::value, int>::type
+num_zero()
+{
+   return 0;
+}
+
+template<optframe::basic_arithmetics T>
+constexpr inline typename std::enable_if<std::is_same<T, double>::value, double>::type
+num_zero()
+{
+   return 0.0;
+}
+
+
 // stores numeric_zero value on 't'
 template<optframe::basic_arithmetics T>
 inline typename std::enable_if<std::is_same<T, double>::value, void>::type

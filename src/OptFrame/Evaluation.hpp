@@ -99,6 +99,9 @@ public:
    // is minimization
    bool isMini {true}; 
 
+
+   static constexpr int x {num_zero<int>()};
+
    // ======================================
    // begin canonical part
 

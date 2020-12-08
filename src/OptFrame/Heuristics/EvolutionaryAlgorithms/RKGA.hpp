@@ -340,6 +340,9 @@ public:
             pair<XEv, op<S>> pe = decoder.decode(best_rkeys, true);
             if (pe.second) {
                star = op<XES>(XES{ *pe.second, pe.first });
+               // check update callback
+               if(!this->onUpdateBest(*this))
+                  return SearchStatus::NO_REPORT;
             }
          } // end if
 

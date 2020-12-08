@@ -21,22 +21,20 @@
 #ifndef OPTFRAME_GLOBAL_SEARCH_HPP_
 #define OPTFRAME_GLOBAL_SEARCH_HPP_
 
-
+#include <cstring>
 #include <iostream>
 #include <vector>
-#include <cstring>
 
 #include "Component.hpp"
 #include "ComponentBuilder.h"
 
 #include "BaseConcepts.hpp"
-#include "StopCriteria.hpp"
 #include "InitialSearch.hpp"
+#include "StopCriteria.hpp"
 
 using namespace std;
 
-namespace optframe
-{
+namespace optframe {
 
 // Defaulting SearchSpace to XES, it means, <S,XEv> space (typically, single obj search)
 //template<XESolution XES, XSearch<XES> XSH = XES, XSearchMethod XM = Component>
@@ -44,22 +42,28 @@ namespace optframe
 //template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES>
 //
 template<XESolution XES, XSearch<XES> XSH = XES>
-class GlobalSearch: public Component
+class GlobalSearch : public Component
 {
    using XEv = typename XES::second_type;
+
 public:
-   // best known solution
+   // best known XSH object: solution/pareto/etc
    std::optional<XSH> best;
+   //
+   // this callback action is triggered after best is updated (if 'beforeUpdateBest' is required some day, think about it.. not now)
+   // returning 'false' should lead to aborting execution (by target, for instance)
+   //
+   bool (*onUpdateBest)(GlobalSearch<XES, XSH>& self) = [](GlobalSearch<XES, XSH>& self) { return true; };
    // strict or non-strict search
-   bool strict { true };
+   bool strict{ true };
 
-	GlobalSearch()
-	{
-	}
+   GlobalSearch()
+   {
+   }
 
-	virtual ~GlobalSearch()
-	{
-	}
+   virtual ~GlobalSearch()
+   {
+   }
 
    // Assuming method is not thread-safe. Now, we can easily use flag SearchStatus::RUNNING.
    virtual SearchStatus search(const StopCriteria<XEv>& stopCriteria) = 0;
@@ -70,60 +74,59 @@ public:
       return search(stopCriteria);
    }
 
-	virtual string log() const
-	{
-		return "Empty heuristic log.";
-	}
+   virtual string log() const
+   {
+      return "Empty heuristic log.";
+   }
 
-	virtual bool compatible(string s)
-	{
-		return (s == idComponent()) || (Component::compatible(s));
-	}
+   virtual bool compatible(string s)
+   {
+      return (s == idComponent()) || (Component::compatible(s));
+   }
 
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << Component::idComponent() << "GlobalSearch:";
-		return ss.str();
-	}
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << Component::idComponent() << "GlobalSearch:";
+      return ss.str();
+   }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
-
+   virtual string id() const
+   {
+      return idComponent();
+   }
 };
 
 template<XSolution S, XEvaluation XEv, XESolution XES, XSearch<XES> XSH>
-class GlobalSearchBuilder: public ComponentBuilder<S, XEv, XSH>
+class GlobalSearchBuilder : public ComponentBuilder<S, XEv, XSH>
 {
 public:
-	virtual ~GlobalSearchBuilder()
-	{
-	}
+   virtual ~GlobalSearchBuilder()
+   {
+   }
 
-	virtual GlobalSearch<XES, XSH>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, XSH>& hf, string family = "") = 0;
+   virtual GlobalSearch<XES, XSH>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, XSH>& hf, string family = "") = 0;
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, XSH>& hf, string family = "")
-	{
-		return build(scanner, hf, family);
-	}
+   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, XSH>& hf, string family = "")
+   {
+      return build(scanner, hf, family);
+   }
 
-	virtual vector<pair<string, string> > parameters() = 0;
+   virtual vector<pair<string, string>> parameters() = 0;
 
-	virtual bool canBuild(string) = 0;
+   virtual bool canBuild(string) = 0;
 
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << ComponentBuilder<S, XEv, XSH>::idComponent() << "GlobalSearch:";
-		return ss.str();
-	}
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << ComponentBuilder<S, XEv, XSH>::idComponent() << "GlobalSearch:";
+      return ss.str();
+   }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
+   virtual string id() const
+   {
+      return idComponent();
+   }
 };
 
 } // namespace optframe
