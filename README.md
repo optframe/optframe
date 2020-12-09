@@ -81,7 +81,16 @@ The following requirements apply for projects (and subprojects):
 
 To install gcc-10.1, see these [Instructions](libs/gcc-10-install/INSTRUCTIONS.md).
 
-## Concepts (Lite)
+## Concepts General
+
+On general two concepts are considered on Search methods (they will be better explained in next section):
+- XES and XSH: XES is base type for search type XSH, which is on general words "what users want"
+- XES2 and XSH2: XES2 is base type for search type XSH2, which is "what method uses to give what users want"
+
+Typically, XSH2=XSH=XES for trajectory-based optimization, and XSH2 is population for population-based methods. On multi-objective scenarios, XSH may be some Pareto structure, while XSH2 some "Pareto Population" (see NSGA-II, for example).
+
+
+## Concepts (Intro)
 
 A major change happened from OptFrame v3 to v4, where C++ Concepts were finally adopted (before official release of C++20 we use `concepts lite` on `gcc-7`).
 This allowed a further simplification of project, by dividing most templates into two basic categories:
