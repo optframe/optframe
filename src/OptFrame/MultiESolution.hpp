@@ -30,9 +30,13 @@
 
 namespace optframe {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+//template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+//
+template<XESolution XES>
 class MultiESolution : public Component
 {
+   using S = typename XES::first_type;
+   using XEv = typename XES::second_type;
 protected:
    vector<S*> p;
    vector<XEv*> pev;
@@ -45,7 +49,7 @@ public:
    MultiESolution(const MultiESolution& pop)
    {
       for (unsigned i = 0; i < pop.size(); i++)
-         p.push_back(&pop.at(i).clone());
+         p.push_back(new S(pop.at(i)));
    }
 
    virtual ~MultiESolution()
@@ -89,7 +93,7 @@ public:
 
    void push_back(const S& c)
    {
-      p.push_back(&c.clone());
+      p.push_back(new S(c)); // copy constructor
    }
 
    S& remove(unsigned pos)
@@ -126,7 +130,7 @@ public:
       return p.empty();
    }
 
-   virtual MultiESolution<S, XEv>& operator=(const MultiESolution<S, XEv>& p)
+   virtual MultiESolution<XES>& operator=(const MultiESolution<XES>& p)
    {
       if (&p == this) // auto ref check
          return *this;
@@ -156,9 +160,9 @@ public:
       return (*this);
    }
 
-   virtual MultiESolution<S>& clone() const
+   virtual MultiESolution<XES>& clone() const
    {
-      return *new MultiESolution<S, XEv>(*this);
+      return *new MultiESolution<XES>(*this);
    }
 
    static string idComponent()
@@ -179,7 +183,7 @@ public:
       cout << endl;
 
       for (unsigned i = 0; i < p.size(); i++) {
-         p.at(i)->print();
+         cout << *p.at(i) << endl;
       }
    }
 };

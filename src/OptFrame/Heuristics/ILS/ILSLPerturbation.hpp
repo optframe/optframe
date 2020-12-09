@@ -240,7 +240,7 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
 class ILSLPerturbationLPlus2Builder: public ComponentBuilder<S, XEv, XES, X2ES>
 {
 public:
@@ -286,7 +286,7 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
 class ILSLPerturbationLPlus2ProbBuilder: public ComponentBuilder<S, XEv, XES, X2ES>
 {
 public:

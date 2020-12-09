@@ -38,7 +38,7 @@ template<XSolution S, XEvaluation XEv, XESolution XES, X2ESolution<XES> X2ES> cl
 
 
 // TODO: maybe use CRTP pattern! (at least from LocalSearch and SingleObjSearch)
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
 class ComponentBuilder : public Component
 {
 public:

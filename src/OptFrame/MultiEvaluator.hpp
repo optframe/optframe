@@ -262,7 +262,7 @@ protected:
 
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
 class MultiEvaluatorAction: public Action<S, XEv, X2ES>
 {
 public:

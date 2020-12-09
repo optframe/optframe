@@ -48,7 +48,7 @@ namespace optframe
 //template<XSolution S, XEvaluation XEv> class HeuristicFactory;
 template<XSolution S, XEvaluation XEv, XESolution XES, X2ESolution<XES> X2ES> class HeuristicFactory;
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
 class Action
 {
 public:
@@ -138,7 +138,7 @@ public:
 };
 
 //template<XSolution S, XEvaluation XEv = Evaluation<>>
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
 class ComponentAction: public Action<S, XEv, X2ES>
 {
 public:

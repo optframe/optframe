@@ -1,4 +1,5 @@
-#pragma once
+#ifndef OPTFRAME_BASECONCEPTS_CTEST_HPP
+#define OPTFRAME_BASECONCEPTS_CTEST_HPP
 
 #include "BaseConcepts.hpp"
 
@@ -13,6 +14,9 @@ using namespace optframe; // importing optframe::operator<< stuff
 // these tests may help understanding deep compilation errors caused by concepts
 
 // ============================
+
+namespace optframe
+{
 
 
 // only for <assert> like stuff
@@ -240,3 +244,7 @@ TestPopOrPareto<IsESolution<double>, IsPareto<IsESolution<double>> > testLocal2;
 
 
 #endif // NDEBUG clause
+
+} // namespace optframe
+
+#endif // OPTFRAME_BASECONCEPTS_CTEST_HPP

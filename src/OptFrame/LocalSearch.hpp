@@ -111,7 +111,7 @@ public:
 };
 
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>, XSearch<XES> XSH = XES>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = XES>
 class LocalSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
 {
 public:

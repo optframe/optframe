@@ -41,7 +41,7 @@ namespace optframe
 // manually passing 'S' (for safety)
 
 // XSH is currently pair<S,XEv> ... will we test both SingleObj and MultiObj here? If that's the case, we will need XSH1 and XSH2 (two search spaces)... better having two checkmodules than this!
-template<XRepresentation R, class ADS, XBaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<S, XEv, XES>, XSearch<XES> XSH = std::pair<S, XEv>>
+template<XRepresentation R, class ADS, XBaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, XEv>>
 class CheckCommand
 {
 
