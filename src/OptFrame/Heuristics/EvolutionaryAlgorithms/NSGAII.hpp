@@ -172,10 +172,10 @@ public:
 	{
 	}
 
-	virtual void basicGeneticOperators(Population<S, XEv>& p) = 0;
+	virtual void basicGeneticOperators(Population<XES>& p) = 0;
 
 	/*
-	virtual void exec(Population<S, XEv>& p, double timelimit, double target_f)
+	virtual void exec(Population<XES>& p, double timelimit, double target_f)
 	{
 		//ACHO Q FALTA APAGAR ALGUMA COISA NO FINAL
 
@@ -201,17 +201,17 @@ public:
 	}
 	*/
 
-	//virtual void exec(Population<S, XEv>& p, FitnessValues& e_pop, double timelimit, double target_f)
+	//virtual void exec(Population<XES>& p, FitnessValues& e_pop, double timelimit, double target_f)
 	virtual Pareto<R, ADS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS>* _pf = nullptr)
 	{
 		Timer tnow;
 
 		cout << "exec: Non Sorting Genetic Algorithm Search " << endl;
 
-		Population<S, XEv> p = init_pop.generatePopulation(init_pop_size);
+		Population<XES> p = init_pop.generatePopulation(init_pop_size);
 		int N = p.size();
 
-		Population<S, XEv> q = p;
+		Population<XES> q = p;
 		basicGeneticOperators(q);
 
 		int g = 0;
@@ -219,16 +219,16 @@ public:
 		{
 			cout << "Generation = " << g << endl;
 
-			Population<S, XEv> r = p;
+			Population<XES> r = p;
 
 			for (int i = 0; i < q.size(); i++)
 				r.push_back(q.at(i));
 
 			//Start NonDominance Order by sets
-			vector<Population<S, XEv>*> F;
+			vector<Population<XES>*> F;
 			nonDominanceOrder(F, r);
 
-			Population<S, XEv> popTemp;
+			Population<XES> popTemp;
 			int j = 0;
 
 			vector<double> cD; //Crowding Distance
@@ -293,7 +293,7 @@ public:
 		return pf;
 	}
 
-	void crowdingDistanceOrder(vector<double>& CD, const Population<S, XEv>& Fj)
+	void crowdingDistanceOrder(vector<double>& CD, const Population<XES>& Fj)
 	{
 		int N = Fj.size();
 		if (N > 0)
@@ -332,11 +332,11 @@ public:
 	}
 
 
-	void nonDominanceOrder(vector<Population<S, XEv>*>& F, const Population<S, XEv>& p)
+	void nonDominanceOrder(vector<Population<XES>*>& F, const Population<XES>& p)
 	{
 
-		Population<S, XEv> pAtual = p;
-		Population<S, XEv>* F0 = new Population<S, XEv> ;
+		Population<XES> pAtual = p;
+		Population<XES>* F0 = new Population<XES> ;
 		F.push_back(F0);
 
 		vector<int> nd;
@@ -374,7 +374,7 @@ public:
 		{
 			k++;
 
-			Population<S, XEv>* uTemp = new Population<S, XEv> ;
+			Population<XES>* uTemp = new Population<XES> ;
 			F.push_back(uTemp);
 
 			for (int i = 0; i < pAtual.size(); i++)
@@ -405,9 +405,9 @@ public:
 
 	}
 
-	virtual Population<S, XEv> basicSelection(const Population<S, XEv>& p, vector<double> cD)
+	virtual Population<XES> basicSelection(const Population<XES>& p, vector<double> cD)
 	{
-		Population<S, XEv> q;
+		Population<XES> q;
 		for (int i = 0; i < p.size(); i++)
 		{
 			int j = rg.rand(p.size());

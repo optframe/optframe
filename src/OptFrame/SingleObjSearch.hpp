@@ -52,8 +52,10 @@ namespace optframe {
 //
 //template<XESolution XES, XEvaluation XEv = Evaluation<>>
 //
-template<XESolution XES>
-class SingleObjSearch: public GlobalSearch<XES, XES> // public Component
+// (Primary) Search space is decided by XES
+// Secondary search space XSH2 is undecided... could be trajectory-based (as default) or population-based
+template<XESolution XES, XESolution XES2 = XES, XSearch<XES2> XSH2 = XES2>
+class SingleObjSearch: public GlobalSearch<XES, XES, XES2, XSH2> // public Component
 {
    using XEv = typename XES::second_type;
    // if passing types directly here, error 'typedef declared auto'
@@ -71,7 +73,7 @@ public:
    {
    }
 
-   op<XES>& getBestSolution()
+   op<XSH>& getBestSolution()
    {
       return this->best;
    }

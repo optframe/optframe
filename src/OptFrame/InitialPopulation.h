@@ -46,16 +46,18 @@
 namespace optframe
 {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES>
 class InitialPopulation: public Component
 {
+   using S = typename XES::first_type;
+   using XEv = typename XES::first_type;
 public:
 
 	virtual ~InitialPopulation()
 	{
 	}
 
-	virtual Population<S, XEv> generatePopulation(unsigned populationSize, double timelimit) = 0;
+	virtual Population<XES> generatePopulation(unsigned populationSize, double timelimit) = 0;
 
 	static string idComponent()
 	{
@@ -70,9 +72,11 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class BasicInitialPopulation: public InitialPopulation<S, XEv>
+template<XESolution XES>
+class BasicInitialPopulation: public InitialPopulation<XES>
 {
+   using S = typename XES::first_type;
+   using XEv = typename XES::first_type;
 public:
 
 	Constructive<S>& constructive;
@@ -86,9 +90,9 @@ public:
 	{
 	}
 
-	virtual Population<S, XEv> generatePopulation(unsigned populationSize, double timelimit)
+	virtual Population<XES> generatePopulation(unsigned populationSize, double timelimit)
 	{
-		Population<S, XEv>* p = new Population<S, XEv>;
+		Population<XES>* p = new Population<XES>;
 		for (unsigned i = 0; i < populationSize; i++)
 			p->push_back(constructive.generateSolution(timelimit));
 		return *p;
@@ -97,7 +101,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Population<S, XEv>::idComponent() << ":BasicInitialPopulation";
+		ss << Population<XES>::idComponent() << ":BasicInitialPopulation";
 		return ss.str();
 	}
 
@@ -107,9 +111,12 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class GRInitialPopulation: public InitialPopulation<S, XEv>
+template<XESolution XES>
+class GRInitialPopulation: public InitialPopulation<XES>
 {
+   using S = typename XES::first_type;
+   using XEv = typename XES::first_type;
+
 public:
 	GRConstructive<S>& constructive;
 	RandGen& rg;
@@ -124,9 +131,9 @@ public:
 	{
 	}
 
-	virtual Population<S, XEv> generatePopulation(unsigned populationSize, double timelimit)
+	virtual Population<XES> generatePopulation(unsigned populationSize, double timelimit)
 	{
-		Population<S, XEv> pop;
+		Population<XES> pop;
 		for (unsigned i = 0; i < populationSize; i++)
 		{
 			float alpha = rg.rand01();
@@ -147,7 +154,7 @@ public:
 	static string idComponent()
 	{
 		stringstream ss;
-		ss << Population<S, XEv>::idComponent() << ":GRInitialPopulation";
+		ss << Population<XES>::idComponent() << ":GRInitialPopulation";
 		return ss.str();
 	}
 
@@ -157,8 +164,11 @@ public:
 	}
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>>
+template<XESolution XES>
 class SimpleInitialPopulation {
+   using S = typename XES::first_type;
+   using XEv = typename XES::first_type;
+
 protected:
 	using Individual = S;
     //using Chromossome = R;
@@ -179,8 +189,11 @@ public:
 /**********************/
 
 //generates random individuals based on user programmed method
-template<XSolution S, XEvaluation XEv = Evaluation<>>
-class RandomInitialPopulation : public SimpleInitialPopulation<S, XEv> {
+template<XESolution XES>
+class RandomInitialPopulation : public SimpleInitialPopulation<XES> {
+   using S = typename XES::first_type;
+   using XEv = typename XES::first_type;
+
 protected:
 	using Individual = S;
     //using Chromossome = R;
@@ -189,7 +202,7 @@ protected:
 
 public:
 	RandomInitialPopulation() = delete;
-	RandomInitialPopulation(unsigned int initialPopSize) : SimpleInitialPopulation<S, XEv>(initialPopSize) { };
+	RandomInitialPopulation(unsigned int initialPopSize) : SimpleInitialPopulation<XES>(initialPopSize) { };
 	virtual ~RandomInitialPopulation() = default;
 
 	virtual Individual generateIndividual() = 0;

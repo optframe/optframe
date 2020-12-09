@@ -74,7 +74,7 @@ public:
 
 		string id = scan.next();
 		Scanner scan_pop(strloadpop + " " + id);
-		Population<S, XEv>* p = nullptr;
+		Population<XES>* p = nullptr;
 		factory.readComponent(p, scan_pop);
 
 		stringstream listContent;

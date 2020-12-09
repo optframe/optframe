@@ -40,7 +40,7 @@ protected:
 
 public:
 
-   virtual Population<S, XEv> & doElitism(const Population<S, XEv> &p, const FitnessValues& fv_p, unsigned popElitistSize) const = 0;
+   virtual Population<XES> & doElitism(const Population<XES> &p, const FitnessValues& fv_p, unsigned popElitistSize) const = 0;
 
 };
 

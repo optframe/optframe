@@ -55,7 +55,7 @@ protected:
     using VPopulation = std::vector< pair<Individual, Fitness> >;
 
     Evaluator<S>& evaluator; //standard problem evaluator
-    SimpleInitialPopulation<S, XEv>& initPop; //operator that generates the initial population
+    SimpleInitialPopulation<XES>& initPop; //operator that generates the initial population
                                         //It is expected that the initial population will have at least 2 individuals.
                                         //It is expected that the initial population size wont surpass the population max size
     SimpleSelection<S, XEv>& selection; //operator that selects a portion (or entirety) of the current population for the current generation
@@ -98,7 +98,7 @@ public:
 
 
     GeneticAlgorithm(Evaluator<S>& _evaluator,
-                     SimpleInitialPopulation<S, XEv>& _initPop,
+                     SimpleInitialPopulation<XES>& _initPop,
                      SimpleSelection<S, XEv>& _selection,
                      SimpleElection<S, XEv>&  _election,
                      SimpleCrossover<S, XEv>& _cross,

@@ -41,7 +41,11 @@ namespace optframe {
 //
 //template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES>
 //
-template<XESolution XES, XSearch<XES> XSH = XES>
+// 'XES' is the "base concept" for the primary search component.
+// 'XSH' is the primary search type ('best' has type XSH)
+// 'XES2' is the "base concept" for the secondary search component.
+// 'XSH2' is the secondary search type ('incumbent' has type XSH2)
+template<XESolution XES, XSearch<XES> XSH = XES, XESolution XES2 = XES, XSearch<XES2> XSH2 = XES2>
 class GlobalSearch : public Component
 {
    using XEv = typename XES::second_type;
@@ -49,11 +53,15 @@ class GlobalSearch : public Component
 public:
    // best known XSH object: solution/pareto/etc
    std::optional<XSH> best;
+   // current/working XSH2 object: population/etc
+   //std::optional<XSH2> incumbent; // currently not storing here... TODO (?)
+   // ----------
    //
-   // this callback action is triggered after best is updated (if 'beforeUpdateBest' is required some day, think about it.. not now)
+   // callback action 'onBest' is triggered after best is updated (if 'beforeUpdateBest' is required some day, think about it.. not now)
    // returning 'false' should lead to aborting execution (by target, for instance)
    //
-   bool (*onUpdateBest)(GlobalSearch<XES, XSH>& self) = [](GlobalSearch<XES, XSH>& self) { return true; };
+   bool (*onBest)(GlobalSearch<XES, XSH, XES2, XSH2>& self) = [](GlobalSearch<XES, XSH, XES2, XSH2>& self) { return true; };
+   void (*onIncumbent)(const XSH2& incumbent) = [](const XSH2& incumbent) {};
    // strict or non-strict search
    bool strict{ true };
 
@@ -97,7 +105,7 @@ public:
    }
 };
 
-template<XSolution S, XEvaluation XEv, XESolution XES, XSearch<XES> XSH>
+template<XSolution S, XEvaluation XEv, XESolution XES, XSearch<XES> XSH, XESolution XES2, XSearch<XES> XSH2 = XSH>
 class GlobalSearchBuilder : public ComponentBuilder<S, XEv, XSH>
 {
 public:
@@ -105,7 +113,7 @@ public:
    {
    }
 
-   virtual GlobalSearch<XES, XSH>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, XSH>& hf, string family = "") = 0;
+   virtual GlobalSearch<XES, XSH, XES2, XSH2>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, XSH>& hf, string family = "") = 0;
 
    virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, XSH>& hf, string family = "")
    {

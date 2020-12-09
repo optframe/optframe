@@ -88,7 +88,7 @@ public:
 
 	virtual vector<MOSIndividual<R, ADS, DS>*>& initialize(unsigned pSize)
 	{
-		Population<S, XEv> *p = &initPop.generatePopulation(pSize);
+		Population<XES> *p = &initPop.generatePopulation(pSize);
 
 		vector<MOSIndividual<R, ADS, DS>*> r;
 		for(unsigned i = 0; i < p->size(); i++)

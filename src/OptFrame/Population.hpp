@@ -38,9 +38,11 @@ namespace optframe
 // For supporting XES, it's required to rebuild this class, in newer standard (supporting 'getP' method from X2ESolution powerset)
 // XES is only present for Evaluation purposes!
 //
-template<XSolution S, XEvaluation XEv, XESolution XES = pair<S, XEv>> // XES only for evaluation purposes!
+template<XESolution XES> // XES only for evaluation purposes!
 class Population final : public Component
 {
+   using S = typename XES::first_type;
+   using XEv = typename XES::first_type;
 protected:
    typedef S chromossome;
    typedef vector<chromossome*> population;
@@ -88,14 +90,15 @@ public:
 
    // IMPORTANT: 'getP' is not supported here
    // This is Legacy Population... we will need "newer" versions to support this.
-   /*
+   
 	XES& getP(unsigned index)
 	{
 		//return make_pair(uptr<S>(), uptr<XEv>());
       XES* p = nullptr;
+      std::cerr << "SHOULD NOT USE getP for POPULATION! TODO: fix" << std::endl;
+      exit(1);
       return *p;
-	}
-   */
+	}   
 
 
    void insert(unsigned pos, chromossome& c)
@@ -167,7 +170,7 @@ public:
       fitness[i] = v;
    }
 
-   void add(const Population<S, XEv>& pop)
+   void add(const Population<XES>& pop)
    {
       for (unsigned i = 0; i < pop.size(); i++) {
          const chromossome& s = pop.at(i);
@@ -221,7 +224,7 @@ public:
       }
    }
 
-   virtual Population<S, XEv>& operator=(const Population<S, XEv>& p)
+   virtual Population<XES>& operator=(const Population<XES>& p)
    {
       if (&p == this) // auto ref check
          return *this;
@@ -255,9 +258,9 @@ public:
       return (*this);
    }
 
-   virtual Population<S, XEv>& clone() const
+   virtual Population<XES>& clone() const
    {
-      return *new Population<S, XEv>(*this);
+      return *new Population<XES>(*this);
    }
 
    static string idComponent()
@@ -285,7 +288,8 @@ public:
 
    // XES is only used here! this is Legacy Population...
    // on newer population, should abolish this method
-   chromossome& cloneBestChromossome(Evaluator<XES, XEv>& eval)
+   /*
+   chromossome& cloneBestChromossome(Evaluator<S, XEv, XES>& eval)
    {
       vector<pair<S, double>> v;
 
@@ -302,7 +306,9 @@ public:
 
       return v[bestC].first;
    }
-};
+   */
+
+}; // class Population
 
 } // namespace optframe
 
@@ -314,7 +320,7 @@ public:
 // Next static compilation should fail!
 
 // compilation tests
-static_assert(!X2ESolution<Population<Solution<double>,Evaluation<double>>, pair<Solution<double>, Evaluation<double>>>);
+static_assert(X2ESolution<Population< std::pair<Solution<double>, Evaluation<double>> >, std::pair<Solution<double>, Evaluation<double>>>);
 
 // population compilation tests (these are NOT unit tests)
 #include "Population.ctest.hpp"
