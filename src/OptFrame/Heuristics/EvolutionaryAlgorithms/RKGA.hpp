@@ -345,7 +345,8 @@ public:
 
          if ((decoder.isMinimization() && pop_best < best_f) || (!decoder.isMinimization() && pop_best > best_f)) {
             best_f = pop_best;
-            cout << "RKGA: best fitness " << best_f << " at generation " << count_gen << endl;
+            if (Component::debug)
+               (*Component::logdata)<< "RKGA: best fitness " << best_f << " at generation " << count_gen << endl;
 
             // send machine logs (TODO: check which format... txt, json... suppose 'txt')
             if(Component::mlog)
