@@ -78,7 +78,7 @@ public:
    Evaluator<RSK, XEv, XES>& evaluator;
 
    DecoderRandomKeysEvaluator(Evaluator<RSK, XEv, XES>& _evaluator)
-     : evaluator(_evaluator)
+     : evaluator{_evaluator}
    {
    }
 

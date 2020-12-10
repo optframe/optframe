@@ -50,10 +50,11 @@ class RandomKeysInitPop : public InitialPopulation<std::pair<std::vector<KeyType
 
 private:
    int rksz;
+   RandGen& rg;
 
 public:
-   RandomKeysInitPop(int size)
-     : rksz(size)
+   RandomKeysInitPop(int size, RandGen& _rg)
+     : rksz(size), rg{_rg}
    {
    }
 
@@ -64,7 +65,7 @@ public:
       for (unsigned i = 0; i < populationSize; i++) {
          random_keys* d = new random_keys(rksz);
          for (int j = 0; j < rksz; j++)
-            d->at(j) = (rand() % 100000) / 100000.0; // TODO: take precision from Template or from good RNG
+            d->at(j) = (rg.rand() % 100000) / 100000.0; // TODO: take precision from Template or from good RNG
          //RSK* sol = new RSK(d);
          //pop.push_back(sol);
          pop.push_back(d); // TODO: pass by std::move() or unique_ptr
@@ -119,9 +120,11 @@ protected:
    unsigned randomSize;
    // number of generations (stop criteria)
    unsigned numGenerations;
+   // random number generator
+   RandGen& rg;
 
 public:
-   RKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, InitialPopulation<XES2>& _initPop, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
+   RKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, InitialPopulation<XES2>& _initPop, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT, RandGen& _rg)
      : decoder(_decoder)
      , evaluator(nullptr)
      , initPop(_initPop)
@@ -129,28 +132,30 @@ public:
      , popSize(_popSize)
      , eliteSize(fracTOP * _popSize)
      , randomSize(fracBOT * _popSize)
+     , rg{_rg}
    {
       this->numGenerations = numGenerations;
       assert(eliteSize < popSize);
       assert(randomSize + eliteSize < popSize);
    }
 
-   RKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
+   RKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT, RandGen& _rg)
      : decoder(_decoder)
      , evaluator(nullptr)
-     , initPop(*new RandomKeysInitPop(key_size))
+     , initPop(*new RandomKeysInitPop(key_size, _rg))
      , del_initPop(true)
      , key_size(key_size)
      , popSize(_popSize)
      , eliteSize(fracTOP * _popSize)
      , randomSize(fracBOT * _popSize)
+     , rg{_rg}
    {
       this->numGenerations = numGenerations;
       assert(eliteSize < popSize);
       assert(randomSize + eliteSize < popSize);
    }
 
-   RKGA(Evaluator<S, XEv>& _evaluator, InitialPopulation<XES2>& _initPop, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
+   RKGA(Evaluator<S, XEv>& _evaluator, InitialPopulation<XES2>& _initPop, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT, RandGen& _rg)
      : decoder(*new DecoderRandomKeysEvaluator<S, XEv, KeyType, XES>(_evaluator))
      , evaluator(&_evaluator)
      , initPop(_initPop)
@@ -158,21 +163,23 @@ public:
      , popSize(_popSize)
      , eliteSize(fracTOP * _popSize)
      , randomSize(fracBOT * _popSize)
+     , rg{_rg}
    {
       this->numGenerations = numGenerations;
       assert(eliteSize < popSize);
       assert(randomSize + eliteSize < popSize);
    }
 
-   RKGA(Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT)
+   RKGA(Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT, RandGen& _rg)
      : decoder(*new DecoderRandomKeysEvaluator<S, XEv, KeyType, XES>(_evaluator))
      , evaluator(&_evaluator)
-     , initPop(*new RandomKeysInitPop(key_size))
+     , initPop(*new RandomKeysInitPop(key_size, _rg))
      , del_initPop(true)
      , key_size(key_size)
      , popSize(_popSize)
      , eliteSize(fracTOP * _popSize)
      , randomSize(fracBOT * _popSize)
+     , rg{_rg}
    {
       this->numGenerations = numGenerations;
       assert(eliteSize < popSize);
