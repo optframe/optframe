@@ -1,6 +1,8 @@
 #ifndef OPTFRAME_SINGLE_OBJ_VALUE_HPP
 #define OPTFRAME_SINGLE_OBJ_VALUE_HPP
 
+#include <math.h>       /* fabs */
+
 // no includes (amazing class!)
 // not anymore :(
 #include "myconcepts.h"

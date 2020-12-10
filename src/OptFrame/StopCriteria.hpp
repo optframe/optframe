@@ -28,7 +28,7 @@
 #include <functional> // std::function
 
 #include "Component.hpp"
-#include "ComponentBuilder.h"
+//#include "ComponentBuilder.h"
 
 #include "BaseConcepts.hpp"
 #include "SearchStatus.hpp"

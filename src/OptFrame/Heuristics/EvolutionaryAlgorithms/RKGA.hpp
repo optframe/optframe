@@ -340,6 +340,10 @@ public:
             best_f = pop_best;
             cout << "RKGA: best fitness " << best_f << " at generation " << count_gen << endl;
 
+            // send machine logs (TODO: check which format... txt, json... suppose 'txt')
+            if(Component::mlog)
+               (*Component::mlog) << "RKGA_best" << "\t" << best_f << "\t" << "gen" << "\t" << count_gen << std::endl;
+
             // TODO: do we need to decode this all the time, or only when exiting?
             RSK& best_rkeys = p.at(0);
             pair<XEv, op<S>> pe = decoder.decode(best_rkeys, true);

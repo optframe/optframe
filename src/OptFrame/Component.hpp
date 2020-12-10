@@ -91,7 +91,11 @@ class Component
 {
 public:
    //Log* logdata;
-   std::ostream* logdata{ &std::cout }; // single log stream
+   //
+   // 'logdata' is for User logs
+   std::ostream* logdata{ &std::cout }; 
+   // 'mlog' is for machine logs (disabled by default)
+   std::ostream* mlog{ nullptr }; 
 
    static bool safe_delete(Component* c)
    {
@@ -117,8 +121,14 @@ public:
       logdata = _logdata;
    }
 
-   // Set log stream recursive: must be implemented on each component. Returns 'false' is not implemented.
+   // Set user log stream recursive: must be implemented on each component. Returns 'false' is not implemented.
    virtual bool setLogR(std::ostream* _logdata)
+   {
+      return false;
+   }
+
+   // Set machine log recursive: must be implemented on each component. Returns 'false' is not implemented.
+   virtual bool setMachineLogR(std::ostream* _mlog)
    {
       return false;
    }

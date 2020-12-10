@@ -29,6 +29,8 @@
 
 #include "../myconcepts.h" // ostreamable concept!
 
+#include "../SemStream.hpp" // support for global semantic streams
+
 using namespace std;
 
 namespace optframe {
@@ -50,13 +52,12 @@ template<class T>
 ostream&
 operator<<(ostream& os, const std::optional<T>& obj)
 {
-   if(!obj)
+   if (!obj)
       os << "nullopt";
    else
       os << obj;
    return os;
 }
-
 
 // ===================================================
 //     Impressao de vectors
@@ -65,21 +66,33 @@ template<class T>
 ostream&
 operator<<(ostream& os, const vector<T>& obj)
 {
-   // Se houver string interna, sera impressa com aspas
-   //string_aspas_25072009 = true;
 
-   os << "vector(" << obj.size() << ") [";
-
-   if (obj.size() > 0) {
-      for (unsigned int i = 0; i < obj.size() - 1; i++)
-         os << obj.at(i) << " , ";
-      os << obj.at(obj.size() - 1);
+   if (&os == &optframe::cjson) {
+      // json
+      os << "[";
+      if (obj.size() > 0) {
+         for (unsigned int i = 0; i < obj.size() - 1; i++)
+            os << obj.at(i) << " , ";
+         os << obj.at(obj.size() - 1);
+      }
+      os << "]";
+   } else if (&os == &optframe::ctxt) {
+      // txt
+      if (obj.size() > 0) {
+         for (int i = 0; i < ((int)obj.size()) - 1; i++)
+            os << obj.at(i) << '\t';
+         os << obj.at(obj.size() - 1);
+      }
+   } else {
+      // human readable (default)
+      os << "vector(" << obj.size() << ") [";
+      if (obj.size() > 0) {
+         for (unsigned int i = 0; i < obj.size() - 1; i++)
+            os << obj.at(i) << " , ";
+         os << obj.at(obj.size() - 1);
+      }
+      os << "]";
    }
-
-   os << "]";
-
-   // Libera a impressao normal de strings
-   //string_aspas_25072009 = false;
 
    return os;
 }
@@ -289,7 +302,6 @@ toString(const std::vector<T>& v)
    return ss.str();
 }
 
-
 // COMPILATION TESTS FOR PRINTABLE
 #ifndef NDEBUG
 
@@ -298,7 +310,6 @@ toString(const std::vector<T>& v)
 class test_runtime_can_print
 {
 public:
-
    friend std::ostream& operator<<(std::ostream& myos, const test_runtime_can_print& me)
    {
       return myos;
@@ -309,18 +320,16 @@ struct test_printability_disable_runtime
 {
    void ftest()
    {
-      std::pair<int,int> ppi;
+      std::pair<int, int> ppi;
       std::cout << ppi << std::endl;
       test_runtime_can_print t1;
       std::cout << t1 << std::endl;
-      std::pair<test_runtime_can_print,test_runtime_can_print> tpp;
+      std::pair<test_runtime_can_print, test_runtime_can_print> tpp;
       std::cout << tpp << std::endl;
    }
-
 };
 
 #endif
-
 
 } // namespace optframe
 
