@@ -116,20 +116,18 @@ public:
    }
 
 public:
-   void setLog(std::ostream* _logdata)
-   {
-      logdata = _logdata;
-   }
 
    // Set user log stream recursive: must be implemented on each component. Returns 'false' is not implemented.
    virtual bool setLogR(std::ostream* _logdata)
    {
+      this->logdata = _logdata;
       return false;
    }
 
    // Set machine log recursive: must be implemented on each component. Returns 'false' is not implemented.
    virtual bool setMachineLogR(std::ostream* _mlog)
    {
+      this->mlog = _mlog;
       return false;
    }
 
@@ -189,7 +187,7 @@ public:
    Component()
    {
       // TODO: create 'logless' implementation on OptFrame (is it faster?)
-      setMessageLevel(LogLevel::Warning);
+      setMessageLevel(LogLevel::Info);
       //logdata = nullptr;
    }
 
@@ -219,25 +217,8 @@ public:
 
    virtual void print() const
    {
-      std::cout << this->toString() << std::endl;
+      (*logdata) << this->toString() << std::endl;
    }
-
-   /*
-	virtual Log* getLog()
-	{
-		return logdata;
-	}
-
-	virtual const Log* getLog() const
-	{
-		return logdata;
-	}
-
-	virtual string log() const
-	{
-		return id();
-	}
-   */
 
    void setVerbose()
    {
@@ -246,6 +227,12 @@ public:
 
    // set verbose level recursive: returns 'false' if not supported.
    virtual bool setVerboseR()
+   {
+      return false;
+   }
+
+   // set silent level recursive: returns 'false' if not supported.
+   virtual bool setSilentR()
    {
       return false;
    }
@@ -264,8 +251,8 @@ public:
          case LogLevel::Error: // ERROR 1
             error = true;
             break;
-         case LogLevel::Info: // INFORMATION 3
-            information = true;
+         case LogLevel::Warning: // WARNING 2
+            warning = true;
             break;
          case LogLevel::Debug: // VERBOSE 4
 #ifdef NDEBUG
@@ -274,8 +261,8 @@ public:
             debug = true;
 #endif
             break;
-         default: // 2: WARNING (default)
-            warning = true;
+         default: // 3: INFORMATION (default)            
+            information = true;
       }
 
       verbose = debug; // always the same

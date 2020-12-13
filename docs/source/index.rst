@@ -17,6 +17,7 @@ Welcome to OptFrame Documentation, please select the desired content section.
    quickstart
    concepts
    fcore
+   debugging
    advanced
    license
 
