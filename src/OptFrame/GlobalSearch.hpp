@@ -61,7 +61,7 @@ public:
    // returning 'false' should lead to aborting execution (by target, for instance)
    //
    bool (*onBest)(GlobalSearch<XES, XSH, XES2, XSH2>& self) = [](GlobalSearch<XES, XSH, XES2, XSH2>& self) { return true; };
-   void (*onIncumbent)(const XSH2& incumbent) = [](const XSH2& incumbent) {};
+   bool (*onIncumbent)(GlobalSearch<XES, XSH, XES2, XSH2>& self, const XSH2& incumbent) = [](GlobalSearch<XES, XSH, XES2, XSH2>& self, const XSH2& incumbent) { return true; };
    // strict or non-strict search
    bool strict{ true };
 

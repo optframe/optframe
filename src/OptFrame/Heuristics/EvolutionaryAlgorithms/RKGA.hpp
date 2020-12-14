@@ -275,7 +275,8 @@ public:
          (*Component::logdata) << "RKGA: will trigger onIncumbent(p)" << std::endl;
 
       // trigger onIncumbent
-      this->onIncumbent(p);
+      if(!this->onIncumbent(*this, p))
+         return SearchStatus::NO_REPORT;
 
       if (Component::debug)
          (*Component::logdata) << "RKGA: will p.getSingleFitness(0)" << std::endl;
@@ -352,7 +353,8 @@ public:
             (*Component::logdata) << "RKGA: will trigger onIncumbent(p)" << std::endl;
 
          // trigger onIncumbent
-         this->onIncumbent(p);
+         if(!this->onIncumbent(*this, p))
+            return SearchStatus::NO_REPORT;
 
          evtype pop_best = p.getSingleFitness(0);
 

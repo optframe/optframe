@@ -135,6 +135,8 @@ Here's an example for *onBest*, for some single-objective trajectory-based metho
         return self.best->second.evaluation() > 9500.0;
     };
 
+Callbacks allow search to be stopped (thus also acting as a custom stop criteria): returning false should halt execution.
+
 .. danger::
     This section is incomplete.
 
