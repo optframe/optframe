@@ -54,7 +54,8 @@ private:
 
 public:
    RandomKeysInitPop(int size, RandGen& _rg)
-     : rksz(size), rg{_rg}
+     : rksz(size)
+     , rg{ _rg }
    {
    }
 
@@ -132,7 +133,7 @@ public:
      , popSize(_popSize)
      , eliteSize(fracTOP * _popSize)
      , randomSize(fracBOT * _popSize)
-     , rg{_rg}
+     , rg{ _rg }
    {
       this->numGenerations = numGenerations;
       assert(eliteSize < popSize);
@@ -148,7 +149,7 @@ public:
      , popSize(_popSize)
      , eliteSize(fracTOP * _popSize)
      , randomSize(fracBOT * _popSize)
-     , rg{_rg}
+     , rg{ _rg }
    {
       this->numGenerations = numGenerations;
       assert(eliteSize < popSize);
@@ -163,7 +164,7 @@ public:
      , popSize(_popSize)
      , eliteSize(fracTOP * _popSize)
      , randomSize(fracBOT * _popSize)
-     , rg{_rg}
+     , rg{ _rg }
    {
       this->numGenerations = numGenerations;
       assert(eliteSize < popSize);
@@ -179,7 +180,7 @@ public:
      , popSize(_popSize)
      , eliteSize(fracTOP * _popSize)
      , randomSize(fracBOT * _popSize)
-     , rg{_rg}
+     , rg{ _rg }
    {
       this->numGenerations = numGenerations;
       assert(eliteSize < popSize);
@@ -271,6 +272,12 @@ public:
       p.sort(decoder.isMinimization());
 
       if (Component::debug)
+         (*Component::logdata) << "RKGA: will trigger onIncumbent(p)" << std::endl;
+
+      // trigger onIncumbent
+      this->onIncumbent(p);
+
+      if (Component::debug)
          (*Component::logdata) << "RKGA: will p.getSingleFitness(0)" << std::endl;
 
       evtype best_f = p.getSingleFitness(0);
@@ -341,16 +348,25 @@ public:
          // sort population
          p.sort(decoder.isMinimization());
 
+         if (Component::debug)
+            (*Component::logdata) << "RKGA: will trigger onIncumbent(p)" << std::endl;
+
+         // trigger onIncumbent
+         this->onIncumbent(p);
+
          evtype pop_best = p.getSingleFitness(0);
 
          if ((decoder.isMinimization() && pop_best < best_f) || (!decoder.isMinimization() && pop_best > best_f)) {
             best_f = pop_best;
             if (Component::debug)
-               (*Component::logdata)<< "RKGA: best fitness " << best_f << " at generation " << count_gen << endl;
+               (*Component::logdata) << "RKGA: best fitness " << best_f << " at generation " << count_gen << endl;
 
             // send machine logs (TODO: check which format... txt, json... suppose 'txt')
-            if(Component::mlog)
-               (*Component::mlog) << "RKGA_best" << "\t" << best_f << "\t" << "gen" << "\t" << count_gen << std::endl;
+            if (Component::mlog)
+               (*Component::mlog) << "RKGA_best"
+                                  << "\t" << best_f << "\t"
+                                  << "gen"
+                                  << "\t" << count_gen << std::endl;
 
             // TODO: do we need to decode this all the time, or only when exiting?
             RSK& best_rkeys = p.at(0);
@@ -403,6 +419,16 @@ public:
       star = make_optional(make_pair(finalSol, e));
       this->best = star;
       return SearchStatus::NO_REPORT;
+   }
+
+   virtual bool
+   setSilentR() override
+   {
+      this->setSilent();
+      // force execution over all components
+      return decoder.setSilentR() &
+             (evaluator ? evaluator->setSilentR() : true) &
+             initPop.setSilentR();
    }
 
    virtual bool

@@ -100,8 +100,8 @@ However, it is useful to add some *context* to the logging, typically *plain tex
     mySearchMethod.mlog = &optframe::ctxt;
 
 .. hint::
-    User can also select json context stream :code:`optframe::json` as output.
-    There are also plans to support CSV format as :code:`optframe::csv`, but we need some help on that...
+    User can also select json context stream :code:`optframe::cjson` as output.
+    There are also plans to support CSV format as :code:`optframe::ccsv`, but we need some help on that...
 
 .. warning::
     Context log streams depend on each implementation of the search methods/components.

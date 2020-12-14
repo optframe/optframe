@@ -93,9 +93,9 @@ public:
    //Log* logdata;
    //
    // 'logdata' is for User logs
-   std::ostream* logdata{ &std::cout }; 
+   std::ostream* logdata{ &std::cout };
    // 'mlog' is for machine logs (disabled by default)
-   std::ostream* mlog{ nullptr }; 
+   std::ostream* mlog{ nullptr };
 
    static bool safe_delete(Component* c)
    {
@@ -116,7 +116,6 @@ public:
    }
 
 public:
-
    // Set user log stream recursive: must be implemented on each component. Returns 'false' is not implemented.
    virtual bool setLogR(std::ostream* _logdata)
    {
@@ -220,6 +219,8 @@ public:
       (*logdata) << this->toString() << std::endl;
    }
 
+   // -----------
+
    void setVerbose()
    {
       setMessageLevel(LogLevel::Debug);
@@ -228,14 +229,26 @@ public:
    // set verbose level recursive: returns 'false' if not supported.
    virtual bool setVerboseR()
    {
+      this->setVerbose();
       return false;
+   }
+
+   // -----------
+
+   // set silent level recursive: returns 'false' if not supported.
+   virtual void setSilent()
+   {
+      setMessageLevel(LogLevel::Silent);
    }
 
    // set silent level recursive: returns 'false' if not supported.
    virtual bool setSilentR()
    {
+      this->setSilent();
       return false;
    }
+
+   // -----------
 
    void setMessageLevel(LogLevel vl)
    {
@@ -261,7 +274,7 @@ public:
             debug = true;
 #endif
             break;
-         default: // 3: INFORMATION (default)            
+         default: // 3: INFORMATION (default)
             information = true;
       }
 
