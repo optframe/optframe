@@ -23,6 +23,7 @@
 
 #include <algorithm>
 
+#include "../../IPopulational.hpp"
 #include "../../InitialPopulation.h"
 #include "../../Population.hpp"
 #include "../../SingleObjSearch.hpp"
@@ -98,9 +99,11 @@ template<
   XESolution XES2 = std::pair<std::vector<KeyType>, typename XES::second_type>,
   XSearch<XES2> XSH2 = Population<XES2>>
 class RKGA : public SingleObjSearch<XES, XES2, XSH2>
+  , public IPopulational<XES, XES, XES2>
 {
    using S = typename XES::first_type;
    using XEv = typename XES::second_type;
+   using XSH = XES;
    //using RSK = std::vector<KeyType>;
    using RSK = typename XES2::first_type;
 
@@ -275,7 +278,7 @@ public:
          (*Component::logdata) << "RKGA: will trigger onIncumbent(p)" << std::endl;
 
       // trigger onIncumbent
-      if(!this->onIncumbent(*this, p))
+      if (!this->onIncumbent(*this))
          return SearchStatus::NO_REPORT;
 
       if (Component::debug)
@@ -353,7 +356,7 @@ public:
             (*Component::logdata) << "RKGA: will trigger onIncumbent(p)" << std::endl;
 
          // trigger onIncumbent
-         if(!this->onIncumbent(*this, p))
+         if (!this->onIncumbent(*this))
             return SearchStatus::NO_REPORT;
 
          evtype pop_best = p.getSingleFitness(0);
@@ -421,6 +424,18 @@ public:
       star = make_optional(make_pair(finalSol, e));
       this->best = star;
       return SearchStatus::NO_REPORT;
+   }
+
+   // reimplementing searchBy, just to make it more explicit (visible)
+   // maybe add some specific logs?
+   virtual SearchStatus searchBy(
+     std::optional<XSH>& _best,
+     std::optional<XSH2>& _inc,
+     const StopCriteria<XEv>& stopCriteria) override
+   {
+      this->best = _best;
+      this->incumbent = _inc;
+      return search(stopCriteria);
    }
 
    virtual bool

@@ -132,7 +132,7 @@ Here's an example for *onBest*, for some single-objective trajectory-based metho
         // logging solution to machine logs
         (*self.mlog) << "solution\t" << self.best->first << std::endl;
         // fine-tuning stop criteria according to some solution characteristic (or objective value)
-        return self.best->second.evaluation() > 9500.0;
+        return self.best->second.evaluation() > 9500.0; // halts if less or equals to 9500.0 (minimization problem)
     };
 
 Callbacks allow search to be stopped (thus also acting as a custom stop criteria): returning false should halt execution.
