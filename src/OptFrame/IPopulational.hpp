@@ -21,7 +21,7 @@
 #ifndef OPTFRAME_IPOPULATIONAL_HPP_
 #define OPTFRAME_IPOPULATIONAL_HPP_
 
-#include "Population.hpp"
+#include "EPopulation.hpp"
 #include "StopCriteria.hpp"
 
 namespace optframe {
@@ -34,7 +34,7 @@ template<XESolution XES, XSearch<XES> XSH = XES, XESolution XES2 = XES>
 class IPopulational // do not inherit here!
 {
    using XEv = typename XES::second_type;
-   using XSH2 = Population<XES2>;
+   using XSH2 = optframe::EPopulation<XES2>; // this uses EPopulation, not "legacy Population"
 
 public:
    // global search method (maybe, someday, create some abstract IGlobalSearch.. not now)
