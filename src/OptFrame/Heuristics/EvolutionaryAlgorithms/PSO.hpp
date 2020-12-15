@@ -86,11 +86,16 @@ public:
 
 // begin PSO
 
+struct Bird {
+    vector<double> velocity;
+    vector<double> position;
+};
+
 template<
   optframe::comparability KeyType = double,
   XEvaluation XEv = Evaluation<>,
   XESolution XES = std::pair<std::vector<KeyType>, XEv>,
-  XESolution XES2 = XES, // don't know if it's really useful... for now, let's keep it.
+  XESolution XES2 = std::pair<Bird, Evaluation<>>, // now it's useful, thanks to Fellipe
   XSearch<XES2> XSH2 = Population<XES2>>
 class PSO : public SingleObjSearch<XES, XES2, XSH2>
   , public IPopulational<XES, XES, XES2>
