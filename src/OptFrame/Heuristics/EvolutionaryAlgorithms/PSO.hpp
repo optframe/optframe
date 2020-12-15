@@ -120,6 +120,8 @@ public:
       for (unsigned i = 0; i < this->pop_size; i++) {
          // create a new Bird
          Bird b;
+         b.velocity = std::vector<double>(this->cI.size(), 0.0);
+         b.position = std::vector<double>(this->cI.size(), 0.0);
          for (unsigned j = 0; j < this->cI.size(); j++) {
             b.position[j] = this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01();
             b.velocity[j] = 0.1 * (this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01());
