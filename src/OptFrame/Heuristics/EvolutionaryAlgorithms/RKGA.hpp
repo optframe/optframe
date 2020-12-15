@@ -99,7 +99,8 @@ template<
   XESolution XES2 = std::pair<std::vector<KeyType>, typename XES::second_type>,
   XSearch<XES2> XSH2 = Population<XES2>>
 class RKGA : public SingleObjSearch<XES, XES2, XSH2>
-  , public IPopulational<XES, XES, XES2>
+  //  TODO: cannot make this IPopulational, unless using EPopulation instead of "legacy" Population
+  //, public IPopulational<XES, XES, XES2>
 {
    using S = typename XES::first_type;
    using XEv = typename XES::second_type;

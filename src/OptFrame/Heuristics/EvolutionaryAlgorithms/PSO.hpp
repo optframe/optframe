@@ -38,14 +38,14 @@
 
 namespace optframe {
 
-
 template<XEvaluation XEv = Evaluation<>, optframe::comparability KeyType = double>
 
 // begin PSO
 
-struct Bird {
-    vector<double> velocity;
-    vector<double> position;
+struct Bird
+{
+   vector<double> velocity;
+   vector<double> position;
 };
 
 template<
@@ -61,9 +61,9 @@ class PSO : public SingleObjSearch<XES, XES2, XSH2>
    //using XEv = typename XES::second_type;
    using XSH = XES;
 
-private:
-   Bird Global;
-   
+   //private:
+   //   Bird Global;
+
 protected:
    Evaluator<S, XEv, XES>& evaluator; // Check to avoid memory leaks
    //InitialPopulation<XES2>& initPop; // TODO: add if necessary
@@ -88,7 +88,7 @@ protected:
    RandGen& rg;
 
 public:
-   PSO(Evaluator<S, XEv, XES>& evaluator, unsigned pop_size, unsigned iter_max, vector<double> cI, vector<double> cS, RandGen& _rg)
+   PSO(Evaluator<S, XEv, XES>& evaluator, unsigned pop_size, unsigned iter_max, const vector<double>& cI, const vector<double>& cS, RandGen& _rg)
      : evaluator(evaluator)
      , pop_size(pop_size)
      , iter_max(iter_max)
@@ -98,55 +98,51 @@ public:
    {
    }
 
-    virtual Population<XES2> generatePopulation()
-    {
-        Population<XES2> swarm;
-        for(unsigned i= 0; i<this->pop_size; i++)
-        {
-            Bird b;
-            for (unsigned j= 0; j< this->cI.size(); j++)
-            {
-                b.position[j]= this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01();
-                b.velocity[j] = 0.1* ( this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01() );
-            }
-            swarm.push_back(b);      
-        }
-        return swarm;
-    }
-    
-    void BirdMutation ( Bird b)
-    {
-       if (rand01() < 0.1*0.1)
-       {
-          for (unsigned j = 0; j < this->cS.size(); j++ )
-          {
-            double r = rand01();
-            if (r < 0.5)
-               b.position[j] += (cS[j] - cI[j]) * (pow(2.0 *   r   , 1.0 / 21 ) - 1);
-            else
-               b.position[j] += (cS[j] - cI[j]) * (pow(2.0 * (1-r) , 1.0 / 21 ) + 1);
-         
-          }
-       }
-    }
+   virtual Population<XES2> generatePopulation()
+   {
+      Population<XES2> swarm;
+      for (unsigned i = 0; i < this->pop_size; i++) {
+         // create a new Bird
+         Bird b;
+         for (unsigned j = 0; j < this->cI.size(); j++) {
+            b.position[j] = this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01();
+            b.velocity[j] = 0.1 * (this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01());
+         }
+         // add bird to swarm (no evaluation is given)
+         swarm.push_back(b);
+      }
+      return swarm;
+   }
 
-    void BoundCheck(Bird& b)    // Rename to assert?
-    {
-    unsigned count = 0;
-    while(counter < this->cS.size() )
-    {
-        if (b.position[count] < cI || b.position[count] >cS)
-        {
-            for (unsigned j = 0; j < this->cS.size(); j++)
-            {
-            b.position[j]= this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01();
-            b.velocity[j] = 0.1* ( this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01() );
+   // update bird position (random mutation)
+   void birdMutation(Bird& b)
+   {
+      if (rg.rand01() < 0.1 * 0.1) {
+         for (unsigned j = 0; j < this->cS.size(); j++) {
+            double r = rg.rand01();
+            if (r < 0.5)
+               b.position[j] += (cS[j] - cI[j]) * (::pow(2.0 * r, 1.0 / 21) - 1);
+            else
+               b.position[j] += (cS[j] - cI[j]) * (::pow(2.0 * (1 - r), 1.0 / 21) + 1);
+         }
+      }
+   }
+
+   // checks if bird position/velocity is within valid bounds
+   void boundCheck(Bird& b)
+   {
+      unsigned count = 0;
+      while (counter < this->cS.size()) {
+         if (b.position[count] < cI || b.position[count] > cS) {
+            for (unsigned j = 0; j < this->cS.size(); j++) {
+               b.position[j] = this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01();
+               b.velocity[j] = 0.1 * (this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01());
             }
             break;
-        }
-        count++;
-    } // while
-    } // BoundCheck
+         }
+         count++;
+      } // while
+   }    // BoundCheck
 
    virtual ~PSO()
    {
@@ -164,83 +160,72 @@ public:
       // check if time/target conditions are met
       if (stopCriteria.shouldStop(std::nullopt))
          return SearchStatus::NO_REPORT;
-      
-      generatePopulation()
 
-      for (unsigned i= 0; i < this->pop_size; i++)
-      {
-        Bird& b = swarm[i]
-        for (unsigned j = 0; j < this->cS.size(); j++)
-        {
+      Population<XES2> swarm = generatePopulation();
+
+      for (unsigned i = 0; i < this->pop_size; i++) {
+         Bird& b = swarm[i];
+         for (unsigned j = 0; j < this->cS.size(); j++) {
+            // update positions of bird b, based on its velocities
             b.position[j] += b.velocity[j];
-        }
-        BoundCheck();
+         }
+         boundCheck();
       }
-      
+
       //first global best
-      for (unsigned i = 0; i<this->pop_size; i++)
-      {
+      for (unsigned i = 0; i < this->pop_size; i++) {
          if (evaluator(swarm[i].localbest) < evaluator(Global)))
             Global = swarm[i];
-      } 
-      
-       // count generations
-      int count_gen = 0;
-      
-      while (count_gen < iter_max)
-      {      
+      }
 
-      // Particle update
-      for (unsigned i = 0; i<this->pop_size; i++)
-      {
-         Bird& b = swarm[i]
-         
-         // 0.1 chance of generating a random guy
-         if( rand01() < 0.1)  
-         {
-            for (unsigned j = 0; j < this->cS.size(); j++)
-            {
-            b.position[j]= this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01();
-            b.velocity[j] = 0.1* ( this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01() );
+      // count generations
+      int count_gen = 0;
+
+      while (count_gen < iter_max) {
+
+         // Particle update
+         for (unsigned i = 0; i < this->pop_size; i++) {
+            Bird& b = swarm[i];
+
+            // 0.1 chance of generating a random guy
+            if (rand01() < 0.1) {
+               for (unsigned j = 0; j < this->cS.size(); j++) {
+                  b.position[j] = this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01();
+                  b.velocity[j] = 0.1 * (this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01());
+               }
+            }
+
+            // 0.9 chance to just update the particle
+            else {
+               for (unsigned j = 0; j < this->cS.size(); j++)
+                  b.position[j] += b.velocity[j];
+            }
+
+            BirdMutation(b) // 0.01 chance to do specific mutation
+
+              // After updating, check to see if there's local upgrades
+              BoundCheck(b);
+            if (evaluator(b.position) < evaluator(b.localbest)))
+            b.localbest = b.position;
+         }
+
+         // Speed update
+         for (unsigned i = 0; i < this->pop_size; i++) {
+            Bird& b = swarm[i];
+            for (unsigned j = 0; j < this->cS.size(); j++) {
+               b.velocity = (0.25 + this->rg.rand01() / 2) * b.velocity + 1.5 * this->rg.rand01() * (b.localbest - b.position) + 1.5 * this->rg.rand01() * (Global.localbest - b.position)
             }
          }
 
-         // 0.9 chance to just update the particle
-         else
-         {         
-         for (unsigned j = 0; j<this->cS.size(); j++)
-            b.position[j] += b.velocity[j];
-         }
-         
-         BirdMutation(b) // 0.01 chance to do specific mutation
-         
-         // After updating, check to see if there's local upgrades
-         BoundCheck(b);
-         if (evaluator(b.position) < evaluator(b.localbest)))
-            b.localbest = b.position;
-      }
-      
-      // Speed update
-      for (unsigned i = 0; i<this->pop_size; i++)
-      {
-         Bird& b = swarm[i]
-         for (unsigned j = 0; j<this->cS.size(); j++)
-         {
-            b.velocity = (0.25 + this->rg.rand01() / 2) * b.velocity + 1.5 * this->rg.rand01() * (b.localbest - b.position)
-                                                                     + 1.5 * this->rg.rand01() * (Global.localbest - b.position)
-         }
-      }
-
-      // Global Best Maintenance
-      for (unsigned i = 0; i<this->pop_size; i++)
-      {
-         if (evaluator(swarm[i].localbest) < evaluator(Global)))
+         // Global Best Maintenance
+         for (unsigned i = 0; i < this->pop_size; i++) {
+            if (evaluator(swarm[i].localbest) < evaluator(Global)))
             Global = swarm[i];
-      }
-      
-      count_gen ++;
-      }  //while count_gen
-      
+         }
+
+         count_gen++;
+      } //while count_gen
+
       // This is where magic happens...
 
       this->best = star;

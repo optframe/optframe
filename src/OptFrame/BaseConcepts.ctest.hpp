@@ -216,7 +216,7 @@ template <XESolution XES>
 struct IsPopulation
 {
    size_t size(); // required
-   XES& getP(size_t i); // required
+   XES& at(size_t i); // required
 };
 
 // compilation test
@@ -229,7 +229,7 @@ template <XESolution XES>
 struct IsPareto
 {
    size_t size(); // required
-   XES& getP(size_t i); // required
+   XES& at(size_t i); // required
 };
 
 // compilation test

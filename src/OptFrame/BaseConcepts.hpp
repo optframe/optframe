@@ -377,11 +377,14 @@ concept
       a.size()
    }
    -> my_convertible_to<size_t>; // could this be 'int' as well? TODO: test
+   /*
    {
       //a.getP(idx) // abandoning 'getP' in favor of 'at'... for compatibility with 'vector'
+      //
       a.at(idx)
    }
    -> my_convertible_to<P>;
+   */
 };
 // TODO: powerset could return a 'size'(or 'count'), and perhaps a vector (or iterator) of objects for type P
 
