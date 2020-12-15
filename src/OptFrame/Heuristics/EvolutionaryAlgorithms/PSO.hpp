@@ -123,8 +123,8 @@ public:
          for (unsigned j = 0; j < this->cI.size(); j++) {
             b.position[j] = this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01();
             b.velocity[j] = 0.1 * (this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01());
-            b.localbest[j] = b.position[j];
          }
+         b.localbest = b.position;
          // add bird to swarm (no evaluation is given)
          swarm.push_back(b);
       }
@@ -191,8 +191,6 @@ public:
             b.position[j] += b.velocity[j];
          }
          boundCheck(b);
-         // register first 'localbest' of particle
-         b.localbest = b.position;
          XEv e = evaluator.evaluate(b.position);
          swarm.setFitness(i, e);
       }
