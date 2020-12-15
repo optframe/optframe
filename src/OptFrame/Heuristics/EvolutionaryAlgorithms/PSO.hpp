@@ -47,12 +47,18 @@ namespace optframe {
 ///template<optframe::comparability KeyType = double>
 struct Bird
 {
-   vector<double> velocity; // assuming 'double' for now
-   vector<double> position; // assuming 'double' for now
+   vector<double> velocity;  // assuming 'double' for now
+   vector<double> position;  // assuming 'double' for now
+   vector<double> localbest; // assuming 'double' for now
+
+   // TODO: cache localbest XEv here, and make Bird some IESolution... looks promising!
 
    friend std::ostream& operator<<(std::ostream& os, const Bird& b)
    {
-      os << "bird{ velocity: " << b.velocity << " position:" << b.position << "}";
+      os << "bird{"
+         << "velocity: " << b.velocity
+         << " position:" << b.position
+         << " localbest:" << b.localbest << "}";
       return os;
    }
 };
@@ -184,32 +190,19 @@ public:
             b.position[j] += b.velocity[j];
          }
          boundCheck(b);
-      }
-
-      // evaluate each bird and update best
-      int localBest = -1;
-      for (unsigned i = 0; i < this->pop_size; i++) {
-         Bird& b = swarm.at(i).first;
-         // execute evaluation function
+         // register first 'localbest' of particle
+         b.localbest = b.position;
          XEv e = evaluator.evaluate(b.position);
          swarm.setFitness(i, e);
-         // check if improves local best
-         if (
-           (localBest < 0) ||
-           (evaluator.betterThan(e, swarm.getFitness(localBest)))) {
-            localBest = i;
-         }
       }
 
-      // best global (XES2 bird pair)
-      XES2 global = swarm.at(localBest); // copy assignment
-
       // first global best
-      //if (
-      //  !star ||
-      //  (evaluator.betterThan(swarm.getFitness(localBest), star->second))) {
-      //   star = std::make_optional(swarm.at(localBest));
-      //}
+      XES2 global = swarm.at(0);
+      for (unsigned i = 1; i < this->pop_size; i++) {
+         // compares localbest of every particle with global best
+         if (evaluator.betterThan(swarm.getFitness(i), global.second))
+            global = swarm.at(i);
+      }
 
       // count generations
       int count_gen = 0;
