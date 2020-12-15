@@ -64,7 +64,8 @@ template<
   XESolution XES2 = std::pair<Bird, Evaluation<>>,
   XSearch<XES2> XSH2 = Population<XES2>>
 class PSO : public SingleObjSearch<XES, XES2, XSH2>
-  , public IPopulational<XES, XES, XES2>
+// TODO: add IPopulational
+//, public IPopulational<XES, XES, XES2>
 {
    using S = typename XES::first_type;
    //using XEv = typename XES::second_type;
@@ -88,7 +89,7 @@ protected:
    // population size
    unsigned pop_size;
    // number of generations (stop criteria)
-   unsigned iter_max;
+   int iter_max;
    // -> Vector con los topes inferiores de los parámetros
    vector<double> cI;
    // -> Vector con los topes superiores de los parámetros
@@ -97,7 +98,7 @@ protected:
    RandGen& rg;
 
 public:
-   PSO(Evaluator<S, XEv, XES>& evaluator, unsigned pop_size, unsigned iter_max, const vector<double>& cI, const vector<double>& cS, RandGen& _rg)
+   PSO(Evaluator<S, XEv, XES>& evaluator, unsigned pop_size, int iter_max, const vector<double>& cI, const vector<double>& cS, RandGen& _rg)
      : evaluator(evaluator)
      , pop_size(pop_size)
      , iter_max(iter_max)
@@ -165,17 +166,19 @@ public:
                                << " pop_size=" << pop_size << " iter_max=" << iter_max
                                << std::endl;
 
+      // beware that 'star' may not be a Bird...
       op<XES>& star = this->best;
+
       // check if time/target conditions are met
       if (stopCriteria.shouldStop(std::nullopt))
          return SearchStatus::NO_REPORT;
 
       // generates initial swarm (of size 'pop_size', see parameter)
-      Population<XES2> swarm = generatePopulation();
+      EPopulation<XES2> swarm = generatePopulation();
 
       // update position of birds and check/adjust bounds
       for (unsigned i = 0; i < this->pop_size; i++) {
-         Bird& b = swarm.at(i);
+         Bird& b = swarm.at(i).first;
          for (unsigned j = 0; j < this->cS.size(); j++) {
             // update positions of bird b, based on its velocities
             b.position[j] += b.velocity[j];
@@ -186,9 +189,9 @@ public:
       // evaluate each bird and update best
       int localBest = -1;
       for (unsigned i = 0; i < this->pop_size; i++) {
-         Bird& b = swarm.at(i);
+         Bird& b = swarm.at(i).first;
          // execute evaluation function
-         XEv e = evaluator.evaluate(b);
+         XEv e = evaluator.evaluate(b.position);
          swarm.setFitness(i, e);
          // check if improves local best
          if (
@@ -198,20 +201,24 @@ public:
          }
       }
 
+      // best global (XES2 bird pair)
+      XES2 global = swarm.at(localBest); // copy assignment
+
       // first global best
-      if (
-        !star ||
-        (evaluator.betterThan(swarm.getFitness(localBest), star->second))) {
-         star = std::make_optional(swarm.at(localBest));
-      }
+      //if (
+      //  !star ||
+      //  (evaluator.betterThan(swarm.getFitness(localBest), star->second))) {
+      //   star = std::make_optional(swarm.at(localBest));
+      //}
 
       // count generations
       int count_gen = 0;
 
+      // main loop
       while (count_gen < iter_max) {
          // Particle update
          for (unsigned i = 0; i < this->pop_size; i++) {
-            Bird& b = swarm[i];
+            Bird& b = swarm.at(i).first;
 
             // 0.1 chance of generating a random guy
             if (rg.rand01() < 0.1) {
@@ -231,26 +238,44 @@ public:
             // After updating, check to see if there's local upgrades
             boundCheck(b);
             // execute evaluation function
-            XEv e = evaluator.evaluate(b);
-            swarm.setFitness(i, e);
+            //XEv e = evaluator.evaluate(b);
+            //swarm.setFitness(i, e);
+            //if (evaluator(b.position) < evaluator(b.localbest)))
+            //b.localbest = b.position;
+         }
 
-            if (evaluator(b.position) < evaluator(b.localbest)))
-            b.localbest = b.position;
+         // evaluate each bird and update best
+         int localBest = -1;
+         for (unsigned i = 0; i < this->pop_size; i++) {
+            Bird& b = swarm.at(i).first;
+            // execute evaluation function
+            XEv e = evaluator.evaluate(b.position);
+            swarm.setFitness(i, e);
+            // check if improves local best
+            if (
+              (localBest < 0) ||
+              (evaluator.betterThan(e, swarm.getFitness(localBest)))) {
+               localBest = i;
+            }
          }
 
          // Speed update
          for (unsigned i = 0; i < this->pop_size; i++) {
-            Bird& b = swarm[i];
+            Bird& b = swarm.at(i).first;
             for (unsigned j = 0; j < this->cS.size(); j++) {
-               b.velocity = (0.25 + this->rg.rand01() / 2) * b.velocity + 1.5 * this->rg.rand01() * (b.localbest - b.position) + 1.5 * this->rg.rand01() * (Global.localbest - b.position)
+               b.velocity[j] =
+                 (0.25 + this->rg.rand01() / 2) * b.velocity[j] + 1.5 * this->rg.rand01() * (swarm.at(localBest).first.position[j] - b.position[j]) + 1.5 * this->rg.rand01() * (global.first.position[j] - b.position[j]);
             }
          }
 
          // Global Best Maintenance
-         for (unsigned i = 0; i < this->pop_size; i++) {
-            if (evaluator(swarm[i].localbest) < evaluator(Global)))
-            Global = swarm[i];
-         }
+         if (evaluator.betterThan(swarm.getFitness(localBest), global.second))
+            global = swarm.at(localBest);
+         //if (
+         //  !star ||
+         //  (evaluator.betterThan(swarm.getFitness(localBest), star->second))) {
+         //   star = std::make_optional(swarm.at(localBest));
+         //}
 
          count_gen++;
       } //while count_gen

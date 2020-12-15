@@ -37,7 +37,7 @@ template<XESolution XES> // XES only for evaluation purposes!
 class EPopulation final : public Component
 {
    using S = typename XES::first_type;
-   using XEv = typename XES::first_type;
+   using XEv = typename XES::second_type;
 
 protected:
    std::vector<XES*> p;
@@ -99,10 +99,20 @@ public:
       p.push_back(new XES(std::move(c)));
    }
 
+   // ============ push_back( S )
+
+   void push_back(const S& cs)
+   {
+      // copy constructor is required
+      p.push_back(new XES(cs, XEv{}));
+   }
+
+
    XEv& getFitness(int pos)
    {
       return p.at(pos)->second;
    }
+   
 
    void setFitness(unsigned pos, const XEv& v)
    {

@@ -78,6 +78,8 @@ public:
       return p.size();
    }
 
+   // TODO: conflicting with "newer" vision of Population... 'at' should return XES, not single element 'S'.
+   // Population will not be supported anymore, please use EPopulation instead
    chromossome& at(unsigned c)
    {
       return (*p.at(c));
@@ -315,11 +317,12 @@ public:
 
 // ==================== 
 // IMPORTANT: this 'Population' class is legacy! (before adoption of -fconcepts)
-// So, it's not supposed to support 'getP' or XES structure...
+// So, it's not supposed to support 'at' for XES structure...
 // it only holds separated Solution and Evaluation containers
 // Next static compilation should fail!
 
 // compilation tests
+//static_assert(!X2ESolution<Population< std::pair<Solution<double>, Evaluation<double>> >, std::pair<Solution<double>, Evaluation<double>>>);
 static_assert(X2ESolution<Population< std::pair<Solution<double>, Evaluation<double>> >, std::pair<Solution<double>, Evaluation<double>>>);
 
 // population compilation tests (these are NOT unit tests)

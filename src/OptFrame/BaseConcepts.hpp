@@ -385,7 +385,15 @@ concept
    }
    -> my_convertible_to<P>;
    */
-};
+}
+/*
+|| requires(Self a, size_t idx)
+   {
+      a.getP(idx) // abandoning 'getP' in favor of 'at'... for compatibility with 'vector'
+   }
+   -> my_convertible_to<P>;
+   */
+;
 // TODO: powerset could return a 'size'(or 'count'), and perhaps a vector (or iterator) of objects for type P
 
 // now redefining X2Solution more beautifully...
