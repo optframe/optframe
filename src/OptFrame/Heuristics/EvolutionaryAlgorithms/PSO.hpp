@@ -123,6 +123,7 @@ public:
          for (unsigned j = 0; j < this->cI.size(); j++) {
             b.position[j] = this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01();
             b.velocity[j] = 0.1 * (this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01());
+            b.localbest[j] = b.position[j];
          }
          // add bird to swarm (no evaluation is given)
          swarm.push_back(b);
