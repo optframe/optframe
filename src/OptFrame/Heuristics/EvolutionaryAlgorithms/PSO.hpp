@@ -213,8 +213,8 @@ class PSO : public SingleObjSearch<XES, XES2, XSH2>
    using XSH = XES;
 
 private:
-    RandGen& rg;
-
+   Bird Global;
+   
 protected:
    Evaluator<S, XEv, XES>& evaluator; // Check to avoid memory leaks
    //InitialPopulation<XES2>& initPop; // TODO: add if necessary
@@ -312,9 +312,46 @@ public:
         BoundCheck()
       }
       
-      // count generations
+       // count generations
       int count_gen = 0;
+      
+      while (count_gen < iter_max)
+      {
 
+      // Global Best Maintenance
+      for (unsigned i = 0; i<this->pop_size; i++)
+      {
+         if (evaluator(swarm[i].localbest) < evaluator(Global)))
+            Global = swarm[i];
+      }
+
+      // Particle update
+      for (unsigned i = 0; i<this->pop_size; i++)
+      {
+         Bird& b = swarm[i]
+         for (unsigned j = 0; j<this->cS.size(); j++)
+         {
+            b.position[j] += b.velocity[j]
+         }
+         BoundCheck(b)
+         if (evaluator(b.position) < evaluator(b.localbest)))
+            b.localbest = b.position
+      }
+      
+      // Speed update
+      for (unsigned i = 0; i<this->pop_size; i++)
+      {
+         Bird& b = swarm[i]
+         for (unsigned j = 0; j<this->cS.size(); j++)
+         {
+            b.velocity = (0.25 + this->rg.rand01() / 2) * b.velocity + 1.5 * this->rg.rand01() * (b.localbest - b.position)
+                                                                     + 1.5 * this->rg.rand01() * (Global.localbest - b.position)
+         }
+      }
+
+      count_gen ++;
+      }  //while count_gen
+      
       // This is where magic happens...
 
       this->best = star;
