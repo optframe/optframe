@@ -119,6 +119,8 @@ protected:
    vector<double> cI;
    // -> Vector con los topes superiores de los parámetros
    vector<double> cS;
+   // number of variables to optimize
+   int nVars; 
    // random number generator
    RandGen& rg;
 
@@ -131,6 +133,8 @@ public:
      , cS(cS)
      , rg{ _rg }
    {
+      assert(cI.size() == cS.size());
+      this->nVars = cI.size();
    }
 
    virtual ~PSO()
@@ -154,6 +158,8 @@ public:
       int count_gen = 0;
 
       // This is where magic happens...
+
+      // 'this->nVars' contains the number of variables to optimize, according to cI and cS limits
 
       this->best = star;
       return SearchStatus::NO_REPORT;
