@@ -173,7 +173,7 @@ public:
                                << std::endl;
 
       // beware that 'star' may not be a Bird...
-      op<XES>& star = this->best;
+      ///op<XES>& star = this->best;
 
       // check if time/target conditions are met
       if (stopCriteria.shouldStop(std::nullopt))
@@ -231,39 +231,42 @@ public:
             // After updating, check to see if there's local upgrades
             boundCheck(b);
             // execute evaluation function
-            //XEv e = evaluator.evaluate(b);
-            //swarm.setFitness(i, e);
-            //if (evaluator(b.position) < evaluator(b.localbest)))
-            //b.localbest = b.position;
-         }
+            // IMPORTANT: we are keeping 'localbest' as the real value of the particle
 
-         // evaluate each bird and update best
-         int localBest = -1;
-         for (unsigned i = 0; i < this->pop_size; i++) {
-            Bird& b = swarm.at(i).first;
-            // execute evaluation function
             XEv e = evaluator.evaluate(b.position);
-            swarm.setFitness(i, e);
-            // check if improves local best
-            if (
-              (localBest < 0) ||
-              (evaluator.betterThan(e, swarm.getFitness(localBest)))) {
-               localBest = i;
+            //swarm.setFitness(i, e);
+
+            if (evaluator.betterThan(e, swarm.getFitness(i))) {
+               // updates 'localbest'
+               b.localbest = b.position;
+               // updates value of localbest
+               swarm.setFitness(i, e);
+               // updates global best if improving (TODO: maybe it's nice here...)
+               //if (evaluator.betterThan(e, global.second))
+               //   global = swarm.at(i);
             }
          }
 
          // Speed update
          for (unsigned i = 0; i < this->pop_size; i++) {
             Bird& b = swarm.at(i).first;
+            //p.v =  p.v * al( 0.25, 0.75 ) +
+            //       al( 0, 1.5 ) * ( p.best - p.params ) +
+            //       al( 0, 1.5 ) * ( gb[ 0 ] - p.params )
             for (unsigned j = 0; j < this->cS.size(); j++) {
                b.velocity[j] =
-                 (0.25 + this->rg.rand01() / 2) * b.velocity[j] + 1.5 * this->rg.rand01() * (swarm.at(localBest).first.position[j] - b.position[j]) + 1.5 * this->rg.rand01() * (global.first.position[j] - b.position[j]);
+                 (0.25 + this->rg.rand01() / 2) * b.velocity[j] +                       // p1
+                 1.5 * this->rg.rand01() * (b.localbest[j] - b.position[j]) +           // p2
+                 1.5 * this->rg.rand01() * (global.first.localbest[j] - b.position[j]); // p3
             }
          }
 
          // Global Best Maintenance
-         if (evaluator.betterThan(swarm.getFitness(localBest), global.second))
-            global = swarm.at(localBest);
+         for (unsigned i = 0; i < this->pop_size; i++) {
+            // compares value with global
+            if (evaluator.betterThan(swarm.getFitness(i), global.second))
+               global = swarm.at(i);
+         }
          //if (
          //  !star ||
          //  (evaluator.betterThan(swarm.getFitness(localBest), star->second))) {
@@ -275,7 +278,9 @@ public:
 
       // This is where magic happens...
 
-      this->best = star;
+      XSH realBest(global.first.localbest, global.second);
+
+      this->best = std::make_optional(realBest);
       return SearchStatus::NO_REPORT;
    }
 
