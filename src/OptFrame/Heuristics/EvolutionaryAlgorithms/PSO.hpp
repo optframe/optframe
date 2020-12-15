@@ -95,7 +95,7 @@ template<
   optframe::comparability KeyType = double,
   XEvaluation XEv = Evaluation<>,
   XESolution XES = std::pair<std::vector<KeyType>, XEv>,
-  XESolution XES2 = std::pair<Bird, Evaluation<>>, // now it's useful, thanks to Fellipe
+  XESolution XES2 = std::pair<Bird, Evaluation<>>,
   XSearch<XES2> XSH2 = Population<XES2>>
 class PSO : public SingleObjSearch<XES, XES2, XSH2>
   , public IPopulational<XES, XES, XES2>
