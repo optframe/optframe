@@ -124,8 +124,8 @@ public:
          b.velocity = std::vector<double>(this->cI.size(), 0.0);
          b.position = std::vector<double>(this->cI.size(), 0.0);
          for (unsigned j = 0; j < this->cI.size(); j++) {
-            b.position[j] = this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01();
-            b.velocity[j] = 0.1 * (this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01());
+            b.position[j] = this->cI[j] + (this->cS[j] - this->cI[j]) * rg.rand01();
+            b.velocity[j] = 0.1 * (this->cI[j] + (this->cS[j] - this->cI[j]) * rg.rand01());
          }
          b.localbest = b.position;
          // add bird to swarm (no evaluation is given)
@@ -224,8 +224,8 @@ public:
             // 0.1 chance of generating a random guy
             if (rg.rand01() < 0.1) {
                for (unsigned j = 0; j < this->cS.size(); j++) {
-                  b.position[j] = this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01();
-                  b.velocity[j] = 0.1 * (this->cI[j] + (this->cS[i] - this->cI[i]) * rg.rand01());
+                  b.position[j] = this->cI[j] + (this->cS[j] - this->cI[j]) * rg.rand01();
+                  b.velocity[j] = 0.1 * (this->cI[j] + (this->cS[j] - this->cI[j]) * rg.rand01());
                }
             } else {
                // 0.9 chance to just update the particle
@@ -263,9 +263,9 @@ public:
             //       al( 0, 1.5 ) * ( gb[ 0 ] - p.params )
             for (unsigned j = 0; j < this->cS.size(); j++) {
                b.velocity[j] =
-                 (0.25 + this->rg.rand01() / 2) * b.velocity[j] +                       // p1
-                 1.5 * this->rg.rand01() * (b.localbest[j] - b.position[j]) +           // p2
-                 1.5 * this->rg.rand01() * (global.first.localbest[j] - b.position[j]); // p3
+                 (0.15 + this->rg.rand01() / 2) * b.velocity[j] +                       // p1
+                 0.9 * this->rg.rand01() * (b.localbest[j] - b.position[j]) +           // p2
+                 0.9 * this->rg.rand01() * (global.first.localbest[j] - b.position[j]); // p3
             }
          }
 
