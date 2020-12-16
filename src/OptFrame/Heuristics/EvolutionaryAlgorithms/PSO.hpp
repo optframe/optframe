@@ -201,8 +201,11 @@ public:
       XES2 global = swarm.at(0);
       for (unsigned i = 1; i < this->pop_size; i++) {
          // compares localbest of every particle with global best
-         if (evaluator.betterThan(swarm.getFitness(i), global.second))
+         if (evaluator.betterThan(swarm.getFitness(i), global.second)) {
             global = swarm.at(i);
+            if (Component::debug)
+               (*Component::logdata) << "PSO updates best: " << global.second.evaluation() << std::endl;
+         }
       }
 
       // count generations
@@ -210,6 +213,9 @@ public:
 
       // main loop
       while (count_gen < iter_max) {
+         // print iteration debug messages
+         if (Component::debug)
+            (*Component::logdata) << "PSO count_gen = " << count_gen << " < " << iter_max << " = iter_max \t global = " << global.second.evaluation() << std::endl;
          // Particle update
          for (unsigned i = 0; i < this->pop_size; i++) {
             Bird& b = swarm.at(i).first;
@@ -265,8 +271,11 @@ public:
          // Global Best Maintenance
          for (unsigned i = 0; i < this->pop_size; i++) {
             // compares value with global
-            if (evaluator.betterThan(swarm.getFitness(i), global.second))
+            if (evaluator.betterThan(swarm.getFitness(i), global.second)) {
                global = swarm.at(i);
+               if (Component::debug)
+                  (*Component::logdata) << "PSO updates best: " << global.second.evaluation() << std::endl;
+            }
          }
          //if (
          //  !star ||
