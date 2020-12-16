@@ -124,8 +124,8 @@ public:
          b.velocity = std::vector<double>(this->cI.size(), 0.0);
          b.position = std::vector<double>(this->cI.size(), 0.0);
          for (unsigned j = 0; j < this->cI.size(); j++) {
-            b.position[j] = this->cI[j] + (this->cS[j] - this->cI[j]) * rg.rand01();
-            b.velocity[j] = 0.1 * (this->cI[j] + (this->cS[j] - this->cI[j]) * rg.rand01());
+            b.position[j] = runif(this->cI[j], this->cS[j]);
+            b.velocity[j] = 0.1 * runif(this->cI[j], this->cS[j]);
          }
          b.localbest = b.position;
          // add bird to swarm (no evaluation is given)
@@ -155,8 +155,8 @@ public:
       while (count < this->cS.size()) {
          if (b.position[count] < cI[count] || b.position[count] > cS[count]) {
             for (unsigned j = 0; j < this->cS.size(); j++) {
-               b.position[j] = this->cI[j] + (this->cS[j] - this->cI[j]) * rg.rand01();
-               b.velocity[j] = 0.1 * (this->cI[j] + (this->cS[j] - this->cI[j]) * rg.rand01());
+               b.position[j] = runif(this->cI[j], this->cS[j]);
+               b.velocity[j] = 0.1 * runif(this->cI[j], this->cS[j]);
             }
             break;
          }
@@ -167,6 +167,14 @@ public:
    virtual ~PSO()
    {
       // nothing to delete... NICE!
+   }
+
+   // uniform random between interval
+   double runif(double a, double b)
+   {
+      if (a == b)
+         return a;
+      return a + (b - a) * rg.rand01();
    }
 
    SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
@@ -224,8 +232,8 @@ public:
             // 0.1 chance of generating a random guy
             if (rg.rand01() < 0.1) {
                for (unsigned j = 0; j < this->cS.size(); j++) {
-                  b.position[j] = this->cI[j] + (this->cS[j] - this->cI[j]) * rg.rand01();
-                  b.velocity[j] = 0.1 * (this->cI[j] + (this->cS[j] - this->cI[j]) * rg.rand01());
+                  b.position[j] = runif(this->cI[j], this->cS[j]);
+                  b.velocity[j] = 0.1 * runif(this->cI[j], this->cS[j]);
                }
             } else {
                // 0.9 chance to just update the particle
