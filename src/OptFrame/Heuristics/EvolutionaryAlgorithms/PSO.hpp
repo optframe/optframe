@@ -26,6 +26,7 @@
 #include "../../IPopulational.hpp"
 ///#include "../../InitialPopulation.h"
 #include "../../EPopulation.hpp"
+#include "../../RandGen.hpp"
 #include "../../SingleObjSearch.hpp"
 
 #include "../../Util/printable.h" // TODO: remove!
@@ -68,7 +69,7 @@ template<
   XEvaluation XEv = Evaluation<>,
   XESolution XES = std::pair<std::vector<double>, XEv>,
   XESolution XES2 = std::pair<Bird, Evaluation<>>,
-  XSearch<XES2> XSH2 = Population<XES2>>
+  XSearch<XES2> XSH2 = EPopulation<XES2>>
 class PSO : public SingleObjSearch<XES, XES2, XSH2>
 // TODO: add IPopulational
 //, public IPopulational<XES, XES, XES2>
