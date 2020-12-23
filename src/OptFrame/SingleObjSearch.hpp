@@ -73,10 +73,6 @@ public:
    {
    }
 
-   op<XSH>& getBestSolution()
-   {
-      return this->best;
-   }
 
    // search method try to find a feasible solution within timelimit, if there is no such solution it returns nullptr.
    //virtual pair<S, XEv>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const XEv* _e = nullptr) = 0;
@@ -88,7 +84,9 @@ public:
    //virtual SearchStatus search(op<XSH>& inputOutput, const StopCriteria<XEv>& stopCriteria) = 0;
    //
    // inputOutput now passed directly on local variable 'this->best'
-   virtual SearchStatus search(const StopCriteria<XEv>& stopCriteria) = 0;
+   //
+   //virtual SearchStatus search(const StopCriteria<XEv>& stopCriteria) = 0;
+   virtual SearchOutput<XES> search(const StopCriteria<XEv>& stopCriteria) override = 0;
    
 
    virtual string log() const

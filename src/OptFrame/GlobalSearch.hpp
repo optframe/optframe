@@ -32,6 +32,8 @@
 #include "InitialSearch.hpp"
 #include "StopCriteria.hpp"
 
+#include "SearchOutput.hpp"
+
 using namespace std;
 
 namespace optframe {
@@ -52,16 +54,19 @@ class GlobalSearch : public Component
 
 public:
    // best known XSH object: solution/pareto/etc
-   std::optional<XSH> best;
+   //std::optional<XSH> best;
    // current/working XSH2 object: population/etc
-   std::optional<XSH2> incumbent;
+   //std::optional<XSH2> incumbent;
    // ----------
    //
    // callback action 'onBest' is triggered after best is updated (if 'beforeUpdateBest' is required some day, think about it.. not now)
    // returning 'false' should lead to aborting execution (by target, for instance)
    //
-   bool (*onBest)(GlobalSearch<XES, XSH, XES2, XSH2>& self) = [](GlobalSearch<XES, XSH, XES2, XSH2>& self) { return true; };
-   bool (*onIncumbent)(GlobalSearch<XES, XSH, XES2, XSH2>& self) = [](GlobalSearch<XES, XSH, XES2, XSH2>& self) { return true; };
+   bool (*onBest)(GlobalSearch<XES, XSH, XES2, XSH2>& self, const XSH& best) =
+     [](GlobalSearch<XES, XSH, XES2, XSH2>& self, const XSH& best) { return true; };
+   //
+   bool (*onIncumbent)(GlobalSearch<XES, XSH, XES2, XSH2>& self, const XSH2& incumbent) =
+     [](GlobalSearch<XES, XSH, XES2, XSH2>& self, const XSH2& incumbent) { return true; };
    // strict or non-strict search
    bool strict{ true };
 
@@ -74,14 +79,16 @@ public:
    }
 
    // Assuming method is not thread-safe. Now, we can easily use flag SearchStatus::RUNNING.
-   virtual SearchStatus search(const StopCriteria<XEv>& stopCriteria) = 0;
+   virtual SearchOutput<XES, XSH> search(const StopCriteria<XEv>& stopCriteria) = 0;
 
+/*
    virtual SearchStatus searchBy(std::optional<XSH>& _best, std::optional<XSH2>& _inc, const StopCriteria<XEv>& stopCriteria)
    {
       best = _best;
       incumbent = _inc;
       return search(stopCriteria);
    }
+*/
 
    virtual string log() const
    {

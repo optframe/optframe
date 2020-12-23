@@ -55,6 +55,7 @@ int
 main()
 {
    int seed = 1000012345;
+   seed = time(NULL);
 
    // Particle Swarm Optimization
    // PSO(Evaluator<S, XEv, XES>& evaluator, unsigned pop_size, unsigned iter_max, vector<double> cI, vector<double> cS, RandGen& _rg)
@@ -77,8 +78,8 @@ main()
 
    auto statusPSO = myPSO.search(5.0); // 5.0 seconds max
 
-   std::cout << "BEST = " << myPSO.best->second.evaluation()
-             << " sol: " << myPSO.best->first << std::endl;
+   std::cout << "BEST = " << statusPSO.best->second.evaluation()
+             << " sol: " << statusPSO.best->first << std::endl;
 
    return 0;
 }

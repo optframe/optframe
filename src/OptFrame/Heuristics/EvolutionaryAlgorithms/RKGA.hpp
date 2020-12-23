@@ -234,25 +234,47 @@ public:
       return *v; // TODO: return by std::move() or unique_ptr
    }
 
+   // PSO Execution Context
+   struct ExecutionContext
+   {
+      // self reference can be very useful
+      RKGA* self;
+      // TODO: add more variables with desired access on callbacks
+      int count_gen;
+   };
+
+   // override callbacks (similar to "double-dispatch", but hiding with inheritance)
+   bool (*onBest)(ExecutionContext& ctx, const XSH& best) =
+     [](ExecutionContext& ctx, const XSH& best) { return true; };
+   //
+   bool (*onIncumbent)(ExecutionContext& ctx, const XSH2& incumbent) =
+     [](ExecutionContext& ctx, const XSH2& incumbent) { return true; };
+
    //pair<CopySolution<random_keys>&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const CopySolution<random_keys>* _s = nullptr, const Evaluation<>* _e = nullptr)
    ///virtual pair<CopySolution<random_keys>, XEv>* search(StopCriteria<XEv>& stopCriteria, const CopySolution<random_keys>* _s = nullptr, const XEv* _e = nullptr) override
    //virtual pair<XRS, XEv>* search(StopCriteria<XEv>& stopCriteria, const XRS* _s = nullptr, const XEv* _e = nullptr) override
    //
    //virtual std::optional<pair<XRS, XEv>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
+   //
+   //SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
+   //
+   SearchOutput<XES> search(const StopCriteria<XEv>& stopCriteria) override
    {
+      ExecutionContext ctx {.self = this};
+
       if (Component::debug)
          (*Component::logdata) << "RKGA search():"
                                << " key_size=" << key_size << " popSize=" << popSize << " eliteSize=" << eliteSize << " randomSize=" << randomSize << " numGenerations=" << numGenerations
                                << std::endl;
 
-      op<XES>& star = this->best;
+      //op<XES>& star = this->best;
+      op<XES> star;
       // check if time/target conditions are met
       if (stopCriteria.shouldStop(std::nullopt))
          return SearchStatus::NO_REPORT;
 
       // count generations
-      int count_gen = 0;
+      ctx.count_gen = 0;
 
       if (Component::debug)
          (*Component::logdata) << "RKGA: will initPop.generatePopulation(popSize=" << popSize << ")" << std::endl;
@@ -279,7 +301,7 @@ public:
          (*Component::logdata) << "RKGA: will trigger onIncumbent(p)" << std::endl;
 
       // trigger onIncumbent
-      if (!this->onIncumbent(*this))
+      if (!this->onIncumbent(ctx, p))
          return SearchStatus::NO_REPORT;
 
       if (Component::debug)
@@ -291,13 +313,13 @@ public:
 
       // stop by number of generations.
       // other stopping criteria? TIME, GAP, ...
-      while (count_gen < int(numGenerations)) {
+      while (ctx.count_gen < int(numGenerations)) {
          // check if time/target conditions are met
          if (stopCriteria.shouldStop(std::nullopt))
             return SearchStatus::NO_REPORT;
 
          if (Component::debug)
-            (*Component::logdata) << "RKGA: count_gen=" << count_gen << " < " << numGenerations << "=numGenerations" << std::endl;
+            (*Component::logdata) << "RKGA: count_gen=" << ctx.count_gen << " < " << numGenerations << "=numGenerations" << std::endl;
 
          if (Component::debug)
             (*Component::logdata) << "RKGA: will initPop.generatePopulation(randomSize=" << randomSize << ")" << std::endl;
@@ -357,7 +379,7 @@ public:
             (*Component::logdata) << "RKGA: will trigger onIncumbent(p)" << std::endl;
 
          // trigger onIncumbent
-         if (!this->onIncumbent(*this))
+         if (!this->onIncumbent(ctx, p))
             return SearchStatus::NO_REPORT;
 
          evtype pop_best = p.getSingleFitness(0);
@@ -365,14 +387,14 @@ public:
          if ((decoder.isMinimization() && pop_best < best_f) || (!decoder.isMinimization() && pop_best > best_f)) {
             best_f = pop_best;
             if (Component::debug)
-               (*Component::logdata) << "RKGA: best fitness " << best_f << " at generation " << count_gen << endl;
+               (*Component::logdata) << "RKGA: best fitness " << best_f << " at generation " << ctx.count_gen << endl;
 
             // send machine logs (TODO: check which format... txt, json... suppose 'txt')
             if (Component::mlog)
                (*Component::mlog) << "RKGA_best"
                                   << "\t" << best_f << "\t"
                                   << "gen"
-                                  << "\t" << count_gen << std::endl;
+                                  << "\t" << ctx.count_gen << std::endl;
 
             // TODO: do we need to decode this all the time, or only when exiting?
             RSK& best_rkeys = p.at(0);
@@ -380,12 +402,12 @@ public:
             if (pe.second) {
                star = op<XES>(XES{ *pe.second, pe.first });
                // check update callback
-               if (!this->onBest(*this))
+               if (!this->onBest(ctx, *star))
                   return SearchStatus::NO_REPORT;
             }
          } // end if
 
-         count_gen++;
+         ctx.count_gen++;
       } // end while
 
       if (Component::debug)
@@ -423,21 +445,24 @@ public:
 
       //return std::optional<pair<XRS, XEv>>(make_pair(finalSol, e));
       star = make_optional(make_pair(finalSol, e));
-      this->best = star;
-      return SearchStatus::NO_REPORT;
+      //this->best = star;
+      return {SearchStatus::NO_REPORT, *star};
    }
 
    // reimplementing searchBy, just to make it more explicit (visible)
    // maybe add some specific logs?
+   //
+   /*
    virtual SearchStatus searchBy(
      std::optional<XSH>& _best,
      std::optional<XSH2>& _inc,
-     const StopCriteria<XEv>& stopCriteria) override
+     const StopCriteria<XEv>& stopCriteria) //override
    {
       this->best = _best;
       this->incumbent = _inc;
       return search(stopCriteria);
    }
+   */
 
    virtual bool
    setSilentR() override

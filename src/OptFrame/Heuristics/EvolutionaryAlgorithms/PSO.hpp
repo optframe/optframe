@@ -177,8 +177,27 @@ public:
       return a + (b - a) * rg.rand01();
    }
 
-   SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
+   // PSO Execution Context
+   struct ExecutionContext
    {
+      // self reference can be very useful
+      PSO* self;
+      // TODO: add more variables with desired access on callbacks
+      int count_gen;
+   };
+
+   // override callbacks (similar to "double-dispatch", but hiding with inheritance)
+   bool (*onBest)(ExecutionContext& ctx, const XSH& best) =
+     [](ExecutionContext& ctx, const XSH& best) { return true; };
+   //
+   bool (*onIncumbent)(ExecutionContext& ctx, const XSH2& incumbent) =
+     [](ExecutionContext& ctx, const XSH2& incumbent) { return true; };
+
+   //SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
+   SearchOutput<XES> search(const StopCriteria<XEv>& stopCriteria) override
+   {
+      ExecutionContext ctx {.self = this};
+
       if (Component::debug)
          (*Component::logdata) << "PSO search():"
                                << " pop_size=" << pop_size << " iter_max=" << iter_max
@@ -299,21 +318,25 @@ public:
 
       XSH realBest(global.first.localbest, global.second);
 
-      this->best = std::make_optional(realBest);
-      return SearchStatus::NO_REPORT;
+      //this->best = std::make_optional(realBest);
+      //return SearchStatus::NO_REPORT;
+      return {SearchStatus::NO_REPORT, std::make_optional(realBest)};
    }
 
    // reimplementing searchBy, just to make it more explicit (visible)
    // maybe add some specific logs?
+   //
+   /*
    virtual SearchStatus searchBy(
      std::optional<XSH>& _best,
      std::optional<XSH2>& _inc,
-     const StopCriteria<XEv>& stopCriteria) override
+     const StopCriteria<XEv>& stopCriteria) //override
    {
       this->best = _best;
       this->incumbent = _inc;
       return search(stopCriteria);
    }
+   */
 
    virtual bool
    setSilentR() override
