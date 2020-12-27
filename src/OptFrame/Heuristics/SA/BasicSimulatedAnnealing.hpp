@@ -158,9 +158,10 @@ public:
    //pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr,  const Evaluation<>* _e = nullptr)
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
 
-   SearchStatus search(const StopCriteria<XEv>& sosc) override
+   SearchOutput<XES, XSH> search(const StopCriteria<XEv>& sosc) override
    {
-      op<XES>& star = this->best;
+      //op<XES>& star = this->best;
+      op<XES> star = std::nullopt;
       double timelimit = sosc.timelimit;
 
       //XEv target_f(stop.target_f); // 'target_f' will break... removing
@@ -277,19 +278,20 @@ public:
       //return new pair<S, Evaluation<>> (s, e);
       //
       //return make_optional(star);
-      this->best = star;
-      return SearchStatus::NO_REPORT;
+      //this->best = star;
+      return {SearchStatus::NO_REPORT, star};
    }
 
    // reimplementing searchBy, just to make it more explicit (visible)
    // maybe add some specific logs?
-   virtual SearchStatus searchBy(
+   virtual SearchOutput<XES, XSH> searchBy(
      std::optional<XES>& _best,
      std::optional<XES>& _inc,
      const StopCriteria<XEv>& stopCriteria) override
    {
-      this->best = _best;
-      this->incumbent = _inc;
+      assert(false); // TODO: implement... and check if 'best' and 'incumbent' are both useful and necessary!
+      //this->best = _best;
+      //this->incumbent = _inc;
       return search(stopCriteria);
    }
 

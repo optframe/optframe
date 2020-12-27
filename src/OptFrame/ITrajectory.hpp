@@ -21,6 +21,7 @@
 #ifndef OPTFRAME_ITRAJECTORY_HPP_
 #define OPTFRAME_ITRAJECTORY_HPP_
 
+#include "SearchOutput.hpp"
 #include "StopCriteria.hpp"
 
 namespace optframe {
@@ -37,10 +38,10 @@ class ITrajectory // do not inherit here!
 
 public:
    // global search method (maybe, someday, create some abstract IGlobalSearch.. not now)
-   virtual SearchStatus search(const StopCriteria<XEv>& stopCriteria) = 0;
+   virtual SearchOutput<XES, XSH> search(const StopCriteria<XEv>& stopCriteria) = 0;
 
    // virtual method with search signature for trajectory methods
-   virtual SearchStatus searchBy(
+   virtual SearchOutput<XES, XSH> searchBy(
      std::optional<XSH>& _best,
      std::optional<XSH>& _inc,
      const StopCriteria<XEv>& stopCriteria) = 0;

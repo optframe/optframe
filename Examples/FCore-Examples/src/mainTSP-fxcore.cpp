@@ -54,8 +54,8 @@ main()
    BasicSimulatedAnnealing<ESolutionTSP> sa{
       ev, initRand, swapFancy, 0.98, 100, 99999, rg
    };
-   SearchStatus status = sa.search(StopCriteria<ESolutionTSP::second_type>{ 10.0 }); // 10.0 seconds max
-   ESolutionTSP best = *sa.getBestSolution();
+   auto status = sa.search(StopCriteria<ESolutionTSP::second_type>{ 10.0 }); // 10.0 seconds max
+   ESolutionTSP best = *status.best;//*sa.getBestSolution();
    // best solution value
    best.second.print();
 
