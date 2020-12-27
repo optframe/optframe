@@ -4,7 +4,7 @@ cc_binary(
     name = "app_KP01_generic",
     srcs = [
         "src/solver_kp01_generic/mainSolverKP.cpp",
-        "src/solver_kp01_generic/solver_kp01_generic.cpp",
+        "src/solver_kp01_generic/solver_kp01_generic.cpp",  # must include library impl
     ],
     copts = [
         "-std=c++17",
@@ -12,41 +12,55 @@ cc_binary(
         "-Wfatal-errors",
     ],
     deps = [
-        "lib_solver_kp01_generic",
+        "solver_kp01_generic_lib",
         "@OptFrame//src:OptFCore",
     ],
 )
 
-cc_library(
-    name = "lib_solver_kp01_generic",
-    hdrs = ["src/solver_kp01_generic/solver_kp01_generic.h"],
-    strip_include_prefix = "src/",
-    deps = ["solver_kp01_generic"],
+# this is a shared library
+cc_binary(
+    name = "solver_kp01_generic",
+    copts = [
+        "-std=c++17",
+        "-fconcepts",
+        "-Wfatal-errors",
+    ],
+    linkshared = 1,
+    deps = ["solver_kp01_generic_lib"],  # just include lib files here
 )
 
+# this library is not a binary! see version with linkshared=1
 cc_library(
-    name = "solver_kp01_generic",
-    ##srcs = ["TSP-fcore.hpp"],
-    #include_prefix="OptFCore",
-    #hdrs = glob(["**/*.hpp"]),
+    name = "solver_kp01_generic_lib",
+    hdrs = [
+        "src/solver_kp01_generic/solver_kp01_generic.cpp",
+        "src/solver_kp01_generic/solver_kp01_generic.h",
+    ],
+    strip_include_prefix = "src/",
+    deps = [
+        "solver_kp01_generic_hpp",
+        "@OptFrame//src:OptFCore",
+    ],
+)
+
+# these are all important included files
+cc_library(
+    name = "solver_kp01_generic_hpp",
     hdrs = glob([
         "src/solver_kp01_generic/**/*.hpp",
     ]),
-    #include_prefix = "nlohmann/",
     strip_include_prefix = "src/",
-    #hdrs = ["FCore.hpp", "FConstructive.hpp"]
-    deps = ["nlohmann"],
+    deps = [
+        "nlohmann",
+        "@OptFrame//src:OptFCore",
+    ],
 )
 
+# thirdparty json library
 cc_library(
     name = "nlohmann",
-    ##srcs = ["TSP-fcore.hpp"],
-    #include_prefix="OptFCore",
-    #hdrs = glob(["**/*.hpp"]),
     hdrs = glob([
         "libs/nlohmann/**/*.hpp",
     ]),
-    #include_prefix = "nlohmann/",
     strip_include_prefix = "libs/",
-    #hdrs = ["FCore.hpp", "FConstructive.hpp"]
 )
