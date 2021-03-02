@@ -115,7 +115,7 @@ using namespace optframe;
 using namespace scannerpp;
 using namespace TSP_brkga;
 
-class MyRandomKeysInitPop : public InitialPopulation<std::vector<double>, Evaluation<double>>
+class MyRandomKeysInitPop : public InitialPopulation<std::pair<std::vector<double>, Evaluation<double>>>
 {
    using RSK = std::vector<double>;
 
@@ -128,9 +128,9 @@ public:
    {
    }
 
-   Population<RSK, Evaluation<double>> generatePopulation(unsigned populationSize, double timelimit) override
+   Population<std::pair<RSK, Evaluation<double>>> generatePopulation(unsigned populationSize, double timelimit) override
    {
-      Population<RSK, Evaluation<double>> pop;
+      Population<std::pair<RSK, Evaluation<double>>> pop;
 
       for (unsigned i = 0; i < populationSize; i++) {
          vector<double>* d = new vector<double>(sz);
@@ -153,22 +153,28 @@ main()
    pTSP.load(scanner);
    std::cout << pTSP.dist << std::endl;
 
-   InitialPopulation<vector<double>, ESolutionTSP::second_type>* initPop =
+   InitialPopulation<std::pair<vector<double>, ESolutionTSP::second_type>>* initPop =
      new MyRandomKeysInitPop(pTSP.n); // passing key_size
 
    // Parameters BRKGA
    // (C1): Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
 
+   DecoderRandomKeys<ESolutionTSP::first_type, ESolutionTSP::second_type, double>& _decoder = decoder;
+   InitialPopulation<std::pair<vector<double>, ESolutionTSP::second_type>>& _initPop = *initPop;
+
+   RandGen rg;
+   
    //eprk, pTSP.n, 1000, 30, 0.4, 0.3, 0.6
    BRKGA<ESolutionTSP, double> brkga(
-     decoder,
-     *initPop,
+     _decoder,
+     _initPop,
      pTSP.n,
      1000,
      30,
      0.4,
      0.3,
-     0.6);
+     0.6,
+     rg);
 
    std::cout << "FINISHED" << std::endl;
    return 0;
