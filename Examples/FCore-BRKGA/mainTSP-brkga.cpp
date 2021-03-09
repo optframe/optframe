@@ -146,7 +146,7 @@ public:
 int
 main()
 {
-   srand(0); // using system random (weak... just an example!)
+   RandGen rg;  // avoids weird windows OS interactions
 
    // load data into problem context 'pTSP'
    Scanner scanner{ "3\n1 10 10\n2 20 20\n3 30 30\n" };
@@ -162,8 +162,6 @@ main()
    DecoderRandomKeys<ESolutionTSP::first_type, ESolutionTSP::second_type, double>& _decoder = decoder;
    InitialPopulation<std::pair<vector<double>, ESolutionTSP::second_type>>& _initPop = *initPop;
 
-   RandGen rg;
-   
    //eprk, pTSP.n, 1000, 30, 0.4, 0.3, 0.6
    BRKGA<ESolutionTSP, double> brkga(
      _decoder,
@@ -175,6 +173,10 @@ main()
      0.3,
      0.6,
      rg);
+  
+   SearchOutput<std::pair<std::vector<int>, Evaluation<> >> status = brkga.search(10.0); // 10.0 seconds max
+  
+   delete initPop;
 
    std::cout << "FINISHED" << std::endl;
    return 0;
