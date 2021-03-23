@@ -338,12 +338,14 @@ Bento Gonçalves-RS, pp 1887-1898.
 ```
 
  
---
+## Licence
 
-[**LICENSE GNU Lesser General Public License v3**](https://github.com/optframe/optframe/blob/master/LICENSE)
+- (v4.2+): MIT License
+
+- (<= v4.1): [**LICENSE GNU Lesser General Public License v3**](https://github.com/optframe/optframe/blob/master/LICENSE)
 
 *OptFrame maintainers* [@igormcoelho](https://github.com/igormcoelho) and [@vncoelho](https://github.com/vncoelho)
 
-Copyright (C) 2007-2020
+Copyright (C) 2007-2021
 
 The OptFrame team
