@@ -1,0 +1,14 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "gsl_lib",
+    hdrs = glob([
+        "*",
+    ]),
+    #copts = ['-std=c++17'], # IGNORED BY BAZEL
+    include_prefix = "gsl/",
+)

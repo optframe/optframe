@@ -5,9 +5,14 @@
 
 #include <memory>   // unique_ptr
 #include <optional> // optional
+#include "nnshared/shared.hpp" // "not null shared pointer" library (local copy!)
 
 namespace optframe
 {
+   // "not null shared pointer" shortcut
+   template<class R>
+   using sref = nn::shared<R>;
+   //
 
    // notes: on c++17, we have 'bool' on concept definition, but not on c++20
    // warning: the ‘bool’ keyword is not allowed in a C++20 concept definition

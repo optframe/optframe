@@ -4,6 +4,13 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
+#cc_binary(
+#    name = "app_TSPfcore_sc",
+#    srcs = ["src/mainTSP_fcore_sc.cpp"],
+#    copts = ['-std=c++20', '-fconcepts'],
+#    deps = [":TSPfcore"],
+#)
+
 
 cc_binary(
     name = "app_TSPfcore",
@@ -18,9 +25,9 @@ cc_library(
     deps = ["@OptFrame//src:OptFCore"]
 )
 
-cc_binary(
-    name = "app_TSPfxcore",
-    srcs = ["src/mainTSP-fxcore.cpp", "src/TSP-fxcore.hpp"],
-    copts = ['-std=c++20', '-fcoroutines'],
-    deps = ["@OptFrame//src:OptFCore"]
-)
+#cc_binary(
+#    name = "app_TSPfxcore",
+#    srcs = ["src/mainTSP-fxcore.cpp", "src/TSP-fxcore.hpp"],
+#    copts = ['-std=c++20', '-fcoroutines'],
+#    deps = ["@OptFrame//src:OptFCore"]
+#)

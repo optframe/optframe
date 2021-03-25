@@ -15,6 +15,7 @@ cc_library(
     ]),
     include_prefix = "OptFrame/",
     #hdrs = ["FCore.hpp", "FConstructive.hpp"]
+    deps = ["//libs/gsl:gsl_lib"]
 )
 
 #filegroup(
