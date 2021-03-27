@@ -44,15 +44,19 @@ template<XESolution XES>
 class BasicSimulatedAnnealing : public SingleObjSearch<XES>
   , public ITrajectory<XES>
 {
+
+//
+//private:
+public:
    using XEv = typename XES::second_type;
    using XSH = XES; // XSearch
-private:
-   GeneralEvaluator<XES, XEv>& evaluator;
+   //
+   sref<GeneralEvaluator<XES, XEv>> evaluator;
    //Constructive<S>& constructive; // TODO: this must become InitialSearch, already starting from "optional" XES element.
-   InitialSearch<XES, XEv>& constructive;
+   sref<InitialSearch<XES, XEv>> constructive;
 
-   vector<NS<XES, XEv, XSH>*> neighbors;
-   RandGen& rg;
+   vsref<NS<XES, XEv, XSH>> neighbors;
+   sref<RandGen> rg;
    double alpha;
    int SAmax;
    double Ti;
@@ -71,7 +75,7 @@ public:
       }
    };
 
-private:
+//private:
    /*
    SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES>> defaultStopBy
     {
@@ -81,7 +85,7 @@ private:
    };
 */
 
-private:
+//private:
    //
    double T;
    Timer tnow;
@@ -98,6 +102,7 @@ public:
       return tnow;
    }
 
+   /*
    BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive, vector<NS<XES, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg)
      : evaluator(_evaluator)
      , constructive(_constructive)
@@ -108,16 +113,6 @@ public:
       SAmax = (_SAmax);
       Ti = (_Ti);
    }
-
-   /*
-   BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive, vector<NS<XES, XEv, XSH>*> _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg, SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES>> _spec) :
-		evaluator(_evaluator), constructive(_constructive), neighbors(_neighbors), rg(_rg), specificStopBy(_spec)
-	{
-		alpha = (_alpha);
-		SAmax = (_SAmax);
-		Ti = (_Ti);
-	}
-*/
 
    BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive, NS<XES, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg)
      : evaluator(_evaluator)
@@ -130,20 +125,55 @@ public:
       Ti = (_Ti);
    }
 
-   /*
-	BasicSimulatedAnnealing(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive, NS<XES, XEv, XSH>& _neighbors, double _alpha, int _SAmax, double _Ti, RandGen& _rg, SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES>> _spec) :
-		evaluator(_evaluator), constructive(_constructive), rg(_rg), specificStopBy(_spec)
-	{
-		neighbors.push_back(&_neighbors);
-		alpha = (_alpha);
-		SAmax = (_SAmax);
-		Ti = (_Ti);
-	}
+   */
+
+/*
+src/mainTSP-fcore.cpp:67:4: error: no matching function for call to 'optframe::BasicSimulatedAnnealing<std::pair<std::vector<int>, optframe::Evaluation<> > >::BasicSimulatedAnnealing(optframe::sref<optframe::GeneralEvaluator<std::pair<std::vector<int>, optframe::Evaluation<> >, optframe::Evaluation<>, std::pair<std::vector<int>, optframe::Evaluation<> > > >&, optframe::sref<optframe::BasicInitialSearch<std::pair<std::vector<int>, optframe::Evaluation<> > > >&, optframe::sref<optframe::NSSeq<std::pair<std::vector<int>, optframe::Evaluation<> >, optframe::Evaluation<>, std::pair<std::vector<int>, optframe::Evaluation<> > > >&, double, int, int, optframe::sref<optframe::RandGen>&)'
+   67 |    );
+WHERE IS THE ERROR?
 */
 
-   virtual ~BasicSimulatedAnnealing()
+
+   BasicSimulatedAnnealing(sref<GeneralEvaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive, sref<NS<XES, XEv, XSH>> _neighbors, double _alpha, int _SAmax, double _Ti, sref<RandGen> _rg)
+     : evaluator(_evaluator)
+     , constructive(_constructive)
+     , rg(_rg) //, specificStopBy(defaultStopBy)
    {
+      neighbors.push_back(_neighbors);
+      alpha = (_alpha);
+      SAmax = (_SAmax);
+      Ti = (_Ti);
    }
+
+
+/*
+   BasicSimulatedAnnealing(sref<GeneralEvaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive, vsref<NS<XES, XEv, XSH>> _neighbors, double _alpha, int _SAmax, double _Ti, sref<RandGen> _rg)
+     : evaluator(_evaluator)
+     , constructive(_constructive)
+     , neighbors(_neighbors)
+     , rg(_rg) //, specificStopBy(defaultStopBy)
+   {
+      alpha = (_alpha);
+      SAmax = (_SAmax);
+      Ti = (_Ti);
+   }
+
+
+   BasicSimulatedAnnealing(sref<GeneralEvaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive, sref<NS<XES, XEv, XSH>> _neighbors, double _alpha, int _SAmax, double _Ti, sref<RandGen> _rg)
+     : evaluator(_evaluator)
+     , constructive(_constructive)
+     , rg(_rg) //, specificStopBy(defaultStopBy)
+   {
+      neighbors.push_back(_neighbors);
+      alpha = (_alpha);
+      SAmax = (_SAmax);
+      Ti = (_Ti);
+   }
+*/
+
+   //virtual ~BasicSimulatedAnnealing()
+   //{
+  // }
 
    // TODO: make optional and consider input too (SingleObjSearch helper class)
    /*
@@ -175,7 +205,7 @@ public:
       //pair<S, XEv> se = genPair(timelimit);
       if (!star)
          //star = SingleObjSearch<XES>::genPair(constructive, evaluator, timelimit);
-         star = constructive.initialSearch(sosc).first;
+         star = constructive->initialSearch(sosc).first;
       if (!star)
          return SearchStatus::NO_SOLUTION; // no possibility to continue.
 
@@ -205,7 +235,7 @@ public:
           specificStopBy(*star, sosc, this) ||
           sosc.shouldStop(opEvStar))) {
          while ((iterT < SAmax) && (tnow.now() < timelimit)) {
-            int n = rg.rand(neighbors.size());
+            int n = rg->rand(neighbors.size());
             uptr<Move<XES, XEv, XSH>> move = neighbors[n]->validRandomMove(se); // TODO: pass 'se.first' here (even 'se' should also work...)
 
             if (!move) {
@@ -222,11 +252,11 @@ public:
             XEv& eCurrent = current.second;
 
             move->applyUpdate(current);
-            evaluator.reevaluate(current);
+            evaluator->reevaluate(current);
 
             //if (evaluator.betterThan(eCurrent, e)) // TODO: replace by 'se' here, and use 'se.second' to compare directly
             //if(eCurrent.betterStrict(e))
-            if (evaluator.betterStrict(eCurrent, e)) {
+            if (evaluator->betterStrict(eCurrent, e)) {
                // if improved, accept it
                //e = *eCurrent;
                //s = *sCurrent;
@@ -236,7 +266,7 @@ public:
 
                //if (evaluator.betterThan(e, eStar))
                //if(e.betterStrict(eStar))
-               if (evaluator.betterStrict(e, eStar)) {
+               if (evaluator->betterStrict(e, eStar)) {
                   //delete sStar;
                   //sStar = &s.clone();
                   //delete eStar;
@@ -248,7 +278,7 @@ public:
                }
             } else {
                // 'current' didn't improve, but may accept it anyway
-               double x = rg.rand01();
+               double x = rg->rand01();
                double delta = ::fabs(eCurrent.evaluation() - e.evaluation());
 
                if (x < exp(-delta / T)) {

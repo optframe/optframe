@@ -6,12 +6,19 @@
 #include <memory>   // unique_ptr
 #include <optional> // optional
 #include "nnshared/shared.hpp" // "not null shared pointer" library (local copy!)
+#include <vector> // for vsref
+
+// =========== OUTSIDE optframe scope (to make error tracking easier...) ==========
+// "not null shared pointer" shortcuts
+template<class R>
+using sref = nn::shared<R>;
+//
+template<class R>
+using vsref = std::vector<sref<R>>;
+//
 
 namespace optframe
 {
-   // "not null shared pointer" shortcut
-   template<class R>
-   using sref = nn::shared<R>;
    //
 
    // notes: on c++17, we have 'bool' on concept definition, but not on c++20

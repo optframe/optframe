@@ -10,6 +10,7 @@ namespace nn {
 template<typename T>
 class shared
 {
+   using shared_type = T;
 public:
    gsl::not_null<std::shared_ptr<T>> data_;
 
@@ -58,6 +59,40 @@ public:
       // return dereferenced shared object
       return *data_;
    }
+
+   /*
+   template <typename Z, // assuming Z = shared<Y>
+          typename = typename std::enable_if<
+               std::is_convertible<typename Z::shared_type*, T*>::value
+            >::type
+          >
+   explicit operator shared<typename Z::shared_type>() // explicit? not necessary... (until now)
+   {
+      std::shared_ptr<typename Z::shared_type> py = data_.get(); // remove encapsulation from not_null
+      return py;
+   }
+   */
+
+   template<class Y,
+            typename = typename std::enable_if<
+               std::is_convertible<T*, Y*>::value
+            >::type
+          >
+   operator shared<Y>() // explicit? not necessary... (until now)
+   {
+      std::shared_ptr<Y> py = data_.get(); // remove encapsulation from not_null
+      return py;
+   }
+
+
+   /*
+   template<class Y>
+   operator shared<Y>() // explicit? not necessary... (until now)
+   {
+      std::shared_ptr<Y> py = data_.get(); // remove encapsulation from not_null
+      return py;
+   }
+   */
 };
 
 } // namespace nn

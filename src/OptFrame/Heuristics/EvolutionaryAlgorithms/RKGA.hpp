@@ -111,6 +111,9 @@ class RKGA : public SingleObjSearch<XES, XES2, XSH2>
 protected:
    DecoderRandomKeys<S, XEv, KeyType>& decoder;
    Evaluator<S, XEv>* evaluator; // Check to avoid memory leaks
+   //std::optional<A&>
+   
+
 
    InitialPopulation<XES2>& initPop;
    bool del_initPop{ false }; // Check to avoid memory leaks
