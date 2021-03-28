@@ -63,7 +63,7 @@ public:
    // unified constructors (explicit initPop)
    // to pass 'key_size' just use parameter "_initPop = RandomKeysInitPop(key_size)"
    BRKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, sref<InitialPopulation<XES2>> _initPop, unsigned _popSize, unsigned numGen, double fracTOP, double fracBOT, double _probElitism, sref<RandGen> _rg = new RandGen)
-     : RKGA<XES, KeyType>(_decoder, _initPop, numGen, _popSize, fracTOP, fracBOT, _rg)
+     : RKGA<XES, KeyType>(_decoder, _initPop, _popSize, numGen, fracTOP, fracBOT, _rg)
      , probElitism(_probElitism)
    {
       assert(probElitism > 0.5);
