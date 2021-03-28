@@ -109,17 +109,10 @@ class RKGA : public SingleObjSearch<XES, XES2, XSH2>
    using RSK = typename XES2::first_type;
 
 protected:
-   DecoderRandomKeys<S, XEv, KeyType>& decoder;
-   Evaluator<S, XEv>* evaluator; // Check to avoid memory leaks
-   //std::optional<A&>
-   
-
-
-   InitialPopulation<XES2>& initPop;
-   bool del_initPop{ false }; // Check to avoid memory leaks
-
-   int key_size;
-
+   // decoder function
+   sref<DecoderRandomKeys<S, XEv, KeyType>> decoder;
+   // population generator
+   sref<InitialPopulation<XES2>> initPop; // implicit key_size
    // population size
    unsigned popSize;
    // number of elite individuals
@@ -129,9 +122,41 @@ protected:
    // number of generations (stop criteria)
    unsigned numGenerations;
    // random number generator
-   RandGen& rg;
+   sref<RandGen> rg;
 
 public:
+
+   // unified constructors (receive 'key_size' value)
+   RKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT, sref<RandGen> _rg)
+     : decoder(_decoder)
+     , initPop(new RandomKeysInitPop(key_size, _rg))
+     , popSize(_popSize)
+     , eliteSize(fracTOP * _popSize)
+     , randomSize(fracBOT * _popSize)
+     , numGenerations(numGenerations)
+     , rg{ _rg }
+   {
+      assert(eliteSize < popSize);
+      assert(randomSize + eliteSize < popSize);
+   }
+
+   // unified constructors (receive 'initPop' object)
+   RKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, sref<InitialPopulation<XES2>> _initPop, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT, sref<RandGen> _rg)
+     : decoder(_decoder)
+     , initPop(_initPop)
+     , popSize(_popSize)
+     , eliteSize(fracTOP * _popSize)
+     , randomSize(fracBOT * _popSize)
+     , numGenerations(numGenerations)
+     , rg{ _rg }
+   {
+      assert(eliteSize < popSize);
+      assert(randomSize + eliteSize < popSize);
+   }
+
+
+
+/*
    RKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, InitialPopulation<XES2>& _initPop, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT, RandGen& _rg)
      : decoder(_decoder)
      , evaluator(nullptr)
@@ -201,13 +226,18 @@ public:
       if (del_initPop)
          delete &initPop;
    }
+*/
+
+   virtual ~RKGA()
+   {
+   }
 
    void decodePopulation(Population<XES2>& p)
    {
       for (unsigned i = 0; i < p.size(); ++i) {
          //random_keys& rk = p.at(i).getR();
          random_keys& rk = p.at(i);
-         pair<XEv, op<S>> pe = decoder.decode(rk, false);
+         pair<XEv, op<S>> pe = decoder->decode(rk, false);
          p.setFitness(i, pe.first.evaluation());
 
          if (Component::debug) {
@@ -218,15 +248,19 @@ public:
       }
    }
 
-   virtual RSK& cross(const Population<XES2>& pop) const
+   virtual RSK& cross(const Population<XES2>& pop)
    {
-      assert(key_size > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
+      //assert(key_size > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
 
       const RSK& p1 = pop.at(rand() % pop.size());
       const RSK& p2 = pop.at(rand() % pop.size());
 
-      random_keys* v = new random_keys(key_size, 0.0);
-      for (int i = 0; i < key_size; i++)
+      //random_keys* v = new random_keys(key_size, 0.0);
+      Population<XES2> p_single = initPop->generatePopulation(1, 0.0); // implicit 'key_size'
+      // TODO: should cache 'key_size' to prevent unused rands on generation
+      random_keys* v = new random_keys(p_single.at(0)); // copy or 'move' ?
+      std::fill(v->begin(), v->end(), 0);
+      for (unsigned i = 0; i < v->size(); i++)
          if (rand() % 2 == 0)
             //v->at(i) = p1.getR()[i];
             v->at(i) = p1[i];
@@ -267,7 +301,7 @@ public:
 
       if (Component::debug)
          (*Component::logdata) << "RKGA search():"
-                               << " key_size=" << key_size << " popSize=" << popSize << " eliteSize=" << eliteSize << " randomSize=" << randomSize << " numGenerations=" << numGenerations
+                               << " popSize=" << popSize << " eliteSize=" << eliteSize << " randomSize=" << randomSize << " numGenerations=" << numGenerations
                                << std::endl;
 
       //op<XES>& star = this->best;
@@ -283,7 +317,7 @@ public:
          (*Component::logdata) << "RKGA: will initPop.generatePopulation(popSize=" << popSize << ")" << std::endl;
 
       // initialize population (of random_keys)
-      Population<XES2> p = initPop.generatePopulation(popSize, stopCriteria.timelimit);
+      Population<XES2> p = initPop->generatePopulation(popSize, stopCriteria.timelimit);
 
       if (Component::debug)
          (*Component::logdata) << "RKGA: p.size() = " << p.size() << std::endl;
@@ -295,10 +329,10 @@ public:
       decodePopulation(p);
 
       if (Component::debug)
-         (*Component::logdata) << "RKGA: will p.sort(isMin=" << decoder.isMinimization() << ")" << std::endl;
+         (*Component::logdata) << "RKGA: will p.sort(isMin=" << decoder->isMinimization() << ")" << std::endl;
 
       // sort population
-      p.sort(decoder.isMinimization());
+      p.sort(decoder->isMinimization());
 
       if (Component::debug)
          (*Component::logdata) << "RKGA: will trigger onIncumbent(p)" << std::endl;
@@ -328,7 +362,7 @@ public:
             (*Component::logdata) << "RKGA: will initPop.generatePopulation(randomSize=" << randomSize << ")" << std::endl;
 
          // create mutants in new population
-         Population<XES2> nextPop = initPop.generatePopulation(randomSize, stopCriteria.timelimit);
+         Population<XES2> nextPop = initPop->generatePopulation(randomSize, stopCriteria.timelimit);
 
          if (Component::debug)
             (*Component::logdata) << "RKGA: nextPop.size() = " << nextPop.size() << std::endl;
@@ -373,10 +407,10 @@ public:
          decodePopulation(p);
 
          if (Component::debug)
-            (*Component::logdata) << "RKGA: will p.sort(isMin=" << decoder.isMinimization() << ")" << std::endl;
+            (*Component::logdata) << "RKGA: will p.sort(isMin=" << decoder->isMinimization() << ")" << std::endl;
 
          // sort population
-         p.sort(decoder.isMinimization());
+         p.sort(decoder->isMinimization());
 
          if (Component::debug)
             (*Component::logdata) << "RKGA: will trigger onIncumbent(p)" << std::endl;
@@ -387,7 +421,7 @@ public:
 
          evtype pop_best = p.getSingleFitness(0);
 
-         if ((decoder.isMinimization() && pop_best < best_f) || (!decoder.isMinimization() && pop_best > best_f)) {
+         if ((decoder->isMinimization() && pop_best < best_f) || (!decoder->isMinimization() && pop_best > best_f)) {
             best_f = pop_best;
             if (Component::debug)
                (*Component::logdata) << "RKGA: best fitness " << best_f << " at generation " << ctx.count_gen << endl;
@@ -401,7 +435,7 @@ public:
 
             // TODO: do we need to decode this all the time, or only when exiting?
             RSK& best_rkeys = p.at(0);
-            pair<XEv, op<S>> pe = decoder.decode(best_rkeys, true);
+            pair<XEv, op<S>> pe = decoder->decode(best_rkeys, true);
             if (pe.second) {
                star = op<XES>(XES{ *pe.second, pe.first });
                // check update callback
@@ -414,16 +448,16 @@ public:
       } // end while
 
       if (Component::debug)
-         (*Component::logdata) << "RKGA: will p.sort(isMin=" << decoder.isMinimization() << ")" << std::endl;
+         (*Component::logdata) << "RKGA: will p.sort(isMin=" << decoder->isMinimization() << ")" << std::endl;
 
       // sort to get best (not necessary)
-      p.sort(decoder.isMinimization());
+      p.sort(decoder->isMinimization());
 
       RSK& best = p.remove(0);
 
       // TODO: we should enfoce a boolean here (NEEDS SOLUTION = TRUE!!)
       //pair<XEv, op<S>> pe = decoder.decode(best.getR(), true);
-      pair<XEv, op<S>> pe = decoder.decode(best, true);
+      pair<XEv, op<S>> pe = decoder->decode(best, true);
       Evaluation<>& e = pe.first;
 
       // WARNING: something VERY strange here... why returning random_keys and not elements?
@@ -472,9 +506,9 @@ public:
    {
       this->setSilent();
       // force execution over all components
-      return decoder.setSilentR() &
-             (evaluator ? evaluator->setSilentR() : true) &
-             initPop.setSilentR();
+      return decoder->setSilentR() &
+             //(evaluator ? evaluator->setSilentR() : true) &
+             initPop->setSilentR();
    }
 
    virtual bool
@@ -482,9 +516,9 @@ public:
    {
       this->setVerbose();
       // force execution over all components
-      return decoder.setVerboseR() &
-             (evaluator ? evaluator->setVerboseR() : true) &
-             initPop.setVerboseR();
+      return decoder->setVerboseR() &
+             //(evaluator ? evaluator->setVerboseR() : true) &
+             initPop->setVerboseR();
    }
 };
 

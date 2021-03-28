@@ -59,6 +59,27 @@ protected:
    double probElitism;
 
 public:
+
+   // unified constructors (explicit key_size)
+   BRKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, int key_size, unsigned numGen, unsigned popSize, double fracTOP, double fracBOT, double _probElitism, sref<RandGen> _rg)
+     : RKGA<XES, KeyType>(_decoder, key_size, numGen, popSize, fracTOP, fracBOT, _rg)
+     , probElitism(_probElitism)
+   {
+      assert(probElitism > 0.5);
+      assert(probElitism <= 1.0);
+   }
+
+   // unified constructors (explicit initPop)
+   BRKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, sref<InitialPopulation<XES2>> _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism, sref<RandGen> _rg)
+     : RKGA<XES, KeyType>(_decoder, _initPop, numGen, _popSize, fracTOP, fracBOT, _rg)
+     , probElitism(_probElitism)
+   {
+      assert(probElitism > 0.5);
+      assert(probElitism <= 1.0);
+   }
+
+
+/*
    BRKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, InitialPopulation<XES2>& _initPop, int _key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism, RandGen& _rg)
      : RKGA<XES, KeyType>(_decoder, _initPop, _key_size, numGen, _popSize, fracTOP, fracBOT, _rg)
      , probElitism(_probElitism)
@@ -90,23 +111,29 @@ public:
       assert(probElitism > 0.5);
       assert(probElitism <= 1.0);
    }
+*/
 
    virtual ~BRKGA()
    {
    }
 
-   virtual RSK& cross(const Population<XES2>& pop) const
+   virtual RSK& cross(const Population<XES2>& pop)
    {
       if (Component::debug)
          (*Component::logdata) << "BRKGA cross(|pop|=" << pop.size() << ")" << std::endl;
-      assert(this->key_size > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
+      //assert(this->key_size > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
 
-      const RSK& p1 = pop.at(this->rg.rand() % this->eliteSize);
-      const RSK& p2 = pop.at(this->eliteSize + this->rg.rand() % (pop.size() - this->eliteSize));
+      const RSK& p1 = pop.at(this->rg->rand() % this->eliteSize);
+      const RSK& p2 = pop.at(this->eliteSize + this->rg->rand() % (pop.size() - this->eliteSize));
 
-      random_keys* v = new random_keys(this->key_size, 0.0);
-      for (int i = 0; i < this->key_size; i++)
-         if ((this->rg.rand() % 1000000) / 1000000.0 < probElitism)
+      //random_keys* v = new random_keys(this->key_size, 0.0);
+      //for (int i = 0; i < this->key_size; i++)
+      Population<XES2> p_single = this->initPop->generatePopulation(1, 0.0); // implicit 'key_size'
+      // TODO: should cache 'key_size' to prevent unused rands on generation
+      random_keys* v = new random_keys(p_single.at(0)); // copy or 'move' ?
+      std::fill(v->begin(), v->end(), 0);
+      for (unsigned i = 0; i < v->size(); i++)
+         if ((this->rg->rand() % 1000000) / 1000000.0 < probElitism)
             //v->at(i) = p1.getR()[i];
             v->at(i) = p1[i];
          else

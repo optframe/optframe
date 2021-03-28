@@ -123,8 +123,15 @@ private:
    int sz;
 
 public:
+
    MyRandomKeysInitPop(int size)
      : sz{ size }
+   {
+   }
+
+   // copy constructor
+   MyRandomKeysInitPop(const MyRandomKeysInitPop& self)
+   : sz{ self.sz }
    {
    }
 
@@ -147,6 +154,7 @@ int
 main()
 {
    RandGen rg;  // avoids weird windows OS interactions
+   sref<RandGen> rg2 = new RandGen;
 
    // load data into problem context 'pTSP'
    Scanner scanner{ "3\n1 10 10\n2 20 20\n3 30 30\n" };
@@ -159,20 +167,20 @@ main()
    // Parameters BRKGA
    // (C1): Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
 
-   DecoderRandomKeys<ESolutionTSP::first_type, ESolutionTSP::second_type, double>& _decoder = decoder;
-   InitialPopulation<std::pair<vector<double>, ESolutionTSP::second_type>>& _initPop = *initPop;
+   sref<DecoderRandomKeys<ESolutionTSP::first_type, ESolutionTSP::second_type, double>> _decoder = decoder;
+   sref<InitialPopulation<std::pair<vector<double>, ESolutionTSP::second_type>>> _initPop = new MyRandomKeysInitPop(pTSP.n); // passing key_size
+
 
    //eprk, pTSP.n, 1000, 30, 0.4, 0.3, 0.6
    BRKGA<ESolutionTSP, double> brkga(
      _decoder,
-     _initPop,
-     pTSP.n,
+     _initPop, // implicit key_size='pTSP.n'
      1000,
      30,
      0.4,
      0.3,
      0.6,
-     rg);
+     rg2);
   
    SearchOutput<std::pair<std::vector<int>, Evaluation<> >> status = brkga.search(10.0); // 10.0 seconds max
   
