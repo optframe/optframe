@@ -127,28 +127,28 @@ protected:
 public:
 
    // unified constructors (receive 'key_size' value)
-   RKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, int key_size, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT, sref<RandGen> _rg)
+   RKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT, sref<RandGen> _rg, int key_size)
      : decoder(_decoder)
-     , initPop(new RandomKeysInitPop(key_size, _rg))
      , popSize(_popSize)
      , eliteSize(fracTOP * _popSize)
      , randomSize(fracBOT * _popSize)
      , numGenerations(numGenerations)
      , rg{ _rg }
+     , initPop(new RandomKeysInitPop(key_size, _rg))
    {
       assert(eliteSize < popSize);
       assert(randomSize + eliteSize < popSize);
    }
 
    // unified constructors (receive 'initPop' object)
-   RKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, sref<InitialPopulation<XES2>> _initPop, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT, sref<RandGen> _rg)
+   RKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, unsigned numGenerations, unsigned _popSize, double fracTOP, double fracBOT, sref<RandGen> _rg, sref<InitialPopulation<XES2>> _initPop)
      : decoder(_decoder)
-     , initPop(_initPop)
      , popSize(_popSize)
      , eliteSize(fracTOP * _popSize)
      , randomSize(fracBOT * _popSize)
      , numGenerations(numGenerations)
      , rg{ _rg }
+     , initPop(_initPop)
    {
       assert(eliteSize < popSize);
       assert(randomSize + eliteSize < popSize);

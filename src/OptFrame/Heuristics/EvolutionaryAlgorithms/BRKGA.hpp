@@ -61,8 +61,8 @@ protected:
 public:
 
    // unified constructors (explicit key_size)
-   BRKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, int key_size, unsigned numGen, unsigned popSize, double fracTOP, double fracBOT, double _probElitism, sref<RandGen> _rg)
-     : RKGA<XES, KeyType>(_decoder, key_size, numGen, popSize, fracTOP, fracBOT, _rg)
+   BRKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism, sref<RandGen> _rg, int key_size)
+     : RKGA<XES, KeyType>(_decoder, key_size, numGen, _popSize, fracTOP, fracBOT, _rg)
      , probElitism(_probElitism)
    {
       assert(probElitism > 0.5);
@@ -70,7 +70,7 @@ public:
    }
 
    // unified constructors (explicit initPop)
-   BRKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, sref<InitialPopulation<XES2>> _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism, sref<RandGen> _rg)
+   BRKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism, sref<RandGen> _rg, sref<InitialPopulation<XES2>> _initPop)
      : RKGA<XES, KeyType>(_decoder, _initPop, numGen, _popSize, fracTOP, fracBOT, _rg)
      , probElitism(_probElitism)
    {
