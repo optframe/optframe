@@ -60,58 +60,15 @@ protected:
 
 public:
 
-   // unified constructors (explicit key_size)
-   BRKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, int key_size, unsigned numGen, unsigned popSize, double fracTOP, double fracBOT, double _probElitism, sref<RandGen> _rg)
-     : RKGA<XES, KeyType>(_decoder, key_size, numGen, popSize, fracTOP, fracBOT, _rg)
-     , probElitism(_probElitism)
-   {
-      assert(probElitism > 0.5);
-      assert(probElitism <= 1.0);
-   }
-
    // unified constructors (explicit initPop)
-   BRKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, sref<InitialPopulation<XES2>> _initPop, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism, sref<RandGen> _rg)
-     : RKGA<XES, KeyType>(_decoder, _initPop, numGen, _popSize, fracTOP, fracBOT, _rg)
+   // to pass 'key_size' just use parameter "_initPop = RandomKeysInitPop(key_size)"
+   BRKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, sref<InitialPopulation<XES2>> _initPop, unsigned _popSize, unsigned numGen, double fracTOP, double fracBOT, double _probElitism, sref<RandGen> _rg = new RandGen)
+     : RKGA<XES, KeyType>(_decoder, _initPop, _popSize, numGen, fracTOP, fracBOT, _rg)
      , probElitism(_probElitism)
    {
       assert(probElitism > 0.5);
       assert(probElitism <= 1.0);
    }
-
-
-/*
-   BRKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, InitialPopulation<XES2>& _initPop, int _key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism, RandGen& _rg)
-     : RKGA<XES, KeyType>(_decoder, _initPop, _key_size, numGen, _popSize, fracTOP, fracBOT, _rg)
-     , probElitism(_probElitism)
-   {
-      assert(probElitism > 0.5);
-      assert(probElitism <= 1.0);
-   }
-
-   BRKGA(DecoderRandomKeys<S, XEv, KeyType>& _decoder, int key_size, unsigned numGen, unsigned popSize, double fracTOP, double fracBOT, double _probElitism, RandGen& _rg)
-     : RKGA<XES, KeyType>(_decoder, key_size, numGen, popSize, fracTOP, fracBOT, _rg)
-     , probElitism(_probElitism)
-   {
-      assert(probElitism > 0.5);
-      assert(probElitism <= 1.0);
-   }
-
-   BRKGA(Evaluator<S, XEv>& _evaluator, InitialPopulation<XES2>& _initPop, int _key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism, RandGen& _rg)
-     : RKGA<XES, KeyType>(_evaluator, _initPop, _key_size, numGen, _popSize, fracTOP, fracBOT, _rg)
-     , probElitism(_probElitism)
-   {
-      assert(probElitism > 0.5);
-      assert(probElitism <= 1.0);
-   }
-
-   BRKGA(Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism, RandGen& _rg)
-     : RKGA<XES, KeyType>(_evaluator, key_size, numGen, _popSize, fracTOP, fracBOT, _rg)
-     , probElitism(_probElitism)
-   {
-      assert(probElitism > 0.5);
-      assert(probElitism <= 1.0);
-   }
-*/
 
    virtual ~BRKGA()
    {
