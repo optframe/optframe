@@ -80,10 +80,10 @@ FEvaluator<ESolutionTSP, MinOrMax::MINIMIZE>
      fevaluate
   };
 
-sref<GeneralEvaluator<ESolutionTSP>> ev2{
-   new FEvaluator<ESolutionTSP, MinOrMax::MINIMIZE>{
-     fevaluate }
-};
+//sref<GeneralEvaluator<ESolutionTSP>> ev2{
+//   new FEvaluator<ESolutionTSP, MinOrMax::MINIMIZE>{
+//     fevaluate }
+//};
 
 // ===========================
 

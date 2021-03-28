@@ -49,51 +49,15 @@ main()
    std::cout << "end listing NSSeqSwapFancy" << std::endl;
 
    // Random number generator
-   RandGen rg;
-   sref<RandGen> rg2 { new RandGen };
+   RandGen rg;                         // stack version
+   sref<RandGen> rg2 { new RandGen };  // heap version (safely shared)
    // testing simulated annealing
    BasicInitialSearch<ESolutionTSP> initRand(crand, ev);
-
-   sref<InitialSearch<ESolutionTSP>> initRand2{
-      new BasicInitialSearch<ESolutionTSP>(crand, ev)
-   };
-
-   //BasicSimulatedAnnealing<ESolutionTSP> sa{
-   //   ev, initRand, nsseq, 0.98, 100, 99999, rg
-   //};
-
-   static_assert(!std::is_aggregate_v<BasicSimulatedAnnealing<ESolutionTSP>>); 
-   //static_assert( std::is_convertible_v<NS<ESolutionTSP>*, NSSeq<ESolutionTSP>*>); 
-   //
-   // only with aggregates
-   /*
-   BasicSimulatedAnnealing<ESolutionTSP> sa = {
-      .evaluator{ev2},
-      .constructive{initRand2},
-      .alpha{0.98},
-      .SAMax{100}, 
-      .Ti{99999},
-      .rg{rg2}
-   };
-   */
-
-  sref<GeneralEvaluator<ESolutionTSP>> _evaluator = ev2;
-  sref<InitialSearch<ESolutionTSP>> _constructive = initRand2;
-  sref<NS<ESolutionTSP>> _neighbors = nsseq2;
-  //sref<NSSeq<ESolutionTSP>> _neighbors2 = (sref<NSSeq<ESolutionTSP>>)_neighbors;
-  double _alpha = 0.98;
-  int _SAmax = 100;
-  double _Ti = 99999;
-  sref<RandGen> _rg = rg2;
-   
-   //BasicSimulatedAnnealing<ESolutionTSP> sa(
-   //   ev2, initRand2, nsseq2, 0.98, 100, 99999, rg2
-   //);
    
    BasicSimulatedAnnealing<ESolutionTSP> sa(
-      _evaluator, _constructive, _neighbors, _alpha, _SAmax, _Ti, _rg
+      //_evaluator, _constructive, _neighbors, _alpha, _SAmax, _Ti, _rg
+      ev, initRand, nsseq, 0.98, 100, 99999, rg2
    );
-   
 
    auto status = sa.search(StopCriteria<ESolutionTSP::second_type>{ 10.0 }); // 10.0 seconds max
    ESolutionTSP best = *status.best;//*sa.getBestSolution();

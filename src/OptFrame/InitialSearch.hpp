@@ -67,10 +67,10 @@ class BasicInitialSearch : public InitialSearch<XES, XEv, XSH>
 public:
    using S = typename XES::first_type;
 
-   Constructive<S>& constructive;
-   Evaluator<S, XEv, XES>& evaluator;
+   sref<Constructive<S>> constructive;
+   sref<Evaluator<S, XEv, XES>> evaluator;
 
-   BasicInitialSearch(Constructive<S>& _constructive, Evaluator<S, XEv, XES>& _evaluator)
+   BasicInitialSearch(sref<Constructive<S>> _constructive, sref<Evaluator<S, XEv, XES>> _evaluator)
      : constructive(_constructive)
      , evaluator(_evaluator)
    {
@@ -78,10 +78,10 @@ public:
 
    virtual std::pair<std::optional<XSH>, SearchStatus> initialSearch(const StopCriteria<XEv>& stop) override
    {
-      std::optional<S> sol = constructive.generateSolution(stop.timelimit);
+      std::optional<S> sol = constructive->generateSolution(stop.timelimit);
       if (!sol)
          return make_pair(nullopt, SearchStatus::NO_REPORT);
-      XEv e = evaluator.evaluate(*sol);
+      XEv e = evaluator->evaluate(*sol);
       XES se(*sol, e);
       return make_pair(se, SearchStatus::NO_REPORT);
    }

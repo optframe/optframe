@@ -71,6 +71,18 @@ public:
    {
    }
 
+   // copy constructor
+   FNSSeq(const FNSSeq& fnsseq) 
+      :
+      fRandom{ fnsseq.fRandom },
+      fIterator { fnsseq.fIterator },
+      fFirst{ fnsseq.fFirst },
+      fNext{ fnsseq.fNext },
+      fIsDone { fnsseq.fIsDone },
+      fCurrent { fnsseq.fCurrent }
+   {
+   }
+
 private:
    // internal class for iterator
    class FNSIterator final : public NSIterator<XES>
