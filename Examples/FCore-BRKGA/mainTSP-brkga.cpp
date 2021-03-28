@@ -121,17 +121,19 @@ class MyRandomKeysInitPop : public InitialPopulation<std::pair<std::vector<doubl
 
 private:
    int sz;
+   sref<RandGen> rg;
 
 public:
-
-   MyRandomKeysInitPop(int size)
+   MyRandomKeysInitPop(int size, sref<RandGen> _rg = new RandGen)
      : sz{ size }
+     , rg{ _rg }
    {
    }
 
    // copy constructor
    MyRandomKeysInitPop(const MyRandomKeysInitPop& self)
-   : sz{ self.sz }
+     : sz{ self.sz }
+     , rg{ self.rg }
    {
    }
 
@@ -142,7 +144,7 @@ public:
       for (unsigned i = 0; i < populationSize; i++) {
          vector<double>* d = new vector<double>(sz);
          for (int j = 0; j < sz; j++)
-            d->at(j) = (rand() % 100000) / 100000.0;
+            d->at(j) = (rg->rand() % 100000) / 100000.0;
          pop.push_back(d);
       }
 
@@ -153,7 +155,7 @@ public:
 int
 main()
 {
-   RandGen rg;  // avoids weird windows OS interactions
+   RandGen rg; // avoids weird windows OS interactions
    sref<RandGen> rg2 = new RandGen;
 
    // load data into problem context 'pTSP'
@@ -161,30 +163,24 @@ main()
    pTSP.load(scanner);
    std::cout << pTSP.dist << std::endl;
 
-   InitialPopulation<std::pair<vector<double>, ESolutionTSP::second_type>>* initPop =
-     new MyRandomKeysInitPop(pTSP.n); // passing key_size
-
    // Parameters BRKGA
    // (C1): Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
 
    sref<DecoderRandomKeys<ESolutionTSP::first_type, ESolutionTSP::second_type, double>> _decoder = decoder;
    sref<InitialPopulation<std::pair<vector<double>, ESolutionTSP::second_type>>> _initPop = new MyRandomKeysInitPop(pTSP.n); // passing key_size
 
-
    //eprk, pTSP.n, 1000, 30, 0.4, 0.3, 0.6
    BRKGA<ESolutionTSP, double> brkga(
      _decoder,
-     _initPop, // implicit key_size='pTSP.n'
-     1000,
+     MyRandomKeysInitPop(pTSP.n, rg2), // key_size = pTSP.n
      30,
+     1000,
      0.4,
      0.3,
      0.6,
      rg2);
-  
-   SearchOutput<std::pair<std::vector<int>, Evaluation<> >> status = brkga.search(10.0); // 10.0 seconds max
-  
-   delete initPop;
+
+   SearchOutput<std::pair<std::vector<int>, Evaluation<>>> status = brkga.search(10.0); // 10.0 seconds max
 
    std::cout << "FINISHED" << std::endl;
    return 0;

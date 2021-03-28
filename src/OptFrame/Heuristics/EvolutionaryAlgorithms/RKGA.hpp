@@ -130,12 +130,12 @@ public:
    // to pass 'key_size' just use parameter "_initPop = RandomKeysInitPop(key_size)"
    RKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, sref<InitialPopulation<XES2>> _initPop, unsigned _popSize, unsigned numGenerations, double fracTOP, double fracBOT, sref<RandGen> _rg = new RandGen)
      : decoder(_decoder)
+     , initPop(_initPop)
      , popSize(_popSize)
      , eliteSize(fracTOP * _popSize)
      , randomSize(fracBOT * _popSize)
      , numGenerations(numGenerations)
      , rg{ _rg }
-     , initPop(_initPop)
    {
       assert(eliteSize < popSize);
       assert(randomSize + eliteSize < popSize);
