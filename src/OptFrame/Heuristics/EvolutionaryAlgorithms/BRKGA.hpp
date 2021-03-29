@@ -23,8 +23,8 @@
 
 #include <algorithm>
 
-#include "../../InitialPopulation.h"
 #include "../../EPopulation.hpp"
+#include "../../InitialPopulation.h"
 #include "../../SingleObjSearch.hpp"
 
 #include "RKGA.hpp"
@@ -59,7 +59,6 @@ protected:
    double probElitism;
 
 public:
-
    // unified constructors (explicit initPop)
    // to pass 'key_size' just use parameter "_initPop = RandomKeysInitPop(key_size)"
    BRKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, sref<InitialPopulation<XES2>> _initPop, unsigned _popSize, unsigned numGen, double fracTOP, double fracBOT, double _probElitism, sref<RandGen> _rg = new RandGen)
@@ -74,6 +73,7 @@ public:
    {
    }
 
+   // returns an owning reference (take good care of it, and delete!)
    virtual RSK& cross(const Population<XES2>& pop)
    {
       if (Component::debug)

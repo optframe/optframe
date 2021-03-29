@@ -91,7 +91,7 @@ public:
       return pair<XEv, op<S>>(evaluator.evaluate(rk, nullptr), nullptr);
    }
 
-   virtual bool isMinimization() const
+   virtual bool isMinimization() const override
    {
       return evaluator.isMinimization();
    }
@@ -145,7 +145,7 @@ public:
       return pair<XEv, op<std::vector<int>>>(e, make_optional(p));
    }
 
-   virtual bool isMinimization() const
+   virtual bool isMinimization() const override
    {
       return ev.isMinimization();
    }
@@ -188,7 +188,7 @@ public:
       return pair<XEv, op<std::vector<bool>>>(e, make_optional(v));
    }
 
-   virtual bool isMinimization() const
+   virtual bool isMinimization() const override
    {
       return ev.isMinimization();
    }

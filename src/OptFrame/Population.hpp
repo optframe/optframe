@@ -44,12 +44,12 @@ class Population final : public Component
    using S = typename XES::first_type;
    using XEv = typename XES::first_type;
 protected:
-   typedef S chromossome;
-   typedef vector<chromossome*> population;
-   typedef vector<vector<XEv> > populationFitness;
+   //typedef S chromossome;
+   //typedef vector<chromossome*> population;
+   //typedef vector<vector<XEv> > populationFitness;
 
-   population p;
-   populationFitness pFitness;
+   vector<S*> p;
+   vector<vector<XEv> > pFitness;
 
 public:
    vector<double> fitness;
@@ -57,6 +57,7 @@ public:
    Population()
    {
    }
+
 
    Population(const Population& pop)
    {
@@ -67,6 +68,15 @@ public:
          pFitness.push_back(a);
       }
    }
+
+   Population(Population&& pop_corpse)
+   {
+      this->p = pop_corpse.p;
+      this->fitness = pop_corpse.fitness;
+      this->pFitness = pop_corpse.pFitness;
+      pop_corpse.clearNoKill();
+   }
+
 
    virtual ~Population()
    {
@@ -80,12 +90,12 @@ public:
 
    // TODO: conflicting with "newer" vision of Population... 'at' should return XES, not single element 'S'.
    // Population will not be supported anymore, please use EPopulation instead
-   chromossome& at(unsigned c)
+   S& at(unsigned c)
    {
       return (*p.at(c));
    }
 
-   const chromossome& at(unsigned c) const
+   const S& at(unsigned c) const
    {
       return (*p.at(c));
    }
@@ -103,15 +113,15 @@ public:
 	}   
 
 
-   void insert(unsigned pos, chromossome& c)
+   void insert(unsigned pos, S& c)
    {
-      p.insert(p.begin() + pos, new chromossome(c));
+      p.insert(p.begin() + pos, new S(c));
       fitness.insert(fitness.begin() + pos, 0.0);
       vector<XEv> a;
       pFitness.insert(pFitness.begin() + pos, a);
    }
 
-   void push_back(chromossome* c)
+   void push_back(S* c)
    {
       if (c) // not null
       {
@@ -122,35 +132,35 @@ public:
       }
    }
 
-   void push_back(const chromossome& c)
+   void push_back(const S& c)
    {
       //p.push_back(&c.clone());
-      p.push_back(new chromossome(c)); // copy constructor is required
+      p.push_back(new S(c)); // copy constructor is required
       fitness.push_back(0);
       vector<XEv> a;
       pFitness.push_back(a);
    }
 
    // chromossome is near dying... take everything and drop the corpse!!
-   void push_back(const chromossome&& c)
+   void push_back(const S&& c)
    {
       //p.push_back(&c.clone());
-      p.push_back(new chromossome(std::move(c)));
+      p.push_back(new S(std::move(c)));
       fitness.push_back(0);
       vector<XEv> a;
       pFitness.push_back(a);
    }
 
-   void push_back(const chromossome& c, vector<XEv> chromossomeFitness)
+   void push_back(const S& c, vector<XEv> chromossomeFitness)
    {
       p.push_back(&c.clone());
       fitness.push_back(0);
       pFitness.push_back(chromossomeFitness);
    }
 
-   chromossome& remove(unsigned pos)
+   S& remove(unsigned pos)
    {
-      chromossome& c = *p.at(pos);
+      S& c = *p.at(pos);
       p.erase(p.begin() + pos);
       fitness.erase(fitness.begin() + pos);
       pFitness.erase(pFitness.begin() + pos);
@@ -175,7 +185,7 @@ public:
    void add(const Population<XES>& pop)
    {
       for (unsigned i = 0; i < pop.size(); i++) {
-         const chromossome& s = pop.at(i);
+         const S& s = pop.at(i);
          push_back(s);
       }
    }
@@ -251,11 +261,43 @@ public:
       for (unsigned i = 0; i < sizePop; i++) {
          if (&p.at(i)) // If no nullptr pointing.
          {
-            this->p.push_back(new chromossome(p.at(i)));
+            this->p.push_back(new S(p.at(i)));
          } else {
             this->p.push_back(nullptr);
          }
       }
+
+      return (*this);
+   }
+
+   virtual Population<XES>& operator=(Population<XES>&& p_corpse)
+   {
+      if (&p_corpse == this) // auto ref check
+         return *this;
+
+      unsigned sizePop = this->p.size();
+
+      fitness = std::move(p_corpse.fitness);
+
+      pFitness = std::move(p_corpse.pFitness);
+
+      for (unsigned i = 0; i < sizePop; i++) {
+         if (this->p.at(i)) // If no nullptr pointing.
+         {
+            delete this->p.at(i);
+         }
+      }
+
+      this->p.clear();
+
+      sizePop = p.size();
+
+      this->p = p_corpse.p; // get pointers from corpse
+
+      p_corpse.p.clear(); // clear pointers
+      p_corpse.fitness.clear();
+      p_corpse.pFitness.clear();
+      p_corpse.clear(); // KILL the rest! (is there any rest to kill?)
 
       return (*this);
    }

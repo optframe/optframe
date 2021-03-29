@@ -99,8 +99,8 @@ template<
   XESolution XES2 = std::pair<std::vector<KeyType>, typename XES::second_type>,
   XSearch<XES2> XSH2 = Population<XES2>>
 class RKGA : public SingleObjSearch<XES, XES2, XSH2>
-  //  TODO: cannot make this IPopulational, unless using EPopulation instead of "legacy" Population
-  //, public IPopulational<XES, XES, XES2>
+//  TODO: cannot make this IPopulational, unless using EPopulation instead of "legacy" Population
+//, public IPopulational<XES, XES, XES2>
 {
    using S = typename XES::first_type;
    using XEv = typename XES::second_type;
@@ -125,7 +125,6 @@ protected:
    sref<RandGen> rg;
 
 public:
-
    // unified constructors (receive 'initPop' object)
    // to pass 'key_size' just use parameter "_initPop = RandomKeysInitPop(key_size)"
    RKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, sref<InitialPopulation<XES2>> _initPop, unsigned _popSize, unsigned numGenerations, double fracTOP, double fracBOT, sref<RandGen> _rg = new RandGen)
@@ -161,12 +160,13 @@ public:
       }
    }
 
+   // returns an owning reference (take good care of it, and delete!)
    virtual RSK& cross(const Population<XES2>& pop)
    {
       //assert(key_size > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
 
-      const RSK& p1 = pop.at(rand() % pop.size());
-      const RSK& p2 = pop.at(rand() % pop.size());
+      const RSK& p1 = pop.at(rg->rand() % pop.size());
+      const RSK& p2 = pop.at(rg->rand() % pop.size());
 
       //random_keys* v = new random_keys(key_size, 0.0);
       Population<XES2> p_single = initPop->generatePopulation(1, 0.0); // implicit 'key_size'
@@ -174,7 +174,7 @@ public:
       random_keys* v = new random_keys(p_single.at(0)); // copy or 'move' ?
       std::fill(v->begin(), v->end(), 0);
       for (unsigned i = 0; i < v->size(); i++)
-         if (rand() % 2 == 0)
+         if (rg->rand() % 2 == 0)
             //v->at(i) = p1.getR()[i];
             v->at(i) = p1[i];
          else
@@ -194,11 +194,15 @@ public:
    };
 
    // override callbacks (similar to "double-dispatch", but hiding with inheritance)
-   bool (*onBest)(ExecutionContext& ctx, const XSH& best) =
-     [](ExecutionContext& ctx, const XSH& best) { return true; };
+   bool (*onBestCtx)(ExecutionContext& ctx, const XSH& best) =
+     [](ExecutionContext& ctx, const XSH& best) {
+        return ctx.self->onBest(*ctx.self, best);
+     };
    //
-   bool (*onIncumbent)(ExecutionContext& ctx, const XSH2& incumbent) =
-     [](ExecutionContext& ctx, const XSH2& incumbent) { return true; };
+   bool (*onIncumbentCtx)(ExecutionContext& ctx, const XSH2& incumbent) =
+     [](ExecutionContext& ctx, const XSH2& incumbent) {
+        return ctx.self->onIncumbent(*ctx.self, incumbent);
+     };
 
    //pair<CopySolution<random_keys>&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const CopySolution<random_keys>* _s = nullptr, const Evaluation<>* _e = nullptr)
    ///virtual pair<CopySolution<random_keys>, XEv>* search(StopCriteria<XEv>& stopCriteria, const CopySolution<random_keys>* _s = nullptr, const XEv* _e = nullptr) override
@@ -210,7 +214,7 @@ public:
    //
    SearchOutput<XES> search(const StopCriteria<XEv>& stopCriteria) override
    {
-      ExecutionContext ctx {.self = this};
+      ExecutionContext ctx{ .self = this };
 
       if (Component::debug)
          (*Component::logdata) << "RKGA search():"
@@ -251,7 +255,7 @@ public:
          (*Component::logdata) << "RKGA: will trigger onIncumbent(p)" << std::endl;
 
       // trigger onIncumbent
-      if (!this->onIncumbent(ctx, p))
+      if (!this->onIncumbentCtx(ctx, p))
          return SearchStatus::NO_REPORT;
 
       if (Component::debug)
@@ -308,7 +312,8 @@ public:
 
          //delete p; // KILL ALL INDIVIDUALS
          p.clear(); // KILL ALL INDIVIDUALS
-         p = nextPop;
+         p = std::move(nextPop);
+         nextPop.clear(); // KILL (what?)
 
          if (Component::debug)
             (*Component::logdata) << "RKGA: p.size() = " << p.size() << std::endl;
@@ -329,7 +334,7 @@ public:
             (*Component::logdata) << "RKGA: will trigger onIncumbent(p)" << std::endl;
 
          // trigger onIncumbent
-         if (!this->onIncumbent(ctx, p))
+         if (!this->onIncumbentCtx(ctx, p))
             return SearchStatus::NO_REPORT;
 
          evtype pop_best = p.getSingleFitness(0);
@@ -352,7 +357,7 @@ public:
             if (pe.second) {
                star = op<XES>(XES{ *pe.second, pe.first });
                // check update callback
-               if (!this->onBest(ctx, *star))
+               if (!this->onBestCtx(ctx, *star))
                   return SearchStatus::NO_REPORT;
             }
          } // end if
@@ -396,7 +401,7 @@ public:
       //return std::optional<pair<XRS, XEv>>(make_pair(finalSol, e));
       star = make_optional(make_pair(finalSol, e));
       //this->best = star;
-      return {SearchStatus::NO_REPORT, *star};
+      return { SearchStatus::NO_REPORT, *star };
    }
 
    // reimplementing searchBy, just to make it more explicit (visible)
