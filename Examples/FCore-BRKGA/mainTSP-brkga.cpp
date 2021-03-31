@@ -155,8 +155,7 @@ public:
 int
 main()
 {
-   RandGen rg; // avoids weird windows OS interactions
-   sref<RandGen> rg2 = new RandGen;
+   sref<RandGen> rg = new RandGen; // avoids weird windows OS interactions
 
    // load data into problem context 'pTSP'
    Scanner scanner{ "3\n1 10 10\n2 20 20\n3 30 30\n" };
@@ -178,9 +177,9 @@ main()
      0.4,
      0.3,
      0.6,
-     rg2);
+     rg);
 
-   SearchOutput<std::pair<std::vector<int>, Evaluation<>>> status = brkga.search(10.0); // 10.0 seconds max
+   auto status = brkga.search(10.0); // 10.0 seconds max
 
    std::cout << "FINISHED" << std::endl;
    return 0;
