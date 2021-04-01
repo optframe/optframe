@@ -80,11 +80,11 @@ public:
    // callback to update local variables
    void (*onBeforeLoopCtx)(SearchContext& ctx) =
      [](auto& ctx) {
-        if(ctx.iterT < ctx.self->SAmax)
+        if(ctx.iterT < ctx.self.SAmax)
          ctx.iterT++;
          else {
             ctx.iterT = 0;
-            ctx.T = ctx.self->alpha * ctx.T; // geometric cooling
+            ctx.T = ctx.self.alpha * ctx.T; // geometric cooling
          }
      };
 

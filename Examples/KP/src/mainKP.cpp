@@ -133,12 +133,14 @@ main(int argc, char** argv)
 
    //EvaluatorSubsetRandomKeys<SolutionKP> eprk(ev1, 0, p.N - 1);
    EvaluatorSubsetRandomKeys<EvaluationKP, double, ESolutionKP> eprk(ev1, 0, p.N - 1);
-   Evaluator<std::vector<double>, EvaluationKP, ESolutionKP>& _eprk = eprk;
+   //Evaluator<std::vector<double>, EvaluationKP, ESolutionKP>& _eprk = eprk;
+   //sref<DecoderRandomKeys<SolutionKP, EvaluationKP, double>> _decoder =
+   //   *new DecoderRandomKeysEvaluator<SolutionKP, EvaluationKP, double, ESolutionKP>(_eprk);
    sref<DecoderRandomKeys<SolutionKP, EvaluationKP, double>> _decoder =
-      *new DecoderRandomKeysEvaluator<SolutionKP, EvaluationKP, double, ESolutionKP>(_eprk);
+      new EvaluatorSubsetRandomKeys<EvaluationKP, double, ESolutionKP>(ev1, 0, p.N - 1);
    
-   sref<InitialPopulation<std::pair<std::vector<double>, Evaluation<>>> _genKeys = 
-      *new RandomKeysInitPop<EvaluationKP, double>(p.N, rg);
+   sref< InitialPopulation<std::pair<std::vector<double>, Evaluation<>> > > _genKeys =
+      new RandomKeysInitPop<EvaluationKP, double>(p.N, rg);
    BRKGA<ESolutionKP, double> brkga(_decoder, _genKeys, 1000, 30, 0.4, 0.3, 0.6, rg);
 
    //pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
