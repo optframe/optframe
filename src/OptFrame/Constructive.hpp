@@ -50,7 +50,8 @@ public:
    static std::string idComponent()
    {
       std::stringstream ss;
-      ss << Component::idComponent() << ":Constructive";
+      std::string s = Component::idComponent();
+      ss << s << ":Constructive";
       return ss.str();
    }
 

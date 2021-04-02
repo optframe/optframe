@@ -394,7 +394,7 @@ public:
       return t;
    }
 
-   friend ostream& operator<<(ostream& os, const TestTArithMO_is_zero& me)
+   friend std::ostream& operator<<(std::ostream& os, const TestTArithMO_is_zero& me)
    {
       os << me.toString();
       return os;

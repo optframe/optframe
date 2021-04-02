@@ -23,10 +23,11 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
 
 namespace optframe {
 
-using string = std::string;
+//using std::string = std::string;
 
 // OPTFRAME ALGORITHM COMPREHENSION FLAG
 #ifndef OPTFRAME_FAST
@@ -45,7 +46,7 @@ struct Log
 		data->clear();
 	}
 
-	void append(string s)
+	void append(std::string s)
 	{
 		(*data) << s;
 	}
@@ -55,7 +56,7 @@ struct Log
 		return data->str();
 	}
 
-	bool toFile(string file, bool append = true)
+	bool toFile(std::string file, bool append = true)
 	{
 		FILE* f;
 		if(append)
@@ -194,22 +195,22 @@ public:
    {
    }
 
-   static string idComponent()
+   static std::string idComponent()
    {
       return "OptFrame";
    }
 
-   virtual string id() const
+   virtual std::string id() const
    {
       return idComponent();
    }
 
-   virtual bool compatible(string s)
+   virtual bool compatible(std::string s)
    {
       return (s == id()) || (s == idComponent()); // equal to this component or "OptFrame:" base
    }
 
-   virtual string toString() const
+   virtual std::string toString() const
    {
       return id();
    }

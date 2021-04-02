@@ -182,6 +182,7 @@ public:
 } // namespace optframe
 
 // compilation tests
-static_assert(X2ESolution<EPopulation<std::pair<Solution<double>, Evaluation<double>>>, std::pair<Solution<double>, Evaluation<double>>>);
+// TODO: only add if not including "printable.h"
+//static_assert(X2ESolution<EPopulation<std::pair<Solution<double>, Evaluation<double>>>, std::pair<Solution<double>, Evaluation<double>>>);
 
 #endif /* OPTFRAME_POPULATION_HPP_ */

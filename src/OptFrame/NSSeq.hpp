@@ -209,8 +209,8 @@ public:
 #ifndef NDEBUG
 
 // General test for NSSeq
-//using nsseq_test_base = NSSeq<pair<IsSolution<vector<int>, short>, IsEvaluation<double>>, IsEvaluation<double>>;
-using nsseq_test_base = NSSeq<pair<IsSolution<vector<int>, short> , Evaluation<> >>;
+// TODO: only if not #include "printable.h"
+//using nsseq_test_base = NSSeq<pair<IsSolution<vector<int>, short> , Evaluation<> >>;
 
 #endif
 

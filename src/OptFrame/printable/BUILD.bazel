@@ -1,0 +1,26 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+
+#cc_binary(
+#    name = "printable_lib",
+#    srcs = ["printable.cpp"],
+#    linkstatic=True,
+#    deps = [":printable_h"]
+#    #include_prefix = "OptFrame/printable",
+#)
+
+cc_library(
+    name = "printable_lib",
+    hdrs = glob([
+        "**/*.h",
+    ]),
+    srcs = glob([
+        "**/*.cpp",
+    ]),
+    copts = ['-std=c++17', '-fconcepts', '-Wfatal-errors'],
+    include_prefix = "OptFrame/printable",
+)

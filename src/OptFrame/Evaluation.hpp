@@ -794,8 +794,8 @@ struct basic_ev_test_copy
 {
    void f()
    {
-      Evaluation<> e1;
-      Evaluation<> e2 = e1; // test 'explicit'
+      optframe::Evaluation<> e1;
+      optframe::Evaluation<> e2 = e1; // test 'explicit'
    }
 };
 

@@ -538,6 +538,7 @@ concept
 } // namespace optframe
 
 // compilation tests for concepts (these are NOT unit tests)
-#include "BaseConcepts.ctest.hpp"
+// TODO: put on unit tests or directly here (without #include "printable.h")
+//#include "BaseConcepts.ctest.hpp"
 
 #endif // OPTFRAME_SOLUTION_CONCEPTS_HPP_
