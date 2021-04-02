@@ -7,7 +7,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <OptFrame/Util/printable.h>
+#include <OptFrame/printable/printable.h>
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Solution.hpp>
 #include <OptFrame/MultiObjValue.hpp> // just for testing
