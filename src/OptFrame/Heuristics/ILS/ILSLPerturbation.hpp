@@ -66,24 +66,24 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class ILSLPerturbationLPlus2: public ILSLPerturbation<XES, XEv>
 {
 private:
-	vector<NS<XES, XEv>*> ns;
-	GeneralEvaluator<XES, XEv>& evaluator;
-	RandGen& rg;
+	vsref<NS<XES, XEv>> ns;
+	sref<GeneralEvaluator<XES, XEv>> evaluator;
+	sref<RandGen> rg;
 
 public:
-	ILSLPerturbationLPlus2(GeneralEvaluator<XES, XEv>& e, NS<XES, XEv>& _ns, RandGen& _rg) :
+	ILSLPerturbationLPlus2(sref<GeneralEvaluator<XES, XEv>> e, sref<NS<XES, XEv>> _ns, sref<RandGen> _rg) :
 			evaluator(e), rg(_rg)
 	{
-		ns.push_back(&_ns);
+		ns.push_back(_ns);
 	}
 
 	virtual ~ILSLPerturbationLPlus2()
 	{
 	}
 
-	void add_ns(NS<XES, XEv>& _ns)
+	void add_ns(sref<NS<XES, XEv>> _ns)
 	{
-		ns.push_back(&_ns);
+		ns.push_back(_ns);
 	}
 
 	void perturb(XES& se, const StopCriteria<XEv>& stopCriteria, int level) override
@@ -98,7 +98,7 @@ public:
 
 		while (a < level)
 		{
-			int x = rg.rand(ns.size());
+			int x = rg->rand(ns.size());
 
 			uptr<Move<XES, XEv>> m = ns[x]->validRandomMove(se);
 
@@ -112,7 +112,7 @@ public:
 					cout << "ILS Warning: perturbation had no effect in level " << a << "!" << endl;
 		}
 
-		evaluator.reevaluate(se); // updates 'e'
+		evaluator->reevaluate(se); // updates 'e'
 	}
 
 	virtual bool compatible(string s)
@@ -137,16 +137,16 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class ILSLPerturbationLPlus2Prob: public ILSLPerturbation<XES, XEv>
 {
 private:
-	vector<NS<XES, XEv>*> ns;
+	vsref<NS<XES, XEv>> ns;
 	vector<pair<int, double> > pNS;
-	GeneralEvaluator<XES, XEv>& evaluator;
-	RandGen& rg;
+	sref<GeneralEvaluator<XES, XEv>> evaluator;
+	sref<RandGen> rg;
 
 public:
-	ILSLPerturbationLPlus2Prob(GeneralEvaluator<XES, XEv>& e, NS<XES, XEv>& _ns, RandGen& _rg) :
+	ILSLPerturbationLPlus2Prob(sref<GeneralEvaluator<XES, XEv>> e, sref<NS<XES, XEv>> _ns, sref<RandGen> _rg) :
 			evaluator(e), rg(_rg)
 	{
-		ns.push_back(&_ns);
+		ns.push_back(_ns);
 		pNS.push_back(make_pair(1, 1));
 	}
 
@@ -154,9 +154,9 @@ public:
 	{
 	}
 
-	void add_ns(NS<XES, XEv>& _ns)
+	void add_ns(sref<NS<XES, XEv>> _ns)
 	{
-		ns.push_back(&_ns);
+		ns.push_back(_ns);
 		pNS.push_back(make_pair(1, 1));
 
 		double soma = 0;
@@ -202,7 +202,7 @@ public:
 
 		while (a < level)
 		{
-			double prob = rg.rand01();
+			double prob = rg->rand01();
 			int x = 0;
 			double sum = pNS[x].second;
 
@@ -224,7 +224,7 @@ public:
 					cout << "ILS Warning: perturbation had no effect in level " << a << "!" << endl;
 		}
 
-		evaluator.reevaluate(se); // updates 'e'
+		evaluator->reevaluate(se); // updates 'e'
 	}
 
 	static string idComponent()
@@ -250,13 +250,13 @@ public:
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		GeneralEvaluator<XES, XEv>* eval;
+		sptr<GeneralEvaluator<XES, XEv>> eval;
 		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NS<XES, XEv>* ns;
+		sptr<NS<XES, XEv>> ns;
 		hf.assign(ns, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new ILSLPerturbationLPlus2<XES, XEv>(*eval, *ns, hf.getRandGen());
+		return new ILSLPerturbationLPlus2<XES, XEv>(eval, ns, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()
@@ -296,13 +296,13 @@ public:
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		GeneralEvaluator<XES, XEv>* eval;
+		sptr<GeneralEvaluator<XES, XEv>> eval;
 		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NS<XES, XEv>* ns;
+		sptr<NS<XES, XEv>> ns;
 		hf.assign(ns, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new ILSLPerturbationLPlus2Prob<XES, XEv>(*eval, *ns, hf.getRandGen());
+		return new ILSLPerturbationLPlus2Prob<XES, XEv>(eval, ns, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()

@@ -38,19 +38,21 @@ class DeltaMoveTSPOrOptk: public MoveTSPOrOptk<int >
 	typedef MoveTSPOrOptk<int> super;
 
 private:
-	ProblemInstance* tsp;
+	sref<ProblemInstance> tsp;
 
 public:
 
-	DeltaMoveTSPOrOptk(int i, int j, int k, ProblemInstance* _tsp) :
-		 super(i, j, k, _tsp), tsp(_tsp)
+	DeltaMoveTSPOrOptk(int i, int j, int k, sref<ProblemInstance> _tsp) :
+		 super(i, j, k, _tsp.sptr()), tsp(_tsp)
 	{
+      /*
 		if(!tsp)
 		{
 			cout << "Error: tsp problem is NULL!" << endl;
 			print();
 			exit(1);
 		}
+      */
 	}
 
 	virtual ~DeltaMoveTSPOrOptk()

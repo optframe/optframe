@@ -61,7 +61,19 @@ public:
    // disallow explicit nullptr
    shared(std::nullptr_t data) = delete;
 
+   shared<T> operator=(const shared<T>& other) {
+      if(this == &other)
+         return *this; // self-check
+      this->get() = other.get();
+      return *this;
+   }
+
    T* operator->()
+   {
+      return data_.get().get();
+   }
+
+   const T* operator->() const
    {
       return data_.get().get();
    }
@@ -72,7 +84,19 @@ public:
       return *data_;
    }
 
+   const T& operator*() const
+   {
+      // return dereferenced shared object
+      return *data_;
+   }
+
    T& get()
+   {
+      // return dereferenced shared object
+      return *data_;
+   }
+
+   const T& get() const
    {
       // return dereferenced shared object
       return *data_;
@@ -90,6 +114,13 @@ public:
    operator shared<Y>() // explicit? not necessary... (until now)
    {
       std::shared_ptr<Y> py = data_.get(); // remove encapsulation from not_null
+      return py;
+   }
+
+   // get copy as a std::shared_ptr
+   std::shared_ptr<T> sptr() const
+   {
+      std::shared_ptr<T> py = data_.get(); // remove encapsulation from not_null
       return py;
    }
 };

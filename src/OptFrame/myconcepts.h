@@ -16,6 +16,11 @@ using sref = nn::shared<R>;
 template<class R>
 using vsref = std::vector<sref<R>>;
 //
+template<class R>
+using sptr = std::shared_ptr<R>;
+//
+template<class R>
+using vsptr = std::vector<sptr<R>>;
 
 namespace optframe
 {

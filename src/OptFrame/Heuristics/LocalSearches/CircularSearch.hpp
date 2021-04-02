@@ -31,13 +31,13 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class CircularSearch : public LocalSearch<XES, XEv>
 {
 private:
-   GeneralEvaluator<XES, XEv>& eval;
-   NSEnum<XES, XEv>& ns;
+   sref<GeneralEvaluator<XES, XEv>> eval;
+   sref<NSEnum<XES, XEv>> ns;
 
    int initial_w;
 
 public:
-   CircularSearch(GeneralEvaluator<XES, XEv>& _eval, NSEnum<XES, XEv>& _nsEnum)
+   CircularSearch(sref<GeneralEvaluator<XES, XEv>> _eval, sref<NSEnum<XES, XEv>> _nsEnum)
      : eval(_eval)
      , ns(_nsEnum)
    {
@@ -62,26 +62,26 @@ public:
       
       //double timelimit = sosc.timelimit;
       //double target_f = sosc.target_f;
-      int Wmax = ns.size();
+      int Wmax = ns->size();
 
       int w = initial_w % Wmax;
 
       do {
-         uptr<Move<XES, XEv>> m = ns.indexMove(w);
+         uptr<Move<XES, XEv>> m = ns->indexMove(w);
 
          //if (m->canBeApplied(s)) {
          if (m->canBeApplied(se)) {
             bool mayEstimate = false;
-            ///MoveCost<>& cost = *eval.moveCost(m, se, mayEstimate);
-            op<XEv> cost = eval.moveCost(*m, se, mayEstimate);
+            ///MoveCost<>& cost = *eval->moveCost(m, se, mayEstimate);
+            op<XEv> cost = eval->moveCost(*m, se, mayEstimate);
 
-            //if (eval.isImprovement(*cost)) {
+            //if (eval->isImprovement(*cost)) {
             //if (cost->isImprovingStrict()) {
-            if (eval.isStrictImprovement(*cost)) {
+            if (eval->isStrictImprovement(*cost)) {
                //double old_f = e.evaluation();
 
                m->applyUpdate(se);
-               eval.reevaluate(se); // updates 'e'
+               eval->reevaluate(se); // updates 'e'
 
                //cout << "CS improvement! w:" << w << " fo=" << e.evaluation() << " (antiga fo="<< old_f << ")" << endl << endl;
 
@@ -124,13 +124,13 @@ public:
 
    virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
-      GeneralEvaluator<XES, XEv>* eval;
+      sptr<GeneralEvaluator<XES, XEv>> eval;
       hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-      NSEnum<XES, XEv>* nsenum;
+      sptr<NSEnum<XES, XEv>> nsenum;
       hf.assign(nsenum, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-      return new CircularSearch<XES, XEv>(*eval, *nsenum);
+      return new CircularSearch<XES, XEv>(eval, nsenum);
    }
 
    virtual vector<pair<string, string>> parameters()

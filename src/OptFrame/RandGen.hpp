@@ -200,6 +200,7 @@ public:
       if (v.size() > 0)
          for (unsigned int i = 0; i < v.size() - 1; i++) {
             int x = i + this->rand(v.size() - i - 1) + 1;
+            //v.swap(v.begin()+i, v.begin()+x);
             T elem = v.at(i);
             v.at(i) = v.at(x);
             v.at(x) = elem;

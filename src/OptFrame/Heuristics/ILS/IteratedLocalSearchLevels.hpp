@@ -38,14 +38,14 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class IteratedLocalSearchLevels: public IteratedLocalSearch<levelHistory, XES, XEv>
 {
 protected:
-	LocalSearch<XES, XEv>& ls;
-	ILSLPerturbation<XES, XEv>& p;
+	sref<LocalSearch<XES, XEv>> ls;
+	sref<ILSLPerturbation<XES, XEv>> p;
 	int iterMax, levelMax;
 
 public:
 
 	//IteratedLocalSearchLevels(Evaluator<XES, XEv>& e, Constructive<S>& constructive, LocalSearch<XES, XEv>& _ls, ILSLPerturbation<S, XEv>& _p, int _iterMax, int _levelMax) :
-   IteratedLocalSearchLevels(GeneralEvaluator<XES, XEv>& e, InitialSearch<XES, XEv>& constructive, LocalSearch<XES, XEv>& _ls, ILSLPerturbation<XES, XEv>& _p, int _iterMax, int _levelMax) :
+   IteratedLocalSearchLevels(sref<GeneralEvaluator<XES, XEv>> e, sref<InitialSearch<XES, XEv>> constructive, sref<LocalSearch<XES, XEv>> _ls, sref<ILSLPerturbation<XES, XEv>> _p, int _iterMax, int _levelMax) :
 		IteratedLocalSearch<levelHistory, XES, XEv> (e, constructive), ls(_ls), p(_p), iterMax(_iterMax), levelMax(_levelMax)
 	{
 	}
@@ -68,7 +68,7 @@ public:
 	virtual void localSearch(XES& se, const StopCriteria<XEv>& stopCriteria) override
 	{
 		//cout << "localSearch(.)" << endl;
-		ls.searchFrom(se, stopCriteria);
+		ls->searchFrom(se, stopCriteria);
 	}
 
 	virtual void perturbation(XES& se, const StopCriteria<XEv>& stopCriteria, levelHistory& history) override
@@ -83,7 +83,7 @@ public:
 		//cout << "level = " << level << " e iter = " << iter << endl;
 
 		// nivel atual: 'level'
-		p.perturb(se, stopCriteria, level);
+		p->perturb(se, stopCriteria, level);
 
 		// Incrementa a iteracao
 		iter++;
@@ -168,29 +168,29 @@ public:
 
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		GeneralEvaluator<XES, XEv>* eval = nullptr;
+		sptr<GeneralEvaluator<XES, XEv>> eval = nullptr;
 		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!eval)
 			return nullptr;
 
 		//Constructive<S>* constructive = nullptr;
-      InitialSearch<XES, XEv>* constructive = nullptr;
+      sptr<InitialSearch<XES, XEv>> constructive = nullptr;
 		hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!constructive)
 			return nullptr;
 
 		string rest = scanner.rest();
 
-		pair<LocalSearch<XES, XEv>*, std::string> method;
+		pair<sptr<LocalSearch<XES, XEv>>, std::string> method;
 		method = hf.createLocalSearch(rest);
 
-		LocalSearch<XES, XEv>* h = method.first;
+		sptr<LocalSearch<XES, XEv>> h = method.first;
 
 		scanner = Scanner(method.second);
 		if(!h)
 			return nullptr;
 
-		ILSLPerturbation<XES, XEv>* pert;
+		sptr<ILSLPerturbation<XES, XEv>> pert;
 		hf.assign(pert, *scanner.nextInt(), scanner.next()); // reads backwards!
 		if(!pert)
 			return nullptr;
@@ -217,7 +217,7 @@ public:
 
       levelMax = *olevelMax;
 
-		return new IteratedLocalSearchLevels<XES, XEv>(*eval, *constructive, *h, *pert, iterMax,levelMax);
+		return new IteratedLocalSearchLevels<XES, XEv>(eval, constructive, h, pert, iterMax,levelMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()

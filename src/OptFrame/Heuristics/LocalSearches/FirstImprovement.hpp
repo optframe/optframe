@@ -32,12 +32,12 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
 class FirstImprovement: public LocalSearch<XES, XEv>
 {
 private:
-	GeneralEvaluator<XES, XEv, XSH>& eval;
-	NSSeq<XES, XEv, XSH>& nsSeq;
+	sref<GeneralEvaluator<XES, XEv, XSH>> eval;
+	sref<NSSeq<XES, XEv, XSH>> nsSeq;
 
 public:
 
-	FirstImprovement(GeneralEvaluator<XES, XEv>& _eval, NSSeq<XES, XEv, XSH>& _nsSeq) :
+	FirstImprovement(sref<GeneralEvaluator<XES, XEv>> _eval, sref<NSSeq<XES, XEv, XSH>> _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 	}
@@ -57,7 +57,7 @@ public:
 	{
       //XSolution& s = se.first;
       //XEv& e = se.second;
-		uptr<NSIterator<XES, XEv>> it = nsSeq.getIterator(se);
+		uptr<NSIterator<XES, XEv>> it = nsSeq->getIterator(se);
       //
       if(!it)
          return SearchStatus::FAILED;
@@ -124,7 +124,7 @@ public:
       if (p) {
          // verify if m is an improving move
          //if (p->isStrictImprovement()) {
-         if (eval.isStrictImprovement(*p)) {
+         if (eval->isStrictImprovement(*p)) {
 
             // apply move and get reverse
             uptr<Move<XES, XEv>> rev = m.apply(se);
@@ -147,13 +147,13 @@ public:
          XEv ev_begin(e);
  
          // apply move to both XEv and Solution
-         uptr<Move<XES, XEv>> rev = eval.applyMoveReevaluate(m, se);
+         uptr<Move<XES, XEv>> rev = eval->applyMoveReevaluate(m, se);
 
          // compute cost directly on Evaluation
          XEv mcost = ev_begin.diff(se.second);
 
          // check if it is improvement
-         if (eval.isStrictImprovement(mcost)) {
+         if (eval->isStrictImprovement(mcost)) {
             return true;
          }
 
@@ -205,7 +205,7 @@ public:
 	virtual string toString() const
 	{
 		stringstream ss;
-		ss << "FI: " << nsSeq.toString();
+		ss << "FI: " << nsSeq->toString();
 		return ss.str();
 	}
 };
@@ -221,13 +221,13 @@ public:
 
 	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		GeneralEvaluator<XES, XEv>* eval;
+		sptr<GeneralEvaluator<XES, XEv>> eval;
 		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NSSeq<XES, XEv, XSH>* nsseq;
+		sptr<NSSeq<XES, XEv, XSH>> nsseq;
 		hf.assign(nsseq, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new FirstImprovement<XES, XEv, XSH>(*eval, *nsseq);
+		return new FirstImprovement<XES, XEv, XSH>(eval, nsseq);
 	}
 
 	virtual vector<pair<string, string> > parameters()

@@ -39,19 +39,21 @@ class DeltaMoveTSP2Opt: public MoveTSP2Opt<int, OPTFRAME_DEFAULT_ADS >
 	typedef MoveTSP2Opt<int, OPTFRAME_DEFAULT_ADS> super;
 
 private:
-	ProblemInstance* tsp;
+	sref<ProblemInstance> tsp;
 
 public:
 
-	DeltaMoveTSP2Opt(int p1, int p2, ProblemInstance* _tsp) :
-		 super(p1, p2, _tsp), tsp(_tsp)
+	DeltaMoveTSP2Opt(int p1, int p2, sref<ProblemInstance> _tsp) :
+		 super(p1, p2, _tsp.sptr()), tsp(_tsp)
 	{
+      /*
 		if(!tsp)
 		{
 			cout << "Error: tsp problem is NULL!" << endl;
 			print();
 			exit(1);
 		}
+      */
 	}
 
 	virtual ~DeltaMoveTSP2Opt()

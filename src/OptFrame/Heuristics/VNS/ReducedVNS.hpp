@@ -38,7 +38,7 @@ public:
 	typedef VariableNeighborhoodSearch<XES, XEv> super;
 
 	//ReducedVNS(Evaluator<S>& evaluator, Constructive<S>& constructive, vector<NS<XES, XEv>*> vshake, vector<NSSeq<S>*> vsearch) :
-   ReducedVNS(Evaluator<XES>& evaluator, InitialSearch<XES, XEv>& constructive, vector<NS<XES, XEv>*> vshake, vector<NSSeq<XES, XEv>*> vsearch) :
+   ReducedVNS(sref<Evaluator<XES>> evaluator, sref<InitialSearch<XES, XEv>> constructive, vsref<NS<XES, XEv>> vshake, vsref<NSSeq<XES, XEv>> vsearch) :
 		VariableNeighborhoodSearch<XES, XEv> (evaluator, constructive, vshake, vsearch)
 	{
 	}
@@ -76,21 +76,26 @@ public:
 
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		GeneralEvaluator<XES>* eval;
+		sptr<GeneralEvaluator<XES>> eval;
 		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		//Constructive<S>* constructive;
-      InitialSearch<XES, XEv>* constructive;
+      sptr<InitialSearch<XES, XEv>> constructive;
 		hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<NS<XES, XEv>*> shakelist;
-		hf.assignList(shakelist, *scanner.nextInt(), scanner.next()); // reads backwards!
+		vsptr<NS<XES, XEv>> _shakelist;
+		hf.assignList(_shakelist, *scanner.nextInt(), scanner.next()); // reads backwards!
+      vsref<NS<XES, XEv>> shakelist;
+      for(auto x : _shakelist)
+         shakelist.push_back(x);
 
-		vector<NSSeq<XES, XEv>*> searchlist;
-		hf.assignList(searchlist, *scanner.nextInt(), scanner.next()); // reads backwards!
+		vsptr<NSSeq<XES, XEv>> _searchlist;
+		hf.assignList(_searchlist, *scanner.nextInt(), scanner.next()); // reads backwards!
+      vsref<NSSeq<XES, XEv>> searchlist;
+      for(auto x : _searchlist)
+         searchlist.push_back(x);
 
-
-		return new BasicVNS<XES, XEv>(*eval, *constructive, shakelist, searchlist);
+		return new BasicVNS<XES, XEv>(eval, constructive, shakelist, searchlist);
 	}
 
 	virtual vector<pair<string, string> > parameters()

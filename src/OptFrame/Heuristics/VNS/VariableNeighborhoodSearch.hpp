@@ -41,14 +41,14 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
 class VariableNeighborhoodSearch: public VNS, public SingleObjSearch<XES>
 {
 protected:
-	GeneralEvaluator<XES, XEv>& evaluator;
-	InitialSearch<XES, XEv>& constructive;
-	vector<NS<XES, XEv, XSH>*> vshake;
-	vector<NSSeq<XES, XEv, XSH>*> vsearch;
+	sref<GeneralEvaluator<XES, XEv>> evaluator;
+	sref<InitialSearch<XES, XEv>> constructive;
+	vsref<NS<XES, XEv, XSH>> vshake;
+	vsref<NSSeq<XES, XEv, XSH>> vsearch;
 
 public:
 
-	VariableNeighborhoodSearch(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive, vector<NS<XES, XEv>*> _vNS, vector<NSSeq<XES, XEv, XSH>*> _vNSSeq) :
+	VariableNeighborhoodSearch(sref<GeneralEvaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive, vsref<NS<XES, XEv>> _vNS, vsref<NSSeq<XES, XEv, XSH>> _vNSSeq) :
 		evaluator(_evaluator), constructive(_constructive), vshake(_vNS), vsearch(_vNSSeq)
 	{
 	}
@@ -70,7 +70,7 @@ public:
 		if(move)
 		{
          move->applyUpdate(se);
-			evaluator.reevaluate(se); // refresh 'e'
+			evaluator->reevaluate(se); // refresh 'e'
 		}
 	}
 
@@ -83,7 +83,7 @@ public:
       //
 		//if (evaluator.betterThan(e2, eStar))
       //if (e2.betterStrict(eStar))
-      if (evaluator.betterStrict(e2, eStar))
+      if (evaluator->betterStrict(e2, eStar))
 		{
 			// IMPROVEMENT!
 			//XES p(s2.clone(), e2.clone()); // TODO: avoid leak!!
@@ -119,10 +119,13 @@ public:
 
 	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
    //virtual std::optional<XES> search(StopCriteria<XEv>& sosc) override
-   SearchStatus search(const StopCriteria<XEv>& sosc) override
+   //
+   //SearchStatus search(const StopCriteria<XEv>& sosc) override
+   SearchOutput<XES> search(const StopCriteria<XEv>& sosc) override
 	{
       // gets incoming solution
-      op<XES>& star = this->best;
+      //op<XES>& star = this->best;
+      op<XES> star; // TODO: get on 'searchBy'
       //
       double timelimit = sosc.timelimit;
       //XEv target_f(sosc.target_f); // BROKEN
@@ -135,7 +138,7 @@ public:
 		//Evaluation<>   eStar = evaluator.evaluate(sStar);
       //XES star = input?*input:genPair(sosc.timelimit); // elvis
       //star = star?:genPair(sosc.timelimit);
-      star = star?:constructive.initialSearch(sosc).first;
+      star = star?:constructive->initialSearch(sosc).first;
       //
       XSolution& sStar = star->first;
 		Evaluation<>& eStar = star->second;
@@ -186,7 +189,7 @@ public:
 
       //if (sosc.target && evaluator.betterThan(star->second, sosc.target->second))
       //if (star->second.betterStrict(sosc.target_f))
-      if (evaluator.betterStrict(star->second, sosc.target_f))
+      if (evaluator->betterStrict(star->second, sosc.target_f))
       {
 			cout << "VNS exit by target_f: " << star->second.evaluation() << " better than " << sosc.target_f.evaluation() << endl;
          //cout << "isMin: " << evaluator.isMinimization() << endl;
@@ -199,9 +202,10 @@ public:
       }
 
       // updates method solution
-      this->best = star;
+      //this->best = star;
+      //
 		//return std::optional<XES> (star);
-      return SearchStatus::NO_REPORT;
+      return {SearchStatus::NO_REPORT, star};
 	}
 
 	static string idComponent()

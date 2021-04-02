@@ -36,11 +36,11 @@ template<XESolution XES, XEvaluation XEv=Evaluation<>>
 class SingleObjSearchToLocalSearch : public LocalSearch<XES, XEv>
 {
 protected:
-   Evaluator<XES, XEv>& evaluator;
-   SingleObjSearch<XES>& sios;
+   sref<Evaluator<XES, XEv>> evaluator;
+   sref<SingleObjSearch<XES>> sios;
 
 public:
-   SingleObjSearchToLocalSearch(Evaluator<XES, XEv>& _evaluator, SingleObjSearch<XES>& _sios)
+   SingleObjSearchToLocalSearch(sref<Evaluator<XES, XEv>> _evaluator, sref<SingleObjSearch<XES>> _sios)
      : evaluator(_evaluator)
      , sios(_sios)
    {
@@ -68,9 +68,12 @@ public:
 
       std::optional<XES> r = make_optional(se);
       
-      sios.best = r;
-      sios.search(sosc);
-      r = sios.best;
+      assert(false);
+      // TODO: must use 'searchBy'
+      //
+      //sios.best = r;
+      //sios.search(sosc);
+      //r = sios.best;
 
       if (r) {
          s = r->first;
@@ -100,7 +103,7 @@ public:
    virtual void print() const
    {
       cout << "SingleObjSearchToLocalSearch with sios: ";
-      sios.print();
+      sios->print();
    }
 };
 
@@ -114,19 +117,19 @@ public:
 
    virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
-      Evaluator<XES, XEv>* eval;
+      sptr<Evaluator<XES, XEv>> eval;
       hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
       string rest = scanner.rest();
 
-      pair<SingleObjSearch<XES>*, std::string> method;
+      pair<sptr<SingleObjSearch<XES>>, std::string> method;
       method = hf.createSingleObjSearch(rest);
 
-      SingleObjSearch<XES>* h = method.first;
+      sptr<SingleObjSearch<XES>> h = method.first;
 
       scanner = Scanner(method.second);
 
-      return new SingleObjSearchToLocalSearch<XES, XEv>(*eval, *h);
+      return new SingleObjSearchToLocalSearch<XES, XEv>(eval, h);
    }
 
    virtual vector<pair<string, string>> parameters()

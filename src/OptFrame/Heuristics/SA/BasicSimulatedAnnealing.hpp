@@ -56,12 +56,25 @@ public:
    int SAmax;
    double Ti;
 
+   // single neighborhood
    BasicSimulatedAnnealing(sref<GeneralEvaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive, sref<NS<XES, XEv, XSH>> _neighbors, double _alpha, int _SAmax, double _Ti, sref<RandGen> _rg)
      : evaluator(_evaluator)
      , constructive(_constructive)
      , rg(_rg) //, specificStopBy(defaultStopBy)
    {
       neighbors.push_back(_neighbors);
+      alpha = (_alpha);
+      SAmax = (_SAmax);
+      Ti = (_Ti);
+   }
+
+   // vector of neighborhoods
+   BasicSimulatedAnnealing(sref<GeneralEvaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive, vsref<NS<XES, XEv, XSH>> _neighbors, double _alpha, int _SAmax, double _Ti, sref<RandGen> _rg)
+     : evaluator(_evaluator)
+     , constructive(_constructive)
+     , neighbors(_neighbors)
+     , rg(_rg) //, specificStopBy(defaultStopBy)
+   {
       alpha = (_alpha);
       SAmax = (_SAmax);
       Ti = (_Ti);
@@ -265,21 +278,24 @@ public:
 
    virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
-      GeneralEvaluator<XES, XEv>* eval;
+      sptr<GeneralEvaluator<XES, XEv>> eval;
       hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
       //Constructive<S>* constructive;
-      InitialSearch<XES, XEv>* constructive;
+      sptr<InitialSearch<XES, XEv>> constructive;
       hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-      vector<NS<XES, XEv>*> hlist;
-      hf.assignList(hlist, *scanner.nextInt(), scanner.next()); // reads backwards!
+      vsptr<NS<XES, XEv>> _hlist;
+      hf.assignList(_hlist, *scanner.nextInt(), scanner.next()); // reads backwards!
+      vsref<NS<XES, XEv>> hlist;
+      for(auto x : _hlist)
+         hlist.push_back(x);
 
       double alpha = *scanner.nextDouble();
       int SAmax = *scanner.nextInt();
       double Ti = *scanner.nextDouble();
 
-      return new BasicSimulatedAnnealing<XES>(*eval, *constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
+      return new BasicSimulatedAnnealing<XES>(eval, constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
    }
 
    virtual vector<pair<string, string>> parameters()

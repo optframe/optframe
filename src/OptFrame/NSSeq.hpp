@@ -206,14 +206,22 @@ public:
     }
 };
 
+} // namespace optframe
+
 #ifndef NDEBUG
 
 // General test for NSSeq
 // TODO: only if not #include "printable.h"
-//using nsseq_test_base = NSSeq<pair<IsSolution<vector<int>, short> , Evaluation<> >>;
+#include "BaseConcepts.hpp"
+#include "BaseConcepts.ctest.hpp"
 
-#endif
+namespace optframe {
+
+using nsseq_test_base = NSSeq<pair<IsSolution<vector<int>, short> , Evaluation<> >>;
 
 } // using namespace optframe
+#endif
+
+
 
 #endif /*OPTFRAME_NSSEQ_HPP_*/

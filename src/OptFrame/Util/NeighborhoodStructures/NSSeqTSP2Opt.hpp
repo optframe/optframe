@@ -101,11 +101,11 @@ class NSSeqTSP2Opt: public NSSeq<XES, XEv>
 	typedef vector<T> Route;
 
 private:
-	P* p; // has to be the last
+	std::shared_ptr<P> p; // has to be the last
 
 public:
 
-	NSSeqTSP2Opt(P* _p = nullptr)
+	NSSeqTSP2Opt(std::shared_ptr<P> _p = nullptr)
 	:
 			p(_p)
 	{
@@ -166,8 +166,10 @@ public:
 	}
 };
 
+
+
 // compile tests
-//using mynsseq_nsseq_tsp_2opt_test = NSSeqTSP2Opt<int, short, IsSolution<vector<int>, short>, IsEvaluation<double>, pair<IsSolution<vector<int>, short>, IsEvaluation<double>> >;
+
 using mynsseq_nsseq_tsp_2opt_test = NSSeqTSP2Opt<int, short, IsSolution<vector<int>, short> >;
 //
 static_assert(std::is_base_of<nsseq_test_base, mynsseq_nsseq_tsp_2opt_test>::value,  "not inherited from NSSeq");

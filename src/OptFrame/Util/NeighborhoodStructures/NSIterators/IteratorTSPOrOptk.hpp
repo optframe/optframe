@@ -38,11 +38,11 @@ protected:
 	int n, k;
 	int i, j;
 
-	P* p; // has to be the last
+	std::shared_ptr<P> p; // has to be the last
 
 public:
 
-	NSIteratorTSPOrOptk(int _n, int _k, P* _p = nullptr) :
+	NSIteratorTSPOrOptk(int _n, int _k, std::shared_ptr<P> _p = nullptr) :
 			n(_n), k(_k), p(_p)
 	{
 		i = j = 0;

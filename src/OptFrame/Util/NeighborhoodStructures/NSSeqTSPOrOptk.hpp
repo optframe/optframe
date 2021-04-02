@@ -45,10 +45,10 @@ class NSSeqTSPOrOptk : public NSSeq<XES, XEv>
 
 private:
    int k;
-   P* p; // has to be the last
+   std::shared_ptr<P> p; // has to be the last
 
 public:
-   NSSeqTSPOrOptk(int _k, P* _p = nullptr)
+   NSSeqTSPOrOptk(int _k, std::shared_ptr<P> _p = nullptr)
      : k(_k)
      , p(_p)
    {

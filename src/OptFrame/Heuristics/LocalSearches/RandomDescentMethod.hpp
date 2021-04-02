@@ -33,13 +33,13 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class RandomDescentMethod: public LocalSearch<XES, XEv, XES>
 {
 private:
-	GeneralEvaluator<XES, XEv>& evaluator;
-	NS<XES, XEv>& ns;
+	sref<GeneralEvaluator<XES, XEv>> evaluator;
+	sref<NS<XES, XEv>> ns;
 	unsigned int iterMax;
 
 public:
 
-	RandomDescentMethod(GeneralEvaluator<XES, XEv>& _eval, NS<XES, XEv>& _ns, unsigned int _iterMax) :
+	RandomDescentMethod(sref<GeneralEvaluator<XES, XEv>> _eval, sref<NS<XES, XEv>> _ns, unsigned int _iterMax) :
 		evaluator(_eval), ns(_ns), iterMax(_iterMax)
 	{
 	}
@@ -67,14 +67,14 @@ public:
 		while ((iter < iterMax) && (tNow.now() < stopCriteria.timelimit)) //&& (evaluator.betterThan(*stopCriteria.target_f, se)))
 		{
 			//uptr<Move<XES, XEv>> move = ns.randomMove(s);
-         uptr<Move<XES, XEv>> move = ns.randomMove(se);
+         uptr<Move<XES, XEv>> move = ns->randomMove(se);
 
 			op<Evaluation<>> cost = nullopt;
 
 			//if (move && move->canBeApplied(s))
          if (move && move->canBeApplied(se))
 			{
-				cost = evaluator.moveCost(*move, se);
+				cost = evaluator->moveCost(*move, se);
 			}
 			else
 			{
@@ -86,10 +86,10 @@ public:
 
 			//if (cost && evaluator.isImprovement(*cost))
          //if (cost && cost->isImprovingStrict())
-         if (cost && evaluator.isStrictImprovement(*cost))
+         if (cost && evaluator->isStrictImprovement(*cost))
 			{
 				move->applyUpdate(se);
-				evaluator.reevaluate(se);
+				evaluator->reevaluate(se);
 				iter = 0;
 			}
 		}
@@ -120,15 +120,15 @@ public:
 
 	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		GeneralEvaluator<XES, XEv>* eval;
+		sptr<GeneralEvaluator<XES, XEv>> eval;
 		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		NS<XES, XEv>* ns;
+		sptr<NS<XES, XEv>> ns;
 		hf.assign(ns, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int iterMax = *scanner.nextInt();
 
-		return new RandomDescentMethod<XES, XEv>(*eval, *ns, iterMax);
+		return new RandomDescentMethod<XES, XEv>(eval, ns, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()

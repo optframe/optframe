@@ -46,9 +46,9 @@ namespace TSP
 class ConstructiveBestInsertion: public InitialSearch<ESolutionTSP, EvaluationTSP>
 {
 private:
-	ProblemInstance* pI;
-   GeneralEvaluator<ESolutionTSP>& eval;
-	RandGen& rg;
+	sref<ProblemInstance> pI;
+   sref<GeneralEvaluator<ESolutionTSP>> eval;
+	sref<RandGen> rg;
 
     static bool compare(const pair<double, pair<int,int> >& p1, const pair<double, pair<int,int> >& p2)
     {
@@ -57,10 +57,9 @@ private:
 
 public:
 
-	ConstructiveBestInsertion(ProblemInstance* pI, GeneralEvaluator<ESolutionTSP>& _eval, RandGen& _rg) :
-      eval(_eval), rg(_rg) // If necessary, add more parameters
+	ConstructiveBestInsertion(sref<ProblemInstance> pI, sref<GeneralEvaluator<ESolutionTSP>> _eval, sref<RandGen> _rg) :
+      pI(pI), eval(_eval), rg(_rg) // If necessary, add more parameters
 	{
-		this->pI = pI;
 		// Put the rest of your code here
 	};
 
@@ -75,14 +74,14 @@ public:
 		RepTSP newRep;
         vector<bool> used(pI->n, false);
 
-        int first = rg.rand(pI->n);
+        int first = rg->rand(pI->n);
 
         newRep.push_back(first);
         used[first] = true;
 
-        int second = rg.rand(pI->n);
+        int second = rg->rand(pI->n);
         while(second == first)
-        	second = rg.rand(pI->n);
+        	second = rg->rand(pI->n);
 
         newRep.push_back(second);
         used[second] = true;
@@ -162,7 +161,7 @@ public:
       //return make_optional(SolutionTSP(newRep));
       EvaluationTSP etsp;
       ESolutionTSP se(SolutionTSP(newRep), etsp);
-      eval.reevaluate(se);
+      eval->reevaluate(se);
       return make_pair(make_optional(se), SearchStatus::NO_REPORT);
 	}
 
