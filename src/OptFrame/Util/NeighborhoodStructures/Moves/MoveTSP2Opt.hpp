@@ -44,11 +44,11 @@ class MoveTSP2Opt: public Move<XES, XEv>
 protected:
 	int p1, p2; // position 1 and position 2, respectively
 
-	OPTFRAME_DEFAULT_PROBLEM* problem;
+	std::shared_ptr<OPTFRAME_DEFAULT_PROBLEM> problem;
 
 public:
 
-	MoveTSP2Opt(int _p1, int _p2, OPTFRAME_DEFAULT_PROBLEM* _problem = nullptr) :
+	MoveTSP2Opt(int _p1, int _p2, std::shared_ptr<OPTFRAME_DEFAULT_PROBLEM> _problem = nullptr) :
 			p1(_p1), p2(_p2), problem(_problem)
 	{
 	}

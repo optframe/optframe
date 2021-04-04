@@ -36,15 +36,15 @@ template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, X
 class BasicGRASP: public SingleObjSearch<XES>, public GRASP
 {
 private:
-	GeneralEvaluator<XES, XEv>& evaluator;
-	GRConstructive<S>& constructive;
-	LocalSearch<XES, XEv>& ls;
+	sref<GeneralEvaluator<XES, XEv>> evaluator;
+	sref<GRConstructive<S>> constructive;
+	sref<LocalSearch<XES, XEv>> ls;
 	float alpha;
 	unsigned int iterMax;
 
 public:
 
-	BasicGRASP(GeneralEvaluator<XES, XEv>& _eval, GRConstructive<S>& _constructive, LocalSearch<XES, XEv>& _ls, float _alpha, int _iterMax) :
+	BasicGRASP(sref<GeneralEvaluator<XES, XEv>> _eval, sref<GRConstructive<S>> _constructive, sref<LocalSearch<XES, XEv>> _ls, float _alpha, int _iterMax) :
 			evaluator(_eval), constructive(_constructive), ls(_ls)
 	{
 		if (_iterMax <= 0)
@@ -62,11 +62,11 @@ public:
    // TODO: consider input and optional output
    XES genGRPair(double timelimit)
    {
-      std::optional<S> sStar = constructive.generateGRSolution(alpha, timelimit);
+      std::optional<S> sStar = constructive->generateGRSolution(alpha, timelimit);
 		//XEv eStar = evaluator.evaluate(*sStar); // TODO: evaluate should receive S... and reevaluate 'both'
       XEv eStar;
       XES p = make_pair(*sStar, eStar);
-      evaluator.reevaluate(p);
+      evaluator->reevaluate(p);
 
       return p;
       //return make_pair(*sStar, eStar); // TODO: generalize this
@@ -75,9 +75,12 @@ public:
 
 	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
+   //
+   //SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
+   SearchOutput<XES> search(const StopCriteria<XEv>& stopCriteria) override
 	{
-      op<XES>& star = this->best;
+      //op<XES>& star = this->best;
+      op<XES> star; // TODO: get on 'searchBy'
 
 		double timelimit = stopCriteria.timelimit;
 
@@ -109,11 +112,11 @@ public:
          XEv& e1 = p1.second;
 
 			StopCriteria<XEv> stopCriteriaLS = stopCriteria.newStopCriteriaWithTL(tNow.now());
-			ls.searchFrom(p1, stopCriteriaLS);
+			ls->searchFrom(p1, stopCriteriaLS);
 
 			//if (evaluator.betterThan(e1, e))
          //if (e1.betterStrict(e))
-         if (evaluator.betterStrict(e1, e))
+         if (evaluator->betterStrict(e1, e))
 			{
 				//(*s) = std::move(*s1);
 				//delete s1;
@@ -135,8 +138,9 @@ public:
 		//return new pair<S, Evaluation<>>(sFinal, e);
       //return make_pair(make_optional(se), SearchStatus::NO_REPORT);
       star = make_optional(se);
-      this->best = star;
-      return SearchStatus::NO_REPORT;
+      //
+      //this->best = star;
+      return {SearchStatus::NO_REPORT, star};
 	}
 
 	virtual string id() const
@@ -163,18 +167,18 @@ public:
 
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		GeneralEvaluator<XES, XEv>* eval;
+		sptr<GeneralEvaluator<XES, XEv>> eval;
 		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		GRConstructive<S>* constructive;
+		sptr<GRConstructive<S>> constructive;
 		hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
 
-		pair<LocalSearch<XES, XEv>*, std::string> method;
+		pair<sptr<LocalSearch<XES, XEv>>, std::string> method;
 		method = hf.createLocalSearch(rest);
 
-		LocalSearch<XES, XEv>* h = method.first;
+		sptr<LocalSearch<XES, XEv>> h = method.first;
 
 		scanner = Scanner(method.second);
 
@@ -188,7 +192,7 @@ public:
 
 		int iterMax = *scanner.nextInt();
 
-		return new BasicGRASP<S, XEv>(*eval, *constructive, *h, alpha, iterMax);
+		return new BasicGRASP<S, XEv>(eval, constructive, h, alpha, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()

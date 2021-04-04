@@ -43,11 +43,11 @@ protected:
 	int p1, p2; // position 1 and position 2, respectively
 	const Route& r;
 
-	P* p; // has to be the last
+	std::shared_ptr<P> p; // has to be the last
 
 public:
 
-	NSIteratorTSP2Opt(const S& _s, P* _p = nullptr) :
+	NSIteratorTSP2Opt(const S& _s, std::shared_ptr<P> _p = nullptr) :
 			r(_s.getR()), p(_p)
 	{
 		p1 = 0; // avoid non-initialization warning

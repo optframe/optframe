@@ -32,12 +32,12 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class HillClimbing: public LocalSearch<XES, XEv>
 {
 private:
-	GeneralEvaluator<XES, XEv>& evaluator;
-	LocalSearch<XES, XEv>& ls;
+	sref<GeneralEvaluator<XES, XEv>> evaluator;
+	sref<LocalSearch<XES, XEv>> ls;
 
 public:
 
-	HillClimbing(GeneralEvaluator<XES, XEv>& _ev, LocalSearch<XES, XEv>& _ls) :
+	HillClimbing(sref<GeneralEvaluator<XES, XEv>> _ev, sref<LocalSearch<XES, XEv>> _ls) :
 		evaluator(_ev), ls(_ls)
 	{
 	}
@@ -65,14 +65,14 @@ public:
 		//Evaluation<>* e0 = &e.clone();
       XEv e0(e); // avoid that using return status on 'exec'
 
-		ls.searchFrom(se, sosc);
+		ls->searchFrom(se, sosc);
 
 		long tnow = time(nullptr);
 
       // while improvement is found
 		//while ((evaluator.betterThan(e, e0)) && ((tnow - tini) < timelimit))
       //while ((e.betterStrict(e0)) && ((tnow - tini) < timelimit))
-      while ((evaluator.betterStrict(e, e0)) && ((tnow - tini) < timelimit))
+      while ((evaluator->betterStrict(e, e0)) && ((tnow - tini) < timelimit))
 		{
 			//delete e0;
 			//e0 = &e.clone();
@@ -80,7 +80,7 @@ public:
          //   (*e0) = e;
          e0 = e;
 
-			ls.searchFrom(se, sosc);
+			ls->searchFrom(se, sosc);
 
 			tnow = time(nullptr);
 		}	
@@ -118,19 +118,19 @@ public:
 
 	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		GeneralEvaluator<XES, XEv>* eval;
+		sptr<GeneralEvaluator<XES, XEv>> eval;
 		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
 
-		pair<LocalSearch<XES, XEv>*, std::string> method;
+		pair<sptr<LocalSearch<XES, XEv>>, std::string> method;
 		method = hf.createLocalSearch(rest);
 
-		LocalSearch<XES, XEv>* h = method.first;
+		sptr<LocalSearch<XES, XEv>> h = method.first;
 
 		scanner = Scanner(method.second);
 
-		return new HillClimbing<XES, XEv>(*eval, *h);
+		return new HillClimbing<XES, XEv>(eval, h);
 	}
 
 	virtual vector<pair<string, string> > parameters()

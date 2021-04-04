@@ -196,7 +196,8 @@ public:
 
 #ifndef NDEBUG
 
-#include "MultiESolution.ctest.hpp"
+// TODO: only in unit tests (or somehow prevent #include "printable.h")
+//#include "MultiESolution.ctest.hpp"
 
 #endif
 

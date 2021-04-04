@@ -30,22 +30,22 @@ namespace optframe {
 template<XSolution S>
 class CloneConstructive : public Constructive<S>
 {
-   S& base;
+   sptr<S> base;
 
 public:
-   CloneConstructive(S& _base)
-     : base(_base.clone())
+   CloneConstructive(sptr<S> _base)
+     : base(&_base->clone())
    {
    }
 
    virtual ~CloneConstructive()
    {
-      delete &base;
+      //delete &base;
    }
 
    virtual std::optional<S> generateSolution(double timelimit) override
    {
-      S& s = base.clone();
+      S& s = base->clone();
       std::optional<S> retS(s); // TODO: what happens here? can we move at least??
       S sc = s;
       delete &s;
@@ -81,10 +81,10 @@ public:
 
    virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
-      S* s;
+      sptr<S> s;
       hf.assign(s, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-      return new CloneConstructive<S>(*s);
+      return new CloneConstructive<S>(s);
    }
 
    virtual vector<pair<string, string>> parameters()

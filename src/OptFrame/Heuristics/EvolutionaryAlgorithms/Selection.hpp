@@ -29,7 +29,7 @@
 #include "../../MultiEvaluation.hpp"
 #include "EA.h"
 
-#include "../../Util/printable.h"
+//#include "../../printable/printable.h" // this should not be required here
 
 #ifndef _OPTFRAME_DBG_SELECTION_
 #   ifdef OPTFRAME_DEBUG
@@ -81,8 +81,8 @@ public:
 			fv[i] = fv[i] / sum;
 			if(fv[i] != fv[i]) // is nan
 			{
-				cout << "Selection::normalize()::NAN VALUE!" << endl;
-				cout << fv << endl;
+				std::cout << "Selection::normalize()::NAN VALUE!" << std::endl;
+				//std::cout << fv << std::endl; // cannot depend on 'printable' here
 				exit(1);
 			}
 		}

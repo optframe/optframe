@@ -7,7 +7,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <OptFrame/Util/printable.h>
+#include <OptFrame/printable/printable.h>
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Solution.hpp>
 #include <OptFrame/MultiObjValue.hpp> // just for testing
@@ -29,7 +29,8 @@ using namespace KP;
 int
 main(int argc, char** argv)
 {
-   RandGenMersenneTwister rg;                   // declara um bom gerador de números aleatórios
+   //RandGenMersenneTwister rg;                   // declara um bom gerador de números aleatórios
+   sref<RandGen> rg = RandGenMersenneTwister();                   // declara um bom gerador de números aleatórios
    Scanner scanner(File("instance-4.txt")); // carrega arquivo no disco
    ProblemInstance p(scanner);                  // cria um problema-teste usando o arquivo carregado
    MyEvaluator ev(p);
@@ -83,23 +84,35 @@ main(int argc, char** argv)
    };
 */
    
-   //BasicSimulatedAnnealing<ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg, spc);
-   BasicSimulatedAnnealing<ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
-   
-   
+   sref<GeneralEvaluator<ESolutionKP>> _evaluator = ev;
+   sref<InitialSearch<ESolutionKP>> _constructive = c1;
+   NS<ESolutionKP>* _ns1 = new NSSeqBitFlip(p, rg);
+   sref<NS<ESolutionKP>> _neighbors = _ns1;
+   double _alpha = 0.98;
+   int _SAmax = 100;
+   double _Ti = 900.0;
+   //BasicSimulatedAnnealing<ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
+   BasicSimulatedAnnealing<ESolutionKP> sa(_evaluator, _constructive, _neighbors, _alpha, _SAmax, _Ti, rg);
+
+  
+   /*
    sa.specificStopBy = 
      SpecificMethodStop<ESolutionKP, EvaluationKP, BasicSimulatedAnnealing<ESolutionKP>>(
       [&](const ESolutionKP& best, const StopCriteria<EvaluationKP>& sosc, BasicSimulatedAnnealing<ESolutionKP>* me) -> bool {
          return ((me->getT() > 0.001) && (me->getTimer().now() < 120)); // 120 seconds and freezing 0.001
       }
      );
+   */
    
+   sa.onLoopCtx = [](auto& ctx, auto& sosc) {
+        return (ctx.T >= 0.001) && !sosc.shouldStop(std::make_optional(ctx.best->second));
+     };
 
    //auto soscSA { StopCriteria(specificStopBy) };
    StopCriteria<EvaluationKP> soscSA;
 
-   sa.search(soscSA);
-   op<ESolutionKP> r = sa.best;
+   SearchOutput<ESolutionKP> sout = sa.search(soscSA);
+   op<ESolutionKP> r = *sout.best;
 
    //r->first.print();
    std::cout << r->first << std::endl;
@@ -120,11 +133,19 @@ main(int argc, char** argv)
 
    //EvaluatorSubsetRandomKeys<SolutionKP> eprk(ev1, 0, p.N - 1);
    EvaluatorSubsetRandomKeys<EvaluationKP, double, ESolutionKP> eprk(ev1, 0, p.N - 1);
-   BRKGA<ESolutionKP, double> brkga(eprk, p.N, 1000, 30, 0.4, 0.3, 0.6);
+   //Evaluator<std::vector<double>, EvaluationKP, ESolutionKP>& _eprk = eprk;
+   //sref<DecoderRandomKeys<SolutionKP, EvaluationKP, double>> _decoder =
+   //   *new DecoderRandomKeysEvaluator<SolutionKP, EvaluationKP, double, ESolutionKP>(_eprk);
+   sref<DecoderRandomKeys<SolutionKP, EvaluationKP, double>> _decoder =
+      new EvaluatorSubsetRandomKeys<EvaluationKP, double, ESolutionKP>(ev1, 0, p.N - 1);
+   
+   sref< InitialPopulation<std::pair<std::vector<double>, Evaluation<>> > > _genKeys =
+      new RandomKeysInitPop<EvaluationKP, double>(p.N, rg);
+   BRKGA<ESolutionKP, double> brkga(_decoder, _genKeys, 1000, 30, 0.4, 0.3, 0.6, rg);
 
    //pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
-   brkga.search(sosc);
-   std::optional<pair<SolutionKP, Evaluation<>>> r2 = brkga.best;
+   SearchOutput<ESolutionKP> sout2 = brkga.search(sosc);
+   std::optional<pair<SolutionKP, EvaluationKP>> r2 = sout2.best;
    
    std::cout << r2->first << std::endl;
 

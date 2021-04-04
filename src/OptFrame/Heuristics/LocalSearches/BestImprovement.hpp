@@ -34,8 +34,8 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
 class BestImprovement: public LocalSearch<XES, XEv>
 {
 private:
-	GeneralEvaluator<XES, XEv>& eval;
-	NSSeq<XES, XEv, XSH>& nsSeq;
+	sref<GeneralEvaluator<XES, XEv>> eval;
+	sref<NSSeq<XES, XEv, XSH>> nsSeq;
 
 	// logs
 	double sum_time;
@@ -43,7 +43,7 @@ private:
 
 public:
 
-	BestImprovement(GeneralEvaluator<XES, XEv>& _eval, NSSeq<XES, XEv, XSH>& _nsSeq) :
+	BestImprovement(sref<GeneralEvaluator<XES, XEv>> _eval, sref<NSSeq<XES, XEv, XSH>> _nsSeq) :
 		eval(_eval), nsSeq(_nsSeq)
 	{
 		sum_time = 0.0;
@@ -70,14 +70,14 @@ public:
       //double target_f = sosc.target_f; 
 
 		if(Component::information)
-			cout << "BI::starts for " << nsSeq.toString() << endl;
+			cout << "BI::starts for " << nsSeq->toString() << endl;
 
 		num_calls++;
 		Timer t;
 
 		// TODO: verify if it's not null
 		//uptr<NSIterator<XES, XEv, XSH>> it = nsSeq.getIterator(s);
-      uptr<NSIterator<XES, XEv, XSH>> it = nsSeq.getIterator(se);
+      uptr<NSIterator<XES, XEv, XSH>> it = nsSeq->getIterator(se);
       //
       if(!it)
          return SearchStatus::FAILED;
@@ -121,10 +121,10 @@ public:
 				}
 			}
 
-			bestCost = eval.moveCost(*bestMove, se);
+			bestCost = eval->moveCost(*bestMove, se);
 			//if (eval.isImprovement(*bestCost))
          //if (bestCost->isImprovingStrict())
-         if (eval.isStrictImprovement(*bestCost))
+         if (eval->isStrictImprovement(*bestCost))
 			{
 				it->next();
 				break;
@@ -155,11 +155,11 @@ public:
          if (move->canBeApplied(se))
 			{
 				///MoveCost<>* cost = eval.moveCost(*move, se);
-            op<XEv> cost = eval.moveCost(*move, se);
+            op<XEv> cost = eval->moveCost(*move, se);
 
 				//if (eval.betterThan(*cost, *bestCost))
             //if (cost->betterStrict(*bestCost))
-            if (eval.betterStrict(*cost, *bestCost))
+            if (eval->betterStrict(*cost, *bestCost))
 				{
 					/////delete bestMove;
 					/////delete bestCost;
@@ -186,7 +186,7 @@ public:
 
 		//if (eval.isImprovement(*bestCost))
       //if (bestCost->isImprovingStrict())
-      if (eval.isStrictImprovement(*bestCost))
+      if (eval->isStrictImprovement(*bestCost))
 		{
 			//cout << "MOVE IS IMPROVEMENT! cost=";
 			//bestCost->print();
@@ -198,7 +198,7 @@ public:
 
 			bestMove->applyUpdate(se);
 
-			eval.reevaluate(se); // updates 'e'
+			eval->reevaluate(se); // updates 'e'
 			//e.setLocalOptimumStatus(bestMove->id(), false); //set NS 'id' out of Local Optimum
 		}
 		else{
@@ -239,7 +239,7 @@ public:
 	virtual string toString() const
 	{
 		stringstream ss;
-		ss << "BI: " << nsSeq.toString();
+		ss << "BI: " << nsSeq->toString();
 		return ss.str();
 	}
 
@@ -265,15 +265,15 @@ public:
 	{
 		if(!scanner.hasNext())
 			return nullptr;
-		GeneralEvaluator<XES, XEv>* eval;
+		sptr<GeneralEvaluator<XES, XEv>> eval;
 		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		if(!scanner.hasNext())
 			return nullptr;
-		NSSeq<XES, XEv, XSH>* nsseq;
+		sptr<NSSeq<XES, XEv, XSH>> nsseq;
 		hf.assign(nsseq, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		return new BestImprovement<XES, XEv, XSH>(*eval, *nsseq);
+		return new BestImprovement<XES, XEv, XSH>(eval, nsseq);
 	}
 
 	virtual vector<pair<string, string> > parameters()

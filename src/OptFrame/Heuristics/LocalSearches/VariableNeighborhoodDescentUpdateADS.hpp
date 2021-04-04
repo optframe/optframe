@@ -34,12 +34,12 @@ template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S, XEvaluation XEv =
 class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES, XEv>
 {
 private:
-   GeneralEvaluator<XES, XEv>& ev;
-   ADSManager<R, ADS, S>& adsMan;
-   vector<LocalSearch<XES, XEv>*> lsList;
+   sref<GeneralEvaluator<XES, XEv>> ev;
+   sref<ADSManager<R, ADS, S>> adsMan;
+   vsref<LocalSearch<XES, XEv>> lsList;
 
 public:
-   VariableNeighborhoodDescentUpdateADS(GeneralEvaluator<XES, XEv>& _ev, ADSManager<R, ADS, S>& _adsMan, vector<LocalSearch<XES, XEv>*> _lsList)
+   VariableNeighborhoodDescentUpdateADS(sref<GeneralEvaluator<XES, XEv>> _ev, sref<ADSManager<R, ADS, S>> _adsMan, vsref<LocalSearch<XES, XEv>> _lsList)
      : ev(_ev)
      , adsMan(_adsMan)
      , lsList(_lsList)
@@ -87,7 +87,7 @@ public:
 
          //if (ev.betterThan(p0, se)) {
          //if (p0.second.betterStrict(se.second)) {
-         if (ev.betterStrict(p0.second, se.second)) {
+         if (ev->betterStrict(p0.second, se.second)) {
             se = p0;
             //delete s0; // no need
             //delete e0; // no need
@@ -97,7 +97,7 @@ public:
             string localSearchID = lsList[k - 1]->toString();
             unsigned found = localSearchID.find("OptFrame");
             string moveID = localSearchID.substr(found);
-            adsMan.setNeighLocalOptimum(se.first, moveID);
+            adsMan->setNeighLocalOptimum(se.first, moveID);
 
             //delete s0; // no need
             //delete e0; // no need
@@ -105,7 +105,7 @@ public:
             k = k + 1;
          }
          //
-         ev.reevaluate(se);
+         ev->reevaluate(se);
 
          tnow = time(nullptr);
       }
@@ -157,16 +157,19 @@ public:
 
    virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
-      GeneralEvaluator<XES, XEv>* eval;
+      sptr<GeneralEvaluator<XES, XEv>> eval;
       hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-      ADSManager<R, ADS, S>* adsMan;
+      sptr<ADSManager<R, ADS, S>> adsMan;
       hf.assign(adsMan, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-      vector<LocalSearch<XES, XEv>*> hlist;
-      hf.assignList(hlist, *scanner.nextInt(), scanner.next()); // reads backwards!
+      vsptr<LocalSearch<XES, XEv>> _hlist;
+      hf.assignList(_hlist, *scanner.nextInt(), scanner.next()); // reads backwards!
+      vsref<LocalSearch<XES, XEv>> hlist;
+      for(auto x : _hlist)
+         hlist.push_back(x);
 
-      return new VariableNeighborhoodDescentUpdateADS<R, ADS, S, XEv>(*eval, *adsMan, hlist);
+      return new VariableNeighborhoodDescentUpdateADS<R, ADS, S, XEv>(eval, adsMan, hlist);
    }
 
    virtual vector<pair<string, string>> parameters()

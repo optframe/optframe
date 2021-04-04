@@ -36,7 +36,7 @@ We consider the following imports.
 #include <OptFCore/FCore.hpp> // OptFrame Functional Core (FCore)
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/Util/Matrix.hpp>
-#include <OptFrame/Util/printable.h>
+#include <OptFrame/printable/printable.h>
 //
 using namespace std;
 using namespace optframe;

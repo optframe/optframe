@@ -25,15 +25,44 @@
 #include <map>
 #include <ostream>
 #include <sstream> // stringstream
+#include <optional> // requires c++17
 #include <vector>
 
-#include "../myconcepts.h" // ostreamable concept!
-
-#include "../SemStream.hpp" // support for global semantic streams
+// TODO: ostreamable
+//#include "../myconcepts.h" // ostreamable concept!
 
 using namespace std;
 
 namespace optframe {
+
+// semantic streams (optframe::cjson, ctxt, etc)
+struct SemStream : private std::streambuf
+  , public std::ostream
+{
+public:
+   std::ostream* os;
+
+   SemStream(std::ostream& _os)
+     : std::ostream{ this }
+     , os{ &_os }
+   {}
+
+private:
+   int overflow(int c) override
+   {
+      (*os).put(c);
+      return 0;
+   }
+
+public:
+   void setStream(std::ostream& _os)
+   {
+      os = &_os;
+   }
+};
+extern SemStream cjson; // only in .cpp
+extern SemStream ctxt; // only in .cpp
+
 
 /*
 ostream&

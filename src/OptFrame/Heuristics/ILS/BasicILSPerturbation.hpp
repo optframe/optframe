@@ -37,14 +37,14 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class BasicILSPerturbation: public ILS, public Component
 {
 private:
-	GeneralEvaluator<XES, XEv>& evaluator;
+	sref<GeneralEvaluator<XES, XEv>> evaluator;
 	int pMin;
 	int pMax;
-	vector<NS<XES, XEv>*> ns;
-	RandGen& rg;
+	vsref<NS<XES, XEv>> ns;
+	sref<RandGen> rg;
 
 public:
-	BasicILSPerturbation(GeneralEvaluator<XES, XEv>& e, int _pMin, int _pMax, vector<NS<XES, XEv>*>& _ns, RandGen& _rg) :
+	BasicILSPerturbation(sref<GeneralEvaluator<XES, XEv>> e, int _pMin, int _pMax, vsref<NS<XES, XEv>>& _ns, sref<RandGen> _rg) :
 		evaluator(e), pMin(_pMin), pMax(_pMax), ns(_ns), rg(_rg)
 	{
 		if(pMax < pMin)
@@ -59,7 +59,7 @@ public:
 			cout << "BasicILSPerturbation warning: empty neighborhood list." << endl;
 	}
 
-	BasicILSPerturbation(GeneralEvaluator<XES, XEv>& e, int _pMin, int _pMax, NS<XES, XEv>& _ns, RandGen& _rg) :
+	BasicILSPerturbation(sref<GeneralEvaluator<XES, XEv>> e, int _pMin, int _pMax, sref<NS<XES, XEv>> _ns, sref<RandGen> _rg) :
 		evaluator(e), pMin(_pMin), pMax(_pMax), rg(_rg)
 	{
 		ns.push_back(&_ns);
@@ -107,7 +107,7 @@ public:
 			}
 		}
 
-		evaluator.reevaluate(se); // updates 'e'
+		evaluator->reevaluate(se); // updates 'e'
 	}
 
 	virtual string id() const
@@ -133,16 +133,19 @@ public:
 
 	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		GeneralEvaluator<XES, XEv>* eval;
+		sptr<GeneralEvaluator<XES, XEv>> eval;
 		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int pMin = *scanner.nextInt();
 		int pMax = *scanner.nextInt();
 
-		vector<NS<XES, XEv>*> ns_list;
-		hf.assignList(ns_list, *scanner.nextInt(), scanner.next()); // reads backwards!
+		vsptr<NS<XES, XEv>> _ns_list;
+		hf.assignList(_ns_list, *scanner.nextInt(), scanner.next()); // reads backwards!
+      vsref<NS<XES, XEv>> ns_list;
+      for(auto x : _ns_list)
+         ns_list.push_back(x);
 
-		return new BasicILSPerturbation<XES, XEv>(*eval, pMin, pMax, ns_list, hf.getRandGen());
+		return new BasicILSPerturbation<XES, XEv>(eval, pMin, pMax, ns_list, hf.getRandGen());
 	}
 
 	virtual vector<pair<string, string> > parameters()

@@ -44,10 +44,10 @@ class MoveSwap : public Move<ESolutionTSP>
 {
 private:
    int c1, c2;
-   ProblemInstance& tsp;
+   sref<ProblemInstance> tsp;
 
 public:
-   MoveSwap(int c1, int c2, ProblemInstance& _tsp)
+   MoveSwap(int c1, int c2, sref<ProblemInstance> _tsp)
      : tsp(_tsp)
    {
       this->c1 = c1;
@@ -107,28 +107,28 @@ public:
 
       if (k2 - k1 == 1) // special case, cities are near
       {
-         f -= (*tsp.dist)(rep[bk1], rep[k1]);
-         f -= (*tsp.dist)(rep[k1], rep[k2]);
-         f -= (*tsp.dist)(rep[k2], rep[ak2]);
+         f -= (*tsp->dist)(rep[bk1], rep[k1]);
+         f -= (*tsp->dist)(rep[k1], rep[k2]);
+         f -= (*tsp->dist)(rep[k2], rep[ak2]);
       } else {
-         f -= (*tsp.dist)(rep[bk1], rep[k1]);
-         f -= (*tsp.dist)(rep[k1], rep[ak1]);
-         f -= (*tsp.dist)(rep[bk2], rep[k2]);
-         f -= (*tsp.dist)(rep[k2], rep[ak2]);
+         f -= (*tsp->dist)(rep[bk1], rep[k1]);
+         f -= (*tsp->dist)(rep[k1], rep[ak1]);
+         f -= (*tsp->dist)(rep[bk2], rep[k2]);
+         f -= (*tsp->dist)(rep[k2], rep[ak2]);
       }
 
       uptr<Move<ESolutionTSP>> rev = apply(se);
 
       if (k2 - k1 == 1) // special case, cities are near
       {
-         f += (*tsp.dist)(rep[bk1], rep[k1]);
-         f += (*tsp.dist)(rep[k1], rep[k2]);
-         f += (*tsp.dist)(rep[k2], rep[ak2]);
+         f += (*tsp->dist)(rep[bk1], rep[k1]);
+         f += (*tsp->dist)(rep[k1], rep[k2]);
+         f += (*tsp->dist)(rep[k2], rep[ak2]);
       } else {
-         f += (*tsp.dist)(rep[bk1], rep[k1]);
-         f += (*tsp.dist)(rep[k1], rep[ak1]);
-         f += (*tsp.dist)(rep[bk2], rep[k2]);
-         f += (*tsp.dist)(rep[k2], rep[ak2]);
+         f += (*tsp->dist)(rep[bk1], rep[k1]);
+         f += (*tsp->dist)(rep[k1], rep[ak1]);
+         f += (*tsp->dist)(rep[bk2], rep[k2]);
+         f += (*tsp->dist)(rep[k2], rep[ak2]);
       }
 
       e.setObjFunction(e.getObjFunction() + f);
@@ -169,32 +169,32 @@ public:
 
       if (k2 - k1 == 1) // special case, cities are near (in fact, a 3-opt case... TODO remove this)
       {
-         f -= (*tsp.dist)(rep[bk1], rep[k1]);
-         f -= (*tsp.dist)(rep[k1], rep[k2]);
-         f -= (*tsp.dist)(rep[k2], rep[ak2]);
+         f -= (*tsp->dist)(rep[bk1], rep[k1]);
+         f -= (*tsp->dist)(rep[k1], rep[k2]);
+         f -= (*tsp->dist)(rep[k2], rep[ak2]);
 
-         f += (*tsp.dist)(rep[bk1], rep[k2]);
-         f += (*tsp.dist)(rep[k2], rep[k1]);
-         f += (*tsp.dist)(rep[k1], rep[ak2]);
+         f += (*tsp->dist)(rep[bk1], rep[k2]);
+         f += (*tsp->dist)(rep[k2], rep[k1]);
+         f += (*tsp->dist)(rep[k1], rep[ak2]);
       } else if ((k1 == 0) && (k2 == ((int)rep.size()) - 1)) // special case, extreme points
       {
-         f -= (*tsp.dist)(rep[bk2], rep[k2]);
-         f -= (*tsp.dist)(rep[k2], rep[k1]);
-         f -= (*tsp.dist)(rep[k1], rep[ak1]);
+         f -= (*tsp->dist)(rep[bk2], rep[k2]);
+         f -= (*tsp->dist)(rep[k2], rep[k1]);
+         f -= (*tsp->dist)(rep[k1], rep[ak1]);
 
-         f += (*tsp.dist)(rep[bk2], rep[k1]);
-         f += (*tsp.dist)(rep[k1], rep[k2]);
-         f += (*tsp.dist)(rep[k2], rep[ak1]);
+         f += (*tsp->dist)(rep[bk2], rep[k1]);
+         f += (*tsp->dist)(rep[k1], rep[k2]);
+         f += (*tsp->dist)(rep[k2], rep[ak1]);
       } else {
-         f -= (*tsp.dist)(rep[bk1], rep[k1]);
-         f -= (*tsp.dist)(rep[k1], rep[ak1]);
-         f -= (*tsp.dist)(rep[bk2], rep[k2]);
-         f -= (*tsp.dist)(rep[k2], rep[ak2]);
+         f -= (*tsp->dist)(rep[bk1], rep[k1]);
+         f -= (*tsp->dist)(rep[k1], rep[ak1]);
+         f -= (*tsp->dist)(rep[bk2], rep[k2]);
+         f -= (*tsp->dist)(rep[k2], rep[ak2]);
 
-         f += (*tsp.dist)(rep[bk1], rep[k2]);
-         f += (*tsp.dist)(rep[k2], rep[ak1]);
-         f += (*tsp.dist)(rep[bk2], rep[k1]);
-         f += (*tsp.dist)(rep[k1], rep[ak2]);
+         f += (*tsp->dist)(rep[bk1], rep[k2]);
+         f += (*tsp->dist)(rep[k2], rep[ak1]);
+         f += (*tsp->dist)(rep[bk2], rep[k1]);
+         f += (*tsp->dist)(rep[k1], rep[ak2]);
       }
 
       //return new MoveCost<>(f, 0);
@@ -224,18 +224,17 @@ public:
 class NSEnumSwap : public NSEnum<ESolutionTSP>
 {
 private:
-   ProblemInstance* pI;
+   sref<ProblemInstance> pI;
    int n;
 
    // Your private vars
 
 public:
 
-   NSEnumSwap(ProblemInstance* pI, RandGen& _rg)
-     : NSEnum<ESolutionTSP>(_rg)
+   NSEnumSwap(sref<ProblemInstance> pI, sref<RandGen> _rg)
+     : NSEnum<ESolutionTSP>(_rg),
+     pI(pI), n(pI->n)
    {
-      this->pI = pI;
-      this->n = pI->n;
    }
 
    // given index, returns (i,j), with 0 < i < j < n-1

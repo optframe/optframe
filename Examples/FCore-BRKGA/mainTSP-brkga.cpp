@@ -11,7 +11,7 @@
 #include <OptFrame/Heuristics/Heuristics.hpp> // many metaheuristics here...
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/Util/Matrix.hpp>
-#include <OptFrame/Util/printable.h>
+#include <OptFrame/printable/printable.h>
 
 using namespace std;
 using namespace optframe;

@@ -17,7 +17,7 @@
 #include "myconcepts.h"
 
 // may require some basic printing capabilities
-//#include "Util/printable.h"
+//#include <OptFrame/printable/printable.h>
 
 // the default ADS type is 'int'
 // adopting 'void' type would cause troubles in constructor/copy/move operations
@@ -538,6 +538,7 @@ concept
 } // namespace optframe
 
 // compilation tests for concepts (these are NOT unit tests)
-#include "BaseConcepts.ctest.hpp"
+// TODO: put on unit tests or directly here (without #include "printable.h")
+//#include "BaseConcepts.ctest.hpp"
 
 #endif // OPTFRAME_SOLUTION_CONCEPTS_HPP_

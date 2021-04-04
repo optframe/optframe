@@ -46,18 +46,17 @@ namespace TSP
 class RandomInitialSolutionTSP: public InitialSearch<ESolutionTSP, EvaluationTSP>
 {
 private:
-	ProblemInstance* pI;
-   GeneralEvaluator<ESolutionTSP>& eval;
-	RandGen& rg;
+	sref<ProblemInstance> pI;
+   sref<GeneralEvaluator<ESolutionTSP>> eval;
+	sref<RandGen> rg;
 
 	// Your private vars
 
 public:
 
-	RandomInitialSolutionTSP(ProblemInstance* pI, GeneralEvaluator<ESolutionTSP>& _eval, RandGen& _rg) :
-      eval(_eval), rg(_rg) // If necessary, add more parameters
+	RandomInitialSolutionTSP(sref<ProblemInstance> _pI, sref<GeneralEvaluator<ESolutionTSP>> _eval, sref<RandGen> _rg) :
+      pI(_pI), eval(_eval), rg(_rg) // If necessary, add more parameters
 	{
-		this->pI = pI;
 		// Put the rest of your code here
 	};
 
@@ -74,7 +73,7 @@ public:
 		for(unsigned int i=0;i<r.size();i++)
 			r[i]=i;
 
-		rg.shuffle(r); // shuffle elements of r
+		rg->shuffle(r); // shuffle elements of r
 
 		for(unsigned int i=0;i<newRep.size();i++)
 			newRep[i] = r[i];
@@ -82,7 +81,7 @@ public:
 		//return new CopySolution<RepTSP>(newRep);
       //return make_optional(SolutionTSP(newRep));
       ESolutionTSP se(newRep, EvaluationTSP());
-      eval.reevaluate(se);
+      eval->reevaluate(se);
       return make_pair(make_optional(se), SearchStatus::NO_REPORT);
 	}
 

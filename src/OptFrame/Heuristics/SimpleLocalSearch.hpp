@@ -36,12 +36,12 @@ template<XESolution XES, XEvaluation XEv=Evaluation<>>
 class SimpleLocalSearch : public SingleObjSearch<XES>
 {
 protected:
-   Evaluator<XES, XEv>& evaluator;
-   InitialSearch<XES, XEv>& constructive;
-   LocalSearch<XES, XEv>& localSearch;
+   sref<Evaluator<XES, XEv>> evaluator;
+   sref<InitialSearch<XES, XEv>> constructive;
+   sref<LocalSearch<XES, XEv>> localSearch;
 
 public:
-   SimpleLocalSearch(Evaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive, LocalSearch<XES, XEv>& _localSearch)
+   SimpleLocalSearch(sref<Evaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive, sref<LocalSearch<XES, XEv>> _localSearch)
      : evaluator(_evaluator)
      , constructive(_constructive)
      , localSearch(_localSearch)
@@ -54,15 +54,19 @@ public:
 
    //pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& sosc) override
-   SearchStatus search(const StopCriteria<XEv>& sosc) override
+   //
+   //SearchStatus search(const StopCriteria<XEv>& sosc) override
+   SearchOutput<XES> search(const StopCriteria<XEv>& sosc) override
    {
-      op<XES>& star = this->best;
+      //op<XES>& star = this->best;
+      //
+      op<XES> star; // TODO: get best from 'searchBy'
       //cout << "SimpleLocalSearch search(" << target_f << "," << timelimit << ")" << endl;
 
       Timer tnow;
 
       //std::optional<S> s = constructive.generateSolution(sosc.timelimit);
-      std::optional<XES> pse = constructive.initialSearch(sosc).first;
+      std::optional<XES> pse = constructive->initialSearch(sosc).first;
       if(!pse)
          return SearchStatus::NO_SOLUTION; // nothing to return
       //Evaluation<> e = evaluator.evaluate(*s);
@@ -74,8 +78,8 @@ public:
       //return make_optional(make_pair(*s, e));
       //star = make_optional(make_pair(*s, e));
       star = make_optional(*pse);
-      this->best = star;
-      return SearchStatus::NO_REPORT;
+      //this->best = star;
+      return {SearchStatus::NO_REPORT, star};
    }
 
    virtual bool compatible(string s)
@@ -99,9 +103,9 @@ public:
    {
       cout << "SimpleLocalSearch with:" << endl;
       cout << "constructive: ";
-      constructive.print();
+      constructive->print();
       cout << "local search: ";
-      localSearch.print();
+      localSearch->print();
    }
 };
 
@@ -115,23 +119,23 @@ public:
 
    virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") override
    {
-      Evaluator<XES, XEv>* eval;
+      sptr<Evaluator<XES, XEv>> eval;
       hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
       //Constructive<S>* constructive;
-      InitialSearch<XES, XEv>* constructive;
+      sptr<InitialSearch<XES, XEv>> constructive;
       hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 
       string rest = scanner.rest();
 
-      pair<LocalSearch<XES, XEv>*, std::string> method;
+      pair<sptr<LocalSearch<XES, XEv>>, std::string> method;
       method = hf.createLocalSearch(rest);
 
-      LocalSearch<XES, XEv>* h = method.first;
+      sptr<LocalSearch<XES, XEv>> h = method.first;
 
       scanner = Scanner(method.second);
 
-      return new SimpleLocalSearch<XES, XEv>(*eval, *constructive, *h);
+      return new SimpleLocalSearch<XES, XEv>(eval, constructive, h);
    }
 
    virtual vector<pair<string, string>> parameters()

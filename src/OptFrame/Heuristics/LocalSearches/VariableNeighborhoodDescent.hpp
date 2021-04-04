@@ -36,13 +36,13 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class VariableNeighborhoodDescent: public LocalSearch<XES, XEv>
 {
 private:
-	GeneralEvaluator<XES, XEv>& ev;
-	vector<LocalSearch<XES, XEv>*> lsList;
-	RandGen* rg;
+	sref<GeneralEvaluator<XES, XEv>> ev;
+	vsref<LocalSearch<XES, XEv>> lsList;
+	sptr<RandGen> rg;
 
 public:
 
-	VariableNeighborhoodDescent(GeneralEvaluator<XES, XEv>& _ev, vector<LocalSearch<XES, XEv>*> _lsList, RandGen* _rg = nullptr) :
+	VariableNeighborhoodDescent(sref<GeneralEvaluator<XES, XEv>> _ev, vsref<LocalSearch<XES, XEv>> _lsList, sptr<RandGen> _rg = nullptr) :
 			ev(_ev), lsList(_lsList), rg(_rg)
 	{
 	}
@@ -90,7 +90,7 @@ public:
 			//if (ev.betterThan(e, eCurrent))
          //if (ev.betterThan(se, current))
          //if (se.second.betterStrict(current.second))
-         if (ev.betterStrict(se.second, current.second))
+         if (ev->betterStrict(se.second, current.second))
 			{
             // improvement
 				k = 1;
@@ -132,7 +132,9 @@ public:
 		ss << "VND: [ ";
 		for (unsigned i = 0; i < lsList.size(); i++)
 		{
-			ss << lsList[i]->toString();
+         auto& x = const_cast<sref<LocalSearch<XES, XEv>>&>(lsList[i]);
+			//ss << lsList[i]->toString();
+         ss << x->toString();
 			if (i != lsList.size() - 1)
 				ss << ",";
 		}
@@ -153,13 +155,16 @@ public:
 
 	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		GeneralEvaluator<XES, XEv>* eval;
+		sptr<GeneralEvaluator<XES, XEv>> eval;
 		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<LocalSearch<XES, XEv>*> hlist;
-		hf.assignList(hlist, *scanner.nextInt(), scanner.next()); // reads backwards!
+		vsptr<LocalSearch<XES, XEv>> _hlist;
+		hf.assignList(_hlist, *scanner.nextInt(), scanner.next()); // reads backwards!
+      vsref<LocalSearch<XES, XEv>> hlist;
+      for(auto x : _hlist)
+         hlist.push_back(x);
 
-		return new VariableNeighborhoodDescent<XES, XEv>(*eval, hlist);
+		return new VariableNeighborhoodDescent<XES, XEv>(eval, hlist);
 	}
 
 	virtual vector<pair<string, string> > parameters()

@@ -43,7 +43,7 @@ namespace TSP {
 class TSPEvaluator : public Evaluator<SolutionTSP>
 {
 private:
-   ProblemInstance* pI;
+   sref<ProblemInstance> pI;
 
 public:
    bool Minimizing;
@@ -58,11 +58,11 @@ public:
 
    //using Evaluator<SolutionTSP>::evaluate; // prevents name hiding
 
-   TSPEvaluator(ProblemInstance* pI)
-     : Evaluator<SolutionTSP>(true) // ALLOW COSTS!
+   TSPEvaluator(sref<ProblemInstance> pI)
+     : Evaluator<SolutionTSP>(true), // ALLOW COSTS!
+     pI(pI)
    {
       Minimizing = true;
-      this->pI = pI;
       solutions = vector<int>(50000, 0);
       solMax = 0;
       solMin = 2000000000;
@@ -229,7 +229,7 @@ public:
 class TSPRepEvaluator : public Evaluator<RepTSP>
 {
 private:
-   ProblemInstance* pI;
+   sref<ProblemInstance> pI;
 
 public:
    bool Minimizing;
@@ -244,11 +244,12 @@ public:
 
    //using Evaluator<SolutionTSP>::evaluate; // prevents name hiding
 
-   TSPRepEvaluator(ProblemInstance* pI)
-     : Evaluator<RepTSP>(true) // ALLOW COSTS!
+   TSPRepEvaluator(sref<ProblemInstance> pI)
+     : Evaluator<RepTSP>(true), // ALLOW COSTS!
+     pI(pI)
    {
       Minimizing = true;
-      this->pI = pI;
+      //this->pI = pI;
       solutions = vector<int>(50000, 0);
       solMax = 0;
       solMin = 2000000000;

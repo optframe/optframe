@@ -93,14 +93,14 @@ template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, X
 class HeuristicFactory
 {
 private:
-	RandGen& rg;
+	sref<RandGen> rg;
 
 public:
 
-	map<string, vector<Component*> > components;
+	map<string, vector<std::shared_ptr<Component>> > components;
 	vector<ComponentBuilder<S, XEv, XES, X2ES>* > builders;
 	vector<Action<S, XEv, XES, X2ES>* > actions;
-	map<string, vector<vector<Component*> > > componentLists;
+	map<string, vector<vector<sptr<Component>> > > componentLists;
 
 	ComponentBuilder<S, XEv, XES, X2ES>* getBuilder(string id)
 	{
@@ -111,12 +111,12 @@ public:
 	}
 
 
-	bool inComponents(Component* c)
+	bool inComponents(std::shared_ptr<Component> c)
 	{
-		map<std::string, vector<Component*> >::iterator iter;
+		map<std::string, vector<std::shared_ptr<Component>> >::iterator iter;
 		for(iter = components.begin(); iter != components.end(); iter++)
 		{
-			vector<Component*> v = iter->second;
+			vector<std::shared_ptr<Component>> v = iter->second;
 
 			for (unsigned int i = 0; i < v.size(); i++)
 				if(v[i]==c)
@@ -149,7 +149,7 @@ public:
 		{
 			// COMPONENT SHORTCUT!
 			// look for pattern
-			map<std::string, vector<Component*> >::iterator iter;
+			map<std::string, vector<std::shared_ptr<Component>> >::iterator iter;
 			for(iter = components.begin(); iter != components.end(); iter++)
 			{
 				string name = iter->first;
@@ -188,7 +188,7 @@ public:
 		return component;
 	}
 
-	template< class T > void assign(T*& component, unsigned number, string id)
+	template< class T > void assign(std::shared_ptr<T>& component, unsigned number, string id)
 	{
 		// check prefix "OptFrame:"
 		if (id[0] != 'O')
@@ -208,10 +208,10 @@ public:
 
 		if(components.count(id) > 0)
 		{
-			vector<Component*>& v = components[id];
-			if(number < v.size())
+			vector<sptr<Component>>& v = components[id];
+			if(number < v.size()) 
 			{
-				component = ((T*) v[number]) ;
+				component = std::shared_ptr<T>((T*)v[number].get()); // need to cast to type T...
 				return;
 			}
 		}
@@ -222,7 +222,7 @@ public:
 		component = nullptr;
 	}
 
-	template< class T > void assignList(vector<T*>& cList, unsigned number, string _listId)
+	template< class T > void assignList(vector<std::shared_ptr<T>>& cList, unsigned number, string _listId)
 	{
 		// type checking for safety!
 		string noList = ComponentHelper::typeOfList(_listId);
@@ -238,34 +238,35 @@ public:
 
 		if(componentLists.count(listId) > 0)
 		{
-			vector<vector<Component*> >& vv = componentLists[listId];
+			vector<vector<sptr<Component>> >& vv = componentLists[listId];
 			if(number < vv.size())
 				for(unsigned i=0; i<vv[number].size(); i++)
-					cList.push_back((T*)vv[number][i]);
+					cList.push_back(sptr<T>((T*)vv[number][i].get()));
 		}
 		else
 			cout << "'" << listId << " " << number << "' not found!" << endl;
 	}
 
-	int addComponent(Component& component, string id)
+	int addComponent(sref<Component> component, string id)
 	{
-		if(inComponents(&component))
+		if(inComponents(component.sptr()))
 		{
-			cout << "HeuristicFactory addComponent: component '" << component.id()  << "' already registered!" << endl;
+			cout << "HeuristicFactory addComponent: component '" << component->id()  << "' already registered!" << endl;
 
 			return -1;
 		}
 
-		if(!component.compatible(id))
+		if(!component->compatible(id))
 		{
 			cout << "HeuristicFactory addComponent: incompatible components '";
-			cout << component.id() << "' and '" << id << "'!" << endl;
+			cout << component->id() << "' and '" << id << "'!" << endl;
 
 			return -1;
 		}
 
-		vector<Component*>& v = components[id];
-		v.push_back(&component);
+		vector<std::shared_ptr<Component>>& v = components[id];
+      std::shared_ptr<Component> scomp = component.sptr();
+		v.push_back(scomp);
 
 		int idx = components[id].size() - 1;
 
@@ -347,7 +348,7 @@ public:
 	{
 		vector<string> list;
 
-		map<std::string, vector<Component*> >::iterator iter;
+		map<std::string, vector<std::shared_ptr<Component>> >::iterator iter;
 
 		for(iter = components.begin(); iter != components.end(); iter++)
 		{
@@ -385,7 +386,7 @@ public:
 	{
 		vector<string> list;
 
-		map<std::string, vector<vector<Component*> > >::iterator iter;
+		map<std::string, vector<vector<sptr<Component>> > >::iterator iter;
 
 		for(iter = componentLists.begin(); iter != componentLists.end(); iter++)
 		{
@@ -474,19 +475,19 @@ public:
 	// Components, Builders and Actions
 	void clear()
 	{
-		map<std::string, vector<Component*> >::iterator iter;
+		map<std::string, vector<std::shared_ptr<Component>> >::iterator iter;
 
 		for(iter = components.begin(); iter != components.end(); iter++)
 		{
-			vector<Component*> v = iter->second;
+			vector<std::shared_ptr<Component>> v = iter->second;
 
-			for (unsigned int i = 0; i < v.size(); i++)
-				delete v[i];
+			//for (unsigned int i = 0; i < v.size(); i++)
+			//	delete v[i];
 
 			iter->second.clear();
 		}
 
-		map<std::string, vector<vector<Component*> > >::iterator iter2;
+		map<std::string, vector<vector<sptr<Component>> > >::iterator iter2;
 
 		for(iter2 = componentLists.begin(); iter2 != componentLists.end(); iter2++)
 		{
@@ -496,19 +497,19 @@ public:
 	}
 
 
-	RandGen& getRandGen()
+	sref<RandGen> getRandGen()
 	{
 		return rg;
 	}
 
 
-	pair<LocalSearch<XES, XEv>*, std::string> createLocalSearch(std::string str)
+	pair<sptr<LocalSearch<XES, XEv>>, std::string> createLocalSearch(std::string str)
 	{
 		Scanner scanner(str);
 
 		// No heuristic!
 		if (!scanner.hasNext())
-			return pair<LocalSearch<XES, XEv>*, std::string>(nullptr, "");
+			return pair<sptr<LocalSearch<XES, XEv>>, std::string>(nullptr, "");
 
 		string h = scanner.next();
 
@@ -516,18 +517,18 @@ public:
 		{
 			unsigned int id = *scanner.nextInt();
 
-			LocalSearch<XES, XEv>* mtd = nullptr;
+			sptr<LocalSearch<XES, XEv>> mtd = nullptr;
 
 			assign(mtd, id, LocalSearch<XES, XEv>::idComponent());
 
 			if(!mtd)
-				return make_pair(new EmptyLocalSearch<XES, XEv> , scanner.rest());
+				return pair<sptr<LocalSearch<XES, XEv>>, std::string>(new EmptyLocalSearch<XES, XEv> , scanner.rest());
 
 			return make_pair(mtd, scanner.rest());
 		}
 
 		if (h == EmptyLocalSearch<XES, XEv>::idComponent())
-			return make_pair(new EmptyLocalSearch<XES, XEv> , scanner.rest());
+			return pair<sptr<LocalSearch<XES, XEv>>, std::string>(new EmptyLocalSearch<XES, XEv> , scanner.rest());
 
 		for(unsigned i=0; i<builders.size(); i++)
 		{
@@ -535,30 +536,30 @@ public:
 			if(builders[i]->id()==h)
 			{
 				LocalSearch<XES, XEv>* ls = ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
-				return make_pair(ls, scanner.rest());
+				return pair<sptr<LocalSearch<XES, XEv>>, std::string>(ls, scanner.rest());
 			}
 
 			// locate builder by local search name
 			if(builders[i]->canBuild(h))
 			{
 				LocalSearch<XES, XEv>* ls = ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
-				return make_pair(ls, scanner.rest());
+				return pair<sptr<LocalSearch<XES, XEv>>, std::string>(ls, scanner.rest());
 			}
 		}
 
 		cout << "HeuristicFactory::createLocalSearch warning: no LocalSearch '" << h << "' found! ignoring..." << endl;
 
-		return pair<LocalSearch<XES, XEv>*, std::string>(nullptr, scanner.rest());
+		return pair<sptr<LocalSearch<XES, XEv>>, std::string>(nullptr, scanner.rest());
 	}
 
 
-	pair<SingleObjSearch<XES>*, std::string> createSingleObjSearch(std::string str)
+	pair<sptr<SingleObjSearch<XES>>, std::string> createSingleObjSearch(std::string str)
 	{
 		Scanner scanner(str);
 
 		// No heuristic!
 		if (!scanner.hasNext())
-			return pair<SingleObjSearch<XES>*, std::string>(nullptr, "");
+			return pair<sptr<SingleObjSearch<XES>>, std::string>(nullptr, "");
 
 		string h = scanner.next();
 
@@ -566,18 +567,18 @@ public:
 		{
 			unsigned int id = *scanner.nextInt();
 
-			SingleObjSearch<XES>* mtd = nullptr;
+			sptr<SingleObjSearch<XES>> mtd = nullptr;
 
 			assign(mtd, id, SingleObjSearch<XES>::idComponent());
 
 			if(!mtd)
-				return make_pair(new EmptySingleObjSearch<XES, XEv> , scanner.rest());
+				return pair<sptr<SingleObjSearch<XES>>, std::string>(new EmptySingleObjSearch<XES, XEv> , scanner.rest());
 
-			return make_pair(mtd, scanner.rest());
+			return pair<sptr<SingleObjSearch<XES>>, std::string>(mtd, scanner.rest());
 		}
 
 		if (h == EmptySingleObjSearch<XES, XEv>::idComponent())
-			return make_pair(new EmptySingleObjSearch<XES, XEv> , scanner.rest());
+			return pair<sptr<SingleObjSearch<XES>>, std::string>(new EmptySingleObjSearch<XES, XEv> , scanner.rest());
 
 		for(unsigned i=0; i<builders.size(); i++)
 		{
@@ -585,21 +586,21 @@ public:
 			if(builders[i]->id()==h)
 			{
 				SingleObjSearch<XES>* sios = ((SingleObjSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
-				return make_pair(sios, scanner.rest());
+				return pair<sptr<SingleObjSearch<XES>>, std::string>(sios, scanner.rest());
 			}
 
 			// locate builder by local search name
 			if(builders[i]->canBuild(h))
 			{
 				SingleObjSearch<XES>* sios = ((SingleObjSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
-				return make_pair(sios, scanner.rest());
+				return pair<sptr<SingleObjSearch<XES>>, std::string>(sios, scanner.rest());
 			}
 		}
 
 
 		cout << "HeuristicFactory::createSingleObjSearch warning: no SingleObjSearch '" << h << "' found! ignoring..." << endl;
 
-		return pair<SingleObjSearch<XES>*, std::string>(nullptr, scanner.rest());
+		return pair<sptr<SingleObjSearch<XES>>, std::string>(nullptr, scanner.rest());
 	}
 
 	pair<MultiObjSearch<XES>*, std::string> createMultiObjSearch(std::string str)

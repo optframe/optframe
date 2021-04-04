@@ -34,20 +34,20 @@ template<XESolution XES, XEvaluation XEv=Evaluation<>>
 class LateAcceptanceHillClimbing: public LocalSearch<XES, XEv>
 {
 private:
-	GeneralEvaluator<XES, XEv>& ev;
-	vector<NS<XES, XEv>*> lns;
+	sref<GeneralEvaluator<XES, XEv>> ev;
+	vsref<NS<XES, XEv>> lns;
 	int L;       // size of list
 	int iterMax; // max iterations without improvement
 
 public:
 
-	LateAcceptanceHillClimbing(GeneralEvaluator<XES, XEv>& _ev, NS<XES, XEv>& _ns, int _L, int _iterMax) :
+	LateAcceptanceHillClimbing(sref<GeneralEvaluator<XES, XEv>> _ev, sref<NS<XES, XEv>> _ns, int _L, int _iterMax) :
 			ev(_ev), L(_L), iterMax(_iterMax)
 	{
 		lns.push_back(&_ns);
 	}
 
-	LateAcceptanceHillClimbing(GeneralEvaluator<XES, XEv>& _ev, vector<NS<XES, XEv>*> _lns, int _L, int _iterMax) :
+	LateAcceptanceHillClimbing(sref<GeneralEvaluator<XES, XEv>> _ev, vsref<NS<XES, XEv>> _lns, int _L, int _iterMax) :
 			ev(_ev), lns(_lns), L(_L), iterMax(_iterMax)
 	{
 	}
@@ -59,7 +59,7 @@ public:
 	// DEPRECATED
 	//virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
 	//{
-	//	Evaluation<> e = std::move(ev.evaluate(s));
+	//	Evaluation<> e = std::move(ev->evaluate(s));
 	//	exec(s, e, stopCriteria);
 	//}
 
@@ -90,7 +90,7 @@ public:
 
 		long tnow = time(nullptr);
 
-		while ((iter <= iterMax) && ((tnow - tini) < timelimit)) //&& ev.betterThan(target_f, eStar))
+		while ((iter <= iterMax) && ((tnow - tini) < timelimit)) //&& ev->betterThan(target_f, eStar))
 		{
 			// choose random neighborhood
 			int ns_k = rand() % lns.size();
@@ -107,20 +107,20 @@ public:
 			if (move && move->canBeApplied(se))
 			{
             bool mayEstimate = false;
-				///MoveCost<>& cost = *ev.moveCost(*move, se, mayEstimate);
-            op<XEv> cost = ev.moveCost(*move, se, mayEstimate);
+				///MoveCost<>& cost = *ev->moveCost(*move, se, mayEstimate);
+            op<XEv> cost = ev->moveCost(*move, se, mayEstimate);
 
 				// test for current index
 #ifdef BRAND_NEW
-				//if (ev.isImprovement(*cost, e, *eList[index]))
+				//if (ev->isImprovement(*cost, e, *eList[index]))
             //if (cost->isImprovingStrict( e, *eList[index]))
-            if (ev.isImprovingStrictly(*cost, e, *eList[index]))
+            if (ev->isImprovingStrictly(*cost, e, *eList[index]))
 #else
-				if (ev.betterThan(cost.cost()+e.evaluation(), eList[index]))
+				if (ev->betterThan(cost.cost()+e.evaluation(), eList[index]))
 #endif
 				{
 					move->applyUpdate(se);
-					ev.reevaluate(se);
+					ev->reevaluate(se);
 
 #ifdef BRAND_NEW
 					delete eList[index];
@@ -129,9 +129,9 @@ public:
 					eList[index] = e.evaluation();
 #endif
 
-					//if (ev.betterThan(e, eStar))
+					//if (ev->betterThan(e, eStar))
                //if (e.betterStrict(eStar))
-               if (ev.betterStrict(e, eStar))
+               if (ev->betterStrict(e, eStar))
 					{
 						sStar = s;
 						eStar = e;
@@ -210,17 +210,20 @@ public:
 
 	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		GeneralEvaluator<XES, XEv>* eval;
+		sptr<GeneralEvaluator<XES, XEv>> eval;
 		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
-		vector<NS<XES, XEv>*> nslist;
-		hf.assignList(nslist, *scanner.nextInt(), scanner.next()); // reads backwards!
+		vsptr<NS<XES, XEv>> _nslist;
+		hf.assignList(_nslist, *scanner.nextInt(), scanner.next()); // reads backwards!
+      vsref<NS<XES, XEv>> nslist;
+      for(auto x : _nslist)
+         nslist.push_back(x);
 
 		int L = *scanner.nextInt();
 
 		int iterMax = *scanner.nextInt();
 
-		return new LateAcceptanceHillClimbing<XES, XEv>(*eval, nslist, L, iterMax);
+		return new LateAcceptanceHillClimbing<XES, XEv>(eval, nslist, L, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()

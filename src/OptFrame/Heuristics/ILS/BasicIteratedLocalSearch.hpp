@@ -40,14 +40,14 @@ template<XESolution XES, XEvaluation XEv = Evaluation<>>
 class BasicIteratedLocalSearch: public IteratedLocalSearch<BasicHistory, XES, XEv>
 {
 protected:
-	LocalSearch<XES, XEv>& ls;
-	BasicILSPerturbation<XES, XEv>& p;
+	sref<LocalSearch<XES, XEv>> ls;
+	sref<BasicILSPerturbation<XES, XEv>> p;
 	int iterMax;
 
 public:
 
 	//BasicIteratedLocalSearch(Evaluator<XES, XEv>& e, Constructive<S>& constructive, LocalSearch<XES, XEv>& _ls, BasicILSPerturbation<S, XEv>& _p, int _iterMax) :
-   BasicIteratedLocalSearch(GeneralEvaluator<XES, XEv>& e, InitialSearch<XES, XEv>& constructive, LocalSearch<XES, XEv>& _ls, BasicILSPerturbation<XES, XEv>& _p, int _iterMax) :
+   BasicIteratedLocalSearch(sref<GeneralEvaluator<XES, XEv>> e, sref<InitialSearch<XES, XEv>> constructive, sref<LocalSearch<XES, XEv>> _ls, sref<BasicILSPerturbation<XES, XEv>> _p, int _iterMax) :
 		IteratedLocalSearch<BasicHistory, XES, XEv> (e, constructive), ls(_ls), p(_p), iterMax(_iterMax)
 	{
 	}
@@ -66,14 +66,14 @@ public:
 
 	virtual void localSearch(XES& se, const StopCriteria<XEv>& sosc) override
 	{
-		ls.searchFrom(se, sosc);
+		ls->searchFrom(se, sosc);
 	}
 
 	virtual void perturbation(XES& se, const StopCriteria<XEv>& sosc, BasicHistory& history) override
 	{
 		int iter = history;
 
-		p.perturb(se, sosc);
+		p->perturb(se, sosc);
 
 		// Incrementa a iteracao
 		iter++;
@@ -144,28 +144,28 @@ public:
 
 	virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") override
 	{
-		GeneralEvaluator<XES, XEv>* eval;
+		sptr<GeneralEvaluator<XES, XEv>> eval;
 		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		//Constructive<S>* constructive;
-      InitialSearch<XES, XEv>* constructive;
+      sptr<InitialSearch<XES, XEv>> constructive;
 		hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
 
-		pair<LocalSearch<XES, XEv>*, std::string> method;
+		pair<sptr<LocalSearch<XES, XEv>>, std::string> method;
 		method = hf.createLocalSearch(rest);
 
-		LocalSearch<XES, XEv>* h = method.first;
+		sptr<LocalSearch<XES, XEv>> h = method.first;
 
 		scanner = Scanner(method.second);
 
-		BasicILSPerturbation<XES, XEv>* pert;
+		sptr<BasicILSPerturbation<XES, XEv>> pert;
 		hf.assign(pert, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		int iterMax = *scanner.nextInt();
 
-		return new BasicIteratedLocalSearch<XES, XEv>(*eval, *constructive, *h, *pert, iterMax);
+		return new BasicIteratedLocalSearch<XES, XEv>(eval, constructive, h, pert, iterMax);
 	}
 
 	virtual vector<pair<string, string> > parameters()

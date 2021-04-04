@@ -33,13 +33,13 @@ template<XESolution XES, XEvaluation XEv=Evaluation<>>
 class CompareLocalSearch: public LocalSearch<XES, XEv>
 {
 private:
-	Evaluator<XES, XEv>& eval;
-	LocalSearch<XES, XEv>& ls1;
-	LocalSearch<XES, XEv>& ls2;
+	sref<Evaluator<XES, XEv>> eval;
+	sref<LocalSearch<XES, XEv>> ls1;
+	sref<LocalSearch<XES, XEv>> ls2;
 
 public:
 
-	CompareLocalSearch(Evaluator<XES, XEv>& _eval, LocalSearch<XES, XEv>& _ls1,  LocalSearch<XES, XEv>& _ls2) :
+	CompareLocalSearch(sref<Evaluator<XES, XEv>> _eval, sref<LocalSearch<XES, XEv>> _ls1,  sref<LocalSearch<XES, XEv>> _ls2) :
 		eval(_eval), ls1(_ls1), ls2(_ls2)
 	{
 	}
@@ -65,16 +65,16 @@ public:
       XES p2 = se; // clone!
       XEv& e2 = p2.second;
 
-		ls1.searchFrom(se, sosc);
-		ls2.searchFrom(p2, sosc);
+		ls1->searchFrom(se, sosc);
+		ls2->searchFrom(p2, sosc);
 
-		if(!eval.equals(e, e2))
+		if(!eval->equals(e, e2))
 		{
 			cout << "CompareLocalSearch error: difference between " << e.evaluation() << " and " << e2.evaluation() << endl;
 			cout << "LocalSearch 1: ";
-			ls1.print();
+			ls1->print();
 			cout << "LocalSearch 2: ";
-			ls2.print();
+			ls2->print();
 			exit(1);
 		}
 
@@ -103,7 +103,7 @@ public:
 	virtual string toString() const
 	{
 		stringstream ss;
-		ss << "CLS: (" << ls1.toString() << "," << ls2.toString() << ")";
+		ss << "CLS: (" << ls1->toString() << "," << ls2->toString() << ")";
 		return ss.str();
 	}
 };
@@ -119,28 +119,28 @@ public:
 
 	virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
 	{
-		Evaluator<XES, XEv>* eval;
+		std::shared_ptr<Evaluator<XES, XEv>> eval;
 		hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
 		string rest = scanner.rest();
 
-		pair<LocalSearch<XES, XEv>*, std::string> method;
+		pair<sptr<LocalSearch<XES, XEv>>, std::string> method;
 		method = hf.createLocalSearch(rest);
 
-		LocalSearch<XES, XEv>* h = method.first;
+		sptr<LocalSearch<XES, XEv>> h = method.first;
 
 		scanner = Scanner(method.second);
 
 		string rest2 = scanner.rest();
 
-		pair<LocalSearch<XES, XEv>*, std::string> method2;
+		pair<sptr<LocalSearch<XES, XEv>>, std::string> method2;
 		method2 = hf.createLocalSearch(rest2);
 
-		LocalSearch<XES, XEv>* h2 = method2.first;
+		sptr<LocalSearch<XES, XEv>> h2 = method2.first;
 
 		scanner = Scanner(method2.second);
 
-		return new CompareLocalSearch<XES, XEv>(*eval, *h, *h2);
+		return new CompareLocalSearch<XES, XEv>(eval, h, h2);
 	}
 
 	virtual vector<pair<string, string> > parameters()

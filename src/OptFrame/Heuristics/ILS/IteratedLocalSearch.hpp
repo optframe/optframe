@@ -76,9 +76,13 @@ public:
 
 	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
    //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
+   //
+   //SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
+   SearchOutput<XES> search(const StopCriteria<XEv>& stopCriteria) override
 	{
-      op<XES>& star = this->best;
+      //op<XES>& star = this->best;
+      op<XES> star; // TODO: receive on 'searchBy'
+
 		//cout << "ILS opt search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
       cout << "ILS opt search(" << stopCriteria.timelimit << ")" << endl;
 
@@ -183,8 +187,9 @@ public:
 
 		//return std::optional<pair<S,XEv>>(*pairToReturn); // TODO: prevent loss
       //return std::optional<pair<S,XEv>>(star);
-      this->best = star;
-      return SearchStatus::NO_REPORT;
+      //
+      //this->best = star;
+      return {SearchStatus::NO_REPORT, star};
 	}
 
 	static string idComponent()

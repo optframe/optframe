@@ -72,8 +72,10 @@ public:
          //pop.push_back(sol);
          pop.push_back(d); // TODO: pass by std::move() or unique_ptr
 
-         if (Component::debug)
-            (*Component::logdata) << "generatePopulation new: " << *d << std::endl;
+         if (Component::debug) {
+            //(*Component::logdata) << "generatePopulation new: " << *d << std::endl;
+            // cannot use 'printable' here
+         }
       }
 
       return pop;

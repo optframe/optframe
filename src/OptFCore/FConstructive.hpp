@@ -46,14 +46,14 @@ public:
       return std::make_optional(fGenerate());
    }
 
-   static string idComponent()
+   static std::string idComponent()
    {
-      stringstream ss;
+      std::stringstream ss;
       ss << Component::idComponent() << ":FConstructive";
       return ss.str();
    }
 
-   virtual string id() const
+   virtual std::string id() const
    {
       return idComponent();
    }

@@ -1,6 +1,6 @@
 #include "ProblemInstance.h"
 
-#include <OptFrame/Util/printable.h>
+#include <OptFrame/printable/printable.h>
 
 using namespace KP;
 using namespace optframe;

@@ -43,14 +43,14 @@ protected:
 	int j; // destination
 	int k; // number of elements
 
-	OPTFRAME_DEFAULT_PROBLEM* problem;
+	std::shared_ptr<OPTFRAME_DEFAULT_PROBLEM> problem;
 
 public:
 
 	using Move<XES, XEv>::apply;
 	using Move<XES, XEv>::canBeApplied;
 
-	MoveTSPOrOptk(int _i, int _j, int _k, OPTFRAME_DEFAULT_PROBLEM* _problem = nullptr) :
+	MoveTSPOrOptk(int _i, int _j, int _k, std::shared_ptr<OPTFRAME_DEFAULT_PROBLEM> _problem = nullptr) :
 			i(_i), j(_j), k(_k), problem(_problem)
 	{
 	}
