@@ -102,10 +102,10 @@ protected:
    // -> Vector con los topes superiores de los parámetros
    vector<double> cS;
    // random number generator
-   RandGen& rg;
+   sref<RandGen> rg;
 
 public:
-   PSO(Evaluator<S, XEv, XES>& evaluator, unsigned pop_size, int iter_max, const vector<double>& cI, const vector<double>& cS, RandGen& _rg)
+   PSO(Evaluator<S, XEv, XES>& evaluator, unsigned pop_size, int iter_max, const vector<double>& cI, const vector<double>& cS, sref<RandGen> _rg = new RandGen)
      : evaluator(evaluator)
      , pop_size(pop_size)
      , iter_max(iter_max)
@@ -113,6 +113,9 @@ public:
      , cS(cS)
      , rg{ _rg }
    {
+      assert(cI.size() == cS.size());
+      for (unsigned i = 0; i < cI.size(); i++)
+         assert(cI[i] < cS[i]);
    }
 
    virtual EPopulation<XES2> generatePopulation()
@@ -137,9 +140,9 @@ public:
    // update bird position (random mutation)
    void birdMutation(Bird& b)
    {
-      if (rg.rand01() < 0.1 * 0.1) {
+      if (rg->rand01() < 0.1 * 0.1) {
          for (unsigned j = 0; j < this->cS.size(); j++) {
-            double r = rg.rand01();
+            double r = rg->rand01();
             if (r < 0.5)
                b.position[j] += (cS[j] - cI[j]) * (::pow(2.0 * r, 1.0 / 21) - 1);
             else
@@ -174,7 +177,7 @@ public:
    {
       if (a == b)
          return a;
-      return a + (b - a) * rg.rand01();
+      return a + (b - a) * rg->rand01();
    }
 
    // PSO Execution Context
@@ -249,7 +252,7 @@ public:
             Bird& b = swarm.at(i).first;
 
             // 0.1 chance of generating a random guy
-            if (rg.rand01() < 0.1) {
+            if (rg->rand01() < 0.1) {
                for (unsigned j = 0; j < this->cS.size(); j++) {
                   b.position[j] = runif(this->cI[j], this->cS[j]);
                   b.velocity[j] = 0.1 * runif(this->cI[j], this->cS[j]);
@@ -290,9 +293,9 @@ public:
             //       al( 0, 1.5 ) * ( gb[ 0 ] - p.params )
             for (unsigned j = 0; j < this->cS.size(); j++) {
                b.velocity[j] =
-                 (0.15 + this->rg.rand01() / 2) * b.velocity[j] +                       // p1
-                 0.9 * this->rg.rand01() * (b.localbest[j] - b.position[j]) +           // p2
-                 0.9 * this->rg.rand01() * (global.first.localbest[j] - b.position[j]); // p3
+                 (0.15 + this->rg->rand01() / 2) * b.velocity[j] +                       // p1
+                 0.9 * this->rg->rand01() * (b.localbest[j] - b.position[j]) +           // p2
+                 0.9 * this->rg->rand01() * (global.first.localbest[j] - b.position[j]); // p3
             }
          }
 

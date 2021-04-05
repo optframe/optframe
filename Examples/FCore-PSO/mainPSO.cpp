@@ -54,18 +54,19 @@ RandGen myRandGen; // good random generator
 int
 main()
 {
+   // Necessary if you want to set specific seeds
+   // Otherwise heuristic uses new RandGen
    int seed = 1000012345;
    seed = time(NULL);
-
-   // Particle Swarm Optimization
-   // PSO(Evaluator<S, XEv, XES>& evaluator, unsigned pop_size, unsigned iter_max, vector<double> cI, vector<double> cS, RandGen& _rg)
-
    myRandGen.setSeed(seed);
-   int nParam = 1; // param size
 
+   // Model for setting the vector<double> boundaries
+   int nParam = 1;
    vector<double> cI(nParam, -100.0);
    vector<double> cS(nParam, 100.0);
 
+   // Particle Swarm Optimization
+   // PSO(Evaluator<S, XEv, XES>& evaluator, unsigned pop_size, unsigned iter_max, vector<double> cI, vector<double> cS, sref<RandGen> _rg)
    PSO<> myPSO{
       evPSO,
       10, // pop_size
