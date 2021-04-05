@@ -41,6 +41,10 @@ public:
    {
    }
 
+   // fGenerate is supposed to be the simplest possible function.
+   // Although fGenerate does not require optional or timelimit (two connected concepts),
+   // the Constructive class must support... since it's completely general.
+   //
    std::optional<S> generateSolution(double timelimit) override
    {
       return std::make_optional(fGenerate());

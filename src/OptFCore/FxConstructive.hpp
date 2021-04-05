@@ -25,6 +25,8 @@
 
 #include <OptFrame/Constructive.hpp>
 
+using namespace std; // TODO: remove
+
 namespace optframe {
 
 template<
