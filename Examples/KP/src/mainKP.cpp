@@ -35,7 +35,7 @@ main(int argc, char** argv)
    ProblemInstance p(scanner);                  // cria um problema-teste usando o arquivo carregado
    MyEvaluator ev(p);
    ConstructiveRandom c1(p, ev);
-   NSSeqBitFlip ns1(p, rg);
+   sref<NSSeq<ESolutionKP>> ns1 = new NSSeqBitFlip(p, rg);
    cout << "will generate solution" << endl;
    //SolutionKP s = *c1.generateSolution(10); // timelimit (10???)
    op<ESolutionKP> opse = c1.initialSearch(StopCriteria<EvaluationKP>(10)).first; // timelimit (10???)
@@ -62,7 +62,7 @@ main(int argc, char** argv)
    check.run(100, 10);        // executa testes com 10 iterações
    */
 
-   NSSeq<ESolutionKP>* nsseq_bit = &ns1;
+   sref<NSSeq<ESolutionKP>> nsseq_bit = ns1;
 
 
 
@@ -86,7 +86,7 @@ main(int argc, char** argv)
    
    sref<GeneralEvaluator<ESolutionKP>> _evaluator = ev;
    sref<InitialSearch<ESolutionKP>> _constructive = c1;
-   NS<ESolutionKP>* _ns1 = new NSSeqBitFlip(p, rg);
+   sref<NS<ESolutionKP>> _ns1 = new NSSeqBitFlip(p, rg);
    sref<NS<ESolutionKP>> _neighbors = _ns1;
    double _alpha = 0.98;
    int _SAmax = 100;
