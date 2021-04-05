@@ -57,10 +57,13 @@ public:
    double Ti;
 
    // single neighborhood
-   BasicSimulatedAnnealing(sref<GeneralEvaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive, sref<NS<XES, XEv, XSH>> _neighbors, double _alpha, int _SAmax, double _Ti, sref<RandGen> _rg)
+   // reordered the different term to the front because of peeve, heheheh
+   // standart RandGen in declaration could be new standart
+   BasicSimulatedAnnealing(sref<GeneralEvaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive, sref<NS<XES, XEv, XSH>> _neighbors, double _alpha, int _SAmax, double _Ti, sref<RandGen> _rg = new RandGen)
      : evaluator(_evaluator)
      , constructive(_constructive)
-     , rg(_rg) //, specificStopBy(defaultStopBy)
+     , rg(_rg) // does the new RandGen thing affect this? doesn't look like it but i'm no specialist
+     //, specificStopBy(defaultStopBy)
    {
       neighbors.push_back(_neighbors);
       alpha = (_alpha);
@@ -69,7 +72,9 @@ public:
    }
 
    // vector of neighborhoods
-   BasicSimulatedAnnealing(sref<GeneralEvaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive, vsref<NS<XES, XEv, XSH>> _neighbors, double _alpha, int _SAmax, double _Ti, sref<RandGen> _rg)
+   // reordered the different term to the front because of peeve, heheheh
+   // standart RandGen in declaration could be new standart
+   BasicSimulatedAnnealing(sref<GeneralEvaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive, vsref<NS<XES, XEv, XSH>> _neighbors, double _alpha, int _SAmax, double _Ti, sref<RandGen> _rg = new RandGen)
      : evaluator(_evaluator)
      , constructive(_constructive)
      , neighbors(_neighbors)
@@ -183,9 +188,9 @@ public:
                return { SearchStatus::NO_REPORT, star };
             }
 
+            XES current(se); // implicit clone??
             //S* sCurrent = &s.clone();
             //Evaluation<>* eCurrent = &e.clone();
-            XES current(se); // implicit clone??
             //S& sCurrent = current.first;
             //XEv& eCurrent = current.second;
 
@@ -195,12 +200,12 @@ public:
             //if (evaluator.betterThan(eCurrent, e)) // TODO: replace by 'se' here, and use 'se.second' to compare directly
             //if(eCurrent.betterStrict(e))
             if (evaluator->betterStrict(current.second, se.second)) {
+               se = current;
                // if improved, accept it
                //e = *eCurrent;
                //s = *sCurrent;
                //delete sCurrent;
                //delete eCurrent;
-               se = current;
 
                //if (evaluator.betterThan(e, eStar))
                //if(e.betterStrict(eStar))
@@ -220,12 +225,12 @@ public:
                double delta = ::fabs(current.second.evaluation() - se.second.evaluation());
 
                if (x < ::exp(-delta / ctx.T)) {
+                  se = current;
                   //s = *sCurrent;
                   //e = *eCurrent;
                   //delete sCurrent;
                   //delete eCurrent;
-                  se = current;
-               } else {
+               // } else {
                   //delete sCurrent;
                   //delete eCurrent;
                }
@@ -276,13 +281,14 @@ public:
    {
    }
 
+   // has sptr instead of sref, is that on purpose or legacy class?
    virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
       sptr<GeneralEvaluator<XES, XEv>> eval;
       hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
       //Constructive<S>* constructive;
-      sptr<InitialSearch<XES, XEv>> constructive;
+      sptr<InitialSearch<XES, XEv>> constructive;  
       hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 
       vsptr<NS<XES, XEv>> _hlist;
@@ -366,6 +372,8 @@ public:
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
+
+// Attempt on implementing SpecificMethodStop, from what I gathered
 #ifndef OPTFRAME_BSA_HPP_
 #define OPTFRAME_BSA_HPP_
 
@@ -415,7 +423,8 @@ public:
    // if you need multiple threads of this method, you should instantiate multiple methods!!
    // this allows monitoring on progress and many other nice things, such as StopCriteria personalization ;)
    //SpecificMethodStop<XES, decltype(*this)> specificStop;
-public:
+
+public: // Are both public declarations on purpose?
    //SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES>> specificStopBy {nullptr};
    SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES>> specificStopBy{
       [&](const XES& best, const StopCriteria<XEv>& sosc, BasicSimulatedAnnealing<XES>* me) -> bool {
@@ -423,8 +432,7 @@ public:
       }
    };
 
-   //private:
-   /*
+   /*private:
    SpecificMethodStop<XES, XEv, BasicSimulatedAnnealing<XES>> defaultStopBy
     {
       [&](const XES& best, const StopCriteria<XEv>& sosc, BasicSimulatedAnnealing<XES>* me) -> bool {
@@ -615,21 +623,21 @@ WHERE IS THE ERROR?
             //if (evaluator.betterThan(eCurrent, e)) // TODO: replace by 'se' here, and use 'se.second' to compare directly
             //if(eCurrent.betterStrict(e))
             if (evaluator->betterStrict(eCurrent, e)) {
+               se = current;
                // if improved, accept it
                //e = *eCurrent;
                //s = *sCurrent;
                //delete sCurrent;
                //delete eCurrent;
-               se = current;
 
                //if (evaluator.betterThan(e, eStar))
                //if(e.betterStrict(eStar))
                if (evaluator->betterStrict(e, eStar)) {
+                  star = make_optional(se);
                   //delete sStar;
                   //sStar = &s.clone();
                   //delete eStar;
                   //eStar = &e.clone();
-                  star = make_optional(se);
 
                   cout << "Best fo: " << e.evaluation() << " Found on Iter = " << iterT << " and T = " << T;
                   cout << endl;
@@ -640,12 +648,12 @@ WHERE IS THE ERROR?
                double delta = ::fabs(eCurrent.evaluation() - e.evaluation());
 
                if (x < exp(-delta / T)) {
+                  se = current;
                   //s = *sCurrent;
                   //e = *eCurrent;
                   //delete sCurrent;
                   //delete eCurrent;
-                  se = current;
-               } else {
+               //} else {
                   //delete sCurrent;
                   //delete eCurrent;
                }
