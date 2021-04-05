@@ -59,7 +59,7 @@ public:
    // single neighborhood
    // reordered the different term to the front because of peeve, heheheh
    // standart RandGen in declaration could be new standart
-   BasicSimulatedAnnealing(sref<NS<XES, XEv, XSH>> _neighbors, sref<GeneralEvaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive, double _alpha, int _SAmax, double _Ti, sref<RandGen> _rg = new RandGen)
+   BasicSimulatedAnnealing(sref<GeneralEvaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive, sref<NS<XES, XEv, XSH>> _neighbors, double _alpha, int _SAmax, double _Ti, sref<RandGen> _rg = new RandGen)
      : evaluator(_evaluator)
      , constructive(_constructive)
      , rg(_rg) // does the new RandGen thing affect this? doesn't look like it but i'm no specialist
@@ -74,7 +74,7 @@ public:
    // vector of neighborhoods
    // reordered the different term to the front because of peeve, heheheh
    // standart RandGen in declaration could be new standart
-   BasicSimulatedAnnealing(vsref<NS<XES, XEv, XSH>> _neighbors, sref<GeneralEvaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive, double _alpha, int _SAmax, double _Ti, sref<RandGen> _rg = new RandGen)
+   BasicSimulatedAnnealing(sref<GeneralEvaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive, vsref<NS<XES, XEv, XSH>> _neighbors, double _alpha, int _SAmax, double _Ti, sref<RandGen> _rg = new RandGen)
      : evaluator(_evaluator)
      , constructive(_constructive)
      , neighbors(_neighbors)
