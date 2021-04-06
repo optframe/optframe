@@ -30,17 +30,38 @@ using namespace std;
 namespace HFMVRP
 {
 
-class DeltaMoveVRP2Opt: public MoveVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP>
+
+vector<vector<int>>& localGetRoutes(const ESolutionHFMVRP& s) {
+      vector<vector<int>>& v = const_cast<vector<vector<int>>&>(s.first.getR());
+      return v;
+   };
+
+//class DeltaMoveVRP2Opt: public MoveVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP>
+//
+//class DeltaMoveVRP2Opt: public MoveVRP2Opt<vector<vector<int>>, AdsHFMVRP, SolutionHFMVRP>
+class DeltaMoveVRP2Opt: public MoveVRP2Opt<ESolutionHFMVRP>
 {
-	typedef MoveVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP> super;
+	//typedef MoveVRP2Opt<vector<vector<int>>, AdsHFMVRP, SolutionHFMVRP> super;
+   typedef MoveVRP2Opt<ESolutionHFMVRP> super;
 
 private:
 	ProblemInstance* hfmvrp;
 
 public:
 
+	DeltaMoveVRP2Opt(Routes& (*getRoutes)(const ESolutionHFMVRP&), int _r, int _p1, int _p2, ProblemInstance* _hfmvrp) :
+		super(getRoutes, _r, _p1, _p2), hfmvrp(_hfmvrp)
+	{
+		if (!_hfmvrp)
+		{
+			cout << "Error: hfmvrp problem is NULL!" << endl;
+			print();
+			exit(1);
+		}
+	}
+
 	DeltaMoveVRP2Opt(int _r, int _p1, int _p2, ProblemInstance* _hfmvrp) :
-		super(_r, _p1, _p2), hfmvrp(_hfmvrp)
+		super(localGetRoutes, _r, _p1, _p2), hfmvrp(_hfmvrp)
 	{
 		if (!_hfmvrp)
 		{

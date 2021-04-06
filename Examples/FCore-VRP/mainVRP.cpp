@@ -13,6 +13,8 @@
 #include <OptFrame/Util/Matrix.hpp>
 #include <OptFrame/printable/printable.h>
 
+#include <OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRP2Opt.hpp>
+
 using namespace std;
 using namespace optframe;
 
@@ -164,6 +166,12 @@ using namespace example_VRP_RepADS;
 
 sref<RandGen> myRandGen = RandGen{}; // good random generator
 
+
+vector<vector<int>>& localGetRoutes(const ESolutionVRP& s) {
+      vector<vector<int>>& v = const_cast<vector<vector<int>>&> (s.first.sol);
+      return v;
+   };
+
 int
 main()
 {
@@ -185,6 +193,13 @@ main()
    // evaluate (test)
    auto e = ev_VRP.evaluate(rep);
    e.print();
+
+
+   //sref<NSSeq<ESolutionVRP>> nsseq_deltaIterator_delta_2opt = new NSSeqVRP2Opt<ESolutionVRP, ProblemContext, DeltaMoveVRP2Opt, DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(localGetRoutes, localGetRoutesX, &pVRP);
+   sref<NSSeq<ESolutionVRP>> nsseq_deltaIterator_delta_2opt = new NSSeqVRP2Opt<ESolutionVRP, ProblemContext>(localGetRoutes, &pVRP);
+   //
+   //uptr<Move<ESolutionVRP>> movetest = nsseq_deltaIterator_delta_2opt->randomMove(esolTest);
+   
 
    /*
    int nParam = 1; // param size
