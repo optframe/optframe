@@ -34,12 +34,12 @@ int
 main(int argc, char** argv)
 {
    cout << argv[0] << endl;
-   RandGenMersenneTwister rg;
+   sref<RandGen> rg = new RandGenMersenneTwister;
    long seed = time(NULL);
    seed = 100;
    cout << "Seed = " << seed << endl;
    srand(seed);
-   rg.setSeed(seed);
+   rg->setSeed(seed);
 
    Timer walltimer;
 
@@ -71,70 +71,103 @@ main(int argc, char** argv)
    Scanner scanner{ File(nome) };
    ProblemInstance* p = new ProblemInstance{ scanner };
 
-   HFMVRPEvaluator* eval = new HFMVRPEvaluator{ *p };
+   //HFMVRPEvaluator* eval = new HFMVRPEvaluator{ *p };
+   //sref<GeneralEvaluator<ESolutionHFMVRP, EvaluationHFMVRP>> eval = new HFMVRPEvaluator{ *p };
+   sref<Evaluator<SolutionHFMVRP, EvaluationHFMVRP, ESolutionHFMVRP>> eval = new HFMVRPEvaluator{ *p };
+
    HFMVRPADSManager* adsMan = new HFMVRPADSManager{ *p };
    double alpha = 0;
    ConstructiveSavingsRandomized is{ *p, rg, *adsMan };
 
-   NSSeq<ESolutionHFMVRP>* nsseq_deltaIterator_delta_2opt = new NSSeqVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRP2Opt, ProblemInstance, DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(p);
-   NSSeq<ESolutionHFMVRP>* nsseq_deltaIterator_delta_or1 = new NSSeqVRPOrOpt1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPOrOpt1, ProblemInstance, DeltaNSIteratorVRPOrOpt1<DeltaMoveVRPOrOpt1>>(p);
-   NSSeq<ESolutionHFMVRP>* nsseq_deltaIterator_delta_or2 = new NSSeqVRPOrOpt2<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPOrOpt2, ProblemInstance, DeltaNSIteratorVRPOrOpt2<DeltaMoveVRPOrOpt2>>(p);
-   NSSeq<ESolutionHFMVRP>* nsseq_deltaIterator_delta_exchange = new NSSeqVRPExchange<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPExchange, ProblemInstance, DeltaNSIteratorVRPExchange<DeltaMoveVRPExchange>>(p);
-   NSSeq<ESolutionHFMVRP>* nsseq_delta_shift10 = new NSSeqVRPShift10<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPShift10, ProblemInstance>(p);
-   NSSeq<ESolutionHFMVRP>* nsseq_delta_swap11 = new NSSeqVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPSwap1_1, ProblemInstance>(p);
-   NSSeq<ESolutionHFMVRP>* nsseq_deltaIterator_swap11 = new NSSeqVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPSwap1_1, ProblemInstance, DeltaNSIteratorVRPSwap1_1<DeltaMoveVRPSwap1_1>>(p);
-   NSSeq<ESolutionHFMVRP>* nsseq_deltaIterator_shift10 = new NSSeqVRPShift10<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPShift10, ProblemInstance, DeltaNSIteratorVRPShift10<DeltaMoveVRPShift10>>(p);
+   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_2opt = new NSSeqVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRP2Opt, ProblemInstance, DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(p);
+   sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_delta_2opt = new NSSeqVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRP2Opt, ProblemInstance, DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(p);
+   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_or1 = new NSSeqVRPOrOpt1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPOrOpt1, ProblemInstance, DeltaNSIteratorVRPOrOpt1<DeltaMoveVRPOrOpt1>>(p);
+   sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_delta_or1 = new NSSeqVRPOrOpt1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPOrOpt1, ProblemInstance, DeltaNSIteratorVRPOrOpt1<DeltaMoveVRPOrOpt1>>(p);
+   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_or2 = new NSSeqVRPOrOpt2<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPOrOpt2, ProblemInstance, DeltaNSIteratorVRPOrOpt2<DeltaMoveVRPOrOpt2>>(p);
+   sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_delta_or2 = new NSSeqVRPOrOpt2<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPOrOpt2, ProblemInstance, DeltaNSIteratorVRPOrOpt2<DeltaMoveVRPOrOpt2>>(p);
+   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_exchange = new NSSeqVRPExchange<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPExchange, ProblemInstance, DeltaNSIteratorVRPExchange<DeltaMoveVRPExchange>>(p);
+   sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_delta_exchange = new NSSeqVRPExchange<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPExchange, ProblemInstance, DeltaNSIteratorVRPExchange<DeltaMoveVRPExchange>>(p);
+   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_delta_shift10 = new NSSeqVRPShift10<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPShift10, ProblemInstance>(p);
+   sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_delta_shift10 = new NSSeqVRPShift10<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPShift10, ProblemInstance>(p);
+   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_delta_swap11 = new NSSeqVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPSwap1_1, ProblemInstance>(p);
+   sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_delta_swap11 = new NSSeqVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPSwap1_1, ProblemInstance>(p);
+   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_swap11 = new NSSeqVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPSwap1_1, ProblemInstance, DeltaNSIteratorVRPSwap1_1<DeltaMoveVRPSwap1_1>>(p);
+   sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_swap11 = new NSSeqVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPSwap1_1, ProblemInstance, DeltaNSIteratorVRPSwap1_1<DeltaMoveVRPSwap1_1>>(p);
+   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_shift10 = new NSSeqVRPShift10<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPShift10, ProblemInstance, DeltaNSIteratorVRPShift10<DeltaMoveVRPShift10>>(p);
+   sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_shift10 = new NSSeqVRPShift10<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPShift10, ProblemInstance, DeltaNSIteratorVRPShift10<DeltaMoveVRPShift10>>(p);
+
 
    ILSLPerturbationLPlus2Prob<ESolutionHFMVRP>* ilsl_pert;
 
    //ilsl_pert = new ILSLPerturbationLPlus2Prob<ESolutionHFMVRP>(*eval, 100000, *nsseq_deltaIterator_shift10, rg);
-   ilsl_pert = new ILSLPerturbationLPlus2Prob<ESolutionHFMVRP>(*eval, *nsseq_deltaIterator_shift10, rg);
-   ilsl_pert->add_ns(*nsseq_deltaIterator_swap11);
-   ilsl_pert->add_ns(*nsseq_deltaIterator_delta_2opt);
-   ilsl_pert->add_ns(*nsseq_deltaIterator_delta_or1);
-   ilsl_pert->add_ns(*nsseq_deltaIterator_delta_or2);
-   ilsl_pert->add_ns(*nsseq_deltaIterator_delta_exchange);
+   //
+   //
+   //
+   //ilsl_pert = new ILSLPerturbationLPlus2Prob<ESolutionHFMVRP>(*eval, *nsseq_deltaIterator_shift10, rg);
+   ilsl_pert = new ILSLPerturbationLPlus2Prob<ESolutionHFMVRP>(eval, ns_deltaIterator_shift10, rg);
+   ilsl_pert->add_ns(ns_deltaIterator_swap11);
+   ilsl_pert->add_ns(ns_deltaIterator_delta_2opt);
+   ilsl_pert->add_ns(ns_deltaIterator_delta_or1);
+   ilsl_pert->add_ns(ns_deltaIterator_delta_or2);
+   ilsl_pert->add_ns(ns_deltaIterator_delta_exchange);
    int myints[] = { 3, 3, 1, 1, 1, 1 };
    vector<int> priorites(myints, myints + sizeof(myints) / sizeof(int));
    ilsl_pert->changeProb(priorites);
 
-   vector<LocalSearch<ESolutionHFMVRP>*> vLS;
-   BestImprovement<ESolutionHFMVRP> fiI(*eval, *nsseq_deltaIterator_delta_2opt);
-   BestImprovement<ESolutionHFMVRP> fiII(*eval, *nsseq_deltaIterator_delta_or1);
-   BestImprovement<ESolutionHFMVRP> fiIII(*eval, *nsseq_deltaIterator_delta_or2);
-   BestImprovement<ESolutionHFMVRP> fiIV(*eval, *nsseq_deltaIterator_delta_exchange);
-   BestImprovement<ESolutionHFMVRP> fiV(*eval, *nsseq_deltaIterator_swap11);
-   BestImprovement<ESolutionHFMVRP> fiVI(*eval, *nsseq_deltaIterator_shift10);
+   //vector<LocalSearch<ESolutionHFMVRP>*> vLS;
+   vsref<LocalSearch<ESolutionHFMVRP>> vLS;
+   /*
+   BestImprovement<ESolutionHFMVRP> fiI(eval, nsseq_deltaIterator_delta_2opt);
+   BestImprovement<ESolutionHFMVRP> fiII(eval, nsseq_deltaIterator_delta_or1);
+   BestImprovement<ESolutionHFMVRP> fiIII(eval, nsseq_deltaIterator_delta_or2);
+   BestImprovement<ESolutionHFMVRP> fiIV(eval, nsseq_deltaIterator_delta_exchange);
+   BestImprovement<ESolutionHFMVRP> fiV(eval, nsseq_deltaIterator_swap11);
+   BestImprovement<ESolutionHFMVRP> fiVI(eval, nsseq_deltaIterator_shift10);
    vLS.push_back(&fiI);
    vLS.push_back(&fiII);
    vLS.push_back(&fiIII);
    vLS.push_back(&fiIV);
    vLS.push_back(&fiV);
    vLS.push_back(&fiVI);
+   */
+
+   vLS.push_back(new BestImprovement<ESolutionHFMVRP>(eval, nsseq_deltaIterator_delta_2opt));
+   vLS.push_back(new BestImprovement<ESolutionHFMVRP>(eval, nsseq_deltaIterator_delta_or1));
+   vLS.push_back(new BestImprovement<ESolutionHFMVRP>(eval, nsseq_deltaIterator_delta_or2));
+   vLS.push_back(new BestImprovement<ESolutionHFMVRP>(eval, nsseq_deltaIterator_delta_exchange));
+   vLS.push_back(new BestImprovement<ESolutionHFMVRP>(eval, nsseq_deltaIterator_swap11));
+   vLS.push_back(new BestImprovement<ESolutionHFMVRP>(eval, nsseq_deltaIterator_shift10));
 
    CheckCommand<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP> cc;
-   cc.add(*eval);
+   cc.add(eval);
    //	cc.add(p);
    cc.add(is);
-   cc.add(*nsseq_delta_shift10);
-   cc.add(*nsseq_delta_swap11);
-   cc.add(*nsseq_deltaIterator_swap11);
-   cc.add(*nsseq_deltaIterator_shift10);
-   cc.add(*nsseq_deltaIterator_delta_2opt);
-   cc.add(*nsseq_deltaIterator_delta_or1);
-   cc.add(*nsseq_deltaIterator_delta_or2);
-   cc.add(*nsseq_deltaIterator_delta_exchange);
+   cc.add(nsseq_delta_shift10);
+   cc.add(nsseq_delta_swap11);
+   cc.add(nsseq_deltaIterator_swap11);
+   cc.add(nsseq_deltaIterator_shift10);
+   cc.add(nsseq_deltaIterator_delta_2opt);
+   cc.add(nsseq_deltaIterator_delta_or1);
+   cc.add(nsseq_deltaIterator_delta_or2);
+   cc.add(nsseq_deltaIterator_delta_exchange);
    cc.add(*adsMan);
    cc.run(1, 1);
    getchar();
 
    // if randgen is given, it is RVND
-   VariableNeighborhoodDescent<ESolutionHFMVRP> newVND(*eval, vLS, &rg);
-   VariableNeighborhoodDescentUpdateADS<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP> newVNDUpdateADS(*eval, *adsMan, vLS);
-   BasicGRASP<SolutionHFMVRP, EvaluationHFMVRP, ESolutionHFMVRP> basicGrasp(*eval, is, newVNDUpdateADS, alpha, 1000);
+   sref<GeneralEvaluator<ESolutionHFMVRP, EvaluationHFMVRP>> _ev = eval;
+   vsref<LocalSearch<ESolutionHFMVRP, EvaluationHFMVRP>> _lsList = vLS;
+   sptr<RandGen> _rg = rg.sptr();
+   //VariableNeighborhoodDescent<ESolutionHFMVRP> newVND(eval, vLS, rg);
+   VariableNeighborhoodDescent<ESolutionHFMVRP> newVND(eval, vLS, rg.sptr());
+   //VariableNeighborhoodDescentUpdateADS<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP> newVNDUpdateADS(*eval, *adsMan, vLS);
+   VariableNeighborhoodDescentUpdateADS<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP> newVNDUpdateADS(eval, *adsMan, vLS);
+   //BasicGRASP<SolutionHFMVRP, EvaluationHFMVRP, ESolutionHFMVRP> basicGrasp(*eval, is, newVNDUpdateADS, alpha, 1000);
+   BasicGRASP<SolutionHFMVRP, EvaluationHFMVRP, ESolutionHFMVRP> basicGrasp(eval, is, newVNDUpdateADS, alpha, 1000);
 
    EmptyLocalSearch<ESolutionHFMVRP> emptyLS;
-   vector<NSSeq<ESolutionHFMVRP>*> vNSeq;
+   //vector<NSSeq<ESolutionHFMVRP>*> vNSeq;
+   vsref<NSSeq<ESolutionHFMVRP>> vNSeq;
    vNSeq.push_back(nsseq_deltaIterator_delta_2opt);
    vNSeq.push_back(nsseq_deltaIterator_delta_or1);
    vNSeq.push_back(nsseq_deltaIterator_delta_or2);
@@ -144,8 +177,8 @@ main(int argc, char** argv)
 
    StopCriteria<EvaluationHFMVRP> soscGR(10); // target zero and 10 seconds
    soscGR.target_f = Evaluation<>(0);
-   basicGrasp.search(soscGR);
-   std::optional<pair<SolutionHFMVRP, Evaluation<>>> initialPairGrasp = basicGrasp.best;
+   auto ret_grasp = basicGrasp.search(soscGR);
+   std::optional<pair<SolutionHFMVRP, Evaluation<>>> initialPairGrasp = ret_grasp.best; //basicGrasp.best;
 
    CloneConstructive<SolutionHFMVRP> cloneSolAsConstructive(initialPairGrasp->first);
 
