@@ -3,6 +3,8 @@
 
 #include <OptFrame/Evaluation.hpp>
 
+using namespace optframe;
+
 typedef Evaluation<> EvaluationHFMVRP;
 
 #endif /*HFMVRP_EVALUATION_H_*/

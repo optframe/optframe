@@ -1,7 +1,7 @@
 all: build/app_Example
 
 CC=g++
-CXXFLAGS= -I../../src  -fno-exceptions -O3 -Wall --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
+CXXFLAGS= -I../../src -I../../libs/  -fno-exceptions -O3 -Wall --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
 LDFLAGS := $(CXXFLAGS)
 
 SRC_DIR := ./src
@@ -11,7 +11,7 @@ OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))  # replace
 
 # pack all objs ($^) into a single APPNAME
 build/app_Example: $(OBJ_FILES)
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) $(LDFLAGS) ../../src/OptFrame/printable/printable.cpp -o $@ $^
 	cp -r tsplib/ build/
 
 # compile each .cpp individually ($<)

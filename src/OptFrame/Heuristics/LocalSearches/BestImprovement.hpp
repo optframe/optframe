@@ -70,7 +70,7 @@ public:
       //double target_f = sosc.target_f; 
 
 		if(Component::information)
-			cout << "BI::starts for " << nsSeq->toString() << endl;
+			std::cout << "BI::starts for " << nsSeq->toString() << std::endl;
 
 		num_calls++;
 		Timer t;
@@ -81,6 +81,9 @@ public:
       //
       if(!it)
          return SearchStatus::FAILED;
+      //
+      if(Component::information)
+         std::cout << "BI::first()" << std::endl;
       //
 		it->first();
 

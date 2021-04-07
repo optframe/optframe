@@ -38,6 +38,11 @@ public:
    {
    }
 
+   CloneConstructive(const S& _base)
+     : base(&_base.clone())
+   {
+   }
+
    virtual ~CloneConstructive()
    {
       //delete &base;

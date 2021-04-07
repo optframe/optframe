@@ -23,6 +23,8 @@
 
 #include <OptFrame/Evaluation.hpp>
 
+using namespace optframe;
+
 typedef Evaluation<> EvaluationOptHS;
 
 #endif /*OptHS_EVALUATION_H_*/

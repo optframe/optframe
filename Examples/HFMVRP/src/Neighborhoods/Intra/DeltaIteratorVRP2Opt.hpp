@@ -29,17 +29,25 @@ namespace HFMVRP
 {
 
 template<class MOVE = DeltaMoveVRP2Opt>
-class DeltaNSIteratorVRP2Opt: public NSIteratorVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRP2Opt, ProblemInstance>
+//class DeltaNSIteratorVRP2Opt: public NSIteratorVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRP2Opt, ProblemInstance>
+class DeltaNSIteratorVRP2Opt: public NSIteratorVRP2Opt<ESolutionHFMVRP, ProblemInstance, DeltaMoveVRP2Opt>
 {
-	typedef NSIteratorVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRP2Opt, ProblemInstance> super;
+	//typedef NSIteratorVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRP2Opt, ProblemInstance> super;
+   typedef NSIteratorVRP2Opt<ESolutionHFMVRP, ProblemInstance, DeltaMoveVRP2Opt> super;
+
+   typedef vector<vector<int>> Routes;
 
 private:
 	const AdsHFMVRP& ads; //TODO COULD BE A POINTER? WHAT IS THE BEST OPTION?
 
 public:
 
-	DeltaNSIteratorVRP2Opt(const RepHFMVRP& _rep, const AdsHFMVRP& _ads, ProblemInstance* _hfmvrp) :
-		super(_rep, _ads, _hfmvrp), ads(_ads)
+   //const vector<vector<int>>& (*getRoutesX)(const ESolutionHFMVRP& s);
+
+	//DeltaNSIteratorVRP2Opt(const RepHFMVRP& _rep, const AdsHFMVRP& _ads, ProblemInstance* _hfmvrp) :
+	//	super(_rep, _ads, _hfmvrp), ads(_ads)
+   DeltaNSIteratorVRP2Opt(vector<vector<int>>& (*_getRoutes)(const ESolutionHFMVRP& s), const ESolutionHFMVRP& se, ProblemInstance* _hfmvrp) :
+   	super(_getRoutes, se, _hfmvrp), ads(se.first.getADS())
 	{
 		if (!_hfmvrp)
 		{
@@ -64,7 +72,7 @@ public:
 				{
 					for (int p2 = p1 + 2; p2 < rep.at(r).size(); p2++)
 					{
-                  uptr<Move<ESolutionHFMVRP>> m1(new MOVE(r, p1, p2, p));
+                  uptr<Move<ESolutionHFMVRP>> m1(new MOVE(super::getRoutes, r, p1, p2, p));
 						moves.push_back(std::move(m1));
 					}
 				}

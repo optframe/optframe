@@ -30,9 +30,9 @@ using namespace std;
 namespace HFMVRP
 {
 
-class DeltaMoveVRPOrOpt2: public MoveVRPOrOpt2<int, AdsHFMVRP, SolutionHFMVRP>
+class DeltaMoveVRPOrOpt2: public MoveVRPOrOpt2<ESolutionHFMVRP>//<int, AdsHFMVRP, SolutionHFMVRP>
 {
-	typedef MoveVRPOrOpt2<int, AdsHFMVRP, SolutionHFMVRP> super;
+	typedef MoveVRPOrOpt2<ESolutionHFMVRP> super;
 
 private:
 	ProblemInstance* hfmvrp;
@@ -40,8 +40,8 @@ private:
 
 public:
 
-	DeltaMoveVRPOrOpt2(int _r, int _c, int _pos, ProblemInstance* _hfmvrp) :
-		super(_r, _c, _pos), hfmvrp(_hfmvrp)
+	DeltaMoveVRPOrOpt2(vector<vector<int>>& (*_getRoutes)(const ESolutionHFMVRP& s), int _r, int _c, int _pos, ProblemInstance* _hfmvrp) :
+		super(_getRoutes, _r, _c, _pos), hfmvrp(_hfmvrp)
 	{
 		k = 2; //OrOpt1
 		if (!_hfmvrp)
@@ -172,7 +172,7 @@ public:
 			//Update minDemand,maxDemand, minPairDemand, maxPairDemand, cumulative and sum
 			updateModifiedRoutes(rep, ads);
 
-			return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRPOrOpt2(r, pos - 2, c, hfmvrp));
+			return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRPOrOpt2(super::getRoutes, r, pos - 2, c, hfmvrp));
 		}
 		else
 		{
@@ -193,11 +193,11 @@ public:
 			//Update minDemand,maxDemand, minPairDemand, maxPairDemand, cumulative and sum
 			updateModifiedRoutes(rep, ads);
 
-			return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRPOrOpt2(r, pos, c + 2, hfmvrp));
+			return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRPOrOpt2(super::getRoutes, r, pos, c + 2, hfmvrp));
 
 		}
 
-		return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRPOrOpt2(-1, -1, -1, hfmvrp));
+		return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRPOrOpt2(super::getRoutes, -1, -1, -1, hfmvrp));
 
 	}
 

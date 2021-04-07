@@ -64,21 +64,21 @@ private:
 	bool checkIndependent;
 
    //vector<GeneralEvaluator<XES>*> lEvaluator;
-	vector<Evaluator<S, XEv, XES>*> lEvaluator;
+	vector<std::shared_ptr<Evaluator<S, XEv, XES>>> lEvaluator;
    //vector<GeneralEvaluator<XES>*> lGenEvaluator;
 	//vector<Constructive<S>*> lConstructive;
-   vector<InitialSearch<XES, XEv>*> lConstructive;
-	vector<CopySolution<R,ADS>*> lSolution;
-	vector<shared_ptr<Move<XES>>> lMove;
-	vector<NS<XES, XEv>*> lNS;
-	vector<NSSeq<XES>*> lNSSeq;
-	vector<NSEnum<XES>*> lNSEnum;
+   vector<std::shared_ptr<InitialSearch<XES, XEv>>> lConstructive;
+	vector<std::shared_ptr<CopySolution<R,ADS>>> lSolution;
+	vector<std::shared_ptr<Move<XES>>> lMove;
+	vector<std::shared_ptr<NS<XES, XEv>>> lNS;
+	vector<std::shared_ptr<NSSeq<XES>>> lNSSeq;
+	vector<std::shared_ptr<NSEnum<XES>>> lNSEnum;
 
-	ADSManager<R, ADS, S>* adsMan;
+	std::shared_ptr<ADSManager<R, ADS, S>> adsMan;
 
 public:
 
-	vector<ADSManager<R, ADS, S>*> lADSManagerComp; // optional
+	vector<std::shared_ptr<ADSManager<R, ADS, S>>> lADSManagerComp; // optional
 
 	CheckCommand(bool _verbose = false) :
 			verbose(_verbose)
@@ -108,16 +108,16 @@ public:
 			cout << "checkcommand: InitialSearch " << lConstructive.size() << " added!" << endl;
 	}
 
-	void add(ADSManager<R, ADS, S>& adsMan)
+	void add(sref<ADSManager<R, ADS, S>> adsMan)
 	{
-		lADSManagerComp.push_back(&adsMan);
+		lADSManagerComp.push_back(adsMan.sptr());
 		if (verbose)
 			cout << "checkcommand: AdsMan " << lADSManagerComp.size() << " added!" << endl;
 	}
 
-	void add(Evaluator<S, XEv, XES>& c)
+	void add(sref<Evaluator<S, XEv, XES>> c)
 	{
-		lEvaluator.push_back(&c);
+		lEvaluator.push_back(c.sptr());
 		if (verbose)
 			cout << "checkcommand: Evaluator " << lEvaluator.size() << " added!" << endl;
 	}
@@ -144,20 +144,23 @@ public:
 			cout << "checkcommand: Move " << lMove.size() << " added!" << endl;
 	}
 
-	void add(NS<XES, XEv>& c)
+	void add(sref<NS<XES, XEv>> c)
 	{
-		lNS.push_back(&c);
+		lNS.push_back(c.sptr());
 		if (verbose)
 			cout << "checkcommand: NS " << lNS.size() << " added!" << endl;
 	}
 
-	void add(NSSeq<XES, XEv, XSH>& c)
+	void add(sref<NSSeq<XES, XEv, XSH>> c)
 	{
-		lNSSeq.push_back(&c);
+		lNSSeq.push_back(c.sptr());
 		if (verbose)
 			cout << "checkcommand: NSSeq " << lNSSeq.size() << " added!" << endl;
-		if (convertNS)
-			add((NS<XES, XEv>&) c);
+		if (convertNS) {
+         std::shared_ptr<NS<XES, XEv>> sptr_ns = c.sptr();
+         add(sptr_ns);
+			//add((std::shared_ptr<NS<XES, XEv>>) c.sptr());
+      }
 	}
 
 	void add(NSEnum<XES, XEv>& c)
@@ -170,6 +173,11 @@ public:
 	}
 
 	void message(Component* c, int iter, string text)
+	{
+		message(c->id(), iter, text);
+	}
+
+	void message(std::shared_ptr<Component> c, int iter, string text)
 	{
 		message(c->id(), iter, text);
 	}
@@ -213,7 +221,7 @@ public:
 		bool overestimate, underestimate;
 	};
 
-	bool testMoveGeneral(int iter, NS<XES, XEv>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<XES>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckWithSamples& timeSamples)
+	bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<XES>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckWithSamples& timeSamples)
 	{
 		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
 		{
@@ -585,7 +593,7 @@ public:
 		// read evaluators
 		// ----------------
 
-		vector<Evaluator<S, XEv, XES>*> evaluators;
+		vector<std::shared_ptr<Evaluator<S, XEv, XES>>> evaluators;
 		for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
 			evaluators.push_back(lEvaluator[ev]);
 
@@ -623,7 +631,7 @@ public:
 		for (unsigned c = 0; c < lConstructive.size(); c++)
 		{
 			//Constructive<S>* constructive = lConstructive.at(c);
-         InitialSearch<XES, XEv>* constructive = lConstructive.at(c);
+         std::shared_ptr<InitialSearch<XES, XEv>> constructive = lConstructive.at(c);
 
 			cout << "checkcommand: testing Constructive " << c << " => " << constructive->toString();
 			cout << endl;
@@ -751,7 +759,7 @@ public:
 
 		for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++)
 		{
-			NS<XES, XEv>* ns = lNS.at(id_ns);
+			std::shared_ptr<NS<XES, XEv>> ns = lNS.at(id_ns);
 
 			cout << "checkcommand: testing NS " << id_ns << " => " << ns->toString();
 			cout << endl;
@@ -818,7 +826,7 @@ public:
 
 		for (unsigned id_nsseq = 0; id_nsseq < lNSSeq.size(); id_nsseq++)
 		{
-			NSSeq<XES, XEv, XES>* nsseq = lNSSeq.at(id_nsseq);
+			std::shared_ptr<NSSeq<XES, XEv, XES>> nsseq = lNSSeq.at(id_nsseq);
 
 			cout << "checkcommand: testing NSSeq " << id_nsseq << " => " << nsseq->toString();
 			cout << endl;
@@ -901,7 +909,7 @@ public:
 
 		for (unsigned id_nsenum = 0; id_nsenum < lNSEnum.size(); id_nsenum++)
 		{
-			NSEnum<XES, XEv>* nsenum = lNSEnum.at(id_nsenum);
+			std::shared_ptr<NSEnum<XES, XEv>> nsenum = lNSEnum.at(id_nsenum);
 
 			cout << "checkcommand: testing NSEnum " << id_nsenum << " => " << nsenum->toString();
 			cout << endl;
@@ -1144,17 +1152,17 @@ public:
 	}
 
 	template<class T>
-	vector<Component*> convertVector(const vector<T*>& v)
+	vector<std::shared_ptr<Component>> convertVector(const vector<sptr<T>>& v)
 	{
-		vector<Component*> vcomp;
+		vector<sptr<Component>> vcomp;
 		for (unsigned c = 0; c < v.size(); c++)
-			vcomp.push_back((Component*) (v[c]));
+			vcomp.push_back((sptr<Component>) (v[c]));
 
 		return vcomp;
 	}
 
 
-	void printSummarySimpleSamples(const vector<Component*>& vcomp, const vector<vector<int> >& vMoveSamples, string type, string title)
+	void printSummarySimpleSamples(const vector<std::shared_ptr<Component>>& vcomp, const vector<vector<int> >& vMoveSamples, string type, string title)
 	{
 		unsigned nComponents = vMoveSamples.size();
 		printf("---------------------------------\n");
@@ -1208,7 +1216,7 @@ public:
 		cout << endl;
 	}
 
-	void printSummarySamples(const vector<Component*>& vcomp, const vector<vector<double> >& vTimeSamples, string type, string title)
+	void printSummarySamples(const vector<std::shared_ptr<Component>>& vcomp, const vector<vector<double> >& vTimeSamples, string type, string title)
 	{
 		unsigned nTests = vTimeSamples.size();
 		printf("---------------------------------\n");

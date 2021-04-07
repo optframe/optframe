@@ -30,17 +30,21 @@ using namespace std;
 namespace HFMVRP
 {
 
-class DeltaMoveVRP2Opt: public MoveVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP>
+//class DeltaMoveVRP2Opt: public MoveVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP>
+//
+//class DeltaMoveVRP2Opt: public MoveVRP2Opt<vector<vector<int>>, AdsHFMVRP, SolutionHFMVRP>
+class DeltaMoveVRP2Opt: public MoveVRP2Opt<ESolutionHFMVRP>
 {
-	typedef MoveVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP> super;
+	//typedef MoveVRP2Opt<vector<vector<int>>, AdsHFMVRP, SolutionHFMVRP> super;
+   typedef MoveVRP2Opt<ESolutionHFMVRP> super;
 
 private:
 	ProblemInstance* hfmvrp;
 
 public:
 
-	DeltaMoveVRP2Opt(int _r, int _p1, int _p2, ProblemInstance* _hfmvrp) :
-		super(_r, _p1, _p2), hfmvrp(_hfmvrp)
+	DeltaMoveVRP2Opt(Routes& (*getRoutes)(const ESolutionHFMVRP&), int _r, int _p1, int _p2, ProblemInstance* _hfmvrp) :
+		super(getRoutes, _r, _p1, _p2), hfmvrp(_hfmvrp)
 	{
 		if (!_hfmvrp)
 		{
@@ -49,6 +53,19 @@ public:
 			exit(1);
 		}
 	}
+
+/*
+	DeltaMoveVRP2Opt(int _r, int _p1, int _p2, ProblemInstance* _hfmvrp) :
+		super(localGetRoutes, _r, _p1, _p2), hfmvrp(_hfmvrp)
+	{
+		if (!_hfmvrp)
+		{
+			cout << "Error: hfmvrp problem is NULL!" << endl;
+			print();
+			exit(1);
+		}
+	}
+*/
 
 	virtual ~DeltaMoveVRP2Opt()
 	{
@@ -186,7 +203,7 @@ public:
 		//Update minDemand,maxDemand, minPairDemand, maxPairDemand, cumulative and sum
 		updateModifiedRoutes(rep, ads);
 
-		return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRP2Opt(r, p1, p2, hfmvrp));
+		return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRP2Opt(super::getRoutes, r, p1, p2, hfmvrp));
 	}
 
 	op<EvaluationHFMVRP> cost(const pair<SolutionHFMVRP, Evaluation<>>& se, bool allowEstimated) override
