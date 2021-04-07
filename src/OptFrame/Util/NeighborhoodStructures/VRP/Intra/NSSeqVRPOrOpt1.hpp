@@ -42,14 +42,13 @@ class MoveVRPOrOpt1: public Move<XES, typename XES::second_type>
 public:
    Routes& (*getRoutes)(const XES&); // function to get routes from type 'R'
 
-private:
-	P* problem;
-
 protected:
 	int r; // route id
 	int c; // client
 	int pos; // position
 
+private:
+	P* problem;
 
 public:
 
@@ -79,7 +78,7 @@ public:
 
 	virtual bool canBeApplied(const XES& se) override
 	{
-      const Routes& rep = se.first.getR();
+      //const Routes& rep = getRoutes(se);//se.first.getR();
 		bool all_positive = (r >= 0) && (c >= 0) && (pos >= 0);
 		return all_positive && (c != pos) && (c + 1 != pos);
 	}
@@ -92,7 +91,7 @@ public:
 
 	virtual uptr<Move<XES>> apply(XES& se) override
 	{
-      Routes& rep = se.first.getR();
+      Routes& rep = getRoutes(se);//se.first.getR();
 		int aux;
 		int i;
 		if (c < pos)
@@ -153,12 +152,9 @@ protected:
 	uptr<Move<XES>> m;
 	vector<uptr<Move<XES>>> moves;
 	int index; //index of moves
-	const Routes& rep;
-
-	P* p; // has to be the last
-public:
-
    Routes& (*getRoutes)(const XES&); // function to get routes from type 'R'
+	const Routes& rep;
+	P* p; // has to be the last
 
 	NSIteratorVRPOrOpt1(Routes& (*getRoutes)(const XES&), const XES& se, P* _p = nullptr) :
 		getRoutes(getRoutes), rep{getRoutes(se)}, p(_p)
@@ -174,11 +170,11 @@ public:
 	virtual void first() override
 	{
 
-		for (int r = 0; r < rep.size(); r++)
+		for (int r = 0; r < (int)rep.size(); r++)
 		{
-			for (int c = 0; c < rep.at(r).size(); c++)
+			for (int c = 0; c < (int)rep.at(r).size(); c++)
 			{
-				for (int pos = 0; pos <= rep.at(r).size(); pos++)
+				for (int pos = 0; pos <= (int)rep.at(r).size(); pos++)
 				{
 					if ((c != pos) && (c + 1 != pos))
 					{
@@ -199,7 +195,7 @@ public:
 	virtual void next() override
 	{
 		index++;
-		if (index < moves.size())
+		if (index < (int)moves.size())
 		{
 			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
@@ -262,7 +258,7 @@ public:
 
 	uptr<Move<XES>> randomMove(const XES& se) override
 	{
-      const Routes& rep = se.first.getR();
+      const Routes& rep = getRoutes(se);//se.first.getR();
 		int r = rand() % rep.size();
 
 		if (rep.at(r).size() < 2)
@@ -277,7 +273,7 @@ public:
 
 	virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
 	{
-      XSolution& s = se.first;
+      //XSolution& s = se.first;
 		return uptr<NSIterator<XES>>(new NSITERATOR(getRoutes, se, p));
 	}
 
