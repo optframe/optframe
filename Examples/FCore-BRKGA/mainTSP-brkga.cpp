@@ -171,7 +171,7 @@ main()
    //eprk, pTSP.n, 1000, 30, 0.4, 0.3, 0.6
    BRKGA<ESolutionTSP, double> brkga(
      _decoder,
-     MyRandomKeysInitPop(pTSP.n, rg2), // key_size = pTSP.n
+     MyRandomKeysInitPop(pTSP.n, rg), // key_size = pTSP.n
      30,
      1000,
      0.4,
