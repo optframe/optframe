@@ -29,17 +29,17 @@ namespace HFMVRP
 {
 
 template<class MOVE = DeltaMoveVRPExchange>
-class DeltaNSIteratorVRPExchange: public NSIteratorVRPExchange<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPExchange, ProblemInstance>
+class DeltaNSIteratorVRPExchange: public NSIteratorVRPExchange<ESolutionHFMVRP, ProblemInstance, DeltaMoveVRPExchange>//<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPExchange, ProblemInstance>
 {
-	typedef NSIteratorVRPExchange<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPExchange, ProblemInstance> super;
+	typedef NSIteratorVRPExchange<ESolutionHFMVRP, ProblemInstance, DeltaMoveVRPExchange> super;//<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPExchange, ProblemInstance> super;
 
 private:
 	const AdsHFMVRP& ads; //TODO COULD BE A POINTER? WHAT IS THE BEST OPTION?
 
 public:
 
-	DeltaNSIteratorVRPExchange(const RepHFMVRP& _rep, const AdsHFMVRP& _ads, ProblemInstance* _hfmvrp) :
-		super(_rep, _ads, _hfmvrp), ads(_ads)
+	DeltaNSIteratorVRPExchange(vector<vector<int>>& (*_getRoutes)(const ESolutionHFMVRP& s), const ESolutionHFMVRP& se, ProblemInstance* _hfmvrp) :
+   	super(_getRoutes, se, _hfmvrp), ads(se.first.getADS())
 	{
 		if (!_hfmvrp)
 		{
@@ -64,7 +64,7 @@ public:
 					for (int c2 = 0; c2 < rep.at(r).size(); c2++)
 					{
 						if (c1 != c2)
-							moves.push_back(uptr<Move<ESolutionHFMVRP>>(new MOVE(r, c1, c2, p)));
+							moves.push_back(uptr<Move<ESolutionHFMVRP>>(new MOVE(getRoutes, r, c1, c2, p)));
 					}
 				}
 			}

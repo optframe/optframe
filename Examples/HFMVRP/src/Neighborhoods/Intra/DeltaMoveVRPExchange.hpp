@@ -30,17 +30,17 @@ using namespace std;
 namespace HFMVRP
 {
 
-class DeltaMoveVRPExchange: public MoveVRPExchange<int, AdsHFMVRP, SolutionHFMVRP>
+class DeltaMoveVRPExchange: public MoveVRPExchange<ESolutionHFMVRP>//<int, AdsHFMVRP, SolutionHFMVRP>
 {
-	typedef MoveVRPExchange<int, AdsHFMVRP, SolutionHFMVRP> super;
+	typedef MoveVRPExchange<ESolutionHFMVRP> super;
 
 private:
 	ProblemInstance* hfmvrp;
 
 public:
 
-	DeltaMoveVRPExchange(int _r, int _c1, int _c2, ProblemInstance* _hfmvrp) :
-		super(_r, _c1, _c2), hfmvrp(_hfmvrp)
+	DeltaMoveVRPExchange(vector<vector<int>>& (*_getRoutes)(const ESolutionHFMVRP& s), int _r, int _c1, int _c2, ProblemInstance* _hfmvrp) :
+		super(_getRoutes, _r, _c1, _c2), hfmvrp(_hfmvrp)
 	{
 		if (!_hfmvrp)
 		{
@@ -137,7 +137,7 @@ public:
 		ads.maxPairDemand[r] = maxPairDemand;
 		ads.minPairDemand[r] = minPairDemand;
 
-		return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRPExchange(r, c1, c2, hfmvrp));
+		return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRPExchange(super::getRoutes, r, c1, c2, hfmvrp));
 	}
 
 	op<EvaluationHFMVRP> cost(const pair<SolutionHFMVRP, Evaluation<>>& se, bool allowEstimated) override

@@ -28,14 +28,22 @@
 using namespace std;
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS>
+/*
 template<class T, class ADS, XBaseSolution<vector<vector<T> >,ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class MoveVRPOrOpt1: public Move<XES, XEv>
 {
-
 	typedef vector<vector<T> > Routes;
+*/
+template<XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM>
+class MoveVRPOrOpt1: public Move<XES, typename XES::second_type>
+{
+   using XEv = typename XES::second_type;
+	typedef vector<vector<int> > Routes;
+public:
+   Routes& (*getRoutes)(const XES&); // function to get routes from type 'R'
 
 private:
-	OPTFRAME_DEFAULT_PROBLEM* problem;
+	P* problem;
 
 protected:
 	int r; // route id
@@ -45,8 +53,8 @@ protected:
 
 public:
 
-	MoveVRPOrOpt1(int _r, int _c, int _pos, OPTFRAME_DEFAULT_PROBLEM* _problem = nullptr) :
-		r(_r), c(_c), pos(_pos), problem(_problem)
+	MoveVRPOrOpt1(Routes& (*_getRoutes)(const XES&), int _r, int _c, int _pos, P* _problem = nullptr) :
+		getRoutes(_getRoutes), r(_r), c(_c), pos(_pos), problem(_problem)
 	{
 	}
 
@@ -76,10 +84,11 @@ public:
 		return all_positive && (c != pos) && (c + 1 != pos);
 	}
 
+/*
 	virtual void updateNeighStatus(ADS& ads)
 	{
-
 	}
+*/
 
 	virtual uptr<Move<XES>> apply(XES& se) override
 	{
@@ -96,7 +105,7 @@ public:
 				//rep.at(r).at(i + 1) = aux;
 			}
 			rep.at(r).at(i) = aux;
-			return uptr<Move<XES>>(new MoveVRPOrOpt1<T, ADS, S> (r, pos - 1, c));
+			return uptr<Move<XES>>(new MoveVRPOrOpt1<XES, P> (getRoutes, r, pos - 1, c));
 		}
 		else
 		{
@@ -106,17 +115,17 @@ public:
 				rep.at(r).at(i) = rep.at(r).at(i - 1);
 			}
 			rep.at(r).at(i) = aux;
-			return uptr<Move<XES>>(new MoveVRPOrOpt1<T, ADS, S> (r, pos, c + 1));
+			return uptr<Move<XES>>(new MoveVRPOrOpt1<XES, P> (getRoutes, r, pos, c + 1));
 
 		}
 
-		return uptr<Move<XES>>(new MoveVRPOrOpt1<T, ADS, S> (-1, -1, -1));
+		return uptr<Move<XES>>(new MoveVRPOrOpt1<XES, P> (getRoutes, -1, -1, -1));
 		///exit(1);
 	}
 
 	virtual bool operator==(const Move<XES>& _m) const
 	{
-		const MoveVRPOrOpt1<T, ADS, S>& m1 = (const MoveVRPOrOpt1<T, ADS, S>&) _m;
+		const MoveVRPOrOpt1<XES, P>& m1 = (const MoveVRPOrOpt1<XES, P>&) _m;
 		return (m1.r == r) && (m1.c == c) && (m1.pos == pos);
 	}
 
@@ -128,10 +137,16 @@ public:
 };
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPOrOpt1<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM>
-template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPOrOpt1<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+/*
+template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPOrOpt1<XES, P>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class NSIteratorVRPOrOpt1: public NSIterator<XES, XEv>
 {
 	typedef vector<vector<T> > Routes;
+*/
+template<XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM, class MOVE = MoveVRPOrOpt1<XES, P>>
+class NSIteratorVRPOrOpt1: public NSIterator<XES, typename XES::second_type>
+{
+	typedef vector<vector<int> > Routes;
 
 protected:
 
@@ -143,8 +158,10 @@ protected:
 	P* p; // has to be the last
 public:
 
-	NSIteratorVRPOrOpt1(const Routes& _r, const ADS& _ads, P* _p = nullptr) :
-		rep(_r), p(_p)
+   Routes& (*getRoutes)(const XES&); // function to get routes from type 'R'
+
+	NSIteratorVRPOrOpt1(Routes& (*getRoutes)(const XES&), const XES& se, P* _p = nullptr) :
+		getRoutes(getRoutes), rep{getRoutes(se)}, p(_p)
 	{
 		m = nullptr;
 		index = 0;
@@ -165,7 +182,7 @@ public:
 				{
 					if ((c != pos) && (c + 1 != pos))
 					{
-						moves.push_back(uptr<Move<XES>>(new MOVE(r, c, pos, p)));
+						moves.push_back(uptr<Move<XES>>(new MOVE(getRoutes, r, c, pos, p)));
 					}
 				}
 			}
@@ -212,18 +229,30 @@ public:
 };
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveVRPOrOpt1<T, ADS> , class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPOrOpt1<T, ADS, MOVE, P> >
-template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPOrOpt1<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPOrOpt1<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = std::pair<S, XEv>>
+/*
+template<class T, class ADS, XBaseSolution<vector<vector<T>>,ADS> S, class MOVE = MoveVRPOrOpt1<XES, P>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorVRPOrOpt1<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = std::pair<S, XEv>>
 class NSSeqVRPOrOpt1: public NSSeq<XES, XEv, XSH>
 {
 	typedef vector<vector<T> > Routes;
 
 private:
 	P* p; // has to be the last
+*/
+template<XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM, class MOVE = MoveVRPOrOpt1<XES, P>, class NSITERATOR = NSIteratorVRPOrOpt1<XES, P, MOVE>>
+class NSSeqVRPOrOpt1: public NSSeq<XES, typename XES::second_type, XES>
+{
+	typedef vector<vector<int> > Routes;
+
+public:
+   Routes& (*getRoutes)(const XES&); // function to get routes from type 'R'
+
+private:
+	P* p; // has to be the last (?)
 
 public:
 
-	NSSeqVRPOrOpt1(P* _p = nullptr) :
-		p(_p)
+	NSSeqVRPOrOpt1(Routes& (*_getRoutes)(const XES&), P* _p = nullptr) :
+		getRoutes(_getRoutes), p(_p)
 	{
 	}
 
@@ -237,19 +266,19 @@ public:
 		int r = rand() % rep.size();
 
 		if (rep.at(r).size() < 2)
-			return uptr<Move<XES>>(new MOVE(-1, -1, -1, p));
+			return uptr<Move<XES>>(new MOVE(getRoutes, -1, -1, -1, p));
 
 		int c = rand() % rep.at(r).size();
 
 		int pos = rand() % (rep.at(r).size() + 1);
 
-		return uptr<Move<XES>>(new MOVE(r, c, pos, p));
+		return uptr<Move<XES>>(new MOVE(getRoutes, r, c, pos, p));
 	}
 
 	virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
 	{
       XSolution& s = se.first;
-		return uptr<NSIterator<XES>>(new NSITERATOR(s.getR(), s.getADS(), p));
+		return uptr<NSIterator<XES>>(new NSITERATOR(getRoutes, se, p));
 	}
 
 	virtual string toString() const

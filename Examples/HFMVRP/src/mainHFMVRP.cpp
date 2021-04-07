@@ -80,22 +80,27 @@ main(int argc, char** argv)
    ConstructiveSavingsRandomized is{ *p, rg, *adsMan };
 
    auto solTest = *is.generateSolution(0);
-   ESolutionHFMVRP esolTest = {solTest, eval->evaluate(solTest)};
+   ESolutionHFMVRP esolTest = { solTest, eval->evaluate(solTest) };
 
    //sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_2opt = new NSSeqVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRP2Opt, ProblemInstance, DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(p);
-   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_2opt = new NSSeqVRP2Opt<ESolutionHFMVRP, ProblemInstance, DeltaMoveVRP2Opt, DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(localGetRoutes, p);
+   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_2opt =
+     new NSSeqVRP2Opt<ESolutionHFMVRP, ProblemInstance, DeltaMoveVRP2Opt, DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(localGetRoutes, p);
    uptr<Move<ESolutionHFMVRP>> movetest = nsseq_deltaIterator_delta_2opt->randomMove(esolTest);
    movetest->print();
 
    //sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_delta_2opt = new NSSeqVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRP2Opt, ProblemInstance, DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(p);
    sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_delta_2opt = nsseq_deltaIterator_delta_2opt;
-   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_or1 = new NSSeqVRPOrOpt1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPOrOpt1, ProblemInstance, DeltaNSIteratorVRPOrOpt1<DeltaMoveVRPOrOpt1>>(p);
+   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_or1 =
+     new NSSeqVRPOrOpt1<ESolutionHFMVRP, ProblemInstance, DeltaMoveVRPOrOpt1, DeltaNSIteratorVRPOrOpt1<DeltaMoveVRPOrOpt1>>(localGetRoutes, p);
    sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_delta_or1 = nsseq_deltaIterator_delta_or1;
-   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_or2 = new NSSeqVRPOrOpt2<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPOrOpt2, ProblemInstance, DeltaNSIteratorVRPOrOpt2<DeltaMoveVRPOrOpt2>>(p);
+   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_or2 =
+     new NSSeqVRPOrOpt2<ESolutionHFMVRP, ProblemInstance, DeltaMoveVRPOrOpt2, DeltaNSIteratorVRPOrOpt2<DeltaMoveVRPOrOpt2>>(localGetRoutes, p);
    sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_delta_or2 = nsseq_deltaIterator_delta_or2;
-   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_exchange = new NSSeqVRPExchange<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPExchange, ProblemInstance, DeltaNSIteratorVRPExchange<DeltaMoveVRPExchange>>(p);
+   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_exchange =
+     new NSSeqVRPExchange<ESolutionHFMVRP, ProblemInstance, DeltaMoveVRPExchange, DeltaNSIteratorVRPExchange<DeltaMoveVRPExchange>>(localGetRoutes, p);
    sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_delta_exchange = nsseq_deltaIterator_delta_exchange;
-   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_delta_shift10 = new NSSeqVRPShift10<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPShift10, ProblemInstance>(p);
+   sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_delta_shift10 =
+     new NSSeqVRPShift10<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPShift10, ProblemInstance>(p);
    sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_delta_shift10 = nsseq_delta_shift10;
    sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_delta_swap11 = new NSSeqVRPSwap1_1<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPSwap1_1, ProblemInstance>(p);
    sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_delta_swap11 = nsseq_delta_swap11;
@@ -103,7 +108,6 @@ main(int argc, char** argv)
    sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_swap11 = nsseq_deltaIterator_swap11;
    sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_shift10 = new NSSeqVRPShift10<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRPShift10, ProblemInstance, DeltaNSIteratorVRPShift10<DeltaMoveVRPShift10>>(p);
    sref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> ns_deltaIterator_shift10 = nsseq_deltaIterator_shift10;
-
 
    ILSLPerturbationLPlus2Prob<ESolutionHFMVRP>* ilsl_pert;
 
