@@ -44,17 +44,18 @@ class MoveVRPExchange: public Move<XES, typename XES::second_type>
 	typedef vector<vector<int> > Routes;
 public:
    Routes& (*getRoutes)(const XES&); // function to get routes from type 'R'
-private:
-	P* problem;
 
 protected:
+   int r; //route
 	int c1, c2; // client 1 and client 2, respectively
-	int r; //route
+
+private:
+	P* problem;
 
 
 public:
 
-	MoveVRPExchange(Routes& (*_getRoutes)(const XES&), int _r, int _c1, int _c2, OPTFRAME_DEFAULT_PROBLEM* _problem = nullptr) :
+	MoveVRPExchange(Routes& (*_getRoutes)(const XES&), int _r, int _c1, int _c2, P* _problem = nullptr) :
 		getRoutes(_getRoutes), r(_r), c1(_c1), c2(_c2), problem(_problem)
 	{
 	}
@@ -80,7 +81,7 @@ public:
 
 	virtual bool canBeApplied(const XES& se) override
 	{
-      const Routes& rep = se.first.getR();
+      const Routes& rep = getRoutes(se);//se.first.getR();
 		bool all_positive = (c1 >= 0) && (c2 >= 0) && (r >= 0);
 		return all_positive && (rep.at(r).size() >= 2);
 	}
@@ -93,7 +94,7 @@ public:
 
 	virtual uptr<Move<XES>> apply(XES& se) override
 	{
-      Routes& rep = se.first.getR();
+      Routes& rep = getRoutes(se);//se.first.getR();
 		int aux = rep.at(r).at(c1);
 		rep.at(r).at(c1) = rep.at(r).at(c2);
 		rep.at(r).at(c2) = aux;
@@ -133,12 +134,10 @@ protected:
 	uptr<Move<XES>> m;
 	int index;
 	vector<uptr<Move<XES>>> moves;
-	const Routes& rep;
-
-	P* p; // has to be the last
-public:
-
    Routes& (*getRoutes)(const XES&); // function to get routes from type 'R'
+	const Routes& rep;
+	P* p; // has to be the last
+
 
 	NSIteratorVRPExchange(Routes& (*getRoutes)(const XES&), const XES& se, P* _p = nullptr) :
 		getRoutes(getRoutes), rep{getRoutes(se)}, p(_p)
@@ -153,11 +152,11 @@ public:
 
 	virtual void first() override
 	{
-		for (int r = 0; r < rep.size(); r++)
+		for (int r = 0; r < (int)rep.size(); r++)
 		{
-			for (int c1 = 0; c1 < rep.at(r).size(); c1++)
+			for (int c1 = 0; c1 < (int)rep.at(r).size(); c1++)
 			{
-				for (int c2 = 0; c2 < rep.at(r).size(); c2++)
+				for (int c2 = 0; c2 < (int)rep.at(r).size(); c2++)
 				{
 					if (c1 != c2)
 						moves.push_back(uptr<Move<XES>>(new MOVE(getRoutes, r, c1, c2, p)));
@@ -175,7 +174,7 @@ public:
 	virtual void next() override
 	{
 		index++;
-		if (index < moves.size())
+		if (index < (int)moves.size())
 		{
 			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
@@ -238,7 +237,7 @@ public:
 
 	uptr<Move<XES>> randomMove(const XES& se) override
 	{
-      const Routes& rep = se.first.getR();
+      const Routes& rep = getRoutes(se); //se.first.getR();
 		int r = rand() % rep.size();
 		if (rep.at(r).size() < 2)
 			return uptr<Move<XES>>(new MOVE(getRoutes, -1, -1, -1, p));
@@ -258,7 +257,7 @@ public:
 
 	virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
 	{
-      XSolution& s = se.first;
+      //XSolution& s = se.first;
 		return uptr<NSIterator<XES>>(new NSITERATOR(getRoutes, se, p));
 	}
 

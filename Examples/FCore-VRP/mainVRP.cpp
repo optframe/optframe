@@ -3,6 +3,7 @@
 
 #include <OptFrame/Heuristics/EvolutionaryAlgorithms/PSO.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
+#include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
 #include <algorithm>
 #include <functional>
 #include <iostream>
@@ -15,6 +16,10 @@
 #include <OptFrame/printable/printable.h>
 
 #include <OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRP2Opt.hpp>
+#include <OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRPExchange.hpp>
+#include <OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRPOrOpt1.hpp>
+#include <OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRPOrOpt2.hpp>
+
 
 using namespace std;
 using namespace optframe;
@@ -197,15 +202,32 @@ main()
    se.second.print();
 
    //sref<NSSeq<ESolutionVRP>> nsseq_deltaIterator_delta_2opt = new NSSeqVRP2Opt<ESolutionVRP, ProblemContext, DeltaMoveVRP2Opt, DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(localGetRoutes, localGetRoutesX, &pVRP);
-   sref<NSSeq<ESolutionVRP>> nsseq_deltaIterator_delta_2opt = new NSSeqVRP2Opt<ESolutionVRP, ProblemContext>(localGetRoutes, &pVRP);
+   sref<NSSeq<ESolutionVRP>> nsseq_2opt = new NSSeqVRP2Opt<ESolutionVRP, ProblemContext>(localGetRoutes, &pVRP);
+   sref<NSSeq<ESolutionVRP>> nsseq_exchange = new NSSeqVRPExchange<ESolutionVRP, ProblemContext>(localGetRoutes, &pVRP);
+   sref<NSSeq<ESolutionVRP>> nsseq_or1 = new NSSeqVRPOrOpt1<ESolutionVRP, ProblemContext>(localGetRoutes, &pVRP);
+   sref<NSSeq<ESolutionVRP>> nsseq_or2 = new NSSeqVRPOrOpt2<ESolutionVRP, ProblemContext>(localGetRoutes, &pVRP);
    //
    //uptr<Move<ESolutionVRP>> movetest = nsseq_deltaIterator_delta_2opt->randomMove(esolTest);
 
-   BestImprovement<ESolutionVRP> bi(ev_VRP, nsseq_deltaIterator_delta_2opt);
-   bi.setVerboseR();
-   SearchStatus st = bi.searchFrom(se, { 10 });
+   sref<LocalSearch<ESolutionVRP>> bi_2opt = new BestImprovement<ESolutionVRP>(ev_VRP, nsseq_2opt);
+   bi_2opt->setVerboseR();
+   SearchStatus st = bi_2opt->searchFrom(se, { 10 });
    std::cout << "status = " << (int)st << std::endl;
+   std::cout << se.first << std::endl;
+   se.second.print();
 
+   vsref<LocalSearch<ESolutionVRP>> ls_vnd;
+   ls_vnd.push_back(bi_2opt);
+   ls_vnd.push_back(new BestImprovement<ESolutionVRP>(ev_VRP, nsseq_exchange));
+   ls_vnd.push_back(new BestImprovement<ESolutionVRP>(ev_VRP, nsseq_or1));
+   ls_vnd.push_back(new BestImprovement<ESolutionVRP>(ev_VRP, nsseq_or2));
+
+   sref<LocalSearch<ESolutionVRP>> vnd = 
+   new VariableNeighborhoodDescent<ESolutionVRP>(ev_VRP, ls_vnd, myRandGen.sptr());
+   
+   vnd->setVerboseR();
+   SearchStatus st2 = vnd->searchFrom(se, { 10 });
+   std::cout << "status = " << (int)st2 << std::endl;
    std::cout << se.first << std::endl;
    se.second.print();
 
