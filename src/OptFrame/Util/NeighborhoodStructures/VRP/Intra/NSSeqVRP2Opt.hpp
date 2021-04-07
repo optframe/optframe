@@ -42,9 +42,8 @@ public:
    Routes& (*getRoutes)(const XES&); // function to get routes from type 'R'
 
 protected:
+   int r; //route id
 	int p1, p2; // position 1 and position 2, respectively
-	int r; //route id
-
 	P* problem;
 
 public:
@@ -175,12 +174,12 @@ public:
 
 	virtual void first() override
 	{
-		for (int r = 0; r < rep.size(); r++)
+		for (int r = 0; r < (int)rep.size(); r++)
 		{
 			int tam = rep.at(r).size() - 2;
 			for (int p1 = 0; p1 < tam; p1++)
 			{
-				for (int p2 = p1 + 2; p2 < rep.at(r).size(); p2++)
+				for (int p2 = p1 + 2; p2 < (int)rep.at(r).size(); p2++)
 				{
 					moves.push_back(uptr<Move<XES>>(new MOVE(getRoutes, r, p1, p2, p)));
 				}
@@ -197,7 +196,7 @@ public:
 	virtual void next() override
 	{
 		index++;
-		if (index < moves.size())
+		if (index < (int)moves.size())
 		{
 			m = std::move(moves[index]); // stealing from vector... verify if this is correct! otherwise, must need clone() on Move
 		}
@@ -276,7 +275,8 @@ public:
 	//virtual uptr<NSITERATOR> getIterator(const S& s) override
    virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
 	{
-      XSolution& s = se.first;
+      //XSolution& s = se.first;
+      //
 		//return uptr<NSIterator<XES>>(new NSITERATOR(s.getR(), s.getADS(), p));
       return uptr<NSIterator<XES>>(new NSITERATOR(getRoutes, se, p));
 	}

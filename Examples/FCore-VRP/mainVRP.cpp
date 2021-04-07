@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include <OptFrame/Heuristics/EvolutionaryAlgorithms/PSO.hpp>
+#include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
 #include <algorithm>
 #include <functional>
 #include <iostream>
@@ -22,7 +23,6 @@ using namespace optframe;
 // this also works when defining in global scope (same as 'class')
 namespace example_VRP_RepADS {
 
-
 // VRP problem context and data reads
 class ProblemContext
 {
@@ -36,8 +36,8 @@ public:
    // load data from Scanner
    void load(Scanner& scanner)
    {
-      n = *scanner.nextInt();      // reads number of clients
-      N = n+1;
+      n = *scanner.nextInt(); // reads number of clients
+      N = n + 1;
       dist = Matrix<double>(N, N); // initializes N x N matrix
       //
       vector<double> xvalues(N);
@@ -85,31 +85,31 @@ struct VRP_RepADS
 };
 
 using ESolutionVRP = std::pair<
-  VRP_RepADS, // first part of search space element: solution (representation + ADS)
-  Evaluation<double>   // second part of search space element: evaluation (objective value)
+  VRP_RepADS,        // first part of search space element: solution (representation + ADS)
+  Evaluation<double> // second part of search space element: evaluation (objective value)
   >;
 
 // full evaluation: count distances (cannot update ADS, since its const)
 Evaluation<double>
 fevaluateVRP(const VRP_RepADS& s)
 {
-   double f = 0; // sumDistances
+   double f = 0;                        // sumDistances
    constexpr double W_ExtraCap = 99999; // high weight for extra cap
    double f_extra = 0;
-   for(unsigned r=0; r<s.sol.size(); r++) {
+   for (unsigned r = 0; r < s.sol.size(); r++) {
       int sumDemands = 0; // sum demands in route
-      for(int i=0; i< ((int)s.sol[r].size())-1; i++) {
-         f += pVRP.dist(s.sol[r][i], s.sol[r][i+1]);
+      for (int i = 0; i < ((int)s.sol[r].size()) - 1; i++) {
+         f += pVRP.dist(s.sol[r][i], s.sol[r][i + 1]);
          sumDemands += pVRP.d[s.sol[r][i]];
       }
-      f += pVRP.dist(s.sol[r][s.sol[r].size()-1], 0); // return to depot
-      sumDemands += pVRP.d[s.sol[r][s.sol[r].size()-1]];
-      if(sumDemands > pVRP.Q) {
-         f_extra += (sumDemands-pVRP.Q);
+      f += pVRP.dist(s.sol[r][s.sol[r].size() - 1], 0); // return to depot
+      sumDemands += pVRP.d[s.sol[r][s.sol[r].size() - 1]];
+      if (sumDemands > pVRP.Q) {
+         f_extra += (sumDemands - pVRP.Q);
       }
    }
 
-   return Evaluation<double>{ f + W_ExtraCap*f_extra };
+   return Evaluation<double>{ f + W_ExtraCap * f_extra };
 }
 
 // Evaluate
@@ -123,11 +123,11 @@ frandom()
 {
    std::cout << "frandom(n=" << pVRP.n << ")" << std::endl;
    VRP_RepADS rep;
-   
+
    // shuffle all clients (client 0 is 'depot')
    vector<int> v(pVRP.n, -1); // get information from context
    for (unsigned i = 0; i < v.size(); i++)
-      v[i] = i+1; // excludes depot 0
+      v[i] = i + 1; // excludes depot 0
    // shuffle (TODO: use randgen)
    std::random_shuffle(v.begin(), v.end());
    //
@@ -135,14 +135,14 @@ frandom()
    // clients are added one by one, unless capacity is exceeded, and a new route is formed
    int sumDemands = 9999999; // accumulate demands on current route (starts VERY BIG)
    //
-   for(unsigned i=0; i<v.size(); i++) {
-      if(sumDemands + pVRP.d[v[i]] > pVRP.Q) {
+   for (unsigned i = 0; i < v.size(); i++) {
+      if (sumDemands + pVRP.d[v[i]] > pVRP.Q) {
          // start new route
          rep.sol.push_back(vector<int>(1, 0)); // "empty route" (depot 0 is always present)
          sumDemands = 0;
       }
       // add client at position v[i]
-      rep.sol[rep.sol.size()-1].push_back(v[i]);
+      rep.sol[rep.sol.size() - 1].push_back(v[i]);
       // add demands
       sumDemands += pVRP.d[v[i]];
    }
@@ -166,11 +166,12 @@ using namespace example_VRP_RepADS;
 
 sref<RandGen> myRandGen = RandGen{}; // good random generator
 
-
-vector<vector<int>>& localGetRoutes(const ESolutionVRP& s) {
-      vector<vector<int>>& v = const_cast<vector<vector<int>>&> (s.first.sol);
-      return v;
-   };
+vector<vector<int>>&
+localGetRoutes(const ESolutionVRP& s)
+{
+   vector<vector<int>>& v = const_cast<vector<vector<int>>&>(s.first.sol);
+   return v;
+};
 
 int
 main()
@@ -182,24 +183,31 @@ main()
    myRandGen->setSeed(seed);
 
    // load instance
-   std::cout << "loading 'instance.txt'" << std::endl;
-   Scanner scanner {File("instance.txt")};
+   std::cout << "loading 'instance10.txt'" << std::endl;
+   Scanner scanner{ File("instance10.txt") };
    pVRP.load(scanner);
 
    // build initial solution (test)
    VRP_RepADS rep = *crand.generateSolution(0);
    std::cout << rep << std::endl;
 
-   // evaluate (test)
-   auto e = ev_VRP.evaluate(rep);
-   e.print();
-
+   // evaluate
+   ESolutionVRP se(rep, ev_VRP.evaluate(rep));
+   std::cout << se.first << std::endl;
+   se.second.print();
 
    //sref<NSSeq<ESolutionVRP>> nsseq_deltaIterator_delta_2opt = new NSSeqVRP2Opt<ESolutionVRP, ProblemContext, DeltaMoveVRP2Opt, DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(localGetRoutes, localGetRoutesX, &pVRP);
    sref<NSSeq<ESolutionVRP>> nsseq_deltaIterator_delta_2opt = new NSSeqVRP2Opt<ESolutionVRP, ProblemContext>(localGetRoutes, &pVRP);
    //
    //uptr<Move<ESolutionVRP>> movetest = nsseq_deltaIterator_delta_2opt->randomMove(esolTest);
-   
+
+   BestImprovement<ESolutionVRP> bi(ev_VRP, nsseq_deltaIterator_delta_2opt);
+   bi.setVerboseR();
+   SearchStatus st = bi.searchFrom(se, { 10 });
+   std::cout << "status = " << (int)st << std::endl;
+
+   std::cout << se.first << std::endl;
+   se.second.print();
 
    /*
    int nParam = 1; // param size

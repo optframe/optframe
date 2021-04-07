@@ -54,7 +54,7 @@ public:
 			cout << "Error: hfmvrp problem is NULL!" << endl;
 			exit(1);
 		}
-
+   
 	}
 
 	virtual ~DeltaNSIteratorVRP2Opt()
