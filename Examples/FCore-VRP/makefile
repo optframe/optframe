@@ -1,9 +1,42 @@
-all: mainTSP-brkga
+# all: mainTSP-brkga
 
-mainTSP-brkga:
-	mkdir -p build
-	g++ -I../../src -I../../libs/ ../../src/OptFrame/printable/printable.cpp --std=c++17 -fconcepts mainVRP.cpp -o ./build/mainTSP-brkga #2> error-gcc.err 
+# mainTSP-brkga:
+# 	mkdir -p build
+# 	g++ -I../../src -I../../libs/ ../../src/OptFrame/printable/printable.cpp --std=c++17 -fconcepts mainVRP.cpp -o ./build/mainTSP-brkga #2> error-gcc.err 
 
-run:
-	@echo "Running FCore (c++17)"
-	./build/mainTSP-brkga 
+# run:
+# 	@echo "Running FCore (c++17)"
+# 	./build/mainTSP-brkga 
+
+
+all: build/app_Example
+
+CC=g++
+# removed -Wall, for now
+CXXFLAGS= -I../../src -I../../libs/ -Wfatal-errors  -fno-exceptions -O3 --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
+LDFLAGS := $(CXXFLAGS)
+
+SRC_DIR := ./
+OBJ_DIR := ./build
+SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp)   # list source files
+OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))  # replace src/ by build/ on objs
+
+# pack all objs ($^) into a single APPNAME
+build/app_Example: $(OBJ_FILES)
+	$(CC) $(LDFLAGS) ../../src/OptFrame/printable/printable.cpp $(OBJ_FILES) -o $@ $^
+
+# compile each .cpp individually ($<)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CC) $(CXXFLAGS) -c -o $@ $<
+
+.PHONY: all clean
+
+clean: 
+	rm -f build/app_*
+	rm -f build/*.o
+	
+test:
+	cd tests && make
+
+test-coverage:
+	cd tests && make test-coverage
