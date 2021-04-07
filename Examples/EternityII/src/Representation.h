@@ -22,7 +22,7 @@
 #define EtII_REPRESENTATION_H_
 
 #include <vector>
-#include <OptFrame/Util/printable.h>
+#include <OptFrame/printable/printable.h>
 
 #include <OptFrame/Util/Matrix.hpp>
 

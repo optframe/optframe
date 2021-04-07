@@ -23,6 +23,8 @@
 
 #include <OptFrame/Evaluation.hpp>
 
+using namespace optframe;
+
 typedef Evaluation<> EvaluationEtII;
 
 #endif /*EtII_EVALUATION_H_*/

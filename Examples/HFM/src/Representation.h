@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <assert.h>
-#include <OptFrame/Util/printable.h>
+#include <OptFrame/printable/printable.h>
 #include <OptFrame/Util/Matrix.hpp>
 
 const int GREATER = 0; // A

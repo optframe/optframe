@@ -54,7 +54,7 @@ public:
 			cout << "Error: hfmvrp problem is NULL!" << endl;
 			exit(1);
 		}
-   
+
 	}
 
 	virtual ~DeltaNSIteratorVRP2Opt()
@@ -72,7 +72,7 @@ public:
 				{
 					for (int p2 = p1 + 2; p2 < rep.at(r).size(); p2++)
 					{
-                  uptr<Move<ESolutionHFMVRP>> m1(new MOVE(r, p1, p2, p));
+                  uptr<Move<ESolutionHFMVRP>> m1(new MOVE(super::getRoutes, r, p1, p2, p));
 						moves.push_back(std::move(m1));
 					}
 				}

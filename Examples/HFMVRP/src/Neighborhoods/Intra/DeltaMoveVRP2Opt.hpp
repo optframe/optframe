@@ -30,12 +30,6 @@ using namespace std;
 namespace HFMVRP
 {
 
-
-vector<vector<int>>& localGetRoutes(const ESolutionHFMVRP& s) {
-      vector<vector<int>>& v = const_cast<vector<vector<int>>&>(s.first.getR());
-      return v;
-   };
-
 //class DeltaMoveVRP2Opt: public MoveVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP>
 //
 //class DeltaMoveVRP2Opt: public MoveVRP2Opt<vector<vector<int>>, AdsHFMVRP, SolutionHFMVRP>
@@ -60,6 +54,7 @@ public:
 		}
 	}
 
+/*
 	DeltaMoveVRP2Opt(int _r, int _p1, int _p2, ProblemInstance* _hfmvrp) :
 		super(localGetRoutes, _r, _p1, _p2), hfmvrp(_hfmvrp)
 	{
@@ -70,6 +65,7 @@ public:
 			exit(1);
 		}
 	}
+*/
 
 	virtual ~DeltaMoveVRP2Opt()
 	{
@@ -207,7 +203,7 @@ public:
 		//Update minDemand,maxDemand, minPairDemand, maxPairDemand, cumulative and sum
 		updateModifiedRoutes(rep, ads);
 
-		return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRP2Opt(r, p1, p2, hfmvrp));
+		return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRP2Opt(super::getRoutes, r, p1, p2, hfmvrp));
 	}
 
 	op<EvaluationHFMVRP> cost(const pair<SolutionHFMVRP, Evaluation<>>& se, bool allowEstimated) override
