@@ -109,7 +109,7 @@ public:
    // callback to handle main loop and stop criteria
    bool (*onLoopCtx)(const SearchContext& ctx, const StopCriteria<XEv>& sosc) =
      [](auto& ctx, auto& sosc) {
-        return (ctx.T >= 0.000001) && !sosc.shouldStop(std::make_optional(ctx.best->second));
+        return (ctx.T >= 0.000001) && !sosc.shouldStop(ctx.best->second);
      };
 
    // search (TODO: consider _best and _incumbent parameters)
@@ -247,8 +247,8 @@ public:
    // reimplementing searchBy, just to make it more explicit (visible)
    // maybe add some specific logs?
    virtual SearchOutput<XES, XSH> searchBy(
-     std::optional<XES>& _best,
-     std::optional<XES>& _inc,
+     XES& _best,
+     XES& _inc,
      const StopCriteria<XEv>& stopCriteria) override
    {
       assert(false); // TODO: implement... and check if 'best' and 'incumbent' are both useful and necessary!

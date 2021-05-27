@@ -226,7 +226,7 @@ public:
       //op<XES>& star = this->best;
       op<XES> star;
       // check if time/target conditions are met
-      if (stopCriteria.shouldStop(std::nullopt))
+      if (stopCriteria.shouldStop())
          return SearchStatus::NO_REPORT;
 
       // count generations
@@ -271,7 +271,7 @@ public:
       // other stopping criteria? TIME, GAP, ...
       while (ctx.count_gen < int(numGenerations)) {
          // check if time/target conditions are met
-         if (stopCriteria.shouldStop(std::nullopt))
+         if (stopCriteria.shouldStop())
             return SearchStatus::NO_REPORT;
 
          if (Component::debug)

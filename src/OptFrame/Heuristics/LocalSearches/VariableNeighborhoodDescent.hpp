@@ -78,7 +78,7 @@ public:
       XES current(se); // full backup! TODO: remove this copy
 		//Evaluation<> eCurrent(e);
       //'target_f' will crash if not provided... removing
-		while ((k <= r) && (tNow.now() < stopCriteria.timelimit))// && (ev.betterThan(stopCriteria.target_f, e))
+		while ((k <= r) && !stopCriteria.shouldStop())// && (ev.betterThan(stopCriteria.target_f, e))
 		{
 			//eCurrent = e; // backup
          current = se; // TODO: remove this copy
@@ -90,6 +90,7 @@ public:
 			//if (ev.betterThan(e, eCurrent))
          //if (ev.betterThan(se, current))
          //if (se.second.betterStrict(current.second))
+         std::cout << "VND will compare(" << se.second.outdated << ";" << current.second.outdated << ")" << std::endl;
          if (ev->betterStrict(se.second, current.second))
 			{
             // improvement

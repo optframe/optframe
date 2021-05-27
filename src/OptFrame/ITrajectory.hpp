@@ -42,8 +42,8 @@ public:
 
    // virtual method with search signature for trajectory methods
    virtual SearchOutput<XES, XSH> searchBy(
-     std::optional<XSH>& _best,
-     std::optional<XSH>& _inc,
+     XSH& _best,
+     XSH& _inc,
      const StopCriteria<XEv>& stopCriteria) = 0;
 };
 

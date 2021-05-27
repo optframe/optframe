@@ -35,16 +35,16 @@ namespace optframe
 {
 
 template<class H, XESolution XES, XEvaluation XEv = Evaluation<>>
-class IteratedLocalSearch: public ILS, public SingleObjSearch<XES>
+class IteratedLocalSearch: public ILS, public SingleObjSearch<XES>, public ITrajectory<XES>
 {
 protected:
-	GeneralEvaluator<XES, XEv>& evaluator;
+	sref<GeneralEvaluator<XES, XEv>> evaluator;
 	//Constructive<S>& constructive;
-   InitialSearch<XES, XEv>& constructive;
+   sref<InitialSearch<XES, XEv>> constructive;
 
 public:
 
-	IteratedLocalSearch(GeneralEvaluator<XES, XEv>& _evaluator, InitialSearch<XES, XEv>& _constructive) :
+	IteratedLocalSearch(sref<GeneralEvaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive) :
 			evaluator(_evaluator), constructive(_constructive)
 	{
 	}
@@ -53,142 +53,96 @@ public:
 	{
 	}
 
-	virtual H& initializeHistory() = 0;
+	virtual sref<H> initializeHistory() = 0;
 
 	virtual void localSearch(XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
 
-	virtual void perturbation(XES& se, const StopCriteria<XEv>& stopCriteria, H& history) = 0;
+	virtual void perturbation(XES& se, const StopCriteria<XEv>& stopCriteria, sref<H> history) = 0;
 
-	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, H& history) = 0;
+	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, sref<H> history) = 0;
 
-	virtual bool terminationCondition(H& history) = 0;
+	virtual bool terminationCondition(sref<H> history) = 0;
 
-   /*
-   std::optional<pair<S, XEv>> genOPair(double timelimit)
-   {
-      std::optional<S> sStar = constructive.generateSolution(timelimit);
-      if(!sStar)
-         return std::nullopt;
-		XEv eStar = evaluator.evaluate(*sStar);
-      return make_optional(make_pair(*sStar, eStar)); 
-   }
-   */
-
-	//pair<S, Evaluation<>>* search(StopCriteria<XEv>& stopCriteria, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-   //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
-   //
-   //SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
+   // default search method (no initial solution passed)
    SearchOutput<XES> search(const StopCriteria<XEv>& stopCriteria) override
 	{
-      //op<XES>& star = this->best;
+      if(Component::information)
+         std::cout << "ILS opt search(" << stopCriteria.timelimit << ")" << std::endl;
+      //
       op<XES> star; // TODO: receive on 'searchBy'
 
-		//cout << "ILS opt search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
-      cout << "ILS opt search(" << stopCriteria.timelimit << ")" << endl;
+      if(Component::debug)
+         std::cout << "ILS::build initial solution" << std::endl;
 
-		Timer tnow;
-
-      //pair<S, XEv> star = input?*input:genPair(stopCriteria.timelimit);
-      //pair<S, XEv> star = *( input ?: genOPair(stopCriteria.timelimit) );
-      //star = star?:genOPair(stopCriteria.timelimit);
-      star = star?:constructive.initialSearch(stopCriteria).first;
+      star = star?:constructive->initialSearch(stopCriteria).first;
       if(!star)
          return SearchStatus::NO_SOLUTION;
-		//S& sStar = star.first;
+
 		Evaluation<>& eStar = star->second;
-
-      /*
-		//If solution is given it should contain an evaluation: TODO - Implement search with Solution
-		if (input)
-		{
-			//(*sStar) = (*_s); // shouldn't this break memory?
-			//(*eStar) = (*_e); // shouldn't this break memory?
-         sStar = new S(input->first);
-         eStar = new XEv(input->second);
-		}
-		else
-		{
-			sStar = new S(std::move(*constructive.generateSolution(stopCriteria.timelimit)));
-			eStar = new Evaluation(evaluator.evaluate(*sStar));
-		}
-      */
-
 		if (Component::information)
 		{
-			cout << "ILS::starting with FO:" << endl;
+			std::cout << "ILS::starting with evaluation:" << std::endl;
 			eStar.print();
 		}
 
-		H* history = &initializeHistory();
+      return searchBy(*star, *star, stopCriteria);
+   }
+
+   // for ILS: incumbent is always derived from star, ignoring 'incumbent'
+   virtual SearchOutput<XES> searchBy(
+     XES& star,
+     XES&,
+     const StopCriteria<XEv>& stopCriteria)
+   {
+      if(Component::information)
+         std::cout << "ILS opt searchBy(" << stopCriteria.timelimit << ")" << std::endl;
+
+		Evaluation<>& eStar = star.second;
+		if (Component::information)
+		{
+			std::cout << "ILS::starting with evaluation:" << std::endl;
+			eStar.print();
+		}
+
+		sref<H> history = initializeHistory();
 
 		// 's0' <- GenerateSolution
 		// 's*' <- localSearch 's'
 
 		if (Component::information)
-			cout << "ILS::performing first local search" << endl;
-		StopCriteria<XEv> stopCriteriaLS = stopCriteria;
-		stopCriteriaLS.updateTimeLimit(tnow.now());
-		localSearch(*star, stopCriteriaLS);
-		if (Component::information)
-			cout << "ILS::finished first local search" << endl;
+			std::cout << "ILS::performing first local search" << std::endl;
+      localSearch(star, stopCriteria);
 
-		cout << "ILS optimized starts: ";
-		eStar.print();
+		if (Component::information)
+			std::cout << "ILS::finished first local search" << std::endl;
+
+      if (Component::information) {
+         std::cout << "ILS optimized starts: ";
+         eStar.print();
+      }
 
 		do
 		{
-         XES p1 = *star; // copy (how to automatically invoke clone?)
-			//S s1(sStar); // copy (should clone?)
-			//Evaluation<> e1(eStar); // copy (should clone?)
-         
-			StopCriteria<XEv> stopCriteriaPert = stopCriteria;
-			stopCriteriaPert.updateTimeLimit(tnow.now());
-			perturbation(p1, stopCriteriaPert, *history);
-
-			StopCriteria<XEv> stopCriteriaLS2 = stopCriteria;
-			stopCriteriaLS2.updateTimeLimit(tnow.now());
-			localSearch(p1, stopCriteriaLS2);
-
-         // Should update evaluation eStar? Why?
-			//(*eStar) = evaluator.evaluate(*sStar);
-
-			//bool improvement = acceptanceCriterion(e1, *eStar, *history);
-         bool improvement = acceptanceCriterion(p1.second, star->second, *history);
-
+         XES p1 = star; // derive new incumbent solution (copy-based solution, for generality)
+			perturbation(p1, stopCriteria, *history);
+			localSearch(p1, stopCriteria);
+         bool improvement = acceptanceCriterion(p1.second, star.second, history);
 			if (improvement)
-			{
-				//(*eStar) = e1;
-				//(*sStar) = s1;
-            star = p1; // copy, or should somehow use clone?
-            // TODO: should probably move here to enhance performance (try to benchmark before!!)
-			}
+            star = p1; // copy-based
+         std::cout << "SHOULD STOP?" << std::endl;
+		}
+      while (!terminationCondition(history) && !stopCriteria.shouldStop(star.second)); 
 
-		} while (!terminationCondition(*history) && ((tnow.now()) < stopCriteria.timelimit)); //&& evaluator.betterThan(stopCriteria.target_f, eStar));
-      // TODO: use stop.shouldStop, to consider 'target_f'
-
-		//if (evaluator.betterThan(eStar, stopCriteria.target_f)) // BROKEN for now!
-      
-      //if (stopCriteria.target_f && evaluator.betterThan(eStar, *stopCriteria.target_f))
-      //if (eStar.betterStrict(stopCriteria.target_f))
-      if (evaluator.betterStrict(eStar, stopCriteria.target_f))
-      {
-			cout << "ILS exit by target_f: " << eStar.evaluation() << " better than " << stopCriteria.target_f.evaluation() << endl;
-         //cout << "isMin: " << evaluator.isMinimization() << endl;
-         cout << "isMin: " << eStar.isMini << endl;
+      if(!stopCriteria.target_f.outdated) {
+         if(Component::debug)
+            std::cout << "ILS will compare(" << eStar.outdated << ";" << stopCriteria.target_f.outdated << ")" << std::endl;
+         if (evaluator->betterStrict(eStar, stopCriteria.target_f))
+         {
+            cout << "ILS exit by target_f: " << eStar.evaluation() << " better than " << stopCriteria.target_f.evaluation() << endl;
+            cout << "isMin: " << eStar.isMini << endl;
+         }
       }
       
-
-		//pair<S, Evaluation<>>* pairToReturn = new pair<S, Evaluation<>>(make_pair(std::move(*sStar), std::move(*eStar)));
-      
-		//delete eStar;
-		//delete sStar;
-
-		delete history; // why do we need this?
-
-		//return std::optional<pair<S,XEv>>(*pairToReturn); // TODO: prevent loss
-      //return std::optional<pair<S,XEv>>(star);
-      //
-      //this->best = star;
       return {SearchStatus::NO_REPORT, star};
 	}
 

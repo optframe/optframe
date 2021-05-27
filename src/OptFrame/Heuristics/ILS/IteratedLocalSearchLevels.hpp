@@ -54,7 +54,7 @@ public:
 	{
 	}
 
-	virtual levelHistory& initializeHistory()
+	virtual sref<levelHistory> initializeHistory()
 	{
 		//cout << "initializeHistory()" << endl;
 		pair<int, int> vars(0, 0);
@@ -62,7 +62,7 @@ public:
 		// IterMax e LevelMax
 		pair<int, int> maxs(iterMax, levelMax);
 
-		return *new levelHistory(vars, maxs);
+		return sref<levelHistory>(new levelHistory(vars, maxs));
 	}
 
 	virtual void localSearch(XES& se, const StopCriteria<XEv>& stopCriteria) override
@@ -71,13 +71,13 @@ public:
 		ls->searchFrom(se, stopCriteria);
 	}
 
-	virtual void perturbation(XES& se, const StopCriteria<XEv>& stopCriteria, levelHistory& history) override
+	virtual void perturbation(XES& se, const StopCriteria<XEv>& stopCriteria, sref<levelHistory> history) override
 	{
 		//cout << "perturbation(.)" << endl;
 
-		int iter = history.first.first;
-		int level = history.first.second;
-		int iterMax = history.second.first;
+		int iter = history->first.first;
+		int level = history->first.second;
+		int iterMax = history->second.first;
 		//int levelMax = history.second.second;
 
 		//cout << "level = " << level << " e iter = " << iter << endl;
@@ -100,21 +100,23 @@ public:
 		}
 
 		// Atualiza o historico
-		history.first.first = iter;
-		history.first.second = level;
+		history->first.first = iter;
+		history->first.second = level;
 	}
 
-	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, levelHistory& history)
+	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, sref<levelHistory> history)
 	{
 		//cout << "acceptanceCriterion(.)" << endl;
 
 		//if (IteratedLocalSearch<levelHistory, XES, XEv>::evaluator.betterThan(e1, e2))
       //if (e1.betterStrict(e2))
-      if (IteratedLocalSearch<levelHistory, XES, XEv>::evaluator.betterStrict(e1, e2))
+       std::cout << "ILSL will compare(" << e1.outdated << ";" << e2.outdated << ")" << std::endl;
+         
+      if (IteratedLocalSearch<levelHistory, XES, XEv>::evaluator->betterStrict(e1, e2))
 		{
 			if(Component::information)
 			{
-				cout << "ILSL::Best fo: on [iter " << history.first.first << " of level " << history.first.second << "] => ";
+				cout << "ILSL::Best fo: on [iter " << history->first.first << " of level " << history->first.second << "] => ";
 				e1.print();
 			}
 
@@ -122,9 +124,9 @@ public:
 			//  Atualiza o historico
 			// =======================
 			// iter = 0
-			history.first.first = 0;
+			history->first.first = 0;
 			// level = 0
-			history.first.second = 0;
+			history->first.second = 0;
 
 			// =======================
 			//    Retorna s2
@@ -135,11 +137,11 @@ public:
 			return false;
 	}
 
-	virtual bool terminationCondition(levelHistory& history)
+	virtual bool terminationCondition(sref<levelHistory> history)
 	{
 		//cout << "terminationCondition(.)" << endl;
-		int level = history.first.second;
-		int levelMax = history.second.second;
+		int level = history->first.second;
+		int levelMax = history->second.second;
 
 		return (level >= levelMax);
 	}
