@@ -1,4 +1,4 @@
-   // OptFrame - Optimization Framework
+// OptFrame - Optimization Framework
 
 // Copyright (C) 2009-2015
 // http://optframe.sourceforge.net/
@@ -26,9 +26,10 @@
 #include <time.h>
 #include <unistd.h>
 #include <vector>
+#include <array>
 //#include <tgmath.h>
 
-#include "Action.hpp"
+//#include "Action.hpp"
 #include "Component.hpp"
 #include "ComponentBuilder.h"
 
@@ -111,7 +112,11 @@ public:
    // initialize random number generation
    virtual void initialize()
    {
-      _gen = std::mt19937(this->seed);
+      unsigned _seed = this->seed;
+      std::array<decltype(_seed), _gen.state_size> seed_data;
+      std::generate(seed_data.begin(), seed_data.end(), [&_seed](){ return _seed++; });
+      std::seed_seq seed_sequence(seed_data.begin(), seed_data.end());
+      _gen.seed(seed_sequence);
    }
 
 public:
