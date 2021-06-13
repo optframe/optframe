@@ -119,6 +119,14 @@ public:
       _gen.seed(seed_sequence);
    }
 
+/*
+@Anderson
+https://stats.stackexchange.com/questions/436733/is-there-such-a-thing-as-a-good-bad-seed-in-pseudo-random-number-generation
+Check Mars answer in StackExchange. He made a short summary of why we should adequately initialize the Mersenne Twister algorithm while linking several studies on the matter.
+He explains: "[...] one of the issues with Mersenne Twisters is that if its internal 624x32-bit state has many zero bits, it takes many iterations to get out of that pattern."
+When you look into the implementation of std::, one can see that the constructor generates at least one random number for each seed given. The static variable (engine size) from std::mt19937 gives the degree of recurrence, in this case, 624. By providing that many seeds to the engine, the quality of the following iterations is significantly higher and, in most cases, independent of the seed size.
+*/
+
 public:
    // random integer
    virtual int rand()

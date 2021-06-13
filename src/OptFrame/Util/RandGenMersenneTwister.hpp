@@ -84,6 +84,7 @@ public:
    RandGenMersenneTwister(unsigned seed)
      : RandGen(seed)
    {
+      this->seed = seed; // override inheritance
       initialize();
    }
 
@@ -99,6 +100,12 @@ public:
       for (i = 1; i < ((int)GEN_STATE_LENGTH); i++) {
          MT[i] = ((CONSTANT_1 * (MT[i - 1] ^ (MT[i - 1] >> 30))) + i) & MASK_1;
       }
+   }
+
+   // randomized number between non-negatives [i, j]
+   virtual unsigned rand(unsigned i, unsigned j) override
+   {
+      return this->rand(j-i+1)+i;
    }
 
    // generate random number
