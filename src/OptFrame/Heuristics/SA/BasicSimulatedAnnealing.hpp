@@ -112,6 +112,58 @@ public:
         return (ctx.T >= 0.000001) && !sosc.shouldStop(ctx.best->second);
      };
 
+   // technique found in lecture notes of prof. Marcone Jamilson Freitas Souza
+   static double estimateInitialTemperature(
+      sref<GeneralEvaluator<XES, XEv>> evaluator, 
+      sref<InitialSearch<XES, XEv>> constructive, 
+      vsref<NS<XES, XEv, XSH>> neighbors,
+      double beta, double gama, int SAmax, double T0, sref<RandGen> rg)
+   {
+      // http://www.decom.ufop.br/prof/marcone/Disciplinas/InteligenciaComputacional/InteligenciaComputacional.pdf
+      double T = T0;  // {Temp eraturacorrente}
+      bool continua = true;
+      std::optional<XES> ose = constructive->initialSearch({99999.9}).first ; // inf time
+      XES& se1 = *ose;
+      //
+      while(continua) {
+         int aceitos = 0; // { número de vizinhos aceitos na temperatura T }
+         //std::cout << "continua. T=" << T << std::endl;
+         //
+         std::optional<XES> ose2 = constructive->initialSearch({99999.9}).first ; // inf time
+         XES& se2 = *ose2;
+         for(int IterT = 0; IterT < SAmax; IterT++)
+         {
+            //XES se = se1;
+            XES se = se2;
+
+            int n = rg->rand(neighbors.size());
+            uptr<Move<XES, XEv, XSH>> move = neighbors[n]->validRandomMove(se); // TODO: pass 'se.first' here (even 'se' should also work...)
+            XES se_line(se);
+            //
+            move->applyUpdate(se_line);
+            evaluator->reevaluate(se_line);
+            //
+            if (evaluator->betterStrict(se_line.second, se.second))
+               aceitos++;
+            else {
+               double x = rg->rand01();
+               double delta = ::fabs(se_line.second.evaluation() - se.second.evaluation());
+               if (x < ::exp(-delta / T))
+                 aceitos++;
+            }
+         } // fim para
+         //std::cout << aceitos << " >= " << gama*SAmax << " ~ " << (aceitos/(double)SAmax) << "?" << std::endl;
+         //
+         if(aceitos >= gama*SAmax) 
+            continua = false;
+         else {
+            T = beta * T;
+         }
+      } // fim enquanto
+      //
+      return T; // { retorna temperatura }
+   }
+
    // search (TODO: consider _best and _incumbent parameters)
    SearchOutput<XES, XSH> search(const StopCriteria<XEv>& sosc) override
    {

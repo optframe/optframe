@@ -9,7 +9,7 @@
                 "${workspaceFolder}/tests/**"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/g++-10",
+            "compilerPath": "/usr/bin/g++",
             "cStandard": "c11",
             "cppStandard": "c++20",
             "intelliSenseMode": "gcc-x64",
