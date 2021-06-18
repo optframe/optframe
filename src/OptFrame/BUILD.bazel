@@ -15,21 +15,5 @@ cc_library(
     ]),
     include_prefix = "OptFrame/",
     #hdrs = ["FCore.hpp", "FConstructive.hpp"]
-    deps = ["//libs/gsl:gsl_lib"]
+    #deps = ["//libs/gsl:gsl_lib"]
 )
-
-#filegroup(
-#    name = "srcs",
-#    srcs = glob(["**"]),
-#)
-
-####
-# https://stackoverflow.com/questions/56781141/bazel-including-all-headers-from-a-directory-when-importing-a-static-library
-
-#cc_library(name = "kahan-float-public",
-#includes = ["."],
-#hdrs = glob(["**/*.hpp"]),
-#deps = ["//src/kahan-float"],
-#visibility = ["//visibility:public"],
-#           copts = ["-Isrc"],
-#)
