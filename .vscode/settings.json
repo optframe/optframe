@@ -5,6 +5,12 @@
     },
     "C_Cpp.intelliSenseEngine": "Tag Parser",
     "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle : Mozilla , ColumnLimit : 0, IndentWidth: 3, AccessModifierOffset: -3}",
+    "editor.formatOnSave": true,
+    "clang-tidy.compilerArgsBefore": [
+        "-Ilibs/",
+        "-Isrc/",
+        "-std=c++20",
+    ],
     "testMate.cpp.test.executables": "{tests,build,Build,BUILD,out,Out,OUT}/**/*{test,Test,TEST}*",
     "files.associations": {
         "type_traits": "cpp",
@@ -73,7 +79,8 @@
         "compare": "cpp",
         "concepts": "cpp",
         "ranges": "cpp",
-        "bit": "cpp"
+        "bit": "cpp",
+        "gsl_assert": "cpp"
     },
     "files.exclude": {
         "bazel-out/**": true

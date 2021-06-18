@@ -1,17 +1,15 @@
 /*
 github.com/optframe/nnptr
-MIT License
-commit 3c95c006eabed95da29ac0be4476f77c5af96934 (HEAD -> master, origin/master,
-origin/HEAD) Author: Igor Machado <igor.machado@gmail.com> Date:   Thu Jun 17
-23:40:11 2021 -0300 differences from gsl::not_null
+commit d1089edbaaeb59ed2d179569e94e77f7bc34f11f (HEAD -> master, tag: v0.2,
+origin/master, origin/HEAD) Author: Igor Machado <igor.machado@gmail.com> Date:
+Fri Jun 18 20:10:45 2021 -0300 fix link
 */
 
-//
-//#include <gsl/gsl> // nnptr (local copy)
+//#include <gsl/gsl> // NotNull (local copy)
 #include <memory> // shared_ptr
 
 // ====================================================================
-// Not Null Shared Pointer (nn::shared)
+// Not Null Shared Pointer (nnptr::shared)
 // Authors: Igor M. Coelho & Fellipe Pessanha
 // MIT License (2021)
 // ====================================================================
@@ -19,12 +17,12 @@ origin/HEAD) Author: Igor Machado <igor.machado@gmail.com> Date:   Thu Jun 17
 // This library depends on...
 
 // ====================================================================
-// nnptr: an alternative to gsl::nnptr, but with NDEBUG removing all
-// 'nnptr' during Release
+// NotNull: an alternative to gsl::NotNull, but with NDEBUG removing all
+// 'NotNull' during Release
 // ====================================================================
 
 // =============
-// For nn::nnptr
+// For nnptr::NotNull
 // =============
 
 #include <algorithm>    // for forward
@@ -34,19 +32,19 @@ origin/HEAD) Author: Igor Machado <igor.machado@gmail.com> Date:   Thu Jun 17
 #include <type_traits>  // for enable_if_t, is_convertible, is_assignable
 
 // ======================
-// begin nn::nnptr part
+// begin nnptr::NotNull part
 // ======================
 
 // =============================================
-// Same assumptions are valid from gsl::nnptr
+// Same assumptions are valid from gsl::NotNull
 // =============================================
 //
-// nn::nnptr restricts a pointer to only hold non-null values (enforced during
-// Debug time, not Release)
+// nnptr::NotNull restricts a pointer to only hold non-null values (enforced
+// during Debug time, not Release)
 //
 // Has zero size overhead over T (during both Debug and Release)
 //
-// For nnptr<T>, if T is a pointer (i.e. T == U*) then
+// For NotNull<T>, if T is a pointer (i.e. T == U*) then
 // - allow construction from U*
 // - disallow construction from nullptr_t
 // - disallow default construction
@@ -55,13 +53,13 @@ origin/HEAD) Author: Igor Machado <igor.machado@gmail.com> Date:   Thu Jun 17
 //
 
 // ==============================================
-// code for nnptr (compatible with gsl::nnptr)
+// code for NotNull (compatible with gsl::NotNull)
 // reference:
 // https://github.com/microsoft/GSL/blob/b26f6d5ec7b043f9d459c1dfdd6da4d930d4e9b4/include/gsl/pointers
 // date: 17-jun-2021
 // ==============================================
 
-namespace nn {
+namespace nnptr {
 
 namespace details {
 template <typename T, typename = void>
@@ -74,14 +72,14 @@ struct is_comparable_to_nullptr<
     : std::true_type {};
 } // namespace details
 
-template <class T> class nnptr {
+template <class T> class NotNull {
 public:
   static_assert(details::is_comparable_to_nullptr<T>::value,
                 "T cannot be compared to nullptr.");
 
   template <typename U,
             typename = std::enable_if_t<std::is_convertible<U, T>::value>>
-  constexpr nnptr(U &&u) : ptr_(std::forward<U>(u)) {
+  constexpr NotNull(U &&u) : ptr_(std::forward<U>(u)) {
 #ifndef NDEBUG
     if (ptr_ == nullptr)
       std::terminate();
@@ -90,7 +88,7 @@ public:
 
   template <
       typename = std::enable_if_t<!std::is_same<std::nullptr_t, T>::value>>
-  constexpr nnptr(T u) : ptr_(std::move(u)) {
+  constexpr NotNull(T u) : ptr_(std::move(u)) {
 #ifndef NDEBUG
     if (ptr_ == nullptr)
       std::terminate();
@@ -99,10 +97,10 @@ public:
 
   template <typename U,
             typename = std::enable_if_t<std::is_convertible<U, T>::value>>
-  constexpr nnptr(const nnptr<U> &other) : nnptr(other.get()) {}
+  constexpr NotNull(const NotNull<U> &other) : NotNull(other.get()) {}
 
-  nnptr(const nnptr &other) = default;
-  nnptr &operator=(const nnptr &other) = default;
+  NotNull(const NotNull &other) = default;
+  NotNull &operator=(const NotNull &other) = default;
   constexpr std::conditional_t<std::is_copy_constructible<T>::value, T,
                                const T &>
   get() const {
@@ -119,112 +117,108 @@ public:
 
   // prevents compilation when someone attempts to assign a null pointer
   // constant
-  nnptr(std::nullptr_t) = delete;
-  nnptr &operator=(std::nullptr_t) = delete;
+  NotNull(std::nullptr_t) = delete;
+  NotNull &operator=(std::nullptr_t) = delete;
 
   // unwanted operators...pointers only point to single objects!
-  nnptr &operator++() = delete;
-  nnptr &operator--() = delete;
-  nnptr operator++(int) = delete;
-  nnptr operator--(int) = delete;
-  nnptr &operator+=(std::ptrdiff_t) = delete;
-  nnptr &operator-=(std::ptrdiff_t) = delete;
+  NotNull &operator++() = delete;
+  NotNull &operator--() = delete;
+  NotNull operator++(int) = delete;
+  NotNull operator--(int) = delete;
+  NotNull &operator+=(std::ptrdiff_t) = delete;
+  NotNull &operator-=(std::ptrdiff_t) = delete;
   void operator[](std::ptrdiff_t) const = delete;
 
 private:
   T ptr_;
 };
 
-template <class T> auto make_nnptr(T &&t) noexcept {
-  return nnptr<std::remove_cv_t<std::remove_reference_t<T>>>{
+template <class T> auto make_NotNull(T &&t) noexcept {
+  return NotNull<std::remove_cv_t<std::remove_reference_t<T>>>{
       std::forward<T>(t)};
 }
 
 template <class T>
-std::ostream &operator<<(std::ostream &os, const nnptr<T> &val) {
+std::ostream &operator<<(std::ostream &os, const NotNull<T> &val) {
   os << val.get();
   return os;
 }
 
 template <class T, class U>
-auto operator==(const nnptr<T> &lhs,
-                const nnptr<U> &rhs) noexcept(noexcept(lhs.get() == rhs.get()))
-    -> decltype(lhs.get() == rhs.get()) {
+auto operator==(const NotNull<T> &lhs, const NotNull<U> &rhs) noexcept(
+    noexcept(lhs.get() == rhs.get())) -> decltype(lhs.get() == rhs.get()) {
   return lhs.get() == rhs.get();
 }
 // should prevent comparisons with nullptr_t (from igor)
 template <class T>
-bool operator==(const nnptr<T> &lhs, std::nullptr_t nptr) = delete;
+bool operator==(const NotNull<T> &lhs, std::nullptr_t nptr) = delete;
 
 template <class T, class U>
-auto operator!=(const nnptr<T> &lhs,
-                const nnptr<U> &rhs) noexcept(noexcept(lhs.get() != rhs.get()))
-    -> decltype(lhs.get() != rhs.get()) {
+auto operator!=(const NotNull<T> &lhs, const NotNull<U> &rhs) noexcept(
+    noexcept(lhs.get() != rhs.get())) -> decltype(lhs.get() != rhs.get()) {
   return lhs.get() != rhs.get();
 }
 // should prevent comparisons with nullptr_t (from igor)
 template <class T>
-bool operator!=(const nnptr<T> &lhs, std::nullptr_t nptr) = delete;
+bool operator!=(const NotNull<T> &lhs, std::nullptr_t nptr) = delete;
 
 template <class T, class U>
-auto operator<(const nnptr<T> &lhs,
-               const nnptr<U> &rhs) noexcept(noexcept(lhs.get() < rhs.get()))
+auto operator<(const NotNull<T> &lhs,
+               const NotNull<U> &rhs) noexcept(noexcept(lhs.get() < rhs.get()))
     -> decltype(lhs.get() < rhs.get()) {
   return lhs.get() < rhs.get();
 }
 
 template <class T, class U>
-auto operator<=(const nnptr<T> &lhs,
-                const nnptr<U> &rhs) noexcept(noexcept(lhs.get() <= rhs.get()))
-    -> decltype(lhs.get() <= rhs.get()) {
+auto operator<=(const NotNull<T> &lhs, const NotNull<U> &rhs) noexcept(
+    noexcept(lhs.get() <= rhs.get())) -> decltype(lhs.get() <= rhs.get()) {
   return lhs.get() <= rhs.get();
 }
 
 template <class T, class U>
-auto operator>(const nnptr<T> &lhs,
-               const nnptr<U> &rhs) noexcept(noexcept(lhs.get() > rhs.get()))
+auto operator>(const NotNull<T> &lhs,
+               const NotNull<U> &rhs) noexcept(noexcept(lhs.get() > rhs.get()))
     -> decltype(lhs.get() > rhs.get()) {
   return lhs.get() > rhs.get();
 }
 
 template <class T, class U>
-auto operator>=(const nnptr<T> &lhs,
-                const nnptr<U> &rhs) noexcept(noexcept(lhs.get() >= rhs.get()))
-    -> decltype(lhs.get() >= rhs.get()) {
+auto operator>=(const NotNull<T> &lhs, const NotNull<U> &rhs) noexcept(
+    noexcept(lhs.get() >= rhs.get())) -> decltype(lhs.get() >= rhs.get()) {
   return lhs.get() >= rhs.get();
 }
 
 // more unwanted operators
 template <class T, class U>
-std::ptrdiff_t operator-(const nnptr<T> &, const nnptr<U> &) = delete;
+std::ptrdiff_t operator-(const NotNull<T> &, const NotNull<U> &) = delete;
 template <class T>
-nnptr<T> operator-(const nnptr<T> &, std::ptrdiff_t) = delete;
+NotNull<T> operator-(const NotNull<T> &, std::ptrdiff_t) = delete;
 template <class T>
-nnptr<T> operator+(const nnptr<T> &, std::ptrdiff_t) = delete;
+NotNull<T> operator+(const NotNull<T> &, std::ptrdiff_t) = delete;
 template <class T>
-nnptr<T> operator+(std::ptrdiff_t, const nnptr<T> &) = delete;
+NotNull<T> operator+(std::ptrdiff_t, const NotNull<T> &) = delete;
 
-} // namespace nn
+} // namespace nnptr
 
 namespace std {
-template <class T> struct hash<nn::nnptr<T>> {
-  std::size_t operator()(const nn::nnptr<T> &value) const {
+template <class T> struct hash<nnptr::NotNull<T>> {
+  std::size_t operator()(const nnptr::NotNull<T> &value) const {
     return hash<T>{}(value.get());
   }
 };
 } // namespace std
 
 // ======================
-// begin nn::shared part
+// begin nnptr::NNShared part
 // ======================
 
-namespace nn {
+namespace nnptr {
 //
-template <typename T> class shared {
+template <typename T> class NNShared {
   using shared_type = T;
 
 public:
-  nnptr<std::shared_ptr<T>> data_;
+  NotNull<std::shared_ptr<T>> data_;
 
   // this constructor can be used to "move" into new shared_ptr versions
   // this requires a copy constructor over the type X (must be concrete)
@@ -234,7 +228,7 @@ public:
           typename std::enable_if<std::is_convertible<X *, T *>::value>::type,
       typename =
           typename std::enable_if<std::is_copy_constructible<X>::value>::type>
-  shared(X &&other) : data_{std::shared_ptr<T>{new X(other)}} {}
+  NNShared(X &&other) : data_{std::shared_ptr<T>{new X(other)}} {}
 
   // this is for existing references (must have copy constructor)
   template <
@@ -243,18 +237,18 @@ public:
           typename std::enable_if<std::is_convertible<X *, T *>::value>::type,
       typename =
           typename std::enable_if<std::is_copy_constructible<X>::value>::type>
-  shared(const X &other) : data_{std::shared_ptr<T>{new X(other)}} {}
+  NNShared(const X &other) : data_{std::shared_ptr<T>{new X(other)}} {}
 
-  shared(const shared<T> &other) : data_{other.data_} {}
+  NNShared(const NNShared<T> &other) : data_{other.data_} {}
 
-  shared(const shared<T> &&corpse) : data_{corpse.data_} {}
+  NNShared(const NNShared<T> &&corpse) : data_{corpse.data_} {}
 
-  shared(std::shared_ptr<T> &data) : data_{data} {}
+  NNShared(std::shared_ptr<T> &data) : data_{data} {}
 
-  shared(T *data) : data_{std::shared_ptr<T>{data}} {}
+  NNShared(T *data) : data_{std::shared_ptr<T>{data}} {}
 
   // disallow explicit nullptr
-  shared(std::nullptr_t data) = delete;
+  NNShared(std::nullptr_t data) = delete;
 
   T *operator->() { return data_.get().get(); }
 
@@ -275,11 +269,11 @@ public:
 
   template <class Y, typename = typename std::enable_if<
                          std::is_convertible<T *, Y *>::value>::type>
-  operator shared<Y>() // explicit? not necessary... (until now)
+  operator NNShared<Y>() // explicit? not necessary... (until now)
   {
-    std::shared_ptr<Y> py = data_.get(); // remove encapsulation from 'nnptr'
+    std::shared_ptr<Y> py = data_.get(); // remove encapsulation from 'NotNull'
     return py;
   }
 };
 
-} // namespace nn
+} // namespace nnptr

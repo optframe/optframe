@@ -3,14 +3,14 @@
 
 // general concepts expected to exist on c++20
 
-#include "nnptr/shared.hpp" // "not null shared pointer" library (local copy!)
-#include <memory>           // unique_ptr
-#include <optional>         // optional
-#include <vector>           // for vsref
+#include "nnptr/nnshared.hpp" // "not null shared pointer" library (local copy!)
+#include <memory>             // unique_ptr
+#include <optional>           // optional
+#include <vector>             // for vsref
 
 // =========== OUTSIDE optframe scope (to make error tracking easier...)
 // ========== "not null shared pointer" shortcuts
-template <class R> using sref = nn::shared<R>;
+template <class R> using sref = nnptr::NNShared<R>;
 //
 template <class R> using vsref = std::vector<sref<R>>;
 //
@@ -248,8 +248,8 @@ concept
   { a - b }
   ->my_same_as<T>;
   //{ a * b } -> std::remove_reference_t<T>; // useful, but too hard now... must
-  //provide multiplication by scalar to do 'weights' { a / b } ->
-  //std::remove_reference_t<T>;  // NOT actually necessary (until today!)
+  // provide multiplication by scalar to do 'weights' { a / b } ->
+  // std::remove_reference_t<T>;  // NOT actually necessary (until today!)
 };
 /* ||
 requires(const std::remove_reference_t<T>& a,
@@ -282,7 +282,7 @@ concept
   ->my_same_as<T>; // std::remove_reference_t<T>; // useful for weighted
                    // computation
   //{ a / b } -> std::remove_reference_t<T>;  // NOT actually necessary (until
-  //today!)
+  // today!)
 };
 
 // capability to move to ostream&
