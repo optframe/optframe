@@ -1,5 +1,5 @@
 /*
-github.com/optframe/nnshared
+github.com/optframe/nnptr
 MIT License
 commit 3c95c006eabed95da29ac0be4476f77c5af96934 (HEAD -> master, origin/master,
 origin/HEAD) Author: Igor Machado <igor.machado@gmail.com> Date:   Thu Jun 17
