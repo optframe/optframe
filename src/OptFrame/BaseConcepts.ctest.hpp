@@ -4,9 +4,9 @@
 #include "BaseConcepts.hpp"
 
 // basic printabilty for std::pair<,>
-#include <OptFrame/printable/printable.h>
+#include <OptFrame/printable/printable.hpp>
 
-using namespace optframe; // importing optframe::operator<< stuff
+//using namespace optframe; // importing optframe::operator<< stuff
 
 // testing BaseConcepts: compilation tests (these are NOT unit tests!)
 // unit tests can be found on tests/ folder
@@ -15,19 +15,17 @@ using namespace optframe; // importing optframe::operator<< stuff
 
 // ============================
 
-namespace optframe
-{
-
+namespace optframe {
 
 // only for <assert> like stuff
 #ifndef NDEBUG
 // Example of valid struct satisfying solution properties
 
-template <XRepresentation R, class ADS = _ADS>
+template<XRepresentation R, class ADS = _ADS>
 struct IsSolution
 {
-   R &getR();
-   ADS *getADSptr();
+   R& getR();
+   ADS* getADSptr();
 
    IsSolution<R, ADS>& clone()
    {
@@ -39,7 +37,7 @@ struct IsSolution
       return "";
    }
 
-   friend std::ostream& operator<<(std::ostream& os, const IsSolution<R,ADS>& me)
+   friend std::ostream& operator<<(std::ostream& os, const IsSolution<R, ADS>& me)
    {
       os << me.toString();
       return os;
@@ -49,14 +47,14 @@ struct IsSolution
 // basic test
 static_assert(XSolution<IsSolution<int, nullptr_t>>);
 
-template <class T>
+template<class T>
 struct IsEvaluation
-{ 
+{
    using objType = T;
    //
-   T &evaluation(); // this is required!
+   T& evaluation(); // this is required!
 
-   bool outdated; // this is required!
+   bool outdated;  // this is required!
    bool estimated; // this is required!
 
    bool betterStrict(const IsEvaluation<T>& e);
@@ -65,7 +63,7 @@ struct IsEvaluation
    bool isStrictImprovement();
    bool isNonStrictImprovement();
 
-   void update(IsEvaluation<T>& e); // required ('cost' operation)
+   void update(IsEvaluation<T>& e);                // required ('cost' operation)
    IsEvaluation<T> diff(const IsEvaluation<T>& e); // required ('cost' operation)
 
    IsEvaluation<T>& clone()
@@ -88,8 +86,7 @@ struct IsEvaluation
 // basic test
 static_assert(XSolution<IsEvaluation<int>>);
 
-
-template <class T>
+template<class T>
 struct IsESolution
 {
    // declaring types
@@ -97,7 +94,7 @@ struct IsESolution
    using second_type = IsEvaluation<T>;
 
    //T& evaluation();
-   IsESolution<T>& first {*this};
+   IsESolution<T>& first{ *this };
    IsEvaluation<T> second;
 
    IsESolution<T>& clone()
@@ -127,7 +124,6 @@ static_assert(HasGetObj<IsEvaluation<int>>);
 static_assert(optframe::ostreamable<IsEvaluation<int>>);
 static_assert(XEvaluation<IsESolution<int>::second_type>); // IsEvaluation<T>
 static_assert(XESolution<IsESolution<int>>);
-
 
 // =======================================
 
@@ -163,15 +159,14 @@ class TestXESol
 public:
 };
 
-// compile tests 
+// compile tests
 static_assert(XBaseSolution<IsSolution<double>, double>); //TestBaseSol<IsSolution<double>> test;
-static_assert(XSolution<IsSolution<double>>); // TestXSol<IsSolution<double>> testXsol;
-static_assert(XRSolution<IsSolution<double>, double>);  //TestXRSolution<double, IsSolution<double>> testxrs;
-static_assert(XEvaluation<IsEvaluation<int>>); // TestEv<IsEvaluation<short>> testev;
+static_assert(XSolution<IsSolution<double>>);             // TestXSol<IsSolution<double>> testXsol;
+static_assert(XRSolution<IsSolution<double>, double>);    //TestXRSolution<double, IsSolution<double>> testxrs;
+static_assert(XEvaluation<IsEvaluation<int>>);            // TestEv<IsEvaluation<short>> testev;
 //static_assert(XEvaluation<IsEvaluation<short>>); // TestEv<IsEvaluation<short>> testev; // won't work wth 'short' on C++20
 // XESolution tests
 static_assert(XESolution<IsESolution<double>>); // TestXESol<IsESolution<double>> testXesol;
-
 
 struct optframe_test_debug_testsol_issolution_disable_runtime
 {
@@ -184,19 +179,19 @@ TestEv<IsEvaluation<short>> testev;
 // XESolution tests
 TestXESol<IsESolution<double>> testXesol;
 */
-void fprint()
-{
-   // testing pair printability
-   std::pair<int,int> pp1;
-   std::cout << pp1 << std::endl;
-   IsSolution<double> issol;
-   std::cout << issol << std::endl;
-   IsEvaluation<double> isev;
-   std::cout << isev << std::endl;
-   std::pair<IsSolution<double>,IsEvaluation<double>> pp;
-   std::cout << pp << std::endl;
-}
-//TestXESol<std::pair<IsSolution<double>,IsEvaluation<double>>> testXesol_pair;
+   void fprint()
+   {
+      // testing pair printability
+      std::pair<int, int> pp1;
+      std::cout << pp1 << std::endl;
+      IsSolution<double> issol;
+      std::cout << issol << std::endl;
+      IsEvaluation<double> isev;
+      std::cout << isev << std::endl;
+      std::pair<IsSolution<double>, IsEvaluation<double>> pp;
+      std::cout << pp << std::endl;
+   }
+   //TestXESol<std::pair<IsSolution<double>,IsEvaluation<double>>> testXesol_pair;
 };
 
 // =========================================================
@@ -212,36 +207,35 @@ public:
 // ----------------
 
 // example of a Population element
-template <XESolution XES>
+template<XESolution XES>
 struct IsPopulation
 {
-   size_t size(); // required
+   size_t size();     // required
    XES& at(size_t i); // required
 };
 
 // compilation test
-static_assert(X2ESolution<IsPopulation<IsESolution<double>>, IsESolution<double>>);  //TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
+static_assert(X2ESolution<IsPopulation<IsESolution<double>>, IsESolution<double>>); //TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
 
 // ---------
 
 // example of a Pareto element
-template <XESolution XES>
+template<XESolution XES>
 struct IsPareto
 {
-   size_t size(); // required
+   size_t size();     // required
    XES& at(size_t i); // required
 };
 
 // compilation test
-static_assert(X2ESolution<IsPareto<IsESolution<double>>, IsESolution<double>>);  //TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
+static_assert(X2ESolution<IsPareto<IsESolution<double>>, IsESolution<double>>); //TestPopOrPareto<IsSolution<double>, IsEvaluation<int>, IsPopulation<IsSolution<double>,IsEvaluation<int>> > testLocal1;
 
 // perform instantiation tests
 struct optframe_test_debug_testpareto_ispop_ispareto_disable_runtime
 {
-TestPopOrPareto<IsESolution<double>, IsPopulation<IsESolution<double>> > testLocal1;
-TestPopOrPareto<IsESolution<double>, IsPareto<IsESolution<double>> > testLocal2;
+   TestPopOrPareto<IsESolution<double>, IsPopulation<IsESolution<double>>> testLocal1;
+   TestPopOrPareto<IsESolution<double>, IsPareto<IsESolution<double>>> testLocal2;
 };
-
 
 #endif // NDEBUG clause
 

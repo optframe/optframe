@@ -21,18 +21,17 @@
 #ifndef PCAP_REPRESENTATION_H_
 #define PCAP_REPRESENTATION_H_
 
+#include <OptFrame/printable/printable.hpp>
 #include <vector>
-#include <OptFrame/printable/printable.h>
 
 #include <OptFrame/Util/Matrix.hpp>
 
 using namespace std;
 
 // Solution Representation
-typedef pair<vector<int>, vector<int> > RepPCAP;
+typedef pair<vector<int>, vector<int>> RepPCAP;
 
 //#include <ostream>
 //ostream & operator<< (ostream & s, RepPCAP){}
 
 #endif /*PCAP_REPRESENTATION_H_*/
-

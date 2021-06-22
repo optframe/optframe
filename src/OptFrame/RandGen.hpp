@@ -21,20 +21,22 @@
 #ifndef OPTFRAME_RANDGEN_HPP_
 #define OPTFRAME_RANDGEN_HPP_
 
-#include <cmath>
+// C includes
 #include <math.h>
 #include <time.h>
 #include <unistd.h>
-#include <vector>
+
+// C++ includes
 #include <array>
+#include <cmath>
+#include <vector>
 //#include <tgmath.h>
+#include <random> //used for Binomial distribution requested by NGES
+//#include <tr1/random>
 
 //#include "Action.hpp"
 #include "Component.hpp"
 #include "ComponentBuilder.h"
-
-#include <random> //used for Binomial distribution requested by NGES
-//#include <tr1/random>
 
 namespace optframe {
 
@@ -95,31 +97,38 @@ public:
    RandGen()
    {
       seed = generateRandomSeed();
-      initialize();
+      mt_initialize();
    }
 
-   RandGen(unsigned _seed)
+   explicit RandGen(unsigned _seed)
      : seed(_seed)
    {
-      initialize();
+      mt_initialize();
    }
 
    virtual ~RandGen()
    {
    }
 
-public:
-   // initialize random number generation
-   virtual void initialize()
+private:
+   void mt_initialize()
    {
       unsigned _seed = this->seed;
-      std::array<decltype(_seed), _gen.state_size> seed_data;
-      std::generate(seed_data.begin(), seed_data.end(), [&_seed](){ return _seed++; });
+      //std::array<decltype(this->_seed), this->_gen.state_size> seed_data;
+      std::array<decltype(_seed), std::mt19937::state_size> seed_data;
+      std::generate(seed_data.begin(), seed_data.end(), [&_seed]() { return _seed++; });
       std::seed_seq seed_sequence(seed_data.begin(), seed_data.end());
       _gen.seed(seed_sequence);
    }
 
-/*
+public:
+   // initialize random number generation
+   virtual void initialize()
+   {
+      mt_initialize();
+   }
+
+   /*
 @Anderson
 https://stats.stackexchange.com/questions/436733/is-there-such-a-thing-as-a-good-bad-seed-in-pseudo-random-number-generation
 Check Mars answer in StackExchange. He made a short summary of why we should adequately initialize the Mersenne Twister algorithm while linking several studies on the matter.
@@ -143,7 +152,7 @@ public:
       std::uniform_int_distribution<unsigned> dis(0, n);
       return dis(_gen);
 
-      // TODO: https://ericlippert.com/2013/12/16/how-much-bias-is-introduced-by-the-remainder-technique/
+      // TODO(igormcoelho): https://ericlippert.com/2013/12/16/how-much-bias-is-introduced-by-the-remainder-technique/
       //return ::rand() % n; // old way, abandoned (too much bias!)
    }
 

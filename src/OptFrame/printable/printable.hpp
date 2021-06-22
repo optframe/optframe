@@ -18,20 +18,22 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_PRINTABLE_H_
-#define OPTFRAME_PRINTABLE_H_
+#ifndef OPTFRAME_PRINTABLE_HPP_
+#define OPTFRAME_PRINTABLE_HPP_
 
 #include <iostream>
 #include <map>
+#include <optional> // requires c++17
 #include <ostream>
 #include <sstream> // stringstream
-#include <optional> // requires c++17
+#include <string>
+#include <utility>
 #include <vector>
 
-// TODO: ostreamable
+// TODO(igormcoelho): ostreamable
 //#include "../myconcepts.h" // ostreamable concept!
 
-using namespace std;
+//using namespace std;
 
 namespace optframe {
 
@@ -60,9 +62,11 @@ public:
       os = &_os;
    }
 };
-extern SemStream cjson; // only in .cpp
-extern SemStream ctxt; // only in .cpp
 
+//extern SemStream cjson; // only in .cpp
+//extern SemStream ctxt;  // only in .cpp
+inline SemStream cjson{ std::cout }; // (C++17 extern linkage is implicit)
+inline SemStream ctxt{ std::cout };  // (C++17 extern linkage is implicit)
 
 /*
 ostream&
@@ -334,7 +338,7 @@ toString(const std::vector<T>& v)
 // COMPILATION TESTS FOR PRINTABLE
 #ifndef NDEBUG
 
-// TODO: use ostreamable<T> here to test structures, instead of printing to cout
+// TODO(igormcoelho): use ostreamable<T> here to test structures, instead of printing to cout
 
 class test_runtime_can_print
 {
@@ -362,4 +366,4 @@ struct test_printability_disable_runtime
 
 } // namespace optframe
 
-#endif /*OPTFRAME_PRINTABLE_H_*/
+#endif /*OPTFRAME_PRINTABLE_HPP_*/

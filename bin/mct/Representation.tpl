@@ -4,7 +4,7 @@
 #define $project_REPRESENTATION_H_
 
 #include <vector>
-#include <OptFrame/printable/printable.h>
+#include <OptFrame/printable/printable.hpp>
 
 #include <OptFrame/Util/Matrix.hpp>
 

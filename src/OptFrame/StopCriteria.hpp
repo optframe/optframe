@@ -115,7 +115,7 @@ public:
    //
    //virtual bool shouldStop(const op<XEv>& best) const
    //
-   
+
    // TODO: do not use std::optional here... let's use good old XEv* syntax
    // reason: elements are usually paired, so cost to unpair and make_optional at every search cycle can become expensive
    virtual bool shouldStop(const XEv& best) const

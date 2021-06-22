@@ -38,7 +38,7 @@ using namespace std;
 //#include <OptFrame/BaseConcepts.ctest.hpp> // tsting concepts
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Solution.hpp>
-#include <OptFrame/printable/printable.h>
+#include <OptFrame/printable/printable.hpp>
 //#include "../OptFrame/Util/TestSolution.hpp"
 
 #include <OptFrame/Heuristics/NSearch/FirstImprovingNeighbor.hpp>
@@ -139,7 +139,7 @@ main(int argc, char** argv)
    FirstImprovingNeighbor<ESolutionTSP> fin(eval, enumswap);
    // =======================================
 
-/*
+   /*
    NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);
    NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tsp2opt;
    NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSPOrOptk, ProblemInstance> nsseq_delta_or1(1, tsp.p);
@@ -150,9 +150,9 @@ main(int argc, char** argv)
    sref<NSSeq<ESolutionTSP>> nsseq_delta_2opt = new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSP2Opt, ProblemInstance>(tsp.p);
    sref<NSSeq<ESolutionTSP>> tsp2opt = new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>();
    sref<NSSeq<ESolutionTSP>> nsseq_delta_or1 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSPOrOptk, ProblemInstance>(1, tsp.p);
-   sref<NSSeq<ESolutionTSP>> tspor1 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> (1);
-   sref<NSSeq<ESolutionTSP>> tspor2 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> (2);
-   sref<NSSeq<ESolutionTSP>> tspor3 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> (3);
+   sref<NSSeq<ESolutionTSP>> tspor1 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(1);
+   sref<NSSeq<ESolutionTSP>> tspor2 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(2);
+   sref<NSSeq<ESolutionTSP>> tspor3 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(3);
 
    // TODO: we need to try NSSeqTSPOrOpt , because it requires adapters...
    NSSeqTSPOrOpt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspor_adapt;
@@ -185,12 +185,17 @@ main(int argc, char** argv)
    EvaluatorPermutationRandomKeys<EvaluationTSP, double> eprk(eval_rep, 0, tsp.p->n - 1);
 
    // BRKGA is using Representation instead of Solution... beware!
-   sref<InitialPopulation<pair<std::vector<double>, EvaluationTSP>>> _initPop = 
-      new RandomKeysInitPop<EvaluationTSP, double>(tsp.p->n, rg2);
-   BRKGA< pair<RepTSP, EvaluationTSP>, double> brkga(
-      eprk,
-      _initPop, // key_size = tsp.p->n
-        10000, 10, 0.4, 0.3, 0.6, rg2);
+   sref<InitialPopulation<pair<std::vector<double>, EvaluationTSP>>> _initPop =
+     new RandomKeysInitPop<EvaluationTSP, double>(tsp.p->n, rg2);
+   BRKGA<pair<RepTSP, EvaluationTSP>, double> brkga(
+     eprk,
+     _initPop, // key_size = tsp.p->n
+     10000,
+     10,
+     0.4,
+     0.3,
+     0.6,
+     rg2);
 
    StopCriteria<EvaluationTSP> sosc;
    // strange that this worked.... it's against 'override' pattern. Very strange!!
@@ -210,7 +215,7 @@ main(int argc, char** argv)
    //std::optional<ESolutionTSP> r2 = brkga.best;
    auto r2 = sout.best;
    //virtual std::optional<pair<XRS, XEv>> search(StopCriteria<XEv>& stopCriteria, const std::optional<pair<XRS, XEv>> input)
-   
+
    //r2->first.print();
    std::cout << r2->first << std::endl;
 

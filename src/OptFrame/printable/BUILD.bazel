@@ -5,22 +5,15 @@ package(
 )
 
 
-#cc_binary(
-#    name = "printable_lib",
-#    srcs = ["printable.cpp"],
-#    linkstatic=True,
-#    deps = [":printable_h"]
-#    #include_prefix = "OptFrame/printable",
-#)
-
 cc_library(
     name = "printable_lib",
     hdrs = glob([
-        "**/*.h",
+        "**/*.hpp",
     ]),
-    srcs = glob([
-        "**/*.cpp",
-    ]),
+    # not necessary anymore to link .cpp here
+    #srcs = glob([
+    #    "**/*.cpp",
+    #]),
     copts = ['-std=c++17', '-fconcepts', '-Wfatal-errors'],
     include_prefix = "OptFrame/printable",
 )

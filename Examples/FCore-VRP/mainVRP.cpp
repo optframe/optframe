@@ -13,13 +13,12 @@
 #include <OptFrame/Heuristics/Heuristics.hpp> // many metaheuristics here...
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/Util/Matrix.hpp>
-#include <OptFrame/printable/printable.h>
+#include <OptFrame/printable/printable.hpp>
 
 #include <OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRP2Opt.hpp>
 #include <OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRPExchange.hpp>
 #include <OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRPOrOpt1.hpp>
 #include <OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRPOrOpt2.hpp>
-
 
 using namespace std;
 using namespace optframe;
@@ -222,9 +221,9 @@ main()
    ls_vnd.push_back(new BestImprovement<ESolutionVRP>(ev_VRP, nsseq_or1));
    ls_vnd.push_back(new BestImprovement<ESolutionVRP>(ev_VRP, nsseq_or2));
 
-   sref<LocalSearch<ESolutionVRP>> vnd = 
-   new VariableNeighborhoodDescent<ESolutionVRP>(ev_VRP, ls_vnd, myRandGen.sptr());
-   
+   sref<LocalSearch<ESolutionVRP>> vnd =
+     new VariableNeighborhoodDescent<ESolutionVRP>(ev_VRP, ls_vnd, myRandGen.sptr());
+
    vnd->setVerboseR();
    SearchStatus st2 = vnd->searchFrom(se, { 10 });
    std::cout << "status = " << (int)st2 << std::endl;

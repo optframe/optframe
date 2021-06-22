@@ -1,17 +1,17 @@
 #ifndef HFM_REPRESENTATION_H_
 #define HFM_REPRESENTATION_H_
 
-#include <vector>
-#include <assert.h>
-#include <OptFrame/printable/printable.h>
 #include <OptFrame/Util/Matrix.hpp>
+#include <OptFrame/printable/printable.hpp>
+#include <assert.h>
+#include <vector>
 
-const int GREATER = 0; // A
-const int GREATER_WEIGHT = 1; // V
-const int LOWER = 2; // B
-const int LOWER_WEIGHT = 3; // W
-const int EPSILON = 4; // E
-const int PERTINENCEFUNC = 5; // Pertinence function index
+const int GREATER = 0;          // A
+const int GREATER_WEIGHT = 1;   // V
+const int LOWER = 2;            // B
+const int LOWER_WEIGHT = 3;     // W
+const int EPSILON = 4;          // E
+const int PERTINENCEFUNC = 5;   // Pertinence function index
 const int NCOLUMNATRIBUTES = 6; // Solution Atributes
 
 const int NAJUSTS = 6; // FOR THE APROX 2
@@ -20,42 +20,41 @@ using namespace std;
 
 enum InputTypes
 {
-	Single_Input,Average_Inputs,Derivative_Inputs,N_Inputs_Types
+   Single_Input,
+   Average_Inputs,
+   Derivative_Inputs,
+   N_Inputs_Types
 };
-
 
 // Solution Representation
 
 enum ActivationFunction
 {
-	Heaviside, Trapezoid, N_Activation_Functions
+   Heaviside,
+   Trapezoid,
+   N_Activation_Functions
 };
-
-
-
-
-
 
 struct RepHFM
 {
-	//single index [ (file,K - x) ,...] ex:  [ (file = 0,K - 10),(file = 0,K - 2), ...]
-	vector<pair<int, int> > singleIndex;
-	vector<vector<double> > singleFuzzyRS; //single inputs relationships
+   //single index [ (file,K - x) ,...] ex:  [ (file = 0,K - 10),(file = 0,K - 2), ...]
+   vector<pair<int, int>> singleIndex;
+   vector<vector<double>> singleFuzzyRS; //single inputs relationships
 
-	vector<vector<pair<int, int> > > averageIndex;
-	vector<vector<double> > averageFuzzyRS;
+   vector<vector<pair<int, int>>> averageIndex;
+   vector<vector<double>> averageFuzzyRS;
 
-	vector<vector<pair<int, int> > > derivativeIndex;
-	vector<vector<double> > derivativeFuzzyRS;
+   vector<vector<pair<int, int>>> derivativeIndex;
+   vector<vector<double>> derivativeFuzzyRS;
 
-	int earliestInput;
+   int earliestInput;
 
-	double alpha;
+   double alpha;
 
-	vector<double> vAlpha;
-	vector<int> vIndex;
-	vector<double> vIndexAlphas;
-	/*
+   vector<double> vAlpha;
+   vector<int> vIndex;
+   vector<double> vIndexAlphas;
+   /*
 	 RepEFP(const RepEFP& rep)
 	 {
 	 singleIndex = rep.singleIndex;
@@ -70,17 +69,17 @@ struct RepHFM
 	 {
 	 }
 	 */
-
 };
 
 //#include <ostream>
 
-ostream & operator<<(ostream & s, const RepHFM rep)
+ostream&
+operator<<(ostream& s, const RepHFM rep)
 {
-	assert(rep.singleIndex.size() == rep.singleFuzzyRS.size());
-	s << "NRules:" <<rep.singleIndex.size() << "/"<<rep.averageIndex.size() <<"/"<< rep.derivativeIndex.size() << endl;
+   assert(rep.singleIndex.size() == rep.singleFuzzyRS.size());
+   s << "NRules:" << rep.singleIndex.size() << "/" << rep.averageIndex.size() << "/" << rep.derivativeIndex.size() << endl;
 
-/*
+   /*
 	s << " ======================== \n Solution printing \n" << endl;
 	s << "Single Inputs" << endl;
 	vector<int> nFuzzyFunction(N_Activation_Functions, 0);
@@ -155,7 +154,7 @@ ostream & operator<<(ostream & s, const RepHFM rep)
 
 	s << " Solution printed \n ======================== \n";
 */
-	return s;
+   return s;
 }
 
 /*
@@ -203,4 +202,3 @@ ostream & operator<<(ostream & s, const RepHFM rep)
 //typedef Solution<RepHFM> SolutionHFM;
 
 #endif /*HFM_REPRESENTATION_H_*/
-

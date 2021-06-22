@@ -1,5 +1,6 @@
 
 //#include "printable.h"
+#error "printable.cpp should not be used anymore"
 #include <OptFrame/printable/printable.h> // boring...
 
 #include <iostream>
@@ -8,9 +9,11 @@
 // User can 'setStream' and redirect it to any other stream (default is 'cout')
 // Some interesting usage can be found on 'printable.h' lib
 
+/*
 namespace optframe {
 
 SemStream cjson{ std::cout };
 SemStream ctxt{ std::cout };
 
 } // namespace optframe
+*/

@@ -34,7 +34,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include <OptFrame/printable/printable.h>
+#include <OptFrame/printable/printable.hpp>
 #include "Util/Matrix.hpp"
 #include "Scanner++/Scanner.hpp"
 

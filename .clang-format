@@ -1,0 +1,4 @@
+BasedOnStyle: "Mozilla"
+ColumnLimit: 0
+IndentWidth: 3 
+AccessModifierOffset: -3

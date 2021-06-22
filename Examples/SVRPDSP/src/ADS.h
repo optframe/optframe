@@ -2,8 +2,8 @@
 #define SVRPDSP_ADS_H_
 
 //#include <ostream>
+#include <OptFrame/Util/printable.hpp>
 #include <vector>
-#include <OptFrame/Util/printable.h>
 
 #include <OptFrame/Util/Matrix.hpp>
 
@@ -16,14 +16,13 @@ struct AdsSVRPDSP
 
    AdsSVRPDSP()
    {
-      gpuSol  = 0;
+      gpuSol = 0;
       gpuLoad = 0;
       zero = 0;
    }
 
    virtual ~AdsSVRPDSP()
    {
-
    }
 
    AdsSVRPDSP(const AdsSVRPDSP& ads)
@@ -33,7 +32,7 @@ struct AdsSVRPDSP
       load = ads.load;
    }
 
-   vector<small_type>   load;
+   vector<small_type> load;
 
    unsigned zero;
    int* gpuSol;
@@ -43,8 +42,7 @@ struct AdsSVRPDSP
    {
       cout << "ADS gpuPtr(" << gpuSol << "," << gpuLoad << ") zero=" << zero << " load: " << load << endl;
 
-      if(gpuSol && gpuLoad)
-      {
+      if (gpuSol && gpuLoad) {
          int* s = new int[load.size()];
          small_type* q = new small_type[load.size()];
 
@@ -55,9 +53,8 @@ struct AdsSVRPDSP
          cout << "gpuLoad: ";
          printv2(q, load.size());
 
-         for(unsigned i=0; i<=zero; i++)
-            if(load[i] != q[i])
-            {
+         for (unsigned i = 0; i <= zero; i++)
+            if (load[i] != q[i]) {
                cout << "ERROR IN GPU ADS AT POS " << i << " CPU is " << load[i] << " and GPU is " << q[i] << endl;
                exit(1);
             }
@@ -73,9 +70,9 @@ struct AdsSVRPDSP
       cout << "ADS::op=" << endl;
       exit(1);
       //cout << "MyS: S=S" << endl;
-      if(&ads == this) // auto ref check
+      if (&ads == this) // auto ref check
          return *this;
-/*
+      /*
       delete r;
       delete ads;
       r   = new RepSVRPDSP(s.getR());
@@ -83,11 +80,8 @@ struct AdsSVRPDSP
 */
       return *this;
    }
-
 };
-
 
 //ostream& operator<< (ostream & s, AdsSVRPDSP){}
 
 #endif /*SVRPDSP_ADS_H_*/
-

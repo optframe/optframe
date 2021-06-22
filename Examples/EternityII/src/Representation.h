@@ -21,8 +21,8 @@
 #ifndef EtII_REPRESENTATION_H_
 #define EtII_REPRESENTATION_H_
 
+#include <OptFrame/printable/printable.hpp>
 #include <vector>
-#include <OptFrame/printable/printable.h>
 
 #include <OptFrame/Util/Matrix.hpp>
 
@@ -35,4 +35,3 @@ using namespace optframe;
 typedef Matrix<Piece> RepEtII;
 
 #endif /*EtII_REPRESENTATION_H_*/
-

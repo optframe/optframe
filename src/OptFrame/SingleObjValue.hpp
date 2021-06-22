@@ -1,11 +1,11 @@
 #ifndef OPTFRAME_SINGLE_OBJ_VALUE_HPP
 #define OPTFRAME_SINGLE_OBJ_VALUE_HPP
 
-#include <math.h>       /* fabs */
+#include <math.h> /* fabs */
 
 // no includes (amazing class!)
 // not anymore :(
-#include "myconcepts.h"
+#include "MyConcepts.hpp"
 
 // only ugly thing left...
 #ifndef EVALUATION_TYPE
@@ -15,8 +15,8 @@
 // finally deprecated this UGLY thing
 /*
 #ifndef EVALUATION_ZERO
-#define EVALUATION_ZERO 0.0001 // TODO: should be part of numerical 'concept' too
-#endif
+#define EVALUATION_ZERO 0.0001 // TODO: should be part of numerical 'concept'
+too #endif
 
 #ifndef EVALUATION_ABS
 #define EVALUATION_ABS ::fabs // TODO: should be part of numerical 'concept' too
@@ -24,7 +24,8 @@
 */
 
 namespace optframe {
-// default to many methods (TODO: unify on SingleObjValue or just leave as it is)
+// default to many methods (TODO: unify on SingleObjValue or just leave as it
+// is)
 using evtype = EVALUATION_TYPE;
 // Single Objective Value will use standard/default value
 using SingleObjValue = evtype;
@@ -35,8 +36,8 @@ public:
    // globally friend classes
 
    // prototype for numeric_zero function: should return zero of that type
-   //template<optframe::basic_arithmetics T>
-   //friend T numeric_zero();
+   // template<optframe::basic_arithmetics T>
+   // friend T numeric_zero();
 
    // doing outside, for clarity!
 };
@@ -60,12 +61,12 @@ num_zero()
 }
 
 template<optframe::basic_arithmetics T>
-constexpr inline typename std::enable_if<std::is_same<T, double>::value, double>::type
-num_zero()
+constexpr inline
+  typename std::enable_if<std::is_same<T, double>::value, double>::type
+  num_zero()
 {
    return 0.0;
 }
-
 
 // stores numeric_zero value on 't'
 template<optframe::basic_arithmetics T>
@@ -76,8 +77,6 @@ numeric_zero(T& t)
 }
 
 // -------------------
-
-
 
 // ===============
 // is_zero section
@@ -97,7 +96,6 @@ numeric_is_zero(const T& t)
 {
    return ::fabs(t) <= 0.0001;
 }
-
 
 } // namespace optframe
 

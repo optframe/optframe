@@ -7,10 +7,10 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <OptFrame/printable/printable.h>
 #include <OptFrame/Evaluation.hpp>
-#include <OptFrame/Solution.hpp>
 #include <OptFrame/MultiObjValue.hpp> // just for testing
+#include <OptFrame/Solution.hpp>
+#include <OptFrame/printable/printable.hpp>
 
 #include <OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
@@ -35,12 +35,12 @@ main(int argc, char** argv)
 
    sref<RandGen> rg = RandGenMersenneTwister(); // declara um bom gerador de números aleatórios
 
-   Scanner scanner(File("instance-4.txt"));  // carrega arquivo no disco
-   ProblemInstance p(scanner);               // cria um problema-teste usando o arquivo carregado
-   MyEvaluator ev(p);                        // cria o avaliador baseado no problema-teste
+   Scanner scanner(File("instance-4.txt")); // carrega arquivo no disco
+   ProblemInstance p(scanner);              // cria um problema-teste usando o arquivo carregado
+   MyEvaluator ev(p);                       // cria o avaliador baseado no problema-teste
    StopCriteria<EvaluationKP> sosc;
-   
-   ConstructiveRandom c1(p, ev);             // construtor de vizinhanças aleatórias
+
+   ConstructiveRandom c1(p, ev); // construtor de vizinhanças aleatórias
    // dada uma vizinhança aleatória, faz uma busca local do tipo bitflip
    sref<NSSeq<ESolutionKP>> ns1 = new NSSeqBitFlip(p, rg);
 
@@ -48,7 +48,6 @@ main(int argc, char** argv)
    // Random Solution
    ////////////////////////////////////////////////////////////////////////////
    cout << "\nWill generate random solution" << endl;
-
 
    //SolutionKP s = *c1.generateSolution(10); // timelimit (10???)
    op<ESolutionKP> opse = c1.initialSearch(StopCriteria<EvaluationKP>(10)).first; // timelimit (10???)
@@ -69,7 +68,7 @@ main(int argc, char** argv)
    */
 
    //BasicSimulatedAnnealing<ESolutionKP> sa(ev, c1, *nsseq_bit, 0.98, 100, 900.0, rg);
-/*
+   /*
    std::function<bool(const op<ESolutionKP>&, BasicSimulatedAnnealing<ESolutionKP, EvaluationKP, Component>*)> specificStopBy = 
       [](const op<ESolutionKP>& se, BasicSimulatedAnnealing<ESolutionKP, EvaluationKP, Component>* m) -> bool {
          return ((m->getT() > 0.001) && (m->getTimer().now() < 120)); // 120 seconds and freezing 0.001
@@ -78,14 +77,14 @@ main(int argc, char** argv)
    auto soscSA { StopCriteria(specificStopBy) };
 */
 
-/*
+   /*
    SpecificMethodStop<ESolutionKP, EvaluationKP, BasicSimulatedAnnealing<ESolutionKP>> spc {
       [&](const ESolutionKP& best, const StopCriteria<EvaluationKP>& sosc, BasicSimulatedAnnealing<ESolutionKP>* me) -> bool {
          return ((me->getT() > 0.001) && (me->getTimer().now() < 120)); // 120 seconds and freezing 0.001
       }
    };
 */
-   
+
    ////////////////////////////////////////////////////////////////////////////
    // Simulated Annealing
    ////////////////////////////////////////////////////////////////////////////
@@ -109,10 +108,10 @@ main(int argc, char** argv)
    */
 
    sa.onLoopCtx = [](auto& ctx, auto& sosc) {
-        return (ctx.T >= 0.001) && !sosc.shouldStop(std::make_optional(ctx.best->second));
-     };
+      return (ctx.T >= 0.001) && !sosc.shouldStop(std::make_optional(ctx.best->second));
+   };
 
-   SearchOutput<ESolutionKP> sout = sa.search(sosc);  // Faz a busca, de fato
+   SearchOutput<ESolutionKP> sout = sa.search(sosc); // Faz a busca, de fato
    op<ESolutionKP> r = *sout.best;
 
    //r->first.print();
@@ -132,9 +131,9 @@ main(int argc, char** argv)
    //
    //pair<SolutionKP, Evaluation<>> se(s, e);
    std::cout << "Best Improvement Search: ";
-   sd.lsearch(se, sosc).second.print();  // executa e imprime HC + BI
+   sd.lsearch(se, sosc).second.print(); // executa e imprime HC + BI
    std::cout << "First Improvement Search: ";
-   pm.lsearch(se, sosc).second.print();  // executa e imprime HC + FI
+   pm.lsearch(se, sosc).second.print(); // executa e imprime HC + FI
    std::cout << "Random Descent Search: ";
    rdm.lsearch(se, sosc).second.print(); // executa e imprime RDM com 10 iterações
 
@@ -148,12 +147,12 @@ main(int argc, char** argv)
    // BRKGA
    ////////////////////////////////////////////////////////////////////////////
    std::cout << "\nBRKGA Search";
-   
+
    sref<DecoderRandomKeys<SolutionKP, EvaluationKP, double>> _decoder =
-      new EvaluatorSubsetRandomKeys<EvaluationKP, double, ESolutionKP>(ev, 0, p.N - 1);
-   
-   sref<InitialPopulation<std::pair<std::vector<double>, Evaluation<>> > > _genKeys =
-      new RandomKeysInitPop<EvaluationKP, double>(p.N, rg);
+     new EvaluatorSubsetRandomKeys<EvaluationKP, double, ESolutionKP>(ev, 0, p.N - 1);
+
+   sref<InitialPopulation<std::pair<std::vector<double>, Evaluation<>>>> _genKeys =
+     new RandomKeysInitPop<EvaluationKP, double>(p.N, rg);
 
    BRKGA<ESolutionKP, double> brkga(_decoder, _genKeys, 1000, 30, 0.4, 0.3, 0.6, rg);
 

@@ -11,7 +11,7 @@
 #include <OptFrame/Heuristics/Heuristics.hpp> // many metaheuristics here...
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/Util/Matrix.hpp>
-#include <OptFrame/Util/printable.h>
+#include <OptFrame/Util/printable.hpp>
 
 using namespace std;
 using namespace optframe;
@@ -29,7 +29,7 @@ namespace solver_kp01 {
 
 using ESolutionKP = std::pair<
   std::vector<bool>, // (representation)
-  Evaluation<int> // (objective value)
+  Evaluation<int>    // (objective value)
   >;
 
 // ==============================
