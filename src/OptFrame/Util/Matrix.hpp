@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 // TODO
 // Implement ITERATORS - Usage: to sort matrix based on a line or a column.
@@ -33,8 +35,7 @@
 
 // (...)
 // Put it this way: the operator() approach is never worse than, and sometimes
-// better than, the [][] approach. 
-
+// better than, the [][] approach.
 
 #ifndef MATRIX_H_
 #define MATRIX_H_
@@ -45,8 +46,7 @@
 
 using namespace std; // TODO: remove!
 
-namespace optframe
-{
+namespace optframe {
 
 /*
 class MatrixBadIndex
@@ -88,10 +88,9 @@ template<class T>
 class Matrix
 {
 public:
-
    Matrix(unsigned _quadratic = 1) noexcept
    {
-      rows = cols = (_quadratic?:1);
+      rows = cols = (_quadratic ?: 1);
 
       //if (rows == 0 || cols == 0)
       //   throw MatrixBadIndex("Matrix constructor has 0 size", 0, 0, 0, 0);
@@ -101,8 +100,8 @@ public:
 
    Matrix(unsigned _rows, unsigned _cols) noexcept
    {
-      rows = _rows?:1;
-      cols = _cols?:1;
+      rows = _rows ?: 1;
+      cols = _cols ?: 1;
 
       //if (rows == 0 || cols == 0)
       //   throw MatrixBadIndex("Matrix constructor has 0 size", 0, 0, 0, 0);
@@ -112,8 +111,8 @@ public:
 
    T& operator()(unsigned row, unsigned col) noexcept
    {
-      row = row >= rows?0:row;
-      col = col >= cols?0:col;
+      row = row >= rows ? 0 : row;
+      col = col >= cols ? 0 : col;
       //if (row >= rows || col >= cols)
       //   throw MatrixBadIndex("Matrix Out of Bounds Exception", row, col, rows, cols);
 
@@ -122,8 +121,8 @@ public:
 
    T operator()(unsigned row, unsigned col) const noexcept
    {
-      row = row >= rows?0:row;
-      col = col >= cols?0:col;
+      row = row >= rows ? 0 : row;
+      col = col >= cols ? 0 : col;
       //if (row >= rows || col >= cols)
       //   throw MatrixBadIndex("Matrix Out of Bounds Exception", row, col, rows, cols);
 
@@ -197,8 +196,7 @@ public:
    {
       vector<T> row(cols);
 
-      for (int i = 0; i < cols; i++)
-      {
+      for (int i = 0; i < cols; i++) {
          row[i] = operator()(_row, i);
       }
 
@@ -209,8 +207,7 @@ public:
    {
       int numCol = (_row.size() < cols) ? _row.size() : cols;
 
-      for (int i = 0; i < numCol; i++)
-      {
+      for (int i = 0; i < numCol; i++) {
          operator()(p, i) = _row[i];
       }
    }
@@ -219,8 +216,7 @@ public:
    {
       vector<T> col(rows);
 
-      for (int i = 0; i < rows; i++)
-      {
+      for (int i = 0; i < rows; i++) {
          col[i] = operator()(i, _col);
       }
 
@@ -231,21 +227,19 @@ public:
    {
       int numRow = (_col.size() < rows) ? _col.size() : rows;
 
-      for (int i = 0; i < numRow; i++)
-      {
+      for (int i = 0; i < numRow; i++) {
          operator()(i, p) = _col[i];
       }
    }
 
-   friend ostream& operator<<(ostream &os, const Matrix<T> &obj)
+   friend ostream& operator<<(ostream& os, const Matrix<T>& obj)
    {
       //const Matrix<T> &obj = *this;
       //os << "Matrix(" << obj.getRows() << "," << obj.getCols() << ")" << endl;
 
       os << endl;
 
-      for (unsigned int i = 0; i < obj.getNumRows(); i++)
-      {
+      for (unsigned int i = 0; i < obj.getNumRows(); i++) {
          for (unsigned int j = 0; j < obj.getNumCols(); j++)
             os << obj(i, j) << "\t";
          os << endl;

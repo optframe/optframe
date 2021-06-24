@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_MULTI_DIRECTION_HPP_
 #define OPTFRAME_MULTI_DIRECTION_HPP_
@@ -24,158 +26,157 @@
 #include <float.h>
 #include <limits>
 
-#include "Solution.hpp"
 #include "Evaluation.hpp"
 #include "Move.hpp"
 #include "MoveCost.hpp"
+#include "Solution.hpp"
 
 #include <iostream>
 
-#include "Component.hpp"
 #include "Action.hpp"
+#include "Component.hpp"
 
 using namespace std;
 using namespace scannerpp;
 
-namespace optframe
-{
+namespace optframe {
 
-class MultiDirection: public Component
+class MultiDirection : public Component
 {
 protected:
-	vector<Direction<>*> vDir;
+   vector<Direction<>*> vDir;
 
 public:
-	unsigned nObjectives;
+   unsigned nObjectives;
 
-	MultiDirection(vector<Direction<>*>& _vDir)
-	{
-		for(unsigned i = 0; i < _vDir.size(); i++)
-			if(_vDir[i])
-				vDir.push_back(_vDir[i]);
-		nObjectives = vDir.size();
-	}
+   MultiDirection(vector<Direction<>*>& _vDir)
+   {
+      for (unsigned i = 0; i < _vDir.size(); i++)
+         if (_vDir[i])
+            vDir.push_back(_vDir[i]);
+      nObjectives = vDir.size();
+   }
 
-	MultiDirection(MultiDirection& mDir) :
-			vDir(mDir.vDir), nObjectives(mDir.nObjectives)
-	{
-	}
+   MultiDirection(MultiDirection& mDir)
+     : vDir(mDir.vDir)
+     , nObjectives(mDir.nObjectives)
+   {
+   }
 
-	MultiDirection()
-	{
-		nObjectives = 0;
-	}
+   MultiDirection()
+   {
+      nObjectives = 0;
+   }
 
-	virtual ~MultiDirection()
-	{
-	}
+   virtual ~MultiDirection()
+   {
+   }
 
-	virtual MultiDirection& addObjective(Direction<>* ds)
-	{
-		if(ds)
-			vDir.push_back(ds);
-		nObjectives = vDir.size();
+   virtual MultiDirection& addObjective(Direction<>* ds)
+   {
+      if (ds)
+         vDir.push_back(ds);
+      nObjectives = vDir.size();
 
-		return *this;
-	}
+      return *this;
+   }
 
-	vector<Direction<>*>& getDirections()
-	{
-		return vDir;
-	}
+   vector<Direction<>*>& getDirections()
+   {
+      return vDir;
+   }
 
-	// ============ betterThan ===========
+   // ============ betterThan ===========
 
-	template<class T>
-	inline bool betterThan(unsigned obj, const T& a, const T& b)
-	{
-		return vDir[obj]->betterThan(a, b);
-	}
+   template<class T>
+   inline bool betterThan(unsigned obj, const T& a, const T& b)
+   {
+      return vDir[obj]->betterThan(a, b);
+   }
 
-	// ============ betterOrEquals ===========
+   // ============ betterOrEquals ===========
 
-	template<class T>
-	inline bool betterOrEquals(unsigned obj, const T& a, const T& b)
-	{
-		return vDir[obj]->betterOrEquals(a, b);
-	}
+   template<class T>
+   inline bool betterOrEquals(unsigned obj, const T& a, const T& b)
+   {
+      return vDir[obj]->betterOrEquals(a, b);
+   }
 
-	// ============ equals ============
+   // ============ equals ============
 
-	template<class T>
-	inline bool equals(unsigned obj, const T& a, const T& b)
-	{
-		return vDir[obj]->equals(a, b);
-	}
+   template<class T>
+   inline bool equals(unsigned obj, const T& a, const T& b)
+   {
+      return vDir[obj]->equals(a, b);
+   }
 
-	// ============= improvement =============
+   // ============= improvement =============
 
-	///inline bool isImprovement(unsigned obj, const MoveCost<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
+   ///inline bool isImprovement(unsigned obj, const MoveCost<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
    inline bool isImprovement(unsigned obj, const Evaluation<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
-	{
-		return vDir[obj]->isImprovement(mc, e1, e2);
-	}
+   {
+      return vDir[obj]->isImprovement(mc, e1, e2);
+   }
 
-	///inline bool isImprovement(unsigned obj, const MoveCost<>& mc)
+   ///inline bool isImprovement(unsigned obj, const MoveCost<>& mc)
    inline bool isImprovement(unsigned obj, const Evaluation<>& mc)
-	{
-		return vDir[obj]->isImprovement(mc);
-	}
+   {
+      return vDir[obj]->isImprovement(mc);
+   }
 
-	// ============= direction ==============
+   // ============= direction ==============
 
-	inline bool isMinimization(unsigned obj)
-	{
-		return vDir[obj]->isMinimization();
-	}
+   inline bool isMinimization(unsigned obj)
+   {
+      return vDir[obj]->isMinimization();
+   }
 
-	inline bool isMaximization(unsigned obj)
-	{
-		return vDir[obj]->isMaximization();
-	}
+   inline bool isMaximization(unsigned obj)
+   {
+      return vDir[obj]->isMaximization();
+   }
 
-	// ============ estimation =============
+   // ============ estimation =============
 
    inline double ideal(unsigned obj)
-	{
-		return vDir[obj]->ideal();
-	}
+   {
+      return vDir[obj]->ideal();
+   }
 
-	//inline double worst(unsigned obj)
+   //inline double worst(unsigned obj)
    inline double nadir(unsigned obj)
-	{
-		return vDir[obj]->nadir();
-	}
+   {
+      return vDir[obj]->nadir();
+   }
 
-	inline double min(unsigned obj)
-	{
-		return vDir[obj]->min();
-	}
+   inline double min(unsigned obj)
+   {
+      return vDir[obj]->min();
+   }
 
-	inline double max(unsigned obj)
-	{
-		return vDir[obj]->max();
-	}
+   inline double max(unsigned obj)
+   {
+      return vDir[obj]->max();
+   }
 
-	// ============= Component ===============
+   // ============= Component ===============
 
-	virtual bool compatible(string s)
-	{
-		return (s == idComponent()) || (Component::compatible(s));
-	}
+   virtual bool compatible(string s)
+   {
+      return (s == idComponent()) || (Component::compatible(s));
+   }
 
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << Component::idComponent() << ":MultiDirection";
-		return ss.str();
-	}
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << Component::idComponent() << ":MultiDirection";
+      return ss.str();
+   }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
-
+   virtual string id() const
+   {
+      return idComponent();
+   }
 };
 
 }

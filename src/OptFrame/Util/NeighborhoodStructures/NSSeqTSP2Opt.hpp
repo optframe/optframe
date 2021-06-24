@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_NSSEQTSP2OPT_HPP_
 #define OPTFRAME_NSSEQTSP2OPT_HPP_
@@ -92,86 +94,78 @@ using namespace optframe;
  \endportuguese
  */
 
-
-
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
-template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, class MOVE = MoveTSP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSP2Opt<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class NSSeqTSP2Opt: public NSSeq<XES, XEv>
+template<class T, class ADS, XBaseSolution<vector<T>, ADS> S, class MOVE = MoveTSP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSP2Opt<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+class NSSeqTSP2Opt : public NSSeq<XES, XEv>
 {
-	typedef vector<T> Route;
+   typedef vector<T> Route;
 
 private:
-	std::shared_ptr<P> p; // has to be the last
+   std::shared_ptr<P> p; // has to be the last
 
 public:
+   NSSeqTSP2Opt(std::shared_ptr<P> _p = nullptr)
+     : p(_p)
+   {
+   }
 
-	NSSeqTSP2Opt(std::shared_ptr<P> _p = nullptr)
-	:
-			p(_p)
-	{
-	}
+   virtual ~NSSeqTSP2Opt()
+   {
+   }
 
-	virtual ~NSSeqTSP2Opt()
-	{
-	}
-
-	uptr<Move<XES, XEv>> randomMove(const XES& s) override
-	{
+   uptr<Move<XES, XEv>> randomMove(const XES& s) override
+   {
       const Route& rep = s.first.getR();
-		if (rep.size() < 2)
-			return uptr<Move<XES, XEv>>(new MOVE(-1, -1, p));
+      if (rep.size() < 2)
+         return uptr<Move<XES, XEv>>(new MOVE(-1, -1, p));
 
-		int p1 = rand() % (rep.size() + 1);
-		int p2 = rand() % (rep.size() + 1);
+      int p1 = rand() % (rep.size() + 1);
+      int p2 = rand() % (rep.size() + 1);
 
-		do
-		{
-			p1 = rand() % (rep.size() + 1);
-			p2 = rand() % (rep.size() + 1);
-		}
-		while ((abs(p1 - p2) < 2) || (p1 > p2));
+      do {
+         p1 = rand() % (rep.size() + 1);
+         p2 = rand() % (rep.size() + 1);
+      } while ((abs(p1 - p2) < 2) || (p1 > p2));
 
-		// create 2-opt(p1,p2) move
-		return uptr<Move<XES, XEv>>(new MOVE(p1, p2, p));
-	}
+      // create 2-opt(p1,p2) move
+      return uptr<Move<XES, XEv>>(new MOVE(p1, p2, p));
+   }
 
-	virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& se) override
-	{
-		return uptr<NSIterator<XES, XEv>>(new NSITERATOR(se.first, p));
-	}
+   virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& se) override
+   {
+      return uptr<NSIterator<XES, XEv>>(new NSITERATOR(se.first, p));
+   }
 
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << NSSeq<XES, XEv>::idComponent() << ":NSSeqTSP2Opt";
-		return ss.str();
-	}
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << NSSeq<XES, XEv>::idComponent() << ":NSSeqTSP2Opt";
+      return ss.str();
+   }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
+   virtual string id() const
+   {
+      return idComponent();
+   }
 
-	virtual bool compatible(string s) 
-	{
-		return (s == idComponent()) || (NSSeq<XES, XEv>::compatible(s));
-	}
+   virtual bool compatible(string s)
+   {
+      return (s == idComponent()) || (NSSeq<XES, XEv>::compatible(s));
+   }
 
-	virtual string toString() const
-	{
-		stringstream ss;
-		ss << "NSSeqTSP2Opt with move: " << MOVE::idComponent();
+   virtual string toString() const
+   {
+      stringstream ss;
+      ss << "NSSeqTSP2Opt with move: " << MOVE::idComponent();
 
-		return ss.str();
-	}
+      return ss.str();
+   }
 };
-
-
 
 // compile tests
 
-using mynsseq_nsseq_tsp_2opt_test = NSSeqTSP2Opt<int, short, IsSolution<vector<int>, short> >;
+using mynsseq_nsseq_tsp_2opt_test = NSSeqTSP2Opt<int, short, IsSolution<vector<int>, short>>;
 //
-static_assert(std::is_base_of<nsseq_test_base, mynsseq_nsseq_tsp_2opt_test>::value,  "not inherited from NSSeq");
+static_assert(std::is_base_of<nsseq_test_base, mynsseq_nsseq_tsp_2opt_test>::value, "not inherited from NSSeq");
 
 #endif /*OPTFRAME_NSSEQTSP2OPT_HPP_*/

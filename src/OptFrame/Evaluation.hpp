@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_EVALUATION_HPP_
 #define OPTFRAME_EVALUATION_HPP_
@@ -26,7 +28,7 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "BaseConcepts.hpp" 
+#include "BaseConcepts.hpp"
 #include "Component.hpp"
 #include "MultiObjValue.hpp"  // inserting this beforehand.. who knows!!!
 #include "SingleObjValue.hpp" // basic value 'evtype' comes from here!
@@ -78,7 +80,6 @@ public:
    using objType = ObjType; // exporting 'objType' type, based on template 'ObjType'
    //
 protected:
-
    //static Evaluation<ObjType> costZero { Evaluation<ObjType>() };
    ObjType objValZero; //{ optframe::get_numeric_zero<ObjType>() };
 
@@ -92,15 +93,14 @@ protected:
 
 public:
    // boolean field to indicate if Evaluation needs an update
-   bool outdated {true};
+   bool outdated{ true };
    // boolean field to indicate if Evaluation value is an estimation (not exact)
-   bool estimated {false};
+   bool estimated{ false };
 
    // is minimization
-   bool isMini {true}; 
+   bool isMini{ true };
 
-
-   static constexpr int x {num_zero<int>()};
+   static constexpr int x{ num_zero<int>() };
 
    // ======================================
    // begin canonical part
@@ -153,7 +153,7 @@ public:
       //outdated = false;
       outdated = true;
       estimated = false;
-   }   
+   }
 
    // never put 'explicit' here!!
    Evaluation(const Evaluation<ObjType>& e)
@@ -174,7 +174,6 @@ public:
    virtual ~Evaluation()
    {
    }
-
 
    virtual Evaluation<ObjType>& operator=(const Evaluation<ObjType>& e)
    {
@@ -235,7 +234,7 @@ public:
    {
       return infMeasure;
    }
-/*
+   /*
    const vector<pair<ObjType, ObjType>>& getAlternativeCosts() const
    {
       return alternatives;
@@ -250,7 +249,7 @@ public:
    {
       infMeasure = inf;
    }
-/*
+   /*
    void addAlternativeCost(const pair<ObjType, ObjType>& alternativeCost)
    {
       alternatives.push_back(alternativeCost);
@@ -282,7 +281,7 @@ public:
    // ------------------
    // for global optimum
    // ------------------
-/*
+   /*
    GOS getGlobalOptimumStatus()
    {
       return gos;
@@ -331,8 +330,7 @@ public:
       return Evaluation<ObjType>(mcost);
    }
 
-
-/*
+   /*
    // this strictly better than parameter 'e' (for mini, 'this' < 'e')
    virtual bool betterStrict(const Evaluation<ObjType>& e) const
    {
@@ -387,7 +385,7 @@ public:
 		
       return isMini ? thisPlusE1 < e2Obj : thisPlusE1 > e2Obj;
 	}
-*/ 
+*/
 
    virtual bool equals(const Evaluation<ObjType>& e)
    {
@@ -471,25 +469,7 @@ static_assert(optframe::ostreamable<Evaluation<>>);
 //
 static_assert(XEvaluation<Evaluation<>>); // check default
 
-
-
 // ==================== end Evaluation ===========
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // Weighted and support to lexicographic computation
 // WLxEvaluation: depend on extended_arithmetics (+, - and *)
@@ -729,7 +709,6 @@ public:
    // finish MoveCost
    // =========
 
-
    // leave option to rewrite tolerance (or consider lexicographic values)
    virtual bool isFeasible() const
    {
@@ -784,11 +763,9 @@ public:
       os << me.toString();
       return os;
    }
-
 };
 
 } // namespace optframe
-
 
 struct basic_ev_test_copy
 {

@@ -1,76 +1,75 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_FI_SLOW_HPP_
 #define OPTFRAME_FI_SLOW_HPP_
 
+#include "../../Evaluator.hpp"
 #include "../../LocalSearch.hpp"
 #include "../../NSSeq.hpp"
-#include "../../Evaluator.hpp"
 
-namespace optframe
-{
+namespace optframe {
 
 template<XESolution XES, XEvaluation XEv = Evaluation<>>
-class FirstImprovementSlow: public LocalSearch<XES, XEv>
+class FirstImprovementSlow : public LocalSearch<XES, XEv>
 {
 private:
-	Evaluator<S>& eval;
-	NSSeq<S>& nsSeq;
+   Evaluator<S>& eval;
+   NSSeq<S>& nsSeq;
 
 public:
+   FirstImprovementSlow(Evaluator<S>& _eval, NSSeq<S>& _nsSeq)
+     : eval(_eval)
+     , nsSeq(_nsSeq)
+   {
+   }
 
-	FirstImprovementSlow(Evaluator<S>& _eval, NSSeq<S>& _nsSeq) :
-		eval(_eval), nsSeq(_nsSeq)
-	{
-	}
+   virtual ~FirstImprovementSlow()
+   {
+   }
 
-	virtual ~FirstImprovementSlow()
-	{
-	}
+   virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
+   {
+      Evaluation<>& e = eval.evaluate(s);
+      exec(s, e, timelimit, target_f);
+      delete &e;
+   }
 
-	virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
-	{
-		Evaluation<>& e = eval.evaluate(s);
-		exec(s, e, timelimit, target_f);
-		delete &e;
-	}
+   virtual void exec(Solution<R, ADS>& s, Evaluation<>& e, double timelimit, double target_f)
+   {
+      NSIterator<S, XEv>& it = nsSeq.getIterator(s);
+      string bestMoveId = "";
+      it.first();
 
-	virtual void exec(Solution<R, ADS>& s, Evaluation<>& e, double timelimit, double target_f)
-	{
-		NSIterator<S, XEv>& it = nsSeq.getIterator(s);
-		string bestMoveId = "";
-		it.first();
+      if (it.isDone()) {
+         delete &it;
+         return;
+      }
 
-		if (it.isDone())
-		{
-			delete &it;
-			return;
-		}
+      do {
+         Move<R, ADS>* move = &it.current();
 
-		do
-		{
-			Move<R, ADS>* move = &it.current();
-
-			// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-			/*
+         // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
+         /*
 			if(e.getLocalOptimumStatus(move->id()))
 			{
 				delete &it;
@@ -79,79 +78,72 @@ public:
 			}
 			*/
 
-			bestMoveId = move->id();
+         bestMoveId = move->id();
 
-			if (move->canBeApplied(s))
-			{
-				MoveCost<>* eCost = &eval.moveCost(*move, se); // estimated cost
+         if (move->canBeApplied(s)) {
+            MoveCost<>* eCost = &eval.moveCost(*move, se); // estimated cost
 
-				if(eval.isImprovement(*eCost))
-				{
-					if(eCost->isEstimated())
-					{
-						// TODO: find a real cost value...
-					}
+            if (eval.isImprovement(*eCost)) {
+               if (eCost->isEstimated()) {
+                  // TODO: find a real cost value...
+               }
 
-					if(eval.isImprovement(*eCost))
-					{
-						delete eCost;
+               if (eval.isImprovement(*eCost)) {
+                  delete eCost;
 
-						Component::safe_delete(move->apply(e, s));
-						delete move;
+                  Component::safe_delete(move->apply(e, s));
+                  delete move;
 
-						delete &it;
+                  delete &it;
 
-						eval.evaluate(e, s); // updates 'e'
+                  eval.evaluate(e, s); // updates 'e'
 
-						// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-						//e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
+                  // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
+                  //e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
 
-						return;
-					}
+                  return;
+               }
+            }
 
-				}
+            delete eCost;
+         }
 
-				delete eCost;
-			}
+         delete move;
 
-			delete move;
+         it.next();
+      } while (!it.isDone());
 
-			it.next();
-		}
-		while (!it.isDone());
+      // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
+      //if(bestMoveId != "")
+      //	e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local Optimum
 
-		// TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-		//if(bestMoveId != "")
-		//	e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local Optimum
+      delete &it;
+   }
 
-		delete &it;
-	}
+   virtual bool compatible(string s)
+   {
+      return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
+   }
 
-	virtual bool compatible(string s)
-	{
-		return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
-	}
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << LocalSearch<XES, XEv>::idComponent() << ":FISlow";
+      return ss.str();
+   }
 
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << LocalSearch<XES, XEv>::idComponent() << ":FISlow";
-		return ss.str();
-	}
+   virtual string id() const
+   {
+      return idComponent();
+   }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
-
-	virtual string toString() const
-	{
-		stringstream ss;
-		ss << "FISlow: " << nsSeq.toString();
-		return ss.str();
-	}
+   virtual string toString() const
+   {
+      stringstream ss;
+      ss << "FISlow: " << nsSeq.toString();
+      return ss.str();
+   }
 };
-
 
 }
 

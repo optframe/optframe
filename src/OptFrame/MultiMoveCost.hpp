@@ -1,153 +1,154 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_MULTI_MOVE_COST_HPP_
 #define OPTFRAME_MULTI_MOVE_COST_HPP_
 
+#include <cmath>
 #include <cstdlib>
 #include <iostream>
-#include <cmath>
 
+#include "BaseConcepts.hpp"
 #include "Component.hpp"
-#include "BaseConcepts.hpp" 
 #include "Evaluation.hpp"
 #include "MoveCost.hpp"
 
 using namespace std;
 
-namespace optframe
-{
+namespace optframe {
 
 //// more than 'objval' we need to ensure arithmetics here... TODO: see that (same as Evaluation)
 template<optframe::objval ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
 //template<class ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
-class MultiMoveCost: public Component
+class MultiMoveCost : public Component
 {
 protected:
-	vector<MoveCost<ObjType, XEv>*> vmc;
+   vector<MoveCost<ObjType, XEv>*> vmc;
 
 public:
-	explicit MultiMoveCost(vector<MoveCost<>*> _vmc) :
-			vmc(_vmc)
-	{
-	}
+   explicit MultiMoveCost(vector<MoveCost<>*> _vmc)
+     : vmc(_vmc)
+   {
+   }
 
-	MultiMoveCost(const MultiMoveCost<>& mc) :
-			vmc(mc.vmc)
-	{
-	}
+   MultiMoveCost(const MultiMoveCost<>& mc)
+     : vmc(mc.vmc)
+   {
+   }
 
-	virtual ~MultiMoveCost()
-	{
-	}
+   virtual ~MultiMoveCost()
+   {
+   }
 
-	int size() const
-	{
-		return vmc.size();
-	}
+   int size() const
+   {
+      return vmc.size();
+   }
 
-	bool hasCost(int k) const
-	{
-		return vmc[k];
-	}
+   bool hasCost(int k) const
+   {
+      return vmc[k];
+   }
 
-	bool isEstimated(int k) const
-	{
-		return vmc[k]->estimated;
-	}
+   bool isEstimated(int k) const
+   {
+      return vmc[k]->estimated;
+   }
 
-	const vector<pair<ObjType, ObjType> >& getAlternativeCosts(int k) const
-	{
-		return vmc[k]->alternatives;
-	}
+   const vector<pair<ObjType, ObjType>>& getAlternativeCosts(int k) const
+   {
+      return vmc[k]->alternatives;
+   }
 
-	ObjType getObjFunctionCost(int k) const
-	{
-		return vmc[k]->objFunction;
-	}
+   ObjType getObjFunctionCost(int k) const
+   {
+      return vmc[k]->objFunction;
+   }
 
-	ObjType getInfMeasureCost(int k) const
-	{
-		return vmc[k]->infMeasure;
-	}
+   ObjType getInfMeasureCost(int k) const
+   {
+      return vmc[k]->infMeasure;
+   }
 
-	void addAlternativeCost(const pair<ObjType, ObjType>& alternativeCost, int k)
-	{
-		vmc[k]->alternatives.push_back(alternativeCost);
-	}
+   void addAlternativeCost(const pair<ObjType, ObjType>& alternativeCost, int k)
+   {
+      vmc[k]->alternatives.push_back(alternativeCost);
+   }
 
-	void setAlternativeCosts(const vector<pair<ObjType, ObjType> >& alternativeCosts, int k)
-	{
-		vmc[k]->alternatives = alternativeCosts;
-	}
+   void setAlternativeCosts(const vector<pair<ObjType, ObjType>>& alternativeCosts, int k)
+   {
+      vmc[k]->alternatives = alternativeCosts;
+   }
 
-	void setObjFunctionCost(ObjType obj, int k)
-	{
-		vmc[k]->objFunction = obj;
-	}
+   void setObjFunctionCost(ObjType obj, int k)
+   {
+      vmc[k]->objFunction = obj;
+   }
 
-	void setInfMeasureCost(ObjType inf, int k)
-	{
-		vmc[k]->infMeasure = inf;
-	}
+   void setInfMeasureCost(ObjType inf, int k)
+   {
+      vmc[k]->infMeasure = inf;
+   }
 
-	ObjType cost(int k) const
-	{
-		return vmc[k]->cost();
-	}
+   ObjType cost(int k) const
+   {
+      return vmc[k]->cost();
+   }
 
-	static string idComponent()
-	{
-		return "OptFrame:MultiMoveCost";
-	}
+   static string idComponent()
+   {
+      return "OptFrame:MultiMoveCost";
+   }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
+   virtual string id() const
+   {
+      return idComponent();
+   }
 
-	virtual void print() const
-	{
-		cout << fixed; // disable scientific notation
-		cout << "MultiMoveCost for " << size() << " objectives:" << endl;
-		for(unsigned i=0; i<vmc.size(); i++)
-			if(vmc[i])
-				vmc[i]->print();
-			else
-				cout << "NO COST" << endl;
-	}
+   virtual void print() const
+   {
+      cout << fixed; // disable scientific notation
+      cout << "MultiMoveCost for " << size() << " objectives:" << endl;
+      for (unsigned i = 0; i < vmc.size(); i++)
+         if (vmc[i])
+            vmc[i]->print();
+         else
+            cout << "NO COST" << endl;
+   }
 
-	virtual MultiMoveCost<>& operator=(const MultiMoveCost<>& mmc)
-	{
-		if (&mmc == this) // auto ref check
-			return *this;
+   virtual MultiMoveCost<>& operator=(const MultiMoveCost<>& mmc)
+   {
+      if (&mmc == this) // auto ref check
+         return *this;
 
-		vmc = mmc.vmc; // TODO fix: this should handle some local instances, for the future...
+      vmc = mmc.vmc; // TODO fix: this should handle some local instances, for the future...
 
-		return *this;
-	}
+      return *this;
+   }
 
-	virtual MultiMoveCost<>& clone() const
-	{
-		return *new MultiMoveCost<>(*this);
-	}
+   virtual MultiMoveCost<>& clone() const
+   {
+      return *new MultiMoveCost<>(*this);
+   }
 };
 
 #ifndef NDEBUG

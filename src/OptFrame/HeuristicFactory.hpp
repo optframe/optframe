@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef HEURISTICFACTORY_HPP_
 #define HEURISTICFACTORY_HPP_
@@ -24,14 +26,13 @@
 #include <iostream>
 #include <string>
 
-#include "Solution.hpp"
-#include "MultiSolution.hpp"
 #include "MultiESolution.hpp"
+#include "MultiSolution.hpp"
+#include "Solution.hpp"
 
 #include "./Scanner++/Scanner.hpp"
 
 #include "OptFrameList.hpp"
-
 
 #include "RandGen.hpp"
 
@@ -40,31 +41,31 @@
 
 #include "Action.hpp"
 
-#include "SingleObjSearch.hpp"
-#include "MultiObjSearch.hpp"
 #include "LocalSearch.hpp"
+#include "MultiObjSearch.hpp"
+#include "SingleObjSearch.hpp"
 
 #include "Heuristics/Empty.hpp"
 
 //Heuristics
-#include "Heuristics/LocalSearches/RandomDescentMethod.hpp"
-#include "Heuristics/LocalSearches/HillClimbing.hpp"
 #include "Heuristics/LocalSearches/BestImprovement.hpp"
-#include "Heuristics/LocalSearches/FirstImprovement.hpp"
 #include "Heuristics/LocalSearches/CircularSearch.hpp"
+#include "Heuristics/LocalSearches/FirstImprovement.hpp"
+#include "Heuristics/LocalSearches/HillClimbing.hpp"
+#include "Heuristics/LocalSearches/RandomDescentMethod.hpp"
 #include "Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp"
 #include "Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp"
 //#include "Heuristics/LocalSearches/RVND.hpp"
 
 //Metaheuristics
 #include "Heuristics/EmptySingleObjSearch.hpp"
-#include "Heuristics/ILS/IteratedLocalSearch.hpp"
 #include "Heuristics/ILS/BasicIteratedLocalSearch.hpp"
+#include "Heuristics/ILS/IteratedLocalSearch.hpp"
 #include "Heuristics/ILS/IteratedLocalSearchLevels.hpp"
 //TODO ERROR on IntensifiedIteratedLocalSearchLevels
 //#include "Heuristics/ILS/IntensifiedIteratedLocalSearchLevels.hpp"
-#include "Heuristics/ILS/Intensification.hpp"
 #include "Heuristics/GRASP/BasicGRASP.hpp"
+#include "Heuristics/ILS/Intensification.hpp"
 #include "Heuristics/TS/BasicTabuSearch.hpp"
 //TODO ERROR on BasicGeneticAlgorithm
 //#include "Heuristics/EvolutionaryAlgorithms/BasicGeneticAlgorithm.hpp"
@@ -77,14 +78,12 @@
 
 #include "Solutions/CopySolution.hpp"
 
-
 //using namespace std;
 //using namespace optframe; (?????????????????) Don't use namespace declarations in headers
 
 // design pattern: Factory
 
-namespace optframe
-{
+namespace optframe {
 
 //template<XRepresentation R, class ADS = _ADS, XBaseSolution<S, XEv> S = CopySolution<S, XEv>, XEvaluation XEv = Evaluation<>>
 //template<class R, class ADS, XSolution S>
@@ -93,548 +92,502 @@ template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, X
 class HeuristicFactory
 {
 private:
-	sref<RandGen> rg;
+   sref<RandGen> rg;
 
 public:
+   map<string, vector<std::shared_ptr<Component>>> components;
+   vector<ComponentBuilder<S, XEv, XES, X2ES>*> builders;
+   vector<Action<S, XEv, XES, X2ES>*> actions;
+   map<string, vector<vector<sptr<Component>>>> componentLists;
 
-	map<string, vector<std::shared_ptr<Component>> > components;
-	vector<ComponentBuilder<S, XEv, XES, X2ES>* > builders;
-	vector<Action<S, XEv, XES, X2ES>* > actions;
-	map<string, vector<vector<sptr<Component>> > > componentLists;
+   ComponentBuilder<S, XEv, XES, X2ES>* getBuilder(string id)
+   {
+      for (unsigned i = 0; i < builders.size(); i++)
+         if (builders[i]->id() == id)
+            return builders[i];
+      return nullptr;
+   }
 
-	ComponentBuilder<S, XEv, XES, X2ES>* getBuilder(string id)
-	{
-		for(unsigned i=0; i<builders.size(); i++)
-			if(builders[i]->id() == id)
-				return builders[i];
-		return nullptr;
-	}
+   bool inComponents(std::shared_ptr<Component> c)
+   {
+      map<std::string, vector<std::shared_ptr<Component>>>::iterator iter;
+      for (iter = components.begin(); iter != components.end(); iter++) {
+         vector<std::shared_ptr<Component>> v = iter->second;
 
+         for (unsigned int i = 0; i < v.size(); i++)
+            if (v[i] == c)
+               return true;
+      }
 
-	bool inComponents(std::shared_ptr<Component> c)
-	{
-		map<std::string, vector<std::shared_ptr<Component>> >::iterator iter;
-		for(iter = components.begin(); iter != components.end(); iter++)
-		{
-			vector<std::shared_ptr<Component>> v = iter->second;
+      return false;
+   }
 
-			for (unsigned int i = 0; i < v.size(); i++)
-				if(v[i]==c)
-					return true;
-		}
+   Component* getNextComponent(Scanner& scanner, string* compName = nullptr, int* compNumber = nullptr)
+   {
+      if (!scanner.hasNext())
+         return nullptr;
 
-		return false;
-	}
+      std::string id = scanner.next();
 
-	Component* getNextComponent(Scanner& scanner, string* compName = nullptr, int* compNumber = nullptr)
-	{
-		if(!scanner.hasNext())
-			return nullptr;
+      if (!scanner.hasNextInt())
+         return nullptr;
 
-		std::string id = scanner.next();
+      int inumber = *scanner.nextInt();
 
-		if(!scanner.hasNextInt())
-			return nullptr;
+      if (inumber < 0)
+         return nullptr;
 
-		int inumber = *scanner.nextInt();
+      unsigned number = inumber;
 
-		if(inumber < 0)
-			return nullptr;
+      Component* component = nullptr;
 
-		unsigned number = inumber;
+      if (id[0] == ':') {
+         // COMPONENT SHORTCUT!
+         // look for pattern
+         map<std::string, vector<std::shared_ptr<Component>>>::iterator iter;
+         for (iter = components.begin(); iter != components.end(); iter++) {
+            string name = iter->first;
 
-		Component* component = nullptr;
+            int p = name.find(id, 0);
+            if ((p > 0) && (p + id.length() == name.length())) // exact match after position 'p'
+            {
+               component = iter->second.at(number);
+               id = name;
+               break;
+            }
+         }
+         if (!component)
+            cout << "HeuristicFactory warning: pattern of component '" << id << " " << number << "' not found" << endl;
+      } else {
+         // look for exact
+         if (components.count(id) > 0) {
+            vector<Component*> v = components[id];
 
-		if(id[0] == ':')
-		{
-			// COMPONENT SHORTCUT!
-			// look for pattern
-			map<std::string, vector<std::shared_ptr<Component>> >::iterator iter;
-			for(iter = components.begin(); iter != components.end(); iter++)
-			{
-				string name = iter->first;
+            if (number < v.size())
+               component = v[number];
+         } else
+            cout << "HeuristicFactory warning: component '" << id << " " << number << "' not found!" << endl;
+      }
 
-				int p = name.find(id, 0);
-				if((p > 0) && (p + id.length() == name.length())) // exact match after position 'p'
-				{
-					component = iter->second.at(number);
-					id = name;
-					break;
-				}
-			}
-			if(!component)
-				cout << "HeuristicFactory warning: pattern of component '" << id << " " << number << "' not found" << endl;
-		}
-		else
-		{
-			// look for exact
-			if(components.count(id) > 0)
-			{
-				vector<Component*> v = components[id];
+      if (compName && compNumber) {
+         (*compName) = id;
+         (*compNumber) = number;
+      }
 
-				if(number < v.size())
-					component = v[number];
-			}
-			else
-				cout << "HeuristicFactory warning: component '" << id << " " << number << "' not found!" << endl;
-		}
+      return component;
+   }
 
-		if(compName && compNumber)
-		{
-			(*compName) = id;
-			(*compNumber) = number;
-		}
+   template<class T>
+   void assign(std::shared_ptr<T>& component, unsigned number, string id)
+   {
+      // check prefix "OptFrame:"
+      if (id[0] != 'O') {
+         string id2 = id;
+         id = "OptFrame:";
+         id.append(id2);
+      }
 
-		return component;
-	}
+      if (!ComponentHelper::compareBase(T::idComponent(), id)) {
+         cout << "HeuristicFactory: incompatible assign '" << T::idComponent() << "' <- '" << id << "'";
+         cout << endl;
+         component = nullptr;
+         return;
+      }
 
-	template< class T > void assign(std::shared_ptr<T>& component, unsigned number, string id)
-	{
-		// check prefix "OptFrame:"
-		if (id[0] != 'O')
-		{
-			string id2 = id;
-			id = "OptFrame:";
-			id.append(id2);
-		}
+      if (components.count(id) > 0) {
+         vector<sptr<Component>>& v = components[id];
+         if (number < v.size()) {
+            component = std::shared_ptr<T>((T*)v[number].get()); // need to cast to type T...
+            return;
+         }
+      } else
+         cout << "'" << id << "' not found!" << endl;
 
-		if(!ComponentHelper::compareBase(T::idComponent(), id))
-		{
-			cout << "HeuristicFactory: incompatible assign '" << T::idComponent() << "' <- '" << id << "'";
-			cout << endl;
-			component = nullptr;
-			return;
-		}
+      // not found!
+      component = nullptr;
+   }
 
-		if(components.count(id) > 0)
-		{
-			vector<sptr<Component>>& v = components[id];
-			if(number < v.size()) 
-			{
-				component = std::shared_ptr<T>((T*)v[number].get()); // need to cast to type T...
-				return;
-			}
-		}
-		else
-			cout << "'" << id << "' not found!" << endl;
+   template<class T>
+   void assignList(vector<std::shared_ptr<T>>& cList, unsigned number, string _listId)
+   {
+      // type checking for safety!
+      string noList = ComponentHelper::typeOfList(_listId);
+      string listId = noList;
+      listId += "[]";
 
-		// not found!
-		component = nullptr;
-	}
+      if (!ComponentHelper::compareBase(T::idComponent(), noList)) {
+         cout << "HeuristicFactory: incompatible list assign '[" << T::idComponent() << "]' <- '[" << noList << "]'";
+         cout << endl;
+         return;
+      }
 
-	template< class T > void assignList(vector<std::shared_ptr<T>>& cList, unsigned number, string _listId)
-	{
-		// type checking for safety!
-		string noList = ComponentHelper::typeOfList(_listId);
-		string listId = noList;
-		listId += "[]";
+      if (componentLists.count(listId) > 0) {
+         vector<vector<sptr<Component>>>& vv = componentLists[listId];
+         if (number < vv.size())
+            for (unsigned i = 0; i < vv[number].size(); i++)
+               cList.push_back(sptr<T>((T*)vv[number][i].get()));
+      } else
+         cout << "'" << listId << " " << number << "' not found!" << endl;
+   }
 
-		if(!ComponentHelper::compareBase(T::idComponent(), noList))
-		{
-			cout << "HeuristicFactory: incompatible list assign '[" << T::idComponent() << "]' <- '[" << noList << "]'";
-			cout << endl;
-			return;
-		}
+   int addComponent(sref<Component> component, string id)
+   {
+      if (inComponents(component.sptr())) {
+         cout << "HeuristicFactory addComponent: component '" << component->id() << "' already registered!" << endl;
 
-		if(componentLists.count(listId) > 0)
-		{
-			vector<vector<sptr<Component>> >& vv = componentLists[listId];
-			if(number < vv.size())
-				for(unsigned i=0; i<vv[number].size(); i++)
-					cList.push_back(sptr<T>((T*)vv[number][i].get()));
-		}
-		else
-			cout << "'" << listId << " " << number << "' not found!" << endl;
-	}
+         return -1;
+      }
 
-	int addComponent(sref<Component> component, string id)
-	{
-		if(inComponents(component.sptr()))
-		{
-			cout << "HeuristicFactory addComponent: component '" << component->id()  << "' already registered!" << endl;
+      if (!component->compatible(id)) {
+         cout << "HeuristicFactory addComponent: incompatible components '";
+         cout << component->id() << "' and '" << id << "'!" << endl;
 
-			return -1;
-		}
+         return -1;
+      }
 
-		if(!component->compatible(id))
-		{
-			cout << "HeuristicFactory addComponent: incompatible components '";
-			cout << component->id() << "' and '" << id << "'!" << endl;
-
-			return -1;
-		}
-
-		vector<std::shared_ptr<Component>>& v = components[id];
+      vector<std::shared_ptr<Component>>& v = components[id];
       std::shared_ptr<Component> scomp = component.sptr();
-		v.push_back(scomp);
+      v.push_back(scomp);
 
-		int idx = components[id].size() - 1;
+      int idx = components[id].size() - 1;
 
-		//cout << "HeuristicFactory: added component '" << id << " " << idx << "'" << endl;
+      //cout << "HeuristicFactory: added component '" << id << " " << idx << "'" << endl;
 
-		return idx;
-	}
+      return idx;
+   }
 
-	int addComponent(Component& component)
-	{
-		return addComponent(component, component.id());
-	}
+   int addComponent(Component& component)
+   {
+      return addComponent(component, component.id());
+   }
 
-	template< class T > void readComponent(T*& component, Scanner& scanner)
-	{
-		std::string tmp = scanner.next();
+   template<class T>
+   void readComponent(T*& component, Scanner& scanner)
+   {
+      std::string tmp = scanner.next();
 
-		if(tmp != T::idComponent())
-		{
-			cout << "Error: expected '" << T::idComponent() << "' and found '" << tmp << "'.";
-			cout << endl;
-			component = nullptr;
+      if (tmp != T::idComponent()) {
+         cout << "Error: expected '" << T::idComponent() << "' and found '" << tmp << "'.";
+         cout << endl;
+         component = nullptr;
 
-			return;
-		}
+         return;
+      }
 
-		unsigned int number = *scanner.nextInt();
+      unsigned int number = *scanner.nextInt();
 
-		component = nullptr;
+      component = nullptr;
 
-		assign(component, number, tmp);
-	}
+      assign(component, number, tmp);
+   }
 
-	int addComponentList(vector<Component*>& cList, string _listId)
-	{
-		// type checking for safety!
-		string noList = ComponentHelper::typeOfList(_listId);
-		string listId = noList;
-		listId += "[]";
+   int addComponentList(vector<Component*>& cList, string _listId)
+   {
+      // type checking for safety!
+      string noList = ComponentHelper::typeOfList(_listId);
+      string listId = noList;
+      listId += "[]";
 
-		for(unsigned i=0; i<cList.size(); i++)
-			if((cList[i]==nullptr) || (!cList[i]->compatible(noList)))
-			{
-				cout << "Warning: incompatible components '";
-				cout << cList[i]->id() << "' and '" << ComponentHelper::typeOfList(listId) << "'!" << endl;
+      for (unsigned i = 0; i < cList.size(); i++)
+         if ((cList[i] == nullptr) || (!cList[i]->compatible(noList))) {
+            cout << "Warning: incompatible components '";
+            cout << cList[i]->id() << "' and '" << ComponentHelper::typeOfList(listId) << "'!" << endl;
 
-				return -1;
-			}
+            return -1;
+         }
 
-		vector<vector<Component*> >& v = componentLists[listId];
-		v.push_back(cList);
+      vector<vector<Component*>>& v = componentLists[listId];
+      v.push_back(cList);
 
-		int idx = componentLists[listId].size() - 1;
+      int idx = componentLists[listId].size() - 1;
 
-		//cout << "HeuristicFactory: added component list '" << listId << " " << idx << "'" << endl;
+      //cout << "HeuristicFactory: added component list '" << listId << " " << idx << "'" << endl;
 
-		return idx;
-	}
+      return idx;
+   }
 
-	int addComponentList(vector<Component*>& cList)
-	{
-		if((cList.size()>0) && (cList[0] != nullptr))
-		{
-			string listId = cList[0]->id();
-			listId += "[]";
+   int addComponentList(vector<Component*>& cList)
+   {
+      if ((cList.size() > 0) && (cList[0] != nullptr)) {
+         string listId = cList[0]->id();
+         listId += "[]";
 
-			return addComponentList(cList, listId);
-		}
-		else
-			return -1;
-	}
+         return addComponentList(cList, listId);
+      } else
+         return -1;
+   }
 
-
-	//! \english listComponents lists all available components that match a given pattern. \endenglish \portuguese listComponents lista todos componentes disponiveis que coincidem com um padrao dado. \endportuguese
-	/*!
+   //! \english listComponents lists all available components that match a given pattern. \endenglish \portuguese listComponents lista todos componentes disponiveis que coincidem com um padrao dado. \endportuguese
+   /*!
 		 \sa listComponents(string)
 	 */
-	vector<string> listComponents(string pattern)
-	{
-		vector<string> list;
+   vector<string> listComponents(string pattern)
+   {
+      vector<string> list;
 
-		map<std::string, vector<std::shared_ptr<Component>> >::iterator iter;
+      map<std::string, vector<std::shared_ptr<Component>>>::iterator iter;
 
-		for(iter = components.begin(); iter != components.end(); iter++)
-		{
-			vector<Component*> v = iter->second;
+      for (iter = components.begin(); iter != components.end(); iter++) {
+         vector<Component*> v = iter->second;
 
-			for (unsigned int i = 0; i < v.size(); i++)
-				if (ComponentHelper::compareBase(pattern, v[i]->id()))
-				{
-					stringstream ss;
-					ss << iter->first << " " << i;
-					list.push_back(ss.str());
-				}
-		}
+         for (unsigned int i = 0; i < v.size(); i++)
+            if (ComponentHelper::compareBase(pattern, v[i]->id())) {
+               stringstream ss;
+               ss << iter->first << " " << i;
+               list.push_back(ss.str());
+            }
+      }
 
-		return list;
-	}
+      return list;
+   }
 
-
-	//! \english listAllComponents lists all available OptFrame components. \endenglish \portuguese listAllComponents lista todos os componentes do OptFrame disponiveis. \endportuguese
-	/*!
+   //! \english listAllComponents lists all available OptFrame components. \endenglish \portuguese listAllComponents lista todos os componentes do OptFrame disponiveis. \endportuguese
+   /*!
 		 \sa listAllComponents()
 	 */
 
-	vector<string> listAllComponents()
-	{
-		return listComponents("OptFrame:");
-	}
+   vector<string> listAllComponents()
+   {
+      return listComponents("OptFrame:");
+   }
 
-
-	//! \english listComponents lists all available components that match a given pattern. \endenglish \portuguese listComponents lista todos componentes disponiveis que coincidem com um padrao dado. \endportuguese
-	/*!
+   //! \english listComponents lists all available components that match a given pattern. \endenglish \portuguese listComponents lista todos componentes disponiveis que coincidem com um padrao dado. \endportuguese
+   /*!
 		 \sa listComponents(string)
 	 */
-	vector<string> listComponentLists(string pattern)
-	{
-		vector<string> list;
+   vector<string> listComponentLists(string pattern)
+   {
+      vector<string> list;
 
-		map<std::string, vector<vector<sptr<Component>> > >::iterator iter;
+      map<std::string, vector<vector<sptr<Component>>>>::iterator iter;
 
-		for(iter = componentLists.begin(); iter != componentLists.end(); iter++)
-		{
-			vector<vector<Component*> > vl = iter->second;
+      for (iter = componentLists.begin(); iter != componentLists.end(); iter++) {
+         vector<vector<Component*>> vl = iter->second;
 
-			for (unsigned int i = 0; i < vl.size(); i++)
-				if (ComponentHelper::compareBase(pattern, iter->first))
-				{
-					stringstream ss;
-					ss << iter->first << " " << i;
-					list.push_back(ss.str());
-				}
-		}
+         for (unsigned int i = 0; i < vl.size(); i++)
+            if (ComponentHelper::compareBase(pattern, iter->first)) {
+               stringstream ss;
+               ss << iter->first << " " << i;
+               list.push_back(ss.str());
+            }
+      }
 
-		return list;
-	}
+      return list;
+   }
 
-	//! \english listBuilders lists all component builders that match a given pattern, with their respective parameters. \endenglish \portuguese listBuilders lista todos component builders, com seus respectivos parametros, que coincidem com um padrao dado. \endportuguese
-	/*!
+   //! \english listBuilders lists all component builders that match a given pattern, with their respective parameters. \endenglish \portuguese listBuilders lista todos component builders, com seus respectivos parametros, que coincidem com um padrao dado. \endportuguese
+   /*!
 		 \sa listComponents(string)
 	 */
 
-	vector<pair<string, vector<pair<string,string> > > > listBuilders(string pattern)
-	{
-		vector<pair<string, vector<pair<string,string> > > > list;
+   vector<pair<string, vector<pair<string, string>>>> listBuilders(string pattern)
+   {
+      vector<pair<string, vector<pair<string, string>>>> list;
 
-		for(unsigned i=0; i<builders.size(); i++)
-			if (ComponentHelper::compareBase(pattern, builders[i]->id()))
-				list.push_back(make_pair(builders[i]->id(), builders[i]->parameters()));
+      for (unsigned i = 0; i < builders.size(); i++)
+         if (ComponentHelper::compareBase(pattern, builders[i]->id()))
+            list.push_back(make_pair(builders[i]->id(), builders[i]->parameters()));
 
-		return list;
-	}
+      return list;
+   }
 
+   // ================================================================
+   // ================================================================
 
-	// ================================================================
-	// ================================================================
+   HeuristicFactory()
+     : rg(*new RandGen)
+   {
+   }
 
-	HeuristicFactory() :
-		rg(*new RandGen)
-	{
-	}
+   HeuristicFactory(RandGen _rg)
+     : rg(*new RandGen(_rg))
+   {
+   }
 
-	HeuristicFactory(RandGen _rg) :
-		rg(*new RandGen(_rg))
-	{
-	}
+   virtual ~HeuristicFactory()
+   {
+      clear();
 
-	virtual ~HeuristicFactory()
-	{
-		clear();
+      delete &rg;
 
-		delete& rg;
+      for (unsigned i = 0; i < builders.size(); i++)
+         delete builders.at(i);
+      builders.clear();
 
-		for(unsigned i=0; i<builders.size(); i++)
-			delete builders.at(i);
-		builders.clear();
+      for (unsigned i = 0; i < actions.size(); i++)
+         delete actions.at(i);
+      actions.clear();
+   }
 
-		for(unsigned i=0; i<actions.size(); i++)
-			delete actions.at(i);
-		actions.clear();
-	}
+   bool drop(string type, int id)
+   {
+      if (components.count(type) > 0) {
+         vector<Component*> v = components[type];
 
-	bool drop(string type, int id)
-	{
-		if(components.count(type) > 0)
-		{
-			vector<Component*> v = components[type];
+         if (id < ((int)v.size())) // else return false?
+         {
+            if (v[id] != nullptr) // else return false?
+            {
+               delete v[id];
+               v[id] = nullptr;
+               components[type] = v;
 
-			if(id < ((int)v.size())) // else return false?
-			{
-				if(v[id] != nullptr) // else return false?
-				{
-					delete v[id];
-					v[id] = nullptr;
-					components[type] = v;
+               return true;
+            }
+         }
+      }
 
-					return true;
-				}
-			}
-		}
+      return false;
+   }
 
-		return false;
-	}
+   // EMPTY ALL LISTS!
+   // Components, Builders and Actions
+   void clear()
+   {
+      map<std::string, vector<std::shared_ptr<Component>>>::iterator iter;
 
-	// EMPTY ALL LISTS!
-	// Components, Builders and Actions
-	void clear()
-	{
-		map<std::string, vector<std::shared_ptr<Component>> >::iterator iter;
+      for (iter = components.begin(); iter != components.end(); iter++) {
+         vector<std::shared_ptr<Component>> v = iter->second;
 
-		for(iter = components.begin(); iter != components.end(); iter++)
-		{
-			vector<std::shared_ptr<Component>> v = iter->second;
+         //for (unsigned int i = 0; i < v.size(); i++)
+         //	delete v[i];
 
-			//for (unsigned int i = 0; i < v.size(); i++)
-			//	delete v[i];
+         iter->second.clear();
+      }
 
-			iter->second.clear();
-		}
+      map<std::string, vector<vector<sptr<Component>>>>::iterator iter2;
 
-		map<std::string, vector<vector<sptr<Component>> > >::iterator iter2;
+      for (iter2 = componentLists.begin(); iter2 != componentLists.end(); iter2++) {
+         // Should not delete the components inside lists. They're already deleted!
+         iter2->second.clear();
+      }
+   }
 
-		for(iter2 = componentLists.begin(); iter2 != componentLists.end(); iter2++)
-		{
-			// Should not delete the components inside lists. They're already deleted!
-			iter2->second.clear();
-		}
-	}
+   sref<RandGen> getRandGen()
+   {
+      return rg;
+   }
 
+   pair<sptr<LocalSearch<XES, XEv>>, std::string> createLocalSearch(std::string str)
+   {
+      Scanner scanner(str);
 
-	sref<RandGen> getRandGen()
-	{
-		return rg;
-	}
+      // No heuristic!
+      if (!scanner.hasNext())
+         return pair<sptr<LocalSearch<XES, XEv>>, std::string>(nullptr, "");
 
+      string h = scanner.next();
 
-	pair<sptr<LocalSearch<XES, XEv>>, std::string> createLocalSearch(std::string str)
-	{
-		Scanner scanner(str);
+      if ((h == LocalSearch<XES, XEv>::idComponent()) || (h == "LocalSearch")) {
+         unsigned int id = *scanner.nextInt();
 
-		// No heuristic!
-		if (!scanner.hasNext())
-			return pair<sptr<LocalSearch<XES, XEv>>, std::string>(nullptr, "");
+         sptr<LocalSearch<XES, XEv>> mtd = nullptr;
 
-		string h = scanner.next();
+         assign(mtd, id, LocalSearch<XES, XEv>::idComponent());
 
-		if ((h == LocalSearch<XES, XEv>::idComponent()) || (h == "LocalSearch"))
-		{
-			unsigned int id = *scanner.nextInt();
+         if (!mtd)
+            return pair<sptr<LocalSearch<XES, XEv>>, std::string>(new EmptyLocalSearch<XES, XEv>, scanner.rest());
 
-			sptr<LocalSearch<XES, XEv>> mtd = nullptr;
+         return make_pair(mtd, scanner.rest());
+      }
 
-			assign(mtd, id, LocalSearch<XES, XEv>::idComponent());
+      if (h == EmptyLocalSearch<XES, XEv>::idComponent())
+         return pair<sptr<LocalSearch<XES, XEv>>, std::string>(new EmptyLocalSearch<XES, XEv>, scanner.rest());
 
-			if(!mtd)
-				return pair<sptr<LocalSearch<XES, XEv>>, std::string>(new EmptyLocalSearch<XES, XEv> , scanner.rest());
+      for (unsigned i = 0; i < builders.size(); i++) {
+         // build local search directly by builder name
+         if (builders[i]->id() == h) {
+            LocalSearch<XES, XEv>* ls = ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
+            return pair<sptr<LocalSearch<XES, XEv>>, std::string>(ls, scanner.rest());
+         }
 
-			return make_pair(mtd, scanner.rest());
-		}
+         // locate builder by local search name
+         if (builders[i]->canBuild(h)) {
+            LocalSearch<XES, XEv>* ls = ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
+            return pair<sptr<LocalSearch<XES, XEv>>, std::string>(ls, scanner.rest());
+         }
+      }
 
-		if (h == EmptyLocalSearch<XES, XEv>::idComponent())
-			return pair<sptr<LocalSearch<XES, XEv>>, std::string>(new EmptyLocalSearch<XES, XEv> , scanner.rest());
+      cout << "HeuristicFactory::createLocalSearch warning: no LocalSearch '" << h << "' found! ignoring..." << endl;
 
-		for(unsigned i=0; i<builders.size(); i++)
-		{
-			// build local search directly by builder name
-			if(builders[i]->id()==h)
-			{
-				LocalSearch<XES, XEv>* ls = ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
-				return pair<sptr<LocalSearch<XES, XEv>>, std::string>(ls, scanner.rest());
-			}
+      return pair<sptr<LocalSearch<XES, XEv>>, std::string>(nullptr, scanner.rest());
+   }
 
-			// locate builder by local search name
-			if(builders[i]->canBuild(h))
-			{
-				LocalSearch<XES, XEv>* ls = ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
-				return pair<sptr<LocalSearch<XES, XEv>>, std::string>(ls, scanner.rest());
-			}
-		}
+   pair<sptr<SingleObjSearch<XES>>, std::string> createSingleObjSearch(std::string str)
+   {
+      Scanner scanner(str);
 
-		cout << "HeuristicFactory::createLocalSearch warning: no LocalSearch '" << h << "' found! ignoring..." << endl;
+      // No heuristic!
+      if (!scanner.hasNext())
+         return pair<sptr<SingleObjSearch<XES>>, std::string>(nullptr, "");
 
-		return pair<sptr<LocalSearch<XES, XEv>>, std::string>(nullptr, scanner.rest());
-	}
+      string h = scanner.next();
 
+      if (h == SingleObjSearch<XES>::idComponent()) {
+         unsigned int id = *scanner.nextInt();
 
-	pair<sptr<SingleObjSearch<XES>>, std::string> createSingleObjSearch(std::string str)
-	{
-		Scanner scanner(str);
+         sptr<SingleObjSearch<XES>> mtd = nullptr;
 
-		// No heuristic!
-		if (!scanner.hasNext())
-			return pair<sptr<SingleObjSearch<XES>>, std::string>(nullptr, "");
+         assign(mtd, id, SingleObjSearch<XES>::idComponent());
 
-		string h = scanner.next();
+         if (!mtd)
+            return pair<sptr<SingleObjSearch<XES>>, std::string>(new EmptySingleObjSearch<XES, XEv>, scanner.rest());
 
-		if (h == SingleObjSearch<XES>::idComponent())
-		{
-			unsigned int id = *scanner.nextInt();
+         return pair<sptr<SingleObjSearch<XES>>, std::string>(mtd, scanner.rest());
+      }
 
-			sptr<SingleObjSearch<XES>> mtd = nullptr;
+      if (h == EmptySingleObjSearch<XES, XEv>::idComponent())
+         return pair<sptr<SingleObjSearch<XES>>, std::string>(new EmptySingleObjSearch<XES, XEv>, scanner.rest());
 
-			assign(mtd, id, SingleObjSearch<XES>::idComponent());
+      for (unsigned i = 0; i < builders.size(); i++) {
+         // build local search directly by builder name
+         if (builders[i]->id() == h) {
+            SingleObjSearch<XES>* sios = ((SingleObjSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
+            return pair<sptr<SingleObjSearch<XES>>, std::string>(sios, scanner.rest());
+         }
 
-			if(!mtd)
-				return pair<sptr<SingleObjSearch<XES>>, std::string>(new EmptySingleObjSearch<XES, XEv> , scanner.rest());
+         // locate builder by local search name
+         if (builders[i]->canBuild(h)) {
+            SingleObjSearch<XES>* sios = ((SingleObjSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
+            return pair<sptr<SingleObjSearch<XES>>, std::string>(sios, scanner.rest());
+         }
+      }
 
-			return pair<sptr<SingleObjSearch<XES>>, std::string>(mtd, scanner.rest());
-		}
+      cout << "HeuristicFactory::createSingleObjSearch warning: no SingleObjSearch '" << h << "' found! ignoring..." << endl;
 
-		if (h == EmptySingleObjSearch<XES, XEv>::idComponent())
-			return pair<sptr<SingleObjSearch<XES>>, std::string>(new EmptySingleObjSearch<XES, XEv> , scanner.rest());
+      return pair<sptr<SingleObjSearch<XES>>, std::string>(nullptr, scanner.rest());
+   }
 
-		for(unsigned i=0; i<builders.size(); i++)
-		{
-			// build local search directly by builder name
-			if(builders[i]->id()==h)
-			{
-				SingleObjSearch<XES>* sios = ((SingleObjSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
-				return pair<sptr<SingleObjSearch<XES>>, std::string>(sios, scanner.rest());
-			}
+   pair<MultiObjSearch<XES>*, std::string> createMultiObjSearch(std::string str)
+   {
+      Scanner scanner(str);
 
-			// locate builder by local search name
-			if(builders[i]->canBuild(h))
-			{
-				SingleObjSearch<XES>* sios = ((SingleObjSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
-				return pair<sptr<SingleObjSearch<XES>>, std::string>(sios, scanner.rest());
-			}
-		}
+      // No heuristic!
+      if (!scanner.hasNext())
+         return pair<MultiObjSearch<XES>*, std::string>(nullptr, "");
 
+      string h = scanner.next();
 
-		cout << "HeuristicFactory::createSingleObjSearch warning: no SingleObjSearch '" << h << "' found! ignoring..." << endl;
+      if (h == MultiObjSearch<XES>::idComponent()) {
+         unsigned int id = *scanner.nextInt();
 
-		return pair<sptr<SingleObjSearch<XES>>, std::string>(nullptr, scanner.rest());
-	}
+         MultiObjSearch<XES>* mtd = nullptr;
 
-	pair<MultiObjSearch<XES>*, std::string> createMultiObjSearch(std::string str)
-	{
-		Scanner scanner(str);
+         assign(mtd, id, MultiObjSearch<XES>::idComponent());
 
-		// No heuristic!
-		if (!scanner.hasNext())
-			return pair<MultiObjSearch<XES>*, std::string>(nullptr, "");
+         if (!mtd)
+            return make_pair(new EmptyMultiObjSearch<XES>, scanner.rest());
 
-		string h = scanner.next();
+         return make_pair(mtd, scanner.rest());
+      }
 
-		if (h == MultiObjSearch<XES>::idComponent())
-		{
-			unsigned int id = *scanner.nextInt();
+      if (h == EmptyMultiObjSearch<XES>::idComponent())
+         return make_pair(new EmptyMultiObjSearch<XES>, scanner.rest());
 
-			MultiObjSearch<XES>* mtd = nullptr;
+      cout << "HeuristicFactory::createMultiObjSearch warning: no MultiObjSearch '" << h << "' found! ignoring..." << endl;
 
-			assign(mtd, id, MultiObjSearch<XES>::idComponent());
-
-			if (!mtd)
-				return make_pair(new EmptyMultiObjSearch<XES>, scanner.rest());
-
-			return make_pair(mtd, scanner.rest());
-		}
-
-		if (h == EmptyMultiObjSearch<XES>::idComponent())
-			return make_pair(new EmptyMultiObjSearch<XES>, scanner.rest());
-
-		cout << "HeuristicFactory::createMultiObjSearch warning: no MultiObjSearch '" << h << "' found! ignoring..." << endl;
-
-		return pair<MultiObjSearch<XES>*, std::string>(nullptr, scanner.rest());
-	}
-
+      return pair<MultiObjSearch<XES>*, std::string>(nullptr, scanner.rest());
+   }
 };
 
 } // namespace optframe

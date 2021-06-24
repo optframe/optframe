@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef TSP_INITIALSOLUTION_Random_HPP_
 #define TSP_INITIALSOLUTION_Random_HPP_
@@ -39,52 +41,51 @@
 
 using namespace std;
 
-namespace TSP
-{
+namespace TSP {
 
 //class RandomInitialSolutionTSP: public Constructive<SolutionTSP>
-class RandomInitialSolutionTSP: public InitialSearch<ESolutionTSP, EvaluationTSP>
+class RandomInitialSolutionTSP : public InitialSearch<ESolutionTSP, EvaluationTSP>
 {
 private:
-	sref<ProblemInstance> pI;
+   sref<ProblemInstance> pI;
    sref<GeneralEvaluator<ESolutionTSP>> eval;
-	sref<RandGen> rg;
+   sref<RandGen> rg;
 
-	// Your private vars
+   // Your private vars
 
 public:
+   RandomInitialSolutionTSP(sref<ProblemInstance> _pI, sref<GeneralEvaluator<ESolutionTSP>> _eval, sref<RandGen> _rg)
+     : pI(_pI)
+     , eval(_eval)
+     , rg(_rg) // If necessary, add more parameters
+     {
+        // Put the rest of your code here
+     };
 
-	RandomInitialSolutionTSP(sref<ProblemInstance> _pI, sref<GeneralEvaluator<ESolutionTSP>> _eval, sref<RandGen> _rg) :
-      pI(_pI), eval(_eval), rg(_rg) // If necessary, add more parameters
-	{
-		// Put the rest of your code here
-	};
+   virtual ~RandomInitialSolutionTSP()
+   {
+   }
 
-	virtual ~RandomInitialSolutionTSP()
-	{
-	}
-
-	//std::optional<SolutionTSP> generateSolution(double timelimit) override
+   //std::optional<SolutionTSP> generateSolution(double timelimit) override
    std::pair<std::optional<ESolutionTSP>, SearchStatus> initialSearch(const StopCriteria<>& sosc) override
-	{
-		RepTSP newRep(pI->n);
+   {
+      RepTSP newRep(pI->n);
 
-		vector<int> r(pI->n);
-		for(unsigned int i=0;i<r.size();i++)
-			r[i]=i;
+      vector<int> r(pI->n);
+      for (unsigned int i = 0; i < r.size(); i++)
+         r[i] = i;
 
-		rg->shuffle(r); // shuffle elements of r
+      rg->shuffle(r); // shuffle elements of r
 
-		for(unsigned int i=0;i<newRep.size();i++)
-			newRep[i] = r[i];
+      for (unsigned int i = 0; i < newRep.size(); i++)
+         newRep[i] = r[i];
 
-		//return new CopySolution<RepTSP>(newRep);
+      //return new CopySolution<RepTSP>(newRep);
       //return make_optional(SolutionTSP(newRep));
       ESolutionTSP se(newRep, EvaluationTSP());
       eval->reevaluate(se);
       return make_pair(make_optional(se), SearchStatus::NO_REPORT);
-	}
-
+   }
 };
 
 }

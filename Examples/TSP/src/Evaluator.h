@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef TSP_EVALUATOR_HPP_
 #define TSP_EVALUATOR_HPP_
@@ -59,7 +61,8 @@ public:
    //using Evaluator<SolutionTSP>::evaluate; // prevents name hiding
 
    TSPEvaluator(sref<ProblemInstance> pI)
-     : Evaluator<SolutionTSP>(true), // ALLOW COSTS!
+     : Evaluator<SolutionTSP>(true)
+     , // ALLOW COSTS!
      pI(pI)
    {
       Minimizing = true;
@@ -146,9 +149,8 @@ public:
 
       //int ads;
       SolutionTSP s(r); // TODO: think
-      EvaluationTSP e; // TODO: think
+      EvaluationTSP e;  // TODO: think
       ESolutionTSP se = make_pair(s, e);
-
 
       NSIterator<ESolutionTSP>& it = *tspswap.getIterator(se);
       it.first();
@@ -162,7 +164,7 @@ public:
          Move<ESolutionTSP>& m = *it.current();
          //m.print();
          SolutionTSP s2(r); // TODO: think
-         EvaluationTSP e2; // TODO: think
+         EvaluationTSP e2;  // TODO: think
          ESolutionTSP se2 = make_pair(s2, e2);
 
          if (m.canBeApplied(se2)) {
@@ -170,7 +172,7 @@ public:
             //Evaluation<>* e = nullptr; // dummy // TODO:
             EvaluationTSP e; // dummy // TODO:
             pair<SolutionTSP, EvaluationTSP> pse(base, e);
-            
+
             //MoveCost<>& mc = *this->moveCost(m, pse);
             op<Evaluation<>> mc = this->moveCost(m, pse);
             doStats = true;
@@ -245,7 +247,8 @@ public:
    //using Evaluator<SolutionTSP>::evaluate; // prevents name hiding
 
    TSPRepEvaluator(sref<ProblemInstance> pI)
-     : Evaluator<RepTSP>(true), // ALLOW COSTS!
+     : Evaluator<RepTSP>(true)
+     , // ALLOW COSTS!
      pI(pI)
    {
       Minimizing = true;

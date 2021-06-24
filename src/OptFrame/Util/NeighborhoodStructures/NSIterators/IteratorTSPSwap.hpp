@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_ITERATORTSPSWAP_HPP_
 #define OPTFRAME_ITERATORTSPSWAP_HPP_
@@ -31,84 +33,77 @@ using namespace std;
 
 // Working structure: vector<T>
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class NSIteratorTSPSwap: public NSIterator<XES, XEv>
+template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>, ADS> S = CopySolution<vector<T>, ADS>, class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+class NSIteratorTSPSwap : public NSIterator<XES, XEv>
 {
-	typedef vector<T> Route;
+   typedef vector<T> Route;
 
 protected:
-	//MOVE* m;
+   //MOVE* m;
    uptr<Move<XES, XEv>> m;
-	int p1, p2; // position 1 and position 2, respectively
-	int n;
+   int p1, p2; // position 1 and position 2, respectively
+   int n;
 
-	P* p; // has to be the last
+   P* p; // has to be the last
 
 public:
+   NSIteratorTSPSwap(int _n, P* _p = nullptr)
+     : p(_p)
+   {
+      p1 = p2 = 0;
+      n = _n;
+      m = nullptr;
+   }
 
-	NSIteratorTSPSwap(int _n, P* _p = nullptr) :
-			p(_p)
-	{
-		p1 = p2 = 0;
-		n = _n;
-		m = nullptr;
-	}
+   virtual ~NSIteratorTSPSwap()
+   {
+   }
 
-	virtual ~NSIteratorTSPSwap()
-	{
-	}
+   virtual void first() override
+   {
+      if (n >= 2) {
+         p1 = 0;
+         p2 = 1;
+         m = uptr<MOVE>(new MOVE(p1, p2, p));
+      } else
+         m = nullptr;
+   }
 
-	virtual void first() override
-	{
-		if (n >= 2)
-		{
-			p1 = 0;
-			p2 = 1;
-			m = uptr<MOVE>(new MOVE(p1, p2, p));
-		}
-		else
-			m = nullptr;
-	}
+   virtual void next() override
+   {
+      if (!((p1 == n - 2) && (p2 == n - 1))) {
+         if (p2 < (n - 1))
+            p2++;
 
-	virtual void next() override
-	{
-		if (!((p1 == n - 2) && (p2 == n - 1)))
-		{
-			if (p2 < (n - 1))
-				p2++;
+         else {
+            p1++;
+            p2 = p1 + 1;
+         }
 
-			else
-			{
-				p1++;
-				p2 = p1 + 1;
-			}
+         m = uptr<MOVE>(new MOVE(p1, p2, p));
+      } else
+         m = nullptr;
+   }
 
-			m = uptr<MOVE>(new MOVE(p1, p2, p));
-		}
-		else
-			m = nullptr;
-	}
+   virtual bool isDone() override
+   {
+      return (m == nullptr);
+   }
 
-	virtual bool isDone() override
-	{
-		return (m == nullptr);
-	}
-
-	virtual uptr<Move<XES, XEv>> current() override
-	{
-		if (isDone())
-		{
-			cout << "There isnt any current element!" << endl;
-			cout << "NSSeqTSPSwap. Aborting." << endl;
-			exit(1);
-		}
+   virtual uptr<Move<XES, XEv>> current() override
+   {
+      if (isDone()) {
+         cout << "There isnt any current element!" << endl;
+         cout << "NSSeqTSPSwap. Aborting." << endl;
+         exit(1);
+      }
 
       // steal from 'm'
       uptr<Move<XES, XEv>> m2 = std::move(m);
       m = nullptr;
 
-		return m2;
-	}
+      return m2;
+   }
 };
 
 #endif /*OPTFRAME_ITERATORTSPSWAP_HPP_*/

@@ -1,84 +1,81 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_FILE_PRINTLN_MODULE_HPP_
 #define OPTFRAME_FILE_PRINTLN_MODULE_HPP_
 
 #include "../Command.hpp"
 
-namespace optframe
-{
+namespace optframe {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class FilePrintlnCommand: public Command<R, ADS, DS>
+class FilePrintlnCommand : public Command<R, ADS, DS>
 {
 public:
+   virtual ~FilePrintlnCommand()
+   {
+   }
 
-	virtual ~FilePrintlnCommand()
-	{
-	}
+   string id()
+   {
+      return "file.println";
+   }
 
-	string id()
-	{
-		return "file.println";
-	}
+   string usage()
+   {
+      return "file.println filename text";
+   }
 
-	string usage()
-	{
-		return "file.println filename text";
-	}
+   bool run(vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<string, string>&, map<string, vector<string>>&, string input)
+   {
+      Scanner scanner(input);
+      if (!scanner.hasNext()) // no file
+      {
+         cout << "Usage: " << usage() << endl;
+         return false;
+      }
 
-	bool run(vector<Command<R, ADS, DS>*>&, vector<PreprocessFunction<R, ADS, DS>*>&, HeuristicFactory<R, ADS, DS>&, map<string, string>&,  map< string,vector<string> >&, string input)
-	{
-		Scanner scanner(input);
-		if(!scanner.hasNext()) // no file
-		{
-			cout << "Usage: " << usage() << endl;
-			return false;
-		}
+      string filename = scanner.next();
 
-		string filename = scanner.next();
+      FILE* file = fopen(filename.c_str(), "a");
 
-		FILE* file = fopen(filename.c_str(), "a");
+      if (!file) {
+         cout << "file.println command: couldn't open file: '" << filename << "'" << endl;
+         return false;
+      }
 
-		if(!file)
-		{
-			cout << "file.println command: couldn't open file: '" << filename << "'" << endl;
-			return false;
-		}
+      string text = Scanner::trim(scanner.nextLine());
 
-		string text = Scanner::trim(scanner.nextLine());
+      fprintf(file, "%s\r\n", text.c_str());
 
-		fprintf(file, "%s\r\n", text.c_str());
+      fclose(file);
 
-		fclose(file);
+      return true;
+   }
 
-		return true;
-	}
-
-	virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string> >& ldictionary, string input)
-	{
-		return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
-	}
-
-
+   virtual string* preprocess(vector<PreprocessFunction<R, ADS, DS>*>& allFunctions, HeuristicFactory<R, ADS, DS>& hf, const map<string, string>& dictionary, const map<string, vector<string>>& ldictionary, string input)
+   {
+      return Command<R, ADS, DS>::defaultPreprocess(allFunctions, hf, dictionary, ldictionary, input);
+   }
 };
 
 }

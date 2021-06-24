@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_FCORE_FNSSEQ_HPP_
 #define OPTFRAME_FCORE_FNSSEQ_HPP_
@@ -35,7 +37,7 @@ namespace optframe {
 // this NSSeq uses "Boring" iterator... first, next, bla, bla...
 // -------------------------------------------------------------
 
-template< class IMS, XESolution XES>
+template<class IMS, XESolution XES>
 class FNSSeq final : public NSSeq<XES>
 {
    using XEv = typename XES::second_type;
@@ -47,39 +49,38 @@ public:
    using ims_type = IMS;
 
    uptr<Move<XES>> (*fRandom)(const XES&); // fRandom
-   IMS (*fIterator)(const XES&);           // fIterator (just initializes IMS)
-   void (*fFirst)(IMS&);                   // iterator.first()
-   void (*fNext)(IMS&);                    // iterator.next()
-   bool (*fIsDone)(IMS&);                  // iterator.isDone()
-   uptr<Move<XES>> (*fCurrent)(IMS&);       // iterator.current()
+   IMS (*fIterator)
+   (const XES&);                      // fIterator (just initializes IMS)
+   void (*fFirst)(IMS&);              // iterator.first()
+   void (*fNext)(IMS&);               // iterator.next()
+   bool (*fIsDone)(IMS&);             // iterator.isDone()
+   uptr<Move<XES>> (*fCurrent)(IMS&); // iterator.current()
 
    FNSSeq(
-      uptr<Move<XES>> (*_fRandom)(const XES&), // fRandom
-      IMS (*_fIterator)(const XES&),           // fIterator (just initializes IMS)
-      void (*_fFirst)(IMS&),                   // iterator.first()
-      void (*_fNext)(IMS&),                    // iterator.next()
-      bool (*_fIsDone)(IMS&),                  // iterator.isDone()
-      uptr<Move<XES>> (*_fCurrent)(IMS&)       // iterator.current()
-   )
-   :
-      fRandom{ _fRandom },
-      fIterator { _fIterator },
-      fFirst{ _fFirst },
-      fNext{ _fNext },
-      fIsDone { _fIsDone },
-      fCurrent { _fCurrent }
+     uptr<Move<XES>> (*_fRandom)(const XES&), // fRandom
+     IMS (*_fIterator)(const XES&),           // fIterator (just initializes IMS)
+     void (*_fFirst)(IMS&),                   // iterator.first()
+     void (*_fNext)(IMS&),                    // iterator.next()
+     bool (*_fIsDone)(IMS&),                  // iterator.isDone()
+     uptr<Move<XES>> (*_fCurrent)(IMS&)       // iterator.current()
+     )
+     : fRandom{ _fRandom }
+     , fIterator{ _fIterator }
+     , fFirst{ _fFirst }
+     , fNext{ _fNext }
+     , fIsDone{ _fIsDone }
+     , fCurrent{ _fCurrent }
    {
    }
 
    // copy constructor
-   FNSSeq(const FNSSeq& fnsseq) 
-      :
-      fRandom{ fnsseq.fRandom },
-      fIterator { fnsseq.fIterator },
-      fFirst{ fnsseq.fFirst },
-      fNext{ fnsseq.fNext },
-      fIsDone { fnsseq.fIsDone },
-      fCurrent { fnsseq.fCurrent }
+   FNSSeq(const FNSSeq& fnsseq)
+     : fRandom{ fnsseq.fRandom }
+     , fIterator{ fnsseq.fIterator }
+     , fFirst{ fnsseq.fFirst }
+     , fNext{ fnsseq.fNext }
+     , fIsDone{ fnsseq.fIsDone }
+     , fCurrent{ fnsseq.fCurrent }
    {
    }
 
@@ -92,9 +93,8 @@ private:
       FNSSeq<IMS, XES>& nsseq;
       //
       FNSIterator(const IMS& _ims, FNSSeq<IMS, XES>& _nsseq) noexcept
-        : 
-        ims{ _ims },
-        nsseq{ _nsseq }
+        : ims{ _ims }
+        , nsseq{ _nsseq }
       {
       }
 

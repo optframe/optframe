@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 // Scanner Object - Scanner++
 
@@ -42,241 +44,238 @@
 
 Scanner::Scanner(File* inputfile)
 {
-	this->inputfile = inputfile;
-	this->input = inputfile->file;
-	useDefaultSeparators();
+   this->inputfile = inputfile;
+   this->input = inputfile->file;
+   useDefaultSeparators();
 }
 
 Scanner::Scanner(istream* input)
 {
-	this->inputfile = nullptr;
-	this->input = input;
-	useDefaultSeparators();
+   this->inputfile = nullptr;
+   this->input = input;
+   useDefaultSeparators();
 }
 
 Scanner::Scanner(string input)
 {
-	this->inputfile = nullptr;
-	this->input = new istringstream(input);
-	useDefaultSeparators();
+   this->inputfile = nullptr;
+   this->input = new istringstream(input);
+   useDefaultSeparators();
 }
 
 Scanner::~Scanner()
 {
-	close();
+   close();
 }
 
-void Scanner::useDefaultSeparators()
+void
+Scanner::useDefaultSeparators()
 {
-	useSeparators(string("\n\r\t "));	
+   useSeparators(string("\n\r\t "));
 }
 
-void Scanner::useSeparators(string s)
+void
+Scanner::useSeparators(string s)
 {
-	sep = s;
+   sep = s;
 }
 
-bool Scanner::inSeparators(char c)
+bool
+Scanner::inSeparators(char c)
 {
-	for(unsigned int i=0;i<sep.length();i++)
-		if(sep[i] == c)
-			return true;
-	return false;
-}
-
-// =================================================================
-// =================================================================
-
-bool Scanner::hasNextChar()
-{
-	if(input->eof())
-		return false;
-
-	char x = input->get();
-	
-	//cout << "get = " << x << " (" << (int)x << ")" << endl;
-	 
-	if(x > 0)
-	{
-		input->putback(x);
-		return true;	
-	}
-	
-	if(x==0)
-	{
-		input->putback(x);
-		return false;	
-	}
-	
-	return false;
-}
-
-char Scanner::nextChar()
-{
-	char x = input->get();
-		
-	if (x <= 0)
-	{
-		cerr << "Excecao: Nao ha proximo char!" << endl;
-		exit(1);	
-	}
-
-	return x;	
+   for (unsigned int i = 0; i < sep.length(); i++)
+      if (sep[i] == c)
+         return true;
+   return false;
 }
 
 // =================================================================
 // =================================================================
 
-int Scanner::nextInt()
+bool
+Scanner::hasNextChar()
 {
-	int x;
-	istringstream myStream(next());
-	if (myStream>>x)
-		return x;
-	else
-	{
-		cerr << "Scanner++: Falha na conversao nextInt()." << endl;
-		exit(1);
-	}
+   if (input->eof())
+      return false;
+
+   char x = input->get();
+
+   //cout << "get = " << x << " (" << (int)x << ")" << endl;
+
+   if (x > 0) {
+      input->putback(x);
+      return true;
+   }
+
+   if (x == 0) {
+      input->putback(x);
+      return false;
+   }
+
+   return false;
 }
 
-long Scanner::nextLong()
+char
+Scanner::nextChar()
 {
-	long x;
-	istringstream myStream(next());
-	if (myStream>>x)
-		return x;
-	else
-	{
-		cerr << "Scanner++: Falha na conversao nextLong()." << endl;
-		exit(1);
-	}
-}
-	
-float Scanner::nextFloat()
-{
-	float x;
-	istringstream myStream(next());
-	if (myStream>>x)
-		return x;
-	else
-	{
-		cerr << "Scanner++: Falha na conversao nextFloat()." << endl;
-		exit(1);
-	}
-	
-}
-	
-double Scanner::nextDouble()
-{
-	double x;
-	istringstream myStream(next());
-	if (myStream>>x)
-		return x;
-	else
-	{
-		cerr << "Scanner++: Falha na conversao nextDouble()." << endl;
-		exit(1);
-	}
-	
+   char x = input->get();
+
+   if (x <= 0) {
+      cerr << "Excecao: Nao ha proximo char!" << endl;
+      exit(1);
+   }
+
+   return x;
 }
 
 // =================================================================
 // =================================================================
 
-bool Scanner::hasNext()
+int
+Scanner::nextInt()
 {
-	if(!hasNextChar())
-		return false;
-
-	vector<char> buffer;
-
-	char novo = nextChar();
-	
-	bool next = true;
-	
-	while( inSeparators(novo) )
-	{
-		buffer.push_back(novo);
-		
-		if( !(hasNextChar()) )
-		{
-			next = false;
-			break;	
-		}	
-	
-		novo = nextChar();
-	}
-	
-	if(next) // ha proximo!	
-		input->putback(novo);
-
-    //devolver o buffer ao IO
-	while(buffer.size()>0)
-	{
-		input->putback(buffer.at(buffer.size()-1));
-		buffer.erase(buffer.begin()+(buffer.size()-1));
-	}	
-	
-	return next;
-}	
-
-std::string Scanner::next()
-{
-	std::string x = "";
-	
-	// Consome caracteres iniciais
-	while(hasNextChar())
-	{
-		char c = nextChar();
-		
-		if( !inSeparators(c))
-		{
-			x = x + c;
-			break;
-		}	
-	}
-	
-	while(hasNextChar())
-	{
-		char c = nextChar();
-		
-		if( inSeparators(c) )
-		{
-			input->putback(c);
-			break;
-		}
-		
-		x = x + c;		
-	}
-	
-	return x;
-}	
-
-bool Scanner::hasNextLine()
-{
-	cout << "Unimplemented hasNextLine() -> calling hasNext()" << endl;
-	return hasNext();
+   int x;
+   istringstream myStream(next());
+   if (myStream >> x)
+      return x;
+   else {
+      cerr << "Scanner++: Falha na conversao nextInt()." << endl;
+      exit(1);
+   }
 }
 
-std::string Scanner::nextLine()
+long
+Scanner::nextLong()
 {
-	string backup_sep = sep;
-	useSeparators("\n");
-	string linha = next();
-	useSeparators(backup_sep);
+   long x;
+   istringstream myStream(next());
+   if (myStream >> x)
+      return x;
+   else {
+      cerr << "Scanner++: Falha na conversao nextLong()." << endl;
+      exit(1);
+   }
+}
 
-	return linha;
-}	
+float
+Scanner::nextFloat()
+{
+   float x;
+   istringstream myStream(next());
+   if (myStream >> x)
+      return x;
+   else {
+      cerr << "Scanner++: Falha na conversao nextFloat()." << endl;
+      exit(1);
+   }
+}
+
+double
+Scanner::nextDouble()
+{
+   double x;
+   istringstream myStream(next());
+   if (myStream >> x)
+      return x;
+   else {
+      cerr << "Scanner++: Falha na conversao nextDouble()." << endl;
+      exit(1);
+   }
+}
 
 // =================================================================
 // =================================================================
 
-void Scanner::close()
+bool
+Scanner::hasNext()
 {
-	if(inputfile)
-	{
-		delete inputfile;
-		inputfile = nullptr;	
-	}	
+   if (!hasNextChar())
+      return false;
+
+   vector<char> buffer;
+
+   char novo = nextChar();
+
+   bool next = true;
+
+   while (inSeparators(novo)) {
+      buffer.push_back(novo);
+
+      if (!(hasNextChar())) {
+         next = false;
+         break;
+      }
+
+      novo = nextChar();
+   }
+
+   if (next) // ha proximo!
+      input->putback(novo);
+
+   //devolver o buffer ao IO
+   while (buffer.size() > 0) {
+      input->putback(buffer.at(buffer.size() - 1));
+      buffer.erase(buffer.begin() + (buffer.size() - 1));
+   }
+
+   return next;
+}
+
+std::string
+Scanner::next()
+{
+   std::string x = "";
+
+   // Consome caracteres iniciais
+   while (hasNextChar()) {
+      char c = nextChar();
+
+      if (!inSeparators(c)) {
+         x = x + c;
+         break;
+      }
+   }
+
+   while (hasNextChar()) {
+      char c = nextChar();
+
+      if (inSeparators(c)) {
+         input->putback(c);
+         break;
+      }
+
+      x = x + c;
+   }
+
+   return x;
+}
+
+bool
+Scanner::hasNextLine()
+{
+   cout << "Unimplemented hasNextLine() -> calling hasNext()" << endl;
+   return hasNext();
+}
+
+std::string
+Scanner::nextLine()
+{
+   string backup_sep = sep;
+   useSeparators("\n");
+   string linha = next();
+   useSeparators(backup_sep);
+
+   return linha;
+}
+
+// =================================================================
+// =================================================================
+
+void
+Scanner::close()
+{
+   if (inputfile) {
+      delete inputfile;
+      inputfile = nullptr;
+   }
 }

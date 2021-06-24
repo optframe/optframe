@@ -1,103 +1,101 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef TSP2_EVALUATOR_HPP_
 #define TSP2_EVALUATOR_HPP_
 
 //#include <cmath>
-#include <stdlib.h>
 #include <math.h>
+#include <stdlib.h>
 
 #include "../../OptFrame/Evaluation.hpp"
 #include "../../OptFrame/Evaluator.hpp"
 
-#include "Representation.h"
 #include "Evaluation.h"
+#include "Representation.h"
 
 #include "ProblemInstance.h"
 
 #define TSP_EPSILON 0.0001
 
-namespace TSP2
-{
+namespace TSP2 {
 
-class MyEvaluator: public Evaluator<SolutionTSP>
+class MyEvaluator : public Evaluator<SolutionTSP>
 {
 private:
-	ProblemInstance& pTSP;
+   ProblemInstance& pTSP;
 
 public:
+   long long evaluations;
 
-	long long evaluations;
+   using Evaluator<SolutionTSP>::evaluate; // prevents name hiding
 
-	using Evaluator<SolutionTSP>::evaluate; // prevents name hiding
+   MyEvaluator(ProblemInstance& _pTSP)
+     : pTSP(_pTSP)
+   {
+      evaluations = 0;
+   }
 
-	MyEvaluator(ProblemInstance& _pTSP) :
-			pTSP(_pTSP)
-	{
-		evaluations = 0;
-	}
+   Evaluation<> evaluate(const RepTSP& r, const OPTFRAME_DEFAULT_ADS*) override
+   {
+      evaluations++;
+      double fo = 0; // Evaluation<> Function Value
 
-	Evaluation<> evaluate(const RepTSP& r, const OPTFRAME_DEFAULT_ADS*) override
-	{
-		evaluations++;
-		double fo = 0; // Evaluation<> Function Value
+      for (int i = 0; i < ((int)r.size()) - 1; i++) {
+         int j = r.at(i);
+         int z = r.at(i + 1);
 
-		for (int i = 0; i < ((int) r.size()) - 1; i++)
-		{
-			int j = r.at(i);
-			int z = r.at(i + 1);
+         double val = pTSP.dist(j, z);
+         fo += val;
+      }
 
-			double val = pTSP.dist(j, z);
-			fo += val;
-		}
+      int k = r.at(((int)r.size()) - 1);
+      int l = r.at(0);
 
-		int k = r.at(((int) r.size()) - 1);
-		int l = r.at(0);
+      double val = pTSP.dist(k, l);
+      fo += val;
 
-		double val = pTSP.dist(k, l);
-		fo += val;
+      return Evaluation(fo);
+   }
 
-		return Evaluation(fo);
-	}
+   virtual bool betterThan(double f1, double f2)
+   {
+      return (f1 < (f2 - TSP_EPSILON));
+   }
 
-	virtual bool betterThan(double f1, double f2)
-	{
-		return (f1 < (f2 - TSP_EPSILON));
-	}
+   virtual bool isMinimization() const
+   {
+      return true;
+   }
 
-	virtual bool isMinimization() const
-	{
-		return true;
-	}
+   virtual string id() const
+   {
+      return "OptFrame:Evaluator:MyEvaluator";
+   }
 
-	virtual string id() const
-	{
-		return "OptFrame:Evaluator:MyEvaluator";
-	}
-
-	void print() const
-	{
-		cout << "TSP evaluation function" << endl;
-	}
-
+   void print() const
+   {
+      cout << "TSP evaluation function" << endl;
+   }
 };
 
 }

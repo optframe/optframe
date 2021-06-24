@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_SOLUTION_HPP_
 #define OPTFRAME_SOLUTION_HPP_
@@ -30,8 +32,7 @@
 // basic elements of an OptFrame Component
 #include "Component.hpp"
 
-namespace optframe
-{
+namespace optframe {
 
 // the default ADS type is 'int'
 // adopting 'void' type would cause troubles in constructor/copy/move operations
@@ -66,258 +67,260 @@ template<XRepresentation R, class ADS = _ADS>
 class Solution : public Component
 {
 protected:
-	R* r;     // representation
-	ADS* ads; // auxiliary data structure
+   R* r;     // representation
+   ADS* ads; // auxiliary data structure
 
 public:
+   Solution(R* _r, ADS* _ads = nullptr)
+     : r(_r)
+     , ads(_ads)
+   {
+      assert(r);
+   }
 
-	Solution(R* _r, ADS* _ads = nullptr) :
-			r(_r), ads(_ads)
-	{
-		assert(r);
-	}
+   // copy constructor (implemented via copy constructor for R)
+   // TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
+   Solution(const R& _r)
+     : r(new R(_r))
+     , ads(nullptr)
+   {
+   }
 
-	// copy constructor (implemented via copy constructor for R)
-	// TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
-	Solution(const R& _r) :
-			r(new R(_r)), ads(nullptr)
-	{
-	}
+   // copy constructor (implemented via copy constructor for R and ADS)
+   // TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
+   Solution(const R& _r, const ADS& _ads)
+     : r(new R(_r))
+     , ads(new ADS(_ads))
+   {
+   }
 
-	// copy constructor (implemented via copy constructor for R and ADS)
-	// TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
-	Solution(const R& _r, const ADS& _ads) :
-			r(new R(_r)), ads(new ADS(_ads))
-	{
-	}
+   // move constructor (implemented via move constructor for R)
+   Solution(R&& _r)
+     : r(new R(std::move(_r)))
+     , ads(nullptr)
+   {
+   }
 
-	// move constructor (implemented via move constructor for R)
-	Solution(R&& _r) :
-			r(new R(std::move(_r))), ads(nullptr)
-	{
-	}
+   // move constructor (implemented via move constructor for R and ADS)
+   Solution(R&& _r, ADS&& _ads)
+     : r(new R(std::move(_r)))
+     , ads(new ADS(std::move(_ads)))
+   {
+   }
 
-	// move constructor (implemented via move constructor for R and ADS)
-	Solution(R&& _r, ADS&& _ads) :
-			r(new R(std::move(_r))), ads(new ADS(std::move(_ads)))
-	{
-	}
-
-	//! copy constructor
-	/*!
+   //! copy constructor
+   /*!
 	 Solution copy constructor will use copy constructor for R and ADS
 	 TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
 	 */
-	Solution(const Solution<R, ADS>& s) :
-			r(new R(*s.r)), ads(s.ads ? new ADS(*s.ads) : nullptr)
-	{
-	}
+   Solution(const Solution<R, ADS>& s)
+     : r(new R(*s.r))
+     , ads(s.ads ? new ADS(*s.ads) : nullptr)
+   {
+   }
 
-	//! move constructor
-	/*!
+   //! move constructor
+   /*!
 	 Solution move constructor will steal the pointers from the object to itself
 	 and set them to null in the object
 	 */
-	Solution(Solution<R, ADS> && s) :
-			r(s.r), ads(s.ads)
-	{
-		s.r = nullptr;
-		s.ads = nullptr;
-	}
+   Solution(Solution<R, ADS>&& s)
+     : r(s.r)
+     , ads(s.ads)
+   {
+      s.r = nullptr;
+      s.ads = nullptr;
+   }
 
-	// assignment operator (implemented via copy constructors for R and ADS)
-	// TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
-	Solution<R, ADS>& operator=(const Solution<R, ADS>& s)
-	{
-		if (&s == this) // auto ref check
-			return *this;
+   // assignment operator (implemented via copy constructors for R and ADS)
+   // TODO: in the future, this could be made using 'R.clone()' operation in #DEFINE option.
+   Solution<R, ADS>& operator=(const Solution<R, ADS>& s)
+   {
+      if (&s == this) // auto ref check
+         return *this;
 
-		// TODO: keep as a #DEFINE option? I don't see any advantage...
-		//(*r) = (*s.r);
-		delete r;
-		r = new R(*s.r);
-		if (ads)
-		{
-			// TODO: keep as a #DEFINE option? I don't see any advantage...
-			//(*ads) = (*s.ads);
-			delete ads;
-			ads = new ADS(*s.ads);
-		}
-		else
-			ads = nullptr;
+      // TODO: keep as a #DEFINE option? I don't see any advantage...
+      //(*r) = (*s.r);
+      delete r;
+      r = new R(*s.r);
+      if (ads) {
+         // TODO: keep as a #DEFINE option? I don't see any advantage...
+         //(*ads) = (*s.ads);
+         delete ads;
+         ads = new ADS(*s.ads);
+      } else
+         ads = nullptr;
 
-		return *this;
-	}
+      return *this;
+   }
 
-	//! move operator
-	/*!
+   //! move operator
+   /*!
 	 Solution move operator will steal the pointers from the object to itself
 	 and set them to null in the object
 	 */
-	Solution<R, ADS>& operator=(Solution<R, ADS> && s) noexcept
-	{
-		// steal pointer from s
-		r = s.r;
-		// steal pointer from s
-		ads = s.ads;
-		// make sure s forgets about its r and ads (if it existed before)
-		s.r = nullptr;
-		s.ads = nullptr;
+   Solution<R, ADS>& operator=(Solution<R, ADS>&& s) noexcept
+   {
+      // steal pointer from s
+      r = s.r;
+      // steal pointer from s
+      ads = s.ads;
+      // make sure s forgets about its r and ads (if it existed before)
+      s.r = nullptr;
+      s.ads = nullptr;
 
-		return *this;
-	}
+      return *this;
+   }
 
-	// destructor for Solution (must free R and ADS objects)
-	virtual ~Solution()
-	{
-		// if r not null
-		if (r)
-			delete r;
-		// if ads not null
-		if (ads)
-			delete ads;
-	}
+   // destructor for Solution (must free R and ADS objects)
+   virtual ~Solution()
+   {
+      // if r not null
+      if (r)
+         delete r;
+      // if ads not null
+      if (ads)
+         delete ads;
+   }
 
-	// ==================
-	// end canonical part
-	// ==================
+   // ==================
+   // end canonical part
+   // ==================
 
-	Solution<R, ADS>& clone() const
-	{
-		// if ads not null
-		if (ads)
-			return *new Solution<R, ADS>(*r, *ads);
-		else
-			return *new Solution<R, ADS>(*r);
-	}
+   Solution<R, ADS>& clone() const
+   {
+      // if ads not null
+      if (ads)
+         return *new Solution<R, ADS>(*r, *ads);
+      else
+         return *new Solution<R, ADS>(*r);
+   }
 
-	// returns true if ads is not null
-	bool hasADS() const
-	{
-		return ads;
-	}
+   // returns true if ads is not null
+   bool hasADS() const
+   {
+      return ads;
+   }
 
-	// =======
-	// setters
-	// =======
+   // =======
+   // setters
+   // =======
 
-	// setR with copy constructor
-	void setR(const R& _r)
-	{
-		// TODO: keep as a #DEFINE option? I don't see any advantage...
-		//(*r) = _r;
-		delete r;
-		r = new R(_r);
-	}
+   // setR with copy constructor
+   void setR(const R& _r)
+   {
+      // TODO: keep as a #DEFINE option? I don't see any advantage...
+      //(*r) = _r;
+      delete r;
+      r = new R(_r);
+   }
 
-	// setR with pointer copy
-	void setR(R* _r)
-	{
-		assert(_r);
-		delete r;
-		r = _r;
-	}
+   // setR with pointer copy
+   void setR(R* _r)
+   {
+      assert(_r);
+      delete r;
+      r = _r;
+   }
 
-	// setR with move semantics
-	void setR(R&& _r)
-	{
-		// move content from rhs param _r
-		(*r) = std::move(_r);
-	}
+   // setR with move semantics
+   void setR(R&& _r)
+   {
+      // move content from rhs param _r
+      (*r) = std::move(_r);
+   }
 
-	// setADS with copy constructor
-	void setADS(const ADS& _ads)
-	{
-		// TODO: keep as a #DEFINE option? I don't see any advantage...
-		//(*ads) = _ads;
-		if (ads)
-			delete ads;
-		ads = new ADS(_ads);
-	}
+   // setADS with copy constructor
+   void setADS(const ADS& _ads)
+   {
+      // TODO: keep as a #DEFINE option? I don't see any advantage...
+      //(*ads) = _ads;
+      if (ads)
+         delete ads;
+      ads = new ADS(_ads);
+   }
 
-	// setADS with pointer copy
-	void setADS(ADS* _ads)
-	{
-		if (ads)
-			delete ads;
-		ads = _ads;
-	}
+   // setADS with pointer copy
+   void setADS(ADS* _ads)
+   {
+      if (ads)
+         delete ads;
+      ads = _ads;
+   }
 
-	// setADS with move semantics
-	void setADS(ADS&& _ads)
-	{
-		// move content from rhs param _ads
-		(*ads) = std::move(_ads);
-	}
+   // setADS with move semantics
+   void setADS(ADS&& _ads)
+   {
+      // move content from rhs param _ads
+      (*ads) = std::move(_ads);
+   }
 
-	// =======
-	// getters
-	// =======
+   // =======
+   // getters
+   // =======
 
-	// get reference of r
-	R& getR()
-	{
-		return *r;
-	}
+   // get reference of r
+   R& getR()
+   {
+      return *r;
+   }
 
-	// get const reference of r
-	const R& getR() const
-	{
-		return *r;
-	}
+   // get const reference of r
+   const R& getR() const
+   {
+      return *r;
+   }
 
-	// contract: assumes hasADS() with positive result
-	ADS& getADS()
-	{
-		assert(hasADS());
-		return *ads;
-	}
+   // contract: assumes hasADS() with positive result
+   ADS& getADS()
+   {
+      assert(hasADS());
+      return *ads;
+   }
 
-	// contract: assumes hasADS() with positive result
-	const ADS& getADS() const
-	{
-		assert(hasADS());
-		return *ads;
-	}
+   // contract: assumes hasADS() with positive result
+   const ADS& getADS() const
+   {
+      assert(hasADS());
+      return *ads;
+   }
 
-	// get ADS pointer
-	ADS* getADSptr()
-	{
-		return ads;
-	}
+   // get ADS pointer
+   ADS* getADSptr()
+   {
+      return ads;
+   }
 
-	// get ADS pointer (const)
-	const ADS* getADSptr() const
-	{
-		return ads;
-	}
+   // get ADS pointer (const)
+   const ADS* getADSptr() const
+   {
+      return ads;
+   }
 
+   // =================
+   // begin Object part
+   // =================
 
-	// =================
-	// begin Object part
-	// =================
+   static string idComponent()
+   {
+      std::stringstream ss;
+      ss << Component::idComponent() << ":Solution";
+      return ss.str();
+   }
 
-	static string idComponent()
-	{
-		std::stringstream ss;
-		ss << Component::idComponent() << ":Solution";
-		return ss.str();
-	}
+   virtual string id() const
+   {
+      return idComponent();
+   }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
-
-	virtual string toString() const
-	{
-		std::stringstream ss;
-		ss << "Solution: " << *r;
-		if (ads)
-			ss << "ADS: " << ads;
-		return ss.str();
-	}
-
+   virtual string toString() const
+   {
+      std::stringstream ss;
+      ss << "Solution: " << *r;
+      if (ads)
+         ss << "ADS: " << ads;
+      return ss.str();
+   }
 };
 
 }

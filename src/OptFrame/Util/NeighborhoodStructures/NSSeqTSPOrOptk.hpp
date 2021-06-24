@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_NSSEQ_TSP_OROPTK_HPP_
 #define OPTFRAME_NSSEQ_TSP_OROPTK_HPP_
@@ -34,11 +36,10 @@ using namespace std;
 
 // Working structure: vector<vector<T> >
 
-
 using namespace optframe;
 
 //template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, class MOVE = MoveTSPOrOptk<T, ADS, S, XEv, XES>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPOrOptk<T, ADS, S, XEv, XES, MOVE, P>, XSearch<XES> XSH = std::pair<S, XEv>>
-template<class T, class ADS, XBaseSolution<vector<T>,ADS> S, class MOVE = MoveTSPOrOptk<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPOrOptk<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+template<class T, class ADS, XBaseSolution<vector<T>, ADS> S, class MOVE = MoveTSPOrOptk<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPOrOptk<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class NSSeqTSPOrOptk : public NSSeq<XES, XEv>
 {
    typedef vector<T> Route;
@@ -133,14 +134,11 @@ public:
    }
 };
 
-
 // compile tests
 //using mynsseq_nsseq_tsp_oroptk_test = NSSeqTSPOrOptk<int, short, IsSolution<vector<int>, short>, IsEvaluation<double>, pair<IsSolution<vector<int>, short>, IsEvaluation<double>> >;
 using mynsseq_nsseq_tsp_oroptk_test = NSSeqTSPOrOptk<int, short, IsSolution<vector<int>, short>>;
 //
-static_assert(std::is_base_of<nsseq_test_base, mynsseq_nsseq_tsp_oroptk_test>::value,  "not inherited from NSSeq");
-static_assert(!std::is_abstract<mynsseq_nsseq_tsp_oroptk_test>::value,  "abstract nsseq");
-
-
+static_assert(std::is_base_of<nsseq_test_base, mynsseq_nsseq_tsp_oroptk_test>::value, "not inherited from NSSeq");
+static_assert(!std::is_abstract<mynsseq_nsseq_tsp_oroptk_test>::value, "abstract nsseq");
 
 #endif /*OPTFRAME_NSSEQ_TSP_OROPTK_HPP_*/

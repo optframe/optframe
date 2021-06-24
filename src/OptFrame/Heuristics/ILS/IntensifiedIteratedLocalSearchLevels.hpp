@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_IILSL_HPP_
 #define OPTFRAME_IILSL_HPP_
@@ -24,159 +26,154 @@
 #include <math.h>
 #include <vector>
 
-#include "IntensifiedIteratedLocalSearch.hpp"
 #include "ILSLPerturbation.hpp"
 #include "Intensification.hpp"
+#include "IntensifiedIteratedLocalSearch.hpp"
 
 #include "../../LocalSearch.hpp"
 
-namespace optframe
-{
+namespace optframe {
 
-typedef pair<pair<int, int> , pair<int, int> > levelHistory;
+typedef pair<pair<int, int>, pair<int, int>> levelHistory;
 
 template<XESolution XES, XEvaluation XEv = Evaluation<>>
-class IntensifiedIteratedLocalSearchLevels: public IntensifiedIteratedLocalSearch<levelHistory, R, ADS, S>
+class IntensifiedIteratedLocalSearchLevels : public IntensifiedIteratedLocalSearch<levelHistory, R, ADS, S>
 {
 protected:
-	LocalSearch<XES, XEv>& ls;
-	Intensification<S, XEv>& h2;
-	ILSLPerturbation<S, XEv>& p;
-	int iterMax, levelMax;
+   LocalSearch<XES, XEv>& ls;
+   Intensification<S, XEv>& h2;
+   ILSLPerturbation<S, XEv>& p;
+   int iterMax, levelMax;
 
 public:
+   IntensifiedIteratedLocalSearchLevels(Evaluator<XES, XEv>& e, Constructive<S>& constructive, LocalSearch<XES, XEv>& _ls, Intensification<S, XEv>& _h2, ILSLPerturbation<S, XEv>& _p, int _iterMax, int _levelMax)
+     : IntensifiedIteratedLocalSearch<levelHistory, R, ADS>(e, constructive)
+     , ls(_ls)
+     , h2(_h2)
+     , p(_p)
+   {
+      iterMax = _iterMax;
+      levelMax = _levelMax;
+   }
 
-	IntensifiedIteratedLocalSearchLevels(Evaluator<XES, XEv>& e, Constructive<S>& constructive, LocalSearch<XES, XEv>& _ls, Intensification<S, XEv>& _h2, ILSLPerturbation<S, XEv>& _p, int _iterMax, int _levelMax) :
-		IntensifiedIteratedLocalSearch<levelHistory, R, ADS > (e, constructive), ls(_ls), h2(_h2), p(_p)
-	{
-		iterMax = _iterMax;
-		levelMax = _levelMax;
-	}
+   virtual ~IntensifiedIteratedLocalSearchLevels()
+   {
+   }
 
-	virtual ~IntensifiedIteratedLocalSearchLevels()
-	{
-	}
+   virtual levelHistory& initializeHistory()
+   {
+      //cout << "initializeHistory()" << endl;
+      pair<int, int> vars(0, 0);
 
-	virtual levelHistory& initializeHistory()
-	{
-		//cout << "initializeHistory()" << endl;
-		pair<int, int> vars(0, 0);
+      // IterMax e LevelMax
+      pair<int, int> maxs(iterMax, levelMax);
 
-		// IterMax e LevelMax
-		pair<int, int> maxs(iterMax, levelMax);
+      return *new levelHistory(vars, maxs);
+   }
 
-		return *new levelHistory(vars, maxs);
-	}
+   virtual void intensification(S& s, Evaluation<>& e, double timelimit, double target_f, levelHistory& history)
+   {
+      h2.addSolution(s);
 
-	virtual void intensification(S& s, Evaluation<>& e, double timelimit, double target_f, levelHistory& history)
-	{
-		h2.addSolution(s);
+      if (history.first.first == history.second.first - 1) //TODO intensification applied only at last iteration of each level
+      {
+         S& s1 = h2.search(s);
 
-		if (history.first.first == history.second.first-1) //TODO intensification applied only at last iteration of each level
-		{
-			S& s1 = h2.search(s);
+         Evaluator<XES, XEv>& ev = this->getEvaluator();
+         Evaluation<>& s1_e = ev.evaluate(s1);
 
-			Evaluator<XES, XEv> & ev = this->getEvaluator();
-			Evaluation<>& s1_e = ev.evaluate(s1);
+         if (ev.betterThan(s1_e, e)) {
+            e = s1_e;
+            s = s1;
+            h2.addSolution(s);
+         }
 
-			if (ev.betterThan(s1_e, e))
-			{
-				e = s1_e;
-				s = s1;
-				h2.addSolution(s);
-			}
+         delete &s1;
+      }
+   }
 
-			delete &s1;
-		}
+   virtual void localSearch(S& s, Evaluation<>& e, double timelimit, double target_f)
+   {
+      //cout << "localSearch(.)" << endl;
+      ls.searchFrom(s, e, timelimit, target_f);
+   }
 
-	}
+   virtual void perturbation(S& s, Evaluation<>& e, double timelimit, double target_f, levelHistory& history)
+   {
+      //cout << "perturbation(.)" << endl;
 
-	virtual void localSearch(S& s, Evaluation<>& e, double timelimit, double target_f)
-	{
-		//cout << "localSearch(.)" << endl;
-		ls.searchFrom(s, e, timelimit, target_f);
-	}
+      int iter = history.first.first;
+      int level = history.first.second;
+      int iterMax = history.second.first;
+      //int levelMax = history.second.second;
 
-	virtual void perturbation(S& s, Evaluation<>& e, double timelimit, double target_f, levelHistory& history)
-	{
-		//cout << "perturbation(.)" << endl;
+      //cout << "level = " << level << " e iter = " << iter << endl;
 
-		int iter = history.first.first;
-		int level = history.first.second;
-		int iterMax = history.second.first;
-		//int levelMax = history.second.second;
+      // nivel atual: 'level'
+      p.perturb(s, e, timelimit, target_f, level);
 
-		//cout << "level = " << level << " e iter = " << iter << endl;
+      // Incrementa a iteracao
+      iter++;
 
-		// nivel atual: 'level'
-		p.perturb(s, e, timelimit, target_f, level);
+      if (iter >= iterMax) {
+         iter = 0;
+         level++;
+         cout << "level " << level << ".." << endl;
+      }
 
-		// Incrementa a iteracao
-		iter++;
+      // Atualiza o historico
+      history.first.first = iter;
+      history.first.second = level;
+   }
 
-		if (iter >= iterMax)
-		{
-			iter = 0;
-			level++;
-			cout << "level " << level << ".." << endl;
-		}
+   virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, levelHistory& history)
+   {
+      if (IntensifiedIteratedLocalSearch<levelHistory, R, ADS>::evaluator.betterThan(e1, e2)) {
+         // =======================
+         //   Melhor solucao: 's2'
+         // =======================
+         cout << "Best fo: " << e1.evaluation();
+         cout << " on [iter " << history.first.first << " of level " << history.first.second << "]" << endl;
 
-		// Atualiza o historico
-		history.first.first = iter;
-		history.first.second = level;
-	}
+         // =======================
+         //  Atualiza o historico
+         // =======================
+         // iter = 0
+         history.first.first = 0;
+         // level = 0
+         history.first.second = 0;
 
-	virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, levelHistory& history)
-	{
-		if (IntensifiedIteratedLocalSearch<levelHistory, R, ADS >::evaluator.betterThan(e1, e2))
-		{
-			// =======================
-			//   Melhor solucao: 's2'
-			// =======================
-			cout << "Best fo: " << e1.evaluation();
-			cout << " on [iter " << history.first.first << " of level " << history.first.second << "]" << endl;
+         // =======================
+         //    Retorna s2
+         // =======================
 
-			// =======================
-			//  Atualiza o historico
-			// =======================
-			// iter = 0
-			history.first.first = 0;
-			// level = 0
-			history.first.second = 0;
+         h2.addSolution(s2); //Deprecated TODO
 
-			// =======================
-			//    Retorna s2
-			// =======================
+         return true;
+      } else
+         return false;
+   }
 
-			h2.addSolution(s2); //Deprecated TODO
+   virtual bool terminationCondition(levelHistory& history)
+   {
+      //cout << "terminationCondition(.)" << endl;
+      int level = history.first.second;
+      int levelMax = history.second.second;
 
-			return true;
-		}
-		else
-			return false;
-	}
+      return (level >= levelMax);
+   }
 
-	virtual bool terminationCondition(levelHistory& history)
-	{
-		//cout << "terminationCondition(.)" << endl;
-		int level = history.first.second;
-		int levelMax = history.second.second;
+   virtual string id() const
+   {
+      return idComponent();
+   }
 
-		return (level >= levelMax);
-	}
-
-	virtual string id() const
-	{
-		return idComponent();
-	}
-
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << IntensifiedIteratedLocalSearch<levelHistory, R, ADS >::idComponent() << "iils";
-		return ss.str();
-
-	}
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << IntensifiedIteratedLocalSearch<levelHistory, R, ADS>::idComponent() << "iils";
+      return ss.str();
+   }
 };
 
 }

@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 //Rename to mainTSP.cpp to run the example
 
@@ -27,8 +29,8 @@
 
 #define MaPI
 
-#include <stdlib.h>
 #include <math.h>
+#include <stdlib.h>
 
 #include <iostream>
 
@@ -36,50 +38,51 @@ using namespace std;
 
 #include <set>
 
-#include "../../OptFrame/Interpreter.hpp"
 #include "../../OptFrame/Experimental/VShuffle.hpp"
+#include "../../OptFrame/Interpreter.hpp"
 #include "../TSP.h"
 
-int main(int argc, char **argv)
+int
+main(int argc, char** argv)
 {
-	// Optimal value for berlin52 is 7542
+   // Optimal value for berlin52 is 7542
 
-	RandGen rg;
+   RandGen rg;
 
-	Scanner scanner(new File("../TSP/tsplib/berlin52.txt"));
+   Scanner scanner(new File("../TSP/tsplib/berlin52.txt"));
 
-	TSPProblemInstance* p = new TSPProblemInstance(scanner);
+   TSPProblemInstance* p = new TSPProblemInstance(scanner);
 
-	TSPEvaluator eval(p);
+   TSPEvaluator eval(p);
 
-	// MapReduce declaration
-	MaPI_MapReduce<RepTSP, RankAndStop, int, pair<RepTSP, double> , RepTSP> mapReduce;
-	TSPSerializer serializer;
-	MyMaPIMapper<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> mapper(&mapReduce, &serializer, eval);
-	MyMaPIReducer<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> reducer(&mapReduce, &serializer, eval);
+   // MapReduce declaration
+   MaPI_MapReduce<RepTSP, RankAndStop, int, pair<RepTSP, double>, RepTSP> mapReduce;
+   TSPSerializer serializer;
+   MyMaPIMapper<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> mapper(&mapReduce, &serializer, eval);
+   MyMaPIReducer<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> reducer(&mapReduce, &serializer, eval);
 
-	srand(clock() + mapReduce.getMPIRank()); // Setting seed according to mpi rank
+   srand(clock() + mapReduce.getMPIRank()); // Setting seed according to mpi rank
 
-	RandomInitialSolutionTSP is(p, rg);
+   RandomInitialSolutionTSP is(p, rg);
 
-	SolutionTSP& s = is.generateSolution();
-	s.print();
-	EvaluationTSP * e = &eval.evaluate(s);
-	e->print();
-	cout << endl;
+   SolutionTSP& s = is.generateSolution();
+   s.print();
+   EvaluationTSP* e = &eval.evaluate(s);
+   e->print();
+   cout << endl;
 
-	Interpreter<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe(rg);
-	optframe.factory.add_initsol(&is);
-	optframe.factory.add_ev(&eval);
-	optframe.factory.add_ns(new NSEnumSwap(p, rg));
-	optframe.factory.add_method(new VShuffle<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> );
+   Interpreter<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP> optframe(rg);
+   optframe.factory.add_initsol(&is);
+   optframe.factory.add_ev(&eval);
+   optframe.factory.add_ns(new NSEnumSwap(p, rg));
+   optframe.factory.add_method(new VShuffle<RepTSP, OPTFRAME_DEFAULT_ADS, MemTSP>);
 
-	// Adding MapReduce to factory
-	optframe.factory.setMapReduce(&serializer, &mapReduce, &mapper, &reducer, argc, argv);
+   // Adding MapReduce to factory
+   optframe.factory.setMapReduce(&serializer, &mapReduce, &mapper, &reducer, argc, argv);
 
-	optframe.execute("read example.opt");
+   optframe.execute("read example.opt");
 
-	cout << "Program ended successfully" << endl;
+   cout << "Program ended successfully" << endl;
 
-	return 0;
+   return 0;
 }

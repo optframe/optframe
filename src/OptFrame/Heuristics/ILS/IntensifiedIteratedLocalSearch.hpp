@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_IILS_HPP_
 #define OPTFRAME_IILS_HPP_
@@ -24,119 +26,115 @@
 #include <math.h>
 #include <vector>
 
-#include "../../SingleObjSearch.hpp"
 #include "../../Evaluator.hpp"
+#include "../../SingleObjSearch.hpp"
 
-namespace optframe
-{
+namespace optframe {
 
 template<class H, class R, class ADS = OPTFRAME_DEFAULT_ADS>
-class IntensifiedIteratedLocalSearch: public SingleObjSearch<XES>
+class IntensifiedIteratedLocalSearch : public SingleObjSearch<XES>
 {
 protected:
-	Evaluator<S>& evaluator;
-	InitialSearch<XES, XEv>& constructive;
+   Evaluator<S>& evaluator;
+   InitialSearch<XES, XEv>& constructive;
 
 public:
+   IntensifiedIteratedLocalSearch(Evaluator<S>& _evaluator, InitialSearch<XES, XEv>& _constructive)
+     : evaluator(_evaluator)
+     , constructive(_constructive)
+   {
+   }
 
-	IntensifiedIteratedLocalSearch(Evaluator<S>& _evaluator, InitialSearch<XES, XEv>& _constructive) :
-		evaluator(_evaluator), constructive(_constructive)
-	{
-	}
+   virtual ~IntensifiedIteratedLocalSearch()
+   {
+   }
 
-	virtual ~IntensifiedIteratedLocalSearch()
-	{
-	}
+   Evaluator<S>& getEvaluator()
+   {
+      return evaluator;
+   }
 
-	Evaluator<S>& getEvaluator()
-	{
-		return evaluator;
-	}
+   virtual H& initializeHistory() = 0;
 
-	virtual H& initializeHistory() = 0;
+   virtual void localSearch(Solution<R, ADS>& s, Evaluation<>& e, double timelimit, double target_f) = 0;
 
-	virtual void localSearch(Solution<R, ADS>& s, Evaluation<>& e, double timelimit, double target_f) = 0;
+   virtual void intensification(Solution<R, ADS>& s, Evaluation<>& e, double timelimit, double target_f, H& history) = 0;
 
-	virtual void intensification(Solution<R, ADS>& s, Evaluation<>& e, double timelimit, double target_f, H& history) = 0;
+   virtual void perturbation(Solution<R, ADS>& s, Evaluation<>& e, double timelimit, double target_f, H& history) = 0;
 
-	virtual void perturbation(Solution<R, ADS>& s, Evaluation<>& e, double timelimit, double target_f, H& history) = 0;
+   virtual Solution<R, ADS>& acceptanceCriterion(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2, H& history) = 0;
 
-	virtual Solution<R, ADS>& acceptanceCriterion(const Solution<R, ADS>& s1, const Solution<R, ADS>& s2, H& history) = 0;
+   virtual bool terminationCondition(H& history) = 0;
 
-	virtual bool terminationCondition(H& history) = 0;
+   pair<Solution<R, ADS>&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = nullptr, const Evaluation<>* _e = nullptr)
+   {
+      cout << "IILS search(" << target_f << "," << timelimit << ")" << endl;
 
-	pair<Solution<R, ADS>&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0,  const Solution<R, ADS>* _s = nullptr,  const Evaluation<>* _e = nullptr)
-	{
-		cout << "IILS search(" << target_f << "," << timelimit << ")" << endl;
+      Timer tnow;
 
-		Timer tnow;
+      Solution<R, ADS>& s = constructive.generateSolution();
+      Evaluation<>& e = evaluator.evaluate(s);
 
-		Solution<R, ADS>& s = constructive.generateSolution();
-		Evaluation<>& e    = evaluator.evaluate(s);
+      H* history = &initializeHistory();
 
-		H* history = &initializeHistory();
+      // 's0' <- GenerateSolution
+      // 's*' <- localSearch 's'
 
-		// 's0' <- GenerateSolution
-		// 's*' <- localSearch 's'
+      localSearch(s, e, (timelimit - (tnow.now())), target_f);
 
+      Solution<R, ADS>* sStar = &s.clone();
+      Evaluation<>* eStar = &e.clone();
 
-		localSearch(s, e, (timelimit - (tnow.now())), target_f);
+      cout << "IILS starts: ";
+      e.print();
 
-		Solution<R, ADS>* sStar = &s.clone();
-		Evaluation<>* eStar = &e.clone();
+      do {
+         Solution<R, ADS>* s1 = &sStar->clone();
+         Evaluation<>* e1 = &eStar->clone();
 
-		cout << "IILS starts: ";
-		e.print();
+         perturbation(*s1, *e1, (timelimit - (tnow.now())), target_f, *history);
 
-		do
-		{
-			Solution<R, ADS>* s1 = &sStar->clone();
-			Evaluation<>* e1 = &eStar->clone();
+         localSearch(*s1, *e1, (timelimit - (tnow.now())), target_f);
 
-			perturbation(*s1, *e1, (timelimit - (tnow.now())), target_f, *history);
+         intensification(*s1, *e1, (timelimit - (tnow.now())), target_f, *history);
 
-			localSearch(*s1, *e1, (timelimit - (tnow.now())), target_f);
+         Solution<R, ADS>* s2 = s1;
+         Evaluation<>* e2 = e1;
 
-			intensification(*s1, *e1, (timelimit - (tnow.now())), target_f, *history);
+         Solution<R, ADS>* sStar1 = &acceptanceCriterion(*sStar, *s2, *history);
 
-			Solution<R, ADS>* s2 = s1;
-			Evaluation<>* e2 = e1;
+         delete sStar;
+         delete eStar;
+         delete s2;
+         delete e2;
 
-			Solution<R, ADS>* sStar1 = &acceptanceCriterion(*sStar, *s2, *history);
+         sStar = sStar1;
+         eStar = &evaluator.evaluate(*sStar);
 
-			delete sStar;
-			delete eStar;
-			delete s2;
-			delete e2;
+      } while (evaluator.betterThan(target_f, eStar->evaluation()) && !terminationCondition(*history) && ((tnow.now()) < timelimit));
 
-			sStar = sStar1;
-			eStar = &evaluator.evaluate(*sStar);
+      e = *eStar;
+      s = *sStar;
 
-		} while (evaluator.betterThan(target_f, eStar->evaluation()) && !terminationCondition(*history) && ((tnow.now()) < timelimit));
+      delete eStar;
+      delete sStar;
 
-		e = *eStar;
-		s = *sStar;
+      delete history;
 
-		delete eStar;
-		delete sStar;
+      return new pair<Solution<R, ADS>&, Evaluation<>&>(s, e);
+   }
 
-		delete history;
+   virtual string id() const
+   {
+      return idComponent();
+   }
 
-		return new pair<Solution<R, ADS>&, Evaluation<>&>(s, e);
-	}
-
-	virtual string id() const
-	{
-		return idComponent();
-	}
-
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << SingleObjSearch<XES>::idComponent() << "IILS:";
-		return ss.str();
-
-	}
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << SingleObjSearch<XES>::idComponent() << "IILS:";
+      return ss.str();
+   }
 };
 
 }

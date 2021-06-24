@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef MAPPER_HPP
 #define MAPPER_HPP
@@ -24,54 +26,56 @@
 
 ///SeqMR_Mapper.
 template<class KeyA, class A, class KeyB, class B, class C>
-class SeqMR_Mapper : public Mapper<KeyA,A,KeyB,B,C>
-{ 
+class SeqMR_Mapper : public Mapper<KeyA, A, KeyB, B, C>
+{
 public:
-	///Constructor.
-	SeqMR_Mapper(MapReduce<KeyA,A,KeyB,B,C> * _mapReduce):mapReduce(_mapReduce){};
-	///Iterator mapping execution (implemented by library).
+   ///Constructor.
+   SeqMR_Mapper(MapReduce<KeyA, A, KeyB, B, C>* _mapReduce)
+     : mapReduce(_mapReduce){};
+   ///Iterator mapping execution (implemented by library).
 #ifndef MRI_USE_MULTIMAP
-	virtual vector< pair<KeyB,B> > run( vector< pair<KeyA,A> > & as )
-	{
-		vector< pair<KeyB,B> > bs;
+   virtual vector<pair<KeyB, B>> run(vector<pair<KeyA, A>>& as)
+   {
+      vector<pair<KeyB, B>> bs;
 
-		typename vector< pair<KeyA,A> >::iterator itAs;
-		for (itAs = as.begin() ; itAs != as.end() ; ++itAs)
-		{
-			vector< pair<KeyB,B> > bss = map( *itAs );
-			typename vector< pair<KeyB,B> >::iterator itBss;
-			for (itBss = bss.begin() ; itBss != bss.end() ; ++itBss) bs.push_back( *itBss );
-		}
-		return bs;
-	};
+      typename vector<pair<KeyA, A>>::iterator itAs;
+      for (itAs = as.begin(); itAs != as.end(); ++itAs) {
+         vector<pair<KeyB, B>> bss = map(*itAs);
+         typename vector<pair<KeyB, B>>::iterator itBss;
+         for (itBss = bss.begin(); itBss != bss.end(); ++itBss)
+            bs.push_back(*itBss);
+      }
+      return bs;
+   };
 #else
-	virtual multimap<KeyB,B> run( vector< pair<KeyA,A> > & as )
-	{
-		multimap<KeyB,B> bs;
+   virtual multimap<KeyB, B> run(vector<pair<KeyA, A>>& as)
+   {
+      multimap<KeyB, B> bs;
 
-		typename vector< pair<KeyA,A> >::iterator itAs;
-		for (itAs = as.begin() ; itAs != as.end() ; ++itAs) 
-		{
-			vector< pair<KeyB,B> > bss = map( *itAs );
-			typename vector< pair<KeyB,B> >::iterator itBss;
-			for (itBss = bss.begin() ; itBss != bss.end() ; ++itBss) bs.insert( *itBss );
-		}
-		return bs;
-	};
+      typename vector<pair<KeyA, A>>::iterator itAs;
+      for (itAs = as.begin(); itAs != as.end(); ++itAs) {
+         vector<pair<KeyB, B>> bss = map(*itAs);
+         typename vector<pair<KeyB, B>>::iterator itBss;
+         for (itBss = bss.begin(); itBss != bss.end(); ++itBss)
+            bs.insert(*itBss);
+      }
+      return bs;
+   };
 #endif
-	///Map function (implemented by user).
-	virtual vector< pair<KeyB,B> > map( pair<KeyA,A> ) = 0 ;
+   ///Map function (implemented by user).
+   virtual vector<pair<KeyB, B>> map(pair<KeyA, A>) = 0;
+
 protected:
-	MapReduce<KeyA,A,KeyB,B,C> * mapReduce;
+   MapReduce<KeyA, A, KeyB, B, C>* mapReduce;
 };
 
 ///SeqMR_StrMapper.
-class SeqMR_StrMapper : public SeqMR_Mapper<string,string,string,string,string> 
+class SeqMR_StrMapper : public SeqMR_Mapper<string, string, string, string, string>
 {
 public:
-	///Constructor.
-	SeqMR_StrMapper(MapReduce<string,string,string,string,string> * _mapReduce)
-		:SeqMR_Mapper<string,string,string,string,string>(_mapReduce) {};	
+   ///Constructor.
+   SeqMR_StrMapper(MapReduce<string, string, string, string, string>* _mapReduce)
+     : SeqMR_Mapper<string, string, string, string, string>(_mapReduce){};
 };
 
 #endif /* MAPPER_HPP */

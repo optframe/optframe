@@ -1,162 +1,162 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_MOS_INDIVIDUAL_HPP_
 #define OPTFRAME_MOS_INDIVIDUAL_HPP_
 
 #include <algorithm>
 
-#include "../../MultiObjSearch.hpp"
-#include "../../Solution.hpp"
-#include "../../Evaluator.hpp"
 #include "../../Evaluation.hpp"
-#include "../../Population.hpp"
+#include "../../Evaluator.hpp"
+#include "../../MultiEvaluation.hpp"
+#include "../../MultiObjSearch.hpp"
 #include "../../NSSeq.hpp"
 #include "../../ParetoDominance.hpp"
-#include "../../MultiEvaluation.hpp"
+#include "../../Population.hpp"
+#include "../../Solution.hpp"
 
-namespace optframe
-{
+namespace optframe {
 
 // MultiObjSearch Individual
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 class MOSIndividual
 {
 public:
+   Solution<R, ADS>* s;
+   MultiEvaluation<DS>* mev; // temporarily kept without evaluation
 
-	Solution<R, ADS>* s;
-	MultiEvaluation<DS>* mev; // temporarily kept without evaluation
+   double fitness;
+   double diversity;
+   int id; // each element should have an unique identifier inside a population
 
-	double fitness;
-	double diversity;
-	int id;           // each element should have an unique identifier inside a population
+   // individuals with same evaluation values (used for compression of population)
+   vector<MOSIndividual<R, ADS, DS>*> copies;
 
-	// individuals with same evaluation values (used for compression of population)
-	vector<MOSIndividual<R, ADS, DS>*> copies;
+   MOSIndividual(Solution<R, ADS>* _s, MultiEvaluation<DS>* _mev)
+     : s(_s)
+     , mev(_mev)
+   {
+      fitness = -1;
+      diversity = -1;
 
-	MOSIndividual(Solution<R, ADS>* _s, MultiEvaluation<DS>* _mev) :
-			s(_s), mev(_mev)
-	{
-		fitness = -1;
-		diversity = -1;
+      id = -1;
+   }
 
-		id = -1;
-	}
+   MOSIndividual(Solution<R, ADS>& _s, MultiEvaluation<DS>& _mev)
+     : s(&_s.clone())
+     , mev(&_mev.clone())
+   {
+      fitness = -1;
+      diversity = -1;
 
-	MOSIndividual(Solution<R, ADS>& _s, MultiEvaluation<DS>& _mev) :
-			s(&_s.clone()), mev(&_mev.clone())
-	{
-		fitness = -1;
-		diversity = -1;
+      id = -1;
+   }
 
-		id = -1;
-	}
+   MOSIndividual(const MOSIndividual<R, ADS>& ind)
+     : s(&ind.s->clone())
+     , mev(&ind.mev->clone())
+   {
+      fitness = ind.fitness;
+      diversity = ind.diversity;
 
-	MOSIndividual(const MOSIndividual<R, ADS>& ind) :
-			s(&ind.s->clone()), mev(&ind.mev->clone())
-	{
-		fitness = ind.fitness;
-		diversity = ind.diversity;
+      id = ind.id;
+   }
 
-		id = ind.id;
-	}
+   virtual ~MOSIndividual()
+   {
+      if (s)
+         delete s;
+      if (mev)
+         delete mev;
+   }
 
-	virtual ~MOSIndividual()
-	{
-		if(s)
-			delete s;
-		if(mev)
-			delete mev;
-	}
+   virtual bool betterThan(const MOSIndividual<R, ADS>& ind) const
+   {
+      // assuming minimization of fitness and maximization of diversity
+      if (fitness < ind.fitness)
+         return true;
+      if ((fitness == ind.fitness))
+         return diversity > ind.diversity;
+      return false;
+   }
 
-	virtual bool betterThan(const MOSIndividual<R, ADS>& ind) const
-	{
-		// assuming minimization of fitness and maximization of diversity
-		if(fitness < ind.fitness)
-			return true;
-		if((fitness == ind.fitness))
-			return diversity > ind.diversity;
-		return false;
-	}
+   virtual bool betterFitness(const MOSIndividual<R, ADS>& ind) const
+   {
+      // assuming minimization of fitness
+      return fitness < ind.fitness;
+   }
 
-	virtual bool betterFitness(const MOSIndividual<R, ADS>& ind) const
-	{
-		// assuming minimization of fitness
-		return fitness < ind.fitness;
-	}
+   virtual bool betterDiversity(const MOSIndividual<R, ADS>& ind) const
+   {
+      // assuming maximization of diversity
+      return diversity > ind.diversity;
+   }
 
-	virtual bool betterDiversity(const MOSIndividual<R, ADS>& ind) const
-	{
-		// assuming maximization of diversity
-		return diversity > ind.diversity;
-	}
+   // assuming minimization of fitness
+   virtual bool minFitness() const
+   {
+      return true;
+   }
 
-	// assuming minimization of fitness
-	virtual bool minFitness() const
-	{
-		return true;
-	}
+   // assuming maximization of diversity
+   virtual bool maxDiversity() const
+   {
+      return true;
+   }
 
-	// assuming maximization of diversity
-	virtual bool maxDiversity() const
-	{
-		return true;
-	}
+   virtual void print() const
+   {
+      cout << "MOSIndividual #" << id << " fitness=" << fitness << "\t diversity=" << diversity;
+      cout << "\t[ ";
+      for (unsigned e = 0; e < mev->size(); e++)
+         cout << mev->at(e).evaluation() << (e == mev->size() - 1 ? " " : " ; ");
+      cout << " ]";
+      cout << endl;
+   }
 
-	virtual void print() const
-	{
-		cout << "MOSIndividual #" << id << " fitness=" << fitness << "\t diversity=" << diversity;
-		cout << "\t[ ";
-		for(unsigned e = 0; e < mev->size(); e++)
-			cout << mev->at(e).evaluation() << (e == mev->size() - 1 ? " " : " ; ");
-		cout << " ]";
-		cout << endl;
-	}
+   virtual MOSIndividual<R, ADS, DS>& clone() const
+   {
+      return *new MOSIndividual<R, ADS, DS>(*this);
+   }
 
-	virtual MOSIndividual<R, ADS, DS>& clone() const
-	{
-		return *new MOSIndividual<R, ADS, DS>(*this);
-	}
+   static void compress(vector<MOSIndividual<R, ADS, DS>*>& P)
+   {
+      for (int s = 0; s < ((int)P.size()) - 1; s++)
+         for (int j = s + 1; j < ((int)P.size()); j++)
+            if (P[s]->mev->sameValues(*P[j]->mev)) {
+               P[s]->copies.push_back(P[j]);
+               P.erase(P.begin() + j);
+               j--;
+            }
+   }
 
-	static void compress(vector<MOSIndividual<R, ADS, DS>*>& P)
-	{
-		for(int s = 0; s < ((int) P.size()) - 1; s++)
-			for(int j = s + 1; j < ((int) P.size()); j++)
-				if(P[s]->mev->sameValues(*P[j]->mev))
-				{
-					P[s]->copies.push_back(P[j]);
-					P.erase(P.begin() + j);
-					j--;
-				}
-	}
-
-	static void spreadToCopies(vector<MOSIndividual<R, ADS, DS>*>& P)
-	{
-		for(unsigned s = 0; s < P.size(); s++)
-			for(int j = 0; j < P[s]->copies.size(); j++)
-			{
-				P[s]->copies[j]->fitness = P[s]->fitness;
-				P[s]->copies[j]->distance = P[s]->distance;
-			}
-	}
-
+   static void spreadToCopies(vector<MOSIndividual<R, ADS, DS>*>& P)
+   {
+      for (unsigned s = 0; s < P.size(); s++)
+         for (int j = 0; j < P[s]->copies.size(); j++) {
+            P[s]->copies[j]->fitness = P[s]->fitness;
+            P[s]->copies[j]->distance = P[s]->distance;
+         }
+   }
 };
 
 /*

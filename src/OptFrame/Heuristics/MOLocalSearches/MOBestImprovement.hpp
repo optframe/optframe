@@ -1,162 +1,158 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_MOBI_HPP_
 #define OPTFRAME_MOBI_HPP_
 
-#include "../../MOLocalSearch.hpp"
-#include "../../NSSeq.hpp"
 #include "../../Evaluator.hpp"
+#include "../../MOLocalSearch.hpp"
 #include "../../MultiObjSearch.hpp"
+#include "../../NSSeq.hpp"
 
 #include "../../Timer.hpp"
 
-namespace optframe
-{
+namespace optframe {
 
 template<XSolution S, XEvaluation XMEv = Evaluation<>, XESolution XMES = pair<S, XMEv>>
-class MOBestImprovement: public MOLocalSearch<S, XMEv>
+class MOBestImprovement : public MOLocalSearch<S, XMEv>
 {
 private:
-	//MultiEvaluator<S, XEv>& v_e;
+   //MultiEvaluator<S, XEv>& v_e;
    GeneralEvaluator<XMES, XMEv>& v_e;
-	NSSeq<S>& nsSeq;
+   NSSeq<S>& nsSeq;
 
-	// logs
-	double sum_time;
-	int num_calls;
+   // logs
+   double sum_time;
+   int num_calls;
 
 public:
+   //MOBestImprovement(MultiEvaluator<S, XEv>& _v_e, NSSeq<S>& _nsSeq) :
+   MOBestImprovement(GeneralEvaluator<XMES, XMEv>& _v_e, NSSeq<S>& _nsSeq)
+     : v_e(_v_e)
+     , nsSeq(_nsSeq)
+   {
+      sum_time = 0.0;
+      num_calls = 0;
+   }
 
-	//MOBestImprovement(MultiEvaluator<S, XEv>& _v_e, NSSeq<S>& _nsSeq) :
-   MOBestImprovement(GeneralEvaluator<XMES, XMEv>& _v_e, NSSeq<S>& _nsSeq) :
-			v_e(_v_e), nsSeq(_nsSeq)
-	{
-		sum_time = 0.0;
-		num_calls = 0;
-	}
+   virtual ~MOBestImprovement()
+   {
+   }
 
-	virtual ~MOBestImprovement()
-	{
-	}
+   virtual void exec(IESolution<S, XMEv>& s, paretoManager<S, XMEv, XMES>& pManager, double timelimit, double target_f)
+   {
+      MultiEvaluation<>& sMev = v_e.evaluate(s);
 
-	virtual void exec(IESolution<S, XMEv>& s, paretoManager<S, XMEv, XMES>& pManager, double timelimit, double target_f)
-	{
-		MultiEvaluation<>& sMev = v_e.evaluate(s);
+      exec(s, sMev, pManager, timelimit, target_f);
 
-		exec(s, sMev, pManager, timelimit, target_f);
+      sMev.clear();
+      delete &sMev;
+   }
 
-		sMev.clear();
-		delete &sMev;
-	}
+   virtual void exec(IESolution<S, XMEv>& s, XMEv& sMev, paretoManager<S, XMEv, XMES>& pManager, double timelimit, double target_f)
+   {
 
-	virtual void exec(IESolution<S, XMEv>& s, XMEv& sMev, paretoManager<S, XMEv, XMES>& pManager, double timelimit, double target_f)
-	{
+      num_calls++;
+      Timer t;
 
-		num_calls++;
-		Timer t;
+      NSIterator<XMES, XMEv>& it = nsSeq.getIterator(s);
 
-		NSIterator<XMES, XMEv>& it = nsSeq.getIterator(s);
+      it.first();
 
-		it.first();
+      if (it.isDone()) {
+         delete &it;
+         sum_time += t.inMilliSecs();
+         return;
+      }
 
-		if (it.isDone())
-		{
-			delete &it;
-			sum_time += t.inMilliSecs();
-			return;
-		}
+      while (!it.isDone()) {
+         Move<XMES, XMEv>* move = &it.current();
+         if (move->canBeApplied(s)) {
+            //				cout << "before anything" << endl;
+            //				sMev.print();
+            Move<XMES, XMEv>* mov_rev = move->apply(sMev, s);
+            v_e.evaluate(sMev, s);
 
-		while (!it.isDone())
-		{
-			Move<XMES, XMEv>* move = &it.current();
-			if (move->canBeApplied(s))
-			{
-//				cout << "before anything" << endl;
-//				sMev.print();
-				Move<XMES, XMEv>* mov_rev = move->apply(sMev, s);
-				v_e.evaluate(sMev, s);
+            //				cout << "after move" << endl;
+            //				sMev.print();
 
-//				cout << "after move" << endl;
-//				sMev.print();
+            pManager.addSolution(&s, &sMev);
 
-				pManager.addSolution(&s, &sMev);
+            delete mov_rev->apply(s);
+            delete mov_rev;
+            delete move;
 
-				delete mov_rev->apply(s);
-				delete mov_rev;
-				delete move;
+            //				v_e.evaluate(sMev, s);
 
-//				v_e.evaluate(sMev, s);
+            //				cout << "reverse move" << endl;
+            //				sMev.print();
+            //				getchar();
+            //				for (int eI = 0; eI < sMev.size(); eI++)
+            //					delete &sMev[eI];
 
-//				cout << "reverse move" << endl;
-//				sMev.print();
-//				getchar();
-//				for (int eI = 0; eI < sMev.size(); eI++)
-//					delete &sMev[eI];
+         } else
+            delete move;
 
-			}
-			else
-				delete move;
+         it.next();
+      }
 
-			it.next();
-		}
+      delete &it;
+      sum_time += t.inMilliSecs();
+   }
+   virtual bool compatible(string s)
+   {
+      return (s == idComponent()) || (MOLocalSearch<S, XMEv>::compatible(s));
+   }
 
-		delete &it;
-		sum_time += t.inMilliSecs();
-	}
-	virtual bool compatible(string s)
-	{
-		return (s == idComponent()) || (MOLocalSearch<S, XMEv>::compatible(s));
-	}
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << MOLocalSearch<XMES, XMEv>::idComponent() << ":MO-BI";
+      return ss.str();
+   }
 
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << MOLocalSearch<XMES, XMEv>::idComponent() << ":MO-BI";
-		return ss.str();
-	}
+   virtual string id() const
+   {
+      return idComponent();
+   }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
+   virtual void print() const
+   {
+      cout << toString() << endl;
+   }
 
-	virtual void print() const
-	{
-		cout << toString() << endl;
-	}
+   virtual string toString() const
+   {
+      stringstream ss;
+      ss << "MOBI: " << nsSeq.toString();
+      return ss.str();
+   }
 
-	virtual string toString() const
-	{
-		stringstream ss;
-		ss << "MOBI: " << nsSeq.toString();
-		return ss.str();
-	}
-
-	virtual string log() const
-	{
-		stringstream ss;
-		ss << sum_time;
-		return ss.str();
-	}
-
+   virtual string log() const
+   {
+      stringstream ss;
+      ss << sum_time;
+      return ss.str();
+   }
 };
 
 }

@@ -1,87 +1,89 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_MOS_EXTENDED_INDIVIDUAL_HPP_
 #define OPTFRAME_MOS_EXTENDED_INDIVIDUAL_HPP_
 
 #include <algorithm>
 
-#include "../../MultiObjSearch.hpp"
-#include "../../Solution.hpp"
-#include "../../Evaluator.hpp"
 #include "../../Evaluation.hpp"
-#include "../../Population.hpp"
+#include "../../Evaluator.hpp"
+#include "../../MultiObjSearch.hpp"
 #include "../../NSSeq.hpp"
 #include "../../ParetoDominance.hpp"
+#include "../../Population.hpp"
+#include "../../Solution.hpp"
 
 #include "MOSIndividual.hpp"
 
-namespace optframe
-{
+namespace optframe {
 
 // MultiObjSearch Extended Individual
 template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MOSExtIndividual: public MOSIndividual<X, ADS, DS>
+class MOSExtIndividual : public MOSIndividual<X, ADS, DS>
 {
 public:
+   MOSIndividual<R>& parent;
 
-	MOSIndividual<R>& parent;
+   MOSExtIndividual(Solution<X, ADS>* s, MultiEvaluation<DS>* mev, MOSIndividual<R>* _parent)
+     : MOSIndividual<X, ADS, DS>(s, mev)
+     , parent(*_parent)
+   {
+   }
 
-	MOSExtIndividual(Solution<X, ADS>* s, MultiEvaluation<DS>* mev, MOSIndividual<R>* _parent) :
-			MOSIndividual<X, ADS, DS>(s, mev), parent(*_parent)
-	{
-	}
+   MOSExtIndividual(Solution<R, ADS>& s, MultiEvaluation<DS>& mev, MOSIndividual<R>* _parent)
+     : MOSIndividual<X, ADS, DS>(s, mev)
+     , parent(*_parent)
+   {
+   }
 
-	MOSExtIndividual(Solution<R, ADS>& s, MultiEvaluation<DS>& mev, MOSIndividual<R>* _parent) :
-			MOSIndividual<X, ADS, DS>(s, mev), parent(*_parent)
-	{
-	}
+   MOSExtIndividual(const MOSExtIndividual<R, X, ADS, DS>& ind)
+     : MOSIndividual<X, ADS, DS>(&ind.s->clone(), &ind.mev->clone())
+     , parent(ind.parent)
+   {
+      this->fitness = ind.fitness;
+      this->diversity = ind.diversity;
 
-	MOSExtIndividual(const MOSExtIndividual<R, X, ADS, DS>& ind) :
-			MOSIndividual<X, ADS, DS>(&ind.s->clone(), &ind.mev->clone()), parent(ind.parent)
-	{
-		this->fitness = ind.fitness;
-		this->diversity = ind.diversity;
+      this->id = ind.id;
+   }
 
-		this->id = ind.id;
-	}
+   virtual ~MOSExtIndividual()
+   {
+   }
 
-	virtual ~MOSExtIndividual()
-	{
-	}
+   virtual void print() const
+   {
+      cout << "MOSExtIndividual: parent=" << &parent << " fitness=" << this->fitness << "\t diversity=" << this->diversity;
+      cout << "\t[ ";
+      for (unsigned e = 0; e < this->mev->size(); e++)
+         cout << this->mev->at(e).evaluation() << (e == this->mev->size() - 1 ? " " : " ; ");
+      cout << " ]";
+      cout << endl;
+   }
 
-	virtual void print() const
-	{
-		cout << "MOSExtIndividual: parent=" << &parent << " fitness=" << this->fitness << "\t diversity=" << this->diversity;
-		cout << "\t[ ";
-		for(unsigned e = 0; e < this->mev->size(); e++)
-			cout << this->mev->at(e).evaluation() << (e == this->mev->size() - 1 ? " " : " ; ");
-		cout << " ]";
-		cout << endl;
-	}
-
-	virtual MOSIndividual<X, ADS, DS>& clone() const
-	{
-		return *new MOSExtIndividual<R, X, ADS, DS>(*this);
-	}
-
+   virtual MOSIndividual<X, ADS, DS>& clone() const
+   {
+      return *new MOSExtIndividual<R, X, ADS, DS>(*this);
+   }
 };
 
 /*

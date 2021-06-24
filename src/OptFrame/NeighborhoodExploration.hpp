@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_NEIGHBORHOOD_EXPLORATION_HPP_
 #define OPTFRAME_NEIGHBORHOOD_EXPLORATION_HPP_
@@ -29,17 +31,13 @@ using namespace std;
 #include "Component.hpp"
 #include "ComponentBuilder.h"
 
-#include "Solution.hpp"
 #include "Evaluation.hpp"
+#include "Solution.hpp"
 
 #include "LocalSearch.hpp"
 #include "SingleObjSearch.hpp"
 
-
-
-
-namespace optframe
-{
+namespace optframe {
 
 // This is  NEx: Neighborhood Exploration
 
@@ -55,15 +53,15 @@ struct RichMove
    {
    }
 
-   RichMove(RichMove&& rmove) :
-      move(std::move(rmove.move))
+   RichMove(RichMove&& rmove)
+     : move(std::move(rmove.move))
    {
    }
 
    RichMove& operator=(RichMove&& rmove)
    {
       // self-reference
-      if(&rmove == this)
+      if (&rmove == this)
          return *this;
       move = std::move(rmove.move);
       cost = std::move(rmove.cost);
@@ -72,13 +70,11 @@ struct RichMove
    }
 };
 
-
 template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES> // defaults to XSH = XES
-class NeighborhoodExploration : public LocalSearch<XES, XEv, XSH>  //: public Component
+class NeighborhoodExploration : public LocalSearch<XES, XEv, XSH>                //: public Component
 {
-   
-public:
 
+public:
    NeighborhoodExploration()
    {
    }
@@ -99,7 +95,7 @@ public:
       //
       // accept if it's improving by flag (avoid double verification and extra Evaluator class here)
       // using !!e idiom, to check against value 0
-      while ( !!(movec->status & SearchStatus::IMPROVEMENT) ) {
+      while (!!(movec->status & SearchStatus::IMPROVEMENT)) {
          improved = true;
          // apply move to solution
          movec->move->apply(se);
@@ -108,7 +104,7 @@ public:
          // searching new move
          movec = searchMove(se, stopCriteria);
          // check if move exists
-         if(!movec)
+         if (!movec)
             return SearchStatus::IMPROVEMENT;
       }
       // finished search
@@ -116,65 +112,62 @@ public:
    }
 
    // Output move may be nullptr. Otherwise it's a pair of Move and its Cost.
-   virtual op< RichMove<XES, XEv> > searchMove(const XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
+   virtual op<RichMove<XES, XEv>> searchMove(const XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
 
    virtual bool compatible(string s)
    {
-	   return ( s == idComponent() ) || ( Component::compatible(s) );
+      return (s == idComponent()) || (Component::compatible(s));
    }
 
    static string idComponent()
    {
-	   stringstream ss;
-	   ss << Component::idComponent() << ":NEx";
-	   return ss.str();
+      stringstream ss;
+      ss << Component::idComponent() << ":NEx";
+      return ss.str();
    }
 
    virtual string id() const
    {
       return idComponent();
    }
-
 };
-
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = XES>
 class NeighborhoodExplorationBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
 {
 public:
-	virtual ~NeighborhoodExplorationBuilder()
-	{
-	}
+   virtual ~NeighborhoodExplorationBuilder()
+   {
+   }
 
-	virtual NeighborhoodExploration<XES, XEv, XSH>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
+   virtual NeighborhoodExploration<XES, XEv, XSH>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
 
-	virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
-	{
-		return build(scanner, hf, family);
-	}
+   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
+   {
+      return build(scanner, hf, family);
+   }
 
-	virtual vector<pair<string, string> > parameters() = 0;
+   virtual vector<pair<string, string>> parameters() = 0;
 
-	virtual bool canBuild(string) = 0;
+   virtual bool canBuild(string) = 0;
 
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "NEx";
-		return ss.str();
-	}
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "NEx";
+      return ss.str();
+   }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
+   virtual string id() const
+   {
+      return idComponent();
+   }
 };
-
 
 } // namespace optframe
 
-#include "BaseConcepts.hpp"
 #include "BaseConcepts.ctest.hpp"
+#include "BaseConcepts.hpp"
 
 namespace optframe {
 
@@ -186,8 +179,8 @@ struct TestSimpleRich
    {
    }
 
-   TestSimpleRich(TestSimpleRich&& tsr) :
-      ptr(std::move(tsr.ptr))
+   TestSimpleRich(TestSimpleRich&& tsr)
+     : ptr(std::move(tsr.ptr))
    {
    }
 };

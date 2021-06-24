@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_BSA_HPP_
 #define OPTFRAME_BSA_HPP_
@@ -63,7 +65,7 @@ public:
      : evaluator(_evaluator)
      , constructive(_constructive)
      , rg(_rg) // does the new RandGen thing affect this? doesn't look like it but i'm no specialist
-     //, specificStopBy(defaultStopBy)
+               //, specificStopBy(defaultStopBy)
    {
       neighbors.push_back(_neighbors);
       alpha = (_alpha);
@@ -98,12 +100,12 @@ public:
    // callback to update local variables
    void (*onBeforeLoopCtx)(SearchContext& ctx) =
      [](auto& ctx) {
-        if(ctx.iterT < ctx.self.SAmax)
-         ctx.iterT++;
-         else {
-            ctx.iterT = 0;
-            ctx.T = ctx.self.alpha * ctx.T; // geometric cooling
-         }
+        if (ctx.iterT < ctx.self.SAmax)
+           ctx.iterT++;
+        else {
+           ctx.iterT = 0;
+           ctx.T = ctx.self.alpha * ctx.T; // geometric cooling
+        }
      };
 
    // callback to handle main loop and stop criteria
@@ -114,25 +116,28 @@ public:
 
    // technique found in lecture notes of prof. Marcone Jamilson Freitas Souza
    static double estimateInitialTemperature(
-      sref<GeneralEvaluator<XES, XEv>> evaluator, 
-      sref<InitialSearch<XES, XEv>> constructive, 
-      vsref<NS<XES, XEv, XSH>> neighbors,
-      double beta, double gama, int SAmax, double T0, sref<RandGen> rg)
+     sref<GeneralEvaluator<XES, XEv>> evaluator,
+     sref<InitialSearch<XES, XEv>> constructive,
+     vsref<NS<XES, XEv, XSH>> neighbors,
+     double beta,
+     double gama,
+     int SAmax,
+     double T0,
+     sref<RandGen> rg)
    {
       // http://www.decom.ufop.br/prof/marcone/Disciplinas/InteligenciaComputacional/InteligenciaComputacional.pdf
-      double T = T0;  // {Temp eraturacorrente}
+      double T = T0; // {Temp eraturacorrente}
       bool continua = true;
-      std::optional<XES> ose = constructive->initialSearch({99999.9}).first ; // inf time
+      std::optional<XES> ose = constructive->initialSearch({ 99999.9 }).first; // inf time
       XES& se1 = *ose;
       //
-      while(continua) {
+      while (continua) {
          int aceitos = 0; // { número de vizinhos aceitos na temperatura T }
          //std::cout << "continua. T=" << T << std::endl;
          //
-         std::optional<XES> ose2 = constructive->initialSearch({99999.9}).first ; // inf time
+         std::optional<XES> ose2 = constructive->initialSearch({ 99999.9 }).first; // inf time
          XES& se2 = *ose2;
-         for(int IterT = 0; IterT < SAmax; IterT++)
-         {
+         for (int IterT = 0; IterT < SAmax; IterT++) {
             //XES se = se1;
             XES se = se2;
 
@@ -149,12 +154,12 @@ public:
                double x = rg->rand01();
                double delta = ::fabs(se_line.second.evaluation() - se.second.evaluation());
                if (x < ::exp(-delta / T))
-                 aceitos++;
+                  aceitos++;
             }
          } // fim para
          //std::cout << aceitos << " >= " << gama*SAmax << " ~ " << (aceitos/(double)SAmax) << "?" << std::endl;
          //
-         if(aceitos >= gama*SAmax) 
+         if (aceitos >= gama * SAmax)
             continua = false;
          else {
             T = beta * T;
@@ -173,7 +178,7 @@ public:
       std::optional<XSH> star;
       std::optional<XSH> incumbent;
 
-      // Note that no comparison is necessarily made between star and incumbent, as types/spaces could be different. Since we are trajectory here, spaces are equal. 
+      // Note that no comparison is necessarily made between star and incumbent, as types/spaces could be different. Since we are trajectory here, spaces are equal.
       // We assume star is better than incumbent, if provided. So, if star is worse than incumbent, we won't re-check that.
 
       // initial setup for incumbent (if has star, copy star, otherwise generate one)
@@ -181,7 +186,7 @@ public:
          incumbent = star ? star : constructive->initialSearch(sosc).first;
 
       // if no star and has incumbent, star is incumbent
-      if(!star && incumbent)
+      if (!star && incumbent)
          star = incumbent;
 
       // abort if no solution exists
@@ -189,17 +194,16 @@ public:
          return SearchStatus::NO_SOLUTION; // no possibility to continue.
 
       // initialize search context for Simulated Annealing
-      SearchContext ctx{.self=*this, .best=star, .incumbent=incumbent};
+      SearchContext ctx{ .self = *this, .best = star, .incumbent = incumbent };
 
       // ===================
       // Simulated Annealing
       // ===================
 
       XSH& se = *incumbent;
-      
+
       ctx.T = Ti;
       ctx.iterT = 0;
-
 
       //XES se = *star; // copy (implicit cloning guaranteed??)
       //
@@ -227,66 +231,65 @@ public:
           sosc.shouldStop(opEvStar))) {
          while ((iterT < SAmax) && (tnow.now() < timelimit)) {
             */
-      while(onLoopCtx(ctx, sosc)) 
-      {
-            int n = rg->rand(neighbors.size());
-            uptr<Move<XES, XEv, XSH>> move = neighbors[n]->validRandomMove(se); // TODO: pass 'se.first' here (even 'se' should also work...)
+      while (onLoopCtx(ctx, sosc)) {
+         int n = rg->rand(neighbors.size());
+         uptr<Move<XES, XEv, XSH>> move = neighbors[n]->validRandomMove(se); // TODO: pass 'se.first' here (even 'se' should also work...)
 
-            if (!move) {
-               if (Component::warning)
-                  cout << "SA warning: no move in iter=" << ctx.iterT << " T=" << ctx.T << "! continue..." << endl;
-               // TODO: return FAIL?
-               //continue;
-               return { SearchStatus::NO_REPORT, star };
+         if (!move) {
+            if (Component::warning)
+               cout << "SA warning: no move in iter=" << ctx.iterT << " T=" << ctx.T << "! continue..." << endl;
+            // TODO: return FAIL?
+            //continue;
+            return { SearchStatus::NO_REPORT, star };
+         }
+
+         XES current(se); // implicit clone??
+         //S* sCurrent = &s.clone();
+         //Evaluation<>* eCurrent = &e.clone();
+         //S& sCurrent = current.first;
+         //XEv& eCurrent = current.second;
+
+         move->applyUpdate(current);
+         evaluator->reevaluate(current);
+
+         //if (evaluator.betterThan(eCurrent, e)) // TODO: replace by 'se' here, and use 'se.second' to compare directly
+         //if(eCurrent.betterStrict(e))
+         if (evaluator->betterStrict(current.second, se.second)) {
+            se = current;
+            // if improved, accept it
+            //e = *eCurrent;
+            //s = *sCurrent;
+            //delete sCurrent;
+            //delete eCurrent;
+
+            //if (evaluator.betterThan(e, eStar))
+            //if(e.betterStrict(eStar))
+            if (evaluator->betterStrict(se.second, star->second)) {
+               //delete sStar;
+               //sStar = &s.clone();
+               //delete eStar;
+               //eStar = &e.clone();
+               star = make_optional(se);
+
+               cout << "Best fo: " << se.second.evaluation() << " Found on Iter = " << ctx.iterT << " and T = " << ctx.T;
+               cout << endl;
             }
+         } else {
+            // 'current' didn't improve, but may accept it anyway
+            double x = rg->rand01();
+            double delta = ::fabs(current.second.evaluation() - se.second.evaluation());
 
-            XES current(se); // implicit clone??
-            //S* sCurrent = &s.clone();
-            //Evaluation<>* eCurrent = &e.clone();
-            //S& sCurrent = current.first;
-            //XEv& eCurrent = current.second;
-
-            move->applyUpdate(current);
-            evaluator->reevaluate(current);
-
-            //if (evaluator.betterThan(eCurrent, e)) // TODO: replace by 'se' here, and use 'se.second' to compare directly
-            //if(eCurrent.betterStrict(e))
-            if (evaluator->betterStrict(current.second, se.second)) {
+            if (x < ::exp(-delta / ctx.T)) {
                se = current;
-               // if improved, accept it
-               //e = *eCurrent;
                //s = *sCurrent;
+               //e = *eCurrent;
                //delete sCurrent;
                //delete eCurrent;
-
-               //if (evaluator.betterThan(e, eStar))
-               //if(e.betterStrict(eStar))
-               if (evaluator->betterStrict(se.second, star->second)) {
-                  //delete sStar;
-                  //sStar = &s.clone();
-                  //delete eStar;
-                  //eStar = &e.clone();
-                  star = make_optional(se);
-
-                  cout << "Best fo: " << se.second.evaluation() << " Found on Iter = " << ctx.iterT << " and T = " << ctx.T;
-                  cout << endl;
-               }
-            } else {
-               // 'current' didn't improve, but may accept it anyway
-               double x = rg->rand01();
-               double delta = ::fabs(current.second.evaluation() - se.second.evaluation());
-
-               if (x < ::exp(-delta / ctx.T)) {
-                  se = current;
-                  //s = *sCurrent;
-                  //e = *eCurrent;
-                  //delete sCurrent;
-                  //delete eCurrent;
                // } else {
-                  //delete sCurrent;
-                  //delete eCurrent;
-               }
+               //delete sCurrent;
+               //delete eCurrent;
             }
+         }
 
          // update iterT and temperature in next method
          onBeforeLoopCtx(ctx);
@@ -340,13 +343,13 @@ public:
       hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
 
       //Constructive<S>* constructive;
-      sptr<InitialSearch<XES, XEv>> constructive;  
+      sptr<InitialSearch<XES, XEv>> constructive;
       hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
 
       vsptr<NS<XES, XEv>> _hlist;
       hf.assignList(_hlist, *scanner.nextInt(), scanner.next()); // reads backwards!
       vsref<NS<XES, XEv>> hlist;
-      for(auto x : _hlist)
+      for (auto x : _hlist)
          hlist.push_back(x);
 
       double alpha = *scanner.nextDouble();
@@ -404,26 +407,27 @@ public:
 }
 
 #endif /*OPTFRAME_BSA_HPP_*/
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
-
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 // Attempt on implementing SpecificMethodStop, from what I gathered
 #ifndef OPTFRAME_BSA_HPP_
@@ -705,7 +709,7 @@ WHERE IS THE ERROR?
                   //e = *eCurrent;
                   //delete sCurrent;
                   //delete eCurrent;
-               //} else {
+                  //} else {
                   //delete sCurrent;
                   //delete eCurrent;
                }

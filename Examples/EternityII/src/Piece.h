@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef PIECE_H_
 #define PIECE_H_
@@ -24,44 +26,49 @@
 class Piece
 {
 public:
-	int down, left, up, right;
-	int index, rotation;
+   int down, left, up, right;
+   int index, rotation;
 
-	Piece()
-	{
-		down = 0;
-		left = 0;
-		up = 0;
-		right = 0;
-		index = -1;
-		rotation = 0;
-	}
+   Piece()
+   {
+      down = 0;
+      left = 0;
+      up = 0;
+      right = 0;
+      index = -1;
+      rotation = 0;
+   }
 
-	Piece(int _down, int _left, int _up, int _right, int _index, int _rotation) :
-		down(_down), left(_left), up(_up), right(_right), index(_index), rotation(_rotation)
-	{
-	}
+   Piece(int _down, int _left, int _up, int _right, int _index, int _rotation)
+     : down(_down)
+     , left(_left)
+     , up(_up)
+     , right(_right)
+     , index(_index)
+     , rotation(_rotation)
+   {
+   }
 
-	void rotate() // rotate 90 degrees clockwise
-	{
-		int first_down = down;
+   void rotate() // rotate 90 degrees clockwise
+   {
+      int first_down = down;
 
-		down = right;
-		right = up;
-		up = left;
+      down = right;
+      right = up;
+      up = left;
 
-		left = first_down;
+      left = first_down;
 
-		rotation++;
-		if (rotation == 4)
-			rotation = 0;
-	}
+      rotation++;
+      if (rotation == 4)
+         rotation = 0;
+   }
 
-	friend ostream& operator<<(ostream &os, const Piece &obj)
-	{
-		os << "(" << obj.down << "," << obj.left << "," << obj.up << "," << obj.right << ")";
-		return os;
-	}
+   friend ostream& operator<<(ostream& os, const Piece& obj)
+   {
+      os << "(" << obj.down << "," << obj.left << "," << obj.up << "," << obj.right << ")";
+      return os;
+   }
 };
 
 /*

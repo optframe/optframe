@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_GENERAL_EVALUATOR_HPP_
 #define OPTFRAME_GENERAL_EVALUATOR_HPP_
@@ -52,10 +54,10 @@ class GeneralEvaluator //: public Component // SHOULD BE PURE HERE, OTHERWISE BR
 {
    //using S = decltype(declval<XES>.first); // error: insufficient contextual information to determine type
    //
-// could contain Direction here, or MultiDirection... but both should be abolished I guess.
-// Where should betterThan decision take place? On Evaluator or on each Evaluation? 
-// Before, it was hard/impossible to do on Evaluation, due to overhead... but now, it may be the case.
-// If XEvaluation actually represents Objective Space, it should also contain guiding directions.
+   // could contain Direction here, or MultiDirection... but both should be abolished I guess.
+   // Where should betterThan decision take place? On Evaluator or on each Evaluation?
+   // Before, it was hard/impossible to do on Evaluation, due to overhead... but now, it may be the case.
+   // If XEvaluation actually represents Objective Space, it should also contain guiding directions.
 
 public:
    GeneralEvaluator()
@@ -70,8 +72,7 @@ public:
    // general evaluation for Search Space element.
    // now user is free to update evaluation, and even solution during the process.
    // note that intention is to only change evaluation, but now it's up to user.
-   virtual void reevaluate(XSH&) = 0;  // TODO: rename to something more general, 'xevaluate' ?
-
+   virtual void reevaluate(XSH&) = 0; // TODO: rename to something more general, 'xevaluate' ?
 
    // ====================
    // direction primitives
@@ -79,7 +80,6 @@ public:
 
    // this strictly better than parameter 'e' (for mini, 'this' < 'e')
    virtual bool betterStrict(const XEv& e1, const XEv& e2) = 0;
-
 
    // this non-strictly better than parameter 'e' (for mini, 'this' <= 'e')
    virtual bool betterNonStrict(const XEv& e1, const XEv& e2)
@@ -120,8 +120,7 @@ public:
       return rev;
    }
 
-
-//
+   //
    //MoveCost<>* moveCost(Move<XES, XEv>& m, XES& se, bool allowEstimated = false)
    op<XEv> moveCost(Move<XES, XEv>& m, XES& se, bool allowEstimated = false)
    {
@@ -131,7 +130,7 @@ public:
       //MoveCost<>* p = nullptr;
       op<XEv> p = std::nullopt;
       //if (allowCosts) {
-         p = m.cost(se, allowEstimated);
+      p = m.cost(se, allowEstimated);
       //}
 
       // if p not null, do not update 's' => much faster (using cost)
@@ -155,7 +154,7 @@ public:
 
          XEv e_end(se.second);
 
-/*
+         /*
          // get final values
          pair<evtype, evtype> e_end = make_pair(e.getObjFunction(), e.getInfMeasure());
          // get final values for lexicographic part
@@ -174,10 +173,7 @@ public:
          //			if (!outdated)
          //				e.outdated = outdated;
 
-         
-
          uptr<Move<XES, XEv>> ini = rev->apply(se);
-
 
          XEv mcost = ev_begin.diff(e_end);
 
@@ -190,7 +186,7 @@ public:
          // recover original evaluation
          e = std::move(ev_begin);
          //==================================================================
-/*
+         /*
          // get original values (also could be calculated in the begin of function)
          pair<evtype, evtype> e_ini = make_pair(e.getObjFunction(), e.getInfMeasure());
          // do the same for lexicographic part
@@ -205,14 +201,14 @@ public:
          /////delete ini;
          // create a MoveCost object...
 
-         // TODO: try to move this MoveCost generation somewhere else.... 
+         // TODO: try to move this MoveCost generation somewhere else....
          // perhaps, in Evaluation class, so that users can easily personalize it.
          // don't know for sure. (TODO)
          //p = new MoveCost<>(e_end.first - e_ini.first, e_end.second - e_ini.second, e.weight);
-         
+
          //
          //p = new MoveCost<>(e_end.first - e_ini.first, e_end.second - e_ini.second);
-         
+
          // ... and set the lexicographic costs
          ////p->setAlternativeCosts(alternatives);
 
@@ -225,14 +221,12 @@ public:
 
    // TODO: decide which methods stay here, and which go to Evaluator.hpp
 
-
    static string idComponent()
    {
       stringstream ss;
       ss << Component::idComponent() << ":GeneralEvaluator";
       return ss.str();
    }
-
 };
 
 } // namespace optframe

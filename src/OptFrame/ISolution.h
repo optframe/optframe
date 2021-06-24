@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_ISOLUTION_HPP_
 #define OPTFRAME_ISOLUTION_HPP_
@@ -31,14 +33,13 @@
 
 #include "IEvaluation.h"
 
-namespace optframe
-{
+namespace optframe {
 
 // ISolution should compatible with XSolution space
 class ISolution
 {
 public:
-	virtual std::string toString() const = 0;
+   virtual std::string toString() const = 0;
 
    virtual ~ISolution()
    {
@@ -51,13 +52,12 @@ class IRSolution : public ISolution
 {
 public:
    virtual R& getR() = 0; // too bad, virtual cannot return deduced type XRepresentation (cannot remove template here)
-	virtual std::string toString() const = 0;
+   virtual std::string toString() const = 0;
 
    virtual ~IRSolution()
    {
    }
 };
-
 
 // IESolution should compatible with XESolution space (XSolution and XEvaluation)
 template<XSolution S, XEvaluation XEv>
@@ -74,12 +74,13 @@ public:
    XEv& second; // non-static declared with placeholder XEvaluation (requires template here!)
 
    // give me the references of something YOU own, not me...
-   explicit IESolution(S& s, XEv& e) :
-      first(s), second(e)
+   explicit IESolution(S& s, XEv& e)
+     : first(s)
+     , second(e)
    {
    }
 
-/*
+   /*
    explicit IESolution(S&& s, XEv&& e) :
       first(s), second(e)
    {
@@ -90,8 +91,6 @@ public:
    {
    }
 };
-
-
 
 } // namespace optframe
 

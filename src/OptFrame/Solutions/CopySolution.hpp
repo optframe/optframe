@@ -1,22 +1,24 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009-2015
-// http://optframe.sourceforge.net/
+// OptFrame 4.2 - Optimization Framework
+// Copyright (C) 2009-2021 - MIT LICENSE
+// https://github.com/optframe/optframe
 //
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 #ifndef OPTFRAME_COPY_SOLUTION_HPP_
 #define OPTFRAME_COPY_SOLUTION_HPP_
@@ -35,13 +37,11 @@
 
 // will require 'R', thus should require basic printability here
 
-
 // copy-based solution (NO POINTER IS USED HERE)
 // requires copy-constructor and move-constructor (for R and ADS)
 // ADS requires empty constructor (but not R)
 
-namespace optframe
-{
+namespace optframe {
 
 //template<XRepresentation R, class ADS = nullptr_t>
 template<XRepresentation R, class ADS = _ADS>
@@ -49,139 +49,138 @@ class CopySolution : public Component
 {
 public:
    // allow direct access to internals (no issue)
-	R r;     // representation
-	ADS ads; // auxiliary data structure
+   R r;     // representation
+   ADS ads; // auxiliary data structure
 
    // copy constructor for R (ADS requires empty constructor)
-	explicit CopySolution(const R& _r) :
-			r(_r), ads(ADS())
-	{
-	}
+   explicit CopySolution(const R& _r)
+     : r(_r)
+     , ads(ADS())
+   {
+   }
 
    // copy constructor for R and ADS
-   CopySolution(const R& _r, const ADS& _ads) :
-			r(_r), ads(_ads)
-	{
-	}
+   CopySolution(const R& _r, const ADS& _ads)
+     : r(_r)
+     , ads(_ads)
+   {
+   }
 
-	// move constructor for R and ADS
-	CopySolution(R&& _r, ADS&& _ads) :
-			r(_r), ads(_ads)
-	{
-	}
+   // move constructor for R and ADS
+   CopySolution(R&& _r, ADS&& _ads)
+     : r(_r)
+     , ads(_ads)
+   {
+   }
 
    // copy constructor
-	CopySolution(const CopySolution<R, ADS>& s) :
-			CopySolution(s.r, s.ads)
-	{
-	}
+   CopySolution(const CopySolution<R, ADS>& s)
+     : CopySolution(s.r, s.ads)
+   {
+   }
 
    // move constructor
-	CopySolution(CopySolution<R, ADS> && s) :
-			CopySolution(s.r, s.ads)
-	{
-	}
+   CopySolution(CopySolution<R, ADS>&& s)
+     : CopySolution(s.r, s.ads)
+   {
+   }
 
+   CopySolution<R, ADS>& operator=(const CopySolution<R, ADS>& s)
+   {
+      if (&s == this) // auto ref check
+         return *this;
 
-	CopySolution<R, ADS>& operator=(const CopySolution<R, ADS>& s)
-	{
-		if (&s == this) // auto ref check
-			return *this;
-
-		r = s.r;
+      r = s.r;
       ads = s.ads;
 
-		return *this;
-	}
+      return *this;
+   }
 
-	CopySolution<R, ADS>& operator=(CopySolution<R, ADS> && s) noexcept
-	{
-		r = std::move(s.r);
+   CopySolution<R, ADS>& operator=(CopySolution<R, ADS>&& s) noexcept
+   {
+      r = std::move(s.r);
       ads = std::move(s.ads);
 
-		return *this;
-	}
+      return *this;
+   }
 
    // -----------------------------------
-   // getters and setters for R and ADS 
+   // getters and setters for R and ADS
    // according to XBaseSolution concept
    // -----------------------------------
 
    R& getR()
    {
-      return r;   
+      return r;
    }
 
    const R& getR() const
    {
-      return r;   
+      return r;
    }
 
    ADS& getADS()
    {
-      return ads;   
+      return ads;
    }
 
    const ADS& getADS() const
    {
-      return ads;   
+      return ads;
    }
 
    ADS* getADSptr()
    {
-      return &ads;   
+      return &ads;
    }
 
    const ADS* getADSptr() const
    {
-      return &ads;   
+      return &ads;
    }
 
    // ==================================================
 
-	// destructor for Solution (must free R and ADS objects)
-	virtual ~CopySolution()
-	{
-	}
+   // destructor for Solution (must free R and ADS objects)
+   virtual ~CopySolution()
+   {
+   }
 
-	// ==================
-	// end canonical part
-	// ==================
-
+   // ==================
+   // end canonical part
+   // ==================
 
    // shouldn't clone here!
 
    // TODO: remove!!!
-	CopySolution<R, ADS>& clone() const
-	{
-   	return *new CopySolution<R, ADS>(*this);
-	}
+   CopySolution<R, ADS>& clone() const
+   {
+      return *new CopySolution<R, ADS>(*this);
+   }
 
+   // =================
+   // begin Object part
+   // =================
 
+   static string idComponent()
+   {
+      std::stringstream ss;
+      ss << Component::idComponent() << ":CopySolution";
+      return ss.str();
+   }
 
-	// =================
-	// begin Object part
-	// =================
+   virtual string id() const
+   {
+      return idComponent();
+   }
 
-	static string idComponent()
-	{
-		std::stringstream ss;
-		ss << Component::idComponent() << ":CopySolution";
-		return ss.str();
-	}
-
-	virtual string id() const
-	{
-		return idComponent();
-	}
-
-	virtual string toString() const
-	{
-		std::stringstream ss;
-		ss << "CopySolution: " << r;
-		//ss << "ADS: " << ads;DecoderRandomKeys
-		return ss.str();
-	}
+   virtual string toString() const
+   {
+      std::stringstream ss;
+      ss << "CopySolution: " << r;
+      //ss << "ADS: " << ads;DecoderRandomKeys
+      return ss.str();
+   }
 
    friend std::ostream& operator<<(std::ostream& os, const CopySolution<R, ADS>& s)
    {
@@ -190,7 +189,7 @@ public:
    }
 };
 
-template<XRepresentation R, class ADS = _ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>>
+template<XRepresentation R, class ADS = _ADS, XBaseSolution<R, ADS> S = CopySolution<R, ADS>>
 struct _Testing
 {
    S s;
