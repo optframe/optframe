@@ -335,6 +335,12 @@ Bento Gonçalves-RS, pp 1887-1898.
     title = {OptFrame: a computational framework for combinatorial optimization problems},
     journal = "Simpósio Brasileiro de Pesquisa Operacional"
 }
+@article{optframe2020,
+    author = {Coelho, Igor M. and N. Coelho, Vitor and  Zudio, Anderson and  Araújo, Rodolfo and Haddad, Matheus N. and Munhoz, Pablo Luiz A. and Maia, Breno S. M. and Ochi, Luiz Satoru and Souza,  Marcone Jamilson F.},
+    year = {2020},
+    title = {Microbenchmark Studies in OptFrame: a 10-Year Anniversary},
+    journal = "Simpósio Brasileiro de Pesquisa Operacional"
+}
 ```
 
  
