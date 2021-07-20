@@ -46,10 +46,17 @@ class FEvaluator final : public Evaluator<typename XES::first_type, typename XES
    using XSH = XES; // only single objective
 
 public:
-   XEv (*fEvaluate)(const S&); // evaluation function
+#ifdef OPTFCORE_FUNC_STATIC
+   typedef XEv (*FuncTypeEvaluate)(const S&);
+#else
+   typedef std::function<XEv(const S&)> FuncTypeEvaluate;
+#endif
 
-   FEvaluator(
-     XEv (*_fEvaluate)(const S&))
+   //XEv (*fEvaluate)(const S&); // evaluation function
+   FuncTypeEvaluate fEvaluate;
+
+   //FEvaluator(XEv (*_fEvaluate)(const S&))
+   FEvaluator(FuncTypeEvaluate _fEvaluate)
      : fEvaluate{ _fEvaluate }
    {
    }

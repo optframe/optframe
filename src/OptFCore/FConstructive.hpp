@@ -33,11 +33,18 @@ template<XSolution S>
 class FConstructive final : public Constructive<S>
 {
 public:
-   S (*fGenerate)
-   (); // constructive
+#ifdef OPTFCORE_FUNC_STATIC
+   typedef S(*FuncTypeGenerate);
+#else
+   typedef std::function<S()> FuncTypeGenerate;
+#endif
 
-   FConstructive(
-     S (*_fGenerate)())
+   //S(*fGenerate)(); // constructive
+   FuncTypeGenerate fGenerate;
+
+   //S (*_fGenerate)())
+   //S (*_fGenerate)())
+   FConstructive(FuncTypeGenerate _fGenerate)
      : fGenerate{ _fGenerate }
    {
    }
