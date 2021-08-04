@@ -176,7 +176,7 @@ using NSSeqSwapFancy = FxNSSeqFancy<
   }>;
 
 // Swap move (RNSSeq) - Random + Iterator + coroutines
-using RNSSeqSwap = FxRNSSeq<
+using RNSSeqSwapV1 = FxRNSSeq<
   ESolutionTSP,
   int, // no cache
   [](const ESolutionTSP& se,
@@ -184,10 +184,6 @@ using RNSSeqSwap = FxRNSSeq<
      sref<RandGen> rg,
      bool single) -> Generator<Move<ESolutionTSP>*> {
      // optimistic cache: count moves and allow repetitions, also missing moves
-     // note that this will reset cache!
-     // one cannot run random moves at the same time an active iterator is running!
-     // if this is important, we can fix... this is a first version prototype
-     nocache = 0;
      //
      // always i < j
      int i = rg->rand() % int(pTSP.n - 1);
@@ -197,6 +193,10 @@ using RNSSeqSwap = FxRNSSeq<
         co_yield new MoveSwap{ make_pair(i, j) };
         co_return; // STOP
      } else {
+        // note that this will reset cache!
+        // one cannot run random moves at the same time an active iterator is running!
+        // if this is important, we can fix... this is a first version prototype
+        nocache = 0;
         // this is a real iterator
         //int MAX_MOVES = pTSP.n * pTSP.n; // N² moves
         int MAX_MOVES = (pTSP.n * (pTSP.n - 1)) / 2; // O(N²) moves
@@ -210,4 +210,25 @@ using RNSSeqSwap = FxRNSSeq<
         }
      }
   }>;
+
+// Swap move (RNSSeq) - Random + Iterator + coroutines
+using RNSSeqSwap = FxRNSSeq<
+  ESolutionTSP,
+  int, // no cache
+  [](const ESolutionTSP& se,
+     int& nocache,
+     sref<RandGen> rg,
+     bool single) -> Generator<Move<ESolutionTSP>*> {
+     // optimistic cache: count moves and allow repetitions, also missing moves
+     nocache = 0;
+     int MAX_MOVES = (pTSP.n * (pTSP.n - 1)) / 2; // O(N²) moves
+     while (nocache < MAX_MOVES) {
+        // next move
+        int i = rg->rand() % int(pTSP.n - 1);
+        int j = rg->rand() % int(pTSP.n - i - 1) + i + 1;
+        co_yield new MoveSwap{ make_pair(i, j) }; // implicit unique_ptr requirements
+        nocache++;
+     }
+  }>;
+
 } // TSP_fxcore
