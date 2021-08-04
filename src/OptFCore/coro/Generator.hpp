@@ -91,12 +91,12 @@ public:
       promise_type& operator=(const promise_type&) = delete;
       promise_type& operator=(promise_type&&) = delete;
 
-      auto initial_suspend()
+      auto initial_suspend() noexcept
       {
          return std::suspend_always{};
       }
 
-      auto final_suspend()
+      auto final_suspend() noexcept
       {
          return std::suspend_always{};
       }
@@ -106,7 +106,7 @@ public:
          return Generator{ handle_type::from_promise(*this) };
       }
 
-      auto return_void()
+      auto return_void() noexcept
       {
          return std::suspend_never{};
       }
