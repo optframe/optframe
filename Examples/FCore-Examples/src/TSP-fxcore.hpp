@@ -219,14 +219,15 @@ using RNSSeqSwap = FxRNSSeq<
      int& nocache,
      sref<RandGen> rg,
      bool single) -> Generator<Move<ESolutionTSP>*> {
-     // optimistic cache: count moves and allow repetitions, also missing moves
+     // optimistic cache: count moves, allow repetitions with missing moves
+     // final result is "Assumed Local Optimum" (not "definitive local optimum")
      nocache = 0;
      int MAX_MOVES = (pTSP.n * (pTSP.n - 1)) / 2; // O(N²) moves
      while (nocache < MAX_MOVES) {
         // next move
-        int i = rg->rand() % int(pTSP.n - 1);
-        int j = rg->rand() % int(pTSP.n - i - 1) + i + 1;
-        co_yield new MoveSwap{ make_pair(i, j) }; // implicit unique_ptr requirements
+        int i = rg->rand(0, pTSP.n - 2);
+        int j = rg->rand(i + 1, pTSP.n - 1);
+        co_yield new MoveSwap{ make_pair(i, j) };
         nocache++;
      }
   }>;

@@ -60,7 +60,7 @@ main()
    // ====================
 
    // Random number generator
-   sref<RandGen> rg = new RandGen(40000);
+   sref<RandGen> rg = new RandGen(60000);
 
    // ====================
 
@@ -75,6 +75,14 @@ main()
       std::cout << "end listing RNSSeqSwap" << std::endl;
    }
    // ====================
+
+   {
+      std::cout << std::endl;
+      std::cout << "begin listing multiple random RNSSeqSwap" << std::endl;
+      for (unsigned i = 0; i < 10; i++)
+         rswap->randomMove(esol)->print();
+      std::cout << "end listing RNSSeqSwap" << std::endl;
+   }
 
    // testing simulated annealing
    //BasicInitialSearch<ESolutionTSP> initRand(crand, ev);
