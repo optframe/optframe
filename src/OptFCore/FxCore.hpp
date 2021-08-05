@@ -7,6 +7,7 @@
 #include "FxEvaluator.hpp"
 #include "FxMove.hpp"
 #include "FxNS.hpp"
+#include "FxNSEnum.hpp"
 #include "FxNSSeq.hpp"
 
 #endif // OPTFRAME_FXCORE_HPP

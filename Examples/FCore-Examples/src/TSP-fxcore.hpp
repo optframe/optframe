@@ -15,6 +15,8 @@
 #include <OptFCore/FxRNSSeq.hpp> // magic iterators with random coupled with regular iterator
 // structured randomized iterators
 
+#include <OptFCore/FNSEnum.hpp>
+#include <OptFCore/FxNSEnum.hpp>
 #include <OptFCore/FxRNSEnum.hpp>
 
 using namespace std;
@@ -245,4 +247,33 @@ using RNSEnumSwap = FxRNSEnum<
      int j = k / (pTSP.n - 1) + i + 1;
      return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j) });
   }>;
-} // TSP_fxcore
+
+using NSEnumSwap = FxNSEnum<
+  ESolutionTSP,
+  []() -> unsigned int {
+     return (pTSP.n * (pTSP.n - 1)) / 2; // O(N²) moves
+  },
+  [](unsigned int k)
+    -> uptr<Move<ESolutionTSP>> {
+     int i = k % (pTSP.n - 1);
+     int j = k / (pTSP.n - 1) + i + 1;
+     return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j) });
+  }>;
+
+sref<RandGen> rg_test = new RandGen();
+FNSEnum<
+  ESolutionTSP>
+fenum_swap(
+  []() -> unsigned int {
+     return (pTSP.n * (pTSP.n - 1)) / 2; // O(N²) moves
+  },
+  [](unsigned int k)
+    -> uptr<Move<ESolutionTSP>> {
+     int i = k % (pTSP.n - 1);
+     int j = k / (pTSP.n - 1) + i + 1;
+     return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j) });
+  },
+  rg_test);
+
+// =======
+} // namespace TSP_fxcore
