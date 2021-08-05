@@ -15,6 +15,8 @@
 #include <OptFCore/FxRNSSeq.hpp> // magic iterators with random coupled with regular iterator
 // structured randomized iterators
 
+#include <OptFCore/FxRNSEnum.hpp>
+
 using namespace std;
 using namespace optframe;
 using namespace scannerpp;
@@ -232,4 +234,15 @@ using RNSSeqSwap = FxRNSSeq<
      }
   }>;
 
+using RNSEnumSwap = FxRNSEnum<
+  ESolutionTSP,
+  []() -> unsigned int {
+     return (pTSP.n * (pTSP.n - 1)) / 2; // O(N²) moves
+  },
+  [](unsigned int k)
+    -> uptr<Move<ESolutionTSP>> {
+     int i = k % (pTSP.n - 1);
+     int j = k / (pTSP.n - 1) + i + 1;
+     return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j) });
+  }>;
 } // TSP_fxcore

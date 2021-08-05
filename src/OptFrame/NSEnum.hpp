@@ -37,10 +37,10 @@ class NSEnum : public NSSeq<XES, XEv, XSH>
 {
 
 protected:
-   RandGen& rg;
+   sref<RandGen> rg;
 
 public:
-   NSEnum(RandGen& _rg)
+   NSEnum(sref<RandGen> _rg)
      : rg(_rg)
    {}
 
@@ -50,7 +50,7 @@ public:
 
    virtual uptr<Move<XES, XEv>> randomMove(const XES&)
    {
-      unsigned int x = rg.rand(size());
+      unsigned int x = rg->rand(size());
       return indexMove(x);
    }
 

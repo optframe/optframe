@@ -84,6 +84,19 @@ main()
       std::cout << "end listing RNSSeqSwap" << std::endl;
    }
 
+   rg->setSeed(100000);
+
+   sref<NSSeq<ESolutionTSP>> rswap_enum = new RNSEnumSwap(rg);
+
+   {
+      std::cout << std::endl;
+      std::cout << "begin listing RNSEnumSwap" << std::endl;
+      auto it1 = rswap_enum->getIterator(esol);
+      for (it1->first(); !it1->isDone(); it1->next())
+         it1->current()->print();
+      std::cout << "end listing RNSEnumSwap" << std::endl;
+   }
+
    // testing simulated annealing
    //BasicInitialSearch<ESolutionTSP> initRand(crand, ev);
    //

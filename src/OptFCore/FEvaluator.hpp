@@ -56,10 +56,12 @@ public:
    FuncTypeEvaluate fEvaluate;
 
    //FEvaluator(XEv (*_fEvaluate)(const S&))
+   
    FEvaluator(FuncTypeEvaluate _fEvaluate)
      : fEvaluate{ _fEvaluate }
    {
    }
+   
 
    virtual XEv evaluate(const S& s)
    {
