@@ -31,9 +31,131 @@
 
 namespace optframe {
 
+// Type I: RNSEnumIteratorOptimistic
+// Issue 1: Repeated moves
+// Issue 2: Incomplete (Missing moves)
+// Spirit: believes in randomness
+template<XESolution XES, XEvaluation XEv = typename XES::second_type, XESolution XSH = XES>
+class RNSEnumIteratorOptimistic : public NSIterator<XES, XEv, XSH>
+{
+private:
+   NSEnum<XES, XEv, XSH>& ns;
+   unsigned int move;
+   unsigned int nsSize;
+   sref<RandGen> rg;
+   int count;
+
+public:
+   RNSEnumIteratorOptimistic(NSEnum<XES, XEv, XSH>& _ns, sref<RandGen> _rg)
+     : ns{ _ns }
+     , rg{ _rg }
+   {
+      move = 0;
+      nsSize = _ns.size();
+      count = 0;
+   }
+
+   virtual ~RNSEnumIteratorOptimistic()
+   {
+   }
+
+   void first() override
+   {
+      move = rg->rand(nsSize);
+      count = 1;
+   }
+
+   void next() override
+   {
+      move = rg->rand(nsSize);
+      count++;
+   }
+
+   bool isDone() override
+   {
+      return count > nsSize;
+   }
+
+   uptr<Move<XES, XEv>> current() override
+   {
+      if (isDone())
+         //throw IteratorOutOfBound(move);
+         return nullptr;
+      return ns.indexMove(move);
+   }
+};
+
+// Type I: RNSEnumIteratorShuffle
+// Issue 1: -
+// Issue 2: -
+// Issue 3: O(neighborhood_size) instead of O(moves) - No Amortized Time!
+// Spirit: always complete but may be slow
+template<XESolution XES, XEvaluation XEv = typename XES::second_type, XESolution XSH = XES>
+class RNSEnumIteratorShuffle : public NSIterator<XES, XEv, XSH>
+{
+private:
+   NSEnum<XES, XEv, XSH>& ns;
+   unsigned int move;
+   unsigned int nsSize;
+   sref<RandGen> rg;
+   std::vector<unsigned int> idMoves;
+   int count;
+
+public:
+   RNSEnumIteratorShuffle(NSEnum<XES, XEv, XSH>& _ns, sref<RandGen> _rg)
+     : ns{ _ns }
+     , rg{ _rg }
+   {
+      move = 0;
+      nsSize = _ns.size();
+      idMoves.reserve(nsSize); // how much cost here?
+      count = 0;
+   }
+
+   virtual ~RNSEnumIteratorShuffle()
+   {
+   }
+
+   void first() override
+   {
+      count = 0;
+      idMoves.clear();
+      for (unsigned i = 0; i < nsSize; i++)
+         idMoves.push_back(i);
+      //
+      rg->shuffle(this->idMoves);
+      //
+      move = idMoves[count];
+      std::cout << "first = " << move << std::endl;
+      count++;
+   }
+
+   void next() override
+   {
+      move = idMoves[count];
+      count++;
+      std::cout << "next = " << move << std::endl;
+   }
+
+   bool isDone() override
+   {
+      std::cout << "count =" << count << " sz=" << nsSize << std::endl;
+      return count >= nsSize;
+   }
+
+   uptr<Move<XES, XEv>> current() override
+   {
+      if (isDone())
+         //throw IteratorOutOfBound(move);
+         return nullptr;
+      return ns.indexMove(move);
+   }
+};
+
 template<XESolution XES,
          unsigned int (*fSize)(),
-         uptr<Move<XES>> (*fIndex)(unsigned int k)>
+         uptr<Move<XES>> (*fIndex)(unsigned int k),
+         typename RNSEnumIterator = RNSEnumIteratorOptimistic<XES>>
 class FxRNSEnum final : public NSEnum<XES>
 {
    using XEv = typename XES::second_type;
@@ -61,64 +183,13 @@ public:
 
    virtual uptr<NSIterator<XES, XEv>> getIterator(const XES&)
    {
-      return uptr<NSIterator<XES, XEv>>(new RNSEnumIteratorOptimistic(*this, rg));
+      //return uptr<NSIterator<XES, XEv>>(new RNSEnumIteratorOptimistic(*this, rg));
+      return uptr<NSIterator<XES, XEv>>(new RNSEnumIterator(*this, rg));
    }
 
 private:
    // fGenerator: IMPORTANT! must respect 'unique' semantics! never repeat pointer.
    //
-
-   // Type I: RNSEnumIteratorOptimistic
-   // believes in random
-
-   class RNSEnumIteratorOptimistic : public NSIterator<XES, XEv, XSH>
-   {
-   private:
-      NSEnum<XES, XEv, XSH>& ns;
-      unsigned int move;
-      unsigned int nsSize;
-      sref<RandGen> rg;
-      int count;
-
-   public:
-      RNSEnumIteratorOptimistic(NSEnum<XES, XEv, XSH>& _ns, sref<RandGen> _rg)
-        : ns{ _ns }
-        , rg{ _rg }
-      {
-         move = 0;
-         nsSize = _ns.size();
-         count = 0;
-      }
-
-      virtual ~RNSEnumIteratorOptimistic()
-      {
-      }
-
-      void first() override
-      {
-         move = rg->rand(nsSize);
-         count = 1;
-      }
-
-      void next() override
-      {
-         move = rg->rand(nsSize);
-         count++;
-      }
-
-      bool isDone() override
-      {
-         return count > nsSize;
-      }
-
-      uptr<Move<XES, XEv>> current() override
-      {
-         if (isDone())
-            //throw IteratorOutOfBound(move);
-            return nullptr;
-         return ns.indexMove(move);
-      }
-   };
 
 public:
    // no need to reimplement 'randomMove': trivial with indexMove and size

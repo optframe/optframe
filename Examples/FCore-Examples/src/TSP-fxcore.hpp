@@ -248,6 +248,19 @@ using RNSEnumSwap = FxRNSEnum<
      return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j) });
   }>;
 
+using RNSEnumSwapShuffle = FxRNSEnum<
+  ESolutionTSP,
+  []() -> unsigned int {
+     return (pTSP.n * (pTSP.n - 1)) / 2; // O(N²) moves
+  },
+  [](unsigned int k)
+    -> uptr<Move<ESolutionTSP>> {
+     int i = k % (pTSP.n - 1);
+     int j = k / (pTSP.n - 1) + i + 1;
+     return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j) });
+  },
+  RNSEnumIteratorShuffle<ESolutionTSP>>;
+
 using NSEnumSwap = FxNSEnum<
   ESolutionTSP,
   []() -> unsigned int {
@@ -261,8 +274,7 @@ using NSEnumSwap = FxNSEnum<
   }>;
 
 sref<RandGen> rg_test = new RandGen();
-FNSEnum<
-  ESolutionTSP>
+FNSEnum<ESolutionTSP>
 fenum_swap(
   []() -> unsigned int {
      return (pTSP.n * (pTSP.n - 1)) / 2; // O(N²) moves

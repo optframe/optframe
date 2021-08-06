@@ -44,6 +44,11 @@ public:
    {
    }
 
+   class Z
+   {
+   public:
+   };
+
    op<Evaluation<>> cost(const pair<SolutionEtII, Evaluation<>>& se, bool allowEstimated) override
    {
       const SolutionEtII& s = se.first;
@@ -130,7 +135,7 @@ public:
 
    virtual void print() const
    {
-      cout << "DeltaMoveSwapCenter: (" << x1 << "," << y1 << ") <=> (" << x2 << "," << y2 << ")" << endl;
+      std::cout << "DeltaMoveSwapCenter: (" << x1 << "," << y1 << ") <=> (" << x2 << "," << y2 << ")" << std::endl;
    }
 
    string id() const

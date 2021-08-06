@@ -85,9 +85,7 @@ main()
    }
 
    rg->setSeed(100000);
-
    sref<NSSeq<ESolutionTSP>> rswap_enum = new RNSEnumSwap(rg);
-
    {
       std::cout << std::endl;
       std::cout << "begin listing RNSEnumSwap" << std::endl;
@@ -97,10 +95,22 @@ main()
       std::cout << "end listing RNSEnumSwap" << std::endl;
    }
 
+   rg->setSeed(0);
+   sref<NSSeq<ESolutionTSP>> rswap_enum_shuffle = new RNSEnumSwapShuffle(rg);
+   {
+      std::cout << std::endl;
+      std::cout << "begin listing RNSEnumSwapShuffle" << std::endl;
+      auto it1 = rswap_enum_shuffle->getIterator(esol);
+      for (it1->first(); !it1->isDone(); it1->next())
+         it1->current()->print();
+      std::cout << "end listing RNSEnumSwapShuffle" << std::endl;
+   }
+
    // testing simulated annealing
    //BasicInitialSearch<ESolutionTSP> initRand(crand, ev);
    //
-   sref<GeneralEvaluator<ESolutionTSP>> gev = ev;
+   sref<GeneralEvaluator<ESolutionTSP>>
+     gev = ev;
    //
    sref<InitialSearch<ESolutionTSP>> initRand = new BasicInitialSearch<ESolutionTSP>(crand, ev);
    BasicSimulatedAnnealing<ESolutionTSP> sa(

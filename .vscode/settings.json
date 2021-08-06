@@ -1,4 +1,11 @@
 {
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/node_modules/**": true
+    },
+    "files.exclude": {
+        "bazel-out/**": true
+    },
     "[cpp]": {
         "editor.tabSize": 3,
         "editor.detectIndentation": false
@@ -86,10 +93,10 @@
         "ranges": "cpp",
         "bit": "cpp",
         "gsl_assert": "cpp",
-        "valarray": "cpp"
-    },
-    "files.exclude": {
-        "bazel-out/**": true
+        "valarray": "cpp",
+        "codecvt": "cpp",
+        "numbers": "cpp",
+        "stop_token": "cpp"
     },
     "restructuredtext.confPath": "${workspaceFolder}/docs/source",
     "editor.tokenColorCustomizations": {
