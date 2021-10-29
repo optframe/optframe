@@ -1,15 +1,19 @@
 //#include <OptFCore/FCore.hpp> // included src
 
-#include<iostream>
+#include <iostream>
 
-#include<vector>
+#include <vector>
 
-#include <OptFrame/myconcepts.h>
-#include <OptFrame/Evaluation.hpp>
 #include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/EPopulation.hpp>
+#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/MyConcepts.hpp>
 
 // simple test for package loading (on bazel)
+
+using optframe::Evaluation;
+using optframe::X2ESolution;
+using optframe::XESolution;
 
 using ESolutionTest = std::pair<int, Evaluation<>>;
 
@@ -23,10 +27,11 @@ using EPopulationRealTest = optframe::EPopulation<ESolutionTest>;
 
 static_assert(X2ESolution<EPopulationRealTest, ESolutionTest>);
 
-int main()
+int
+main()
 {
    EPopulationTest epop;
-   std::cout << "A" << std::endl;
+   std::cout << "Hello" << std::endl;
    //
    optframe::Evaluation<int> ev;
    //

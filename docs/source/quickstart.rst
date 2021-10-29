@@ -21,8 +21,8 @@ file (all included in headers!).
 The first test on FCore is to see if it's correctly compiling. So let's just include its main header,
 and print its `welcome()` message:
 
-.. code-block:: c++
-
+..
+    // THIS IS NOT PRINTED: COMMENT IN RESTRUCTURED TEXT (SEE REAL FILE INCLUSION BELOW)
     // file: 'mytest.cpp'
     #include<iostream>
     #include<OptFCore/FCore.hpp>
@@ -31,29 +31,45 @@ and print its `welcome()` message:
         return 0;
     }
 
+:code:`File 'mytest.cpp' located in 'demo/01_QuickstartWelcome/'`
+
+.. literalinclude:: ../../demo/01_QuickstartWelcome/mytest.cpp
+    :linenos:
+    :language: c++
+
 Build with make
 ^^^^^^^^^^^^^^^
 
-To compile it and see the results (using GCC C++ compiler)::
+One way to compile it locally is just copy src/ folder inside your project and see the results (using GCC C++ compiler)::
 
     g++ --std=c++17 -fconcepts mytest.cpp -o fcore_mytest
     ./fcore_mytest
     # Welcome to OptFrame Functional Core (FCore) - version 4.1-dev
 
-If a local copy of OptFrame is being used (via git clone), one needs to pass its location via flag `-I`
-to the compiler (*considering relative location of ./optframe/src/*)::
+If a local copy of OptFrame is being used in other folder (via git clone), one needs to pass its location via flag `-I`
+to the compiler (*considering relative location of ./optframe/src/*):
 
+..
+    # COMMENTED!!
     g++ --std=c++17 -fconcepts -I./optframe/src mytest.cpp -o fcore_localtest
     ./fcore_localtest
     # Welcome to OptFrame Functional Core (FCore) - version 4.1-dev
+
+:code:`File 'makefile' located in 'demo/01_QuickstartWelcome/'`
+
+.. literalinclude:: ../../demo/01_QuickstartWelcome/makefile
+    :linenos:
+    :language: make
 
 
 Build with bazel
 ^^^^^^^^^^^^^^^^
 
 If one wants to build in Windows or any other system, easiest manner is to use Bazel.
-Just create a *WORKSPACE.bazel* file that points to remote OptFrame git repository::
+Just create a *WORKSPACE.bazel* file that points to remote OptFrame git repository:
 
+..
+   # COMMENTED!!
    load('@bazel_tools//tools/build_defs/repo:git.bzl', 'git_repository')
    git_repository(
        name='OptFrame', 
@@ -61,8 +77,17 @@ Just create a *WORKSPACE.bazel* file that points to remote OptFrame git reposito
        branch='master'
    )
 
-And use the following *BUILD.bazel* file (with dependency to @OptFrame)::
-    
+:code:`File 'WORKSPACE.bazel' located in 'demo/01_QuickstartWelcome/'`
+
+.. literalinclude:: ../../demo/01_QuickstartWelcome/WORKSPACE.bazel
+    :linenos:
+    :language: python
+
+
+And use the following *BUILD.bazel* file (with dependency to @OptFrame):
+
+..
+    # COMMENTS!!
     load("@rules_cc//cc:defs.bzl", "cc_library", "cc_binary")
     cc_binary(
         name = "fcore_localtest",
@@ -71,10 +96,16 @@ And use the following *BUILD.bazel* file (with dependency to @OptFrame)::
         copts = ['--std=c++17', '-fconcepts']
     )
 
-Just invoke bazel build system (assuming MinGW C/C++ toolchain on Windows or just remove option for Linux)::
+:code:`File 'BUILD.bazel' located in 'demo/01_QuickstartWelcome/'`
 
-    bazel build --compiler=mingw-gcc ...  
-    bazel run :fcore_localtest
+.. literalinclude:: ../../demo/01_QuickstartWelcome/BUILD.bazel
+    :linenos:
+    :language: python
+
+Just invoke bazel build system (assuming MinGW C/C++ toolchain on Windows or just remove option :code:`--compiler` for Linux)::
+
+    bazel build --compiler=mingw-gcc ... 
+    bazel run :demo_welcome
     # Welcome to OptFrame Functional Core (FCore) - version 4.1-dev
 
 

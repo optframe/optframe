@@ -54,11 +54,12 @@ First, install [Bazel Build](https://bazel.build): `npm install -g @bazel/bazeli
 
 Also, install bazel buildifier (recommended): `go get -v github.com/bazelbuild/buildtools/buildifier` (should appear on `$HOME/go/bin`) 
 
-
-To build (currently a small test on `demo_opt`):
+To build (currently a small test on `demo/00_SimpleBuild`):
 `bazel build ...`
 
-Resulting binaries will be located at folder `./bazel-bin/demo_opt/`
+To run: `bazel run //demo/00_SimpleBuild:app_demo_opt`
+
+Resulting binaries will be located at folder `./bazel-bin/demo/00_SimpleBuild/`
 
 To clean:
 `bazel clean` or `bazel clean --expunge`

@@ -9,7 +9,7 @@ for the classic 0-1 Knapsack Problem (01KP).
 We demonstrate how to update this code for other metaheuristics, for the classic Traveling Salesman Problem (TSP).
 
 Solution definition and exploration method
-----------------------------------------
+------------------------------------------
 
 We define a TSP solution as a permutations of $N$ cities being visited by a Traveling Salesman.
 In this representation, each city is represented as a number $0..N-1$, being a solution a
