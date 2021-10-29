@@ -15,6 +15,7 @@ Welcome to OptFrame Documentation, please select the desired content section.
    intro
    install
    quickstart
+   quickstart_continued
    concepts
    fcore
    debugging
