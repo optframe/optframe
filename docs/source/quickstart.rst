@@ -368,20 +368,24 @@ Time to Test!
 At this point, you can already test many nice metaheuristics and solve your knapsack problem!
 We use the following code to load a problem instance (see `Complete Example`_ after):
 
-.. code-block:: c++ 
-
+.. 
+    // COMMENTS!!
     // loading data into problem context 'pTSP'
     Scanner scanner{ File{ "knapsack-example.txt" } };
     pKP.load(scanner);
     std::cout << "number of items in problem:" << pKP.n << std::endl;
+
+.. literalinclude:: ../../demo/02_QuickstartKP_SA/mainKP-fcore-ex-part2.cpp
+    :linenos:
+    :language: c++
 
 .. hint::
     It is useful to test every FCore structure independently, so as to develop unit testing for them.
 
 To test the constructive and evaluator:
 
-.. code-block:: c++ 
-
+..
+    // COMMENTS
     // invokes method 'generateSolution' from 'FConstructive' to get random solution (no timelimit is passed)
     std::vector<bool> sol = *randomConstructive.generateSolution(0.0);
     // prints solution using OptFrame default operator<<
@@ -392,12 +396,15 @@ To test the constructive and evaluator:
     // prints initial evaluation value (corresponding to random solution in pair)
     esol.second.print();
 
+.. literalinclude:: ../../demo/02_QuickstartKP_SA/mainKP-fcore-ex-part3.cpp
+    :linenos:
+    :language: c++
 
 Now we give an example with of the most well-known metaheuristics: the `Simulated Annealing <https://en.wikipedia.org/wiki/Simulated_annealing>`_.
 It has few parameters, including: initial temperature :code:`T0`, cooling factor :code:`alpha`, and iterations per temperature :code:`iterT`.
 
-.. code-block:: c++
-
+.. 
+    // COMMENTS
     // Good quality number generator for Simulated Annealing (by default Mersenne Twister)
     RandGen rg;
     
@@ -418,7 +425,9 @@ It has few parameters, including: initial temperature :code:`T0`, cooling factor
     std::cout << bestSolution.first << std::endl;   // prints solution
     bestSolution.second.print();                    // prints evaluation
     
-
+.. literalinclude:: ../../demo/02_QuickstartKP_SA/mainKP-fcore-ex-part4.cpp
+    :linenos:
+    :language: c++
 
 Complete Example
 ----------------
