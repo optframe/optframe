@@ -7,7 +7,7 @@
 using namespace std;
 using namespace optframe;
 using namespace scannerpp;
-using namespace KP_fcore;
+//using namespace KP_fcore;
 
 int
 main(int argc, char** argv)
@@ -19,12 +19,11 @@ main(int argc, char** argv)
    std::string sinstance = "knapsack-example.txt";
    File f{ sinstance };
 
-   if(!f.isOpen())
-   {
+   if (!f.isOpen()) {
       std::cerr << "Problema '" << sinstance << "' não encontrado no diretório!" << std::endl;
       return 1;
    }
-   
+
    Scanner scanner{ std::move(f) };
 
    pKP.load(scanner);
@@ -32,13 +31,13 @@ main(int argc, char** argv)
 
    std::cout << "======== Testa Construtivo Aleatório ========" << std::endl;
    // invoca método 'generateSolution' do FCore 'FConstructive' para construtivo aleatório
-   std::vector<bool> sol = *construtivoAleatorio.generateSolution(0.0);
+   std::vector<bool> sol = *randomConstructive.generateSolution(0.0);
    // imprime solução inicial
    std::cout << sol << std::endl;
    //
    std::cout << "======== Testa Avaliador ========" << std::endl;
    // avalia solução inicial e cria um par 'ESolution'
-   ESolutionKP esol(sol, avaliador.evaluate(sol));
+   ESolutionKP esol(sol, evalKP.evaluate(sol));
    // imprime avaliação da solução inicial
    esol.second.print();
 
@@ -47,16 +46,16 @@ main(int argc, char** argv)
    RandGen rg;
    //
    // Cria objeto da classe 'InitialSearch' (parecido com 'construtivoAleatório')
-   BasicInitialSearch<ESolutionKP> initRand(construtivoAleatorio, avaliador);
+   BasicInitialSearch<ESolutionKP> initRand(randomConstructive, evalKP);
    // Instancia um Simulated Annealing com alpha=98%, iterações na temp = 100, temperatura inicial = 99999
    BasicSimulatedAnnealing<ESolutionKP> sa{
-      avaliador, initRand, nsFlip, 0.98, 100, 99999, rg
+      evalKP, initRand, nsFlip, 0.98, 100, 99999, rg
    };
    // executa o SA e coleta o 'status' de saída
    // passa um 'Criterio de Parada' por tempo (= 10 segundos)
-   SearchStatus status = sa.search(StopCriteria<ESolutionKP::second_type>{ 10.0 }); // 10.0 seconds max
+   auto searchOut = sa.search(StopCriteria<ESolutionKP::second_type>{ 10.0 }); // 10.0 seconds max
    // pega melhor solução do método SA
-   ESolutionKP melhor = *sa.getBestSolution();
+   ESolutionKP melhor = *searchOut.best; //*sa.getBestSolution();
    std::cout << "======== Imprime melhor solução do SA ========" << std::endl;
    // imprime representação da melhor solução
    cout << melhor.first << endl;

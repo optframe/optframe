@@ -154,8 +154,8 @@ an :cppcode:`Evaluation<int>` (just ignore the *Evaluation* container for now...
 We declare a `XESolution <./concepts.html>`_ pair that aggregates both spaces as a single 
 type :code:`ESolutionKP` (meaning an *evaluated solution for the knapsack problem*):
 
-.. code-block:: c++
-
+.. 
+    // COMMENTS!!!
     // file: 'example.cpp'
     #include<iostream>
     #include<vector>
@@ -167,6 +167,10 @@ type :code:`ESolutionKP` (meaning an *evaluated solution for the knapsack proble
         std::vector<bool>, // (representation)
         Evaluation<int> // (objective value)
     >;
+
+.. literalinclude:: ../../demo/02_QuickstartKP_SA/KP-fcore-ex-part1.hpp
+    :linenos:
+    :language: c++
 
 .. this is called an 'admonition'
 .. https://docutils.sourceforge.io/docs/ref/rst/directives.html#code
@@ -191,8 +195,8 @@ so a *ProblemContext* can be introduced.
 For easy interoperability with file and string inputs (on Linux/Windows), we use *Scanner* class
 to process problem data (some details of 'load' function will only be discussed in a later moment):
 
-.. code-block:: c++
-
+.. 
+    // COMMENTS
     // example.cpp
     // ...
     #include <OptFrame/Scanner++/Scanner.hpp>
@@ -213,6 +217,10 @@ to process problem data (some details of 'load' function will only be discussed 
     // global instance for problem data
     ProblemContext pKP;
 
+.. literalinclude:: ../../demo/02_QuickstartKP_SA/KP-fcore-ex-part2.hpp
+    :linenos:
+    :language: c++
+
 .. hint::
     ProblemContext is a user-defined class that can have any desired format. A 'load' function
     is just a suggestion, but not at all necessary. The object :code:`pKP` is declared in global scope
@@ -224,8 +232,8 @@ Random Constructive
 We need to have some initial solution for the search process, so we just proceed in a random manner.
 For simplicity, we allow infeasible solutions to be generated (as if capacity was infinite).
 
-.. code-block:: c++
-
+..
+    // COMMENTS
     // declaring a 'frandom' function that generates initial solution
     std::vector<bool>
     frandom()
@@ -239,6 +247,10 @@ For simplicity, we allow infeasible solutions to be generated (as if capacity wa
 
     // Instantiates a FConstructive object for method 'frandom'
     FConstructive<std::vector<bool>> randomConstructive{ frandom };
+
+.. literalinclude:: ../../demo/02_QuickstartKP_SA/KP-fcore-ex-part3.hpp
+    :linenos:
+    :language: c++
 
 .. hint::
     User can also define many advanced constructive techniques in a similar manner, such as greedy 
@@ -254,8 +266,8 @@ As discussed in constructive section, we allow accumulated weight to surpass kna
 for infeasible configurations. 
 To discourage that, we introduce negative penalization whenever capacity is exceeded (assuming weight -1000000):
 
-.. code-block:: c++
-
+..
+    // COMMENTS
     // function 'fevaluate' receives a const solution and returns an evaluation
     Evaluation<int>
     fevaluate(const std::vector<bool>& s)
@@ -275,11 +287,15 @@ To discourage that, we introduce negative penalization whenever capacity is exce
         return Evaluation<int>{ sum_p }; // returns Evaluation object
     }
 
-We now use the defined :code:`fevaluate` function to create an :code:`Evaluator` object named :code:`evalKP`,
-in a :code:`MAXIMIZE` direction:
+.. literalinclude:: ../../demo/02_QuickstartKP_SA/KP-fcore-ex-part4.hpp
+    :linenos:
+    :language: c++
 
-.. code-block:: c++
+We have defined :code:`fevaluate` function to create an :code:`Evaluator` object named :code:`evalKP`,
+in a :code:`MAXIMIZE` direction.
 
+.. 
+    // COMMENTS (SEE ABOVE FILE!)
     FEvaluator<ESolutionKP, MAXIMIZE> evalKP{ fevaluate };
 
 .. hint::
@@ -298,8 +314,8 @@ Every neighborhood is related to a move operator, which is required (on FCore) t
 We create a :code:`BitFlip` move, that changes the :code:`true/false` selection of a given item :math:`k`.
 In this case, the `move structure` (representation of the move) is just an :code:`int`, that represents the flipped item.
 
-.. code-block:: c++
-
+.. 
+    // COMMENTS
     // MoveBitFlip (move structure is an 'int')
     using MoveBitFlip = FMove<int, ESolutionKP>;
 
@@ -312,13 +328,18 @@ In this case, the `move structure` (representation of the move) is just an :code
         return k;                   // returns the "undo move", which is in this case the same move 'k' (symmetric move)
     }
 
+
+.. literalinclude:: ../../demo/02_QuickstartKP_SA/KP-fcore-ex-part5.hpp
+    :linenos:
+    :language: c++
+
 Now, it's time to define a neighborhood generator for the move.
 OptFrame has three main types of neighborhoods: :code:`NS`, :code:`NSSeq` and :code:`NSEnum`.
 
 In this example, we will use :code:`NS`, since it only requires the generation of random moves:
 
-.. code-block:: c++
-
+..
+    // COMMENTS
     // random generator for BitFlip moves (returned as C++11 unique pointers)
     std::unique_ptr<Move<ESolutionKP>>
     fRandomFlip(const ESolutionKP& se)
@@ -331,6 +352,9 @@ In this example, we will use :code:`NS`, since it only requires the generation o
     // Defines a NS object for BitFlip with function 'fRandomFlip'
     FNS<ESolutionKP> nsFlip{ fRandomFlip };
 
+.. literalinclude:: ../../demo/02_QuickstartKP_SA/KP-fcore-ex-part6.hpp
+    :linenos:
+    :language: c++
 
 .. hint::
     It is usually a good idea to start developing over the simplest neighborhood, which is :code:`NS`.
@@ -412,24 +436,30 @@ Example is divided in two files: :code:`KP-fcore-ex.hpp` and :code:`mainKP-fcore
 
 *KP-fcore-ex.hpp*
 
-.. literalinclude:: ./_example/KP-fcore-ex.hpp
+:code:`File 'KP-fcore-ex.hpp' located in 'demo/02_QuickstartKP_SA/'`
+
+.. literalinclude:: ../../demo/02_QuickstartKP_SA/KP-fcore-ex.hpp
     :linenos:
     :language: c++
 
 *mainKP-fcore-ex.cpp*
 
-.. literalinclude:: ./_example/mainKP-fcore-ex.cpp
+:code:`File 'mainKP-fcore-ex.cpp' located in 'demo/02_QuickstartKP_SA/'`
+
+.. literalinclude:: ../../demo/02_QuickstartKP_SA/mainKP-fcore-ex.cpp
     :linenos:
     :language: c++
 
 *knapsack-example.txt*
 
-.. literalinclude:: ./_example/knapsack-example.txt
+:code:`File 'knapsack-example.txt' located in 'demo/02_QuickstartKP_SA/'`
+
+.. literalinclude:: ../../demo/02_QuickstartKP_SA/knapsack-example.txt
     :linenos:
     :language: c++
 
 To compile it (generates binary `app_KP`)::
 
-    g++ -g -O3 --std=c++17 -fconcepts  mainKP-fcore-ex.cpp -o app_KP
+    g++ -g -O3 --std=c++17 -fconcepts -I../../src  mainKP-fcore-ex.cpp -o app_KP
 
 
