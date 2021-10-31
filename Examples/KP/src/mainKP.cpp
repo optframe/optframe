@@ -108,7 +108,7 @@ main(int argc, char** argv)
    */
 
    sa.onLoopCtx = [](auto& ctx, auto& sosc) {
-      return (ctx.T >= 0.001) && !sosc.shouldStop(std::make_optional(ctx.best->second));
+      return (ctx.T >= 0.001) && !sosc.shouldStop(ctx.best->second);
    };
 
    SearchOutput<ESolutionKP> sout = sa.search(sosc); // Faz a busca, de fato
