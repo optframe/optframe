@@ -168,7 +168,7 @@ We note that all four iterator operations (first, next, current and isDone) are 
 available quite naturally with a single coroutine generator that executes co_yield for
 each available move.
 
-.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/TSP-fxcore-nsseq.hpp
+.. literalinclude:: ../../demo/04_Quickstart_Advanced_TSP_fxcore/TSP-fxcore-nsseq.hpp
     :linenos:
     :language: c++
 
