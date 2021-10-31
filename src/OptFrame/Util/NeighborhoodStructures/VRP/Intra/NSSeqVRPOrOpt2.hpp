@@ -162,6 +162,7 @@ protected:
    const Routes& rep;
    P* p; // has to be the last
 
+public:
    NSIteratorVRPOrOpt2(Routes& (*getRoutes)(const XES&), const XES& se, P* _p = nullptr)
      : getRoutes(getRoutes)
      , rep{ getRoutes(se) }
@@ -275,7 +276,8 @@ public:
    virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
    {
       //XSolution& s = se.first;
-      return uptr<NSIterator<XES>>(new NSITERATOR(getRoutes, se, p));
+      NSITERATOR* it = new NSITERATOR(getRoutes, se, p);
+      return uptr<NSIterator<XES>>(it);
    }
 
    virtual string toString() const

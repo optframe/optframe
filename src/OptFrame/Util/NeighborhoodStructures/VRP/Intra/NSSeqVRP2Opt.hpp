@@ -24,10 +24,14 @@
 #define OPTFRAME_NSSEQVRP2OPT_HPP_
 
 // Framework includes
+#include "../../../../BaseConcepts.hpp"
 #include "../../../../Move.hpp"
 #include "../../../../NSSeq.hpp"
 
 using namespace std;
+
+// for XESolution
+using namespace optframe;
 
 // Working structure: vector<T>
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS>

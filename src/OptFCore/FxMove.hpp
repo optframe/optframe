@@ -35,23 +35,23 @@ namespace optframe {
 //  So, looks like we need to have function in global scope, for it to have linkage.
 //
 template<class M, XESolution XES>
-auto fDefaultCanBeApplied =
+auto fxDefaultCanBeApplied =
   [](const M&, const XES&) -> bool {
    return true;
 };
 //
 template<class M, XESolution XES>
-auto fDefaultCompareEq =
+auto fxDefaultCompareEq =
   [](const M& me, const Move<XES>& other) -> bool {
    return false;
 };
 //
 template<
-  class M,                                                                    // Move structure
-  XESolution XES,                                                             // ESolution Type
-  M (*fApply)(const M&, XES&),                                                // fApply
-  bool (*fCanBeApplied)(const M&, const XES&) = fDefaultCanBeApplied<M, XES>, // fCanBeApplied
-  bool (*fCompareEq)(const M&, const Move<XES>&) = fDefaultCompareEq<M, XES>  // fCompareEq
+  class M,                                                                     // Move structure
+  XESolution XES,                                                              // ESolution Type
+  M (*fApply)(const M&, XES&),                                                 // fApply
+  bool (*fCanBeApplied)(const M&, const XES&) = fxDefaultCanBeApplied<M, XES>, // fCanBeApplied
+  bool (*fCompareEq)(const M&, const Move<XES>&) = fxDefaultCompareEq<M, XES>  // fCompareEq
   >
 class FxMove final : public Move<XES, typename XES::second_type>
 {

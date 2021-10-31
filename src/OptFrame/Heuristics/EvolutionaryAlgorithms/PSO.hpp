@@ -29,7 +29,7 @@
 #include "../../RandGen.hpp"
 #include "../../SingleObjSearch.hpp"
 
-#include <OptFrame/printable/printable.h> // TODO: remove!
+#include <OptFrame/printable/printable.hpp> // TODO: remove!
 
 /*
 #include "Crossover.hpp"
@@ -199,7 +199,7 @@ public:
    //SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
    SearchOutput<XES> search(const StopCriteria<XEv>& stopCriteria) override
    {
-      ExecutionContext ctx {.self = this};
+      ExecutionContext ctx{ .self = this };
 
       if (Component::debug)
          (*Component::logdata) << "PSO search():"
@@ -323,7 +323,7 @@ public:
 
       //this->best = std::make_optional(realBest);
       //return SearchStatus::NO_REPORT;
-      return {SearchStatus::NO_REPORT, std::make_optional(realBest)};
+      return { SearchStatus::NO_REPORT, std::make_optional(realBest) };
    }
 
    // reimplementing searchBy, just to make it more explicit (visible)

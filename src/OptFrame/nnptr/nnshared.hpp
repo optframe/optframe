@@ -322,6 +322,12 @@ public:
       return *data_;
    }
 
+   // method 'sptr' should be taken only in extreme/compatibility cases
+   std::shared_ptr<T> sptr() const
+   {
+      return data_;
+   }
+
    T& get()
    {
       // return dereferenced shared object

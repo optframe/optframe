@@ -155,6 +155,7 @@ protected:
    const Routes& rep;
    P* p; // has to be the last
 
+public:
    NSIteratorVRPOrOpt1(Routes& (*getRoutes)(const XES&), const XES& se, P* _p = nullptr)
      : getRoutes(getRoutes)
      , rep{ getRoutes(se) }
