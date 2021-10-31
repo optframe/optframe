@@ -135,7 +135,11 @@ main(int argc, char** argv)
    RandomInitialSolutionTSP randomTSP(tsp.p, eval, rg);
    NearestNeighborConstructive cnn(tsp.p, eval, rg);
    ConstructiveBestInsertion cbi(tsp.p, eval, rg);
-   NSEnumSwap enumswap(tsp.p, rg);
+
+   // NSEnumSwap enumswap(tsp.p, rg);
+   sref<NSEnum<ESolutionTSP>> enumswap{
+      new NSEnumSwap(tsp.p, rg)
+   };
 
    // Basic test for Neighborhood Exploration
    FirstImprovingNeighbor<ESolutionTSP> fin(eval, enumswap);

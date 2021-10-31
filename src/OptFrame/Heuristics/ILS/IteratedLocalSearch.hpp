@@ -28,6 +28,7 @@
 
 #include "../../Constructive.hpp"
 #include "../../Evaluator.hpp"
+#include "../../ITrajectory.hpp"
 #include "../../SingleObjSearch.hpp"
 #include "../../Timer.hpp"
 

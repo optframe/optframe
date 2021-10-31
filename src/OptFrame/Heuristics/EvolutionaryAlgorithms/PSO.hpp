@@ -199,7 +199,8 @@ public:
    //SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
    SearchOutput<XES> search(const StopCriteria<XEv>& stopCriteria) override
    {
-      ExecutionContext ctx{ .self = this };
+      // TODO: context 'ctx'
+      //ExecutionContext ctx{ .self = this };
 
       if (Component::debug)
          (*Component::logdata) << "PSO search():"

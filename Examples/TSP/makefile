@@ -11,7 +11,7 @@ OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))  # replace
 
 # pack all objs ($^) into a single APPNAME
 build/app_Example: $(OBJ_FILES)
-	$(CC) $(LDFLAGS) ../../src/OptFrame/printable/printable.cpp -o $@ $^
+	$(CC) $(LDFLAGS)  -o $@ $^
 	cp -r tsplib/ build/
 
 # compile each .cpp individually ($<)

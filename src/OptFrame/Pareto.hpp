@@ -27,6 +27,8 @@
 #include <iostream>
 #include <vector>
 
+#include "BaseConcepts.hpp"
+
 #include "Direction.hpp"
 #include "Evaluation.hpp"
 #include "Population.hpp"
@@ -614,8 +616,10 @@ public:
 
 } // namespace optframe
 
+namespace optframe {
 // compilation tests
 static_assert(X2ESolution<Pareto<ESolution<double>>, ESolution<double>>);
+} // namespace optframe
 
 // compilation tests for concepts (these are NOT unit tests)
 #include "Pareto.ctest.hpp"

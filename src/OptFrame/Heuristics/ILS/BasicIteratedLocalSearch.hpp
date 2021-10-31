@@ -59,9 +59,9 @@ public:
    {
    }
 
-   virtual BasicHistory& initializeHistory()
+   virtual sref<BasicHistory> initializeHistory() override
    {
-      int& iter = *new int;
+      sref<int> iter = new int;
       iter = 0;
 
       return iter;
@@ -72,7 +72,7 @@ public:
       ls->searchFrom(se, sosc);
    }
 
-   virtual void perturbation(XES& se, const StopCriteria<XEv>& sosc, BasicHistory& history) override
+   virtual void perturbation(XES& se, const StopCriteria<XEv>& sosc, sref<BasicHistory> history) override
    {
       int iter = history;
 
@@ -85,11 +85,11 @@ public:
       history = iter;
    }
 
-   virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, BasicHistory& history) override
+   virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, sref<BasicHistory> history) override
    {
       //if (IteratedLocalSearch<BasicHistory, XES, XEv>::evaluator.betterThan(e1, e2))
       //if (e1.betterStrict(e2))
-      if (IteratedLocalSearch<BasicHistory, XES, XEv>::evaluator.betterStrict(e1, e2)) {
+      if (IteratedLocalSearch<BasicHistory, XES, XEv>::evaluator->betterStrict(e1, e2)) {
          // =======================
          //   Melhor solucao: 's2'
          // =======================
@@ -110,7 +110,7 @@ public:
          return false;
    }
 
-   virtual bool terminationCondition(BasicHistory& history)
+   virtual bool terminationCondition(sref<BasicHistory> history) override
    {
       int iter = history;
 

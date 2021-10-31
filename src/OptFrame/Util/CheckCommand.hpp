@@ -99,9 +99,9 @@ public:
       cout << "checkcommand: Constructive not registered!" << endl;
    }
 
-   void add(InitialSearch<XES, XEv>& c)
+   void add(sref<InitialSearch<XES, XEv>> c)
    {
-      lConstructive.push_back(&c);
+      lConstructive.push_back(c.sptr());
       if (verbose)
          cout << "checkcommand: InitialSearch " << lConstructive.size() << " added!" << endl;
    }
@@ -161,13 +161,13 @@ public:
       }
    }
 
-   void add(NSEnum<XES, XEv>& c)
+   void add(sref<NSEnum<XES, XEv>> c)
    {
-      lNSEnum.push_back(&c);
+      lNSEnum.push_back(c.sptr());
       if (verbose)
          cout << "checkcommand: NSEnum " << lNSEnum.size() << " added!" << endl;
       if (convertNS)
-         add((NSSeq<XES, XEv>&)c);
+         add((sref<NSSeq<XES, XEv>>)c);
    }
 
    void message(Component* c, int iter, string text)
