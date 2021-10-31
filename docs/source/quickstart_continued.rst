@@ -157,6 +157,11 @@ current (returns current move) and isDone (indicates if no move exists).
     :linenos:
     :language: c++
 
+.. hint::
+    According to groundbreaking ideas from Variable Neighborhood Search community, the user 
+    should create multiple neighborhoods, with different ideas in each one, in order to better
+    explore the solution space.
+
 At this point, we quickly demonstrate how novel C++20 features, such as Coroutines,
 have improved OptFrame in latest versions (named FxCore library). 
 We note that all four iterator operations (first, next, current and isDone) are made
