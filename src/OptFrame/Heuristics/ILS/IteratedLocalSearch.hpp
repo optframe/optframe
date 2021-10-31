@@ -129,7 +129,8 @@ public:
          bool improvement = acceptanceCriterion(p1.second, star.second, history);
          if (improvement)
             star = p1; // copy-based
-         std::cout << "SHOULD STOP?" << std::endl;
+         if (Component::debug)
+            std::cout << "SHOULD STOP?" << std::endl;
       } while (!terminationCondition(history) && !stopCriteria.shouldStop(star.second));
 
       if (!stopCriteria.target_f.outdated) {

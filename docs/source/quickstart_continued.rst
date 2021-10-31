@@ -8,8 +8,14 @@ for the classic 0-1 Knapsack Problem (01KP).
 
 We demonstrate how to update this code for other metaheuristics, for the classic Traveling Salesman Problem (TSP).
 
-Solution definition and exploration method
+Problem definition and exploration methods
 ------------------------------------------
+
+At this point, we assume the reader is familiarized with the Traveling Salesman Problem...
+we intend to expand this section in the future with figures and more motivation (for now, sorry, and let's move on).
+
+TSP Solution definition
+^^^^^^^^^^^^^^^^^^^^^^^
 
 We define a TSP solution as a permutations of $N$ cities being visited by a Traveling Salesman.
 In this representation, each city is represented as a number $0..N-1$, being a solution a
@@ -19,12 +25,16 @@ Objective is to find a route that minimizes distance between the $N$ visited cit
 
 We may define ESolutionTSP as a pair, containing a solution and its objective value (double).
 
-.. code-block:: c++
-
+..
+    // COMMENTS 
     using ESolutionTSP = std::pair<
         std::vector<int>,  // first part of search space element: solution (representation)
         Evaluation<double> // second part of search space element: evaluation (objective value)
     >;
+
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/TSP-fcore-part1.hpp
+    :linenos:
+    :language: c++
 
 
 Problem Data
@@ -34,8 +44,8 @@ We read a matrix of distances between pairs of cities (considering Euclidean dis
 store in a structure named ProblemContext. Do not forget to #include helpers from optframe namespace, 
 such as Matrix and Scanner.
 
-.. code-block:: c++
-
+..
+    // COMMENTS
     // TSP problem context and data reads
     class ProblemContext
     {
@@ -68,12 +78,11 @@ such as Matrix and Scanner.
         }
     };
 
-Finally, we declare a global object (for simplicity), that includes all data.
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/TSP-fcore-part2.hpp
+    :linenos:
+    :language: c++
 
-.. code-block:: c++
-
-    // Create TSP Problem Context
-    ProblemContext pTSP;
+Finally, we declare a global object :code:`ProblemContext pTSP` (for simplicity), that includes all data.
 
 
 Evaluation
@@ -83,8 +92,8 @@ Objective calculation can be done by using Functional Core class FEvaluator, whi
 simplification from OptFrame Core components Evaluator (for single objectives) and 
 GeneralEvaluator (for single and multiple objectives).
 
-.. code-block:: c++
-
+..
+    // COMMENTS
     Evaluation<double>
     fevaluate(const std::vector<int>& s)
     {
@@ -103,11 +112,125 @@ GeneralEvaluator (for single and multiple objectives).
         fevaluate
     };
 
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/TSP-fcore-part3.hpp
+    :linenos:
+    :language: c++
 
-Search method
-^^^^^^^^^^^^^^^
 
-We start now with the Biased Random Key Genetic Algorithm (BRKGA), a simple metaheuristic
+Search methods based on neighborhoods
+-------------------------------------
+
+The next components will depend on the type of search method used, we start with 
+neighborhood-based search techniques.
+
+Random constructive
+^^^^^^^^^^^^^^^^^^^
+
+In a similar manner with Knapsack example (on Quickstart part 1), we define
+a random solution generator.
+
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/TSP-fcore-part4.hpp
+    :linenos:
+    :language: c++
+
+First move operator: Swap
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+We start with a Move operator capable of exchanging two elements from a given TSP solution.
+We have four types of neighborhood definitions in OptFrame (NS, NSFind, NSSeq and NSEnum), but
+two major are NS and NSSeq.
+
+NS works well for random neighborhoods, with no intent of explicitly
+visiting all possible neighbors (also useful for continuous or infinite neighborhoods).
+Swap move and NS definition can be seen below.
+
+
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/TSP-fcore-part5.hpp
+    :linenos:
+    :language: c++
+
+We now define the NSSeq neighborhood with a explicit iterator definition, that requires four
+operations: first (initializes first valid move), next (skips to next valid move), 
+current (returns current move) and isDone (indicates if no move exists).
+
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/TSP-fcore-part6.hpp
+    :linenos:
+    :language: c++
+
+At this point, we quickly demonstrate how novel C++20 features, such as Coroutines,
+have improved OptFrame in latest versions (named FxCore library). 
+We note that all four iterator operations (first, next, current and isDone) are made
+available quite naturally with a single coroutine generator that executes co_yield for
+each available move.
+
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/TSP-fxcore-nsseq.hpp
+    :linenos:
+    :language: c++
+
+We will explore more of these bleeding-edge tools in an advanced topic.
+
+Complete Example for TSP Components
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For simplicity, we separate the main TSP components in a file named :code:`TSP-fcore.hpp`.
+
+.. hint::
+    This example could be made in a single file, to be even simpler. However, we recommend users to have  
+    a clear separation for the header declaration of *FCore components* (on :code:`TSP-fcore.hpp`) 
+    from the :code:`main()` entrypoint depending on method used, e.g., :code:`mainTSP-fcore-ils.cpp` or :code:`mainTSP-fcore-brkga.cpp`.
+
+*TSP-fcore.hpp*
+
+:code:`File 'TSP-fcore.hpp' located in 'demo/03_QuickstartTSP_VNS_BRKGA/'`
+
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/TSP-fcore.hpp
+    :linenos:
+    :language: c++
+
+
+Exploring with neighborhood exploration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+OptFrame supports several strategies for neighborhood exploration, such as:
+First Improvement, Best Improvement, Random Selection and Multi Improvement.
+We can also combine several local search strategies in a multiple strategy
+called Variable Neighborhood Descent (VND).
+
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/mainTSP-fcore-ils-part2.cpp
+    :linenos:
+    :language: c++
+
+If one wants to build a complete metaheuristic, the Iterated Local Search (ILS) or a Variable
+Neighborhood Search (VNS).
+The ILS is based on general perturbation concept, so we will use the concept of Levels of 
+Perturbation, that are increased when stuck in a poor quality local optimum. We adopt a perturbation 
+strategy that tries to escape at level p by applying p+2 random moves, e.g., at level 0,
+2 random moves are applied, and so on.
+
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/mainTSP-fcore-ils-part3.cpp
+    :linenos:
+    :language: c++
+
+
+
+
+Complete Example for ILS
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+We provide the main file for TSP ILS :code:`mainTSP-fcore-ils.cpp`.
+
+*mainTSP-fcore-ils.cpp*
+
+:code:`File 'mainTSP-fcore-ils.cpp' located in 'demo/03_QuickstartTSP_VNS_BRKGA/'`
+
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/mainTSP-fcore-ils.cpp
+    :linenos:
+    :language: c++
+
+Search methods based on random keys
+-----------------------------------
+
+We finish with the Biased Random Key Genetic Algorithm (BRKGA), a simple metaheuristic
 inspired by classic Genetic Algorithm, using the solution representation of $n$ Random Keys, 
 which are $[0,1]^n$ float values.
 
@@ -120,8 +243,8 @@ but we choose to demonstrate manually (by inheriting from OptFrame Core class In
 
 This is good to tune the degree of randomness (number of random digits) and also the random function used.
 
-.. code-block:: c++
-
+..
+    // COMMENTS
     class MyRandomKeysInitPop : public InitialPopulation<std::pair<std::vector<double>, Evaluation<double>>>
     {
         using RSK = std::vector<double>;
@@ -159,6 +282,10 @@ This is good to tune the degree of randomness (number of random digits) and also
         }
     };
 
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/mainTSP-fcore-brkga-part2.cpp
+    :linenos:
+    :language: c++
+
 BRKGA decoding
 ^^^^^^^^^^^^^^^
 
@@ -167,8 +294,8 @@ BRKGA also requires a decoder function, that maps this array of random keys into
 This can be easily done with Functional Core class FDecodeRK, and an interesting approach based
 on sorting the keys, related to a predefined indexing of each key.
 
-.. code-block:: c++
-
+..
+    // COMMENTS
     pair<Evaluation<double>, vector<int>>
     fDecode(const vector<double>& rk)
     {
@@ -197,6 +324,9 @@ on sorting the keys, related to a predefined indexing of each key.
     };
 
 
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/mainTSP-fcore-brkga-part3.cpp
+    :linenos:
+    :language: c++
 
 BRKGA with TSP
 ^^^^^^^^^^^^^^^
@@ -207,8 +337,8 @@ and invoke a BRKGA to solve it.
 The parameters of BRKGA are: decoding function, initial solution generator, population size, number of iterations,
 also rates for mutation (randomness), elite (best solutions), preference for elite solutions, and finally, a random generation method.
 
-.. code-block:: c++
-
+..
+   // COMMENTS
    sref<RandGen> rg = new RandGen;
 
    // load data into problem context 'pTSP'
@@ -232,15 +362,31 @@ also rates for mutation (randomness), elite (best solutions), preference for eli
 
    auto searchOut = brkga.search(10.0); // 10.0 seconds max
 
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/mainTSP-fcore-brkga-part4.cpp
+    :linenos:
+    :language: c++
 
 The result from searchOut can be split in two parts, an error code and the returned solution 
 (the same as in Simulated Annealing or any other OptFrame search method).
 
 
-Complete Example
-----------------
+Complete Example for BRKGA
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For a complete example, see folder Examples/FCore-BRKGA and execute :code:`bazel build ...`
+We provide the main file for TSP BRKGA :code:`mainTSP-fcore-brkga.cpp`.
+
+*mainTSP-fcore-brkga.cpp*
+
+:code:`File 'mainTSP-fcore-brkga.cpp' located in 'demo/03_QuickstartTSP_VNS_BRKGA/'`
+
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/mainTSP-fcore-brkga.cpp
+    :linenos:
+    :language: c++
+
+More Examples 
+^^^^^^^^^^^^^
+
+For a other examples, see folder Examples/FCore-BRKGA and execute :code:`bazel build ...`
 
 .. warning::
     Feel free to check folder :code:`OptFrame/Examples` for other examples on FCore and OptFrame Classic.

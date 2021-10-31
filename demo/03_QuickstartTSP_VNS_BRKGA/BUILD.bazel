@@ -1,0 +1,13 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+cc_binary(
+    name = "app_KPfcore",
+    srcs = ["mainKP-fcore-ex.cpp", "KP-fcore-ex.hpp"],
+    copts = ['-std=c++17', '-fconcepts', '-Wfatal-errors'],
+    data = ['knapsack-example.txt'],
+    deps = ["@OptFrame//src:OptFCore"]
+)

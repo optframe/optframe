@@ -92,7 +92,8 @@ public:
          //if (ev.betterThan(e, eCurrent))
          //if (ev.betterThan(se, current))
          //if (se.second.betterStrict(current.second))
-         std::cout << "VND will compare(" << se.second.outdated << ";" << current.second.outdated << ")" << std::endl;
+         if (Component::debug)
+            std::cout << "VND will compare(" << se.second.outdated << ";" << current.second.outdated << ")" << std::endl;
          if (ev->betterStrict(se.second, current.second)) {
             // improvement
             k = 1;

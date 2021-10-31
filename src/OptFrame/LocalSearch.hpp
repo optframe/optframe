@@ -50,6 +50,8 @@ class LocalSearch : public Component
 public:
    LocalSearch()
    {
+      // DEFAULT for LocalSearch: silent
+      Component::setSilent();
    }
 
    virtual ~LocalSearch()
