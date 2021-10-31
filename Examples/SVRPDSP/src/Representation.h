@@ -1,7 +1,7 @@
 #ifndef SVRPDSP_REPRESENTATION_H_
 #define SVRPDSP_REPRESENTATION_H_
 
-#include <OptFrame/Util/printable.hpp>
+#include <OptFrame/printable/printable.hpp>
 #include <vector>
 
 #include <OptFrame/Util/Matrix.hpp>

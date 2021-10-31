@@ -210,7 +210,7 @@ public:
       ///op<XES>& star = this->best;
 
       // check if time/target conditions are met
-      if (stopCriteria.shouldStop(std::nullopt))
+      if (stopCriteria.shouldStop())
          return SearchStatus::NO_REPORT;
 
       // generates initial swarm (of size 'pop_size', see parameter)

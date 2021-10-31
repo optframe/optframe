@@ -2,7 +2,7 @@
 //
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/Util/Matrix.hpp>
-#include <OptFrame/Util/printable.hpp>
+#include <OptFrame/printable/printable.hpp>
 
 using namespace optframe;
 using namespace scannerpp;
