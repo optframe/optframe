@@ -10,9 +10,9 @@ OptFrame
   </a>
 </p>
 
-## OptFrame 4.3-dev - Optimization Framework
+## OptFrame 4.4-dev - Optimization Framework
 
-OptFrame v4.2 is launched! Version 4.3 is on development.
+OptFrame v4.3 is launched! Version 4.4 is on development.
 
 Now, with newest C++20 features and integrated Unit Testing for user projects and examples (still ongoing work). Scanner++ library is also dettached independent project now.
 Remember to clone this repo using `--recursive` option, so you don't miss anything ;)
@@ -30,12 +30,7 @@ Note that OptFrame website may have obsolete documentation and examples:
 
 ~Check [https://optframe.github.io/docs/quick-start-guide/](https://optframe.github.io/docs/quick-start-guide/)~
 
-### Intended changes for 4.2
-
-For 4.2 we plan to:
-- migrate into MIT License model, that corresponds into newer open-source community global standards (from previous LGPLv3 license)
-- fix many bugs from v4.1
-- adopt standard memory management for all components (from *widget&* into *not null shared pointer* "sref")
+### Intended changes for 4.4
 
 
 ### Docs Requirements

@@ -1,6 +1,17 @@
 
 # OptFrame Changelog
 
+## OptFrame 4.3
+
+- adopt standard memory management for all components (from *widget&* into *not null shared pointer* "sref")
+- start broad support for examples (some still not compiling)
+
+## OptFrame 4.2
+
+- migrate into MIT License model, that corresponds into newer open-source community global standards (from previous LGPLv3 license)
+- fix many bugs from v4.1
+
+
 ## OptFrame 4.0.3 - development (bugfix)
 
 - explored gcc bug "a variable concept cannot be constrained", meaning that during concepts 
