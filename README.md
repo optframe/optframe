@@ -252,8 +252,8 @@ Interesting examples are available (see `Examples` folder):
 - [HFMVRP](./Examples/HFMVRP/README.md): Heterogeneous Fleet Vehicle Routing Problem - [![Example HFMVRP](https://github.com/optframe/optframe/actions/workflows/example_hfmvrp.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_hfmvrp.yml)
 - [KP](./Examples/KP/README.md): Knapsack Problem (v1) - [![Example KP](https://github.com/optframe/optframe/actions/workflows/example_kp.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_kp.yml)
 - [KP2](./Examples/KP2/README.md): Knapsack Problem (v2) - [![Example KP2](https://github.com/optframe/optframe/actions/workflows/example_kp2.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_kp2.yml)
-- [MITSP](./Examples/MITSP/README.md): Multi Improvement Dynamic Programming for Traveling Salesman Problem
-- [MODM](./Examples/MODM/README.md): Multi Objective Direct Marketing Problem
+- [MITSP](./Examples/MITSP/README.md): Multi Improvement Dynamic Programming for Traveling Salesman Problem - [![Example MITSP](https://github.com/optframe/optframe/actions/workflows/example_mitsp.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_mitsp.yml)
+- [MODM](./Examples/MODM/README.md): Multi Objective Direct Marketing Problem - [![Example MODM](https://github.com/optframe/optframe/actions/workflows/example_modm.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_modm.yml)
 - [OPM](./Examples/OPM/README.md): Open Pit Mining Operational Planning Problem
 - [OptHS](./Examples/OptHS/README.md): OptHouse Cleaning Scheduling
 - [ParallelTSP](./Examples/ParallelTSP/README.md): Parallel TSP Prototype
