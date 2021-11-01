@@ -1,26 +1,27 @@
 #ifndef KP2_INITIAL_POPULATION_H_
 #define KP2_INITIAL_POPULATION_H_
 
-#include "../../OptFrame/InitialPopulation.h"
+#include <OptFrame/InitialPopulation.h>
 
 #include "./ProblemInstance.h"
 #include "./Representation.h"
 
-namespace KP2
-{
+namespace KP2 {
 
-class MyInitialPopulation : public optframe::RandomInitialPopulation<RepKP2>{
+class MyInitialPopulation : public optframe::RandomInitialPopulation<RepKP2>
+{
 private:
-	ProblemInstance& pKP2;
+   ProblemInstance& pKP2;
+
+   using Individual = RepKP2;
 
 public:
-	MyInitialPopulation() = delete;
-	MyInitialPopulation(unsigned int initialPopSize, ProblemInstance& _pKP2);
+   MyInitialPopulation() = delete;
+   MyInitialPopulation(unsigned int initialPopSize, ProblemInstance& _pKP2);
 
-	Individual generateIndividual() override;
+   Individual generateIndividual() override;
 };
 
 }
-
 
 #endif

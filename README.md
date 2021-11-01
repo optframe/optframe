@@ -250,8 +250,8 @@ Interesting examples are available (see `Examples` folder):
 - [EternityII](./Examples/EternityII/README.md): Eternity II Puzzle  - [![Example Eternity II](https://github.com/optframe/optframe/actions/workflows/example_eternityii.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_eternityii.yml)
 - [HFM](./Examples/HFM/README.md): HFM forecast framework by @vncoelho - [![Example HFM](https://github.com/optframe/optframe/actions/workflows/example_hfm.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_hfm.yml)
 - [HFMVRP](./Examples/HFMVRP/README.md): Heterogeneous Fleet Vehicle Routing Problem - [![Example HFMVRP](https://github.com/optframe/optframe/actions/workflows/example_hfmvrp.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_hfmvrp.yml)
-- [KP](./Examples/KP/README.md): Knapsack Problem (v1)
-- [KP2](./Examples/KP2/README.md): Knapsack Problem (v2)  
+- [KP](./Examples/KP/README.md): Knapsack Problem (v1) - [![Example KP](https://github.com/optframe/optframe/actions/workflows/example_kp.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_kp.yml)
+- [KP2](./Examples/KP2/README.md): Knapsack Problem (v2) - [![Example KP2](https://github.com/optframe/optframe/actions/workflows/example_kp2.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_kp2.yml)
 - [MITSP](./Examples/MITSP/README.md): Multi Improvement Dynamic Programming for Traveling Salesman Problem
 - [MODM](./Examples/MODM/README.md): Multi Objective Direct Marketing Problem
 - [OPM](./Examples/OPM/README.md): Open Pit Mining Operational Planning Problem
