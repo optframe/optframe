@@ -1,15 +1,20 @@
 
 # OptFrame Changelog
 
+## OptFrame 4.4-dev
+
+- currently working!
+
 ## OptFrame 4.3
 
-- adopt standard memory management for all components (from *widget&* into *not null shared pointer* "sref")
 - start broad support for examples (some still not compiling)
+- improve support for optframe functional core (and start support for fxcore c++20)
 
 ## OptFrame 4.2
 
 - migrate into MIT License model, that corresponds into newer open-source community global standards (from previous LGPLv3 license)
 - fix many bugs from v4.1
+- large refactor to adopt standard memory management for all components (from *widget&* into *not null shared pointer* "sref")
 
 
 ## OptFrame 4.0.3 - development (bugfix)
