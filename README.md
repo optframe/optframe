@@ -258,7 +258,7 @@ Interesting examples are available (see `Examples` folder):
 - [OptHS](./Examples/OptHS/README.md): OptHouse Cleaning Scheduling - [![Example OptHS](https://github.com/optframe/optframe/actions/workflows/example_opths.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_opths.yml)
 - [PMedCap](./Examples/PMedCap/README.md): Capacitated P-Median Problem - [![Example PMedCap](https://github.com/optframe/optframe/actions/workflows/example_pmedcap.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_pmedcap.yml)
 - [PN](./Examples/PN/README.md): Number Partition Problem - [![Example PN](https://github.com/optframe/optframe/actions/workflows/example_pn.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_pn.yml)
-- [SVRPDSP](./Examples/SVRPDSP/README.md): Single Vehicle Routing Problem with Deliveries and Selective Pickups
+- [SVRPDSP](./Examples/SVRPDSP/README.md): Single Vehicle Routing Problem with Deliveries and Selective Pickups - [![Example SVRPDSP](https://github.com/optframe/optframe/actions/workflows/example_svrpdsp.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_svrpdsp.yml)
 - [TSP](./Examples/TSP/README.md): Traveling Salesman Problem (v1)  
 - [TSP2](./Examples/TSP2/README.md): Traveling Salesman Problem (v2)  
 

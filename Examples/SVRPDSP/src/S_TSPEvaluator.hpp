@@ -5,12 +5,15 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "../../OptFrame/Evaluation.hpp"
-#include "../../OptFrame/Evaluator.hpp"
+#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Evaluator.hpp>
 
 #include "ADS.h"
+
 #include "Delta.h"
+
 #include "MySolution.hpp"
+
 #include "Representation.h"
 
 #include "ProblemInstance.hpp"

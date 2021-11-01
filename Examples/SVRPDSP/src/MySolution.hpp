@@ -1,10 +1,11 @@
 #ifndef SVRPDSP_SOLUTION_H_
 #define SVRPDSP_SOLUTION_H_
 
-#include "../../OptFrame/Solution.hpp"
-#include "../../OptFrame/Solutions/CopySolution.hpp"
-#include "Representation.h"
+#include <OptFrame/Solution.hpp>
+#include <OptFrame/Solutions/CopySolution.hpp>
+
 #include "ADS.h"
+#include "Representation.h"
 
 #include "ProblemInstance.hpp"
 
@@ -12,8 +13,7 @@
 
 using namespace optframe;
 
-namespace SVRPDSP
-{
+namespace SVRPDSP {
 ////static int mysolution_count = 0;
 
 class MySolution : public CopySolution<RepSVRPDSP, AdsSVRPDSP>
@@ -22,10 +22,10 @@ private:
    static const bool verbose = false;
 
 public:
-   MySolution(RepSVRPDSP& r, AdsSVRPDSP& ads):
-      CopySolution<RepSVRPDSP, AdsSVRPDSP>(r, ads)
+   MySolution(RepSVRPDSP& r, AdsSVRPDSP& ads)
+     : CopySolution<RepSVRPDSP, AdsSVRPDSP>(r, ads)
    {
-/*
+      /*
        mysolution_count++;
        if(mysolution_count>1)
        {
@@ -40,10 +40,10 @@ public:
 */
    }
 
-   explicit MySolution(RepSVRPDSP& r):
-      CopySolution<RepSVRPDSP, AdsSVRPDSP>(r)
+   explicit MySolution(RepSVRPDSP& r)
+     : CopySolution<RepSVRPDSP, AdsSVRPDSP>(r)
    {
-/*
+      /*
        mysolution_count++;
        if(mysolution_count>1)
        {
@@ -58,10 +58,10 @@ public:
 */
    }
 
-   MySolution(const MySolution& sol):
-      CopySolution<RepSVRPDSP, AdsSVRPDSP>(sol)
+   MySolution(const MySolution& sol)
+     : CopySolution<RepSVRPDSP, AdsSVRPDSP>(sol)
    {
-/*
+      /*
        mysolution_count++;
        if(mysolution_count>1)
        {
@@ -77,7 +77,7 @@ public:
 
       //cout << "MyS: copy constructor" << endl;
 
-/*
+      /*
       int* s = new int[getR().size()];
       small_type* q = new small_type[getR().size()];
 
@@ -105,21 +105,20 @@ public:
 
    virtual ~MySolution()
    {
-       ////mysolution_count--;
+      ////mysolution_count--;
    }
 
    // syncronize ADS with R and check for errors
    bool syncADS(ProblemInstance& p)
    {
-       return syncADS(p, getR(), getADS());
+      return syncADS(p, getR(), getADS());
    }
 
    // syncronize ADS with R and check for errors
    static bool syncADS(ProblemInstance& p, const RepSVRPDSP& rep, AdsSVRPDSP& ads)
    {
 
-      if(verbose)
-      {
+      if (verbose) {
          cout << "MyS: syncADS" << endl;
          cout << "rep: " << rep << endl;
       }
@@ -129,13 +128,12 @@ public:
       int dn = p.dn;
       int n = p.n;
 
-      if(rep.size() != (dn+2))
-      {
-         cout << "syncADS: missing numbers! it's " << rep.size() << " and should be " << (dn+2) << endl;
+      if (rep.size() != (dn + 2)) {
+         cout << "syncADS: missing numbers! it's " << rep.size() << " and should be " << (dn + 2) << endl;
          return false;
       }
 
-      if(rep.at(0) != 0) // no starting depot
+      if (rep.at(0) != 0) // no starting depot
       {
          cout << "syncADS: missing initial depot!" << endl;
          return false;
@@ -143,15 +141,13 @@ public:
 
       ads.load = vector<small_type>(rep.size(), 0);
 
-      int* s = new int[rep.size()]; 
+      int* s = new int[rep.size()];
       small_type* q = new small_type[rep.size()];
 
-      for(unsigned i=0; i<rep.size(); i++)
-      {
-         if(rep[i]==0)
-         {
+      for (unsigned i = 0; i < rep.size(); i++) {
+         if (rep[i] == 0) {
             ads.zero = i;
-            if(verbose)
+            if (verbose)
                cout << "new zero on " << i << endl;
          }
 
@@ -159,46 +155,40 @@ public:
       }
 
       ads.load[0] = p.Q;
-      if(verbose)
+      if (verbose)
          cout << "load: ";
-      for(unsigned i=1; i<ads.zero; i++)
-      {
-         ads.load[i] = ads.load[i-1] + p.dp.at(rep[i]) - p.dd.at(rep[i]);
-         if(verbose)
+      for (unsigned i = 1; i < ads.zero; i++) {
+         ads.load[i] = ads.load[i - 1] + p.dp.at(rep[i]) - p.dd.at(rep[i]);
+         if (verbose)
             cout << i << "(" << rep[i] << "): +=" << (p.dp.at(rep[i]) - p.dd.at(rep[i])) << "=" << ads.load[i] << " ";
       }
-      if(verbose)
+      if (verbose)
          cout << endl;
 
-      for(unsigned i=0; i<ads.load.size(); i++)
+      for (unsigned i = 0; i < ads.load.size(); i++)
          q[i] = ads.load[i];
 
 #ifdef ENABLE_GPU
-      int* ds; // gpu solution
+      int* ds;        // gpu solution
       small_type* dq; // gpu load vector
 
-      if(!ads.gpuSol || !ads.gpuLoad)
-      {
+      if (!ads.gpuSol || !ads.gpuLoad) {
          initialize_gpu_solution(&ds, &dq, rep.size()); // max_size
-         if(verbose)
+         if (verbose)
             cout << "NEW GPU ADS! (" << ds << "," << dq << ")" << endl;
-      }
-      else
-      {
+      } else {
          ds = ads.gpuSol;
          dq = ads.gpuLoad;
       }
       update_gpu_solution(rep.size(), s, q, ds, dq);
 
-      ads.gpuSol  = ds;
+      ads.gpuSol = ds;
       ads.gpuLoad = dq;
 
-      if(verbose)
-      {
+      if (verbose) {
          get_gpu_solution(rep.size(), ds, dq, s, q);
-         for(unsigned i=0; i<rep.size(); i++)
-            if(q[i] != ads.load[i])
-            {
+         for (unsigned i = 0; i < rep.size(); i++)
+            if (q[i] != ads.load[i]) {
                cout << "GPU ERROR COPY LOAD: " << i << endl;
                exit(1);
             }
@@ -209,7 +199,7 @@ public:
       delete[] s;
       delete[] q;
 
-      if(verbose)
+      if (verbose)
          ads.print();
 
       return true;
@@ -223,15 +213,15 @@ public:
       //getADS().print();
    }
 
-   MySolution& operator= (const MySolution& s)
+   MySolution& operator=(const MySolution& s)
    {
       //cout << "MyS: MyS = MyS" << endl;
-      if(&s == this) // auto ref check
+      if (&s == this) // auto ref check
          return *this;
 
       delete r;
       delete ads;
-      r   = new RepSVRPDSP(s.getR());
+      r = new RepSVRPDSP(s.getR());
       ads = new AdsSVRPDSP(s.getADS());
 
       return *this;
@@ -240,12 +230,12 @@ public:
    CopySolution<RepSVRPDSP, AdsSVRPDSP>& operator=(const CopySolution<RepSVRPDSP, AdsSVRPDSP>& s)
    {
       //cout << "MyS: S=S" << endl;
-      if(&s == this) // auto ref check
+      if (&s == this) // auto ref check
          return *this;
 
       delete r;
       delete ads;
-      r   = new RepSVRPDSP(s.getR());
+      r = new RepSVRPDSP(s.getR());
       ads = new AdsSVRPDSP(s.getADS());
 
       return *this;
@@ -257,10 +247,8 @@ public:
       CopySolution<RepSVRPDSP, AdsSVRPDSP>* s = new MySolution(*this);
       return (*s);
    }
-
 };
 
 }
 
 #endif /*SVRPDSP_SOLUTION_H_*/
-

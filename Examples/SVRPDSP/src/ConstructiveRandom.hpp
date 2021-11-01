@@ -1,21 +1,23 @@
 #ifndef SVRPDSP_CONSTRUCTIVE_Random_HPP_
 #define SVRPDSP_CONSTRUCTIVE_Random_HPP_
 
-//#include "../../OptFrame/Util/TestSolution.hpp"
+//#include <OptFrame/Util/TestSolution.hpp"
+
+#include <algorithm>
+#include <list>
+#include <stdlib.h>
 
 #include "ProblemInstance.hpp"
 
 #include "ADS.h"
+
 #include "MySolution.hpp"
+
 #include "Representation.h"
 
 #include "Evaluator.hpp"
 
-#include <list>
-
-#include "../../OptFrame/Constructive.hpp"
-#include <algorithm>
-#include <stdlib.h>
+#include <OptFrame/Constructive.hpp>
 
 using namespace std;
 
