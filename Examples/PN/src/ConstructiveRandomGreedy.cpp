@@ -11,7 +11,8 @@ ConstructiveRandomGreedy::~ConstructiveRandomGreedy()
 {
 }
 
-Solution<RepPN, MY_ADS>*
+//Solution<RepPN, MY_ADS>* ConstructiveRandomGreedy::generateSolution(double timelimit)
+std::optional<RepPN>
 ConstructiveRandomGreedy::generateSolution(double timelimit)
 {
    RepPN sol = vector<bool>(pPN.nums.size());
@@ -30,5 +31,6 @@ ConstructiveRandomGreedy::generateSolution(double timelimit)
       }
    }
 
-   return new Solution<RepPN, MY_ADS>(sol);
+   return std::make_optional(sol);
+   //return new Solution<RepPN, MY_ADS>(sol);
 }

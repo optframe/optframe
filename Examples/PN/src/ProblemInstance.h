@@ -3,30 +3,28 @@
 
 #include <iostream>
 
+#include <OptFrame/Component.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
-#include "../../OptFrame/Component.hpp"
 
 using namespace std;
 using namespace scannerpp;
 using namespace optframe;
 
-namespace PN
-{
+namespace PN {
 
 class ProblemInstance : public Component
 {
 private:
-	// Your private vars
+   // Your private vars
 
 public:
-	int size;
-	vector<double> nums;
-	ProblemInstance(Scanner& scanner);
-	
-	virtual ~ProblemInstance();
+   int size;
+   vector<double> nums;
+   ProblemInstance(Scanner& scanner);
+
+   virtual ~ProblemInstance();
 };
 
 }
 
 #endif /*PN_PROBLEMINSTANCE_H_*/
-

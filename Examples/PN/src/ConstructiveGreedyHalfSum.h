@@ -20,10 +20,9 @@ using namespace std;
 
 using namespace optframe;
 
-namespace PN
-{
+namespace PN {
 
-class ConstructiveGreedyHalfSum: public Constructive<RepPN, MY_ADS>
+class ConstructiveGreedyHalfSum : public Constructive<RepPN> //, MY_ADS>
 {
 private:
    ProblemInstance& pPN;
@@ -31,17 +30,17 @@ private:
    // Your private vars
 
 public:
-	
-	ConstructiveGreedyHalfSum(ProblemInstance& _pPN);
-	
-	virtual ~ConstructiveGreedyHalfSum();
+   ConstructiveGreedyHalfSum(ProblemInstance& _pPN);
 
-	Solution<RepPN, MY_ADS>* generateSolution(double timelimit);
+   virtual ~ConstructiveGreedyHalfSum();
 
-	void print() const
-	{
-		cout << "ConstructiveGreedyHalfSum" << endl;
-	}
+   //Solution<RepPN, MY_ADS>* generateSolution(double timelimit);
+   std::optional<RepPN> generateSolution(double timelimit) override;
+
+   void print() const
+   {
+      cout << "ConstructiveGreedyHalfSum" << endl;
+   }
 };
 
 }

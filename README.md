@@ -256,9 +256,8 @@ Interesting examples are available (see `Examples` folder):
 - [MODM](./Examples/MODM/README.md): Multi Objective Direct Marketing Problem - [![Example MODM](https://github.com/optframe/optframe/actions/workflows/example_modm.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_modm.yml)
 - [OPM](./Examples/OPM/README.md): Open Pit Mining Operational Planning Problem - [![Example OPM](https://github.com/optframe/optframe/actions/workflows/example_opm.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_opm.yml)
 - [OptHS](./Examples/OptHS/README.md): OptHouse Cleaning Scheduling - [![Example OptHS](https://github.com/optframe/optframe/actions/workflows/example_opths.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_opths.yml)
-- [ParallelTSP](./Examples/ParallelTSP/README.md): Parallel TSP Prototype
-- [PMedCap](./Examples/PMedCap/README.md): Capacitated P-Median Problem
-- [PN](./Examples/PN/README.md): Number Partition Problem
+- [PMedCap](./Examples/PMedCap/README.md): Capacitated P-Median Problem - [![Example PMedCap](https://github.com/optframe/optframe/actions/workflows/example_pmedcap.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_pmedcap.yml)
+- [PN](./Examples/PN/README.md): Number Partition Problem - [![Example PN](https://github.com/optframe/optframe/actions/workflows/example_pn.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_pn.yml)
 - [SVRPDSP](./Examples/SVRPDSP/README.md): Single Vehicle Routing Problem with Deliveries and Selective Pickups
 - [TSP](./Examples/TSP/README.md): Traveling Salesman Problem (v1)  
 - [TSP2](./Examples/TSP2/README.md): Traveling Salesman Problem (v2)  

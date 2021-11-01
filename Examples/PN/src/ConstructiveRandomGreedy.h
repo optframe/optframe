@@ -20,10 +20,9 @@ using namespace std;
 
 using namespace optframe;
 
-namespace PN
-{
+namespace PN {
 
-class ConstructiveRandomGreedy: public Constructive<RepPN, MY_ADS>
+class ConstructiveRandomGreedy : public Constructive<RepPN> //, MY_ADS>
 {
 private:
    ProblemInstance& pPN;
@@ -31,17 +30,17 @@ private:
    // Your private vars
 
 public:
-	
-	ConstructiveRandomGreedy(ProblemInstance& _pPN);
-	
-	virtual ~ConstructiveRandomGreedy();
+   ConstructiveRandomGreedy(ProblemInstance& _pPN);
 
-	Solution<RepPN, MY_ADS>* generateSolution(double timelimit);
+   virtual ~ConstructiveRandomGreedy();
 
-	void print() const
-	{
-		cout << "ConstructiveRandomGreedy" << endl;
-	}
+   //Solution<RepPN, MY_ADS>* generateSolution(double timelimit);
+   std::optional<RepPN> generateSolution(double timelimit) override;
+
+   void print() const
+   {
+      cout << "ConstructiveRandomGreedy" << endl;
+   }
 };
 
 }

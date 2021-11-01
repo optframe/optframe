@@ -20,10 +20,9 @@ using namespace std;
 
 using namespace optframe;
 
-namespace PN
-{
+namespace PN {
 
-class ConstructiveGreedySum: public Constructive<RepPN, MY_ADS>
+class ConstructiveGreedySum : public Constructive<RepPN> //, MY_ADS>
 {
 private:
    ProblemInstance& pPN;
@@ -31,17 +30,17 @@ private:
    // Your private vars
 
 public:
-	
-	ConstructiveGreedySum(ProblemInstance& _pPN);
-	
-	virtual ~ConstructiveGreedySum();
+   ConstructiveGreedySum(ProblemInstance& _pPN);
 
-	Solution<RepPN, MY_ADS>* generateSolution(double timelimit);
+   virtual ~ConstructiveGreedySum();
 
-	void print() const
-	{
-		cout << "ConstructiveGreedySum" << endl;
-	}
+   //Solution<RepPN, MY_ADS>* generateSolution(double timelimit);
+   std::optional<RepPN> generateSolution(double timelimit) override;
+
+   void print() const
+   {
+      cout << "ConstructiveGreedySum" << endl;
+   }
 };
 
 }
