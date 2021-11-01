@@ -27,11 +27,13 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "../../OptFrame/Evaluation.hpp"
-#include "../../OptFrame/Evaluator.hpp"
+#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Evaluator.hpp>
 
 #include "Evaluation.h"
 #include "Representation.h"
+
+#include "Solution.h"
 
 #include "ProblemInstance.h"
 
@@ -39,7 +41,8 @@
 
 namespace TSP2 {
 
-class MyEvaluator : public Evaluator<SolutionTSP>
+//class MyEvaluator : public Evaluator<SolutionTSP>
+class MyEvaluator : public Evaluator<SolutionTSP, EvaluationTSP>
 {
 private:
    ProblemInstance& pTSP;

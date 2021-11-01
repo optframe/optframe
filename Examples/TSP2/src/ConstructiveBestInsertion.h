@@ -23,17 +23,17 @@
 #ifndef TSP2_BEST_INSERTION_CONSTRUCTIVE_HPP_
 #define TSP2_BEST_INSERTION_CONSTRUCTIVE_HPP_
 
-//#include "../../OptFrame/Util/TestSolution.hpp"
+//#include <OptFrame/Util/TestSolution.hpp"
 
 #include "ProblemInstance.h"
 
 #include "Representation.h"
 
-#include "../../OptFrame/RandGen.hpp"
 #include "Evaluator.h"
+#include <OptFrame/RandGen.hpp>
 #include <list>
 
-#include "../../OptFrame/Constructive.hpp"
+#include <OptFrame/Constructive.hpp>
 #include <algorithm>
 #include <stdlib.h>
 

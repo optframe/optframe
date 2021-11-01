@@ -27,11 +27,12 @@
 #include <iostream>
 #include <stdio.h>
 
-#include "../../OptFrame/Scanner++/Scanner.h"
-#include "../../OptFrame/Util/Matrix.hpp"
+#include <OptFrame/Scanner++/Scanner.hpp>
+#include <OptFrame/Util/Matrix.hpp>
 
 using namespace std;
 using namespace scannerpp;
+using namespace optframe;
 
 namespace TSP2 {
 

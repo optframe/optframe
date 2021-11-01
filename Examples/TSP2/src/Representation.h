@@ -23,7 +23,7 @@
 #ifndef TSP2_REPRESENTATION_H_
 #define TSP2_REPRESENTATION_H_
 
-#include "../../OptFrame/Util/printable.h"
+#include <OptFrame/printable/printable.hpp>
 #include <vector>
 
 using namespace std;
