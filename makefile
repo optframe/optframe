@@ -18,3 +18,4 @@ docs:
 
 clean:
 	cd Examples && make clean
+	bazel clean --expunge
