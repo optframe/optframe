@@ -68,6 +68,11 @@ public:
       return not coro.done();
    }
 
+   bool isDone()
+   {
+      return coro.done();
+   }
+
    T getValue()
    {
       return coro.promise().current_value;

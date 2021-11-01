@@ -254,8 +254,8 @@ Interesting examples are available (see `Examples` folder):
 - [KP2](./Examples/KP2/README.md): Knapsack Problem (v2) - [![Example KP2](https://github.com/optframe/optframe/actions/workflows/example_kp2.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_kp2.yml)
 - [MITSP](./Examples/MITSP/README.md): Multi Improvement Dynamic Programming for Traveling Salesman Problem - [![Example MITSP](https://github.com/optframe/optframe/actions/workflows/example_mitsp.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_mitsp.yml)
 - [MODM](./Examples/MODM/README.md): Multi Objective Direct Marketing Problem - [![Example MODM](https://github.com/optframe/optframe/actions/workflows/example_modm.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_modm.yml)
-- [OPM](./Examples/OPM/README.md): Open Pit Mining Operational Planning Problem
-- [OptHS](./Examples/OptHS/README.md): OptHouse Cleaning Scheduling
+- [OPM](./Examples/OPM/README.md): Open Pit Mining Operational Planning Problem - [![Example OPM](https://github.com/optframe/optframe/actions/workflows/example_opm.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_opm.yml)
+- [OptHS](./Examples/OptHS/README.md): OptHouse Cleaning Scheduling - [![Example OptHS](https://github.com/optframe/optframe/actions/workflows/example_opths.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_opths.yml)
 - [ParallelTSP](./Examples/ParallelTSP/README.md): Parallel TSP Prototype
 - [PMedCap](./Examples/PMedCap/README.md): Capacitated P-Median Problem
 - [PN](./Examples/PN/README.md): Number Partition Problem

@@ -2,7 +2,7 @@
 #define OPM_NSENUMLD_HPP_
 
 // Framework includes
-#include "../../OptFrame/NSEnum.hpp"
+#include <OptFrame/NSEnum.hpp>
 
 // Own includes
 #include "ProblemInstance.hpp"
