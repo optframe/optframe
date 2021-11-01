@@ -171,6 +171,8 @@ Binary will be located at `./Examples/FCore-Examples/bazel-bin/src/app_TSPfcore`
 
 #### EternityII Example
 
+[![Example for Eternity II](https://github.com/optframe/optframe/actions/workflows/example_eternityii.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_eternityii.yml)
+
 From root:
 - `bazel build @EternityII//...`
 - `cd ./bazel-bin/external/EternityII/app_Example.runfiles/EternityII/`
