@@ -43,9 +43,9 @@ template<XESolution XES, class P = OPTFRAME_DEFAULT_PROBLEM>
 class MoveVRP2Opt : public Move<XES, typename XES::second_type>
 {
    using XEv = typename XES::second_type;
-   typedef vector<vector<int>> Routes;
 
 public:
+   typedef vector<vector<int>> Routes;
    Routes& (*getRoutes)(const XES&); // function to get routes from type 'R'
 
 protected:

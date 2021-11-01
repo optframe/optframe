@@ -32,8 +32,8 @@
 #include <utility>
 #include <vector>
 
-// TODO(igormcoelho): ostreamable
-//#include "../myconcepts.h" // ostreamable concept!
+// TODO(igormcoelho): std::ostreamable
+//#include "../myconcepts.h" // std::ostreamable concept!
 
 //using namespace std;
 
@@ -72,7 +72,7 @@ inline SemStream ctxt{ std::cout };  // (C++17 extern linkage is implicit)
 
 /*
 ostream&
-operator<<(ostream& os, const nullptr_t& nptr)
+operator<<(std::ostream& os, const nullptr_t& nptr)
 {
    os << "nullptr_t";
    return os;
@@ -80,12 +80,12 @@ operator<<(ostream& os, const nullptr_t& nptr)
 */
 
 template<class T1, class T2>
-ostream&
-operator<<(ostream& os, const pair<T1, T2>& obj);
+std::ostream&
+operator<<(std::ostream& os, const std::pair<T1, T2>& obj);
 
 template<class T>
-ostream&
-operator<<(ostream& os, const std::optional<T>& obj)
+std::ostream&
+operator<<(std::ostream& os, const std::optional<T>& obj)
 {
    if (!obj)
       os << "nullopt";
@@ -98,8 +98,8 @@ operator<<(ostream& os, const std::optional<T>& obj)
 //     Impressao de vectors
 // ===================================================
 template<class T>
-ostream&
-operator<<(ostream& os, const vector<T>& obj)
+std::ostream&
+operator<<(std::ostream& os, const std::vector<T>& obj)
 {
 
    if (&os == &optframe::cjson) {
@@ -136,8 +136,8 @@ operator<<(ostream& os, const vector<T>& obj)
 //   Impressao de vectors (com parametro ponteiro)
 // ===================================================
 template<class T>
-ostream&
-operator<<(ostream& os, const vector<T*>& obj)
+std::ostream&
+operator<<(std::ostream& os, const std::vector<T*>& obj)
 {
    // Se houver string interna, sera impressa com aspas
    //string_aspas_25072009 = true;
@@ -172,8 +172,8 @@ operator<<(ostream& os, const vector<T*>& obj)
 //     Impressao de pares
 // ===================================================
 template<class T1, class T2>
-ostream&
-operator<<(ostream& os, const pair<T1, T2>& obj)
+std::ostream&
+operator<<(std::ostream& os, const std::pair<T1, T2>& obj)
 {
    // Se houver string interna, sera impressa com aspas
    //string_aspas_25072009 = true;
@@ -190,8 +190,8 @@ operator<<(ostream& os, const pair<T1, T2>& obj)
 //  Impressao de pares (com segundo elemento ponteiro)
 // ===================================================
 template<class T1, class T2>
-ostream&
-operator<<(ostream& os, const pair<T1, T2*>& obj)
+std::ostream&
+operator<<(std::ostream& os, const std::pair<T1, T2*>& obj)
 {
    // Se houver string interna, sera impressa com aspas
    //string_aspas_25072009 = true;
@@ -214,8 +214,8 @@ operator<<(ostream& os, const pair<T1, T2*>& obj)
 // Impressao de pares (com primeiro elemento ponteiro)
 // ===================================================
 template<class T1, class T2>
-ostream&
-operator<<(ostream& os, const pair<T1*, T2>& obj)
+std::ostream&
+operator<<(std::ostream& os, const std::pair<T1*, T2>& obj)
 {
    // Se houver string interna, sera impressa com aspas
    //string_aspas_25072009 = true;
@@ -239,8 +239,8 @@ operator<<(ostream& os, const pair<T1*, T2>& obj)
 //  Impressao de pares (com ambos elementos ponteiros)
 // ===================================================
 template<class T1, class T2>
-ostream&
-operator<<(ostream& os, const pair<T1*, T2*>& obj)
+std::ostream&
+operator<<(std::ostream& os, const std::pair<T1*, T2*>& obj)
 {
    // Se houver string interna, sera impressa com aspas
    //string_aspas_25072009 = true;
@@ -270,8 +270,8 @@ operator<<(ostream& os, const pair<T1*, T2*>& obj)
 //     Impressao de multimaps
 // ===================================================
 template<class Key, class T>
-ostream&
-operator<<(ostream& os, multimap<Key, T>& obj)
+std::ostream&
+operator<<(std::ostream& os, std::multimap<Key, T>& obj)
 {
    // Se houver string interna, sera impressa com aspas
    //string_aspas_25072009 = true;
@@ -279,7 +279,7 @@ operator<<(ostream& os, multimap<Key, T>& obj)
    os << "multimap(" << obj.size() << ") [";
 
    if (obj.size() > 0) {
-      typename multimap<Key, T>::iterator it;
+      typename std::multimap<Key, T>::iterator it;
       int i = 0;
       for (it = obj.begin(); it != obj.end(); ++it) {
          os << *it;
@@ -301,8 +301,8 @@ operator<<(ostream& os, multimap<Key, T>& obj)
 //     Impressao de multimaps
 // ===================================================
 template<class Key, class T>
-ostream&
-operator<<(ostream& os, map<Key, T>& obj)
+std::ostream&
+operator<<(std::ostream& os, std::map<Key, T>& obj)
 {
    // Se houver string interna, sera impressa com aspas
    //string_aspas_25072009 = true;
@@ -310,7 +310,7 @@ operator<<(ostream& os, map<Key, T>& obj)
    os << "map(" << obj.size() << ") [";
 
    if (obj.size() > 0) {
-      typename map<Key, T>::iterator it;
+      typename std::map<Key, T>::iterator it;
       int i = 0;
       for (it = obj.begin(); it != obj.end(); ++it) {
          os << *it;
@@ -340,7 +340,7 @@ toString(const std::vector<T>& v)
 // COMPILATION TESTS FOR PRINTABLE
 #ifndef NDEBUG
 
-// TODO(igormcoelho): use ostreamable<T> here to test structures, instead of printing to cout
+// TODO(igormcoelho): use std::ostreamable<T> here to test structures, instead of printing to cout
 
 class test_runtime_can_print
 {

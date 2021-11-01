@@ -171,8 +171,6 @@ Binary will be located at `./Examples/FCore-Examples/bazel-bin/src/app_TSPfcore`
 
 #### EternityII Example
 
-[![Example for Eternity II](https://github.com/optframe/optframe/actions/workflows/example_eternityii.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_eternityii.yml)
-
 From root:
 - `bazel build @EternityII//...`
 - `cd ./bazel-bin/external/EternityII/app_Example.runfiles/EternityII/`
@@ -249,9 +247,9 @@ We recommend to run `make test-install` after that, to ensure everything is fine
 
 Interesting examples are available (see `Examples` folder):
 
-- [EternityII](./Examples/EternityII/README.md): Eternity II Puzzle  
-- [HFM](./Examples/HFM/README.md): HFM forecast framework by @vncoelho
-- [HFMVRP](./Examples/HFMVRP/README.md): Heterogeneous Fleet Vehicle Routing Problem
+- [EternityII](./Examples/EternityII/README.md): Eternity II Puzzle  - [![Example Eternity II](https://github.com/optframe/optframe/actions/workflows/example_eternityii.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_eternityii.yml)
+- [HFM](./Examples/HFM/README.md): HFM forecast framework by @vncoelho - [![Example HFM](https://github.com/optframe/optframe/actions/workflows/example_hfm.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_hfm.yml)
+- [HFMVRP](./Examples/HFMVRP/README.md): Heterogeneous Fleet Vehicle Routing Problem - [![Example HFMVRP](https://github.com/optframe/optframe/actions/workflows/example_hfmvrp.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/example_hfmvrp.yml)
 - [KP](./Examples/KP/README.md): Knapsack Problem (v1)
 - [KP2](./Examples/KP2/README.md): Knapsack Problem (v2)  
 - [MITSP](./Examples/MITSP/README.md): Multi Improvement Dynamic Programming for Traveling Salesman Problem

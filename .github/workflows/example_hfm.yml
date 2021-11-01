@@ -1,4 +1,4 @@
-name: Example Eternity II
+name: Example HFM
 
 on:
   push:
@@ -13,7 +13,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: install libsndfile1-dev
+      run: sudo apt install libsndfile1-dev
     - name: make
-      working-directory: ./Examples/EternityII/
+      working-directory: ./Examples/HFM/
       run: make
 
