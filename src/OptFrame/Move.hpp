@@ -71,7 +71,11 @@ public:
       return 0;
    }
 
-   virtual bool canBeApplied(const XES& se) = 0;
+   // default is ALL CAN BE APPLIED
+   virtual bool canBeApplied(const XES& se)
+   {
+      return true;
+   }
 
    // returns true if the apply returns a non-null pointer
    virtual bool hasReverse()
@@ -191,7 +195,11 @@ public:
 
    // ================== basic comparison
 
-   virtual bool operator==(const Move<XES, XEv, XSH>& m) const = 0;
+   // default is ALL DIFFERENT
+   virtual bool operator==(const Move<XES, XEv, XSH>& m) const
+   {
+      return false;
+   }
 
    bool operator!=(const Move<XES, XEv, XSH>& m) const
    {
@@ -210,7 +218,10 @@ public:
       return idComponent();
    }
 
-   virtual void print() const = 0;
+   // default NO PRINT
+   virtual void print() const override
+   {
+   }
 };
 
 } // namespace optframe

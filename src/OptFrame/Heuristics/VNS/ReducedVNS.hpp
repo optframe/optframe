@@ -38,7 +38,7 @@ public:
    typedef VariableNeighborhoodSearch<XES, XEv> super;
 
    //ReducedVNS(Evaluator<S>& evaluator, Constructive<S>& constructive, vector<NS<XES, XEv>*> vshake, vector<NSSeq<S>*> vsearch) :
-   ReducedVNS(sref<Evaluator<XES>> evaluator, sref<InitialSearch<XES, XEv>> constructive, vsref<NS<XES, XEv>> vshake, vsref<NSSeq<XES, XEv>> vsearch)
+   ReducedVNS(sref<Evaluator<XES, XEv>> evaluator, sref<InitialSearch<XES, XEv>> constructive, vsref<NS<XES, XEv>> vshake, vsref<NSSeq<XES, XEv>> vsearch)
      : VariableNeighborhoodSearch<XES, XEv>(evaluator, constructive, vshake, vsearch)
    {
    }

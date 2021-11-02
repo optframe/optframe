@@ -328,6 +328,13 @@ In this case, the `move structure` (representation of the move) is just an :code
         return k;                   // returns the "undo move", which is in this case the same move 'k' (symmetric move)
     }
 
+Note the :code:`makeMoveBitFlip` move generator based on FCore library.
+
+.. literalinclude:: ../../demo/02_QuickstartKP_SA/KP-fcore-ex-part5-fcore.hpp
+    :linenos:
+    :language: c++
+
+The definition of the move can be done using inheritance, if one finds easier (which is what we will adopt).
 
 .. literalinclude:: ../../demo/02_QuickstartKP_SA/KP-fcore-ex-part5.hpp
     :linenos:
