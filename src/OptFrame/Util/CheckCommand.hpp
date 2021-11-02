@@ -30,6 +30,7 @@
 
 #include "../Constructive.hpp"
 #include "../Evaluator.hpp"
+#include "../InitialSearch.hpp"
 #include "../NS.hpp"
 #include "../NSEnum.hpp"
 #include "../NSSeq.hpp"
@@ -41,9 +42,14 @@ namespace optframe {
 // manually passing 'S' (for safety)
 
 // XSH is currently pair<S,XEv> ... will we test both SingleObj and MultiObj here? If that's the case, we will need XSH1 and XSH2 (two search spaces)... better having two checkmodules than this!
-template<XRepresentation R, class ADS, XBaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, XEv>>
+//
+//template<XRepresentation R, class ADS, XBaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, XEv>>
+//
+//template<XESolution XES, XEvaluation XEv = typename XES::second_type, XRepresentation R = typename XES::first_type, class ADS = int, XBaseSolution<R, ADS> S = CopySolution<R, ADS>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, XEv>>
+template<XESolution XES, XRepresentation R = typename XES::first_type, class ADS = int, XBaseSolution<R, ADS> S = CopySolution<R, ADS>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, typename XES::second_type>>
 class CheckCommand
 {
+   using XEv = typename XES::second_type;
 
    static const int CMERR_EV_BETTERTHAN = 2001;
    static const int CMERR_EV_BETTEREQUALS = 2002;
@@ -64,15 +70,18 @@ private:
    bool checkIndependent;
 
    //vector<GeneralEvaluator<XES>*> lEvaluator;
-   vector<std::shared_ptr<Evaluator<S, XEv, XES>>> lEvaluator;
+   vector<std::shared_ptr<Evaluator<R, XEv, XES>>> lEvaluator;
    //vector<GeneralEvaluator<XES>*> lGenEvaluator;
    //vector<Constructive<S>*> lConstructive;
    vector<std::shared_ptr<InitialSearch<XES, XEv>>> lConstructive;
-   vector<std::shared_ptr<CopySolution<R, ADS>>> lSolution;
-   vector<std::shared_ptr<Move<XES>>> lMove;
+   //
+   //vector<std::shared_ptr<CopySolution<R, ADS>>> lSolution;
+   vector<std::shared_ptr<R>> lSolution;
+
+   vector<std::shared_ptr<Move<XES, XEv>>> lMove;
    vector<std::shared_ptr<NS<XES, XEv>>> lNS;
-   vector<std::shared_ptr<NSSeq<XES>>> lNSSeq;
-   vector<std::shared_ptr<NSEnum<XES>>> lNSEnum;
+   vector<std::shared_ptr<NSSeq<XES, XEv>>> lNSSeq;
+   vector<std::shared_ptr<NSEnum<XES, XEv>>> lNSEnum;
 
    std::shared_ptr<ADSManager<R, ADS, S>> adsMan;
 
@@ -91,7 +100,7 @@ public:
    {
    }
 
-   void add(Constructive<S>& c)
+   void add(sref<Constructive<S>> c)
    {
       //lConstructive.push_back(&c);
       //if (verbose)
@@ -113,11 +122,17 @@ public:
          cout << "checkcommand: AdsMan " << lADSManagerComp.size() << " added!" << endl;
    }
 
-   void add(sref<Evaluator<S, XEv, XES>> c)
+   void add(sref<Evaluator<R, XEv, XES>> c)
    {
       lEvaluator.push_back(c.sptr());
       if (verbose)
          cout << "checkcommand: Evaluator " << lEvaluator.size() << " added!" << endl;
+   }
+
+   // explicit add implementation
+   void addEvaluator(sref<Evaluator<R, XEv, XES>> c)
+   {
+      add(c);
    }
 
    /*
@@ -149,7 +164,12 @@ public:
          cout << "checkcommand: NS " << lNS.size() << " added!" << endl;
    }
 
-   void add(sref<NSSeq<XES, XEv, XSH>> c)
+   void addNS(sref<NS<XES, XEv>> c)
+   {
+      add(c);
+   }
+
+   void add(sref<NSSeq<XES, XEv>> c)
    {
       lNSSeq.push_back(c.sptr());
       if (verbose)
@@ -161,6 +181,11 @@ public:
       }
    }
 
+   void addNSSeq(sref<NSSeq<XES, XEv>> c)
+   {
+      add(c);
+   }
+
    void add(sref<NSEnum<XES, XEv>> c)
    {
       lNSEnum.push_back(c.sptr());
@@ -168,6 +193,11 @@ public:
          cout << "checkcommand: NSEnum " << lNSEnum.size() << " added!" << endl;
       if (convertNS)
          add((sref<NSSeq<XES, XEv>>)c);
+   }
+
+   void addNSEnum(sref<NSEnum<XES, XEv>> c)
+   {
+      add(c);
    }
 
    void message(Component* c, int iter, string text)
@@ -219,12 +249,13 @@ public:
       bool overestimate, underestimate;
    };
 
-   bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns, CopySolution<R, ADS>& s, int id_s, Move<XES>& move, vector<vector<Evaluation<>*>>& evaluations, TimeCheckWithSamples& timeSamples)
+   //bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns, CopySolution<R, ADS>& s, int id_s, Move<XES>& move, vector<vector<Evaluation<>*>>& evaluations, TimeCheckWithSamples& timeSamples)
+   bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns, R& s, int id_s, Move<XES>& move, vector<vector<XEv*>>& evaluations, TimeCheckWithSamples& timeSamples)
    {
       for (unsigned ev = 0; ev < lEvaluator.size(); ev++) {
          message(lEvaluator.at(ev), iter, "evaluating random move (apply, revert and moveCost).");
 
-         Evaluation<> e = lEvaluator[ev]->evaluate(s);
+         XEv e = lEvaluator[ev]->evaluate(s);
 
          XES se = make_pair(s, e);
 
@@ -244,7 +275,8 @@ public:
          message(moveFrom, iter, "testing reverse.");
 
          Timer t_clone;
-         CopySolution<R, ADS>& sOriginal = s.clone(); // remove if not verbose
+         //CopySolution<R, ADS>& sOriginal = s.clone(); // remove if not verbose
+         R sOriginal = s; // copy
          timeSamples.timeCloneSolution.push_back(t_clone.inMilliSecs());
 
          Timer tMovApply;
@@ -257,12 +289,13 @@ public:
          timeSamples.timeNSApply[id_ns].push_back(tMovApply.inMilliSecs());
 
          Timer t_clone2;
-         CopySolution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
+         //CopySolution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
+         R sNeighbor = s; // copy
          timeSamples.timeCloneSolution.push_back(t_clone2.inMilliSecs());
          // ===================== tests with ADSManager ======================
 
          // DEPRECATED ADSManager
-#if 1
+#if 0
          if (adsMan) {
             message(lEvaluator.at(ev), -1, "testing ADS.");
 
@@ -286,7 +319,7 @@ public:
 #endif
 
          Timer te;
-         Evaluation<> e_rev = lEvaluator.at(ev)->evaluate(s);
+         XEv e_rev = lEvaluator.at(ev)->evaluate(s);
          timeSamples.fullTimeEval[ev].push_back(te.inMilliSecs());
 
          Timer tMovRevApply;
@@ -296,7 +329,7 @@ public:
          timeSamples.timeNSApply[id_ns].push_back(tMovRevApply.inMilliSecs());
          // ===================== tests with ADSManager ======================
 
-#if 1
+#if 0
          if (adsMan) {
             message(lEvaluator.at(ev), -1, "testing ADS.");
 
@@ -323,10 +356,10 @@ public:
          if (!rev)
             s = sOriginal;
 
-         delete &sOriginal;
+         //delete &sOriginal;
 
          Timer te2;
-         Evaluation<> e_ini = lEvaluator.at(ev)->evaluate(s);
+         XEv e_ini = lEvaluator.at(ev)->evaluate(s);
          timeSamples.fullTimeEval[ev].push_back(te2.inMilliSecs());
 
          if (ini && (*ini != move)) {
@@ -369,7 +402,7 @@ public:
 
          Timer tMoveCostApply;
          ///MoveCost<>* mcSimpleCost = lEvaluator[ev]->moveCostComplete(move, s);
-         op<Evaluation<>> mcSimpleCost = lEvaluator[ev]->moveCostComplete(move, se);
+         op<XEv> mcSimpleCost = lEvaluator[ev]->moveCostComplete(move, se);
          //evtype simpleCost = mcSimpleCost->cost();
          evtype simpleCost = mcSimpleCost->evaluation();
          //delete mcSimpleCost;
@@ -392,7 +425,7 @@ public:
          // ==============
          // fasterCost
          Timer tMoveCostApplyDelta;
-         Evaluation<> evBeginFasterCost(e);
+         XEv evBeginFasterCost(e);
          uptr<Move<XES, XEv, XES>> rev1 = lEvaluator[ev]->applyMoveReevaluate(move, se);
          evtype e_end1 = e.evaluation();
          // TODO: check outdated status
@@ -429,7 +462,7 @@ public:
          lEvaluator[ev]->setAllowCosts(false);
 
          //MoveCost<>* mcRealFasterCost = lEvaluator[ev]->moveCost(move, se);
-         op<Evaluation<>> mcRealFasterCost = lEvaluator[ev]->moveCost(move, se);
+         op<XEv> mcRealFasterCost = lEvaluator[ev]->moveCost(move, se);
 
          lEvaluator[ev]->setAllowCosts(oldAllowCostsStatus);
          //evtype realFasterCost = mcRealFasterCost->cost();
@@ -453,7 +486,7 @@ public:
 
          Timer tMoveCost;
          ///MoveCost<>* cost = nullptr;
-         op<Evaluation<>> cost = nullopt;
+         op<XEv> cost = nullopt;
 
          if (lEvaluator[ev]->getAllowCosts())
             cost = move.cost(se, false);
@@ -488,9 +521,13 @@ public:
                //cout << "e+cost():\t obj:" << e.getObjFunction() + cost->getObjFunctionCost() << "\t inf:" << e.getInfMeasure() + cost->getInfMeasureCost() << "\t total:" << e.evaluation() + cost->cost() << endl;
                cout << "e+cost():\t obj:" << e.getObjFunction() + cost->getObjFunction() << "\t inf:" << e.getInfMeasure() + cost->getInfMeasure() << "\t total:" << e.evaluation() + cost->evaluation() << endl;
                cout << "s: ";
-               s.print();
+               //s.print();
+               cout << s;
+               //
                cout << "s': ";
-               sNeighbor.print();
+               //sNeighbor.print();
+               cout << sNeighbor;
+               //
                cout << "move: ";
                move.print();
                cout << "==============" << endl;
@@ -516,7 +553,7 @@ public:
                   }
                } else {
                   //MoveCost<>* cost2 = nullptr;
-                  op<Evaluation<>> cost2 = nullopt;
+                  op<XEv> cost2 = nullopt;
                   if (lEvaluator[ev]->getAllowCosts()) {
                      cost2 = move2->cost(se, false);
                      if (cost2) {
@@ -535,7 +572,9 @@ public:
 
          //if (rev)
          //	delete rev;
-         delete &sNeighbor;
+         //
+         //delete &sNeighbor;
+         //
          //if (ini)
          //	delete ini;
       }
@@ -569,7 +608,7 @@ public:
       // read evaluators
       // ----------------
 
-      vector<std::shared_ptr<Evaluator<S, XEv, XES>>> evaluators;
+      vector<std::shared_ptr<Evaluator<R, XEv, XES>>> evaluators;
       for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
          evaluators.push_back(lEvaluator[ev]);
 
@@ -598,8 +637,12 @@ public:
       // generate 'iterMax' OptFrame:Solution for each OptFrame:Constructive and store evaluation
       // ----------------------------------------------------------------------------------------
 
-      vector<CopySolution<R, ADS>*> solutions;
-      vector<vector<Evaluation<>*>> evaluations(evaluators.size());
+      using SolOrRepType = typename XES::first_type;
+      //using EvalType = typename XES::second_type;
+      //vector<CopySolution<R, ADS>*> solutions;
+      vector<SolOrRepType*> solutions;
+
+      vector<vector<XEv*>> evaluations(evaluators.size());
 
       if (lConstructive.size() > 0)
          cout << "checkcommand  will test " << lConstructive.size() << " constructive components (iterMax=" << iterMax << ")" << endl;
@@ -617,21 +660,29 @@ public:
             //CopySolution<R,ADS> s = *constructive->generateSolution(10000000);
             op<XES> ps = constructive->initialSearch(StopCriteria<XEv>(10000000)).first;
             //CopySolution<R,ADS> s = *constructive->initialSolution(10000000);
-            CopySolution<R, ADS> s = ps->first;
+            //
+            //CopySolution<R, ADS> s = ps->first;
+            auto s = ps->first;
+
             timeSamples.timeConstructive[c].push_back(ts.inMilliSecs());
 
-            if (adsMan) {
-               Timer ts2;
-               adsMan->initializeADS(s.getR(), s.getADS());
-               timeSamples.timeInitializeADS[0].push_back(ts2.inMilliSecs());
+            // only enable adsMan in LEGACY code
+            using T = decltype(s);
+            if constexpr (is_same<SolOrRepType, S>::value) {
+               if (adsMan) {
+                  Timer ts2;
+                  adsMan->initializeADS(s.getR(), s.getADS());
+                  timeSamples.timeInitializeADS[0].push_back(ts2.inMilliSecs());
+               }
             }
 
-            solutions.push_back(new CopySolution<R, ADS>(s));
+            //solutions.push_back(new CopySolution<R, ADS>(s));
+            solutions.push_back(new T(s));
 
             for (unsigned ev = 0; ev < evaluators.size(); ev++) {
                message(lEvaluator.at(ev), iter, "evaluating solution.");
                Timer te;
-               Evaluation<> e = evaluators.at(ev)->evaluate(s);
+               XEv e = evaluators.at(ev)->evaluate(s);
                timeSamples.fullTimeEval[ev].push_back(te.inMilliSecs());
 
                evaluations.at(ev).push_back(new Evaluation(e));
@@ -666,12 +717,13 @@ public:
          cout << "checkcommand  will test given Move components (|Move|=" << lMove.size() << "; numSolutions=" << solutions.size() << ")" << endl;
 
       for (unsigned p = 0; p < lSolution.size(); p++) {
-         solutions.push_back(&lSolution[p]->clone());
+         //solutions.push_back(&lSolution[p]->clone());
+         solutions.push_back(new R(*lSolution[p]));
 
          for (unsigned ev = 0; ev < evaluators.size(); ev++) {
             message(lEvaluator.at(ev), p, "evaluating input solution.");
             Timer te;
-            Evaluation<> e = evaluators.at(ev)->evaluate(*lSolution[p]);
+            XEv e = evaluators.at(ev)->evaluate(*lSolution[p]);
             timeSamples.fullTimeEval[ev].push_back(te.inMilliSecs());
 
             evaluations.at(ev).push_back(new Evaluation(e));
@@ -688,7 +740,8 @@ public:
                cout << endl;
             message(lMove.at(id_move).get(), -1, "working on move.");
 
-            CopySolution<R, ADS>& s = *solutions.at(id_s);
+            //CopySolution<R, ADS>& s = *solutions.at(id_s);
+            R& s = *solutions.at(id_s);
 
             Move<XES, XEv, XES>& move = *pmove;
 
@@ -739,7 +792,8 @@ public:
                ss_msg1 << "generating random move for solution id=" << id_s;
                message(lNS.at(id_ns), iter, ss_msg1.str());
 
-               CopySolution<R, ADS>& s = *solutions.at(id_s);
+               //CopySolution<R, ADS>& s = *solutions.at(id_s);
+               R& s = *solutions.at(id_s);
 
                XES se = make_pair(s, XEv());
 
@@ -794,7 +848,8 @@ public:
             message(lNSSeq.at(id_nsseq), nqs, "starting tests!");
 
             int randomIndex = rand() % solutions.size();
-            CopySolution<R, ADS>& s = *solutions.at(randomIndex);
+            //CopySolution<R, ADS>& s = *solutions.at(randomIndex);
+            R& s = *solutions.at(randomIndex);
             int id_s = randomIndex;
 
             XES se = make_pair(s, XEv());
@@ -872,7 +927,8 @@ public:
             message(lNSEnum.at(id_nsenum), nqs, "starting tests!");
 
             int randomIndex = rand() % solutions.size();
-            CopySolution<R, ADS>& s = *solutions.at(randomIndex);
+            //CopySolution<R, ADS>& s = *solutions.at(randomIndex);
+            R& s = *solutions.at(randomIndex);
             int id_s = randomIndex;
 
             XES se = make_pair(s, XEv());
@@ -929,7 +985,9 @@ public:
             // indicate possible independent moves
 
             // adopting Evaluator 0...
-            Evaluator<S>& ev = *evaluators.at(0);
+            //Evaluator<S>& ev = *evaluators.at(0);
+            Evaluator<R, XEv, XES>& ev = *evaluators.at(0);
+
             int countMovePairsEnum = 0;
             int countMoveIndependentEnum = 0;
             // check for independence between moves m1 and m2
@@ -945,7 +1003,8 @@ public:
                   if (!conflict) {
                      // TODO: increase performance of this method
                      for (unsigned sol = 0; sol < solutions.size(); sol++) {
-                        CopySolution<R, ADS>& s = *solutions.at(sol);
+                        //CopySolution<R, ADS>& s = *solutions.at(sol);
+                        R& s = *solutions.at(sol);
                         XES se = make_pair(s, XEv());
 
                         // TODO: verify if return is return is not null!
@@ -1072,7 +1131,8 @@ public:
    }
 
    template<class T>
-   vector<T*> assignVector(const vector<string> lComponents, T* type, HeuristicFactory<S, XEv, XES, X2ES>& factory)
+   vector<T*>
+   assignVector(const vector<string> lComponents, T* type, HeuristicFactory<S, XEv, XES, X2ES>& factory)
    {
       vector<T*> vComp;
       for (unsigned i = 0; i < lComponents.size(); i++) {
@@ -1090,7 +1150,8 @@ public:
    }
 
    template<class T>
-   vector<std::shared_ptr<Component>> convertVector(const vector<sptr<T>>& v)
+   vector<std::shared_ptr<Component>>
+   convertVector(const vector<sptr<T>>& v)
    {
       vector<sptr<Component>> vcomp;
       for (unsigned c = 0; c < v.size(); c++)
@@ -1099,7 +1160,8 @@ public:
       return vcomp;
    }
 
-   void printSummarySimpleSamples(const vector<std::shared_ptr<Component>>& vcomp, const vector<vector<int>>& vMoveSamples, string type, string title)
+   void
+   printSummarySimpleSamples(const vector<std::shared_ptr<Component>>& vcomp, const vector<vector<int>>& vMoveSamples, string type, string title)
    {
       unsigned nComponents = vMoveSamples.size();
       printf("---------------------------------\n");
@@ -1126,7 +1188,8 @@ public:
       cout << endl;
    }
 
-   void printSingleSummarySamples(string component, const vector<double> vTimeSamples, string title)
+   void
+   printSingleSummarySamples(string component, const vector<double> vTimeSamples, string title)
    {
       printf("---------------------------------\n");
       cout << component << "\t" << title << endl;
@@ -1147,7 +1210,8 @@ public:
       cout << endl;
    }
 
-   void printSummarySamples(const vector<std::shared_ptr<Component>>& vcomp, const vector<vector<double>>& vTimeSamples, string type, string title)
+   void
+   printSummarySamples(const vector<std::shared_ptr<Component>>& vcomp, const vector<vector<double>>& vTimeSamples, string type, string title)
    {
       unsigned nTests = vTimeSamples.size();
       printf("---------------------------------\n");
@@ -1171,7 +1235,6 @@ public:
       cout << endl;
    }
 };
-
 }
 
 #endif /* OPTFRAME_CHECK_COMMAND_HPP_ */

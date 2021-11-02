@@ -50,7 +50,7 @@ public:
    // findBest: returns move that greatly improves current solution 'se', according 'gev'
    // RETURNS: pair< uptr<Move<XES, XEv, XSH>>, op<XEv> >
    // NSFind is useful for exponential-sized neighborhoods, without requiring any iterator structure
-   virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findBest(GeneralEvaluator<XES>& gev, XES& se) = 0;
+   virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findBest(GeneralEvaluator<XES, XEv, XSH>& gev, XES& se) = 0;
 
 public:
    static string idComponent()

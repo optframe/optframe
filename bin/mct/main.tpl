@@ -34,6 +34,7 @@ int main(int argc, char **argv)
    Constructive$constructive c1(p);
    
    //CheckCommand<Rep$project> check;
+   // CheckCommand<ESolutionHFMVRP, EvaluationHFMVRP, RepHFMVRP, AdsHFMVRP, SolutionHFMVRP> cc;
    //check.add(ev);
    //check.add(c1);
    //check.add(ns1);

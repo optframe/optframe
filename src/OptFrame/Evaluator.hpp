@@ -66,10 +66,13 @@ namespace optframe {
 
 // Evaluation may need to be S dependent, while GeneralEvaluator is not.
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+template<XSolution S, XEvaluation XEv, XESolution XES = pair<S, XEv>>
 class Evaluator : public Direction<XEv>
   , public GeneralEvaluator<XES, XEv, XES>
 {
+   static_assert(is_same<S, typename XES::first_type>::value);
+   static_assert(is_same<XEv, typename XES::second_type>::value);
+
 protected:
    bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
    evtype weight;   // defaults to 1
@@ -147,7 +150,7 @@ public:
    // Movement cost based on complete evaluation (only on CheckCommand)
    // USE ONLY FOR VALIDATION OF CODE! OTHERWISE, USE MoveCost<>(e, m, s)
    ///MoveCost<>* moveCostComplete(Move<XES, XEv>& m, XES& s, bool allowEstimated = false)
-   op<Evaluation<>> moveCostComplete(Move<XES, XEv>& m, XES& se, bool allowEstimated = false)
+   op<XEv> moveCostComplete(Move<XES, XEv>& m, XES& se, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
       // TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
@@ -173,7 +176,7 @@ public:
       */
 
       ///MoveCost<>* p = new MoveCost<>(obj, inf);
-      op<Evaluation<>> p = make_optional(Evaluation<>(obj, inf));
+      op<XEv> p = make_optional(XEv(obj, inf));
 
       //p->setAlternativeCosts(alternatives);
 

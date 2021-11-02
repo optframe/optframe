@@ -17,7 +17,8 @@ main()
    srand(0); // using system random (weak... just an example!)
 
    // load data into problem context 'pTSP'
-   Scanner scanner{ "3\n1 10 10\n2 20 20\n3 30 30\n" };
+   //Scanner scanner{ "3\n1 10 10\n2 20 20\n3 30 30\n" };
+   Scanner scanner{ "5\n0 100 100\n1 100 200\n2 2000 2000\n3 2000 100\n4 150 150" };
    pTSP.load(scanner);
    std::cout << pTSP.dist << std::endl;
 
@@ -31,7 +32,7 @@ main()
    std::cout << sol << std::endl;
 
    // evaluation value and store on ESolution pair
-   ESolutionTSP esol(sol, ev.evaluate(sol));
+   ESolutionTSP esol(sol, ev->evaluate(sol));
    esol.second.print(); // print evaluation
 
    // swap 0 with 1

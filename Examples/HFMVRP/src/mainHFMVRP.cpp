@@ -150,7 +150,13 @@ main(int argc, char** argv)
    vLS.push_back(new BestImprovement<ESolutionHFMVRP>(eval, nsseq_deltaIterator_swap11));
    vLS.push_back(new BestImprovement<ESolutionHFMVRP>(eval, nsseq_deltaIterator_shift10));
 
-   CheckCommand<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP> cc;
+   //
+   //CheckCommand<RepHFMVRP, AdsHFMVRP, SolutionHFMVRP> cc;
+   //
+   // template<XESolution XES, XEvaluation XEv = typename XES::second_type, XRepresentation R = typename XES::first_type, class ADS = int, XBaseSolution<R, ADS> S = CopySolution<R, ADS>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, XEv>>
+   //
+   CheckCommand<ESolutionHFMVRP, RepHFMVRP, AdsHFMVRP, SolutionHFMVRP> cc;
+   //
    cc.add(eval);
    //	cc.add(p);
    cc.add(is);

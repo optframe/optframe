@@ -82,10 +82,10 @@ private:
    uptr<NSIterator<XES, XEv, XSH>> it;
 
 public:
-   // findFirst: returns the *first* move that strictly improves current solution 'se', according 'gev'
+   // findFirst (from NSSeq): returns the *first* move that strictly improves current solution 'se', according 'gev'
    // RETURNS: pair< uptr<Move<XES, XEv, XSH>>, op<XEv> >
    // note that this method is *not stateless* regarding NSSeq class, as a *stateful* iterator variable is locally stored
-   virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findFirst(GeneralEvaluator<XES>& gev, XES& se)
+   virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findFirst(GeneralEvaluator<XES, XEv, XSH>& gev, XES& se)
    {
       // initializes iterator
       it = this->getIterator(se);
@@ -120,10 +120,10 @@ public:
       return std::make_pair(pm.release(), mvcost);
    }
 
-   // findNext: returns the *next* move that strictly improves current solution 'se', according 'gev'
+   // findNext (from NSSeq): returns the *next* move that strictly improves current solution 'se', according 'gev'
    // RETURNS: pair< uptr<Move<XES, XEv, XSH>>, op<XEv> >
    // note that this method is *not stateless* regarding NSSeq class, as a *stateful* iterator variable is locally stored
-   virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findNext(GeneralEvaluator<XES>& gev, XES& se)
+   virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findNext(GeneralEvaluator<XES, XEv, XSH>& gev, XES& se)
    {
       // checks if iterator is initialized or finished
       if (!it || it->isDone())
@@ -159,9 +159,9 @@ public:
       return std::make_pair(pm.release(), mvcost);
    }
 
-   // findBest: returns move that greatly improves current solution 'se', according 'gev'
+   // findBest (from NSFind): returns move that greatly improves current solution 'se', according 'gev'
    // NSFind is useful for exponential-sized neighborhoods, without requiring any iterator structure
-   virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findBest(GeneralEvaluator<XES>& gev, XES& se)
+   virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findBest(GeneralEvaluator<XES, XEv, XSH>& gev, XES& se) override
    {
       // finds first improving move
       pair<Move<XES, XEv, XSH>*, op<XEv>> mve = this->findFirst(gev, se);

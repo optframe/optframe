@@ -124,7 +124,10 @@ main(int argc, char** argv)
 	*/
 
    bool check_verbose = false;
-   CheckCommand<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> check(check_verbose);
+   //
+   //CheckCommand<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> check(check_verbose);
+   //
+   CheckCommand<ESolutionTSP, RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> check(check_verbose);
 
    RandGenMersenneTwister rg(0);
    sref<RandGen> rg2 = RandGenMersenneTwister(0);
