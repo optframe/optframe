@@ -57,11 +57,17 @@ class CheckCommand
 
    static const int CMERR_EV_BETTERTHAN = 2001;
    static const int CMERR_EV_BETTEREQUALS = 2002;
+   // Check if operator== is correctly implemented for Move class
    static const int CMERR_MOVE_EQUALS = 3001;
+
    static const int CMERR_MOVE_HASREVERSE = 3002;
    static const int CMERR_MOVE_REVREV_VALUE = 3004;
+   // CMERR_MOVE_REVSIMPLE: check what?
    static const int CMERR_MOVE_REVSIMPLE = 3005;
+   // CMERR_MOVE_REVFASTER: check what?
    static const int CMERR_MOVE_REVFASTER = 3006;
+   // CMERR_MOVE_REALREVFASTER
+   // explanation: disables allowCost from neighborhood, then uses moveCost() function from Evaluator
    static const int CMERR_MOVE_REALREVFASTER = 3008;
    static const int CMERR_MOVE_COST = 3007;
 
@@ -274,14 +280,17 @@ public:
    };
 
    //bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns, CopySolution<R, ADS>& s, int id_s, Move<XES>& move, vector<vector<Evaluation<>*>>& evaluations, TimeCheckWithSamples& timeSamples)
-   bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns, S& s, int id_s, Move<XES>& move, vector<vector<XEv*>>& evaluations, TimeCheckWithSamples& timeSamples)
+   bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns, S& _s, int id_s, Move<XES>& move, vector<vector<XEv*>>& evaluations, TimeCheckWithSamples& timeSamples)
    {
       for (unsigned ev = 0; ev < lEvaluator.size(); ev++) {
          message(lEvaluator.at(ev), iter, "evaluating random move (apply, revert and moveCost).");
 
-         XEv e = lEvaluator[ev]->evaluate(s);
-
-         XES se = make_pair(s, e);
+         // ==============
+         // creating 'se'
+         // ---------------
+         XEv _e = lEvaluator[ev]->evaluate(_s);
+         XES se = make_pair(_s, _e);
+         //
 
          string moveFrom = "Move ";
          moveFrom.append(move.id());
@@ -300,11 +309,13 @@ public:
 
          Timer t_clone;
          //CopySolution<R, ADS>& sOriginal = s.clone(); // remove if not verbose
-         S sOriginal = s; // copy
+         //S sOriginal = s; // copy
+         S sOriginal = se.first; // copy
          timeSamples.timeCloneSolution.push_back(t_clone.inMilliSecs());
 
          Timer tMovApply;
          uptr<Move<XES, XEv, XES>> rev = move.apply(se);
+         //
          if ((!move.hasReverse() && rev) || (move.hasReverse() && !rev)) {
             errormsg(moveFrom, CMERR_MOVE_HASREVERSE, "CMERR_MOVE_HASREVERSE", iter, " conflict between apply result and hasReverse()");
             return false;
@@ -314,12 +325,13 @@ public:
 
          Timer t_clone2;
          //CopySolution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
-         S sNeighbor = s; // copy
+         //S sNeighbor = s; // copy
+         S sNeighbor = se.first; // copy
          timeSamples.timeCloneSolution.push_back(t_clone2.inMilliSecs());
          // ===================== tests with ADSManager ======================
 
          // DEPRECATED ADSManager
-#if 0
+#ifdef LEGACY_ADS
          if (adsMan) {
             message(lEvaluator.at(ev), -1, "testing ADS.");
 
@@ -342,18 +354,22 @@ public:
          }
 #endif
 
+         //
          Timer te;
-         XEv e_rev = lEvaluator.at(ev)->evaluate(s);
+         XEv e_rev = lEvaluator.at(ev)->evaluate(se.first);
          timeSamples.fullTimeEval[ev].push_back(te.inMilliSecs());
 
+         //
          Timer tMovRevApply;
          uptr<Move<XES, XEv, XES>> ini = nullptr;
          if (rev)
             ini = rev->apply(se);
          timeSamples.timeNSApply[id_ns].push_back(tMovRevApply.inMilliSecs());
+
+         //
          // ===================== tests with ADSManager ======================
 
-#if 0
+#ifdef LEGACY_ADS
          if (adsMan) {
             message(lEvaluator.at(ev), -1, "testing ADS.");
 
@@ -377,13 +393,15 @@ public:
 #endif
 
          // go back by copy (if necessary!)
-         if (!rev)
-            s = sOriginal;
+         if (!rev) {
+            //s = sOriginal;
+            se.first = sOriginal;
+         }
 
          //delete &sOriginal;
 
          Timer te2;
-         XEv e_ini = lEvaluator.at(ev)->evaluate(s);
+         XEv e_ini = lEvaluator.at(ev)->evaluate(se.first);
          timeSamples.fullTimeEval[ev].push_back(te2.inMilliSecs());
 
          if (ini && (*ini != move)) {
@@ -402,13 +420,13 @@ public:
          message(lEvaluator.at(ev), iter, "testing reverse value.");
 
          //if (EVALUATION_ABS(e_ini.evaluation() - e.evaluation()) >= optframe::get_numeric_zero<evtype>())
-         if (!optframe::numeric_is_zero(e_ini.evaluation() - e.evaluation())) {
+         if (!optframe::numeric_is_zero(e_ini.evaluation() - _e.evaluation())) {
             errormsg(moveFrom, CMERR_MOVE_REVREV_VALUE, "CMERR_MOVE_REVREV_VALUE", iter, "reverse of reverse has a different evaluation value!");
             move.print();
             cout << "move: ";
             move.print();
             cout << "original: ";
-            e.print();
+            _e.print();
             cout << "reverse of reverse:";
             e_ini.print();
 
@@ -420,8 +438,11 @@ public:
          message(lEvaluator.at(ev), iter, "testing move cost.");
 
          // ==============
+         // revCost
+         // ---------------
+         //
 
-         evtype revCost = e_rev.evaluation() - e.evaluation();
+         evtype revCost = e_rev.evaluation() - _e.evaluation();
          message(lEvaluator.at(ev), iter, "revCost calculated!");
 
          Timer tMoveCostApply;
@@ -429,9 +450,15 @@ public:
          op<XEv> mcSimpleCost = lEvaluator[ev]->moveCostComplete(move, se);
          //evtype simpleCost = mcSimpleCost->cost();
          evtype simpleCost = mcSimpleCost->evaluation();
+         //
+         timeSamples.timeNSCostApply[id_ns].push_back(tMoveCostApply.inMilliSecs());
          //delete mcSimpleCost;
          message(lEvaluator.at(ev), iter, "simpleCost calculated!");
-         timeSamples.timeNSCostApply[id_ns].push_back(tMoveCostApply.inMilliSecs());
+
+         if (!optframe::numeric_is_zero(se.second.evaluation() - _e.evaluation())) {
+            std::cout << "ERROR: calculation of revCost is wrong! " << se.second.evaluation() << " != " << _e.evaluation() << std::endl;
+            assert(false);
+         }
 
          // TODO: fix ABS with is_zero pattern
          //if (EVALUATION_ABS(revCost - simpleCost) >= optframe::get_numeric_zero<evtype>())
@@ -439,8 +466,10 @@ public:
             errormsg(moveFrom, CMERR_MOVE_REVSIMPLE, "CMERR_MOVE_REVSIMPLE", iter, "difference between revCost and simpleCost");
             cout << "move: ";
             move.print();
-            cout << "revCost = " << revCost << endl;
-            cout << "simpleCost = " << simpleCost << endl;
+            cout << "revCost = " << revCost << "= ..." << endl;
+            cout << "   ... = (e_rev after move) " << e_rev.evaluation() << " -  (_e before move) " << _e.evaluation() << ")" << std::endl;
+            cout << "simpleCost = " << simpleCost << " (from 'ev->moveCostComplete(move, se)' method)" << endl;
+            cout << "Current Evaluation: se.second.evaluation() = " << se.second.evaluation() << std::endl;
             return false;
          }
 
@@ -448,16 +477,36 @@ public:
 
          // ==============
          // fasterCost
+         // --------------
+         //
+         // update from original version
+         se.first = _s;
+         se.second = _e;
+         //
          Timer tMoveCostApplyDelta;
-         XEv evBeginFasterCost(e);
+         //
+         //XEv evBeginFasterCost(_e);
+         XEv evBeginFasterCost(se.second);
+         //
          uptr<Move<XES, XEv, XES>> rev1 = lEvaluator[ev]->applyMoveReevaluate(move, se);
-         evtype e_end1 = e.evaluation();
+         //evtype e_end1 = _e.evaluation();
+         evtype e_end1 = se.second.evaluation();
+         if (se.second.outdated) {
+            std::cout << "WARNING: evaluation is OUTDATED! WHAT TO DO HERE?" << std::endl;
+         }
+         //
+         //
          // TODO: check outdated status
          // TODO: if(e.outdated), it means that user did not implement Move::applyMoveReevaluate(e,R,ADS)!
          //			Move<XES, XEv, XES>& ini1 = *lEvaluator[ev]->applyMoveReevaluate(e, rev1, s);
-         uptr<Move<XES, XEv, XES>> ini1 = rev1->apply(se);
-         e = std::move(evBeginFasterCost);
-         evtype e_ini1 = e.evaluation();
+         uptr<Move<XES, XEv, XES>> ini1 = rev1->applyUpdate(se);
+         if (se.second.outdated) {
+            //std::cout << "WARNING: evaluation is OUTDATED after applyUpdate! manual evaluate" << std::endl;
+            se.second = lEvaluator[ev]->evaluate(se.first);
+         }
+         //_e = std::move(evBeginFasterCost);
+         //evtype e_ini1 = _e.evaluation();
+         evtype e_ini1 = evBeginFasterCost.evaluation();
          timeSamples.timeNSCostApplyDelta[id_ns].push_back(tMoveCostApplyDelta.inMilliSecs());
 
          //delete &rev1;
@@ -466,6 +515,11 @@ public:
          evtype fasterCost = e_end1 - e_ini1;
          message(lEvaluator.at(ev), iter, "fasterCost calculated!");
 
+         if (!optframe::numeric_is_zero(se.second.evaluation() - _e.evaluation())) {
+            std::cout << "ERROR: calculation of faster is wrong! " << se.second.evaluation() << " != " << _e.evaluation() << std::endl;
+            assert(false);
+         }
+
          //if (EVALUATION_ABS(revCost - fasterCost) >= optframe::get_numeric_zero<evtype>())
          if (!optframe::numeric_is_zero(revCost - fasterCost)) {
             errormsg(moveFrom, CMERR_MOVE_REVFASTER, "CMERR_MOVE_REVFASTER", iter, "difference between revCost and fasterCost!");
@@ -473,7 +527,7 @@ public:
             move.print();
             cout << "revCost = " << revCost << endl;
             cout << "fasterCost = " << fasterCost << endl;
-            cout << "e = " << e.evaluation() << endl;
+            cout << "_e = " << _e.evaluation() << endl;
             cout << "e_rev = " << e_rev.evaluation() << endl;
             return false;
          }
@@ -481,21 +535,31 @@ public:
 
          // ==============
          // real fasterCost
+         // ---------------
+         //
+         // update 'se' from original version
+         se.first = _s;
+         se.second = _e;
+
          Timer tMoveCostApplyRealDelta;
          bool oldAllowCostsStatus = lEvaluator[ev]->getAllowCosts();
          lEvaluator[ev]->setAllowCosts(false);
 
          //MoveCost<>* mcRealFasterCost = lEvaluator[ev]->moveCost(move, se);
-         op<XEv> mcRealFasterCost = lEvaluator[ev]->moveCost(move, se);
+         XEv mcRealFasterCost = lEvaluator[ev]->moveCost(move, se);
 
          lEvaluator[ev]->setAllowCosts(oldAllowCostsStatus);
          //evtype realFasterCost = mcRealFasterCost->cost();
-         evtype realFasterCost = mcRealFasterCost->evaluation();
-         //delete mcRealFasterCost;
-         message(lEvaluator.at(ev), iter, "realFasterCost calculated!");
+         evtype realFasterCost = mcRealFasterCost.evaluation();
          timeSamples.timeNSCostApplyRealDelta[id_ns].push_back(tMoveCostApplyRealDelta.inMilliSecs());
 
-         message(lEvaluator.at(ev), iter, "realfasterCost calculated!");
+         //delete mcRealFasterCost;
+         message(lEvaluator.at(ev), iter, "realFasterCost calculated!");
+
+         if (!optframe::numeric_is_zero(se.second.evaluation() - _e.evaluation())) {
+            std::cout << "ERROR: calculation of realFasterCost is wrong! " << se.second.evaluation() << " != " << _e.evaluation() << std::endl;
+            assert(false);
+         }
 
          //if (EVALUATION_ABS(revCost - realFasterCost) >= optframe::get_numeric_zero<evtype>())
          if (!optframe::numeric_is_zero(revCost - realFasterCost)) {
@@ -540,13 +604,13 @@ public:
                move.print();
                cout << "expected cost: (e' - e) =\t" << revCost << endl;
                cout << "cost() =\t" << cValue << endl;
-               cout << "e: \t obj:" << e.getObjFunction() << "\t inf: " << e.getInfMeasure() << " \t total:" << e.evaluation() << endl;
+               cout << "_e: \t obj:" << _e.getObjFunction() << "\t inf: " << _e.getInfMeasure() << " \t total:" << _e.evaluation() << endl;
                cout << "e':\t obj:" << e_rev.getObjFunction() << "\t inf:" << e_rev.getInfMeasure() << " \t total:" << e_rev.evaluation() << endl;
                //cout << "e+cost():\t obj:" << e.getObjFunction() + cost->getObjFunctionCost() << "\t inf:" << e.getInfMeasure() + cost->getInfMeasureCost() << "\t total:" << e.evaluation() + cost->cost() << endl;
-               cout << "e+cost():\t obj:" << e.getObjFunction() + cost->getObjFunction() << "\t inf:" << e.getInfMeasure() + cost->getInfMeasure() << "\t total:" << e.evaluation() + cost->evaluation() << endl;
-               cout << "s: ";
+               cout << "_e+cost():\t obj:" << _e.getObjFunction() + cost->getObjFunction() << "\t inf:" << _e.getInfMeasure() + cost->getInfMeasure() << "\t total:" << _e.evaluation() + cost->evaluation() << endl;
+               cout << "_s: ";
                //s.print();
-               cout << s;
+               cout << _s;
                //
                cout << "s': ";
                //sNeighbor.print();
@@ -890,18 +954,19 @@ public:
             // ===================
 
             // TODO: consider that iterator can be null!
-            NSIterator<XES, XEv>& it = *nsseq->getIterator(se);
+            //NSIterator<XES, XEv>& it = *nsseq->getIterator(se);
+            auto it = nsseq->getIterator(se);
 
             int countMovesNSSeq = 0;
             int countValidMovesNSSeq = 0;
 
-            for (it.first(); !it.isDone(); it.next()) {
+            for (it->first(); !it->isDone(); it->next()) {
                if (verbose)
                   cout << endl;
                message(lNSSeq.at(id_nsseq), nqs, "getting current move (NSSeq tests).");
 
                // TODO: verify if it's not null!
-               uptr<Move<XES, XEv, XES>> move = it.current();
+               uptr<Move<XES, XEv, XES>> move = it->current();
                countMovesNSSeq++;
 
                if (!move->canBeApplied(se)) {
@@ -926,7 +991,6 @@ public:
 
             vCountMovesSamples[id_nsseq].push_back(countMovesNSSeq);
             vCountValidMovesSamples[id_nsseq].push_back(countValidMovesNSSeq);
-            delete &it;
          }
 
          cout << "checkcommand: " << lNSSeq.at(id_nsseq)->id() << " finished." << endl;
@@ -1133,13 +1197,13 @@ public:
 
       printSummarySamples(convertVector(lEvaluator), timeSamples.fullTimeEval, "Evaluators", "testing full evaluate(s) of a solution");
 
-      printSummarySamples(convertVector(lNS), timeSamples.timeNSApply, "NS", "testing time of move apply(s)");
+      printSummarySamples(convertVector(lNS), timeSamples.timeNSApply, "NS", "testing time of move apply(s) [apply no evaluation]");
 
-      printSummarySamples(convertVector(lNS), timeSamples.timeNSCostApply, "NS", "testing time of cost based on move apply(s)");
+      printSummarySamples(convertVector(lNS), timeSamples.timeNSCostApply, "NS", "testing time of cost based on move apply(s) [revCost]");
 
-      printSummarySamples(convertVector(lNS), timeSamples.timeNSCostApplyDelta, "NS", "testing time of cost based on move apply(e, s)");
+      printSummarySamples(convertVector(lNS), timeSamples.timeNSCostApplyDelta, "NS", "testing time of cost based on move apply(e, s) [fasterCost]");
 
-      printSummarySamples(convertVector(lNS), timeSamples.timeNSCostApplyRealDelta, "NS", "testing time of real cost based on move apply(e, s) - forcing allowCosts to False");
+      printSummarySamples(convertVector(lNS), timeSamples.timeNSCostApplyRealDelta, "NS", "testing time of real cost based on move apply(e, s) - forcing allowCosts to False [realFasterCost]");
 
       printSummarySamples(convertVector(lNS), timeSamples.timeNSCost, "NS", "testing time of move cost()");
 

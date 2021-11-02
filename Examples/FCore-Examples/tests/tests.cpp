@@ -54,10 +54,18 @@ TEST_CASE("FCore-Examples TSP fcore: Test Constructive")
 
 TEST_CASE("FCore-Examples TSP fcore: Test Check Command")
 {
-   Scanner scanner{ std::string(instance5) };
+   std::stringstream ss;
+   srand(1000000);
+   int N = 50;
+   ss << N << std::endl;
+   for (unsigned i = 0; i < N; i++)
+      ss << i << "\t" << rand() % 1000 << "\t" << rand() % 1000 << std::endl;
+   //Scanner scanner{ std::string(instance5) };
+   Scanner scanner{ ss.str() };
    pTSP.load(scanner);
 
-   REQUIRE(pTSP.n == 5);
+   //REQUIRE(pTSP.n == 5);
+   REQUIRE(pTSP.n == 50);
 
    // set random seed for std::random_shuffle
    srand(1000000);
@@ -66,7 +74,7 @@ TEST_CASE("FCore-Examples TSP fcore: Test Check Command")
       new BasicInitialSearch<ESolutionTSP>(crand, ev)
    };
 
-   CheckCommand<ESolutionTSP> check(true); // verbose
+   CheckCommand<ESolutionTSP> check(false); // verbose
    //
    check.addEvaluator(ev);
    check.add(initRand);
@@ -74,7 +82,7 @@ TEST_CASE("FCore-Examples TSP fcore: Test Check Command")
    check.addNSSeq(nsseq2); // NSSeq
 
    // bool run(int iterMax, int nSolNSSeq)
-   check.run(10, 10);
+   check.run(100, 10);
    //
    REQUIRE(0);
 }

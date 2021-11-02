@@ -122,7 +122,7 @@ public:
 
    //
    //MoveCost<>* moveCost(Move<XES, XEv>& m, XES& se, bool allowEstimated = false)
-   op<XEv> moveCost(Move<XES, XEv>& m, XES& se, bool allowEstimated = false)
+   XEv moveCost(Move<XES, XEv>& m, XES& se, bool allowEstimated = false)
    {
       // TODO: in the future, consider 'allowEstimated' parameter
       // TODO: in the future, consider 'e' and 's' as 'const', and use 'const_cast' to remove it.
@@ -135,7 +135,7 @@ public:
 
       // if p not null, do not update 's' => much faster (using cost)
       if (p) {
-         return p;
+         return *p;
       } else {
          // need to update 's' together with reevaluation of 'e' => slower (may perform reevaluation)
 
@@ -143,9 +143,9 @@ public:
          assert(m.hasReverse());
 
          //XSolution& s = se.first;
-         XEv& e = se.second;
+         //XEv& e = se.second;
 
-         XEv ev_begin(e); // copy
+         XEv ev_begin(se.second); // copy
          //XEv ev_begin = e; //TODO: VITOR removing last evaluation
          // saving 'outdated' status to avoid inefficient re-evaluations
          //			bool outdated = e.outdated;
@@ -183,8 +183,9 @@ public:
          // TODO: include management for 'false' hasReverse()
          assert(rev->hasReverse() && ini);
 
-         // recover original evaluation
-         e = std::move(ev_begin);
+         // recover original evaluation (note that e is a reference to se.second)
+         //e = std::move(ev_begin);
+         se.second = std::move(ev_begin);
          //==================================================================
          /*
          // get original values (also could be calculated in the begin of function)
@@ -215,7 +216,10 @@ public:
          // return a MoveCost object pointer
          //p = make_optional(Evaluation<>(e_end.first - e_ini.first, e_end.second - e_ini.second));
          //return p;
-         return make_optional(mcost);
+         //
+         //
+         //return make_optional(mcost);
+         return mcost;
       }
    }
 
