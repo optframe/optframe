@@ -79,8 +79,17 @@ main(int argc, char** argv)
    double alpha = 0;
    ConstructiveSavingsRandomized is{ *p, rg, *adsMan };
 
+   sref<InitialSearch<ESolutionHFMVRP>> initSearch{
+      new BasicInitialSearch<ESolutionHFMVRP>{
+        new ConstructiveSavingsRandomized{ *p, rg, *adsMan },
+        eval }
+   };
+
    auto solTest = *is.generateSolution(0);
    ESolutionHFMVRP esolTest = { solTest, eval->evaluate(solTest) };
+
+   //
+   ESolutionHFMVRP esolTest2 = *initSearch->initialSearch({ 1.0 }).first; // 1.0 sec
 
    //sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_2opt = new NSSeqVRP2Opt<int, AdsHFMVRP, SolutionHFMVRP, DeltaMoveVRP2Opt, ProblemInstance, DeltaNSIteratorVRP2Opt<DeltaMoveVRP2Opt>>(p);
    sref<NSSeq<ESolutionHFMVRP, EvaluationHFMVRP>> nsseq_deltaIterator_delta_2opt =
@@ -155,11 +164,15 @@ main(int argc, char** argv)
    //
    // template<XESolution XES, XEvaluation XEv = typename XES::second_type, XRepresentation R = typename XES::first_type, class ADS = int, XBaseSolution<R, ADS> S = CopySolution<R, ADS>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, XEv>>
    //
-   CheckCommand<ESolutionHFMVRP, RepHFMVRP, AdsHFMVRP, SolutionHFMVRP> cc;
+   //CheckCommand<ESolutionHFMVRP, RepHFMVRP, AdsHFMVRP, SolutionHFMVRP> cc;
+   CheckCommand<ESolutionHFMVRP, SolutionHFMVRP, RepHFMVRP, AdsHFMVRP> cc;
    //
    cc.add(eval);
    //	cc.add(p);
-   cc.add(is);
+   //
+   //cc.add(is);
+   cc.add(initSearch);
+   //
    cc.add(nsseq_delta_shift10);
    cc.add(nsseq_delta_swap11);
    cc.add(nsseq_deltaIterator_swap11);
@@ -168,7 +181,9 @@ main(int argc, char** argv)
    cc.add(nsseq_deltaIterator_delta_or1);
    cc.add(nsseq_deltaIterator_delta_or2);
    cc.add(nsseq_deltaIterator_delta_exchange);
+   //
    cc.add(*adsMan);
+   //
    cc.run(1, 1);
    getchar();
 

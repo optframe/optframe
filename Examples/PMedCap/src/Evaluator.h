@@ -40,7 +40,7 @@ using namespace optframe;
 
 #define EPSILON_PCAP 0.0001
 
-class PCAPEvaluator : public Evaluator<SolutionPCAP>
+class PCAPEvaluator : public Evaluator<SolutionPCAP, EvaluationPCAP, ESolutionPCAP>
 {
 private:
    PCAPProblemInstance& pPCAP;
@@ -114,7 +114,7 @@ public:
    }
 };
 
-static_assert(std::is_base_of<Evaluator<SolutionPCAP>, PCAPEvaluator>::value, "not inherited from Evaluator");
+static_assert(std::is_base_of<Evaluator<SolutionPCAP, EvaluationPCAP>, PCAPEvaluator>::value, "not inherited from Evaluator");
 static_assert(std::is_base_of<GeneralEvaluator<ESolutionPCAP>, PCAPEvaluator>::value, "not inherited from GeneralEvaluator");
 
 #endif /*PCAP_EVALUATOR_HPP_*/

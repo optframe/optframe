@@ -48,7 +48,7 @@ private:
    ProblemInstance& p;
 
 public:
-   using Evaluator<SolutionOptHS>::evaluate; // prevents name hiding
+   using Evaluator<SolutionOptHS, EvaluationOptHS>::evaluate; // prevents name hiding
 
    OptHSEvaluator(ProblemInstance& _p)
      : p(_p)
@@ -108,7 +108,7 @@ public:
 
    virtual string id() const
    {
-      string pai = Evaluator<SolutionOptHS>::idComponent();
+      string pai = Evaluator<SolutionOptHS, EvaluationOptHS>::idComponent();
       pai.append(":OptHSEvaluator");
       return pai;
    }

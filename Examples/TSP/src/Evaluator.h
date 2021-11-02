@@ -42,7 +42,7 @@
 
 namespace TSP {
 
-class TSPEvaluator : public Evaluator<SolutionTSP>
+class TSPEvaluator : public Evaluator<SolutionTSP, EvaluationTSP>
 {
 private:
    sref<ProblemInstance> pI;
@@ -61,7 +61,7 @@ public:
    //using Evaluator<SolutionTSP>::evaluate; // prevents name hiding
 
    TSPEvaluator(sref<ProblemInstance> pI)
-     : Evaluator<SolutionTSP>(true)
+     : Evaluator<SolutionTSP, EvaluationTSP>(true)
      , // ALLOW COSTS!
      pI(pI)
    {
@@ -221,14 +221,14 @@ public:
 
    virtual string id() const
    {
-      string pai = Evaluator<SolutionTSP>::idComponent();
+      string pai = Evaluator<SolutionTSP, EvaluationTSP>::idComponent();
       pai.append(":TSPEvaluator");
       return pai;
    }
 };
 
 // only evaluates by representation
-class TSPRepEvaluator : public Evaluator<RepTSP>
+class TSPRepEvaluator : public Evaluator<RepTSP, EvaluationTSP>
 {
 private:
    sref<ProblemInstance> pI;
@@ -247,7 +247,7 @@ public:
    //using Evaluator<SolutionTSP>::evaluate; // prevents name hiding
 
    TSPRepEvaluator(sref<ProblemInstance> pI)
-     : Evaluator<RepTSP>(true)
+     : Evaluator<RepTSP, EvaluationTSP>(true)
      , // ALLOW COSTS!
      pI(pI)
    {
@@ -306,7 +306,7 @@ public:
 
    virtual string id() const
    {
-      string pai = Evaluator<RepTSP>::idComponent();
+      string pai = Evaluator<RepTSP, EvaluationTSP>::idComponent();
       pai.append(":TSPRepEvaluator");
       return pai;
    }

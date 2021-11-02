@@ -127,13 +127,16 @@ main(int argc, char** argv)
    //
    //CheckCommand<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> check(check_verbose);
    //
-   CheckCommand<ESolutionTSP, RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> check(check_verbose);
+   //
+   //CheckCommand<ESolutionTSP, RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> check(check_verbose);
+   //
+   CheckCommand<ESolutionTSP> check(check_verbose);
 
    RandGenMersenneTwister rg(0);
    sref<RandGen> rg2 = RandGenMersenneTwister(0);
    //
    TSPEvaluator eval1(tsp.p); // Should not be Specific to TSP!! Won't work on Decoder..
-   sref<Evaluator<SolutionTSP>> eval = eval1;
+   sref<Evaluator<SolutionTSP, EvaluationTSP>> eval = eval1;
 
    RandomInitialSolutionTSP randomTSP(tsp.p, eval, rg);
    NearestNeighborConstructive cnn(tsp.p, eval, rg);

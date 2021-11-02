@@ -29,7 +29,7 @@
 
 namespace optframe {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
+template<XESolution XES, XEvaluation XEv = typename XES::second_type, XESolution XSH = XES>
 class FirstImprovingNeighbor : public NeighborhoodExploration<XES, XEv>
 {
 private:

@@ -86,7 +86,7 @@ public:
       hf.addComponent(is);
 
       OptHSEvaluator& eval = *new OptHSEvaluator(*p);
-      hf.addComponent(eval, Evaluator<SolutionOptHS>::idComponent());
+      hf.addComponent(eval, Evaluator<SolutionOptHS, EvaluationOptHS>::idComponent());
 
       NSSwap* ns = new NSSwap(*p, hf.getRandGen());
       hf.addComponent(*ns);

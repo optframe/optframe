@@ -46,7 +46,11 @@ namespace optframe {
 //template<XRepresentation R, class ADS, XBaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, XEv>>
 //
 //template<XESolution XES, XEvaluation XEv = typename XES::second_type, XRepresentation R = typename XES::first_type, class ADS = int, XBaseSolution<R, ADS> S = CopySolution<R, ADS>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, XEv>>
-template<XESolution XES, XRepresentation R = typename XES::first_type, class ADS = int, XBaseSolution<R, ADS> S = CopySolution<R, ADS>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, typename XES::second_type>>
+//
+//template<XESolution XES, XRepresentation R = typename XES::first_type, class ADS = int, XBaseSolution<R, ADS> S = CopySolution<R, ADS>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, typename XES::second_type>>
+//
+// NOTE THAT, HERE, XES denotes the pair <S,XEv>, while S can be <REP,ADS>, if desired
+template<XESolution XES, XSolution S = typename XES::first_type, XRepresentation REP = S, class ADS = int, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, typename XES::second_type>>
 class CheckCommand
 {
    using XEv = typename XES::second_type;
@@ -70,29 +74,36 @@ private:
    bool checkIndependent;
 
    //vector<GeneralEvaluator<XES>*> lEvaluator;
-   vector<std::shared_ptr<Evaluator<R, XEv, XES>>> lEvaluator;
+   vector<std::shared_ptr<Evaluator<S, XEv, XES>>> lEvaluator;
    //vector<GeneralEvaluator<XES>*> lGenEvaluator;
    //vector<Constructive<S>*> lConstructive;
    vector<std::shared_ptr<InitialSearch<XES, XEv>>> lConstructive;
    //
    //vector<std::shared_ptr<CopySolution<R, ADS>>> lSolution;
-   vector<std::shared_ptr<R>> lSolution;
+   vector<std::shared_ptr<S>> lSolution;
 
    vector<std::shared_ptr<Move<XES, XEv>>> lMove;
    vector<std::shared_ptr<NS<XES, XEv>>> lNS;
    vector<std::shared_ptr<NSSeq<XES, XEv>>> lNSSeq;
    vector<std::shared_ptr<NSEnum<XES, XEv>>> lNSEnum;
 
-   std::shared_ptr<ADSManager<R, ADS, S>> adsMan;
+#ifdef LEGACY_ADS
+   std::shared_ptr<ADSManager<REP, ADS, S>> adsMan;
+#endif
 
 public:
-   vector<std::shared_ptr<ADSManager<R, ADS, S>>> lADSManagerComp; // optional
+#ifdef LEGACY_ADS
+   vector<std::shared_ptr<ADSManager<REP, ADS, S>>> lADSManagerComp; // optional
+#endif
 
    CheckCommand(bool _verbose = false)
      : verbose(_verbose)
    {
       convertNS = true;
+
+#ifdef LEGACY_ADS
       adsMan = nullptr;
+#endif
       checkIndependent = true;
    }
 
@@ -106,6 +117,12 @@ public:
       //if (verbose)
       //	cout << "checkcommand: Constructive " << lConstructive.size() << " added!" << endl;
       cout << "checkcommand: Constructive not registered!" << endl;
+      assert(false);
+   }
+
+   void addConstructive(sref<Constructive<S>> c)
+   {
+      add(c);
    }
 
    void add(sref<InitialSearch<XES, XEv>> c)
@@ -115,14 +132,21 @@ public:
          cout << "checkcommand: InitialSearch " << lConstructive.size() << " added!" << endl;
    }
 
-   void add(sref<ADSManager<R, ADS, S>> adsMan)
+   void addInitialSearch(sref<InitialSearch<XES, XEv>> c)
+   {
+      add(c);
+   }
+
+#ifdef LEGACY_ADS
+   void add(sref<ADSManager<REP, ADS, S>> adsMan)
    {
       lADSManagerComp.push_back(adsMan.sptr());
       if (verbose)
          cout << "checkcommand: AdsMan " << lADSManagerComp.size() << " added!" << endl;
    }
+#endif
 
-   void add(sref<Evaluator<R, XEv, XES>> c)
+   void add(sref<Evaluator<S, XEv, XES>> c)
    {
       lEvaluator.push_back(c.sptr());
       if (verbose)
@@ -130,7 +154,7 @@ public:
    }
 
    // explicit add implementation
-   void addEvaluator(sref<Evaluator<R, XEv, XES>> c)
+   void addEvaluator(sref<Evaluator<S, XEv, XES>> c)
    {
       add(c);
    }
@@ -143,7 +167,7 @@ public:
 			cout << "checkcommand: General Evaluator " << lEvaluator.size() << " added!" << endl;
 	}
 */
-   void add(CopySolution<R, ADS>& c)
+   void add(CopySolution<REP, ADS>& c)
    {
       lSolution.push_back(&c);
       if (verbose)
@@ -250,7 +274,7 @@ public:
    };
 
    //bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns, CopySolution<R, ADS>& s, int id_s, Move<XES>& move, vector<vector<Evaluation<>*>>& evaluations, TimeCheckWithSamples& timeSamples)
-   bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns, R& s, int id_s, Move<XES>& move, vector<vector<XEv*>>& evaluations, TimeCheckWithSamples& timeSamples)
+   bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns, S& s, int id_s, Move<XES>& move, vector<vector<XEv*>>& evaluations, TimeCheckWithSamples& timeSamples)
    {
       for (unsigned ev = 0; ev < lEvaluator.size(); ev++) {
          message(lEvaluator.at(ev), iter, "evaluating random move (apply, revert and moveCost).");
@@ -276,7 +300,7 @@ public:
 
          Timer t_clone;
          //CopySolution<R, ADS>& sOriginal = s.clone(); // remove if not verbose
-         R sOriginal = s; // copy
+         S sOriginal = s; // copy
          timeSamples.timeCloneSolution.push_back(t_clone.inMilliSecs());
 
          Timer tMovApply;
@@ -290,7 +314,7 @@ public:
 
          Timer t_clone2;
          //CopySolution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
-         R sNeighbor = s; // copy
+         S sNeighbor = s; // copy
          timeSamples.timeCloneSolution.push_back(t_clone2.inMilliSecs());
          // ===================== tests with ADSManager ======================
 
@@ -599,8 +623,11 @@ public:
       cout << "ns=" << lNS.size() << endl;
       cout << "nsseq=" << lNSSeq.size() << endl;
       cout << "nsenum=" << lNSEnum.size() << endl;
+
+#ifdef LEGACY_ADS
       // ADSManager is deprecated!
       cout << "DEPRECATED:adsmanager=" << lADSManagerComp.size() << endl;
+#endif
       cout << "---------------------------------------" << endl
            << endl;
 
@@ -608,10 +635,11 @@ public:
       // read evaluators
       // ----------------
 
-      vector<std::shared_ptr<Evaluator<R, XEv, XES>>> evaluators;
+      vector<std::shared_ptr<Evaluator<S, XEv, XES>>> evaluators;
       for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
          evaluators.push_back(lEvaluator[ev]);
 
+#ifdef LEGACY_ADS
       adsMan = nullptr;
       if (lADSManagerComp.size() > 0) {
          adsMan = lADSManagerComp[0];
@@ -619,6 +647,7 @@ public:
          if (lADSManagerComp.size() > 1)
             cout << " checkcommand warning: more than 1 ADSManager (" << lADSManagerComp.size() << ")" << endl;
       }
+#endif
 
       TimeCheckWithSamples timeSamples;
       timeSamples.timeNSApply = vector<vector<double>>(lNS.size());
@@ -668,6 +697,8 @@ public:
 
             // only enable adsMan in LEGACY code
             using T = decltype(s);
+
+#ifdef LEGACY_ADS
             if constexpr (is_same<SolOrRepType, S>::value) {
                if (adsMan) {
                   Timer ts2;
@@ -675,7 +706,7 @@ public:
                   timeSamples.timeInitializeADS[0].push_back(ts2.inMilliSecs());
                }
             }
-
+#endif
             //solutions.push_back(new CopySolution<R, ADS>(s));
             solutions.push_back(new T(s));
 
@@ -718,7 +749,7 @@ public:
 
       for (unsigned p = 0; p < lSolution.size(); p++) {
          //solutions.push_back(&lSolution[p]->clone());
-         solutions.push_back(new R(*lSolution[p]));
+         solutions.push_back(new S(*lSolution[p]));
 
          for (unsigned ev = 0; ev < evaluators.size(); ev++) {
             message(lEvaluator.at(ev), p, "evaluating input solution.");
@@ -741,7 +772,7 @@ public:
             message(lMove.at(id_move).get(), -1, "working on move.");
 
             //CopySolution<R, ADS>& s = *solutions.at(id_s);
-            R& s = *solutions.at(id_s);
+            S& s = *solutions.at(id_s);
 
             Move<XES, XEv, XES>& move = *pmove;
 
@@ -793,7 +824,7 @@ public:
                message(lNS.at(id_ns), iter, ss_msg1.str());
 
                //CopySolution<R, ADS>& s = *solutions.at(id_s);
-               R& s = *solutions.at(id_s);
+               S& s = *solutions.at(id_s);
 
                XES se = make_pair(s, XEv());
 
@@ -849,7 +880,7 @@ public:
 
             int randomIndex = rand() % solutions.size();
             //CopySolution<R, ADS>& s = *solutions.at(randomIndex);
-            R& s = *solutions.at(randomIndex);
+            S& s = *solutions.at(randomIndex);
             int id_s = randomIndex;
 
             XES se = make_pair(s, XEv());
@@ -928,7 +959,7 @@ public:
 
             int randomIndex = rand() % solutions.size();
             //CopySolution<R, ADS>& s = *solutions.at(randomIndex);
-            R& s = *solutions.at(randomIndex);
+            S& s = *solutions.at(randomIndex);
             int id_s = randomIndex;
 
             XES se = make_pair(s, XEv());
@@ -986,7 +1017,7 @@ public:
 
             // adopting Evaluator 0...
             //Evaluator<S>& ev = *evaluators.at(0);
-            Evaluator<R, XEv, XES>& ev = *evaluators.at(0);
+            Evaluator<S, XEv, XES>& ev = *evaluators.at(0);
 
             int countMovePairsEnum = 0;
             int countMoveIndependentEnum = 0;
@@ -1004,7 +1035,7 @@ public:
                      // TODO: increase performance of this method
                      for (unsigned sol = 0; sol < solutions.size(); sol++) {
                         //CopySolution<R, ADS>& s = *solutions.at(sol);
-                        R& s = *solutions.at(sol);
+                        S& s = *solutions.at(sol);
                         XES se = make_pair(s, XEv());
 
                         // TODO: verify if return is return is not null!
@@ -1091,12 +1122,14 @@ public:
 
       printSummarySamples(convertVector(lConstructive), timeSamples.timeConstructive, "Constructive", "testing construction of initial solution");
 
+#ifdef LEGACY_ADS
       if (adsMan)
          printSummarySamples(convertVector(lADSManagerComp), timeSamples.timeInitializeADS, "ADSManager::initializeADS()", "testing lazy initializeADS in solutions");
       else
          cout << endl
               << "No ADSManager was tested." << endl
               << endl;
+#endif
 
       printSummarySamples(convertVector(lEvaluator), timeSamples.fullTimeEval, "Evaluators", "testing full evaluate(s) of a solution");
 

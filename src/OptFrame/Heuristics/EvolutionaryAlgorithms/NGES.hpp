@@ -24,8 +24,8 @@
 // filename: NGES.hpp
 
 #include <math.h>
-#include <vector>
 #include <memory> // shared_ptr
+#include <vector>
 
 #include "../../Constructive.hpp"
 #include "../../Evaluation.hpp"
@@ -107,8 +107,8 @@ struct NGESInd
    vector<NGESIndStructure<S, XEv>> vEsStructureInd; // number of applications
    vector<int> vNSInd;
 
-// CANNOT MOVE EXTERNAL NON-TEMPORARY REFERENCES (???)
-/*
+   // CANNOT MOVE EXTERNAL NON-TEMPORARY REFERENCES (???)
+   /*
    NGESInd(S& _sInd, Evaluation<>& _e, vector<NGESIndStructure<S, XEv>>& _vEsStructureInd, int nNS)
      : sInd(std::move(_sInd))
      , e(std::move(_e))
@@ -151,7 +151,7 @@ struct NGESInd
    {
    }
 
-/*
+   /*
    // -----------------------
    // move-based constructors
 
@@ -218,17 +218,17 @@ struct NGESInd
 };
 
 //CADA INDIVIDUO EH UM PAR DE SOLUCAO E UMA TUPLE COM O PARAMETROS DA ESTRATEGIA
-template<XSolution S,  XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class NGES : public SingleObjSearch<XES>
 {
 private:
    //typedef vector<NGESInd<S, XEv>*> NGESPopulation;
    using NGESPopulation = vector<std::shared_ptr<NGESInd<S, XEv>>>;
 
-   Evaluator<S>& eval;
+   Evaluator<S, XEv, XES>& eval;
    //Constructive<S>& constructive;
    InitialSearch<XES, XEv>& constructive;
-   vector<NS<XES, XEv>*> vNS; 
+   vector<NS<XES, XEv>*> vNS;
    LocalSearch<XES, XEv>& ls;
    RandGen& rg;
    NGESParams& ngesParams;
@@ -240,7 +240,7 @@ public:
    //Evaluator, constructive, vNS -- vector with neighboorhods strucutures able to move solution,
    // selectionMethod: 0-low selection pressure (mi,lambda);1 selection pressure (mi+lambda)
    //TODO - Check why vector<NSSeq*> can not be passed as parameter - Tried but failled
-   NGES(Evaluator<S>& _eval, InitialSearch<XES, XEv>& _constructive, vector<NS<XES, XEv>*> _vNS, LocalSearch<XES, XEv>& _ls, RandGen& _rg, NGESParams& _ngesParams)
+   NGES(Evaluator<S, XEv, XES>& _eval, InitialSearch<XES, XEv>& _constructive, vector<NS<XES, XEv>*> _vNS, LocalSearch<XES, XEv>& _ls, RandGen& _rg, NGESParams& _ngesParams)
      : eval(_eval)
      , constructive(_constructive)
      , vNS(_vNS)
@@ -330,7 +330,6 @@ public:
 
                //delete mov_tmp;
             }
-         
       }
       //
       s = se.first;
@@ -339,13 +338,11 @@ public:
    void printPop(NGESPopulation& pop)
    {
       cout << "PRINT!" << endl;
-      for(unsigned i=0; i<pop.size(); i++)
-      {
+      for (unsigned i = 0; i < pop.size(); i++) {
          cout << "i=" << i << ": ";
          pop[i]->print();
       }
    }
-
 
    //void competition(NGESPopulation& pop, NGESPopulation& offsprings, S& sStar, Evaluation<>& eStar, int& iterWithoutImprovement, const int& gCurrent, int selectionType)
    void competition(NGESPopulation& pop, NGESPopulation& offsprings, pair<S, XEv>& star, int& iterWithoutImprovement, const int& gCurrent, int selectionType)
@@ -375,7 +372,7 @@ public:
          //indB->getEv().print();
          eb.getEv().print();
          */
-         return eval.betterThan(indA->getEv(), indB->getEv()); 
+         return eval.betterThan(indA->getEv(), indB->getEv());
          // TODO: fix bug here
       };
 
@@ -397,7 +394,7 @@ public:
       for (int i = 0; i < ngesParams.lambda; i++)
          offsprings[i + ngesParams.mi] = nullptr;
 
-      Evaluation<> evBest { pop[0]->getEv() };
+      Evaluation<> evBest{ pop[0]->getEv() };
 
       //if (eval.betterThan(evBest, eStar)) {
       if (eval.betterThan(evBest, star.second)) {
@@ -474,7 +471,7 @@ public:
 
       for (int i = 0; i < ngesParams.mi; i++) {
          //PartialGreedyInitialSolutionOPM is(opm, 0.4, 0.4, 0.4); // waste, ore, shovel
-         
+
          //std::optional<S> s = constructive.generateSolution(stopCriteria.timelimit); //MAKE MOVE TODO
          //Evaluation<> e = eval.evaluate(*s);
          //pair<S, XEv> se = *SingleObjSearch<XES>::genPair(constructive, eval, stopCriteria.timelimit);
@@ -486,7 +483,7 @@ public:
          //probability, application, sigmaNomal, sigmaBinomial
          for (int aux = 0; aux < nNS; aux++)
             m.push_back(NGESIndStructure<S, XEv>(rg.rand01(), rg.randB(0.5, 10) + 1, rg.rand01(), rg.rand01()));
-         
+
          // pass 'se' by copy (TODO: think if std::move is enough)
          //NGESInd<S, XEv>* ind = new NGESInd<S, XEv>(se, m, nNS); //TODO MAKE MOVE
          std::shared_ptr<NGESInd<S, XEv>> ind(new NGESInd<S, XEv>(se, m, nNS)); //TODO MAKE MOVE
