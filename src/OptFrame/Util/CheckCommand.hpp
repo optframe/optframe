@@ -581,8 +581,6 @@ public:
          if (lEvaluator[ev]->getAllowCosts())
             cost = move.cost(se, false);
 
-         message(lEvaluator.at(ev), iter, "cost() calculated!");
-
          if (cost && !cost->isEstimated())
             timeSamples.timeNSCost[id_ns].push_back(tMoveCost.inMilliSecs());
 
@@ -595,6 +593,8 @@ public:
             if (cost->evaluation() < revCost)
                timeSamples.underestimate = true;
          }
+
+         message(lEvaluator.at(ev), iter, "cost() calculated!");
 
          if (cost && !cost->isEstimated()) {
             //double cValue = cost->cost();

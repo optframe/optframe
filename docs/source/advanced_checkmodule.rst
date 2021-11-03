@@ -155,10 +155,11 @@ An example of output can be seen here:
 |    \|NS|=2	testing time of move cost()
 |    ---------------------------------
 |    #id	title	#tests	avg(ms)	std(ms)
-|    #0	OptFrame:FNS	20524	0.0044	0.0030
-|    #1	OptFrame:FNSSeq	9227	0.0042	0.0021
+|    #0	OptFrame:FNS	20524	0.0008	0.0006
+|    #1	OptFrame:FNSSeq	9227	0.0008	0.0007
 |    ---------------------------------
-|    all	*	-	0.0043	-
+|    all	*	-	0.0008	-
+
 
 Note that cost() version is faster than others, for both neighborhoods (NS and NSSeq), as expected.
 
