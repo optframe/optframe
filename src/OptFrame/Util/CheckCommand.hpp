@@ -499,6 +499,7 @@ public:
          // TODO: check outdated status
          // TODO: if(e.outdated), it means that user did not implement Move::applyMoveReevaluate(e,R,ADS)!
          //			Move<XES, XEv, XES>& ini1 = *lEvaluator[ev]->applyMoveReevaluate(e, rev1, s);
+         //
          uptr<Move<XES, XEv, XES>> ini1 = rev1->applyUpdate(se);
          if (se.second.outdated) {
             //std::cout << "WARNING: evaluation is OUTDATED after applyUpdate! manual evaluate" << std::endl;
@@ -542,6 +543,7 @@ public:
          se.second = _e;
 
          Timer tMoveCostApplyRealDelta;
+         // NOTE THAT GeneralEvaluator does not have a Allow Costs strategy...
          bool oldAllowCostsStatus = lEvaluator[ev]->getAllowCosts();
          lEvaluator[ev]->setAllowCosts(false);
 

@@ -20,6 +20,7 @@ Welcome to OptFrame Documentation, please select the desired content section.
    fcore
    debugging
    advanced
+   advanced_checkmodule
    license
 
 

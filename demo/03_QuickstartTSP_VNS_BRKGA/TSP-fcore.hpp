@@ -106,6 +106,11 @@ fApplySwap(const std::pair<int, int>& moveData, ESolutionTSP& se)
 using MoveSwap = FMove<std::pair<int, int>, ESolutionTSP>;
 
 uptr<Move<ESolutionTSP>>
+makeMoveSwap(int i, int j)
+{
+   return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j), fApplySwap });
+}
+uptr<Move<ESolutionTSP>>
 fRandomSwap(const ESolutionTSP& se)
 {
    int i = rand() % pTSP.n;
@@ -114,7 +119,7 @@ fRandomSwap(const ESolutionTSP& se)
       i = rand() % pTSP.n;
       j = rand() % pTSP.n;
    }
-   return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j), fApplySwap });
+   return uptr<Move<ESolutionTSP>>(makeMoveSwap(i, j));
 }
 
 // Swap move (NS)
@@ -132,7 +137,7 @@ sref<NSSeq<ESolutionTSP>> nsseq2{
            i = rand() % pTSP.n;
            j = rand() % pTSP.n;
         }
-        return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j), fApplySwap });
+        return uptr<Move<ESolutionTSP>>(makeMoveSwap(i, j));
      },
      // iterator initialization (fGenerator)
      [](const ESolutionTSP& se) -> std::pair<int, int> {
@@ -158,6 +163,6 @@ sref<NSSeq<ESolutionTSP>> nsseq2{
      },
      [](std::pair<int, int>& p) -> uptr<Move<ESolutionTSP>> {
         //uptr<Move<XES>> (*fCurrent)(IMS&)       // iterator.current()
-        return uptr<Move<ESolutionTSP>>(new MoveSwap{ p, fApplySwap });
+        return uptr<Move<ESolutionTSP>>(makeMoveSwap(p.first, p.second));
      } } // FNSSeq
 };       // nsseq2

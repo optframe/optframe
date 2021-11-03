@@ -15,18 +15,7 @@ fApplySwap(const std::pair<int, int>& moveData, ESolutionTSP& se)
 using MoveSwap = FMove<std::pair<int, int>, ESolutionTSP>;
 
 uptr<Move<ESolutionTSP>>
-fRandomSwap(const ESolutionTSP& se)
+makeMoveSwap(int i, int j)
 {
-   int i = rand() % pTSP.n;
-   int j = i;
-   while (j <= i) {
-      i = rand() % pTSP.n;
-      j = rand() % pTSP.n;
-   }
    return uptr<Move<ESolutionTSP>>(new MoveSwap{ make_pair(i, j), fApplySwap });
 }
-
-// Swap move (NS)
-FNS<ESolutionTSP> nsswap{
-   fRandomSwap
-};

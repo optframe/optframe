@@ -17,8 +17,8 @@ using namespace scannerpp;
 
 // define TSP solution type as 'vector<int>', using 'double' as evaluation type
 using ESolutionTSP1 = std::pair<
-  std::vector<int>,  // first part of search space element: solution (representation)
-  Evaluation<double> // second part of search space element: evaluation (objective value)
+  std::vector<int>, // first part of search space element: solution (representation)
+  Evaluation<int>   // second part of search space element: evaluation (objective value)
   >;
 
 template<class X = nullptr_t>

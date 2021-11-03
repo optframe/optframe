@@ -41,7 +41,9 @@ Problem Data
 ^^^^^^^^^^^^
 
 We read a matrix of distances between pairs of cities (considering Euclidean distance), and
-store in a structure named ProblemContext. Do not forget to #include helpers from optframe namespace, 
+store in a structure named ProblemContext. Note that we round the result to int, just to allow
+precise value calculation (but one may use float or double, and then manage the floating-point errors).
+Do not forget to #include helpers from optframe namespace, 
 such as Matrix and Scanner.
 
 ..
@@ -137,6 +139,11 @@ First move operator: Swap
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 We start with a Move operator capable of exchanging two elements from a given TSP solution.
+
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/TSP-fcore-part5.hpp
+    :linenos:
+    :language: c++
+
 We have four types of neighborhood definitions in OptFrame (NS, NSFind, NSSeq and NSEnum), but
 two major are NS and NSSeq.
 
@@ -145,7 +152,7 @@ visiting all possible neighbors (also useful for continuous or infinite neighbor
 Swap move and NS definition can be seen below.
 
 
-.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/TSP-fcore-part5.hpp
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/TSP-fcore-part6.hpp
     :linenos:
     :language: c++
 
@@ -153,7 +160,7 @@ We now define the NSSeq neighborhood with a explicit iterator definition, that r
 operations: first (initializes first valid move), next (skips to next valid move), 
 current (returns current move) and isDone (indicates if no move exists).
 
-.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/TSP-fcore-part6.hpp
+.. literalinclude:: ../../demo/03_QuickstartTSP_VNS_BRKGA/TSP-fcore-part7.hpp
     :linenos:
     :language: c++
 
@@ -168,7 +175,7 @@ We note that all four iterator operations (first, next, current and isDone) are 
 available quite naturally with a single coroutine generator that executes co_yield for
 each available move.
 
-.. literalinclude:: ../../demo/04_Quickstart_Advanced_TSP_fxcore/TSP-fxcore-nsseq.hpp
+.. literalinclude:: ../../demo/04_Advanced_TSP_fxcore/TSP-fxcore-nsseq.hpp
     :linenos:
     :language: c++
 

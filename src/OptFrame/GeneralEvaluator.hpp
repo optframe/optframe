@@ -129,6 +129,7 @@ public:
 
       //MoveCost<>* p = nullptr;
       op<XEv> p = std::nullopt;
+      // general evaluator does not have 'disallow costs' strategy (TODO: why is it useful?)
       //if (allowCosts) {
       p = m.cost(se, allowEstimated);
       //}
@@ -173,15 +174,19 @@ public:
          //			if (!outdated)
          //				e.outdated = outdated;
 
-         uptr<Move<XES, XEv>> ini = rev->apply(se);
+         //
+         //uptr<Move<XES, XEv>> ini = rev->apply(se);
+         rev->apply(se);
 
          XEv mcost = ev_begin.diff(e_end);
 
          // TODO: why?
          // for now, must be not nullptr
-         assert(ini != nullptr);
+         //
+         //assert(ini != nullptr);
+         //
          // TODO: include management for 'false' hasReverse()
-         assert(rev->hasReverse() && ini);
+         //assert(rev->hasReverse() && ini);
 
          // recover original evaluation (note that e is a reference to se.second)
          //e = std::move(ev_begin);
