@@ -18,11 +18,11 @@
 # -- Project information -----------------------------------------------------
 
 project = 'optframe'
-copyright = '2020, OptFrame Core Developers'
+copyright = '2007-2021, OptFrame Core Developers'
 author = 'OptFrame Core Developers'
 
 # The full version, including alpha/beta/rc tags
-release = '2020'
+release = '4.3'
 
 
 # -- General configuration ---------------------------------------------------
@@ -57,3 +57,9 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+html_logo = "optframe-cut.png"
+html_theme_options = {
+    'logo_only': True,
+    'display_version': False,
+}
