@@ -373,12 +373,12 @@ public:
          if (adsMan) {
             message(lEvaluator.at(ev), -1, "testing ADS.");
 
-            ADS ads(s.getADS()); // copy
+            ADS ads(se.first.getADS()); // copy
             Timer ts_ds2;
-            adsMan->initializeADS(s.getR(), s.getADS());
+            adsMan->initializeADS(se.first.getR(), se.first.getADS());
             timeSamples.timeInitializeADS[0].push_back(ts_ds2.inMilliSecs());
 
-            if (!adsMan->compareADS(ads, s.getADS())) {
+            if (!adsMan->compareADS(ads, se.first.getADS())) {
                cout << "checkcommand error: ADS not updated correctly! Compared brand new initializeADS with update from reverse move => ";
                Component::safe_print(rev.get());
                cout << "S (sOriginal.getADS()): " << endl;
@@ -386,7 +386,7 @@ public:
                cout << "WRONG (s.getADS()): " << endl;
                adsMan->printADS(ads);
                cout << "RIGHT (re-initialized): " << endl;
-               adsMan->printADS(s.getADS());
+               adsMan->printADS(se.first.getADS());
                return false;
             }
          }

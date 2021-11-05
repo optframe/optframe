@@ -46,7 +46,7 @@ main(int argc, char** argv)
    //srand(seed);
 
    if (argc != 7) {
-      cout << "Parametros incorretos!" << endl;
+      cout << "Parametros incorretos! esperado 7 e recebeu " << argc << endl;
       cout << "Os parametros esperados sao: nome tempo fo_alvo mutationRate mi batch" << endl;
       exit(1);
    }
@@ -73,7 +73,8 @@ main(int argc, char** argv)
 
    //HFMVRPEvaluator* eval = new HFMVRPEvaluator{ *p };
    //sref<GeneralEvaluator<ESolutionHFMVRP, EvaluationHFMVRP>> eval = new HFMVRPEvaluator{ *p };
-   sref<Evaluator<SolutionHFMVRP, EvaluationHFMVRP, ESolutionHFMVRP>> eval = new HFMVRPEvaluator{ *p };
+   sref<Evaluator<SolutionHFMVRP, EvaluationHFMVRP, ESolutionHFMVRP>> eval =
+     new HFMVRPEvaluator{ *p };
 
    HFMVRPADSManager* adsMan = new HFMVRPADSManager{ *p };
    double alpha = 0;
@@ -213,7 +214,14 @@ main(int argc, char** argv)
    auto ret_grasp = basicGrasp.search(soscGR);
    std::optional<pair<SolutionHFMVRP, Evaluation<>>> initialPairGrasp = ret_grasp.best; //basicGrasp.best;
 
-   CloneConstructive<SolutionHFMVRP> cloneSolAsConstructive(initialPairGrasp->first);
+   //
+   //CloneConstructive<SolutionHFMVRP> cloneSolAsConstructive(initialPairGrasp->first);
+   //
+
+   sref<InitialSearch<ESolutionHFMVRP>> initConstructive =
+     new BasicInitialSearch<ESolutionHFMVRP>(
+       new CloneConstructive<SolutionHFMVRP>(initialPairGrasp->first),
+       eval);
 
    vector<int> vNSeqMaxApplication(vNSeq.size(), 1000);
    int selectionType = 1;
@@ -222,17 +230,55 @@ main(int argc, char** argv)
    //int batach = 5;
 
    // which ES?
-   /*
+   //===============
+   //
 
-   ES<ESolutionHFMVRP> es(*eval, cloneSolAsConstructive, vNSeq, vNSeqMaxApplication, emptyLS, selectionType, mutationRate, rg, mi, 6 * mi, 50000, "./esOutput", batch);
-   es.setMessageLevel(4);
+   //ES<ESolutionHFMVRP> es(*eval, cloneSolAsConstructive, vNSeq, vNSeqMaxApplication, emptyLS, selectionType, mutationRate, rg, mi, 6 * mi, 50000, "./esOutput", batch);
+   //es.setMessageLevel(4);
 
-   StopCriteria<ESolutionHFMVRP> soscES(180, 0);
-   pair<Solution<ESolutionHFMVRP>, Evaluation<>>* initialSol = es.search(soscES);
-   double objFuncES = initialSol->second.getObjFunction();
+   //double mutationRate = 1;
+   //int selectionType = 1;
+
+   string outputFile = "./esOutput";
+   //NGESParams* ngesParams =
+   //  new NGESParams(
+   NGESParams ngesParams(
+     vNSeqMaxApplication,
+     selectionType,
+     mutationRate,
+     mi,
+     6 * mi,
+     50000,
+     outputFile,
+     batch);
+
+   //NGES(sref<GeneralEvaluator<XES>> _eval, sref<InitialSearch<XES, XEv>> _constructive, vsref<NS<XES, XEv>> _vNS, sref<LocalSearch<XES, XEv>> _ls, sref<RandGen> _rg, NGESParams _ngesParams)
+   //
+   sref<GeneralEvaluator<ESolutionHFMVRP>> _eval = eval;
+   sref<InitialSearch<ESolutionHFMVRP, EvaluationHFMVRP>> _constructive = initConstructive;
+   vsref<NS<ESolutionHFMVRP, EvaluationHFMVRP>> _vNS;
+   sref<LocalSearch<ESolutionHFMVRP, EvaluationHFMVRP>> _ls = emptyLS;
+   //sref<RandGen> _rg = rg;
+
+   //NGES<ESolutionHFMVRP>* es = new NGES<ESolutionHFMVRP>(*eval, cloneSolAsConstructive, vNSeq, emptyLS, rg, *ngesParams);
+   NGES<ESolutionHFMVRP>* es =
+     new NGES<ESolutionHFMVRP>(_eval, _constructive, _vNS, _ls, rg, ngesParams);
+   es->setMessageLevel(LogLevel::Info);
+
+   //=====================
+
+   //StopCriteria<ESolutionHFMVRP> soscES(180, 0);
+   StopCriteria<EvaluationHFMVRP> soscES({ 180 });
+   //pair<Solution<ESolutionHFMVRP>, Evaluation<>>* initialSol = es.search(soscES);
+   auto initialOutput = es->search(soscES);
+   ESolutionHFMVRP initialSol = *initialOutput.best;
+   double objFuncES = initialSol.second.getObjFunction();
    cout << "getObjFunction: " << objFuncES << endl;
-   */
-   double objFuncES = 0; // which is this Vitor?
+
+   //
+   // =============
+
+   //double objFuncES = 0; // which is this Vitor?
 
    size_t found = nome.find_last_of("/\\");
    string instanceName = nome.substr(found + 1);

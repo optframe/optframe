@@ -20,6 +20,7 @@
 #include "MultiEvaluatorHFM.hpp"
 #include "ProblemInstance.hpp"
 
+#include "TreatForecasts.hpp"
 #include <OptFrame/Heuristics/Empty.hpp>
 #include <OptFrame/Heuristics/EvolutionaryAlgorithms/NGES.hpp>
 #include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>
@@ -39,7 +40,6 @@
 #include <OptFrame/MultiObjSearch.hpp>
 #include <OptFrame/NSSeq.hpp>
 #include <OptFrame/Util/CheckCommand.hpp>
-#include "TreatForecasts.hpp"
 
 namespace HFM {
 
@@ -52,11 +52,12 @@ private:
    HFMParams& methodParam;
 
    HFMProblemInstance* p;
-   HFMEvaluator* eval;
+   //HFMEvaluator* eval;
+   sref<GeneralEvaluator<ESolutionHFMVRP>> eval;
 
    //Constructive<SolutionHFM>* c;
-   InitialSearch<ESolutionHFM, EvaluationHFM>* c; // for single obj
-   InitialSearch<EMSolutionHFM, MultiEvaluationHFM>* cm;  // for multi obj
+   InitialSearch<ESolutionHFM, EvaluationHFM>* c;        // for single obj
+   InitialSearch<EMSolutionHFM, MultiEvaluationHFM>* cm; // for multi obj
    //
    vector<NSSeq<ESolutionHFM>*> vNS;
 
@@ -106,10 +107,10 @@ public:
 
       auto nsChangeSingleInput = new NSSeqHFMChangeSingleInput<>(*p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
       auto nsChangeSingleInputMO = new NSSeqHFMChangeSingleInput<EMSolutionHFM, MultiEvaluationHFM>(*p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
-      
+
       auto nsRemoveSingleInput = new NSSeqHFMRemoveSingleInput<>(rg);
       auto nsRemoveSingleInputMO = new NSSeqHFMRemoveSingleInput<EMSolutionHFM, MultiEvaluationHFM>(rg);
-      
+
       auto nsAddSingleInput = new NSSeqNEIGHAddSingleInput<>(*p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
       auto nsAddSingleInputMO = new NSSeqNEIGHAddSingleInput<EMSolutionHFM, MultiEvaluationHFM>(*p, rg, problemParam.getVMaxLag(), problemParam.getVMaxUpperLag());
       //
@@ -128,14 +129,12 @@ public:
       int cMethod = methodParam.getConstrutiveMethod();
       int cPre = methodParam.getConstrutivePrecision();
 
-      if (cMethod == 0)
-      {
-         c  = new ConstructiveRandom<ESolutionHFM, EvaluationHFM>(*p, problemParam, rg, cPre);
+      if (cMethod == 0) {
+         c = new ConstructiveRandom<ESolutionHFM, EvaluationHFM>(*p, problemParam, rg, cPre);
          cm = new ConstructiveRandom<EMSolutionHFM, MultiEvaluationHFM>(*p, problemParam, rg, cPre);
       }
-      if (cMethod == 2)
-      {
-         c  = new ConstructiveACF<ESolutionHFM, EvaluationHFM>(*p, problemParam, rg, cPre, methodParam.getConstrutiveLimitAlphaACF());
+      if (cMethod == 2) {
+         c = new ConstructiveACF<ESolutionHFM, EvaluationHFM>(*p, problemParam, rg, cPre, methodParam.getConstrutiveLimitAlphaACF());
          cm = new ConstructiveACF<EMSolutionHFM, MultiEvaluationHFM>(*p, problemParam, rg, cPre, methodParam.getConstrutiveLimitAlphaACF());
       }
 
@@ -143,10 +142,10 @@ public:
       //FirstImprovement<SolutionHFM>* fiChangeSingleInput = new FirstImprovement<SolutionHFM>(*eval, *nsChangeSingleInput);
       RandomDescentMethod<ESolutionHFM>* rdmRemove = new RandomDescentMethod<ESolutionHFM>(*eval, *nsRemoveSingleInput, 500); //		FirstImprovement<RepEFP>* fiVAlpha = new FirstImprovement<RepEFP>(*eval, *nsVAlpha);
       RandomDescentMethod<ESolutionHFM>* rdmAdd = new RandomDescentMethod<ESolutionHFM>(*eval, *nsAddSingleInput, 500);       //		FirstImprovement<RepEFP>* fiVAlpha = new FirstImprovement<RepEFP>(*eval, *nsVAlpha);
-                                                                                                                  //		int maxRDM = 100;
-                                                                                                                  //
-                                                                                                                  //		//rdm->setMessageLevel(3);
-                                                                                                                  //		vLS.push_back(fiVAlpha);
+                                                                                                                              //		int maxRDM = 100;
+                                                                                                                              //
+                                                                                                                              //		//rdm->setMessageLevel(3);
+                                                                                                                              //		vLS.push_back(fiVAlpha);
       vLS.push_back(rdmRemove);
       vLS.push_back(rdmAdd);
       //		vLS.push_back(fiModifyFuzzyRules);
@@ -155,8 +154,7 @@ public:
       //		vnd->setVerbose();
 
       //		ilsPert = new ILSLPerturbationLPlus2<RepEFP,OPTFRAME_DEFAULT_ADS>(*eval, 50, *nsModifyFuzzyRules, rg); //TODO check why 50 was removed
-      
-      
+
       //ilsPert = new ILSLPerturbationLPlus2<ESolutionHFM>(*eval, *nsModifyFuzzyRules, rg);
       ilsPert = new ILSLPerturbationLPlus2<ESolutionHFM>(*eval, *nsModifyFuzzyRulesSO, rg);
       //		ilsPert->add_ns(*nsChangeSingleInput);
@@ -164,7 +162,6 @@ public:
 
       GeneralEvaluator<ESolutionHFM>& geval = *eval;
       //InitialSearch<XES, XEv>& constructive
-
 
       ils = new IteratedLocalSearchLevels<ESolutionHFM>(geval, *c, *vnd, *ilsPert, 100, 10);
 
@@ -192,7 +189,6 @@ public:
       vNSeqMO->push_back(nsChangeSingleInputMO);
       vNSeqMO->push_back(nsRemoveSingleInputMO);
       vNSeqMO->push_back(nsAddSingleInputMO);
-
 
       //		vNSeq.push_back(nsVAlpha);
       //		vNSeq.push_back(nsAddMean01);
@@ -303,7 +299,7 @@ public:
    }
 
    //Pareto<SolutionHFM> runMultiObjSearch(double timeGPLS, Pareto<SolutionHFM>* _pf = nullptr)
-   void runMultiObjSearch(double timeGPLS, op< Pareto<SolutionHFM> > ioPF)
+   void runMultiObjSearch(double timeGPLS, op<Pareto<SolutionHFM>> ioPF)
    {
       //Pareto<SolutionHFM>* pf = new Pareto<SolutionHFM>();
 
@@ -342,7 +338,6 @@ public:
       MORandomImprovement<SolutionHFM> moriRSI(*gmev, *vNSeqMO->at(2), maxTriesRI);
       MORandomImprovement<SolutionHFM> moriASI(*gmev, *vNSeqMO->at(3), maxTriesRI);
 
-
       vector<MOLocalSearch<SolutionHFM>*> vMOLS;
       vMOLS.push_back(&moriMFR);
       vMOLS.push_back(&moriRSI);
@@ -352,10 +347,10 @@ public:
       GeneralParetoLocalSearch<SolutionHFM> generalPLS(*mev, grIP, initial_population_size, vMOLS);
 
       BasicMOILS<SolutionHFM, MultiEvaluationHFM> basicMOILS(*mev, grIP, initial_population_size, &moriASI, rg, *basicMOILSPert, 100);
-      
+
       // for testing OptFrame v4
       //BasicGeneralILS<SolutionHFM> basicGeneralILS(*mev, grIP, initial_population_size, &moriASI, rg, *basicMOILSPert, 100);
-      
+
       int moIlslevelMax = 10;
       int moIlsIterMax = 100;
       MOILSLevels<SolutionHFM> moILSLevels(*mev, grIP, initial_population_size, &moriASI, rg, *moILSPert, moIlsIterMax, moIlslevelMax);
@@ -364,7 +359,7 @@ public:
       StopCriteria<MultiEvaluationHFM> moStopCriteriaGPLS;
       moStopCriteriaGPLS.timelimit = timeGPLS;
 
-/*
+      /*
       Pareto<SolutionHFM> pfs;
       if (_pf == nullptr) {
          //delete pf;
@@ -376,7 +371,7 @@ public:
          //			pf = moILSLevels.search(moStopCriteriaGPLS, _pf);
       }
 */
-         generalPLS.searchWithOptionalPareto(moStopCriteriaGPLS, ioPF);
+      generalPLS.searchWithOptionalPareto(moStopCriteriaGPLS, ioPF);
 
       //		vector<MultiEvaluation<>*> vEval = pf->getParetoFront();
       //		vector<Solution<RepEFP>*> vSolPf = pf->getParetoSet();
@@ -407,7 +402,7 @@ public:
       return finalSol;
    }
 
-   std::optional< ESolutionHFM > run(int timeES, int timeVND, int timeILS)
+   std::optional<ESolutionHFM> run(int timeES, int timeVND, int timeILS)
    {
       if (timeES == 0)
          timeES = 1;
@@ -415,13 +410,13 @@ public:
       double targetValue = 3.879748973;
       targetValue = 0;
 
-      //StopCriteria<EvaluationHFM> stopCriteria(timeES, Evaluation<>(targetValue));   
+      //StopCriteria<EvaluationHFM> stopCriteria(timeES, Evaluation<>(targetValue));
       StopCriteria<EvaluationHFM> stopCriteria(timeES);
       stopCriteria.target_f = Evaluation<>(targetValue);
       //
       es->search(stopCriteria);
-      std::optional< ESolutionHFM > finalSol = es->getBestSolution();
-      
+      std::optional<ESolutionHFM> finalSol = es->getBestSolution();
+
       //finalSol = EsCOpt->search(timeES); //Continous ES -- Deprecated
 
       //		vnd->setMessageLevel(3);
@@ -437,7 +432,7 @@ public:
       return finalSol;
    }
 
-   std::optional< ESolutionHFM > runGILS(int timeGRASP, int timeILS)
+   std::optional<ESolutionHFM> runGILS(int timeGRASP, int timeILS)
    {
 
       //		BasicGRASP<RepEFP> g(*eval, *c, emptyLS, 0.1, 100000);
@@ -449,14 +444,13 @@ public:
       //		const Solution<RepEFP> solGRASP = finalSol.first;
       //		const Evaluation<> evaluationGrasp = finalSol.second;
 
-      std::optional< ESolutionHFM > finalSol = std::nullopt;
+      std::optional<ESolutionHFM> finalSol = std::nullopt;
       StopCriteria<EvaluationHFM> stopCriteria;
       stopCriteria.timelimit = timeILS;
       //stopCriteria.target_f(Evaluation<>(0));
       //
       ils->setMessageLevel(3);
-      if (timeILS > 0)
-      {
+      if (timeILS > 0) {
          ils->best = finalSol;
          ils->search(stopCriteria);
          finalSol = ils->getBestSolution();

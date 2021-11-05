@@ -1,0 +1,12 @@
+Install g++ 4.6 
+
+Get into the code folder.
+compiling the code:
+"make"
+
+Execute the application:
+"$instanceFile 0 0 $outputFile"
+
+Example:
+make
+./MyProjects/HFMVRP/Instances/testInstance0511MT 0 0 ./MyProjects/HFMVRP/Instances/saidaTestInstance0511MT
