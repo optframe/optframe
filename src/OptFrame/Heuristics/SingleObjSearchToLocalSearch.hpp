@@ -61,7 +61,7 @@ public:
 
    virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& sosc) override
    {
-      XSolution& s = se.first;
+      XSolution AUTO_CONCEPTS& s = se.first;
       XEv& e = se.second;
 
       // will ignore 'se'

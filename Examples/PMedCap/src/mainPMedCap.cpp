@@ -57,7 +57,7 @@ main(int argc, char** argv)
    //SolutionPCAP s = *is_greedy.generateSolution(100); // timelimit 100
    ESolutionPCAP se = *is_greedy.initialSearch(StopCriteria<EvaluationPCAP>(100)).first; // timelimit 100
 
-   XSolution& s = se.first;
+   XSolution AUTO_CONCEPTS& s = se.first;
    ////XEvaluation& e = se.second;
 
    NSSeqSWAP nsSwap(p, rg);

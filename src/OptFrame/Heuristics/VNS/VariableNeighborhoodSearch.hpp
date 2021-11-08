@@ -61,14 +61,14 @@ public:
    {
    }
 
-   //virtual void improvement(XSolution& s, Evaluation<>& e, double timelimit, double target_f) = 0;
+   //virtual void improvement(XSolution AUTO_CONCEPTS& s, Evaluation<>& e, double timelimit, double target_f) = 0;
 
    virtual void shake(XES& se, unsigned int k_shake, const StopCriteria<XEv>& sosc)
    {
       //double timelimit = sosc.timelimit;
       //XEv target_f(sosc.target_f); // BROKEN
       //
-      //XSolution& s = se.first;
+      //XSolution AUTO_CONCEPTS& s = se.first;
       //Evaluation<>& e = se.second;
       uptr<Move<XES, XEv>> move = vshake.at(k_shake)->validRandomMove(se);
       if (move) {
@@ -79,9 +79,9 @@ public:
 
    virtual pair<XES, unsigned int> neighborhoodChange(const XES& star, const XES& p2, unsigned int k)
    {
-      //const XSolution& s2 = p2.first;
+      //const XSolution AUTO_CONCEPTS& s2 = p2.first;
       const XEv& e2 = p2.second;
-      //const XSolution& sStar = star.first;
+      //const XSolution AUTO_CONCEPTS& sStar = star.first;
       const XEv& eStar = star.second;
       //
       //if (evaluator.betterThan(e2, eStar))
@@ -133,13 +133,13 @@ public:
 
       Timer tnow;
 
-      //XSolution& sStar = *constructive.generateSolution(sosc.timelimit);
+      //XSolution AUTO_CONCEPTS& sStar = *constructive.generateSolution(sosc.timelimit);
       //Evaluation<>   eStar = evaluator.evaluate(sStar);
       //XES star = input?*input:genPair(sosc.timelimit); // elvis
       //star = star?:genPair(sosc.timelimit);
       star = star ?: constructive->initialSearch(sosc).first;
       //
-      XSolution& sStar = star->first;
+      XSolution AUTO_CONCEPTS& sStar = star->first;
       Evaluation<>& eStar = star->second;
 
       if (Component::information)
@@ -155,7 +155,7 @@ public:
 
          while (k < vshake.size()) {
             XES p1 = *star; // copy (how to automatically invoke clone?)
-            ////XSolution& s = *new S(sStar); // implicit clone on copy constructor
+            ////XSolution AUTO_CONCEPTS& s = *new S(sStar); // implicit clone on copy constructor
             ////Evaluation<>&   e = eStar.clone();
 
             shake(p1, k, sosc);

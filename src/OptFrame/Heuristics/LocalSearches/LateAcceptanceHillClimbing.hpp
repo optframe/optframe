@@ -70,7 +70,7 @@ public:
 
    virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& sosc) override
    {
-      XSolution& sStar = se.first;
+      XSolution AUTO_CONCEPTS& sStar = se.first;
       XEv& eStar = se.second;
 
       double timelimit = sosc.timelimit;
@@ -90,7 +90,7 @@ public:
       int iter = 1;
       unsigned index = 0;
 
-      XSolution& s = sStar.clone();
+      XSolution AUTO_CONCEPTS& s = sStar.clone();
       Evaluation<>& e = eStar.clone();
 
       long tnow = time(nullptr);

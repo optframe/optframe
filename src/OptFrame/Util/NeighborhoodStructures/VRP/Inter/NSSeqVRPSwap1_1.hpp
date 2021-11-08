@@ -236,7 +236,7 @@ public:
 
    virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
    {
-      XSolution& s = se.first;
+      XSolution AUTO_CONCEPTS& s = se.first;
       return uptr<NSIterator<XES>>(new NSITERATOR(s.getR(), s.getADS(), p));
    }
 

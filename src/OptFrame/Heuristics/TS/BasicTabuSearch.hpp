@@ -64,10 +64,10 @@ public:
       long tini = time(nullptr);
       long timelimit = stop.timelimit;
 
-      XSolution& s = constructive.generateSolution();
+      XSolution AUTO_CONCEPTS& s = constructive.generateSolution();
       Evaluation<>& e = evaluator.evaluate(s);
 
-      XSolution* sStar = &s.clone();
+      XSolution AUTO_CONCEPTS* sStar = &s.clone();
       Evaluation<>* evalSStar = &evaluator.evaluate(*sStar);
 
       //evalSStar->print();
@@ -198,7 +198,7 @@ public:
 
    Move<XES, XEv>* tabuBestMove(XES& se, const vector<Move<XES, XEv>*>& tabuList)
    {
-      XSolution& s = se.first;
+      XSolution AUTO_CONCEPTS& s = se.first;
       Evaluation<>& e = se.second;
 
       NSIterator<XES, XEv>& it = nsSeq.getIterator(s.getR(), s.getADS());
