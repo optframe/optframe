@@ -37,6 +37,8 @@ using namespace std;
 
 #include <set>
 
+#include <OptFrame/Solutions/ESolution.hpp>
+
 //#include <OptFrame/BaseConcepts.ctest.hpp> // tsting concepts
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Solution.hpp>
@@ -187,7 +189,9 @@ main(int argc, char** argv)
    check.add(tspor3);
    check.add(tspswap);
 
-   //check.run(100, 10);
+   check.run(100, 10);
+   getchar();
+   getchar();
 
    cout << "will test BRKGA (n=" << tsp.p->n << ")" << endl;
 

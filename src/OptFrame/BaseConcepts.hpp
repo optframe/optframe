@@ -30,6 +30,18 @@ typedef OPTFRAME_DEFAULT_ADS _ADS;        // more beautiful :)
 
 namespace optframe {
 
+template<class T>
+concept
+#if __cplusplus <= 201703L // after c++20, not required 'bool'
+  bool
+#endif
+    IsComplete = requires(T self)
+{
+   {
+      sizeof(self)
+   };
+};
+
 // Representation type just requires some Copy Constructive behavior
 template<class R>
 // concept bool Representation = true;
@@ -39,7 +51,7 @@ concept
 #endif
 //XRepresentation = true; // optframe::ostreamable<R>;
 #if __cplusplus <= 201703L // after c++20, not required 'bool'
-    XRepresentation = requires(R self)
+    XRepresentation = /*!IsComplete<R> ||*/ requires(R self)
 {
    {
       new R(self) //static_assert(std::is_copy_constructible<R>::value)
@@ -95,6 +107,23 @@ concept
     XSolution =
       XRepresentation<Self>; // HasClone<Self> && HasToString<Self> &&
                              // XRepresentation<Self>;
+
+// -------
+// Why is XSolutionOrIncomplete necessary?
+// See imcoelho response on stackoverflow
+// https://stackoverflow.com/questions/63429760/can-a-concept-be-checked-against-incomplete-type/69907133#69907133
+// Trick to allow Solution type to be incomplete, during CRTP requirements
+//
+// Other possibility is to statically assert concept just after it becomes concrete (but definitive type needs to be known in advance).
+//
+
+template<class S>
+concept
+#if __cplusplus <= 201703L // after c++20, not required 'bool'
+  bool
+#endif
+    XSolutionOrIncomplete = !IsComplete<S> || XSolution<S>;
+
 // No more cloning!! finally! thanks concepts :)
 
 // ==========================

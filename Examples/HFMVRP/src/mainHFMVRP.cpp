@@ -187,6 +187,7 @@ main(int argc, char** argv)
    //
    cc.run(1, 1);
    getchar();
+   getchar();
 
    // if randgen is given, it is RVND
    sref<GeneralEvaluator<ESolutionHFMVRP, EvaluationHFMVRP>> _ev = eval;

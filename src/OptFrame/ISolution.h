@@ -60,7 +60,10 @@ public:
 };
 
 // IESolution should compatible with XESolution space (XSolution and XEvaluation)
-template<XSolution S, XEvaluation XEv>
+// NOTE THAT: XSolutionOrIncomplete allows for ANY incomplete type
+// and it may be XSolution or not... compiler caching may generate undefined behavior (beware!)
+// We need this to allow easy CRTP over IESolution.
+template<XSolutionOrIncomplete S, XEvaluation XEv>
 class IESolution : public ISolution
 {
 public:
