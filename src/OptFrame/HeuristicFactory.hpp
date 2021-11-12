@@ -240,7 +240,8 @@ public:
 
       if (!component->compatible(id)) {
          cout << "HeuristicFactory addComponent: incompatible components '";
-         cout << component->id() << "' and '" << id << "'!" << endl;
+         cout << component->id() << "' and '" << id << "'! " << endl;
+         cout << "Rejecting component '" << component->toString() << "'." << std::endl;
 
          return -1;
       }
@@ -408,7 +409,7 @@ public:
    {
       clear();
 
-      delete &rg;
+      //delete &rg; // shared reference 'sref'
 
       for (unsigned i = 0; i < builders.size(); i++)
          delete builders.at(i);

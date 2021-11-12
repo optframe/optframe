@@ -251,7 +251,7 @@ public:
          j = (n - 1) - j + 1;
       }
 
-      return uptr<Move<ESolutionTSP>>(new MoveSwap(i, j, *pI));
+      return uptr<Move<ESolutionTSP>>(new MoveSwap(i, j, pI));
 
       // Please, keep 'busca' for historical (and emotional) purposes :)
       // This was created in the night before the TCC presentation of OptFrame (in 2009)

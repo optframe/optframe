@@ -92,7 +92,8 @@ main(int argc, char** argv)
    TSPProblemCommand tsp;
 
    // instance relative path to executable directory
-   std::string sinstance = "tsplib/berlin52.txt";
+   //std::string sinstance = "tsplib/berlin52.txt";
+   std::string sinstance = "tsplib/miniberlin52-10.txt";
 
    std::string good_path = resolvePath(sinstance, argv[0], "TSP");
 

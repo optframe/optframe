@@ -968,13 +968,14 @@ public:
                message(lNSSeq.at(id_nsseq), nqs, "getting current move (NSSeq tests).");
 
                // TODO: verify if it's not null!
-               uptr<Move<XES, XEv, XES>> move = it->current();
+               uptr<Move<XES, XEv, XES>> pmove = it->current();
+               Move<XES, XEv, XES>& move = *pmove;
                countMovesNSSeq++;
 
-               if (!move->canBeApplied(se)) {
+               if (!move.canBeApplied(se)) {
                   if (verbose) {
                      cout << "move cannot be applied (NSSeq tests): ";
-                     move->print();
+                     move.print();
                   }
                   continue;
                }
@@ -986,7 +987,7 @@ public:
                //	bool testMoveNSSeq(int iter, NSSeq<R,ADS>* nsseq, int nqs, int id_nsseq, CopySolution<R,ADS>& s, int id_s, Move<XES, XEv, XES>& move, vector<vector<Evaluation<>*> >& evaluations, pair<int, double>& timeCloneSolution, vector<pair<int, double> >& timeInitializeADS, vector<pair<int, double> >& fullTimeEval, vector<pair<int, double> >& timeReeval, TimeNS& timeNS)
                // 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<XES, XEv, XES>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
 
-               if (!testMoveGeneral(nqs, nsseq, id_nsseq, s, id_s, *move, evaluations, timeSamples)) {
+               if (!testMoveGeneral(nqs, nsseq, id_nsseq, s, id_s, move, evaluations, timeSamples)) {
                   return false;
                }
             }
@@ -1035,17 +1036,18 @@ public:
             // ===================
 
             // TODO: consider that iterator can be null!
-            NSIterator<XES, XEv>& it = *nsenum->getIterator(se);
+            uptr<NSIterator<XES, XEv>> it = nsenum->getIterator(se);
             int countMovesNSEnum = 0;
             int countValidMovesNSEnum = 0;
 
-            for (it.first(); !it.isDone(); it.next()) {
+            for (it->first(); !it->isDone(); it->next()) {
                if (verbose)
                   cout << endl;
                message(lNSEnum.at(id_nsenum), nqs, "getting current move (NSEnum tests).");
 
                // TODO: verify if it's not null!
-               Move<XES, XEv, XES>& move = *it.current();
+               uptr<Move<XES, XEv, XES>> pmove = it->current();
+               Move<XES, XEv, XES>& move = *pmove;
                countMovesNSEnum++;
 
                if (!move.canBeApplied(se)) {
@@ -1053,7 +1055,7 @@ public:
                      cout << "move cannot be applied (NSEnum tests): ";
                      move.print();
                   }
-                  delete &move;
+                  //delete &move;
                   continue;
                }
 
@@ -1064,21 +1066,21 @@ public:
                // 	bool testMoveGeneral(int iter, NS<R,ADS>* ns, int id_ns, CopySolution<R,ADS>& s, int id_s, Move<XES, XEv, XES>& move, vector<vector<Evaluation<>*> >& evaluations, TimeCheckSol& timeSol, TimeNS& timeNS)
 
                if (!testMoveGeneral(nqs, nsenum, id_nsenum, s, id_s, move, evaluations, timeSamples)) {
-                  delete &move;
+                  //delete &move;
                   return false;
                }
 
-               delete &move;
+               //delete &move;
             }
 
             vCountMovesEnumSamples[id_nsenum].push_back(countMovesNSEnum);
             vCountValidMovesEnumSamples[id_nsenum].push_back(countValidMovesNSEnum);
 
-            delete &it;
+            //delete &it;
          }
 
          if (checkIndependent) {
-            cout << "checkcommand: will try to identify independent moves (can take some time... deactivate with 'checkIndependent=false')" << endl;
+            cout << "checkcommand: will try to identify independent moves from '" << nsenum->id() << "' (can take some time... deactivate with 'checkIndependent=false')" << endl;
             // indicate possible independent moves
 
             // adopting Evaluator 0...
@@ -1088,9 +1090,9 @@ public:
             int countMovePairsEnum = 0;
             int countMoveIndependentEnum = 0;
             // check for independence between moves m1 and m2
-            for (int m1 = 0; m1 < int(nsenum->size()) - 1; m1++) {
+            for (int m1 = 0; m1 < (int)nsenum->size(); m1++) {
                // slow...
-               cout << "checkcommand: independence test for move " << m1 << " / " << nsenum->size() << endl;
+               cout << "checkcommand: independence test for move #" << m1 << " / " << nsenum->size() << endl;
                int count_ind_m1 = 0;
                for (int m2 = m1 + 1; m2 < int(nsenum->size()); m2++) {
                   bool conflict = false;

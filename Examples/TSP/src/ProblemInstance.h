@@ -74,8 +74,11 @@ public:
    virtual ~ProblemInstance()
    {
       delete dist;
+      dist = nullptr;
       delete xvalues;
+      xvalues = nullptr;
       delete yvalues;
+      yvalues = nullptr;
    }
 
    //private:
