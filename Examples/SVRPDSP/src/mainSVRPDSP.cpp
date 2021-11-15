@@ -164,13 +164,13 @@ main(int argc, char** argv)
    //NSSeqTSP2Opt<int, AdsSVRPDSP>* ns_2opt = new NSSeqTSP2Opt<int, AdsSVRPDSP>;
    //NSSeqTSPSwap<int, AdsSVRPDSP>* ns_swap = new NSSeqTSPSwap<int, AdsSVRPDSP>;
    NSSeq<RepSVRPDSP, AdsSVRPDSP>* delta_2opt = new NSSeqTSP2Opt<int, AdsSVRPDSP, DeltaMove2Opt, ProblemInstance>(p);
-   //if(!registerComponent(*delta_2opt, "OptFrame:NS:NSSeq", "nsseq_delta_2opt", hf, dictionary))
+   //if(!registerComponent(*delta_2opt, "OptFrame:NS:NSFind:NSSeq", "nsseq_delta_2opt", hf, dictionary))
    //   return false;
 
    //registerComponent(*new DeltaMove2Opt(5, 20, p), "OptFrame:Move", "move_2opt_5-20", hf, dictionary);
 
    NSSeq<RepSVRPDSP, AdsSVRPDSP, MySolution>* delta_swap = new NSSeqTSPSwap<int, AdsSVRPDSP, MySolution, DeltaMoveSwap, ProblemInstance>(p);
-   //if(!registerComponent(*delta_swap, "OptFrame:NS:NSSeq", "nsseq_delta_swap", hf, dictionary))
+   //if(!registerComponent(*delta_swap, "OptFrame:NS:NSFind:NSSeq", "nsseq_delta_swap", hf, dictionary))
    //   return false;
 
    //hf.addComponent(*ns_swap, NSSeq<RepSVRPDSP>::idComponent());
@@ -181,19 +181,19 @@ main(int argc, char** argv)
    //NSSeqTSPOrOptk<int, AdsSVRPDSP>* ns_or3 = new NSSeqTSPOrOptk<int, AdsSVRPDSP>(3);
 
    NSSeq<RepSVRPDSP, AdsSVRPDSP>* delta_ns_or1 = new NSSeqTSPOrOptk<int, AdsSVRPDSP, DeltaMoveOrOptk, ProblemInstance>(1, p);
-   //if(!registerComponent(*delta_ns_or1, "OptFrame:NS:NSSeq", "nsseq_delta_or1", hf, dictionary))
+   //if(!registerComponent(*delta_ns_or1, "OptFrame:NS:NSFind:NSSeq", "nsseq_delta_or1", hf, dictionary))
    //   return false;
 
    //registerComponent(*new DeltaMoveOrOptk(26,29, 2, p), "OptFrame:Move", "move_or2_26-29", hf, dictionary);
 
    NSSeq<RepSVRPDSP, AdsSVRPDSP>* delta_ns_or2 = new NSSeqTSPOrOptk<int, AdsSVRPDSP, DeltaMoveOrOptk, ProblemInstance>(2, p);
-   //if(!registerComponent(*delta_ns_or2, "OptFrame:NS:NSSeq", "nsseq_delta_or2", hf, dictionary))
+   //if(!registerComponent(*delta_ns_or2, "OptFrame:NS:NSFind:NSSeq", "nsseq_delta_or2", hf, dictionary))
    //   return false;
 
    //registerComponent(*new DeltaMoveOrOptk(74, 960, 2, p), "OptFrame:Move", "move_or2_74-960", hf, dictionary);
 
    //NSSeq<RepSVRPDSP, AdsSVRPDSP>* delta_ns_or3 = new NSSeqTSPOrOptk<int, AdsSVRPDSP, DeltaMoveOrOptk, ProblemInstance>(3, p);
-   //if(!registerComponent(*delta_ns_or3, "OptFrame:NS:NSSeq", "nsseq_delta_or3", hf, dictionary))
+   //if(!registerComponent(*delta_ns_or3, "OptFrame:NS:NSFind:NSSeq", "nsseq_delta_or3", hf, dictionary))
    //   return false;
 
    //hf.addComponent(*ns_or1, NSSeq<RepSVRPDSP>::idComponent());

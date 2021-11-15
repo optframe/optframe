@@ -27,6 +27,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <OptFrame/SemStream.hpp>
+
 namespace optframe {
 
 //using std::string = std::string;
@@ -88,6 +90,14 @@ enum LogLevel
    Warning = 2,
    Info = 3,
    Debug = 4
+};
+
+enum StringFormat
+{
+   Undefined = 0, // undefined... typically 'Human'
+   Human = 1,     // human readable
+   NoSpaces = 2,  // raw: no spaces (undescore is allowed)
+   JSON = 3       // json format
 };
 
 class Component
@@ -212,6 +222,15 @@ public:
       return (s == id()) || (s == idComponent()); // equal to this component or "OptFrame:" base
    }
 
+   //StringFormat mlogType{ StringFormat::Human };
+
+   // returns 'false' if unsupported
+   virtual bool toStream(SemStream& ss) const
+   {
+      return false;
+   }
+
+   // returns "" if unsupported
    virtual std::string toString() const
    {
       return id();

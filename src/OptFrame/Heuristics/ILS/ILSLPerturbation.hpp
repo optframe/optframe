@@ -57,7 +57,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ILS::family() << "LevelPert";
+      ss << Component::idComponent() << ":" << ILS::family() << "LevelPert";
       return ss.str();
    }
 };

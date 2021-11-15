@@ -37,6 +37,85 @@
 
 namespace optframe {
 
+// Time Data - CheckCommand
+
+struct TimeDataCheckCommand
+{
+
+   TimeDataCheckCommand()
+   {
+   }
+
+   void initialize(int ns_size, int ev_size, int c_size)
+   {
+      this->timeNSApply = vector<vector<double>>(ns_size);
+      this->timeNSCostApply = vector<vector<double>>(ns_size);
+      this->timeNSCostApplyDelta = vector<vector<double>>(ns_size);
+      this->timeNSCostApplyRealDelta = vector<vector<double>>(ns_size);
+      this->timeNSCost = vector<vector<double>>(ns_size);
+      this->timeNSEstimatedCost = vector<vector<double>>(ns_size);
+      this->errorNSEstimatedCost = vector<vector<double>>(ns_size);
+      this->fullTimeEval = vector<vector<double>>(ev_size);
+      this->timeReeval = vector<vector<double>>(ev_size);
+      this->timeConstructive = vector<vector<double>>(c_size);
+      this->overestimate = this->underestimate = false;
+   }
+
+   vector<vector<double>> timeNSApply;
+   vector<vector<double>> timeNSCostApply;
+   vector<vector<double>> timeNSCostApplyDelta;
+   vector<vector<double>> timeNSCostApplyRealDelta;
+   vector<vector<double>> timeNSCost;
+   vector<vector<double>> timeNSEstimatedCost;
+   vector<vector<double>> errorNSEstimatedCost;
+   vector<double> timeCloneSolution;
+   vector<vector<double>> timeInitializeADS;
+   vector<vector<double>> fullTimeEval;
+   vector<vector<double>> timeReeval;
+   vector<vector<double>> timeConstructive;
+
+   bool overestimate, underestimate;
+};
+
+// Solution Data - CheckCommand (solutions and evaluations)
+
+template<XESolution XES>
+struct SolDataCheckCommand
+{
+   using S = typename XES::first_type;
+   using XEv = typename XES::second_type;
+
+   vector<std::shared_ptr<Evaluator<S, XEv, XES>>> evaluators;
+
+   vector<S*> solutions;
+
+   vector<vector<XEv*>> evaluations;
+};
+
+template<XESolution XES>
+struct CountDataCheckCommand
+{
+   vector<vector<int>> vCountMovesSamples;
+   vector<vector<int>> vCountValidMovesSamples;
+   vector<vector<int>> vCountMovesEnumSamples;
+   vector<vector<int>> vCountValidMovesEnumSamples;
+
+   vector<vector<int>> vCountIndependentEnumSamples;
+   vector<vector<int>> vCountMovePairsEnumSamples;
+
+   void initialize(int nsseq_size, int nsenum_size)
+   {
+      this->vCountMovesSamples = vector<vector<int>>(nsseq_size); //lNSSeq.size());
+      this->vCountValidMovesSamples = vector<vector<int>>(nsseq_size);
+
+      this->vCountMovesEnumSamples = vector<vector<int>>(nsenum_size);      //lNSEnum.size());
+      this->vCountValidMovesEnumSamples = vector<vector<int>>(nsenum_size); //lNSEnum.size());
+
+      this->vCountIndependentEnumSamples = vector<vector<int>>(nsenum_size); //lNSEnum.size());
+      this->vCountMovePairsEnumSamples = vector<vector<int>>(nsenum_size);   //lNSEnum.size());
+   }
+};
+
 //CheckCommand uses SRand seed TODO
 //template<XRepresentation R, class ADS, XSolution S = CopySolution<R, ADS>, XEvaluation XEv = Evaluation<>>
 // manually passing 'S' (for safety)
@@ -261,26 +340,9 @@ public:
       return b == "true";
    }
 
-   struct TimeCheckWithSamples
-   {
-      vector<vector<double>> timeNSApply;
-      vector<vector<double>> timeNSCostApply;
-      vector<vector<double>> timeNSCostApplyDelta;
-      vector<vector<double>> timeNSCostApplyRealDelta;
-      vector<vector<double>> timeNSCost;
-      vector<vector<double>> timeNSEstimatedCost;
-      vector<vector<double>> errorNSEstimatedCost;
-      vector<double> timeCloneSolution;
-      vector<vector<double>> timeInitializeADS;
-      vector<vector<double>> fullTimeEval;
-      vector<vector<double>> timeReeval;
-      vector<vector<double>> timeConstructive;
-
-      bool overestimate, underestimate;
-   };
-
+private:
    //bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns, CopySolution<R, ADS>& s, int id_s, Move<XES>& move, vector<vector<Evaluation<>*>>& evaluations, TimeCheckWithSamples& timeSamples)
-   bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns, S& _s, int id_s, Move<XES>& move, vector<vector<XEv*>>& evaluations, TimeCheckWithSamples& timeSamples)
+   bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns, S& _s, int id_s, Move<XES>& move, vector<vector<XEv*>>& evaluations, TimeDataCheckCommand& timeSamples)
    {
       for (unsigned ev = 0; ev < lEvaluator.size(); ev++) {
          message(lEvaluator.at(ev), iter, "evaluating random move (apply, revert and moveCost).");
@@ -674,6 +736,7 @@ public:
       return true;
    }
 
+public:
    bool run(int iterMax, int nSolNSSeq)
    {
       // ======================================
@@ -697,37 +760,12 @@ public:
       cout << "---------------------------------------" << endl
            << endl;
 
-      // ----------------
-      // read evaluators
-      // ----------------
+      return doRun(iterMax, nSolNSSeq);
+   }
 
-      vector<std::shared_ptr<Evaluator<S, XEv, XES>>> evaluators;
-      for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
-         evaluators.push_back(lEvaluator[ev]);
-
-#ifdef LEGACY_ADS
-      adsMan = nullptr;
-      if (lADSManagerComp.size() > 0) {
-         adsMan = lADSManagerComp[0];
-
-         if (lADSManagerComp.size() > 1)
-            cout << " checkcommand warning: more than 1 ADSManager (" << lADSManagerComp.size() << ")" << endl;
-      }
-#endif
-
-      TimeCheckWithSamples timeSamples;
-      timeSamples.timeNSApply = vector<vector<double>>(lNS.size());
-      timeSamples.timeNSCostApply = vector<vector<double>>(lNS.size());
-      timeSamples.timeNSCostApplyDelta = vector<vector<double>>(lNS.size());
-      timeSamples.timeNSCostApplyRealDelta = vector<vector<double>>(lNS.size());
-      timeSamples.timeNSCost = vector<vector<double>>(lNS.size());
-      timeSamples.timeNSEstimatedCost = vector<vector<double>>(lNS.size());
-      timeSamples.errorNSEstimatedCost = vector<vector<double>>(lNS.size());
-      timeSamples.fullTimeEval = vector<vector<double>>(evaluators.size());
-      timeSamples.timeReeval = vector<vector<double>>(evaluators.size());
-      timeSamples.timeConstructive = vector<vector<double>>(lConstructive.size());
-      timeSamples.overestimate = timeSamples.underestimate = false;
-
+private:
+   bool doRunConstructive(int iterMax, TimeDataCheckCommand& timeSamples, SolDataCheckCommand<XES>& solData)
+   {
       // ----------------------------------------------------------------------------------------
       // generate 'iterMax' OptFrame:Solution for each OptFrame:Constructive and store evaluation
       // ----------------------------------------------------------------------------------------
@@ -736,6 +774,8 @@ public:
       //using EvalType = typename XES::second_type;
       //vector<CopySolution<R, ADS>*> solutions;
       vector<SolOrRepType*> solutions;
+
+      vector<std::shared_ptr<Evaluator<SolOrRepType, XEv, XES>>>& evaluators = solData.evaluators;
 
       vector<vector<XEv*>> evaluations(evaluators.size());
 
@@ -806,6 +846,20 @@ public:
          cout << endl
               << endl;
 
+      solData.solutions = solutions;
+      solData.evaluations = evaluations;
+      return true;
+   }
+
+   bool doRunMove(int iterMax, TimeDataCheckCommand& timeSamples, SolDataCheckCommand<XES>& solData)
+   {
+
+      using SolOrRepType = typename XES::first_type;
+      vector<SolOrRepType*>& solutions = solData.solutions;
+      vector<vector<XEv*>>& evaluations = solData.evaluations;
+
+      vector<std::shared_ptr<Evaluator<SolOrRepType, XEv, XES>>>& evaluators = solData.evaluators;
+
       // ====================================================================
       // testing Move
       // ====================================================================
@@ -864,6 +918,15 @@ public:
       if (verbose)
          cout << endl
               << endl;
+      return true;
+   }
+
+   bool doRunNS(int iterMax, TimeDataCheckCommand& timeSamples, SolDataCheckCommand<XES>& solData)
+   {
+
+      using SolOrRepType = typename XES::first_type;
+      vector<SolOrRepType*>& solutions = solData.solutions;
+      vector<vector<XEv*>>& evaluations = solData.evaluations;
 
       // ====================================================================
       // testing NS
@@ -924,6 +987,15 @@ public:
             cout << endl
                  << endl;
       }
+      return true;
+   }
+
+   bool doRunNSSeq(int nSolNSSeq, TimeDataCheckCommand& timeSamples, SolDataCheckCommand<XES>& solData, CountDataCheckCommand<XES>& countData)
+   {
+
+      using SolOrRepType = typename XES::first_type;
+      vector<SolOrRepType*>& solutions = solData.solutions;
+      vector<vector<XEv*>>& evaluations = solData.evaluations;
 
       // ====================================================================
       // testing NSSeq
@@ -932,8 +1004,8 @@ public:
       if (lNSSeq.size() > 0)
          cout << "checkcommand  will test " << lNSSeq.size() << " NSSeq components (nSolNSSeq=" << nSolNSSeq << " of numSolutions=" << solutions.size() << ")" << endl;
 
-      vector<vector<int>> vCountMovesSamples(lNSSeq.size());
-      vector<vector<int>> vCountValidMovesSamples(lNSSeq.size());
+      vector<vector<int>>& vCountMovesSamples = countData.vCountMovesSamples;           ///(lNSSeq.size());
+      vector<vector<int>>& vCountValidMovesSamples = countData.vCountValidMovesSamples; //(lNSSeq.size());
 
       for (unsigned id_nsseq = 0; id_nsseq < lNSSeq.size(); id_nsseq++) {
          std::shared_ptr<NSSeq<XES, XEv, XES>> nsseq = lNSSeq.at(id_nsseq);
@@ -1001,6 +1073,15 @@ public:
             cout << endl
                  << endl;
       }
+      return true;
+   }
+
+   bool doRunNSEnum(int nSolNSSeq, TimeDataCheckCommand& timeSamples, SolDataCheckCommand<XES>& solData, CountDataCheckCommand<XES>& countData)
+   {
+      using SolOrRepType = typename XES::first_type;
+      vector<SolOrRepType*>& solutions = solData.solutions;
+      vector<vector<XEv*>>& evaluations = solData.evaluations;
+      vector<std::shared_ptr<Evaluator<SolOrRepType, XEv, XES>>>& evaluators = solData.evaluators;
 
       // ====================================================================
       // testing NSEnum
@@ -1009,11 +1090,11 @@ public:
       if (lNSEnum.size() > 0)
          cout << "checkcommand  will test " << lNSEnum.size() << " NSEnum components (nSolNSSeq=" << nSolNSSeq << " of numSolutions=" << solutions.size() << ")" << endl;
 
-      vector<vector<int>> vCountMovesEnumSamples(lNSEnum.size());
-      vector<vector<int>> vCountValidMovesEnumSamples(lNSEnum.size());
+      vector<vector<int>>& vCountMovesEnumSamples = countData.vCountMovesEnumSamples;
+      vector<vector<int>>& vCountValidMovesEnumSamples = countData.vCountValidMovesEnumSamples;
 
-      vector<vector<int>> vCountIndependentEnumSamples(lNSEnum.size());
-      vector<vector<int>> vCountMovePairsEnumSamples(lNSEnum.size());
+      vector<vector<int>>& vCountIndependentEnumSamples = countData.vCountIndependentEnumSamples;
+      vector<vector<int>>& vCountMovePairsEnumSamples = countData.vCountMovePairsEnumSamples;
 
       for (unsigned id_nsenum = 0; id_nsenum < lNSEnum.size(); id_nsenum++) {
          std::shared_ptr<NSEnum<XES, XEv>> nsenum = lNSEnum.at(id_nsenum);
@@ -1173,14 +1254,11 @@ public:
             cout << endl
                  << endl;
       }
+      return true;
+   }
 
-      for (unsigned i = 0; i < solutions.size(); i++)
-         delete solutions[i];
-
-      for (unsigned i = 0; i < evaluations.size(); i++)
-         for (unsigned j = 0; j < evaluations[i].size(); j++)
-            delete evaluations[i][j];
-
+   void doPrintSummary(TimeDataCheckCommand& timeSamples, CountDataCheckCommand<XES>& countData)
+   {
       cout << "===============================" << endl;
       cout << "           SUMMARY             " << endl;
       cout << "===============================" << endl
@@ -1215,19 +1293,75 @@ public:
 
       printSummarySamples(convertVector(lNS), timeSamples.errorNSEstimatedCost, "NS", "testing error (%) of move estimatedCost()");
 
-      printSummarySimpleSamples(convertVector(lNSSeq), vCountMovesSamples, "NSSeq", "counting moves of NSSeq iterator");
+      printSummarySimpleSamples(convertVector(lNSSeq), countData.vCountMovesSamples, "NSSeq", "counting moves of NSSeq iterator");
 
-      printSummarySimpleSamples(convertVector(lNSSeq), vCountValidMovesSamples, "NSSeq", "counting valid moves of NSSeq iterator");
+      printSummarySimpleSamples(convertVector(lNSSeq), countData.vCountValidMovesSamples, "NSSeq", "counting valid moves of NSSeq iterator");
 
-      printSummarySimpleSamples(convertVector(lNSEnum), vCountMovesEnumSamples, "NSEnum", "counting moves of NSEnum iterator");
+      printSummarySimpleSamples(convertVector(lNSEnum), countData.vCountMovesEnumSamples, "NSEnum", "counting moves of NSEnum iterator");
 
-      printSummarySimpleSamples(convertVector(lNSEnum), vCountValidMovesEnumSamples, "NSEnum", "counting valid moves of NSEnum iterator");
+      printSummarySimpleSamples(convertVector(lNSEnum), countData.vCountValidMovesEnumSamples, "NSEnum", "counting valid moves of NSEnum iterator");
 
-      printSummarySimpleSamples(convertVector(lNSEnum), vCountMovePairsEnumSamples, "NSEnum", "counting general move pairs for NSEnum");
+      printSummarySimpleSamples(convertVector(lNSEnum), countData.vCountMovePairsEnumSamples, "NSEnum", "counting general move pairs for NSEnum");
 
-      printSummarySimpleSamples(convertVector(lNSEnum), vCountIndependentEnumSamples, "NSEnum", "counting independent move pairs for NSEnum");
+      printSummarySimpleSamples(convertVector(lNSEnum), countData.vCountIndependentEnumSamples, "NSEnum", "counting independent move pairs for NSEnum");
+   }
 
-      cout << "checkcommand: tests finished successfully!" << endl;
+private:
+   bool doRun(int iterMax, int nSolNSSeq)
+   {
+
+      // ----------------
+      // read evaluators
+      // ----------------
+
+      vector<std::shared_ptr<Evaluator<S, XEv, XES>>> evaluators;
+      for (unsigned ev = 0; ev < lEvaluator.size(); ev++)
+         evaluators.push_back(lEvaluator[ev]);
+
+#ifdef LEGACY_ADS
+      adsMan = nullptr;
+      if (lADSManagerComp.size() > 0) {
+         adsMan = lADSManagerComp[0];
+
+         if (lADSManagerComp.size() > 1)
+            cout << " checkcommand warning: more than 1 ADSManager (" << lADSManagerComp.size() << ")" << endl;
+      }
+#endif
+
+      TimeDataCheckCommand timeSamples;
+      timeSamples.initialize(lNS.size(), evaluators.size(), lConstructive.size());
+
+      CountDataCheckCommand<XES> countData;
+      countData.initialize(this->lNSSeq.size(), this->lNSEnum.size());
+
+      // testing Constructive
+      SolDataCheckCommand<XES> solData;
+      solData.evaluators = evaluators;
+      doRunConstructive(iterMax, timeSamples, solData);
+
+      // testing Move
+      doRunMove(iterMax, timeSamples, solData);
+
+      // testing NS
+      doRunNS(iterMax, timeSamples, solData);
+
+      // testing NSSeq
+      doRunNSSeq(nSolNSSeq, timeSamples, solData, countData);
+
+      // testing NSEnum
+      doRunNSEnum(nSolNSSeq, timeSamples, solData, countData);
+
+      for (unsigned i = 0; i < solData.solutions.size(); i++)
+         delete solData.solutions[i];
+
+      for (unsigned i = 0; i < solData.evaluations.size(); i++)
+         for (unsigned j = 0; j < solData.evaluations[i].size(); j++)
+            delete solData.evaluations[i][j];
+
+      // print summary
+      doPrintSummary(timeSamples, countData);
+
+      std::cout << "checkcommand: tests finished successfully!" << std::endl;
       return true;
    }
 

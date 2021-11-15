@@ -67,7 +67,7 @@ public:
 
    virtual bool compatible(string s)
    {
-      return (s == idComponent()) || (Component::compatible(s));
+      return (s == idComponent()) || (NS<XES, XEv>::compatible(s));
    }
 };
 

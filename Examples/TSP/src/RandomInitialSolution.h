@@ -86,6 +86,23 @@ public:
       eval->reevaluate(se);
       return make_pair(make_optional(se), SearchStatus::NO_REPORT);
    }
+
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << InitialSearch<ESolutionTSP, EvaluationTSP>::idComponent() << ":RandomInitialSolution";
+      return ss.str();
+   }
+
+   virtual string id() const
+   {
+      return idComponent();
+   }
+
+   virtual bool compatible(string s)
+   {
+      return (s == idComponent()) || (InitialSearch<ESolutionTSP, EvaluationTSP>::compatible(s));
+   }
 };
 
 }
