@@ -134,6 +134,7 @@ main(int argc, char** argv)
    //CheckCommand<ESolutionTSP, RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> check(check_verbose);
    //
    CheckCommand<ESolutionTSP> check(check_verbose);
+   check.paramJsonLogs = true;
 
    RandGenMersenneTwister rg(0);
    sref<RandGen> rg2 = RandGenMersenneTwister(0);
@@ -182,6 +183,8 @@ main(int argc, char** argv)
    check.add(cbi);
    check.add(eval);
    check.add(enumswap);
+   // TODO: add again!
+   /*
    check.add(nsseq_delta_2opt);
    check.add(tsp2opt);
    check.add(nsseq_delta_or1);
@@ -189,8 +192,34 @@ main(int argc, char** argv)
    check.add(tspor2);
    check.add(tspor3);
    check.add(tspswap);
+   */
 
-   check.run(100, 10);
+   auto allData = check.run(100, 10);
+
+   std::cout << "|SOLUTIONS| = " << allData.solData.logSolutions.size() << std::endl;
+   FILE* flogsol = fopen("log_solutions.json", "w");
+   optframe::cjson.dump();
+   optframe::cjson << allData.solData.logSolutions;
+   fprintf(flogsol, "%s\n", optframe::cjson.dump().c_str());
+   fclose(flogsol);
+
+   for (unsigned i = 0; i < allData.solData.logEvaluations.size(); i++) {
+      std::cout << "|EV_" << i << "| = " << allData.solData.logEvaluations[i].size() << std::endl;
+   }
+
+   FILE* flogev = fopen("log_ev0.json", "w");
+   optframe::cjson << allData.solData.logEvaluations[0];
+   fprintf(flogev, "%s\n", optframe::cjson.dump().c_str());
+   fclose(flogev);
+
+   std::cout << "|MOVES| = " << allData.timeData.logMoves << std::endl;
+   std::cout << "|MOVES| = " << allData.timeData.logMoves.size() << std::endl;
+
+   FILE* flogmove = fopen("log_moves.json", "w");
+   optframe::cjson << allData.timeData.logMoves;
+   fprintf(flogmove, "%s\n", optframe::cjson.dump().c_str());
+   fclose(flogmove);
+
    getchar();
    getchar();
 
@@ -257,11 +286,11 @@ main(int argc, char** argv)
    ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor2));
    ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor3));
    ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspswap));
-   for (unsigned i = 0; i < ns_list.size(); i++)
-      ns_list[i]->setVerbose();
+   //for (unsigned i = 0; i < ns_list.size(); i++)
+   //   ns_list[i]->setVerbose();
 
    VariableNeighborhoodDescent<ESolutionTSP> VND(eval, ns_list);
-   VND.setVerbose();
+   //VND.setVerbose();
 
    ILSLPerturbationLPlus2<ESolutionTSP> pert(eval, tsp2opt, rg);
    pert.add_ns(tspor1);
@@ -271,7 +300,8 @@ main(int argc, char** argv)
 
    IteratedLocalSearchLevels<ESolutionTSP> ils(eval, randomTSP, VND, pert, 3, 2);
    //ils.setMessageLevel(4);
-   ils.setVerbose();
+   //
+   //ils.setVerbose();
    if (ils.information)
       cout << "infomation is on for ILS" << endl;
 

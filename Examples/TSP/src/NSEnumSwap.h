@@ -203,7 +203,7 @@ public:
       return make_optional(Evaluation<>(f, 0));
    }
 
-   void print() const
+   void print() const override
    {
       cout << "MoveSwap between " << c1 << " and " << c2 << endl;
    }
@@ -216,6 +216,26 @@ public:
          return true;
       else
          return false;
+   }
+
+   virtual bool toStream(std::ostream& os) const override
+   {
+      // forward to operator<<
+      os << (*this);
+      return true;
+   }
+
+   friend std::ostream& operator<<(std::ostream& os, const MoveSwap& mv)
+   {
+      if (&os == &optframe::cjson) {
+         os << "{";
+         os << "\"move_type\": \"MoveSwap\""
+            << ",";
+         os << "\"params\": [" << mv.c1 << ", " << mv.c2 << "]";
+         os << "}";
+      } else
+         os << mv.toString();
+      return os;
    }
 };
 

@@ -62,11 +62,42 @@ public:
       }
 
       cout << "All data read ok!" << endl;
+      std::cout << "WARNING: euclidean distances will be rounded!" << std::endl;
 
       // Calculating the distances
       for (int i = 0; i < n; i++)
          for (int j = 0; j < n; j++)
-            (*dist)(i, j) = distance(xvalues->at(i), yvalues->at(i), xvalues->at(j), yvalues->at(j));
+            (*dist)(i, j) = ::round(distance(xvalues->at(i), yvalues->at(i), xvalues->at(j), yvalues->at(j)));
+
+      FILE* fprob = fopen("log_tsp_problem.json", "w");
+      fprintf(fprob, "{\"problem_type\":\"euc_tsp\", \"n\": %d,", n);
+      fprintf(fprob, "\"xvalues\": [");
+      for (int i = 0; i < n; i++) {
+         fprintf(fprob, "%f", xvalues->at(i));
+         if (i != (n - 1))
+            fprintf(fprob, ",");
+      }
+      fprintf(fprob, "],\"yvalues\": [");
+      for (int i = 0; i < n; i++) {
+         fprintf(fprob, "%f", yvalues->at(i));
+         if (i != (n - 1))
+            fprintf(fprob, ",");
+      }
+      fprintf(fprob, "],");
+      fprintf(fprob, "\"distance_matrix\": [");
+      for (int i = 0; i < n; i++) {
+         fprintf(fprob, "[");
+         for (int j = 0; j < n; j++) {
+            fprintf(fprob, "%d", (int)(*dist)(i, j));
+            if (j != (n - 1))
+               fprintf(fprob, ",");
+         }
+         fprintf(fprob, "]");
+         if (i != (n - 1))
+            fprintf(fprob, ",");
+      }
+      fprintf(fprob, "]}");
+      fclose(fprob);
 
       //cout << (*dist);
    }
@@ -95,7 +126,6 @@ public:
       return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
    }
 };
-
 }
 
 #endif /*TSP_PROBLEMINSTANCE_HPP_*/

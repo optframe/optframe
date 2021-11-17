@@ -182,9 +182,27 @@ public:
       return ss.str();
    }
 
+   virtual bool toStream(std::ostream& os) const
+   {
+      /*
+      if (&os == &optframe::cjson) {
+         assert(false);
+      }
+      assert(false);
+      return false;
+      */
+      // forward to operator<<
+      os << (*this);
+      return true;
+   }
+
    friend std::ostream& operator<<(std::ostream& os, const CopySolution<R, ADS>& s)
    {
-      os << s.toString();
+      //os << s.toString();
+      if (&os == &optframe::cjson) {
+         os << s.r; // invoke json print from 'r'
+      } else
+         os << s.toString();
       return os;
    }
 };

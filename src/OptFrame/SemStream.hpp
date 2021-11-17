@@ -13,12 +13,22 @@ namespace optframe {
 struct SemStream : private std::streambuf
   , public std::ostream
 {
+private:
+   // possibly storing locally
+   std::stringstream oss;
+
 public:
+   // just a raw pointer
    std::ostream* os;
 
    SemStream(std::ostream& _os)
      : std::ostream{ this }
      , os{ &_os }
+   {}
+
+   SemStream()
+     : std::ostream{ this }
+     , os{ &oss }
    {}
 
 private:
@@ -33,12 +43,21 @@ public:
    {
       os = &_os;
    }
+
+   std::string dump()
+   {
+      std::string dump{ oss.str() };
+      // TODO: do we need os->clear() ?
+      oss.str(std::string()); // better than str("")
+      os->clear();
+      return dump;
+   }
 };
 
 //extern SemStream cjson; // only in .cpp
 //extern SemStream ctxt;  // only in .cpp
-inline SemStream cjson{ std::cout }; // (C++17 extern linkage is implicit)
-inline SemStream ctxt{ std::cout };  // (C++17 extern linkage is implicit)
+inline SemStream cjson{}; // (C++17 extern linkage is implicit)
+inline SemStream ctxt{};  // (C++17 extern linkage is implicit)
 
 }
 

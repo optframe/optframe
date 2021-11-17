@@ -225,7 +225,7 @@ public:
    //StringFormat mlogType{ StringFormat::Human };
 
    // returns 'false' if unsupported
-   virtual bool toStream(SemStream& ss) const
+   virtual bool toStream(std::ostream& os) const
    {
       return false;
    }
@@ -236,6 +236,13 @@ public:
       return id();
    }
 
+   /*
+   // returns "" if unsupported
+   virtual std::string toStringFormat(StringFormat fmt) const
+   {
+      return "";
+   }
+*/
    virtual void print() const
    {
       (*logdata) << this->toString() << std::endl;

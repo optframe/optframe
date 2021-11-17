@@ -452,9 +452,23 @@ public:
       return ss.str();
    }
 
+   virtual bool toStream(std::ostream& os) const
+   {
+      // forward to operator<<
+      os << (*this);
+      return true;
+   }
+
    friend std::ostream& operator<<(std::ostream& os, const Evaluation& me)
    {
-      os << me.toString();
+      if (&os == &optframe::cjson) {
+         os << "{";
+         os << "\"evaluation\": " << me.evaluation() << ",";
+         os << "\"feasible\": " << (me.isFeasible() ? "true" : "false") << ",";
+         os << "\"outdated\": " << (me.outdated ? "true" : "false") << ",";
+         os << "\"estimated\": " << (me.estimated ? "true" : "false") << "}";
+      } else
+         os << me.toString();
       return os;
    }
 };

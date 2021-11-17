@@ -17,8 +17,8 @@ using namespace scannerpp;
 
 // define TSP solution type as 'vector<int>', using 'double' as evaluation type
 using ESolutionTSP1 = std::pair<
-  std::vector<int>,  // first part of search space element: solution (representation)
-  Evaluation<double> // second part of search space element: evaluation (objective value)
+  std::vector<int>, // first part of search space element: solution (representation)
+  Evaluation<int>   // second part of search space element: evaluation (objective value)
   >;
 
 template<class X = nullptr_t>
@@ -30,13 +30,13 @@ using ESolutionTSP = ESolutionTSP2<>;
 class ProblemContext
 {
 public:
-   int n;               // number of clients
-   Matrix<double> dist; // distance matrix (Euclidean)
+   int n;            // number of clients
+   Matrix<int> dist; // distance matrix (Euclidean)
    // load data from Scanner
    void load(Scanner& scanner)
    {
-      n = *scanner.nextInt();      // reads number of clients
-      dist = Matrix<double>(n, n); // initializes n x n matrix
+      n = *scanner.nextInt();   // reads number of clients
+      dist = Matrix<int>(n, n); // initializes n x n matrix
       //
       vector<double> xvalues(n);
       vector<double> yvalues(n);
@@ -49,7 +49,7 @@ public:
       // calculate distance values, for every client pair (i,j)
       for (int i = 0; i < n; i++)
          for (int j = 0; j < n; j++)
-            dist(i, j) = distance(xvalues.at(i), yvalues.at(i), xvalues.at(j), yvalues.at(j));
+            dist(i, j) = ::round(distance(xvalues.at(i), yvalues.at(i), xvalues.at(j), yvalues.at(j)));
    }
    // euclidean distance (double as return)
    double distance(double x1, double y1, double x2, double y2)
@@ -60,14 +60,14 @@ public:
 // Create TSP Problem Context
 ProblemContext pTSP;
 
-Evaluation<double>
+Evaluation<int>
 fevaluate(const std::vector<int>& s)
 {
-   double f = 0;
+   int f = 0;
    for (int i = 0; i < int(pTSP.n) - 1; i++)
       f += pTSP.dist(s[i], s[i + 1]);
    f += pTSP.dist(s[int(pTSP.n) - 1], s[0]);
-   return Evaluation<double>{ f };
+   return Evaluation<int>{ f };
 }
 
 // Evaluate

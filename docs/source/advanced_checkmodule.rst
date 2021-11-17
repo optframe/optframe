@@ -116,7 +116,7 @@ An example of output can be seen here:
 |    all	*	-	0.0013	-
 |
 |    ---------------------------------
-|    \|NS|=2	testing time of move apply(s) [apply no evaluation]
+|    \|NS|=2	testing time of move apply(s) [apply_no_evaluation]
 |    ---------------------------------
 |    #id	title	#tests	avg(ms)	std(ms)
 |    #0	OptFrame:FNS	41048	0.0008	0.0015

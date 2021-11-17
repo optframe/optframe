@@ -75,6 +75,9 @@ struct TimeDataCheckCommand
    vector<vector<double>> timeConstructive;
 
    bool overestimate, underestimate;
+
+   //
+   vector<std::string> logMoves;
 };
 
 // Solution Data - CheckCommand (solutions and evaluations)
@@ -87,9 +90,14 @@ struct SolDataCheckCommand
 
    vector<std::shared_ptr<Evaluator<S, XEv, XES>>> evaluators;
 
-   vector<S*> solutions;
+   vector<std::shared_ptr<S>> solutions;
 
-   vector<vector<XEv*>> evaluations;
+   vector<vector<std::shared_ptr<XEv>>> evaluations;
+
+   // ======================================
+   // log data for solutions and evaluations
+   vector<std::string> logSolutions;
+   vector<vector<std::string>> logEvaluations;
 };
 
 template<XESolution XES>
@@ -114,6 +122,16 @@ struct CountDataCheckCommand
       this->vCountIndependentEnumSamples = vector<vector<int>>(nsenum_size); //lNSEnum.size());
       this->vCountMovePairsEnumSamples = vector<vector<int>>(nsenum_size);   //lNSEnum.size());
    }
+};
+
+template<XESolution XES>
+struct AllDataCheckCommand
+{
+   TimeDataCheckCommand timeData;
+   SolDataCheckCommand<XES> solData;
+   CountDataCheckCommand<XES> countData;
+
+   bool status;
 };
 
 //CheckCommand uses SRand seed TODO
@@ -151,13 +169,20 @@ class CheckCommand
    static const int CMERR_MOVE_COST = 3007;
 
 private:
+   // verbose flag
    bool verbose;
 
-   bool convertNS;
+   // why this?
+   bool paramConvertNS;
 
+public:
    // independent moves
-   bool checkIndependent;
+   bool paramCheckIndependent;
 
+   // store logs in json (string) format
+   bool paramJsonLogs{ false };
+
+private:
    //vector<GeneralEvaluator<XES>*> lEvaluator;
    vector<std::shared_ptr<Evaluator<S, XEv, XES>>> lEvaluator;
    //vector<GeneralEvaluator<XES>*> lGenEvaluator;
@@ -184,12 +209,12 @@ public:
    CheckCommand(bool _verbose = false)
      : verbose(_verbose)
    {
-      convertNS = true;
+      paramConvertNS = true;
 
 #ifdef LEGACY_ADS
       adsMan = nullptr;
 #endif
-      checkIndependent = true;
+      paramCheckIndependent = true;
    }
 
    virtual ~CheckCommand()
@@ -283,7 +308,7 @@ public:
       lNSSeq.push_back(c.sptr());
       if (verbose)
          cout << "checkcommand: NSSeq " << lNSSeq.size() << " added!" << endl;
-      if (convertNS) {
+      if (paramConvertNS) {
          std::shared_ptr<NS<XES, XEv>> sptr_ns = c.sptr();
          add(sptr_ns);
          //add((std::shared_ptr<NS<XES, XEv>>) c.sptr());
@@ -300,7 +325,7 @@ public:
       lNSEnum.push_back(c.sptr());
       if (verbose)
          cout << "checkcommand: NSEnum " << lNSEnum.size() << " added!" << endl;
-      if (convertNS)
+      if (paramConvertNS)
          add((sref<NSSeq<XES, XEv>>)c);
    }
 
@@ -342,7 +367,15 @@ public:
 
 private:
    //bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns, CopySolution<R, ADS>& s, int id_s, Move<XES>& move, vector<vector<Evaluation<>*>>& evaluations, TimeCheckWithSamples& timeSamples)
-   bool testMoveGeneral(int iter, std::shared_ptr<NS<XES, XEv>> ns, int id_ns, S& _s, int id_s, Move<XES>& move, vector<vector<XEv*>>& evaluations, TimeDataCheckCommand& timeSamples)
+   bool testMoveGeneral(
+     int iter,
+     std::shared_ptr<NS<XES, XEv>> ns,
+     int id_ns,
+     S& _s,
+     int id_s,
+     Move<XES>& move,
+     vector<vector<std::shared_ptr<XEv>>>& evaluations,
+     TimeDataCheckCommand& timeSamples)
    {
       for (unsigned ev = 0; ev < lEvaluator.size(); ev++) {
          message(lEvaluator.at(ev), iter, "evaluating random move (apply, revert and moveCost).");
@@ -367,6 +400,32 @@ private:
          if (verbose)
             move.print();
 
+         std::stringstream ssMoveLog;
+         if (paramJsonLogs) {
+            //
+            std::string dump = optframe::cjson.dump();
+            //std::cout << "DUMP -> " << dump << std::endl;
+            assert(dump.length() == 0);
+            //
+            bool os_ok = move.toStream(optframe::cjson);
+            //
+            dump = optframe::cjson.dump();
+            if (!os_ok)
+               dump = "{\"move_type\":\"UnknownMove\"}";
+            //std::cout << "DUMP -> " << dump << std::endl;
+            //
+            ssMoveLog.precision(3);
+            ssMoveLog << std::fixed;
+            ssMoveLog << "{";
+            ssMoveLog << "\"move_log_id\":" << timeSamples.logMoves.size() << ",";
+            ssMoveLog << "\"ev_id\":" << ev << ",";
+            ssMoveLog << "\"move\":" << dump << ",";
+            ssMoveLog << "\"move_sol_id\": " << id_s << ",";
+            ssMoveLog << "\"sol_evaluation\":" << se.second.evaluation() << ",";
+            ssMoveLog << "\"move_ns_id\": " << id_ns << ",";
+            //assert(false);
+         }
+
          message(moveFrom, iter, "testing reverse.");
 
          Timer t_clone;
@@ -383,7 +442,12 @@ private:
             return false;
          }
 
-         timeSamples.timeNSApply[id_ns].push_back(tMovApply.inMilliSecs());
+         double applyMS = tMovApply.inMilliSecs();
+         timeSamples.timeNSApply[id_ns].push_back(applyMS);
+
+         if (paramJsonLogs) {
+            ssMoveLog << "\"timeNSApplyMS\":" << applyMS << ",";
+         }
 
          Timer t_clone2;
          //CopySolution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
@@ -426,7 +490,14 @@ private:
          uptr<Move<XES, XEv, XES>> ini = nullptr;
          if (rev)
             ini = rev->apply(se);
-         timeSamples.timeNSApply[id_ns].push_back(tMovRevApply.inMilliSecs());
+
+         double applyRevMS = tMovRevApply.inMilliSecs();
+         timeSamples.timeNSApply[id_ns].push_back(applyRevMS);
+
+         if (paramJsonLogs) {
+            ssMoveLog << "\"timeNSApplyRevMS\":" << applyRevMS << ",";
+            ssMoveLog << "\"sol_rev_evaluation\":" << e_rev.evaluation() << ",";
+         }
 
          //
          // ===================== tests with ADSManager ======================
@@ -513,7 +584,15 @@ private:
          //evtype simpleCost = mcSimpleCost->cost();
          evtype simpleCost = mcSimpleCost->evaluation();
          //
-         timeSamples.timeNSCostApply[id_ns].push_back(tMoveCostApply.inMilliSecs());
+         double revCostMS = tMoveCostApply.inMilliSecs();
+         timeSamples.timeNSCostApply[id_ns].push_back(revCostMS);
+
+         if (paramJsonLogs) {
+            ssMoveLog << "\"timeNSCostApplyMS\":" << revCostMS << ",";
+            ssMoveLog << "\"simpleCost\":" << simpleCost << ",";
+            //timeSamples.logMoves.push_back(ssMoveLog.str());
+         }
+
          //delete mcSimpleCost;
          message(lEvaluator.at(ev), iter, "simpleCost calculated!");
 
@@ -570,7 +649,14 @@ private:
          //_e = std::move(evBeginFasterCost);
          //evtype e_ini1 = _e.evaluation();
          evtype e_ini1 = evBeginFasterCost.evaluation();
-         timeSamples.timeNSCostApplyDelta[id_ns].push_back(tMoveCostApplyDelta.inMilliSecs());
+
+         double fasterCostMS = tMoveCostApplyDelta.inMilliSecs();
+         timeSamples.timeNSCostApplyDelta[id_ns].push_back(fasterCostMS);
+
+         if (paramJsonLogs) {
+            ssMoveLog << "\"timeNSCostApplyDeltaMS\":" << fasterCostMS << ",";
+            //timeSamples.logMoves.push_back(ssMoveLog.str());
+         }
 
          //delete &rev1;
          //delete &ini1;
@@ -615,7 +701,14 @@ private:
          lEvaluator[ev]->setAllowCosts(oldAllowCostsStatus);
          //evtype realFasterCost = mcRealFasterCost->cost();
          evtype realFasterCost = mcRealFasterCost.evaluation();
-         timeSamples.timeNSCostApplyRealDelta[id_ns].push_back(tMoveCostApplyRealDelta.inMilliSecs());
+
+         double realFasterCostMS = tMoveCostApplyRealDelta.inMilliSecs();
+         timeSamples.timeNSCostApplyRealDelta[id_ns].push_back(realFasterCostMS);
+
+         if (paramJsonLogs) {
+            ssMoveLog << "\"timeNSCostApplyRealDelta\":" << realFasterCostMS << ",";
+            //timeSamples.logMoves.push_back(ssMoveLog.str());
+         }
 
          //delete mcRealFasterCost;
          message(lEvaluator.at(ev), iter, "realFasterCost calculated!");
@@ -643,11 +736,24 @@ private:
          if (lEvaluator[ev]->getAllowCosts())
             cost = move.cost(se, false);
 
-         if (cost && !cost->isEstimated())
-            timeSamples.timeNSCost[id_ns].push_back(tMoveCost.inMilliSecs());
+         if (cost && !cost->isEstimated()) {
+            double costMS = tMoveCost.inMilliSecs();
+            timeSamples.timeNSCost[id_ns].push_back(costMS);
+
+            if (paramJsonLogs) {
+               ssMoveLog << "\"timeNSCost\":" << costMS; // THIS IS THE LAST, NO COMMA ','
+            }
+         }
 
          if (cost && cost->isEstimated()) {
-            timeSamples.timeNSEstimatedCost[id_ns].push_back(tMoveCost.inMilliSecs());
+            double estimatedCostMS = tMoveCost.inMilliSecs();
+            timeSamples.timeNSEstimatedCost[id_ns].push_back(estimatedCostMS);
+
+            if (paramJsonLogs) {
+               ssMoveLog << "\"timeNSEstimatedCost\":" << estimatedCostMS << ",";
+               //timeSamples.logMoves.push_back(ssMoveLog.str());
+            }
+
             //if (cost->cost() > revCost)
             if (cost->evaluation() > revCost)
                timeSamples.overestimate = true;
@@ -729,6 +835,11 @@ private:
          //
          //if (ini)
          //	delete ini;
+
+         if (paramJsonLogs) {
+            ssMoveLog << "}";
+            timeSamples.logMoves.push_back(ssMoveLog.str());
+         }
       }
 
       //delete &move;  // ONLY IF NECESSARY! DO IT OUTSIDE...
@@ -737,7 +848,7 @@ private:
    }
 
 public:
-   bool run(int iterMax, int nSolNSSeq)
+   AllDataCheckCommand<XES> run(int iterMax, int nSolNSSeq)
    {
       // ======================================
       //           BEGIN TESTS
@@ -773,11 +884,15 @@ private:
       using SolOrRepType = typename XES::first_type;
       //using EvalType = typename XES::second_type;
       //vector<CopySolution<R, ADS>*> solutions;
-      vector<SolOrRepType*> solutions;
+      vector<std::shared_ptr<SolOrRepType>> solutions;
 
       vector<std::shared_ptr<Evaluator<SolOrRepType, XEv, XES>>>& evaluators = solData.evaluators;
 
-      vector<vector<XEv*>> evaluations(evaluators.size());
+      vector<vector<std::shared_ptr<XEv>>> evaluations(evaluators.size());
+
+      if (paramJsonLogs) {
+         solData.logEvaluations = vector<vector<std::string>>(evaluators.size());
+      }
 
       if (lConstructive.size() > 0)
          cout << "checkcommand  will test " << lConstructive.size() << " constructive components (iterMax=" << iterMax << ")" << endl;
@@ -793,7 +908,7 @@ private:
 
             Timer ts;
             //CopySolution<R,ADS> s = *constructive->generateSolution(10000000);
-            op<XES> ps = constructive->initialSearch(StopCriteria<XEv>(10000000)).first;
+            op<XES> ps = constructive->initialSearch({ 0.0 }).first;
             //CopySolution<R,ADS> s = *constructive->initialSolution(10000000);
             //
             //CopySolution<R, ADS> s = ps->first;
@@ -814,7 +929,27 @@ private:
             }
 #endif
             //solutions.push_back(new CopySolution<R, ADS>(s));
-            solutions.push_back(new T(s));
+            std::shared_ptr<SolOrRepType> sptr_sol(new T(s));
+            //solutions.push_back(new T(s));
+            solutions.push_back(sptr_sol);
+            //
+            if (paramJsonLogs) {
+               //solData.logSolutions.push_back(sptr_sol->toStringFormat(StringFormat::JSON));
+               std::string dump = optframe::cjson.dump();
+               //std::cout << "DUMP -> " << dump << std::endl;
+               assert(dump.length() == 0);
+               //bool ret = sptr_sol->toStream(optframe::cjson);
+               //assert(ret);
+               optframe::cjson << *sptr_sol;
+               dump = optframe::cjson.dump();
+               //
+               std::stringstream ss;
+               ss << "{\"sol_log_id\":" << solData.logSolutions.size() << ",";
+               ss << "\"solution\":" << dump << "}";
+               //std::cout << "DUMP -> " << dump << std::endl;
+               solData.logSolutions.push_back(ss.str()); //(dump);
+               //assert(false);
+            }
 
             for (unsigned ev = 0; ev < evaluators.size(); ev++) {
                message(lEvaluator.at(ev), iter, "evaluating solution.");
@@ -822,7 +957,29 @@ private:
                XEv e = evaluators.at(ev)->evaluate(s);
                timeSamples.fullTimeEval[ev].push_back(te.inMilliSecs());
 
-               evaluations.at(ev).push_back(new Evaluation(e));
+               std::shared_ptr<XEv> sptr_ev(new Evaluation(e));
+               //evaluations.at(ev).push_back(new Evaluation(e));
+               evaluations.at(ev).push_back(sptr_ev);
+               //
+               if (paramJsonLogs) {
+
+                  std::string dump = optframe::cjson.dump();
+                  //std::cout << "DUMP -> '" << dump << "'" << std::endl;
+                  assert(dump.length() == 0);
+                  //bool ret = sptr_sol->toStream(optframe::cjson);
+                  //assert(ret);
+                  optframe::cjson << *sptr_ev;
+                  dump = optframe::cjson.dump();
+                  //
+                  std::stringstream ss;
+                  ss << "{\"evaluation_log_id\":" << solData.logEvaluations.at(ev).size() << ",";
+                  ss << "\"ev_id\": " << ev << ",";
+                  ss << "\"evaluation\":" << dump << "}";
+                  //solData.logEvaluations.at(ev).push_back(sptr_ev->toStringFormat(StringFormat::JSON));
+                  solData.logEvaluations.at(ev).push_back(ss.str()); //(dump);
+                  //std::cout << "DUMP -> " << dump << std::endl;
+                  //assert(false);
+               }
 
                if (lEvaluator.at(ev)->betterThan(e, e)) {
                   errormsg(lEvaluator.at(ev)->toString(), CMERR_EV_BETTERTHAN, "CMERR_EV_BETTERTHAN", iter, "error in betterThan(X,X)=true");
@@ -855,8 +1012,8 @@ private:
    {
 
       using SolOrRepType = typename XES::first_type;
-      vector<SolOrRepType*>& solutions = solData.solutions;
-      vector<vector<XEv*>>& evaluations = solData.evaluations;
+      vector<std::shared_ptr<SolOrRepType>>& solutions = solData.solutions;
+      vector<vector<std::shared_ptr<XEv>>>& evaluations = solData.evaluations;
 
       vector<std::shared_ptr<Evaluator<SolOrRepType, XEv, XES>>>& evaluators = solData.evaluators;
 
@@ -869,7 +1026,11 @@ private:
 
       for (unsigned p = 0; p < lSolution.size(); p++) {
          //solutions.push_back(&lSolution[p]->clone());
-         solutions.push_back(new S(*lSolution[p]));
+         //
+         std::shared_ptr<S> sptr_sol(new S(*lSolution[p]));
+         //
+         //solutions.push_back(new S(*lSolution[p]));
+         solutions.push_back(sptr_sol);
 
          for (unsigned ev = 0; ev < evaluators.size(); ev++) {
             message(lEvaluator.at(ev), p, "evaluating input solution.");
@@ -877,7 +1038,10 @@ private:
             XEv e = evaluators.at(ev)->evaluate(*lSolution[p]);
             timeSamples.fullTimeEval[ev].push_back(te.inMilliSecs());
 
-            evaluations.at(ev).push_back(new Evaluation(e));
+            std::shared_ptr<XEv> sptr_ev(new Evaluation(e));
+
+            //evaluations.at(ev).push_back(new Evaluation(e));
+            evaluations.at(ev).push_back(sptr_ev);
          }
       }
 
@@ -925,8 +1089,8 @@ private:
    {
 
       using SolOrRepType = typename XES::first_type;
-      vector<SolOrRepType*>& solutions = solData.solutions;
-      vector<vector<XEv*>>& evaluations = solData.evaluations;
+      vector<std::shared_ptr<SolOrRepType>>& solutions = solData.solutions;
+      vector<vector<std::shared_ptr<XEv>>>& evaluations = solData.evaluations;
 
       // ====================================================================
       // testing NS
@@ -994,8 +1158,8 @@ private:
    {
 
       using SolOrRepType = typename XES::first_type;
-      vector<SolOrRepType*>& solutions = solData.solutions;
-      vector<vector<XEv*>>& evaluations = solData.evaluations;
+      vector<std::shared_ptr<SolOrRepType>>& solutions = solData.solutions;
+      vector<vector<std::shared_ptr<XEv>>>& evaluations = solData.evaluations;
 
       // ====================================================================
       // testing NSSeq
@@ -1079,8 +1243,8 @@ private:
    bool doRunNSEnum(int nSolNSSeq, TimeDataCheckCommand& timeSamples, SolDataCheckCommand<XES>& solData, CountDataCheckCommand<XES>& countData)
    {
       using SolOrRepType = typename XES::first_type;
-      vector<SolOrRepType*>& solutions = solData.solutions;
-      vector<vector<XEv*>>& evaluations = solData.evaluations;
+      vector<std::shared_ptr<SolOrRepType>>& solutions = solData.solutions;
+      vector<vector<std::shared_ptr<XEv>>>& evaluations = solData.evaluations;
       vector<std::shared_ptr<Evaluator<SolOrRepType, XEv, XES>>>& evaluators = solData.evaluators;
 
       // ====================================================================
@@ -1160,8 +1324,8 @@ private:
             //delete &it;
          }
 
-         if (checkIndependent) {
-            cout << "checkcommand: will try to identify independent moves from '" << nsenum->id() << "' (can take some time... deactivate with 'checkIndependent=false')" << endl;
+         if (paramCheckIndependent) {
+            cout << "checkcommand: will try to identify independent moves from '" << nsenum->id() << "' (can take some time... deactivate with 'paramCheckIndependent=false')" << endl;
             // indicate possible independent moves
 
             // adopting Evaluator 0...
@@ -1279,7 +1443,7 @@ private:
 
       printSummarySamples(convertVector(lEvaluator), timeSamples.fullTimeEval, "Evaluators", "testing full evaluate(s) of a solution");
 
-      printSummarySamples(convertVector(lNS), timeSamples.timeNSApply, "NS", "testing time of move apply(s) [apply no evaluation]");
+      printSummarySamples(convertVector(lNS), timeSamples.timeNSApply, "NS", "testing time of move apply(s) [apply_no_evaluation]");
 
       printSummarySamples(convertVector(lNS), timeSamples.timeNSCostApply, "NS", "testing time of cost based on move apply(s) [revCost]");
 
@@ -1307,7 +1471,7 @@ private:
    }
 
 private:
-   bool doRun(int iterMax, int nSolNSSeq)
+   AllDataCheckCommand<XES> doRun(int iterMax, int nSolNSSeq)
    {
 
       // ----------------
@@ -1351,18 +1515,25 @@ private:
       // testing NSEnum
       doRunNSEnum(nSolNSSeq, timeSamples, solData, countData);
 
+      /*
+      // SHARED POINTERS! DO NOT DELETE!
       for (unsigned i = 0; i < solData.solutions.size(); i++)
          delete solData.solutions[i];
 
       for (unsigned i = 0; i < solData.evaluations.size(); i++)
          for (unsigned j = 0; j < solData.evaluations[i].size(); j++)
             delete solData.evaluations[i][j];
-
+*/
       // print summary
       doPrintSummary(timeSamples, countData);
 
+      AllDataCheckCommand<XES> allData;
+      allData.timeData = timeSamples;
+      allData.countData = countData;
+      allData.solData = solData;
+
       std::cout << "checkcommand: tests finished successfully!" << std::endl;
-      return true;
+      return allData;
    }
 
    template<class T>
