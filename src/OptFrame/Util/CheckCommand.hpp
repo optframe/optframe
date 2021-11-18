@@ -108,8 +108,9 @@ struct CountDataCheckCommand
    vector<vector<int>> vCountMovesEnumSamples;
    vector<vector<int>> vCountValidMovesEnumSamples;
 
-   vector<vector<int>> vCountIndependentEnumSamples;
-   vector<vector<int>> vCountMovePairsEnumSamples;
+   // used on run independent
+   vector<vector<int>> vCountIndependentSamples;
+   vector<vector<int>> vCountMovePairsSamples;
 
    void initialize(int nsseq_size, int nsenum_size)
    {
@@ -119,8 +120,8 @@ struct CountDataCheckCommand
       this->vCountMovesEnumSamples = vector<vector<int>>(nsenum_size);      //lNSEnum.size());
       this->vCountValidMovesEnumSamples = vector<vector<int>>(nsenum_size); //lNSEnum.size());
 
-      this->vCountIndependentEnumSamples = vector<vector<int>>(nsenum_size); //lNSEnum.size());
-      this->vCountMovePairsEnumSamples = vector<vector<int>>(nsenum_size);   //lNSEnum.size());
+      this->vCountIndependentSamples = vector<vector<int>>(nsseq_size);
+      this->vCountMovePairsSamples = vector<vector<int>>(nsseq_size);
    }
 };
 
@@ -1245,7 +1246,7 @@ private:
       using SolOrRepType = typename XES::first_type;
       vector<std::shared_ptr<SolOrRepType>>& solutions = solData.solutions;
       vector<vector<std::shared_ptr<XEv>>>& evaluations = solData.evaluations;
-      vector<std::shared_ptr<Evaluator<SolOrRepType, XEv, XES>>>& evaluators = solData.evaluators;
+      //vector<std::shared_ptr<Evaluator<SolOrRepType, XEv, XES>>>& evaluators = solData.evaluators;
 
       // ====================================================================
       // testing NSEnum
@@ -1257,8 +1258,8 @@ private:
       vector<vector<int>>& vCountMovesEnumSamples = countData.vCountMovesEnumSamples;
       vector<vector<int>>& vCountValidMovesEnumSamples = countData.vCountValidMovesEnumSamples;
 
-      vector<vector<int>>& vCountIndependentEnumSamples = countData.vCountIndependentEnumSamples;
-      vector<vector<int>>& vCountMovePairsEnumSamples = countData.vCountMovePairsEnumSamples;
+      //vector<vector<int>>& vCountIndependentEnumSamples = countData.vCountIndependentEnumSamples;
+      //vector<vector<int>>& vCountMovePairsEnumSamples = countData.vCountMovePairsEnumSamples;
 
       for (unsigned id_nsenum = 0; id_nsenum < lNSEnum.size(); id_nsenum++) {
          std::shared_ptr<NSEnum<XES, XEv>> nsenum = lNSEnum.at(id_nsenum);
@@ -1324,6 +1325,7 @@ private:
             //delete &it;
          }
 
+         /*
          if (paramCheckIndependent) {
             cout << "checkcommand: will try to identify independent moves from '" << nsenum->id() << "' (can take some time... deactivate with 'paramCheckIndependent=false')" << endl;
             // indicate possible independent moves
@@ -1412,8 +1414,162 @@ private:
             vCountMovePairsEnumSamples[id_nsenum].push_back(countMovePairsEnum);
             vCountIndependentEnumSamples[id_nsenum].push_back(countMoveIndependentEnum);
          }
+         */
 
          cout << "checkcommand: " << lNSEnum.at(id_nsenum)->id() << " finished." << endl;
+         if (verbose)
+            cout << endl
+                 << endl;
+      }
+      return true;
+   }
+
+   bool doRunIndependent(int nSolNSSeq, TimeDataCheckCommand& timeSamples, SolDataCheckCommand<XES>& solData, CountDataCheckCommand<XES>& countData)
+   {
+      using SolOrRepType = typename XES::first_type;
+      vector<std::shared_ptr<SolOrRepType>>& solutions = solData.solutions;
+      //vector<vector<std::shared_ptr<XEv>>>& evaluations = solData.evaluations;
+      vector<std::shared_ptr<Evaluator<SolOrRepType, XEv, XES>>>& evaluators = solData.evaluators;
+
+      // ====================================================================
+      // testing every NSSeq that isSolutionIndependent()
+      // ====================================================================
+
+      if (lNSSeq.size() > 0)
+         cout << "checkcommand  will test " << lNSSeq.size() << " NSSeq (and NSEnum) components (nSolNSSeq=" << nSolNSSeq << " of numSolutions=" << solutions.size() << ")" << endl;
+
+      vector<vector<int>>& vCountIndependentSamples = countData.vCountIndependentSamples;
+      vector<vector<int>>& vCountMovePairsSamples = countData.vCountMovePairsSamples;
+
+      for (unsigned id_nsseq = 0; id_nsseq < lNSSeq.size(); id_nsseq++) {
+         std::shared_ptr<NSSeq<XES, XEv>> nsseq = lNSSeq.at(id_nsseq);
+
+         cout << "checkcommand: testing NSSeq " << id_nsseq << " => " << nsseq->toString();
+         cout << endl;
+         if (!nsseq->isSolutionIndependent()) {
+            cout << "checkcommand: WARNING ignoring NSSeq " << id_nsseq << " isSolutionIndependent() returns FALSE -> " << nsseq->toString();
+            cout << endl;
+            continue;
+         }
+
+         if (paramCheckIndependent) {
+            cout << "checkcommand: will try to identify independent moves from '" << nsseq->id() << "' (can take some time... deactivate with 'paramCheckIndependent=false')" << endl;
+            // indicate possible independent moves
+
+            // adopting Evaluator 0...
+            //Evaluator<S>& ev = *evaluators.at(0);
+            Evaluator<S, XEv, XES>& ev = *evaluators.at(0);
+
+            int countMovePairs = 0;
+            int countMoveIndependent = 0;
+            //
+            // SOLUTION ZERO WILL BE REFERENCE (SHOULD NOT MATTER!!! BECAUSE OF isSolutionIndependent())
+            //
+            S& s = *solutions.at(0);
+            XES se = make_pair(s, XEv());
+            //
+            uptr<NSIterator<XES, XEv>> it = nsseq->getIterator(se);
+            //int countMoves = 0;
+            //int countValidMoves = 0;
+
+            std::vector<Move<XES>*> allMoves;
+
+            for (it->first(); !it->isDone(); it->next()) {
+               if (verbose)
+                  cout << endl;
+               allMoves.push_back(it->current().release());
+            }
+
+            //
+            // check for independence between moves m1 and m2
+            for (int m1 = 0; m1 < (int)allMoves.size(); m1++) {
+               // slow...
+               cout << "checkcommand: independence test for move #" << m1 << " / " << allMoves.size() << endl;
+               int count_ind_m1 = 0;
+               for (int m2 = m1 + 1; m2 < int(allMoves.size()); m2++) {
+                  bool conflict = false;
+                  // compute another move pair
+                  countMovePairs++;
+
+                  if (!conflict) {
+                     // TODO: increase performance of this method
+                     for (unsigned sol = 0; sol < solutions.size(); sol++) {
+                        //CopySolution<R, ADS>& s = *solutions.at(sol);
+                        S& s = *solutions.at(sol);
+                        XES se = make_pair(s, XEv());
+
+                        // TODO: verify if return is return is not null!
+                        Move<XES, XEv, XES>* move1{ allMoves.at(m1) };
+                        Move<XES, XEv, XES>* move2{ allMoves.at(m2) };
+                        // moves must be valid
+                        if (!(move1->canBeApplied(se) && move2->canBeApplied(se)))
+                           break;
+                        // move 1 must have reverse
+                        if (!move1->hasReverse()) {
+                           cout << "checkcommand: NSSeq independent check expected reverse move... (deactivate with 'checkIndependent=false')" << endl;
+                           break;
+                        }
+
+                        // calculate cost for move 2
+                        ///MoveCost<>* cost_m2 = ev.moveCostComplete(move2, s);
+                        op<XEv> cost_m2 = ev.moveCostComplete(*move2, se);
+
+                        // apply move 1 (consider reverse is not nullptr)
+                        uptr<Move<XES, XEv, XES>> rev_m1 = move1->apply(se);
+
+                        // calculate new cost for move 2
+                        ///MoveCost<>* cost2_m2 = ev.moveCostComplete(move2, s);
+                        op<XEv> cost2_m2 = ev.moveCostComplete(*move2, se);
+
+                        // return solution to original value and free
+                        rev_m1->apply(se);
+                        //delete &rev_m1;
+                        //delete &move1;
+                        //delete &move2;
+
+                        // leave pointers
+                        //move1.release();
+                        //move2.release();
+
+                        // if costs differ, moves are not independent
+                        if (!ev.equals(*cost2_m2, *cost_m2)) {
+                           // mark conflict between m1 and m2
+                           conflict = true;
+                           //delete cost2_m2;
+                           //delete cost_m2;
+                           break;
+                        }
+                        //delete cost2_m2;
+                        //delete cost_m2;
+                     }
+
+                     if (!conflict) {
+                        // if here, m1 'could' be independent from m2
+                        countMoveIndependent++;
+                        count_ind_m1++;
+                        if (verbose) {
+                           cout << "independent(m1=" << m1 << ";m2=" << m2 << ")" << endl;
+                           allMoves.at(m1)->print(); // TODO: fix leak
+                           allMoves.at(m2)->print(); // TODO: fix leak
+                           cout << endl;
+                        }
+                     }
+                  }
+               }
+               cout << "checkcommand: found " << count_ind_m1 << " independent move pairs." << endl;
+            }
+
+            //Aigor - Check if this counter is right - Any example was tested here
+            vCountMovePairsSamples[id_nsseq].push_back(countMovePairs);
+            vCountIndependentSamples[id_nsseq].push_back(countMoveIndependent);
+
+            // clears all used moves
+            for (unsigned k = 0; k < allMoves.size(); k++)
+               delete allMoves.at(k);
+            allMoves.clear();
+         }
+
+         cout << "checkcommand: " << lNSSeq.at(id_nsseq)->id() << " finished." << endl;
          if (verbose)
             cout << endl
                  << endl;
@@ -1465,9 +1621,9 @@ private:
 
       printSummarySimpleSamples(convertVector(lNSEnum), countData.vCountValidMovesEnumSamples, "NSEnum", "counting valid moves of NSEnum iterator");
 
-      printSummarySimpleSamples(convertVector(lNSEnum), countData.vCountMovePairsEnumSamples, "NSEnum", "counting general move pairs for NSEnum");
+      printSummarySimpleSamples(convertVector(lNSSeq), countData.vCountMovePairsSamples, "NSSeq", "counting general move pairs for NSSeq with isSolutionIndependent()");
 
-      printSummarySimpleSamples(convertVector(lNSEnum), countData.vCountIndependentEnumSamples, "NSEnum", "counting independent move pairs for NSEnum");
+      printSummarySimpleSamples(convertVector(lNSSeq), countData.vCountIndependentSamples, "NSSeq", "counting independent move pairs for NSSeq with isSolutionIndependent()");
    }
 
 private:
@@ -1514,6 +1670,9 @@ private:
 
       // testing NSEnum
       doRunNSEnum(nSolNSSeq, timeSamples, solData, countData);
+
+      // testing independent
+      doRunIndependent(nSolNSSeq, timeSamples, solData, countData);
 
       /*
       // SHARED POINTERS! DO NOT DELETE!

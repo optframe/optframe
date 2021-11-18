@@ -42,6 +42,14 @@ public:
    }
 
 public:
+   // returns 'true' if moves generated from this neighborhood are solution-independent
+   // this means that a move generated for solution s1 could also be applied to solution s2
+   // default is 'true', but if this is 'false', one should be specially careful on canBeApplied tests
+   virtual bool isSolutionIndependent() const
+   {
+      return true;
+   }
+
    virtual uptr<Move<XES, XEv, XSH>> randomMove(const XES&) = 0;
 
    virtual uptr<Move<XES, XEv, XSH>> validRandomMove(const XES& se)

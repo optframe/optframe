@@ -183,8 +183,6 @@ main(int argc, char** argv)
    check.add(cbi);
    check.add(eval);
    check.add(enumswap);
-   // TODO: add again!
-   /*
    check.add(nsseq_delta_2opt);
    check.add(tsp2opt);
    check.add(nsseq_delta_or1);
@@ -192,7 +190,6 @@ main(int argc, char** argv)
    check.add(tspor2);
    check.add(tspor3);
    check.add(tspswap);
-   */
 
    auto allData = check.run(100, 10);
 
@@ -212,7 +209,7 @@ main(int argc, char** argv)
    fprintf(flogev, "%s\n", optframe::cjson.dump().c_str());
    fclose(flogev);
 
-   std::cout << "|MOVES| = " << allData.timeData.logMoves << std::endl;
+   //std::cout << "|MOVES| = " << allData.timeData.logMoves << std::endl;
    std::cout << "|MOVES| = " << allData.timeData.logMoves.size() << std::endl;
 
    FILE* flogmove = fopen("log_moves.json", "w");

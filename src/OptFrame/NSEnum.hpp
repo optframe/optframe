@@ -48,6 +48,12 @@ public:
    {
    }
 
+   // every move from NSEnum must be solution-independent (only problem-dependent)
+   bool isSolutionIndependent() const final override
+   {
+      return true;
+   }
+
    virtual uptr<Move<XES, XEv>> randomMove(const XES&)
    {
       unsigned int x = rg->rand(size());
