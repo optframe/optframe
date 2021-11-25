@@ -52,6 +52,9 @@ public:
    R r;     // representation
    ADS ads; // auxiliary data structure
 
+   using typeR = R;
+   using typeADS = ADS;
+
    // copy constructor for R (ADS requires empty constructor)
    explicit CopySolution(const R& _r)
      : r(_r)
@@ -77,12 +80,20 @@ public:
    CopySolution(const CopySolution<R, ADS>& s)
      : CopySolution(s.r, s.ads)
    {
+#ifdef OPTFRAME_AC
+      // copy listAC directly
+      this->listAC = s.listAC;
+#endif
    }
 
    // move constructor
    CopySolution(CopySolution<R, ADS>&& s)
      : CopySolution(s.r, s.ads)
    {
+#ifdef OPTFRAME_AC
+      // copy listAC directly
+      this->listAC = s.listAC;
+#endif
    }
 
    CopySolution<R, ADS>& operator=(const CopySolution<R, ADS>& s)
@@ -93,6 +104,11 @@ public:
       r = s.r;
       ads = s.ads;
 
+#ifdef OPTFRAME_AC
+      // copy listAC directly
+      this->listAC = s.listAC;
+#endif
+
       return *this;
    }
 
@@ -100,6 +116,11 @@ public:
    {
       r = std::move(s.r);
       ads = std::move(s.ads);
+
+#ifdef OPTFRAME_AC
+      // copy listAC directly
+      this->listAC = s.listAC;
+#endif
 
       return *this;
    }
@@ -151,6 +172,15 @@ public:
    // ==================
 
    // shouldn't clone here!
+
+#ifdef OPTFRAME_AC
+   std::shared_ptr<Component> sharedClone() const override
+   {
+      std::shared_ptr<Component> sptr{ &clone() };
+      sptr->listAC = this->listAC;
+      return sptr;
+   }
+#endif
 
    // TODO: remove!!!
    CopySolution<R, ADS>& clone() const

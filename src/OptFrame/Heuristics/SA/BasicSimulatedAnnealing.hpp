@@ -129,6 +129,7 @@ public:
       double T = T0; // {Temp eraturacorrente}
       bool continua = true;
       std::optional<XES> ose = constructive->initialSearch({ 99999.9 }).first; // inf time
+      assert(ose);
       XES& se1 = *ose;
       //
       while (continua) {
@@ -185,9 +186,31 @@ public:
       if (!incumbent)
          incumbent = star ? star : constructive->initialSearch(sosc).first;
 
+#ifdef OPTFRAME_AC
+      // requires first part of solution to be a component
+      static_assert(XRSolution<typename XSH::first_type, typename XSH::first_type::typeR>);
+      {
+         std::stringstream ss;
+         ss << incumbent->second.evaluation();
+         incumbent->first.listAC.push_back(ContextAC{ .id{ "SA_INIT" }, .message{ ss.str() }, .payload{ incumbent->first.sharedClone() } });
+      }
+#endif
+
       // if no star and has incumbent, star is incumbent
       if (!star && incumbent)
          star = incumbent;
+
+#ifdef OPTFRAME_AC
+      // requires first part of solution to be a component
+      static_assert(XRSolution<typename XSH::first_type, typename XSH::first_type::typeR>);
+      {
+         std::stringstream ss;
+         ss << star->second.evaluation();
+         star->first.listAC.push_back(ContextAC{ .id{ "SA_NEW_STAR" }, .message{ ss.str() }, .payload{ star->first.sharedClone() } });
+      }
+      //
+      //star->first.printListAC();
+#endif
 
       // abort if no solution exists
       if (!star)
@@ -244,6 +267,18 @@ public:
          }
 
          XES current(se); // implicit clone??
+
+         /*
+#ifdef OPTFRAME_AC
+         std::cout << "begin current: " << std::endl;
+         current.first.printListAC();
+         assert(current.first.hasInListAC("SA_INIT"));
+         std::cout << "begin se: " << std::endl;
+         se.first.printListAC();
+         assert(se.first.hasInListAC("SA_INIT"));
+         std::cout << std::endl;
+#endif
+*/
          //S* sCurrent = &s.clone();
          //Evaluation<>* eCurrent = &e.clone();
          //S& sCurrent = current.first;
@@ -252,10 +287,48 @@ public:
          move->applyUpdate(current);
          evaluator->reevaluate(current);
 
+         /*
+#ifdef OPTFRAME_AC
+         // requires first part of solution to be a component
+         static_assert(XRSolution<typename XSH::first_type, typename XSH::first_type::typeR>);
+         {
+            std::stringstream ss;
+            ss << move->toString();
+            current.first.listAC.push_back(ContextAC{ .id{ "SA_MOVE_APPLY" }, .message{ ss.str() }, .payload{ move->sharedClone() } });
+         }
+         //
+         //star->first.printListAC();
+#endif
+*/
          //if (evaluator.betterThan(eCurrent, e)) // TODO: replace by 'se' here, and use 'se.second' to compare directly
          //if(eCurrent.betterStrict(e))
          if (evaluator->betterStrict(current.second, se.second)) {
             se = current;
+
+// CONSIDER THAT MOVE IS PERFORMED HERE!!
+#ifdef OPTFRAME_AC
+            // requires first part of solution to be a component
+            static_assert(XRSolution<typename XSH::first_type, typename XSH::first_type::typeR>);
+            {
+               std::stringstream ss;
+               ss << move->toString();
+               se.first.listAC.push_back(ContextAC{ .id{ "SA_MOVE_APPLY_GOOD" }, .message{ ss.str() }, .payload{ move->sharedClone() } });
+            }
+            //
+            //star->first.printListAC();
+#endif
+
+            /*
+#ifdef OPTFRAME_AC
+            std::cout << "current: " << std::endl;
+            current.first.printListAC();
+            assert(current.first.hasInListAC("SA_MOVE_APPLY"));
+            std::cout << "se: " << std::endl;
+            se.first.printListAC();
+            assert(se.first.hasInListAC("SA_MOVE_APPLY"));
+            std::cout << std::endl;
+#endif
+*/
             // if improved, accept it
             //e = *eCurrent;
             //s = *sCurrent;
@@ -270,9 +343,39 @@ public:
                //delete eStar;
                //eStar = &e.clone();
                star = make_optional(se);
+               /*
+#ifdef OPTFRAME_AC
+               std::cout << "se: " << std::endl;
+               se.first.printListAC();
+               assert(se.first.hasInListAC("SA_MOVE_APPLY"));
+               std::cout << "star: " << std::endl;
+               star->first.printListAC();
+               //assert(star->first.hasInListAC("SA_MOVE_APPLY"));
+               assert(star->first.listAC.size() == se.first.listAC.size());
+#endif
+   */
 
                cout << "Best fo: " << se.second.evaluation() << " Found on Iter = " << ctx.iterT << " and T = " << ctx.T;
                cout << endl;
+
+#ifdef OPTFRAME_AC
+               // requires first part of solution to be a component
+               static_assert(XRSolution<typename XSH::first_type, typename XSH::first_type::typeR>);
+               {
+                  std::stringstream ss;
+                  ss << star->second.evaluation();
+                  star->first.listAC.push_back(ContextAC{ .id{ "SA_NEW_STAR" }, .message{ ss.str() }, .payload{ star->first.sharedClone() } });
+               }
+               //
+               //star->first.printListAC();
+#endif
+
+               /*
+#ifdef OPTFRAME_AC
+               assert(se.first.hasInListAC("SA_MOVE_APPLY"));
+               assert(star->first.hasInListAC("SA_MOVE_APPLY"));
+#endif
+*/
             }
          } else {
             // 'current' didn't improve, but may accept it anyway
@@ -288,6 +391,19 @@ public:
                // } else {
                //delete sCurrent;
                //delete eCurrent;
+
+// CONSIDER THAT MOVE IS PERFORMED HERE!!
+#ifdef OPTFRAME_AC
+               // requires first part of solution to be a component
+               static_assert(XRSolution<typename XSH::first_type, typename XSH::first_type::typeR>);
+               {
+                  std::stringstream ss;
+                  ss << move->toString();
+                  se.first.listAC.push_back(ContextAC{ .id{ "SA_MOVE_APPLY_BAD" }, .message{ ss.str() }, .payload{ move->sharedClone() } });
+               }
+               //
+               //star->first.printListAC();
+#endif
             }
          }
 
@@ -295,6 +411,19 @@ public:
          onBeforeLoopCtx(ctx);
       }
       std::cout << "T=" << ctx.T << std::endl;
+
+#ifdef OPTFRAME_AC
+      // requires first part of solution to be a component
+      static_assert(XRSolution<typename XSH::first_type, typename XSH::first_type::typeR>);
+      {
+         std::stringstream ss;
+         ss << star->second.evaluation();
+         star->first.listAC.push_back(ContextAC{ .id{ "SA_FINAL" }, .message{ ss.str() }, .payload{ star->first.sharedClone() } });
+      }
+      //
+      //std::cout << "SA: final star" << std::endl;
+      //star->first.printListAC();
+#endif
 
       return { SearchStatus::NO_REPORT, star };
    }

@@ -151,6 +151,40 @@ main(int argc, char** argv)
       new NSEnumSwap(tsp.p, rg)
    };
 
+   // ============
+
+   std::cout << "WILL START SIMULATED ANNEALING!" << std::endl;
+
+   BasicSimulatedAnnealing<ESolutionTSP> sa(
+     eval,
+     randomTSP,
+     enumswap,
+     0.98,
+     100,
+     99999,
+     rg2);
+
+   auto status = sa.search(
+     StopCriteria<ESolutionTSP::second_type>{ 10.0 }); // 10.0 seconds max
+
+   ESolutionTSP best = *status.best; //*sa.getBestSolution();
+
+#ifdef OPTFRAME_AC
+   std::cout << "mainTSP: final best " << std::endl;
+   best.first.printDistinctListAC();
+#endif
+
+   // best solution value
+   best.second.print();
+
+#ifdef OPTFRAME_AC
+   std::cout << "Search Path Length = " << best.first.listAC.size() << std::endl;
+#endif
+
+   //return 1;
+
+   // =============
+
    // Basic test for Neighborhood Exploration
    FirstImprovingNeighbor<ESolutionTSP> fin(eval, enumswap);
    // =======================================

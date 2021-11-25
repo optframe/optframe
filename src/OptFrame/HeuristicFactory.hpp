@@ -396,12 +396,12 @@ public:
    // ================================================================
 
    HeuristicFactory()
-     : rg(*new RandGen)
+     : rg{ new RandGen }
    {
    }
 
-   HeuristicFactory(RandGen _rg)
-     : rg(*new RandGen(_rg))
+   HeuristicFactory(sref<RandGen> _rg)
+     : rg{ _rg }
    {
    }
 

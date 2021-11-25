@@ -26,6 +26,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
+#include <vector> // only for OPTFRAME_AC
 
 #include <OptFrame/SemStream.hpp>
 
@@ -33,10 +34,12 @@ namespace optframe {
 
 //using std::string = std::string;
 
+/*
 // OPTFRAME ALGORITHM COMPREHENSION FLAG
 #ifndef OPTFRAME_FAST
 #define OPTFRAME_AC
 #endif
+*/
 
 /*
 struct Log
@@ -98,6 +101,16 @@ enum StringFormat
    Human = 1,     // human readable
    NoSpaces = 2,  // raw: no spaces (undescore is allowed)
    JSON = 3       // json format
+};
+
+class Component;
+
+class ContextAC
+{
+public:
+   std::string id;
+   std::string message;
+   std::shared_ptr<Component> payload;
 };
 
 class Component
@@ -206,6 +219,49 @@ public:
    virtual ~Component()
    {
    }
+
+#ifdef OPTFRAME_AC
+   // clones current Component and it is either: (i) optional (by nullptr); (ii) a shared_ptr instance as output
+   virtual std::shared_ptr<Component> sharedClone() const
+   {
+      return nullptr;
+   }
+
+   // list for algorithm comprehension / search comprehension
+   std::vector<ContextAC> listAC;
+
+   bool hasInListAC(std::string _id)
+   {
+      for (unsigned i = 0; i < listAC.size(); i++)
+         if (listAC[i].id == _id)
+            return true;
+      return false;
+   }
+
+   void printListAC()
+   {
+      std::cout << "ContextAC list for '" << id() << "': [";
+      for (unsigned i = 0; i < listAC.size(); i++)
+         std::cout << listAC[i].id << " {" << listAC[i].message << "} ; ";
+      std::cout << "]" << std::endl;
+   }
+
+   void printDistinctListAC()
+   {
+      std::cout << "ContextAC distinct list for '" << id() << "': [";
+      std::string lastId = "";
+      int count = 0;
+      for (unsigned i = 0; i < listAC.size(); i++) {
+         count++;
+         if (listAC[i].id != lastId) {
+            std::cout << " |" << count << "|; ... => " << listAC[i].id << " {" << listAC[i].message << "} ";
+            lastId = listAC[i].id;
+            count = 0;
+         }
+      }
+      std::cout << "]" << std::endl;
+   }
+#endif
 
    static std::string idComponent()
    {

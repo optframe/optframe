@@ -203,9 +203,17 @@ public:
       return make_optional(Evaluation<>(f, 0));
    }
 
+   /*
    void print() const override
    {
       cout << "MoveSwap between " << c1 << " and " << c2 << endl;
+   }
+*/
+   std::string toString() const override
+   {
+      std::stringstream ss;
+      ss << "MoveSwap(" << c1 << ";" << c2 << ")";
+      return ss.str();
    }
 
    virtual bool operator==(const Move<ESolutionTSP>& _m) const
@@ -217,6 +225,15 @@ public:
       else
          return false;
    }
+
+#ifdef OPTFRAME_AC
+   std::shared_ptr<Component> sharedClone() const override
+   {
+      std::shared_ptr<Component> sptr{ new MoveSwap(c1, c2, tsp) };
+      sptr->listAC = this->listAC;
+      return sptr;
+   }
+#endif
 
    virtual bool toStream(std::ostream& os) const override
    {
