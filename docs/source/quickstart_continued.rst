@@ -8,8 +8,8 @@ for the classic 0-1 Knapsack Problem (01KP).
 
 We demonstrate how to update this code for other metaheuristics, for the classic Traveling Salesman Problem (TSP).
 
-Problem definition and exploration methods
-------------------------------------------
+Second example: Traveling Salesman Problem, Local Search and Random Keys Genetic Algorithm
+------------------------------------------------------------------------------------------
 
 At this point, we assume the reader is familiarized with the Traveling Salesman Problem...
 we intend to expand this section in the future with figures and more motivation (for now, sorry, and let's move on).
