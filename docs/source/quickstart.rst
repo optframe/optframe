@@ -113,8 +113,8 @@ A deeper explanation of OptFrame theoretical foundations can be found on `Concep
 section, so we will move fast here!
 
 
-First Example: 0-1 Knapsack Problem
------------------------------------
+First Example: 0-1 Knapsack Problem and Simulated Annealing
+-----------------------------------------------------------
 
 Let's consider a classic problem: the 0-1 Knapsack Problem (KP).
 
