@@ -396,7 +396,7 @@ We provide the main file for TSP BRKGA :code:`mainTSP-fcore-brkga.cpp`.
     :language: c++
 
 More Examples 
-^^^^^^^^^^^^^
+-------------
 
 For a other examples, see folder Examples/FCore-BRKGA and execute :code:`bazel build ...`
 
