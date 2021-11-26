@@ -47,6 +47,9 @@ using namespace std;
 
 #include <OptFrame/Heuristics/NSearch/FirstImprovingNeighbor.hpp>
 
+//
+#include <OptFrame/Heuristics/LocalSearches/MultiImprovement.hpp>
+
 #include <OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp>
 #include <OptFrame/Loader.hpp>
 ////#include "../OptFrame/Util/BuildCommand.hpp"  // TODO: return after Concepts OptFrame v4

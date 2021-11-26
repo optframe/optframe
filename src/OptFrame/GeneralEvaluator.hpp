@@ -59,9 +59,15 @@ class GeneralEvaluator //: public Component // SHOULD BE PURE HERE, OTHERWISE BR
    // Before, it was hard/impossible to do on Evaluation, due to overhead... but now, it may be the case.
    // If XEvaluation actually represents Objective Space, it should also contain guiding directions.
 
+   using typeXES = XES;
+   using typeXEv = XEv;
+   using typeXSH = XSH;
+
 public:
    GeneralEvaluator()
    {
+      //sum_time = 0.0;
+      //num_calls = 0;
    }
 
    virtual ~GeneralEvaluator()

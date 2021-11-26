@@ -50,6 +50,11 @@ public:
       return true;
    }
 
+   virtual bool supportsMoveIndependence() const
+   {
+      return false;
+   }
+
    virtual uptr<Move<XES, XEv, XSH>> randomMove(const XES&) = 0;
 
    virtual uptr<Move<XES, XEv, XSH>> validRandomMove(const XES& se)

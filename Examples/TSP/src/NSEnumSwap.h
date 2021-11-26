@@ -61,8 +61,24 @@ public:
    bool canBeApplied(const ESolutionTSP& s) override
    {
       // If there are some move "MoveSwap" that can't be applied, implement this method
+      //
 
-      return true;
+      // only allows lower half quadratic moves
+      return (c1 < c2) && (c1 != 0);
+   }
+
+   bool independentOf(const Move<ESolutionTSP>& _m) override
+   {
+      auto& m = (MoveSwap&)_m;
+
+      assert(c1 < c2);
+      assert(m.c1 < m.c2);
+
+      bool conflicts = (::abs(c1 - m.c1) <= 1) || (::abs(c1 - m.c2) <= 1) || (::abs(c2 - m.c1) <= 1) || (::abs(c2 - m.c2) <= 1);
+
+      conflicts = conflicts || ((c1 == 0) && (c2 == tsp->n - 1));
+
+      return !conflicts;
    }
 
    uptr<Move<ESolutionTSP>> apply(ESolutionTSP& s) override
@@ -274,6 +290,12 @@ public:
      , pI(pI)
      , n(pI->n)
    {
+   }
+
+   // this NS type supports Move Independence
+   bool supportsMoveIndependence() const override
+   {
+      return true;
    }
 
    // given index, returns (i,j), with 0 < i < j < n-1

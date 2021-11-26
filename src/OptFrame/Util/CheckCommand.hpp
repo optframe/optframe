@@ -111,6 +111,11 @@ struct CountDataCheckCommand
    // used on run independent
    vector<vector<int>> vCountIndependentSamples;
    vector<vector<int>> vCountMovePairsSamples;
+   // count good and bad examples
+   vector<vector<int>> vCountTPIndependentSamples;
+   vector<vector<int>> vCountFPIndependentSamples;
+   vector<vector<int>> vCountTNIndependentSamples;
+   vector<vector<int>> vCountFNIndependentSamples;
 
    void initialize(int nsseq_size, int nsenum_size)
    {
@@ -122,6 +127,11 @@ struct CountDataCheckCommand
 
       this->vCountIndependentSamples = vector<vector<int>>(nsseq_size);
       this->vCountMovePairsSamples = vector<vector<int>>(nsseq_size);
+
+      this->vCountTPIndependentSamples = vector<vector<int>>(nsseq_size);
+      this->vCountTNIndependentSamples = vector<vector<int>>(nsseq_size);
+      this->vCountFPIndependentSamples = vector<vector<int>>(nsseq_size);
+      this->vCountFNIndependentSamples = vector<vector<int>>(nsseq_size);
    }
 };
 
@@ -1441,6 +1451,11 @@ private:
       vector<vector<int>>& vCountIndependentSamples = countData.vCountIndependentSamples;
       vector<vector<int>>& vCountMovePairsSamples = countData.vCountMovePairsSamples;
 
+      vector<vector<int>>& vCountTPIndependentSamples = countData.vCountTPIndependentSamples;
+      vector<vector<int>>& vCountTNIndependentSamples = countData.vCountTNIndependentSamples;
+      vector<vector<int>>& vCountFPIndependentSamples = countData.vCountFPIndependentSamples;
+      vector<vector<int>>& vCountFNIndependentSamples = countData.vCountFNIndependentSamples;
+
       for (unsigned id_nsseq = 0; id_nsseq < lNSSeq.size(); id_nsseq++) {
          std::shared_ptr<NSSeq<XES, XEv>> nsseq = lNSSeq.at(id_nsseq);
 
@@ -1462,6 +1477,15 @@ private:
 
             int countMovePairs = 0;
             int countMoveIndependent = 0;
+            //
+            // count true positive
+            int countTPMoveIndependent = 0;
+            // count false positive
+            int countFPMoveIndependent = 0;
+            // count true negative
+            int countTNMoveIndependent = 0;
+            // count false negative
+            int countFNMoveIndependent = 0;
             //
             // SOLUTION ZERO WILL BE REFERENCE (SHOULD NOT MATTER!!! BECAUSE OF isSolutionIndependent())
             //
@@ -1541,8 +1565,12 @@ private:
                         }
                         //delete cost2_m2;
                         //delete cost_m2;
-                     }
+                        //
+                     } // for (solutions)
 
+                     // ==================================================
+                     // check for "apparent" support of independence
+                     //
                      if (!conflict) {
                         // if here, m1 'could' be independent from m2
                         countMoveIndependent++;
@@ -1553,15 +1581,38 @@ private:
                            allMoves.at(m2)->print(); // TODO: fix leak
                            cout << endl;
                         }
-                     }
-                  }
-               }
+                     } // if (!conflict)
+
+                     // ==================================================
+                     // check if move independence is officially supported
+                     //
+                     if (nsseq->supportsMoveIndependence()) {
+                        bool realIndep = allMoves.at(m1)->independentOf(*allMoves.at(m2));
+                        bool indep = !conflict;
+                        // true positive
+                        countTPMoveIndependent += indep && realIndep;
+                        // false positive
+                        countFPMoveIndependent += indep && !realIndep;
+                        // true negative
+                        countTNMoveIndependent += !indep && !realIndep;
+                        // false negative
+                        countFNMoveIndependent += !indep && realIndep;
+                     } // if officialy supported move independence
+                  }    // first if !conflict
+               }       // for every move
                cout << "checkcommand: found " << count_ind_m1 << " independent move pairs." << endl;
             }
 
             //Aigor - Check if this counter is right - Any example was tested here
             vCountMovePairsSamples[id_nsseq].push_back(countMovePairs);
             vCountIndependentSamples[id_nsseq].push_back(countMoveIndependent);
+            //
+            // add good and bad (if officially supported)
+            vCountTPIndependentSamples[id_nsseq].push_back(countTPMoveIndependent);
+            vCountTNIndependentSamples[id_nsseq].push_back(countTNMoveIndependent);
+            vCountFPIndependentSamples[id_nsseq].push_back(countFPMoveIndependent);
+            vCountFNIndependentSamples[id_nsseq].push_back(countFNMoveIndependent);
+            //
 
             // clears all used moves
             for (unsigned k = 0; k < allMoves.size(); k++)
@@ -1624,6 +1675,12 @@ private:
       printSummarySimpleSamples(convertVector(lNSSeq), countData.vCountMovePairsSamples, "NSSeq", "counting general move pairs for NSSeq with isSolutionIndependent()");
 
       printSummarySimpleSamples(convertVector(lNSSeq), countData.vCountIndependentSamples, "NSSeq", "counting independent move pairs for NSSeq with isSolutionIndependent()");
+
+      // confusion matrix for multi improvement
+      printSummarySimpleSamples(convertVector(lNSSeq), countData.vCountTPIndependentSamples, "NSSeq", "counting True Positive independence (estimated independent and it is officially independent) move pairs for NSSeq (officially supported) with isSolutionIndependent()");
+      printSummarySimpleSamples(convertVector(lNSSeq), countData.vCountTNIndependentSamples, "NSSeq", "counting True Negative independent (estimated conflict and it is officially conflict) move pairs for NSSeq (officially supported) with isSolutionIndependent()");
+      printSummarySimpleSamples(convertVector(lNSSeq), countData.vCountFPIndependentSamples, "NSSeq", "counting False Positive independent (estimated independent and it is officially conflict) move pairs for NSSeq (officially supported) with isSolutionIndependent()");
+      printSummarySimpleSamples(convertVector(lNSSeq), countData.vCountFNIndependentSamples, "NSSeq", "counting False Negative independent (estimated conflict and it is officially independent) move pairs for NSSeq (officially supported) with isSolutionIndependent()");
    }
 
 private:
