@@ -1062,8 +1062,7 @@ private:
          cout << "checkcommand: testing Move " << id_move << " => " << pmove->toString() << endl;
 
          for (unsigned id_s = 0; id_s < solutions.size(); id_s++) {
-            if (verbose)
-               cout << endl;
+
             message(lMove.at(id_move).get(), -1, "working on move.");
 
             //CopySolution<R, ADS>& s = *solutions.at(id_s);
@@ -1090,9 +1089,6 @@ private:
          }
       }
 
-      if (verbose)
-         cout << endl
-              << endl;
       return true;
    }
 
@@ -1120,8 +1116,6 @@ private:
             message(lNS.at(id_ns), iter, "starting tests!");
 
             for (unsigned id_s = 0; id_s < solutions.size(); id_s++) {
-               if (verbose)
-                  cout << endl;
 
                stringstream ss_msg1;
                ss_msg1 << "generating random move for solution id=" << id_s;
@@ -1158,9 +1152,6 @@ private:
          }
 
          cout << "checkcommand: " << lNS.at(id_ns)->id() << " finished." << endl;
-         if (verbose)
-            cout << endl
-                 << endl;
       }
       return true;
    }
@@ -1211,8 +1202,8 @@ private:
 
             for (it->first(); !it->isDone(); it->next()) {
                if (verbose)
-                  cout << endl;
-               message(lNSSeq.at(id_nsseq), nqs, "getting current move (NSSeq tests).");
+                  // cout << endl;
+                  message(lNSSeq.at(id_nsseq), nqs, "getting current move (NSSeq tests).");
 
                // TODO: verify if it's not null!
                uptr<Move<XES, XEv, XES>> pmove = it->current();
@@ -1244,9 +1235,6 @@ private:
          }
 
          cout << "checkcommand: " << lNSSeq.at(id_nsseq)->id() << " finished." << endl;
-         if (verbose)
-            cout << endl
-                 << endl;
       }
       return true;
    }
@@ -1427,9 +1415,6 @@ private:
          */
 
          cout << "checkcommand: " << lNSEnum.at(id_nsenum)->id() << " finished." << endl;
-         if (verbose)
-            cout << endl
-                 << endl;
       }
       return true;
    }
@@ -1499,8 +1484,7 @@ private:
             std::vector<Move<XES>*> allMoves;
 
             for (it->first(); !it->isDone(); it->next()) {
-               if (verbose)
-                  cout << endl;
+
                allMoves.push_back(it->current().release());
             }
 
@@ -1621,9 +1605,6 @@ private:
          }
 
          cout << "checkcommand: " << lNSSeq.at(id_nsseq)->id() << " finished." << endl;
-         if (verbose)
-            cout << endl
-                 << endl;
       }
       return true;
    }
