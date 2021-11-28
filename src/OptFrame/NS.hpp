@@ -44,10 +44,10 @@ public:
 public:
    // returns 'true' if moves generated from this neighborhood are solution-independent
    // this means that a move generated for solution s1 could also be applied to solution s2
-   // default is 'true', but if this is 'false', one should be specially careful on canBeApplied tests
+   // default is 'false' for safety precautions. if this is 'false', one should be VERY careful on canBeApplied tests
    virtual bool isSolutionIndependent() const
    {
-      return true;
+      return false;
    }
 
    virtual bool supportsMoveIndependence() const
