@@ -77,7 +77,7 @@ public:
 
       // add everything to the HeuristicFactory 'hf'
 
-      sref<TSPEvaluator> eval = new TSPEvaluator(p);
+      sref<TSPEvaluator> eval{ new TSPEvaluator(p) };
       hf.addComponent(eval, Evaluator<SolutionTSP, EvaluationTSP>::idComponent());
 
       sref<RandomInitialSolutionTSP> is = new RandomInitialSolutionTSP(p, eval, hf.getRandGen());

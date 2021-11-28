@@ -56,24 +56,27 @@ public:
 
    virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& sosc) override
    {
+      if (Component::information)
+         std::cout << "HillClimbing (ls=" << ls->toString() << ") starts." << std::endl;
       //S& s = se.first;
       XEv& e = se.second;
       //
-      double timelimit = sosc.timelimit;
-
-      long tini = time(nullptr);
+      //double timelimit = sosc.timelimit;
+      //long tini = time(nullptr);
 
       //Evaluation<>* e0 = &e.clone();
       XEv e0(e); // avoid that using return status on 'exec'
 
+      if (Component::information)
+         std::cout << "HillClimbing invoking ls=" << ls->toString() << std::endl;
       ls->searchFrom(se, sosc);
 
-      long tnow = time(nullptr);
+      //long tnow = time(nullptr);
 
       // while improvement is found
       //while ((evaluator.betterThan(e, e0)) && ((tnow - tini) < timelimit))
       //while ((e.betterStrict(e0)) && ((tnow - tini) < timelimit))
-      while ((evaluator->betterStrict(e, e0)) && ((tnow - tini) < timelimit)) {
+      while ((evaluator->betterStrict(e, e0)) && !sosc.shouldStop(e)) { //((tnow - tini) < timelimit)) {
          //delete e0;
          //e0 = &e.clone();
 
@@ -82,27 +85,38 @@ public:
 
          ls->searchFrom(se, sosc);
 
-         tnow = time(nullptr);
+         //tnow = time(nullptr);
       }
 
       return SearchStatus::NO_REPORT;
    }
 
-   virtual bool compatible(string s)
+   virtual bool
+   compatible(string s)
    {
       return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
    }
 
-   virtual string id() const
+   virtual string
+   id() const
    {
       return idComponent();
    }
 
-   static string idComponent()
+   static string
+   idComponent()
    {
       stringstream ss;
       ss << LocalSearch<XES, XEv>::idComponent() << ":HC";
       return ss.str();
+   }
+
+   virtual bool
+   setVerboseR() override
+   {
+      this->setVerbose();
+      //evaluator->setVerboseR();
+      return ls->setVerboseR();
    }
 };
 
@@ -157,7 +171,6 @@ public:
       return idComponent();
    }
 };
-
 }
 
 #endif /*OPTFRAME_HILLCLIMBING_HPP_*/

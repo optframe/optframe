@@ -64,7 +64,8 @@ public:
       //
 
       // only allows lower half quadratic moves
-      return (c1 < c2) && (c1 != 0);
+      //return (c1 < c2) && (c1 != 0);
+      return true;
    }
 
    bool independentOf(const Move<ESolutionTSP>& _m) override
@@ -74,9 +75,13 @@ public:
       assert(c1 < c2);
       assert(m.c1 < m.c2);
 
-      bool conflicts = (::abs(c1 - m.c1) <= 1) || (::abs(c1 - m.c2) <= 1) || (::abs(c2 - m.c1) <= 1) || (::abs(c2 - m.c2) <= 1);
+      // (0,1) nao existe!! pq são adjacentes!         0  1* 2 3* 4 5 6* 7 8* 9           0*  1 2* 3 4 5 6 7* 8 9* -> 0
+      // (c1,c2) -> (1, 3)     (6,8)
+      // são independentes?
 
-      conflicts = conflicts || ((c1 == 0) && (c2 == tsp->n - 1));
+      bool conflicts = (::abs(c1 - m.c1) <= 2) || (::abs(c1 - m.c2) <= 2) || (::abs(c2 - m.c1) <= 2) || (::abs(c2 - m.c2) <= 2);
+
+      conflicts = conflicts || ((c1 == 0) && (c2 == tsp->n - 1)) || ((c1 == 0) && (c2 == tsp->n - 2));
 
       return !conflicts;
    }

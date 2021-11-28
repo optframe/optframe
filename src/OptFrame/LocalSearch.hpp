@@ -108,6 +108,12 @@ public:
    {
       return idComponent();
    }
+
+   virtual bool setVerboseR() override
+   {
+      this->setVerbose();
+      return true;
+   }
 };
 
 template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = XES>

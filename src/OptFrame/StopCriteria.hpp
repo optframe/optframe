@@ -177,7 +177,12 @@ public:
    // helper method: returns true if timer expired
    bool timerExpired() const
    {
-      return timelimit == 0.0 ? false : localTimer.now() >= timelimit;
+      return timelimit == 0.0 ? false : getTime() >= timelimit;
+   }
+
+   double getTime() const
+   {
+      return localTimer.now();
    }
 
    // helper method: returns true if evaluation count expired (TODO: maybe move this to inheritance...)
