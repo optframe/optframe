@@ -25,6 +25,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <memory> // for shared_ptr
 #include <sstream>
 #include <vector> // only for OPTFRAME_AC
 
