@@ -59,6 +59,8 @@ class MultiImprovement : public LocalSearch<XES, XEv>
 private:
    sref<GeneralEvaluator<XES, XEv>> eval;
    sref<NSSeq<XES, XEv, XSH>> nsSeq;
+   // cost "zero"
+   XEv stopCost;
    //
    using objType = typename XEv::objType;
    //
@@ -69,13 +71,10 @@ public:
            v.begin(),
            v.end(),
            [this](const std::pair<XEv, int>& e1, const std::pair<XEv, int>& e2) -> bool {
-              return this->eval.betterStrict(e1.first, e2.first);
+              return this->eval->betterStrict(e1.first, e2.first);
            });
       }
    };
-
-   // cost "zero"
-   XEv stopCost;
 
 public:
    //
@@ -88,9 +87,9 @@ public:
      , stopCost{ _stopCost } // stopCost is typically 0 (or 0.0), for Sing.Obj.Problems
    {
       // only allow NSSeq which is Solution Independent
-      assert(nsSeq.isSolutionIndependent());
+      assert(nsSeq->isSolutionIndependent());
       // only allow NSSeq which explictly supports Move Independence
-      assert(nsSeq.supportsMoveIndependence());
+      assert(nsSeq->supportsMoveIndependence());
    }
 
    virtual ~MultiImprovement()
@@ -120,7 +119,7 @@ public:
       //
       std::vector<Move<XES, XEv, XSH>*> allMoves;
       for (it->first(); !it->isDone(); it->next())
-         allMoves.push_back(it->current()->release());
+         allMoves.push_back(it->current().release());
 
       if (allMoves.size() == 0) {
          if (Component::warning)
@@ -136,9 +135,9 @@ public:
          std::cout << "MI computing all costs" << std::endl;
       //
       std::vector<std::pair<XEv, int>> allCosts(allMoves.size());
-      for (int k = 0; k < allMoves.size(); k++)
+      for (int k = 0; k < (int)allMoves.size(); k++)
          if (allMoves[k]->canBeApplied(se))
-            allCosts[k] = std::make_pair(eval.moveCost(*allMoves[k], se), k);
+            allCosts[k] = std::make_pair(eval->moveCost(*allMoves[k], se), k);
          else
             allCosts[k].second = -1; // flag as useless
 
@@ -156,10 +155,17 @@ public:
       if (Component::information)
          std::cout << "MI selecting and applying" << std::endl;
       //
+      objType accumulate;
+      optframe::numeric_zero(accumulate);
+      //
+      int countAcc = 0;
+      //
       for (unsigned k = 0; k < allCosts.size(); k++) {
          // check if move was excluded
          if (allCosts[k].second != -1)
-            if (eval.betterStrict(allCosts[k].first, stopCost)) {
+            if (eval->betterStrict(allCosts[k].first, stopCost)) {
+               countAcc++;
+               accumulate += allCosts[k].first.getObjFunction();
                // ==========
                // apply move
                //
@@ -171,9 +177,14 @@ public:
                //
                for (unsigned c = k + 1; c < allCosts.size(); c++)
                   if (allCosts[c].second != -1)
-                     if (!allMoves[allCosts[k].second]->independentOf(allMoves[allCosts[c].second]))
+                     if (!allMoves[allCosts[k].second]->independentOf(*allMoves[allCosts[c].second]))
                         allCosts[c].second = -1; // flag as conflicting
             }
+      }
+
+      if (Component::information) {
+         std::cout << "MI count=" << countAcc << std::endl;
+         std::cout << "MI accumulate=" << accumulate << std::endl;
       }
 
       // ==============

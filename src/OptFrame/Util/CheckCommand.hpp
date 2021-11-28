@@ -1426,12 +1426,194 @@ private:
       //vector<vector<std::shared_ptr<XEv>>>& evaluations = solData.evaluations;
       vector<std::shared_ptr<Evaluator<SolOrRepType, XEv, XES>>>& evaluators = solData.evaluators;
 
+      if (lNS.size() > 0)
+         cout << "checkcommand  will test " << lNS.size() << " NS random components (nSolNSSeq=" << nSolNSSeq << " of numSolutions=" << solutions.size() << ")" << endl;
+
+      //
+      // NS
+      //
+
+      for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++) {
+         std::shared_ptr<NS<XES, XEv>> ns = lNS.at(id_ns);
+
+         cout << "checkcommand: testing NS " << id_ns << " => " << ns->toString();
+         cout << endl;
+         if (!ns->isSolutionIndependent()) {
+            cout << "checkcommand: WARNING ignoring NS " << id_ns << " isSolutionIndependent() returns FALSE -> " << ns->toString();
+            cout << endl;
+            continue;
+         }
+
+         if (paramCheckIndependent) {
+            cout << "checkcommand: will try to identify RANDOM independent moves from '" << ns->id() << "' (can take some time... deactivate with 'paramCheckIndependent=false')" << endl;
+            // indicate possible independent moves
+
+            // adopting Evaluator 0...
+            //Evaluator<S>& ev = *evaluators.at(0);
+            Evaluator<S, XEv, XES>& ev = *evaluators.at(0);
+
+            int countMovePairs = 0;
+            int countMoveIndependent = 0;
+            //
+            // count true positive
+            int countTPMoveIndependent = 0;
+            // count false positive
+            int countFPMoveIndependent = 0;
+            // count true negative
+            int countTNMoveIndependent = 0;
+            // count false negative
+            int countFNMoveIndependent = 0;
+            //
+            // SOLUTION ZERO WILL BE REFERENCE (SHOULD NOT MATTER!!! BECAUSE OF isSolutionIndependent())
+            //
+            S& s = *solutions.at(0);
+            XES se = make_pair(s, XEv());
+            //
+            std::cout << "checkcommand: randomizing " << nSolNSSeq * nSolNSSeq << " random moves" << std::endl;
+            //
+
+            //uptr<NSIterator<XES, XEv>> it = nsseq->getIterator(se);
+            //int countMoves = 0;
+            //int countValidMoves = 0;
+
+            std::vector<Move<XES>*> allMoves;
+            for (unsigned i = 0; i < nSolNSSeq * nSolNSSeq; i++)
+               allMoves.push_back(ns->randomMove(se).release());
+
+            //
+            // check for independence between moves m1 and m2
+            for (int m1 = 0; m1 < (int)allMoves.size(); m1++) {
+               // slow...
+               cout << "checkcommand: independence test for RANDOM move #" << m1 << " / " << allMoves.size() << endl;
+               int count_ind_m1 = 0;
+               for (int m2 = m1 + 1; m2 < int(allMoves.size()); m2++) {
+                  bool conflict = false;
+                  // compute another move pair
+                  countMovePairs++;
+
+                  if (!conflict) {
+                     // TODO: increase performance of this method
+                     for (unsigned sol = 0; sol < solutions.size(); sol++) {
+                        //CopySolution<R, ADS>& s = *solutions.at(sol);
+                        S& s = *solutions.at(sol);
+                        XES se = make_pair(s, XEv());
+
+                        // TODO: verify if return is return is not null!
+                        Move<XES, XEv, XES>* move1{ allMoves.at(m1) };
+                        Move<XES, XEv, XES>* move2{ allMoves.at(m2) };
+                        // moves must be valid
+                        if (!(move1->canBeApplied(se) && move2->canBeApplied(se)))
+                           break;
+                        // move 1 must have reverse
+                        if (!move1->hasReverse()) {
+                           cout << "checkcommand: NS independent RANDOM check expected reverse move... (deactivate with 'checkIndependent=false')" << endl;
+                           break;
+                        }
+
+                        // calculate cost for move 2
+                        ///MoveCost<>* cost_m2 = ev.moveCostComplete(move2, s);
+                        op<XEv> cost_m2 = ev.moveCostComplete(*move2, se);
+
+                        // apply move 1 (consider reverse is not nullptr)
+                        uptr<Move<XES, XEv, XES>> rev_m1 = move1->apply(se);
+
+                        // calculate new cost for move 2
+                        ///MoveCost<>* cost2_m2 = ev.moveCostComplete(move2, s);
+                        op<XEv> cost2_m2 = ev.moveCostComplete(*move2, se);
+
+                        // return solution to original value and free
+                        rev_m1->apply(se);
+                        //delete &rev_m1;
+                        //delete &move1;
+                        //delete &move2;
+
+                        // leave pointers
+                        //move1.release();
+                        //move2.release();
+
+                        // if costs differ, moves are not independent
+                        if (!ev.equals(*cost2_m2, *cost_m2)) {
+                           // mark conflict between m1 and m2
+                           conflict = true;
+                           //delete cost2_m2;
+                           //delete cost_m2;
+                           break;
+                        }
+                        //delete cost2_m2;
+                        //delete cost_m2;
+                        //
+                     } // for (solutions)
+
+                     // ==================================================
+                     // check for "apparent" support of independence
+                     //
+                     if (!conflict) {
+                        // if here, m1 'could' be independent from m2
+                        countMoveIndependent++;
+                        count_ind_m1++;
+                        if (verbose) {
+                           cout << "RANDOM independent(m1=" << m1 << ";m2=" << m2 << ")" << endl;
+                           allMoves.at(m1)->print(); // TODO: fix leak
+                           allMoves.at(m2)->print(); // TODO: fix leak
+                           cout << endl;
+                        }
+                     } // if (!conflict)
+
+                     // ==================================================
+                     // check if move independence is officially supported
+                     //
+                     if (ns->supportsMoveIndependence()) {
+                        bool realIndep = allMoves.at(m1)->independentOf(*allMoves.at(m2));
+                        bool indep = !conflict;
+                        // true positive
+                        countTPMoveIndependent += indep && realIndep;
+                        // false positive
+                        countFPMoveIndependent += indep && !realIndep;
+                        // true negative
+                        countTNMoveIndependent += !indep && !realIndep;
+                        // false negative
+                        countFNMoveIndependent += !indep && realIndep;
+                     } // if officialy supported move independence
+                  }    // first if !conflict
+               }       // for every move
+               cout << "checkcommand: found " << count_ind_m1 << " independent move pairs." << endl;
+            }
+
+            std::cout << "checkcommand: RANDOM independent short summary {";
+            std::cout << "countMovePairs=" << countMovePairs << " countMoveIndependent=" << countMoveIndependent << "}" << std::endl;
+
+            double accuracy = ((double)countTPMoveIndependent + countTNMoveIndependent) / countMovePairs;
+            double precision = ((double)countTPMoveIndependent) / (countTPMoveIndependent + countFPMoveIndependent);
+            double recall = ((double)countTPMoveIndependent) / (countTPMoveIndependent + countFNMoveIndependent);
+
+            std::cout << "checkcommand: RANDOM indep: accuracy=" << accuracy << " precision=" << precision << " recall=" << recall << std::endl;
+
+            /*
+            //Aigor - Check if this counter is right - Any example was tested here
+            vCountMovePairsSamples[id_nsseq].push_back(countMovePairs);
+            vCountIndependentSamples[id_nsseq].push_back(countMoveIndependent);
+            //
+            // add good and bad (if officially supported)
+            vCountTPIndependentSamples[id_nsseq].push_back(countTPMoveIndependent);
+            vCountTNIndependentSamples[id_nsseq].push_back(countTNMoveIndependent);
+            vCountFPIndependentSamples[id_nsseq].push_back(countFPMoveIndependent);
+            vCountFNIndependentSamples[id_nsseq].push_back(countFNMoveIndependent);
+            //
+            */
+
+            // clears all used moves
+            for (unsigned k = 0; k < allMoves.size(); k++)
+               delete allMoves.at(k);
+            allMoves.clear();
+         } // if param independent
+      }    // for NS
+
       // ====================================================================
       // testing every NSSeq that isSolutionIndependent()
       // ====================================================================
 
       if (lNSSeq.size() > 0)
-         cout << "checkcommand  will test " << lNSSeq.size() << " NSSeq (and NSEnum) components (nSolNSSeq=" << nSolNSSeq << " of numSolutions=" << solutions.size() << ")" << endl;
+         cout << "checkcommand  will test " << lNSSeq.size() << " NSSeq (and NSEnum) iterator-based components (nSolNSSeq=" << nSolNSSeq << " of numSolutions=" << solutions.size() << ")" << endl;
 
       vector<vector<int>>& vCountIndependentSamples = countData.vCountIndependentSamples;
       vector<vector<int>>& vCountMovePairsSamples = countData.vCountMovePairsSamples;
@@ -1586,6 +1768,15 @@ private:
                }       // for every move
                cout << "checkcommand: found " << count_ind_m1 << " independent move pairs." << endl;
             }
+
+            std::cout << "checkcommand: independent short summary {";
+            std::cout << "countMovePairs=" << countMovePairs << " countMoveIndependent=" << countMoveIndependent << "}" << std::endl;
+
+            double accuracy = ((double)countTPMoveIndependent + countTNMoveIndependent) / countMovePairs;
+            double precision = ((double)countTPMoveIndependent) / (countTPMoveIndependent + countFPMoveIndependent);
+            double recall = ((double)countTPMoveIndependent) / (countTPMoveIndependent + countFNMoveIndependent);
+
+            std::cout << "checkcommand: indep: accuracy=" << accuracy << " precision=" << precision << " recall=" << recall << std::endl;
 
             //Aigor - Check if this counter is right - Any example was tested here
             vCountMovePairsSamples[id_nsseq].push_back(countMovePairs);

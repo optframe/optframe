@@ -29,7 +29,7 @@ enum class SearchStatus : uint8_t
    // flag GENERAL_STOP = timelimit OR memory
    // GENERAL_STOP = 0x04, // removed!
    // stop by memory limit: intended stops only! out-of-memory errors should use FAILED flag only.
-   // if stop by time/memory is not set, it means method stopped by any 
+   // if stop by time/memory is not set, it means method stopped by any
    // other parameter: target, evaluation count, population count, ...
    // user must verify information logs in this case
    //
@@ -53,16 +53,23 @@ enum class SearchStatus : uint8_t
    // if this flag is NOT set, it means no improvement has been found (no evolution).
    // this flag SHOULD still be used when necessary, sometimes with or without LOCAL_OPT / GLOBAL_OPT flags.
    //
-   LOCAL_OPT = 0x40, // local optimum (if not set, no information is given). 
+   LOCAL_OPT = 0x40, // local optimum (if not set, no information is given).
    // this flag is NOT required when it's GLOBAL_OPT (but method designer may also provide this information, if useful)
    //
    GLOBAL_OPT = 0x80 // global optimum (if not set, it may be LOCAL_OPT)
    //
-   // TODO: do we need more? which? 
+   // TODO: do we need more? which?
    // ... LOWER_BOUND / UPPER_BOUND ? How to allow represent only evaluation and not include solution? TODO (IGOR): think... maybe some specific BoundSearch or RelaxationSearch ??..
    // ... sometimes, good also to result solution, and approximation value provided (ApproxSearch) approximative search (route + value + ~1.5 bound)
    // ... finally, maybe good to add Bound to input/output search format... return bound value or approximation in other param (with empty solution)
 };
+
+inline std::ostream&
+operator<<(std::ostream& os, const SearchStatus& ss)
+{
+   os << "SearchStatus(" << (int)ss << ")";
+   return os;
+}
 
 // advice from: https://stackoverflow.com/questions/1448396/how-to-use-enums-as-flags-in-c
 // not working yet...
@@ -106,12 +113,14 @@ operator|(SearchStatus a, SearchStatus b)
    return static_cast<SearchStatus>(static_cast<uint8_t>(a) | static_cast<uint8_t>(b));
 }
 
-inline constexpr SearchStatus operator&(SearchStatus a, SearchStatus b)
+inline constexpr SearchStatus
+operator&(SearchStatus a, SearchStatus b)
 {
    return static_cast<SearchStatus>(static_cast<uint8_t>(a) & static_cast<uint8_t>(b));
 }
 
-inline bool operator!(SearchStatus e)
+inline bool
+operator!(SearchStatus e)
 {
    return e == static_cast<SearchStatus>(0);
 }

@@ -303,6 +303,13 @@ public:
      : data_{ std::shared_ptr<T>{ data } }
    {}
 
+   /*   
+   template<typename... Args>
+   NNShared(Args&&... args)
+     : data_{ std::shared_ptr<T>{ new T(std::forward<Args>(args)...) } }
+   {}
+   */
+
    // disallow explicit nullptr
    NNShared(std::nullptr_t data) = delete;
 
