@@ -1588,6 +1588,8 @@ private:
             double precision = ((double)countTPMoveIndependent) / (countTPMoveIndependent + countFPMoveIndependent);
             double recall = ((double)countTPMoveIndependent) / (countTPMoveIndependent + countFNMoveIndependent);
 
+            if (!ns->supportsMoveIndependence())
+               std::cout << "checkcommand: WARNING supportsMoveIndependence() is false, so Accuracy may be zero (no real independence was tested!)" << std::endl;
             std::cout << "checkcommand: RANDOM indep: accuracy=" << accuracy << " precision=" << precision << " recall=" << recall << std::endl;
 
             /*
