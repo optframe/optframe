@@ -1581,6 +1581,8 @@ private:
 
             std::cout << "checkcommand: RANDOM independent short summary {";
             std::cout << "countMovePairs=" << countMovePairs << " countMoveIndependent=" << countMoveIndependent << "}" << std::endl;
+            std::cout << "checkcommand: RANDOM TP=" << countTPMoveIndependent << " TN=" << countTNMoveIndependent;
+            std::cout << " FP=" << countFPMoveIndependent << " FN=" << countFNMoveIndependent << std::endl;
 
             double accuracy = ((double)countTPMoveIndependent + countTNMoveIndependent) / countMovePairs;
             double precision = ((double)countTPMoveIndependent) / (countTPMoveIndependent + countFPMoveIndependent);
