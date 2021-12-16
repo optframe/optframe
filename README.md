@@ -343,7 +343,7 @@ Bento Gonçalves-RS, pp 1887-1898.
  
 ## Licence
 
-- (v4.2+): MIT License
+- (v4.2+): Dual License: MIT License / LGPLv3
 
 - (<= v4.1): [**LICENSE GNU Lesser General Public License v3**](https://github.com/optframe/optframe/blob/master/LICENSE)
 
