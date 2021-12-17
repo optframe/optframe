@@ -1,5 +1,5 @@
 
-pair<Evaluation<double>, vector<int>>
+pair<Evaluation<int>, vector<int>>
 fDecode(const vector<double>& rk)
 {
    vector<pair<double, int>> v(rk.size());
@@ -16,11 +16,11 @@ fDecode(const vector<double>& rk)
    for (unsigned i = 0; i < v.size(); i++)
       p[i] = v[i].second;
 
-   Evaluation<double> e = eval.evaluate(p);
+   Evaluation<int> e = eval.evaluate(p);
    return make_pair(e, p);
 }
 
 // evaluator random keys (for TSP)
-FDecoderRK<std::vector<int>, Evaluation<>, double, MinOrMax::MINIMIZE> decoder{
+FDecoderRK<std::vector<int>, Evaluation<int>, double, MinOrMax::MINIMIZE> decoder{
    fDecode
 };

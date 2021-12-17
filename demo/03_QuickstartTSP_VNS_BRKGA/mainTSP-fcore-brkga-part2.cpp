@@ -1,5 +1,5 @@
 
-class MyRandomKeysInitPop : public InitialPopulation<std::pair<std::vector<double>, Evaluation<double>>>
+class MyRandomKeysInitPop : public InitialPopulation<std::pair<std::vector<double>, Evaluation<int>>>
 {
    using RSK = std::vector<double>;
 
@@ -21,9 +21,9 @@ public:
    {
    }
 
-   Population<std::pair<RSK, Evaluation<double>>> generatePopulation(unsigned populationSize, double timelimit) override
+   Population<std::pair<RSK, Evaluation<int>>> generatePopulation(unsigned populationSize, double timelimit) override
    {
-      Population<std::pair<RSK, Evaluation<double>>> pop;
+      Population<std::pair<RSK, Evaluation<int>>> pop;
 
       for (unsigned i = 0; i < populationSize; i++) {
          vector<double>* d = new vector<double>(sz);

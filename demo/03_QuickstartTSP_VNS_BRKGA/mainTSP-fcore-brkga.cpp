@@ -17,7 +17,7 @@ using namespace optframe;
 using namespace scannerpp;
 //using namespace TSP_fcore;
 
-class MyRandomKeysInitPop : public InitialPopulation<std::pair<std::vector<double>, Evaluation<double>>>
+class MyRandomKeysInitPop : public InitialPopulation<std::pair<std::vector<double>, Evaluation<int>>>
 {
    using RSK = std::vector<double>;
 
@@ -39,9 +39,9 @@ public:
    {
    }
 
-   Population<std::pair<RSK, Evaluation<double>>> generatePopulation(unsigned populationSize, double timelimit) override
+   Population<std::pair<RSK, Evaluation<int>>> generatePopulation(unsigned populationSize, double timelimit) override
    {
-      Population<std::pair<RSK, Evaluation<double>>> pop;
+      Population<std::pair<RSK, Evaluation<int>>> pop;
 
       for (unsigned i = 0; i < populationSize; i++) {
          vector<double>* d = new vector<double>(sz);
@@ -53,7 +53,7 @@ public:
       return pop;
    }
 };
-pair<Evaluation<double>, vector<int>>
+pair<Evaluation<int>, vector<int>>
 fDecode(const vector<double>& rk)
 {
    vector<pair<double, int>> v(rk.size());
@@ -70,12 +70,12 @@ fDecode(const vector<double>& rk)
    for (unsigned i = 0; i < v.size(); i++)
       p[i] = v[i].second;
 
-   Evaluation<double> e = eval.evaluate(p);
+   Evaluation<int> e = eval.evaluate(p);
    return make_pair(e, p);
 }
 
 // evaluator random keys (for TSP)
-FDecoderRK<std::vector<int>, Evaluation<>, double, MinOrMax::MINIMIZE> decoder{
+FDecoderRK<std::vector<int>, Evaluation<int>, double, MinOrMax::MINIMIZE> decoder{
    fDecode
 };
 int
