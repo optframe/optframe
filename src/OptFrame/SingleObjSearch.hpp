@@ -108,6 +108,11 @@ public:
    {
       return idComponent();
    }
+
+   virtual std::string toString() const override
+   {
+      return id();
+   }
 };
 
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
@@ -141,6 +146,11 @@ public:
    virtual string id() const
    {
       return idComponent();
+   }
+
+   virtual std::string toString() const override
+   {
+      return id();
    }
 };
 

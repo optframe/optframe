@@ -124,6 +124,11 @@ public:
       return idComponent();
    }
 
+   virtual std::string toString() const override
+   {
+      return id();
+   }
+
    virtual void print() const
    {
       cout << fixed; // disable scientific notation

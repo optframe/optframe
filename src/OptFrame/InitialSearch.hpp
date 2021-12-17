@@ -61,6 +61,11 @@ public:
    {
       return idComponent();
    }
+
+   virtual std::string toString() const override
+   {
+      return id();
+   }
 };
 
 template<XESolution XES, XEvaluation XEv = typename XES::second_type, XSearch<XES> XSH = XES>

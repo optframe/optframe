@@ -61,7 +61,13 @@ public:
    {
       return idComponent();
    }
+
+   virtual std::string toString() const override
+   {
+      return id();
+   }
 };
+//
 } // namespace optframe
 
 #endif /*OPTFRAME_CONSTRUCTIVE_HPP_*/

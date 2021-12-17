@@ -180,6 +180,11 @@ public:
       return idComponent();
    }
 
+   virtual std::string toString() const override
+   {
+      return id();
+   }
+
    virtual void print() const
    {
       cout << "MultiESolution(" << p.size() << ")";

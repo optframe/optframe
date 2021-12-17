@@ -217,7 +217,7 @@ public:
       cout << toString() << endl;
    }
 
-   virtual string toString() const
+   virtual string toString() const override
    {
       stringstream ss;
       ss << "MultiEvaluation<> (" << vev.size() << "):";

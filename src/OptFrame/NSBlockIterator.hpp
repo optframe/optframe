@@ -105,6 +105,11 @@ public:
    {
       return idComponent();
    }
+
+   virtual std::string toString() const override
+   {
+      return id();
+   }
 };
 
 }

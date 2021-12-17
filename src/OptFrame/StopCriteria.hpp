@@ -207,6 +207,11 @@ public:
    {
       return "StopCriteria";
    }
+
+   virtual std::string toString() const override
+   {
+      return id();
+   }
 };
 
 template<XESolution XES, XEvaluation XEv, XSearchMethod XM>

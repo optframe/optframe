@@ -288,10 +288,10 @@ public:
    }
 
    // returns "" if unsupported
-   virtual std::string toString() const
-   {
-      return id();
-   }
+   virtual std::string toString() const = 0;
+   //{
+   //   return id();
+   //}
 
    /*
    // returns "" if unsupported

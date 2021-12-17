@@ -241,6 +241,11 @@ public:
       return idComponent();
    }
 
+   virtual std::string toString() const override
+   {
+      return id();
+   }
+
    virtual bool compatible(string s)
    {
       return (s == idComponent()) || (Component::compatible(s));
