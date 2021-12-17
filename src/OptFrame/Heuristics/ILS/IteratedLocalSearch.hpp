@@ -36,7 +36,7 @@
 
 namespace optframe {
 
-template<class H, XESolution XES, XEvaluation XEv = Evaluation<>>
+template<class H, XESolution XES, XEvaluation XEv = typename XES::second_type>
 class IteratedLocalSearch : public ILS
   , public SingleObjSearch<XES>
   , public ITrajectory<XES>
@@ -63,7 +63,7 @@ public:
 
    virtual void perturbation(XES& se, const StopCriteria<XEv>& stopCriteria, sref<H> history) = 0;
 
-   virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, sref<H> history) = 0;
+   virtual bool acceptanceCriterion(const XEv& e1, const XEv& e2, sref<H> history) = 0;
 
    virtual bool terminationCondition(sref<H> history) = 0;
 
@@ -82,7 +82,7 @@ public:
       if (!star)
          return SearchStatus::NO_SOLUTION;
 
-      Evaluation<>& eStar = star->second;
+      XEv& eStar = star->second;
       if (Component::information) {
          std::cout << "ILS::starting with evaluation:" << std::endl;
          eStar.print();
@@ -100,7 +100,7 @@ public:
       if (Component::information)
          std::cout << "ILS opt searchBy(" << stopCriteria.timelimit << ")" << std::endl;
 
-      Evaluation<>& eStar = star.second;
+      XEv& eStar = star.second;
       if (Component::information) {
          std::cout << "ILS::starting with evaluation:" << std::endl;
          eStar.print();

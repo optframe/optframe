@@ -41,7 +41,7 @@ using namespace std;
 namespace optframe {
 
 // TODO: may pass just XESolution and XEvaluation here (for StopCriteria)... no XSolution explicitly required.
-template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES> // defaults to XSH = XES
+template<XESolution XES, XEvaluation XEv = typename XES::second_type, XSearch<XES> XSH = XES> // defaults to XSH = XES
 class LocalSearch : public Component
 {
    typedef vector<XEv*> FitnessValues;

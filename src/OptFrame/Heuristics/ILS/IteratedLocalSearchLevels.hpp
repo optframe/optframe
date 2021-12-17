@@ -36,7 +36,7 @@ namespace optframe {
 
 typedef pair<pair<int, int>, pair<int, int>> levelHistory;
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = typename XES::second_type>
 class IteratedLocalSearchLevels : public IteratedLocalSearch<levelHistory, XES, XEv>
 {
 protected:
@@ -108,7 +108,7 @@ public:
       history->first.second = level;
    }
 
-   virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, sref<levelHistory> history)
+   virtual bool acceptanceCriterion(const XEv& e1, const XEv& e2, sref<levelHistory> history) override
    {
       //cout << "acceptanceCriterion(.)" << endl;
 

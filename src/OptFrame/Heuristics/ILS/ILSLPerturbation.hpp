@@ -33,7 +33,7 @@
 
 namespace optframe {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = typename XES::second_type>
 class ILSLPerturbation : public Component
   , public ILS
 {
@@ -62,7 +62,7 @@ public:
    }
 };
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = typename XES::second_type>
 class ILSLPerturbationLPlus2 : public ILSLPerturbation<XES, XEv>
 {
 private:
@@ -130,7 +130,7 @@ public:
    }
 };
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = typename XES::second_type>
 class ILSLPerturbationLPlus2Prob : public ILSLPerturbation<XES, XEv>
 {
 private:

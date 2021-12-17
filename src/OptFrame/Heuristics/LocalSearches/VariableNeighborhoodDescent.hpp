@@ -33,7 +33,7 @@
 namespace optframe {
 
 //When RandGen is given as parameter it performs RVND
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
+template<XESolution XES, XEvaluation XEv = typename XES::second_type>
 class VariableNeighborhoodDescent : public LocalSearch<XES, XEv>
 {
 private:
