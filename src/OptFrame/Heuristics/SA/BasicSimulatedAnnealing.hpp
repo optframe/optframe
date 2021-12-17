@@ -87,6 +87,13 @@ public:
       Ti = (_Ti);
    }
 
+   virtual ~BasicSimulatedAnnealing()
+   {
+      //for (unsigned i = 0; i < neighbors.size(); i++)
+      //   neighbors[i] = nullptr;
+      neighbors.clear();
+   }
+
    struct SearchContext
    {
       BasicSimulatedAnnealing<XES>& self;
@@ -468,12 +475,14 @@ public:
    // has sptr instead of sref, is that on purpose or legacy class?
    virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
+
       if (!scanner.hasNext()) {
          std::cout << "no next1a! aborting..." << std::endl;
          return nullptr;
       }
       sptr<GeneralEvaluator<XES, XEv>> eval;
       hf.assignGE(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
+      assert(eval);
 
       if (!scanner.hasNext()) {
          std::cout << "no next1b! aborting..." << std::endl;
@@ -482,6 +491,9 @@ public:
       //Constructive<S>* constructive;
       sptr<InitialSearch<XES, XEv>> constructive;
       hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
+      assert(constructive);
+
+      //return nullptr;
 
       if (!scanner.hasNext()) {
          std::cout << "no next1c! aborting..." << std::endl;
@@ -490,8 +502,10 @@ public:
       vsptr<NS<XES, XEv>> _hlist;
       hf.assignList(_hlist, *scanner.nextInt(), scanner.next()); // reads backwards!
       vsref<NS<XES, XEv>> hlist;
-      for (auto x : _hlist)
+      for (sptr<NS<XES, XEv>> x : _hlist) {
+         assert(x);
          hlist.push_back(x);
+      }
       std::cout << "list ok!" << hlist.size() << std::endl;
 
       if (!scanner.hasNext()) {
