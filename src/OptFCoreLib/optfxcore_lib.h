@@ -60,6 +60,9 @@ registerComponent(sref<Component> component, std::string sid);
 int
 registerComponentList(vector<sref<Component>> vcomponent, std::string sid);
 
+int
+registerComponentListPtr(std::vector<sptr<Component>> vcomponent, std::string sid);
+
 //
 bool
 initializeStandardBuilders();
@@ -70,8 +73,15 @@ buildSearch(std::string str);
 vector<pair<string, vector<pair<string, string>>>>
 listBuilders(string pattern);
 
+// =========================
+
 vector<string>
 listComponents(string pattern);
+
+vector<string>
+listComponentLists(string pattern);
+
+// =========================
 
 bool
 clearFactory();

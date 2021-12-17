@@ -1,3 +1,3 @@
 #!/bin/bash
-export LD_LIBRARY_PATH=. && ./appTestLib 
+export LD_LIBRARY_PATH=. &&  ./appTestLib 
 

@@ -56,7 +56,9 @@ buildSearch(std::string str)
       std::cout << "Cannot build '" << str << "' rest='" << psearch.second << "'" << std::endl;
       return nullptr;
    }
+   //hfactory.clear();
    return psearch.first;
+   //return nullptr;
 }
 
 vector<pair<string, vector<pair<string, string>>>>
@@ -71,6 +73,12 @@ listComponents(string pattern)
    return hfactory.listComponents(pattern);
 }
 
+vector<string>
+listComponentLists(string pattern)
+{
+   return hfactory.listComponentLists(pattern);
+}
+
 int
 registerComponent(sref<Component> component, std::string sid)
 {
@@ -82,6 +90,13 @@ int
 registerComponentList(vsref<Component> vcomponent, std::string sid)
 {
    std::cout << "registerComponentList -> " << sid << std::endl;
+   return hfactory.addComponentListRef(vcomponent, sid);
+}
+
+int
+registerComponentListPtr(std::vector<sptr<Component>> vcomponent, std::string sid)
+{
+   std::cout << "registerComponentListPtr -> " << sid << std::endl;
    return hfactory.addComponentList(vcomponent, sid);
 }
 

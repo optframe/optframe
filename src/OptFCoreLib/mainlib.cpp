@@ -195,50 +195,60 @@ main()
             co_yield new MyMoveSwap(i, j); // implicit unique_ptr requirements
    };
 
-   sref<NSSeq<LESolution>> insseq = generateFxNSSeq(fRand, fIterator);
-   insseq->print();
-
-   // ------
-
-   // Evaluate
-   sref<Evaluator<typename LESolution::first_type, typename LESolution::second_type>> ev{
-      new FEvaluator<LESolution, MinOrMax::MINIMIZE>{ fevaluate }
-   };
-
-   // Generate random solution
-   FConstructive<typename LESolution::first_type> crand{
-      frandom
-   };
-
    // ============================
    // initialize standard builders
    //
    initializeStandardBuilders();
 
-   // ----------------------------
+   // ===================
+   {
 
-   int nsseq_id = registerComponent(insseq, "OptFrame:NS");
-   std::cout << "nsseq_id = " << nsseq_id << std::endl;
+      sref<NSSeq<LESolution>> insseq = generateFxNSSeq(fRand, fIterator);
+      insseq->print();
 
-   vsref<Component> nslist;
-   nslist.push_back(insseq);
+      //sref<Component>& cinsseq = insseq;
 
-   int nsseqlist_id = registerComponentList(nslist, "OptFrame:NS");
-   std::cout << "nsseqlist_id = " << nsseqlist_id << std::endl;
+      // ------
 
-   //Component& cev = ev;
-   //std::cout << "cev => " << cev.id() << std::endl;
-   int ev_id = registerComponent(ev, "OptFrame:GeneralEvaluator");
-   std::cout << "ev_id = " << ev_id << std::endl;
-   assert(ev_id >= 0);
+      // Evaluate
+      sref<Evaluator<typename LESolution::first_type, typename LESolution::second_type>> ev{
+         new FEvaluator<LESolution, MinOrMax::MINIMIZE>{ fevaluate }
+      };
 
-   sref<InitialSearch<LESolution>> initRand{
-      new BasicInitialSearch<LESolution>(crand, ev)
-   };
+      // Generate random solution
+      sref<Constructive<typename LESolution::first_type>> crand{
+         new FConstructive<typename LESolution::first_type>{ frandom }
+      };
 
-   int rand_id = registerComponent(initRand, "OptFrame:InitialSearch");
-   std::cout << "rand_id = " << rand_id << std::endl;
-   assert(rand_id >= 0);
+      // ----------------------------
+
+      int nsseq_id = registerComponent(insseq, "OptFrame:NS");
+      std::cout << "nsseq_id = " << nsseq_id << std::endl;
+
+      //vsref<Component> nslist;
+      std::vector<sptr<Component>> nslist;
+      nslist.push_back(insseq.sptr());
+
+      int nsseqlist_id = registerComponentListPtr(nslist, "OptFrame:NS");
+
+      //int nsseqlist_id = registerComponentList(nslist, "OptFrame:NS");
+      std::cout << "nsseqlist_id = " << nsseqlist_id << std::endl;
+      assert(nsseqlist_id >= 0);
+
+      //Component& cev = ev;
+      //std::cout << "cev => " << cev.id() << std::endl;
+      int ev_id = registerComponent(ev, "OptFrame:GeneralEvaluator");
+      std::cout << "ev_id = " << ev_id << std::endl;
+      assert(ev_id >= 0);
+
+      sref<Component> initRand{
+         new BasicInitialSearch<LESolution>(crand, ev)
+      };
+
+      int rand_id = registerComponent(initRand, "OptFrame:InitialSearch");
+      std::cout << "rand_id = " << rand_id << std::endl;
+      assert(rand_id >= 0);
+   }
 
    // ----------------------------
 
@@ -251,11 +261,23 @@ main()
          std::cout << "\tparameter " << j << ": '" << lbs[i].second[j].first << "'" << std::endl;
    }
 
+   // =============================
    // list components
+   //
+   std::cout << std::endl
+             << " ===== Components ===== " << std::endl;
    vector<string> lcmps = listComponents("OptFrame:");
    std::cout << "# components: " << lcmps.size() << std::endl;
    for (unsigned i = 0; i < lcmps.size(); i++)
       std::cout << "component '" << lcmps[i] << "'" << std::endl;
+   //
+   std::cout << std::endl
+             << " ===== Component List ===== " << std::endl;
+   vector<string> lcmps_list = listComponentLists("OptFrame:NS[]");
+   std::cout << "# component lists: " << lcmps_list.size() << std::endl;
+   for (unsigned i = 0; i < lcmps_list.size(); i++)
+      std::cout << "component_list '" << lcmps_list[i] << "'" << std::endl;
+   //
 
    // =============================
 
@@ -268,8 +290,10 @@ main()
                                                            " 999.99 100 0.98");
    if (!uSearch)
       std::cout << "-> nullptr" << std::endl;
-   else
+   else {
+      std::cout << "Basic SA was build! -> ";
       uSearch->print();
+   }
 
    clearFactory();
 
