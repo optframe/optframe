@@ -95,7 +95,7 @@ private:
    sref<RandGen> rg;
 
 public:
-   map<string, vector<std::shared_ptr<Component>>> components;
+   map<string, vector<sptr<Component>>> components;
    vector<ComponentBuilder<S, XEv, XES, X2ES>*> builders;
    vector<Action<S, XEv, XES, X2ES>*> actions;
    map<string, vector<vector<sptr<Component>>>> componentLists;
@@ -108,11 +108,11 @@ public:
       return nullptr;
    }
 
-   bool inComponents(std::shared_ptr<Component> c)
+   bool inComponents(sptr<Component> c)
    {
-      map<std::string, vector<std::shared_ptr<Component>>>::iterator iter;
+      map<std::string, vector<sptr<Component>>>::iterator iter;
       for (iter = components.begin(); iter != components.end(); iter++) {
-         vector<std::shared_ptr<Component>> v = iter->second;
+         vector<sptr<Component>> v = iter->second;
 
          for (unsigned int i = 0; i < v.size(); i++)
             if (v[i] == c)
@@ -199,7 +199,8 @@ public:
       if (components.count(id) > 0) {
          vector<sptr<Component>>& v = components[id];
          if (number < v.size()) {
-            component = std::shared_ptr<T>((T*)v[number].get()); // need to cast to type T...
+            //component = std::shared_ptr<T>((T*)v[number].get()); // need to cast to type T...
+            component = std::shared_ptr<T>((std::shared_ptr<T>&)v[number]); // need to cast to type T...
             return;
          }
       } else
@@ -231,7 +232,8 @@ public:
       if (components.count(id) > 0) {
          vector<sptr<Component>>& v = components[id];
          if (number < v.size()) {
-            component = std::shared_ptr<GeneralEvaluator<XES, XEv>>((GeneralEvaluator<XES, XEv>*)v[number].get()); // need to cast to type T...
+            //component = std::shared_ptr<GeneralEvaluator<XES, XEv>>((GeneralEvaluator<XES, XEv>*)v[number].get()); // need to cast to type T...
+            component = std::shared_ptr<GeneralEvaluator<XES, XEv>>((sptr<GeneralEvaluator<XES, XEv>>&)v[number]); // need to cast to type T...
             return;
          }
       } else
@@ -259,7 +261,8 @@ public:
          vector<vector<sptr<Component>>>& vv = componentLists[listId];
          if (number < vv.size())
             for (unsigned i = 0; i < vv[number].size(); i++)
-               cList.push_back(sptr<T>((T*)vv[number][i].get()));
+               //cList.push_back(sptr<T>((T*)vv[number][i].get()));
+               cList.push_back(sptr<T>((std::shared_ptr<T>&)vv[number][i]));
       } else
          cout << "'" << listId << " " << number << "' not found!" << endl;
    }
@@ -291,7 +294,7 @@ public:
       return idx;
    }
 
-   int addComponent(Component& component)
+   int addComponentRef(Component& component)
    {
       return addComponent(component, component.id());
    }
@@ -316,7 +319,7 @@ public:
       assign(component, number, tmp);
    }
 
-   int addComponentList(vsref<Component>& cList, string _listId)
+   int addComponentListRef(vsref<Component>& cList, string _listId)
    {
       vector<sptr<Component>> sptrList;
       for (unsigned i = 0; i < cList.size(); i++)
@@ -341,6 +344,7 @@ public:
 
       vector<vector<sptr<Component>>>& v = componentLists[listId];
       v.push_back(cList);
+      std::cout << "HeuristicFactory: adding to list id '" << listId << "'" << std::endl;
 
       int idx = componentLists[listId].size() - 1;
 
@@ -402,12 +406,13 @@ public:
 	 */
    vector<string> listComponentLists(string pattern)
    {
+      std::cout << "lising component lists for pattern = '" << pattern << "'" << std::endl;
       vector<string> list;
 
       map<std::string, vector<vector<sptr<Component>>>>::iterator iter;
 
       for (iter = componentLists.begin(); iter != componentLists.end(); iter++) {
-         vector<vector<Component*>> vl = iter->second;
+         vector<vector<std::shared_ptr<Component>>>& vl = iter->second;
 
          for (unsigned int i = 0; i < vl.size(); i++)
             if (ComponentHelper::compareBase(pattern, iter->first)) {
@@ -494,17 +499,26 @@ public:
       for (iter = components.begin(); iter != components.end(); iter++) {
          vector<std::shared_ptr<Component>>& v = iter->second;
 
-         //for (unsigned int i = 0; i < v.size(); i++)
-         //	delete v[i];
+         for (unsigned int i = 0; i < v.size(); i++)
+            //delete v[i];
+            v[i] = nullptr;
 
          // TODO: MUST KEEP LINE BELOW!
          std::cout << "WILL CLEAR COMPONENT: '" << iter->first << "'" << std::endl;
-         iter->second.clear();
+         //iter->second.clear();
+         v.clear();
       }
 
       map<std::string, vector<vector<sptr<Component>>>>::iterator iter2;
 
       for (iter2 = componentLists.begin(); iter2 != componentLists.end(); iter2++) {
+
+         vector<vector<std::shared_ptr<Component>>>& v = iter2->second;
+
+         for (unsigned int i = 0; i < v.size(); i++)
+            //delete v[i];
+            v[i].clear();
+
          // Should not delete the components inside lists. They're already deleted!
          iter2->second.clear();
       }
