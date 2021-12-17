@@ -41,6 +41,7 @@ template<
   >
 class FEvaluator final : public Evaluator<typename XES::first_type, typename XES::second_type, XES>
 {
+   using super = Evaluator<typename XES::first_type, typename XES::second_type, XES>;
    using S = typename XES::first_type;
    using XEv = typename XES::second_type;
    using XSH = XES; // only single objective
@@ -56,12 +57,11 @@ public:
    FuncTypeEvaluate fEvaluate;
 
    //FEvaluator(XEv (*_fEvaluate)(const S&))
-   
+
    FEvaluator(FuncTypeEvaluate _fEvaluate)
      : fEvaluate{ _fEvaluate }
    {
    }
-   
 
    virtual XEv evaluate(const S& s)
    {
@@ -78,7 +78,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ":FEvaluator";
+      ss << super::idComponent() << ":FEvaluator";
       return ss.str();
    }
 

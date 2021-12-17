@@ -32,6 +32,8 @@ namespace optframe {
 template<XSolution S>
 class FConstructive final : public Constructive<S>
 {
+   using super = Constructive<S>;
+
 public:
 #ifdef OPTFCORE_FUNC_STATIC
    typedef S(*FuncTypeGenerate);
@@ -61,7 +63,7 @@ public:
    static std::string idComponent()
    {
       std::stringstream ss;
-      ss << Component::idComponent() << ":FConstructive";
+      ss << super::idComponent() << ":FConstructive";
       return ss.str();
    }
 

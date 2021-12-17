@@ -23,27 +23,22 @@
 #ifndef OPTFRAME_MI_HPP_
 #define OPTFRAME_MI_HPP_
 
-// ==============================================================================================
+// =====================================================================================================
 // This is a Multi Improvement (MI) implementation
 //
-// The MI method was officially proposed in 2016 by Coelho et al (WAMCA/Los Angeles)
+// The MI method was officially presented in 2016 by I.M. Coelho (Best Paper Award - WAMCA/Los Angeles)
 // "A Benchmark on Multi Improvement Neighborhood Search Strategies in CPU/GPU Systems"
-//
-// Method detailed in 2016 PhD thesis by Eyder Rios (pt-BR)
-// "Exploração de Estratégias de Busca Local em Ambientes CPU/GPU"
+// Authors: Eyder Rios; Igor M. Coelho; Luiz Satoru Ochi; Cristina Boeres; Ricardo Farias
 //
 // Dataflow extension in 2018 by Araujo et al
 // "A DVND Local Search Implemented on a Dataflow Architecture for the Minimum Latency Problem"
-//
-// Heuristic MI extension to VRPs in 2019 by Silva Jr (pt-BR)
-// "Multi Improvement: uma Solução Alternativa para o Problema de Roteamento de Veículos"
 //
 // Parallel GPU Data Flow extension in 2020 by Araujo et al
 // "A multi-improvement local search using dataflow and GPU to solve the minimum latency problem"
 //
 // Exact dynamic programming approach in 2020 by Silva et al
 // "Finding the Maximum Multi Improvement on neighborhood exploration"
-// ==============================================================================================
+// ======================================================================================================
 
 #include "../../Evaluator.hpp"
 #include "../../LocalSearch.hpp"

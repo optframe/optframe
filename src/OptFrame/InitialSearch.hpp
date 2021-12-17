@@ -78,6 +78,10 @@ public:
    {
    }
 
+   virtual ~BasicInitialSearch()
+   {
+   }
+
    virtual std::pair<std::optional<XSH>, SearchStatus> initialSearch(const StopCriteria<XEv>& stop) override
    {
       std::optional<S> sol = constructive->generateSolution(stop.timelimit);

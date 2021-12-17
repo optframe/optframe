@@ -180,6 +180,8 @@ public:
    template<class T>
    void assign(std::shared_ptr<T>& component, unsigned number, string id)
    {
+      // NOTE THAT component is likely to be NULL!!
+      //std::cout << "hf will try to assign component '" << component->id() << " with id = '" << id << " #" << number << std::endl;
       // check prefix "OptFrame:"
       if (id[0] != 'O') {
          string id2 = id;
@@ -198,6 +200,38 @@ public:
          vector<sptr<Component>>& v = components[id];
          if (number < v.size()) {
             component = std::shared_ptr<T>((T*)v[number].get()); // need to cast to type T...
+            return;
+         }
+      } else
+         cout << "'" << id << "' not found!" << endl;
+
+      // not found!
+      component = nullptr;
+   }
+
+   // EXCEPTION FOR GENERAL EVALUATOR: ISSUE WITH Multiple Inheritance
+   void assignGE(std::shared_ptr<GeneralEvaluator<XES, XEv>>& component, unsigned number, string id)
+   {
+      std::cout << "SPECIAL assign GeneralEvaluator for '" << id << " #" << number << "'" << std::endl;
+      //std::cout << "SPECIAL hf will try to assign component '" << component->id() << " with id = '" << id << " #" << number << std::endl;
+      // check prefix "OptFrame:"
+      if (id[0] != 'O') {
+         string id2 = id;
+         id = "OptFrame:";
+         id.append(id2);
+      }
+
+      if (!ComponentHelper::compareBase(GeneralEvaluator<XES, XEv>::idComponent(), id)) {
+         cout << "HeuristicFactory: incompatible assign '" << GeneralEvaluator<XES, XEv>::idComponent() << "' <- '" << id << "'";
+         cout << endl;
+         component = nullptr;
+         return;
+      }
+
+      if (components.count(id) > 0) {
+         vector<sptr<Component>>& v = components[id];
+         if (number < v.size()) {
+            component = std::shared_ptr<GeneralEvaluator<XES, XEv>>((GeneralEvaluator<XES, XEv>*)v[number].get()); // need to cast to type T...
             return;
          }
       } else
@@ -282,7 +316,15 @@ public:
       assign(component, number, tmp);
    }
 
-   int addComponentList(vector<Component*>& cList, string _listId)
+   int addComponentList(vsref<Component>& cList, string _listId)
+   {
+      vector<sptr<Component>> sptrList;
+      for (unsigned i = 0; i < cList.size(); i++)
+         sptrList.push_back(cList[i].sptr());
+      return addComponentList(sptrList, _listId);
+   }
+
+   int addComponentList(vector<sptr<Component>>& cList, string _listId)
    {
       // type checking for safety!
       string noList = ComponentHelper::typeOfList(_listId);
@@ -297,7 +339,7 @@ public:
             return -1;
          }
 
-      vector<vector<Component*>>& v = componentLists[listId];
+      vector<vector<sptr<Component>>>& v = componentLists[listId];
       v.push_back(cList);
 
       int idx = componentLists[listId].size() - 1;
@@ -329,7 +371,9 @@ public:
       map<std::string, vector<std::shared_ptr<Component>>>::iterator iter;
 
       for (iter = components.begin(); iter != components.end(); iter++) {
-         vector<Component*> v = iter->second;
+         //
+         std::vector<std::shared_ptr<Component>> v = iter->second;
+         //vector<Component*> v = iter->second;
 
          for (unsigned int i = 0; i < v.size(); i++)
             if (ComponentHelper::compareBase(pattern, v[i]->id())) {
@@ -448,11 +492,13 @@ public:
       map<std::string, vector<std::shared_ptr<Component>>>::iterator iter;
 
       for (iter = components.begin(); iter != components.end(); iter++) {
-         vector<std::shared_ptr<Component>> v = iter->second;
+         vector<std::shared_ptr<Component>>& v = iter->second;
 
          //for (unsigned int i = 0; i < v.size(); i++)
          //	delete v[i];
 
+         // TODO: MUST KEEP LINE BELOW!
+         std::cout << "WILL CLEAR COMPONENT: '" << iter->first << "'" << std::endl;
          iter->second.clear();
       }
 

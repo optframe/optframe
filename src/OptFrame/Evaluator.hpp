@@ -263,19 +263,25 @@ public:
 
    // ============= Component ===============
 
-   virtual bool compatible(string s)
+   virtual bool compatible(string s) override
    {
-      return (s == idComponent()) || (Direction<XEv>::compatible(s));
+      // forcing comparison here (with GeneralEvaluator) due to Multiple Inheritance
+      // TODO: find better solution to this
+      return (s == idComponent()) || (Direction<XEv>::compatible(s)) || (s == "OptFrame:GeneralEvaluator"); //|| (GeneralEvaluator<XES, XEv, XES>::compatible(s));
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ":Evaluator";
+      //ss << Component::idComponent() << ":Evaluator";
+      //ss << ":GeneralEvaluator" Direction<XEv>::idComponent() << ":GeneralEvaluator"
+      //   << ":Evaluator";
+      // TODO: this will require multiple idComponent()!!
+      ss << "OptFrame:GeneralEvaluator:Direction:Evaluator";
       return ss.str();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
