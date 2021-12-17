@@ -378,7 +378,7 @@ public:
       // TODO: we should enfoce a boolean here (NEEDS SOLUTION = TRUE!!)
       //pair<XEv, op<S>> pe = decoder.decode(best.getR(), true);
       pair<XEv, op<S>> pe = decoder->decode(best, true);
-      Evaluation<>& e = pe.first;
+      XEv& e = pe.first;
 
       // WARNING: something VERY strange here... why returning random_keys and not elements?
       // TODO: I may be wrong, but next part seems to be very wrong... how does 'override' allowed this in the past??
