@@ -45,7 +45,10 @@ main()
    BasicInitialSearch<ESolutionTSP> initRand(crand, eval);
 
    vsref<LocalSearch<ESolutionTSP>> ns_list;
-   ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, nsseq2));
+   Evaluator<ESolutionTSP::first_type, ESolutionTSP::second_type>* ev2 = new FEvaluator<ESolutionTSP, MinOrMax::MINIMIZE>{ fevaluate };
+   GeneralEvaluator<ESolutionTSP>* gev2 = (GeneralEvaluator<ESolutionTSP>*)ev2;
+   sref<GeneralEvaluator<ESolutionTSP>> eval2(gev2);
+   ns_list.push_back(new BestImprovement<ESolutionTSP>(eval2, nsseq2));
 
    VariableNeighborhoodDescent<ESolutionTSP> VND(eval, ns_list);
    // VND.setVerbose();

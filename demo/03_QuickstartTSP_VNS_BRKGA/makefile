@@ -4,7 +4,7 @@ fcore-ils:
 	echo "WILL JOIN FILES INTO COMPLETE EXAMPLE"
 	./join.sh
 	echo "WILL COMPILE"
-	g++ -g -O3 --std=c++17 -fconcepts -I../../src -Wfatal-errors  mainTSP-fcore-ils.cpp -o app_TSP-fcore-ils
+	g++ -g -O3 --std=c++17 -fconcepts -I../../src   mainTSP-fcore-ils.cpp -o app_TSP-fcore-ils
 	echo "WILL RUN"
 	./app_TSP-fcore-ils
 
