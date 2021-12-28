@@ -43,6 +43,7 @@ template<XSolution S, XEvaluation XEv, optframe::comparability KeyType>
 class DecoderRandomKeys : public Component
 {
    using RSK = std::vector<KeyType>;
+
 public:
    virtual ~DecoderRandomKeys()
    {
@@ -53,6 +54,11 @@ public:
    virtual pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) = 0;
 
    virtual bool isMinimization() const = 0;
+
+   std::string toString() const override
+   {
+      return id();
+   }
 };
 
 // ========================================================
@@ -71,14 +77,14 @@ template<XSolution S, XEvaluation XEv, optframe::comparability KeyType, XESoluti
 class DecoderRandomKeysEvaluator : public DecoderRandomKeys<S, XEv, KeyType>
 {
    using RSK = std::vector<KeyType>;
-public:
 
+public:
    //using RKEvaluator = Evaluator<random_keys, OPTFRAME_DEFAULT_ADS, CopySolution<random_keys,OPTFRAME_DEFAULT_ADS>;
 
    Evaluator<RSK, XEv, XES>& evaluator;
 
    DecoderRandomKeysEvaluator(Evaluator<RSK, XEv, XES>& _evaluator)
-     : evaluator{_evaluator}
+     : evaluator{ _evaluator }
    {
    }
 
@@ -97,7 +103,6 @@ public:
    }
 };
 
-
 // transforms 'random_keys' into a XRS solution (with R=permutation), then use Evaluator<XRS, XEv> to generate output XEv
 //template<XRSolution<vector<int>> XRS, XEvaluation XEv>
 //
@@ -105,12 +110,13 @@ template<XEvaluation XEv, optframe::comparability KeyType = double, XESolution X
 class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<vector<int>, XEv, KeyType>
 {
    using RSK = std::vector<KeyType>;
+
 public:
    Evaluator<std::vector<int>, XEv, XES>& ev; // evaluator for permutation
-   int a, b;                   // decode in interval [a,b]
+   int a, b;                                  // decode in interval [a,b]
 
    EvaluatorPermutationRandomKeys(Evaluator<std::vector<int>, XEv, XES>& _ev, int _a, int _b)
-     : ev{_ev}
+     : ev{ _ev }
      , a(_a)
      , b(_b)
    {
@@ -134,7 +140,7 @@ public:
       for (unsigned i = 0; i < v.size(); i++)
          p[i] = v[i].second;
 
-      // XRS is user solution, based on 'vector<int>'      
+      // XRS is user solution, based on 'vector<int>'
       //XRS sevp(p);
       //XEv e = ev.evaluate(sevp);
       //
@@ -158,10 +164,11 @@ template<XEvaluation XEv, optframe::comparability KeyType, XESolution XES = pair
 class EvaluatorSubsetRandomKeys : public DecoderRandomKeys<vector<bool>, XEv, KeyType>
 {
    using RSK = std::vector<KeyType>;
+
 public:
    Evaluator<std::vector<bool>, XEv, XES>& ev; // evaluator for permutation
-   int a, b;                    // decode in interval [a,b]
-   double limit;                // limit to decide membership (default=0.5)
+   int a, b;                                   // decode in interval [a,b]
+   double limit;                               // limit to decide membership (default=0.5)
 
    EvaluatorSubsetRandomKeys(Evaluator<std::vector<bool>, XEv, XES>& _ev, int _a, int _b, double _limit = 0.5)
      : ev(_ev)
