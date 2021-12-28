@@ -63,7 +63,7 @@ public:
       return "problem.TSP";
    }
 
-   bool registerComponent(Component& component, string type, string name, HeuristicFactoryTSP& hf, map<string, string>& dictionary)
+   bool registerComponent(sref<Component> component, string type, string name, HeuristicFactoryTSP& hf, map<string, string>& dictionary)
    {
       int idx = hf.addComponent(component, type);
       stringstream ss;
@@ -118,7 +118,7 @@ public:
         new ILSLPerturbationLPlus2<ESolutionTSP>(eval, nsseq_delta_2opt, hf.getRandGen());
       ilsl_pert->add_ns(nsseq_delta_or1);
 
-      hf.addComponent(ilsl_pert);
+      hf.addComponent(ilsl_pert, ilsl_pert->id());
 
       cout << "TSP problem loaded successfully" << endl;
 
