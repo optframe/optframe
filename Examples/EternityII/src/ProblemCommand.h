@@ -5,27 +5,27 @@
 
 #include <OptFrame/Scanner++/Scanner.hpp>
 
+#include "Evaluation.h"
 #include "Representation.h"
 #include "Solution.h"
-#include "Evaluation.h"
 
 #include "ProblemInstance.h"
 
 #include "Evaluator.h"
 
-#include "NSSeqRotate.h"
 #include "DeltaMoveRotate.h"
+#include "NSSeqRotate.h"
 
-#include "NSSeqSwapCenter.h"
 #include "DeltaMoveSwapCenter.h"
+#include "NSSeqSwapCenter.h"
 
-#include "NSSeqSwapCorner.h"
 #include "DeltaMoveSwapCorner.h"
+#include "NSSeqSwapCorner.h"
 
 #include "NSSeqSwapRotateCenter.h"
 
-#include "NSSeqSwapSide.h"
 #include "DeltaMoveSwapSide.h"
+#include "NSSeqSwapSide.h"
 
 #include "InitialSolutionGreedy.h"
 
@@ -34,98 +34,97 @@
 using namespace scannerpp;
 using namespace optframe;
 
-namespace EtII
-{
+namespace EtII {
 
 class EtIIProblemCommand
 {
 public:
+   ProblemInstance* p;
 
-    ProblemInstance* p;
-    
-    EtIIProblemCommand()
-    {
-        p = NULL;
-    }
+   EtIIProblemCommand()
+   {
+      p = NULL;
+   }
 
-    virtual ~EtIIProblemCommand()
-    {
-        if(p)
-           delete p;    
-    }
+   virtual ~EtIIProblemCommand()
+   {
+      if (p)
+         delete p;
+   }
 
-    string id()
-    {
-    	return "problem.EtII";
-    }
+   string id()
+   {
+      return "problem.EtII";
+   }
 
-    bool registerComponent(Component& component, string type, string name, HeuristicFactory<SolutionEtII>& hf, map<string, string>& dictionary)
-    {
-       int idx = hf.addComponent(component, type);
-       stringstream ss;
-       ss << type << " " << idx;
-       return true; //defineText(name, ss.str(), dictionary);
-    }
+   bool registerComponent(sref<Component> component, string type, string name, HeuristicFactory<SolutionEtII>& hf, map<string, string>& dictionary)
+   {
+      int idx = hf.addComponent(component, type);
+      stringstream ss;
+      ss << type << " " << idx;
+      return true; //defineText(name, ss.str(), dictionary);
+   }
 
-	bool load(string filename, HeuristicFactory<SolutionEtII>& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
-	{
-	    File file(filename);
+   bool load(string filename, HeuristicFactory<SolutionEtII>& hf, map<string, string>& dictionary, map<string, vector<string>>& ldictionary)
+   {
+      File file(filename);
 
-        if(!file.isOpen())
-        {
-           cout << "File '" << filename <<"' not found" << endl;
-           return false;
-        }
+      if (!file.isOpen()) {
+         cout << "File '" << filename << "' not found" << endl;
+         return false;
+      }
 
-        Scanner scanner(std::move(file));
+      Scanner scanner(std::move(file));
 
-        p = new ProblemInstance(scanner);
+      p = new ProblemInstance(scanner);
 
-        // add everything to the HeuristicFactory 'hf'
+      // add everything to the HeuristicFactory 'hf'
 
-    	EtIIInitialSolutionGreedy& is = * new EtIIInitialSolutionGreedy(*p, hf.getRandGen());
+      //EtIIInitialSolutionGreedy& is = *new EtIIInitialSolutionGreedy(*p, hf.getRandGen());
+      sref<Constructive<SolutionEtII>> is(new EtIIInitialSolutionGreedy(*p, hf.getRandGen()));
 
-    	SolutionEtII s = *is.generateSolution(10); // TODO: fix time
+      SolutionEtII s = *is->generateSolution(10); // TODO: fix time
 
-    	NSSeqRotate<DeltaMoveRotate>& nsRotate = * new NSSeqRotate<DeltaMoveRotate>(hf.getRandGen());
-    	NSSeqSwapCenter<DeltaMoveSwapCenter>& nsSwapCenter = * new NSSeqSwapCenter<DeltaMoveSwapCenter>(hf.getRandGen());
-    	NSSeqSwapCorner<DeltaMoveSwapCorner>& nsSwapCorner = * new NSSeqSwapCorner<DeltaMoveSwapCorner>(hf.getRandGen());
-    	NSSeqSwapRotateCenter<>& nsSwapRotateCenter = * new NSSeqSwapRotateCenter<>(hf.getRandGen());
-    	NSSeqSwapSide<DeltaMoveSwapSide>& nsSwapSide = * new NSSeqSwapSide<DeltaMoveSwapSide>(hf.getRandGen());
+      sref<NSSeqRotate<DeltaMoveRotate>> nsRotate{ new NSSeqRotate<DeltaMoveRotate>(hf.getRandGen()) };
+      sref<NSSeqSwapCenter<DeltaMoveSwapCenter>> nsSwapCenter = new NSSeqSwapCenter<DeltaMoveSwapCenter>(hf.getRandGen());
+      sref<NSSeqSwapCorner<DeltaMoveSwapCorner>> nsSwapCorner = new NSSeqSwapCorner<DeltaMoveSwapCorner>(hf.getRandGen());
+      sref<NSSeqSwapRotateCenter<>> nsSwapRotateCenter = new NSSeqSwapRotateCenter<>(hf.getRandGen());
+      sref<NSSeqSwapSide<DeltaMoveSwapSide>> nsSwapSide = new NSSeqSwapSide<DeltaMoveSwapSide>(hf.getRandGen());
 
-    	s.print();
+      s.print();
 
-    	EtIIEvaluator& eval = * new EtIIEvaluator(*p);
-    	
-    	Evaluation<> e = eval.evaluate(s);
+      //EtIIEvaluator& eval = *new EtIIEvaluator(*p);
+      //sref<GeneralEvaluator<ESolutionEtII>> eval(new EtIIEvaluator(*p));
+      sref<Component> eval(new EtIIEvaluator(*p));
 
-    	e.print();
-    	cout << endl;
+      Evaluation<> e = ((Evaluator<SolutionEtII, EvaluationEtII, ESolutionEtII>&)*eval).evaluate(s);
 
-    	hf.addComponent(is);
-    	hf.addComponent(eval);
-    	hf.addComponent(nsRotate);
-    	hf.addComponent(nsSwapCenter);
-    	hf.addComponent(nsSwapCorner);
-    	hf.addComponent(nsSwapRotateCenter);
-    	hf.addComponent(nsSwapSide);
-		
-        cout << "problem '" << filename << "' loaded successfully" << endl;
-        
-        return true;
-    }
-    
-    bool unload(HeuristicFactory<SolutionEtII>& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary)
-    {
-       if(p)
-          delete p;
-       p = NULL;
-       
-       return true;
-    }
+      e.print();
+      cout << endl;
+
+      hf.addComponent(is, "OptFrame:Constructive");
+      hf.addComponent(eval, "OptFrame:GeneralEvaluator");
+      hf.addComponent(nsRotate, "OptFrame:NS:NSFind:NSSeq");
+      hf.addComponent(nsSwapCenter, "OptFrame:NS:NSFind:NSSeq");
+      hf.addComponent(nsSwapCorner, "OptFrame:NS:NSFind:NSSeq");
+      hf.addComponent(nsSwapRotateCenter, "OptFrame:NS:NSFind:NSSeq");
+      hf.addComponent(nsSwapSide, "OptFrame:NS:NSFind:NSSeq");
+
+      cout << "problem '" << filename << "' loaded successfully" << endl;
+
+      return true;
+   }
+
+   bool unload(HeuristicFactory<SolutionEtII>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary)
+   {
+      if (p)
+         delete p;
+      p = NULL;
+
+      return true;
+   }
 };
 
 }
 
 #endif /*ETII_PROBLEMMODULE_HPP_*/
-

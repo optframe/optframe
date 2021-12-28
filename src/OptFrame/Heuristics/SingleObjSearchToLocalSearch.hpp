@@ -97,6 +97,11 @@ public:
       return ss.str();
    }
 
+   std::string toString() const override
+   {
+      return id();
+   }
+
    virtual string id() const
    {
       return idComponent();
@@ -153,6 +158,11 @@ public:
       stringstream ss;
       ss << LocalSearchBuilder<S, XEv>::idComponent() << "SingleObjSearchToLocalSearch";
       return ss.str();
+   }
+
+   std::string toString() const override
+   {
+      return id();
    }
 
    virtual string id() const

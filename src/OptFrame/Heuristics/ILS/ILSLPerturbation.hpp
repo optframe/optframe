@@ -49,6 +49,11 @@ public:
       return (s == idComponent()) || (Component::compatible(s));
    }
 
+   std::string toString() const override
+   {
+      return id();
+   }
+
    virtual string id() const
    {
       return idComponent();
@@ -122,6 +127,11 @@ public:
       stringstream ss;
       ss << ILSLPerturbation<XES, XEv>::idComponent() << ":LPlus2";
       return ss.str();
+   }
+
+   std::string toString() const override
+   {
+      return id();
    }
 
    virtual string id() const
@@ -225,6 +235,11 @@ public:
       return ss.str();
    }
 
+   std::string toString() const override
+   {
+      return id();
+   }
+
    virtual string id() const
    {
       return idComponent();
@@ -271,6 +286,11 @@ public:
       return ss.str();
    }
 
+   std::string toString() const override
+   {
+      return id();
+   }
+
    virtual string id() const
    {
       return idComponent();
@@ -315,6 +335,11 @@ public:
       stringstream ss;
       ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << ILS::family() << "LevelPert:LPlus2Prob";
       return ss.str();
+   }
+
+   std::string toString() const override
+   {
+      return id();
    }
 
    virtual string id() const

@@ -28,6 +28,7 @@ class Piece
 public:
    int down, left, up, right;
    int index, rotation;
+   // ...
 
    Piece()
    {

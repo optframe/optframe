@@ -166,6 +166,11 @@ public:
       return ss.str();
    }
 
+   std::string toString() const override
+   {
+      return id();
+   }
+
    virtual string id() const
    {
       return idComponent();

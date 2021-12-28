@@ -112,6 +112,11 @@ public:
       evaluator->reevaluate(se); // updates 'e'
    }
 
+   std::string toString() const override
+   {
+      return id();
+   }
+
    virtual string id() const
    {
       return idComponent();
@@ -173,6 +178,11 @@ public:
       stringstream ss;
       ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << ILS::family() << "basic_pert";
       return ss.str();
+   }
+
+   std::string toString() const override
+   {
+      return id();
    }
 
    virtual string id() const
