@@ -51,27 +51,27 @@ main(int argc, char** argv)
    //double tempo = 120;
 
    PCAPProblemInstance p(scanner);
-   PCAPEvaluator e(p);
-   GeneralEvaluator<ESolutionPCAP>& e2 = e;
-   PCAPInitialSolutionGreedy is_greedy(p, e2, rg);
+   sref<PCAPEvaluator> e = new PCAPEvaluator(p);
+   sref<GeneralEvaluator<ESolutionPCAP>> e2 = e;
+   sref<PCAPInitialSolutionGreedy> is_greedy = new PCAPInitialSolutionGreedy(p, e2, rg);
    //SolutionPCAP s = *is_greedy.generateSolution(100); // timelimit 100
-   ESolutionPCAP se = *is_greedy.initialSearch(StopCriteria<EvaluationPCAP>(100)).first; // timelimit 100
+   ESolutionPCAP se = *is_greedy->initialSearch(StopCriteria<EvaluationPCAP>(100)).first; // timelimit 100
 
    XSolution AUTO_CONCEPTS& s = se.first;
    ////XEvaluation& e = se.second;
 
-   NSSeqSWAP nsSwap(p, rg);
+   sref<NSSeqSWAP> nsSwap = new NSSeqSWAP(p, rg);
 
    s.print();
 
-   e.evaluate(s).print();
+   e->evaluate(s).print();
 
    PCAPSolCheck(p, s);
 
    Loader<RepPCAP, OPTFRAME_DEFAULT_ADS, SolutionPCAP, EvaluationPCAP, ESolutionPCAP> optframe(rg);
-   optframe.factory.addComponent(is_greedy);
-   optframe.factory.addComponent(e);
-   optframe.factory.addComponent(nsSwap);
+   optframe.factory.addComponent(is_greedy, "OptFrame:Constructive");
+   optframe.factory.addComponent(e, "OptFrame:GeneralEvaluator");
+   optframe.factory.addComponent(nsSwap, "OptFrame:NS");
 
    // do something!
 

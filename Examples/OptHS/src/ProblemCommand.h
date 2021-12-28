@@ -66,7 +66,7 @@ public:
       return "problem.OptHS";
    }
 
-   bool registerComponent(Component& component, string type, string name, HeuristicFactory<SolutionOptHS>& hf, map<string, string>& dictionary)
+   bool registerComponent(sref<Component> component, string type, string name, HeuristicFactory<SolutionOptHS>& hf, map<string, string>& dictionary)
    {
       int idx = hf.addComponent(component, type);
       stringstream ss;
@@ -82,14 +82,14 @@ public:
 
       // add everything to the HeuristicFactory 'hf'
 
-      ConstructiveRandom& is = *new ConstructiveRandom(*p, hf.getRandGen());
-      hf.addComponent(is);
+      sref<ConstructiveRandom> is = new ConstructiveRandom(*p, hf.getRandGen());
+      hf.addComponent(is, "OptFrame:Constructive");
 
-      OptHSEvaluator& eval = *new OptHSEvaluator(*p);
+      sref<OptHSEvaluator> eval = new OptHSEvaluator(*p);
       hf.addComponent(eval, Evaluator<SolutionOptHS, EvaluationOptHS>::idComponent());
 
-      NSSwap* ns = new NSSwap(*p, hf.getRandGen());
-      hf.addComponent(*ns);
+      sref<NSSwap> ns = new NSSwap(*p, hf.getRandGen());
+      hf.addComponent(ns, "OptFrame:NS");
 
       cout << "problem '" << members << "' loaded successfully" << endl;
 
