@@ -38,10 +38,11 @@ using namespace optframe;
 //using HeuristicFactoryTSP = HeuristicFactory<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP>;
 //using HeuristicFactoryTSP = HeuristicFactory<ESolutionTSP>;
 // template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
-using HeuristicFactoryTSP = HeuristicFactory<SolutionTSP, EvaluationTSP, ESolutionTSP>;
+static_assert(X2ESolution<MultiESolution<ESolutionTSP>, ESolutionTSP>);
+//
+using HeuristicFactoryTSP = HeuristicFactory<SolutionTSP, EvaluationTSP, ESolutionTSP, MultiESolution<ESolutionTSP>>;
 
 namespace TSP {
-
 class TSPProblemCommand
 {
 public:

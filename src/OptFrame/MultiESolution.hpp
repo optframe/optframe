@@ -73,6 +73,14 @@ public:
       return *p;
    }
 
+   XES& at(size_t i)
+   {
+      //return make_pair(uptr<S>(),uptr<XEv>());
+      XES* p;
+      return *p;
+   }
+
+   /*
    S& at(unsigned c)
    {
       return (*p.at(c));
@@ -82,6 +90,7 @@ public:
    {
       return (*p.at(c));
    }
+   */
 
    void insert(unsigned pos, S& c)
    {
@@ -205,7 +214,7 @@ public:
 #ifndef NDEBUG
 
 // TODO: only in unit tests (or somehow prevent #include "printable.h")
-//#include "MultiESolution.ctest.hpp"
+#include "MultiESolution.ctest.hpp"
 
 #endif
 

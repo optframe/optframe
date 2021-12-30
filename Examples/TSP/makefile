@@ -2,7 +2,7 @@ all: build/app_Example
 
 CC=g++
 # -fconcepts-diagnostics-depth=5
-CXXFLAGS= -I../../src -I../../libs/ -DOPTFRAME_AC  -fsanitize=address -g -fno-exceptions -O3 -Wall --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
+CXXFLAGS= -I../../src -I../../libs/ -DOPTFRAME_AC -fconcepts-diagnostics-depth=5  -fsanitize=address -g -fno-exceptions -O3 -Wall --std=c++17 -fconcepts #-fno-exceptions -fno-rtti #TODO: disable exceptions
 LDFLAGS := $(CXXFLAGS)
 
 SRC_DIR := ./src

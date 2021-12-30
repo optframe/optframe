@@ -60,17 +60,22 @@ public:
    {
    }
 
-   virtual Population<XES> generatePopulation(unsigned populationSize, double timelimit) override
+   virtual VEPopulation<XES> generatePopulation(unsigned populationSize, double timelimit) override
    {
-      Population<XES> pop;
+      VEPopulation<XES> pop;
 
       for (unsigned i = 0; i < populationSize; i++) {
-         random_keys* d = new random_keys(rksz);
+         //
+         //random_keys* d = new random_keys(rksz);
+         random_keys vd(rksz);
+         //
          for (int j = 0; j < rksz; j++)
-            d->at(j) = (rg->rand() % 100000) / 100000.0; // TODO: take precision from Template or from good RNG
+            vd.at(j) = (rg->rand() % 100000) / 100000.0; // TODO: take precision from Template or from good RNG
          //RSK* sol = new RSK(d);
          //pop.push_back(sol);
-         pop.push_back(d); // TODO: pass by std::move() or unique_ptr
+         //
+         //pop.push_back(std::move(vd)); // TODO: pass by std::move() or unique_ptr
+         pop.push_back(XES{ std::move(vd), XEv{} }); // TODO: pass by std::move() or unique_ptr
 
          if (Component::debug) {
             //(*Component::logdata) << "generatePopulation new: " << *d << std::endl;
@@ -99,7 +104,7 @@ template<
   XESolution XES,
   optframe::comparability KeyType = double,
   XESolution XES2 = std::pair<std::vector<KeyType>, typename XES::second_type>,
-  XSearch<XES2> XSH2 = Population<XES2>>
+  XSearch<XES2> XSH2 = VEPopulation<XES2>>
 class RKGA : public SingleObjSearch<XES, XES2, XSH2>
 //  TODO: cannot make this IPopulational, unless using EPopulation instead of "legacy" Population
 //, public IPopulational<XES, XES, XES2>
@@ -112,7 +117,7 @@ class RKGA : public SingleObjSearch<XES, XES2, XSH2>
 
 protected:
    // decoder function
-   sref<DecoderRandomKeys<S, XEv, KeyType>> decoder;
+   sref<DecoderRandomKeys<XES, KeyType>> decoder;
    // population generator
    sref<InitialPopulation<XES2>> initPop; // implicit key_size
    // population size
@@ -129,7 +134,7 @@ protected:
 public:
    // unified constructors (receive 'initPop' object)
    // to pass 'key_size' just use parameter "_initPop = RandomKeysInitPop(key_size)"
-   RKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, sref<InitialPopulation<XES2>> _initPop, unsigned _popSize, unsigned numGenerations, double fracTOP, double fracBOT, sref<RandGen> _rg = new RandGen)
+   RKGA(sref<DecoderRandomKeys<XES, KeyType>> _decoder, sref<InitialPopulation<XES2>> _initPop, unsigned _popSize, unsigned numGenerations, double fracTOP, double fracBOT, sref<RandGen> _rg = new RandGen)
      : decoder(_decoder)
      , initPop(_initPop)
      , popSize(_popSize)
@@ -146,13 +151,15 @@ public:
    {
    }
 
-   void decodePopulation(Population<XES2>& p)
+   void decodePopulation(VEPopulation<XES2>& p)
    {
       for (unsigned i = 0; i < p.size(); ++i) {
          //random_keys& rk = p.at(i).getR();
-         random_keys& rk = p.at(i);
+         random_keys& rk = p.at(i).first;
          pair<XEv, op<S>> pe = decoder->decode(rk, false);
-         p.setFitness(i, pe.first.evaluation());
+         //
+         //p.setFitness(i, pe.first.evaluation());
+         p.at(i).second = pe.first.evaluation();
 
          if (Component::debug) {
             (*Component::logdata) << "RKGA: decodePopulation p.setFitness(" << i << ") = " << pe.first.evaluation() << std::endl;
@@ -163,27 +170,30 @@ public:
    }
 
    // returns an owning reference (take good care of it, and delete!)
-   virtual RSK& cross(const Population<XES2>& pop)
+   virtual RSK cross(const VEPopulation<XES2>& pop)
    {
       //assert(key_size > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
 
-      const RSK& p1 = pop.at(rg->rand() % pop.size());
-      const RSK& p2 = pop.at(rg->rand() % pop.size());
+      const RSK& p1 = pop.at(rg->rand() % pop.size()).first;
+      const RSK& p2 = pop.at(rg->rand() % pop.size()).first;
 
       //random_keys* v = new random_keys(key_size, 0.0);
-      Population<XES2> p_single = initPop->generatePopulation(1, 0.0); // implicit 'key_size'
+      VEPopulation<XES2> p_single = initPop->generatePopulation(1, 0.0); // implicit 'key_size'
       // TODO: should cache 'key_size' to prevent unused rands on generation
-      random_keys* v = new random_keys(p_single.at(0)); // copy or 'move' ?
-      std::fill(v->begin(), v->end(), 0);
-      for (unsigned i = 0; i < v->size(); i++)
+      //
+      //random_keys* v = new random_keys(p_single.at(0)); // copy or 'move' ?
+      random_keys v(p_single.at(0).first);
+      //
+      std::fill(v.begin(), v.end(), 0);
+      for (unsigned i = 0; i < v.size(); i++)
          if (rg->rand() % 2 == 0)
             //v->at(i) = p1.getR()[i];
-            v->at(i) = p1[i];
+            v.at(i) = p1[i];
          else
             //v->at(i) = p2.getR()[i];
-            v->at(i) = p2[i];
+            v.at(i) = p2[i];
       //return *new RSK(v);
-      return *v; // TODO: return by std::move() or unique_ptr
+      return v; // TODO: return by std::move() or unique_ptr
    }
 
    // PSO Execution Context
@@ -236,7 +246,7 @@ public:
          (*Component::logdata) << "RKGA: will initPop.generatePopulation(popSize=" << popSize << ")" << std::endl;
 
       // initialize population (of random_keys)
-      Population<XES2> p = initPop->generatePopulation(popSize, stopCriteria.timelimit);
+      VEPopulation<XES2> p = initPop->generatePopulation(popSize, stopCriteria.timelimit);
 
       if (Component::debug)
          (*Component::logdata) << "RKGA: p.size() = " << p.size() << std::endl;
@@ -251,7 +261,8 @@ public:
          (*Component::logdata) << "RKGA: will p.sort(isMin=" << decoder->isMinimization() << ")" << std::endl;
 
       // sort population
-      p.sort(decoder->isMinimization());
+      //p.sort(decoder->isMinimization());
+      decoder->vsort(p);
 
       if (Component::debug)
          (*Component::logdata) << "RKGA: will trigger onIncumbent(p)" << std::endl;
@@ -263,7 +274,9 @@ public:
       if (Component::debug)
          (*Component::logdata) << "RKGA: will p.getSingleFitness(0)" << std::endl;
 
-      evtype best_f = p.getSingleFitness(0);
+      //evtype best_f = p.getSingleFitness(0);
+      evtype best_f = p.at(0).second.evaluation();
+
       if (Component::information)
          (*Component::logdata) << "RKGA: best fitness at initial population: " << best_f << endl;
 
@@ -281,7 +294,7 @@ public:
             (*Component::logdata) << "RKGA: will initPop.generatePopulation(randomSize=" << randomSize << ")" << std::endl;
 
          // create mutants in new population
-         Population<XES2> nextPop = initPop->generatePopulation(randomSize, stopCriteria.timelimit);
+         VEPopulation<XES2> nextPop = initPop->generatePopulation(randomSize, stopCriteria.timelimit);
 
          if (Component::debug)
             (*Component::logdata) << "RKGA: nextPop.size() = " << nextPop.size() << std::endl;
@@ -305,8 +318,9 @@ public:
             if (Component::debug)
                (*Component::logdata) << "RKGA: will cross(p)" << std::endl;
 
-            RSK* s = &cross(p);
-            nextPop.push_back(s);
+            RSK vkeys = cross(p);
+            //nextPop.push_back(se);
+            nextPop.push_back(XES2{ vkeys, XEv{} });
          }
 
          if (Component::debug)
@@ -330,7 +344,8 @@ public:
             (*Component::logdata) << "RKGA: will p.sort(isMin=" << decoder->isMinimization() << ")" << std::endl;
 
          // sort population
-         p.sort(decoder->isMinimization());
+         //p.sort(decoder->isMinimization());
+         decoder->vsort(p);
 
          if (Component::debug)
             (*Component::logdata) << "RKGA: will trigger onIncumbent(p)" << std::endl;
@@ -339,7 +354,8 @@ public:
          if (!this->onIncumbentCtx(ctx, p))
             return SearchStatus::NO_REPORT;
 
-         evtype pop_best = p.getSingleFitness(0);
+         //evtype pop_best = p.getSingleFitness(0);
+         evtype pop_best = p.at(0).second.evaluation();
 
          if ((decoder->isMinimization() && pop_best < best_f) || (!decoder->isMinimization() && pop_best > best_f)) {
             best_f = pop_best;
@@ -354,7 +370,7 @@ public:
                                   << "\t" << ctx.count_gen << std::endl;
 
             // TODO: do we need to decode this all the time, or only when exiting?
-            RSK& best_rkeys = p.at(0);
+            RSK best_rkeys = p.at(0).first;
             pair<XEv, op<S>> pe = decoder->decode(best_rkeys, true);
             if (pe.second) {
                star = op<XES>(XES{ *pe.second, pe.first });
@@ -371,9 +387,14 @@ public:
          (*Component::logdata) << "RKGA: will p.sort(isMin=" << decoder->isMinimization() << ")" << std::endl;
 
       // sort to get best (not necessary)
-      p.sort(decoder->isMinimization());
+      //p.sort(decoder->isMinimization());
+      decoder->vsort(p);
 
-      RSK& best = p.remove(0);
+      RSK best = p.at(0).first;
+      // TODO: avoid legacy method 'remove(0)'
+      // replace into 'pop_back' and use reversed ordered population (to be compatible to std::vector)
+      //RSK& best = p.remove(0);
+      p.erase(p.begin());
 
       // TODO: we should enfoce a boolean here (NEEDS SOLUTION = TRUE!!)
       //pair<XEv, op<S>> pe = decoder.decode(best.getR(), true);

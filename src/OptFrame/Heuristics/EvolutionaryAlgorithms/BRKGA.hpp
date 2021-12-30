@@ -47,7 +47,7 @@ template<
   XESolution XES,
   optframe::comparability KeyType = double,
   XESolution XES2 = std::pair<std::vector<KeyType>, typename XES::second_type>,
-  XSearch<XES2> XSH2 = Population<XES2>>
+  XSearch<XES2> XSH2 = VEPopulation<XES2>>
 class BRKGA : public RKGA<XES, KeyType, XES2, XSH2>
 {
    using S = typename XES::first_type;
@@ -61,7 +61,7 @@ protected:
 public:
    // unified constructors (explicit initPop)
    // to pass 'key_size' just use parameter "_initPop = RandomKeysInitPop(key_size)"
-   BRKGA(sref<DecoderRandomKeys<S, XEv, KeyType>> _decoder, sref<InitialPopulation<XES2>> _initPop, unsigned _popSize, unsigned numGen, double fracTOP, double fracBOT, double _probElitism, sref<RandGen> _rg = new RandGen)
+   BRKGA(sref<DecoderRandomKeys<XES, KeyType>> _decoder, sref<InitialPopulation<XES2>> _initPop, unsigned _popSize, unsigned numGen, double fracTOP, double fracBOT, double _probElitism, sref<RandGen> _rg = new RandGen)
      : RKGA<XES, KeyType>(_decoder, _initPop, _popSize, numGen, fracTOP, fracBOT, _rg)
      , probElitism(_probElitism)
    {
@@ -74,30 +74,30 @@ public:
    }
 
    // returns an owning reference (take good care of it, and delete!)
-   virtual RSK& cross(const Population<XES2>& pop)
+   virtual RSK cross(const VEPopulation<XES2>& pop) override
    {
       if (Component::debug)
          (*Component::logdata) << "BRKGA cross(|pop|=" << pop.size() << ")" << std::endl;
       //assert(this->key_size > 0); // In case of using InitPop, maybe must receive a Selection or Crossover object...
 
-      const RSK& p1 = pop.at(this->rg->rand() % this->eliteSize);
-      const RSK& p2 = pop.at(this->eliteSize + this->rg->rand() % (pop.size() - this->eliteSize));
+      const RSK& p1 = pop.at(this->rg->rand() % this->eliteSize).first;
+      const RSK& p2 = pop.at(this->eliteSize + this->rg->rand() % (pop.size() - this->eliteSize)).first;
 
       //random_keys* v = new random_keys(this->key_size, 0.0);
       //for (int i = 0; i < this->key_size; i++)
-      Population<XES2> p_single = this->initPop->generatePopulation(1, 0.0); // implicit 'key_size'
+      VEPopulation<XES2> p_single = this->initPop->generatePopulation(1, 0.0); // implicit 'key_size'
       // TODO: should cache 'key_size' to prevent unused rands on generation
-      random_keys* v = new random_keys(p_single.at(0)); // copy or 'move' ?
-      std::fill(v->begin(), v->end(), 0);
-      for (unsigned i = 0; i < v->size(); i++)
+      random_keys v(p_single.at(0).first); // copy or 'move' ?
+      std::fill(v.begin(), v.end(), 0);
+      for (unsigned i = 0; i < v.size(); i++)
          if ((this->rg->rand() % 1000000) / 1000000.0 < probElitism)
             //v->at(i) = p1.getR()[i];
-            v->at(i) = p1[i];
+            v.at(i) = p1[i];
          else
             //v->at(i) = p2.getR()[i];
-            v->at(i) = p2[i];
+            v.at(i) = p2[i];
       //return *new RSK(v);
-      return *v; // TODO: pass by std::move() or unique_ptr
+      return v; // TODO: pass by std::move() or unique_ptr
    }
 
    virtual bool setVerboseR() override

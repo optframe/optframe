@@ -39,10 +39,17 @@ typedef vector<double> random_keys;
 //
 //template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv, XRepresentation RKeys = optframe::random_keys>
 //
-template<XSolution S, XEvaluation XEv, optframe::comparability KeyType>
+//template<XSolution S, XEvaluation XEv, optframe::comparability KeyType>
+template<XESolution XES, optframe::comparability KeyType>
+//XESolution XES2 = std::pair<std::vector<KeyType>, typename XES::second_type>,
+//X2ESolution<XES2> X2ES = VEPopulation<XES2>>
 class DecoderRandomKeys : public Component
 {
+   using S = typename XES::first_type;
+   using XEv = typename XES::second_type;
    using RSK = std::vector<KeyType>;
+   using XES2 = std::pair<RSK, XEv>;
+   using X2ES = VEPopulation<XES2>;
 
 public:
    virtual ~DecoderRandomKeys()
@@ -55,6 +62,35 @@ public:
 
    virtual bool isMinimization() const = 0;
 
+   virtual void vsort(X2ES& pop) const
+   {
+      psort(isMinimization(), pop);
+   }
+
+private:
+   void psort(bool isMin, X2ES& p) const
+   {
+      // basic selection sort
+      for (int i = 0; i < int(p.size()) - 1; i++) {
+         int best = i;
+         for (int j = i + 1; j < int(p.size()); j++)
+            if ((isMin && p.at(j).second.evaluation() < p.at(best).second.evaluation()) ||
+                (!isMin && p.at(j).second.evaluation() > p.at(best).second.evaluation()))
+               best = j;
+         // swap best
+         if (best != i) {
+            XES2 si = p.at(i);
+            p.at(i) = p.at(best);
+            p.at(best) = si;
+
+            //double di = fitness[i];
+            //fitness[i] = fitness[best];
+            //fitness[best] = di;
+         }
+      }
+   }
+
+public:
    std::string toString() const override
    {
       return id();
@@ -74,7 +110,7 @@ public:
 //template<XRepresentation R, XRSolution<R> XRS, XEvaluation XEv, XRepresentation RKeys = optframe::random_keys>
 //
 template<XSolution S, XEvaluation XEv, optframe::comparability KeyType, XESolution XES = pair<S, XEv>>
-class DecoderRandomKeysEvaluator : public DecoderRandomKeys<S, XEv, KeyType>
+class DecoderRandomKeysEvaluator : public DecoderRandomKeys<XES, KeyType>
 {
    using RSK = std::vector<KeyType>;
 
@@ -107,7 +143,7 @@ public:
 //template<XRSolution<vector<int>> XRS, XEvaluation XEv>
 //
 template<XEvaluation XEv, optframe::comparability KeyType = double, XESolution XES = pair<std::vector<int>, XEv>>
-class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<vector<int>, XEv, KeyType>
+class EvaluatorPermutationRandomKeys : public DecoderRandomKeys<XES, KeyType>
 {
    using RSK = std::vector<KeyType>;
 
@@ -161,7 +197,7 @@ public:
 //template<XRSolution<vector<bool>> XRS, XEvaluation XEv = Evaluation<>>
 //
 template<XEvaluation XEv, optframe::comparability KeyType, XESolution XES = pair<std::vector<bool>, XEv>>
-class EvaluatorSubsetRandomKeys : public DecoderRandomKeys<vector<bool>, XEv, KeyType>
+class EvaluatorSubsetRandomKeys : public DecoderRandomKeys<XES, KeyType>
 {
    using RSK = std::vector<KeyType>;
 

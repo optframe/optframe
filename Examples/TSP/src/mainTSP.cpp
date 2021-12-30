@@ -268,15 +268,27 @@ main(int argc, char** argv)
    // BRKGA is using Representation instead of Solution... beware!
    sref<InitialPopulation<pair<std::vector<double>, EvaluationTSP>>> _initPop =
      new RandomKeysInitPop<EvaluationTSP, double>(tsp.p->n, rg2);
-   BRKGA<pair<RepTSP, EvaluationTSP>, double> brkga(
-     eprk,
-     _initPop, // key_size = tsp.p->n
-     10000,
-     10,
-     0.4,
-     0.3,
-     0.6,
-     rg2);
+   //
+   using RK_ESolution = pair<vector<double>, EvaluationTSP>;
+   static_assert(XESolution<RK_ESolution>);
+   static_assert(X2ESolution<VEPopulation<RK_ESolution>, RK_ESolution>);
+   static_assert(XSearch<VEPopulation<RK_ESolution>, RK_ESolution>);
+   BRKGA<
+     pair<RepTSP, EvaluationTSP>,
+     double,
+     pair<vector<double>, EvaluationTSP>,
+     VEPopulation<pair<vector<double>, EvaluationTSP>>>
+     brkga(
+       //
+       //BRKGA<pair<RepTSP, EvaluationTSP>, double> brkga(
+       eprk,
+       _initPop, // key_size = tsp.p->n
+       10000,
+       10,
+       0.4,
+       0.3,
+       0.6,
+       rg2);
 
    StopCriteria<EvaluationTSP> sosc;
    // strange that this worked.... it's against 'override' pattern. Very strange!!

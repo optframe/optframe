@@ -434,15 +434,15 @@ concept
       a.size()
       }
       -> my_convertible_to<size_t>; // could this be 'int' as well? TODO: test
-                                    /*
-                               {
-                                  //a.getP(idx) // abandoning 'getP' in favor of 'at'... for compatibility
-                               with 'vector'
-                                  //
-                                  a.at(idx)
-                               }
-                               -> my_convertible_to<P>;
-                               */
+
+   {
+      //a.getP(idx) // abandoning 'getP' in favor of 'at'... for compatibility
+      //with 'vector'
+      //
+      a.at(idx)
+      }
+      -> my_convertible_to<P>;
+
 }
 /*
 || requires(Self a, size_t idx)
@@ -628,6 +628,6 @@ concept
 
 // compilation tests for concepts (these are NOT unit tests)
 // TODO: put on unit tests or directly here (without #include "printable.h")
-//#include "BaseConcepts.ctest.hpp"
+#include "BaseConcepts.ctest.hpp"
 
 #endif // OPTFRAME_SOLUTION_CONCEPTS_HPP_

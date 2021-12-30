@@ -33,6 +33,7 @@
 #include "Evaluator.hpp"
 #include "Heuristics/GRASP/GRConstructive.hpp"
 #include "RandGen.hpp"
+#include "VEPopulation.hpp"
 
 #ifndef _OPTFRAME_DBG_INITIAL_POP_
 #ifdef OPTFRAME_DEBUG
@@ -44,7 +45,7 @@
 
 namespace optframe {
 
-template<XESolution XES>
+template<XESolution XES, X2ESolution<XES> X2ES = VEPopulation<XES>> //= Population<XES>>
 class InitialPopulation : public Component
 {
    using S = typename XES::first_type;
@@ -55,7 +56,7 @@ public:
    {
    }
 
-   virtual Population<XES> generatePopulation(unsigned populationSize, double timelimit) = 0;
+   virtual X2ES generatePopulation(unsigned populationSize, double timelimit) = 0;
 
    static string idComponent()
    {
@@ -75,8 +76,8 @@ public:
    }
 };
 
-template<XESolution XES>
-class BasicInitialPopulation : public InitialPopulation<XES>
+template<XESolution XES, X2ESolution<XES> X2ES = VEPopulation<XES>>
+class BasicInitialPopulation : public InitialPopulation<XES, X2ES>
 {
    using S = typename XES::first_type;
    using XEv = typename XES::first_type;
@@ -93,12 +94,15 @@ public:
    {
    }
 
-   virtual Population<XES> generatePopulation(unsigned populationSize, double timelimit)
+   // Population<XES>
+   virtual X2ES generatePopulation(unsigned populationSize, double timelimit)
    {
-      Population<XES>* p = new Population<XES>;
+      //Population<XES>* p = new Population<XES>;
+      X2ES p;
       for (unsigned i = 0; i < populationSize; i++)
-         p->push_back(constructive.generateSolution(timelimit));
-      return *p;
+         p.push_back(constructive.generateSolution(timelimit));
+      return p;
+      //return *p;
    }
 
    static string idComponent()
@@ -119,8 +123,8 @@ public:
    }
 };
 
-template<XESolution XES>
-class GRInitialPopulation : public InitialPopulation<XES>
+template<XESolution XES, X2ESolution<XES> X2ES = VEPopulation<XES>>
+class GRInitialPopulation : public InitialPopulation<XES, X2ES>
 {
    using S = typename XES::first_type;
    using XEv = typename XES::first_type;
@@ -141,9 +145,11 @@ public:
    {
    }
 
-   virtual Population<XES> generatePopulation(unsigned populationSize, double timelimit)
+   // Population<XES>
+   virtual X2ES generatePopulation(unsigned populationSize, double timelimit)
    {
-      Population<XES> pop;
+      //Population<XES> pop;
+      X2ES pop;
       for (unsigned i = 0; i < populationSize; i++) {
          float alpha = rg.rand01();
          while (alpha > maxAlpha) {

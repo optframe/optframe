@@ -189,6 +189,12 @@ public:
       return *paretoSetFront.at(index);
    }
 
+   // compatibility with X2ESolution
+   XMES& at(unsigned index)
+   {
+      return getP(index);
+   }
+
    // return "observer pointers" mirroring internal pareto set / front
    vector<XMES*> getParetoSetFrontPtr()
    {
