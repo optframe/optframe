@@ -1,11 +1,11 @@
 #ifndef MODM_SOLUTION_H_
 #define MODM_SOLUTION_H_
 
-#include <OptFrame/Solution.hpp>
-#include <OptFrame/Solutions/CopySolution.hpp>
-#include "Representation.h"
 #include "ADS.h"
 #include "Evaluation.h"
+#include "Representation.h"
+#include <OptFrame/Solution.hpp>
+#include <OptFrame/Solutions/CopySolution.hpp>
 
 using namespace optframe;
 using namespace MODM;
@@ -17,10 +17,10 @@ typedef CopySolution<RepMODM, AdsMODM> SolutionMODM;
 
 typedef pair<SolutionMODM, EvaluationMODM> ESolutionMODM;
 
+typedef pair<SolutionMODM, MultiEvaluationMODM> EMSolutionMODM;
+
 static_assert(XESolution<ESolutionMODM>);
 
 static_assert(XSearch<ESolutionMODM, ESolutionMODM>);
 
 #endif /*MODM_SOLUTION_H_*/
-
-

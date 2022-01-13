@@ -161,7 +161,7 @@ main(int argc, char** argv)
 
    ConstructiveBasicGreedyRandomized grC(p, rg, adsMan);
 
-   ConstructiveToInitialSearch<SolutionMODM, EvaluationMODM> is_grC(grC, eval);
+   ConstructiveToInitialSearch<ESolutionMODM> is_grC(grC, eval);
 
    //NSSeqSWAP nsseq_swap(rg, &p);
    sref<NSSeq<ESolutionMODM>> nsseq_swap{
@@ -227,7 +227,7 @@ main(int argc, char** argv)
    VariableNeighborhoodDescent<ESolutionMODM> vnd(eval, vLS);
 
    //ILSLPerturbationLPlus2<SolutionMODM> ilsl_pert(eval, 100000, nsseq_invert, rg);
-   Evaluator<SolutionMODM>& eval2 = eval;
+   Evaluator<SolutionMODM, EvaluationMODM, ESolutionMODM>& eval2 = eval;
 
    sref<GeneralEvaluator<ESolutionMODM>> eval3{
       eval
@@ -256,7 +256,7 @@ main(int argc, char** argv)
 
    //===========================================
    //MO
-   vector<Evaluator<SolutionMODM>*> v_e;
+   vector<Evaluator<SolutionMODM, EvaluationMODM, ESolutionMODM>*> v_e;
    v_e.push_back(&eval);
    v_e.push_back(&evalRobustness);
 
@@ -288,7 +288,7 @@ main(int argc, char** argv)
 	TwoPhaseParetoLocalSearch<SolutionMODM> paretoSearch(mev, bip, initial_population_size, neighboors);
 
    */
-   Pareto<SolutionMODM>* pf;
+   Pareto<EMSolutionMODM>* pf;
    /*
 	int time2PPLS = 120;
 	for (int exec = 0; exec < 1; exec++)

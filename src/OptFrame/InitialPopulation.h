@@ -160,7 +160,8 @@ public:
             alpha = 0.00001;
 
          std::optional<S> s = constructive.generateGRSolution(alpha, timelimit);
-         pop.push_back(std::move(*s)); // the end of solution
+         XES se = { *s, Evaluation<>{} };
+         pop.push_back(se); // the end of solution
       }
       return pop;
    }
