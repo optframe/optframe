@@ -22,7 +22,7 @@ using namespace optframe;
 
 namespace PN {
 
-class ConstructiveRandom : public Constructive<RepPN> //, MY_ADS>
+class ConstructiveRandom : public Constructive<SolutionPN> //<RepPN> //, MY_ADS>
 {
 private:
    ProblemInstance& pPN;
@@ -34,8 +34,8 @@ public:
 
    virtual ~ConstructiveRandom();
 
-   //Solution<RepPN, MY_ADS>* generateSolution(double timelimit);
-   std::optional<RepPN> generateSolution(double timelimit) override;
+   //Solution<ESolutionPN>* generateSolution(double timelimit);
+   std::optional<SolutionPN> generateSolution(double timelimit) override;
 
    void print() const
    {

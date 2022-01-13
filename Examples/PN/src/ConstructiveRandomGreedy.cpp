@@ -11,17 +11,17 @@ ConstructiveRandomGreedy::~ConstructiveRandomGreedy()
 {
 }
 
-//Solution<RepPN, MY_ADS>* ConstructiveRandomGreedy::generateSolution(double timelimit)
-std::optional<RepPN>
+//Solution<ESolutionPN>* ConstructiveRandomGreedy::generateSolution(double timelimit)
+std::optional<SolutionPN>
 ConstructiveRandomGreedy::generateSolution(double timelimit)
 {
    RepPN sol = vector<bool>(pPN.nums.size());
 
-   double soma = 0, soma1 = 0, soma2 = 0;
+   double soma1 = 0, soma2 = 0;
 
    random_shuffle(pPN.nums.rbegin(), pPN.nums.rend());
 
-   for (int i = 0; i < pPN.nums.size(); i++) {
+   for (int i = 0; i < (int)pPN.nums.size(); i++) {
       if (soma1 > soma2) {
          sol[i] = 0;
          soma2 += pPN.nums[i];
@@ -31,6 +31,7 @@ ConstructiveRandomGreedy::generateSolution(double timelimit)
       }
    }
 
-   return std::make_optional(sol);
-   //return new Solution<RepPN, MY_ADS>(sol);
+   SolutionPN s{ sol };
+   return std::make_optional(s);
+   //return new Solution<ESolutionPN>(sol);
 }

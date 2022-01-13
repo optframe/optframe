@@ -4,21 +4,28 @@ using namespace PN;
 
 // ============ MoveShift ==============
 
-bool MoveShift::canBeApplied(const RepPN& rep, const MY_ADS&)
+bool
+MoveShift::canBeApplied(const ESolutionPN& se)
 {
-        if (i >= rep.size()-1 || i < 0)
-		return false;
-    return true;
+   const RepPN& rep = se.first.getR();
+   if (i >= (int)rep.size() - 1 || i < 0)
+      return false;
+   return true;
 }
 
-Move< RepPN , MY_ADS  >& MoveShift::apply(RepPN& rep, MY_ADS&)
+uptr<Move<ESolutionPN>>
+MoveShift::apply(ESolutionPN& se)
 {
-    rep[i] = !(rep[i]);
+   RepPN& rep = se.first.getR();
+   rep[i] = !(rep[i]);
 
-    return * new MoveShift(i, pPN);
+   return uptr<Move<ESolutionPN>>{
+      new MoveShift(i, pPN)
+   };
 }
 
-MoveCost<>* MoveShift::cost(const Evaluation<>&, const RepPN& rep, const MY_ADS& ads)
+op<EvaluationPN>
+MoveShift::cost(const ESolutionPN& se, bool allowEstimate)
 {
    return NULL;
    // Implement if a more efficient evaluation of the move is available
@@ -27,39 +34,43 @@ MoveCost<>* MoveShift::cost(const Evaluation<>&, const RepPN& rep, const MY_ADS&
    //return new MoveCost<>(move_cost, move_cost_infeasible);
 }
 
-
-
 // ============ NSIteratorShift ==============
 
-void NSIteratorShift::first()
+void
+NSIteratorShift::first()
 {
-    i = 0;
+   i = 0;
 };
 
-void NSIteratorShift::next()
+void
+NSIteratorShift::next()
 {
-    i++;
-};
-	
-bool NSIteratorShift::isDone()
-{
-    return (i > rep.size() - 1);
-};
-	
-Move< RepPN , MY_ADS  >& NSIteratorShift::current()
-{
-    return *new MoveShift(i, pPN);
+   i++;
 };
 
+bool
+NSIteratorShift::isDone()
+{
+   return (i > (int)rep.size() - 1);
+};
 
-
+uptr<Move<ESolutionPN>>
+NSIteratorShift::current()
+{
+   return uptr<Move<ESolutionPN>>{
+      new MoveShift(i, pPN)
+   };
+};
 
 // ============ NSSeqShift ==============
 
-
-Move<RepPN , MY_ADS >& NSSeqShift::move(const RepPN& rep, const MY_ADS&)
+uptr<Move<ESolutionPN>>
+NSSeqShift::randomMove(const ESolutionPN& se)
 {
+   const RepPN& rep = se.first.getR();
    int i1 = rg.rand(rep.size());
-   
-   return * new MoveShift(i1, pPN);
+
+   return uptr<Move<ESolutionPN>>{
+      new MoveShift(i1, pPN)
+   };
 }

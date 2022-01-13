@@ -19,7 +19,7 @@
 
 namespace PN {
 
-class PNEvaluator : public Evaluator<RepPN, EvaluationPN> //public Evaluator<RepPN, MY_ADS>
+class PNEvaluator : public Evaluator<SolutionPN, EvaluationPN, ESolutionPN> //RepPN, EvaluationPN> //public Evaluator<ESolutionPN>
 {
 private:
    ProblemInstance& pPN;
@@ -32,15 +32,20 @@ public:
 
    virtual ~PNEvaluator();
 
-   EvaluationPN evaluate(const RepPN& rep, const OPTFRAME_DEFAULT_ADS*);
+   EvaluationPN evaluate(const SolutionPN& s) override;
 
    //EvaluationPN& evaluate(const RepPN& rep, const MY_ADS&);
 
-   virtual bool betterThan(double f1, double f2);
+   virtual bool betterThan(const EvaluationPN& f1, const EvaluationPN& f2) override;
 
-   virtual bool isMinimization() const
+   virtual bool isMinimization() const override
    {
       return true;
+   }
+
+   std::string toString() const override
+   {
+      return "PNEvaluator";
    }
 
    void print() const

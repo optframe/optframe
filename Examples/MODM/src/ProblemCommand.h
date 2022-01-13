@@ -5,15 +5,15 @@
 
 #include <OptFrame/Scanner++/Scanner.hpp>
 
-#include "Representation.h"
 #include "DeltaStructure.h"
-#include "Solution.h"
 #include "Evaluation.h"
+#include "Representation.h"
+#include "Solution.h"
 
-#include "Evaluator.h"
 #include "ConstructiveBasicGreedyRandomized.h"
-#include "NSSeqSWAPInter.h"
+#include "Evaluator.h"
 #include "NSSeqSWAP.h"
+#include "NSSeqSWAPInter.h"
 
 #include "ProblemInstance.h"
 
@@ -26,47 +26,44 @@
 using namespace scannerpp;
 using namespace optframe;
 
-namespace MODM
-{
+namespace MODM {
 
 class MODMProblemCommand
 {
 public:
+   //CheckCommand<RepMODM, AdsMODM >* check;
+   sref<RandGen> rg;
+   vsref<Component> vd;
 
-    //CheckCommand<RepMODM, AdsMODM >* check;
-    RandGen& rg;
-    vector<Component*> vd;
-    
-    void registerComponent(Component* c, string s)
-    {
-        vd.push_back(c);
-    }
+   void registerComponent(sref<Component> c, string s)
+   {
+      vd.push_back(c);
+   }
 
-    ProblemInstance* p;
-    
-    MODMProblemCommand(RandGen& _rg) 
-        : rg(_rg)
-    { 
-        p = NULL;
-        //check = NULL;
-    }
+   ProblemInstance* p;
 
-    virtual ~MODMProblemCommand()
-    {
-    }
-    
-    string id()
-    {
-        return "problem.MODM";
-    }
-    
-    // Implement 'load' and 'unload' methods in .cpp file
-    bool load(string filename);
+   MODMProblemCommand(sref<RandGen> _rg)
+     : rg(_rg)
+   {
+      p = NULL;
+      //check = NULL;
+   }
 
-    bool unload();
+   virtual ~MODMProblemCommand()
+   {
+   }
+
+   string id()
+   {
+      return "problem.MODM";
+   }
+
+   // Implement 'load' and 'unload' methods in .cpp file
+   bool load(string filename);
+
+   bool unload();
 };
 
 }
 
 #endif /*MODM_PROBLEMMODULE_H_*/
-

@@ -11,8 +11,8 @@ ConstructiveGreedySum::~ConstructiveGreedySum()
 {
 }
 
-//Solution<RepPN, MY_ADS>* ConstructiveGreedySum::generateSolution(double timelimit)
-std::optional<RepPN>
+//Solution<ESolutionPN>* ConstructiveGreedySum::generateSolution(double timelimit)
+std::optional<SolutionPN>
 ConstructiveGreedySum::generateSolution(double timelimit)
 {
    RepPN sol = vector<bool>(pPN.nums.size());
@@ -21,7 +21,7 @@ ConstructiveGreedySum::generateSolution(double timelimit)
 
    sort(pPN.nums.rbegin(), pPN.nums.rend());
 
-   for (int i = 0; i < pPN.nums.size(); i++) {
+   for (int i = 0; i < (int)pPN.nums.size(); i++) {
       if (soma1 > soma2) {
          sol[i] = 0;
          soma2 += pPN.nums[i];
@@ -31,6 +31,7 @@ ConstructiveGreedySum::generateSolution(double timelimit)
       }
    }
 
-   return std::make_optional(sol);
-   //return new Solution<RepPN, MY_ADS>(sol);
+   SolutionPN s{ sol };
+   return std::make_optional(s);
+   //return new Solution<ESolutionPN>(sol);
 }

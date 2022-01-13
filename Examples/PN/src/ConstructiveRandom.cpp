@@ -11,13 +11,13 @@ ConstructiveRandom::~ConstructiveRandom()
 {
 }
 
-//Solution<RepPN, MY_ADS>* ConstructiveRandom::generateSolution(double timelimit)
-std::optional<RepPN>
+//Solution<ESolutionPN>* ConstructiveRandom::generateSolution(double timelimit)
+std::optional<SolutionPN>
 ConstructiveRandom::generateSolution(double timelimit)
 {
    RepPN sol = vector<bool>(pPN.nums.size());
 
-   for (int i = 0; i < pPN.nums.size(); i++) {
+   for (int i = 0; i < (int)pPN.nums.size(); i++) {
       double u = (double)(rand() % 100) / 100.0;
 
       if (u <= 0.5)
@@ -26,6 +26,7 @@ ConstructiveRandom::generateSolution(double timelimit)
          sol[i] = 1;
    }
 
-   return std::make_optional(sol);
-   //return new Solution<RepPN, MY_ADS>(sol);
+   SolutionPN s{ sol };
+   return std::make_optional(s);
+   //return new Solution<ESolutionPN>(sol);
 }

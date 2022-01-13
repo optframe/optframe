@@ -14,7 +14,7 @@ using namespace std;
 
 namespace PN {
 
-class MoveSwap : public Move<RepPN, MY_ADS>
+class MoveSwap : public Move<ESolutionPN>
 {
 private:
    // MOVE PARAMETERS
@@ -40,10 +40,10 @@ public:
 
    string id() const
    {
-      return Move<RepPN, MY_ADS>::idComponent().append(":MoveSwap");
+      return Move<ESolutionPN>::idComponent().append(":MoveSwap");
    }
 
-   bool operator==(const Move<RepPN, MY_ADS>& _m) const
+   bool operator==(const Move<ESolutionPN>& _m) const
    {
       const MoveSwap& m = (const MoveSwap&)_m;
       return (i == m.i) && (j == m.j);
@@ -51,14 +51,14 @@ public:
 
    // Implement these methods in the .cpp file
 
-   bool canBeApplied(const RepPN& rep, const MY_ADS*) override;
+   bool canBeApplied(const ESolutionPN& se) override;
 
-   Move<RepPN, MY_ADS>* apply(RepPN& rep, MY_ADS*) override;
+   uptr<Move<ESolutionPN>> apply(ESolutionPN& se) override;
 
-   op<EvaluationPN> cost(const Evaluation<>&, const RepPN& rep, const MY_ADS* ads, bool allowEstimate) override;
+   op<EvaluationPN> cost(const ESolutionPN& se, bool allowEstimate) override;
 };
 
-class NSIteratorSwap : public NSIterator<RepPN, MY_ADS>
+class NSIteratorSwap : public NSIterator<ESolutionPN>
 {
 private:
    // ITERATOR PARAMETERS
@@ -67,8 +67,8 @@ private:
    ProblemInstance& pPN;
 
 public:
-   NSIteratorSwap(ProblemInstance& _pPN, const RepPN& _rep)
-     : rep(_rep)
+   NSIteratorSwap(ProblemInstance& _pPN, const ESolutionPN& se)
+     : rep{ se.first.getR() }
      , pPN(_pPN)
    {
    }
@@ -82,10 +82,10 @@ public:
    void first() override;
    void next() override;
    bool isDone() override;
-   Move<RepPN, MY_ADS>* current() override;
+   uptr<Move<ESolutionPN>> current() override;
 };
 
-class NSSeqSwap : public NSSeq<RepPN, MY_ADS>
+class NSSeqSwap : public NSSeq<ESolutionPN>
 {
 private:
    // YOU MAY REMOVE THESE PARAMETERS IF YOU DON'T NEED (BUT PROBABLY WILL...)
@@ -111,27 +111,27 @@ public:
 
    string id() const
    {
-      return NSSeq<RepPN, MY_ADS>::idComponent().append(":NSSeqSwap");
+      return NSSeq<ESolutionPN>::idComponent().append(":NSSeqSwap");
    }
 
-   NSIterator<RepPN, MY_ADS>* getIterator(const RepPN& rep, const MY_ADS*) override
+   uptr<NSIterator<ESolutionPN>> getIterator(const ESolutionPN& se) override
    {
       // return an iterator to the neighbors of 'rep'
-      return new NSIteratorSwap(pPN, rep); // ADD POSSIBLE ITERATOR PARAMETERS
+      return uptr<NSIterator<ESolutionPN>>{
+         new NSIteratorSwap(pPN, se)
+      }; // ADD POSSIBLE ITERATOR PARAMETERS
    }
 
    // Implement this method in the .cpp file
 
-   Move<RepPN, MY_ADS>* randomMove(const RepPN& rep, const MY_ADS*);
+   uptr<Move<ESolutionPN>> randomMove(const ESolutionPN& se);
 
-   Move<RepPN, MY_ADS>* validMove(const RepPN& rep, const MY_ADS* ads)
+   uptr<Move<ESolutionPN>> validMove(const ESolutionPN& se)
    {
       for (unsigned i = 0; i < 100; i++) {
-         Move<RepPN, MY_ADS>& m = *randomMove(rep, ads);
-         if (m.canBeApplied(rep, ads))
-            return &m;
-         else
-            delete &m;
+         uptr<Move<ESolutionPN>> m = randomMove(se);
+         if (m->canBeApplied(se))
+            return m;
       }
       return NULL;
    }

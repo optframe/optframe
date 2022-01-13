@@ -23,6 +23,11 @@ public:
    ProblemInstance(Scanner& scanner);
 
    virtual ~ProblemInstance();
+
+   virtual std::string toString() const
+   {
+      return "PROBLEM_PN";
+   }
 };
 
 }

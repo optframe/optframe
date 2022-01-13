@@ -3,19 +3,21 @@
 
 #include <iostream>
 
-#include "../../OptFrame/Commands/ProblemCommand.hpp"
-#include "../../OptFrame/Scanner++/Scanner.h"
+//#include "../../OptFrame/Commands/ProblemCommand.hpp"
+#include <OptFrame/Scanner++/Scanner.hpp>
 
-#include "Representation.h"
+#include <OptFrame/HeuristicFactory.hpp>
+
 #include "DeltaStructure.h"
-#include "Solution.h"
 #include "Evaluation.h"
+#include "Representation.h"
+#include "Solution.h"
 
-#include "Evaluator.h"
 #include "ConstructiveGreedyHalfSum.h"
 #include "ConstructiveGreedySum.h"
-#include "ConstructiveRandomGreedy.h"
 #include "ConstructiveRandom.h"
+#include "ConstructiveRandomGreedy.h"
+#include "Evaluator.h"
 #include "NSSeqShift.h"
 #include "NSSeqSwap.h"
 
@@ -24,37 +26,41 @@
 using namespace scannerpp;
 using namespace optframe;
 
-namespace PN
-{
+namespace PN {
 
-class PNProblemCommand : public ProblemCommand<RepPN , MY_ADS >
+class PNProblemCommand //: public ProblemCommand<RepPN , MY_ADS >
 {
 public:
+   ProblemInstance* p;
 
-    ProblemInstance* p;
-    
-    PNProblemCommand()
-    {
-        p = NULL;
-    }
+   PNProblemCommand()
+   {
+      p = NULL;
+   }
 
-    virtual ~PNProblemCommand()
-    {
-    }
-    
-    string id()
-    {
-        return "problem.PN";
-    }
-    
-    // Implement 'load' and 'unload' methods in .cpp file
-    
-	bool load(string filename, HeuristicFactory<RepPN , MY_ADS >& hf, map<string, string>& dictionary, map<string, vector<string> >& ldictionary);
-	    
-    bool unload(HeuristicFactory<RepPN , MY_ADS >& factory, map<string, string>& dictionary, map<string, vector<string> >& ldictionary);
+   virtual ~PNProblemCommand()
+   {
+   }
+
+   string id()
+   {
+      return "problem.PN";
+   }
+
+   vsref<Component> vd;
+
+   void registerComponent(sref<Component> c, string s)
+   {
+      vd.push_back(c);
+   }
+
+   // Implement 'load' and 'unload' methods in .cpp file
+
+   bool load(string filename, HeuristicFactory<SolutionPN, EvaluationPN, ESolutionPN>& hf, map<string, string>& dictionary, map<string, vector<string>>& ldictionary);
+
+   bool unload(HeuristicFactory<SolutionPN, EvaluationPN, ESolutionPN>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary);
 };
 
 }
 
 #endif /*PN_PROBLEMMODULE_H_*/
-

@@ -4,29 +4,34 @@ using namespace PN;
 
 // ============ MoveSwap ==============
 
-bool MoveSwap::canBeApplied(const RepPN& rep, const MY_ADS&)
+bool
+MoveSwap::canBeApplied(const ESolutionPN& se)
 {
-	if (i >= rep.size()-1 || i < 0)
-		return false;
-	if (j >= rep.size()-1 || j < 0)
-		return false;
-        if (rep[i] == rep[j])
-                return false;
-    return true;
+   const RepPN& rep = se.first.getR();
+   if (i >= (int)rep.size() - 1 || i < 0)
+      return false;
+   if (j >= (int)rep.size() - 1 || j < 0)
+      return false;
+   if (rep[i] == rep[j])
+      return false;
+   return true;
 }
 
-Move< RepPN , MY_ADS  >& MoveSwap::apply(RepPN& rep, MY_ADS&)
-{	
-    int aux;
+uptr<Move<ESolutionPN>>
+MoveSwap::apply(ESolutionPN& se)
+{
+   RepPN& rep = se.first.getR();
+   int aux;
 
-    aux = rep[i];
-    rep[i] = rep[j];
-    rep[j] = aux;    
+   aux = rep[i];
+   rep[i] = rep[j];
+   rep[j] = aux;
 
-    return * new MoveSwap(j,i,pPN); 
+   return uptr<Move<ESolutionPN>>{ new MoveSwap(j, i, pPN) };
 }
 
-MoveCost<>* MoveSwap::cost(const Evaluation<>&, const RepPN& rep, const MY_ADS& ads)
+op<EvaluationPN>
+MoveSwap::cost(const ESolutionPN& se, bool allowEstimate)
 {
    return NULL;
    // Implement if a more efficient evaluation of the move is available
@@ -35,47 +40,47 @@ MoveCost<>* MoveSwap::cost(const Evaluation<>&, const RepPN& rep, const MY_ADS& 
    //return new MoveCost<>(move_cost, move_cost_infeasible);
 }
 
-
-
 // ============ NSIteratorSwap ==============
 
-void NSIteratorSwap::first()
+void
+NSIteratorSwap::first()
 {
-    i = 0;
-    j = 1;
+   i = 0;
+   j = 1;
 };
 
-void NSIteratorSwap::next()
+void
+NSIteratorSwap::next()
 {
-    j++;
-    if (j > rep.size()-1)
-    {
-	i++;
-	j = 1;
-    }
-
-};
-	
-bool NSIteratorSwap::isDone()
-{
-    return (i >= rep.size() - 1);
-};
-	
-Move< RepPN , MY_ADS  >& NSIteratorSwap::current()
-{
-    return *new MoveSwap(i, j, pPN);
+   j++;
+   if (j > (int)rep.size() - 1) {
+      i++;
+      j = 1;
+   }
 };
 
+bool
+NSIteratorSwap::isDone()
+{
+   return (i >= (int)rep.size() - 1);
+};
 
-
+uptr<Move<ESolutionPN>>
+NSIteratorSwap::current()
+{
+   return uptr<Move<ESolutionPN>>{
+      new MoveSwap(i, j, pPN)
+   };
+};
 
 // ============ NSSeqSwap ==============
 
-
-Move<RepPN , MY_ADS >& NSSeqSwap::move(const RepPN& rep, const MY_ADS&)
+uptr<Move<ESolutionPN>>
+NSSeqSwap::randomMove(const ESolutionPN& se)
 {
-   int i1 = rg.rand(rep.size()-1);
-   int j1 = rg.rand(rep.size()-1);
-   
-   return * new MoveSwap(i1, j1, pPN); 
+   const RepPN& rep = se.first.getR();
+   int i1 = rg.rand(rep.size() - 1);
+   int j1 = rg.rand(rep.size() - 1);
+
+   return uptr<Move<ESolutionPN>>{ new MoveSwap(i1, j1, pPN) };
 }

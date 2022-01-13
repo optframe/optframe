@@ -3,10 +3,11 @@
 // Project Particao
 // ===================================
 
-#include <stdlib.h>
-#include <math.h>
 #include <iostream>
+#include <math.h>
+#include <stdlib.h>
 
+/*
 #include "../OptFrame/Interactive.hpp"
 #include "PN.h"
 
@@ -14,9 +15,10 @@ using namespace std;
 using namespace optframe;
 using namespace PN;
 
-int main(int argc, char **argv)
+int
+main(int argc, char** argv)
 {
-   Interactive<RepPN, MY_ADS > optf;
+   Interactive<RepPN, MY_ADS> optf;
    //optframe.loadCallCommand();
 
    optf.loadCommand(new PNProblemCommand);
@@ -26,6 +28,23 @@ int main(int argc, char **argv)
    optf.execute();
 
    cout << "Program ended successfully" << endl;
-   
+
+   return 0;
+}
+*/
+
+#include "PN.h"
+
+using namespace std;
+using namespace optframe;
+using namespace PN;
+
+int
+main(int argc, char** argv)
+{
+   PNProblemCommand p;
+
+   cout << "Program ended successfully" << endl;
+
    return 0;
 }

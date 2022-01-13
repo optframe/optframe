@@ -11,8 +11,8 @@ ConstructiveGreedyHalfSum::~ConstructiveGreedyHalfSum()
 {
 }
 
-//Solution<RepPN, MY_ADS>* ConstructiveGreedyHalfSum::generateSolution(double timelimit)
-std::optional<RepPN>
+//Solution<ESolutionPN>* ConstructiveGreedyHalfSum::generateSolution(double timelimit)
+std::optional<SolutionPN>
 ConstructiveGreedyHalfSum::generateSolution(double timelimit)
 {
    RepPN sol = vector<bool>(this->pPN.nums.size());
@@ -21,7 +21,7 @@ ConstructiveGreedyHalfSum::generateSolution(double timelimit)
 
    random_shuffle(pPN.nums.begin(), pPN.nums.end());
 
-   for (int i = 0; i < pPN.nums.size(); ++i) {
+   for (int i = 0; i < (int)pPN.nums.size(); ++i) {
       soma += pPN.nums[i];
    }
 
@@ -35,7 +35,7 @@ ConstructiveGreedyHalfSum::generateSolution(double timelimit)
       i++;
    }
 
-   for (int j = i; j < pPN.nums.size(); ++j) {
+   for (int j = i; j < (int)pPN.nums.size(); ++j) {
       if ((soma1 + pPN.nums[j]) <= soma) {
          sol[j] = 1;
          soma1 += pPN.nums[j];
@@ -45,6 +45,7 @@ ConstructiveGreedyHalfSum::generateSolution(double timelimit)
       }
    }
 
-   return std::make_optional(sol);
-   //return new Solution<RepPN, MY_ADS>(sol);
+   SolutionPN s{ sol };
+   return std::make_optional(s);
+   //return new Solution<ESolutionPN>(sol);
 }
