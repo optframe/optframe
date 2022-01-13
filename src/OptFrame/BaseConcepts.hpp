@@ -295,6 +295,9 @@ concept
           e.estimated
           }
           -> my_convertible_to<bool>;
+       {
+          e.diff(e)
+       };
     }) || // classic multiobj (MultiEvaluation) - TODO: remove this option
   (requires(Self e, size_t idx) {
      // variable 'outdated' is still useful for optimizations
@@ -302,6 +305,9 @@ concept
         e.atObjVal(idx)
         }
         -> optframe::objval;
+     {
+        e.diff(e)
+     };
   });
 
 // XSolution and XEvaluation are container-inspired "conceptual objects", to

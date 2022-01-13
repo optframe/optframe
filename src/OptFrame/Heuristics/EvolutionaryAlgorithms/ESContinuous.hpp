@@ -48,7 +48,10 @@ struct ESContinuousStructure
 
 //CADA INDIVIDUO EH UM PAR DE SOLUCAO E UMA TUPLE COM O PARAMETROS DA ESTRATEGIA
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class ESStruct = double>
+//
+//template<XRepresentation R, class ADS = OPTFRAME_DEFAULT_ADS, class ESStruct = double, XBaseSolution<R, ADS> S = CopySolution<R, ADS>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 template<XRepresentation R, class ADS = OPTFRAME_DEFAULT_ADS, class ESStruct = double, XBaseSolution<R, ADS> S = CopySolution<R, ADS>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+
 class ESContinous : public SingleObjSearch<XES>
 {
 private:
@@ -258,9 +261,13 @@ public:
    }
 
    //std::optional<pair<S, Evaluation<>>> search(StopCriteria<XEv>& stopCriteria) override
-   SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
+   //
+   //SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
+   SearchOutput<XES> search(const StopCriteria<XEv>& stopCriteria) override
    {
-      op<XES>& star = this->best;
+      //op<XES>& star = this->best;
+      // TODO: reimplement with SearchBy ...
+      op<XES> star;
       cout << "ES search(" << stopCriteria.target_f << "," << stopCriteria.timelimit << ")" << endl;
 
       Timer tnow;
@@ -413,8 +420,8 @@ public:
       //return new pair<S, Evaluation<>>(s, e);
       //return make_optional(make_pair(*sStar, *eStar)); // fix: leak
       star = make_optional(make_pair(*sStar, *eStar)); // fix: leak
-      this->best = star;
-      return SearchStatus::NO_REPORT;
+      //this->best = star;
+      return SearchOutput<XES>{ SearchStatus::NO_REPORT, star };
    }
 
    static string idComponent()

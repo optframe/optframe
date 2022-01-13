@@ -43,15 +43,15 @@ class BasicMOILSPerturbation : public MOILS
 {
 private:
    //MultiEvaluator<S, XEv>& mEval;
-   GeneralEvaluator<XMES, XMEv>& mEval;
+   sref<GeneralEvaluator<XMES, XMEv>> mEval;
    int pMin;
    int pMax;
-   vector<NS<XMES, XMEv>*> ns;
-   RandGen& rg;
+   vsref<NS<XMES, XMEv>> ns;
+   sref<RandGen> rg;
 
 public:
    //BasicMOILSPerturbation(MultiEvaluator<S, XEv>& _mEval, int _pMin, int _pMax, vector<NS<XES, XEv>*>& _ns, RandGen& _rg) :
-   BasicMOILSPerturbation(GeneralEvaluator<XMES, XMEv>& _mEval, int _pMin, int _pMax, vector<NS<XMES, XMEv>*>& _ns, RandGen& _rg)
+   BasicMOILSPerturbation(sref<GeneralEvaluator<XMES, XMEv>> _mEval, int _pMin, int _pMax, vsref<NS<XMES, XMEv>> _ns, sref<RandGen> _rg)
      : mEval(_mEval)
      , pMin(_pMin)
      , pMax(_pMax)
@@ -70,13 +70,13 @@ public:
    }
 
    //BasicMOILSPerturbation(MultiEvaluator<S, XEv>& _mEval, int _pMin, int _pMax, NS<XES, XEv>& _ns, RandGen& _rg) :
-   BasicMOILSPerturbation(GeneralEvaluator<XMES, XMEv>& _mEval, int _pMin, int _pMax, NS<XMES, XMEv>& _ns, RandGen& _rg)
+   BasicMOILSPerturbation(sref<GeneralEvaluator<XMES, XMEv>> _mEval, int _pMin, int _pMax, sref<NS<XMES, XMEv>> _ns, sref<RandGen> _rg)
      : mEval(_mEval)
      , pMin(_pMin)
      , pMax(_pMax)
      , rg(_rg)
    {
-      ns.push_back(&_ns);
+      ns.push_back(_ns);
       if (pMax < pMin) {
          cout << "BasicMOILSPerturbation warning: pMax > pMin! Swapping both." << endl;
          int aux = pMax;
@@ -92,9 +92,9 @@ public:
    {
    }
 
-   void add_ns(NS<XMES, XMEv>& _ns)
+   void add_ns(sref<NS<XMES, XMEv>> _ns)
    {
-      ns.push_back(&_ns);
+      ns.push_back(_ns);
    }
 
    //void perturb(S& s, MultiEvaluation<>& mev, const StopCriteria<XEv>& stopCriteria)
@@ -120,12 +120,17 @@ public:
       }
 
       //mEval.reevaluateMEV(mev, se); // updates 'e'
-      mEval.reevaluate(smev); // updates 'e'
+      mEval->reevaluate(smev); // updates 'e'
    }
 
    virtual string id() const
    {
       return idComponent();
+   }
+
+   virtual std::string toString() const override
+   {
+      return id();
    }
 
    static string idComponent()

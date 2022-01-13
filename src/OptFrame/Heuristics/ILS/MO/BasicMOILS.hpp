@@ -23,96 +23,96 @@
 
 #include <algorithm>
 
-#include "MultiObjILS.hpp"
 #include "BasicMOILSPerturbation.hpp"
+#include "MultiObjILS.hpp"
 
-
-namespace optframe
-{
+namespace optframe {
 
 typedef int BasicHistory;
 
-template<XSolution S, XEvaluation XMEv=MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+template<XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
 //template<XESolution XMES, XEvaluation XMEv=MultiEvaluation<>>
-class BasicMOILS: public MultiObjILS<BasicHistory, S, XMEv, XMES>
+class BasicMOILS : public MultiObjILS<BasicHistory, typename XMES::first_type, XMEv, XMES>
 {
+   using S = typename XMES::first_type;
+   static_assert(is_same<S, typename XMES::first_type>::value);
+   static_assert(is_same<XMEv, typename XMES::second_type>::value);
    using XEv = Evaluation<>; // hardcoded.. TODO: fix
 private:
-	BasicMOILSPerturbation<XMES, XMEv>& p;
-	int iterMax;
+   sref<BasicMOILSPerturbation<XMES, XMEv>> p;
+   int iterMax;
 
 public:
+   BasicMOILS(sref<MultiEvaluator<S, XEv, XMEv, XMES>> _mev, sref<InitialPareto<XMES>> _init_pareto, int _init_pop_size, sref<MOLocalSearch<XMES, XMEv>> _ls, sref<RandGen> _rg, sref<BasicMOILSPerturbation<XMES, XMEv>> _p, int _iterMax)
+     : //BasicMOILS(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, BasicMOILSPerturbation<XMES, XMEv>& _p, int _iterMax) :
+     MultiObjILS<BasicHistory, S, XMEv, XMES>(_mev, _init_pareto, _init_pop_size, _ls, _rg)
+     , p(_p)
+     , iterMax(_iterMax)
+   {
+   }
 
-   BasicMOILS(MultiEvaluator<S, XEv, XMEv, XMES>& _mev, InitialPareto<XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, BasicMOILSPerturbation<XMES, XMEv>& _p, int _iterMax) :
-	//BasicMOILS(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg, BasicMOILSPerturbation<XMES, XMEv>& _p, int _iterMax) :
-		MultiObjILS<BasicHistory, S, XMEv, XMES>(_mev,_init_pareto,_init_pop_size,_ls,_rg), p(_p), iterMax(_iterMax)
-	{
-	}
+   virtual ~BasicMOILS()
+   {
+   }
 
-	virtual ~BasicMOILS()
-	{
-	}
+   virtual BasicHistory& initializeHistory() override
+   {
+      int& iter = *new int;
+      iter = 0;
 
-	virtual BasicHistory& initializeHistory() override
-	{
-		int& iter = *new int;
-		iter = 0;
+      return iter;
+   }
 
-		return iter;
-	}
+   virtual void perturbation(XMES& smev, const StopCriteria<XMEv>& stopCriteria, BasicHistory& history) override
+   {
+      int iter = history;
 
-	virtual void perturbation(XMES& smev, const StopCriteria<XMEv>& stopCriteria, BasicHistory& history) override
-	{
-		int iter = history;
+      p->perturb(smev, stopCriteria);
 
-		p.perturb(smev, stopCriteria);
+      // Incrementa a iteracao
+      iter++;
 
-		// Incrementa a iteracao
-		iter++;
+      // Atualiza o historico
+      history = iter;
+   }
 
-		// Atualiza o historico
-		history = iter;
-	}
+   virtual void acceptanceCriterion(const Pareto<XMES>& pf, BasicHistory& history) override
+   {
 
-	virtual void acceptanceCriterion(const Pareto<XMES>& pf, BasicHistory& history) override
-	{
+      if (pf.getNewNonDominatedSolutionsStatus()) {
+         cout << "New Pareto size: is " << pf.size();
+         cout << " on [iter without improvement " << history << "]" << endl;
 
-		if (pf.getNewNonDominatedSolutionsStatus())
-		{
-			cout << "New Pareto size: is "<<pf.size();
-			cout << " on [iter without improvement " << history << "]" << endl;
+         // =======================
+         //  Atualiza o historico
+         // =======================
+         history = 0;
+      }
+   }
 
-			// =======================
-			//  Atualiza o historico
-			// =======================
-			history = 0;
-		}
-	}
+   virtual bool terminationCondition(BasicHistory& history) override
+   {
+      int iter = history;
 
-	virtual bool terminationCondition(BasicHistory& history) override
-	{
-		int iter = history;
+      return (iter >= iterMax);
+   }
 
-		return (iter >= iterMax);
-	}
+   virtual bool compatible(string s)
+   {
+      return (s == idComponent()) || (MultiObjSearch<XMES>::compatible(s));
+   }
 
-	virtual bool compatible(string s)
-	{
-		return (s == idComponent()) || (MultiObjSearch<S, XMEv>::compatible(s));
-	}
+   virtual string id() const
+   {
+      return idComponent();
+   }
 
-	virtual string id() const
-	{
-		return idComponent();
-	}
-
-	static string idComponent()
-	{
-		stringstream ss;
-		ss << MultiObjILS<BasicHistory, S, XMEv>::idComponent() << "BasicMOILS";
-		return ss.str();
-	}
-
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << MultiObjILS<BasicHistory, S, XMEv>::idComponent() << "BasicMOILS";
+      return ss.str();
+   }
 };
 
 }

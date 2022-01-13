@@ -45,6 +45,10 @@
 
 using namespace std;
 
+// Pareto class is meant to work with Legacy OptFrame structures,
+// meaning that it requires MultiEvaluation and also ParetoDominance.
+// XMES -> Solution with MultiEvaluation (similar to XES: Solution with Evaluation)
+
 namespace optframe {
 
 //template<XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>

@@ -163,6 +163,9 @@ class CheckCommand
 {
    using XEv = typename XES::second_type;
 
+   static_assert(is_same<S, typename XES::first_type>::value);
+   static_assert(is_same<XEv, typename XES::second_type>::value);
+
    static const int CMERR_EV_BETTERTHAN = 2001;
    static const int CMERR_EV_BETTEREQUALS = 2002;
    // Check if operator== is correctly implemented for Move class

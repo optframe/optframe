@@ -109,6 +109,11 @@ public:
       return ss.str();
    }
 
+   virtual std::string toString() const override
+   {
+      return id();
+   }
+
    virtual string id() const
    {
       return idComponent();
@@ -133,6 +138,11 @@ public:
    virtual vector<pair<string, string>> parameters() = 0;
 
    virtual bool canBuild(string) = 0;
+
+   virtual std::string toString() const override
+   {
+      return id();
+   }
 
    static string idComponent()
    {

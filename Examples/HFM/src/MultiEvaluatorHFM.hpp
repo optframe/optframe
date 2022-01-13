@@ -33,10 +33,10 @@ namespace HFM {
 
 class HFMMultiEvaluator : public MultiEvaluator<SolutionHFM, EvaluationHFM, MultiEvaluationHFM>
 {
-   HFMEvaluator& evalEFP;
+   sref<HFMEvaluator> evalEFP;
 
 public:
-   HFMMultiEvaluator(HFMEvaluator& _evalEFP)
+   HFMMultiEvaluator(sref<HFMEvaluator> _evalEFP)
      : evalEFP(_evalEFP)
    {
    }
@@ -50,7 +50,7 @@ public:
       const RepHFM& r = s.getR();
       MultiEvaluation<> nev;
 
-      vector<double>* foIndicator = evalEFP.evaluateAll(r, ALL_EVALUATIONS);
+      vector<double>* foIndicator = evalEFP->evaluateAll(r, ALL_EVALUATIONS);
 
       //It has been verified that most part of INDEX minimizes Square Errors and are strongly correlated
       //Instead of designed MAPE_INV
@@ -70,7 +70,7 @@ public:
       smev.second = evaluate(smev.first);
    }
 
-   void addEvaluator(Evaluator<SolutionHFM>& ev)
+   void addEvaluator(Evaluator<SolutionHFM, Evaluation<>>& ev)
    {
       cout << "I should not add anyone! HFM MEV" << endl;
       getchar();
@@ -81,14 +81,14 @@ public:
       return 5;
    }
 
-   bool betterThan(const Evaluation<>& ev1, const Evaluation<>& ev2, int index)
+   bool betterThan(const Evaluation<>& ev1, const Evaluation<>& ev2, int index) override
    {
-      return evalEFP.betterThan(ev1, ev2);
+      return evalEFP->betterThan(ev1, ev2);
    }
 
-   bool equals(const Evaluation<>& ev1, const Evaluation<>& ev2, int index)
+   bool equals(const Evaluation<>& ev1, const Evaluation<>& ev2, int index) override
    {
-      return evalEFP.equals(ev1, ev2);
+      return evalEFP->equals(ev1, ev2);
    }
 
 protected:
@@ -99,7 +99,7 @@ protected:
       return ss.str();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

@@ -138,6 +138,15 @@ public:
       return vev[index].evaluation();
    }
 
+   // TODO: test!!
+   MultiEvaluation<> diff(const MultiEvaluation<>& other)
+   {
+      MultiEvaluation<> r = *this;
+      for (unsigned i = 0; i < r.size(); i++)
+         r.at(i) = r.at(i).diff(other.at(i));
+      return r;
+   }
+
    Evaluation<>& operator[](unsigned index)
    {
       return vev[index];

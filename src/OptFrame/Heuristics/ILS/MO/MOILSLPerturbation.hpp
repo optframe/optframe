@@ -56,6 +56,11 @@ public:
       return idComponent();
    }
 
+   virtual std::string toString() const override
+   {
+      return id();
+   }
+
    static string idComponent()
    {
       stringstream ss;
@@ -69,27 +74,27 @@ template<XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
 class MOILSLPerturbationLPlus2 : public MOILSLPerturbation<XMES, XMEv>
 {
 private:
-   vector<NS<XMES, XMEv>*> ns;
+   vsref<NS<XMES, XMEv>> ns;
    //MultiEvaluator<S, XEv, XMEv, XMES>& evaluator;
-   GeneralEvaluator<XMES, XMEv>& evaluator;
-   RandGen& rg;
+   sref<GeneralEvaluator<XMES, XMEv>> evaluator;
+   sref<RandGen> rg;
 
 public:
    //MOILSLPerturbationLPlus2(MultiEvaluator<S, XEv, XMEv, XMES>& _e, NS<XMES, XMEv>& _ns, RandGen& _rg) :
-   MOILSLPerturbationLPlus2(GeneralEvaluator<XMES, XMEv>& _e, NS<XMES, XMEv>& _ns, RandGen& _rg)
+   MOILSLPerturbationLPlus2(sref<GeneralEvaluator<XMES, XMEv>> _e, sref<NS<XMES, XMEv>> _ns, sref<RandGen> _rg)
      : evaluator(_e)
      , rg(_rg)
    {
-      ns.push_back(&_ns);
+      ns.push_back(_ns);
    }
 
    virtual ~MOILSLPerturbationLPlus2()
    {
    }
 
-   void add_ns(NS<XMES, XMEv>& _ns)
+   void add_ns(sref<NS<XMES, XMEv>> _ns)
    {
-      ns.push_back(&_ns);
+      ns.push_back(_ns);
    }
 
    //void perturb(S& s, XMEv& mev, const StopCriteria<XEv>& stopCriteria, int level)
@@ -102,7 +107,7 @@ public:
       level += 2; // level 0 applies 2 moves
 
       while (a < level) {
-         int x = rg.rand(ns.size());
+         int x = rg->rand(ns.size());
 
          uptr<Move<XMES, XMEv>> m = ns[x]->validRandomMove(smev);
 
@@ -117,7 +122,7 @@ public:
          //delete m;
       }
 
-      evaluator.reevaluate(smev); // updates 'mev'
+      evaluator->reevaluate(smev); // updates 'mev'
    }
 
    virtual bool compatible(string s)

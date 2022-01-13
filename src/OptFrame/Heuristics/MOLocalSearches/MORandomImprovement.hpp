@@ -33,13 +33,17 @@
 namespace optframe {
 
 //Basic MORI does not considering valid move, parameter iterMax only.
-template<XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
-class MORandomImprovement : public MOLocalSearch<S, XMEv>
+template<XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
+class MORandomImprovement : public MOLocalSearch<XMES, XMEv>
 {
+   using S = typename XMES::first_type;
+   static_assert(is_same<S, typename XMES::first_type>::value);
+   static_assert(is_same<XMEv, typename XMES::second_type>::value);
+
 private:
    //MultiEvaluator<S, XEv>& mev;
-   GeneralEvaluator<XMES, XMEv>& mev;
-   NS<XMES, XMEv>& ns;
+   sref<GeneralEvaluator<XMES, XMEv>> mev;
+   sref<NS<XMES, XMEv>> ns;
 
    // logs
    double sum_time;
@@ -48,7 +52,7 @@ private:
 
 public:
    //MORandomImprovement(MultiEvaluator<S, XEv>& _mev, NS<XES, XEv>& _ns, unsigned int _iterMax) :
-   MORandomImprovement(GeneralEvaluator<XMES, XMEv>& _mev, NS<XMES, XMEv>& _ns, unsigned int _iterMax)
+   MORandomImprovement(sref<GeneralEvaluator<XMES, XMEv>> _mev, sref<NS<XMES, XMEv>> _ns, unsigned int _iterMax)
      : mev(_mev)
      , ns(_ns)
      , iterMax(_iterMax)
@@ -80,7 +84,7 @@ public:
       int iter = 0;
 
       while ((iter < iterMax) && ((t.now() - stopCriteria.timelimit) < 0)) {
-         uptr<Move<XMES, XMEv>> move = ns.randomMove(se);
+         uptr<Move<XMES, XMEv>> move = ns->randomMove(se);
          if (move->canBeApplied(se)) {
             //Move and mark sMev as outdated
             uptr<Move<XMES, XMEv>> mov_rev = move->apply(se);
@@ -110,13 +114,13 @@ public:
    }
    virtual bool compatible(string s)
    {
-      return (s == idComponent()) || (MOLocalSearch<S, XMEv>::compatible(s));
+      return (s == idComponent()) || (MOLocalSearch<XMES, XMEv>::compatible(s));
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << MOLocalSearch<S, XMEv>::idComponent() << "MO-RI";
+      ss << MOLocalSearch<XMES, XMEv>::idComponent() << "MO-RI";
       return ss.str();
    }
 
@@ -133,7 +137,7 @@ public:
    virtual string toString() const
    {
       stringstream ss;
-      ss << "MORI: " << ns.toString();
+      ss << "MORI: " << ns->toString();
       return ss.str();
    }
 

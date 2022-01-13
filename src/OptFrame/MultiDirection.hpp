@@ -161,9 +161,14 @@ public:
 
    // ============= Component ===============
 
-   virtual bool compatible(string s)
+   virtual bool compatible(string s) override
    {
       return (s == idComponent()) || (Component::compatible(s));
+   }
+
+   virtual std::string toString() const override
+   {
+      return id();
    }
 
    static string idComponent()
@@ -173,7 +178,7 @@ public:
       return ss.str();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

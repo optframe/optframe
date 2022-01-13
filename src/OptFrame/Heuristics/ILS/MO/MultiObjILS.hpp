@@ -35,20 +35,21 @@
 namespace optframe {
 
 template<class H, XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>, XSearch<XMES> XSH = Pareto<XMES>>
-class MultiObjILS : public MOILS, public MultiObjSearch<S, XMEv, XMES>
+class MultiObjILS : public MOILS
+  , public MultiObjSearch<XMES>
 {
    using XEv = Evaluation<>; // hardcoded... TODO: fix
 private:
-   InitialPareto<XMES>& init_pareto;
+   sref<InitialPareto<XMES>> init_pareto;
    int init_pop_size;
-   MOLocalSearch<S, XMEv, XMES>* ls;
+   sref<MOLocalSearch<XMES, XMEv>> ls;
    paretoManager<S, XMEv, XMES> pMan;
-   RandGen& rg;
+   sref<RandGen> rg;
 
 public:
    //MultiObjILS(GeneralEvaluator<XMES, XMEv>& _mev, InitialPareto<XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg)
-   MultiObjILS(MultiEvaluator<S, XEv, XMEv, XMES>& _mev, InitialPareto<XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XMEv>* _ls, RandGen& _rg)
-   //MultiObjILS(Evaluator<S>& _mev, InitialPareto<XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg)
+   MultiObjILS(sref<MultiEvaluator<S, XEv, XMEv, XMES>> _mev, sref<InitialPareto<XMES>> _init_pareto, int _init_pop_size, sref<MOLocalSearch<XMES, XMEv>> _ls, sref<RandGen> _rg)
+     //MultiObjILS(Evaluator<S>& _mev, InitialPareto<XMES>& _init_pareto, int _init_pop_size, MOLocalSearch<S, XEv>* _ls, RandGen& _rg)
      : init_pareto(_init_pareto)
      , init_pop_size(_init_pop_size)
      , ls(_ls)
@@ -70,21 +71,23 @@ public:
    virtual bool terminationCondition(H& history) = 0;
 
    //virtual Pareto<XMES>* search(StopCriteria<XEv>& stopCriteria, Pareto<XMES>* _pf = nullptr) override
-   virtual SearchStatus search(const StopCriteria<XMEv>& stopCriteria) override
+   virtual SearchOutput<XMES, Pareto<XMES>> search(const StopCriteria<XMEv>& stopCriteria) override
    {
-      std::optional<Pareto<XMES>>& p = this->best;
+      //std::optional<Pareto<XMES>>& p = this->best;
+      // TODO: reimplement with SearchBy...
+      std::optional<Pareto<XMES>> p;
       //
       Timer tnow;
       Pareto<XMES> x_e;
       cout << "exec: MOILS (tL:" << stopCriteria.timelimit << ")" << endl;
 
       //if (_pf == nullptr) {
-      if(p == nullopt) {
+      if (p == nullopt) {
          if (Component::information)
             cout << "Creating initial population using a initial pareto method:" << init_pop_size << endl;
 
          if (tnow.now() < stopCriteria.timelimit)
-            x_e = init_pareto.generatePareto(init_pop_size, stopCriteria.timelimit - tnow.now());
+            x_e = init_pareto->generatePareto(init_pop_size, stopCriteria.timelimit - tnow.now());
 
          if (Component::information)
             cout << "Population generated with " << x_e.size() << " individuals!" << endl;
@@ -95,7 +98,7 @@ public:
 
          //x_e = std::move(*_pf); //check this move with AIIIGOR todo
          x_e = std::move(*p); //Igor: VITORRRRR this is even worse now! hahaha need to check!!
-         p = nullopt; // disengage!
+         p = nullopt;         // disengage!
 
          if (Component::information)
             cout << "Extracting PF contains " << x_e.size() << " individuals." << endl;
@@ -108,7 +111,7 @@ public:
       H* history = &initializeHistory();
 
       while (tnow.now() < stopCriteria.timelimit && !terminationCondition(*history)) {
-         int ind = rg.rand(x_e.size());
+         int ind = rg->rand(x_e.size());
          //			while (visited[ind])
          //				ind = rg.rand(x_e.size());
          //			visited[ind] = true;
@@ -135,7 +138,6 @@ public:
          ls->moSearchFrom(x_e, smes, pMan, stopCriteriaLS);
          rS = smes.first;
          rMev = smes.second;
-
 
          acceptanceCriterion(x_e, *history);
          x_e.setNewNonDominatedSolutionsStatus(false);
@@ -169,8 +171,8 @@ public:
 
       delete history;
       //return pReturn;
-      this->best = p;
-      return SearchStatus::NO_REPORT; // nothing to say
+      //this->best = p;
+      return SearchOutput<XMES, Pareto<XMES>>{ SearchStatus::NO_REPORT, p }; // nothing to say
    }
 };
 }

@@ -37,9 +37,12 @@ using namespace std;
 
 namespace optframe {
 
-template<XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+template<XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
 class MOLocalSearch : public Component
 {
+   using S = typename XMES::first_type;
+   static_assert(is_same<S, typename XMES::first_type>::value);
+   static_assert(is_same<XMEv, typename XMES::second_type>::value);
 
 public:
    MOLocalSearch()
@@ -62,6 +65,11 @@ public:
    virtual bool compatible(string s)
    {
       return (s == idComponent()) || (Component::compatible(s));
+   }
+
+   virtual std::string toString() const override
+   {
+      return id();
    }
 
    static string idComponent()

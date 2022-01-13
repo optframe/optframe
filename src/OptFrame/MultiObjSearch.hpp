@@ -110,7 +110,7 @@ public:
    //virtual Pareto<XMES>* search(MOSC& stopCriteria, Pareto<XMES>* _pf = nullptr) = 0;
    //
    //virtual SearchStatus search(std::optional<Pareto<XMES>>& p, const StopCriteria<XMEv>& stopCriteria) = 0;
-   virtual SearchStatus search(const StopCriteria<XMEv>& stopCriteria) = 0;
+   virtual SearchOutput<XMES, Pareto<XMES>> search(const StopCriteria<XMEv>& stopCriteria) override = 0;
 
    virtual string log() const
    {
