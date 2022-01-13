@@ -148,7 +148,7 @@ main(int argc, char** argv)
    ////////////////////////////////////////////////////////////////////////////
    std::cout << "\nBRKGA Search";
 
-   sref<DecoderRandomKeys<SolutionKP, EvaluationKP, double>> _decoder =
+   sref<DecoderRandomKeys<ESolutionKP, double>> _decoder =
      new EvaluatorSubsetRandomKeys<EvaluationKP, double, ESolutionKP>(ev, 0, p.N - 1);
 
    sref<InitialPopulation<std::pair<std::vector<double>, Evaluation<>>>> _genKeys =
