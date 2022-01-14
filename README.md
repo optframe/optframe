@@ -5,8 +5,11 @@ OptFrame
   <a href="https://github.com/optframe/optframe">
     <img src="https://tokei.rs/b1/github/optframe/optframe?category=lines" alt="Current total lines.">
   </a>
+  <a href="https://github.com/optframe/optframe/blob/master/LICENSE-legacy">
+    <img src="https://img.shields.io/badge/License-LGPL%20v3-blue.svg" alt="LGPLv3 License.">
+  </a>
   <a href="https://github.com/optframe/optframe/blob/master/LICENSE">
-    <img src="https://img.shields.io/badge/License-LGPL%20v3-blue.svg" alt="License.">
+    <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License.">
   </a>
 </p>
 
@@ -41,7 +44,6 @@ Note that OptFrame website may have obsolete documentation and examples:
 ### Intended changes for 4.4
 
 - fix all examples
-- support general library
 
 ### Docs Requirements
 
