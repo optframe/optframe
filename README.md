@@ -31,6 +31,7 @@ Major changes happened from v3 to v4, so we will need to update our tutorials...
 - [01_QuickstartWelcome](./demo/01_QuickstartWelcome/README.md): 01_QuickstartWelcome  - [![01_QuickstartWelcome](https://github.com/optframe/optframe/actions/workflows/demo_01_quickstartwelcome.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/demo_01_quickstartwelcome.yml)
 - [02_QuickstartKP_SA](./demo/02_QuickstartKP_SA/README.md): 02_QuickstartKP_SA  - [![02_QuickstartKP_SA](https://github.com/optframe/optframe/actions/workflows/demo_02_quickstartkp_sa.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/demo_02_quickstartkp_sa.yml)
 - [03_QuickstartTSP_VNS_BRKGA](./demo/03_QuickstartTSP_VNS_BRKGA/README.md): 03_QuickstartTSP_VNS_BRKGA  - [![03_QuickstartTSP_VNS_BRKGA](https://github.com/optframe/optframe/actions/workflows/demo_03_quickstart_tsp_vns_brkga.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/demo_03_quickstart_tsp_vns_brkga.yml)
+- [05_Advanced_TSP_checkmodule](./demo/05_Advanced_TSP_checkmodule/README.md): 05_Advanced_TSP_checkmodule  - [![05_Advanced_TSP_checkmodule](https://github.com/optframe/optframe/actions/workflows/demo_05_advanced_tsp_checkmodule.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/demo_05_advanced_tsp_checkmodule.yml)
 
 
 Note that OptFrame website may have obsolete documentation and examples:
