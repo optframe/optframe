@@ -25,6 +25,7 @@
 #include "../../Evaluator.hpp"
 #include "../../Solution.hpp"
 #include "../../Solutions/CopySolution.hpp"
+#include "../../VEPopulation.hpp"
 
 namespace optframe {
 

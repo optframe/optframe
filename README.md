@@ -25,6 +25,12 @@ Major changes happened from v3 to v4, so we will need to update our tutorials...
 
 [![Documentation Status](https://readthedocs.org/projects/optframe/badge/?version=latest)](https://optframe.readthedocs.io/en/latest/?badge=latest)
 
+#### Try the Demos on ReadTheDocs Quickstart
+
+- [00_SimpleBuild](./demo/00_SimpleBuild/README.md): 00_SimpleBuild  - [![00_SimpleBuild](https://github.com/optframe/optframe/actions/workflows/demo_00_simplebuild.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/demo_00_simplebuild.yml)
+- [01_QuickstartWelcome](./demo/01_QuickstartWelcome/README.md): 01_QuickstartWelcome  - [![01_QuickstartWelcome](https://github.com/optframe/optframe/actions/workflows/demo_01_quickstartwelcome.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/demo_01_quickstartwelcome.yml)
+- [02_QuickstartKP_SA](./demo/02_QuickstartKP_SA/README.md): 02_QuickstartKP_SA  - [![02_QuickstartKP_SA](https://github.com/optframe/optframe/actions/workflows/demo_02_quickstartkp_sa.yml/badge.svg)](https://github.com/optframe/optframe/actions/workflows/demo_02_quickstartkp_sa.yml)
+
 
 Note that OptFrame website may have obsolete documentation and examples:
 

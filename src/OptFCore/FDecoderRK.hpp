@@ -30,12 +30,13 @@
 namespace optframe {
 
 template<
-  XSolution S,
-  XEvaluation XEv,
+  XESolution XES,
   optframe::comparability KeyType,
   MinOrMax Minimizing>
-class FDecoderRK final : public DecoderRandomKeys<S, XEv, KeyType>
+class FDecoderRK final : public DecoderRandomKeys<XES, KeyType>
 {
+   using S = typename XES::first_type;
+   using XEv = typename XES::second_type;
    using RSK = std::vector<KeyType>;
 
 public:

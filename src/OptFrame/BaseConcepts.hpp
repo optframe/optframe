@@ -49,12 +49,11 @@ concept
 #if __cplusplus <= 201703L // after c++20, not required 'bool'
   bool
 #endif
-//XRepresentation = true; // optframe::ostreamable<R>;
 #if __cplusplus <= 201703L // after c++20, not required 'bool'
-    XRepresentation = /*!IsComplete<R> ||*/ requires(R self)
+    XRepresentation = requires(R self)
 {
    {
-      new R(self) //static_assert(std::is_copy_constructible<R>::value)
+      new R(self)
    };
 };
 #else
