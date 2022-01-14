@@ -1,9 +1,12 @@
 
 # OptFrame Changelog
 
-## OptFrame 4.4-dev
+## OptFrame 4.4
 
-- currently working!
+- fixed examples
+- many small fixes according to v4 concepts philosophy
+- added github actions for compilation tests
+- added demos on quickstart
 
 ## OptFrame 4.3
 

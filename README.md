@@ -13,9 +13,9 @@ OptFrame
   </a>
 </p>
 
-## OptFrame 4.4-dev - Optimization Framework
+## OptFrame 4.4 - Optimization Framework
 
-OptFrame v4.3 is launched! Version 4.4 is on development.
+OptFrame v4.4 is launched! 
 
 Now, with newest C++20 features and integrated Unit Testing for user projects and examples (still ongoing work). Scanner++ library is also dettached independent project now.
 Remember to clone this repo using `--recursive` option, so you don't miss anything ;)

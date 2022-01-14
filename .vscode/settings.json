@@ -96,7 +96,8 @@
         "valarray": "cpp",
         "codecvt": "cpp",
         "numbers": "cpp",
-        "stop_token": "cpp"
+        "stop_token": "cpp",
+        "any": "cpp"
     },
     "restructuredtext.confPath": "${workspaceFolder}/docs/source",
     "editor.tokenColorCustomizations": {
