@@ -1,7 +1,7 @@
 #include <chrono>
 #include <random>
 
-#include "InitialPopulation.h"
+#include "InitialPopulation.hpp"
 
 using namespace KP2;
 

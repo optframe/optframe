@@ -21,6 +21,6 @@ fDecode(const vector<double>& rk)
 }
 
 // evaluator random keys (for TSP)
-FDecoderRK<std::vector<int>, Evaluation<int>, double, MinOrMax::MINIMIZE> decoder{
+FDecoderRK<std::pair<std::vector<int>, Evaluation<int>>, double, MinOrMax::MINIMIZE> decoder{
    fDecode
 };

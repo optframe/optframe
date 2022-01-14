@@ -18,8 +18,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_INITIALPOPULATION_H_
-#define OPTFRAME_INITIALPOPULATION_H_
+#ifndef OPTFRAME_INITIALPOPULATION_HPP_
+#define OPTFRAME_INITIALPOPULATION_HPP_
 
 #include <chrono>
 #include <random>
@@ -249,4 +249,4 @@ public:
 
 }
 
-#endif /*OPTFRAME_INITIALPOPULATION_H_*/
+#endif /*OPTFRAME_INITIALPOPULATION_HPP_*/

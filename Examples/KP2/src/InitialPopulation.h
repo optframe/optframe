@@ -1,7 +1,7 @@
 #ifndef KP2_INITIAL_POPULATION_H_
 #define KP2_INITIAL_POPULATION_H_
 
-#include <OptFrame/InitialPopulation.h>
+#include <OptFrame/InitialPopulation.hpp>
 
 #include "./ProblemInstance.h"
 #include "./Representation.h"

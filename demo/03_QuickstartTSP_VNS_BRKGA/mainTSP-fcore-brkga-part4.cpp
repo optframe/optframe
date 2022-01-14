@@ -11,7 +11,7 @@ main()
    // Parameters BRKGA
    // (C1): Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
 
-   sref<DecoderRandomKeys<ESolutionTSP::first_type, ESolutionTSP::second_type, double>> _decoder = decoder;
+   sref<DecoderRandomKeys<ESolutionTSP, double>> _decoder = decoder;
    sref<InitialPopulation<std::pair<vector<double>, ESolutionTSP::second_type>>> _initPop = new MyRandomKeysInitPop(pTSP.n); // passing key_size
 
    //eprk, pTSP.n, 1000, 30, 0.4, 0.3, 0.6

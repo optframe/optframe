@@ -21,15 +21,16 @@ public:
    {
    }
 
-   Population<std::pair<RSK, Evaluation<int>>> generatePopulation(unsigned populationSize, double timelimit) override
+   VEPopulation<std::pair<RSK, Evaluation<int>>> generatePopulation(unsigned populationSize, double timelimit) override
    {
-      Population<std::pair<RSK, Evaluation<int>>> pop;
+      VEPopulation<std::pair<RSK, Evaluation<int>>> pop;
 
       for (unsigned i = 0; i < populationSize; i++) {
-         vector<double>* d = new vector<double>(sz);
+         vector<double> vd(sz);
          for (int j = 0; j < sz; j++)
-            d->at(j) = (rg->rand() % 100000) / 100000.0;
-         pop.push_back(d);
+            vd[j] = (rg->rand() % 100000) / 100000.0;
+         std::pair<RSK, Evaluation<int>> ind{ vd, Evaluation<int>{} };
+         pop.push_back(ind);
       }
 
       return pop;

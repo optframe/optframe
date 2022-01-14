@@ -24,7 +24,7 @@
 #include <algorithm>
 
 #include "../../EPopulation.hpp"
-#include "../../InitialPopulation.h"
+#include "../../InitialPopulation.hpp"
 #include "../../SingleObjSearch.hpp"
 
 #include "RKGA.hpp"

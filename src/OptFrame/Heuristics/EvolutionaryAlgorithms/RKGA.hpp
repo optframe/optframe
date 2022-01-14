@@ -24,7 +24,7 @@
 #include <algorithm>
 
 #include "../../IPopulational.hpp"
-#include "../../InitialPopulation.h"
+#include "../../InitialPopulation.hpp"
 #include "../../Population.hpp"
 #include "../../SingleObjSearch.hpp"
 

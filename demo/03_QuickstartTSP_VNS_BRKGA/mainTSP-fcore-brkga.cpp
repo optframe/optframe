@@ -8,7 +8,7 @@
 #include <OptFrame/Core.hpp>
 #include <OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp>
 #include <OptFrame/Heuristics/Heuristics.hpp> // many metaheuristics here...
-#include <OptFrame/InitialPopulation.h>
+#include <OptFrame/InitialPopulation.hpp>
 #include <OptFrame/LocalSearch.hpp>
 
 // import everything on main()
@@ -39,15 +39,16 @@ public:
    {
    }
 
-   Population<std::pair<RSK, Evaluation<int>>> generatePopulation(unsigned populationSize, double timelimit) override
+   VEPopulation<std::pair<RSK, Evaluation<int>>> generatePopulation(unsigned populationSize, double timelimit) override
    {
-      Population<std::pair<RSK, Evaluation<int>>> pop;
+      VEPopulation<std::pair<RSK, Evaluation<int>>> pop;
 
       for (unsigned i = 0; i < populationSize; i++) {
-         vector<double>* d = new vector<double>(sz);
+         vector<double> vd(sz);
          for (int j = 0; j < sz; j++)
-            d->at(j) = (rg->rand() % 100000) / 100000.0;
-         pop.push_back(d);
+            vd[j] = (rg->rand() % 100000) / 100000.0;
+         std::pair<RSK, Evaluation<int>> ind{ vd, Evaluation<int>{} };
+         pop.push_back(ind);
       }
 
       return pop;
@@ -75,7 +76,7 @@ fDecode(const vector<double>& rk)
 }
 
 // evaluator random keys (for TSP)
-FDecoderRK<std::vector<int>, Evaluation<int>, double, MinOrMax::MINIMIZE> decoder{
+FDecoderRK<std::pair<std::vector<int>, Evaluation<int>>, double, MinOrMax::MINIMIZE> decoder{
    fDecode
 };
 int
@@ -91,7 +92,7 @@ main()
    // Parameters BRKGA
    // (C1): Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
 
-   sref<DecoderRandomKeys<ESolutionTSP::first_type, ESolutionTSP::second_type, double>> _decoder = decoder;
+   sref<DecoderRandomKeys<ESolutionTSP, double>> _decoder = decoder;
    sref<InitialPopulation<std::pair<vector<double>, ESolutionTSP::second_type>>> _initPop = new MyRandomKeysInitPop(pTSP.n); // passing key_size
 
    //eprk, pTSP.n, 1000, 30, 0.4, 0.3, 0.6

@@ -47,7 +47,7 @@
 
 #include "Population.hpp"
 
-#include "InitialPopulation.h"
+#include "InitialPopulation.hpp"
 
 #include "Move.hpp"
 //#include "Util/TestMove.hpp"

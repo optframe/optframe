@@ -1,4 +1,4 @@
-name: Demo 02 QuickstartKP_SA
+name: Demo 03 Quickstart TSP VNS BRKGA
 
 on:
   push:
@@ -14,6 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: make
-      working-directory: ./demo/02_QuickstartKP_SA/
+      working-directory: ./demo/03_QuickstartTSP_VNS_BRKGA/
       run: make
 

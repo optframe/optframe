@@ -10,7 +10,7 @@
 
 #include "./src/Crossover.h"
 #include "./src/Evaluator.h"
-#include "./src/InitialPopulation.h"
+#include "./src/InitialPopulation.hpp"
 #include "./src/Mutation.h"
 #include "./src/ProblemInstance.h"
 #include "./src/Representation.h"
