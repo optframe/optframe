@@ -4,7 +4,7 @@ main()
    srand(0); // using system random (weak... just an example!)
 
    // load data into problem context 'pTSP'
-   Scanner scanner{ "3\n1 10 10\n2 20 20\n3 30 30\n" };
+   Scanner scanner{ "5\n1 10 10\n2 20 20\n3 30 30\n4 40 40\n5 50 50\n" };
    pTSP.load(scanner);
    std::cout << pTSP.dist << std::endl;
 

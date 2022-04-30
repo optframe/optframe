@@ -58,9 +58,9 @@ pair<Evaluation<int>, vector<int>>
 fDecode(const vector<double>& rk)
 {
    vector<pair<double, int>> v(rk.size());
-   int k = 0;
+   //
    for (unsigned i = 0; i < v.size(); i++)
-      v[k] = pair<double, int>(rk[i], i);
+      v[i] = pair<double, int>(rk[i], i);
 
    sort(v.begin(), v.end(), [](const pair<double, int>& i, const pair<double, int>& j) -> bool {
       return i.first < j.first;
@@ -70,6 +70,23 @@ fDecode(const vector<double>& rk)
    vector<int> p(v.size());
    for (unsigned i = 0; i < v.size(); i++)
       p[i] = v[i].second;
+
+   /*
+   // ========== CHECKER ========
+   vector<bool> vb(v.size(), false);
+   for (unsigned i = 0; i < p.size(); i++)
+      vb[p[i]] = true;
+   for (unsigned i = 0; i < vb.size(); i++) {
+      if (!vb[i]) {
+         std::cout << "ERROR rk:" << rk << std::endl;
+         std::cout << "ERROR v:" << v << std::endl;
+         std::cout << "ERROR p:" << p << std::endl;
+         std::cout << "ERROR vb:" << vb << std::endl;
+      }
+      assert(vb[i]);
+   }
+   // ===== end CHECKER =====
+*/
 
    Evaluation<int> e = eval.evaluate(p);
    return make_pair(e, p);
@@ -85,7 +102,7 @@ main()
    sref<RandGen> rg = new RandGen; // avoids weird windows OS interactions
 
    // load data into problem context 'pTSP'
-   Scanner scanner{ "3\n1 10 10\n2 20 20\n3 30 30\n" };
+   Scanner scanner{ "5\n1 10 10\n2 20 20\n3 30 30\n4 40 40\n5 50 50\n" };
    pTSP.load(scanner);
    std::cout << pTSP.dist << std::endl;
 
@@ -110,6 +127,7 @@ main()
    ESolutionTSP best = *searchOut.best;
    // best solution value
    best.second.print();
+   std::cout << "solution: " << best.first << std::endl;
 
    std::cout << "FINISHED" << std::endl;
    return 0;

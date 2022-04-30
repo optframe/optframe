@@ -11,6 +11,7 @@ auto status = ils.search(
 ESolutionTSP best = *status.best;
 // best solution value
 best.second.print();
+std::cout << "solution: " << best.first << std::endl;
 
 std::cout << "FINISHED" << std::endl;
 return 0;
