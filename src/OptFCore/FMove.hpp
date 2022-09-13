@@ -56,17 +56,38 @@ class FMove final : public Move<XES, typename XES::second_type>
 public:
    M m; // internal structure for move
 
-   M (*fApply)
-   (const M&, XES&);                                                           // fApply
-   bool (*fCanBeApplied)(const M&, const XES&) = fDefaultCanBeApplied<M, XES>; // fCanBeApplied
-   bool (*fCompareEq)(const M&, const Move<XES>&) = fDefaultCompareEq<M, XES>; // fCompareEq
+#ifdef OPTFCORE_FUNC_STATIC
+#define OPTFCORE_FUNC_STATIC_FMOVE
+#endif
+
+   // force static on move, for now
+   //#define OPTFCORE_FUNC_STATIC_FMOVE
+
+#ifdef OPTFCORE_FUNC_STATIC_FMOVE
+   typedef M (*FuncTypeMoveApply)(const M&, XES&);
+   typedef bool (*FuncTypeMoveCBA)(const M&, XES&);
+   typedef bool (*FuncTypeMoveEq)(const M&, const Move<XES>&);
+#else
+   typedef std::function<M(const M&, XES&)> FuncTypeMoveApply;
+   typedef std::function<bool(const M&, const XES&)> FuncTypeMoveCBA;
+   typedef std::function<bool(const M&, const Move<XES>&)> FuncTypeMoveEq;
+#endif
+
+   //M (*fApply)(const M&, XES&);                                                // fApply
+   FuncTypeMoveApply fApply;
+   //bool (*fCanBeApplied)(const M&, const XES&) = fDefaultCanBeApplied<M, XES>; // fCanBeApplied
+   FuncTypeMoveCBA fCanBeApplied = fDefaultCanBeApplied<M, XES>;
+   //bool (*fCompareEq)(const M&, const Move<XES>&) = fDefaultCompareEq<M, XES>; // fCompareEq
+   FuncTypeMoveEq fCompareEq = fDefaultCompareEq<M, XES>;
 
    FMove(
      const M& _m,
-     M (*_fApply)(const M&, XES&),                                                // fApply
-     bool (*_fCanBeApplied)(const M&, const XES&) = fDefaultCanBeApplied<M, XES>, // fCanBeApplied
-     bool (*_fCompareEq)(const M&, const Move<XES>&) = fDefaultCompareEq<M, XES>  // fCompareEq
-     )
+     //M (*_fApply)(const M&, XES&),                                                // fApply
+     FuncTypeMoveApply _fApply,
+     //bool (*_fCanBeApplied)(const M&, const XES&) = fDefaultCanBeApplied<M, XES>, // fCanBeApplied
+     FuncTypeMoveCBA _fCanBeApplied = fDefaultCanBeApplied<M, XES>,
+     //bool (*_fCompareEq)(const M&, const Move<XES>&) = fDefaultCompareEq<M, XES>  // fCompareEq
+     FuncTypeMoveEq _fCompareEq = fDefaultCompareEq<M, XES>)
      : m{ _m }
      , fApply{ _fApply }
      , fCanBeApplied{ _fCanBeApplied }

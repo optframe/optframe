@@ -632,6 +632,9 @@ static_assert(X2ESolution<Pareto<ESolution<double>>, ESolution<double>>);
 } // namespace optframe
 
 // compilation tests for concepts (these are NOT unit tests)
+
+#ifdef HAS_CONCEPTS_TESTS
 #include "Pareto.ctest.hpp"
+#endif
 
 #endif /* OPTFRAME_PARETO_HPP_ */

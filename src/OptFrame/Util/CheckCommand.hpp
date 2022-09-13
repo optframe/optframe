@@ -220,6 +220,11 @@ public:
    vector<std::shared_ptr<ADSManager<REP, ADS, S>>> lADSManagerComp; // optional
 #endif
 
+   void setParameters(bool _verbose)
+   {
+      this->verbose = _verbose;
+   }
+
    CheckCommand(bool _verbose = false)
      : verbose(_verbose)
    {
@@ -240,7 +245,7 @@ public:
       //lConstructive.push_back(&c);
       //if (verbose)
       //	cout << "checkcommand: Constructive " << lConstructive.size() << " added!" << endl;
-      cout << "checkcommand: Constructive not registered!" << endl;
+      cout << "checkcommand: Constructive not registered! NOT SUPPORTED! Try InitialSearch instead." << endl;
       assert(false);
    }
 
@@ -1480,7 +1485,7 @@ private:
             //int countValidMoves = 0;
 
             std::vector<Move<XES>*> allMoves;
-            for (unsigned i = 0; i < nSolNSSeq * nSolNSSeq; i++)
+            for (unsigned i = 0; i < (unsigned)nSolNSSeq * (unsigned)nSolNSSeq; i++)
                allMoves.push_back(ns->randomMove(se).release());
 
             //
@@ -1923,9 +1928,9 @@ private:
       doPrintSummary(timeSamples, countData);
 
       AllDataCheckCommand<XES> allData;
-      allData.timeData = timeSamples;
-      allData.countData = countData;
-      allData.solData = solData;
+      //allData.timeData = timeSamples; // TODO: restore here!!!
+      //allData.countData = countData;
+      //allData.solData = solData;
 
       std::cout << "checkcommand: tests finished successfully!" << std::endl;
       return allData;

@@ -8,6 +8,9 @@
 #include "FxMove.hpp"
 #include "FxNS.hpp"
 #include "FxNSEnum.hpp"
+
+#ifdef CORO
 #include "FxNSSeq.hpp"
+#endif
 
 #endif // OPTFRAME_FXCORE_HPP

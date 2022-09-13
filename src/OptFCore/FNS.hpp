@@ -36,10 +36,17 @@ class FNS final : public NS<XES> // typename XES::second_type
    using XSH = XES; // only single objective
 
 public:
-   uptr<Move<XES>> (*fRandom)(const XES&);
+#ifdef OPTFCORE_FUNC_STATIC
+   typedef uptr<Move<XES>> (*FuncTypeNSRand)(const XES&);
+#else
+   typedef std::function<uptr<Move<XES>>(const XES&)> FuncTypeNSRand;
+#endif
+
+   FuncTypeNSRand fRandom;
 
    FNS(
-     uptr<Move<XES>> (*_fRandom)(const XES&))
+     //uptr<Move<XES>> (*_fRandom)(const XES&))
+     FuncTypeNSRand _fRandom)
      : fRandom{ _fRandom }
    {
    }

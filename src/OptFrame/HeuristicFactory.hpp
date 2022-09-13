@@ -270,9 +270,9 @@ public:
    int addComponent(sref<Component> component, string id)
    {
       if (inComponents(component.sptr())) {
-         cout << "HeuristicFactory addComponent: component '" << component->id() << "' already registered!" << endl;
+         cout << "WARNING: HeuristicFactory addComponent: component '" << component->id() << "' already registered!" << endl;
 
-         return -1;
+         //return -1;
       }
 
       if (!component->compatible(id)) {
@@ -499,9 +499,11 @@ public:
       for (iter = components.begin(); iter != components.end(); iter++) {
          vector<std::shared_ptr<Component>>& v = iter->second;
 
-         for (unsigned int i = 0; i < v.size(); i++)
+         for (unsigned int i = 0; i < v.size(); i++) {
+            std::cout << "HF: will clear v.toString()=" << v[i]->toString() << std::endl;
             //delete v[i];
             v[i] = nullptr;
+         }
 
          // TODO: MUST KEEP LINE BELOW!
          std::cout << "WILL CLEAR COMPONENT: '" << iter->first << "'" << std::endl;

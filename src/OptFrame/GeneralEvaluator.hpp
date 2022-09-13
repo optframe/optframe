@@ -234,6 +234,12 @@ public:
       }
    }
 
+   // special method
+   virtual std::string idGE() const
+   {
+      return "GeneralEvaluator";
+   }
+
    // TODO: decide which methods stay here, and which go to Evaluator.hpp
 
    static string idComponent()
