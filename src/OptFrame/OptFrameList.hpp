@@ -32,6 +32,8 @@
 using namespace std;
 using namespace scannerpp;
 
+namespace optframe {
+
 class OptFrameList
 {
 public:
@@ -255,5 +257,7 @@ public:
       return ss.str();
    }
 };
+
+} // namespace optframe
 
 #endif /* OPTFRAME_LIST_HPP_ */
