@@ -131,7 +131,13 @@ namespace optframe {
 
 //template<XESolution XES, XEvaluation XEv = Evaluation<>>
 // template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+//
+//
+#ifdef OPTFRAME_LEGACY_R_ADS
 template<XRepresentation R, class ADS, XBaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+#else
+template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+#endif
 class Loader
 {
 public:
@@ -166,7 +172,9 @@ public:
       factory.builders.push_back(new RandomDescentMethodBuilder<S, XEv>);
       factory.builders.push_back(new CircularSearchBuilder<S, XEv>);
       factory.builders.push_back(new VariableNeighborhoodDescentBuilder<S, XEv>);
+#ifdef OPTFRAME_LEGACY_R_ADS
       factory.builders.push_back(new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS, S, XEv>);
+#endif
       //factory.builders.push_back(new RVNDBuilder<S, XEv> );
       factory.builders.push_back(new HillClimbingBuilder<S, XEv>);
       factory.builders.push_back(new LateAcceptanceHillClimbingBuilder<S, XEv>);

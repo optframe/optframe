@@ -90,7 +90,9 @@ class Matrix
 public:
    Matrix(unsigned _quadratic = 1) noexcept
    {
-      rows = cols = (_quadratic ?: 1);
+      if (!_quadratic)
+         _quadratic = 1;
+      rows = cols = _quadratic;
 
       //if (rows == 0 || cols == 0)
       //   throw MatrixBadIndex("Matrix constructor has 0 size", 0, 0, 0, 0);
@@ -100,8 +102,14 @@ public:
 
    Matrix(unsigned _rows, unsigned _cols) noexcept
    {
-      rows = _rows ?: 1;
-      cols = _cols ?: 1;
+      // rows = _rows ?: 1;
+      rows = _rows;
+      if (!rows)
+         rows = 1;
+      //cols = _cols ?: 1;
+      cols = _cols;
+      if (!cols)
+         cols = 1;
 
       //if (rows == 0 || cols == 0)
       //   throw MatrixBadIndex("Matrix constructor has 0 size", 0, 0, 0, 0);

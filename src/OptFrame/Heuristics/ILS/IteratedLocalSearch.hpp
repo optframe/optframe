@@ -78,7 +78,9 @@ public:
       if (Component::debug)
          std::cout << "ILS::build initial solution" << std::endl;
 
-      star = star ?: constructive->initialSearch(stopCriteria).first;
+      //star = star ?: constructive->initialSearch(stopCriteria).first;
+      if (!star)
+         star = constructive->initialSearch(stopCriteria).first;
       if (!star)
          return SearchStatus::NO_SOLUTION;
 

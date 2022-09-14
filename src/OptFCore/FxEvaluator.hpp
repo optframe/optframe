@@ -46,7 +46,8 @@ public:
       return fEvaluate(s);
    }
 
-   virtual constexpr bool isMinimization() const
+   // constexpr
+   virtual bool isMinimization() const
    {
       return Minimizing;
    }

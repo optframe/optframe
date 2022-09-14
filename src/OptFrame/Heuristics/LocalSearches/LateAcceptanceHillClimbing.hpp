@@ -90,8 +90,8 @@ public:
       int iter = 1;
       unsigned index = 0;
 
-      XSolution AUTO_CONCEPTS& s = sStar.clone();
-      Evaluation<>& e = eStar.clone();
+      XSolution s = sStar;
+      Evaluation<> e = eStar;
 
       long tnow = time(nullptr);
 

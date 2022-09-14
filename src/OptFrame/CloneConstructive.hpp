@@ -32,18 +32,18 @@ namespace optframe {
 template<XSolution S>
 class CloneConstructive : public Constructive<S>
 {
-   sptr<S> base;
+   //sptr<S> base;
+   S base;
 
 public:
-   CloneConstructive(sptr<S> _base)
-     : base(&_base->clone())
+   CloneConstructive(S _base) //(sptr<S> _base)
+     : base{ _base }          //base(&_base->clone())
    {
    }
 
    CloneConstructive(const S& _base)
-     : base(&_base.clone())
-   {
-   }
+     : base{ _base } //(&_base.clone())
+   {}
 
    virtual ~CloneConstructive()
    {
@@ -52,27 +52,33 @@ public:
 
    virtual std::optional<S> generateSolution(double timelimit) override
    {
+      /*
       S& s = base->clone();
       std::optional<S> retS(s); // TODO: what happens here? can we move at least??
       S sc = s;
       delete &s;
       //return new S(sc);
       return retS;
+      */
+      return std::optional<S>(base);
    }
 
-   virtual bool compatible(string s)
+   virtual bool
+   compatible(string s)
    {
       return (s == idComponent()) || (Constructive<S>::compatible(s));
    }
 
-   static string idComponent()
+   static string
+   idComponent()
    {
       stringstream ss;
       ss << Constructive<S>::idComponent() << ":CloneConstructive";
       return ss.str();
    }
 
-   virtual string id() const
+   virtual string
+   id() const
    {
       return idComponent();
    }
@@ -88,16 +94,25 @@ public:
 
    virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
+      std::cout << "CloneConstructive NOT AVAILABLE... TODO!" << std::endl;
+      assert(false);
+      /*
       sptr<S> s;
       hf.assign(s, *scanner.nextInt(), scanner.next()); // reads backwards!
 
       return new CloneConstructive<S>(s);
+      */
+      return nullptr;
    }
 
    virtual vector<pair<string, string>> parameters()
    {
       vector<pair<string, string>> params;
-      params.push_back(make_pair(S::idComponent(), "solution"));
+      //assert(false);
+      //
+      //params.push_back(make_pair(S::idComponent(), "solution"));
+      params.push_back(make_pair("NO_TYPE", "solution"));
+      //
 
       return params;
    }

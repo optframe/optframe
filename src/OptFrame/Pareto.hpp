@@ -629,7 +629,7 @@ public:
 namespace optframe {
 // compilation tests
 static_assert(X2ESolution<Pareto<ESolution<double>>, ESolution<double>>);
-} // namespace optframe
+} // namespace optframeas
 
 // compilation tests for concepts (these are NOT unit tests)
 
