@@ -49,6 +49,12 @@ public:
    FConstructive(FuncTypeGenerate _fGenerate)
      : fGenerate{ _fGenerate }
    {
+      //std::cout << "FConstructive()" << std::endl;
+   }
+
+   virtual ~FConstructive()
+   {
+      //std::cout << "~FConstructive()" << std::endl;
    }
 
    // fGenerate is supposed to be the simplest possible function.

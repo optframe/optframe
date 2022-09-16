@@ -285,6 +285,13 @@ public:
    {
       return idComponent();
    }
+
+   // id from GeneralEvaluator class (due to multiple inheritance)
+   // TODO: REMOVE MULTIPLE INHERITANCE!!!!! VERY URGENT!!
+   virtual std::string idGE() const override
+   {
+      return id();
+   }
 };
 
 template<XRepresentation R, XEvaluation XEv = Evaluation<>>

@@ -94,13 +94,13 @@ public:
 
    virtual bool compatible(string s)
    {
-      return (s == idComponent()) || (Component::compatible(s));
+      return (s == idComponent()) || (GlobalSearch<XES, XES, XES2, XSH2>::compatible(s));
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ":SingleObjSearch";
+      ss << GlobalSearch<XES, XES, XES2, XSH2>::idComponent() << "SingleObjSearch";
       return ss.str();
    }
 

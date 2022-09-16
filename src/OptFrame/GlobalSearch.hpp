@@ -105,7 +105,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << "GlobalSearch:";
+      ss << Component::idComponent() << ":GlobalSearch:";
       return ss.str();
    }
 

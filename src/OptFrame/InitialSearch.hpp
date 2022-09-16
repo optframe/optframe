@@ -89,11 +89,24 @@ public:
 
    virtual std::pair<std::optional<XSH>, SearchStatus> initialSearch(const StopCriteria<XEv>& stop) override
    {
+      if (Component::verbose)
+         std::cout << "BasicInitialSearch: initialSearch begins" << std::endl;
       std::optional<S> sol = constructive->generateSolution(stop.timelimit);
+
+      if (Component::verbose)
+         std::cout << "BasicInitialSearch: sol? " << (bool)sol << std::endl;
+
       if (!sol)
          return make_pair(nullopt, SearchStatus::NO_REPORT);
+
+      if (Component::verbose)
+         std::cout << "BasicInitialSearch: sol => " << *sol << std::endl;
+
       XEv e = evaluator->evaluate(*sol);
       XES se(*sol, e);
+
+      if (Component::verbose)
+         std::cout << "BasicInitialSearch: se => " << se << std::endl;
       return make_pair(se, SearchStatus::NO_REPORT);
    }
 };

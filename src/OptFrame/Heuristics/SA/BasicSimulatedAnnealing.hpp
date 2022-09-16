@@ -58,6 +58,18 @@ public:
    int SAmax;
    double Ti;
 
+   // set verbose level recursive: returns 'false' if not supported.
+   virtual bool setVerboseR() override
+   {
+      this->setVerbose();
+      //
+      // evaluator ?? how to do this on GeneralEvaluator...
+      constructive->setVerbose();
+      for (unsigned i = 0; i < neighbors.size(); i++)
+         neighbors[i]->setVerbose();
+      return true;
+   }
+
    // single neighborhood
    // reordered the different term to the front because of peeve, heheheh
    // standart RandGen in declaration could be new standart
@@ -189,9 +201,14 @@ public:
       // Note that no comparison is necessarily made between star and incumbent, as types/spaces could be different. Since we are trajectory here, spaces are equal.
       // We assume star is better than incumbent, if provided. So, if star is worse than incumbent, we won't re-check that.
 
+      if (Component::verbose)
+         std::cout << "SA: will build initialSearch" << std::endl;
       // initial setup for incumbent (if has star, copy star, otherwise generate one)
       if (!incumbent)
          incumbent = star ? star : constructive->initialSearch(sosc).first;
+
+      if (Component::verbose)
+         std::cout << "SA: post build initialSearch" << std::endl;
 
 #ifdef OPTFRAME_AC
       // requires first part of solution to be a component
@@ -203,9 +220,19 @@ public:
       }
 #endif
 
+      if (Component::verbose) {
+         std::cout << "SA begin: incumbent? " << (bool)incumbent << std::endl;
+         std::cout << "SA begin: star? " << (bool)star << std::endl;
+      }
+
       // if no star and has incumbent, star is incumbent
       if (!star && incumbent)
          star = incumbent;
+
+      if (Component::verbose) {
+         std::cout << "SA begin: incumbent? " << (bool)incumbent << std::endl;
+         std::cout << "SA begin: star? " << (bool)star << std::endl;
+      }
 
 #ifdef OPTFRAME_AC
       // requires first part of solution to be a component
@@ -223,46 +250,39 @@ public:
       if (!star)
          return SearchStatus::NO_SOLUTION; // no possibility to continue.
 
+      if (Component::verbose) {
+         std::cout << "star value: " << star->second.evaluation() << std::endl;
+         std::cout << "star: " << star->first << std::endl;
+      }
+
       // initialize search context for Simulated Annealing
       SearchContext ctx{ .self = *this, .best = star, .incumbent = incumbent };
+
+      if (Component::verbose)
+         std::cout << "SA: begin SearchContext" << std::endl;
 
       // ===================
       // Simulated Annealing
       // ===================
+
+      if (Component::verbose)
+         std::cout << "incumbent? " << (bool)incumbent << std::endl;
 
       XSH& se = *incumbent;
 
       ctx.T = Ti;
       ctx.iterT = 0;
 
-      //XES se = *star; // copy (implicit cloning guaranteed??)
-      //
-      //XSolution& s = se.first;
-      //
-      //XEv& e = se.second;
+      if (Component::verbose)
+         std::cout << "SA(verbose): BEGIN se: " << se << std::endl;
+      // SANITY CHECK
+      assert(!se.second.outdated);
 
-      //pair<S, XEv> star = se; // copy (implicit cloning guaranteed??)
-      //
-      ////S* sStar = &s.clone();
-      //S& sStar = star.first;
-      ////Evaluation<>* eStar = &e.clone();
-      //
-      //XEv& eStar = star->second;
-
-      // try specific stop criteria, otherwise just use standard one
-      //while (stop.specific ? stop.shouldStop(eStar, reinterpret_cast<XM*>(this)) : ((T > 0.000001) && (tnow.now() < timelimit)))
-      //while (sosc.specific ? sosc.shouldStop(star, reinterpret_cast<XM*>(this)) : ((T > 0.000001) && (tnow.now() < timelimit)))
-      //
-      //op<XEv> opEvStar = make_optional(eStar);
-      /*
-      while (
-        !(
-          specificStopBy(*star, sosc, this) ||
-          sosc.shouldStop(opEvStar))) {
-         while ((iterT < SAmax) && (tnow.now() < timelimit)) {
-            */
       while (onLoopCtx(ctx, sosc)) {
+         if (Component::verbose)
+            std::cout << "SA(verbose): after onLoopCtx" << std::endl;
          int n = rg->rand(neighbors.size());
+
          uptr<Move<XES, XEv, XSH>> move = neighbors[n]->validRandomMove(se); // TODO: pass 'se.first' here (even 'se' should also work...)
 
          if (!move) {
@@ -273,7 +293,12 @@ public:
             return { SearchStatus::NO_REPORT, star };
          }
 
+         if (Component::verbose)
+            std::cout << "SA(verbose): will copy to current=se: " << se << std::endl;
          XES current(se); // implicit clone??
+
+         if (Component::verbose)
+            std::cout << "SA(verbose): current: " << current << std::endl;
 
          /*
 #ifdef OPTFRAME_AC
@@ -291,8 +316,21 @@ public:
          //S& sCurrent = current.first;
          //XEv& eCurrent = current.second;
 
+         if (Component::verbose)
+            std::cout << "SA(verbose): will apply move. current=" << current << std::endl;
+
          move->applyUpdate(current);
+
+         if (Component::verbose)
+            std::cout << "SA(verbose): will reevaluate. current.first=" << current.first << std::endl;
+
          evaluator->reevaluate(current);
+
+         // SANITY CHECK
+         assert(!current.second.outdated);
+
+         if (Component::verbose)
+            std::cout << "SA(verbose): after reevaluate. current=" << current << std::endl;
 
          /*
 #ifdef OPTFRAME_AC
@@ -307,6 +345,10 @@ public:
          //star->first.printListAC();
 #endif
 */
+
+         if (Component::verbose)
+            std::cout << "SA(verbose): will compare betterStrict" << std::endl;
+
          //if (evaluator.betterThan(eCurrent, e)) // TODO: replace by 'se' here, and use 'se.second' to compare directly
          //if(eCurrent.betterStrict(e))
          if (evaluator->betterStrict(current.second, se.second)) {
@@ -480,9 +522,20 @@ public:
          std::cout << "no next1a! aborting..." << std::endl;
          return nullptr;
       }
+      // TODO: MUST USE GeneralEvaluator HERE!!
+      // HOWEVER... TOO MANY BUGS NOW!! Trying to force Evaluator here and downcast to GeneralEvaluator!
+      // MUST REMOVE MULTIPLE INHERITANCE FROM OptFrame!!!!!!!!!!!!!
+      //
+      /*
       sptr<GeneralEvaluator<XES, XEv>> eval;
       hf.assignGE(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
       assert(eval);
+      */
+      sptr<Evaluator<typename XES::first_type, typename XES::second_type, XES>> eval;
+      hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
+      assert(eval);
+
+      sptr<GeneralEvaluator<XES, XEv>> ge{ eval };
 
       if (!scanner.hasNext()) {
          std::cout << "no next1b! aborting..." << std::endl;
@@ -527,14 +580,24 @@ public:
       double Ti = *scanner.nextDouble();
 
       std::cout << "got all parameters!" << std::endl;
+      std::cout << "BasicSimulatedAnnealing with:" << std::endl;
+      std::cout << "\teval=" << ge->idGE() << std::endl;
+      std::cout << "\tconstructive=" << constructive->id() << std::endl;
+      std::cout << "\t|hlist|=" << hlist.size() << std::endl;
+      std::cout << "\thlist[0]=" << hlist[0]->id() << std::endl;
+      std::cout << "\talpha=" << alpha << std::endl;
+      std::cout << "\tSAmax=" << SAmax << std::endl;
+      std::cout << "\tTi=" << Ti << std::endl;
 
-      return new BasicSimulatedAnnealing<XES>(eval, constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
+      return new BasicSimulatedAnnealing<XES>(ge, constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
    }
 
    virtual vector<pair<string, string>> parameters()
    {
       vector<pair<string, string>> params;
-      params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
+      //params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
+      params.push_back(make_pair(Evaluator<typename XES::first_type, typename XES::second_type, XES>::idComponent(), "evaluation function"));
+      //
       //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
       params.push_back(make_pair(InitialSearch<XES, XEv>::idComponent(), "constructive heuristic"));
       stringstream ss;

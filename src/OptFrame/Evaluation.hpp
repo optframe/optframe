@@ -433,6 +433,7 @@ public:
 
    virtual string toString() const
    {
+      // ONE SHOULD NEVER PRINT AN EVALUATION WITH OUTDATED FLAG... SANITY CHECK!
       assert(!outdated);
       stringstream ss;
       ss << fixed; // disable scientific notation
