@@ -46,24 +46,45 @@ public:
    //
    // function templates (exported)
    //
+   // SHOULD NOT REQUIRE 'COPY' FROM IMS, IF NOT NECESSARY!
    using ims_type = IMS;
 
-   uptr<Move<XES>> (*fRandom)(const XES&); // fRandom
-   IMS (*fIterator)
-   (const XES&);                      // fIterator (just initializes IMS)
-   void (*fFirst)(IMS&);              // iterator.first()
-   void (*fNext)(IMS&);               // iterator.next()
-   bool (*fIsDone)(IMS&);             // iterator.isDone()
-   uptr<Move<XES>> (*fCurrent)(IMS&); // iterator.current()
+#ifdef OPTFCORE_FUNC_STATIC
+   typedef uptr<Move<XES>> (*FuncTypeNSRand)(const XES&);
+   typedef IMS (*FuncTypeNSSeqItInit)(const XES&);
+   typedef void (*FuncTypeNSSeqItFirst)(IMS&);
+   typedef void (*FuncTypeNSSeqItNext)(IMS&);
+   typedef bool (*FuncTypeNSSeqItIsDone)(IMS&);
+   typedef uptr<Move<XES>> (*FuncTypeNSSeqItCurrent)(IMS&);
+#else
+   typedef std::function<uptr<Move<XES>>(const XES&)> FuncTypeNSRand;
+   typedef std::function<IMS(const XES&)> FuncTypeNSSeqItInit;
+   typedef std::function<void(IMS&)> FuncTypeNSSeqItFirst;
+   typedef std::function<void(IMS&)> FuncTypeNSSeqItNext;
+   typedef std::function<bool(IMS&)> FuncTypeNSSeqItIsDone;
+   typedef std::function<uptr<Move<XES>>(IMS&)> FuncTypeNSSeqItCurrent;
+#endif
+
+   //uptr<Move<XES>> (*fRandom)(const XES&); // fRandom
+   FuncTypeNSRand fRandom;
+   //IMS (*fIterator)(const XES&);      // fIterator (just initializes IMS)
+   FuncTypeNSSeqItInit fIterator;
+   //void (*fFirst)(IMS&);              // iterator.first()
+   FuncTypeNSSeqItFirst fFirst;
+   //void (*fNext)(IMS&);               // iterator.next()
+   FuncTypeNSSeqItNext fNext;
+   //bool (*fIsDone)(IMS&);             // iterator.isDone()
+   FuncTypeNSSeqItIsDone fIsDone;
+   //uptr<Move<XES>> (*fCurrent)(IMS&); // iterator.current()
+   FuncTypeNSSeqItCurrent fCurrent;
 
    FNSSeq(
-     uptr<Move<XES>> (*_fRandom)(const XES&), // fRandom
-     IMS (*_fIterator)(const XES&),           // fIterator (just initializes IMS)
-     void (*_fFirst)(IMS&),                   // iterator.first()
-     void (*_fNext)(IMS&),                    // iterator.next()
-     bool (*_fIsDone)(IMS&),                  // iterator.isDone()
-     uptr<Move<XES>> (*_fCurrent)(IMS&)       // iterator.current()
-     )
+     FuncTypeNSRand _fRandom,
+     FuncTypeNSSeqItInit _fIterator,
+     FuncTypeNSSeqItFirst _fFirst,
+     FuncTypeNSSeqItNext _fNext,
+     FuncTypeNSSeqItIsDone _fIsDone,
+     FuncTypeNSSeqItCurrent _fCurrent)
      : fRandom{ _fRandom }
      , fIterator{ _fIterator }
      , fFirst{ _fFirst }
@@ -89,11 +110,12 @@ private:
    class FNSIterator final : public NSIterator<XES>
    {
    public:
+      // SHOULD NOT REQUIRE COPY FROM IMS, IF NOT NECESSARY!
       IMS ims;
       FNSSeq<IMS, XES>& nsseq;
       //
-      FNSIterator(const IMS& _ims, FNSSeq<IMS, XES>& _nsseq) noexcept
-        : ims{ _ims }
+      FNSIterator(IMS&& _ims, FNSSeq<IMS, XES>& _nsseq) noexcept
+        : ims{ std::move(_ims) }
         , nsseq{ _nsseq }
       {
       }
