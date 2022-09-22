@@ -58,7 +58,7 @@ public:
    {
       if (Component::verbose) {
          std::cout << "FI: searchFrom begins" << std::endl;
-         std::cout << eval->idGE() << std::endl;
+         std::cout << eval->id() << std::endl;
       }
       //XSolution& s = se.first;
       //XEv& e = se.second;

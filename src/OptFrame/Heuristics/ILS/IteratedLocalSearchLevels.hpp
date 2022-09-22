@@ -156,7 +156,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << IteratedLocalSearch<levelHistory, XES, XEv>::idComponent() << "ilsl";
+      ss << IteratedLocalSearch<levelHistory, XES, XEv>::idComponent() << "ILSL";
       return ss.str();
    }
 };

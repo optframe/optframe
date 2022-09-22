@@ -526,14 +526,16 @@ public:
       // HOWEVER... TOO MANY BUGS NOW!! Trying to force Evaluator here and downcast to GeneralEvaluator!
       // MUST REMOVE MULTIPLE INHERITANCE FROM OptFrame!!!!!!!!!!!!!
       //
-      /*
+
       sptr<GeneralEvaluator<XES, XEv>> eval;
-      hf.assignGE(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
+      hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
       assert(eval);
-      */
+
+      /*
       sptr<Evaluator<typename XES::first_type, typename XES::second_type, XES>> eval;
       hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
       assert(eval);
+      */
 
       sptr<GeneralEvaluator<XES, XEv>> ge{ eval };
 
@@ -581,7 +583,7 @@ public:
 
       std::cout << "got all parameters!" << std::endl;
       std::cout << "BasicSimulatedAnnealing with:" << std::endl;
-      std::cout << "\teval=" << ge->idGE() << std::endl;
+      std::cout << "\teval=" << ge->id() << std::endl;
       std::cout << "\tconstructive=" << constructive->id() << std::endl;
       std::cout << "\t|hlist|=" << hlist.size() << std::endl;
       std::cout << "\thlist[0]=" << hlist[0]->id() << std::endl;

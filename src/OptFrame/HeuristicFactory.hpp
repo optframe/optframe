@@ -212,6 +212,7 @@ public:
       component = nullptr;
    }
 
+   /*
    // EXCEPTION FOR GENERAL EVALUATOR: ISSUE WITH Multiple Inheritance
    void assignGE(std::shared_ptr<GeneralEvaluator<XES, XEv>>& component, unsigned number, string id)
    {
@@ -244,6 +245,7 @@ public:
       // not found!
       component = nullptr;
    }
+*/
 
    template<class T>
    void assignList(vector<std::shared_ptr<T>>& cList, unsigned number, string _listId)

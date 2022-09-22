@@ -48,11 +48,10 @@ namespace optframe {
 template<XEvaluation XEv = Evaluation<evtype>> // default is 'evtype'
 class Direction : public Component
 {
-protected:
+public:
    ///MoveCost<evtype, Evaluation<>> nullCost;
    XEv nullCost;
 
-public:
    Direction()
      :                ///nullCost(MoveCost<>(0))
      nullCost(XEv(0)) // requires cast from value zero, at least

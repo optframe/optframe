@@ -1000,12 +1000,12 @@ private:
                   //assert(false);
                }
 
-               if (lEvaluator.at(ev)->betterThan(e, e)) {
+               if (lEvaluator.at(ev)->direction->betterThan(e, e)) {
                   errormsg(lEvaluator.at(ev)->toString(), CMERR_EV_BETTERTHAN, "CMERR_EV_BETTERTHAN", iter, "error in betterThan(X,X)=true");
                   return false;
                }
 
-               if (!lEvaluator.at(ev)->betterOrEquals(e, e)) {
+               if (!lEvaluator.at(ev)->direction->betterOrEquals(e, e)) {
                   errormsg(lEvaluator.at(ev)->toString(), CMERR_EV_BETTEREQUALS, "CMERR_EV_BETTEREQUALS", iter, "error in betterOrEquals(X,X)=false");
                   return false;
                }

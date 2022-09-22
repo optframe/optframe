@@ -59,7 +59,10 @@ public:
    //FEvaluator(XEv (*_fEvaluate)(const S&))
 
    FEvaluator(FuncTypeEvaluate _fEvaluate)
-     : fEvaluate{ _fEvaluate }
+     : super(
+         (Minimizing == MinOrMax::MINIMIZE) ? sref<Direction<XEv>>{ new Minimization<XEv>() }
+                                            : sref<Direction<XEv>>{ new Maximization<XEv>() })
+     , fEvaluate{ _fEvaluate }
    {
    }
 
@@ -70,9 +73,20 @@ public:
 
    //virtual constexpr bool isMinimization() const
    // note that c++-10.1 accepts this on --std=c++17, which is a mistake (should only exist on c++20)
+   /*
    virtual bool isMinimization() const
    {
       return Minimizing == MinOrMax::MINIMIZE;
+   }
+   */
+
+   virtual bool compatible(string s) override
+   {
+      // forcing comparison here (with GeneralEvaluator) due to Multiple Inheritance
+      // TODO: find better solution to this
+      //return (s == idComponent()) || (direction->compatible(s)) || (s == "OptFrame:GeneralEvaluator"); //|| (GeneralEvaluator<XES, XEv, XES>::compatible(s));
+      // FIXED!
+      return (s == idComponent()) || (super::compatible(s));
    }
 
    static string idComponent()

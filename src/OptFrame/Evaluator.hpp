@@ -67,25 +67,36 @@ namespace optframe {
 // Evaluation may need to be S dependent, while GeneralEvaluator is not.
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 template<XSolution S, XEvaluation XEv, XESolution XES = pair<S, XEv>>
-class Evaluator : public Direction<XEv>
-  , public GeneralEvaluator<XES, XEv, XES>
+class Evaluator : public GeneralEvaluator<XES, XEv, XES>
 {
    static_assert(is_same<S, typename XES::first_type>::value);
    static_assert(is_same<XEv, typename XES::second_type>::value);
+
+public:
+   // Evaluator HAS_A Direction, not IS_A Direction!
+   // This (hopefully) fixes Diamond problem with GeneralEvaluator
+   sref<Direction<XEv>> direction;
 
 protected:
    bool allowCosts; // move.cost() is enabled or disabled for this Evaluator
    evtype weight;   // defaults to 1
 
 public:
-   Evaluator(bool _allowCosts = true, evtype w = 1)
-     : allowCosts(_allowCosts)
-     , weight(w)
+   Evaluator(sref<Direction<XEv>> _direction, bool _allowCosts = true, evtype w = 1)
+     : direction{ _direction }
+     , allowCosts{ _allowCosts }
+     , weight{ w }
    {
    }
 
    virtual ~Evaluator()
    {
+   }
+
+   // OLD Direction... now embedded here as well
+   virtual bool isMinimization() const
+   {
+      return direction->isMinimization();
    }
 
    bool getAllowCosts()
@@ -190,7 +201,7 @@ public:
 
    // From Direction:
    //virtual inline bool betterThan(const MoveCost<>& mc1, const MoveCost<>& mc2)
-   using Direction<XEv>::betterThan;
+   //using direction->betterThan;
 
    // Note that these parameters are NON-CONST... so, they can be updated if necessary!
    virtual bool betterThan(XES& se1, XES& se2)
@@ -203,7 +214,9 @@ public:
       if (e2.outdated)
          e2 = evaluate(se2.first);
       //e2 = evaluate(se2);
-      bool r = Direction<XEv>::betterThan(e1, e2);
+      //
+      //bool r = direction->betterThan(e1, e2);
+      bool r = direction->betterThan(e1, e2);
       return r;
    }
 
@@ -223,13 +236,13 @@ public:
       // TODO: verify if outdated is not set!!
       XEv e1 = evaluate(s1.first);
       XEv e2 = evaluate(s2.first);
-      bool r = Direction<XEv>::betterThan(e1, e2);
+      bool r = direction->betterThan(e1, e2);
       return r;
    }
 
    virtual bool betterThan(const XEv& e1, const XEv& e2)
    {
-      return Direction<XEv>::betterThan(e1, e2);
+      return direction->betterThan(e1, e2);
    }
 
    // =======================================
@@ -239,46 +252,51 @@ public:
    {
       assert(!e1.outdated);
       assert(!e2.outdated);
-      return Direction<XEv>::betterThan(e1, e2);
+      return direction->betterThan(e1, e2);
    }
 
    // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
    virtual bool isStrictImprovement(const XEv& e) override
    {
-      std::cout << "isStrictImprovement?" << std::endl;
-      return Direction<XEv>::isImprovement(e);
+      return direction->isImprovement(e);
    }
 
    // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
    virtual bool isNonStrictImprovement(const XEv& e) override
    {
-      return isStrictImprovement(e) || Direction<XEv>::equals(e, this->nullCost);
+      return isStrictImprovement(e) || direction->equals(e, direction->nullCost);
    }
 
    virtual bool equals(const XEv& e1, const XEv& e2) override
    {
-      return Direction<XEv>::equals(e1, e2);
+      return direction->equals(e1, e2);
    }
 
    // ---------------------------------------
 
    // ============= Component ===============
 
+   virtual string toString() const override
+   {
+      return id();
+   }
+
    virtual bool compatible(string s) override
    {
       // forcing comparison here (with GeneralEvaluator) due to Multiple Inheritance
       // TODO: find better solution to this
-      return (s == idComponent()) || (Direction<XEv>::compatible(s)) || (s == "OptFrame:GeneralEvaluator"); //|| (GeneralEvaluator<XES, XEv, XES>::compatible(s));
+      //return (s == idComponent()) || (direction->compatible(s)) || (s == "OptFrame:GeneralEvaluator"); //|| (GeneralEvaluator<XES, XEv, XES>::compatible(s));
+      // FIXED!
+      return (s == idComponent()) || (GeneralEvaluator<XES, XEv, XES>::compatible(s));
    }
 
    static string idComponent()
    {
       stringstream ss;
-      //ss << Component::idComponent() << ":Evaluator";
-      //ss << ":GeneralEvaluator" Direction<XEv>::idComponent() << ":GeneralEvaluator"
-      //   << ":Evaluator";
-      // TODO: this will require multiple idComponent()!!
-      ss << "OptFrame:GeneralEvaluator:Direction:Evaluator";
+      // ss << Component::idComponent() << ":Evaluator";
+      ss << GeneralEvaluator<XES>::idComponent() << ":Evaluator";
+      // TODO: this will require multiple idComponent()!! NOT ANYMORE (no diamonds...)
+      //ss << "OptFrame:GeneralEvaluator:Direction:Evaluator"; // DEPRECATED!
       return ss.str();
    }
 
@@ -287,12 +305,14 @@ public:
       return idComponent();
    }
 
+   /*
    // id from GeneralEvaluator class (due to multiple inheritance)
    // TODO: REMOVE MULTIPLE INHERITANCE!!!!! VERY URGENT!!
    virtual std::string idGE() const override
    {
       return id();
    }
+*/
 };
 
 template<XRepresentation R, XEvaluation XEv = Evaluation<>>

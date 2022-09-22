@@ -49,13 +49,13 @@ namespace optframe {
 //template<XSolution S, XEvaluation XEv, XSearch<S, XEv> XSH>
 //template<XSolution S, XEvaluation XEv, XESolution XES, XSearch<XES> XSH = XES> // defaults to single obj.
 template<XESolution XES, XEvaluation XEv = typename XES::second_type, XSearch<XES> XSH = XES> // defaults to single obj.
-// BREAK TIME!! Only 'XES' shall pass!!
-class GeneralEvaluator //: public Component // SHOULD BE PURE HERE, OTHERWISE BREAKS DIAMOND PROBLEMS!
+class GeneralEvaluator : public Component
 {
    //using S = decltype(declval<XES>.first); // error: insufficient contextual information to determine type
    //
    // could contain Direction here, or MultiDirection... but both should be abolished I guess.
    // Where should betterThan decision take place? On Evaluator or on each Evaluation?
+   //    SOLUTION: Evaluator should hold (HAS_A, not IS_A) Direction; and MultiEvaluator should hold (HAS_A, not IS_A) MultiDirection
    // Before, it was hard/impossible to do on Evaluation, due to overhead... but now, it may be the case.
    // If XEvaluation actually represents Objective Space, it should also contain guiding directions.
 
@@ -234,10 +234,22 @@ public:
       }
    }
 
+   /*
    // special method
    virtual std::string idGE() const
    {
       return "GeneralEvaluator";
+   }
+*/
+
+   virtual bool compatible(std::string s) override
+   {
+      return (s == idComponent()) || (Component::compatible(s));
+   }
+
+   virtual std::string id() const override
+   {
+      return idComponent();
    }
 
    // TODO: decide which methods stay here, and which go to Evaluator.hpp
