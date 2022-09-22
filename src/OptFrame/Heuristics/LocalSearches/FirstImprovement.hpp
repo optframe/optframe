@@ -56,22 +56,44 @@ public:
 
    virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) override
    {
+      if (Component::verbose) {
+         std::cout << "FI: searchFrom begins" << std::endl;
+         std::cout << eval->idGE() << std::endl;
+      }
       //XSolution& s = se.first;
       //XEv& e = se.second;
+
+      if (Component::verbose)
+         std::cout << "FI: getIterator" << std::endl;
       uptr<NSIterator<XES, XEv>> it = nsSeq->getIterator(se);
       //
-      if (!it)
+      if (!it) {
+         if (Component::warning)
+            std::cout << "FI(WARNING): getIterator FAILED!" << std::endl;
          return SearchStatus::FAILED;
+      }
       //
       string bestMoveId = "";
+      if (Component::verbose)
+         std::cout << "FI: it->first()" << std::endl;
       it->first();
 
       if (it->isDone()) {
+         if (Component::warning)
+            std::cout << "FI(WARN): empty neighborhood!" << std::endl;
          return SearchStatus::NO_REPORT;
       }
 
       do {
+         if (Component::verbose)
+            std::cout << "FI: it->current()" << std::endl;
          uptr<Move<XES, XEv, XSH>> move = it->current();
+
+         if (!move) {
+            if (Component::warning)
+               std::cout << "FI(WARNING): it->current() FAILED!" << std::endl;
+            return SearchStatus::FAILED;
+         }
 
          // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
          /*
@@ -85,6 +107,8 @@ public:
 
          //			bestMoveId = move->id();
 
+         if (Component::verbose)
+            std::cout << "FI: move->canBeApplied()" << std::endl;
          if (move->canBeApplied(se)) {
             if (this->acceptsImprove(*move, se)) {
                // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
@@ -94,6 +118,8 @@ public:
             }
          }
 
+         if (Component::verbose)
+            std::cout << "FI: it->next()" << std::endl;
          it->next();
       } while (!it->isDone());
 
@@ -108,6 +134,8 @@ public:
    ///bool acceptsImprove(Move<XES, XEv>& m, XSH& se, MoveCost<>* mc = nullptr, bool allowEstimated = false)
    bool acceptsImprove(Move<XES, XEv>& m, XSH& se, bool allowEstimated = false)
    {
+      if (Component::verbose)
+         std::cout << "FI: begin acceptsImprove()" << std::endl;
       //XSolution& s = se.first;
       XEv& e = se.second;
 
@@ -129,6 +157,8 @@ public:
             return false;
          }
       } else {
+         if (Component::verbose)
+            std::cout << "FI: no cost" << std::endl;
          // need to update 's' together with reevaluation of 'e' => slower (may perform reevaluation)
 
          // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
@@ -143,6 +173,8 @@ public:
          // compute cost directly on Evaluation
          XEv mcost = ev_begin.diff(se.second);
 
+         if (Component::verbose)
+            std::cout << "FI: isStrictImprovement?" << std::endl;
          // check if it is improvement
          if (eval->isStrictImprovement(mcost)) {
             return true;
@@ -164,6 +196,9 @@ public:
          //			e = ini.second;
          //			delete ini.first;
 
+         if (Component::verbose)
+            std::cout << "FI: No improvement. Will reverse." << std::endl;
+
          uptr<Move<XES, XEv>> ini = rev->apply(se);
          // for now, must be not nullptr
          assert(ini != nullptr);
@@ -171,6 +206,9 @@ public:
          assert(rev->hasReverse() && ini);
          e = std::move(ev_begin);
          //==================================================================
+
+         if (Component::verbose)
+            std::cout << "FI: ends acceptsImprove()" << std::endl;
 
          return false;
       }

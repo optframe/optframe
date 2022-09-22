@@ -235,7 +235,7 @@ public:
    // =======================================
 
    // this strictly better than parameter 'e' (for mini, 'this' < 'e')
-   virtual bool betterStrict(const XEv& e1, const XEv& e2)
+   virtual bool betterStrict(const XEv& e1, const XEv& e2) override
    {
       assert(!e1.outdated);
       assert(!e2.outdated);
@@ -243,18 +243,19 @@ public:
    }
 
    // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
-   virtual bool isStrictImprovement(const XEv& e)
+   virtual bool isStrictImprovement(const XEv& e) override
    {
+      std::cout << "isStrictImprovement?" << std::endl;
       return Direction<XEv>::isImprovement(e);
    }
 
    // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
-   virtual bool isNonStrictImprovement(const XEv& e)
+   virtual bool isNonStrictImprovement(const XEv& e) override
    {
       return isStrictImprovement(e) || Direction<XEv>::equals(e, this->nullCost);
    }
 
-   virtual bool equals(const XEv& e1, const XEv& e2)
+   virtual bool equals(const XEv& e1, const XEv& e2) override
    {
       return Direction<XEv>::equals(e1, e2);
    }

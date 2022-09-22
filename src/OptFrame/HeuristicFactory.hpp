@@ -122,7 +122,9 @@ public:
       return false;
    }
 
-   Component* getNextComponent(Scanner& scanner, string* compName = nullptr, int* compNumber = nullptr)
+   /// compName is an optional reference return value
+   /// compNumber is an optional reference return value
+   sptr<Component> getNextComponent(Scanner& scanner, string* compName = nullptr, int* compNumber = nullptr)
    {
       if (!scanner.hasNext())
          return nullptr;
@@ -139,7 +141,7 @@ public:
 
       unsigned number = inumber;
 
-      Component* component = nullptr;
+      sptr<Component> component = nullptr;
 
       if (id[0] == ':') {
          // COMPONENT SHORTCUT!
@@ -161,7 +163,7 @@ public:
       } else {
          // look for exact
          if (components.count(id) > 0) {
-            vector<Component*> v = components[id];
+            vector<sptr<Component>> v = components[id];
 
             if (number < v.size())
                component = v[number];
