@@ -3,8 +3,8 @@
 using namespace PN;
 
 PNEvaluator::PNEvaluator(ProblemInstance& _pPN)
-  : // If necessary, add more parameters
-  pPN(_pPN)
+  : Evaluator(new Minimization())
+  , pPN{ _pPN }
 {
    // Put the rest of your code here
 }

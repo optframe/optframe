@@ -53,7 +53,7 @@ public:
    using Evaluator<SolutionEtII, EvaluationEtII>::evaluate;
 
    EtIIEvaluator(ProblemInstance& _pEtII)
-     : Evaluator<SolutionEtII, EvaluationEtII>(true)
+     : Evaluator<SolutionEtII, EvaluationEtII>(new Maximization<EvaluationEtII>(), true)
      , pEtII(_pEtII) // DISALLOW COSTS (DEFAULT)
    {
       // Put the rest of your code here

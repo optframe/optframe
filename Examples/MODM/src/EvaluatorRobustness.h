@@ -37,10 +37,10 @@ private:
 
 public:
    MODMRobustnessEvaluator(ProblemInstance& _pMODM, MODMADSManager& _adsMan, RandGen& _rg)
-     : // If necessary, add more parameters
-     pMODM(_pMODM)
-     , adsMan(_adsMan)
-     , rg(_rg)
+     : Evaluator(new Maximization())
+     , pMODM{ _pMODM }
+     , adsMan{ _adsMan }
+     , rg{ _rg }
    {
       totalTime = 0;
       totalTimeEC = 0;

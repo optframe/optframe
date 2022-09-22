@@ -27,6 +27,12 @@
 
 // mainTSP.cpp
 
+// ============= LEGACY R and ADS for Loader ==============
+//
+#define OPTFRAME_LEGACY_R_ADS
+//
+// ========================================================
+
 #include <math.h>
 #include <stdlib.h>
 
@@ -91,7 +97,9 @@ int
 main(int argc, char** argv)
 {
    // ADS still exists, only because of ADSManager...
+   //
    Loader<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP, EvaluationTSP, ESolutionTSP> optframe;
+
    TSPProblemCommand tsp;
 
    // instance relative path to executable directory
@@ -201,12 +209,18 @@ main(int argc, char** argv)
    NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspor2(2);
    NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspor3(3);
 */
-   sref<NSSeq<ESolutionTSP>> nsseq_delta_2opt = new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSP2Opt, ProblemInstance>(tsp.p);
-   sref<NSSeq<ESolutionTSP>> tsp2opt = new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>();
-   sref<NSSeq<ESolutionTSP>> nsseq_delta_or1 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSPOrOptk, ProblemInstance>(1, tsp.p);
-   sref<NSSeq<ESolutionTSP>> tspor1 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(1);
-   sref<NSSeq<ESolutionTSP>> tspor2 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(2);
-   sref<NSSeq<ESolutionTSP>> tspor3 = new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(3);
+   sref<NSSeq<ESolutionTSP>> nsseq_delta_2opt =
+     new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSP2Opt, ProblemInstance>(tsp.p);
+   sref<NSSeq<ESolutionTSP>> tsp2opt =
+     new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>();
+   sref<NSSeq<ESolutionTSP>> nsseq_delta_or1 =
+     new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSPOrOptk, ProblemInstance>(1, tsp.p);
+   sref<NSSeq<ESolutionTSP>> tspor1 =
+     new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(1);
+   sref<NSSeq<ESolutionTSP>> tspor2 =
+     new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(2);
+   sref<NSSeq<ESolutionTSP>> tspor3 =
+     new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(3);
 
    // TODO: we need to try NSSeqTSPOrOpt , because it requires adapters...
    NSSeqTSPOrOpt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspor_adapt;
@@ -333,8 +347,6 @@ main(int argc, char** argv)
    ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor2));
    ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor3));
    ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspswap));
-   //for (unsigned i = 0; i < ns_list.size(); i++)
-   //   ns_list[i]->setVerbose();
 
    VariableNeighborhoodDescent<ESolutionTSP> VND(eval, ns_list);
    //VND.setVerbose();

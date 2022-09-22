@@ -61,9 +61,8 @@ public:
    //using Evaluator<SolutionTSP>::evaluate; // prevents name hiding
 
    TSPEvaluator(sref<ProblemInstance> pI)
-     : Evaluator<SolutionTSP, EvaluationTSP>(true)
-     , // ALLOW COSTS!
-     pI(pI)
+     : Evaluator<SolutionTSP, EvaluationTSP>(new Minimization(), true /*allow costs*/)
+     , pI{ pI }
    {
       Minimizing = true;
       solutions = vector<int>(50000, 0);
@@ -247,9 +246,8 @@ public:
    //using Evaluator<SolutionTSP>::evaluate; // prevents name hiding
 
    TSPRepEvaluator(sref<ProblemInstance> pI)
-     : Evaluator<RepTSP, EvaluationTSP>(true)
-     , // ALLOW COSTS!
-     pI(pI)
+     : Evaluator<RepTSP, EvaluationTSP>(new Minimization(), true)
+     , pI{ pI }
    {
       Minimizing = true;
       //this->pI = pI;
@@ -290,7 +288,7 @@ public:
       //e1.print();
       //e2.print();
       //
-      if (isMinimization())
+      if (Minimizing)
          //return ::fabs(e2.evaluation() - e1.evaluation()) >= 0.00001;
          return (e2.evaluation() - e1.evaluation()) > 0.00001;
       else

@@ -44,6 +44,7 @@ Note that OptFrame website may have obsolete documentation and examples:
 ### Intended changes for 5.0
 
 - support global library for multiple languages
+- fix multiple inheritance (DONE!)
 
 ### Docs Requirements
 

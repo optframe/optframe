@@ -34,6 +34,6 @@ using namespace std;
 using namespace optframe;
 
 // Solution Representation
-typedef Matrix<Piece> RepEtII;
+typedef optframe::Matrix<Piece> RepEtII;
 
 #endif /*EtII_REPRESENTATION_H_*/

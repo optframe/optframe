@@ -2,8 +2,9 @@
 
 using namespace $project;
 
-MyEvaluator::MyEvaluator(ProblemInstance& _p$project): // If necessary, add more parameters
-p$project(_p$project)
+MyEvaluator::MyEvaluator(ProblemInstance& _p$project): 
+ Evaluator( $isMin ? new Minimization() : new Maximization() )
+, p$project(_p$project)
 {
 	// Put the rest of your code here
 }

@@ -37,7 +37,7 @@ namespace EtII {
 class ProblemInstance
 {
 public:
-   vector<Piece> pieces;
+   std::vector<Piece> pieces;
    int width, height;
 
    ProblemInstance(Scanner& scanner)

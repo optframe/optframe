@@ -10,3 +10,4 @@ app_*
 *.err
 *.code-workspace
 bazel-*
+.vscode

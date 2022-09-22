@@ -80,7 +80,8 @@ main(int argc, char** argv)
       return 1; // cannot open file
    }
 
-   Loader<RepEtII, OPTFRAME_DEFAULT_ADS, SolutionEtII> optframe;
+   //Loader<RepEtII, OPTFRAME_DEFAULT_ADS, SolutionEtII> optframe;
+   Loader<SolutionEtII, EvaluationEtII, ESolutionEtII> optframe;
    EtIIProblemCommand etii;
    etii.load(good_path, optframe.factory, optframe.dictionary, optframe.ldictionary);
 

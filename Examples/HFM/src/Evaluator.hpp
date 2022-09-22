@@ -63,8 +63,8 @@ private:
 
 public:
    HFMEvaluator(HFMProblemInstance& _pEFP, ProblemParameters& _problemParam, int _optMetric, int _aprox)
-     : // If necessary, add more parameters
-     pEFP(_pEFP)
+     : Evaluator(new Minimization<EvaluationHFM>())
+     , pEFP(_pEFP)
      , problemParam(_problemParam)
      , optMetric(_optMetric)
      , aprox(_aprox)

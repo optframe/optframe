@@ -39,11 +39,18 @@ namespace optframe {
 // MultiEvaluator is not a REAL evaluator... a bunch/pack of evaluators... TODO: unify
 
 template<XSolution S, XEvaluation XEv, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>, XSearch<XMES> XSH = XMES> //, XSearch<XES> XSH = MultiESolution<XES> >
-class MultiEvaluator : public MultiDirection
-  , public GeneralEvaluator<XMES, XMEv, XSH>
+class MultiEvaluator : public GeneralEvaluator<XMES, XMEv, XSH>
 {
    //XESolution XES = pair<S, XMEv>,
    using XES = pair<S, XEv>;
+
+public:
+   // TODO: why do we need this? Can't we just extract each Direction for each Evaluator?
+   //sref<MultiDirection<XEv>> mdirection;
+   //
+   vsref<Direction<XEv>> vDir;
+   unsigned nObjectives;
+   // ========== end old MultiDirection part ==========
 
 protected:
    vector<Evaluator<S, XEv, XES>*> sngEvaluators; // single evaluators
@@ -51,12 +58,12 @@ protected:
 
 public:
    MultiEvaluator(vector<Evaluator<S, XEv, XES>*> _veval)
-     : sngEvaluators(_veval)
-     , allowCosts(false)
+     : sngEvaluators{ _veval }
+     , allowCosts{ false }
    {
       for (unsigned i = 0; i < _veval.size(); i++)
          if (_veval[i])
-            vDir.push_back(_veval[i]);
+            vDir.push_back(_veval[i]->direction);
       nObjectives = vDir.size();
    }
 
@@ -236,13 +243,13 @@ protected:
    // ============= Component ===============
    virtual bool compatible(string s)
    {
-      return (s == idComponent()) || (MultiDirection::compatible(s));
+      return (s == idComponent()) || (GeneralEvaluator<XMES, XMEv, XSH>::compatible(s));
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << MultiDirection::idComponent() << ":MultiEvaluator";
+      ss << GeneralEvaluator<XMES, XMEv, XSH>::idComponent() << ":MultiEvaluator";
       return ss.str();
    }
 
