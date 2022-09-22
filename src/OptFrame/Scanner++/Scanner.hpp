@@ -418,7 +418,7 @@ public:
       istream* input = const_cast<istream*>(this->input);
 
       while (hasNextChar()) {
-         char c;
+         char c = '\0';
          getChar(*input, c); // ignoring output (should be 'true', because of 'hasNextChar')
 
          if (!inSeparators(c)) {
@@ -429,7 +429,7 @@ public:
       }
 
       while (hasNextChar()) {
-         char c;
+         char c = '\0';
          getChar(*input, c); // ignoring output (should be 'true', because of 'hasNextChar')
 
          if (inSeparators(c)) {
