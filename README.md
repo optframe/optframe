@@ -45,6 +45,8 @@ Note that OptFrame website may have obsolete documentation and examples:
 
 - support global library for multiple languages
 - fix multiple inheritance (DONE!)
+- rename src/ to include/ and follow C++ package standards (DONE!)
+- no 'using namespace std' 
 
 ### Docs Requirements
 

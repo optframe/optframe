@@ -78,6 +78,8 @@
 
 #include "Solutions/CopySolution.hpp"
 
+#include "Component.hpp"
+
 //using namespace std;
 //using namespace optframe; (?????????????????) Don't use namespace declarations in headers
 
@@ -92,6 +94,9 @@ template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, X
 class HeuristicFactory
 {
 private:
+   // for debug purposes (mainly 'memory debug')
+   LogLevel loglevel;
+   // default random number generator
    sref<RandGen> rg;
 
 public:
@@ -158,8 +163,10 @@ public:
                break;
             }
          }
-         if (!component)
-            cout << "HeuristicFactory warning: pattern of component '" << id << " " << number << "' not found" << endl;
+         if (!component) {
+            if (loglevel >= LogLevel::Warning)
+               std::cout << "HeuristicFactory warning: pattern of component '" << id << " " << number << "' not found" << std::endl;
+         }
       } else {
          // look for exact
          if (components.count(id) > 0) {
@@ -167,8 +174,10 @@ public:
 
             if (number < v.size())
                component = v[number];
-         } else
-            cout << "HeuristicFactory warning: component '" << id << " " << number << "' not found!" << endl;
+         } else {
+            if (loglevel >= LogLevel::Warning)
+               std::cout << "HeuristicFactory warning: component '" << id << " " << number << "' not found!" << std::endl;
+         }
       }
 
       if (compName && compNumber) {
@@ -183,7 +192,8 @@ public:
    void assign(std::shared_ptr<T>& component, unsigned number, string id)
    {
       // NOTE THAT component is likely to be NULL!!
-      //std::cout << "hf will try to assign component '" << component->id() << " with id = '" << id << " #" << number << std::endl;
+      if (loglevel >= LogLevel::Debug)
+         std::cout << "hf will try to assign component '" << component->id() << " with id = '" << id << " #" << number << std::endl;
       // check prefix "OptFrame:"
       if (id[0] != 'O') {
          string id2 = id;
@@ -192,8 +202,9 @@ public:
       }
 
       if (!ComponentHelper::compareBase(T::idComponent(), id)) {
-         cout << "HeuristicFactory: incompatible assign '" << T::idComponent() << "' <- '" << id << "'";
-         cout << endl;
+         if (loglevel >= LogLevel::Warning)
+            std::cout << "HeuristicFactory: incompatible assign '" << T::idComponent() << "' <- '" << id << "'" << std::endl;
+
          component = nullptr;
          return;
       }
@@ -205,47 +216,14 @@ public:
             component = std::shared_ptr<T>((std::shared_ptr<T>&)v[number]); // need to cast to type T...
             return;
          }
-      } else
-         cout << "'" << id << "' not found!" << endl;
+      } else {
+         if (loglevel >= LogLevel::Warning)
+            std::cout << "'" << id << "' not found!" << std::endl;
+      }
 
       // not found!
       component = nullptr;
    }
-
-   /*
-   // EXCEPTION FOR GENERAL EVALUATOR: ISSUE WITH Multiple Inheritance
-   void assignGE(std::shared_ptr<GeneralEvaluator<XES, XEv>>& component, unsigned number, string id)
-   {
-      std::cout << "SPECIAL assign GeneralEvaluator for '" << id << " #" << number << "'" << std::endl;
-      //std::cout << "SPECIAL hf will try to assign component '" << component->id() << " with id = '" << id << " #" << number << std::endl;
-      // check prefix "OptFrame:"
-      if (id[0] != 'O') {
-         string id2 = id;
-         id = "OptFrame:";
-         id.append(id2);
-      }
-
-      if (!ComponentHelper::compareBase(GeneralEvaluator<XES, XEv>::idComponent(), id)) {
-         cout << "HeuristicFactory: incompatible assign '" << GeneralEvaluator<XES, XEv>::idComponent() << "' <- '" << id << "'";
-         cout << endl;
-         component = nullptr;
-         return;
-      }
-
-      if (components.count(id) > 0) {
-         vector<sptr<Component>>& v = components[id];
-         if (number < v.size()) {
-            //component = std::shared_ptr<GeneralEvaluator<XES, XEv>>((GeneralEvaluator<XES, XEv>*)v[number].get()); // need to cast to type T...
-            component = std::shared_ptr<GeneralEvaluator<XES, XEv>>((sptr<GeneralEvaluator<XES, XEv>>&)v[number]); // need to cast to type T...
-            return;
-         }
-      } else
-         cout << "'" << id << "' not found!" << endl;
-
-      // not found!
-      component = nullptr;
-   }
-*/
 
    template<class T>
    void assignList(vector<std::shared_ptr<T>>& cList, unsigned number, string _listId)
@@ -256,8 +234,10 @@ public:
       listId += "[]";
 
       if (!ComponentHelper::compareBase(T::idComponent(), noList)) {
-         cout << "HeuristicFactory: incompatible list assign '[" << T::idComponent() << "]' <- '[" << noList << "]'";
-         cout << endl;
+
+         if (loglevel >= LogLevel::Warning)
+            std::cout << "HeuristicFactory: incompatible list assign '[" << T::idComponent() << "]' <- '[" << noList << "]'" << std::endl;
+
          return;
       }
 
@@ -267,22 +247,28 @@ public:
             for (unsigned i = 0; i < vv[number].size(); i++)
                //cList.push_back(sptr<T>((T*)vv[number][i].get()));
                cList.push_back(sptr<T>((std::shared_ptr<T>&)vv[number][i]));
-      } else
-         cout << "'" << listId << " " << number << "' not found!" << endl;
+      } else {
+         if (loglevel >= LogLevel::Warning)
+            std::cout << "'" << listId << " " << number << "' not found!" << std::endl;
+      }
    }
 
    int addComponent(sref<Component> component, string id)
    {
       if (inComponents(component.sptr())) {
-         cout << "WARNING: HeuristicFactory addComponent: component '" << component->id() << "' already registered!" << endl;
+         if (loglevel >= LogLevel::Warning)
+            std::cout << "WARNING: HeuristicFactory addComponent: component '" << component->id() << "' already registered!" << std::endl;
 
          //return -1;
       }
 
       if (!component->compatible(id)) {
-         cout << "HeuristicFactory addComponent: incompatible components '";
-         cout << component->id() << "' and '" << id << "'! " << endl;
-         cout << "Rejecting component '" << component->toString() << "'." << std::endl;
+
+         if (loglevel >= LogLevel::Warning) {
+            std::cout << "HeuristicFactory addComponent: incompatible components '";
+            std::cout << component->id() << "' and '" << id << "'! " << std::endl;
+            std::cout << "Rejecting component '" << component->toString() << "'." << std::endl;
+         }
 
          return -1;
       }
@@ -309,8 +295,10 @@ public:
       std::string tmp = scanner.next();
 
       if (tmp != T::idComponent()) {
-         cout << "Error: expected '" << T::idComponent() << "' and found '" << tmp << "'.";
-         cout << endl;
+
+         if (loglevel >= LogLevel::Error)
+            std::cout << "Error: expected '" << T::idComponent() << "' and found '" << tmp << "'." << std::endl;
+
          component = nullptr;
 
          return;
@@ -340,15 +328,20 @@ public:
 
       for (unsigned i = 0; i < cList.size(); i++)
          if ((cList[i] == nullptr) || (!cList[i]->compatible(noList))) {
-            cout << "Warning: incompatible components '";
-            cout << cList[i]->id() << "' and '" << ComponentHelper::typeOfList(listId) << "'!" << endl;
+
+            if (loglevel >= LogLevel::Warning) {
+               std::cout << "Warning: incompatible components '";
+               std::cout << cList[i]->id() << "' and '" << ComponentHelper::typeOfList(listId) << "'!" << std::endl;
+            }
 
             return -1;
          }
 
       vector<vector<sptr<Component>>>& v = componentLists[listId];
       v.push_back(cList);
-      std::cout << "HeuristicFactory: adding to list id '" << listId << "'" << std::endl;
+
+      if (loglevel >= LogLevel::Info)
+         std::cout << "HeuristicFactory: adding to list id '" << listId << "'" << std::endl;
 
       int idx = componentLists[listId].size() - 1;
 
@@ -410,7 +403,8 @@ public:
 	 */
    vector<string> listComponentLists(string pattern)
    {
-      std::cout << "lising component lists for pattern = '" << pattern << "'" << std::endl;
+      if (loglevel >= LogLevel::Debug)
+         std::cout << "listing component lists for pattern = '" << pattern << "'" << std::endl;
       vector<string> list;
 
       map<std::string, vector<vector<sptr<Component>>>>::iterator iter;
@@ -448,13 +442,15 @@ public:
    // ================================================================
    // ================================================================
 
-   HeuristicFactory()
-     : rg{ new RandGen }
+   HeuristicFactory(LogLevel _loglevel = LogLevel::Warning)
+     : loglevel{ _loglevel }
+     , rg{ new RandGen }
    {
    }
 
-   HeuristicFactory(sref<RandGen> _rg)
-     : rg{ _rg }
+   HeuristicFactory(sref<RandGen> _rg, LogLevel _loglevel = LogLevel::Warning)
+     : loglevel{ _loglevel }
+     , rg{ _rg }
    {
    }
 
@@ -504,13 +500,16 @@ public:
          vector<std::shared_ptr<Component>>& v = iter->second;
 
          for (unsigned int i = 0; i < v.size(); i++) {
-            std::cout << "HF: will clear v.toString()=" << v[i]->toString() << std::endl;
+            if (loglevel >= LogLevel::Debug)
+               std::cout << "HF: will clear v.toString()=" << v[i]->toString() << std::endl;
             //delete v[i];
             v[i] = nullptr;
          }
 
+         if (loglevel >= LogLevel::Debug)
+            std::cout << "HF: WILL CLEAR COMPONENT: '" << iter->first << "'" << std::endl;
+         //
          // TODO: MUST KEEP LINE BELOW!
-         std::cout << "WILL CLEAR COMPONENT: '" << iter->first << "'" << std::endl;
          //iter->second.clear();
          v.clear();
       }
@@ -575,7 +574,8 @@ public:
          }
       }
 
-      cout << "HeuristicFactory::createLocalSearch warning: no LocalSearch '" << h << "' found! ignoring..." << endl;
+      if (loglevel >= LogLevel::Warning)
+         std::cout << "HeuristicFactory::createLocalSearch warning: no LocalSearch '" << h << "' found! ignoring..." << std::endl;
 
       return pair<sptr<LocalSearch<XES, XEv>>, std::string>(nullptr, scanner.rest());
    }
@@ -620,7 +620,8 @@ public:
          }
       }
 
-      cout << "HeuristicFactory::createSingleObjSearch warning: no SingleObjSearch '" << h << "' found! ignoring..." << endl;
+      if (loglevel >= LogLevel::Warning)
+         std::cout << "HeuristicFactory::createSingleObjSearch warning: no SingleObjSearch '" << h << "' found! ignoring..." << std::endl;
 
       return pair<sptr<SingleObjSearch<XES>>, std::string>(nullptr, scanner.rest());
    }
@@ -651,7 +652,8 @@ public:
       if (h == EmptyMultiObjSearch<XES>::idComponent())
          return make_pair(new EmptyMultiObjSearch<XES>, scanner.rest());
 
-      cout << "HeuristicFactory::createMultiObjSearch warning: no MultiObjSearch '" << h << "' found! ignoring..." << endl;
+      if (loglevel >= LogLevel::Warning)
+         std::cout << "HeuristicFactory::createMultiObjSearch warning: no MultiObjSearch '" << h << "' found! ignoring..." << std::endl;
 
       return pair<MultiObjSearch<XES>*, std::string>(nullptr, scanner.rest());
    }

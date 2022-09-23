@@ -87,6 +87,14 @@ struct Log
 // |      1      |      2      |      3      |      4      |
 // |    error    |   warning   | information | debug/verb. |
 
+// One can use logs like this:
+// Suppose my 'loglevel' is Info (default)
+// Then, I would also allow everything more restrict than Info, such as Warnings and Errors
+// So, if my 'loglevel' (3) is higher than Warning (2), warnings will also display, but Debug (4) will not.
+// Example:
+// if (loglevel >= LogLevel::Warning) { ... }
+//
+
 enum LogLevel
 {
    Silent = 0,
