@@ -70,7 +70,8 @@ public:
 
    virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& sosc) override
    {
-      XSolution AUTO_CONCEPTS& sStar = se.first;
+      using S = XES::first_type;
+      S& sStar = se.first;
       XEv& eStar = se.second;
 
       double timelimit = sosc.timelimit;
@@ -90,7 +91,7 @@ public:
       int iter = 1;
       unsigned index = 0;
 
-      XSolution s = sStar;
+      S s = sStar;
       Evaluation<> e = eStar;
 
       long tnow = time(nullptr);
