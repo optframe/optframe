@@ -70,7 +70,7 @@ public:
 
    virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& sosc) override
    {
-      using S = XES::first_type;
+      using S = typename XES::first_type;
       S& sStar = se.first;
       XEv& eStar = se.second;
 

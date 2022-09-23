@@ -267,7 +267,7 @@ public:
          XEv* e;
          hf.assign(e, *scanner.nextInt(), scanner.next());
 
-         pair<S, XEv>* p = sios->search(StopCriteria(timelimit, target_f), s, e);
+         pair<S, XEv>* p = sios->search(StopCriteria<XEv>(timelimit, target_f), s, e);
 
          if (!p)
             return true;

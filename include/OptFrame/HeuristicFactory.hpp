@@ -472,13 +472,13 @@ public:
    bool drop(string type, int id)
    {
       if (components.count(type) > 0) {
-         vector<Component*> v = components[type];
+         vector<sptr<Component>> v = components[type];
 
          if (id < ((int)v.size())) // else return false?
          {
             if (v[id] != nullptr) // else return false?
             {
-               delete v[id];
+               //delete v[id];
                v[id] = nullptr;
                components[type] = v;
 
