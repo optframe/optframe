@@ -105,6 +105,44 @@ public:
    vector<Action<S, XEv, XES, X2ES>*> actions;
    map<string, vector<vector<sptr<Component>>>> componentLists;
 
+   HeuristicFactory(LogLevel _loglevel = LogLevel::Warning)
+     : loglevel{ _loglevel }
+     , rg{ new RandGen }
+   {
+   }
+
+   HeuristicFactory(sref<RandGen> _rg, LogLevel _loglevel = LogLevel::Warning)
+     : loglevel{ _loglevel }
+     , rg{ _rg }
+   {
+   }
+
+   virtual ~HeuristicFactory()
+   {
+      clear();
+
+      //delete &rg; // shared reference 'sref'
+
+      for (unsigned i = 0; i < builders.size(); i++)
+         delete builders.at(i);
+      builders.clear();
+
+      for (unsigned i = 0; i < actions.size(); i++)
+         delete actions.at(i);
+      actions.clear();
+   }
+
+   void setLogLevel(LogLevel ll)
+   {
+      this->loglevel = ll;
+      // must apply loglevel to all builders
+      for (unsigned i = 0; i < builders.size(); i++) {
+         if (ll == LogLevel::Debug)
+            std::cout << "Setting builder LogLevel to Debug: " << builders[i]->id() << std::endl;
+         builders[i]->setMessageLevel(ll);
+      }
+   }
+
    ComponentBuilder<S, XEv, XES, X2ES>* getBuilder(string id)
    {
       for (unsigned i = 0; i < builders.size(); i++)
@@ -441,33 +479,6 @@ public:
 
    // ================================================================
    // ================================================================
-
-   HeuristicFactory(LogLevel _loglevel = LogLevel::Warning)
-     : loglevel{ _loglevel }
-     , rg{ new RandGen }
-   {
-   }
-
-   HeuristicFactory(sref<RandGen> _rg, LogLevel _loglevel = LogLevel::Warning)
-     : loglevel{ _loglevel }
-     , rg{ _rg }
-   {
-   }
-
-   virtual ~HeuristicFactory()
-   {
-      clear();
-
-      //delete &rg; // shared reference 'sref'
-
-      for (unsigned i = 0; i < builders.size(); i++)
-         delete builders.at(i);
-      builders.clear();
-
-      for (unsigned i = 0; i < actions.size(); i++)
-         delete actions.at(i);
-      actions.clear();
-   }
 
    bool drop(string type, int id)
    {
