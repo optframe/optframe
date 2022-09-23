@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced - CheckModule &mdash; optframe 4.3 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="License" href="license.html" />
+    <link rel="prev" title="Advanced" href="advanced.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html">
+            <img src="_static/optframe-cut.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart_continued.html">Quick start (Continued)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fcore.html">FCore Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="debugging.html">Debugging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced - CheckModule</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-ways-to-evaluate-a-move">Multiple ways to evaluate a move</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-move-cost-calculation-revcost">Basic move cost calculation (revCost)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#faster-move-cost-calculation-fastercost">Faster move cost calculation (fasterCost)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#constant-cost-calculation-cost">Constant cost calculation (cost)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-the-checkcommand-to-test-structures">Using the CheckCommand to test structures</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#error-codes-on-checkcommand">Error codes on CheckCommand</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#more-tricks-on-checkcommand">More Tricks on CheckCommand</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">optframe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Advanced - CheckModule</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/advanced_checkmodule.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="advanced-checkmodule">
+<h1>Advanced - CheckModule<a class="headerlink" href="#advanced-checkmodule" title="Permalink to this headline"></a></h1>
+<p>We expand the knowledge from <a class="reference external" href="../quickstart">Quick Start</a> where the user
+has learned how to <a class="reference external" href="../install">Install</a> OptFrame, and how to compile and
+test metaheuristics for classic 0-1 Knapsack Problem (01KP) and Traveling Salesman Problem (TSP).</p>
+<p>We now demonstrate how to quickly test the code and provide better move evaluations.</p>
+<section id="multiple-ways-to-evaluate-a-move">
+<h2>Multiple ways to evaluate a move<a class="headerlink" href="#multiple-ways-to-evaluate-a-move" title="Permalink to this headline"></a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>At this point, we assume the reader is familiarized with the Traveling Salesman Problem,
+and is also familiarized with basic workings of OptFrame and OptFrame Functional Core.</p>
+</div>
+<p>We recall the example for the TSP, where a move operation called MoveSwap is proposed.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span>
+<span class="linenos"> 2</span><span class="n">fApplySwap</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">moveData</span><span class="p">,</span> <span class="n">ESolutionTSP</span><span class="o">&amp;</span> <span class="n">se</span><span class="p">)</span>
+<span class="linenos"> 3</span><span class="p">{</span>
+<span class="linenos"> 4</span>   <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">moveData</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+<span class="linenos"> 5</span>   <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">moveData</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+<span class="linenos"> 6</span>   <span class="c1">// perform swap of clients i and j</span>
+<span class="linenos"> 7</span>   <span class="kt">int</span> <span class="n">aux</span> <span class="o">=</span> <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+<span class="linenos"> 8</span>   <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="linenos"> 9</span>   <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">aux</span><span class="p">;</span>
+<span class="linenos">10</span>   <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span> <span class="c1">// return a reverse move (&#39;undo&#39; move)s</span>
+<span class="linenos">11</span><span class="p">}</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span><span class="c1">// Swap move</span>
+<span class="linenos">14</span><span class="k">using</span> <span class="n">MoveSwap</span> <span class="o">=</span> <span class="n">FMove</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">ESolutionTSP</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span><span class="n">uptr</span><span class="o">&lt;</span><span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span>
+<span class="linenos">17</span><span class="n">makeMoveSwap</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">)</span>
+<span class="linenos">18</span><span class="p">{</span>
+<span class="linenos">19</span>   <span class="k">return</span> <span class="n">uptr</span><span class="o">&lt;</span><span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="k">new</span> <span class="n">MoveSwap</span><span class="p">{</span> <span class="n">make_pair</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="n">fApplySwap</span> <span class="p">});</span>
+<span class="linenos">20</span><span class="p">}</span>
+</pre></div>
+</div>
+<section id="basic-move-cost-calculation-revcost">
+<h3>Basic move cost calculation (revCost)<a class="headerlink" href="#basic-move-cost-calculation-revcost" title="Permalink to this headline"></a></h3>
+<p>Typically, any basic move implementation will require at least one extra evaluation (on objective space)
+and two move applications (called revCost):</p>
+<ol class="arabic simple">
+<li><p>First apply move it to current solution, becoming a neighbor solution (prevent solution copy)</p></li>
+<li><p>generating an Undo Move</p></li>
+<li><p>evaluating the cost at the neighbor solution</p></li>
+<li><p>applying the Undo Move and come back to original solution</p></li>
+<li><p>update objective value (by numeric copy)</p></li>
+</ol>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">class</span> <span class="nc">MoveSwap</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;</span>
+<span class="linenos"> 2</span><span class="p">{</span>
+<span class="linenos"> 3</span><span class="k">public</span><span class="o">:</span>
+<span class="linenos"> 4</span>   <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">;</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span>   <span class="n">MoveSwap</span><span class="p">(</span><span class="kt">int</span> <span class="n">_i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">_j</span><span class="p">)</span>
+<span class="linenos"> 7</span>     <span class="o">:</span> <span class="n">i</span><span class="p">{</span> <span class="n">_i</span> <span class="p">}</span>
+<span class="linenos"> 8</span>     <span class="p">,</span> <span class="n">j</span><span class="p">{</span> <span class="n">_j</span> <span class="p">}</span>
+<span class="linenos"> 9</span>   <span class="p">{</span>
+<span class="linenos">10</span>   <span class="p">}</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span>   <span class="kt">bool</span> <span class="n">canBeApplied</span><span class="p">(</span><span class="k">const</span> <span class="n">ESolutionTSP</span><span class="o">&amp;</span> <span class="n">se</span><span class="p">)</span> <span class="k">override</span>
+<span class="linenos">13</span>   <span class="p">{</span>
+<span class="linenos">14</span>      <span class="k">return</span> <span class="p">(</span><span class="o">::</span><span class="n">abs</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">);</span>
+<span class="linenos">15</span>   <span class="p">}</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span>   <span class="n">uptr</span><span class="o">&lt;</span><span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span> <span class="n">apply</span><span class="p">(</span><span class="n">ESolutionTSP</span><span class="o">&amp;</span> <span class="n">se</span><span class="p">)</span> <span class="k">override</span>
+<span class="linenos">18</span>   <span class="p">{</span>
+<span class="linenos">19</span>      <span class="c1">// perform swap of clients i and j</span>
+<span class="linenos">20</span>      <span class="kt">int</span> <span class="n">aux</span> <span class="o">=</span> <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+<span class="linenos">21</span>      <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="linenos">22</span>      <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">aux</span><span class="p">;</span>
+<span class="linenos">23</span>      <span class="k">return</span> <span class="n">uptr</span><span class="o">&lt;</span><span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="k">new</span> <span class="n">MoveSwap</span><span class="p">{</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span> <span class="p">});</span> <span class="c1">// return a reverse move (&#39;undo&#39; move)s</span>
+<span class="linenos">24</span>   <span class="p">}</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span>   <span class="kt">bool</span>
+<span class="linenos">27</span>   <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">const</span> <span class="k">override</span>
+<span class="linenos">28</span>   <span class="p">{</span>
+<span class="linenos">29</span>      <span class="k">auto</span><span class="o">&amp;</span> <span class="n">fmove</span> <span class="o">=</span> <span class="p">(</span><span class="n">MoveSwap</span><span class="o">&amp;</span><span class="p">)</span><span class="n">other</span><span class="p">;</span>
+<span class="linenos">30</span>      <span class="k">return</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">fmove</span><span class="p">.</span><span class="n">i</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">j</span> <span class="o">==</span> <span class="n">fmove</span><span class="p">.</span><span class="n">j</span><span class="p">);</span>
+<span class="linenos">31</span>   <span class="p">}</span>
+<span class="linenos">32</span><span class="p">};</span>
+<span class="linenos">33</span>
+<span class="linenos">34</span><span class="n">uptr</span><span class="o">&lt;</span><span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span>
+<span class="linenos">35</span><span class="n">makeMoveSwap</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">)</span>
+<span class="linenos">36</span><span class="p">{</span>
+<span class="linenos">37</span>   <span class="k">return</span> <span class="n">uptr</span><span class="o">&lt;</span><span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="k">new</span> <span class="n">MoveSwap</span><span class="p">{</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="p">});</span>
+<span class="linenos">38</span><span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>We have included the filter <code class="code docutils literal notranslate"><span class="pre">canBeApplied</span></code> to limit the scope of valid moves,
+so as an <code class="code docutils literal notranslate"><span class="pre">operator==</span></code> to check for equality between moves.</p>
+</div>
+</section>
+<section id="faster-move-cost-calculation-fastercost">
+<h3>Faster move cost calculation (fasterCost)<a class="headerlink" href="#faster-move-cost-calculation-fastercost" title="Permalink to this headline"></a></h3>
+<p>Step 3 from revCost is typically costly, what may be prevented by directly updating objective value at the same time the move is applied to solution.
+This can be done by adopting the <code class="code docutils literal notranslate"><span class="pre">applyUpdate</span></code> operation on Move implementation.
+Usually, this can be done by either:</p>
+<ol class="arabic simple">
+<li><p>Precomputing the cost value before move apply, and then apply it</p></li>
+<li><p>Apply the move and then directly compute the updated objective value</p></li>
+</ol>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">class</span> <span class="nc">MoveSwap</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;</span>
+<span class="linenos"> 2</span><span class="p">{</span>
+<span class="linenos"> 3</span><span class="k">public</span><span class="o">:</span>
+<span class="linenos"> 4</span>   <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">;</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span>   <span class="n">MoveSwap</span><span class="p">(</span><span class="kt">int</span> <span class="n">_i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">_j</span><span class="p">)</span>
+<span class="linenos"> 7</span>     <span class="o">:</span> <span class="n">i</span><span class="p">{</span> <span class="n">_i</span> <span class="p">}</span>
+<span class="linenos"> 8</span>     <span class="p">,</span> <span class="n">j</span><span class="p">{</span> <span class="n">_j</span> <span class="p">}</span>
+<span class="linenos"> 9</span>   <span class="p">{</span>
+<span class="linenos">10</span>   <span class="p">}</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span>   <span class="kt">bool</span> <span class="n">canBeApplied</span><span class="p">(</span><span class="k">const</span> <span class="n">ESolutionTSP</span><span class="o">&amp;</span> <span class="n">se</span><span class="p">)</span> <span class="k">override</span>
+<span class="linenos">13</span>   <span class="p">{</span>
+<span class="linenos">14</span>      <span class="k">return</span> <span class="p">(</span><span class="o">::</span><span class="n">abs</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">);</span>
+<span class="linenos">15</span>   <span class="p">}</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span>   <span class="n">uptr</span><span class="o">&lt;</span><span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span> <span class="n">applyUpdate</span><span class="p">(</span><span class="n">ESolutionTSP</span><span class="o">&amp;</span> <span class="n">se</span><span class="p">)</span> <span class="k">override</span>
+<span class="linenos">18</span>   <span class="p">{</span>
+<span class="linenos">19</span>      <span class="c1">// input cannot be outdated</span>
+<span class="linenos">20</span>      <span class="n">assert</span><span class="p">(</span><span class="o">!</span><span class="n">se</span><span class="p">.</span><span class="n">second</span><span class="p">.</span><span class="n">outdated</span><span class="p">);</span>
+<span class="linenos">21</span>      <span class="k">auto</span><span class="o">&amp;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+<span class="linenos">22</span>      <span class="kt">int</span> <span class="n">diff</span> <span class="o">=</span> <span class="o">-</span><span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">s</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">])</span> <span class="o">-</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">-</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">s</span><span class="p">[(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">]);</span>
+<span class="linenos">23</span>      <span class="n">diff</span> <span class="o">+=</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">+</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">s</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">])</span> <span class="o">+</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">s</span><span class="p">[(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">]);</span>
+<span class="linenos">24</span>      <span class="c1">// solution swap</span>
+<span class="linenos">25</span>      <span class="k">auto</span> <span class="n">rev</span> <span class="o">=</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">apply</span><span class="p">(</span><span class="n">se</span><span class="p">);</span>
+<span class="linenos">26</span>      <span class="n">se</span><span class="p">.</span><span class="n">second</span><span class="p">.</span><span class="n">setObjFunction</span><span class="p">(</span><span class="n">se</span><span class="p">.</span><span class="n">second</span><span class="p">.</span><span class="n">evaluation</span><span class="p">()</span> <span class="o">+</span> <span class="n">diff</span><span class="p">);</span>
+<span class="linenos">27</span>      <span class="k">return</span> <span class="n">rev</span><span class="p">;</span>
+<span class="linenos">28</span>   <span class="p">}</span>
+<span class="linenos">29</span>
+<span class="linenos">30</span>   <span class="n">uptr</span><span class="o">&lt;</span><span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span> <span class="n">apply</span><span class="p">(</span><span class="n">ESolutionTSP</span><span class="o">&amp;</span> <span class="n">se</span><span class="p">)</span> <span class="k">override</span>
+<span class="linenos">31</span>   <span class="p">{</span>
+<span class="linenos">32</span>      <span class="c1">// perform swap of clients i and j</span>
+<span class="linenos">33</span>      <span class="kt">int</span> <span class="n">aux</span> <span class="o">=</span> <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+<span class="linenos">34</span>      <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="linenos">35</span>      <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">aux</span><span class="p">;</span>
+<span class="linenos">36</span>      <span class="k">return</span> <span class="n">uptr</span><span class="o">&lt;</span><span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="k">new</span> <span class="n">MoveSwap</span><span class="p">{</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span> <span class="p">});</span> <span class="c1">// return a reverse move (&#39;undo&#39; move)s</span>
+<span class="linenos">37</span>   <span class="p">}</span>
+<span class="linenos">38</span>
+<span class="linenos">39</span>   <span class="kt">bool</span>
+<span class="linenos">40</span>   <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">const</span> <span class="k">override</span>
+<span class="linenos">41</span>   <span class="p">{</span>
+<span class="linenos">42</span>      <span class="k">auto</span><span class="o">&amp;</span> <span class="n">fmove</span> <span class="o">=</span> <span class="p">(</span><span class="n">MoveSwap</span><span class="o">&amp;</span><span class="p">)</span><span class="n">other</span><span class="p">;</span>
+<span class="linenos">43</span>      <span class="k">return</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">fmove</span><span class="p">.</span><span class="n">i</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">j</span> <span class="o">==</span> <span class="n">fmove</span><span class="p">.</span><span class="n">j</span><span class="p">);</span>
+<span class="linenos">44</span>   <span class="p">}</span>
+<span class="linenos">45</span><span class="p">};</span>
+<span class="linenos">46</span>
+<span class="linenos">47</span><span class="n">uptr</span><span class="o">&lt;</span><span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span>
+<span class="linenos">48</span><span class="n">makeMoveSwap</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">)</span>
+<span class="linenos">49</span><span class="p">{</span>
+<span class="linenos">50</span>   <span class="k">return</span> <span class="n">uptr</span><span class="o">&lt;</span><span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="k">new</span> <span class="n">MoveSwap</span><span class="p">{</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="p">});</span>
+<span class="linenos">51</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="constant-cost-calculation-cost">
+<h3>Constant cost calculation (cost)<a class="headerlink" href="#constant-cost-calculation-cost" title="Permalink to this headline"></a></h3>
+<p>Finally, an even faster approach is not directly compute cost of move, without even applying it to the solution.
+The method <code class="code docutils literal notranslate"><span class="pre">cost()</span></code> may optionally return a calculated cost, if user wants to use that.</p>
+<p>We observe that it is important to have some precise numerics here, such as <code class="code docutils literal notranslate"><span class="pre">Evaluation&lt;int&gt;</span></code>,
+instead of <code class="code docutils literal notranslate"><span class="pre">Evaluation&lt;double&gt;</span></code>. Cost recalculation may impose calculation errors (but if user
+wants to do it anyway, OptFrame will not forbid it).</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">class</span> <span class="nc">MoveSwap</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;</span>
+<span class="linenos"> 2</span><span class="p">{</span>
+<span class="linenos"> 3</span><span class="k">public</span><span class="o">:</span>
+<span class="linenos"> 4</span>   <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">;</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span>   <span class="n">MoveSwap</span><span class="p">(</span><span class="kt">int</span> <span class="n">_i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">_j</span><span class="p">)</span>
+<span class="linenos"> 7</span>     <span class="o">:</span> <span class="n">i</span><span class="p">{</span> <span class="n">_i</span> <span class="p">}</span>
+<span class="linenos"> 8</span>     <span class="p">,</span> <span class="n">j</span><span class="p">{</span> <span class="n">_j</span> <span class="p">}</span>
+<span class="linenos"> 9</span>   <span class="p">{</span>
+<span class="linenos">10</span>   <span class="p">}</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span>   <span class="kt">bool</span> <span class="n">canBeApplied</span><span class="p">(</span><span class="k">const</span> <span class="n">ESolutionTSP</span><span class="o">&amp;</span> <span class="n">se</span><span class="p">)</span> <span class="k">override</span>
+<span class="linenos">13</span>   <span class="p">{</span>
+<span class="linenos">14</span>      <span class="k">return</span> <span class="p">(</span><span class="o">::</span><span class="n">abs</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">);</span>
+<span class="linenos">15</span>   <span class="p">}</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span>   <span class="n">uptr</span><span class="o">&lt;</span><span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span> <span class="n">applyUpdate</span><span class="p">(</span><span class="n">ESolutionTSP</span><span class="o">&amp;</span> <span class="n">se</span><span class="p">)</span> <span class="k">override</span>
+<span class="linenos">18</span>   <span class="p">{</span>
+<span class="linenos">19</span>      <span class="c1">// input cannot be outdated</span>
+<span class="linenos">20</span>      <span class="n">assert</span><span class="p">(</span><span class="o">!</span><span class="n">se</span><span class="p">.</span><span class="n">second</span><span class="p">.</span><span class="n">outdated</span><span class="p">);</span>
+<span class="linenos">21</span>      <span class="k">auto</span><span class="o">&amp;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+<span class="linenos">22</span>      <span class="kt">int</span> <span class="n">diff</span> <span class="o">=</span> <span class="o">-</span><span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">s</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">])</span> <span class="o">-</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">-</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">s</span><span class="p">[(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">]);</span>
+<span class="linenos">23</span>      <span class="n">diff</span> <span class="o">+=</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">+</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">s</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">])</span> <span class="o">+</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">s</span><span class="p">[(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">]);</span>
+<span class="linenos">24</span>      <span class="c1">// solution swap</span>
+<span class="linenos">25</span>      <span class="k">auto</span> <span class="n">rev</span> <span class="o">=</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">apply</span><span class="p">(</span><span class="n">se</span><span class="p">);</span>
+<span class="linenos">26</span>      <span class="n">se</span><span class="p">.</span><span class="n">second</span><span class="p">.</span><span class="n">setObjFunction</span><span class="p">(</span><span class="n">se</span><span class="p">.</span><span class="n">second</span><span class="p">.</span><span class="n">evaluation</span><span class="p">()</span> <span class="o">+</span> <span class="n">diff</span><span class="p">);</span>
+<span class="linenos">27</span>      <span class="k">return</span> <span class="n">rev</span><span class="p">;</span>
+<span class="linenos">28</span>   <span class="p">}</span>
+<span class="linenos">29</span>
+<span class="linenos">30</span>   <span class="n">uptr</span><span class="o">&lt;</span><span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span> <span class="n">apply</span><span class="p">(</span><span class="n">ESolutionTSP</span><span class="o">&amp;</span> <span class="n">se</span><span class="p">)</span> <span class="k">override</span>
+<span class="linenos">31</span>   <span class="p">{</span>
+<span class="linenos">32</span>      <span class="c1">// perform swap of clients i and j</span>
+<span class="linenos">33</span>      <span class="kt">int</span> <span class="n">aux</span> <span class="o">=</span> <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+<span class="linenos">34</span>      <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="linenos">35</span>      <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">aux</span><span class="p">;</span>
+<span class="linenos">36</span>      <span class="k">return</span> <span class="n">uptr</span><span class="o">&lt;</span><span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="k">new</span> <span class="n">MoveSwap</span><span class="p">{</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span> <span class="p">});</span> <span class="c1">// return a reverse move (&#39;undo&#39; move)s</span>
+<span class="linenos">37</span>   <span class="p">}</span>
+<span class="linenos">38</span>
+<span class="linenos">39</span>   <span class="k">virtual</span> <span class="n">op</span><span class="o">&lt;</span><span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">cost</span><span class="p">(</span><span class="k">const</span> <span class="n">ESolutionTSP</span><span class="o">&amp;</span> <span class="n">se</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">allowEstimated</span><span class="p">)</span> <span class="k">override</span>
+<span class="linenos">40</span>   <span class="p">{</span>
+<span class="linenos">41</span>      <span class="n">assert</span><span class="p">(</span><span class="o">!</span><span class="n">se</span><span class="p">.</span><span class="n">second</span><span class="p">.</span><span class="n">outdated</span><span class="p">);</span>
+<span class="linenos">42</span>      <span class="k">auto</span><span class="o">&amp;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">se</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+<span class="linenos">43</span>      <span class="kt">int</span> <span class="n">diff</span> <span class="o">=</span> <span class="o">-</span><span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">s</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">])</span> <span class="o">-</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">-</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">s</span><span class="p">[(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">]);</span>
+<span class="linenos">44</span>      <span class="n">diff</span> <span class="o">+=</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">+</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">s</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">])</span> <span class="o">+</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">s</span><span class="p">[(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">]);</span>
+<span class="linenos">45</span>      <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">make_optional</span><span class="p">(</span><span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">diff</span><span class="p">));</span>
+<span class="linenos">46</span>   <span class="p">}</span>
+<span class="linenos">47</span>
+<span class="linenos">48</span>   <span class="kt">bool</span>
+<span class="linenos">49</span>   <span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span> <span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">const</span> <span class="k">override</span>
+<span class="linenos">50</span>   <span class="p">{</span>
+<span class="linenos">51</span>      <span class="k">auto</span><span class="o">&amp;</span> <span class="n">fmove</span> <span class="o">=</span> <span class="p">(</span><span class="n">MoveSwap</span><span class="o">&amp;</span><span class="p">)</span><span class="n">other</span><span class="p">;</span>
+<span class="linenos">52</span>      <span class="k">return</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">fmove</span><span class="p">.</span><span class="n">i</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">j</span> <span class="o">==</span> <span class="n">fmove</span><span class="p">.</span><span class="n">j</span><span class="p">);</span>
+<span class="linenos">53</span>   <span class="p">}</span>
+<span class="linenos">54</span><span class="p">};</span>
+<span class="linenos">55</span>
+<span class="linenos">56</span><span class="n">uptr</span><span class="o">&lt;</span><span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span>
+<span class="linenos">57</span><span class="n">makeMoveSwap</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">)</span>
+<span class="linenos">58</span><span class="p">{</span>
+<span class="linenos">59</span>   <span class="k">return</span> <span class="n">uptr</span><span class="o">&lt;</span><span class="n">Move</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="k">new</span> <span class="n">MoveSwap</span><span class="p">{</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="p">});</span>
+<span class="linenos">60</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="using-the-checkcommand-to-test-structures">
+<h2>Using the CheckCommand to test structures<a class="headerlink" href="#using-the-checkcommand-to-test-structures" title="Permalink to this headline"></a></h2>
+<p>One can easily check for the integrity of the structures, by creating an instance of
+CheckCommand.</p>
+<p>First, create it, then add all available components (NS, NSSeq, Evaluator, Constructive, …).
+Finally, invoke it passing two parameters: randomized pressure and iterative pressure.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<span class="linenos"> 2</span><span class="c1">//</span>
+<span class="linenos"> 3</span><span class="cp">#include</span> <span class="cpf">&quot;TSP-fcore.hpp&quot;</span><span class="cp"></span>
+<span class="linenos"> 4</span><span class="c1">// implementation of TSP</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="cp">#include</span> <span class="cpf">&lt;OptFrame/Core.hpp&gt;</span><span class="cp"></span>
+<span class="linenos"> 7</span><span class="cp">#include</span> <span class="cpf">&lt;OptFrame/Heuristics/Heuristics.hpp&gt;</span><span class="c1"> // many metaheuristics here...</span><span class="cp"></span>
+<span class="linenos"> 8</span><span class="cp">#include</span> <span class="cpf">&lt;OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp&gt;</span><span class="cp"></span>
+<span class="linenos"> 9</span><span class="cp">#include</span> <span class="cpf">&lt;OptFrame/Heuristics/LocalSearches/BestImprovement.hpp&gt;</span><span class="cp"></span>
+<span class="linenos">10</span><span class="cp">#include</span> <span class="cpf">&lt;OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp&gt;</span><span class="cp"></span>
+<span class="linenos">11</span><span class="cp">#include</span> <span class="cpf">&lt;OptFrame/LocalSearch.hpp&gt;</span><span class="cp"></span>
+<span class="linenos">12</span><span class="cp">#include</span> <span class="cpf">&lt;OptFrame/Util/CheckCommand.hpp&gt;</span><span class="cp"></span>
+<span class="linenos">13</span>
+<span class="linenos">14</span><span class="c1">// import everything on main()</span>
+<span class="linenos">15</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+<span class="linenos">16</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">optframe</span><span class="p">;</span>
+<span class="linenos">17</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">scannerpp</span><span class="p">;</span>
+<span class="linenos">18</span><span class="c1">//using namespace TSP_fcore;</span>
+<span class="linenos">19</span><span class="kt">int</span>
+<span class="linenos">20</span><span class="nf">main</span><span class="p">()</span>
+<span class="linenos">21</span><span class="p">{</span>
+<span class="linenos">22</span>   <span class="n">std</span><span class="o">::</span><span class="n">stringstream</span> <span class="n">ss</span><span class="p">;</span>
+<span class="linenos">23</span>   <span class="n">srand</span><span class="p">(</span><span class="mi">1000000</span><span class="p">);</span>
+<span class="linenos">24</span>   <span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">50</span><span class="p">;</span>
+<span class="linenos">25</span>   <span class="n">ss</span> <span class="o">&lt;&lt;</span> <span class="n">N</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="linenos">26</span>   <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="linenos">27</span>      <span class="n">ss</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="mi">1000</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="mi">1000</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="linenos">28</span>   <span class="c1">//Scanner scanner{ std::string(instance5) };</span>
+<span class="linenos">29</span>   <span class="n">Scanner</span> <span class="n">scanner</span><span class="p">{</span> <span class="n">ss</span><span class="p">.</span><span class="n">str</span><span class="p">()</span> <span class="p">};</span>
+<span class="linenos">30</span>   <span class="n">pTSP</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">scanner</span><span class="p">);</span>
+<span class="linenos">31</span>
+<span class="linenos">32</span>   <span class="c1">//REQUIRE(pTSP.n == 5);</span>
+<span class="linenos">33</span>   <span class="n">assert</span><span class="p">(</span><span class="n">pTSP</span><span class="p">.</span><span class="n">n</span> <span class="o">==</span> <span class="mi">50</span><span class="p">);</span>
+<span class="linenos">34</span>
+<span class="linenos">35</span>   <span class="c1">// set random seed for std::random_shuffle</span>
+<span class="linenos">36</span>   <span class="n">srand</span><span class="p">(</span><span class="mi">1000000</span><span class="p">);</span>
+<span class="linenos">37</span>
+<span class="linenos">38</span>   <span class="n">sref</span><span class="o">&lt;</span><span class="n">InitialSearch</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;&gt;</span> <span class="n">initRand</span><span class="p">{</span>
+<span class="linenos">39</span>      <span class="k">new</span> <span class="n">BasicInitialSearch</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;</span><span class="p">(</span><span class="n">crand</span><span class="p">,</span> <span class="n">eval</span><span class="p">)</span>
+<span class="linenos">40</span>   <span class="p">};</span>
+<span class="linenos">41</span>
+<span class="linenos">42</span>   <span class="n">CheckCommand</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="o">&gt;</span> <span class="n">check</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span> <span class="c1">// verbose</span>
+<span class="linenos">43</span>   <span class="c1">//</span>
+<span class="linenos">44</span>   <span class="n">check</span><span class="p">.</span><span class="n">addEvaluator</span><span class="p">(</span><span class="n">eval</span><span class="p">);</span>
+<span class="linenos">45</span>   <span class="n">check</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">initRand</span><span class="p">);</span>
+<span class="linenos">46</span>   <span class="n">check</span><span class="p">.</span><span class="n">addNS</span><span class="p">(</span><span class="n">nsswap</span><span class="p">);</span>    <span class="c1">// NS</span>
+<span class="linenos">47</span>   <span class="n">check</span><span class="p">.</span><span class="n">addNSSeq</span><span class="p">(</span><span class="n">nsseq2</span><span class="p">);</span> <span class="c1">// NSSeq</span>
+<span class="linenos">48</span>
+<span class="linenos">49</span>   <span class="c1">// bool run(int iterMax, int nSolNSSeq)</span>
+<span class="linenos">50</span>   <span class="n">check</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+<span class="linenos">51</span>   <span class="c1">//</span>
+<span class="linenos">52</span>   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="linenos">53</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>An example of output can be seen here:</p>
+<div class="line-block">
+<div class="line">———————————</div>
+<div class="line">Solution   Time to clone a solution</div>
+<div class="line">———————————</div>
+<div class="line">title      #tests  avg(ms) std(ms)</div>
+<div class="line">Solution   59502   0.0009  0.0014</div>
+<div class="line">———————————</div>
+<div class="line">all        -       0.0009  -</div>
+<div class="line"><br /></div>
+<div class="line">———————————</div>
+<div class="line">|Constructive|=1  testing construction of initial solution</div>
+<div class="line">———————————</div>
+<div class="line">#id        title   #tests  avg(ms) std(ms)</div>
+<div class="line">#0 OptFrame:InitialSearch  100     0.0181  0.0334</div>
+<div class="line">———————————</div>
+<div class="line">all        *       -       0.0181  -</div>
+<div class="line"><br /></div>
+<div class="line">———————————</div>
+<div class="line">|Evaluators|=1    testing full evaluate(s) of a solution</div>
+<div class="line">———————————</div>
+<div class="line">#id        title   #tests  avg(ms) std(ms)</div>
+<div class="line">#0 Direction:MIN   59602   0.0013  0.0008</div>
+<div class="line">———————————</div>
+<div class="line">all        *       -       0.0013  -</div>
+<div class="line"><br /></div>
+<div class="line">———————————</div>
+<div class="line">|NS|=2    testing time of move apply(s) [apply_no_evaluation]</div>
+<div class="line">———————————</div>
+<div class="line">#id        title   #tests  avg(ms) std(ms)</div>
+<div class="line">#0 OptFrame:FNS    41048   0.0008  0.0015</div>
+<div class="line">#1 OptFrame:FNSSeq 18454   0.0007  0.0008</div>
+<div class="line">———————————</div>
+<div class="line">all        *       -       0.0008  -</div>
+<div class="line"><br /></div>
+<div class="line">———————————</div>
+<div class="line">|NS|=2    testing time of cost based on move apply(s) [revCost]</div>
+<div class="line">———————————</div>
+<div class="line">#id        title   #tests  avg(ms) std(ms)</div>
+<div class="line">#0 OptFrame:FNS    20524   0.0054  0.0033</div>
+<div class="line">#1 OptFrame:FNSSeq 9227    0.0051  0.0018</div>
+<div class="line">———————————</div>
+<div class="line">all        *       -       0.0053  -</div>
+<div class="line"><br /></div>
+<div class="line">———————————</div>
+<div class="line">|NS|=2    testing time of cost based on move apply(e, s) [fasterCost]</div>
+<div class="line">———————————</div>
+<div class="line">#id        title   #tests  avg(ms) std(ms)</div>
+<div class="line">#0 OptFrame:FNS    20524   0.0020  0.0019</div>
+<div class="line">#1 OptFrame:FNSSeq 9227    0.0019  0.0011</div>
+<div class="line">———————————</div>
+<div class="line">all        *       -       0.0020  -</div>
+<div class="line"><br /></div>
+<div class="line">———————————</div>
+<div class="line">|NS|=2    testing time of real cost based on move apply(e, s) - forcing allowCosts to False [realFasterCost]</div>
+<div class="line">———————————</div>
+<div class="line">#id        title   #tests  avg(ms) std(ms)</div>
+<div class="line">#0 OptFrame:FNS    20524   0.0015  0.0029</div>
+<div class="line">#1 OptFrame:FNSSeq 9227    0.0013  0.0006</div>
+<div class="line">———————————</div>
+<div class="line">all        *       -       0.0014  -</div>
+<div class="line"><br /></div>
+<div class="line">———————————</div>
+<div class="line">|NS|=2    testing time of move cost()</div>
+<div class="line">———————————</div>
+<div class="line">#id        title   #tests  avg(ms) std(ms)</div>
+<div class="line">#0 OptFrame:FNS    20524   0.0008  0.0006</div>
+<div class="line">#1 OptFrame:FNSSeq 9227    0.0008  0.0007</div>
+<div class="line">———————————</div>
+<div class="line">all        *       -       0.0008  -</div>
+</div>
+<p>Note that cost() version is faster than others, for both neighborhoods (NS and NSSeq), as expected.</p>
+<section id="error-codes-on-checkcommand">
+<h3>Error codes on CheckCommand<a class="headerlink" href="#error-codes-on-checkcommand" title="Permalink to this headline"></a></h3>
+<p>CheckCommand may launch several errors, according to the table below:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">CMERR_EV_BETTERTHAN</span> <span class="o">=</span> <span class="mi">2001</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">CMERR_EV_BETTEREQUALS</span> <span class="o">=</span> <span class="mi">2002</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">CMERR_MOVE_EQUALS</span> <span class="o">=</span> <span class="mi">3001</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">CMERR_MOVE_HASREVERSE</span> <span class="o">=</span> <span class="mi">3002</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">CMERR_MOVE_REVREV_VALUE</span> <span class="o">=</span> <span class="mi">3004</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">CMERR_MOVE_REVSIMPLE</span> <span class="o">=</span> <span class="mi">3005</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">CMERR_MOVE_REVFASTER</span> <span class="o">=</span> <span class="mi">3006</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">CMERR_MOVE_REALREVFASTER</span> <span class="o">=</span> <span class="mi">3008</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">CMERR_MOVE_COST</span> <span class="o">=</span> <span class="mi">3007</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Feel free to file an Issue on OptFrame Project in order to discuss how to handle them.</p>
+<p>In the future, we intend to expand this section.</p>
+</section>
+<section id="more-tricks-on-checkcommand">
+<h3>More Tricks on CheckCommand<a class="headerlink" href="#more-tricks-on-checkcommand" title="Permalink to this headline"></a></h3>
+<p>For a other examples, see folder Examples/FCore-BRKGA and execute <code class="code docutils literal notranslate"><span class="pre">bazel</span> <span class="pre">build</span> <span class="pre">...</span></code></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Feel free to check folder <code class="code docutils literal notranslate"><span class="pre">OptFrame/Examples</span></code> for other examples on FCore and OptFrame Classic.</p>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="advanced.html" class="btn btn-neutral float-left" title="Advanced" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="license.html" class="btn btn-neutral float-right" title="License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2007-2021, OptFrame Core Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

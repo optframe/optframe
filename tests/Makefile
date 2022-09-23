@@ -1,6 +1,6 @@
 
 ROOT_PATH=..
-SRC_PATH=../src
+SRC_PATH=../include
 LIBS_PATH=../libs
 
 all: test

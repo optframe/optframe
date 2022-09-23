@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced &mdash; optframe 4.3 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Advanced - CheckModule" href="advanced_checkmodule.html" />
+    <link rel="prev" title="Debugging" href="debugging.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html">
+            <img src="_static/optframe-cut.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart_continued.html">Quick start (Continued)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fcore.html">FCore Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="debugging.html">Debugging</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#explicit-xesolution">Explicit XESolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#local-search">Local Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#move-cost">Move Cost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multi-objective">Multi-Objective</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_checkmodule.html">Advanced - CheckModule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">optframe</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Advanced</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/advanced.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="advanced">
+<h1>Advanced<a class="headerlink" href="#advanced" title="Permalink to this headline"></a></h1>
+<p>Some advanced tricks and optimization techniques.</p>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>This section is incomplete!</p>
+</div>
+<section id="explicit-xesolution">
+<h2>Explicit XESolution<a class="headerlink" href="#explicit-xesolution" title="Permalink to this headline"></a></h2>
+<p>Instead of using standard <code class="code docutils literal notranslate"><span class="pre">std::pair</span></code> to glue solution and evaluation types,
+one can explictly declare a class. This is useful to embed user methods and other
+problem-specific operations.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// explicit declaration of class to represent XESolution pair</span>
+<span class="k">class</span> <span class="nc">MyESolution1</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+    <span class="k">using</span> <span class="n">first_type</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="k">using</span> <span class="n">second_type</span> <span class="o">=</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="n">first_type</span> <span class="n">first</span><span class="p">;</span>   <span class="c1">// some XSolution type</span>
+    <span class="n">second_type</span> <span class="n">second</span><span class="p">;</span> <span class="c1">// some XEvaluation type</span>
+    <span class="c1">// other specific methods ...</span>
+<span class="p">}</span>
+
+<span class="c1">// declaration of XESolution pair via inheritance over IESolution</span>
+<span class="k">class</span> <span class="nc">MyESolution2</span> <span class="o">:</span> <span class="k">public</span> <span class="n">IESolution</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span>
+<span class="p">{</span>
+    <span class="c1">// other specific methods ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="local-search">
+<h2>Local Search<a class="headerlink" href="#local-search" title="Permalink to this headline"></a></h2>
+<p>OptFrame has three main types of neighborhoods: <code class="code docutils literal notranslate"><span class="pre">NS</span></code>, <code class="code docutils literal notranslate"><span class="pre">NSSeq</span></code> and <code class="code docutils literal notranslate"><span class="pre">NSEnum</span></code>.</p>
+<p>Advanced local search, …</p>
+</section>
+<section id="move-cost">
+<h2>Move Cost<a class="headerlink" href="#move-cost" title="Permalink to this headline"></a></h2>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>On OptFrame Classic (not FCore) it’s possible to avoid the creation of an undo move. Currently, all
+existing examples on OptFrame Classic use the undo feature anyway, since move undo is typically much faster than a complete copy of
+the solution structure.</p>
+</div>
+</section>
+<section id="multi-objective">
+<h2>Multi-Objective<a class="headerlink" href="#multi-objective" title="Permalink to this headline"></a></h2>
+<p>For multiple objectives, …</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="debugging.html" class="btn btn-neutral float-left" title="Debugging" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced_checkmodule.html" class="btn btn-neutral float-right" title="Advanced - CheckModule" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2007-2021, OptFrame Core Developers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
