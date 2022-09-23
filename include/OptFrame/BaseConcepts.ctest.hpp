@@ -45,7 +45,7 @@ struct IsSolution
 };
 
 // basic test
-static_assert(XSolution<IsSolution<int, nullptr_t>>);
+static_assert(XSolution<IsSolution<int, std::nullptr_t>>);
 
 template<class T>
 struct IsEvaluation

@@ -184,7 +184,7 @@ public:
       return ss.str();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
@@ -194,7 +194,7 @@ public:
       return id();
    }
 
-   virtual void print() const
+   virtual void print() const override
    {
       cout << "MultiESolution(" << p.size() << ")";
       cout << endl;

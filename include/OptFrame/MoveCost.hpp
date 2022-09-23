@@ -142,7 +142,7 @@ public:
       return "OptFrame:MoveCost";
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
@@ -152,7 +152,7 @@ public:
       return id();
    }
 
-   virtual void print() const
+   virtual void print() const override
    {
       cout << fixed; // disable scientific notation
       cout << "Move cost = " << cost() << endl;

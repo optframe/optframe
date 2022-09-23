@@ -33,10 +33,10 @@
 namespace optframe {
 
 //
-// EPopulation class is 'final'
+// EPopulation class is 'final' (WHY??? NOT ANYMORE...)
 //
 template<XESolution XES> // XES only for evaluation purposes!
-class EPopulation final : public Component
+class EPopulation : public Component
 {
    using S = typename XES::first_type;
    using XEv = typename XES::second_type;

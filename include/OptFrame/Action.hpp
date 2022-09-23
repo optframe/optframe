@@ -244,7 +244,7 @@ public:
          if (!scanner.hasNext())
             return false;
 
-         LogLevel verboseLevel = *scanner.nextInt();
+         LogLevel verboseLevel = (LogLevel)*scanner.nextInt();
 
          c->setMessageLevel(verboseLevel);
 
