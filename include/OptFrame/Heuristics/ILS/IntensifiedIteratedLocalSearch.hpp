@@ -124,7 +124,7 @@ public:
       return new pair<Solution<R, ADS>&, Evaluation<>&>(s, e);
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

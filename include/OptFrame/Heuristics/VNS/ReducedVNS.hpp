@@ -52,7 +52,7 @@ public:
       return *new EmptyLocalSearch<XES, XEv>();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
@@ -128,7 +128,7 @@ public:
       return ss.str();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

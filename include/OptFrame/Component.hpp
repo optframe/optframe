@@ -363,7 +363,8 @@ public:
             break;
          case LogLevel::Debug: // VERBOSE 4
 #ifdef NDEBUG
-            std::cerr << "WARNING: LogLevel::Debug is disabled due to NDEBUG flag!" << std::endl;
+            std::cerr << "WARNING: LogLevel::Debug is disabled due to NDEBUG flag! Setting LogLevel::Info instead." << std::endl;
+            information = true;
 #else
             debug = true;
 #endif

@@ -148,7 +148,7 @@ public:
       return (level >= levelMax);
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
@@ -173,13 +173,17 @@ public:
    virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
       sptr<GeneralEvaluator<XES, XEv>> eval = nullptr;
-      hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
+      std::string sid_0 = scanner.next();
+      int id_0 = *scanner.nextInt();
+      hf.assign(eval, id_0, sid_0);
       if (!eval)
          return nullptr;
 
       //Constructive<S>* constructive = nullptr;
       sptr<InitialSearch<XES, XEv>> constructive = nullptr;
-      hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
+      std::string sid_1 = scanner.next();
+      int id_1 = *scanner.nextInt();
+      hf.assign(constructive, id_1, sid_1);
       if (!constructive)
          return nullptr;
 
@@ -195,7 +199,9 @@ public:
          return nullptr;
 
       sptr<ILSLPerturbation<XES, XEv>> pert;
-      hf.assign(pert, *scanner.nextInt(), scanner.next()); // reads backwards!
+      std::string sid_3 = scanner.next();
+      int id_3 = *scanner.nextInt();
+      hf.assign(pert, id_3, sid_3);
       if (!pert)
          return nullptr;
 
@@ -248,7 +254,7 @@ public:
       return ss.str();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

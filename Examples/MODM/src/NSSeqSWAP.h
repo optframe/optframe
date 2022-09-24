@@ -72,7 +72,7 @@ public:
    op<Evaluation<>> cost(const pair<SolutionMODM, Evaluation<>>& se, bool allowEstimate) override
    {
       const SolutionMODM& s = se.first;
-      
+
       const RepMODM& rep = s.getR();
       const AdsMODM& ads = s.getADS();
       //
@@ -273,7 +273,7 @@ public:
       return ss.str();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

@@ -218,7 +218,7 @@ public:
       return Minimizing;
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       string pai = Evaluator<SolutionTSP, EvaluationTSP>::idComponent();
       pai.append(":TSPEvaluator");
@@ -302,7 +302,7 @@ public:
       return Minimizing;
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       string pai = Evaluator<RepTSP, EvaluationTSP>::idComponent();
       pai.append(":TSPRepEvaluator");

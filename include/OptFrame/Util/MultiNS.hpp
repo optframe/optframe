@@ -79,7 +79,7 @@ public:
       return "OptFrame:Move:MultiMove";
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
@@ -130,7 +130,7 @@ public:
       return "OptFrame:NS:MultiNS";
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

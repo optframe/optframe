@@ -81,7 +81,6 @@ public:
 
       // =========================
 
-
       std::cout << "TS search(" << sosc.timelimit << ")" << std::endl;
 
       // TODO: receive on 'searchBy'
@@ -122,7 +121,7 @@ public:
 
       int estimative_BTmax = 0;
 
-      while (Iter - BestIter <= tsMax && sosc.shouldStop(star->second)){//((tnow - tini) < timelimit)) {
+      while (Iter - BestIter <= tsMax && sosc.shouldStop(star->second)) { //((tnow - tini) < timelimit)) {
          Iter = Iter + 1;
 
          if ((Iter - BestIter) > estimative_BTmax)
@@ -134,7 +133,7 @@ public:
          // First: aspiration
          // ==================
 
-         Move<XES, XEv>* bestMove = tabuBestMove(se.first, se.second, emptyList);//tabuBestMove(s, e, emptyList);
+         Move<XES, XEv>* bestMove = tabuBestMove(se.first, se.second, emptyList); //tabuBestMove(s, e, emptyList);
 
          //XSolution* s1 = &s.clone();
          XES se1 = se;
@@ -142,11 +141,10 @@ public:
          //Move<XES, XEv>* newTabu = &bestMove->apply(se1.first);//(*s1);
          //XEv* evalS1 = &evaluator.evaluate(se1.first);//(*s1);
 
-         uptr<Move<XES, XEv>> newTabu = bestMove->applyUpdate(se1);//(*s1);
+         uptr<Move<XES, XEv>> newTabu = bestMove->applyUpdate(se1); //(*s1);
          evaluator.reevaluate(se1);
          //
          //XEv* evalS1 = &evaluator.evaluate(se1.first);//(*s1);
-
 
          //if (evaluator.betterThan(*evalS1, *evalSStar)) {
          if (evaluator->betterStrict(se1.second, star->second)) {
@@ -325,7 +323,7 @@ public:
       return ss.str();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
@@ -389,7 +387,7 @@ public:
       return ss.str();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

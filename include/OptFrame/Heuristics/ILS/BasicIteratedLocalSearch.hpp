@@ -122,7 +122,7 @@ public:
       return (s == idComponent()) || (SingleObjSearch<XES>::compatible(s));
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
@@ -195,7 +195,7 @@ public:
       return ss.str();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

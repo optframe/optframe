@@ -90,7 +90,7 @@ public:
       return true;
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return "OptFrame:Evaluator:MyEvaluator";
    }

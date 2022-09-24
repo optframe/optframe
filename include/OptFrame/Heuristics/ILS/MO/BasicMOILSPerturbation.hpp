@@ -123,7 +123,7 @@ public:
       mEval->reevaluate(smev); // updates 'e'
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

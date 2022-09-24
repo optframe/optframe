@@ -686,12 +686,12 @@ public:
       return new pair<vector<double>*, vector<double>*>(make_pair(allTargets, allForecasts));
    }
 
-   virtual bool isMinimization() const
+   virtual bool isMinimization() const override
    {
       return true;
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

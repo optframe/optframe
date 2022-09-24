@@ -21,91 +21,87 @@
 #ifndef OPTFRAME_MULTIOBJECTIVEEVALUATOR_HPP_
 #define OPTFRAME_MULTIOBJECTIVEEVALUATOR_HPP_
 
-#include "Evaluator.hpp"
 #include "Evaluation.hpp"
+#include "Evaluator.hpp"
 #include "Move.hpp"
 
 #include <iostream>
 
 using namespace std;
 
-namespace optframe
-{
-
+namespace optframe {
 
 template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MultiObjectiveEvaluator: public Evaluator<R, ADS, DS>
+class MultiObjectiveEvaluator : public Evaluator<R, ADS, DS>
 {
 protected:
-	vector<Evaluator<R, ADS, DS>*> partialEvaluators;
+   vector<Evaluator<R, ADS, DS>*> partialEvaluators;
+
 public:
+   using Evaluator<R, ADS, DS>::evaluate; // prevents name hiding
 
-	using Evaluator<R, ADS, DS>::evaluate; // prevents name hiding
+   MultiObjectiveEvaluator(Evaluator<R, ADS, DS>& e)
+   {
+      partialEvaluators.push_back(&e);
+   }
 
-	MultiObjectiveEvaluator(Evaluator<R, ADS, DS>& e)
-	{
-		partialEvaluators.push_back(&e);
-	}
+   virtual ~MultiObjectiveEvaluator()
+   {
+   }
 
-	virtual ~MultiObjectiveEvaluator()
-	{
-	}
+   void add(Evaluator<R, ADS, DS>& e)
+   {
+      partialEvaluators.push_back(&e);
+   }
 
-	void add(Evaluator<R, ADS, DS>& e)
-	{
-		partialEvaluators.push_back(&e);
-	}
+   virtual Evaluation<DS>& evaluate(const R& r)
+   {
+      double objFunction = 0;
+      double infMeasure = 0;
 
-	virtual Evaluation<DS>& evaluate(const R& r)
-	{
-		double objFunction = 0;
-		double infMeasure = 0;
+      Evaluation<DS>& e = partialEvaluators.at(0)->evaluate(r);
 
-		Evaluation<DS>& e = partialEvaluators.at(0)->evaluate(r);
+      objFunction += e.getObjFunction();
+      infMeasure += e.getInfMeasure();
 
-		objFunction += e.getObjFunction();
-		infMeasure += e.getInfMeasure();
+      for (unsigned i = 1; i < partialEvaluators.size(); i++) {
+         partialEvaluators.at(i)->evaluate(e, r);
+         objFunction += e.getObjFunction();
+         infMeasure += e.getInfMeasure();
+      }
 
-		for (unsigned i = 1; i < partialEvaluators.size(); i++)
-		{
-			partialEvaluators.at(i)->evaluate(e, r);
-			objFunction += e.getObjFunction();
-			infMeasure += e.getInfMeasure();
-		}
+      e.setObjFunction(objFunction);
+      e.setInfMeasure(infMeasure);
 
-		e.setObjFunction(objFunction);
-		e.setInfMeasure(infMeasure);
+      return e;
+   }
 
-		return e;
-	}
+   virtual void evaluate(Evaluation<DS>& e, const R& r)
+   {
+      double objFunction = 0;
+      double infMeasure = 0;
 
-	virtual void evaluate(Evaluation<DS>& e, const R& r)
-	{
-		double objFunction = 0;
-		double infMeasure = 0;
+      for (unsigned i = 0; i < partialEvaluators.size(); i++) {
+         partialEvaluators[i]->evaluate(e, r);
+         objFunction += e.getObjFunction();
+         infMeasure += e.getInfMeasure();
+      }
 
-		for (unsigned i = 0; i < partialEvaluators.size(); i++)
-		{
-			partialEvaluators[i]->evaluate(e, r);
-			objFunction += e.getObjFunction();
-			infMeasure += e.getInfMeasure();
-		}
+      e.setObjFunction(objFunction);
+      e.setInfMeasure(infMeasure);
+   }
 
-		e.setObjFunction(objFunction);
-		e.setInfMeasure(infMeasure);
-	}
-
-	virtual bool betterThan(double a, double b)
-	{
-		return partialEvaluators[0]->betterThan(a, b);
-	}
+   virtual bool betterThan(double a, double b)
+   {
+      return partialEvaluators[0]->betterThan(a, b);
+   }
 
    static string idComponent()
    {
       return "OptFrame:moev";
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

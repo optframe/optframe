@@ -39,7 +39,7 @@ public:
 
    virtual void addSolution(const XES&) = 0;
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

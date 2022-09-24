@@ -63,7 +63,7 @@ public:
       cout << "FitnessAssignment" << endl;
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return "FitnessAssignment";
    }

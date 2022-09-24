@@ -117,7 +117,7 @@ public:
       return id();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
@@ -185,7 +185,7 @@ public:
       return id();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

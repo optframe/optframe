@@ -54,7 +54,7 @@ public:
       return id();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
@@ -134,7 +134,7 @@ public:
       return id();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
@@ -240,7 +240,7 @@ public:
       return id();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
@@ -257,10 +257,14 @@ public:
    virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
       sptr<GeneralEvaluator<XES, XEv>> eval;
-      hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
+      std::string sid_0 = scanner.next();
+      int id_0 = *scanner.nextInt();
+      hf.assign(eval, id_0, sid_0);
 
       sptr<NS<XES, XEv>> ns;
-      hf.assign(ns, *scanner.nextInt(), scanner.next()); // reads backwards!
+      std::string sid_1 = scanner.next();
+      int id_1 = *scanner.nextInt();
+      hf.assign(ns, id_1, sid_1);
 
       return new ILSLPerturbationLPlus2<XES, XEv>(eval, ns, hf.getRandGen());
    }
@@ -291,7 +295,7 @@ public:
       return id();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
@@ -342,7 +346,7 @@ public:
       return id();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

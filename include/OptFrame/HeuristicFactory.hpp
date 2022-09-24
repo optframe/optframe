@@ -230,8 +230,10 @@ public:
    void assign(std::shared_ptr<T>& component, unsigned number, string id)
    {
       // NOTE THAT component is likely to be NULL!!
-      if (loglevel >= LogLevel::Debug)
-         std::cout << "hf will try to assign component '" << component->id() << " with id = '" << id << " #" << number << std::endl;
+      if (loglevel >= LogLevel::Debug) {
+         std::cout << "Debug: hf will try to assign component '" << (component ? component->id() : "nullptr");
+         std::cout << "' with id = '" << id << " #" << number << std::endl;
+      }
       // check prefix "OptFrame:"
       if (id[0] != 'O') {
          string id2 = id;
@@ -283,7 +285,6 @@ public:
          vector<vector<sptr<Component>>>& vv = componentLists[listId];
          if (number < vv.size())
             for (unsigned i = 0; i < vv[number].size(); i++)
-               //cList.push_back(sptr<T>((T*)vv[number][i].get()));
                cList.push_back(sptr<T>((std::shared_ptr<T>&)vv[number][i]));
       } else {
          if (loglevel >= LogLevel::Warning)
@@ -293,12 +294,14 @@ public:
 
    int addComponent(sref<Component> component, string id)
    {
+      // NO NEED FOR DOUBLE POINTER WARNING ANYMORE... LONG LIVE SHARED_PTR!!!
+      /*
       if (inComponents(component.sptr())) {
          if (loglevel >= LogLevel::Warning)
             std::cout << "WARNING: HeuristicFactory addComponent: component '" << component->id() << "' already registered!" << std::endl;
-
          //return -1;
       }
+      */
 
       if (!component->compatible(id)) {
 

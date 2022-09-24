@@ -490,7 +490,7 @@ public:
       return search(stopCriteria);
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
@@ -518,78 +518,97 @@ public:
    virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
 
+      if (Component::debug)
+         std::cout << "BasicSA Builder Loading Parameter #0" << std::endl;
       if (!scanner.hasNext()) {
-         std::cout << "no next1a! aborting..." << std::endl;
+         if (Component::warning)
+            std::cout << "no next1a! aborting..." << std::endl;
          return nullptr;
       }
-      // TODO: MUST USE GeneralEvaluator HERE!!
-      // HOWEVER... TOO MANY BUGS NOW!! Trying to force Evaluator here and downcast to GeneralEvaluator!
-      // MUST REMOVE MULTIPLE INHERITANCE FROM OptFrame!!!!!!!!!!!!!
-      //
 
       sptr<GeneralEvaluator<XES, XEv>> eval;
-      hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
+      std::string sid_0 = scanner.next();
+      int id_0 = *scanner.nextInt();
+      hf.assign(eval, id_0, sid_0);
       assert(eval);
-
-      /*
-      sptr<Evaluator<typename XES::first_type, typename XES::second_type, XES>> eval;
-      hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
-      assert(eval);
-      */
 
       sptr<GeneralEvaluator<XES, XEv>> ge{ eval };
 
+      if (Component::debug)
+         std::cout << "BasicSA Builder Loading Parameter #2" << std::endl;
       if (!scanner.hasNext()) {
-         std::cout << "no next1b! aborting..." << std::endl;
+         if (Component::warning)
+            std::cout << "no next1b! aborting..." << std::endl;
          return nullptr;
       }
       //Constructive<S>* constructive;
       sptr<InitialSearch<XES, XEv>> constructive;
-      hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
+      std::string sid_1 = scanner.next();
+      int id_1 = *scanner.nextInt();
+      hf.assign(constructive, id_1, sid_1);
       assert(constructive);
 
       //return nullptr;
 
+      if (Component::debug)
+         std::cout << "BasicSA Builder Loading Parameter #3" << std::endl;
       if (!scanner.hasNext()) {
-         std::cout << "no next1c! aborting..." << std::endl;
+         if (Component::warning)
+            std::cout << "no next1c! aborting..." << std::endl;
          return nullptr;
       }
       vsptr<NS<XES, XEv>> _hlist;
-      hf.assignList(_hlist, *scanner.nextInt(), scanner.next()); // reads backwards!
+
+      std::string sid_2 = scanner.next();
+      int id_2 = *scanner.nextInt();
+      hf.assignList(_hlist, id_2, sid_2);
       vsref<NS<XES, XEv>> hlist;
       for (sptr<NS<XES, XEv>> x : _hlist) {
          assert(x);
          hlist.push_back(x);
       }
-      std::cout << "list ok!" << hlist.size() << std::endl;
 
+      if (Component::debug)
+         std::cout << "list ok!" << hlist.size() << std::endl;
+
+      if (Component::debug)
+         std::cout << "BasicSA Builder Loading Parameter #4" << std::endl;
       if (!scanner.hasNext()) {
-         std::cout << "no next alpha! aborting..." << std::endl;
+         if (Component::debug)
+            std::cout << "no next alpha! aborting..." << std::endl;
          return nullptr;
       }
       double alpha = *scanner.nextDouble();
 
+      if (Component::debug)
+         std::cout << "BasicSA Builder Loading Parameter #5" << std::endl;
       if (!scanner.hasNext()) {
-         std::cout << "no next SAmax! aborting..." << std::endl;
+         if (Component::warning)
+            std::cout << "no next SAmax! aborting..." << std::endl;
          return nullptr;
       }
       int SAmax = *scanner.nextInt();
 
+      if (Component::debug)
+         std::cout << "BasicSA Builder Loading Parameter #6" << std::endl;
       if (!scanner.hasNext()) {
-         std::cout << "no next Ti! aborting..." << std::endl;
+         if (Component::warning)
+            std::cout << "no next Ti! aborting..." << std::endl;
          return nullptr;
       }
       double Ti = *scanner.nextDouble();
 
-      std::cout << "got all parameters!" << std::endl;
-      std::cout << "BasicSimulatedAnnealing with:" << std::endl;
-      std::cout << "\teval=" << ge->id() << std::endl;
-      std::cout << "\tconstructive=" << constructive->id() << std::endl;
-      std::cout << "\t|hlist|=" << hlist.size() << std::endl;
-      std::cout << "\thlist[0]=" << hlist[0]->id() << std::endl;
-      std::cout << "\talpha=" << alpha << std::endl;
-      std::cout << "\tSAmax=" << SAmax << std::endl;
-      std::cout << "\tTi=" << Ti << std::endl;
+      if (Component::debug) {
+         std::cout << "BasicSA Builder: got all parameters!" << std::endl;
+         std::cout << "BasicSimulatedAnnealing with:" << std::endl;
+         std::cout << "\teval=" << ge->id() << std::endl;
+         std::cout << "\tconstructive=" << constructive->id() << std::endl;
+         std::cout << "\t|hlist|=" << hlist.size() << std::endl;
+         std::cout << "\thlist[0]=" << hlist[0]->id() << std::endl;
+         std::cout << "\talpha=" << alpha << std::endl;
+         std::cout << "\tSAmax=" << SAmax << std::endl;
+         std::cout << "\tTi=" << Ti << std::endl;
+      }
 
       return new BasicSimulatedAnnealing<XES>(ge, constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
    }
@@ -624,7 +643,7 @@ public:
       return ss.str();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

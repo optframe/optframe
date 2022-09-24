@@ -38,7 +38,7 @@ public:
    {
    }
 
-   bool canBeApplied(const ESolutionMODM& se) override 
+   bool canBeApplied(const ESolutionMODM& se) override
    {
       return true;
    }
@@ -220,7 +220,7 @@ public:
       return ss.str();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

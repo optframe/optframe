@@ -226,7 +226,7 @@ public:
       return ss.str();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
@@ -250,10 +250,14 @@ public:
    virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
       sptr<GeneralEvaluator<XES, XEv>> eval;
-      hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
+      std::string sid_0 = scanner.next();
+      int id_0 = *scanner.nextInt();
+      hf.assign(eval, id_0, sid_0);
 
       sptr<NSSeq<XES, XEv, XSH>> nsseq;
-      hf.assign(nsseq, *scanner.nextInt(), scanner.next()); // reads backwards!
+      std::string sid_1 = scanner.next();
+      int id_1 = *scanner.nextInt();
+      hf.assign(nsseq, id_1, sid_1);
 
       return new FirstImprovement<XES, XEv, XSH>(eval, nsseq);
    }
@@ -284,7 +288,7 @@ public:
       return id();
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

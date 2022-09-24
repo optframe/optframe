@@ -106,7 +106,7 @@ public:
       return true;
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       string pai = Evaluator<SolutionOptHS, EvaluationOptHS>::idComponent();
       pai.append(":OptHSEvaluator");

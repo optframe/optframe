@@ -102,7 +102,7 @@ public:
       return (s == idComponent()) || (MultiObjSearch<XMES>::compatible(s));
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }
