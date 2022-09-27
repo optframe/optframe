@@ -22,12 +22,12 @@ cc_binary(
 cc_library(
     name = "TSPfcore",
     hdrs = ["src/TSP-fcore.hpp"],
-    deps = ["@OptFrame//src:OptFCore"]
+    deps = ["@OptFrame//include:OptFCore"]
 )
 
 #cc_binary(
 #    name = "app_TSPfxcore",
 #    srcs = ["src/mainTSP-fxcore.cpp", "src/TSP-fxcore.hpp"],
 #    copts = ['-std=c++20', '-fcoroutines'],
-#    deps = ["@OptFrame//src:OptFCore"]
+#    deps = ["@OptFrame//include:OptFCore"]
 #)

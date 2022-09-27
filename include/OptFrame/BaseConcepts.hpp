@@ -551,8 +551,12 @@ concept
 #if __cplusplus <= 201703L // after c++20, not required 'bool'
   bool
 #endif
-    XSearch = XESolution<XES> &&
-  (XESolution<Self> || X2ESolution<Self, XES>);
+    //XSearch = XESolution<XES> && (XESolution<Self> || X2ESolution<Self, XES>);
+    //
+    // XES must be of XESolution kind
+    // XES is either the BASE type for Self or the REAL type for Self
+    XSearch = (XESolution<XES> && XESolution<Self>) ||
+              (XESolution<XES> && X2ESolution<Self, XES>);
 
 // -------------
 // Maybe make evaluation values total_ordered...

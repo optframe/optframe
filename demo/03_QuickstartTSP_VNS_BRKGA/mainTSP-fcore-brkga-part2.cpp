@@ -1,5 +1,5 @@
 
-class MyRandomKeysInitPop : public InitialPopulation<std::pair<std::vector<double>, Evaluation<int>>>
+class MyRandomKeysInitEPop : public InitialEPopulation<std::pair<std::vector<double>, Evaluation<int>>>
 {
    using RSK = std::vector<double>;
 
@@ -8,20 +8,26 @@ private:
    sref<RandGen> rg;
 
 public:
-   MyRandomKeysInitPop(int size, sref<RandGen> _rg = new RandGen)
+   MyRandomKeysInitEPop(int size, sref<RandGen> _rg = new RandGen)
      : sz{ size }
      , rg{ _rg }
    {
    }
 
    // copy constructor
-   MyRandomKeysInitPop(const MyRandomKeysInitPop& self)
+   MyRandomKeysInitEPop(const MyRandomKeysInitEPop& self)
      : sz{ self.sz }
      , rg{ self.rg }
    {
    }
 
-   VEPopulation<std::pair<RSK, Evaluation<int>>> generatePopulation(unsigned populationSize, double timelimit) override
+   // this generator cannot evaluate solutions
+   virtual bool canEvaluate() const override
+   {
+      return false;
+   }
+
+   VEPopulation<std::pair<RSK, Evaluation<int>>> generateEPopulation(unsigned populationSize, double timelimit) override
    {
       VEPopulation<std::pair<RSK, Evaluation<int>>> pop;
 
@@ -29,6 +35,7 @@ public:
          vector<double> vd(sz);
          for (int j = 0; j < sz; j++)
             vd[j] = (rg->rand() % 100000) / 100000.0;
+         // assert(!this->canEvaluate());
          std::pair<RSK, Evaluation<int>> ind{ vd, Evaluation<int>{} };
          pop.push_back(ind);
       }

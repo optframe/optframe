@@ -43,6 +43,9 @@
 
 namespace optframe {
 
+template<XSolution S>
+using VPopulation = std::vector<S>;
+
 template<XESolution XES>
 using VEPopulation = std::vector<XES>;
 

@@ -9,5 +9,5 @@ cc_binary(
     srcs = ["mainKP-fcore-ex.cpp", "KP-fcore-ex.hpp"],
     copts = ['-std=c++17', '-fconcepts', '-Wfatal-errors'],
     data = ['knapsack-example.txt'],
-    deps = ["@OptFrame//src:OptFCore"]
+    deps = ["@OptFrame//include:OptFCore"]
 )

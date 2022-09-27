@@ -92,7 +92,7 @@ And use the following *BUILD.bazel* file (with dependency to @OptFrame):
     cc_binary(
         name = "fcore_localtest",
         srcs = ["mytest.cpp"],
-        deps=["@OptFrame//src:OptFCore"],
+        deps=["@OptFrame//include:OptFCore"],
         copts = ['--std=c++17', '-fconcepts']
     )
 

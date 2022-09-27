@@ -61,12 +61,14 @@ protected:
 public:
    // unified constructors (explicit initPop)
    // to pass 'key_size' just use parameter "_initPop = RandomKeysInitPop(key_size)"
-   BRKGA(sref<DecoderRandomKeys<XES, KeyType>> _decoder, sref<InitialPopulation<XES2>> _initPop, unsigned _popSize, unsigned numGen, double fracTOP, double fracBOT, double _probElitism, sref<RandGen> _rg = new RandGen)
+   BRKGA(sref<DecoderRandomKeys<XES, KeyType>> _decoder, sref<InitialEPopulation<XES2>> _initPop, unsigned _popSize, unsigned numGen, double fracTOP, double fracBOT, double _probElitism, sref<RandGen> _rg = new RandGen)
      : RKGA<XES, KeyType>(_decoder, _initPop, _popSize, numGen, fracTOP, fracBOT, _rg)
      , probElitism(_probElitism)
    {
       assert(probElitism > 0.5);
       assert(probElitism <= 1.0);
+      // TODO: keep this?
+      assert(!_initPop->canEvaluate());
    }
 
    virtual ~BRKGA()
@@ -85,7 +87,7 @@ public:
 
       //random_keys* v = new random_keys(this->key_size, 0.0);
       //for (int i = 0; i < this->key_size; i++)
-      VEPopulation<XES2> p_single = this->initPop->generatePopulation(1, 0.0); // implicit 'key_size'
+      VEPopulation<XES2> p_single = this->initPop->generateEPopulation(1, 0.0); // implicit 'key_size'
       // TODO: should cache 'key_size' to prevent unused rands on generation
       random_keys v(p_single.at(0).first); // copy or 'move' ?
       std::fill(v.begin(), v.end(), 0);

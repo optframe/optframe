@@ -44,7 +44,7 @@ namespace optframe {
 //template<XRSolution<random_keys> RSK = RSolution<random_keys>, XEvaluation XEv = Evaluation<>>
 //
 template<XEvaluation XEv = Evaluation<>, optframe::comparability KeyType = double>
-class RandomKeysInitPop : public InitialPopulation<std::pair<std::vector<KeyType>, XEv>>
+class RandomKeysInitEPop : public InitialEPopulation<std::pair<std::vector<KeyType>, XEv>>
 {
    using RSK = std::vector<KeyType>;
    using XES = std::pair<std::vector<KeyType>, XEv>;
@@ -54,13 +54,19 @@ private:
    sref<RandGen> rg;
 
 public:
-   RandomKeysInitPop(int size, sref<RandGen> _rg = new RandGen)
+   RandomKeysInitEPop(int size, sref<RandGen> _rg = new RandGen)
      : rksz(size)
      , rg{ _rg }
    {
    }
 
-   virtual VEPopulation<XES> generatePopulation(unsigned populationSize, double timelimit) override
+   // this generator cannot evaluate solutions
+   virtual bool canEvaluate() const override
+   {
+      return false;
+   }
+
+   virtual VEPopulation<XES> generateEPopulation(unsigned populationSize, double timelimit) override
    {
       VEPopulation<XES> pop;
 
@@ -75,6 +81,7 @@ public:
          //pop.push_back(sol);
          //
          //pop.push_back(std::move(vd)); // TODO: pass by std::move() or unique_ptr
+         assert(!this->canEvaluate());
          pop.push_back(XES{ std::move(vd), XEv{} }); // TODO: pass by std::move() or unique_ptr
 
          if (Component::debug) {
@@ -119,7 +126,7 @@ protected:
    // decoder function
    sref<DecoderRandomKeys<XES, KeyType>> decoder;
    // population generator
-   sref<InitialPopulation<XES2>> initPop; // implicit key_size
+   sref<InitialEPopulation<XES2>> initPop; // implicit key_size
    // population size
    unsigned popSize;
    // number of elite individuals
@@ -134,7 +141,7 @@ protected:
 public:
    // unified constructors (receive 'initPop' object)
    // to pass 'key_size' just use parameter "_initPop = RandomKeysInitPop(key_size)"
-   RKGA(sref<DecoderRandomKeys<XES, KeyType>> _decoder, sref<InitialPopulation<XES2>> _initPop, unsigned _popSize, unsigned numGenerations, double fracTOP, double fracBOT, sref<RandGen> _rg = new RandGen)
+   RKGA(sref<DecoderRandomKeys<XES, KeyType>> _decoder, sref<InitialEPopulation<XES2>> _initPop, unsigned _popSize, unsigned numGenerations, double fracTOP, double fracBOT, sref<RandGen> _rg = new RandGen)
      : decoder(_decoder)
      , initPop(_initPop)
      , popSize(_popSize)
@@ -145,6 +152,9 @@ public:
    {
       assert(eliteSize < popSize);
       assert(randomSize + eliteSize < popSize);
+      // must not evaluate solutions at first...
+      // TODO: could we allow this at the expense of user efficiency? or leave like this?
+      assert(!_initPop->canEvaluate());
    }
 
    virtual ~RKGA()
@@ -178,7 +188,7 @@ public:
       const RSK& p2 = pop.at(rg->rand() % pop.size()).first;
 
       //random_keys* v = new random_keys(key_size, 0.0);
-      VEPopulation<XES2> p_single = initPop->generatePopulation(1, 0.0); // implicit 'key_size'
+      VEPopulation<XES2> p_single = initPop->generateEPopulation(1, 0.0); // implicit 'key_size'
       // TODO: should cache 'key_size' to prevent unused rands on generation
       //
       //random_keys* v = new random_keys(p_single.at(0)); // copy or 'move' ?
@@ -246,7 +256,7 @@ public:
          (*Component::logdata) << "RKGA: will initPop.generatePopulation(popSize=" << popSize << ")" << std::endl;
 
       // initialize population (of random_keys)
-      VEPopulation<XES2> p = initPop->generatePopulation(popSize, stopCriteria.timelimit);
+      VEPopulation<XES2> p = initPop->generateEPopulation(popSize, stopCriteria.timelimit);
 
       if (Component::debug)
          (*Component::logdata) << "RKGA: p.size() = " << p.size() << std::endl;
@@ -294,7 +304,7 @@ public:
             (*Component::logdata) << "RKGA: will initPop.generatePopulation(randomSize=" << randomSize << ")" << std::endl;
 
          // create mutants in new population
-         VEPopulation<XES2> nextPop = initPop->generatePopulation(randomSize, stopCriteria.timelimit);
+         VEPopulation<XES2> nextPop = initPop->generateEPopulation(randomSize, stopCriteria.timelimit);
 
          if (Component::debug)
             (*Component::logdata) << "RKGA: nextPop.size() = " << nextPop.size() << std::endl;

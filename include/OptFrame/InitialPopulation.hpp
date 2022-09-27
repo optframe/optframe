@@ -45,18 +45,78 @@
 
 namespace optframe {
 
-template<XESolution XES, X2ESolution<XES> X2ES = VEPopulation<XES>> //= Population<XES>>
-class InitialPopulation : public Component
+// IMPORTANT:
+// A difference from InitialPopulation and InitialEPopulation is that
+// initpop does not care about evaluations, but initepop guarantees it.
+//
+// However, it's bad to have distinct Population types, separating solutions from
+// evaluations, when we need both united... so a proposed solution here is to
+// allow InitialEPopulation to NOT evaluate solutions, just keep them outdated, if needed.
+//
+
+// XES is the BASE TYPE
+// X2ES is the REAL TYPE
+// By default, VEPopulation is std::vector<XES>
+//
+template<XESolution XES, X2ESolution<XES> X2ES = VEPopulation<XES>>
+class InitialEPopulation : public Component
 {
    using S = typename XES::first_type;
    using XEv = typename XES::first_type;
 
 public:
+   virtual ~InitialEPopulation()
+   {
+   }
+
+   // By default, this generator will evaluate ESolution pairs here,
+   // but user can opt-out of this, leaving evaluations for the future
+   // See BRKGA on a implementation over this concept.
+   virtual bool canEvaluate() const
+   {
+      return true;
+   }
+
+   virtual X2ES generateEPopulation(unsigned populationSize, double timelimit) = 0;
+
+   static string idComponent()
+   {
+      stringstream ss;
+      ss << Component::idComponent() << ":InitialEPopulation";
+      return ss.str();
+   }
+
+   std::string toString() const override
+   {
+      return id();
+   }
+
+   virtual string id() const override
+   {
+      return idComponent();
+   }
+};
+
+// =================================================================
+// THIS IS WHERE THE CONFUSION BEGINS... BECAUSE OF LEGACY STUFF!
+// Should InitialPopulation guarantee that evaluations are correct?
+// I don't think so...
+// otherwise, BasicInitialPopulation would not work, as it doesnt require an Evaluator
+// =================================================================
+
+// S is the BASE TYPE
+// X2S is the REAL TYPE
+// By default, VPopulation is std::vector<XS>
+//
+template<XSolution S, X2Solution<S> X2S = VPopulation<S>>
+class InitialPopulation : public Component
+{
+public:
    virtual ~InitialPopulation()
    {
    }
 
-   virtual X2ES generatePopulation(unsigned populationSize, double timelimit) = 0;
+   virtual X2S generatePopulation(unsigned populationSize, double timelimit) = 0;
 
    static string idComponent()
    {
@@ -76,11 +136,9 @@ public:
    }
 };
 
-template<XESolution XES, X2ESolution<XES> X2ES = VEPopulation<XES>>
-class BasicInitialPopulation : public InitialPopulation<XES, X2ES>
+template<XSolution S, X2Solution<S> X2S = VPopulation<S>>
+class BasicInitialPopulation : public InitialPopulation<S, X2S>
 {
-   using S = typename XES::first_type;
-   using XEv = typename XES::first_type;
 
 public:
    Constructive<S>& constructive;
@@ -95,10 +153,10 @@ public:
    }
 
    // Population<XES>
-   virtual X2ES generatePopulation(unsigned populationSize, double timelimit)
+   virtual X2S generatePopulation(unsigned populationSize, double timelimit)
    {
       //Population<XES>* p = new Population<XES>;
-      X2ES p;
+      X2S p;
       for (unsigned i = 0; i < populationSize; i++)
          p.push_back(constructive.generateSolution(timelimit));
       return p;
@@ -108,7 +166,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << Population<XES>::idComponent() << ":BasicInitialPopulation";
+      ss << InitialPopulation<S, X2S>::idComponent() << ":BasicInitialPopulation";
       return ss.str();
    }
 
@@ -123,11 +181,11 @@ public:
    }
 };
 
-template<XESolution XES, X2ESolution<XES> X2ES = VEPopulation<XES>>
-class GRInitialPopulation : public InitialPopulation<XES, X2ES>
+template<XSolution S, X2Solution<S> X2S = VPopulation<S>>
+class GRInitialPopulation : public InitialPopulation<S, X2S>
 {
-   using S = typename XES::first_type;
-   using XEv = typename XES::first_type;
+   //   using S = typename XES::first_type;
+   //   using XEv = typename XES::first_type;
 
 public:
    GRConstructive<S>& constructive;
@@ -146,10 +204,10 @@ public:
    }
 
    // Population<XES>
-   virtual X2ES generatePopulation(unsigned populationSize, double timelimit)
+   virtual X2S generatePopulation(unsigned populationSize, double timelimit)
    {
       //Population<XES> pop;
-      X2ES pop;
+      X2S pop;
       for (unsigned i = 0; i < populationSize; i++) {
          float alpha = rg.rand01();
          while (alpha > maxAlpha) {
@@ -160,8 +218,9 @@ public:
             alpha = 0.00001;
 
          std::optional<S> s = constructive.generateGRSolution(alpha, timelimit);
-         XES se = { *s, Evaluation<>{} };
-         pop.push_back(se); // the end of solution
+         //XES se = { *s, Evaluation<>{} };
+         S sol = (*s);
+         pop.push_back(s); // the end of solution
       }
       return pop;
    }
@@ -169,7 +228,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << Population<XES>::idComponent() << ":GRInitialPopulation";
+      ss << InitialPopulation<S, X2S>::idComponent() << ":GRInitialPopulation";
       return ss.str();
    }
 

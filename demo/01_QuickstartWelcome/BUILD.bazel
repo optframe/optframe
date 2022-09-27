@@ -2,6 +2,6 @@ load("@rules_cc//cc:defs.bzl", "cc_library", "cc_binary")
 cc_binary(
     name = "demo_welcome",
     srcs = ["mytest.cpp"],
-    deps=["@OptFrame//src:OptFCore"],
+    deps=["@OptFrame//include:OptFCore"],
     copts = ['--std=c++17', '-fconcepts']
 )

@@ -12,12 +12,12 @@ main()
    // (C1): Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
 
    sref<DecoderRandomKeys<ESolutionTSP, double>> _decoder = decoder;
-   sref<InitialPopulation<std::pair<vector<double>, ESolutionTSP::second_type>>> _initPop = new MyRandomKeysInitPop(pTSP.n); // passing key_size
+   sref<InitialEPopulation<std::pair<vector<double>, ESolutionTSP::second_type>>> _initPop = new MyRandomKeysInitEPop(pTSP.n); // passing key_size
 
    //eprk, pTSP.n, 1000, 30, 0.4, 0.3, 0.6
    BRKGA<ESolutionTSP, double> brkga(
      _decoder,
-     MyRandomKeysInitPop(pTSP.n, rg), // key_size = pTSP.n
+     MyRandomKeysInitEPop(pTSP.n, rg), // key_size = pTSP.n
      30,
      1000,
      0.4,

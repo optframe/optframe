@@ -6,15 +6,15 @@ package(
 
 cc_library(
     name = "OptFCore",
-    deps = ["//src/OptFCore:all_hpp", ":OptFrame"],
+    deps = ["//include/OptFCore:all_hpp", ":OptFrame"],
 )
 
 cc_library(
     name = "OptFrame",
-    deps = ["//src/OptFrame:all_hpp", ":printable"],
+    deps = ["//include/OptFrame:all_hpp", ":printable"],
 )
 
 cc_library(
     name = "printable",
-    deps = ["//src/OptFrame/printable:printable_lib"],
+    deps = ["//include/OptFrame/printable:printable_lib"],
 )

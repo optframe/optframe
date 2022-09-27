@@ -164,7 +164,7 @@ Just create a <em>WORKSPACE.bazel</em> file that points to remote OptFrame git r
 <span class="linenos">2</span><span class="n">cc_binary</span><span class="p">(</span>
 <span class="linenos">3</span>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;demo_welcome&quot;</span><span class="p">,</span>
 <span class="linenos">4</span>    <span class="n">srcs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mytest.cpp&quot;</span><span class="p">],</span>
-<span class="linenos">5</span>    <span class="n">deps</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;@OptFrame//src:OptFCore&quot;</span><span class="p">],</span>
+<span class="linenos">5</span>    <span class="n">deps</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;@OptFrame//include:OptFCore&quot;</span><span class="p">],</span>
 <span class="linenos">6</span>    <span class="n">copts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;--std=c++17&#39;</span><span class="p">,</span> <span class="s1">&#39;-fconcepts&#39;</span><span class="p">]</span>
 <span class="linenos">7</span><span class="p">)</span>
 </pre></div>

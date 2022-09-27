@@ -13,7 +13,7 @@ cc_binary(
     ],
     deps = [
         "solver_kp01_generic_lib",
-        "@OptFrame//src:OptFCore",
+        "@OptFrame//include:OptFCore",
     ],
 )
 
@@ -39,7 +39,7 @@ cc_library(
     strip_include_prefix = "src/",
     deps = [
         "solver_kp01_generic_hpp",
-        "@OptFrame//src:OptFCore",
+        "@OptFrame//include:OptFCore",
     ],
 )
 
@@ -52,7 +52,7 @@ cc_library(
     strip_include_prefix = "src/",
     deps = [
         "nlohmann",
-        "@OptFrame//src:OptFCore",
+        "@OptFrame//include:OptFCore",
     ],
 )
 

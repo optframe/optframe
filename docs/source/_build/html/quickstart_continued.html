@@ -746,7 +746,7 @@ which are $[0,1]^n$ float values.</p>
 This can be done automatically by the method (since its trivial do generate $n$ [0,1] random numbers),
 but we choose to demonstrate manually (by inheriting from OptFrame Core class Initial Population).</p>
 <p>This is good to tune the degree of randomness (number of random digits) and also the random function used.</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">class</span> <span class="nc">MyRandomKeysInitPop</span> <span class="o">:</span> <span class="k">public</span> <span class="n">InitialPopulation</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">class</span> <span class="nc">MyRandomKeysInitEPop</span> <span class="o">:</span> <span class="k">public</span> <span class="n">InitialEPopulation</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span>
 <span class="linenos"> 2</span><span class="p">{</span>
 <span class="linenos"> 3</span>   <span class="k">using</span> <span class="n">RSK</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">;</span>
 <span class="linenos"> 4</span>
@@ -755,34 +755,41 @@ but we choose to demonstrate manually (by inheriting from OptFrame Core class In
 <span class="linenos"> 7</span>   <span class="n">sref</span><span class="o">&lt;</span><span class="n">RandGen</span><span class="o">&gt;</span> <span class="n">rg</span><span class="p">;</span>
 <span class="linenos"> 8</span>
 <span class="linenos"> 9</span><span class="k">public</span><span class="o">:</span>
-<span class="linenos">10</span>   <span class="n">MyRandomKeysInitPop</span><span class="p">(</span><span class="kt">int</span> <span class="n">size</span><span class="p">,</span> <span class="n">sref</span><span class="o">&lt;</span><span class="n">RandGen</span><span class="o">&gt;</span> <span class="n">_rg</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RandGen</span><span class="p">)</span>
+<span class="linenos">10</span>   <span class="n">MyRandomKeysInitEPop</span><span class="p">(</span><span class="kt">int</span> <span class="n">size</span><span class="p">,</span> <span class="n">sref</span><span class="o">&lt;</span><span class="n">RandGen</span><span class="o">&gt;</span> <span class="n">_rg</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RandGen</span><span class="p">)</span>
 <span class="linenos">11</span>     <span class="o">:</span> <span class="n">sz</span><span class="p">{</span> <span class="n">size</span> <span class="p">}</span>
 <span class="linenos">12</span>     <span class="p">,</span> <span class="n">rg</span><span class="p">{</span> <span class="n">_rg</span> <span class="p">}</span>
 <span class="linenos">13</span>   <span class="p">{</span>
 <span class="linenos">14</span>   <span class="p">}</span>
 <span class="linenos">15</span>
 <span class="linenos">16</span>   <span class="c1">// copy constructor</span>
-<span class="linenos">17</span>   <span class="n">MyRandomKeysInitPop</span><span class="p">(</span><span class="k">const</span> <span class="n">MyRandomKeysInitPop</span><span class="o">&amp;</span> <span class="n">self</span><span class="p">)</span>
+<span class="linenos">17</span>   <span class="n">MyRandomKeysInitEPop</span><span class="p">(</span><span class="k">const</span> <span class="n">MyRandomKeysInitEPop</span><span class="o">&amp;</span> <span class="n">self</span><span class="p">)</span>
 <span class="linenos">18</span>     <span class="o">:</span> <span class="n">sz</span><span class="p">{</span> <span class="n">self</span><span class="p">.</span><span class="n">sz</span> <span class="p">}</span>
 <span class="linenos">19</span>     <span class="p">,</span> <span class="n">rg</span><span class="p">{</span> <span class="n">self</span><span class="p">.</span><span class="n">rg</span> <span class="p">}</span>
 <span class="linenos">20</span>   <span class="p">{</span>
 <span class="linenos">21</span>   <span class="p">}</span>
 <span class="linenos">22</span>
-<span class="linenos">23</span>   <span class="n">VEPopulation</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">RSK</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span> <span class="n">generatePopulation</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">populationSize</span><span class="p">,</span> <span class="kt">double</span> <span class="n">timelimit</span><span class="p">)</span> <span class="k">override</span>
-<span class="linenos">24</span>   <span class="p">{</span>
-<span class="linenos">25</span>      <span class="n">VEPopulation</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">RSK</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span> <span class="n">pop</span><span class="p">;</span>
-<span class="linenos">26</span>
-<span class="linenos">27</span>      <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">populationSize</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-<span class="linenos">28</span>         <span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">vd</span><span class="p">(</span><span class="n">sz</span><span class="p">);</span>
-<span class="linenos">29</span>         <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">sz</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
-<span class="linenos">30</span>            <span class="n">vd</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rg</span><span class="o">-&gt;</span><span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100000</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100000.0</span><span class="p">;</span>
-<span class="linenos">31</span>         <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">RSK</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">ind</span><span class="p">{</span> <span class="n">vd</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{}</span> <span class="p">};</span>
-<span class="linenos">32</span>         <span class="n">pop</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">ind</span><span class="p">);</span>
-<span class="linenos">33</span>      <span class="p">}</span>
-<span class="linenos">34</span>
-<span class="linenos">35</span>      <span class="k">return</span> <span class="n">pop</span><span class="p">;</span>
-<span class="linenos">36</span>   <span class="p">}</span>
-<span class="linenos">37</span><span class="p">};</span>
+<span class="linenos">23</span>   <span class="c1">// this generator cannot evaluate solutions</span>
+<span class="linenos">24</span>   <span class="k">virtual</span> <span class="kt">bool</span> <span class="n">canEvaluate</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span>
+<span class="linenos">25</span>   <span class="p">{</span>
+<span class="linenos">26</span>      <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="linenos">27</span>   <span class="p">}</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span>   <span class="n">VEPopulation</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">RSK</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span> <span class="n">generateEPopulation</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">populationSize</span><span class="p">,</span> <span class="kt">double</span> <span class="n">timelimit</span><span class="p">)</span> <span class="k">override</span>
+<span class="linenos">30</span>   <span class="p">{</span>
+<span class="linenos">31</span>      <span class="n">VEPopulation</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">RSK</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span> <span class="n">pop</span><span class="p">;</span>
+<span class="linenos">32</span>
+<span class="linenos">33</span>      <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">populationSize</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+<span class="linenos">34</span>         <span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">vd</span><span class="p">(</span><span class="n">sz</span><span class="p">);</span>
+<span class="linenos">35</span>         <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">sz</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+<span class="linenos">36</span>            <span class="n">vd</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rg</span><span class="o">-&gt;</span><span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100000</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100000.0</span><span class="p">;</span>
+<span class="linenos">37</span>         <span class="c1">// assert(!this-&gt;canEvaluate());</span>
+<span class="linenos">38</span>         <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">RSK</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">ind</span><span class="p">{</span> <span class="n">vd</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{}</span> <span class="p">};</span>
+<span class="linenos">39</span>         <span class="n">pop</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">ind</span><span class="p">);</span>
+<span class="linenos">40</span>      <span class="p">}</span>
+<span class="linenos">41</span>
+<span class="linenos">42</span>      <span class="k">return</span> <span class="n">pop</span><span class="p">;</span>
+<span class="linenos">43</span>   <span class="p">}</span>
+<span class="linenos">44</span><span class="p">};</span>
 </pre></div>
 </div>
 </section>
@@ -856,12 +863,12 @@ also rates for mutation (randomness), elite (best solutions), preference for eli
 <span class="linenos">12</span>   <span class="c1">// (C1): Evaluator&lt;S, XEv&gt;&amp; _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :</span>
 <span class="linenos">13</span>
 <span class="linenos">14</span>   <span class="n">sref</span><span class="o">&lt;</span><span class="n">DecoderRandomKeys</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="p">,</span> <span class="kt">double</span><span class="o">&gt;&gt;</span> <span class="n">_decoder</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">;</span>
-<span class="linenos">15</span>   <span class="n">sref</span><span class="o">&lt;</span><span class="n">InitialPopulation</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">ESolutionTSP</span><span class="o">::</span><span class="n">second_type</span><span class="o">&gt;&gt;&gt;</span> <span class="n">_initPop</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MyRandomKeysInitPop</span><span class="p">(</span><span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">);</span> <span class="c1">// passing key_size</span>
+<span class="linenos">15</span>   <span class="n">sref</span><span class="o">&lt;</span><span class="n">InitialEPopulation</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">ESolutionTSP</span><span class="o">::</span><span class="n">second_type</span><span class="o">&gt;&gt;&gt;</span> <span class="n">_initPop</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MyRandomKeysInitEPop</span><span class="p">(</span><span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">);</span> <span class="c1">// passing key_size</span>
 <span class="linenos">16</span>
 <span class="linenos">17</span>   <span class="c1">//eprk, pTSP.n, 1000, 30, 0.4, 0.3, 0.6</span>
 <span class="linenos">18</span>   <span class="n">BRKGA</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="p">,</span> <span class="kt">double</span><span class="o">&gt;</span> <span class="n">brkga</span><span class="p">(</span>
 <span class="linenos">19</span>     <span class="n">_decoder</span><span class="p">,</span>
-<span class="linenos">20</span>     <span class="n">MyRandomKeysInitPop</span><span class="p">(</span><span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">,</span> <span class="n">rg</span><span class="p">),</span> <span class="c1">// key_size = pTSP.n</span>
+<span class="linenos">20</span>     <span class="n">MyRandomKeysInitEPop</span><span class="p">(</span><span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">,</span> <span class="n">rg</span><span class="p">),</span> <span class="c1">// key_size = pTSP.n</span>
 <span class="linenos">21</span>     <span class="mi">30</span><span class="p">,</span>
 <span class="linenos">22</span>     <span class="mi">1000</span><span class="p">,</span>
 <span class="linenos">23</span>     <span class="mf">0.4</span><span class="p">,</span>
@@ -905,7 +912,7 @@ also rates for mutation (randomness), elite (best solutions), preference for eli
 <span class="linenos"> 15</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">scannerpp</span><span class="p">;</span>
 <span class="linenos"> 16</span><span class="c1">//using namespace TSP_fcore;</span>
 <span class="linenos"> 17</span>
-<span class="linenos"> 18</span><span class="k">class</span> <span class="nc">MyRandomKeysInitPop</span> <span class="o">:</span> <span class="k">public</span> <span class="n">InitialPopulation</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span>
+<span class="linenos"> 18</span><span class="k">class</span> <span class="nc">MyRandomKeysInitEPop</span> <span class="o">:</span> <span class="k">public</span> <span class="n">InitialEPopulation</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span>
 <span class="linenos"> 19</span><span class="p">{</span>
 <span class="linenos"> 20</span>   <span class="k">using</span> <span class="n">RSK</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">;</span>
 <span class="linenos"> 21</span>
@@ -914,112 +921,120 @@ also rates for mutation (randomness), elite (best solutions), preference for eli
 <span class="linenos"> 24</span>   <span class="n">sref</span><span class="o">&lt;</span><span class="n">RandGen</span><span class="o">&gt;</span> <span class="n">rg</span><span class="p">;</span>
 <span class="linenos"> 25</span>
 <span class="linenos"> 26</span><span class="k">public</span><span class="o">:</span>
-<span class="linenos"> 27</span>   <span class="n">MyRandomKeysInitPop</span><span class="p">(</span><span class="kt">int</span> <span class="n">size</span><span class="p">,</span> <span class="n">sref</span><span class="o">&lt;</span><span class="n">RandGen</span><span class="o">&gt;</span> <span class="n">_rg</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RandGen</span><span class="p">)</span>
+<span class="linenos"> 27</span>   <span class="n">MyRandomKeysInitEPop</span><span class="p">(</span><span class="kt">int</span> <span class="n">size</span><span class="p">,</span> <span class="n">sref</span><span class="o">&lt;</span><span class="n">RandGen</span><span class="o">&gt;</span> <span class="n">_rg</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RandGen</span><span class="p">)</span>
 <span class="linenos"> 28</span>     <span class="o">:</span> <span class="n">sz</span><span class="p">{</span> <span class="n">size</span> <span class="p">}</span>
 <span class="linenos"> 29</span>     <span class="p">,</span> <span class="n">rg</span><span class="p">{</span> <span class="n">_rg</span> <span class="p">}</span>
 <span class="linenos"> 30</span>   <span class="p">{</span>
 <span class="linenos"> 31</span>   <span class="p">}</span>
 <span class="linenos"> 32</span>
 <span class="linenos"> 33</span>   <span class="c1">// copy constructor</span>
-<span class="linenos"> 34</span>   <span class="n">MyRandomKeysInitPop</span><span class="p">(</span><span class="k">const</span> <span class="n">MyRandomKeysInitPop</span><span class="o">&amp;</span> <span class="n">self</span><span class="p">)</span>
+<span class="linenos"> 34</span>   <span class="n">MyRandomKeysInitEPop</span><span class="p">(</span><span class="k">const</span> <span class="n">MyRandomKeysInitEPop</span><span class="o">&amp;</span> <span class="n">self</span><span class="p">)</span>
 <span class="linenos"> 35</span>     <span class="o">:</span> <span class="n">sz</span><span class="p">{</span> <span class="n">self</span><span class="p">.</span><span class="n">sz</span> <span class="p">}</span>
 <span class="linenos"> 36</span>     <span class="p">,</span> <span class="n">rg</span><span class="p">{</span> <span class="n">self</span><span class="p">.</span><span class="n">rg</span> <span class="p">}</span>
 <span class="linenos"> 37</span>   <span class="p">{</span>
 <span class="linenos"> 38</span>   <span class="p">}</span>
 <span class="linenos"> 39</span>
-<span class="linenos"> 40</span>   <span class="n">VEPopulation</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">RSK</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span> <span class="n">generatePopulation</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">populationSize</span><span class="p">,</span> <span class="kt">double</span> <span class="n">timelimit</span><span class="p">)</span> <span class="k">override</span>
-<span class="linenos"> 41</span>   <span class="p">{</span>
-<span class="linenos"> 42</span>      <span class="n">VEPopulation</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">RSK</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span> <span class="n">pop</span><span class="p">;</span>
-<span class="linenos"> 43</span>
-<span class="linenos"> 44</span>      <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">populationSize</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-<span class="linenos"> 45</span>         <span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">vd</span><span class="p">(</span><span class="n">sz</span><span class="p">);</span>
-<span class="linenos"> 46</span>         <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">sz</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
-<span class="linenos"> 47</span>            <span class="n">vd</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rg</span><span class="o">-&gt;</span><span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100000</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100000.0</span><span class="p">;</span>
-<span class="linenos"> 48</span>         <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">RSK</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">ind</span><span class="p">{</span> <span class="n">vd</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{}</span> <span class="p">};</span>
-<span class="linenos"> 49</span>         <span class="n">pop</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">ind</span><span class="p">);</span>
-<span class="linenos"> 50</span>      <span class="p">}</span>
-<span class="linenos"> 51</span>
-<span class="linenos"> 52</span>      <span class="k">return</span> <span class="n">pop</span><span class="p">;</span>
-<span class="linenos"> 53</span>   <span class="p">}</span>
-<span class="linenos"> 54</span><span class="p">};</span>
-<span class="linenos"> 55</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span>
-<span class="linenos"> 56</span><span class="n">fDecode</span><span class="p">(</span><span class="k">const</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&amp;</span> <span class="n">rk</span><span class="p">)</span>
-<span class="linenos"> 57</span><span class="p">{</span>
-<span class="linenos"> 58</span>   <span class="n">vector</span><span class="o">&lt;</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">v</span><span class="p">(</span><span class="n">rk</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
-<span class="linenos"> 59</span>   <span class="c1">//</span>
-<span class="linenos"> 60</span>   <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">v</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-<span class="linenos"> 61</span>      <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pair</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">rk</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">i</span><span class="p">);</span>
+<span class="linenos"> 40</span>   <span class="c1">// this generator cannot evaluate solutions</span>
+<span class="linenos"> 41</span>   <span class="k">virtual</span> <span class="kt">bool</span> <span class="n">canEvaluate</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span>
+<span class="linenos"> 42</span>   <span class="p">{</span>
+<span class="linenos"> 43</span>      <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="linenos"> 44</span>   <span class="p">}</span>
+<span class="linenos"> 45</span>
+<span class="linenos"> 46</span>   <span class="n">VEPopulation</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">RSK</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span> <span class="n">generateEPopulation</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">populationSize</span><span class="p">,</span> <span class="kt">double</span> <span class="n">timelimit</span><span class="p">)</span> <span class="k">override</span>
+<span class="linenos"> 47</span>   <span class="p">{</span>
+<span class="linenos"> 48</span>      <span class="n">VEPopulation</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">RSK</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span> <span class="n">pop</span><span class="p">;</span>
+<span class="linenos"> 49</span>
+<span class="linenos"> 50</span>      <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">populationSize</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+<span class="linenos"> 51</span>         <span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">vd</span><span class="p">(</span><span class="n">sz</span><span class="p">);</span>
+<span class="linenos"> 52</span>         <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">sz</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+<span class="linenos"> 53</span>            <span class="n">vd</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rg</span><span class="o">-&gt;</span><span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="mi">100000</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100000.0</span><span class="p">;</span>
+<span class="linenos"> 54</span>         <span class="c1">// assert(!this-&gt;canEvaluate());</span>
+<span class="linenos"> 55</span>         <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">RSK</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">ind</span><span class="p">{</span> <span class="n">vd</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{}</span> <span class="p">};</span>
+<span class="linenos"> 56</span>         <span class="n">pop</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">ind</span><span class="p">);</span>
+<span class="linenos"> 57</span>      <span class="p">}</span>
+<span class="linenos"> 58</span>
+<span class="linenos"> 59</span>      <span class="k">return</span> <span class="n">pop</span><span class="p">;</span>
+<span class="linenos"> 60</span>   <span class="p">}</span>
+<span class="linenos"> 61</span><span class="p">};</span>
 <span class="linenos"> 62</span>
-<span class="linenos"> 63</span>   <span class="n">sort</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">v</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="p">[](</span><span class="k">const</span> <span class="n">pair</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">i</span><span class="p">,</span> <span class="k">const</span> <span class="n">pair</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">j</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">bool</span> <span class="p">{</span>
-<span class="linenos"> 64</span>      <span class="k">return</span> <span class="n">i</span><span class="p">.</span><span class="n">first</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
-<span class="linenos"> 65</span>   <span class="p">});</span>
-<span class="linenos"> 66</span>
-<span class="linenos"> 67</span>   <span class="c1">// R = vector&lt;int&gt;</span>
-<span class="linenos"> 68</span>   <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">p</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
-<span class="linenos"> 69</span>   <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">v</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-<span class="linenos"> 70</span>      <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">second</span><span class="p">;</span>
-<span class="linenos"> 71</span>
-<span class="linenos"> 72</span>   <span class="cm">/*</span>
-<span class="linenos"> 73</span><span class="cm">   // ========== CHECKER ========</span>
-<span class="linenos"> 74</span><span class="cm">   vector&lt;bool&gt; vb(v.size(), false);</span>
-<span class="linenos"> 75</span><span class="cm">   for (unsigned i = 0; i &lt; p.size(); i++)</span>
-<span class="linenos"> 76</span><span class="cm">      vb[p[i]] = true;</span>
-<span class="linenos"> 77</span><span class="cm">   for (unsigned i = 0; i &lt; vb.size(); i++) {</span>
-<span class="linenos"> 78</span><span class="cm">      if (!vb[i]) {</span>
-<span class="linenos"> 79</span><span class="cm">         std::cout &lt;&lt; &quot;ERROR rk:&quot; &lt;&lt; rk &lt;&lt; std::endl;</span>
-<span class="linenos"> 80</span><span class="cm">         std::cout &lt;&lt; &quot;ERROR v:&quot; &lt;&lt; v &lt;&lt; std::endl;</span>
-<span class="linenos"> 81</span><span class="cm">         std::cout &lt;&lt; &quot;ERROR p:&quot; &lt;&lt; p &lt;&lt; std::endl;</span>
-<span class="linenos"> 82</span><span class="cm">         std::cout &lt;&lt; &quot;ERROR vb:&quot; &lt;&lt; vb &lt;&lt; std::endl;</span>
-<span class="linenos"> 83</span><span class="cm">      }</span>
-<span class="linenos"> 84</span><span class="cm">      assert(vb[i]);</span>
-<span class="linenos"> 85</span><span class="cm">   }</span>
-<span class="linenos"> 86</span><span class="cm">   // ===== end CHECKER =====</span>
-<span class="linenos"> 87</span><span class="cm">*/</span>
-<span class="linenos"> 88</span>
-<span class="linenos"> 89</span>   <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">e</span> <span class="o">=</span> <span class="n">eval</span><span class="p">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
-<span class="linenos"> 90</span>   <span class="k">return</span> <span class="nf">make_pair</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
-<span class="linenos"> 91</span><span class="p">}</span>
-<span class="linenos"> 92</span>
-<span class="linenos"> 93</span><span class="c1">// evaluator random keys (for TSP)</span>
-<span class="linenos"> 94</span><span class="n">FDecoderRK</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="kt">double</span><span class="p">,</span> <span class="n">MinOrMax</span><span class="o">::</span><span class="n">MINIMIZE</span><span class="o">&gt;</span> <span class="n">decoder</span><span class="p">{</span>
-<span class="linenos"> 95</span>   <span class="n">fDecode</span>
-<span class="linenos"> 96</span><span class="p">};</span>
-<span class="linenos"> 97</span><span class="kt">int</span>
-<span class="linenos"> 98</span><span class="nf">main</span><span class="p">()</span>
-<span class="linenos"> 99</span><span class="p">{</span>
-<span class="linenos">100</span>   <span class="n">sref</span><span class="o">&lt;</span><span class="n">RandGen</span><span class="o">&gt;</span> <span class="n">rg</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RandGen</span><span class="p">;</span> <span class="c1">// avoids weird windows OS interactions</span>
-<span class="linenos">101</span>
-<span class="linenos">102</span>   <span class="c1">// load data into problem context &#39;pTSP&#39;</span>
-<span class="linenos">103</span>   <span class="n">Scanner</span> <span class="n">scanner</span><span class="p">{</span> <span class="s">&quot;5</span><span class="se">\n</span><span class="s">1 10 10</span><span class="se">\n</span><span class="s">2 20 20</span><span class="se">\n</span><span class="s">3 30 30</span><span class="se">\n</span><span class="s">4 40 40</span><span class="se">\n</span><span class="s">5 50 50</span><span class="se">\n</span><span class="s">&quot;</span> <span class="p">};</span>
-<span class="linenos">104</span>   <span class="n">pTSP</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">scanner</span><span class="p">);</span>
-<span class="linenos">105</span>   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-<span class="linenos">106</span>
-<span class="linenos">107</span>   <span class="c1">// Parameters BRKGA</span>
-<span class="linenos">108</span>   <span class="c1">// (C1): Evaluator&lt;S, XEv&gt;&amp; _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :</span>
+<span class="linenos"> 63</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span>
+<span class="linenos"> 64</span><span class="n">fDecode</span><span class="p">(</span><span class="k">const</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&amp;</span> <span class="n">rk</span><span class="p">)</span>
+<span class="linenos"> 65</span><span class="p">{</span>
+<span class="linenos"> 66</span>   <span class="n">vector</span><span class="o">&lt;</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">v</span><span class="p">(</span><span class="n">rk</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+<span class="linenos"> 67</span>   <span class="c1">//</span>
+<span class="linenos"> 68</span>   <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">v</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="linenos"> 69</span>      <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pair</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">rk</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">i</span><span class="p">);</span>
+<span class="linenos"> 70</span>
+<span class="linenos"> 71</span>   <span class="n">sort</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">v</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="p">[](</span><span class="k">const</span> <span class="n">pair</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">i</span><span class="p">,</span> <span class="k">const</span> <span class="n">pair</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">j</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">bool</span> <span class="p">{</span>
+<span class="linenos"> 72</span>      <span class="k">return</span> <span class="n">i</span><span class="p">.</span><span class="n">first</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+<span class="linenos"> 73</span>   <span class="p">});</span>
+<span class="linenos"> 74</span>
+<span class="linenos"> 75</span>   <span class="c1">// R = vector&lt;int&gt;</span>
+<span class="linenos"> 76</span>   <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">p</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+<span class="linenos"> 77</span>   <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">v</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="linenos"> 78</span>      <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">second</span><span class="p">;</span>
+<span class="linenos"> 79</span>
+<span class="linenos"> 80</span>   <span class="cm">/*</span>
+<span class="linenos"> 81</span><span class="cm">   // ========== CHECKER ========</span>
+<span class="linenos"> 82</span><span class="cm">   vector&lt;bool&gt; vb(v.size(), false);</span>
+<span class="linenos"> 83</span><span class="cm">   for (unsigned i = 0; i &lt; p.size(); i++)</span>
+<span class="linenos"> 84</span><span class="cm">      vb[p[i]] = true;</span>
+<span class="linenos"> 85</span><span class="cm">   for (unsigned i = 0; i &lt; vb.size(); i++) {</span>
+<span class="linenos"> 86</span><span class="cm">      if (!vb[i]) {</span>
+<span class="linenos"> 87</span><span class="cm">         std::cout &lt;&lt; &quot;ERROR rk:&quot; &lt;&lt; rk &lt;&lt; std::endl;</span>
+<span class="linenos"> 88</span><span class="cm">         std::cout &lt;&lt; &quot;ERROR v:&quot; &lt;&lt; v &lt;&lt; std::endl;</span>
+<span class="linenos"> 89</span><span class="cm">         std::cout &lt;&lt; &quot;ERROR p:&quot; &lt;&lt; p &lt;&lt; std::endl;</span>
+<span class="linenos"> 90</span><span class="cm">         std::cout &lt;&lt; &quot;ERROR vb:&quot; &lt;&lt; vb &lt;&lt; std::endl;</span>
+<span class="linenos"> 91</span><span class="cm">      }</span>
+<span class="linenos"> 92</span><span class="cm">      assert(vb[i]);</span>
+<span class="linenos"> 93</span><span class="cm">   }</span>
+<span class="linenos"> 94</span><span class="cm">   // ===== end CHECKER =====</span>
+<span class="linenos"> 95</span><span class="cm">*/</span>
+<span class="linenos"> 96</span>
+<span class="linenos"> 97</span>   <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">e</span> <span class="o">=</span> <span class="n">eval</span><span class="p">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+<span class="linenos"> 98</span>   <span class="k">return</span> <span class="nf">make_pair</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
+<span class="linenos"> 99</span><span class="p">}</span>
+<span class="linenos">100</span>
+<span class="linenos">101</span><span class="c1">// evaluator random keys (for TSP)</span>
+<span class="linenos">102</span><span class="n">FDecoderRK</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Evaluation</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="kt">double</span><span class="p">,</span> <span class="n">MinOrMax</span><span class="o">::</span><span class="n">MINIMIZE</span><span class="o">&gt;</span> <span class="n">decoder</span><span class="p">{</span>
+<span class="linenos">103</span>   <span class="n">fDecode</span>
+<span class="linenos">104</span><span class="p">};</span>
+<span class="linenos">105</span><span class="kt">int</span>
+<span class="linenos">106</span><span class="nf">main</span><span class="p">()</span>
+<span class="linenos">107</span><span class="p">{</span>
+<span class="linenos">108</span>   <span class="n">sref</span><span class="o">&lt;</span><span class="n">RandGen</span><span class="o">&gt;</span> <span class="n">rg</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RandGen</span><span class="p">;</span> <span class="c1">// avoids weird windows OS interactions</span>
 <span class="linenos">109</span>
-<span class="linenos">110</span>   <span class="n">sref</span><span class="o">&lt;</span><span class="n">DecoderRandomKeys</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="p">,</span> <span class="kt">double</span><span class="o">&gt;&gt;</span> <span class="n">_decoder</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">;</span>
-<span class="linenos">111</span>   <span class="n">sref</span><span class="o">&lt;</span><span class="n">InitialPopulation</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">ESolutionTSP</span><span class="o">::</span><span class="n">second_type</span><span class="o">&gt;&gt;&gt;</span> <span class="n">_initPop</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MyRandomKeysInitPop</span><span class="p">(</span><span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">);</span> <span class="c1">// passing key_size</span>
-<span class="linenos">112</span>
-<span class="linenos">113</span>   <span class="c1">//eprk, pTSP.n, 1000, 30, 0.4, 0.3, 0.6</span>
-<span class="linenos">114</span>   <span class="n">BRKGA</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="p">,</span> <span class="kt">double</span><span class="o">&gt;</span> <span class="n">brkga</span><span class="p">(</span>
-<span class="linenos">115</span>     <span class="n">_decoder</span><span class="p">,</span>
-<span class="linenos">116</span>     <span class="n">MyRandomKeysInitPop</span><span class="p">(</span><span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">,</span> <span class="n">rg</span><span class="p">),</span> <span class="c1">// key_size = pTSP.n</span>
-<span class="linenos">117</span>     <span class="mi">30</span><span class="p">,</span>
-<span class="linenos">118</span>     <span class="mi">1000</span><span class="p">,</span>
-<span class="linenos">119</span>     <span class="mf">0.4</span><span class="p">,</span>
-<span class="linenos">120</span>     <span class="mf">0.3</span><span class="p">,</span>
-<span class="linenos">121</span>     <span class="mf">0.6</span><span class="p">,</span>
-<span class="linenos">122</span>     <span class="n">rg</span><span class="p">);</span>
-<span class="linenos">123</span>
-<span class="linenos">124</span>   <span class="k">auto</span> <span class="n">searchOut</span> <span class="o">=</span> <span class="n">brkga</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="mf">3.0</span><span class="p">);</span> <span class="c1">// 3.0 seconds max</span>
-<span class="linenos">125</span>   <span class="n">ESolutionTSP</span> <span class="n">best</span> <span class="o">=</span> <span class="o">*</span><span class="n">searchOut</span><span class="p">.</span><span class="n">best</span><span class="p">;</span>
-<span class="linenos">126</span>   <span class="c1">// best solution value</span>
-<span class="linenos">127</span>   <span class="n">best</span><span class="p">.</span><span class="n">second</span><span class="p">.</span><span class="n">print</span><span class="p">();</span>
-<span class="linenos">128</span>   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;solution: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">best</span><span class="p">.</span><span class="n">first</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-<span class="linenos">129</span>
-<span class="linenos">130</span>   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;FINISHED&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-<span class="linenos">131</span>   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="linenos">132</span><span class="p">}</span>
+<span class="linenos">110</span>   <span class="c1">// load data into problem context &#39;pTSP&#39;</span>
+<span class="linenos">111</span>   <span class="n">Scanner</span> <span class="n">scanner</span><span class="p">{</span> <span class="s">&quot;5</span><span class="se">\n</span><span class="s">1 10 10</span><span class="se">\n</span><span class="s">2 20 20</span><span class="se">\n</span><span class="s">3 30 30</span><span class="se">\n</span><span class="s">4 40 40</span><span class="se">\n</span><span class="s">5 50 50</span><span class="se">\n</span><span class="s">&quot;</span> <span class="p">};</span>
+<span class="linenos">112</span>   <span class="n">pTSP</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">scanner</span><span class="p">);</span>
+<span class="linenos">113</span>   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">pTSP</span><span class="p">.</span><span class="n">dist</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="linenos">114</span>
+<span class="linenos">115</span>   <span class="c1">// Parameters BRKGA</span>
+<span class="linenos">116</span>   <span class="c1">// (C1): Evaluator&lt;S, XEv&gt;&amp; _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :</span>
+<span class="linenos">117</span>
+<span class="linenos">118</span>   <span class="n">sref</span><span class="o">&lt;</span><span class="n">DecoderRandomKeys</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="p">,</span> <span class="kt">double</span><span class="o">&gt;&gt;</span> <span class="n">_decoder</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">;</span>
+<span class="linenos">119</span>   <span class="n">sref</span><span class="o">&lt;</span><span class="n">InitialEPopulation</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">ESolutionTSP</span><span class="o">::</span><span class="n">second_type</span><span class="o">&gt;&gt;&gt;</span> <span class="n">_initPop</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MyRandomKeysInitEPop</span><span class="p">(</span><span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">);</span> <span class="c1">// passing key_size</span>
+<span class="linenos">120</span>
+<span class="linenos">121</span>   <span class="c1">//eprk, pTSP.n, 1000, 30, 0.4, 0.3, 0.6</span>
+<span class="linenos">122</span>   <span class="n">BRKGA</span><span class="o">&lt;</span><span class="n">ESolutionTSP</span><span class="p">,</span> <span class="kt">double</span><span class="o">&gt;</span> <span class="n">brkga</span><span class="p">(</span>
+<span class="linenos">123</span>     <span class="n">_decoder</span><span class="p">,</span>
+<span class="linenos">124</span>     <span class="n">MyRandomKeysInitEPop</span><span class="p">(</span><span class="n">pTSP</span><span class="p">.</span><span class="n">n</span><span class="p">,</span> <span class="n">rg</span><span class="p">),</span> <span class="c1">// key_size = pTSP.n</span>
+<span class="linenos">125</span>     <span class="mi">30</span><span class="p">,</span>
+<span class="linenos">126</span>     <span class="mi">1000</span><span class="p">,</span>
+<span class="linenos">127</span>     <span class="mf">0.4</span><span class="p">,</span>
+<span class="linenos">128</span>     <span class="mf">0.3</span><span class="p">,</span>
+<span class="linenos">129</span>     <span class="mf">0.6</span><span class="p">,</span>
+<span class="linenos">130</span>     <span class="n">rg</span><span class="p">);</span>
+<span class="linenos">131</span>
+<span class="linenos">132</span>   <span class="k">auto</span> <span class="n">searchOut</span> <span class="o">=</span> <span class="n">brkga</span><span class="p">.</span><span class="n">search</span><span class="p">(</span><span class="mf">3.0</span><span class="p">);</span> <span class="c1">// 3.0 seconds max</span>
+<span class="linenos">133</span>   <span class="n">ESolutionTSP</span> <span class="n">best</span> <span class="o">=</span> <span class="o">*</span><span class="n">searchOut</span><span class="p">.</span><span class="n">best</span><span class="p">;</span>
+<span class="linenos">134</span>   <span class="c1">// best solution value</span>
+<span class="linenos">135</span>   <span class="n">best</span><span class="p">.</span><span class="n">second</span><span class="p">.</span><span class="n">print</span><span class="p">();</span>
+<span class="linenos">136</span>   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;solution: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">best</span><span class="p">.</span><span class="n">first</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="linenos">137</span>
+<span class="linenos">138</span>   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;FINISHED&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="linenos">139</span>   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="linenos">140</span><span class="p">}</span>
 </pre></div>
 </div>
 </section>
