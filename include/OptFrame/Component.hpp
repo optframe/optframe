@@ -85,7 +85,7 @@ struct Log
 */
 
 // |      1      |      2      |      3      |      4      |
-// |    error    |   warning   | information | debug/verb. |
+// |    error    |   warning   | information | debug/verb. | => this direction = more verbose...
 
 // One can use logs like this:
 // Suppose my 'loglevel' is Info (default)
@@ -93,6 +93,7 @@ struct Log
 // So, if my 'loglevel' (3) is higher than Warning (2), warnings will also display, but Debug (4) will not.
 // Example:
 // if (loglevel >= LogLevel::Warning) { ... }
+// translates to: if loglevel "more verbose than" warning ...
 //
 
 enum LogLevel

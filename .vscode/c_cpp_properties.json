@@ -16,7 +16,8 @@
             "compilerArgs": [
                 "-fconcepts",
                 "-fcoroutines"
-            ]
+            ],
+            "configurationProvider": "ms-vscode.makefile-tools"
         }
     ],
     "version": 4

@@ -19,7 +19,7 @@ class FCore
 public:
    static std::string version()
    {
-      return "4.1-dev";
+      return "5.0-dev";
    }
 
    static std::string welcome()

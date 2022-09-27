@@ -291,7 +291,7 @@ public:
       return "OptFrame:Evaluator:HFMVRPEvaluator";
    }
 
-   virtual string id() const
+   virtual string id() const override
    {
       return idComponent();
    }

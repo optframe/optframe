@@ -121,5 +121,7 @@
                 }
             }
         ]
-    }
+    },
+    "esbonio.server.enabled": true,
+    "esbonio.sphinx.confDir": "${workspaceFolder}/docs/source"
 }
