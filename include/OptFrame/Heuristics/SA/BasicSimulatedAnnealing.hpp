@@ -490,6 +490,11 @@ public:
       return search(stopCriteria);
    }
 
+   virtual bool compatible(string s) override
+   {
+      return (s == idComponent()) || (SingleObjSearch<XES>::compatible(s));
+   }
+
    virtual string id() const override
    {
       return idComponent();

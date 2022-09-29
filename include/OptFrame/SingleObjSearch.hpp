@@ -119,7 +119,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << GlobalSearch<XES, XES>::idComponent() << "SingleObjSearch";
+      ss << GlobalSearch<XES, XES>::idComponent() << ":SingleObjSearch";
       return ss.str();
    }
 
