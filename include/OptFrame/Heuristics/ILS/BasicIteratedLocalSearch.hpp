@@ -201,6 +201,6 @@ public:
    }
 };
 
-}
+} // namespace optframe
 
 #endif /*OPTFRAME_BASICILS_HPP_*/

@@ -23,7 +23,7 @@
 
 #include <algorithm>
 
-#include "../../IPopulational.hpp"
+//#include "../../IPopulational.hpp"
 #include "../../InitialPopulation.hpp"
 #include "../../Population.hpp"
 #include "../../SingleObjSearch.hpp"
@@ -110,9 +110,10 @@ public:
 template<
   XESolution XES,
   optframe::comparability KeyType = double,
-  XESolution XES2 = std::pair<std::vector<KeyType>, typename XES::second_type>,
-  XSearch<XES2> XSH2 = VEPopulation<XES2>>
-class RKGA : public SingleObjSearch<XES, XES2, XSH2>
+  XESolution XES2 = std::pair<std::vector<KeyType>, typename XES::second_type>> //,
+                                                                                //XSearch<XES2> XSH2 = VEPopulation<XES2>>
+class RKGA : public Populational<XES, XES, XES2>
+//public SingleObjSearch<XES, XES2, XSH2>
 //  TODO: cannot make this IPopulational, unless using EPopulation instead of "legacy" Population
 //, public IPopulational<XES, XES, XES2>
 {
@@ -220,11 +221,21 @@ public:
      [](ExecutionContext& ctx, const XSH& best) {
         return ctx.self->onBest(*ctx.self, best);
      };
+   using IncType = typename Populational<XES, XES, XES2>::IncumbentType;
    //
-   bool (*onIncumbentCtx)(ExecutionContext& ctx, const XSH2& incumbent) =
-     [](ExecutionContext& ctx, const XSH2& incumbent) {
+   bool (*onIncumbentCtx)(ExecutionContext& ctx, const IncType& incumbent) =
+     [](ExecutionContext& ctx, const IncType& incumbent) {
         return ctx.self->onIncumbent(*ctx.self, incumbent);
      };
+
+   virtual SearchOutput<XES> searchPopulational(
+     std::optional<XES>& _best,
+     IncType& _inc,
+     const StopCriteria<XEv>& stopCriteria) override
+   {
+      // TODO: IMPLEMENT!!
+      assert(false);
+   }
 
    //pair<CopySolution<random_keys>&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const CopySolution<random_keys>* _s = nullptr, const Evaluation<>* _e = nullptr)
    ///virtual pair<CopySolution<random_keys>, XEv>* search(StopCriteria<XEv>& stopCriteria, const CopySolution<random_keys>* _s = nullptr, const XEv* _e = nullptr) override

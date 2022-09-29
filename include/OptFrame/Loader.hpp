@@ -117,6 +117,8 @@
 //TODO ERROR on DecoderNSGAII
 //#include "Heuristics/EvolutionaryAlgorithms/DecoderNSGAII.hpp"
 
+#include "Heuristics/EvolutionaryAlgorithms/BRKGA.hpp"
+
 // test local searches
 #include "Heuristics/CompareLocalSearch.hpp"
 
@@ -192,6 +194,21 @@ public:
       factory.builders.push_back(new BasicVNSBuilder<S, XEv>);
       factory.builders.push_back(new ReducedVNSBuilder<S, XEv>);
       factory.builders.push_back(new GeneralVNSBuilder<S, XEv>);
+
+      // RK family (random keys)
+      //static_assert(X2ESolution<XES, MultiESolution<XES>>);
+      //factory.builders.push_back(new BRKGABuilder<XES>);
+
+      // GlobalSearchBuilder
+      //using XES2_BRKGA = std::pair<std::vector<double>, Evaluation<>>;
+      //using XSH2_BRKGA = VEPopulation<XES2_BRKGA>;
+      //
+      // Ignoring other BRKGA type parameters...
+      // In the future, perhaps try to make other specific lists,
+      // such as ITrajectory or IPopulational (if users want to have specific features,
+      // like onIncumbent(...) callback.
+      // For Multi Objective, must see benefits.
+      factory.builders.push_back(new BRKGABuilder<XES>);
 
       // test local searches
       factory.builders.push_back(new CompareLocalSearchBuilder<S, XEv>);

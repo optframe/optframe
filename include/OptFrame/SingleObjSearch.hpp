@@ -45,6 +45,16 @@ using namespace std;
 
 namespace optframe {
 
+template<class Self>
+concept
+#if __cplusplus <= 201703L // after c++20, not required 'bool'
+  bool
+#endif
+    XSingleObjSearch = requires(Self a)
+{
+   XESolution<typename Self::BestType>;
+};
+
 //template<XESolution XES, XEvaluation XEv = Evaluation<>>
 //concept SolEv;
 
@@ -56,7 +66,7 @@ namespace optframe {
 // (Primary) Search space is decided by XES
 // Secondary search space XSH2 is undecided... could be trajectory-based (as default) or population-based
 template<XESolution XES, XESolution XES2 = XES, XSearch<XES2> XSH2 = XES2>
-class SingleObjSearch : public GlobalSearch<XES, XES, XES2, XSH2> // public Component
+class SingleObjSearch : public GlobalSearch<XES, XES> // public Component
 {
    using XEv = typename XES::second_type;
    // if passing types directly here, error 'typedef declared auto'
@@ -64,6 +74,15 @@ class SingleObjSearch : public GlobalSearch<XES, XES, XES2, XSH2> // public Comp
    //typedef const vector<const XEv*> ConstFitnessValues;
 
    using XSH = XES; // XSearch<XES> = XES
+
+   // onIncumbent for SingleObjSearch
+   //bool (*onSingleIncumbent)(GlobalSearch<XES, XSH>& self, const XSH2& incumbent) =
+   //  [](GlobalSearch<XES, XSH>& self, const XSH2& incumbent) { return true; };
+
+   // ========================================
+   // THIS CLASS IS USELESS! WHAT'S THE POINT?
+   // Best to just have XSingleObjSearch
+   // ========================================
 
 public:
    SingleObjSearch()
@@ -94,13 +113,13 @@ public:
 
    virtual bool compatible(string s)
    {
-      return (s == idComponent()) || (GlobalSearch<XES, XES, XES2, XSH2>::compatible(s));
+      return (s == idComponent()) || (GlobalSearch<XES, XES>::compatible(s));
    }
 
    static string idComponent()
    {
       stringstream ss;
-      ss << GlobalSearch<XES, XES, XES2, XSH2>::idComponent() << "SingleObjSearch";
+      ss << GlobalSearch<XES, XES>::idComponent() << "SingleObjSearch";
       return ss.str();
    }
 

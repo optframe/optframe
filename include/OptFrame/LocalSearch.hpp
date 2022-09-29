@@ -40,6 +40,10 @@ using namespace std;
 
 namespace optframe {
 
+// Maybe LocalSearch should only deal with INCUMBENT TYPES...
+// That may be a difference from GlobalSearch, that deal with BEST and INCUMBENT types...
+// TODO: must investigate
+
 // TODO: may pass just XESolution and XEvaluation here (for StopCriteria)... no XSolution explicitly required.
 template<XESolution XES, XEvaluation XEv = typename XES::second_type, XSearch<XES> XSH = XES> // defaults to XSH = XES
 class LocalSearch : public Component

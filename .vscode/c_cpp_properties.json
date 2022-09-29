@@ -5,7 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/Examples/**",
-                "${workspaceFolder}/src/**",
+                "${workspaceFolder}/include/**",
                 "${workspaceFolder}/tests/**"
             ],
             "defines": [],

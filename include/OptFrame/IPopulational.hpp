@@ -40,13 +40,24 @@ class IPopulational // do not inherit here!
 
 public:
    // global search method (maybe, someday, create some abstract IGlobalSearch.. not now)
-   virtual SearchStatus search(const StopCriteria<XEv>& stopCriteria) = 0;
+   //virtual SearchStatus search(const StopCriteria<XEv>& stopCriteria) = 0;
+   //
+   //virtual SearchOutput<XES, BestType> search(const StopCriteria<XEv>& stopCriteria) = 0;
 
+   //
    // virtual method with search signature for populational methods
+   //
+   virtual SearchOutput<XES, BestType> searchPopulational(
+     std::optional<XSH>& _best,
+     XSH2& _inc,
+     const StopCriteria<XEv>& stopCriteria) = 0;
+
+   /*
    virtual SearchStatus searchBy(
      std::optional<XSH>& _best,
      std::optional<XSH2>& _inc,
      const StopCriteria<XEv>& stopCriteria) = 0;
+     */
 };
 
 } // namespace optframe

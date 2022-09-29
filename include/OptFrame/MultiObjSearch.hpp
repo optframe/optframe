@@ -50,6 +50,17 @@ using namespace std;
 
 namespace optframe {
 
+template<class Self, class XES>
+concept
+#if __cplusplus <= 201703L // after c++20, not required 'bool'
+  bool
+#endif
+    XMultiObjSearch = requires(Self a)
+{
+   XESolution<XES>;
+   X2ESolution<typename Self::BestType, XES>;
+};
+
 /*
 // Multi Objective Stopping Criteria
 // Must include GENERAL stopping criteria
@@ -87,13 +98,22 @@ public:
 //
 //template<XSolution S, XEvaluation XMEv = Evaluation<>, XESolution XMES = pair<S, XMEv>>
 //
-template<XESolution XMES>
+template<XESolution XMES, XESolution XMES2 = XMES, XSearch<XMES2> XMSH2 = XMES2>
 class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>> // public Component
 {
    using S = typename XMES::first_type;
    using XMEv = typename XMES::second_type;
-   using XSH = Pareto<XMES>; // search space
+   using XMSH = Pareto<XMES>; // search space
 public:
+   //
+   //bool (*onParetoIncumbent)(GlobalSearch<XMES, Pareto<XMES>>& self, const XMSH2& incumbent) =
+   //  [](GlobalSearch<XMES, Pareto<XMES>>& self, const XMSH2& incumbent) { return true; };
+
+   // ========================================
+   // THIS CLASS IS USELESS! WHAT'S THE POINT?
+   // Best to just have XMultiObjSearch
+   // ========================================
+
    MultiObjSearch()
    {
    }
@@ -102,7 +122,7 @@ public:
    {
    }
 
-   op<XSH>& getBestPareto()
+   op<Pareto<XMES>>& getBestPareto()
    {
       return this->best;
    }
