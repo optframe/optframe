@@ -503,19 +503,22 @@ public:
    }
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template<XESolution XES, XESolution XES2, X2ESolution<XES2> X2ES = MultiESolution<XES2>>
 class BasicSimulatedAnnealingBuilder : public SA
-  , public SingleObjSearchBuilder<S, XEv, XES>
+  , public GlobalSearchBuilder<XES, XES, XES2, X2ES>
 {
    //using XM = BasicSimulatedAnnealing<S, XEv, pair<S, XEv>, Component>;
    //using XM = Component; // only general builds here
+   using S = typename XES::first_type;
+   using XEv = typename XES::second_type;
+
 public:
    virtual ~BasicSimulatedAnnealingBuilder()
    {
    }
 
    // has sptr instead of sref, is that on purpose or legacy class?
-   virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
+   virtual GlobalSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
    {
 
       if (Component::debug)
@@ -639,7 +642,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << SingleObjSearchBuilder<S, XEv>::idComponent() << ":" << SA::family() << "BasicSA";
+      ss << GlobalSearchBuilder<XES, XES, XES2, X2ES>::idComponent() << ":" << SA::family() << "BasicSA";
       return ss.str();
    }
 

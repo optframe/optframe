@@ -115,8 +115,8 @@ public:
 // TODO: only time can tell...
 //
 //template<XESolution XES, XESolution XES2_Factory = XES, X2ESolution<XES2_Factory> X2ES_Factory = MultiESolution<XES2_Factory>>
-template<XESolution XES>
-class BRKGABuilder : public GlobalSearchBuilder<XES, XES>
+template<XESolution XES, XESolution XES2_Factory, XSearch<XES2_Factory> X2ES_Factory>
+class BRKGABuilder : public GlobalSearchBuilder<XES, XES, XES2_Factory, X2ES_Factory>
 {
    using S = typename XES::first_type;
    using XEv = typename XES::second_type;
@@ -136,7 +136,7 @@ public:
 
    virtual GlobalSearch<XES>* build(
      Scanner& scanner,
-     HeuristicFactory<S, XEv, XES>& hf,
+     HeuristicFactory<S, XEv, XES, X2ES_Factory>& hf,
      string family = "") override
    {
       sptr<DecoderRandomKeys<XES, KeyType>> decoder;
@@ -184,7 +184,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << GlobalSearchBuilder<XES, XES>::idComponent() << "RK:"
+      ss << GlobalSearchBuilder<XES, XES, XES2_Factory, X2ES_Factory>::idComponent() << "RK:"
          << "BRKGA";
       return ss.str();
    }

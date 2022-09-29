@@ -136,12 +136,20 @@ namespace optframe {
 //
 //
 #ifdef OPTFRAME_LEGACY_R_ADS
-template<XRepresentation R, class ADS, XBaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template<XRepresentation R, class ADS, XBaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = XES, XESolution XES2 = XES, X2ESolution<XES> X2ES = MultiESolution<XES>>
 #else
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template<XESolution XES, XSearch<XES> XSH = XES, XESolution XES2 = XES, X2ESolution<XES2> X2ES = MultiESolution<XES2>>
 #endif
 class Loader
 {
+
+#ifdef OPTFRAME_LEGACY_R_ADS
+//
+#else
+   using S = typename XES::first_type;
+   using XEv = typename XES::second_type;
+#endif
+
 public:
    HeuristicFactory<S, XEv, XES, X2ES> factory;
    map<string, string> dictionary;
@@ -184,7 +192,7 @@ public:
 
       // SingleObjSearch + Parameters
       factory.builders.push_back(new SimpleLocalSearchBuilder<S, XEv>);
-      factory.builders.push_back(new BasicSimulatedAnnealingBuilder<S, XEv, XES>);
+      factory.builders.push_back(new BasicSimulatedAnnealingBuilder<XSH, XES2, X2ES>);
       factory.builders.push_back(new BasicIteratedLocalSearchBuilder<S, XEv>);
       factory.builders.push_back(new BasicILSPerturbationBuilder<S, XEv>);
       factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<S, XEv>);
@@ -208,7 +216,7 @@ public:
       // such as ITrajectory or IPopulational (if users want to have specific features,
       // like onIncumbent(...) callback.
       // For Multi Objective, must see benefits.
-      factory.builders.push_back(new BRKGABuilder<XES>);
+      factory.builders.push_back(new BRKGABuilder<XES, XES, X2ES>);
 
       // test local searches
       factory.builders.push_back(new CompareLocalSearchBuilder<S, XEv>);

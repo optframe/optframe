@@ -36,6 +36,8 @@
 
 #include "SearchOutput.hpp"
 
+#include "VEPopulation.hpp"
+
 using namespace std;
 
 namespace optframe {
@@ -186,7 +188,7 @@ public:
    }
 };
 
-template<XESolution XES, XSearch<XES> XSH, X2ESolution<XES> X2ES = MultiESolution<XES>> //, XESolution XES2, XSearch<XES> XSH2 = XSH>
+template<XESolution XES, XSearch<XES> XSH, XESolution XES2, X2ESolution<XES2> X2ES = MultiESolution<XES2>> //, XESolution XES2, XSearch<XES> XSH2 = XSH>
 class GlobalSearchBuilder : public ComponentBuilder<typename XES::first_type, typename XES::second_type, XSH>
 {
    using S = typename XES::first_type;

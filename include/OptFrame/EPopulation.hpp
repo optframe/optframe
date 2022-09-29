@@ -168,13 +168,20 @@ public:
 
    virtual void print() const
    {
-      cout << "EPopulation(" << p.size() << ")";
-      cout << endl;
+      std::cout << toString() << std::endl;
+   }
+
+   virtual std::string toString() const override
+   {
+      std::stringstream ss;
+      ss << "EPopulation(" << p.size() << ")";
+      ss << endl;
 
       for (unsigned i = 0; i < p.size(); i++) {
          //p.at(i)->print();
-         std::cout << *p.at(i) << std::endl;
+         ss << *p.at(i) << std::endl;
       }
+      return ss.str();
    }
 
 }; // class EPopulation

@@ -102,7 +102,7 @@ fDecode(const vector<double>& rk)
 }
 
 // evaluator random keys (for TSP)
-FDecoderRK<std::vector<int>, Evaluation<>, double, MinOrMax::MINIMIZE> decoder{
+FDecoderRK<std::pair<std::vector<int>, Evaluation<>>, double, MinOrMax::MINIMIZE> decoder{
    fDecode
 };
 
@@ -115,7 +115,7 @@ using namespace optframe;
 using namespace scannerpp;
 using namespace TSP_brkga;
 
-class MyRandomKeysInitPop : public InitialPopulation<std::pair<std::vector<double>, Evaluation<double>>>
+class MyRandomKeysInitEPop : public InitialEPopulation<std::pair<std::vector<double>, Evaluation<double>>>
 {
    using RSK = std::vector<double>;
 
@@ -124,33 +124,34 @@ private:
    sref<RandGen> rg;
 
 public:
-   MyRandomKeysInitPop(int size, sref<RandGen> _rg = new RandGen)
+   MyRandomKeysInitEPop(int size, sref<RandGen> _rg = new RandGen)
      : sz{ size }
      , rg{ _rg }
    {
    }
 
    // copy constructor
-   MyRandomKeysInitPop(const MyRandomKeysInitPop& self)
+   MyRandomKeysInitEPop(const MyRandomKeysInitEPop& self)
      : sz{ self.sz }
      , rg{ self.rg }
    {
    }
 
-   Population<std::pair<RSK, Evaluation<double>>> generatePopulation(unsigned populationSize, double timelimit) override
+   VEPopulation<std::pair<RSK, Evaluation<double>>> generateEPopulation(unsigned populationSize, double timelimit) override
    {
-      Population<std::pair<RSK, Evaluation<double>>> pop;
+      VEPopulation<std::pair<RSK, Evaluation<double>>> pop;
 
       for (unsigned i = 0; i < populationSize; i++) {
-         vector<double>* d = new vector<double>(sz);
+         vector<double> d(sz);
          for (int j = 0; j < sz; j++)
-            d->at(j) = (rg->rand() % 100000) / 100000.0;
-         pop.push_back(d);
+            d.at(j) = (rg->rand() % 100000) / 100000.0;
+         std::pair<vector<double>, Evaluation<double>> p{ d, Evaluation<>() };
+         pop.push_back(p);
       }
 
       return pop;
    }
-};
+}; // MyRandomKeysInitPop
 
 int
 main()
@@ -165,13 +166,13 @@ main()
    // Parameters BRKGA
    // (C1): Evaluator<S, XEv>& _evaluator, int key_size, unsigned numGen, unsigned _popSize, double fracTOP, double fracBOT, double _probElitism) :
 
-   sref<DecoderRandomKeys<ESolutionTSP::first_type, ESolutionTSP::second_type, double>> _decoder = decoder;
-   sref<InitialPopulation<std::pair<vector<double>, ESolutionTSP::second_type>>> _initPop = new MyRandomKeysInitPop(pTSP.n); // passing key_size
+   sref<DecoderRandomKeys<ESolutionTSP, double>> _decoder = decoder;
+   sref<InitialEPopulation<std::pair<vector<double>, ESolutionTSP::second_type>>> _initPop = new MyRandomKeysInitEPop(pTSP.n); // passing key_size
 
    //eprk, pTSP.n, 1000, 30, 0.4, 0.3, 0.6
    BRKGA<ESolutionTSP, double> brkga(
      _decoder,
-     MyRandomKeysInitPop(pTSP.n, rg), // key_size = pTSP.n
+     MyRandomKeysInitEPop(pTSP.n, rg), // key_size = pTSP.n
      30,
      1000,
      0.4,

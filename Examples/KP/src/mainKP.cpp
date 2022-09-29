@@ -151,8 +151,8 @@ main(int argc, char** argv)
    sref<DecoderRandomKeys<ESolutionKP, double>> _decoder =
      new EvaluatorSubsetRandomKeys<EvaluationKP, double, ESolutionKP>(ev, 0, p.N - 1);
 
-   sref<InitialPopulation<std::pair<std::vector<double>, Evaluation<>>>> _genKeys =
-     new RandomKeysInitPop<EvaluationKP, double>(p.N, rg);
+   sref<InitialEPopulation<std::pair<std::vector<double>, Evaluation<>>>> _genKeys =
+     new RandomKeysInitEPop<EvaluationKP, double>(p.N, rg);
 
    BRKGA<ESolutionKP, double> brkga(_decoder, _genKeys, 1000, 30, 0.4, 0.3, 0.6, rg);
 

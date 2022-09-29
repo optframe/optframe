@@ -96,7 +96,7 @@ public:
    virtual bool setVerboseR() override
    {
       this->setVerbose();
-      return InitialPopulation<XES>::setVerboseR();
+      return InitialEPopulation<XES>::setVerboseR();
    }
 };
 

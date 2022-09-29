@@ -81,7 +81,7 @@ main(int argc, char** argv)
    }
 
    //Loader<RepEtII, OPTFRAME_DEFAULT_ADS, SolutionEtII> optframe;
-   Loader<SolutionEtII, EvaluationEtII, ESolutionEtII> optframe;
+   Loader<ESolutionEtII> optframe;
    EtIIProblemCommand etii;
    etii.load(good_path, optframe.factory, optframe.dictionary, optframe.ldictionary);
 

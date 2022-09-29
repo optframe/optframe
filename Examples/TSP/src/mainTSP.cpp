@@ -279,19 +279,25 @@ main(int argc, char** argv)
    //Evaluator<SolutionTSP>& eval2 = eval;
    EvaluatorPermutationRandomKeys<EvaluationTSP, double> eprk(eval_rep, 0, tsp.p->n - 1);
 
+   DecoderRandomKeys<std::pair<std::vector<int>, EvaluationTSP>, double>* ptr_eprk = new EvaluatorPermutationRandomKeys<EvaluationTSP, double>(eval_rep, 0, tsp.p->n - 1);
+
+   sref<DecoderRandomKeys<std::pair<std::vector<int>, EvaluationTSP>, double>> sref_eprk(ptr_eprk);
+
    // BRKGA is using Representation instead of Solution... beware!
-   sref<InitialPopulation<pair<std::vector<double>, EvaluationTSP>>> _initPop =
-     new RandomKeysInitPop<EvaluationTSP, double>(tsp.p->n, rg2);
+   sref<InitialEPopulation<pair<std::vector<double>, EvaluationTSP>>> _initPop =
+     new RandomKeysInitEPop<EvaluationTSP, double>(tsp.p->n, rg2);
    //
    using RK_ESolution = pair<vector<double>, EvaluationTSP>;
    static_assert(XESolution<RK_ESolution>);
    static_assert(X2ESolution<VEPopulation<RK_ESolution>, RK_ESolution>);
    static_assert(XSearch<VEPopulation<RK_ESolution>, RK_ESolution>);
+   //
    BRKGA<
-     pair<RepTSP, EvaluationTSP>,
+     std::pair<std::vector<int>, EvaluationTSP>,
      double,
-     pair<vector<double>, EvaluationTSP>,
-     VEPopulation<pair<vector<double>, EvaluationTSP>>>
+     pair<vector<double>, EvaluationTSP> //,
+     //VEPopulation<pair<vector<double>, EvaluationTSP>>
+     >
      brkga(
        //
        //BRKGA<pair<RepTSP, EvaluationTSP>, double> brkga(

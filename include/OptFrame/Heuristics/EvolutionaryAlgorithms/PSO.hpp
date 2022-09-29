@@ -23,7 +23,7 @@
 
 #include <algorithm>
 
-#include "../../IPopulational.hpp"
+//#include "../../IPopulational.hpp"
 ///#include "../../InitialPopulation.hpp"
 #include "../../EPopulation.hpp"
 #include "../../RandGen.hpp"
@@ -64,11 +64,21 @@ struct Bird
    }
 };
 
+using EBird = std::pair<Bird, Evaluation<>>;
+
+static_assert(XESolution<EBird>);
+static_assert(XSearch<EBird, EBird>);
+
+static_assert(XESolution<std::pair<std::vector<double>, Evaluation<>>>);
+
+static_assert(X2ESolution<EPopulation<EBird>, EBird>);
+static_assert(XSearch<EPopulation<EBird>, EBird>);
+
 template<
   ///optframe::comparability KeyType = double,
   XEvaluation XEv = Evaluation<>,
   XESolution XES = std::pair<std::vector<double>, XEv>,
-  XESolution XES2 = std::pair<Bird, Evaluation<>>,
+  XESolution XES2 = EBird,
   XSearch<XES2> XSH2 = EPopulation<XES2>>
 class PSO : public SingleObjSearch<XES, XES2, XSH2>
 // TODO: add IPopulational

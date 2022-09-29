@@ -14,5 +14,5 @@ cc_binary(
         "tsplib/*",
     ]),
     copts = ['-Wfatal-errors'],
-    deps = ["@OptFrame//src:OptFrame"]
+    deps = ["@OptFrame//include:OptFrame"]
 )

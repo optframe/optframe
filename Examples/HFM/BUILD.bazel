@@ -23,5 +23,5 @@ cc_binary(
     ]),
     linkopts = ['-lgomp'],
     copts = ['-fopenmp'],
-    deps = ["@OptFrame//src:OptFrame"]
+    deps = ["@OptFrame//include:OptFrame"]
 )

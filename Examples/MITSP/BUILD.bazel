@@ -13,5 +13,5 @@ cc_binary(
     data = glob([
         "instances/*.tsp",
     ]),
-    deps = ["@OptFrame//src:OptFrame"]
+    deps = ["@OptFrame//include:OptFrame"]
 )
