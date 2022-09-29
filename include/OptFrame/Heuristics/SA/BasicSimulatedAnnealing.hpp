@@ -642,7 +642,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << GlobalSearchBuilder<XES, XES, XES2, X2ES>::idComponent() << ":" << SA::family() << "BasicSA";
+      ss << GlobalSearchBuilder<XES, XES, XES2, X2ES>::idComponent() << SA::family() << "BasicSA";
       return ss.str();
    }
 
