@@ -56,7 +56,8 @@ public:
    virtual pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) override
    {
       if (!needsSolution)
-         std::cout << "WARNING: cannot disable solution decoding!" << std::endl;
+         if (Component::warning)
+            std::cout << "WARNING: cannot disable solution decoding!" << std::endl;
       S s = decoderSol->decodeSolution(rk);
       XEv e = evaluator->evaluate(s);
       return pair<XEv, op<S>>{ e, op<S>{ s } };
