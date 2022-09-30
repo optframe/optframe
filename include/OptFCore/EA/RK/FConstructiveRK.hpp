@@ -27,6 +27,7 @@
 
 #include <OptFrame/Constructive.hpp>
 #include <OptFrame/Heuristics/EA/EA.h>
+#include <OptFrame/Heuristics/EA/RK/ConstructiveRK.hpp>
 #include <OptFrame/Heuristics/EA/RK/RK.h>
 
 namespace optframe {
@@ -34,9 +35,9 @@ namespace optframe {
 // only works for RK representation
 //
 template<class KeyType = double>
-class FConstructiveRK final : public Constructive<std::vector<KeyType>>
+class FConstructiveRK final : public ConstructiveRK<KeyType>
 {
-   using super = Constructive<std::vector<KeyType>>;
+   using super = ConstructiveRK<KeyType>;
 
    using S = std::vector<KeyType>;
 
@@ -87,7 +88,7 @@ public:
    static std::string idComponent()
    {
       std::stringstream ss;
-      ss << super::idComponent() << ":" << EA::family() << ":" << RK::family() << "FConstructiveRK";
+      ss << super::idComponent() << ":FConstructiveRK";
       return ss.str();
    }
 

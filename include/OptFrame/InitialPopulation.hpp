@@ -62,7 +62,7 @@ template<XESolution XES, X2ESolution<XES> X2ES = VEPopulation<XES>>
 class InitialEPopulation : public Component
 {
    using S = typename XES::first_type;
-   using XEv = typename XES::first_type;
+   using XEv = typename XES::second_type;
 
 public:
    virtual ~InitialEPopulation()
