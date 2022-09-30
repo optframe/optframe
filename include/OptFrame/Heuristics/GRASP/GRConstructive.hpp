@@ -87,7 +87,7 @@ public:
       return c.generateSolution(timelimit);
    }
 
-   virtual bool compatible(string s)
+   virtual bool compatible(string s) override
    {
       return (s == idComponent()) || (Component::compatible(s));
    }

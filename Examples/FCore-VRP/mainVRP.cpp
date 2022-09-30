@@ -1,7 +1,7 @@
 
 #include <iostream>
 
-#include <OptFrame/Heuristics/EvolutionaryAlgorithms/PSO.hpp>
+#include <OptFrame/Heuristics/EA/PSO.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescent.hpp>
 #include <algorithm>

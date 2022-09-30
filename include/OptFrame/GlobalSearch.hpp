@@ -109,7 +109,7 @@ public:
       return "Empty heuristic log.";
    }
 
-   virtual bool compatible(string s)
+   virtual bool compatible(string s) override
    {
       return (s == idComponent()) || (Component::compatible(s));
    }
@@ -165,7 +165,7 @@ public:
      IncumbentType& _inc,
      const StopCriteria<XEv>& stopCriteria) = 0;
 
-   virtual bool compatible(std::string s)
+   virtual bool compatible(std::string s) override
    {
       return (s == idComponent()) || (GlobalSearch<XES, XSH>::compatible(s));
    }
@@ -177,7 +177,7 @@ public:
       return ss.str();
    }
 
-   virtual std::string id() const
+   virtual std::string id() const override
    {
       return idComponent();
    }

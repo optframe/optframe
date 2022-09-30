@@ -75,21 +75,21 @@ public:
    {
    }
 
-   void first()
+   void first() override
    {
    }
 
-   void next()
+   void next() override
    {
       it = nullptr;
    }
 
-   bool isDone()
+   bool isDone() override
    {
       return it == nullptr;
    }
 
-   virtual NSIterator<S, XEv>& current()
+   virtual NSIterator<S, XEv>& current() override
    {
       return *it;
    }

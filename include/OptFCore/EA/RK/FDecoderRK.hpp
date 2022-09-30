@@ -20,54 +20,50 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_CONSTRUCTIVE_HPP_
-#define OPTFRAME_CONSTRUCTIVE_HPP_
+#ifndef OPTFRAME_FCORE_FDECODER_RK_HPP_
+#define OPTFRAME_FCORE_FDECODER_RK_HPP_
 
-#include "BaseConcepts.hpp"
-#include "Component.hpp"
-//#include "Solution.hpp"
-//#include "Solutions/CopySolution.hpp"
-//#include "InitialSearch.hpp" // TODO: remove
+#include <functional>
+
+#include <OptFrame/Heuristics/EA/RK/DecoderRandomKeys.hpp>
 
 namespace optframe {
 
-//template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R, ADS> S = CopySolution<R, ADS>>
-template<XSolution S>
-class Constructive : public Component
+template<
+  XESolution XES,
+  optframe::comparability KeyType,
+  MinOrMax Minimizing>
+class FDecoderRK final : public DecoderRandomKeys<XES, KeyType>
 {
+   using S = typename XES::first_type;
+   using XEv = typename XES::second_type;
+   using RSK = std::vector<KeyType>;
+
 public:
-   virtual ~Constructive()
+   pair<XEv, S> (*fDecode)(const RSK& rk); // decode function
+
+   FDecoderRK(
+     pair<XEv, S> (*_fDecode)(const RSK& rk))
+     : fDecode{ _fDecode }
    {
    }
 
-   // timelimit in seconds, accepting fractions (millisecs, ...)
-   // may or may not generate valid solution in time
-   virtual std::optional<S> generateSolution(double timelimit) = 0;
-
-   virtual bool compatible(std::string s) override
+   virtual ~FDecoderRK()
    {
-      return (s == idComponent()) || (Component::compatible(s));
    }
 
-   static std::string idComponent()
+   virtual pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) override
    {
-      std::stringstream ss;
-      std::string s = Component::idComponent();
-      ss << s << ":Constructive";
-      return ss.str();
+      auto p = fDecode(rk);
+      return make_pair(p.first, make_optional(p.second));
    }
 
-   virtual std::string id() const override
+   virtual bool isMinimization() const override
    {
-      return idComponent();
-   }
-
-   virtual std::string toString() const override
-   {
-      return id();
+      return Minimizing == MinOrMax::MINIMIZE;
    }
 };
-//
+
 } // namespace optframe
 
-#endif /*OPTFRAME_CONSTRUCTIVE_HPP_*/
+#endif /*OPTFRAME_FCORE_FDECODER_RK_HPP_*/

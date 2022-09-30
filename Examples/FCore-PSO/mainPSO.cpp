@@ -1,7 +1,7 @@
 
 #include <iostream>
 
-#include <OptFrame/Heuristics/EvolutionaryAlgorithms/PSO.hpp>
+#include <OptFrame/Heuristics/EA/PSO.hpp>
 #include <algorithm>
 #include <functional>
 #include <iostream>

@@ -303,19 +303,19 @@ public:
    // begin Object part
    // =================
 
-   static string idComponent()
+   static std::string idComponent()
    {
       std::stringstream ss;
       ss << Component::idComponent() << ":Solution";
       return ss.str();
    }
 
-   virtual string id() const override
+   virtual std::string id() const override
    {
       return idComponent();
    }
 
-   virtual string toString() const
+   virtual std::string toString() const override
    {
       std::stringstream ss;
       ss << "Solution: " << *r;

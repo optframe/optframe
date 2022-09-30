@@ -24,15 +24,15 @@
 #include <algorithm>
 
 //#include "../../IPopulational.hpp"
-#include "../../InitialPopulation.hpp"
-#include "../../Population.hpp"
-#include "../../SingleObjSearch.hpp"
+#include "../../../InitialPopulation.hpp"
+//#include "../../../Population.hpp"
+#include "../../../SingleObjSearch.hpp"
 
-#include "Crossover.hpp"
+#include "../Crossover.hpp"
+#include "../Elitism.hpp"
+#include "../Mutation.hpp"
+#include "../Selection.hpp"
 #include "DecoderRandomKeys.hpp"
-#include "Elitism.hpp"
-#include "Mutation.hpp"
-#include "Selection.hpp"
 
 // RKGA - Random Key Genetic Algorithms
 // Bean, J.C.: Genetic algorithms and random keys for

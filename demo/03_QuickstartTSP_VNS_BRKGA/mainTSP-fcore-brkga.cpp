@@ -6,7 +6,7 @@
 // implementation of TSP
 
 #include <OptFrame/Core.hpp>
-#include <OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp>
+#include <OptFrame/Heuristics/EA/RK/BRKGA.hpp>
 #include <OptFrame/Heuristics/Heuristics.hpp> // many metaheuristics here...
 #include <OptFrame/InitialPopulation.hpp>
 #include <OptFrame/LocalSearch.hpp>

@@ -12,7 +12,7 @@
 #include <OptFrame/Solution.hpp>
 #include <OptFrame/printable/printable.hpp>
 
-#include <OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp>
+#include <OptFrame/Heuristics/EA/RK/BRKGA.hpp>
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp>
 #include <OptFrame/Heuristics/LocalSearches/HillClimbing.hpp>

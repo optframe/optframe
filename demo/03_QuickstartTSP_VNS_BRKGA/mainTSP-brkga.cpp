@@ -1,7 +1,7 @@
 
 #include <iostream>
 
-#include <OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp>
+#include <OptFrame/Heuristics/EA/RK/BRKGA.hpp>
 #include <algorithm>
 #include <functional>
 #include <iostream>

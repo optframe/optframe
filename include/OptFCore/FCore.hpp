@@ -9,7 +9,9 @@
 #include "FNS.hpp"
 #include "FNSSeq.hpp"
 //
-#include "FDecoderRK.hpp" // Extra
+#include "EA/RK/FConstructiveRK.hpp"       // Extra
+#include "EA/RK/FDecoderRK.hpp"            // Extra
+#include "EA/RK/FInitialEPopulationRK.hpp" // Extra
 
 namespace optframe {
 

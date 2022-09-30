@@ -96,7 +96,7 @@ public:
       return los_unknown;
    }
 
-   virtual bool compatible(string s)
+   virtual bool compatible(string s) override
    {
       return (s == idComponent()) || (Component::compatible(s));
    }

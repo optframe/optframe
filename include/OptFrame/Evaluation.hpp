@@ -426,16 +426,16 @@ public:
       return idComponent();
    }
 
-   virtual void print() const
+   virtual void print() const override
    {
       cout << toString() << endl;
    }
 
-   virtual string toString() const
+   virtual std::string toString() const override
    {
       // ONE SHOULD NEVER PRINT AN EVALUATION WITH OUTDATED FLAG... SANITY CHECK!
       assert(!outdated);
-      stringstream ss;
+      std::stringstream ss;
       ss << fixed; // disable scientific notation
       ss << "Evaluation function value = " << evaluation();
       ss << (isFeasible() ? " " : " (not feasible) ");
@@ -453,7 +453,7 @@ public:
       return ss.str();
    }
 
-   virtual bool toStream(std::ostream& os) const
+   virtual bool toStream(std::ostream& os) const override
    {
       // forward to operator<<
       os << (*this);

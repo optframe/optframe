@@ -521,7 +521,7 @@ public:
          }
 
          if (loglevel >= LogLevel::Debug)
-            std::cout << "HF: WILL CLEAR COMPONENT: '" << iter->first << "'" << std::endl;
+            std::cout << "    => HF: CLEARING COMPONENT: '" << iter->first << "'" << std::endl;
          //
          // TODO: MUST KEEP LINE BELOW!
          //iter->second.clear();

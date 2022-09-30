@@ -283,7 +283,7 @@ main()
 
    std::cout << std::endl
              << "will build SA!" << std::endl;
-   sptr<SingleObjSearch<LESolution>> uSearch = buildSearch("OptFrame:ComponentBuilder:SingleObjSearch:SA:BasicSA "
+   sptr<SingleObjSearch<LESolution>> uSearch = buildSearch("OptFrame:ComponentBuilder:GlobalSearch:SA:BasicSA "
                                                            " OptFrame:GeneralEvaluator 0 "
                                                            " OptFrame:InitialSearch 0 "
                                                            " OptFrame:NS[] 0 "

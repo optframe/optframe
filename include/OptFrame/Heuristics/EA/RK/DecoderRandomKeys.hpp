@@ -21,11 +21,11 @@
 #ifndef OPTFRAME_DECODER_RANDOM_KEYS_HPP_
 #define OPTFRAME_DECODER_RANDOM_KEYS_HPP_
 
-#include "../../Evaluation.hpp"
-#include "../../Evaluator.hpp"
-#include "../../Solution.hpp"
-#include "../../Solutions/CopySolution.hpp"
-#include "../../VEPopulation.hpp"
+//#include "../../../Evaluation.hpp"
+//#include "../../../Evaluator.hpp"
+//#include "../../../Solution.hpp"
+//#include "../../../Solutions/CopySolution.hpp"
+#include "../../../VEPopulation.hpp"
 
 namespace optframe {
 

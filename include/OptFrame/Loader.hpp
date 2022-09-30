@@ -117,7 +117,7 @@
 //TODO ERROR on DecoderNSGAII
 //#include "Heuristics/EvolutionaryAlgorithms/DecoderNSGAII.hpp"
 
-#include "Heuristics/EvolutionaryAlgorithms/BRKGA.hpp"
+#include "Heuristics/EA/RK/BRKGA.hpp"
 
 // test local searches
 #include "Heuristics/CompareLocalSearch.hpp"

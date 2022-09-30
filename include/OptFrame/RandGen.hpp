@@ -246,7 +246,7 @@ public:
       return id();
    }
 
-   virtual bool compatible(string s)
+   virtual bool compatible(string s) override
    {
       return (s == idComponent()) || (Component::compatible(s));
    }

@@ -84,7 +84,7 @@ public:
       return SearchStatus::NO_REPORT;
    }
 
-   virtual bool compatible(string s)
+   virtual bool compatible(string s) override
    {
       return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
    }
@@ -101,7 +101,7 @@ public:
       return idComponent();
    }
 
-   virtual string toString() const
+   virtual string toString() const override
    {
       stringstream ss;
       ss << "CLS: (" << ls1->toString() << "," << ls2->toString() << ")";
@@ -153,7 +153,7 @@ public:
       return params;
    }
 
-   virtual bool canBuild(string component)
+   virtual bool canBuild(string component) override
    {
       return component == FirstImprovement<XES, XEv>::idComponent();
    }

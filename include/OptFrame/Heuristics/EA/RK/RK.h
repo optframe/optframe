@@ -20,50 +20,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_FCORE_FDECODER_RK_HPP_
-#define OPTFRAME_FCORE_FDECODER_RK_HPP_
+#ifndef OPTFRAME_RK_FAMILY_H_
+#define OPTFRAME_RK_FAMILY_H_
 
-#include <functional>
+#include <string>
 
-#include <OptFrame/Heuristics/EvolutionaryAlgorithms/DecoderRandomKeys.hpp>
+//using namespace std;
 
 namespace optframe {
 
-template<
-  XESolution XES,
-  optframe::comparability KeyType,
-  MinOrMax Minimizing>
-class FDecoderRK final : public DecoderRandomKeys<XES, KeyType>
+// Random Keys family
+
+class RK
 {
-   using S = typename XES::first_type;
-   using XEv = typename XES::second_type;
-   using RSK = std::vector<KeyType>;
-
 public:
-   pair<XEv, S> (*fDecode)(const RSK& rk); // decode function
-
-   FDecoderRK(
-     pair<XEv, S> (*_fDecode)(const RSK& rk))
-     : fDecode{ _fDecode }
+   static std::string family()
    {
+      return "RK:";
    }
 
-   virtual ~FDecoderRK()
+   virtual ~RK()
    {
-   }
-
-   virtual pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) override
-   {
-      auto p = fDecode(rk);
-      return make_pair(p.first, make_optional(p.second));
-   }
-
-   virtual bool isMinimization() const override
-   {
-      return Minimizing == MinOrMax::MINIMIZE;
    }
 };
 
-} // namespace optframe
+}
 
-#endif /*OPTFRAME_FCORE_FDECODER_RK_HPP_*/
+#endif /*OPTFRAME_RK_FAMILY_H_*/

@@ -194,7 +194,7 @@ public:
       return SearchStatus::NO_REPORT;
    }
 
-   virtual bool compatible(string s)
+   virtual bool compatible(string s) override
    {
       return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
    }
@@ -211,12 +211,12 @@ public:
       return idComponent();
    }
 
-   virtual void print() const
+   virtual void print() const override
    {
       cout << toString() << endl;
    }
 
-   virtual string toString() const
+   virtual string toString() const override
    {
       stringstream ss;
       ss << "BI: " << nsSeq->toString();
@@ -254,7 +254,7 @@ public:
       return new BestImprovement<XES, XEv, XSH>(eval, nsseq);
    }
 
-   virtual vector<pair<string, string>> parameters()
+   virtual vector<pair<string, string>> parameters() override
    {
       vector<pair<string, string>> params;
       params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
@@ -263,7 +263,7 @@ public:
       return params;
    }
 
-   virtual bool canBuild(string component)
+   virtual bool canBuild(string component) override
    {
       return component == BestImprovement<XES, XEv>::idComponent();
    }

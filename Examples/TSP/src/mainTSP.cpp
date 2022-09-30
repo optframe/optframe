@@ -56,7 +56,7 @@ using namespace std;
 //
 #include <OptFrame/Heuristics/LocalSearches/MultiImprovement.hpp>
 
-#include <OptFrame/Heuristics/EvolutionaryAlgorithms/BRKGA.hpp>
+#include <OptFrame/Heuristics/EA/RK/BRKGA.hpp>
 #include <OptFrame/Loader.hpp>
 ////#include "../OptFrame/Util/BuildCommand.hpp"  // TODO: return after Concepts OptFrame v4
 #include "TSP.h"

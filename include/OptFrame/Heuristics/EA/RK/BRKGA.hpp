@@ -23,11 +23,13 @@
 
 #include <algorithm>
 
-#include "../../EPopulation.hpp"
-#include "../../InitialPopulation.hpp"
-#include "../../SingleObjSearch.hpp"
+#include "../../../EPopulation.hpp"
+#include "../../../InitialPopulation.hpp"
+#include "../../../SingleObjSearch.hpp"
 
 #include "RKGA.hpp"
+
+#include "RK.h"
 
 // BRKGA - Biased-Random Key Genetic Algorithms
 
@@ -184,8 +186,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << GlobalSearchBuilder<XES, XES, XES2_Factory, X2ES_Factory>::idComponent() << "RK:"
-         << "BRKGA";
+      ss << GlobalSearchBuilder<XES, XES, XES2_Factory, X2ES_Factory>::idComponent() << EA::family() << RK::family() << "BRKGA";
       return ss.str();
    }
 
