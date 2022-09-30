@@ -292,6 +292,54 @@ public:
       }
    }
 
+   // TODO: experimental
+   bool checkCompatible(std::string scomponent, std::string starget)
+   {
+      // This is equivalent to: component->compatible(starget)
+      // Meaning that, either scomponent == starget, or starget is subpart of scomponent
+      // To make this beautiful, let's split in parts, separated by ':'
+      Scanner scan1(scomponent);
+      scan1.useSeparators(":");
+      std::vector<std::string> vparts1;
+      while (scan1.hasNext())
+         vparts1.push_back(scan1.next());
+      //
+      Scanner scan2(starget);
+      scan2.useSeparators(":");
+      std::vector<std::string> vparts2;
+      while (scan2.hasNext())
+         vparts2.push_back(scan2.next());
+      //
+      if (loglevel >= LogLevel::Debug) {
+         std::cout << "DEBUG: HF checkCompatible(" << scomponent << ";" << starget << ")" << std::endl;
+         for (unsigned i = 0; i < vparts1.size(); i++)
+            std::cout << vparts1[i] << " | ";
+         std::cout << std::endl;
+         for (unsigned i = 0; i < vparts2.size(); i++)
+            std::cout << vparts2[i] << " | ";
+         std::cout << std::endl;
+      }
+
+      if ((vparts1[0] != std::string{ "OptFrame" }) ||
+          (vparts2[0] != std::string{ "OptFrame" })) {
+         std::cout << "HF: WARNING: checkCompatible has STRANGE NON-OptFrame components '" << scomponent << "' AND '" << starget << "'" << std::endl;
+         return false;
+      }
+      // check if equals
+      if (scomponent == starget)
+         return true;
+      // cannot upcast
+      if (vparts2.size() > vparts1.size()) {
+         std::cout << "HF: WARNING: cannot upcast components '" << scomponent << "' AND '" << starget << "'" << std::endl;
+         return false;
+      }
+      // check if starget is subpart, a.k.a., "subclass"
+      for (unsigned i = 0; i < vparts2.size(); i++)
+         if (vparts1[i] != vparts2[i])
+            return false;
+      return true;
+   }
+
    int addComponent(sref<Component> component, string id)
    {
       // NO NEED FOR DOUBLE POINTER WARNING ANYMORE... LONG LIVE SHARED_PTR!!!
@@ -303,16 +351,24 @@ public:
       }
       */
 
+      bool b = checkCompatible(component->id(), id);
+      if (loglevel >= LogLevel::Debug)
+         std::cout << "DEBUG: HF checkCompatible returns b=" << b << std::endl;
+
+      if (!b)
+         return -1;
+      /*
       if (!component->compatible(id)) {
 
          if (loglevel >= LogLevel::Warning) {
-            std::cout << "HeuristicFactory addComponent: incompatible components '";
-            std::cout << component->id() << "' and '" << id << "'! " << std::endl;
+            std::cout << "HeuristicFactory addComponent: incompatible components. NOTE: component->id():'";
+            std::cout << component->id() << "' ->compatible('" << id << "') returned FALSE! " << std::endl;
             std::cout << "Rejecting component '" << component->toString() << "'." << std::endl;
          }
 
          return -1;
       }
+      */
 
       vector<std::shared_ptr<Component>>& v = components[id];
       std::shared_ptr<Component> scomp = component.sptr();
