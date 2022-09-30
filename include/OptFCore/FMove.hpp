@@ -137,7 +137,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ":FMove";
+      ss << Move<XES, typename XES::second_type>::idComponent() << ":FMove";
       return ss.str();
    }
 

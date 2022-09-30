@@ -59,7 +59,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ":FNS";
+      ss << NS<XES>::idComponent() << ":FNS";
       return ss.str();
    }
 

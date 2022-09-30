@@ -69,7 +69,7 @@ public:
    static std::string idComponent()
    {
       std::stringstream ss;
-      ss << super::idComponent() << ":FConstructive";
+      ss << Constructive<S>::idComponent() << ":FConstructive";
       return ss.str();
    }
 

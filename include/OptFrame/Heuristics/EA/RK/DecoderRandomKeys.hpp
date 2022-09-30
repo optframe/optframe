@@ -26,6 +26,8 @@
 //#include "../../../Solution.hpp"
 //#include "../../../Solutions/CopySolution.hpp"
 #include "../../../VEPopulation.hpp"
+#include "../EA.h"
+#include "RK.h"
 
 namespace optframe {
 
@@ -92,6 +94,18 @@ private:
    }
 
 public:
+   static std::string idComponent()
+   {
+      std::stringstream ss;
+      ss << Component::idComponent() << ":" << EA::family() << ":" << RK::family() << "DecoderRandomKeys";
+      return ss.str();
+   }
+
+   virtual std::string id() const
+   {
+      return idComponent();
+   }
+
    std::string toString() const override
    {
       return id();

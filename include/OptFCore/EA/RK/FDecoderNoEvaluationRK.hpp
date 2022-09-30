@@ -20,58 +20,50 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_FCORE_FNSENUM_HPP_
-#define OPTFRAME_FCORE_FNSENUM_HPP_
+#ifndef OPTFRAME_FCORE_FDECODER_NOEVALUATION_RK_HPP_
+#define OPTFRAME_FCORE_FDECODER_NOEVALUATION_RK_HPP_
 
 #include <functional>
 
-#include <OptFrame/NSEnum.hpp>
-
-// no need for coroutines
+#include <OptFrame/Heuristics/EA/RK/DecoderRandomKeysNoEvaluation.hpp>
 
 namespace optframe {
 
-template<XESolution XES>
-class FNSEnum final : public NSEnum<XES>
+template<XSolution S, optframe::comparability KeyType>
+class FDecoderNoEvaluationRK final : public DecoderRandomKeysNoEvaluation<S, KeyType>
 {
-   using XEv = typename XES::second_type;
-   using XSH = XES; // only single objective
-
-   std::function<unsigned int()> fSize;
-   std::function<uptr<Move<XES>>(unsigned int k)> fIndex;
-   // random generator
-   sref<RandGen> rg;
-   //
 public:
-   FNSEnum(
-     std::function<unsigned int()> fSize,
-     std::function<uptr<Move<XES>>(unsigned int k)> fIndex,
-     sref<RandGen> _rg)
-     : NSEnum<XES>(_rg)
-     , fSize{ fSize }
-     , fIndex{ fIndex }
-     , rg{ _rg }
+#ifdef OPTFCORE_FUNC_STATIC
+   typedef S (*FuncTypeDecode)(const std::vector<KeyType>& rk);
+#else
+   typedef std::function<S(const std::vector<KeyType>&)> FuncTypeDecode;
+#endif
+
+   FuncTypeDecode fDecode;
+
+   FDecoderNoEvaluationRK(FuncTypeDecode _fDecode)
+     : fDecode{ _fDecode }
    {
    }
 
-   virtual uptr<Move<XES, XEv>> indexMove(unsigned int index) override
+   virtual ~FDecoderNoEvaluationRK()
    {
-      return fIndex(index);
    }
 
-   virtual unsigned int size() const override
+   virtual S decodeSolution(const std::vector<KeyType>& rk) override
    {
-      return fSize();
+      auto s = fDecode(rk);
+      return s;
    }
 
-   static string idComponent()
+   static std::string idComponent()
    {
-      stringstream ss;
-      ss << NSEnum<XES>::idComponent() << ":FxNSEnum";
+      std::stringstream ss;
+      ss << DecoderRandomKeysNoEvaluation<S, KeyType>::idComponent() << ":FDecoderNoEvaluationRK";
       return ss.str();
    }
 
-   virtual string id() const override
+   virtual std::string id() const
    {
       return idComponent();
    }
@@ -79,4 +71,4 @@ public:
 
 } // namespace optframe
 
-#endif /*OPTFRAME_FCORE_FNSENUM_HPP_*/
+#endif /*OPTFRAME_FCORE_FDECODER_NOEVALUATION_RK_HPP_*/

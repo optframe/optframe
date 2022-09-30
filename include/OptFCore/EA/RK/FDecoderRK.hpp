@@ -40,10 +40,17 @@ class FDecoderRK final : public DecoderRandomKeys<XES, KeyType>
    using RSK = std::vector<KeyType>;
 
 public:
-   pair<XEv, S> (*fDecode)(const RSK& rk); // decode function
+   //pair<XEv, S> (*fDecode)(const RSK& rk); // decode function
 
-   FDecoderRK(
-     pair<XEv, S> (*_fDecode)(const RSK& rk))
+#ifdef OPTFCORE_FUNC_STATIC
+   typedef pair<XEv, S> (*FuncTypeDecode)(const RSK& rk);
+#else
+   typedef std::function<pair<XEv, S>(const RSK&)> FuncTypeDecode;
+#endif
+
+   FuncTypeDecode fDecode;
+
+   FDecoderRK(FuncTypeDecode _fDecode)
      : fDecode{ _fDecode }
    {
    }
@@ -61,6 +68,18 @@ public:
    virtual bool isMinimization() const override
    {
       return Minimizing == MinOrMax::MINIMIZE;
+   }
+
+   static std::string idComponent()
+   {
+      std::stringstream ss;
+      ss << DecoderRandomKeys<XES, KeyType>::idComponent() << ":FDecoderRK";
+      return ss.str();
+   }
+
+   virtual std::string id() const
+   {
+      return idComponent();
    }
 };
 

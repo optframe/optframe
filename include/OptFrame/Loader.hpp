@@ -118,6 +118,7 @@
 //#include "Heuristics/EvolutionaryAlgorithms/DecoderNSGAII.hpp"
 
 #include "Heuristics/EA/RK/BRKGA.hpp"
+#include "Heuristics/EA/RK/BasicDecoderRandomKeys.hpp"
 #include "Heuristics/EA/RK/BasicInitialEPopulationRK.hpp"
 
 // test local searches
@@ -219,6 +220,7 @@ public:
       // For Multi Objective, must see benefits.
       factory.builders.push_back(new BRKGABuilder<XES, XES, X2ES>);
       factory.builders.push_back(new BasicInitialEPopulationRKBuilder<S, XEv>);
+      factory.builders.push_back(new BasicDecoderRandomKeysBuilder<S, XEv>);
 
       // test local searches
       factory.builders.push_back(new CompareLocalSearchBuilder<S, XEv>);

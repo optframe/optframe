@@ -155,7 +155,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << Component::idComponent() << ":FNSSeq";
+      ss << NSSeq<XES>::idComponent() << ":FNSSeq";
       return ss.str();
    }
 

@@ -186,7 +186,7 @@ public:
    static string idComponent()
    {
       stringstream ss;
-      ss << GlobalSearchBuilder<XES, XES, XES2_Factory, X2ES_Factory>::idComponent() << EA::family() << RK::family() << "BRKGA";
+      ss << GlobalSearchBuilder<XES, XES, XES2_Factory, X2ES_Factory>::idComponent() << EA::family() << ":" << RK::family() << "BRKGA";
       return ss.str();
    }
 
