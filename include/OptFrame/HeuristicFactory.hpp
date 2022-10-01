@@ -355,11 +355,17 @@ public:
       if (loglevel >= LogLevel::Debug)
          std::cout << "DEBUG: HF checkCompatible returns b=" << b << std::endl;
 
-      if (!b)
-         return -1;
-      /*
-      if (!component->compatible(id)) {
+      bool b2 = component->compatible(id);
 
+      // experimental: disagreement is not ok
+      if (b xor b2) {
+         std::cout << "HF WARNING: disagreement between b and b2! Must Fix this!" << std::endl;
+         // assert(false);
+         std::cout << "Will not do anything if any is true... b=" << b << " b2=" << b2 << std::endl;
+      }
+
+      // experimental: but agreement is ok
+      if ((!b) && (!b2)) {
          if (loglevel >= LogLevel::Warning) {
             std::cout << "HeuristicFactory addComponent: incompatible components. NOTE: component->id():'";
             std::cout << component->id() << "' ->compatible('" << id << "') returned FALSE! " << std::endl;
@@ -368,7 +374,9 @@ public:
 
          return -1;
       }
-      */
+
+      // agreement: ok
+      // assert(b && b2);
 
       vector<std::shared_ptr<Component>>& v = components[id];
       std::shared_ptr<Component> scomp = component.sptr();
