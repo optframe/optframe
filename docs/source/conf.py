@@ -18,11 +18,11 @@
 # -- Project information -----------------------------------------------------
 
 project = 'optframe'
-copyright = '2007-2021, OptFrame Core Developers'
+copyright = '2007-2022, OptFrame Core Developers'
 author = 'OptFrame Core Developers'
 
 # The full version, including alpha/beta/rc tags
-release = '4.3'
+release = '5.0.0'
 
 
 # -- General configuration ---------------------------------------------------

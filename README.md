@@ -13,9 +13,9 @@ OptFrame
   </a>
 </p>
 
-## OptFrame 5.0-dev - Optimization Framework
+## OptFrame - C++ Optimization Framework
 
-OptFrame v4.4 is launched! v5.0 is under development.
+OptFrame `v5.0.0` is released.
 
 Now, with newest C++20 features and integrated Unit Testing for user projects and examples (still ongoing work). Scanner++ library is also dettached independent project now.
 Remember to clone this repo using `--recursive` option, so you don't miss anything ;)
@@ -41,7 +41,7 @@ Note that OptFrame website may have obsolete documentation and examples:
 
 ~Check [https://optframe.github.io/docs/quick-start-guide/](https://optframe.github.io/docs/quick-start-guide/)~
 
-### Intended changes for 5.0
+### Intended changes for Major 5
 
 - support global library for multiple languages
 - fix multiple inheritance (DONE!)
@@ -356,12 +356,12 @@ Bento Gonçalves-RS, pp 1887-1898.
  
 ## Licence
 
-- (v4.2+): Dual License: MIT License / LGPLv3
+- (4 dot 2+): Dual License: MIT License / LGPLv3
 
-- (<= v4.1): [**LICENSE GNU Lesser General Public License v3**](https://github.com/optframe/optframe/blob/master/LICENSE)
+- (<= 4 dot 1): [**LICENSE GNU Lesser General Public License v3**](https://github.com/optframe/optframe/blob/master/LICENSE)
 
 *OptFrame maintainers* [@igormcoelho](https://github.com/igormcoelho) and [@vncoelho](https://github.com/vncoelho)
 
-Copyright (C) 2007-2021
+Copyright (C) 2007-2022
 
 The OptFrame team

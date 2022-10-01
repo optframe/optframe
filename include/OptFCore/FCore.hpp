@@ -19,9 +19,10 @@ namespace optframe {
 class FCore
 {
 public:
+   constexpr std::string OPTFRAME_VERSION = "5.0.0";
    static std::string version()
    {
-      return "5.0-dev";
+      return OPTFRAME_VERSION;
    }
 
    static std::string welcome()
