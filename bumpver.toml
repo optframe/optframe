@@ -18,5 +18,5 @@ push = false
     "{version}"
 ]
 "docs/source/conf.py" = [
-    "{version}",
+    "release = {version}",
 ]
