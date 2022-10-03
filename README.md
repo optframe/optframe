@@ -49,6 +49,12 @@ Note that OptFrame website may have obsolete documentation and examples:
 - no 'using namespace std' 
 - change to more compact and consistent formatting style (using cpplint tool)
 
+### Versioning requirements
+
+`pip install bumpver`
+
+`bumpver update --patch`
+
 ### Docs Requirements
 
 `python3 -m pip install -r requirements.txt`
