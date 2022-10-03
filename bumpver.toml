@@ -14,9 +14,6 @@ push = false
 "bumpver.toml" = [
     'current_version = "{version}"',
 ]
-"include/OptFCore/FCore.hpp" = [
-    "{version}"
-]
 "docs/source/conf.py" = [
     "release = {version}",
 ]
