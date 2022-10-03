@@ -11,3 +11,4 @@ app_*
 *.code-workspace
 bazel-*
 .vscode
+.xxxxx-vscode
