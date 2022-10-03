@@ -15,7 +15,7 @@ OptFrame
 
 ## OptFrame - C++ Optimization Framework
 
-OptFrame `5.0.0` is released.
+OptFrame `5.0.1` is released.
 
 Now, with newest C++20 features and integrated Unit Testing for user projects and examples (still ongoing work). Scanner++ library is also dettached independent project now.
 Remember to clone this repo using `--recursive` option, so you don't miss anything ;)
