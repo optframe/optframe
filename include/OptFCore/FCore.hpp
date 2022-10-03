@@ -1,36 +1,38 @@
-#ifndef OPTFRAME_FCORE_HPP
-#define OPTFRAME_FCORE_HPP
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
+
+#ifndef OPTFCORE_FCORE_HPP_
+#define OPTFCORE_FCORE_HPP_
+
+#include <string>
 
 // Functional Core Module: inclusion of "Functional OptFrame Core" components
 
-#include "FConstructive.hpp"
-#include "FEvaluator.hpp"
-#include "FMove.hpp"
-#include "FNS.hpp"
-#include "FNSSeq.hpp"
+#include <OptFCore/FConstructive.hpp>
+#include <OptFCore/FEvaluator.hpp>
+#include <OptFCore/FMove.hpp>
+#include <OptFCore/FNS.hpp>
+#include <OptFCore/FNSSeq.hpp>
 //
-#include "EA/RK/FConstructiveRK.hpp"        // Extra
-#include "EA/RK/FDecoderNoEvaluationRK.hpp" // Extra
-#include "EA/RK/FDecoderRK.hpp"             // Extra
+#include "EA/RK/FConstructiveRK.hpp"         // Extra
+#include "EA/RK/FDecoderNoEvaluationRK.hpp"  // Extra
+#include "EA/RK/FDecoderRK.hpp"              // Extra
 
 namespace optframe {
 
 // OptFrame Functional Core (FCore)
-class FCore
-{
-public:
-   constexpr std::string OPTFRAME_VERSION = "5.0.0";
-   static std::string version()
-   {
-      return OPTFRAME_VERSION;
-   }
+class FCore {
+ public:
+  static constexpr char OPTFRAME_VERSION[] = "5.0.0";
+  static std::string version() {
+    return OPTFRAME_VERSION;
+  }
 
-   static std::string welcome()
-   {
-      return "Welcome to OptFrame Functional Core (FCore) - version " + version();
-   }
+  static std::string welcome() {
+    return "Welcome to OptFrame Functional Core (FCore) - version " + version();
+  }
 };
 
-} // optframe
+}  // namespace optframe
 
-#endif // OPTFRAME_FCORE_HPP
+#endif  // OPTFCORE_FCORE_HPP_

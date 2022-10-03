@@ -1,16 +1,19 @@
-#ifndef OPTFRAME_FXCORE_HPP
-#define OPTFRAME_FXCORE_HPP
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
+
+#ifndef OPTFCORE_FXCORE_HPP_
+#define OPTFCORE_FXCORE_HPP_
 
 // Functional Core Module: inclusion of "Functional OptFrame Core" components
 
-#include "FxConstructive.hpp"
-#include "FxEvaluator.hpp"
-#include "FxMove.hpp"
-#include "FxNS.hpp"
-#include "FxNSEnum.hpp"
+#include <OptFCore/FxConstructive.hpp>
+#include <OptFCore/FxEvaluator.hpp>
+#include <OptFCore/FxMove.hpp>
+#include <OptFCore/FxNS.hpp>
+#include <OptFCore/FxNSEnum.hpp>
 
 #ifdef CORO
-#include "FxNSSeq.hpp"
+#include <OptFCore/FxNSSeq.hpp>
 #endif
 
-#endif // OPTFRAME_FXCORE_HPP
+#endif  // OPTFCORE_FXCORE_HPP_

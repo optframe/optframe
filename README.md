@@ -47,6 +47,7 @@ Note that OptFrame website may have obsolete documentation and examples:
 - fix multiple inheritance (DONE!)
 - rename src/ to include/ and follow C++ package standards (DONE!)
 - no 'using namespace std' 
+- change to more compact and consistent formatting style (using cpplint tool)
 
 ### Docs Requirements
 
@@ -320,7 +321,7 @@ We recommend the following settings for vscode (`.vscode/settings.json`):
         "editor.detectIndentation": false
     },
     "C_Cpp.intelliSenseEngine": "Tag Parser",
-    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle : Mozilla , ColumnLimit : 0, IndentWidth: 3, AccessModifierOffset: -3}",
+    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle : Google , ColumnLimit : 0, IndentWidth: 2, AccessModifierOffset: -1}",
     "testMate.cpp.test.executables": "{tests,build,Build,BUILD,out,Out,OUT}/**/*{test,Test,TEST}*"
 }
 ```
@@ -356,9 +357,11 @@ Bento Gonçalves-RS, pp 1887-1898.
  
 ## Licence
 
+- (<= 4 dot 1): [**LICENSE GNU Lesser General Public License v3**](https://github.com/optframe/optframe/blob/master/LICENSE)
+
 - (4 dot 2+): Dual License: MIT License / LGPLv3
 
-- (<= 4 dot 1): [**LICENSE GNU Lesser General Public License v3**](https://github.com/optframe/optframe/blob/master/LICENSE)
+- v5+ : Dual License: MIT License / LGPLv3+
 
 *OptFrame maintainers* [@igormcoelho](https://github.com/igormcoelho) and [@vncoelho](https://github.com/vncoelho)
 

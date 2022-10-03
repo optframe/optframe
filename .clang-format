@@ -1,4 +1,4 @@
-BasedOnStyle: "Mozilla"
+BasedOnStyle: "Google"
 ColumnLimit: 0
-IndentWidth: 3 
-AccessModifierOffset: -3
+IndentWidth: 2 
+AccessModifierOffset: -1
