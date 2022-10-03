@@ -23,7 +23,7 @@ namespace optframe {
 // OptFrame Functional Core (FCore)
 class FCore {
  public:
-  static constexpr char OPTFRAME_VERSION[] = "5.0.2";
+  static constexpr char OPTFRAME_VERSION[] = "5.0.3";
   static std::string version() {
     return OPTFRAME_VERSION;
   }
