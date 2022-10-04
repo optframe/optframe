@@ -5,42 +5,37 @@
 #include <OptFrame/InitialSearch.hpp>
 //#include "../../OptFrame/Util/TestSolution.hpp"
 
-#include "ProblemInstance.h"
-
-#include "Representation.h"
-#include "Solution.h"
-
-#include "Evaluator.h"
-
-#include <list>
+#include <stdlib.h>
 
 #include <algorithm>
-#include <stdlib.h>
+#include <list>
+
+#include "Evaluator.h"
+#include "ProblemInstance.h"
+#include "Representation.h"
+#include "Solution.h"
 
 using namespace std;
 
 using namespace optframe;
 
-namespace KP
-{
+namespace KP {
 
 //class ConstructiveRandom: public Constructive<SolutionKP>
-class ConstructiveRandom: public InitialSearch<ESolutionKP, EvaluationKP>
-{
-private:
-   ProblemInstance& pKP;
-   GeneralEvaluator<ESolutionKP>& eval;
+class ConstructiveRandom : public InitialSearch<ESolutionKP> {
+ private:
+  ProblemInstance& pKP;
+  GeneralEvaluator<ESolutionKP>& eval;
 
-public:
-	
-	ConstructiveRandom(ProblemInstance& _pKP, GeneralEvaluator<ESolutionKP>& _eval);
-	
-	virtual ~ConstructiveRandom();
+ public:
+  ConstructiveRandom(ProblemInstance& _pKP, GeneralEvaluator<ESolutionKP>& _eval);
 
-	//std::optional<SolutionKP> generateSolution(double timelimit) override;
-   std::pair<std::optional<ESolutionKP>, SearchStatus> initialSearch(const StopCriteria<EvaluationKP>& stop) override;
+  virtual ~ConstructiveRandom();
+
+  //std::optional<SolutionKP> generateSolution(double timelimit) override;
+  std::pair<std::optional<ESolutionKP>, SearchStatus> initialSearch(const StopCriteria<EvaluationKP>& stop) override;
 };
 
-}
+}  // namespace KP
 
 #endif /*KP_CONTRUCTIVE_Random_H_*/

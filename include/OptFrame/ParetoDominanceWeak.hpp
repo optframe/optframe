@@ -30,41 +30,38 @@
 #ifndef OPTFRAME_PARETODOMINANCE_WEAK_HPP_
 #define OPTFRAME_PARETODOMINANCE_WEAK_HPP_
 
-#include "MultiEvaluation.hpp"
-#include "ParetoDominance.hpp"
-
 #include <cmath>
 #include <iostream>
+
+#include "MultiEvaluation.hpp"
+#include "ParetoDominance.hpp"
 
 using namespace std;
 
 namespace optframe {
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XEvaluation XMEv = MultiEvaluation<>>
-class ParetoDominanceWeak : public ParetoDominance<S, XEv, XMEv>
-{
-public:
-   using ParetoDominance<S, XEv, XMEv>::dominates;
+template <XSolution S, XEvaluation XEv = Evaluation<>, XEvaluation XMEv = MultiEvaluation<>>
+class ParetoDominanceWeak : public ParetoDominance<S, XEv, XMEv> {
+ public:
+  using XMES = std::pair<S, XMEv>;
+  using ParetoDominance<S, XEv, XMEv>::dominates;
 
-   ParetoDominanceWeak(MultiEvaluator<S, XEv, XMEv>& _mev)
-     : ParetoDominance<S, XEv, XMEv>(_mev)
-   {
-   }
+  ParetoDominanceWeak(MultiEvaluator<XMES>& _mev)
+      : ParetoDominance<S, XEv, XMEv>(_mev) {
+  }
 
-   virtual ~ParetoDominanceWeak()
-   {
-   }
+  virtual ~ParetoDominanceWeak() {
+  }
 
-   virtual bool dominates(const MultiEvaluation<>& mev1, const MultiEvaluation<>& mev2)
-   {
-      pair<int, int> betterEquals = ParetoDominance<S, XEv, XMEv>::checkDominates(mev1, mev2);
-      int better = betterEquals.first;
-      int equals = betterEquals.second;
+  virtual bool dominates(const MultiEvaluation<>& mev1, const MultiEvaluation<>& mev2) {
+    pair<int, int> betterEquals = ParetoDominance<S, XEv, XMEv>::checkDominates(mev1, mev2);
+    int better = betterEquals.first;
+    int equals = betterEquals.second;
 
-      return (((unsigned)better + equals == mev1.size()));
-   }
+    return (((unsigned)better + equals == mev1.size()));
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /*OPTFRAME_PARETODOMINANCE_WEAK_HPP_*/

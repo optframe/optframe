@@ -4,7 +4,7 @@
 
 // =========================================
 // Compilation tests for Evaluation concepts
-// These are NOT unit tests... 
+// These are NOT unit tests...
 // Unit Tests are on tests/ folder
 // =========================================
 
@@ -15,65 +15,59 @@ namespace optframe {
 
 // TestTArithMO_is_zero2 is a XEvaluation class
 
-template<optframe::basic_arithmetics ObjType>
-class TestTArithMO_is_zero2
-{
-public:
-   using objType = ObjType; // exporting 'objType' type, based on 'ObjType'
-   //
-   
-   ObjType infMeasureX;
+template <optframe::basic_arithmetics ObjType>
+class TestTArithMO_is_zero2 {
+ public:
+  using objType = ObjType;  // exporting 'objType' type, based on 'ObjType'
+  //
 
-   bool outdated; // this is required by XEvaluation
-   bool estimated; // this is required by XEvaluation
+  ObjType infMeasureX;
 
-   bool betterStrict(const TestTArithMO_is_zero2<ObjType>& e); // required
-   bool betterNonStrict(const TestTArithMO_is_zero2<ObjType>& e); // required
-   bool equals(const TestTArithMO_is_zero2<ObjType>& e); // required
-   bool isStrictImprovement();
-   bool isNonStrictImprovement();
+  //bool outdated; // this is required by XEvaluation
+  //bool estimated; // this is required by XEvaluation
+  bool isOutdated();
+  void invalidate();
+  bool isEstimated();
 
+  bool betterStrict(const TestTArithMO_is_zero2<ObjType>& e);     // required
+  bool betterNonStrict(const TestTArithMO_is_zero2<ObjType>& e);  // required
+  bool equals(const TestTArithMO_is_zero2<ObjType>& e);           // required
+  bool isStrictImprovement();
+  bool isNonStrictImprovement();
 
-   void update(const TestTArithMO_is_zero2<ObjType>& e); // required
-   TestTArithMO_is_zero2<ObjType> diff(const TestTArithMO_is_zero2<ObjType>& e); // required
+  void update(const TestTArithMO_is_zero2<ObjType>& e);                          // required
+  TestTArithMO_is_zero2<ObjType> diff(const TestTArithMO_is_zero2<ObjType>& e);  // required
 
+  bool f() {
+    return optframe::numeric_is_zero<ObjType>(infMeasureX);
+  }
 
-   bool f()
-   {
-      return optframe::numeric_is_zero<ObjType>(infMeasureX);
-   }
+  string toString() const {
+    return "";
+  }
 
-   string toString() const
-   {
-      return "";
-   }
+  TestTArithMO_is_zero2& clone() {
+    return *this;
+  }
 
-   TestTArithMO_is_zero2& clone()
-   {
-      return *this;
-   }
+  ObjType evaluation() const {
+    ObjType o;
+    return o;
+  }
 
-   ObjType evaluation() const
-   {
-      ObjType o;
-      return o;
-   }
-
-   friend ostream& operator<<(ostream& os, const TestTArithMO_is_zero2& me)
-   {
-      os << me.toString();
-      return os;
-   }
+  friend ostream& operator<<(ostream& os, const TestTArithMO_is_zero2& me) {
+    os << me.toString();
+    return os;
+  }
 };
-
 
 static_assert(XEvaluation<Evaluation<double>>);
 static_assert(XEvaluation<Evaluation<int>>);
 static_assert(XEvaluation<Evaluation<>>);
-static_assert(XEvaluation<Evaluation<SingleObjValue>>); // single obj value
+static_assert(XEvaluation<Evaluation<SingleObjValue>>);  // single obj value
 static_assert(XEvaluation<TestTArithMO_is_zero<MultiObjValue<int, double>>>);
 static_assert(XEvaluation<TestTArithMO_is_zero2<MultiObjValue<int, double>>>);
-static_assert(XEvaluation<Evaluation<MultiObjValue<int, double>>>); // multi obj value
+static_assert(XEvaluation<Evaluation<MultiObjValue<int, double>>>);  // multi obj value
 
 /*
 struct optframe_test_debug_testev_evaluation_disable_runtime
@@ -89,11 +83,10 @@ struct optframe_test_debug_testev_evaluation_disable_runtime
 };
 */
 
-struct optframe_debug_test_evaluation
-{
-   Evaluation<> testEvaluation;
+struct optframe_debug_test_evaluation {
+  Evaluation<> testEvaluation;
 };
 
-} // namespace optframe
+}  // namespace optframe
 
-#endif // NDEBUG
+#endif  // NDEBUG

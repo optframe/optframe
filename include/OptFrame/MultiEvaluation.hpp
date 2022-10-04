@@ -20,240 +20,214 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_MULTI_EVALUATION_HPP_
-#define OPTFRAME_MULTI_EVALUATION_HPP_
+#ifndef OPTFRAME_MULTIEVALUATION_HPP_
+#define OPTFRAME_MULTIEVALUATION_HPP_
 
-#include "Evaluation.hpp"
+#include <string>
+#include <utility>
+#include <vector>
+//
 
-using namespace std;
+#include <OptFrame/Evaluation.hpp>
+
+// using namespace std;
 
 namespace optframe {
 
-// TODO: pass ObjType here
-// TODO: convert MultiEvaluation<> to XEvaluation model too
-template<optframe::objval ObjType = evtype>
-class MultiEvaluation : public Component
-{
-protected:
-   vector<Evaluation<>> vev; // TODO: pass ObjType here
+// evtype is default (double?)
 
-public:
-   bool outdated{ true };
+template <optframe::objval ObjType = evtype>
+class MultiEvaluation : public Component {
+ public:
+  // internal Evaluation type
+  using XEv = Evaluation<ObjType>;
+  // this is not 'double' but a 'vector of double'
+  using objType = std::vector<XEv>;
 
-public:
-   MultiEvaluation()
-   {
-      static_assert(XEvaluation<MultiEvaluation<ObjType>>);
-   }
+ protected:
+  // internal structure is a pack of XEv
+  std::vector<XEv> vev;
 
-   MultiEvaluation(Evaluation<> ev)
-   {
-      vev.push_back(ev);
-      static_assert(XEvaluation<MultiEvaluation<ObjType>>);
-   }
+ public:
+  // this 'outdated' should be true, when any
+  // bool outdated{true};
 
-   //	MultiEvaluation(const Evaluation<> ev)
-   //	{
-   //		vev.push_back(&ev.clone());
-   //	}
+ public:
+  MultiEvaluation() {
+    static_assert(XEvaluation<MultiEvaluation<ObjType>>);
+  }
 
-   MultiEvaluation(const vector<double>& vd)
-   {
-      for (unsigned i = 0; i < vd.size(); i++)
-         vev.push_back(Evaluation(vd[i]));
-   }
+  explicit MultiEvaluation(Evaluation<ObjType> ev) {
+    vev.push_back(ev);
+    static_assert(XEvaluation<MultiEvaluation<ObjType>>);
+  }
 
-   //	MultiEvaluation(const vector<Evaluation<>*>& _vev)
-   //	{
-   //		for (unsigned i = 0; i < _vev.size(); i++)
-   //			vev.push_back(&_vev[i]->clone());
-   //	}
+  explicit MultiEvaluation(const vector<ObjType>& vd) {
+    for (unsigned i = 0; i < vd.size(); i++)
+      vev.push_back(XEv{vd[i]});
+  }
 
-   //	MultiEvaluation(MultiEvaluation<>&& mev)
-   //	{
-   //		cout<<"finally here..."<<endl;
-   //		for (unsigned i = 0; i < mev.vev.size(); i++)
-   //			vev.push_back(std::move(mev.vev[i]));
-   //	}
+  MultiEvaluation(const MultiEvaluation<ObjType>& mev) {
+    for (unsigned i = 0; i < mev.vev.size(); i++)
+      vev.push_back(mev.vev[i]);
+  }
 
-   MultiEvaluation(const MultiEvaluation<>& mev)
-   {
-      for (unsigned i = 0; i < mev.vev.size(); i++)
-         vev.push_back(mev.vev[i]);
-   }
+  MultiEvaluation(MultiEvaluation<ObjType>&& mev)
+      : vev(std::move(mev.vev)) {
+  }
 
-   MultiEvaluation(MultiEvaluation<>&& mev)
-     : vev(std::move(mev.vev))
-   {
-   }
+  virtual ~MultiEvaluation() {
+    this->clear();
+  }
 
-   virtual ~MultiEvaluation()
-   {
-      this->clear();
-   }
+  // ===============
+  // getters/setters
+  // ===============
 
-   void print()
-   {
-      for (unsigned i = 0; i < vev.size(); i++)
-         vev[i].print();
-   }
+  // if any objective is outdated, this is also outdated
+  bool isOutdated() {
+    for (unsigned i = 0; i < vev.size(); i++)
+      if (vev[i].isOutdated())
+        return true;
+    return false;
+  }
 
-   //	void addEvaluation(const Evaluation<> ev)
-   //	{
-   //		vev.push_back(ev.clone());
-   //	}
+  // makes all evaluations 'outdated'
+  void invalidate() {
+    for (unsigned i = 0; i < vev.size(); i++)
+      vev[i].invalidate();
+  }
 
-   void addEvaluation(Evaluation<>& ev)
-   {
-      vev.push_back(ev);
-   }
+  // if any objective is estimated, this is also estimated
+  bool isEstimated() {
+    for (unsigned i = 0; i < vev.size(); i++)
+      if (vev[i].isEstimated())
+        return true;
+    return false;
+  }
 
-   void addEvaluation(Evaluation<>&& ev)
-   {
-      vev.push_back(std::move(ev));
-   }
+  std::vector<XEv>& evaluation() {
+    return vev;
+  }
 
-   unsigned size() const
-   {
-      return vev.size();
-   }
+  void print() {
+    for (unsigned i = 0; i < vev.size(); i++)
+      vev[i].print();
+  }
 
-   void erase(unsigned index)
-   {
-      vev.erase(vev.begin() + index);
-   }
+  void addEvaluation(Evaluation<ObjType>& ev) {
+    vev.push_back(ev);
+  }
 
-   Evaluation<>& at(unsigned index)
-   {
-      return vev[index];
-   }
+  void addEvaluation(Evaluation<ObjType>&& ev) {
+    vev.push_back(std::move(ev));
+  }
 
-   const Evaluation<>& at(unsigned index) const
-   {
-      return vev[index];
-   }
+  unsigned size() const {
+    return vev.size();
+  }
 
-   evtype atObjVal(unsigned index)
-   {
-      return vev[index].evaluation();
-   }
+  void erase(unsigned index) {
+    vev.erase(vev.begin() + index);
+  }
 
-   // TODO: test!!
-   MultiEvaluation<> diff(const MultiEvaluation<>& other)
-   {
-      MultiEvaluation<> r = *this;
-      for (unsigned i = 0; i < r.size(); i++)
-         r.at(i) = r.at(i).diff(other.at(i));
-      return r;
-   }
+  XEv& at(unsigned index) {
+    return vev[index];
+  }
 
-   Evaluation<>& operator[](unsigned index)
-   {
-      return vev[index];
-   }
+  const XEv& at(unsigned index) const {
+    return vev[index];
+  }
 
-   const Evaluation<>& operator[](unsigned index) const
-   {
-      return vev[index];
-   }
+  evtype atObjVal(unsigned index) {
+    return vev[index].evaluation();
+  }
 
-   void setOutdated(unsigned index, bool status)
-   {
-      vev[index].outdated = status;
-   }
+  MultiEvaluation<ObjType> diff(const MultiEvaluation<ObjType>& other) const {
+    MultiEvaluation<ObjType> r = *this;
+    for (unsigned i = 0; i < r.size(); i++)
+      r.at(i) = r.at(i).diff(other.at(i));
+    return r;
+  }
 
-   //	const vector<Evaluation<>*>& getVector() const
-   //	{
-   //		return vev;
-   //	}
+  XEv& operator[](unsigned index) {
+    return vev[index];
+  }
 
-   //	vector<Evaluation<>*> getCloneVector() const
-   //	{
-   //		vector<Evaluation<>*> v_e;
-   //		for (unsigned i = 0; i < vev.size(); i++)
-   //			v_e.push_back(&vev[i]->clone());
-   //		return v_e;
-   //	}
+  const XEv& operator[](unsigned index) const {
+    return vev[index];
+  }
 
-   //	bool sameValues(const MultiEvaluation<>& mev)
-   //	{
-   //		if (vev.size() != mev.vev.size())
-   //			return false;
-   //
-   //		for (unsigned i = 0; i < vev.size(); i++)
-   //			if (vev[i]->evaluation() != mev.vev[i]->evaluation())
-   //				return false;
-   //		return true;
-   //	}
+  void setOutdated(unsigned index, bool status) {
+    vev[index].outdated = status;
+  }
 
-   virtual MultiEvaluation<>& operator=(const MultiEvaluation<>& mev)
-   {
-      if (&mev == this) // auto ref check
-         return *this;
-
-      this->vev.clear();
-      for (unsigned i = 0; i < mev.vev.size(); i++)
-         this->vev.push_back(mev.vev[i]);
-
+  virtual MultiEvaluation<ObjType>& operator=(const MultiEvaluation<ObjType>& mev) {
+    if (&mev == this)  // auto ref check
       return *this;
-   }
 
-   virtual MultiEvaluation<>& clone() const
-   {
-      return *new MultiEvaluation(*this);
-   }
+    this->vev.clear();
+    for (unsigned i = 0; i < mev.vev.size(); i++)
+      this->vev.push_back(mev.vev[i]);
 
-   //	void clearNoKill()
-   //	{
-   //		this->vev.clear();
-   //	}
+    return *this;
+  }
 
-   void clear()
-   {
-      this->vev.clear();
-   }
+  virtual MultiEvaluation<ObjType>& clone() const {
+    return *new MultiEvaluation(*this);
+  }
 
-   // update Evaluation with costs
-   virtual void update(MultiEvaluation<ObjType>& mevTarget) const
-   {
-      // this task was performed before by MoveCost... now unifying in Evaluation
-      // how to do this?
-      assert(false);
-   }
+  void clear() {
+    this->vev.clear();
+  }
 
-   virtual void print() const override
-   {
-      cout << toString() << endl;
-   }
+  // update Evaluation with costs
+  virtual void update(MultiEvaluation<ObjType>& mevTarget) const {
+    // this task was performed before by MoveCost... now unifying in Evaluation
+    // how to do this?
+    assert(false);
+  }
 
-   virtual string toString() const override
-   {
-      stringstream ss;
-      ss << "MultiEvaluation<> (" << vev.size() << "):";
-      for (unsigned i = 0; i < vev.size(); i++)
-         ss << vev[i].toString() << endl;
-      return ss.str();
-   }
+  void print() const override {
+    cout << toString() << endl;
+  }
 
-   friend std::ostream& operator<<(std::ostream& os, const MultiEvaluation& me)
-   {
-      os << me.toString();
-      return os;
-   }
+  std::string toString() const override {
+    std::stringstream ss;
+    ss << "MultiXEv (" << vev.size() << "):";
+    for (unsigned i = 0; i < vev.size(); i++)
+      ss << vev[i].toString() << endl;
+    return ss.str();
+  }
+
+  friend std::ostream& operator<<(std::ostream& os, const MultiEvaluation& me) {
+    os << me.toString();
+    return os;
+  }
 };
+
+/*
+optframe::evgoal<Self>&&
+   HasClone<Self>&&
+         HasToString<Self>&&
+            HasGetObj<Self>&&
+               optframe::ostreamable<Self>&& requires(Self e) {
+                  typename Self::objType;
+               } &&
+*/
+static_assert(optframe::evgoal<MultiEvaluation<double>>);
 
 // Compilation test for concepts
 // MultiEvaluation is considered an XEvaluation type (compatible with past implementations)
 // TODO: remove this
-static_assert(XEvaluation<MultiEvaluation<>>);
+static_assert(XEvaluation<MultiEvaluation<double>>);
 
-#ifndef NDEBUG
-struct optframe_debug_test_multievaluation
-{
-   MultiEvaluation<> testEvaluation;
+//#ifndef NDEBUG
+struct optframe_debug_test_multievaluation {
+  MultiEvaluation<double> testEvaluation;
 };
-#endif
+//#endif
 
-} // namespace optframe
+}  // namespace optframe
 
-#endif /*OPTFRAME_MULTI_EVALUATION_HPP_*/
+#endif  // OPTFRAME_MULTIEVALUATION_HPP_

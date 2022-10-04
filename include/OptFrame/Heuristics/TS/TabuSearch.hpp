@@ -27,252 +27,239 @@
 
 namespace optframe {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
-class TabuSearch : public SingleObjSearch<XES>
-{
-private:
-   Evaluator<XES, XEv>& evaluator;
-   InitialSearch<XES, XEv>& constructive;
-   NSSeq<XES, XEv, XSH>& nsSeq;
-   int tlSize;
-   int tsMax;
+template <XESolution XES, XEvaluation XEv = Evaluation<>>
+class TabuSearch : public SingleObjSearch<XES> {
+ private:
+  Evaluator<XES, XEv>& evaluator;
+  InitialSearch<XES>& constructive;
+  NSSeq<XES, XEv, XSH>& nsSeq;
+  int tlSize;
+  int tsMax;
 
-public:
-   TabuSearch(Evaluator<XES, XEv>& _ev, InitialSearch<XES, XEv>& _constructive, NSSeq<XES, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax)
-     : evaluator(_ev)
-     , constructive(_constructive)
-     , nsSeq(_nsSeq)
-     , tlSize(_tlSize)
-     , tsMax(_tsMax)
-   {
-   }
+ public:
+  TabuSearch(Evaluator<XES, XEv>& _ev, InitialSearch<XES>& _constructive, NSSeq<XES, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax)
+      : evaluator(_ev), constructive(_constructive), nsSeq(_nsSeq), tlSize(_tlSize), tsMax(_tsMax) {
+  }
 
-   virtual ~TabuSearch()
-   {
-   }
+  virtual ~TabuSearch() {
+  }
 
-   pair<S&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0, const S* _s = nullptr, const Evaluation<DS>* _e = nullptr)
-   {
-      //cout << "TabuSearch exec(" << target_f << "," << timelimit << ")" << endl;
+  pair<S&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0, const S* _s = nullptr, const Evaluation<DS>* _e = nullptr) {
+    //cout << "TabuSearch exec(" << target_f << "," << timelimit << ")" << endl;
 
-      long tini = time(nullptr);
+    long tini = time(nullptr);
 
-      S& s = constructive.generateSolution();
-      Evaluation<DS>& e = evaluator.evaluate(s);
+    S& s = constructive.generateSolution();
+    Evaluation<DS>& e = evaluator.evaluate(s);
 
-      S* sStar = &s.clone();
-      Evaluation<DS>* evalSStar = &evaluator.evaluate(*sStar);
+    S* sStar = &s.clone();
+    Evaluation<DS>* evalSStar = &evaluator.evaluate(*sStar);
 
-      //evalSStar->print();
+    //evalSStar->print();
 
-      int Iter = 0;
+    int Iter = 0;
 
-      int BestIter = 0;
+    int BestIter = 0;
 
-      const vector<Move<S, XEv>*> emptyList;
-      vector<Move<S, XEv>*> tabuList;
+    const vector<Move<S, XEv>*> emptyList;
+    vector<Move<S, XEv>*> tabuList;
 
-      long tnow = time(nullptr);
+    long tnow = time(nullptr);
 
-      int estimative_BTmax = 0;
+    int estimative_BTmax = 0;
 
-      while (Iter - BestIter <= tsMax && ((tnow - tini) < timelimit)) {
-         Iter = Iter + 1;
+    while (Iter - BestIter <= tsMax && ((tnow - tini) < timelimit)) {
+      Iter = Iter + 1;
 
-         if ((Iter - BestIter) > estimative_BTmax)
-            estimative_BTmax = (Iter - BestIter);
+      if ((Iter - BestIter) > estimative_BTmax)
+        estimative_BTmax = (Iter - BestIter);
 
-         //cout << "Iter " << Iter << " (" << (Iter - BestIter - 1) << " without improvement)" << endl;
+      //cout << "Iter " << Iter << " (" << (Iter - BestIter - 1) << " without improvement)" << endl;
 
-         // ==================
-         // First: aspiration
-         // ==================
+      // ==================
+      // First: aspiration
+      // ==================
 
-         Move<S, XEv>* bestMove = tabuBestMove(s, e, emptyList);
+      Move<S, XEv>* bestMove = tabuBestMove(s, e, emptyList);
 
-         S* s1 = &s.clone();
+      S* s1 = &s.clone();
 
-         Move<S, XEv>* newTabu = &bestMove->apply(*s1);
-         Evaluation<DS>* evalS1 = &evaluator.evaluate(*s1);
+      Move<S, XEv>* newTabu = &bestMove->apply(*s1);
+      Evaluation<DS>* evalS1 = &evaluator.evaluate(*s1);
 
-         if (evaluator.betterThan(*evalS1, *evalSStar)) {
-            // Better than global!
+      if (evaluator.betterThan(*evalS1, *evalSStar)) {
+        // Better than global!
 
-            for (unsigned int i = 0; i < tabuList.size(); i++)
-               if ((*tabuList[i]) == (*bestMove)) {
-                  delete tabuList[i];
-                  tabuList.erase(tabuList.begin() + i);
-                  break;
-               }
-         } else {
-            delete s1;
-            delete evalS1;
-            delete newTabu;
-            delete bestMove;
-
-            bestMove = tabuBestMove(s, e, tabuList);
-            s1 = &s.clone();
-            newTabu = &bestMove->apply(*s1);
-            evalS1 = &evaluator.evaluate(*s1);
-
-            delete bestMove;
-         }
-
-         // =====================================================
-         //    |T| <= tsSize
-         // =====================================================
-
-         tabuList.push_back(newTabu);
-
-         if (((int)tabuList.size()) > tlSize) {
-            delete tabuList[0];
-            tabuList.erase(tabuList.begin());
-         }
-
-         //-----------------------------------------------------------
-         if (((int)tabuList.size()) > tlSize)
-            throw string("ERROR on Tabu Search! more elements than expected...");
-         //-----------------------------------------------------------
-
-         // =====================================================
-         //        's' <- 's1';
-         // =====================================================
-         s = *s1;
-         e = *evalS1;
-
-         delete s1;
-         delete evalS1;
-
-         // =====================================================
-         //        's' better than 's*' (?)
-         // =====================================================
-
-         if (evaluator.betterThan(e, *evalSStar)) {
-            delete sStar;
-            delete evalSStar;
-
-            sStar = &s.clone();
-            evalSStar = &evaluator.evaluate(*sStar);
-
-            BestIter = Iter;
-
-            //cout << "Improvement on " << BestIter << ": fo=" << evalSStar->evaluation() << endl;
-         }
-
-         tnow = time(nullptr);
-      }
-
-      while (tabuList.size() > 0) {
-         delete tabuList[0];
-         tabuList.erase(tabuList.begin());
-      }
-
-      // ===========
-      // 's' <- 's*'
-      // ===========
-
-      s = *sStar;
-      e = *evalSStar;
-
-      delete sStar;
-      delete evalSStar;
-
-      FILE* ftabu = fopen("tabu.txt", "a");
-      if (!ftabu) {
-         cout << "Error creating file 'tabu.txt'" << endl;
+        for (unsigned int i = 0; i < tabuList.size(); i++)
+          if ((*tabuList[i]) == (*bestMove)) {
+            delete tabuList[i];
+            tabuList.erase(tabuList.begin() + i);
+            break;
+          }
       } else {
-         fprintf(ftabu, "%d\n", estimative_BTmax);
-         fclose(ftabu);
+        delete s1;
+        delete evalS1;
+        delete newTabu;
+        delete bestMove;
+
+        bestMove = tabuBestMove(s, e, tabuList);
+        s1 = &s.clone();
+        newTabu = &bestMove->apply(*s1);
+        evalS1 = &evaluator.evaluate(*s1);
+
+        delete bestMove;
       }
 
-      return new pair<S&, Evaluation<DS>&>(s, e);
-   }
+      // =====================================================
+      //    |T| <= tsSize
+      // =====================================================
 
-   Move<S, XEv>* tabuBestMove(S& s, Evaluation<DS>& e, const vector<Move<S, XEv>*>& tabuList)
-   {
-      NSIterator<S, XEv>& it = nsSeq.getIterator(e.getDS(), s.getR(), s.getADS());
+      tabuList.push_back(newTabu);
 
-      it.first();
-
-      if (it.isDone()) {
-         delete &it;
-         return nullptr;
+      if (((int)tabuList.size()) > tlSize) {
+        delete tabuList[0];
+        tabuList.erase(tabuList.begin());
       }
 
-      Move<S, XEv>* bestMove = &it.current();
+      //-----------------------------------------------------------
+      if (((int)tabuList.size()) > tlSize)
+        throw string("ERROR on Tabu Search! more elements than expected...");
+      //-----------------------------------------------------------
 
-      while (!bestMove->canBeApplied(s) || inList(bestMove, tabuList)) {
-         delete bestMove;
-         it.next();
+      // =====================================================
+      //        's' <- 's1';
+      // =====================================================
+      s = *s1;
+      e = *evalS1;
 
-         if (!it.isDone()) {
-            bestMove = &it.current();
-         } else {
-            delete &it;
-            return nullptr;
-         }
+      delete s1;
+      delete evalS1;
+
+      // =====================================================
+      //        's' better than 's*' (?)
+      // =====================================================
+
+      if (evaluator.betterThan(e, *evalSStar)) {
+        delete sStar;
+        delete evalSStar;
+
+        sStar = &s.clone();
+        evalSStar = &evaluator.evaluate(*sStar);
+
+        BestIter = Iter;
+
+        //cout << "Improvement on " << BestIter << ": fo=" << evalSStar->evaluation() << endl;
       }
 
-      MoveCost<>* bestCost = &evaluator.moveCost(*bestMove, se);
-      it.next();
-      while (!it.isDone()) {
-         Move<S, XEv>* move = &it.current();
-         if (move->canBeApplied(s) && !inList(bestMove, tabuList)) {
-            MoveCost<>* cost = &evaluator.moveCost(*move, se);
+      tnow = time(nullptr);
+    }
 
-            if (evaluator.betterThan(*cost, *bestCost)) {
-               delete bestMove;
-               delete bestCost;
-               bestMove = move;
-               bestCost = cost;
-            } else {
-               delete move;
-               delete cost;
-            }
-         } else
-            delete move;
-         it.next();
-      }
+    while (tabuList.size() > 0) {
+      delete tabuList[0];
+      tabuList.erase(tabuList.begin());
+    }
 
+    // ===========
+    // 's' <- 's*'
+    // ===========
+
+    s = *sStar;
+    e = *evalSStar;
+
+    delete sStar;
+    delete evalSStar;
+
+    FILE* ftabu = fopen("tabu.txt", "a");
+    if (!ftabu) {
+      cout << "Error creating file 'tabu.txt'" << endl;
+    } else {
+      fprintf(ftabu, "%d\n", estimative_BTmax);
+      fclose(ftabu);
+    }
+
+    return new pair<S&, Evaluation<DS>&>(s, e);
+  }
+
+  Move<S, XEv>* tabuBestMove(S& s, Evaluation<DS>& e, const vector<Move<S, XEv>*>& tabuList) {
+    NSIterator<S, XEv>& it = nsSeq.getIterator(e.getDS(), s.getR(), s.getADS());
+
+    it.first();
+
+    if (it.isDone()) {
       delete &it;
+      return nullptr;
+    }
 
-      delete bestCost;
+    Move<S, XEv>* bestMove = &it.current();
 
-      return bestMove;
-   }
+    while (!bestMove->canBeApplied(s) || inList(bestMove, tabuList)) {
+      delete bestMove;
+      it.next();
 
-   bool inList(Move<S, XEv>* m, const vector<Move<S, XEv>*>& v)
-   {
-      for (unsigned int i = 0; i < v.size(); i++)
-         if ((*m) == (*v[i]))
-            return true;
-      return false;
-   }
+      if (!it.isDone()) {
+        bestMove = &it.current();
+      } else {
+        delete &it;
+        return nullptr;
+      }
+    }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << SingleObjSearch<XES>::idComponent() << "TS:basic_ts";
-      return ss.str();
-   }
+    MoveCost<>* bestCost = &evaluator.moveCost(*bestMove, se);
+    it.next();
+    while (!it.isDone()) {
+      Move<S, XEv>* move = &it.current();
+      if (move->canBeApplied(s) && !inList(bestMove, tabuList)) {
+        MoveCost<>* cost = &evaluator.moveCost(*move, se);
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+        if (evaluator.betterThan(*cost, *bestCost)) {
+          delete bestMove;
+          delete bestCost;
+          bestMove = move;
+          bestCost = cost;
+        } else {
+          delete move;
+          delete cost;
+        }
+      } else
+        delete move;
+      it.next();
+    }
 
-   virtual vector<pair<string, string>> parameters() const
-   {
-      vector<pair<string, string>> p;
-      p.push_back(make_pair("OptFrame:ev", "evaluator"));
-      p.push_back(make_pair("OptFrame:nsseq", "neighborhood_structure"));
-      p.push_back(make_pair("int", "tabu_list_size"));
-      p.push_back(make_pair("int", "ts_max"));
+    delete &it;
 
-      return p;
-   }
+    delete bestCost;
+
+    return bestMove;
+  }
+
+  bool inList(Move<S, XEv>* m, const vector<Move<S, XEv>*>& v) {
+    for (unsigned int i = 0; i < v.size(); i++)
+      if ((*m) == (*v[i]))
+        return true;
+    return false;
+  }
+
+  static string idComponent() {
+    stringstream ss;
+    ss << SingleObjSearch<XES>::idComponent() << "TS:basic_ts";
+    return ss.str();
+  }
+
+  virtual string id() const override {
+    return idComponent();
+  }
+
+  virtual vector<pair<string, string>> parameters() const {
+    vector<pair<string, string>> p;
+    p.push_back(make_pair("OptFrame:ev", "evaluator"));
+    p.push_back(make_pair("OptFrame:nsseq", "neighborhood_structure"));
+    p.push_back(make_pair("int", "tabu_list_size"));
+    p.push_back(make_pair("int", "ts_max"));
+
+    return p;
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /*OPTFRAME_TABUSEARCH_HPP_*/

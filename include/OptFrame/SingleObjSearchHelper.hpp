@@ -28,54 +28,47 @@
 
 using namespace std;
 
-#include "BaseConcepts.hpp"
-
 #include "Action.hpp"
-#include "Constructive.hpp" // for helper only  (TODO: make special class)
-#include "Evaluation.hpp"
-#include "Evaluator.hpp" // for helper only (TODO: make special class)
-#include "Solution.hpp"
-
+#include "BaseConcepts.hpp"
 #include "Component.hpp"
 #include "ComponentBuilder.h"
-
-#include "Timer.hpp" // TODO: move together with StopCriteria to other file!!
-
+#include "Constructive.hpp"  // for helper only  (TODO: make special class)
+#include "Evaluation.hpp"
+#include "Evaluator.hpp"  // for helper only (TODO: make special class)
 #include "GlobalSearch.hpp"
+#include "Solution.hpp"
+#include "Timer.hpp"  // TODO: move together with StopCriteria to other file!!
 
 namespace optframe {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearchMethod XM = Component>
-class SingleObjSearchHelper
-{
-public:
-   static std::optional<XES> genPair(Constructive<S>& constructive, Evaluator<XES, XEv>& evaluator, double timelimit, const std::optional<XES> input = std::nullopt)
-   {
-      // TODO: we must start from InitialSearch generating 'XES'.. thus starting evaluating already, and fully abstracting S.
-      // TODO: Evaluator should be GeneralEvaluator... and GeneralEvaluator should only receive XES.. maybe impossible.
-      if (input)
-         return input;
-      std::optional<S> sStar = constructive.generateSolution(timelimit);
-      if (!sStar)
-         return std::nullopt;
-      XEv eStar = evaluator.evaluate(*sStar);
-      return make_pair(*sStar, eStar);
-   }
+template <XESolution XES, XEvaluation XEv = Evaluation<>, XSearchMethod XM = Component>
+class SingleObjSearchHelper {
+ public:
+  static std::optional<XES> genPair(Constructive<S>& constructive, Evaluator<XES, XEv>& evaluator, double timelimit, const std::optional<XES> input = std::nullopt) {
+    // TODO: we must start from InitialSearch generating 'XES'.. thus starting evaluating already, and fully abstracting S.
+    // TODO: Evaluator should be GeneralEvaluator... and GeneralEvaluator should only receive XES.. maybe impossible.
+    if (input)
+      return input;
+    std::optional<S> sStar = constructive.generateSolution(timelimit);
+    if (!sStar)
+      return std::nullopt;
+    XEv eStar = evaluator.evaluate(*sStar);
+    return make_pair(*sStar, eStar);
+  }
 
-   static std::optional<XES> genInitial(InitialSearch<XES, XEv>& constructive, Evaluator<XES, XEv>& evaluator, double timelimit, const std::optional<XES> input = std::nullopt)
-   {
-      // TODO: we must start from InitialSearch generating 'XES'.. thus starting evaluating already, and fully abstracting S.
-      // TODO: Evaluator should be GeneralEvaluator... and GeneralEvaluator should only receive XES.. maybe impossible.
-      if (input)
-         return input;
-      std::optional<S> sStar = constructive.generateSolution(timelimit);
-      if (!sStar)
-         return std::nullopt;
-      XEv eStar = evaluator.evaluate(*sStar);
-      return make_pair(*sStar, eStar);
-   }
+  static std::optional<XES> genInitial(InitialSearch<XES>& constructive, Evaluator<XES, XEv>& evaluator, double timelimit, const std::optional<XES> input = std::nullopt) {
+    // TODO: we must start from InitialSearch generating 'XES'.. thus starting evaluating already, and fully abstracting S.
+    // TODO: Evaluator should be GeneralEvaluator... and GeneralEvaluator should only receive XES.. maybe impossible.
+    if (input)
+      return input;
+    std::optional<S> sStar = constructive.generateSolution(timelimit);
+    if (!sStar)
+      return std::nullopt;
+    XEv eStar = evaluator.evaluate(*sStar);
+    return make_pair(*sStar, eStar);
+  }
 };
 
-} // namespace optframe
+}  // namespace optframe
 
 #endif /* OPTFRAME_SINGLE_OBJ_SEARCH_HELPER_HPP_ */

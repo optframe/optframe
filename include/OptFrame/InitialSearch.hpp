@@ -23,6 +23,8 @@
 #ifndef OPTFRAME_INITIAL_SEARCH_HPP_
 #define OPTFRAME_INITIAL_SEARCH_HPP_
 
+#include <utility>
+//
 #include "BaseConcepts.hpp"
 #include "Component.hpp"
 #include "Constructive.hpp"
@@ -33,84 +35,84 @@
 namespace optframe {
 
 //template<XESolution XES, XSearch<XES> XSH = XES, XSearchMethod XM = Component> // defaults to single obj.
-template<XESolution XES, XEvaluation XEv = typename XES::second_type, XSearch<XES> XSH = XES> // defaults to single obj
-class InitialSearch : public Component
-{
-public:
-   virtual ~InitialSearch()
-   {
-   }
+template <XESolution XES, XSearch<XES> XSH = XES>
+class InitialSearch : public Component {
+  using XEv = typename XES::second_type;
 
-   // timelimit in seconds, accepting fractions (millisecs, ...)
-   // may or may not generate valid solution in time
-   virtual std::pair<std::optional<XSH>, SearchStatus> initialSearch(const StopCriteria<XEv>& stop) = 0;
+ public:
+  virtual ~InitialSearch() {
+  }
 
-   virtual bool compatible(std::string s)
-   {
-      return (s == idComponent()) || (Component::compatible(s));
-   }
+  // timelimit in seconds, accepting fractions (millisecs, ...)
+  // may or may not generate valid solution in time
+  virtual std::pair<
+      std::optional<XSH>,
+      SearchStatus>
+  initialSearch(const StopCriteria<XEv>& stop) = 0;
 
-   static std::string idComponent()
-   {
-      std::stringstream ss;
-      ss << Component::idComponent() << ":InitialSearch";
-      return ss.str();
-   }
+  virtual bool compatible(std::string s) {
+    return (s == idComponent()) || (Component::compatible(s));
+  }
 
-   virtual std::string id() const
-   {
-      return idComponent();
-   }
+  static std::string idComponent() {
+    std::stringstream ss;
+    ss << Component::idComponent() << ":InitialSearch";
+    return ss.str();
+  }
 
-   virtual std::string toString() const override
-   {
-      return id();
-   }
+  virtual std::string id() const {
+    return idComponent();
+  }
+
+  virtual std::string toString() const override {
+    return id();
+  }
 };
 
-template<XESolution XES, XEvaluation XEv = typename XES::second_type, XSearch<XES> XSH = XES>
-class BasicInitialSearch : public InitialSearch<XES, XEv, XSH>
-{
-public:
-   using S = typename XES::first_type;
+template <XESolution XES, XSearch<XES> XSH = XES>
+class BasicInitialSearch : public InitialSearch<XES, XSH> {
+  using XEv = typename XES::second_type;
 
-   sref<Constructive<S>> constructive;
-   sref<Evaluator<S, XEv, XES>> evaluator;
+ public:
+  using S = typename XES::first_type;
 
-   BasicInitialSearch(sref<Constructive<S>> _constructive, sref<Evaluator<S, XEv, XES>> _evaluator)
-     : constructive(_constructive)
-     , evaluator(_evaluator)
-   {
-   }
+  sref<Constructive<S>> constructive;
+  sref<IEvaluator<XES>> evaluator;
 
-   virtual ~BasicInitialSearch()
-   {
-   }
+  BasicInitialSearch(sref<Constructive<S>> _constructive,
+                     sref<IEvaluator<XES>> _evaluator)
+      : constructive(_constructive), evaluator(_evaluator) {
+  }
 
-   virtual std::pair<std::optional<XSH>, SearchStatus> initialSearch(const StopCriteria<XEv>& stop) override
-   {
-      if (Component::verbose)
-         std::cout << "BasicInitialSearch: initialSearch begins" << std::endl;
-      std::optional<S> sol = constructive->generateSolution(stop.timelimit);
+  virtual ~BasicInitialSearch() {
+  }
 
-      if (Component::verbose)
-         std::cout << "BasicInitialSearch: sol? " << (bool)sol << std::endl;
+  virtual std::pair<
+      std::optional<XSH>,
+      SearchStatus>
+  initialSearch(const StopCriteria<XEv>& stop) override {
+    if (Component::verbose)
+      std::cout << "BasicInitialSearch: initialSearch begins" << std::endl;
+    std::optional<S> sol = constructive->generateSolution(stop.timelimit);
 
-      if (!sol)
-         return make_pair(nullopt, SearchStatus::NO_REPORT);
+    if (Component::verbose)
+      std::cout << "BasicInitialSearch: sol? " << (bool)sol << std::endl;
 
-      if (Component::verbose)
-         std::cout << "BasicInitialSearch: sol => " << *sol << std::endl;
+    if (!sol)
+      return make_pair(nullopt, SearchStatus::NO_REPORT);
 
-      XEv e = evaluator->evaluate(*sol);
-      XES se(*sol, e);
+    if (Component::verbose)
+      std::cout << "BasicInitialSearch: sol => " << *sol << std::endl;
 
-      if (Component::verbose)
-         std::cout << "BasicInitialSearch: se => " << se << std::endl;
-      return make_pair(se, SearchStatus::NO_REPORT);
-   }
+    XEv e = evaluator->evaluate(*sol);
+    XES se(*sol, e);
+
+    if (Component::verbose)
+      std::cout << "BasicInitialSearch: se => " << se << std::endl;
+    return make_pair(se, SearchStatus::NO_REPORT);
+  }
 };
 
-} // namespace optframe
+}  // namespace optframe
 
 #endif /*OPTFRAME_INITIAL_SEARCH_HPP_*/

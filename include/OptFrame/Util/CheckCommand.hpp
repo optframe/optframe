@@ -201,7 +201,7 @@ private:
    vector<std::shared_ptr<Evaluator<S, XEv, XES>>> lEvaluator;
    //vector<GeneralEvaluator<XES>*> lGenEvaluator;
    //vector<Constructive<S>*> lConstructive;
-   vector<std::shared_ptr<InitialSearch<XES, XEv>>> lConstructive;
+   vector<std::shared_ptr<InitialSearch<XES>>> lConstructive;
    //
    //vector<std::shared_ptr<CopySolution<R, ADS>>> lSolution;
    vector<std::shared_ptr<S>> lSolution;
@@ -254,14 +254,14 @@ public:
       add(c);
    }
 
-   void add(sref<InitialSearch<XES, XEv>> c)
+   void add(sref<InitialSearch<XES>> c)
    {
       lConstructive.push_back(c.sptr());
       if (verbose)
          cout << "checkcommand: InitialSearch " << lConstructive.size() << " added!" << endl;
    }
 
-   void addInitialSearch(sref<InitialSearch<XES, XEv>> c)
+   void addInitialSearch(sref<InitialSearch<XES>> c)
    {
       add(c);
    }
@@ -651,7 +651,7 @@ private:
          uptr<Move<XES, XEv, XES>> rev1 = lEvaluator[ev]->applyMoveReevaluate(move, se);
          //evtype e_end1 = _e.evaluation();
          evtype e_end1 = se.second.evaluation();
-         if (se.second.outdated) {
+         if (se.second.isOutdated()) {
             std::cout << "WARNING: evaluation is OUTDATED! WHAT TO DO HERE?" << std::endl;
          }
          //
@@ -661,7 +661,7 @@ private:
          //			Move<XES, XEv, XES>& ini1 = *lEvaluator[ev]->applyMoveReevaluate(e, rev1, s);
          //
          uptr<Move<XES, XEv, XES>> ini1 = rev1->applyUpdate(se);
-         if (se.second.outdated) {
+         if (se.second.isOutdated()) {
             //std::cout << "WARNING: evaluation is OUTDATED after applyUpdate! manual evaluate" << std::endl;
             se.second = lEvaluator[ev]->evaluate(se.first);
          }
@@ -917,7 +917,7 @@ private:
          cout << "checkcommand  will test " << lConstructive.size() << " constructive components (iterMax=" << iterMax << ")" << endl;
       for (unsigned c = 0; c < lConstructive.size(); c++) {
          //Constructive<S>* constructive = lConstructive.at(c);
-         std::shared_ptr<InitialSearch<XES, XEv>> constructive = lConstructive.at(c);
+         std::shared_ptr<InitialSearch<XES>> constructive = lConstructive.at(c);
 
          cout << "checkcommand: testing Constructive " << c << " => " << constructive->toString();
          cout << endl;

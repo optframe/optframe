@@ -24,6 +24,7 @@
 #define OPTFRAME_SIMPLE_LOCAL_SEARCH_HPP_
 
 #include <math.h>
+
 #include <vector>
 
 #include "../Constructive.hpp"
@@ -34,140 +35,123 @@
 
 namespace optframe {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
-class SimpleLocalSearch : public SingleObjSearch<XES>
-{
-protected:
-   sref<Evaluator<XES, XEv>> evaluator;
-   sref<InitialSearch<XES, XEv>> constructive;
-   sref<LocalSearch<XES, XEv>> localSearch;
+template <XESolution XES, XEvaluation XEv = Evaluation<>>
+class SimpleLocalSearch : public SingleObjSearch<XES> {
+ protected:
+  sref<Evaluator<XES, XEv>> evaluator;
+  sref<InitialSearch<XES>> constructive;
+  sref<LocalSearch<XES, XEv>> localSearch;
 
-public:
-   SimpleLocalSearch(sref<Evaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES, XEv>> _constructive, sref<LocalSearch<XES, XEv>> _localSearch)
-     : evaluator(_evaluator)
-     , constructive(_constructive)
-     , localSearch(_localSearch)
-   {
-   }
+ public:
+  SimpleLocalSearch(sref<Evaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES>> _constructive, sref<LocalSearch<XES, XEv>> _localSearch)
+      : evaluator(_evaluator), constructive(_constructive), localSearch(_localSearch) {
+  }
 
-   virtual ~SimpleLocalSearch()
-   {
-   }
+  virtual ~SimpleLocalSearch() {
+  }
 
-   //pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-   //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& sosc) override
-   //
-   //SearchStatus search(const StopCriteria<XEv>& sosc) override
-   SearchOutput<XES> search(const StopCriteria<XEv>& sosc) override
-   {
-      //op<XES>& star = this->best;
-      //
-      op<XES> star; // TODO: get best from 'searchBy'
-      //cout << "SimpleLocalSearch search(" << target_f << "," << timelimit << ")" << endl;
+  //pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+  //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& sosc) override
+  //
+  //SearchStatus search(const StopCriteria<XEv>& sosc) override
+  SearchOutput<XES> search(const StopCriteria<XEv>& sosc) override {
+    //op<XES>& star = this->best;
+    //
+    op<XES> star;  // TODO: get best from 'searchBy'
+    //cout << "SimpleLocalSearch search(" << target_f << "," << timelimit << ")" << endl;
 
-      Timer tnow;
+    Timer tnow;
 
-      //std::optional<S> s = constructive.generateSolution(sosc.timelimit);
-      std::optional<XES> pse = constructive->initialSearch(sosc).first;
-      if (!pse)
-         return SearchStatus::NO_SOLUTION; // nothing to return
-      //Evaluation<> e = evaluator.evaluate(*s);
+    //std::optional<S> s = constructive.generateSolution(sosc.timelimit);
+    std::optional<XES> pse = constructive->initialSearch(sosc).first;
+    if (!pse)
+      return SearchStatus::NO_SOLUTION;  // nothing to return
+    //Evaluation<> e = evaluator.evaluate(*s);
 
-      ////pair<S&, Evaluation<>&>& p = localSearch.search(s, e, sosc);
+    ////pair<S&, Evaluation<>&>& p = localSearch.search(s, e, sosc);
 
-      //delete &s;
+    //delete &s;
 
-      //return make_optional(make_pair(*s, e));
-      //star = make_optional(make_pair(*s, e));
-      star = make_optional(*pse);
-      //this->best = star;
-      return { SearchStatus::NO_REPORT, star };
-   }
+    //return make_optional(make_pair(*s, e));
+    //star = make_optional(make_pair(*s, e));
+    star = make_optional(*pse);
+    //this->best = star;
+    return {SearchStatus::NO_REPORT, star};
+  }
 
-   virtual bool compatible(string s)
-   {
-      return (s == idComponent()) || (SingleObjSearch<XES>::compatible(s));
-   }
+  virtual bool compatible(string s) {
+    return (s == idComponent()) || (SingleObjSearch<XES>::compatible(s));
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << SingleObjSearch<XES>::idComponent() << "SimpleLocalSearch";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << SingleObjSearch<XES>::idComponent() << "SimpleLocalSearch";
+    return ss.str();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 
-   virtual void print() const
-   {
-      cout << "SimpleLocalSearch with:" << endl;
-      cout << "constructive: ";
-      constructive->print();
-      cout << "local search: ";
-      localSearch->print();
-   }
+  virtual void print() const {
+    cout << "SimpleLocalSearch with:" << endl;
+    cout << "constructive: ";
+    constructive->print();
+    cout << "local search: ";
+    localSearch->print();
+  }
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
-class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<S, XEv, XES>
-{
-public:
-   virtual ~SimpleLocalSearchBuilder()
-   {
-   }
+template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<S, XEv, XES> {
+ public:
+  virtual ~SimpleLocalSearchBuilder() {
+  }
 
-   virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") override
-   {
-      sptr<Evaluator<XES, XEv>> eval;
-      hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
+  virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") override {
+    sptr<Evaluator<XES, XEv>> eval;
+    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
 
-      //Constructive<S>* constructive;
-      sptr<InitialSearch<XES, XEv>> constructive;
-      hf.assign(constructive, *scanner.nextInt(), scanner.next()); // reads backwards!
+    //Constructive<S>* constructive;
+    sptr<InitialSearch<XES>> constructive;
+    hf.assign(constructive, *scanner.nextInt(), scanner.next());  // reads backwards!
 
-      string rest = scanner.rest();
+    string rest = scanner.rest();
 
-      pair<sptr<LocalSearch<XES, XEv>>, std::string> method;
-      method = hf.createLocalSearch(rest);
+    pair<sptr<LocalSearch<XES, XEv>>, std::string> method;
+    method = hf.createLocalSearch(rest);
 
-      sptr<LocalSearch<XES, XEv>> h = method.first;
+    sptr<LocalSearch<XES, XEv>> h = method.first;
 
-      scanner = Scanner(method.second);
+    scanner = Scanner(method.second);
 
-      return new SimpleLocalSearch<XES, XEv>(eval, constructive, h);
-   }
+    return new SimpleLocalSearch<XES, XEv>(eval, constructive, h);
+  }
 
-   virtual vector<pair<string, string>> parameters()
-   {
-      vector<pair<string, string>> params;
-      params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
-      //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-      params.push_back(make_pair(InitialSearch<XES, XEv>::idComponent(), "constructive heuristic"));
-      params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
+  virtual vector<pair<string, string>> parameters() {
+    vector<pair<string, string>> params;
+    params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+    //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
+    params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
+    params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
 
-      return params;
-   }
+    return params;
+  }
 
-   virtual bool canBuild(string component)
-   {
-      return component == SimpleLocalSearch<XES, XEv>::idComponent();
-   }
+  virtual bool canBuild(string component) {
+    return component == SimpleLocalSearch<XES, XEv>::idComponent();
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << SingleObjSearchBuilder<S, XEv>::idComponent() << "SimpleLocalSearch";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << "SimpleLocalSearch";
+    return ss.str();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 };
-}
+}  // namespace optframe
 
 #endif /*OPTFRAME_SIMPLE_LOCAL_SEARCH_HPP_*/

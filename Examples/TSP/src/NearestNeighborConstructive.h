@@ -27,94 +27,87 @@
 #include <OptFrame/InitialSearch.hpp>
 //#include "../../OptFrame/Util/TestSolution.hpp"
 
-#include "ProblemInstance.h"
+#include <stdlib.h>
 
-#include "Representation.h"
-#include "Solution.h"
-
-#include "Evaluator.h"
 #include <OptFrame/RandGen.hpp>
+#include <algorithm>
 #include <list>
 
-#include <algorithm>
-#include <stdlib.h>
+#include "Evaluator.h"
+#include "ProblemInstance.h"
+#include "Representation.h"
+#include "Solution.h"
 
 using namespace std;
 
 namespace TSP {
 
 //class NearestNeighborConstructive: public Constructive<SolutionTSP>
-class NearestNeighborConstructive : public InitialSearch<ESolutionTSP, EvaluationTSP>
-{
-private:
-   sref<ProblemInstance> pI;
-   sref<GeneralEvaluator<ESolutionTSP>> eval;
-   sref<RandGen> rg;
+class NearestNeighborConstructive : public InitialSearch<ESolutionTSP> {
+ private:
+  sref<ProblemInstance> pI;
+  sref<GeneralEvaluator<ESolutionTSP>> eval;
+  sref<RandGen> rg;
 
-   static bool compare(const pair<double, int>& p1, const pair<double, int>& p2)
-   {
-      return p1.first < p2.first;
-   }
+  static bool compare(const pair<double, int>& p1, const pair<double, int>& p2) {
+    return p1.first < p2.first;
+  }
 
-public:
-   NearestNeighborConstructive(sref<ProblemInstance> pI, sref<GeneralEvaluator<ESolutionTSP>> _eval, sref<RandGen> _rg)
-     : pI(pI)
-     , eval(_eval)
-     , rg(_rg) // If necessary, add more parameters
-     {
-        // Put the rest of your code here
-     };
+ public:
+  NearestNeighborConstructive(sref<ProblemInstance> pI, sref<GeneralEvaluator<ESolutionTSP>> _eval, sref<RandGen> _rg)
+      : pI(pI), eval(_eval), rg(_rg)  // If necessary, add more parameters
+        {
+            // Put the rest of your code here
+        };
 
-   virtual ~NearestNeighborConstructive()
-   {
-   }
+  virtual ~NearestNeighborConstructive() {
+  }
 
-   //std::optional<SolutionTSP> generateSolution(double timelimit) override
-   std::pair<std::optional<ESolutionTSP>, SearchStatus> initialSearch(const StopCriteria<>& sosc) override
-   {
-      //cout << "Generating solution" << endl;
-      RepTSP newRep;
-      vector<bool> used(pI->n, false);
+  //std::optional<SolutionTSP> generateSolution(double timelimit) override
+  std::pair<std::optional<ESolutionTSP>, SearchStatus> initialSearch(const StopCriteria<>& sosc) override {
+    //cout << "Generating solution" << endl;
+    RepTSP newRep;
+    vector<bool> used(pI->n, false);
 
-      int first = rg->rand(pI->n);
+    int first = rg->rand(pI->n);
 
-      newRep.push_back(first);
-      used[first] = true;
-      //cout << "first is " << first << endl;
+    newRep.push_back(first);
+    used[first] = true;
+    //cout << "first is " << first << endl;
 
-      while (((int)newRep.size()) < pI->n - 1) {
-         vector<pair<double, int>> candidates;
+    while (((int)newRep.size()) < pI->n - 1) {
+      vector<pair<double, int>> candidates;
 
-         for (unsigned i = 0; i < used.size(); i++)
-            if (!used[i])
-               candidates.push_back(make_pair((*pI->dist)(i, newRep.at(newRep.size() - 1)), i));
+      for (unsigned i = 0; i < used.size(); i++)
+        if (!used[i])
+          candidates.push_back(make_pair((*pI->dist)(i, newRep.at(newRep.size() - 1)), i));
 
-         //cout << "before sort: " << newRep << endl;
-         sort(candidates.begin(), candidates.end(), compare);
+      //cout << "before sort: " << newRep << endl;
+      sort(candidates.begin(), candidates.end(), compare);
 
-         newRep.push_back(candidates[0].second);
-         used[candidates[0].second] = true;
+      newRep.push_back(candidates[0].second);
+      used[candidates[0].second] = true;
 
-         //cout << "after sort: " << newRep << endl;
+      //cout << "after sort: " << newRep << endl;
+    }
+
+    // add last
+    for (unsigned i = 0; i < used.size(); i++)
+      if (!used[i]) {
+        newRep.push_back(i);
+        used[i] = true;
+        break;
       }
 
-      // add last
-      for (unsigned i = 0; i < used.size(); i++)
-         if (!used[i]) {
-            newRep.push_back(i);
-            used[i] = true;
-            break;
-         }
-
-      //return new CopySolution<RepTSP>(newRep);
-      //return make_optional(SolutionTSP(newRep));
-      EvaluationTSP etsp;
-      ESolutionTSP se(SolutionTSP(newRep), etsp);
-      eval->reevaluate(se);
-      return make_pair(make_optional(se), SearchStatus::NO_REPORT);
-   }
+    //return new CopySolution<RepTSP>(newRep);
+    //return make_optional(SolutionTSP(newRep));
+    EvaluationTSP etsp;
+    ESolutionTSP se(SolutionTSP(newRep), etsp);
+    eval->reevaluate(se);
+    return make_pair(make_optional(se), SearchStatus::NO_REPORT);
+  }
 };
 
-}
+}  // namespace TSP
 
 #endif /*TSP_NN_CONSTRUCTIVE_HPP_*/

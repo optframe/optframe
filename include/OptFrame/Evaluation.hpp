@@ -24,14 +24,15 @@
 #define OPTFRAME_EVALUATION_HPP_
 
 #include <assert.h>
+
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
 
 #include "BaseConcepts.hpp"
 #include "Component.hpp"
-#include "MultiObjValue.hpp"  // inserting this beforehand.. who knows!!!
-#include "SingleObjValue.hpp" // basic value 'evtype' comes from here!
+#include "MultiObjValue.hpp"   // inserting this beforehand.. who knows!!!
+#include "SingleObjValue.hpp"  // basic value 'evtype' comes from here!
 
 using namespace std;
 
@@ -72,184 +73,190 @@ namespace optframe {
 // so we will proceed with basic arithmetics, +, - and *.
 // this effectively discard 'string' and others (although comparable)
 
-// THIS IS FOCUSED SINGLE DIRECTION PERSPECTIVE (TOTAL ORDER). SEE PARAM 'isMini'
-template<optframe::basic_arithmetics ObjType = evtype>
-class Evaluation final : public Component
-{
-public:
-   using objType = ObjType; // exporting 'objType' type, based on template 'ObjType'
-   //
-protected:
-   //static Evaluation<ObjType> costZero { Evaluation<ObjType>() };
-   ObjType objValZero; //{ optframe::get_numeric_zero<ObjType>() };
+// THIS IS FOCUSED SINGLE DIRECTION PERSPECTIVE (TOTAL ORDER).
+// SEE PARAM 'isMini'
+template <optframe::basic_arithmetics ObjType = evtype>
+class Evaluation final : public Component {
+ public:
+  // exporting 'objType' type, based on template 'ObjType'
+  using objType = ObjType;
+  //
+ protected:
+  // static Evaluation<ObjType> costZero { Evaluation<ObjType>() };
+  ObjType objValZero;  //{ optframe::get_numeric_zero<ObjType>() };
 
-   // ==== Objective Space type: pair<evtype, evtype> ====
-   // objective function value (default = double)
-   ObjType objFunction;
-   // infeasibility measure value (default = double)
-   ObjType infMeasure;
-   // for lexicographic approaches, use these extra evaluation values
-   //vector<pair<ObjType, ObjType>> alternatives;
+  // ==== Objective Space type: pair<evtype, evtype> ====
+  // objective function value (default = double)
+  ObjType objFunction;
+  // infeasibility measure value (default = double)
+  ObjType infMeasure;
+  // for lexicographic approaches, use these extra evaluation values
+  // vector<pair<ObjType, ObjType>> alternatives;
 
-public:
-   // boolean field to indicate if Evaluation needs an update
-   bool outdated{ true };
-   // boolean field to indicate if Evaluation value is an estimation (not exact)
-   bool estimated{ false };
+ protected:
+  // boolean field to indicate if Evaluation needs an update
+  bool outdated{true};
+  // boolean field to indicate if Evaluation value is an estimation (not exact)
+  bool estimated{false};
 
-   // is minimization
-   bool isMini{ true };
+ public:
+  // is minimization (WHY???)
+  bool isMini{true};
 
-   static constexpr int x{ num_zero<int>() };
+  static constexpr int x{num_zero<int>()};
 
-   // ======================================
-   // begin canonical part
+  // ======================================
+  // begin canonical part
 
-   // TODO (IGOR): maybe create empty Evaluation with numeric_zero on 'obj'
+  // TODO (IGOR): maybe create empty Evaluation with numeric_zero on 'obj'
 
-   explicit Evaluation(const ObjType& obj, const ObjType& inf, const evtype& w = 1, bool _isMini = true)
-     : objFunction(obj)
-     , infMeasure(inf)
-     , isMini(_isMini)
-   {
-      // verify that this is valid XEvaluation
-      static_assert(XEvaluation<Evaluation<ObjType>>);
+  explicit Evaluation(const ObjType& obj, const ObjType& inf, const evtype& w = 1, bool _isMini = true)
+      : objFunction(obj), infMeasure(inf), isMini(_isMini) {
+    // verify that this is valid XEvaluation
+    static_assert(XEvaluation<Evaluation<ObjType>>);
 
-      optframe::numeric_zero(objValZero);
+    optframe::numeric_zero(objValZero);
 
-      //gos = gos_unknown;
-      outdated = false;
-      estimated = false;
-   }
+    //gos = gos_unknown;
+    outdated = false;
+    estimated = false;
+  }
 
-   // TODO (IGOR): I am removing 'explicit' to allow StopCriteria "seamless" passing of Evaluation object.
-   Evaluation(const ObjType& obj)
-     : objFunction(obj)
-   {
-      // verify that this is valid XEvaluation
-      static_assert(XEvaluation<Evaluation<ObjType>>);
+  // TODO (IGOR): I am removing 'explicit' to allow StopCriteria "seamless" passing of Evaluation object.
+  Evaluation(const ObjType& obj)
+      : objFunction(obj) {
+    // verify that this is valid XEvaluation
+    static_assert(XEvaluation<Evaluation<ObjType>>);
 
-      optframe::numeric_zero(objValZero);
+    optframe::numeric_zero(objValZero);
 
-      //infMeasure = optframe::get_numeric_zero<ObjType>();
-      optframe::numeric_zero(infMeasure);
+    //infMeasure = optframe::get_numeric_zero<ObjType>();
+    optframe::numeric_zero(infMeasure);
 
-      //gos = gos_unknown;
-      outdated = false;
-      estimated = false;
-   }
+    //gos = gos_unknown;
+    outdated = false;
+    estimated = false;
+  }
 
-   explicit Evaluation()
-   {
-      // verify that this is valid XEvaluation
-      //static_assert(XEvaluation<decltype(*this)>);  // TODO: this SHOULD work... don't know why it's not!
-      static_assert(XEvaluation<Evaluation<ObjType>>);
+  explicit Evaluation() {
+    // verify that this is valid XEvaluation
+    //static_assert(XEvaluation<decltype(*this)>);  // TODO: this SHOULD work... don't know why it's not!
+    static_assert(XEvaluation<Evaluation<ObjType>>);
 
-      optframe::numeric_zero(objValZero);
-      optframe::numeric_zero(objFunction);
-      optframe::numeric_zero(infMeasure);
+    optframe::numeric_zero(objValZero);
+    optframe::numeric_zero(objFunction);
+    optframe::numeric_zero(infMeasure);
 
-      //gos = gos_unknown;
-      //outdated = false;
-      outdated = true;
-      estimated = false;
-   }
+    //gos = gos_unknown;
+    //outdated = false;
+    outdated = true;
+    estimated = false;
+  }
 
-   // never put 'explicit' here!!
-   Evaluation(const Evaluation<ObjType>& e)
-     : objFunction(e.objFunction)
-     , infMeasure(e.infMeasure)
-     //, alternatives(e.alternatives)
-     //, gos(e.gos)
-     , outdated(e.outdated)
-     , estimated(e.estimated)
-     , isMini(e.isMini)
-   {
-      // verify that this is valid XEvaluation
-      static_assert(XEvaluation<Evaluation<ObjType>>);
+  // never put 'explicit' here!!
+  Evaluation(const Evaluation<ObjType>& e)
+      : objFunction(e.objFunction), infMeasure(e.infMeasure)
+        //, alternatives(e.alternatives)
+        //, gos(e.gos)
+        ,
+        outdated(e.outdated),
+        estimated(e.estimated),
+        isMini(e.isMini) {
+    // verify that this is valid XEvaluation
+    static_assert(XEvaluation<Evaluation<ObjType>>);
 
-      optframe::numeric_zero(objValZero);
-   }
+    optframe::numeric_zero(objValZero);
+  }
 
-   virtual ~Evaluation()
-   {
-   }
+  virtual ~Evaluation() {
+  }
 
-   virtual Evaluation<ObjType>& operator=(const Evaluation<ObjType>& e)
-   {
-      if (&e == this) // auto ref check
-         return *this;
-
-      objFunction = e.objFunction;
-      infMeasure = e.infMeasure;
-      outdated = e.outdated;
-      estimated = e.estimated;
-      //alternatives = e.alternatives;
-      //gos = e.gos;
-      isMini = e.isMini;
-
+  virtual Evaluation<ObjType>& operator=(const Evaluation<ObjType>& e) {
+    if (&e == this)  // auto ref check
       return *this;
-   }
 
-   virtual Evaluation<ObjType>& operator=(const Evaluation<ObjType>&& e)
-   {
-      if (&e == this) // auto ref check
-         return *this;
+    objFunction = e.objFunction;
+    infMeasure = e.infMeasure;
+    outdated = e.outdated;
+    estimated = e.estimated;
+    //alternatives = e.alternatives;
+    //gos = e.gos;
+    isMini = e.isMini;
 
-      // TODO: steal from 'e'
+    return *this;
+  }
 
-      objFunction = e.objFunction;
-      infMeasure = e.infMeasure;
-      outdated = e.outdated;
-      estimated = e.estimated;
-      //alternatives = e.alternatives;
-      //gos = e.gos;
-      isMini = e.isMini;
-
+  virtual Evaluation<ObjType>& operator=(const Evaluation<ObjType>&& e) {
+    if (&e == this)  // auto ref check
       return *this;
-   }
 
-   virtual Evaluation<ObjType>& clone() const
-   {
-      return *new Evaluation(*this);
-   }
+    // TODO: steal from 'e'
 
-   // end canonical part
-   // ======================================
-   // begin Evaluation methods
+    objFunction = e.objFunction;
+    infMeasure = e.infMeasure;
+    outdated = e.outdated;
+    estimated = e.estimated;
+    //alternatives = e.alternatives;
+    //gos = e.gos;
+    isMini = e.isMini;
 
-   static constexpr ObjType getZero()
-   {
-      ObjType objValZero;
-      optframe::numeric_zero(objValZero);
-      return objValZero;
-   }
+    return *this;
+  }
 
-   ObjType getObjFunction() const
-   {
-      return objFunction;
-   }
+  virtual Evaluation<ObjType>& clone() const {
+    return *new Evaluation(*this);
+  }
 
-   ObjType getInfMeasure() const
-   {
-      return infMeasure;
-   }
-   /*
+  // end canonical part
+  // ======================================
+  // begin Evaluation methods
+
+  // getters/setters
+  bool isOutdated() const {
+    return outdated;
+  }
+
+  void invalidate() {
+    outdated = true;
+  }
+
+  bool isEstimated() const {
+    return estimated;
+  }
+
+  static constexpr ObjType getZero() {
+    ObjType objValZero;
+    optframe::numeric_zero(objValZero);
+    return objValZero;
+  }
+
+  ObjType getObjFunction() const {
+    return objFunction;
+  }
+
+  ObjType getInfMeasure() const {
+    return infMeasure;
+  }
+  /*
    const vector<pair<ObjType, ObjType>>& getAlternativeCosts() const
    {
       return alternatives;
    }
 */
-   void setObjFunction(ObjType obj)
-   {
-      objFunction = obj;
-   }
+  void setObjFunction(ObjType obj) {
+    objFunction = obj;
+    // I THINK this is right... but let's warn, for now!
+    // Otherwise, where else could we set outdated to false??
+    if (Component::warning)
+      std::cout << "WARNING: setObjFunction sets outdated=false" << std::endl;
 
-   void setInfMeasure(ObjType inf)
-   {
-      infMeasure = inf;
-   }
-   /*
+    outdated = false;
+  }
+
+  void setInfMeasure(ObjType inf) {
+    infMeasure = inf;
+  }
+  /*
    void addAlternativeCost(const pair<ObjType, ObjType>& alternativeCost)
    {
       alternatives.push_back(alternativeCost);
@@ -261,12 +268,12 @@ public:
    }
 */
 
-   // -----------------
-   // for local optimum
-   // -----------------
+  // -----------------
+  // for local optimum
+  // -----------------
 
-   // TODO: remove! LOS management is now on NSSeq and NSSeqIterators
-   /*
+  // TODO: remove! LOS management is now on NSSeq and NSSeqIterators
+  /*
 	bool getLocalOptimumStatus(string moveId)
 	{
 		return localStatus[moveId];
@@ -278,10 +285,10 @@ public:
 	}
 	*/
 
-   // ------------------
-   // for global optimum
-   // ------------------
-   /*
+  // ------------------
+  // for global optimum
+  // ------------------
+  /*
    GOS getGlobalOptimumStatus()
    {
       return gos;
@@ -293,44 +300,40 @@ public:
    }
 */
 
-   ObjType evaluation() const
-   {
-      return objFunction + infMeasure;
-   }
+  ObjType evaluation() const {
+    return objFunction + infMeasure;
+  }
 
-   // ========= TAKEN FROM MoveCost =======
+  // ========= TAKEN FROM MoveCost =======
 
-   // update target Evaluation with *this cost
-   virtual void update(Evaluation<ObjType>& evTarget) const
-   {
+  // update target Evaluation with *this cost
+  virtual void update(Evaluation<ObjType>& evTarget) const {
+    // this task was performed before by MoveCost... now unifying in Evaluation
+    // how to do this?
+    assert(false);
+  }
 
-      // this task was performed before by MoveCost... now unifying in Evaluation
-      // how to do this?
-      assert(false);
-   }
+  // returns the difference/cost between evFinal - evThis
+  virtual Evaluation<ObjType> diff(const Evaluation<ObjType>& evFinal) const {
+    const Evaluation<ObjType>& e = evFinal;  // pointing to legacy code
 
-   // returns the difference/cost between evFinal - evThis
-   virtual Evaluation<ObjType> diff(const Evaluation<ObjType>& evFinal) const
-   {
-      const Evaluation<ObjType>& e = evFinal; // pointing to legacy code
+    // take my own information
+    // -----------------------
 
-      // take my own information
-      // -----------------------
+    pair<ObjType, ObjType> e_begin = make_pair(this->getObjFunction(), this->getInfMeasure());
 
-      pair<ObjType, ObjType> e_begin = make_pair(this->getObjFunction(), this->getInfMeasure());
+    // compute cost difference
+    // -----------------------
+    Evaluation<ObjType> mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1);  // no outdated or estimated
 
-      // compute cost difference
-      // -----------------------
-      Evaluation<ObjType> mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1); // no outdated or estimated
+    // ======================================================
+    // For alternative/lexicographic costs, see WLxEvaluation
+    // ======================================================
 
-      // ======================================================
-      // For alternative/lexicographic costs, see WLxEvaluation
-      // ======================================================
+    return Evaluation<ObjType>(mcost);
+  }
 
-      return Evaluation<ObjType>(mcost);
-   }
-
-   /*
+  /*
    // this strictly better than parameter 'e' (for mini, 'this' < 'e')
    virtual bool betterStrict(const Evaluation<ObjType>& e) const
    {
@@ -387,91 +390,82 @@ public:
 	}
 */
 
-   virtual bool equals(const Evaluation<ObjType>& e)
-   {
-      return evaluation() == e.evaluation();
-   }
+  virtual bool equals(const Evaluation<ObjType>& e) {
+    return evaluation() == e.evaluation();
+  }
 
-   virtual bool isEstimated()
-   {
-      return false; // TODO: created good flag here??
-   }
+  virtual bool isEstimated() {
+    return false;  // TODO: created good flag here??
+  }
 
-   // =========
-   // finish MoveCost
-   // =========
+  // =========
+  // finish MoveCost
+  // =========
 
-   // leave option to rewrite tolerance (or consider lexicographic values)
-   virtual bool isFeasible() const
-   {
-      //return optframe::numeric_is_zero<ObjType>(infMeasure);
-      // IMPORTANT: numeric_is_zero can come from anywhere!
-      return optframe::numeric_is_zero(infMeasure);
-      //return (EVALUATION_ABS(infMeasure) <= optframe::get_numeric_zero<ObjType>()); // deprecated
-   }
+  // leave option to rewrite tolerance (or consider lexicographic values)
+  virtual bool isFeasible() const {
+    //return optframe::numeric_is_zero<ObjType>(infMeasure);
+    // IMPORTANT: numeric_is_zero can come from anywhere!
+    return optframe::numeric_is_zero(infMeasure);
+    //return (EVALUATION_ABS(infMeasure) <= optframe::get_numeric_zero<ObjType>()); // deprecated
+  }
 
-   // ======================
-   // Object specific part
-   // ======================
+  // ======================
+  // Object specific part
+  // ======================
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << Component::idComponent() << ":Evaluation";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << Component::idComponent() << ":Evaluation";
+    return ss.str();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 
-   virtual void print() const override
-   {
-      cout << toString() << endl;
-   }
+  virtual void print() const override {
+    cout << toString() << endl;
+  }
 
-   virtual std::string toString() const override
-   {
-      // ONE SHOULD NEVER PRINT AN EVALUATION WITH OUTDATED FLAG... SANITY CHECK!
-      assert(!outdated);
-      std::stringstream ss;
-      ss << fixed; // disable scientific notation
-      ss << "Evaluation function value = " << evaluation();
-      ss << (isFeasible() ? " " : " (not feasible) ");
-      ss << (outdated ? " OUTDATED " : " ");
-      ss << (estimated ? " ESTIMATED " : " ");
-      /*
+  virtual std::string toString() const override {
+    // ONE SHOULD NEVER PRINT AN EVALUATION WITH OUTDATED FLAG... SANITY CHECK!
+    assert(!outdated);
+    std::stringstream ss;
+    ss << fixed;  // disable scientific notation
+    ss << "Evaluation function value = " << evaluation();
+    ss << (isFeasible() ? " " : " (not feasible) ");
+    ss << (outdated ? " OUTDATED " : " ");
+    ss << (estimated ? " ESTIMATED " : " ");
+    /*
       if (alternatives.size() > 0) {
          ss << " alternative costs: ";
          for (unsigned i = 0; i < alternatives.size(); i++)
             ss << "(" << alternatives[i].first << ";" << alternatives[i].second << ") ";
       }
       */
-      // ss << endl;
+    // ss << endl;
 
-      return ss.str();
-   }
+    return ss.str();
+  }
 
-   virtual bool toStream(std::ostream& os) const override
-   {
-      // forward to operator<<
-      os << (*this);
-      return true;
-   }
+  virtual bool toStream(std::ostream& os) const override {
+    // forward to operator<<
+    os << (*this);
+    return true;
+  }
 
-   friend std::ostream& operator<<(std::ostream& os, const Evaluation& me)
-   {
-      if (&os == &optframe::cjson) {
-         os << "{";
-         os << "\"evaluation\": " << me.evaluation() << ",";
-         os << "\"feasible\": " << (me.isFeasible() ? "true" : "false") << ",";
-         os << "\"outdated\": " << (me.outdated ? "true" : "false") << ",";
-         os << "\"estimated\": " << (me.estimated ? "true" : "false") << "}";
-      } else
-         os << me.toString();
-      return os;
-   }
+  friend std::ostream& operator<<(std::ostream& os, const Evaluation& me) {
+    if (&os == &optframe::cjson) {
+      os << "{";
+      os << "\"evaluation\": " << me.evaluation() << ",";
+      os << "\"feasible\": " << (me.isFeasible() ? "true" : "false") << ",";
+      os << "\"outdated\": " << (me.outdated ? "true" : "false") << ",";
+      os << "\"estimated\": " << (me.estimated ? "true" : "false") << "}";
+    } else
+      os << me.toString();
+    return os;
+  }
 };
 
 // compilation test (for concepts)
@@ -482,167 +476,141 @@ static_assert(HasToString<Evaluation<>>);
 static_assert(HasGetObj<Evaluation<>>);
 static_assert(optframe::ostreamable<Evaluation<>>);
 //
-static_assert(XEvaluation<Evaluation<>>); // check default
+static_assert(XEvaluation<Evaluation<>>);  // check default
 
 // ==================== end Evaluation ===========
 
 // Weighted and support to lexicographic computation
 // WLxEvaluation: depend on extended_arithmetics (+, - and *)
-template<optframe::extended_arithmetics ObjType = evtype>
-class WLxEvaluation final : public Component
-{
-protected:
-   // ==== Objective Space type: pair<evtype, evtype> ====
-   // objective function value (default = double)
-   ObjType objFunction;
-   // infeasibility measure value (default = double)
-   ObjType infMeasure;
-   // for lexicographic approaches, use these extra evaluation values
-   vector<pair<ObjType, ObjType>> alternatives;
+template <optframe::extended_arithmetics ObjType = evtype>
+class WLxEvaluation final : public Component {
+ protected:
+  // ==== Objective Space type: pair<evtype, evtype> ====
+  // objective function value (default = double)
+  ObjType objFunction;
+  // infeasibility measure value (default = double)
+  ObjType infMeasure;
+  // for lexicographic approaches, use these extra evaluation values
+  vector<pair<ObjType, ObjType>> alternatives;
 
-   // ==== Objective Space auxiliary information ====
-   // LocalOptimum Status: mapping 'move.id()' to 'NeighborhoodStatus'
-   // map<string, bool> localStatus; // TODO: REMOVE!
-   // GlobalOptimumStatus (for exact methods only)
-   enum GOS
-   {
-      gos_yes,
-      gos_no,
-      gos_unknown
-   } gos;
+  // ==== Objective Space auxiliary information ====
+  // LocalOptimum Status: mapping 'move.id()' to 'NeighborhoodStatus'
+  // map<string, bool> localStatus; // TODO: REMOVE!
+  // GlobalOptimumStatus (for exact methods only)
+  enum GOS {
+    gos_yes,
+    gos_no,
+    gos_unknown
+  } gos;
 
-   // LocalOptimumStatus
-   enum LOS
-   {
-      los_yes,
-      los_no,
-      los_unknown
-   }; // do not declare here (keep in ADS or R)
+  // LocalOptimumStatus
+  enum LOS {
+    los_yes,
+    los_no,
+    los_unknown
+  };  // do not declare here (keep in ADS or R)
 
-public:
-   // boolean field to indicate if Evaluation needs an update
-   bool outdated;
-   // boolean field to indicate if Evaluation value is an estimation (not exact)
-   bool estimated;
-   // constant to mutiply infeasibility weight
-   ObjType weight;
+ public:
+  // boolean field to indicate if Evaluation needs an update
+  bool outdated;
+  // boolean field to indicate if Evaluation value is an estimation (not exact)
+  bool estimated;
+  // constant to mutiply infeasibility weight
+  ObjType weight;
 
-   // ======================================
-   // begin canonical part
+  // ======================================
+  // begin canonical part
 
-   WLxEvaluation(const ObjType& obj, const ObjType& inf, const evtype& w = 1)
-     : objFunction(obj)
-     , infMeasure(inf)
-     , weight(w)
-   {
-      gos = gos_unknown;
-      outdated = false;
-      estimated = false;
-   }
+  WLxEvaluation(const ObjType& obj, const ObjType& inf, const evtype& w = 1)
+      : objFunction(obj), infMeasure(inf), weight(w) {
+    gos = gos_unknown;
+    outdated = false;
+    estimated = false;
+  }
 
-   WLxEvaluation(const ObjType& obj)
-     : objFunction(obj)
-   {
-      weight = 1;
-      //infMeasure = optframe::get_numeric_zero<ObjType>();
-      optframe::numeric_zero(infMeasure);
+  WLxEvaluation(const ObjType& obj)
+      : objFunction(obj) {
+    weight = 1;
+    //infMeasure = optframe::get_numeric_zero<ObjType>();
+    optframe::numeric_zero(infMeasure);
 
-      gos = gos_unknown;
-      outdated = false;
-      estimated = false;
-   }
+    gos = gos_unknown;
+    outdated = false;
+    estimated = false;
+  }
 
-   WLxEvaluation(const WLxEvaluation& e)
-     : objFunction(e.objFunction)
-     , infMeasure(e.infMeasure)
-     , alternatives(e.alternatives)
-     , gos(e.gos)
-     , outdated(e.outdated)
-     , estimated(e.estimated)
-     , weight(e.weight)
-   {
-   }
+  WLxEvaluation(const WLxEvaluation& e)
+      : objFunction(e.objFunction), infMeasure(e.infMeasure), alternatives(e.alternatives), gos(e.gos), outdated(e.outdated), estimated(e.estimated), weight(e.weight) {
+  }
 
-   virtual ~WLxEvaluation()
-   {
-   }
+  virtual ~WLxEvaluation() {
+  }
 
-   virtual WLxEvaluation& operator=(const WLxEvaluation& e)
-   {
-      if (&e == this) // auto ref check
-         return *this;
-
-      objFunction = e.objFunction;
-      infMeasure = e.infMeasure;
-      outdated = e.outdated;
-      estimated = e.estimated;
-      weight = e.weight;
-      alternatives = e.alternatives;
-      gos = e.gos;
-
+  virtual WLxEvaluation& operator=(const WLxEvaluation& e) {
+    if (&e == this)  // auto ref check
       return *this;
-   }
 
-   virtual WLxEvaluation& clone() const
-   {
-      return *new WLxEvaluation(*this);
-   }
+    objFunction = e.objFunction;
+    infMeasure = e.infMeasure;
+    outdated = e.outdated;
+    estimated = e.estimated;
+    weight = e.weight;
+    alternatives = e.alternatives;
+    gos = e.gos;
 
-   // end canonical part
-   // ======================================
-   // begin Evaluation methods
+    return *this;
+  }
 
-   ObjType getObjFunction() const
-   {
-      return objFunction;
-   }
+  virtual WLxEvaluation& clone() const {
+    return *new WLxEvaluation(*this);
+  }
 
-   ObjType getInfMeasure() const
-   {
-      return infMeasure;
-   }
+  // end canonical part
+  // ======================================
+  // begin Evaluation methods
 
-   evtype getWeight() const
-   {
-      return weight;
-   }
+  ObjType getObjFunction() const {
+    return objFunction;
+  }
 
-   const vector<pair<ObjType, ObjType>>& getAlternativeCosts() const
-   {
-      return alternatives;
-   }
+  ObjType getInfMeasure() const {
+    return infMeasure;
+  }
 
-   void setObjFunction(ObjType obj)
-   {
-      objFunction = obj;
-   }
+  evtype getWeight() const {
+    return weight;
+  }
 
-   void setInfMeasure(ObjType inf)
-   {
-      infMeasure = inf;
-   }
+  const vector<pair<ObjType, ObjType>>& getAlternativeCosts() const {
+    return alternatives;
+  }
 
-   void setWeight(const evtype& w)
-   {
-      weight = w;
-   }
+  void setObjFunction(ObjType obj) {
+    objFunction = obj;
+  }
 
-   void addAlternativeCost(const pair<ObjType, ObjType>& alternativeCost)
-   {
-      alternatives.push_back(alternativeCost);
-   }
+  void setInfMeasure(ObjType inf) {
+    infMeasure = inf;
+  }
 
-   void setAlternativeCosts(const vector<pair<ObjType, ObjType>>& alternativeCosts)
-   {
-      alternatives = alternativeCosts;
-   }
+  void setWeight(const evtype& w) {
+    weight = w;
+  }
 
-   // -----------------
-   // for local optimum
-   // -----------------
+  void addAlternativeCost(const pair<ObjType, ObjType>& alternativeCost) {
+    alternatives.push_back(alternativeCost);
+  }
 
-   // TODO: remove! LOS management is now on NSSeq and NSSeqIterators
-   /*
+  void setAlternativeCosts(const vector<pair<ObjType, ObjType>>& alternativeCosts) {
+    alternatives = alternativeCosts;
+  }
+
+  // -----------------
+  // for local optimum
+  // -----------------
+
+  // TODO: remove! LOS management is now on NSSeq and NSSeqIterators
+  /*
 	bool getLocalOptimumStatus(string moveId)
 	{
 		return localStatus[moveId];
@@ -654,141 +622,127 @@ public:
 	}
 	*/
 
-   // ------------------
-   // for global optimum
-   // ------------------
+  // ------------------
+  // for global optimum
+  // ------------------
 
-   GOS getGlobalOptimumStatus()
-   {
-      return gos;
-   }
+  GOS getGlobalOptimumStatus() {
+    return gos;
+  }
 
-   void setGlobalOptimumStatus(GOS status)
-   {
-      gos = status;
-   }
+  void setGlobalOptimumStatus(GOS status) {
+    gos = status;
+  }
 
-   // evaluation = objFunction + weight*infMeasure
-   // note that, if 'evtype' becomes complex, one must return a moveable copy, not reference of internal value
-   ObjType evaluation() const
-   {
-      assert(!outdated);
-      return objFunction + weight * infMeasure;
-   }
+  // evaluation = objFunction + weight*infMeasure
+  // note that, if 'evtype' becomes complex, one must return a moveable copy, not reference of internal value
+  ObjType evaluation() const {
+    assert(!outdated);
+    return objFunction + weight * infMeasure;
+  }
 
-   // ========= TAKEN FROM MoveCost =======
+  // ========= TAKEN FROM MoveCost =======
 
-   // update Evaluation with costs
-   virtual void update(Evaluation<ObjType>& evCost)
-   {
-      // this task was performed before by MoveCost... now unifying in Evaluation
-      // how to do this?
-      assert(false);
-   }
+  // update Evaluation with costs
+  virtual void update(Evaluation<ObjType>& evCost) {
+    // this task was performed before by MoveCost... now unifying in Evaluation
+    // how to do this?
+    assert(false);
+  }
 
-   virtual WLxEvaluation<ObjType> diff(const WLxEvaluation<ObjType>& evFinal)
-   {
-      const WLxEvaluation<ObjType>& e = evFinal; // pointing to legacy code
+  virtual WLxEvaluation<ObjType> diff(const WLxEvaluation<ObjType>& evFinal) {
+    const WLxEvaluation<ObjType>& e = evFinal;  // pointing to legacy code
 
-      // take my own information
-      // -----------------------
+    // take my own information
+    // -----------------------
 
-      pair<ObjType, ObjType> e_begin = make_pair(this->getObjFunction(), this->getInfMeasure());
-      // get original values for lexicographic part
-      vector<pair<evtype, evtype>> alt_begin(this->getAlternativeCosts().size());
-      for (unsigned i = 0; i < alt_begin.size(); i++) {
-         alt_begin[i].first = this->getAlternativeCosts()[i].first;
-         alt_begin[i].second = this->getAlternativeCosts()[i].second;
-      }
+    pair<ObjType, ObjType> e_begin = make_pair(this->getObjFunction(), this->getInfMeasure());
+    // get original values for lexicographic part
+    vector<pair<evtype, evtype>> alt_begin(this->getAlternativeCosts().size());
+    for (unsigned i = 0; i < alt_begin.size(); i++) {
+      alt_begin[i].first = this->getAlternativeCosts()[i].first;
+      alt_begin[i].second = this->getAlternativeCosts()[i].second;
+    }
 
-      // compute cost difference
-      // -----------------------
-      WLxEvaluation<ObjType> mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1); // no outdated or estimated
+    // compute cost difference
+    // -----------------------
+    WLxEvaluation<ObjType> mcost(e.getObjFunction() - e_begin.first, e.getInfMeasure() - e_begin.second, 1);  // no outdated or estimated
 
-      // guarantee that alternative costs have same size
-      assert(alt_begin.size() == e.getAlternativeCosts().size());
+    // guarantee that alternative costs have same size
+    assert(alt_begin.size() == e.getAlternativeCosts().size());
 
-      // compute alternative costs
-      for (unsigned i = 0; i < alt_begin.size(); i++)
-         mcost.addAlternativeCost(make_pair(e.getAlternativeCosts()[i].first - alt_begin[i].first, e.getAlternativeCosts()[i].second - alt_begin[i].second));
+    // compute alternative costs
+    for (unsigned i = 0; i < alt_begin.size(); i++)
+      mcost.addAlternativeCost(make_pair(e.getAlternativeCosts()[i].first - alt_begin[i].first, e.getAlternativeCosts()[i].second - alt_begin[i].second));
 
-      return WLxEvaluation<ObjType>(mcost);
-   }
+    return WLxEvaluation<ObjType>(mcost);
+  }
 
-   virtual bool isEstimated()
-   {
-      return false; // TODO: created good flag here??
-   }
+  virtual bool isEstimated() {
+    return false;  // TODO: created good flag here??
+  }
 
-   // =========
-   // finish MoveCost
-   // =========
+  // =========
+  // finish MoveCost
+  // =========
 
-   // leave option to rewrite tolerance (or consider lexicographic values)
-   virtual bool isFeasible() const
-   {
-      //return optframe::numeric_is_zero<ObjType>(infMeasure);
-      // IMPORTANT: numeric_is_zero can come from anywhere!
-      return optframe::numeric_is_zero(infMeasure);
-      //return (EVALUATION_ABS(infMeasure) <= optframe::get_numeric_zero<ObjType>()); // deprecated
-   }
+  // leave option to rewrite tolerance (or consider lexicographic values)
+  virtual bool isFeasible() const {
+    //return optframe::numeric_is_zero<ObjType>(infMeasure);
+    // IMPORTANT: numeric_is_zero can come from anywhere!
+    return optframe::numeric_is_zero(infMeasure);
+    //return (EVALUATION_ABS(infMeasure) <= optframe::get_numeric_zero<ObjType>()); // deprecated
+  }
 
-   // ======================
-   // Object specific part
-   // ======================
+  // ======================
+  // Object specific part
+  // ======================
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << Component::idComponent() << ":WLxEvaluation";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << Component::idComponent() << ":WLxEvaluation";
+    return ss.str();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 
-   virtual void print() const
-   {
-      cout << toString() << endl;
-   }
+  virtual void print() const {
+    cout << toString() << endl;
+  }
 
-   virtual string toString() const
-   {
-      stringstream ss;
-      ss << fixed; // disable scientific notation
-      ss << "WLxEvaluation function value = " << evaluation();
-      ss << (isFeasible() ? " " : " (not feasible) ");
-      ss << " w= " << weight << " ";
-      ss << (outdated ? " OUTDATED " : " ");
-      ss << (estimated ? " ESTIMATED " : " ");
-      if (alternatives.size() > 0) {
-         ss << " alternative costs: ";
-         for (unsigned i = 0; i < alternatives.size(); i++)
-            ss << "(" << alternatives[i].first << ";" << alternatives[i].second << ") ";
-      }
-      // ss << endl;
+  virtual string toString() const {
+    stringstream ss;
+    ss << fixed;  // disable scientific notation
+    ss << "WLxEvaluation function value = " << evaluation();
+    ss << (isFeasible() ? " " : " (not feasible) ");
+    ss << " w= " << weight << " ";
+    ss << (outdated ? " OUTDATED " : " ");
+    ss << (estimated ? " ESTIMATED " : " ");
+    if (alternatives.size() > 0) {
+      ss << " alternative costs: ";
+      for (unsigned i = 0; i < alternatives.size(); i++)
+        ss << "(" << alternatives[i].first << ";" << alternatives[i].second << ") ";
+    }
+    // ss << endl;
 
-      return ss.str();
-   }
+    return ss.str();
+  }
 
-   friend std::ostream& operator<<(std::ostream& os, const WLxEvaluation& me)
-   {
-      os << me.toString();
-      return os;
-   }
+  friend std::ostream& operator<<(std::ostream& os, const WLxEvaluation& me) {
+    os << me.toString();
+    return os;
+  }
 };
 
-} // namespace optframe
+}  // namespace optframe
 
-struct basic_ev_test_copy
-{
-   void f()
-   {
-      optframe::Evaluation<> e1;
-      optframe::Evaluation<> e2 = e1; // test 'explicit'
-   }
+struct basic_ev_test_copy {
+  void f() {
+    optframe::Evaluation<> e1;
+    optframe::Evaluation<> e2 = e1;  // test 'explicit'
+  }
 };
 
 // Compilation tests for XEvaluation concepts
