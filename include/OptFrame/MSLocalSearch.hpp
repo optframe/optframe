@@ -33,50 +33,43 @@ using namespace std;
 #include "Evaluation.hpp"
 #include "MultiObjSearch.hpp"
 #include "ParetoManager.hpp"
-#include "Solution.hpp"
+// #include "Solution.hpp"
 
 // Local Search defined for "MultiSolution Space" (2^S)
 
 namespace optframe {
 
-template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
-class MSLocalSearch : public Component
-{
+template <XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
+class MSLocalSearch : public Component {
+ public:
+  MSLocalSearch() {
+  }
 
-public:
-   MSLocalSearch()
-   {
-   }
+  virtual ~MSLocalSearch() {
+  }
 
-   virtual ~MSLocalSearch()
-   {
-   }
+  // core methods
 
-   // core methods
+  // core methods
 
-   // core methods
+  // 1
+  virtual void msSearchFrom(X2ES& p, pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) = 0;
 
-   // 1
-   virtual void msSearchFrom(X2ES& p, pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) = 0;
+  virtual bool compatible(string s) {
+    return (s == idComponent()) || (Component::compatible(s));
+  }
 
-   virtual bool compatible(string s)
-   {
-      return (s == idComponent()) || (Component::compatible(s));
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << Component::idComponent() << ":MSLocalSearch";
+    return ss.str();
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << Component::idComponent() << ":MSLocalSearch";
-      return ss.str();
-   }
-
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_MS_LOCAL_SEARCH_HPP_ */

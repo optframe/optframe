@@ -25,57 +25,56 @@
 // Project PMedCap
 // ===================================
 
-#include <iostream>
 #include <math.h>
 #include <stdlib.h>
 
-#include "PMedCap.h"
-#include <OptFrame/Loader.hpp>
-#include <OptFrame/Move.hpp> // for testing
+#include <OptFrame/Hyper/Loader.hpp>
+#include <OptFrame/Move.hpp>  // for testing
 #include <OptFrame/Timer.hpp>
+#include <iostream>
+
+#include "PMedCap.h"
 
 using namespace std;
 using namespace optframe;
 using namespace pmedcap;
 
-int
-main(int argc, char** argv)
-{
-   Timer walltimer;
+int main(int argc, char** argv) {
+  Timer walltimer;
 
-   srand(time(NULL));
-   RandGen rg(time(NULL));
+  srand(time(NULL));
+  RandGen rg(time(NULL));
 
-   Scanner scanner(File("./Examples/PMedCap/InstancesLorena/SJC1"));
+  Scanner scanner(File("./Examples/PMedCap/InstancesLorena/SJC1"));
 
-   //double tempo = 120;
+  //double tempo = 120;
 
-   PCAPProblemInstance p(scanner);
-   sref<PCAPEvaluator> e = new PCAPEvaluator(p);
-   sref<GeneralEvaluator<ESolutionPCAP>> e2 = e;
-   sref<PCAPInitialSolutionGreedy> is_greedy = new PCAPInitialSolutionGreedy(p, e2, rg);
-   //SolutionPCAP s = *is_greedy.generateSolution(100); // timelimit 100
-   ESolutionPCAP se = *is_greedy->initialSearch(StopCriteria<EvaluationPCAP>(100)).first; // timelimit 100
+  PCAPProblemInstance p(scanner);
+  sref<PCAPEvaluator> e = new PCAPEvaluator(p);
+  sref<GeneralEvaluator<ESolutionPCAP>> e2 = e;
+  sref<PCAPInitialSolutionGreedy> is_greedy = new PCAPInitialSolutionGreedy(p, e2, rg);
+  //SolutionPCAP s = *is_greedy.generateSolution(100); // timelimit 100
+  ESolutionPCAP se = *is_greedy->initialSearch(StopCriteria<EvaluationPCAP>(100)).first;  // timelimit 100
 
-   XSolution AUTO_CONCEPTS& s = se.first;
-   ////XEvaluation& e = se.second;
+  XSolution AUTO_CONCEPTS& s = se.first;
+  ////XEvaluation& e = se.second;
 
-   sref<NSSeqSWAP> nsSwap = new NSSeqSWAP(p, rg);
+  sref<NSSeqSWAP> nsSwap = new NSSeqSWAP(p, rg);
 
-   s.print();
+  s.print();
 
-   e->evaluate(s).print();
+  e->evaluate(s).print();
 
-   PCAPSolCheck(p, s);
+  PCAPSolCheck(p, s);
 
-   Loader<RepPCAP, OPTFRAME_DEFAULT_ADS, SolutionPCAP, EvaluationPCAP, ESolutionPCAP> optframe(rg);
-   optframe.factory.addComponent(is_greedy, "OptFrame:Constructive");
-   optframe.factory.addComponent(e, "OptFrame:GeneralEvaluator");
-   optframe.factory.addComponent(nsSwap, "OptFrame:NS");
+  Loader<RepPCAP, OPTFRAME_DEFAULT_ADS, SolutionPCAP, EvaluationPCAP, ESolutionPCAP> optframe(rg);
+  optframe.factory.addComponent(is_greedy, "OptFrame:Constructive");
+  optframe.factory.addComponent(e, "OptFrame:GeneralEvaluator");
+  optframe.factory.addComponent(nsSwap, "OptFrame:NS");
 
-   // do something!
+  // do something!
 
-   cout << "Program ended successfully" << endl;
+  cout << "Program ended successfully" << endl;
 
-   return 0;
+  return 0;
 }

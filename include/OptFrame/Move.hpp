@@ -23,17 +23,18 @@
 #ifndef OPTFRAME_MOVE_HPP_
 #define OPTFRAME_MOVE_HPP_
 
-#include "Component.hpp"
-#include "Evaluation.hpp"
-#include "MoveCost.hpp"
-#include "MultiEvaluation.hpp"
-#include "MultiMoveCost.hpp"
-#include "Solution.hpp"
-#include "Solutions/CopySolution.hpp"
+#include <OptFrame/BaseConcepts.hpp>
+#include <OptFrame/Component.hpp>
+// #include "Evaluation.hpp"
+// #include "MoveCost.hpp"
+// #include "MultiEvaluation.hpp"
+// #include "MultiMoveCost.hpp"
+//#include "Solution.hpp"
+//#include "Solutions/CopySolution.hpp"
 
 //#include "Action.hpp"
 
-using namespace std;
+//using namespace std;
 
 typedef void OPTFRAME_DEFAULT_PROBLEM;
 
@@ -50,7 +51,9 @@ namespace optframe {
 // Efficient components (like Move) should use 'XR' instead of 'XSolution' (and equivalents).
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XSearch<S, XEv> XSH = std::pair<S, XEv> >
 //template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XSH = std::pair<S, XEv>>
-template <XESolution XES, XEvaluation XEv = typename XES::second_type, XSearch<XES> XSH = XES>
+template <XESolution XES,
+          XEvaluation XEv = typename XES::second_type,
+          XSearch<XES> XSH = XES>
 // BREAK TIME!! ONLY 'XES' shall pass... can we finish 'S' here?
 // Finally, now it's possible to abolish XEv (XEv2) passing here, and deduce from 'XES::second_type'.
 class Move : public Component {
@@ -145,7 +148,7 @@ class Move : public Component {
 */
 
   // TODO: coming in one of the next versions..
-  //virtual pair<Move<XES, XEv, XSH>&, MoveCost<>*> apply(const Evaluation<>& e, R& r, ADS& ads) = 0;
+  // virtual pair<Move<XES, XEv, XSH>&, MoveCost<>*> apply(const Evaluation<>& e, R& r, ADS& ads) = 0;
 
   // ================== cost calculation
 
@@ -205,25 +208,26 @@ class Move : public Component {
     return !(*this == m);
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":Move";
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
-  virtual std::string toString() const override {
+  std::string toString() const override {
     return id();
   }
 
-  // default NO PRINT
+  // default NO PRINT (WHY??)
   virtual void print() const override {
+    std::cout << toString() << std::endl;
   }
 };
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_MOVE_HPP_*/
+#endif  // OPTFRAME_MOVE_HPP_

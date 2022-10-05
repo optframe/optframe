@@ -32,33 +32,31 @@
 
 using namespace std;
 
+#include <OptFrame/Hyper/Loader.hpp>
 #include <set>
 
 #include "OptHScheduling.h"
-#include <OptFrame/Loader.hpp>
 
 using namespace OptHS;
 using namespace scannerpp;
 
-int
-main(int argc, char** argv)
-{
-   Loader<RepOptHS, OPTFRAME_DEFAULT_ADS, SolutionOptHS> loader;
-   OptHSProblemCommand opths;
-   //optframe.execute("system.read ../definitions.opt");
-   //optframe.execute("problem.OptHS load Y Z M B E J");
-   //optframe.execute("component.exec_constructive $Constructive 0  sol-random");
-   //optframe.execute("evaluate $Evaluator 0 $sol-random");
-   //optframe.execute("print $sol-random");
-   //optframe.execute("component.create_list [ OptFrame:NS 0 ] OptFrame:NS ns_list");
-   //optframe.execute("component.build OptFrame:LocalSearch:LAHC $Evaluator 0  $ns_list 1000 10000 50 my_lahc");
-   //optframe.execute("component.exec_local_search 0 30  $sol-random  $my_lahc  best-solution  time");
-   //optframe.execute("echo found best solution in $time milliseconds");
-   //optframe.execute("evaluate $Evaluator 0 $best-solution");
-   //optframe.execute("to_string $best-solution bs_str");
-   //optframe.execute("echo $bs_str");
+int main(int argc, char** argv) {
+  Loader<RepOptHS, OPTFRAME_DEFAULT_ADS, SolutionOptHS> loader;
+  OptHSProblemCommand opths;
+  //optframe.execute("system.read ../definitions.opt");
+  //optframe.execute("problem.OptHS load Y Z M B E J");
+  //optframe.execute("component.exec_constructive $Constructive 0  sol-random");
+  //optframe.execute("evaluate $Evaluator 0 $sol-random");
+  //optframe.execute("print $sol-random");
+  //optframe.execute("component.create_list [ OptFrame:NS 0 ] OptFrame:NS ns_list");
+  //optframe.execute("component.build OptFrame:LocalSearch:LAHC $Evaluator 0  $ns_list 1000 10000 50 my_lahc");
+  //optframe.execute("component.exec_local_search 0 30  $sol-random  $my_lahc  best-solution  time");
+  //optframe.execute("echo found best solution in $time milliseconds");
+  //optframe.execute("evaluate $Evaluator 0 $best-solution");
+  //optframe.execute("to_string $best-solution bs_str");
+  //optframe.execute("echo $bs_str");
 
-   cout << "Program ended successfully" << endl;
+  cout << "Program ended successfully" << endl;
 
-   return 0;
+  return 0;
 }

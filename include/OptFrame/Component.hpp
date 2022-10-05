@@ -25,15 +25,23 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <memory> // for shared_ptr
+#include <memory>  // for shared_ptr
 #include <sstream>
-#include <vector> // only for OPTFRAME_AC
+#include <vector>  // only for OPTFRAME_AC
 
+//
 #include <OptFrame/SemStream.hpp>
+
+//
 
 namespace optframe {
 
-//using std::string = std::string;
+// SORRY! BUT WE NEED THESE!
+using std::cout, std::endl;
+using std::fixed;
+using std::ostream;
+using std::pair, std::make_pair, std::string, std::vector;
+using std::stringstream;
 
 /*
 // OPTFRAME ALGORITHM COMPREHENSION FLAG
@@ -96,77 +104,69 @@ struct Log
 // translates to: if loglevel "more verbose than" warning ...
 //
 
-enum LogLevel
-{
-   Silent = 0,
-   Error = 1,
-   Warning = 2,
-   Info = 3,
-   Debug = 4
+enum LogLevel {
+  Silent = 0,
+  Error = 1,
+  Warning = 2,
+  Info = 3,
+  Debug = 4
 };
 
-enum StringFormat
-{
-   Undefined = 0, // undefined... typically 'Human'
-   Human = 1,     // human readable
-   NoSpaces = 2,  // raw: no spaces (undescore is allowed)
-   JSON = 3       // json format
+enum StringFormat {
+  Undefined = 0,  // undefined... typically 'Human'
+  Human = 1,      // human readable
+  NoSpaces = 2,   // raw: no spaces (undescore is allowed)
+  JSON = 3        // json format
 };
 
 class Component;
 
-class ContextAC
-{
-public:
-   std::string id;
-   std::string message;
-   std::shared_ptr<Component> payload;
+class ContextAC {
+ public:
+  std::string id;
+  std::string message;
+  std::shared_ptr<Component> payload;
 };
 
-class Component
-{
-public:
-   //Log* logdata;
-   //
-   // 'logdata' is for User logs
-   std::ostream* logdata{ &std::cout };
-   // 'mlog' is for machine logs (disabled by default)
-   std::ostream* mlog{ nullptr };
+class Component {
+ public:
+  //Log* logdata;
+  //
+  // 'logdata' is for User logs
+  std::ostream* logdata{&std::cout};
+  // 'mlog' is for machine logs (disabled by default)
+  std::ostream* mlog{nullptr};
 
-   static bool safe_delete(Component* c)
-   {
-      if (c) {
-         delete c;
-         return true;
-      } else
-         return false;
-   }
-
-   static void safe_print(Component* c)
-   {
-      //assert(c);
-      if (c)
-         c->print();
-      else
-         std::cout << "nullptr Component" << std::endl;
-   }
-
-public:
-   // Set user log stream recursive: must be implemented on each component. Returns 'false' is not implemented.
-   virtual bool setLogR(std::ostream* _logdata)
-   {
-      this->logdata = _logdata;
+  static bool safe_delete(Component* c) {
+    if (c) {
+      delete c;
+      return true;
+    } else
       return false;
-   }
+  }
 
-   // Set machine log recursive: must be implemented on each component. Returns 'false' is not implemented.
-   virtual bool setMachineLogR(std::ostream* _mlog)
-   {
-      this->mlog = _mlog;
-      return false;
-   }
+  static void safe_print(Component* c) {
+    //assert(c);
+    if (c)
+      c->print();
+    else
+      std::cout << "nullptr Component" << std::endl;
+  }
 
-   /*
+ public:
+  // Set user log stream recursive: must be implemented on each component. Returns 'false' is not implemented.
+  virtual bool setLogR(std::ostream* _logdata) {
+    this->logdata = _logdata;
+    return false;
+  }
+
+  // Set machine log recursive: must be implemented on each component. Returns 'false' is not implemented.
+  virtual bool setMachineLogR(std::ostream* _mlog) {
+    this->mlog = _mlog;
+    return false;
+  }
+
+  /*
 	void initializeLog()
 	{
 		logdata = new Log;
@@ -181,211 +181,194 @@ public:
 		}
 	}
 */
-   int verboseLevel;
+  int verboseLevel;
 
-   bool error;
-   bool warning;
-   bool information;
-   // debug and verbose should be "almost the same"
+  bool error;
+  bool warning;
+  bool information;
+  // debug and verbose should be "almost the same"
 #ifdef NDEBUG
-   constexpr static bool debug{ false };
+  constexpr static bool debug{false};
 #else
-   bool debug; // perform dead code elimination, having always debug{true} as constexpr, when NDEBUG is ON
+  bool debug;  // perform dead code elimination, having always debug{true} as constexpr, when NDEBUG is ON
 #endif
-   bool verbose; // no dead code elimination, even when NDEBUG is ON
+  bool verbose;  // no dead code elimination, even when NDEBUG is ON
 
-   // Mode: SILENT  = 0
-   // |      1      |      2      |      3      |      4      |
-   // |    error    |   warning   | information | debug/verb. |
-   // |      -      |      -      |      -      |      -      |
+  // Mode: SILENT  = 0
+  // |      1      |      2      |      3      |      4      |
+  // |    error    |   warning   | information | debug/verb. |
+  // |      -      |      -      |      -      |      -      |
 
-   // Mode: ERROR = 1
-   // |      1      |      2      |      3      |      4      |
-   // |    error    |   warning   | information | debug/verb. |
-   // |      x      |      -      |      -      |      -      |
+  // Mode: ERROR = 1
+  // |      1      |      2      |      3      |      4      |
+  // |    error    |   warning   | information | debug/verb. |
+  // |      x      |      -      |      -      |      -      |
 
-   // Mode: WARNING = 2 (DEFAULT)
-   // |      1      |      2      |      3      |      4      |
-   // |    error    |   warning   | information | debug/verb. |
-   // |      x      |      x      |      -      |      -      |
+  // Mode: WARNING = 2 (DEFAULT)
+  // |      1      |      2      |      3      |      4      |
+  // |    error    |   warning   | information | debug/verb. |
+  // |      x      |      x      |      -      |      -      |
 
-   // Mode: INFORMATION = 3
-   // |      1      |      2      |      3      |      4      |
-   // |    error    |   warning   | information | debug/verb. |
-   // |      x      |      x      |      x      |      -      |
+  // Mode: INFORMATION = 3
+  // |      1      |      2      |      3      |      4      |
+  // |    error    |   warning   | information | debug/verb. |
+  // |      x      |      x      |      x      |      -      |
 
-   // Mode: VERBOSE/DEBUG = 4
-   // |      1      |      2      |      3      |      4      |
-   // |    error    |   warning   | information | debug/verb. |
-   // |      x      |      x      |      x      |      x      |
+  // Mode: VERBOSE/DEBUG = 4
+  // |      1      |      2      |      3      |      4      |
+  // |    error    |   warning   | information | debug/verb. |
+  // |      x      |      x      |      x      |      x      |
 
-   Component()
-   {
-      // TODO: create 'logless' implementation on OptFrame (is it faster?)
-      setMessageLevel(LogLevel::Info);
-      //logdata = nullptr;
-   }
+  Component() {
+    // TODO: create 'logless' implementation on OptFrame (is it faster?)
+    setMessageLevel(LogLevel::Info);
+    //logdata = nullptr;
+  }
 
-   virtual ~Component()
-   {
-   }
+  virtual ~Component() {
+  }
 
 #ifdef OPTFRAME_AC
-   // clones current Component and it is either: (i) optional (by nullptr); (ii) a shared_ptr instance as output
-   virtual std::shared_ptr<Component> sharedClone() const
-   {
-      return nullptr;
-   }
+  // clones current Component and it is either: (i) optional (by nullptr); (ii) a shared_ptr instance as output
+  virtual std::shared_ptr<Component> sharedClone() const {
+    return nullptr;
+  }
 
-   // list for algorithm comprehension / search comprehension
-   std::vector<ContextAC> listAC;
+  // list for algorithm comprehension / search comprehension
+  std::vector<ContextAC> listAC;
 
-   bool hasInListAC(std::string _id)
-   {
-      for (unsigned i = 0; i < listAC.size(); i++)
-         if (listAC[i].id == _id)
-            return true;
-      return false;
-   }
+  bool hasInListAC(std::string _id) {
+    for (unsigned i = 0; i < listAC.size(); i++)
+      if (listAC[i].id == _id)
+        return true;
+    return false;
+  }
 
-   void printListAC()
-   {
-      std::cout << "ContextAC list for '" << id() << "': [";
-      for (unsigned i = 0; i < listAC.size(); i++)
-         std::cout << listAC[i].id << " {" << listAC[i].message << "} ; ";
-      std::cout << "]" << std::endl;
-   }
+  void printListAC() {
+    std::cout << "ContextAC list for '" << id() << "': [";
+    for (unsigned i = 0; i < listAC.size(); i++)
+      std::cout << listAC[i].id << " {" << listAC[i].message << "} ; ";
+    std::cout << "]" << std::endl;
+  }
 
-   void printDistinctListAC()
-   {
-      std::cout << "ContextAC distinct list for '" << id() << "': [";
-      std::string lastId = "";
-      int count = 0;
-      for (unsigned i = 0; i < listAC.size(); i++) {
-         count++;
-         if (listAC[i].id != lastId) {
-            std::cout << " |" << count << "|; ... => " << listAC[i].id << " {" << listAC[i].message << "} ";
-            lastId = listAC[i].id;
-            count = 0;
-         }
+  void printDistinctListAC() {
+    std::cout << "ContextAC distinct list for '" << id() << "': [";
+    std::string lastId = "";
+    int count = 0;
+    for (unsigned i = 0; i < listAC.size(); i++) {
+      count++;
+      if (listAC[i].id != lastId) {
+        std::cout << " |" << count << "|; ... => " << listAC[i].id << " {" << listAC[i].message << "} ";
+        lastId = listAC[i].id;
+        count = 0;
       }
-      std::cout << "]" << std::endl;
-   }
+    }
+    std::cout << "]" << std::endl;
+  }
 #endif
 
-   static std::string idComponent()
-   {
-      return "OptFrame";
-   }
+  static std::string idComponent() {
+    return "OptFrame";
+  }
 
-   virtual std::string id() const
-   {
-      return idComponent();
-   }
+  virtual std::string id() const {
+    return idComponent();
+  }
 
-   virtual bool compatible(std::string s)
-   {
-      return (s == id()) || (s == idComponent()); // equal to this component or "OptFrame:" base
-   }
+  virtual bool compatible(std::string s) {
+    return (s == id()) || (s == idComponent());  // equal to this component or "OptFrame:" base
+  }
 
-   //StringFormat mlogType{ StringFormat::Human };
+  //StringFormat mlogType{ StringFormat::Human };
 
-   // returns 'false' if unsupported
-   virtual bool toStream(std::ostream& os) const
-   {
-      return false;
-   }
+  // returns 'false' if unsupported
+  virtual bool toStream(std::ostream& os) const {
+    return false;
+  }
 
-   // returns "" if unsupported
-   virtual std::string toString() const = 0;
-   //{
-   //   return id();
-   //}
+  // returns "" if unsupported
+  virtual std::string toString() const = 0;
+  //{
+  //   return id();
+  //}
 
-   /*
+  /*
    // returns "" if unsupported
    virtual std::string toStringFormat(StringFormat fmt) const
    {
       return "";
    }
 */
-   virtual void print() const
-   {
-      (*logdata) << this->toString() << std::endl;
-   }
+  virtual void print() const {
+    (*logdata) << this->toString() << std::endl;
+  }
 
-   // -----------
+  // -----------
 
-   void setVerbose()
-   {
-      setMessageLevel(LogLevel::Debug);
-   }
+  void setVerbose() {
+    setMessageLevel(LogLevel::Debug);
+  }
 
-   // set verbose level recursive: returns 'false' if not supported.
-   virtual bool setVerboseR()
-   {
-      this->setVerbose();
-      return false;
-   }
+  // set verbose level recursive: returns 'false' if not supported.
+  virtual bool setVerboseR() {
+    this->setVerbose();
+    return false;
+  }
 
-   // -----------
+  // -----------
 
-   // set silent level recursive: returns 'false' if not supported.
-   virtual void setSilent()
-   {
-      setMessageLevel(LogLevel::Silent);
-   }
+  // set silent level recursive: returns 'false' if not supported.
+  virtual void setSilent() {
+    setMessageLevel(LogLevel::Silent);
+  }
 
-   // set silent level recursive: returns 'false' if not supported.
-   virtual bool setSilentR()
-   {
-      this->setSilent();
-      return false;
-   }
+  // set silent level recursive: returns 'false' if not supported.
+  virtual bool setSilentR() {
+    this->setSilent();
+    return false;
+  }
 
-   // -----------
+  // -----------
 
-   void setMessageLevel(LogLevel vl)
-   {
-      error = warning = information = verbose = false;
+  void setMessageLevel(LogLevel vl) {
+    error = warning = information = verbose = false;
 #ifndef NDEBUG
-      debug = false;
+    debug = false;
 #endif
 
-      verboseLevel = vl;
-      switch (verboseLevel) {
-         case LogLevel::Silent: // SILENT 0
-            break;
-         case LogLevel::Error: // ERROR 1
-            error = true;
-            break;
-         case LogLevel::Warning: // WARNING 2
-            warning = true;
-            break;
-         case LogLevel::Debug: // VERBOSE 4
+    verboseLevel = vl;
+    switch (verboseLevel) {
+      case LogLevel::Silent:  // SILENT 0
+        break;
+      case LogLevel::Error:  // ERROR 1
+        error = true;
+        break;
+      case LogLevel::Warning:  // WARNING 2
+        warning = true;
+        break;
+      case LogLevel::Debug:  // VERBOSE 4
 #ifdef NDEBUG
-            std::cerr << "WARNING: LogLevel::Debug is disabled due to NDEBUG flag! Setting LogLevel::Info instead." << std::endl;
-            information = true;
+        std::cerr << "WARNING: LogLevel::Debug is disabled due to NDEBUG flag! Setting LogLevel::Info instead." << std::endl;
+        information = true;
 #else
-            debug = true;
+        debug = true;
 #endif
-            break;
-         default: // 3: INFORMATION (default)
-            information = true;
-      }
+        break;
+      default:  // 3: INFORMATION (default)
+        information = true;
+    }
 
-      verbose = debug; // always the same
-      error = error || warning || information || debug;
-      warning = warning || information || debug;
-      information = information || debug;
-   }
+    verbose = debug;  // always the same
+    error = error || warning || information || debug;
+    warning = warning || information || debug;
+    information = information || debug;
+  }
 
-   bool getVerboseLevel()
-   {
-      return verboseLevel;
-   }
+  bool getVerboseLevel() {
+    return verboseLevel;
+  }
 };
 
-} // namespace optframe
+}  // namespace optframe
 
 #endif /* OPTFRAME_COMPONENT_HPP_ */

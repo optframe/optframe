@@ -23,72 +23,64 @@
 #ifndef OPTFRAME_ADSMANAGER_HPP_
 #define OPTFRAME_ADSMANAGER_HPP_
 
+// C++
 #include <cstdlib>
 #include <iostream>
+//
+#include <OptFrame/Component.hpp>
+#include <OptFrame/Helper/Solution.hpp>
+#include <OptFrame/Helper/Solutions/CopySolution.hpp>
 
-#include "Component.hpp"
-#include "Solution.hpp"
-#include "Solutions/CopySolution.hpp"
-
-using namespace std;
+// using namespace std;
 
 namespace optframe {
 
 //template<class R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>>
 // force manual passing (for safety)
-template<class R, class ADS, XBaseSolution<R, ADS> S>
-class ADSManager : public Component
-{
+template <class R, class ADS, XBaseSolution<R, ADS> S>
+class ADSManager : public Component {
+ public:
+  ADSManager() {
+  }
 
-public:
-   ADSManager()
-   {
-   }
+  virtual ~ADSManager() {
+  }
 
-   virtual ~ADSManager()
-   {
-   }
+  virtual void initializeADS(const R& rep, ADS& _ads) = 0;
 
-   virtual void initializeADS(const R& rep, ADS& _ads) = 0;
+  virtual void initializeADSNeighStructure(const R& rep, ADS& _ads) = 0;
 
-   virtual void initializeADSNeighStructure(const R& rep, ADS& _ads) = 0;
+  virtual void setNeighLocalOptimum(const R& rep, ADS& _ads, string str) = 0;
 
-   virtual void setNeighLocalOptimum(const R& rep, ADS& _ads, string str) = 0;
+  virtual void setNeighLocalOptimum(S& s, string str) {
+    setNeighLocalOptimum(s.getR(), s.getADS(), str);
+  }
 
-   virtual void setNeighLocalOptimum(S& s, string str)
-   {
-      setNeighLocalOptimum(s.getR(), s.getADS(), str);
-   }
+  virtual bool compareADS(const ADS& _ads1, const ADS& _ads2) = 0;
 
-   virtual bool compareADS(const ADS& _ads1, const ADS& _ads2) = 0;
+  virtual void printADS(const ADS& _ads) = 0;
 
-   virtual void printADS(const ADS& _ads) = 0;
+  virtual bool compatible(string s) {
+    return (s == idComponent()) || (Component::compatible(s));
+  }
 
-   virtual bool compatible(string s)
-   {
-      return (s == idComponent()) || (Component::compatible(s));
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << Component::idComponent() << "ADSManager";
+    return ss.str();
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << Component::idComponent() << "ADSManager";
-      return ss.str();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
-
-   virtual string toString() const
-   {
-      stringstream ss;
-      ss << "ADSManager";
-      return ss.str();
-   }
+  virtual string toString() const {
+    stringstream ss;
+    ss << "ADSManager";
+    return ss.str();
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_ADSMANAGER_HPP_ */

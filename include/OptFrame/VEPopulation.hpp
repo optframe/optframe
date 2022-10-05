@@ -23,12 +23,9 @@
 #ifndef OPTFRAME_VEPOPULATION_HPP_
 #define OPTFRAME_VEPOPULATION_HPP_
 
+#include <OptFrame/BaseConcepts.hpp>
 #include <vector>
-
-#include "BaseConcepts.hpp"
 //
-#include "Evaluation.hpp" // JUST FOR TESTING!
-#include "Solution.hpp"   // JUST FOR TESTING!
 
 // ================================================================
 // Remember that VEPopulation is NOT a optframe::Component!
@@ -43,19 +40,14 @@
 
 namespace optframe {
 
-template<XSolution S>
+template <XSolution S>
 using VPopulation = std::vector<S>;
 
-template<XESolution XES>
+template <XESolution XES>
 using VEPopulation = std::vector<XES>;
 
-} // namespace optframe
+}  // namespace optframe
 
-// compilation tests
-#ifndef NDEBUG
-namespace optframe {
-static_assert(X2ESolution<VEPopulation<std::pair<Solution<double>, Evaluation<double>>>, std::pair<Solution<double>, Evaluation<double>>>);
-} // namespace optframe
-#endif
+#include "VEPopulation.test.hpp"
 
 #endif /* OPTFRAME_VEPOPULATION_HPP_ */

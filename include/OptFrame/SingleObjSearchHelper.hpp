@@ -28,8 +28,9 @@
 
 using namespace std;
 
+#include <OptFrame/BaseConcepts.hpp>
+
 #include "Action.hpp"
-#include "BaseConcepts.hpp"
 #include "Component.hpp"
 #include "ComponentBuilder.h"
 #include "Constructive.hpp"  // for helper only  (TODO: make special class)

@@ -30,16 +30,17 @@
 #ifndef OPTFRAME_PARETODOMINANCE_HPP_
 #define OPTFRAME_PARETODOMINANCE_HPP_
 
+// C++
 #include <cmath>
 #include <iostream>
+//
+#include <OptFrame/Direction.hpp>
+#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Helper/Solution.hpp>
+#include <OptFrame/MultiEvaluator.hpp>
 
-#include "Direction.hpp"
-#include "Evaluation.hpp"
-#include "Evaluator.hpp"
-#include "MultiEvaluator.hpp"
-#include "Solution.hpp"
-
-using namespace std;
+// using namespace std;
 
 namespace optframe {
 
@@ -47,7 +48,7 @@ template <XSolution S, XEvaluation XEv = Evaluation<>, XEvaluation XMEv = MultiE
 class ParetoDominance {
  public:
   // TODO: make Evaluator inherit from Direction!
-  vector<Direction<>*> v_d;
+  vector<Direction<XEv>*> v_d;
   MultiEvaluator<XMES>& mev;
 
  public:

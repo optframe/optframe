@@ -20,22 +20,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_MULTIESOLUTION_CTEST_HPP_
-#define OPTFRAME_MULTIESOLUTION_CTEST_HPP_
+#ifndef OPTFRAME_IEVALUATION_HPP_
+#define OPTFRAME_IEVALUATION_HPP_
 
-#include <OptFrame/BaseConcepts.ctest.hpp>
-#include <OptFrame/MultiESolution.hpp>
+// C
+#include <assert.h>
+// C++
+#include <cmath>
+#include <cstdlib>
+#include <iostream>
+#include <string>
+//
+#include <OptFrame/BaseConcepts.hpp>
+#include <OptFrame/SingleObjValue.hpp>
+// #include "MultiObjValue.hpp"   // inserting this beforehand.. who knows!!!
+// #include "SingleObjValue.hpp"  // basic value 'evtype' comes from here!
 
-#ifndef NDEBUG
+// using namespace std;
 
 namespace optframe {
 
-// basic compilation test (TODO: improve)
-//static_assert(X2ESolution<MultiESolution<IsESolution<double>>, IsSolution<double>, IsEvaluation<int>, IsESolution<double>>);
-static_assert(X2ESolution<MultiESolution<IsESolution<double>>, IsESolution<double>>);
+template <optframe::basic_arithmetics ObjType = evtype>
+class IEvaluation {
+ public:
+  // too bad, cannot just put deduced type here (virtual function)
+  virtual ObjType evaluation() const = 0;
 
-} // namespace optframe
+  virtual std::string toString() const = 0;
+};
 
-#endif // NDEBUG
+}  // namespace optframe
 
-#endif /* OPTFRAME_MULTISOLUTION_CTEST_HPP_ */
+#endif  // OPTFRAME_IEVALUATION_HPP_

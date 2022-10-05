@@ -23,14 +23,16 @@
 #ifndef OPTFRAME_BASIC_VNS_HPP_
 #define OPTFRAME_BASIC_VNS_HPP_
 
+// C
 #include <math.h>
-
+// C++
 #include <vector>
+//
+#include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
+#include <OptFrame/Heuristics/VNS/VariableNeighborhoodSearch.hpp>
+#include <OptFrame/Hyper/HeuristicFactory.hpp>
 
-#include "../../HeuristicFactory.hpp"
-#include "../LocalSearches/BestImprovement.hpp"
 #include "VNS.h"
-#include "VariableNeighborhoodSearch.hpp"
 
 namespace optframe {
 

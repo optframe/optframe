@@ -23,8 +23,8 @@
 #ifndef TSP2_SOLUTION_H_
 #define TSP2_SOLUTION_H_
 
-#include <OptFrame/Solution.hpp>
-#include <OptFrame/Solutions/CopySolution.hpp>
+#include <OptFrame/Helper/Solution.hpp>
+#include <OptFrame/Helper/Solutions/CopySolution.hpp>
 
 #include "Evaluation.h"
 #include "Representation.h"
@@ -37,6 +37,6 @@ typedef CopySolution<TSP2::RepTSP> SolutionTSP;
 
 typedef pair<SolutionTSP, EvaluationTSP> ESolutionTSP;
 
-} // namespace TSP2
+}  // namespace TSP2
 
 #endif /*TSP2_SOLUTION_H_*/

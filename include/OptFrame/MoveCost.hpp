@@ -23,11 +23,11 @@
 #ifndef OPTFRAME_MOVE_COST_HPP_
 #define OPTFRAME_MOVE_COST_HPP_
 
+#include <OptFrame/BaseConcepts.hpp>
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
 
-#include "BaseConcepts.hpp"
 #include "Component.hpp"
 #include "Evaluation.hpp"
 

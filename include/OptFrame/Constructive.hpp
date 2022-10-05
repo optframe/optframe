@@ -23,7 +23,8 @@
 #ifndef OPTFRAME_CONSTRUCTIVE_HPP_
 #define OPTFRAME_CONSTRUCTIVE_HPP_
 
-#include "BaseConcepts.hpp"
+#include <OptFrame/BaseConcepts.hpp>
+
 #include "Component.hpp"
 //#include "Solution.hpp"
 //#include "Solutions/CopySolution.hpp"
@@ -32,42 +33,36 @@
 namespace optframe {
 
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R, ADS> S = CopySolution<R, ADS>>
-template<XSolution S>
-class Constructive : public Component
-{
-public:
-   virtual ~Constructive()
-   {
-   }
+template <XSolution S>
+class Constructive : public Component {
+ public:
+  virtual ~Constructive() {
+  }
 
-   // timelimit in seconds, accepting fractions (millisecs, ...)
-   // may or may not generate valid solution in time
-   virtual std::optional<S> generateSolution(double timelimit) = 0;
+  // timelimit in seconds, accepting fractions (millisecs, ...)
+  // may or may not generate valid solution in time
+  virtual std::optional<S> generateSolution(double timelimit) = 0;
 
-   virtual bool compatible(std::string s) override
-   {
-      return (s == idComponent()) || (Component::compatible(s));
-   }
+  virtual bool compatible(std::string s) override {
+    return (s == idComponent()) || (Component::compatible(s));
+  }
 
-   static std::string idComponent()
-   {
-      std::stringstream ss;
-      std::string s = Component::idComponent();
-      ss << s << ":Constructive";
-      return ss.str();
-   }
+  static std::string idComponent() {
+    std::stringstream ss;
+    std::string s = Component::idComponent();
+    ss << s << ":Constructive";
+    return ss.str();
+  }
 
-   virtual std::string id() const override
-   {
-      return idComponent();
-   }
+  virtual std::string id() const override {
+    return idComponent();
+  }
 
-   virtual std::string toString() const override
-   {
-      return id();
-   }
+  virtual std::string toString() const override {
+    return id();
+  }
 };
 //
-} // namespace optframe
+}  // namespace optframe
 
 #endif /*OPTFRAME_CONSTRUCTIVE_HPP_*/

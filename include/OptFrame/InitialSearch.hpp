@@ -25,7 +25,8 @@
 
 #include <utility>
 //
-#include "BaseConcepts.hpp"
+#include <OptFrame/BaseConcepts.hpp>
+
 #include "Component.hpp"
 #include "Constructive.hpp"
 #include "Evaluator.hpp"
@@ -115,4 +116,4 @@ class BasicInitialSearch : public InitialSearch<XES, XSH> {
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_INITIAL_SEARCH_HPP_*/
+#endif  // OPTFRAME_INITIALSEARCH_HPP_

@@ -1,14 +1,15 @@
 #ifndef OPTFRAME_MULTI_OBJ_VALUE_HPP
 #define OPTFRAME_MULTI_OBJ_VALUE_HPP
 
+// C
 #include <assert.h>
-
+// C++
 #include <iostream>
 #include <sstream>
 #include <tuple>
-
-#include "MyConcepts.hpp"
-#include "SingleObjValue.hpp"  // must re-use some structures
+//
+#include <OptFrame/MyConcepts.hpp>
+#include <OptFrame/SingleObjValue.hpp>  // must re-use some structures
 
 //#include <OptFrame/printable/printable.hpp>
 

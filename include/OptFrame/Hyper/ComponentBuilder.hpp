@@ -20,52 +20,51 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_COMPONENT_BUILDER_H_
-#define OPTFRAME_COMPONENT_BUILDER_H_
+#ifndef OPTFRAME_HYPER_COMPONENTBUILDER_HPP_
+#define OPTFRAME_HYPER_COMPONENTBUILDER_HPP_
 
-#include "Component.hpp"
-#include "Evaluation.hpp"
-#include "MultiESolution.hpp"
-#include "Solution.hpp"
-#include "Solutions/CopySolution.hpp"
+// C++
+#include <string>
+//
 
-#include "Scanner++/Scanner.hpp"
+#include <OptFrame/Component.hpp>
+//#include "Evaluation.hpp"
+#include <OptFrame/Helper/MultiESolution.hpp>
+//#include "Solution.hpp"
+//#include "Solutions/CopySolution.hpp"
+#include <OptFrame/Scanner++/Scanner.hpp>
 
-using namespace scannerpp;
+using scannerpp::Scanner;
 
 namespace optframe {
 
-template<XSolution S, XEvaluation XEv, XESolution XES, X2ESolution<XES> X2ES>
+template <XSolution S, XEvaluation XEv, XESolution XES, X2ESolution<XES> X2ES>
 class HeuristicFactory;
 
 // TODO: maybe use CRTP pattern! (at least from LocalSearch and SingleObjSearch)
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
-class ComponentBuilder : public Component
-{
-public:
-   virtual ~ComponentBuilder()
-   {
-   }
+template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+class ComponentBuilder : public Component {
+ public:
+  virtual ~ComponentBuilder() {
+  }
 
-   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
+  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
 
-   virtual vector<pair<string, string>> parameters() = 0;
+  virtual vector<pair<string, string>> parameters() = 0;
 
-   virtual bool canBuild(string) = 0;
+  virtual bool canBuild(string) = 0;
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << Component::idComponent() << ":ComponentBuilder:";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << Component::idComponent() << ":ComponentBuilder:";
+    return ss.str();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual std::string id() const override {
+    return idComponent();
+  }
 };
 
-}
+}  // namespace optframe
 
-#endif /*OPTFRAME_COMPONENT_BUILDER_H_*/
+#endif  // OPTFRAME_HYPER_COMPONENTBUILDER_HPP_

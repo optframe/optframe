@@ -8,7 +8,7 @@
 
 #include <OptFrame/Util/Matrix.hpp>
 
-#include <OptFrame/Solutions/CopySolution.hpp>
+#include <OptFrame/Helper/Solutions/CopySolution.hpp>
 
 #include <OptFrame/Evaluation.hpp>
 

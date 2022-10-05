@@ -3,14 +3,15 @@
 // Project MODM
 // ===================================
 
-#include <iostream>
 #include <math.h>
 #include <stdlib.h>
 
-#include "Evaluator.cpp" // TODO: very strange!!
 #include <OptFrame/Evaluator.hpp>
-#include <OptFrame/Loader.hpp>
-#include <OptFrame/Solutions/ESolution.hpp> // TODO: remove.. just to enforce compilation errors.
+#include <OptFrame/Helper/Solutions/ESolution.hpp>  // TODO: remove.. just to enforce compilation errors.
+#include <OptFrame/Hyper/Loader.hpp>
+#include <iostream>
+
+#include "Evaluator.cpp"  // TODO: very strange!!
 //#include "../OptFrame/Heuristics/VNS/MOVNSLevels.hpp"
 //#include "../OptFrame/Heuristics/2PPLS.hpp"
 #include <OptFrame/MultiEvaluator.hpp>
@@ -18,175 +19,162 @@
 //#include "../OptFrame/Util/UnionNDSets.hpp"
 
 #include <OptFrame/ConstructiveToInitialSearch.hpp>
+#include <string>
 
 #include "MODM.h"
-#include <string>
 
 using namespace std;
 using namespace optframe;
 using namespace MODM;
 
-char*
-execCommand(const char* command)
-{
+char* execCommand(const char* command) {
+  FILE* fp;
+  char* line = NULL;
+  // Following initialization is equivalent to char* result = ""; and just
+  // initializes result to an empty string, only it works with
+  // -Werror=write-strings and is so much less clear.
+  char* result = (char*)calloc(1, 1);
+  size_t len = 0;
 
-   FILE* fp;
-   char* line = NULL;
-   // Following initialization is equivalent to char* result = ""; and just
-   // initializes result to an empty string, only it works with
-   // -Werror=write-strings and is so much less clear.
-   char* result = (char*)calloc(1, 1);
-   size_t len = 0;
+  fflush(NULL);
+  fp = popen(command, "r");
+  if (fp == NULL) {
+    printf("Cannot execute command:\n%s\n", command);
+    return NULL;
+  }
 
-   fflush(NULL);
-   fp = popen(command, "r");
-   if (fp == NULL) {
-      printf("Cannot execute command:\n%s\n", command);
-      return NULL;
-   }
+  while (getline(&line, &len, fp) != -1) {
+    // +1 below to allow room for null terminator.
+    result = (char*)realloc(result, strlen(result) + strlen(line) + 1);
+    // +1 below so we copy the final null terminator.
+    strncpy(result + strlen(result), line, strlen(line) + 1);
+    free(line);
+    line = NULL;
+  }
 
-   while (getline(&line, &len, fp) != -1) {
-      // +1 below to allow room for null terminator.
-      result = (char*)realloc(result, strlen(result) + strlen(line) + 1);
-      // +1 below so we copy the final null terminator.
-      strncpy(result + strlen(result), line, strlen(line) + 1);
-      free(line);
-      line = NULL;
-   }
+  fflush(fp);
+  if (pclose(fp) != 0) {
+    perror("Cannot close stream.\n");
+  }
 
-   fflush(fp);
-   if (pclose(fp) != 0) {
-      perror("Cannot close stream.\n");
-   }
-
-   return result;
+  return result;
 }
 
 double
-hipervolume(vector<vector<double>> v)
-{
-   int nSol = v.size();
-   int nObj = v[0].size();
-   string tempFile = "tempFileHipervolueFunc";
-   FILE* fTempHV = fopen(tempFile.c_str(), "w");
+hipervolume(vector<vector<double>> v) {
+  int nSol = v.size();
+  int nObj = v[0].size();
+  string tempFile = "tempFileHipervolueFunc";
+  FILE* fTempHV = fopen(tempFile.c_str(), "w");
 
-   for (int s = 0; s < nSol; s++) {
-      for (int o = 0; o < nObj; o++) {
-         fprintf(fTempHV, "%.7f\t", v[s][o]);
-      }
-      fprintf(fTempHV, "\n");
-   }
+  for (int s = 0; s < nSol; s++) {
+    for (int o = 0; o < nObj; o++) {
+      fprintf(fTempHV, "%.7f\t", v[s][o]);
+    }
+    fprintf(fTempHV, "\n");
+  }
 
-   fclose(fTempHV);
-   stringstream ss;
-   ss << "./hv\t -r \"" << 0 << " " << 0 << "\" \t" << tempFile.c_str();
-   string hvValueString = execCommand(ss.str().c_str());
-   double hvValue = atof(hvValueString.c_str());
-   return hvValue;
+  fclose(fTempHV);
+  stringstream ss;
+  ss << "./hv\t -r \"" << 0 << " " << 0 << "\" \t" << tempFile.c_str();
+  string hvValueString = execCommand(ss.str().c_str());
+  double hvValue = atof(hvValueString.c_str());
+  return hvValue;
 }
 
-int
-main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
+  int nOfArguments = 7;
+  if (argc != (1 + nOfArguments)) {
+    cout << "Parametros incorretos!" << endl;
+    cout << "Os parametros esperados sao: \n"
+            "1 - instancia \n"
+            "2 - saida - for saving solutions for each execution - type write\n"
+            "3 - saida geral -- general file for savings all results - type append \n"
+            "4 - timeILS\n"
+            "5 - alpha Builder Int\n"
+            "6 - alpha NS Int \n"
+            "7 - initial population size \n"
+         << endl;
+    exit(1);
+  }
 
-   int nOfArguments = 7;
-   if (argc != (1 + nOfArguments)) {
-      cout << "Parametros incorretos!" << endl;
-      cout << "Os parametros esperados sao: \n"
-              "1 - instancia \n"
-              "2 - saida - for saving solutions for each execution - type write\n"
-              "3 - saida geral -- general file for savings all results - type append \n"
-              "4 - timeILS\n"
-              "5 - alpha Builder Int\n"
-              "6 - alpha NS Int \n"
-              "7 - initial population size \n"
-           << endl;
-      exit(1);
-   }
+  //RandGenMersenneTwister rg;
+  sref<RandGen> rg{
+      new RandGenMersenneTwister()};
+  long seed = time(NULL);
 
-   //RandGenMersenneTwister rg;
-   sref<RandGen> rg{
-      new RandGenMersenneTwister()
-   };
-   long seed = time(NULL);
+  //seed = 10;
+  srand(seed);
+  rg->setSeed(seed);
 
-   //seed = 10;
-   srand(seed);
-   rg->setSeed(seed);
+  const char* instancia = argv[1];
+  const char* saida = argv[2];
+  const char* saidaGeral = argv[3];
+  int timeILS = atoi(argv[4]);
+  int alphaBuilderInt = atoi(argv[5]);
+  int alphaNSInt = atoi(argv[6]);
+  int pop = atoi(argv[7]);
 
-   const char* instancia = argv[1];
-   const char* saida = argv[2];
-   const char* saidaGeral = argv[3];
-   int timeILS = atoi(argv[4]);
-   int alphaBuilderInt = atoi(argv[5]);
-   int alphaNSInt = atoi(argv[6]);
-   int pop = atoi(argv[7]);
+  double alphaBuilder = alphaBuilderInt / 10.0;
+  double alphaNeighARProduct = alphaNSInt / 10.0;
 
-   double alphaBuilder = alphaBuilderInt / 10.0;
-   double alphaNeighARProduct = alphaNSInt / 10.0;
+  string filename = instancia;
+  string output = saida;
+  string outputGeral = saidaGeral;
+  cout << "filename = " << filename << endl;
+  cout << "output = " << output << endl;
+  cout << "outputGeral = " << outputGeral << endl;
+  cout << "timeILS = " << timeILS << endl;
+  cout << "alphaBuilder = " << alphaBuilder << endl;
+  cout << "alphaNeighARProduct = " << alphaNeighARProduct << endl;
+  cout << "initial population size = " << pop << endl;
+  cout << "Seed = " << seed << endl;
 
-   string filename = instancia;
-   string output = saida;
-   string outputGeral = saidaGeral;
-   cout << "filename = " << filename << endl;
-   cout << "output = " << output << endl;
-   cout << "outputGeral = " << outputGeral << endl;
-   cout << "timeILS = " << timeILS << endl;
-   cout << "alphaBuilder = " << alphaBuilder << endl;
-   cout << "alphaNeighARProduct = " << alphaNeighARProduct << endl;
-   cout << "initial population size = " << pop << endl;
-   cout << "Seed = " << seed << endl;
+  //filename = "./MyProjects/MODM/Instances/S3-15/S3-10-15-1-s.txt";
+  //filename = "./MyProjects/MODM/Instances/L-5/L-10-5-1-l.txt";
 
-   //filename = "./MyProjects/MODM/Instances/S3-15/S3-10-15-1-s.txt";
-   //filename = "./MyProjects/MODM/Instances/L-5/L-10-5-1-l.txt";
+  //string filename = "./MyProjects/MODM/Instances/L-5/L-15-5-2-s.txt";
 
-   //string filename = "./MyProjects/MODM/Instances/L-5/L-15-5-2-s.txt";
+  File file{filename};
 
-   File file{ filename };
+  if (!file.isOpen()) {
+    cout << "File '" << filename << "' not found" << endl;
+    return false;
+  }
 
-   if (!file.isOpen()) {
-      cout << "File '" << filename << "' not found" << endl;
-      return false;
-   }
+  Scanner scanner{std::move(file)};
 
-   Scanner scanner{ std::move(file) };
+  ProblemInstance p{scanner};
 
-   ProblemInstance p{ scanner };
+  // add everything to the HeuristicFactory 'hf'
 
-   // add everything to the HeuristicFactory 'hf'
+  MODMADSManager adsMan(p);
+  MODMEvaluator eval(p, adsMan);
+  MODMRobustnessEvaluator evalRobustness(p, adsMan, rg);
 
-   MODMADSManager adsMan(p);
-   MODMEvaluator eval(p, adsMan);
-   MODMRobustnessEvaluator evalRobustness(p, adsMan, rg);
+  ConstructiveBasicGreedyRandomized grC(p, rg, adsMan);
 
-   ConstructiveBasicGreedyRandomized grC(p, rg, adsMan);
+  ConstructiveToInitialSearch<ESolutionMODM> is_grC(grC, eval);
 
-   ConstructiveToInitialSearch<ESolutionMODM> is_grC(grC, eval);
+  //NSSeqSWAP nsseq_swap(rg, &p);
+  sref<NSSeq<ESolutionMODM>> nsseq_swap{
+      new NSSeqSWAP(rg, &p)};
+  //NSSeqSWAPInter nsseq_swapInter(rg, &p);
+  sref<NSSeq<ESolutionMODM>> nsseq_swapInter{
+      new NSSeqSWAPInter(rg, &p)};
+  //NSSeqInvert nsseq_invert(rg, &p);
+  sref<NSSeq<ESolutionMODM>> nsseq_invert{
+      new NSSeqInvert(rg, &p)};
+  //NSSeqARProduct nsseq_arProduct(rg, &p, alphaNeighARProduct);
+  sref<NSSeq<ESolutionMODM>> nsseq_arProduct{
+      new NSSeqARProduct(rg, &p, alphaNeighARProduct)};
+  //NSSeqADD nsseq_add(rg, &p);
+  sref<NSSeq<ESolutionMODM>> nsseq_add{
+      new NSSeqADD(rg, &p)};
 
-   //NSSeqSWAP nsseq_swap(rg, &p);
-   sref<NSSeq<ESolutionMODM>> nsseq_swap{
-      new NSSeqSWAP(rg, &p)
-   };
-   //NSSeqSWAPInter nsseq_swapInter(rg, &p);
-   sref<NSSeq<ESolutionMODM>> nsseq_swapInter{
-      new NSSeqSWAPInter(rg, &p)
-   };
-   //NSSeqInvert nsseq_invert(rg, &p);
-   sref<NSSeq<ESolutionMODM>> nsseq_invert{
-      new NSSeqInvert(rg, &p)
-   };
-   //NSSeqARProduct nsseq_arProduct(rg, &p, alphaNeighARProduct);
-   sref<NSSeq<ESolutionMODM>> nsseq_arProduct{
-      new NSSeqARProduct(rg, &p, alphaNeighARProduct)
-   };
-   //NSSeqADD nsseq_add(rg, &p);
-   sref<NSSeq<ESolutionMODM>> nsseq_add{
-      new NSSeqADD(rg, &p)
-   };
+  // ================ BEGIN OF CHECK MODULE ================
 
-   // ================ BEGIN OF CHECK MODULE ================
-
-   /*	CheckCommand<SolutionMODM> check(false);
+  /*	CheckCommand<SolutionMODM> check(false);
 	 check.add(grC);
 	 check.add(eval);
 	 //check.add(nsseq_swap);
@@ -197,99 +185,98 @@ main(int argc, char** argv)
 	 check.run(1, 1);
 	 getchar();*/
 
-   // ================ END OF CHECK MODULE ================
-   FirstImprovement<ESolutionMODM> fiSwap(eval, nsseq_swap);
-   FirstImprovement<ESolutionMODM> fiSwapInter(eval, nsseq_swapInter);
-   FirstImprovement<ESolutionMODM> fiInvert(eval, nsseq_invert);
+  // ================ END OF CHECK MODULE ================
+  FirstImprovement<ESolutionMODM> fiSwap(eval, nsseq_swap);
+  FirstImprovement<ESolutionMODM> fiSwapInter(eval, nsseq_swapInter);
+  FirstImprovement<ESolutionMODM> fiInvert(eval, nsseq_invert);
 
-   int nMovesRDM = 500000;
-   RandomDescentMethod<ESolutionMODM> rdmSwap(eval, nsseq_swap, nMovesRDM);
-   RandomDescentMethod<ESolutionMODM> rdmSwapInter(eval, nsseq_swapInter, nMovesRDM);
-   RandomDescentMethod<ESolutionMODM> rdmInvert(eval, nsseq_invert, nMovesRDM);
-   RandomDescentMethod<ESolutionMODM> rdmARProduct(eval, nsseq_arProduct, nMovesRDM);
-   RandomDescentMethod<ESolutionMODM> rdmADD(eval, nsseq_add, 1);
+  int nMovesRDM = 500000;
+  RandomDescentMethod<ESolutionMODM> rdmSwap(eval, nsseq_swap, nMovesRDM);
+  RandomDescentMethod<ESolutionMODM> rdmSwapInter(eval, nsseq_swapInter, nMovesRDM);
+  RandomDescentMethod<ESolutionMODM> rdmInvert(eval, nsseq_invert, nMovesRDM);
+  RandomDescentMethod<ESolutionMODM> rdmARProduct(eval, nsseq_arProduct, nMovesRDM);
+  RandomDescentMethod<ESolutionMODM> rdmADD(eval, nsseq_add, 1);
 
-   //vector<LocalSearch<ESolutionMODM>*> vLS;
-   //
-   vsref<LocalSearch<ESolutionMODM>> vLS;
-   //
-   //vLS.push_back(&fiSwap);
-   // vLS.push_back(&fiSwapInter);
-   //vLS.push_back(&fiInvert);
+  //vector<LocalSearch<ESolutionMODM>*> vLS;
+  //
+  vsref<LocalSearch<ESolutionMODM>> vLS;
+  //
+  //vLS.push_back(&fiSwap);
+  // vLS.push_back(&fiSwapInter);
+  //vLS.push_back(&fiInvert);
 
-   vLS.push_back(&rdmSwap);
-   vLS.push_back(&rdmSwapInter);
-   //vLS.push_back(&rdmInvert);
-   vLS.push_back(&rdmADD);
+  vLS.push_back(&rdmSwap);
+  vLS.push_back(&rdmSwapInter);
+  //vLS.push_back(&rdmInvert);
+  vLS.push_back(&rdmADD);
 
-   //vLS.push_back(&rdmARProduct);
+  //vLS.push_back(&rdmARProduct);
 
-   VariableNeighborhoodDescent<ESolutionMODM> vnd(eval, vLS);
+  VariableNeighborhoodDescent<ESolutionMODM> vnd(eval, vLS);
 
-   //ILSLPerturbationLPlus2<SolutionMODM> ilsl_pert(eval, 100000, nsseq_invert, rg);
-   Evaluator<SolutionMODM, EvaluationMODM, ESolutionMODM>& eval2 = eval;
+  //ILSLPerturbationLPlus2<SolutionMODM> ilsl_pert(eval, 100000, nsseq_invert, rg);
+  Evaluator<SolutionMODM, EvaluationMODM, ESolutionMODM>& eval2 = eval;
 
-   sref<GeneralEvaluator<ESolutionMODM>> eval3{
-      eval
-   };
+  sref<GeneralEvaluator<ESolutionMODM>> eval3{
+      eval};
 
-   ILSLPerturbationLPlus2<ESolutionMODM> ilsl_pert(eval3, nsseq_arProduct, rg);
-   //ILSLPerturbationLPlus2<SolutionMODM> ilsl_pert(eval, 100000, nsseq_add, rg);
-   ilsl_pert.add_ns(nsseq_add);
-   ilsl_pert.add_ns(nsseq_swapInter);
-   ilsl_pert.add_ns(nsseq_swap);
-   ilsl_pert.add_ns(nsseq_invert);
+  ILSLPerturbationLPlus2<ESolutionMODM> ilsl_pert(eval3, nsseq_arProduct, rg);
+  //ILSLPerturbationLPlus2<SolutionMODM> ilsl_pert(eval, 100000, nsseq_add, rg);
+  ilsl_pert.add_ns(nsseq_add);
+  ilsl_pert.add_ns(nsseq_swapInter);
+  ilsl_pert.add_ns(nsseq_swap);
+  ilsl_pert.add_ns(nsseq_invert);
 
-   IteratedLocalSearchLevels<ESolutionMODM> ils(eval, is_grC, vnd, ilsl_pert, 50, 15);
-   ils.setMessageLevel(LogLevel::Info);
+  IteratedLocalSearchLevels<ESolutionMODM> ils(eval, is_grC, vnd, ilsl_pert, 50, 15);
+  ils.setMessageLevel(LogLevel::Info);
 
-   pair<Solution<SolutionMODM>&, Evaluation<>&>* finalSol;
+  pair<Solution<SolutionMODM>&, Evaluation<>&>* finalSol;
 
-   EmptyLocalSearch<ESolutionMODM> emptyLS;
-   BasicGRASP<SolutionMODM> g(eval, grC, emptyLS, alphaBuilder, 100000);
+  EmptyLocalSearch<ESolutionMODM> emptyLS;
+  BasicGRASP<SolutionMODM> g(eval, grC, emptyLS, alphaBuilder, 100000);
 
-   g.setMessageLevel(LogLevel::Info);
-   int timeGRASP = 100;
-   double target = 9999999;
-   //MODMProblemCommand problemCommand(rg);
-   //finalSol = g.search(timeGRASP,target);
+  g.setMessageLevel(LogLevel::Info);
+  int timeGRASP = 100;
+  double target = 9999999;
+  //MODMProblemCommand problemCommand(rg);
+  //finalSol = g.search(timeGRASP,target);
 
-   //===========================================
-   //MO
-   vector<Evaluator<SolutionMODM, EvaluationMODM, ESolutionMODM>*> v_e;
-   v_e.push_back(&eval);
-   v_e.push_back(&evalRobustness);
+  //===========================================
+  //MO
+  vector<Evaluator<SolutionMODM, EvaluationMODM, ESolutionMODM>*> v_e;
+  v_e.push_back(&eval);
+  v_e.push_back(&evalRobustness);
 
-   //	NSSeqSWAP nsseq_swap(rg, &p);
-   //	NSSeqSWAPInter nsseq_swapInter(rg, &p);
-   //	NSSeqInvert nsseq_invert(rg, &p);
-   //	NSSeqARProduct nsseq_arProduct(rg, &p, alphaNeighARProduct);
-   //	NSSeqADD nsseq_add(rg, &p);
-   //
-   //vector<NSSeq<ESolutionMODM>*> neighboors;
-   //
-   vsref<NSSeq<ESolutionMODM>> neighboors;
+  //	NSSeqSWAP nsseq_swap(rg, &p);
+  //	NSSeqSWAPInter nsseq_swapInter(rg, &p);
+  //	NSSeqInvert nsseq_invert(rg, &p);
+  //	NSSeqARProduct nsseq_arProduct(rg, &p, alphaNeighARProduct);
+  //	NSSeqADD nsseq_add(rg, &p);
+  //
+  //vector<NSSeq<ESolutionMODM>*> neighboors;
+  //
+  vsref<NSSeq<ESolutionMODM>> neighboors;
 
-   neighboors.push_back(nsseq_arProduct);
-   neighboors.push_back(nsseq_add);
-   //neighboors.push_back(&nsseq_swapInter);
-   //neighboors.push_back(&nsseq_swap);
+  neighboors.push_back(nsseq_arProduct);
+  neighboors.push_back(nsseq_add);
+  //neighboors.push_back(&nsseq_swapInter);
+  //neighboors.push_back(&nsseq_swap);
 
-   //alphaBuilder as the limit
+  //alphaBuilder as the limit
 
-   GRInitialPopulation<ESolutionMODM> bip(grC, rg, 0.2);
-   int initial_population_size = pop;
-   initial_population_size = 10;
-   MultiEvaluator<SolutionMODM, EvaluationMODM, MultiEvaluationMODM> mev(v_e);
+  GRInitialPopulation<ESolutionMODM> bip(grC, rg, 0.2);
+  int initial_population_size = pop;
+  initial_population_size = 10;
+  MultiEvaluator<SolutionMODM, EvaluationMODM, MultiEvaluationMODM> mev(v_e);
 
-   // MOVNSLevels (??) - TwoPhaseParetoLocalSearch (???) - Where is it Vitor?
-   /*
+  // MOVNSLevels (??) - TwoPhaseParetoLocalSearch (???) - Where is it Vitor?
+  /*
 	MOVNSLevels<SolutionMODM> multiobjectvns(v_e, bip, initial_population_size, neighboors, rg, 10, 10);
 	TwoPhaseParetoLocalSearch<SolutionMODM> paretoSearch(mev, bip, initial_population_size, neighboors);
 
    */
-   Pareto<EMSolutionMODM>* pf;
-   /*
+  Pareto<EMSolutionMODM>* pf;
+  /*
 	int time2PPLS = 120;
 	for (int exec = 0; exec < 1; exec++)
 	{
@@ -300,9 +287,9 @@ main(int argc, char** argv)
 	}
    */
 
-   // 2PPLS (???)
-   // UnionNDSets (???)
-   /*
+  // 2PPLS (???)
+  // UnionNDSets (???)
+  /*
 
 cout<<"Oi"<<endl;
 getchar();
@@ -327,12 +314,12 @@ getchar();
 
    */
 
-   //
-   //	getchar();
+  //
+  //	getchar();
 
-   // How to get these to compile??
+  // How to get these to compile??
 
-   /*
+  /*
 
 	vector<vector<Evaluation<>*> > vEval = pf->getParetoFront();
 	vector<Solution<SolutionMODM>*> vSolPf = pf->getParetoSet();
@@ -398,12 +385,12 @@ getchar();
 	fclose(fGeral);
 */
 
-   // what else?
+  // what else?
 
-   //getchar();
-   //===========================================
+  //getchar();
+  //===========================================
 
-   /*
+  /*
 	 //timeILS = 6;
 
 	 finalSol = ils.search(timeILS, target);
@@ -448,6 +435,6 @@ getchar();
 	 fclose(fGeral);
 
 	 */
-   cout << "Programa terminado com sucesso!" << endl;
-   return 0;
+  cout << "Programa terminado com sucesso!" << endl;
+  return 0;
 }

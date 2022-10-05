@@ -7,3 +7,6 @@ fcore-btsp:
 run:
 	@echo "Running FCore (c++20)"
 	./build/app_bTSP-fcore 
+
+clean:
+	rm -f ./build/app_*

@@ -23,24 +23,23 @@
 #ifndef OPTFRAME_NSITERATOR_HPP_
 #define OPTFRAME_NSITERATOR_HPP_
 
-#include "Move.hpp"
+// #include "Solution.hpp"
 
-#include "Solution.hpp"
-
-#include "Component.hpp"
+#include <OptFrame/BaseConcepts.hpp>
+#include <OptFrame/Component.hpp>
+#include <OptFrame/Move.hpp>
 //#include "Action.hpp"
 
-using namespace std;
+// using namespace std;
 
 namespace optframe {
 
 // Local Optimum Status
-enum LOS
-{
-   los_yes,
-   los_no,
-   los_unknown,
-   los_partial
+enum LOS {
+  los_yes,
+  los_no,
+  los_unknown,
+  los_partial
 };
 
 // exemplo: mochila NSSeq de incrementos (+1).
@@ -52,89 +51,78 @@ enum LOS
 // it may happen for example in a VRP, where a route is in LO while others are not.
 
 // TODO: unused?
-class IteratorOutOfBound
-{
-private:
-   int id;
+class IteratorOutOfBound {
+ private:
+  int id;
 
-public:
-   IteratorOutOfBound(int _id)
-     : id(_id)
-   {
-   }
+ public:
+  IteratorOutOfBound(int _id)
+      : id(_id) {
+  }
 
-   int getId()
-   {
-      return id;
-   }
+  int getId() {
+    return id;
+  }
 };
 
-template<XESolution XES, XEvaluation XEv = typename XES::second_type, XESolution XSH = XES>
-class NSIterator : public Component
-{
-public:
-   virtual ~NSIterator()
-   {
-   }
+template <XESolution XES, XEvaluation XEv = typename XES::second_type, XESolution XSH = XES>
+class NSIterator : public Component {
+ public:
+  virtual ~NSIterator() {
+  }
 
-   virtual void first() = 0;
+  virtual void first() = 0;
 
-   virtual void firstValid(const XES& se)
-   {
-      first();
+  virtual void firstValid(const XES& se) {
+    first();
 
-      while (!isDone()) {
-         uptr<Move<XES, XEv>> m = current();
+    while (!isDone()) {
+      uptr<Move<XES, XEv>> m = current();
 
-         if (m && m->canBeApplied(se))
-            break;
+      if (m && m->canBeApplied(se))
+        break;
 
-         next();
-      }
-   }
-
-   virtual void next() = 0;
-
-   virtual void nextValid(const XES& se)
-   {
       next();
+    }
+  }
 
-      while (!isDone()) {
-         uptr<Move<XES, XEv>> m = current();
+  virtual void next() = 0;
 
-         if (m && m->canBeApplied(se))
-            break;
+  virtual void nextValid(const XES& se) {
+    next();
 
-         next();
-      }
-   }
+    while (!isDone()) {
+      uptr<Move<XES, XEv>> m = current();
 
-   virtual bool isDone() = 0;
-   virtual uptr<Move<XES, XEv>> current() = 0;
+      if (m && m->canBeApplied(se))
+        break;
 
-   // INSERT LOCAL OPTIMUM INFORMATION IN SOLUTION (IN ADS? USER DECIDES.)
-   virtual void setLOS(LOS status, XES& s)
-   {
-   }
+      next();
+    }
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << Component::idComponent() << ":NSIterator";
-      return ss.str();
-   }
+  virtual bool isDone() = 0;
+  virtual uptr<Move<XES, XEv>> current() = 0;
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  // INSERT LOCAL OPTIMUM INFORMATION IN SOLUTION (IN ADS? USER DECIDES.)
+  virtual void setLOS(LOS status, XES& s) {
+  }
 
-   virtual std::string toString() const override
-   {
-      return id();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << Component::idComponent() << ":NSIterator";
+    return ss.str();
+  }
+
+  virtual string id() const override {
+    return idComponent();
+  }
+
+  virtual std::string toString() const override {
+    return id();
+  }
 };
 
-}
+}  // namespace optframe
 
-#endif //OPTFRAME_NSITERATOR_HPP_
+#endif  //OPTFRAME_NSITERATOR_HPP_

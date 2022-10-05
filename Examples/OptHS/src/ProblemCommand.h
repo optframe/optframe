@@ -23,91 +23,79 @@
 #ifndef OptHS_PROBLEMMODULE_HPP_
 #define OptHS_PROBLEMMODULE_HPP_
 
+#include <OptFrame/Hyper/HeuristicFactory.hpp>
+#include <OptFrame/Scanner++/Scanner.hpp>
 #include <iostream>
 
-#include <OptFrame/Scanner++/Scanner.hpp>
-
+#include "ConstructiveRandom.h"
 #include "Evaluation.h"
+#include "Evaluator.h"
+#include "NSSwap.h"
+#include "ProblemInstance.h"
 #include "Representation.h"
 #include "Solution.h"
-
-#include "ProblemInstance.h"
-
-#include "Evaluator.h"
-
-#include "ConstructiveRandom.h"
-#include "NSSwap.h"
-
-#include <OptFrame/HeuristicFactory.hpp>
 
 using namespace scannerpp;
 using namespace optframe;
 
 namespace OptHS {
 
-class OptHSProblemCommand
-{
-public:
-   ProblemInstance* p;
+class OptHSProblemCommand {
+ public:
+  ProblemInstance* p;
 
-   OptHSProblemCommand()
-   {
-      p = NULL;
-   }
+  OptHSProblemCommand() {
+    p = NULL;
+  }
 
-   virtual ~OptHSProblemCommand()
-   {
-      if (p)
-         delete p;
-   }
+  virtual ~OptHSProblemCommand() {
+    if (p)
+      delete p;
+  }
 
-   string id()
-   {
-      return "problem.OptHS";
-   }
+  string id() {
+    return "problem.OptHS";
+  }
 
-   bool registerComponent(sref<Component> component, string type, string name, HeuristicFactory<SolutionOptHS>& hf, map<string, string>& dictionary)
-   {
-      int idx = hf.addComponent(component, type);
-      stringstream ss;
-      ss << type << " " << idx;
-      return true; //defineText(name, ss.str(), dictionary);
-   }
+  bool registerComponent(sref<Component> component, string type, string name, HeuristicFactory<SolutionOptHS>& hf, map<string, string>& dictionary) {
+    int idx = hf.addComponent(component, type);
+    stringstream ss;
+    ss << type << " " << idx;
+    return true;  //defineText(name, ss.str(), dictionary);
+  }
 
-   bool load(string members, HeuristicFactory<SolutionOptHS>& hf, map<string, string>& dictionary, map<string, vector<string>>& ldictionary)
-   {
-      Scanner scanner(members);
+  bool load(string members, HeuristicFactory<SolutionOptHS>& hf, map<string, string>& dictionary, map<string, vector<string>>& ldictionary) {
+    Scanner scanner(members);
 
-      p = new ProblemInstance(scanner);
+    p = new ProblemInstance(scanner);
 
-      // add everything to the HeuristicFactory 'hf'
+    // add everything to the HeuristicFactory 'hf'
 
-      sref<ConstructiveRandom> is = new ConstructiveRandom(*p, hf.getRandGen());
-      hf.addComponent(is, "OptFrame:Constructive");
+    sref<ConstructiveRandom> is = new ConstructiveRandom(*p, hf.getRandGen());
+    hf.addComponent(is, "OptFrame:Constructive");
 
-      sref<OptHSEvaluator> eval = new OptHSEvaluator(*p);
-      hf.addComponent(eval, Evaluator<SolutionOptHS, EvaluationOptHS>::idComponent());
+    sref<OptHSEvaluator> eval = new OptHSEvaluator(*p);
+    hf.addComponent(eval, Evaluator<SolutionOptHS, EvaluationOptHS>::idComponent());
 
-      sref<NSSwap> ns = new NSSwap(*p, hf.getRandGen());
-      hf.addComponent(ns, "OptFrame:NS");
+    sref<NSSwap> ns = new NSSwap(*p, hf.getRandGen());
+    hf.addComponent(ns, "OptFrame:NS");
 
-      cout << "problem '" << members << "' loaded successfully" << endl;
+    cout << "problem '" << members << "' loaded successfully" << endl;
 
-      return true;
-   }
+    return true;
+  }
 
-   bool unload(HeuristicFactory<SolutionOptHS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary)
-   {
-      if (p)
-         delete p;
-      p = NULL;
+  bool unload(HeuristicFactory<SolutionOptHS>& factory, map<string, string>& dictionary, map<string, vector<string>>& ldictionary) {
+    if (p)
+      delete p;
+    p = NULL;
 
-      cout << "problem instance for OptHS unloaded successfully (use 'drop_all' if you want to remove all components)" << endl;
+    cout << "problem instance for OptHS unloaded successfully (use 'drop_all' if you want to remove all components)" << endl;
 
-      return true;
-   }
+    return true;
+  }
 };
 
-}
+}  // namespace OptHS
 
 #endif /*OptHS_PROBLEMMODULE_HPP_*/

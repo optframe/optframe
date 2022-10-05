@@ -41,26 +41,25 @@
 
 using namespace std;
 
+#include <OptFrame/Helper/Solutions/ESolution.hpp>
 #include <set>
-
-#include <OptFrame/Solutions/ESolution.hpp>
 
 //#include <OptFrame/BaseConcepts.ctest.hpp> // tsting concepts
 #include <OptFrame/Evaluation.hpp>
-#include <OptFrame/Solution.hpp>
+#include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/printable/printable.hpp>
 //#include "../OptFrame/Util/TestSolution.hpp"
 
 #include <OptFrame/Heuristics/NSearch/FirstImprovingNeighbor.hpp>
 
 //
-#include <OptFrame/Heuristics/LocalSearches/MultiImprovement.hpp>
-
 #include <OptFrame/Heuristics/EA/RK/BRKGA.hpp>
-#include <OptFrame/Loader.hpp>
+#include <OptFrame/Heuristics/LocalSearches/MultiImprovement.hpp>
+#include <OptFrame/Hyper/Loader.hpp>
 ////#include "../OptFrame/Util/BuildCommand.hpp"  // TODO: return after Concepts OptFrame v4
-#include "TSP.h"
 #include <OptFrame/Util/CheckCommand.hpp>
+
+#include "TSP.h"
 
 ////#include <OptFrame/EvaluatorAdapter.hpp>
 
@@ -71,60 +70,57 @@ using namespace scannerpp;
 
 // gets real file path, if file exists, or empty string, if not
 std::string
-resolvePath(std::string sinstance, std::string appPath, std::string bazelPackage = "")
-{
-   // try relative path
-   if (std::filesystem::exists(sinstance))
-      return sinstance;
+resolvePath(std::string sinstance, std::string appPath, std::string bazelPackage = "") {
+  // try relative path
+  if (std::filesystem::exists(sinstance))
+    return sinstance;
 
-   // load file from absolute directory that contains executable
-   std::filesystem::path exec = appPath;
-   std::string full_instance = exec.parent_path().string() + std::string("/") + sinstance;
-   //std::cout << "loading instance at '" << full_instance << "'" << std::endl;
-   if (std::filesystem::exists(full_instance))
-      return full_instance;
+  // load file from absolute directory that contains executable
+  std::filesystem::path exec = appPath;
+  std::string full_instance = exec.parent_path().string() + std::string("/") + sinstance;
+  //std::cout << "loading instance at '" << full_instance << "'" << std::endl;
+  if (std::filesystem::exists(full_instance))
+    return full_instance;
 
-   // try .runfiles directory extension (bazel build for external bazel package)
-   full_instance = exec.string() + std::string(".runfiles/") + std::string(bazelPackage) + std::string("/") + sinstance;
-   if (std::filesystem::exists(full_instance))
-      return full_instance;
+  // try .runfiles directory extension (bazel build for external bazel package)
+  full_instance = exec.string() + std::string(".runfiles/") + std::string(bazelPackage) + std::string("/") + sinstance;
+  if (std::filesystem::exists(full_instance))
+    return full_instance;
 
-   // instance not found
-   return "";
+  // instance not found
+  return "";
 }
 
-int
-main(int argc, char** argv)
-{
-   // ADS still exists, only because of ADSManager...
-   //
-   Loader<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP, EvaluationTSP, ESolutionTSP> optframe;
+int main(int argc, char** argv) {
+  // ADS still exists, only because of ADSManager...
+  //
+  Loader<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP, EvaluationTSP, ESolutionTSP> optframe;
 
-   TSPProblemCommand tsp;
+  TSPProblemCommand tsp;
 
-   // instance relative path to executable directory
-   //std::string sinstance = "tsplib/berlin52.txt";
-   std::string sinstance = "tsplib/miniberlin52-10.txt";
+  // instance relative path to executable directory
+  //std::string sinstance = "tsplib/berlin52.txt";
+  std::string sinstance = "tsplib/miniberlin52-10.txt";
 
-   std::string good_path = resolvePath(sinstance, argv[0], "TSP");
+  std::string good_path = resolvePath(sinstance, argv[0], "TSP");
 
-   if (good_path == "") {
-      std::cerr << "Instances not found in executable directory. Aborting." << std::endl;
-      return 1; // cannot open file
-   }
+  if (good_path == "") {
+    std::cerr << "Instances not found in executable directory. Aborting." << std::endl;
+    return 1;  // cannot open file
+  }
 
-   File file(good_path);
-   //File file("./tsplib/berlin52.txt");
+  File file(good_path);
+  //File file("./tsplib/berlin52.txt");
 
-   if (!file.isOpen()) {
-      cout << "File not found" << endl;
-      return 1;
-   }
+  if (!file.isOpen()) {
+    cout << "File not found" << endl;
+    return 1;
+  }
 
-   Scanner scanner(std::move(file));
-   tsp.load(scanner, optframe.factory, optframe.dictionary, optframe.ldictionary);
+  Scanner scanner(std::move(file));
+  tsp.load(scanner, optframe.factory, optframe.dictionary, optframe.ldictionary);
 
-   /*
+  /*
 	FILE* outf = fopen("berlin52.mtx","w");
 	fprintf(outf, "%d\n", tsp.p->n);
 	for(unsigned i=0; i<tsp.p->n; i++) {
@@ -137,52 +133,51 @@ main(int argc, char** argv)
 	exit(1);
 	*/
 
-   bool check_verbose = false;
-   //
-   //CheckCommand<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> check(check_verbose);
-   //
-   //
-   //CheckCommand<ESolutionTSP, RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> check(check_verbose);
-   //
-   CheckCommand<ESolutionTSP> check(check_verbose);
-   check.paramJsonLogs = true;
+  bool check_verbose = false;
+  //
+  //CheckCommand<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> check(check_verbose);
+  //
+  //
+  //CheckCommand<ESolutionTSP, RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> check(check_verbose);
+  //
+  CheckCommand<ESolutionTSP> check(check_verbose);
+  check.paramJsonLogs = true;
 
-   RandGenMersenneTwister rg(0);
-   sref<RandGen> rg2 = RandGenMersenneTwister(0);
-   //
-   TSPEvaluator eval1(tsp.p); // Should not be Specific to TSP!! Won't work on Decoder..
-   sref<Evaluator<SolutionTSP, EvaluationTSP>> eval = eval1;
+  RandGenMersenneTwister rg(0);
+  sref<RandGen> rg2 = RandGenMersenneTwister(0);
+  //
+  TSPEvaluator eval1(tsp.p);  // Should not be Specific to TSP!! Won't work on Decoder..
+  sref<Evaluator<SolutionTSP, EvaluationTSP>> eval = eval1;
 
-   RandomInitialSolutionTSP randomTSP(tsp.p, eval, rg);
-   NearestNeighborConstructive cnn(tsp.p, eval, rg);
-   ConstructiveBestInsertion cbi(tsp.p, eval, rg);
+  RandomInitialSolutionTSP randomTSP(tsp.p, eval, rg);
+  NearestNeighborConstructive cnn(tsp.p, eval, rg);
+  ConstructiveBestInsertion cbi(tsp.p, eval, rg);
 
-   // NSEnumSwap enumswap(tsp.p, rg);
-   sref<NSEnum<ESolutionTSP>> enumswap{
-      new NSEnumSwap(tsp.p, rg)
-   };
+  // NSEnumSwap enumswap(tsp.p, rg);
+  sref<NSEnum<ESolutionTSP>> enumswap{
+      new NSEnumSwap(tsp.p, rg)};
 
-   // ============
+  // ============
 
-   std::cout << "WILL START SIMULATED ANNEALING!" << std::endl;
+  std::cout << "WILL START SIMULATED ANNEALING!" << std::endl;
 
-   BasicSimulatedAnnealing<ESolutionTSP> sa(
-     eval,
-     randomTSP,
-     enumswap,
-     0.98,
-     100,
-     99999,
-     rg2);
+  BasicSimulatedAnnealing<ESolutionTSP> sa(
+      eval,
+      randomTSP,
+      enumswap,
+      0.98,
+      100,
+      99999,
+      rg2);
 
-   auto status = sa.search(
-     StopCriteria<ESolutionTSP::second_type>{ 10.0 }); // 10.0 seconds max
+  auto status = sa.search(
+      StopCriteria<ESolutionTSP::second_type>{10.0});  // 10.0 seconds max
 
-   ESolutionTSP best = *status.best; //*sa.getBestSolution();
-   // best solution value
-   best.second.print();
+  ESolutionTSP best = *status.best;  //*sa.getBestSolution();
+  // best solution value
+  best.second.print();
 
-   /*
+  /*
 #ifdef OPTFRAME_AC
    std::cout << "mainTSP: final best " << std::endl;
    best.first.printDistinctListAC();
@@ -193,15 +188,15 @@ main(int argc, char** argv)
 #endif
 */
 
-   //return 1;
+  //return 1;
 
-   // =============
+  // =============
 
-   // Basic test for Neighborhood Exploration
-   FirstImprovingNeighbor<ESolutionTSP> fin(eval, enumswap);
-   // =======================================
+  // Basic test for Neighborhood Exploration
+  FirstImprovingNeighbor<ESolutionTSP> fin(eval, enumswap);
+  // =======================================
 
-   /*
+  /*
    NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSP2Opt, ProblemInstance> nsseq_delta_2opt(tsp.p);
    NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tsp2opt;
    NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSPOrOptk, ProblemInstance> nsseq_delta_or1(1, tsp.p);
@@ -209,110 +204,110 @@ main(int argc, char** argv)
    NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspor2(2);
    NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspor3(3);
 */
-   sref<NSSeq<ESolutionTSP>> nsseq_delta_2opt =
-     new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSP2Opt, ProblemInstance>(tsp.p);
-   sref<NSSeq<ESolutionTSP>> tsp2opt =
-     new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>();
-   sref<NSSeq<ESolutionTSP>> nsseq_delta_or1 =
-     new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSPOrOptk, ProblemInstance>(1, tsp.p);
-   sref<NSSeq<ESolutionTSP>> tspor1 =
-     new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(1);
-   sref<NSSeq<ESolutionTSP>> tspor2 =
-     new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(2);
-   sref<NSSeq<ESolutionTSP>> tspor3 =
-     new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(3);
+  sref<NSSeq<ESolutionTSP>> nsseq_delta_2opt =
+      new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSP2Opt, ProblemInstance>(tsp.p);
+  sref<NSSeq<ESolutionTSP>> tsp2opt =
+      new NSSeqTSP2Opt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>();
+  sref<NSSeq<ESolutionTSP>> nsseq_delta_or1 =
+      new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP, DeltaMoveTSPOrOptk, ProblemInstance>(1, tsp.p);
+  sref<NSSeq<ESolutionTSP>> tspor1 =
+      new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(1);
+  sref<NSSeq<ESolutionTSP>> tspor2 =
+      new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(2);
+  sref<NSSeq<ESolutionTSP>> tspor3 =
+      new NSSeqTSPOrOptk<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>(3);
 
-   // TODO: we need to try NSSeqTSPOrOpt , because it requires adapters...
-   NSSeqTSPOrOpt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspor_adapt;
-   // Maybe S& should be the Representation itself over there.... no getR() inside there.
-   // It makes more sense to pass RepTSP + ESolutionTSP... than SolutionTSP + ESolutionTSP
-   // Then, should adapters just work for R,ADS pair on XBaseSolution concept?? TODO: think...
+  // TODO: we need to try NSSeqTSPOrOpt , because it requires adapters...
+  NSSeqTSPOrOpt<int, OPTFRAME_DEFAULT_ADS, SolutionTSP> tspor_adapt;
+  // Maybe S& should be the Representation itself over there.... no getR() inside there.
+  // It makes more sense to pass RepTSP + ESolutionTSP... than SolutionTSP + ESolutionTSP
+  // Then, should adapters just work for R,ADS pair on XBaseSolution concept?? TODO: think...
 
-   sref<NSSeq<ESolutionTSP>> tspswap = new NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>();
+  sref<NSSeq<ESolutionTSP>> tspswap = new NSSeqTSPSwap<int, OPTFRAME_DEFAULT_ADS, SolutionTSP>();
 
-   check.add(randomTSP);
-   check.add(cnn);
-   check.add(cbi);
-   check.add(eval);
-   check.add(enumswap);
-   check.add(nsseq_delta_2opt);
-   check.add(tsp2opt);
-   check.add(nsseq_delta_or1);
-   check.add(tspor1);
-   check.add(tspor2);
-   check.add(tspor3);
-   check.add(tspswap);
+  check.add(randomTSP);
+  check.add(cnn);
+  check.add(cbi);
+  check.add(eval);
+  check.add(enumswap);
+  check.add(nsseq_delta_2opt);
+  check.add(tsp2opt);
+  check.add(nsseq_delta_or1);
+  check.add(tspor1);
+  check.add(tspor2);
+  check.add(tspor3);
+  check.add(tspswap);
 
-   auto allData = check.run(100, 10);
+  auto allData = check.run(100, 10);
 
-   std::cout << "|SOLUTIONS| = " << allData.solData.logSolutions.size() << std::endl;
-   FILE* flogsol = fopen("log_solutions.json", "w");
-   optframe::cjson.dump();
-   optframe::cjson << allData.solData.logSolutions;
-   fprintf(flogsol, "%s\n", optframe::cjson.dump().c_str());
-   fclose(flogsol);
+  std::cout << "|SOLUTIONS| = " << allData.solData.logSolutions.size() << std::endl;
+  FILE* flogsol = fopen("log_solutions.json", "w");
+  optframe::cjson.dump();
+  optframe::cjson << allData.solData.logSolutions;
+  fprintf(flogsol, "%s\n", optframe::cjson.dump().c_str());
+  fclose(flogsol);
 
-   for (unsigned i = 0; i < allData.solData.logEvaluations.size(); i++) {
-      std::cout << "|EV_" << i << "| = " << allData.solData.logEvaluations[i].size() << std::endl;
-   }
+  for (unsigned i = 0; i < allData.solData.logEvaluations.size(); i++) {
+    std::cout << "|EV_" << i << "| = " << allData.solData.logEvaluations[i].size() << std::endl;
+  }
 
-   FILE* flogev = fopen("log_ev0.json", "w");
-   optframe::cjson << allData.solData.logEvaluations[0];
-   fprintf(flogev, "%s\n", optframe::cjson.dump().c_str());
-   fclose(flogev);
+  FILE* flogev = fopen("log_ev0.json", "w");
+  optframe::cjson << allData.solData.logEvaluations[0];
+  fprintf(flogev, "%s\n", optframe::cjson.dump().c_str());
+  fclose(flogev);
 
-   //std::cout << "|MOVES| = " << allData.timeData.logMoves << std::endl;
-   std::cout << "|MOVES| = " << allData.timeData.logMoves.size() << std::endl;
+  //std::cout << "|MOVES| = " << allData.timeData.logMoves << std::endl;
+  std::cout << "|MOVES| = " << allData.timeData.logMoves.size() << std::endl;
 
-   FILE* flogmove = fopen("log_moves.json", "w");
-   optframe::cjson << allData.timeData.logMoves;
-   fprintf(flogmove, "%s\n", optframe::cjson.dump().c_str());
-   fclose(flogmove);
+  FILE* flogmove = fopen("log_moves.json", "w");
+  optframe::cjson << allData.timeData.logMoves;
+  fprintf(flogmove, "%s\n", optframe::cjson.dump().c_str());
+  fclose(flogmove);
 
-   getchar();
-   getchar();
+  getchar();
+  getchar();
 
-   cout << "will test BRKGA (n=" << tsp.p->n << ")" << endl;
+  cout << "will test BRKGA (n=" << tsp.p->n << ")" << endl;
 
-   TSPRepEvaluator eval_rep(tsp.p);
+  TSPRepEvaluator eval_rep(tsp.p);
 
-   //Evaluator<SolutionTSP>& eval2 = eval;
-   EvaluatorPermutationRandomKeys<EvaluationTSP, double> eprk(eval_rep, 0, tsp.p->n - 1);
+  //Evaluator<SolutionTSP>& eval2 = eval;
+  EvaluatorPermutationRandomKeys<EvaluationTSP, double> eprk(eval_rep, 0, tsp.p->n - 1);
 
-   DecoderRandomKeys<std::pair<std::vector<int>, EvaluationTSP>, double>* ptr_eprk = new EvaluatorPermutationRandomKeys<EvaluationTSP, double>(eval_rep, 0, tsp.p->n - 1);
+  DecoderRandomKeys<std::pair<std::vector<int>, EvaluationTSP>, double>* ptr_eprk = new EvaluatorPermutationRandomKeys<EvaluationTSP, double>(eval_rep, 0, tsp.p->n - 1);
 
-   sref<DecoderRandomKeys<std::pair<std::vector<int>, EvaluationTSP>, double>> sref_eprk(ptr_eprk);
+  sref<DecoderRandomKeys<std::pair<std::vector<int>, EvaluationTSP>, double>> sref_eprk(ptr_eprk);
 
-   // BRKGA is using Representation instead of Solution... beware!
-   sref<InitialEPopulation<pair<std::vector<double>, EvaluationTSP>>> _initPop =
-     new RandomKeysInitEPop<EvaluationTSP, double>(tsp.p->n, rg2);
-   //
-   using RK_ESolution = pair<vector<double>, EvaluationTSP>;
-   static_assert(XESolution<RK_ESolution>);
-   static_assert(X2ESolution<VEPopulation<RK_ESolution>, RK_ESolution>);
-   static_assert(XSearch<VEPopulation<RK_ESolution>, RK_ESolution>);
-   //
-   BRKGA<
-     std::pair<std::vector<int>, EvaluationTSP>,
-     double,
-     pair<vector<double>, EvaluationTSP> //,
-     //VEPopulation<pair<vector<double>, EvaluationTSP>>
-     >
-     brkga(
-       //
-       //BRKGA<pair<RepTSP, EvaluationTSP>, double> brkga(
-       eprk,
-       _initPop, // key_size = tsp.p->n
-       10000,
-       10,
-       0.4,
-       0.3,
-       0.6,
-       rg2);
+  // BRKGA is using Representation instead of Solution... beware!
+  sref<InitialEPopulation<pair<std::vector<double>, EvaluationTSP>>> _initPop =
+      new RandomKeysInitEPop<EvaluationTSP, double>(tsp.p->n, rg2);
+  //
+  using RK_ESolution = pair<vector<double>, EvaluationTSP>;
+  static_assert(XESolution<RK_ESolution>);
+  static_assert(X2ESolution<VEPopulation<RK_ESolution>, RK_ESolution>);
+  static_assert(XSearch<VEPopulation<RK_ESolution>, RK_ESolution>);
+  //
+  BRKGA<
+      std::pair<std::vector<int>, EvaluationTSP>,
+      double,
+      pair<vector<double>, EvaluationTSP>  //,
+      //VEPopulation<pair<vector<double>, EvaluationTSP>>
+      >
+      brkga(
+          //
+          //BRKGA<pair<RepTSP, EvaluationTSP>, double> brkga(
+          eprk,
+          _initPop,  // key_size = tsp.p->n
+          10000,
+          10,
+          0.4,
+          0.3,
+          0.6,
+          rg2);
 
-   StopCriteria<EvaluationTSP> sosc;
-   // strange that this worked.... it's against 'override' pattern. Very strange!!
-   /*
+  StopCriteria<EvaluationTSP> sosc;
+  // strange that this worked.... it's against 'override' pattern. Very strange!!
+  /*
    pair<CopySolution<random_keys>, Evaluation<>>* r2 = brkga.search(sosc);
    r2->first.print();
    pair<Evaluation<>, CopySolution<vector<int>>*> pd = eprk.decode(r2->first.getR());
@@ -322,22 +317,22 @@ main(int argc, char** argv)
    pd.first.print();
    */
 
-   //pair<SolutionTSP, Evaluation<>>* r2 = brkga.search(sosc);
+  //pair<SolutionTSP, Evaluation<>>* r2 = brkga.search(sosc);
 
-   auto sout = brkga.search(sosc.start());
-   //std::optional<ESolutionTSP> r2 = brkga.best;
-   auto r2 = sout.best;
-   //virtual std::optional<pair<XRS, XEv>> search(StopCriteria<XEv>& stopCriteria, const std::optional<pair<XRS, XEv>> input)
+  auto sout = brkga.search(sosc.start());
+  //std::optional<ESolutionTSP> r2 = brkga.best;
+  auto r2 = sout.best;
+  //virtual std::optional<pair<XRS, XEv>> search(StopCriteria<XEv>& stopCriteria, const std::optional<pair<XRS, XEv>> input)
 
-   //r2->first.print();
-   std::cout << r2->first << std::endl;
+  //r2->first.print();
+  std::cout << r2->first << std::endl;
 
-   r2->second.print();
+  r2->second.print();
 
-   cout << "end BRKGA tests" << endl;
+  cout << "end BRKGA tests" << endl;
 
-   // TODO: return after refactor on Concepts and OptFrame v4
-   /*
+  // TODO: return after refactor on Concepts and OptFrame v4
+  /*
    BuildCommand<RepTSP, OPTFRAME_DEFAULT_ADS, SolutionTSP> build;
    for (unsigned i = 0; i <= 7; i++) {
       stringstream ss;
@@ -347,84 +342,84 @@ main(int argc, char** argv)
    }
    */
 
-   vsref<LocalSearch<ESolutionTSP>> ns_list;
-   ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tsp2opt));
-   ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor1));
-   ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor2));
-   ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor3));
-   ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspswap));
+  vsref<LocalSearch<ESolutionTSP>> ns_list;
+  ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tsp2opt));
+  ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor1));
+  ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor2));
+  ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspor3));
+  ns_list.push_back(new BestImprovement<ESolutionTSP>(eval, tspswap));
 
-   VariableNeighborhoodDescent<ESolutionTSP> VND(eval, ns_list);
-   //VND.setVerbose();
+  VariableNeighborhoodDescent<ESolutionTSP> VND(eval, ns_list);
+  //VND.setVerbose();
 
-   ILSLPerturbationLPlus2<ESolutionTSP> pert(eval, tsp2opt, rg);
-   pert.add_ns(tspor1);
-   pert.add_ns(tspor2);
-   pert.add_ns(tspor3);
-   pert.add_ns(tspswap);
+  ILSLPerturbationLPlus2<ESolutionTSP> pert(eval, tsp2opt, rg);
+  pert.add_ns(tspor1);
+  pert.add_ns(tspor2);
+  pert.add_ns(tspor3);
+  pert.add_ns(tspswap);
 
-   IteratedLocalSearchLevels<ESolutionTSP> ils(eval, randomTSP, VND, pert, 3, 2);
-   //ils.setMessageLevel(4);
-   //
-   //ils.setVerbose();
-   if (ils.information)
-      cout << "infomation is on for ILS" << endl;
+  IteratedLocalSearchLevels<ESolutionTSP> ils(eval, randomTSP, VND, pert, 3, 2);
+  //ils.setMessageLevel(4);
+  //
+  //ils.setVerbose();
+  if (ils.information)
+    cout << "infomation is on for ILS" << endl;
 
-   cout << "will run ils" << endl;
-   Timer tim;
-   StopCriteria<EvaluationTSP> soscILS;
-   soscILS.timelimit = 3; // 1000
-   soscILS.target_f = EvaluationTSP(0.0);
-   //pair<CopySolution<RepTSP>, Evaluation<>>& psol = *ils.search(soscILS, NULL, NULL);
-   auto sout2 = ils.search(soscILS);
-   std::optional<ESolutionTSP> psol = sout2.best;
-   cout << "finished ILS!" << endl;
-   cout << tim.now() << " secs" << endl;
+  cout << "will run ils" << endl;
+  Timer tim;
+  StopCriteria<EvaluationTSP> soscILS;
+  soscILS.timelimit = 3;  // 1000
+  soscILS.target_f = EvaluationTSP(0.0);
+  //pair<CopySolution<RepTSP>, Evaluation<>>& psol = *ils.search(soscILS, NULL, NULL);
+  auto sout2 = ils.search(soscILS);
+  std::optional<ESolutionTSP> psol = sout2.best;
+  cout << "finished ILS!" << endl;
+  cout << tim.now() << " secs" << endl;
 
-   psol->first.print();
-   psol->second.print();
-   cout << endl
-        << endl;
+  psol->first.print();
+  psol->second.print();
+  cout << endl
+       << endl;
 
-   // ===========
+  // ===========
 
-   //for (unsigned i = 0; i < ns_list.size(); i++)
-   //   delete ns_list[i];
+  //for (unsigned i = 0; i < ns_list.size(); i++)
+  //   delete ns_list[i];
 
-   vsref<NS<ESolutionTSP>> v_ns;
-   //vsref<NSSeq<ESolutionTSP>> v_nsseq = { tsp2opt, tspor1, tspor2, tspor3, tspswap };
-   vsref<NSSeq<ESolutionTSP>> v_nsseq;
-   v_nsseq.push_back(tsp2opt);
-   v_nsseq.push_back(tspor1);
-   v_nsseq.push_back(tspor2);
-   v_nsseq.push_back(tspor3);
-   v_nsseq.push_back(tspswap);
+  vsref<NS<ESolutionTSP>> v_ns;
+  //vsref<NSSeq<ESolutionTSP>> v_nsseq = { tsp2opt, tspor1, tspor2, tspor3, tspswap };
+  vsref<NSSeq<ESolutionTSP>> v_nsseq;
+  v_nsseq.push_back(tsp2opt);
+  v_nsseq.push_back(tspor1);
+  v_nsseq.push_back(tspor2);
+  v_nsseq.push_back(tspor3);
+  v_nsseq.push_back(tspswap);
 
-   //v_nsseq.push_back(&tsp2opt);
-   //v_nsseq.push_back(&tspor1);
-   //v_nsseq.push_back(&tspor2);
-   //v_nsseq.push_back(&tspor3);
-   //v_nsseq.push_back(&tspswap);
-   for (unsigned i = 0; i < v_nsseq.size(); i++)
-      v_ns.push_back(v_nsseq[i]);
+  //v_nsseq.push_back(&tsp2opt);
+  //v_nsseq.push_back(&tspor1);
+  //v_nsseq.push_back(&tspor2);
+  //v_nsseq.push_back(&tspor3);
+  //v_nsseq.push_back(&tspswap);
+  for (unsigned i = 0; i < v_nsseq.size(); i++)
+    v_ns.push_back(v_nsseq[i]);
 
-   BasicVNS<ESolutionTSP> vns(eval, randomTSP, v_ns, v_nsseq);
-   vns.setMessageLevel(LogLevel::Info); // INFORMATION
-   StopCriteria<EvaluationTSP> soscVNS;
-   soscVNS.timelimit = 2; // 2 seconds
-   soscVNS.target_f = EvaluationTSP(7550.0);
+  BasicVNS<ESolutionTSP> vns(eval, randomTSP, v_ns, v_nsseq);
+  vns.setMessageLevel(LogLevel::Info);  // INFORMATION
+  StopCriteria<EvaluationTSP> soscVNS;
+  soscVNS.timelimit = 2;  // 2 seconds
+  soscVNS.target_f = EvaluationTSP(7550.0);
 
-   // zero is better than any positive value
-   assert(eval->betterThan(EvaluationTSP(0), soscVNS.target_f));
+  // zero is better than any positive value
+  assert(eval->betterThan(EvaluationTSP(0), soscVNS.target_f));
 
-   //pair<CopySolution<RepTSP>, Evaluation<>>& psol2 = *vns.search(sosc, NULL, NULL);
-   auto sout3 = vns.search(soscVNS.start());
-   std::optional<ESolutionTSP> psol2 = sout3.best;
-   psol2->first.print();
-   psol2->second.print();
+  //pair<CopySolution<RepTSP>, Evaluation<>>& psol2 = *vns.search(sosc, NULL, NULL);
+  auto sout3 = vns.search(soscVNS.start());
+  std::optional<ESolutionTSP> psol2 = sout3.best;
+  psol2->first.print();
+  psol2->second.print();
 
-   // Remember the old times...
-   /*
+  // Remember the old times...
+  /*
 	 echo building VND
 	 define vnd_list [ OptFrame:LocalSearch: 0 ,  OptFrame:LocalSearch: 1, OptFrame:LocalSearch: 2, OptFrame:LocalSearch: 3 ]
 	 component.create_list $vnd_list OptFrame:LocalSearch: comp_vnd_list
@@ -440,7 +435,7 @@ main(int argc, char** argv)
 	 evaluate $Evaluator 0 $solucao_saida
 	 */
 
-   cout << "Program ended successfully" << endl;
+  cout << "Program ended successfully" << endl;
 
-   return 0;
+  return 0;
 }

@@ -1,7 +1,7 @@
 #ifndef OPTFRAME_BASECONCEPTS_CTEST_HPP
 #define OPTFRAME_BASECONCEPTS_CTEST_HPP
 
-#include "BaseConcepts.hpp"
+#include <OptFrame/BaseConcepts.hpp>
 
 // basic printabilty for std::pair<,>
 #include <OptFrame/printable/printable.hpp>

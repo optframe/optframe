@@ -26,69 +26,62 @@
 // Framework includes
 #include "../../../Move.hpp"
 #include "../../../NSIterator.hpp"
+#include "../Moves/MoveTSPSwap.hpp"
+#include "IteratorTSPSwap.hpp"
 
 using namespace std;
 
 // Working structure: vector<vector<T> >
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>, ADS> S = CopySolution<vector<T>, ADS>, class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class NSIteratorTSPOrOptk : public NSIterator<XES, XEv>
-{
-   typedef vector<T> Route;
+template <class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>, ADS> S = CopySolution<vector<T>, ADS>, class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+class NSIteratorTSPOrOptk : public NSIterator<XES, XEv> {
+  typedef vector<T> Route;
 
-protected:
-   int n, k;
-   int i, j;
+ protected:
+  int n, k;
+  int i, j;
 
-   std::shared_ptr<P> p; // has to be the last
+  std::shared_ptr<P> p;  // has to be the last
 
-public:
-   NSIteratorTSPOrOptk(int _n, int _k, std::shared_ptr<P> _p = nullptr)
-     : n(_n)
-     , k(_k)
-     , p(_p)
-   {
-      i = j = 0;
-   }
+ public:
+  NSIteratorTSPOrOptk(int _n, int _k, std::shared_ptr<P> _p = nullptr)
+      : n(_n), k(_k), p(_p) {
+    i = j = 0;
+  }
 
-   virtual ~NSIteratorTSPOrOptk()
-   {
-   }
+  virtual ~NSIteratorTSPOrOptk() {
+  }
 
-   virtual void first() override
-   {
-      i = 0;
-      j = 1;
-   }
+  virtual void first() override {
+    i = 0;
+    j = 1;
+  }
 
-   virtual void next() override
-   {
+  virtual void next() override {
+    j++;
+
+    if (j == i)
       j++;
 
-      if (j == i)
-         j++;
+    if (j > n - k) {
+      j = 0;
+      i++;
+    }
+  }
 
-      if (j > n - k) {
-         j = 0;
-         i++;
-      }
-   }
+  virtual bool isDone() override {
+    return i > n - k;
+  }
 
-   virtual bool isDone() override
-   {
-      return i > n - k;
-   }
+  virtual uptr<Move<XES, XEv>> current() override {
+    if (isDone()) {
+      cout << "There isnt any current element!" << endl;
+      cout << "OrOpt{K=" << k << "}. Aborting." << endl;
+      exit(1);
+    }
 
-   virtual uptr<Move<XES, XEv>> current() override
-   {
-      if (isDone()) {
-         cout << "There isnt any current element!" << endl;
-         cout << "OrOpt{K=" << k << "}. Aborting." << endl;
-         exit(1);
-      }
-
-      return uptr<Move<XES, XEv>>(new MOVE(i, j, k, p));
-   }
+    return uptr<Move<XES, XEv>>(new MOVE(i, j, k, p));
+  }
 };
 
 #endif /*OPTFRAME_NSITERATOROROPTK_HPP_*/

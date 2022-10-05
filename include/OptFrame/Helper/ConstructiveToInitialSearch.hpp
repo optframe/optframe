@@ -23,63 +23,56 @@
 #ifndef OPTFRAME_CONSTRUCTIVE_TO_INITIALSEARCH_HPP_
 #define OPTFRAME_CONSTRUCTIVE_TO_INITIALSEARCH_HPP_
 
-#include "BaseConcepts.hpp"
+#include <OptFrame/BaseConcepts.hpp>
+
 #include "Component.hpp"
 //#include "Solution.hpp"
 //#include "Solutions/CopySolution.hpp"
-#include "InitialSearch.hpp" // TODO: remove
+#include "InitialSearch.hpp"  // TODO: remove
 
 namespace optframe {
 
 //template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R, ADS> S = CopySolution<R, ADS>>
-template<XESolution XES>
-class ConstructiveToInitialSearch : public InitialSearch<XES>
-{
-   using S = typename XES::first_type;
-   using XEv = typename XES::second_type;
+template <XESolution XES>
+class ConstructiveToInitialSearch : public InitialSearch<XES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
 
-public:
-   Constructive<S>& c;
-   Evaluator<S, XEv, XES>& eval;
+ public:
+  Constructive<S>& c;
+  Evaluator<S, XEv, XES>& eval;
 
-   ConstructiveToInitialSearch(Constructive<S>& _c, Evaluator<S, XEv, XES>& _eval)
-     : c(_c)
-     , eval(_eval)
-   {
-   }
+  ConstructiveToInitialSearch(Constructive<S>& _c, Evaluator<S, XEv, XES>& _eval)
+      : c(_c), eval(_eval) {
+  }
 
-   virtual ~ConstructiveToInitialSearch()
-   {
-   }
+  virtual ~ConstructiveToInitialSearch() {
+  }
 
-   // timelimit in seconds, accepting fractions (millisecs, ...)
-   // may or may not generate valid solution in time
-   std::pair<std::optional<XES>, SearchStatus> initialSearch(const StopCriteria<XEv>& sosc) override
-   {
-      std::optional<S> s = c.generateSolution(sosc.timelimit);
-      if (!s)
-         return make_pair(nullopt, SearchStatus::NO_REPORT);
-      XES se = make_pair(*s, eval.evaluate(*s));
-      return make_pair(make_optional(se), SearchStatus::NO_REPORT);
-   }
+  // timelimit in seconds, accepting fractions (millisecs, ...)
+  // may or may not generate valid solution in time
+  std::pair<std::optional<XES>, SearchStatus> initialSearch(const StopCriteria<XEv>& sosc) override {
+    std::optional<S> s = c.generateSolution(sosc.timelimit);
+    if (!s)
+      return make_pair(nullopt, SearchStatus::NO_REPORT);
+    XES se = make_pair(*s, eval.evaluate(*s));
+    return make_pair(make_optional(se), SearchStatus::NO_REPORT);
+  }
 
-   virtual bool compatible(std::string s)
-   {
-      return (s == idComponent()) || (Component::compatible(s));
-   }
+  virtual bool compatible(std::string s) {
+    return (s == idComponent()) || (Component::compatible(s));
+  }
 
-   static std::string idComponent()
-   {
-      std::stringstream ss;
-      ss << Component::idComponent() << ":ConstructiveToInitialSearch";
-      return ss.str();
-   }
+  static std::string idComponent() {
+    std::stringstream ss;
+    ss << Component::idComponent() << ":ConstructiveToInitialSearch";
+    return ss.str();
+  }
 
-   virtual std::string id() const
-   {
-      return idComponent();
-   }
+  virtual std::string id() const {
+    return idComponent();
+  }
 };
-} // namespace optframe
+}  // namespace optframe
 
 #endif /*OPTFRAME_CONSTRUCTIVE_TO_INITIALSEARCH_HPP_*/

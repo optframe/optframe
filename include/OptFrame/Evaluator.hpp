@@ -23,22 +23,24 @@
 #ifndef OPTFRAME_EVALUATOR_HPP_
 #define OPTFRAME_EVALUATOR_HPP_
 
+// C++
 #include <iostream>
-
-#include "ADSManager.hpp"
-#include "Action.hpp"
-#include "Direction.hpp"
-#include "Evaluation.hpp"
-#include "GeneralEvaluator.hpp"
-#include "IEvaluator.hpp"
-#include "Move.hpp"
-#include "MoveCost.hpp"
-#include "Solution.hpp"
+//
+//#include "ADSManager.hpp"
+//#include "Action.hpp"
+#include <OptFrame/Direction.hpp>
+#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/GeneralEvaluator.hpp>
+#include <OptFrame/Helper/Solution.hpp>
+#include <OptFrame/IEvaluator.hpp>
+#include <OptFrame/Move.hpp>
+#include <OptFrame/MoveCost.hpp>
+//#include "Solution.hpp"
 
 //#define OPTFRAME_EPSILON 0.0001
 
-using namespace std;
-using namespace scannerpp;
+// using namespace std;
+// using namespace scannerpp;
 
 namespace optframe {
 

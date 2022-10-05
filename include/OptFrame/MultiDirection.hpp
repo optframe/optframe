@@ -23,167 +23,149 @@
 #ifndef OPTFRAME_MULTI_DIRECTION_HPP_
 #define OPTFRAME_MULTI_DIRECTION_HPP_
 
+// C
 #include <float.h>
-#include <limits>
-
-#include "Evaluation.hpp"
-#include "Move.hpp"
-#include "MoveCost.hpp"
-#include "Solution.hpp"
-
+// C++
 #include <iostream>
+#include <limits>
+//
+#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Move.hpp>
+#include <OptFrame/MoveCost.hpp>
+// #include "Solution.hpp"
 
-#include "Action.hpp"
-#include "Component.hpp"
+#include <OptFrame/Component.hpp>
+#include <OptFrame/Hyper/Action.hpp>
 
-using namespace std;
-using namespace scannerpp;
+// using namespace std;
+// using namespace scannerpp;
 
 namespace optframe {
 
-class MultiDirection : public Component
-{
-protected:
-   vector<Direction<>*> vDir;
+// using scannerpp::Scanner;
 
-public:
-   unsigned nObjectives;
+class MultiDirection : public Component {
+  using XEv = Evaluation<>;
 
-   MultiDirection(vector<Direction<>*>& _vDir)
-   {
-      for (unsigned i = 0; i < _vDir.size(); i++)
-         if (_vDir[i])
-            vDir.push_back(_vDir[i]);
-      nObjectives = vDir.size();
-   }
+ protected:
+  vector<Direction<XEv>*> vDir;
 
-   MultiDirection(MultiDirection& mDir)
-     : vDir(mDir.vDir)
-     , nObjectives(mDir.nObjectives)
-   {
-   }
+ public:
+  unsigned nObjectives;
 
-   MultiDirection()
-   {
-      nObjectives = 0;
-   }
+  MultiDirection(vector<Direction<XEv>*>& _vDir) {
+    for (unsigned i = 0; i < _vDir.size(); i++)
+      if (_vDir[i])
+        vDir.push_back(_vDir[i]);
+    nObjectives = vDir.size();
+  }
 
-   virtual ~MultiDirection()
-   {
-   }
+  MultiDirection(MultiDirection& mDir)
+      : vDir(mDir.vDir), nObjectives(mDir.nObjectives) {
+  }
 
-   virtual MultiDirection& addObjective(Direction<>* ds)
-   {
-      if (ds)
-         vDir.push_back(ds);
-      nObjectives = vDir.size();
+  MultiDirection() {
+    nObjectives = 0;
+  }
 
-      return *this;
-   }
+  virtual ~MultiDirection() {
+  }
 
-   vector<Direction<>*>& getDirections()
-   {
-      return vDir;
-   }
+  virtual MultiDirection& addObjective(Direction<XEv>* ds) {
+    if (ds)
+      vDir.push_back(ds);
+    nObjectives = vDir.size();
 
-   // ============ betterThan ===========
+    return *this;
+  }
 
-   template<class T>
-   inline bool betterThan(unsigned obj, const T& a, const T& b)
-   {
-      return vDir[obj]->betterThan(a, b);
-   }
+  vector<Direction<XEv>*>& getDirections() {
+    return vDir;
+  }
 
-   // ============ betterOrEquals ===========
+  // ============ betterThan ===========
 
-   template<class T>
-   inline bool betterOrEquals(unsigned obj, const T& a, const T& b)
-   {
-      return vDir[obj]->betterOrEquals(a, b);
-   }
+  template <class T>
+  inline bool betterThan(unsigned obj, const T& a, const T& b) {
+    return vDir[obj]->betterThan(a, b);
+  }
 
-   // ============ equals ============
+  // ============ betterOrEquals ===========
 
-   template<class T>
-   inline bool equals(unsigned obj, const T& a, const T& b)
-   {
-      return vDir[obj]->equals(a, b);
-   }
+  template <class T>
+  inline bool betterOrEquals(unsigned obj, const T& a, const T& b) {
+    return vDir[obj]->betterOrEquals(a, b);
+  }
 
-   // ============= improvement =============
+  // ============ equals ============
 
-   ///inline bool isImprovement(unsigned obj, const MoveCost<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
-   inline bool isImprovement(unsigned obj, const Evaluation<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
-   {
-      return vDir[obj]->isImprovement(mc, e1, e2);
-   }
+  template <class T>
+  inline bool equals(unsigned obj, const T& a, const T& b) {
+    return vDir[obj]->equals(a, b);
+  }
 
-   ///inline bool isImprovement(unsigned obj, const MoveCost<>& mc)
-   inline bool isImprovement(unsigned obj, const Evaluation<>& mc)
-   {
-      return vDir[obj]->isImprovement(mc);
-   }
+  // ============= improvement =============
 
-   // ============= direction ==============
+  ///inline bool isImprovement(unsigned obj, const MoveCost<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
+  inline bool isImprovement(unsigned obj, const Evaluation<>& mc, const Evaluation<>& e1, const Evaluation<>& e2) {
+    return vDir[obj]->isImprovement(mc, e1, e2);
+  }
 
-   inline bool isMinimization(unsigned obj)
-   {
-      return vDir[obj]->isMinimization();
-   }
+  ///inline bool isImprovement(unsigned obj, const MoveCost<>& mc)
+  inline bool isImprovement(unsigned obj, const Evaluation<>& mc) {
+    return vDir[obj]->isImprovement(mc);
+  }
 
-   inline bool isMaximization(unsigned obj)
-   {
-      return vDir[obj]->isMaximization();
-   }
+  // ============= direction ==============
 
-   // ============ estimation =============
+  inline bool isMinimization(unsigned obj) {
+    return vDir[obj]->isMinimization();
+  }
 
-   inline double ideal(unsigned obj)
-   {
-      return vDir[obj]->ideal();
-   }
+  inline bool isMaximization(unsigned obj) {
+    return vDir[obj]->isMaximization();
+  }
 
-   //inline double worst(unsigned obj)
-   inline double nadir(unsigned obj)
-   {
-      return vDir[obj]->nadir();
-   }
+  // ============ estimation =============
 
-   inline double min(unsigned obj)
-   {
-      return vDir[obj]->min();
-   }
+  inline double ideal(unsigned obj) {
+    return vDir[obj]->ideal();
+  }
 
-   inline double max(unsigned obj)
-   {
-      return vDir[obj]->max();
-   }
+  //inline double worst(unsigned obj)
+  inline double nadir(unsigned obj) {
+    return vDir[obj]->nadir();
+  }
 
-   // ============= Component ===============
+  inline double min(unsigned obj) {
+    return vDir[obj]->min();
+  }
 
-   virtual bool compatible(string s) override
-   {
-      return (s == idComponent()) || (Component::compatible(s));
-   }
+  inline double max(unsigned obj) {
+    return vDir[obj]->max();
+  }
 
-   virtual std::string toString() const override
-   {
-      return id();
-   }
+  // ============= Component ===============
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << Component::idComponent() << ":MultiDirection";
-      return ss.str();
-   }
+  virtual bool compatible(string s) override {
+    return (s == idComponent()) || (Component::compatible(s));
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual std::string toString() const override {
+    return id();
+  }
+
+  static string idComponent() {
+    stringstream ss;
+    ss << Component::idComponent() << ":MultiDirection";
+    return ss.str();
+  }
+
+  virtual string id() const override {
+    return idComponent();
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /*OPTFRAME_MULTI_DIRECTION_HPP_*/

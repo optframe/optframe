@@ -1,11 +1,12 @@
 #ifndef MODM_SOLUTION_H_
 #define MODM_SOLUTION_H_
 
+#include <OptFrame/Helper/Solution.hpp>
+#include <OptFrame/Helper/Solutions/CopySolution.hpp>
+
 #include "ADS.h"
 #include "Evaluation.h"
 #include "Representation.h"
-#include <OptFrame/Solution.hpp>
-#include <OptFrame/Solutions/CopySolution.hpp>
 
 using namespace optframe;
 using namespace MODM;

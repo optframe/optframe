@@ -20,32 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_IEVALUATION_HPP_
-#define OPTFRAME_IEVALUATION_HPP_
+#ifndef OPTFRAME_MULTIESOLUTION_CTEST_HPP_
+#define OPTFRAME_MULTIESOLUTION_CTEST_HPP_
 
-#include <assert.h>
-#include <cmath>
-#include <cstdlib>
-#include <iostream>
+#include <OptFrame/BaseConcepts.ctest.hpp>
+#include <OptFrame/Helper/MultiESolution.hpp>
 
-#include "BaseConcepts.hpp"
-
-#include "MultiObjValue.hpp"  // inserting this beforehand.. who knows!!!
-#include "SingleObjValue.hpp" // basic value 'evtype' comes from here!
-
-using namespace std;
+#ifndef NDEBUG
 
 namespace optframe {
 
-template<optframe::basic_arithmetics ObjType = evtype>
-class IEvaluation
-{
-public:
-   virtual ObjType evaluation() const = 0; // too bad, cannot just put deduced type here (virtual function)
+// basic compilation test (TODO: improve)
+//static_assert(X2ESolution<MultiESolution<IsESolution<double>>, IsSolution<double>, IsEvaluation<int>, IsESolution<double>>);
+static_assert(X2ESolution<MultiESolution<IsESolution<double>>, IsESolution<double>>);
 
-   virtual string toString() const = 0;
-};
+}  // namespace optframe
 
-} // namespace optframe
+#endif  // NDEBUG
 
-#endif /*OPTFRAME_IEVALUATION_HPP_*/
+#endif /* OPTFRAME_MULTISOLUTION_CTEST_HPP_ */

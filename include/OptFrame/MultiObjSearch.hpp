@@ -23,42 +23,35 @@
 #ifndef OPTFRAME_MULTI_OBJ_SEARCH_HPP_
 #define OPTFRAME_MULTI_OBJ_SEARCH_HPP_
 
+// C++
 #include <cstring>
 #include <iostream>
 #include <vector>
+//
+#include <OptFrame/Component.hpp>
+#include <OptFrame/Direction.hpp>
+#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/GlobalSearch.hpp>  // Base class
+#include <OptFrame/Helper/MultiEvaluation.hpp>
+#include <OptFrame/Helper/Population.hpp>
+#include <OptFrame/Hyper/ComponentBuilder.hpp>
+#include <OptFrame/MultiEvaluator.hpp>
+#include <OptFrame/Pareto.hpp>
+#include <OptFrame/ParetoDominance.hpp>
+#include <OptFrame/ParetoDominanceWeak.hpp>
 
-using namespace std;
-
-#include "Direction.hpp"
-#include "Evaluation.hpp"
-#include "Population.hpp"
-#include "Solution.hpp"
-
-#include "MultiEvaluation.hpp"
-#include "MultiEvaluator.hpp"
-
-#include "Component.hpp"
-#include "ComponentBuilder.h"
-
-#include "Pareto.hpp"
-#include "ParetoDominance.hpp"
-#include "ParetoDominanceWeak.hpp"
-
-#include "SingleObjSearch.hpp" // TODO: remove
-
-#include "GlobalSearch.hpp" // Base class
+// using namespace std;
 
 namespace optframe {
 
-template<class Self, class XES>
+template <class Self, class XES>
 concept
-#if __cplusplus <= 201703L // after c++20, not required 'bool'
-  bool
+#if __cplusplus <= 201703L  // after c++20, not required 'bool'
+    bool
 #endif
-    XMultiObjSearch = requires(Self a)
-{
-   XESolution<XES>;
-   X2ESolution<typename Self::BestType, XES>;
+        XMultiObjSearch = requires(Self a) {
+  XESolution<XES>;
+  X2ESolution<typename Self::BestType, XES>;
 };
 
 /*
@@ -98,95 +91,83 @@ public:
 //
 //template<XSolution S, XEvaluation XMEv = Evaluation<>, XESolution XMES = pair<S, XMEv>>
 //
-template<XESolution XMES, XESolution XMES2 = XMES, XSearch<XMES2> XMSH2 = XMES2>
-class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>> // public Component
+template <XESolution XMES, XESolution XMES2 = XMES, XSearch<XMES2> XMSH2 = XMES2>
+class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>>  // public Component
 {
-   using S = typename XMES::first_type;
-   using XMEv = typename XMES::second_type;
-   using XMSH = Pareto<XMES>; // search space
-public:
-   //
-   //bool (*onParetoIncumbent)(GlobalSearch<XMES, Pareto<XMES>>& self, const XMSH2& incumbent) =
-   //  [](GlobalSearch<XMES, Pareto<XMES>>& self, const XMSH2& incumbent) { return true; };
+  using S = typename XMES::first_type;
+  using XMEv = typename XMES::second_type;
+  using XMSH = Pareto<XMES>;  // search space
+ public:
+  //
+  //bool (*onParetoIncumbent)(GlobalSearch<XMES, Pareto<XMES>>& self, const XMSH2& incumbent) =
+  //  [](GlobalSearch<XMES, Pareto<XMES>>& self, const XMSH2& incumbent) { return true; };
 
-   // ========================================
-   // THIS CLASS IS USELESS! WHAT'S THE POINT?
-   // Best to just have XMultiObjSearch
-   // ========================================
+  // ========================================
+  // THIS CLASS IS USELESS! WHAT'S THE POINT?
+  // Best to just have XMultiObjSearch
+  // ========================================
 
-   MultiObjSearch()
-   {
-   }
+  MultiObjSearch() {
+  }
 
-   virtual ~MultiObjSearch()
-   {
-   }
+  virtual ~MultiObjSearch() {
+  }
 
-   op<Pareto<XMES>>& getBestPareto()
-   {
-      return this->best;
-   }
+  op<Pareto<XMES>>& getBestPareto() {
+    return this->best;
+  }
 
-   //virtual Pareto<XMES>* search(MOSC& stopCriteria, Pareto<XMES>* _pf = nullptr) = 0;
-   //
-   //virtual SearchStatus search(std::optional<Pareto<XMES>>& p, const StopCriteria<XMEv>& stopCriteria) = 0;
-   virtual SearchOutput<XMES, Pareto<XMES>> search(const StopCriteria<XMEv>& stopCriteria) override = 0;
+  //virtual Pareto<XMES>* search(MOSC& stopCriteria, Pareto<XMES>* _pf = nullptr) = 0;
+  //
+  //virtual SearchStatus search(std::optional<Pareto<XMES>>& p, const StopCriteria<XMEv>& stopCriteria) = 0;
+  virtual SearchOutput<XMES, Pareto<XMES>> search(const StopCriteria<XMEv>& stopCriteria) override = 0;
 
-   virtual string log() const
-   {
-      return "Empty heuristic log.";
-   }
+  virtual string log() const {
+    return "Empty heuristic log.";
+  }
 
-   virtual bool compatible(string s)
-   {
-      return (s == idComponent()) || (Component::compatible(s));
-   }
+  virtual bool compatible(string s) {
+    return (s == idComponent()) || (Component::compatible(s));
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << Component::idComponent() << "MultiObjSearch:";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << Component::idComponent() << "MultiObjSearch:";
+    return ss.str();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
-class MultiObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
-{
-public:
-   virtual ~MultiObjSearchBuilder()
-   {
-   }
+template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+class MultiObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+ public:
+  virtual ~MultiObjSearchBuilder() {
+  }
 
-   virtual MultiObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
+  virtual MultiObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
 
-   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
-   {
-      return build(scanner, hf, family);
-   }
+  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+    return build(scanner, hf, family);
+  }
 
-   virtual vector<pair<string, string>> parameters() = 0;
+  virtual vector<pair<string, string>> parameters() = 0;
 
-   virtual bool canBuild(string) = 0;
+  virtual bool canBuild(string) = 0;
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "MultiObjSearch:";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "MultiObjSearch:";
+    return ss.str();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_MULTI_OBJ_SEARCH_HPP_ */

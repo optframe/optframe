@@ -24,53 +24,45 @@
 #define OPTFRAME_NSFIND_HPP_
 
 #include "Move.hpp"
-#include "Solution.hpp"
-
-#include "Action.hpp"
+// #include "Solution.hpp"
+//#include "Action.hpp"
 #include "Component.hpp"
-
-#include "GeneralEvaluator.hpp" // included for Neighborhood Exploration
-
+#include "GeneralEvaluator.hpp"  // included for Neighborhood Exploration
 #include "NS.hpp"
 
 namespace optframe {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
-class NSFind : public NS<XES, XEv, XSH>
-{
-public:
-   virtual ~NSFind()
-   {
-   }
+template <XESolution XES, XEvaluation XEv = Evaluation<>, XESolution XSH = XES>
+class NSFind : public NS<XES, XEv, XSH> {
+ public:
+  virtual ~NSFind() {
+  }
 
-public:
-   // =======================================
-   // find section (neighborhood exploration)
-   // =======================================
-   // findBest: returns move that greatly improves current solution 'se', according 'gev'
-   // RETURNS: pair< uptr<Move<XES, XEv, XSH>>, op<XEv> >
-   // NSFind is useful for exponential-sized neighborhoods, without requiring any iterator structure
-   virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findBest(GeneralEvaluator<XES, XEv, XSH>& gev, XES& se) = 0;
+ public:
+  // =======================================
+  // find section (neighborhood exploration)
+  // =======================================
+  // findBest: returns move that greatly improves current solution 'se', according 'gev'
+  // RETURNS: pair< uptr<Move<XES, XEv, XSH>>, op<XEv> >
+  // NSFind is useful for exponential-sized neighborhoods, without requiring any iterator structure
+  virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findBest(GeneralEvaluator<XES, XEv, XSH>& gev, XES& se) = 0;
 
-public:
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << NS<XES, XEv>::idComponent() << ":NSFind";
-      return ss.str();
-   }
+ public:
+  static string idComponent() {
+    stringstream ss;
+    ss << NS<XES, XEv>::idComponent() << ":NSFind";
+    return ss.str();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 
-   virtual bool compatible(string s)
-   {
-      return (s == idComponent()) || (NS<XES, XEv>::compatible(s));
-   }
+  virtual bool compatible(string s) {
+    return (s == idComponent()) || (NS<XES, XEv>::compatible(s));
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /*OPTFRAME_NSFIND_HPP_*/

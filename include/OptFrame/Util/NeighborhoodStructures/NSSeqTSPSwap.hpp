@@ -23,12 +23,10 @@
 #ifndef OPTFRAME_NSSEQTSPSWAP_HPP_
 #define OPTFRAME_NSSEQTSPSWAP_HPP_
 
+#include "../../Helper/Solution.hpp"
 #include "../../Move.hpp"
 #include "../../NSSeq.hpp"
-#include "../../Solution.hpp"
-
 #include "BaseSolutionTSP.hpp"
-
 #include "Moves/MoveTSPSwap.hpp"
 #include "NSIterators/IteratorTSPSwap.hpp"
 
@@ -84,74 +82,65 @@ using namespace std;
 
 namespace optframe {
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>, ADS> S = CopySolution<vector<T>, ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = std::pair<S, XEv>>
-class NSSeqTSPSwap : public NSSeq<XES, XEv, XSH>
-{
-   typedef vector<T> Route;
+template <class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>, ADS> S = CopySolution<vector<T>, ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = std::pair<S, XEv>>
+class NSSeqTSPSwap : public NSSeq<XES, XEv, XSH> {
+  typedef vector<T> Route;
 
-private:
-   P* p; // has to be the last
+ private:
+  P* p;  // has to be the last
 
-public:
-   NSSeqTSPSwap(P* _p = nullptr)
-     : p(_p)
-   {
-   }
+ public:
+  NSSeqTSPSwap(P* _p = nullptr)
+      : p(_p) {
+  }
 
-   virtual ~NSSeqTSPSwap()
-   {
-   }
+  virtual ~NSSeqTSPSwap() {
+  }
 
-   //using NSSeq<S, XEv, XSH>::move;
-   //using NSSeq<S, XEv, XSH>::getIterator;
+  //using NSSeq<S, XEv, XSH>::move;
+  //using NSSeq<S, XEv, XSH>::getIterator;
 
-   uptr<Move<XES, XEv>> randomMove(const XES& s) override
-   {
-      const Route& rep = s.first.getR();
-      if (rep.size() < 2)
-         return uptr<Move<XES, XEv>>(new MOVE(-1, -1, p));
+  uptr<Move<XES, XEv>> randomMove(const XES& s) override {
+    const Route& rep = s.first.getR();
+    if (rep.size() < 2)
+      return uptr<Move<XES, XEv>>(new MOVE(-1, -1, p));
 
-      int p1 = rand() % rep.size();
+    int p1 = rand() % rep.size();
 
-      int p2 = p1;
+    int p2 = p1;
 
-      while (p2 == p1)
-         p2 = rand() % rep.size();
+    while (p2 == p1)
+      p2 = rand() % rep.size();
 
-      return uptr<Move<XES, XEv>>(new MOVE(p1, p2, p));
-   }
+    return uptr<Move<XES, XEv>>(new MOVE(p1, p2, p));
+  }
 
-   virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& s) override
-   {
-      const Route& r = s.first.getR();
-      return uptr<NSIterator<XES, XEv>>(new NSITERATOR(r.size(), p));
-   }
+  virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& s) override {
+    const Route& r = s.first.getR();
+    return uptr<NSIterator<XES, XEv>>(new NSITERATOR(r.size(), p));
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << NSSeq<XES, XEv, XSH>::idComponent() << ":NSSeqTSPSwap";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << NSSeq<XES, XEv, XSH>::idComponent() << ":NSSeqTSPSwap";
+    return ss.str();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 
-   virtual bool compatible(string s)
-   {
-      return (s == idComponent()) || (NSSeq<XES, XEv, XSH>::compatible(s));
-   }
+  virtual bool compatible(string s) {
+    return (s == idComponent()) || (NSSeq<XES, XEv, XSH>::compatible(s));
+  }
 
-   virtual string toString() const
-   {
-      stringstream ss;
-      ss << "NSSeqTSPSwap";
-      return ss.str();
-   }
+  virtual string toString() const {
+    stringstream ss;
+    ss << "NSSeqTSPSwap";
+    return ss.str();
+  }
 };
 
-} // namespace optframe
+}  // namespace optframe
 
 #endif /*OPTFRAME_NSSEQTSPSWAP_HPP_*/

@@ -20,23 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_LOCAL_SEARCH_HPP_
-#define OPTFRAME_LOCAL_SEARCH_HPP_
+#ifndef OPTFRAME_LOCALSEARCH_HPP_
+#define OPTFRAME_LOCALSEARCH_HPP_
 
 #include <iostream>
+#include <string>
+#include <utility>
 #include <vector>
 
-using namespace std;
-
+//
 #include "Component.hpp"
-#include "ComponentBuilder.h"
-
 #include "Evaluation.hpp"
-#include "Solution.hpp"
-
-#include "Component.hpp"
 #include "NSIterator.hpp"
 #include "SingleObjSearch.hpp"
+//#include "Solution.hpp"
+#include <OptFrame/Hyper/ComponentBuilder.hpp>
+
+//using namespace std;
 
 namespace optframe {
 
@@ -45,123 +45,116 @@ namespace optframe {
 // TODO: must investigate
 
 // TODO: may pass just XESolution and XEvaluation here (for StopCriteria)... no XSolution explicitly required.
-template<XESolution XES, XEvaluation XEv = typename XES::second_type, XSearch<XES> XSH = XES> // defaults to XSH = XES
-class LocalSearch : public Component
-{
-   typedef vector<XEv*> FitnessValues;
-   typedef const vector<const XEv*> ConstFitnessValues;
+template <XESolution XES,
+          XEvaluation XEv = typename XES::second_type,
+          XSearch<XES> XSH = XES>  // defaults to XSH = XES
+class LocalSearch : public Component {
+  typedef vector<XEv*> FitnessValues;
+  typedef const vector<const XEv*> ConstFitnessValues;
 
-public:
-   LocalSearch()
-   {
-      // DEFAULT for LocalSearch: silent
-      Component::setSilent();
-   }
+ public:
+  LocalSearch() {
+    // DEFAULT for LocalSearch: silent
+    Component::setSilent();
+  }
 
-   virtual ~LocalSearch()
-   {
-   }
+  virtual ~LocalSearch() {
+  }
 
-   // core methods
+  // core methods
 
-   // copy-based version (TODO: deprecate this?)
-   XES lsearch(const XES& se, const StopCriteria<XEv>& stopCriteria)
-   {
-      //S& s2 = s.clone();
-      //XEv& e2 = e.clone();
-      XES p2 = se; // implicit 'clone' here ??
-      searchFrom(p2, stopCriteria);
-      //return *new pair<S&, XEv&> (s2, e2);
-      return p2;
-   }
+  // copy-based version (TODO: deprecate this?)
+  XES lsearch(const XES& se, const StopCriteria<XEv>& stopCriteria) {
+    //S& s2 = s.clone();
+    //XEv& e2 = e.clone();
+    XES p2 = se;  // implicit 'clone' here ??
+    searchFrom(p2, stopCriteria);
+    //return *new pair<S&, XEv&> (s2, e2);
+    return p2;
+  }
 
-   // core methods
+  // core methods
 
-   // 1
-   //virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria) = 0;
+  // 1
+  //virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria) = 0;
 
-   // keeping only this method, for simplification
-   // 2
-   //virtual void exec(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) = 0;
-   virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
+  // keeping only this method, for simplification
+  // 2
+  //virtual void exec(pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) = 0;
+  virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
 
-   // optional: set local optimum status (LOS)
-   virtual void setLOS(LOS los, string nsid, XES& se)
-   {
-   }
+  // optional: set local optimum status (LOS)
+  virtual void setLOS(LOS los, string nsid, XES& se) {
+  }
 
-   // optional: get local optimum status (LOS)
-   virtual LOS getLOS(string nsid, XES& se)
-   {
-      return los_unknown;
-   }
+  // optional: get local optimum status (LOS)
+  virtual LOS getLOS(string nsid, XES& se) {
+    return los_unknown;
+  }
 
-   virtual bool compatible(string s) override
-   {
-      return (s == idComponent()) || (Component::compatible(s));
-   }
+  virtual bool compatible(string s) override {
+    return (s == idComponent()) || (Component::compatible(s));
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << Component::idComponent() << ":LocalSearch";
-      return ss.str();
-   }
+  static std::string idComponent() {
+    std::stringstream ss;
+    ss << Component::idComponent() << ":LocalSearch";
+    return ss.str();
+  }
 
-   std::string toString() const override
-   {
-      return id();
-   }
+  std::string toString() const override {
+    return id();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual std::string id() const override {
+    return idComponent();
+  }
 
-   virtual bool setVerboseR() override
-   {
-      this->setVerbose();
-      return true;
-   }
+  virtual bool setVerboseR() override {
+    this->setVerbose();
+    return true;
+  }
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = XES>
-class LocalSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
-{
-public:
-   virtual ~LocalSearchBuilder()
-   {
-   }
+template <XSolution S,
+          XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>,
+          XSearch<XES> XSH = XES>
+class LocalSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+ public:
+  virtual ~LocalSearchBuilder() {
+  }
 
-   virtual LocalSearch<XES, XEv, XSH>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
+  virtual LocalSearch<XES, XEv, XSH>* build(Scanner& scanner,
+                                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                            string family = "") = 0;
 
-   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
-   {
-      return build(scanner, hf, family);
-   }
+  virtual Component* buildComponent(Scanner& scanner,
+                                    HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                    string family = "") {
+    return build(scanner, hf, family);
+  }
 
-   virtual vector<pair<string, string>> parameters() = 0;
+  virtual std::vector<pair<string, string>> parameters() = 0;
 
-   virtual bool canBuild(string) = 0;
+  virtual bool canBuild(string) = 0;
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "LocalSearch";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "LocalSearch";
+    return ss.str();
+  }
 
-   std::string toString() const override
-   {
-      return id();
-   }
+  std::string toString() const override {
+    return id();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  std::string id() const override {
+    return idComponent();
+  }
 };
 
-}
+}  // namespace optframe
 
-#endif /* OPTFRAME_LOCAL_SEARCH_HPP_ */
+#endif  // OPTFRAME_LOCALSEARCH_HPP_

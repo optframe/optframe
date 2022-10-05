@@ -32,11 +32,11 @@
 
 #include <cmath>
 #include <iostream>
+//
+#include <OptFrame/Helper/MultiEvaluation.hpp>
+#include <OptFrame/ParetoDominance.hpp>
 
-#include "MultiEvaluation.hpp"
-#include "ParetoDominance.hpp"
-
-using namespace std;
+// using namespace std;
 
 namespace optframe {
 

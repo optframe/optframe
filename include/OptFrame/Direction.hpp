@@ -29,23 +29,25 @@
 #include <iostream>
 #include <limits>
 
-#include "ADSManager.hpp"
-#include "Action.hpp"
-#include "BaseConcepts.hpp"  // Base concepts
+//#include "ADSManager.hpp"
+//#include "Action.hpp"
+// Base concepts
+#include <OptFrame/BaseConcepts.hpp>
+
 #include "Component.hpp"
 #include "Evaluation.hpp"
 #include "Move.hpp"
 #include "MoveCost.hpp"
-#include "Solution.hpp"
+//#include "Solution.hpp"
 
-using namespace std;
-using namespace scannerpp;
+// using namespace std;
+// using namespace scannerpp;
 
 namespace optframe {
 
 // Direction 'betterThan' depends on a 'totally_ordered' type
 ////template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
-template <XEvaluation XEv = Evaluation<evtype>>  // default is 'evtype'
+template <XEvaluation XEv>  //= Evaluation<evtype>>  // default is 'evtype'
 class Direction : public Component {
  public:
   ///MoveCost<evtype, Evaluation<>> nullCost;

@@ -23,14 +23,15 @@
 #ifndef OPTFRAME_MULTI_EVALUATOR_HPP_
 #define OPTFRAME_MULTI_EVALUATOR_HPP_
 
+// C++
 #include <iostream>
-
-#include "Action.hpp"
-#include "Evaluator.hpp"
-#include "IEvaluator.hpp"
-#include "MultiDirection.hpp"
-#include "MultiEvaluation.hpp"
-#include "Solution.hpp"
+//
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Helper/MultiEvaluation.hpp>
+#include <OptFrame/Hyper/Action.hpp>
+#include <OptFrame/IEvaluator.hpp>
+#include <OptFrame/MultiDirection.hpp>
+// #include "Solution.hpp"
 
 namespace optframe {
 
@@ -95,30 +96,24 @@ class MultiEvaluator : public GeneralEvaluator<XMES,
   virtual ~MultiEvaluator() {
   }
 
-  unsigned size() {
-    return sngEvaluators.size();
-  }
-
   unsigned size() const {
     return sngEvaluators.size();
   }
 
-  virtual bool betterThan(const XEv& ev1,
-                          const XEv& ev2,
-                          int index) {
+  virtual bool betterThanAt(const XEv& ev1,
+                            const XEv& ev2,
+                            int index) {
     return sngEvaluators[index]->betterThan(ev1, ev2);
   }
 
-  virtual bool equals(const XEv& ev1,
-                      const XEv& ev2,
-                      int index) {
+  virtual bool equalsAt(const XEv& ev1,
+                        const XEv& ev2,
+                        int index) {
     return sngEvaluators[index]->equals(ev1, ev2);
   }
 
   // changed to Meval without point TODO
-  virtual XMEv evaluate(const S& s) {
-    cout << "inside mother class" << endl;
-    getchar();
+  XMEv evaluate(const S& s) override {
     XMEv nev;
     for (unsigned i = 0; i < sngEvaluators.size(); i++) {
       XEv ev{sngEvaluators[i]->evaluate(s)};
@@ -129,8 +124,7 @@ class MultiEvaluator : public GeneralEvaluator<XMES,
   }
 
   void clear() {
-    for (int e = 0; e < int(sngEvaluators.size()); e++)
-      delete sngEvaluators[e];
+    sngEvaluators.clear();
   }
 
   // virtual void reevaluateMEV(MultiXEv& mev, const XES& se)

@@ -23,6 +23,7 @@
 #ifndef TIMER_HPP
 #define TIMER_HPP
 
+// C includes
 #ifdef WIN32
 #include <windows.h>
 #else
@@ -30,147 +31,128 @@
 #endif
 
 #include <stdlib.h>
-
-#include "Action.hpp"
-#include "Component.hpp"
-#include "ComponentBuilder.h"
+//
+#include <OptFrame/Component.hpp>
+#include <OptFrame/Hyper/Action.hpp>
+#include <OptFrame/Hyper/ComponentBuilder.hpp>
 
 namespace optframe {
 
-class Timer : public Component
-{
-private:
-   bool showMessageOnDestroy;
+class Timer : public Component {
+ private:
+  bool showMessageOnDestroy;
 
 #ifdef WIN32
-   LARGE_INTEGER frequency;
-   LARGE_INTEGER tstart;
+  LARGE_INTEGER frequency;
+  LARGE_INTEGER tstart;
 #else
-   struct timeval tstart;
+  struct timeval tstart;
 #endif
 
-public:
-   Timer(bool m = false)
-     : showMessageOnDestroy(m)
-   {
+ public:
+  Timer(bool m = false)
+      : showMessageOnDestroy(m) {
 #ifdef WIN32
-      QueryPerformanceFrequency(&frequency);
-      QueryPerformanceCounter(&tstart);
+    QueryPerformanceFrequency(&frequency);
+    QueryPerformanceCounter(&tstart);
 #else
-      struct timezone tz;
-      gettimeofday(&tstart, &tz);
+    struct timezone tz;
+    gettimeofday(&tstart, &tz);
 #endif
-   }
+  }
 
-   virtual ~Timer()
-   {
-      if (showMessageOnDestroy)
-         printf("Spent time: %f secs\n", now());
-   }
+  virtual ~Timer() {
+    if (showMessageOnDestroy)
+      printf("Spent time: %f secs\n", now());
+  }
 
-   double now() const
-   {
-      return inSecs();
-   }
+  double now() const {
+    return inSecs();
+  }
 
-   double inSecs() const
-   {
-      return inMicroSecs() * 0.000001;
-   }
+  double inSecs() const {
+    return inMicroSecs() * 0.000001;
+  }
 
-   double inMilliSecs() const
-   {
-      return inMicroSecs() * 0.001;
-   }
+  double inMilliSecs() const {
+    return inMicroSecs() * 0.001;
+  }
 
-   double inMicroSecs() const
-   {
-      double start;
-      double end;
+  double inMicroSecs() const {
+    double start;
+    double end;
 
 #ifdef WIN32
-      LARGE_INTEGER t;
-      QueryPerformanceCounter(&t);
+    LARGE_INTEGER t;
+    QueryPerformanceCounter(&t);
 
-      start = tstart.QuadPart * (1000000.0 / frequency.QuadPart);
-      end = t.QuadPart * (1000000.0 / frequency.QuadPart);
+    start = tstart.QuadPart * (1000000.0 / frequency.QuadPart);
+    end = t.QuadPart * (1000000.0 / frequency.QuadPart);
 #else
-      struct timeval t;
-      struct timezone tz;
-      gettimeofday(&t, &tz);
+    struct timeval t;
+    struct timezone tz;
+    gettimeofday(&t, &tz);
 
-      start = (tstart.tv_sec * 1000000.0) + tstart.tv_usec;
-      end = (t.tv_sec * 1000000.0) + t.tv_usec;
+    start = (tstart.tv_sec * 1000000.0) + tstart.tv_usec;
+    end = (t.tv_sec * 1000000.0) + t.tv_usec;
 #endif
 
-      return end - start;
-   }
+    return end - start;
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << Component::idComponent() << ":Timer";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << Component::idComponent() << ":Timer";
+    return ss.str();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 
-   virtual std::string toString() const override
-   {
-      return id();
-   }
+  virtual std::string toString() const override {
+    return id();
+  }
 
-   virtual bool compatible(string s)
-   {
-      return (s == idComponent()) || (Component::compatible(s));
-   }
+  virtual bool compatible(string s) {
+    return (s == idComponent()) || (Component::compatible(s));
+  }
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
-class TimerBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
-{
-public:
-   virtual ~TimerBuilder()
-   {
-   }
+template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+class TimerBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+ public:
+  virtual ~TimerBuilder() {
+  }
 
-   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
-   {
-      return new Timer;
-   }
+  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+    return new Timer;
+  }
 
-   virtual vector<pair<string, string>> parameters()
-   {
-      vector<pair<string, string>> params;
-      return params;
-   }
+  virtual vector<pair<string, string>> parameters() {
+    vector<pair<string, string>> params;
+    return params;
+  }
 
-   virtual bool canBuild(string component)
-   {
-      return component == Timer::idComponent();
-   }
+  virtual bool canBuild(string component) {
+    return component == Timer::idComponent();
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "Timer";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "Timer";
+    return ss.str();
+  }
 
-   std::string toString() const override
-   {
-      return id();
-   }
+  std::string toString() const override {
+    return id();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 };
 
-} // namespace optframe
+}  // namespace optframe
 
 #endif /* TIMER_HPP */

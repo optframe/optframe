@@ -27,63 +27,52 @@
 
 #include "../../Evaluation.hpp"
 #include "../../Evaluator.hpp"
+#include "../../Helper/Solution.hpp"
 #include "../../MultiObjSearch.hpp"
 #include "../../NSSeq.hpp"
 #include "../../ParetoDominance.hpp"
 #include "../../Population.hpp"
-#include "../../Solution.hpp"
-
 #include "MOSIndividual.hpp"
 
 namespace optframe {
 
 // MultiObjSearch Extended Individual
-template<class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MOSExtIndividual : public MOSIndividual<X, ADS, DS>
-{
-public:
-   MOSIndividual<R>& parent;
+template <class R, class X, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+class MOSExtIndividual : public MOSIndividual<X, ADS, DS> {
+ public:
+  MOSIndividual<R>& parent;
 
-   MOSExtIndividual(Solution<X, ADS>* s, MultiEvaluation<DS>* mev, MOSIndividual<R>* _parent)
-     : MOSIndividual<X, ADS, DS>(s, mev)
-     , parent(*_parent)
-   {
-   }
+  MOSExtIndividual(Solution<X, ADS>* s, MultiEvaluation<DS>* mev, MOSIndividual<R>* _parent)
+      : MOSIndividual<X, ADS, DS>(s, mev), parent(*_parent) {
+  }
 
-   MOSExtIndividual(Solution<R, ADS>& s, MultiEvaluation<DS>& mev, MOSIndividual<R>* _parent)
-     : MOSIndividual<X, ADS, DS>(s, mev)
-     , parent(*_parent)
-   {
-   }
+  MOSExtIndividual(Solution<R, ADS>& s, MultiEvaluation<DS>& mev, MOSIndividual<R>* _parent)
+      : MOSIndividual<X, ADS, DS>(s, mev), parent(*_parent) {
+  }
 
-   MOSExtIndividual(const MOSExtIndividual<R, X, ADS, DS>& ind)
-     : MOSIndividual<X, ADS, DS>(&ind.s->clone(), &ind.mev->clone())
-     , parent(ind.parent)
-   {
-      this->fitness = ind.fitness;
-      this->diversity = ind.diversity;
+  MOSExtIndividual(const MOSExtIndividual<R, X, ADS, DS>& ind)
+      : MOSIndividual<X, ADS, DS>(&ind.s->clone(), &ind.mev->clone()), parent(ind.parent) {
+    this->fitness = ind.fitness;
+    this->diversity = ind.diversity;
 
-      this->id = ind.id;
-   }
+    this->id = ind.id;
+  }
 
-   virtual ~MOSExtIndividual()
-   {
-   }
+  virtual ~MOSExtIndividual() {
+  }
 
-   virtual void print() const
-   {
-      cout << "MOSExtIndividual: parent=" << &parent << " fitness=" << this->fitness << "\t diversity=" << this->diversity;
-      cout << "\t[ ";
-      for (unsigned e = 0; e < this->mev->size(); e++)
-         cout << this->mev->at(e).evaluation() << (e == this->mev->size() - 1 ? " " : " ; ");
-      cout << " ]";
-      cout << endl;
-   }
+  virtual void print() const {
+    cout << "MOSExtIndividual: parent=" << &parent << " fitness=" << this->fitness << "\t diversity=" << this->diversity;
+    cout << "\t[ ";
+    for (unsigned e = 0; e < this->mev->size(); e++)
+      cout << this->mev->at(e).evaluation() << (e == this->mev->size() - 1 ? " " : " ; ");
+    cout << " ]";
+    cout << endl;
+  }
 
-   virtual MOSIndividual<X, ADS, DS>& clone() const
-   {
-      return *new MOSExtIndividual<R, X, ADS, DS>(*this);
-   }
+  virtual MOSIndividual<X, ADS, DS>& clone() const {
+    return *new MOSExtIndividual<R, X, ADS, DS>(*this);
+  }
 };
 
 /*
@@ -236,6 +225,6 @@ public:
 };
 */
 
-}
+}  // namespace optframe
 
 #endif /*OPTFRAME_MOS_EXTENDED_INDIVIDUAL_HPP_*/

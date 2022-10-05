@@ -41,14 +41,12 @@
 #include "Direction.hpp"
 #include "Evaluation.hpp"
 #include "Population.hpp"
-#include "Solution.hpp"
-
-#include "MultiEvaluation.hpp"
-#include "MultiEvaluator.hpp"
+// #include "Solution.hpp"
 
 #include "Component.hpp"
 #include "ComponentBuilder.h"
-
+#include "MultiEvaluation.hpp"
+#include "MultiEvaluator.hpp"
 #include "Pareto.hpp"
 #include "ParetoDominance.hpp"
 #include "ParetoDominanceWeak.hpp"
@@ -57,76 +55,64 @@ using namespace std;
 
 namespace optframe {
 
-template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
-class MSSearch : public Component
-{
-public:
-   MSSearch()
-   {
-   }
+template <XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
+class MSSearch : public Component {
+ public:
+  MSSearch() {
+  }
 
-   virtual ~MSSearch()
-   {
-   }
+  virtual ~MSSearch() {
+  }
 
-   // this should be pure virtual. useful for populational searches (single or multiobj) and general multiobj searches (by pareto sets)
-   virtual SearchStatus search(std::optional<X2ES>& p, const StopCriteria<XEv>& stopCriteria) = 0;
+  // this should be pure virtual. useful for populational searches (single or multiobj) and general multiobj searches (by pareto sets)
+  virtual SearchStatus search(std::optional<X2ES>& p, const StopCriteria<XEv>& stopCriteria) = 0;
 
-   virtual string log() const
-   {
-      return "Empty heuristic log.";
-   }
+  virtual string log() const {
+    return "Empty heuristic log.";
+  }
 
-   virtual bool compatible(string s)
-   {
-      return (s == idComponent()) || (Component::compatible(s));
-   }
+  virtual bool compatible(string s) {
+    return (s == idComponent()) || (Component::compatible(s));
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << Component::idComponent() << "MSSearch:";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << Component::idComponent() << "MSSearch:";
+    return ss.str();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 };
 
-template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
-class MSSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
-{
-public:
-   virtual ~MSSearchBuilder()
-   {
-   }
+template <XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
+class MSSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+ public:
+  virtual ~MSSearchBuilder() {
+  }
 
-   virtual MSSearch<S, XEv, X2ES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
+  virtual MSSearch<S, XEv, X2ES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
 
-   virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
-   {
-      return build(scanner, hf, family);
-   }
+  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+    return build(scanner, hf, family);
+  }
 
-   virtual vector<pair<string, string>> parameters() = 0;
+  virtual vector<pair<string, string>> parameters() = 0;
 
-   virtual bool canBuild(string) = 0;
+  virtual bool canBuild(string) = 0;
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "MSSearch:";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "MSSearch:";
+    return ss.str();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 };
 
-} // namespace optframe
+}  // namespace optframe
 
 #endif /* OPTFRAME_MULTI_SOLUTION_SEARCH_HPP_ */

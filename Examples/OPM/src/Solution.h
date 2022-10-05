@@ -1,9 +1,10 @@
 #ifndef OPM_SOLUTION_H_
 #define OPM_SOLUTION_H_
 
+#include <OptFrame/Helper/Solution.hpp>
+#include <OptFrame/Helper/Solutions/CopySolution.hpp>
+
 #include "Representation.h"
-#include <OptFrame/Solution.hpp>
-#include <OptFrame/Solutions/CopySolution.hpp>
 
 using namespace optframe;
 

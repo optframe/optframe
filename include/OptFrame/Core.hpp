@@ -11,7 +11,7 @@
 #include "NSEnum.hpp"
 #include "NSSeq.hpp"
 #include "RandGen.hpp"
-#include "Solution.hpp"
+//#include "Solution.hpp"
 #include "Timer.hpp"
 
-#endif // OPTFRAME_CORE_HPP
+#endif  // OPTFRAME_CORE_HPP
