@@ -20,77 +20,99 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_INITIALPOPULATION_HPP_
-#define OPTFRAME_INITIALPOPULATION_HPP_
+#ifndef OPTFRAME_HELPER_INITIALMULTISOLUTION_HPP_
+#define OPTFRAME_HELPER_INITIALMULTISOLUTION_HPP_
 
-#include "../../Component.hpp"
-#include "../../Constructive.hpp"
-#include "../../MultiSolution.hpp"
-#include "EA.h"
+// C++
+#include <string>
+//
+#include <OptFrame/Component.hpp>
+#include <OptFrame/Constructive.hpp>
+#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Helper/MultiSolution.hpp>
 
-using namespace std;
+// #include "EA.h"
+
+// using namespace std;
 
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class InitialMultiSolution : public Component, public EA {
+template <XSolution S, X2Solution<S> X2S = MultiSolution<S>>
+class InitialMultiSolution : public Component {
  public:
   virtual ~InitialMultiSolution() {
   }
 
-  virtual MultiSolution<S>& generatePopulation(unsigned populationSize) = 0;
+  virtual X2S generatePopulation(unsigned populationSize) = 0;
 
-  virtual bool compatible(string s) {
+  bool compatible(string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
-    ss << Component::idComponent() << ":" << EA::family() << ":InitialPopulation";
+  static std::string idComponent() {
+    std::stringstream ss;
+    ss << Component::idComponent() << ":InitialMultiSolution";
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class BasicInitialMultiSolution : public InitialMultiSolution<S> {
- public:
-  Constructive<S>& constructive;
+// ==========================================================
+// BasicInitialMultiSolution<S> -> generates MultiSolution<S>
+// ==========================================================
 
-  BasicInitialMultiSolution(Constructive<S>& _constructive)
+template <XSolution S>
+class BasicInitialMultiSolution : public InitialMultiSolution<
+                                      S, MultiSolution<S>> {
+ public:
+  sref<Constructive<S>> constructive;
+
+  explicit BasicInitialMultiSolution(sref<Constructive<S>> _constructive)
       : constructive(_constructive) {
   }
 
   virtual ~BasicInitialMultiSolution() {
   }
 
-  virtual MultiSolution<S>& generatePopulation(unsigned populationSize) {
-    MultiSolution<S>* p = new MultiSolution<S>;
+  MultiSolution<S> generatePopulation(unsigned populationSize) override {
+    MultiSolution<S> p;
+    // TODO(igormcoelho): generatePopulation must have timelimit!
+    double timelimit = 0.0;
     for (unsigned i = 0; i < populationSize; i++)
-      p->push_back(&constructive.generateSolution());
-    return *p;
+      p.push_back(*constructive->generateSolution(timelimit));
+    return p;
   }
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (InitialMultiSolution<S>::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << InitialMultiSolution<S>::idComponent() << ":BasicInitialPopulation";
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string toString() const override {
+    return id();
+  }
+
+  std::string id() const override {
     return idComponent();
   }
 };
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class BasicInitialPopulationBuilder : public ComponentBuilder<R, ADS> {
+// TODO(igormcoelho): fix this builder later!!!
+
+/*
+
+template <XSolution S,
+          XEvaluation XEv = Evaluation<>,
+          XESolution XES = std::pair<S, XEv>>
+class BasicInitialPopulationBuilder : public ComponentBuilder<S, XEv, XES> {
  public:
   virtual ~BasicInitialPopulationBuilder() {
   }
@@ -123,6 +145,8 @@ class BasicInitialPopulationBuilder : public ComponentBuilder<R, ADS> {
     return idComponent();
   }
 };
+*/
+
 }  // namespace optframe
 
-#endif /*OPTFRAME_INITIALPOPULATION_HPP_*/
+#endif  // OPTFRAME_HELPER_INITIALMULTISOLUTION_HPP_

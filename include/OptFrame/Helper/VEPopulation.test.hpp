@@ -5,7 +5,7 @@
 //
 #include <OptFrame/Evaluation.hpp>       // JUST FOR TESTING!
 #include <OptFrame/Helper/Solution.hpp>  // JUST FOR TESTING!
-#include <OptFrame/VEPopulation.hpp>
+#include <OptFrame/Helper/VEPopulation.hpp>
 
 namespace optframe {
 

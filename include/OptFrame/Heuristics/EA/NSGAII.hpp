@@ -20,26 +20,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef NONSORTINGGENETICALGORITHMII_HPP_
-#define NONSORTINGGENETICALGORITHMII_HPP_
+#ifndef OPTFRAME_HEURISTICS_EA_NSGAII_HPP_
+#define OPTFRAME_HEURISTICS_EA_NSGAII_HPP_
 
+// C++
 #include <algorithm>
-
-#include "../../Evaluation.hpp"
-#include "../../Evaluator.hpp"
-#include "../../Helper/Solution.hpp"
-#include "../../MultiObjSearch.hpp"
-#include "../../NSSeq.hpp"
-#include "../../ParetoDominance.hpp"
-#include "../../Population.hpp"
+#include <utility>
+#include <vector>
+//
+#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Evaluator.hpp>
+#include <OptFrame/Helper/InitialMultiESolution.hpp>
+#include <OptFrame/Helper/Population.hpp>
+#include <OptFrame/Helper/Solution.hpp>
+#include <OptFrame/MultiObjSearch.hpp>
+#include <OptFrame/NSSeq.hpp>
+#include <OptFrame/ParetoDominance.hpp>
 
 namespace optframe {
-#define INFINITO 1000000000
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>>
+constexpr int INFINITO = 1'000'000'000;
+
+template <XESolution XMES>  //, XEvaluation XEv = Evaluation<>>
 struct IndividualNSGAII {
-  Solution<R, ADS>& s;
-  MultiEvaluation<>* mev;  // TODO: remove?
+  using S = typename XMES::first_type;
+  using XMEv = typename XMES::first_type;
+  using first_type = S;
+  using second_type = XMEv;
+  //
+  // Solution<R, ADS>& s;
+  // MultiEvaluation<XEv>* mev;  // TODO: remove?
+  //
+  S first;      // s
+  XMEv second;  // mev
+  //
   int rank;
   double distance;
 
@@ -51,9 +65,11 @@ struct IndividualNSGAII {
   int id;            // for debug reasons
   int num_children;  // for tests
 
-  IndividualNSGAII(Solution<R, ADS>& _s)
-      : s(_s) {
-    mev = nullptr;
+  explicit IndividualNSGAII(S& _s)  // Solution<R, ADS>& _s)
+      : first{_s} {
+    // mev = nullptr;
+    second.invalidate();
+    //
     rank = -1;
     distance = -1;
     id = -1;
@@ -65,11 +81,17 @@ struct IndividualNSGAII {
     isMutation = false;
   }
 
-  IndividualNSGAII(const IndividualNSGAII<R, ADS>& ind)
-      : s(ind.s.clone()) {
-    mev = nullptr;
-    if (ind.mev)
-      mev = &ind.mev->clone();
+  // (const IndividualNSGAII<R, ADS>& ind)
+  IndividualNSGAII(const IndividualNSGAII<XMES>& ind)
+      : first{ind.first} {  // s(ind.s.clone()) {
+    // mev = nullptr;
+    second.invalidate();
+    //
+    // if (ind.mev)
+    //  mev = &ind.mev->clone();
+    if (!ind.second.isOutdated())
+      second = ind.second;
+
     rank = ind.rank;
     distance = ind.distance;
 
@@ -83,28 +105,34 @@ struct IndividualNSGAII {
   }
 
   virtual ~IndividualNSGAII() {
-    delete &s;
-    if (mev)
-      delete mev;
+    // delete &s;
+    // if (mev)
+    //   delete mev;
   }
 
   void print() const {
     cout << "IndNSGAII: rank=" << rank << "\tdist=" << distance;
     cout << "\t[ ";
-    if (mev)
-      for (unsigned e = 0; e < mev->size(); e++)
-        cout << mev->at(e).evaluation() << " ; ";
+    // if (mev)
+    if (!second.isOutdated()) {
+      for (unsigned e = 0; e < second.size(); e++)
+        cout << second.at(e).evaluation() << " ; ";
+    }
     cout << " ]";
 
-    cout << "\tisChild=" << isChild << " Crs=" << isCross << " Rdm=" << isRandom << " Mut=" << isMutation << "\t |x|=" << num_children << endl;
-    //cout << s.getR() << endl;
+    std::cout << "\tisChild=" << isChild << " Crs=" << isCross;
+    std::cout << " Rdm=" << isRandom << " Mut=" << isMutation;
+    std::cout << "\t |x|=" << num_children << endl;
+    // cout << s.getR() << endl;
   }
 
-  IndividualNSGAII<R, ADS>& clone() const {
-    return *new IndividualNSGAII<R, ADS>(*this);
+  IndividualNSGAII<XMES>& clone() const {
+    // no need for this anymore
+    assert(false);
+    return *new IndividualNSGAII<XMES>(*this);
   }
 
-  static void printResume(const vector<IndividualNSGAII<R, ADS>*>& v) {
+  static void printResume(const vector<IndividualNSGAII<XMES>*>& v) {
     int count_child = 0;
     int count_cross = 0;
     int count_random = 0;
@@ -120,126 +148,123 @@ struct IndividualNSGAII {
         count_mutation++;
     }
     cout << "|S|=" << v.size();
-    cout << "\tchild=" << count_child << "(" << (count_child * 100 / v.size()) << "%) |";
-    cout << "\trandom=" << count_random << "(" << (count_random * 100 / v.size()) << "%)";
-    cout << "\tcross=" << count_cross << "(" << (count_cross * 100 / v.size()) << "%)";
-    cout << "\tmutation=" << count_mutation << "(" << (count_mutation * 100 / v.size()) << "%)";
+    cout << "\tchild=" << count_child;
+    std::cout << "(" << (count_child * 100 / v.size()) << "%) |";
+    cout << "\trandom=" << count_random;
+    std::cout << "(" << (count_random * 100 / v.size()) << "%)";
+    cout << "\tcross=" << count_cross;
+    std::cout << "(" << (count_cross * 100 / v.size()) << "%)";
+    cout << "\tmutation=" << count_mutation;
+    std::cout << "(" << (count_mutation * 100 / v.size()) << "%)";
     cout << endl;
   }
 };
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class NSGAII : public MultiObjSearch<R, ADS> {
-  typedef vector<Evaluation<>*> FitnessValues;
+// : public MultiObjSearch<R, ADS> {
+template <XESolution XMES>
+class NSGAII : public MultiObjSearch<XMES,
+                                     IndividualNSGAII<XMES>,
+                                     VEPopulation<IndividualNSGAII<XMES>>> {
+  // typedef vector<Evaluation<>*> FitnessValues;
+  using S = typename XMES::first_type;
+  using XMEv = typename XMES::second_type;
+  using XEv = typename XMEv::XEv;
+  // Why?
+  using XES = std::pair<S, XEv>;
 
  private:
-  vector<Evaluator<S>*> v_e;
+  // vector of (single-obj) evaluators
+  vsref<Evaluator<S, XEv, XES>> v_e;
 
-  InitialMultiSolution<S>& init_pop;
+  sref<InitialMultiESolution<XMES>> init_epop;
   int init_pop_size;
 
-  ParetoDominance<R, ADS> pDominance;
+  sref<ParetoDominance<XMES>> pDominance;
   int gMax;
 
-  static bool compara(pair<double, int> p1, pair<double, int> p2) {
+  static bool compare(pair<double, int> p1, pair<double, int> p2) {
     return p1.first > p2.first;
   }
 
  protected:
-  RandGen& rg;
+  sref<RandGen> rg;
 
  public:
-  //using Heuristic<R, ADS >::exec; // prevents name hiding
+  // using Heuristic<R, ADS >::exec; // prevents name hiding
 
-  NSGAII(vector<Evaluator<S>*> _v_e, InitialMultiSolution<S>& _init_pop, int _init_pop_size, int _gMax, RandGen& _rg)
-      : v_e(_v_e), init_pop(_init_pop), init_pop_size(_init_pop_size), pDominance(ParetoDominance<R, ADS>(_v_e)), rg(_rg) {
-    pDominance.insertEvaluators(_v_e);
+  NSGAII(vsref<Evaluator<S, XEv, XES>> _v_e,
+         sref<InitialMultiESolution<XMES>> _init_epop,
+         int _init_pop_size,
+         int _gMax,
+         sref<RandGen> _rg)
+      : v_e(_v_e),
+        init_epop(_init_epop),
+        init_pop_size(_init_pop_size),
+        pDominance{new ParetoDominance<XMES>{_v_e}},
+        rg(_rg) {
+    // TODO(igormcoelho): why put again the evaluators? seems wrong...
+    // assert(false);
+    // pDominance->insertEvaluators(_v_e);
+    //
     gMax = _gMax;
   }
 
   virtual ~NSGAII() {
   }
 
-  virtual void basicGeneticOperators(Population<XES>& p) = 0;
+  virtual void basicGeneticOperators(VEPopulation<XMES>& p) = 0;
 
-  /*
-	virtual void exec(Population<XES>& p, double timelimit, double target_f)
-	{
-		//ACHO Q FALTA APAGAR ALGUMA COISA NO FINAL
-
-		//vector<vector<Evaluation<>*> > e_pop;
-		FitnessValues& e_pop = *new FitnessValues;
-
-		for (int i = 0; i < p.size(); i++)
-			e_pop.push_back(&v_e[0]->evaluate(p.at(i)));
-
-		exec(p, e_pop, timelimit, target_f);
-
-		for (int i = 0; i < e_pop.size(); i++)
-		{
-			//for (int e = 0; e < v_e.size(); e++)
-			//{
-			//	delete e_pop[i][e];
-			//}
-			//delete &e_pop[i];
-
-			delete e_pop[i];
-		}
-		delete &e_pop;
-	}
-	*/
-
-  //virtual void exec(Population<XES>& p, FitnessValues& e_pop, double timelimit, double target_f)
-  virtual Pareto<R, ADS>* search(double timelimit = 100000000, double target_f = 0, Pareto<R, ADS>* _pf = nullptr) {
+  SearchOutput<XMES, Pareto<XMES>> search(
+      const StopCriteria<XMEv>& stop) override {
     Timer tnow;
 
     cout << "exec: Non Sorting Genetic Algorithm Search " << endl;
 
-    Population<XES> p = init_pop.generatePopulation(init_pop_size);
+    VEPopulation<XMES> p = init_epop->generateEPopulation(init_pop_size);
+
     int N = p.size();
 
-    Population<XES> q = p;
+    VEPopulation<XMES> q = p;
     basicGeneticOperators(q);
 
     int g = 0;
-    while ((g <= gMax) && (tnow.now() < timelimit)) {
+    while ((g <= gMax) && (tnow.now() < stop.timelimit)) {
       cout << "Generation = " << g << endl;
 
-      Population<XES> r = p;
+      VEPopulation<XMES> r = p;
 
       for (int i = 0; i < q.size(); i++)
         r.push_back(q.at(i));
 
-      //Start NonDominance Order by sets
-      vector<Population<XES>*> F;
-      nonDominanceOrder(F, r);
+      // Start NonDominance Order by sets
+      vector<vector<XMES>> F = nonDominanceOrder(r);
 
-      Population<XES> popTemp;
+      VEPopulation<XMES> popTemp;
       int j = 0;
 
-      vector<double> cD;  //Crowding Distance
+      vector<double> cD;  // Crowding Distance
 
-      while ((popTemp.size() + F[j]->size()) < N) {
-        crowdingDistanceOrder(cD, *F[j]);
+      while ((popTemp.size() + F[j].size()) < N) {
+        crowdingDistanceOrder(cD, F[j]);
 
-        for (int i = 0; i < F[j]->size(); i++)
-          popTemp.push_back(F[j]->at(i));
+        for (int i = 0; i < F[j].size(); i++)
+          popTemp.push_back(F[j].at(i));
         j++;
       }
 
       vector<double> cDTemp;
-      crowdingDistanceOrder(cDTemp, *F[j]);
+      crowdingDistanceOrder(cDTemp, F[j]);
 
       vector<pair<double, int>> cDOrdenated;
       for (int i = 0; i < cDTemp.size(); i++)
         cDOrdenated.push_back(make_pair(cDTemp[i], i));
 
-      sort(cDOrdenated.begin(), cDOrdenated.end(), compara);
+      sort(cDOrdenated.begin(), cDOrdenated.end(), compare);
 
       int popTempSize = popTemp.size();
       for (int i = 0; i < (N - popTempSize); i++) {
         cD.push_back(cDOrdenated[i].first);
-        popTemp.push_back(F[j]->at(cDOrdenated[i].second));
+        popTemp.push_back(F[j].at(cDOrdenated[i].second));
       }
 
       p.clear();
@@ -252,29 +277,28 @@ class NSGAII : public MultiObjSearch<R, ADS> {
       basicGeneticOperators(q);
 
       for (int i = 0; i < F.size(); i++)
-        F[i]->clear();
+        F[i].clear();
 
       r.clear();
 
       g++;
     }
 
-    Pareto<R, ADS>* pf = new Pareto<R, ADS>;
+    // TODO(igormcoelho): NOW, efficiency comes later!
+    // we may std::move many things here... think about it!
+
+    // TODO: support direct migration from VEPopulation to Pareto
+    std::optional<Pareto<XMES>> pf = Pareto<XMES>{};
     for (unsigned i = 0; i < p.size(); i++) {
-      Solution<R, ADS>* s = &p.at(i);
-      vector<Evaluation<>*> e;
-      for (unsigned ev = 0; ev < v_e.size(); ev++) {
-        Evaluator<S>* evtr = v_e[ev];
-        //evtr->evaluate(s);
-        Evaluation<>& e1 = evtr->evaluate(*s);
-        e.push_back(&e1);
-      }
-      pf->push_back(*s, e);
+      // TODO: move?
+      XMES se = p.at(i);
+      pf->push_back(se);
     }
-    return pf;
+    SearchOutput<XMES, Pareto<XMES>> sout{SearchStatus::NO_REPORT, pf};
+    return sout;
   }
 
-  void crowdingDistanceOrder(vector<double>& CD, const Population<XES>& Fj) {
+  void crowdingDistanceOrder(vector<double>& CD, const vector<XMES>& Fj) {
     int N = Fj.size();
     if (N > 0) {
       int CDOldSize = CD.size();
@@ -285,12 +309,12 @@ class NSGAII : public MultiObjSearch<R, ADS> {
         vector<pair<double, int>> fitness;
 
         for (int i = 0; i < N; i++) {
-          Evaluation<>& e = v_e[m]->evaluate(Fj.at(i));
+          XEv e = v_e[m]->evaluate(Fj.at(i).first);
           fitness.push_back(make_pair(e.evaluation(), i));
-          delete &e;
+          // delete &e;
         }
 
-        sort(fitness.begin(), fitness.end(), compara);
+        sort(fitness.begin(), fitness.end(), compare);
 
         CD[CDOldSize + fitness[0].second] = INFINITO;
         CD[CDOldSize + fitness[N - 1].second] = INFINITO;
@@ -299,87 +323,116 @@ class NSGAII : public MultiObjSearch<R, ADS> {
           if ((fitness[0].first - fitness[N - 1].first) < 0.000001)
             CD[CDOldSize + fitness[i].second] = INFINITO;
           else
-            CD[CDOldSize + fitness[i].second] = CD[CDOldSize + fitness[i].second] + (fitness[i - 1].first - fitness[i + 1].first) / (fitness[0].first - fitness[N - 1].first);
+            CD[CDOldSize + fitness[i].second] =
+                CD[CDOldSize + fitness[i].second] +
+                (fitness[i - 1].first - fitness[i + 1].first) /
+                    (fitness[0].first - fitness[N - 1].first);
         }
       }
     }
+    // finish crowdingDistanceOrder
   }
 
-  void nonDominanceOrder(vector<Population<XES>*>& F, const Population<XES>& p) {
-    Population<XES> pAtual = p;
-    Population<XES>* F0 = new Population<XES>;
+  // nonDominanceOrder(F,p)
+  // This method LIKELY (I don't remember well...) sorts
+  // p population into fronts F... It would be nice for
+  // F elements to be "reference wrappers" of elements
+  // in p... this way, costs could be reduced!
+  //
+  vector<vector<XMES>> nonDominanceOrder(
+      const VEPopulation<XMES>& p) {
+    // store front elements in F
+    vector<vector<XMES>> F;
+    //
+    VEPopulation<XMES> pAtual = p;
+    // TODO: see if we can improving things with std::move
+    // NO MORE POINTERS HERE!
+
+    // F0: non-dominated front
+    VEPopulation<XMES> F0;
     F.push_back(F0);
 
     vector<int> nd;
-    vector<int> deleteds;
+    vector<int> moved_s;
 
     for (int i = 0; i < pAtual.size(); i++) {
       int nd = 0;
 
       for (int j = 0; j < pAtual.size(); j++) {
-        if (j != i)
-          if (pDominance.dominates(pAtual.at(j), pAtual.at(i)))
+        if (j != i) {
+          // check if 'j' dominates 'i'
+          if (pDominance->dominates(pAtual.at(j).second, pAtual.at(i).second))
             nd++;
+        }
       }
 
+      // check if 'nd' (non-dominated) count is zero
       if (nd == 0) {
-        F[0]->push_back(pAtual.at(i));
-        deleteds.push_back(i);
+        // TODO: std::move here or use some sort of ref_wrap
+        // F[0].push_back(std::move(pAtual.at(i)));
+        F[0].push_back(pAtual.at(i));
+        //
+        moved_s.push_back(i);
       }
     }
 
     int nMax = p.size() / 2;
-    int nAtual = F[0]->size();
+    int nAtual = F[0].size();
 
-    for (int i = 0; i < deleteds.size(); i++)
-      delete &pAtual.remove(deleteds[i] - i);
-
-    deleteds.clear();
+    for (int i = 0; i < moved_s.size(); i++)
+      // delete &pAtual.remove(deleteds[i] - i);
+      pAtual.erase(pAtual.begin() + (moved_s[i] - i));
+    moved_s.clear();
 
     int k = 0;
-
-    while ((F[k]->size() != 0) && (nAtual <= nMax)) {
+    while ((F[k].size() != 0) && (nAtual <= nMax)) {
       k++;
 
-      Population<XES>* uTemp = new Population<XES>;
+      VEPopulation<XMES> uTemp;  // = new Population<XES>;
       F.push_back(uTemp);
 
       for (int i = 0; i < pAtual.size(); i++) {
         int nd = 0;
 
         for (int j = 0; j < pAtual.size(); j++) {
-          if (j != i)
-            if (pDominance.dominates(pAtual.at(j), pAtual.at(i)))
+          if (j != i) {
+            // check if 'j' dominates 'i'
+            if (pDominance->dominates(pAtual.at(j).second, pAtual.at(i).second))
               nd++;
+          }
         }
 
+        // check if 'nd' (non-dominated) count is zero
         if (nd == 0) {
-          F[k]->push_back(pAtual.at(i));
-          deleteds.push_back(i);
+          F[k].push_back(pAtual.at(i));
+          moved_s.push_back(i);
         }
       }
 
-      for (int i = 0; i < deleteds.size(); i++)
-        delete &pAtual.remove(deleteds[i] - i);
+      for (int i = 0; i < moved_s.size(); i++)
+        pAtual.erase(pAtual.begin() + (moved_s[i] - i));
 
-      nAtual += F[k]->size();
+      nAtual += F[k].size();
 
-      deleteds.clear();
+      moved_s.clear();
     }
+    // return fronts
+    return F;
   }
 
-  virtual Population<XES> basicSelection(const Population<XES>& p, vector<double> cD) {
-    Population<XES> q;
+  virtual VEPopulation<XMES> basicSelection(
+      const VEPopulation<XMES>& p, vector<double> cD) {
+    VEPopulation<XMES> q;
     for (int i = 0; i < p.size(); i++) {
-      int j = rg.rand(p.size());
+      int j = rg->rand(p.size());
       while (i == j)
-        j = rg.rand(p.size());
+        j = rg->rand(p.size());
 
-      bool A = pDominance.dominates(p.at(i), p.at(j));
+      bool A = pDominance->dominates(p.at(i).second, p.at(j).second);
       if (A)
         q.push_back(p.at(i));
 
-      bool B = pDominance.dominates(p.at(j), p.at(i));
+      bool B = pDominance->dominates(p.at(j).second, p.at(i).second);
       if (B)
         q.push_back(p.at(j));
 
@@ -397,4 +450,4 @@ class NSGAII : public MultiObjSearch<R, ADS> {
 
 }  // namespace optframe
 
-#endif /*NONSORTINGGENETICALGORITHMII_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_EA_NSGAII_HPP_

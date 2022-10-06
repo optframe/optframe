@@ -65,6 +65,7 @@ class ProblemContextBTSP {
   void load(Scanner& scanner) {
     n = *scanner.nextInt();     // reads number of clients
     dist1 = Matrix<int>(n, n);  // initializes n x n matrix
+    dist2 = Matrix<int>(n, n);  // initializes n x n matrix
     //
     vector<double> xvalues(n);
     vector<double> yvalues(n);
@@ -79,7 +80,19 @@ class ProblemContextBTSP {
       for (int j = 0; j < n; j++)
         dist1(i, j) = ::round(distance(xvalues.at(i), yvalues.at(i),
                                        xvalues.at(j), yvalues.at(j)));
-    dist2 = dist1;
+    xvalues = vector<double>(n);
+    yvalues = vector<double>(n);
+
+    for (int i = 0; i < n; i++) {
+      scanner.next();
+      xvalues[i] = *scanner.nextDouble();  // reads x
+      yvalues[i] = *scanner.nextDouble();  // reads y
+    }
+    // calculate distance values, for every client pair (i,j)
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < n; j++)
+        dist2(i, j) = ::round(distance(xvalues.at(i), yvalues.at(i),
+                                       xvalues.at(j), yvalues.at(j)));
   }
   // euclidean distance (double as return)
   double distance(double x1, double y1, double x2, double y2) {

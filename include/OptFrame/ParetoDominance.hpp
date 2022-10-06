@@ -33,6 +33,7 @@
 // C++
 #include <cmath>
 #include <iostream>
+#include <utility>
 //
 #include <OptFrame/Direction.hpp>
 #include <OptFrame/Evaluation.hpp>
@@ -44,32 +45,43 @@
 
 namespace optframe {
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+template <XESolution XMES>
 class ParetoDominance {
- public:
-  // TODO: make Evaluator inherit from Direction!
-  vector<Direction<XEv>*> v_d;
-  MultiEvaluator<XMES>& mev;
+  using S = typename XMES::first_type;
+  using XMEv = typename XMES::second_type;
+  using XEv = typename XMEv::XEv;
+  using XES = std::pair<S, XEv>;
 
  public:
-  ParetoDominance(MultiEvaluator<XMES>& _mev)
+  //
+  // TODO: why we need v_d???
+  // vsref<Direction<XEv>> v_d;
+  //
+  sref<MultiEvaluator<XMES>> mev;
+
+ public:
+  explicit ParetoDominance(sref<MultiEvaluator<XMES>> _mev)
       : mev(_mev) {
+  }
+
+  explicit ParetoDominance(vsref<Evaluator<S, XEv, XES>> _v_e)
+      : mev{new MultiEvaluator<XMES>{_v_e}} {
   }
 
   virtual ~ParetoDominance() {
   }
 
-  //	void insertEvaluators(vector<Evaluator<XES, XEv>*> _v_e)
-  //	{
-  //		mev.addEvaluator(_v_e);
-  //	}
+  // void insertEvaluators(vector<Evaluator<XES, XEv>*> _v_e)
+  // {
+  //    mev.addEvaluator(_v_e);
+  // }
 
-  //	vector<Evaluator<XES, XEv>*> getEvaluators()
-  //	{
-  //		return v_e;
-  //	}
+  // vector<Evaluator<XES, XEv>*> getEvaluators()
+  // {
+  //    return v_e;
+  // }
 
-  MultiEvaluator<XMES>& getMultiEvaluator() {
+  sref<MultiEvaluator<XMES>> getMultiEvaluator() {
     return mev;
   }
 
@@ -98,12 +110,8 @@ class ParetoDominance {
 */
 
   // true if 's1' dominates 's2'
-  virtual bool dominates(const MultiEvaluation<>* mev1, const MultiEvaluation<>* mev2) {
-    return dominates(*mev1, *mev2);
-  }
-
-  // true if 's1' dominates 's2'
-  virtual bool dominates(const MultiEvaluation<>& mev1, const MultiEvaluation<>& mev2) {
+  virtual bool dominates(const XMEv& mev1,
+                         const XMEv& mev2) {
     pair<int, int> betterEquals = checkDominates(mev1, mev2);
     int better = betterEquals.first;
     int equals = betterEquals.second;
@@ -111,10 +119,12 @@ class ParetoDominance {
     return ((better + equals == (int)mev1.size()) && (better > 0));
   }
 
-  //return a pair of better and equals
-  pair<int, int> checkDominates(const MultiEvaluation<>& mev1, const MultiEvaluation<>& mev2) {
-    if ((mev1.size() != mev2.size()) || (mev1.size() == 0) || (mev2.size() == 0)) {
-      // TODO: throw exception!
+  // return a pair of better and equals
+  pair<int, int> checkDominates(const XMEv& mev1,
+                                const XMEv& mev2) {
+    if ((mev1.size() != mev2.size()) ||
+        (mev1.size() == 0) || (mev2.size() == 0)) {
+      // if (Component::warning)
       cout << "WARNING in ParetoDominance: different sizes or empty!" << endl;
       return make_pair(-1, -1);
     }
@@ -123,13 +133,13 @@ class ParetoDominance {
     int equals = 0;
 
     for (int eIndex = 0; eIndex < (int)mev1.size(); eIndex++) {
-      if (mev.betterThan(mev1[eIndex], mev2[eIndex], eIndex))
+      if (mev->betterThanAt(mev1[eIndex], mev2[eIndex], eIndex))
         better++;
 
-      if (mev.equals(mev1[eIndex], mev2[eIndex], eIndex))
+      if (mev->equalsAt(mev1[eIndex], mev2[eIndex], eIndex))
         equals++;
 
-      //			if (abs(mev1[e].evaluation() - mev2[e].evaluation()) < 0.0001)
+      // if (abs(mev1[e].evaluation() - mev2[e].evaluation()) < 0.0001)
       //
     }
 
@@ -163,4 +173,4 @@ class ParetoDominance {
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_PARETODOMINANCE_HPP_*/
+#endif  // OPTFRAME_PARETODOMINANCE_HPP_

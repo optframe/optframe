@@ -30,11 +30,11 @@
 //
 #include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
+#include <OptFrame/Helper/VEPopulation.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
 #include <OptFrame/InitialSearch.hpp>
 #include <OptFrame/SearchOutput.hpp>
 #include <OptFrame/StopCriteria.hpp>
-#include <OptFrame/VEPopulation.hpp>
 
 // using namespace std;
 

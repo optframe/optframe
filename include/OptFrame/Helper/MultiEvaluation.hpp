@@ -110,11 +110,6 @@ class MultiEvaluation : public Component {
     return vev;
   }
 
-  void print() {
-    for (unsigned i = 0; i < vev.size(); i++)
-      vev[i].print();
-  }
-
   void addEvaluation(Evaluation<ObjType>& ev) {
     vev.push_back(ev);
   }
@@ -162,7 +157,8 @@ class MultiEvaluation : public Component {
     vev[index].outdated = status;
   }
 
-  virtual MultiEvaluation<ObjType>& operator=(const MultiEvaluation<ObjType>& mev) {
+  virtual MultiEvaluation<ObjType>& operator=(
+      const MultiEvaluation<ObjType>& mev) {
     if (&mev == this)  // auto ref check
       return *this;
 
@@ -194,9 +190,10 @@ class MultiEvaluation : public Component {
 
   std::string toString() const override {
     std::stringstream ss;
-    ss << "MultiXEv (" << vev.size() << "):";
+    ss << "MultiEvaluation (" << vev.size() << "): {" << std::endl;
     for (unsigned i = 0; i < vev.size(); i++)
-      ss << vev[i].toString() << endl;
+      ss << "\t" << vev[i].toString() << std::endl;
+    ss << "}";
     return ss.str();
   }
 

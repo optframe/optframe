@@ -30,83 +30,77 @@
 #ifndef OPTFRAME_PARETODOMINANCE_STRICT_HPP_
 #define OPTFRAME_PARETODOMINANCE_STRICT_HPP_
 
-#include "Evaluation.hpp"
-#include "Solution.hpp"
-
-#include "Direction.hpp"
-#include "Evaluator.hpp"
-
-#include "ParetoDominance.hpp"
-
 #include <iostream>
 
-using namespace std;
+#include "Direction.hpp"
+#include "Evaluation.hpp"
+#include "Evaluator.hpp"
+#include "ParetoDominance.hpp"
+#include "Solution.hpp"
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
-class ParetoDominanceStrict : public ParetoDominance<S, XEv, XMEv>
-{
-public:
-   using ParetoDominance<S, XEv, XMEv>::dominates;
-   using ParetoDominance<S, XEv, XMEv>::birelation;
+// using namespace std;
 
-   ParetoDominanceStrict(vector<Evaluator<S, XEv>*> _v_e)
-     : ParetoDominance<S, XEv, XMEv>(_v_e)
-   {
-   }
+template <XESolution XMES>
+class ParetoDominanceStrict : public ParetoDominance<XMES> {
+ public:
+  using S = typename XMES::first_type;
+  using XMEv = typename XMES::second_type;
+  using XEv = typename XMEv::XEv;
+  using XES = std::pair<S, XEv>;
 
-   ParetoDominanceStrict(vector<Direction<>*> _v_d)
-     : ParetoDominance<S, XEv, XMEv>(_v_d)
-   {
-   }
+  using ParetoDominance<XMES>::dominates;
+  using ParetoDominance<XMES>::birelation;
 
-   ParetoDominanceStrict()
-   {
-   }
+  ParetoDominanceStrict(vector<Evaluator<S, XEv>*> _v_e)
+      : ParetoDominance<XMES>(_v_e) {
+  }
 
-   virtual ~ParetoDominanceStrict()
-   {
-   }
+  ParetoDominanceStrict(vector<Direction<>*> _v_d)
+      : ParetoDominance<XMES>(_v_d) {
+  }
 
-   void insertEvaluators(vector<Evaluator<XES, XEv>*> _v_e)
-   {
-      ParetoDominance<S, XEv, XMEv>::v_e = _v_e;
-   }
+  ParetoDominanceStrict() {
+  }
 
-   // true if 's1' weakly dominates 's2'
-   virtual bool dominates(const vector<double>& v1, const vector<double>& v2)
-   {
-      vector<Evaluator<XES, XEv>*>& v_e = ParetoDominance<S, XEv, XMEv>::v_e;
+  virtual ~ParetoDominanceStrict() {
+  }
 
-      if (!((v_e.size() == v1.size()) && (v1.size() == v2.size()))) {
-         cout << "WARNING in ParetoDominanceStrict: different sizes." << endl;
-         return false;
+  void insertEvaluators(vector<Evaluator<XES, XEv>*> _v_e) {
+    ParetoDominance<XMES>::v_e = _v_e;
+  }
+
+  // true if 's1' weakly dominates 's2'
+  virtual bool dominates(const vector<double>& v1, const vector<double>& v2) {
+    vector<Evaluator<XES, XEv>*>& v_e = ParetoDominance<XMES>::v_e;
+
+    if (!((v_e.size() == v1.size()) && (v1.size() == v2.size()))) {
+      cout << "WARNING in ParetoDominanceStrict: different sizes." << endl;
+      return false;
+    }
+
+    int better = 0;
+    //int equals = 0;
+
+    // TODO: make inheritance!
+    if (v_e.size() == v1.size()) {
+      for (int e = 0; e < v1.size(); e++) {
+        if (v_e[e]->betterThan(v1[e], v2[e]))
+          better++;
       }
 
-      int better = 0;
-      //int equals = 0;
-
-      // TODO: make inheritance!
-      if (v_e.size() == v1.size()) {
-
-         for (int e = 0; e < v1.size(); e++) {
-            if (v_e[e]->betterThan(v1[e], v2[e]))
-               better++;
-         }
-
-      } else {
-         for (int e = 0; e < v1.size(); e++) {
-            if (this->v_d[e]->betterThan(v1[e], v2[e]))
-               better++;
-         }
+    } else {
+      for (int e = 0; e < v1.size(); e++) {
+        if (this->v_d[e]->betterThan(v1[e], v2[e]))
+          better++;
       }
+    }
 
-      return (better == v_e.size());
-   }
+    return (better == v_e.size());
+  }
 
-   virtual pair<bool, bool> birelation(const vector<Evaluation<DS>*>& v1, const vector<Evaluation<DS>*>& v2)
-   {
-      return make_pair(dominates(v1, v2), dominates(v2, v1));
-   }
+  virtual pair<bool, bool> birelation(const vector<Evaluation<DS>*>& v1, const vector<Evaluation<DS>*>& v2) {
+    return make_pair(dominates(v1, v2), dominates(v2, v1));
+  }
 };
 
 #endif /*OPTFRAME_PARETODOMINANCE_STRICT_HPP_*/

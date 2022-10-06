@@ -31,26 +31,31 @@
 
 namespace optframe {
 
-template <XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
-class paretoManager {
-  using XEv = Evaluation<>;  // hardcoding this... TODO: solve by having a GeneralEvaluator down here!
+// template <XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>>
+template <XESolution XMES>
+class ParetoManager {
+  using S = typename XMES::first_type;
+  using XMEv = typename XMES::second_type;
+  using XEv = typename XMEv::XEv;
+  using XES = std::pair<S, XEv>;
+  // using XEv = Evaluation<>;  // hardcoding this... TODO: solve by having a GeneralEvaluator down here!
  public:
   MultiEvaluator<XMES>& multiEval;
   //GeneralEvaluator<XMES, XMEv>& multiEval;
   //MultiEvaluator<S, XEv>& mev; // cannot be this, for now!
-  ParetoDominance<S, XEv, XMEv> dom;
-  ParetoDominanceWeak<S, XEv, XMEv> domWeak;
+  ParetoDominance<XMES> dom;
+  ParetoDominanceWeak<XMES> domWeak;
   //	Pareto<XMES> x_e;
 
  public:
-  paretoManager(MultiEvaluator<XMES>& _multiEval)
+  explicit ParetoManager(MultiEvaluator<XMES>& _multiEval)
       :  //paretoManager(GeneralEvaluator<XMES, XMEv>& _multiEval) : // cannot be this, for now!
         multiEval(_multiEval),
-        dom(ParetoDominance<S, XEv, XMEv>(_multiEval)),
-        domWeak(ParetoDominanceWeak<S, XEv, XMEv>(_multiEval)) {
+        dom(ParetoDominance<XMES>(_multiEval)),
+        domWeak(ParetoDominanceWeak<XMES>(_multiEval)) {
   }
 
-  virtual ~paretoManager() {
+  virtual ~ParetoManager() {
   }
 
   //	virtual Pareto<XMES>& getParetoInsideManager()

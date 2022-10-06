@@ -20,10 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_MULTISOLUTION_HPP_
-#define OPTFRAME_MULTISOLUTION_HPP_
+#ifndef OPTFRAME_HELPER_MULTISOLUTION_HPP_
+#define OPTFRAME_HELPER_MULTISOLUTION_HPP_
 
 // C++
+#include <string>
+#include <utility>
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
@@ -34,7 +36,7 @@ namespace optframe {
 template <XSolution S>
 class MultiSolution : public Component {
  protected:
-  vector<S*> p;
+  vector<S> p;
 
  public:
   MultiSolution() {
@@ -42,7 +44,7 @@ class MultiSolution : public Component {
 
   MultiSolution(const MultiSolution& pop) {
     for (unsigned i = 0; i < pop.size(); i++)
-      p.push_back(&pop.at(i).clone());
+      p.push_back(pop.at(i));
   }
 
   virtual ~MultiSolution() {
@@ -54,28 +56,31 @@ class MultiSolution : public Component {
   }
 
   S& at(unsigned c) {
-    return (*p.at(c));
+    return (p.at(c));
   }
 
   const S& at(unsigned c) const {
-    return (*p.at(c));
+    return (p.at(c));
   }
 
   void insert(unsigned pos, S& c) {
-    p.insert(p.begin() + pos, new S(c));
+    p.insert(p.begin() + pos, S{c});
   }
 
+  /*
   void push_back(S* c) {
     if (c)  // not null
       p.push_back(c);
   }
+  */
 
   void push_back(const S& c) {
-    p.push_back(&c.clone());
+    p.push_back(c);
   }
 
-  S& remove(unsigned pos) {
-    S& c = *p.at(pos);
+  S remove(unsigned pos) {
+    // steal
+    S c = std::move(p.at(pos));
     p.erase(p.begin() + pos);
     return c;
   }
@@ -87,15 +92,8 @@ class MultiSolution : public Component {
     }
   }
 
-  // clear and kill
+  // clear
   void clear() {
-    for (unsigned i = 0; i < p.size(); i++)
-      delete p.at(i);
-
-    p.clear();
-  }
-
-  void clearNoKill() {
     p.clear();
   }
 
@@ -106,56 +104,41 @@ class MultiSolution : public Component {
   virtual MultiSolution<S>& operator=(const MultiSolution<S>& p) {
     if (&p == this)  // auto ref check
       return *this;
-
-    unsigned sizePop = this->p.size();
-
-    for (unsigned i = 0; i < sizePop; i++) {
-      if (this->p.at(i))  // If no nullptr pointing.
-      {
-        delete this->p.at(i);
-      }
-    }
-
-    this->p.clear();
-
-    sizePop = p.size();
-
-    for (unsigned i = 0; i < sizePop; i++) {
-      if (&p.at(i))  // If no nullptr pointing.
-      {
-        this->p.push_back(new S(p.at(i)));
-      } else {
-        this->p.push_back(nullptr);
-      }
-    }
-
+    // simple
+    this->p = p.p;
     return (*this);
   }
 
+  /*
   virtual MultiSolution<S>& clone() const {
     return *new MultiSolution<S>(*this);
   }
+*/
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":MultiSolution";
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
-
-  virtual void print() const {
-    cout << "MultiSolution(" << p.size() << ")";
-    cout << endl;
-
+  std::string toString() const override {
+    std::stringstream ss;
+    ss << "MultiSolution(" << p.size() << ")";
+    ss << endl;
     for (unsigned i = 0; i < p.size(); i++) {
-      p.at(i)->print();
+      ss << p.at(i);
     }
+    return ss.str();
+  }
+
+  void print() const {
+    std::cout << toString() << std::endl;
   }
 };
 
 }  // namespace optframe
 
-#endif /* OPTFRAME_MULTISOLUTION_HPP_ */
+#endif  // OPTFRAME_HELPER_MULTISOLUTION_HPP_

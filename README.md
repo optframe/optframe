@@ -152,6 +152,24 @@ It also accepts a powerset of Solution Space together with powerset of Objective
 `InitialSearch` corresponds to (OptFrame v3) `Constructive`, in the same way, Solution Space corresponds to Search Space.
 Thus it can be used to generate initial valid "solution" that also comprises an objective value.
 
+###  Technical Notes on Initializers
+
+Initializers (for XSolution, XESolution and X2ESolution)
+
+- Constructive: generates XSolution object
+  * good for initializing single solution without worrying about XEvaluation space
+- InitialMultiSolution: generates multiple XSolution objects
+  * good for initializing multiple solutions (or Population) without worrying about XEvaluation space
+  * a typical output could be a MultiSolution<S>, Population<S> or VPopulation<S>
+- InitialMultiESolution: generates multiple XESolution objects
+  * good for initializing multiple solutions (or Population) already with evaluation values.
+  * note that objective values may be valid or not, depending on X2ESolution type...
+     - EPopulation, MultiESolution and VEPopulation allows for initial objective values to be in invalid state
+- InitialSearch: generates XSearch object (XESolution or X2ESolution) 
+  * It can be used to initialize both search spaces, although not imposing any "size" constraints on "multi" types (X2ESolution)... 
+     - it works as a "transparency layer" that means: "I don't care how you generate, just generate for me!"
+
+
 ### Examples
 
 Please take a deep look at `Examples` folder, and build them by simply typing `make` there.

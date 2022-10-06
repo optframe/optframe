@@ -42,10 +42,13 @@
 
 namespace optframe {
 
-// using scannerpp::Scanner;
+// ===============================================
+// this is homogeneous multi-obj with obj type XEv
+// ===============================================
 
+template <XEvaluation XEv = Evaluation<>>
 class MultiDirection : public Component {
-  using XEv = Evaluation<>;
+  // using XEv = Evaluation<>;
 
  protected:
   vector<Direction<XEv>*> vDir;

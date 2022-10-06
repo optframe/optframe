@@ -82,7 +82,7 @@ class IESolution : public ISolution {
    }
 */
 
-  virtual ~IESolution() {
+  virtual ~IESolution() noexcept {
   }
 };
 
