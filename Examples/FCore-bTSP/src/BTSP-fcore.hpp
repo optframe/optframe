@@ -310,4 +310,6 @@ sref<NSSeq<ESolutionBTSP>> nsseq2{
         }}  // FNSSeq
 };          // nsseq2
 
+vsref<NS<ESolutionBTSP>> nslist{nsseq2};
+
 }  // namespace BTSP_fcore

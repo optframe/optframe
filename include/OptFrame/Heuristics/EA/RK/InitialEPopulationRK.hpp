@@ -18,54 +18,49 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_INITIAL_EPOPULATION_RK_HPP_
-#define OPTFRAME_INITIAL_EPOPULATION_RK_HPP_
+#ifndef OPTFRAME_HEURISTICS_EA_RK_INITIALEPOPULATIONRK_HPP_
+#define OPTFRAME_HEURISTICS_EA_RK_INITIALEPOPULATIONRK_HPP_
 
-#include "../../../InitialPopulation.hpp"
-#include "../../../VEPopulation.hpp"
+#include <OptFrame/Helper/VEPopulation.hpp>
+#include <OptFrame/InitialPopulation.hpp>
+
 #include "ConstructiveRK.hpp"
 
 namespace optframe {
 
-template<XESolution XES, class KeyType = double, X2ESolution<XES> X2ES = VEPopulation<XES>>
-class InitialEPopulationRK : public InitialEPopulation<XES, X2ES>
-{
-   using S = typename XES::first_type;
-   using XEv = typename XES::second_type;
+template <XESolution XES, class KeyType = double, X2ESolution<XES> X2ES = VEPopulation<XES>>
+class InitialEPopulationRK : public InitialEPopulation<XES, X2ES> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
 
-public:
-   virtual ~InitialEPopulationRK()
-   {
-   }
+ public:
+  virtual ~InitialEPopulationRK() {
+  }
 
-   // By default, this generator will evaluate ESolution pairs here,
-   // but user can opt-out of this, leaving evaluations for the future
-   // See BRKGA on a implementation over this concept.
-   virtual bool canEvaluate() const
-   {
-      return true;
-   }
+  // By default, this generator will evaluate ESolution pairs here,
+  // but user can opt-out of this, leaving evaluations for the future
+  // See BRKGA on a implementation over this concept.
+  virtual bool canEvaluate() const {
+    return true;
+  }
 
-   virtual X2ES generateEPopulation(unsigned populationSize, double timelimit) = 0;
+  virtual X2ES generateEPopulation(unsigned populationSize, double timelimit) = 0;
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << InitialEPopulation<XES>::idComponent() << ":" << EA::family() << ":" << RK::family() << "InitialEPopulationRK";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << InitialEPopulation<XES>::idComponent() << ":" << EA::family() << ":" << RK::family() << "InitialEPopulationRK";
+    return ss.str();
+  }
 
-   std::string toString() const override
-   {
-      return id();
-   }
+  std::string toString() const override {
+    return id();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 };
 
-} // namespace optframe
+}  // namespace optframe
 
-#endif /*OPTFRAME_INITIAL_EPOPULATION_RK_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_EA_RK_INITIALEPOPULATIONRK_HPP_

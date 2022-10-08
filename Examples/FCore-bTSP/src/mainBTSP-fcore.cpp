@@ -12,6 +12,7 @@
 #include <OptFrame/Helper/PopulationBasedMultiObjSearch.hpp>
 // optframe extra
 #include <OptFrame/Heuristics/EA/NSGAII.hpp>
+#include <OptFrame/Heuristics/MultiObjective/ClassicNSGAII.hpp>
 
 // import everything on main()
 using namespace std;
@@ -113,6 +114,33 @@ return q;
 }
 */
 
+class CrossTSPRandomPoint : public GeneralCrossover<
+                                typename ESolutionBTSP::first_type> {
+  using S = typename ESolutionBTSP::first_type;
+
+ public:
+  virtual ~CrossTSPRandomPoint() {
+  }
+
+  virtual pair<std::optional<S>, std::optional<S>>
+  cross(const S& p1, const S& p2) {
+    op<S> s1 = p1;
+    op<S> s2 = p2;
+
+    int k = (rand() % (p1.size() - 1)) + 1;
+
+    for (unsigned i = 0; i < k; i++) {
+      (*s1)[i] = p1[i];
+      (*s2)[i] = p2[i];
+    }
+    for (unsigned j = k; j < p1.size(); j++) {
+      (*s1)[j] = p2[j];
+      (*s2)[j] = p1[j];
+    }
+    return {s1, s2};
+  }
+};
+
 int main() {
   srand(0);  // using system random (weak... just an example!)
 
@@ -167,6 +195,25 @@ int main() {
 
   sref<InitialMultiESolution<ESolutionBTSP>> init_epop{
       new BasicInitialMultiESolution<ESolutionBTSP>{crand, ev}};
+
+  vsref<GeneralCrossover<typename ESolutionBTSP::first_type>> crossovers;
+  crossovers.push_back(new CrossTSPRandomPoint{});
+  //
+  sref<MOPopulationManagement<ESolutionBTSP>>
+      popMan{
+          new BasicPopulationManagement<ESolutionBTSP>(
+              init_epop,
+              nslist,  //vsref<NS<XMES2>> _mutations,
+              0.5,     //double _mutationRate,
+              crossovers,
+              0.1,  //double _renewRate,
+              rg2)};
+
+  sref<MultiDirection<typename ESolutionBTSP::second_type::XEv>> mDir = {
+      new MultiDirection<typename ESolutionBTSP::second_type::XEv>{
+          ev->vDir}};
+
+  ClassicNSGAII<ESolutionBTSP> classic_nsgaii{ev, mDir, popMan, 40, 100};
 
   sref<NSGAII<ESolutionBTSP>> nsgaii{
       new MyNSGAIIforBTSP(ev_list,

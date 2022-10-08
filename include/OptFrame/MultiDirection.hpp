@@ -51,15 +51,15 @@ class MultiDirection : public Component {
   // using XEv = Evaluation<>;
 
  protected:
-  vector<Direction<XEv>*> vDir;
+  vsref<Direction<XEv>> vDir;
 
  public:
   unsigned nObjectives;
 
-  MultiDirection(vector<Direction<XEv>*>& _vDir) {
-    for (unsigned i = 0; i < _vDir.size(); i++)
-      if (_vDir[i])
-        vDir.push_back(_vDir[i]);
+  explicit MultiDirection(vsref<Direction<XEv>>& _vDir) : vDir{_vDir} {
+    // for (unsigned i = 0; i < _vDir.size(); i++)
+    //  if (_vDir[i])
+    //    vDir.push_back(_vDir[i]);
     nObjectives = vDir.size();
   }
 
@@ -82,50 +82,50 @@ class MultiDirection : public Component {
     return *this;
   }
 
-  vector<Direction<XEv>*>& getDirections() {
+  vsref<Direction<XEv>> getDirections() {
     return vDir;
   }
 
   // ============ betterThan ===========
 
   template <class T>
-  inline bool betterThan(unsigned obj, const T& a, const T& b) {
+  inline bool betterThanAt(unsigned obj, const T& a, const T& b) {
     return vDir[obj]->betterThan(a, b);
   }
 
   // ============ betterOrEquals ===========
 
   template <class T>
-  inline bool betterOrEquals(unsigned obj, const T& a, const T& b) {
+  inline bool betterOrEqualsAt(unsigned obj, const T& a, const T& b) {
     return vDir[obj]->betterOrEquals(a, b);
   }
 
   // ============ equals ============
 
   template <class T>
-  inline bool equals(unsigned obj, const T& a, const T& b) {
+  inline bool equalsAt(unsigned obj, const T& a, const T& b) {
     return vDir[obj]->equals(a, b);
   }
 
   // ============= improvement =============
 
   ///inline bool isImprovement(unsigned obj, const MoveCost<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
-  inline bool isImprovement(unsigned obj, const Evaluation<>& mc, const Evaluation<>& e1, const Evaluation<>& e2) {
+  inline bool isImprovementAt(unsigned obj, const Evaluation<>& mc, const Evaluation<>& e1, const Evaluation<>& e2) {
     return vDir[obj]->isImprovement(mc, e1, e2);
   }
 
   ///inline bool isImprovement(unsigned obj, const MoveCost<>& mc)
-  inline bool isImprovement(unsigned obj, const Evaluation<>& mc) {
+  inline bool isImprovementAt(unsigned obj, const Evaluation<>& mc) {
     return vDir[obj]->isImprovement(mc);
   }
 
   // ============= direction ==============
 
-  inline bool isMinimization(unsigned obj) {
+  inline bool isMinimizationAt(unsigned obj) {
     return vDir[obj]->isMinimization();
   }
 
-  inline bool isMaximization(unsigned obj) {
+  inline bool isMaximizationAt(unsigned obj) {
     return vDir[obj]->isMaximization();
   }
 

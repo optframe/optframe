@@ -24,6 +24,7 @@
 #define OPTFRAME_HEURISTICS_MULTIOBJECTIVE_MOPOPULATIONMANAGEMENT_HPP_
 //
 #include <optional>
+#include <string>
 #include <utility>
 #include <vector>
 //
@@ -50,7 +51,7 @@ class MOPopulationManagement : public Component {
   // create next population
   virtual vector<MOSIndividual<XMES2>> createNext(
       unsigned target_size,
-      const vector<const MOSIndividual<XMES2>>& P) = 0;
+      const vector<MOSIndividual<XMES2>>& P) = 0;
 
   virtual void print() const {
     cout << "MOPopulationManagement" << endl;
@@ -79,7 +80,7 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
       double _mutationRate,
       vsref<GeneralCrossover<S>> _crossovers,
       double _renewRate,
-      RandGen& _rg)
+      sref<RandGen> _rg)
       : initEPop(_initEPop),
         mutations(_mutations),
         mutationRate(_mutationRate),
@@ -107,7 +108,7 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
 
   virtual vector<MOSIndividual<XMES2>> initialize(unsigned pSize) {
     // Population<XES>* p = &initPop.generatePopulation(pSize);
-    MultiESolution<XMES2> mes = initEPop.generateEPopulation(pSize);
+    VEPopulation<XMES2> mes = initEPop->generateEPopulation(pSize);
 
     vector<MOSIndividual<XMES2>> r;
     for (unsigned i = 0; i < mes.size(); i++)
@@ -119,40 +120,45 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
   }
 
   // multiple crossovers in a binary tournament and apply many mutations
-  virtual vector<MOSIndividual<XMES2>*>& createNext(
-      unsigned target_size, const vector<const MOSIndividual<XMES2>*>& P) {
-    vector<MOSIndividual<XMES2>*>* children = nullptr;
+  vector<MOSIndividual<XMES2>> createNext(
+      unsigned target_size,
+      const vector<MOSIndividual<XMES2>>& P) override {
+    //
+    vector<MOSIndividual<XMES2>> children;  // = nullptr;
 
     unsigned size_renew = renewRate * target_size;
 
     if (size_renew > 0)
-      children = &initialize(size_renew);
+      children = initialize(size_renew);
     else
-      children = new vector<MOSIndividual<XMES2>*>();
+      children.clear();  // = new vector<MOSIndividual<XMES2>*>();
 
     unsigned rest = target_size - size_renew;
 
-    vector<const MOSIndividual<XMES2>*> Pconst(P.begin(), P.end());
-    vector<const MOSIndividual<XMES2>*>& pool = binaryTournment(rest, Pconst);
+    vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
+    vector<MOSIndividual<XMES2>> pool = binaryTournment(rest, Pconst);
 
-    vector<MOSIndividual<XMES2>*>& crossMut = basicCrossoverMutation(pool);
+    vector<MOSIndividual<XMES2>> crossMut = basicCrossoverMutation(pool);
 
-    children->insert(children->end(), crossMut.begin(), crossMut.end());
+    children.insert(children.end(), crossMut.begin(), crossMut.end());
 
-    delete &crossMut;
+    // delete &crossMut;
 
-    if (children->size() != target_size)
+    if (children.size() != target_size) {
       if (Component::warning) {
-        cout << "WARNING: BasicPopulationManagement::createNext() tried to create population of " << target_size << " but got " << children->size();
+        cout << "WARNING: BasicPopulationManagement::createNext()";
+        cout << " tried to create population of " << target_size;
+        cout << " but got " << children.size();
         cout << endl;
       }
+    }
 
-    return *children;
+    return children;
   }
 
-  vector<const MOSIndividual<XMES2>> binaryTournment(
-      unsigned poolSize, const vector<const MOSIndividual<XMES2>>& P) {
-    vector<const MOSIndividual<XMES2>> pool;
+  vector<MOSIndividual<XMES2>> binaryTournment(
+      unsigned poolSize, const vector<MOSIndividual<XMES2>>& P) {
+    vector<MOSIndividual<XMES2>> pool;
 
     for (unsigned t = 1; t <= poolSize; t++) {
       int i = rg->rand(P.size());
@@ -160,7 +166,7 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
       while (i == j)
         j = rg->rand(P.size());
 
-      if (P[i]->betterThan(*P[j]))
+      if (P[i].betterThan(P[j]))
         pool.push_back(P[i]);
       else
         pool.push_back(P[j]);
@@ -170,11 +176,11 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
   }
 
   vector<MOSIndividual<XMES2>> basicCrossoverMutation(
-      const vector<const MOSIndividual<XMES2>>& pool) {
+      const vector<MOSIndividual<XMES2>>& pool) {
     vector<MOSIndividual<XMES2>> children;
 
     if (pool.size() == 0)
-      return *children;
+      return children;
 
     for (unsigned i = 0; i < pool.size(); i++) {
       unsigned j = i + 1;
@@ -186,9 +192,10 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
 
       if (crossovers.size() > 0) {
         int crossId = rg->rand(crossovers.size());
-        crossChildren = crossovers[crossId]->cross(pool[i]->s, pool[j]->s);
+        crossChildren = crossovers[crossId]->cross(
+            pool[i].first, pool[j].first);
       } else {
-        crossChildren = make_pair(pool[i]->s, pool[j]->s);
+        crossChildren = make_pair(pool[i].first, pool[j].first);
       }
 
       // vector<Solution<R, ADS>*> vChildren(2, nullptr);
@@ -197,24 +204,32 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
       vChildren[1] = crossChildren.second;
 
       for (unsigned c = 0; c < 2; c++) {
+        XMES2 se{*vChildren[c], XMEv{}};
         // mutation rate
         if ((mutations.size() > 0) && rg->randP(mutationRate)) {
           int neigh = rg->rand(mutations.size());
+
           uptr<Move<XMES2>> move =
-              mutations[neigh]->validMove(*vChildren[c]);
+              mutations[neigh]->validRandomMove(se);
 
           if (move) {
-            move->apply(*vChildren[c]);
+            move->apply(se);
             // delete move;
-            move = nullptr;
+            // move = nullptr;
           }
         }
 
-        children->push_back(new MOSIndividual<XMES2>(vChildren[c], XMEv{}));
+        children.push_back(MOSIndividual<XMES2>{se});
       }
     }
 
-    return *children;
+    return children;
+  }
+
+  std::string toString() const override {
+    std::stringstream ss;
+    ss << "MOPopulationManagement";
+    return ss.str();
   }
 };
 

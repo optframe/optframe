@@ -30,9 +30,9 @@
 #include <OptFrame/Helper/Population.hpp>
 //#include "Evaluation.hpp"
 //#include "Evaluator.hpp"
+#include <OptFrame/Helper/VEPopulation.hpp>
 #include <OptFrame/Heuristics/GRASP/GRConstructive.hpp>
 #include <OptFrame/RandGen.hpp>
-#include <OptFrame/VEPopulation.hpp>
 
 #ifndef _OPTFRAME_DBG_INITIAL_POP_
 #ifdef OPTFRAME_DEBUG

@@ -23,6 +23,9 @@
 #ifndef OPTFRAME_HELPER_POPULATIONBASEDMULTIOBJSEARCH_HPP_
 #define OPTFRAME_HELPER_POPULATIONBASEDMULTIOBJSEARCH_HPP_
 
+// c++
+#include <vector>
+//
 #include <OptFrame/Heuristics/MultiObjective/DiversityManagement.hpp>
 #include <OptFrame/Heuristics/MultiObjective/FitnessAssignment.hpp>
 #include <OptFrame/Heuristics/MultiObjective/MOElitism.hpp>
@@ -72,9 +75,9 @@ class PopulationBasedMultiObjSearch : public MultiObjSearch<
   }
 
   virtual vector<double> initializeBounds() {
-    vector<double> best(mDir.nObjectives);
-    for (unsigned i = 0; i < mDir.nObjectives; i++)
-      best[i] = mDir.nadir(i);
+    vector<double> best(mDir->nObjectives);
+    for (unsigned i = 0; i < mDir->nObjectives; i++)
+      best[i] = mDir->nadir(i);
     return best;
   }
 
@@ -82,12 +85,16 @@ class PopulationBasedMultiObjSearch : public MultiObjSearch<
   virtual bool updateBounds(vector<MOSIndividual<XMES2>>& P,
                             vector<double>& best) {
     bool improved = false;
-    for (unsigned s = 0; s < P.size(); s++)
-      for (unsigned i = 0; i < best.size(); i++)
-        if (mDir.betterThan(i, P[s]->mev->at(i).evaluation(), best[i])) {
-          best[i] = P[s]->mev->at(i).evaluation();
+    for (unsigned s = 0; s < P.size(); s++) {
+      for (unsigned i = 0; i < best.size(); i++) {
+        if (mDir->getDirections()[i]->betterThan(
+                P[s].second.at(i).evaluation(),
+                best[i])) {
+          best[i] = P[s].second.at(i).evaluation();
           improved = true;
         }
+      }
+    }
     return improved;
   }
 
@@ -95,18 +102,18 @@ class PopulationBasedMultiObjSearch : public MultiObjSearch<
   // TODO: VEPopMOS<XMES2> ?
   virtual void assignFitness(
       vector<MOSIndividual<XMES2>>& g,
-      const vector<const MOSIndividual<XMES2>>& P) = 0;
+      const vector<MOSIndividual<XMES2>>& P) = 0;
 
   // assign diversity to subset 'g' that belongs to 'P'
   // TODO: VEPopMOS<XMES> ?
   virtual void assignDiversity(
       vector<MOSIndividual<XMES2>>& g,
-      const vector<const MOSIndividual<XMES2>>& P) = 0;
+      const vector<MOSIndividual<XMES2>>& P) = 0;
 
   // update archive based on current population
   // TODO: VEPopMOS<XMES> ?
   virtual void updateArchive(
-      const vector<const MOSIndividual<XMES2>>& P,
+      const vector<MOSIndividual<XMES2>>& P,
       vector<MOSIndividual<XMES2>>& archive) = 0;
 
   // from MultiObjSearch
@@ -157,22 +164,31 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
   }
 
   // evaluate and return best values for population
-  vector<double> evaluate(vector<MOSIndividual<XMES2>*>& Pop) override = 0;
+  virtual vector<double> evaluate(vector<MOSIndividual<XMES2>>& Pop) = 0;
 
+  // from PopulationBasedMultiObjSearch
   void assignFitness(
-      vector<MOSIndividual<XMES2>*>& g,
-      const vector<const MOSIndividual<XMES2>*>& P) override = 0;
+      vector<MOSIndividual<XMES2>>& g,
+      const vector<MOSIndividual<XMES2>>& P) override = 0;
 
+  // from PopulationBasedMultiObjSearch
   void assignDiversity(
-      vector<MOSIndividual<XMES2>*>& g,
-      const vector<const MOSIndividual<XMES2>*>& P) override = 0;
+      vector<MOSIndividual<XMES2>>& g,
+      const vector<MOSIndividual<XMES2>>& P) override = 0;
 
-  void select(unsigned popSize,
-              vector<MOSIndividual<XMES2>*>& P,
-              vector<MOSIndividual<XMES2>*>& archive) override = 0;
+  // from PopulationBasedMultiObjSearch
+  void updateArchive(
+      const vector<MOSIndividual<XMES2>>& P,
+      vector<MOSIndividual<XMES2>>& archive) override = 0;
 
-  void freePopulation(vector<MOSIndividual<XMES2>*>& P,
-                      vector<MOSIndividual<XMES2>*>& archive) override = 0;
+  // new method
+  virtual void select(unsigned popSize,
+                      vector<MOSIndividual<XMES2>>& P,
+                      vector<MOSIndividual<XMES2>>& archive) = 0;
+
+  // new method
+  virtual void freePopulation(vector<MOSIndividual<XMES2>>& P,
+                              vector<MOSIndividual<XMES2>>& archive) = 0;
 
   // Pareto<R, ADS, DS>* search(double timelimit = 100000000,
   //    double target_f = 0, Pareto<R, ADS, DS>* _pf = nullptr) {
@@ -184,33 +200,33 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
 
     cout << "Population Based Multi Objective Search search()" << endl;
 
-    vector<MOSIndividual<XMES2>*> archive;
+    vector<MOSIndividual<XMES2>> archive;
 
-    vector<MOSIndividual<XMES2>*>& P = popMan.initialize(popSize);
+    vector<MOSIndividual<XMES2>> P = popMan->initialize(popSize);
     evaluate(P);
-    vector<const MOSIndividual<XMES2>*> Pconst(P.begin(), P.end());
+    vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
     assignFitness(P, Pconst);
     assignDiversity(P, Pconst);
 
-    vector<MOSIndividual<XMES2>*>& Q = popMan.createNext(popSize, Pconst);
+    vector<MOSIndividual<XMES2>> Q = popMan->createNext(popSize, Pconst);
     vector<double> bestQ = evaluate(Q);
 
     int t = 0;
     int tImp = 0;
 
-    vector<double> bestObj(mDir.nObjectives);
+    vector<double> bestObj(mDir->nObjectives);
     for (unsigned i = 0; i < bestObj.size(); i++)
-      bestObj[i] = mDir.nadir(i);
+      bestObj[i] = mDir->nadir(i);
 
     while ((timer.now() < stop.timelimit) &&
            (t <= maxGen) && (tImp <= maxIter)) {
       vector<double> bestP = evaluate(P);
       P.insert(P.end(), Q.begin(), Q.end());
       for (unsigned i = 0; i < bestP.size(); i++)
-        if (mDir.betterThan(i, bestQ[i], bestP[i]))
+        if (mDir->betterThanAt(i, bestQ[i], bestP[i]))
           bestP[i] = bestQ[i];
 
-      Pconst = vector<const MOSIndividual<XMES2>*>(P.begin(), P.end());
+      Pconst = vector<MOSIndividual<XMES2>>(P.begin(), P.end());
       assignFitness(P, Pconst);
       assignDiversity(P, Pconst);
 
@@ -222,7 +238,7 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
       bool improved = false;
       for (unsigned s = 0; s < archive.size(); s++)
         for (unsigned i = 0; i < bestObj.size(); i++)
-          if (mDir.betterThan(i, bestP[i], bestObj[i])) {
+          if (mDir->betterThanAt(i, bestP[i], bestObj[i])) {
             // IMPROVEMENT IN ONE OBJECTIVE
             improved = true;
             bestObj[i] = bestP[i];
@@ -234,8 +250,9 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
       }
 
       // generating next population
-      Pconst = vector<const MOSIndividual<XMES2>*>(P.begin(), P.end());
-      Q = popMan.createNext(popSize, Pconst);
+      Pconst = vector<MOSIndividual<XMES2>>(P.begin(),
+                                            P.end());
+      Q = popMan->createNext(popSize, Pconst);
       bestQ = evaluate(Q);
       t++;
       tImp++;
@@ -249,13 +266,13 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
       S s = archive.at(i).first;
       // MultiEvaluation<DS>* mev = archive.at(i)->mev;
       XMEv mev = archive.at(i).second;
-      pf.push_back(s, mev);
+      pf.push_back({s, mev});
     }
 
     // delete &P;
     // delete &archive;
 
-    return pf;
+    return SearchOutput<XMES, Pareto<XMES>>{.status = SearchStatus::NO_REPORT, .best = pf};
   }
 };
 

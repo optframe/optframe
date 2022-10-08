@@ -1,74 +1,127 @@
-#pragma once
+// OptFrame - Optimization Framework
 
+// Copyright (C) 2009, 2010, 2011
+// http://optframe.sourceforge.net/
+//
+// This file is part of the OptFrame optimization framework. This framework
+// is free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License v3 as published by the
+// Free Software Foundation.
+
+// This framework is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License v3 for more details.
+
+// You should have received a copy of the GNU Lesser General Public License v3
+// along with this library; see the file COPYING.  If not, write to the Free
+// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+// USA.
+
+#ifndef OPTFRAME_HEURISTICS_MULTIOBJECTIVE_CLASSICNSGAII_HPP_
+#define OPTFRAME_HEURISTICS_MULTIOBJECTIVE_CLASSICNSGAII_HPP_
+
+// c++
+#include <vector>
+//
 #include <OptFrame/Helper/PopulationBasedMultiObjSearch.hpp>
 
 namespace optframe {
 
-template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<R, ADS, DS> {
+// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+//
+template <XESolution XMES>
+class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
+  using S = typename XMES::first_type;
+  using XMEv = typename XMES::second_type;
+  using XEv = typename XMEv::XEv;
+
  protected:
-  MultiEvaluator<R, ADS, DS>& mevr;
-  FitnessAssignment<R, ADS, DS>* fa;
-  DiversityManagement<R, ADS, DS>* dm;
-  MOSSelection<R, ADS, DS>* sel;
+  //
+  sref<MultiEvaluator<XMES>> mevr;
+  sptr<MultiDirection<XEv>> mdir;
+  //
+  sptr<FitnessAssignment<XMES>> fa;
+  sptr<DiversityManagement<XMES>> dm;
+  sptr<MOSSelection<XMES>> sel;
 
  public:
-  ClassicNSGAII(MultiEvaluator<R, ADS, DS>& _mevr, PopulationManagement<R, ADS, DS>& _popMan, unsigned popSize, int maxIter, int maxGen = 100000000)
-      : NSPopulationBasedMultiObjSearch<R, ADS, DS>(_mevr, _popMan, popSize, maxIter, maxGen), mevr(_mevr) {
-    if (mevr.nObjectives == 2)
-      fa = new BiObjNonDominatedSort<R, ADS, DS>(mevr.getDirections());
+  ClassicNSGAII(sref<MultiEvaluator<XMES>> _mevr,
+                sref<MultiDirection<XEv>> _mDir,
+                sref<MOPopulationManagement<XMES>> _popMan,
+                unsigned popSize, int maxIter, int maxGen = 100000000)
+      : NSPopulationBasedMultiObjSearch<XMES>(
+            _mDir, _popMan, popSize, maxIter, maxGen),
+        mevr{_mevr} {
+    mdir = sptr<MultiDirection<XEv>>{
+        new MultiDirection(mevr->vDir)};
+    if (mevr->nObjectives == 2)
+      fa = sptr<FitnessAssignment<XMES>>{
+          new BiObjNonDominatedSort<XMES>(_mDir->getDirections())};
     else
-      fa = new NonDominatedSort<R, ADS, DS>(mevr.getDirections());
+      fa = sptr<FitnessAssignment<XMES>>{
+          new NonDominatedSort<XMES>{_mevr}};
 
-    dm = new CrowdingDistance<R, ADS, DS>(mevr.getDirections());
+    dm = sptr<DiversityManagement<XMES>>{
+        new CrowdingDistance<XMES>(_mDir->getDirections())};
 
-    sel = new NSGAIISelection<R, ADS, DS>;
+    sel = sptr<MOSSelection<XMES>>{
+        new NSGAIISelection<XMES>};
   }
 
   virtual ~ClassicNSGAII() {
-    delete fa;
-    delete dm;
-    delete sel;
+    // delete fa;
+    // delete dm;
+    // delete sel;
   }
 
-  using NSPopulationBasedMultiObjSearch<R, ADS, DS>::search;
+  using NSPopulationBasedMultiObjSearch<XMES>::search;
 
-  vector<double> evaluate(vector<MOSIndividual<XMES2>*>& P) {
-    vector<double> best(mevr.nObjectives);
+  vector<double> evaluate(vector<MOSIndividual<XMES>>& P) override {
+    vector<double> best(mevr->nObjectives);
     for (unsigned i = 0; i < best.size(); i++)
-      best[i] = mevr.nadir(i);
+      best[i] = mdir->nadir(i);
 
-    for (unsigned s = 0; s < P.size(); s++)
-      if (!P[s]->mev)  // not evaluated (nullptr)
-      {
-        P[s]->mev = &mevr.evaluate(*P[s]->s);
+    for (unsigned s = 0; s < P.size(); s++) {
+      // check if not evaluated (nullptr)
+      if (P[s].second.isOutdated()) {
+        P[s].second = mevr->evaluate(P[s].first);
         for (unsigned i = 0; i < best.size(); i++)
-          if (mevr.betterThan(i, P[s]->mev->at(i).evaluation(), best[i]))
-            best[i] = P[s]->mev->at(i).evaluation();
+          if (mdir->getDirections()[i]->betterThan(
+                  P[s].second.at(i).evaluation(), best[i]))
+            best[i] = P[s].second.at(i).evaluation();
       }
+    }
 
     return best;
   }
 
-  virtual void assignFitness(vector<MOSIndividual<XMES2>*>& g, const vector<const MOSIndividual<XMES2>*>& P) {
+  void assignFitness(vector<MOSIndividual<XMES>>& g,
+                     const vector<MOSIndividual<XMES>>& P) override {
     fa->assignFitnessGroup(g, P);
   }
 
-  virtual void assignDiversity(vector<MOSIndividual<XMES2>*>& g, const vector<const MOSIndividual<XMES2>*>& P) {
+  void assignDiversity(vector<MOSIndividual<XMES>>& g,
+                       const vector<MOSIndividual<XMES>>& P) override {
     dm->assignDiversityGroup(g, P);
   }
 
-  virtual void updateArchive(const vector<const MOSIndividual<XMES2>*>& P, vector<MOSIndividual<XMES2>*>& archive) {
+  void updateArchive(const vector<MOSIndividual<XMES>>& P,
+                     vector<MOSIndividual<XMES>>& archive) override {
     // NO ARCHIVING IN NSGA-II
   }
 
-  virtual void select(unsigned popSize, vector<MOSIndividual<XMES2>*>& P, vector<MOSIndividual<XMES2>*>& archive) {
+  void select(unsigned popSize, vector<MOSIndividual<XMES>>& P,
+              vector<MOSIndividual<XMES>>& archive) override {
     sel->select(popSize, P, archive);
   }
 
-  virtual void freePopulation(vector<MOSIndividual<XMES2>*>& P, vector<MOSIndividual<XMES2>*>& archive) {
+  void freePopulation(vector<MOSIndividual<XMES>>& P,
+                      vector<MOSIndividual<XMES>>& archive) override {
     sel->free(P, archive);
   }
 };
 
 }  // namespace optframe
+
+#endif  // OPTFRAME_HEURISTICS_MULTIOBJECTIVE_CLASSICNSGAII_HPP_

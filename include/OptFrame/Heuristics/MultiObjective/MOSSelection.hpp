@@ -24,6 +24,8 @@
 #define OPTFRAME_MOS_SELECTION_HPP_
 
 // C++
+#include <string>
+#include <utility>
 #include <vector>
 //
 #include "../../Component.hpp"
@@ -67,8 +69,9 @@ class NSGAIISelection : public MOSSelection<XMES2> {
   virtual ~NSGAIISelection() {
   }
 
-  static bool compare(MOSIndividual<XMES2>* ind1, MOSIndividual<XMES2>* ind2) {
-    return ind1->betterThan(*ind2);
+  static bool compareRef(MOSIndividual<XMES2>& ind1,
+                         MOSIndividual<XMES2>& ind2) {
+    return ind1.betterThan(ind2);
   }
 
   void select(unsigned target_size,
@@ -76,11 +79,13 @@ class NSGAIISelection : public MOSSelection<XMES2> {
               vector<MOSIndividual<XMES2>>& archive) override {
     int f = 0;
     unsigned count = 0;
-    vector<vector<MOSIndividual<XMES2>*>> F;
+    // vector<vector<MOSIndividual<XMES2>*>> F;
+    vector<vector<MOSIndividual<XMES2>>> F;
     while (count != Pop.size()) {
-      vector<MOSIndividual<XMES2>*> front;
+      // vector<MOSIndividual<XMES2>*> front;
+      vector<MOSIndividual<XMES2>> front;
       for (unsigned i = 0; i < Pop.size(); i++)
-        if (Pop.at(i)->fitness == f)
+        if (Pop.at(i).fitness == f)
           front.push_back(Pop.at(i));
       F.push_back(front);
       count += front.size();
@@ -99,19 +104,26 @@ class NSGAIISelection : public MOSSelection<XMES2> {
     }
 
     if (Pop.size() < target_size) {
-      sort(F[i].begin(), F[i].end(), compare);
+      sort(F[i].begin(), F[i].end(), compareRef);
 
       unsigned missing = target_size - Pop.size();
       for (unsigned j = 0; j < missing; j++) {
-        Pop.push_back(F[i][j]);
-        F[i][j] = nullptr;
+        // Pop.push_back(F[i][j]);
+        //
+        // TODO: why ??
+        // F[i][j] = nullptr;
+        //
+        // Could this be a MOVE?
+        Pop.push_back(std::move(F[i][j]));
       }
     }
 
+    /*
     for (i = 0; i < F.size(); i++)
       for (unsigned j = 0; j < F[i].size(); j++)
         if (F[i][j])
           delete F[i][j];
+    */
 
     archive = Pop;  // no other archiving
   }
@@ -120,6 +132,10 @@ class NSGAIISelection : public MOSSelection<XMES2> {
             vector<MOSIndividual<XMES2>>& archive) override {
     archive = Pop;
     Pop.clear();
+  }
+
+  std::string toString() const override {
+    return "NSGAIISelection";
   }
 };
 

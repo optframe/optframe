@@ -147,28 +147,30 @@ class ParetoDominance {
   }
 
   // returns pair: (true, if 's1' dominates 's2'; true, if 's2' dominates 's1')
-  //virtual pair<bool, bool> birelation(const vector<Evaluation<>*>& v1, const vector<Evaluation<>*>& v2)
-  //{
-  //	bool b1 = dominates(v1, v2);
-  //	bool b2 = dominates(v2, v1);
-  //	return make_pair(b1, b2);
-  //}
-  //
-  //	virtual pair<bool, bool> birelation(const MultiEvaluation<>& mev1, const MultiEvaluation<>& mev2)
-  //	{
-  //		pair<int, int> betterEquals = checkDominates(mev1, mev2);
-  //		int better = betterEquals.first;
-  //		int equals = betterEquals.second;
-  //
-  //		int N = mev1.size();
-  //		int better2 = N - better - equals;
-  //		// 'v1' dominates 'v2'?
-  //		bool b1 = (better + equals == N) && (better > 0);
-  //		// 'v2' dominates 'v1'?
-  //		bool b2 = (better2 + equals == N) && (better2 > 0);
-  //
-  //		return make_pair(b1, b2);
-  //	}
+  virtual pair<bool, bool> birelation(const XMEv& v1,
+                                      const XMEv& v2) {
+    bool b1 = dominates(v1, v2);
+    bool b2 = dominates(v2, v1);
+    return make_pair(b1, b2);
+  }
+
+  /*
+  virtual pair<bool, bool> birelation(const XMEv& mev1,
+                                      const XMEv& mev2) {
+    pair<int, int> betterEquals = checkDominates(mev1, mev2);
+    int better = betterEquals.first;
+    int equals = betterEquals.second;
+
+    int N = mev1.size();
+    int better2 = N - better - equals;
+    // 'v1' dominates 'v2'?
+    bool b1 = (better + equals == N) && (better > 0);
+    // 'v2' dominates 'v1'?
+    bool b2 = (better2 + equals == N) && (better2 > 0);
+
+    return make_pair(b1, b2);
+  }
+  */
 };
 
 }  // namespace optframe

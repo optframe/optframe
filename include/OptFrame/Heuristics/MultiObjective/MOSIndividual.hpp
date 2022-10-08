@@ -84,8 +84,16 @@ class MOSIndividual {
 
   MyVEPopulation<MOSIndividual<XMES2>> copies;
 
-  MOSIndividual(S& _s, XMEv& _mev)
+  MOSIndividual(const S& _s, const XMEv& _mev)
       : first{_s}, second{_mev} {
+    fitness = -1;
+    diversity = -1;
+
+    id = -1;
+  }
+
+  explicit MOSIndividual(const XMES2& se)
+      : first{se.first}, second{se.second} {
     fitness = -1;
     diversity = -1;
 

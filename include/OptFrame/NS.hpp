@@ -51,6 +51,8 @@ class NS : public Component {
 
   virtual uptr<Move<XES, XEv, XSH>> randomMove(const XES&) = 0;
 
+  // TODO(igormcoelho): rename to 'anyValidMove'
+  // TODO(igormcoelho): should we require XES here? Or just S?
   virtual uptr<Move<XES, XEv, XSH>> validRandomMove(const XES& se) {
     uptr<Move<XES, XEv, XSH>> moveValid = this->randomMove(se);
     if (moveValid && moveValid->canBeApplied(se))

@@ -47,22 +47,22 @@ class FitnessAssignment : public Component {
   // assign fitness to individual 's' according to population 'P'
   virtual void assignFitnessIndividual(
       MOSIndividual<XMES2>& s,
-      const vector<const MOSIndividual<XMES2>>& P) {
+      const vector<MOSIndividual<XMES2>>& P) {
     vector<MOSIndividual<XMES2>> v;
     v.push_back(s);
     assignFitnessGroup(v, P);
   }
 
   // assign fitness to all individuals from population 'P'
-  virtual void assignFitnessAll(vector<MOSIndividual<XMES2>*>& P) {
-    vector<const MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
+  virtual void assignFitnessAll(vector<MOSIndividual<XMES2>>& P) {
+    vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
     assignFitnessGroup(P, Pconst);
   }
 
   // assign fitness to group of individuals 'g' according to population 'P'
   virtual void assignFitnessGroup(
       vector<MOSIndividual<XMES2>>& g,
-      const vector<const MOSIndividual<XMES2>>& P) = 0;
+      const vector<MOSIndividual<XMES2>>& P) = 0;
 
   void print() const override {
     cout << "FitnessAssignment" << endl;
@@ -82,7 +82,7 @@ struct FitnessIndividual {
   FitnessIndividual() {
     idx = -1;
     fitness = 0;
-    mev = nullptr;
+    // mev = nullptr;
   }
 
   FitnessIndividual(int _idx, double _fitness, XMEv _mev)
@@ -96,9 +96,9 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
  public:
   using XMEv = typename XMES2::second_type;
   using XEv = typename XMEv::XEv;
-  vector<Direction<XEv>> vDir;
+  vsref<Direction<XEv>> vDir;
 
-  explicit BiObjNonDominatedSort(vector<Direction<XEv>>& _vDir)
+  explicit BiObjNonDominatedSort(vsref<Direction<XEv>> _vDir)
       : vDir{_vDir} {
     assert(vDir.size() == 2);
   }
@@ -106,30 +106,30 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
   virtual ~BiObjNonDominatedSort() {
   }
 
-  static bool sortByFirst(
-      const FitnessIndividual<XMEv>& ind1, const FitnessIndividual<XMEv>& ind2) {
-    return ind1.mev->at(0).evaluation() < ind2.mev->at(0).evaluation();
+  static bool sortByFirst(const FitnessIndividual<XMEv>& ind1,
+                          const FitnessIndividual<XMEv>& ind2) {
+    return ind1.mev.at(0).evaluation() < ind2.mev.at(0).evaluation();
   }
 
-  static bool sortBySecond(
-      const FitnessIndividual<XMEv>& ind1, const FitnessIndividual<XMEv>& ind2) {
-    return ind1.mev->at(1).evaluation() < ind1.mev->at(1).evaluation();
+  static bool sortBySecond(const FitnessIndividual<XMEv>& ind1,
+                           const FitnessIndividual<XMEv>& ind2) {
+    return ind1.mev.at(1).evaluation() < ind1.mev.at(1).evaluation();
   }
 
-  virtual void assignFitnessGroup(
-      vector<MOSIndividual<XMES2>*>& g,
-      const vector<const MOSIndividual<XMES2>*>& Pop) {
+  void assignFitnessGroup(vector<MOSIndividual<XMES2>>& g,
+                          const vector<MOSIndividual<XMES2>>& Pop) override {
     // ASSUMES UNIQUE ELEMENTS IN 'Pop'
 
     const int INF = 10000000;
 
     vector<FitnessIndividual<XMEv>> P(Pop.size());
     for (unsigned s = 0; s < P.size(); s++)
-      P[s] = FitnessIndividual<XMEv>(s, INF, Pop[s]->mev);
+      P[s] = FitnessIndividual<XMEv>(s, INF, Pop[s].second);
 
     sort(P.begin(), P.end(), sortBySecond);        // any sort is good!
     stable_sort(P.begin(), P.end(), sortByFirst);  // necessary to be stable!!
-    // (otherwise, when first objective is equal then the second may be downgraded in future and destroy dominance)
+    // (otherwise, when first objective is equal then the second may be
+    // downgraded in future and destroy dominance)
 
     unsigned count_x = 0;
     int rank = 0;
@@ -140,29 +140,29 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
         if (P[j].fitness == INF)
           break;
       P[j].fitness = rank;
-      //cout << "rank: " << rank << " to ";
-      //P[j]->print();
-      int max_obj2 = P[j].mev->at(1).evaluation();
+      // cout << "rank: " << rank << " to ";
+      // P[j]->print();
+      int max_obj2 = P[j].mev.at(1).evaluation();
       int min_obj2 = max_obj2;
-      //cout << "max_obj2: " << max_obj2 << " min_obj2: " << min_obj2 << endl;
+      // cout << "max_obj2: " << max_obj2 << " min_obj2: " << min_obj2 << endl;
       count_x++;
       vector<int> m;
       m.push_back(j);
 
       for (unsigned r = j + 1; r < P.size(); r++)
         if (P[r].fitness == INF) {
-          if (P[r].mev->at(1).evaluation() > max_obj2)
+          if (P[r].mev.at(1).evaluation() > max_obj2)
             continue;  // discard element (is dominated!)
 
-          if (P[r].mev->at(1).evaluation() < min_obj2)  // add element (improves the best obj2!)
-          {
-            //cout << "r:" << r << " ";
+          // add element (improves the best obj2!)
+          if (P[r].mev.at(1).evaluation() < min_obj2) {
+            // cout << "r:" << r << " ";
             P[r].fitness = rank;
-            //cout << "rank: " << rank << " to ";
-            //P[r]->print();
-            //cout << "min_obj2: " << min_obj2 << " => ";
-            min_obj2 = P[r].mev->at(1).evaluation();
-            //cout << min_obj2 << endl;
+            // cout << "rank: " << rank << " to ";
+            // P[r]->print();
+            // cout << "min_obj2: " << min_obj2 << " => ";
+            min_obj2 = P[r].mev.at(1).evaluation();
+            // cout << min_obj2 << endl;
             count_x++;
             m.push_back(r);
             continue;
@@ -170,28 +170,29 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
 
           // otherwise, check on list
           bool nonDom = true;
-          for (unsigned z = 0; z < m.size(); z++)
-            if (P[m[z]].mev->at(1).evaluation() <= P[r].mev->at(1).evaluation())  // <= is enough, because distance is better (and values are unique)
-            {
-              //cout << "r: " << r << " dominated by " << m[z] << " m=" << m << endl;
+          for (unsigned z = 0; z < m.size(); z++) {
+            // <= is enough, because distance is better (and values are unique)
+            if (P[m[z]].mev.at(1).evaluation() <= P[r].mev.at(1).evaluation()) {
+              // cout << "r: " << r << " dominated by " << m[z] << " m=" << m << endl;
               nonDom = false;
               break;
             }
+          }
 
           if (nonDom) {
-            //cout << "*r:" << r << " ";
+            // cout << "*r:" << r << " ";
             P[r].fitness = rank;
-            //cout << "rank: " << rank << " to ";
-            //P[r]->print();
-            //cout << "m=" << m << endl;
+            // cout << "rank: " << rank << " to ";
+            // P[r]->print();
+            // cout << "m=" << m << endl;
             count_x++;
             m.push_back(r);
           } else {
-            //cout << "r: " << r << " not selected! [" << P[r]->mev.at(0).evaluation() << ";" << P[r]->mev.at(1).evaluation() << "]" << endl;
+            // cout << "r: " << r << " not selected! [" << P[r]->mev.at(0).evaluation() << ";" << P[r]->mev.at(1).evaluation() << "]" << endl;
           }
         }
 
-      //cout << "FINISHED RANK " << rank << " WITH " << m << endl << endl;
+      // cout << "FINISHED RANK " << rank << " WITH " << m << endl << endl;
       m.clear();
 
       rank++;
@@ -199,36 +200,48 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
 
     for (unsigned s = 0; s < g.size(); s++)
       for (unsigned k = 0; k < P.size(); k++)
-        if (g[s]->id == Pop[P[k].idx]->id) {
-          g[s]->fitness = P[k].fitness;
+        if (g[s].id == Pop[P[k].idx].id) {
+          g[s].fitness = P[k].fitness;
           break;
         }
   }
+
+  std::string toString() const override {
+    return "BiObjNonDominatedSort";
+  }
 };
 
-//template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 template <XESolution XMES2>
 class NonDominatedSort : public FitnessAssignment<XMES2> {
  public:
   using XMEv = typename XMES2::second_type;
   using XEv = typename XMEv::XEv;
-  vector<Direction<XEv>> vDir;
 
-  explicit NonDominatedSort(vector<Direction<XEv>>& _vDir)
+  sref<MultiEvaluator<XMES2>> mev;
+  vsref<Direction<XEv>> vDir;
+
+  /*
+  explicit NonDominatedSort(vsref<Direction<XEv>> _vDir)
       : vDir{_vDir} {
+  }
+  */
+
+  explicit NonDominatedSort(sref<MultiEvaluator<XMES2>> _mev)
+      : mev{_mev}, vDir{_mev->vDir} {
   }
 
   virtual ~NonDominatedSort() {
   }
 
-  virtual void assignFitnessGroup(
-      vector<MOSIndividual<XMES2>*>& g,
-      const vector<const MOSIndividual<XMES2>*>& Pop) {
-    ParetoDominance<XMES2> pDominance(vDir);
+  void assignFitnessGroup(
+      vector<MOSIndividual<XMES2>>& g,
+      const vector<MOSIndividual<XMES2>>& Pop) override {
+    ParetoDominance<XMES2> pDominance{mev};
 
     vector<FitnessIndividual<XMEv>> P(Pop.size());
     for (unsigned s = 0; s < P.size(); s++)
-      P[s] = FitnessIndividual<XMEv>(s, -1, Pop[s]->mev);
+      P[s] = FitnessIndividual<XMEv>(s, -1, Pop[s].second);
 
     if (Component::information)
       std::cout << this->id() << "::fastNonDominatedSort |P|=";
@@ -250,7 +263,7 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
       for (unsigned q = 0; q < P.size(); q++)
         if (p != q) {
           pair<bool, bool> v = pDominance.birelation(
-              *P.at(p).mev, *P.at(q).mev);
+              P.at(p).mev, P.at(q).mev);
 
           // if (p << q)
           if (v.first)
@@ -308,10 +321,14 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
     // finished, P is updated, update group 'g'
     for (unsigned s = 0; s < g.size(); s++)
       for (unsigned k = 0; k < P.size(); k++)
-        if (g[s]->id == Pop[P[k].idx]->id) {
-          g[s]->fitness = P[k].fitness;
+        if (g[s].id == Pop[P[k].idx].id) {
+          g[s].fitness = P[k].fitness;
           break;
         }
+  }
+
+  std::string toString() const override {
+    return "NonDominatedSort";
   }
 };
 
