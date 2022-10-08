@@ -312,7 +312,7 @@ class Population final : public Component {
    {
       vector<pair<S, double>> v;
 
-      for (int i = 0; i < p.size(); i++) {
+      for (int i = 0; i < (int)p.size(); i++) {
          XEv& e = eval.evaluate(p[i]);
          v.push_back(make_pair(*p[i], e.evaluation()));
          delete &e;

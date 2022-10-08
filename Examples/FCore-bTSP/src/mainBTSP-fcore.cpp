@@ -129,11 +129,11 @@ class CrossTSPRandomPoint : public GeneralCrossover<
 
     int k = (rand() % (p1.size() - 1)) + 1;
 
-    for (unsigned i = 0; i < k; i++) {
+    for (int i = 0; i < (int)k; i++) {
       (*s1)[i] = p1[i];
       (*s2)[i] = p2[i];
     }
-    for (unsigned j = k; j < p1.size(); j++) {
+    for (int j = k; j < (int)p1.size(); j++) {
       (*s1)[j] = p2[j];
       (*s2)[j] = p1[j];
     }

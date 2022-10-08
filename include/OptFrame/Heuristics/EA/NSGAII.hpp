@@ -233,7 +233,7 @@ class NSGAII : public MultiObjSearch<XMES,
 
       VEPopulation<XMES> r = p;
 
-      for (int i = 0; i < q.size(); i++)
+      for (int i = 0; i < (int)q.size(); i++)
         r.push_back(q.at(i));
 
       // Start NonDominance Order by sets
@@ -244,10 +244,10 @@ class NSGAII : public MultiObjSearch<XMES,
 
       vector<double> cD;  // Crowding Distance
 
-      while ((popTemp.size() + F[j].size()) < N) {
+      while ((int)(popTemp.size() + F[j].size()) < N) {
         crowdingDistanceOrder(cD, F[j]);
 
-        for (int i = 0; i < F[j].size(); i++)
+        for (int i = 0; i < (int)F[j].size(); i++)
           popTemp.push_back(F[j].at(i));
         j++;
       }
@@ -256,7 +256,7 @@ class NSGAII : public MultiObjSearch<XMES,
       crowdingDistanceOrder(cDTemp, F[j]);
 
       vector<pair<double, int>> cDOrdenated;
-      for (int i = 0; i < cDTemp.size(); i++)
+      for (int i = 0; i < (int)cDTemp.size(); i++)
         cDOrdenated.push_back(make_pair(cDTemp[i], i));
 
       sort(cDOrdenated.begin(), cDOrdenated.end(), compare);
@@ -276,7 +276,7 @@ class NSGAII : public MultiObjSearch<XMES,
 
       basicGeneticOperators(q);
 
-      for (int i = 0; i < F.size(); i++)
+      for (int i = 0; i < (int)F.size(); i++)
         F[i].clear();
 
       r.clear();
@@ -305,7 +305,7 @@ class NSGAII : public MultiObjSearch<XMES,
       for (int i = 0; i < N; i++)
         CD.push_back(0);
 
-      for (int m = 0; m < v_e.size(); m++) {
+      for (int m = 0; m < (int)v_e.size(); m++) {
         vector<pair<double, int>> fitness;
 
         for (int i = 0; i < N; i++) {
@@ -355,10 +355,10 @@ class NSGAII : public MultiObjSearch<XMES,
     vector<int> nd;
     vector<int> moved_s;
 
-    for (int i = 0; i < pAtual.size(); i++) {
+    for (int i = 0; i < (int)pAtual.size(); i++) {
       int nd = 0;
 
-      for (int j = 0; j < pAtual.size(); j++) {
+      for (int j = 0; j < (int)pAtual.size(); j++) {
         if (j != i) {
           // check if 'j' dominates 'i'
           if (pDominance->dominates(pAtual.at(j).second, pAtual.at(i).second))
@@ -379,7 +379,7 @@ class NSGAII : public MultiObjSearch<XMES,
     int nMax = p.size() / 2;
     int nAtual = F[0].size();
 
-    for (int i = 0; i < moved_s.size(); i++)
+    for (int i = 0; i < (int)moved_s.size(); i++)
       // delete &pAtual.remove(deleteds[i] - i);
       pAtual.erase(pAtual.begin() + (moved_s[i] - i));
     moved_s.clear();
@@ -391,10 +391,10 @@ class NSGAII : public MultiObjSearch<XMES,
       VEPopulation<XMES> uTemp;  // = new Population<XES>;
       F.push_back(uTemp);
 
-      for (int i = 0; i < pAtual.size(); i++) {
+      for (int i = 0; i < (int)pAtual.size(); i++) {
         int nd = 0;
 
-        for (int j = 0; j < pAtual.size(); j++) {
+        for (int j = 0; j < (int)pAtual.size(); j++) {
           if (j != i) {
             // check if 'j' dominates 'i'
             if (pDominance->dominates(pAtual.at(j).second, pAtual.at(i).second))
@@ -409,7 +409,7 @@ class NSGAII : public MultiObjSearch<XMES,
         }
       }
 
-      for (int i = 0; i < moved_s.size(); i++)
+      for (int i = 0; i < (int)moved_s.size(); i++)
         pAtual.erase(pAtual.begin() + (moved_s[i] - i));
 
       nAtual += F[k].size();
@@ -423,7 +423,7 @@ class NSGAII : public MultiObjSearch<XMES,
   virtual VEPopulation<XMES> basicSelection(
       const VEPopulation<XMES>& p, vector<double> cD) {
     VEPopulation<XMES> q;
-    for (int i = 0; i < p.size(); i++) {
+    for (int i = 0; i < (int)p.size(); i++) {
       int j = rg->rand(p.size());
       while (i == j)
         j = rg->rand(p.size());

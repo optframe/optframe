@@ -321,8 +321,8 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
     vector<int> n(P.size());
 
     // for each 'p' in 'P'
-    double sum_dom_time = 0.0;
-    int count_dom_times = 0;
+    // double sum_dom_time = 0.0;
+    // int count_dom_times = 0;
     for (unsigned p = 0; p < P.size(); p++) {
       S[p].clear();  // Sp = {}
       n[p] = 0;      // np = 0

@@ -122,7 +122,7 @@ class CrowdingDistance : public DiversityManagement<XMES2> {
       vector<MOSIndividual<XMES2>>& P) override {
     // for now, only accept ALL in g
     assert(g.size() == P.size());
-    const int INF = 10000000;
+    // const int INF = 10000000;
 
     vector<DiversityIndividual<XMEv>> I(P.size());
     for (unsigned s = 0; s < I.size(); s++)
@@ -137,7 +137,7 @@ class CrowdingDistance : public DiversityManagement<XMES2> {
       // I = sort(I, m)
       vector<pair<double, int>> fitness;  // (fitness, id)
 
-      for (int i = 0; i < I.size(); i++) {
+      for (int i = 0; i < (int)I.size(); i++) {
         double fit = I[i].mev.at(m).evaluation();
         fitness.push_back(make_pair(fit, i));
       }
@@ -154,7 +154,7 @@ class CrowdingDistance : public DiversityManagement<XMES2> {
       ////cout << "ORDER: (rank=" << r << ") " << fitness << endl;
       // for i=2 to l-1
       // ADAPTATION WITH ANOTHER LOOP
-      for (int k = 0; k < fitness.size(); k++) {
+      for (int k = 0; k < (int)fitness.size(); k++) {
         int i = fitness[k].second;
 
         if (k == 0) {

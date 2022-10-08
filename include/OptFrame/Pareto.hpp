@@ -375,7 +375,7 @@ class Pareto {
   static bool addSolution(ParetoDominance<XMES>& dom,
                           ParetoDominanceWeak<XMES>& domWeak,
                           vector<XMES>& nonDom, const XMES& candidate) {
-    for (int ind = 0; ind < nonDom.size(); ind++) {
+    for (int ind = 0; ind < (int)nonDom.size(); ind++) {
       if (domWeak.dominates(nonDom.at(ind).second, candidate.second))
         return false;
 
