@@ -46,23 +46,29 @@ class FitnessAssignment : public Component {
 
   // assign fitness to individual 's' according to population 'P'
   virtual void assignFitnessIndividual(
-      MOSIndividual<XMES2>& s,
-      const vector<MOSIndividual<XMES2>>& P) {
-    vector<MOSIndividual<XMES2>> v;
-    v.push_back(s);
-    assignFitnessGroup(v, P);
+      // MOSIndividual<XMES2>& s,
+      int id_s,
+      vector<MOSIndividual<XMES2>>& P) {
+    // vector<MOSIndividual<XMES2>> v;
+    vector<int> v_id;
+    v_id.push_back(id_s);
+    assignFitnessGroup(v_id, P);
   }
 
   // assign fitness to all individuals from population 'P'
   virtual void assignFitnessAll(vector<MOSIndividual<XMES2>>& P) {
-    vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
-    assignFitnessGroup(P, Pconst);
+    // vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
+    vector<int> v_id;
+    for (unsigned i = 0; i < P.size(); i++)
+      v_id.push_back(i);
+    assignFitnessGroup(v_id, P);
   }
 
   // assign fitness to group of individuals 'g' according to population 'P'
   virtual void assignFitnessGroup(
-      vector<MOSIndividual<XMES2>>& g,
-      const vector<MOSIndividual<XMES2>>& P) = 0;
+      // vector<MOSIndividual<XMES2>>& g,
+      const vector<int>& g,
+      vector<MOSIndividual<XMES2>>& P) = 0;
 
   void print() const override {
     cout << "FitnessAssignment" << endl;
@@ -87,6 +93,14 @@ struct FitnessIndividual {
 
   FitnessIndividual(int _idx, double _fitness, XMEv _mev)
       : idx(_idx), fitness(_fitness), mev(_mev) {
+  }
+
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const FitnessIndividual& me) {
+    os << "FitInd{idx=" << me.idx;
+    os << "; fit=" << me.fitness;
+    os << "; mev=" << me.mev << "}";
+    return os;
   }
 };
 
@@ -116,20 +130,46 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
     return ind1.mev.at(1).evaluation() < ind1.mev.at(1).evaluation();
   }
 
-  void assignFitnessGroup(vector<MOSIndividual<XMES2>>& g,
-                          const vector<MOSIndividual<XMES2>>& Pop) override {
+  // void assignFitnessGroup(vector<MOSIndividual<XMES2>>& g,
+  void assignFitnessGroup(const vector<int>& g,
+                          vector<MOSIndividual<XMES2>>& Pop) override {
     // ASSUMES UNIQUE ELEMENTS IN 'Pop'
+    std::cout << "BiObj NSGA-II: assignFitnessGroup(";
+    std::cout << "|g|:" << g.size() << " ";
+    std::cout << "|Pop|:" << Pop.size() << ")" << std::endl;
+
+    // for now: we only accept groups that are equal to whole population
+    assert(g.size() == Pop.size());
 
     const int INF = 10000000;
 
+    // TODO: prevent creation of P and use Pop instead...
     vector<FitnessIndividual<XMEv>> P(Pop.size());
-    for (unsigned s = 0; s < P.size(); s++)
+    for (unsigned s = 0; s < P.size(); s++) {
       P[s] = FitnessIndividual<XMEv>(s, INF, Pop[s].second);
+      if (Pop[s].second.isOutdated() || (Pop[s].second.size() == 0)) {
+        std::cout << "ERROR! MultiEvaluation is Empty or Outdated!";
+        std::cout << std::endl;
+        assert(false);
+      }
+    }
 
-    sort(P.begin(), P.end(), sortBySecond);        // any sort is good!
-    stable_sort(P.begin(), P.end(), sortByFirst);  // necessary to be stable!!
+    std::cout << "BEGIN Population of FitnessIndividual (|P|=" << P.size() << "):{";
+    for (unsigned i = 0; i < P.size(); i++)
+      std::cout << "P[" << i << "]:" << P[i] << ";" << std::endl;
+    std::cout << "}" << std::endl;
+
+    std::cout << "will sort by second(|P|:" << P.size() << ")" << std::endl;
+    // any sort is good!
+    sort(P.begin(), P.end(), sortBySecond);
+    std::cout << "will stable_sort by first()" << std::endl;
+    // necessary to be stable!!
+    stable_sort(P.begin(), P.end(), sortByFirst);
     // (otherwise, when first objective is equal then the second may be
     // downgraded in future and destroy dominance)
+
+    if (Component::verbose)
+      std::cout << "will count_x" << std::endl;
 
     unsigned count_x = 0;
     int rank = 0;
@@ -140,11 +180,13 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
         if (P[j].fitness == INF)
           break;
       P[j].fitness = rank;
-      // cout << "rank: " << rank << " to ";
+      if (Component::verbose)
+        cout << "rank: " << rank << " to ";
       // P[j]->print();
       int max_obj2 = P[j].mev.at(1).evaluation();
       int min_obj2 = max_obj2;
-      // cout << "max_obj2: " << max_obj2 << " min_obj2: " << min_obj2 << endl;
+      if (Component::verbose)
+        cout << "max_obj2: " << max_obj2 << " min_obj2: " << min_obj2 << endl;
       count_x++;
       vector<int> m;
       m.push_back(j);
@@ -173,37 +215,60 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
           for (unsigned z = 0; z < m.size(); z++) {
             // <= is enough, because distance is better (and values are unique)
             if (P[m[z]].mev.at(1).evaluation() <= P[r].mev.at(1).evaluation()) {
-              // cout << "r: " << r << " dominated by " << m[z] << " m=" << m << endl;
+              if (Component::verbose) {
+                cout << "r: " << r << " dominated by ";
+                cout << m[z] << " m=" << m << endl;
+              }
               nonDom = false;
               break;
             }
           }
 
           if (nonDom) {
-            // cout << "*r:" << r << " ";
             P[r].fitness = rank;
-            // cout << "rank: " << rank << " to ";
-            // P[r]->print();
-            // cout << "m=" << m << endl;
+            //
+            if (Component::verbose) {
+              cout << "*r:" << r << " ";
+              cout << "rank: " << rank << " to ";
+              cout << "P[" << r << "]:" << P[r] << endl;
+              cout << "m=" << m << endl;
+            }
             count_x++;
             m.push_back(r);
           } else {
-            // cout << "r: " << r << " not selected! [" << P[r]->mev.at(0).evaluation() << ";" << P[r]->mev.at(1).evaluation() << "]" << endl;
+            if (Component::verbose) {
+              cout << "r: " << r << " not selected! [";
+              cout << P[r].mev.at(0).evaluation() << ";";
+              cout << P[r].mev.at(1).evaluation() << "]" << endl;
+            }
           }
         }
 
-      // cout << "FINISHED RANK " << rank << " WITH " << m << endl << endl;
+      cout << "FINISHED RANK " << rank << " WITH " << m << endl
+           << endl;
       m.clear();
 
       rank++;
     }
 
+    std::cout << "END Population of FitnessIndividual (|P|=" << P.size() << "):{";
+    for (unsigned i = 0; i < P.size(); i++)
+      std::cout << "P[" << i << "]:" << P[i] << ";" << std::endl;
+    std::cout << "}" << std::endl;
+
+    // TODO: this should be automatic...
+    // must work with Pop instead of P...
+    assert(P.size() == Pop.size());
+    for (unsigned i = 0; i < P.size(); i++)
+      Pop[i].fitness = P[i].fitness;
+    /*
     for (unsigned s = 0; s < g.size(); s++)
       for (unsigned k = 0; k < P.size(); k++)
-        if (g[s].id == Pop[P[k].idx].id) {
+        if (g[s] == Pop[P[k].idx].id) {
           g[s].fitness = P[k].fitness;
           break;
         }
+    */
   }
 
   std::string toString() const override {
@@ -235,9 +300,12 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
   }
 
   void assignFitnessGroup(
-      vector<MOSIndividual<XMES2>>& g,
-      const vector<MOSIndividual<XMES2>>& Pop) override {
+      // vector<MOSIndividual<XMES2>>& g,
+      const vector<int>& g,
+      vector<MOSIndividual<XMES2>>& Pop) override {
     ParetoDominance<XMES2> pDominance{mev};
+    // for now, ignore 'g'
+    assert(g.size() == Pop.size());
 
     vector<FitnessIndividual<XMEv>> P(Pop.size());
     for (unsigned s = 0; s < P.size(); s++)
@@ -318,6 +386,7 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
         cout << "fastNonDominatedSort i=" << i << " |Q|=" << Q.size() << endl;
     }
 
+    /*
     // finished, P is updated, update group 'g'
     for (unsigned s = 0; s < g.size(); s++)
       for (unsigned k = 0; k < P.size(); k++)
@@ -325,6 +394,7 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
           g[s].fitness = P[k].fitness;
           break;
         }
+    */
   }
 
   std::string toString() const override {

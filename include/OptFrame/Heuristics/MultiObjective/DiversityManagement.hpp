@@ -47,23 +47,30 @@ class DiversityManagement : public Component {
 
   // assign diversity to individual 's' according to population 'P'
   virtual void assignDiversityIndividual(
-      MOSIndividual<XMES2>& s,
-      const vector<MOSIndividual<XMES2>>& P) {
-    VEPopulation<MOSIndividual<XMES2>> v;
-    v.push_back(s);
-    assignDiversityGroup(v, P);
+      // MOSIndividual<XMES2>& s,
+      int id_s,
+      vector<MOSIndividual<XMES2>>& P) {
+    // VEPopulation<MOSIndividual<XMES2>> v;
+    std::vector<int> v_id;
+    v_id.push_back(id_s);
+    assignDiversityGroup(v_id, P);
   }
 
   // assign diversity to all individuals from population 'P'
   virtual void assignDiversityAll(vector<MOSIndividual<XMES2>>& P) {
-    vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
-    assignDiversityGroup(P, Pconst);
+    // vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
+
+    std::vector<int> v_id;
+    for (unsigned i = 0; i < P.size(); i++)
+      v_id.push_back(i);
+    assignDiversityGroup(v_id, P);
   }
 
   // assign diversity to group of individuals 'g' according to population 'P'
   virtual void assignDiversityGroup(
-      vector<MOSIndividual<XMES2>>& g,
-      const vector<MOSIndividual<XMES2>>& P) = 0;
+      // vector<MOSIndividual<XMES2>>& g,
+      const std::vector<int>& g,
+      vector<MOSIndividual<XMES2>>& P) = 0;
 
   virtual void print() const {
     cout << "DiversityManagement" << endl;
@@ -110,8 +117,11 @@ class CrowdingDistance : public DiversityManagement<XMES2> {
   }
 
   void assignDiversityGroup(
-      vector<MOSIndividual<XMES2>>& g,
-      const vector<MOSIndividual<XMES2>>& P) override {
+      // vector<MOSIndividual<XMES2>>& g,
+      const std::vector<int>& g,
+      vector<MOSIndividual<XMES2>>& P) override {
+    // for now, only accept ALL in g
+    assert(g.size() == P.size());
     const int INF = 10000000;
 
     vector<DiversityIndividual<XMEv>> I(P.size());
@@ -168,12 +178,19 @@ class CrowdingDistance : public DiversityManagement<XMES2> {
       }
     }  // for each objective
 
+    assert(I.size() == P.size());
+    for (unsigned i = 0; i < I.size(); i++)
+      P[i].diversity = I[i].diversity;
+
+    // ignoring group parameter for now
+    /*
     for (unsigned s = 0; s < g.size(); s++)
       for (unsigned k = 0; k < I.size(); k++)
         if (g[s].id == P[I[k].idx].id) {
           g[s].diversity = I[k].diversity;
           break;
         }
+        */
   }  // end function
 
   std::string toString() const override {

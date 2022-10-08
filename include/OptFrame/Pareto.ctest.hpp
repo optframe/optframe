@@ -5,14 +5,12 @@
 #include "BaseConcepts.ctest.hpp"
 #include "Pareto.hpp"
 
+namespace optframe {
 
-namespace optframe
-{
+using EMSolution_Test = std::pair<IsSolution, MultiEvaluation<double>>;
 
-struct optframe_test_debug_testpareto_ispareto_disable_runtime
-{
-   TestPopOrPareto<ESolution<double>, Pareto<ESolution<double>> > testPareto;
+struct optframe_test_debug_testpareto_ispareto_disable_runtime {
+  TestPopOrPareto<EMSolution_Test, Pareto<EMSolution_Test>> testPareto;
 };
 
-
-} // namespace optframe
+}  // namespace optframe

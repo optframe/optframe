@@ -51,7 +51,7 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
                 sref<MOPopulationManagement<XMES>> _popMan,
                 unsigned popSize, int maxIter, int maxGen = 100000000)
       : NSPopulationBasedMultiObjSearch<XMES>(
-            _mDir, _popMan, popSize, maxIter, maxGen),
+            _mevr, _mDir, _popMan, popSize, maxIter, maxGen),
         mevr{_mevr} {
     mdir = sptr<MultiDirection<XEv>>{
         new MultiDirection(mevr->vDir)};
@@ -84,7 +84,7 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
 
     for (unsigned s = 0; s < P.size(); s++) {
       // check if not evaluated (nullptr)
-      if (P[s].second.isOutdated()) {
+      if ((P[s].second.size() == 0) || P[s].second.isOutdated()) {
         P[s].second = mevr->evaluate(P[s].first);
         for (unsigned i = 0; i < best.size(); i++)
           if (mdir->getDirections()[i]->betterThan(
@@ -96,13 +96,15 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
     return best;
   }
 
-  void assignFitness(vector<MOSIndividual<XMES>>& g,
-                     const vector<MOSIndividual<XMES>>& P) override {
+  // void assignFitness(vector<MOSIndividual<XMES>>& g,
+  void assignFitness(const vector<int>& g,
+                     vector<MOSIndividual<XMES>>& P) override {
     fa->assignFitnessGroup(g, P);
   }
 
-  void assignDiversity(vector<MOSIndividual<XMES>>& g,
-                       const vector<MOSIndividual<XMES>>& P) override {
+  // void assignDiversity(vector<MOSIndividual<XMES>>& g,
+  void assignDiversity(const vector<int>& g,
+                       vector<MOSIndividual<XMES>>& P) override {
     dm->assignDiversityGroup(g, P);
   }
 

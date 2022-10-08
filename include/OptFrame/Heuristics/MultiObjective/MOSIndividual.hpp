@@ -25,6 +25,7 @@
 
 // C++
 #include <algorithm>
+#include <string>
 #include <vector>
 //
 #include <OptFrame/Evaluation.hpp>
@@ -127,6 +128,7 @@ class MOSIndividual {
     this->fitness = other.fitness;
     this->diversity = other.diversity;
     this->id = other.id;
+    return *this;
   }
 
   virtual ~MOSIndividual() {
@@ -167,16 +169,27 @@ class MOSIndividual {
     return true;
   }
 
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const MOSIndividual<XMES2>& ind) {
+    os << ind.toString();
+    return os;
+  }
+
   virtual void print() const {
-    std::cout << "MOSIndividual #" << id << " fitness=" << fitness;
-    std::cout << "\t diversity=" << diversity;
-    cout << "\t[ ";
+    cout << toString() << endl;
+  }
+
+  virtual std::string toString() const {
+    std::stringstream ss;
+    ss << "MOSIndividual #" << id << " fitness=" << fitness;
+    ss << "\t diversity=" << diversity;
+    ss << "\t[ ";
     for (unsigned e = 0; e < second.size(); e++) {
-      cout << second.at(e).evaluation();
-      cout << (e == second.size() - 1 ? " " : " ; ");
+      ss << second.at(e).evaluation();
+      ss << (e == second.size() - 1 ? " " : " ; ");
     }
-    cout << " ]";
-    cout << endl;
+    ss << " ]";
+    return ss.str();
   }
 
   /*

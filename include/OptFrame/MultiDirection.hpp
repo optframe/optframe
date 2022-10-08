@@ -135,7 +135,7 @@ class MultiDirection : public Component {
     return vDir[obj]->ideal();
   }
 
-  //inline double worst(unsigned obj)
+  // inline double worst(unsigned obj)
   inline double nadir(unsigned obj) {
     return vDir[obj]->nadir();
   }

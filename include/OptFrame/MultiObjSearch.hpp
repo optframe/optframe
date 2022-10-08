@@ -96,6 +96,9 @@ class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>>  // public Compon
 {
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
+  static_assert(XEvaluation<typename XMEv::XEv>);
+  using XEv = typename XMEv::XEv;
+  static_assert(XEvaluation<XEv>);
   using XMSH = Pareto<XMES>;  // search space
  public:
   //

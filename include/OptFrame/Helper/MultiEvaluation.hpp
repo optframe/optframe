@@ -85,7 +85,7 @@ class MultiEvaluation : public Component {
   // ===============
 
   // if any objective is outdated, this is also outdated
-  bool isOutdated() {
+  bool isOutdated() const {
     for (unsigned i = 0; i < vev.size(); i++)
       if (vev[i].isOutdated())
         return true;
@@ -190,10 +190,17 @@ class MultiEvaluation : public Component {
 
   std::string toString() const override {
     std::stringstream ss;
-    ss << "MultiEvaluation (" << vev.size() << "): {" << std::endl;
-    for (unsigned i = 0; i < vev.size(); i++)
-      ss << "\t" << vev[i].toString() << std::endl;
-    ss << "}";
+    ss << "MultiEvaluation (" << vev.size() << "):";
+    if (isOutdated()) {
+      ss << "OUTDATED";
+    } else if (vev.size() == 0) {
+      ss << "EMPTY";
+    } else {
+      ss << " [";  // << std::endl;
+      for (unsigned i = 0; i < vev.size(); i++)
+        ss << vev[i].evaluation() << "; ";  // <<  std::endl;
+      ss << "]";
+    }
     return ss.str();
   }
 

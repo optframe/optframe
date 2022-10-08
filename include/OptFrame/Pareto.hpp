@@ -54,11 +54,10 @@ template <XESolution XMES>
 class Pareto {
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
-
-  //using XEv = decltype(declval<XMEv>.at(0)); // not enough contextual information...
-  using XEv = Evaluation<>;  // hardcoding this, for now...
-                             // its bad to have XEv here, as its just a requirement of MultiEvaluator, insider ParetoDominance managers!!
-                             // to solve this, individuals should always be treated in pairs XMES=<S, XMEv>, so evaluate() becomes unnecessary, and GeneralEvaluator is enough. (TODO:)
+  static_assert(XEvaluation<typename XMEv::XEv>);
+  // static_assert(std::is_same_v<XMEv, MultiEvaluation<>>);
+  using XEv = typename XMEv::XEv;
+  static_assert(XEvaluation<XEv>);
 
  private:
   // all individuals are safely stored here
@@ -76,9 +75,17 @@ class Pareto {
   }
 
   Pareto(const Pareto<XMES>& _pf) {
-    this->clear();
-    unsigned sizeNewPop = _pf.paretoSet.size();
-
+    // this->clear();
+    // unsigned sizeNewPop = _pf.paretoSet.size();
+    for (unsigned i = 0; i < _pf.paretoSetFront.size(); i++) {
+      auto* se_ptr = new XMES{*_pf.paretoSetFront[i]};
+      paretoSet.push_back(&se_ptr->first);
+      paretoFront.push_back(&se_ptr->second);
+      paretoSetFront.push_back(uptr<XMES>{se_ptr});
+    }
+    //
+    this->added = _pf.added;
+    /*
     for (unsigned i = 0; i < sizeNewPop; i++) {
       //this->add_indWithMev(_pf.getNonDominatedSol(i), _pf.getIndMultiEvaluation(i));
       //
@@ -89,30 +96,33 @@ class Pareto {
       //			this->add_indWithMev(sNew, mevNew);
     }
     added = true;
+    */
   }
 
+  // paretoSet(std::move(_pf.paretoSet)), paretoFront(std::move(_pf.paretoFront))
   Pareto(Pareto<XMES>&& _pf)
-      :  //paretoSet(std::move(_pf.paretoSet)), paretoFront(std::move(_pf.paretoFront))
-        paretoSetFront(std::move(_pf.paretoSetFront)) {
-    added = false;
-
-    if (paretoSetFront.size() > 0)
-      added = true;
+      : paretoSetFront(std::move(_pf.paretoSetFront)),
+        paretoSet{std::move(_pf.paretoSet)},
+        paretoFront{std::move(_pf.paretoFront)} {
+    added = _pf.added;
+    //if (paretoSetFront.size() > 0)
+    //  added = true;
   }
 
   virtual Pareto<XMES>& operator=(const Pareto<XMES>& _pf) {
     if (&_pf == this)  // auto ref check
       return *this;
-
+    //
     this->clear();
-    unsigned sizeNewPop = _pf.paretoSet.size();
-
-    for (unsigned i = 0; i < sizeNewPop; i++)
-      //this->add_indWithMev(_pf.getNonDominatedSol(i), _pf.getIndMultiEvaluation(i));
-      this->add_indWithMev(_pf.getP(i));
-
-    if (sizeNewPop > 0)
-      added = true;
+    //
+    for (unsigned i = 0; i < _pf.paretoSetFront.size(); i++) {
+      auto* se_ptr = new XMES{*_pf.paretoSetFront[i]};
+      this->paretoSet.push_back(&se_ptr->first);
+      this->paretoFront.push_back(&se_ptr->second);
+      this->paretoSetFront.push_back(uptr<XMES>{se_ptr});
+    }
+    //
+    this->added = _pf.added;
 
     return (*this);
   }
@@ -320,11 +330,12 @@ class Pareto {
     fclose(fPF);
   }
 
-  static vector<MultiEvaluation<>*> filterDominated(vector<Direction<XEv>*>& vdir, const vector<MultiEvaluation<>*>& candidates) {
-    vector<MultiEvaluation<>*> nonDom;
+  static vector<XMEv> filterDominatedMEV(sref<MultiEvaluator<XMES>> mev,
+                                         const vector<XMEv>& candidates) {
+    vector<XMEv> nonDom;
 
-    ParetoDominance<XMES> pDom(vdir);
-    ParetoDominanceWeak<XMES> pDomWeak(vdir);
+    ParetoDominance<XMES> pDom(mev);
+    ParetoDominanceWeak<XMES> pDomWeak(mev);
 
     for (unsigned i = 0; i < candidates.size(); i++)
       addSolution(pDom, pDomWeak, nonDom, candidates[i]);
@@ -332,11 +343,13 @@ class Pareto {
     return nonDom;
   }
 
-  static vector<pair<S*, XMEv*>> filterDominated(vector<Direction<XEv>*>& vdir, const vector<pair<S*, XMEv*>>& candidates) {
-    vector<pair<S*, XMEv*>> nonDom;
-
-    ParetoDominance<XMES> pDom(vdir);
-    ParetoDominanceWeak<XMES> pDomWeak(vdir);
+  static vector<XMES> filterDominated(sref<MultiEvaluator<XMES>> mev,
+                                      const vector<XMES>& candidates) {
+    // store non dominated on 'nonDom'
+    vector<XMES> nonDom;
+    //
+    ParetoDominance<XMES> pDom(mev);
+    ParetoDominanceWeak<XMES> pDomWeak(mev);
 
     for (unsigned i = 0; i < candidates.size(); i++)
       addSolution(pDom, pDomWeak, nonDom, candidates[i]);
@@ -358,24 +371,23 @@ class Pareto {
   //		return addSolution(dom, domWeak, nonDom, candidate);
   //	}
   //
-  //	template<class T>
-  //	static bool addSolution(ParetoDominance<XMES>& dom, ParetoDominanceWeak<XMES>& domWeak, vector<T*>& nonDom, T* candidate)
-  //	{
-  //		for (int ind = 0; ind < nonDom.size(); ind++)
-  //		{
-  //			if (domWeak.dominates(*nonDom.at(ind), *candidate))
-  //				return false;
-  //
-  //			if (dom.dominates(*candidate, *nonDom.at(ind)))
-  //			{
-  //				nonDom.erase(nonDom.begin() + ind);
-  //				ind--;
-  //			}
-  //		}
-  //
-  //		nonDom.push_back(candidate);
-  //		return true;
-  //	}
+  // template <class T>
+  static bool addSolution(ParetoDominance<XMES>& dom,
+                          ParetoDominanceWeak<XMES>& domWeak,
+                          vector<XMES>& nonDom, const XMES& candidate) {
+    for (int ind = 0; ind < nonDom.size(); ind++) {
+      if (domWeak.dominates(nonDom.at(ind).second, candidate.second))
+        return false;
+
+      if (dom.dominates(candidate.second, nonDom.at(ind).second)) {
+        nonDom.erase(nonDom.begin() + ind);
+        ind--;
+      }
+    }
+
+    nonDom.push_back(candidate);
+    return true;
+  }
 
   //	static bool addSolution(ParetoDominance<XMES>& dom, ParetoDominanceWeak<XMES>& domWeak, Pareto<XMES>& p, S* candidate)
   //	{
@@ -609,8 +621,10 @@ class Pareto {
 }  // namespace optframe
 
 namespace optframe {
+using ParetoSolTest = std::vector<int>;
+using EMSolution_Test = std::pair<ParetoSolTest, MultiEvaluation<double>>;
 // compilation tests
-static_assert(X2ESolution<Pareto<ESolution<double>>, ESolution<double>>);
+static_assert(X2ESolution<Pareto<EMSolution_Test>, EMSolution_Test>);
 }  // namespace optframe
 
 // compilation tests for concepts (these are NOT unit tests)

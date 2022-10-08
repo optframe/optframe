@@ -23,22 +23,23 @@
 #ifndef OPTFRAME_OPTIMIZATION_DIRECTION_HPP_
 #define OPTFRAME_OPTIMIZATION_DIRECTION_HPP_
 
+// C
 #include <assert.h>
 #include <float.h>
-
+// C++
 #include <iostream>
 #include <limits>
-
+#include <utility>
+//
 //#include "ADSManager.hpp"
 //#include "Action.hpp"
 // Base concepts
 #include <OptFrame/BaseConcepts.hpp>
-
-#include "Component.hpp"
-#include "Evaluation.hpp"
-#include "Move.hpp"
-#include "MoveCost.hpp"
-//#include "Solution.hpp"
+#include <OptFrame/Component.hpp>
+#include <OptFrame/Evaluation.hpp>
+#include <OptFrame/Move.hpp>
+#include <OptFrame/MoveCost.hpp>
+// #include "Solution.hpp"
 
 // using namespace std;
 // using namespace scannerpp;
@@ -49,14 +50,25 @@ namespace optframe {
 ////template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
 template <XEvaluation XEv>  //= Evaluation<evtype>>  // default is 'evtype'
 class Direction : public Component {
- public:
-  ///MoveCost<evtype, Evaluation<>> nullCost;
-  XEv nullCost;
+  using objType = typename XEv::objType;
 
+ public:
+  /// MoveCost<evtype, Evaluation<>> nullCost;
+  XEv nullCost;
+  // worst possible value
+  std::optional<objType> opNadir;
+  // best possible value
+  std::optional<objType> opIdeal;
+  // minimum value
+  std::optional<objType> opMin;
+  // maximum value
+  std::optional<objType> opMax;
+
+  // nullCost(MoveCost<>(0))
+  // requires cast from value zero, at least
+  // TODO: or... simply assume that "empty" means "zero"
   Direction()
-      :                   ///nullCost(MoveCost<>(0))
-        nullCost(XEv(0))  // requires cast from value zero, at least
-  {
+      : nullCost(XEv(0)) {
   }
 
   virtual ~Direction() {
@@ -72,35 +84,38 @@ class Direction : public Component {
 	 - for minimization problems, returns a < b;
 	 - for maximization problems, returns a > b.
 	 */
-  //virtual bool betterThan(evtype a, evtype b) = 0;
+  // virtual bool betterThan(evtype a, evtype b) = 0;
 
   // true if 'mc1' is better than 'mc2'
-  virtual inline bool betterThan(const MoveCost<XEv>& mc1, const MoveCost<XEv>& mc2) {
+  virtual inline bool betterThan(const MoveCost<XEv>& mc1,
+                                 const MoveCost<XEv>& mc2) {
     if (isMinimization())
-      return (mc2.cost() - mc1.cost()) >= optframe::get_numeric_zero<typename XEv::objType>();
+      return (mc2.cost() - mc1.cost()) >=
+             optframe::get_numeric_zero<typename XEv::objType>();
     else
-      return (mc1.cost() - mc2.cost()) >= optframe::get_numeric_zero<typename XEv::objType>();
+      return (mc1.cost() - mc2.cost()) >=
+             optframe::get_numeric_zero<typename XEv::objType>();
   }
 
   // true if 'e1' is better than 'e2'
   virtual inline bool betterThan(const XEv& e1, const XEv& e2) {
-    //cout << "BETTER THAN! (isMin=" << isMinimization() << ")" << endl;
-    //e1.print();
-    //e2.print();
+    // cout << "BETTER THAN! (isMin=" << isMinimization() << ")" << endl;
+    // e1.print();
+    // e2.print();
 
-    //bool r = true;
+    // bool r = true;
 
     evtype diff;
     if (isMinimization()) {
       diff = e2.evaluation() - e1.evaluation();
-      //r = (e2.evaluation() - e1.evaluation()) >= optframe::get_numeric_zero<evtype>();
+      // r = (e2.evaluation() - e1.evaluation()) >= optframe::get_numeric_zero<evtype>();
     } else {
       diff = e1.evaluation() - e2.evaluation();
-      //r = (e1.evaluation() - e2.evaluation()) >= optframe::get_numeric_zero<evtype>();
+      // r = (e1.evaluation() - e2.evaluation()) >= optframe::get_numeric_zero<evtype>();
     }
     bool r = !(optframe::numeric_is_zero<typename XEv::objType>(diff)) && (diff > optframe::get_numeric_zero<typename XEv::objType>());
 
-    //printf("r=%d e1=%.7f e2=%.7f zero=%.7f nzero=%.7f\n",r,e1.evaluation(), e2.evaluation(), optframe::get_numeric_zero<evtype>(), t);
+    // printf("r=%d e1=%.7f e2=%.7f zero=%.7f nzero=%.7f\n",r,e1.evaluation(), e2.evaluation(), optframe::get_numeric_zero<evtype>(), t);
 
     return r;
   }
@@ -236,41 +251,61 @@ class Direction : public Component {
     return !isMinimization();
   }
 
-  // ============ estimation =============
+  // ============ Limits =============
 
-  inline evtype ideal() {
-    if (isMinimization())
-      return min();
-    else
-      return max();
+  // best possible value: caching opIdeal
+  virtual objType ideal() {
+    if (!opIdeal) {
+      if (isMinimization())
+        opIdeal = min();
+      else
+        opIdeal = max();
+    }
+    return *opIdeal;
   }
 
-  //inline evtype worst()
-  inline evtype nadir() {
-    if (isMinimization())
-      return max();
-    else
-      return min();
+  //  worst possible value: caching opNadir
+  virtual objType nadir() {
+    if (!opNadir) {
+      if (isMinimization())
+        opNadir = max();
+      else
+        opNadir = min();
+    }
+    return *opNadir;
   }
 
-  // bad approximation!
-  virtual inline typename XEv::objType min() {
-    ////return -DBL_MAX;
-
-    if (numeric_limits<evtype>::has_infinity)
-      return -numeric_limits<typename XEv::objType>::infinity();
-    else
-      return -numeric_limits<typename XEv::objType>::max();
+  // set min possible value: caching opMax
+  virtual objType min() {
+    if (!opMin) {
+      if (numeric_limits<objType>::has_infinity)
+        opMin = -numeric_limits<objType>::infinity();
+      else
+        opMin = -numeric_limits<objType>::max();
+    }
+    return *opMin;
   }
 
-  // bad approximation!
-  virtual inline typename XEv::objType max() {
-    ////return DBL_MAX;
+  // set max possible value: caching opMax
+  virtual objType max() {
+    if (!opMax) {
+      if (numeric_limits<objType>::has_infinity)
+        opMax = numeric_limits<objType>::infinity();
+      else
+        opMax = numeric_limits<objType>::max();
+    }
+    return *opMax;
+  }
 
-    if (numeric_limits<typename XEv::objType>::has_infinity)
-      return numeric_limits<typename XEv::objType>::infinity();
-    else
-      return numeric_limits<typename XEv::objType>::max();
+  // pass min and max: return ideal and nadir
+  virtual std::pair<objType, objType> setLimits(const objType& vMin,
+                                                const objType& vMax) {
+    opMin = vMin;
+    opMax = vMax;
+    opNadir = std::nullopt;
+    opIdeal = std::nullopt;
+    // methods nadir() and ideal() will set internal limits
+    return {ideal(), nadir()};
   }
 
   // ============= Component ===============

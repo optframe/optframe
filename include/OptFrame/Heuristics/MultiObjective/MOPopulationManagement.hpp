@@ -124,24 +124,38 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
       unsigned target_size,
       const vector<MOSIndividual<XMES2>>& P) override {
     //
-    vector<MOSIndividual<XMES2>> children;  // = nullptr;
-
+    std::cout << "BasicPopManager: createNext()";
+    std::cout << "target_size=" << target_size << std::endl;
     unsigned size_renew = renewRate * target_size;
+    std::cout << "size_renew=" << size_renew;
+    std::cout << "(" << renewRate << "*" << target_size << ")" << std::endl;
 
+    vector<MOSIndividual<XMES2>> children;  // = nullptr;
     if (size_renew > 0)
       children = initialize(size_renew);
-    else
-      children.clear();  // = new vector<MOSIndividual<XMES2>*>();
+    std::cout << "children.size()=" << children.size() << std::endl;
+    // else
+    //  children.clear();  // = new vector<MOSIndividual<XMES2>*>();
 
     unsigned rest = target_size - size_renew;
 
-    vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
-    vector<MOSIndividual<XMES2>> pool = binaryTournment(rest, Pconst);
+    // vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
+    std::cout << std::endl;
+    std::cout << "will run binaryTournment(rest=" << rest << ")" << std::endl;
+    vector<MOSIndividual<XMES2>> pool = binaryTournment(rest, P);
+    std::cout << "pool.size() = " << pool.size() << std::endl;
+    children.insert(children.end(), pool.begin(), pool.end());
+    std::cout << "children.size()=" << children.size() << std::endl;
 
-    vector<MOSIndividual<XMES2>> crossMut = basicCrossoverMutation(pool);
+    std::cout << std::endl;
+    std::cout << "will run basicCrossoverMutation(|pool|=";
+    std::cout << pool.size() << ")" << std::endl;
+    vector<MOSIndividual<XMES2>> crossMut =
+        basicCrossoverMutation(children);  // pool);
+    std::cout << "crossMut.size() = " << crossMut.size() << std::endl;
 
     children.insert(children.end(), crossMut.begin(), crossMut.end());
-
+    std::cout << "children.size()=" << children.size() << std::endl;
     // delete &crossMut;
 
     if (children.size() != target_size) {
@@ -149,6 +163,8 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
         cout << "WARNING: BasicPopulationManagement::createNext()";
         cout << " tried to create population of " << target_size;
         cout << " but got " << children.size();
+        cout << endl;
+        cout << "I THINK NSGA-II requires double population, not more...";
         cout << endl;
       }
     }

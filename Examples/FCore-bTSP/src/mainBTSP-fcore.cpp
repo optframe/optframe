@@ -213,7 +213,10 @@ int main() {
       new MultiDirection<typename ESolutionBTSP::second_type::XEv>{
           ev->vDir}};
 
-  ClassicNSGAII<ESolutionBTSP> classic_nsgaii{ev, mDir, popMan, 40, 100};
+  ev->vDir[0]->setLimits(0, 100000);
+  ev->vDir[1]->setLimits(0, 100000);
+
+  ClassicNSGAII<ESolutionBTSP> classic_nsgaii{ev, mDir, popMan, 20, 100};
 
   sref<NSGAII<ESolutionBTSP>> nsgaii{
       new MyNSGAIIforBTSP(ev_list,
@@ -222,9 +225,14 @@ int main() {
                           100,
                           rg2)};
 
-  auto status = nsgaii->search(
+  // testing 'classic_nsgaii' for now
+
+  auto sout = classic_nsgaii.search(
       StopCriteria<ESolutionBTSP::second_type>{10.0});  // 10.0 seconds max
-  Pareto<ESolutionBTSP> best = *status.best;            //*sa.getBestSolution();
+  std::cout << "finished classic_nsgaii with: ";
+  std::cout << "status=" << sout.status << std::endl;
+  Pareto<ESolutionBTSP> best = *sout.best;
+  std::cout << "best pareto: ";
   // best pareto front
   best.print();
 

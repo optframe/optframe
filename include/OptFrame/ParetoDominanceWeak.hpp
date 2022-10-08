@@ -57,7 +57,7 @@ class ParetoDominanceWeak : public ParetoDominance<XMES> {
   virtual ~ParetoDominanceWeak() {
   }
 
-  virtual bool dominates(const MultiEvaluation<>& mev1, const MultiEvaluation<>& mev2) {
+  virtual bool dominates(const XMEv& mev1, const XMEv& mev2) {
     pair<int, int> betterEquals = ParetoDominance<XMES>::checkDominates(mev1, mev2);
     int better = betterEquals.first;
     int equals = betterEquals.second;

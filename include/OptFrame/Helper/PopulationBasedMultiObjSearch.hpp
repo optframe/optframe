@@ -63,6 +63,7 @@ class PopulationBasedMultiObjSearch : public MultiObjSearch<
   using XMEv = typename XMES::second_type;
   // this is homogeneous multi-obj based on XEv obj type
   using XEv = typename XMEv::XEv;
+  using MyPareto = Pareto<XMES>;
 
  public:
   sref<MultiDirection<XEv>> mDir;
@@ -101,14 +102,16 @@ class PopulationBasedMultiObjSearch : public MultiObjSearch<
   // assign fitness to subset 'g' that belongs to 'P'
   // TODO: VEPopMOS<XMES2> ?
   virtual void assignFitness(
-      vector<MOSIndividual<XMES2>>& g,
-      const vector<MOSIndividual<XMES2>>& P) = 0;
+      // vector<MOSIndividual<XMES2>>& g,
+      const vector<int>& g,
+      vector<MOSIndividual<XMES2>>& P) = 0;
 
   // assign diversity to subset 'g' that belongs to 'P'
   // TODO: VEPopMOS<XMES> ?
   virtual void assignDiversity(
-      vector<MOSIndividual<XMES2>>& g,
-      const vector<MOSIndividual<XMES2>>& P) = 0;
+      // vector<MOSIndividual<XMES2>>& g,
+      const vector<int>& g,
+      vector<MOSIndividual<XMES2>>& P) = 0;
 
   // update archive based on current population
   // TODO: VEPopMOS<XMES> ?
@@ -137,8 +140,10 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
   using XMEv = typename XMES::second_type;
   // this is homogeneous multi-obj based on XEv obj type
   using XEv = typename XMEv::XEv;
+  using MyPareto = Pareto<XMES>;
 
  protected:
+  sref<MultiEvaluator<XMES>> mev;
   sref<MultiDirection<XEv>> mDir;
   sref<MOPopulationManagement<XMES>> popMan;
   unsigned popSize;
@@ -149,10 +154,12 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
 
  public:
   NSPopulationBasedMultiObjSearch(
+      sref<MultiEvaluator<XMES>> _mev,
       sref<MultiDirection<XEv>> _mDir,
       sref<MOPopulationManagement<XMES>> _popMan,
       unsigned _popSize, int _maxIter, int _maxGen = 100000000)
       : PopulationBasedMultiObjSearch<XMES, XMES2>(_mDir),
+        mev(_mev),
         mDir(_mDir),
         popMan(_popMan),
         popSize(_popSize),
@@ -168,13 +175,15 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
 
   // from PopulationBasedMultiObjSearch
   void assignFitness(
-      vector<MOSIndividual<XMES2>>& g,
-      const vector<MOSIndividual<XMES2>>& P) override = 0;
+      // vector<MOSIndividual<XMES2>>& g,
+      const vector<int>& g,
+      vector<MOSIndividual<XMES2>>& P) override = 0;
 
   // from PopulationBasedMultiObjSearch
   void assignDiversity(
-      vector<MOSIndividual<XMES2>>& g,
-      const vector<MOSIndividual<XMES2>>& P) override = 0;
+      // vector<MOSIndividual<XMES2>>& g,
+      const vector<int>& g,
+      vector<MOSIndividual<XMES2>>& P) override = 0;
 
   // from PopulationBasedMultiObjSearch
   void updateArchive(
@@ -190,6 +199,13 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
   virtual void freePopulation(vector<MOSIndividual<XMES2>>& P,
                               vector<MOSIndividual<XMES2>>& archive) = 0;
 
+  virtual void printPopulation(const vector<MOSIndividual<XMES2>>& P) {
+    std::cout << "NSPopulationBasedMultiObjSearch::printPopulation(|P|:";
+    std::cout << P.size() << "):" << std::endl;
+    for (unsigned i = 0; i < P.size(); i++)
+      std::cout << "P[" << i << "]:" << P[i] << std::endl;
+  }
+
   // Pareto<R, ADS, DS>* search(double timelimit = 100000000,
   //    double target_f = 0, Pareto<R, ADS, DS>* _pf = nullptr) {
 
@@ -198,39 +214,94 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
       const StopCriteria<XMEv>& stop) override {
     Timer timer;
 
-    cout << "Population Based Multi Objective Search search()" << endl;
+    std::cout << std::endl;
+    std::cout << "NSPopulationBasedMultiObjSearch::search(";
+    std::cout << "timelimit=" << stop.timelimit << ")" << std::endl;
 
     vector<MOSIndividual<XMES2>> archive;
 
-    vector<MOSIndividual<XMES2>> P = popMan->initialize(popSize);
-    evaluate(P);
-    vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
-    assignFitness(P, Pconst);
-    assignDiversity(P, Pconst);
+    std::cout << "DEBUG: will gen population popSize=" << popSize << std::endl;
 
-    vector<MOSIndividual<XMES2>> Q = popMan->createNext(popSize, Pconst);
+    vector<MOSIndividual<XMES2>> P = popMan->initialize(popSize);
+    std::cout << "DEBUG: P.size = " << P.size() << std::endl;
+    //
+    std::cout << "DEBUG: will evaluate()" << std::endl;
+    evaluate(P);
+
+    std::cout << std::endl;
+    printPopulation(P);
+
+    // vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
+    std::cout << "DEBUG: will assignFitness()" << std::endl;
+    // ignore group id parameter, for now
+    std::vector<int> v_id;
+    for (unsigned i = 0; i < P.size(); i++)
+      v_id.push_back(i);
+    //
+    assignFitness(v_id, P);
+    std::cout << "DEBUG: will assignDiversity()" << std::endl;
+    // ignore group id parameter, for now
+    assignDiversity(v_id, P);
+
+    std::cout << std::endl;
+    printPopulation(P);
+
+    std::cout << "DEBUG: will createNext()" << std::endl;
+    vector<MOSIndividual<XMES2>> Q = popMan->createNext(popSize, P);
+    std::cout << "DEBUG: Q.size = " << Q.size() << std::endl;
     vector<double> bestQ = evaluate(Q);
+
+    std::cout << std::endl
+              << "Q:" << std::endl;
+    printPopulation(Q);
 
     int t = 0;
     int tImp = 0;
 
     vector<double> bestObj(mDir->nObjectives);
-    for (unsigned i = 0; i < bestObj.size(); i++)
+    for (unsigned i = 0; i < bestObj.size(); i++) {
+      // why initialize with worst?
       bestObj[i] = mDir->nadir(i);
+      std::cout << "bestObj[" << i << "] = " << bestObj[i] << std::endl;
+    }
 
     while ((timer.now() < stop.timelimit) &&
            (t <= maxGen) && (tImp <= maxIter)) {
+      std::cout << "main_loop: ";
+      std::cout << "will evaluate(|P|=" << P.size() << ")" << std::endl;
       vector<double> bestP = evaluate(P);
+      std::cout << "will perform P = P U Q" << std::endl;
       P.insert(P.end(), Q.begin(), Q.end());
+      std::cout << "P.size() = " << P.size() << std::endl;
       for (unsigned i = 0; i < bestP.size(); i++)
         if (mDir->betterThanAt(i, bestQ[i], bestP[i]))
           bestP[i] = bestQ[i];
 
-      Pconst = vector<MOSIndividual<XMES2>>(P.begin(), P.end());
-      assignFitness(P, Pconst);
-      assignDiversity(P, Pconst);
+      std::cout << std::endl
+                << "P:" << std::endl;
+      printPopulation(P);
 
+      // Pconst = vector<MOSIndividual<XMES2>>(P.begin(), P.end());
+      std::cout << "will assignFitness(|P|=" << P.size() << ")" << std::endl;
+      // ignore group parameter for now
+      std::vector<int> v_id;
+      for (unsigned i = 0; i < P.size(); i++)
+        v_id.push_back(i);
+      //
+      assignFitness(v_id, P);  // Pconst);
+      std::cout << "will assignDiversity(|P|=" << P.size() << ")" << std::endl;
+      // ignore group parameter for now
+      assignDiversity(v_id, P);  // Pconst);
+      std::cout << "will select(popSize=" << popSize;
+      std::cout << "|P|=" << P.size();
+      std::cout << "|archive|=" << archive.size() << ")" << std::endl;
       select(popSize, P, archive);
+
+      std::cout << "P: " << std::endl;
+      printPopulation(P);
+
+      std::cout << "archive: " << std::endl;
+      printPopulation(archive);
 
       // archive is updated
       // unused already free'd
@@ -250,9 +321,8 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
       }
 
       // generating next population
-      Pconst = vector<MOSIndividual<XMES2>>(P.begin(),
-                                            P.end());
-      Q = popMan->createNext(popSize, Pconst);
+      // Pconst = vector<MOSIndividual<XMES2>>(P.begin(), P.end());
+      Q = popMan->createNext(popSize, P);
       bestQ = evaluate(Q);
       t++;
       tImp++;
@@ -260,19 +330,39 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
 
     freePopulation(P, archive);
 
+    std::cout << "FINAL archive: " << std::endl;
+    printPopulation(archive);
+
+    vsref<Direction<XEv>> vs_dir = mDir->getDirections();
+    VEPopulation<XMES> finalPop;
+    for (unsigned i = 0; i < archive.size(); i++)
+      finalPop.push_back({archive[i].first, archive[i].second});
+    //
+    vector<XMES> nondom = Pareto<XMES>::filterDominated(mev, finalPop);
+
+    std::cout << "after non domination filter:" << std::endl;
+    std::cout << "SIZE = " << nondom.size() << std::endl;
+
     Pareto<XMES> pf;  //= new Pareto<R, ADS, DS>;
-    for (unsigned i = 0; i < archive.size(); i++) {
+    for (unsigned i = 0; i < nondom.size(); i++) {
       // Solution<R, ADS>* s = archive.at(i)->s;
-      S s = archive.at(i).first;
+      S s = nondom.at(i).first;
       // MultiEvaluation<DS>* mev = archive.at(i)->mev;
-      XMEv mev = archive.at(i).second;
+      XMEv mev = nondom.at(i).second;
       pf.push_back({s, mev});
     }
 
+    std::cout << "FINAL pareto: " << std::endl;
+    pf.print();
     // delete &P;
     // delete &archive;
 
-    return SearchOutput<XMES, Pareto<XMES>>{.status = SearchStatus::NO_REPORT, .best = pf};
+    SearchOutput<XMES, Pareto<XMES>> sout{
+        .status = SearchStatus::NO_REPORT,
+        .best = pf};
+
+    // sout.best->print();
+    return sout;
   }
 };
 

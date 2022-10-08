@@ -8,6 +8,7 @@
 #include <OptFrame/Core.hpp>
 #include <OptFrame/Heuristics/Heuristics.hpp>  // many metaheuristics here...
 #include <OptFrame/MultiEvaluator.hpp>
+#include <OptFrame/Pareto.hpp>
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/Util/Matrix.hpp>
 #include <OptFrame/printable/printable.hpp>
@@ -26,6 +27,8 @@ using ESolutionBTSP = std::pair<
     std::vector<int>,
     // second part of search space element: multi-evaluation (objective value)
     MultiEvaluation<int>>;
+
+using MyPareto = optframe::Pareto<ESolutionBTSP>;
 
 // helper type for (single-obj) evaluator adapters
 using ESolutionBTSPSingle = std::pair<
