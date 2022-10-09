@@ -83,6 +83,7 @@ template <XEvaluation XMEv = MultiEvaluation<double>>
 struct FitnessIndividual {
   int idx;
   double fitness;
+  // could be non-owning XMEv* ... but few gains here, I guess.
   XMEv mev;
 
   FitnessIndividual() {
@@ -101,6 +102,22 @@ struct FitnessIndividual {
     os << "; fit=" << me.fitness;
     os << "; mev=" << me.mev << "}";
     return os;
+  }
+
+  std::string toString() const {
+    std::stringstream ss;
+    ss << "FitInd{idx=" << this->idx;
+    ss << "; fit=" << this->fitness;
+    ss << "; mev=" << this->mev << "}";
+    return ss.str();
+  }
+
+  static void printPopulationFitness(
+      const std::vector<FitnessIndividual<XMEv>>& P) {
+    std::cout << "VEPopulation<FitInd>(|P|=" << P.size() << "):{" << std::endl;
+    for (unsigned i = 0; i < P.size(); i++)
+      std::cout << "P[" << i << "]:" << P[i].toString() << ";" << std::endl;
+    std::cout << "}" << std::endl;
   }
 };
 
@@ -127,21 +144,27 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
 
   static bool sortBySecond(const FitnessIndividual<XMEv>& ind1,
                            const FitnessIndividual<XMEv>& ind2) {
-    return ind1.mev.at(1).evaluation() < ind1.mev.at(1).evaluation();
+    return ind1.mev.at(1).evaluation() < ind2.mev.at(1).evaluation();
   }
 
   // void assignFitnessGroup(vector<MOSIndividual<XMES2>>& g,
   void assignFitnessGroup(const vector<int>& g,
                           vector<MOSIndividual<XMES2>>& Pop) override {
     // ASSUMES UNIQUE ELEMENTS IN 'Pop'
-    std::cout << "BiObj NSGA-II: assignFitnessGroup(";
-    std::cout << "|g|:" << g.size() << " ";
-    std::cout << "|Pop|:" << Pop.size() << ")" << std::endl;
+    if (Component::verbose) {
+      std::cout << "BiObj NSGA-II: assignFitnessGroup(";
+      std::cout << "|g|:" << g.size() << " ";
+      std::cout << "|Pop|:" << Pop.size() << ")" << std::endl;
+    }
 
     // for now: we only accept groups that are equal to whole population
     assert(g.size() == Pop.size());
 
-    const int INF = 10000000;
+    // const int INF = 10000000;
+
+    // INFINITE FITNESS: Population Size + 1? Use *100 just to make it big!
+    // Note that fitness on NSGA-II is naturally limited to [0, Pop.size()]
+    const int INF = Pop.size() * 100;
 
     // TODO: prevent creation of P and use Pop instead...
     vector<FitnessIndividual<XMEv>> P(Pop.size());
@@ -154,49 +177,102 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
       }
     }
 
-    std::cout << "BEGIN Population of FitnessIndividual (|P|=" << P.size() << "):{";
-    for (unsigned i = 0; i < P.size(); i++)
-      std::cout << "P[" << i << "]:" << P[i] << ";" << std::endl;
-    std::cout << "}" << std::endl;
-
-    std::cout << "will sort by second(|P|:" << P.size() << ")" << std::endl;
-    // any sort is good!
-    sort(P.begin(), P.end(), sortBySecond);
-    std::cout << "will stable_sort by first()" << std::endl;
-    // necessary to be stable!!
-    stable_sort(P.begin(), P.end(), sortByFirst);
-    // (otherwise, when first objective is equal then the second may be
-    // downgraded in future and destroy dominance)
+    if (Component::verbose) {
+      std::cout << "BEGIN Population of FitnessIndividual";
+      FitnessIndividual<XMEv>::printPopulationFitness(P);
+    }
 
     if (Component::verbose)
-      std::cout << "will count_x" << std::endl;
+      std::cout << "will sort by second(|P|:" << P.size() << ")" << std::endl;
+    // any sort is good!
+    // sort(P.begin(), P.end(), sortBySecond);
 
+    auto _vDir = vDir;
+
+    sort(P.begin(), P.end(),
+         [_vDir](const FitnessIndividual<XMEv>& ind1,
+                 const FitnessIndividual<XMEv>& ind2) -> bool {
+           // return ind1.mev.at(1).evaluation() < ind2.mev.at(1).evaluation();
+           if (_vDir[1]->isMinimization())
+             return ind1.mev.at(1).evaluation() < ind2.mev.at(1).evaluation();
+           else
+             return ind1.mev.at(1).evaluation() > ind2.mev.at(1).evaluation();
+           // return _vDir[1]->betterThan(ind1.mev.at(1), ind2.mev.at(1));
+         });
+
+    if (Component::verbose) {
+      std::cout << "Sorted SECOND Population of FitnessIndividual";
+      FitnessIndividual<XMEv>::printPopulationFitness(P);
+    }
+
+    if (Component::verbose)
+      std::cout << "will stable_sort by first()" << std::endl;
+    // necessary to be stable!!
+    // (otherwise, when first objective is equal then the second may be
+    // downgraded in future and destroy dominance)
+    //
+    // stable_sort(P.begin(), P.end(), sortByFirst);
+
+    // TODO: create TWO LAMBDAS... one for MIN and other for MAX...
+    // THIS MUST BE MUCH MORE EFFICIENT! I'm pretty sure...
+    stable_sort(
+        P.begin(), P.end(),
+        [_vDir](const FitnessIndividual<XMEv>& ind1,
+                const FitnessIndividual<XMEv>& ind2) -> bool {
+          // return ind1.mev.at(0).evaluation() < ind2.mev.at(0).evaluation();
+          if (_vDir[0]->isMinimization())
+            return ind1.mev.at(0).evaluation() < ind2.mev.at(0).evaluation();
+          else
+            return ind1.mev.at(0).evaluation() > ind2.mev.at(0).evaluation();
+          // return _vDir[0]->betterThan(ind1.mev.at(0), ind2.mev.at(0));
+        });
+
+    if (Component::verbose) {
+      std::cout << "Sorted FIRST Population of FitnessIndividual";
+      FitnessIndividual<XMEv>::printPopulationFitness(P);
+    }
+
+    if (Component::verbose)
+      std::cout << "will set: count_x = 0" << std::endl;
+
+    // 'count_x' counts the number of already selected solutions
     unsigned count_x = 0;
+    // start non-dominated sorting with rank 0
     int rank = 0;
     while (count_x != P.size()) {
-      // find first
+      // find first solution available to put in 'rank'
       unsigned j = 0;
       for (j = 0; j < P.size(); j++)
         if (P[j].fitness == INF)
           break;
       P[j].fitness = rank;
       if (Component::verbose)
-        cout << "rank: " << rank << " to ";
-      // P[j]->print();
+        cout << "set rank " << rank << " to " << P[j] << std::endl;
       int max_obj2 = P[j].mev.at(1).evaluation();
       int min_obj2 = max_obj2;
-      if (Component::verbose)
-        cout << "max_obj2: " << max_obj2 << " min_obj2: " << min_obj2 << endl;
+      if (Component::verbose) {
+        cout << "max_obj_second: " << max_obj2 << " ";
+        cout << "min_obj_second: " << min_obj2 << endl;
+      }
+      if ((!vDir[0]->isMinimization()) || (!vDir[1]->isMinimization())) {
+        std::cout << "ERROR! Only supports MIN MIN bi-objectives!" << std::endl;
+        assert(false);
+      }
+
+      // this element is certainly non-dominated (because of objective 0)
       count_x++;
       vector<int> m;
       m.push_back(j);
 
       for (unsigned r = j + 1; r < P.size(); r++)
         if (P[r].fitness == INF) {
-          if (P[r].mev.at(1).evaluation() > max_obj2)
-            continue;  // discard element (is dominated!)
+          // TODO: use nadir and ideal here, instead of min and max
+          if (P[r].mev.at(1).evaluation() > max_obj2) {
+            // discard element (is dominated!)
+            continue;
+          }
 
-          // add element (improves the best obj2!)
+          // add element (if improves the best known second obj)
           if (P[r].mev.at(1).evaluation() < min_obj2) {
             // cout << "r:" << r << " ";
             P[r].fitness = rank;
@@ -205,6 +281,8 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
             // cout << "min_obj2: " << min_obj2 << " => ";
             min_obj2 = P[r].mev.at(1).evaluation();
             // cout << min_obj2 << endl;
+            //
+            // add another one to non-dominated front
             count_x++;
             m.push_back(r);
             continue;
@@ -244,23 +322,29 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
           }
         }
 
-      cout << "FINISHED RANK " << rank << " WITH " << m << endl
-           << endl;
+      if (Component::verbose) {
+        cout << "FINISHED RANK " << rank << " WITH m=" << m << " ";
+        cout << "ID_LIST on m: [";
+        for (unsigned i = 0; i < m.size(); i++)
+          cout << P[m[i]].idx << " ";
+        cout << "]" << endl;
+        cout << endl;
+      }
       m.clear();
 
       rank++;
     }
 
-    std::cout << "END Population of FitnessIndividual (|P|=" << P.size() << "):{";
-    for (unsigned i = 0; i < P.size(); i++)
-      std::cout << "P[" << i << "]:" << P[i] << ";" << std::endl;
-    std::cout << "}" << std::endl;
+    if (Component::verbose) {
+      std::cout << "END Population of FitnessIndividual" << std::endl;
+      FitnessIndividual<XMEv>::printPopulationFitness(P);
+    }
 
     // TODO: this should be automatic...
     // must work with Pop instead of P...
     assert(P.size() == Pop.size());
     for (unsigned i = 0; i < P.size(); i++)
-      Pop[i].fitness = P[i].fitness;
+      Pop[P[i].idx].fitness = P[i].fitness;
     /*
     for (unsigned s = 0; s < g.size(); s++)
       for (unsigned k = 0; k < P.size(); k++)

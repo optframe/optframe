@@ -75,7 +75,7 @@ class GlobalSearch : public Component {
   //
   // onIncumbent now will depend on Incumbent type (look on ITrajectory or IPopulational)
   //
-  //bool (*onIncumbent)(GlobalSearch<XES, XSH, XES2, XSH2>& self, const XSH2& incumbent) =
+  // bool (*onIncumbent)(GlobalSearch<XES, XSH, XES2, XSH2>& self, const XSH2& incumbent) =
   //  [](GlobalSearch<XES, XSH, XES2, XSH2>& self, const XSH2& incumbent) { return true; };
   //
   // strict or non-strict search
@@ -87,8 +87,10 @@ class GlobalSearch : public Component {
   virtual ~GlobalSearch() {
   }
 
-  // Assuming method is not thread-safe. Now, we can easily use flag SearchStatus::RUNNING.
-  virtual SearchOutput<XES, BestType> search(const StopCriteria<XEv>& stopCriteria) = 0;
+  // Assuming method is not thread-safe.
+  // Now, we can easily use flag SearchStatus::RUNNING.
+  virtual SearchOutput<XES, BestType> search(
+      const StopCriteria<XEv>& stopCriteria) = 0;
 
   /*
    virtual SearchStatus searchBy(std::optional<XSH>& _best, std::optional<XSH2>& _inc, const StopCriteria<XEv>& stopCriteria)
@@ -99,25 +101,25 @@ class GlobalSearch : public Component {
    }
 */
 
-  virtual string log() const {
+  virtual std::string log() const {
     return "Empty heuristic log.";
   }
 
-  virtual bool compatible(string s) override {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << Component::idComponent() << ":GlobalSearch";
     return ss.str();
   }
 
-  virtual std::string toString() const override {
+  std::string toString() const override {
     return id();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

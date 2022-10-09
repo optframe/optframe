@@ -36,7 +36,7 @@ namespace optframe {
 // template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 
 template <XESolution XMES2>
-class MOSSelection : Component {
+class MOSSelection : public Component {
  public:
   MOSSelection() {
   }

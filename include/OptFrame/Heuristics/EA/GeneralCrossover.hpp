@@ -22,6 +22,7 @@
 #define OPTFRAME_HEURISTICS_EA_GENERALCROSSOVER_HPP_
 
 // C++
+#include <string>
 #include <utility>
 //
 #include <OptFrame/Evaluation.hpp>
@@ -29,15 +30,30 @@
 
 namespace optframe {
 
-//template <class R, class ADS = OPTFRAME_DEFAULT_ADS>
+// template <class R, class ADS = OPTFRAME_DEFAULT_ADS>
 template <XSolution S>
-class GeneralCrossover {
+class GeneralCrossover : public Component {
  public:
   virtual ~GeneralCrossover() {
   }
 
   virtual pair<std::optional<S>, std::optional<S>>
   cross(const S&, const S&) = 0;
+
+ public:
+  static std::string idComponent() {
+    std::stringstream ss;
+    ss << Component::idComponent() << ":GeneralCrossover";
+    return ss.str();
+  }
+
+  std::string id() const override {
+    return idComponent();
+  }
+
+  std::string toString() const override {
+    return id();
+  }
 };
 
 }  // namespace optframe

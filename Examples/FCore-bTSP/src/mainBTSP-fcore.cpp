@@ -117,17 +117,19 @@ return q;
 class CrossTSPRandomPoint : public GeneralCrossover<
                                 typename ESolutionBTSP::first_type> {
   using S = typename ESolutionBTSP::first_type;
+  sref<RandGen> rg;
 
  public:
-  virtual ~CrossTSPRandomPoint() {
-  }
+  explicit CrossTSPRandomPoint(sref<RandGen> _rg) : rg{_rg} {}
+
+  virtual ~CrossTSPRandomPoint() {}
 
   virtual pair<std::optional<S>, std::optional<S>>
   cross(const S& p1, const S& p2) {
     op<S> s1 = p1;
     op<S> s2 = p2;
 
-    int k = (rand() % (p1.size() - 1)) + 1;
+    int k = (rg->rand() % (p1.size() - 1)) + 1;
 
     for (int i = 0; i < (int)k; i++) {
       (*s1)[i] = p1[i];
@@ -188,8 +190,10 @@ int main() {
   std::cout << "end listing NSSeqSwapFancy" << std::endl;
 
   // Random number generator
-  RandGen rg;                      // stack version
+  // RandGen rg;                      // stack version
   sref<RandGen> rg2{new RandGen};  // heap version (safely shared)
+  rg2->setSeed(0);
+  //
   // testing simulated annealing
   BasicInitialSearch<ESolutionBTSP> initRand(crand, ev);
 
@@ -197,7 +201,7 @@ int main() {
       new BasicInitialMultiESolution<ESolutionBTSP>{crand, ev}};
 
   vsref<GeneralCrossover<typename ESolutionBTSP::first_type>> crossovers;
-  crossovers.push_back(new CrossTSPRandomPoint{});
+  crossovers.push_back(new CrossTSPRandomPoint{rg2});
   //
   sref<MOPopulationManagement<ESolutionBTSP>>
       popMan{
@@ -216,7 +220,9 @@ int main() {
   ev->vDir[0]->setLimits(0, 100000);
   ev->vDir[1]->setLimits(0, 100000);
 
-  ClassicNSGAII<ESolutionBTSP> classic_nsgaii{ev, mDir, popMan, 20, 100};
+  ClassicNSGAII<ESolutionBTSP> classic_nsgaii{ev, mDir, popMan, 10, 5};
+
+  // classic_nsgaii.setVerboseR();
 
   sref<NSGAII<ESolutionBTSP>> nsgaii{
       new MyNSGAIIforBTSP(ev_list,

@@ -57,6 +57,10 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
         new MultiDirection(mevr->vDir)};
     if (mevr->nObjectives == 2)
       fa = sptr<FitnessAssignment<XMES>>{
+          // TODO: could be some BiObjNonDominatedSort with REMOVAL
+          // of CLONES (in obj space).. this makes multiple fronts
+          // appear here. Must see in PROBLEM if this is desired,
+          // than create here or not.
           new BiObjNonDominatedSort<XMES>(_mDir->getDirections())};
     else
       fa = sptr<FitnessAssignment<XMES>>{
@@ -121,6 +125,19 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
   void freePopulation(vector<MOSIndividual<XMES>>& P,
                       vector<MOSIndividual<XMES>>& archive) override {
     sel->free(P, archive);
+  }
+
+ public:
+  bool setVerboseR() override {
+    this->setVerbose();
+    //
+    mevr->setVerboseR();
+    mdir->setVerboseR();
+    fa->setVerboseR();
+    dm->setVerboseR();
+    sel->setVerboseR();
+    //
+    return true;
   }
 };
 

@@ -23,6 +23,7 @@
 #ifndef OPTFRAME_NSSEQ_HPP_
 #define OPTFRAME_NSSEQ_HPP_
 
+#include <string>
 #include <type_traits>  // static assert is_same
 //
 #include <OptFrame/Experimental/NSBlockIterator.hpp>
@@ -177,21 +178,21 @@ class NSSeq : public NSFind<XES, XEv, XSH> {
   }
 
  public:
-  static string idComponent() {
-    stringstream ss;
+  static std::string idComponent() {
+    std::stringstream ss;
     ss << NSFind<XES, XEv>::idComponent() << ":NSSeq";
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
-  virtual std::string toString() const override {
+  std::string toString() const override {
     return id();
   }
 
-  virtual bool compatible(string s) override {
+  bool compatible(string s) override {
     return (s == idComponent()) || (NSFind<XES, XEv>::compatible(s));
   }
 };

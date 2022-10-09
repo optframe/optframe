@@ -23,6 +23,7 @@
 #ifndef OPTFRAME_HEURISTICS_MULTIOBJECTIVE_MOPOPULATIONMANAGEMENT_HPP_
 #define OPTFRAME_HEURISTICS_MULTIOBJECTIVE_MOPOPULATIONMANAGEMENT_HPP_
 //
+#include <algorithm>
 #include <optional>
 #include <string>
 #include <utility>
@@ -124,34 +125,44 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
       unsigned target_size,
       const vector<MOSIndividual<XMES2>>& P) override {
     //
-    std::cout << "BasicPopManager: createNext()";
-    std::cout << "target_size=" << target_size << std::endl;
     unsigned size_renew = renewRate * target_size;
-    std::cout << "size_renew=" << size_renew;
-    std::cout << "(" << renewRate << "*" << target_size << ")" << std::endl;
+    if (Component::verbose) {
+      std::cout << "BasicPopManager: createNext()" << std::endl;
+      std::cout << "target_size=" << target_size << std::endl;
+      std::cout << "size_renew=" << size_renew << " ";
+      std::cout << "(" << renewRate << "*" << target_size << ")" << std::endl;
+    }
 
-    vector<MOSIndividual<XMES2>> children;  // = nullptr;
-    if (size_renew > 0)
+    vector<MOSIndividual<XMES2>> children;
+    //
+    if (size_renew > 0) {
       children = initialize(size_renew);
-    std::cout << "children.size()=" << children.size() << std::endl;
-    // else
-    //  children.clear();  // = new vector<MOSIndividual<XMES2>*>();
+    } else {
+      if ((renewRate > 0) && Component::warning) {
+        std::cout << "WARNING MOPopManagemnt: size_renew is ZERO!" << std::endl;
+        std::cout << "size_renew=" << size_renew << " ";
+        std::cout << "(" << renewRate << "*" << target_size << ")" << std::endl;
+      }
+    }
 
     unsigned rest = target_size - size_renew;
+
+    std::cout << "children.size()=" << children.size() << std::endl;
+    std::cout << "rest=" << rest << std::endl;
 
     // vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
     std::cout << std::endl;
     std::cout << "will run binaryTournment(rest=" << rest << ")" << std::endl;
-    vector<MOSIndividual<XMES2>> pool = binaryTournment(rest, P);
-    std::cout << "pool.size() = " << pool.size() << std::endl;
-    children.insert(children.end(), pool.begin(), pool.end());
-    std::cout << "children.size()=" << children.size() << std::endl;
+    vector<MOSIndividual<XMES2>> pool_best = binaryTournment(rest, P);
+    std::cout << "pool_best.size() = " << pool_best.size() << std::endl;
+    // children.insert(children.end(), pool_best.begin(), pool_best.end());
+    // std::cout << "children.size()=" << children.size() << std::endl;
 
     std::cout << std::endl;
     std::cout << "will run basicCrossoverMutation(|pool|=";
-    std::cout << pool.size() << ")" << std::endl;
+    std::cout << pool_best.size() << ")" << std::endl;
     vector<MOSIndividual<XMES2>> crossMut =
-        basicCrossoverMutation(children);  // pool);
+        basicCrossoverMutation(rest, pool_best);  // pool);
     std::cout << "crossMut.size() = " << crossMut.size() << std::endl;
 
     children.insert(children.end(), crossMut.begin(), crossMut.end());
@@ -192,11 +203,22 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
   }
 
   vector<MOSIndividual<XMES2>> basicCrossoverMutation(
+      unsigned targetSize,
       const vector<MOSIndividual<XMES2>>& pool) {
-    vector<MOSIndividual<XMES2>> children;
+    //
+    std::cout << "DEBUG: |pool| = " << pool.size() << std::endl;
+    if (pool.size() == 0) {
+      if (targetSize != 0) {
+        if (Component::warning) {
+          std::cout << "WARNING: expected |children|=0";
+          std::cout << " targetSize=" << targetSize << std::endl;
+        }
+      }
+      return vector<MOSIndividual<XMES2>>{};
+    }
 
-    if (pool.size() == 0)
-      return children;
+    // perform many crossovers and mutations, then choose
+    vector<MOSIndividual<XMES2>> childrenPool;
 
     for (unsigned i = 0; i < pool.size(); i++) {
       unsigned j = i + 1;
@@ -235,11 +257,48 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
           }
         }
 
-        children.push_back(MOSIndividual<XMES2>{se});
+        childrenPool.push_back(MOSIndividual<XMES2>{se});
       }
     }
 
+    // will select 'targetSize' children from childrenPool
+    vector<MOSIndividual<XMES2>> children;
+    //
+    // if (Component::verbose)
+    std::cout << "DEBUG: |childrenPool|=" << childrenPool.size() << std::endl;
+    rg->shuffle(childrenPool);
+    //
+    if (targetSize > childrenPool.size()) {
+      if (Component::warning) {
+        std::cout << "WARNING: childrenPool too small!" << std::endl;
+      }
+    }
+    //
+    int min_sz = ::min((int)childrenPool.size(), (int)targetSize);
+    for (int i = 0; i < min_sz; i++)
+      children.push_back(std::move(childrenPool[i]));
+    // drop skeletons
+    childrenPool.clear();
+
+    if (targetSize != children.size()) {
+      if (Component::warning) {
+        std::cout << "WARNING: expected |children|=" << children.size();
+        std::cout << " targetSize=" << targetSize << std::endl;
+      }
+    }
+    //
     return children;
+  }
+
+  bool setVerboseR() override {
+    this->setVerbose();
+    //
+    initEPop->setVerboseR();
+    for (unsigned i = 0; i < mutations.size(); i++)
+      mutations[i]->setVerboseR();
+    for (unsigned i = 0; i < crossovers.size(); i++)
+      crossovers[i]->setVerboseR();
+    return true;
   }
 
   std::string toString() const override {

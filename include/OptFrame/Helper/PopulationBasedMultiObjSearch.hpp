@@ -122,6 +122,14 @@ class PopulationBasedMultiObjSearch : public MultiObjSearch<
   // from MultiObjSearch
   SearchOutput<XMES, Pareto<XMES>> search(
       const StopCriteria<XMEv>& stopCriteria) override = 0;
+
+  bool setVerboseR() override {
+    this->setVerbose();
+    //
+    mDir->setVerboseR();
+    //
+    return true;
+  }
 };
 
 // =======================================================================
@@ -214,46 +222,68 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
       const StopCriteria<XMEv>& stop) override {
     Timer timer;
 
-    std::cout << std::endl;
-    std::cout << "NSPopulationBasedMultiObjSearch::search(";
-    std::cout << "timelimit=" << stop.timelimit << ")" << std::endl;
+    if (Component::information) {
+      std::cout << "NSPopulationBasedMultiObjSearch::search(";
+      std::cout << "timelimit=" << stop.timelimit << ")" << std::endl;
+    }
 
     vector<MOSIndividual<XMES2>> archive;
 
-    std::cout << "DEBUG: will gen population popSize=" << popSize << std::endl;
+    if (Component::verbose)
+      std::cout << "DEBUG: will gen population popSize=" << popSize << std::endl;
 
     vector<MOSIndividual<XMES2>> P = popMan->initialize(popSize);
-    std::cout << "DEBUG: P.size = " << P.size() << std::endl;
+    if (Component::verbose) {
+      std::cout << "DEBUG: P.size = " << P.size() << std::endl;
+      //
+      std::cout << "DEBUG: will evaluate()" << std::endl;
+    }
     //
-    std::cout << "DEBUG: will evaluate()" << std::endl;
     evaluate(P);
 
-    std::cout << std::endl;
-    printPopulation(P);
+    if (Component::verbose) {
+      std::cout << std::endl;
+      printPopulation(P);
+    }
 
-    // vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
-    std::cout << "DEBUG: will assignFitness()" << std::endl;
+    if (Component::verbose)
+      std::cout << "DEBUG: will assignFitness()" << std::endl;
     // ignore group id parameter, for now
     std::vector<int> v_id;
     for (unsigned i = 0; i < P.size(); i++)
       v_id.push_back(i);
     //
     assignFitness(v_id, P);
-    std::cout << "DEBUG: will assignDiversity()" << std::endl;
+
+    if (Component::verbose) {
+      std::cout << std::endl;
+      printPopulation(P);
+      //
+      std::cout << "DEBUG: will assignDiversity()" << std::endl;
+    }
     // ignore group id parameter, for now
     assignDiversity(v_id, P);
 
-    std::cout << std::endl;
-    printPopulation(P);
+    if (Component::verbose) {
+      std::cout << std::endl;
+      printPopulation(P);
+    }
 
-    std::cout << "DEBUG: will createNext()" << std::endl;
+    if (Component::verbose)
+      std::cout << "DEBUG: will createNext()" << std::endl;
+    //
     vector<MOSIndividual<XMES2>> Q = popMan->createNext(popSize, P);
-    std::cout << "DEBUG: Q.size = " << Q.size() << std::endl;
+    //
+    if (Component::verbose)
+      std::cout << "DEBUG: Q.size = " << Q.size() << std::endl;
+    //
     vector<double> bestQ = evaluate(Q);
 
-    std::cout << std::endl
-              << "Q:" << std::endl;
-    printPopulation(Q);
+    if (Component::verbose) {
+      std::cout << std::endl;
+      std::cout << "Q:" << std::endl;
+      printPopulation(Q);
+    }
 
     int t = 0;
     int tImp = 0;
@@ -262,46 +292,67 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
     for (unsigned i = 0; i < bestObj.size(); i++) {
       // why initialize with worst?
       bestObj[i] = mDir->nadir(i);
-      std::cout << "bestObj[" << i << "] = " << bestObj[i] << std::endl;
+      if (Component::verbose)
+        std::cout << "bestObj[" << i << "] = " << bestObj[i] << std::endl;
     }
 
     while ((timer.now() < stop.timelimit) &&
            (t <= maxGen) && (tImp <= maxIter)) {
-      std::cout << "main_loop: ";
-      std::cout << "will evaluate(|P|=" << P.size() << ")" << std::endl;
+      //
+      if (Component::verbose) {
+        std::cout << "main_loop: tImp=" << tImp << "/maxIter=" << maxIter << std::endl;
+        std::cout << "will evaluate(|P|=" << P.size() << ")" << std::endl;
+      }
+      //
       vector<double> bestP = evaluate(P);
-      std::cout << "will perform P = P U Q" << std::endl;
+      //
+      if (Component::verbose)
+        std::cout << "will perform P = P U Q" << std::endl;
+      //
       P.insert(P.end(), Q.begin(), Q.end());
-      std::cout << "P.size() = " << P.size() << std::endl;
+      //
+      if (Component::verbose)
+        std::cout << "P.size() = " << P.size() << std::endl;
+      //
       for (unsigned i = 0; i < bestP.size(); i++)
         if (mDir->betterThanAt(i, bestQ[i], bestP[i]))
           bestP[i] = bestQ[i];
 
-      std::cout << std::endl
-                << "P:" << std::endl;
-      printPopulation(P);
+      if (Component::verbose) {
+        std::cout << std::endl
+                  << "P:" << std::endl;
+        printPopulation(P);
+      }
 
-      // Pconst = vector<MOSIndividual<XMES2>>(P.begin(), P.end());
-      std::cout << "will assignFitness(|P|=" << P.size() << ")" << std::endl;
+      if (Component::verbose)
+        std::cout << "will assignFitness(|P|=" << P.size() << ")" << std::endl;
       // ignore group parameter for now
       std::vector<int> v_id;
       for (unsigned i = 0; i < P.size(); i++)
         v_id.push_back(i);
       //
-      assignFitness(v_id, P);  // Pconst);
-      std::cout << "will assignDiversity(|P|=" << P.size() << ")" << std::endl;
+      assignFitness(v_id, P);
+      if (Component::verbose)
+        std::cout << "will assignDiversity(|P|=" << P.size() << ")" << std::endl;
       // ignore group parameter for now
-      assignDiversity(v_id, P);  // Pconst);
-      std::cout << "will select(popSize=" << popSize;
-      std::cout << "|P|=" << P.size();
-      std::cout << "|archive|=" << archive.size() << ")" << std::endl;
+      assignDiversity(v_id, P);
+      //
+      if (Component::verbose) {
+        std::cout << "will select(popSize=" << popSize;
+        std::cout << "|P|=" << P.size();
+        std::cout << "|archive|=" << archive.size() << ")" << std::endl;
+      }
       select(popSize, P, archive);
 
-      std::cout << "P: " << std::endl;
-      printPopulation(P);
+      if (Component::verbose) {
+        std::cout << "P: " << std::endl;
+        printPopulation(P);
+      }
 
-      std::cout << "archive: " << std::endl;
-      printPopulation(archive);
+      if (Component::verbose) {
+        std::cout << "archive: " << std::endl;
+        printPopulation(archive);
+      }
 
       // archive is updated
       // unused already free'd
@@ -313,11 +364,19 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
             // IMPROVEMENT IN ONE OBJECTIVE
             improved = true;
             bestObj[i] = bestP[i];
+            if (Component::information) {
+              std::cout << "NSPopMO: Improvement in Objective " << i << ":";
+              std::cout << "bestObj[" << i << "] = " << bestObj[i] << std::endl;
+            }
           }
 
       if (improved) {
         tImp = -1;
-        cout << "t=" << t << " improved bounds: " << bestObj << endl;
+        if (Component::verbose)
+          std::cout << "t=" << t << " improved bounds: " << bestObj << std::endl;
+      } else {
+        if (Component::verbose)
+          std::cout << "DID NOT IMPROVE ANY BOUNDS " << bestObj << std::endl;
       }
 
       // generating next population
@@ -330,8 +389,10 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
 
     freePopulation(P, archive);
 
-    std::cout << "FINAL archive: " << std::endl;
-    printPopulation(archive);
+    if (Component::verbose) {
+      std::cout << "FINAL archive: " << std::endl;
+      printPopulation(archive);
+    }
 
     vsref<Direction<XEv>> vs_dir = mDir->getDirections();
     VEPopulation<XMES> finalPop;
@@ -340,29 +401,39 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
     //
     vector<XMES> nondom = Pareto<XMES>::filterDominated(mev, finalPop);
 
-    std::cout << "after non domination filter:" << std::endl;
-    std::cout << "SIZE = " << nondom.size() << std::endl;
+    if (Component::verbose) {
+      std::cout << "after non domination filter:" << std::endl;
+      std::cout << "SIZE = " << nondom.size() << std::endl;
+    }
 
-    Pareto<XMES> pf;  //= new Pareto<R, ADS, DS>;
+    Pareto<XMES> pf;
     for (unsigned i = 0; i < nondom.size(); i++) {
-      // Solution<R, ADS>* s = archive.at(i)->s;
       S s = nondom.at(i).first;
-      // MultiEvaluation<DS>* mev = archive.at(i)->mev;
       XMEv mev = nondom.at(i).second;
       pf.push_back({s, mev});
     }
 
-    std::cout << "FINAL pareto: " << std::endl;
-    pf.print();
-    // delete &P;
-    // delete &archive;
+    if (Component::verbose) {
+      std::cout << "FINAL pareto: " << std::endl;
+      pf.print();
+    }
 
     SearchOutput<XMES, Pareto<XMES>> sout{
         .status = SearchStatus::NO_REPORT,
         .best = pf};
 
-    // sout.best->print();
     return sout;
+  }
+
+ public:
+  bool setVerboseR() override {
+    this->setVerbose();
+    //
+    mev->setVerboseR();
+    mDir->setVerboseR();
+    popMan->setVerboseR();
+    //
+    return true;
   }
 };
 
