@@ -55,7 +55,25 @@ class MOPopulationManagement : public Component {
       const vector<MOSIndividual<XMES2>>& P) = 0;
 
   virtual void print() const {
-    cout << "MOPopulationManagement" << endl;
+    cout << toString() << endl;
+  }
+
+  bool compatible(std::string s) override {
+    return (s == idComponent()) || (Component::compatible(s));
+  }
+
+  static std::string idComponent() {
+    std::stringstream ss;
+    ss << Component::idComponent() << ":MOPopulationManagement";
+    return ss.str();
+  }
+
+  std::string id() const override {
+    return idComponent();
+  }
+
+  std::string toString() const override {
+    return id();
   }
 };
 
@@ -65,6 +83,7 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
   using S = typename XMES2::first_type;
   using XMEv = typename XMES2::second_type;
   using XEv = typename XMEv::XEv;
+  using super = MOPopulationManagement<XMES2>;
 
  public:
   sref<InitialMultiESolution<XMES2>> initEPop;
@@ -309,10 +328,22 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
     return true;
   }
 
-  std::string toString() const override {
+  bool compatible(std::string s) override {
+    return (s == idComponent()) || (super::compatible(s));
+  }
+
+  static std::string idComponent() {
     std::stringstream ss;
-    ss << "BasicMOPopulationManagement";
+    ss << super::idComponent() << ":BasicMOPopulationManagement";
     return ss.str();
+  }
+
+  std::string id() const override {
+    return idComponent();
+  }
+
+  std::string toString() const override {
+    return id();
   }
 };
 
@@ -389,7 +420,7 @@ class BasicMOPopulationManagementBuilder : public ComponentBuilder<S, XEv, XES, 
         InitialMultiESolution<XMES>::idComponent(),
         "initial epopulation"));
     stringstream ss;
-    ss << NS<XES, XEv>::idComponent() << "[]";
+    ss << NS<XMES>::idComponent() << "[]";
     params.push_back(make_pair(ss.str(), "list of NS"));
     params.push_back(make_pair("OptFrame:double", "mutation rate"));
     stringstream ss2;
@@ -406,7 +437,7 @@ class BasicMOPopulationManagementBuilder : public ComponentBuilder<S, XEv, XES, 
   static string idComponent() {
     stringstream ss;
     ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent();
-    ss << "BasicMOPopulationManagementBuilder";
+    ss << "BasicMOPopulationManagement";
     return ss.str();
   }
 

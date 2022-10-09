@@ -40,6 +40,10 @@ class FGeneralCrossover final : public GeneralCrossover<S> {
     return pop;
   }
 
+  bool compatible(std::string s) override {
+    return (s == idComponent()) || (super::compatible(s));
+  }
+
   static std::string idComponent() {
     std::stringstream ss;
     ss << GeneralCrossover<S>::idComponent() << ":FGeneralCrossover";

@@ -41,6 +41,10 @@ class GeneralCrossover : public Component {
   cross(const S&, const S&) = 0;
 
  public:
+  bool compatible(std::string s) override {
+    return (s == idComponent()) || (Component::compatible(s));
+  }
+
   static std::string idComponent() {
     std::stringstream ss;
     ss << Component::idComponent() << ":GeneralCrossover";
