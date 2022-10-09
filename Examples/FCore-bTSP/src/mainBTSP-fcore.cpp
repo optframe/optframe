@@ -205,7 +205,7 @@ int main() {
   //
   sref<MOPopulationManagement<ESolutionBTSP>>
       popMan{
-          new BasicPopulationManagement<ESolutionBTSP>(
+          new BasicMOPopulationManagement<ESolutionBTSP>(
               init_epop,
               nslist,  //vsref<NS<XMES2>> _mutations,
               0.5,     //double _mutationRate,
@@ -220,7 +220,7 @@ int main() {
   ev->vDir[0]->setLimits(0, 100000);
   ev->vDir[1]->setLimits(0, 100000);
 
-  ClassicNSGAII<ESolutionBTSP> classic_nsgaii{ev, mDir, popMan, 30, 100};
+  ClassicNSGAII<ESolutionBTSP> classic_nsgaii{ev, popMan, 30, 100};
 
   // classic_nsgaii.setVerboseR();
 

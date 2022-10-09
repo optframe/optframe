@@ -70,6 +70,7 @@
 //#include <OptFrame/Helper/Solutions/CopySolution.hpp>
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
+#include <OptFrame/Hyper/ComponentMultiBuilder.hpp>
 
 //using namespace std;
 //using namespace optframe; (?????????????????) Don't use namespace declarations in headers
@@ -83,6 +84,11 @@ namespace optframe {
 //template<XSolution S, XEvaluation XEv = Evaluation<>>
 template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
 class HeuristicFactory {
+  // TODO: must add to template!!!
+  using XMEv = MultiEvaluation<typename XEv::objType>;
+  using XMES = std::pair<S, XMEv>;
+  using X2MES = VEPopulation<XMES>;
+
  private:
   // for debug purposes (mainly 'memory debug')
   LogLevel loglevel;
@@ -92,6 +98,7 @@ class HeuristicFactory {
  public:
   map<string, vector<sptr<Component>>> components;
   vector<ComponentBuilder<S, XEv, XES, X2ES>*> builders;
+  vector<ComponentMultiBuilder<S, XMEv, XMES, X2MES>*> xmes_builders;
   vector<Action<S, XEv, XES, X2ES>*> actions;
   map<string, vector<vector<sptr<Component>>>> componentLists;
 

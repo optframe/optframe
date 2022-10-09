@@ -61,7 +61,7 @@ class MOPopulationManagement : public Component {
 
 // template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 template <XESolution XMES2>
-class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
+class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
   using S = typename XMES2::first_type;
   using XMEv = typename XMES2::second_type;
   using XEv = typename XMEv::XEv;
@@ -75,7 +75,7 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
   double renewRate;
   sref<RandGen> rg;
 
-  BasicPopulationManagement(
+  BasicMOPopulationManagement(
       sref<InitialMultiESolution<XMES2>> _initEPop,
       vsref<NS<XMES2>> _mutations,
       double _mutationRate,
@@ -94,7 +94,7 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
       renewRate = 0;
   }
 
-  virtual ~BasicPopulationManagement() {
+  virtual ~BasicMOPopulationManagement() {
   }
 
   // giving ownership of 's'
@@ -311,8 +311,111 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
 
   std::string toString() const override {
     std::stringstream ss;
-    ss << "MOPopulationManagement";
+    ss << "BasicMOPopulationManagement";
     return ss.str();
+  }
+};
+
+template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+class BasicMOPopulationManagementBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+  using XMEv = MultiEvaluation<typename XEv::objType>;
+  using XMES = std::pair<S, XMEv>;
+
+ public:
+  virtual ~BasicMOPopulationManagementBuilder() {
+  }
+
+  // has sptr instead of sref, is that on purpose or legacy class?
+  virtual Component* buildComponent(Scanner& scanner,
+                                    HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                    string family = "") {
+    if (Component::debug)
+      std::cout << "BasicMOPopulationBuilder Loading Parameter #0" << std::endl;
+
+    sptr<InitialMultiESolution<XMES>> _initEPop;
+    std::string sid_0 = scanner.next();
+    int id_0 = *scanner.nextInt();
+    hf.assign(_initEPop, id_0, sid_0);
+    assert(_initEPop);
+    sref<InitialMultiESolution<XMES>> initEPop{_initEPop};
+
+    vsptr<NS<XMES>> _hlist;
+    std::string sid_1 = scanner.next();
+    int id_1 = *scanner.nextInt();
+    hf.assignList(_hlist, id_1, sid_1);
+    vsref<NS<XMES>> hlist;
+    for (sptr<NS<XMES>> x : _hlist) {
+      assert(x);
+      hlist.push_back(x);
+    }
+
+    if (!scanner.hasNext()) {
+      if (Component::debug)
+        std::cout << "no next mutation rate! aborting..." << std::endl;
+      return nullptr;
+    }
+    double _mutationRate = *scanner.nextDouble();
+
+    vsptr<GeneralCrossover<S>> _clist;
+    std::string sid_3 = scanner.next();
+    int id_3 = *scanner.nextInt();
+    hf.assignList(_clist, id_3, sid_3);
+    vsref<GeneralCrossover<S>> clist;
+    for (sptr<GeneralCrossover<S>> x : _clist) {
+      assert(x);
+      clist.push_back(x);
+    }
+
+    if (!scanner.hasNext()) {
+      if (Component::debug)
+        std::cout << "no next renew rate! aborting..." << std::endl;
+      return nullptr;
+    }
+
+    double _renew_rate = *scanner.nextDouble();
+
+    return new BasicMOPopulationManagement<XMES>(
+        initEPop,
+        hlist,
+        _mutationRate,
+        clist,
+        _renew_rate,
+        hf.getRandGen());
+  }
+
+  virtual vector<pair<string, string>> parameters() {
+    vector<pair<string, string>> params;
+    params.push_back(make_pair(
+        InitialMultiESolution<XMES>::idComponent(),
+        "initial epopulation"));
+    stringstream ss;
+    ss << NS<XES, XEv>::idComponent() << "[]";
+    params.push_back(make_pair(ss.str(), "list of NS"));
+    params.push_back(make_pair("OptFrame:double", "mutation rate"));
+    stringstream ss2;
+    ss2 << GeneralCrossover<S>::idComponent() << "[]";
+    params.push_back(make_pair(ss2.str(), "list of crossover"));
+    params.push_back(make_pair("OptFrame:double", "renew rate"));
+    return params;
+  }
+
+  virtual bool canBuild(string component) {
+    return component == BasicMOPopulationManagement<XMES>::idComponent();
+  }
+
+  static string idComponent() {
+    stringstream ss;
+    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent();
+    ss << "BasicMOPopulationManagementBuilder";
+    return ss.str();
+  }
+
+  std::string toString() const override {
+    return id();
+  }
+
+  string id() const override {
+    return idComponent();
   }
 };
 

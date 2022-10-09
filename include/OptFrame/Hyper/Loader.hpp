@@ -35,11 +35,13 @@
 #include <iostream>
 #include <map>
 #include <ostream>
+#include <utility>
 #include <vector>
 //
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Evaluator.hpp>
 #include <OptFrame/Helper/ADSManager.hpp>
+#include <OptFrame/Helper/InitialMultiESolution.hpp>
 #include <OptFrame/Helper/Population.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 #include <OptFrame/InitialPopulation.hpp>
@@ -106,6 +108,7 @@
 #include <OptFrame/Heuristics/EA/RK/BRKGA.hpp>
 #include <OptFrame/Heuristics/EA/RK/BasicDecoderRandomKeys.hpp>
 #include <OptFrame/Heuristics/EA/RK/BasicInitialEPopulationRK.hpp>
+#include <OptFrame/Heuristics/MultiObjective/MOPopulationManagement.hpp>
 
 // test local searches
 #include <OptFrame/BaseConcepts.hpp>
@@ -135,6 +138,11 @@ class Loader {
   using XEv = typename XES::second_type;
 #endif
 
+  // TODO: add to Loader and Factory template!!!
+  using XMEv = MultiEvaluation<typename XEv::objType>;
+  using XMES = std::pair<S, XMEv>;
+  using X2MES = VEPopulation<XMES>;
+
  public:
   HeuristicFactory<S, XEv, XES, X2ES> factory;
   map<string, string> dictionary;
@@ -156,6 +164,20 @@ class Loader {
 
     // Base
     factory.builders.push_back(new CloneConstructiveBuilder<S, XEv>);
+
+    // official
+    factory.builders.push_back(new MultiEvaluatorBuilder<S, XEv>);
+    // alternative on 'xmes_builders'... TODO: think about it.
+    //
+    // we don't REALLY need xmes, as long as we can DEDUCE it from S, XEv.
+    // S and XEv can be considered BASE types of Multi types as well.
+    ComponentMultiBuilder<S, XMEv, XMES, X2MES>* meb =
+        new MultiEvaluatorMultiBuilder<S, XMEv, XMES, X2MES>{};
+    factory.xmes_builders.push_back(meb);
+    //
+    factory.builders.push_back(new BasicInitialMultiESolutionBuilder<S, XEv>);
+
+    factory.builders.push_back(new BasicMOPopulationManagementBuilder<S, XEv>);
 
     // LocalSearch
     factory.builders.push_back(new EmptyLocalSearchBuilder<S, XEv>);

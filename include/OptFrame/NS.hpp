@@ -28,6 +28,7 @@
 //#include "Action.hpp"
 #include "Component.hpp"
 #include "GeneralEvaluator.hpp"  // included for Neighborhood Exploration
+#include "Helper/MultiEvaluation.hpp"
 
 namespace optframe {
 
@@ -93,6 +94,8 @@ class NS : public Component {
   static string idComponent() {
     stringstream ss;
     ss << Component::idComponent() << ":NS";
+    if constexpr (std::is_same_v<XEv, MultiEvaluation<>>)
+      ss << "<XMESf64>";
     return ss.str();
   }
 

@@ -29,6 +29,8 @@
 #include <OptFrame/Evaluator.hpp>
 #include <OptFrame/Helper/MultiEvaluation.hpp>
 #include <OptFrame/Hyper/Action.hpp>
+#include <OptFrame/Hyper/ComponentBuilder.hpp>
+#include <OptFrame/Hyper/ComponentMultiBuilder.hpp>
 #include <OptFrame/IEvaluator.hpp>
 #include <OptFrame/MultiDirection.hpp>
 // #include "Solution.hpp"
@@ -176,7 +178,7 @@ class MultiEvaluator : public GeneralEvaluator<XMES,
 
   // ================================================
 
- protected:
+ public:
   // ============= Component ===============
   virtual bool compatible(string s) {
     return (s == idComponent()) ||
@@ -187,6 +189,118 @@ class MultiEvaluator : public GeneralEvaluator<XMES,
     stringstream ss;
     ss << GeneralEvaluator<XMES, XMEv, XSH>::idComponent() << ":MultiEvaluator";
     return ss.str();
+  }
+
+  string id() const override {
+    return idComponent();
+  }
+};
+
+template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+class MultiEvaluatorBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+  using XMEv = MultiEvaluation<typename XEv::objType>;
+  using XMES = std::pair<S, XMEv>;
+
+ public:
+  virtual ~MultiEvaluatorBuilder() {
+  }
+
+  virtual Component* buildComponent(Scanner& scanner,
+                                    HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                    string family = "") {
+    //
+    vsptr<Evaluator<S, XEv, XES>> _evlist;
+    std::string sid_0 = scanner.next();
+    int id_0 = *scanner.nextInt();
+    hf.assignList(_evlist, id_0, sid_0);
+    vsref<Evaluator<S, XEv, XES>> evlist;
+    for (sptr<Evaluator<S, XEv, XES>> x : _evlist) {
+      assert(x);
+      evlist.push_back(x);
+    }
+
+    return new MultiEvaluator<XMES>(evlist);
+  }
+
+  virtual vector<pair<string, string>> parameters() {
+    vector<pair<string, string>> params;
+    std::stringstream ss;
+    ss << Evaluator<S, XEv, XES>::idComponent() << "[]";
+    params.push_back(make_pair(ss.str(), "list of evaluator"));
+
+    return params;
+  }
+
+  virtual bool canBuild(string component) {
+    return component == MultiEvaluator<XMES>::idComponent();
+  }
+
+  static string idComponent() {
+    stringstream ss;
+    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent();
+    ss << "MultiEvaluator";
+    return ss.str();
+  }
+
+  std::string toString() const override {
+    return id();
+  }
+
+  string id() const override {
+    return idComponent();
+  }
+};
+
+template <XSolution S, XEvaluation XMEv = MultiEvaluation<>, XESolution XMES = pair<S, XMEv>, X2ESolution<XMES> X2MES = VEPopulation<XMES>>
+class MultiEvaluatorMultiBuilder : public ComponentMultiBuilder<S, XMEv, XMES, X2MES> {
+  // using XMEv = MultiEvaluation<typename XEv::objType>;
+  // using XMES = std::pair<S, XMEv>;
+  using XEv = typename XMEv::XEv;
+  using XES = std::pair<S, XEv>;
+  using X2ES = MultiESolution<XES>;  // TODO: is this right??
+
+ public:
+  virtual ~MultiEvaluatorMultiBuilder() {
+  }
+
+  virtual Component* buildMultiComponent(
+      Scanner& scanner,
+      HeuristicFactory<S, XEv, XES, X2ES>& hf,
+      string family = "") {
+    vsptr<Evaluator<S, XEv, XES>> _evlist;
+    std::string sid_0 = scanner.next();
+    int id_0 = *scanner.nextInt();
+    hf.assignList(_evlist, id_0, sid_0);
+    vsref<Evaluator<S, XEv, XES>> evlist;
+    for (sptr<Evaluator<S, XEv, XES>> x : _evlist) {
+      assert(x);
+      evlist.push_back(x);
+    }
+
+    return new MultiEvaluator<XMES>(evlist);
+  }
+
+  vector<pair<string, string>> parameters() override {
+    vector<pair<string, string>> params;
+    params.push_back(make_pair(Evaluator<S, XEv, XES>::idComponent(),
+                               "list of evaluators"));
+
+    return params;
+  }
+
+  bool canBuild(string component) override {
+    return component == MultiEvaluator<XMES>::idComponent();
+  }
+
+  static string idComponent() {
+    stringstream ss;
+    ss << ComponentMultiBuilder<S, XMEv, XMES, X2MES>::idComponent();
+    ss << "MultiEvaluatorMultiBuilder";
+    return ss.str();
+  }
+
+  std::string toString() const override {
+    return id();
   }
 
   string id() const override {

@@ -17,6 +17,8 @@
 #include "EA/RK/FConstructiveRK.hpp"         // Extra
 #include "EA/RK/FDecoderNoEvaluationRK.hpp"  // Extra
 #include "EA/RK/FDecoderRK.hpp"              // Extra
+//
+#include <OptFCore/EA/FGeneralCrossover.hpp>
 
 namespace optframe {
 

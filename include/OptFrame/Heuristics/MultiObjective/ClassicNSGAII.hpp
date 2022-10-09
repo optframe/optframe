@@ -47,11 +47,14 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
 
  public:
   ClassicNSGAII(sref<MultiEvaluator<XMES>> _mevr,
-                sref<MultiDirection<XEv>> _mDir,
+                // sref<MultiDirection<XEv>> _mDir,
                 sref<MOPopulationManagement<XMES>> _popMan,
                 unsigned popSize, int maxIter, int maxGen = 100000000)
       : NSPopulationBasedMultiObjSearch<XMES>(
-            _mevr, _mDir, _popMan, popSize, maxIter, maxGen),
+            _mevr,
+            // _mDir,
+            sref<MultiDirection<XEv>>{new MultiDirection(_mevr->vDir)},
+            _popMan, popSize, maxIter, maxGen),
         mevr{_mevr} {
     mdir = sptr<MultiDirection<XEv>>{
         new MultiDirection(mevr->vDir)};
@@ -61,13 +64,13 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
           // of CLONES (in obj space).. this makes multiple fronts
           // appear here. Must see in PROBLEM if this is desired,
           // than create here or not.
-          new BiObjNonDominatedSort<XMES>(_mDir->getDirections())};
+          new BiObjNonDominatedSort<XMES>(mdir->getDirections())};
     else
       fa = sptr<FitnessAssignment<XMES>>{
           new NonDominatedSort<XMES>{_mevr}};
 
     dm = sptr<DiversityManagement<XMES>>{
-        new CrowdingDistance<XMES>(_mDir->getDirections())};
+        new CrowdingDistance<XMES>(mdir->getDirections())};
 
     sel = sptr<MOSSelection<XMES>>{
         new NSGAIISelection<XMES>};

@@ -25,12 +25,14 @@
 
 // C++
 #include <string>
+#include <utility>
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Constructive.hpp>
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Helper/MultiESolution.hpp>
 #include <OptFrame/Helper/VEPopulation.hpp>
+#include <OptFrame/MultiEvaluator.hpp>
 
 // #include "EA.h"
 
@@ -120,7 +122,7 @@ class BasicInitialMultiESolution : public InitialMultiESolution<
   static std::string idComponent() {
     std::stringstream ss;
     ss << InitialMultiESolution<XES>::idComponent();
-    ss << ":BasicInitialPopulation";
+    ss << ":BasicInitialMultiESolution";
     return ss.str();
   }
 
@@ -133,47 +135,63 @@ class BasicInitialMultiESolution : public InitialMultiESolution<
   }
 };
 
-// TODO(igormcoelho): fix this builder later!!!
+template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+class BasicInitialMultiESolutionBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+  using XMEv = MultiEvaluation<typename XEv::objType>;
+  using XMES = std::pair<S, XMEv>;
 
-/*
-
-template <XSolution S,
-          XEvaluation XEv = Evaluation<>,
-          XESolution XES = std::pair<S, XEv>>
-class BasicInitialPopulationBuilder : public ComponentBuilder<S, XEv, XES> {
  public:
-  virtual ~BasicInitialPopulationBuilder() {
+  virtual ~BasicInitialMultiESolutionBuilder() {
   }
 
-  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "") {
-    Constructive<S>* c;
-    hf.assign(c, *scanner.nextInt(), scanner.next());  // reads backwards!
+  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+    //
+    sptr<Constructive<S>> c;
+    std::string sid_0 = scanner.next();
+    int id_0 = *scanner.nextInt();
+    hf.assign(c, id_0, sid_0);
 
-    return new BasicInitialMultiSolution<S>(*c);
+    // Reading concrete MultiEvaluator as an IEvaluator
+    // TODO: we NEED multiple buildComponent... implement that ASAP!
+    sptr<MultiEvaluator<XMES>> _mev;
+    std::string sid_1 = scanner.next();
+    int id_1 = *scanner.nextInt();
+    hf.assign(_mev, id_1, sid_1);
+    sptr<IEvaluator<XMES>> _imev = _mev;
+    sref<IEvaluator<XMES>> mev{_imev};
+
+    return new BasicInitialMultiESolution<XMES>(c, mev);
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<string, string>> parameters() override {
     vector<pair<string, string>> params;
-    //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-    params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
+    params.push_back(make_pair(Constructive<S>::idComponent(),
+                               "constructive"));
+    params.push_back(make_pair(MultiEvaluator<XMES>::idComponent(),
+                               "multi evaluator"));
+
     return params;
   }
 
-  virtual bool canBuild(string component) {
-    return component == BasicInitialMultiSolution<S>::idComponent();
+  bool canBuild(string component) override {
+    return component == BasicInitialMultiESolution<XMES>::idComponent();
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<R, ADS>::idComponent() << "" << EA::family() << ":BasicInitialPopulation";
+    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent();
+    ss << "BasicInitialMultiESolution";
     return ss.str();
+  }
+
+  std::string toString() const override {
+    return id();
   }
 
   virtual string id() const override {
     return idComponent();
   }
 };
-*/
 
 }  // namespace optframe
 
