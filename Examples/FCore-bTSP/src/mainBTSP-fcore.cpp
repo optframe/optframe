@@ -192,7 +192,7 @@ int main() {
   // Random number generator
   // RandGen rg;                      // stack version
   sref<RandGen> rg2{new RandGen};  // heap version (safely shared)
-  rg2->setSeed(0);
+  // rg2->setSeed(0);
   //
   // testing simulated annealing
   BasicInitialSearch<ESolutionBTSP> initRand(crand, ev);
@@ -220,7 +220,7 @@ int main() {
   ev->vDir[0]->setLimits(0, 100000);
   ev->vDir[1]->setLimits(0, 100000);
 
-  ClassicNSGAII<ESolutionBTSP> classic_nsgaii{ev, mDir, popMan, 10, 5};
+  ClassicNSGAII<ESolutionBTSP> classic_nsgaii{ev, mDir, popMan, 30, 100};
 
   // classic_nsgaii.setVerboseR();
 

@@ -147,27 +147,32 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
 
     unsigned rest = target_size - size_renew;
 
-    std::cout << "children.size()=" << children.size() << std::endl;
-    std::cout << "rest=" << rest << std::endl;
+    if (Component::verbose) {
+      std::cout << "children.size()=" << children.size() << std::endl;
+      std::cout << "rest=" << rest << std::endl;
+    }
 
-    // vector<MOSIndividual<XMES2>> Pconst(P.begin(), P.end());
-    std::cout << std::endl;
-    std::cout << "will run binaryTournment(rest=" << rest << ")" << std::endl;
+    if (Component::verbose) {
+      std::cout << std::endl;
+      std::cout << "will run binaryTournment(rest=" << rest << ")" << std::endl;
+    }
     vector<MOSIndividual<XMES2>> pool_best = binaryTournment(rest, P);
-    std::cout << "pool_best.size() = " << pool_best.size() << std::endl;
-    // children.insert(children.end(), pool_best.begin(), pool_best.end());
-    // std::cout << "children.size()=" << children.size() << std::endl;
+    if (Component::verbose)
+      std::cout << "pool_best.size() = " << pool_best.size() << std::endl;
 
-    std::cout << std::endl;
-    std::cout << "will run basicCrossoverMutation(|pool|=";
-    std::cout << pool_best.size() << ")" << std::endl;
+    if (Component::verbose) {
+      std::cout << std::endl;
+      std::cout << "will run basicCrossoverMutation(|pool|=";
+      std::cout << pool_best.size() << ")" << std::endl;
+    }
     vector<MOSIndividual<XMES2>> crossMut =
-        basicCrossoverMutation(rest, pool_best);  // pool);
-    std::cout << "crossMut.size() = " << crossMut.size() << std::endl;
+        basicCrossoverMutation(rest, pool_best);
+    if (Component::verbose)
+      std::cout << "crossMut.size() = " << crossMut.size() << std::endl;
 
     children.insert(children.end(), crossMut.begin(), crossMut.end());
-    std::cout << "children.size()=" << children.size() << std::endl;
-    // delete &crossMut;
+    if (Component::verbose)
+      std::cout << "children.size()=" << children.size() << std::endl;
 
     if (children.size() != target_size) {
       if (Component::warning) {
@@ -206,7 +211,9 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
       unsigned targetSize,
       const vector<MOSIndividual<XMES2>>& pool) {
     //
-    std::cout << "DEBUG: |pool| = " << pool.size() << std::endl;
+    if (Component::verbose)
+      std::cout << "DEBUG: |pool| = " << pool.size() << std::endl;
+    //
     if (pool.size() == 0) {
       if (targetSize != 0) {
         if (Component::warning) {
@@ -264,8 +271,9 @@ class BasicPopulationManagement : public MOPopulationManagement<XMES2> {
     // will select 'targetSize' children from childrenPool
     vector<MOSIndividual<XMES2>> children;
     //
-    // if (Component::verbose)
-    std::cout << "DEBUG: |childrenPool|=" << childrenPool.size() << std::endl;
+    if (Component::verbose)
+      std::cout << "DEBUG: |childrenPool|=" << childrenPool.size() << std::endl;
+    //
     rg->shuffle(childrenPool);
     //
     if (targetSize > childrenPool.size()) {

@@ -365,7 +365,8 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
             improved = true;
             bestObj[i] = bestP[i];
             if (Component::information) {
-              std::cout << "NSPopMO: Improvement in Objective " << i << ":";
+              std::cout << "NSPopBasedMO tImp = " << tImp << " ";
+              std::cout << "Improvement in Objective " << i << ": ";
               std::cout << "bestObj[" << i << "] = " << bestObj[i] << std::endl;
             }
           }
