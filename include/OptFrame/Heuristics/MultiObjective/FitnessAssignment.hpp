@@ -378,6 +378,7 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
 
   explicit NonDominatedSort(sref<MultiEvaluator<XMES2>> _mev)
       : mev{_mev}, vDir{_mev->vDir} {
+    assert(false);
   }
 
   virtual ~NonDominatedSort() {

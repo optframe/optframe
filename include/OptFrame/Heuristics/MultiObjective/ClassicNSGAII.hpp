@@ -58,6 +58,8 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
         mevr{_mevr} {
     mdir = sptr<MultiDirection<XEv>>{
         new MultiDirection(mevr->vDir)};
+    std::cout << "ClassicNSGAII::nObjectives: ";
+    std::cout << mevr->nObjectives << std::endl;
     if (mevr->nObjectives == 2)
       fa = sptr<FitnessAssignment<XMES>>{
           // TODO: could be some BiObjNonDominatedSort with REMOVAL

@@ -33,12 +33,12 @@ namespace optframe {
 
 //template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 template <XESolution XMES2>
-class Elitism : Component {
+class MOElitism : Component {
  public:
-  Elitism() {
+  MOElitism() {
   }
 
-  virtual ~Elitism() {
+  virtual ~MOElitism() {
   }
 
   // keep archive updated
@@ -47,13 +47,13 @@ class Elitism : Component {
       vector<MOSIndividual<XMES2>>& archive) = 0;
 
   virtual void print() const {
-    cout << "Elitism" << endl;
+    cout << "MOElitism" << endl;
   }
 };
 
 // template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 template <XESolution XMES2>
-class NoArchiving : public Elitism<XMES2> {
+class NoArchiving : public MOElitism<XMES2> {
  public:
   NoArchiving() {
   }
@@ -74,7 +74,7 @@ class NoArchiving : public Elitism<XMES2> {
 
 //template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 template <XESolution XMES2>
-class BoundedArchiving : public Elitism<XMES2> {
+class BoundedArchiving : public MOElitism<XMES2> {
   using XMEv = typename XMES2::second_type;
 
  protected:
@@ -103,7 +103,7 @@ class BoundedArchiving : public Elitism<XMES2> {
 
 //template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
 template <XESolution XMES2>
-class UnboundedArchiving : public Elitism<XMES2> {
+class UnboundedArchiving : public MOElitism<XMES2> {
   using XMEv = typename XMES2::second_type;
 
  protected:

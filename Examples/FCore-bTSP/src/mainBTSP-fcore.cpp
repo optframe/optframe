@@ -139,6 +139,8 @@ class CrossTSPRandomPoint : public GeneralCrossover<
       (*s1)[j] = p2[j];
       (*s2)[j] = p1[j];
     }
+    std::cout << "WARNING: we need to fix this crossover,";
+    std::cout << "otherwise cities may repeat!" << std::endl;
     return {s1, s2};
   }
 };

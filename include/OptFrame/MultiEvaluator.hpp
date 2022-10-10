@@ -89,6 +89,7 @@ class MultiEvaluator : public GeneralEvaluator<XMES,
 
   explicit MultiEvaluator(bool _allowCosts = false)
       : allowCosts(_allowCosts) {
+    nObjectives = 0;
   }
 
   virtual void addEvaluator(sref<Evaluator<S, XEv, XES>> ev) {
