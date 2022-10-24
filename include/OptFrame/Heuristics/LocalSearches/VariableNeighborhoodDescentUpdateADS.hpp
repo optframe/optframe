@@ -108,7 +108,7 @@ class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES, XEv> {
     return SearchStatus::NO_REPORT;
   }
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
   }
 
@@ -118,11 +118,11 @@ class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES, XEv> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
-  virtual string toString() const {
+  std::string toString() const override {
     stringstream ss;
     ss << "VND: [ ";
     for (unsigned i = 0; i < lsList.size(); i++) {
@@ -145,7 +145,9 @@ class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<S,
   virtual ~VariableNeighborhoodDescentUpdateADSBuilder() {
   }
 
-  virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+  LocalSearch<XES, XEv>* build(Scanner& scanner,
+                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                               string family = "") override {
     sptr<GeneralEvaluator<XES, XEv>> eval;
     hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
 
@@ -161,7 +163,7 @@ class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<S,
     return new VariableNeighborhoodDescentUpdateADS<R, ADS, S, XEv>(eval, adsMan, hlist);
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
 
@@ -174,7 +176,7 @@ class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<S,
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == VariableNeighborhoodDescentUpdateADS<R, ADS, S, XEv>::idComponent();
   }
 
@@ -188,7 +190,7 @@ class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<S,
     return id();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

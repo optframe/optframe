@@ -43,11 +43,11 @@ class MOILSLPerturbation : public Component, public MOILS {
 
   virtual void perturb(XMES& smev, const StopCriteria<XMEv>& stopCriteria, int level) = 0;
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
@@ -110,7 +110,7 @@ class MOILSLPerturbationLPlus2 : public MOILSLPerturbation<XMES, XMEv> {
     evaluator->reevaluate(smev);  // updates 'mev'
   }
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (MOILSLPerturbation<XMES, XMEv>::compatible(s));
   }
 
@@ -120,7 +120,7 @@ class MOILSLPerturbationLPlus2 : public MOILSLPerturbation<XMES, XMEv> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
@@ -215,7 +215,7 @@ class MOILSLPerturbationLPlus2Prob : public MOILSLPerturbation<XMES, XMEv> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

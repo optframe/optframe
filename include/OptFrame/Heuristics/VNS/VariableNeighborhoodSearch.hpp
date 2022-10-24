@@ -95,7 +95,7 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
     }
   }
 
-  virtual LocalSearch<XES, XEv>& buildSearch(unsigned k_search) = 0;
+  virtual sref<LocalSearch<XES, XEv>> buildSearch(unsigned k_search) = 0;
 
   /*
    XES genPair(double timelimit)
@@ -203,7 +203,7 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

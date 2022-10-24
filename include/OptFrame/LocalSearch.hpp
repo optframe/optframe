@@ -92,7 +92,7 @@ class LocalSearch : public Component {
     return los_unknown;
   }
 
-  virtual bool compatible(string s) override {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
@@ -126,19 +126,20 @@ class LocalSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
   virtual ~LocalSearchBuilder() {
   }
 
-  virtual LocalSearch<XES, XEv, XSH>* build(Scanner& scanner,
-                                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                                            string family = "") = 0;
+  virtual LocalSearch<XES, XEv, XSH>* build(
+      Scanner& scanner,
+      HeuristicFactory<S, XEv, XES, X2ES>& hf,
+      string family = "") = 0;
 
-  virtual Component* buildComponent(Scanner& scanner,
-                                    HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                                    string family = "") {
+  Component* buildComponent(Scanner& scanner,
+                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                            string family = "") override {
     return build(scanner, hf, family);
   }
 
-  virtual std::vector<pair<string, string>> parameters() = 0;
+  std::vector<pair<string, string>> parameters() override = 0;
 
-  virtual bool canBuild(string) = 0;
+  bool canBuild(string) override = 0;
 
   static string idComponent() {
     stringstream ss;

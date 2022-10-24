@@ -45,7 +45,7 @@ class InitialMultiSolution : public Component {
 
   virtual X2S generatePopulation(unsigned populationSize) = 0;
 
-  bool compatible(string s) override {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
@@ -117,21 +117,21 @@ class BasicInitialPopulationBuilder : public ComponentBuilder<S, XEv, XES> {
   virtual ~BasicInitialPopulationBuilder() {
   }
 
-  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "") {
+   Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "") override {
     Constructive<S>* c;
     hf.assign(c, *scanner.nextInt(), scanner.next());  // reads backwards!
 
     return new BasicInitialMultiSolution<S>(*c);
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
     params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == BasicInitialMultiSolution<S>::idComponent();
   }
 
@@ -141,7 +141,7 @@ class BasicInitialPopulationBuilder : public ComponentBuilder<S, XEv, XES> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

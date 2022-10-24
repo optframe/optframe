@@ -476,11 +476,11 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>, public ITrajectory<
     return search(stopCriteria);
   }
 
-  virtual bool compatible(string s) override {
+  virtual bool compatible(std::string s) override {
     return (s == idComponent()) || (SingleObjSearch<XES>::compatible(s));
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
@@ -503,7 +503,9 @@ class BasicSimulatedAnnealingBuilder : public SA, public GlobalSearchBuilder<XES
   }
 
   // has sptr instead of sref, is that on purpose or legacy class?
-  virtual GlobalSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+  GlobalSearch<XES>* build(Scanner& scanner,
+                           HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                           string family = "") override {
     if (Component::debug)
       std::cout << "BasicSA Builder Loading Parameter #0" << std::endl;
     if (!scanner.hasNext()) {
@@ -599,7 +601,7 @@ class BasicSimulatedAnnealingBuilder : public SA, public GlobalSearchBuilder<XES
     return new BasicSimulatedAnnealing<XES>(ge, constructive, hlist, alpha, SAmax, Ti, hf.getRandGen());
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     //params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
     params.push_back(make_pair(Evaluator<typename XES::first_type, typename XES::second_type, XES>::idComponent(), "evaluation function"));
@@ -616,7 +618,7 @@ class BasicSimulatedAnnealingBuilder : public SA, public GlobalSearchBuilder<XES
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == BasicSimulatedAnnealing<XES>::idComponent();
   }
 
@@ -626,7 +628,7 @@ class BasicSimulatedAnnealingBuilder : public SA, public GlobalSearchBuilder<XES
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

@@ -124,7 +124,7 @@ class FirstImprovingNeighbor : public NeighborhoodExploration<XES, XEv> {
     return nullopt;
   }
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (NeighborhoodExploration<XES, XEv>::compatible(s));
   }
 
@@ -138,7 +138,7 @@ class FirstImprovingNeighbor : public NeighborhoodExploration<XES, XEv> {
     return idComponent();
   }
 
-  virtual string toString() const {
+  std::string toString() const override {
     stringstream ss;
     ss << "FirstImprovingNeighbor: " << nsSeq.toString();
     return ss.str();
@@ -161,7 +161,7 @@ class FirstImprovingNeighborBuilder : public NeighborhoodExplorationBuilder<S, X
     return new FirstImprovingNeighbor<XES, XEv, XSH>(*eval, *nsseq);
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
     params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(), "neighborhood structure"));
@@ -169,7 +169,7 @@ class FirstImprovingNeighborBuilder : public NeighborhoodExplorationBuilder<S, X
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == FirstImprovingNeighbor<XES, XEv>::idComponent();
   }
 

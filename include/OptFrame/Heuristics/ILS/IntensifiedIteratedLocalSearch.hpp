@@ -119,7 +119,7 @@ class IntensifiedIteratedLocalSearch : public SingleObjSearch<XES> {
     return new pair<Solution<R, ADS>&, Evaluation<>&>(s, e);
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 

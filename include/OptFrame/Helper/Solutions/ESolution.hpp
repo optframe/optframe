@@ -267,11 +267,11 @@ class ESolution final : public Component, public IESolution<ESolution<R, ADS, XE
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
-  virtual string toString() const {
+  std::string toString() const override {
     std::stringstream ss;
     ss << "ESolution: " << this->first.getR();
     if (this->first.hasADS())

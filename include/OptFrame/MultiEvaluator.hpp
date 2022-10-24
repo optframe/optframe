@@ -155,24 +155,24 @@ class MultiEvaluator : public GeneralEvaluator<XMES,
   // =======================
 
   // this strictly better than parameter 'e' (for mini, 'this' < 'e')
-  virtual bool betterStrict(const XMEv& e1, const XMEv& e2) {
+  bool betterStrict(const XMEv& e1, const XMEv& e2) override {
     assert(false);
     return false;
   }
 
   // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
-  virtual bool isStrictImprovement(const XMEv& e) {
+  bool isStrictImprovement(const XMEv& e) override {
     assert(false);
     return false;
   }
 
   // returns 'true' if this 'cost' (represented by this Evaluation) is improvement
-  virtual bool isNonStrictImprovement(const XMEv& e) {
+  bool isNonStrictImprovement(const XMEv& e) override {
     assert(false);
     return false;
   }
 
-  virtual bool equals(const XMEv& e1, const XMEv& e2) {
+  bool equals(const XMEv& e1, const XMEv& e2) override {
     assert(false);
     return false;
   }
@@ -181,7 +181,7 @@ class MultiEvaluator : public GeneralEvaluator<XMES,
 
  public:
   // ============= Component ===============
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) ||
            (GeneralEvaluator<XMES, XMEv, XSH>::compatible(s));
   }
@@ -206,9 +206,9 @@ class MultiEvaluatorBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
   virtual ~MultiEvaluatorBuilder() {
   }
 
-  virtual Component* buildComponent(Scanner& scanner,
-                                    HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                                    string family = "") {
+  Component* buildComponent(Scanner& scanner,
+                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                            string family = "") override {
     //
     vsptr<Evaluator<S, XEv, XES>> _evlist;
     std::string sid_0 = scanner.next();
@@ -223,7 +223,7 @@ class MultiEvaluatorBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     return new MultiEvaluator<XMES>(evlist);
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     std::stringstream ss;
     ss << Evaluator<S, XEv, XES>::idComponent() << "[]";
@@ -232,7 +232,7 @@ class MultiEvaluatorBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == MultiEvaluator<XMES>::idComponent();
   }
 
@@ -264,10 +264,9 @@ class MultiEvaluatorMultiBuilder : public ComponentMultiBuilder<S, XMEv, XMES, X
   virtual ~MultiEvaluatorMultiBuilder() {
   }
 
-  virtual Component* buildMultiComponent(
-      Scanner& scanner,
-      HeuristicFactory<S, XEv, XES, X2ES>& hf,
-      string family = "") {
+  Component* buildMultiComponent(Scanner& scanner,
+                                 HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                 string family = "") override {
     vsptr<Evaluator<S, XEv, XES>> _evlist;
     std::string sid_0 = scanner.next();
     int id_0 = *scanner.nextInt();

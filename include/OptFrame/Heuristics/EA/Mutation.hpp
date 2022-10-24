@@ -60,7 +60,7 @@ class Mutation : public Component, public EA {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
@@ -99,7 +99,7 @@ class BasicMutation : public Mutation<S, XEv> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
@@ -110,7 +110,9 @@ class BasicMutationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
   virtual ~BasicMutationBuilder() {
   }
 
-  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+  Component* buildComponent(Scanner& scanner,
+                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                            string family = "") override {
     int n = *scanner.nextInt();
 
     vector<NS<XES, XEv>*> ns_list;
@@ -119,7 +121,7 @@ class BasicMutationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     return new BasicMutation<S, XEv>(n, ns_list, hf.getRandGen());
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     params.push_back(make_pair("OptFrame:int", "number of moves"));
     stringstream ss;
@@ -129,7 +131,7 @@ class BasicMutationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == BasicMutation<S, XEv>::idComponent();
   }
 
@@ -139,7 +141,7 @@ class BasicMutationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

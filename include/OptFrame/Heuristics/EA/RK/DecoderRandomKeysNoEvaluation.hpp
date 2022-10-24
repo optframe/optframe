@@ -25,37 +25,32 @@
 
 namespace optframe {
 
-template<XSolution S, optframe::comparability KeyType>
-class DecoderRandomKeysNoEvaluation : public Component
-{
-   using RSK = std::vector<KeyType>;
+template <XSolution S, optframe::comparability KeyType>
+class DecoderRandomKeysNoEvaluation : public Component {
+  using RSK = std::vector<KeyType>;
 
-public:
-   virtual ~DecoderRandomKeysNoEvaluation()
-   {
-   }
+ public:
+  virtual ~DecoderRandomKeysNoEvaluation() {
+  }
 
-   virtual S decodeSolution(const RSK& rk) = 0;
+  virtual S decodeSolution(const RSK& rk) = 0;
 
-public:
-   static std::string idComponent()
-   {
-      std::stringstream ss;
-      ss << Component::idComponent() << ":" << EA::family() << ":" << RK::family() << "DecoderRandomKeysNoEvaluation";
-      return ss.str();
-   }
+ public:
+  static std::string idComponent() {
+    std::stringstream ss;
+    ss << Component::idComponent() << ":" << EA::family() << ":" << RK::family() << "DecoderRandomKeysNoEvaluation";
+    return ss.str();
+  }
 
-   virtual std::string id() const
-   {
-      return idComponent();
-   }
+  std::string id() const override {
+    return idComponent();
+  }
 
-   std::string toString() const override
-   {
-      return id();
-   }
+  std::string toString() const override {
+    return id();
+  }
 };
 
-} // namespace optframe
+}  // namespace optframe
 
 #endif /*OPTFRAME_DECODER_RANDOM_KEYS_NOEVALUATION_HPP_*/

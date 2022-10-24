@@ -25,6 +25,8 @@
 
 // C++
 #include <iostream>
+#include <string>
+#include <utility>
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
@@ -105,7 +107,7 @@ class NeighborhoodExploration : public LocalSearch<XES, XEv, XSH>               
   // Output move may be nullptr. Otherwise it's a pair of Move and its Cost.
   virtual op<RichMove<XES, XEv>> searchMove(const XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
@@ -115,7 +117,7 @@ class NeighborhoodExploration : public LocalSearch<XES, XEv, XSH>               
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
@@ -126,15 +128,20 @@ class NeighborhoodExplorationBuilder : public ComponentBuilder<S, XEv, XES, X2ES
   virtual ~NeighborhoodExplorationBuilder() {
   }
 
-  virtual NeighborhoodExploration<XES, XEv, XSH>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
+  virtual NeighborhoodExploration<XES, XEv, XSH>* build(
+      Scanner& scanner,
+      HeuristicFactory<S, XEv, XES, X2ES>& hf,
+      string family = "") = 0;
 
-  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+  Component* buildComponent(Scanner& scanner,
+                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                            string family = "") override {
     return build(scanner, hf, family);
   }
 
-  virtual vector<pair<string, string>> parameters() = 0;
+  vector<pair<string, string>> parameters() override = 0;
 
-  virtual bool canBuild(string) = 0;
+  bool canBuild(string) override = 0;
 
   static string idComponent() {
     stringstream ss;
@@ -142,7 +149,7 @@ class NeighborhoodExplorationBuilder : public ComponentBuilder<S, XEv, XES, X2ES
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

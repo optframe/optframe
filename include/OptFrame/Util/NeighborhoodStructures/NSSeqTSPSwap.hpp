@@ -126,15 +126,15 @@ class NSSeqTSPSwap : public NSSeq<XES, XEv, XSH> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (NSSeq<XES, XEv, XSH>::compatible(s));
   }
 
-  virtual string toString() const {
+  std::string toString() const override {
     stringstream ss;
     ss << "NSSeqTSPSwap";
     return ss.str();

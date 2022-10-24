@@ -54,11 +54,11 @@ class NSFind : public NS<XES, XEv, XSH> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (NS<XES, XEv>::compatible(s));
   }
 };

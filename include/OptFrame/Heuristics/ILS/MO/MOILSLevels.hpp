@@ -114,11 +114,11 @@ class MOILSLevels : public MultiObjILS<levelHistory, typename XMES::first_type, 
     return (level >= levelMax);
   }
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (MultiObjSearch<XMES>::compatible(s));
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 

@@ -89,11 +89,11 @@ class BasicMOILS : public MultiObjILS<BasicHistory, typename XMES::first_type, X
     return (iter >= iterMax);
   }
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (MultiObjSearch<XMES>::compatible(s));
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 

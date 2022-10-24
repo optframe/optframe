@@ -41,7 +41,7 @@ class ExtMOSSelection : Component {
   // select individuals and FREE unused individuals, keep archive updated
   virtual void extSelect(unsigned target_size, vector<MOSIndividual<R>*>& ps, vector<MOSExtIndividual<R, X>*>& p, vector<MOSExtIndividual<R, X>*>& archive) = 0;
 
-  virtual void print() const {
+  void print() const override {
     cout << "ExtMOSSelection" << endl;
   }
 };

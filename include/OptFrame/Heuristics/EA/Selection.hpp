@@ -83,7 +83,7 @@ class Selection : public Component, public EA {
     }
   }
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
@@ -93,7 +93,7 @@ class Selection : public Component, public EA {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

@@ -23,17 +23,14 @@
 #ifndef OPTFRAME_NSSEQTSP2OPT_HPP_
 #define OPTFRAME_NSSEQTSP2OPT_HPP_
 
-#include "../../Move.hpp"
-#include "../../NSSeq.hpp"
-
-#include "BaseSolutionTSP.hpp"
-
-#include "Moves/MoveTSP2Opt.hpp"
-#include "NSIterators/IteratorTSP2Opt.hpp"
+#include <type_traits>  // static assert is_same
 
 #include "../../BaseConcepts.hpp"
-
-#include <type_traits> // static assert is_same
+#include "../../Move.hpp"
+#include "../../NSSeq.hpp"
+#include "BaseSolutionTSP.hpp"
+#include "Moves/MoveTSP2Opt.hpp"
+#include "NSIterators/IteratorTSP2Opt.hpp"
 
 using namespace std;
 using namespace optframe;
@@ -95,71 +92,62 @@ using namespace optframe;
  */
 
 //template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>,ADS> S = CopySolution<vector<T>,ADS>, class MOVE = MoveTSPSwap<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSPSwap<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>>
-template<class T, class ADS, XBaseSolution<vector<T>, ADS> S, class MOVE = MoveTSP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSP2Opt<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class NSSeqTSP2Opt : public NSSeq<XES, XEv>
-{
-   typedef vector<T> Route;
+template <class T, class ADS, XBaseSolution<vector<T>, ADS> S, class MOVE = MoveTSP2Opt<T, ADS, S>, class P = OPTFRAME_DEFAULT_PROBLEM, class NSITERATOR = NSIteratorTSP2Opt<T, ADS, S, MOVE, P>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+class NSSeqTSP2Opt : public NSSeq<XES, XEv> {
+  typedef vector<T> Route;
 
-private:
-   std::shared_ptr<P> p; // has to be the last
+ private:
+  std::shared_ptr<P> p;  // has to be the last
 
-public:
-   NSSeqTSP2Opt(std::shared_ptr<P> _p = nullptr)
-     : p(_p)
-   {
-   }
+ public:
+  NSSeqTSP2Opt(std::shared_ptr<P> _p = nullptr)
+      : p(_p) {
+  }
 
-   virtual ~NSSeqTSP2Opt()
-   {
-   }
+  virtual ~NSSeqTSP2Opt() {
+  }
 
-   uptr<Move<XES, XEv>> randomMove(const XES& s) override
-   {
-      const Route& rep = s.first.getR();
-      if (rep.size() < 2)
-         return uptr<Move<XES, XEv>>(new MOVE(-1, -1, p));
+  uptr<Move<XES, XEv>> randomMove(const XES& s) override {
+    const Route& rep = s.first.getR();
+    if (rep.size() < 2)
+      return uptr<Move<XES, XEv>>(new MOVE(-1, -1, p));
 
-      int p1 = rand() % (rep.size() + 1);
-      int p2 = rand() % (rep.size() + 1);
+    int p1 = rand() % (rep.size() + 1);
+    int p2 = rand() % (rep.size() + 1);
 
-      do {
-         p1 = rand() % (rep.size() + 1);
-         p2 = rand() % (rep.size() + 1);
-      } while ((abs(p1 - p2) < 2) || (p1 > p2));
+    do {
+      p1 = rand() % (rep.size() + 1);
+      p2 = rand() % (rep.size() + 1);
+    } while ((abs(p1 - p2) < 2) || (p1 > p2));
 
-      // create 2-opt(p1,p2) move
-      return uptr<Move<XES, XEv>>(new MOVE(p1, p2, p));
-   }
+    // create 2-opt(p1,p2) move
+    return uptr<Move<XES, XEv>>(new MOVE(p1, p2, p));
+  }
 
-   virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& se) override
-   {
-      return uptr<NSIterator<XES, XEv>>(new NSITERATOR(se.first, p));
-   }
+  virtual uptr<NSIterator<XES, XEv>> getIterator(const XES& se) override {
+    return uptr<NSIterator<XES, XEv>>(new NSITERATOR(se.first, p));
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << NSSeq<XES, XEv>::idComponent() << ":NSSeqTSP2Opt";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << NSSeq<XES, XEv>::idComponent() << ":NSSeqTSP2Opt";
+    return ss.str();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 
-   virtual bool compatible(string s)
-   {
-      return (s == idComponent()) || (NSSeq<XES, XEv>::compatible(s));
-   }
+  bool compatible(std::string s) override {
+    return (s == idComponent()) || (NSSeq<XES, XEv>::compatible(s));
+  }
 
-   virtual string toString() const
-   {
-      stringstream ss;
-      ss << "NSSeqTSP2Opt with move: " << MOVE::idComponent();
+  std::string toString() const override {
+    stringstream ss;
+    ss << "NSSeqTSP2Opt with move: " << MOVE::idComponent();
 
-      return ss.str();
-   }
+    return ss.str();
+  }
 };
 
 // compile tests

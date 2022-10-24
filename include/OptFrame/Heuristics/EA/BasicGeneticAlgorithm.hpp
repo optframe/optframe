@@ -280,7 +280,7 @@ class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public EA {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
@@ -322,7 +322,7 @@ class BasicGeneticAlgorithmBuilder : public EA, public SingleObjSearchBuilder<S,
     return new BasicGeneticAlgorithm<R, ADS>(*eval, *initPop, popSize, pCross, pMut, pLS, nGen, *sel, *cross, *mut, *h, hf.getRandGen());
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     params.push_back(make_pair(Evaluator<S>::idComponent(), "evaluation function"));
     params.push_back(make_pair(InitialMultiSolution<S>::idComponent(), "generator for initial population"));
@@ -339,7 +339,7 @@ class BasicGeneticAlgorithmBuilder : public EA, public SingleObjSearchBuilder<S,
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == BasicGeneticAlgorithmBuilder<R, ADS>::idComponent();
   }
 
@@ -349,7 +349,7 @@ class BasicGeneticAlgorithmBuilder : public EA, public SingleObjSearchBuilder<S,
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

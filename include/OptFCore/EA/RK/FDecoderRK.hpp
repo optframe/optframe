@@ -23,66 +23,58 @@
 #ifndef OPTFRAME_FCORE_FDECODER_RK_HPP_
 #define OPTFRAME_FCORE_FDECODER_RK_HPP_
 
-#include <functional>
-
 #include <OptFrame/Heuristics/EA/RK/DecoderRandomKeys.hpp>
+#include <functional>
 
 namespace optframe {
 
-template<
-  XESolution XES,
-  optframe::comparability KeyType,
-  MinOrMax Minimizing>
-class FDecoderRK final : public DecoderRandomKeys<XES, KeyType>
-{
-   using S = typename XES::first_type;
-   using XEv = typename XES::second_type;
-   using RSK = std::vector<KeyType>;
+template <
+    XESolution XES,
+    optframe::comparability KeyType,
+    MinOrMax Minimizing>
+class FDecoderRK final : public DecoderRandomKeys<XES, KeyType> {
+  using S = typename XES::first_type;
+  using XEv = typename XES::second_type;
+  using RSK = std::vector<KeyType>;
 
-public:
-   //pair<XEv, S> (*fDecode)(const RSK& rk); // decode function
+ public:
+  //pair<XEv, S> (*fDecode)(const RSK& rk); // decode function
 
 #ifdef OPTFCORE_FUNC_STATIC
-   typedef pair<XEv, S> (*FuncTypeDecode)(const RSK& rk);
+  typedef pair<XEv, S> (*FuncTypeDecode)(const RSK& rk);
 #else
-   typedef std::function<pair<XEv, S>(const RSK&)> FuncTypeDecode;
+  typedef std::function<pair<XEv, S>(const RSK&)> FuncTypeDecode;
 #endif
 
-   FuncTypeDecode fDecode;
+  FuncTypeDecode fDecode;
 
-   FDecoderRK(FuncTypeDecode _fDecode)
-     : fDecode{ _fDecode }
-   {
-   }
+  FDecoderRK(FuncTypeDecode _fDecode)
+      : fDecode{_fDecode} {
+  }
 
-   virtual ~FDecoderRK()
-   {
-   }
+  virtual ~FDecoderRK() {
+  }
 
-   virtual pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) override
-   {
-      auto p = fDecode(rk);
-      return make_pair(p.first, make_optional(p.second));
-   }
+  virtual pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) override {
+    auto p = fDecode(rk);
+    return make_pair(p.first, make_optional(p.second));
+  }
 
-   virtual bool isMinimization() const override
-   {
-      return Minimizing == MinOrMax::MINIMIZE;
-   }
+  virtual bool isMinimization() const override {
+    return Minimizing == MinOrMax::MINIMIZE;
+  }
 
-   static std::string idComponent()
-   {
-      std::stringstream ss;
-      ss << DecoderRandomKeys<XES, KeyType>::idComponent() << ":FDecoderRK";
-      return ss.str();
-   }
+  static std::string idComponent() {
+    std::stringstream ss;
+    ss << DecoderRandomKeys<XES, KeyType>::idComponent() << ":FDecoderRK";
+    return ss.str();
+  }
 
-   virtual std::string id() const
-   {
-      return idComponent();
-   }
+  std::string id() const override {
+    return idComponent();
+  }
 };
 
-} // namespace optframe
+}  // namespace optframe
 
 #endif /*OPTFRAME_FCORE_FDECODER_RK_HPP_*/

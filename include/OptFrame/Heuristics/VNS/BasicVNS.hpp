@@ -49,11 +49,11 @@ class BasicVNS : public VariableNeighborhoodSearch<XES, XEv> {
   virtual ~BasicVNS() {
   }
 
-  virtual LocalSearch<XES, XEv>& buildSearch(unsigned k_search) {
+  sref<LocalSearch<XES, XEv>> buildSearch(unsigned k_search) override {
     return *new BestImprovement<XES, XEv>(super::evaluator, super::vsearch.at(k_search));
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
@@ -70,7 +70,9 @@ class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, XES> {
   virtual ~BasicVNSBuilder() {
   }
 
-  virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+  SingleObjSearch<XES>* build(Scanner& scanner,
+                              HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                              string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
     hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
 
@@ -93,7 +95,7 @@ class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, XES> {
     return new BasicVNS<XES, XEv>(eval, constructive, shakelist, searchlist);
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     params.push_back(make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
     //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
@@ -110,7 +112,7 @@ class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, XES> {
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == BasicVNS<XES, XEv>::idComponent();
   }
 
@@ -120,7 +122,7 @@ class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, XES> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

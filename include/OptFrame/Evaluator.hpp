@@ -260,7 +260,7 @@ class Evaluator : public GeneralEvaluator<XES, XEv, XES>,
     return id();
   }
 
-  virtual bool compatible(string s) override {
+  virtual bool compatible(std::string s) override {
     // forcing comparison here (with GeneralEvaluator) due to Multiple Inheritance
     // TODO: find better solution to this
     //return (s == idComponent()) || (direction->compatible(s)) || (s == "OptFrame:GeneralEvaluator"); //|| (GeneralEvaluator<XES, XEv, XES>::compatible(s));
@@ -277,7 +277,7 @@ class Evaluator : public GeneralEvaluator<XES, XEv, XES>,
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 

@@ -144,7 +144,9 @@ class BasicInitialMultiESolutionBuilder : public ComponentBuilder<S, XEv, XES, X
   virtual ~BasicInitialMultiESolutionBuilder() {
   }
 
-  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+  Component* buildComponent(Scanner& scanner,
+                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                            string family = "") override {
     //
     sptr<Constructive<S>> c;
     std::string sid_0 = scanner.next();
@@ -188,7 +190,7 @@ class BasicInitialMultiESolutionBuilder : public ComponentBuilder<S, XEv, XES, X
     return id();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

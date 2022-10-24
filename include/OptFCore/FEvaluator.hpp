@@ -44,7 +44,7 @@ class FEvaluator final : public Evaluator<typename XES::first_type,
         fEvaluate{_fEvaluate} {
   }
 
-  virtual XEv evaluate(const S& s) {
+  XEv evaluate(const S& s) override {
     return fEvaluate(s);
   }
 

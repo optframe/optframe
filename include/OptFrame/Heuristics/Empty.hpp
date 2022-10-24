@@ -30,90 +30,76 @@
 
 namespace optframe {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
-class EmptyLocalSearch : public LocalSearch<XES, XEv>
-{
-public:
-   EmptyLocalSearch()
-   {
-   }
+template <XESolution XES, XEvaluation XEv = Evaluation<>>
+class EmptyLocalSearch : public LocalSearch<XES, XEv> {
+ public:
+  EmptyLocalSearch() {
+  }
 
-   virtual ~EmptyLocalSearch()
-   {
-   }
+  virtual ~EmptyLocalSearch() {
+  }
 
-   virtual SearchStatus searchFrom(XES&, const StopCriteria<XEv>& stopCriteria) override
-   {
-      // placeholder for empty local search
-      return SearchStatus::NO_REPORT;
-   };
+  virtual SearchStatus searchFrom(XES&, const StopCriteria<XEv>& stopCriteria) override {
+    // placeholder for empty local search
+    return SearchStatus::NO_REPORT;
+  };
 
-   string log() const
-   {
-      return "Heuristic Empty: no log.";
-   }
+  string log() const {
+    return "Heuristic Empty: no log.";
+  }
 
-   virtual bool compatible(string s)
-   {
-      return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
-   }
+  bool compatible(std::string s) override {
+    return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << LocalSearch<XES, XEv>::idComponent() << ":Empty";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << LocalSearch<XES, XEv>::idComponent() << ":Empty";
+    return ss.str();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
-class EmptyLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES>
-{
-public:
-   virtual ~EmptyLocalSearchBuilder()
-   {
-   }
+template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+class EmptyLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+ public:
+  virtual ~EmptyLocalSearchBuilder() {
+  }
 
-   virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
-   {
-      return new EmptyLocalSearch<XES, XEv>;
-   }
+  LocalSearch<XES, XEv>* build(Scanner& scanner,
+                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                               string family = "") override {
+    return new EmptyLocalSearch<XES, XEv>;
+  }
 
-   virtual vector<pair<string, string>> parameters()
-   {
-      vector<pair<string, string>> params;
+  vector<pair<std::string, std::string>> parameters() override {
+    vector<pair<string, string>> params;
 
-      return params;
-   }
+    return params;
+  }
 
-   virtual bool canBuild(string component)
-   {
-      return component == EmptyLocalSearch<XES, XEv>::idComponent();
-   }
+  bool canBuild(std::string component) override {
+    return component == EmptyLocalSearch<XES, XEv>::idComponent();
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << LocalSearchBuilder<S, XEv>::idComponent() << ":Empty";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << LocalSearchBuilder<S, XEv>::idComponent() << ":Empty";
+    return ss.str();
+  }
 
-   std::string toString() const override
-   {
-      return id();
-   }
+  std::string toString() const override {
+    return id();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /*OPTFRAME_EMPTY_HPP_*/

@@ -20,147 +20,134 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_RDM_HPP_
-#define OPTFRAME_RDM_HPP_
+#ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_RANDOMDESCENTMETHOD_HPP_
+#define OPTFRAME_HEURISTICS_LOCALSEARCHES_RANDOMDESCENTMETHOD_HPP_
 
+#include <string>
+//
 #include "../../LocalSearch.hpp"
-
 #include "../../NS.hpp"
 #include "../../Timer.hpp"
 
 namespace optframe {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
-class RandomDescentMethod : public LocalSearch<XES, XEv, XES>
-{
-private:
-   sref<GeneralEvaluator<XES, XEv>> evaluator;
-   sref<NS<XES, XEv>> ns;
-   unsigned int iterMax;
+template <XESolution XES, XEvaluation XEv = Evaluation<>>
+class RandomDescentMethod : public LocalSearch<XES, XEv, XES> {
+ private:
+  sref<GeneralEvaluator<XES, XEv>> evaluator;
+  sref<NS<XES, XEv>> ns;
+  unsigned int iterMax;
 
-public:
-   RandomDescentMethod(sref<GeneralEvaluator<XES, XEv>> _eval, sref<NS<XES, XEv>> _ns, unsigned int _iterMax)
-     : evaluator(_eval)
-     , ns(_ns)
-     , iterMax(_iterMax)
-   {
-   }
+ public:
+  RandomDescentMethod(sref<GeneralEvaluator<XES, XEv>> _eval, sref<NS<XES, XEv>> _ns, unsigned int _iterMax)
+      : evaluator(_eval), ns(_ns), iterMax(_iterMax) {
+  }
 
-   virtual ~RandomDescentMethod()
-   {
-   }
+  virtual ~RandomDescentMethod() {
+  }
 
-   // DEPRECATED
-   //virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
-   //{
-   //	Evaluation<> e = std::move(ev.evaluate(s));
-   //	exec(s, e, stopCriteria);
-   //}
+  // DEPRECATED
+  //virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
+  //{
+  //	Evaluation<> e = std::move(ev.evaluate(s));
+  //	exec(s, e, stopCriteria);
+  //}
 
-   virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) override
-   {
-      //XSolution& s = se.first;
-      //XEv& e = se.second;
-      //Timer tNow;
+  virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) override {
+    //XSolution& s = se.first;
+    //XEv& e = se.second;
+    //Timer tNow;
 
-      unsigned int iter = 0;
+    unsigned int iter = 0;
 
-      // TODO: de-referentiation of 'target_f' WILL crash, if not provided!! removing 'target_f'
-      while ((iter < iterMax) && !stopCriteria.shouldStop(se.second)) //(tNow.now() < stopCriteria.timelimit)) //&& (evaluator.betterThan(*stopCriteria.target_f, se)))
-      {
-         //uptr<Move<XES, XEv>> move = ns.randomMove(s);
-         uptr<Move<XES, XEv>> move = ns->randomMove(se);
+    // TODO: de-referentiation of 'target_f' WILL crash, if not provided!! removing 'target_f'
+    while ((iter < iterMax) && !stopCriteria.shouldStop(se.second))  //(tNow.now() < stopCriteria.timelimit)) //&& (evaluator.betterThan(*stopCriteria.target_f, se)))
+    {
+      //uptr<Move<XES, XEv>> move = ns.randomMove(s);
+      uptr<Move<XES, XEv>> move = ns->randomMove(se);
 
-         op<XEv> cost = nullopt;
+      op<XEv> cost = nullopt;
 
-         //if (move && move->canBeApplied(s))
-         if (move && move->canBeApplied(se)) {
-            cost = evaluator->moveCost(*move, se);
-         } else {
-            iter++;
-            continue;
-         }
-
-         iter++;
-
-         //if (cost && evaluator.isImprovement(*cost))
-         //if (cost && cost->isImprovingStrict())
-         if (cost && evaluator->isStrictImprovement(*cost)) {
-            move->applyUpdate(se);
-            evaluator->reevaluate(se);
-            iter = 0;
-         }
+      //if (move && move->canBeApplied(s))
+      if (move && move->canBeApplied(se)) {
+        cost = evaluator->moveCost(*move, se);
+      } else {
+        iter++;
+        continue;
       }
-      return SearchStatus::NO_REPORT;
-   }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << LocalSearch<XES, XEv>::idComponent() << ":RDM";
-      return ss.str();
-   }
+      iter++;
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+      //if (cost && evaluator.isImprovement(*cost))
+      //if (cost && cost->isImprovingStrict())
+      if (cost && evaluator->isStrictImprovement(*cost)) {
+        move->applyUpdate(se);
+        evaluator->reevaluate(se);
+        iter = 0;
+      }
+    }
+    return SearchStatus::NO_REPORT;
+  }
+
+  static string idComponent() {
+    stringstream ss;
+    ss << LocalSearch<XES, XEv>::idComponent() << ":RDM";
+    return ss.str();
+  }
+
+  virtual string id() const override {
+    return idComponent();
+  }
 };
 
-template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
-class RandomDescentMethodBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES>
-{
-public:
-   virtual ~RandomDescentMethodBuilder()
-   {
-   }
+template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+class RandomDescentMethodBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+ public:
+  virtual ~RandomDescentMethodBuilder() {
+  }
 
-   virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "")
-   {
-      sptr<GeneralEvaluator<XES, XEv>> eval;
-      hf.assign(eval, *scanner.nextInt(), scanner.next()); // reads backwards!
+  LocalSearch<XES, XEv>* build(Scanner& scanner,
+                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                               string family = "") override {
+    sptr<GeneralEvaluator<XES, XEv>> eval;
+    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
 
-      sptr<NS<XES, XEv>> ns;
-      hf.assign(ns, *scanner.nextInt(), scanner.next()); // reads backwards!
+    sptr<NS<XES, XEv>> ns;
+    hf.assign(ns, *scanner.nextInt(), scanner.next());  // reads backwards!
 
-      int iterMax = *scanner.nextInt();
+    int iterMax = *scanner.nextInt();
 
-      return new RandomDescentMethod<XES, XEv>(eval, ns, iterMax);
-   }
+    return new RandomDescentMethod<XES, XEv>(eval, ns, iterMax);
+  }
 
-   virtual vector<pair<string, string>> parameters()
-   {
-      vector<pair<string, string>> params;
-      params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
-      params.push_back(make_pair(NS<XES, XEv>::idComponent(), "neighborhood structure"));
-      params.push_back(make_pair("OptFrame:int", "max number of iterations without improvement"));
+  vector<pair<string, string>> parameters() override {
+    vector<pair<string, string>> params;
+    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
+    params.push_back(make_pair(NS<XES, XEv>::idComponent(), "neighborhood structure"));
+    params.push_back(make_pair("OptFrame:int", "max number of iterations without improvement"));
 
-      return params;
-   }
+    return params;
+  }
 
-   virtual bool canBuild(string component)
-   {
-      return component == RandomDescentMethod<XES, XEv>::idComponent();
-   }
+  bool canBuild(std::string component) override {
+    return component == RandomDescentMethod<XES, XEv>::idComponent();
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << LocalSearchBuilder<S, XEv>::idComponent() << ":RDM";
-      return ss.str();
-   }
+  static std::string idComponent() {
+    stringstream ss;
+    ss << LocalSearchBuilder<S, XEv>::idComponent() << ":RDM";
+    return ss.str();
+  }
 
-   std::string toString() const override
-   {
-      return id();
-   }
+  std::string toString() const override {
+    return id();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  std::string id() const override {
+    return idComponent();
+  }
 };
 
-}
+}  // namespace optframe
 
-#endif /*OPTFRAME_RDM_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_LOCALSEARCHES_RANDOMDESCENTMETHOD_HPP_

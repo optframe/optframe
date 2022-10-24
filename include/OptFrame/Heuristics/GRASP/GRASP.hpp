@@ -83,7 +83,7 @@ class GRASP : public SingleObjSearch<XES> {
     return new pair<Solution<R, ADS>&, Evaluation<DS>&>(s, e);
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
@@ -124,7 +124,7 @@ class GRASPBuilder : public GRASPH, public SingleObjSearchBuilder<R, ADS, DS> {
     return new GRASP<R, ADS, DS>(*eval, *constructive, *h, iterMax);
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
     //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
@@ -135,7 +135,7 @@ class GRASPBuilder : public GRASPH, public SingleObjSearchBuilder<R, ADS, DS> {
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == GRASPBuilder<R, ADS, DS>::idComponent();
   }
 
@@ -145,7 +145,7 @@ class GRASPBuilder : public GRASPH, public SingleObjSearchBuilder<R, ADS, DS> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

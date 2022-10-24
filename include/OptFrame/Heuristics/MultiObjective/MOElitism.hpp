@@ -46,7 +46,7 @@ class MOElitism : Component {
       const vector<const MOSIndividual<XMES2>>& P,
       vector<MOSIndividual<XMES2>>& archive) = 0;
 
-  virtual void print() const {
+  void print() const override {
     cout << "MOElitism" << endl;
   }
 };
@@ -67,7 +67,7 @@ class NoArchiving : public MOElitism<XMES2> {
     // DO ANYTHING! NSGA-II STYLE
   }
 
-  virtual void print() const {
+  void print() const override {
     cout << "NoArchiving" << endl;
   }
 };
@@ -96,7 +96,7 @@ class BoundedArchiving : public MOElitism<XMES2> {
     // USE DOMINANCE TO KEEP ARCHIVING SUBJECT TO LIMIT
   }
 
-  virtual void print() const {
+  void print() const override {
     cout << "BoundedArchiving(" << limit << ")" << endl;
   }
 };
@@ -124,7 +124,7 @@ class UnboundedArchiving : public MOElitism<XMES2> {
     // USE DOMINANCE TO KEEP ARCHIVING
   }
 
-  virtual void print() const {
+  void print() const override {
     cout << "UnboundedArchiving" << endl;
   }
 };

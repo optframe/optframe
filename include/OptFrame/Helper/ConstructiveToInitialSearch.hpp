@@ -23,12 +23,13 @@
 #ifndef OPTFRAME_CONSTRUCTIVE_TO_INITIALSEARCH_HPP_
 #define OPTFRAME_CONSTRUCTIVE_TO_INITIALSEARCH_HPP_
 
+#include <string>
+//
 #include <OptFrame/BaseConcepts.hpp>
-
-#include "Component.hpp"
+#include <OptFrame/Component.hpp>
 //#include "Solution.hpp"
 //#include "Solutions/CopySolution.hpp"
-#include "InitialSearch.hpp"  // TODO: remove
+#include <OptFrame/InitialSearch.hpp>  // TODO: remove
 
 namespace optframe {
 
@@ -59,7 +60,7 @@ class ConstructiveToInitialSearch : public InitialSearch<XES> {
     return make_pair(make_optional(se), SearchStatus::NO_REPORT);
   }
 
-  virtual bool compatible(std::string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
@@ -69,7 +70,7 @@ class ConstructiveToInitialSearch : public InitialSearch<XES> {
     return ss.str();
   }
 
-  virtual std::string id() const {
+  std::string id() const override {
     return idComponent();
   }
 };

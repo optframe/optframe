@@ -25,6 +25,8 @@
 
 // C++
 #include <string>
+#include <utility>
+#include <vector>
 //
 
 #include <OptFrame/Component.hpp>
@@ -48,11 +50,13 @@ class ComponentBuilder : public Component {
   virtual ~ComponentBuilder() {
   }
 
-  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
+  virtual Component* buildComponent(Scanner& scanner,
+                                    HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                    string family = "") = 0;
 
-  virtual vector<pair<string, string>> parameters() = 0;
+  virtual vector<pair<std::string, std::string>> parameters() = 0;
 
-  virtual bool canBuild(string) = 0;
+  virtual bool canBuild(std::string) = 0;
 
   static string idComponent() {
     stringstream ss;
@@ -60,7 +64,7 @@ class ComponentBuilder : public Component {
     return ss.str();
   }
 
-  virtual std::string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

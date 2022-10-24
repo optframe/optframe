@@ -43,7 +43,7 @@ class GRConstructive : public Constructive<S>, public GRASP {
     return generateGRSolution(1.0, timelimit);
   }
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
@@ -53,7 +53,7 @@ class GRConstructive : public Constructive<S>, public GRASP {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
@@ -76,7 +76,7 @@ class BasicGRConstructive : public GRConstructive<S> {
     return c.generateSolution(timelimit);
   }
 
-  virtual bool compatible(string s) override {
+  virtual bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
@@ -86,7 +86,7 @@ class BasicGRConstructive : public GRConstructive<S> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

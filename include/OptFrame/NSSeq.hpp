@@ -47,7 +47,7 @@ class NSSeq : public NSFind<XES, XEv, XSH> {
   virtual ~NSSeq() {
   }
 
-  virtual uptr<Move<XES, XEv, XSH>> randomMove(const XES&) = 0;
+  uptr<Move<XES, XEv, XSH>> randomMove(const XES&) override = 0;
 
   virtual uptr<NSIterator<XES, XEv, XSH>> getIterator(const XES&) = 0;
 
@@ -192,7 +192,7 @@ class NSSeq : public NSFind<XES, XEv, XSH> {
     return id();
   }
 
-  bool compatible(string s) override {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (NSFind<XES, XEv>::compatible(s));
   }
 };

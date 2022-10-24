@@ -55,7 +55,7 @@ class MSLocalSearch : public Component {
   // 1
   virtual void msSearchFrom(X2ES& p, pair<S, XEv>& se, const StopCriteria<XEv>& stopCriteria) = 0;
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
@@ -65,7 +65,7 @@ class MSLocalSearch : public Component {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

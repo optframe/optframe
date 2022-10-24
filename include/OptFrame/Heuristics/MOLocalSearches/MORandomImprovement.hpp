@@ -27,45 +27,39 @@
 #include "../../MOLocalSearch.hpp"
 #include "../../MultiObjSearch.hpp"
 #include "../../NSSeq.hpp"
-
 #include "../../Timer.hpp"
 
 namespace optframe {
 
 //Basic MORI does not considering valid move, parameter iterMax only.
-template<XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
-class MORandomImprovement : public MOLocalSearch<XMES, XMEv>
-{
-   using S = typename XMES::first_type;
-   static_assert(is_same<S, typename XMES::first_type>::value);
-   static_assert(is_same<XMEv, typename XMES::second_type>::value);
+template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
+class MORandomImprovement : public MOLocalSearch<XMES, XMEv> {
+  using S = typename XMES::first_type;
+  static_assert(is_same<S, typename XMES::first_type>::value);
+  static_assert(is_same<XMEv, typename XMES::second_type>::value);
 
-private:
-   //MultiEvaluator<S, XEv>& mev;
-   sref<GeneralEvaluator<XMES, XMEv>> mev;
-   sref<NS<XMES, XMEv>> ns;
+ private:
+  //MultiEvaluator<S, XEv>& mev;
+  sref<GeneralEvaluator<XMES, XMEv>> mev;
+  sref<NS<XMES, XMEv>> ns;
 
-   // logs
-   double sum_time;
-   int num_calls;
-   int iterMax;
+  // logs
+  double sum_time;
+  int num_calls;
+  int iterMax;
 
-public:
-   //MORandomImprovement(MultiEvaluator<S, XEv>& _mev, NS<XES, XEv>& _ns, unsigned int _iterMax) :
-   MORandomImprovement(sref<GeneralEvaluator<XMES, XMEv>> _mev, sref<NS<XMES, XMEv>> _ns, unsigned int _iterMax)
-     : mev(_mev)
-     , ns(_ns)
-     , iterMax(_iterMax)
-   {
-      sum_time = 0.0;
-      num_calls = 0;
-   }
+ public:
+  //MORandomImprovement(MultiEvaluator<S, XEv>& _mev, NS<XES, XEv>& _ns, unsigned int _iterMax) :
+  MORandomImprovement(sref<GeneralEvaluator<XMES, XMEv>> _mev, sref<NS<XMES, XMEv>> _ns, unsigned int _iterMax)
+      : mev(_mev), ns(_ns), iterMax(_iterMax) {
+    sum_time = 0.0;
+    num_calls = 0;
+  }
 
-   virtual ~MORandomImprovement()
-   {
-   }
+  virtual ~MORandomImprovement() {
+  }
 
-   /*
+  /*
 	virtual void moSearchFrom(Pareto<XMES>& p, S& s, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) override
 	{
 		MultiEvaluation<> sMev(std::move(mev.evaluate(s)));
@@ -74,81 +68,74 @@ public:
 	}
 */
 
-   virtual void moSearchFrom(Pareto<XMES>& p, XMES& se, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) override
-   {
-      num_calls++;
-      Timer t;
+  virtual void moSearchFrom(Pareto<XMES>& p, XMES& se, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) override {
+    num_calls++;
+    Timer t;
 
-      // XES se = make_pair(s, Evaluation<>());
+    // XES se = make_pair(s, Evaluation<>());
 
-      int iter = 0;
+    int iter = 0;
 
-      while ((iter < iterMax) && ((t.now() - stopCriteria.timelimit) < 0)) {
-         uptr<Move<XMES, XMEv>> move = ns->randomMove(se);
-         if (move->canBeApplied(se)) {
-            //Move and mark sMev as outdated
-            uptr<Move<XMES, XMEv>> mov_rev = move->apply(se);
+    while ((iter < iterMax) && ((t.now() - stopCriteria.timelimit) < 0)) {
+      uptr<Move<XMES, XMEv>> move = ns->randomMove(se);
+      if (move->canBeApplied(se)) {
+        //Move and mark sMev as outdated
+        uptr<Move<XMES, XMEv>> mov_rev = move->apply(se);
 
-            //Call method to reevaluate sMev and try to include TODO
-            //				pManager->addSolutionWithMEVReevaluation(p, *s,*sMev);
+        //Call method to reevaluate sMev and try to include TODO
+        //				pManager->addSolutionWithMEVReevaluation(p, *s,*sMev);
 
-            pManager.addSolution(p, se.first);
-            //delete mov_rev->apply(s);
-            mov_rev->apply(se);
-            //delete mov_rev;
+        pManager.addSolution(p, se.first);
+        //delete mov_rev->apply(s);
+        mov_rev->apply(se);
+        //delete mov_rev;
 
-            //			vector<MoveCost<>*> vMoveCost;
-            //			for (int ev = 0; ev < v_e.size(); ev++)
-            //			{
-            //				vMoveCost.push_back(&v_e[ev].moveCost(sMev[ev], move, s));
-            //			}
-            //			bool itsWorthAdding = pManager.checkDominance(pManager.getParetoInsideManager(), &sMev);
-            //			if (itsWorthAdding)
-         }
-         //delete move;
-
-         iter++;
+        //			vector<MoveCost<>*> vMoveCost;
+        //			for (int ev = 0; ev < v_e.size(); ev++)
+        //			{
+        //				vMoveCost.push_back(&v_e[ev].moveCost(sMev[ev], move, s));
+        //			}
+        //			bool itsWorthAdding = pManager.checkDominance(pManager.getParetoInsideManager(), &sMev);
+        //			if (itsWorthAdding)
       }
+      //delete move;
 
-      sum_time += t.inMilliSecs();
-   }
-   virtual bool compatible(string s)
-   {
-      return (s == idComponent()) || (MOLocalSearch<XMES, XMEv>::compatible(s));
-   }
+      iter++;
+    }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << MOLocalSearch<XMES, XMEv>::idComponent() << "MO-RI";
-      return ss.str();
-   }
+    sum_time += t.inMilliSecs();
+  }
+  bool compatible(std::string s) override {
+    return (s == idComponent()) || (MOLocalSearch<XMES, XMEv>::compatible(s));
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << MOLocalSearch<XMES, XMEv>::idComponent() << "MO-RI";
+    return ss.str();
+  }
 
-   virtual void print() const
-   {
-      cout << toString() << endl;
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 
-   virtual string toString() const
-   {
-      stringstream ss;
-      ss << "MORI: " << ns->toString();
-      return ss.str();
-   }
+  void print() const override {
+    cout << toString() << endl;
+  }
 
-   virtual string log() const
-   {
-      stringstream ss;
-      ss << sum_time;
-      return ss.str();
-   }
+  std::string toString() const override {
+    stringstream ss;
+    ss << "MORI: " << ns->toString();
+    return ss.str();
+  }
+
+  virtual string log() const {
+    stringstream ss;
+    ss << sum_time;
+    return ss.str();
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /*OPTFRAME_MORI_HPP_*/

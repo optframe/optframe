@@ -245,7 +245,7 @@ class TabuSearch : public SingleObjSearch<XES> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 

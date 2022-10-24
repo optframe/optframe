@@ -187,7 +187,7 @@ class StopCriteria final : public Component {
     return newStopCriteria;
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return "StopCriteria";
   }
 

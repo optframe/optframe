@@ -51,7 +51,7 @@ class RandVNS : public VariableNeighborhoodSearch<R, ADS, DS> {
     return *new RVND<R, ADS, DS>(super::evaluator, vls, rg);
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
@@ -87,7 +87,7 @@ class RandVNSBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, DS> {
     return new RandVNS<R, ADS, DS>(*eval, *constructive, shakelist, searchlist, hf.getRandGen());
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
     //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
@@ -104,7 +104,7 @@ class RandVNSBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, DS> {
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == RandVNS<R, ADS, DS>::idComponent();
   }
 
@@ -114,7 +114,7 @@ class RandVNSBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, DS> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

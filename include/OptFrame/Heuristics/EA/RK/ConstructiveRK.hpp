@@ -29,41 +29,35 @@
 
 namespace optframe {
 
-template<class KeyType>
-class ConstructiveRK : public Constructive<std::vector<KeyType>>
-{
-   using S = std::vector<KeyType>;
+template <class KeyType>
+class ConstructiveRK : public Constructive<std::vector<KeyType>> {
+  using S = std::vector<KeyType>;
 
-public:
-   virtual ~ConstructiveRK()
-   {
-   }
+ public:
+  virtual ~ConstructiveRK() {
+  }
 
-   virtual std::optional<S> generateSolution(double timelimit) = 0;
+  std::optional<S> generateSolution(double timelimit) override = 0;
 
-   virtual bool compatible(std::string s) override
-   {
-      return (s == idComponent()) || (Constructive<S>::compatible(s));
-   }
+  bool compatible(std::string s) override {
+    return (s == idComponent()) || (Constructive<S>::compatible(s));
+  }
 
-   static std::string idComponent()
-   {
-      std::stringstream ss;
-      ss << Constructive<S>::idComponent() << ":" << EA::family() << ":" << RK::family() << "ConstructiveRK";
-      return ss.str();
-   }
+  static std::string idComponent() {
+    std::stringstream ss;
+    ss << Constructive<S>::idComponent() << ":" << EA::family() << ":" << RK::family() << "ConstructiveRK";
+    return ss.str();
+  }
 
-   virtual std::string id() const override
-   {
-      return idComponent();
-   }
+  std::string id() const override {
+    return idComponent();
+  }
 
-   virtual std::string toString() const override
-   {
-      return id();
-   }
+  std::string toString() const override {
+    return id();
+  }
 };
 //
-} // namespace optframe
+}  // namespace optframe
 
 #endif /*OPTFRAME_CONSTRUCTIVE_RK_HPP_*/

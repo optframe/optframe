@@ -414,7 +414,7 @@ class NSGAIICrowdingComparison {
     return false;
   }
 
-  virtual void print() const {
+  void print() const override {
     cout << "NSGAIICrowdingComparison DEFAULT" << endl;
   }
 };

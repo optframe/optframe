@@ -419,9 +419,7 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
       pf.print();
     }
 
-    SearchOutput<XMES, Pareto<XMES>> sout{
-        .status = SearchStatus::NO_REPORT,
-        .best = pf};
+    SearchOutput<XMES, Pareto<XMES>> sout{SearchStatus::NO_REPORT, pf};
 
     return sout;
   }

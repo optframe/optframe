@@ -52,7 +52,7 @@ class IteratedLocalSearchLevels : public IteratedLocalSearch<levelHistory, XES, 
   virtual ~IteratedLocalSearchLevels() {
   }
 
-  virtual sref<levelHistory> initializeHistory() {
+  sref<levelHistory> initializeHistory() override {
     //cout << "initializeHistory()" << endl;
     pair<int, int> vars(0, 0);
 
@@ -128,7 +128,7 @@ class IteratedLocalSearchLevels : public IteratedLocalSearch<levelHistory, XES, 
       return false;
   }
 
-  virtual bool terminationCondition(sref<levelHistory> history) {
+  bool terminationCondition(sref<levelHistory> history) override {
     //cout << "terminationCondition(.)" << endl;
     int level = history->first.second;
     int levelMax = history->second.second;
@@ -136,7 +136,7 @@ class IteratedLocalSearchLevels : public IteratedLocalSearch<levelHistory, XES, 
     return (level >= levelMax);
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
@@ -153,7 +153,9 @@ class IteratedLocalSearchLevelsBuilder : public ILS, public SingleObjSearchBuild
   virtual ~IteratedLocalSearchLevelsBuilder() {
   }
 
-  virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+  SingleObjSearch<XES>* build(Scanner& scanner,
+                              HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                              string family = "") override {
     sptr<GeneralEvaluator<XES, XEv>> eval = nullptr;
     std::string sid_0 = scanner.next();
     int id_0 = *scanner.nextInt();
@@ -210,7 +212,7 @@ class IteratedLocalSearchLevelsBuilder : public ILS, public SingleObjSearchBuild
     return new IteratedLocalSearchLevels<XES, XEv>(eval, constructive, h, pert, iterMax, levelMax);
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
     //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
@@ -223,7 +225,7 @@ class IteratedLocalSearchLevelsBuilder : public ILS, public SingleObjSearchBuild
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == IteratedLocalSearchLevels<XES, XEv>::idComponent();
   }
 
@@ -233,7 +235,7 @@ class IteratedLocalSearchLevelsBuilder : public ILS, public SingleObjSearchBuild
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

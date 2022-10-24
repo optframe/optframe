@@ -60,20 +60,17 @@ class CloneConstructive : public Constructive<S> {
     return std::optional<S>(base);
   }
 
-  virtual bool
-  compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Constructive<S>::compatible(s));
   }
 
-  static string
-  idComponent() {
+  static std::string idComponent() {
     stringstream ss;
     ss << Constructive<S>::idComponent() << ":CloneConstructive";
     return ss.str();
   }
 
-  virtual string
-  id() const {
+  std::string id() const override {
     return idComponent();
   }
 };
@@ -84,7 +81,9 @@ class CloneConstructiveBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
   virtual ~CloneConstructiveBuilder() {
   }
 
-  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+  Component* buildComponent(Scanner& scanner,
+                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                            string family = "") override {
     std::cout << "CloneConstructive NOT AVAILABLE... TODO!" << std::endl;
     assert(false);
     /*
@@ -96,7 +95,7 @@ class CloneConstructiveBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     return nullptr;
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     //assert(false);
     //
@@ -107,7 +106,7 @@ class CloneConstructiveBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == CloneConstructive<S>::idComponent();
   }
 
@@ -121,7 +120,7 @@ class CloneConstructiveBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     return id();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

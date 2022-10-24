@@ -20,12 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_MULTI_OBJ_SEARCH_HPP_
-#define OPTFRAME_MULTI_OBJ_SEARCH_HPP_
+#ifndef OPTFRAME_MULTIOBJSEARCH_HPP_
+#define OPTFRAME_MULTIOBJSEARCH_HPP_
 
 // C++
 #include <cstring>
 #include <iostream>
+#include <string>
+#include <utility>
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
@@ -125,11 +127,11 @@ class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>>  // public Compon
   //virtual SearchStatus search(std::optional<Pareto<XMES>>& p, const StopCriteria<XMEv>& stopCriteria) = 0;
   virtual SearchOutput<XMES, Pareto<XMES>> search(const StopCriteria<XMEv>& stopCriteria) override = 0;
 
-  virtual string log() const {
+  std::string log() const override {
     return "Empty heuristic log.";
   }
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
@@ -139,7 +141,7 @@ class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>>  // public Compon
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
@@ -150,15 +152,19 @@ class MultiObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
   virtual ~MultiObjSearchBuilder() {
   }
 
-  virtual MultiObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
+  virtual MultiObjSearch<XES>* build(Scanner& scanner,
+                                     HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                     string family = "") = 0;
 
-  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+  Component* buildComponent(Scanner& scanner,
+                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                            string family = "") override {
     return build(scanner, hf, family);
   }
 
-  virtual vector<pair<string, string>> parameters() = 0;
+  vector<pair<string, string>> parameters() override = 0;
 
-  virtual bool canBuild(string) = 0;
+  bool canBuild(string) override = 0;
 
   static string idComponent() {
     stringstream ss;
@@ -166,11 +172,11 @@ class MultiObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
 
 }  // namespace optframe
 
-#endif /* OPTFRAME_MULTI_OBJ_SEARCH_HPP_ */
+#endif  // OPTFRAME_MULTIOBJSEARCH_HPP_

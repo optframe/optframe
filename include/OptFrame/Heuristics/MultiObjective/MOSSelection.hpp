@@ -53,7 +53,7 @@ class MOSSelection : public Component {
   virtual void free(vector<MOSIndividual<XMES2>>& Pop,
                     vector<MOSIndividual<XMES2>>& archive) = 0;
 
-  virtual void print() const {
+  void print() const override {
     cout << "MOSSelection" << endl;
   }
 };

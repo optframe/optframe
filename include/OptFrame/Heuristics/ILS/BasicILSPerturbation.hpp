@@ -104,7 +104,7 @@ class BasicILSPerturbation : public ILS, public Component {
     return id();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
@@ -121,7 +121,9 @@ class BasicILSPerturbationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
   virtual ~BasicILSPerturbationBuilder() {
   }
 
-  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+  Component* buildComponent(Scanner& scanner,
+                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                            string family = "") override {
     sptr<GeneralEvaluator<XES, XEv>> eval;
     hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
 
@@ -137,7 +139,7 @@ class BasicILSPerturbationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     return new BasicILSPerturbation<XES, XEv>(eval, pMin, pMax, ns_list, hf.getRandGen());
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
     params.push_back(make_pair("OptFrame:int", "pMin: min number of moves"));
@@ -149,7 +151,7 @@ class BasicILSPerturbationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == BasicILSPerturbation<XES, XEv>::idComponent();
   }
 
@@ -163,7 +165,7 @@ class BasicILSPerturbationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     return id();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

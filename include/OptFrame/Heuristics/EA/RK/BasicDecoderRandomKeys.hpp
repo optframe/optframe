@@ -63,7 +63,7 @@ class BasicDecoderRandomKeys : public DecoderRandomKeys<XES, KeyType> {
     return pair<XEv, op<S>>{e, op<S>{s}};
   }
 
-  virtual bool isMinimization() const {
+  bool isMinimization() const override {
     return evaluator->isMinimization();
   }
 
@@ -74,7 +74,7 @@ class BasicDecoderRandomKeys : public DecoderRandomKeys<XES, KeyType> {
     return ss.str();
   }
 
-  virtual std::string id() const {
+  std::string id() const override {
     return idComponent();
   }
 
@@ -94,7 +94,9 @@ class BasicDecoderRandomKeysBuilder : public ComponentBuilder<S, XEv, XES, X2ES>
   virtual ~BasicDecoderRandomKeysBuilder() {
   }
 
-  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+  Component* buildComponent(Scanner& scanner,
+                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                            string family = "") override {
     sptr<Evaluator<S, XEv, XES>> evaluator;
     std::string sid_0 = scanner.next();
     int id_0 = *scanner.nextInt();

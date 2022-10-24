@@ -291,11 +291,11 @@ class Population final : public Component {
     return id();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
-  virtual void print() const {
+  void print() const override {
     cout << "Population(" << p.size() << ")";
     cout << endl;
 

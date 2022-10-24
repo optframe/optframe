@@ -61,7 +61,7 @@ class MOSExtIndividual : public MOSIndividual<X, ADS, DS> {
   virtual ~MOSExtIndividual() {
   }
 
-  virtual void print() const {
+  void print() const override {
     cout << "MOSExtIndividual: parent=" << &parent << " fitness=" << this->fitness << "\t diversity=" << this->diversity;
     cout << "\t[ ";
     for (unsigned e = 0; e < this->mev->size(); e++)

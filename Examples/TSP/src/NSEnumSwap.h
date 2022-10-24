@@ -310,7 +310,7 @@ class NSEnumSwap : public NSEnum<ESolutionTSP> {
     return n * (n - 1) / 2;
   }
 
-  virtual void print() const {
+  void print() const override {
     cout << "NSEnum Swap (" << size() << ")\n";
   }
 

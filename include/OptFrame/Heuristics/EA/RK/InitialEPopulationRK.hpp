@@ -40,11 +40,11 @@ class InitialEPopulationRK : public InitialEPopulation<XES, X2ES> {
   // By default, this generator will evaluate ESolution pairs here,
   // but user can opt-out of this, leaving evaluations for the future
   // See BRKGA on a implementation over this concept.
-  virtual bool canEvaluate() const {
+  bool canEvaluate() const override {
     return true;
   }
 
-  virtual X2ES generateEPopulation(unsigned populationSize, double timelimit) = 0;
+  X2ES generateEPopulation(unsigned populationSize, double timelimit) override = 0;
 
   static string idComponent() {
     stringstream ss;
@@ -56,7 +56,7 @@ class InitialEPopulationRK : public InitialEPopulation<XES, X2ES> {
     return id();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

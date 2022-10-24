@@ -150,7 +150,7 @@ class MultiDirection : public Component {
 
   // ============= Component ===============
 
-  virtual bool compatible(string s) override {
+  virtual bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
@@ -164,7 +164,7 @@ class MultiDirection : public Component {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

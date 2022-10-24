@@ -60,7 +60,7 @@ class InitialPareto : public InitialSearch<XMES, XMEv, Pareto<XMES>>  //public C
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
@@ -99,7 +99,7 @@ class BasicInitialPareto : public InitialPareto<XMES> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
@@ -146,7 +146,7 @@ class GRInitialPareto : public InitialPareto<XMES> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

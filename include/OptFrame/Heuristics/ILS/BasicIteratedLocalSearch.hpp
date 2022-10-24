@@ -105,11 +105,11 @@ class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES, X
     return (iter >= iterMax);
   }
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (SingleObjSearch<XES>::compatible(s));
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
@@ -126,7 +126,9 @@ class BasicIteratedLocalSearchBuilder : public ILS, public SingleObjSearchBuilde
   virtual ~BasicIteratedLocalSearchBuilder() {
   }
 
-  virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") override {
+  SingleObjSearch<XES>* build(Scanner& scanner,
+                              HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                              string family = "") override {
     sptr<GeneralEvaluator<XES, XEv>> eval;
     hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
 
@@ -151,7 +153,7 @@ class BasicIteratedLocalSearchBuilder : public ILS, public SingleObjSearchBuilde
     return new BasicIteratedLocalSearch<XES, XEv>(eval, constructive, h, pert, iterMax);
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
     //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
@@ -163,7 +165,7 @@ class BasicIteratedLocalSearchBuilder : public ILS, public SingleObjSearchBuilde
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == BasicIteratedLocalSearch<XES, XEv>::idComponent();
   }
 
@@ -173,7 +175,7 @@ class BasicIteratedLocalSearchBuilder : public ILS, public SingleObjSearchBuilde
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

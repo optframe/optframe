@@ -121,7 +121,7 @@ class MoveCost : public Component {
     return "OptFrame:MoveCost";
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 

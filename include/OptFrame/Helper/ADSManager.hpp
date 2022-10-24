@@ -60,7 +60,7 @@ class ADSManager : public Component {
 
   virtual void printADS(const ADS& _ads) = 0;
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
@@ -70,11 +70,11 @@ class ADSManager : public Component {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
-  virtual string toString() const {
+  std::string toString() const override {
     stringstream ss;
     ss << "ADSManager";
     return ss.str();

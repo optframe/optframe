@@ -226,15 +226,15 @@ class WLxEvaluation final : public Component {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
-  virtual void print() const {
+  void print() const override {
     cout << toString() << endl;
   }
 
-  virtual string toString() const {
+  std::string toString() const override {
     stringstream ss;
     ss << fixed;  // disable scientific notation
     ss << "WLxEvaluation function value = " << evaluation();

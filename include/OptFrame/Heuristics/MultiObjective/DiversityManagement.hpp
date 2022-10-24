@@ -72,7 +72,7 @@ class DiversityManagement : public Component {
       const std::vector<int>& g,
       vector<MOSIndividual<XMES2>>& P) = 0;
 
-  virtual void print() const {
+  void print() const override {
     cout << "DiversityManagement" << endl;
   }
 };

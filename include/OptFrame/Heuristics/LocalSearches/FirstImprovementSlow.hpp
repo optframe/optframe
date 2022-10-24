@@ -29,47 +29,41 @@
 
 namespace optframe {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
-class FirstImprovementSlow : public LocalSearch<XES, XEv>
-{
-private:
-   Evaluator<S>& eval;
-   NSSeq<S>& nsSeq;
+template <XESolution XES, XEvaluation XEv = Evaluation<>>
+class FirstImprovementSlow : public LocalSearch<XES, XEv> {
+ private:
+  Evaluator<S>& eval;
+  NSSeq<S>& nsSeq;
 
-public:
-   FirstImprovementSlow(Evaluator<S>& _eval, NSSeq<S>& _nsSeq)
-     : eval(_eval)
-     , nsSeq(_nsSeq)
-   {
-   }
+ public:
+  FirstImprovementSlow(Evaluator<S>& _eval, NSSeq<S>& _nsSeq)
+      : eval(_eval), nsSeq(_nsSeq) {
+  }
 
-   virtual ~FirstImprovementSlow()
-   {
-   }
+  virtual ~FirstImprovementSlow() {
+  }
 
-   virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f)
-   {
-      Evaluation<>& e = eval.evaluate(s);
-      exec(s, e, timelimit, target_f);
-      delete &e;
-   }
+  virtual void exec(Solution<R, ADS>& s, double timelimit, double target_f) {
+    Evaluation<>& e = eval.evaluate(s);
+    exec(s, e, timelimit, target_f);
+    delete &e;
+  }
 
-   virtual void exec(Solution<R, ADS>& s, Evaluation<>& e, double timelimit, double target_f)
-   {
-      NSIterator<S, XEv>& it = nsSeq.getIterator(s);
-      string bestMoveId = "";
-      it.first();
+  virtual void exec(Solution<R, ADS>& s, Evaluation<>& e, double timelimit, double target_f) {
+    NSIterator<S, XEv>& it = nsSeq.getIterator(s);
+    string bestMoveId = "";
+    it.first();
 
-      if (it.isDone()) {
-         delete &it;
-         return;
-      }
+    if (it.isDone()) {
+      delete &it;
+      return;
+    }
 
-      do {
-         Move<R, ADS>* move = &it.current();
+    do {
+      Move<R, ADS>* move = &it.current();
 
-         // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-         /*
+      // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
+      /*
 			if(e.getLocalOptimumStatus(move->id()))
 			{
 				delete &it;
@@ -78,73 +72,69 @@ public:
 			}
 			*/
 
-         bestMoveId = move->id();
+      bestMoveId = move->id();
 
-         if (move->canBeApplied(s)) {
-            MoveCost<>* eCost = &eval.moveCost(*move, se); // estimated cost
+      if (move->canBeApplied(s)) {
+        MoveCost<>* eCost = &eval.moveCost(*move, se);  // estimated cost
 
-            if (eval.isImprovement(*eCost)) {
-               if (eCost->isEstimated()) {
-                  // TODO: find a real cost value...
-               }
+        if (eval.isImprovement(*eCost)) {
+          if (eCost->isEstimated()) {
+            // TODO: find a real cost value...
+          }
 
-               if (eval.isImprovement(*eCost)) {
-                  delete eCost;
-
-                  Component::safe_delete(move->apply(e, s));
-                  delete move;
-
-                  delete &it;
-
-                  eval.evaluate(e, s); // updates 'e'
-
-                  // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-                  //e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
-
-                  return;
-               }
-            }
-
+          if (eval.isImprovement(*eCost)) {
             delete eCost;
-         }
 
-         delete move;
+            Component::safe_delete(move->apply(e, s));
+            delete move;
 
-         it.next();
-      } while (!it.isDone());
+            delete &it;
 
-      // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-      //if(bestMoveId != "")
-      //	e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local Optimum
+            eval.evaluate(e, s);  // updates 'e'
 
-      delete &it;
-   }
+            // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
+            //e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
 
-   virtual bool compatible(string s)
-   {
-      return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
-   }
+            return;
+          }
+        }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << LocalSearch<XES, XEv>::idComponent() << ":FISlow";
-      return ss.str();
-   }
+        delete eCost;
+      }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+      delete move;
 
-   virtual string toString() const
-   {
-      stringstream ss;
-      ss << "FISlow: " << nsSeq.toString();
-      return ss.str();
-   }
+      it.next();
+    } while (!it.isDone());
+
+    // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
+    //if(bestMoveId != "")
+    //	e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local Optimum
+
+    delete &it;
+  }
+
+  bool compatible(std::string s) override {
+    return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
+  }
+
+  static string idComponent() {
+    stringstream ss;
+    ss << LocalSearch<XES, XEv>::idComponent() << ":FISlow";
+    return ss.str();
+  }
+
+  virtual string id() const override {
+    return idComponent();
+  }
+
+  std::string toString() const override {
+    stringstream ss;
+    ss << "FISlow: " << nsSeq.toString();
+    return ss.str();
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /*OPTFRAME_FI_SLOW_HPP_*/

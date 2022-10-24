@@ -85,7 +85,7 @@ class InitialEPopulation : public Component {
     return id();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
@@ -119,7 +119,7 @@ class InitialPopulation : public Component {
     return id();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
@@ -156,7 +156,7 @@ class BasicInitialPopulation : public InitialPopulation<S, X2S> {
     return id();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
@@ -209,7 +209,7 @@ class GRInitialPopulation : public InitialPopulation<S, X2S> {
     return id();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

@@ -53,7 +53,7 @@ class NSBlockIterator : public Component {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

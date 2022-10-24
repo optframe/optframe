@@ -424,11 +424,11 @@ class RSolution : public Component {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
-  virtual string toString() const {
+  std::string toString() const override {
     std::stringstream ss;
     ss << "RSolution: " << *r;
     return ss.str();

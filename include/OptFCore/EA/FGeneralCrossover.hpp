@@ -50,7 +50,7 @@ class FGeneralCrossover final : public GeneralCrossover<S> {
     return ss.str();
   }
 
-  virtual std::string id() const {
+  std::string id() const override {
     return idComponent();
   }
 };

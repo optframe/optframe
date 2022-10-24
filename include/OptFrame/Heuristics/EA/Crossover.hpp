@@ -49,7 +49,7 @@ class Crossover : public Component, public EA {
 
   virtual pair<S*, S*> cross(const S&, const S&) = 0;
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
@@ -59,7 +59,7 @@ class Crossover : public Component, public EA {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

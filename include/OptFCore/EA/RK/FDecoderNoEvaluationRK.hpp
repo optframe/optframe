@@ -23,52 +23,45 @@
 #ifndef OPTFRAME_FCORE_FDECODER_NOEVALUATION_RK_HPP_
 #define OPTFRAME_FCORE_FDECODER_NOEVALUATION_RK_HPP_
 
-#include <functional>
-
 #include <OptFrame/Heuristics/EA/RK/DecoderRandomKeysNoEvaluation.hpp>
+#include <functional>
 
 namespace optframe {
 
-template<XSolution S, optframe::comparability KeyType>
-class FDecoderNoEvaluationRK final : public DecoderRandomKeysNoEvaluation<S, KeyType>
-{
-public:
+template <XSolution S, optframe::comparability KeyType>
+class FDecoderNoEvaluationRK final : public DecoderRandomKeysNoEvaluation<S, KeyType> {
+ public:
 #ifdef OPTFCORE_FUNC_STATIC
-   typedef S (*FuncTypeDecode)(const std::vector<KeyType>& rk);
+  typedef S (*FuncTypeDecode)(const std::vector<KeyType>& rk);
 #else
-   typedef std::function<S(const std::vector<KeyType>&)> FuncTypeDecode;
+  typedef std::function<S(const std::vector<KeyType>&)> FuncTypeDecode;
 #endif
 
-   FuncTypeDecode fDecode;
+  FuncTypeDecode fDecode;
 
-   FDecoderNoEvaluationRK(FuncTypeDecode _fDecode)
-     : fDecode{ _fDecode }
-   {
-   }
+  FDecoderNoEvaluationRK(FuncTypeDecode _fDecode)
+      : fDecode{_fDecode} {
+  }
 
-   virtual ~FDecoderNoEvaluationRK()
-   {
-   }
+  virtual ~FDecoderNoEvaluationRK() {
+  }
 
-   virtual S decodeSolution(const std::vector<KeyType>& rk) override
-   {
-      auto s = fDecode(rk);
-      return s;
-   }
+  virtual S decodeSolution(const std::vector<KeyType>& rk) override {
+    auto s = fDecode(rk);
+    return s;
+  }
 
-   static std::string idComponent()
-   {
-      std::stringstream ss;
-      ss << DecoderRandomKeysNoEvaluation<S, KeyType>::idComponent() << ":FDecoderNoEvaluationRK";
-      return ss.str();
-   }
+  static std::string idComponent() {
+    std::stringstream ss;
+    ss << DecoderRandomKeysNoEvaluation<S, KeyType>::idComponent() << ":FDecoderNoEvaluationRK";
+    return ss.str();
+  }
 
-   virtual std::string id() const
-   {
-      return idComponent();
-   }
+  std::string id() const override {
+    return idComponent();
+  }
 };
 
-} // namespace optframe
+}  // namespace optframe
 
 #endif /*OPTFRAME_FCORE_FDECODER_NOEVALUATION_RK_HPP_*/

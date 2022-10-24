@@ -178,7 +178,7 @@ class BRKGABuilder : public GlobalSearchBuilder<XES, XES, XES2_Factory, X2ES_Fac
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

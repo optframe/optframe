@@ -87,10 +87,10 @@ class IteratedLocalSearch : public ILS, public SingleObjSearch<XES>, public ITra
   }
 
   // for ILS: incumbent is always derived from star, ignoring 'incumbent'
-  virtual SearchOutput<XES> searchBy(
+  SearchOutput<XES> searchBy(
       XES& star,
       XES&,
-      const StopCriteria<XEv>& stopCriteria) {
+      const StopCriteria<XEv>& stopCriteria) override {
     if (Component::information)
       std::cout << "ILS opt searchBy(" << stopCriteria.timelimit << ")" << std::endl;
 
@@ -146,7 +146,7 @@ class IteratedLocalSearch : public ILS, public SingleObjSearch<XES>, public ITra
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

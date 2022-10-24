@@ -100,11 +100,11 @@ class SingleObjSearch : public GlobalSearch<XES, XES>  // public Component
   //virtual SearchStatus search(const StopCriteria<XEv>& stopCriteria) = 0;
   virtual SearchOutput<XES> search(const StopCriteria<XEv>& stopCriteria) override = 0;
 
-  virtual string log() const {
+  std::string log() const override {
     return "Empty heuristic log.";
   }
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (GlobalSearch<XES, XES>::compatible(s));
   }
 
@@ -114,7 +114,7 @@ class SingleObjSearch : public GlobalSearch<XES, XES>  // public Component
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
@@ -131,27 +131,32 @@ class SingleObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
   virtual ~SingleObjSearchBuilder() {
   }
 
-  virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
+  virtual SingleObjSearch<XES>* build(Scanner& scanner,
+                                      HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                      string family = "") = 0;
 
-  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+  Component* buildComponent(Scanner& scanner,
+                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                            string family = "") override {
     return build(scanner, hf, family);
   }
 
-  virtual vector<pair<string, string>> parameters() = 0;
+  vector<pair<string, string>> parameters() override = 0;
 
-  virtual bool canBuild(string) = 0;
+  bool canBuild(string) override = 0;
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "SingleObjSearch";
+    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent();
+    ss << "SingleObjSearch";
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
-  virtual std::string toString() const override {
+  std::string toString() const override {
     return id();
   }
 };

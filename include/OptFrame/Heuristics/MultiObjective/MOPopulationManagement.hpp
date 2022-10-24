@@ -54,7 +54,7 @@ class MOPopulationManagement : public Component {
       unsigned target_size,
       const vector<MOSIndividual<XMES2>>& P) = 0;
 
-  virtual void print() const {
+  void print() const override {
     cout << toString() << endl;
   }
 
@@ -126,7 +126,7 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
     return mosind;  //new MOSIndividual<XMES2>(s, mev);
   }
 
-  virtual vector<MOSIndividual<XMES2>> initialize(unsigned pSize) {
+  vector<MOSIndividual<XMES2>> initialize(unsigned pSize) override {
     // Population<XES>* p = &initPop.generatePopulation(pSize);
     VEPopulation<XMES2> mes = initEPop->generateEPopulation(pSize);
 
@@ -357,9 +357,9 @@ class BasicMOPopulationManagementBuilder : public ComponentBuilder<S, XEv, XES, 
   }
 
   // has sptr instead of sref, is that on purpose or legacy class?
-  virtual Component* buildComponent(Scanner& scanner,
-                                    HeuristicFactory<S, XEv, XES, X2ES>& hf,
-                                    string family = "") {
+  Component* buildComponent(Scanner& scanner,
+                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                            string family = "") override {
     if (Component::debug)
       std::cout << "BasicMOPopulationBuilder Loading Parameter #0" << std::endl;
 
@@ -414,7 +414,7 @@ class BasicMOPopulationManagementBuilder : public ComponentBuilder<S, XEv, XES, 
         hf.getRandGen());
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     params.push_back(make_pair(
         InitialMultiESolution<XMES>::idComponent(),
@@ -430,7 +430,7 @@ class BasicMOPopulationManagementBuilder : public ComponentBuilder<S, XEv, XES, 
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == BasicMOPopulationManagement<XMES>::idComponent();
   }
 

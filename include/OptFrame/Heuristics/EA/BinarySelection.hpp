@@ -24,92 +24,85 @@
 #define BINARY_SELECTION_HPP_
 
 #include <assert.h>
+
 #include <vector>
 
 #include "../../MultiEvaluation.hpp"
 #include "../../MultiSolution.hpp"
 #include "../../RandGen.hpp"
-
 #include "Selection.hpp"
 
 namespace optframe {
 
-template<XSolution S>
-class BinarySelection : public Selection<R, ADS>
-{
-private:
-   RandGen& rg;
+template <XSolution S>
+class BinarySelection : public Selection<R, ADS> {
+ private:
+  RandGen& rg;
 
-public:
-   BinarySelection(RandGen& _rg)
-     : rg(_rg)
-   {
-   }
+ public:
+  BinarySelection(RandGen& _rg)
+      : rg(_rg) {
+  }
 
-   virtual ~BinarySelection()
-   {
-   }
+  virtual ~BinarySelection() {
+  }
 
-   pair<unsigned, unsigned> select(const MultiSolution<S>& p, const MultiEvaluation<>& mev, const vector<double>& fv)
-   {
-      assert(p.size() > 1);
-      //cout << "SELECT: " << p.size() << endl;
-      //cout << fv << " = " << Selection<R, ADS>::getSum(fv) << endl;
+  pair<unsigned, unsigned> select(const MultiSolution<S>& p, const MultiEvaluation<>& mev, const vector<double>& fv) {
+    assert(p.size() > 1);
+    //cout << "SELECT: " << p.size() << endl;
+    //cout << fv << " = " << Selection<R, ADS>::getSum(fv) << endl;
 
-      unsigned s1 = 0;
+    unsigned s1 = 0;
 
-      float x = rg.rand01();
-      //cout << "x=" << x << endl;
+    float x = rg.rand01();
+    //cout << "x=" << x << endl;
+    for (unsigned i = 0; i < fv.size(); i++) {
+      x -= fv[i];
+      if (x <= 0) {
+        s1 = i;
+        break;
+      }
+    }
+
+    unsigned s2 = s1;
+    //cout << "s1 = " << s1 << endl;
+    int trye = 0;
+    while (s2 == s1) {
+      trye++;
+      if (trye >= 100 * p.size()) {
+        cout << "LOOP IN BINARYSELECTION??" << endl;
+        cout << fv << " = " << Selection<R, ADS>::getSum(fv) << endl;
+        exit(1);
+      }
+      x = rg.rand01();
+      //cout << "x2=" << x << endl;
       for (unsigned i = 0; i < fv.size(); i++) {
-         x -= fv[i];
-         if (x <= 0) {
-            s1 = i;
-            break;
-         }
+        x -= fv[i];
+        if (x <= 0) {
+          s2 = i;
+          break;
+        }
       }
+    }
 
-      unsigned s2 = s1;
-      //cout << "s1 = " << s1 << endl;
-      int trye = 0;
-      while (s2 == s1) {
-         trye++;
-         if (trye >= 100 * p.size()) {
-            cout << "LOOP IN BINARYSELECTION??" << endl;
-            cout << fv << " = " << Selection<R, ADS>::getSum(fv) << endl;
-            exit(1);
-         }
-         x = rg.rand01();
-         //cout << "x2=" << x << endl;
-         for (unsigned i = 0; i < fv.size(); i++) {
-            x -= fv[i];
-            if (x <= 0) {
-               s2 = i;
-               break;
-            }
-         }
-      }
+    return make_pair(s1, s2);
+  }
 
-      return make_pair(s1, s2);
-   }
+  bool compatible(std::string s) override {
+    return (s == idComponent()) || (Selection<R, ADS>::compatible(s));
+  }
 
-   virtual bool compatible(string s)
-   {
-      return (s == idComponent()) || (Selection<R, ADS>::compatible(s));
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << Selection<R, ADS>::idComponent() << ":BinarySelection";
+    return ss.str();
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << Selection<R, ADS>::idComponent() << ":BinarySelection";
-      return ss.str();
-   }
-
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* BINARY_SELECTION_HPP_ */

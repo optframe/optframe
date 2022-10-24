@@ -310,7 +310,7 @@ class Direction : public Component {
 
   // ============= Component ===============
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
@@ -320,18 +320,18 @@ class Direction : public Component {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
-  virtual string toString() const {
+  std::string toString() const override {
     if (isMinimization())
       return "Direction:MIN";
     else
       return "Direction:MAX";
   }
 
-  virtual void print() const {
+  void print() const override {
     cout << toString() << endl;
   }
 };

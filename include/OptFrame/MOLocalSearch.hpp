@@ -37,54 +37,47 @@ using namespace std;
 
 namespace optframe {
 
-template<XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
-class MOLocalSearch : public Component
-{
-   using S = typename XMES::first_type;
-   static_assert(is_same<S, typename XMES::first_type>::value);
-   static_assert(is_same<XMEv, typename XMES::second_type>::value);
+template <XESolution XMES, XEvaluation XMEv = MultiEvaluation<>>
+class MOLocalSearch : public Component {
+  using S = typename XMES::first_type;
+  static_assert(is_same<S, typename XMES::first_type>::value);
+  static_assert(is_same<XMEv, typename XMES::second_type>::value);
 
-public:
-   MOLocalSearch()
-   {
-   }
+ public:
+  MOLocalSearch() {
+  }
 
-   virtual ~MOLocalSearch()
-   {
-   }
+  virtual ~MOLocalSearch() {
+  }
 
-   // core methods
+  // core methods
 
-   // 1
-   //virtual void moSearchFrom(Pareto<XMES>& p, S& s, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) = 0;
-   // removed this method.. now only pair XMES!
+  // 1
+  //virtual void moSearchFrom(Pareto<XMES>& p, S& s, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) = 0;
+  // removed this method.. now only pair XMES!
 
-   // 2
-   virtual void moSearchFrom(Pareto<XMES>& p, XMES& smev, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) = 0;
+  // 2
+  virtual void moSearchFrom(Pareto<XMES>& p, XMES& smev, paretoManager<S, XMEv, XMES>& pManager, const StopCriteria<XMEv>& stopCriteria) = 0;
 
-   virtual bool compatible(string s)
-   {
-      return (s == idComponent()) || (Component::compatible(s));
-   }
+  bool compatible(std::string s) override {
+    return (s == idComponent()) || (Component::compatible(s));
+  }
 
-   virtual std::string toString() const override
-   {
-      return id();
-   }
+  virtual std::string toString() const override {
+    return id();
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << Component::idComponent() << ":MOLocalSearch";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << Component::idComponent() << ":MOLocalSearch";
+    return ss.str();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override {
+    return idComponent();
+  }
 };
 
-}
+}  // namespace optframe
 
 #endif /* OPTFRAME_MO_LOCAL_SEARCH_HPP_ */

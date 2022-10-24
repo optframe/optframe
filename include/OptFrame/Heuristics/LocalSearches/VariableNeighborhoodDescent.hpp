@@ -103,7 +103,7 @@ class VariableNeighborhoodDescent : public LocalSearch<XES, XEv> {
     return SearchStatus::NO_REPORT;
   }
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
   }
 
@@ -113,11 +113,11 @@ class VariableNeighborhoodDescent : public LocalSearch<XES, XEv> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
-  virtual string toString() const {
+  std::string toString() const override {
     stringstream ss;
     ss << "VND: [ ";
     for (unsigned i = 0; i < lsList.size(); i++) {
@@ -139,7 +139,9 @@ class VariableNeighborhoodDescentBuilder : public LocalSearchBuilder<S, XEv, XES
   virtual ~VariableNeighborhoodDescentBuilder() {
   }
 
-  virtual LocalSearch<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+  LocalSearch<XES, XEv>* build(Scanner& scanner,
+                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                               string family = "") override {
     sptr<GeneralEvaluator<XES, XEv>> eval;
     hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
 
@@ -152,7 +154,7 @@ class VariableNeighborhoodDescentBuilder : public LocalSearchBuilder<S, XEv, XES
     return new VariableNeighborhoodDescent<XES, XEv>(eval, hlist);
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
     stringstream ss;
@@ -162,7 +164,7 @@ class VariableNeighborhoodDescentBuilder : public LocalSearchBuilder<S, XEv, XES
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == VariableNeighborhoodDescent<XES, XEv>::idComponent();
   }
 
@@ -176,7 +178,7 @@ class VariableNeighborhoodDescentBuilder : public LocalSearchBuilder<S, XEv, XES
     return id();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

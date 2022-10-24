@@ -143,11 +143,11 @@ class EPopulation : public Component {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 
-  virtual void print() const {
+  void print() const override {
     std::cout << toString() << std::endl;
   }
 

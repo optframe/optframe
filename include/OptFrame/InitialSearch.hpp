@@ -51,7 +51,7 @@ class InitialSearch : public Component {
       SearchStatus>
   initialSearch(const StopCriteria<XEv>& stop) = 0;
 
-  virtual bool compatible(std::string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
@@ -61,11 +61,11 @@ class InitialSearch : public Component {
     return ss.str();
   }
 
-  virtual std::string id() const {
+  std::string id() const override {
     return idComponent();
   }
 
-  virtual std::string toString() const override {
+  std::string toString() const override {
     return id();
   }
 };

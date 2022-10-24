@@ -107,7 +107,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
     const vector<Move<XES, XEv>*> emptyList;
     vector<Move<XES, XEv>*> tabuList;
 
-    long tnow = time(nullptr);
+    // long tnow = time(nullptr);
 
     int estimative_BTmax = 0;
 
@@ -244,7 +244,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
 
   Move<XES, XEv>* tabuBestMove(XES& se, const vector<Move<XES, XEv>*>& tabuList) {
     XSolution AUTO_CONCEPTS& s = se.first;
-    Evaluation<>& e = se.second;
+    // Evaluation<>& e = se.second;
 
     NSIterator<XES, XEv>& it = nsSeq.getIterator(s.getR(), s.getADS());
 
@@ -310,7 +310,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
@@ -321,7 +321,9 @@ class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<S, XEv, 
   virtual ~BasicTabuSearchBuilder() {
   }
 
-  virtual SingleObjSearch<XES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+  SingleObjSearch<XES>* build(Scanner& scanner,
+                              HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                              string family = "") override {
     Evaluator<XES, XEv>* eval;
     hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
 
@@ -344,7 +346,7 @@ class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<S, XEv, 
     return new BasicTabuSearch<XES>(*eval, *constructive, *nsseq, tl, tsMax);
   }
 
-  virtual vector<pair<string, string>> parameters() {
+  vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
     params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
     //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
@@ -356,7 +358,7 @@ class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<S, XEv, 
     return params;
   }
 
-  virtual bool canBuild(string component) {
+  bool canBuild(std::string component) override {
     return component == BasicTabuSearchBuilder<S, XEv>::idComponent();
   }
 
@@ -366,7 +368,7 @@ class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<S, XEv, 
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };

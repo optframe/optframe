@@ -36,8 +36,9 @@
 
 #include <cstring>
 #include <iostream>
+#include <utility>
 #include <vector>
-
+//
 #include "Direction.hpp"
 #include "Evaluation.hpp"
 #include "Population.hpp"
@@ -67,11 +68,11 @@ class MSSearch : public Component {
   // this should be pure virtual. useful for populational searches (single or multiobj) and general multiobj searches (by pareto sets)
   virtual SearchStatus search(std::optional<X2ES>& p, const StopCriteria<XEv>& stopCriteria) = 0;
 
-  virtual string log() const {
+  std::string log() const override {
     return "Empty heuristic log.";
   }
 
-  virtual bool compatible(string s) {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
@@ -81,7 +82,7 @@ class MSSearch : public Component {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
@@ -92,15 +93,19 @@ class MSSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
   virtual ~MSSearchBuilder() {
   }
 
-  virtual MSSearch<S, XEv, X2ES>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
+  virtual MSSearch<S, XEv, X2ES>* build(Scanner& scanner,
+                                        HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                        string family = "") = 0;
 
-  virtual Component* buildComponent(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+  Component* buildComponent(Scanner& scanner,
+                            HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                            string family = "") override {
     return build(scanner, hf, family);
   }
 
-  virtual vector<pair<string, string>> parameters() = 0;
+  vector<pair<string, string>> parameters() override = 0;
 
-  virtual bool canBuild(string) = 0;
+  bool canBuild(string) override = 0;
 
   static string idComponent() {
     stringstream ss;
@@ -108,7 +113,7 @@ class MSSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     return ss.str();
   }
 
-  virtual string id() const override {
+  std::string id() const override {
     return idComponent();
   }
 };
