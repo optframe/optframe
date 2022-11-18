@@ -2,19 +2,20 @@
 ROOT_PATH=..
 SRC_PATH=../include
 LIBS_PATH=../libs
+CATCH2_MAIN_PART=-Ithirdparty -DCATCH_CONFIG_MAIN thirdparty/catch2/catch_amalgamated.cpp 
 
 all: test
 	@echo "Executing tests"
 	./build/OptFrame_test
 
 test: clean OptFrame_test 
-	
 
-OptFrame_test : OptFrame.Test.cpp
-	g++ --coverage -g -O0 -fconcepts -fmax-errors=5 -std=c++17 -I$(SRC_PATH) -I$(LIBS_PATH) -DCATCH_CONFIG_MAIN $< -o ./build/$@   
+
+OptFrame_test : OptFrame.Test.cpp 
+	g++ --coverage -g -O0 -fconcepts -fmax-errors=5 -std=c++17 -I$(SRC_PATH) -I$(LIBS_PATH) $(CATCH2_MAIN_PART) $<  -o ./build/$@   
 
 FCore_test : FCore.Test.cpp
-	g++-10.1 --coverage -g -O0 -fmax-errors=5 -std=c++20 -fcoroutines -I$(SRC_PATH) -I$(LIBS_PATH) -DCATCH_CONFIG_MAIN $< -o ./build/$@   
+	g++-10.1 --coverage -g -O0 -fmax-errors=5 -std=c++20 -fcoroutines -I$(SRC_PATH) -I$(LIBS_PATH) $(CATCH2_MAIN_PART) $< -o ./build/$@   
 
 test-install:
 	g++ -g --std=c++17 -fconcepts test-install-OptFrame.cpp -o ./build/optframe_test_install

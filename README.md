@@ -49,39 +49,6 @@ Note that OptFrame website may have obsolete documentation and examples:
 - no 'using namespace std' 
 - change to more compact and consistent formatting style (using cpplint tool)
 
-### Versioning requirements
-
-`pip install bumpver`
-
-`bumpver update --patch`
-
-### Docs Requirements
-
-`python3 -m pip install -r requirements.txt`
-
-TODO: use [exhale](https://exhale.readthedocs.io/en/latest/usage.html#usage-quickstart-guide)
-
-Just type: `make docs`
-
-Output is on: `xdg-open $(pwd)/docs/build/html/index.html`
-
-## Build with Bazel
-
-First, install [Bazel Build](https://bazel.build): `npm install -g @bazel/bazelisk`
-
-Also, install bazel buildifier (recommended): `go get -v github.com/bazelbuild/buildtools/buildifier` (should appear on `$HOME/go/bin`) 
-
-To build (currently a small test on `demo/00_SimpleBuild`):
-`bazel build ...`
-
-To run: `bazel run //demo/00_SimpleBuild:app_demo_opt`
-
-Resulting binaries will be located at folder `./bazel-bin/demo/00_SimpleBuild/`
-
-To clean:
-`bazel clean` or `bazel clean --expunge`
-
-
 ## Project Structure
 
 Project is organized in three main folders: `src`, `libs`, `tests` and `bin`.
@@ -97,7 +64,7 @@ OptFrame Functional Core (FCore) is also provided (strict `c++20`):
 * On `src/OptFCore` and `Examples/FCore-Examples` are code and testing for `FCore` framework itself.
 
 
-## C++ Requirements
+## C++ and Development Requirements
 
 The following requirements apply for projects (and subprojects):
 
@@ -107,67 +74,12 @@ The following requirements apply for projects (and subprojects):
 
 To install gcc-10.1, see these [Instructions](libs/gcc-10-install/INSTRUCTIONS.md).
 
+To learn more about bazel build, versioning and general development requirements, see [DEVEL.md](DEVEL.md).
+
+
 ## Concepts General
 
-On general two concepts are considered on Search methods (they will be better explained in next section):
-- XES and XSH: XES is base type for (primary) search type XSH, which is on general words "what users want"
-- XES2 and XSH2: XES2 is base type for (secondary) search/exploration type XSH2, which is "what method uses to give what users want"
-
-Typically, XSH2=XSH=XES for trajectory-based optimization, and XSH2 is population for population-based methods. On multi-objective scenarios, XSH may be some Pareto structure, while XSH2 some "Pareto Population" (see NSGA-II, for example).
-
-
-## Concepts (Intro)
-
-A major change happened from OptFrame v3 to v4, where C++ Concepts were finally adopted (before official release of C++20 we use `concepts lite` on `gcc-7`).
-This allowed a further simplification of project, by dividing most templates into two basic categories:
-- Solution Space: `XS` template concept
-- Objective Space: `XEv` template concept
-
-On general, methods will work over a simplified Search Space, composed by a pair `<XS, XEv>` (or equivalent structure). Users will likely just use a pair of classical `Solution` and `Evaluation` classes, or inherit from `IESolution` to make its own personalized class ;)
-
-Note that this will be valid for both Single- and Multi-Objective problems, unifying even more all kinds of techniques, into basic containers.
-
-Specially for Multi-Objective problems, the standard Search Space will consist of `2^XES` space, where `XES=<XS, XEv>`. A classic member of `2^XES` is the `Pareto` class (together with a `MultiEvaluator`).
-
-### Solution and Evaluation containers
-
-Basic containers are still default `Solution` and `Evaluation`. Note that both are now not mandatory (thanks to concepts). It's still a very good deal to use them, as they allow templated primitive types like `int` and `double` to be directly used on `Evaluation`, also using basic std structures like `vector` directly on `Solution`.
-If you don't like them, feel free to just replace them (`XS` and `XEv` can become virtually anything you want).
-
-One can also personalize `Evaluation` class with a `MultiObjValue` tuple. This theoretically allows a unification between SingleObj and MultiObj methods, without further changes.
-
-OptFrame 3 relied strongly on templates `R` and `ADS`, but now those only exist for basic Solution containers, and are not mandatory anymore (yet, it may still be good to follow this amazing optimization pattern).
-
-Things are still moving, more big changes are coming.
-
-### Search Space details
-
-Search Space is defined on OptFrame as the pair of Solution* Space and Objective Space.
-It also accepts a powerset of Solution Space together with powerset of Objective Space (for population/multiobjective search).
-
-(*) Solution Space is also called Decision Space by some authors: `Lust, T., & Teghem, J. (2009). Two-phase Pareto local search for the biobjective traveling salesman problem. Journal of Heuristics, 16(3), 475–510. doi:10.1007/s10732-009-9103-9`.
-
-### InitialSearch
-
-`InitialSearch` corresponds to (OptFrame v3) `Constructive`, in the same way, Solution Space corresponds to Search Space.
-Thus it can be used to generate initial valid "solution" that also comprises an objective value.
-
-###  Technical Notes on Initializers
-
-Initializers (for XSolution, XESolution and X2ESolution)
-
-- Constructive: generates XSolution object
-  * good for initializing single solution without worrying about XEvaluation space
-- InitialMultiSolution: generates multiple XSolution objects
-  * good for initializing multiple solutions (or Population) without worrying about XEvaluation space
-  * a typical output could be a MultiSolution<S>, Population<S> or VPopulation<S>
-- InitialMultiESolution: generates multiple XESolution objects
-  * good for initializing multiple solutions (or Population) already with evaluation values.
-  * note that objective values may be valid or not, depending on X2ESolution type...
-     - EPopulation, MultiESolution and VEPopulation allows for initial objective values to be in invalid state
-- InitialSearch: generates XSearch object (XESolution or X2ESolution) 
-  * It can be used to initialize both search spaces, although not imposing any "size" constraints on "multi" types (X2ESolution)... 
-     - it works as a "transparency layer" that means: "I don't care how you generate, just generate for me!"
+To learn a little bit of Optimization Concepts and C++ Concepts behind this project, see [OPTCONCEPTS.md](OPTCONCEPTS.md)
 
 
 ### Examples
@@ -229,54 +141,11 @@ Getting submodules: `git submodule update --init --recursive` and `git pull --re
 Just type `cd ./bin && ./mct.sh` (or `make mct`) and follow the instructions on screen.
 You can find your new project on `src/MyProjects/` (and tests on `tests/MyProjects/`).
 
-## Special thanks for SourceForge.net
-
-The OptFrame project was hosted in SourceForge.net for 8 years and we are
-very grateful for all support during this time. Thanks to this support, we
-have published several academic papers and solved many large scale problems
-during these years. In order to easily interact with new project collaborators
-the project is now moved to GitHub platform.
-
-Thanks a lot SourceForge/GitHub!
 
 ## A brief history of OptFrame
 
-### OptFrame v1
-* Born on 2007 at Universidade Federal de Ouro Preto, Ouro Preto/MG, Brazil
-* Very early phases of project, mostly used for Open Pit Mining optimization and VNS/ILS
-* Too many type casts (no templates yet!)
-* No efficient version control for source files
+For a brief history of OptFrame v1, v2, v3, v4 and v5 (current), see [HISTORY.md](HISTORY.md).
 
-### OptFrame v2
-* Adopted templates and nice metaprogramming design
-* Adopted SVN version control
-* Evolution on many aspects, due to collaborations on Universidade Federal Fluminense, Niterói/RJ, Brazil
-* Mostly maintained by four initial OptHouse members: Igor Machado, Sabir Ribas, Pablo Munhoz and Mário Perché
-
-### OptFrame v3
-* Stable release with many techniques for Single and Multi-objective
-* Automated runtime testing with CheckCommand
-* Practical implementations on several Master and PhD thesis
-* Professional implementations on industry software
-* Moved to Git source control
-* Mostly maintained by Igor Machado and Vitor Nazário Coelho
-
-### OptFrame v4
-* Just born with C++ Concepts in mind!
-* Byproduct of several worldwide collaborations, with best known software management practices
-* Focusing on achieving maximum C++ performance, solving too many memory management complex strategies (fully using self managed memory by smart pointers and move semantics)
-* Maximum personalization by the user
-
-
-## Installation
-
-OptFrame is organized in several C++ headers.
-To install it system-wide (in linux), just type `make install` (`sudo` will be necessary here):
-
-- headers will be put on `/usr/local/include`
-- examples, src and tests will be put on `/usr/local/optframe`
-
-We recommend to run `make test-install` after that, to ensure everything is fine!
 
 ## Examples
 
@@ -334,6 +203,17 @@ Multi-Objective metaheuristics:
 - MOVNS
 - 2PPLS
 - ...
+
+
+## Installation
+
+OptFrame is organized in several C++ headers.
+To install it system-wide (in linux), just type `make install` (`sudo` will be necessary here):
+
+- headers will be put on `/usr/local/include`
+- examples, src and tests will be put on `/usr/local/optframe`
+
+We recommend to run `make test-install` after that, to ensure everything is fine!
 
 ## VSCode Settings
 

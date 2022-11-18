@@ -82,7 +82,7 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES, XEv> {
     unsigned index = 0;
 
     S s = sStar;
-    Evaluation<> e = eStar;
+    XEv e = eStar;
 
     long tnow = time(nullptr);
 

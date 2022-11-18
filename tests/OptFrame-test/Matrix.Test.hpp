@@ -1,6 +1,7 @@
-#include <catch2/catch.hpp>
+#include <catch2/catch_amalgamated.hpp>
 // Some instructions for Catch2
 // https://github.com/catchorg/Catch2/blob/master/docs/test-cases-and-sections.md
+// Now v3: ...
 
 // system
 #include <limits>

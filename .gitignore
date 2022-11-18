@@ -12,3 +12,4 @@ app_*
 bazel-*
 .vscode
 .xxxxx-vscode
+.devcontainer
