@@ -1,1 +1,24 @@
-build --cxxopt='-std=c++17' --cxxopt='-fconcepts'
+build --cxxopt='-std=c++20'
+build --cxxopt='-Wno-macro-redefined'
+build --cxxopt='-Wno-builtin-macro-redefined'
+#
+build --cxxopt='-Wno-unused-private-field'
+
+
+#### https://github.com/llvm/llvm-project/issues/56709
+#### https://github.com/erenon/bazel_clang_tidy/issues/29
+#
+# build --cxxopt='-Wfatal-errors'
+build --client_env=CC=clang
+
+#######
+# FROM: https://github.com/erenon/bazel_clang_tidy
+
+# Required for bazel_clang_tidy to operate as expected
+build:clang-tidy --aspects @bazel_clang_tidy//clang_tidy:clang_tidy.bzl%clang_tidy_aspect
+build:clang-tidy --output_groups=report
+
+# Optionally override the .clang-tidy config file target
+build:clang-tidy --@bazel_clang_tidy//:clang_tidy_config=//:clang_tidy_config
+
+# THEN, just do it: bazel build //... --config clang-tidy

@@ -3,5 +3,5 @@ cc_binary(
     name = "demo_welcome",
     srcs = ["mytest.cpp"],
     deps=["@OptFrame//include:OptFCore"],
-    copts = ['--std=c++17', '-fconcepts']
+    ##copts = ['--std=c++17', '-fconcepts']
 )

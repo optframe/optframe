@@ -64,27 +64,20 @@ class MultiDirection : public Component {
   }
 
   MultiDirection(MultiDirection& mDir)
-      : vDir(mDir.vDir), nObjectives(mDir.nObjectives) {
-  }
+      : vDir(mDir.vDir), nObjectives(mDir.nObjectives) {}
 
-  MultiDirection() {
-    nObjectives = 0;
-  }
+  MultiDirection() { nObjectives = 0; }
 
-  virtual ~MultiDirection() {
-  }
+  virtual ~MultiDirection() {}
 
   virtual MultiDirection& addObjective(Direction<XEv>* ds) {
-    if (ds)
-      vDir.push_back(ds);
+    if (ds) vDir.push_back(ds);
     nObjectives = vDir.size();
 
     return *this;
   }
 
-  vsref<Direction<XEv>> getDirections() {
-    return vDir;
-  }
+  vsref<Direction<XEv>> getDirections() { return vDir; }
 
   // ============ betterThan ===========
 
@@ -109,12 +102,14 @@ class MultiDirection : public Component {
 
   // ============= improvement =============
 
-  ///inline bool isImprovement(unsigned obj, const MoveCost<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
-  inline bool isImprovementAt(unsigned obj, const Evaluation<>& mc, const Evaluation<>& e1, const Evaluation<>& e2) {
+  /// inline bool isImprovement(unsigned obj, const MoveCost<>& mc, const
+  /// Evaluation<>& e1, const Evaluation<>& e2)
+  inline bool isImprovementAt(unsigned obj, const Evaluation<>& mc,
+                              const Evaluation<>& e1, const Evaluation<>& e2) {
     return vDir[obj]->isImprovement(mc, e1, e2);
   }
 
-  ///inline bool isImprovement(unsigned obj, const MoveCost<>& mc)
+  /// inline bool isImprovement(unsigned obj, const MoveCost<>& mc)
   inline bool isImprovementAt(unsigned obj, const Evaluation<>& mc) {
     return vDir[obj]->isImprovement(mc);
   }
@@ -131,32 +126,22 @@ class MultiDirection : public Component {
 
   // ============ estimation =============
 
-  inline double ideal(unsigned obj) {
-    return vDir[obj]->ideal();
-  }
+  inline double ideal(unsigned obj) { return vDir[obj]->ideal(); }
 
   // inline double worst(unsigned obj)
-  inline double nadir(unsigned obj) {
-    return vDir[obj]->nadir();
-  }
+  inline double nadir(unsigned obj) { return vDir[obj]->nadir(); }
 
-  inline double min(unsigned obj) {
-    return vDir[obj]->min();
-  }
+  inline double min(unsigned obj) { return vDir[obj]->min(); }
 
-  inline double max(unsigned obj) {
-    return vDir[obj]->max();
-  }
+  inline double max(unsigned obj) { return vDir[obj]->max(); }
 
   // ============= Component ===============
 
-  virtual bool compatible(std::string s) override {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
-  virtual std::string toString() const override {
-    return id();
-  }
+  virtual std::string toString() const override { return id(); }
 
   static string idComponent() {
     stringstream ss;
@@ -164,9 +149,7 @@ class MultiDirection : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

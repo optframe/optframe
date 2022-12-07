@@ -23,58 +23,48 @@
 #ifndef EtII_Delta_Move_SwapSide_HPP_
 #define EtII_Delta_Move_SwapSide_HPP_
 
-#include "./NSSeqSwapSide.h"
-
 #include <cmath>
+
+#include "./NSSeqSwapSide.h"
 
 using namespace std;
 
 namespace EtII {
 
-class DeltaMoveSwapSide : public MoveSwapSide
-{
+class DeltaMoveSwapSide : public MoveSwapSide {
+ public:
+  DeltaMoveSwapSide(int _x1, int _y1, int _x2, int _y2)
+      : MoveSwapSide(_x1, _y1, _x2, _y2) {}
 
-public:
-   DeltaMoveSwapSide(int _x1, int _y1, int _x2, int _y2)
-     : MoveSwapSide(_x1, _y1, _x2, _y2)
-   {
-   }
+  virtual ~DeltaMoveSwapSide() {}
 
-   virtual ~DeltaMoveSwapSide()
-   {
-   }
+  /*
+       MoveCost<>* estimatedCost(const Evaluation<MemEtII>&, const SolutionEtII&
+     s)
+       {
+               double f = 0;
 
-   /*
-	MoveCost<>* estimatedCost(const Evaluation<MemEtII>&, const SolutionEtII& s)
-	{
-		double f = 0;
+               return new MoveCost (f, 0);
+       }
+       */
 
-		return new MoveCost (f, 0);
-	}
-	*/
+  static string idComponent() {
+    string idComp = MoveSwapSide::idComponent();
+    idComp.append(":DeltaMoveSwapSide");
+    return idComp;
+  }
 
-   static string idComponent()
-   {
-      string idComp = DeltaMoveSwapSide::idComponent();
-      idComp.append(":DeltaMoveSwapSide");
-      return idComp;
-   }
+  virtual bool operator==(const DeltaMoveSwapSide& _m) const {
+    const DeltaMoveSwapSide& m = (const DeltaMoveSwapSide&)_m;
+    return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2);
+  }
 
-   virtual bool operator==(const DeltaMoveSwapSide& _m) const
-   {
-      const DeltaMoveSwapSide& m = (const DeltaMoveSwapSide&)_m;
-      return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2);
-   }
+  void print() const override {
+    cout << "DeltaMoveSwapSide: (" << x1 << "," << y1 << ") <=> (" << x2 << ","
+         << y2 << ")" << endl;
+  }
 
-   virtual void print() const
-   {
-      cout << "DeltaMoveSwapSide: (" << x1 << "," << y1 << ") <=> (" << x2 << "," << y2 << ")" << endl;
-   }
-
-   string id() const
-   {
-      return "OptFrame:Move:DeltaMoveSwapSide";
-   }
+  std::string id() const override { return "OptFrame:Move:DeltaMoveSwapSide"; }
 };
-}
+}  // namespace EtII
 #endif /*EtII_Delta_Move_SwapSide_HPP_*/

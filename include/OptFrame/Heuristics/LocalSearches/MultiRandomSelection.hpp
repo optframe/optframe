@@ -26,20 +26,24 @@
 // ==============================================================================================
 // This is a Multi Improvement (MI) implementation
 //
-// The MI method was officially proposed in 2016 by Coelho et al (WAMCA/Los Angeles)
-// "A Benchmark on Multi Improvement Neighborhood Search Strategies in CPU/GPU Systems"
+// The MI method was officially proposed in 2016 by Coelho et al (WAMCA/Los
+// Angeles) "A Benchmark on Multi Improvement Neighborhood Search Strategies in
+// CPU/GPU Systems"
 //
 // Method detailed in 2016 PhD thesis by Eyder Rios (pt-BR)
 // "Exploração de Estratégias de Busca Local em Ambientes CPU/GPU"
 //
 // Dataflow extension in 2018 by Araujo et al
-// "A DVND Local Search Implemented on a Dataflow Architecture for the Minimum Latency Problem"
+// "A DVND Local Search Implemented on a Dataflow Architecture for the Minimum
+// Latency Problem"
 //
 // Heuristic MI extension to VRPs in 2019 by Silva Jr (pt-BR)
-// "Multi Improvement: uma Solução Alternativa para o Problema de Roteamento de Veículos"
+// "Multi Improvement: uma Solução Alternativa para o Problema de Roteamento de
+// Veículos"
 //
 // Parallel GPU Data Flow extension in 2020 by Araujo et al
-// "A multi-improvement local search using dataflow and GPU to solve the minimum latency problem"
+// "A multi-improvement local search using dataflow and GPU to solve the minimum
+// latency problem"
 //
 // Exact dynamic programming approach in 2020 by Silva et al
 // "Finding the Maximum Multi Improvement on neighborhood exploration"
@@ -67,22 +71,23 @@ class MultiRandomSelection : public LocalSearch<XES, XEv> {
  public:
   std::function<void(std::vector<std::pair<XEv, int>>&)> sorter{
       [this](std::vector<std::pair<XEv, int>>& v) -> void {
-        std::sort(
-            v.begin(),
-            v.end(),
-            [this](const std::pair<XEv, int>& e1, const std::pair<XEv, int>& e2) -> bool {
-              return this->eval->betterStrict(e1.first, e2.first);
-            });
+        std::sort(v.begin(), v.end(),
+                  [this](const std::pair<XEv, int>& e1,
+                         const std::pair<XEv, int>& e2) -> bool {
+                    return this->eval->betterStrict(e1.first, e2.first);
+                  });
       }};
 
  public:
   //
-  MultiRandomSelection(
-      sref<GeneralEvaluator<XES, XEv>> _eval,
-      sref<NS<XES, XEv, XSH>> _ns,
-      int _countMoves,
-      XEv _stopCost)
-      : eval{_eval}, ns{_ns}, countMoves{_countMoves}, stopCost{_stopCost}  // stopCost is typically 0 (or 0.0), for Sing.Obj.Problems
+  MultiRandomSelection(sref<GeneralEvaluator<XES, XEv>> _eval,
+                       sref<NS<XES, XEv, XSH>> _ns, int _countMoves,
+                       XEv _stopCost)
+      : eval{_eval},
+        ns{_ns},
+        countMoves{_countMoves},
+        stopCost{_stopCost}
+  // stopCost is typically 0 (or 0.0), for Sing.Obj.Problems
   {
     // only allow NS which is Solution Independent
     assert(ns->isSolutionIndependent());
@@ -90,10 +95,10 @@ class MultiRandomSelection : public LocalSearch<XES, XEv> {
     assert(ns->supportsMoveIndependence());
   }
 
-  virtual ~MultiRandomSelection() {
-  }
+  virtual ~MultiRandomSelection() {}
 
-  virtual SearchStatus searchFrom(XSH& se, const StopCriteria<XEv>& sosc) override {
+  virtual SearchStatus searchFrom(XSH& se,
+                                  const StopCriteria<XEv>& sosc) override {
     if (Component::information)
       std::cout << "MIRS::starts for " << ns->toString() << std::endl;
 
@@ -136,7 +141,8 @@ class MultiRandomSelection : public LocalSearch<XES, XEv> {
     // compute all costs
     //
     if (Component::information)
-      std::cout << "MIRS computing all costs (" << allMoves.size() << ")" << std::endl;
+      std::cout << "MIRS computing all costs (" << allMoves.size() << ")"
+                << std::endl;
     //
     std::vector<std::pair<XEv, int>> allCosts(allMoves.size());
     for (int k = 0; k < (int)allMoves.size(); k++)
@@ -178,7 +184,8 @@ class MultiRandomSelection : public LocalSearch<XES, XEv> {
           //
           for (unsigned c = k + 1; c < allCosts.size(); c++)
             if (allCosts[c].second != -1)
-              if (!allMoves[allCosts[k].second]->independentOf(*allMoves[allCosts[c].second]))
+              if (!allMoves[allCosts[k].second]->independentOf(
+                      *allMoves[allCosts[c].second]))
                 allCosts[c].second = -1;  // flag as conflicting
         }
     }
@@ -191,15 +198,14 @@ class MultiRandomSelection : public LocalSearch<XES, XEv> {
     // ==============
     // free resources
     //
-    for (unsigned i = 0; i < allMoves.size(); i++)
-      delete allMoves[i];
+    for (unsigned i = 0; i < allMoves.size(); i++) delete allMoves[i];
     allMoves.clear();
 
     // report 'all is well' (and dance...)
     return SearchStatus::NO_REPORT;
   }
 
-  virtual bool compatible(std::string s) override {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
   }
 
@@ -209,9 +215,7 @@ class MultiRandomSelection : public LocalSearch<XES, XEv> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   virtual string toString() const override {
     stringstream ss;
@@ -220,22 +224,23 @@ class MultiRandomSelection : public LocalSearch<XES, XEv> {
   }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, XEv>>
-class MultiRandomSelectionBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>,
+          XSearch<XES> XSH = std::pair<S, XEv>>
+class MultiRandomSelectionBuilder
+    : public LocalSearchBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~MultiRandomSelectionBuilder() {
-  }
+  virtual ~MultiRandomSelectionBuilder() {}
 
   LocalSearch<XES, XEv>* build(Scanner& scanner,
                                HeuristicFactory<S, XEv, XES, X2ES>& hf,
                                string family = "") override {
-    if (!scanner.hasNext())
-      return nullptr;
+    if (!scanner.hasNext()) return nullptr;
     sptr<GeneralEvaluator<XES, XEv>> eval;
     hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
 
-    if (!scanner.hasNext())
-      return nullptr;
+    if (!scanner.hasNext()) return nullptr;
     sptr<NS<XES, XEv, XSH>> nsseq;
     hf.assign(nsseq, *scanner.nextInt(), scanner.next());  // reads backwards!
 
@@ -244,8 +249,10 @@ class MultiRandomSelectionBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES>
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
-    params.push_back(make_pair(NS<XES, XEv, XSH>::idComponent(), "neighborhood structure"));
+    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
+                               "evaluation function"));
+    params.push_back(
+        make_pair(NS<XES, XEv, XSH>::idComponent(), "neighborhood structure"));
 
     return params;
   }
@@ -260,9 +267,7 @@ class MultiRandomSelectionBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES>
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

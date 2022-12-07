@@ -31,76 +31,60 @@
 #include <OptFrame/Evaluator.hpp>
 
 #include "Evaluation.h"
-#include "Representation.h"
-
-#include "Solution.h"
-
 #include "ProblemInstance.h"
+#include "Representation.h"
+#include "Solution.h"
 
 #define TSP_EPSILON 0.0001
 
 namespace TSP2 {
 
-//class MyEvaluator : public Evaluator<SolutionTSP>
-class MyEvaluator : public Evaluator<SolutionTSP, EvaluationTSP>
-{
-private:
-   ProblemInstance& pTSP;
+// class MyEvaluator : public Evaluator<SolutionTSP>
+class MyEvaluator : public Evaluator<SolutionTSP, EvaluationTSP> {
+ private:
+  ProblemInstance& pTSP;
 
-public:
-   long long evaluations;
+ public:
+  long long evaluations;
 
-   using Evaluator<SolutionTSP>::evaluate; // prevents name hiding
+  using Evaluator<SolutionTSP>::evaluate;  // prevents name hiding
 
-   MyEvaluator(ProblemInstance& _pTSP)
-     : pTSP(_pTSP)
-   {
-      evaluations = 0;
-   }
+  MyEvaluator(ProblemInstance& _pTSP) : pTSP(_pTSP) { evaluations = 0; }
 
-   Evaluation<> evaluate(const RepTSP& r, const OPTFRAME_DEFAULT_ADS*) override
-   {
-      evaluations++;
-      double fo = 0; // Evaluation<> Function Value
+  Evaluation<> evaluate(const RepTSP& r, const OPTFRAME_DEFAULT_ADS*) override {
+    evaluations++;
+    double fo = 0;  // Evaluation<> Function Value
 
-      for (int i = 0; i < ((int)r.size()) - 1; i++) {
-         int j = r.at(i);
-         int z = r.at(i + 1);
+    for (int i = 0; i < ((int)r.size()) - 1; i++) {
+      int j = r.at(i);
+      int z = r.at(i + 1);
 
-         double val = pTSP.dist(j, z);
-         fo += val;
-      }
-
-      int k = r.at(((int)r.size()) - 1);
-      int l = r.at(0);
-
-      double val = pTSP.dist(k, l);
+      double val = pTSP.dist(j, z);
       fo += val;
+    }
 
-      return Evaluation(fo);
-   }
+    int k = r.at(((int)r.size()) - 1);
+    int l = r.at(0);
 
-   virtual bool betterThan(double f1, double f2)
-   {
-      return (f1 < (f2 - TSP_EPSILON));
-   }
+    double val = pTSP.dist(k, l);
+    fo += val;
 
-   virtual bool isMinimization() const
-   {
-      return true;
-   }
+    return Evaluation(fo);
+  }
 
-   virtual string id() const override
-   {
-      return "OptFrame:Evaluator:MyEvaluator";
-   }
+  virtual bool betterThan(double f1, double f2) {
+    return (f1 < (f2 - TSP_EPSILON));
+  }
 
-   void print() const
-   {
-      cout << "TSP evaluation function" << endl;
-   }
+  virtual bool isMinimization() const { return true; }
+
+  virtual string id() const override {
+    return "OptFrame:Evaluator:MyEvaluator";
+  }
+
+  void print() const override { cout << "TSP evaluation function" << endl; }
 };
 
-}
+}  // namespace TSP2
 
 #endif /*TSP2_EVALUATOR_HPP_*/

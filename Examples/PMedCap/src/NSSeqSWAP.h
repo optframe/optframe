@@ -39,121 +39,92 @@ using namespace optframe;
 
 namespace pmedcap {
 
-class MoveSWAP : public Move<ESolutionPCAP>
-{
-public:
-   int x;
-   int med;
-   MoveSWAP(int _x, int _med)
-   {
-      x = _x;
-      med = _med;
-   }
+class MoveSWAP : public Move<ESolutionPCAP> {
+ public:
+  int x;
+  int med;
+  MoveSWAP(int _x, int _med) {
+    x = _x;
+    med = _med;
+  }
 
-   virtual ~MoveSWAP()
-   {
-   }
+  virtual ~MoveSWAP() {}
 
-   bool canBeApplied(const ESolutionPCAP& s) override
-   {
-      return true;
-   }
+  bool canBeApplied(const ESolutionPCAP& s) override { return true; }
 
-   uptr<Move<ESolutionPCAP>> apply(ESolutionPCAP& s) override
-   {
-      RepPCAP& rep = s.first.getR();
-      int aux = rep.second[x];
-      rep.second[x] = med;
-      return uptr<Move<ESolutionPCAP>>(new MoveSWAP(x, aux));
-   }
+  uptr<Move<ESolutionPCAP>> apply(ESolutionPCAP& s) override {
+    RepPCAP& rep = s.first.getR();
+    int aux = rep.second[x];
+    rep.second[x] = med;
+    return uptr<Move<ESolutionPCAP>>(new MoveSWAP(x, aux));
+  }
 
-   virtual bool operator==(const Move<ESolutionPCAP>& _m) const
-   {
-      const MoveSWAP& m = (const MoveSWAP&)_m;
-      return x == m.x;
-   }
+  virtual bool operator==(const Move<ESolutionPCAP>& _m) const {
+    const MoveSWAP& m = (const MoveSWAP&)_m;
+    return x == m.x;
+  }
 
-   void print() const
-   {
-      cout << "MoveSwapMediana: (" << x << "," << med << ")" << endl;
-   }
+  void print() const override {
+    cout << "MoveSwapMediana: (" << x << "," << med << ")" << endl;
+  }
 };
 
-class NSIteratorSWAP : public NSIterator<ESolutionPCAP>
-{
-public:
-   PCAPProblemInstance& p;
-   int x;
-   int mediana;
-   NSIteratorSWAP(PCAPProblemInstance& _p)
-     : p(_p)
-   {
-   }
+class NSIteratorSWAP : public NSIterator<ESolutionPCAP> {
+ public:
+  PCAPProblemInstance& p;
+  int x;
+  int mediana;
+  NSIteratorSWAP(PCAPProblemInstance& _p) : p(_p) {}
 
-   virtual ~NSIteratorSWAP()
-   {
-   }
+  virtual ~NSIteratorSWAP() {}
 
-   virtual void first() override
-   {
-      x = 0;
+  virtual void first() override {
+    x = 0;
+    mediana = 0;
+  }
+
+  virtual void next() override {
+    mediana++;
+    if (mediana == (p.nMedianas - 1)) {
       mediana = 0;
-   }
+      x++;
+    }
+  }
 
-   virtual void next() override
-   {
-      mediana++;
-      if (mediana == (p.nMedianas - 1)) {
-         mediana = 0;
-         x++;
-      }
-   }
+  virtual bool isDone() override { return x == p.nCidades; }
 
-   virtual bool isDone() override
-   {
-      return x == p.nCidades;
-   }
-
-   virtual uptr<Move<ESolutionPCAP>> current() override
-   {
-      return uptr<Move<ESolutionPCAP>>(new MoveSWAP(x, mediana));
-   }
+  virtual uptr<Move<ESolutionPCAP>> current() override {
+    return uptr<Move<ESolutionPCAP>>(new MoveSWAP(x, mediana));
+  }
 };
 
-class NSSeqSWAP : public NSSeq<ESolutionPCAP>
-{
-public:
-   PCAPProblemInstance& p;
-   RandGen& rg;
+class NSSeqSWAP : public NSSeq<ESolutionPCAP> {
+ public:
+  PCAPProblemInstance& p;
+  RandGen& rg;
 
-   NSSeqSWAP(PCAPProblemInstance& _p, RandGen& _rg)
-     : p(_p)
-     , rg(_rg)
-   {
-   }
+  NSSeqSWAP(PCAPProblemInstance& _p, RandGen& _rg) : p(_p), rg(_rg) {}
 
-   virtual ~NSSeqSWAP()
-   {
-   }
+  virtual ~NSSeqSWAP() {}
 
-   virtual uptr<Move<ESolutionPCAP>> randomMove(const ESolutionPCAP& s) override
-   {
-      const RepPCAP& rep = s.first.getR();
-      int cidade = rg.rand(rep.second.size());
-      int mediana = rg.rand(rep.first.size());
-      return uptr<Move<ESolutionPCAP>>(new MoveSWAP(cidade, mediana)); // return a random move
-   }
+  virtual uptr<Move<ESolutionPCAP>> randomMove(
+      const ESolutionPCAP& s) override {
+    const RepPCAP& rep = s.first.getR();
+    int cidade = rg.rand(rep.second.size());
+    int mediana = rg.rand(rep.first.size());
+    return uptr<Move<ESolutionPCAP>>(
+        new MoveSWAP(cidade, mediana));  // return a random move
+  }
 
-   virtual uptr<NSIterator<ESolutionPCAP>> getIterator(const ESolutionPCAP& s) override
-   {
-      return uptr<NSIterator<ESolutionPCAP>>(new NSIteratorSWAP(p)); // return an iterator to the neighbors of 'rep'
-   }
+  virtual uptr<NSIterator<ESolutionPCAP>> getIterator(
+      const ESolutionPCAP& s) override {
+    return uptr<NSIterator<ESolutionPCAP>>(
+        new NSIteratorSWAP(p));  // return an iterator to the neighbors of 'rep'
+  }
 
-   virtual void print() const
-   {
-   }
+  void print() const override {}
 };
 
-}
+}  // namespace pmedcap
 
 #endif /*PCAP_NSSEQSWAP_HPP_*/

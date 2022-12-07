@@ -28,49 +28,35 @@
 
 using namespace std;
 
-template<class T1, class T2, class DS = OPTFRAME_DEFAULT_EMEMORY>
-class MovePairFirst : public Move<pair<T1, T2>, DS>
-{
-protected:
-   Move<T1, DS>& m;
+template <class T1, class T2, class DS = OPTFRAME_DEFAULT_EMEMORY>
+class MovePairFirst : public Move<pair<T1, T2>, DS> {
+ protected:
+  Move<T1, DS>& m;
 
-public:
-   MovePairFirst(Move<T1, DS>& _m)
-     : m(_m)
-   {
-   }
+ public:
+  MovePairFirst(Move<T1, DS>& _m) : m(_m) {}
 
-   Move<T1, DS>& get_m()
-   {
-      return m;
-   }
+  Move<T1, DS>& get_m() { return m; }
 
-   virtual ~MovePairFirst()
-   {
-      delete &m;
-   }
+  virtual ~MovePairFirst() { delete &m; }
 
-   bool canBeApplied(const pair<T1, T2>& rep)
-   {
-      return m.canBeApplied(rep.first);
-   }
+  bool canBeApplied(const pair<T1, T2>& rep) {
+    return m.canBeApplied(rep.first);
+  }
 
-   Move<pair<T1, T2>, DS>& apply(pair<T1, T2>& rep)
-   {
-      return *new MovePairFirst<T1, T2, DS>(m.apply(rep.first));
-   }
+  Move<pair<T1, T2>, DS>& apply(pair<T1, T2>& rep) {
+    return *new MovePairFirst<T1, T2, DS>(m.apply(rep.first));
+  }
 
-   virtual bool operator==(const Move<pair<T1, T2>, DS>& _m) const
-   {
-      const MovePairFirst<T1, T2, DS>& m1 = (const MovePairFirst<T1, T2, DS>&)_m;
-      return m == m1.m;
-   }
+  virtual bool operator==(const Move<pair<T1, T2>, DS>& _m) const {
+    const MovePairFirst<T1, T2, DS>& m1 = (const MovePairFirst<T1, T2, DS>&)_m;
+    return m == m1.m;
+  }
 
-   void print() const
-   {
-      cout << "MovePairFirst: move = ";
-      m.print();
-   }
+  void print() const override {
+    cout << "MovePairFirst: move = ";
+    m.print();
+  }
 };
 
 #endif /*OPTFRAME_MOVEPAIRFIRST_ADAPTER_HPP_*/

@@ -39,33 +39,21 @@ class MultiSolution : public Component {
   vector<S> p;
 
  public:
-  MultiSolution() {
-  }
+  MultiSolution() {}
 
   MultiSolution(const MultiSolution& pop) {
-    for (unsigned i = 0; i < pop.size(); i++)
-      p.push_back(pop.at(i));
+    for (unsigned i = 0; i < pop.size(); i++) p.push_back(pop.at(i));
   }
 
-  virtual ~MultiSolution() {
-    clear();
-  }
+  virtual ~MultiSolution() { clear(); }
 
-  unsigned size() const {
-    return p.size();
-  }
+  unsigned size() const { return p.size(); }
 
-  S& at(unsigned c) {
-    return (p.at(c));
-  }
+  S& at(unsigned c) { return (p.at(c)); }
 
-  const S& at(unsigned c) const {
-    return (p.at(c));
-  }
+  const S& at(unsigned c) const { return (p.at(c)); }
 
-  void insert(unsigned pos, S& c) {
-    p.insert(p.begin() + pos, S{c});
-  }
+  void insert(unsigned pos, S& c) { p.insert(p.begin() + pos, S{c}); }
 
   /*
   void push_back(S* c) {
@@ -74,9 +62,7 @@ class MultiSolution : public Component {
   }
   */
 
-  void push_back(const S& c) {
-    p.push_back(c);
-  }
+  void push_back(const S& c) { p.push_back(c); }
 
   S remove(unsigned pos) {
     // steal
@@ -93,13 +79,9 @@ class MultiSolution : public Component {
   }
 
   // clear
-  void clear() {
-    p.clear();
-  }
+  void clear() { p.clear(); }
 
-  bool empty() {
-    return p.empty();
-  }
+  bool empty() { return p.empty(); }
 
   virtual MultiSolution<S>& operator=(const MultiSolution<S>& p) {
     if (&p == this)  // auto ref check
@@ -121,9 +103,7 @@ class MultiSolution : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
   std::string toString() const override {
     std::stringstream ss;
     ss << "MultiSolution(" << p.size() << ")";
@@ -134,9 +114,7 @@ class MultiSolution : public Component {
     return ss.str();
   }
 
-  void print() const {
-    std::cout << toString() << std::endl;
-  }
+  void print() const override { std::cout << toString() << std::endl; }
 };
 
 }  // namespace optframe

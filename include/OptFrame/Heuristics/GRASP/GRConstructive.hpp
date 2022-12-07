@@ -34,10 +34,10 @@ namespace optframe {
 template <XSolution S>
 class GRConstructive : public Constructive<S>, public GRASP {
  public:
-  virtual ~GRConstructive() {
-  }
+  virtual ~GRConstructive() {}
 
-  virtual std::optional<S> generateGRSolution(float alpha, double timelimit) = 0;
+  virtual std::optional<S> generateGRSolution(float alpha,
+                                              double timelimit) = 0;
 
   virtual std::optional<S> generateSolution(double timelimit) override {
     return generateGRSolution(1.0, timelimit);
@@ -49,13 +49,12 @@ class GRConstructive : public Constructive<S>, public GRASP {
 
   static string idComponent() {
     stringstream ss;
-    ss << Component::idComponent() << ":" << GRASP::family() << ":GRConstructive";
+    ss << Component::idComponent() << ":" << GRASP::family()
+       << ":GRConstructive";
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 // BasicGRConstructive can envelop a Constructive
@@ -64,31 +63,27 @@ class BasicGRConstructive : public GRConstructive<S> {
  public:
   Constructive<S>& c;
 
-  BasicGRConstructive(Constructive<S>& _c)
-      : c(_c) {
-  }
+  BasicGRConstructive(Constructive<S>& _c) : c(_c) {}
 
-  virtual ~BasicGRConstructive() {
-  }
+  virtual ~BasicGRConstructive() {}
 
   virtual op<S> generateGRSolution(float alpha, double timelimit) override {
     // ignoring alpha
     return c.generateSolution(timelimit);
   }
 
-  virtual bool compatible(std::string s) override {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << Component::idComponent() << ":" << GRASP::family() << ":GRConstructive";
+    ss << Component::idComponent() << ":" << GRASP::family()
+       << ":GRConstructive";
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 }  // namespace optframe
 

@@ -22,303 +22,288 @@
 #define DELTA_MOVEVRPOR1OPT_HPP_
 
 #include <OptFrame/Util/NeighborhoodStructures/VRP/Intra/NSSeqVRPOrOpt1.hpp>
-
 #include <cmath>
 
 using namespace std;
 
-namespace HFMVRP
+namespace HFMVRP {
+
+class DeltaMoveVRPOrOpt1
+    : public MoveVRPOrOpt1<ESolutionHFMVRP>  //<int, AdsHFMVRP, SolutionHFMVRP>
 {
+  typedef MoveVRPOrOpt1<ESolutionHFMVRP> super;
 
-class DeltaMoveVRPOrOpt1: public MoveVRPOrOpt1<ESolutionHFMVRP>//<int, AdsHFMVRP, SolutionHFMVRP>
-{
-	typedef MoveVRPOrOpt1<ESolutionHFMVRP> super;
+ private:
+  ProblemInstance* hfmvrp;
+  int k;
 
-private:
-	ProblemInstance* hfmvrp;
-	int k;
+ public:
+  DeltaMoveVRPOrOpt1(
+      vector<vector<int>>& (*_getRoutes)(const ESolutionHFMVRP& s), int _r,
+      int _c, int _pos, ProblemInstance* _hfmvrp)
+      : super(_getRoutes, _r, _c, _pos), hfmvrp(_hfmvrp) {
+    k = 1;  // OrOpt1
+    if (!_hfmvrp) {
+      cout << "Error: hfmvrp problem is NULL!" << endl;
+      print();
+      exit(1);
+    }
+  }
 
-public:
+  virtual ~DeltaMoveVRPOrOpt1() {}
 
-	DeltaMoveVRPOrOpt1(vector<vector<int>>& (*_getRoutes)(const ESolutionHFMVRP& s), int _r, int _c, int _pos, ProblemInstance* _hfmvrp) :
-		super(_getRoutes, _r, _c, _pos), hfmvrp(_hfmvrp)
-	{
-		k = 1; //OrOpt1
-		if (!_hfmvrp)
-		{
-			cout << "Error: hfmvrp problem is NULL!" << endl;
-			print();
-			exit(1);
-		}
-	}
+  int myabs(int x) { return std::abs(x); }
 
-	virtual ~DeltaMoveVRPOrOpt1()
-	{
-	}
+  bool canBeApplied(const ESolutionHFMVRP& se) {
+    const SolutionHFMVRP& s = se.first;
+    const RepHFMVRP& rep = s.getR();
+    if (r >= 0) {
+      bool all_positive = (r >= 0) && (c >= 1) &&
+                          (c < (((int)rep[r].size()) - 1)) && (pos >= 1) &&
+                          (pos < (((int)rep[r].size()) - 1));
+      bool minSize = (((int)rep[r].size()) >= 3);
 
-	int myabs(int x)
-	{
-		return std::abs(x);
-	}
+      return all_positive && minSize && (c != pos) && (c + 1 != pos) &&
+             ((c - pos) >= k);
+    } else {
+      return 0;
+    }
+  }
 
-	bool canBeApplied(const ESolutionHFMVRP& se)
-	{
-      const SolutionHFMVRP& s = se.first;
-      const RepHFMVRP& rep = s.getR();
-		if (r >= 0)
-		{
-			bool all_positive = (r >= 0) && (c >= 1) && (c < (((int) rep[r].size()) - 1)) && (pos >= 1) && (pos < (((int) rep[r].size()) - 1));
-			bool minSize = (((int) rep[r].size()) >= 3);
+  virtual void updateNeighStatus(AdsHFMVRP& ads) {
+    for (map<string, vector<bool>>::iterator iter =
+             ads.neighborhoodStatus.begin();
+         iter != ads.neighborhoodStatus.end(); iter++) {
+      //			cout<<r<<"\titer->first: "<<iter->first<<endl;
+      ads.neighborhoodStatus.at(iter->first).at(r) = false;
+    }
+  }
 
-			return all_positive && minSize && (c != pos) && (c + 1 != pos) && ((c - pos) >= k);
-		}
-		else
-		{
-			return 0;
-		}
-	}
+  void updateModifiedRoutes(RepHFMVRP& rep, AdsHFMVRP& ads) {
+    vector<int> modRoutes;  // modified routes
+    modRoutes.push_back(r);
 
-	virtual void updateNeighStatus(AdsHFMVRP& ads)
-	{
-		for (map<string, vector<bool> >::iterator iter = ads.neighborhoodStatus.begin(); iter != ads.neighborhoodStatus.end(); iter++)
-		{
-//			cout<<r<<"\titer->first: "<<iter->first<<endl;
-			ads.neighborhoodStatus.at(iter->first).at(r) = false;
-		}
-	}
+    for (int iter = 0; iter < ((int)modRoutes.size()); iter++) {
+      int r = modRoutes[iter];
+      vector<int> route = rep[r];
+      int routeSize = route.size();
 
-	void updateModifiedRoutes(RepHFMVRP& rep, AdsHFMVRP& ads)
-	{
-		vector<int> modRoutes; //modified routes
-		modRoutes.push_back(r);
+      vector<double> routeDemands(routeSize);
 
-		for (int iter = 0; iter < ((int)modRoutes.size()); iter++)
-		{
-			int r = modRoutes[iter];
-			vector<int> route = rep[r];
-			int routeSize = route.size();
+      routeDemands[0] = 0;              // depot demand
+      routeDemands[routeSize - 1] = 0;  // depot demand
 
-			vector<double> routeDemands(routeSize);
+      ads.cumulativeDemand[r].clear();  // TODO leak memoria
+      ads.cumulativeDemand[r].resize(routeSize);
 
-			routeDemands[0] = 0; //depot demand
-			routeDemands[routeSize - 1] = 0; //depot demand
+      ads.cumulativeDemand[r][0] = 0;              // depot cumulative demand
+      ads.cumulativeDemand[r][routeSize - 1] = 0;  // depot cumulative demand
 
-			ads.cumulativeDemand[r].clear(); //TODO leak memoria
-			ads.cumulativeDemand[r].resize(routeSize);
+      for (int c = 1; c < int(routeSize - 1); c++) {
+        routeDemands[c] = hfmvrp->demands[route[c]];
+        ads.cumulativeDemand[r][c] =
+            routeDemands[c] +
+            ads.cumulativeDemand[r][c - 1];  // calculate the cumulative demand
+                                             // for it s of the route
+      }
 
-			ads.cumulativeDemand[r][0] = 0; //depot cumulative demand
-			ads.cumulativeDemand[r][routeSize - 1] = 0; //depot cumulative demand
+      // minPairDemand and maxPairDemand Calculus
+      double minPairDemand = 100000000;
+      double maxPairDemand = 0;
+      for (int i = 1; i < int(routeSize - 1); i++) {
+        if (i != int(routeSize - 2)) {
+          double pairDemand = routeDemands[i] + routeDemands[i + 1];
+          if (pairDemand < minPairDemand) minPairDemand = pairDemand;
+          if (pairDemand > maxPairDemand) maxPairDemand = pairDemand;
+        }
+      }
+      if (maxPairDemand == 0) {
+        minPairDemand = routeDemands[1];
+        maxPairDemand = routeDemands[1];
+      }
 
-			for (int c = 1; c < int(routeSize - 1); c++)
-			{
-				routeDemands[c] = hfmvrp->demands[route[c]];
-				ads.cumulativeDemand[r][c] = routeDemands[c] + ads.cumulativeDemand[r][c - 1]; // calculate the cumulative demand for it s of the route
-			}
+      ads.maxPairDemand[r] = maxPairDemand;
+      ads.minPairDemand[r] = minPairDemand;
+    }
+  }
 
-			//minPairDemand and maxPairDemand Calculus
-			double minPairDemand = 100000000;
-			double maxPairDemand = 0;
-			for (int i = 1; i < int(routeSize - 1); i++)
-			{
-				if (i != int(routeSize - 2))
-				{
-					double pairDemand = routeDemands[i] + routeDemands[i + 1];
-					if (pairDemand < minPairDemand)
-						minPairDemand = pairDemand;
-					if (pairDemand > maxPairDemand)
-						maxPairDemand = pairDemand;
-				}
-			}
-			if (maxPairDemand == 0)
-			{
-				minPairDemand = routeDemands[1];
-				maxPairDemand = routeDemands[1];
-			}
+  uptr<Move<ESolutionHFMVRP>> apply(ESolutionHFMVRP& se) override {
+    SolutionHFMVRP& s = se.first;
+    RepHFMVRP& rep = s.getR();
+    AdsHFMVRP& ads = s.getADS();
+    // Update NeightStatus
+    //		print();
+    updateNeighStatus(ads);
 
-			ads.maxPairDemand[r] = maxPairDemand;
-			ads.minPairDemand[r] = minPairDemand;
+    int aux;
+    int i = 0;
+    if (c < pos) {
+      aux = rep.at(r).at(c);
+      for (i = c; i < (pos - 1); i++) {
+        // aux = rep.at(r).at(i);
+        rep.at(r).at(i) = rep.at(r).at(i + 1);
+        // rep.at(r).at(i + 1) = aux;
+      }
+      rep.at(r).at(i) = aux;
 
-		}
+      // Update ADS
+      // Update minDemand,maxDemand, minPairDemand, maxPairDemand, cumulative
+      // and sum
+      updateModifiedRoutes(rep, ads);
 
-	}
+      return uptr<Move<ESolutionHFMVRP>>(
+          new DeltaMoveVRPOrOpt1(super::getRoutes, r, pos - 1, c, hfmvrp));
+    } else {
+      aux = rep.at(r).at(c);
+      for (i = c; i > pos; i--) {
+        rep.at(r).at(i) = rep.at(r).at(i - 1);
+      }
+      rep.at(r).at(i) = aux;
 
-	uptr<Move<ESolutionHFMVRP>> apply(ESolutionHFMVRP& se) override
-	{
-      SolutionHFMVRP& s = se.first;
-      RepHFMVRP& rep = s.getR();
-      AdsHFMVRP& ads = s.getADS();
-		//Update NeightStatus
-//		print();
-		updateNeighStatus(ads);
+      // Update ADS
+      // Update minDemand,maxDemand, minPairDemand, maxPairDemand, cumulative
+      // and sum
+      updateModifiedRoutes(rep, ads);
 
-		int aux;
-		int i = 0;
-		if (c < pos)
-		{
-			aux = rep.at(r).at(c);
-			for (i = c; i < (pos - 1); i++)
-			{
-				//aux = rep.at(r).at(i);
-				rep.at(r).at(i) = rep.at(r).at(i + 1);
-				//rep.at(r).at(i + 1) = aux;
-			}
-			rep.at(r).at(i) = aux;
+      return uptr<Move<ESolutionHFMVRP>>(
+          new DeltaMoveVRPOrOpt1(super::getRoutes, r, pos, c + 1, hfmvrp));
+    }
+  }
 
-			//Update ADS
-			//Update minDemand,maxDemand, minPairDemand, maxPairDemand, cumulative and sum
-			updateModifiedRoutes(rep, ads);
+  op<EvaluationHFMVRP> cost(const pair<SolutionHFMVRP, Evaluation<>>& se,
+                            bool allowEstimated) override {
+    const SolutionHFMVRP& s = se.first;
+    const RepHFMVRP& rep = s.getR();
+    // const AdsHFMVRP& ads = s.getADS();
+    vector<int> route = rep[r];
+    int routeSize = route.size();
+    // cout << "routeSize = " << routeSize << endl;
+    // cout << route << endl;
 
-			return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRPOrOpt1(super::getRoutes, r, pos - 1, c, hfmvrp));
-		}
-		else
-		{
-			aux = rep.at(r).at(c);
-			for (i = c; i > pos; i--)
-			{
-				rep.at(r).at(i) = rep.at(r).at(i - 1);
-			}
-			rep.at(r).at(i) = aux;
+    int vType = -1;
+    if (r >= hfmvrp->nVehicles)
+      vType = 2;  // MultiTripVehicle
+    else
+      vType = hfmvrp->getVehicleType(r);
 
-			//Update ADS
-			//Update minDemand,maxDemand, minPairDemand, maxPairDemand, cumulative and sum
-			updateModifiedRoutes(rep, ads);
+    double vTDC = hfmvrp->getVehicleTypeDistCost(vType);
 
-			return uptr<Move<ESolutionHFMVRP>>(new DeltaMoveVRPOrOpt1(super::getRoutes, r, pos, c+1, hfmvrp));
+    // before c and pos
+    int bi = c - 1;
+    int bj = pos - 1;
 
-		}
+    if (bi < 0) {
+      cout << "BUGGGGGG====================" << endl;
+      getchar();
+      bi = routeSize - 2;
+    }
+    if (bj < 0) {
+      cout << "BUGGGGGG====================" << endl;
+      getchar();
+      bj = routeSize - 2;
+    }
 
-	}
+    // after j
+    unsigned aj = pos + 1;
 
-	op<EvaluationHFMVRP> cost(const pair<SolutionHFMVRP, Evaluation<>>& se, bool allowEstimated) override
-	{
-      const SolutionHFMVRP& s = se.first;
-      const RepHFMVRP& rep = s.getR();
-      //const AdsHFMVRP& ads = s.getADS();
-		vector<int> route = rep[r];
-		int routeSize = route.size();
-		//cout << "routeSize = " << routeSize << endl;
-		//cout << route << endl;
+    if (aj == (unsigned)routeSize)  // depot at the for each route
+    {
+      aj = 1;
+      cout << "BUGGGGGG====================" << endl;
+      getchar();
+    }
 
-		int vType = -1;
-		if (r >= hfmvrp->nVehicles)
-			vType = 2;//MultiTripVehicle
-		else
-			vType = hfmvrp->getVehicleType(r);
+    // last i+k
+    unsigned lik = c + k - 1;
 
-		double vTDC = hfmvrp->getVehicleTypeDistCost(vType);
+    // after i+k
+    unsigned aik = c + k;
 
-		// before c and pos
-		int bi = c - 1;
-		int bj = pos - 1;
+    if (aik == (unsigned)routeSize) {
+      aik = 1;
+      cout << "BUGGGGGG====================" << endl;
+      getchar();
+    }
 
-		if (bi < 0)
-		{
-			cout << "BUGGGGGG====================" << endl;
-			getchar();
-			bi = routeSize - 2;
-		}
-		if (bj < 0)
-		{
-			cout << "BUGGGGGG====================" << endl;
-			getchar();
-			bj = routeSize - 2;
-		}
+    double f = 0;
 
-		// after j
-		unsigned aj = pos + 1;
+    if (((c == routeSize - 2) && (pos == 0)) ||
+        ((c == 0) && (pos == routeSize - 2)))  // extreme point
+    {
+      f = 0;
+    } else {
+      if (c < pos) {
+        f -= hfmvrp->getDist(route[bi], route[c]) * vTDC;
+        // cout << "-d(" << rep[r][bi] << "," << rep[r][c] << ") \t f= " << f <<
+        // endl;
+        f -= hfmvrp->getDist(route[lik], route[aik]) * vTDC;
+        // cout << "-d(" << rep[r][lik] << "," << rep[r][aik] << ") \t f= " << f
+        // << endl;
+        f -= hfmvrp->getDist(route[pos], route[aj]) * vTDC;
+        // cout << "-d(" << rep[r][pos] << "," << rep[r][aj] << ") \t f= " << f
+        // << endl;
 
-		if (aj == (unsigned)routeSize)//depot at the for each route
-		{
-			aj = 1;
-			cout << "BUGGGGGG====================" << endl;
-			getchar();
-		}
+        f += hfmvrp->getDist(route[bi], route[aik]) * vTDC;
+        // cout << "+d(" << rep[r][bi] << "," << rep[r][aik] << ") \t f= " << f
+        // << endl;
+        f += hfmvrp->getDist(route[pos], route[c]) * vTDC;
+        // cout << "+d(" << rep[r][pos] << "," << rep[r][c] << ") \t f= " << f
+        // << endl;
+        f += hfmvrp->getDist(route[lik], route[aj]) * vTDC;
+        // cout << "+d(" << rep[r][lik] << "," << rep[r][aj] << ") \t f= " << f
+        // << endl;
+      } else  // c > pos
+      {
+        f -= hfmvrp->getDist(route[bi], route[c]) * vTDC;
+        // cout << "-d(" << rep[r][bi] << "," << rep[r][c] << ") \t f= " << f <<
+        // endl;
+        f -= hfmvrp->getDist(route[lik], route[aik]) * vTDC;
+        // cout << "-d(" << rep[r][lik] << "," << rep[r][aik] << ") \t f= " << f
+        // << endl;
+        f -= hfmvrp->getDist(route[bj], route[pos]) * vTDC;
+        // cout << "-d(" << rep[r][bj] << "," << rep[r][pos] << ") \t f= " << f
+        // << endl;
 
-		// last i+k
-		unsigned lik = c + k - 1;
+        f += hfmvrp->getDist(route[bi], route[aik]) * vTDC;
+        // cout << "+d(" << rep[r][bi] << "," << rep[r][aik] << ") \t f= " << f
+        // << endl;
+        f += hfmvrp->getDist(route[bj], route[c]) * vTDC;
+        // cout << "+d(" << rep[r][bj] << "," << rep[r][c] << ") \t f= " << f <<
+        // endl;
+        f += hfmvrp->getDist(route[lik], route[pos]) * vTDC;
+        // cout << "+d(" << rep[r][lik] << "," << rep[r][pos] << ") \t f= " << f
+        // << endl;
+      }
+    }
 
-		// after i+k
-		unsigned aik = c + k;
+    /// return new MoveCost<> (f, 0);
+    return make_optional(Evaluation<>(f, 0));
+  }
 
-		if (aik == (unsigned)routeSize)
-		{
-			aik = 1;
-			cout << "BUGGGGGG====================" << endl;
-			getchar();
-		}
+  std::string id() const override {
+    stringstream ssIdRoute;
+    ssIdRoute << super::idComponent() << ":DeltaMoveVRPOrOpt1"
+              << "+Route=" << r;
+    return ssIdRoute.str();
+  }
 
-		double f = 0;
+  static string idComponent() {
+    string idComp = super::idComponent();
+    idComp.append(":DeltaMoveVRPOrOpt1");
+    return idComp;
+  }
 
-		if (((c == routeSize - 2) && (pos == 0)) || ((c == 0) && (pos == routeSize - 2))) // extreme point
-		{
-			f = 0;
-		}
-		else
-		{
-			if (c < pos)
-			{
-				f -= hfmvrp->getDist(route[bi], route[c]) * vTDC;
-				//cout << "-d(" << rep[r][bi] << "," << rep[r][c] << ") \t f= " << f << endl;
-				f -= hfmvrp->getDist(route[lik], route[aik]) * vTDC;
-				//cout << "-d(" << rep[r][lik] << "," << rep[r][aik] << ") \t f= " << f << endl;
-				f -= hfmvrp->getDist(route[pos], route[aj]) * vTDC;
-				//cout << "-d(" << rep[r][pos] << "," << rep[r][aj] << ") \t f= " << f << endl;
+  virtual bool operator==(const Move<ESolutionHFMVRP>& _m) const {
+    const DeltaMoveVRPOrOpt1& m1 = (const DeltaMoveVRPOrOpt1&)_m;
+    return (m1.r == r) && (m1.c == c) && (m1.pos == pos);
+  }
 
-				f += hfmvrp->getDist(route[bi], route[aik]) * vTDC;
-				//cout << "+d(" << rep[r][bi] << "," << rep[r][aik] << ") \t f= " << f << endl;
-				f += hfmvrp->getDist(route[pos], route[c]) * vTDC;
-				//cout << "+d(" << rep[r][pos] << "," << rep[r][c] << ") \t f= " << f << endl;
-				f += hfmvrp->getDist(route[lik], route[aj]) * vTDC;
-				//cout << "+d(" << rep[r][lik] << "," << rep[r][aj] << ") \t f= " << f << endl;
-			}
-			else // c > pos
-			{
-				f -= hfmvrp->getDist(route[bi], route[c]) * vTDC;
-				//cout << "-d(" << rep[r][bi] << "," << rep[r][c] << ") \t f= " << f << endl;
-				f -= hfmvrp->getDist(route[lik], route[aik]) * vTDC;
-				//cout << "-d(" << rep[r][lik] << "," << rep[r][aik] << ") \t f= " << f << endl;
-				f -= hfmvrp->getDist(route[bj], route[pos]) * vTDC;
-				//cout << "-d(" << rep[r][bj] << "," << rep[r][pos] << ") \t f= " << f << endl;
-
-				f += hfmvrp->getDist(route[bi], route[aik]) * vTDC;
-				//cout << "+d(" << rep[r][bi] << "," << rep[r][aik] << ") \t f= " << f << endl;
-				f += hfmvrp->getDist(route[bj], route[c]) * vTDC;
-				//cout << "+d(" << rep[r][bj] << "," << rep[r][c] << ") \t f= " << f << endl;
-				f += hfmvrp->getDist(route[lik], route[pos]) * vTDC;
-				//cout << "+d(" << rep[r][lik] << "," << rep[r][pos] << ") \t f= " << f << endl;
-			}
-		}
-
-		///return new MoveCost<> (f, 0);
-      return make_optional(Evaluation<> (f, 0));
-	}
-
-	string id() const
-	{
-		stringstream ssIdRoute;
-		ssIdRoute << super::idComponent() << ":DeltaMoveVRPOrOpt1" << "+Route=" << r;
-		return ssIdRoute.str();
-	}
-
-	static string idComponent()
-	{
-		string idComp = super::idComponent();
-		idComp.append(":DeltaMoveVRPOrOpt1");
-		return idComp;
-	}
-
-	virtual bool operator==(const Move<ESolutionHFMVRP>& _m) const
-	{
-		const DeltaMoveVRPOrOpt1& m1 = (const DeltaMoveVRPOrOpt1&) _m;
-		return (m1.r == r) && (m1.c == c) && (m1.pos == pos);
-	}
-
-	virtual void print() const override
-	{
-		cout << "DeltaMoveVRPOrOpt1( route: " << r << " , " << c << " , " << pos << " )" << endl;
-	}
+  void print() const override {
+    cout << "DeltaMoveVRPOrOpt1( route: " << r << " , " << c << " , " << pos
+         << " )" << endl;
+  }
 };
 
-}
+}  // namespace HFMVRP
 
 #endif /*DELTA_MOVEVRPOR2OPT_HPP_*/

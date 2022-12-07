@@ -20,19 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_COPY_SOLUTION_HPP_
-#define OPTFRAME_COPY_SOLUTION_HPP_
+#ifndef OPTFRAME_HELPER_SOLUTIONS_COPYSOLUTION_HPP_
+#define OPTFRAME_HELPER_SOLUTIONS_COPYSOLUTION_HPP_
 
 #include <assert.h>
 //
 #include <cstdlib>
 #include <iostream>
+#include <memory>
+#include <string>
+#include <utility>
 //
 
 // basic elements of an OptFrame Component
 #include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
-//#include "../Util/printable.h"
+// #include "../Util/printable.h"
 
 // will require 'R', thus should require basic printability here
 
@@ -42,7 +45,7 @@
 
 namespace optframe {
 
-//template<XRepresentation R, class ADS = nullptr_t>
+// template<XRepresentation R, class ADS = nullptr_t>
 template <XRepresentation R, class ADS = _ADS>
 class CopySolution : public Component {
  public:
@@ -54,23 +57,16 @@ class CopySolution : public Component {
   using typeADS = ADS;
 
   // copy constructor for R (ADS requires empty constructor)
-  explicit CopySolution(const R& _r)
-      : r(_r), ads(ADS()) {
-  }
+  explicit CopySolution(const R& _r) : r(_r), ads(ADS()) {}
 
   // copy constructor for R and ADS
-  CopySolution(const R& _r, const ADS& _ads)
-      : r(_r), ads(_ads) {
-  }
+  CopySolution(const R& _r, const ADS& _ads) : r(_r), ads(_ads) {}
 
   // move constructor for R and ADS
-  CopySolution(R&& _r, ADS&& _ads)
-      : r(_r), ads(_ads) {
-  }
+  CopySolution(R&& _r, ADS&& _ads) : r(_r), ads(_ads) {}
 
   // copy constructor
-  CopySolution(const CopySolution<R, ADS>& s)
-      : CopySolution(s.r, s.ads) {
+  CopySolution(const CopySolution<R, ADS>& s) : CopySolution(s.r, s.ads) {
 #ifdef OPTFRAME_AC
     // copy listAC directly
     this->listAC = s.listAC;
@@ -78,8 +74,7 @@ class CopySolution : public Component {
   }
 
   // move constructor
-  CopySolution(CopySolution<R, ADS>&& s)
-      : CopySolution(s.r, s.ads) {
+  CopySolution(CopySolution<R, ADS>&& s) noexcept : CopySolution(s.r, s.ads) {
 #ifdef OPTFRAME_AC
     // copy listAC directly
     this->listAC = s.listAC;
@@ -118,35 +113,22 @@ class CopySolution : public Component {
   // according to XBaseSolution concept
   // -----------------------------------
 
-  R& getR() {
-    return r;
-  }
+  R& getR() { return r; }
 
-  const R& getR() const {
-    return r;
-  }
+  const R& getR() const { return r; }
 
-  ADS& getADS() {
-    return ads;
-  }
+  ADS& getADS() { return ads; }
 
-  const ADS& getADS() const {
-    return ads;
-  }
+  const ADS& getADS() const { return ads; }
 
-  ADS* getADSptr() {
-    return &ads;
-  }
+  ADS* getADSptr() { return &ads; }
 
-  const ADS* getADSptr() const {
-    return &ads;
-  }
+  const ADS* getADSptr() const { return &ads; }
 
   // ==================================================
 
   // destructor for Solution (must free R and ADS objects)
-  virtual ~CopySolution() {
-  }
+  virtual ~CopySolution() {}
 
   // ==================
   // end canonical part
@@ -177,18 +159,16 @@ class CopySolution : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   std::string toString() const override {
     std::stringstream ss;
     ss << "CopySolution: " << r;
-    //ss << "ADS: " << ads;DecoderRandomKeys
+    // ss << "ADS: " << ads;DecoderRandomKeys
     return ss.str();
   }
 
-  virtual bool toStream(std::ostream& os) const {
+  bool toStream(std::ostream& os) const override {
     /*
       if (&os == &optframe::cjson) {
          assert(false);
@@ -201,21 +181,24 @@ class CopySolution : public Component {
     return true;
   }
 
-  friend std::ostream& operator<<(std::ostream& os, const CopySolution<R, ADS>& s) {
-    //os << s.toString();
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const CopySolution<R, ADS>& s) {
+    // os << s.toString();
     if (&os == &optframe::cjson) {
       os << s.r;  // invoke json print from 'r'
-    } else
+    } else {
       os << s.toString();
+    }
     return os;
   }
 };
 
-template <XRepresentation R, class ADS = _ADS, XBaseSolution<R, ADS> S = CopySolution<R, ADS>>
+template <XRepresentation R, class ADS = _ADS,
+          XBaseSolution<R, ADS> S = CopySolution<R, ADS>>
 struct _Testing {
   S s;
 };
 
 }  // namespace optframe
 
-#endif /* OPTFRAME_COPY_SOLUTION_HPP_ */
+#endif  // OPTFRAME_HELPER_SOLUTIONS_COPYSOLUTION_HPP_

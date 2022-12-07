@@ -26,8 +26,9 @@
 // Framework includes
 #include "../../../Move.hpp"
 
-//using namespace std;
-//using namespace optframe; (?????????????????) Don't use namespace declarations in headers
+// using namespace std;
+// using namespace optframe; (?????????????????) Don't use namespace
+// declarations in headers
 
 namespace optframe {
 
@@ -35,54 +36,47 @@ namespace optframe {
 //                           Shift Move
 //============================================================================
 
-template<class T>
-class MoveVectorShift : public Move<vector<T>>
-{
-private:
-   int t1, t2;
-   int n;
+template <class T>
+class MoveVectorShift : public Move<vector<T>> {
+ private:
+  int t1, t2;
+  int n;
 
-public:
-   MoveVectorShift(int t1, int t2)
-   {
-      this->t1 = t1;
-      this->t2 = t2;
-   }
+ public:
+  MoveVectorShift(int t1, int t2) {
+    this->t1 = t1;
+    this->t2 = t2;
+  }
 
-   bool canBeApplied(Solution<vector<T>>* s)
-   {
-      return t1 != t2;
-   }
+  bool canBeApplied(Solution<vector<T>>* s) { return t1 != t2; }
 
-   Move<vector<T>>* apply(Solution<vector<T>>* s)
-   {
-      vector<T>* rep = s->getRepresentation();
+  Move<vector<T>>* apply(Solution<vector<T>>* s) {
+    vector<T>* rep = s->getRepresentation();
 
-      T aux;
-      if (t1 < t2)
-         for (int i = t1; i < t2; i++) {
-            aux = rep->at(i);
-            (*rep)[i] = (*rep)[i + 1];
-            (*rep)[i + 1] = aux;
-         }
-      else
-         for (int i = t1; i > t2; i--) {
-            aux = rep->at(i);
-            (*rep)[i] = (*rep)[i - 1];
-            (*rep)[i - 1] = aux;
-         }
+    T aux;
+    if (t1 < t2)
+      for (int i = t1; i < t2; i++) {
+        aux = rep->at(i);
+        (*rep)[i] = (*rep)[i + 1];
+        (*rep)[i + 1] = aux;
+      }
+    else
+      for (int i = t1; i > t2; i--) {
+        aux = rep->at(i);
+        (*rep)[i] = (*rep)[i - 1];
+        (*rep)[i - 1] = aux;
+      }
 
-      MoveVectorShift<T>* ms = new MoveVectorShift<T>(t2, t1);
+    MoveVectorShift<T>* ms = new MoveVectorShift<T>(t2, t1);
 
-      return ms;
-   }
+    return ms;
+  }
 
-   void print() const
-   {
-      cout << "Move Vector Shift(" << t1 << " -> " << t2 << ")" << endl;
-   }
+  void print() const override {
+    cout << "Move Vector Shift(" << t1 << " -> " << t2 << ")" << endl;
+  }
 };
 
-} // namespace optframe
+}  // namespace optframe
 
 #endif /*OPTFRAME_MOVEVECTORSHIFT_HPP_*/

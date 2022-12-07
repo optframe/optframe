@@ -6,11 +6,11 @@ cc_binary(
         "src/solver_kp01_generic/mainSolverKP.cpp",
         "src/solver_kp01_generic/solver_kp01_generic.cpp",  # must include library impl
     ],
-    copts = [
-        "-std=c++17",
-        "-fconcepts",
-        "-Wfatal-errors",
-    ],
+    #copts = [
+    #    "-std=c++17",
+    #    "-fconcepts",
+    #    "-Wfatal-errors",
+    #],
     deps = [
         "solver_kp01_generic_lib",
         "@OptFrame//include:OptFCore",
@@ -20,11 +20,11 @@ cc_binary(
 # this is a shared library
 cc_binary(
     name = "solver_kp01_generic",
-    copts = [
-        "-std=c++17",
-        "-fconcepts",
-        "-Wfatal-errors",
-    ],
+    #copts = [
+    #    "-std=c++17",
+    #    "-fconcepts",
+    #    "-Wfatal-errors",
+    #],
     linkshared = 1,
     deps = ["solver_kp01_generic_lib"],  # just include lib files here
 )

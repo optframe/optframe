@@ -59,77 +59,78 @@ concept
 /*
 // Multi Objective Stopping Criteria
 // Must include GENERAL stopping criteria
-// specific stopping criteria for metaheuristics can be included in their constructors
-class MOSC: public Component
+// specific stopping criteria for metaheuristics can be included in their
+constructors class MOSC: public Component
 {
 public:
-	// maximum timelimit (seconds)
-	double timelimit;
-	//Hypervolume indicator
-	//	double hv;
-	//Pareto cardinality
-	//	double cardinality;
+        // maximum timelimit (seconds)
+        double timelimit;
+        //Hypervolume indicator
+        //	double hv;
+        //Pareto cardinality
+        //	double cardinality;
 
-	MOSC(double _timelimit = 100000000.0) :
-			timelimit(_timelimit)
-	{
-	}
+        MOSC(double _timelimit = 100000000.0) :
+                        timelimit(_timelimit)
+        {
+        }
 
-	virtual ~MOSC()
-	{
-	}
+        virtual ~MOSC()
+        {
+        }
 
-	virtual string id() const override
-	{
-		return "MOSC";
-	}
+        virtual string id() const override
+        {
+                return "MOSC";
+        }
 };
 */
 
 // This MultiObjSearch perspective inherits from Multi Solution Search,
 // considering a X2ES space with Pareto structure
 
-//template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
+// template<XSolution S, XEvaluation XEv, X2ESolution<S, XEv> X2ES>
 //
-//template<XSolution S, XEvaluation XMEv = Evaluation<>, XESolution XMES = pair<S, XMEv>>
+//  template<XSolution S, XEvaluation XMEv = Evaluation<>, XESolution XMES =
+//  pair<S, XMEv>>
 //
-template <XESolution XMES, XESolution XMES2 = XMES, XSearch<XMES2> XMSH2 = XMES2>
-class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>>  // public Component
-{
+template <XESolution XMES, XESolution XMES2 = XMES,
+          XSearch<XMES2> XMSH2 = XMES2>
+class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>> {
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
   static_assert(XEvaluation<typename XMEv::XEv>);
   using XEv = typename XMEv::XEv;
   static_assert(XEvaluation<XEv>);
   using XMSH = Pareto<XMES>;  // search space
+
  public:
   //
-  //bool (*onParetoIncumbent)(GlobalSearch<XMES, Pareto<XMES>>& self, const XMSH2& incumbent) =
-  //  [](GlobalSearch<XMES, Pareto<XMES>>& self, const XMSH2& incumbent) { return true; };
+  // bool (*onParetoIncumbent)(GlobalSearch<XMES, Pareto<XMES>>& self, const
+  // XMSH2& incumbent) =
+  //  [](GlobalSearch<XMES, Pareto<XMES>>& self, const XMSH2& incumbent) {
+  //  return true; };
 
   // ========================================
   // THIS CLASS IS USELESS! WHAT'S THE POINT?
   // Best to just have XMultiObjSearch
   // ========================================
 
-  MultiObjSearch() {
-  }
+  MultiObjSearch() {}
 
-  virtual ~MultiObjSearch() {
-  }
+  virtual ~MultiObjSearch() = default;
 
-  op<Pareto<XMES>>& getBestPareto() {
-    return this->best;
-  }
+  op<Pareto<XMES>>& getBestPareto() { return this->best; }
 
-  //virtual Pareto<XMES>* search(MOSC& stopCriteria, Pareto<XMES>* _pf = nullptr) = 0;
+  // virtual Pareto<XMES>* search(MOSC& stopCriteria, Pareto<XMES>* _pf =
+  // nullptr) = 0;
   //
-  //virtual SearchStatus search(std::optional<Pareto<XMES>>& p, const StopCriteria<XMEv>& stopCriteria) = 0;
-  virtual SearchOutput<XMES, Pareto<XMES>> search(const StopCriteria<XMEv>& stopCriteria) override = 0;
+  // virtual SearchStatus search(std::optional<Pareto<XMES>>& p, const
+  // StopCriteria<XMEv>& stopCriteria) = 0;
+  SearchOutput<XMES, Pareto<XMES>> search(
+      const StopCriteria<XMEv>& stopCriteria) override = 0;
 
-  std::string log() const override {
-    return "Empty heuristic log.";
-  }
+  std::string log() const override { return "Empty heuristic log."; }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
@@ -141,16 +142,15 @@ class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>>  // public Compon
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
 class MultiObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~MultiObjSearchBuilder() {
-  }
+  virtual ~MultiObjSearchBuilder() {}
 
   virtual MultiObjSearch<XES>* build(Scanner& scanner,
                                      HeuristicFactory<S, XEv, XES, X2ES>& hf,
@@ -168,13 +168,12 @@ class MultiObjSearchBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "MultiObjSearch:";
+    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent()
+       << "MultiObjSearch:";
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

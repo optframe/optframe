@@ -38,26 +38,27 @@ class CompareLocalSearch : public LocalSearch<XES, XEv> {
   sref<LocalSearch<XES, XEv>> ls2;
 
  public:
-  CompareLocalSearch(sref<Evaluator<XES, XEv>> _eval, sref<LocalSearch<XES, XEv>> _ls1, sref<LocalSearch<XES, XEv>> _ls2)
-      : eval(_eval), ls1(_ls1), ls2(_ls2) {
-  }
+  CompareLocalSearch(sref<Evaluator<XES, XEv>> _eval,
+                     sref<LocalSearch<XES, XEv>> _ls1,
+                     sref<LocalSearch<XES, XEv>> _ls2)
+      : eval(_eval), ls1(_ls1), ls2(_ls2) {}
 
-  virtual ~CompareLocalSearch() {
-  }
+  virtual ~CompareLocalSearch() {}
 
   // DEPRECATED
-  //virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
+  // virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
   //{
   //	Evaluation<> e = std::move(ev.evaluate(s));
   //	exec(s, e, stopCriteria);
   //}
 
-  virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& sosc) override {
-    //S& s = se.first;
+  virtual SearchStatus searchFrom(XES& se,
+                                  const StopCriteria<XEv>& sosc) override {
+    // S& s = se.first;
     XEv& e = se.second;
 
-    //S& s2 = s.clone();
-    //Evaluation<>& e2   = e.clone();
+    // S& s2 = s.clone();
+    // Evaluation<>& e2   = e.clone();
     XES p2 = se;  // clone!
     XEv& e2 = p2.second;
 
@@ -65,7 +66,8 @@ class CompareLocalSearch : public LocalSearch<XES, XEv> {
     ls2->searchFrom(p2, sosc);
 
     if (!eval->equals(e, e2)) {
-      cout << "CompareLocalSearch error: difference between " << e.evaluation() << " and " << e2.evaluation() << endl;
+      cout << "CompareLocalSearch error: difference between " << e.evaluation()
+           << " and " << e2.evaluation() << endl;
       cout << "LocalSearch 1: ";
       ls1->print();
       cout << "LocalSearch 2: ";
@@ -73,12 +75,12 @@ class CompareLocalSearch : public LocalSearch<XES, XEv> {
       exit(1);
     }
 
-    //delete &s2;
-    //delete &e2;
+    // delete &s2;
+    // delete &e2;
     return SearchStatus::NO_REPORT;
   }
 
-  virtual bool compatible(std::string s) override {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
   }
 
@@ -88,9 +90,7 @@ class CompareLocalSearch : public LocalSearch<XES, XEv> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   virtual string toString() const override {
     stringstream ss;
@@ -99,11 +99,12 @@ class CompareLocalSearch : public LocalSearch<XES, XEv> {
   }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
 class CompareLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~CompareLocalSearchBuilder() {
-  }
+  virtual ~CompareLocalSearchBuilder() {}
 
   LocalSearch<XES, XEv>* build(Scanner& scanner,
                                HeuristicFactory<S, XEv, XES, X2ES>& hf,
@@ -134,9 +135,12 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
-    params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search 1"));
-    params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search 2"));
+    params.push_back(
+        make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+    params.push_back(
+        make_pair(LocalSearch<XES, XEv>::idComponent(), "local search 1"));
+    params.push_back(
+        make_pair(LocalSearch<XES, XEv>::idComponent(), "local search 2"));
 
     return params;
   }
@@ -151,13 +155,9 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     return ss.str();
   }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

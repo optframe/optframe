@@ -36,30 +36,29 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
   sref<NSSeq<XES, XEv, XSH>> nsSeq;
 
  public:
-  FirstImprovement(sref<GeneralEvaluator<XES, XEv>> _eval, sref<NSSeq<XES, XEv, XSH>> _nsSeq)
-      : eval(_eval), nsSeq(_nsSeq) {
-  }
+  FirstImprovement(sref<GeneralEvaluator<XES, XEv>> _eval,
+                   sref<NSSeq<XES, XEv, XSH>> _nsSeq)
+      : eval(_eval), nsSeq(_nsSeq) {}
 
-  virtual ~FirstImprovement() {
-  }
+  virtual ~FirstImprovement() {}
 
   // DEPRECATED
-  //virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
+  // virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
   //{
   //	Evaluation<> e = std::move(ev.evaluate(s));
   //	exec(s, e, stopCriteria);
   //}
 
-  virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) override {
+  SearchStatus searchFrom(XES& se,
+                          const StopCriteria<XEv>& stopCriteria) override {
     if (Component::verbose) {
       std::cout << "FI: searchFrom begins" << std::endl;
       std::cout << eval->id() << std::endl;
     }
-    //XSolution& s = se.first;
-    //XEv& e = se.second;
+    // XSolution& s = se.first;
+    // XEv& e = se.second;
 
-    if (Component::verbose)
-      std::cout << "FI: getIterator" << std::endl;
+    if (Component::verbose) std::cout << "FI: getIterator" << std::endl;
     uptr<NSIterator<XES, XEv>> it = nsSeq->getIterator(se);
     //
     if (!it) {
@@ -69,8 +68,7 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
     }
     //
     string bestMoveId = "";
-    if (Component::verbose)
-      std::cout << "FI: it->first()" << std::endl;
+    if (Component::verbose) std::cout << "FI: it->first()" << std::endl;
     it->first();
 
     if (it->isDone()) {
@@ -80,8 +78,7 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
     }
 
     do {
-      if (Component::verbose)
-        std::cout << "FI: it->current()" << std::endl;
+      if (Component::verbose) std::cout << "FI: it->current()" << std::endl;
       uptr<Move<XES, XEv, XSH>> move = it->current();
 
       if (!move) {
@@ -92,13 +89,13 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
 
       // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
       /*
-			if(e.getLocalOptimumStatus(move->id()))
-			{
-				delete &it;
-				delete move;
-				return;
-			}
-			*/
+                        if(e.getLocalOptimumStatus(move->id()))
+                        {
+                                delete &it;
+                                delete move;
+                                return;
+                        }
+                        */
 
       //			bestMoveId = move->id();
 
@@ -107,30 +104,32 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
       if (move->canBeApplied(se)) {
         if (this->acceptsImprove(*move, se)) {
           // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-          //e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of Local Optimum
+          // e.setLocalOptimumStatus(bestMoveId, false); //set NS 'id' out of
+          // Local Optimum
 
           return SearchStatus::IMPROVEMENT;
         }
       }
 
-      if (Component::verbose)
-        std::cout << "FI: it->next()" << std::endl;
+      if (Component::verbose) std::cout << "FI: it->next()" << std::endl;
       it->next();
     } while (!it->isDone());
 
     // TODO: deprecated! use LOS in NSSeq and NSSeqIterator instead
-    //if(bestMoveId != "")
-    //	e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local Optimum
+    // if(bestMoveId != "")
+    //	e.setLocalOptimumStatus(bestMoveId, true); //set NS 'id' on Local
+    // Optimum
     return SearchStatus::NO_REPORT;
   }
 
   // used on FirstImprovement
   // Accept and apply move if it improves parameter moveCost
-  ///bool acceptsImprove(Move<XES, XEv>& m, XSH& se, MoveCost<>* mc = nullptr, bool allowEstimated = false)
+  /// bool acceptsImprove(Move<XES, XEv>& m, XSH& se, MoveCost<>* mc = nullptr,
+  /// bool allowEstimated = false)
   bool acceptsImprove(Move<XES, XEv>& m, XSH& se, bool allowEstimated = false) {
     if (Component::verbose)
       std::cout << "FI: begin acceptsImprove()" << std::endl;
-    //XSolution& s = se.first;
+    // XSolution& s = se.first;
     XEv& e = se.second;
 
     // try to get a cost
@@ -139,7 +138,7 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
     // if p not null => much faster (using cost)
     if (p) {
       // verify if m is an improving move
-      //if (p->isStrictImprovement()) {
+      // if (p->isStrictImprovement()) {
       if (eval->isStrictImprovement(*p)) {
         // apply move and get reverse
         uptr<Move<XES, XEv>> rev = m.apply(se);
@@ -150,11 +149,12 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
         return false;
       }
     } else {
-      if (Component::verbose)
-        std::cout << "FI: no cost" << std::endl;
-      // need to update 's' together with reevaluation of 'e' => slower (may perform reevaluation)
+      if (Component::verbose) std::cout << "FI: no cost" << std::endl;
+      // need to update 's' together with reevaluation of 'e' => slower (may
+      // perform reevaluation)
 
-      // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
+      // TODO: in the future, consider moves with nullptr reverse (must save
+      // original solution/evaluation)
       assert(m.hasReverse());
 
       // saving previous evaluation
@@ -176,10 +176,12 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
       // must return to original situation
 
       // apply reverse move in order to get the original solution back
-      //TODO - Vitor, Why apply Move with e is not used???
-      //			Even when reevaluate is implemented, It would be hard to design a strategy that is faster than copying previous evaluation
+      // TODO - Vitor, Why apply Move with e is not used???
+      //			Even when reevaluate is implemented, It would be
+      // hard to design a strategy that is faster than copying previous
+      // evaluation
       //==================================================================
-      //pair<Move<S, XEv>*, XEv> ini = applyMove(*rev, s);
+      // pair<Move<S, XEv>*, XEv> ini = applyMove(*rev, s);
 
       // if XEv wasn't 'outdated' before, restore its previous status
       //			if (!outdated)
@@ -217,9 +219,7 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
     return ss.str();
   }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  virtual string id() const override { return idComponent(); }
 
   std::string toString() const override {
     stringstream ss;
@@ -228,11 +228,13 @@ class FirstImprovement : public LocalSearch<XES, XEv> {
   }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, XEv>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>,
+          XSearch<XES> XSH = std::pair<S, XEv>>
 class FirstImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~FirstImprovementBuilder() {
-  }
+  virtual ~FirstImprovementBuilder() {}
 
   LocalSearch<XES, XEv>* build(Scanner& scanner,
                                HeuristicFactory<S, XEv, XES, X2ES>& hf,
@@ -252,8 +254,10 @@ class FirstImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
-    params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(), "neighborhood structure"));
+    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
+                               "evaluation function"));
+    params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(),
+                               "neighborhood structure"));
 
     return params;
   }
@@ -268,13 +272,9 @@ class FirstImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     return ss.str();
   }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  virtual string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

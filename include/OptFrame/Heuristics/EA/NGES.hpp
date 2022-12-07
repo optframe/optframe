@@ -184,7 +184,7 @@ struct NGESInd {
   ~NGESInd() {
   }
 
-  void print() const {
+  void print() const override {
     cout << "NGESInd: {";
     ind.first.print();
     ind.second.print();

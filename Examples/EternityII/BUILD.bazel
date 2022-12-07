@@ -10,7 +10,7 @@ cc_binary(
         "src/**/*.h", 
         "src/**/*.cpp"
     ]),
-    copts = ['-std=c++17', '-fconcepts', '-Wfatal-errors'],
+    ##copts = ['-std=c++17', '-fconcepts', '-Wfatal-errors'],
     data = glob([
         "pieces_set_2/*.txt",
     ]),

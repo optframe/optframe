@@ -23,57 +23,49 @@
 #ifndef EtII_Delta_Move_Swap_Rotate_Center_HPP_
 #define EtII_Delta_Move_Swap_Rotate_Center_HPP_
 
-#include "NSSeqSwapRotateCenter.h"
-
 #include <cmath>
+
+#include "NSSeqSwapRotateCenter.h"
 
 using namespace std;
 
 namespace EtII {
 
-class DeltaMoveSwapRotateCenter : public MoveSwapRotateCenter
-{
+class DeltaMoveSwapRotateCenter : public MoveSwapRotateCenter {
+ public:
+  DeltaMoveSwapRotateCenter(int _x1, int _y1, int _x2, int _y2)
+      : MoveSwapRotateCenter(_x1, _y1, _x2, _y2) {}
 
-public:
-   DeltaMoveSwapRotateCenter(int _x1, int _y1, int _x2, int _y2)
-     : MoveSwapRotateCenter(_x1, _y1, _x2, _y2)
-   {
-   }
+  virtual ~DeltaMoveSwapRotateCenter() {}
 
-   virtual ~DeltaMoveSwapRotateCenter()
-   {
-   }
+  op<Evaluation<>> cost(const pair<SolutionEtII, Evaluation<>>& se,
+                        bool allowEstimated) override {
+    double f = 0;
 
-   op<Evaluation<>> cost(const pair<SolutionEtII, Evaluation<>>& se, bool allowEstimated) override
-   {
-      double f = 0;
+    // return new MoveCost<> (f, 0);
+    return make_optional(Evaluation<>(f, 0));
+  }
 
-      //return new MoveCost<> (f, 0);
-      return make_optional(Evaluation<>(f, 0));
-   }
+  static string idComponent() {
+    string idComp = MoveSwapRotateCenter::idComponent();
+    idComp.append(":DeltaMoveSwapRotateCenter");
+    return idComp;
+  }
 
-   static string idComponent()
-   {
-      string idComp = DeltaMoveSwapRotateCenter::idComponent();
-      idComp.append(":DeltaMoveSwapRotateCenter");
-      return idComp;
-   }
+  virtual bool operator==(const DeltaMoveSwapRotateCenter& _m) const {
+    const DeltaMoveSwapRotateCenter& m = (const DeltaMoveSwapRotateCenter&)_m;
+    return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2) &&
+           (m.r1 == r1) && (m.r2 == r2);
+  }
 
-   virtual bool operator==(const DeltaMoveSwapRotateCenter& _m) const
-   {
-      const DeltaMoveSwapRotateCenter& m = (const DeltaMoveSwapRotateCenter&)_m;
-      return (m.x1 == x1) && (m.y1 == y1) && (m.x2 == x2) && (m.y2 == y2) && (m.r1 == r1) && (m.r2 == r2);
-   }
+  void print() const override {
+    cout << "DeltaMoveSwapRotateCenter: (" << x1 << "," << y1 << ") r=" << r1
+         << " <=> (" << x2 << "," << y2 << ") r=" << r2 << endl;
+  }
 
-   virtual void print() const
-   {
-      cout << "DeltaMoveSwapRotateCenter: (" << x1 << "," << y1 << ") r=" << r1 << " <=> (" << x2 << "," << y2 << ") r=" << r2 << endl;
-   }
-
-   string id() const
-   {
-      return "OptFrame:Move:DeltaMoveSwapRotateCenter";
-   }
+  std::string id() const override {
+    return "OptFrame:Move:DeltaMoveSwapRotateCenter";
+  }
 };
-}
+}  // namespace EtII
 #endif /*EtII_Delta_Move_Swap_Rotate_Center_HPP_*/

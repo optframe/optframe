@@ -41,20 +41,24 @@
 
 namespace optframe {
 
-// Defaulting SearchSpace to XES, it means, <S,XEv> space (typically, single obj search)
-//template<XESolution XES, XSearch<XES> XSH = XES, XSearchMethod XM = Component>
+// Defaulting SearchSpace to XES, it means, <S,XEv> space (typically, single obj
+// search)
+// template<XESolution XES, XSearch<XES> XSH = XES, XSearchMethod XM =
+// Component>
 //
-//template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES>
+// template<XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH =
+// XES>
 //
 // 'XES' is the "base concept" for the primary search component.
 // 'XSH' is the primary search type ('best' has type XSH)
 // 'XES2' is the "base concept" for the secondary search component.
 // 'XSH2' is the secondary search type ('incumbent' has type XSH2)
 //
-// We need to make all methods compatible, and too many templates is polluting this...
-// 1) Explicitly renaming XSH to XBest
-// 2) Keeping XSH2 as XIncumbent on specific searchBy methods (Trajectory? Populational?)
-template <XESolution XES, XSearch<XES> XSH = XES>  // XESolution XES2, XSearch<XES> XSH2 = XSH>
+// We need to make all methods compatible, and too many templates is polluting
+// this... 1) Explicitly renaming XSH to XBest 2) Keeping XSH2 as XIncumbent on
+// specific searchBy methods (Trajectory? Populational?)
+template <XESolution XES,
+          XSearch<XES> XSH = XES>  // XESolution XES2, XSearch<XES> XSH2 = XSH>
 class GlobalSearch : public Component {
   using XEv = typename XES::second_type;
 
@@ -63,30 +67,35 @@ class GlobalSearch : public Component {
 
  public:
   // best known XSH object: solution/pareto/etc
-  //std::optional<XSH> best;
+  // std::optional<XSH> best;
   // current/working XSH2 object: population/etc
-  //std::optional<XSH2> incumbent;
+  // std::optional<XSH2> incumbent;
   // ----------
   //
-  // callback action 'onBest' is triggered after best is updated (if 'beforeUpdateBest' is required some day, think about it.. not now)
-  // returning 'false' should lead to aborting execution (by target, for instance)
+  // callback action 'onBest' is triggered after best is updated (if
+  // 'beforeUpdateBest' is required some day, think about it.. not now)
+  // returning 'false' should lead to aborting execution (by target, for
+  // instance)
   //
   bool (*onBest)(GlobalSearch<XES, BestType>& self, const BestType& best) =
-      [](GlobalSearch<XES, BestType>& self, const BestType& best) { return true; };
+      [](GlobalSearch<XES, BestType>& self, const BestType& best) {
+        return true;
+      };
   //
-  // onIncumbent now will depend on Incumbent type (look on ITrajectory or IPopulational)
+  // onIncumbent now will depend on Incumbent type (look on ITrajectory or
+  // IPopulational)
   //
-  // bool (*onIncumbent)(GlobalSearch<XES, XSH, XES2, XSH2>& self, const XSH2& incumbent) =
-  //  [](GlobalSearch<XES, XSH, XES2, XSH2>& self, const XSH2& incumbent) { return true; };
+  // bool (*onIncumbent)(GlobalSearch<XES, XSH, XES2, XSH2>& self, const XSH2&
+  // incumbent) =
+  //  [](GlobalSearch<XES, XSH, XES2, XSH2>& self, const XSH2& incumbent) {
+  //  return true; };
   //
   // strict or non-strict search
   bool strict{true};
 
-  GlobalSearch() {
-  }
+  GlobalSearch() {}
 
-  virtual ~GlobalSearch() {
-  }
+  ~GlobalSearch() override = default;
 
   // Assuming method is not thread-safe.
   // Now, we can easily use flag SearchStatus::RUNNING.
@@ -94,7 +103,8 @@ class GlobalSearch : public Component {
       const StopCriteria<XEv>& stopCriteria) = 0;
 
   /*
-   virtual SearchStatus searchBy(std::optional<XSH>& _best, std::optional<XSH2>& _inc, const StopCriteria<XEv>& stopCriteria)
+   virtual SearchStatus searchBy(std::optional<XSH>& _best, std::optional<XSH2>&
+   _inc, const StopCriteria<XEv>& stopCriteria)
    {
       best = _best;
       incumbent = _inc;
@@ -102,9 +112,7 @@ class GlobalSearch : public Component {
    }
 */
 
-  virtual std::string log() const {
-    return "Empty heuristic log.";
-  }
+  virtual std::string log() const { return "Empty heuristic log."; }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
@@ -116,48 +124,54 @@ class GlobalSearch : public Component {
     return ss.str();
   }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 // 'XES' is the "base concept" for the primary search component.
 // 'XSH' is the primary search type ('best' has type XSH)
 // 'XES2' is the "base concept" for the secondary search component.
 // 'XSH2' is the secondary search type ('incumbent' has type XSH2)
-template <XESolution XES, XSearch<XES> XSH = XES, XESolution XES2 = XES, XSearch<XES> XSH2 = XSH>
+template <XESolution XES, XSearch<XES> XSH = XES, XESolution XES2 = XES,
+          XSearch<XES> XSH2 = XSH>
 class Populational : public GlobalSearch<XES, XSH> {
   using XEv = typename XES::second_type;
   using BestType = XSH;
 
  public:
-  using IncumbentType = optframe::VEPopulation<XES2>;  // this uses EPopulation, not "legacy Population"
+  using IncumbentType =
+      optframe::VEPopulation<XES2>;  // this uses EPopulation, not "legacy
+                                     // Population"
+
+  virtual ~Populational() = default;
 
  public:
-  // onIncumbent now will depend on Incumbent type (look on ITrajectory or IPopulational)
+  // onIncumbent now will depend on Incumbent type (look on ITrajectory or
+  // IPopulational)
   //
-  bool (*onIncumbent)(GlobalSearch<XES, XSH>& self, const IncumbentType& incumbent) =
-      [](GlobalSearch<XES, XSH>& self, const IncumbentType& incumbent) { return true; };
+  bool (*onIncumbent)(GlobalSearch<XES, XSH>& self,
+                      const IncumbentType& incumbent) =
+      [](GlobalSearch<XES, XSH>& self, const IncumbentType& incumbent) {
+        return true;
+      };
   //
 
-  // global search method (maybe, someday, create some abstract IGlobalSearch.. not now)
-  //virtual SearchStatus search(const StopCriteria<XEv>& stopCriteria) = 0;
+  // global search method (maybe, someday, create some abstract IGlobalSearch..
+  // not now)
+  // virtual SearchStatus search(const StopCriteria<XEv>& stopCriteria) = 0;
   //
-  virtual SearchOutput<XES, BestType> search(const StopCriteria<XEv>& stopCriteria) override = 0;
+  SearchOutput<XES, BestType> search(
+      const StopCriteria<XEv>& stopCriteria) override = 0;
 
   //
   // virtual method with search signature for populational methods
   //
   virtual SearchOutput<XES, BestType> searchPopulational(
-      std::optional<BestType>& _best,
-      IncumbentType& _inc,
+      std::optional<BestType>& _best, IncumbentType& _inc,
       const StopCriteria<XEv>& stopCriteria) = 0;
 
-  virtual bool compatible(std::string s) override {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (GlobalSearch<XES, XSH>::compatible(s));
   }
 
@@ -167,25 +181,27 @@ class Populational : public GlobalSearch<XES, XSH> {
     return ss.str();
   }
 
-  virtual std::string id() const override {
-    return idComponent();
-  }
+  virtual std::string id() const override { return idComponent(); }
 
-  virtual std::string toString() const override {
-    return id();
-  }
+  virtual std::string toString() const override { return id(); }
 };
 
-template <XESolution XES, XSearch<XES> XSH, XESolution XES2, X2ESolution<XES2> X2ES = MultiESolution<XES2>>  //, XESolution XES2, XSearch<XES> XSH2 = XSH>
-class GlobalSearchBuilder : public ComponentBuilder<typename XES::first_type, typename XES::second_type, XSH> {
+template <XESolution XES, XSearch<XES> XSH, XESolution XES2,
+          X2ESolution<XES2> X2ES =
+              MultiESolution<XES2>>  //, XESolution XES2, XSearch<XES> XSH2 =
+                                     // XSH>
+class GlobalSearchBuilder
+    : public ComponentBuilder<typename XES::first_type,
+                              typename XES::second_type, XSH> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
 
  public:
-  virtual ~GlobalSearchBuilder() {
-  }
+  virtual ~GlobalSearchBuilder() {}
 
-  virtual GlobalSearch<XES, XSH>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") = 0;
+  virtual GlobalSearch<XES, XSH>* build(Scanner& scanner,
+                                        HeuristicFactory<S, XEv, XES, X2ES>& hf,
+                                        string family = "") = 0;
 
   Component* buildComponent(Scanner& scanner,
                             HeuristicFactory<S, XEv, XES, X2ES>& hf,
@@ -197,9 +213,7 @@ class GlobalSearchBuilder : public ComponentBuilder<typename XES::first_type, ty
 
   bool canBuild(string) override = 0;
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
   static string idComponent() {
     stringstream ss;
@@ -207,9 +221,7 @@ class GlobalSearchBuilder : public ComponentBuilder<typename XES::first_type, ty
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

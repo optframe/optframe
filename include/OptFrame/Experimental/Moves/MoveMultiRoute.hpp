@@ -28,67 +28,46 @@
 
 using namespace std;
 
-template<class T, class DS = OPTFRAME_DEFAULT_EMEMORY>
-class MoveMultiRoute : public Move<vector<vector<T>>, DS>
-{
-   typedef vector<T> Route;
-   typedef vector<vector<T>> MultiRoute;
+template <class T, class DS = OPTFRAME_DEFAULT_EMEMORY>
+class MoveMultiRoute : public Move<vector<vector<T>>, DS> {
+  typedef vector<T> Route;
+  typedef vector<vector<T>> MultiRoute;
 
-protected:
-   int k; // route number
-   Move<Route, DS>& m;
+ protected:
+  int k;  // route number
+  Move<Route, DS>& m;
 
-public:
-   MoveMultiRoute(int _k, Move<Route, DS>& _m)
-     : k(_k)
-     , m(_m)
-   {
-   }
+ public:
+  MoveMultiRoute(int _k, Move<Route, DS>& _m) : k(_k), m(_m) {}
 
-   int get_k()
-   {
-      return k;
-   }
+  int get_k() { return k; }
 
-   Move<Route, DS>& get_m()
-   {
-      return m;
-   }
+  Move<Route, DS>& get_m() { return m; }
 
-   virtual ~MoveMultiRoute()
-   {
-      delete &m;
-   }
+  virtual ~MoveMultiRoute() { delete &m; }
 
-   bool canBeApplied(const MultiRoute& rep)
-   {
-      return m.canBeApplied(rep[k]);
-   }
+  bool canBeApplied(const MultiRoute& rep) { return m.canBeApplied(rep[k]); }
 
-   Move<MultiRoute, DS>& apply(MultiRoute& rep)
-   {
-      return *new MoveMultiRoute<T, DS>(k, m.apply(rep[k]));
-   }
+  Move<MultiRoute, DS>& apply(MultiRoute& rep) {
+    return *new MoveMultiRoute<T, DS>(k, m.apply(rep[k]));
+  }
 
-   Move<MultiRoute, DS>& apply(DS& mem, MultiRoute& rep)
-   {
-      return *new MoveMultiRoute<T, DS>(k, m.apply(mem, rep[k]));
-   }
+  Move<MultiRoute, DS>& apply(DS& mem, MultiRoute& rep) {
+    return *new MoveMultiRoute<T, DS>(k, m.apply(mem, rep[k]));
+  }
 
-   virtual bool operator==(const Move<MultiRoute, DS>& _m) const
-   {
-      const MoveMultiRoute<T, DS>& m1 = (const MoveMultiRoute<T, DS>&)_m;
-      if (k == m1.k)
-         return m == m1.m;
-      else
-         return false;
-   }
+  virtual bool operator==(const Move<MultiRoute, DS>& _m) const {
+    const MoveMultiRoute<T, DS>& m1 = (const MoveMultiRoute<T, DS>&)_m;
+    if (k == m1.k)
+      return m == m1.m;
+    else
+      return false;
+  }
 
-   void print() const
-   {
-      cout << "MoveMultiRoute: k=" << k << "; move = ";
-      m.print();
-   }
+  void print() const override {
+    cout << "MoveMultiRoute: k=" << k << "; move = ";
+    m.print();
+  }
 };
 
 #endif /*OPTFRAME_MOVEMULTIROUTE_HPP_*/

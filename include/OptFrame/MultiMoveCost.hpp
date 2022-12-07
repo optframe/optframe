@@ -39,82 +39,59 @@ using namespace std;
 
 namespace optframe {
 
-//// more than 'objval' we need to ensure arithmetics here... TODO: see that (same as Evaluation)
-template <optframe::objval ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
-//template<class ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
+//// more than 'objval' we need to ensure arithmetics here... TODO: see that
+///(same as Evaluation)
+template <optframe::objval ObjType = evtype,
+          XEvaluation XEv = Evaluation<ObjType>>
+// template<class ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
 class MultiMoveCost : public Component {
  protected:
   vector<MoveCost<ObjType, XEv>*> vmc;
 
  public:
-  explicit MultiMoveCost(vector<MoveCost<>*> _vmc)
-      : vmc(_vmc) {
-  }
+  explicit MultiMoveCost(vector<MoveCost<>*> _vmc) : vmc(_vmc) {}
 
-  MultiMoveCost(const MultiMoveCost<>& mc)
-      : vmc(mc.vmc) {
-  }
+  MultiMoveCost(const MultiMoveCost<>& mc) : vmc(mc.vmc) {}
 
-  virtual ~MultiMoveCost() {
-  }
+  virtual ~MultiMoveCost() {}
 
-  int size() const {
-    return vmc.size();
-  }
+  int size() const { return vmc.size(); }
 
-  bool hasCost(int k) const {
-    return vmc[k];
-  }
+  bool hasCost(int k) const { return vmc[k]; }
 
-  bool isEstimated(int k) const {
-    return vmc[k]->estimated;
-  }
+  bool isEstimated(int k) const { return vmc[k]->estimated; }
 
   const vector<pair<ObjType, ObjType>>& getAlternativeCosts(int k) const {
     return vmc[k]->alternatives;
   }
 
-  ObjType getObjFunctionCost(int k) const {
-    return vmc[k]->objFunction;
-  }
+  ObjType getObjFunctionCost(int k) const { return vmc[k]->objFunction; }
 
-  ObjType getInfMeasureCost(int k) const {
-    return vmc[k]->infMeasure;
-  }
+  ObjType getInfMeasureCost(int k) const { return vmc[k]->infMeasure; }
 
-  void addAlternativeCost(const pair<ObjType, ObjType>& alternativeCost, int k) {
+  void addAlternativeCost(const pair<ObjType, ObjType>& alternativeCost,
+                          int k) {
     vmc[k]->alternatives.push_back(alternativeCost);
   }
 
-  void setAlternativeCosts(const vector<pair<ObjType, ObjType>>& alternativeCosts, int k) {
+  void setAlternativeCosts(
+      const vector<pair<ObjType, ObjType>>& alternativeCosts, int k) {
     vmc[k]->alternatives = alternativeCosts;
   }
 
-  void setObjFunctionCost(ObjType obj, int k) {
-    vmc[k]->objFunction = obj;
-  }
+  void setObjFunctionCost(ObjType obj, int k) { vmc[k]->objFunction = obj; }
 
-  void setInfMeasureCost(ObjType inf, int k) {
-    vmc[k]->infMeasure = inf;
-  }
+  void setInfMeasureCost(ObjType inf, int k) { vmc[k]->infMeasure = inf; }
 
-  ObjType cost(int k) const {
-    return vmc[k]->cost();
-  }
+  ObjType cost(int k) const { return vmc[k]->cost(); }
 
-  static string idComponent() {
-    return "OptFrame:MultiMoveCost";
-  }
+  static string idComponent() { return "OptFrame:MultiMoveCost"; }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
-  virtual std::string toString() const override {
-    return id();
-  }
+  virtual std::string toString() const override { return id(); }
 
-  virtual void print() const override {
+  void print() const override {
     cout << fixed;  // disable scientific notation
     cout << "MultiMoveCost for " << size() << " objectives:" << endl;
     for (unsigned i = 0; i < vmc.size(); i++)
@@ -128,14 +105,13 @@ class MultiMoveCost : public Component {
     if (&mmc == this)  // auto ref check
       return *this;
 
-    vmc = mmc.vmc;  // TODO fix: this should handle some local instances, for the future...
+    vmc = mmc.vmc;  // TODO fix: this should handle some local instances, for
+                    // the future...
 
     return *this;
   }
 
-  virtual MultiMoveCost<>& clone() const {
-    return *new MultiMoveCost<>(*this);
-  }
+  virtual MultiMoveCost<>& clone() const { return *new MultiMoveCost<>(*this); }
 };
 
 #ifndef NDEBUG

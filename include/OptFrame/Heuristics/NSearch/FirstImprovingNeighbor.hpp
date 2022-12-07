@@ -23,27 +23,31 @@
 #ifndef OPTFRAME_FIRST_IMPROVING_NEIGHBOR_HPP_
 #define OPTFRAME_FIRST_IMPROVING_NEIGHBOR_HPP_
 
+// C++
+#include <string>
+//
 #include "../../Evaluator.hpp"
 #include "../../Experimental/NeighborhoodExploration.hpp"
 #include "../../NSSeq.hpp"
 
 namespace optframe {
 
-template <XESolution XES, XEvaluation XEv = typename XES::second_type, XESolution XSH = XES>
+template <XESolution XES, XEvaluation XEv = typename XES::second_type,
+          XESolution XSH = XES>
 class FirstImprovingNeighbor : public NeighborhoodExploration<XES, XEv> {
  private:
   GeneralEvaluator<XES, XEv, XSH>& eval;
   NSSeq<XES, XEv, XSH>& nsSeq;
 
  public:
-  FirstImprovingNeighbor(GeneralEvaluator<XES, XEv>& _eval, NSSeq<XES, XEv, XSH>& _nsSeq)
-      : eval(_eval), nsSeq(_nsSeq) {
-  }
+  FirstImprovingNeighbor(GeneralEvaluator<XES, XEv>& _eval,
+                         NSSeq<XES, XEv, XSH>& _nsSeq)
+      : eval(_eval), nsSeq(_nsSeq) {}
 
-  virtual ~FirstImprovingNeighbor() {
-  }
+  virtual ~FirstImprovingNeighbor() {}
 
-  virtual op<RichMove<XES, XEv>> searchMove(const XES& se, const StopCriteria<XEv>& stopCriteria) override {
+  virtual op<RichMove<XES, XEv>> searchMove(
+      const XES& se, const StopCriteria<XEv>& stopCriteria) override {
     // gets valid iterator
     uptr<NSIterator<XES, XEv>> it = nsSeq.getIterator(se);
     // TODO: may throw? just break now...
@@ -67,7 +71,7 @@ class FirstImprovingNeighbor : public NeighborhoodExploration<XES, XEv> {
           rmove.move = std::move(move);
           rmove.cost = std::move(*mcost);
           rmove.status = SearchStatus::IMPROVEMENT;
-          //return make_optional(rmove);
+          // return make_optional(rmove);
           return std::optional<RichMove<XES, XEv>>(std::move(rmove));
         }
       }
@@ -80,24 +84,28 @@ class FirstImprovingNeighbor : public NeighborhoodExploration<XES, XEv> {
   }
 
   // returns 'cost' if it's improving, otherwise std::nullopt
-  op<XEv> isImprovingCost(Move<XES, XEv>& m, const XSH& cse, bool allowEstimated = false) {
+  op<XEv> isImprovingCost(Move<XES, XEv>& m, const XSH& cse,
+                          bool allowEstimated = false) {
     // try to get a cost
     op<XEv> p = m.cost(cse, allowEstimated);
     // if p not null => much faster (using cost)
     if (p) {
       // verify if m is an improving move
-      //if (p->isStrictImprovement()) {
+      // if (p->isStrictImprovement()) {
       if (eval.isStrictImprovement(*p))
         return p;
       else
         return nullopt;
     } else {
-      // need to update 's' together with reevaluation of 'e' => slower (may perform reevaluation)
+      // need to update 's' together with reevaluation of 'e' => slower (may
+      // perform reevaluation)
 
-      // TODO: in the future, consider moves with nullptr reverse (must save original solution/evaluation)
+      // TODO: in the future, consider moves with nullptr reverse (must save
+      // original solution/evaluation)
       assert(m.hasReverse());
 
-      // remove constness! must make sure 'cse' is never changed from its original state
+      // remove constness! must make sure 'cse' is never changed from its
+      // original state
       XSH& se = const_cast<XSH&>(cse);
       XEv& e = se.second;
 
@@ -125,18 +133,18 @@ class FirstImprovingNeighbor : public NeighborhoodExploration<XES, XEv> {
   }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) || (NeighborhoodExploration<XES, XEv>::compatible(s));
+    return (s == idComponent()) ||
+           (NeighborhoodExploration<XES, XEv>::compatible(s));
   }
 
   static string idComponent() {
     stringstream ss;
-    ss << NeighborhoodExploration<XES, XEv>::idComponent() << ":FirstImprovingNeighbor";
+    ss << NeighborhoodExploration<XES, XEv>::idComponent()
+       << ":FirstImprovingNeighbor";
     return ss.str();
   }
 
-  virtual string id() const {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   std::string toString() const override {
     stringstream ss;
@@ -145,13 +153,18 @@ class FirstImprovingNeighbor : public NeighborhoodExploration<XES, XEv> {
   }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, XEv>>
-class FirstImprovingNeighborBuilder : public NeighborhoodExplorationBuilder<S, XEv, XES, X2ES> {
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>,
+          XSearch<XES> XSH = std::pair<S, XEv>>
+class FirstImprovingNeighborBuilder
+    : public NeighborhoodExplorationBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~FirstImprovingNeighborBuilder() {
-  }
+  virtual ~FirstImprovingNeighborBuilder() {}
 
-  virtual NeighborhoodExploration<XES, XEv>* build(Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf, string family = "") {
+  virtual NeighborhoodExploration<XES, XEv>* build(
+      Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf,
+      string family = "") {
     GeneralEvaluator<XES, XEv>* eval;
     hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
 
@@ -163,8 +176,10 @@ class FirstImprovingNeighborBuilder : public NeighborhoodExplorationBuilder<S, X
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
-    params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(), "neighborhood structure"));
+    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
+                               "evaluation function"));
+    params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(),
+                               "neighborhood structure"));
 
     return params;
   }
@@ -175,13 +190,12 @@ class FirstImprovingNeighborBuilder : public NeighborhoodExplorationBuilder<S, X
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearchBuilder<S, XEv>::idComponent() << ":FirstImprovingNeighbor";
+    ss << LocalSearchBuilder<S, XEv>::idComponent()
+       << ":FirstImprovingNeighbor";
     return ss.str();
   }
 
-  virtual string id() const {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

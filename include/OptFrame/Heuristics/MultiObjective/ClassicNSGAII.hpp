@@ -25,10 +25,13 @@
 #include <vector>
 //
 #include <OptFrame/Helper/PopulationBasedMultiObjSearch.hpp>
+#include <OptFrame/Heuristics/MultiObjective/BiObjNonDominatedSort.hpp>
+#include <OptFrame/Heuristics/MultiObjective/NonDominatedSort.hpp>
 
 namespace optframe {
 
-// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS =
+// OPTFRAME_DEFAULT_DS>
 //
 template <XESolution XMES>
 class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
@@ -48,16 +51,15 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
  public:
   ClassicNSGAII(sref<MultiEvaluator<XMES>> _mevr,
                 // sref<MultiDirection<XEv>> _mDir,
-                sref<MOPopulationManagement<XMES>> _popMan,
-                unsigned popSize, int maxIter, int maxGen = 100000000)
+                sref<MOPopulationManagement<XMES>> _popMan, unsigned popSize,
+                int maxIter, int maxGen = 100000000)
       : NSPopulationBasedMultiObjSearch<XMES>(
             _mevr,
             // _mDir,
-            sref<MultiDirection<XEv>>{new MultiDirection(_mevr->vDir)},
-            _popMan, popSize, maxIter, maxGen),
-        mevr{_mevr} {
-    mdir = sptr<MultiDirection<XEv>>{
-        new MultiDirection(mevr->vDir)};
+            sref<MultiDirection<XEv>>{new MultiDirection(_mevr->vDir)}, _popMan,
+            popSize, maxIter, maxGen),
+        mevr{_mevr},
+        mdir{sptr<MultiDirection<XEv>>{new MultiDirection(mevr->vDir)}} {
     std::cout << "ClassicNSGAII::nObjectives: ";
     std::cout << mevr->nObjectives << std::endl;
     if (mevr->nObjectives == 2)
@@ -68,28 +70,21 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
           // than create here or not.
           new BiObjNonDominatedSort<XMES>(mdir->getDirections())};
     else
-      fa = sptr<FitnessAssignment<XMES>>{
-          new NonDominatedSort<XMES>{_mevr}};
+      fa = sptr<FitnessAssignment<XMES>>{new NonDominatedSort<XMES>{_mevr}};
 
     dm = sptr<DiversityManagement<XMES>>{
         new CrowdingDistance<XMES>(mdir->getDirections())};
 
-    sel = sptr<MOSSelection<XMES>>{
-        new NSGAIISelection<XMES>};
+    sel = sptr<MOSSelection<XMES>>{new NSGAIISelection<XMES>};
   }
 
-  virtual ~ClassicNSGAII() {
-    // delete fa;
-    // delete dm;
-    // delete sel;
-  }
+  virtual ~ClassicNSGAII() = default;
 
   using NSPopulationBasedMultiObjSearch<XMES>::search;
 
   vector<double> evaluate(vector<MOSIndividual<XMES>>& P) override {
     vector<double> best(mevr->nObjectives);
-    for (unsigned i = 0; i < best.size(); i++)
-      best[i] = mdir->nadir(i);
+    for (unsigned i = 0; i < best.size(); i++) best[i] = mdir->nadir(i);
 
     for (unsigned s = 0; s < P.size(); s++) {
       // check if not evaluated (nullptr)

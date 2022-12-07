@@ -7,7 +7,7 @@ package(
 cc_binary(
     name = "app_TSPfcore",
     srcs = ["src/mainTSP-fcore.cpp"],
-    copts = ['-std=c++17', '-fconcepts', '-Wfatal-errors'],
+    ##copts = ['-std=c++17', '-fconcepts', '-Wfatal-errors'],
     deps = [":TSPfcore"],
 )
 

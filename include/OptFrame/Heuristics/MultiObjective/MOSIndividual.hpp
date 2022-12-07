@@ -46,7 +46,8 @@ namespace optframe {
 template <XESolution XMES2>
 
 // MultiObjSearch Individual
-// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS =
+// OPTFRAME_DEFAULT_DS>
 
 class MOSIndividual {
   using S = typename XMES2::first_type;
@@ -55,13 +56,13 @@ class MOSIndividual {
   // ======================================================
   // WARNING: I THINK we cannot put XESolution checks here,
   // until class is complete... terrible!
-  //using XMSH2 = VEPopulation<MOSIndividual<XMES2>>;
+  // using XMSH2 = VEPopulation<MOSIndividual<XMES2>>;
   // XSearch<XMES2> XMSH2 = VEPopulation<MOSIndividual<XMES2>>;
   //
   template <class XES>
   using MyVEPopulation = std::vector<XES>;
 
-  //static_assert(XSearch<XMSH2, XMES2>);
+  // static_assert(XSearch<XMSH2, XMES2>);
 
  public:
   using first_type = S;
@@ -75,8 +76,8 @@ class MOSIndividual {
   double diversity;
   int id;  // each element should have an unique identifier inside a population
 
-  // individuals with same evaluation values (used for compression of population)
-  // vector<MOSIndividual<XMES2>*> copies;
+  // individuals with same evaluation values (used for compression of
+  // population) vector<MOSIndividual<XMES2>*> copies;
   //
   // WARNING: I THINK we cannot put XESolution checks here,
   // until class is complete... terrible!
@@ -85,16 +86,14 @@ class MOSIndividual {
 
   MyVEPopulation<MOSIndividual<XMES2>> copies;
 
-  MOSIndividual(const S& _s, const XMEv& _mev)
-      : first{_s}, second{_mev} {
+  MOSIndividual(const S& _s, const XMEv& _mev) : first{_s}, second{_mev} {
     fitness = -1;
     diversity = -1;
 
     id = -1;
   }
 
-  explicit MOSIndividual(const XMES2& se)
-      : first{se.first}, second{se.second} {
+  explicit MOSIndividual(const XMES2& se) : first{se.first}, second{se.second} {
     fitness = -1;
     diversity = -1;
 
@@ -102,8 +101,7 @@ class MOSIndividual {
   }
 
   MOSIndividual(const MOSIndividual<XMES2>& ind)
-      : first{ind.first},
-        second{ind.second} {
+      : first{ind.first}, second{ind.second} {
     fitness = ind.fitness;
     diversity = ind.diversity;
 
@@ -111,8 +109,7 @@ class MOSIndividual {
   }
 
   MOSIndividual(MOSIndividual<XMES2>&& ind)
-      : first{ind.first},
-        second{ind.second} {
+      : first{ind.first}, second{ind.second} {
     fitness = ind.fitness;
     diversity = ind.diversity;
 
@@ -120,8 +117,7 @@ class MOSIndividual {
   }
 
   MOSIndividual<XMES2>& operator=(const MOSIndividual<XMES2>& other) {
-    if (this == &other)
-      return *this;
+    if (this == &other) return *this;
 
     this->first = other.first;
     this->second = other.second;
@@ -142,10 +138,8 @@ class MOSIndividual {
 
   virtual bool betterThan(const MOSIndividual<XMES2>& ind) const {
     // assuming minimization of fitness and maximization of diversity
-    if (fitness < ind.fitness)
-      return true;
-    if ((fitness == ind.fitness))
-      return diversity > ind.diversity;
+    if (fitness < ind.fitness) return true;
+    if ((fitness == ind.fitness)) return diversity > ind.diversity;
     return false;
   }
 
@@ -160,14 +154,10 @@ class MOSIndividual {
   }
 
   // assuming minimization of fitness
-  virtual bool minFitness() const {
-    return true;
-  }
+  virtual bool minFitness() const { return true; }
 
   // assuming maximization of diversity
-  virtual bool maxDiversity() const {
-    return true;
-  }
+  virtual bool maxDiversity() const { return true; }
 
   friend std::ostream& operator<<(std::ostream& os,
                                   const MOSIndividual<XMES2>& ind) {
@@ -175,9 +165,7 @@ class MOSIndividual {
     return os;
   }
 
-  virtual void print() const {
-    cout << toString() << endl;
-  }
+  virtual void print() const { cout << toString() << endl; }
 
   virtual std::string toString() const {
     std::stringstream ss;
@@ -218,83 +206,83 @@ class MOSIndividual {
 };
 
 /*
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
-class MOSPopulation
+template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS =
+OPTFRAME_DEFAULT_DS> class MOSPopulation
 {
 protected:
-	vector<MOSIndividual<XMES2>*> P;
+        vector<MOSIndividual<XMES2>*> P;
 
 public:
-	MOSPopulation()
-	{
-	}
+        MOSPopulation()
+        {
+        }
 
-	MOSPopulation(MOSIndividual<XMES2>* ind)
-	{
-		P.push_back(ind);
-	}
+        MOSPopulation(MOSIndividual<XMES2>* ind)
+        {
+                P.push_back(ind);
+        }
 
-	MOSPopulation(const vector<MOSIndividual<XMES2>*>& _P) :
-			P(_P)
-	{
-	}
+        MOSPopulation(const vector<MOSIndividual<XMES2>*>& _P) :
+                        P(_P)
+        {
+        }
 
-	virtual ~MOSPopulation()
-	{
-	}
+        virtual ~MOSPopulation()
+        {
+        }
 
-	virtual void setVector(vector<MOSIndividual<XMES2>*>& v)
-	{
-		P = v;
-	}
+        virtual void setVector(vector<MOSIndividual<XMES2>*>& v)
+        {
+                P = v;
+        }
 
-	virtual vector<MOSIndividual<XMES2>*>& getVector()
-	{
-		return P;
-	}
+        virtual vector<MOSIndividual<XMES2>*>& getVector()
+        {
+                return P;
+        }
 
-	virtual vector<MOSIndividual<XMES2>*> getVector() const
-	{
-		return P;
-	}
+        virtual vector<MOSIndividual<XMES2>*> getVector() const
+        {
+                return P;
+        }
 
-	virtual MOSIndividual<XMES2>* at(unsigned id) const
-	{
-		return P[id];
-	}
+        virtual MOSIndividual<XMES2>* at(unsigned id) const
+        {
+                return P[id];
+        }
 
-	virtual unsigned size() const
-	{
-		return P.size();
-	}
+        virtual unsigned size() const
+        {
+                return P.size();
+        }
 
-	virtual void add(MOSIndividual<XMES2>* ind)
-	{
-		P.push_back(ind);
-	}
+        virtual void add(MOSIndividual<XMES2>* ind)
+        {
+                P.push_back(ind);
+        }
 
-	virtual void add(MOSPopulation<R, ADS, DS>& Pop)
-	{
-		P.insert(P.end(), Pop.P.begin(), Pop.P.end());
-	}
+        virtual void add(MOSPopulation<R, ADS, DS>& Pop)
+        {
+                P.insert(P.end(), Pop.P.begin(), Pop.P.end());
+        }
 
-	virtual void add(vector<MOSIndividual<XMES2>*>& v)
-	{
-		P.insert(P.end(), v.begin(), v.end());
-	}
+        virtual void add(vector<MOSIndividual<XMES2>*>& v)
+        {
+                P.insert(P.end(), v.begin(), v.end());
+        }
 
-	virtual void clear()
-	{
-		P.clear();
-	}
+        virtual void clear()
+        {
+                P.clear();
+        }
 
-	virtual void free()
-	{
-		for(unsigned i = 0; i < P.size(); i++)
-			if(P[i])
-				delete P[i];
-		P.clear();
-	}
+        virtual void free()
+        {
+                for(unsigned i = 0; i < P.size(); i++)
+                        if(P[i])
+                                delete P[i];
+                P.clear();
+        }
 };
 */
 

@@ -37,9 +37,11 @@
 
 namespace optframe {
 
-// template <XESolution XMES, XESolution XMES2 = XMES, XSearch<XMES2> XMSH2 = XMES2>
+// template <XESolution XMES, XESolution XMES2 = XMES, XSearch<XMES2> XMSH2 =
+// XMES2>
 
-// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS =
+// OPTFRAME_DEFAULT_DS>
 
 // primary base-type: XMES
 //  -> output / best-type / target-type on "search" is Pareto<XMES>
@@ -56,9 +58,8 @@ using VEPopMOS = VEPopulation<MOSIndividual<XMES>>;
 // something even weirder....... could this help on ExtNSGAII?
 // will leave XMES2 just as a last option...
 template <XESolution XMES, XESolution XMES2 = XMES>
-class PopulationBasedMultiObjSearch : public MultiObjSearch<
-                                          XMES, MOSIndividual<XMES2>,
-                                          VEPopMOS<XMES2>> {
+class PopulationBasedMultiObjSearch
+    : public MultiObjSearch<XMES, MOSIndividual<XMES2>, VEPopMOS<XMES2>> {
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
   // this is homogeneous multi-obj based on XEv obj type
@@ -69,16 +70,13 @@ class PopulationBasedMultiObjSearch : public MultiObjSearch<
   sref<MultiDirection<XEv>> mDir;
 
   explicit PopulationBasedMultiObjSearch(sref<MultiDirection<XEv>> _mDir)
-      : mDir{_mDir} {
-  }
+      : mDir{_mDir} {}
 
-  virtual ~PopulationBasedMultiObjSearch() {
-  }
+  virtual ~PopulationBasedMultiObjSearch() = default;
 
   virtual vector<double> initializeBounds() {
     vector<double> best(mDir->nObjectives);
-    for (unsigned i = 0; i < mDir->nObjectives; i++)
-      best[i] = mDir->nadir(i);
+    for (unsigned i = 0; i < mDir->nObjectives; i++) best[i] = mDir->nadir(i);
     return best;
   }
 
@@ -88,9 +86,8 @@ class PopulationBasedMultiObjSearch : public MultiObjSearch<
     bool improved = false;
     for (unsigned s = 0; s < P.size(); s++) {
       for (unsigned i = 0; i < best.size(); i++) {
-        if (mDir->getDirections()[i]->betterThan(
-                P[s].second.at(i).evaluation(),
-                best[i])) {
+        if (mDir->getDirections()[i]->betterThan(P[s].second.at(i).evaluation(),
+                                                 best[i])) {
           best[i] = P[s].second.at(i).evaluation();
           improved = true;
         }
@@ -103,21 +100,18 @@ class PopulationBasedMultiObjSearch : public MultiObjSearch<
   // TODO: VEPopMOS<XMES2> ?
   virtual void assignFitness(
       // vector<MOSIndividual<XMES2>>& g,
-      const vector<int>& g,
-      vector<MOSIndividual<XMES2>>& P) = 0;
+      const vector<int>& g, vector<MOSIndividual<XMES2>>& P) = 0;
 
   // assign diversity to subset 'g' that belongs to 'P'
   // TODO: VEPopMOS<XMES> ?
   virtual void assignDiversity(
       // vector<MOSIndividual<XMES2>>& g,
-      const vector<int>& g,
-      vector<MOSIndividual<XMES2>>& P) = 0;
+      const vector<int>& g, vector<MOSIndividual<XMES2>>& P) = 0;
 
   // update archive based on current population
   // TODO: VEPopMOS<XMES> ?
-  virtual void updateArchive(
-      const vector<MOSIndividual<XMES2>>& P,
-      vector<MOSIndividual<XMES2>>& archive) = 0;
+  virtual void updateArchive(const vector<MOSIndividual<XMES2>>& P,
+                             vector<MOSIndividual<XMES2>>& archive) = 0;
 
   // from MultiObjSearch
   SearchOutput<XMES, Pareto<XMES>> search(
@@ -137,13 +131,14 @@ class PopulationBasedMultiObjSearch : public MultiObjSearch<
 // WHAT IS 'NS' IN THIS CONTEXT?????
 // =======================================================================
 
-// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS =
+// OPTFRAME_DEFAULT_DS>
 
 // Will LIKELY not use XMES2.... only for some WEIRD non-XMES pop type...
 // Could this help with ExtNSGAII????? maybe......
 template <XESolution XMES, XESolution XMES2 = XMES>
-class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
-                                            XMES, XMES2> {
+class NSPopulationBasedMultiObjSearch
+    : public PopulationBasedMultiObjSearch<XMES, XMES2> {
   using S = typename XMES::first_type;
   using XMEv = typename XMES::second_type;
   // this is homogeneous multi-obj based on XEv obj type
@@ -161,22 +156,20 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
   int maxIter;  // generations without improvement
 
  public:
-  NSPopulationBasedMultiObjSearch(
-      sref<MultiEvaluator<XMES>> _mev,
-      sref<MultiDirection<XEv>> _mDir,
-      sref<MOPopulationManagement<XMES>> _popMan,
-      unsigned _popSize, int _maxIter, int _maxGen = 100000000)
+  NSPopulationBasedMultiObjSearch(sref<MultiEvaluator<XMES>> _mev,
+                                  sref<MultiDirection<XEv>> _mDir,
+                                  sref<MOPopulationManagement<XMES>> _popMan,
+                                  unsigned _popSize, int _maxIter,
+                                  int _maxGen = 100000000)
       : PopulationBasedMultiObjSearch<XMES, XMES2>(_mDir),
         mev(_mev),
         mDir(_mDir),
         popMan(_popMan),
         popSize(_popSize),
         maxGen(_maxGen),
-        maxIter(_maxIter) {
-  }
+        maxIter(_maxIter) {}
 
-  virtual ~NSPopulationBasedMultiObjSearch() {
-  }
+  virtual ~NSPopulationBasedMultiObjSearch() = default;
 
   // evaluate and return best values for population
   virtual vector<double> evaluate(vector<MOSIndividual<XMES2>>& Pop) = 0;
@@ -184,23 +177,19 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
   // from PopulationBasedMultiObjSearch
   void assignFitness(
       // vector<MOSIndividual<XMES2>>& g,
-      const vector<int>& g,
-      vector<MOSIndividual<XMES2>>& P) override = 0;
+      const vector<int>& g, vector<MOSIndividual<XMES2>>& P) override = 0;
 
   // from PopulationBasedMultiObjSearch
   void assignDiversity(
       // vector<MOSIndividual<XMES2>>& g,
-      const vector<int>& g,
-      vector<MOSIndividual<XMES2>>& P) override = 0;
+      const vector<int>& g, vector<MOSIndividual<XMES2>>& P) override = 0;
 
   // from PopulationBasedMultiObjSearch
-  void updateArchive(
-      const vector<MOSIndividual<XMES2>>& P,
-      vector<MOSIndividual<XMES2>>& archive) override = 0;
+  void updateArchive(const vector<MOSIndividual<XMES2>>& P,
+                     vector<MOSIndividual<XMES2>>& archive) override = 0;
 
   // new method
-  virtual void select(unsigned popSize,
-                      vector<MOSIndividual<XMES2>>& P,
+  virtual void select(unsigned popSize, vector<MOSIndividual<XMES2>>& P,
                       vector<MOSIndividual<XMES2>>& archive) = 0;
 
   // new method
@@ -230,7 +219,8 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
     vector<MOSIndividual<XMES2>> archive;
 
     if (Component::verbose)
-      std::cout << "DEBUG: will gen population popSize=" << popSize << std::endl;
+      std::cout << "DEBUG: will gen population popSize=" << popSize
+                << std::endl;
 
     vector<MOSIndividual<XMES2>> P = popMan->initialize(popSize);
     if (Component::verbose) {
@@ -250,8 +240,7 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
       std::cout << "DEBUG: will assignFitness()" << std::endl;
     // ignore group id parameter, for now
     std::vector<int> v_id;
-    for (unsigned i = 0; i < P.size(); i++)
-      v_id.push_back(i);
+    for (unsigned i = 0; i < P.size(); i++) v_id.push_back(i);
     //
     assignFitness(v_id, P);
 
@@ -296,11 +285,12 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
         std::cout << "bestObj[" << i << "] = " << bestObj[i] << std::endl;
     }
 
-    while ((timer.now() < stop.timelimit) &&
-           (t <= maxGen) && (tImp <= maxIter)) {
+    while ((timer.now() < stop.timelimit) && (t <= maxGen) &&
+           (tImp <= maxIter)) {
       //
       if (Component::verbose) {
-        std::cout << "main_loop: tImp=" << tImp << "/maxIter=" << maxIter << std::endl;
+        std::cout << "main_loop: tImp=" << tImp << "/maxIter=" << maxIter
+                  << std::endl;
         std::cout << "will evaluate(|P|=" << P.size() << ")" << std::endl;
       }
       //
@@ -315,12 +305,10 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
         std::cout << "P.size() = " << P.size() << std::endl;
       //
       for (unsigned i = 0; i < bestP.size(); i++)
-        if (mDir->betterThanAt(i, bestQ[i], bestP[i]))
-          bestP[i] = bestQ[i];
+        if (mDir->betterThanAt(i, bestQ[i], bestP[i])) bestP[i] = bestQ[i];
 
       if (Component::verbose) {
-        std::cout << std::endl
-                  << "P:" << std::endl;
+        std::cout << std::endl << "P:" << std::endl;
         printPopulation(P);
       }
 
@@ -328,12 +316,12 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
         std::cout << "will assignFitness(|P|=" << P.size() << ")" << std::endl;
       // ignore group parameter for now
       std::vector<int> v_id;
-      for (unsigned i = 0; i < P.size(); i++)
-        v_id.push_back(i);
+      for (unsigned i = 0; i < P.size(); i++) v_id.push_back(i);
       //
       assignFitness(v_id, P);
       if (Component::verbose)
-        std::cout << "will assignDiversity(|P|=" << P.size() << ")" << std::endl;
+        std::cout << "will assignDiversity(|P|=" << P.size() << ")"
+                  << std::endl;
       // ignore group parameter for now
       assignDiversity(v_id, P);
       //
@@ -374,7 +362,8 @@ class NSPopulationBasedMultiObjSearch : public PopulationBasedMultiObjSearch<
       if (improved) {
         tImp = -1;
         if (Component::verbose)
-          std::cout << "t=" << t << " improved bounds: " << bestObj << std::endl;
+          std::cout << "t=" << t << " improved bounds: " << bestObj
+                    << std::endl;
       } else {
         if (Component::verbose)
           std::cout << "DID NOT IMPROVE ANY BOUNDS " << bestObj << std::endl;

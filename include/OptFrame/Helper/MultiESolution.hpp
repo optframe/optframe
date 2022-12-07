@@ -32,7 +32,8 @@
 
 namespace optframe {
 
-//template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+// template<XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES =
+// pair<S, XEv>>
 //
 template <XESolution XES>
 class MultiESolution : public Component {
@@ -44,31 +45,25 @@ class MultiESolution : public Component {
   vector<XEv*> pev;
 
  public:
-  MultiESolution() {
-  }
+  MultiESolution() {}
 
   MultiESolution(const MultiESolution& pop) {
-    for (unsigned i = 0; i < pop.size(); i++)
-      p.push_back(new S(pop.at(i)));
+    for (unsigned i = 0; i < pop.size(); i++) p.push_back(new S(pop.at(i)));
   }
 
-  virtual ~MultiESolution() {
-    clear();
-  }
+  virtual ~MultiESolution() { clear(); }
 
-  unsigned size() const {
-    return p.size();
-  }
+  unsigned size() const { return p.size(); }
 
   // todo: implement
   XES& getP(size_t i) {
-    //return make_pair(uptr<S>(),uptr<XEv>());
+    // return make_pair(uptr<S>(),uptr<XEv>());
     XES* p;
     return *p;
   }
 
   XES& at(size_t i) {
-    //return make_pair(uptr<S>(),uptr<XEv>());
+    // return make_pair(uptr<S>(),uptr<XEv>());
     XES* p;
     return *p;
   }
@@ -85,9 +80,7 @@ class MultiESolution : public Component {
    }
    */
 
-  void insert(unsigned pos, S& c) {
-    p.insert(p.begin() + pos, new S(c));
-  }
+  void insert(unsigned pos, S& c) { p.insert(p.begin() + pos, new S(c)); }
 
   void push_back(S* c) {
     if (c)  // not null
@@ -113,19 +106,14 @@ class MultiESolution : public Component {
 
   // clear and kill
   void clear() {
-    for (unsigned i = 0; i < p.size(); i++)
-      delete p.at(i);
+    for (unsigned i = 0; i < p.size(); i++) delete p.at(i);
 
     p.clear();
   }
 
-  void clearNoKill() {
-    p.clear();
-  }
+  void clearNoKill() { p.clear(); }
 
-  bool empty() {
-    return p.empty();
-  }
+  bool empty() { return p.empty(); }
 
   virtual MultiESolution<XES>& operator=(const MultiESolution<XES>& p) {
     if (&p == this)  // auto ref check
@@ -166,15 +154,11 @@ class MultiESolution : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
-  virtual std::string toString() const override {
-    return id();
-  }
+  virtual std::string toString() const override { return id(); }
 
-  virtual void print() const override {
+  void print() const override {
     cout << "MultiESolution(" << p.size() << ")";
     cout << endl;
 
@@ -185,8 +169,10 @@ class MultiESolution : public Component {
 };
 
 // basic compilation test (TODO: improve)
-//static_assert(X2ESolution<MultiESolution<IsESolution<double>>, IsSolution<double>, IsEvaluation<int>, IsESolution<double>>);
-//static_assert(X2ESolution<MultiESolution<IsSolution<double>, IsEvaluation<int>, IsESolution<double>>, IsESolution<double>>);
+// static_assert(X2ESolution<MultiESolution<IsESolution<double>>,
+// IsSolution<double>, IsEvaluation<int>, IsESolution<double>>);
+// static_assert(X2ESolution<MultiESolution<IsSolution<double>,
+// IsEvaluation<int>, IsESolution<double>>, IsESolution<double>>);
 
 }  // namespace optframe
 

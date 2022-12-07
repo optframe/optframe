@@ -6,7 +6,7 @@ cc_binary(
     name = "app_demo_opt",
     srcs = ["OptFCore_load.cpp"],
     deps = ["//include:OptFCore"],
-    copts = ['--std=c++17', '-fconcepts', '-Wfatal-errors']
+    ##copts = ['--std=c++17', '-fconcepts', '-Wfatal-errors']
 )
 
 filegroup(

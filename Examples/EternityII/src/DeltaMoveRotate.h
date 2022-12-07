@@ -23,109 +23,80 @@
 #ifndef EtII_Delta_Move_Rotate_HPP_
 #define EtII_Delta_Move_Rotate_HPP_
 
-#include "./NSSeqRotate.h"
-
 #include <cmath>
+
+#include "./NSSeqRotate.h"
 
 using namespace std;
 
 namespace EtII {
 
-class DeltaMoveRotate : public MoveRotate
-{
+class DeltaMoveRotate : public MoveRotate {
+ public:
+  DeltaMoveRotate(int _nRot, int _x, int _y) : MoveRotate(_nRot, _x, _y) {}
 
-public:
-   DeltaMoveRotate(int _nRot, int _x, int _y)
-     : MoveRotate(_nRot, _x, _y)
-   {
-   }
+  virtual ~DeltaMoveRotate() {}
 
-   virtual ~DeltaMoveRotate()
-   {
-   }
+  op<Evaluation<>> cost(const pair<SolutionEtII, Evaluation<>>& se,
+                        bool allowEstimated) override {
+    const SolutionEtII& s = se.first;
+    // const Evaluation<>& e = se.second;
 
-   op<Evaluation<>> cost(const pair<SolutionEtII, Evaluation<>>& se, bool allowEstimated) override
-   {
-      const SolutionEtII& s = se.first;
-      //const Evaluation<>& e = se.second;
+    const RepEtII& rep = s.getR();
+    double f = 0;
 
-      const RepEtII& rep = s.getR();
-      double f = 0;
+    int f1 = 0;
+    if (rep(x, y).left == rep(x, y - 1).right) f1++;
+    if (rep(x, y).up == rep(x - 1, y).down) f1++;
+    if (rep(x, y).right == rep(x, y + 1).left) f1++;
+    if (rep(x, y).down == rep(x + 1, y).up) f1++;
 
-      int f1 = 0;
-      if (rep(x, y).left == rep(x, y - 1).right)
-         f1++;
-      if (rep(x, y).up == rep(x - 1, y).down)
-         f1++;
-      if (rep(x, y).right == rep(x, y + 1).left)
-         f1++;
-      if (rep(x, y).down == rep(x + 1, y).up)
-         f1++;
+    int f2 = 0;
+    if (nRot == 1) {
+      if (rep(x, y).left == rep(x - 1, y).down) f2++;
+      if (rep(x, y).up == rep(x, y + 1).left) f2++;
+      if (rep(x, y).right == rep(x + 1, y).up) f2++;
+      if (rep(x, y).down == rep(x, y - 1).right) f2++;
+    }
 
-      int f2 = 0;
-      if (nRot == 1) {
-         if (rep(x, y).left == rep(x - 1, y).down)
-            f2++;
-         if (rep(x, y).up == rep(x, y + 1).left)
-            f2++;
-         if (rep(x, y).right == rep(x + 1, y).up)
-            f2++;
-         if (rep(x, y).down == rep(x, y - 1).right)
-            f2++;
-      }
+    if (nRot == 2) {
+      if (rep(x, y).left == rep(x, y + 1).left) f2++;
+      if (rep(x, y).up == rep(x + 1, y).up) f2++;
+      if (rep(x, y).right == rep(x, y - 1).right) f2++;
+      if (rep(x, y).down == rep(x - 1, y).down) f2++;
+    }
 
-      if (nRot == 2) {
-         if (rep(x, y).left == rep(x, y + 1).left)
-            f2++;
-         if (rep(x, y).up == rep(x + 1, y).up)
-            f2++;
-         if (rep(x, y).right == rep(x, y - 1).right)
-            f2++;
-         if (rep(x, y).down == rep(x - 1, y).down)
-            f2++;
-      }
+    if (nRot == 3) {
+      if (rep(x, y).left == rep(x + 1, y).up) f2++;
+      if (rep(x, y).up == rep(x, y - 1).right) f2++;
+      if (rep(x, y).right == rep(x - 1, y).down) f2++;
+      if (rep(x, y).down == rep(x, y + 1).left) f2++;
+    }
 
-      if (nRot == 3) {
-         if (rep(x, y).left == rep(x + 1, y).up)
-            f2++;
-         if (rep(x, y).up == rep(x, y - 1).right)
-            f2++;
-         if (rep(x, y).right == rep(x - 1, y).down)
-            f2++;
-         if (rep(x, y).down == rep(x, y + 1).left)
-            f2++;
-      }
+    f += (f2 - f1);
 
-      f += (f2 - f1);
+    // return new MoveCost<> (f, 0);
+    return make_optional(Evaluation<>(f, 0));
+  }
 
-      //return new MoveCost<> (f, 0);
-      return make_optional(Evaluation<>(f, 0));
-   }
+  static string idComponent() {
+    string idComp = MoveRotate::idComponent();
+    idComp.append(":DeltaMoveRotate");
+    return idComp;
+  }
 
-   static string idComponent()
-   {
-      string idComp = DeltaMoveRotate::idComponent();
-      idComp.append(":DeltaMoveRotate");
-      return idComp;
-   }
+  virtual bool operator==(const DeltaMoveRotate& _m) const {
+    const DeltaMoveRotate& m = (const DeltaMoveRotate&)_m;
+    return (m.nRot == nRot) && (m.x == x) && (m.y == y);
+  }
 
-   virtual bool operator==(const DeltaMoveRotate& _m) const
-   {
-      const DeltaMoveRotate& m = (const DeltaMoveRotate&)_m;
-      return (m.nRot == nRot) && (m.x == x) && (m.y == y);
-   }
+  void print() const override {
+    cout << "DeltaMoveRotate( ";
+    cout << nRot << " rotations on (" << x << "," << y << ")" << endl;
+    cout << endl;
+  }
 
-   virtual void print() const
-   {
-      cout << "DeltaMoveRotate( ";
-      cout << nRot << " rotations on (" << x << "," << y << ")" << endl;
-      cout << endl;
-   }
-
-   string id() const
-   {
-      return "OptFrame:Move:DeltaMoveRotate";
-   }
+  std::string id() const override { return "OptFrame:Move:DeltaMoveRotate"; }
 };
-}
+}  // namespace EtII
 #endif /*EtII_Delta_Move_Rotate_HPP_*/

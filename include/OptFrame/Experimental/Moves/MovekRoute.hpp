@@ -28,57 +28,42 @@
 
 using namespace std;
 
-template<class T, class DS>
-class MovekRoute : public Move<vector<vector<T>>, DS>
-{
-   typedef vector<T> Route;
-   typedef vector<vector<T>> MultiRoute;
+template <class T, class DS>
+class MovekRoute : public Move<vector<vector<T>>, DS> {
+  typedef vector<T> Route;
+  typedef vector<vector<T>> MultiRoute;
 
-protected:
-   int k; // route number
-   Move<Route, DS>& m;
+ protected:
+  int k;  // route number
+  Move<Route, DS>& m;
 
-public:
-   MovekRoute(int _k, Move<Route, DS>& _m)
-     : k(_k)
-     , m(_m)
-   {
-   }
+ public:
+  MovekRoute(int _k, Move<Route, DS>& _m) : k(_k), m(_m) {}
 
-   virtual ~MovekRoute()
-   {
-      delete &m;
-   }
+  virtual ~MovekRoute() { delete &m; }
 
-   bool canBeApplied(const MultiRoute& rep)
-   {
-      return m.canBeApplied(rep[k]);
-   }
+  bool canBeApplied(const MultiRoute& rep) { return m.canBeApplied(rep[k]); }
 
-   Move<MultiRoute, DS>& apply(MultiRoute& rep)
-   {
-      return *new MovekRoute<T, DS>(k, m.apply(rep[k]));
-   }
+  Move<MultiRoute, DS>& apply(MultiRoute& rep) {
+    return *new MovekRoute<T, DS>(k, m.apply(rep[k]));
+  }
 
-   Move<MultiRoute, DS>& apply(DS& mem, MultiRoute& rep)
-   {
-      return *new MovekRoute<T, DS>(k, m.apply(mem, rep[k]));
-   }
+  Move<MultiRoute, DS>& apply(DS& mem, MultiRoute& rep) {
+    return *new MovekRoute<T, DS>(k, m.apply(mem, rep[k]));
+  }
 
-   virtual bool operator==(const Move<MultiRoute, DS>& _m) const
-   {
-      const MovekRoute<T, DS>& m1 = (const MovekRoute<T, DS>&)_m;
-      if (k == m1.k)
-         return m == m1.m;
-      else
-         return false;
-   }
+  virtual bool operator==(const Move<MultiRoute, DS>& _m) const {
+    const MovekRoute<T, DS>& m1 = (const MovekRoute<T, DS>&)_m;
+    if (k == m1.k)
+      return m == m1.m;
+    else
+      return false;
+  }
 
-   void print() const
-   {
-      cout << "MovekRoute: k=" << k << "; move = ";
-      m.print();
-   }
+  void print() const override {
+    cout << "MovekRoute: k=" << k << "; move = ";
+    m.print();
+  }
 };
 
 #endif /*OPTFRAME_MOVEKROUTE_HPP_*/

@@ -89,8 +89,7 @@ struct IndividualNSGAII {
     //
     // if (ind.mev)
     //  mev = &ind.mev->clone();
-    if (!ind.second.isOutdated())
-      second = ind.second;
+    if (!ind.second.isOutdated()) second = ind.second;
 
     rank = ind.rank;
     distance = ind.distance;
@@ -138,14 +137,10 @@ struct IndividualNSGAII {
     int count_random = 0;
     int count_mutation = 0;
     for (unsigned i = 0; i < v.size(); i++) {
-      if (v[i]->isChild)
-        count_child++;
-      if (v[i]->isRandom)
-        count_random++;
-      if (v[i]->isCross)
-        count_cross++;
-      if (v[i]->isMutation)
-        count_mutation++;
+      if (v[i]->isChild) count_child++;
+      if (v[i]->isRandom) count_random++;
+      if (v[i]->isCross) count_cross++;
+      if (v[i]->isMutation) count_mutation++;
     }
     cout << "|S|=" << v.size();
     cout << "\tchild=" << count_child;
@@ -162,8 +157,7 @@ struct IndividualNSGAII {
 
 // : public MultiObjSearch<R, ADS> {
 template <XESolution XMES>
-class NSGAII : public MultiObjSearch<XMES,
-                                     IndividualNSGAII<XMES>,
+class NSGAII : public MultiObjSearch<XMES, IndividualNSGAII<XMES>,
                                      VEPopulation<IndividualNSGAII<XMES>>> {
   // typedef vector<Evaluation<>*> FitnessValues;
   using S = typename XMES::first_type;
@@ -193,10 +187,8 @@ class NSGAII : public MultiObjSearch<XMES,
   // using Heuristic<R, ADS >::exec; // prevents name hiding
 
   NSGAII(vsref<Evaluator<S, XEv, XES>> _v_e,
-         sref<InitialMultiESolution<XMES>> _init_epop,
-         int _init_pop_size,
-         int _gMax,
-         sref<RandGen> _rg)
+         sref<InitialMultiESolution<XMES>> _init_epop, int _init_pop_size,
+         int _gMax, sref<RandGen> _rg)
       : v_e(_v_e),
         init_epop(_init_epop),
         init_pop_size(_init_pop_size),
@@ -209,8 +201,7 @@ class NSGAII : public MultiObjSearch<XMES,
     gMax = _gMax;
   }
 
-  virtual ~NSGAII() {
-  }
+  virtual ~NSGAII() {}
 
   virtual void basicGeneticOperators(VEPopulation<XMES>& p) = 0;
 
@@ -233,8 +224,7 @@ class NSGAII : public MultiObjSearch<XMES,
 
       VEPopulation<XMES> r = p;
 
-      for (int i = 0; i < (int)q.size(); i++)
-        r.push_back(q.at(i));
+      for (int i = 0; i < (int)q.size(); i++) r.push_back(q.at(i));
 
       // Start NonDominance Order by sets
       vector<vector<XMES>> F = nonDominanceOrder(r);
@@ -276,8 +266,7 @@ class NSGAII : public MultiObjSearch<XMES,
 
       basicGeneticOperators(q);
 
-      for (int i = 0; i < (int)F.size(); i++)
-        F[i].clear();
+      for (int i = 0; i < (int)F.size(); i++) F[i].clear();
 
       r.clear();
 
@@ -302,8 +291,7 @@ class NSGAII : public MultiObjSearch<XMES,
     int N = Fj.size();
     if (N > 0) {
       int CDOldSize = CD.size();
-      for (int i = 0; i < N; i++)
-        CD.push_back(0);
+      for (int i = 0; i < N; i++) CD.push_back(0);
 
       for (int m = 0; m < (int)v_e.size(); m++) {
         vector<pair<double, int>> fitness;
@@ -339,8 +327,7 @@ class NSGAII : public MultiObjSearch<XMES,
   // F elements to be "reference wrappers" of elements
   // in p... this way, costs could be reduced!
   //
-  vector<vector<XMES>> nonDominanceOrder(
-      const VEPopulation<XMES>& p) {
+  vector<vector<XMES>> nonDominanceOrder(const VEPopulation<XMES>& p) {
     // store front elements in F
     vector<vector<XMES>> F;
     //
@@ -420,21 +407,18 @@ class NSGAII : public MultiObjSearch<XMES,
     return F;
   }
 
-  virtual VEPopulation<XMES> basicSelection(
-      const VEPopulation<XMES>& p, vector<double> cD) {
+  virtual VEPopulation<XMES> basicSelection(const VEPopulation<XMES>& p,
+                                            vector<double> cD) {
     VEPopulation<XMES> q;
     for (int i = 0; i < (int)p.size(); i++) {
       int j = rg->rand(p.size());
-      while (i == j)
-        j = rg->rand(p.size());
+      while (i == j) j = rg->rand(p.size());
 
       bool A = pDominance->dominates(p.at(i).second, p.at(j).second);
-      if (A)
-        q.push_back(p.at(i));
+      if (A) q.push_back(p.at(i));
 
       bool B = pDominance->dominates(p.at(j).second, p.at(i).second);
-      if (B)
-        q.push_back(p.at(j));
+      if (B) q.push_back(p.at(j));
 
       if (A == B) {
         if (cD[i] >= cD[j])

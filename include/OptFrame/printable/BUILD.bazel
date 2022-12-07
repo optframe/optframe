@@ -14,6 +14,6 @@ cc_library(
     #srcs = glob([
     #    "**/*.cpp",
     #]),
-    copts = ['-std=c++17', '-fconcepts', '-Wfatal-errors'],
+    ###copts = ['-std=c++17', '-fconcepts', '-Wfatal-errors'],
     include_prefix = "OptFrame/printable",
 )

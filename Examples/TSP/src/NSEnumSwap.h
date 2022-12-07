@@ -23,6 +23,8 @@
 #ifndef TSP_NSENUMSwap_HPP_
 #define TSP_NSENUMSwap_HPP_
 
+// C++
+#include <string>
 // Framework includes
 #include <OptFrame/Move.hpp>
 #include <OptFrame/NSEnum.hpp>
@@ -49,8 +51,7 @@ class MoveSwap : public Move<ESolutionTSP> {
   sref<ProblemInstance> tsp;
 
  public:
-  MoveSwap(int c1, int c2, sref<ProblemInstance> _tsp)
-      : tsp(_tsp) {
+  MoveSwap(int c1, int c2, sref<ProblemInstance> _tsp) : tsp(_tsp) {
     this->c1 = c1;
     this->c2 = c2;
 
@@ -58,11 +59,12 @@ class MoveSwap : public Move<ESolutionTSP> {
   }
 
   bool canBeApplied(const ESolutionTSP& s) override {
-    // If there are some move "MoveSwap" that can't be applied, implement this method
+    // If there are some move "MoveSwap" that can't be applied, implement this
+    // method
     //
 
     // only allows lower half quadratic moves
-    //return (c1 < c2) && (c1 != 0);
+    // return (c1 < c2) && (c1 != 0);
     return true;
   }
 
@@ -72,13 +74,14 @@ class MoveSwap : public Move<ESolutionTSP> {
     assert(c1 < c2);
     assert(m.c1 < m.c2);
 
-    // (0,1) nao existe!! pq são adjacentes!         0  1* 2 3* 4 5 6* 7 8* 9           0*  1 2* 3 4 5 6 7* 8 9* -> 0
-    // (c1,c2) -> (1, 3)     (6,8)
-    // são independentes?
+    // (0,1) nao existe!! pq são adjacentes!         0  1* 2 3* 4 5 6* 7 8* 9 0*
+    // 1 2* 3 4 5 6 7* 8 9* -> 0 (c1,c2) -> (1, 3)     (6,8) são independentes?
 
-    bool conflicts = (::abs(c1 - m.c1) <= 2) || (::abs(c1 - m.c2) <= 2) || (::abs(c2 - m.c1) <= 2) || (::abs(c2 - m.c2) <= 2);
+    bool conflicts = (::abs(c1 - m.c1) <= 2) || (::abs(c1 - m.c2) <= 2) ||
+                     (::abs(c2 - m.c1) <= 2) || (::abs(c2 - m.c2) <= 2);
 
-    conflicts = conflicts || ((c1 == 0) && (c2 == tsp->n - 1)) || ((c1 == 0) && (c2 == tsp->n - 2));
+    conflicts = conflicts || ((c1 == 0) && (c2 == tsp->n - 1)) ||
+                ((c1 == 0) && (c2 == tsp->n - 2));
 
     return !conflicts;
   }
@@ -116,10 +119,8 @@ class MoveSwap : public Move<ESolutionTSP> {
     int ak1 = k1 + 1;
     int ak2 = k2 + 1;
 
-    if (k1 == 0)
-      bk1 = rep.size() - 1;
-    if (k2 == ((int)rep.size()) - 1)
-      ak2 = 0;
+    if (k1 == 0) bk1 = rep.size() - 1;
+    if (k2 == ((int)rep.size()) - 1) ak2 = 0;
 
     double f = 0;
 
@@ -155,7 +156,8 @@ class MoveSwap : public Move<ESolutionTSP> {
     return rev;
   }
 
-  op<EvaluationTSP> cost(const pair<SolutionTSP, Evaluation<>>& se, bool allowEstimated) override {
+  op<EvaluationTSP> cost(const pair<SolutionTSP, Evaluation<>>& se,
+                         bool allowEstimated) override {
     const SolutionTSP& s = se.first;
     const RepTSP& rep = s.getR();
     int k1, k2;
@@ -168,7 +170,8 @@ class MoveSwap : public Move<ESolutionTSP> {
       k2 = c1;
     }
 
-    //cout << "Swap k1=" << k1 << "(" << rep[k1] << ")" << " k2=" << k2 << "(" << rep[k2] << ")" << endl;
+    // cout << "Swap k1=" << k1 << "(" << rep[k1] << ")" << " k2=" << k2 << "("
+    // << rep[k2] << ")" << endl;
 
     // before k2 and k1
     int bk1 = k1 - 1;
@@ -177,14 +180,13 @@ class MoveSwap : public Move<ESolutionTSP> {
     int ak1 = k1 + 1;
     int ak2 = k2 + 1;
 
-    if (k1 == 0)
-      bk1 = ((int)rep.size()) - 1;
-    if (k2 == ((int)rep.size()) - 1)
-      ak2 = 0;
+    if (k1 == 0) bk1 = ((int)rep.size()) - 1;
+    if (k2 == ((int)rep.size()) - 1) ak2 = 0;
 
     double f = 0;
 
-    if (k2 - k1 == 1)  // special case, cities are near (in fact, a 3-opt case... TODO remove this)
+    if (k2 - k1 == 1)  // special case, cities are near (in fact, a 3-opt
+                       // case... TODO remove this)
     {
       f -= (*tsp->dist)(rep[bk1], rep[k1]);
       f -= (*tsp->dist)(rep[k1], rep[k2]);
@@ -193,7 +195,8 @@ class MoveSwap : public Move<ESolutionTSP> {
       f += (*tsp->dist)(rep[bk1], rep[k2]);
       f += (*tsp->dist)(rep[k2], rep[k1]);
       f += (*tsp->dist)(rep[k1], rep[ak2]);
-    } else if ((k1 == 0) && (k2 == ((int)rep.size()) - 1))  // special case, extreme points
+    } else if ((k1 == 0) &&
+               (k2 == ((int)rep.size()) - 1))  // special case, extreme points
     {
       f -= (*tsp->dist)(rep[bk2], rep[k2]);
       f -= (*tsp->dist)(rep[k2], rep[k1]);
@@ -214,7 +217,7 @@ class MoveSwap : public Move<ESolutionTSP> {
       f += (*tsp->dist)(rep[k1], rep[ak2]);
     }
 
-    //return new MoveCost<>(f, 0);
+    // return new MoveCost<>(f, 0);
     return make_optional(Evaluation<>(f, 0));
   }
 
@@ -230,8 +233,9 @@ class MoveSwap : public Move<ESolutionTSP> {
     return ss.str();
   }
 
-  virtual bool operator==(const Move<ESolutionTSP>& _m) const {
-    const MoveSwap& m = (const MoveSwap&)_m;  // You can only compare if types are equal
+  bool operator==(const Move<ESolutionTSP>& _m) const override {
+    const MoveSwap& m =
+        (const MoveSwap&)_m;  // You can only compare if types are equal
 
     if ((c1 == m.c1 && c2 == m.c2) || (c1 == m.c2 && c2 == m.c1))
       return true;
@@ -247,7 +251,7 @@ class MoveSwap : public Move<ESolutionTSP> {
   }
 #endif
 
-  virtual bool toStream(std::ostream& os) const override {
+  bool toStream(std::ostream& os) const override {
     // forward to operator<<
     os << (*this);
     return true;
@@ -279,13 +283,10 @@ class NSEnumSwap : public NSEnum<ESolutionTSP> {
 
  public:
   NSEnumSwap(sref<ProblemInstance> pI, sref<RandGen> _rg)
-      : NSEnum<ESolutionTSP>(_rg), pI(pI), n(pI->n) {
-  }
+      : NSEnum<ESolutionTSP>(_rg), pI(pI), n(pI->n) {}
 
   // this NS type supports Move Independence
-  bool supportsMoveIndependence() const override {
-    return true;
-  }
+  bool supportsMoveIndependence() const override { return true; }
 
   // given index, returns (i,j), with 0 < i < j < n-1
   virtual uptr<Move<ESolutionTSP>> indexMove(unsigned int k) override {
@@ -301,24 +302,18 @@ class NSEnumSwap : public NSEnum<ESolutionTSP> {
     return uptr<Move<ESolutionTSP>>(new MoveSwap(i, j, pI));
 
     // Please, keep 'busca' for historical (and emotional) purposes :)
-    // This was created in the night before the TCC presentation of OptFrame (in 2009)
-    // And now, in 2017, a beautiful calculation is presented.
-    //return busca(k, 1, 2 * n);
+    // This was created in the night before the TCC presentation of OptFrame (in
+    // 2009) And now, in 2017, a beautiful calculation is presented.
+    // return busca(k, 1, 2 * n);
   }
 
-  unsigned int size() const {
-    return n * (n - 1) / 2;
-  }
+  unsigned int size() const override { return n * (n - 1) / 2; }
 
-  void print() const override {
-    cout << "NSEnum Swap (" << size() << ")\n";
-  }
+  void print() const override { cout << "NSEnum Swap (" << size() << ")\n"; }
 
   // Auxiliar methods
 
-  int corresp(int d) {
-    return d - ((d - (n - 1)) - 1) * 2;
-  }
+  int corresp(int d) { return d - ((d - (n - 1)) - 1) * 2; }
 
   int numElem(int d) {
     if (d <= n)
@@ -334,8 +329,7 @@ class NSEnumSwap : public NSEnum<ESolutionTSP> {
       int ant = z * (z - 1);
 
       // Se impar, soma mais 'z'
-      if (d % 2 == 1)
-        ant += z;
+      if (d % 2 == 1) ant += z;
 
       return ant;
     } else {
@@ -343,41 +337,37 @@ class NSEnumSwap : public NSEnum<ESolutionTSP> {
     }
   }
 
-  int termina(int d) {
-    return comeca(d) + numElem(d) - 1;
-  }
+  int termina(int d) { return comeca(d) + numElem(d) - 1; }
 
   Move<ESolutionTSP>& busca(int k, int a, int b) {
     int d = (a + b) / 2;
 
-    //cout << "busca "<<k<<" na diagonal "<<d<<"entre ["<<a<<","<<b<<"]"<<endl;
+    // cout << "busca "<<k<<" na diagonal "<<d<<"entre ["<<a<<","<<b<<"]"<<endl;
 
     int c = comeca(d);
     int t = termina(d);
 
-    //cout <<"comeca em "<<c<<" e termina em "<<t<<endl;
+    // cout <<"comeca em "<<c<<" e termina em "<<t<<endl;
 
-    //int p;
-    //cin >>p;
+    // int p;
+    // cin >>p;
 
     if (k < c) {
-      //cout << "k<c"<<endl;
+      // cout << "k<c"<<endl;
       return busca(k, a, d);
     }
 
     if (k > t) {
-      //cout << "k>t"<<endl;
+      // cout << "k>t"<<endl;
 
-      if (a == d)
-        d++;
+      if (a == d) d++;
 
       return busca(k, d, b);
     }
 
     if (d <= n) {
       for (int i = 0; i < numElem(d); i++)
-        if (k == c + i)
-          return *new MoveSwap(i, d - i - 1, *pI);
+        if (k == c + i) return *new MoveSwap(i, d - i - 1, *pI);
     } else {
       for (int i = 0; i < numElem(d); i++)
         if (k == c + i) {

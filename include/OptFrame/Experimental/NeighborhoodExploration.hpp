@@ -42,24 +42,21 @@ namespace optframe {
 
 // This is  NEx: Neighborhood Exploration
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES>
-//using MoveWithCost = pair< uptr< Move<XES, XEv> >, XEv >;
+template <XESolution XES, XEvaluation XEv = Evaluation<>,
+          XSearch<XES> XSH = XES>
+// using MoveWithCost = pair< uptr< Move<XES, XEv> >, XEv >;
 struct RichMove {
   uptr<Move<XES, XEv, XSH>> move;
   XEv cost;
   SearchStatus status;
 
-  RichMove() {
-  }
+  RichMove() {}
 
-  RichMove(RichMove&& rmove)
-      : move(std::move(rmove.move)) {
-  }
+  RichMove(RichMove&& rmove) : move(std::move(rmove.move)) {}
 
   RichMove& operator=(RichMove&& rmove) {
     // self-reference
-    if (&rmove == this)
-      return *this;
+    if (&rmove == this) return *this;
     move = std::move(rmove.move);
     cost = std::move(rmove.cost);
     status = rmove.status;
@@ -67,27 +64,27 @@ struct RichMove {
   }
 };
 
-template <XESolution XES, XEvaluation XEv = Evaluation<>, XSearch<XES> XSH = XES>  // defaults to XSH = XES
-class NeighborhoodExploration : public LocalSearch<XES, XEv, XSH>                  //: public Component
+template <XESolution XES, XEvaluation XEv = Evaluation<>,
+          XSearch<XES> XSH = XES>  // defaults to XSH = XES
+class NeighborhoodExploration
+    : public LocalSearch<XES, XEv, XSH>  //: public Component
 {
  public:
-  NeighborhoodExploration() {
-  }
+  NeighborhoodExploration() {}
 
-  virtual ~NeighborhoodExploration() {
-  }
+  virtual ~NeighborhoodExploration() {}
 
   // implementation of a "default" local search for this NEx
-  virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& stopCriteria) {
+  SearchStatus searchFrom(XES& se,
+                          const StopCriteria<XEv>& stopCriteria) override {
     bool improved = false;
     // searching new move
     op<RichMove<XES, XEv>> movec = searchMove(se, stopCriteria);
     // check if move exists
-    if (!movec)
-      return SearchStatus::NO_REPORT;
+    if (!movec) return SearchStatus::NO_REPORT;
     //
-    // accept if it's improving by flag (avoid double verification and extra Evaluator class here)
-    // using !!e idiom, to check against value 0
+    // accept if it's improving by flag (avoid double verification and extra
+    // Evaluator class here) using !!e idiom, to check against value 0
     while (!!(movec->status & SearchStatus::IMPROVEMENT)) {
       improved = true;
       // apply move to solution
@@ -97,15 +94,15 @@ class NeighborhoodExploration : public LocalSearch<XES, XEv, XSH>               
       // searching new move
       movec = searchMove(se, stopCriteria);
       // check if move exists
-      if (!movec)
-        return SearchStatus::IMPROVEMENT;
+      if (!movec) return SearchStatus::IMPROVEMENT;
     }
     // finished search
     return improved ? SearchStatus::IMPROVEMENT : SearchStatus::NO_REPORT;
   }
 
   // Output move may be nullptr. Otherwise it's a pair of Move and its Cost.
-  virtual op<RichMove<XES, XEv>> searchMove(const XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
+  virtual op<RichMove<XES, XEv>> searchMove(
+      const XES& se, const StopCriteria<XEv>& stopCriteria) = 0;
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
@@ -117,20 +114,19 @@ class NeighborhoodExploration : public LocalSearch<XES, XEv, XSH>               
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = XES>
-class NeighborhoodExplorationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = XES>
+class NeighborhoodExplorationBuilder
+    : public ComponentBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~NeighborhoodExplorationBuilder() {
-  }
+  virtual ~NeighborhoodExplorationBuilder() {}
 
   virtual NeighborhoodExploration<XES, XEv, XSH>* build(
-      Scanner& scanner,
-      HeuristicFactory<S, XEv, XES, X2ES>& hf,
+      Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf,
       string family = "") = 0;
 
   Component* buildComponent(Scanner& scanner,
@@ -149,9 +145,7 @@ class NeighborhoodExplorationBuilder : public ComponentBuilder<S, XEv, XES, X2ES
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe
@@ -164,17 +158,14 @@ namespace optframe {
 struct TestSimpleRich {
   uptr<int> ptr;
 
-  TestSimpleRich() {
-  }
+  TestSimpleRich() {}
 
-  TestSimpleRich(TestSimpleRich&& tsr)
-      : ptr(std::move(tsr.ptr)) {
-  }
+  TestSimpleRich(TestSimpleRich&& tsr) : ptr(std::move(tsr.ptr)) {}
 };
 
 using TestRichMove = RichMove<IsESolution<int>, IsEvaluation<int>>;
 
-//static_assert(std::is_destructible<TestRichMove>);
+// static_assert(std::is_destructible<TestRichMove>);
 
 struct TestCompilationRichMove {
   /*
@@ -184,7 +175,8 @@ struct TestCompilationRichMove {
       //
       RichMove<IsESolution<int>, IsEvaluation<int>> rmove;
       //return make_optional(rmove);
-      return op<RichMove<IsESolution<int>, IsEvaluation<int>>>(std::move(rmove));
+      return op<RichMove<IsESolution<int>,
+   IsEvaluation<int>>>(std::move(rmove));
    }
    */
 
@@ -195,9 +187,7 @@ struct TestCompilationRichMove {
     return op<TestSimpleRich>(std::move(simple));
   }
 
-  void test() {
-    auto rmv = getRichOptional();
-  }
+  void test() { auto rmv = getRichOptional(); }
 };
 
 }  // namespace optframe

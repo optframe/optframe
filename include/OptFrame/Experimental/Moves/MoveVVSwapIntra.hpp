@@ -30,50 +30,41 @@ using namespace std;
 
 // Working structure: vector<vector<T> >
 
-template<class T, class DS = OPTFRAME_DEFAULT_EMEMORY>
-class MoveVVSwapIntra : public Move<vector<vector<T>>, DS>
-{
-   typedef vector<vector<T>> Routes;
+template <class T, class DS = OPTFRAME_DEFAULT_EMEMORY>
+class MoveVVSwapIntra : public Move<vector<vector<T>>, DS> {
+  typedef vector<vector<T>> Routes;
 
-private:
-   int i, j, k;
+ private:
+  int i, j, k;
 
-public:
-   MoveVVSwapIntra(int i, int j, int k)
-   {
-      this->i = i;
-      this->j = j;
-      this->k = k;
-   }
+ public:
+  MoveVVSwapIntra(int i, int j, int k) {
+    this->i = i;
+    this->j = j;
+    this->k = k;
+  }
 
-   virtual ~MoveVVSwapIntra()
-   {
-   }
+  virtual ~MoveVVSwapIntra() {}
 
-   bool canBeApplied(const Routes& rep)
-   {
-      return (j != k);
-   }
+  bool canBeApplied(const Routes& rep) { return (j != k); }
 
-   Move<Routes, DS>& apply(Routes& rep)
-   {
-      T aux = rep[i][j];
-      rep[i][j] = rep[i][k];
-      rep[i][k] = aux;
+  Move<Routes, DS>& apply(Routes& rep) {
+    T aux = rep[i][j];
+    rep[i][j] = rep[i][k];
+    rep[i][k] = aux;
 
-      return *new MoveVVSwapIntra(i, k, j);
-   }
+    return *new MoveVVSwapIntra(i, k, j);
+  }
 
-   virtual bool operator==(const Move<Routes, DS>& _m) const
-   {
-      const MoveVVSwapIntra& m = (const MoveVVSwapIntra&)_m;
-      return (m.i == i) && ((m.j == j && m.k == k) || (m.j == k && m.k == j));
-   }
+  virtual bool operator==(const Move<Routes, DS>& _m) const {
+    const MoveVVSwapIntra& m = (const MoveVVSwapIntra&)_m;
+    return (m.i == i) && ((m.j == j && m.k == k) || (m.j == k && m.k == j));
+  }
 
-   void print() const
-   {
-      cout << "MoveVVSwapIntra( " << i << " , ( " << j << " , " << k << " ) )" << endl;
-   }
+  void print() const override {
+    cout << "MoveVVSwapIntra( " << i << " , ( " << j << " , " << k << " ) )"
+         << endl;
+  }
 };
 
 #endif /*OPTFRAME_MOVEVVSWAPINTRA_HPP_*/

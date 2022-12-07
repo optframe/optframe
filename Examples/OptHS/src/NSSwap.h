@@ -38,81 +38,57 @@ using namespace optframe;
 
 namespace OptHS {
 
-class MoveSwap : public Move<ESolutionOptHS>
-{
-public:
-   int w1;
-   int w2;
+class MoveSwap : public Move<ESolutionOptHS> {
+ public:
+  int w1;
+  int w2;
 
-   MoveSwap(int _w1, int _w2)
-     : w1(_w1)
-     , w2(_w2)
-   {
-   }
+  MoveSwap(int _w1, int _w2) : w1(_w1), w2(_w2) {}
 
-   virtual ~MoveSwap()
-   {
-   }
+  virtual ~MoveSwap() {}
 
-   bool canBeApplied(const ESolutionOptHS& s) override
-   {
-      return w1 != w2;
-   }
+  bool canBeApplied(const ESolutionOptHS& s) override { return w1 != w2; }
 
-   uptr<Move<ESolutionOptHS>> apply(ESolutionOptHS& se) override
-   {
-      RepOptHS& rep = se.first.getR();
-      pair<char, char> aux = rep[w1];
-      rep[w1] = rep[w2];
-      rep[w2] = aux;
-      return uptr<Move<ESolutionOptHS>>(new MoveSwap(w2, w1));
-   }
+  uptr<Move<ESolutionOptHS>> apply(ESolutionOptHS& se) override {
+    RepOptHS& rep = se.first.getR();
+    pair<char, char> aux = rep[w1];
+    rep[w1] = rep[w2];
+    rep[w2] = aux;
+    return uptr<Move<ESolutionOptHS>>(new MoveSwap(w2, w1));
+  }
 
-   virtual bool operator==(const Move<ESolutionOptHS>& _m) const
-   {
-      const MoveSwap& m = (const MoveSwap&)_m;
-      return (w1 == m.w1) && (w2 == m.w2);
-   }
+  virtual bool operator==(const Move<ESolutionOptHS>& _m) const {
+    const MoveSwap& m = (const MoveSwap&)_m;
+    return (w1 == m.w1) && (w2 == m.w2);
+  }
 
-   void print() const
-   {
-      cout << "MoveSwap: (" << w1 << "," << w2 << ")" << endl;
-   }
+  void print() const override {
+    cout << "MoveSwap: (" << w1 << "," << w2 << ")" << endl;
+  }
 };
 
-class NSSwap : public NS<ESolutionOptHS>
-{
-public:
-   ProblemInstance& p;
-   RandGen& rg;
+class NSSwap : public NS<ESolutionOptHS> {
+ public:
+  ProblemInstance& p;
+  RandGen& rg;
 
-   NSSwap(ProblemInstance& _p, RandGen& _rg)
-     : p(_p)
-     , rg(_rg)
-   {
-   }
+  NSSwap(ProblemInstance& _p, RandGen& _rg) : p(_p), rg(_rg) {}
 
-   virtual ~NSSwap()
-   {
-   }
+  virtual ~NSSwap() {}
 
-   virtual uptr<Move<ESolutionOptHS>> randomMove(const ESolutionOptHS& se) override
-   {
-      const RepOptHS& rep = se.first.getR();
-      int w1 = rg.rand(rep.size());
-      int w2 = w1;
-      while (w2 == w1)
-         w2 = rg.rand(rep.size());
+  virtual uptr<Move<ESolutionOptHS>> randomMove(
+      const ESolutionOptHS& se) override {
+    const RepOptHS& rep = se.first.getR();
+    int w1 = rg.rand(rep.size());
+    int w2 = w1;
+    while (w2 == w1) w2 = rg.rand(rep.size());
 
-      return uptr<Move<ESolutionOptHS>>(new MoveSwap(w1, w2));
-   }
+    return uptr<Move<ESolutionOptHS>>(new MoveSwap(w1, w2));
+  }
 
-   virtual void print() const
-   {
-      cout << "NSSwap" << endl;
-   }
+  void print() const override { cout << "NSSwap" << endl; }
 };
 
-}
+}  // namespace OptHS
 
 #endif /*OptHS_NSSwap_HPP_*/

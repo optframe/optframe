@@ -28,76 +28,58 @@
 
 using namespace std;
 
-template<class T, class DS>
-class MoveTSPOr1Opt : public Move<vector<T>, DS>
-{
+template <class T, class DS>
+class MoveTSPOr1Opt : public Move<vector<T>, DS> {
+ private:
+  int c;    // client
+  int pos;  // position
 
-private:
-   int c;   // client
-   int pos; // position
+  typedef vector<T> Route;
 
-   typedef vector<T> Route;
+ public:
+  MoveTSPOr1Opt(int _c, int _pos) : c(_c), pos(_pos) {}
 
-public:
-   MoveTSPOr1Opt(int _c, int _pos)
-     : c(_c)
-     , pos(_pos)
-   {
-   }
+  virtual ~MoveTSPOr1Opt() {}
 
-   virtual ~MoveTSPOr1Opt()
-   {
-   }
+  int getClient() { return c; }
 
-   int getClient()
-   {
-      return c;
-   }
+  int getPosition() { return pos; }
 
-   int getPosition()
-   {
-      return pos;
-   }
+  bool canBeApplied(const Route& rep) {
+    bool all_positive = (c >= 0) && (pos >= 0);
+    return all_positive && (c != pos) && (c + 1 != pos);
+  }
 
-   bool canBeApplied(const Route& rep)
-   {
-      bool all_positive = (c >= 0) && (pos >= 0);
-      return all_positive && (c != pos) && (c + 1 != pos);
-   }
-
-   MoveTSPOr1Opt& apply(Route& rep)
-   {
-      T aux;
-      if (c < pos) {
-         for (int i = c; i < (pos - 1); i++) {
-            aux = rep.at(i);
-            rep.at(i) = rep.at(i + 1);
-            rep.at(i + 1) = aux;
-         }
-         return *new MoveTSPOr1Opt(pos - 1, c);
-      } else {
-         for (int i = c; i > pos; i--) {
-            aux = rep.at(i);
-            rep.at(i) = rep.at(i - 1);
-            rep.at(i - 1) = aux;
-         }
-         return *new MoveTSPOr1Opt(pos, c + 1);
+  MoveTSPOr1Opt& apply(Route& rep) {
+    T aux;
+    if (c < pos) {
+      for (int i = c; i < (pos - 1); i++) {
+        aux = rep.at(i);
+        rep.at(i) = rep.at(i + 1);
+        rep.at(i + 1) = aux;
       }
+      return *new MoveTSPOr1Opt(pos - 1, c);
+    } else {
+      for (int i = c; i > pos; i--) {
+        aux = rep.at(i);
+        rep.at(i) = rep.at(i - 1);
+        rep.at(i - 1) = aux;
+      }
+      return *new MoveTSPOr1Opt(pos, c + 1);
+    }
 
-      return *new MoveTSPOr1Opt(-1, -1);
-   }
+    return *new MoveTSPOr1Opt(-1, -1);
+  }
 
-   bool operator==(const Move<vector<T>, DS>& _m) const
-   {
-      const MoveTSPOr1Opt& m1 = (const MoveTSPOr1Opt&)_m;
-      return (m1.c == c) && (m1.pos == pos);
-   }
+  bool operator==(const Move<vector<T>, DS>& _m) const {
+    const MoveTSPOr1Opt& m1 = (const MoveTSPOr1Opt&)_m;
+    return (m1.c == c) && (m1.pos == pos);
+  }
 
-   void print() const
-   {
-      cout << "MoveTSPOr1Opt";
-      cout << "( " << c << " , " << pos << " )" << endl;
-   }
+  void print() const override {
+    cout << "MoveTSPOr1Opt";
+    cout << "( " << c << " , " << pos << " )" << endl;
+  }
 };
 
 #endif /*OPTFRAME_MOVETSPOR1OPT_HPP_*/

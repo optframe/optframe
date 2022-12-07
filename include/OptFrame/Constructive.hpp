@@ -32,18 +32,18 @@
 
 namespace optframe {
 
-//template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R, ADS> S = CopySolution<R, ADS>>
+// template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R, ADS> S =
+// CopySolution<R, ADS>>
 template <XSolution S>
 class Constructive : public Component {
  public:
-  virtual ~Constructive() {
-  }
+  virtual ~Constructive() {}
 
   // timelimit in seconds, accepting fractions (millisecs, ...)
   // may or may not generate valid solution in time
   virtual std::optional<S> generateSolution(double timelimit) = 0;
 
-  virtual bool compatible(std::string s) override {
+  bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
   }
 
@@ -54,13 +54,9 @@ class Constructive : public Component {
     return ss.str();
   }
 
-  virtual std::string id() const override {
-    return idComponent();
-  }
+  virtual std::string id() const override { return idComponent(); }
 
-  virtual std::string toString() const override {
-    return id();
-  }
+  virtual std::string toString() const override { return id(); }
 };
 //
 }  // namespace optframe

@@ -9,118 +9,90 @@
 #include "Solution.h"
 
 using namespace std;
-namespace POLAD
-{
-class MovePO: public Move<RepOPM>
-{
-private:
-	int f;
+namespace POLAD {
+class MovePO : public Move<RepOPM> {
+ private:
+  int f;
 
-	vector<int>* mem;
+  vector<int>* mem;
 
-	MovePO(int f, vector<int>* _mem)
-	{
-		this->f = f;
-		this->mem = _mem;
-	}
+  MovePO(int f, vector<int>* _mem) {
+    this->f = f;
+    this->mem = _mem;
+  }
 
-public:
+ public:
+  MovePO(int f) {
+    this->f = f;
+    this->mem = NULL;
+  }
 
-	MovePO(int f)
-	{
-		this->f = f;
-		this->mem = NULL;
-	}
+  virtual ~MovePO() {
+    if (mem) delete mem;
+  }
 
-	virtual ~MovePO()
-	{
-		if (mem)
-			delete mem;
-	}
+  bool canBeApplied(const RepOPM& rep, const OPTFRAME_DEFAULT_ADS*) override {
+    return true;
+  }
 
-	bool canBeApplied(const RepOPM& rep, const OPTFRAME_DEFAULT_ADS*) override
-	{
-		return true;
-	}
+  Move<RepOPM>* apply(RepOPM& rep, OPTFRAME_DEFAULT_ADS*) override {
+    vector<int>* anterior;
 
-	Move<RepOPM>* apply(RepOPM& rep, OPTFRAME_DEFAULT_ADS*) override
-	{
-		vector<int>* anterior;
+    if (mem == NULL) {
+      anterior = new vector<int>(rep.second.getNumCols());
 
-		if (mem == NULL)
-		{
-			anterior = new vector<int> (rep.second.getNumCols());
+      for (unsigned int c = 0; c < rep.second.getNumCols(); c++) {
+        (*anterior)[c] = rep.second(f, c);
+        rep.second(f, c) = 0;
+      }
+    } else {
+      anterior = NULL;
 
-			for (unsigned int c = 0; c < rep.second.getNumCols(); c++)
-			{
-				(*anterior)[c] = rep.second(f, c);
-				rep.second(f, c) = 0;
-			}
-		}
-		else
-		{
-			anterior = NULL;
+      for (unsigned int c = 0; c < rep.second.getNumCols(); c++)
+        rep.second(f, c) = (*mem)[c];
+    }
 
-			for (unsigned int c = 0; c < rep.second.getNumCols(); c++)
-				rep.second(f, c) = (*mem)[c];
-		}
+    return new MovePO(f, anterior);
+  }
 
-		return new MovePO(f, anterior);
-	}
+  virtual bool operator==(const Move<RepOPM>& _m) const {
+    const MovePO& m = (const MovePO&)_m;
+    return (f == m.f);
+  }
 
-	virtual bool operator==(const Move<RepOPM>& _m) const
-	{
-		const MovePO& m = (const MovePO&) _m;
-		return (f == m.f);
-	}
-
-	void print() const
-	{
-		cout << "MovePO(" << f << ") ";
-		if (mem == NULL)
-			cout << "no memory." << endl;
-		else
-			cout << "memory: " << (*mem) << endl;
-	}
+  void print() const override {
+    cout << "MovePO(" << f << ") ";
+    if (mem == NULL)
+      cout << "no memory." << endl;
+    else
+      cout << "memory: " << (*mem) << endl;
+  }
 };
-class NSEnumPO: public NSEnum<RepOPM>
-{
-private:
-	OPMProblemInstance& opm;
-public:
+class NSEnumPO : public NSEnum<RepOPM> {
+ private:
+  OPMProblemInstance& opm;
 
-	NSEnumPO(OPMProblemInstance& _opm, RandGen& _rg) :
-		NSEnum<RepOPM>(_rg), opm(_opm)
-	{
-	}
+ public:
+  NSEnumPO(OPMProblemInstance& _opm, RandGen& _rg)
+      : NSEnum<RepOPM>(_rg), opm(_opm) {}
 
-	virtual ~NSEnumPO()
-	{
-	}
+  virtual ~NSEnumPO() {}
 
-	Move<RepOPM>* indexMove(unsigned int m) override
-	{
-		if (m > size())
-		{
-			cerr << "Neighborhood PO Error! Move " << m << " doesnt exist! Valid Interval from 0 to " << (size() - 1) << "." << endl;
-			exit(1);
+  Move<RepOPM>* indexMove(unsigned int m) override {
+    if (m > size()) {
+      cerr << "Neighborhood PO Error! Move " << m
+           << " doesnt exist! Valid Interval from 0 to " << (size() - 1) << "."
+           << endl;
+      exit(1);
+    }
 
-		}
+    return new MovePO(m);
+  }
 
-		return new MovePO(m);
-	}
+  unsigned int size() const override { return opm.getNumFrentes(); }
 
-	unsigned int size() const
-	{
-		return opm.getNumFrentes();
-	}
-
-	void print()
-	{
-		cout << "NSEnum PO (" << size() << ")\n";
-	}
+  void print() { cout << "NSEnum PO (" << size() << ")\n"; }
 };
 
-}
+}  // namespace POLAD
 #endif /*OPM_NSENUMPO_HPP_*/
-

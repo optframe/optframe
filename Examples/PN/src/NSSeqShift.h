@@ -14,130 +14,98 @@ using namespace std;
 
 namespace PN {
 
-class MoveShift : public Move<ESolutionPN>
-{
-private:
-   // MOVE PARAMETERS
-   int i;
-   ProblemInstance& pPN;
+class MoveShift : public Move<ESolutionPN> {
+ private:
+  // MOVE PARAMETERS
+  int i;
+  ProblemInstance& pPN;
 
-public:
-   MoveShift(int _i, ProblemInstance& _pPN)
-     : i(_i)
-     , pPN(_pPN)
-   {
-   }
+ public:
+  MoveShift(int _i, ProblemInstance& _pPN) : i(_i), pPN(_pPN) {}
 
-   virtual ~MoveShift()
-   {
-   }
+  virtual ~MoveShift() {}
 
-   void print() const
-   {
-      cout << id() << " with params: '" << i << "'" << endl;
-   }
+  void print() const override {
+    cout << id() << " with params: '" << i << "'" << endl;
+  }
 
-   string id() const
-   {
-      return Move<ESolutionPN>::idComponent().append(":MoveShift");
-   }
+  std::string id() const override {
+    return Move<ESolutionPN>::idComponent().append(":MoveShift");
+  }
 
-   bool operator==(const Move<ESolutionPN>& _m) const
-   {
-      const MoveShift& m = (const MoveShift&)_m;
-      return (i == m.i);
-   }
+  bool operator==(const Move<ESolutionPN>& _m) const {
+    const MoveShift& m = (const MoveShift&)_m;
+    return (i == m.i);
+  }
 
-   // Implement these methods in the .cpp file
+  // Implement these methods in the .cpp file
 
-   //bool canBeApplied(const RepPN& rep, const MY_ADS*) override;
-   bool canBeApplied(const ESolutionPN& se) override;
+  // bool canBeApplied(const RepPN& rep, const MY_ADS*) override;
+  bool canBeApplied(const ESolutionPN& se) override;
 
-   uptr<Move<ESolutionPN>> apply(ESolutionPN& se) override;
+  uptr<Move<ESolutionPN>> apply(ESolutionPN& se) override;
 
-   op<EvaluationPN> cost(const ESolutionPN& se, bool allowEstimate) override;
+  op<EvaluationPN> cost(const ESolutionPN& se, bool allowEstimate) override;
 };
 
-class NSIteratorShift : public NSIterator<ESolutionPN>
-{
-private:
-   // ITERATOR PARAMETERS
-   int i;
-   const ESolutionPN& se;
-   const RepPN& rep;
-   ProblemInstance& pPN;
+class NSIteratorShift : public NSIterator<ESolutionPN> {
+ private:
+  // ITERATOR PARAMETERS
+  int i;
+  const ESolutionPN& se;
+  const RepPN& rep;
+  ProblemInstance& pPN;
 
-public:
-   NSIteratorShift(ProblemInstance& _pPN, const ESolutionPN& _se)
-     : se{ _se }
-     , rep(_se.first.getR())
-     , pPN(_pPN)
-   {
-   }
+ public:
+  NSIteratorShift(ProblemInstance& _pPN, const ESolutionPN& _se)
+      : se{_se}, rep(_se.first.getR()), pPN(_pPN) {}
 
-   virtual ~NSIteratorShift()
-   {
-   }
+  virtual ~NSIteratorShift() {}
 
-   // Implement these methods in the .cpp file
+  // Implement these methods in the .cpp file
 
-   void first() override;
-   void next() override;
-   bool isDone() override;
-   uptr<Move<ESolutionPN>> current() override;
+  void first() override;
+  void next() override;
+  bool isDone() override;
+  uptr<Move<ESolutionPN>> current() override;
 };
 
-class NSSeqShift : public NSSeq<ESolutionPN>
-{
-private:
-   // YOU MAY REMOVE THESE PARAMETERS IF YOU DON'T NEED (BUT PROBABLY WILL...)
-   ProblemInstance& pPN; // problem instance data
-   RandGen& rg;          // random number generator
+class NSSeqShift : public NSSeq<ESolutionPN> {
+ private:
+  // YOU MAY REMOVE THESE PARAMETERS IF YOU DON'T NEED (BUT PROBABLY WILL...)
+  ProblemInstance& pPN;  // problem instance data
+  RandGen& rg;           // random number generator
 
-public:
-   // YOU MAY REMOVE THESE PARAMETERS IF YOU DON'T NEED (BUT PROBABLY WILL...)
-   NSSeqShift(ProblemInstance& _pPN, RandGen& _rg)
-     : pPN(_pPN)
-     , rg(_rg)
-   {
-   }
+ public:
+  // YOU MAY REMOVE THESE PARAMETERS IF YOU DON'T NEED (BUT PROBABLY WILL...)
+  NSSeqShift(ProblemInstance& _pPN, RandGen& _rg) : pPN(_pPN), rg(_rg) {}
 
-   virtual ~NSSeqShift()
-   {
-   }
+  virtual ~NSSeqShift() {}
 
-   void print() const
-   {
-      cout << "NSSeqShift" << endl;
-   }
+  void print() const override { cout << "NSSeqShift" << endl; }
 
-   string id() const
-   {
-      return NSSeq<ESolutionPN>::idComponent().append(":NSSeqShift");
-   }
+  std::string id() const override {
+    return NSSeq<ESolutionPN>::idComponent().append(":NSSeqShift");
+  }
 
-   uptr<NSIterator<ESolutionPN>> getIterator(const ESolutionPN& se)
-   {
-      // return an iterator to the neighbors of 'rep'
-      return uptr<NSIterator<ESolutionPN>>{
-         new NSIteratorShift(pPN, se)
-      }; // ADD POSSIBLE ITERATOR PARAMETERS
-   }
+  uptr<NSIterator<ESolutionPN>> getIterator(const ESolutionPN& se) {
+    // return an iterator to the neighbors of 'rep'
+    return uptr<NSIterator<ESolutionPN>>{
+        new NSIteratorShift(pPN, se)};  // ADD POSSIBLE ITERATOR PARAMETERS
+  }
 
-   // Implement this method in the .cpp file
+  // Implement this method in the .cpp file
 
-   uptr<Move<ESolutionPN>> randomMove(const ESolutionPN& se) override;
+  uptr<Move<ESolutionPN>> randomMove(const ESolutionPN& se) override;
 
-   uptr<Move<ESolutionPN>> validMove(const ESolutionPN& se)
-   {
-      for (unsigned i = 0; i < 100; i++) {
-         uptr<Move<ESolutionPN>> m = randomMove(se);
-         if (m->canBeApplied(se))
-            return m;
-      }
-      return NULL;
-   }
+  uptr<Move<ESolutionPN>> validMove(const ESolutionPN& se) {
+    for (unsigned i = 0; i < 100; i++) {
+      uptr<Move<ESolutionPN>> m = randomMove(se);
+      if (m->canBeApplied(se)) return m;
+    }
+    return NULL;
+  }
 };
-}
+}  // namespace PN
 
 #endif /*PN_NSSEQShift_H_*/

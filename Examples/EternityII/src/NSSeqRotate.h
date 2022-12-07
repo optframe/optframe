@@ -36,185 +36,138 @@ using namespace optframe;
 
 namespace EtII {
 
-class MoveRotate : public Move<ESolutionEtII>
-{
-protected:
-   int nRot, x, y;
+class MoveRotate : public Move<ESolutionEtII> {
+ protected:
+  int nRot, x, y;
 
-public:
-   using Move<ESolutionEtII>::apply;        // prevents name hiding
-   using Move<ESolutionEtII>::canBeApplied; // prevents name hiding
+ public:
+  using Move<ESolutionEtII>::apply;         // prevents name hiding
+  using Move<ESolutionEtII>::canBeApplied;  // prevents name hiding
 
-   MoveRotate(int _nRot, int _x, int _y)
-     : nRot(_nRot)
-     , x(_x)
-     , y(_y)
-   {
-   }
+  MoveRotate(int _nRot, int _x, int _y) : nRot(_nRot), x(_x), y(_y) {}
 
-   virtual ~MoveRotate()
-   {
-   }
+  virtual ~MoveRotate() {}
 
-   bool canBeApplied(const ESolutionEtII& s) override
-   {
-      return true;
-   }
+  bool canBeApplied(const ESolutionEtII& s) override { return true; }
 
-   uptr<Move<ESolutionEtII>> apply(ESolutionEtII& se) override
-   {
-      RepEtII& rep = se.first.getR();
-      for (int i = 0; i < nRot; i++)
-         rep(x, y).rotate();
+  uptr<Move<ESolutionEtII>> apply(ESolutionEtII& se) override {
+    RepEtII& rep = se.first.getR();
+    for (int i = 0; i < nRot; i++) rep(x, y).rotate();
 
-      return uptr<Move<ESolutionEtII>>(new MoveRotate(4 - nRot, x, y));
-   }
+    return uptr<Move<ESolutionEtII>>(new MoveRotate(4 - nRot, x, y));
+  }
 
-   uptr<Move<ESolutionEtII>> applyUpdate(ESolutionEtII& se) override
-   {
-      SolutionEtII& s = se.first;
-      Evaluation<>& e = se.second;
-      RepEtII& rep = s.getR();
-      int f = 0;
-      if (rep(x, y).left == rep(x, y - 1).right)
-         f++;
-      if (rep(x, y).up == rep(x - 1, y).down)
-         f++;
-      if (rep(x, y).right == rep(x, y + 1).left)
-         f++;
-      if (rep(x, y).down == rep(x + 1, y).up)
-         f++;
+  uptr<Move<ESolutionEtII>> applyUpdate(ESolutionEtII& se) override {
+    SolutionEtII& s = se.first;
+    Evaluation<>& e = se.second;
+    RepEtII& rep = s.getR();
+    int f = 0;
+    if (rep(x, y).left == rep(x, y - 1).right) f++;
+    if (rep(x, y).up == rep(x - 1, y).down) f++;
+    if (rep(x, y).right == rep(x, y + 1).left) f++;
+    if (rep(x, y).down == rep(x + 1, y).up) f++;
 
-      uptr<Move<ESolutionEtII>> rev = apply(se);
+    uptr<Move<ESolutionEtII>> rev = apply(se);
 
-      int f2 = 0;
-      if (rep(x, y).left == rep(x, y - 1).right)
-         f2++;
-      if (rep(x, y).up == rep(x - 1, y).down)
-         f2++;
-      if (rep(x, y).right == rep(x, y + 1).left)
-         f2++;
-      if (rep(x, y).down == rep(x + 1, y).up)
-         f2++;
+    int f2 = 0;
+    if (rep(x, y).left == rep(x, y - 1).right) f2++;
+    if (rep(x, y).up == rep(x - 1, y).down) f2++;
+    if (rep(x, y).right == rep(x, y + 1).left) f2++;
+    if (rep(x, y).down == rep(x + 1, y).up) f2++;
 
-      e.setObjFunction(e.getObjFunction() + (f2 - f));
+    e.setObjFunction(e.getObjFunction() + (f2 - f));
 
-      return rev;
-   }
+    return rev;
+  }
 
-   virtual bool operator==(const Move<ESolutionEtII>& _m) const
-   {
-      const MoveRotate& m = (const MoveRotate&)_m;
-      return (m.nRot == nRot) && (m.x == x) && (m.y == y);
-   }
+  bool operator==(const Move<ESolutionEtII>& _m) const override {
+    const MoveRotate& m = (const MoveRotate&)_m;
+    return (m.nRot == nRot) && (m.x == x) && (m.y == y);
+  }
 
-   void print() const
-   {
-      cout << "MoveRotate: " << nRot << " rotations on (" << x << "," << y << ")" << endl;
-   }
+  void print() const override {
+    cout << "MoveRotate: " << nRot << " rotations on (" << x << "," << y << ")"
+         << endl;
+  }
 
-   string id() const
-   {
-      return "OptFrame:Move:MoveRotate";
-   }
+  std::string id() const override { return "OptFrame:Move:MoveRotate"; }
 };
 
-class NSIteratorRotate : public NSIterator<ESolutionEtII>
-{
-private:
-   int nIntraRows, nIntraCols;
-   int nRot, x, y;
+class NSIteratorRotate : public NSIterator<ESolutionEtII> {
+ private:
+  int nIntraRows, nIntraCols;
+  int nRot, x, y;
 
-public:
-   NSIteratorRotate(int _nIntraRows, int _nIntraCols)
-     : nIntraRows(_nIntraRows)
-     , nIntraCols(_nIntraCols)
-   {
-      x = 0;
-      y = 0;
+ public:
+  NSIteratorRotate(int _nIntraRows, int _nIntraCols)
+      : nIntraRows(_nIntraRows), nIntraCols(_nIntraCols) {
+    x = 0;
+    y = 0;
+    nRot = 1;
+  }
+
+  virtual ~NSIteratorRotate() {}
+
+  virtual void first() override {
+    x = 0;
+    y = 0;
+    nRot = 1;
+  }
+
+  virtual void next() override {
+    nRot++;
+    if (nRot > 3) {
       nRot = 1;
-   }
-
-   virtual ~NSIteratorRotate()
-   {
-   }
-
-   virtual void first() override
-   {
-      x = 0;
-      y = 0;
-      nRot = 1;
-   }
-
-   virtual void next() override
-   {
-      nRot++;
-      if (nRot > 3) {
-         nRot = 1;
-         y++;
-         if (y >= nIntraCols) {
-            y = 0;
-            x++;
-         }
+      y++;
+      if (y >= nIntraCols) {
+        y = 0;
+        x++;
       }
-   }
+    }
+  }
 
-   virtual bool isDone() override
-   {
-      return x >= nIntraRows;
-   }
+  virtual bool isDone() override { return x >= nIntraRows; }
 
-   virtual uptr<Move<ESolutionEtII>> current() override
-   {
-      return uptr<Move<ESolutionEtII>>(new MoveRotate(nRot, x + 1, y + 1));
-   }
+  virtual uptr<Move<ESolutionEtII>> current() override {
+    return uptr<Move<ESolutionEtII>>(new MoveRotate(nRot, x + 1, y + 1));
+  }
 };
 
-template<class MOVE = MoveRotate>
-class NSSeqRotate : public NSSeq<ESolutionEtII>
-{
-private:
-   RandGen& rg;
+template <class MOVE = MoveRotate>
+class NSSeqRotate : public NSSeq<ESolutionEtII> {
+ private:
+  RandGen& rg;
 
-public:
-   NSSeqRotate(RandGen& _rg)
-     : rg(_rg)
-   {
-   }
+ public:
+  NSSeqRotate(RandGen& _rg) : rg(_rg) {}
 
-   virtual ~NSSeqRotate()
-   {
-   }
+  virtual ~NSSeqRotate() {}
 
-   virtual uptr<Move<ESolutionEtII>> randomMove(const ESolutionEtII& s) override
-   {
-      const RepEtII& rep = s.first.getR();
-      // line 'x' and col 'y'
-      int x = rg.rand((rep.getNumRows() - 2)) + 1;
-      int y = rg.rand((rep.getNumCols() - 2)) + 1;
-      int nRot = rg.rand(3) + 1;
+  virtual uptr<Move<ESolutionEtII>> randomMove(
+      const ESolutionEtII& s) override {
+    const RepEtII& rep = s.first.getR();
+    // line 'x' and col 'y'
+    int x = rg.rand((rep.getNumRows() - 2)) + 1;
+    int y = rg.rand((rep.getNumCols() - 2)) + 1;
+    int nRot = rg.rand(3) + 1;
 
-      return uptr<Move<ESolutionEtII>>(new MOVE(nRot, x, y)); // return a random move
-   }
+    return uptr<Move<ESolutionEtII>>(
+        new MOVE(nRot, x, y));  // return a random move
+  }
 
-   virtual uptr<NSIterator<ESolutionEtII>> getIterator(const ESolutionEtII& s) override
-   {
-      const RepEtII& rep = s.first.getR();
-      // return an iterator to the neighbors of 'rep'
-      return uptr<NSIterator<ESolutionEtII>>(new NSIteratorRotate(rep.getNumRows() - 2, rep.getNumCols() - 2));
-   }
+  virtual uptr<NSIterator<ESolutionEtII>> getIterator(
+      const ESolutionEtII& s) override {
+    const RepEtII& rep = s.first.getR();
+    // return an iterator to the neighbors of 'rep'
+    return uptr<NSIterator<ESolutionEtII>>(
+        new NSIteratorRotate(rep.getNumRows() - 2, rep.getNumCols() - 2));
+  }
 
-   virtual void print() const
-   {
-      cout << "NSSeqRotate" << endl;
-   }
+  void print() const override { cout << "NSSeqRotate" << endl; }
 
-   string id() const
-   {
-      return "OptFrame:NS:NSSeqRotate";
-   }
+  std::string id() const override { return "OptFrame:NS:NSSeqRotate"; }
 };
 
-} // namespace EtII
+}  // namespace EtII
 
 #endif /*EtII_NSSEQRotate_HPP_*/

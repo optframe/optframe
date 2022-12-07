@@ -127,7 +127,7 @@ struct IndividualExtNSGAII {
     }
   }
 
-  void print() const {
+  void print() const override {
     cout << "IndExtNSGAII: rank=" << rank << "\tdist=" << distance << "\t";
     cout << "[ ";
     for (unsigned i = 0; i < mev.size(); i++)

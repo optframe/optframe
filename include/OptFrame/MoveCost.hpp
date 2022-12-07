@@ -35,8 +35,10 @@ using namespace std;
 
 namespace optframe {
 
-// more than 'objval' we need to ensure arithmetics here... TODO: see that (same as Evaluation)
-//template<optframe::objval ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
+// more than 'objval' we need to ensure arithmetics here... TODO: see that (same
+// as Evaluation)
+// template<optframe::objval ObjType = evtype, XEvaluation XEv =
+// Evaluation<ObjType>>
 template <XEvaluation XEv>
 class MoveCost : public Component {
   using ObjType = typename XEv::objType;  // = evtype;
@@ -56,52 +58,48 @@ class MoveCost : public Component {
   vector<pair<evtype, evtype>> alternatives;
 
  public:
-  explicit MoveCost(ObjType obj, ObjType inf = 0, evtype w = 1, bool _outdated = true, bool _estimated = false)
-      : objFunction(obj), infMeasure(inf), weight(w), outdated(_outdated), estimated(_estimated) {
-  }
+  explicit MoveCost(ObjType obj, ObjType inf = 0, evtype w = 1,
+                    bool _outdated = true, bool _estimated = false)
+      : objFunction(obj),
+        infMeasure(inf),
+        weight(w),
+        outdated(_outdated),
+        estimated(_estimated) {}
 
   MoveCost(const MoveCost& mc)
-      : objFunction(mc.objFunction), infMeasure(mc.infMeasure), weight(mc.weight), outdated(mc.outdated), estimated(mc.estimated), alternatives(mc.alternatives) {
-  }
+      : objFunction(mc.objFunction),
+        infMeasure(mc.infMeasure),
+        weight(mc.weight),
+        outdated(mc.outdated),
+        estimated(mc.estimated),
+        alternatives(mc.alternatives) {}
 
-  virtual ~MoveCost() {
-  }
+  virtual ~MoveCost() {}
 
-  bool isEstimated() const {
-    return estimated;
-  }
+  bool isEstimated() const { return estimated; }
 
   const vector<pair<evtype, evtype>>& getAlternativeCosts() const {
     return alternatives;
   }
 
-  ObjType getObjFunctionCost() const {
-    return objFunction;
-  }
+  ObjType getObjFunctionCost() const { return objFunction; }
 
-  ObjType getInfMeasureCost() const {
-    return infMeasure;
-  }
+  ObjType getInfMeasureCost() const { return infMeasure; }
 
   void addAlternativeCost(const pair<evtype, evtype>& alternativeCost) {
     alternatives.push_back(alternativeCost);
   }
 
-  void setAlternativeCosts(const vector<pair<evtype, evtype>>& alternativeCosts) {
+  void setAlternativeCosts(
+      const vector<pair<evtype, evtype>>& alternativeCosts) {
     alternatives = alternativeCosts;
   }
 
-  void setObjFunctionCost(ObjType obj) {
-    objFunction = obj;
-  }
+  void setObjFunctionCost(ObjType obj) { objFunction = obj; }
 
-  void setInfMeasureCost(ObjType inf) {
-    infMeasure = inf;
-  }
+  void setInfMeasureCost(ObjType inf) { infMeasure = inf; }
 
-  ObjType cost() const {
-    return objFunction + weight * infMeasure;
-  }
+  ObjType cost() const { return objFunction + weight * infMeasure; }
 
   // update Evaluation with costs
   virtual void update(XEv& e)  // TODO: put correct ObjType here
@@ -111,31 +109,25 @@ class MoveCost : public Component {
     // update infeasibility measure value
     e.setInfMeasure(e.getInfMeasure() + infMeasure);
     // restore previous 'outdated' status, if Evaluation wasn't outdated before
-    if (!outdated)
-      e.outdated = outdated;
+    if (!outdated) e.outdated = outdated;
 
     // may also update lexicographic costs...
   }
 
-  static string idComponent() {
-    return "OptFrame:MoveCost";
-  }
+  static string idComponent() { return "OptFrame:MoveCost"; }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
-  virtual std::string toString() const override {
-    return id();
-  }
+  virtual std::string toString() const override { return id(); }
 
-  virtual void print() const override {
+  void print() const override {
     cout << fixed;  // disable scientific notation
     cout << "Move cost = " << cost() << endl;
     if (alternatives.size() > 0) {
       cout << "Alternative Costs: ";
       for (unsigned i = 0; i < alternatives.size(); i++)
-        cout << "(" << alternatives[i].first << ";" << alternatives[i].second << ") ";
+        cout << "(" << alternatives[i].first << ";" << alternatives[i].second
+             << ") ";
       cout << endl;
     }
   }
@@ -154,12 +146,10 @@ class MoveCost : public Component {
     return *this;
   }
 
-  virtual MoveCost& clone() const {
-    return *new MoveCost(*this);
-  }
+  virtual MoveCost& clone() const { return *new MoveCost(*this); }
 
   // TODO: THIS FRIEND WAS DESTROYING EVERYTHING!!
-  //friend class MultiMoveCost; // TODO: remove! experiment for MO problems
+  // friend class MultiMoveCost; // TODO: remove! experiment for MO problems
 };
 
 #ifndef NDEBUG

@@ -53,64 +53,59 @@ using std::stringstream;
 /*
 struct Log
 {
-	stringstream data;
+        stringstream data;
    //ostream* data{&std::cout};
    //bool must_free {false};
 
-	void clear()
-	{
-		data->clear();
-	}
+        void clear()
+        {
+                data->clear();
+        }
 
-	void append(std::string s)
-	{
-		(*data) << s;
-	}
+        void append(std::string s)
+        {
+                (*data) << s;
+        }
 
-	string log()
-	{
-		return data->str();
-	}
+        string log()
+        {
+                return data->str();
+        }
 
-	bool toFile(std::string file, bool append = true)
-	{
-		FILE* f;
-		if(append)
-			f = fopen(file.c_str(), "a");
-		else
-			f = fopen(file.c_str(), "w");
+        bool toFile(std::string file, bool append = true)
+        {
+                FILE* f;
+                if(append)
+                        f = fopen(file.c_str(), "a");
+                else
+                        f = fopen(file.c_str(), "w");
 
-		if(!f)
-			return false;
+                if(!f)
+                        return false;
 
-		fprintf(f, "%s", data.str().c_str());
+                fprintf(f, "%s", data.str().c_str());
 
-		fclose(f);
+                fclose(f);
 
-		return true;
-	}
+                return true;
+        }
 };
 */
 
 // |      1      |      2      |      3      |      4      |
-// |    error    |   warning   | information | debug/verb. | => this direction = more verbose...
+// |    error    |   warning   | information | debug/verb. | => this direction =
+// more verbose...
 
 // One can use logs like this:
 // Suppose my 'loglevel' is Info (default)
-// Then, I would also allow everything more restrict than Info, such as Warnings and Errors
-// So, if my 'loglevel' (3) is higher than Warning (2), warnings will also display, but Debug (4) will not.
-// Example:
-// if (loglevel >= LogLevel::Warning) { ... }
-// translates to: if loglevel "more verbose than" warning ...
+// Then, I would also allow everything more restrict than Info, such as Warnings
+// and Errors So, if my 'loglevel' (3) is higher than Warning (2), warnings will
+// also display, but Debug (4) will not. Example: if (loglevel >=
+// LogLevel::Warning) { ... } translates to: if loglevel "more verbose than"
+// warning ...
 //
 
-enum LogLevel {
-  Silent = 0,
-  Error = 1,
-  Warning = 2,
-  Info = 3,
-  Debug = 4
-};
+enum LogLevel { Silent = 0, Error = 1, Warning = 2, Info = 3, Debug = 4 };
 
 enum StringFormat {
   Undefined = 0,  // undefined... typically 'Human'
@@ -130,9 +125,9 @@ class ContextAC {
 
 class Component {
  public:
-  //Log* logdata;
+  // Log* logdata;
   //
-  // 'logdata' is for User logs
+  //  'logdata' is for User logs
   std::ostream* logdata{&std::cout};
   // 'mlog' is for machine logs (disabled by default)
   std::ostream* mlog{nullptr};
@@ -146,7 +141,7 @@ class Component {
   }
 
   static void safe_print(Component* c) {
-    //assert(c);
+    // assert(c);
     if (c)
       c->print();
     else
@@ -154,32 +149,34 @@ class Component {
   }
 
  public:
-  // Set user log stream recursive: must be implemented on each component. Returns 'false' is not implemented.
+  // Set user log stream recursive: must be implemented on each component.
+  // Returns 'false' is not implemented.
   virtual bool setLogR(std::ostream* _logdata) {
     this->logdata = _logdata;
     return false;
   }
 
-  // Set machine log recursive: must be implemented on each component. Returns 'false' is not implemented.
+  // Set machine log recursive: must be implemented on each component. Returns
+  // 'false' is not implemented.
   virtual bool setMachineLogR(std::ostream* _mlog) {
     this->mlog = _mlog;
     return false;
   }
 
   /*
-	void initializeLog()
-	{
-		logdata = new Log;
-	}
+        void initializeLog()
+        {
+                logdata = new Log;
+        }
 
-	void destroyLog()
-	{
-		if(logdata)
-		{
-			delete logdata;
-			logdata = nullptr;
-		}
-	}
+        void destroyLog()
+        {
+                if(logdata)
+                {
+                        delete logdata;
+                        logdata = nullptr;
+                }
+        }
 */
   int verboseLevel;
 
@@ -190,7 +187,8 @@ class Component {
 #ifdef NDEBUG
   constexpr static bool debug{false};
 #else
-  bool debug;  // perform dead code elimination, having always debug{true} as constexpr, when NDEBUG is ON
+  bool debug;  // perform dead code elimination, having always debug{true} as
+               // constexpr, when NDEBUG is ON
 #endif
   bool verbose;  // no dead code elimination, even when NDEBUG is ON
 
@@ -222,25 +220,22 @@ class Component {
   Component() {
     // TODO: create 'logless' implementation on OptFrame (is it faster?)
     setMessageLevel(LogLevel::Info);
-    //logdata = nullptr;
+    // logdata = nullptr;
   }
 
-  virtual ~Component() {
-  }
+  virtual ~Component() = default;
 
 #ifdef OPTFRAME_AC
-  // clones current Component and it is either: (i) optional (by nullptr); (ii) a shared_ptr instance as output
-  virtual std::shared_ptr<Component> sharedClone() const {
-    return nullptr;
-  }
+  // clones current Component and it is either: (i) optional (by nullptr); (ii)
+  // a shared_ptr instance as output
+  virtual std::shared_ptr<Component> sharedClone() const { return nullptr; }
 
   // list for algorithm comprehension / search comprehension
   std::vector<ContextAC> listAC;
 
   bool hasInListAC(std::string _id) {
     for (unsigned i = 0; i < listAC.size(); i++)
-      if (listAC[i].id == _id)
-        return true;
+      if (listAC[i].id == _id) return true;
     return false;
   }
 
@@ -258,7 +253,8 @@ class Component {
     for (unsigned i = 0; i < listAC.size(); i++) {
       count++;
       if (listAC[i].id != lastId) {
-        std::cout << " |" << count << "|; ... => " << listAC[i].id << " {" << listAC[i].message << "} ";
+        std::cout << " |" << count << "|; ... => " << listAC[i].id << " {"
+                  << listAC[i].message << "} ";
         lastId = listAC[i].id;
         count = 0;
       }
@@ -267,24 +263,19 @@ class Component {
   }
 #endif
 
-  static std::string idComponent() {
-    return "OptFrame";
-  }
+  static std::string idComponent() { return "OptFrame"; }
 
-  virtual std::string id() const {
-    return idComponent();
-  }
+  virtual std::string id() const { return idComponent(); }
 
   virtual bool compatible(std::string s) {
-    return (s == id()) || (s == idComponent());  // equal to this component or "OptFrame:" base
+    return (s == id()) ||
+           (s == idComponent());  // equal to this component or "OptFrame:" base
   }
 
-  //StringFormat mlogType{ StringFormat::Human };
+  // StringFormat mlogType{ StringFormat::Human };
 
   // returns 'false' if unsupported
-  virtual bool toStream(std::ostream& os) const {
-    return false;
-  }
+  virtual bool toStream(std::ostream& os) const { return false; }
 
   // returns "" if unsupported
   virtual std::string toString() const = 0;
@@ -299,15 +290,11 @@ class Component {
       return "";
    }
 */
-  virtual void print() const {
-    (*logdata) << this->toString() << std::endl;
-  }
+  virtual void print() const { (*logdata) << this->toString() << std::endl; }
 
   // -----------
 
-  void setVerbose() {
-    setMessageLevel(LogLevel::Debug);
-  }
+  void setVerbose() { setMessageLevel(LogLevel::Debug); }
 
   // set verbose level recursive: returns 'false' if not supported.
   virtual bool setVerboseR() {
@@ -318,9 +305,7 @@ class Component {
   // -----------
 
   // set silent level recursive: returns 'false' if not supported.
-  virtual void setSilent() {
-    setMessageLevel(LogLevel::Silent);
-  }
+  virtual void setSilent() { setMessageLevel(LogLevel::Silent); }
 
   // set silent level recursive: returns 'false' if not supported.
   virtual bool setSilentR() {
@@ -348,7 +333,9 @@ class Component {
         break;
       case LogLevel::Debug:  // VERBOSE 4
 #ifdef NDEBUG
-        std::cerr << "WARNING: LogLevel::Debug is disabled due to NDEBUG flag! Setting LogLevel::Info instead." << std::endl;
+        std::cerr << "WARNING: LogLevel::Debug is disabled due to NDEBUG flag! "
+                     "Setting LogLevel::Info instead."
+                  << std::endl;
         information = true;
 #else
         debug = true;
@@ -364,9 +351,7 @@ class Component {
     information = information || debug;
   }
 
-  bool getVerboseLevel() {
-    return verboseLevel;
-  }
+  bool getVerboseLevel() { return verboseLevel; }
 };
 
 }  // namespace optframe

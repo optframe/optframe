@@ -31,10 +31,9 @@
 #include <OptFrame/Evaluator.hpp>
 
 #include "Evaluation.h"
+#include "ProblemInstance.h"
 #include "Representation.h"
 #include "Solution.h"
-
-#include "ProblemInstance.h"
 
 using namespace optframe;
 
@@ -44,55 +43,49 @@ extern int numEvs;
 
 namespace EtII {
 
-class EtIIEvaluator : public Evaluator<SolutionEtII, EvaluationEtII>
-{
-private:
-   ProblemInstance& pEtII;
+class EtIIEvaluator : public Evaluator<SolutionEtII, EvaluationEtII> {
+ private:
+  ProblemInstance& pEtII;  // NOLINT
 
-public:
-   using Evaluator<SolutionEtII, EvaluationEtII>::evaluate;
+ public:
+  using Evaluator<SolutionEtII, EvaluationEtII>::evaluate;
 
-   EtIIEvaluator(ProblemInstance& _pEtII)
-     : Evaluator<SolutionEtII, EvaluationEtII>(new Maximization<EvaluationEtII>(), true)
-     , pEtII(_pEtII) // DISALLOW COSTS (DEFAULT)
-   {
-      // Put the rest of your code here
-   }
+  explicit EtIIEvaluator(ProblemInstance& _pEtII)
+      : Evaluator<SolutionEtII, EvaluationEtII>(
+            new Maximization<EvaluationEtII>(), true),
+        pEtII(_pEtII)  // DISALLOW COSTS (DEFAULT)
+  {
+    // Put the rest of your code here
+  }
 
-   Evaluation<> evaluate(const SolutionEtII& s) override
-   {
-      const RepEtII& rep = s.getR();
-      //counting evaluations.
-      numEvs++;
-      //cout<<"##### Number of evaluates: "<<numEvs<<endl;
+  Evaluation<> evaluate(const SolutionEtII& s) override {
+    const RepEtII& rep = s.getR();
+    // counting evaluations.
+    numEvs++;
+    // cout<<"##### Number of evaluates: "<<numEvs<<endl;
 
-      int fo = 0; // Evaluation<> Function Value
+    int fo = 0;  // Evaluation<> Function Value
 
-      // horizontal
-      for (unsigned int i = 0; i < rep.getNumRows(); i++)
-         for (unsigned int j = 0; j < rep.getNumCols() - 1; j++)
-            if (rep(i, j).right == rep(i, j + 1).left)
-               fo++;
+    // horizontal
+    for (unsigned int i = 0; i < rep.getNumRows(); i++)
+      for (unsigned int j = 0; j < rep.getNumCols() - 1; j++)
+        if (rep(i, j).right == rep(i, j + 1).left) fo++;
 
-      // vertical
-      for (unsigned int j = 0; j < rep.getNumCols(); j++)
-         for (unsigned int i = 0; i < rep.getNumRows() - 1; i++)
-            if (rep(i, j).down == rep(i + 1, j).up)
-               fo++;
+    // vertical
+    for (unsigned int j = 0; j < rep.getNumCols(); j++)
+      for (unsigned int i = 0; i < rep.getNumRows() - 1; i++)
+        if (rep(i, j).down == rep(i + 1, j).up) fo++;
 
-      return Evaluation<>(fo);
-   }
+    return Evaluation<>(fo);
+  }
 
-   virtual bool betterThan(double f1, double f2)
-   {
-      return (f1 > (f2 - EPSILON_EtII));
-   }
+  // TODO: fix
+  virtual bool betterThan(double f1, double f2) {
+    return (f1 > (f2 - EPSILON_EtII));
+  }
 
-   virtual bool isMinimization() const
-   {
-      return false;
-   }
+  bool isMinimization() const override { return false; }
 };
-}
+}  // namespace EtII
 
 #endif /*EtII_EVALUATOR_HPP_*/

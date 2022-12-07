@@ -1,4 +1,9 @@
-BasedOnStyle: "Google"
-ColumnLimit: 0
-IndentWidth: 2 
+---
+# clang-format -style=google -dump-config > .clang-format
+Language:        Cpp
+BasedOnStyle:  Google
 AccessModifierOffset: -1
+ReferenceAlignment: Left
+DerivePointerAlignment: false
+...
+

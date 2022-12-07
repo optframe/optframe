@@ -25,7 +25,6 @@
 
 #include "../../OptFrame/Constructive.hpp"
 #include "../../OptFrame/RandGen.hpp"
-
 #include "ProblemInstance.h"
 #include "Representation.h"
 
@@ -34,41 +33,30 @@ using namespace std;
 
 namespace TSP2 {
 
-class ConstructiveRandom : public Constructive<RepTSP>
-{
-private:
-   ProblemInstance& pTSP;
-   RandGen& rg;
+class ConstructiveRandom : public Constructive<RepTSP> {
+ private:
+  ProblemInstance& pTSP;
+  RandGen& rg;
 
-public:
-   ConstructiveRandom(ProblemInstance& _pTSP, RandGen& _rg)
-     : pTSP(_pTSP)
-     , rg(_rg)
-   {
-   }
+ public:
+  ConstructiveRandom(ProblemInstance& _pTSP, RandGen& _rg)
+      : pTSP(_pTSP), rg(_rg) {}
 
-   virtual ~ConstructiveRandom()
-   {
-   }
+  virtual ~ConstructiveRandom() {}
 
-   Solution<RepTSP>& generateSolution()
-   {
-      RepTSP r(pTSP.n);
+  Solution<RepTSP>& generateSolution() {
+    RepTSP r(pTSP.n);
 
-      for (unsigned int i = 0; i < r.size(); i++)
-         r[i] = i;
+    for (unsigned int i = 0; i < r.size(); i++) r[i] = i;
 
-      rg.shuffle(r); // shuffle elements of r
+    rg.shuffle(r);  // shuffle elements of r
 
-      return *new Solution<RepTSP>(r);
-   }
+    return *new Solution<RepTSP>(r);
+  }
 
-   void print() const
-   {
-      cout << "Random Constructive" << endl;
-   }
+  void print() const override { cout << "Random Constructive" << endl; }
 };
 
-}
+}  // namespace TSP2
 
 #endif /*TSP2_CONSTRUCTIVE_RANDOM_H_*/
