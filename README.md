@@ -267,6 +267,8 @@ Bento Gonçalves-RS, pp 1887-1898.
 
 - v5+ : Dual License: MIT License / LGPLv3+
 
+`SPDX-License-Identifier: MIT OR LGPL-3.0-or-later`
+
 *OptFrame maintainers* [@igormcoelho](https://github.com/igormcoelho) and [@vncoelho](https://github.com/vncoelho)
 
 Copyright (C) 2007-2022
