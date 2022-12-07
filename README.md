@@ -261,11 +261,11 @@ Bento Gonçalves-RS, pp 1887-1898.
  
 ## Licence
 
-- (<= 4 dot 1): [**LICENSE GNU Lesser General Public License v3**](https://github.com/optframe/optframe/blob/master/LICENSE)
+- (<= 4 dot 1): LICENSE GNU Lesser General Public License v3 (LGPLv3)
 
-- (4 dot 2+): Dual License: MIT License / LGPLv3
+- (4 dot 2+): Dual License: MIT License OR LGPLv3
 
-- v5+ : Dual License: MIT License / LGPLv3+
+- v5+ : Dual License: [**MIT License**](https://github.com/optframe/optframe/blob/master/LICENSE.MIT.txt) OR [**LGPLv3+**](https://github.com/optframe/optframe/blob/master/LICENSE.LGPLv3+.txt)
 
 `SPDX-License-Identifier: MIT OR LGPL-3.0-or-later`
 
