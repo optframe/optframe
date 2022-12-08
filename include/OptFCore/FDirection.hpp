@@ -9,9 +9,9 @@
 //
 #include <OptFrame/Direction.hpp>
 
-enum MinOrMax { MINIMIZE, MAXIMIZE };
-
 namespace optframe {
+
+enum MinOrMax { MINIMIZE, MAXIMIZE };
 
 template <XEvaluation XEv,     // E Type
           MinOrMax Minimizing  // is minimization
