@@ -44,9 +44,9 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
   sref<MultiEvaluator<XMES>> mevr;
   sptr<MultiDirection<XEv>> mdir;
   //
-  sptr<FitnessAssignment<XMES>> fa;
-  sptr<DiversityManagement<XMES>> dm;
-  sptr<MOSSelection<XMES>> sel;
+  sref<FitnessAssignment<XMES>> fa;
+  sref<DiversityManagement<XMES>> dm;
+  sref<MOSSelection<XMES>> sel;
 
  public:
   ClassicNSGAII(sref<MultiEvaluator<XMES>> _mevr,
@@ -59,23 +59,34 @@ class ClassicNSGAII : public NSPopulationBasedMultiObjSearch<XMES> {
             sref<MultiDirection<XEv>>{new MultiDirection(_mevr->vDir)}, _popMan,
             popSize, maxIter, maxGen),
         mevr{_mevr},
-        mdir{sptr<MultiDirection<XEv>>{new MultiDirection(mevr->vDir)}} {
+        mdir{sptr<MultiDirection<XEv>>{new MultiDirection(mevr->vDir)}},
+        fa{setupFA()},
+        dm{new CrowdingDistance<XMES>(mdir->getDirections())},
+        sel{new NSGAIISelection<XMES>} {
     std::cout << "ClassicNSGAII::nObjectives: ";
     std::cout << mevr->nObjectives << std::endl;
-    if (mevr->nObjectives == 2)
-      fa = sptr<FitnessAssignment<XMES>>{
-          // TODO: could be some BiObjNonDominatedSort with REMOVAL
-          // of CLONES (in obj space).. this makes multiple fronts
-          // appear here. Must see in PROBLEM if this is desired,
-          // than create here or not.
-          new BiObjNonDominatedSort<XMES>(mdir->getDirections())};
-    else
-      fa = sptr<FitnessAssignment<XMES>>{new NonDominatedSort<XMES>{_mevr}};
+  }
 
-    dm = sptr<DiversityManagement<XMES>>{
-        new CrowdingDistance<XMES>(mdir->getDirections())};
-
-    sel = sptr<MOSSelection<XMES>>{new NSGAIISelection<XMES>};
+  sref<FitnessAssignment<XMES>> setupFA() {
+    // ===================================================
+    // MIN-MIN optimization (no MAX-MAX for the moment...)
+    //
+    if ((this->mevr->vDir.size() == 2) &&
+        this->mevr->vDir[0]->isMinimization() &&
+        this->mevr->vDir[1]->isMinimization()) {
+      if (Component::information)
+        std::cout << "ClassicNSGAII: 2 MIN-MIN objectives (fast "
+                     "BiObjNonDominatedSort)"
+                  << std::endl;
+      return sref<FitnessAssignment<XMES>>{
+          new BiObjNonDominatedSort<XMES>(this->mdir->getDirections())};
+    } else {
+      if (Component::information)
+        std::cout << "ClassicNSGAII: multiple objectives with NonDominatedSort"
+                  << std::endl;
+      return sref<FitnessAssignment<XMES>>{
+          new NonDominatedSort<XMES>{this->mevr}};
+    }
   }
 
   virtual ~ClassicNSGAII() = default;

@@ -1,6 +1,12 @@
+// SPDX-License-Identifier:  MIT OR LGPL-3.0-or-later
+// Copyright (C) 2007-2022 - OptFrme developers
+// https://github.com/optframe/optframe
 
+#ifndef TESTS_OPTFRAME_TEST_RANDGEN_TEST_HPP_
+#define TESTS_OPTFRAME_TEST_RANDGEN_TEST_HPP_
 // C++
 #include <limits>
+#include <vector>
 //
 #include <catch2/catch_amalgamated.hpp>
 // Some instructions for Catch2
@@ -23,7 +29,7 @@ TEST_CASE("OptFrameUtilsTests: RandGen_20000_0_9_Is_Balanced_1_percent") {
   std::map<int, int> hist;
   RandGen rg;
   for (int n = 0; n < 20000; ++n) {
-    ++hist[rg.rand(0, 9)];
+    ++hist[(int)rg.rand(0, 9)];
   }
 
   int min = 20000;
@@ -47,7 +53,7 @@ TEST_CASE("OptFrameUtilsTests: RandGen_20000_10_Is_Balanced_1_percent") {
   std::map<int, int> hist;
   RandGen rg;
   for (int n = 0; n < 20000; ++n) {
-    ++hist[rg.rand(10)];  // 0 to 9
+    ++hist[(int)rg.rand(10)];  // 0 to 9
   }
 
   int min = 20000;
@@ -72,7 +78,7 @@ TEST_CASE("OptFrameUtilsTests: RandGenMT_20000_10_Is_Balanced_1_percent") {
   RandGenMersenneTwister rg1;
   RandGen& rg = rg1;
   for (int n = 0; n < 20000; ++n) {
-    ++hist[rg.rand(10)];  // 0 to 9
+    ++hist[(int)rg.rand(10)];  // 0 to 9
   }
 
   int min = 20000;
@@ -145,3 +151,5 @@ TEST_CASE("OptFrameUtilsTests: RandGen_has_no_Min_Weakness") {
     REQUIRE(vcount2[i] > 1000);  // all over 1000 (~11617 / 11)
   // std::cout << "vcount2[" << i << "]=" << vcount2[i] << std::endl;
 }
+
+#endif  // TESTS_OPTFRAME_TEST_RANDGEN_TEST_HPP_

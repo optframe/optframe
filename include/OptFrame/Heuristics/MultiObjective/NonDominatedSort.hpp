@@ -70,8 +70,11 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
     // initialize individuals with -1 fitness
     // (TODO: reuse MOSIndividual structure)
     vector<FitnessIndividual<XMEv>> P(Pop.size());
-    for (unsigned s = 0; s < P.size(); s++)
-      P[s] = FitnessIndividual<XMEv>(s, -1, Pop[s].second);
+    for (unsigned s_idx = 0; s_idx < P.size(); s_idx++) {
+      P[s_idx] = FitnessIndividual<XMEv>{(int)s_idx, -1, Pop[s_idx].second};
+      // check number of objectives
+      assert(Pop[s_idx].second.size() == vDir.size());
+    }
 
     if (Component::information)
       std::cout << this->id() << "::fastNonDominatedSort |P|=";
@@ -79,9 +82,11 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
 
     // Initialize pareto front vector F (of ids)
     vector<vector<int>> F;
+    // initialize front 0 (empty)
     F.push_back(vector<int>{});
-    // ???
+    // S[p] is list of elements dominated by p
     vector<vector<int>> S(P.size());
+    // n[p] is number of elements that dominate p
     vector<int> n(P.size());
 
     // for each 'p' in 'P'
@@ -94,8 +99,8 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
       // for each 'q' in 'P'
       for (unsigned q = 0; q < P.size(); q++)
         if (p != q) {
+          // pair: ( p dominates q? , q dominates p? )
           pair<bool, bool> v = pDominance.birelation(P.at(p).mev, P.at(q).mev);
-
           // if (p << q)
           if (v.first) S[p].push_back((int)q);  // Sp = Sp U {q}
           // else if (q << p)
@@ -110,6 +115,9 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
       }
     }
 
+    // =============================
+    // starting from first front i=0
+    // =============================
     int i = 0;  // i=1
     // while Fi != {}
     while (F[i].size() != 0) {
@@ -119,14 +127,21 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
       }
       vector<int> Q;  // Q = {}
 
+      // ======================================
+      // remove count for all dominated from Fi
+      // ======================================
       // for each 'p' in 'Fi'
-      for (unsigned k = 0; k < F[i].size(); k++) {
-        int p = F[i].at(k);
-
+      //
+      // for (unsigned k = 0; k < F[i].size(); k++) {
+      //  int p = F[i].at(k);
+      //
+      for (int p : F[i]) {
         // for each 'q' in 'Sp'
-        for (unsigned j = 0; j < S[p].size(); j++) {
-          int q = S[p][j];
-
+        //
+        // for (unsigned j = 0; j < S[p].size(); j++) {
+        //  int q = S[p][j];
+        //
+        for (int q : S[p]) {
           // nq = nq - 1
           n[q]--;
 
@@ -138,14 +153,29 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
         }
       }
 
+      // will start new front
+      F.push_back(vector<int>{});
       i++;  // i = i + 1
-      // F.push_back(nullptr);
-      //  CANNOT PUSH EMPTY ANYMORE... SHOULD THIS VECTOR BE std::optional???
-      assert(false);  // F.push_back(nullptr);
-
+      //
       F[i] = Q;  // Fi = Q
       if (Component::debug)
         cout << "fastNonDominatedSort i=" << i << " |Q|=" << Q.size() << endl;
+    }
+
+    // =====================================
+    // dummy check: no fitness should be -1
+    // =====================================
+
+    for (auto& fitInd : P) {
+      assert(fitInd.fitness != -1);
+    }
+
+    // ====================================
+    // Fix original population Pop
+    // FitnessIndividual -> MOSIndividual
+    // ====================================
+    for (auto& fitInd : P) {
+      Pop[fitInd.idx].fitness = fitInd.fitness;
     }
 
     /*

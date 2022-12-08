@@ -32,6 +32,7 @@
 #include <OptFrame/Component.hpp>
 //#include "Evaluation.hpp"
 #include <OptFrame/Helper/MultiESolution.hpp>
+#include <OptFrame/Helper/VEPopulation.hpp>
 //#include "Solution.hpp"
 //#include "Solutions/CopySolution.hpp"
 #include <OptFrame/Scanner++/Scanner.hpp>
@@ -43,8 +44,7 @@ namespace optframe {
 template <XSolution S, XEvaluation XEv, XESolution XES, X2ESolution<XES> X2ES>
 class HeuristicFactory;
 
-template <XSolution S,
-          XEvaluation XMEv = MultiEvaluation<>,
+template <XSolution S, XEvaluation XMEv = MultiEvaluation<>,
           XESolution XMES = pair<S, XMEv>,
           X2ESolution<XMES> X2MES = VEPopulation<XMES>>
 class ComponentMultiBuilder : public Component {
@@ -54,12 +54,10 @@ class ComponentMultiBuilder : public Component {
   using X2ES = MultiESolution<XES>;  // TODO: check this!
 
  public:
-  virtual ~ComponentMultiBuilder() {
-  }
+  virtual ~ComponentMultiBuilder() {}
 
   virtual Component* buildMultiComponent(
-      Scanner& scanner,
-      HeuristicFactory<S, XEv, XES, X2ES>& hf,
+      Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf,
       string family = "") = 0;
 
   virtual vector<pair<string, string>> parameters() = 0;
@@ -72,9 +70,7 @@ class ComponentMultiBuilder : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

@@ -17,7 +17,7 @@ template <XESolution XES,      // ESolution Type
           >
 class FEvaluator final : public Evaluator<typename XES::first_type,
                                           typename XES::second_type, XES> {
-  using super =
+   using super =
       Evaluator<typename XES::first_type, typename XES::second_type, XES>;
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;

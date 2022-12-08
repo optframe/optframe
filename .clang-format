@@ -5,5 +5,10 @@ BasedOnStyle:  Google
 AccessModifierOffset: -1
 ReferenceAlignment: Left
 DerivePointerAlignment: false
+#
+# Offending cpplint itself: "More than one command on the same line" "[whitespace/newline]"
+# Sometimes, we need to manually add more lines to lambda, to make sure it will break line
+# AllowShortLambdasOnASingleLine : SLS_Inline
+#
 ...
 

@@ -80,7 +80,7 @@ class MultiEvaluator : public GeneralEvaluator<XMES,
 
  public:
   // MultiEvaluator(vector<Evaluator<S, XEv, XES>*> _veval)
-  explicit MultiEvaluator(vsref<Evaluator<S, XEv, XES>>& _veval)
+  explicit MultiEvaluator(const vsref<Evaluator<S, XEv, XES>>& _veval)
       : sngEvaluators{_veval}, allowCosts{false} {
     for (unsigned i = 0; i < _veval.size(); i++)
       vDir.push_back(_veval[i]->direction);
@@ -373,7 +373,7 @@ class MultiEvaluatorAction : public Action<S, XEv, X2ES> {
     cout << "MultiEvaluator::doAction: NOT IMPLEMENTED!" << endl;
     return false;
 
-    //cout << "Evaluator::doAction '" << content << "'" << endl;
+    // cout << "Evaluator::doAction '" << content << "'" << endl;
 
     Scanner scanner(content);
 

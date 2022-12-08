@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFCORE_FDIRECTION_HPP_
-#define OPTFCORE_FDIRECTION_HPP_
+#ifndef OPTFCORE_FDIRECTION_HPP_  // NOLINT
+#define OPTFCORE_FDIRECTION_HPP_  // NOLINT
 
 #include <functional>
 #include <string>
@@ -39,4 +39,4 @@ class FDirection final : public Direction<XEv> {
 
 }  // namespace optframe
 
-#endif  // OPTFCORE_FDIRECTION_HPP_
+#endif  // OPTFCORE_FDIRECTION_HPP_ // NOLINT

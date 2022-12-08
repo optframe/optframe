@@ -21,25 +21,18 @@
 #include <OptFCore/FDirection.hpp>
 #include <OptFrame/Heuristics/MultiObjective/NonDominatedSort.hpp>
 
+#include "include/OptFCore/FEvaluator.hpp"
+
 using namespace std;       // NOLINT
 using namespace optframe;  // NOLINT
 
-using TestXMES = std::pair<int, MultiEvaluation<int>>;
+using TestS = int;
+using TestXMES = std::pair<TestS, MultiEvaluation<int>>;
 using TestXEv = Evaluation<int>;
 using TestXMEv = MultiEvaluation<int>;
+using TestXES = std::pair<TestS, TestXEv>;
 
-TEST_CASE("OptFrameHeuristicsTests: nondom_sort_front_min_min_min") {
-  vsref<Direction<TestXEv>> vDir;
-  vDir.push_back(new FDirection<TestXEv, MinOrMax::MINIMIZE>{});
-  vDir.push_back(new FDirection<TestXEv, MinOrMax::MINIMIZE>{});
-  vDir.push_back(new FDirection<TestXEv, MinOrMax::MINIMIZE>{});
-
-  sref<MultiEvaluator<TestXMES>> mev{new MultiEvaluator<TestXMES>{}};
-  //
-
-  NonDominatedSort<TestXMES> mobj{mev};
-  REQUIRE(mobj.vDir.size() == 3);
-
+TEST_CASE("OptFrameHeuristicsTests: nondom_sort_front_7_7") {
   // example in (7x7) grid
   MultiEvaluation<int> A{vector<int>{1, 6}};
   MultiEvaluation<int> B{vector<int>{2, 4}};
@@ -51,18 +44,7 @@ TEST_CASE("OptFrameHeuristicsTests: nondom_sort_front_min_min_min") {
   MultiEvaluation<int> H{vector<int>{5, 6}};
   MultiEvaluation<int> I{vector<int>{5, 4}};
   MultiEvaluation<int> J{vector<int>{7, 5}};
-  /*
-  ^
-  |
-  7     E
-  6 A            H
-  5        F           J
-  4     B        I
-  3           G
-  2        C
-  1              D
-     1  2  3  4  5  6  7 -->
-  */
+
   vector<MOSIndividual<TestXMES>> vpop;
   vpop.push_back(MOSIndividual{TestXMES{-1, A}});
   vpop.push_back(MOSIndividual{TestXMES{-1, B}});
@@ -75,7 +57,26 @@ TEST_CASE("OptFrameHeuristicsTests: nondom_sort_front_min_min_min") {
   vpop.push_back(MOSIndividual{TestXMES{-1, I}});
   vpop.push_back(MOSIndividual{TestXMES{-1, J}});
 
-  mobj.assignFitnessAll(vpop);
+  // ======================================================
+  //                      MIN-MIN
+
+  vsref<Evaluator<TestS, TestXEv, TestXES>> veval2min;
+  veval2min.push_back(new FEvaluator<TestXES, MinOrMax::MINIMIZE>{
+      [](const TestS& s) -> TestXEv {
+        int obj = -1;
+        return TestXEv{obj};
+      }});
+  veval2min.push_back(new FEvaluator<TestXES, MinOrMax::MINIMIZE>{
+      [](const TestS& s) -> TestXEv {
+        int obj = -2;
+        return TestXEv{obj};
+      }});
+  sref<MultiEvaluator<TestXMES>> mev2min{
+      new MultiEvaluator<TestXMES>{veval2min}};
+  //
+  REQUIRE(mev2min->vDir.size() == 2);
+  NonDominatedSort<TestXMES> biObjMinMin{mev2min};
+  biObjMinMin.assignFitnessAll(vpop);
   REQUIRE(vpop[0].fitness == 0);  // A
   REQUIRE(vpop[1].fitness == 0);  // B
   REQUIRE(vpop[2].fitness == 0);  // C
@@ -86,6 +87,80 @@ TEST_CASE("OptFrameHeuristicsTests: nondom_sort_front_min_min_min") {
   REQUIRE(vpop[7].fitness == 3);  // H
   REQUIRE(vpop[8].fitness == 2);  // I
   REQUIRE(vpop[9].fitness == 3);  // J
+
+  // ======================================================
+  //                      MAX-MAX
+
+  vsref<Evaluator<TestS, TestXEv, TestXES>> veval2max;
+  veval2max.push_back(new FEvaluator<TestXES, MinOrMax::MAXIMIZE>{
+      [](const TestS& s) -> TestXEv {
+        int obj = -1;
+        return TestXEv{obj};
+      }});
+  veval2max.push_back(new FEvaluator<TestXES, MinOrMax::MAXIMIZE>{
+      [](const TestS& s) -> TestXEv {
+        int obj = -2;
+        return TestXEv{obj};
+      }});
+  sref<MultiEvaluator<TestXMES>> mev2max{
+      new MultiEvaluator<TestXMES>{veval2max}};
+  //
+  REQUIRE(mev2max->vDir.size() == 2);
+  NonDominatedSort<TestXMES> biObjMaxMax{mev2max};
+  //
+  biObjMinMin.assignFitnessAll(vpop);
+  REQUIRE(vpop[0].fitness == 0);  // A
+  REQUIRE(vpop[1].fitness == 0);  // B
+  REQUIRE(vpop[2].fitness == 0);  // C
+  REQUIRE(vpop[3].fitness == 0);  // D
+  REQUIRE(vpop[4].fitness == 1);  // E
+  REQUIRE(vpop[5].fitness == 1);  // F
+  REQUIRE(vpop[6].fitness == 1);  // G
+  REQUIRE(vpop[7].fitness == 3);  // H
+  REQUIRE(vpop[8].fitness == 2);  // I
+  REQUIRE(vpop[9].fitness == 3);  // J
+}
+
+TEST_CASE("OptFrameHeuristicsTests: nondom_sort_front_min_min_min") {
+  //
+  vsref<Evaluator<TestS, TestXEv, TestXES>> veval;
+  veval.push_back(new FEvaluator<TestXES, MinOrMax::MINIMIZE>{
+      [](const TestS& s) -> TestXEv {
+        int obj = -1;
+        return TestXEv{obj};
+      }});
+  veval.push_back(new FEvaluator<TestXES, MinOrMax::MINIMIZE>{
+      [](const TestS& s) -> TestXEv {
+        int obj = -2;
+        return TestXEv{obj};
+      }});
+  veval.push_back(new FEvaluator<TestXES, MinOrMax::MINIMIZE>{
+      [](const TestS& s) -> TestXEv {
+        int obj = -3;
+        return TestXEv{obj};
+      }});
+
+  sref<MultiEvaluator<TestXMES>> mev{new MultiEvaluator<TestXMES>{veval}};
+  //
+  REQUIRE(mev->vDir.size() == 3);
+  NonDominatedSort<TestXMES> ndSort{mev};
+  //
+  REQUIRE(ndSort.vDir.size() == 3);
+
+  //
+  MultiEvaluation<int> A{vector<int>{1, 2, 3}};
+  MultiEvaluation<int> B{vector<int>{2, 1, 3}};
+  MultiEvaluation<int> C{vector<int>{3, 3, 3}};
+
+  vector<MOSIndividual<TestXMES>> vpop;
+  vpop.push_back(MOSIndividual{TestXMES{-1, A}});
+  vpop.push_back(MOSIndividual{TestXMES{-1, B}});
+  vpop.push_back(MOSIndividual{TestXMES{-1, C}});
+
+  ndSort.assignFitnessAll(vpop);
+  REQUIRE(vpop[0].fitness == 0);  // A
+  REQUIRE(vpop[1].fitness == 0);  // B
+  REQUIRE(vpop[2].fitness == 1);  // C
 }
 
 #endif  // TESTS_OPTFRAME_TEST_HEURISTICS_TEST_MULTIOBJECTIVE_TEST_NONDOMINATEDSORT_TEST_HPP_

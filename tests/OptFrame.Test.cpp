@@ -6,6 +6,7 @@
 
 #include "./OptFrame-test/Heuristics-test/HeuristicsAll.Test.hpp"
 #include "./OptFrame-test/Matrix.Test.hpp"
+#include "./OptFrame-test/ParetoDominance.Test.hpp"
 #include "./OptFrame-test/RandGen.Test.hpp"
 
 // good
