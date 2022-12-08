@@ -76,9 +76,10 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
       assert(Pop[s_idx].second.size() == vDir.size());
     }
 
-    if (Component::information)
+    if (Component::debug) {
       std::cout << this->id() << "::fastNonDominatedSort |P|=";
-    std::cout << P.size() << " begin" << endl;
+      std::cout << P.size() << " begin" << endl;
+    }
 
     // Initialize pareto front vector F (of ids)
     vector<vector<int>> F;
