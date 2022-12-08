@@ -37,3 +37,6 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
      && apt-get -y install --no-install-recommends python3-pip
 # install cpplint into /usr/local/bin/cpplint
 RUN pip install cpplint 
+
+# bumpver
+RUN python3 -m pip install bumpver
