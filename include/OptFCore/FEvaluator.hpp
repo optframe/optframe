@@ -7,23 +7,18 @@
 #include <functional>
 #include <string>
 //
+#include <OptFCore/FDirection.hpp>
 #include <OptFrame/Evaluator.hpp>
 
 namespace optframe {
 
-enum MinOrMax {
-  MINIMIZE,
-  MAXIMIZE
-};
-
-template <
-    XESolution XES,      // ESolution Type
-    MinOrMax Minimizing  // is minimization
-    >
+template <XESolution XES,      // ESolution Type
+          MinOrMax Minimizing  // is minimization
+          >
 class FEvaluator final : public Evaluator<typename XES::first_type,
                                           typename XES::second_type, XES> {
-  using super = Evaluator<typename XES::first_type,
-                          typename XES::second_type, XES>;
+  using super =
+      Evaluator<typename XES::first_type, typename XES::second_type, XES>;
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
   using XSH = XES;  // only single objective
@@ -41,12 +36,9 @@ class FEvaluator final : public Evaluator<typename XES::first_type,
       : super((Minimizing == MinOrMax::MINIMIZE)
                   ? sref<Direction<XEv>>{new Minimization<XEv>()}
                   : sref<Direction<XEv>>{new Maximization<XEv>()}),
-        fEvaluate{_fEvaluate} {
-  }
+        fEvaluate{_fEvaluate} {}
 
-  XEv evaluate(const S& s) override {
-    return fEvaluate(s);
-  }
+  XEv evaluate(const S& s) override { return fEvaluate(s); }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (super::compatible(s));
@@ -58,9 +50,7 @@ class FEvaluator final : public Evaluator<typename XES::first_type,
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe

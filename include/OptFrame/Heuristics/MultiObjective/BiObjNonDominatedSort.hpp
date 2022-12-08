@@ -50,15 +50,17 @@ class BiObjNonDominatedSort : public FitnessAssignment<XMES2> {
 
   virtual ~BiObjNonDominatedSort() = default;
 
-  static bool sortByFirst(const FitnessIndividual<XMEv>& ind1,
-                          const FitnessIndividual<XMEv>& ind2) {
-    return ind1.mev.at(0).evaluation() < ind2.mev.at(0).evaluation();
-  }
+  /*
+    static bool sortByFirst(const FitnessIndividual<XMEv>& ind1,
+                            const FitnessIndividual<XMEv>& ind2) {
+      return ind1.mev.at(0).evaluation() < ind2.mev.at(0).evaluation();
+    }
 
-  static bool sortBySecond(const FitnessIndividual<XMEv>& ind1,
-                           const FitnessIndividual<XMEv>& ind2) {
-    return ind1.mev.at(1).evaluation() < ind2.mev.at(1).evaluation();
-  }
+    static bool sortBySecond(const FitnessIndividual<XMEv>& ind1,
+                             const FitnessIndividual<XMEv>& ind2) {
+      return ind1.mev.at(1).evaluation() < ind2.mev.at(1).evaluation();
+    }
+  */
 
   // void assignFitnessGroup(vector<MOSIndividual<XMES2>>& g,
   void assignFitnessGroup(const vector<int>& g,

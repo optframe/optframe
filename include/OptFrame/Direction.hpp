@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_OPTIMIZATION_DIRECTION_HPP_
-#define OPTFRAME_OPTIMIZATION_DIRECTION_HPP_
+#ifndef OPTFRAME_DIRECTION_HPP_  // NOLINT
+#define OPTFRAME_DIRECTION_HPP_  // NOLINT
 
 // C
 #include <assert.h>
@@ -31,8 +31,8 @@
 #include <limits>
 #include <utility>
 //
-//#include "ADSManager.hpp"
-//#include "Action.hpp"
+// #include "ADSManager.hpp"
+// #include "Action.hpp"
 // Base concepts
 #include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
@@ -47,7 +47,8 @@
 namespace optframe {
 
 // Direction 'betterThan' depends on a 'totally_ordered' type
-////template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
+//// template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv =
+/// Evaluation<ObjType>>
 template <XEvaluation XEv>  //= Evaluation<evtype>>  // default is 'evtype'
 class Direction : public Component {
   using objType = typename XEv::objType;
@@ -67,23 +68,23 @@ class Direction : public Component {
   // nullCost(MoveCost<>(0))
   // requires cast from value zero, at least
   // TODO: or... simply assume that "empty" means "zero"
-  Direction()
-      : nullCost(XEv(0)) {
-  }
+  Direction() : nullCost(XEv(0)) {}
 
-  virtual ~Direction() {
-  }
+  ~Direction() override = default;
 
   // ============ betterThan ===========
 
-  //! abstract method betterThan: true when a < b for minimization problems; and true when a > b for maximization problems.
+  //! abstract method betterThan: true when a < b for minimization problems; and
+  //! true when a > b for maximization problems.
   /*!
-	 betterThan is the method in OptFrame used to guide the search methods into the solution space.
-	 with betterThan the search methods are able to compare good and poor solutions, in one of the two directions: minimization and maximization.
-	 It must be implemented by the final user in one of these ways:
-	 - for minimization problems, returns a < b;
-	 - for maximization problems, returns a > b.
-	 */
+         betterThan is the method in OptFrame used to guide the search methods
+     into the solution space. with betterThan the search methods are able to
+     compare good and poor solutions, in one of the two directions: minimization
+     and maximization. It must be implemented by the final user in one of these
+     ways:
+         - for minimization problems, returns a < b;
+         - for maximization problems, returns a > b.
+         */
   // virtual bool betterThan(evtype a, evtype b) = 0;
 
   // true if 'mc1' is better than 'mc2'
@@ -108,45 +109,51 @@ class Direction : public Component {
     evtype diff;
     if (isMinimization()) {
       diff = e2.evaluation() - e1.evaluation();
-      // r = (e2.evaluation() - e1.evaluation()) >= optframe::get_numeric_zero<evtype>();
+      // r = (e2.evaluation() - e1.evaluation()) >=
+      // optframe::get_numeric_zero<evtype>();
     } else {
       diff = e1.evaluation() - e2.evaluation();
-      // r = (e1.evaluation() - e2.evaluation()) >= optframe::get_numeric_zero<evtype>();
+      // r = (e1.evaluation() - e2.evaluation()) >=
+      // optframe::get_numeric_zero<evtype>();
     }
-    bool r = !(optframe::numeric_is_zero<typename XEv::objType>(diff)) && (diff > optframe::get_numeric_zero<typename XEv::objType>());
+    bool r = !(optframe::numeric_is_zero<typename XEv::objType>(diff)) &&
+             (diff > optframe::get_numeric_zero<typename XEv::objType>());
 
-    // printf("r=%d e1=%.7f e2=%.7f zero=%.7f nzero=%.7f\n",r,e1.evaluation(), e2.evaluation(), optframe::get_numeric_zero<evtype>(), t);
+    // printf("r=%d e1=%.7f e2=%.7f zero=%.7f nzero=%.7f\n",r,e1.evaluation(),
+    // e2.evaluation(), optframe::get_numeric_zero<evtype>(), t);
 
     return r;
   }
 
   /*
-	virtual inline bool betterThan(const vector<pair<evtype, evtype> >& altCosts1, const vector<pair<evtype, evtype> >& altCosts2)
-	{
-		if(altCosts1.size() != altCosts2.size())
-			return false;
-		for(unsigned i = 0; i < altCosts1.size(); i++)
-			if(!betterThan(altCosts1[i].first + altCosts1[i].second, altCosts2[i].first + altCosts2[i].second))
-				return false;
-		return true;
-	}
-	*/
+        virtual inline bool betterThan(const vector<pair<evtype, evtype> >&
+     altCosts1, const vector<pair<evtype, evtype> >& altCosts2)
+        {
+                if(altCosts1.size() != altCosts2.size())
+                        return false;
+                for(unsigned i = 0; i < altCosts1.size(); i++)
+                        if(!betterThan(altCosts1[i].first + altCosts1[i].second,
+     altCosts2[i].first + altCosts2[i].second)) return false; return true;
+        }
+        */
 
   // ============ betterOrEquals ===========
 
   /*
-	inline bool betterOrEquals(const vector<pair<evtype, evtype> >& altCosts1, const vector<pair<evtype, evtype> >& altCosts2)
-	{
-		return betterThan(altCosts1, altCosts2) || equals(altCosts1, altCosts2);
-	}
-	*/
+        inline bool betterOrEquals(const vector<pair<evtype, evtype> >&
+     altCosts1, const vector<pair<evtype, evtype> >& altCosts2)
+        {
+                return betterThan(altCosts1, altCosts2) || equals(altCosts1,
+     altCosts2);
+        }
+        */
 
   // abolishing MoveCost
   /*
-	inline bool betterOrEquals(const MoveCost<>& mc1, const MoveCost<>& mc2)
-	{
-		return betterThan(mc1, mc2) || equals(mc1, mc2);
-	}
+        inline bool betterOrEquals(const MoveCost<>& mc1, const MoveCost<>& mc2)
+        {
+                return betterThan(mc1, mc2) || equals(mc1, mc2);
+        }
 */
 
   inline bool betterOrEquals(const XEv& e1, const XEv& e2) {
@@ -154,90 +161,102 @@ class Direction : public Component {
   }
 
   /*
-	inline bool betterOrEquals(evtype a, evtype b)
-	{
-		return betterThan(a, b) || equals(a, b);
-	}
-	*/
+        inline bool betterOrEquals(evtype a, evtype b)
+        {
+                return betterThan(a, b) || equals(a, b);
+        }
+        */
 
   // ============ equals ============
 
   /*
-	virtual inline bool equals(const evtype& t1, const evtype& t2, const vector<pair<evtype, evtype> >& altCosts1, const vector<pair<evtype, evtype> >& altCosts2)
-	{
+        virtual inline bool equals(const evtype& t1, const evtype& t2, const
+     vector<pair<evtype, evtype> >& altCosts1, const vector<pair<evtype, evtype>
+     >& altCosts2)
+        {
       if(optframe::numeric_is_zero<evtype>(t1 - t2))
-		//if(EVALUATION_ABS(t1 - t2) <= optframe::get_numeric_zero<evtype>()) // deprecated
-			return true;
+                //if(EVALUATION_ABS(t1 - t2) <=
+     optframe::get_numeric_zero<evtype>()) // deprecated return true;
 
-		if(t1 != t2)
-			return false;
+                if(t1 != t2)
+                        return false;
 
-		assert(altCosts1.size() == altCosts2.size());
+                assert(altCosts1.size() == altCosts2.size());
 
-		for(unsigned i = 0; i < altCosts1.size(); i++)
-			if((altCosts1[i].first + altCosts1[i].second) != (altCosts2[i].first + altCosts2[i].second))
-				return false;
+                for(unsigned i = 0; i < altCosts1.size(); i++)
+                        if((altCosts1[i].first + altCosts1[i].second) !=
+     (altCosts2[i].first + altCosts2[i].second)) return false;
 
-		return true;
-	}
+                return true;
+        }
 */
 
-  virtual inline bool equals(const typename XEv::objType& t1, const typename XEv::objType& t2) {
+  virtual inline bool equals(const typename XEv::objType& t1,
+                             const typename XEv::objType& t2) {
     if (optframe::numeric_is_zero<typename XEv::objType>(t1 - t2))
-      //if(EVALUATION_ABS(t1 - t2) <= optframe::get_numeric_zero<evtype>()) // deprecated
+      // if(EVALUATION_ABS(t1 - t2) <= optframe::get_numeric_zero<evtype>()) //
+      // deprecated
       return true;
 
-    if (t1 != t2)
-      return false;
+    if (t1 != t2) return false;
 
-    //assert(altCosts1.size() == altCosts2.size());
+    // assert(altCosts1.size() == altCosts2.size());
 
-    //for(unsigned i = 0; i < altCosts1.size(); i++)
-    //	if((altCosts1[i].first + altCosts1[i].second) != (altCosts2[i].first + altCosts2[i].second))
-    //		return false;
+    // for(unsigned i = 0; i < altCosts1.size(); i++)
+    //	if((altCosts1[i].first + altCosts1[i].second) != (altCosts2[i].first +
+    // altCosts2[i].second)) 		return false;
 
     return true;
   }
 
   // Abolishing MoveCost
   /*
-	virtual inline bool equals(const MoveCost<>& mc1, const MoveCost<>& mc2)
-	{
-		return equals(mc1.cost(), mc2.cost(), mc1.getAlternativeCosts(), mc2.getAlternativeCosts());
-	}
+        virtual inline bool equals(const MoveCost<>& mc1, const MoveCost<>& mc2)
+        {
+                return equals(mc1.cost(), mc2.cost(), mc1.getAlternativeCosts(),
+     mc2.getAlternativeCosts());
+        }
 */
   virtual inline bool equals(const XEv& e1, const XEv& e2) {
-    //return equals(e1.evaluation(), e2.evaluation(), e1.getAlternativeCosts(), e2.getAlternativeCosts());
+    // return equals(e1.evaluation(), e2.evaluation(), e1.getAlternativeCosts(),
+    // e2.getAlternativeCosts());
     return equals(e1.evaluation(), e2.evaluation());
   }
 
   /*
-	virtual inline bool equals(evtype a, evtype b)
-	{
-		return (::abs(a - b) < OPTFRAME_EPSILON);
-	}
-	*/
+        virtual inline bool equals(evtype a, evtype b)
+        {
+                return (::abs(a - b) < OPTFRAME_EPSILON);
+        }
+        */
 
   // ============= improvement =============
 
-  ///virtual bool isImprovement(const MoveCost<>& mc, const Evaluation<>& e1, const Evaluation<>& e2)
+  /// virtual bool isImprovement(const MoveCost<>& mc, const Evaluation<>& e1,
+  /// const Evaluation<>& e2)
   // Analyse if '(mc + e1)' is an improvement over 'e2'
   virtual bool isImprovement(const XEv& mc, const XEv& e1, const XEv& e2) {
-    //evtype ec1 = mc.cost() + e1.evaluation();
+    // evtype ec1 = mc.cost() + e1.evaluation();
     evtype ec1 = mc.evaluation() + e1.evaluation();
 
-    //if(isMinimization()  && (e2.evaluation() - ec1) >= EVALUATION_ZERO) // deprecated
-    if (isMinimization() && (e2.evaluation() - ec1) >= optframe::get_numeric_zero<typename XEv::objType>())
+    // if(isMinimization()  && (e2.evaluation() - ec1) >= EVALUATION_ZERO) //
+    // deprecated
+    if (isMinimization() &&
+        (e2.evaluation() - ec1) >=
+            optframe::get_numeric_zero<typename XEv::objType>())
       return true;
 
-    //if(!isMinimization() && (ec1 - e2.evaluation()) >= EVALUATION_ZERO) // deprecated
-    if (!isMinimization() && (ec1 - e2.evaluation()) >= optframe::get_numeric_zero<typename XEv::objType>())
+    // if(!isMinimization() && (ec1 - e2.evaluation()) >= EVALUATION_ZERO) //
+    // deprecated
+    if (!isMinimization() &&
+        (ec1 - e2.evaluation()) >=
+            optframe::get_numeric_zero<typename XEv::objType>())
       return true;
 
     return false;
   }
 
-  ///virtual inline bool isImprovement(const MoveCost<>& mc)
+  /// virtual inline bool isImprovement(const MoveCost<>& mc)
   virtual inline bool isImprovement(const XEv& mc) {
     return betterThan(mc, nullCost);
   }
@@ -247,9 +266,7 @@ class Direction : public Component {
 
   virtual bool isMinimization() const = 0;
 
-  inline bool isMaximization() const {
-    return !isMinimization();
-  }
+  inline bool isMaximization() const { return !isMinimization(); }
 
   // ============ Limits =============
 
@@ -320,9 +337,7 @@ class Direction : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   std::string toString() const override {
     if (isMinimization())
@@ -331,51 +346,43 @@ class Direction : public Component {
       return "Direction:MAX";
   }
 
-  void print() const override {
-    cout << toString() << endl;
-  }
+  void print() const override { cout << toString() << endl; }
 };
 
-//template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
-//class Minimization: public Direction<ObjType, XEv>
+// template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv =
+// Evaluation<ObjType>> class Minimization: public Direction<ObjType, XEv>
 template <XEvaluation XEv = Evaluation<evtype>>  // default is 'evtype'
 class Minimization : public Direction<XEv> {
  public:
-  virtual ~Minimization() {
-  }
+  virtual ~Minimization() {}
 
   /*
-	inline bool betterThan(evtype f1, evtype f2)
-	{
-		// MINIMIZATION
-		return (f1 < (f2 - OPTFRAME_EPSILON));
-	}*/
+        inline bool betterThan(evtype f1, evtype f2)
+        {
+                // MINIMIZATION
+                return (f1 < (f2 - OPTFRAME_EPSILON));
+        }*/
 
-  inline bool isMinimization() const {
-    return true;
-  }
+  inline bool isMinimization() const { return true; }
 };
 
-//template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv = Evaluation<ObjType>>
-//class Maximization: public Direction<ObjType, XEv>
+// template<optframe::totally_ordered ObjType = evtype, XEvaluation XEv =
+// Evaluation<ObjType>> class Maximization: public Direction<ObjType, XEv>
 template <XEvaluation XEv = Evaluation<evtype>>  // default is 'evtype'
 class Maximization : public Direction<XEv> {
  public:
-  virtual ~Maximization() {
-  }
+  virtual ~Maximization() {}
 
   /*
-	inline bool betterThan(evtype f1, evtype f2)
-	{
-		// MAXIMIZATION
-		return (f1 > (f2 + OPTFRAME_EPSILON));
-	}*/
+        inline bool betterThan(evtype f1, evtype f2)
+        {
+                // MAXIMIZATION
+                return (f1 > (f2 + OPTFRAME_EPSILON));
+        }*/
 
-  inline bool isMinimization() const {
-    return false;
-  }
+  inline bool isMinimization() const { return false; }
 };
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_OPTIMIZATION_DIRECTION_HPP_*/
+#endif  // OPTFRAME_DIRECTION_HPP_

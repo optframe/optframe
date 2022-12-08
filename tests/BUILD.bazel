@@ -11,7 +11,7 @@ cc_test(
         "OptFrame-test/**/*.h",
     ]),
     defines = ["CATCH_CONFIG_MAIN"],
-    deps = ["//include:OptFrame", ":catch2_thirdparty"],
+    deps = ["//include:OptFrame", "//include:OptFCore", ":catch2_thirdparty"],
 )
 
 

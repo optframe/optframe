@@ -54,7 +54,7 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
 
   explicit NonDominatedSort(sref<MultiEvaluator<XMES2>> _mev)
       : mev{_mev}, vDir{_mev->vDir} {
-    assert(false);
+    assert(mev->vDir.size() > 0);
   }
 
   virtual ~NonDominatedSort() = default;
@@ -63,9 +63,12 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
       // vector<MOSIndividual<XMES2>>& g,
       const vector<int>& g, vector<MOSIndividual<XMES2>>& Pop) override {
     ParetoDominance<XMES2> pDominance{mev};
-    // for now, ignore 'g'
+    //
+    // for now, ignore 'g' (assume only "ALL" can be executed here!)
     assert(g.size() == Pop.size());
 
+    // initialize individuals with -1 fitness
+    // (TODO: reuse MOSIndividual structure)
     vector<FitnessIndividual<XMEv>> P(Pop.size());
     for (unsigned s = 0; s < P.size(); s++)
       P[s] = FitnessIndividual<XMEv>(s, -1, Pop[s].second);
@@ -74,8 +77,10 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
       std::cout << this->id() << "::fastNonDominatedSort |P|=";
     std::cout << P.size() << " begin" << endl;
 
+    // Initialize pareto front vector F (of ids)
     vector<vector<int>> F;
     F.push_back(vector<int>{});
+    // ???
     vector<vector<int>> S(P.size());
     vector<int> n(P.size());
 
@@ -92,7 +97,7 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
           pair<bool, bool> v = pDominance.birelation(P.at(p).mev, P.at(q).mev);
 
           // if (p << q)
-          if (v.first) S[p].push_back(q);  // Sp = Sp U {q}
+          if (v.first) S[p].push_back((int)q);  // Sp = Sp U {q}
           // else if (q << p)
           else if (v.second)
             n[p]++;  // np = np + 1
@@ -100,8 +105,8 @@ class NonDominatedSort : public FitnessAssignment<XMES2> {
 
       // if n_p = 0, p belongs to the first front
       if (n[p] == 0) {
-        P[p].fitness = 0;   // p rank = 1
-        F[0].push_back(p);  // F_1 = F_1 U {p}
+        P[p].fitness = 0;        // p rank = 1
+        F[0].push_back((int)p);  // F_1 = F_1 U {p}
       }
     }
 

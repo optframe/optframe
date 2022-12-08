@@ -11,6 +11,7 @@ Checks: >
     -cppcoreguidelines-non-private-member-variables-in-classes,
     -cppcoreguidelines-pro-type-cstyle-cast,
     -clang-diagnostic-builtin-macro-redefined,
+    -google-readability-casting
 HeaderFilterRegex: ".*"
 # disable: cppcoreguidelines-pro-type-union-access
 # how to disable: bugprone-easily-swappable-parameters

@@ -9,6 +9,7 @@
 // Functional Core Module: inclusion of "Functional OptFrame Core" components
 
 #include <OptFCore/FConstructive.hpp>
+#include <OptFCore/FDirection.hpp>
 #include <OptFCore/FEvaluator.hpp>
 #include <OptFCore/FMove.hpp>
 #include <OptFCore/FNS.hpp>
@@ -26,9 +27,7 @@ namespace optframe {
 class FCore {
  public:
   static constexpr char OPTFRAME_VERSION[] = "5.0.5";
-  static std::string version() {
-    return OPTFRAME_VERSION;
-  }
+  static std::string version() { return OPTFRAME_VERSION; }
 
   static std::string welcome() {
     return "Welcome to OptFrame Functional Core (FCore) - version " + version();

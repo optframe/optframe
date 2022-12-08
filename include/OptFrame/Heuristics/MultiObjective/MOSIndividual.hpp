@@ -43,12 +43,11 @@ namespace optframe {
 
 // This is typically part of a Secondary Type (not primary)
 
-template <XESolution XMES2>
-
 // MultiObjSearch Individual
 // template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS =
 // OPTFRAME_DEFAULT_DS>
 
+template <XESolution XMES2>
 class MOSIndividual {
   using S = typename XMES2::first_type;
   using XMEv = typename XMES2::second_type;
