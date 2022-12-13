@@ -151,16 +151,22 @@ TEST_CASE("OptFrameHeuristicsTests: nondom_sort_front_min_min_min") {
   MultiEvaluation<int> A{vector<int>{1, 2, 3}};
   MultiEvaluation<int> B{vector<int>{2, 1, 3}};
   MultiEvaluation<int> C{vector<int>{3, 3, 3}};
+  MultiEvaluation<int> D{vector<int>{4, 5, 6}};
+  MultiEvaluation<int> E{vector<int>{6, 5, 4}};
 
   vector<MOSIndividual<TestXMES>> vpop;
   vpop.push_back(MOSIndividual{TestXMES{-1, A}});
   vpop.push_back(MOSIndividual{TestXMES{-1, B}});
   vpop.push_back(MOSIndividual{TestXMES{-1, C}});
+  vpop.push_back(MOSIndividual{TestXMES{-1, D}});
+  vpop.push_back(MOSIndividual{TestXMES{-1, E}});
 
   ndSort.assignFitnessAll(vpop);
   REQUIRE(vpop[0].fitness == 0);  // A
   REQUIRE(vpop[1].fitness == 0);  // B
   REQUIRE(vpop[2].fitness == 1);  // C
+  REQUIRE(vpop[3].fitness == 2);  // D
+  REQUIRE(vpop[4].fitness == 2);  // E
 }
 
 #endif  // TESTS_OPTFRAME_TEST_HEURISTICS_TEST_MULTIOBJECTIVE_TEST_NONDOMINATEDSORT_TEST_HPP_

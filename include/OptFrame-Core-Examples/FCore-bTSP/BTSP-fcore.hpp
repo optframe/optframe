@@ -1,4 +1,9 @@
-#pragma once
+// SPDX-License-Identifier:  MIT OR LGPL-3.0-or-later
+// Copyright (C) 2007-2022 - OptFrme developers
+// https://github.com/optframe/optframe
+
+#ifndef OPTFRAME_CORE_EXAMPLES_FCORE_BTSP_BTSP_FCORE_HPP_  // NOLINT
+#define OPTFRAME_CORE_EXAMPLES_FCORE_BTSP_BTSP_FCORE_HPP_  // NOLINT
 
 #include <algorithm>
 #include <functional>
@@ -31,9 +36,8 @@ using ESolutionBTSP = std::pair<
 using MyPareto = optframe::Pareto<ESolutionBTSP>;
 
 // helper type for (single-obj) evaluator adapters
-using ESolutionBTSPSingle = std::pair<
-    typename ESolutionBTSP::first_type,
-    typename ESolutionBTSP::second_type::XEv>;
+using ESolutionBTSPSingle = std::pair<typename ESolutionBTSP::first_type,
+                                      typename ESolutionBTSP::second_type::XEv>;
 
 /*
 optframe::evgoal<Self>&&
@@ -43,7 +47,7 @@ optframe::evgoal<Self>&&
                optframe::ostreamable<Self>&& requires(Self e) {
                   typename Self::objType;
                } &&
-               
+
 */
 
 hasUpdateDiff auto global_ev1 = MultiEvaluation<int>();
@@ -105,20 +109,16 @@ class ProblemContextBTSP {
 // Create TSP Problem Context
 ProblemContextBTSP pBTSP;
 
-Evaluation<int>
-fevaluate0(const std::vector<int>& s) {
+Evaluation<int> fevaluate0(const std::vector<int>& s) {
   int f1 = 0;
-  for (int i = 0; i < int(pBTSP.n) - 1; i++)
-    f1 += pBTSP.dist1(s[i], s[i + 1]);
+  for (int i = 0; i < int(pBTSP.n) - 1; i++) f1 += pBTSP.dist1(s[i], s[i + 1]);
   f1 += pBTSP.dist1(s[int(pBTSP.n) - 1], s[0]);
   return Evaluation<int>{f1};
 }
 
-Evaluation<int>
-fevaluate1(const std::vector<int>& s) {
+Evaluation<int> fevaluate1(const std::vector<int>& s) {
   int f2 = 0;
-  for (int i = 0; i < int(pBTSP.n) - 1; i++)
-    f2 += pBTSP.dist2(s[i], s[i + 1]);
+  for (int i = 0; i < int(pBTSP.n) - 1; i++) f2 += pBTSP.dist2(s[i], s[i + 1]);
   f2 += pBTSP.dist2(s[int(pBTSP.n) - 1], s[0]);
   return Evaluation<int>{f2};
 }
@@ -132,28 +132,24 @@ sref<MultiEvaluator<typename ESolutionBTSP::first_type,
 
 sref<Evaluator<typename ESolutionBTSPSingle::first_type,
                typename ESolutionBTSPSingle::second_type>>
-    ev0{
-        new FEvaluator<ESolutionBTSPSingle, MinOrMax::MINIMIZE>{fevaluate0}};
+    ev0{new FEvaluator<ESolutionBTSPSingle, MinOrMax::MINIMIZE>{fevaluate0}};
 
 sref<Evaluator<typename ESolutionBTSPSingle::first_type,
                typename ESolutionBTSPSingle::second_type>>
-    ev1{
-        new FEvaluator<ESolutionBTSPSingle, MinOrMax::MINIMIZE>{fevaluate1}};
+    ev1{new FEvaluator<ESolutionBTSPSingle, MinOrMax::MINIMIZE>{fevaluate1}};
 
 vsref<Evaluator<typename ESolutionBTSPSingle::first_type,
                 typename ESolutionBTSPSingle::second_type>>
     ev_list = {ev0, ev1};
 
-sref<MultiEvaluator<ESolutionBTSP>>
-    ev{new MultiEvaluator<ESolutionBTSP>(ev_list)};
+sref<MultiEvaluator<ESolutionBTSP>> ev{
+    new MultiEvaluator<ESolutionBTSP>(ev_list)};
 
 // ===========================
 
-std::vector<int>
-frandom() {
+std::vector<int> frandom() {
   vector<int> v(pBTSP.n, -1);  // get information from context
-  for (unsigned i = 0; i < v.size(); i++)
-    v[i] = i;
+  for (unsigned i = 0; i < v.size(); i++) v[i] = i;
   // leave 0 on first position and shuffle the rest
   std::random_shuffle(v.begin() + 1, v.end());
   return v;
@@ -167,9 +163,7 @@ class MoveSwap : public Move<ESolutionBTSP> {
  public:
   int i, j;
 
-  MoveSwap(int _i, int _j)
-      : i{_i}, j{_j} {
-  }
+  MoveSwap(int _i, int _j) : i{_i}, j{_j} {}
 
   bool canBeApplied(const ESolutionBTSP& se) override {
     return (::abs(i - j) >= 2) && (i >= 1) && (j >= 1);
@@ -180,20 +174,24 @@ class MoveSwap : public Move<ESolutionBTSP> {
     // input cannot be outdated
     assert(!se.second.isOutdated());
     auto& s = se.first;
-    int diff = -pBTSP.dist(s[i - 1], s[i]) - pBTSP.dist(s[i], s[(i + 1) % pBTSP.n]) - pBTSP.dist(s[j - 1], s[j]) - pBTSP.dist(s[j], s[(j + 1) % pBTSP.n]);
-    diff += pBTSP.dist(s[i - 1], s[j]) + pBTSP.dist(s[j], s[(i + 1) % pBTSP.n]) + pBTSP.dist(s[j - 1], s[i]) + pBTSP.dist(s[i], s[(j + 1) % pBTSP.n]);
+    int diff = -pBTSP.dist(s[i - 1], s[i]) - pBTSP.dist(s[i], s[(i + 1) %
+  pBTSP.n]) - pBTSP.dist(s[j - 1], s[j]) - pBTSP.dist(s[j], s[(j + 1) %
+  pBTSP.n]); diff += pBTSP.dist(s[i - 1], s[j]) + pBTSP.dist(s[j], s[(i + 1) %
+  pBTSP.n]) + pBTSP.dist(s[j - 1], s[i]) + pBTSP.dist(s[i], s[(j + 1) %
+  pBTSP.n]);
     // solution swap
     auto rev = this->apply(se);
     se.second.setObjFunction(se.second.evaluation() + diff);
     return rev;
   }
 
-  virtual op<Evaluation<int>> cost(const ESolutionBTSP& se, bool allowEstimated) override {
-    assert(!se.second.isOutdated());
-    auto& s = se.first;
-    int diff = -pBTSP.dist(s[i - 1], s[i]) - pBTSP.dist(s[i], s[(i + 1) % pBTSP.n]) - pBTSP.dist(s[j - 1], s[j]) - pBTSP.dist(s[j], s[(j + 1) % pBTSP.n]);
-    diff += pBTSP.dist(s[i - 1], s[j]) + pBTSP.dist(s[j], s[(i + 1) % pBTSP.n]) + pBTSP.dist(s[j - 1], s[i]) + pBTSP.dist(s[i], s[(j + 1) % pBTSP.n]);
-    return std::make_optional(Evaluation<int>(diff));
+  virtual op<Evaluation<int>> cost(const ESolutionBTSP& se, bool allowEstimated)
+  override { assert(!se.second.isOutdated()); auto& s = se.first; int diff =
+  -pBTSP.dist(s[i - 1], s[i]) - pBTSP.dist(s[i], s[(i + 1) % pBTSP.n]) -
+  pBTSP.dist(s[j - 1], s[j]) - pBTSP.dist(s[j], s[(j + 1) % pBTSP.n]); diff +=
+  pBTSP.dist(s[i - 1], s[j]) + pBTSP.dist(s[j], s[(i + 1) % pBTSP.n]) +
+  pBTSP.dist(s[j - 1], s[i]) + pBTSP.dist(s[i], s[(j + 1) % pBTSP.n]); return
+  std::make_optional(Evaluation<int>(diff));
   }
   */
 
@@ -202,30 +200,29 @@ class MoveSwap : public Move<ESolutionBTSP> {
     int aux = se.first[j];
     se.first[j] = se.first[i];
     se.first[i] = aux;
-    return uptr<Move<ESolutionBTSP>>(new MoveSwap{j, i});  // return a reverse move ('undo' move)s
+    return uptr<Move<ESolutionBTSP>>(
+        new MoveSwap{j, i});  // return a reverse move ('undo' move)s
   }
 
-  bool
-  operator==(const Move<ESolutionBTSP>& other) const override {
+  bool operator==(const Move<ESolutionBTSP>& other) const override {
     auto& fmove = (MoveSwap&)other;
     return (i == fmove.i) && (j == fmove.j);
   }
 };
 
-uptr<Move<ESolutionBTSP>>
-makeMoveSwap(int i, int j) {
+uptr<Move<ESolutionBTSP>> makeMoveSwap(int i, int j) {
   return uptr<Move<ESolutionBTSP>>(new MoveSwap{i, j});
 }
 
-uptr<Move<ESolutionBTSP>>
-fRandomSwap(const ESolutionBTSP& se) {
+uptr<Move<ESolutionBTSP>> fRandomSwap(const ESolutionBTSP& se) {
   int i = rand() % pBTSP.n;
   int j = i;
   while (j <= i) {
     i = rand() % pBTSP.n;
     j = rand() % pBTSP.n;
   }
-  //return uptr<Move<ESolutionBTSP>>(new MoveSwap{ make_pair(i, j), fApplySwap, fDefaultCanBeApplied<std::pair<int, int>, ESolutionBTSP>, fCompare });
+  // return uptr<Move<ESolutionBTSP>>(new MoveSwap{ make_pair(i, j), fApplySwap,
+  // fDefaultCanBeApplied<std::pair<int, int>, ESolutionBTSP>, fCompare });
   return uptr<Move<ESolutionBTSP>>(makeMoveSwap(i, j));
 }
 
@@ -241,7 +238,9 @@ FNSSeq<std::pair<int, int>, ESolutionBTSP> nsseq{
         i = rand() % pBTSP.n;
         j = rand() % pBTSP.n;
       }
-      //return uptr<Move<ESolutionBTSP>>(new MoveSwap{ make_pair(i, j), fApplySwap, fDefaultCanBeApplied<std::pair<int, int>, ESolutionBTSP>, fCompare });
+      // return uptr<Move<ESolutionBTSP>>(new MoveSwap{ make_pair(i, j),
+      // fApplySwap, fDefaultCanBeApplied<std::pair<int, int>, ESolutionBTSP>,
+      // fCompare });
       return uptr<Move<ESolutionBTSP>>(makeMoveSwap(i, j));
     },
     // iterator initialization (fGenerator)
@@ -249,12 +248,12 @@ FNSSeq<std::pair<int, int>, ESolutionBTSP> nsseq{
       return make_pair(-1, -1);
     },
     [](std::pair<int, int>& p) -> void {
-      //void (*fFirst)(IMS&),                   // iterator.first()
+      // void (*fFirst)(IMS&),                   // iterator.first()
       p.first = 0;
       p.second = 1;
     },
     [](std::pair<int, int>& p) -> void {
-      //void (*fNext)(IMS&),                    // iterator.next()
+      // void (*fNext)(IMS&),                    // iterator.next()
       if (p.second < (pBTSP.n - 1))
         p.second++;
       else {
@@ -263,12 +262,13 @@ FNSSeq<std::pair<int, int>, ESolutionBTSP> nsseq{
       }
     },
     [](std::pair<int, int>& p) -> bool {
-      //bool (*fIsDone)(IMS&),                  // iterator.isDone()
+      // bool (*fIsDone)(IMS&),                  // iterator.isDone()
       return p.first >= pBTSP.n - 1;
     },
     [](std::pair<int, int>& p) -> uptr<Move<ESolutionBTSP>> {
-      //uptr<Move<XES>> (*fCurrent)(IMS&)       // iterator.current()
-      //return uptr<Move<ESolutionBTSP>>(new MoveSwap{ p, fApplySwap, fDefaultCanBeApplied<std::pair<int, int>, ESolutionBTSP>, fCompare });
+      // uptr<Move<XES>> (*fCurrent)(IMS&)       // iterator.current()
+      // return uptr<Move<ESolutionBTSP>>(new MoveSwap{ p, fApplySwap,
+      // fDefaultCanBeApplied<std::pair<int, int>, ESolutionBTSP>, fCompare });
       return uptr<Move<ESolutionBTSP>>(makeMoveSwap(p.first, p.second));
     }};
 //
@@ -281,7 +281,9 @@ sref<NSSeq<ESolutionBTSP>> nsseq2{
             i = rand() % pBTSP.n;
             j = rand() % pBTSP.n;
           }
-          //return uptr<Move<ESolutionBTSP>>(new MoveSwap{ make_pair(i, j), fApplySwap, fDefaultCanBeApplied<std::pair<int, int>, ESolutionBTSP>, fCompare });
+          // return uptr<Move<ESolutionBTSP>>(new MoveSwap{ make_pair(i, j),
+          // fApplySwap, fDefaultCanBeApplied<std::pair<int, int>,
+          // ESolutionBTSP>, fCompare });
           return uptr<Move<ESolutionBTSP>>(makeMoveSwap(i, j));
         },
         // iterator initialization (fGenerator)
@@ -289,12 +291,12 @@ sref<NSSeq<ESolutionBTSP>> nsseq2{
           return make_pair(-1, -1);
         },
         [](std::pair<int, int>& p) -> void {
-          //void (*fFirst)(IMS&),                   // iterator.first()
+          // void (*fFirst)(IMS&),                   // iterator.first()
           p.first = 0;
           p.second = 1;
         },
         [](std::pair<int, int>& p) -> void {
-          //void (*fNext)(IMS&),                    // iterator.next()
+          // void (*fNext)(IMS&),                    // iterator.next()
           if (p.second < (pBTSP.n - 1))
             p.second++;
           else {
@@ -303,12 +305,14 @@ sref<NSSeq<ESolutionBTSP>> nsseq2{
           }
         },
         [](std::pair<int, int>& p) -> bool {
-          //bool (*fIsDone)(IMS&),                  // iterator.isDone()
+          // bool (*fIsDone)(IMS&),                  // iterator.isDone()
           return p.first >= pBTSP.n - 1;
         },
         [](std::pair<int, int>& p) -> uptr<Move<ESolutionBTSP>> {
-          //uptr<Move<XES>> (*fCurrent)(IMS&)       // iterator.current()
-          //return uptr<Move<ESolutionBTSP>>(new MoveSwap{ p, fApplySwap, fDefaultCanBeApplied<std::pair<int, int>, ESolutionBTSP>, fCompare });
+          // uptr<Move<XES>> (*fCurrent)(IMS&)       // iterator.current()
+          // return uptr<Move<ESolutionBTSP>>(new MoveSwap{ p, fApplySwap,
+          // fDefaultCanBeApplied<std::pair<int, int>, ESolutionBTSP>, fCompare
+          // });
           return uptr<Move<ESolutionBTSP>>(makeMoveSwap(p.first, p.second));
         }}  // FNSSeq
 };          // nsseq2
@@ -316,3 +320,5 @@ sref<NSSeq<ESolutionBTSP>> nsseq2{
 vsref<NS<ESolutionBTSP>> nslist{nsseq2};
 
 }  // namespace BTSP_fcore
+
+#endif  // OPTFRAME_CORE_EXAMPLES_FCORE_BTSP_BTSP_FCORE_HPP_ // NOLINT

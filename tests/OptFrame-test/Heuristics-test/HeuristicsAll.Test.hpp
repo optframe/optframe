@@ -5,6 +5,7 @@
 #ifndef TESTS_OPTFRAME_TEST_HEURISTICS_TEST_HEURISTICSALL_TEST_HPP_
 #define TESTS_OPTFRAME_TEST_HEURISTICS_TEST_HEURISTICSALL_TEST_HPP_
 
+#include "./BasicTabuSearch.Test.hpp"
 #include "./MultiObjective-test/BiObjNonDominatedSort.Test.hpp"
 #include "./MultiObjective-test/NonDominatedSort.Test.hpp"
 

@@ -5,6 +5,11 @@ package(
 )
 
 cc_library(
+    name = "OptFrame-Core-Examples",
+    deps = ["//include/OptFrame-Core-Examples:core-examples-hpp"],
+)
+
+cc_library(
     name = "OptFCore",
     deps = ["//include/OptFCore:all_hpp", ":OptFrame"],
 )

@@ -1,27 +1,9 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
+// SPDX-License-Identifier:  MIT OR LGPL-3.0-or-later
+// Copyright (C) 2007-2022 - OptFrme developers
 // https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
 
-#ifndef OPTFRAME_TABUSEARCH_HPP_
-#define OPTFRAME_TABUSEARCH_HPP_
+#ifndef OPTFRAME_HEURISTICS_TS_BASICTABUSEARCH_HPP_
+#define OPTFRAME_HEURISTICS_TS_BASICTABUSEARCH_HPP_
 
 #include "../../Evaluator.hpp"
 #include "../../NSEnum.hpp"
@@ -37,9 +19,9 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
   using XSH = XES;
   //
  private:
-  //Evaluator<XES, XEv>& evaluator;
-  //InitialSearch<XES>& constructive;
-  //NSSeq<XES, XEv, XSH>& nsSeq;
+  // Evaluator<XES, XEv>& evaluator;
+  // InitialSearch<XES>& constructive;
+  // NSSeq<XES, XEv, XSH>& nsSeq;
   sref<GeneralEvaluator<XES, XEv>> evaluator;
   sref<InitialSearch<XES>> constructive;
   vsref<NSSeq<XES, XEv, XSH>> nsSeq;
@@ -47,27 +29,35 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
   int tsMax;
 
  public:
-  //BasicTabuSearch(Evaluator<XES, XEv>& _ev, InitialSearch<XES>& _constructive, NSSeq<XES, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax)
-  BasicTabuSearch(sref<GeneralEvaluator<XES, XEv>> _ev, sref<InitialSearch<XES>> _constructive, sref<NSSeq<XES, XEv, XSH>> _nsSeq, int _tlSize, int _tsMax)
-      : evaluator(_ev), constructive(_constructive), nsSeq(_nsSeq), tlSize(_tlSize), tsMax(_tsMax) {
-  }
+  // BasicTabuSearch(Evaluator<XES, XEv>& _ev, InitialSearch<XES>&
+  // _constructive, NSSeq<XES, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax)
+  BasicTabuSearch(sref<GeneralEvaluator<XES, XEv>> _ev,
+                  sref<InitialSearch<XES>> _constructive,
+                  sref<NSSeq<XES, XEv, XSH>> _nsSeq, int _tlSize, int _tsMax)
+      : evaluator(_ev),
+        constructive(_constructive),
+        nsSeq(_nsSeq),
+        tlSize(_tlSize),
+        tsMax(_tsMax) {}
 
-  virtual ~BasicTabuSearch() {
-  }
+  ~BasicTabuSearch() override = default;
 
-  //pair<S&, Evaluation<>&>* search(double timelimit = 100000000, double target_f = 0, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
+  // pair<S&, Evaluation<>&>* search(double timelimit = 100000000, double
+  // target_f = 0, const S* _s = nullptr, const Evaluation<>* _e = nullptr)
+  // override
   SearchOutput<XES, XSH> search(const StopCriteria<XEv>& sosc) override {
-    //cout << "BasicTabuSearch exec(" << target_f << "," << timelimit << ")" << endl;
+    // cout << "BasicTabuSearch exec(" << target_f << "," << timelimit << ")" <<
+    // endl;
 
-    //long tini = time(nullptr);
-    //long timelimit = stop.timelimit;
+    // long tini = time(nullptr);
+    // long timelimit = stop.timelimit;
 
-    //XSolution AUTO_CONCEPTS& s = constructive.generateSolution();
-    //XSolution AUTO_CONCEPTS& s = constructive.generateSolution();
-    //Evaluation<>& e = evaluator.evaluate(s);
+    // XSolution AUTO_CONCEPTS& s = constructive.generateSolution();
+    // XSolution AUTO_CONCEPTS& s = constructive.generateSolution();
+    // Evaluation<>& e = evaluator.evaluate(s);
 
-    //XSolution AUTO_CONCEPTS* sStar = &s.clone();
-    //Evaluation<>* evalSStar = &evaluator.evaluate(*sStar);
+    // XSolution AUTO_CONCEPTS* sStar = &s.clone();
+    // Evaluation<>* evalSStar = &evaluator.evaluate(*sStar);
 
     // =========================
 
@@ -77,20 +67,21 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
     std::optional<XSH> star;
     std::optional<XSH> incumbent;
 
-    // Note that no comparison is necessarily made between star and incumbent, as types/spaces could be different. Since we are trajectory here, spaces are equal.
-    // We assume star is better than incumbent, if provided. So, if star is worse than incumbent, we won't re-check that.
+    // Note that no comparison is necessarily made between star and incumbent,
+    // as types/spaces could be different. Since we are trajectory here, spaces
+    // are equal. We assume star is better than incumbent, if provided. So, if
+    // star is worse than incumbent, we won't re-check that.
 
-    // initial setup for incumbent (if has star, copy star, otherwise generate one)
+    // initial setup for incumbent (if has star, copy star, otherwise generate
+    // one)
     if (!incumbent)
       incumbent = star ? star : constructive->initialSearch(sosc).first;
 
     // if no star and has incumbent, star is incumbent
-    if (!star && incumbent)
-      star = incumbent;
+    if (!star && incumbent) star = incumbent;
 
     // abort if no solution exists
-    if (!star)
-      return SearchStatus::NO_SOLUTION;  // no possibility to continue.
+    if (!star) return SearchStatus::NO_SOLUTION;  // no possibility to continue.
 
     // ===========
     // Tabu Search
@@ -98,7 +89,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
 
     XSH& se = *incumbent;
 
-    //evalSStar->print();
+    // evalSStar->print();
 
     int Iter = 0;
 
@@ -111,32 +102,35 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
 
     int estimative_BTmax = 0;
 
-    while (Iter - BestIter <= tsMax && sosc.shouldStop(star->second)) {  //((tnow - tini) < timelimit)) {
+    while (Iter - BestIter <= tsMax &&
+           sosc.shouldStop(star->second)) {  //((tnow - tini) < timelimit)) {
       Iter = Iter + 1;
 
       if ((Iter - BestIter) > estimative_BTmax)
         estimative_BTmax = (Iter - BestIter);
 
-      //cout << "Iter " << Iter << " (" << (Iter - BestIter - 1) << " without improvement)" << endl;
+      // cout << "Iter " << Iter << " (" << (Iter - BestIter - 1) << " without
+      // improvement)" << endl;
 
       // ==================
       // First: aspiration
       // ==================
 
-      Move<XES, XEv>* bestMove = tabuBestMove(se.first, se.second, emptyList);  //tabuBestMove(s, e, emptyList);
+      Move<XES, XEv>* bestMove = tabuBestMove(
+          se.first, se.second, emptyList);  // tabuBestMove(s, e, emptyList);
 
-      //XSolution* s1 = &s.clone();
+      // XSolution* s1 = &s.clone();
       XES se1 = se;
 
-      //Move<XES, XEv>* newTabu = &bestMove->apply(se1.first);//(*s1);
-      //XEv* evalS1 = &evaluator.evaluate(se1.first);//(*s1);
+      // Move<XES, XEv>* newTabu = &bestMove->apply(se1.first);//(*s1);
+      // XEv* evalS1 = &evaluator.evaluate(se1.first);//(*s1);
 
       uptr<Move<XES, XEv>> newTabu = bestMove->applyUpdate(se1);  //(*s1);
       evaluator.reevaluate(se1);
       //
-      //XEv* evalS1 = &evaluator.evaluate(se1.first);//(*s1);
+      // XEv* evalS1 = &evaluator.evaluate(se1.first);//(*s1);
 
-      //if (evaluator.betterThan(*evalS1, *evalSStar)) {
+      // if (evaluator.betterThan(*evalS1, *evalSStar)) {
       if (evaluator->betterStrict(se1.second, star->second)) {
         // Better than global!
 
@@ -147,20 +141,20 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
             break;
           }
       } else {
-        //delete s1;
-        //delete evalS1;
-        //delete newTabu;
+        // delete s1;
+        // delete evalS1;
+        // delete newTabu;
         delete bestMove;
 
-        //bestMove = tabuBestMove(s, e, tabuList);
+        // bestMove = tabuBestMove(s, e, tabuList);
         bestMove = tabuBestMove(se.first, se.second, tabuList);
 
-        //s1 = &s.clone();
-        //XES se1 = se;
+        // s1 = &s.clone();
+        // XES se1 = se;
         se1 = se;
 
-        //newTabu = &bestMove->apply(*s1);
-        //evalS1 = &evaluator.evaluate(*s1);
+        // newTabu = &bestMove->apply(*s1);
+        // evalS1 = &evaluator.evaluate(*s1);
         newTabu = bestMove->applyUpdate(se1);
         evaluator->reevaluate(se1);
 
@@ -187,30 +181,31 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
       //        's' <- 's1';
       // =====================================================
       se = std::move(se1);
-      //s = *s1;
-      //e = *evalS1;
-      //delete s1;
-      //delete evalS1;
+      // s = *s1;
+      // e = *evalS1;
+      // delete s1;
+      // delete evalS1;
 
       // =====================================================
       //        's' better than 's*' (?)
       // =====================================================
 
-      //if (evaluator.betterThan(e, *evalSStar)) {
+      // if (evaluator.betterThan(e, *evalSStar)) {
       if (evaluator->betterStrict(se.second, star->second)) {
-        //delete sStar;
-        //delete evalSStar;
+        // delete sStar;
+        // delete evalSStar;
 
-        //sStar = &s.clone();
-        //evalSStar = &evaluator.evaluate(*sStar);
+        // sStar = &s.clone();
+        // evalSStar = &evaluator.evaluate(*sStar);
         star = se;
 
         BestIter = Iter;
 
-        //cout << "Improvement on " << BestIter << ": fo=" << evalSStar->evaluation() << endl;
+        // cout << "Improvement on " << BestIter << ": fo=" <<
+        // evalSStar->evaluation() << endl;
       }
 
-      //tnow = time(nullptr);
+      // tnow = time(nullptr);
     }
 
     while (tabuList.size() > 0) {
@@ -222,12 +217,12 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
     // 's' <- 's*'
     // ===========
 
-    //s = *sStar;
-    //e = *evalSStar;
-    //se = star;
+    // s = *sStar;
+    // e = *evalSStar;
+    // se = star;
 
-    //delete sStar;
-    //delete evalSStar;
+    // delete sStar;
+    // delete evalSStar;
 
     FILE* ftabu = fopen("tabu.txt", "a");
     if (!ftabu) {
@@ -237,12 +232,13 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
       fclose(ftabu);
     }
 
-    //return new pair<S&, Evaluation<>&>(s, e);
-    //return STATUS
+    // return new pair<S&, Evaluation<>&>(s, e);
+    // return STATUS
     return {SearchStatus::NO_REPORT, star};
   }
 
-  Move<XES, XEv>* tabuBestMove(XES& se, const vector<Move<XES, XEv>*>& tabuList) {
+  Move<XES, XEv>* tabuBestMove(XES& se,
+                               const vector<Move<XES, XEv>*>& tabuList) {
     XSolution AUTO_CONCEPTS& s = se.first;
     // Evaluation<>& e = se.second;
 
@@ -299,8 +295,7 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
 
   bool inList(Move<XES, XEv>* m, const vector<Move<XES, XEv>*>& v) {
     for (unsigned int i = 0; i < v.size(); i++)
-      if ((*m) == (*v[i]))
-        return true;
+      if ((*m) == (*v[i])) return true;
     return false;
   }
 
@@ -310,16 +305,17 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, XEv>>
-class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<S, XEv, XES> {
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>,
+          XSearch<XES> XSH = std::pair<S, XEv>>
+class BasicTabuSearchBuilder : public TS,
+                               public SingleObjSearchBuilder<S, XEv, XES> {
  public:
-  virtual ~BasicTabuSearchBuilder() {
-  }
+  virtual ~BasicTabuSearchBuilder() {}
 
   SingleObjSearch<XES>* build(Scanner& scanner,
                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
@@ -328,18 +324,17 @@ class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<S, XEv, 
     hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
 
     Constructive<S>* constructive;
-    hf.assign(constructive, *scanner.nextInt(), scanner.next());  // reads backwards!
+    hf.assign(constructive, *scanner.nextInt(),
+              scanner.next());  // reads backwards!
 
     NSSeq<XES, XEv, XSH>* nsseq;
     hf.assign(nsseq, *scanner.nextInt(), scanner.next());  // reads backwards!
 
-    if (!scanner.hasNext())
-      return nullptr;
+    if (!scanner.hasNext()) return nullptr;
 
     int tl = *scanner.nextInt();
 
-    if (!scanner.hasNext())
-      return nullptr;
+    if (!scanner.hasNext()) return nullptr;
 
     int tsMax = *scanner.nextInt();
 
@@ -348,10 +343,14 @@ class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<S, XEv, 
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
-    //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-    params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
-    params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(), "neighborhood structure"));
+    params.push_back(
+        make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+    // params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
+    // heuristic"));
+    params.push_back(
+        make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
+    params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(),
+                               "neighborhood structure"));
     params.push_back(make_pair("OptFrame:int", "tabu list size"));
     params.push_back(make_pair("OptFrame:int", "max number of iterations"));
 
@@ -364,15 +363,14 @@ class BasicTabuSearchBuilder : public TS, public SingleObjSearchBuilder<S, XEv, 
 
   static string idComponent() {
     stringstream ss;
-    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << ":" << TS::family() << ":BasicTabuSearch";
+    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << ":" << TS::family()
+       << ":BasicTabuSearch";
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_TABUSEARCH_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_TS_BASICTABUSEARCH_HPP_

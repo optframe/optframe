@@ -7,14 +7,14 @@ package(
 cc_binary(
     name = "app_BTSPfcore",
     srcs = ["src/mainBTSP-fcore.cpp"],
-    copts = ['-std=c++20', '-Wfatal-errors'],
-    deps = [":BTSPfcore"],
+    #copts = ['-std=c++20', '-Wfatal-errors'],
+    deps = ["@OptFrame//include/OptFrame-Core-Examples:core-examples-hpp"],
 )
 
-cc_library(
-    name = "BTSPfcore",
-    hdrs = ["src/BTSP-fcore.hpp"],
-    deps = ["@OptFrame//include:OptFCore"]
-)
+#cc_library(
+#    name = "BTSPfcore",
+#    hdrs = ["src/BTSP-fcore.hpp"],
+#    deps = ["@OptFrame//include:OptFCore"]
+#)
 
 

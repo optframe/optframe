@@ -11,6 +11,10 @@ install:
 	echo "installing OptFrame headers in /usr/local/include/"
 	./install.sh && echo "Finished Installation"
 
+lint:
+	bazel run @hedron_compile_commands//:refresh_all
+	bazel build //... --config clang-tidy
+
 .PHONY: docs
 
 docs:

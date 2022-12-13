@@ -1,5 +1,8 @@
-// OptFrame - Optimization Framework
+// SPDX-License-Identifier:  MIT OR LGPL-3.0-or-later
+// Copyright (C) 2007-2022 - OptFrme developers
+// https://github.com/optframe/optframe
 
+// OptFrame - Optimization Framework
 // Copyright (C) 2009, 2010, 2011
 // http://optframe.sourceforge.net/
 //
@@ -18,8 +21,8 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_TABUSEARCH_HPP_
-#define OPTFRAME_TABUSEARCH_HPP_
+#ifndef OPTFRAME_HEURISTICS_TS_TABUSEARCH_HPP_  // NOLINT
+#define OPTFRAME_HEURISTICS_TS_TABUSEARCH_HPP_  // NOLINT
 
 #include "../../Evaluator.hpp"
 #include "../../NSEnum.hpp"
@@ -37,15 +40,21 @@ class TabuSearch : public SingleObjSearch<XES> {
   int tsMax;
 
  public:
-  TabuSearch(Evaluator<XES, XEv>& _ev, InitialSearch<XES>& _constructive, NSSeq<XES, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax)
-      : evaluator(_ev), constructive(_constructive), nsSeq(_nsSeq), tlSize(_tlSize), tsMax(_tsMax) {
-  }
+  TabuSearch(Evaluator<XES, XEv>& _ev, InitialSearch<XES>& _constructive,
+             NSSeq<XES, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax)
+      : evaluator(_ev),
+        constructive(_constructive),
+        nsSeq(_nsSeq),
+        tlSize(_tlSize),
+        tsMax(_tsMax) {}
 
-  virtual ~TabuSearch() {
-  }
+  virtual ~TabuSearch() {}
 
-  pair<S&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0, const S* _s = nullptr, const Evaluation<DS>* _e = nullptr) {
-    //cout << "TabuSearch exec(" << target_f << "," << timelimit << ")" << endl;
+  pair<S&, Evaluation<DS>&>* search(double timelimit = 100000000,
+                                    double target_f = 0, const S* _s = nullptr,
+                                    const Evaluation<DS>* _e = nullptr) {
+    // cout << "TabuSearch exec(" << target_f << "," << timelimit << ")" <<
+    // endl;
 
     long tini = time(nullptr);
 
@@ -55,7 +64,7 @@ class TabuSearch : public SingleObjSearch<XES> {
     S* sStar = &s.clone();
     Evaluation<DS>* evalSStar = &evaluator.evaluate(*sStar);
 
-    //evalSStar->print();
+    // evalSStar->print();
 
     int Iter = 0;
 
@@ -74,7 +83,8 @@ class TabuSearch : public SingleObjSearch<XES> {
       if ((Iter - BestIter) > estimative_BTmax)
         estimative_BTmax = (Iter - BestIter);
 
-      //cout << "Iter " << Iter << " (" << (Iter - BestIter - 1) << " without improvement)" << endl;
+      // cout << "Iter " << Iter << " (" << (Iter - BestIter - 1) << " without
+      // improvement)" << endl;
 
       // ==================
       // First: aspiration
@@ -148,7 +158,8 @@ class TabuSearch : public SingleObjSearch<XES> {
 
         BestIter = Iter;
 
-        //cout << "Improvement on " << BestIter << ": fo=" << evalSStar->evaluation() << endl;
+        // cout << "Improvement on " << BestIter << ": fo=" <<
+        // evalSStar->evaluation() << endl;
       }
 
       tnow = time(nullptr);
@@ -180,7 +191,8 @@ class TabuSearch : public SingleObjSearch<XES> {
     return new pair<S&, Evaluation<DS>&>(s, e);
   }
 
-  Move<S, XEv>* tabuBestMove(S& s, Evaluation<DS>& e, const vector<Move<S, XEv>*>& tabuList) {
+  Move<S, XEv>* tabuBestMove(S& s, Evaluation<DS>& e,
+                             const vector<Move<S, XEv>*>& tabuList) {
     NSIterator<S, XEv>& it = nsSeq.getIterator(e.getDS(), s.getR(), s.getADS());
 
     it.first();
@@ -234,8 +246,7 @@ class TabuSearch : public SingleObjSearch<XES> {
 
   bool inList(Move<S, XEv>* m, const vector<Move<S, XEv>*>& v) {
     for (unsigned int i = 0; i < v.size(); i++)
-      if ((*m) == (*v[i]))
-        return true;
+      if ((*m) == (*v[i])) return true;
     return false;
   }
 
@@ -245,9 +256,7 @@ class TabuSearch : public SingleObjSearch<XES> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   virtual vector<pair<string, string>> parameters() const {
     vector<pair<string, string>> p;
@@ -262,4 +271,4 @@ class TabuSearch : public SingleObjSearch<XES> {
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_TABUSEARCH_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_TS_TABUSEARCH_HPP_ // NOLINT

@@ -11,9 +11,42 @@
 
 namespace optframe {
 
+template <XESolution XES, typename ProblemType = void>
+class FNS final : public NS<XES> {
+  using XEv = typename XES::second_type;
+  using XSH = XES;  // only single objective
+
+ public:
+#ifdef OPTFCORE_FUNC_STATIC
+  typedef uptr<Move<XES>> (*FuncTypeNSRand)(sref<ProblemType>, const XES&);
+#else
+  typedef std::function<uptr<Move<XES>>(sref<ProblemType>, const XES&)>
+      FuncTypeNSRand;
+#endif
+
+  sref<ProblemType> p;
+  FuncTypeNSRand fRandom;
+
+  FNS(sref<ProblemType> _p, FuncTypeNSRand _fRandom)
+      : p{_p}, fRandom{_fRandom} {}
+
+  uptr<Move<XES, XEv, XSH>> randomMove(const XES& se) override {
+    return fRandom(p, se);
+  }
+
+  static std::string idComponent() {
+    std::stringstream ss;
+    ss << NS<XES>::idComponent() << ":FNS";
+    return ss.str();
+  }
+
+  std::string id() const override { return idComponent(); }
+};
+
+// template specialization for empty problem = void
+
 template <XESolution XES>
-class FNS final : public NS<XES>  // typename XES::second_type
-{
+class FNS<XES, void> final : public NS<XES> {
   using XEv = typename XES::second_type;
   using XSH = XES;  // only single objective
 
@@ -26,9 +59,7 @@ class FNS final : public NS<XES>  // typename XES::second_type
 
   FuncTypeNSRand fRandom;
 
-  FNS(FuncTypeNSRand _fRandom)
-      : fRandom{_fRandom} {
-  }
+  explicit FNS(FuncTypeNSRand _fRandom) : fRandom{_fRandom} {}
 
   uptr<Move<XES, XEv, XSH>> randomMove(const XES& se) override {
     return fRandom(se);
@@ -40,9 +71,7 @@ class FNS final : public NS<XES>  // typename XES::second_type
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe
