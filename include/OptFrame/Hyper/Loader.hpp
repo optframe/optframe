@@ -26,9 +26,9 @@
 /*! \mainpage OptFrame
  * This is the OptFrame documentation.
  */
-//Esta é a documentação do OptFrame.
+// Esta é a documentação do OptFrame.
 //
-// C
+//  C
 #include <stdlib.h>
 #include <unistd.h>
 // C++
@@ -97,12 +97,13 @@
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
 #include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
 #include <OptFrame/Heuristics/SimpleLocalSearch.hpp>
+#include <OptFrame/Heuristics/TS/BasicTabuSearch.hpp>
 #include <OptFrame/Heuristics/VNS/BasicVNS.hpp>
 #include <OptFrame/Heuristics/VNS/GeneralVNS.hpp>
 #include <OptFrame/Heuristics/VNS/ReducedVNS.hpp>
 #include <OptFrame/Heuristics/VNS/VariableNeighborhoodSearch.hpp>
 
-//TODO ERROR on DecoderNSGAII
+// TODO ERROR on DecoderNSGAII
 //#include <OptFrame/Heuristics/EvolutionaryAlgorithms/DecoderNSGAII.hpp"
 
 #include <OptFrame/Heuristics/EA/RK/BRKGA.hpp>
@@ -120,14 +121,19 @@
 
 namespace optframe {
 
-//template<XESolution XES, XEvaluation XEv = Evaluation<>>
-// template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+// template<XESolution XES, XEvaluation XEv = Evaluation<>>
+//  template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S =
+//  CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
 //
 //
 #ifdef OPTFRAME_LEGACY_R_ADS
-template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, XSearch<XES> XSH = XES, XESolution XES2 = XES, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S,
+          XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>,
+          XSearch<XES> XSH = XES, XESolution XES2 = XES,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
 #else
-template <XESolution XES, XSearch<XES> XSH = XES, XESolution XES2 = XES, X2ESolution<XES2> X2ES = MultiESolution<XES2>>
+template <XESolution XES, XSearch<XES> XSH = XES, XESolution XES2 = XES,
+          X2ESolution<XES2> X2ES = MultiESolution<XES2>>
 #endif
 class Loader {
 
@@ -148,12 +154,9 @@ class Loader {
   map<string, string> dictionary;
   map<string, vector<string>> ldictionary;
 
-  Loader() {
-    loadComponentBuilders();
-  }
+  Loader() { loadComponentBuilders(); }
 
-  Loader(RandGen _rg)
-      : factory(HeuristicFactory<S, XEv, XES, X2ES>(_rg)) {
+  Loader(RandGen _rg) : factory(HeuristicFactory<S, XEv, XES, X2ES>(_rg)) {
     loadComponentBuilders();
   }
 
@@ -187,16 +190,19 @@ class Loader {
     factory.builders.push_back(new CircularSearchBuilder<S, XEv>);
     factory.builders.push_back(new VariableNeighborhoodDescentBuilder<S, XEv>);
 #ifdef OPTFRAME_LEGACY_R_ADS
-    factory.builders.push_back(new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS, S, XEv>);
+    factory.builders.push_back(
+        new VariableNeighborhoodDescentUpdateADSBuilder<R, ADS, S, XEv>);
 #endif
-    //factory.builders.push_back(new RVNDBuilder<S, XEv> );
+    // factory.builders.push_back(new RVNDBuilder<S, XEv> );
     factory.builders.push_back(new HillClimbingBuilder<S, XEv>);
     factory.builders.push_back(new LateAcceptanceHillClimbingBuilder<S, XEv>);
     factory.builders.push_back(new SingleObjSearchToLocalSearchBuilder<S, XEv>);
 
     // SingleObjSearch + Parameters
     factory.builders.push_back(new SimpleLocalSearchBuilder<S, XEv>);
-    factory.builders.push_back(new BasicSimulatedAnnealingBuilder<XSH, XES2, X2ES>);
+    factory.builders.push_back(
+        new BasicSimulatedAnnealingBuilder<XSH, XES2, X2ES>);
+    factory.builders.push_back(new BasicTabuSearchBuilder<S, XEv>);
     factory.builders.push_back(new BasicIteratedLocalSearchBuilder<S, XEv>);
     factory.builders.push_back(new BasicILSPerturbationBuilder<S, XEv>);
     factory.builders.push_back(new IteratedLocalSearchLevelsBuilder<S, XEv>);
@@ -208,18 +214,18 @@ class Loader {
     factory.builders.push_back(new GeneralVNSBuilder<S, XEv>);
 
     // RK family (random keys)
-    //static_assert(X2ESolution<XES, MultiESolution<XES>>);
-    //factory.builders.push_back(new BRKGABuilder<XES>);
+    // static_assert(X2ESolution<XES, MultiESolution<XES>>);
+    // factory.builders.push_back(new BRKGABuilder<XES>);
 
     // GlobalSearchBuilder
-    //using XES2_BRKGA = std::pair<std::vector<double>, Evaluation<>>;
-    //using XSH2_BRKGA = VEPopulation<XES2_BRKGA>;
+    // using XES2_BRKGA = std::pair<std::vector<double>, Evaluation<>>;
+    // using XSH2_BRKGA = VEPopulation<XES2_BRKGA>;
     //
     // Ignoring other BRKGA type parameters...
     // In the future, perhaps try to make other specific lists,
-    // such as ITrajectory or IPopulational (if users want to have specific features,
-    // like onIncumbent(...) callback.
-    // For Multi Objective, must see benefits.
+    // such as ITrajectory or IPopulational (if users want to have specific
+    // features, like onIncumbent(...) callback. For Multi Objective, must see
+    // benefits.
     factory.builders.push_back(new BRKGABuilder<XES, XES, X2ES>);
     factory.builders.push_back(new BasicInitialEPopulationRKBuilder<S, XEv>);
     factory.builders.push_back(new BasicDecoderRandomKeysBuilder<S, XEv>);

@@ -334,15 +334,49 @@ class BasicTabuSearchBuilder : public TS,
   SingleObjSearch<XES>* build(Scanner& scanner,
                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
                               string family = "") override {
-    Evaluator<XES, XEv>* eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    if (Component::debug)
+      std::cout << "BasicTabuSearch Builder Loading Parameter #0" << std::endl;
+    if (!scanner.hasNext()) {
+      if (Component::warning)
+        std::cout << "no next1a! aborting..." << std::endl;
+      return nullptr;
+    }
 
-    Constructive<S>* constructive;
-    hf.assign(constructive, *scanner.nextInt(),
-              scanner.next());  // reads backwards!
+    sptr<GeneralEvaluator<XES, XEv>> eval;
+    std::string sid_0 = scanner.next();
+    int id_0 = *scanner.nextInt();
+    hf.assign(eval, id_0, sid_0);
+    assert(eval);
 
-    NSSeq<XES, XEv, XSH>* nsseq;
-    hf.assign(nsseq, *scanner.nextInt(), scanner.next());  // reads backwards!
+    sptr<GeneralEvaluator<XES, XEv>> ge{eval};
+
+    if (Component::debug)
+      std::cout << "BasicTabuSearch Builder Loading Parameter #2" << std::endl;
+    if (!scanner.hasNext()) {
+      if (Component::warning)
+        std::cout << "no next1b! aborting..." << std::endl;
+      return nullptr;
+    }
+
+    sptr<InitialSearch<XES>> constructive;
+    std::string sid_1 = scanner.next();
+    int id_1 = *scanner.nextInt();
+    hf.assign(constructive, id_1, sid_1);
+    assert(constructive);
+
+    if (Component::debug)
+      std::cout << "BasicTabuSearch Builder Loading Parameter #3" << std::endl;
+    if (!scanner.hasNext()) {
+      if (Component::warning)
+        std::cout << "no next1c! aborting..." << std::endl;
+      return nullptr;
+    }
+
+    sptr<NSSeq<XES>> nsseq;
+    std::string sid_2 = scanner.next();
+    int id_2 = *scanner.nextInt();
+    hf.assign(nsseq, id_2, sid_2);
+    assert(nsseq);
 
     if (!scanner.hasNext()) return nullptr;
 
@@ -353,7 +387,7 @@ class BasicTabuSearchBuilder : public TS,
     int tsMax = *scanner.nextInt();
 
     // NOLINTNEXTLINE
-    return new BasicTabuSearch<XES>(*eval, *constructive, *nsseq, tl, tsMax);
+    return new BasicTabuSearch<XES>(eval, constructive, nsseq, tl, tsMax);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
