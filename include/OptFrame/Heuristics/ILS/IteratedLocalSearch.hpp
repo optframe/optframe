@@ -65,7 +65,8 @@ class IteratedLocalSearch : public ILS,
   virtual bool terminationCondition(sref<H> history) = 0;
 
   // default search method (no initial solution passed)
-  SearchOutput<XES> search(const StopCriteria<XEv>& stopCriteria) override {
+  SearchOutput<XES> searchBy(const StopCriteria<XEv>& stopCriteria,
+                             std::optional<XES> _best) override {
     if (Component::information)
       std::cout << "ILS opt search(" << stopCriteria.timelimit << ")"
                 << std::endl;
@@ -85,12 +86,12 @@ class IteratedLocalSearch : public ILS,
       eStar.print();
     }
 
-    return searchBy(*star, *star, stopCriteria);
+    return searchByIncumbent(*star, *star, stopCriteria);
   }
 
   // for ILS: incumbent is always derived from star, ignoring 'incumbent'
-  SearchOutput<XES> searchBy(XES& star, XES&,
-                             const StopCriteria<XEv>& stopCriteria) override {
+  SearchOutput<XES> searchByIncumbent(
+      XES& star, XES&, const StopCriteria<XEv>& stopCriteria) override {
     if (Component::information)
       std::cout << "ILS opt searchBy(" << stopCriteria.timelimit << ")"
                 << std::endl;

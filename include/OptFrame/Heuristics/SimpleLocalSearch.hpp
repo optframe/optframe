@@ -20,12 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_SIMPLE_LOCAL_SEARCH_HPP_
-#define OPTFRAME_SIMPLE_LOCAL_SEARCH_HPP_
+#ifndef OPTFRAME_HEURISTICS_SIMPLELOCALSEARCH_HPP_
+#define OPTFRAME_HEURISTICS_SIMPLELOCALSEARCH_HPP_
 
+// C
 #include <math.h>
-
+// C++
+#include <string>
 #include <vector>
+//
 
 #include "../Constructive.hpp"
 #include "../Evaluation.hpp"
@@ -43,39 +46,43 @@ class SimpleLocalSearch : public SingleObjSearch<XES> {
   sref<LocalSearch<XES, XEv>> localSearch;
 
  public:
-  SimpleLocalSearch(sref<Evaluator<XES, XEv>> _evaluator, sref<InitialSearch<XES>> _constructive, sref<LocalSearch<XES, XEv>> _localSearch)
-      : evaluator(_evaluator), constructive(_constructive), localSearch(_localSearch) {
-  }
+  SimpleLocalSearch(sref<Evaluator<XES, XEv>> _evaluator,
+                    sref<InitialSearch<XES>> _constructive,
+                    sref<LocalSearch<XES, XEv>> _localSearch)
+      : evaluator(_evaluator),
+        constructive(_constructive),
+        localSearch(_localSearch) {}
 
-  virtual ~SimpleLocalSearch() {
-  }
+  ~SimpleLocalSearch() override = default;
 
-  //pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc, const S* _s = nullptr, const Evaluation<>* _e = nullptr) override
-  //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& sosc) override
+  // pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc, const S* _s =
+  // nullptr, const Evaluation<>* _e = nullptr) override virtual
+  // std::optional<pair<S, XEv>> search(StopCriteria<XEv>& sosc) override
   //
-  //SearchStatus search(const StopCriteria<XEv>& sosc) override
-  SearchOutput<XES> search(const StopCriteria<XEv>& sosc) override {
-    //op<XES>& star = this->best;
+  // SearchStatus search(const StopCriteria<XEv>& sosc) override
+  SearchOutput<XES> searchBy(const StopCriteria<XEv>& sosc,
+                             std::optional<XES> _best) override {
+    // op<XES>& star = this->best;
     //
     op<XES> star;  // TODO: get best from 'searchBy'
-    //cout << "SimpleLocalSearch search(" << target_f << "," << timelimit << ")" << endl;
+    // cout << "SimpleLocalSearch search(" << target_f << "," << timelimit <<
+    // ")" << endl;
 
     Timer tnow;
 
-    //std::optional<S> s = constructive.generateSolution(sosc.timelimit);
+    // std::optional<S> s = constructive.generateSolution(sosc.timelimit);
     std::optional<XES> pse = constructive->initialSearch(sosc).first;
-    if (!pse)
-      return SearchStatus::NO_SOLUTION;  // nothing to return
-    //Evaluation<> e = evaluator.evaluate(*s);
+    if (!pse) return SearchStatus::NO_SOLUTION;  // nothing to return
+    // Evaluation<> e = evaluator.evaluate(*s);
 
     ////pair<S&, Evaluation<>&>& p = localSearch.search(s, e, sosc);
 
-    //delete &s;
+    // delete &s;
 
-    //return make_optional(make_pair(*s, e));
-    //star = make_optional(make_pair(*s, e));
+    // return make_optional(make_pair(*s, e));
+    // star = make_optional(make_pair(*s, e));
     star = make_optional(*pse);
-    //this->best = star;
+    // this->best = star;
     return {SearchStatus::NO_REPORT, star};
   }
 
@@ -89,9 +96,7 @@ class SimpleLocalSearch : public SingleObjSearch<XES> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   void print() const override {
     cout << "SimpleLocalSearch with:" << endl;
@@ -102,11 +107,12 @@ class SimpleLocalSearch : public SingleObjSearch<XES> {
   }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
 class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<S, XEv, XES> {
  public:
-  virtual ~SimpleLocalSearchBuilder() {
-  }
+  virtual ~SimpleLocalSearchBuilder() {}
 
   SingleObjSearch<XES>* build(Scanner& scanner,
                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
@@ -114,9 +120,10 @@ class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<S, XEv, XES> {
     sptr<Evaluator<XES, XEv>> eval;
     hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
 
-    //Constructive<S>* constructive;
+    // Constructive<S>* constructive;
     sptr<InitialSearch<XES>> constructive;
-    hf.assign(constructive, *scanner.nextInt(), scanner.next());  // reads backwards!
+    hf.assign(constructive, *scanner.nextInt(),
+              scanner.next());  // reads backwards!
 
     string rest = scanner.rest();
 
@@ -132,10 +139,14 @@ class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<S, XEv, XES> {
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
-    //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-    params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
-    params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
+    params.push_back(
+        make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+    // params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
+    // heuristic"));
+    params.push_back(
+        make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
+    params.push_back(
+        make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
 
     return params;
   }
@@ -150,10 +161,8 @@ class SimpleLocalSearchBuilder : public SingleObjSearchBuilder<S, XEv, XES> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 }  // namespace optframe
 
-#endif /*OPTFRAME_SIMPLE_LOCAL_SEARCH_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_SIMPLELOCALSEARCH_HPP_

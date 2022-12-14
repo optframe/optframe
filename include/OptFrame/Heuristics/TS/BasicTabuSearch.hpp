@@ -42,15 +42,16 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
 
   ~BasicTabuSearch() override = default;
 
-  SearchOutput<XES, XSH> search(const StopCriteria<XEv>& sosc) override {
+  SearchOutput<XES, XSH> searchBy(const StopCriteria<XEv>& sosc,
+                                  std::optional<XES> _best) override {
     if (Component::information) {
       std::cout << "BasicTabuSearch search(" << sosc.timelimit << ")"
                 << std::endl;
     }
 
-    // TODO: receive on 'searchBy'
     std::optional<XSH> star;
-    std::optional<XSH> incumbent;
+    if (_best) star = std::move(_best);
+    std::optional<XSH> incumbent = star;
 
     // Note that no comparison is necessarily made between star and incumbent,
     // as types/spaces could be different. Since we are trajectory here, spaces
@@ -71,6 +72,10 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
     // ===========
     // Tabu Search
     // ===========
+
+    if (Component::information)
+      std::cout << "BasicTabuSearch starts with f(s*)="
+                << star->second.evaluation() << std::endl;
 
     XSH& se = *incumbent;
 
@@ -95,7 +100,17 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
         };
     // ============================================
 
-    while (Iter - BestIter <= tsMax && sosc.shouldStop(star->second)) {
+    if (Component::verbose) {
+      std::cout << "BasicTabuSearch begins tsMax=" << tsMax << std::endl;
+    }
+    //
+    while ((Iter - BestIter) <= tsMax && !sosc.shouldStop(star->second)) {
+      //
+      if (Component::verbose) {
+        std::cout << "BasicTabuSearch (Iter=" << Iter
+                  << " - BestIter=" << BestIter << ") <= tsMax = " << tsMax
+                  << std::endl;
+      }
       Iter = Iter + 1;
 
       if ((Iter - BestIter) > estimative_BTmax)
@@ -132,7 +147,14 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
       // ===============================
       //
       if (evaluator->betterStrict(se.second, star->second)) {
-        // Better than global! Can remove from tabu list
+        // Better than global
+        (*star) = se;
+        BestIter = Iter;
+        if (Component::information) {
+          std::cout << "BasicTabuSearch BestIter=" << Iter
+                    << " f(s*)=" << star->second.evaluation() << std::endl;
+        }
+        // Can remove from tabu list
         for (unsigned int i = 0; i < tabuList.size(); i++)
           if ((*tabuList[i]) == (*bestMove)) {
             // let this move expire (no 'delete' here)

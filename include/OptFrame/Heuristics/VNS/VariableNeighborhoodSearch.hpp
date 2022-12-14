@@ -20,12 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_VNS_HPP_
-#define OPTFRAME_VNS_HPP_
+#ifndef OPTFRAME_HEURISTICS_VNS_VARIABLENEIGHBORHOODSEARCH_HPP_
+#define OPTFRAME_HEURISTICS_VNS_VARIABLENEIGHBORHOODSEARCH_HPP_
 
+// C
 #include <math.h>
-
+// C++
+#include <string>
 #include <vector>
+//
 
 #include "../../Constructive.hpp"
 #include "../../Evaluator.hpp"
@@ -56,7 +59,7 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
         vshake(_vNS),
         vsearch(_vNSSeq) {}
 
-  virtual ~VariableNeighborhoodSearch() {}
+  ~VariableNeighborhoodSearch() override = default;
 
   // virtual void improvement(XSolution AUTO_CONCEPTS& s, Evaluation<>& e,
   // double timelimit, double target_f) = 0;
@@ -120,7 +123,8 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
   // std::optional<XES> search(StopCriteria<XEv>& sosc) override
   //
   // SearchStatus search(const StopCriteria<XEv>& sosc) override
-  SearchOutput<XES> search(const StopCriteria<XEv>& sosc) override {
+  SearchOutput<XES> searchBy(const StopCriteria<XEv>& sosc,
+                             std::optional<XES> _best) override {
     // gets incoming solution
     // op<XES>& star = this->best;
     op<XES> star;  // TODO: get on 'searchBy'
@@ -162,7 +166,7 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
       while (k < vshake.size()) {
         XES p1 = *star;  // copy (how to automatically invoke clone?)
         ////XSolution AUTO_CONCEPTS& s = *new S(sStar); // implicit clone on
-        ///copy constructor /Evaluation<>&   e = eStar.clone();
+        /// copy constructor /Evaluation<>&   e = eStar.clone();
 
         shake(p1, k, sosc);
 
@@ -223,4 +227,4 @@ class VariableNeighborhoodSearch : public VNS, public SingleObjSearch<XES> {
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_VNS_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_VNS_VARIABLENEIGHBORHOODSEARCH_HPP_

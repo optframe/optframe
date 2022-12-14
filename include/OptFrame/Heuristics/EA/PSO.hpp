@@ -44,19 +44,20 @@
 namespace optframe {
 
 // begin PSO
-//template<XEvaluation XEv = Evaluation<>, optframe::comparability KeyType = double>
-///template<optframe::comparability KeyType = double>
+// template<XEvaluation XEv = Evaluation<>, optframe::comparability KeyType =
+// double>
+/// template<optframe::comparability KeyType = double>
 struct Bird {
   vector<double> velocity;   // assuming 'double' for now
   vector<double> position;   // assuming 'double' for now
   vector<double> localbest;  // assuming 'double' for now
 
-  // TODO: cache localbest XEv here, and make Bird some IESolution... looks promising!
+  // TODO: cache localbest XEv here, and make Bird some IESolution... looks
+  // promising!
 
   friend std::ostream& operator<<(std::ostream& os, const Bird& b) {
     os << "bird{"
-       << "velocity: " << b.velocity
-       << " position:" << b.position
+       << "velocity: " << b.velocity << " position:" << b.position
        << " localbest:" << b.localbest << "}";
     return os;
   }
@@ -73,25 +74,24 @@ static_assert(X2ESolution<EPopulation<EBird>, EBird>);
 static_assert(XSearch<EPopulation<EBird>, EBird>);
 
 template <
-    ///optframe::comparability KeyType = double,
+    /// optframe::comparability KeyType = double,
     XEvaluation XEv = Evaluation<>,
     XESolution XES = std::pair<std::vector<double>, XEv>,
-    XESolution XES2 = EBird,
-    XSearch<XES2> XSH2 = EPopulation<XES2>>
+    XESolution XES2 = EBird, XSearch<XES2> XSH2 = EPopulation<XES2>>
 class PSO : public SingleObjSearch<XES, XES2, XSH2>
 // TODO: add IPopulational
 //, public IPopulational<XES, XES, XES2>
 {
   using S = typename XES::first_type;
-  //using XEv = typename XES::second_type;
+  // using XEv = typename XES::second_type;
   using XSH = XES;
 
-  //private:
-  //   Bird Global;
+  // private:
+  //    Bird Global;
 
  protected:
   Evaluator<S, XEv, XES>& evaluator;  // Check to avoid memory leaks
-  //InitialPopulation<XES2>& initPop; // TODO: add if necessary
+  // InitialPopulation<XES2>& initPop; // TODO: add if necessary
   /*
       RANDOM PSO
     * pop_size -> Número de pájaros (o partículas)
@@ -99,7 +99,7 @@ class PSO : public SingleObjSearch<XES, XES2, XSH2>
     * cI -> Vector con los topes inferiores de los parámetros
     * cS -> Vector con los topes superiores de los parámetros
     * FUNCION -> Función que pretendemos minimizar
-    * 
+    *
     * */
   // population size
   unsigned pop_size;
@@ -113,11 +113,17 @@ class PSO : public SingleObjSearch<XES, XES2, XSH2>
   sref<RandGen> rg;
 
  public:
-  PSO(Evaluator<S, XEv, XES>& evaluator, unsigned pop_size, int iter_max, const vector<double>& cI, const vector<double>& cS, sref<RandGen> _rg = new RandGen)
-      : evaluator(evaluator), pop_size(pop_size), iter_max(iter_max), cI(cI), cS(cS), rg{_rg} {
+  PSO(Evaluator<S, XEv, XES>& evaluator, unsigned pop_size, int iter_max,
+      const vector<double>& cI, const vector<double>& cS,
+      sref<RandGen> _rg = new RandGen)
+      : evaluator(evaluator),
+        pop_size(pop_size),
+        iter_max(iter_max),
+        cI(cI),
+        cS(cS),
+        rg{_rg} {
     assert(cI.size() == cS.size());
-    for (unsigned i = 0; i < cI.size(); i++)
-      assert(cI[i] < cS[i]);
+    for (unsigned i = 0; i < cI.size(); i++) assert(cI[i] < cS[i]);
   }
 
   virtual EPopulation<XES2> generatePopulation() {
@@ -146,7 +152,8 @@ class PSO : public SingleObjSearch<XES, XES2, XSH2>
         if (r < 0.5)
           b.position[j] += (cS[j] - cI[j]) * (::pow(2.0 * r, 1.0 / 21) - 1);
         else
-          b.position[j] += (cS[j] - cI[j]) * (::pow(2.0 * (1 - r), 1.0 / 21) + 1);
+          b.position[j] +=
+              (cS[j] - cI[j]) * (::pow(2.0 * (1 - r), 1.0 / 21) + 1);
       }
     }
   }
@@ -172,8 +179,7 @@ class PSO : public SingleObjSearch<XES, XES2, XSH2>
 
   // uniform random between interval
   double runif(double a, double b) {
-    if (a == b)
-      return a;
+    if (a == b) return a;
     return a + (b - a) * rg->rand01();
   }
 
@@ -185,29 +191,30 @@ class PSO : public SingleObjSearch<XES, XES2, XSH2>
     int count_gen;
   };
 
-  // override callbacks (similar to "double-dispatch", but hiding with inheritance)
+  // override callbacks (similar to "double-dispatch", but hiding with
+  // inheritance)
   bool (*onBest)(ExecutionContext& ctx, const XSH& best) =
       [](ExecutionContext& ctx, const XSH& best) { return true; };
   //
   bool (*onIncumbent)(ExecutionContext& ctx, const XSH2& incumbent) =
       [](ExecutionContext& ctx, const XSH2& incumbent) { return true; };
 
-  //SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
-  SearchOutput<XES> search(const StopCriteria<XEv>& stopCriteria) override {
+  // SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
+  SearchOutput<XES> searchBy(const StopCriteria<XEv>& stopCriteria,
+                             std::optional<XSH> _best) override {
     // TODO: context 'ctx'
-    //ExecutionContext ctx{ .self = this };
+    // ExecutionContext ctx{ .self = this };
 
     if (Component::debug)
-      (*Component::logdata) << "PSO search():"
-                            << " pop_size=" << pop_size << " iter_max=" << iter_max
-                            << std::endl;
+      (*Component::logdata)
+          << "PSO search():"
+          << " pop_size=" << pop_size << " iter_max=" << iter_max << std::endl;
 
     // beware that 'star' may not be a Bird...
-    ///op<XES>& star = this->best;
+    /// op<XES>& star = this->best;
 
     // check if time/target conditions are met
-    if (stopCriteria.shouldStop())
-      return SearchStatus::NO_REPORT;
+    if (stopCriteria.shouldStop()) return SearchStatus::NO_REPORT;
 
     // generates initial swarm (of size 'pop_size', see parameter)
     EPopulation<XES2> swarm = generatePopulation();
@@ -231,7 +238,9 @@ class PSO : public SingleObjSearch<XES, XES2, XSH2>
       if (evaluator.betterThan(swarm.getFitness(i), global.second)) {
         global = swarm.at(i);
         if (Component::debug)
-          (*Component::logdata) << "PSO updates best: " << global.second.evaluation() << std::endl;
+          (*Component::logdata)
+              << "PSO updates best: " << global.second.evaluation()
+              << std::endl;
       }
     }
 
@@ -242,7 +251,10 @@ class PSO : public SingleObjSearch<XES, XES2, XSH2>
     while (count_gen < iter_max) {
       // print iteration debug messages
       if (Component::debug)
-        (*Component::logdata) << "PSO count_gen = " << count_gen << " < " << iter_max << " = iter_max \t global = " << global.second.evaluation() << std::endl;
+        (*Component::logdata)
+            << "PSO count_gen = " << count_gen << " < " << iter_max
+            << " = iter_max \t global = " << global.second.evaluation()
+            << std::endl;
       // Particle update
       for (unsigned i = 0; i < this->pop_size; i++) {
         Bird& b = swarm.at(i).first;
@@ -265,10 +277,11 @@ class PSO : public SingleObjSearch<XES, XES2, XSH2>
         // After updating, check to see if there's local upgrades
         boundCheck(b);
         // execute evaluation function
-        // IMPORTANT: we are keeping 'localbest' as the real value of the particle
+        // IMPORTANT: we are keeping 'localbest' as the real value of the
+        // particle
 
         XEv e = evaluator.evaluate(b.position);
-        //swarm.setFitness(i, e);
+        // swarm.setFitness(i, e);
 
         if (evaluator.betterThan(e, swarm.getFitness(i))) {
           // updates 'localbest'
@@ -276,7 +289,7 @@ class PSO : public SingleObjSearch<XES, XES2, XSH2>
           // updates value of localbest
           swarm.setFitness(i, e);
           // updates global best if improving (TODO: maybe it's nice here...)
-          //if (evaluator.betterThan(e, global.second))
+          // if (evaluator.betterThan(e, global.second))
           //   global = swarm.at(i);
         }
       }
@@ -284,14 +297,16 @@ class PSO : public SingleObjSearch<XES, XES2, XSH2>
       // Speed update
       for (unsigned i = 0; i < this->pop_size; i++) {
         Bird& b = swarm.at(i).first;
-        //p.v =  p.v * al( 0.25, 0.75 ) +
-        //       al( 0, 1.5 ) * ( p.best - p.params ) +
-        //       al( 0, 1.5 ) * ( gb[ 0 ] - p.params )
+        // p.v =  p.v * al( 0.25, 0.75 ) +
+        //        al( 0, 1.5 ) * ( p.best - p.params ) +
+        //        al( 0, 1.5 ) * ( gb[ 0 ] - p.params )
         for (unsigned j = 0; j < this->cS.size(); j++) {
           b.velocity[j] =
-              (0.15 + this->rg->rand01() / 2) * b.velocity[j] +                        // p1
-              0.9 * this->rg->rand01() * (b.localbest[j] - b.position[j]) +            // p2
-              0.9 * this->rg->rand01() * (global.first.localbest[j] - b.position[j]);  // p3
+              (0.15 + this->rg->rand01() / 2) * b.velocity[j] +  // p1
+              0.9 * this->rg->rand01() *
+                  (b.localbest[j] - b.position[j]) +  // p2
+              0.9 * this->rg->rand01() *
+                  (global.first.localbest[j] - b.position[j]);  // p3
         }
       }
 
@@ -301,24 +316,26 @@ class PSO : public SingleObjSearch<XES, XES2, XSH2>
         if (evaluator.betterThan(swarm.getFitness(i), global.second)) {
           global = swarm.at(i);
           if (Component::debug)
-            (*Component::logdata) << "PSO updates best: " << global.second.evaluation() << std::endl;
+            (*Component::logdata)
+                << "PSO updates best: " << global.second.evaluation()
+                << std::endl;
         }
       }
-      //if (
-      //  !star ||
-      //  (evaluator.betterThan(swarm.getFitness(localBest), star->second))) {
-      //   star = std::make_optional(swarm.at(localBest));
-      //}
+      // if (
+      //   !star ||
+      //   (evaluator.betterThan(swarm.getFitness(localBest), star->second))) {
+      //    star = std::make_optional(swarm.at(localBest));
+      // }
 
       count_gen++;
-    }  //while count_gen
+    }  // while count_gen
 
     // This is where magic happens...
 
     XSH realBest(global.first.localbest, global.second);
 
-    //this->best = std::make_optional(realBest);
-    //return SearchStatus::NO_REPORT;
+    // this->best = std::make_optional(realBest);
+    // return SearchStatus::NO_REPORT;
     return {SearchStatus::NO_REPORT, std::make_optional(realBest)};
   }
 
@@ -337,15 +354,13 @@ class PSO : public SingleObjSearch<XES, XES2, XSH2>
    }
    */
 
-  virtual bool
-  setSilentR() override {
+  virtual bool setSilentR() override {
     this->setSilent();
     // force execution over all components
     return evaluator.setSilentR();
   }
 
-  virtual bool
-  setVerboseR() override {
+  virtual bool setVerboseR() override {
     this->setVerbose();
     // force execution over all components
     return evaluator.setVerboseR();

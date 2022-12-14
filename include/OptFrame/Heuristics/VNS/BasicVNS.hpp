@@ -20,12 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_BASIC_VNS_HPP_
-#define OPTFRAME_BASIC_VNS_HPP_
+#ifndef OPTFRAME_HEURISTICS_VNS_BASICVNS_HPP_
+#define OPTFRAME_HEURISTICS_VNS_BASICVNS_HPP_
 
 // C
 #include <math.h>
 // C++
+#include <string>
 #include <vector>
 //
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
@@ -41,21 +42,22 @@ class BasicVNS : public VariableNeighborhoodSearch<XES, XEv> {
  public:
   typedef VariableNeighborhoodSearch<XES, XEv> super;
 
-  //BasicVNS(Evaluator<XES>& evaluator, Constructive<S>& constructive, vector<NS<XES, XEv>*> vshake, vector<NSSeq<S>*> vsearch) :
-  BasicVNS(sref<GeneralEvaluator<XES>> evaluator, sref<InitialSearch<XES>> constructive, vsref<NS<XES, XEv>> vshake, vsref<NSSeq<XES>> vsearch)
-      : VariableNeighborhoodSearch<XES, XEv>(evaluator, constructive, vshake, vsearch) {
-  }
+  // BasicVNS(Evaluator<XES>& evaluator, Constructive<S>& constructive,
+  // vector<NS<XES, XEv>*> vshake, vector<NSSeq<S>*> vsearch) :
+  BasicVNS(sref<GeneralEvaluator<XES>> evaluator,
+           sref<InitialSearch<XES>> constructive, vsref<NS<XES, XEv>> vshake,
+           vsref<NSSeq<XES>> vsearch)
+      : VariableNeighborhoodSearch<XES, XEv>(evaluator, constructive, vshake,
+                                             vsearch) {}
 
-  virtual ~BasicVNS() {
-  }
+  virtual ~BasicVNS() {}
 
   sref<LocalSearch<XES, XEv>> buildSearch(unsigned k_search) override {
-    return *new BestImprovement<XES, XEv>(super::evaluator, super::vsearch.at(k_search));
+    return *new BestImprovement<XES, XEv>(super::evaluator,
+                                          super::vsearch.at(k_search));
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   static string idComponent() {
     stringstream ss;
@@ -64,11 +66,12 @@ class BasicVNS : public VariableNeighborhoodSearch<XES, XEv> {
   }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
 class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, XES> {
  public:
-  virtual ~BasicVNSBuilder() {
-  }
+  virtual ~BasicVNSBuilder() {}
 
   SingleObjSearch<XES>* build(Scanner& scanner,
                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
@@ -76,30 +79,34 @@ class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, XES> {
     sptr<GeneralEvaluator<XES>> eval;
     hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
 
-    //Constructive<S>* constructive;
+    // Constructive<S>* constructive;
     sptr<InitialSearch<XES>> constructive;
-    hf.assign(constructive, *scanner.nextInt(), scanner.next());  // reads backwards!
+    hf.assign(constructive, *scanner.nextInt(),
+              scanner.next());  // reads backwards!
 
     vsptr<NS<XES, XEv>> _shakelist;
-    hf.assignList(_shakelist, *scanner.nextInt(), scanner.next());  // reads backwards!
+    hf.assignList(_shakelist, *scanner.nextInt(),
+                  scanner.next());  // reads backwards!
     vsref<NS<XES, XEv>> shakelist;
-    for (auto x : _shakelist)
-      shakelist.push_back(x);
+    for (auto x : _shakelist) shakelist.push_back(x);
 
     vsptr<NSSeq<XES, XEv>> _searchlist;
-    hf.assignList(_searchlist, *scanner.nextInt(), scanner.next());  // reads backwards!
+    hf.assignList(_searchlist, *scanner.nextInt(),
+                  scanner.next());  // reads backwards!
     vsref<NSSeq<XES, XEv>> searchlist;
-    for (auto x : _searchlist)
-      searchlist.push_back(x);
+    for (auto x : _searchlist) searchlist.push_back(x);
 
     return new BasicVNS<XES, XEv>(eval, constructive, shakelist, searchlist);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
-    //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-    params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
+    params.push_back(
+        make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
+    // params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
+    // heuristic"));
+    params.push_back(
+        make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 
     stringstream ss;
     ss << NS<XES, XEv>::idComponent() << "[]";
@@ -118,15 +125,14 @@ class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, XES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << VNS::family() << "BasicVNS";
+    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << VNS::family()
+       << "BasicVNS";
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_BasicVNS_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_VNS_BASICVNS_HPP_

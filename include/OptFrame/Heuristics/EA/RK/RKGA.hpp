@@ -18,10 +18,13 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_RKGA_HPP_
-#define OPTFRAME_RKGA_HPP_
+#ifndef OPTFRAME_HEURISTICS_EA_RK_RKGA_HPP_
+#define OPTFRAME_HEURISTICS_EA_RK_RKGA_HPP_
 
+// C++
 #include <algorithm>
+#include <utility>
+//
 
 //#include "../../IPopulational.hpp"
 #include "../../../InitialPopulation.hpp"
@@ -55,14 +58,14 @@ class RandomKeysInitEPop
   sref<RandGen> rg;
 
  public:
-  RandomKeysInitEPop(int size, sref<RandGen> _rg = new RandGen)
+  explicit RandomKeysInitEPop(int size, sref<RandGen> _rg = new RandGen)
       : rksz(size), rg{_rg} {}
 
   // this generator cannot evaluate solutions
-  virtual bool canEvaluate() const override { return false; }
+  bool canEvaluate() const override { return false; }
 
-  virtual VEPopulation<XES> generateEPopulation(unsigned populationSize,
-                                                double timelimit) override {
+  VEPopulation<XES> generateEPopulation(unsigned populationSize,
+                                        double timelimit) override {
     VEPopulation<XES> pop;
 
     for (unsigned i = 0; i < populationSize; i++) {
@@ -84,7 +87,7 @@ class RandomKeysInitEPop
                         XEv{}});  // TODO: pass by std::move() or unique_ptr
 
       if (Component::debug) {
-        //(*Component::logdata) << "generatePopulation new: " << *d <<
+        // (*Component::logdata) << "generatePopulation new: " << *d <<
         // std::endl;
         // cannot use 'printable' here
       }
@@ -93,7 +96,7 @@ class RandomKeysInitEPop
     return pop;
   }
 
-  virtual bool setVerboseR() override {
+  bool setVerboseR() override {
     this->setVerbose();
     return InitialEPopulation<XES>::setVerboseR();
   }
@@ -112,16 +115,8 @@ class RandomKeysInitEPop
 //
 template <XESolution XES, optframe::comparability KeyType = double,
           XESolution XES2 =
-              std::pair<std::vector<KeyType>,
-                        typename XES::second_type>>  //,
-                                                     // XSearch<XES2> XSH2 =
-                                                     // VEPopulation<XES2>>
-class RKGA : public Populational<XES, XES, XES2>
-// public SingleObjSearch<XES, XES2, XSH2>
-//   TODO: cannot make this IPopulational, unless using EPopulation instead of
-//   "legacy" Population
-//, public IPopulational<XES, XES, XES2>
-{
+              std::pair<std::vector<KeyType>, typename XES::second_type>>
+class RKGA : public Populational<XES, XES, XES2> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
   using XSH = XES;
@@ -258,7 +253,8 @@ class RKGA : public Populational<XES, XES, XES2>
   //
   // SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
   //
-  SearchOutput<XES> search(const StopCriteria<XEv>& stopCriteria) override {
+  SearchOutput<XES> searchBy(const StopCriteria<XEv>& stopCriteria,
+                             std::optional<XSH> _best) override {
     ExecutionContext ctx{.self = this};
 
     if (Component::debug)
@@ -482,7 +478,7 @@ class RKGA : public Populational<XES, XES, XES2>
     S finalSol(*pe.second);  // TODO: avoid loss
 
     // return std::optional<pair<XRS, XEv>>(make_pair(finalSol, e));
-    star = make_optional(make_pair(finalSol, e));
+    star = std::make_optional(make_pair(finalSol, e));
     // this->best = star;
     return {SearchStatus::NO_REPORT, *star};
   }
@@ -502,7 +498,7 @@ class RKGA : public Populational<XES, XES, XES2>
   }
   */
 
-  virtual bool setSilentR() override {
+  bool setSilentR() override {
     this->setSilent();
     // force execution over all components
     bool b1 = decoder->setSilentR();
@@ -510,7 +506,7 @@ class RKGA : public Populational<XES, XES, XES2>
     return b1 && b2;
   }
 
-  virtual bool setVerboseR() override {
+  bool setVerboseR() override {
     this->setVerbose();
     // force execution over all components
     bool b1 = decoder->setVerboseR();
@@ -521,4 +517,4 @@ class RKGA : public Populational<XES, XES, XES2>
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_RKGA_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_EA_RK_RKGA_HPP_

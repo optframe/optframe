@@ -20,52 +20,50 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_EMPTY_SINGLE_OBJ_SEARCH_HPP_
-#define OPTFRAME_EMPTY_SINGLE_OBJ_SEARCH_HPP_
+#ifndef OPTFRAME_HEURISTICS_EMPTYSINGLEOBJSEARCH_HPP_
+#define OPTFRAME_HEURISTICS_EMPTYSINGLEOBJSEARCH_HPP_
 
+// C
 #include <math.h>
+// C++
+#include <string>
 #include <vector>
+//
 
 #include "../SingleObjSearch.hpp"
 
 namespace optframe {
 
-template<XESolution XES, XEvaluation XEv = Evaluation<>>
-class EmptySingleObjSearch : public SingleObjSearch<XES>
-{
-public:
-   EmptySingleObjSearch()
-   {
-   }
+template <XESolution XES, XEvaluation XEv = Evaluation<>>
+class EmptySingleObjSearch : public SingleObjSearch<XES> {
+ public:
+  EmptySingleObjSearch() {}
 
-   virtual ~EmptySingleObjSearch()
-   {
-   }
+  ~EmptySingleObjSearch() override = default;
 
-   //pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc,  const S* _s = nullptr,  const Evaluation<>* _e = nullptr) override
-   //virtual std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria) override
-   //
-   //SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
-   SearchOutput<XES> search(const StopCriteria<XEv>& stopCriteria) override
-   {
-      cout << "WARNING: RETURNING A EmptySingleObjSearch!" << endl;
-      //return std::nullopt; // nothing to return
-      return SearchStatus::NO_REPORT;
-   }
+  // pair<S, Evaluation<>>* search(StopCriteria<XEv>& sosc,  const S* _s =
+  // nullptr,  const Evaluation<>* _e = nullptr) override virtual
+  // std::optional<pair<S, XEv>> search(StopCriteria<XEv>& stopCriteria)
+  // override
+  //
+  // SearchStatus search(const StopCriteria<XEv>& stopCriteria) override
+  SearchOutput<XES> searchBy(const StopCriteria<XEv>& stopCriteria,
+                             std::optional<XES> _best) override {
+    if (_best)
+      std::cout << "WARNING: RETURNING A EmptySingleObjSearch!" << std::endl;
+    // return std::nullopt; // nothing to return
+    return SearchStatus::NO_REPORT;
+  }
 
-   static string idComponent()
-   {
-      stringstream ss;
-      ss << SingleObjSearch<XES>::idComponent() << "empty";
-      return ss.str();
-   }
+  static string idComponent() {
+    stringstream ss;
+    ss << SingleObjSearch<XES>::idComponent() << "empty";
+    return ss.str();
+  }
 
-   virtual string id() const override
-   {
-      return idComponent();
-   }
+  virtual string id() const override { return idComponent(); }
 };
 
-}
+}  // namespace optframe
 
-#endif /*OPTFRAME_EMPTY_SINGLE_OBJ_SEARCH_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_EMPTYSINGLEOBJSEARCH_HPP_

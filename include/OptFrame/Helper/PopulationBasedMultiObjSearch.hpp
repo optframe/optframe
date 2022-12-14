@@ -114,8 +114,9 @@ class PopulationBasedMultiObjSearch
                              vector<MOSIndividual<XMES2>>& archive) = 0;
 
   // from MultiObjSearch
-  SearchOutput<XMES, Pareto<XMES>> search(
-      const StopCriteria<XMEv>& stopCriteria) override = 0;
+  SearchOutput<XMES, Pareto<XMES>> searchBy(
+      const StopCriteria<XMEv>& stopCriteria,
+      std::optional<Pareto<XMES>> _best) override = 0;
 
   bool setVerboseR() override {
     this->setVerbose();
@@ -207,8 +208,9 @@ class NSPopulationBasedMultiObjSearch
   //    double target_f = 0, Pareto<R, ADS, DS>* _pf = nullptr) {
 
   // from MultiObjSearch
-  SearchOutput<XMES, Pareto<XMES>> search(
-      const StopCriteria<XMEv>& stop) override {
+  SearchOutput<XMES, Pareto<XMES>> searchBy(
+      const StopCriteria<XMEv>& stop,
+      std::optional<Pareto<XMES>> _best) override {
     Timer timer;
 
     if (Component::information) {

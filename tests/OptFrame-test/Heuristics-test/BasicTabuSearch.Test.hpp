@@ -213,11 +213,10 @@ TEST_CASE("OptFrameHeuristicsTests: tabu_search_kp") {
   auto se_ts = se_base;
   REQUIRE(se_base.second.evaluation() == 6);
 
-  auto sout = basicTabuSearch.search({10000.0});  // too many seconds
+  // too many seconds
+  auto sout = basicTabuSearch.searchBy({10000.0}, std::move(se_ts));
 
   REQUIRE(sout.best->second.evaluation() == 11);
-
-  REQUIRE(false);
 }
 
 #endif  // TESTS_OPTFRAME_TEST_HEURISTICS_TEST_TABUSEARCH_TEST_HPP_ // NOLINT

@@ -205,8 +205,9 @@ class NSGAII : public MultiObjSearch<XMES, IndividualNSGAII<XMES>,
 
   virtual void basicGeneticOperators(VEPopulation<XMES>& p) = 0;
 
-  SearchOutput<XMES, Pareto<XMES>> search(
-      const StopCriteria<XMEv>& stop) override {
+  SearchOutput<XMES, Pareto<XMES>> searchBy(
+      const StopCriteria<XMEv>& stop,
+      std::optional<Pareto<XMES>> _best) override {
     Timer tnow;
 
     cout << "exec: Non Sorting Genetic Algorithm Search " << endl;

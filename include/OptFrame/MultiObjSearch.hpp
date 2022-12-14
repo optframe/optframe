@@ -127,8 +127,9 @@ class MultiObjSearch : public GlobalSearch<XMES, Pareto<XMES>> {
   //
   // virtual SearchStatus search(std::optional<Pareto<XMES>>& p, const
   // StopCriteria<XMEv>& stopCriteria) = 0;
-  SearchOutput<XMES, Pareto<XMES>> search(
-      const StopCriteria<XMEv>& stopCriteria) override = 0;
+  SearchOutput<XMES, Pareto<XMES>> searchBy(
+      const StopCriteria<XMEv>& stopCriteria,
+      std::optional<Pareto<XMES>> _best) override = 0;
 
   std::string log() const override { return "Empty heuristic log."; }
 

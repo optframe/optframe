@@ -57,8 +57,7 @@ namespace optframe {
 // We need to make all methods compatible, and too many templates is polluting
 // this... 1) Explicitly renaming XSH to XBest 2) Keeping XSH2 as XIncumbent on
 // specific searchBy methods (Trajectory? Populational?)
-template <XESolution XES,
-          XSearch<XES> XSH = XES>  // XESolution XES2, XSearch<XES> XSH2 = XSH>
+template <XESolution XES, XSearch<XES> XSH = XES>
 class GlobalSearch : public Component {
   using XEv = typename XES::second_type;
 
@@ -99,8 +98,15 @@ class GlobalSearch : public Component {
 
   // Assuming method is not thread-safe.
   // Now, we can easily use flag SearchStatus::RUNNING.
-  virtual SearchOutput<XES, BestType> search(
-      const StopCriteria<XEv>& stopCriteria) = 0;
+  virtual SearchOutput<XES, BestType> search(const StopCriteria<XEv>& stop) {
+    return searchBy(stop, std::nullopt);
+  }
+  // 'searchBy': Optionally start with some solution (best type XSH)
+  // Note this is a copy, not reference, so solution will be moved to the
+  // output or even destroyed. SearchOutput MUST hold a solution which is,
+  // AT LEAST as good as input 'best', and never worsen it.
+  virtual SearchOutput<XES, BestType> searchBy(const StopCriteria<XEv>& stop,
+                                               std::optional<XSH> best) = 0;
 
   /*
    virtual SearchStatus searchBy(std::optional<XSH>& _best, std::optional<XSH2>&
@@ -161,8 +167,8 @@ class Populational : public GlobalSearch<XES, XSH> {
   // not now)
   // virtual SearchStatus search(const StopCriteria<XEv>& stopCriteria) = 0;
   //
-  SearchOutput<XES, BestType> search(
-      const StopCriteria<XEv>& stopCriteria) override = 0;
+  // SearchOutput<XES, BestType> search(
+  //    const StopCriteria<XEv>& stopCriteria) override = 0;
 
   //
   // virtual method with search signature for populational methods

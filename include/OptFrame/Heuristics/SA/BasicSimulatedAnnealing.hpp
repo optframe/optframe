@@ -20,12 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_BSA_HPP_
-#define OPTFRAME_BSA_HPP_
+#ifndef OPTFRAME_HEURISTICS_SA_BASICSIMULATEDANNEALING_HPP_  // NOLINT
+#define OPTFRAME_HEURISTICS_SA_BASICSIMULATEDANNEALING_HPP_  // NOLINT
 
+// C
 #include <math.h>
+// C++
+#include <string>
+//
 
 #include "../../ITrajectory.hpp"
+#include "../../RandGen.hpp"
 #include "../../SingleObjSearch.hpp"
 #include "SA.h"
 
@@ -58,16 +63,6 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
   int SAmax;
   double Ti;
 
-  // set verbose level recursive: returns 'false' if not supported.
-  virtual bool setVerboseR() override {
-    this->setVerbose();
-    //
-    // evaluator ?? how to do this on GeneralEvaluator...
-    constructive->setVerbose();
-    for (unsigned i = 0; i < neighbors.size(); i++) neighbors[i]->setVerbose();
-    return true;
-  }
-
   // single neighborhood
   // reordered the different term to the front because of peeve, heheheh
   // standart RandGen in declaration could be new standart
@@ -76,12 +71,7 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
                           sref<NS<XES, XEv, XSH>> _neighbors, double _alpha,
                           int _SAmax, double _Ti,
                           sref<RandGen> _rg = new RandGen)
-      : evaluator(_evaluator),
-        constructive(_constructive),
-        rg(_rg)  // does the new RandGen thing affect this? doesn't look like it
-                 // but i'm no specialist
-                 //, specificStopBy(defaultStopBy)
-  {
+      : evaluator(_evaluator), constructive(_constructive), rg(_rg) {
     neighbors.push_back(_neighbors);
     alpha = (_alpha);
     SAmax = (_SAmax);
@@ -192,7 +182,8 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
   }
 
   // search (TODO: consider _best and _incumbent parameters)
-  SearchOutput<XES, XSH> search(const StopCriteria<XEv>& sosc) override {
+  SearchOutput<XES, XSH> searchBy(const StopCriteria<XEv>& sosc,
+                                  std::optional<XSH> _best) override {
     std::cout << "SA search(" << sosc.timelimit << ")" << std::endl;
 
     // TODO: receive on 'searchBy'
@@ -512,13 +503,26 @@ XSH::first_type::typeR>);
 
   // reimplementing searchBy, just to make it more explicit (visible)
   // maybe add some specific logs?
-  virtual SearchOutput<XES, XSH> searchBy(
-      XES& _best, XES& _inc, const StopCriteria<XEv>& stopCriteria) override {
+  virtual SearchOutput<XES, XSH> searchByIncumbent(
+      XES& _best, XES& _inc, const StopCriteria<XEv>& stop) override {
     assert(false);  // TODO: implement... and check if 'best' and 'incumbent'
                     // are both useful and necessary!
     // this->best = _best;
     // this->incumbent = _inc;
-    return search(stopCriteria);
+    return SingleObjSearch<XES>::search(stop);
+  }
+
+  // =======================================
+  //               Component
+  // =======================================
+  // set verbose level recursive: returns 'false' if not supported.
+  bool setVerboseR() override {
+    this->setVerbose();
+    //
+    // evaluator ?? how to do this on GeneralEvaluator...
+    constructive->setVerbose();
+    for (unsigned i = 0; i < neighbors.size(); i++) neighbors[i]->setVerbose();
+    return true;
   }
 
   bool compatible(std::string s) override {
@@ -697,4 +701,4 @@ class BasicSimulatedAnnealingBuilder
 
 }  // namespace optframe
 
-#endif
+#endif  // OPTFRAME_HEURISTICS_SA_BASICSIMULATEDANNEALING_HPP_  // NOLINT
