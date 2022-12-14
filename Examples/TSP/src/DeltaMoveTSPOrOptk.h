@@ -75,8 +75,12 @@ class DeltaMoveTSPOrOptk : public MoveTSPOrOptk<int> {
        }
        */
 
-  op<EvaluationTSP> cost(const Evaluation<>&, const RepTSP& rep,
-                         const OPTFRAME_DEFAULT_ADS& ads) {
+  // op<EvaluationTSP> cost(const Evaluation<>&, const RepTSP& rep, const
+  // OPTFRAME_DEFAULT_ADS& ads) override {
+  op<EvaluationTSP> cost(const ESolutionTSP& se, bool allowEstimated) override {
+    // const Evaluation<>& e = se.second;
+    const RepTSP& rep = se.first.getR();
+    // const OPTFRAME_DEFAULT_ADS& ads = se.first.getADS();
     // before i and j
     int bi = i - 1;
     int bj = j - 1;

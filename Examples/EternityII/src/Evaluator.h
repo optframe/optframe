@@ -80,7 +80,9 @@ class EtIIEvaluator : public Evaluator<SolutionEtII, EvaluationEtII> {
   }
 
   // TODO: fix
-  virtual bool betterThan(double f1, double f2) {
+  bool betterThan(const Evaluation<>& e1, const Evaluation<>& e2) override {
+    double f1 = e1.evaluation();
+    double f2 = e2.evaluation();
     return (f1 > (f2 - EPSILON_EtII));
   }
 

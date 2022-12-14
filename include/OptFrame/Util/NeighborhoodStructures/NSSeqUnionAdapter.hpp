@@ -23,93 +23,90 @@
 #ifndef OPTFRAME_NSSEQUNIONADAPTER_HPP_
 #define OPTFRAME_NSSEQUNIONADAPTER_HPP_
 
+// C++
+#include <string>
 // Framework includes
 #include "../../Move.hpp"
 #include "../../NSIterator.hpp"
 #include "../../NSSeq.hpp"
-
 #include "./Moves/MoveNSSeqUnion.hpp"
 #include "./NSIterators/IteratorNSSeqUnion.hpp"
 
-using namespace std;
+using namespace std;  // NOLINT
 
-//template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE = MoveNSSeqUnion<R, ADS> >
-template<class R, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<R, ADS> S = CopySolution<R, ADS>, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, class MOVE = MoveNSSeqUnion<S, XEv, XES>>
-class NSSeqUnionAdapter : public NSSeq<XES, XEv>
-{
-private:
-   vector<NSSeq<XES>*> ns;
+// template<class R, class ADS = OPTFRAME_DEFAULT_ADS, class MOVE =
+// MoveNSSeqUnion<R, ADS> >
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          XBaseSolution<R, ADS> S = CopySolution<R, ADS>,
+          XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>,
+          class MOVE = MoveNSSeqUnion<S, XEv, XES>>
+class NSSeqUnionAdapter : public NSSeq<XES, XEv> {
+ private:
+  vector<NSSeq<XES>*> ns;
 
-public:
-   NSSeqUnionAdapter(NSSeq<XES>& _n1, NSSeq<XES>& _n2)
-   {
-      ns.push_back(&_n1);
-      ns.push_back(&_n2);
-   }
+ public:
+  NSSeqUnionAdapter(NSSeq<XES>& _n1, NSSeq<XES>& _n2) {
+    ns.push_back(&_n1);
+    ns.push_back(&_n2);
+  }
 
-   void add_ns(NSSeq<XES>& _ns)
-   {
-      ns.push_back(&_ns);
-   }
+  void add_ns(NSSeq<XES>& _ns) { ns.push_back(&_ns); }
 
-   virtual ~NSSeqUnionAdapter()
-   {
-   }
+  virtual ~NSSeqUnionAdapter() {}
 
-   //Move<R, ADS>& move(const R& r, const ADS& ads)
-   uptr<Move<XES, XEv>> randomMove(const XES& se) override
-   {
-      //const R& r = s.first.getR();
-      int x = rand() % ns.size();
+  // Move<R, ADS>& move(const R& r, const ADS& ads)
+  uptr<Move<XES, XEv>> randomMove(const XES& se) override {
+    // const R& r = s.first.getR();
+    int x = rand() % ns.size();
 
-      uptr<Move<XES, XEv>> mvv = ns[x]->randomMove(se);
-      MoveNSSeqUnion<S, XEv, XES>* pm = new MoveNSSeqUnion<S, XEv, XES>(x, mvv.release());
+    uptr<Move<XES, XEv>> mvv = ns[x]->randomMove(se);
+    MoveNSSeqUnion<S, XEv, XES>* pm =
+        new MoveNSSeqUnion<S, XEv, XES>(x, mvv.release());
 
-      //uptr<Move<XES, XEv>> mvv2 = std::move(mvv);
-      //MoveNSSeqUnion<S, XEv, XES> *pm = new MoveNSSeqUnion<S, XEv, XES>(x, std::move(mvv2));
-      Move<XES, XEv>* pm2 = pm;
-      uptr<Move<XES, XEv>> mv2(pm2);
-      return mv2;
-   }
+    // uptr<Move<XES, XEv>> mvv2 = std::move(mvv);
+    // MoveNSSeqUnion<S, XEv, XES> *pm = new MoveNSSeqUnion<S, XEv, XES>(x,
+    // std::move(mvv2));
+    Move<XES, XEv>* pm2 = pm;
+    uptr<Move<XES, XEv>> mv2(pm2);
+    return mv2;
+  }
 
-   /*
-	//Move<R, ADS>* validMove(const R& r, const ADS& ads) override
-   uptr<Move<XES>> validRandomMove(const R& r, const ADS& ads) override
-	{
-		Move<R, ADS>* m = &move(r, ads);
-		if(m->canBeApplied(r, ads))
-			return m;
-		else
-		{
-			delete m;
-			return nullptr;
-		}
-	}
-   */
+  /*
+       //Move<R, ADS>* validMove(const R& r, const ADS& ads) override
+  uptr<Move<XES>> validRandomMove(const R& r, const ADS& ads) override
+       {
+               Move<R, ADS>* m = &move(r, ads);
+               if(m->canBeApplied(r, ads))
+                       return m;
+               else
+               {
+                       delete m;
+                       return nullptr;
+               }
+       }
+  */
 
-   virtual uptr<NSIterator<XES>> getIterator(const XES& se) override
-   {
-      //vector<uptr<NSIterator<XES>>> it;
-      vector<NSIterator<XES>*> it;
-      for (unsigned int i = 0; i < ns.size(); i++)
-         it.push_back(ns[i]->getIterator(se).release());
+  virtual uptr<NSIterator<XES>> getIterator(const XES& se) override {
+    // vector<uptr<NSIterator<XES>>> it;
+    vector<NSIterator<XES>*> it;
+    for (unsigned int i = 0; i < ns.size(); i++)
+      it.push_back(ns[i]->getIterator(se).release());
 
-      return uptr<NSIterator<XES>>(new IteratorNSSeqUnion<R, ADS, S, XEv, XES, MOVE>(it));
-   }
+    return uptr<NSIterator<XES>>(
+        new IteratorNSSeqUnion<R, ADS, S, XEv, XES, MOVE>(it));
+  }
 
-   virtual string toString() const override
-   {
-      stringstream ss;
-      ss << "NSSeqUnionAdapter: [";
-      for (unsigned int i = 0; i < ns.size(); i++) {
-         ss << ns[i]->toString();
+  string toString() const override {
+    stringstream ss;
+    ss << "NSSeqUnionAdapter: [";
+    for (unsigned int i = 0; i < ns.size(); i++) {
+      ss << ns[i]->toString();
 
-         if (i != ns.size() - 1)
-            ss << ",";
-      }
-      ss << "] ";
-      return ss.str();
-   }
+      if (i != ns.size() - 1) ss << ",";
+    }
+    ss << "] ";
+    return ss.str();
+  }
 };
 
 #endif /*OPTFRAME_NSSEQUNIONADAPTER_HPP_*/

@@ -76,8 +76,10 @@ class DeltaMoveTSP2Opt : public MoveTSP2Opt<int, OPTFRAME_DEFAULT_ADS> {
        }
        */
 
-  op<EvaluationTSP> cost(const Evaluation<>&, const RepTSP& rep,
-                         const OPTFRAME_DEFAULT_ADS& ads) {
+  op<EvaluationTSP> cost(const ESolutionTSP& se, bool estimated) override {
+    // const Evaluation<>& e = se.second;
+    const RepTSP& rep = se.first.getR();
+    // const OPTFRAME_DEFAULT_ADS& ads = se.first.getADS();
     if (p1 >= p2) {
       cout << "DeltaMoveTSP2Opt FATAL ERROR!" << endl;
       exit(1);

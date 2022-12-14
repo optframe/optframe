@@ -23,10 +23,14 @@
 #ifndef OPTFRAME_MOVETSPSWAP_HPP_
 #define OPTFRAME_MOVETSPSWAP_HPP_
 
+// C++
+#include <string>
 // Framework includes
-#include "../../../Move.hpp"
+#include <OptFrame/BaseConcepts.hpp>
+#include <OptFrame/Helper/Solutions/CopySolution.hpp>
+#include <OptFrame/Move.hpp>
 
-using namespace std;
+using namespace std;  // NOLINT
 
 // Working structure: vector<T>
 

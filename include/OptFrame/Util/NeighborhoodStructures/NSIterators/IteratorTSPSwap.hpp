@@ -23,87 +23,84 @@
 #ifndef OPTFRAME_ITERATORTSPSWAP_HPP_
 #define OPTFRAME_ITERATORTSPSWAP_HPP_
 
+// C++
+#include <string>
 // Framework includes
+#include <OptFrame/BaseConcepts.hpp>
+#include <OptFrame/Helper/Solutions/CopySolution.hpp>
+
 #include "../../../Move.hpp"
 #include "../../../NSIterator.hpp"
-
 #include "../Moves/MoveTSPSwap.hpp"
 
-using namespace std;
+using namespace std;       // NOLINT
+using namespace optframe;  // NOLINT
 
 // Working structure: vector<T>
 
-template<class T, class ADS = OPTFRAME_DEFAULT_ADS, XBaseSolution<vector<T>, ADS> S = CopySolution<vector<T>, ADS>, class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
-class NSIteratorTSPSwap : public NSIterator<XES, XEv>
-{
-   typedef vector<T> Route;
+template <class T, class ADS = OPTFRAME_DEFAULT_ADS,
+          XBaseSolution<vector<T>, ADS> S = CopySolution<vector<T>, ADS>,
+          class MOVE = MoveTSPSwap<T, ADS>, class P = OPTFRAME_DEFAULT_PROBLEM,
+          XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+class NSIteratorTSPSwap : public NSIterator<XES, XEv> {
+  typedef vector<T> Route;
 
-protected:
-   //MOVE* m;
-   uptr<Move<XES, XEv>> m;
-   int p1, p2; // position 1 and position 2, respectively
-   int n;
+ protected:
+  // MOVE* m;
+  uptr<Move<XES, XEv>> m;
+  int p1, p2;  // position 1 and position 2, respectively
+  int n;
 
-   P* p; // has to be the last
+  P* p;  // has to be the last
 
-public:
-   NSIteratorTSPSwap(int _n, P* _p = nullptr)
-     : p(_p)
-   {
-      p1 = p2 = 0;
-      n = _n;
+ public:
+  NSIteratorTSPSwap(int _n, P* _p = nullptr) : p(_p) {
+    p1 = p2 = 0;
+    n = _n;
+    m = nullptr;
+  }
+
+  virtual ~NSIteratorTSPSwap() {}
+
+  virtual void first() override {
+    if (n >= 2) {
+      p1 = 0;
+      p2 = 1;
+      m = uptr<MOVE>(new MOVE(p1, p2, p));
+    } else
       m = nullptr;
-   }
+  }
 
-   virtual ~NSIteratorTSPSwap()
-   {
-   }
+  virtual void next() override {
+    if (!((p1 == n - 2) && (p2 == n - 1))) {
+      if (p2 < (n - 1))
+        p2++;
 
-   virtual void first() override
-   {
-      if (n >= 2) {
-         p1 = 0;
-         p2 = 1;
-         m = uptr<MOVE>(new MOVE(p1, p2, p));
-      } else
-         m = nullptr;
-   }
-
-   virtual void next() override
-   {
-      if (!((p1 == n - 2) && (p2 == n - 1))) {
-         if (p2 < (n - 1))
-            p2++;
-
-         else {
-            p1++;
-            p2 = p1 + 1;
-         }
-
-         m = uptr<MOVE>(new MOVE(p1, p2, p));
-      } else
-         m = nullptr;
-   }
-
-   virtual bool isDone() override
-   {
-      return (m == nullptr);
-   }
-
-   virtual uptr<Move<XES, XEv>> current() override
-   {
-      if (isDone()) {
-         cout << "There isnt any current element!" << endl;
-         cout << "NSSeqTSPSwap. Aborting." << endl;
-         exit(1);
+      else {
+        p1++;
+        p2 = p1 + 1;
       }
 
-      // steal from 'm'
-      uptr<Move<XES, XEv>> m2 = std::move(m);
+      m = uptr<MOVE>(new MOVE(p1, p2, p));
+    } else
       m = nullptr;
+  }
 
-      return m2;
-   }
+  virtual bool isDone() override { return (m == nullptr); }
+
+  virtual uptr<Move<XES, XEv>> current() override {
+    if (isDone()) {
+      cout << "There isnt any current element!" << endl;
+      cout << "NSSeqTSPSwap. Aborting." << endl;
+      exit(1);
+    }
+
+    // steal from 'm'
+    uptr<Move<XES, XEv>> m2 = std::move(m);
+    m = nullptr;
+
+    return m2;
+  }
 };
 
 #endif /*OPTFRAME_ITERATORTSPSWAP_HPP_*/

@@ -73,8 +73,7 @@ class MoveNSSeqUnion : public Move<XES, XEv> {
         new MoveNSSeqUnion<S, XEv, XES>(id, m->apply(se).release()));
   }
 
-  uptr<Move<XES, XEv>> applyUpdate(Evaluation<>& e, S& s) {
-    XES se(s, e);
+  uptr<Move<XES, XEv>> applyUpdate(XES& se) override {
     return uptr<Move<XES, XEv>>(
         new MoveNSSeqUnion<S, XEv, XES>(id, m->apply(se).release()));
   }

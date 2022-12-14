@@ -6,6 +6,8 @@
 
 // this is C++ file
 
+// C
+#include <string.h>
 // C++
 #include <iostream>
 #include <string>
