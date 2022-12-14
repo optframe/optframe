@@ -34,7 +34,7 @@
 #include <OptFrame/NS.hpp>
 #include <OptFrame/RandGen.hpp>
 
-#include "EA.h"
+#include "EA.hpp"
 
 #ifndef _OPTFRAME_DBG_MUTATION_
 #ifdef OPTFRAME_DEBUG
@@ -46,11 +46,11 @@
 
 namespace optframe {
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>>
 class Mutation : public Component, public EA {
  public:
-  virtual ~Mutation() {
-  }
+  virtual ~Mutation() {}
 
   virtual void mutate(S& individual, XEv& e) = 0;
 
@@ -60,12 +60,11 @@ class Mutation : public Component, public EA {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>>
 class BasicMutation : public Mutation<S, XEv> {
  protected:
   unsigned n;
@@ -74,11 +73,9 @@ class BasicMutation : public Mutation<S, XEv> {
 
  public:
   BasicMutation(unsigned _n, vector<NS<XES, XEv>*> _vNS, RandGen& _rg)
-      : n(_n), vNS(_vNS), rg(_rg) {
-  }
+      : n(_n), vNS(_vNS), rg(_rg) {}
 
-  virtual ~BasicMutation() {
-  }
+  virtual ~BasicMutation() {}
 
   virtual void mutate(S& s, XEv& e) {
     for (unsigned i = 0; i < n; i++) {
@@ -99,16 +96,15 @@ class BasicMutation : public Mutation<S, XEv> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
 class BasicMutationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~BasicMutationBuilder() {
-  }
+  virtual ~BasicMutationBuilder() {}
 
   Component* buildComponent(Scanner& scanner,
                             HeuristicFactory<S, XEv, XES, X2ES>& hf,
@@ -116,7 +112,8 @@ class BasicMutationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     int n = *scanner.nextInt();
 
     vector<NS<XES, XEv>*> ns_list;
-    hf.assignList(ns_list, *scanner.nextInt(), scanner.next());  // reads backwards!
+    hf.assignList(ns_list, *scanner.nextInt(),
+                  scanner.next());  // reads backwards!
 
     return new BasicMutation<S, XEv>(n, ns_list, hf.getRandGen());
   }
@@ -137,22 +134,23 @@ class BasicMutationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "" << EA::family() << ":BasicMutation";
+    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << ""
+       << EA::family() << ":BasicMutation";
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
-//temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+// temporary fix for the true basic genetic algorithm! I will revisit this in
+// the future to perform a proper naming convention
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>>
 class SimpleMutation {
  protected:
   using Individual = S;
-  //using Chromossome = R;
-  using Fitness = XEv*;  //nullptr means there's no evaluation
+  // using Chromossome = R;
+  using Fitness = XEv*;  // nullptr means there's no evaluation
   using VPopulation = std::vector<std::pair<Individual, Fitness>>;
 
  public:
@@ -166,45 +164,53 @@ class SimpleMutation {
 /* MUTATION EXAMPLES */
 /**********************/
 
-//changes 100beta% individuals chosen randomly -- may choose the same individual more than once
-//user should program the function that changes the individual
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+// changes 100beta% individuals chosen randomly -- may choose the same
+// individual more than once user should program the function that changes the
+// individual
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>>
 class DefaultMutation : public SimpleMutation<S, XEv> {
  protected:
   using Individual = S;
-  //using Chromossome = R;
-  using Fitness = XEv*;  //nullptr means there's no evaluation
+  // using Chromossome = R;
+  using Fitness = XEv*;  // nullptr means there's no evaluation
   using VPopulation = std::vector<std::pair<Individual, Fitness>>;
   double omega;
 
  public:
   DefaultMutation() = delete;
-  DefaultMutation(double mutationRate)
-      : omega(mutationRate) {
+  DefaultMutation(double mutationRate) : omega(mutationRate) {
     assert(mutationRate >= 0.0 && mutationRate <= 1.0);
   };
   virtual ~DefaultMutation() = default;
 
-  virtual void mutate(Individual&) = 0;  //Should change the solution unpredicatelly
-                                         //Individual is passed so the user may change ADS if he wants to
+  virtual void mutate(
+      Individual&) = 0;  // Should change the solution unpredicatelly
+                         // Individual is passed so the user may change ADS if
+                         // he wants to
 
   virtual void mutate(VPopulation& population) override {
-    _OPTFRAME_DBG_MUTATION_ std::cerr << "-OptDebug- Starting mutation operator. Will insert " << static_cast<int>(population.size() * omega) << " mutants into the population." << std::endl;
+    _OPTFRAME_DBG_MUTATION_ std::cerr
+        << "-OptDebug- Starting mutation operator. Will insert "
+        << static_cast<int>(population.size() * omega)
+        << " mutants into the population." << std::endl;
 
-    //todo: use randgen
-    std::mt19937 mersenne_twister(std::chrono::steady_clock::now().time_since_epoch().count());
+    // todo: use randgen
+    std::mt19937 mersenne_twister(
+        std::chrono::steady_clock::now().time_since_epoch().count());
     std::uniform_int_distribution<unsigned int> dist(0u, population.size() - 1);
     int iteration_count = population.size() * omega;
     for (int i = 0; i < iteration_count; ++i) {
       int mut_pos = dist(mersenne_twister);
-      _OPTFRAME_DBG_MUTATION_ std::cerr << "-OptDebug- Mutating individual " << mut_pos << std::endl;
+      _OPTFRAME_DBG_MUTATION_ std::cerr << "-OptDebug- Mutating individual "
+                                        << mut_pos << std::endl;
       mutate(population[mut_pos].first.getR());
-      if (population[mut_pos].second)
-        delete population[mut_pos].second;
+      if (population[mut_pos].second) delete population[mut_pos].second;
       population[mut_pos].second = nullptr;
     }
 
-    _OPTFRAME_DBG_MUTATION_ std::cerr << "-OptDebug- Mutation operator ended" << std::endl;
+    _OPTFRAME_DBG_MUTATION_ std::cerr << "-OptDebug- Mutation operator ended"
+                                      << std::endl;
   }
 };
 

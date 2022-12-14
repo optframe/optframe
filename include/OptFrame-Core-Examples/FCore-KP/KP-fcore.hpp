@@ -1,5 +1,5 @@
 // SPDX-License-Identifier:  MIT OR LGPL-3.0-or-later
-// Copyright (C) 2007-2022 - OptFrme developers
+// Copyright (C) 2007-2022 - OptFrame developers
 // https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_CORE_EXAMPLES_FCORE_KP_KP_FCORE_HPP_  // NOLINT

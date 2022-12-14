@@ -23,9 +23,12 @@
 #ifndef OPTFRAME_CONSTRUCTIVE_RK_HPP_
 #define OPTFRAME_CONSTRUCTIVE_RK_HPP_
 
+// C++
+#include <vector>
+//
 #include "../../../Constructive.hpp"
-#include "../EA.h"
-#include "RK.h"
+#include "../EA.hpp"
+#include "RK.hpp"
 
 namespace optframe {
 
@@ -34,8 +37,7 @@ class ConstructiveRK : public Constructive<std::vector<KeyType>> {
   using S = std::vector<KeyType>;
 
  public:
-  virtual ~ConstructiveRK() {
-  }
+  virtual ~ConstructiveRK() = default;
 
   std::optional<S> generateSolution(double timelimit) override = 0;
 
@@ -45,17 +47,14 @@ class ConstructiveRK : public Constructive<std::vector<KeyType>> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << Constructive<S>::idComponent() << ":" << EA::family() << ":" << RK::family() << "ConstructiveRK";
+    ss << Constructive<S>::idComponent() << ":" << EA::family() << ":"
+       << RK::family() << "ConstructiveRK";
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 };
 //
 }  // namespace optframe

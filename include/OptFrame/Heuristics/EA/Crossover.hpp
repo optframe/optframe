@@ -29,7 +29,7 @@
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Helper/Solution.hpp>
 
-#include "EA.h"
+#include "EA.hpp"
 
 #ifndef _OPTFRAME_DBG_CROSSOVER_
 #ifdef OPTFRAME_DEBUG
@@ -41,11 +41,11 @@
 
 namespace optframe {
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>>
 class Crossover : public Component, public EA {
  public:
-  virtual ~Crossover() {
-  }
+  virtual ~Crossover() {}
 
   virtual pair<S*, S*> cross(const S&, const S&) = 0;
 
@@ -59,18 +59,18 @@ class Crossover : public Component, public EA {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
-//temporary fix for the true basic genetic algorithm! I will revisit this in the future to perform a proper naming convention
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+// temporary fix for the true basic genetic algorithm! I will revisit this in
+// the future to perform a proper naming convention
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>>
 class SimpleCrossover {
  protected:
   using Individual = S;
-  //using Chromossome = R;
-  using Fitness = XEv*;  //nullptr means there's no evaluation
+  // using Chromossome = R;
+  using Fitness = XEv*;  // nullptr means there's no evaluation
   using VPopulation = std::vector<pair<Individual, Fitness>>;
 
  public:
@@ -84,20 +84,22 @@ class SimpleCrossover {
 /* CROSSOVER EXAMPLES */
 /**********************/
 
-//receives two parents to return offspring with user programmed operator
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+// receives two parents to return offspring with user programmed operator
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>>
 class TwoParentsCrossover : public SimpleCrossover<S, XEv> {
  protected:
   using Individual = S;
-  //using Chromossome = R;
-  using Fitness = XEv*;  //nullptr means there's no evaluation
+  // using Chromossome = R;
+  using Fitness = XEv*;  // nullptr means there's no evaluation
   using VPopulation = std::vector<std::pair<Individual, Fitness>>;
 
  public:
   TwoParentsCrossover() = default;
   virtual ~TwoParentsCrossover() = default;
 
-  virtual VPopulation cross(const Individual& parent1, const Individual& parent2) = 0;
+  virtual VPopulation cross(const Individual& parent1,
+                            const Individual& parent2) = 0;
 
   virtual VPopulation cross(const std::vector<Individual*>& parents) {
     assert(parents.size() == 2);

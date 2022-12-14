@@ -37,7 +37,7 @@ namespace optframe {
 template <XSolution S>
 class Constructive : public Component {
  public:
-  virtual ~Constructive() {}
+  ~Constructive() override = default;
 
   // timelimit in seconds, accepting fractions (millisecs, ...)
   // may or may not generate valid solution in time

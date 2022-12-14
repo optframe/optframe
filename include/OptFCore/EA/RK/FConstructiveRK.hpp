@@ -20,84 +20,78 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef OPTFRAME_FCORE_FCONSTRUCTIVE_RK_HPP_
-#define OPTFRAME_FCORE_FCONSTRUCTIVE_RK_HPP_
+#ifndef OPTFCORE_EA_RK_FCONSTRUCTIVERK_HPP_  // NOLINT
+#define OPTFCORE_EA_RK_FCONSTRUCTIVERK_HPP_  // NOLINT
 
+// C++
 #include <functional>
-
+#include <string>
+#include <vector>
+//
 #include <OptFrame/Constructive.hpp>
-#include <OptFrame/Heuristics/EA/EA.h>
+#include <OptFrame/Heuristics/EA/EA.hpp>
 #include <OptFrame/Heuristics/EA/RK/ConstructiveRK.hpp>
-#include <OptFrame/Heuristics/EA/RK/RK.h>
+#include <OptFrame/Heuristics/EA/RK/RK.hpp>
 
 namespace optframe {
 
 // only works for RK representation
 //
-template<class KeyType = double>
-class FConstructiveRK final : public ConstructiveRK<KeyType>
-{
-   using super = ConstructiveRK<KeyType>;
+template <class KeyType = double>
+class FConstructiveRK final : public ConstructiveRK<KeyType> {
+  using super = ConstructiveRK<KeyType>;
 
-   using S = std::vector<KeyType>;
+  using S = std::vector<KeyType>;
 
-public:
+ public:
 #ifdef OPTFCORE_FUNC_STATIC
-   typedef S(*FuncTypeGenerate);
+  typedef S(*FuncTypeGenerate);
 #else
-   typedef std::function<S()> FuncTypeGenerate;
+  typedef std::function<S()> FuncTypeGenerate;
 #endif
 
-   //S(*fGenerate)(); // constructive
-   FuncTypeGenerate fGenerate;
+  // S(*fGenerate)(); // constructive
+  FuncTypeGenerate fGenerate;
 
-   //S (*_fGenerate)())
-   //S (*_fGenerate)())
-   FConstructiveRK(FuncTypeGenerate _fGenerate)
-     : fGenerate{ _fGenerate }
-   {
-      //std::cout << "FConstructive()" << std::endl;
-   }
+  // S (*_fGenerate)())
+  // S (*_fGenerate)())
+  explicit FConstructiveRK(FuncTypeGenerate _fGenerate)
+      : fGenerate{_fGenerate} {
+    // std::cout << "FConstructive()" << std::endl;
+  }
 
-   virtual ~FConstructiveRK()
-   {
-      //std::cout << "~FConstructive()" << std::endl;
-   }
+  virtual ~FConstructiveRK() = default;
 
-   // fGenerate is supposed to be the simplest possible function.
-   // Although fGenerate does not require optional or timelimit (two connected concepts),
-   // the Constructive class must support... since it's completely general.
-   //
-   std::optional<S> generateSolution(double timelimit) override
-   {
-      return std::make_optional(fGenerate());
-   }
+  // fGenerate is supposed to be the simplest possible function.
+  // Although fGenerate does not require optional or timelimit (two connected
+  // concepts), the Constructive class must support... since it's completely
+  // general.
+  //
+  std::optional<S> generateSolution(double timelimit) override {
+    return std::make_optional(fGenerate());
+  }
 
-   virtual bool compatible(std::string s) override
-   {
-      // Experimental: trying substring matching
-      // If MY id() INCLUDES 's' and position is ZERO, then we must accept it, right?
-      std::string sid = id();
-      std::size_t found_begin = sid.find(s);
-      if (found_begin == 0)
-         return true;
-      //
-      return (s == idComponent()) || (Constructive<std::vector<KeyType>>::compatible(s));
-   }
+  bool compatible(std::string s) override {
+    // Experimental: trying substring matching
+    // If MY id() INCLUDES 's' and position is ZERO, then we must accept it,
+    // right?
+    std::string sid = id();
+    std::size_t found_begin = sid.find(s);
+    if (found_begin == 0) return true;
+    //
+    return (s == idComponent()) ||
+           (Constructive<std::vector<KeyType>>::compatible(s));
+  }
 
-   static std::string idComponent()
-   {
-      std::stringstream ss;
-      ss << super::idComponent() << ":FConstructiveRK";
-      return ss.str();
-   }
+  static std::string idComponent() {
+    std::stringstream ss;
+    ss << super::idComponent() << ":FConstructiveRK";
+    return ss.str();
+  }
 
-   virtual std::string id() const override
-   {
-      return idComponent();
-   }
+  std::string id() const override { return idComponent(); }
 };
 
-} // namespace optframe
+}  // namespace optframe
 
-#endif /*OPTFRAME_FCORE_FCONSTRUCTIVE_RK_HPP_*/
+#endif  // OPTFCORE_EA_RK_FCONSTRUCTIVERK_HPP_ // NOLINT

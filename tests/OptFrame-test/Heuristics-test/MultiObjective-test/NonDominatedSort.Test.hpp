@@ -1,5 +1,5 @@
 // SPDX-License-Identifier:  MIT OR LGPL-3.0-or-later
-// Copyright (C) 2007-2022 - OptFrme developers
+// Copyright (C) 2007-2022 - OptFrame developers
 // https://github.com/optframe/optframe
 
 #ifndef TESTS_OPTFRAME_TEST_HEURISTICS_TEST_MULTIOBJECTIVE_TEST_NONDOMINATEDSORT_TEST_HPP_

@@ -31,7 +31,7 @@
 #include <OptFrame/Evaluation.hpp>
 #include <OptFrame/Helper/MultiSolution.hpp>
 
-// #include "EA.h"
+// #include "EA.hpp"
 
 // using namespace std;
 
@@ -40,8 +40,7 @@ namespace optframe {
 template <XSolution S, X2Solution<S> X2S = MultiSolution<S>>
 class InitialMultiSolution : public Component {
  public:
-  virtual ~InitialMultiSolution() {
-  }
+  virtual ~InitialMultiSolution() {}
 
   virtual X2S generatePopulation(unsigned populationSize) = 0;
 
@@ -55,9 +54,7 @@ class InitialMultiSolution : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 // ==========================================================
@@ -65,17 +62,15 @@ class InitialMultiSolution : public Component {
 // ==========================================================
 
 template <XSolution S>
-class BasicInitialMultiSolution : public InitialMultiSolution<
-                                      S, MultiSolution<S>> {
+class BasicInitialMultiSolution
+    : public InitialMultiSolution<S, MultiSolution<S>> {
  public:
   sref<Constructive<S>> constructive;
 
   explicit BasicInitialMultiSolution(sref<Constructive<S>> _constructive)
-      : constructive(_constructive) {
-  }
+      : constructive(_constructive) {}
 
-  virtual ~BasicInitialMultiSolution() {
-  }
+  virtual ~BasicInitialMultiSolution() {}
 
   MultiSolution<S> generatePopulation(unsigned populationSize) override {
     MultiSolution<S> p;
@@ -96,13 +91,9 @@ class BasicInitialMultiSolution : public InitialMultiSolution<
     return ss.str();
   }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 // TODO(igormcoelho): fix this builder later!!!
@@ -117,18 +108,18 @@ class BasicInitialPopulationBuilder : public ComponentBuilder<S, XEv, XES> {
   virtual ~BasicInitialPopulationBuilder() {
   }
 
-   Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf, string family = "") override {
-    Constructive<S>* c;
-    hf.assign(c, *scanner.nextInt(), scanner.next());  // reads backwards!
+   Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf,
+string family = "") override { Constructive<S>* c; hf.assign(c,
+*scanner.nextInt(), scanner.next());  // reads backwards!
 
     return new BasicInitialMultiSolution<S>(*c);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-    params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
-    return params;
+    //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
+heuristic")); params.push_back(make_pair(InitialSearch<XES>::idComponent(),
+"constructive heuristic")); return params;
   }
 
   bool canBuild(std::string component) override {
@@ -137,8 +128,8 @@ class BasicInitialPopulationBuilder : public ComponentBuilder<S, XEv, XES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<R, ADS>::idComponent() << "" << EA::family() << ":BasicInitialPopulation";
-    return ss.str();
+    ss << ComponentBuilder<R, ADS>::idComponent() << "" << EA::family() <<
+":BasicInitialPopulation"; return ss.str();
   }
 
   std::string id() const override {

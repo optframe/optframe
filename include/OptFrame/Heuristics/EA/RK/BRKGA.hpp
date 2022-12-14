@@ -18,20 +18,19 @@
 // Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 // USA.
 
-#ifndef OPTFRAME_HEURISTICS_EA_RK_BRKGA_HPP_
-#define OPTFRAME_HEURISTICS_EA_RK_BRKGA_HPP_
+#ifndef OPTFRAME_HEURISTICS_EA_RK_BRKGA_HPP_  // NOLINT
+#define OPTFRAME_HEURISTICS_EA_RK_BRKGA_HPP_  // NOLINT
 
 // C++
 #include <algorithm>
 #include <string>
 //
+#include <OptFrame/GlobalSearch.hpp>
 #include <OptFrame/Helper/EPopulation.hpp>
+#include <OptFrame/Heuristics/EA/RK/RK.hpp>
+#include <OptFrame/Heuristics/EA/RK/RKGA.hpp>
 #include <OptFrame/InitialPopulation.hpp>
 #include <OptFrame/SingleObjSearch.hpp>
-
-#include "RK.h"
-#include "RKGA.hpp"
-#include "include/OptFrame/GlobalSearch.hpp"
 
 // BRKGA - Biased-Random Key Genetic Algorithms
 
@@ -206,4 +205,4 @@ class BRKGABuilder
 
 }  // namespace optframe
 
-#endif  // OPTFRAME_HEURISTICS_EA_RK_BRKGA_HPP_
+#endif  // OPTFRAME_HEURISTICS_EA_RK_BRKGA_HPP_ // NOLINT

@@ -34,7 +34,7 @@
 #include <OptFrame/Helper/VEPopulation.hpp>
 #include <OptFrame/MultiEvaluator.hpp>
 
-// #include "EA.h"
+// #include "EA.hpp"
 
 // using namespace std;
 
@@ -47,8 +47,7 @@ namespace optframe {
 template <XESolution XES, X2ESolution<XES> X2ES = VEPopulation<XES>>
 class InitialMultiESolution : public Component {
  public:
-  virtual ~InitialMultiESolution() {
-  }
+  virtual ~InitialMultiESolution() {}
 
   virtual X2ES generateEPopulation(unsigned populationSize) = 0;
 
@@ -62,9 +61,7 @@ class InitialMultiESolution : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 // ================================================================
@@ -82,8 +79,8 @@ class InitialMultiESolution : public Component {
 //  so, we need some specific type anyway.
 //
 template <XESolution XES>
-class BasicInitialMultiESolution : public InitialMultiESolution<
-                                       XES, VEPopulation<XES>> {
+class BasicInitialMultiESolution
+    : public InitialMultiESolution<XES, VEPopulation<XES>> {
   using XEv = typename XES::second_type;
 
  public:
@@ -92,15 +89,11 @@ class BasicInitialMultiESolution : public InitialMultiESolution<
   sref<Constructive<S>> constructive;
   sref<IEvaluator<XES>> evaluator;
 
-  explicit BasicInitialMultiESolution(
-      sref<Constructive<S>> _constructive,
-      sref<IEvaluator<XES>> _evaluator)
-      : constructive{_constructive},
-        evaluator{_evaluator} {
-  }
+  explicit BasicInitialMultiESolution(sref<Constructive<S>> _constructive,
+                                      sref<IEvaluator<XES>> _evaluator)
+      : constructive{_constructive}, evaluator{_evaluator} {}
 
-  virtual ~BasicInitialMultiESolution() {
-  }
+  virtual ~BasicInitialMultiESolution() {}
 
   VEPopulation<XES> generateEPopulation(unsigned populationSize) override {
     VEPopulation<XES> p;
@@ -115,8 +108,7 @@ class BasicInitialMultiESolution : public InitialMultiESolution<
   }
 
   bool compatible(std::string s) override {
-    return (s == idComponent()) ||
-           (InitialMultiESolution<XES>::compatible(s));
+    return (s == idComponent()) || (InitialMultiESolution<XES>::compatible(s));
   }
 
   static std::string idComponent() {
@@ -126,23 +118,21 @@ class BasicInitialMultiESolution : public InitialMultiESolution<
     return ss.str();
   }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
-class BasicInitialMultiESolutionBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
+class BasicInitialMultiESolutionBuilder
+    : public ComponentBuilder<S, XEv, XES, X2ES> {
   using XMEv = MultiEvaluation<typename XEv::objType>;
   using XMES = std::pair<S, XMEv>;
 
  public:
-  virtual ~BasicInitialMultiESolutionBuilder() {
-  }
+  virtual ~BasicInitialMultiESolutionBuilder() {}
 
   Component* buildComponent(Scanner& scanner,
                             HeuristicFactory<S, XEv, XES, X2ES>& hf,
@@ -167,10 +157,9 @@ class BasicInitialMultiESolutionBuilder : public ComponentBuilder<S, XEv, XES, X
 
   vector<pair<string, string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(Constructive<S>::idComponent(),
-                               "constructive"));
-    params.push_back(make_pair(MultiEvaluator<XMES>::idComponent(),
-                               "multi evaluator"));
+    params.push_back(make_pair(Constructive<S>::idComponent(), "constructive"));
+    params.push_back(
+        make_pair(MultiEvaluator<XMES>::idComponent(), "multi evaluator"));
 
     return params;
   }
@@ -186,13 +175,9 @@ class BasicInitialMultiESolutionBuilder : public ComponentBuilder<S, XEv, XES, X
     return ss.str();
   }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe
