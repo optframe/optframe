@@ -352,12 +352,15 @@ class HeuristicFactory {
     bool b2 = component->compatible(id);
 
     // experimental: disagreement is not ok
-    if (b xor b2) {
-      std::cout << "HF WARNING: disagreement between b and b2! Must Fix this!"
-                << std::endl;
-      // assert(false);
-      std::cout << "Will not do anything if any is true... b=" << b
-                << " b2=" << b2 << std::endl;
+    // xor
+    if (b ^ b2) {
+      if (loglevel >= LogLevel::Warning) {
+        std::cout << "HF WARNING: disagreement between b and b2! Must Fix this!"
+                  << std::endl;
+        // assert(false);
+        std::cout << "Will not do anything if any is true... b=" << b
+                  << " b2=" << b2 << std::endl;
+      }
     }
 
     // experimental: but agreement is ok

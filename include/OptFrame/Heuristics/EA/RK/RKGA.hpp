@@ -24,11 +24,12 @@
 // C++
 #include <algorithm>
 #include <utility>
+#include <vector>
 //
 
-//#include "../../IPopulational.hpp"
+// #include "../../IPopulational.hpp"
 #include "../../../InitialPopulation.hpp"
-//#include "../../../Population.hpp"
+// #include "../../../Population.hpp"
 #include "../../../SingleObjSearch.hpp"
 #include "../Crossover.hpp"
 #include "../Elitism.hpp"
@@ -465,14 +466,17 @@ class RKGA : public Populational<XES, XES, XES2> {
     p.clear();
     return new pair<RSK, XEv>(best, e);
     */
-    cout << "RKGA print sol: optional(" << ((bool)pe.second) << ") -> ";
-    if (!pe.second) {
-      cout << "RKGA ERROR!! DOESNT HAVE A SOLUTION!! VALUE IS: "
-           << pe.first.evaluation() << endl;
-      cout << "SHOULD WE RETURN EMPTY PAIR<S, XEv> OR FORCE SOME DECODER TO AT "
-              "LEAST PROVIDE A SOLUTION?"
-           << endl;
-      assert(false);
+    if (Component::debug) {
+      cout << "RKGA print sol: optional(" << ((bool)pe.second) << ") -> ";
+      if (!pe.second) {
+        cout << "RKGA ERROR!! DOESNT HAVE A SOLUTION!! VALUE IS: "
+             << pe.first.evaluation() << endl;
+        cout << "SHOULD WE RETURN EMPTY PAIR<S, XEv> OR FORCE SOME DECODER TO "
+                "AT "
+                "LEAST PROVIDE A SOLUTION?"
+             << endl;
+        assert(false);
+      }
     }
 
     S finalSol(*pe.second);  // TODO: avoid loss
