@@ -20,12 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef HEURISTICFACTORY_HPP_
-#define HEURISTICFACTORY_HPP_
+#ifndef OPTFRAME_HYPER_HEURISTICFACTORY_HPP_
+#define OPTFRAME_HYPER_HEURISTICFACTORY_HPP_
 
 // C++
 #include <iostream>
 #include <string>
+#include <utility>
 //
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Helper/MultiESolution.hpp>
@@ -41,7 +42,7 @@
 #include <OptFrame/Scanner++/Scanner.hpp>
 #include <OptFrame/SingleObjSearch.hpp>
 
-//Heuristics
+// Heuristics
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
 #include <OptFrame/Heuristics/LocalSearches/CircularSearch.hpp>
 #include <OptFrame/Heuristics/LocalSearches/FirstImprovement.hpp>
@@ -51,17 +52,17 @@
 #include <OptFrame/Heuristics/LocalSearches/VariableNeighborhoodDescentUpdateADS.hpp>
 //#include "Heuristics/LocalSearches/RVND.hpp"
 
-//Metaheuristics
+// Metaheuristics
 #include <OptFrame/Heuristics/EmptySingleObjSearch.hpp>
 #include <OptFrame/Heuristics/ILS/BasicIteratedLocalSearch.hpp>
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearch.hpp>
 #include <OptFrame/Heuristics/ILS/IteratedLocalSearchLevels.hpp>
-//TODO ERROR on IntensifiedIteratedLocalSearchLevels
+// TODO ERROR on IntensifiedIteratedLocalSearchLevels
 //#include "Heuristics/ILS/IntensifiedIteratedLocalSearchLevels.hpp"
 #include <OptFrame/Heuristics/GRASP/BasicGRASP.hpp>
 #include <OptFrame/Heuristics/ILS/Intensification.hpp>
 #include <OptFrame/Heuristics/TS/BasicTabuSearch.hpp>
-//TODO ERROR on BasicGeneticAlgorithm
+// TODO ERROR on BasicGeneticAlgorithm
 //#include "Heuristics/EvolutionaryAlgorithms/BasicGeneticAlgorithm.hpp"
 #include <OptFrame/Heuristics/EmptyMultiObjSearch.hpp>
 #include <OptFrame/Heuristics/SA/BasicSimulatedAnnealing.hpp>
@@ -72,17 +73,20 @@
 #include <OptFrame/Hyper/ComponentBuilder.hpp>
 #include <OptFrame/Hyper/ComponentMultiBuilder.hpp>
 
-//using namespace std;
-//using namespace optframe; (?????????????????) Don't use namespace declarations in headers
+// using namespace std;
+// using namespace optframe; (?????????????????) Don't use namespace
+// declarations in headers
 
 // design pattern: Factory
 
 namespace optframe {
 
-//template<XRepresentation R, class ADS = _ADS, XBaseSolution<S, XEv> S = CopySolution<S, XEv>, XEvaluation XEv = Evaluation<>>
-//template<class R, class ADS, XSolution S>
-//template<XSolution S, XEvaluation XEv = Evaluation<>>
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+// template<XRepresentation R, class ADS = _ADS, XBaseSolution<S, XEv> S =
+// CopySolution<S, XEv>, XEvaluation XEv = Evaluation<>> template<class R, class
+// ADS, XSolution S> template<XSolution S, XEvaluation XEv = Evaluation<>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
 class HeuristicFactory {
   // TODO: must add to template!!!
   using XMEv = MultiEvaluation<typename XEv::objType>;
@@ -102,42 +106,41 @@ class HeuristicFactory {
   vector<Action<S, XEv, XES, X2ES>*> actions;
   map<string, vector<vector<sptr<Component>>>> componentLists;
 
-  HeuristicFactory(LogLevel _loglevel = LogLevel::Warning)
-      : loglevel{_loglevel}, rg{new RandGen} {
-  }
+  explicit HeuristicFactory(LogLevel _loglevel = LogLevel::Warning)
+      : loglevel{_loglevel}, rg{new RandGen} {}
 
-  HeuristicFactory(sref<RandGen> _rg, LogLevel _loglevel = LogLevel::Warning)
-      : loglevel{_loglevel}, rg{_rg} {
-  }
+  explicit HeuristicFactory(sref<RandGen> _rg,
+                            LogLevel _loglevel = LogLevel::Warning)
+      : loglevel{_loglevel}, rg{_rg} {}
 
   virtual ~HeuristicFactory() {
     clear();
 
-    //delete &rg; // shared reference 'sref'
+    // delete &rg; // shared reference 'sref'
 
-    for (unsigned i = 0; i < builders.size(); i++)
-      delete builders.at(i);
+    for (unsigned i = 0; i < builders.size(); i++) delete builders.at(i);
     builders.clear();
 
-    for (unsigned i = 0; i < actions.size(); i++)
-      delete actions.at(i);
+    for (unsigned i = 0; i < actions.size(); i++) delete actions.at(i);
     actions.clear();
   }
+
+  const LogLevel& getLogLevel() const { return this->loglevel; }
 
   void setLogLevel(LogLevel ll) {
     this->loglevel = ll;
     // must apply loglevel to all builders
     for (unsigned i = 0; i < builders.size(); i++) {
       if (ll == LogLevel::Debug)
-        std::cout << "Setting builder LogLevel to Debug: " << builders[i]->id() << std::endl;
+        std::cout << "Setting builder LogLevel to Debug: " << builders[i]->id()
+                  << std::endl;
       builders[i]->setMessageLevel(ll);
     }
   }
 
   ComponentBuilder<S, XEv, XES, X2ES>* getBuilder(string id) {
     for (unsigned i = 0; i < builders.size(); i++)
-      if (builders[i]->id() == id)
-        return builders[i];
+      if (builders[i]->id() == id) return builders[i];
     return nullptr;
   }
 
@@ -147,8 +150,7 @@ class HeuristicFactory {
       vector<sptr<Component>> v = iter->second;
 
       for (unsigned int i = 0; i < v.size(); i++)
-        if (v[i] == c)
-          return true;
+        if (v[i] == c) return true;
     }
 
     return false;
@@ -156,19 +158,17 @@ class HeuristicFactory {
 
   /// compName is an optional reference return value
   /// compNumber is an optional reference return value
-  sptr<Component> getNextComponent(Scanner& scanner, string* compName = nullptr, int* compNumber = nullptr) {
-    if (!scanner.hasNext())
-      return nullptr;
+  sptr<Component> getNextComponent(Scanner& scanner, string* compName = nullptr,
+                                   int* compNumber = nullptr) {
+    if (!scanner.hasNext()) return nullptr;
 
     std::string id = scanner.next();
 
-    if (!scanner.hasNextInt())
-      return nullptr;
+    if (!scanner.hasNextInt()) return nullptr;
 
     int inumber = *scanner.nextInt();
 
-    if (inumber < 0)
-      return nullptr;
+    if (inumber < 0) return nullptr;
 
     unsigned number = inumber;
 
@@ -182,7 +182,8 @@ class HeuristicFactory {
         string name = iter->first;
 
         int p = name.find(id, 0);
-        if ((p > 0) && (p + id.length() == name.length()))  // exact match after position 'p'
+        if ((p > 0) && (p + id.length() ==
+                        name.length()))  // exact match after position 'p'
         {
           component = iter->second.at(number);
           id = name;
@@ -191,18 +192,19 @@ class HeuristicFactory {
       }
       if (!component) {
         if (loglevel >= LogLevel::Warning)
-          std::cout << "HeuristicFactory warning: pattern of component '" << id << " " << number << "' not found" << std::endl;
+          std::cout << "HeuristicFactory warning: pattern of component '" << id
+                    << " " << number << "' not found" << std::endl;
       }
     } else {
       // look for exact
       if (components.count(id) > 0) {
         vector<sptr<Component>> v = components[id];
 
-        if (number < v.size())
-          component = v[number];
+        if (number < v.size()) component = v[number];
       } else {
         if (loglevel >= LogLevel::Warning)
-          std::cout << "HeuristicFactory warning: component '" << id << " " << number << "' not found!" << std::endl;
+          std::cout << "HeuristicFactory warning: component '" << id << " "
+                    << number << "' not found!" << std::endl;
       }
     }
 
@@ -218,7 +220,8 @@ class HeuristicFactory {
   void assign(std::shared_ptr<T>& component, unsigned number, string id) {
     // NOTE THAT component is likely to be NULL!!
     if (loglevel >= LogLevel::Debug) {
-      std::cout << "Debug: hf will try to assign component '" << (component ? component->id() : "nullptr");
+      std::cout << "Debug: hf will try to assign component '"
+                << (component ? component->id() : "nullptr");
       std::cout << "' with id = '" << id << " #" << number << std::endl;
     }
     // check prefix "OptFrame:"
@@ -230,7 +233,8 @@ class HeuristicFactory {
 
     if (!ComponentHelper::compareBase(T::idComponent(), id)) {
       if (loglevel >= LogLevel::Warning)
-        std::cout << "HeuristicFactory: incompatible assign '" << T::idComponent() << "' <- '" << id << "'" << std::endl;
+        std::cout << "HeuristicFactory: incompatible assign '"
+                  << T::idComponent() << "' <- '" << id << "'" << std::endl;
 
       component = nullptr;
       return;
@@ -239,8 +243,10 @@ class HeuristicFactory {
     if (components.count(id) > 0) {
       vector<sptr<Component>>& v = components[id];
       if (number < v.size()) {
-        //component = std::shared_ptr<T>((T*)v[number].get()); // need to cast to type T...
-        component = std::shared_ptr<T>((std::shared_ptr<T>&)v[number]);  // need to cast to type T...
+        // component = std::shared_ptr<T>((T*)v[number].get()); // need to cast
+        // to type T...
+        component = std::shared_ptr<T>(
+            (std::shared_ptr<T>&)v[number]);  // need to cast to type T...
         return;
       }
     } else {
@@ -253,7 +259,8 @@ class HeuristicFactory {
   }
 
   template <class T>
-  void assignList(vector<std::shared_ptr<T>>& cList, unsigned number, string _listId) {
+  void assignList(vector<std::shared_ptr<T>>& cList, unsigned number,
+                  string _listId) {
     // type checking for safety!
     string noList = ComponentHelper::typeOfList(_listId);
     string listId = noList;
@@ -261,7 +268,9 @@ class HeuristicFactory {
 
     if (!ComponentHelper::compareBase(T::idComponent(), noList)) {
       if (loglevel >= LogLevel::Warning)
-        std::cout << "HeuristicFactory: incompatible list assign '[" << T::idComponent() << "]' <- '[" << noList << "]'" << std::endl;
+        std::cout << "HeuristicFactory: incompatible list assign '["
+                  << T::idComponent() << "]' <- '[" << noList << "]'"
+                  << std::endl;
 
       return;
     }
@@ -273,29 +282,29 @@ class HeuristicFactory {
           cList.push_back(sptr<T>((std::shared_ptr<T>&)vv[number][i]));
     } else {
       if (loglevel >= LogLevel::Warning)
-        std::cout << "'" << listId << " " << number << "' not found!" << std::endl;
+        std::cout << "'" << listId << " " << number << "' not found!"
+                  << std::endl;
     }
   }
 
   // TODO: experimental
   bool checkCompatible(std::string scomponent, std::string starget) {
     // This is equivalent to: component->compatible(starget)
-    // Meaning that, either scomponent == starget, or starget is subpart of scomponent
-    // To make this beautiful, let's split in parts, separated by ':'
+    // Meaning that, either scomponent == starget, or starget is subpart of
+    // scomponent To make this beautiful, let's split in parts, separated by ':'
     Scanner scan1(scomponent);
     scan1.useSeparators(":");
     std::vector<std::string> vparts1;
-    while (scan1.hasNext())
-      vparts1.push_back(scan1.next());
+    while (scan1.hasNext()) vparts1.push_back(scan1.next());
     //
     Scanner scan2(starget);
     scan2.useSeparators(":");
     std::vector<std::string> vparts2;
-    while (scan2.hasNext())
-      vparts2.push_back(scan2.next());
+    while (scan2.hasNext()) vparts2.push_back(scan2.next());
     //
     if (loglevel >= LogLevel::Debug) {
-      std::cout << "DEBUG: HF checkCompatible(" << scomponent << ";" << starget << ")" << std::endl;
+      std::cout << "DEBUG: HF checkCompatible(" << scomponent << ";" << starget
+                << ")" << std::endl;
       for (unsigned i = 0; i < vparts1.size(); i++)
         std::cout << vparts1[i] << " | ";
       std::cout << std::endl;
@@ -306,21 +315,22 @@ class HeuristicFactory {
 
     if ((vparts1[0] != std::string{"OptFrame"}) ||
         (vparts2[0] != std::string{"OptFrame"})) {
-      std::cout << "HF: WARNING: checkCompatible has STRANGE NON-OptFrame components '" << scomponent << "' AND '" << starget << "'" << std::endl;
+      std::cout << "HF: WARNING: checkCompatible has STRANGE NON-OptFrame "
+                   "components '"
+                << scomponent << "' AND '" << starget << "'" << std::endl;
       return false;
     }
     // check if equals
-    if (scomponent == starget)
-      return true;
+    if (scomponent == starget) return true;
     // cannot upcast
     if (vparts2.size() > vparts1.size()) {
-      std::cout << "HF: WARNING: cannot upcast components '" << scomponent << "' AND '" << starget << "'" << std::endl;
+      std::cout << "HF: WARNING: cannot upcast components '" << scomponent
+                << "' AND '" << starget << "'" << std::endl;
       return false;
     }
     // check if starget is subpart, a.k.a., "subclass"
     for (unsigned i = 0; i < vparts2.size(); i++)
-      if (vparts1[i] != vparts2[i])
-        return false;
+      if (vparts1[i] != vparts2[i]) return false;
     return true;
   }
 
@@ -329,7 +339,8 @@ class HeuristicFactory {
     /*
       if (inComponents(component.sptr())) {
          if (loglevel >= LogLevel::Warning)
-            std::cout << "WARNING: HeuristicFactory addComponent: component '" << component->id() << "' already registered!" << std::endl;
+            std::cout << "WARNING: HeuristicFactory addComponent: component '"
+      << component->id() << "' already registered!" << std::endl;
          //return -1;
       }
       */
@@ -342,17 +353,22 @@ class HeuristicFactory {
 
     // experimental: disagreement is not ok
     if (b xor b2) {
-      std::cout << "HF WARNING: disagreement between b and b2! Must Fix this!" << std::endl;
+      std::cout << "HF WARNING: disagreement between b and b2! Must Fix this!"
+                << std::endl;
       // assert(false);
-      std::cout << "Will not do anything if any is true... b=" << b << " b2=" << b2 << std::endl;
+      std::cout << "Will not do anything if any is true... b=" << b
+                << " b2=" << b2 << std::endl;
     }
 
     // experimental: but agreement is ok
     if ((!b) && (!b2)) {
       if (loglevel >= LogLevel::Warning) {
-        std::cout << "HeuristicFactory addComponent: incompatible components. NOTE: component->id():'";
-        std::cout << component->id() << "' ->compatible('" << id << "') returned FALSE! " << std::endl;
-        std::cout << "Rejecting component '" << component->toString() << "'." << std::endl;
+        std::cout << "HeuristicFactory addComponent: incompatible components. "
+                     "NOTE: component->id():'";
+        std::cout << component->id() << "' ->compatible('" << id
+                  << "') returned FALSE! " << std::endl;
+        std::cout << "Rejecting component '" << component->toString() << "'."
+                  << std::endl;
       }
 
       return -1;
@@ -367,7 +383,8 @@ class HeuristicFactory {
 
     int idx = components[id].size() - 1;
 
-    //cout << "HeuristicFactory: added component '" << id << " " << idx << "'" << endl;
+    // cout << "HeuristicFactory: added component '" << id << " " << idx << "'"
+    // << endl;
 
     return idx;
   }
@@ -382,7 +399,8 @@ class HeuristicFactory {
 
     if (tmp != T::idComponent()) {
       if (loglevel >= LogLevel::Error)
-        std::cout << "Error: expected '" << T::idComponent() << "' and found '" << tmp << "'." << std::endl;
+        std::cout << "Error: expected '" << T::idComponent() << "' and found '"
+                  << tmp << "'." << std::endl;
 
       component = nullptr;
 
@@ -413,7 +431,8 @@ class HeuristicFactory {
       if ((cList[i] == nullptr) || (!cList[i]->compatible(noList))) {
         if (loglevel >= LogLevel::Warning) {
           std::cout << "Warning: incompatible components '";
-          std::cout << cList[i]->id() << "' and '" << ComponentHelper::typeOfList(listId) << "'!" << std::endl;
+          std::cout << cList[i]->id() << "' and '"
+                    << ComponentHelper::typeOfList(listId) << "'!" << std::endl;
         }
 
         return -1;
@@ -423,11 +442,13 @@ class HeuristicFactory {
     v.push_back(cList);
 
     if (loglevel >= LogLevel::Info)
-      std::cout << "HeuristicFactory: adding to list id '" << listId << "'" << std::endl;
+      std::cout << "HeuristicFactory: adding to list id '" << listId << "'"
+                << std::endl;
 
     int idx = componentLists[listId].size() - 1;
 
-    //cout << "HeuristicFactory: added component list '" << listId << " " << idx << "'" << endl;
+    // cout << "HeuristicFactory: added component list '" << listId << " " <<
+    // idx << "'" << endl;
 
     return idx;
   }
@@ -442,10 +463,12 @@ class HeuristicFactory {
       return -1;
   }
 
-  //! \english listComponents lists all available components that match a given pattern. \endenglish \portuguese listComponents lista todos componentes disponiveis que coincidem com um padrao dado. \endportuguese
+  //! \english listComponents lists all available components that match a given
+  //! pattern. \endenglish \portuguese listComponents lista todos componentes
+  //! disponiveis que coincidem com um padrao dado. \endportuguese
   /*!
-		 \sa listComponents(string)
-	 */
+                 \sa listComponents(string)
+         */
   vector<string> listComponents(string pattern) {
     vector<string> list;
 
@@ -454,7 +477,7 @@ class HeuristicFactory {
     for (iter = components.begin(); iter != components.end(); iter++) {
       //
       std::vector<std::shared_ptr<Component>> v = iter->second;
-      //vector<Component*> v = iter->second;
+      // vector<Component*> v = iter->second;
 
       for (unsigned int i = 0; i < v.size(); i++)
         if (ComponentHelper::compareBase(pattern, v[i]->id())) {
@@ -467,22 +490,25 @@ class HeuristicFactory {
     return list;
   }
 
-  //! \english listAllComponents lists all available OptFrame components. \endenglish \portuguese listAllComponents lista todos os componentes do OptFrame disponiveis. \endportuguese
+  //! \english listAllComponents lists all available OptFrame components.
+  //! \endenglish \portuguese listAllComponents lista todos os componentes do
+  //! OptFrame disponiveis. \endportuguese
   /*!
-		 \sa listAllComponents()
-	 */
+                 \sa listAllComponents()
+         */
 
-  vector<string> listAllComponents() {
-    return listComponents("OptFrame:");
-  }
+  vector<string> listAllComponents() { return listComponents("OptFrame:"); }
 
-  //! \english listComponents lists all available components that match a given pattern. \endenglish \portuguese listComponents lista todos componentes disponiveis que coincidem com um padrao dado. \endportuguese
+  //! \english listComponents lists all available components that match a given
+  //! pattern. \endenglish \portuguese listComponents lista todos componentes
+  //! disponiveis que coincidem com um padrao dado. \endportuguese
   /*!
-		 \sa listComponents(string)
-	 */
+                 \sa listComponents(string)
+         */
   vector<string> listComponentLists(string pattern) {
     if (loglevel >= LogLevel::Debug)
-      std::cout << "listing component lists for pattern = '" << pattern << "'" << std::endl;
+      std::cout << "listing component lists for pattern = '" << pattern << "'"
+                << std::endl;
     vector<string> list;
 
     map<std::string, vector<vector<sptr<Component>>>>::iterator iter;
@@ -501,12 +527,16 @@ class HeuristicFactory {
     return list;
   }
 
-  //! \english listBuilders lists all component builders that match a given pattern, with their respective parameters. \endenglish \portuguese listBuilders lista todos component builders, com seus respectivos parametros, que coincidem com um padrao dado. \endportuguese
+  //! \english listBuilders lists all component builders that match a given
+  //! pattern, with their respective parameters. \endenglish \portuguese
+  //! listBuilders lista todos component builders, com seus respectivos
+  //! parametros, que coincidem com um padrao dado. \endportuguese
   /*!
-		 \sa listComponents(string)
-	 */
+                 \sa listComponents(string)
+         */
 
-  vector<pair<string, vector<pair<string, string>>>> listBuilders(string pattern) {
+  vector<pair<string, vector<pair<string, string>>>> listBuilders(
+      string pattern) {
     vector<pair<string, vector<pair<string, string>>>> list;
 
     for (unsigned i = 0; i < builders.size(); i++)
@@ -527,7 +557,7 @@ class HeuristicFactory {
       {
         if (v[id] != nullptr)  // else return false?
         {
-          //delete v[id];
+          // delete v[id];
           v[id] = nullptr;
           components[type] = v;
 
@@ -549,26 +579,29 @@ class HeuristicFactory {
 
       for (unsigned int i = 0; i < v.size(); i++) {
         if (loglevel >= LogLevel::Debug)
-          std::cout << "HF: will clear v.toString()=" << v[i]->toString() << std::endl;
-        //delete v[i];
+          std::cout << "HF: will clear v.toString()=" << v[i]->toString()
+                    << std::endl;
+        // delete v[i];
         v[i] = nullptr;
       }
 
       if (loglevel >= LogLevel::Debug)
-        std::cout << "    => HF: CLEARING COMPONENT: '" << iter->first << "'" << std::endl;
+        std::cout << "    => HF: CLEARING COMPONENT: '" << iter->first << "'"
+                  << std::endl;
       //
       // TODO: MUST KEEP LINE BELOW!
-      //iter->second.clear();
+      // iter->second.clear();
       v.clear();
     }
 
     map<std::string, vector<vector<sptr<Component>>>>::iterator iter2;
 
-    for (iter2 = componentLists.begin(); iter2 != componentLists.end(); iter2++) {
+    for (iter2 = componentLists.begin(); iter2 != componentLists.end();
+         iter2++) {
       vector<vector<std::shared_ptr<Component>>>& v = iter2->second;
 
       for (unsigned int i = 0; i < v.size(); i++)
-        //delete v[i];
+        // delete v[i];
         v[i].clear();
 
       // Should not delete the components inside lists. They're already deleted!
@@ -576,11 +609,10 @@ class HeuristicFactory {
     }
   }
 
-  sref<RandGen> getRandGen() {
-    return rg;
-  }
+  sref<RandGen> getRandGen() { return rg; }
 
-  pair<sptr<LocalSearch<XES, XEv>>, std::string> createLocalSearch(std::string str) {
+  pair<sptr<LocalSearch<XES, XEv>>, std::string> createLocalSearch(
+      std::string str) {
     Scanner scanner(str);
 
     // No heuristic!
@@ -597,35 +629,45 @@ class HeuristicFactory {
       assign(mtd, id, LocalSearch<XES, XEv>::idComponent());
 
       if (!mtd)
-        return pair<sptr<LocalSearch<XES, XEv>>, std::string>(new EmptyLocalSearch<XES, XEv>, scanner.rest());
+        return pair<sptr<LocalSearch<XES, XEv>>, std::string>(
+            new EmptyLocalSearch<XES, XEv>, scanner.rest());
 
       return make_pair(mtd, scanner.rest());
     }
 
     if (h == EmptyLocalSearch<XES, XEv>::idComponent())
-      return pair<sptr<LocalSearch<XES, XEv>>, std::string>(new EmptyLocalSearch<XES, XEv>, scanner.rest());
+      return pair<sptr<LocalSearch<XES, XEv>>, std::string>(
+          new EmptyLocalSearch<XES, XEv>, scanner.rest());
 
     for (unsigned i = 0; i < builders.size(); i++) {
       // build local search directly by builder name
       if (builders[i]->id() == h) {
-        LocalSearch<XES, XEv>* ls = ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
-        return pair<sptr<LocalSearch<XES, XEv>>, std::string>(ls, scanner.rest());
+        LocalSearch<XES, XEv>* ls =
+            ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
+        return pair<sptr<LocalSearch<XES, XEv>>, std::string>(ls,
+                                                              scanner.rest());
       }
 
       // locate builder by local search name
       if (builders[i]->canBuild(h)) {
-        LocalSearch<XES, XEv>* ls = ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
-        return pair<sptr<LocalSearch<XES, XEv>>, std::string>(ls, scanner.rest());
+        LocalSearch<XES, XEv>* ls =
+            ((LocalSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
+        return pair<sptr<LocalSearch<XES, XEv>>, std::string>(ls,
+                                                              scanner.rest());
       }
     }
 
     if (loglevel >= LogLevel::Warning)
-      std::cout << "HeuristicFactory::createLocalSearch warning: no LocalSearch '" << h << "' found! ignoring..." << std::endl;
+      std::cout
+          << "HeuristicFactory::createLocalSearch warning: no LocalSearch '"
+          << h << "' found! ignoring..." << std::endl;
 
-    return pair<sptr<LocalSearch<XES, XEv>>, std::string>(nullptr, scanner.rest());
+    return pair<sptr<LocalSearch<XES, XEv>>, std::string>(nullptr,
+                                                          scanner.rest());
   }
 
-  pair<sptr<SingleObjSearch<XES>>, std::string> createSingleObjSearch(std::string str) {
+  pair<sptr<SingleObjSearch<XES>>, std::string> createSingleObjSearch(
+      std::string str) {
     Scanner scanner(str);
 
     // No heuristic!
@@ -642,35 +684,47 @@ class HeuristicFactory {
       assign(mtd, id, SingleObjSearch<XES>::idComponent());
 
       if (!mtd)
-        return pair<sptr<SingleObjSearch<XES>>, std::string>(new EmptySingleObjSearch<XES, XEv>, scanner.rest());
+        return pair<sptr<SingleObjSearch<XES>>, std::string>(
+            new EmptySingleObjSearch<XES, XEv>, scanner.rest());
 
       return pair<sptr<SingleObjSearch<XES>>, std::string>(mtd, scanner.rest());
     }
 
     if (h == EmptySingleObjSearch<XES, XEv>::idComponent())
-      return pair<sptr<SingleObjSearch<XES>>, std::string>(new EmptySingleObjSearch<XES, XEv>, scanner.rest());
+      return pair<sptr<SingleObjSearch<XES>>, std::string>(
+          new EmptySingleObjSearch<XES, XEv>, scanner.rest());
 
     for (unsigned i = 0; i < builders.size(); i++) {
       // build local search directly by builder name
       if (builders[i]->id() == h) {
-        SingleObjSearch<XES>* sios = ((SingleObjSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
-        return pair<sptr<SingleObjSearch<XES>>, std::string>(sios, scanner.rest());
+        SingleObjSearch<XES>* sios =
+            ((SingleObjSearchBuilder<S, XEv>*)(builders[i]))
+                ->build(scanner, *this);
+        return pair<sptr<SingleObjSearch<XES>>, std::string>(sios,
+                                                             scanner.rest());
       }
 
       // locate builder by local search name
       if (builders[i]->canBuild(h)) {
-        SingleObjSearch<XES>* sios = ((SingleObjSearchBuilder<S, XEv>*)(builders[i]))->build(scanner, *this);
-        return pair<sptr<SingleObjSearch<XES>>, std::string>(sios, scanner.rest());
+        SingleObjSearch<XES>* sios =
+            ((SingleObjSearchBuilder<S, XEv>*)(builders[i]))
+                ->build(scanner, *this);
+        return pair<sptr<SingleObjSearch<XES>>, std::string>(sios,
+                                                             scanner.rest());
       }
     }
 
     if (loglevel >= LogLevel::Warning)
-      std::cout << "HeuristicFactory::createSingleObjSearch warning: no SingleObjSearch '" << h << "' found! ignoring..." << std::endl;
+      std::cout << "HeuristicFactory::createSingleObjSearch warning: no "
+                   "SingleObjSearch '"
+                << h << "' found! ignoring..." << std::endl;
 
-    return pair<sptr<SingleObjSearch<XES>>, std::string>(nullptr, scanner.rest());
+    return pair<sptr<SingleObjSearch<XES>>, std::string>(nullptr,
+                                                         scanner.rest());
   }
 
-  pair<MultiObjSearch<XES>*, std::string> createMultiObjSearch(std::string str) {
+  pair<MultiObjSearch<XES>*, std::string> createMultiObjSearch(
+      std::string str) {
     Scanner scanner(str);
 
     // No heuristic!
@@ -686,8 +740,7 @@ class HeuristicFactory {
 
       assign(mtd, id, MultiObjSearch<XES>::idComponent());
 
-      if (!mtd)
-        return make_pair(new EmptyMultiObjSearch<XES>, scanner.rest());
+      if (!mtd) return make_pair(new EmptyMultiObjSearch<XES>, scanner.rest());
 
       return make_pair(mtd, scanner.rest());
     }
@@ -696,7 +749,9 @@ class HeuristicFactory {
       return make_pair(new EmptyMultiObjSearch<XES>, scanner.rest());
 
     if (loglevel >= LogLevel::Warning)
-      std::cout << "HeuristicFactory::createMultiObjSearch warning: no MultiObjSearch '" << h << "' found! ignoring..." << std::endl;
+      std::cout << "HeuristicFactory::createMultiObjSearch warning: no "
+                   "MultiObjSearch '"
+                << h << "' found! ignoring..." << std::endl;
 
     return pair<MultiObjSearch<XES>*, std::string>(nullptr, scanner.rest());
   }
@@ -704,4 +759,4 @@ class HeuristicFactory {
 
 }  // namespace optframe
 
-#endif /* HEURISTICFACTORY_HPP_ */
+#endif  // OPTFRAME_HYPER_HEURISTICFACTORY_HPP_
