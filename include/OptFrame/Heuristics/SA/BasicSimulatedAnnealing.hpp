@@ -184,7 +184,8 @@ class BasicSimulatedAnnealing : public SingleObjSearch<XES>,
   // search (TODO: consider _best and _incumbent parameters)
   SearchOutput<XES, XSH> searchBy(const StopCriteria<XEv>& sosc,
                                   std::optional<XSH> _best) override {
-    std::cout << "SA search(" << sosc.timelimit << ")" << std::endl;
+    if (Component::information)
+      std::cout << "SA search(" << sosc.timelimit << ")" << std::endl;
 
     // TODO: receive on 'searchBy'
     std::optional<XSH> star;
@@ -414,10 +415,12 @@ XSH::first_type::typeR>);
                assert(star->first.listAC.size() == se.first.listAC.size());
 #endif
    */
-
-          cout << "Best fo: " << se.second.evaluation()
-               << " Found on Iter = " << ctx.iterT << " and T = " << ctx.T;
-          cout << endl;
+          if (Component::information) {
+            std::cout << "Best fo: " << se.second.evaluation()
+                      << " Found on Iter = " << ctx.iterT
+                      << " and T = " << ctx.T;
+            std::cout << endl;
+          }
 
 #ifdef OPTFRAME_AC
           // requires first part of solution to be a component
@@ -479,7 +482,9 @@ XSH::first_type::typeR>);
       // update iterT and temperature in next method
       onBeforeLoopCtx(ctx);
     }
-    std::cout << "T=" << ctx.T << std::endl;
+    if (Component::debug) {
+      std::cout << "T=" << ctx.T << std::endl;
+    }
 
 #ifdef OPTFRAME_AC
     // requires first part of solution to be a component
@@ -503,7 +508,7 @@ XSH::first_type::typeR>);
 
   // reimplementing searchBy, just to make it more explicit (visible)
   // maybe add some specific logs?
-  virtual SearchOutput<XES, XSH> searchByIncumbent(
+  SearchOutput<XES, XSH> searchByIncumbent(
       XES& _best, XES& _inc, const StopCriteria<XEv>& stop) override {
     assert(false);  // TODO: implement... and check if 'best' and 'incumbent'
                     // are both useful and necessary!

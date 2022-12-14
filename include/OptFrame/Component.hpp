@@ -313,7 +313,8 @@ class Component {
     return false;
   }
 
-  // -----------
+  // ------------------------------
+  // TODO: MISSING setMessageLevelR !!!
 
   void setMessageLevel(LogLevel vl) {
     error = warning = information = verbose = false;
