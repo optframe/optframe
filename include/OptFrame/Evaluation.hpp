@@ -29,17 +29,21 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
+#include <utility>
 //
 #include <OptFrame/BaseConcepts.hpp>
 #include <OptFrame/Component.hpp>
 #include <OptFrame/Helper/MultiObjValue.hpp>  // inserting this beforehand.. who knows!!!
-#include <OptFrame/SingleObjValue.hpp>        // basic value 'evtype' comes from here!
+#include <OptFrame/SingleObjValue.hpp>  // basic value 'evtype' comes from here!
 
 // using namespace std;
 
 namespace optframe {
 
-//! \english The Evaluation class is a container class for the objective function value and the Memory structure M. \endenglish \portuguese A classe Evaluation é uma classe contêiner para o valor da função objetivo e a estrutura de Memória M. \endportuguese
+//! \english The Evaluation class is a container class for the objective
+//! function value and the Memory structure M. \endenglish \portuguese A classe
+//! Evaluation é uma classe contêiner para o valor da função objetivo e a
+//! estrutura de Memória M. \endportuguese
 
 /*!
  \english
@@ -49,8 +53,8 @@ namespace optframe {
 
  \portuguese
  Também é possível carregar uma medida de inviabilidade infMeasure.
- O método evaluation() retorna a soma da função objetivo objFunction e a infMeasure.
- \endportuguese
+ O método evaluation() retorna a soma da função objetivo objFunction e a
+ infMeasure. \endportuguese
  */
 
 //#include "Util/PackTypes.hpp"
@@ -59,18 +63,21 @@ namespace optframe {
 // note: for multi-objective problems with distinct objective space types
 // such as (int, evtype, long long) you can use PackTypes in Utils or overload
 // manually each of the numeric operators +, -, *
-//why this isn't a template????????????????
+// why this isn't a template????????????????
 // found a solution using C++20 concepts: now it's an optional template :)
 
 // TODO: this ObjType here can require more than 'totally_ordered',
-// as it will require arithmetics (+,-,*) to calculate MoveCosts and Infeasibility
-// Thus, we should use another concept here, composed (&&) with arithmetics.
-// Good thing is that Evaluation class is generic for most uses...
-// This is not the case for Pareto solutions, where composability may become more complex (MultiEvaluation)
-// TODO: must see next how to deal with that (on Pareto side), but at least we have a very elegant solution now
+// as it will require arithmetics (+,-,*) to calculate MoveCosts and
+// Infeasibility Thus, we should use another concept here, composed (&&) with
+// arithmetics. Good thing is that Evaluation class is generic for most uses...
+// This is not the case for Pareto solutions, where composability may become
+// more complex (MultiEvaluation)
+// TODO: must see next how to deal with that (on Pareto side), but at least we
+// have a very elegant solution now
 
-// here comes the tricky part, 'totally_ordered' should be enough, but we endup needing arithmetics to compute costs
-//template<optframe::totally_ordered ObjType = evtype>
+// here comes the tricky part, 'totally_ordered' should be enough, but we endup
+// needing arithmetics to compute costs
+// template<optframe::totally_ordered ObjType = evtype>
 // so we will proceed with basic arithmetics, +, - and *.
 // this effectively discard 'string' and others (although comparable)
 
@@ -102,7 +109,7 @@ class Evaluation final : public Component {
 
  public:
   // is minimization (WHY???)
-  bool isMini{true};
+  // bool isMini{true};
 
   static constexpr int x{num_zero<int>()};
 
@@ -111,11 +118,11 @@ class Evaluation final : public Component {
 
   // TODO(IGOR): maybe create empty Evaluation with numeric_zero on 'obj'
 
-  explicit Evaluation(const ObjType& obj,
-                      const ObjType& inf,
-                      const evtype& w = 1,
-                      bool _isMini = true)
-      : objFunction(obj), infMeasure(inf), isMini(_isMini) {
+  explicit Evaluation(const ObjType& obj, const ObjType& inf,
+                      const evtype& w = 1)  //, bool _isMini = true)
+      : objFunction(obj),
+        infMeasure(inf)  //, isMini(_isMini)
+  {
     // verify that this is valid XEvaluation
     static_assert(XEvaluation<Evaluation<ObjType>>);
 
@@ -128,8 +135,7 @@ class Evaluation final : public Component {
 
   // TODO(IGOR): I am removing 'explicit' to allow StopCriteria "seamless"
   // passing of Evaluation object.
-  Evaluation(const ObjType& obj)
-      : objFunction(obj) {
+  Evaluation(const ObjType& obj) : objFunction(obj) {
     // verify that this is valid XEvaluation
     static_assert(XEvaluation<Evaluation<ObjType>>);
 
@@ -161,21 +167,23 @@ class Evaluation final : public Component {
 
   // never put 'explicit' here!!
   Evaluation(const Evaluation<ObjType>& e)
-      : objFunction(e.objFunction), infMeasure(e.infMeasure)
+      : objFunction(e.objFunction),
+        infMeasure(e.infMeasure)
         //, alternatives(e.alternatives)
         //, gos(e.gos)
         ,
         outdated(e.outdated),
-        estimated(e.estimated),
-        isMini(e.isMini) {
+        estimated(e.estimated)
+  //,
+  // isMini(e.isMini)
+  {
     // verify that this is valid XEvaluation
     static_assert(XEvaluation<Evaluation<ObjType>>);
 
     optframe::numeric_zero(objValZero);
   }
 
-  virtual ~Evaluation() {
-  }
+  virtual ~Evaluation() {}
 
   virtual Evaluation<ObjType>& operator=(const Evaluation<ObjType>& e) {
     if (&e == this)  // auto ref check
@@ -187,7 +195,7 @@ class Evaluation final : public Component {
     estimated = e.estimated;
     // alternatives = e.alternatives;
     // gos = e.gos;
-    isMini = e.isMini;
+    // isMini = e.isMini;
 
     return *this;
   }
@@ -203,31 +211,23 @@ class Evaluation final : public Component {
     estimated = e.estimated;
     // alternatives = e.alternatives;
     // gos = e.gos;
-    isMini = e.isMini;
+    // isMini = e.isMini;
 
     return *this;
   }
 
-  virtual Evaluation<ObjType>& clone() const {
-    return *new Evaluation(*this);
-  }
+  virtual Evaluation<ObjType>& clone() const { return *new Evaluation(*this); }
 
   // end canonical part
   // ======================================
   // begin Evaluation methods
 
   // getters/setters
-  bool isOutdated() const {
-    return outdated;
-  }
+  bool isOutdated() const { return outdated; }
 
-  void invalidate() {
-    outdated = true;
-  }
+  void invalidate() { outdated = true; }
 
-  bool isEstimated() const {
-    return estimated;
-  }
+  bool isEstimated() const { return estimated; }
 
   static constexpr ObjType getZero() {
     ObjType objValZero;
@@ -235,13 +235,9 @@ class Evaluation final : public Component {
     return objValZero;
   }
 
-  ObjType getObjFunction() const {
-    return objFunction;
-  }
+  ObjType getObjFunction() const { return objFunction; }
 
-  ObjType getInfMeasure() const {
-    return infMeasure;
-  }
+  ObjType getInfMeasure() const { return infMeasure; }
 
   void setObjFunction(ObjType obj) {
     objFunction = obj;
@@ -253,21 +249,20 @@ class Evaluation final : public Component {
     outdated = false;
   }
 
-  void setInfMeasure(ObjType inf) {
-    infMeasure = inf;
-  }
+  void setInfMeasure(ObjType inf) { infMeasure = inf; }
 
-  ObjType evaluation() const {
-    return objFunction + infMeasure;
-  }
+  ObjType evaluation() const { return objFunction + infMeasure; }
 
   // ========= TAKEN FROM MoveCost =======
 
   // update target Evaluation with *this cost
+  // this requires operator+ over ObjType
   virtual void update(Evaluation<ObjType>& evTarget) const {
-    // this task was performed before by MoveCost... now unifying in Evaluation
-    // how to do this?
-    assert(false);
+    assert(!evTarget.isOutdated());  // NOLINT
+    assert(!this->isOutdated());     // NOLINT
+    evTarget = Evaluation<ObjType>{
+        evTarget.getObjFunction() + this->getObjFunction(),
+        evTarget.getInfMeasure() + this->getInfMeasure(), true};
   }
 
   // returns the difference/cost between evFinal - evThis
@@ -277,17 +272,15 @@ class Evaluation final : public Component {
     // take my own information
     // -----------------------
 
-    pair<ObjType, ObjType> e_begin = make_pair(
-        this->getObjFunction(),
-        this->getInfMeasure());
+    pair<ObjType, ObjType> e_begin =
+        make_pair(this->getObjFunction(), this->getInfMeasure());
 
     // -----------------------
     // compute cost difference
     // -----------------------
-    Evaluation<ObjType> mcost(
-        e.getObjFunction() - e_begin.first,
-        e.getInfMeasure() - e_begin.second,
-        1);  // no outdated or estimated
+    Evaluation<ObjType> mcost(e.getObjFunction() - e_begin.first,
+                              e.getInfMeasure() - e_begin.second,
+                              1);  // no outdated or estimated
 
     // ======================================================
     // For alternative/lexicographic costs, see WLxEvaluation
@@ -309,7 +302,8 @@ class Evaluation final : public Component {
     // return optframe::numeric_is_zero<ObjType>(infMeasure);
     // IMPORTANT: numeric_is_zero can come from anywhere!
     return optframe::numeric_is_zero(infMeasure);
-    // return (EVALUATION_ABS(infMeasure) <= optframe::get_numeric_zero<ObjType>()); // deprecated
+    // return (EVALUATION_ABS(infMeasure) <=
+    // optframe::get_numeric_zero<ObjType>()); // deprecated
   }
 
   // ======================
@@ -322,13 +316,9 @@ class Evaluation final : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
-  void print() const override {
-    std::cout << toString() << endl;
-  }
+  void print() const override { std::cout << toString() << endl; }
 
   std::string toString() const override {
     // ONE SHOULD NEVER PRINT AN EVALUATION WITH OUTDATED FLAG... SANITY CHECK!

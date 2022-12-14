@@ -3,6 +3,7 @@ build --cxxopt='-Wno-macro-redefined'
 build --cxxopt='-Wno-builtin-macro-redefined'
 #
 build --cxxopt='-Wno-unused-private-field'
+build --cxxopt='-g'
 
 
 #### https://github.com/llvm/llvm-project/issues/56709

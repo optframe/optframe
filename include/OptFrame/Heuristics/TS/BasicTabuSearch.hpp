@@ -5,6 +5,11 @@
 #ifndef OPTFRAME_HEURISTICS_TS_BASICTABUSEARCH_HPP_
 #define OPTFRAME_HEURISTICS_TS_BASICTABUSEARCH_HPP_
 
+// C++
+#include <string>
+#include <utility>
+#include <vector>
+//
 #include "../../Evaluator.hpp"
 #include "../../NSEnum.hpp"
 #include "../../SingleObjSearch.hpp"
@@ -18,19 +23,14 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
   using XEv = typename XES::second_type;
   using XSH = XES;
   //
- private:
-  // Evaluator<XES, XEv>& evaluator;
-  // InitialSearch<XES>& constructive;
-  // NSSeq<XES, XEv, XSH>& nsSeq;
+ public:
   sref<GeneralEvaluator<XES, XEv>> evaluator;
   sref<InitialSearch<XES>> constructive;
-  vsref<NSSeq<XES, XEv, XSH>> nsSeq;
+  sref<NSSeq<XES, XEv, XSH>> nsSeq;
   int tlSize;
   int tsMax;
 
  public:
-  // BasicTabuSearch(Evaluator<XES, XEv>& _ev, InitialSearch<XES>&
-  // _constructive, NSSeq<XES, XEv, XSH>& _nsSeq, int _tlSize, int _tsMax)
   BasicTabuSearch(sref<GeneralEvaluator<XES, XEv>> _ev,
                   sref<InitialSearch<XES>> _constructive,
                   sref<NSSeq<XES, XEv, XSH>> _nsSeq, int _tlSize, int _tsMax)
@@ -42,26 +42,11 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
 
   ~BasicTabuSearch() override = default;
 
-  // pair<S&, Evaluation<>&>* search(double timelimit = 100000000, double
-  // target_f = 0, const S* _s = nullptr, const Evaluation<>* _e = nullptr)
-  // override
   SearchOutput<XES, XSH> search(const StopCriteria<XEv>& sosc) override {
-    // cout << "BasicTabuSearch exec(" << target_f << "," << timelimit << ")" <<
-    // endl;
-
-    // long tini = time(nullptr);
-    // long timelimit = stop.timelimit;
-
-    // XSolution AUTO_CONCEPTS& s = constructive.generateSolution();
-    // XSolution AUTO_CONCEPTS& s = constructive.generateSolution();
-    // Evaluation<>& e = evaluator.evaluate(s);
-
-    // XSolution AUTO_CONCEPTS* sStar = &s.clone();
-    // Evaluation<>* evalSStar = &evaluator.evaluate(*sStar);
-
-    // =========================
-
-    std::cout << "TS search(" << sosc.timelimit << ")" << std::endl;
+    if (Component::information) {
+      std::cout << "BasicTabuSearch search(" << sosc.timelimit << ")"
+                << std::endl;
+    }
 
     // TODO: receive on 'searchBy'
     std::optional<XSH> star;
@@ -89,211 +74,217 @@ class BasicTabuSearch : public SingleObjSearch<XES>, public TS {
 
     XSH& se = *incumbent;
 
-    // evalSStar->print();
-
+    // ---------------------
+    // initialize iterations
+    //
     int Iter = 0;
-
     int BestIter = 0;
 
-    const vector<Move<XES, XEv>*> emptyList;
+    // initialize empty tabu list
     vector<Move<XES, XEv>*> tabuList;
-
-    // long tnow = time(nullptr);
 
     int estimative_BTmax = 0;
 
-    while (Iter - BestIter <= tsMax &&
-           sosc.shouldStop(star->second)) {  //((tnow - tini) < timelimit)) {
+    // ============================================
+    // initialize aspiration function A
+    // idea: f(s') < A(f(s)), where A(f(s))=f(s*)
+    //
+    std::function<bool(const XEv&, const XEv&)> cmpA =
+        [&star, this](const XEv& e_prime, const XEv&) {
+          return this->evaluator->betterStrict(e_prime, star->second);
+        };
+    // ============================================
+
+    while (Iter - BestIter <= tsMax && sosc.shouldStop(star->second)) {
       Iter = Iter + 1;
 
       if ((Iter - BestIter) > estimative_BTmax)
         estimative_BTmax = (Iter - BestIter);
 
-      // cout << "Iter " << Iter << " (" << (Iter - BestIter - 1) << " without
-      // improvement)" << endl;
+      // find best non-tabu move OR
+      // best move with aspiration
 
-      // ==================
-      // First: aspiration
-      // ==================
-
-      Move<XES, XEv>* bestMove = tabuBestMove(
-          se.first, se.second, emptyList);  // tabuBestMove(s, e, emptyList);
-
-      // XSolution* s1 = &s.clone();
-      XES se1 = se;
-
-      // Move<XES, XEv>* newTabu = &bestMove->apply(se1.first);//(*s1);
-      // XEv* evalS1 = &evaluator.evaluate(se1.first);//(*s1);
-
-      uptr<Move<XES, XEv>> newTabu = bestMove->applyUpdate(se1);  //(*s1);
-      evaluator.reevaluate(se1);
-      //
-      // XEv* evalS1 = &evaluator.evaluate(se1.first);//(*s1);
-
-      // if (evaluator.betterThan(*evalS1, *evalSStar)) {
-      if (evaluator->betterStrict(se1.second, star->second)) {
-        // Better than global!
-
-        for (unsigned int i = 0; i < tabuList.size(); i++)
-          if ((*tabuList[i]) == (*bestMove)) {
-            delete tabuList[i];
-            tabuList.erase(tabuList.begin() + i);
-            break;
-          }
-      } else {
-        // delete s1;
-        // delete evalS1;
-        // delete newTabu;
-        delete bestMove;
-
-        // bestMove = tabuBestMove(s, e, tabuList);
-        bestMove = tabuBestMove(se.first, se.second, tabuList);
-
-        // s1 = &s.clone();
-        // XES se1 = se;
-        se1 = se;
-
-        // newTabu = &bestMove->apply(*s1);
-        // evalS1 = &evaluator.evaluate(*s1);
-        newTabu = bestMove->applyUpdate(se1);
-        evaluator->reevaluate(se1);
-
-        delete bestMove;
-      }
-
-      // =====================================================
-      //    |T| <= tsSize
-      // =====================================================
-
-      tabuList.push_back(newTabu);
-
-      if (((int)tabuList.size()) > tlSize) {
-        delete tabuList[0];
-        tabuList.erase(tabuList.begin());
-      }
-
-      //-----------------------------------------------------------
-      if (((int)tabuList.size()) > tlSize)
-        throw string("ERROR on Tabu Search! more elements than expected...");
-      //-----------------------------------------------------------
+      uptr<Move<XES, XEv>> bestMove =
+          tabuBestMoveWithAspiration(se, tabuList, cmpA);
+      if (!bestMove) return SearchStatus::FAILED;
 
       // =====================================================
       //        's' <- 's1';
       // =====================================================
-      se = std::move(se1);
-      // s = *s1;
-      // e = *evalS1;
-      // delete s1;
-      // delete evalS1;
+      // apply move and store new tabu move
+      uptr<Move<XES, XEv>> newTabu = bestMove->applyUpdate(se);
+      evaluator->reevaluate(se);
 
-      // =====================================================
-      //        's' better than 's*' (?)
-      // =====================================================
+      // =======================================
+      //  update tabu list: ensure |T| <= tsSize
+      // =======================================
+      tabuList.push_back(newTabu.release());
 
-      // if (evaluator.betterThan(e, *evalSStar)) {
-      if (evaluator->betterStrict(se.second, star->second)) {
-        // delete sStar;
-        // delete evalSStar;
-
-        // sStar = &s.clone();
-        // evalSStar = &evaluator.evaluate(*sStar);
-        star = se;
-
-        BestIter = Iter;
-
-        // cout << "Improvement on " << BestIter << ": fo=" <<
-        // evalSStar->evaluation() << endl;
+      if (((int)tabuList.size()) > tlSize) {
+        // do not 'delete' here
+        uptr<Move<XES, XEv>> firstMove{tabuList[0]};
+        tabuList.erase(tabuList.begin());
+        firstMove = nullptr;
       }
 
-      // tnow = time(nullptr);
+      // ===============================
+      //       's' better than 's*'?
+      // ===============================
+      //
+      if (evaluator->betterStrict(se.second, star->second)) {
+        // Better than global! Can remove from tabu list
+        for (unsigned int i = 0; i < tabuList.size(); i++)
+          if ((*tabuList[i]) == (*bestMove)) {
+            // let this move expire (no 'delete' here)
+            uptr<Move<XES, XEv>> sameMove{tabuList[i]};
+            tabuList.erase(tabuList.begin() + i);
+            sameMove = nullptr;
+            //
+            break;
+          }
+      }
+      // next iteration
     }
 
+    // ===============
+    // clear tabu list
+    // ===============
+
     while (tabuList.size() > 0) {
-      delete tabuList[0];
+      // do not 'delete' here
+      uptr<Move<XES, XEv>> firstMove{tabuList[0]};
+      firstMove = nullptr;
+      //
       tabuList.erase(tabuList.begin());
     }
 
     // ===========
-    // 's' <- 's*'
+    // return 's*'
     // ===========
-
-    // s = *sStar;
-    // e = *evalSStar;
-    // se = star;
-
-    // delete sStar;
-    // delete evalSStar;
-
-    FILE* ftabu = fopen("tabu.txt", "a");
-    if (!ftabu) {
-      cout << "Error creating file 'tabu.txt'" << endl;
-    } else {
-      fprintf(ftabu, "%d\n", estimative_BTmax);
-      fclose(ftabu);
-    }
-
-    // return new pair<S&, Evaluation<>&>(s, e);
-    // return STATUS
+    //
     return {SearchStatus::NO_REPORT, star};
   }
 
-  Move<XES, XEv>* tabuBestMove(XES& se,
-                               const vector<Move<XES, XEv>*>& tabuList) {
-    XSolution AUTO_CONCEPTS& s = se.first;
-    // Evaluation<>& e = se.second;
+  // =====================================
+  // get best move (even if non-improving)
+  // move should not offend tabu list OR
+  // should satisfy aspiration function
+  // =====================================
 
-    NSIterator<XES, XEv>& it = nsSeq.getIterator(s.getR(), s.getADS());
+  uptr<Move<XES, XEv>> tabuBestMoveWithAspiration(
+      XES& se, const vector<Move<XES, XEv>*>& tabuList,
+      std::function<bool(const XEv&, const XEv&)> cmp) {
+    // auto& s = se.first;
+    //
+    uptr<Move<XES, XEv>> bestMove = nullptr;
+    XEv bestCost;  // TODO: initialize? how?
+    //
 
-    it.first();
-
-    if (it.isDone()) {
-      delete &it;
-      return nullptr;
+    // initialize iterator
+    uptr<NSIterator<XES, XEv>> it = nsSeq->getIterator(se);
+    // find first move
+    it->first();
+    if (it->isDone()) {
+      return bestMove;
     }
+    uptr<Move<XES, XEv>> current = it->current();
 
-    Move<XES, XEv>* bestMove = &it.current();
-
-    while (!bestMove->canBeApplied(s) || inList(bestMove, tabuList)) {
-      delete bestMove;
-      it.next();
-
-      if (!it.isDone()) {
-        bestMove = &it.current();
-      } else {
-        delete &it;
-        return nullptr;
+    // while current move exists
+    while (current) {
+      // check if move is good
+      if (!current->canBeApplied(se)) {
+        it->next();
+        if (!it->isDone())
+          current = it->current();
+        else
+          current = nullptr;
+        // try again...
+        continue;
       }
-    }
+      // compute move cost
+      XEv currentCost = evaluator->moveCost(*current, se);
+      if (Component::verbose) {
+        std::cout << "currentCost1:" << currentCost.evaluation() << " move:";
+        current->print();
+      }
+      // check if it's improving best
+      bool improvingBest =
+          (!bestMove) || evaluator->betterStrict(currentCost, bestCost);
+      // if not improving best, try next one..
+      if (!improvingBest) {
+        it->next();
+        if (!it->isDone())
+          current = it->current();
+        else
+          current = nullptr;
+        // try again...
+        continue;
+      }
+      // =================================
+      // okay, we have an improvement here
+      // must check if it's not tabu...
+      // =================================
+      //
+      // assuming aspiration function is cheaper!
+      //
 
-    MoveCost<XEv>* bestCost = &evaluator.moveCost(*bestMove, se);
-    it.next();
-    while (!it.isDone()) {
-      Move<XES, XEv>* move = &it.current();
-      if (move->canBeApplied(s) && !inList(bestMove, tabuList)) {
-        MoveCost<XEv>* cost = &evaluator.moveCost(*move, se);
+      XEv e_prime(se.second);
+      currentCost.update(e_prime);  // e' := e + currentCost
+      if (Component::verbose) {
+        std::cout << "currentCost2:" << currentCost.evaluation() << " move:";
+        current->print();
+      }
 
-        if (evaluator.betterThan(*cost, *bestCost)) {
-          delete bestMove;
-          delete bestCost;
-          bestMove = move;
-          bestCost = cost;
-        } else {
-          delete move;
-          delete cost;
+      //
+      // check aspiration (s', s)
+      if (cmp(e_prime, se.second)) {
+        // OKAY, it satisfies aspiration!
+        // let's accept it directly (no need to check tabu list)
+        bestMove = std::move(current);
+        bestCost = std::move(currentCost);
+        //
+        current = nullptr;
+
+      } else {
+        //
+        // finally... it's improvement, but not satisfying aspiration.
+        //
+        // check if it's in tabu list
+        bool isTabu = inList(current, tabuList);
+        if (isTabu && Component::verbose) {
+          std::cout << "isTabu = true! ";
+          current->print();
         }
-      } else
-        delete move;
-      it.next();
+
+        // if non-tabu, accept it!
+        if (!isTabu) {
+          bestMove = std::move(current);
+          bestCost = std::move(currentCost);
+          //
+          current = nullptr;
+        }
+      }
+      // get next move
+      it->next();
+      if (!it->isDone())
+        current = it->current();
+      else
+        current = nullptr;
+      // try again...
     }
 
-    delete &it;
-
-    delete bestCost;
+    if (Component::verbose) {
+      std::cout << "bestMove = ";
+      if (bestMove)
+        bestMove->print();
+      else
+        std::cout << "nullptr!" << std::endl;
+    }
 
     return bestMove;
   }
 
-  bool inList(Move<XES, XEv>* m, const vector<Move<XES, XEv>*>& v) {
+  bool inList(uptr<Move<XES, XEv>>& m, const vector<Move<XES, XEv>*>& v) {
     for (unsigned int i = 0; i < v.size(); i++)
       if ((*m) == (*v[i])) return true;
     return false;
@@ -315,8 +306,9 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
 class BasicTabuSearchBuilder : public TS,
                                public SingleObjSearchBuilder<S, XEv, XES> {
  public:
-  virtual ~BasicTabuSearchBuilder() {}
+  ~BasicTabuSearchBuilder() override = default;
 
+  // NOLINTNEXTLINE
   SingleObjSearch<XES>* build(Scanner& scanner,
                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
                               string family = "") override {
@@ -338,6 +330,7 @@ class BasicTabuSearchBuilder : public TS,
 
     int tsMax = *scanner.nextInt();
 
+    // NOLINTNEXTLINE
     return new BasicTabuSearch<XES>(*eval, *constructive, *nsseq, tl, tsMax);
   }
 
@@ -345,8 +338,8 @@ class BasicTabuSearchBuilder : public TS,
     vector<pair<string, string>> params;
     params.push_back(
         make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
-    // params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
-    // heuristic"));
+    // params.push_back(make_pair(Constructive<S>::idComponent(),
+    // "constructive heuristic"));
     params.push_back(
         make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
     params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(),

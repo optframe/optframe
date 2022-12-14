@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <functional>
 #include <iostream>
+#include <string>
 #include <utility>
 #include <vector>
 //
@@ -36,6 +37,7 @@ class ProblemContext {
   int Q{-1};
   vector<int> p;
   vector<int> w;
+  int INF_W{100000};
   ProblemContext() : rg{new RandGen{}} {}
   //
   void load(Scanner& scanner) {
@@ -47,12 +49,12 @@ class ProblemContext {
     for (int i = 0; i < n; i++) {
       p[i] = *scanner.nextInt();
     }
-    cout << endl;
     //
     for (int i = 0; i < n; i++) {
       w[i] = *scanner.nextInt();
     }
-    cout << endl;
+    //
+    INF_W = *scanner.nextInt();
   }
 };
 
@@ -77,7 +79,8 @@ Evaluation<int> fevaluate(sref<ProblemContext> pKP,
       sum_w += pKP->w[i];
     }
   //
-  if (sum_w >= pKP->Q) f -= 1000000 * (sum_w - pKP->Q);
+  if (sum_w >= pKP->Q) f -= pKP->INF_W * (sum_w - pKP->Q);
+  // std::cout << "\tevaluated with f = " << f << std::endl;
   //
   return Evaluation<int>{f};
 }
@@ -90,8 +93,20 @@ class MoveBitFlip : public Move<ESolutionKP> {
   explicit MoveBitFlip(int _k) : k{_k} {}
 
   uptr<Move<ESolutionKP>> apply(ESolutionKP& se) override {
+    // std::cout << "apply k=" << k << " to " << se.first << std::endl;
     se.first[k] = !se.first[k];                          // reverts element 'k'
     return uptr<Move<ESolutionKP>>(new MoveBitFlip{k});  // returns reverse move
+  }
+
+  bool operator==(const Move<ESolutionKP>& _m) const override {
+    MoveBitFlip& m = (MoveBitFlip&)_m;
+    return this->k == m.k;
+  }
+
+  std::string toString() const override {
+    std::stringstream ss;
+    ss << "MoveBitFlip(k=" << k << ")";
+    return ss.str();
   }
 };
 
