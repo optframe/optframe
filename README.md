@@ -15,7 +15,7 @@ OptFrame
 
 ## OptFrame - C++ Optimization Framework
 
-OptFrame `5.0.6` is released.
+OptFrame `5.0.7` is released.
 
 Project uses semantic versioning, so to patch it, run: `bumpver update --patch`
 
