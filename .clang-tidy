@@ -12,7 +12,13 @@ Checks: >
     -cppcoreguidelines-pro-type-cstyle-cast,
     -clang-diagnostic-builtin-macro-redefined,
     -google-readability-casting
+#
 HeaderFilterRegex: ".*"
+# HeaderFilterRegex: "^((?!catch2).)*$" # DOES NOT WORK FOR CPP... only HPP...
+# 
+# HeaderFilterRegex: '^((?!tests/thirdparty/|/external/).)*$' # DOES NOT WORK
+#
+#
 # disable: cppcoreguidelines-pro-type-union-access
 # how to disable: bugprone-easily-swappable-parameters
 # bugprone-*,

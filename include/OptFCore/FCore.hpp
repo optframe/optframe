@@ -16,6 +16,7 @@
 #include <OptFCore/FNSSeq.hpp>
 //
 #include "EA/RK/FConstructiveRK.hpp"         // Extra
+#include "EA/RK/FDecoderEvalRK.hpp"          // Extra
 #include "EA/RK/FDecoderNoEvaluationRK.hpp"  // Extra
 #include "EA/RK/FDecoderRK.hpp"              // Extra
 //

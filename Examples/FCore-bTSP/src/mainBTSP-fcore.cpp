@@ -4,21 +4,22 @@
 // Example: implementation of bi-objective TSP
 //
 
-// base (stored as core component)
-#include <OptFrame-Core-Examples/FCore-bTSP/BTSP-fcore.hpp>
 // C++
 #include <iostream>
+
+// base (stored as core component)
+#include <OptFrame-Core-Examples/FCore-bTSP/BTSP-fcore.hpp>
+
 //
 #include <OptFrame/Helper/PopulationBasedMultiObjSearch.hpp>
-// optframe extra
 #include <OptFrame/Heuristics/EA/NSGAII.hpp>
 #include <OptFrame/Heuristics/MultiObjective/ClassicNSGAII.hpp>
 
 // import everything on main()
-using namespace std;
-using namespace optframe;
-using namespace scannerpp;
-using namespace BTSP_fcore;
+using namespace std;         // NOLINT
+using namespace optframe;    // NOLINT
+using namespace scannerpp;   // NOLINT
+using namespace BTSP_fcore;  // NOLINT
 
 class MyNSGAIIforBTSP : public NSGAII<ESolutionBTSP> {
   //
@@ -35,7 +36,7 @@ class MyNSGAIIforBTSP : public NSGAII<ESolutionBTSP> {
 
   void basicGeneticOperators(VEPopulation<ESolutionBTSP>& p) override {
     // TODO: must implement this!!!!
-    assert(false);
+    assert(false);  // NOLINT
   }
 };
 
@@ -114,14 +115,14 @@ class CrossTSPRandomPoint
  public:
   explicit CrossTSPRandomPoint(sref<RandGen> _rg) : rg{_rg} {}
 
-  virtual ~CrossTSPRandomPoint() {}
+  ~CrossTSPRandomPoint() override = default;
 
-  virtual pair<std::optional<S>, std::optional<S>> cross(const S& p1,
-                                                         const S& p2) {
+  pair<std::optional<S>, std::optional<S>> cross(const S& p1,
+                                                 const S& p2) override {
     op<S> s1 = p1;
     op<S> s2 = p2;
 
-    int k = (rg->rand() % (p1.size() - 1)) + 1;
+    int k = (int)(rg->rand() % (p1.size() - 1)) + 1;
 
     for (int i = 0; i < (int)k; i++) {
       (*s1)[i] = p1[i];

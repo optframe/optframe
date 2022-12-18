@@ -1,14 +1,15 @@
 // mainKP-fcore-ex.cpp
+
+// C++
 #include <iostream>
 
-#include "KP-fcore-ex.hpp" // implementação da mochila
+//
+#include "KP-fcore-ex.hpp"  // implementação da mochila
 
 // import everything on main()
-using namespace std;
-using namespace optframe;
-using namespace scannerpp;
-//using namespace KP_fcore;
+using namespace std;        // NOLINT
+using namespace optframe;   // NOLINT
+using namespace scannerpp;  // NOLINT
+// using namespace KP_fcore;
 
-int
-main(int argc, char** argv)
-{
+int main(int argc, char** argv) {

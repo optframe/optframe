@@ -12,6 +12,7 @@
 #include <iostream>
 #include <string>
 #include <utility>
+#include <vector>
 // thirdparty
 #include <nlohmann/json.hpp>
 //
@@ -107,7 +108,7 @@ int solver_kp01_generic(int format, const char* config, char* output) {
   joutput["time_spent"] = spentTime.now();
   joutput["status"] = status.status;
   joutput["best_value"] = status.best->second.evaluation();
-  strcpy(output, joutput.dump().c_str());
+  strcpy(output, joutput.dump().c_str());  // NOLINT
   // output = "";
 
   return 0;  // OK

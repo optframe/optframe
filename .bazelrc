@@ -16,10 +16,13 @@ build --client_env=CC=clang
 # FROM: https://github.com/erenon/bazel_clang_tidy
 
 # Required for bazel_clang_tidy to operate as expected
-build:clang-tidy --aspects @bazel_clang_tidy//clang_tidy:clang_tidy.bzl%clang_tidy_aspect
+#
+build:clang-tidy --aspects @local_bazel_clang_tidy//clang_tidy:clang_tidy.bzl%clang_tidy_aspect
+# build:clang-tidy --aspects @bazel_clang_tidy//clang_tidy:clang_tidy.bzl%clang_tidy_aspect
+#
 build:clang-tidy --output_groups=report
 
 # Optionally override the .clang-tidy config file target
-##build:clang-tidy --@bazel_clang_tidy//:clang_tidy_config=//:clang_tidy_config 
+build:clang-tidy --@local_bazel_clang_tidy//:clang_tidy_config=//:clang_tidy_config 
 
 # THEN, just do it: bazel build //... --config clang-tidy

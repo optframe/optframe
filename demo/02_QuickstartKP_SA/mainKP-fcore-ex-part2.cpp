@@ -3,14 +3,18 @@ std::cout << "======== Carregando Problema ========" << std::endl;
 srand(time(NULL));
 
 std::string sinstance = "knapsack-example.txt";
-File f{ sinstance };
+File f{sinstance};
 
 if (!f.isOpen()) {
-   std::cerr << "Problema '" << sinstance << "' não encontrado no diretório!" << std::endl;
-   return 1;
+  std::cerr << "Problema '" << sinstance << "' não encontrado no diretório!"
+            << std::endl;
+  return 1;
 }
 
-Scanner scanner{ std::move(f) };
+Scanner scanner{std::move(f)};
 
-pKP.load(scanner);
-std::cout << "número de elementos na mochila:" << pKP.n << std::endl;
+sref<ProblemContext> pKP{new ProblemContext{}};
+pKP->load(scanner);
+std::cout << "número de elementos na mochila:" << pKP->n << std::endl;
+
+OptFrameDemoKP demo{pKP};

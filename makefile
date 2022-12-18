@@ -23,3 +23,7 @@ docs:
 clean:
 	cd Examples && make clean
 	bazel clean --expunge
+
+install_sphinx:
+	# apt-get install python3-sphinx
+	(cd docs && python3 -m pip install requirements.txt )

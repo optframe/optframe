@@ -39,13 +39,19 @@ local_repository(
 
 # CLANG-TIDY-INTEGRATION (experimental) - https://github.com/erenon/bazel_clang_tidy
 
-http_archive(
-    name = "bazel_clang_tidy",
-    sha256 = "2c2d7e290d78c0020c60f07cec6e3820cce64c285153de8e96637027ee5e3b8e",
-    strip_prefix = "bazel_clang_tidy-31d62bf825a94468b3d35c5ffd4e014e1c0ff566",
-    url = "https://github.com/erenon/bazel_clang_tidy/archive/31d62bf825a94468b3d35c5ffd4e014e1c0ff566.tar.gz",
-)
+#http_archive(
+#    name = "bazel_clang_tidy",
+#    sha256 = "2c2d7e290d78c0020c60f07cec6e3820cce64c285153de8e96637027ee5e3b8e",
+#    strip_prefix = "bazel_clang_tidy-31d62bf825a94468b3d35c5ffd4e014e1c0ff566",
+#    url = "https://github.com/erenon/bazel_clang_tidy/archive/31d62bf825a94468b3d35c5ffd4e014e1c0ff566.tar.gz",
+#)
 # BUILD WITH clang-tidy: bazel build //... --config clang-tidy
+
+local_repository(
+    name = "local_bazel_clang_tidy",
+    path = "libs/erenon_bazel_clang_tidy",
+)
+
 
 #####################################################
 # tooling for vscode (generate compile_commands.json)
