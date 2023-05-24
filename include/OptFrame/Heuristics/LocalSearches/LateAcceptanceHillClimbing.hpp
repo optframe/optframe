@@ -59,10 +59,11 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES, XEv> {
   //	exec(s, e, stopCriteria);
   //}
 
-  virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& sosc) override {
+  SearchStatus searchFrom(XES& seBest, const StopCriteria<XEv>& sosc) override {
     using S = typename XES::first_type;
-    S& sStar = se.first;
-    XEv& eStar = se.second;
+    // convenient local references on 'seBest'
+    S&   sStar = seBest.first;
+    XEv& eStar = seBest.second;
 
     double timelimit = sosc.timelimit;
 
@@ -81,8 +82,8 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES, XEv> {
     int iter = 1;
     unsigned index = 0;
 
-    S s = sStar;
-    XEv e = eStar;
+    S   s = sStar; // copy
+    XEv e = eStar; // copy
 
     long tnow = time(nullptr);
 
@@ -91,7 +92,7 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES, XEv> {
       // choose random neighborhood
       int ns_k = rand() % lns.size();
 
-      uptr<Move<XES, XEv>> move = lns[ns_k]->validRandomMove(se);
+      uptr<Move<XES, XEv>> move = lns[ns_k]->validRandomMove(seBest);
 
       if (!move) {
         cout << "Warning in LAHC: cannot find an appliable move for neighborhood ";
@@ -99,10 +100,10 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES, XEv> {
         // TODO: return FAIL here
       }
 
-      if (move && move->canBeApplied(se)) {
+      if (move && move->canBeApplied(seBest)) {
         bool mayEstimate = false;
         ///MoveCost<>& cost = *ev->moveCost(*move, se, mayEstimate);
-        op<XEv> cost = ev->moveCost(*move, se, mayEstimate);
+        op<XEv> cost = ev->moveCost(*move, seBest, mayEstimate);
 
         // test for current index
 #ifdef BRAND_NEW
@@ -113,8 +114,8 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES, XEv> {
         if (ev->betterThan(cost.cost() + e.evaluation(), eList[index]))
 #endif
         {
-          move->applyUpdate(se);
-          ev->reevaluate(se);
+          move->applyUpdate(seBest);
+          ev->reevaluate(seBest);
 
 #ifdef BRAND_NEW
           delete eList[index];
@@ -122,12 +123,9 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES, XEv> {
 #else
           eList[index] = e.evaluation();
 #endif
-
-          //if (ev->betterThan(e, eStar))
-          //if (e.betterStrict(eStar))
           if (ev->betterStrict(e, eStar)) {
-            sStar = s;
-            eStar = e;
+            sStar = s; // copy
+            eStar = e; // copy
 
             cout << "LAHC: best solution in iter=" << iter << " => ";
             e.print();
@@ -146,8 +144,8 @@ class LateAcceptanceHillClimbing : public LocalSearch<XES, XEv> {
       tnow = time(nullptr);
     }
 
-    delete &e;
-    delete &s;
+    // delete &e;
+    // delete &s;
 
     // free list
 

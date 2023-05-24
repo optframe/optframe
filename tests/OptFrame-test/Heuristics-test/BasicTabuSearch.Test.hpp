@@ -19,11 +19,9 @@
 
 // core includes
 #include <OptFrame-Core-Examples/FCore-KP/KP-fcore.hpp>
+#include <OptFrame/BaseConcepts.ctest.hpp>
 #include <OptFrame/Heuristics/TS/BasicTabuSearch.hpp>
 #include <OptFrame/InitialSearch.hpp>
-
-#include "include/OptFrame-Core-Examples/FCore-KP/KP-fcore.hpp"
-#include "include/OptFrame/BaseConcepts.ctest.hpp"
 
 using namespace std;       // NOLINT
 using namespace optframe;  // NOLINT

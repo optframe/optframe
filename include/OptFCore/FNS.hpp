@@ -19,19 +19,36 @@ class FNS final : public NS<XES> {
  public:
 #ifdef OPTFCORE_FUNC_STATIC
   typedef uptr<Move<XES>> (*FuncTypeNSRand)(sref<ProblemType>, const XES&);
+  typedef uptr<Move<XES>> (*FuncTypeNSValidRand)(sref<ProblemType>, const XES&);
 #else
   typedef std::function<uptr<Move<XES>>(sref<ProblemType>, const XES&)>
       FuncTypeNSRand;
+  typedef FuncTypeNSRand FuncTypeNSValidRand;  // same type
 #endif
 
   sref<ProblemType> p;
   FuncTypeNSRand fRandom;
+
+  // standard implementation for fValidRandom with ProblemType
+  FuncTypeNSValidRand fValidRandom{
+      [this](sref<ProblemType> _p, const XES& se) -> uptr<Move<XES, XEv, XSH>> {
+        uptr<Move<XES, XEv, XSH>> moveValid = this->fRandom(_p, se);
+        if (moveValid && moveValid->canBeApplied(se))
+          return moveValid;
+        else
+          return nullptr;
+      }};
 
   FNS(sref<ProblemType> _p, FuncTypeNSRand _fRandom)
       : p{_p}, fRandom{_fRandom} {}
 
   uptr<Move<XES, XEv, XSH>> randomMove(const XES& se) override {
     return fRandom(p, se);
+  }
+
+  // personalization of validRandomRandom, if necessary!
+  uptr<Move<XES, XEv, XSH>> validRandomMove(const XES& se) override {
+    return fValidRandom(p, se);
   }
 
   static std::string idComponent() {
@@ -53,16 +70,32 @@ class FNS<XES, void> final : public NS<XES> {
  public:
 #ifdef OPTFCORE_FUNC_STATIC
   typedef uptr<Move<XES>> (*FuncTypeNSRand)(const XES&);
+  typedef uptr<Move<XES>> (*FuncTypeNSValidRand)(const XES&);
 #else
   typedef std::function<uptr<Move<XES>>(const XES&)> FuncTypeNSRand;
+  typedef FuncTypeNSRand FuncTypeNSValidRand;  // same type
 #endif
 
   FuncTypeNSRand fRandom;
+
+  // standard implementation for fValidRandom for ProblemType=void
+  FuncTypeNSValidRand fValidRandom{[this](const XES& se) -> uptr<Move<XES>> {
+    uptr<Move<XES, XEv, XSH>> moveValid = this->fRandom(se);
+    if (moveValid && moveValid->canBeApplied(se))
+      return moveValid;
+    else
+      return nullptr;
+  }};
 
   explicit FNS(FuncTypeNSRand _fRandom) : fRandom{_fRandom} {}
 
   uptr<Move<XES, XEv, XSH>> randomMove(const XES& se) override {
     return fRandom(se);
+  }
+
+  // personalization of validRandomRandom, if necessary!
+  uptr<Move<XES, XEv, XSH>> validRandomMove(const XES& se) override {
+    return fValidRandom(se);
   }
 
   static std::string idComponent() {

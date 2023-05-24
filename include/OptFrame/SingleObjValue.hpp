@@ -42,16 +42,15 @@ public:
    // doing outside, for clarity!
 };
 
-// numeric_zero
-// number zero for that arithmetic type
+// ======================
+// FOUR IMPORTANT METHODS
+// ======================
+// num_zero           => returns a copy of the numeric zero
+// numeric_zero(x)    => sets x as the numeric zero
+// numeric_is_zero(x) => checks if x is zero
+// num_zero_precision => returns a copy of the numeric zero precision
 
-// stores numeric_zero value on 't'
-template<optframe::basic_arithmetics T>
-inline typename std::enable_if<std::is_same<T, int>::value, void>::type
-numeric_zero(T& t)
-{
-   t = 0;
-}
+// =========== num_zero ============
 
 template<optframe::basic_arithmetics T>
 constexpr inline typename std::enable_if<std::is_same<T, int>::value, int>::type
@@ -68,6 +67,17 @@ constexpr inline
    return 0.0;
 }
 
+// ========== numeric_zero ============
+// number zero for that arithmetic type
+
+// stores numeric_zero value on 't'
+template<optframe::basic_arithmetics T>
+inline typename std::enable_if<std::is_same<T, int>::value, void>::type
+numeric_zero(T& t)
+{
+   t = 0;
+}
+
 // stores numeric_zero value on 't'
 template<optframe::basic_arithmetics T>
 inline typename std::enable_if<std::is_same<T, double>::value, void>::type
@@ -76,7 +86,23 @@ numeric_zero(T& t)
    t = 0.0;
 }
 
-// -------------------
+// =========== num_zero ============
+
+template<optframe::basic_arithmetics T>
+constexpr inline typename std::enable_if<std::is_same<T, int>::value, int>::type
+num_zero_precision()
+{
+   return 0;
+}
+
+template<optframe::basic_arithmetics T>
+constexpr inline
+  typename std::enable_if<std::is_same<T, double>::value, double>::type
+  num_zero_precision()
+{
+   double p = 0.0001;
+   return p;
+}
 
 // ===============
 // is_zero section
@@ -94,7 +120,7 @@ template<optframe::basic_arithmetics T>
 inline typename std::enable_if<std::is_same<T, double>::value, bool>::type
 numeric_is_zero(const T& t)
 {
-   return ::fabs(t) <= 0.0001;
+   return ::fabs(t) <= num_zero_precision<T>();
 }
 
 } // namespace optframe

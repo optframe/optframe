@@ -421,11 +421,10 @@ public:
                evaluations.at(ev).push_back(&e);
             }
          }
-
-         cout << "component.check: " << lConstructive.at(c) << " finished." << endl;
+         if(logLevel >= LogLevel::Info)
+            cout << "component.check: " << lConstructive.at(c) << " finished." << endl;
          if (verbose)
-            cout << endl
-                 << endl;
+            cout << endl << endl;
       }
 
       if (verbose)
@@ -957,11 +956,10 @@ public:
                delete &move;
             }
          }
-
-         cout << "component.check: " << lNS.at(id_ns) << " finished." << endl;
+         if(logLevel >= LogLevel::Info)
+            cout << "component.check: " << lNS.at(id_ns) << " finished." << endl;
          if (verbose)
-            cout << endl
-                 << endl;
+            cout << endl << endl;
       }
 
       // ====================================================================
@@ -1251,10 +1249,10 @@ public:
          vCountMoves[id_nsseq] += countMoves;
          vCountValidMoves[id_nsseq] += countValidMoves;
 
-         cout << "component.check: " << lNSSeq.at(id_nsseq) << " finished." << endl;
+         if(logLevel >= LogLevel::Info)
+            cout << "component.check: " << lNSSeq.at(id_nsseq) << " finished." << endl;
          if (verbose)
-            cout << endl
-                 << endl;
+            cout << endl << endl;
       }
 
       for (unsigned i = 0; i < solutions.size(); i++)

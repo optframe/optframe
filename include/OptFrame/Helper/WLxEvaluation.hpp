@@ -53,9 +53,9 @@ class WLxEvaluation final : public Component {
   WLxEvaluation(const ObjType& obj)
       : objFunction(obj) {
     weight = 1;
-    //infMeasure = optframe::get_numeric_zero<ObjType>();
+    //
     optframe::numeric_zero(infMeasure);
-
+    //
     gos = gos_unknown;
     outdated = false;
     estimated = false;
@@ -210,10 +210,7 @@ class WLxEvaluation final : public Component {
 
   // leave option to rewrite tolerance (or consider lexicographic values)
   virtual bool isFeasible() const {
-    //return optframe::numeric_is_zero<ObjType>(infMeasure);
-    // IMPORTANT: numeric_is_zero can come from anywhere!
     return optframe::numeric_is_zero(infMeasure);
-    //return (EVALUATION_ABS(infMeasure) <= optframe::get_numeric_zero<ObjType>()); // deprecated
   }
 
   // ======================

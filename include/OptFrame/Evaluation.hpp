@@ -90,8 +90,7 @@ class Evaluation final : public Component {
   using objType = ObjType;
   //
  protected:
-  // static Evaluation<ObjType> costZero { Evaluation<ObjType>() };
-  ObjType objValZero;  //{ optframe::get_numeric_zero<ObjType>() };
+  ObjType objValZero;
 
   // ==== Objective Space type: pair<evtype, evtype> ====
   // objective function value (default = double)
@@ -140,8 +139,6 @@ class Evaluation final : public Component {
     static_assert(XEvaluation<Evaluation<ObjType>>);
 
     optframe::numeric_zero(objValZero);
-
-    // infMeasure = optframe::get_numeric_zero<ObjType>();
     optframe::numeric_zero(infMeasure);
 
     // gos = gos_unknown;
@@ -299,11 +296,7 @@ class Evaluation final : public Component {
 
   // leave option to rewrite tolerance (or consider lexicographic values)
   virtual bool isFeasible() const {
-    // return optframe::numeric_is_zero<ObjType>(infMeasure);
-    // IMPORTANT: numeric_is_zero can come from anywhere!
     return optframe::numeric_is_zero(infMeasure);
-    // return (EVALUATION_ABS(infMeasure) <=
-    // optframe::get_numeric_zero<ObjType>()); // deprecated
   }
 
   // ======================

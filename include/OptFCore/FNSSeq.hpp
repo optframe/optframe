@@ -31,6 +31,7 @@ class FNSSeq final : public NSSeq<XES> {
   sref<ProblemType> p;
 #ifdef OPTFCORE_FUNC_STATIC
   typedef uptr<Move<XES>> (*FuncTypeNSRand)(sref<ProblemType>, const XES&);
+  typedef uptr<Move<XES>> (*FuncTypeNSValidRand)(sref<ProblemType>, const XES&);
   typedef IMS (*FuncTypeNSSeqItInit)(sref<ProblemType>, const XES&);
   typedef void (*FuncTypeNSSeqItFirst)(sref<ProblemType>, IMS&);
   typedef void (*FuncTypeNSSeqItNext)(sref<ProblemType>, IMS&);
@@ -39,6 +40,7 @@ class FNSSeq final : public NSSeq<XES> {
 #else
   typedef std::function<uptr<Move<XES>>(sref<ProblemType>, const XES&)>
       FuncTypeNSRand;
+  typedef FuncTypeNSRand FuncTypeNSValidRand;  // same type
   typedef std::function<IMS(sref<ProblemType>, const XES&)> FuncTypeNSSeqItInit;
   typedef std::function<void(sref<ProblemType>, IMS&)> FuncTypeNSSeqItFirst;
   typedef std::function<void(sref<ProblemType>, IMS&)> FuncTypeNSSeqItNext;
@@ -48,6 +50,17 @@ class FNSSeq final : public NSSeq<XES> {
 #endif
 
   FuncTypeNSRand fRandom;
+
+  // standard implementation for fValidRandom with ProblemType
+  FuncTypeNSValidRand fValidRandom{
+      [this](sref<ProblemType> _p, const XES& se) -> uptr<Move<XES, XEv, XSH>> {
+        uptr<Move<XES, XEv, XSH>> moveValid = this->fRandom(_p, se);
+        if (moveValid && moveValid->canBeApplied(se))
+          return moveValid;
+        else
+          return nullptr;
+      }};
+
   FuncTypeNSSeqItInit fIterator;
   FuncTypeNSSeqItFirst fFirst;
   FuncTypeNSSeqItNext fNext;
@@ -104,6 +117,11 @@ class FNSSeq final : public NSSeq<XES> {
  public:
   uptr<Move<XES>> randomMove(const XES& se) override { return fRandom(p, se); }
 
+  // personalization of validRandomRandom, if necessary!
+  uptr<Move<XES, XEv, XSH>> validRandomMove(const XES& se) override {
+    return fValidRandom(p, se);
+  }
+
   uptr<NSIterator<XES>> getIterator(const XES& se) override {
     return uptr<NSIterator<XES>>{new FNSIterator{fIterator(p, se), this}};
   }
@@ -133,6 +151,7 @@ class FNSSeq<IMS, XES, void> final : public NSSeq<XES> {
 
 #ifdef OPTFCORE_FUNC_STATIC
   typedef uptr<Move<XES>> (*FuncTypeNSRand)(const XES&);
+  typedef uptr<Move<XES>> (*FuncTypeNSValidRand)(const XES&);
   typedef IMS (*FuncTypeNSSeqItInit)(const XES&);
   typedef void (*FuncTypeNSSeqItFirst)(IMS&);
   typedef void (*FuncTypeNSSeqItNext)(IMS&);
@@ -140,6 +159,7 @@ class FNSSeq<IMS, XES, void> final : public NSSeq<XES> {
   typedef uptr<Move<XES>> (*FuncTypeNSSeqItCurrent)(IMS&);
 #else
   typedef std::function<uptr<Move<XES>>(const XES&)> FuncTypeNSRand;
+  typedef FuncTypeNSRand FuncTypeNSValidRand;  // same type
   typedef std::function<IMS(const XES&)> FuncTypeNSSeqItInit;
   typedef std::function<void(IMS&)> FuncTypeNSSeqItFirst;
   typedef std::function<void(IMS&)> FuncTypeNSSeqItNext;
@@ -148,6 +168,14 @@ class FNSSeq<IMS, XES, void> final : public NSSeq<XES> {
 #endif
 
   FuncTypeNSRand fRandom;
+  // standard implementation for fValidRandom for ProblemType=void
+  FuncTypeNSValidRand fValidRandom{[this](const XES& se) -> uptr<Move<XES>> {
+    uptr<Move<XES, XEv, XSH>> moveValid = this->fRandom(se);
+    if (moveValid && moveValid->canBeApplied(se))
+      return moveValid;
+    else
+      return nullptr;
+  }};
   FuncTypeNSSeqItInit fIterator;
   FuncTypeNSSeqItFirst fFirst;
   FuncTypeNSSeqItNext fNext;
@@ -200,6 +228,11 @@ class FNSSeq<IMS, XES, void> final : public NSSeq<XES> {
 
  public:
   uptr<Move<XES>> randomMove(const XES& se) override { return fRandom(se); }
+
+  // personalization of validRandomRandom, if necessary!
+  uptr<Move<XES, XEv, XSH>> validRandomMove(const XES& se) override {
+    return fValidRandom(se);
+  }
 
   uptr<NSIterator<XES>> getIterator(const XES& se) override {
     return uptr<NSIterator<XES>>{new FNSIterator{fIterator(se), this}};
