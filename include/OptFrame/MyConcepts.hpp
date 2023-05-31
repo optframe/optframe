@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
+
 #ifndef OPTFRAME_MYCONCEPTS
 #define OPTFRAME_MYCONCEPTS
 
@@ -109,8 +112,8 @@ concept
 #if __cplusplus <= 201703L  // after c++20, not required 'bool'
     bool
 #endif
-        my_convertible_to = std::is_convertible_v<From, To> && requires(
-            std::add_rvalue_reference_t<From> (&f)()) {
+        my_convertible_to = std::is_convertible_v<From, To> &&
+    requires(std::add_rvalue_reference_t<From> (&f)()) {
   static_cast<To>(f());
 };
 
@@ -123,22 +126,10 @@ concept
         __WeaklyEqualityComparableWith =  // exposition only
     requires(const std::remove_reference_t<T>& t,
              const std::remove_reference_t<U>& u) {
-  {
-    t == u
-    }
-    -> my_same_as<bool>;  // std::boolean;
-  {
-    t != u
-    }
-    -> my_same_as<bool>;  // std::boolean;
-  {
-    u == t
-    }
-    -> my_same_as<bool>;  // std::boolean;
-  {
-    u != t
-    }
-    -> my_same_as<bool>;  // std::boolean;
+  { t == u } -> my_same_as<bool>;  // std::boolean;
+  { t != u } -> my_same_as<bool>;  // std::boolean;
+  { u == t } -> my_same_as<bool>;  // std::boolean;
+  { u != t } -> my_same_as<bool>;  // std::boolean;
 };
 //
 
@@ -188,25 +179,13 @@ concept
 #if __cplusplus <= 201703L  // after c++20, not required 'bool'
     bool
 #endif
-        comparability = optframe::equality_comparable<T> && requires(
-            const std::remove_reference_t<T>& a,
-            const std::remove_reference_t<T>& b) {
-  {
-    a < b
-    }
-    -> my_same_as<bool>;
-  {
-    a > b
-    }
-    -> my_same_as<bool>;
-  {
-    a <= b
-    }
-    -> my_same_as<bool>;
-  {
-    a >= b
-    }
-    -> my_same_as<bool>;
+        comparability = optframe::equality_comparable<T> &&
+    requires(const std::remove_reference_t<T>& a,
+             const std::remove_reference_t<T>& b) {
+  { a < b } -> my_same_as<bool>;
+  { a > b } -> my_same_as<bool>;
+  { a <= b } -> my_same_as<bool>;
+  { a >= b } -> my_same_as<bool>;
 };
 
 // The 'comparability' name was 'totally_ordered' (as C++ proposal), but it's
@@ -262,9 +241,9 @@ concept
 #if __cplusplus <= 201703L  // after c++20, not required 'bool'
     bool
 #endif
-        basic_arithmetics = optframe::basic_arithmetics_assign<T> && requires(
-            const std::remove_reference_t<T>& a,
-            const std::remove_reference_t<T>& b) {
+        basic_arithmetics = optframe::basic_arithmetics_assign<T> &&
+    requires(const std::remove_reference_t<T>& a,
+             const std::remove_reference_t<T>& b) {
   { a + b } -> my_same_as<T>;
   { a - b } -> my_same_as<T>;
 };
@@ -296,16 +275,16 @@ concept
 #if __cplusplus <= 201703L  // after c++20, not required 'bool'
     bool
 #endif
-        extended_arithmetics = optframe::basic_arithmetics<T> && requires(
-            const std::remove_reference_t<T>& a,
-            const std::remove_reference_t<T>& b) {
+        extended_arithmetics = optframe::basic_arithmetics<T> &&
+    requires(const std::remove_reference_t<T>& a,
+             const std::remove_reference_t<T>& b) {
   {
     a* b
-    }
-    -> my_same_as<T>;  // std::remove_reference_t<T>; // useful for weighted
-                       // computation
-                       //{ a / b } -> std::remove_reference_t<T>;  // NOT actually necessary (until
-                       // today!)
+    } -> my_same_as<T>;  // std::remove_reference_t<T>; // useful for weighted
+                         // computation
+                         //{ a / b } -> std::remove_reference_t<T>;  // NOT
+                         //actually necessary (until
+                         // today!)
 };
 
 // capability to move to ostream&
@@ -366,13 +345,13 @@ struct MyConceptsLocalTestBed {
 
 class ConceptsTestClassArithmetics : public ConceptsTestClassTotalOrder {
  public:
-  ConceptsTestClassArithmetics&
-  operator+=(const ConceptsTestClassArithmetics& c) {
+  ConceptsTestClassArithmetics& operator+=(
+      const ConceptsTestClassArithmetics& c) {
     return *this;
   }
 
-  ConceptsTestClassArithmetics&
-  operator-=(const ConceptsTestClassArithmetics& c) {
+  ConceptsTestClassArithmetics& operator-=(
+      const ConceptsTestClassArithmetics& c) {
     return *this;
   }
 
@@ -385,13 +364,13 @@ class ConceptsTestClassArithmetics : public ConceptsTestClassTotalOrder {
   //}
   // division is not required!
 
-  ConceptsTestClassArithmetics
-  operator+(const ConceptsTestClassArithmetics& c) const {
+  ConceptsTestClassArithmetics operator+(
+      const ConceptsTestClassArithmetics& c) const {
     return ConceptsTestClassArithmetics(*this) += c;
   }
 
-  ConceptsTestClassArithmetics
-  operator-(const ConceptsTestClassArithmetics& c) const {
+  ConceptsTestClassArithmetics operator-(
+      const ConceptsTestClassArithmetics& c) const {
     return ConceptsTestClassArithmetics(*this) -= c;
   }
 

@@ -1,22 +1,5 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009, 2010, 2011
-// http://optframe.sourceforge.net/
-//
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_HEURISTICS_EA_RK_RKGA_HPP_
 #define OPTFRAME_HEURISTICS_EA_RK_RKGA_HPP_
@@ -97,9 +80,9 @@ class RandomKeysInitEPop
     return pop;
   }
 
-  bool setVerboseR() override {
-    this->setVerbose();
-    return InitialEPopulation<XES>::setVerboseR();
+  bool setMessageLevelR(LogLevel ll) override {
+    this->setMessageLevel(ll);
+    return InitialEPopulation<XES>::setMessageLevelR(ll);
   }
 };
 
@@ -502,19 +485,11 @@ class RKGA : public Populational<XES, XES, XES2> {
   }
   */
 
-  bool setSilentR() override {
-    this->setSilent();
+  bool setMessageLevelR(LogLevel ll) override {
+    this->setMessageLevel(ll);
     // force execution over all components
-    bool b1 = decoder->setSilentR();
-    bool b2 = initPop->setSilentR();
-    return b1 && b2;
-  }
-
-  bool setVerboseR() override {
-    this->setVerbose();
-    // force execution over all components
-    bool b1 = decoder->setVerboseR();
-    bool b2 = initPop->setVerboseR();
+    bool b1 = decoder->setMessageLevelR(ll);
+    bool b2 = initPop->setMessageLevelR(ll);
     return b1 && b2;
   }
 };

@@ -1,24 +1,5 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_NSENUM_HPP_
 #define OPTFRAME_NSENUM_HPP_
@@ -37,16 +18,13 @@ class NSEnum : public NSSeq<XES, XEv, XSH> {
   sref<RandGen> rg;
 
  public:
-  NSEnum(sref<RandGen> _rg)
-      : rg(_rg) {}
+  NSEnum(sref<RandGen> _rg) : rg(_rg) {}
 
-  virtual ~NSEnum() {
-  }
+  virtual ~NSEnum() {}
 
-  // every move from NSEnum must be solution-independent (only problem-dependent)
-  bool isSolutionIndependent() const final {
-    return true;
-  }
+  // every move from NSEnum must be solution-independent (only
+  // problem-dependent)
+  bool isSolutionIndependent() const final { return true; }
 
   uptr<Move<XES, XEv>> randomMove(const XES&) override {
     unsigned int x = rg->rand(size());
@@ -62,16 +40,16 @@ class NSEnum : public NSSeq<XES, XEv, XSH> {
   virtual unsigned int size() const = 0;
 
  public:
-  // findFrom: returns the *next* move starting from index k (inclusive), that strictly improves current solution 'se', according 'gev'
-  // RETURNS: pair< uptr<Move<XES, XEv, XSH>>, op<XEv> >
+  // findFrom: returns the *next* move starting from index k (inclusive), that
+  // strictly improves current solution 'se', according 'gev' RETURNS: pair<
+  // uptr<Move<XES, XEv, XSH>>, op<XEv> >
   virtual pair<Move<XES, XEv, XSH>*, op<XEv>> findFrom(
       unsigned int& k, GeneralEvaluator<XES>& gev, XES& se) {
     // iterates from k
     for (unsigned xk = k; xk < this->size(); xk++) {
       // gets variable index 'xk'
       uptr<Move<XES, XEv>> pm = this->indexMove(xk);
-      if (!pm->canBeApplied(se))
-        continue;
+      if (!pm->canBeApplied(se)) continue;
       Move<XES, XEv, XSH>* m = pm.get();
       op<XEv> mvcost = gev.moveCost(*m, se);
       if (gev.isStrictImprovement(*mvcost)) {
@@ -84,10 +62,10 @@ class NSEnum : public NSSeq<XES, XEv, XSH> {
     return std::make_pair(nullptr, std::nullopt);
   }
 
-  // findBest: returns move that greatly improves current solution 'se', according 'gev'
-  // iterates using findFrom: 0..size-1
-  pair<Move<XES, XEv, XSH>*, op<XEv>> findBest(
-      GeneralEvaluator<XES>& gev, XES& se) override {
+  // findBest: returns move that greatly improves current solution 'se',
+  // according 'gev' iterates using findFrom: 0..size-1
+  pair<Move<XES, XEv, XSH>*, op<XEv>> findBest(GeneralEvaluator<XES>& gev,
+                                               XES& se) override {
     // starts count iterator
     unsigned int k = 0;
     // best move
@@ -98,8 +76,7 @@ class NSEnum : public NSSeq<XES, XEv, XSH> {
       // gets index 'k'
       pair<Move<XES, XEv, XSH>*, op<XEv>> mve = findFrom(k, gev, se);
       // if not good, process is finished: returns existing best
-      if (!mve.second)
-        return std::make_pair(bestMove, bestCost);
+      if (!mve.second) return std::make_pair(bestMove, bestCost);
       // if improvement exists, try to improve best
       if ((!bestCost) || gev.betterStrict(*mve.second, *bestCost)) {
         bestMove = mve.first;
@@ -117,9 +94,7 @@ class NSEnum : public NSSeq<XES, XEv, XSH> {
     return ss.str();
   }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  virtual string id() const override { return idComponent(); }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (NSSeq<XES, XEv, XSH>::compatible(s));

@@ -1,24 +1,5 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_COMPONENT_HPP_
 #define OPTFRAME_COMPONENT_HPP_
@@ -27,6 +8,7 @@
 #include <iostream>
 #include <memory>  // for shared_ptr
 #include <sstream>
+#include <string>
 #include <vector>  // only for OPTFRAME_AC
 
 //
@@ -48,48 +30,6 @@ using std::stringstream;
 #ifndef OPTFRAME_FAST
 #define OPTFRAME_AC
 #endif
-*/
-
-/*
-struct Log
-{
-        stringstream data;
-   //ostream* data{&std::cout};
-   //bool must_free {false};
-
-        void clear()
-        {
-                data->clear();
-        }
-
-        void append(std::string s)
-        {
-                (*data) << s;
-        }
-
-        string log()
-        {
-                return data->str();
-        }
-
-        bool toFile(std::string file, bool append = true)
-        {
-                FILE* f;
-                if(append)
-                        f = fopen(file.c_str(), "a");
-                else
-                        f = fopen(file.c_str(), "w");
-
-                if(!f)
-                        return false;
-
-                fprintf(f, "%s", data.str().c_str());
-
-                fclose(f);
-
-                return true;
-        }
-};
 */
 
 // |      1      |      2      |      3      |      4      |
@@ -163,23 +103,13 @@ class Component {
     return false;
   }
 
-  /*
-        void initializeLog()
-        {
-                logdata = new Log;
-        }
-
-        void destroyLog()
-        {
-                if(logdata)
-                {
-                        delete logdata;
-                        logdata = nullptr;
-                }
-        }
-*/
+  // private:
+  // KEEP THIS PUBLIC, TO MAKE IT EASY TO USE
+  //
+  // this is equivalent to LogLevel
   int verboseLevel;
 
+  // auxiliar flags
   bool error;
   bool warning;
   bool information;
@@ -217,6 +147,7 @@ class Component {
   // |    error    |   warning   | information | debug/verb. |
   // |      x      |      x      |      x      |      x      |
 
+ public:
   Component() {
     // TODO: create 'logless' implementation on OptFrame (is it faster?)
     setMessageLevel(LogLevel::Info);
@@ -272,24 +203,12 @@ class Component {
            (s == idComponent());  // equal to this component or "OptFrame:" base
   }
 
-  // StringFormat mlogType{ StringFormat::Human };
-
   // returns 'false' if unsupported
   virtual bool toStream(std::ostream& os) const { return false; }
 
   // returns "" if unsupported
   virtual std::string toString() const = 0;
-  //{
-  //   return id();
-  //}
 
-  /*
-   // returns "" if unsupported
-   virtual std::string toStringFormat(StringFormat fmt) const
-   {
-      return "";
-   }
-*/
   virtual void print() const { (*logdata) << this->toString() << std::endl; }
 
   // -----------
@@ -297,26 +216,19 @@ class Component {
   void setVerbose() { setMessageLevel(LogLevel::Debug); }
 
   // set verbose level recursive: returns 'false' if not supported.
-  virtual bool setVerboseR() {
-    this->setVerbose();
-    return false;
-  }
+  virtual bool setVerboseR() final { return setMessageLevelR(LogLevel::Debug); }
 
   // -----------
 
-  // set silent level recursive: returns 'false' if not supported.
+  // set silent level
   virtual void setSilent() { setMessageLevel(LogLevel::Silent); }
 
   // set silent level recursive: returns 'false' if not supported.
-  virtual bool setSilentR() {
-    this->setSilent();
-    return false;
-  }
+  virtual bool setSilentR() final { return setMessageLevelR(LogLevel::Silent); }
 
   // ------------------------------
-  // TODO: MISSING setMessageLevelR !!!
 
-  void setMessageLevel(LogLevel vl) {
+  virtual void setMessageLevel(LogLevel vl) final {
     error = warning = information = verbose = false;
 #ifndef NDEBUG
     debug = false;
@@ -352,7 +264,16 @@ class Component {
     information = information || debug;
   }
 
-  bool getVerboseLevel() { return verboseLevel; }
+  // set log level recursive: returns 'false' if not supported.
+  virtual bool setMessageLevelR(LogLevel vl) {
+    setMessageLevel(vl);
+    return false;
+  }
+
+  // =============================
+  // for old/compatibility reasons
+
+  bool getVerboseLevel() { return verboseLevel >= 4; }
 };
 
 }  // namespace optframe

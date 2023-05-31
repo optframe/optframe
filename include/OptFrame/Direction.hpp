@@ -1,24 +1,5 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_DIRECTION_HPP_  // NOLINT
 #define OPTFRAME_DIRECTION_HPP_  // NOLINT
@@ -29,9 +10,9 @@
 // C++
 #include <iostream>
 #include <limits>
-#include <utility>
-#include <string>
 #include <optional>
+#include <string>
+#include <utility>
 //
 // Base concepts
 #include <OptFrame/BaseConcepts.hpp>
@@ -81,8 +62,7 @@ class Direction : public Component {
          */
 
   // true if 'mc1' is better than 'mc2'
-  virtual bool betterThan(const MoveCost<XEv>& mc1,
-                                 const MoveCost<XEv>& mc2) {
+  virtual bool betterThan(const MoveCost<XEv>& mc1, const MoveCost<XEv>& mc2) {
     if (isMinimization())
       return (mc2.cost() - mc1.cost()) >=
              optframe::num_zero<typename XEv::objType>();
@@ -109,9 +89,8 @@ class Direction : public Component {
   }
 
   virtual bool equals(const typename XEv::objType& t1,
-                             const typename XEv::objType& t2) {
-    if (optframe::numeric_is_zero<typename XEv::objType>(t1 - t2))
-      return true;
+                      const typename XEv::objType& t2) {
+    if (optframe::numeric_is_zero<typename XEv::objType>(t1 - t2)) return true;
     // should not pass != operator
     if (t1 != t2) return false;
     // default case
@@ -128,12 +107,12 @@ class Direction : public Component {
   virtual bool isImprovement(const XEv& mc, const XEv& e1, const XEv& e2) {
     evtype ec1 = mc.evaluation() + e1.evaluation();
     // minimization case
-    if (isMinimization() && (e2.evaluation() - ec1) >=
-            optframe::num_zero<typename XEv::objType>())
+    if (isMinimization() &&
+        (e2.evaluation() - ec1) >= optframe::num_zero<typename XEv::objType>())
       return true;
     // maximization case
-    if (!isMinimization() && (ec1 - e2.evaluation()) >=
-            optframe::num_zero<typename XEv::objType>())
+    if (!isMinimization() &&
+        (ec1 - e2.evaluation()) >= optframe::num_zero<typename XEv::objType>())
       return true;
     // default case
     return false;

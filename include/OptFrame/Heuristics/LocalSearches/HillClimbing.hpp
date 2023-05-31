@@ -1,24 +1,5 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_HILLCLIMBING_HPP_
 #define OPTFRAME_HILLCLIMBING_HPP_
@@ -36,51 +17,53 @@ class HillClimbing : public LocalSearch<XES, XEv> {
   sref<LocalSearch<XES, XEv>> ls;
 
  public:
-  HillClimbing(sref<GeneralEvaluator<XES, XEv>> _ev, sref<LocalSearch<XES, XEv>> _ls)
-      : evaluator(_ev), ls(_ls) {
-  }
+  HillClimbing(sref<GeneralEvaluator<XES, XEv>> _ev,
+               sref<LocalSearch<XES, XEv>> _ls)
+      : evaluator(_ev), ls(_ls) {}
 
-  virtual ~HillClimbing() {
-  }
+  virtual ~HillClimbing() {}
 
   // DEPRECATED
-  //virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
+  // virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
   //{
   //	Evaluation<> e = std::move(ev.evaluate(s));
   //	exec(s, e, stopCriteria);
   //}
 
-  virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& sosc) override {
+  virtual SearchStatus searchFrom(XES& se,
+                                  const StopCriteria<XEv>& sosc) override {
     if (Component::information)
-      std::cout << "HillClimbing (ls=" << ls->toString() << ") starts." << std::endl;
-    //S& s = se.first;
+      std::cout << "HillClimbing (ls=" << ls->toString() << ") starts."
+                << std::endl;
+    // S& s = se.first;
     XEv& e = se.second;
     //
-    //double timelimit = sosc.timelimit;
-    //long tini = time(nullptr);
+    // double timelimit = sosc.timelimit;
+    // long tini = time(nullptr);
 
-    //Evaluation<>* e0 = &e.clone();
+    // Evaluation<>* e0 = &e.clone();
     XEv e0(e);  // avoid that using return status on 'exec'
 
     if (Component::information)
       std::cout << "HillClimbing invoking ls=" << ls->toString() << std::endl;
     ls->searchFrom(se, sosc);
 
-    //long tnow = time(nullptr);
+    // long tnow = time(nullptr);
 
     // while improvement is found
-    //while ((evaluator.betterThan(e, e0)) && ((tnow - tini) < timelimit))
-    //while ((e.betterStrict(e0)) && ((tnow - tini) < timelimit))
-    while ((evaluator->betterStrict(e, e0)) && !sosc.shouldStop(e)) {  //((tnow - tini) < timelimit)) {
-      //delete e0;
-      //e0 = &e.clone();
+    // while ((evaluator.betterThan(e, e0)) && ((tnow - tini) < timelimit))
+    // while ((e.betterStrict(e0)) && ((tnow - tini) < timelimit))
+    while ((evaluator->betterStrict(e, e0)) &&
+           !sosc.shouldStop(e)) {  //((tnow - tini) < timelimit)) {
+      // delete e0;
+      // e0 = &e.clone();
 
       //   (*e0) = e;
       e0 = e;
 
       ls->searchFrom(se, sosc);
 
-      //tnow = time(nullptr);
+      // tnow = time(nullptr);
     }
 
     return SearchStatus::NO_REPORT;
@@ -90,9 +73,7 @@ class HillClimbing : public LocalSearch<XES, XEv> {
     return (s == idComponent()) || (LocalSearch<XES, XEv>::compatible(s));
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   static std::string idComponent() {
     stringstream ss;
@@ -100,18 +81,19 @@ class HillClimbing : public LocalSearch<XES, XEv> {
     return ss.str();
   }
 
-  bool setVerboseR() override {
-    this->setVerbose();
-    //evaluator->setVerboseR();
-    return ls->setVerboseR();
+  bool setMessageLevelR(LogLevel ll) override {
+    this->setMessageLevel(ll);
+    // evaluator->setVerboseR();
+    return ls->setMessageLevelR(ll);
   }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
 class HillClimbingBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~HillClimbingBuilder() {
-  }
+  virtual ~HillClimbingBuilder() {}
 
   LocalSearch<XES, XEv>* build(Scanner& scanner,
                                HeuristicFactory<S, XEv, XES, X2ES>& hf,
@@ -133,8 +115,10 @@ class HillClimbingBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
-    params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
+    params.push_back(
+        make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+    params.push_back(
+        make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
 
     return params;
   }
@@ -149,13 +133,9 @@ class HillClimbingBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     return ss.str();
   }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  virtual string id() const override { return idComponent(); }
 };
 }  // namespace optframe
 

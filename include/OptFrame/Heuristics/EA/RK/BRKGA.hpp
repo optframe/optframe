@@ -1,22 +1,5 @@
-// OptFrame - Optimization Framework
-
-// Copyright (C) 2009, 2010, 2011
-// http://optframe.sourceforge.net/
-//
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_HEURISTICS_EA_RK_BRKGA_HPP_  // NOLINT
 #define OPTFRAME_HEURISTICS_EA_RK_BRKGA_HPP_  // NOLINT
@@ -113,9 +96,9 @@ class BRKGA : public RKGA<XES, KeyType, XES2> {
     return v;  // TODO: pass by std::move() or unique_ptr
   }
 
-  virtual bool setVerboseR() override {
-    this->setVerbose();
-    return RKGA<XES, KeyType>::setVerboseR();
+  bool setMessageLevelR(LogLevel ll) override {
+    this->setMessageLevel(ll);
+    return RKGA<XES, KeyType>::setMessageLevelR(ll);
   }
 };  // class BRKGA
 

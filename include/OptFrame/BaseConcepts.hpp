@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
+
 #ifndef OPTFRAME_BASE_CONCEPTS_HPP_
 #define OPTFRAME_BASE_CONCEPTS_HPP_
 
@@ -36,8 +39,7 @@ concept
     bool
 #endif
         IsComplete = requires(T self) {
-  {
-      sizeof(self)};
+  {sizeof(self)};
 };
 
 // Representation type just requires some Copy Constructive behavior
@@ -49,8 +51,7 @@ concept
 #endif
 #if __cplusplus <= 201703L  // after c++20, not required 'bool'
         XRepresentation = requires(R self) {
-  {
-      new R(self)};
+  {new R(self)};
 };
 #else
     XRepresentation = std::copy_constructible<R>;
@@ -84,10 +85,7 @@ concept
     bool
 #endif
         HasToString = requires(Self self) {
-  {
-    self.toString()
-    }
-    -> my_same_as<std::string>;
+  { self.toString() } -> my_same_as<std::string>;
 };
 
 // TODO: should we require 'copy constructive' for 'XSolution'? or for
@@ -108,7 +106,8 @@ concept
 // https://stackoverflow.com/questions/63429760/can-a-concept-be-checked-against-incomplete-type/69907133#69907133
 // Trick to allow Solution type to be incomplete, during CRTP requirements
 //
-// Other possibility is to statically assert concept just after it becomes concrete (but definitive type needs to be known in advance).
+// Other possibility is to statically assert concept just after it becomes
+// concrete (but definitive type needs to be known in advance).
 //
 
 template <class S>
@@ -138,16 +137,10 @@ concept
 #endif
         HasGetR = XRepresentation<R> &&(
             requires(S a) {
-              {
-                a.getR()
-                }
-                -> my_same_as<R&>;
+              { a.getR() } -> my_same_as<R&>;
             } ||
             requires(S a) {
-              {
-                a.getR()
-                }
-                -> my_same_as<R>;
+              { a.getR() } -> my_same_as<R>;
             });
 
 template <class S, class ADS = _ADS>
@@ -156,10 +149,7 @@ concept
     bool
 #endif
         HasGetADS = requires(S a) {
-  {
-    a.getADSptr()
-    }
-    -> my_same_as<ADS*>;
+  { a.getADSptr() } -> my_same_as<ADS*>;
 };
 
 // gcc bug allowed "XRepresentation R" here, but "error: a variable concept
@@ -170,7 +160,8 @@ concept
 #if __cplusplus <= 201703L  // after c++20, not required 'bool'
     bool
 #endif
-        XBaseSolution = XRepresentation<R> && HasGetR<S, R> && HasGetADS<S, ADS> && XSolution<S>;
+        XBaseSolution = XRepresentation<R> && HasGetR<S, R> &&
+    HasGetADS<S, ADS> && XSolution<S>;
 
 // same gcc bug: "error: a variable concept cannot be constrained" for
 // "XRepresentation R"
@@ -279,13 +270,10 @@ concept
 #endif
         XEvaluation =  // sing obj. evaluation part (standard multi obj)
     (
-        optframe::evgoal<Self>&&
-            HasClone<Self>&&
-                HasToString<Self>&&
-                    HasGetObj<Self>&&
-                        optframe::ostreamable<Self>&& requires(Self e) {
-                          typename Self::objType;
-                        } &&
+        optframe::evgoal<Self>&& HasClone<Self>&& HasToString<Self>&&
+            HasGetObj<Self>&& optframe::ostreamable<Self>&& requires(Self e) {
+              typename Self::objType;
+            } &&
         requires(Self e) {
           // variable 'outdated' is still useful for optimizations
           //{ e.outdated } -> my_convertible_to<bool>;
@@ -369,18 +357,12 @@ concept
     requires(Self p) {
   typename Self::first_type;   // requires a "first_type" with some "XSolution
                                // properties"
-  typename Self::second_type;  // requires a "second_type" with some "XEvaluation
-                               // properties"
+  typename Self::second_type;  // requires a "second_type" with some
+                               // "XEvaluation properties"
   // p.first;  // requires a XSolution variable named 'first'
-  {
-    p.first
-    }
-    -> my_convertible_to<typename Self::first_type>;
+  { p.first } -> my_convertible_to<typename Self::first_type>;
   // p.second; // requires a XEvaluation variable named 'second'
-  {
-    p.second
-    }
-    -> my_convertible_to<typename Self::second_type>;
+  { p.second } -> my_convertible_to<typename Self::second_type>;
   //
   // requires my_same_as<decltype(p.first), typename Self::first_type>;    //
   // not enough for reference and non-reference cases requires
@@ -436,16 +418,14 @@ concept
         XPowerSet = requires(Self a, size_t idx) {
   {
     a.size()
-    }
-    -> my_convertible_to<size_t>;  // could this be 'int' as well? TODO: test
+    } -> my_convertible_to<size_t>;  // could this be 'int' as well? TODO: test
 
   {
-    //a.getP(idx) // abandoning 'getP' in favor of 'at'... for compatibility
-    //with 'vector'
+    // a.getP(idx) // abandoning 'getP' in favor of 'at'... for compatibility
+    // with 'vector'
     //
     a.at(idx)
-    }
-    -> my_convertible_to<P>;
+    } -> my_convertible_to<P>;
 };
 /*
 || requires(Self a, size_t idx)
@@ -469,7 +449,8 @@ concept
 #if __cplusplus <= 201703L  // after c++20, not required 'bool'
     bool
 #endif
-        X2Solution = XSolution<S> && XPowerSet<Self, S>;  // Too bad, this is unused on OptFrame... :'(
+        X2Solution = XSolution<S> &&
+    XPowerSet<Self, S>;  // Too bad, this is unused on OptFrame... :'(
 
 // ---
 // We will usually assume a X2ESolution type, since it carries solution sample
@@ -549,12 +530,13 @@ concept
 #if __cplusplus <= 201703L  // after c++20, not required 'bool'
     bool
 #endif
-        //XSearch = XESolution<XES> && (XESolution<Self> || X2ESolution<Self, XES>);
+        // XSearch = XESolution<XES> && (XESolution<Self> || X2ESolution<Self,
+        // XES>);
         //
-        // XES must be of XESolution kind
-        // XES is either the BASE type for Self or the REAL type for Self
-        XSearch = (XESolution<XES> && XESolution<Self>) ||
-                  (XESolution<XES> && X2ESolution<Self, XES>);
+        //  XES must be of XESolution kind
+        //  XES is either the BASE type for Self or the REAL type for Self
+            XSearch = (XESolution<XES> && XESolution<Self>) ||
+                      (XESolution<XES> && X2ESolution<Self, XES>);
 
 // -------------
 // Maybe make evaluation values total_ordered...

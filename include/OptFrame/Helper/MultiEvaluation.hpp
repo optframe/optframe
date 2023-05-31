@@ -1,24 +1,5 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_MULTIEVALUATION_HPP_
 #define OPTFRAME_MULTIEVALUATION_HPP_
@@ -53,9 +34,7 @@ class MultiEvaluation : public Component {
   // bool outdated{true};
 
  public:
-  MultiEvaluation() {
-    static_assert(XEvaluation<MultiEvaluation<ObjType>>);
-  }
+  MultiEvaluation() { static_assert(XEvaluation<MultiEvaluation<ObjType>>); }
 
   explicit MultiEvaluation(Evaluation<ObjType> ev) {
     vev.push_back(ev);
@@ -63,22 +42,16 @@ class MultiEvaluation : public Component {
   }
 
   explicit MultiEvaluation(const vector<ObjType>& vd) {
-    for (unsigned i = 0; i < vd.size(); i++)
-      vev.push_back(XEv{vd[i]});
+    for (unsigned i = 0; i < vd.size(); i++) vev.push_back(XEv{vd[i]});
   }
 
   MultiEvaluation(const MultiEvaluation<ObjType>& mev) {
-    for (unsigned i = 0; i < mev.vev.size(); i++)
-      vev.push_back(mev.vev[i]);
+    for (unsigned i = 0; i < mev.vev.size(); i++) vev.push_back(mev.vev[i]);
   }
 
-  MultiEvaluation(MultiEvaluation<ObjType>&& mev)
-      : vev(std::move(mev.vev)) {
-  }
+  MultiEvaluation(MultiEvaluation<ObjType>&& mev) : vev(std::move(mev.vev)) {}
 
-  virtual ~MultiEvaluation() {
-    this->clear();
-  }
+  virtual ~MultiEvaluation() { this->clear(); }
 
   // ===============
   // getters/setters
@@ -87,71 +60,47 @@ class MultiEvaluation : public Component {
   // if any objective is outdated, this is also outdated
   bool isOutdated() const {
     for (unsigned i = 0; i < vev.size(); i++)
-      if (vev[i].isOutdated())
-        return true;
+      if (vev[i].isOutdated()) return true;
     return false;
   }
 
   // makes all evaluations 'outdated'
   void invalidate() {
-    for (unsigned i = 0; i < vev.size(); i++)
-      vev[i].invalidate();
+    for (unsigned i = 0; i < vev.size(); i++) vev[i].invalidate();
   }
 
   // if any objective is estimated, this is also estimated
   bool isEstimated() {
     for (unsigned i = 0; i < vev.size(); i++)
-      if (vev[i].isEstimated())
-        return true;
+      if (vev[i].isEstimated()) return true;
     return false;
   }
 
-  std::vector<XEv>& evaluation() {
-    return vev;
-  }
+  std::vector<XEv>& evaluation() { return vev; }
 
-  void addEvaluation(Evaluation<ObjType>& ev) {
-    vev.push_back(ev);
-  }
+  void addEvaluation(Evaluation<ObjType>& ev) { vev.push_back(ev); }
 
-  void addEvaluation(Evaluation<ObjType>&& ev) {
-    vev.push_back(std::move(ev));
-  }
+  void addEvaluation(Evaluation<ObjType>&& ev) { vev.push_back(std::move(ev)); }
 
-  unsigned size() const {
-    return vev.size();
-  }
+  unsigned size() const { return vev.size(); }
 
-  void erase(unsigned index) {
-    vev.erase(vev.begin() + index);
-  }
+  void erase(unsigned index) { vev.erase(vev.begin() + index); }
 
-  XEv& at(unsigned index) {
-    return vev[index];
-  }
+  XEv& at(unsigned index) { return vev[index]; }
 
-  const XEv& at(unsigned index) const {
-    return vev[index];
-  }
+  const XEv& at(unsigned index) const { return vev[index]; }
 
-  evtype atObjVal(unsigned index) {
-    return vev[index].evaluation();
-  }
+  evtype atObjVal(unsigned index) { return vev[index].evaluation(); }
 
   MultiEvaluation<ObjType> diff(const MultiEvaluation<ObjType>& other) const {
     MultiEvaluation<ObjType> r = *this;
-    for (unsigned i = 0; i < r.size(); i++)
-      r.at(i) = r.at(i).diff(other.at(i));
+    for (unsigned i = 0; i < r.size(); i++) r.at(i) = r.at(i).diff(other.at(i));
     return r;
   }
 
-  XEv& operator[](unsigned index) {
-    return vev[index];
-  }
+  XEv& operator[](unsigned index) { return vev[index]; }
 
-  const XEv& operator[](unsigned index) const {
-    return vev[index];
-  }
+  const XEv& operator[](unsigned index) const { return vev[index]; }
 
   void setOutdated(unsigned index, bool status) {
     vev[index].outdated = status;
@@ -173,9 +122,7 @@ class MultiEvaluation : public Component {
     return *new MultiEvaluation(*this);
   }
 
-  void clear() {
-    this->vev.clear();
-  }
+  void clear() { this->vev.clear(); }
 
   // update Evaluation with costs
   virtual void update(MultiEvaluation<ObjType>& mevTarget) const {
@@ -184,9 +131,7 @@ class MultiEvaluation : public Component {
     assert(false);
   }
 
-  void print() const override {
-    cout << toString() << endl;
-  }
+  void print() const override { cout << toString() << endl; }
 
   std::string toString() const override {
     std::stringstream ss;
@@ -222,7 +167,8 @@ optframe::evgoal<Self>&&
 static_assert(optframe::evgoal<MultiEvaluation<double>>);
 
 // Compilation test for concepts
-// MultiEvaluation is considered an XEvaluation type (compatible with past implementations)
+// MultiEvaluation is considered an XEvaluation type (compatible with past
+// implementations)
 // TODO: remove this
 static_assert(XEvaluation<MultiEvaluation<double>>);
 

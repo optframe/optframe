@@ -1,24 +1,5 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_HEURISTICS_MULTIOBJECTIVE_MOPOPULATIONMANAGEMENT_HPP_
 #define OPTFRAME_HEURISTICS_MULTIOBJECTIVE_MOPOPULATIONMANAGEMENT_HPP_
@@ -36,27 +17,23 @@
 
 namespace optframe {
 
-// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS =
+// OPTFRAME_DEFAULT_DS>
 template <XESolution XMES2>
 class MOPopulationManagement : public Component {
  public:
-  MOPopulationManagement() {
-  }
+  MOPopulationManagement() {}
 
-  virtual ~MOPopulationManagement() {
-  }
+  virtual ~MOPopulationManagement() {}
 
   // create a new population
   virtual vector<MOSIndividual<XMES2>> initialize(unsigned pSize) = 0;
 
   // create next population
   virtual vector<MOSIndividual<XMES2>> createNext(
-      unsigned target_size,
-      const vector<MOSIndividual<XMES2>>& P) = 0;
+      unsigned target_size, const vector<MOSIndividual<XMES2>>& P) = 0;
 
-  void print() const override {
-    cout << toString() << endl;
-  }
+  void print() const override { cout << toString() << endl; }
 
   bool compatible(std::string s) override {
     return (s == idComponent()) || (Component::compatible(s));
@@ -68,16 +45,13 @@ class MOPopulationManagement : public Component {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 };
 
-// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+// template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS =
+// OPTFRAME_DEFAULT_DS>
 template <XESolution XMES2>
 class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
   using S = typename XMES2::first_type;
@@ -94,27 +68,21 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
   double renewRate;
   sref<RandGen> rg;
 
-  BasicMOPopulationManagement(
-      sref<InitialMultiESolution<XMES2>> _initEPop,
-      vsref<NS<XMES2>> _mutations,
-      double _mutationRate,
-      vsref<GeneralCrossover<S>> _crossovers,
-      double _renewRate,
-      sref<RandGen> _rg)
+  BasicMOPopulationManagement(sref<InitialMultiESolution<XMES2>> _initEPop,
+                              vsref<NS<XMES2>> _mutations, double _mutationRate,
+                              vsref<GeneralCrossover<S>> _crossovers,
+                              double _renewRate, sref<RandGen> _rg)
       : initEPop(_initEPop),
         mutations(_mutations),
         mutationRate(_mutationRate),
         crossovers(_crossovers),
         renewRate(_renewRate),
         rg(_rg) {
-    if (renewRate > 1)
-      renewRate = 1;
-    if (renewRate < 0)
-      renewRate = 0;
+    if (renewRate > 1) renewRate = 1;
+    if (renewRate < 0) renewRate = 0;
   }
 
-  virtual ~BasicMOPopulationManagement() {
-  }
+  virtual ~BasicMOPopulationManagement() {}
 
   // giving ownership of 's'
   virtual MOSIndividual<XMES2> createIndividual(XMES2&& se) {
@@ -123,7 +91,7 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
 
     // no evaluation here!
 
-    return mosind;  //new MOSIndividual<XMES2>(s, mev);
+    return mosind;  // new MOSIndividual<XMES2>(s, mev);
   }
 
   vector<MOSIndividual<XMES2>> initialize(unsigned pSize) override {
@@ -141,8 +109,7 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
 
   // multiple crossovers in a binary tournament and apply many mutations
   vector<MOSIndividual<XMES2>> createNext(
-      unsigned target_size,
-      const vector<MOSIndividual<XMES2>>& P) override {
+      unsigned target_size, const vector<MOSIndividual<XMES2>>& P) override {
     //
     unsigned size_renew = renewRate * target_size;
     if (Component::verbose) {
@@ -214,8 +181,7 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
     for (unsigned t = 1; t <= poolSize; t++) {
       int i = rg->rand(P.size());
       int j = i;
-      while (i == j)
-        j = rg->rand(P.size());
+      while (i == j) j = rg->rand(P.size());
 
       if (P[i].betterThan(P[j]))
         pool.push_back(P[i]);
@@ -227,8 +193,7 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
   }
 
   vector<MOSIndividual<XMES2>> basicCrossoverMutation(
-      unsigned targetSize,
-      const vector<MOSIndividual<XMES2>>& pool) {
+      unsigned targetSize, const vector<MOSIndividual<XMES2>>& pool) {
     //
     if (Component::verbose)
       std::cout << "DEBUG: |pool| = " << pool.size() << std::endl;
@@ -248,16 +213,15 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
 
     for (unsigned i = 0; i < pool.size(); i++) {
       unsigned j = i + 1;
-      if (j == pool.size())
-        j = 0;
+      if (j == pool.size()) j = 0;
 
       // pair<Solution<R, ADS>*, Solution<R, ADS>*> crossChildren;
       std::pair<op<S>, op<S>> crossChildren;
 
       if (crossovers.size() > 0) {
         int crossId = rg->rand(crossovers.size());
-        crossChildren = crossovers[crossId]->cross(
-            pool[i].first, pool[j].first);
+        crossChildren =
+            crossovers[crossId]->cross(pool[i].first, pool[j].first);
       } else {
         crossChildren = make_pair(pool[i].first, pool[j].first);
       }
@@ -273,8 +237,7 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
         if ((mutations.size() > 0) && rg->randP(mutationRate)) {
           int neigh = rg->rand(mutations.size());
 
-          uptr<Move<XMES2>> move =
-              mutations[neigh]->validRandomMove(se);
+          uptr<Move<XMES2>> move = mutations[neigh]->validRandomMove(se);
 
           if (move) {
             move->apply(se);
@@ -317,14 +280,14 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
     return children;
   }
 
-  bool setVerboseR() override {
-    this->setVerbose();
+  bool setMessageLevelR(LogLevel ll) override {
+    this->setMessageLevel(ll);
     //
-    initEPop->setVerboseR();
+    initEPop->setMessageLevelR(ll);
     for (unsigned i = 0; i < mutations.size(); i++)
-      mutations[i]->setVerboseR();
+      mutations[i]->setMessageLevelR(ll);
     for (unsigned i = 0; i < crossovers.size(); i++)
-      crossovers[i]->setVerboseR();
+      crossovers[i]->setMessageLevelR(ll);
     return true;
   }
 
@@ -338,23 +301,21 @@ class BasicMOPopulationManagement : public MOPopulationManagement<XMES2> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
-class BasicMOPopulationManagementBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
+class BasicMOPopulationManagementBuilder
+    : public ComponentBuilder<S, XEv, XES, X2ES> {
   using XMEv = MultiEvaluation<typename XEv::objType>;
   using XMES = std::pair<S, XMEv>;
 
  public:
-  virtual ~BasicMOPopulationManagementBuilder() {
-  }
+  virtual ~BasicMOPopulationManagementBuilder() {}
 
   // has sptr instead of sref, is that on purpose or legacy class?
   Component* buildComponent(Scanner& scanner,
@@ -406,19 +367,13 @@ class BasicMOPopulationManagementBuilder : public ComponentBuilder<S, XEv, XES, 
     double _renew_rate = *scanner.nextDouble();
 
     return new BasicMOPopulationManagement<XMES>(
-        initEPop,
-        hlist,
-        _mutationRate,
-        clist,
-        _renew_rate,
-        hf.getRandGen());
+        initEPop, hlist, _mutationRate, clist, _renew_rate, hf.getRandGen());
   }
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(
-        InitialMultiESolution<XMES>::idComponent(),
-        "initial epopulation"));
+    params.push_back(make_pair(InitialMultiESolution<XMES>::idComponent(),
+                               "initial epopulation"));
     stringstream ss;
     ss << NS<XMES>::idComponent() << "[]";
     params.push_back(make_pair(ss.str(), "list of NS"));
@@ -441,13 +396,9 @@ class BasicMOPopulationManagementBuilder : public ComponentBuilder<S, XEv, XES, 
     return ss.str();
   }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
-  string id() const override {
-    return idComponent();
-  }
+  string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe
