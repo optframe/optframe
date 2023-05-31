@@ -1,28 +1,12 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_CHECK_COMMAND_HPP_
-#define OPTFRAME_CHECK_COMMAND_HPP_
+#ifndef OPTFRAME_UTIL_CHECKCOMMAND_HPP_
+#define OPTFRAME_UTIL_CHECKCOMMAND_HPP_
 
+#include <string>
+#include <vector>
+//
 #include <OptFrame/Constructive.hpp>
 #include <OptFrame/Evaluator.hpp>
 #include <OptFrame/Hyper/OptFrameList.hpp>
@@ -172,7 +156,7 @@ template <XESolution XES, XSolution S = typename XES::first_type,
           XRepresentation REP = S, class ADS = int,
           X2ESolution<XES> X2ES = MultiESolution<XES>,
           XSearch<XES> XSH = std::pair<S, typename XES::second_type>>
-class CheckCommand {  // NOLINT
+class CheckCommand : public Component {  // NOLINT
   using XEv = typename XES::second_type;
 
   static_assert(is_same<S, typename XES::first_type>::value);
@@ -197,8 +181,8 @@ class CheckCommand {  // NOLINT
 
  private:
   // verbose flag
-  bool verbose;
-  LogLevel logLevel;
+  // bool verbose;
+  // LogLevel logLevel;
 
   // why this?
   bool paramConvertNS;
@@ -235,6 +219,7 @@ class CheckCommand {  // NOLINT
 #endif
 
   // setParameters only works for verbosity ON and OFF
+  /*
   void setParameters(bool _verbose) {
     this->verbose = _verbose;
     if (verbose)
@@ -242,7 +227,9 @@ class CheckCommand {  // NOLINT
     else
       logLevel = LogLevel::Silent;
   }
+  */
 
+  /*
   void setLogLevel(LogLevel _logLevel) {
     this->logLevel = _logLevel;
     if (logLevel >= LogLevel::Debug)
@@ -250,14 +237,14 @@ class CheckCommand {  // NOLINT
     else
       verbose = false;
   }
+  */
 
-  explicit CheckCommand(bool _verbose = false)
-      : verbose{_verbose}, paramConvertNS{true} {
+  explicit CheckCommand(bool _verbose = false) : paramConvertNS{true} {
     //
     if (verbose)
-      logLevel = LogLevel::Debug;
+      this->setMessageLevel(LogLevel::Debug);
     else
-      logLevel = LogLevel::Info;
+      this->setMessageLevel(LogLevel::Info);
 
 #ifdef LEGACY_ADS
     adsMan = nullptr;
@@ -373,14 +360,13 @@ class CheckCommand {  // NOLINT
            << component << "' => " << text << endl;
   }
 
-  void error(string text) {
-    if (logLevel >= LogLevel::Error)
-      cout << "checkcommand error: " << text << endl;
+  void error_text(string text) {
+    if (this->error) cout << "checkcommand error: " << text << endl;
   }
 
   void errormsg(string component, int code, string scode, int iter,
                 string text) {
-    if (logLevel >= LogLevel::Error)
+    if (this->error)
       cout << "checkcommand ERROR " << code << " (" << scode
            << "): iter=" << iter << " testing component '" << component
            << "' MSG: " << text << endl;
@@ -896,17 +882,17 @@ class CheckCommand {  // NOLINT
 
  public:
   AllDataCheckCommand<XES> run(int iterMax, int nSolNSSeq) {
-    if (logLevel >= LogLevel::Info) {
+    if (this->information) {
       cout << "CheckCommand::run(";
       cout << "iterMax=" << iterMax << ";";
       cout << "nSolNSSeq=" << nSolNSSeq << ";";
-      cout << "logLevel=" << logLevel << ")" << endl;
+      cout << "logLevel=" << getMessageLevel() << ")" << endl;
     }
     // ======================================
     //           BEGIN TESTS
     // ======================================
 
-    if (logLevel >= LogLevel::Info) {
+    if (this->information) {
       cout << "---------------------------------------" << endl;
       cout << "tests/(nSolutions*|constructives|)=" << iterMax
            << " tests(NSSeq)=" << nSolNSSeq << endl;
@@ -923,7 +909,7 @@ class CheckCommand {  // NOLINT
     // ADSManager is deprecated!
     cout << "DEPRECATED:adsmanager=" << lADSManagerComp.size() << endl;
 #endif
-    if (logLevel >= LogLevel::Info) {
+    if (this->information) {
       cout << "---------------------------------------" << endl << endl;
     }
 
@@ -953,14 +939,14 @@ class CheckCommand {  // NOLINT
     }
 
     if (lConstructive.size() > 0)
-      if (logLevel >= LogLevel::Info)
+      if (this->information)
         cout << "checkcommand  will test " << lConstructive.size()
              << " constructive components (iterMax=" << iterMax << ")" << endl;
     for (unsigned c = 0; c < lConstructive.size(); c++) {
       // Constructive<S>* constructive = lConstructive.at(c);
       std::shared_ptr<InitialSearch<XES>> constructive = lConstructive.at(c);
 
-      if (logLevel >= LogLevel::Info) {
+      if (this->information) {
         cout << "checkcommand: testing Constructive " << c << " => "
              << constructive->toString();
         cout << endl;
@@ -1061,7 +1047,7 @@ class CheckCommand {  // NOLINT
         }
       }
 
-      if (logLevel >= LogLevel::Info)
+      if (this->information)
         cout << "checkcommand: Constructive " << c << " => "
              << lConstructive.at(c)->id() << " finished." << endl;
       if (verbose) cout << endl << endl;
@@ -1088,7 +1074,7 @@ class CheckCommand {  // NOLINT
     // ====================================================================
 
     if (lMove.size() > 0)
-      if (logLevel >= LogLevel::Info)
+      if (this->information)
         cout << "checkcommand  will test given Move components (|Move|="
              << lMove.size() << "; numSolutions=" << solutions.size() << ")"
              << endl;
@@ -1116,7 +1102,7 @@ class CheckCommand {  // NOLINT
 
     for (unsigned id_move = 0; id_move < lMove.size(); id_move++) {
       shared_ptr<Move<XES, XEv, XES>> pmove = lMove.at(id_move);
-      if (logLevel >= LogLevel::Info)
+      if (this->information)
         cout << "checkcommand: testing Move " << id_move << " => "
              << pmove->toString() << endl;
 
@@ -1165,14 +1151,14 @@ class CheckCommand {  // NOLINT
     // ====================================================================
 
     if (lNS.size() > 0)
-      if (logLevel >= LogLevel::Info)
+      if (this->information)
         cout << "checkcommand  will test " << lNS.size()
              << " NS components (iterMax=" << iterMax
              << " Solutions=" << solutions.size() << ")" << endl;
 
     for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++) {
       std::shared_ptr<NS<XES, XEv>> ns = lNS.at(id_ns);
-      if (logLevel >= LogLevel::Info) {
+      if (this->information) {
         cout << "checkcommand: testing NS " << id_ns << " => "
              << ns->toString();
         cout << endl;
@@ -1222,7 +1208,7 @@ class CheckCommand {  // NOLINT
           }
         }
       }
-      if (logLevel >= LogLevel::Info)
+      if (this->information)
         cout << "checkcommand: " << lNS.at(id_ns)->id() << " finished." << endl;
     }
     return true;
@@ -1240,7 +1226,7 @@ class CheckCommand {  // NOLINT
     // ====================================================================
 
     if (lNSSeq.size() > 0)
-      if (logLevel >= LogLevel::Info)
+      if (this->information)
         cout << "checkcommand  will test " << lNSSeq.size()
              << " NSSeq components (nSolNSSeq=" << nSolNSSeq
              << " of numSolutions=" << solutions.size() << ")" << endl;
@@ -1252,7 +1238,7 @@ class CheckCommand {  // NOLINT
 
     for (unsigned id_nsseq = 0; id_nsseq < lNSSeq.size(); id_nsseq++) {
       std::shared_ptr<NSSeq<XES, XEv, XES>> nsseq = lNSSeq.at(id_nsseq);
-      if (logLevel >= LogLevel::Info) {
+      if (this->information) {
         cout << "checkcommand: testing NSSeq " << id_nsseq << " => "
              << nsseq->toString();
         cout << endl;
@@ -1322,7 +1308,7 @@ class CheckCommand {  // NOLINT
         vCountMovesSamples[id_nsseq].push_back(countMovesNSSeq);
         vCountValidMovesSamples[id_nsseq].push_back(countValidMovesNSSeq);
       }
-      if (logLevel >= LogLevel::Info)
+      if (this->information)
         cout << "checkcommand: " << lNSSeq.at(id_nsseq)->id() << " finished."
              << endl;
     }
@@ -1343,7 +1329,7 @@ class CheckCommand {  // NOLINT
     // ====================================================================
 
     if (lNSEnum.size() > 0)
-      if (logLevel >= LogLevel::Info)
+      if (this->information)
         cout << "checkcommand  will test " << lNSEnum.size()
              << " NSEnum components (nSolNSSeq=" << nSolNSSeq
              << " of numSolutions=" << solutions.size() << ")" << endl;
@@ -1359,7 +1345,7 @@ class CheckCommand {  // NOLINT
 
     for (unsigned id_nsenum = 0; id_nsenum < lNSEnum.size(); id_nsenum++) {
       std::shared_ptr<NSEnum<XES, XEv>> nsenum = lNSEnum.at(id_nsenum);
-      if (logLevel >= LogLevel::Info) {
+      if (this->information) {
         cout << "checkcommand: testing NSEnum " << id_nsenum << " => "
              << nsenum->toString();
         cout << endl;
@@ -1526,7 +1512,7 @@ class CheckCommand {  // NOLINT
             vCountIndependentEnumSamples[id_nsenum].push_back(countMoveIndependentEnum);
          }
          */
-      if (logLevel >= LogLevel::Info)
+      if (this->information)
         cout << "checkcommand: " << lNSEnum.at(id_nsenum)->id() << " finished."
              << endl;
     }
@@ -1543,7 +1529,7 @@ class CheckCommand {  // NOLINT
         solData.evaluators;
 
     if (lNS.size() > 0)
-      if (logLevel >= LogLevel::Info)
+      if (this->information)
         cout << "checkcommand  will test " << lNS.size()
              << " NS random components (nSolNSSeq=" << nSolNSSeq
              << " of numSolutions=" << solutions.size() << ")" << endl;
@@ -1554,13 +1540,13 @@ class CheckCommand {  // NOLINT
 
     for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++) {
       std::shared_ptr<NS<XES, XEv>> ns = lNS.at(id_ns);
-      if (logLevel >= LogLevel::Info) {
+      if (this->information) {
         cout << "checkcommand: testing NS " << id_ns << " => "
              << ns->toString();
         cout << endl;
       }
       if (!ns->isSolutionIndependent()) {
-        if (logLevel >= LogLevel::Info) {
+        if (this->information) {
           cout << "checkcommand: ignoring NS " << id_ns
                << " isSolutionIndependent() returns FALSE -> "
                << ns->toString();
@@ -1570,7 +1556,7 @@ class CheckCommand {  // NOLINT
       }
 
       if (paramCheckIndependent) {
-        if (logLevel >= LogLevel::Info)
+        if (this->information)
           cout << "checkcommand: will try to identify RANDOM independent moves "
                   "from '"
                << ns->id()
@@ -1601,7 +1587,7 @@ class CheckCommand {  // NOLINT
         S& s = *solutions.at(0);
         XES se = make_pair(s, XEv());
         //
-        if (logLevel >= LogLevel::Info)
+        if (this->information)
           std::cout << "checkcommand: randomizing " << nSolNSSeq * nSolNSSeq
                     << " random moves" << std::endl;
         //
@@ -1618,7 +1604,7 @@ class CheckCommand {  // NOLINT
         // check for independence between moves m1 and m2
         for (int m1 = 0; m1 < (int)allMoves.size(); m1++) {
           // slow...
-          if (logLevel >= LogLevel::Info)
+          if (this->information)
             cout << "checkcommand: independence test for RANDOM move #" << m1
                  << " / " << allMoves.size() << endl;
           int count_ind_m1 = 0;
@@ -1642,7 +1628,7 @@ class CheckCommand {  // NOLINT
                   break;
                 // move 1 must have reverse
                 if (!move1->hasReverse()) {
-                  if (logLevel >= LogLevel::Info)
+                  if (this->information)
                     cout << "checkcommand: NS independent RANDOM check "
                             "expected reverse move... (deactivate with "
                             "'checkIndependent=false')"
@@ -1718,12 +1704,12 @@ class CheckCommand {  // NOLINT
               }  // if officialy supported move independence
             }    // first if !conflict
           }      // for every move
-          if (logLevel >= LogLevel::Info)
+          if (this->information)
             cout << "checkcommand: found " << count_ind_m1
                  << " independent move pairs." << endl;
         }
 
-        if (logLevel >= LogLevel::Info) {
+        if (this->information) {
           std::cout << "checkcommand: RANDOM independent short summary {";
           std::cout << "countMovePairs=" << countMovePairs
                     << " countMoveIndependent=" << countMoveIndependent << "}"
@@ -1742,13 +1728,13 @@ class CheckCommand {  // NOLINT
                         (countTPMoveIndependent + countFNMoveIndependent);
 
         if (!ns->supportsMoveIndependence()) {
-          if (logLevel >= LogLevel::Info)
+          if (this->information)
             std::cout
                 << "checkcommand: WARNING supportsMoveIndependence() is false, "
                    "so Accuracy may be zero (no real independence was tested!)"
                 << std::endl;
         }
-        if (logLevel >= LogLevel::Info)
+        if (this->information)
           std::cout << "checkcommand: RANDOM indep: accuracy=" << accuracy
                     << " precision=" << precision << " recall=" << recall
                     << std::endl;
@@ -1777,7 +1763,7 @@ class CheckCommand {  // NOLINT
     // ====================================================================
 
     if (lNSSeq.size() > 0)
-      if (logLevel >= LogLevel::Info)
+      if (this->information)
         cout << "checkcommand  will test " << lNSSeq.size()
              << " NSSeq (and NSEnum) iterator-based components (nSolNSSeq="
              << nSolNSSeq << " of numSolutions=" << solutions.size() << ")"
@@ -1799,13 +1785,13 @@ class CheckCommand {  // NOLINT
 
     for (unsigned id_nsseq = 0; id_nsseq < lNSSeq.size(); id_nsseq++) {
       std::shared_ptr<NSSeq<XES, XEv>> nsseq = lNSSeq.at(id_nsseq);
-      if (logLevel >= LogLevel::Info) {
+      if (this->information) {
         cout << "checkcommand: testing NSSeq " << id_nsseq << " => "
              << nsseq->toString();
         cout << endl;
       }
       if (!nsseq->isSolutionIndependent()) {
-        if (logLevel >= LogLevel::Info) {
+        if (this->information) {
           cout << "checkcommand: WARNING ignoring NSSeq " << id_nsseq
                << " isSolutionIndependent() returns FALSE -> "
                << nsseq->toString();
@@ -1815,7 +1801,7 @@ class CheckCommand {  // NOLINT
       }
 
       if (paramCheckIndependent) {
-        if (logLevel >= LogLevel::Info)
+        if (this->information)
           cout << "checkcommand: will try to identify independent moves from '"
                << nsseq->id()
                << "' (can take some time... deactivate with "
@@ -1859,7 +1845,7 @@ class CheckCommand {  // NOLINT
         // check for independence between moves m1 and m2
         for (int m1 = 0; m1 < (int)allMoves.size(); m1++) {
           // slow...
-          if (logLevel >= LogLevel::Info)
+          if (this->information)
             cout << "checkcommand: independence test for move #" << m1 << " / "
                  << allMoves.size() << endl;
           int count_ind_m1 = 0;
@@ -1883,7 +1869,7 @@ class CheckCommand {  // NOLINT
                   break;
                 // move 1 must have reverse
                 if (!move1->hasReverse()) {
-                  if (logLevel >= LogLevel::Info)
+                  if (this->information)
                     cout << "checkcommand: NSSeq independent check expected "
                             "reverse move... (deactivate with "
                             "'checkIndependent=false')"
@@ -1959,11 +1945,11 @@ class CheckCommand {  // NOLINT
               }  // if officialy supported move independence
             }    // first if !conflict
           }      // for every move
-          if (logLevel >= LogLevel::Info)
+          if (this->information)
             cout << "checkcommand: found " << count_ind_m1
                  << " independent move pairs." << endl;
         }
-        if (logLevel >= LogLevel::Info) {
+        if (this->information) {
           std::cout << "checkcommand: independent short summary {";
           std::cout << "countMovePairs=" << countMovePairs
                     << " countMoveIndependent=" << countMoveIndependent << "}"
@@ -1977,7 +1963,7 @@ class CheckCommand {  // NOLINT
         double recall = ((double)countTPMoveIndependent) /
                         (countTPMoveIndependent + countFNMoveIndependent);
 
-        if (logLevel >= LogLevel::Info)
+        if (this->information)
           std::cout << "checkcommand: indep: accuracy=" << accuracy
                     << " precision=" << precision << " recall=" << recall
                     << std::endl;
@@ -1997,7 +1983,7 @@ class CheckCommand {  // NOLINT
         for (unsigned k = 0; k < allMoves.size(); k++) delete allMoves.at(k);
         allMoves.clear();
       }
-      if (logLevel >= LogLevel::Info)
+      if (this->information)
         cout << "checkcommand: " << lNSSeq.at(id_nsseq)->id() << " finished."
              << endl;
     }
@@ -2160,13 +2146,13 @@ class CheckCommand {  // NOLINT
             delete solData.evaluations[i][j];
 */
     // print summary
-    if (logLevel >= LogLevel::Info) doPrintSummary(timeSamples, countData);
+    if (this->information) doPrintSummary(timeSamples, countData);
 
     AllDataCheckCommand<XES> allData;
     // allData.timeData = timeSamples; // TODO: restore here!!!
     // allData.countData = countData;
     // allData.solData = solData;
-    if (logLevel >= LogLevel::Info)
+    if (this->information)
       std::cout << "checkcommand: tests finished successfully!" << std::endl;
     return allData;
   }
@@ -2283,7 +2269,9 @@ class CheckCommand {  // NOLINT
     printf("all\t*\t-\t%.4f\t-\n", (avg / validValues));
     cout << endl;
   }
+
+  std::string toString() const override { return "CheckCommand"; }
 };
 }  // namespace optframe
 
-#endif /* OPTFRAME_CHECK_COMMAND_HPP_ */
+#endif  // OPTFRAME_UTIL_CHECKCOMMAND_HPP_

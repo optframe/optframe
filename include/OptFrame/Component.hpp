@@ -228,6 +228,8 @@ class Component {
 
   // ------------------------------
 
+  LogLevel getMessageLevel() const { return (LogLevel)verboseLevel; }
+
   virtual void setMessageLevel(LogLevel vl) final {
     error = warning = information = verbose = false;
 #ifndef NDEBUG
@@ -278,4 +280,4 @@ class Component {
 
 }  // namespace optframe
 
-#endif /* OPTFRAME_COMPONENT_HPP_ */
+#endif  // OPTFRAME_COMPONENT_HPP_
