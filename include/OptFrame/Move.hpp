@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_MOVE_HPP_
+#ifndef OPTFRAME_MOVE_HPP_  // NOLINT
 #define OPTFRAME_MOVE_HPP_
 
 // C++
@@ -205,9 +205,9 @@ class Move : public Component {
   std::string toString() const override { return id(); }
 
   // default NO PRINT (WHY??)
-  void print() const override { std::cout << toString() << std::endl; }
+  void print() const override { (*this->logdata) << toString() << std::endl; }
 };
 
 }  // namespace optframe
 
-#endif  // OPTFRAME_MOVE_HPP_
+#endif  // OPTFRAME_MOVE_HPP_ // NOLINT

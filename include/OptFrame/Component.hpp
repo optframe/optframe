@@ -80,12 +80,12 @@ class Component {
       return false;
   }
 
-  static void safe_print(Component* c) {
+  static void safe_print(std::ostream& os, Component* c) {
     // assert(c);
     if (c)
       c->print();
     else
-      std::cout << "nullptr Component" << std::endl;
+      os << "nullptr Component" << std::endl;
   }
 
  public:

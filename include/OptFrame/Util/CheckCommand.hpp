@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_UTIL_CHECKCOMMAND_HPP_
+#ifndef OPTFRAME_UTIL_CHECKCOMMAND_HPP_  // NOLINT
 #define OPTFRAME_UTIL_CHECKCOMMAND_HPP_
 
 #include <string>
@@ -219,25 +219,24 @@ class CheckCommand : public Component {  // NOLINT
 #endif
 
   // setParameters only works for verbosity ON and OFF
-  /*
   void setParameters(bool _verbose) {
-    this->verbose = _verbose;
-    if (verbose)
-      logLevel = LogLevel::Debug;
+    // this->verbose = _verbose;
+    if (_verbose)
+      // logLevel = LogLevel::Debug;
+      this->setMessageLevel(LogLevel::Debug);
     else
-      logLevel = LogLevel::Silent;
+      // logLevel = LogLevel::Silent;
+      this->setMessageLevel(LogLevel::Silent);
   }
-  */
 
-  /*
   void setLogLevel(LogLevel _logLevel) {
-    this->logLevel = _logLevel;
-    if (logLevel >= LogLevel::Debug)
-      verbose = true;
-    else
-      verbose = false;
+    // this->logLevel = _logLevel;
+    this->setMessageLevel(_logLevel);
+    // if (logLevel >= LogLevel::Debug)
+    //  verbose = true;
+    // else
+    //   verbose = false;
   }
-  */
 
   explicit CheckCommand(bool _verbose = false) : paramConvertNS{true} {
     //
@@ -252,16 +251,26 @@ class CheckCommand : public Component {  // NOLINT
     paramCheckIndependent = true;
   }
 
-  virtual ~CheckCommand() {}
+  ~CheckCommand() override = default;
+
+  std::string toString() const override { return "CheckCommand"; }
+
+  // callback 'onFail' allows integration with external tools
+  std::function<bool(int)> onFail{
+      [](int) -> bool { return false; }  // 'false' means no treatment
+  };
+
+  bool retryDebug{true};  // retry component test with Debug flag on failure
 
   void add(sref<Constructive<S>> c) {
     // lConstructive.push_back(&c);
     // if (verbose)
-    // cout << "checkcommand: Constructive " << lConstructive.size() << "
-    // added!" << endl;
-    cout << "checkcommand: Constructive not registered! NOT SUPPORTED! Try "
-            "InitialSearch instead."
-         << endl;
+    // (*this->logdata) <<  "checkcommand: Constructive " <<
+    // lConstructive.size() << " added!" << endl;
+    (*this->logdata)
+        << "checkcommand: Constructive not registered! NOT SUPPORTED! Try "
+           "InitialSearch instead."
+        << endl;
     assert(false);
   }
 
@@ -270,8 +279,8 @@ class CheckCommand : public Component {  // NOLINT
   void add(sref<InitialSearch<XES>> c) {
     lConstructive.push_back(c.sptr());
     if (verbose)
-      cout << "checkcommand: InitialSearch " << lConstructive.size()
-           << " added!" << endl;
+      (*this->logdata) << "checkcommand: InitialSearch " << lConstructive.size()
+                       << " added!" << endl;
   }
 
   void addInitialSearch(sref<InitialSearch<XES>> c) { add(c); }
@@ -280,16 +289,16 @@ class CheckCommand : public Component {  // NOLINT
   void add(sref<ADSManager<REP, ADS, S>> adsMan) {
     lADSManagerComp.push_back(adsMan.sptr());
     if (verbose)
-      cout << "checkcommand: AdsMan " << lADSManagerComp.size() << " added!"
-           << endl;
+      (*this->logdata) << "checkcommand: AdsMan " << lADSManagerComp.size()
+                       << " added!" << endl;
   }
 #endif
 
   void add(sref<Evaluator<S, XEv, XES>> c) {
     lEvaluator.push_back(c.sptr());
     if (verbose)
-      cout << "checkcommand: Evaluator " << lEvaluator.size() << " added!"
-           << endl;
+      (*this->logdata) << "checkcommand: Evaluator " << lEvaluator.size()
+                       << " added!" << endl;
   }
 
   // explicit add implementation
@@ -300,26 +309,29 @@ class CheckCommand : public Component {  // NOLINT
         {
                 lEvaluator.push_back(&c);
                 if (verbose)
-                        cout << "checkcommand: General Evaluator " <<
-   lEvaluator.size() << " added!" << endl;
+                        (*this->logdata) <<  "checkcommand: General Evaluator "
+   << lEvaluator.size() << " added!" << endl;
         }
 */
   void add(CopySolution<REP, ADS>& c) {
     lSolution.push_back(&c);
     if (verbose)
-      cout << "checkcommand: Solution " << lSolution.size() << " added!"
-           << endl;
+      (*this->logdata) << "checkcommand: Solution " << lSolution.size()
+                       << " added!" << endl;
   }
 
   void add(Move<XES, XEv>& c) {
     lMove.push_back(&c);
     if (verbose)
-      cout << "checkcommand: Move " << lMove.size() << " added!" << endl;
+      (*this->logdata) << "checkcommand: Move " << lMove.size() << " added!"
+                       << endl;
   }
 
   void add(sref<NS<XES, XEv>> c) {
     lNS.push_back(c.sptr());
-    if (verbose) cout << "checkcommand: NS " << lNS.size() << " added!" << endl;
+    if (verbose)
+      (*this->logdata) << "checkcommand: NS " << lNS.size() << " added!"
+                       << endl;
   }
 
   void addNS(sref<NS<XES, XEv>> c) { add(c); }
@@ -327,7 +339,8 @@ class CheckCommand : public Component {  // NOLINT
   void add(sref<NSSeq<XES, XEv>> c) {
     lNSSeq.push_back(c.sptr());
     if (verbose)
-      cout << "checkcommand: NSSeq " << lNSSeq.size() << " added!" << endl;
+      (*this->logdata) << "checkcommand: NSSeq " << lNSSeq.size() << " added!"
+                       << endl;
     if (paramConvertNS) {
       std::shared_ptr<NS<XES, XEv>> sptr_ns = c.sptr();
       add(sptr_ns);
@@ -340,7 +353,8 @@ class CheckCommand : public Component {  // NOLINT
   void add(sref<NSEnum<XES, XEv>> c) {
     lNSEnum.push_back(c.sptr());
     if (verbose)
-      cout << "checkcommand: NSEnum " << lNSEnum.size() << " added!" << endl;
+      (*this->logdata) << "checkcommand: NSEnum " << lNSEnum.size() << " added!"
+                       << endl;
     if (paramConvertNS) add((sref<NSSeq<XES, XEv>>)c);
   }
 
@@ -356,20 +370,21 @@ class CheckCommand : public Component {  // NOLINT
 
   void message(string component, int iter, string text) {
     if (verbose)
-      cout << "checkcommand iter: " << iter << " testing component '"
-           << component << "' => " << text << endl;
+      (*this->logdata) << "checkcommand iter: " << iter
+                       << " testing component '" << component << "' => " << text
+                       << endl;
   }
 
   void error_text(string text) {
-    if (this->error) cout << "checkcommand error: " << text << endl;
+    if (this->error) (*this->logdata) << "checkcommand error: " << text << endl;
   }
 
   void errormsg(string component, int code, string scode, int iter,
                 string text) {
     if (this->error)
-      cout << "checkcommand ERROR " << code << " (" << scode
-           << "): iter=" << iter << " testing component '" << component
-           << "' MSG: " << text << endl;
+      (*this->logdata) << "checkcommand ERROR " << code << " (" << scode
+                       << "): iter=" << iter << " testing component '"
+                       << component << "' MSG: " << text << endl;
   }
 
   bool parseBool(string b) { return b == "true"; }
@@ -410,14 +425,14 @@ class CheckCommand : public Component {  // NOLINT
       if (paramJsonLogs) {
         //
         std::string dump = optframe::cjson.dump();
-        // std::cout << "DUMP -> " << dump << std::endl;
+        // (*this->logdata) <<  "DUMP -> " << dump << std::endl;
         assert(dump.length() == 0);
         //
         bool os_ok = move.toStream(optframe::cjson);
         //
         dump = optframe::cjson.dump();
         if (!os_ok) dump = "{\"move_type\":\"UnknownMove\"}";
-        // std::cout << "DUMP -> " << dump << std::endl;
+        // (*this->logdata) <<  "DUMP -> " << dump << std::endl;
         //
         ssMoveLog.precision(3);
         ssMoveLog << std::fixed;
@@ -439,25 +454,34 @@ class CheckCommand : public Component {  // NOLINT
       S sOriginal = se.first;  // copy
       timeSamples.timeCloneSolution.push_back(t_clone.inMilliSecs());
 
-      Timer tMovApply;
-      uptr<Move<XES, XEv, XES>> rev = move.apply(se);
-      //
-      if ((!move.hasReverse() && rev) || (move.hasReverse() && !rev)) {
-        errormsg(moveFrom, CMERR_MOVE_HASREVERSE, "CMERR_MOVE_HASREVERSE", iter,
-                 " conflict between apply result and hasReverse()");
-        return false;
-      }
+      uptr<Move<XES, XEv, XES>> rev;
 
-      double applyMS = tMovApply.inMilliSecs();
-      timeSamples.timeNSApply[id_ns].push_back(applyMS);
+      {  // test CMERR_MOVE_HASREVERSE
+        Timer tMovApply;
+        auto se_backup = se;  // backup for failure
+        rev = move.apply(se);
+        //
+        if ((!move.hasReverse() && rev) || (move.hasReverse() && !rev)) {
+          errormsg(moveFrom, CMERR_MOVE_HASREVERSE, "CMERR_MOVE_HASREVERSE",
+                   iter, " conflict between apply result and hasReverse()");
+          onFail(CMERR_MOVE_HASREVERSE);
+          if (retryDebug) {
+            move.setVerboseR();
+            // force debug message printing on move apply
+            move.apply(se_backup);
+          }
+          return false;
+        }
 
-      if (paramJsonLogs) {
-        ssMoveLog << "\"timeNSApplyMS\":" << applyMS << ",";
-      }
+        double applyMS = tMovApply.inMilliSecs();
+        timeSamples.timeNSApply[id_ns].push_back(applyMS);
+
+        if (paramJsonLogs) {
+          ssMoveLog << "\"timeNSApplyMS\":" << applyMS << ",";
+        }
+      }  // test CMERR_MOVE_HASREVERSE
 
       Timer t_clone2;
-      // CopySolution<R, ADS>& sNeighbor = s.clone(); // remove if not verbose
-      // S sNeighbor = s; // copy
       S sNeighbor = se.first;  // copy
       timeSamples.timeCloneSolution.push_back(t_clone2.inMilliSecs());
       // ===================== tests with ADSManager ======================
@@ -473,14 +497,15 @@ class CheckCommand : public Component {  // NOLINT
         timeSamples.timeInitializeADS[0].push_back(ts_ds.inMilliSecs());
 
         if (!adsMan->compareADS(ads, sNeighbor.getADS())) {
-          cout << "checkcommand error: ADS not updated correctly! Compared "
-                  "brand new initializeADS with update from move => ";
+          (*this->logdata)
+              << "checkcommand error: ADS not updated correctly! Compared "
+                 "brand new initializeADS with update from move => ";
           move.print();
-          cout << "S (sOriginal.getADS()): " << endl;
+          (*this->logdata) << "S (sOriginal.getADS()): " << endl;
           adsMan->printADS(sOriginal.getADS());
-          cout << "WRONG: (sNeighbor.getADS())" << endl;
+          (*this->logdata) << "WRONG: (sNeighbor.getADS())" << endl;
           adsMan->printADS(ads);
-          cout << "RIGHT (re-initialized): " << endl;
+          (*this->logdata) << "RIGHT (re-initialized): " << endl;
           adsMan->printADS(sNeighbor.getADS());
           return false;
         }
@@ -518,14 +543,15 @@ class CheckCommand : public Component {  // NOLINT
         timeSamples.timeInitializeADS[0].push_back(ts_ds2.inMilliSecs());
 
         if (!adsMan->compareADS(ads, se.first.getADS())) {
-          cout << "checkcommand error: ADS not updated correctly! Compared "
-                  "brand new initializeADS with update from reverse move => ";
-          Component::safe_print(rev.get());
-          cout << "S (sOriginal.getADS()): " << endl;
+          (*this->logdata)
+              << "checkcommand error: ADS not updated correctly! Compared "
+                 "brand new initializeADS with update from reverse move => ";
+          Component::safe_print((*this->logdata), rev.get());
+          (*this->logdata) << "S (sOriginal.getADS()): " << endl;
           adsMan->printADS(sOriginal.getADS());
-          cout << "WRONG (s.getADS()): " << endl;
+          (*this->logdata) << "WRONG (s.getADS()): " << endl;
           adsMan->printADS(ads);
-          cout << "RIGHT (re-initialized): " << endl;
+          (*this->logdata) << "RIGHT (re-initialized): " << endl;
           adsMan->printADS(se.first.getADS());
           return false;
         }
@@ -533,29 +559,38 @@ class CheckCommand : public Component {  // NOLINT
 #endif
 
       // go back by copy (if necessary!)
-      if (!rev) {
-        // s = sOriginal;
-        se.first = sOriginal;
-      }
+      if (!rev) se.first = sOriginal;
 
-      // delete &sOriginal;
+      XEv e_ini;
+      {  // test CMERR_MOVE_EQUALS
+        Timer te2;
+        e_ini = lEvaluator.at(ev)->evaluate(se.first);
+        timeSamples.fullTimeEval[ev].push_back(te2.inMilliSecs());
 
-      Timer te2;
-      XEv e_ini = lEvaluator.at(ev)->evaluate(se.first);
-      timeSamples.fullTimeEval[ev].push_back(te2.inMilliSecs());
+        if (ini && (*ini != move)) {
+          errormsg(moveFrom, CMERR_MOVE_EQUALS, "CMERR_MOVE_EQUALS", iter,
+                   "reverse of reverse is not the original move!");
+          move.print();
+          (*this->logdata) << "move: ";
+          move.print();
+          (*this->logdata) << "rev: ";
+          Component::safe_print((*this->logdata), rev.get());
+          (*this->logdata) << "ini (reverse of rev): ";
+          Component::safe_print((*this->logdata), ini.get());
+          //
+          onFail(CMERR_MOVE_EQUALS);
+          // retry with verbose flags set on moves
+          if (retryDebug) {
+            move.setVerboseR();
+            auto seBackup = sOriginal;
+            rev->setVerboseR();
+            uptr<Move<XES, XEv, XES>> ini = rev->apply(se);
+            // compare and let operator== raise debug messages
+            if (*ini != move) return false;  // must use bool result here
+          }
 
-      if (ini && (*ini != move)) {
-        errormsg(moveFrom, CMERR_MOVE_EQUALS, "CMERR_MOVE_EQUALS", iter,
-                 "reverse of reverse is not the original move!");
-        move.print();
-        cout << "move: ";
-        move.print();
-        cout << "rev: ";
-        Component::safe_print(rev.get());
-        cout << "ini (reverse of rev): ";
-        Component::safe_print(ini.get());
-
-        return false;
+          return false;
+        }
       }
 
       message(lEvaluator.at(ev), iter, "testing reverse value.");
@@ -564,12 +599,19 @@ class CheckCommand : public Component {  // NOLINT
         errormsg(moveFrom, CMERR_MOVE_REVREV_VALUE, "CMERR_MOVE_REVREV_VALUE",
                  iter, "reverse of reverse has a different evaluation value!");
         move.print();
-        cout << "move: ";
+        (*this->logdata) << "move: ";
         move.print();
-        cout << "original: ";
+        (*this->logdata) << "original: ";
         _e.print();
-        cout << "reverse of reverse:";
+        (*this->logdata) << "reverse of reverse:";
         e_ini.print();
+
+        onFail(CMERR_MOVE_REVREV_VALUE);
+        if (retryDebug) {
+          lEvaluator.at(ev)->setVerbose();
+          auto _e = lEvaluator[ev]->evaluate(_s);
+          auto e_ini = lEvaluator.at(ev)->evaluate(se.first);
+        }
 
         return false;
       }
@@ -606,24 +648,26 @@ class CheckCommand : public Component {  // NOLINT
 
       if (!optframe::numeric_is_zero(se.second.evaluation() -
                                      _e.evaluation())) {
-        std::cout << "ERROR: calculation of revCost is wrong! "
-                  << se.second.evaluation() << " != " << _e.evaluation()
-                  << std::endl;
+        (*this->logdata) << "ERROR: calculation of revCost is wrong! "
+                         << se.second.evaluation() << " != " << _e.evaluation()
+                         << std::endl;
         assert(false);
       }
 
       if (!optframe::numeric_is_zero(revCost - simpleCost)) {
         errormsg(moveFrom, CMERR_MOVE_REVSIMPLE, "CMERR_MOVE_REVSIMPLE", iter,
                  "difference between revCost and simpleCost");
-        cout << "move: ";
+        (*this->logdata) << "move: ";
         move.print();
-        cout << "revCost = " << revCost << "= ..." << endl;
-        cout << "   ... = (e_rev after move) " << e_rev.evaluation()
-             << " -  (_e before move) " << _e.evaluation() << ")" << std::endl;
-        cout << "simpleCost = " << simpleCost
-             << " (from 'ev->moveCostComplete(move, se)' method)" << endl;
-        cout << "Current Evaluation: se.second.evaluation() = "
-             << se.second.evaluation() << std::endl;
+        (*this->logdata) << "revCost = " << revCost << "= ..." << endl;
+        (*this->logdata) << "   ... = (e_rev after move) " << e_rev.evaluation()
+                         << " -  (_e before move) " << _e.evaluation() << ")"
+                         << std::endl;
+        (*this->logdata) << "simpleCost = " << simpleCost
+                         << " (from 'ev->moveCostComplete(move, se)' method)"
+                         << endl;
+        (*this->logdata) << "Current Evaluation: se.second.evaluation() = "
+                         << se.second.evaluation() << std::endl;
         return false;
       }
 
@@ -647,8 +691,8 @@ class CheckCommand : public Component {  // NOLINT
       // evtype e_end1 = _e.evaluation();
       evtype e_end1 = se.second.evaluation();
       if (se.second.isOutdated()) {
-        std::cout << "WARNING: evaluation is OUTDATED! WHAT TO DO HERE?"
-                  << std::endl;
+        (*this->logdata) << "WARNING: evaluation is OUTDATED! WHAT TO DO HERE?"
+                         << std::endl;
       }
       //
       //
@@ -660,8 +704,8 @@ class CheckCommand : public Component {  // NOLINT
       //
       uptr<Move<XES, XEv, XES>> ini1 = rev1->applyUpdate(se);
       if (se.second.isOutdated()) {
-        // std::cout << "WARNING: evaluation is OUTDATED after applyUpdate!
-        // manual evaluate" << std::endl;
+        // (*this->logdata) <<  "WARNING: evaluation is OUTDATED after
+        // applyUpdate! manual evaluate" << std::endl;
         se.second = lEvaluator[ev]->evaluate(se.first);
       }
       //_e = std::move(evBeginFasterCost);
@@ -684,21 +728,21 @@ class CheckCommand : public Component {  // NOLINT
 
       if (!optframe::numeric_is_zero(se.second.evaluation() -
                                      _e.evaluation())) {
-        std::cout << "ERROR: calculation of faster is wrong! "
-                  << se.second.evaluation() << " != " << _e.evaluation()
-                  << std::endl;
+        (*this->logdata) << "ERROR: calculation of faster is wrong! "
+                         << se.second.evaluation() << " != " << _e.evaluation()
+                         << std::endl;
         assert(false);
       }
 
       if (!optframe::numeric_is_zero(revCost - fasterCost)) {
         errormsg(moveFrom, CMERR_MOVE_REVFASTER, "CMERR_MOVE_REVFASTER", iter,
                  "difference between revCost and fasterCost!");
-        cout << "move: ";
+        (*this->logdata) << "move: ";
         move.print();
-        cout << "revCost = " << revCost << endl;
-        cout << "fasterCost = " << fasterCost << endl;
-        cout << "_e = " << _e.evaluation() << endl;
-        cout << "e_rev = " << e_rev.evaluation() << endl;
+        (*this->logdata) << "revCost = " << revCost << endl;
+        (*this->logdata) << "fasterCost = " << fasterCost << endl;
+        (*this->logdata) << "_e = " << _e.evaluation() << endl;
+        (*this->logdata) << "e_rev = " << e_rev.evaluation() << endl;
         return false;
       }
       // ==============
@@ -736,19 +780,19 @@ class CheckCommand : public Component {  // NOLINT
 
       if (!optframe::numeric_is_zero(se.second.evaluation() -
                                      _e.evaluation())) {
-        std::cout << "ERROR: calculation of realFasterCost is wrong! "
-                  << se.second.evaluation() << " != " << _e.evaluation()
-                  << std::endl;
+        (*this->logdata) << "ERROR: calculation of realFasterCost is wrong! "
+                         << se.second.evaluation() << " != " << _e.evaluation()
+                         << std::endl;
         assert(false);
       }
 
       if (!optframe::numeric_is_zero(revCost - realFasterCost)) {
         errormsg(moveFrom, CMERR_MOVE_REALREVFASTER, "CMERR_MOVE_REALREVFASTER",
                  iter, "difference between revCost and realfasterCost!");
-        cout << "move: ";
+        (*this->logdata) << "move: ";
         move.print();
-        cout << "revCost = " << revCost << endl;
-        cout << "simpleCost = " << realFasterCost << endl;
+        (*this->logdata) << "revCost = " << revCost << endl;
+        (*this->logdata) << "simpleCost = " << realFasterCost << endl;
         return false;
       }
       // ==============
@@ -793,37 +837,39 @@ class CheckCommand : public Component {  // NOLINT
         if (!optframe::numeric_is_zero(revCost - cValue)) {
           errormsg(moveFrom, CMERR_MOVE_COST, "CMERR_MOVE_COST", iter,
                    "difference between expected cost and cost()");
-          cout << "move: ";
+          (*this->logdata) << "move: ";
           move.print();
-          cout << "expected cost: (e' - e) =\t" << revCost << endl;
-          cout << "cost() =\t" << cValue << endl;
-          cout << "_e: \t obj:" << _e.getObjFunction()
-               << "\t inf: " << _e.getInfMeasure()
-               << " \t total:" << _e.evaluation() << endl;
-          cout << "e':\t obj:" << e_rev.getObjFunction()
-               << "\t inf:" << e_rev.getInfMeasure()
-               << " \t total:" << e_rev.evaluation() << endl;
-          // cout << "e+cost():\t obj:" << e.getObjFunction() +
+          (*this->logdata) << "expected cost: (e' - e) =\t" << revCost << endl;
+          (*this->logdata) << "cost() =\t" << cValue << endl;
+          (*this->logdata) << "_e: \t obj:" << _e.getObjFunction()
+                           << "\t inf: " << _e.getInfMeasure()
+                           << " \t total:" << _e.evaluation() << endl;
+          (*this->logdata) << "e':\t obj:" << e_rev.getObjFunction()
+                           << "\t inf:" << e_rev.getInfMeasure()
+                           << " \t total:" << e_rev.evaluation() << endl;
+          // (*this->logdata) <<  "e+cost():\t obj:" << e.getObjFunction() +
           // cost->getObjFunctionCost() << "\t inf:" << e.getInfMeasure() +
           // cost->getInfMeasureCost() << "\t total:" << e.evaluation() +
           // cost->cost() << endl;
-          cout << "_e+cost():\t obj:"
-               << _e.getObjFunction() + cost->getObjFunction()
-               << "\t inf:" << _e.getInfMeasure() + cost->getInfMeasure()
-               << "\t total:" << _e.evaluation() + cost->evaluation() << endl;
-          cout << "_s: ";
+          (*this->logdata) << "_e+cost():\t obj:"
+                           << _e.getObjFunction() + cost->getObjFunction()
+                           << "\t inf:"
+                           << _e.getInfMeasure() + cost->getInfMeasure()
+                           << "\t total:"
+                           << _e.evaluation() + cost->evaluation() << endl;
+          (*this->logdata) << "_s: ";
           // s.print();
-          cout << _s;
+          (*this->logdata) << _s;
           //
-          cout << "s': ";
+          (*this->logdata) << "s': ";
           // sNeighbor.print();
-          cout << sNeighbor;
+          (*this->logdata) << sNeighbor;
           //
-          cout << "move: ";
+          (*this->logdata) << "move: ";
           move.print();
-          cout << "==============" << endl;
-          cout << "  GOOD LUCK!  " << endl;
-          cout << "==============" << endl;
+          (*this->logdata) << "==============" << endl;
+          (*this->logdata) << "  GOOD LUCK!  " << endl;
+          (*this->logdata) << "==============" << endl;
           return false;
         }
 
@@ -833,13 +879,13 @@ class CheckCommand : public Component {  // NOLINT
           // TODO: consider that randomMove can be null
           uptr<Move<XES, XEv, XES>> move2 = ns->randomMove(se);
           if (verbose) {
-            cout << "testing double move!" << endl;
+            (*this->logdata) << "testing double move!" << endl;
             move2->print();
           }
 
           if (!move2->canBeApplied(se)) {
             if (verbose) {
-              cout << "double move cannot be applied: ";
+              (*this->logdata) << "double move cannot be applied: ";
               move2->print();
             }
           } else {
@@ -883,34 +929,36 @@ class CheckCommand : public Component {  // NOLINT
  public:
   AllDataCheckCommand<XES> run(int iterMax, int nSolNSSeq) {
     if (this->information) {
-      cout << "CheckCommand::run(";
-      cout << "iterMax=" << iterMax << ";";
-      cout << "nSolNSSeq=" << nSolNSSeq << ";";
-      cout << "logLevel=" << getMessageLevel() << ")" << endl;
+      (*this->logdata) << "CheckCommand::run(";
+      (*this->logdata) << "iterMax=" << iterMax << ";";
+      (*this->logdata) << "nSolNSSeq=" << nSolNSSeq << ";";
+      (*this->logdata) << "logLevel=" << getMessageLevel() << ")" << endl;
     }
     // ======================================
     //           BEGIN TESTS
     // ======================================
 
     if (this->information) {
-      cout << "---------------------------------------" << endl;
-      cout << "tests/(nSolutions*|constructives|)=" << iterMax
-           << " tests(NSSeq)=" << nSolNSSeq << endl;
-      cout << "---------------------------------------" << endl;
-      cout << "evaluators=" << lEvaluator.size() << endl;
-      cout << "constructives=" << lConstructive.size() << endl;
-      cout << "moves=" << lMove.size() << endl;
-      cout << "ns=" << lNS.size() << endl;
-      cout << "nsseq=" << lNSSeq.size() << endl;
-      cout << "nsenum=" << lNSEnum.size() << endl;
+      (*this->logdata) << "---------------------------------------" << endl;
+      (*this->logdata) << "tests/(nSolutions*|constructives|)=" << iterMax
+                       << " tests(NSSeq)=" << nSolNSSeq << endl;
+      (*this->logdata) << "---------------------------------------" << endl;
+      (*this->logdata) << "evaluators=" << lEvaluator.size() << endl;
+      (*this->logdata) << "constructives=" << lConstructive.size() << endl;
+      (*this->logdata) << "moves=" << lMove.size() << endl;
+      (*this->logdata) << "ns=" << lNS.size() << endl;
+      (*this->logdata) << "nsseq=" << lNSSeq.size() << endl;
+      (*this->logdata) << "nsenum=" << lNSEnum.size() << endl;
     }
 
 #ifdef LEGACY_ADS
     // ADSManager is deprecated!
-    cout << "DEPRECATED:adsmanager=" << lADSManagerComp.size() << endl;
+    (*this->logdata) << "DEPRECATED:adsmanager=" << lADSManagerComp.size()
+                     << endl;
 #endif
     if (this->information) {
-      cout << "---------------------------------------" << endl << endl;
+      (*this->logdata) << "---------------------------------------" << endl
+                       << endl;
     }
 
     return doRun(iterMax, nSolNSSeq);
@@ -940,16 +988,17 @@ class CheckCommand : public Component {  // NOLINT
 
     if (lConstructive.size() > 0)
       if (this->information)
-        cout << "checkcommand  will test " << lConstructive.size()
-             << " constructive components (iterMax=" << iterMax << ")" << endl;
+        (*this->logdata) << "checkcommand  will test " << lConstructive.size()
+                         << " constructive components (iterMax=" << iterMax
+                         << ")" << endl;
     for (unsigned c = 0; c < lConstructive.size(); c++) {
       // Constructive<S>* constructive = lConstructive.at(c);
       std::shared_ptr<InitialSearch<XES>> constructive = lConstructive.at(c);
 
       if (this->information) {
-        cout << "checkcommand: testing Constructive " << c << " => "
-             << constructive->toString();
-        cout << endl;
+        (*this->logdata) << "checkcommand: testing Constructive " << c << " => "
+                         << constructive->toString();
+        (*this->logdata) << endl;
       }
 
       for (int iter = 1; iter <= iterMax; iter++) {
@@ -985,7 +1034,7 @@ class CheckCommand : public Component {  // NOLINT
         if (paramJsonLogs) {
           // solData.logSolutions.push_back(sptr_sol->toStringFormat(StringFormat::JSON));
           std::string dump = optframe::cjson.dump();
-          // std::cout << "DUMP -> " << dump << std::endl;
+          // (*this->logdata) <<  "DUMP -> " << dump << std::endl;
           assert(dump.length() == 0);
           // bool ret = sptr_sol->toStream(optframe::cjson);
           // assert(ret);
@@ -995,7 +1044,7 @@ class CheckCommand : public Component {  // NOLINT
           std::stringstream ss;
           ss << "{\"sol_log_id\":" << solData.logSolutions.size() << ",";
           ss << "\"solution\":" << dump << "}";
-          // std::cout << "DUMP -> " << dump << std::endl;
+          // (*this->logdata) <<  "DUMP -> " << dump << std::endl;
           solData.logSolutions.push_back(ss.str());  //(dump);
                                                      // assert(false);
         }
@@ -1012,7 +1061,7 @@ class CheckCommand : public Component {  // NOLINT
           //
           if (paramJsonLogs) {
             std::string dump = optframe::cjson.dump();
-            // std::cout << "DUMP -> '" << dump << "'" << std::endl;
+            // (*this->logdata) <<  "DUMP -> '" << dump << "'" << std::endl;
             assert(dump.length() == 0);
             // bool ret = sptr_sol->toStream(optframe::cjson);
             // assert(ret);
@@ -1027,8 +1076,8 @@ class CheckCommand : public Component {  // NOLINT
             // solData.logEvaluations.at(ev).push_back(sptr_ev->toStringFormat(StringFormat::JSON));
             solData.logEvaluations.at(ev).push_back(
                 ss.str());  //(dump);
-                            // std::cout << "DUMP -> " << dump << std::endl;
-                            // assert(false);
+                            // (*this->logdata) <<  "DUMP -> " << dump <<
+                            // std::endl; assert(false);
           }
 
           if (lEvaluator.at(ev)->direction->betterThan(e, e)) {
@@ -1048,12 +1097,12 @@ class CheckCommand : public Component {  // NOLINT
       }
 
       if (this->information)
-        cout << "checkcommand: Constructive " << c << " => "
-             << lConstructive.at(c)->id() << " finished." << endl;
-      if (verbose) cout << endl << endl;
+        (*this->logdata) << "checkcommand: Constructive " << c << " => "
+                         << lConstructive.at(c)->id() << " finished." << endl;
+      if (verbose) (*this->logdata) << endl << endl;
     }
 
-    if (verbose) cout << endl << endl;
+    if (verbose) (*this->logdata) << endl << endl;
 
     solData.solutions = solutions;
     solData.evaluations = evaluations;
@@ -1075,9 +1124,10 @@ class CheckCommand : public Component {  // NOLINT
 
     if (lMove.size() > 0)
       if (this->information)
-        cout << "checkcommand  will test given Move components (|Move|="
-             << lMove.size() << "; numSolutions=" << solutions.size() << ")"
-             << endl;
+        (*this->logdata)
+            << "checkcommand  will test given Move components (|Move|="
+            << lMove.size() << "; numSolutions=" << solutions.size() << ")"
+            << endl;
 
     for (unsigned p = 0; p < lSolution.size(); p++) {
       // solutions.push_back(&lSolution[p]->clone());
@@ -1103,8 +1153,8 @@ class CheckCommand : public Component {  // NOLINT
     for (unsigned id_move = 0; id_move < lMove.size(); id_move++) {
       shared_ptr<Move<XES, XEv, XES>> pmove = lMove.at(id_move);
       if (this->information)
-        cout << "checkcommand: testing Move " << id_move << " => "
-             << pmove->toString() << endl;
+        (*this->logdata) << "checkcommand: testing Move " << id_move << " => "
+                         << pmove->toString() << endl;
 
       for (unsigned id_s = 0; id_s < solutions.size(); id_s++) {
         message(lMove.at(id_move).get(), -1, "working on move.");
@@ -1118,7 +1168,7 @@ class CheckCommand : public Component {  // NOLINT
 
         if (!move.canBeApplied(se)) {
           if (verbose) {
-            cout << "move cannot be applied: ";
+            (*this->logdata) << "move cannot be applied: ";
             move.print();
           }
           continue;
@@ -1152,16 +1202,16 @@ class CheckCommand : public Component {  // NOLINT
 
     if (lNS.size() > 0)
       if (this->information)
-        cout << "checkcommand  will test " << lNS.size()
-             << " NS components (iterMax=" << iterMax
-             << " Solutions=" << solutions.size() << ")" << endl;
+        (*this->logdata) << "checkcommand  will test " << lNS.size()
+                         << " NS components (iterMax=" << iterMax
+                         << " Solutions=" << solutions.size() << ")" << endl;
 
     for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++) {
       std::shared_ptr<NS<XES, XEv>> ns = lNS.at(id_ns);
       if (this->information) {
-        cout << "checkcommand: testing NS " << id_ns << " => "
-             << ns->toString();
-        cout << endl;
+        (*this->logdata) << "checkcommand: testing NS " << id_ns << " => "
+                         << ns->toString();
+        (*this->logdata) << endl;
       }
 
       for (int iter = 1; iter <= iterMax; iter++) {
@@ -1183,7 +1233,7 @@ class CheckCommand : public Component {  // NOLINT
 
           if (!move->canBeApplied(se)) {
             if (verbose) {
-              cout << "move cannot be applied: ";
+              (*this->logdata) << "move cannot be applied: ";
               move->print();
             }
 
@@ -1209,7 +1259,8 @@ class CheckCommand : public Component {  // NOLINT
         }
       }
       if (this->information)
-        cout << "checkcommand: " << lNS.at(id_ns)->id() << " finished." << endl;
+        (*this->logdata) << "checkcommand: " << lNS.at(id_ns)->id()
+                         << " finished." << endl;
     }
     return true;
   }
@@ -1227,9 +1278,10 @@ class CheckCommand : public Component {  // NOLINT
 
     if (lNSSeq.size() > 0)
       if (this->information)
-        cout << "checkcommand  will test " << lNSSeq.size()
-             << " NSSeq components (nSolNSSeq=" << nSolNSSeq
-             << " of numSolutions=" << solutions.size() << ")" << endl;
+        (*this->logdata) << "checkcommand  will test " << lNSSeq.size()
+                         << " NSSeq components (nSolNSSeq=" << nSolNSSeq
+                         << " of numSolutions=" << solutions.size() << ")"
+                         << endl;
 
     vector<vector<int>>& vCountMovesSamples =
         countData.vCountMovesSamples;  ///(lNSSeq.size());
@@ -1239,9 +1291,9 @@ class CheckCommand : public Component {  // NOLINT
     for (unsigned id_nsseq = 0; id_nsseq < lNSSeq.size(); id_nsseq++) {
       std::shared_ptr<NSSeq<XES, XEv, XES>> nsseq = lNSSeq.at(id_nsseq);
       if (this->information) {
-        cout << "checkcommand: testing NSSeq " << id_nsseq << " => "
-             << nsseq->toString();
-        cout << endl;
+        (*this->logdata) << "checkcommand: testing NSSeq " << id_nsseq << " => "
+                         << nsseq->toString();
+        (*this->logdata) << endl;
       }
 
       for (int nqs = 1; nqs <= nSolNSSeq; nqs++) {
@@ -1267,7 +1319,7 @@ class CheckCommand : public Component {  // NOLINT
 
         for (it->first(); !it->isDone(); it->next()) {
           if (verbose)
-            // cout << endl;
+            // (*this->logdata) <<  endl;
             message(lNSSeq.at(id_nsseq), nqs,
                     "getting current move (NSSeq tests).");
 
@@ -1278,7 +1330,7 @@ class CheckCommand : public Component {  // NOLINT
 
           if (!move.canBeApplied(se)) {
             if (verbose) {
-              cout << "move cannot be applied (NSSeq tests): ";
+              (*this->logdata) << "move cannot be applied (NSSeq tests): ";
               move.print();
             }
             continue;
@@ -1309,8 +1361,8 @@ class CheckCommand : public Component {  // NOLINT
         vCountValidMovesSamples[id_nsseq].push_back(countValidMovesNSSeq);
       }
       if (this->information)
-        cout << "checkcommand: " << lNSSeq.at(id_nsseq)->id() << " finished."
-             << endl;
+        (*this->logdata) << "checkcommand: " << lNSSeq.at(id_nsseq)->id()
+                         << " finished." << endl;
     }
     return true;
   }
@@ -1330,9 +1382,10 @@ class CheckCommand : public Component {  // NOLINT
 
     if (lNSEnum.size() > 0)
       if (this->information)
-        cout << "checkcommand  will test " << lNSEnum.size()
-             << " NSEnum components (nSolNSSeq=" << nSolNSSeq
-             << " of numSolutions=" << solutions.size() << ")" << endl;
+        (*this->logdata) << "checkcommand  will test " << lNSEnum.size()
+                         << " NSEnum components (nSolNSSeq=" << nSolNSSeq
+                         << " of numSolutions=" << solutions.size() << ")"
+                         << endl;
 
     vector<vector<int>>& vCountMovesEnumSamples =
         countData.vCountMovesEnumSamples;
@@ -1346,9 +1399,9 @@ class CheckCommand : public Component {  // NOLINT
     for (unsigned id_nsenum = 0; id_nsenum < lNSEnum.size(); id_nsenum++) {
       std::shared_ptr<NSEnum<XES, XEv>> nsenum = lNSEnum.at(id_nsenum);
       if (this->information) {
-        cout << "checkcommand: testing NSEnum " << id_nsenum << " => "
-             << nsenum->toString();
-        cout << endl;
+        (*this->logdata) << "checkcommand: testing NSEnum " << id_nsenum
+                         << " => " << nsenum->toString();
+        (*this->logdata) << endl;
       }
 
       for (int nqs = 1; nqs <= nSolNSSeq; nqs++) {
@@ -1371,7 +1424,7 @@ class CheckCommand : public Component {  // NOLINT
         int countValidMovesNSEnum = 0;
 
         for (it->first(); !it->isDone(); it->next()) {
-          if (verbose) cout << endl;
+          if (verbose) (*this->logdata) << endl;
           message(lNSEnum.at(id_nsenum), nqs,
                   "getting current move (NSEnum tests).");
 
@@ -1382,7 +1435,7 @@ class CheckCommand : public Component {  // NOLINT
 
           if (!move.canBeApplied(se)) {
             if (verbose) {
-              cout << "move cannot be applied (NSEnum tests): ";
+              (*this->logdata) << "move cannot be applied (NSEnum tests): ";
               move.print();
             }
             // delete &move;
@@ -1420,7 +1473,8 @@ class CheckCommand : public Component {  // NOLINT
 
       /*
          if (paramCheckIndependent) {
-            cout << "checkcommand: will try to identify independent moves from
+            (*this->logdata) <<  "checkcommand: will try to identify independent
+         moves from
          '" << nsenum->id() << "' (can take some time... deactivate with
          'paramCheckIndependent=false')" << endl;
             // indicate possible independent moves
@@ -1434,9 +1488,10 @@ class CheckCommand : public Component {  // NOLINT
             // check for independence between moves m1 and m2
             for (int m1 = 0; m1 < (int)nsenum->size(); m1++) {
                // slow...
-               cout << "checkcommand: independence test for move #" << m1 << " /
-         " << nsenum->size() << endl; int count_ind_m1 = 0; for (int m2 = m1 +
-         1; m2 < int(nsenum->size()); m2++) { bool conflict = false;
+               (*this->logdata) <<  "checkcommand: independence test for move #"
+         << m1 << " / " << nsenum->size() << endl; int count_ind_m1 = 0; for
+         (int m2 = m1 + 1; m2 < int(nsenum->size()); m2++) { bool conflict =
+         false;
                   // compute another move pair
                   countMovePairsEnum++;
 
@@ -1455,9 +1510,9 @@ class CheckCommand : public Component {  // NOLINT
          move2->canBeApplied(se))) break;
                         // move 1 must have reverse
                         if (!move1->hasReverse()) {
-                           cout << "checkcommand: NSEnum independent check
-         expected reverse move... (deactivate with 'checkIndependent=false')" <<
-         endl; break;
+                           (*this->logdata) <<  "checkcommand: NSEnum
+         independent check expected reverse move... (deactivate with
+         'checkIndependent=false')" << endl; break;
                         }
 
                         // calculate cost for move 2
@@ -1494,16 +1549,17 @@ class CheckCommand : public Component {  // NOLINT
                         countMoveIndependentEnum++;
                         count_ind_m1++;
                         if (verbose) {
-                           cout << "independent(m1=" << m1 << ";m2=" << m2 <<
+                           (*this->logdata) <<  "independent(m1=" << m1 <<
+         ";m2=" << m2 <<
          ")" << endl; nsenum->indexMove(m1)->print(); // TODO: fix leak
                            nsenum->indexMove(m2)->print(); // TODO: fix leak
-                           cout << endl;
+                           (*this->logdata) <<  endl;
                         }
                      }
                   }
                }
-               cout << "checkcommand: found " << count_ind_m1 << " independent
-         move pairs." << endl;
+               (*this->logdata) <<  "checkcommand: found " << count_ind_m1 << "
+         independent move pairs." << endl;
             }
 
             //Aigor - Check if this counter is right - Any example was tested
@@ -1513,8 +1569,8 @@ class CheckCommand : public Component {  // NOLINT
          }
          */
       if (this->information)
-        cout << "checkcommand: " << lNSEnum.at(id_nsenum)->id() << " finished."
-             << endl;
+        (*this->logdata) << "checkcommand: " << lNSEnum.at(id_nsenum)->id()
+                         << " finished." << endl;
     }
     return true;
   }
@@ -1530,9 +1586,10 @@ class CheckCommand : public Component {  // NOLINT
 
     if (lNS.size() > 0)
       if (this->information)
-        cout << "checkcommand  will test " << lNS.size()
-             << " NS random components (nSolNSSeq=" << nSolNSSeq
-             << " of numSolutions=" << solutions.size() << ")" << endl;
+        (*this->logdata) << "checkcommand  will test " << lNS.size()
+                         << " NS random components (nSolNSSeq=" << nSolNSSeq
+                         << " of numSolutions=" << solutions.size() << ")"
+                         << endl;
 
     //
     // NS
@@ -1541,28 +1598,29 @@ class CheckCommand : public Component {  // NOLINT
     for (unsigned id_ns = 0; id_ns < lNS.size(); id_ns++) {
       std::shared_ptr<NS<XES, XEv>> ns = lNS.at(id_ns);
       if (this->information) {
-        cout << "checkcommand: testing NS " << id_ns << " => "
-             << ns->toString();
-        cout << endl;
+        (*this->logdata) << "checkcommand: testing NS " << id_ns << " => "
+                         << ns->toString();
+        (*this->logdata) << endl;
       }
       if (!ns->isSolutionIndependent()) {
         if (this->information) {
-          cout << "checkcommand: ignoring NS " << id_ns
-               << " isSolutionIndependent() returns FALSE -> "
-               << ns->toString();
-          cout << endl;
+          (*this->logdata) << "checkcommand: ignoring NS " << id_ns
+                           << " isSolutionIndependent() returns FALSE -> "
+                           << ns->toString();
+          (*this->logdata) << endl;
         }
         continue;
       }
 
       if (paramCheckIndependent) {
         if (this->information)
-          cout << "checkcommand: will try to identify RANDOM independent moves "
-                  "from '"
-               << ns->id()
-               << "' (can take some time... deactivate with "
-                  "'paramCheckIndependent=false')"
-               << endl;
+          (*this->logdata)
+              << "checkcommand: will try to identify RANDOM independent moves "
+                 "from '"
+              << ns->id()
+              << "' (can take some time... deactivate with "
+                 "'paramCheckIndependent=false')"
+              << endl;
         // indicate possible independent moves
 
         // adopting Evaluator 0...
@@ -1588,8 +1646,9 @@ class CheckCommand : public Component {  // NOLINT
         XES se = make_pair(s, XEv());
         //
         if (this->information)
-          std::cout << "checkcommand: randomizing " << nSolNSSeq * nSolNSSeq
-                    << " random moves" << std::endl;
+          (*this->logdata) << "checkcommand: randomizing "
+                           << nSolNSSeq * nSolNSSeq << " random moves"
+                           << std::endl;
         //
 
         // uptr<NSIterator<XES, XEv>> it = nsseq->getIterator(se);
@@ -1605,8 +1664,9 @@ class CheckCommand : public Component {  // NOLINT
         for (int m1 = 0; m1 < (int)allMoves.size(); m1++) {
           // slow...
           if (this->information)
-            cout << "checkcommand: independence test for RANDOM move #" << m1
-                 << " / " << allMoves.size() << endl;
+            (*this->logdata)
+                << "checkcommand: independence test for RANDOM move #" << m1
+                << " / " << allMoves.size() << endl;
           int count_ind_m1 = 0;
           for (int m2 = m1 + 1; m2 < int(allMoves.size()); m2++) {
             bool conflict = false;
@@ -1629,10 +1689,11 @@ class CheckCommand : public Component {  // NOLINT
                 // move 1 must have reverse
                 if (!move1->hasReverse()) {
                   if (this->information)
-                    cout << "checkcommand: NS independent RANDOM check "
-                            "expected reverse move... (deactivate with "
-                            "'checkIndependent=false')"
-                         << endl;
+                    (*this->logdata)
+                        << "checkcommand: NS independent RANDOM check "
+                           "expected reverse move... (deactivate with "
+                           "'checkIndependent=false')"
+                        << endl;
                   break;
                 }
 
@@ -1678,11 +1739,11 @@ class CheckCommand : public Component {  // NOLINT
                 countMoveIndependent++;
                 count_ind_m1++;
                 if (verbose) {
-                  cout << "RANDOM independent(m1=" << m1 << ";m2=" << m2 << ")"
-                       << endl;
+                  (*this->logdata) << "RANDOM independent(m1=" << m1
+                                   << ";m2=" << m2 << ")" << endl;
                   allMoves.at(m1)->print();  // TODO: fix leak
                   allMoves.at(m2)->print();  // TODO: fix leak
-                  cout << endl;
+                  (*this->logdata) << endl;
                 }
               }  // if (!conflict)
 
@@ -1705,19 +1766,21 @@ class CheckCommand : public Component {  // NOLINT
             }    // first if !conflict
           }      // for every move
           if (this->information)
-            cout << "checkcommand: found " << count_ind_m1
-                 << " independent move pairs." << endl;
+            (*this->logdata) << "checkcommand: found " << count_ind_m1
+                             << " independent move pairs." << endl;
         }
 
         if (this->information) {
-          std::cout << "checkcommand: RANDOM independent short summary {";
-          std::cout << "countMovePairs=" << countMovePairs
-                    << " countMoveIndependent=" << countMoveIndependent << "}"
-                    << std::endl;
-          std::cout << "checkcommand: RANDOM TP=" << countTPMoveIndependent
-                    << " TN=" << countTNMoveIndependent;
-          std::cout << " FP=" << countFPMoveIndependent
-                    << " FN=" << countFNMoveIndependent << std::endl;
+          (*this->logdata)
+              << "checkcommand: RANDOM independent short summary {";
+          (*this->logdata) << "countMovePairs=" << countMovePairs
+                           << " countMoveIndependent=" << countMoveIndependent
+                           << "}" << std::endl;
+          (*this->logdata) << "checkcommand: RANDOM TP="
+                           << countTPMoveIndependent
+                           << " TN=" << countTNMoveIndependent;
+          (*this->logdata) << " FP=" << countFPMoveIndependent
+                           << " FN=" << countFNMoveIndependent << std::endl;
         }
         double accuracy =
             ((double)countTPMoveIndependent + countTNMoveIndependent) /
@@ -1735,9 +1798,9 @@ class CheckCommand : public Component {  // NOLINT
                 << std::endl;
         }
         if (this->information)
-          std::cout << "checkcommand: RANDOM indep: accuracy=" << accuracy
-                    << " precision=" << precision << " recall=" << recall
-                    << std::endl;
+          (*this->logdata) << "checkcommand: RANDOM indep: accuracy="
+                           << accuracy << " precision=" << precision
+                           << " recall=" << recall << std::endl;
 
         /*
             //Aigor - Check if this counter is right - Any example was tested
@@ -1764,10 +1827,11 @@ class CheckCommand : public Component {  // NOLINT
 
     if (lNSSeq.size() > 0)
       if (this->information)
-        cout << "checkcommand  will test " << lNSSeq.size()
-             << " NSSeq (and NSEnum) iterator-based components (nSolNSSeq="
-             << nSolNSSeq << " of numSolutions=" << solutions.size() << ")"
-             << endl;
+        (*this->logdata)
+            << "checkcommand  will test " << lNSSeq.size()
+            << " NSSeq (and NSEnum) iterator-based components (nSolNSSeq="
+            << nSolNSSeq << " of numSolutions=" << solutions.size() << ")"
+            << endl;
 
     vector<vector<int>>& vCountIndependentSamples =
         countData.vCountIndependentSamples;
@@ -1786,27 +1850,29 @@ class CheckCommand : public Component {  // NOLINT
     for (unsigned id_nsseq = 0; id_nsseq < lNSSeq.size(); id_nsseq++) {
       std::shared_ptr<NSSeq<XES, XEv>> nsseq = lNSSeq.at(id_nsseq);
       if (this->information) {
-        cout << "checkcommand: testing NSSeq " << id_nsseq << " => "
-             << nsseq->toString();
-        cout << endl;
+        (*this->logdata) << "checkcommand: testing NSSeq " << id_nsseq << " => "
+                         << nsseq->toString();
+        (*this->logdata) << endl;
       }
       if (!nsseq->isSolutionIndependent()) {
         if (this->information) {
-          cout << "checkcommand: WARNING ignoring NSSeq " << id_nsseq
-               << " isSolutionIndependent() returns FALSE -> "
-               << nsseq->toString();
-          cout << endl;
+          (*this->logdata) << "checkcommand: WARNING ignoring NSSeq "
+                           << id_nsseq
+                           << " isSolutionIndependent() returns FALSE -> "
+                           << nsseq->toString();
+          (*this->logdata) << endl;
         }
         continue;
       }
 
       if (paramCheckIndependent) {
         if (this->information)
-          cout << "checkcommand: will try to identify independent moves from '"
-               << nsseq->id()
-               << "' (can take some time... deactivate with "
-                  "'paramCheckIndependent=false')"
-               << endl;
+          (*this->logdata)
+              << "checkcommand: will try to identify independent moves from '"
+              << nsseq->id()
+              << "' (can take some time... deactivate with "
+                 "'paramCheckIndependent=false')"
+              << endl;
         // indicate possible independent moves
 
         // adopting Evaluator 0...
@@ -1846,8 +1912,8 @@ class CheckCommand : public Component {  // NOLINT
         for (int m1 = 0; m1 < (int)allMoves.size(); m1++) {
           // slow...
           if (this->information)
-            cout << "checkcommand: independence test for move #" << m1 << " / "
-                 << allMoves.size() << endl;
+            (*this->logdata) << "checkcommand: independence test for move #"
+                             << m1 << " / " << allMoves.size() << endl;
           int count_ind_m1 = 0;
           for (int m2 = m1 + 1; m2 < int(allMoves.size()); m2++) {
             bool conflict = false;
@@ -1870,10 +1936,11 @@ class CheckCommand : public Component {  // NOLINT
                 // move 1 must have reverse
                 if (!move1->hasReverse()) {
                   if (this->information)
-                    cout << "checkcommand: NSSeq independent check expected "
-                            "reverse move... (deactivate with "
-                            "'checkIndependent=false')"
-                         << endl;
+                    (*this->logdata)
+                        << "checkcommand: NSSeq independent check expected "
+                           "reverse move... (deactivate with "
+                           "'checkIndependent=false')"
+                        << endl;
                   break;
                 }
 
@@ -1919,11 +1986,11 @@ class CheckCommand : public Component {  // NOLINT
                 countMoveIndependent++;
                 count_ind_m1++;
                 if (verbose) {
-                  cout << "independent(m1=" << m1 << ";m2=" << m2 << ")"
-                       << endl;
+                  (*this->logdata)
+                      << "independent(m1=" << m1 << ";m2=" << m2 << ")" << endl;
                   allMoves.at(m1)->print();  // TODO: fix leak
                   allMoves.at(m2)->print();  // TODO: fix leak
-                  cout << endl;
+                  (*this->logdata) << endl;
                 }
               }  // if (!conflict)
 
@@ -1946,14 +2013,14 @@ class CheckCommand : public Component {  // NOLINT
             }    // first if !conflict
           }      // for every move
           if (this->information)
-            cout << "checkcommand: found " << count_ind_m1
-                 << " independent move pairs." << endl;
+            (*this->logdata) << "checkcommand: found " << count_ind_m1
+                             << " independent move pairs." << endl;
         }
         if (this->information) {
-          std::cout << "checkcommand: independent short summary {";
-          std::cout << "countMovePairs=" << countMovePairs
-                    << " countMoveIndependent=" << countMoveIndependent << "}"
-                    << std::endl;
+          (*this->logdata) << "checkcommand: independent short summary {";
+          (*this->logdata) << "countMovePairs=" << countMovePairs
+                           << " countMoveIndependent=" << countMoveIndependent
+                           << "}" << std::endl;
         }
         double accuracy =
             ((double)countTPMoveIndependent + countTNMoveIndependent) /
@@ -1964,9 +2031,9 @@ class CheckCommand : public Component {  // NOLINT
                         (countTPMoveIndependent + countFNMoveIndependent);
 
         if (this->information)
-          std::cout << "checkcommand: indep: accuracy=" << accuracy
-                    << " precision=" << precision << " recall=" << recall
-                    << std::endl;
+          (*this->logdata) << "checkcommand: indep: accuracy=" << accuracy
+                           << " precision=" << precision << " recall=" << recall
+                           << std::endl;
 
         // Aigor - Check if this counter is right - Any example was tested here
         vCountMovePairsSamples[id_nsseq].push_back(countMovePairs);
@@ -1984,17 +2051,17 @@ class CheckCommand : public Component {  // NOLINT
         allMoves.clear();
       }
       if (this->information)
-        cout << "checkcommand: " << lNSSeq.at(id_nsseq)->id() << " finished."
-             << endl;
+        (*this->logdata) << "checkcommand: " << lNSSeq.at(id_nsseq)->id()
+                         << " finished." << endl;
     }
     return true;
   }
 
   void doPrintSummary(const TimeDataCheckCommand& timeSamples,
                       const CountDataCheckCommand<XES>& countData) {
-    cout << "===============================" << endl;
-    cout << "           SUMMARY             " << endl;
-    cout << "===============================" << endl << endl;
+    (*this->logdata) << "===============================" << endl;
+    (*this->logdata) << "           SUMMARY             " << endl;
+    (*this->logdata) << "===============================" << endl << endl;
 
     printSingleSummarySamples("Solution", timeSamples.timeCloneSolution,
                               "Time to clone a solution");
@@ -2010,7 +2077,7 @@ class CheckCommand : public Component {  // NOLINT
                           "ADSManager::initializeADS()",
                           "testing lazy initializeADS in solutions");
     else
-      cout << endl << "No ADSManager was tested." << endl << endl;
+      (*this->logdata) << endl << "No ADSManager was tested." << endl << endl;
 #endif
 
     printSummarySamples(convertVector(lEvaluator), timeSamples.fullTimeEval,
@@ -2105,8 +2172,8 @@ class CheckCommand : public Component {  // NOLINT
       adsMan = lADSManagerComp[0];
 
       if (lADSManagerComp.size() > 1)
-        cout << " checkcommand warning: more than 1 ADSManager ("
-             << lADSManagerComp.size() << ")" << endl;
+        (*this->logdata) << " checkcommand warning: more than 1 ADSManager ("
+                         << lADSManagerComp.size() << ")" << endl;
     }
 #endif
 
@@ -2153,7 +2220,8 @@ class CheckCommand : public Component {  // NOLINT
     // allData.countData = countData;
     // allData.solData = solData;
     if (this->information)
-      std::cout << "checkcommand: tests finished successfully!" << std::endl;
+      (*this->logdata) << "checkcommand: tests finished successfully!"
+                       << std::endl;
     return allData;
   }
 
@@ -2167,8 +2235,8 @@ class CheckCommand : public Component {  // NOLINT
       factory.assign(type, scan.nextInt(), scan.next());  // reversed!
 
       if (!type) {
-        cout << "checkcommand  warning: nullptr component " << lComponents[i]
-             << "!" << endl;
+        (*this->logdata) << "checkcommand  warning: nullptr component "
+                         << lComponents[i] << "!" << endl;
       } else
         vComp.push_back(type);
     }
@@ -2190,7 +2258,8 @@ class CheckCommand : public Component {  // NOLINT
       const vector<vector<int>>& vMoveSamples, string type, string title) {
     unsigned nComponents = vMoveSamples.size();
     printf("---------------------------------\n");
-    cout << "|" << type << "|=" << nComponents << "\t" << title << endl;
+    (*this->logdata) << "|" << type << "|=" << nComponents << "\t" << title
+                     << endl;
     printf("---------------------------------\n");
     printf("#id\ttitle\t#tests\ttotal\tavg\tstd \n");
     double avg = 0;
@@ -2216,14 +2285,14 @@ class CheckCommand : public Component {  // NOLINT
     }
     printf("---------------------------------\n");
     printf("all\t*\t-\t%.4f\t-\n", (avg / validValues));
-    cout << endl;
+    (*this->logdata) << endl;
   }
 
   void printSingleSummarySamples(string component,
                                  const vector<double> vTimeSamples,
                                  string title) {
     printf("---------------------------------\n");
-    cout << component << "\t" << title << endl;
+    (*this->logdata) << component << "\t" << title << endl;
     printf("---------------------------------\n");
     printf("title\t#tests\tavg(ms)\tstd(ms)\n");
     double avg = 0;
@@ -2239,7 +2308,7 @@ class CheckCommand : public Component {  // NOLINT
       printf("%s\t%d\tUNTESTED OR UNIMPLEMENTED\n", component.c_str(), 0);
     printf("---------------------------------\n");
     printf("all\t-\t%.4f\t-\n", (avg / validValues));
-    cout << endl;
+    (*this->logdata) << endl;
   }
 
   void printSummarySamples(const vector<std::shared_ptr<Component>>& vcomp,
@@ -2247,7 +2316,7 @@ class CheckCommand : public Component {  // NOLINT
                            string type, string title) {
     unsigned nTests = vTimeSamples.size();
     printf("---------------------------------\n");
-    cout << "|" << type << "|=" << nTests << "\t" << title << endl;
+    (*this->logdata) << "|" << type << "|=" << nTests << "\t" << title << endl;
     printf("---------------------------------\n");
     printf("#id\ttitle\t#tests\tavg(ms)\tstd(ms)\n");
     double avg = 0;
@@ -2267,11 +2336,10 @@ class CheckCommand : public Component {  // NOLINT
     }
     printf("---------------------------------\n");
     printf("all\t*\t-\t%.4f\t-\n", (avg / validValues));
-    cout << endl;
+    (*this->logdata) << endl;
   }
-
-  std::string toString() const override { return "CheckCommand"; }
 };
+
 }  // namespace optframe
 
-#endif  // OPTFRAME_UTIL_CHECKCOMMAND_HPP_
+#endif  // OPTFRAME_UTIL_CHECKCOMMAND_HPP_ // NOLINT
