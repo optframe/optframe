@@ -1,30 +1,13 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_BASICILS_HPP_
-#define OPTFRAME_BASICILS_HPP_
+#ifndef OPTFRAME_HEURISTICS_ILS_BASICITERATEDLOCALSEARCH_HPP_
+#define OPTFRAME_HEURISTICS_ILS_BASICITERATEDLOCALSEARCH_HPP_
 
 #include <math.h>
 
+#include <string>
+#include <utility>
 #include <vector>
 
 #include "../../LocalSearch.hpp"
@@ -37,33 +20,39 @@ namespace optframe {
 typedef int BasicHistory;
 
 template <XESolution XES, XEvaluation XEv = Evaluation<>>
-class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES, XEv> {
+class BasicIteratedLocalSearch
+    : public IteratedLocalSearch<BasicHistory, XES, XEv> {
  protected:
   sref<LocalSearch<XES, XEv>> ls;
   sref<BasicILSPerturbation<XES, XEv>> p;
   int iterMax;
 
  public:
-  //BasicIteratedLocalSearch(Evaluator<XES, XEv>& e, Constructive<S>& constructive, LocalSearch<XES, XEv>& _ls, BasicILSPerturbation<S, XEv>& _p, int _iterMax) :
-  BasicIteratedLocalSearch(sref<GeneralEvaluator<XES, XEv>> e, sref<InitialSearch<XES>> constructive, sref<LocalSearch<XES, XEv>> _ls, sref<BasicILSPerturbation<XES, XEv>> _p, int _iterMax)
-      : IteratedLocalSearch<BasicHistory, XES, XEv>(e, constructive), ls(_ls), p(_p), iterMax(_iterMax) {
-  }
+  BasicIteratedLocalSearch(sref<GeneralEvaluator<XES, XEv>> e,
+                           sref<InitialSearch<XES>> constructive,
+                           sref<LocalSearch<XES, XEv>> _ls,
+                           sref<BasicILSPerturbation<XES, XEv>> _p,
+                           int _iterMax)
+      : IteratedLocalSearch<BasicHistory, XES, XEv>(e, constructive),
+        ls(_ls),
+        p(_p),
+        iterMax(_iterMax) {}
 
-  virtual ~BasicIteratedLocalSearch() {
-  }
+  virtual ~BasicIteratedLocalSearch() {}
 
-  virtual sref<BasicHistory> initializeHistory() override {
+  sref<BasicHistory> initializeHistory() override {
     sref<int> iter = new int;
     iter = 0;
 
     return iter;
   }
 
-  virtual void localSearch(XES& se, const StopCriteria<XEv>& sosc) override {
+  void localSearch(XES& se, const StopCriteria<XEv>& sosc) override {
     ls->searchFrom(se, sosc);
   }
 
-  virtual void perturbation(XES& se, const StopCriteria<XEv>& sosc, sref<BasicHistory> history) override {
+  void perturbation(XES& se, const StopCriteria<XEv>& sosc,
+                    sref<BasicHistory> history) override {
     int iter = history;
 
     p->perturb(se, sosc);
@@ -75,10 +64,10 @@ class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES, X
     history = iter;
   }
 
-  virtual bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2, sref<BasicHistory> history) override {
-    //if (IteratedLocalSearch<BasicHistory, XES, XEv>::evaluator.betterThan(e1, e2))
-    //if (e1.betterStrict(e2))
-    if (IteratedLocalSearch<BasicHistory, XES, XEv>::evaluator->betterStrict(e1, e2)) {
+  bool acceptanceCriterion(const Evaluation<>& e1, const Evaluation<>& e2,
+                           sref<BasicHistory> history) override {
+    if (IteratedLocalSearch<BasicHistory, XES, XEv>::evaluator->betterStrict(
+            e1, e2)) {
       // =======================
       //   Melhor solucao: 's2'
       // =======================
@@ -95,11 +84,12 @@ class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES, X
       //    Retorna s2
       // =======================
       return true;
-    } else
+    } else {
       return false;
+    }
   }
 
-  virtual bool terminationCondition(sref<BasicHistory> history) override {
+  bool terminationCondition(sref<BasicHistory> history) override {
     int iter = history;
 
     return (iter >= iterMax);
@@ -109,32 +99,37 @@ class BasicIteratedLocalSearch : public IteratedLocalSearch<BasicHistory, XES, X
     return (s == idComponent()) || (SingleObjSearch<XES>::compatible(s));
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   static string idComponent() {
     stringstream ss;
-    ss << IteratedLocalSearch<BasicHistory, XES, XEv>::idComponent() << "BasicILS";
+    ss << IteratedLocalSearch<BasicHistory, XES, XEv>::idComponent()
+       << "BasicILS";
     return ss.str();
   }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
-class BasicIteratedLocalSearchBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, XES> {
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
+class BasicIteratedLocalSearchBuilder
+    : public ILS,
+      public SingleObjSearchBuilder<S, XEv, XES> {
  public:
-  virtual ~BasicIteratedLocalSearchBuilder() {
-  }
+  ~BasicIteratedLocalSearchBuilder() override = default;
 
   SingleObjSearch<XES>* build(Scanner& scanner,
                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
                               string family = "") override {
     sptr<GeneralEvaluator<XES, XEv>> eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assign(eval, id1, comp_id1);
 
-    //Constructive<S>* constructive;
     sptr<InitialSearch<XES>> constructive;
-    hf.assign(constructive, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id2 = scanner.next();
+    int id2 = *scanner.nextInt();
+    hf.assign(constructive, id2, comp_id2);
 
     string rest = scanner.rest();
 
@@ -146,21 +141,29 @@ class BasicIteratedLocalSearchBuilder : public ILS, public SingleObjSearchBuilde
     scanner = Scanner(method.second);
 
     sptr<BasicILSPerturbation<XES, XEv>> pert;
-    hf.assign(pert, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id3 = scanner.next();
+    int id3 = *scanner.nextInt();
+    hf.assign(pert, id3, comp_id3);
 
     int iterMax = *scanner.nextInt();
 
-    return new BasicIteratedLocalSearch<XES, XEv>(eval, constructive, h, pert, iterMax);
+    // NOLINTNEXTLINE
+    return new BasicIteratedLocalSearch<XES, XEv>(eval, constructive, h, pert,
+                                                  iterMax);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
-    //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-    params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
-    params.push_back(make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
-    params.push_back(make_pair(BasicILSPerturbation<XES, XEv>::idComponent(), "ils perturbation"));
-    params.push_back(make_pair("OptFrame:int", "max number of iterations without improvement"));
+    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
+                               "evaluation function"));
+    params.push_back(
+        make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
+    params.push_back(
+        make_pair(LocalSearch<XES, XEv>::idComponent(), "local search"));
+    params.push_back(make_pair(BasicILSPerturbation<XES, XEv>::idComponent(),
+                               "ils perturbation"));
+    params.push_back(make_pair("OptFrame:int",
+                               "max number of iterations without improvement"));
 
     return params;
   }
@@ -171,15 +174,14 @@ class BasicIteratedLocalSearchBuilder : public ILS, public SingleObjSearchBuilde
 
   static string idComponent() {
     stringstream ss;
-    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << ":" << ILS::family() << "BasicILS";
+    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << ":" << ILS::family()
+       << "BasicILS";
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_BASICILS_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_ILS_BASICITERATEDLOCALSEARCH_HPP_

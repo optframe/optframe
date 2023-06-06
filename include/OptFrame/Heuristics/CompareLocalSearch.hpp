@@ -1,27 +1,13 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_COMPARE_LOCAL_SEARCH_HPP_
-#define OPTFRAME_COMPARE_LOCAL_SEARCH_HPP_
+#ifndef OPTFRAME_HEURISTICS_COMPARELOCALSEARCH_HPP_
+#define OPTFRAME_HEURISTICS_COMPARELOCALSEARCH_HPP_
+
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "../Evaluation.hpp"
 #include "../Evaluator.hpp"
@@ -52,8 +38,7 @@ class CompareLocalSearch : public LocalSearch<XES, XEv> {
   //	exec(s, e, stopCriteria);
   //}
 
-  virtual SearchStatus searchFrom(XES& se,
-                                  const StopCriteria<XEv>& sosc) override {
+  SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& sosc) override {
     // S& s = se.first;
     XEv& e = se.second;
 
@@ -92,7 +77,7 @@ class CompareLocalSearch : public LocalSearch<XES, XEv> {
 
   std::string id() const override { return idComponent(); }
 
-  virtual string toString() const override {
+  string toString() const override {
     stringstream ss;
     ss << "CLS: (" << ls1->toString() << "," << ls2->toString() << ")";
     return ss.str();
@@ -110,7 +95,9 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
                                HeuristicFactory<S, XEv, XES, X2ES>& hf,
                                string family = "") override {
     std::shared_ptr<Evaluator<XES, XEv>> eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assign(eval, id1, comp_id1);
 
     string rest = scanner.rest();
 
@@ -130,6 +117,7 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
     scanner = Scanner(method2.second);
 
+    // NOLINTNEXTLINE
     return new CompareLocalSearch<XES, XEv>(eval, h, h2);
   }
 
@@ -145,8 +133,8 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     return params;
   }
 
-  virtual bool canBuild(string component) override {
-    return component == FirstImprovement<XES, XEv>::idComponent();
+  bool canBuild(string component) override {
+    return component == CompareLocalSearch<XES, XEv>::idComponent();
   }
 
   static string idComponent() {
@@ -162,4 +150,4 @@ class CompareLocalSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_COMPARE_LOCAL_SEARCH_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_COMPARELOCALSEARCH_HPP_

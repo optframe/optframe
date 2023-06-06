@@ -1,27 +1,8 @@
-// OptFrame 4 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_MIRS_HPP_
-#define OPTFRAME_MIRS_HPP_
+#ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_MULTIRANDOMSELECTION_HPP_
+#define OPTFRAME_HEURISTICS_LOCALSEARCHES_MULTIRANDOMSELECTION_HPP_
 
 // ==============================================================================================
 // This is a Multi Improvement (MI) implementation
@@ -48,6 +29,10 @@
 // Exact dynamic programming approach in 2020 by Silva et al
 // "Finding the Maximum Multi Improvement on neighborhood exploration"
 // ==============================================================================================
+
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "../../Evaluator.hpp"
 #include "../../LocalSearch.hpp"
@@ -211,13 +196,13 @@ class MultiRandomSelection : public LocalSearch<XES, XEv> {
 
   static string idComponent() {
     stringstream ss;
-    ss << LocalSearch<XES, XEv>::idComponent() << "MI";
+    ss << LocalSearch<XES, XEv>::idComponent() << ":MIRS";
     return ss.str();
   }
 
   std::string id() const override { return idComponent(); }
 
-  virtual string toString() const override {
+  string toString() const override {
     stringstream ss;
     ss << "MIRS: " << ns->toString();
     return ss.str();
@@ -231,19 +216,27 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
 class MultiRandomSelectionBuilder
     : public LocalSearchBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~MultiRandomSelectionBuilder() {}
+  virtual ~MultiRandomSelectionBuilder() = default;
 
+  // NOLINTNEXTLINE
   LocalSearch<XES, XEv>* build(Scanner& scanner,
                                HeuristicFactory<S, XEv, XES, X2ES>& hf,
                                string family = "") override {
     if (!scanner.hasNext()) return nullptr;
+
     sptr<GeneralEvaluator<XES, XEv>> eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assign(eval, id1, comp_id1);
 
     if (!scanner.hasNext()) return nullptr;
-    sptr<NS<XES, XEv, XSH>> nsseq;
-    hf.assign(nsseq, *scanner.nextInt(), scanner.next());  // reads backwards!
 
+    sptr<NS<XES, XEv, XSH>> nsseq;
+    std::string comp_id2 = scanner.next();
+    int id2 = *scanner.nextInt();
+    hf.assign(nsseq, id2, comp_id2);
+
+    // NOLINTNEXTLINE
     return new MultiRandomSelection<XES, XEv, XSH>(eval, nsseq);
   }
 
@@ -272,4 +265,4 @@ class MultiRandomSelectionBuilder
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_MIRS_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_LOCALSEARCHES_MULTIRANDOMSELECTION_HPP_

@@ -31,29 +31,27 @@ namespace optframe {
 
 template <XSolution S>
 class CloneConstructive : public Constructive<S> {
-  //sptr<S> base;
+  // sptr<S> base;
   S base;
 
  public:
   CloneConstructive(S _base)  //(sptr<S> _base)
-      : base{_base}           //base(&_base->clone())
-  {
-  }
+      : base{_base}           // base(&_base->clone())
+  {}
 
   CloneConstructive(const S& _base)
       : base{_base}  //(&_base.clone())
   {}
 
   virtual ~CloneConstructive() {
-    //delete &base;
+    // delete &base;
   }
 
   virtual std::optional<S> generateSolution(double timelimit) override {
     /*
       S& s = base->clone();
-      std::optional<S> retS(s); // TODO: what happens here? can we move at least??
-      S sc = s;
-      delete &s;
+      std::optional<S> retS(s); // TODO: what happens here? can we move at
+      least?? S sc = s; delete &s;
       //return new S(sc);
       return retS;
       */
@@ -70,36 +68,29 @@ class CloneConstructive : public Constructive<S> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
 class CloneConstructiveBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~CloneConstructiveBuilder() {
-  }
+  virtual ~CloneConstructiveBuilder() {}
 
   Component* buildComponent(Scanner& scanner,
                             HeuristicFactory<S, XEv, XES, X2ES>& hf,
                             string family = "") override {
     std::cout << "CloneConstructive NOT AVAILABLE... TODO!" << std::endl;
     assert(false);
-    /*
-      sptr<S> s;
-      hf.assign(s, *scanner.nextInt(), scanner.next()); // reads backwards!
-
-      return new CloneConstructive<S>(s);
-      */
     return nullptr;
   }
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    //assert(false);
+    // assert(false);
     //
-    //params.push_back(make_pair(S::idComponent(), "solution"));
+    // params.push_back(make_pair(S::idComponent(), "solution"));
     params.push_back(make_pair("NO_TYPE", "solution"));
     //
 
@@ -112,17 +103,14 @@ class CloneConstructiveBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
 
   static string idComponent() {
     stringstream ss;
-    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent() << "CloneConstructive";
+    ss << ComponentBuilder<S, XEv, XES, X2ES>::idComponent()
+       << "CloneConstructive";
     return ss.str();
   }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 }  // namespace optframe
 

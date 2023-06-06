@@ -1,27 +1,12 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_CS_HPP_
-#define OPTFRAME_CS_HPP_
+#ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_CIRCULARSEARCH_HPP_
+#define OPTFRAME_HEURISTICS_LOCALSEARCHES_CIRCULARSEARCH_HPP_
+
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "../../Evaluator.hpp"
 #include "../../LocalSearch.hpp"
@@ -38,27 +23,28 @@ class CircularSearch : public LocalSearch<XES, XEv> {
   int initial_w;
 
  public:
-  CircularSearch(sref<GeneralEvaluator<XES, XEv>> _eval, sref<NSEnum<XES, XEv>> _nsEnum)
+  CircularSearch(sref<GeneralEvaluator<XES, XEv>> _eval,
+                 sref<NSEnum<XES, XEv>> _nsEnum)
       : eval(_eval), ns(_nsEnum) {
     initial_w = 0;
   }
 
-  virtual ~CircularSearch() {
-  }
+  virtual ~CircularSearch() {}
 
   // DEPRECATED
-  //virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
+  // virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
   //{
   //	Evaluation<> e = std::move(ev.evaluate(s));
   //	exec(s, e, stopCriteria);
   //}
 
-  virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& sosc) override {
-    //XSolution& s = se.first;
-    //XEv& e = se.second;
+  virtual SearchStatus searchFrom(XES& se,
+                                  const StopCriteria<XEv>& sosc) override {
+    // XSolution& s = se.first;
+    // XEv& e = se.second;
 
-    //double timelimit = sosc.timelimit;
-    //double target_f = sosc.target_f;
+    // double timelimit = sosc.timelimit;
+    // double target_f = sosc.target_f;
     int Wmax = ns->size();
 
     int w = initial_w % Wmax;
@@ -66,21 +52,22 @@ class CircularSearch : public LocalSearch<XES, XEv> {
     do {
       uptr<Move<XES, XEv>> m = ns->indexMove(w);
 
-      //if (m->canBeApplied(s)) {
+      // if (m->canBeApplied(s)) {
       if (m->canBeApplied(se)) {
         bool mayEstimate = false;
-        ///MoveCost<>& cost = *eval->moveCost(m, se, mayEstimate);
+        /// MoveCost<>& cost = *eval->moveCost(m, se, mayEstimate);
         op<XEv> cost = eval->moveCost(*m, se, mayEstimate);
 
-        //if (eval->isImprovement(*cost)) {
-        //if (cost->isImprovingStrict()) {
+        // if (eval->isImprovement(*cost)) {
+        // if (cost->isImprovingStrict()) {
         if (eval->isStrictImprovement(*cost)) {
-          //double old_f = e.evaluation();
+          // double old_f = e.evaluation();
 
           m->applyUpdate(se);
           eval->reevaluate(se);  // updates 'e'
 
-          //cout << "CS improvement! w:" << w << " fo=" << e.evaluation() << " (antiga fo="<< old_f << ")" << endl << endl;
+          // cout << "CS improvement! w:" << w << " fo=" << e.evaluation() << "
+          // (antiga fo="<< old_f << ")" << endl << endl;
 
           initial_w = w + 1;
 
@@ -103,33 +90,40 @@ class CircularSearch : public LocalSearch<XES, XEv> {
     return ss.str();
   }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  string id() const override { return idComponent(); }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
 class CircularSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~CircularSearchBuilder() {
-  }
+  virtual ~CircularSearchBuilder() = default;
 
+  // NOLINTNEXTLINE
   LocalSearch<XES, XEv>* build(Scanner& scanner,
                                HeuristicFactory<S, XEv, XES, X2ES>& hf,
                                string family = "") override {
     sptr<GeneralEvaluator<XES, XEv>> eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assign(eval, id1, comp_id1);
 
     sptr<NSEnum<XES, XEv>> nsenum;
-    hf.assign(nsenum, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id2 = scanner.next();
+    int id2 = *scanner.nextInt();
+    hf.assign(nsenum, id2, comp_id2);
 
+    // NOLINTNEXTLINE
     return new CircularSearch<XES, XEv>(eval, nsenum);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
-    params.push_back(make_pair(NSEnum<XES, XEv>::idComponent(), "neighborhood structure"));
+    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
+                               "evaluation function"));
+    params.push_back(
+        make_pair(NSEnum<XES, XEv>::idComponent(), "neighborhood structure"));
 
     return params;
   }
@@ -144,14 +138,10 @@ class CircularSearchBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     return ss.str();
   }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  string id() const override { return idComponent(); }
 };
 }  // namespace optframe
 
-#endif /*OPTFRAME_CS_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_LOCALSEARCHES_CIRCULARSEARCH_HPP_

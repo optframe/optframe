@@ -1,25 +1,12 @@
-// OptFrame - Optimization Framework
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-// Copyright (C) 2009, 2010, 2011
-// http://optframe.sourceforge.net/
-//
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
+#ifndef OPTFRAME_HEURISTICS_GRASP_GRASP_HPP_
+#define OPTFRAME_HEURISTICS_GRASP_GRASP_HPP_
 
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
-
-#ifndef OPTFRAME_GRASP_HPP_
-#define OPTFRAME_GRASP_HPP_
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "../../LocalSearch.hpp"
 #include "../../SingleObjSearch.hpp"
@@ -37,15 +24,18 @@ class GRASP : public SingleObjSearch<XES> {
   unsigned int iterMax;
 
  public:
-  GRASP(Evaluator& _eval, InitialSearch<XES>& _constructive, LocalSearch<XES, XEv>& _ls, int _iterMax)
+  GRASP(Evaluator& _eval, InitialSearch<XES>& _constructive,
+        LocalSearch<XES, XEv>& _ls, int _iterMax)
       : evaluator(_eval), constructive(_constructive), ls(_ls) {
     iterMax = _iterMax;
   }
 
-  virtual ~GRASP() {
-  }
+  virtual ~GRASP() {}
 
-  pair<Solution<R, ADS>&, Evaluation<DS>&>* search(double timelimit = 100000000, double target_f = 0, const Solution<R, ADS>* _s = nullptr, const Evaluation<DS>* _e = nullptr) {
+  pair<Solution<R, ADS>&, Evaluation<DS>&>* search(
+      double timelimit = 100000000, double target_f = 0,
+      const Solution<R, ADS>* _s = nullptr,
+      const Evaluation<DS>* _e = nullptr) {
     long tini = time(nullptr);
 
     unsigned int iter = 0;
@@ -55,9 +45,9 @@ class GRASP : public SingleObjSearch<XES> {
     Solution<R, ADS>& s = constructive.generateSolution();
     Evaluation<>& e = evaluator.evaluate(s);
 
-    while ((iter < iterMax) && ((tnow - tini) < timelimit) && (evaluator.betterThan(target_f, e.evaluation()))) {
-      if (Component::verbose)
-        cout << "GRASP::iter=" << iter << endl;
+    while ((iter < iterMax) && ((tnow - tini) < timelimit) &&
+           (evaluator.betterThan(target_f, e.evaluation()))) {
+      if (Component::verbose) cout << "GRASP::iter=" << iter << endl;
 
       Solution<R, ADS>& s1 = constructive.generateSolution();
       Evaluation<DS>& e1 = evaluator.evaluate(s1);
@@ -83,29 +73,34 @@ class GRASP : public SingleObjSearch<XES> {
     return new pair<Solution<R, ADS>&, Evaluation<DS>&>(s, e);
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   static string idComponent() {
     stringstream ss;
-    ss << SingleObjSearch<R, ADS, DS>::idComponent() << GRASPH::family() << "GRASP";
+    ss << SingleObjSearch<R, ADS, DS>::idComponent() << GRASPH::family()
+       << "GRASP";
     return ss.str();
   }
 };
 
-template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
 class GRASPBuilder : public GRASPH, public SingleObjSearchBuilder<R, ADS, DS> {
  public:
-  virtual ~GRASPBuilder() {
-  }
+  virtual ~GRASPBuilder() {}
 
-  virtual SingleObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "") {
+  virtual SingleObjSearch<R, ADS, DS>* build(Scanner& scanner,
+                                             HeuristicFactory<R, ADS, DS>& hf,
+                                             string family = "") {
     Evaluator<R, ADS, DS>* eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assign(eval, id1, comp_id1);
 
     Constructive<S>* constructive;
-    hf.assign(constructive, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id2 = scanner.next();
+    int id2 = *scanner.nextInt();
+    hf.assign(constructive, id2, comp_id2);
 
     string rest = scanner.rest();
 
@@ -116,8 +111,7 @@ class GRASPBuilder : public GRASPH, public SingleObjSearchBuilder<R, ADS, DS> {
 
     scanner = Scanner(method.second);
 
-    if (!scanner.hasNext())
-      return nullptr;
+    if (!scanner.hasNext()) return nullptr;
 
     int iterMax = *scanner.nextInt();
 
@@ -126,10 +120,14 @@ class GRASPBuilder : public GRASPH, public SingleObjSearchBuilder<R, ADS, DS> {
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
-    //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-    params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
-    params.push_back(make_pair(LocalSearch<R, ADS, DS>::idComponent(), "local search"));
+    params.push_back(
+        make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
+    // params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
+    // heuristic"));
+    params.push_back(
+        make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
+    params.push_back(
+        make_pair(LocalSearch<R, ADS, DS>::idComponent(), "local search"));
     params.push_back(make_pair("int", "max number of iterations"));
 
     return params;
@@ -141,15 +139,14 @@ class GRASPBuilder : public GRASPH, public SingleObjSearchBuilder<R, ADS, DS> {
 
   static string idComponent() {
     stringstream ss;
-    ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << GRASPH::family() << "GRASP";
+    ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << GRASPH::family()
+       << "GRASP";
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_GRASP_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_GRASP_GRASP_HPP_

@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_HILLCLIMBING_HPP_
-#define OPTFRAME_HILLCLIMBING_HPP_
+#ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_HILLCLIMBING_HPP_
+#define OPTFRAME_HEURISTICS_LOCALSEARCHES_HILLCLIMBING_HPP_
+
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "../../Evaluator.hpp"
 #include "../../LocalSearch.hpp"
@@ -21,7 +25,7 @@ class HillClimbing : public LocalSearch<XES, XEv> {
                sref<LocalSearch<XES, XEv>> _ls)
       : evaluator(_ev), ls(_ls) {}
 
-  virtual ~HillClimbing() {}
+  virtual ~HillClimbing() = default;
 
   // DEPRECATED
   // virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
@@ -54,7 +58,7 @@ class HillClimbing : public LocalSearch<XES, XEv> {
     // while ((evaluator.betterThan(e, e0)) && ((tnow - tini) < timelimit))
     // while ((e.betterStrict(e0)) && ((tnow - tini) < timelimit))
     while ((evaluator->betterStrict(e, e0)) &&
-           !sosc.shouldStop(e)) {  //((tnow - tini) < timelimit)) {
+           !sosc.shouldStop(e)) {  // ((tnow - tini) < timelimit)) {
       // delete e0;
       // e0 = &e.clone();
 
@@ -93,13 +97,16 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
 class HillClimbingBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~HillClimbingBuilder() {}
+  virtual ~HillClimbingBuilder() = default;
 
+  // NOLINTNEXTLINE
   LocalSearch<XES, XEv>* build(Scanner& scanner,
                                HeuristicFactory<S, XEv, XES, X2ES>& hf,
                                string family = "") override {
     sptr<GeneralEvaluator<XES, XEv>> eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assign(eval, id1, comp_id1);
 
     string rest = scanner.rest();
 
@@ -110,6 +117,7 @@ class HillClimbingBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
     scanner = Scanner(method.second);
 
+    // NOLINTNEXTLINE
     return new HillClimbing<XES, XEv>(eval, h);
   }
 
@@ -135,8 +143,9 @@ class HillClimbingBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
 
   std::string toString() const override { return id(); }
 
-  virtual string id() const override { return idComponent(); }
+  string id() const override { return idComponent(); }
 };
+
 }  // namespace optframe
 
-#endif /*OPTFRAME_HILLCLIMBING_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_LOCALSEARCHES_HILLCLIMBING_HPP_

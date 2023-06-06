@@ -1,30 +1,13 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_FIRST_IMPROVING_NEIGHBOR_HPP_
-#define OPTFRAME_FIRST_IMPROVING_NEIGHBOR_HPP_
+#ifndef OPTFRAME_HEURISTICS_NSEARCH_FIRSTIMPROVINGNEIGHBOR_HPP_
+#define OPTFRAME_HEURISTICS_NSEARCH_FIRSTIMPROVINGNEIGHBOR_HPP_
 
 // C++
 #include <string>
+#include <utility>
+#include <vector>
 //
 #include "../../Evaluator.hpp"
 #include "../../Experimental/NeighborhoodExploration.hpp"
@@ -44,9 +27,9 @@ class FirstImprovingNeighbor : public NeighborhoodExploration<XES, XEv> {
                          NSSeq<XES, XEv, XSH>& _nsSeq)
       : eval(_eval), nsSeq(_nsSeq) {}
 
-  virtual ~FirstImprovingNeighbor() {}
+  virtual ~FirstImprovingNeighbor() = default;
 
-  virtual op<RichMove<XES, XEv>> searchMove(
+  op<RichMove<XES, XEv>> searchMove(
       const XES& se, const StopCriteria<XEv>& stopCriteria) override {
     // gets valid iterator
     uptr<NSIterator<XES, XEv>> it = nsSeq.getIterator(se);
@@ -160,17 +143,24 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
 class FirstImprovingNeighborBuilder
     : public NeighborhoodExplorationBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~FirstImprovingNeighborBuilder() {}
+  virtual ~FirstImprovingNeighborBuilder() = default;
 
-  virtual NeighborhoodExploration<XES, XEv>* build(
+  // NOLINTNEXTLINE
+  NeighborhoodExploration<XES, XEv>* build(
       Scanner& scanner, HeuristicFactory<S, XEv, XES, X2ES>& hf,
-      string family = "") {
+      string family = "") override {
+    //
     GeneralEvaluator<XES, XEv>* eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assign(eval, id1, comp_id1);
 
     NSSeq<XES, XEv, XSH>* nsseq;
-    hf.assign(nsseq, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id2 = scanner.next();
+    int id2 = *scanner.nextInt();
+    hf.assign(nsseq, id2, comp_id2);
 
+    // NOLINTNEXTLINE
     return new FirstImprovingNeighbor<XES, XEv, XSH>(*eval, *nsseq);
   }
 
@@ -200,4 +190,4 @@ class FirstImprovingNeighborBuilder
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_FIRST_IMPROVING_NEIGHBOR_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_NSEARCH_FIRSTIMPROVINGNEIGHBOR_HPP_

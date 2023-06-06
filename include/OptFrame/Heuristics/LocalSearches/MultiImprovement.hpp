@@ -1,44 +1,32 @@
-// OptFrame 4 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_MI_HPP_
-#define OPTFRAME_MI_HPP_
+#ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_MULTIIMPROVEMENT_HPP_
+#define OPTFRAME_HEURISTICS_LOCALSEARCHES_MULTIIMPROVEMENT_HPP_
 
 // =====================================================================================================
 // This is a Multi Improvement (MI) implementation
 //
-// The MI method was officially presented in 2016 by I.M. Coelho (Best Paper Award - WAMCA/Los Angeles)
-// "A Benchmark on Multi Improvement Neighborhood Search Strategies in CPU/GPU Systems"
-// Authors: Eyder Rios; Igor M. Coelho; Luiz Satoru Ochi; Cristina Boeres; Ricardo Farias
+// The MI method was officially presented in 2016 by I.M. Coelho (Best Paper
+// Award - WAMCA/Los Angeles) "A Benchmark on Multi Improvement Neighborhood
+// Search Strategies in CPU/GPU Systems" Authors: Eyder Rios; Igor M. Coelho;
+// Luiz Satoru Ochi; Cristina Boeres; Ricardo Farias
 //
 // Dataflow extension in 2018 by Araujo et al
-// "A DVND Local Search Implemented on a Dataflow Architecture for the Minimum Latency Problem"
+// "A DVND Local Search Implemented on a Dataflow Architecture for the Minimum
+// Latency Problem"
 //
 // Parallel GPU Data Flow extension in 2020 by Araujo et al
-// "A multi-improvement local search using dataflow and GPU to solve the minimum latency problem"
+// "A multi-improvement local search using dataflow and GPU to solve the minimum
+// latency problem"
 //
 // Exact dynamic programming approach in 2020 by Silva et al
 // "Finding the Maximum Multi Improvement on neighborhood exploration"
 // ======================================================================================================
+
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "../../Evaluator.hpp"
 #include "../../LocalSearch.hpp"
@@ -60,21 +48,21 @@ class MultiImprovement : public LocalSearch<XES, XEv> {
  public:
   std::function<void(std::vector<std::pair<XEv, int>>&)> sorter{
       [this](std::vector<std::pair<XEv, int>>& v) -> void {
-        std::sort(
-            v.begin(),
-            v.end(),
-            [this](const std::pair<XEv, int>& e1, const std::pair<XEv, int>& e2) -> bool {
-              return this->eval->betterStrict(e1.first, e2.first);
-            });
+        std::sort(v.begin(), v.end(),
+                  [this](const std::pair<XEv, int>& e1,
+                         const std::pair<XEv, int>& e2) -> bool {
+                    return this->eval->betterStrict(e1.first, e2.first);
+                  });
       }};
 
  public:
   //
-  MultiImprovement(
-      sref<GeneralEvaluator<XES, XEv>> _eval,
-      sref<NSSeq<XES, XEv, XSH>> _nsSeq,
-      XEv _stopCost)
-      : eval{_eval}, nsSeq{_nsSeq}, stopCost{_stopCost}  // stopCost is typically 0 (or 0.0), for Sing.Obj.Problems
+  MultiImprovement(sref<GeneralEvaluator<XES, XEv>> _eval,
+                   sref<NSSeq<XES, XEv, XSH>> _nsSeq, XEv _stopCost)
+      : eval{_eval},
+        nsSeq{_nsSeq},
+        stopCost{_stopCost}
+  // stopCost is typically 0 (or 0.0), for Sing.Obj.Problems
   {
     // only allow NSSeq which is Solution Independent
     assert(nsSeq->isSolutionIndependent());
@@ -82,10 +70,10 @@ class MultiImprovement : public LocalSearch<XES, XEv> {
     assert(nsSeq->supportsMoveIndependence());
   }
 
-  virtual ~MultiImprovement() {
-  }
+  virtual ~MultiImprovement() {}
 
-  virtual SearchStatus searchFrom(XSH& se, const StopCriteria<XEv>& sosc) override {
+  virtual SearchStatus searchFrom(XSH& se,
+                                  const StopCriteria<XEv>& sosc) override {
     if (Component::information)
       std::cout << "MI::starts for " << nsSeq->toString() << std::endl;
 
@@ -132,8 +120,7 @@ class MultiImprovement : public LocalSearch<XES, XEv> {
     // =================
     // invoke sorter
     //
-    if (Component::information)
-      std::cout << "MI invoking sorter" << std::endl;
+    if (Component::information) std::cout << "MI invoking sorter" << std::endl;
     //
     this->sorter(allCosts);
 
@@ -165,7 +152,8 @@ class MultiImprovement : public LocalSearch<XES, XEv> {
           //
           for (unsigned c = k + 1; c < allCosts.size(); c++)
             if (allCosts[c].second != -1)
-              if (!allMoves[allCosts[k].second]->independentOf(*allMoves[allCosts[c].second]))
+              if (!allMoves[allCosts[k].second]->independentOf(
+                      *allMoves[allCosts[c].second]))
                 allCosts[c].second = -1;  // flag as conflicting
         }
     }
@@ -178,8 +166,7 @@ class MultiImprovement : public LocalSearch<XES, XEv> {
     // ==============
     // free resources
     //
-    for (unsigned i = 0; i < allMoves.size(); i++)
-      delete allMoves[i];
+    for (unsigned i = 0; i < allMoves.size(); i++) delete allMoves[i];
     allMoves.clear();
 
     // report 'all is well' (and dance...)
@@ -196,13 +183,9 @@ class MultiImprovement : public LocalSearch<XES, XEv> {
     return ss.str();
   }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  virtual string id() const override { return idComponent(); }
 
-  void print() const override {
-    cout << toString() << endl;
-  }
+  void print() const override { cout << toString() << endl; }
 
   std::string toString() const override {
     stringstream ss;
@@ -211,32 +194,42 @@ class MultiImprovement : public LocalSearch<XES, XEv> {
   }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>, XSearch<XES> XSH = std::pair<S, XEv>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>,
+          XSearch<XES> XSH = std::pair<S, XEv>>
 class MultiImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~MultiImprovementBuilder() {
-  }
+  virtual ~MultiImprovementBuilder() {}
 
+  // NOLINTNEXTLINE
   LocalSearch<XES, XEv>* build(Scanner& scanner,
                                HeuristicFactory<S, XEv, XES, X2ES>& hf,
                                string family = "") override {
-    if (!scanner.hasNext())
-      return nullptr;
+    if (!scanner.hasNext()) return nullptr;
+
     sptr<GeneralEvaluator<XES, XEv>> eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assign(eval, id1, comp_id1);
 
-    if (!scanner.hasNext())
-      return nullptr;
+    if (!scanner.hasNext()) return nullptr;
+
     sptr<NSSeq<XES, XEv, XSH>> nsseq;
-    hf.assign(nsseq, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id2 = scanner.next();
+    int id2 = *scanner.nextInt();
+    hf.assign(nsseq, id2, comp_id2);
 
+    // NOLINTNEXTLINE
     return new MultiImprovement<XES, XEv, XSH>(eval, nsseq);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(), "evaluation function"));
-    params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(), "neighborhood structure"));
+    params.push_back(make_pair(GeneralEvaluator<XES, XEv>::idComponent(),
+                               "evaluation function"));
+    params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(),
+                               "neighborhood structure"));
 
     return params;
   }
@@ -251,11 +244,9 @@ class MultiImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     return ss.str();
   }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_MI_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_LOCALSEARCHES_MULTIIMPROVEMENT_HPP_

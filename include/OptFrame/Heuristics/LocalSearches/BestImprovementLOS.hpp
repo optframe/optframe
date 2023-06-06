@@ -1,27 +1,12 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_BI_LOS_HPP_
-#define OPTFRAME_BI_LOS_HPP_
+#ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_BESTIMPROVEMENTLOS_HPP_
+#define OPTFRAME_HEURISTICS_LOCALSEARCHES_BESTIMPROVEMENTLOS_HPP_
+
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "../../Evaluator.hpp"
 #include "../../LocalSearch.hpp"
@@ -38,11 +23,9 @@ class BestImprovementLOS : public LocalSearch<S, XEv, XSH> {
 
  public:
   BestImprovementLOS(Evaluator<XES, XEv>& _eval, NSSeq<XES, XEv, XSH>& _nsSeq)
-      : eval(_eval), nsSeq(_nsSeq) {
-  }
+      : eval(_eval), nsSeq(_nsSeq) {}
 
-  virtual ~BestImprovementLOS() {
-  }
+  virtual ~BestImprovementLOS() {}
 
   virtual void exec(S& s, const StopCriteria<XEv>& sosc) override {
     Evaluation<> e = eval.evaluate(s);
@@ -50,19 +33,20 @@ class BestImprovementLOS : public LocalSearch<S, XEv, XSH> {
     exec(s, e, sosc);
   }
 
-  virtual void exec(S& s, Evaluation<>& e, const StopCriteria<XEv>& sosc) override {
+  virtual void exec(S& s, Evaluation<>& e,
+                    const StopCriteria<XEv>& sosc) override {
     Timer t;
 
-    //TODO: use block iterator and manage each partial local optima discovered
+    // TODO: use block iterator and manage each partial local optima discovered
 
-    //NSBlockIterator<S, XEv>& itb = *nsSeq.getBlockIterator(s);
+    // NSBlockIterator<S, XEv>& itb = *nsSeq.getBlockIterator(s);
     NSBlockIterator<S, XEv>& itb = *nsSeq.getBlockIterator(se);
 
     cout << "TODO: BestImprovementLOS UNIMPLEMENTED!" << endl;
 
     return;
 
-    //NSIterator<S, XEv>& it = *nsSeq.getIterator(s);
+    // NSIterator<S, XEv>& it = *nsSeq.getIterator(s);
     NSIterator<S, XEv>& it = *nsSeq.getIterator(se);
 
     it.first();
@@ -75,18 +59,18 @@ class BestImprovementLOS : public LocalSearch<S, XEv, XSH> {
     Move<S, XEv>* bestMove = it.current();
 
     /*if(e.getLocalOptimumStatus(bestMove->id()))
-		{
-			delete &it;
-			delete bestMove;
+                {
+                        delete &it;
+                        delete bestMove;
 
-			sum_time += t.inMilliSecs();
-			return;
-		}*/
+                        sum_time += t.inMilliSecs();
+                        return;
+                }*/
 
     MoveCost<>* bestCost = nullptr;
 
     while (true) {
-      //while (!bestMove->canBeApplied(s))
+      // while (!bestMove->canBeApplied(s))
       while (!bestMove->canBeApplied(se)) {
         delete bestMove;
         it.next();
@@ -116,7 +100,7 @@ class BestImprovementLOS : public LocalSearch<S, XEv, XSH> {
       }
     }
 
-    //it.next();
+    // it.next();
     while (!it.isDone()) {
       Move<S, XEv>* move = it.current();
       if (move->canBeApplied(s)) {
@@ -139,8 +123,8 @@ class BestImprovementLOS : public LocalSearch<S, XEv, XSH> {
     }
 
     if (eval.isImprovement(*bestCost)) {
-      //cout << "MOVE IS IMPROVEMENT! cost=";
-      //bestCost->print();
+      // cout << "MOVE IS IMPROVEMENT! cost=";
+      // bestCost->print();
 
       if (bestCost->isEstimated()) {
         // TODO: have to test if bestMove is ACTUALLY an improvement move...
@@ -149,15 +133,17 @@ class BestImprovementLOS : public LocalSearch<S, XEv, XSH> {
       Component::safe_delete(bestMove->applyUpdate(e, s));
 
       eval.reevaluate(e, s);  // updates 'e'
-                              //e.setLocalOptimumStatus(bestMove->id(), false); //set NS 'id' out of Local Optimum
+                              // e.setLocalOptimumStatus(bestMove->id(), false);
+                              // //set NS 'id' out of Local Optimum
     } else {
-      //bestMove->updateNeighStatus(s.getADS());
-      //e.setLocalOptimumStatus(bestMove->id(), true); //set NS 'id' on Local Optimum
+      // bestMove->updateNeighStatus(s.getADS());
+      // e.setLocalOptimumStatus(bestMove->id(), true); //set NS 'id' on Local
+      // Optimum
     }
-    //cout << "#" << num_calls << " out_bi:";
-    //bestMove->print();
-    //nsSeq.print();
-    //e.print();
+    // cout << "#" << num_calls << " out_bi:";
+    // bestMove->print();
+    // nsSeq.print();
+    // e.print();
 
     delete bestCost;
     delete bestMove;
@@ -174,13 +160,9 @@ class BestImprovementLOS : public LocalSearch<S, XEv, XSH> {
     return ss.str();
   }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  string id() const override { return idComponent(); }
 
-  void print() const override {
-    cout << toString() << endl;
-  }
+  void print() const override { cout << toString() << endl; }
 
   std::string toString() const override {
     stringstream ss;
@@ -189,32 +171,39 @@ class BestImprovementLOS : public LocalSearch<S, XEv, XSH> {
   }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
 class BestImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~BestImprovementBuilder() {
-  }
+  virtual ~BestImprovementBuilder() = default;
 
+  // NOLINTNEXTLINE
   LocalSearch<XES, XEv>* build(Scanner& scanner,
                                HeuristicFactory<S, XEv, XES, X2ES>& hf,
                                string family = "") override {
-    if (!scanner.hasNext())
-      return nullptr;
+    if (!scanner.hasNext()) return nullptr;
     Evaluator<XES, XEv>* eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assign(eval, id1, comp_id1);
 
-    if (!scanner.hasNext())
-      return nullptr;
-    NSSeq<XES, XEv, XSH>* nsseq;
-    hf.assign(nsseq, *scanner.nextInt(), scanner.next());  // reads backwards!
+    if (!scanner.hasNext()) return nullptr;
+    NSSeq<XES, XEv>* nsseq;
+    std::string comp_id2 = scanner.next();
+    int id2 = *scanner.nextInt();
+    hf.assign(nsseq, id2, comp_id2);
 
+    // NOLINTNEXTLINE
     return new BestImprovementLOS<S, XEv>(*eval, *nsseq);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
-    params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(), "neighborhood structure"));
+    params.push_back(
+        make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+    params.push_back(make_pair(NSSeq<XES, XEv, XSH>::idComponent(),
+                               "neighborhood structure"));
 
     return params;
   }
@@ -229,11 +218,9 @@ class BestImprovementBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
     return ss.str();
   }
 
-  virtual string id() const override {
-    return idComponent();
-  }
+  string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_BI_LOS_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_LOCALSEARCHES_BESTIMPROVEMENTLOS_HPP_

@@ -1,29 +1,13 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_GENETICALGORITHM_HPP_
-#define OPTFRAME_GENETICALGORITHM_HPP_
+#ifndef OPTFRAME_HEURISTICS_EA_BASICGENETICALGORITHM_HPP_
+#define OPTFRAME_HEURISTICS_EA_BASICGENETICALGORITHM_HPP_
 
 #include <algorithm>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "../../LocalSearch.hpp"
 #include "../../MultiSolution.hpp"
@@ -143,8 +127,8 @@ class BasicGeneticAlgorithm : public SingleObjSearch<XES>, public EA {
 
     for (int i = 0; i < fv.size(); i++) {
       fv[i] = (fv[i] / avgEvalsPop);
-      if (fv[i] != fv[i])  // is nan
-      {
+      // if is nan
+      if (fv[i] != fv[i]) {
         cout << "Selection::setFitness()::NAN VALUE!" << endl;
         cout << "average=" << avgEvalsPop << endl;
         cout << fv << endl;
@@ -315,10 +299,14 @@ class BasicGeneticAlgorithmBuilder
                                       HeuristicFactory<R, ADS>& hf,
                                       string family = "") {
     Evaluator<S>* eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assign(eval, id1, comp_id1);
 
     InitialMultiSolution<S>* initPop;
-    hf.assign(initPop, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id2 = scanner.next();
+    int id2 = *scanner.nextInt();
+    hf.assign(initPop, id2, comp_id2);
 
     int popSize = *scanner.nextInt();
     float pCross = *scanner.nextFloat();
@@ -327,13 +315,19 @@ class BasicGeneticAlgorithmBuilder
     int nGen = *scanner.nextInt();
 
     Selection<R, ADS>* sel;
-    hf.assign(sel, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id3 = scanner.next();
+    int id3 = *scanner.nextInt();
+    hf.assign(sel, id3, comp_id3);
 
     Crossover<R, ADS>* cross;
-    hf.assign(cross, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id4 = scanner.next();
+    int id4 = *scanner.nextInt();
+    hf.assign(cross, id4, comp_id4);
 
     Mutation<R, ADS>* mut;
-    hf.assign(mut, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id5 = scanner.next();
+    int id5 = *scanner.nextInt();
+    hf.assign(mut, id5, comp_id5);
 
     string rest = scanner.rest();
     pair<LocalSearch<XES, XEv>*, std::string> method;
@@ -383,4 +377,4 @@ class BasicGeneticAlgorithmBuilder
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_GENETICALGORITHM_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_EA_BASICGENETICALGORITHM_HPP_

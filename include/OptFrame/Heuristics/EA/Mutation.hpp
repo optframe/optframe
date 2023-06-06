@@ -1,31 +1,14 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef MUTATION_HPP_
-#define MUTATION_HPP_
+#ifndef OPTFRAME_HEURISTICS_EA_MUTATION_HPP_
+#define OPTFRAME_HEURISTICS_EA_MUTATION_HPP_
 
 // C++
 #include <chrono>
 #include <random>
+#include <string>
+#include <utility>
 #include <vector>
 //
 #include <OptFrame/Component.hpp>
@@ -81,9 +64,9 @@ class BasicMutation : public Mutation<S, XEv> {
     for (unsigned i = 0; i < n; i++) {
       int x = rg.rand(vNS.size());
       Move<S, XEv>* mp = vNS[x]->validMove(s);
-      if (!mp)
+      if (!mp) {
         cout << "Warning: no move in BasicMutation!" << endl;
-      else {
+      } else {
         delete &mp->apply(e, s);
         delete mp;
       }
@@ -112,9 +95,11 @@ class BasicMutationBuilder : public ComponentBuilder<S, XEv, XES, X2ES> {
     int n = *scanner.nextInt();
 
     vector<NS<XES, XEv>*> ns_list;
-    hf.assignList(ns_list, *scanner.nextInt(),
-                  scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assignList(ns_list, id1, comp_id1);
 
+    // NOLINTNEXTLINE
     return new BasicMutation<S, XEv>(n, ns_list, hf.getRandGen());
   }
 
@@ -179,9 +164,9 @@ class DefaultMutation : public SimpleMutation<S, XEv> {
 
  public:
   DefaultMutation() = delete;
-  DefaultMutation(double mutationRate) : omega(mutationRate) {
+  explicit DefaultMutation(double mutationRate) : omega(mutationRate) {
     assert(mutationRate >= 0.0 && mutationRate <= 1.0);
-  };
+  }
   virtual ~DefaultMutation() = default;
 
   virtual void mutate(
@@ -189,7 +174,7 @@ class DefaultMutation : public SimpleMutation<S, XEv> {
                          // Individual is passed so the user may change ADS if
                          // he wants to
 
-  virtual void mutate(VPopulation& population) override {
+  void mutate(VPopulation& population) override {
     _OPTFRAME_DBG_MUTATION_ std::cerr
         << "-OptDebug- Starting mutation operator. Will insert "
         << static_cast<int>(population.size() * omega)
@@ -216,4 +201,4 @@ class DefaultMutation : public SimpleMutation<S, XEv> {
 
 }  // namespace optframe
 
-#endif /* MUTATION_HPP_ */
+#endif  // OPTFRAME_HEURISTICS_EA_MUTATION_HPP_

@@ -1,30 +1,13 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_HEURISTICS_GRASP_BASICGRASP_HPP_
 #define OPTFRAME_HEURISTICS_GRASP_BASICGRASP_HPP_
 // C
 // C++
 #include <string>
+#include <utility>
+#include <vector>
 //
 #include "../../LocalSearch.hpp"
 #include "../../SingleObjSearch.hpp"
@@ -141,7 +124,7 @@ class BasicGRASP : public SingleObjSearch<XES>, public GRASP {
     return {SearchStatus::NO_REPORT, star};
   }
 
-  virtual string id() const override { return idComponent(); }
+  string id() const override { return idComponent(); }
 
   static string idComponent() {
     stringstream ss;
@@ -157,17 +140,20 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
 class BasicGRASPBuilder : public GRASP,
                           public SingleObjSearchBuilder<S, XEv, XES> {
  public:
-  virtual ~BasicGRASPBuilder() {}
+  ~BasicGRASPBuilder() override = default;
 
   SingleObjSearch<XES>* build(Scanner& scanner,
                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
                               string family = "") override {
     sptr<GeneralEvaluator<XES, XEv>> eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assign(eval, id1, comp_id1);
 
     sptr<GRConstructive<S>> constructive;
-    hf.assign(constructive, *scanner.nextInt(),
-              scanner.next());  // reads backwards!
+    std::string comp_id2 = scanner.next();
+    int id2 = *scanner.nextInt();
+    hf.assign(constructive, id2, comp_id2);
 
     string rest = scanner.rest();
 
@@ -186,6 +172,7 @@ class BasicGRASPBuilder : public GRASP,
 
     int iterMax = *scanner.nextInt();
 
+    // NOLINTNEXTLINE
     return new BasicGRASP<S, XEv>(eval, constructive, h, alpha, iterMax);
   }
 

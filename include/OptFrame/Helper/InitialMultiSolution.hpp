@@ -96,48 +96,6 @@ class BasicInitialMultiSolution
   std::string id() const override { return idComponent(); }
 };
 
-// TODO(igormcoelho): fix this builder later!!!
-
-/*
-
-template <XSolution S,
-          XEvaluation XEv = Evaluation<>,
-          XESolution XES = std::pair<S, XEv>>
-class BasicInitialPopulationBuilder : public ComponentBuilder<S, XEv, XES> {
- public:
-  virtual ~BasicInitialPopulationBuilder() {
-  }
-
-   Component* buildComponent(Scanner& scanner, HeuristicFactory<R, ADS>& hf,
-string family = "") override { Constructive<S>* c; hf.assign(c,
-*scanner.nextInt(), scanner.next());  // reads backwards!
-
-    return new BasicInitialMultiSolution<S>(*c);
-  }
-
-  vector<pair<std::string, std::string>> parameters() override {
-    vector<pair<string, string>> params;
-    //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
-heuristic")); params.push_back(make_pair(InitialSearch<XES>::idComponent(),
-"constructive heuristic")); return params;
-  }
-
-  bool canBuild(std::string component) override {
-    return component == BasicInitialMultiSolution<S>::idComponent();
-  }
-
-  static string idComponent() {
-    stringstream ss;
-    ss << ComponentBuilder<R, ADS>::idComponent() << "" << EA::family() <<
-":BasicInitialPopulation"; return ss.str();
-  }
-
-  std::string id() const override {
-    return idComponent();
-  }
-};
-*/
-
 }  // namespace optframe
 
 #endif  // OPTFRAME_HELPER_INITIALMULTISOLUTION_HPP_

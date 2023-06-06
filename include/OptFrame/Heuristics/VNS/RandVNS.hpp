@@ -1,59 +1,46 @@
-// OptFrame - Optimization Framework
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-// Copyright (C) 2009, 2010, 2011
-// http://optframe.sourceforge.net/
-//
-// This file is part of the OptFrame optimization framework. This framework
-// is free software; you can redistribute it and/or modify it under the
-// terms of the GNU Lesser General Public License v3 as published by the
-// Free Software Foundation.
-
-// This framework is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License v3 for more details.
-
-// You should have received a copy of the GNU Lesser General Public License v3
-// along with this library; see the file COPYING.  If not, write to the Free
-// Software Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
-// USA.
-
-#ifndef OPTFRAME_RAND_VNS_HPP_
-#define OPTFRAME_RAND_VNS_HPP_
+#ifndef OPTFRAME_HEURISTICS_VNS_RANDVNS_HPP_
+#define OPTFRAME_HEURISTICS_VNS_RANDVNS_HPP_
 
 #include <math.h>
-
+//
+#include <string>
+#include <utility>
 #include <vector>
-
+//
 #include "../LocalSearches/RVND.hpp"
 #include "VNS.h"
 #include "VariableNeighborhoodSearch.hpp"
 
 namespace optframe {
 
-template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
 class RandVNS : public VariableNeighborhoodSearch<R, ADS, DS> {
  public:
   typedef VariableNeighborhoodSearch<R, ADS, DS> super;
 
-  RandVNS(Evaluator<R, ADS, DS>& evaluator, Constructive<S>& constructive, vector<NS<R, ADS, DS>*> vshake, vector<NSSeq<R, ADS, DS>*> vsearch, RandGen& _rg)
-      : VariableNeighborhoodSearch<R, ADS, DS>(evaluator, constructive, vshake, vsearch), rg(_rg) {
-  }
+  RandVNS(Evaluator<R, ADS, DS>& evaluator, Constructive<S>& constructive,
+          vector<NS<R, ADS, DS>*> vshake, vector<NSSeq<R, ADS, DS>*> vsearch,
+          RandGen& _rg)
+      : VariableNeighborhoodSearch<R, ADS, DS>(evaluator, constructive, vshake,
+                                               vsearch),
+        rg(_rg) {}
 
-  virtual ~RandVNS() {
-  }
+  virtual ~RandVNS() = default;
 
   virtual LocalSearch<R, ADS, DS>& buildSearch(unsigned k_search) {
     vector<LocalSearch<R, ADS, DS>*> vls;
     for (unsigned i = 0; i < super::vsearch.size(); i++)
-      vls.push_back(new BestImprovement<R, ADS, DS>(super::evaluator, *super::vsearch.at(i)));
+      vls.push_back(new BestImprovement<R, ADS, DS>(super::evaluator,
+                                                    *super::vsearch.at(i)));
 
     return *new RVND<R, ADS, DS>(super::evaluator, vls, rg);
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   static string idComponent() {
     stringstream ss;
@@ -65,33 +52,47 @@ class RandVNS : public VariableNeighborhoodSearch<R, ADS, DS> {
   RandGen& rg;
 };
 
-template <class R, class ADS = OPTFRAME_DEFAULT_ADS, class DS = OPTFRAME_DEFAULT_DS>
+template <class R, class ADS = OPTFRAME_DEFAULT_ADS,
+          class DS = OPTFRAME_DEFAULT_DS>
 class RandVNSBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, DS> {
  public:
-  virtual ~RandVNSBuilder() {
-  }
+  virtual ~RandVNSBuilder() = default;
 
-  virtual SingleObjSearch<R, ADS, DS>* build(Scanner& scanner, HeuristicFactory<R, ADS, DS>& hf, string family = "") {
+  SingleObjSearch<R, ADS, DS>* build(Scanner& scanner,
+                                     HeuristicFactory<R, ADS, DS>& hf,
+                                     string family = "") override {
     Evaluator<R, ADS, DS>* eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assign(eval, id1, comp_id1);
 
     Constructive<S>* constructive;
-    hf.assign(constructive, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id2 = scanner.next();
+    int id2 = *scanner.nextInt();
+    hf.assign(constructive, id2, comp_id2);
 
     vector<NS<R, ADS, DS>*> shakelist;
-    hf.assignList(shakelist, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id3 = scanner.next();
+    int id3 = *scanner.nextInt();
+    hf.assignList(shakelist, id3, comp_id3);
 
     vector<NSSeq<R, ADS, DS>*> searchlist;
-    hf.assignList(searchlist, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id4 = scanner.next();
+    int id4 = *scanner.nextInt();
+    hf.assignList(searchlist, id4, comp_id4);
 
-    return new RandVNS<R, ADS, DS>(*eval, *constructive, shakelist, searchlist, hf.getRandGen());
+    return new RandVNS<R, ADS, DS>(*eval, *constructive, shakelist, searchlist,
+                                   hf.getRandGen());
   }
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
-    //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-    params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
+    params.push_back(
+        make_pair(Evaluator<R, ADS, DS>::idComponent(), "evaluation function"));
+    // params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
+    // heuristic"));
+    params.push_back(
+        make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 
     stringstream ss;
     ss << NS<R, ADS, DS>::idComponent() << "[]";
@@ -110,15 +111,14 @@ class RandVNSBuilder : public ILS, public SingleObjSearchBuilder<R, ADS, DS> {
 
   static string idComponent() {
     stringstream ss;
-    ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << VNS::family() << "RandVNS";
+    ss << SingleObjSearchBuilder<R, ADS, DS>::idComponent() << VNS::family()
+       << "RandVNS";
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_GENERAL_VNS_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_VNS_RANDVNS_HPP_

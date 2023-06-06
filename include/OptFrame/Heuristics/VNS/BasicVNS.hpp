@@ -1,24 +1,5 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_HEURISTICS_VNS_BASICVNS_HPP_
 #define OPTFRAME_HEURISTICS_VNS_BASICVNS_HPP_
@@ -27,6 +8,7 @@
 #include <math.h>
 // C++
 #include <string>
+#include <utility>
 #include <vector>
 //
 #include <OptFrame/Heuristics/LocalSearches/BestImprovement.hpp>
@@ -50,7 +32,7 @@ class BasicVNS : public VariableNeighborhoodSearch<XES, XEv> {
       : VariableNeighborhoodSearch<XES, XEv>(evaluator, constructive, vshake,
                                              vsearch) {}
 
-  virtual ~BasicVNS() {}
+  virtual ~BasicVNS() = default;
 
   sref<LocalSearch<XES, XEv>> buildSearch(unsigned k_search) override {
     return *new BestImprovement<XES, XEv>(super::evaluator,
@@ -71,31 +53,37 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
           X2ESolution<XES> X2ES = MultiESolution<XES>>
 class BasicVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, XES> {
  public:
-  virtual ~BasicVNSBuilder() {}
+  ~BasicVNSBuilder() override = default;
 
+  // NOLINTNEXTLINE
   SingleObjSearch<XES>* build(Scanner& scanner,
                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
                               string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assign(eval, id1, comp_id1);
 
-    // Constructive<S>* constructive;
     sptr<InitialSearch<XES>> constructive;
-    hf.assign(constructive, *scanner.nextInt(),
-              scanner.next());  // reads backwards!
+    std::string comp_id2 = scanner.next();
+    int id2 = *scanner.nextInt();
+    hf.assign(constructive, id2, comp_id2);
 
     vsptr<NS<XES, XEv>> _shakelist;
-    hf.assignList(_shakelist, *scanner.nextInt(),
-                  scanner.next());  // reads backwards!
+    std::string comp_id3 = scanner.next();
+    int id3 = *scanner.nextInt();
+    hf.assignList(_shakelist, id3, comp_id3);
     vsref<NS<XES, XEv>> shakelist;
     for (auto x : _shakelist) shakelist.push_back(x);
 
     vsptr<NSSeq<XES, XEv>> _searchlist;
-    hf.assignList(_searchlist, *scanner.nextInt(),
-                  scanner.next());  // reads backwards!
+    std::string comp_id4 = scanner.next();
+    int id4 = *scanner.nextInt();
+    hf.assignList(_searchlist, id4, comp_id4);
     vsref<NSSeq<XES, XEv>> searchlist;
     for (auto x : _searchlist) searchlist.push_back(x);
 
+    // NOLINTNEXTLINE
     return new BasicVNS<XES, XEv>(eval, constructive, shakelist, searchlist);
   }
 

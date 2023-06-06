@@ -1,29 +1,12 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
 #ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_RANDOMDESCENTMETHOD_HPP_
 #define OPTFRAME_HEURISTICS_LOCALSEARCHES_RANDOMDESCENTMETHOD_HPP_
 
 #include <string>
+#include <utility>
+#include <vector>
 //
 #include "../../LocalSearch.hpp"
 #include "../../NS.hpp"
@@ -43,14 +26,7 @@ class RandomDescentMethod : public LocalSearch<XES, XEv, XES> {
                       sref<NS<XES, XEv>> _ns, unsigned int _iterMax)
       : evaluator(_eval), ns(_ns), iterMax(_iterMax) {}
 
-  virtual ~RandomDescentMethod() {}
-
-  // DEPRECATED
-  // virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
-  //{
-  //	Evaluation<> e = std::move(ev.evaluate(s));
-  //	exec(s, e, stopCriteria);
-  //}
+  virtual ~RandomDescentMethod() = default;
 
   SearchStatus searchFrom(XES& se,
                           const StopCriteria<XEv>& stopCriteria) override {
@@ -62,12 +38,7 @@ class RandomDescentMethod : public LocalSearch<XES, XEv, XES> {
 
     // TODO: de-referentiation of 'target_f' WILL crash, if not provided!!
     // removing 'target_f'
-    while (
-        (iter < iterMax) &&
-        !stopCriteria.shouldStop(
-            se.second))  //(tNow.now() < stopCriteria.timelimit)) //&&
-                         //(evaluator.betterThan(*stopCriteria.target_f, se)))
-    {
+    while ((iter < iterMax) && !stopCriteria.shouldStop(se.second)) {
       // uptr<Move<XES, XEv>> move = ns.randomMove(s);
       uptr<Move<XES, XEv>> move = ns->randomMove(se);
 
@@ -100,7 +71,7 @@ class RandomDescentMethod : public LocalSearch<XES, XEv, XES> {
     return ss.str();
   }
 
-  virtual string id() const override { return idComponent(); }
+  string id() const override { return idComponent(); }
 };
 
 template <XSolution S, XEvaluation XEv = Evaluation<>,
@@ -109,19 +80,25 @@ template <XSolution S, XEvaluation XEv = Evaluation<>,
 class RandomDescentMethodBuilder
     : public LocalSearchBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~RandomDescentMethodBuilder() {}
+  virtual ~RandomDescentMethodBuilder() = default;
 
+  // NOLINTNEXTLINE
   LocalSearch<XES, XEv>* build(Scanner& scanner,
                                HeuristicFactory<S, XEv, XES, X2ES>& hf,
                                string family = "") override {
     sptr<GeneralEvaluator<XES, XEv>> eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assign(eval, id1, comp_id1);
 
     sptr<NS<XES, XEv>> ns;
-    hf.assign(ns, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id2 = scanner.next();
+    int id2 = *scanner.nextInt();
+    hf.assign(ns, id2, comp_id2);
 
     int iterMax = *scanner.nextInt();
 
+    // NOLINTNEXTLINE
     return new RandomDescentMethod<XES, XEv>(eval, ns, iterMax);
   }
 

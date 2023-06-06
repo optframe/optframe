@@ -1,28 +1,13 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef VARIABLENEIGHBORHOODDESCENTUPDATEADS_HPP_
-#define VARIABLENEIGHBORHOODDESCENTUPDATEADS_HPP_
+#ifndef OPTFRAME_HEURISTICS_LOCALSEARCHES_VARIABLENEIGHBORHOODDESCENTUPDATEADS_HPP_
+#define OPTFRAME_HEURISTICS_LOCALSEARCHES_VARIABLENEIGHBORHOODDESCENTUPDATEADS_HPP_
 
+#include <string>
+#include <utility>
+#include <vector>
+//
 #include <OptFrame/Evaluator.hpp>
 #include <OptFrame/Helper/ADSManager.hpp>
 #include <OptFrame/LocalSearch.hpp>
@@ -32,8 +17,10 @@
 
 namespace optframe {
 
-//template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
+// template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S =
+// CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S,
+          XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>>
 class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES, XEv> {
  private:
   sref<GeneralEvaluator<XES, XEv>> ev;
@@ -41,27 +28,20 @@ class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES, XEv> {
   vsref<LocalSearch<XES, XEv>> lsList;
 
  public:
-  VariableNeighborhoodDescentUpdateADS(sref<GeneralEvaluator<XES, XEv>> _ev, sref<ADSManager<R, ADS, S>> _adsMan, vsref<LocalSearch<XES, XEv>> _lsList)
-      : ev(_ev), adsMan(_adsMan), lsList(_lsList) {
-  }
+  VariableNeighborhoodDescentUpdateADS(sref<GeneralEvaluator<XES, XEv>> _ev,
+                                       sref<ADSManager<R, ADS, S>> _adsMan,
+                                       vsref<LocalSearch<XES, XEv>> _lsList)
+      : ev(_ev), adsMan(_adsMan), lsList(_lsList) {}
 
-  virtual ~VariableNeighborhoodDescentUpdateADS() {
-  }
+  virtual ~VariableNeighborhoodDescentUpdateADS() = default;
 
-  // DEPRECATED
-  //virtual void exec(S& s, const StopCriteria<XEv>& stopCriteria)
-  //{
-  //	Evaluation<> e = std::move(ev.evaluate(s));
-  //	exec(s, e, stopCriteria);
-  //}
-
-  virtual SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& sosc) override {
-    //S& s = se.first;
-    //XEv& e = se.second;
+  SearchStatus searchFrom(XES& se, const StopCriteria<XEv>& sosc) override {
+    // S& s = se.first;
+    // XEv& e = se.second;
     //
     double timelimit = sosc.timelimit;
 
-    //XEv target_f(sosc.target_f); // 'target_f' will break... removing
+    // XEv target_f(sosc.target_f); // 'target_f' will break... removing
 
     long tini = time(nullptr);
 
@@ -70,33 +50,34 @@ class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES, XEv> {
     int k = 1;
 
     long tnow = time(nullptr);
-    while ((k <= r) && ((tnow - tini) < timelimit))  //&& ev.betterThan(target_f, e))
+    while ((k <= r) &&
+           ((tnow - tini) < timelimit))  //&& ev.betterThan(target_f, e))
     {
       // avoiding heap
-      //S* s0 = &s.clone();
-      //Evaluation<>* e0 = &e.clone();
-      //S s0(s); // enough to clone?
-      //XEv e0(e);
+      // S* s0 = &s.clone();
+      // Evaluation<>* e0 = &e.clone();
+      // S s0(s); // enough to clone?
+      // XEv e0(e);
       pair<S, XEv> p0 = se;  // enough to clone?
 
       lsList[k - 1]->searchFrom(p0, sosc);
 
-      //if (ev.betterThan(p0, se)) {
-      //if (p0.second.betterStrict(se.second)) {
+      // if (ev.betterThan(p0, se)) {
+      // if (p0.second.betterStrict(se.second)) {
       if (ev->betterStrict(p0.second, se.second)) {
         se = p0;
-        //delete s0; // no need
-        //delete e0; // no need
+        // delete s0; // no need
+        // delete e0; // no need
         k = 1;
       } else {
-        //Find move ID
+        // Find move ID
         string localSearchID = lsList[k - 1]->toString();
         unsigned found = localSearchID.find("OptFrame");
         string moveID = localSearchID.substr(found);
         adsMan->setNeighLocalOptimum(se.first, moveID);
 
-        //delete s0; // no need
-        //delete e0; // no need
+        // delete s0; // no need
+        // delete e0; // no need
 
         k = k + 1;
       }
@@ -118,17 +99,14 @@ class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES, XEv> {
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   std::string toString() const override {
     stringstream ss;
     ss << "VND: [ ";
     for (unsigned i = 0; i < lsList.size(); i++) {
       ss << lsList[i]->toString();
-      if (i != lsList.size() - 1)
-        ss << ",";
+      if (i != lsList.size() - 1) ss << ",";
     }
     ss << "]";
 
@@ -136,38 +114,51 @@ class VariableNeighborhoodDescentUpdateADS : public LocalSearch<XES, XEv> {
   }
 };
 
-///template<XESolution XES, XEvaluation XEv = Evaluation<>>
-//template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S = CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
-// passing 'S' manually, for safety
-template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
-class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<S, XEv, XES, X2ES> {
+/// template<XESolution XES, XEvaluation XEv = Evaluation<>>
+// template<XRepresentation R, class ADS, XBaseSolution<R,ADS> S =
+// CopySolution<R,ADS>, XEvaluation XEv = Evaluation<>>
+//  passing 'S' manually, for safety
+template <XRepresentation R, class ADS, XBaseSolution<R, ADS> S,
+          XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
+class VariableNeighborhoodDescentUpdateADSBuilder
+    : public LocalSearchBuilder<S, XEv, XES, X2ES> {
  public:
-  virtual ~VariableNeighborhoodDescentUpdateADSBuilder() {
-  }
+  virtual ~VariableNeighborhoodDescentUpdateADSBuilder() = default;
 
+  // NOLINTNEXTLINE
   LocalSearch<XES, XEv>* build(Scanner& scanner,
                                HeuristicFactory<S, XEv, XES, X2ES>& hf,
                                string family = "") override {
     sptr<GeneralEvaluator<XES, XEv>> eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assign(eval, id1, comp_id1);
 
     sptr<ADSManager<R, ADS, S>> adsMan;
-    hf.assign(adsMan, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id2 = scanner.next();
+    int id2 = *scanner.nextInt();
+    hf.assign(adsMan, id2, comp_id2);
 
     vsptr<LocalSearch<XES, XEv>> _hlist;
-    hf.assignList(_hlist, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id3 = scanner.next();
+    int id3 = *scanner.nextInt();
+    hf.assignList(_hlist, id3, comp_id3);
     vsref<LocalSearch<XES, XEv>> hlist;
-    for (auto x : _hlist)
-      hlist.push_back(x);
+    for (auto x : _hlist) hlist.push_back(x);
 
-    return new VariableNeighborhoodDescentUpdateADS<R, ADS, S, XEv>(eval, adsMan, hlist);
+    // NOLINTNEXTLINE
+    return new VariableNeighborhoodDescentUpdateADS<R, ADS, S, XEv>(
+        eval, adsMan, hlist);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
+    params.push_back(
+        make_pair(Evaluator<XES, XEv>::idComponent(), "evaluation function"));
 
-    params.push_back(make_pair(ADSManager<R, ADS, S>::idComponent(), "ADSManager function"));
+    params.push_back(
+        make_pair(ADSManager<R, ADS, S>::idComponent(), "ADSManager function"));
 
     stringstream ss;
     ss << LocalSearch<XES, XEv>::idComponent() << "[]";
@@ -177,7 +168,8 @@ class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<S,
   }
 
   bool canBuild(std::string component) override {
-    return component == VariableNeighborhoodDescentUpdateADS<R, ADS, S, XEv>::idComponent();
+    return component ==
+           VariableNeighborhoodDescentUpdateADS<R, ADS, S, XEv>::idComponent();
   }
 
   static string idComponent() {
@@ -186,14 +178,11 @@ class VariableNeighborhoodDescentUpdateADSBuilder : public LocalSearchBuilder<S,
     return ss.str();
   }
 
-  std::string toString() const override {
-    return id();
-  }
+  std::string toString() const override { return id(); }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
+
 }  // namespace optframe
 
-#endif /*VARIABLENEIGHBORHOODDESCENTUPDATEADS_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_LOCALSEARCHES_VARIABLENEIGHBORHOODDESCENTUPDATEADS_HPP_

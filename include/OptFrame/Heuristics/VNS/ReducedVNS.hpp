@@ -1,32 +1,15 @@
-// OptFrame 4.2 - Optimization Framework
-// Copyright (C) 2009-2021 - MIT LICENSE
-// https://github.com/optframe/optframe
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
+// Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFRAME_REDUCED_VNS_HPP_
-#define OPTFRAME_REDUCED_VNS_HPP_
+#ifndef OPTFRAME_HEURISTICS_VNS_REDUCEDVNS_HPP_
+#define OPTFRAME_HEURISTICS_VNS_REDUCEDVNS_HPP_
 
 #include <math.h>
-
+//
+#include <string>
+#include <utility>
 #include <vector>
-
+//
 #include "VNS.h"
 #include "VariableNeighborhoodSearch.hpp"
 
@@ -37,21 +20,21 @@ class ReducedVNS : public VariableNeighborhoodSearch<XES, XEv> {
  public:
   typedef VariableNeighborhoodSearch<XES, XEv> super;
 
-  //ReducedVNS(Evaluator<S>& evaluator, Constructive<S>& constructive, vector<NS<XES, XEv>*> vshake, vector<NSSeq<S>*> vsearch) :
-  ReducedVNS(sref<Evaluator<XES, XEv>> evaluator, sref<InitialSearch<XES>> constructive, vsref<NS<XES, XEv>> vshake, vsref<NSSeq<XES, XEv>> vsearch)
-      : VariableNeighborhoodSearch<XES, XEv>(evaluator, constructive, vshake, vsearch) {
-  }
+  // ReducedVNS(Evaluator<S>& evaluator, Constructive<S>& constructive,
+  // vector<NS<XES, XEv>*> vshake, vector<NSSeq<S>*> vsearch) :
+  ReducedVNS(sref<Evaluator<XES, XEv>> evaluator,
+             sref<InitialSearch<XES>> constructive, vsref<NS<XES, XEv>> vshake,
+             vsref<NSSeq<XES, XEv>> vsearch)
+      : VariableNeighborhoodSearch<XES, XEv>(evaluator, constructive, vshake,
+                                             vsearch) {}
 
-  virtual ~ReducedVNS() {
-  }
+  virtual ~ReducedVNS() {}
 
   sref<LocalSearch<XES, XEv>> buildSearch(unsigned k_search) override {
     return new EmptyLocalSearch<XES, XEv>();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 
   static string idComponent() {
     stringstream ss;
@@ -60,42 +43,52 @@ class ReducedVNS : public VariableNeighborhoodSearch<XES, XEv> {
   }
 };
 
-template <XSolution S, XEvaluation XEv = Evaluation<>, XESolution XES = pair<S, XEv>, X2ESolution<XES> X2ES = MultiESolution<XES>>
-class ReducedVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, XES> {
+template <XSolution S, XEvaluation XEv = Evaluation<>,
+          XESolution XES = pair<S, XEv>,
+          X2ESolution<XES> X2ES = MultiESolution<XES>>
+class ReducedVNSBuilder : public ILS,
+                          public SingleObjSearchBuilder<S, XEv, XES> {
  public:
-  virtual ~ReducedVNSBuilder() {
-  }
+  virtual ~ReducedVNSBuilder() {}
 
   SingleObjSearch<XES>* build(Scanner& scanner,
                               HeuristicFactory<S, XEv, XES, X2ES>& hf,
                               string family = "") override {
     sptr<GeneralEvaluator<XES>> eval;
-    hf.assign(eval, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id1 = scanner.next();
+    int id1 = *scanner.nextInt();
+    hf.assign(eval, id1, comp_id1);
 
-    //Constructive<S>* constructive;
     sptr<InitialSearch<XES>> constructive;
-    hf.assign(constructive, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id2 = scanner.next();
+    int id2 = *scanner.nextInt();
+    hf.assign(constructive, id2, comp_id2);
 
     vsptr<NS<XES, XEv>> _shakelist;
-    hf.assignList(_shakelist, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id3 = scanner.next();
+    int id3 = *scanner.nextInt();
+    hf.assignList(_shakelist, id3, comp_id3);
     vsref<NS<XES, XEv>> shakelist;
-    for (auto x : _shakelist)
-      shakelist.push_back(x);
+    for (auto x : _shakelist) shakelist.push_back(x);
 
     vsptr<NSSeq<XES, XEv>> _searchlist;
-    hf.assignList(_searchlist, *scanner.nextInt(), scanner.next());  // reads backwards!
+    std::string comp_id4 = scanner.next();
+    int id4 = *scanner.nextInt();
+    hf.assignList(_searchlist, id4, comp_id4);
     vsref<NSSeq<XES, XEv>> searchlist;
-    for (auto x : _searchlist)
-      searchlist.push_back(x);
+    for (auto x : _searchlist) searchlist.push_back(x);
 
     return new BasicVNS<XES, XEv>(eval, constructive, shakelist, searchlist);
   }
 
   vector<pair<std::string, std::string>> parameters() override {
     vector<pair<string, string>> params;
-    params.push_back(make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
-    //params.push_back(make_pair(Constructive<S>::idComponent(), "constructive heuristic"));
-    params.push_back(make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
+    params.push_back(
+        make_pair(GeneralEvaluator<XES>::idComponent(), "evaluation function"));
+    // params.push_back(make_pair(Constructive<S>::idComponent(), "constructive
+    // heuristic"));
+    params.push_back(
+        make_pair(InitialSearch<XES>::idComponent(), "constructive heuristic"));
 
     stringstream ss;
     ss << NS<XES, XEv>::idComponent() << "[]";
@@ -114,15 +107,14 @@ class ReducedVNSBuilder : public ILS, public SingleObjSearchBuilder<S, XEv, XES>
 
   static string idComponent() {
     stringstream ss;
-    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << VNS::family() << "RVNS";
+    ss << SingleObjSearchBuilder<S, XEv>::idComponent() << VNS::family()
+       << "RVNS";
     return ss.str();
   }
 
-  std::string id() const override {
-    return idComponent();
-  }
+  std::string id() const override { return idComponent(); }
 };
 
 }  // namespace optframe
 
-#endif /*OPTFRAME_REDUCED_VNS_HPP_*/
+#endif  // OPTFRAME_HEURISTICS_VNS_REDUCEDVNS_HPP_
