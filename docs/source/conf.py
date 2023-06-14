@@ -22,7 +22,7 @@ copyright = '2007-2022, OptFrame Core Developers'
 author = 'OptFrame Core Developers'
 
 # The full version, including alpha/beta/rc tags
-release = '5.0.10'
+release = '5.0.11'
 
 
 # -- General configuration ---------------------------------------------------
