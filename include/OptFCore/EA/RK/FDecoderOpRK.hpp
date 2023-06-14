@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later OR MIT
 // Copyright (C) 2007-2022 - OptFrame - https://github.com/optframe/optframe
 
-#ifndef OPTFCORE_EA_RK_FDECODERRK_HPP_
-#define OPTFCORE_EA_RK_FDECODERRK_HPP_
+#ifndef OPTFCORE_EA_RK_FDECODEROPRK_HPP_
+#define OPTFCORE_EA_RK_FDECODEROPRK_HPP_
 
 #include <functional>
 #include <string>
@@ -15,29 +15,27 @@
 namespace optframe {
 
 template <XESolution XES, optframe::comparability KeyType, MinOrMax Minimizing>
-class FDecoderRK final : public DecoderRandomKeys<XES, KeyType> {
+class FDecoderOpRK final : public DecoderRandomKeys<XES, KeyType> {
   using S = typename XES::first_type;
   using XEv = typename XES::second_type;
   using RSK = std::vector<KeyType>;
 
  public:
-  // pair<XEv, S> (*fDecode)(const RSK& rk); // decode function
-
 #ifdef OPTFCORE_FUNC_STATIC
-  typedef pair<XEv, S> (*FuncTypeDecode)(const RSK& rk);
+  typedef pair<XEv, op<S>> (*FuncTypeDecodeOp)(const RSK& rk, bool);
 #else
-  typedef std::function<pair<XEv, S>(const RSK&)> FuncTypeDecode;
+  typedef std::function<pair<XEv, op<S>>(const RSK&, bool)> FuncTypeDecodeOp;
 #endif
 
-  FuncTypeDecode fDecode;
+  FuncTypeDecodeOp fDecodeOp;
 
-  explicit FDecoderRK(FuncTypeDecode _fDecode) : fDecode{_fDecode} {}
+  explicit FDecoderOpRK(FuncTypeDecodeOp _fDecode) : fDecodeOp{_fDecode} {}
 
-  virtual ~FDecoderRK() = default;
+  virtual ~FDecoderOpRK() = default;
 
   pair<XEv, op<S>> decode(const RSK& rk, bool needsSolution) override {
-    auto p = fDecode(rk);
-    return make_pair(p.first, make_optional(p.second));
+    auto p = fDecodeOp(rk, needsSolution);
+    return p;
   }
 
   bool isMinimization() const override {
@@ -46,7 +44,7 @@ class FDecoderRK final : public DecoderRandomKeys<XES, KeyType> {
 
   static std::string idComponent() {
     std::stringstream ss;
-    ss << DecoderRandomKeys<XES, KeyType>::idComponent() << ":FDecoderRK";
+    ss << DecoderRandomKeys<XES, KeyType>::idComponent() << ":FDecoderOpRK";
     return ss.str();
   }
 
@@ -55,4 +53,4 @@ class FDecoderRK final : public DecoderRandomKeys<XES, KeyType> {
 
 }  // namespace optframe
 
-#endif  // OPTFCORE_EA_RK_FDECODERRK_HPP_
+#endif  // OPTFCORE_EA_RK_FDECODEROPRK_HPP_
